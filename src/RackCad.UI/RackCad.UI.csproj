@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RackCad.Domain\RackCad.Domain.csproj" />
+    <ProjectReference Include="..\RackCad.Application\RackCad.Application.csproj" />
+  </ItemGroup>
+</Project>
