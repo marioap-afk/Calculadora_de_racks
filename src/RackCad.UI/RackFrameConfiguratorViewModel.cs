@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
 
@@ -934,32 +936,75 @@ namespace RackCad.UI
                 var generated = new RackFrameConfigurationFactory(catalog)
                     .Build(template, SimplePostCatalogId, simpleHeight, simpleDepth);
 
-                CopyConfiguration(generated, Configuration);
-                SelectedBracingSegments.Clear();
-                SelectedBracingSegment = null;
-                SelectedHorizontal = null;
-                LoadRowsFromConfiguration();
-                NormalizeHorizontalsAndPanels(preservePanelOverrides: true);
-                RefreshPhysicalMembers();
-                standardConfigurationSnapshot = CloneConfiguration(Configuration);
-                RebuildNavigationItems();
-                RebuildExceptions();
-
-                SelectedBracingSegment = BracingSegments.Count > 0 ? BracingSegments[0] : null;
-                SelectedHorizontal = Horizontals.Count > 0 ? Horizontals[0] : null;
-                SelectedNavigationItem = SelectedBracingSegment == null
-                    ? panelsNavigationItem
-                    : GetNavigationItemForSegment(SelectedBracingSegment) ?? panelsNavigationItem;
-                RefreshAllConfigurationProperties();
-
-                StatusMessage = "Cabecera generada: " + template.Name + " (" + FormatInches(simpleHeight) + " alto, " + FormatInches(simpleDepth) + " fondo).";
-                StatusBrush = "#2F855A";
+                ReplaceConfigurationAndReload(
+                    generated,
+                    "Cabecera generada: " + template.Name + " (" + FormatInches(simpleHeight) + " alto, " + FormatInches(simpleDepth) + " fondo).");
             }
             catch (Exception ex)
             {
                 StatusMessage = "No se pudo generar la cabecera: " + ex.Message;
                 StatusBrush = "#B00020";
             }
+        }
+
+        public void SaveProjectTo(string path)
+        {
+            try
+            {
+                new RackFrameProjectStore().Save(Configuration, path);
+                StatusMessage = "Proyecto guardado: " + Path.GetFileName(path);
+                StatusBrush = "#2F855A";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = "No se pudo guardar el proyecto: " + ex.Message;
+                StatusBrush = "#B00020";
+            }
+        }
+
+        public void LoadProjectFrom(string path)
+        {
+            try
+            {
+                var loaded = new RackFrameProjectStore().Load(path);
+                ReplaceConfigurationAndReload(loaded, "Proyecto abierto: " + Path.GetFileName(path));
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = "No se pudo abrir el proyecto: " + ex.Message;
+                StatusBrush = "#B00020";
+            }
+        }
+
+        private void ReplaceConfigurationAndReload(RackFrameConfiguration source, string successMessage)
+        {
+            CopyConfiguration(source, Configuration);
+            SelectedBracingSegments.Clear();
+            SelectedBracingSegment = null;
+            SelectedHorizontal = null;
+            LoadRowsFromConfiguration();
+            NormalizeHorizontalsAndPanels(preservePanelOverrides: true);
+            RefreshPhysicalMembers();
+            standardConfigurationSnapshot = CloneConfiguration(Configuration);
+            RebuildNavigationItems();
+            RebuildExceptions();
+
+            SelectedBracingSegment = BracingSegments.Count > 0 ? BracingSegments[0] : null;
+            SelectedHorizontal = Horizontals.Count > 0 ? Horizontals[0] : null;
+            SelectedNavigationItem = SelectedBracingSegment == null
+                ? panelsNavigationItem
+                : GetNavigationItemForSegment(SelectedBracingSegment) ?? panelsNavigationItem;
+
+            simpleHeight = Configuration.Height;
+            simpleDepth = Configuration.Depth;
+            simplePostCatalogId = NormalizeText(Configuration.LeftPost?.PostCatalogId);
+            OnPropertyChanged(nameof(SimpleHeightText));
+            OnPropertyChanged(nameof(SimpleDepthText));
+            OnPropertyChanged(nameof(SimplePostCatalogId));
+
+            RefreshAllConfigurationProperties();
+            StatusMessage = successMessage;
+            StatusBrush = "#2F855A";
         }
 
         public void ReportNonBlockingError(Exception ex)

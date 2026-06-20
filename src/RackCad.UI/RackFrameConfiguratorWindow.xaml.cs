@@ -177,6 +177,45 @@ namespace RackCad.UI
             });
         }
 
+        private void SaveProject_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
+                FileName = "cabecera" + RackCad.Application.Persistence.RackFrameProjectStore.FileExtension
+            };
+
+            if (dialog.ShowDialog(this) == true)
+            {
+                RunUiAction(() => ViewModel.SaveProjectTo(dialog.FileName));
+            }
+        }
+
+        private void OpenProject_Click(object sender, RoutedEventArgs e)
+        {
+            if (!ConfirmDiscard("abrir otro proyecto"))
+            {
+                return;
+            }
+
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json|Todos (*.*)|*.*"
+            };
+
+            if (dialog.ShowDialog(this) == true)
+            {
+                RunUiAction(() =>
+                {
+                    ViewModel.LoadProjectFrom(dialog.FileName);
+                    SyncGridSelectionFromViewModel();
+                    SyncHorizontalGridSelectionFromViewModel();
+                    SyncTreeSelectionFromViewModel();
+                    DrawPreview();
+                });
+            }
+        }
+
         private void Add44Segment_Click(object sender, RoutedEventArgs e)
         {
             RunUiAction(() =>
