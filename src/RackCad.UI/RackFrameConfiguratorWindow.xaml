@@ -1227,6 +1227,12 @@
                             Margin="0,0,8,0"
                             ToolTip="Muestra la lista de materiales (postes, placas, horizontales, diagonales) y permite exportarla a CSV."
                             Click="ViewBom_Click" />
+                    <Button Content="Sistema dinamico..."
+                            MinWidth="150"
+                            Padding="14,7"
+                            Margin="0,0,8,0"
+                            ToolTip="Disena un sistema dinamico (pallet flow) usando la cabecera actual como componente: vista lateral, BOM y guardar/abrir."
+                            Click="OpenDynamicSystem_Click" />
                     <Button Content="Restaurar cabecera estándar"
                             MinWidth="190"
                             Padding="14,7"
