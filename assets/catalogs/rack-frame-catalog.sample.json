@@ -1,0 +1,60 @@
+{
+  "catalogId": "RACK-FRAME-CATALOG-SAMPLE",
+  "version": "0.1",
+  "units": "in",
+  "postProfiles": [
+    {
+      "id": "POSTE_OMEGA_3X3",
+      "description": "Poste omega 3x3",
+      "attributes": {
+        "material": "steel"
+      }
+    }
+  ],
+  "horizontalProfiles": [
+    {
+      "id": "HORIZONTAL_INFERIOR",
+      "description": "Horizontal inferior estandar"
+    },
+    {
+      "id": "HORIZONTAL_INTERMEDIA",
+      "description": "Horizontal intermedia estandar"
+    },
+    {
+      "id": "HORIZONTAL_SUPERIOR",
+      "description": "Horizontal superior estandar"
+    }
+  ],
+  "diagonalProfiles": [
+    {
+      "id": "TRAVESANO_DINAMICO_OMEGA_3X3",
+      "description": "Travesano dinamico omega 3x3"
+    }
+  ],
+  "basePlates": [
+    {
+      "id": "PLACA_BASE_ATORNILLABLE",
+      "description": "Placa base atornillable"
+    }
+  ],
+  "connectionPoints": [
+    {
+      "id": "PlacaBase_01",
+      "description": "Conexion de placa base estandar",
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "TroquelCelosia_01",
+      "description": "Troquel inicial de celosia",
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "TroquelCelosia_02",
+      "description": "Troquel final de celosia",
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    }
+  ]
+}

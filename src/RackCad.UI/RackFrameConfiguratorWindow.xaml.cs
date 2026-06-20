@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using RackCad.Application.Diagnostics;
 using RackCad.Domain.RackFrames;
 
 namespace RackCad.UI
@@ -35,6 +36,7 @@ namespace RackCad.UI
 
         public RackFrameConfiguratorWindow(RackFrameConfiguration configuration)
         {
+            RackCadLogger.Configure();
             InitializeComponent();
             Dispatcher.UnhandledException += Dispatcher_UnhandledException;
             ViewModel = new RackFrameConfiguratorViewModel(configuration);
@@ -44,6 +46,7 @@ namespace RackCad.UI
             ViewModel.BracingSegments.CollectionChanged += BracingSegments_CollectionChanged;
             ViewModel.Horizontals.CollectionChanged += BracingSegments_CollectionChanged;
             Loaded += RackFrameConfiguratorWindow_Loaded;
+            RackCadLogger.Information("Rack frame configurator window created for {FrameId}.", Configuration.FrameId);
         }
 
         public RackFrameConfiguratorViewModel ViewModel { get; private set; }
@@ -342,6 +345,7 @@ namespace RackCad.UI
         protected override void OnClosed(EventArgs e)
         {
             SaveCurrentLayout();
+            RackCadLogger.Information("Rack frame configurator window closed for {FrameId}.", Configuration.FrameId);
             Loaded -= RackFrameConfiguratorWindow_Loaded;
             Dispatcher.UnhandledException -= Dispatcher_UnhandledException;
 
@@ -482,6 +486,7 @@ namespace RackCad.UI
 
         private void Dispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
+            RackCadLogger.Error(e.Exception, "Unhandled WPF dispatcher exception.");
             ViewModel?.ReportNonBlockingError(e.Exception);
             e.Handled = true;
         }
@@ -495,6 +500,7 @@ namespace RackCad.UI
             }
             catch (Exception ex)
             {
+                RackCadLogger.Error(ex, "Non-blocking WPF action failed.");
                 ViewModel.ReportNonBlockingError(ex);
             }
         }

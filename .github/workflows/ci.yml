@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  core:
+    name: Core build and tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore core projects
+        run: |
+          dotnet restore src/RackCad.Domain/RackCad.Domain.csproj
+          dotnet restore src/RackCad.Application/RackCad.Application.csproj
+          dotnet restore src/RackCad.Catalogs/RackCad.Catalogs.csproj
+          dotnet restore tests/RackCad.Tests/RackCad.Tests.csproj
+
+      - name: Build core projects
+        run: |
+          dotnet build src/RackCad.Domain/RackCad.Domain.csproj --configuration Release --no-restore
+          dotnet build src/RackCad.Application/RackCad.Application.csproj --configuration Release --no-restore
+          dotnet build src/RackCad.Catalogs/RackCad.Catalogs.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/RackCad.Tests/RackCad.Tests.csproj --configuration Release --no-restore --collect:"XPlat Code Coverage"
+
+  windows-ui:
+    name: WPF restore/build without AutoCAD plugin
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build WPF UI
+        run: dotnet build src/RackCad.UI/RackCad.UI.csproj --configuration Release

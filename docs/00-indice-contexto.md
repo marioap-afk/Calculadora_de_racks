@@ -19,6 +19,12 @@ Este indice resume como entender rapidamente el proyecto antes de continuar el d
 5. `docs/04-roadmap-operativo.md`
    - Siguientes pasos recomendados sin mezclar dibujo, BOM, catalogos y persistencia antes de tiempo.
 
+6. `docs/05-pendientes-instalacion-local.md`
+   - Instalaciones pendientes en Windows para compilar y probar el plugin completo con AutoCAD.
+
+7. `docs/06-mejoras-aplicadas-complementos.md`
+   - Complementos instalados que ya quedaron aplicados en codigo, catalogos, logging, pruebas y CI.
+
 ## Documentos historicos existentes
 
 Estos documentos son utiles para decisiones de arquitectura, pero son mas extensos:
@@ -47,4 +53,3 @@ Estos documentos son utiles para decisiones de arquitectura, pero son mas extens
 El codigo actual es un prototipo funcional de configurador. Todavia no debe tratarse como motor CAD final.
 
 La carpeta de salida `bin/`, `obj/`, caches locales `.dotnet_home`, `.nuget_packages`, `.appdata` y `.localappdata` no son parte logica del codigo fuente y estan ignoradas por `.gitignore`.
-

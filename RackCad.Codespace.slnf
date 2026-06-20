@@ -1,0 +1,12 @@
+{
+  "solution": {
+    "path": "RackCad.sln",
+    "projects": [
+      "src/RackCad.Domain/RackCad.Domain.csproj",
+      "src/RackCad.Application/RackCad.Application.csproj",
+      "src/RackCad.Catalogs/RackCad.Catalogs.csproj",
+      "src/RackCad.UI/RackCad.UI.csproj",
+      "tests/RackCad.Tests/RackCad.Tests.csproj"
+    ]
+  }
+}
