@@ -1,24 +1,22 @@
 namespace RackCad.Domain.Systems
 {
-    /// <summary>Type of a longitudinal module of a dynamic system (each position can be edited).</summary>
+    /// <summary>
+    /// Type of a longitudinal module. Only headers and separators are real modules; in the UI the
+    /// three header kinds are all shown as "cabecera". Intermediate posts are NOT a module type:
+    /// they are derived markers drawn where two separators meet.
+    /// </summary>
     public enum DynamicRackModuleKind
     {
         /// <summary>Cabecera inicial (end frame at the start). Length = pallet depth + 6".</summary>
         HeaderStart,
 
-        /// <summary>Cabecera intermedia (an interior position turned into a frame).</summary>
+        /// <summary>Cabecera intermedia. Length = pallet depth.</summary>
         HeaderIntermediate,
 
         /// <summary>Cabecera final (end frame at the end). Length = pallet depth + 6".</summary>
         HeaderEnd,
 
         /// <summary>Separador / bahia de tarima. Length = pallet depth.</summary>
-        Separator,
-
-        /// <summary>Poste intermedio: a zero-length position marker (drawn as a line).</summary>
-        IntermediatePost,
-
-        /// <summary>Modulo a medida.</summary>
-        Custom
+        Separator
     }
 }

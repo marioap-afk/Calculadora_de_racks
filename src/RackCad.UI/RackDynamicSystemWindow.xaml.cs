@@ -26,6 +26,8 @@ namespace RackCad.UI
     {
         private const string DefaultPostCatalogId = "POSTE_OMEGA_3X3";
         private const double DefaultHeaderHeight = 132.0;
+        private const string KindHeader = "Cabecera";
+        private const string KindSeparator = "Separador";
 
         private static readonly Brush UprightStroke = new SolidColorBrush(Color.FromRgb(0xCF, 0xDB, 0xE8));
         private static readonly Brush HorizontalStroke = new SolidColorBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
@@ -50,7 +52,7 @@ namespace RackCad.UI
             InitializeComponent();
             catalog = LoadCatalogSafe();
             builder = new DynamicRackSystemBuilder(catalog);
-            KindBox.ItemsSource = Enum.GetValues(typeof(DynamicRackModuleKind));
+            KindBox.ItemsSource = new[] { KindHeader, KindSeparator };
             Recompose();
         }
 
@@ -102,22 +104,37 @@ namespace RackCad.UI
                 return;
             }
 
-            if (!TryNum(ModuleLengthBox.Text, out var length) || length < 0)
+            if (!TryNum(ModuleLengthBox.Text, out var length) || length <= 0)
             {
-                SetStatus("Longitud invalida.", true);
+                SetStatus("Longitud invalida (debe ser mayor que cero).", true);
                 return;
             }
 
-            var kind = KindBox.SelectedItem is DynamicRackModuleKind k ? k : selectedModule.Kind;
+            var label = KindBox.SelectedItem as string ?? (selectedModule.IsHeader ? KindHeader : KindSeparator);
+            var wantsHeader = label == KindHeader;
 
-            selectedModule.Kind = kind;
             selectedModule.Length = length;
             selectedModule.IsManualOverride = true;
             selectedModule.IsCalculated = false;
 
-            if (selectedModule.IsHeader && selectedModule.AssociatedFrameConfiguration == null)
+            if (wantsHeader)
             {
-                selectedModule.AssociatedFrameConfiguration = BuildHeaderConfig(Math.Max(length, 1.0));
+                var index = system.Modules.IndexOf(selectedModule);
+                selectedModule.Kind = index == 0
+                    ? DynamicRackModuleKind.HeaderStart
+                    : index == system.Modules.Count - 1
+                        ? DynamicRackModuleKind.HeaderEnd
+                        : DynamicRackModuleKind.HeaderIntermediate;
+
+                if (selectedModule.AssociatedFrameConfiguration == null)
+                {
+                    selectedModule.AssociatedFrameConfiguration = BuildHeaderConfig(Math.Max(length, 1.0));
+                }
+            }
+            else
+            {
+                selectedModule.Kind = DynamicRackModuleKind.Separator;
+                selectedModule.AssociatedFrameConfiguration = null;
             }
 
             builder.Refresh(system);
@@ -144,11 +161,26 @@ namespace RackCad.UI
             var window = new RackFrameConfiguratorWindow(selectedModule.AssociatedFrameConfiguration) { Owner = this };
             window.ShowDialog();
 
+            // The header's depth (fondo) edited in the configurator becomes the module length.
+            var editedDepth = selectedModule.AssociatedFrameConfiguration.Depth;
+            if (editedDepth > 0 && Math.Abs(editedDepth - selectedModule.Length) > 0.0001)
+            {
+                selectedModule.Length = editedDepth;
+                selectedModule.IsManualOverride = true;
+                selectedModule.IsCalculated = false;
+            }
+
             builder.Refresh(system);
             BindModules();
+            UpdateSelectedPanel();
             UpdateSummary();
             DrawSideView();
-            SetStatus("Cabecera del modulo actualizada.", false);
+            SetStatus("Cabecera del modulo actualizada (fondo " + editedDepth.ToString("0.##", CultureInfo.InvariantCulture) + " in).", false);
+        }
+
+        private void RestoreDefault_Click(object sender, RoutedEventArgs e)
+        {
+            Recompose();
         }
 
         private RackFrameConfiguration BuildHeaderConfig(double depth)
@@ -212,7 +244,7 @@ namespace RackCad.UI
                 selectedModule.Length,
                 selectedModule.IsManualOverride ? "  [override]" : string.Empty);
 
-            KindBox.SelectedItem = selectedModule.Kind;
+            KindBox.SelectedItem = selectedModule.IsHeader ? KindHeader : KindSeparator;
             ModuleLengthBox.Text = selectedModule.Length.ToString("0.##", CultureInfo.InvariantCulture);
             ApplyModuleButton.IsEnabled = true;
             EditHeaderButton.IsEnabled = selectedModule.IsHeader;
@@ -228,13 +260,13 @@ namespace RackCad.UI
 
             var headers = system.Modules.Count(m => m.IsHeader);
             var separators = system.Modules.Count(m => m.Kind == DynamicRackModuleKind.Separator);
-            var posts = system.Modules.Count(m => m.Kind == DynamicRackModuleKind.IntermediatePost);
+            var posts = system.GetDerivedPostOffsets().Count;
 
             SummaryText.Text = string.Format(
                 CultureInfo.InvariantCulture,
-                "Longitud total: {0:0.##} in   (regla: N x fondo + 12)\nModulos con longitud: {1}   |   {2} cabeceras, {3} separadores, {4} postes",
+                "Longitud total: {0:0.##} in   (regla: N x fondo + 12)\nModulos: {1}   |   {2} cabeceras, {3} separadores   |   postes derivados: {4}",
                 system.TotalLength,
-                system.LengthBearingModuleCount,
+                system.Modules.Count,
                 headers,
                 separators,
                 posts);
@@ -299,12 +331,6 @@ namespace RackCad.UI
 
             foreach (var module in system.Modules)
             {
-                if (module.Kind == DynamicRackModuleKind.IntermediatePost)
-                {
-                    AddLine(Map(module.StartX, 0), Map(module.StartX, height), PostStroke, 1.8, Dash());
-                    continue;
-                }
-
                 if (module.IsHeader)
                 {
                     DrawHeader(module, height);
@@ -312,10 +338,17 @@ namespace RackCad.UI
                 else
                 {
                     var topLeft = Map(module.StartX, height);
-                    AddRectangle(topLeft.X, topLeft.Y, module.Length * mapScale, drawHeight, SeparatorStroke, 1.0, Dash());
+                    AddRectangle(topLeft.X, topLeft.Y, module.Length * mapScale, drawHeight, SeparatorStroke, 1.2, Dash());
                 }
 
                 AddLengthLabel(module);
+            }
+
+            // Derived intermediate posts: drawn where two separators meet (not modules).
+            foreach (var postX in system.GetDerivedPostOffsets())
+            {
+                AddLine(Map(postX, 0), Map(postX, height), PostStroke, 2.4, Dash());
+                AddCanvasLabel(Map(postX, 0).X - 14, mapBottomY + 16, "poste", PostStroke, 10);
             }
 
             DrawSelectionHighlight(height, drawHeight);
@@ -356,12 +389,6 @@ namespace RackCad.UI
                 return;
             }
 
-            if (selectedModule.Kind == DynamicRackModuleKind.IntermediatePost)
-            {
-                AddLine(Map(selectedModule.StartX, 0), Map(selectedModule.StartX, height), SelectionStroke, 2.6, Dash());
-                return;
-            }
-
             var topLeft = Map(selectedModule.StartX, height);
             AddRectangle(topLeft.X - 1, topLeft.Y - 1, Math.Max(selectedModule.Length * mapScale, 2) + 2, drawHeight + 2, SelectionStroke, 2.2, null);
         }
@@ -369,9 +396,7 @@ namespace RackCad.UI
         private void AddLengthLabel(DynamicRackModule module)
         {
             var centerX = (module.StartX + module.EndX) / 2.0;
-            var text = module.Kind == DynamicRackModuleKind.IntermediatePost
-                ? "poste"
-                : module.Length.ToString("0.##", CultureInfo.InvariantCulture);
+            var text = module.Length.ToString("0.##", CultureInfo.InvariantCulture);
             AddCanvasLabel(Map(centerX, 0).X - 12, mapBottomY + 2, text, LabelStroke, 11);
         }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
@@ -10,32 +9,37 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Builds the default editable dynamic system and keeps it consistent after edits. The default
-    /// layout follows the pallet rule (Total = N x depth + 12"; first/last = depth+6; interior =
-    /// depth; even N gets a zero-length center post). Header modules get their own header
-    /// configuration built through the existing <see cref="RackFrameConfigurationFactory"/> (reusing
-    /// the header logic without coupling to its window). Pure logic, no UI/AutoCAD.
+    /// Builds the default editable dynamic system and keeps it consistent after edits.
+    ///
+    /// Default layout (alternating headers/separators):
+    ///   N modules. The two ends are headers of length depth+6. Every other module is depth.
+    ///   A module is a CABECERA when its distance to the nearest end is even, else a SEPARADOR
+    ///   (so the pattern reads cabecera-separador-cabecera-...). Total = N x depth + 12" always
+    ///   (only the two ends carry the +6). Intermediate posts are NOT modules; they are derived
+    ///   where two separators are consecutive (only happens for some even N).
+    ///
+    /// Header modules get their own header configuration built through the existing
+    /// <see cref="RackFrameConfigurationFactory"/> at the module's length (depth+6 for ends, depth
+    /// for interior headers). Pure logic, no UI/AutoCAD.
     /// </summary>
     public sealed class DynamicRackSystemBuilder
     {
         private readonly RackFrameConfigurationFactory headerFactory;
-        private readonly IIntermediatePostRule postRule;
         private readonly BracingPanelMemberBuilder memberBuilder = new BracingPanelMemberBuilder();
 
         public DynamicRackSystemBuilder()
-            : this(new RackFrameConfigurationFactory(), new CenterWhenEvenRule())
+            : this(new RackFrameConfigurationFactory())
         {
         }
 
         public DynamicRackSystemBuilder(RackCatalog catalog)
-            : this(new RackFrameConfigurationFactory(catalog), new CenterWhenEvenRule())
+            : this(new RackFrameConfigurationFactory(catalog))
         {
         }
 
-        public DynamicRackSystemBuilder(RackFrameConfigurationFactory headerFactory, IIntermediatePostRule postRule)
+        public DynamicRackSystemBuilder(RackFrameConfigurationFactory headerFactory)
         {
             this.headerFactory = headerFactory ?? new RackFrameConfigurationFactory();
-            this.postRule = postRule ?? new CenterWhenEvenRule();
         }
 
         public DynamicRackSystem BuildDefault(
@@ -61,25 +65,36 @@ namespace RackCad.Application.Systems
             }
 
             var depth = pallet.Depth;
-            var headerLength = depth + DynamicRackDefaults.HeaderEndAllowance;
+            var endLength = depth + DynamicRackDefaults.HeaderEndAllowance;
             var template = headerTemplate ?? RackFrameTemplateCatalog.Default;
 
             var system = new DynamicRackSystem { Pallet = pallet, PalletsDeep = palletsDeep };
 
-            system.Modules.Add(CreateHeader(DynamicRackModuleKind.HeaderStart, headerLength, template, headerPostCatalogId, headerHeight));
-
-            for (var i = 0; i < palletsDeep - 2; i++)
+            for (var position = 1; position <= palletsDeep; position++)
             {
-                system.Modules.Add(CreateSeparator(depth));
+                var isEnd = position == 1 || position == palletsDeep;
+                var distanceToNearestEnd = Math.Min(position - 1, palletsDeep - position);
+                var isHeader = distanceToNearestEnd % 2 == 0;
+                var length = isEnd ? endLength : depth;
+
+                if (isHeader)
+                {
+                    var kind = position == 1
+                        ? DynamicRackModuleKind.HeaderStart
+                        : position == palletsDeep
+                            ? DynamicRackModuleKind.HeaderEnd
+                            : DynamicRackModuleKind.HeaderIntermediate;
+
+                    system.Modules.Add(CreateHeader(kind, length, template, headerPostCatalogId, headerHeight));
+                }
+                else
+                {
+                    system.Modules.Add(CreateSeparator(length));
+                }
             }
 
-            system.Modules.Add(CreateHeader(DynamicRackModuleKind.HeaderEnd, headerLength, template, headerPostCatalogId, headerHeight));
-
-            system.RecalculatePositions();
-            InsertIntermediatePosts(system);
             system.RecalculatePositions();
             AssignIds(system);
-
             return system;
         }
 
@@ -104,24 +119,12 @@ namespace RackCad.Application.Systems
             AssignIds(system);
         }
 
-        private void InsertIntermediatePosts(DynamicRackSystem system)
+        /// <summary>Builds a header configuration for a module at the given depth.</summary>
+        public RackFrameConfiguration BuildHeaderConfiguration(RackFrameTemplate template, string postCatalogId, double height, double depth)
         {
-            var lengthModules = system.Modules.Where(m => m.Length > 0.0).ToList();
-            var offsets = postRule.ResolvePostOffsets(system.PalletsDeep, lengthModules) ?? Array.Empty<double>();
-
-            foreach (var offset in offsets.OrderByDescending(o => o))
-            {
-                var afterIndex = system.Modules
-                    .Select((module, index) => (module, index))
-                    .Where(item => item.module.Length > 0.0 && Math.Abs(item.module.EndX - offset) <= 1e-6)
-                    .Select(item => (int?)item.index)
-                    .FirstOrDefault();
-
-                if (afterIndex.HasValue)
-                {
-                    system.Modules.Insert(afterIndex.Value + 1, CreatePost());
-                }
-            }
+            var header = headerFactory.Build(template ?? RackFrameTemplateCatalog.Default, postCatalogId, height, depth);
+            memberBuilder.RefreshPhysicalModel(header);
+            return header;
         }
 
         private DynamicRackModule CreateHeader(
@@ -131,15 +134,12 @@ namespace RackCad.Application.Systems
             string postCatalogId,
             double headerHeight)
         {
-            var header = headerFactory.Build(template, postCatalogId, headerHeight, length);
-            memberBuilder.RefreshPhysicalModel(header);
-
             return new DynamicRackModule
             {
                 Kind = kind,
                 Length = length,
                 IsCalculated = true,
-                AssociatedFrameConfiguration = header
+                AssociatedFrameConfiguration = BuildHeaderConfiguration(template, postCatalogId, headerHeight, length)
             };
         }
 
@@ -149,16 +149,6 @@ namespace RackCad.Application.Systems
             {
                 Kind = DynamicRackModuleKind.Separator,
                 Length = length,
-                IsCalculated = true
-            };
-        }
-
-        private static DynamicRackModule CreatePost()
-        {
-            return new DynamicRackModule
-            {
-                Kind = DynamicRackModuleKind.IntermediatePost,
-                Length = 0.0,
                 IsCalculated = true
             };
         }

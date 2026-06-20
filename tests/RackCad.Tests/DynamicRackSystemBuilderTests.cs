@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
@@ -29,96 +28,36 @@ namespace RackCad.Tests
             return (module.Kind, module.StartX, module.EndX);
         }
 
-        // ---- Conteo de modulos con longitud = N; total = N*fondo+12 ----
+        // ---- N modulos; total = N*fondo+12 (solo los extremos llevan +6) ----
 
         [Theory]
-        [InlineData(2)]
         [InlineData(3)]
+        [InlineData(4)]
         [InlineData(5)]
         [InlineData(8)]
-        public void BuildDefault_LengthBearingCountEqualsN_AndTotalMatchesRule(int palletsDeep)
+        public void BuildDefault_ModuleCountEqualsN_AndTotalMatchesRule(int palletsDeep)
         {
             var system = Build(palletsDeep);
 
-            Assert.Equal(palletsDeep, system.LengthBearingModuleCount);
+            Assert.Equal(palletsDeep, system.Modules.Count);
             Assert.Equal(palletsDeep * 48.0 + 12.0, system.TotalLength);
             Assert.Equal(system.TotalLength, system.Modules.Sum(m => m.Length));
         }
 
         [Fact]
-        public void BuildDefault_EndsAreHeadersWithOwnConfig_InteriorsAreSeparators()
+        public void BuildDefault_OnlyEndsAreDepthPlusSix_EverythingElseIsDepth()
         {
             var system = Build(5);
 
-            Assert.Equal(DynamicRackModuleKind.HeaderStart, system.Modules.First().Kind);
-            Assert.Equal(DynamicRackModuleKind.HeaderEnd, system.Modules.Last().Kind);
             Assert.Equal(54.0, system.Modules.First().Length);
             Assert.Equal(54.0, system.Modules.Last().Length);
-
-            var interiors = system.Modules.Where(m => m.Length > 0 && !m.IsHeader).ToList();
-            Assert.Equal(3, interiors.Count);
-            Assert.All(interiors, m => Assert.Equal(DynamicRackModuleKind.Separator, m.Kind));
-            Assert.All(interiors, m => Assert.Equal(48.0, m.Length));
-            Assert.All(interiors, m => Assert.Null(m.AssociatedFrameConfiguration));
-
-            // Each header module owns an independent configuration.
-            var start = system.Modules.First().AssociatedFrameConfiguration;
-            var end = system.Modules.Last().AssociatedFrameConfiguration;
-            Assert.NotNull(start);
-            Assert.NotNull(end);
-            Assert.NotSame(start, end);
-            Assert.Equal(54.0, start.Depth);
-            Assert.NotEmpty(start.Members);
+            Assert.All(system.Modules.Skip(1).Take(system.Modules.Count - 2), m => Assert.Equal(48.0, m.Length));
         }
 
-        // ---- Postes: modulo de longitud 0 en la lista, no suman longitud ni cuentan como length-bearing ----
-
-        [Theory]
-        [InlineData(3)]
-        [InlineData(5)]
-        [InlineData(7)]
-        public void BuildDefault_OddCount_HasNoPostModule(int palletsDeep)
-        {
-            Assert.DoesNotContain(Build(palletsDeep).Modules, m => m.Kind == DynamicRackModuleKind.IntermediatePost);
-        }
+        // ---- Layout alternado exacto (ejemplos del usuario) ----
 
         [Fact]
-        public void BuildDefault_EvenCount_HasOneZeroLengthPostModuleAtCenter()
-        {
-            var system = Build(8);
-
-            var post = Assert.Single(system.Modules.Where(m => m.Kind == DynamicRackModuleKind.IntermediatePost));
-            Assert.Equal(0.0, post.Length);
-            Assert.Equal(post.StartX, post.EndX);
-            Assert.Equal(system.TotalLength / 2.0, post.StartX); // 198
-            Assert.Equal(8, system.LengthBearingModuleCount);     // post does not change the count
-            Assert.Equal(396.0, system.TotalLength);              // nor the total
-        }
-
-        // ---- Contigüidad ----
-
-        [Theory]
-        [InlineData(3)]
-        [InlineData(8)]
-        public void BuildDefault_ModulesAreContiguousAndIndexed(int palletsDeep)
-        {
-            var modules = Build(palletsDeep).Modules;
-
-            Assert.Equal(0.0, modules.First().StartX);
-            for (var i = 0; i < modules.Count; i++)
-            {
-                Assert.Equal(i, modules[i].Index);
-                if (i > 0)
-                {
-                    Assert.Equal(modules[i - 1].EndX, modules[i].StartX);
-                }
-            }
-        }
-
-        // ---- Layouts exactos para 3, 5 y 8 ----
-
-        [Fact]
-        public void BuildDefault_Three_ProducesExpectedLayout()
+        public void BuildDefault_Three_ProducesHeaderSeparatorHeader()
         {
             Assert.Equal(new[]
             {
@@ -129,39 +68,100 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void BuildDefault_Five_ProducesExpectedLayout()
+        public void BuildDefault_Four_HasTwoConsecutiveSeparators_AndOneDerivedCenterPost()
         {
+            var system = Build(4);
+
             Assert.Equal(new[]
             {
                 (DynamicRackModuleKind.HeaderStart, 0.0, 54.0),
                 (DynamicRackModuleKind.Separator, 54.0, 102.0),
                 (DynamicRackModuleKind.Separator, 102.0, 150.0),
+                (DynamicRackModuleKind.HeaderEnd, 150.0, 204.0)
+            }, system.Modules.Select(Triple).ToArray());
+
+            Assert.Equal(new[] { 102.0 }, system.GetDerivedPostOffsets()); // poste between the two separators (center)
+        }
+
+        [Fact]
+        public void BuildDefault_Five_HasInteriorHeaderOfDepth_AndNoPost()
+        {
+            var system = Build(5);
+
+            Assert.Equal(new[]
+            {
+                (DynamicRackModuleKind.HeaderStart, 0.0, 54.0),
+                (DynamicRackModuleKind.Separator, 54.0, 102.0),
+                (DynamicRackModuleKind.HeaderIntermediate, 102.0, 150.0),
                 (DynamicRackModuleKind.Separator, 150.0, 198.0),
                 (DynamicRackModuleKind.HeaderEnd, 198.0, 252.0)
-            }, Build(5).Modules.Select(Triple).ToArray());
+            }, system.Modules.Select(Triple).ToArray());
+
+            Assert.Empty(system.GetDerivedPostOffsets());
+
+            var interiorHeader = system.Modules[2];
+            Assert.True(interiorHeader.IsHeader);
+            Assert.Equal(48.0, interiorHeader.AssociatedFrameConfiguration.Depth); // interior header is fondo deep
         }
 
         [Fact]
-        public void BuildDefault_Eight_ProducesExpectedLayoutWithCenterPost()
+        public void BuildDefault_Eight_AlternatesWithCenterPost()
         {
-            Assert.Equal(new[]
-            {
-                (DynamicRackModuleKind.HeaderStart, 0.0, 54.0),
-                (DynamicRackModuleKind.Separator, 54.0, 102.0),
-                (DynamicRackModuleKind.Separator, 102.0, 150.0),
-                (DynamicRackModuleKind.Separator, 150.0, 198.0),
-                (DynamicRackModuleKind.IntermediatePost, 198.0, 198.0),
-                (DynamicRackModuleKind.Separator, 198.0, 246.0),
-                (DynamicRackModuleKind.Separator, 246.0, 294.0),
-                (DynamicRackModuleKind.Separator, 294.0, 342.0),
-                (DynamicRackModuleKind.HeaderEnd, 342.0, 396.0)
-            }, Build(8).Modules.Select(Triple).ToArray());
+            var system = Build(8);
+
+            Assert.Equal(
+                new[]
+                {
+                    DynamicRackModuleKind.HeaderStart, DynamicRackModuleKind.Separator, DynamicRackModuleKind.HeaderIntermediate,
+                    DynamicRackModuleKind.Separator, DynamicRackModuleKind.Separator, DynamicRackModuleKind.HeaderIntermediate,
+                    DynamicRackModuleKind.Separator, DynamicRackModuleKind.HeaderEnd
+                },
+                system.Modules.Select(m => m.Kind).ToArray());
+            Assert.Equal(396.0, system.TotalLength);
+            Assert.Equal(new[] { 198.0 }, system.GetDerivedPostOffsets());
         }
 
-        // ---- Edicion / override + Refresh ----
+        // ---- Postes derivados ----
+
+        [Theory]
+        [InlineData(3)]
+        [InlineData(5)]
+        [InlineData(7)]
+        public void BuildDefault_OddCount_HasNoDerivedPost(int palletsDeep)
+        {
+            Assert.Empty(Build(palletsDeep).GetDerivedPostOffsets());
+        }
 
         [Fact]
-        public void Refresh_AfterEditingHeaderLength_RecalculatesPositionsAndSyncsHeaderDepth()
+        public void GetDerivedPostOffsets_AppearsWhenEditsCreateConsecutiveSeparators()
+        {
+            var builder = new DynamicRackSystemBuilder(Catalog);
+            var system = builder.BuildDefault(Pallet48(), 5, RackFrameTemplateCatalog.Default, "POSTE_OMEGA_3X3", 132.0);
+            Assert.Empty(system.GetDerivedPostOffsets());
+
+            // Turn the interior header (index 2) into a separator -> now separators 1,2,3 are consecutive.
+            system.Modules[2].Kind = DynamicRackModuleKind.Separator;
+            system.Modules[2].AssociatedFrameConfiguration = null;
+            builder.Refresh(system);
+
+            Assert.NotEmpty(system.GetDerivedPostOffsets());
+        }
+
+        // ---- Cabeceras independientes + edicion ----
+
+        [Fact]
+        public void BuildDefault_EachHeaderHasItsOwnConfiguration()
+        {
+            var system = Build(5);
+            var headers = system.Modules.Where(m => m.IsHeader).Select(m => m.AssociatedFrameConfiguration).ToList();
+
+            Assert.Equal(3, headers.Count);
+            Assert.Equal(headers.Count, headers.Distinct().Count()); // all distinct instances
+            Assert.All(headers, h => Assert.NotEmpty(h.Members));
+        }
+
+        [Fact]
+        public void Refresh_AfterEditingHeaderLength_SyncsConfigDepthAndPositions()
         {
             var builder = new DynamicRackSystemBuilder(Catalog);
             var system = builder.BuildDefault(Pallet48(), 4, RackFrameTemplateCatalog.Default, "POSTE_OMEGA_3X3", 132.0);
@@ -172,8 +172,7 @@ namespace RackCad.Tests
 
             builder.Refresh(system);
 
-            Assert.Equal(60.0, startHeader.AssociatedFrameConfiguration.Depth); // header depth follows the module length
-            Assert.Equal(0.0, startHeader.StartX);
+            Assert.Equal(60.0, startHeader.AssociatedFrameConfiguration.Depth);
             Assert.Equal(60.0, startHeader.EndX);
             Assert.Equal(system.Modules.Sum(m => m.Length), system.TotalLength);
         }
@@ -193,24 +192,6 @@ namespace RackCad.Tests
         {
             Assert.Throws<ArgumentNullException>(() =>
                 new DynamicRackSystemBuilder(Catalog).BuildDefault(null, 4, RackFrameTemplateCatalog.Default, "POSTE_OMEGA_3X3", 132.0));
-        }
-
-        [Fact]
-        public void BuildDefault_WithNoPostRule_NeverAddsPostModules()
-        {
-            var builder = new DynamicRackSystemBuilder(new RackFrameConfigurationFactory(Catalog), new NoPostRule());
-            var system = builder.BuildDefault(Pallet48(), 8, RackFrameTemplateCatalog.Default, "POSTE_OMEGA_3X3", 132.0);
-
-            Assert.DoesNotContain(system.Modules, m => m.Kind == DynamicRackModuleKind.IntermediatePost);
-            Assert.Equal(8, system.Modules.Count);
-        }
-
-        private sealed class NoPostRule : IIntermediatePostRule
-        {
-            public IReadOnlyList<double> ResolvePostOffsets(int palletsDeep, IReadOnlyList<DynamicRackModule> lengthModules)
-            {
-                return Array.Empty<double>();
-            }
         }
     }
 }

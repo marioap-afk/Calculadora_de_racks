@@ -40,5 +40,25 @@ namespace RackCad.Domain.Systems
                 x = module.EndX;
             }
         }
+
+        /// <summary>
+        /// X positions of the derived intermediate posts: the boundary wherever two separators are
+        /// consecutive. Posts are not modules — they are a structural consequence of the layout.
+        /// </summary>
+        public IReadOnlyList<double> GetDerivedPostOffsets()
+        {
+            var posts = new List<double>();
+
+            for (var i = 1; i < Modules.Count; i++)
+            {
+                if (Modules[i - 1].Kind == DynamicRackModuleKind.Separator
+                    && Modules[i].Kind == DynamicRackModuleKind.Separator)
+                {
+                    posts.Add(Modules[i - 1].EndX);
+                }
+            }
+
+            return posts;
+        }
     }
 }

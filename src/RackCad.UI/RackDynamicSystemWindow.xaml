@@ -128,6 +128,8 @@
 
         <!-- Actions -->
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Restaurar layout predeterminado" MinWidth="210" Padding="14,7" Margin="0,0,8,0"
+                    ToolTip="Recalcula el sistema desde la tarima y elimina los overrides manuales." Click="RestoreDefault_Click" />
             <Button Content="Exportar BOM" MinWidth="120" Padding="14,7" Margin="0,0,8,0" Click="ExportBom_Click" />
             <Button Content="Ver BOM" MinWidth="100" Padding="14,7" Margin="0,0,8,0" Click="ViewBom_Click" />
             <Button Content="Abrir sistema" MinWidth="120" Padding="14,7" Margin="0,0,8,0" Click="OpenSystem_Click" />
