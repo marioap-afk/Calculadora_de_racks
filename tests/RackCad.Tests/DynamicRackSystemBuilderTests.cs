@@ -105,6 +105,26 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void BuildDefault_Six_PlacesDoubleSeparatorNearCenter()
+        {
+            var system = Build(6);
+
+            // N divisible by 4 centers the poste; N=6 (=2 mod 4) shifts the double separator one step.
+            Assert.Equal(new[]
+            {
+                (DynamicRackModuleKind.HeaderStart, 0.0, 54.0),
+                (DynamicRackModuleKind.Separator, 54.0, 102.0),
+                (DynamicRackModuleKind.Separator, 102.0, 150.0),
+                (DynamicRackModuleKind.HeaderIntermediate, 150.0, 198.0),
+                (DynamicRackModuleKind.Separator, 198.0, 246.0),
+                (DynamicRackModuleKind.HeaderEnd, 246.0, 300.0)
+            }, system.Modules.Select(Triple).ToArray());
+
+            Assert.Equal(new[] { 102.0 }, system.GetDerivedPostOffsets()); // poste between the two separators
+            Assert.Equal(300.0, system.TotalLength);
+        }
+
+        [Fact]
         public void BuildDefault_Eight_AlternatesWithCenterPost()
         {
             var system = Build(8);

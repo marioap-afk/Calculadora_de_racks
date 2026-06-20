@@ -73,8 +73,7 @@ namespace RackCad.Application.Systems
             for (var position = 1; position <= palletsDeep; position++)
             {
                 var isEnd = position == 1 || position == palletsDeep;
-                var distanceToNearestEnd = Math.Min(position - 1, palletsDeep - position);
-                var isHeader = distanceToNearestEnd % 2 == 0;
+                var isHeader = IsHeaderPosition(position, palletsDeep);
                 var length = isEnd ? endLength : depth;
 
                 if (isHeader)
@@ -117,6 +116,27 @@ namespace RackCad.Application.Systems
 
             system.RecalculatePositions();
             AssignIds(system);
+        }
+
+        /// <summary>
+        /// Whether the module at <paramref name="position"/> (1-indexed) is a header in the default
+        /// layout. Odd N: strict alternating C-S-C-...-C. Even N: alternating with ONE pair of
+        /// consecutive separators (the derived poste) placed as close to the center as possible —
+        /// exactly centered for N divisible by 4, one pallet off-center otherwise.
+        /// </summary>
+        private static bool IsHeaderPosition(int position, int palletsDeep)
+        {
+            if (palletsDeep % 2 == 1)
+            {
+                return position % 2 == 1;
+            }
+
+            // doublingStart = largest even number <= N/2; modules doublingStart and doublingStart+1 are the
+            // two consecutive separators (the poste boundary), kept nearest the center.
+            var doublingStart = 2 * (palletsDeep / 4);
+            return position <= doublingStart
+                ? position % 2 == 1
+                : (position - doublingStart) % 2 == 0;
         }
 
         /// <summary>Builds a header configuration for a module at the given depth.</summary>
