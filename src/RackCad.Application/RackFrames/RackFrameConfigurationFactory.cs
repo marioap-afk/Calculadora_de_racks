@@ -41,11 +41,18 @@ namespace RackCad.Application.RackFrames
                 throw new ArgumentNullException(nameof(template));
             }
 
-            var ratios = template.HorizontalElevationRatios;
+            var referenceElevations = template.HorizontalElevations;
 
-            if (ratios == null || ratios.Count < 2)
+            if (referenceElevations == null || referenceElevations.Count < 2)
             {
                 throw new ArgumentException("La plantilla debe tener al menos dos horizontales.", nameof(template));
+            }
+
+            var maxReferenceElevation = referenceElevations[referenceElevations.Count - 1];
+
+            if (maxReferenceElevation <= 0.0)
+            {
+                throw new ArgumentException("La ultima elevacion de la plantilla debe ser mayor que cero.", nameof(template));
             }
 
             if (height <= 0.0)
@@ -76,15 +83,16 @@ namespace RackCad.Application.RackFrames
                 RightBasePlate = CreateBasePlate(PostSide.Right, basePlate, basePlateConnectionPointId)
             };
 
-            for (var index = 0; index < ratios.Count; index++)
+            for (var index = 0; index < referenceElevations.Count; index++)
             {
-                var elevation = Math.Round(height * Math.Clamp(ratios[index], 0.0, 1.0), 4);
-                var profileId = ResolveHorizontalProfile(index, ratios.Count);
+                var ratio = Math.Clamp(referenceElevations[index] / maxReferenceElevation, 0.0, 1.0);
+                var elevation = Math.Round(height * ratio, 4);
+                var profileId = ResolveHorizontalProfile(index, referenceElevations.Count);
                 var quantity = index == 0 ? 2 : 1;
                 AddHorizontal(configuration, index + 1, elevation, profileId, quantity);
             }
 
-            for (var index = 0; index < ratios.Count - 1; index++)
+            for (var index = 0; index < referenceElevations.Count - 1; index++)
             {
                 var lowerId = "H" + (index + 1).ToString(CultureInfo.InvariantCulture);
                 var upperId = "H" + (index + 2).ToString(CultureInfo.InvariantCulture);

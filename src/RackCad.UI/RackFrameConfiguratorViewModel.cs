@@ -104,8 +104,21 @@ namespace RackCad.UI
             standardRightPlateCatalogId = NormalizeText(configuration.RightBasePlate?.PlateCatalogId);
             standardRightPlateConnectionPointId = NormalizeText(configuration.RightBasePlate?.ConnectionPointId);
 
-            HeaderTemplateOptions = RackFrameTemplateCatalog.All;
-            selectedHeaderTemplate = RackFrameTemplateCatalog.Default;
+            IReadOnlyList<RackFrameTemplate> headerTemplates;
+            string templateLoadWarning = null;
+
+            try
+            {
+                headerTemplates = RackFrameTemplateProvider.FromBaseDirectory().Load();
+            }
+            catch (Exception ex)
+            {
+                headerTemplates = RackFrameTemplateCatalog.All;
+                templateLoadWarning = "Plantillas: " + ex.Message + " Se usaron las plantillas internas.";
+            }
+
+            HeaderTemplateOptions = headerTemplates;
+            selectedHeaderTemplate = headerTemplates.Count > 0 ? headerTemplates[0] : RackFrameTemplateCatalog.Default;
             simplePostCatalogId = NormalizeText(configuration.LeftPost?.PostCatalogId);
             simpleHeight = configuration.Height;
             simpleDepth = configuration.Depth;
@@ -118,6 +131,12 @@ namespace RackCad.UI
             RebuildNavigationItems();
             RebuildExceptions();
             SelectedNavigationItem = NavigationItems.First();
+
+            if (templateLoadWarning != null)
+            {
+                StatusMessage = templateLoadWarning;
+                StatusBrush = "#B00020";
+            }
         }
 
         public RackFrameConfiguration Configuration { get; private set; }
@@ -170,6 +189,22 @@ namespace RackCad.UI
                 }
 
                 selectedHeaderTemplate = value;
+
+                if (value != null)
+                {
+                    if (value.DefaultHeight > 0.0)
+                    {
+                        simpleHeight = value.DefaultHeight;
+                        OnPropertyChanged(nameof(SimpleHeightText));
+                    }
+
+                    if (value.DefaultDepth > 0.0)
+                    {
+                        simpleDepth = value.DefaultDepth;
+                        OnPropertyChanged(nameof(SimpleDepthText));
+                    }
+                }
+
                 OnPropertyChanged(nameof(SelectedHeaderTemplate));
             }
         }

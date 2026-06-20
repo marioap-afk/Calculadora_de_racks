@@ -6,9 +6,9 @@ using RackCad.Domain.RackFrames;
 namespace RackCad.Application.RackFrames
 {
     /// <summary>
-    /// Built-in header templates offered by the simple ("quick") configurator mode.
-    /// Kept in code for now; can move to a versioned JSON catalog later without changing
-    /// the factory contract.
+    /// Built-in header templates used as a FALLBACK when the external
+    /// <c>header-templates.json</c> catalog is missing or empty. The JSON catalog is the
+    /// authoritative source at runtime; these keep the configurator usable without it.
     /// </summary>
     public static class RackFrameTemplateCatalog
     {
@@ -20,7 +20,7 @@ namespace RackCad.Application.RackFrames
                 Name = "Estandar (3 paneles)",
                 DefaultHeight = 132.0,
                 DefaultDepth = 42.0,
-                HorizontalElevationRatios = new[] { 0.0, 1.0 / 3.0, 2.0 / 3.0, 1.0 },
+                HorizontalElevations = new[] { 0.0, 44.0, 88.0, 132.0 },
                 DefaultArrangement = BracingPattern.SingleDiagonal
             },
             new RackFrameTemplate
@@ -29,7 +29,7 @@ namespace RackCad.Application.RackFrames
                 Name = "Compacta (2 paneles)",
                 DefaultHeight = 96.0,
                 DefaultDepth = 36.0,
-                HorizontalElevationRatios = new[] { 0.0, 0.5, 1.0 },
+                HorizontalElevations = new[] { 0.0, 48.0, 96.0 },
                 DefaultArrangement = BracingPattern.SingleDiagonal
             },
             new RackFrameTemplate
@@ -38,7 +38,7 @@ namespace RackCad.Application.RackFrames
                 Name = "Alta (4 paneles, X)",
                 DefaultHeight = 180.0,
                 DefaultDepth = 42.0,
-                HorizontalElevationRatios = new[] { 0.0, 0.25, 0.5, 0.75, 1.0 },
+                HorizontalElevations = new[] { 0.0, 45.0, 90.0, 135.0, 180.0 },
                 DefaultArrangement = BracingPattern.XBracing
             }
         };

@@ -5,8 +5,9 @@ namespace RackCad.Application.RackFrames
 {
     /// <summary>
     /// Defines the SHAPE of a header (how many horizontals and where, plus the default
-    /// bracing) independently of the concrete dimensions. Elevations are expressed as
-    /// ratios of the total height so the same template scales to any height.
+    /// bracing) independently of the final dimensions. Elevations are reference values in
+    /// inches; the factory scales them proportionally to the chosen height, so the top
+    /// horizontal always lands exactly on the requested height.
     /// </summary>
     public sealed class RackFrameTemplate
     {
@@ -15,8 +16,8 @@ namespace RackCad.Application.RackFrames
         public double DefaultHeight { get; set; }
         public double DefaultDepth { get; set; }
 
-        /// <summary>Ascending ratios in [0,1]; must start at 0 and end at 1.</summary>
-        public IReadOnlyList<double> HorizontalElevationRatios { get; set; } = new List<double>();
+        /// <summary>Reference elevations in inches, ascending, starting at 0.</summary>
+        public IReadOnlyList<double> HorizontalElevations { get; set; } = new List<double>();
 
         public BracingPattern DefaultArrangement { get; set; } = BracingPattern.SingleDiagonal;
 

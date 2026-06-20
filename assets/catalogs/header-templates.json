@@ -1,0 +1,26 @@
+[
+  {
+    "id": "STD-3P",
+    "name": "Estandar (3 paneles)",
+    "defaultHeight": 132.0,
+    "defaultDepth": 42.0,
+    "horizontalElevations": [0.0, 44.0, 88.0, 132.0],
+    "defaultArrangement": "SingleDiagonal"
+  },
+  {
+    "id": "COMPACT-2P",
+    "name": "Compacta (2 paneles)",
+    "defaultHeight": 96.0,
+    "defaultDepth": 36.0,
+    "horizontalElevations": [0.0, 48.0, 96.0],
+    "defaultArrangement": "SingleDiagonal"
+  },
+  {
+    "id": "TALL-4P",
+    "name": "Alta (4 paneles, X)",
+    "defaultHeight": 180.0,
+    "defaultDepth": 42.0,
+    "horizontalElevations": [0.0, 45.0, 90.0, 135.0, 180.0],
+    "defaultArrangement": "XBracing"
+  }
+]

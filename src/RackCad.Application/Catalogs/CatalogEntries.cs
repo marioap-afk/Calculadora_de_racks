@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RackCad.Application.RackFrames;
 
 namespace RackCad.Application.Catalogs
 {

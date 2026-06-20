@@ -98,9 +98,9 @@ namespace RackCad.Tests
             Assert.NotNull(RackFrameTemplateCatalog.Default);
             Assert.All(RackFrameTemplateCatalog.All, t =>
             {
-                Assert.NotNull(t.HorizontalElevationRatios);
-                Assert.Equal(0.0, t.HorizontalElevationRatios.First());
-                Assert.Equal(1.0, t.HorizontalElevationRatios.Last());
+                Assert.NotNull(t.HorizontalElevations);
+                Assert.Equal(0.0, t.HorizontalElevations.First());
+                Assert.Equal(t.DefaultHeight, t.HorizontalElevations.Last());
             });
         }
     }
