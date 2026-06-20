@@ -1,0 +1,17 @@
+[
+  {
+    "id": "PlacaBase_01",
+    "description": "Punto de conexion de placa base",
+    "role": "BasePlate"
+  },
+  {
+    "id": "TroquelCelosia_01",
+    "description": "Troquel inicial de celosia",
+    "role": "Brace"
+  },
+  {
+    "id": "TroquelCelosia_02",
+    "description": "Troquel final de celosia",
+    "role": "Brace"
+  }
+]

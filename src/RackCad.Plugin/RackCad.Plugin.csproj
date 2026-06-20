@@ -12,6 +12,12 @@
     <ProjectReference Include="..\RackCad.Application\RackCad.Application.csproj" />
     <ProjectReference Include="..\RackCad.UI\RackCad.UI.csproj" />
   </ItemGroup>
+  <!-- Ship versioned catalogs next to the plugin DLL so JsonRackCatalogProvider.FromBaseDirectory() resolves them. -->
+  <ItemGroup>
+    <Content Include="..\..\assets\catalogs\*.json" Link="catalogs\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="AcCoreMgd">
       <HintPath>$(AutoCADInstallDir)\AcCoreMgd.dll</HintPath>

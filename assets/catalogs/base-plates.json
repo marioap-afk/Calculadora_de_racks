@@ -1,0 +1,11 @@
+[
+  {
+    "id": "PLACA_BASE_ATORNILLABLE",
+    "description": "Placa base atornillable",
+    "width": 4.0,
+    "length": 6.0,
+    "thickness": 0.25,
+    "connectionPointId": "PlacaBase_01",
+    "units": "in"
+  }
+]

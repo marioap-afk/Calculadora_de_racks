@@ -1,0 +1,83 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+
+namespace RackCad.Application.Catalogs
+{
+    /// <summary>
+    /// Loads the rack catalog from a directory of versioned JSON files. Each file
+    /// is an array of entries. Missing files yield empty lists rather than throwing,
+    /// so a partial catalog folder still produces a usable <see cref="RackCatalog"/>.
+    /// </summary>
+    public sealed class JsonRackCatalogProvider : IRackCatalogProvider
+    {
+        public const string PostProfilesFile = "post-profiles.json";
+        public const string HorizontalProfilesFile = "horizontal-profiles.json";
+        public const string DiagonalProfilesFile = "diagonal-profiles.json";
+        public const string BasePlatesFile = "base-plates.json";
+        public const string ConnectionPointsFile = "connection-points.json";
+
+        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
+
+        private readonly string _directory;
+
+        public JsonRackCatalogProvider(string directory)
+        {
+            _directory = directory ?? throw new ArgumentNullException(nameof(directory));
+        }
+
+        /// <summary>
+        /// Builds a provider pointing at a <c>catalogs</c> folder next to the
+        /// executing assembly, which is how the AutoCAD plugin ships them.
+        /// </summary>
+        public static JsonRackCatalogProvider FromBaseDirectory()
+        {
+            return new JsonRackCatalogProvider(Path.Combine(AppContext.BaseDirectory, "catalogs"));
+        }
+
+        public RackCatalog Load()
+        {
+            return new RackCatalog
+            {
+                PostProfiles = ReadArray<ProfileCatalogEntry>(PostProfilesFile),
+                HorizontalProfiles = ReadArray<ProfileCatalogEntry>(HorizontalProfilesFile),
+                DiagonalProfiles = ReadArray<ProfileCatalogEntry>(DiagonalProfilesFile),
+                BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
+                ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile)
+            };
+        }
+
+        private List<T> ReadArray<T>(string fileName)
+        {
+            var path = Path.Combine(_directory, fileName);
+
+            if (!File.Exists(path))
+            {
+                return new List<T>();
+            }
+
+            var json = File.ReadAllText(path);
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return new List<T>();
+            }
+
+            try
+            {
+                return JsonSerializer.Deserialize<List<T>>(json, SerializerOptions) ?? new List<T>();
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidOperationException(
+                    "El catalogo '" + fileName + "' no es JSON valido: " + ex.Message, ex);
+            }
+        }
+    }
+}

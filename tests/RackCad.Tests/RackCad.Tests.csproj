@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- No .NET 8 runtime in this codespace (only 9/10); run the test host on a later major. -->
+    <RollForward>LatestMajor</RollForward>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RackCad.Domain\RackCad.Domain.csproj" />
+    <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
+  </ItemGroup>
+
+  <!-- Ship the versioned catalogs next to the test binaries so the JSON provider
+       can be exercised exactly as the plugin would load them at runtime. -->
+  <ItemGroup>
+    <Content Include="..\..\assets\catalogs\*.json" Link="catalogs\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

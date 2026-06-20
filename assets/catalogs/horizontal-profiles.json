@@ -1,0 +1,29 @@
+[
+  {
+    "id": "HORIZONTAL_INFERIOR",
+    "description": "Horizontal inferior",
+    "family": "OMEGA",
+    "width": 3.0,
+    "depth": 1.5,
+    "thickness": 0.105,
+    "units": "in"
+  },
+  {
+    "id": "HORIZONTAL_INTERMEDIA",
+    "description": "Horizontal intermedia",
+    "family": "OMEGA",
+    "width": 3.0,
+    "depth": 1.5,
+    "thickness": 0.105,
+    "units": "in"
+  },
+  {
+    "id": "HORIZONTAL_SUPERIOR",
+    "description": "Horizontal superior",
+    "family": "OMEGA",
+    "width": 3.0,
+    "depth": 1.5,
+    "thickness": 0.105,
+    "units": "in"
+  }
+]

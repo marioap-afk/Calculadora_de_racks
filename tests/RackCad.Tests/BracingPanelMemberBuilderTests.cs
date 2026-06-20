@@ -1,0 +1,134 @@
+using System.Linq;
+using RackCad.Application.RackFrames;
+using RackCad.Domain.RackFrames;
+using Xunit;
+
+namespace RackCad.Tests
+{
+    public class BracingPanelMemberBuilderTests
+    {
+        private static readonly BracingPanelMemberBuilder Builder = new BracingPanelMemberBuilder();
+
+        private static RackFrameConfiguration BuildStandardModel()
+        {
+            var configuration = new HardcodedStandardRackFrameService().CreateDefault();
+            Builder.RefreshPhysicalModel(configuration);
+            return configuration;
+        }
+
+        private static bool IsHorizontal(FrameMember member)
+        {
+            return member.MemberType == FrameMemberType.LowerHorizontal ||
+                   member.MemberType == FrameMemberType.UpperHorizontal ||
+                   member.MemberType == FrameMemberType.IntermediateHorizontal ||
+                   member.MemberType == FrameMemberType.AdditionalHorizontal;
+        }
+
+        [Fact]
+        public void RefreshPhysicalModel_StandardFrame_GeneratesOneMemberPerHorizontalPlusOneDiagonalPerPanel()
+        {
+            var configuration = BuildStandardModel();
+
+            Assert.Equal(4, configuration.Members.Count(IsHorizontal));
+            Assert.Equal(3, configuration.Members.Count(m => m.MemberType == FrameMemberType.DiagonalBrace));
+            Assert.Equal(7, configuration.Members.Count);
+        }
+
+        [Fact]
+        public void RefreshPhysicalModel_AttachesDiagonalsToTheirPanel()
+        {
+            var configuration = BuildStandardModel();
+
+            Assert.All(configuration.BracingPanels, panel => Assert.Single(panel.Members));
+            // Horizontals are not attached to any panel.
+            Assert.DoesNotContain(configuration.BracingPanels.SelectMany(p => p.Members), IsHorizontal);
+        }
+
+        [Fact]
+        public void RefreshPhysicalModel_ResolvesPanelElevationsFromHorizontals()
+        {
+            var configuration = BuildStandardModel();
+            var panels = configuration.BracingPanels.OrderBy(p => p.Number).ToList();
+
+            Assert.Equal((0.0, 44.0), (panels[0].StartElevation, panels[0].EndElevation));
+            Assert.Equal((44.0, 88.0), (panels[1].StartElevation, panels[1].EndElevation));
+            Assert.Equal((88.0, 132.0), (panels[2].StartElevation, panels[2].EndElevation));
+        }
+
+        [Fact]
+        public void AutoAlternating_AlternatesDiagonalDirectionByPanelNumber()
+        {
+            var configuration = BuildStandardModel();
+            var panels = configuration.BracingPanels.OrderBy(p => p.Number).ToList();
+
+            // P1 (odd) rises to the right: start on the left post, end on the right post.
+            var p1 = panels[0].Members.Single();
+            Assert.Equal(PostSide.Left, p1.Start.PostSide);
+            Assert.Equal(PostSide.Right, p1.End.PostSide);
+
+            // P2 (even) rises to the left: start on the right post, end on the left post.
+            var p2 = panels[1].Members.Single();
+            Assert.Equal(PostSide.Right, p2.Start.PostSide);
+            Assert.Equal(PostSide.Left, p2.End.PostSide);
+        }
+
+        [Fact]
+        public void NoBracing_ProducesNoDiagonalsButKeepsHorizontals()
+        {
+            var configuration = new HardcodedStandardRackFrameService().CreateDefault();
+            foreach (var panel in configuration.BracingPanels)
+            {
+                panel.Arrangement = BracingPattern.NoBracing;
+            }
+
+            Builder.RefreshPhysicalModel(configuration);
+
+            Assert.DoesNotContain(configuration.Members, m => m.MemberType == FrameMemberType.DiagonalBrace);
+            Assert.Equal(4, configuration.Members.Count(IsHorizontal));
+            Assert.All(configuration.BracingPanels, panel => Assert.Empty(panel.Members));
+        }
+
+        [Fact]
+        public void XBracing_ProducesTwoCrossingDiagonalsPerPanel()
+        {
+            var configuration = new HardcodedStandardRackFrameService().CreateDefault();
+            var target = configuration.BracingPanels.First();
+            target.Arrangement = BracingPattern.XBracing;
+
+            Builder.RefreshPhysicalModel(configuration);
+
+            Assert.Equal(2, target.Members.Count);
+            // The two braces run in opposite directions.
+            Assert.Contains(target.Members, m => m.Start.PostSide == PostSide.Left && m.End.PostSide == PostSide.Right);
+            Assert.Contains(target.Members, m => m.Start.PostSide == PostSide.Right && m.End.PostSide == PostSide.Left);
+        }
+
+        [Fact]
+        public void BothFaces_DuplicatesDiagonalsOnFrontAndBack()
+        {
+            var configuration = new HardcodedStandardRackFrameService().CreateDefault();
+            var target = configuration.BracingPanels.First();
+            target.MountingFace = FrameSide.Both;
+
+            Builder.RefreshPhysicalModel(configuration);
+
+            Assert.Equal(2, target.Members.Count);
+            Assert.Contains(target.Members, m => m.MountingFace == FrameSide.Front);
+            Assert.Contains(target.Members, m => m.MountingFace == FrameSide.Back);
+        }
+
+        [Fact]
+        public void Custom_ArrangementProducesNoDerivedDiagonals()
+        {
+            var configuration = new HardcodedStandardRackFrameService().CreateDefault();
+            foreach (var panel in configuration.BracingPanels)
+            {
+                panel.Arrangement = BracingPattern.Custom;
+            }
+
+            Builder.RefreshPhysicalModel(configuration);
+
+            Assert.DoesNotContain(configuration.Members, m => m.MemberType == FrameMemberType.DiagonalBrace);
+        }
+    }
+}

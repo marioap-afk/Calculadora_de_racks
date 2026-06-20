@@ -1,0 +1,11 @@
+[
+  {
+    "id": "POSTE_OMEGA_3X3",
+    "description": "Poste omega 3x3",
+    "family": "OMEGA",
+    "width": 3.0,
+    "depth": 3.0,
+    "thickness": 0.105,
+    "units": "in"
+  }
+]
