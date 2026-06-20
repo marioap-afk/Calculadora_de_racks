@@ -15,6 +15,7 @@ namespace RackCad.Application.Catalogs
         public const string PostProfilesFile = "post-profiles.json";
         public const string HorizontalProfilesFile = "horizontal-profiles.json";
         public const string DiagonalProfilesFile = "diagonal-profiles.json";
+        public const string ReinforcementProfilesFile = "reinforcement-profiles.json";
         public const string BasePlatesFile = "base-plates.json";
         public const string ConnectionPointsFile = "connection-points.json";
 
@@ -48,6 +49,7 @@ namespace RackCad.Application.Catalogs
                 PostProfiles = ReadArray<ProfileCatalogEntry>(PostProfilesFile),
                 HorizontalProfiles = ReadArray<ProfileCatalogEntry>(HorizontalProfilesFile),
                 DiagonalProfiles = ReadArray<ProfileCatalogEntry>(DiagonalProfilesFile),
+                ReinforcementProfiles = ReadArray<ProfileCatalogEntry>(ReinforcementProfilesFile),
                 BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
                 ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile)
             };

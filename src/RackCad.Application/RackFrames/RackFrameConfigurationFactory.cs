@@ -12,15 +12,15 @@ namespace RackCad.Application.RackFrames
     /// </summary>
     public sealed class RackFrameConfigurationFactory
     {
-        private const string BasePlateCatalogId = "PLACA_BASE_ATORNILLABLE";
-        private const string DiagonalProfileId = "TRAVESANO_DINAMICO_OMEGA_3X3";
-        private const string LowerHorizontalProfileId = "HORIZONTAL_INFERIOR";
-        private const string IntermediateHorizontalProfileId = "HORIZONTAL_INTERMEDIA";
-        private const string UpperHorizontalProfileId = "HORIZONTAL_SUPERIOR";
-        private const string BraceStartConnectionPointId = "TroquelCelosia_01";
-        private const string BraceEndConnectionPointId = "TroquelCelosia_02";
-        private const string FallbackBasePlateConnectionPointId = "PlacaBase_01";
-        private const string FallbackPostCatalogId = "POSTE_OMEGA_3X3";
+        private const string BasePlateCatalogId = CatalogIds.BasePlate;
+        private const string DiagonalProfileId = CatalogIds.Diagonal;
+        private const string LowerHorizontalProfileId = CatalogIds.LowerHorizontal;
+        private const string IntermediateHorizontalProfileId = CatalogIds.IntermediateHorizontal;
+        private const string UpperHorizontalProfileId = CatalogIds.UpperHorizontal;
+        private const string BraceStartConnectionPointId = CatalogIds.BraceStartConnectionPoint;
+        private const string BraceEndConnectionPointId = CatalogIds.BraceEndConnectionPoint;
+        private const string FallbackBasePlateConnectionPointId = CatalogIds.BasePlateConnectionPoint;
+        private const string FallbackPostCatalogId = CatalogIds.StandardPost;
 
         private readonly RackCatalog catalog;
 
@@ -48,6 +48,16 @@ namespace RackCad.Application.RackFrames
                 throw new ArgumentException("La plantilla debe tener al menos dos horizontales.", nameof(template));
             }
 
+            for (var index = 1; index < referenceElevations.Count; index++)
+            {
+                if (referenceElevations[index] - referenceElevations[index - 1] <= 1e-4)
+                {
+                    throw new ArgumentException(
+                        "La plantilla debe tener elevaciones estrictamente ascendentes y distintas.", nameof(template));
+                }
+            }
+
+            // Strict ascent guarantees the last entry is the maximum.
             var maxReferenceElevation = referenceElevations[referenceElevations.Count - 1];
 
             if (maxReferenceElevation <= 0.0)

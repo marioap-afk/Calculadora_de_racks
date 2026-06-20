@@ -118,6 +118,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RefreshPhysicalModel_DuplicateHorizontalIds_DoesNotThrow()
+        {
+            var configuration = new HardcodedStandardRackFrameService().CreateDefault();
+            // Force a duplicate Id; the core regeneration path must degrade gracefully, not throw.
+            configuration.Horizontals[1].Id = configuration.Horizontals[0].Id;
+
+            var exception = Record.Exception(() => Builder.RefreshPhysicalModel(configuration));
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
         public void Custom_ArrangementProducesNoDerivedDiagonals()
         {
             var configuration = new HardcodedStandardRackFrameService().CreateDefault();

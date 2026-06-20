@@ -84,6 +84,40 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_DescendingOrDuplicateTemplateElevations_Throws()
+        {
+            var descending = new RackFrameTemplate
+            {
+                Id = "BAD-DESC",
+                Name = "Mala (descendente)",
+                DefaultHeight = 132.0,
+                DefaultDepth = 42.0,
+                HorizontalElevations = new[] { 0.0, 132.0, 44.0 }
+            };
+            var duplicate = new RackFrameTemplate
+            {
+                Id = "BAD-DUP",
+                Name = "Mala (duplicada)",
+                DefaultHeight = 132.0,
+                DefaultDepth = 42.0,
+                HorizontalElevations = new[] { 0.0, 44.0, 44.0, 132.0 }
+            };
+
+            Assert.Throws<System.ArgumentException>(() => CreateFactory().Build(descending, "POSTE_OMEGA_3X3", 132.0, 42.0));
+            Assert.Throws<System.ArgumentException>(() => CreateFactory().Build(duplicate, "POSTE_OMEGA_3X3", 132.0, 42.0));
+        }
+
+        [Fact]
+        public void Build_AllBuiltInTemplates_StillBuild()
+        {
+            foreach (var template in RackFrameTemplateCatalog.All)
+            {
+                var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", template.DefaultHeight, template.DefaultDepth);
+                Assert.Equal(template.HorizontalElevations.Count, configuration.Horizontals.Count);
+            }
+        }
+
+        [Fact]
         public void Build_NullPost_FallsBackToDefaultPostId()
         {
             var configuration = CreateFactory().Build(RackFrameTemplateCatalog.Default, null, 132.0, 42.0);

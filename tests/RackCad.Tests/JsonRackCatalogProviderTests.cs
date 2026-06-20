@@ -16,6 +16,7 @@ namespace RackCad.Tests
             Assert.NotEmpty(catalog.DiagonalProfiles);
             Assert.NotEmpty(catalog.BasePlates);
             Assert.NotEmpty(catalog.ConnectionPoints);
+            Assert.NotEmpty(catalog.ReinforcementProfiles);
 
             Assert.NotNull(catalog.PostProfiles.FindProfile("POSTE_OMEGA_3X3"));
             Assert.NotNull(catalog.BasePlates.FindBasePlate("PLACA_BASE_ATORNILLABLE"));

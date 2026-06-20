@@ -28,25 +28,30 @@ namespace RackCad.Application.RackFrames
                 panel.Members.Clear();
             }
 
+            // Index panels by id once instead of scanning the panel list per member (was O(members x panels)).
+            var panelsById = configuration.BracingPanels
+                .GroupBy(panel => panel.PanelId ?? string.Empty)
+                .ToDictionary(group => group.Key, group => group.First());
+
             foreach (var member in members)
             {
                 configuration.Members.Add(member);
 
-                if (!IsHorizontalMember(member))
+                if (!IsHorizontalMember(member) &&
+                    panelsById.TryGetValue(member.SourcePanelId ?? string.Empty, out var panel))
                 {
-                    var panel = configuration.BracingPanels.FirstOrDefault(item => item.PanelId == member.SourcePanelId);
-
-                    if (panel != null)
-                    {
-                        panel.Members.Add(member);
-                    }
+                    panel.Members.Add(member);
                 }
             }
         }
 
         private static void ResolvePanelElevations(RackFrameConfiguration configuration)
         {
-            var horizontals = configuration.Horizontals.ToDictionary(horizontal => horizontal.Id ?? string.Empty);
+            // Duplicate-tolerant: RefreshPhysicalModel is the core regeneration entry point, so a
+            // stray duplicate Id (or two empty Ids) must degrade gracefully, not throw from ToDictionary.
+            var horizontals = configuration.Horizontals
+                .GroupBy(horizontal => horizontal.Id ?? string.Empty)
+                .ToDictionary(group => group.Key, group => group.First());
 
             foreach (var panel in configuration.BracingPanels)
             {

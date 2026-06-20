@@ -47,6 +47,7 @@ namespace RackCad.Application.Catalogs
         public IReadOnlyList<ProfileCatalogEntry> PostProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<ProfileCatalogEntry> HorizontalProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<ProfileCatalogEntry> DiagonalProfiles { get; set; } = new List<ProfileCatalogEntry>();
+        public IReadOnlyList<ProfileCatalogEntry> ReinforcementProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<BasePlateCatalogEntry> BasePlates { get; set; } = new List<BasePlateCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
     }

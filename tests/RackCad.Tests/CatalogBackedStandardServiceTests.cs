@@ -40,7 +40,8 @@ namespace RackCad.Tests
         {
             var configuration = new HardcodedStandardRackFrameService(new RackCatalog()).CreateDefault();
 
-            Assert.Equal("Poste omega 3x3", configuration.LeftPost.Description);
+            // With no catalog the post description falls back to its id; the plate keeps a literal fallback.
+            Assert.Equal("POSTE_OMEGA_3X3", configuration.LeftPost.Description);
             Assert.Equal("Placa base atornillable", configuration.LeftBasePlate.Description);
             Assert.Equal("PlacaBase_01", configuration.LeftBasePlate.ConnectionPointId);
         }
@@ -50,7 +51,7 @@ namespace RackCad.Tests
         {
             var configuration = new HardcodedStandardRackFrameService((RackCatalog)null).CreateDefault();
 
-            Assert.Equal("Poste omega 3x3", configuration.LeftPost.Description);
+            Assert.Equal("POSTE_OMEGA_3X3", configuration.LeftPost.Description);
             // Structure is unchanged regardless of catalog.
             Assert.Equal(4, configuration.Horizontals.Count);
             Assert.Equal(3, configuration.BracingPanels.Count);
