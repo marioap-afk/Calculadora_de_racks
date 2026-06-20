@@ -59,6 +59,29 @@ namespace RackCad.Application.Bom
             return new BillOfMaterials(lines);
         }
 
+        /// <summary>Merges several bills of materials into one, summing quantities of identical lines.</summary>
+        public static BillOfMaterials Merge(IEnumerable<BillOfMaterials> boms)
+        {
+            var lines = (boms ?? Enumerable.Empty<BillOfMaterials>())
+                .Where(bom => bom != null)
+                .SelectMany(bom => bom.Lines)
+                .GroupBy(line => (line.Category, Id: Normalize(line.ProfileId), line.Length))
+                .Select(group => new BomLine
+                {
+                    Category = group.Key.Category,
+                    ProfileId = group.Key.Id,
+                    Length = group.Key.Length,
+                    Quantity = group.Sum(line => line.Quantity),
+                    Description = group.Select(line => line.Description).FirstOrDefault(d => !string.IsNullOrEmpty(d)) ?? string.Empty
+                })
+                .OrderBy(line => CategoryOrder(line.Category))
+                .ThenBy(line => line.ProfileId, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(line => line.Length)
+                .ToList();
+
+            return new BillOfMaterials(lines);
+        }
+
         private static void AddPost(List<RawItem> raw, PostAssembly post, double height)
         {
             if (post == null || string.IsNullOrWhiteSpace(post.PostCatalogId))
