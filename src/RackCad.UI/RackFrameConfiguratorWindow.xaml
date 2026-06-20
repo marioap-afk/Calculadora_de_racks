@@ -1221,6 +1221,12 @@
                             Margin="0,0,8,0"
                             ToolTip="Guarda la cabecera actual como archivo .rackcad.json."
                             Click="SaveProject_Click" />
+                    <Button Content="Exportar BOM"
+                            MinWidth="110"
+                            Padding="14,7"
+                            Margin="0,0,8,0"
+                            ToolTip="Exporta la lista de materiales (postes, placas, horizontales, diagonales) a CSV."
+                            Click="ExportBom_Click" />
                     <Button Content="Restaurar cabecera estándar"
                             MinWidth="190"
                             Padding="14,7"

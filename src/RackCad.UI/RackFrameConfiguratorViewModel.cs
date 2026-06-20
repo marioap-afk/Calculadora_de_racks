@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
@@ -943,6 +944,22 @@ namespace RackCad.UI
             catch (Exception ex)
             {
                 StatusMessage = "No se pudo generar la cabecera: " + ex.Message;
+                StatusBrush = "#B00020";
+            }
+        }
+
+        public void ExportBomCsv(string path)
+        {
+            try
+            {
+                var bom = BomBuilder.Build(Configuration, catalog);
+                File.WriteAllText(path, BomCsvExporter.ToCsv(bom));
+                StatusMessage = "BOM exportado (" + bom.TotalPieces.ToString(CultureInfo.InvariantCulture) + " piezas): " + Path.GetFileName(path);
+                StatusBrush = "#2F855A";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = "No se pudo exportar el BOM: " + ex.Message;
                 StatusBrush = "#B00020";
             }
         }
