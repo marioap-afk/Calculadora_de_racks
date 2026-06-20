@@ -138,6 +138,18 @@ namespace RackCad.UI
             });
         }
 
+        private void ApplySimpleHeader_Click(object sender, RoutedEventArgs e)
+        {
+            RunUiAction(() =>
+            {
+                ViewModel.ApplySimpleConfiguration();
+                SyncGridSelectionFromViewModel();
+                SyncHorizontalGridSelectionFromViewModel();
+                SyncTreeSelectionFromViewModel();
+                DrawPreview();
+            });
+        }
+
         private void Add44Segment_Click(object sender, RoutedEventArgs e)
         {
             RunUiAction(() =>

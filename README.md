@@ -23,6 +23,32 @@ dotnet build RackCad.sln -v:minimal
 
 Advertencias conocidas: `MSB3277` por conflictos de versiones entre referencias AutoCAD 2025 y ensamblados .NET. Actualmente no bloquean la compilacion.
 
+## Modos de configuracion
+
+El configurador abre en **Configuracion rapida**: solo se elige tipo de cabecera (plantilla), tipo de poste, alto y fondo, y se pulsa `Generar cabecera`. Un check **Editor avanzado** en la barra superior muestra el editor detallado actual (horizontales, paneles, perfiles, excepciones). La vista previa se mantiene en ambos modos.
+
+Las plantillas viven en `RackCad.Application.RackFrames.RackFrameTemplateCatalog` (por ahora en codigo) y la generacion la hace `RackFrameConfigurationFactory`. Las elevaciones de cada plantilla son proporciones del alto, asi que escalan con la altura elegida.
+
+## Pruebas
+
+Pruebas unitarias en `tests/RackCad.Tests` (xUnit). Cubren `RackCad.Domain` y `RackCad.Application`, que son `net8.0` puro y por tanto corren en cualquier OS (incluido el codespace Linux, sin AutoCAD ni Windows):
+
+```bash
+dotnet test tests/RackCad.Tests/RackCad.Tests.csproj
+```
+
+## Catalogos externos
+
+Los perfiles, placas y puntos de conexion viven como JSON versionado en `assets/catalogs/`:
+
+- `post-profiles.json`
+- `horizontal-profiles.json`
+- `diagonal-profiles.json`
+- `base-plates.json`
+- `connection-points.json`
+
+Se cargan con `RackCad.Application.Catalogs.JsonRackCatalogProvider`. El plugin y el proyecto de pruebas copian estos archivos a una carpeta `catalogs/` junto al ensamblado, de modo que `JsonRackCatalogProvider.FromBaseDirectory()` los resuelve en runtime. Una prueba (`CatalogStandardConsistencyTests`) garantiza que todo id usado por la cabecera estandar exista en los catalogos antes de migrar los valores hardcodeados.
+
 ## Probar en AutoCAD
 
 1. Abrir AutoCAD 2025.

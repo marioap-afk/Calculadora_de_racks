@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
 
@@ -26,12 +27,18 @@ namespace RackCad.UI
         private readonly string standardLeftPlateConnectionPointId;
         private readonly string standardRightPlateCatalogId;
         private readonly string standardRightPlateConnectionPointId;
+        private readonly RackCatalog catalog;
         private readonly BracingPanelMemberBuilder memberBuilder;
         private readonly ConfiguratorNavigationItem panelsNavigationItem;
         private readonly ConfiguratorNavigationItem horizontalsNavigationItem;
         private readonly ObservableCollection<string> modelWarnings;
-        private readonly RackFrameConfiguration standardConfigurationSnapshot;
+        private RackFrameConfiguration standardConfigurationSnapshot;
 
+        private bool isAdvancedEditor;
+        private RackFrameTemplate selectedHeaderTemplate;
+        private string simplePostCatalogId;
+        private double simpleHeight;
+        private double simpleDepth;
         private ConfiguratorNavigationItem selectedNavigationItem;
         private BracingSegmentEditorRow selectedBracingSegment;
         private HorizontalEditorRow selectedHorizontal;
@@ -42,9 +49,22 @@ namespace RackCad.UI
         private string bulkProfileId = DefaultDiagonalProfileId;
 
         public RackFrameConfiguratorViewModel(RackFrameConfiguration configuration)
+            : this(configuration, null)
+        {
+        }
+
+        public RackFrameConfiguratorViewModel(RackFrameConfiguration configuration, RackCatalog catalog)
         {
             Configuration = configuration;
+            this.catalog = catalog ?? LoadCatalogSafe();
             memberBuilder = new BracingPanelMemberBuilder();
+
+            PostProfileOptions = ToIdOptions(this.catalog.PostProfiles.Select(profile => profile?.Id));
+            HorizontalProfileOptions = ToIdOptions(this.catalog.HorizontalProfiles.Select(profile => profile?.Id));
+            DiagonalProfileOptions = ToIdOptions(this.catalog.DiagonalProfiles.Select(profile => profile?.Id));
+            BasePlateOptions = ToIdOptions(this.catalog.BasePlates.Select(plate => plate?.Id));
+            ConnectionPointOptions = ToIdOptions(this.catalog.ConnectionPoints.Select(point => point?.Id));
+
             PatternOptions = Enum.GetValues(typeof(BracingPattern));
             SideOptions = Enum.GetValues(typeof(FrameSide));
             DirectionOptions = Enum.GetValues(typeof(DiagonalDirection));
@@ -84,6 +104,12 @@ namespace RackCad.UI
             standardRightPlateCatalogId = NormalizeText(configuration.RightBasePlate?.PlateCatalogId);
             standardRightPlateConnectionPointId = NormalizeText(configuration.RightBasePlate?.ConnectionPointId);
 
+            HeaderTemplateOptions = RackFrameTemplateCatalog.All;
+            selectedHeaderTemplate = RackFrameTemplateCatalog.Default;
+            simplePostCatalogId = NormalizeText(configuration.LeftPost?.PostCatalogId);
+            simpleHeight = configuration.Height;
+            simpleDepth = configuration.Depth;
+
             EnsureModernConfiguration();
             LoadRowsFromConfiguration();
             NormalizeHorizontalsAndPanels(preservePanelOverrides: true);
@@ -104,6 +130,94 @@ namespace RackCad.UI
         public ObservableCollection<BracingSegmentEditorRow> BracingSegments { get; private set; }
         public ObservableCollection<BracingSegmentEditorRow> SelectedBracingSegments { get; private set; }
         public ObservableCollection<string> HorizontalOptions { get; private set; }
+        public ObservableCollection<string> PostProfileOptions { get; private set; }
+        public ObservableCollection<string> HorizontalProfileOptions { get; private set; }
+        public ObservableCollection<string> DiagonalProfileOptions { get; private set; }
+        public ObservableCollection<string> BasePlateOptions { get; private set; }
+        public ObservableCollection<string> ConnectionPointOptions { get; private set; }
+
+        public bool IsAdvancedEditor
+        {
+            get => isAdvancedEditor;
+            set
+            {
+                if (isAdvancedEditor == value)
+                {
+                    return;
+                }
+
+                isAdvancedEditor = value;
+                OnPropertyChanged(nameof(IsAdvancedEditor));
+                OnPropertyChanged(nameof(IsSimpleEditor));
+                OnPropertyChanged(nameof(EditorModeLabel));
+            }
+        }
+
+        public bool IsSimpleEditor => !isAdvancedEditor;
+
+        public string EditorModeLabel => isAdvancedEditor ? "Editor avanzado" : "Configuracion rapida";
+
+        public IReadOnlyList<RackFrameTemplate> HeaderTemplateOptions { get; private set; }
+
+        public RackFrameTemplate SelectedHeaderTemplate
+        {
+            get => selectedHeaderTemplate;
+            set
+            {
+                if (selectedHeaderTemplate == value)
+                {
+                    return;
+                }
+
+                selectedHeaderTemplate = value;
+                OnPropertyChanged(nameof(SelectedHeaderTemplate));
+            }
+        }
+
+        public string SimplePostCatalogId
+        {
+            get => simplePostCatalogId;
+            set
+            {
+                var normalized = NormalizeText(value);
+
+                if (simplePostCatalogId == normalized)
+                {
+                    return;
+                }
+
+                simplePostCatalogId = normalized;
+                OnPropertyChanged(nameof(SimplePostCatalogId));
+            }
+        }
+
+        public string SimpleHeightText
+        {
+            get => FormatEditableNumber(simpleHeight);
+            set
+            {
+                if (TryParseDimension(value, out var parsedValue))
+                {
+                    simpleHeight = parsedValue;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
+        public string SimpleDepthText
+        {
+            get => FormatEditableNumber(simpleDepth);
+            set
+            {
+                if (TryParseDimension(value, out var parsedValue))
+                {
+                    simpleDepth = parsedValue;
+                }
+
+                OnPropertyChanged();
+            }
+        }
         public ObservableCollection<FrameExceptionEditorRow> Exceptions { get; private set; }
         public ObservableCollection<FrameExceptionGroup> ExceptionGroups { get; private set; }
         public ObservableCollection<string> ModelWarnings => modelWarnings;
@@ -757,6 +871,42 @@ namespace RackCad.UI
             RefreshAllConfigurationProperties();
             StatusMessage = "Cabecera estandar restaurada. Modificaciones y excepciones limpiadas.";
             StatusBrush = "#2F855A";
+        }
+
+        public void ApplySimpleConfiguration()
+        {
+            try
+            {
+                var template = SelectedHeaderTemplate ?? RackFrameTemplateCatalog.Default;
+                var generated = new RackFrameConfigurationFactory(catalog)
+                    .Build(template, SimplePostCatalogId, simpleHeight, simpleDepth);
+
+                CopyConfiguration(generated, Configuration);
+                SelectedBracingSegments.Clear();
+                SelectedBracingSegment = null;
+                SelectedHorizontal = null;
+                LoadRowsFromConfiguration();
+                NormalizeHorizontalsAndPanels(preservePanelOverrides: true);
+                RefreshPhysicalMembers();
+                standardConfigurationSnapshot = CloneConfiguration(Configuration);
+                RebuildNavigationItems();
+                RebuildExceptions();
+
+                SelectedBracingSegment = BracingSegments.Count > 0 ? BracingSegments[0] : null;
+                SelectedHorizontal = Horizontals.Count > 0 ? Horizontals[0] : null;
+                SelectedNavigationItem = SelectedBracingSegment == null
+                    ? panelsNavigationItem
+                    : GetNavigationItemForSegment(SelectedBracingSegment) ?? panelsNavigationItem;
+                RefreshAllConfigurationProperties();
+
+                StatusMessage = "Cabecera generada: " + template.Name + " (" + FormatInches(simpleHeight) + " alto, " + FormatInches(simpleDepth) + " fondo).";
+                StatusBrush = "#2F855A";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = "No se pudo generar la cabecera: " + ex.Message;
+                StatusBrush = "#B00020";
+            }
         }
 
         public void ReportNonBlockingError(Exception ex)
@@ -1819,6 +1969,31 @@ namespace RackCad.UI
         private static string NormalizeText(string value)
         {
             return value == null ? string.Empty : value.Trim();
+        }
+
+        private static RackCatalog LoadCatalogSafe()
+        {
+            try
+            {
+                return JsonRackCatalogProvider.FromBaseDirectory().Load();
+            }
+            catch
+            {
+                // The configurator must still open if the catalogs are missing or malformed;
+                // option lists are simply empty and the editable fields fall back to free text.
+                return new RackCatalog();
+            }
+        }
+
+        private static ObservableCollection<string> ToIdOptions(IEnumerable<string> ids)
+        {
+            var distinct = (ids ?? Enumerable.Empty<string>())
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Select(id => id.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(id => id, StringComparer.OrdinalIgnoreCase);
+
+            return new ObservableCollection<string>(distinct);
         }
     }
 }
