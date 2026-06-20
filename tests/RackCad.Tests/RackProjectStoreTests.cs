@@ -15,7 +15,7 @@ namespace RackCad.Tests
 
         private static DynamicRackSystem DynamicSystem()
         {
-            return new DynamicRackSystemFactory(Catalog).Create(
+            return new DynamicRackSystemBuilder(Catalog).BuildDefault(
                 new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
                 palletsDeep: 4,
                 headerTemplate: RackFrameTemplateCatalog.Default,
@@ -43,10 +43,14 @@ namespace RackCad.Tests
             Assert.Equal(1000.0, system.Pallet.Weight);
             Assert.Equal("kg", system.Pallet.WeightUnit);
             Assert.Equal(4, system.PalletsDeep);
-            Assert.Equal(54.0, system.Header.Depth);
-            Assert.Equal(4, system.Header.Horizontals.Count);
-            Assert.Equal(3, system.Header.BracingPanels.Count);
-            Assert.NotEmpty(system.Header.Members); // members rebuilt on load
+            Assert.Equal(4, system.LengthBearingModuleCount);
+
+            var startHeader = system.Modules.First();
+            Assert.Equal(DynamicRackModuleKind.HeaderStart, startHeader.Kind);
+            Assert.Equal(54.0, startHeader.AssociatedFrameConfiguration.Depth);
+            Assert.Equal(4, startHeader.AssociatedFrameConfiguration.Horizontals.Count);
+            Assert.Equal(3, startHeader.AssociatedFrameConfiguration.BracingPanels.Count);
+            Assert.NotEmpty(startHeader.AssociatedFrameConfiguration.Members); // members rebuilt on load
         }
 
         [Fact]

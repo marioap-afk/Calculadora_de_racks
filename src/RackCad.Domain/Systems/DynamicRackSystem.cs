@@ -1,13 +1,13 @@
-using RackCad.Domain.RackFrames;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RackCad.Domain.Systems
 {
     /// <summary>
-    /// Aggregate (source of truth) for a dynamic (pallet flow) system. Holds the pallet spec, the
-    /// number of pallets deep, and a single shared header configuration used at both ends
-    /// (symmetric). The header depth is fully pallet-driven: <see cref="EffectiveHeaderDepth"/> =
-    /// pallet depth + 6", which is exactly the length of the first/last module. Modules, posts and
-    /// total length are derived (not stored) by the Application layer.
+    /// Aggregate (source of truth) for a dynamic (pallet flow) system: the pallet spec, the number
+    /// of pallets deep, and the editable sequence of longitudinal modules. The default sequence is
+    /// produced by the Application layer (Total = N x depth + 12"), but every module can be edited
+    /// afterwards. Total length and module positions are derived from the module lengths.
     /// </summary>
     public sealed class DynamicRackSystem
     {
@@ -15,10 +15,30 @@ namespace RackCad.Domain.Systems
         public PalletSpecification Pallet { get; set; } = new PalletSpecification();
         public int PalletsDeep { get; set; }
 
-        /// <summary>End frame reused as a component. Shared by the start and end (symmetric).</summary>
-        public RackFrameConfiguration Header { get; set; }
+        /// <summary>Ordered, editable modules. Intermediate posts are zero-length entries.</summary>
+        public IList<DynamicRackModule> Modules { get; } = new List<DynamicRackModule>();
 
-        /// <summary>Header depth the system imposes: pallet depth + 6" (= the first/last module length).</summary>
-        public double EffectiveHeaderDepth => (Pallet?.Depth ?? 0.0) + DynamicRackDefaults.HeaderEndAllowance;
+        public double TotalLength => Modules.Sum(module => module.Length);
+
+        /// <summary>Number of modules that actually carry length (excludes zero-length posts).</summary>
+        public int LengthBearingModuleCount => Modules.Count(module => module.Length > 0.0);
+
+        /// <summary>Default header length imposed by the pallet rule: depth + 6".</summary>
+        public double DefaultHeaderLength => (Pallet?.Depth ?? 0.0) + DynamicRackDefaults.HeaderEndAllowance;
+
+        /// <summary>Lays out StartX/EndX and Index sequentially from each module's Length.</summary>
+        public void RecalculatePositions()
+        {
+            var x = 0.0;
+            var index = 0;
+
+            foreach (var module in Modules)
+            {
+                module.Index = index++;
+                module.StartX = x;
+                module.EndX = x + module.Length;
+                x = module.EndX;
+            }
+        }
     }
 }

@@ -1,28 +1,29 @@
+using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
+using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
 {
     /// <summary>
     /// Aggregates a whole dynamic system into one bill of materials by merging the BOM of every
-    /// header module. With a symmetric system that means the shared header counted at both ends
-    /// (quantities doubled). Separators and intermediate posts contribute nothing yet (they carry
-    /// no profiled members in the current model); when they gain rails/rollers, they simply add to
-    /// the same merge.
+    /// header module (each with its own associated configuration). Separators and intermediate
+    /// posts contribute nothing yet (no profiled members); when they gain rails/rollers they simply
+    /// add to the same merge.
     /// </summary>
     public static class SystemBomBuilder
     {
-        public static BillOfMaterials Build(ComposedDynamicRack composed, RackCatalog catalog)
+        public static BillOfMaterials Build(DynamicRackSystem system, RackCatalog catalog)
         {
-            if (composed == null)
+            if (system == null)
             {
-                return new BillOfMaterials(new System.Collections.Generic.List<BomLine>());
+                return new BillOfMaterials(new List<BomLine>());
             }
 
-            var headerBoms = composed.PlacedModules
-                .Where(module => module.IsHeader)
-                .Select(module => BomBuilder.Build(module.Header, catalog));
+            var headerBoms = system.Modules
+                .Where(module => module.IsHeader && module.AssociatedFrameConfiguration != null)
+                .Select(module => BomBuilder.Build(module.AssociatedFrameConfiguration, catalog));
 
             return BomBuilder.Merge(headerBoms);
         }

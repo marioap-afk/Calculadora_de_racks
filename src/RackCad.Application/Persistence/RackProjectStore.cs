@@ -102,9 +102,12 @@ namespace RackCad.Application.Persistence
             {
                 var system = document.DynamicSystem.ToDomain();
 
-                if (system.Header != null)
+                foreach (var module in system.Modules)
                 {
-                    builder.RefreshPhysicalModel(system.Header);
+                    if (module.AssociatedFrameConfiguration != null)
+                    {
+                        builder.RefreshPhysicalModel(module.AssociatedFrameConfiguration);
+                    }
                 }
 
                 return RackProject.ForDynamic(system);

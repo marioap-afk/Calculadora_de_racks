@@ -11,7 +11,7 @@ namespace RackCad.Application.Systems
     /// </summary>
     public sealed class CenterWhenEvenRule : IIntermediatePostRule
     {
-        public IReadOnlyList<double> ResolvePostOffsets(int palletsDeep, IReadOnlyList<RackModule> lengthModules)
+        public IReadOnlyList<double> ResolvePostOffsets(int palletsDeep, IReadOnlyList<DynamicRackModule> lengthModules)
         {
             if (palletsDeep < 4 || palletsDeep % 2 != 0 || lengthModules == null || lengthModules.Count == 0)
             {
@@ -19,7 +19,7 @@ namespace RackCad.Application.Systems
             }
 
             // The last length module ends at the total run length; its midpoint is a separator boundary.
-            var totalLength = lengthModules[lengthModules.Count - 1].EndOffset;
+            var totalLength = lengthModules[lengthModules.Count - 1].EndX;
             return new[] { totalLength / 2.0 };
         }
     }
