@@ -19,7 +19,7 @@ namespace RackCad.Application.Systems
     public sealed class DynamicRackLayoutGenerator
     {
         /// <summary>The 6" each header adds beyond the pallet depth (the +12 split across both ends).</summary>
-        public const double HeaderEndAllowance = 6.0;
+        public const double HeaderEndAllowance = DynamicRackDefaults.HeaderEndAllowance;
 
         private const double Tolerance = 1e-6;
 
@@ -47,13 +47,37 @@ namespace RackCad.Application.Systems
                 throw new ArgumentOutOfRangeException(nameof(pallet), "El fondo de tarima debe ser mayor que cero.");
             }
 
+            return Generate(pallet, palletsDeep, pallet.Depth + HeaderEndAllowance);
+        }
+
+        /// <summary>
+        /// Generates the layout with an explicit header length (e.g. an overridden header depth).
+        /// Separators still use the pallet depth, so the total no longer reduces to N*depth+12 when
+        /// the header length differs from depth+6 — it is always the sum of the modules.
+        /// </summary>
+        public DynamicRackLayout Generate(PalletSpecification pallet, int palletsDeep, double headerLength)
+        {
+            if (pallet == null)
+            {
+                throw new ArgumentNullException(nameof(pallet));
+            }
+
+            if (pallet.Depth <= 0.0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pallet), "El fondo de tarima debe ser mayor que cero.");
+            }
+
+            if (headerLength <= 0.0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(headerLength), "El largo de cabecera debe ser mayor que cero.");
+            }
+
             if (palletsDeep < 2)
             {
                 throw new ArgumentOutOfRangeException(nameof(palletsDeep), "Se requieren al menos 2 tarimas de fondo.");
             }
 
             var depth = pallet.Depth;
-            var headerLength = depth + HeaderEndAllowance;
 
             // 1) Length-bearing modules: HeaderStart, (N-2) separators, HeaderEnd.
             var lengthModules = new List<RackModule>();
