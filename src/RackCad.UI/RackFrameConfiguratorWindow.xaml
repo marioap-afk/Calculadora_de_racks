@@ -478,7 +478,7 @@
                                     <CheckBox Grid.Row="1" Grid.Column="1" Content="Poste reforzado" IsChecked="{Binding LeftPostHasReinforcement, Mode=TwoWay}" Margin="0,3,0,10" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Tipo refuerzo" Style="{StaticResource PropertyLabelStyle}" />
-                                    <TextBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Placa asociada" Style="{StaticResource PropertyLabelStyle}" />
                                     <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding BasePlateOptions}" Text="{Binding LeftPlateCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
@@ -519,7 +519,7 @@
                                     <CheckBox Grid.Row="1" Grid.Column="1" Content="Poste reforzado" IsChecked="{Binding RightPostHasReinforcement, Mode=TwoWay}" Margin="0,3,0,10" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Tipo refuerzo" Style="{StaticResource PropertyLabelStyle}" />
-                                    <TextBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding RightPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding RightPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Placa asociada" Style="{StaticResource PropertyLabelStyle}" />
                                     <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding BasePlateOptions}" Text="{Binding RightPlateCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
@@ -612,10 +612,10 @@
                                     <CheckBox Grid.Row="0" Grid.Column="4" Content="Con refuerzo" IsChecked="{Binding RightPostHasReinforcement, Mode=TwoWay}" Margin="0,3,0,10" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Tipo izquierdo" Style="{StaticResource PropertyLabelStyle}" />
-                                    <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Tipo derecho" Style="{StaticResource PropertyLabelStyle}" />
-                                    <TextBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding RightPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding RightPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </Border>
 

@@ -126,8 +126,30 @@ namespace RackCad.UI
             RunUiAction(() => ViewModel.RestoreSelectedSegment());
         }
 
+        private bool ConfirmDiscard(string action)
+        {
+            if (ViewModel == null || !ViewModel.HasUnsavedManualEdits)
+            {
+                return true;
+            }
+
+            var result = MessageBox.Show(
+                this,
+                "Hay cambios manuales o excepciones que se perderan al " + action + ". Deseas continuar?",
+                "Confirmar",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            return result == MessageBoxResult.Yes;
+        }
+
         private void RestoreStandardFrameButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!ConfirmDiscard("restaurar la cabecera estandar"))
+            {
+                return;
+            }
+
             RunUiAction(() =>
             {
                 ViewModel.RestoreStandardConfiguration();
@@ -140,6 +162,11 @@ namespace RackCad.UI
 
         private void ApplySimpleHeader_Click(object sender, RoutedEventArgs e)
         {
+            if (!ConfirmDiscard("generar la cabecera"))
+            {
+                return;
+            }
+
             RunUiAction(() =>
             {
                 ViewModel.ApplySimpleConfiguration();

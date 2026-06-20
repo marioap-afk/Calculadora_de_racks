@@ -62,6 +62,7 @@ namespace RackCad.UI
             PostProfileOptions = ToIdOptions(this.catalog.PostProfiles.Select(profile => profile?.Id));
             HorizontalProfileOptions = ToIdOptions(this.catalog.HorizontalProfiles.Select(profile => profile?.Id));
             DiagonalProfileOptions = ToIdOptions(this.catalog.DiagonalProfiles.Select(profile => profile?.Id));
+            ReinforcementProfileOptions = ToIdOptions(this.catalog.ReinforcementProfiles.Select(profile => profile?.Id));
             BasePlateOptions = ToIdOptions(this.catalog.BasePlates.Select(plate => plate?.Id));
             ConnectionPointOptions = ToIdOptions(this.catalog.ConnectionPoints.Select(point => point?.Id));
 
@@ -152,6 +153,7 @@ namespace RackCad.UI
         public ObservableCollection<string> PostProfileOptions { get; private set; }
         public ObservableCollection<string> HorizontalProfileOptions { get; private set; }
         public ObservableCollection<string> DiagonalProfileOptions { get; private set; }
+        public ObservableCollection<string> ReinforcementProfileOptions { get; private set; }
         public ObservableCollection<string> BasePlateOptions { get; private set; }
         public ObservableCollection<string> ConnectionPointOptions { get; private set; }
 
@@ -231,9 +233,14 @@ namespace RackCad.UI
             get => FormatEditableNumber(simpleHeight);
             set
             {
-                if (TryParseDimension(value, out var parsedValue))
+                if (TryParseDimension(value, out var parsedValue) && parsedValue > 0.0)
                 {
                     simpleHeight = parsedValue;
+                }
+                else if (!string.IsNullOrWhiteSpace(value))
+                {
+                    StatusMessage = "Alto invalido: escribe un numero mayor que cero.";
+                    StatusBrush = "#B00020";
                 }
 
                 OnPropertyChanged();
@@ -245,9 +252,14 @@ namespace RackCad.UI
             get => FormatEditableNumber(simpleDepth);
             set
             {
-                if (TryParseDimension(value, out var parsedValue))
+                if (TryParseDimension(value, out var parsedValue) && parsedValue > 0.0)
                 {
                     simpleDepth = parsedValue;
+                }
+                else if (!string.IsNullOrWhiteSpace(value))
+                {
+                    StatusMessage = "Fondo invalido: escribe un numero mayor que cero.";
+                    StatusBrush = "#B00020";
                 }
 
                 OnPropertyChanged();
@@ -657,6 +669,12 @@ namespace RackCad.UI
         public bool CanDeleteSelectedHorizontal => SelectedHorizontal != null && Horizontals.Count > 2;
         public bool CanDuplicateSelectedHorizontal => SelectedHorizontal != null;
 
+        /// <summary>True when discarding the model (Restore / Generate) would lose manual edits or exceptions.</summary>
+        public bool HasUnsavedManualEdits =>
+            Horizontals.Any(row => row != null && row.IsModified)
+            || BracingSegments.Any(row => row != null && row.IsModified)
+            || Exceptions.Count > 0;
+
         public string SelectedSegmentSummary => SelectedBracingSegment == null
             ? "Selecciona un panel en la tabla para editar sus propiedades."
             : "Panel " + SelectedBracingSegment.Index.ToString(CultureInfo.InvariantCulture) + " / " +
@@ -1017,6 +1035,13 @@ namespace RackCad.UI
 
         private void AddHorizontalAt(double elevation, string profileId, int quantity, string successMessage)
         {
+            if (FrameModelValidator.CollidesWithExisting(Configuration.Horizontals.Select(h => h.Elevation), elevation, HeightTolerance))
+            {
+                StatusMessage = "Ya existe una horizontal en " + FormatInches(elevation) + " (o muy cerca). No se agrego para evitar un panel de altura cero.";
+                StatusBrush = "#B00020";
+                return;
+            }
+
             var horizontal = new FrameHorizontal
             {
                 Id = CreateNextHorizontalId(),
@@ -1333,11 +1358,12 @@ namespace RackCad.UI
                 ModelWarnings.Add("Horizontal duplicada: " + duplicateIdGroup.Key + ".");
             }
 
-            foreach (var duplicateElevationGroup in Configuration.Horizontals
-                .GroupBy(horizontal => Math.Round(horizontal.Elevation, 4))
-                .Where(group => group.Count() > 1))
+            // Tolerance-based model checks (near-equal elevations, zero-height panels, non-zero base,
+            // unknown catalog ids) live in the testable Application layer to stay consistent with the
+            // model's own equality tolerance instead of exact rounding.
+            foreach (var warning in FrameModelValidator.Validate(Configuration, catalog, HeightTolerance))
             {
-                ModelWarnings.Add("Elevacion duplicada en horizontales: " + FormatInches(duplicateElevationGroup.Key) + ".");
+                ModelWarnings.Add(warning);
             }
 
             for (var index = 1; index < orderedHorizontals.Count; index++)

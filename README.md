@@ -44,6 +44,7 @@ Los perfiles, placas y puntos de conexion viven como JSON versionado en `assets/
 - `post-profiles.json`
 - `horizontal-profiles.json`
 - `diagonal-profiles.json`
+- `reinforcement-profiles.json`
 - `base-plates.json`
 - `connection-points.json`
 - `header-templates.json`

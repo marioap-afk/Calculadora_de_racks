@@ -8,12 +8,13 @@ Fuente versionada (lo que se edita en el repositorio):
 
 ```
 assets/catalogs/
-  post-profiles.json         Perfiles de poste
-  horizontal-profiles.json   Perfiles de horizontal
-  diagonal-profiles.json     Perfiles de diagonal/celosia
-  base-plates.json           Placas base
-  connection-points.json     Puntos de conexion (troqueles)
-  header-templates.json      Plantillas de cabecera (modo rapido)
+  post-profiles.json            Perfiles de poste
+  horizontal-profiles.json      Perfiles de horizontal
+  diagonal-profiles.json        Perfiles de diagonal/celosia
+  reinforcement-profiles.json   Perfiles de refuerzo de poste
+  base-plates.json              Placas base
+  connection-points.json        Puntos de conexion (troqueles)
+  header-templates.json         Plantillas de cabecera (modo rapido)
 ```
 
 Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del plugin. La aplicacion los lee al iniciarse.
@@ -118,7 +119,7 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales:
 
 ## Catalogos de piezas
 
-### Perfiles (`post-profiles.json`, `horizontal-profiles.json`, `diagonal-profiles.json`)
+### Perfiles (`post-profiles.json`, `horizontal-profiles.json`, `diagonal-profiles.json`, `reinforcement-profiles.json`)
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
