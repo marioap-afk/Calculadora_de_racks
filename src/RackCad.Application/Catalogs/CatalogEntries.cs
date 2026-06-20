@@ -30,12 +30,17 @@ namespace RackCad.Application.Catalogs
         public string Units { get; set; }
     }
 
-    /// <summary>Named connection point (punch/troquel) referenced by members.</summary>
+    /// <summary>
+    /// Named connection point (punch/troquel) referenced by members. Carries a local 2D offset
+    /// (inches) within the owning piece's frame so the mate solver can resolve absolute positions.
+    /// </summary>
     public sealed class ConnectionPointCatalogEntry
     {
         public string Id { get; set; }
         public string Description { get; set; }
         public string Role { get; set; }
+        public double LocalX { get; set; }
+        public double LocalY { get; set; }
     }
 
     /// <summary>

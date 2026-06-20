@@ -148,6 +148,8 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales:
 | `id` | texto | Identificador (ej. `TroquelCelosia_01`). |
 | `description` | texto | Texto legible. |
 | `role` | texto | Rol del punto (ej. `Brace`, `BasePlate`). |
+| `localX` | numero | Offset X (in) del punto dentro de su pieza. Lo usa el solver de posiciones. Por defecto 0. |
+| `localY` | numero | Offset Y (in) del punto dentro de su pieza. Por defecto 0. |
 
 > Los `id` que use una cabecera deben existir en estos catalogos. La prueba automatica `CatalogStandardConsistencyTests` verifica que la cabecera estandar no referencie ids inexistentes.
 
