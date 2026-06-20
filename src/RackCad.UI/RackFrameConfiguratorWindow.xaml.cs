@@ -177,18 +177,13 @@ namespace RackCad.UI
             });
         }
 
-        private void ExportBom_Click(object sender, RoutedEventArgs e)
+        private void ViewBom_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new Microsoft.Win32.SaveFileDialog
+            RunUiAction(() =>
             {
-                Filter = "CSV (*.csv)|*.csv|Todos (*.*)|*.*",
-                FileName = "bom-cabecera.csv"
-            };
-
-            if (dialog.ShowDialog(this) == true)
-            {
-                RunUiAction(() => ViewModel.ExportBomCsv(dialog.FileName));
-            }
+                var window = new RackBomWindow(ViewModel.BuildBom()) { Owner = this };
+                window.ShowDialog();
+            });
         }
 
         private void SaveProject_Click(object sender, RoutedEventArgs e)

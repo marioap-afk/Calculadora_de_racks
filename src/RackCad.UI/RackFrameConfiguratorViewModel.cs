@@ -948,20 +948,9 @@ namespace RackCad.UI
             }
         }
 
-        public void ExportBomCsv(string path)
+        public BillOfMaterials BuildBom()
         {
-            try
-            {
-                var bom = BomBuilder.Build(Configuration, catalog);
-                File.WriteAllText(path, BomCsvExporter.ToCsv(bom));
-                StatusMessage = "BOM exportado (" + bom.TotalPieces.ToString(CultureInfo.InvariantCulture) + " piezas): " + Path.GetFileName(path);
-                StatusBrush = "#2F855A";
-            }
-            catch (Exception ex)
-            {
-                StatusMessage = "No se pudo exportar el BOM: " + ex.Message;
-                StatusBrush = "#B00020";
-            }
+            return BomBuilder.Build(Configuration, catalog);
         }
 
         public void SaveProjectTo(string path)
