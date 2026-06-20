@@ -52,10 +52,6 @@
                     <TextBlock Text="Tarimas de fondo" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="PalletsDeepBox" Style="{StaticResource FieldBox}" Text="8" />
 
-                    <TextBlock Text="Profundidad de cabecera (in, opcional)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="HeaderDepthOverrideBox" Style="{StaticResource FieldBox}" Text=""
-                             ToolTip="Vacio = fondo + 6 (derivado). Escribe un valor para sobrescribir." />
-
                     <Button Content="Actualizar vista" Click="Update_Click" Margin="0,16,0,0" Padding="12,7" />
 
                     <Border Background="#F1F4F8" BorderBrush="#D8DEE6" BorderThickness="1" Padding="10" Margin="0,16,0,0">

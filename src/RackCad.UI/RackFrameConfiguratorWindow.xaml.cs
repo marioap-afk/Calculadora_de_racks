@@ -186,15 +186,6 @@ namespace RackCad.UI
             });
         }
 
-        private void OpenDynamicSystem_Click(object sender, RoutedEventArgs e)
-        {
-            RunUiAction(() =>
-            {
-                var window = new RackDynamicSystemWindow(ViewModel.Configuration) { Owner = this };
-                window.ShowDialog();
-            });
-        }
-
         private void SaveProject_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new Microsoft.Win32.SaveFileDialog

@@ -35,29 +35,28 @@ namespace RackCad.Application.Systems
             int palletsDeep,
             RackFrameTemplate headerTemplate,
             string headerPostCatalogId,
-            double headerHeight,
-            double? headerDepthOverride = null)
+            double headerHeight)
         {
             if (pallet == null)
             {
                 throw new ArgumentNullException(nameof(pallet));
             }
 
-            var effectiveDepth = headerDepthOverride ?? (pallet.Depth + DynamicRackDefaults.HeaderEndAllowance);
+            // Header depth is fully pallet-driven: pallet depth + 6" (= the first/last module length).
+            var headerDepth = pallet.Depth + DynamicRackDefaults.HeaderEndAllowance;
 
             var header = headerFactory.Build(
                 headerTemplate ?? RackFrameTemplateCatalog.Default,
                 headerPostCatalogId,
                 headerHeight,
-                effectiveDepth);
+                headerDepth);
 
             return new DynamicRackSystem
             {
                 Kind = RackSystemKind.PalletFlow,
                 Pallet = pallet,
                 PalletsDeep = palletsDeep,
-                Header = header,
-                HeaderDepthOverride = headerDepthOverride
+                Header = header
             };
         }
     }

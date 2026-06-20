@@ -5,9 +5,9 @@ namespace RackCad.Domain.Systems
     /// <summary>
     /// Aggregate (source of truth) for a dynamic (pallet flow) system. Holds the pallet spec, the
     /// number of pallets deep, and a single shared header configuration used at both ends
-    /// (symmetric for now). The header's depth is driven by the system:
-    /// <see cref="EffectiveHeaderDepth"/> = override, or pallet depth + 6". Modules and total
-    /// length are derived (not stored) by the Application layer.
+    /// (symmetric). The header depth is fully pallet-driven: <see cref="EffectiveHeaderDepth"/> =
+    /// pallet depth + 6", which is exactly the length of the first/last module. Modules, posts and
+    /// total length are derived (not stored) by the Application layer.
     /// </summary>
     public sealed class DynamicRackSystem
     {
@@ -18,11 +18,7 @@ namespace RackCad.Domain.Systems
         /// <summary>End frame reused as a component. Shared by the start and end (symmetric).</summary>
         public RackFrameConfiguration Header { get; set; }
 
-        /// <summary>Optional manual override of the header depth; null means derive depth + 6".</summary>
-        public double? HeaderDepthOverride { get; set; }
-
-        /// <summary>Header depth the system imposes: the override when set, otherwise pallet depth + 6".</summary>
-        public double EffectiveHeaderDepth =>
-            HeaderDepthOverride ?? ((Pallet?.Depth ?? 0.0) + DynamicRackDefaults.HeaderEndAllowance);
+        /// <summary>Header depth the system imposes: pallet depth + 6" (= the first/last module length).</summary>
+        public double EffectiveHeaderDepth => (Pallet?.Depth ?? 0.0) + DynamicRackDefaults.HeaderEndAllowance;
     }
 }

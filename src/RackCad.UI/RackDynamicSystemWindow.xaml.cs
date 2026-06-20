@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,12 +16,15 @@ using RackCad.Domain.Systems;
 namespace RackCad.UI
 {
     /// <summary>
-    /// Preliminary side view of a dynamic (pallet flow) system. Reuses the configured header as a
-    /// component, composes the run via DynamicRackComposer and draws it. UI only; the layout/BOM
-    /// logic lives in the Application layer.
+    /// Independent module: preliminary side view of a dynamic (pallet flow) system. It builds its
+    /// own header through the header FACTORY (reusing that logic without coupling to the header
+    /// configurator window). UI only; layout/BOM logic lives in the Application layer.
     /// </summary>
     public partial class RackDynamicSystemWindow : Window
     {
+        private const string DefaultPostCatalogId = "POSTE_OMEGA_3X3";
+        private const double DefaultHeaderHeight = 132.0;
+
         private static readonly Brush HeaderMember = new SolidColorBrush(Color.FromRgb(0x7F, 0xB3, 0xFF));
         private static readonly Brush HeaderOutline = new SolidColorBrush(Color.FromRgb(0x3A, 0x55, 0x7A));
         private static readonly Brush SeparatorOutline = new SolidColorBrush(Color.FromRgb(0x3A, 0x50, 0x68));
@@ -28,14 +32,14 @@ namespace RackCad.UI
         private static readonly Brush FloorStroke = new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
 
         private readonly RackCatalog catalog;
-        private RackFrameConfiguration headerSource;
+        private RackFrameConfiguration header;
         private ComposedDynamicRack composed;
 
-        public RackDynamicSystemWindow(RackFrameConfiguration header)
+        public RackDynamicSystemWindow()
         {
             InitializeComponent();
             catalog = LoadCatalogSafe();
-            headerSource = Clone(header) ?? new HardcodedStandardRackFrameService(catalog).CreateDefault();
+            header = BuildStandardHeader();
             UpdateHeaderInfo();
             Recompose();
         }
@@ -52,7 +56,7 @@ namespace RackCad.UI
 
         private void Recompose()
         {
-            if (!TryReadInputs(out var pallet, out var palletsDeep, out var headerDepthOverride, out var error))
+            if (!TryReadInputs(out var pallet, out var palletsDeep, out var error))
             {
                 SetStatus(error, true);
                 return;
@@ -65,8 +69,7 @@ namespace RackCad.UI
                     Kind = RackSystemKind.PalletFlow,
                     Pallet = pallet,
                     PalletsDeep = palletsDeep,
-                    Header = headerSource,
-                    HeaderDepthOverride = headerDepthOverride
+                    Header = header
                 };
 
                 composed = new DynamicRackComposer().Compose(system);
@@ -82,11 +85,10 @@ namespace RackCad.UI
             }
         }
 
-        private bool TryReadInputs(out PalletSpecification pallet, out int palletsDeep, out double? headerDepthOverride, out string error)
+        private bool TryReadInputs(out PalletSpecification pallet, out int palletsDeep, out string error)
         {
             pallet = null;
             palletsDeep = 0;
-            headerDepthOverride = null;
             error = null;
 
             if (!TryNum(FrontBox.Text, out var front) || front <= 0)
@@ -119,18 +121,6 @@ namespace RackCad.UI
                 return false;
             }
 
-            var overrideText = HeaderDepthOverrideBox.Text;
-            if (!string.IsNullOrWhiteSpace(overrideText))
-            {
-                if (!TryNum(overrideText, out var overrideValue) || overrideValue <= 0)
-                {
-                    error = "Profundidad de cabecera invalida.";
-                    return false;
-                }
-
-                headerDepthOverride = overrideValue;
-            }
-
             pallet = new PalletSpecification(front, depth, palletHeight, weight, "kg");
             return true;
         }
@@ -144,33 +134,21 @@ namespace RackCad.UI
             }
 
             var modules = composed.Layout.Modules;
-            var separators = 0;
-            var posts = 0;
-            foreach (var module in modules)
-            {
-                if (module.Kind == RackModuleKind.Separator)
-                {
-                    separators++;
-                }
-                else if (module.Kind == RackModuleKind.IntermediatePost)
-                {
-                    posts++;
-                }
-            }
+            var separators = modules.Count(m => m.Kind == RackModuleKind.Separator);
 
             SummaryText.Text = string.Format(
                 CultureInfo.InvariantCulture,
-                "Longitud total: {0:0.##} in\nProfundidad de cabecera: {1:0.##} in\nModulos: {2}  (2 cabeceras, {3} separadores, {4} postes)",
+                "Longitud total: {0:0.##} in\nProfundidad de cabecera: {1:0.##} in\nModulos: {2}  (2 cabeceras, {3} separadores)\nPostes intermedios: {4}",
                 composed.Layout.TotalLength,
                 composed.System.EffectiveHeaderDepth,
                 modules.Count,
                 separators,
-                posts);
+                composed.Layout.IntermediatePosts.Count);
         }
 
         private void UpdateHeaderInfo()
         {
-            if (headerSource == null)
+            if (header == null)
             {
                 HeaderInfoText.Text = string.Empty;
                 return;
@@ -179,10 +157,10 @@ namespace RackCad.UI
             HeaderInfoText.Text = string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}\nAlto {1:0.##} in - {2} horizontales - {3} paneles",
-                headerSource.Name,
-                headerSource.Height,
-                headerSource.Horizontals.Count,
-                headerSource.BracingPanels.Count);
+                header.Name,
+                header.Height,
+                header.Horizontals.Count,
+                header.BracingPanels.Count);
         }
 
         private void DrawSideView()
@@ -226,13 +204,6 @@ namespace RackCad.UI
             foreach (var placed in composed.PlacedModules)
             {
                 var module = placed.Module;
-
-                if (module.Kind == RackModuleKind.IntermediatePost)
-                {
-                    AddLine(Map(module.StartOffset, 0), Map(module.StartOffset, height), PostStroke, 1.6, Dash());
-                    continue;
-                }
-
                 var topLeft = Map(module.StartOffset, height);
                 AddRectangle(topLeft.X, topLeft.Y, module.Length * scale, drawHeight,
                     placed.IsHeader ? HeaderOutline : SeparatorOutline, 1.0, placed.IsHeader ? null : Dash());
@@ -254,11 +225,17 @@ namespace RackCad.UI
                     AddLine(Map(sx, member.Start.Elevation), Map(ex, member.End.Elevation), HeaderMember, 1.4);
                 }
             }
+
+            // Intermediate posts are markers (a vertical line), not modules.
+            foreach (var postX in composed.Layout.IntermediatePosts)
+            {
+                AddLine(Map(postX, 0), Map(postX, height), PostStroke, 1.6, Dash());
+            }
         }
 
         private void AddLine(Point a, Point b, Brush stroke, double thickness, DoubleCollection dash = null)
         {
-            var line = new Line
+            PreviewCanvas.Children.Add(new Line
             {
                 X1 = a.X,
                 Y1 = a.Y,
@@ -267,8 +244,7 @@ namespace RackCad.UI
                 Stroke = stroke,
                 StrokeThickness = thickness,
                 StrokeDashArray = dash
-            };
-            PreviewCanvas.Children.Add(line);
+            });
         }
 
         private void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, DoubleCollection dash)
@@ -392,14 +368,17 @@ namespace RackCad.UI
                 }
 
                 var system = project.DynamicSystem;
-                headerSource = system.Header;
-                UpdateHeaderInfo();
+                if (system.Header != null)
+                {
+                    header = system.Header;
+                    UpdateHeaderInfo();
+                }
+
                 FrontBox.Text = Num(system.Pallet.Front);
                 DepthBox.Text = Num(system.Pallet.Depth);
                 PalletHeightBox.Text = Num(system.Pallet.Height);
                 WeightBox.Text = Num(system.Pallet.Weight);
                 PalletsDeepBox.Text = system.PalletsDeep.ToString(CultureInfo.InvariantCulture);
-                HeaderDepthOverrideBox.Text = system.HeaderDepthOverride.HasValue ? Num(system.HeaderDepthOverride.Value) : string.Empty;
                 Recompose();
                 SetStatus("Sistema abierto: " + System.IO.Path.GetFileName(dialog.FileName), false);
             }
@@ -420,6 +399,16 @@ namespace RackCad.UI
             StatusText.Foreground = new SolidColorBrush(isError ? Color.FromRgb(0xB0, 0x00, 0x20) : Color.FromRgb(0x2F, 0x85, 0x5A));
         }
 
+        private RackFrameConfiguration BuildStandardHeader()
+        {
+            // Reuse the header factory; depth here is a placeholder (the composer re-imposes pallet depth + 6).
+            return new RackFrameConfigurationFactory(catalog).Build(
+                RackFrameTemplateCatalog.Default,
+                DefaultPostCatalogId,
+                DefaultHeaderHeight,
+                depth: 54.0);
+        }
+
         private static string Num(double value)
         {
             return value.ToString("0.##", CultureInfo.InvariantCulture);
@@ -429,11 +418,6 @@ namespace RackCad.UI
         {
             return double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out value)
                 || double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out value);
-        }
-
-        private static RackFrameConfiguration Clone(RackFrameConfiguration source)
-        {
-            return source == null ? null : RackFrameProjectDocument.FromConfiguration(source).ToConfiguration();
         }
 
         private static RackCatalog LoadCatalogSafe()

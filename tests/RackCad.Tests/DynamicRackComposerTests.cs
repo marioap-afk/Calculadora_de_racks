@@ -19,35 +19,18 @@ namespace RackCad.Tests
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
-        private static DynamicRackSystem CreateSystem(int palletsDeep = 4, double? headerDepthOverride = null)
+        private static DynamicRackSystem CreateSystem(int palletsDeep = 4)
         {
             return new DynamicRackSystemFactory(Catalog).Create(
                 Pallet48(),
                 palletsDeep,
                 RackFrameTemplateCatalog.Default,
                 "POSTE_OMEGA_3X3",
-                headerHeight: 132.0,
-                headerDepthOverride: headerDepthOverride);
+                headerHeight: 132.0);
         }
 
-        // ---- Generator overload (header length / depth override) ----
-
         [Fact]
-        public void Generate_WithHeaderLengthOverride_UsesItForHeadersAndSumsToTotal()
-        {
-            var layout = new DynamicRackLayoutGenerator().Generate(Pallet48(), 4, headerLength: 60.0);
-
-            Assert.Equal(2 * 60.0 + 2 * 48.0, layout.TotalLength); // 216
-            Assert.Equal(60.0, layout.Modules.First().Length);
-            Assert.Equal(60.0, layout.Modules.Last().Length);
-            Assert.Equal(layout.TotalLength, layout.SumOfModuleLengths);
-            Assert.Equal(156.0, layout.Modules.Single(m => m.Kind == RackModuleKind.HeaderEnd).StartOffset);
-        }
-
-        // ---- Factory builds a real header at the system-driven depth ----
-
-        [Fact]
-        public void Factory_BuildsHeaderAtPalletDepthPlusSix()
+        public void Factory_BuildsRealHeaderAtPalletDepthPlusSix()
         {
             var system = CreateSystem();
 
@@ -58,25 +41,24 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Factory_WithDepthOverride_UsesOverrideForTheHeader()
-        {
-            var system = CreateSystem(headerDepthOverride: 60.0);
-
-            Assert.Equal(60.0, system.EffectiveHeaderDepth);
-            Assert.Equal(60.0, system.Header.Depth);
-        }
-
-        // ---- Composition: positioning + symmetry + real members ----
-
-        [Fact]
-        public void Compose_PlacesEveryModuleAndKeepsCounts()
+        public void Compose_PlacesExactlyNModules()
         {
             var composed = new DynamicRackComposer().Compose(CreateSystem(4));
 
+            Assert.Equal(4, composed.Layout.Modules.Count);          // module count == pallets deep
             Assert.Equal(composed.Layout.Modules.Count, composed.PlacedModules.Count);
             Assert.Equal(204.0, composed.Layout.TotalLength);
             Assert.Equal(0.0, composed.PlacedModules.Single(p => p.Module.Kind == RackModuleKind.HeaderStart).Placement.OffsetX);
             Assert.Equal(150.0, composed.PlacedModules.Single(p => p.Module.Kind == RackModuleKind.HeaderEnd).Placement.OffsetX);
+        }
+
+        [Fact]
+        public void Compose_IntermediatePostsAreMarkersNotPlacedModules()
+        {
+            var composed = new DynamicRackComposer().Compose(CreateSystem(4));
+
+            Assert.Equal(new[] { 102.0 }, composed.Layout.IntermediatePosts); // center marker
+            Assert.DoesNotContain(composed.PlacedModules, p => p.Module.Kind == RackModuleKind.Separator && p.IsHeader);
         }
 
         [Fact]
@@ -88,28 +70,18 @@ namespace RackCad.Tests
             var end = composed.PlacedModules.Single(p => p.Module.Kind == RackModuleKind.HeaderEnd).Header;
 
             Assert.NotNull(start);
-            Assert.Same(start, end); // symmetric: same instance, different placement
-            Assert.NotEmpty(start.Members); // real members were generated
+            Assert.Same(start, end);
+            Assert.NotEmpty(start.Members);
         }
 
         [Fact]
-        public void Compose_SeparatorsAndPosts_HaveNoHeader()
+        public void Compose_SeparatorsHaveNoHeader()
         {
-            var composed = new DynamicRackComposer().Compose(CreateSystem(4));
+            var composed = new DynamicRackComposer().Compose(CreateSystem(5));
 
             Assert.All(
-                composed.PlacedModules.Where(p => p.Module.Kind == RackModuleKind.Separator || p.Module.Kind == RackModuleKind.IntermediatePost),
+                composed.PlacedModules.Where(p => p.Module.Kind == RackModuleKind.Separator),
                 p => Assert.False(p.IsHeader));
-        }
-
-        [Fact]
-        public void Compose_WithOverride_ShiftsPlacementsAndTotal()
-        {
-            var composed = new DynamicRackComposer().Compose(CreateSystem(4, headerDepthOverride: 60.0));
-
-            Assert.Equal(216.0, composed.Layout.TotalLength);
-            Assert.Equal(60.0, composed.System.Header.Depth);
-            Assert.Equal(156.0, composed.PlacedModules.Single(p => p.Module.Kind == RackModuleKind.HeaderEnd).Placement.OffsetX);
         }
 
         [Fact]
@@ -119,14 +91,11 @@ namespace RackCad.Tests
             var depth = composed.System.EffectiveHeaderDepth;
             var endHeader = composed.PlacedModules.Single(p => p.Module.Kind == RackModuleKind.HeaderEnd);
 
-            // A horizontal member's far end sits on the right upright (local X = depth).
             var rightUpright = composed.System.Header.Members.First(m => Math.Abs(m.End.HorizontalPositionRatio - 1.0) < 1e-9);
             var worldEnd = endHeader.Placement.Apply(new Point2D(rightUpright.End.HorizontalPositionRatio * depth, rightUpright.End.Elevation));
 
             Assert.Equal(composed.Layout.TotalLength, worldEnd.X, 6);
         }
-
-        // ---- Validation ----
 
         [Fact]
         public void Compose_NullSystem_Throws()

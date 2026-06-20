@@ -13,15 +13,14 @@ namespace RackCad.Tests
     {
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
-        private static DynamicRackSystem DynamicSystem(double? headerDepthOverride = null)
+        private static DynamicRackSystem DynamicSystem()
         {
             return new DynamicRackSystemFactory(Catalog).Create(
                 new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
                 palletsDeep: 4,
                 headerTemplate: RackFrameTemplateCatalog.Default,
                 headerPostCatalogId: "POSTE_OMEGA_3X3",
-                headerHeight: 132.0,
-                headerDepthOverride: headerDepthOverride);
+                headerHeight: 132.0);
         }
 
         private static RackFrameConfiguration SelectiveHeader()
@@ -44,22 +43,10 @@ namespace RackCad.Tests
             Assert.Equal(1000.0, system.Pallet.Weight);
             Assert.Equal("kg", system.Pallet.WeightUnit);
             Assert.Equal(4, system.PalletsDeep);
-            Assert.Null(system.HeaderDepthOverride);
             Assert.Equal(54.0, system.Header.Depth);
             Assert.Equal(4, system.Header.Horizontals.Count);
             Assert.Equal(3, system.Header.BracingPanels.Count);
             Assert.NotEmpty(system.Header.Members); // members rebuilt on load
-        }
-
-        [Fact]
-        public void RoundTrip_DynamicSystem_PreservesDepthOverride()
-        {
-            var store = new RackProjectStore();
-
-            var loaded = store.Deserialize(store.Serialize(RackProject.ForDynamic(DynamicSystem(headerDepthOverride: 60.0))));
-
-            Assert.Equal(60.0, loaded.DynamicSystem.HeaderDepthOverride);
-            Assert.Equal(60.0, loaded.DynamicSystem.Header.Depth);
         }
 
         [Fact]

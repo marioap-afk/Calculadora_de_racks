@@ -45,7 +45,7 @@ namespace RackCad.Application.Systems
             system.Header.Depth = effectiveDepth;
             memberBuilder.RefreshPhysicalModel(system.Header);
 
-            var layout = generator.Generate(system.Pallet, system.PalletsDeep, effectiveDepth);
+            var layout = generator.Generate(system.Pallet, system.PalletsDeep);
 
             var placed = new List<PlacedModule>(layout.Modules.Count);
             foreach (var module in layout.Modules)

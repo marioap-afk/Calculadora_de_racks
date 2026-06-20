@@ -15,7 +15,6 @@ namespace RackCad.Application.Persistence
         public double PalletWeight { get; set; }
         public string PalletWeightUnit { get; set; } = "kg";
         public int PalletsDeep { get; set; }
-        public double? HeaderDepthOverride { get; set; }
         public RackFrameProjectDocument Header { get; set; }
 
         public static DynamicRackSystemDocument From(DynamicRackSystem system)
@@ -28,7 +27,6 @@ namespace RackCad.Application.Persistence
                 PalletWeight = system.Pallet?.Weight ?? 0.0,
                 PalletWeightUnit = system.Pallet?.WeightUnit ?? "kg",
                 PalletsDeep = system.PalletsDeep,
-                HeaderDepthOverride = system.HeaderDepthOverride,
                 Header = system.Header == null ? null : RackFrameProjectDocument.FromConfiguration(system.Header)
             };
         }
@@ -45,7 +43,6 @@ namespace RackCad.Application.Persistence
                     PalletWeight,
                     string.IsNullOrWhiteSpace(PalletWeightUnit) ? "kg" : PalletWeightUnit),
                 PalletsDeep = PalletsDeep,
-                HeaderDepthOverride = HeaderDepthOverride,
                 Header = Header?.ToConfiguration()
             };
         }
