@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -49,6 +50,10 @@ namespace RackCad.UI
         private DynamicRackSystem system;
         private DynamicRackModule selectedModule;
 
+        private const string ConfigCalculated = "Calculada";
+        private readonly List<HeaderPreset> headerPresets = new List<HeaderPreset>();
+        private bool suppressConfigSelection;
+
         private double mapScale;
         private double mapOffsetX;
         private double mapBottomY;
@@ -74,6 +79,7 @@ namespace RackCad.UI
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
             KindBox.ItemsSource = new[] { KindHeader, KindSeparator };
+            RefreshConfigBox();
             Recompose();
         }
 
@@ -191,6 +197,12 @@ namespace RackCad.UI
                 selectedModule.IsCalculated = false;
             }
 
+            // Save the edited header as a reusable preset ("Personalizada N") for the configuration dropdown.
+            headerPresets.Add(new HeaderPreset(
+                "Personalizada " + (headerPresets.Count + 1).ToString(CultureInfo.InvariantCulture),
+                Clone(selectedModule.AssociatedFrameConfiguration)));
+            RefreshConfigBox();
+
             builder.Refresh(system);
             BindModules();
             UpdateSelectedPanel();
@@ -253,6 +265,8 @@ namespace RackCad.UI
                 ModuleLengthBox.Text = string.Empty;
                 ApplyModuleButton.IsEnabled = false;
                 EditHeaderButton.IsEnabled = false;
+                ConfigBox.IsEnabled = false;
+                SelectConfigCalculated();
                 return;
             }
 
@@ -269,6 +283,103 @@ namespace RackCad.UI
             ModuleLengthBox.Text = selectedModule.Length.ToString("0.##", CultureInfo.InvariantCulture);
             ApplyModuleButton.IsEnabled = true;
             EditHeaderButton.IsEnabled = selectedModule.IsHeader;
+            ConfigBox.IsEnabled = selectedModule.IsHeader;
+            SelectConfigCalculated();
+        }
+
+        // ---- Header configuration presets ----
+
+        private void RefreshConfigBox()
+        {
+            suppressConfigSelection = true;
+            try
+            {
+                var items = new List<string> { ConfigCalculated };
+                items.AddRange(headerPresets.Select(preset => preset.Name));
+                ConfigBox.ItemsSource = items;
+                ConfigBox.SelectedIndex = 0;
+            }
+            finally
+            {
+                suppressConfigSelection = false;
+            }
+        }
+
+        private void SelectConfigCalculated()
+        {
+            if (ConfigBox.Items.Count == 0)
+            {
+                return;
+            }
+
+            suppressConfigSelection = true;
+            try
+            {
+                ConfigBox.SelectedIndex = 0;
+            }
+            finally
+            {
+                suppressConfigSelection = false;
+            }
+        }
+
+        private void ConfigBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressConfigSelection || selectedModule == null || !selectedModule.IsHeader || system == null)
+            {
+                return;
+            }
+
+            if (!(ConfigBox.SelectedItem is string name))
+            {
+                return;
+            }
+
+            RackFrameConfiguration applied;
+
+            if (name == ConfigCalculated)
+            {
+                applied = BuildHeaderConfig(Math.Max(selectedModule.Length, 1.0));
+                selectedModule.IsManualOverride = false;
+            }
+            else
+            {
+                var preset = headerPresets.FirstOrDefault(p => p.Name == name);
+                if (preset == null)
+                {
+                    return;
+                }
+
+                // Copy the configuration only — keep the module's own length (Refresh sets Depth = Length).
+                applied = Clone(preset.Config);
+                selectedModule.IsManualOverride = true;
+            }
+
+            selectedModule.AssociatedFrameConfiguration = applied;
+            builder.Refresh(system);
+            BindModules();
+            UpdateSelectedPanel();
+            UpdateSummary();
+            DrawSideView();
+            SetStatus("Configuración '" + name + "' aplicada al módulo.", false);
+        }
+
+        private static RackFrameConfiguration Clone(RackFrameConfiguration configuration)
+        {
+            var store = new RackFrameProjectStore();
+            return store.Deserialize(store.Serialize(configuration));
+        }
+
+        private sealed class HeaderPreset
+        {
+            public HeaderPreset(string name, RackFrameConfiguration config)
+            {
+                Name = name;
+                Config = config;
+            }
+
+            public string Name { get; }
+            public RackFrameConfiguration Config { get; }
         }
 
         private void UpdateSummary()
