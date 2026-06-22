@@ -139,9 +139,7 @@ namespace RackCad.Application.Catalogs
             }
 
             var profile = catalog.PostProfiles.FindProfile(id)
-                ?? catalog.HorizontalProfiles.FindProfile(id)
-                ?? catalog.DiagonalProfiles.FindProfile(id)
-                ?? catalog.ReinforcementProfiles.FindProfile(id);
+                ?? catalog.TrussProfiles.FindProfile(id);
 
             if (profile != null)
             {

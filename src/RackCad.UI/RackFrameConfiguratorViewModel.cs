@@ -68,9 +68,11 @@ namespace RackCad.UI
             memberBuilder = new BracingPanelMemberBuilder();
 
             PostProfileOptions = ToIdOptions(this.catalog.PostProfiles.Select(profile => profile?.Id));
-            HorizontalProfileOptions = ToIdOptions(this.catalog.HorizontalProfiles.Select(profile => profile?.Id));
-            DiagonalProfileOptions = ToIdOptions(this.catalog.DiagonalProfiles.Select(profile => profile?.Id));
-            ReinforcementProfileOptions = ToIdOptions(this.catalog.ReinforcementProfiles.Select(profile => profile?.Id));
+            // Horizontals and diagonals are both truss members: both dropdowns list the same truss catalog.
+            HorizontalProfileOptions = ToIdOptions(this.catalog.TrussProfiles.Select(profile => profile?.Id));
+            DiagonalProfileOptions = ToIdOptions(this.catalog.TrussProfiles.Select(profile => profile?.Id));
+            // Reinforcements are posts: the reinforcement dropdown lists the same post catalog.
+            ReinforcementProfileOptions = ToIdOptions(this.catalog.PostProfiles.Select(profile => profile?.Id));
             BasePlateOptions = ToIdOptions(this.catalog.BasePlates.Select(plate => plate?.Id));
             ConnectionPointOptions = ToIdOptions(this.catalog.ConnectionPoints.Select(point => point?.Id));
 

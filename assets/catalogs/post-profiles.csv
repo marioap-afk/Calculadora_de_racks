@@ -1,2 +1,4 @@
 id,displayName,description,family,width,depth,thickness,units,gauge,weightPerMeter,material,finish,partNumber,manufacturer,unitCost,currency,costUnit,Ix,Iy,norma,perforacion
-POSTE_OMEGA_3X3,Poste Omega 3x3 cal.14,Poste omega 3x3,OMEGA,3,3,0.105,in,cal. 14,4.2,Acero A36,Galvanizado,PT-OM-3X3-14,Generico,12.5,USD,m,2.5,2.5,RMI,paso 50mm
+POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14,"Poste omega 3"" x 3"" atornillable con 
+troquel gota de agua de cinta negra 
+calibre 14 ",Poste Omega 3x3 calibre 14,Omega,3,3,0.0747,in,14,,,,,,,,,,,,

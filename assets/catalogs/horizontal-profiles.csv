@@ -1,4 +1,0 @@
-id,displayName,description,family,width,depth,thickness,units,gauge,weightPerMeter,material
-HORIZONTAL_INFERIOR,Horizontal inferior 3x1.5,Horizontal inferior,OMEGA,3,1.5,0.105,in,cal. 14,2.6,Acero A36
-HORIZONTAL_INTERMEDIA,Horizontal intermedia 3x1.5,Horizontal intermedia,OMEGA,3,1.5,0.105,in,cal. 14,2.6,Acero A36
-HORIZONTAL_SUPERIOR,Horizontal superior 3x1.5,Horizontal superior,OMEGA,3,1.5,0.105,in,cal. 14,2.6,Acero A36

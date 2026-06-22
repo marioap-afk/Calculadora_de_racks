@@ -97,15 +97,15 @@ namespace RackCad.Application.RackFrames
             CheckProfile(catalog.PostProfiles, configuration.LeftPost?.PostCatalogId);
             CheckProfile(catalog.PostProfiles, configuration.RightPost?.PostCatalogId);
 
-            // Reinforcement ids are only validated when a reinforcement catalog exists.
+            // Reinforcements are posts, so their ids are validated against the post catalog.
             if (configuration.LeftPost != null && configuration.LeftPost.HasReinforcement)
             {
-                CheckProfile(catalog.ReinforcementProfiles, configuration.LeftPost.ReinforcementCatalogId);
+                CheckProfile(catalog.PostProfiles, configuration.LeftPost.ReinforcementCatalogId);
             }
 
             if (configuration.RightPost != null && configuration.RightPost.HasReinforcement)
             {
-                CheckProfile(catalog.ReinforcementProfiles, configuration.RightPost.ReinforcementCatalogId);
+                CheckProfile(catalog.PostProfiles, configuration.RightPost.ReinforcementCatalogId);
             }
 
             if (catalog.BasePlates != null && catalog.BasePlates.Count > 0)
@@ -116,12 +116,12 @@ namespace RackCad.Application.RackFrames
 
             foreach (var horizontal in configuration.Horizontals.Where(horizontal => horizontal != null))
             {
-                CheckProfile(catalog.HorizontalProfiles, horizontal.ProfileId);
+                CheckProfile(catalog.TrussProfiles, horizontal.ProfileId);
             }
 
             foreach (var panel in configuration.BracingPanels.Where(panel => panel != null))
             {
-                CheckProfile(catalog.DiagonalProfiles, panel.DiagonalProfileId);
+                CheckProfile(catalog.TrussProfiles, panel.DiagonalProfileId);
             }
 
             if (catalog.ConnectionPoints != null && catalog.ConnectionPoints.Count > 0)

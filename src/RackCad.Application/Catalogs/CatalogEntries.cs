@@ -135,10 +135,14 @@ namespace RackCad.Application.Catalogs
     /// </summary>
     public sealed class RackCatalog
     {
+        /// <summary>Post profiles. Reinforcements are not a separate part — they are posts, drawn from here too.</summary>
         public IReadOnlyList<ProfileCatalogEntry> PostProfiles { get; set; } = new List<ProfileCatalogEntry>();
-        public IReadOnlyList<ProfileCatalogEntry> HorizontalProfiles { get; set; } = new List<ProfileCatalogEntry>();
-        public IReadOnlyList<ProfileCatalogEntry> DiagonalProfiles { get; set; } = new List<ProfileCatalogEntry>();
-        public IReadOnlyList<ProfileCatalogEntry> ReinforcementProfiles { get; set; } = new List<ProfileCatalogEntry>();
+
+        /// <summary>
+        /// Celosía/truss profiles. Horizontals and diagonals are not different parts — both are truss
+        /// members drawn from this single catalog (a profile can be used either way).
+        /// </summary>
+        public IReadOnlyList<ProfileCatalogEntry> TrussProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<BasePlateCatalogEntry> BasePlates { get; set; } = new List<BasePlateCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
         public IReadOnlyList<ConnectionLayoutEntry> ConnectionLayout { get; set; } = new List<ConnectionLayoutEntry>();

@@ -33,7 +33,7 @@ namespace RackCad.Tests
 
             foreach (var horizontal in configuration.Horizontals)
             {
-                Assert.NotNull(catalog.HorizontalProfiles.FindProfile(horizontal.ProfileId));
+                Assert.NotNull(catalog.TrussProfiles.FindProfile(horizontal.ProfileId));
             }
         }
 
@@ -45,7 +45,7 @@ namespace RackCad.Tests
 
             foreach (var panel in configuration.BracingPanels)
             {
-                Assert.NotNull(catalog.DiagonalProfiles.FindProfile(panel.DiagonalProfileId));
+                Assert.NotNull(catalog.TrussProfiles.FindProfile(panel.DiagonalProfileId));
                 Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(panel.StartConnectionPointId));
                 Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(panel.EndConnectionPointId));
             }

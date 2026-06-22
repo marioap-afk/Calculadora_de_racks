@@ -13,9 +13,7 @@ namespace RackCad.Application.Catalogs
     public sealed class JsonRackCatalogProvider : IRackCatalogProvider
     {
         public const string PostProfilesFile = "post-profiles.json";
-        public const string HorizontalProfilesFile = "horizontal-profiles.json";
-        public const string DiagonalProfilesFile = "diagonal-profiles.json";
-        public const string ReinforcementProfilesFile = "reinforcement-profiles.json";
+        public const string TrussProfilesFile = "truss-profiles.json";
         public const string BasePlatesFile = "base-plates.json";
         public const string ConnectionPointsFile = "connection-points.json";
         public const string ConnectionLayoutFile = "connection-layout.json";
@@ -51,9 +49,7 @@ namespace RackCad.Application.Catalogs
             return new RackCatalog
             {
                 PostProfiles = ReadArray<ProfileCatalogEntry>(PostProfilesFile),
-                HorizontalProfiles = ReadArray<ProfileCatalogEntry>(HorizontalProfilesFile),
-                DiagonalProfiles = ReadArray<ProfileCatalogEntry>(DiagonalProfilesFile),
-                ReinforcementProfiles = ReadArray<ProfileCatalogEntry>(ReinforcementProfilesFile),
+                TrussProfiles = ReadArray<ProfileCatalogEntry>(TrussProfilesFile),
                 BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
                 ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile),
                 ConnectionLayout = ReadArray<ConnectionLayoutEntry>(ConnectionLayoutFile),

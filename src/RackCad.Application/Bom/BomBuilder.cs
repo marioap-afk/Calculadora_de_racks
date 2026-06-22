@@ -133,10 +133,9 @@ namespace RackCad.Application.Bom
                 return catalog.BasePlates.FindBasePlate(id)?.Description ?? string.Empty;
             }
 
-            var list = category == Post ? catalog.PostProfiles
-                : category == Reinforcement ? catalog.ReinforcementProfiles
-                : category == Horizontal ? catalog.HorizontalProfiles
-                : category == Diagonal ? catalog.DiagonalProfiles
+            // Reinforcements are posts; horizontals and diagonals are both truss members.
+            var list = category == Post || category == Reinforcement ? catalog.PostProfiles
+                : category == Horizontal || category == Diagonal ? catalog.TrussProfiles
                 : null;
 
             return list?.FindProfile(id)?.Description ?? string.Empty;

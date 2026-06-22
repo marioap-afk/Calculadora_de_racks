@@ -12,11 +12,9 @@ namespace RackCad.Tests
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
 
             Assert.NotEmpty(catalog.PostProfiles);
-            Assert.NotEmpty(catalog.HorizontalProfiles);
-            Assert.NotEmpty(catalog.DiagonalProfiles);
+            Assert.NotEmpty(catalog.TrussProfiles);
             Assert.NotEmpty(catalog.BasePlates);
             Assert.NotEmpty(catalog.ConnectionPoints);
-            Assert.NotEmpty(catalog.ReinforcementProfiles);
 
             Assert.NotNull(catalog.PostProfiles.FindProfile("POSTE_OMEGA_3X3"));
             Assert.NotNull(catalog.BasePlates.FindBasePlate("PLACA_BASE_ATORNILLABLE"));
@@ -85,7 +83,7 @@ namespace RackCad.Tests
             var catalog = provider.Load();
 
             Assert.Empty(catalog.PostProfiles);
-            Assert.Empty(catalog.HorizontalProfiles);
+            Assert.Empty(catalog.TrussProfiles);
             Assert.Empty(catalog.ConnectionPoints);
         }
 
