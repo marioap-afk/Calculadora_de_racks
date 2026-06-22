@@ -21,10 +21,11 @@ namespace RackCad.Tests
 
             Assert.NotNull(standard);
             Assert.Equal(new[] { 0.0, 44.0, 88.0, 132.0 }, standard.Horizontals.Select(h => h.Elevation));
-            Assert.Equal(new[] { "HORIZONTAL_INFERIOR", "HORIZONTAL_INTERMEDIA", "HORIZONTAL_INTERMEDIA", "HORIZONTAL_SUPERIOR" }, standard.Horizontals.Select(h => h.Profile));
+            // Horizontals are all the unified celosía/truss profile now.
+            Assert.All(standard.Horizontals, h => Assert.Equal(CatalogIds.TrussProfile, h.Profile));
             Assert.Equal(2, standard.Horizontals.First().Quantity);
-            Assert.Equal("POSTE_OMEGA_3X3", standard.Post);
-            Assert.Equal("TRAVESANO_DINAMICO_OMEGA_3X3", standard.DiagonalProfile);
+            Assert.Equal(CatalogIds.StandardPost, standard.Post);
+            Assert.Equal(CatalogIds.TrussProfile, standard.DiagonalProfile);
             Assert.Equal(BracingPattern.SingleDiagonal, standard.DefaultArrangement);
         }
 

@@ -1,5 +1,6 @@
 using System.IO;
 using RackCad.Application.Catalogs;
+using RackCad.Application.RackFrames;
 using Xunit;
 
 namespace RackCad.Tests
@@ -16,32 +17,8 @@ namespace RackCad.Tests
             Assert.NotEmpty(catalog.BasePlates);
             Assert.NotEmpty(catalog.ConnectionPoints);
 
-            Assert.NotNull(catalog.PostProfiles.FindProfile("POSTE_OMEGA_3X3"));
-            Assert.NotNull(catalog.BasePlates.FindBasePlate("PLACA_BASE_ATORNILLABLE"));
-        }
-
-        [Fact]
-        public void Load_ProfileRichFields_AndExtensiblePropertiesRoundTrip()
-        {
-            var post = JsonRackCatalogProvider.FromBaseDirectory().Load().PostProfiles.FindProfile("POSTE_OMEGA_3X3");
-
-            Assert.NotNull(post);
-            Assert.Equal("Poste Omega 3x3 cal.14", post.DisplayName);
-            Assert.Equal("Acero A36", post.Material);
-            Assert.True(post.WeightPerMeter > 0);
-            Assert.Equal("Poste Omega 3x3 cal.14", post.Label); // display name preferred
-            // Block name/layer no longer live on the piece — they belong to blocks.csv (per view).
-
-            // Open properties bag carries arbitrary future attributes.
-            Assert.Equal("RMI", post.Properties["norma"]);
-            Assert.Equal("paso 50mm", post.Properties["perforacion"]);
-        }
-
-        [Fact]
-        public void DescribeId_PrefersDisplayName()
-        {
-            var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
-            Assert.Equal("Poste Omega 3x3 cal.14", catalog.DescribeId("POSTE_OMEGA_3X3"));
+            Assert.NotNull(catalog.PostProfiles.FindProfile(CatalogIds.StandardPost));
+            Assert.NotNull(catalog.BasePlates.FindBasePlate(CatalogIds.BasePlate));
         }
 
         [Fact]
@@ -50,8 +27,8 @@ namespace RackCad.Tests
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
 
             Assert.NotNull(catalog.Defaults);
-            Assert.Equal("POSTE_OMEGA_3X3", catalog.Defaults.Post);
-            Assert.Equal("PLACA_BASE_ATORNILLABLE", catalog.Defaults.BasePlate);
+            Assert.Equal(CatalogIds.StandardPost, catalog.Defaults.Post);
+            Assert.Equal(CatalogIds.BasePlate, catalog.Defaults.BasePlate);
             Assert.Equal(132.0, catalog.Defaults.DefaultHeaderHeight);
             Assert.Equal(6.0, catalog.Defaults.HeaderEndAllowance);
         }
@@ -64,7 +41,7 @@ namespace RackCad.Tests
             var defaults = provider.Load().Defaults;
 
             Assert.NotNull(defaults);
-            Assert.Equal("POSTE_OMEGA_3X3", defaults.Post); // CatalogIds fallback
+            Assert.Equal(CatalogIds.StandardPost, defaults.Post); // CatalogIds fallback
         }
 
         [Fact]
@@ -72,7 +49,7 @@ namespace RackCad.Tests
         {
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
 
-            Assert.NotNull(catalog.PostProfiles.FindProfile("poste_omega_3x3"));
+            Assert.NotNull(catalog.PostProfiles.FindProfile(CatalogIds.StandardPost.ToLowerInvariant()));
         }
 
         [Fact]

@@ -14,13 +14,13 @@ namespace RackCad.Tests
             {
                 PostProfiles = new List<ProfileCatalogEntry>
                 {
-                    new ProfileCatalogEntry { Id = "POSTE_OMEGA_3X3", Description = "Poste personalizado" }
+                    new ProfileCatalogEntry { Id = CatalogIds.StandardPost, Description = "Poste personalizado" }
                 },
                 BasePlates = new List<BasePlateCatalogEntry>
                 {
                     new BasePlateCatalogEntry
                     {
-                        Id = "PLACA_BASE_ATORNILLABLE",
+                        Id = CatalogIds.BasePlate,
                         Description = "Placa personalizada"
                     }
                 },
@@ -33,7 +33,7 @@ namespace RackCad.Tests
                 {
                     new ConnectionLayoutEntry
                     {
-                        PieceId = "PLACA_BASE_ATORNILLABLE",
+                        PieceId = CatalogIds.BasePlate,
                         ConnectionPointId = "CP_CUSTOM",
                         View = "FRONTAL"
                     }
@@ -54,9 +54,9 @@ namespace RackCad.Tests
             var configuration = new HardcodedStandardRackFrameService(new RackCatalog()).CreateDefault();
 
             // With no catalog the post description falls back to its id; the plate keeps a literal fallback.
-            Assert.Equal("POSTE_OMEGA_3X3", configuration.LeftPost.Description);
+            Assert.Equal(CatalogIds.StandardPost, configuration.LeftPost.Description);
             Assert.Equal("Placa base atornillable", configuration.LeftBasePlate.Description);
-            Assert.Equal("MONTAJE_POSTE", configuration.LeftBasePlate.ConnectionPointId);
+            Assert.Equal(CatalogIds.BasePlateConnectionPoint, configuration.LeftBasePlate.ConnectionPointId);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace RackCad.Tests
         {
             var configuration = new HardcodedStandardRackFrameService((RackCatalog)null).CreateDefault();
 
-            Assert.Equal("POSTE_OMEGA_3X3", configuration.LeftPost.Description);
+            Assert.Equal(CatalogIds.StandardPost, configuration.LeftPost.Description);
             // Structure is unchanged regardless of catalog.
             Assert.Equal(4, configuration.Horizontals.Count);
             Assert.Equal(3, configuration.BracingPanels.Count);
@@ -73,10 +73,10 @@ namespace RackCad.Tests
         [Fact]
         public void CreateDefault_DefaultConstructor_ReadsDescriptionFromShippedCatalog()
         {
-            // The shipped assets/catalogs/post-profiles.json describes POSTE_OMEGA_3X3.
+            // The shipped post-profiles.csv describes the standard post.
             var configuration = new HardcodedStandardRackFrameService().CreateDefault();
 
-            Assert.Equal("Poste omega 3x3", configuration.LeftPost.Description);
+            Assert.Equal("Poste Omega 3x3 calibre 14", configuration.LeftPost.Description);
         }
     }
 }

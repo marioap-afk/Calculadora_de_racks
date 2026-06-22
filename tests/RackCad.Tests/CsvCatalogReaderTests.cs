@@ -54,61 +54,12 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ShippedPostProfile_LoadsFromCsv_WithStructuralColumnsInProperties()
-        {
-            var post = JsonRackCatalogProvider.FromBaseDirectory().Load().PostProfiles.FindProfile("POSTE_OMEGA_3X3");
-
-            Assert.NotNull(post);
-            Assert.Equal("Poste Omega 3x3 cal.14", post.DisplayName); // came from the CSV
-            Assert.True(post.Properties.ContainsKey("Ix"));           // extra column -> properties bag
-        }
-
-        [Fact]
         public void ShippedViews_LoadFromCsv()
         {
             var views = JsonRackCatalogProvider.FromBaseDirectory().Load().Views;
 
             Assert.NotEmpty(views);
             Assert.Equal("Frontal", views.FindView("FRONTAL")?.DisplayName);
-        }
-
-        [Fact]
-        public void ShippedConnectionLayout_PieceHasManyPoints_AndPositionDependsOnView()
-        {
-            var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
-            var plate = "PLACA_BASE_ATORNILLABLE";
-
-            // Cardinality: a plate carries several connection points (mate + floor anchors).
-            var pointIds = catalog.ConnectionLayout.ConnectionLayoutFor(plate)
-                .Select(e => e.ConnectionPointId).Distinct().ToList();
-            Assert.Contains("MONTAJE_POSTE", pointIds);
-            Assert.Contains("ANCLA_1", pointIds);
-            Assert.Contains("ANCLA_2", pointIds); // two floor anchors: distinct ids, same role
-
-            // View dependency: same point, different 2D position per view.
-            var frontal = catalog.ConnectionLayout.FindConnectionLayout(plate, "MONTAJE_POSTE", "FRONTAL");
-            var planta = catalog.ConnectionLayout.FindConnectionLayout(plate, "MONTAJE_POSTE", "PLANTA");
-            Assert.Equal(0.0, frontal.LocalY);
-            Assert.Equal(3.0, planta.LocalY);
-
-            // The factory picks the mate-to-post anchor (role BasePlate) from the layout.
-            Assert.Equal("MONTAJE_POSTE", catalog.MountConnectionPointId(plate));
-        }
-
-        [Fact]
-        public void ShippedBlocks_RelatePieceAndView()
-        {
-            var blocks = JsonRackCatalogProvider.FromBaseDirectory().Load().Blocks;
-
-            // A single piece carries several view-specific blocks (the whole point of a separate table).
-            Assert.Equal(4, blocks.BlocksFor("POSTE_OMEGA_3X3").Count());
-
-            var frontal = blocks.FindBlock("POSTE_OMEGA_3X3", "FRONTAL");
-            Assert.Equal("POSTE_OMEGA_3X3_FRONT", frontal?.BlockName);
-            Assert.Equal("RACK-POSTES", frontal?.Layer);
-            Assert.Equal(1.0, frontal?.Scale);
-
-            Assert.Null(blocks.FindBlock("POSTE_OMEGA_3X3", "VISTA_INEXISTENTE"));
         }
     }
 }

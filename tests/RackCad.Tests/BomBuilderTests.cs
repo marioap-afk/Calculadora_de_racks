@@ -9,12 +9,14 @@ namespace RackCad.Tests
 {
     public class BomBuilderTests
     {
+        private const string PostDescription = "Poste Omega 3x3 calibre 14";
+
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         private static RackFrameConfiguration StandardWithMembers()
         {
             var configuration = new RackFrameConfigurationFactory(Catalog)
-                .Build(RackFrameTemplateCatalog.Default, "POSTE_OMEGA_3X3", 132.0, 42.0);
+                .Build(RackFrameTemplateCatalog.Default, CatalogIds.StandardPost, 132.0, 42.0);
             new BracingPanelMemberBuilder().RefreshPhysicalModel(configuration);
             return configuration;
         }
@@ -24,10 +26,10 @@ namespace RackCad.Tests
         {
             var bom = BomBuilder.Build(StandardWithMembers(), Catalog);
 
-            var post = bom.Lines.Single(l => l.Category == BomBuilder.Post && l.ProfileId == "POSTE_OMEGA_3X3");
+            var post = bom.Lines.Single(l => l.Category == BomBuilder.Post && l.ProfileId == CatalogIds.StandardPost);
             Assert.Equal(2, post.Quantity);
             Assert.Equal(132.0, post.Length);
-            Assert.Equal("Poste omega 3x3", post.Description);
+            Assert.Equal(PostDescription, post.Description);
         }
 
         [Fact]
@@ -35,14 +37,10 @@ namespace RackCad.Tests
         {
             var bom = BomBuilder.Build(StandardWithMembers(), Catalog);
 
-            // H1 has quantity 2 -> the lower horizontal line is quantity 2.
-            Assert.Equal(2, bom.Lines.Single(l => l.ProfileId == "HORIZONTAL_INFERIOR").Quantity);
-            // H2 + H3 share the intermediate profile -> quantity 2.
-            Assert.Equal(2, bom.Lines.Single(l => l.ProfileId == "HORIZONTAL_INTERMEDIA").Quantity);
-            // Three SingleDiagonal panels of equal height collapse to one line of quantity 3.
-            Assert.Equal(3, bom.Lines.Single(l => l.Category == BomBuilder.Diagonal).Quantity);
-            // Two base plates.
-            Assert.Equal(2, bom.Lines.Single(l => l.Category == BomBuilder.BasePlate).Quantity);
+            // Horizontals and diagonals are all one truss profile now, so they aggregate by category.
+            Assert.Equal(5, bom.Lines.Where(l => l.Category == BomBuilder.Horizontal).Sum(l => l.Quantity));
+            Assert.Equal(3, bom.Lines.Where(l => l.Category == BomBuilder.Diagonal).Sum(l => l.Quantity));
+            Assert.Equal(2, bom.Lines.Where(l => l.Category == BomBuilder.BasePlate).Sum(l => l.Quantity));
         }
 
         [Fact]
@@ -50,7 +48,7 @@ namespace RackCad.Tests
         {
             var bom = BomBuilder.Build(StandardWithMembers(), Catalog);
 
-            // 2 posts + 2 plates + (2+2+1) horizontals + 3 diagonals
+            // 2 posts + 2 plates + (2+1+1+1) horizontals + 3 diagonals
             Assert.Equal(12, bom.TotalPieces);
         }
 
@@ -59,13 +57,13 @@ namespace RackCad.Tests
         {
             var configuration = StandardWithMembers();
             configuration.LeftPost.HasReinforcement = true;
-            configuration.LeftPost.ReinforcementCatalogId = "REFUERZO_OMEGA_3X3";
+            configuration.LeftPost.ReinforcementCatalogId = CatalogIds.StandardPost; // reinforcements are posts
 
             var bom = BomBuilder.Build(configuration, Catalog);
 
             var reinforcement = bom.Lines.Single(l => l.Category == BomBuilder.Reinforcement);
-            Assert.Equal("REFUERZO_OMEGA_3X3", reinforcement.ProfileId);
-            Assert.Equal("Refuerzo omega 3x3", reinforcement.Description);
+            Assert.Equal(CatalogIds.StandardPost, reinforcement.ProfileId);
+            Assert.Equal(PostDescription, reinforcement.Description);
         }
 
         [Fact]
@@ -74,8 +72,8 @@ namespace RackCad.Tests
             var csv = BomCsvExporter.ToCsv(BomBuilder.Build(StandardWithMembers(), Catalog));
 
             Assert.StartsWith("Categoria,Perfil,Descripcion,Longitud_in,Cantidad", csv);
-            Assert.Contains("POSTE_OMEGA_3X3", csv);
-            Assert.Contains("Poste omega 3x3", csv);
+            Assert.Contains(CatalogIds.StandardPost, csv);
+            Assert.Contains(PostDescription, csv);
         }
     }
 }

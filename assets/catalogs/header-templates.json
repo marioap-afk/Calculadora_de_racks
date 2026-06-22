@@ -5,17 +5,17 @@
     "defaultHeight": 132.0,
     "defaultDepth": 42.0,
     "horizontals": [
-      { "elevation": 0.0, "profile": "HORIZONTAL_INFERIOR", "quantity": 2 },
-      { "elevation": 44.0, "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 88.0, "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 132.0, "profile": "HORIZONTAL_SUPERIOR", "quantity": 1 }
+      { "elevation": 0.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 2 },
+      { "elevation": 44.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 88.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 132.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 }
     ],
     "defaultArrangement": "SingleDiagonal",
-    "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
-    "braceStartConnectionPoint": "TroquelCelosia_01",
-    "braceEndConnectionPoint": "TroquelCelosia_02",
-    "basePlate": "PLACA_BASE_ATORNILLABLE",
-    "post": "POSTE_OMEGA_3X3"
+    "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+    "braceStartConnectionPoint": "TROQUEL_CELOSIA",
+    "braceEndConnectionPoint": "CELOSIA",
+    "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16",
+    "post": "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14"
   },
   {
     "id": "COMPACT-2P",
@@ -23,16 +23,16 @@
     "defaultHeight": 96.0,
     "defaultDepth": 36.0,
     "horizontals": [
-      { "elevation": 0.0, "profile": "HORIZONTAL_INFERIOR", "quantity": 2 },
-      { "elevation": 48.0, "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 96.0, "profile": "HORIZONTAL_SUPERIOR", "quantity": 1 }
+      { "elevation": 0.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 2 },
+      { "elevation": 48.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 96.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 }
     ],
     "defaultArrangement": "SingleDiagonal",
-    "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
-    "braceStartConnectionPoint": "TroquelCelosia_01",
-    "braceEndConnectionPoint": "TroquelCelosia_02",
-    "basePlate": "PLACA_BASE_ATORNILLABLE",
-    "post": "POSTE_OMEGA_3X3"
+    "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+    "braceStartConnectionPoint": "TROQUEL_CELOSIA",
+    "braceEndConnectionPoint": "CELOSIA",
+    "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16",
+    "post": "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14"
   },
   {
     "id": "TALL-4P",
@@ -40,17 +40,17 @@
     "defaultHeight": 180.0,
     "defaultDepth": 42.0,
     "horizontals": [
-      { "elevation": 0.0, "profile": "HORIZONTAL_INFERIOR", "quantity": 2 },
-      { "elevation": 45.0, "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 90.0, "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 135.0, "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 180.0, "profile": "HORIZONTAL_SUPERIOR", "quantity": 1 }
+      { "elevation": 0.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 2 },
+      { "elevation": 45.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 90.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 135.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 180.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 }
     ],
     "defaultArrangement": "XBracing",
-    "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
-    "braceStartConnectionPoint": "TroquelCelosia_01",
-    "braceEndConnectionPoint": "TroquelCelosia_02",
-    "basePlate": "PLACA_BASE_ATORNILLABLE",
-    "post": "POSTE_OMEGA_3X3"
+    "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+    "braceStartConnectionPoint": "TROQUEL_CELOSIA",
+    "braceEndConnectionPoint": "CELOSIA",
+    "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16",
+    "post": "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14"
   }
 ]

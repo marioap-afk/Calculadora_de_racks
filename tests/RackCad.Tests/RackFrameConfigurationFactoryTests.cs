@@ -122,7 +122,7 @@ namespace RackCad.Tests
         {
             var configuration = CreateFactory().Build(RackFrameTemplateCatalog.Default, null, 132.0, 42.0);
 
-            Assert.Equal("POSTE_OMEGA_3X3", configuration.LeftPost.PostCatalogId);
+            Assert.Equal(CatalogIds.StandardPost, configuration.LeftPost.PostCatalogId);
         }
 
         [Fact]

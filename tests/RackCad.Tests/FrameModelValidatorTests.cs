@@ -14,7 +14,7 @@ namespace RackCad.Tests
         private static RackFrameConfiguration StandardConfig()
         {
             return new RackFrameConfigurationFactory(JsonRackCatalogProvider.FromBaseDirectory().Load())
-                .Build(RackFrameTemplateCatalog.Default, "POSTE_OMEGA_3X3", 132.0, 42.0);
+                .Build(RackFrameTemplateCatalog.Default, CatalogIds.StandardPost, 132.0, 42.0);
         }
 
         private static RackCatalog ShippedCatalog()
