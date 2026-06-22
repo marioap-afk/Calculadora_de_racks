@@ -1,0 +1,5 @@
+id,displayName,description
+FRONTAL,Frontal,Vista frontal (alzado)
+LATERAL_IZQ,Lateral izquierda,Vista lateral izquierda
+LATERAL_DER,Lateral derecha,Vista lateral derecha
+PLANTA,Planta,Vista superior (planta)

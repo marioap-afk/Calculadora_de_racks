@@ -39,6 +39,42 @@ namespace RackCad.Application.Catalogs
                 string.Equals(point?.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
+        public static ViewCatalogEntry FindView(this IEnumerable<ViewCatalogEntry> views, string id)
+        {
+            if (views == null || string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            return views.FirstOrDefault(view =>
+                string.Equals(view?.Id, id, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>Every block defined for a piece, in no particular order (one per available view).</summary>
+        public static IEnumerable<BlockCatalogEntry> BlocksFor(this IEnumerable<BlockCatalogEntry> blocks, string pieceId)
+        {
+            if (blocks == null || string.IsNullOrWhiteSpace(pieceId))
+            {
+                return Enumerable.Empty<BlockCatalogEntry>();
+            }
+
+            return blocks.Where(block =>
+                string.Equals(block?.PieceId, pieceId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>The block for a given piece in a given view, or null when that combination is absent.</summary>
+        public static BlockCatalogEntry FindBlock(this IEnumerable<BlockCatalogEntry> blocks, string pieceId, string view)
+        {
+            if (blocks == null || string.IsNullOrWhiteSpace(pieceId) || string.IsNullOrWhiteSpace(view))
+            {
+                return null;
+            }
+
+            return blocks.FirstOrDefault(block =>
+                string.Equals(block?.PieceId, pieceId, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(block?.View, view, StringComparison.OrdinalIgnoreCase));
+        }
+
         /// <summary>
         /// Human-readable description for a catalog id, searched across every catalog list. Falls
         /// back to the id itself when not found. Replaces fragile id-prefix string manipulation.

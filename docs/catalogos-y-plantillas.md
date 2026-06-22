@@ -19,6 +19,8 @@ assets/catalogs/
   reinforcement-profiles.csv    Perfiles de refuerzo         (Excel/CSV)
   base-plates.csv               Placas base                  (Excel/CSV)
   connection-points.csv         Puntos de conexion           (Excel/CSV)
+  views.csv                     Vistas posibles              (Excel/CSV)
+  blocks.csv                    Bloque por pieza y vista      (Excel/CSV)
   header-templates.json         Plantillas de cabecera       (JSON, auto-descriptivas)
   defaults.json                 Receta estandar global       (JSON)
 ```
@@ -241,6 +243,30 @@ Campos comunes **mas**:
 | `role` | texto | Rol del punto (ej. `Brace`, `BasePlate`). |
 | `localX` | numero | Offset X (in) del punto dentro de su pieza. Lo usa el solver de posiciones. Por defecto 0. |
 | `localY` | numero | Offset Y (in) del punto dentro de su pieza. Por defecto 0. |
+
+### Vistas (`views.csv`)
+
+Catalogo simple de las vistas en que se puede dibujar una pieza. Campos comunes; en la practica solo:
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL_IZQ`, `PLANTA`). Lo referencia `blocks.csv`. |
+| `displayName` | texto | Nombre para mostrar (ej. `Frontal`). |
+
+### Bloques por vista (`blocks.csv`)
+
+Tabla **normalizada**: una pieza puede tener **varios bloques**, uno por vista. Por eso *no* hay una columna `vista` en los perfiles ni un bloque unico con todo: cada combinacion pieza+vista es **una fila** aqui. Asi una vista nueva = agregar filas (no columnas), y una pieza solo lista las vistas que existan.
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| `pieceId` | texto | Id de la pieza (perfil/placa/...) a la que pertenece el bloque. |
+| `view` | texto | Vista que dibuja (debe existir en `views.csv`). |
+| `blockName` | texto | Nombre del bloque de AutoCAD para esa pieza en esa vista. |
+| `layer` | texto | Capa de insercion. |
+| `scale` | numero | Escala de insercion (por defecto 1). |
+| `rotation` | numero | Rotacion en grados (por defecto 0). |
+
+> `pieceId` + `view` forman la clave: el codigo busca el bloque con `catalog.Blocks.FindBlock(pieceId, view)`. Esta es exactamente la estructura relacional que usara SQLite mas adelante (tabla `blocks` con FK a la pieza y a la vista). Aun no se consume en el dibujo; es la base de datos lista para esa fase.
 
 > Los `id` que use una cabecera deben existir en estos catalogos. La prueba automatica `CatalogStandardConsistencyTests` verifica que la cabecera estandar no referencie ids inexistentes.
 

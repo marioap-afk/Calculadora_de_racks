@@ -85,6 +85,32 @@ namespace RackCad.Application.Catalogs
     }
 
     /// <summary>
+    /// A drawing view a piece can be represented in (frontal, lateral, planta, ...). Just a lookup:
+    /// <c>Id</c> is the code referenced by <see cref="BlockCatalogEntry.View"/>, <c>DisplayName</c> the
+    /// label.
+    /// </summary>
+    public sealed class ViewCatalogEntry : CatalogEntryBase
+    {
+    }
+
+    /// <summary>
+    /// One AutoCAD block for a piece in a specific view (a row of the normalized blocks table, so a
+    /// piece can have many: <see cref="PieceId"/> + <see cref="View"/> are the key). The block name and
+    /// layer come from the shared base; scale/rotation are per-view placement hints for the draw phase.
+    /// </summary>
+    public sealed class BlockCatalogEntry : CatalogEntryBase
+    {
+        /// <summary>Id of the piece this block represents (FK to a profile/plate/etc.).</summary>
+        public string PieceId { get; set; }
+
+        /// <summary>View code this block draws (FK to <see cref="ViewCatalogEntry.Id"/>).</summary>
+        public string View { get; set; }
+
+        public double Scale { get; set; } = 1.0;
+        public double Rotation { get; set; }
+    }
+
+    /// <summary>
     /// Aggregate of every catalog the configurator consumes. Lists are never
     /// null so callers can enumerate without guarding.
     /// </summary>
@@ -96,6 +122,8 @@ namespace RackCad.Application.Catalogs
         public IReadOnlyList<ProfileCatalogEntry> ReinforcementProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<BasePlateCatalogEntry> BasePlates { get; set; } = new List<BasePlateCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
+        public IReadOnlyList<ViewCatalogEntry> Views { get; set; } = new List<ViewCatalogEntry>();
+        public IReadOnlyList<BlockCatalogEntry> Blocks { get; set; } = new List<BlockCatalogEntry>();
         public RackDefaults Defaults { get; set; } = new RackDefaults();
     }
 }

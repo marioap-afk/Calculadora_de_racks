@@ -1,3 +1,4 @@
+using System.Linq;
 using RackCad.Application.Catalogs;
 using Xunit;
 
@@ -60,6 +61,31 @@ namespace RackCad.Tests
             Assert.NotNull(post);
             Assert.Equal("Poste Omega 3x3 cal.14", post.DisplayName); // came from the CSV
             Assert.True(post.Properties.ContainsKey("Ix"));           // extra column -> properties bag
+        }
+
+        [Fact]
+        public void ShippedViews_LoadFromCsv()
+        {
+            var views = JsonRackCatalogProvider.FromBaseDirectory().Load().Views;
+
+            Assert.NotEmpty(views);
+            Assert.Equal("Frontal", views.FindView("FRONTAL")?.DisplayName);
+        }
+
+        [Fact]
+        public void ShippedBlocks_RelatePieceAndView()
+        {
+            var blocks = JsonRackCatalogProvider.FromBaseDirectory().Load().Blocks;
+
+            // A single piece carries several view-specific blocks (the whole point of a separate table).
+            Assert.Equal(4, blocks.BlocksFor("POSTE_OMEGA_3X3").Count());
+
+            var frontal = blocks.FindBlock("POSTE_OMEGA_3X3", "FRONTAL");
+            Assert.Equal("POSTE_OMEGA_3X3_FRONT", frontal?.BlockName);
+            Assert.Equal("RACK-POSTES", frontal?.Layer);
+            Assert.Equal(1.0, frontal?.Scale);
+
+            Assert.Null(blocks.FindBlock("POSTE_OMEGA_3X3", "VISTA_INEXISTENTE"));
         }
     }
 }
