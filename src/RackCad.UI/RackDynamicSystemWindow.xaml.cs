@@ -466,15 +466,20 @@ namespace RackCad.UI
             AddCanvasLabel(mapOffsetX, Math.Max(4.0, mapBottomY - drawHeight - 24.0), "Longitud total: " + total.ToString("0.##", CultureInfo.InvariantCulture) + " in", LabelStroke, 12, 260.0, FontWeights.SemiBold);
             AddLine(Map(0, 0), Map(total, 0), FloorStroke, 1.5);
 
+            var separatorLevels = SeparatorLevelCalculator.Levels(height, SeparatorBaseY(), 2.0);
+            var headerOrdinal = 0;
+
             foreach (var module in system.Modules.Where(m => m.Length > 0.0))
             {
                 if (module.IsHeader)
                 {
-                    DrawHeader(module, height);
+                    // Every other header is mirrored so the celosía alternates along the line (matches AutoCAD).
+                    DrawHeader(module, height, headerOrdinal % 2 == 1);
+                    headerOrdinal++;
                 }
                 else
                 {
-                    DrawSeparator(module, height, drawHeight);
+                    DrawSeparator(module, height, drawHeight, separatorLevels);
                 }
 
                 AddLengthLabel(module);
@@ -491,7 +496,7 @@ namespace RackCad.UI
             DrawSelectionHighlight(height, drawHeight);
         }
 
-        private void DrawHeader(DynamicRackModule module, double height)
+        private void DrawHeader(DynamicRackModule module, double height, bool mirrored)
         {
             var topLeft = Map(module.StartX, height);
             var moduleWidth = module.Length * mapScale;
@@ -507,12 +512,15 @@ namespace RackCad.UI
 
             if (config == null)
             {
-                DrawFallbackHeaderMembers(module, height);
+                DrawFallbackHeaderMembers(module, height, mirrored);
                 return;
             }
 
             var depth = config.Depth <= 0 ? module.Length : config.Depth;
             var drewMembers = false;
+
+            // Mirror a header by flipping member X within the module span (the celosía direction flips).
+            double MemberX(double ratio) => mirrored ? module.EndX - ratio * depth : module.StartX + ratio * depth;
 
             foreach (var member in config.Members ?? Enumerable.Empty<FrameMember>())
             {
@@ -521,8 +529,8 @@ namespace RackCad.UI
                     continue;
                 }
 
-                var sx = module.StartX + member.Start.HorizontalPositionRatio * depth;
-                var ex = module.StartX + member.End.HorizontalPositionRatio * depth;
+                var sx = MemberX(member.Start.HorizontalPositionRatio);
+                var ex = MemberX(member.End.HorizontalPositionRatio);
                 var thickness = member.MemberType == FrameMemberType.DiagonalBrace ? 3.0 : 3.6;
                 AddLine(Map(sx, member.Start.Elevation), Map(ex, member.End.Elevation), MemberBrush(member.MemberType), thickness);
                 drewMembers = true;
@@ -530,20 +538,32 @@ namespace RackCad.UI
 
             if (!drewMembers)
             {
-                DrawFallbackHeaderMembers(module, height);
+                DrawFallbackHeaderMembers(module, height, mirrored);
             }
         }
 
-        private void DrawSeparator(DynamicRackModule module, double height, double drawHeight)
+        private void DrawSeparator(DynamicRackModule module, double height, double drawHeight, IReadOnlyList<double> levels)
         {
             var topLeft = Map(module.StartX, height);
             var width = Math.Max(1.0, module.Length * mapScale);
             AddRectangle(topLeft.X, topLeft.Y, width, drawHeight, SeparatorStroke, 0.9, Dash(), SeparatorFill);
 
-            var centerX = (module.StartX + module.EndX) / 2.0;
-            AddLine(Map(centerX, 0), Map(centerX, height), SeparatorStroke, 1.4, Dash());
-            AddLine(Map(module.StartX, height * 0.18), Map(module.EndX, height * 0.18), SeparatorStroke, 1.0);
-            AddLine(Map(module.StartX, height * 0.82), Map(module.EndX, height * 0.82), SeparatorStroke, 1.0);
+            // The actual separator beams at each vertical level (so a custom count/spacing is visible).
+            foreach (var level in levels)
+            {
+                AddLine(Map(module.StartX, level), Map(module.EndX, level), SeparatorStroke, 2.2);
+            }
+        }
+
+        /// <summary>Y of the post's first separator troquel (TROQUEL_SEPARADOR), the base of the separator grid.</summary>
+        private double SeparatorBaseY()
+        {
+            var postId = system?.Modules
+                .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration != null)?
+                .AssociatedFrameConfiguration.LeftPost?.PostCatalogId ?? defaultPostCatalogId;
+
+            var entry = catalog.ConnectionLayout.FindConnectionLayout(postId, "TROQUEL_SEPARADOR", "LATERAL");
+            return entry?.LocalY ?? 0.0;
         }
 
         private void DrawHeaderPost(double x, double height, double moduleWidth, PostAssembly post, bool reinforcementOnRightSide)
@@ -581,13 +601,17 @@ namespace RackCad.UI
             AddRectangle(Map(x, 0).X - plateWidth / 2.0, bottom + 4.0, plateWidth, 5.5, UprightStroke, 1.0, null, PlateFill);
         }
 
-        private void DrawFallbackHeaderMembers(DynamicRackModule module, double height)
+        private void DrawFallbackHeaderMembers(DynamicRackModule module, double height, bool mirrored)
         {
             AddLine(Map(module.StartX, height * 0.12), Map(module.EndX, height * 0.12), HorizontalStroke, 3.6);
             AddLine(Map(module.StartX, height * 0.50), Map(module.EndX, height * 0.50), HorizontalStroke, 3.2);
             AddLine(Map(module.StartX, height * 0.88), Map(module.EndX, height * 0.88), HorizontalStroke, 3.2);
-            AddLine(Map(module.StartX, height * 0.12), Map(module.EndX, height * 0.50), DiagonalStroke, 3.0);
-            AddLine(Map(module.EndX, height * 0.50), Map(module.StartX, height * 0.88), DiagonalStroke, 3.0);
+
+            // Flip the diagonals for a mirrored header so the celosía alternates along the line.
+            var lowX = mirrored ? module.EndX : module.StartX;
+            var highX = mirrored ? module.StartX : module.EndX;
+            AddLine(Map(lowX, height * 0.12), Map(highX, height * 0.50), DiagonalStroke, 3.0);
+            AddLine(Map(highX, height * 0.50), Map(lowX, height * 0.88), DiagonalStroke, 3.0);
         }
 
         private void DrawDerivedPost(double x, double height)
