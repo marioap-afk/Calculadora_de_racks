@@ -41,6 +41,27 @@ namespace RackCad.Plugin.Headers
                 var layout = builder.Build(configuration, parameters, catalog);
                 var blockName = BuildBlockName(catalog, configuration);
 
+                return PlaceLayout(document, catalog, layout, blockName);
+            }
+            catch (Exception ex)
+            {
+                return HeaderPlacementResult.Failure(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Turn an already-built plan into one AutoCAD block and let the user place it with the mouse.
+        /// Shared by the single header and the whole dynamic system.
+        /// </summary>
+        public HeaderPlacementResult PlaceLayout(Document document, RackCatalog catalog, LateralHeaderLayout layout, string blockName)
+        {
+            if (document == null)
+            {
+                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
+            }
+
+            try
+            {
                 var block = CreateBlock(document, layout, blockName);
                 var placed = PlaceBlockWithJig(document, block.DefinitionId);
 
@@ -133,7 +154,7 @@ namespace RackCad.Plugin.Headers
             return lines;
         }
 
-        private static RackCatalog LoadCatalog()
+        public static RackCatalog LoadCatalog()
         {
             try
             {

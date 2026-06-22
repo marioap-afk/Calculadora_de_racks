@@ -9,7 +9,10 @@ namespace RackCad.Application.Headers
         Post,
         Horizontal,
         Diagonal,
-        ClosingHorizontal
+        ClosingHorizontal,
+
+        /// <summary>A separator beam linking two adjacent headers in a dynamic system.</summary>
+        Separator
     }
 
     /// <summary>

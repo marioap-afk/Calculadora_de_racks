@@ -2,8 +2,11 @@ using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.RackFrames;
+using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
+using RackCad.Domain.Systems;
 using RackCad.Plugin.Headers;
+using RackCad.Plugin.Systems;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -63,6 +66,40 @@ namespace RackCad.Plugin
             try
             {
                 DrawAndPlace(new HardcodedStandardRackFrameService().CreateDefault());
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// Draws a preliminary dynamic (pallet flow) system: headers along the run + separators per level,
+        /// as one block placed with the mouse. Uses default pallet/height for now (header-height logic TBD).
+        /// </summary>
+        [CommandMethod("RACKSISTEMADINAMICO")]
+        public void RackSistemaDinamico()
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
+                var system = new DynamicRackSystemBuilder(catalog).BuildDefault(
+                    pallet,
+                    palletsDeep: 8,
+                    headerTemplate: RackFrameTemplateCatalog.Default,
+                    headerPostCatalogId: CatalogIds.StandardPost,
+                    headerHeight: 132.0);
+
+                var result = new DynamicSystemDrawService().DrawAndPlace(document, system);
+                document.Editor.WriteMessage("\n" + Describe(result));
             }
             catch (System.Exception ex)
             {

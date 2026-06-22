@@ -3,3 +3,5 @@ MONTAJE_POSTE,Montaje a poste,Punto de mate de la placa al poste (compartible po
 TROQUEL_CELOSIA,Troquel de celosia,Primer troquel de la celosía,Poste
 CELOSIA,Troquel de celosía,Troquel donde se monta la celosía,Truss
 FIN_POSTE,Montaje de refuerzo,Punto de mate de poste y refuerzo,Poste
+TROQUEL_SEPARADOR,Troquel de separador en poste,Troquel de separador en poste,Poste
+TROQUEL_CABECERA,Troquel donde va cabecera en separador,Troquel donde va cabecera en separador,Spacer
