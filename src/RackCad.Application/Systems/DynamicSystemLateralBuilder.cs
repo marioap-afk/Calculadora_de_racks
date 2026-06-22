@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Geometry;
 using RackCad.Application.Headers;
@@ -45,12 +44,14 @@ namespace RackCad.Application.Systems
             {
                 if (module.IsHeader && module.AssociatedFrameConfiguration != null)
                 {
-                    var signature = Signature(module.AssociatedFrameConfiguration);
+                    // Build the header and key the group on the resulting geometry, so two headers share a
+                    // definition only when their drawing is truly identical (any edit separates them).
+                    var parameters = LateralHeaderParametersFactory.FromConfiguration(module.AssociatedFrameConfiguration);
+                    var layout = headerBuilder.Build(module.AssociatedFrameConfiguration, parameters, catalog);
+                    var signature = LayoutSignature(layout.Instances);
 
                     if (!groups.TryGetValue(signature, out var group))
                     {
-                        var parameters = LateralHeaderParametersFactory.FromConfiguration(module.AssociatedFrameConfiguration);
-                        var layout = headerBuilder.Build(module.AssociatedFrameConfiguration, parameters, catalog);
                         group = new HeaderGroupBuilder(HeaderName(module.AssociatedFrameConfiguration), layout.Instances.ToList());
                         groups[signature] = group;
                         order.Add(signature);
@@ -83,26 +84,26 @@ namespace RackCad.Application.Systems
             return new DynamicSystemPlan(headers, loose);
         }
 
-        /// <summary>Signature of the layout-affecting fields, so identical headers share one block definition.</summary>
-        private static string Signature(RackFrameConfiguration c)
+        /// <summary>
+        /// Signature of a built header's geometry: two headers share a block definition only when this matches
+        /// (so any edit that changes the drawing — position, block, rotation, mirror, dynamic length — separates
+        /// them). Order-independent.
+        /// </summary>
+        private static string LayoutSignature(IReadOnlyList<HeaderBlockInstance> instances)
         {
-            var sb = new StringBuilder();
-            sb.Append(c.Height.ToString("0.###", CultureInfo.InvariantCulture)).Append('|')
-              .Append(c.Depth.ToString("0.###", CultureInfo.InvariantCulture)).Append('|')
-              .Append(c.LeftPost?.PostCatalogId).Append('|').Append(c.LeftBasePlate?.PlateCatalogId).Append('|')
-              .Append(c.CelosiaStartTroquel).Append('|').Append(c.DiagonalStartOffsetTroqueles).Append('|').Append(c.DiagonalEndOffsetTroqueles);
+            var parts = instances.Select(instance => string.Join("|",
+                instance.Role,
+                instance.BlockName,
+                instance.View,
+                instance.Insertion.X.ToString("0.###", CultureInfo.InvariantCulture),
+                instance.Insertion.Y.ToString("0.###", CultureInfo.InvariantCulture),
+                instance.RotationRadians.ToString("0.#####", CultureInfo.InvariantCulture),
+                instance.MirroredX,
+                string.Join(",", instance.DynamicParameters
+                    .OrderBy(p => p.Key, StringComparer.Ordinal)
+                    .Select(p => p.Key + "=" + p.Value.ToString("0.###", CultureInfo.InvariantCulture)))));
 
-            foreach (var h in c.Horizontals.OrderBy(item => item.Elevation))
-            {
-                sb.Append("|H").Append(h.Elevation.ToString("0.###", CultureInfo.InvariantCulture)).Append(',').Append(h.Quantity).Append(',').Append(h.ProfileId);
-            }
-
-            foreach (var p in c.BracingPanels.OrderBy(item => item.Number))
-            {
-                sb.Append("|P").Append(p.Arrangement).Append(',').Append(p.DiagonalDirection).Append(',').Append(p.DiagonalProfileId);
-            }
-
-            return sb.ToString();
+            return string.Join(";", parts.OrderBy(part => part, StringComparer.Ordinal));
         }
 
         private static string HeaderName(RackFrameConfiguration c)
