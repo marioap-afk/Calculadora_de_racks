@@ -22,6 +22,17 @@ namespace RackCad.Domain.RackFrames
         public string Units { get; set; }
         public double Height { get; set; }
         public double Depth { get; set; }
+
+        // ---- Celosía / diagonal parameters (advanced editor; drive the lateral header builder) ----
+        /// <summary>1-based troquel index where the first horizontal of the celosía sits.</summary>
+        public int CelosiaStartTroquel { get; set; } = 3;
+
+        /// <summary>The diagonal starts this many troqueles above the lower horizontal of its panel.</summary>
+        public int DiagonalStartOffsetTroqueles { get; set; } = 2;
+
+        /// <summary>The diagonal ends this many troqueles below the upper horizontal of its panel.</summary>
+        public int DiagonalEndOffsetTroqueles { get; set; } = 2;
+
         public string StandardBaselineId { get; set; }
         public string StandardBaselineVersion { get; set; }
         public PostAssembly LeftPost { get; set; }

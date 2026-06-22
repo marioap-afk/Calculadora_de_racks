@@ -16,6 +16,12 @@ namespace RackCad.Application.Persistence
         public string Units { get; set; }
         public double Height { get; set; }
         public double Depth { get; set; }
+
+        // Nullable so legacy projects without these fields fall back to the built-in defaults.
+        public int? CelosiaStartTroquel { get; set; }
+        public int? DiagonalStartOffsetTroqueles { get; set; }
+        public int? DiagonalEndOffsetTroqueles { get; set; }
+
         public string StandardBaselineId { get; set; }
         public string StandardBaselineVersion { get; set; }
         public PostDocument LeftPost { get; set; }
@@ -33,6 +39,9 @@ namespace RackCad.Application.Persistence
                 Units = configuration.Units,
                 Height = configuration.Height,
                 Depth = configuration.Depth,
+                CelosiaStartTroquel = configuration.CelosiaStartTroquel,
+                DiagonalStartOffsetTroqueles = configuration.DiagonalStartOffsetTroqueles,
+                DiagonalEndOffsetTroqueles = configuration.DiagonalEndOffsetTroqueles,
                 StandardBaselineId = configuration.StandardBaselineId,
                 StandardBaselineVersion = configuration.StandardBaselineVersion,
                 LeftPost = PostDocument.From(configuration.LeftPost),
@@ -62,6 +71,9 @@ namespace RackCad.Application.Persistence
                 Units = string.IsNullOrWhiteSpace(Units) ? "in" : Units,
                 Height = Height,
                 Depth = Depth,
+                CelosiaStartTroquel = CelosiaStartTroquel ?? 3,
+                DiagonalStartOffsetTroqueles = DiagonalStartOffsetTroqueles ?? 2,
+                DiagonalEndOffsetTroqueles = DiagonalEndOffsetTroqueles ?? 2,
                 StandardBaselineId = StandardBaselineId,
                 StandardBaselineVersion = StandardBaselineVersion,
                 LeftPost = LeftPost?.ToDomain(PostSide.Left),

@@ -40,6 +40,33 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_PreservesCelosiaAndDiagonalParameters()
+        {
+            var store = new RackFrameProjectStore();
+            var original = SampleConfig();
+            original.CelosiaStartTroquel = 5;
+            original.DiagonalStartOffsetTroqueles = 1;
+            original.DiagonalEndOffsetTroqueles = 3;
+
+            var loaded = store.Deserialize(store.Serialize(original));
+
+            Assert.Equal(5, loaded.CelosiaStartTroquel);
+            Assert.Equal(1, loaded.DiagonalStartOffsetTroqueles);
+            Assert.Equal(3, loaded.DiagonalEndOffsetTroqueles);
+        }
+
+        [Fact]
+        public void LegacyDocument_WithoutCelosiaParameters_FallsBackToDefaults()
+        {
+            // A project that predates these fields leaves them null -> built-in defaults.
+            var configuration = new RackFrameProjectDocument().ToConfiguration();
+
+            Assert.Equal(3, configuration.CelosiaStartTroquel);
+            Assert.Equal(2, configuration.DiagonalStartOffsetTroqueles);
+            Assert.Equal(2, configuration.DiagonalEndOffsetTroqueles);
+        }
+
+        [Fact]
         public void Deserialize_RebuildsDerivedMembersAndPanelElevations()
         {
             var store = new RackFrameProjectStore();

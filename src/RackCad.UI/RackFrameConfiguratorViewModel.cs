@@ -410,6 +410,107 @@ namespace RackCad.UI
             }
         }
 
+        // ---- Celosía / diagonal parameters (advanced editor) ----
+
+        public int CelosiaStartTroquel
+        {
+            get => Configuration.CelosiaStartTroquel;
+            private set
+            {
+                if (value < 1 || Configuration.CelosiaStartTroquel == value)
+                {
+                    return;
+                }
+
+                Configuration.CelosiaStartTroquel = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CelosiaStartTroquelText));
+                MarkConfigurationEdited("Inicio de celosia actualizado.");
+            }
+        }
+
+        public string CelosiaStartTroquelText
+        {
+            get => Configuration.CelosiaStartTroquel.ToString(CultureInfo.InvariantCulture);
+            set
+            {
+                if (TryParseIntAtLeast(value, 1, out var parsed))
+                {
+                    CelosiaStartTroquel = parsed;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int DiagonalStartOffsetTroqueles
+        {
+            get => Configuration.DiagonalStartOffsetTroqueles;
+            private set
+            {
+                if (value < 0 || Configuration.DiagonalStartOffsetTroqueles == value)
+                {
+                    return;
+                }
+
+                Configuration.DiagonalStartOffsetTroqueles = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DiagonalStartOffsetText));
+                MarkConfigurationEdited("Offset de diagonal (inicio) actualizado.");
+            }
+        }
+
+        public string DiagonalStartOffsetText
+        {
+            get => Configuration.DiagonalStartOffsetTroqueles.ToString(CultureInfo.InvariantCulture);
+            set
+            {
+                if (TryParseIntAtLeast(value, 0, out var parsed))
+                {
+                    DiagonalStartOffsetTroqueles = parsed;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
+        public int DiagonalEndOffsetTroqueles
+        {
+            get => Configuration.DiagonalEndOffsetTroqueles;
+            private set
+            {
+                if (value < 0 || Configuration.DiagonalEndOffsetTroqueles == value)
+                {
+                    return;
+                }
+
+                Configuration.DiagonalEndOffsetTroqueles = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DiagonalEndOffsetText));
+                MarkConfigurationEdited("Offset de diagonal (fin) actualizado.");
+            }
+        }
+
+        public string DiagonalEndOffsetText
+        {
+            get => Configuration.DiagonalEndOffsetTroqueles.ToString(CultureInfo.InvariantCulture);
+            set
+            {
+                if (TryParseIntAtLeast(value, 0, out var parsed))
+                {
+                    DiagonalEndOffsetTroqueles = parsed;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
+        private static bool TryParseIntAtLeast(string text, int minimum, out int value)
+        {
+            return int.TryParse((text ?? string.Empty).Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value)
+                && value >= minimum;
+        }
+
         public string StandardBaselineId => Configuration.StandardBaselineId;
         public string StandardBaselineVersion => Configuration.StandardBaselineVersion;
         public PostAssembly LeftPost => Configuration.LeftPost;

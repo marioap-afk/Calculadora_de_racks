@@ -432,6 +432,8 @@
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre" Style="{StaticResource PropertyLabelStyle}" />
@@ -448,6 +450,15 @@
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Unidades" Style="{StaticResource PropertyLabelStyle}" />
                                     <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding Units, Mode=OneWay}" IsReadOnly="True" Background="#F7F9FB" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Inicio celosia (troquel)" Style="{StaticResource PropertyLabelStyle}" />
+                                    <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding CelosiaStartTroquelText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                                    <TextBlock Grid.Row="3" Grid.Column="3" Text="Offset diag. inicio (troqueles)" Style="{StaticResource PropertyLabelStyle}" />
+                                    <TextBox Grid.Row="3" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding DiagonalStartOffsetText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Offset diag. fin (troqueles)" Style="{StaticResource PropertyLabelStyle}" />
+                                    <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding DiagonalEndOffsetText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                                 </Grid>
                             </Border>
 
