@@ -101,6 +101,7 @@ namespace RackCad.UI
             try
             {
                 system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, defaultPostCatalogId, defaultHeaderHeight);
+                ApplySeparatorOverrides();
                 selectedModule = null;
                 BindModules();
                 UpdateSelectedPanel();
@@ -466,7 +467,8 @@ namespace RackCad.UI
             AddCanvasLabel(mapOffsetX, Math.Max(4.0, mapBottomY - drawHeight - 24.0), "Longitud total: " + total.ToString("0.##", CultureInfo.InvariantCulture) + " in", LabelStroke, 12, 260.0, FontWeights.SemiBold);
             AddLine(Map(0, 0), Map(total, 0), FloorStroke, 1.5);
 
-            var separatorLevels = SeparatorLevelCalculator.Levels(height, SeparatorBaseY(), 2.0);
+            var separatorLevels = SeparatorLevelCalculator.Levels(
+                height, SeparatorBaseY(), 2.0, system.SeparatorCountOverride, system.SeparatorSpacingOverride);
             var headerOrdinal = 0;
 
             foreach (var module in system.Modules.Where(m => m.Length > 0.0))
@@ -553,6 +555,20 @@ namespace RackCad.UI
             {
                 AddLine(Map(module.StartX, level), Map(module.EndX, level), SeparatorStroke, 2.2);
             }
+        }
+
+        /// <summary>Read the optional separator count/spacing fields onto the system (empty = standard).</summary>
+        private void ApplySeparatorOverrides()
+        {
+            if (system == null)
+            {
+                return;
+            }
+
+            system.SeparatorCountOverride =
+                int.TryParse(SeparatorCountBox.Text?.Trim(), out var count) && count >= 1 ? count : (int?)null;
+            system.SeparatorSpacingOverride =
+                TryNum(SeparatorSpacingBox.Text, out var spacing) && spacing > 0.0 ? spacing : (double?)null;
         }
 
         /// <summary>Y of the post's first separator troquel (TROQUEL_SEPARADOR), the base of the separator grid.</summary>

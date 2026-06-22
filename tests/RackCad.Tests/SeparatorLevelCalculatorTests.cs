@@ -64,6 +64,25 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Levels_CountOverride_ForcesThatManyLevels()
+        {
+            var levels = SeparatorLevelCalculator.Levels(120.0, 0.0, 2.0, countOverride: 4);
+
+            Assert.Equal(4, levels.Count);
+        }
+
+        [Fact]
+        public void Levels_SpacingOverride_UsesThatSpacing()
+        {
+            var levels = SeparatorLevelCalculator.Levels(200.0, 0.0, 2.0, spacingOverride: 50.0).ToList();
+
+            for (var i = 1; i < levels.Count; i++)
+            {
+                Assert.Equal(50.0, levels[i] - levels[i - 1], 4);
+            }
+        }
+
+        [Fact]
         public void Levels_AreAscending()
         {
             var levels = SeparatorLevelCalculator.Levels(200.0, 2.1563, 2.0).ToList();

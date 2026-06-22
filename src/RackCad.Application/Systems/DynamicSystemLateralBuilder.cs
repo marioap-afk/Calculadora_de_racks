@@ -140,7 +140,9 @@ namespace RackCad.Application.Systems
             context.PostBlock = Block(catalog, context.PostId, "LATERAL");
             context.PlateBlock = Block(catalog, context.PlateId, "LATERAL");
 
-            context.Levels = SeparatorLevelCalculator.Levels(context.Height, troquelSeparador.Y, context.Paso);
+            context.Levels = SeparatorLevelCalculator.Levels(
+                context.Height, troquelSeparador.Y, context.Paso,
+                system.SeparatorCountOverride, system.SeparatorSpacingOverride);
             return context;
         }
 

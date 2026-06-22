@@ -34,7 +34,9 @@ namespace RackCad.Application.Systems
         /// troquel grid <paramref name="troquelSeparadorY"/> + k·<paramref name="paso"/>, are spaced an even
         /// "full" apart, with the top space ≈ half; the bottom space absorbs the remainder.
         /// </summary>
-        public static IReadOnlyList<double> Levels(double headerHeight, double troquelSeparadorY, double paso)
+        public static IReadOnlyList<double> Levels(
+            double headerHeight, double troquelSeparadorY, double paso,
+            int? countOverride = null, double? spacingOverride = null)
         {
             var levels = new List<double>();
 
@@ -48,8 +50,9 @@ namespace RackCad.Application.Systems
                 paso = 2.0;
             }
 
-            var count = Count(headerHeight);
-            var full = headerHeight / count;
+            // Defaults follow the standard rule; an explicit count and/or spacing override them.
+            var count = countOverride.HasValue && countOverride.Value >= 1 ? countOverride.Value : Count(headerHeight);
+            var full = spacingOverride.HasValue && spacingOverride.Value > 0.0 ? spacingOverride.Value : headerHeight / count;
             var half = full / 2.0;
 
             // Spacing between separators, rounded to a whole number of troqueles (so it is even on a 2" pitch).

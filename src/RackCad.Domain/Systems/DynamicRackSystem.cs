@@ -15,6 +15,12 @@ namespace RackCad.Domain.Systems
         public PalletSpecification Pallet { get; set; } = new PalletSpecification();
         public int PalletsDeep { get; set; }
 
+        /// <summary>Optional custom number of separator levels per header (null = standard rule).</summary>
+        public int? SeparatorCountOverride { get; set; }
+
+        /// <summary>Optional custom spacing (in) between separator levels (null = standard rule).</summary>
+        public double? SeparatorSpacingOverride { get; set; }
+
         /// <summary>Ordered, editable modules. Intermediate posts are zero-length entries.</summary>
         public IList<DynamicRackModule> Modules { get; } = new List<DynamicRackModule>();
 

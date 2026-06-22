@@ -128,6 +128,25 @@
                         </StackPanel>
                     </Grid>
 
+                    <TextBlock Text="Separadores (vacío = automático)" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Niveles (cantidad)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="SeparatorCountBox" Style="{StaticResource FieldBox}"
+                                     ToolTip="Cantidad de separadores por cabecera. Vacío = el cálculo estándar (mín. 2, +1 cada 60&quot;)." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Separación (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="SeparatorSpacingBox" Style="{StaticResource FieldBox}"
+                                     ToolTip="Separación entre niveles. Vacío = el estándar (altura repartida con medios en los extremos)." />
+                        </StackPanel>
+                    </Grid>
+
                     <Button Content="Actualizar vista (recalcular)" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Left" Margin="0,12,0,0" />
 
                     <TextBlock Text="Módulos" Style="{StaticResource SectionTitle}" />
