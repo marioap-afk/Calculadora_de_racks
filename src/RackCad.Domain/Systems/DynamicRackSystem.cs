@@ -21,6 +21,12 @@ namespace RackCad.Domain.Systems
         /// <summary>Optional custom spacing (in) between separator levels (null = standard rule).</summary>
         public double? SeparatorSpacingOverride { get; set; }
 
+        /// <summary>Whether the derived (shared) post where two separators meet is reinforced. Default: true.</summary>
+        public bool DerivedPostReinforced { get; set; } = true;
+
+        /// <summary>Reinforcement length (in) for the derived post; null/&lt;=0 = full post height.</summary>
+        public double? DerivedPostReinforcementHeight { get; set; }
+
         /// <summary>Ordered, editable modules. Intermediate posts are zero-length entries.</summary>
         public IList<DynamicRackModule> Modules { get; } = new List<DynamicRackModule>();
 

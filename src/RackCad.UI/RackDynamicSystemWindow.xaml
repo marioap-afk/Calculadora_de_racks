@@ -196,6 +196,15 @@
                             </StackPanel>
                         </Grid>
 
+                    <TextBlock Text="Poste derivado" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <CheckBox x:Name="DerivedReinforceBox" Content="Reforzar poste derivado" IsChecked="True"
+                              Foreground="#415161" Margin="0,4,0,0"
+                              Checked="DerivedReinforce_Changed" Unchecked="DerivedReinforce_Changed"
+                              ToolTip="El poste compartido donde se juntan dos separadores. Predeterminado: reforzado a altura completa." />
+                    <TextBlock Text="Longitud refuerzo (in)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="DerivedReinforcementBox" Style="{StaticResource FieldBox}"
+                             ToolTip="Longitud del refuerzo. Vacío = misma longitud que el poste (altura de cabecera)." />
+
                     <TextBlock Text="Módulos" Style="{StaticResource SectionTitle}" />
                     <DataGrid x:Name="ModulesGrid"
                               AutoGenerateColumns="False"

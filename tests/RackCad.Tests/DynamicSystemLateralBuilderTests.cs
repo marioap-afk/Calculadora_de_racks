@@ -102,6 +102,40 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_DerivedPost_NotReinforced_OmitsReinforcement()
+        {
+            var catalog = Catalog;
+            var system = StandardSystem();
+            system.DerivedPostReinforced = false;
+            var offset = system.GetDerivedPostOffsets()[0];
+            var finPosteX = catalog.ConnectionLayout
+                .FindConnectionLayout(CatalogIds.StandardPost, "FIN_POSTE", "LATERAL").LocalX;
+
+            var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
+
+            // The post and plate are still there, but there is no reinforcement post at FIN_POSTE.
+            Assert.Contains(layout.OfRole(HeaderBlockRole.Post), p => Math.Abs(p.ConnectionAnchor.X - offset) < 1e-3);
+            Assert.DoesNotContain(layout.OfRole(HeaderBlockRole.Post), p => Math.Abs(p.ConnectionAnchor.X - (offset + finPosteX)) < 1e-3);
+        }
+
+        [Fact]
+        public void Build_DerivedPost_ReinforcementHeightOverride_SetsLongitud()
+        {
+            var catalog = Catalog;
+            var system = StandardSystem();
+            system.DerivedPostReinforcementHeight = 60.0;
+            var offset = system.GetDerivedPostOffsets()[0];
+            var finPosteX = catalog.ConnectionLayout
+                .FindConnectionLayout(CatalogIds.StandardPost, "FIN_POSTE", "LATERAL").LocalX;
+
+            var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
+            var reinforcement = layout.OfRole(HeaderBlockRole.Post)
+                .First(p => Math.Abs(p.ConnectionAnchor.X - (offset + finPosteX)) < 1e-3);
+
+            Assert.Equal(60.0, reinforcement.DynamicParameters["LONGITUD"], 4);
+        }
+
+        [Fact]
         public void Build_GroupsIdenticalHeaders_SharingOneDefinition()
         {
             // Pallets-deep 4 → both headers are end headers (length 54) → one shared definition, two placements.

@@ -54,6 +54,7 @@ namespace RackCad.UI
         private const string ConfigCalculated = "Calculada";
         private readonly List<HeaderPreset> headerPresets = new List<HeaderPreset>();
         private bool suppressConfigSelection;
+        private bool suppressRecompose;
 
         private double mapScale;
         private double mapOffsetX;
@@ -104,8 +105,8 @@ namespace RackCad.UI
 
         private void PostBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Ignore the initial selection set during construction (before the first build).
-            if (system == null)
+            // Ignore the initial selection set during construction and changes applied while syncing a load.
+            if (system == null || suppressRecompose)
             {
                 return;
             }
@@ -141,6 +142,7 @@ namespace RackCad.UI
                 computedHeaderHeight = ComputeHeaderHeight(pallet, palletsDeep);
                 system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, SelectedPostId(), computedHeaderHeight);
                 ApplySeparatorOverrides();
+                ApplyDerivedPostOptions();
                 selectedModule = null;
                 BindModules();
                 UpdateSelectedPanel();
@@ -632,6 +634,30 @@ namespace RackCad.UI
                 TryNum(SeparatorSpacingBox.Text, out var spacing) && spacing > 0.0 ? spacing : (double?)null;
         }
 
+        /// <summary>Read the derived-post reinforcement option/length onto the system (empty length = full height).</summary>
+        private void ApplyDerivedPostOptions()
+        {
+            if (system == null)
+            {
+                return;
+            }
+
+            system.DerivedPostReinforced = DerivedReinforceBox.IsChecked == true;
+            system.DerivedPostReinforcementHeight =
+                TryNum(DerivedReinforcementBox.Text, out var length) && length > 0.0 ? length : (double?)null;
+        }
+
+        private void DerivedReinforce_Changed(object sender, RoutedEventArgs e)
+        {
+            // Ignore the initial state set during construction and changes applied while syncing a load.
+            if (system == null || suppressRecompose)
+            {
+                return;
+            }
+
+            Recompose();
+        }
+
         /// <summary>Y of the post's first separator troquel (TROQUEL_SEPARADOR), the base of the separator grid.</summary>
         private double SeparatorBaseY()
         {
@@ -700,6 +726,16 @@ namespace RackCad.UI
             AddLine(new Point(canvasX, top), new Point(canvasX, bottom), PostStroke, 2.4, Dash());
             AddLine(new Point(canvasX - 8.0, top + 8.0), new Point(canvasX + 8.0, top + 8.0), PostStroke, 1.3);
             AddLine(new Point(canvasX - 8.0, bottom - 8.0), new Point(canvasX + 8.0, bottom - 8.0), PostStroke, 1.3);
+
+            if (system?.DerivedPostReinforced == true)
+            {
+                var reinforcementHeight = system.DerivedPostReinforcementHeight is double rh && rh > 0.0 ? rh : height;
+                var reinforcementTop = Map(x, Math.Min(reinforcementHeight, height)).Y;
+                var reinforcementX = canvasX + 6.0;
+                AddLine(new Point(reinforcementX, reinforcementTop + 1.0), new Point(reinforcementX, bottom - 1.0), ReinforcementStroke, 3.4);
+                AddLine(new Point(reinforcementX - 3.0, bottom - 10.0), new Point(reinforcementX + 3.0, bottom - 10.0), ReinforcementStroke, 1.0);
+            }
+
             AddCenteredLabel(canvasX, mapBottomY + 34.0, "poste", 52.0, PostStroke, 9.5, null);
         }
 
@@ -934,11 +970,32 @@ namespace RackCad.UI
 
                 system = project.DynamicSystem;
                 selectedModule = null;
-                FrontBox.Text = Num(system.Pallet.Front);
-                DepthBox.Text = Num(system.Pallet.Depth);
-                PalletHeightBox.Text = Num(system.Pallet.Height);
-                WeightBox.Text = Num(system.Pallet.Weight);
-                PalletsDeepBox.Text = system.PalletsDeep.ToString(CultureInfo.InvariantCulture);
+                suppressRecompose = true;
+                try
+                {
+                    FrontBox.Text = Num(system.Pallet.Front);
+                    DepthBox.Text = Num(system.Pallet.Depth);
+                    PalletHeightBox.Text = Num(system.Pallet.Height);
+                    WeightBox.Text = Num(system.Pallet.Weight);
+                    PalletsDeepBox.Text = system.PalletsDeep.ToString(CultureInfo.InvariantCulture);
+
+                    SeparatorCountBox.Text = system.SeparatorCountOverride?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
+                    SeparatorSpacingBox.Text = system.SeparatorSpacingOverride.HasValue ? Num(system.SeparatorSpacingOverride.Value) : string.Empty;
+                    DerivedReinforceBox.IsChecked = system.DerivedPostReinforced;
+                    DerivedReinforcementBox.Text = system.DerivedPostReinforcementHeight.HasValue ? Num(system.DerivedPostReinforcementHeight.Value) : string.Empty;
+
+                    var loadedPostId = system.Modules
+                        .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration?.LeftPost != null)?
+                        .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
+                    if (!string.IsNullOrWhiteSpace(loadedPostId))
+                    {
+                        PostBox.SelectedValue = loadedPostId;
+                    }
+                }
+                finally
+                {
+                    suppressRecompose = false;
+                }
                 BindModules();
                 UpdateSelectedPanel();
                 UpdateSummary();

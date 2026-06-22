@@ -143,6 +143,12 @@ namespace RackCad.Application.Systems
             context.Levels = SeparatorLevelCalculator.Levels(
                 context.Height, troquelSeparador.Y, context.Paso,
                 system.SeparatorCountOverride, system.SeparatorSpacingOverride);
+
+            context.ReinforceDerivedPost = system.DerivedPostReinforced;
+            context.DerivedReinforcementHeight =
+                system.DerivedPostReinforcementHeight.HasValue && system.DerivedPostReinforcementHeight.Value > 0.0
+                    ? system.DerivedPostReinforcementHeight.Value
+                    : context.Height;
             return context;
         }
 
@@ -202,18 +208,21 @@ namespace RackCad.Application.Systems
             post.DynamicParameters["LONGITUD"] = context.Height;
             instances.Add(post);
 
-            // Default reinforcement: a second post mated at FIN_POSTE, full height.
-            var reinforcement = new HeaderBlockInstance
+            // Optional reinforcement: a second post mated at FIN_POSTE (reinforced by default, full height).
+            if (context.ReinforceDerivedPost)
             {
-                Role = HeaderBlockRole.Post,
-                PieceId = context.PostId,
-                BlockName = context.PostBlock,
-                View = "LATERAL",
-                ConnectionAnchor = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y),
-                Insertion = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y)
-            };
-            reinforcement.DynamicParameters["LONGITUD"] = context.Height;
-            instances.Add(reinforcement);
+                var reinforcement = new HeaderBlockInstance
+                {
+                    Role = HeaderBlockRole.Post,
+                    PieceId = context.PostId,
+                    BlockName = context.PostBlock,
+                    View = "LATERAL",
+                    ConnectionAnchor = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y),
+                    Insertion = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y)
+                };
+                reinforcement.DynamicParameters["LONGITUD"] = context.DerivedReinforcementHeight;
+                instances.Add(reinforcement);
+            }
         }
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
@@ -257,6 +266,9 @@ namespace RackCad.Application.Systems
             public string SeparatorBlock { get; set; }
             public Point2D SeparatorMate { get; set; }
             public IReadOnlyList<double> Levels { get; set; }
+
+            public bool ReinforceDerivedPost { get; set; } = true;
+            public double DerivedReinforcementHeight { get; set; }
         }
     }
 }

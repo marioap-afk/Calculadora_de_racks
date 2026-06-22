@@ -18,6 +18,10 @@ namespace RackCad.Application.Persistence
         public double PalletWeight { get; set; }
         public string PalletWeightUnit { get; set; } = "kg";
         public int PalletsDeep { get; set; }
+        public int? SeparatorCountOverride { get; set; }
+        public double? SeparatorSpacingOverride { get; set; }
+        public bool DerivedPostReinforced { get; set; } = true;
+        public double? DerivedPostReinforcementHeight { get; set; }
         public List<DynamicRackModuleDocument> Modules { get; set; } = new List<DynamicRackModuleDocument>();
 
         public static DynamicRackSystemDocument From(DynamicRackSystem system)
@@ -29,7 +33,11 @@ namespace RackCad.Application.Persistence
                 PalletHeight = system.Pallet?.Height ?? 0.0,
                 PalletWeight = system.Pallet?.Weight ?? 0.0,
                 PalletWeightUnit = system.Pallet?.WeightUnit ?? "kg",
-                PalletsDeep = system.PalletsDeep
+                PalletsDeep = system.PalletsDeep,
+                SeparatorCountOverride = system.SeparatorCountOverride,
+                SeparatorSpacingOverride = system.SeparatorSpacingOverride,
+                DerivedPostReinforced = system.DerivedPostReinforced,
+                DerivedPostReinforcementHeight = system.DerivedPostReinforcementHeight
             };
 
             foreach (var module in system.Modules)
@@ -51,7 +59,11 @@ namespace RackCad.Application.Persistence
                     PalletHeight,
                     PalletWeight,
                     string.IsNullOrWhiteSpace(PalletWeightUnit) ? "kg" : PalletWeightUnit),
-                PalletsDeep = PalletsDeep
+                PalletsDeep = PalletsDeep,
+                SeparatorCountOverride = SeparatorCountOverride,
+                SeparatorSpacingOverride = SeparatorSpacingOverride,
+                DerivedPostReinforced = DerivedPostReinforced,
+                DerivedPostReinforcementHeight = DerivedPostReinforcementHeight
             };
 
             foreach (var module in Modules ?? Enumerable.Empty<DynamicRackModuleDocument>())

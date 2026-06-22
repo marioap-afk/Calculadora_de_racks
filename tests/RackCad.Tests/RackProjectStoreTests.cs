@@ -54,6 +54,24 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_DynamicSystem_PreservesSeparatorAndDerivedPostOptions()
+        {
+            var store = new RackProjectStore();
+            var original = DynamicSystem();
+            original.SeparatorCountOverride = 4;
+            original.SeparatorSpacingOverride = 50.0;
+            original.DerivedPostReinforced = false;
+            original.DerivedPostReinforcementHeight = 72.0;
+
+            var loaded = store.Deserialize(store.Serialize(RackProject.ForDynamic(original))).DynamicSystem;
+
+            Assert.Equal(4, loaded.SeparatorCountOverride);
+            Assert.Equal(50.0, loaded.SeparatorSpacingOverride);
+            Assert.False(loaded.DerivedPostReinforced);
+            Assert.Equal(72.0, loaded.DerivedPostReinforcementHeight);
+        }
+
+        [Fact]
         public void RoundTrip_SelectiveHeader_PreservesHeader()
         {
             var store = new RackProjectStore();
