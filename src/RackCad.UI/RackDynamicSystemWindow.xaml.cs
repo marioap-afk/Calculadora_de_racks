@@ -37,6 +37,12 @@ namespace RackCad.UI
         private static readonly Brush FloorStroke = new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
         private static readonly Brush LabelStroke = new SolidColorBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
         private static readonly Brush SelectionStroke = new SolidColorBrush(Color.FromRgb(0xFF, 0xD1, 0x66));
+        private static readonly Brush HeaderFill = new SolidColorBrush(Color.FromArgb(0x36, 0x2A, 0x5B, 0x78));
+        private static readonly Brush SeparatorFill = new SolidColorBrush(Color.FromArgb(0x18, 0x8A, 0xA0, 0xB4));
+        private static readonly Brush ModuleBoundaryStroke = new SolidColorBrush(Color.FromArgb(0x95, 0x74, 0x86, 0x99));
+        private static readonly Brush PostFill = new SolidColorBrush(Color.FromRgb(0x20, 0x34, 0x48));
+        private static readonly Brush PlateFill = new SolidColorBrush(Color.FromRgb(0xB7, 0xC3, 0xCF));
+        private static readonly Brush ReinforcementStroke = new SolidColorBrush(Color.FromRgb(0xF2, 0xA6, 0x3B));
 
         private readonly RackCatalog catalog;
         private readonly DynamicRackSystemBuilder builder;
@@ -316,8 +322,12 @@ namespace RackCad.UI
                 return;
             }
 
-            const double margin = 40.0;
-            mapScale = Math.Min((availableWidth - 2 * margin) / total, (availableHeight - 2 * margin) / height);
+            const double horizontalMargin = 52.0;
+            const double topMargin = 28.0;
+            const double bottomMargin = 76.0;
+            var usableWidth = Math.Max(1.0, availableWidth - 2 * horizontalMargin);
+            var usableHeight = Math.Max(1.0, availableHeight - topMargin - bottomMargin);
+            mapScale = Math.Min(usableWidth / total, usableHeight / height);
             if (mapScale <= 0)
             {
                 return;
@@ -325,11 +335,12 @@ namespace RackCad.UI
 
             var drawHeight = height * mapScale;
             mapOffsetX = (availableWidth - total * mapScale) / 2.0;
-            mapBottomY = (availableHeight - drawHeight) / 2.0 + drawHeight;
+            mapBottomY = topMargin + (usableHeight - drawHeight) / 2.0 + drawHeight;
 
+            AddCanvasLabel(mapOffsetX, Math.Max(4.0, mapBottomY - drawHeight - 24.0), "Longitud total: " + total.ToString("0.##", CultureInfo.InvariantCulture) + " in", LabelStroke, 12, 260.0, FontWeights.SemiBold);
             AddLine(Map(0, 0), Map(total, 0), FloorStroke, 1.5);
 
-            foreach (var module in system.Modules)
+            foreach (var module in system.Modules.Where(m => m.Length > 0.0))
             {
                 if (module.IsHeader)
                 {
@@ -337,39 +348,47 @@ namespace RackCad.UI
                 }
                 else
                 {
-                    var topLeft = Map(module.StartX, height);
-                    AddRectangle(topLeft.X, topLeft.Y, module.Length * mapScale, drawHeight, SeparatorStroke, 1.2, Dash());
+                    DrawSeparator(module, height, drawHeight);
                 }
 
                 AddLengthLabel(module);
             }
 
-            // Derived intermediate posts: drawn where two separators meet (not modules).
+            DrawTotalDimension(total);
+
+            // Derived intermediate posts: markers only, never primary editable modules.
             foreach (var postX in system.GetDerivedPostOffsets())
             {
-                AddLine(Map(postX, 0), Map(postX, height), PostStroke, 2.4, Dash());
-                AddCanvasLabel(Map(postX, 0).X - 14, mapBottomY + 16, "poste", PostStroke, 10);
+                DrawDerivedPost(postX, height);
             }
 
             DrawSelectionHighlight(height, drawHeight);
-            AddCanvasLabel(mapOffsetX, mapBottomY + 14, "Longitud total: " + total.ToString("0.##", CultureInfo.InvariantCulture) + " in", LabelStroke, 12);
         }
 
         private void DrawHeader(DynamicRackModule module, double height)
         {
-            // Two uprights (posts) at the module edges.
-            AddLine(Map(module.StartX, 0), Map(module.StartX, height), UprightStroke, 2.2);
-            AddLine(Map(module.EndX, 0), Map(module.EndX, height), UprightStroke, 2.2);
-
+            var topLeft = Map(module.StartX, height);
+            var moduleWidth = module.Length * mapScale;
+            var moduleHeight = height * mapScale;
+            AddRectangle(topLeft.X, topLeft.Y, moduleWidth, moduleHeight, ModuleBoundaryStroke, 1.0, null, HeaderFill);
+            AddLine(Map(module.StartX, height), Map(module.EndX, height), ModuleBoundaryStroke, 1.0);
+            AddLine(Map(module.StartX, 0), Map(module.EndX, 0), ModuleBoundaryStroke, 1.0);
             var config = module.AssociatedFrameConfiguration;
+            DrawHeaderPost(module.StartX, height, moduleWidth, config?.LeftPost, true);
+            DrawHeaderPost(module.EndX, height, moduleWidth, config?.RightPost, false);
+            DrawBasePlate(module.StartX);
+            DrawBasePlate(module.EndX);
+
             if (config == null)
             {
+                DrawFallbackHeaderMembers(module, height);
                 return;
             }
 
             var depth = config.Depth <= 0 ? module.Length : config.Depth;
+            var drewMembers = false;
 
-            foreach (var member in config.Members)
+            foreach (var member in config.Members ?? Enumerable.Empty<FrameMember>())
             {
                 if (member?.Start == null || member.End == null)
                 {
@@ -378,13 +397,84 @@ namespace RackCad.UI
 
                 var sx = module.StartX + member.Start.HorizontalPositionRatio * depth;
                 var ex = module.StartX + member.End.HorizontalPositionRatio * depth;
-                AddLine(Map(sx, member.Start.Elevation), Map(ex, member.End.Elevation), MemberBrush(member.MemberType), 1.4);
+                var thickness = member.MemberType == FrameMemberType.DiagonalBrace ? 3.0 : 3.6;
+                AddLine(Map(sx, member.Start.Elevation), Map(ex, member.End.Elevation), MemberBrush(member.MemberType), thickness);
+                drewMembers = true;
             }
+
+            if (!drewMembers)
+            {
+                DrawFallbackHeaderMembers(module, height);
+            }
+        }
+
+        private void DrawSeparator(DynamicRackModule module, double height, double drawHeight)
+        {
+            var topLeft = Map(module.StartX, height);
+            var width = Math.Max(1.0, module.Length * mapScale);
+            AddRectangle(topLeft.X, topLeft.Y, width, drawHeight, SeparatorStroke, 0.9, Dash(), SeparatorFill);
+
+            var centerX = (module.StartX + module.EndX) / 2.0;
+            AddLine(Map(centerX, 0), Map(centerX, height), SeparatorStroke, 1.4, Dash());
+            AddLine(Map(module.StartX, height * 0.18), Map(module.EndX, height * 0.18), SeparatorStroke, 1.0);
+            AddLine(Map(module.StartX, height * 0.82), Map(module.EndX, height * 0.82), SeparatorStroke, 1.0);
+        }
+
+        private void DrawHeaderPost(double x, double height, double moduleWidth, PostAssembly post, bool reinforcementOnRightSide)
+        {
+            var postCenter = Map(x, height / 2.0);
+            var top = Map(x, height).Y;
+            var bottom = Map(x, 0).Y;
+            var postWidth = Math.Max(7.0, Math.Min(14.0, moduleWidth * 0.18));
+            var left = postCenter.X - postWidth / 2.0;
+
+            AddRectangle(left, top, postWidth, bottom - top, UprightStroke, 1.7, null, PostFill);
+            AddLine(new Point(left + postWidth * 0.28, top + 6.0), new Point(left + postWidth * 0.28, bottom - 6.0), ModuleBoundaryStroke, 0.8);
+            AddLine(new Point(left + postWidth * 0.72, top + 6.0), new Point(left + postWidth * 0.72, bottom - 6.0), ModuleBoundaryStroke, 0.8);
+
+            if (post?.HasReinforcement == true)
+            {
+                var offset = reinforcementOnRightSide
+                    ? postWidth / 2.0 + 5.0
+                    : -(postWidth / 2.0 + 5.0);
+                var reinforcementX = postCenter.X + offset;
+                AddLine(new Point(reinforcementX, top + 3.0), new Point(reinforcementX, bottom - 3.0), ReinforcementStroke, 3.4);
+                AddLine(new Point(reinforcementX - 3.0, top + 10.0), new Point(reinforcementX + 3.0, top + 10.0), ReinforcementStroke, 1.0);
+                AddLine(new Point(reinforcementX - 3.0, bottom - 10.0), new Point(reinforcementX + 3.0, bottom - 10.0), ReinforcementStroke, 1.0);
+            }
+        }
+
+        private void DrawBasePlate(double x)
+        {
+            var bottom = Map(x, 0).Y;
+            var plateWidth = Math.Max(16.0, Math.Min(34.0, 18.0 + 4.0 * mapScale));
+            AddRectangle(Map(x, 0).X - plateWidth / 2.0, bottom + 4.0, plateWidth, 5.5, UprightStroke, 1.0, null, PlateFill);
+        }
+
+        private void DrawFallbackHeaderMembers(DynamicRackModule module, double height)
+        {
+            AddLine(Map(module.StartX, height * 0.12), Map(module.EndX, height * 0.12), HorizontalStroke, 3.6);
+            AddLine(Map(module.StartX, height * 0.50), Map(module.EndX, height * 0.50), HorizontalStroke, 3.2);
+            AddLine(Map(module.StartX, height * 0.88), Map(module.EndX, height * 0.88), HorizontalStroke, 3.2);
+            AddLine(Map(module.StartX, height * 0.12), Map(module.EndX, height * 0.50), DiagonalStroke, 3.0);
+            AddLine(Map(module.EndX, height * 0.50), Map(module.StartX, height * 0.88), DiagonalStroke, 3.0);
+        }
+
+        private void DrawDerivedPost(double x, double height)
+        {
+            var top = Map(x, height).Y;
+            var bottom = Map(x, 0).Y;
+            var canvasX = Map(x, 0).X;
+
+            AddLine(new Point(canvasX, top), new Point(canvasX, bottom), PostStroke, 2.4, Dash());
+            AddLine(new Point(canvasX - 8.0, top + 8.0), new Point(canvasX + 8.0, top + 8.0), PostStroke, 1.3);
+            AddLine(new Point(canvasX - 8.0, bottom - 8.0), new Point(canvasX + 8.0, bottom - 8.0), PostStroke, 1.3);
+            AddCenteredLabel(canvasX, mapBottomY + 34.0, "poste", 52.0, PostStroke, 9.5, null);
         }
 
         private void DrawSelectionHighlight(double height, double drawHeight)
         {
-            if (selectedModule == null)
+            if (selectedModule == null || selectedModule.Length <= 0.0)
             {
                 return;
             }
@@ -395,9 +485,56 @@ namespace RackCad.UI
 
         private void AddLengthLabel(DynamicRackModule module)
         {
+            if (module.Length <= 0.0)
+            {
+                return;
+            }
+
             var centerX = (module.StartX + module.EndX) / 2.0;
-            var text = module.Length.ToString("0.##", CultureInfo.InvariantCulture);
-            AddCanvasLabel(Map(centerX, 0).X - 12, mapBottomY + 2, text, LabelStroke, 11);
+            var canvasX = Map(centerX, 0).X;
+            var maxWidth = Math.Max(28.0, module.Length * mapScale - 6.0);
+            AddCenteredLabel(canvasX, mapBottomY + 7.0, module.Length.ToString("0.##", CultureInfo.InvariantCulture) + " in", maxWidth, LabelStroke, 10.5, FontWeights.SemiBold);
+
+            if (maxWidth >= 54.0)
+            {
+                AddCenteredLabel(canvasX, mapBottomY + 22.0, ModuleLabel(module), maxWidth, LabelStroke, 9.2, null);
+            }
+        }
+
+        private void DrawTotalDimension(double total)
+        {
+            var y = mapBottomY + 56.0;
+            var start = Map(0, 0).X;
+            var end = Map(total, 0).X;
+            AddLine(new Point(start, y), new Point(end, y), FloorStroke, 1.0);
+            AddLine(new Point(start, y - 5.0), new Point(start, y + 5.0), FloorStroke, 1.0);
+            AddLine(new Point(end, y - 5.0), new Point(end, y + 5.0), FloorStroke, 1.0);
+            AddCenteredLabel((start + end) / 2.0, y + 4.0, total.ToString("0.##", CultureInfo.InvariantCulture) + " in total", Math.Max(80.0, end - start), LabelStroke, 10.5, null);
+        }
+
+        private static string ModuleLabel(DynamicRackModule module)
+        {
+            if (module == null)
+            {
+                return string.Empty;
+            }
+
+            if (module.Kind == DynamicRackModuleKind.Separator)
+            {
+                return "separador";
+            }
+
+            if (module.Kind == DynamicRackModuleKind.HeaderStart)
+            {
+                return "cab. inicial";
+            }
+
+            if (module.Kind == DynamicRackModuleKind.HeaderEnd)
+            {
+                return "cab. final";
+            }
+
+            return "cabecera";
         }
 
         private static Brush MemberBrush(FrameMemberType type)
@@ -418,26 +555,78 @@ namespace RackCad.UI
 
         private void AddLine(Point a, Point b, Brush stroke, double thickness, DoubleCollection dash = null)
         {
-            PreviewCanvas.Children.Add(new Line { X1 = a.X, Y1 = a.Y, X2 = b.X, Y2 = b.Y, Stroke = stroke, StrokeThickness = thickness, StrokeDashArray = dash });
+            PreviewCanvas.Children.Add(new Line
+            {
+                X1 = a.X,
+                Y1 = a.Y,
+                X2 = b.X,
+                Y2 = b.Y,
+                Stroke = stroke,
+                StrokeThickness = thickness,
+                StrokeDashArray = dash,
+                StrokeStartLineCap = PenLineCap.Round,
+                StrokeEndLineCap = PenLineCap.Round
+            });
         }
 
-        private void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, DoubleCollection dash)
+        private void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, DoubleCollection dash, Brush fill = null)
         {
             if (width <= 0 || height <= 0)
             {
                 return;
             }
 
-            var rectangle = new Rectangle { Width = width, Height = height, Stroke = stroke, StrokeThickness = thickness, StrokeDashArray = dash, Fill = Brushes.Transparent };
+            var rectangle = new Rectangle
+            {
+                Width = width,
+                Height = height,
+                Stroke = stroke,
+                StrokeThickness = thickness,
+                StrokeDashArray = dash,
+                Fill = fill ?? Brushes.Transparent
+            };
             Canvas.SetLeft(rectangle, left);
             Canvas.SetTop(rectangle, top);
             PreviewCanvas.Children.Add(rectangle);
         }
 
-        private void AddCanvasLabel(double left, double top, string text, Brush brush, double size)
+        private void AddCanvasLabel(double left, double top, string text, Brush brush, double size, double maxWidth = 0.0, FontWeight? fontWeight = null)
         {
-            var label = new TextBlock { Text = text, Foreground = brush, FontSize = size };
+            var label = new TextBlock
+            {
+                Text = text,
+                Foreground = brush,
+                FontSize = size,
+                FontWeight = fontWeight ?? FontWeights.Normal,
+                TextTrimming = TextTrimming.CharacterEllipsis
+            };
+
+            if (maxWidth > 0.0)
+            {
+                label.Width = maxWidth;
+                label.TextAlignment = TextAlignment.Left;
+            }
+
             Canvas.SetLeft(label, left);
+            Canvas.SetTop(label, top);
+            PreviewCanvas.Children.Add(label);
+        }
+
+        private void AddCenteredLabel(double centerX, double top, string text, double maxWidth, Brush brush, double size, FontWeight? fontWeight)
+        {
+            var width = Math.Max(24.0, maxWidth);
+            var label = new TextBlock
+            {
+                Text = text,
+                Foreground = brush,
+                FontSize = size,
+                FontWeight = fontWeight ?? FontWeights.Normal,
+                TextAlignment = TextAlignment.Center,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                Width = width
+            };
+
+            Canvas.SetLeft(label, centerX - width / 2.0);
             Canvas.SetTop(label, top);
             PreviewCanvas.Children.Add(label);
         }

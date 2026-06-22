@@ -119,8 +119,32 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Vista lateral (X = longitud del sistema, Y = altura de cabecera). Clic en un modulo para seleccionarlo."
-                           Foreground="#617080" FontSize="11" Margin="10,8" TextWrapping="Wrap" />
+                <StackPanel Grid.Row="0" Margin="10,8">
+                    <TextBlock Text="Vista lateral (X = longitud del sistema, Y = altura de cabecera). Clic en un modulo para seleccionarlo."
+                               Foreground="#617080" FontSize="11" TextWrapping="Wrap" />
+                    <WrapPanel Margin="0,6,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
+                            <Border Width="16" Height="8" Background="#335B78" BorderBrush="#7DA4BF" BorderThickness="1" Margin="0,3,5,0" />
+                            <TextBlock Text="cabecera" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
+                            <Border Width="16" Height="1" Background="#8AA0B4" Margin="0,7,5,0" />
+                            <TextBlock Text="separador" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
+                            <Border Width="2" Height="12" Background="#FF6B6B" Margin="7,1,5,0" />
+                            <TextBlock Text="poste derivado" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
+                            <Border Width="3" Height="12" Background="#F2A63B" Margin="7,1,5,0" />
+                            <TextBlock Text="refuerzo" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="16" Height="8" BorderBrush="#FFD166" BorderThickness="2" Margin="0,3,5,0" />
+                            <TextBlock Text="seleccion" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
                 <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="#0E1B2A" ClipToBounds="True"
                         SizeChanged="PreviewCanvas_SizeChanged" MouseLeftButtonDown="PreviewCanvas_MouseLeftButtonDown" />
             </Grid>
