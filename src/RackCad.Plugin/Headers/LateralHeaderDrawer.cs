@@ -79,9 +79,12 @@ namespace RackCad.Plugin.Headers
 
             foreach (var pair in headerDefs)
             {
-                foreach (var offset in pair.Value.OffsetsX)
+                foreach (var placement in pair.Value.Placements)
                 {
-                    var headerRef = new BlockReference(new Point3d(offset, 0.0, 0.0), pair.Key);
+                    var headerRef = new BlockReference(new Point3d(placement.InsertionX, 0.0, 0.0), pair.Key)
+                    {
+                        ScaleFactors = placement.Mirrored ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
+                    };
                     systemDef.AppendEntity(headerRef);
                     tr.AddNewlyCreatedDBObject(headerRef, true);
                     inserted++;

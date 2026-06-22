@@ -108,7 +108,33 @@ namespace RackCad.Tests
             var plan = new DynamicSystemLateralBuilder().Build(StandardSystem(), Catalog);
 
             Assert.Single(plan.Headers);
-            Assert.Equal(2, plan.Headers[0].OffsetsX.Count);
+            Assert.Equal(2, plan.Headers[0].Placements.Count);
+        }
+
+        [Fact]
+        public void Build_AlternatesHeaderMirroringAlongTheLine()
+        {
+            // 6 pallets deep gives 3 headers: 1st normal, 2nd mirrored, 3rd normal (celosía alternates).
+            var system = new DynamicRackSystemBuilder(Catalog).BuildDefault(
+                new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
+                palletsDeep: 6,
+                headerTemplate: RackFrameTemplateCatalog.Default,
+                headerPostCatalogId: CatalogIds.StandardPost,
+                headerHeight: 132.0);
+
+            var plan = new DynamicSystemLateralBuilder().Build(system, Catalog);
+
+            // Placements across all groups, ordered along the run, must alternate the mirror flag.
+            var placements = plan.Headers
+                .SelectMany(g => g.Placements)
+                .OrderBy(p => p.InsertionX)
+                .ToList();
+
+            Assert.True(placements.Count >= 3);
+            for (var i = 1; i < placements.Count; i++)
+            {
+                Assert.NotEqual(placements[i - 1].Mirrored, placements[i].Mirrored);
+            }
         }
 
         [Fact]

@@ -34,10 +34,12 @@ namespace RackCad.Application.Systems
             var context = Resolve(system, catalog);
             var loose = new List<HeaderBlockInstance>();
 
-            // Group identical headers so each distinct header becomes one shared block definition; record
-            // the run positions (StartX) where each is placed.
+            // Group identical headers so each distinct header becomes one shared block definition; record the
+            // placements (with a mirror flag) where each is used. Consecutive headers alternate (mirror) so the
+            // celosía direction alternates along the line.
             var groups = new Dictionary<string, HeaderGroupBuilder>();
             var order = new List<string>();
+            var headerOrdinal = 0;
 
             foreach (var module in system.Modules)
             {
@@ -54,7 +56,12 @@ namespace RackCad.Application.Systems
                         order.Add(signature);
                     }
 
-                    group.Offsets.Add(module.StartX);
+                    // Every other header is mirrored; a mirrored reference is inserted at the module's far edge
+                    // so it still fills [StartX, EndX] but flips the celosía.
+                    var mirrored = headerOrdinal % 2 == 1;
+                    var insertionX = mirrored ? module.StartX + module.Length : module.StartX;
+                    group.Placements.Add(new HeaderPlacement(insertionX, mirrored));
+                    headerOrdinal++;
                 }
                 else if (module.Kind == DynamicRackModuleKind.Separator && module.Length > 0.0 && context.SeparatorBlock != null)
                 {
@@ -221,14 +228,14 @@ namespace RackCad.Application.Systems
             {
                 Name = name;
                 Instances = instances;
-                Offsets = new List<double>();
+                Placements = new List<HeaderPlacement>();
             }
 
             public string Name { get; }
             public IReadOnlyList<HeaderBlockInstance> Instances { get; }
-            public List<double> Offsets { get; }
+            public List<HeaderPlacement> Placements { get; }
 
-            public HeaderGroup ToGroup() => new HeaderGroup(Name, Instances, Offsets);
+            public HeaderGroup ToGroup() => new HeaderGroup(Name, Instances, Placements);
         }
 
         private sealed class HeaderContext
