@@ -10,8 +10,8 @@ namespace RackCad.Tests
         public void Read_MapsKnownColumnsToTypedFields_AndExtraColumnsToProperties()
         {
             var csv =
-                "id,displayName,width,thickness,blockName,Ix,Iy\n" +
-                "POSTE_X,Poste X,3,0.105,BLK_X,2.5,1.8\n";
+                "id,displayName,width,thickness,material,Ix,Iy\n" +
+                "POSTE_X,Poste X,3,0.105,Acero A36,2.5,1.8\n";
 
             var entry = Assert.Single(CsvCatalogReader.Read<ProfileCatalogEntry>(csv));
 
@@ -19,7 +19,7 @@ namespace RackCad.Tests
             Assert.Equal("Poste X", entry.DisplayName);
             Assert.Equal(3.0, entry.Width);
             Assert.Equal(0.105, entry.Thickness);
-            Assert.Equal("BLK_X", entry.BlockName);
+            Assert.Equal("Acero A36", entry.Material);
 
             // Unknown engineering columns land in the open properties bag.
             Assert.Equal("2.5", entry.Properties["Ix"]);

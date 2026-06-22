@@ -1,3 +1,3 @@
-id,displayName,description,family,width,depth,thickness,units,gauge,weightPerMeter,material,blockName,layer
-REFUERZO_OMEGA_3X3,Refuerzo Omega 3x3,Refuerzo omega 3x3,OMEGA,3,3,0.135,in,cal. 11,5.4,Acero A36,REFUERZO_OMEGA_3X3,RACK-REFUERZOS
-REFUERZO_PLACA_SOLERA,Refuerzo placa solera,Refuerzo de placa solera,SOLERA,4,0.25,0.25,in,,,Acero A36,REFUERZO_PLACA_SOLERA,RACK-REFUERZOS
+id,displayName,description,family,width,depth,thickness,units,gauge,weightPerMeter,material
+REFUERZO_OMEGA_3X3,Refuerzo Omega 3x3,Refuerzo omega 3x3,OMEGA,3,3,0.135,in,cal. 11,5.4,Acero A36
+REFUERZO_PLACA_SOLERA,Refuerzo placa solera,Refuerzo de placa solera,SOLERA,4,0.25,0.25,in,,,Acero A36

@@ -18,11 +18,6 @@ namespace RackCad.Application.Catalogs
 
         public string Description { get; set; }
 
-        // ---- CAD (used by the future drawing phase) ----
-        public string BlockName { get; set; }
-        public string Layer { get; set; }
-        public int Color { get; set; }
-
         // ---- Commercial / quoting ----
         public string Material { get; set; }
         public string PartNumber { get; set; }
@@ -95,17 +90,23 @@ namespace RackCad.Application.Catalogs
 
     /// <summary>
     /// One AutoCAD block for a piece in a specific view (a row of the normalized blocks table, so a
-    /// piece can have many: <see cref="PieceId"/> + <see cref="View"/> are the key). The block name and
-    /// layer come from the shared base; scale/rotation are per-view placement hints for the draw phase.
+    /// piece can have many: <see cref="PieceId"/> + <see cref="View"/> are the key). This is the ONLY
+    /// place a block name lives — the piece catalogs describe what a part IS; this table describes how
+    /// to draw it per view (block, layer, color, scale, rotation).
     /// </summary>
     public sealed class BlockCatalogEntry : CatalogEntryBase
     {
-        /// <summary>Id of the piece this block represents (FK to a profile/plate/etc.).</summary>
+        /// <summary>Id of the piece this block represents (FK to a profile/plate/connection point).</summary>
         public string PieceId { get; set; }
 
         /// <summary>View code this block draws (FK to <see cref="ViewCatalogEntry.Id"/>).</summary>
         public string View { get; set; }
 
+        /// <summary>AutoCAD block name to insert.</summary>
+        public string BlockName { get; set; }
+
+        public string Layer { get; set; }
+        public int Color { get; set; }
         public double Scale { get; set; } = 1.0;
         public double Rotation { get; set; }
     }

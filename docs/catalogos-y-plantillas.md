@@ -38,7 +38,7 @@ Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del
 
 Cada CSV tiene una **fila de encabezados** que nombra las columnas. Reglas:
 
-- Una columna cuyo nombre coincide con un campo conocido (`id`, `displayName`, `width`, `material`, `blockName`...) se carga en ese campo.
+- Una columna cuyo nombre coincide con un campo conocido (`id`, `displayName`, `width`, `material`...) se carga en ese campo.
 - **Cualquier columna extra** (por ejemplo `Ix`, `Iy`, `area`, `norma`...) se guarda automaticamente en la bolsa `properties` de la pieza, **sin tocar el codigo**. Asi agregas propiedades estructurales o lo que necesites desde Excel.
 - Campos con coma o comillas: enciérralos en comillas dobles (`"Acero, A36"`). Excel lo hace solo al guardar como CSV.
 - Una celda vacia deja el campo en su valor por defecto.
@@ -46,8 +46,8 @@ Cada CSV tiene una **fila de encabezados** que nombra las columnas. Reglas:
 Ejemplo (`post-profiles.csv`):
 
 ```
-id,displayName,width,thickness,material,blockName,Ix,Iy
-POSTE_OMEGA_3X3,Poste Omega 3x3 cal.14,3,0.105,Acero A36,POSTE_OMEGA_3X3,2.5,2.5
+id,displayName,width,thickness,material,Ix,Iy
+POSTE_OMEGA_3X3,Poste Omega 3x3 cal.14,3,0.105,Acero A36,2.5,2.5
 ```
 
 `Ix` e `Iy` no son campos fijos -> entran a `properties`.
@@ -197,15 +197,14 @@ Todas las piezas (perfiles, placas, puntos de conexion) comparten estos **campos
 | `id` | texto | **Obligatorio.** Identificador usado por cabeceras/plantillas (ej. `POSTE_OMEGA_3X3`). |
 | `displayName` | texto | Nombre para mostrar en la UI (si falta, usa `description`, luego `id`). |
 | `description` | texto | Descripcion tecnica. |
-| `blockName` | texto | Nombre del bloque de AutoCAD a insertar (fase de dibujo futura). |
-| `layer` | texto | Capa de AutoCAD. |
-| `color` | numero | Indice de color ACAD. |
 | `material` | texto | Material (ej. `Acero A36`). |
 | `partNumber` | texto | Codigo de parte / SKU (BOM/cotizacion). |
 | `manufacturer` | texto | Fabricante. |
 | `finish` | texto | Acabado (galvanizado, pintado...). |
 | `unitCost` / `currency` / `costUnit` | numero/texto | Costo unitario, moneda y unidad (`m`, `pieza`...). |
 | `properties` | objeto | **Bolsa abierta** de pares clave/valor para cualquier propiedad futura, sin tocar el codigo. |
+
+> La pieza describe **qué es** (medidas, material, costo). **El nombre de bloque NO va aqui**: como una pieza se dibuja distinto en cada vista, el bloque (y su capa/escala) vive en `blocks.csv`, una fila por pieza+vista. Asi no hay una columna `blockName` redundante en cada pieza.
 
 > La bolsa `properties` es la costura de **escalabilidad**: agrega ahi atributos que aun no son campos fijos (norma, paso de perforacion, etc.) y se cargan/guardan sin cambiar el modelo. Cuando un atributo se vuelve comun, se promueve a campo tipado.
 

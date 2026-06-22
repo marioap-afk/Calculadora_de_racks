@@ -29,11 +29,10 @@ namespace RackCad.Tests
 
             Assert.NotNull(post);
             Assert.Equal("Poste Omega 3x3 cal.14", post.DisplayName);
-            Assert.Equal("POSTE_OMEGA_3X3", post.BlockName);
-            Assert.Equal("RACK-POSTES", post.Layer);
             Assert.Equal("Acero A36", post.Material);
             Assert.True(post.WeightPerMeter > 0);
             Assert.Equal("Poste Omega 3x3 cal.14", post.Label); // display name preferred
+            // Block name/layer no longer live on the piece — they belong to blocks.csv (per view).
 
             // Open properties bag carries arbitrary future attributes.
             Assert.Equal("RMI", post.Properties["norma"]);

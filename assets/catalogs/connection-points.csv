@@ -1,4 +1,4 @@
-id,displayName,description,role,localX,localY,blockName
-PlacaBase_01,Conexion placa base,Punto de conexion de placa base,BasePlate,2,0,CONEXION_PLACA_BASE
-TroquelCelosia_01,Troquel celosia inicial,Troquel inicial de celosia,Brace,0,0,TROQUEL_CELOSIA
-TroquelCelosia_02,Troquel celosia final,Troquel final de celosia,Brace,0,0,TROQUEL_CELOSIA
+id,displayName,description,role,localX,localY
+PlacaBase_01,Conexion placa base,Punto de conexion de placa base,BasePlate,2,0
+TroquelCelosia_01,Troquel celosia inicial,Troquel inicial de celosia,Brace,0,0
+TroquelCelosia_02,Troquel celosia final,Troquel final de celosia,Brace,0,0

@@ -1,2 +1,2 @@
-id,displayName,description,family,width,depth,thickness,units,gauge,weightPerMeter,material,finish,blockName,layer,color,partNumber,manufacturer,unitCost,currency,costUnit,Ix,Iy,norma,perforacion
-POSTE_OMEGA_3X3,Poste Omega 3x3 cal.14,Poste omega 3x3,OMEGA,3,3,0.105,in,cal. 14,4.2,Acero A36,Galvanizado,POSTE_OMEGA_3X3,RACK-POSTES,5,PT-OM-3X3-14,Generico,12.5,USD,m,2.5,2.5,RMI,paso 50mm
+id,displayName,description,family,width,depth,thickness,units,gauge,weightPerMeter,material,finish,partNumber,manufacturer,unitCost,currency,costUnit,Ix,Iy,norma,perforacion
+POSTE_OMEGA_3X3,Poste Omega 3x3 cal.14,Poste omega 3x3,OMEGA,3,3,0.105,in,cal. 14,4.2,Acero A36,Galvanizado,PT-OM-3X3-14,Generico,12.5,USD,m,2.5,2.5,RMI,paso 50mm
