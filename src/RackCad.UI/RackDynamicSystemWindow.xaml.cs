@@ -47,6 +47,7 @@ namespace RackCad.UI
         private readonly DynamicRackSystemBuilder builder;
         private readonly string defaultPostCatalogId;
         private readonly double defaultHeaderHeight;
+        private double computedHeaderHeight;
         private DynamicRackSystem system;
         private DynamicRackModule selectedModule;
 
@@ -78,6 +79,7 @@ namespace RackCad.UI
             builder = new DynamicRackSystemBuilder(catalog);
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
+            computedHeaderHeight = defaultHeaderHeight;
             KindBox.ItemsSource = new[] { KindHeader, KindSeparator };
             RefreshConfigBox();
             Recompose();
@@ -100,7 +102,8 @@ namespace RackCad.UI
 
             try
             {
-                system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, defaultPostCatalogId, defaultHeaderHeight);
+                computedHeaderHeight = ComputeHeaderHeight(pallet, palletsDeep);
+                system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, defaultPostCatalogId, computedHeaderHeight);
                 ApplySeparatorOverrides();
                 selectedModule = null;
                 BindModules();
@@ -220,7 +223,29 @@ namespace RackCad.UI
         private RackFrameConfiguration BuildHeaderConfig(double depth)
         {
             return new RackFrameConfigurationFactory(catalog)
-                .Build(RackFrameTemplateCatalog.Default, defaultPostCatalogId, defaultHeaderHeight, depth);
+                .Build(RackFrameTemplateCatalog.Default, defaultPostCatalogId, computedHeaderHeight, depth);
+        }
+
+        /// <summary>
+        /// Computes the header height from the load inputs (DynamicHeaderHeightCalculator) and shows it.
+        /// Load height = the pallet height; total depth (the slope run) = the full run length we already
+        /// derive (tarimas x fondo + 12"). Levels/first-level/beam-depth come from the new fields.
+        /// </summary>
+        private double ComputeHeaderHeight(PalletSpecification pallet, int palletsDeep)
+        {
+            var levels = int.TryParse(LoadLevelsBox.Text?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) && n >= 1 ? n : 1;
+            var firstLevel = TryNum(FirstLevelHeightBox.Text, out var f) && f >= 0.0 ? f : 0.0;
+            var beamDepth = TryNum(BeamDepthBox.Text, out var b) && b >= 0.0 ? b : 0.0;
+            var totalDepth = palletsDeep * pallet.Depth + 2.0 * DynamicRackDefaults.HeaderEndAllowance;
+
+            var result = DynamicHeaderHeightCalculator.Calculate(pallet.Height, levels, firstLevel, beamDepth, totalDepth);
+
+            ComputedHeightText.Text = string.Format(
+                CultureInfo.InvariantCulture,
+                "Altura calculada: {0:0.#}\" → {1:0}\"  (pendiente {2:0.#}\")",
+                result.TheoreticalHeight, result.HeaderHeight, result.Slope);
+
+            return result.HeaderHeight;
         }
 
         private bool TryReadInputs(out PalletSpecification pallet, out int palletsDeep, out string error)
@@ -715,7 +740,7 @@ namespace RackCad.UI
         private double HeaderHeight()
         {
             var header = system?.Modules.FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration != null);
-            return header?.AssociatedFrameConfiguration.Height ?? defaultHeaderHeight;
+            return header?.AssociatedFrameConfiguration.Height ?? computedHeaderHeight;
         }
 
         private Point Map(double x, double y)

@@ -147,6 +147,30 @@
                         </StackPanel>
                     </Grid>
 
+                    <TextBlock Text="Cabecera (altura automática)" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Niveles de carga" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="LoadLevelsBox" Style="{StaticResource FieldBox}" Text="3"
+                                     ToolTip="Número de niveles de carga en la cabecera." />
+                            <TextBlock Text="Peralte larguero (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="BeamDepthBox" Style="{StaticResource FieldBox}" Text="4"
+                                     ToolTip="Peralte (alto) de cada larguero/viga." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Altura 1er nivel (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="FirstLevelHeightBox" Style="{StaticResource FieldBox}" Text="6"
+                                     ToolTip="Elevación del primer larguero desde el piso." />
+                            <TextBlock x:Name="ComputedHeightText" Style="{StaticResource FieldLabel}"
+                                       Text="Altura calculada: —" Margin="0,10,0,0" />
+                        </StackPanel>
+                    </Grid>
+
                     <Button Content="Actualizar vista (recalcular)" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Left" Margin="0,12,0,0" />
 
                     <TextBlock Text="Módulos" Style="{StaticResource SectionTitle}" />
