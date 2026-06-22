@@ -84,8 +84,21 @@ namespace RackCad.Application.Catalogs
             }
         }
 
-        private List<T> ReadArray<T>(string fileName)
+        private List<T> ReadArray<T>(string fileName) where T : CatalogEntryBase, new()
         {
+            // Excel-first: a sibling .csv (the format users edit in Excel) wins over the .json.
+            var csvPath = Path.Combine(_directory, Path.ChangeExtension(fileName, ".csv"));
+
+            if (File.Exists(csvPath))
+            {
+                var csv = File.ReadAllText(csvPath);
+
+                if (!string.IsNullOrWhiteSpace(csv))
+                {
+                    return CsvCatalogReader.Read<T>(csv);
+                }
+            }
+
             var path = Path.Combine(_directory, fileName);
 
             if (!File.Exists(path))

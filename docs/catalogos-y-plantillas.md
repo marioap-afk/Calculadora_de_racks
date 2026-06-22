@@ -1,6 +1,11 @@
-# Catalogos y plantillas (JSON)
+# Catalogos y plantillas
 
-Esta guia explica como modificar los catalogos y las plantillas de cabecera **sin programar**, editando archivos JSON.
+Esta guia explica como modificar los catalogos y las plantillas **sin programar**. Hay dos formatos por proposito:
+
+- **CSV (se edita en Excel)** para los datos maestros tabulares: perfiles, placas y puntos de conexion. Una fila = una pieza.
+- **JSON** para lo anidado/estructurado: plantillas de cabecera y la receta `defaults`.
+
+> Por que esta separacion: los catalogos son tablas que crecen mucho (mejor en Excel/CSV, y luego SQLite); las plantillas/defaults son estructuras anidadas (mejor en JSON). La carga esta detras de una interfaz (`IRackCatalogProvider`), asi que migrar a SQLite despues no cambia el resto de la app.
 
 ## Donde estan los archivos
 
@@ -8,24 +13,42 @@ Fuente versionada (lo que se edita en el repositorio):
 
 ```
 assets/catalogs/
-  post-profiles.json            Perfiles de poste
-  horizontal-profiles.json      Perfiles de horizontal
-  diagonal-profiles.json        Perfiles de diagonal/celosia
-  reinforcement-profiles.json   Perfiles de refuerzo de poste
-  base-plates.json              Placas base
-  connection-points.json        Puntos de conexion (troqueles)
-  header-templates.json         Plantillas de cabecera (auto-descriptivas)
-  defaults.json                 Receta estandar global (piezas/alto por defecto)
+  post-profiles.csv             Perfiles de poste            (Excel/CSV)
+  horizontal-profiles.csv       Perfiles de horizontal       (Excel/CSV)
+  diagonal-profiles.csv         Perfiles de diagonal/celosia (Excel/CSV)
+  reinforcement-profiles.csv    Perfiles de refuerzo         (Excel/CSV)
+  base-plates.csv               Placas base                  (Excel/CSV)
+  connection-points.csv         Puntos de conexion           (Excel/CSV)
+  header-templates.json         Plantillas de cabecera       (JSON, auto-descriptivas)
+  defaults.json                 Receta estandar global       (JSON)
 ```
 
-Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del plugin. La aplicacion los lee al iniciarse.
+Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del plugin. La aplicacion los lee al iniciarse. Si para un catalogo existen `.csv` y `.json`, **gana el `.csv`**.
 
 ### Como aplicar un cambio
 
-- **Editando el repositorio**: cambia el JSON en `assets/catalogs/` y recompila.
-- **En una instalacion ya desplegada** (sin Visual Studio): edita el JSON dentro de la carpeta `catalogs/` que esta junto a `RackCad.Plugin.dll`, **reinicia AutoCAD** y vuelve a ejecutar `RACKCABECERA`. No hace falta recompilar.
+- **Editando el repositorio**: cambia el archivo en `assets/catalogs/` y recompila.
+- **En una instalacion ya desplegada** (sin Visual Studio): edita el archivo dentro de la carpeta `catalogs/` que esta junto a `RackCad.Plugin.dll`, **reinicia AutoCAD** y vuelve a ejecutar el comando. No hace falta recompilar.
 
-> Si un archivo falta, la aplicacion sigue funcionando (usa valores internos por defecto). Si un archivo tiene un error de JSON, la aplicacion lo avisa en la barra de estado en vez de aplicar los cambios.
+> Si un archivo falta, la aplicacion sigue funcionando (usa valores internos por defecto). Un error de formato no tumba la app: una celda mal escrita en CSV deja ese campo en su valor por defecto; un JSON invalido se avisa.
+
+## Catalogos en Excel (CSV)
+
+Cada CSV tiene una **fila de encabezados** que nombra las columnas. Reglas:
+
+- Una columna cuyo nombre coincide con un campo conocido (`id`, `displayName`, `width`, `material`, `blockName`...) se carga en ese campo.
+- **Cualquier columna extra** (por ejemplo `Ix`, `Iy`, `area`, `norma`...) se guarda automaticamente en la bolsa `properties` de la pieza, **sin tocar el codigo**. Asi agregas propiedades estructurales o lo que necesites desde Excel.
+- Campos con coma o comillas: enciérralos en comillas dobles (`"Acero, A36"`). Excel lo hace solo al guardar como CSV.
+- Una celda vacia deja el campo en su valor por defecto.
+
+Ejemplo (`post-profiles.csv`):
+
+```
+id,displayName,width,thickness,material,blockName,Ix,Iy
+POSTE_OMEGA_3X3,Poste Omega 3x3 cal.14,3,0.105,Acero A36,POSTE_OMEGA_3X3,2.5,2.5
+```
+
+`Ix` e `Iy` no son campos fijos -> entran a `properties`.
 
 ## Reglas generales de JSON
 

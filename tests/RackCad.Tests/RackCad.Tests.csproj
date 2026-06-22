@@ -23,7 +23,7 @@
   <!-- Ship the versioned catalogs next to the test binaries so the JSON provider
        can be exercised exactly as the plugin would load them at runtime. -->
   <ItemGroup>
-    <Content Include="..\..\assets\catalogs\*.json" Link="catalogs\%(Filename)%(Extension)">
+    <Content Include="..\..\assets\catalogs\*.json;..\..\assets\catalogs\*.csv" Link="catalogs\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

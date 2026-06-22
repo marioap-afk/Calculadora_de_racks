@@ -1,0 +1,2 @@
+id,displayName,description,width,length,thickness,connectionPointId,units,material,weightEach,finish,blockName,layer,partNumber,unitCost,currency,costUnit
+PLACA_BASE_ATORNILLABLE,Placa base atornillable 4x6,Placa base atornillable,4,6,0.25,PlacaBase_01,in,Acero A36,1.1,Galvanizado,PLACA_BASE_4X6,RACK-PLACAS,PB-4X6-ATOR,6,USD,pieza
