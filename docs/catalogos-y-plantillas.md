@@ -14,9 +14,7 @@ Fuente versionada (lo que se edita en el repositorio):
 ```
 assets/catalogs/
   post-profiles.csv             Perfiles de poste            (Excel/CSV)
-  horizontal-profiles.csv       Perfiles de horizontal       (Excel/CSV)
-  diagonal-profiles.csv         Perfiles de diagonal/celosia (Excel/CSV)
-  reinforcement-profiles.csv    Perfiles de refuerzo         (Excel/CSV)
+  truss-profiles.csv            Perfiles de celosia (horizontales y diagonales) (Excel/CSV)
   base-plates.csv               Placas base                  (Excel/CSV)
   connection-points.csv         Puntos de conexion (definicion)(Excel/CSV)
   connection-layout.csv         Punto por pieza y vista       (Excel/CSV)
@@ -48,7 +46,7 @@ Ejemplo (`post-profiles.csv`):
 
 ```
 id,displayName,width,thickness,material,Ix,Iy
-POSTE_OMEGA_3X3,Poste Omega 3x3 cal.14,3,0.105,Acero A36,2.5,2.5
+POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14,Poste Omega 3x3 cal.14,3,0.105,Acero A36,2.5,2.5
 ```
 
 `Ix` e `Iy` no son campos fijos -> entran a `properties`.
@@ -77,17 +75,17 @@ Una plantilla es **auto-descriptiva**: define cuantas horizontales hay, a que al
     "defaultHeight": 132.0,
     "defaultDepth": 42.0,
     "horizontals": [
-      { "elevation": 0.0,   "profile": "HORIZONTAL_INFERIOR",   "quantity": 2 },
-      { "elevation": 44.0,  "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 88.0,  "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
-      { "elevation": 132.0, "profile": "HORIZONTAL_SUPERIOR",   "quantity": 1 }
+      { "elevation": 0.0,   "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 2 },
+      { "elevation": 44.0,  "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 88.0,  "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 132.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 }
     ],
     "defaultArrangement": "SingleDiagonal",
-    "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
-    "braceStartConnectionPoint": "TroquelCelosia_01",
-    "braceEndConnectionPoint": "TroquelCelosia_02",
-    "basePlate": "PLACA_BASE_ATORNILLABLE",
-    "post": "POSTE_OMEGA_3X3"
+    "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+    "braceStartConnectionPoint": "TROQUEL_CELOSIA",
+    "braceEndConnectionPoint": "CELOSIA",
+    "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16",
+    "post": "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14"
   }
 ]
 ```
@@ -100,9 +98,9 @@ Una plantilla es **auto-descriptiva**: define cuantas horizontales hay, a que al
 | `name` | texto | si | Nombre que se ve en el desplegable "Tipo de cabecera". |
 | `defaultHeight` | numero | si | Alto sugerido en pulgadas. Se precarga al elegir la plantilla. |
 | `defaultDepth` | numero | si | Fondo sugerido en pulgadas. Se precarga al elegir la plantilla. |
-| `horizontals` | lista | si | Una entrada por horizontal: `elevation` (in), `profile` (id de `horizontal-profiles.json`), `quantity`. Ver abajo. |
+| `horizontals` | lista | si | Una entrada por horizontal: `elevation` (in), `profile` (id de `truss-profiles.csv`), `quantity`. Ver abajo. |
 | `defaultArrangement` | texto | no | Celosia por defecto de cada panel. Por defecto `SingleDiagonal`. |
-| `diagonalProfile` | texto | no | Perfil de diagonal (id de `diagonal-profiles.json`). Vacio = `defaults.json`. |
+| `diagonalProfile` | texto | no | Perfil de diagonal (id de `truss-profiles.csv`). Vacio = `defaults.json`. |
 | `braceStartConnectionPoint` / `braceEndConnectionPoint` | texto | no | Puntos de conexion de la celosia. Vacio = `defaults.json`. |
 | `basePlate` | texto | no | Placa base (id de `base-plates.json`). Vacio = `defaults.json`. |
 | `post` | texto | no | Poste por defecto (id de `post-profiles.json`). Vacio = `defaults.json`. |
@@ -145,8 +143,8 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de
     "defaultHeight": 60.0,
     "defaultDepth": 42.0,
     "horizontals": [
-      { "elevation": 0.0,  "profile": "HORIZONTAL_INFERIOR", "quantity": 2 },
-      { "elevation": 60.0, "profile": "HORIZONTAL_SUPERIOR", "quantity": 1 }
+      { "elevation": 0.0,  "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 2 },
+      { "elevation": 60.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 }
     ],
     "defaultArrangement": "NoBracing"
   }
@@ -166,12 +164,12 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de
 
 ```json
 {
-  "post": "POSTE_OMEGA_3X3",
-  "basePlate": "PLACA_BASE_ATORNILLABLE",
-  "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
-  "horizontalProfile": "HORIZONTAL_INTERMEDIA",
-  "braceStartConnectionPoint": "TroquelCelosia_01",
-  "braceEndConnectionPoint": "TroquelCelosia_02",
+  "post": "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14",
+  "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16",
+  "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+  "horizontalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+  "braceStartConnectionPoint": "TROQUEL_CELOSIA",
+  "braceEndConnectionPoint": "CELOSIA",
   "basePlateConnectionPoint": "MONTAJE_POSTE",
   "defaultHeaderHeight": 132.0,
   "headerEndAllowance": 6.0
@@ -195,7 +193,7 @@ Todas las piezas (perfiles, placas, puntos de conexion) comparten estos **campos
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `id` | texto | **Obligatorio.** Identificador usado por cabeceras/plantillas (ej. `POSTE_OMEGA_3X3`). |
+| `id` | texto | **Obligatorio.** Identificador usado por cabeceras/plantillas (ej. `POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14`). |
 | `displayName` | texto | Nombre para mostrar en la UI (si falta, usa `description`, luego `id`). |
 | `description` | texto | Descripcion tecnica. |
 | `material` | texto | Material (ej. `Acero A36`). |
@@ -209,7 +207,9 @@ Todas las piezas (perfiles, placas, puntos de conexion) comparten estos **campos
 
 > La bolsa `properties` es la costura de **escalabilidad**: agrega ahi atributos que aun no son campos fijos (norma, paso de perforacion, etc.) y se cargan/guardan sin cambiar el modelo. Cuando un atributo se vuelve comun, se promueve a campo tipado.
 
-### Perfiles (`post-profiles.json`, `horizontal-profiles.json`, `diagonal-profiles.json`, `reinforcement-profiles.json`)
+### Perfiles (`post-profiles.csv`, `truss-profiles.csv`)
+
+> Horizontales y diagonales **no son catalogos distintos**: ambas son miembros de celosia y salen del unico `truss-profiles.csv`. Los **refuerzos son postes**, asi que se toman de `post-profiles.csv` (no hay un catalogo de refuerzos aparte).
 
 Campos comunes (arriba) **mas**:
 

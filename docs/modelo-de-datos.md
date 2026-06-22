@@ -10,9 +10,7 @@ Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que ot
 | Tabla (archivo) | Clave | ¿Referencia a otras? |
 |---|---|---|
 | `post-profiles.csv` | `id` | No (catálogo hoja) |
-| `horizontal-profiles.csv` | `id` | No |
-| `diagonal-profiles.csv` | `id` | No |
-| `reinforcement-profiles.csv` | `id` | No |
+| `truss-profiles.csv` | `id` | No (horizontales y diagonales; los refuerzos usan `post-profiles.csv`) |
 | `connection-points.csv` | `id` | No (solo define qué es el punto) |
 | `views.csv` | `id` | No |
 | `base-plates.csv` | `id` | No (su posición de puntos va en `connection-layout`) |
@@ -29,17 +27,17 @@ Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos 
 ```
         CATÁLOGOS HOJA (clave = id, no dependen de nadie)
         ┌──────────────────────┐ ┌────────────────────────┐ ┌───────────────┐
-        │ post-profiles.csv    │ │ horizontal-profiles.csv│ │ views.csv     │
-        │ diagonal-profiles.csv│ │ reinforcement-prof.csv │ │ (FRONTAL,     │
-        │ (POSTE_*, ...)       │ │ connection-points.csv  │ │  PLANTA, ...) │
+        │ post-profiles.csv    │ │ truss-profiles.csv     │ │ views.csv     │
+        │ (POSTE_*, refuerzos) │ │ (horizontales/diag.)   │ │ (FRONTAL,     │
+        │                      │ │ connection-points.csv  │ │  PLANTA, ...) │
         └──────────▲───────────┘ └───────────▲────────────┘ └───────▲───────┘
                    │                          │                      │
    ┌───────────────┼──────────────┬───────────┼──────────┐           │
    │               │              │           │          │           │
-   │   base-plates.csv            │           │          │           │
+   │   connection-layout.csv      │           │          │           │
    │   ─ connectionPointId ───────┼───────────┘          │           │
-   │          ▲                   │ (apunta a connection-points)     │
-   │          │                   │                                  │
+   │   ─ pieceId ─► cualquier pieza   ─ view ─► views.csv │           │
+   │     (placa/poste/...) · posición 2D por vista        │           │
    │   blocks.csv                 │                                  │
    │   ─ pieceId ─► CUALQUIER pieza (post/horizontal/diagonal/       │
    │   │            refuerzo/placa/punto), por su id ────────────────┘ (no)
@@ -47,8 +45,8 @@ Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos 
    │
    │   header-templates.json            defaults.json
    │   ─ post                ─► post-profiles        ─ post                ─► post-profiles
-   │   ─ horizontals[].profile ─► horizontal-profiles ─ horizontalProfile  ─► horizontal-profiles
-   │   ─ diagonalProfile     ─► diagonal-profiles    ─ diagonalProfile     ─► diagonal-profiles
+   │   ─ horizontals[].profile ─► truss-profiles     ─ horizontalProfile  ─► truss-profiles
+   │   ─ diagonalProfile     ─► truss-profiles       ─ diagonalProfile     ─► truss-profiles
    │   ─ basePlate           ─► base-plates          ─ basePlate           ─► base-plates
    │   ─ braceStart/EndConnectionPoint ─► connection-points
    │                                                 ─ brace*/basePlateConnectionPoint ─► connection-points
@@ -57,15 +55,14 @@ Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos 
 
 Resumen de las **claves foráneas** (FK), una por una:
 
-- `base-plates.connectionPointId` → `connection-points.id`
 - `blocks.pieceId` → el `id` de cualquier pieza (perfil, placa o punto)
 - `blocks.view` → `views.id`
 - `connection-layout.pieceId` → el `id` de cualquier pieza (p. ej. una placa)
 - `connection-layout.connectionPointId` → `connection-points.id`
 - `connection-layout.view` → `views.id`
 - `header-templates.post` → `post-profiles.id`
-- `header-templates.horizontals[].profile` → `horizontal-profiles.id`
-- `header-templates.diagonalProfile` → `diagonal-profiles.id`
+- `header-templates.horizontals[].profile` → `truss-profiles.id`
+- `header-templates.diagonalProfile` → `truss-profiles.id`
 - `header-templates.basePlate` → `base-plates.id`
 - `header-templates.braceStartConnectionPoint` / `braceEndConnectionPoint` → `connection-points.id`
 - `defaults.post` / `basePlate` / `diagonalProfile` / `horizontalProfile` → su catálogo
@@ -76,9 +73,7 @@ Mismo diagrama en formato Mermaid (se ve en GitHub/VS Code):
 ```mermaid
 erDiagram
     POST_PROFILES        { string id PK }
-    HORIZONTAL_PROFILES  { string id PK }
-    DIAGONAL_PROFILES    { string id PK }
-    REINFORCEMENT        { string id PK }
+    TRUSS_PROFILES       { string id PK }
     CONNECTION_POINTS    { string id PK }
     CONNECTION_LAYOUT    { string pieceId FK }
     VIEWS                { string id PK }
@@ -93,8 +88,8 @@ erDiagram
     BLOCKS           }o--|| VIEWS             : view
     BLOCKS           }o--|| POST_PROFILES     : "pieceId (cualquier pieza)"
     HEADER_TEMPLATES }o--|| POST_PROFILES     : post
-    HEADER_TEMPLATES }o--|| HORIZONTAL_PROFILES : "horizontals[].profile"
-    HEADER_TEMPLATES }o--|| DIAGONAL_PROFILES : diagonalProfile
+    HEADER_TEMPLATES }o--|| TRUSS_PROFILES    : "horizontals[].profile"
+    HEADER_TEMPLATES }o--|| TRUSS_PROFILES    : diagonalProfile
     HEADER_TEMPLATES }o--|| BASE_PLATES       : basePlate
     HEADER_TEMPLATES }o--|| CONNECTION_POINTS : "brace start/end"
     DEFAULTS         }o--|| POST_PROFILES     : post
@@ -112,7 +107,7 @@ JsonRackCatalogProvider.FromBaseDirectory().Load()
    │   (lee cada .csv; si no hay, el .json)
    ▼
 RackCatalog {
-   PostProfiles, HorizontalProfiles, DiagonalProfiles, ReinforcementProfiles,
+   PostProfiles, TrussProfiles,
    BasePlates, ConnectionPoints, Views, Blocks,
    Defaults
 }
@@ -148,14 +143,14 @@ La fase de **dibujo** (aún pendiente) cerrará el círculo usando `blocks` + `v
 Quiero dibujar la cabecera estándar en vista frontal:
 
 1. `Load()` lee todo → `RackCatalog`.
-2. Tomo la plantilla `STD-3P`. Su campo `post` = `POSTE_OMEGA_3X3`.
-3. `FindProfile("POSTE_OMEGA_3X3")` en `post-profiles.csv` → la pieza con su `width`, `material`, etc.
-4. Su `basePlate` = `PLACA_BASE_ATORNILLABLE`. ¿Dónde se monta? `MountConnectionPointId("PLACA_BASE_ATORNILLABLE")`
+2. Tomo la plantilla `STD-3P`. Su campo `post` = `POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14`.
+3. `FindProfile("POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14")` en `post-profiles.csv` → la pieza con su `width`, `material`, etc.
+4. Su `basePlate` = `PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16`. ¿Dónde se monta? `MountConnectionPointId("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16")`
    busca en `connection-layout.csv` la fila de esa placa con rol `BasePlate` → `MONTAJE_POSTE`. Luego
-   `FindConnectionLayout("PLACA_BASE_ATORNILLABLE","MONTAJE_POSTE","FRONTAL")` → `localX/localY` para el mate.
+   `FindConnectionLayout("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16","MONTAJE_POSTE","FRONTAL")` → `localX/localY` para el mate.
    (`MONTAJE_POSTE` es compartible: cualquier placa lo usa con su propia posición. La placa puede tener más
    puntos —p. ej. `ANCLA_1`, `ANCLA_2` en `PLANTA`— sin tocar la fila de la placa.)
-5. (Dibujo) Para ese poste en vista `FRONTAL`: `Blocks.FindBlock("POSTE_OMEGA_3X3","FRONTAL")`
+5. (Dibujo) Para ese poste en vista `FRONTAL`: `Blocks.FindBlock("POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14","FRONTAL")`
    → `blockName = POSTE_OMEGA_3X3_FRONT`, capa `RACK-POSTES` → se inserta en AutoCAD.
 
 ## 5. Reglas para mantener la integridad

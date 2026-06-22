@@ -19,6 +19,24 @@ Este indice resume como entender rapidamente el proyecto antes de continuar el d
 5. `docs/04-roadmap-operativo.md`
    - Siguientes pasos recomendados sin mezclar dibujo, BOM, catalogos y persistencia antes de tiempo.
 
+## Catalogos, datos y generacion de cabecera (estado actual)
+
+Estos son los documentos vigentes del modelo de datos y de la nueva logica de cabecera:
+
+6. `docs/catalogos-y-plantillas.md`
+   - Como editar los catalogos (CSV/Excel) y las plantillas (JSON). Refleja la unificacion:
+     **horizontales y diagonales = una sola lista `truss-profiles.csv` (celosia/truss)** y
+     **los refuerzos son postes** (`post-profiles.csv`); ya no existen `diagonal-profiles.csv` ni
+     `reinforcement-profiles.csv`.
+
+7. `docs/modelo-de-datos.md`
+   - Como se conectan las tablas (FK) y como se cargan (`RackCatalog`), con diagrama ASCII + Mermaid.
+
+8. `docs/generacion-cabecera-lateral.md`
+   - **Logica nueva block-based** de cabecera lateral anclada a puntos de conexion (poste como base).
+     Incluye el **handoff del "paso 2"**: lo que falta cablear en AutoCAD (comando del Plugin + drawer),
+     a realizar por Claude local en Windows (el Plugin no compila en Linux).
+
 ## Documentos historicos existentes
 
 Estos documentos son utiles para decisiones de arquitectura, pero son mas extensos:

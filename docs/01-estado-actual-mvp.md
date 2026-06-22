@@ -51,14 +51,14 @@ Validar que un ingeniero pueda configurar una cabecera de rack mas rapido que di
 - Unidades: `in`.
 - Altura objetivo: `132 in`.
 - Fondo: `42 in`.
-- Poste izquierdo: `POSTE_OMEGA_3X3`.
-- Poste derecho: `POSTE_OMEGA_3X3`.
-- Placa base: `PLACA_BASE_ATORNILLABLE`.
-- Horizontales:
-  - H1 = 0 in, `HORIZONTAL_INFERIOR`, cantidad 2.
-  - H2 = 44 in, `HORIZONTAL_INTERMEDIA`, cantidad 1.
-  - H3 = 88 in, `HORIZONTAL_INTERMEDIA`, cantidad 1.
-  - H4 = 132 in, `HORIZONTAL_SUPERIOR`, cantidad 1.
+- Poste izquierdo: `POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14`.
+- Poste derecho: el mismo poste.
+- Placa base: `PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16`.
+- Horizontales (todas el mismo perfil de celosia `TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14`):
+  - H1 = 0 in, cantidad 2.
+  - H2 = 44 in, cantidad 1.
+  - H3 = 88 in, cantidad 1.
+  - H4 = 132 in, cantidad 1.
 - Paneles derivados:
   - P1 = H1-H2.
   - P2 = H2-H3.
