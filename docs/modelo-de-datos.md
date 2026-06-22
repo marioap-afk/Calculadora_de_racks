@@ -151,9 +151,10 @@ Quiero dibujar la cabecera estándar en vista frontal:
 2. Tomo la plantilla `STD-3P`. Su campo `post` = `POSTE_OMEGA_3X3`.
 3. `FindProfile("POSTE_OMEGA_3X3")` en `post-profiles.csv` → la pieza con su `width`, `material`, etc.
 4. Su `basePlate` = `PLACA_BASE_ATORNILLABLE`. ¿Dónde se monta? `MountConnectionPointId("PLACA_BASE_ATORNILLABLE")`
-   busca en `connection-layout.csv` la fila de esa placa con rol `BasePlate` → `PlacaBase_01`. Luego
-   `FindConnectionLayout("PLACA_BASE_ATORNILLABLE","PlacaBase_01","FRONTAL")` → `localX/localY` para el mate.
-   (La placa puede tener más puntos —p. ej. `ANCLA_PISO` en `PLANTA`— sin tocar la fila de la placa.)
+   busca en `connection-layout.csv` la fila de esa placa con rol `BasePlate` → `MONTAJE_POSTE`. Luego
+   `FindConnectionLayout("PLACA_BASE_ATORNILLABLE","MONTAJE_POSTE","FRONTAL")` → `localX/localY` para el mate.
+   (`MONTAJE_POSTE` es compartible: cualquier placa lo usa con su propia posición. La placa puede tener más
+   puntos —p. ej. `ANCLA_1`, `ANCLA_2` en `PLANTA`— sin tocar la fila de la placa.)
 5. (Dibujo) Para ese poste en vista `FRONTAL`: `Blocks.FindBlock("POSTE_OMEGA_3X3","FRONTAL")`
    → `blockName = POSTE_OMEGA_3X3_FRONT`, capa `RACK-POSTES` → se inserta en AutoCAD.
 

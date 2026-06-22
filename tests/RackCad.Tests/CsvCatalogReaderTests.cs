@@ -81,17 +81,18 @@ namespace RackCad.Tests
             // Cardinality: a plate carries several connection points (mate + floor anchors).
             var pointIds = catalog.ConnectionLayout.ConnectionLayoutFor(plate)
                 .Select(e => e.ConnectionPointId).Distinct().ToList();
-            Assert.Contains("PlacaBase_01", pointIds);
-            Assert.Contains("ANCLA_PISO", pointIds);
+            Assert.Contains("MONTAJE_POSTE", pointIds);
+            Assert.Contains("ANCLA_1", pointIds);
+            Assert.Contains("ANCLA_2", pointIds); // two floor anchors: distinct ids, same role
 
             // View dependency: same point, different 2D position per view.
-            var frontal = catalog.ConnectionLayout.FindConnectionLayout(plate, "PlacaBase_01", "FRONTAL");
-            var planta = catalog.ConnectionLayout.FindConnectionLayout(plate, "PlacaBase_01", "PLANTA");
+            var frontal = catalog.ConnectionLayout.FindConnectionLayout(plate, "MONTAJE_POSTE", "FRONTAL");
+            var planta = catalog.ConnectionLayout.FindConnectionLayout(plate, "MONTAJE_POSTE", "PLANTA");
             Assert.Equal(0.0, frontal.LocalY);
             Assert.Equal(3.0, planta.LocalY);
 
             // The factory picks the mate-to-post anchor (role BasePlate) from the layout.
-            Assert.Equal("PlacaBase_01", catalog.MountConnectionPointId(plate));
+            Assert.Equal("MONTAJE_POSTE", catalog.MountConnectionPointId(plate));
         }
 
         [Fact]

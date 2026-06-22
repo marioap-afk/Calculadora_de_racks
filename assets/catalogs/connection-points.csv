@@ -1,5 +1,6 @@
 id,displayName,description,role
-PlacaBase_01,Anclaje a poste,Punto de mate de la placa al poste,BasePlate
-ANCLA_PISO,Barreno de anclaje a piso,Barreno para fijar la placa al piso,Anchor
+MONTAJE_POSTE,Montaje a poste,Punto de mate de la placa al poste (compartible por cualquier placa),BasePlate
+ANCLA_1,Barreno de piso 1,Barreno de anclaje al piso,Anchor
+ANCLA_2,Barreno de piso 2,Barreno de anclaje al piso,Anchor
 TroquelCelosia_01,Troquel celosia inicial,Troquel inicial de celosia,Brace
 TroquelCelosia_02,Troquel celosia final,Troquel final de celosia,Brace

@@ -172,7 +172,7 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de
   "horizontalProfile": "HORIZONTAL_INTERMEDIA",
   "braceStartConnectionPoint": "TroquelCelosia_01",
   "braceEndConnectionPoint": "TroquelCelosia_02",
-  "basePlateConnectionPoint": "PlacaBase_01",
+  "basePlateConnectionPoint": "MONTAJE_POSTE",
   "defaultHeaderHeight": 132.0,
   "headerEndAllowance": 6.0
 }
@@ -255,6 +255,8 @@ Tabla **normalizada**, gemela de `blocks.csv`: relaciona **pieza + punto + vista
 | `localX` | numero | Offset X (in) del punto dentro de la pieza, en esa vista. |
 | `localY` | numero | Offset Y (in) del punto dentro de la pieza, en esa vista. |
 
+> **Regla de identidad del `connectionPointId`:** el `id` es el nombre logico del punto; lo que define "misma funcion" es el `role`. Puedes **compartir el mismo `id` entre piezas distintas** (p. ej. `MONTAJE_POSTE` en todas las placas) — la `pieza` desambigua la posicion. Lo unico que NO puedes: repetir el mismo `id` dos veces en la **misma pieza y vista** (la clave `pieza+punto+vista` chocaria). Para varios puntos del mismo tipo en una pieza (p. ej. 4 barrenos), usa ids distintos que comparten el `role`: `ANCLA_1`, `ANCLA_2`, ...
+
 ### Vistas (`views.csv`)
 
 Catalogo simple de las vistas en que se puede dibujar una pieza. Campos comunes; en la practica solo:
@@ -262,15 +264,6 @@ Catalogo simple de las vistas en que se puede dibujar una pieza. Campos comunes;
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
 | `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL_IZQ`, `PLANTA`). Lo referencian `blocks.csv` y `connection-layout.csv`. |
-| `displayName` | texto | Nombre para mostrar (ej. `Frontal`). |
-
-### Vistas (`views.csv`)
-
-Catalogo simple de las vistas en que se puede dibujar una pieza. Campos comunes; en la practica solo:
-
-| Campo | Tipo | Descripcion |
-|-------|------|-------------|
-| `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL_IZQ`, `PLANTA`). Lo referencia `blocks.csv`. |
 | `displayName` | texto | Nombre para mostrar (ej. `Frontal`). |
 
 ### Bloques por vista (`blocks.csv`)

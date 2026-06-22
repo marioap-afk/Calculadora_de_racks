@@ -14,6 +14,6 @@ namespace RackCad.Application.RackFrames
         public const string Diagonal = "TRAVESANO_DINAMICO_OMEGA_3X3";
         public const string BraceStartConnectionPoint = "TroquelCelosia_01";
         public const string BraceEndConnectionPoint = "TroquelCelosia_02";
-        public const string BasePlateConnectionPoint = "PlacaBase_01";
+        public const string BasePlateConnectionPoint = "MONTAJE_POSTE";
     }
 }

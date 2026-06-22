@@ -56,7 +56,7 @@ namespace RackCad.Tests
             // With no catalog the post description falls back to its id; the plate keeps a literal fallback.
             Assert.Equal("POSTE_OMEGA_3X3", configuration.LeftPost.Description);
             Assert.Equal("Placa base atornillable", configuration.LeftBasePlate.Description);
-            Assert.Equal("PlacaBase_01", configuration.LeftBasePlate.ConnectionPointId);
+            Assert.Equal("MONTAJE_POSTE", configuration.LeftBasePlate.ConnectionPointId);
         }
 
         [Fact]

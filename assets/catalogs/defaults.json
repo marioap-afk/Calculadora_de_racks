@@ -5,7 +5,7 @@
   "horizontalProfile": "HORIZONTAL_INTERMEDIA",
   "braceStartConnectionPoint": "TroquelCelosia_01",
   "braceEndConnectionPoint": "TroquelCelosia_02",
-  "basePlateConnectionPoint": "PlacaBase_01",
+  "basePlateConnectionPoint": "MONTAJE_POSTE",
   "defaultHeaderHeight": 132.0,
   "headerEndAllowance": 6.0
 }
