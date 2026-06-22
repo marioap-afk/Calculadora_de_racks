@@ -80,9 +80,45 @@ namespace RackCad.UI
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
             computedHeaderHeight = defaultHeaderHeight;
+            PostBox.ItemsSource = BuildPostOptions();
+            PostBox.SelectedValue = defaultPostCatalogId;
             KindBox.ItemsSource = new[] { KindHeader, KindSeparator };
             RefreshConfigBox();
             Recompose();
+        }
+
+        /// <summary>Post-type options (DisplayName shown, Id stored) for the basic "Tipo de poste" combo.</summary>
+        private List<CatalogOption> BuildPostOptions()
+        {
+            return (catalog?.PostProfiles ?? Enumerable.Empty<ProfileCatalogEntry>())
+                .Where(p => p != null && !string.IsNullOrWhiteSpace(p.Id))
+                .GroupBy(p => p.Id.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.First())
+                .OrderBy(p => p.Label, StringComparer.CurrentCultureIgnoreCase)
+                .Select(p => new CatalogOption(p.Id.Trim(), p.Label))
+                .ToList();
+        }
+
+        /// <summary>The selected post id, or the catalog default if the combo has no selection yet.</summary>
+        private string SelectedPostId() => PostBox?.SelectedValue as string ?? defaultPostCatalogId;
+
+        private void PostBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Ignore the initial selection set during construction (before the first build).
+            if (system == null)
+            {
+                return;
+            }
+
+            Recompose();
+        }
+
+        private void AdvancedToggle_Changed(object sender, RoutedEventArgs e)
+        {
+            if (AdvancedPanel != null)
+            {
+                AdvancedPanel.Visibility = AdvancedToggle.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         // ---- Build / edit ----
@@ -103,7 +139,7 @@ namespace RackCad.UI
             try
             {
                 computedHeaderHeight = ComputeHeaderHeight(pallet, palletsDeep);
-                system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, defaultPostCatalogId, computedHeaderHeight);
+                system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, SelectedPostId(), computedHeaderHeight);
                 ApplySeparatorOverrides();
                 selectedModule = null;
                 BindModules();
@@ -223,7 +259,7 @@ namespace RackCad.UI
         private RackFrameConfiguration BuildHeaderConfig(double depth)
         {
             return new RackFrameConfigurationFactory(catalog)
-                .Build(RackFrameTemplateCatalog.Default, defaultPostCatalogId, computedHeaderHeight, depth);
+                .Build(RackFrameTemplateCatalog.Default, SelectedPostId(), computedHeaderHeight, depth);
         }
 
         /// <summary>
