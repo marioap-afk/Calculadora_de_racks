@@ -56,6 +56,22 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_PreservesReinforcement()
+        {
+            var store = new RackFrameProjectStore();
+            var original = SampleConfig();
+            original.LeftPost.HasReinforcement = true;
+            original.LeftPost.ReinforcementCatalogId = "POSTE_OMEGA_3X3";
+            original.LeftPost.ReinforcementHeight = 60.0;
+
+            var loaded = store.Deserialize(store.Serialize(original));
+
+            Assert.True(loaded.LeftPost.HasReinforcement);
+            Assert.Equal("POSTE_OMEGA_3X3", loaded.LeftPost.ReinforcementCatalogId);
+            Assert.Equal(60.0, loaded.LeftPost.ReinforcementHeight, 4);
+        }
+
+        [Fact]
         public void LegacyDocument_WithoutCelosiaParameters_FallsBackToDefaults()
         {
             // A project that predates these fields leaves them null -> built-in defaults.
@@ -74,8 +90,8 @@ namespace RackCad.Tests
             var loaded = store.Deserialize(store.Serialize(SampleConfig()));
 
             Assert.NotEmpty(loaded.Members);
-            Assert.Equal(0.0, loaded.BracingPanels.First().StartElevation);
-            Assert.Equal(44.0, loaded.BracingPanels.First().EndElevation);
+            Assert.Equal(4.0, loaded.BracingPanels.First().StartElevation);
+            Assert.Equal(48.0, loaded.BracingPanels.First().EndElevation);
         }
 
         [Fact]
@@ -97,8 +113,8 @@ namespace RackCad.Tests
             {
                 store.Save(SampleConfig(), path);
                 var loaded = store.Load(path);
-                Assert.Equal(4, loaded.Horizontals.Count);
-                Assert.Equal(3, loaded.BracingPanels.Count);
+                Assert.Equal(5, loaded.Horizontals.Count);
+                Assert.Equal(4, loaded.BracingPanels.Count);
             }
             finally
             {

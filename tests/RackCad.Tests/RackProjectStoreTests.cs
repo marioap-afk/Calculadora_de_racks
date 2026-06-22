@@ -48,8 +48,8 @@ namespace RackCad.Tests
             var startHeader = system.Modules.First();
             Assert.Equal(DynamicRackModuleKind.HeaderStart, startHeader.Kind);
             Assert.Equal(54.0, startHeader.AssociatedFrameConfiguration.Depth);
-            Assert.Equal(4, startHeader.AssociatedFrameConfiguration.Horizontals.Count);
-            Assert.Equal(3, startHeader.AssociatedFrameConfiguration.BracingPanels.Count);
+            Assert.Equal(5, startHeader.AssociatedFrameConfiguration.Horizontals.Count);
+            Assert.Equal(4, startHeader.AssociatedFrameConfiguration.BracingPanels.Count);
             Assert.NotEmpty(startHeader.AssociatedFrameConfiguration.Members); // members rebuilt on load
         }
 
@@ -62,7 +62,7 @@ namespace RackCad.Tests
 
             Assert.Equal(RackSystemKind.Selective, loaded.Kind);
             Assert.NotNull(loaded.Header);
-            Assert.Equal(4, loaded.Header.Horizontals.Count);
+            Assert.Equal(5, loaded.Header.Horizontals.Count);
             Assert.NotEmpty(loaded.Header.Members);
         }
 
@@ -76,7 +76,7 @@ namespace RackCad.Tests
 
             Assert.Equal(RackSystemKind.Selective, loaded.Kind);
             Assert.NotNull(loaded.Header);
-            Assert.Equal(4, loaded.Header.Horizontals.Count);
+            Assert.Equal(5, loaded.Header.Horizontals.Count);
         }
 
         [Fact]

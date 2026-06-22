@@ -32,9 +32,20 @@ namespace RackCad.UI
 
         private bool syncingTreeSelection;
         private bool syncingGridSelection;
+        private readonly bool canInsertInAutoCad;
+
+        /// <summary>True when the user asked to draw the header in AutoCAD; the host inserts it after this
+        /// window closes (the placement jig needs the editor free, so it cannot run while the modal is open).</summary>
+        public bool InsertRequested { get; private set; }
 
         public RackFrameConfiguratorWindow(RackFrameConfiguration configuration)
+            : this(configuration, false)
         {
+        }
+
+        public RackFrameConfiguratorWindow(RackFrameConfiguration configuration, bool canInsertInAutoCad)
+        {
+            this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
             Dispatcher.UnhandledException += Dispatcher_UnhandledException;
             ViewModel = new RackFrameConfiguratorViewModel(configuration);
@@ -184,6 +195,40 @@ namespace RackCad.UI
                 var window = new RackBomWindow(ViewModel.BuildBom()) { Owner = this };
                 window.ShowDialog();
             });
+        }
+
+        private void InsertInAutoCad_Click(object sender, RoutedEventArgs e)
+        {
+            if (!canInsertInAutoCad)
+            {
+                MessageBox.Show(
+                    this,
+                    "El dibujo en AutoCAD solo esta disponible cuando el configurador se abre desde AutoCAD.",
+                    "Insertar en AutoCAD",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            if (!ViewModel.IsHeightValid)
+            {
+                var proceed = MessageBox.Show(
+                    this,
+                    "La altura configurada no es valida segun la validacion del modelo. Deseas dibujar de todos modos?",
+                    "Insertar en AutoCAD",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (proceed != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            // The placement jig needs the editor free, so we only flag the request and close; the host
+            // command draws the block and runs the jig once every modal window is gone.
+            InsertRequested = true;
+            Close();
         }
 
         private void SaveProject_Click(object sender, RoutedEventArgs e)

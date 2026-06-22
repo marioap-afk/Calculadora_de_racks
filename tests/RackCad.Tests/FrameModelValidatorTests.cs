@@ -44,8 +44,8 @@ namespace RackCad.Tests
         public void Validate_NearEqualElevations_WarnsAndFlagsZeroHeightPanel()
         {
             var config = StandardConfig();
-            // Collapse H2 onto H1 (both at 0) -> panel P1 becomes zero-height.
-            config.Horizontals.First(h => h.Id == "H2").Elevation = 0.004;
+            // Collapse H2 onto H1 (both near the 4" start troquel) -> panel P1 becomes zero-height.
+            config.Horizontals.First(h => h.Id == "H2").Elevation = 4.004;
 
             var warnings = FrameModelValidator.Validate(config, ShippedCatalog(), Tolerance);
 
@@ -54,14 +54,14 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Validate_NonZeroBaseElevation_Warns()
+        public void Validate_BaseAwayFromStartTroquel_Warns()
         {
             var config = StandardConfig();
-            config.Horizontals.First(h => h.Id == "H1").Elevation = 10.0;
+            config.Horizontals.First(h => h.Id == "H1").Elevation = 10.0; // expected start troquel is 4"
 
             var warnings = FrameModelValidator.Validate(config, ShippedCatalog(), Tolerance);
 
-            Assert.Contains(warnings, w => w.Contains("inferior deberia estar en 0"));
+            Assert.Contains(warnings, w => w.Contains("inferior deberia estar en el troquel de inicio"));
         }
 
         [Fact]

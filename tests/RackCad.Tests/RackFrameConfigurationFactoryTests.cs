@@ -16,29 +16,33 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Build_StandardTemplateAtDefaultDimensions_MatchesLegacyStandard()
+        public void Build_StandardTemplateAtDefaultDimensions_UsesParametricCelosiaWithClosings()
         {
             var template = RackFrameTemplateCatalog.FindById("STD-3P");
 
             var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", 132.0, 42.0);
 
-            Assert.Equal(new[] { "H1", "H2", "H3", "H4" }, configuration.Horizontals.Select(h => h.Id));
-            Assert.Equal(new[] { 0.0, 44.0, 88.0, 132.0 }, configuration.Horizontals.Select(h => h.Elevation));
-            Assert.Equal(3, configuration.BracingPanels.Count);
-            Assert.All(configuration.BracingPanels, p => Assert.Equal(BracingPattern.SingleDiagonal, p.Arrangement));
+            // First travesaño at troquel 3 (4"), panels of 44", then two closing travesaños (110, 128).
+            Assert.Equal(new[] { "H1", "H2", "H3", "H4", "H5" }, configuration.Horizontals.Select(h => h.Id));
+            Assert.Equal(new[] { 4.0, 48.0, 92.0, 110.0, 128.0 }, configuration.Horizontals.Select(h => h.Elevation));
+            Assert.Equal(4, configuration.BracingPanels.Count);
+            Assert.Equal(2, configuration.BracingPanels.Count(p => p.Arrangement == BracingPattern.SingleDiagonal));
+            Assert.Equal(2, configuration.BracingPanels.Count(p => p.Arrangement == BracingPattern.NoBracing));
             Assert.Equal(132.0, configuration.Height);
             Assert.Equal(42.0, configuration.Depth);
         }
 
         [Fact]
-        public void Build_ScalesHorizontalElevationsWithHeight()
+        public void Build_FirstTravesanoAtTroquel_PanelsEvery44_RegardlessOfHeight()
         {
             var template = RackFrameTemplateCatalog.FindById("STD-3P");
 
             var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", 300.0, 48.0);
+            var elevations = configuration.Horizontals.Select(h => h.Elevation).OrderBy(e => e).ToList();
 
-            Assert.Equal(new[] { 0.0, 100.0, 200.0, 300.0 }, configuration.Horizontals.Select(h => h.Elevation));
-            Assert.Equal(300.0, configuration.Horizontals.Max(h => h.Elevation));
+            Assert.Equal(4.0, elevations[0], 4);           // first travesaño on the start troquel
+            Assert.Equal(44.0, elevations[1] - elevations[0], 4); // standard panels are 44" apart
+            Assert.True(elevations.Last() < 300.0);        // closings clear the post top
             Assert.Equal(48.0, configuration.Depth);
         }
 
@@ -113,7 +117,11 @@ namespace RackCad.Tests
             foreach (var template in RackFrameTemplateCatalog.All)
             {
                 var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", template.DefaultHeight, template.DefaultDepth);
-                Assert.Equal(template.Horizontals.Count, configuration.Horizontals.Count);
+
+                // Horizontals are now computed parametrically (start troquel + 44" panels + closings), so the
+                // count is no longer the template's; just assert a usable celosía was produced.
+                Assert.True(configuration.Horizontals.Count >= 2);
+                Assert.True(configuration.BracingPanels.Count >= 1);
             }
         }
 

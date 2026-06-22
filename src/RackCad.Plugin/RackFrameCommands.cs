@@ -1,5 +1,9 @@
+using System.Globalization;
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.RackFrames;
+using RackCad.Domain.RackFrames;
+using RackCad.Plugin.Headers;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -13,7 +17,13 @@ namespace RackCad.Plugin
         {
             try
             {
-                AcApplication.ShowModalWindow(new RackMainMenuWindow());
+                var menu = new RackMainMenuWindow(canInsertInAutoCad: true);
+                AcApplication.ShowModalWindow(menu);
+
+                if (menu.InsertRequested)
+                {
+                    DrawAndPlace(menu.ConfigurationToInsert);
+                }
             }
             catch (System.Exception ex)
             {
@@ -28,12 +38,79 @@ namespace RackCad.Plugin
             try
             {
                 var configuration = new HardcodedStandardRackFrameService().CreateDefault();
-                AcApplication.ShowModalWindow(new RackFrameConfiguratorWindow(configuration));
+                var window = new RackFrameConfiguratorWindow(configuration, canInsertInAutoCad: true);
+                AcApplication.ShowModalWindow(window);
+
+                if (window.InsertRequested)
+                {
+                    DrawAndPlace(window.Configuration);
+                }
             }
             catch (System.Exception ex)
             {
                 Report(ex);
             }
+        }
+
+        /// <summary>
+        /// Draws the standard lateral header straight into the drawing (creates the block and lets the user
+        /// place it). Quick path without the configurator; the editor's "Insertar en AutoCAD" button draws
+        /// the edited header instead.
+        /// </summary>
+        [CommandMethod("RACKCABECERALATERAL")]
+        public void RackCabeceraLateral()
+        {
+            try
+            {
+                DrawAndPlace(new HardcodedStandardRackFrameService().CreateDefault());
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
+        /// <summary>Builds the header block and runs the placement jig, then reports the outcome.</summary>
+        private static void DrawAndPlace(RackFrameConfiguration configuration)
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null || configuration == null)
+            {
+                return;
+            }
+
+            var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration);
+            document.Editor.WriteMessage("\n" + Describe(result));
+        }
+
+        private static string Describe(HeaderPlacementResult result)
+        {
+            if (!result.Success)
+            {
+                return "RackCad: no se pudo dibujar la cabecera lateral. " + result.ErrorMessage;
+            }
+
+            if (!result.Placed)
+            {
+                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
+            }
+
+            var outcome = result.Outcome;
+            var summary = string.Format(
+                CultureInfo.InvariantCulture,
+                "RackCad: cabecera insertada como bloque '{0}'. {1} piezas ({2} horizontales, {3} diagonales).",
+                result.BlockName,
+                outcome.InsertedCount,
+                outcome.Layout.HorizontalCount,
+                outcome.Layout.DiagonalCount);
+
+            if (result.HasMissingBlocks)
+            {
+                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
+            }
+
+            return summary;
         }
 
         private static void Report(System.Exception ex)

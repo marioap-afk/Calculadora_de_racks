@@ -25,21 +25,25 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void RefreshPhysicalModel_StandardFrame_GeneratesOneMemberPerHorizontalPlusOneDiagonalPerPanel()
+        public void RefreshPhysicalModel_StandardFrame_GeneratesOneMemberPerHorizontalPlusOneDiagonalPerBracedPanel()
         {
             var configuration = BuildStandardModel();
 
-            Assert.Equal(4, configuration.Members.Count(IsHorizontal));
-            Assert.Equal(3, configuration.Members.Count(m => m.MemberType == FrameMemberType.DiagonalBrace));
+            // Standard now: 5 horizontals (3 standard + 2 closings) and 2 diagonals (the closing panels carry none).
+            Assert.Equal(5, configuration.Members.Count(IsHorizontal));
+            Assert.Equal(2, configuration.Members.Count(m => m.MemberType == FrameMemberType.DiagonalBrace));
             Assert.Equal(7, configuration.Members.Count);
         }
 
         [Fact]
-        public void RefreshPhysicalModel_AttachesDiagonalsToTheirPanel()
+        public void RefreshPhysicalModel_AttachesDiagonalsToBracedPanelsOnly()
         {
             var configuration = BuildStandardModel();
+            var bracedPanels = configuration.BracingPanels.Where(p => p.Arrangement != BracingPattern.NoBracing).ToList();
+            var closingPanels = configuration.BracingPanels.Where(p => p.Arrangement == BracingPattern.NoBracing).ToList();
 
-            Assert.All(configuration.BracingPanels, panel => Assert.Single(panel.Members));
+            Assert.All(bracedPanels, panel => Assert.Single(panel.Members));
+            Assert.All(closingPanels, panel => Assert.Empty(panel.Members));
             // Horizontals are not attached to any panel.
             Assert.DoesNotContain(configuration.BracingPanels.SelectMany(p => p.Members), IsHorizontal);
         }
@@ -50,9 +54,10 @@ namespace RackCad.Tests
             var configuration = BuildStandardModel();
             var panels = configuration.BracingPanels.OrderBy(p => p.Number).ToList();
 
-            Assert.Equal((0.0, 44.0), (panels[0].StartElevation, panels[0].EndElevation));
-            Assert.Equal((44.0, 88.0), (panels[1].StartElevation, panels[1].EndElevation));
-            Assert.Equal((88.0, 132.0), (panels[2].StartElevation, panels[2].EndElevation));
+            Assert.Equal((4.0, 48.0), (panels[0].StartElevation, panels[0].EndElevation));
+            Assert.Equal((48.0, 92.0), (panels[1].StartElevation, panels[1].EndElevation));
+            Assert.Equal((92.0, 110.0), (panels[2].StartElevation, panels[2].EndElevation));
+            Assert.Equal((110.0, 128.0), (panels[3].StartElevation, panels[3].EndElevation));
         }
 
         [Fact]
@@ -84,7 +89,7 @@ namespace RackCad.Tests
             Builder.RefreshPhysicalModel(configuration);
 
             Assert.DoesNotContain(configuration.Members, m => m.MemberType == FrameMemberType.DiagonalBrace);
-            Assert.Equal(4, configuration.Members.Count(IsHorizontal));
+            Assert.Equal(5, configuration.Members.Count(IsHorizontal));
             Assert.All(configuration.BracingPanels, panel => Assert.Empty(panel.Members));
         }
 

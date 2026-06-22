@@ -34,8 +34,8 @@ Estos son los documentos vigentes del modelo de datos y de la nueva logica de ca
 
 8. `docs/generacion-cabecera-lateral.md`
    - **Logica nueva block-based** de cabecera lateral anclada a puntos de conexion (poste como base).
-     Incluye el **handoff del "paso 2"**: lo que falta cablear en AutoCAD (comando del Plugin + drawer),
-     a realizar por Claude local en Windows (el Plugin no compila en Linux).
+     El **"paso 2" (dibujo en AutoCAD) ya esta cableado**: comando `RACKCABECERALATERAL`, boton
+     `Insertar en AutoCAD` y servicio de dibujo. Solo resta definir los bloques en el DWG y la prueba visual.
 
 ## Documentos historicos existentes
 

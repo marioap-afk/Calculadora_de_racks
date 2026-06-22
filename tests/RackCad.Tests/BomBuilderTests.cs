@@ -37,9 +37,9 @@ namespace RackCad.Tests
         {
             var bom = BomBuilder.Build(StandardWithMembers(), Catalog);
 
-            // Horizontals and diagonals are all one truss profile now, so they aggregate by category.
+            // Standard now: 5 single travesaños (3 standard + 2 closings) and 2 diagonals.
             Assert.Equal(5, bom.Lines.Where(l => l.Category == BomBuilder.Horizontal).Sum(l => l.Quantity));
-            Assert.Equal(3, bom.Lines.Where(l => l.Category == BomBuilder.Diagonal).Sum(l => l.Quantity));
+            Assert.Equal(2, bom.Lines.Where(l => l.Category == BomBuilder.Diagonal).Sum(l => l.Quantity));
             Assert.Equal(2, bom.Lines.Where(l => l.Category == BomBuilder.BasePlate).Sum(l => l.Quantity));
         }
 
@@ -48,8 +48,8 @@ namespace RackCad.Tests
         {
             var bom = BomBuilder.Build(StandardWithMembers(), Catalog);
 
-            // 2 posts + 2 plates + (2+1+1+1) horizontals + 3 diagonals
-            Assert.Equal(12, bom.TotalPieces);
+            // 2 posts + 2 plates + 5 single travesaños + 2 diagonals
+            Assert.Equal(11, bom.TotalPieces);
         }
 
         [Fact]

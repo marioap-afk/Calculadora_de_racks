@@ -4,9 +4,10 @@ Esta es la lógica nueva para generar una **cabecera en vista lateral** a partir
 independientes anclados a puntos de conexión** (no una composición visual libre). El **poste es la base
 geométrica**; horizontales y diagonales de celosía cuelgan de la línea de troqueles del poste.
 
-> **Handoff:** la **lógica pura ya está implementada y probada** en Linux. El **paso 2 (dibujo en
-> AutoCAD)** lo debe hacer Claude local en Windows, porque el proyecto `RackCad.Plugin` solo compila con
-> las DLLs de AutoCAD. Ver la sección [Paso 2](#paso-2-lo-que-falta-en-autocad-claude-local).
+> **Estado:** la **lógica pura** y el **cableado en AutoCAD (paso 2)** ya están implementados y compilan en
+> Windows. El comando `RACKCABECERALATERAL` y el botón **Insertar en AutoCAD** del configurador ya dibujan
+> la cabecera. Lo único que resta es del lado del **dibujo (DWG)**: que los bloques de AutoCAD existan con
+> sus parámetros dinámicos y verificar el resultado visual. Ver la sección [Paso 2](#paso-2-estado-del-cableado-en-autocad).
 
 ## Arquitectura (separación pura ↔ AutoCAD)
 
@@ -79,31 +80,37 @@ Cada inserción trae: `Role` (BasePlate/Post/Horizontal/Diagonal/ClosingHorizont
 `Insertion` (origen del bloque), `ConnectionAnchor` (dónde cae su punto de referencia), `RotationRadians`,
 `MirroredX`, y `DynamicParameters` (p. ej. `LONGITUD`, `Distancia1`).
 
-## Paso 2: lo que falta (en AutoCAD, Claude local)
+## Paso 2: estado del cableado en AutoCAD
 
-El drawer ya existe (`RackCad.Plugin/Headers/LateralHeaderDrawer.cs`). Falta **cablearlo**:
+El drawer (`RackCad.Plugin/Headers/LateralHeaderDrawer.cs`) **ya está cableado**:
 
-1. **Comando del Plugin** (p. ej. `RACKCABECERALATERAL`) que, dentro de una transacción:
-   - obtenga el `RackCatalog` (`JsonRackCatalogProvider.FromBaseDirectory().Load()`) y la
-     `RackFrameConfiguration` actual;
-   - arme `LateralHeaderParameters` desde la config:
-     `Height`, `Depth`, `InicioCelosiaTroquel = config.CelosiaStartTroquel`,
-     `OffsetDiagonalInicioTroqueles = config.DiagonalStartOffsetTroqueles`,
-     `OffsetDiagonalFinTroqueles = config.DiagonalEndOffsetTroqueles`,
-     `ClaroPanel` (del claro estándar), y los ids reales (`PostId`/`BasePlateId`/`TrussProfileId`);
-   - llame `new LateralHeaderDrawer().BuildAndDraw(db, tr, espacioModelo, catalog, parameters)`.
-2. **Requisitos de los bloques de AutoCAD** (datos a completar):
-   - el bloque del **poste** necesita el parámetro dinámico **`LONGITUD`**;
-   - los bloques de **travesaño** necesitan **`Distancia1`** (largo);
-   - cada bloque debe tener definidos los **puntos de conexión** correspondientes y, en
-     `connection-layout.csv`, su posición **en la vista `LATERAL`**:
-     - placa → `MONTAJE_POSTE` (ya está)
-     - poste → `TROQUEL_CELOSIA` (ya está)
-     - travesaño → **`CELOSIA` (falta agregarlo en `connection-layout.csv` para el id del travesaño)**
-3. **Diálogo de parámetros** (opcional pero recomendado): exponer Height/Depth (clásico) e
-   InicioCelosia/Claro/offsets (avanzado) — ya están en el editor; el comando puede tomarlos de ahí.
-4. **Prueba visual en AutoCAD**: insertar, ver que el poste estira con `LONGITUD`, que las horizontales
-   caen en la línea de troquel y abarcan poste a poste, y que las diagonales quedan con el ángulo correcto.
+1. ✅ **Mapeo config → parámetros**: `LateralHeaderParametersFactory.FromConfiguration` (capa pura,
+   `RackCad.Application/Headers/`, con tests) arma `LateralHeaderParameters` desde la `RackFrameConfiguration`:
+   `Height`, `Depth`, `InicioCelosiaTroquel = CelosiaStartTroquel`,
+   `OffsetDiagonalInicioTroqueles = DiagonalStartOffsetTroqueles`,
+   `OffsetDiagonalFinTroqueles = DiagonalEndOffsetTroqueles`, `ClaroPanel` (derivado del primer claro entre
+   horizontales) y los ids reales (`PostId`/`BasePlateId`/`TrussProfileId`).
+2. ✅ **Servicio de dibujo**: `RackCad.Plugin/Headers/LateralHeaderDrawService.cs` carga el catálogo
+   (`JsonRackCatalogProvider.FromBaseDirectory().Load()`), bloquea el documento, abre una transacción y llama
+   `LateralHeaderDrawer.BuildAndDraw(...)`. Implementa la interfaz `RackCad.UI.IHeaderDrawService` para que la
+   WPF dispare el dibujo **sin** referenciar las DLLs de AutoCAD (regla de oro: la UI no conoce AutoCAD).
+3. ✅ **Comando del Plugin** `RACKCABECERALATERAL`: dibuja la cabecera estándar directo en el model space
+   (smoke test). El **botón "Insertar en AutoCAD"** del configurador dibuja la cabecera **que el usuario
+   configuró** (toma `Height/Depth` clásico e `InicioCelosia/Claro/offsets` avanzado del editor).
+4. ✅ **Reporte de bloques faltantes**: `BuildAndDraw` devuelve un `LateralHeaderDrawOutcome` con las piezas
+   insertadas y los **bloques referidos pero no definidos en el dibujo** (se omiten en vez de lanzar). El
+   comando y el botón informan al usuario qué bloques faltan modelar.
+
+### Lo que resta (del lado del DWG, no del código)
+
+- **Definir los bloques de AutoCAD** referidos en `blocks.csv` (vista `LATERAL`) dentro del dibujo:
+  - el bloque del **poste** con el parámetro dinámico **`LONGITUD`**;
+  - los bloques de **travesaño** con **`Distancia1`** (largo);
+  - cada bloque con sus **puntos de conexión** y su posición en `connection-layout.csv` para la vista `LATERAL`
+    (placa → `MONTAJE_POSTE`, poste → `TROQUEL_CELOSIA`, travesaño → `CELOSIA`: **los tres ya están** en el CSV).
+- **Prueba visual en AutoCAD**: ejecutar `RACKCABECERALATERAL` (o el botón), ver que el poste estira con
+  `LONGITUD`, que las horizontales caen en la línea de troquel y abarcan poste a poste, y que las diagonales
+  quedan con el ángulo correcto.
 
 ## Supuestos de geometría a verificar (pendiente del usuario)
 
@@ -113,8 +120,14 @@ El drawer ya existe (`RackCad.Plugin/Headers/LateralHeaderDrawer.cs`). Falta **c
 
 ## Dónde está en el código
 
-- Lógica pura: `src/RackCad.Application/Headers/`.
-- Adapter AutoCAD: `src/RackCad.Plugin/Headers/LateralHeaderDrawer.cs`.
-- Tests (9): `tests/RackCad.Tests/LateralHeaderLayoutBuilderTests.cs`.
+- Lógica pura: `src/RackCad.Application/Headers/` (builder, resolver, parámetros y
+  `LateralHeaderParametersFactory` config→parámetros).
+- Adapter AutoCAD: `src/RackCad.Plugin/Headers/LateralHeaderDrawer.cs` (+ `LateralHeaderDrawOutcome.cs`).
+- Servicio de dibujo (puente UI↔AutoCAD): `src/RackCad.Plugin/Headers/LateralHeaderDrawService.cs`,
+  que implementa `src/RackCad.UI/IHeaderDrawService.cs`.
+- Comando: `RACKCABECERALATERAL` en `src/RackCad.Plugin/RackFrameCommands.cs`; botón "Insertar en AutoCAD"
+  en `src/RackCad.UI/RackFrameConfiguratorWindow.xaml(.cs)`.
+- Tests: `tests/RackCad.Tests/LateralHeaderLayoutBuilderTests.cs` (builder/resolver) y
+  `tests/RackCad.Tests/LateralHeaderParametersFactoryTests.cs` (mapeo config→parámetros).
 - Parámetros en el editor: `RackFrameConfiguration` + `RackFrameConfiguratorViewModel` + el panel
   "Header" del editor avanzado en `RackFrameConfiguratorWindow.xaml`.

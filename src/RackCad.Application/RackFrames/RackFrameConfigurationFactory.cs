@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using RackCad.Application.Catalogs;
 using RackCad.Domain.RackFrames;
@@ -91,22 +92,79 @@ namespace RackCad.Application.RackFrames
                 RightBasePlate = CreateBasePlate(PostSide.Right, plateId, basePlate, plateConnectionId)
             };
 
-            for (var index = 0; index < horizontals.Count; index++)
+            // Parametric standard model: the first travesaño sits at the celosía troquel, then panels of
+            // PanelClear, then 0/1/2 closing travesaños that absorb the leftover while clearing the post top.
+            // Closing panels carry no diagonal. The shape no longer comes from the template's elevations (it
+            // is computed), but the template still supplies the profiles, plate, post and connection points.
+            var horizontalProfileId = FirstNonEmpty(horizontals[0].Profile, defaults.HorizontalProfile, diagonalId);
+            var elevations = ComputeStandardElevations(
+                height, configuration.CelosiaStartTroquel, configuration.PasoTroquel, configuration.PanelClear, out var standardCount);
+
+            for (var index = 0; index < elevations.Count; index++)
             {
-                var horizontal = horizontals[index];
-                var ratio = Math.Clamp(horizontal.Elevation / maxReferenceElevation, 0.0, 1.0);
-                var elevation = Math.Round(height * ratio, 4);
-                AddHorizontal(configuration, index + 1, elevation, NormalizeText(horizontal.Profile), Math.Max(1, horizontal.Quantity));
+                AddHorizontal(configuration, index + 1, elevations[index], horizontalProfileId, quantity: 1);
             }
 
-            for (var index = 0; index < horizontals.Count - 1; index++)
+            for (var index = 0; index < elevations.Count - 1; index++)
             {
                 var lowerId = "H" + (index + 1).ToString(CultureInfo.InvariantCulture);
                 var upperId = "H" + (index + 2).ToString(CultureInfo.InvariantCulture);
-                AddPanel(configuration, index + 1, lowerId, upperId, template.DefaultArrangement, diagonalId, braceStartId, braceEndId);
+                // Standard panels get the template's diagonal; the closing panels above them carry none.
+                var arrangement = index < standardCount - 1 ? template.DefaultArrangement : BracingPattern.NoBracing;
+                AddPanel(configuration, index + 1, lowerId, upperId, arrangement, diagonalId, braceStartId, braceEndId);
             }
 
             return configuration;
+        }
+
+        /// <summary>
+        /// Standard celosía elevations: the first travesaño at the start troquel, then one every
+        /// <paramref name="claro"/>, then up to two closing travesaños. <paramref name="standardCount"/> is the
+        /// number of evenly-spaced travesaños before the closings (the panels among them carry diagonals).
+        ///
+        /// Closing rule (the leftover above the last standard travesaño is split so the closings land on
+        /// troqueles and keep clear of the post top): a large leftover takes two closings, a moderate one
+        /// takes a single closing, and a small one takes none.
+        /// </summary>
+        private static IReadOnlyList<double> ComputeStandardElevations(
+            double height, int troquelStart, double paso, double claro, out int standardCount)
+        {
+            if (paso <= 0.0) paso = 2.0;
+            if (claro <= 0.0) claro = 44.0;
+            if (troquelStart < 1) troquelStart = 1;
+
+            var yFirst = (troquelStart - 1) * paso;
+            var elevations = new List<double>();
+
+            if (yFirst >= height)
+            {
+                standardCount = 1;
+                elevations.Add(0.0);
+                return elevations;
+            }
+
+            standardCount = (int)Math.Floor((height - yFirst) / claro) + 1;
+
+            for (var index = 0; index < standardCount; index++)
+            {
+                elevations.Add(Math.Round(yFirst + index * claro, 4));
+            }
+
+            var lastStandard = yFirst + (standardCount - 1) * claro;
+            var leftover = height - lastStandard;
+
+            if (leftover >= 26.0)
+            {
+                var spacing = (leftover - 2.0) % 4.0 == 0.0 ? (leftover - 2.0) / 2.0 : (leftover - 4.0) / 2.0;
+                elevations.Add(Math.Round(lastStandard + spacing, 4));
+                elevations.Add(Math.Round(lastStandard + 2.0 * spacing, 4));
+            }
+            else if (leftover >= 14.0)
+            {
+                elevations.Add(Math.Round(lastStandard + (leftover - 2.0), 4));
+            }
+
+            return elevations;
         }
 
         private PostAssembly CreatePost(PostSide side, string postCatalogId)

@@ -13,36 +13,41 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void CreateDefault_ProducesFourHorizontalsAtExpectedElevations()
+        public void CreateDefault_ProducesParametricHorizontals_StartingAtTheCelosiaTroquel()
         {
             var configuration = CreateStandard();
 
-            Assert.Equal(4, configuration.Horizontals.Count);
-            Assert.Equal(new[] { "H1", "H2", "H3", "H4" }, configuration.Horizontals.Select(h => h.Id));
-            Assert.Equal(new[] { 0.0, 44.0, 88.0, 132.0 }, configuration.Horizontals.Select(h => h.Elevation));
+            // First travesaño at the start troquel (troquel 3 -> 4"), then panels of 44", then two closings.
+            Assert.Equal(new[] { "H1", "H2", "H3", "H4", "H5" }, configuration.Horizontals.Select(h => h.Id));
+            Assert.Equal(new[] { 4.0, 48.0, 92.0, 110.0, 128.0 }, configuration.Horizontals.Select(h => h.Elevation));
             Assert.All(configuration.Horizontals, h => Assert.True(h.IsStandard));
         }
 
         [Fact]
-        public void CreateDefault_ProducesThreeConsecutivePanels()
+        public void CreateDefault_StandardPanelsAreDiagonal_ClosingPanelsAreNot()
         {
             var configuration = CreateStandard();
+            var panels = configuration.BracingPanels.OrderBy(p => p.Number).ToList();
 
-            Assert.Equal(3, configuration.BracingPanels.Count);
+            Assert.Equal(4, panels.Count);
+            Assert.Equal(new[] { "H1", "H2", "H3", "H4" }, panels.Select(p => p.LowerHorizontalId));
+            Assert.Equal(new[] { "H2", "H3", "H4", "H5" }, panels.Select(p => p.UpperHorizontalId));
 
-            // Invariant: each panel spans two consecutive horizontals (no skips).
-            Assert.Equal(new[] { "H1", "H2", "H3" }, configuration.BracingPanels.Select(p => p.LowerHorizontalId));
-            Assert.Equal(new[] { "H2", "H3", "H4" }, configuration.BracingPanels.Select(p => p.UpperHorizontalId));
-            Assert.All(configuration.BracingPanels, p => Assert.Equal(BracingPattern.SingleDiagonal, p.Arrangement));
+            // Two standard diagonal panels, then two closing panels with no bracing.
+            Assert.Equal(BracingPattern.SingleDiagonal, panels[0].Arrangement);
+            Assert.Equal(BracingPattern.SingleDiagonal, panels[1].Arrangement);
+            Assert.Equal(BracingPattern.NoBracing, panels[2].Arrangement);
+            Assert.Equal(BracingPattern.NoBracing, panels[3].Arrangement);
         }
 
         [Fact]
-        public void CreateDefault_TargetHeightMatchesTopHorizontal()
+        public void CreateDefault_ClosingTravesanosClearThePostTop()
         {
             var configuration = CreateStandard();
 
             Assert.Equal(132.0, configuration.Height);
-            Assert.Equal(configuration.Height, configuration.Horizontals.Max(h => h.Elevation));
+            // The top travesaño deliberately sits below the post top (the closings clear it).
+            Assert.True(configuration.Horizontals.Max(h => h.Elevation) < configuration.Height);
         }
     }
 }

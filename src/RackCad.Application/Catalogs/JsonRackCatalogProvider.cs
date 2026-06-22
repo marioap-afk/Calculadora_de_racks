@@ -36,12 +36,13 @@ namespace RackCad.Application.Catalogs
         }
 
         /// <summary>
-        /// Builds a provider pointing at a <c>catalogs</c> folder next to the
-        /// executing assembly, which is how the AutoCAD plugin ships them.
+        /// Builds a provider pointing at the <c>catalogs</c> folder next to the executing assembly, which is
+        /// how the AutoCAD plugin and the tests ship them. See <see cref="CatalogDirectory"/> for why this is
+        /// resolved relative to the assembly rather than <see cref="AppContext.BaseDirectory"/>.
         /// </summary>
         public static JsonRackCatalogProvider FromBaseDirectory()
         {
-            return new JsonRackCatalogProvider(Path.Combine(AppContext.BaseDirectory, "catalogs"));
+            return new JsonRackCatalogProvider(CatalogDirectory.Resolve());
         }
 
         public RackCatalog Load()

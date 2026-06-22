@@ -44,6 +44,10 @@ Validar que un ingeniero pueda configurar una cabecera de rack mas rapido que di
 - Persistencia local de layout de usuario.
 - Boton `Restaurar layout predeterminado`.
 - Boton `Restaurar cabecera estandar`.
+- Lista de materiales (BOM) con exportacion a CSV.
+- Guardar/abrir proyecto (`.rackcad.json`).
+- Dibujo de la cabecera en vista lateral (block-based) en AutoCAD con el boton `Insertar en AutoCAD`
+  y el comando `RACKCABECERALATERAL`.
 
 ## Estandar temporal actual
 
@@ -84,11 +88,9 @@ Validar que un ingeniero pueda configurar una cabecera de rack mas rapido que di
 
 ## Fuera de alcance todavia
 
-- Dibujo AutoCAD.
-- Bloques dinamicos.
+- Dibujo de las vistas frontal y planta (solo existe la cabecera lateral).
+- Definicion automatica de los bloques dinamicos en el DWG (deben existir previamente).
 - SQLite.
-- BOM formal.
-- Exportacion Excel.
+- Exportacion a Excel (hoy el BOM exporta CSV).
 - Guardado de metadatos en DWG.
-- Catalogos externos reales.
 

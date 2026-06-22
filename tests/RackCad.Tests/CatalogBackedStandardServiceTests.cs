@@ -65,9 +65,9 @@ namespace RackCad.Tests
             var configuration = new HardcodedStandardRackFrameService((RackCatalog)null).CreateDefault();
 
             Assert.Equal(CatalogIds.StandardPost, configuration.LeftPost.Description);
-            // Structure is unchanged regardless of catalog.
-            Assert.Equal(4, configuration.Horizontals.Count);
-            Assert.Equal(3, configuration.BracingPanels.Count);
+            // Structure is unchanged regardless of catalog: 3 standard travesaños + 2 closings, 4 panels.
+            Assert.Equal(5, configuration.Horizontals.Count);
+            Assert.Equal(4, configuration.BracingPanels.Count);
         }
 
         [Fact]

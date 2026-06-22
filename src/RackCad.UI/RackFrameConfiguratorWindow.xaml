@@ -75,6 +75,68 @@
                 <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
 
+            <!-- Accent button for the main calls to action (Generar cabecera, Insertar en AutoCAD). -->
+            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Background" Value="#2B6CB0" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Padding" Value="16,8" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#2C5282" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#234876" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="bd" Property="Background" Value="#A0AEC0" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Subtle outlined button for secondary footer actions. -->
+            <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="#2D3748" />
+                <Setter Property="Background" Value="White" />
+                <Setter Property="BorderBrush" Value="#C9D2DD" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Padding" Value="14,7" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#EDF2F7" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="bd" Property="Background" Value="#E2E8F0" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="bd" Property="Opacity" Value="0.5" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
         </Grid.Resources>
 
@@ -96,7 +158,7 @@
                                Foreground="White"
                                FontSize="22"
                                FontWeight="SemiBold" />
-                    <TextBlock Text="Partir del estandar y modificar excepciones"
+                    <TextBlock Text="Partir del estándar y modificar excepciones"
                                Foreground="#C7D0DA"
                                FontSize="13"
                                Margin="0,4,0,0" />
@@ -107,7 +169,7 @@
                                Foreground="White"
                                FontWeight="SemiBold"
                                HorizontalAlignment="Right" />
-                    <TextBlock Text="{Binding StandardBaselineVersion, StringFormat=Version {0}}"
+                    <TextBlock Text="{Binding StandardBaselineVersion, StringFormat=Versión {0}}"
                                Foreground="#C7D0DA"
                                FontSize="12"
                                HorizontalAlignment="Right"
@@ -117,7 +179,7 @@
                             Padding="10,6"
                             Margin="0,10,0,0"
                             HorizontalAlignment="Right"
-                            ToolTip="Muestra u oculta el editor detallado (horizontales, paneles, perfiles y excepciones). Apagado = configuracion rapida.">
+                            ToolTip="Muestra u oculta el editor detallado (horizontales, paneles, perfiles y excepciones). Apagado = configuración rápida.">
                         <CheckBox Content="Editor avanzado"
                                   IsChecked="{Binding IsAdvancedEditor, Mode=TwoWay}"
                                   Foreground="White"
@@ -149,7 +211,7 @@
                     Visibility="{Binding IsSimpleEditor, Converter={StaticResource BoolToVis}}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel MaxWidth="560" HorizontalAlignment="Left">
-                        <TextBlock Text="Configuracion rapida" Style="{StaticResource SectionTitleStyle}" />
+                        <TextBlock Text="Configuración rápida" Style="{StaticResource SectionTitleStyle}" />
                         <TextBlock Text="Define lo esencial y genera la cabecera. Activa &quot;Editor avanzado&quot; en la barra superior para ajustar horizontales, paneles, perfiles y excepciones en detalle."
                                    Style="{StaticResource MutedTextStyle}"
                                    FontSize="12"
@@ -164,9 +226,10 @@
 
                         <TextBlock Text="Tipo de poste" Style="{StaticResource PropertyLabelStyle}" />
                         <ComboBox Style="{StaticResource PropertyComboBoxStyle}"
-                                  IsEditable="True"
                                   ItemsSource="{Binding PostProfileOptions}"
-                                  Text="{Binding SimplePostCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                  DisplayMemberPath="DisplayName"
+                                  SelectedValuePath="Id"
+                                  SelectedValue="{Binding SimplePostCatalogId, Mode=TwoWay}" />
 
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -188,8 +251,9 @@
 
                         <Button Content="Generar cabecera"
                                 Click="ApplySimpleHeader_Click"
-                                Style="{StaticResource CompactButtonStyle}"
+                                Style="{StaticResource PrimaryButtonStyle}"
                                 HorizontalAlignment="Left"
+                                MinWidth="150"
                                 Margin="0,8,0,0" />
 
                         <Border Background="#F1F4F8"
@@ -487,7 +551,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Perfil" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding PostProfileOptions}" Text="{Binding LeftPostCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding PostProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPostCatalogId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Descripcion" Style="{StaticResource PropertyLabelStyle}" />
                                     <TextBox Grid.Row="0" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding LeftPostDescription, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
@@ -496,10 +560,10 @@
                                     <CheckBox Grid.Row="1" Grid.Column="1" Content="Poste reforzado" IsChecked="{Binding LeftPostHasReinforcement, Mode=TwoWay}" Margin="0,3,0,10" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Tipo refuerzo" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ReinforcementProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Placa asociada" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding BasePlateOptions}" Text="{Binding LeftPlateCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding BasePlateOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPlateCatalogId, Mode=TwoWay}" />
                                 </Grid>
                             </Border>
 
@@ -528,7 +592,7 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Perfil" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding PostProfileOptions}" Text="{Binding RightPostCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding PostProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPostCatalogId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Descripcion" Style="{StaticResource PropertyLabelStyle}" />
                                     <TextBox Grid.Row="0" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding RightPostDescription, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
@@ -537,10 +601,10 @@
                                     <CheckBox Grid.Row="1" Grid.Column="1" Content="Poste reforzado" IsChecked="{Binding RightPostHasReinforcement, Mode=TwoWay}" Margin="0,3,0,10" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Tipo refuerzo" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding RightPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ReinforcementProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPostReinforcementCatalogId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Placa asociada" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding BasePlateOptions}" Text="{Binding RightPlateCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding BasePlateOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPlateCatalogId, Mode=TwoWay}" />
                                 </Grid>
                             </Border>
 
@@ -581,13 +645,13 @@
                                     <ComboBox Grid.Row="0" Grid.Column="7" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding SideOptions}" SelectedItem="{Binding SelectedBracingSegment.SideMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Perfil" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding DiagonalProfileOptions}" Text="{Binding SelectedBracingSegment.BraceProfileId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding DiagonalProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding SelectedBracingSegment.BraceProfileId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Punto inicial" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding SelectedBracingSegment.StartConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding SelectedBracingSegment.StartConnectionPointId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="6" Text="Punto final" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="7" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding SelectedBracingSegment.EndConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="7" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding SelectedBracingSegment.EndConnectionPointId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Horizontal inferior" Style="{StaticResource PropertyLabelStyle}" />
                                     <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding SelectedBracingSegment.LowerHorizontalId, Mode=OneWay}" IsReadOnly="True" Background="#F7F9FB" />
@@ -621,6 +685,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Izquierdo" Style="{StaticResource PropertyLabelStyle}" />
@@ -630,10 +695,16 @@
                                     <CheckBox Grid.Row="0" Grid.Column="4" Content="Con refuerzo" IsChecked="{Binding RightPostHasReinforcement, Mode=TwoWay}" Margin="0,3,0,10" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Tipo izquierdo" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ReinforcementProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPostReinforcementCatalogId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Tipo derecho" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ReinforcementProfileOptions}" Text="{Binding RightPostReinforcementCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ReinforcementProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPostReinforcementCatalogId, Mode=TwoWay}" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Altura refuerzo izq (in)" Style="{StaticResource PropertyLabelStyle}" />
+                                    <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding LeftPostReinforcementHeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=0.##}" ToolTip="Altura (LONGITUD) del refuerzo izquierdo desde la base. La celosía en esa zona se ancla al troquel del refuerzo." />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="Altura refuerzo der (in)" Style="{StaticResource PropertyLabelStyle}" />
+                                    <TextBox Grid.Row="2" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding RightPostReinforcementHeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=0.##}" ToolTip="Altura (LONGITUD) del refuerzo derecho desde la base. La celosía en esa zona se ancla al troquel del refuerzo." />
                                 </Grid>
                             </Border>
 
@@ -661,16 +732,16 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Placa izquierda" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding BasePlateOptions}" Text="{Binding LeftPlateCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding BasePlateOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPlateCatalogId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Placa derecha" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="0" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding BasePlateOptions}" Text="{Binding RightPlateCatalogId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="0" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding BasePlateOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPlateCatalogId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Punto izquierdo" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding LeftPlateConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPlateConnectionPointId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Punto derecho" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding RightPlateConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPlateConnectionPointId, Mode=TwoWay}" />
                                 </Grid>
                             </Border>
 
@@ -709,7 +780,7 @@
                                         <TextBox Grid.Row="0" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding SelectedHorizontal.ElevationText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
                                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Perfil" Style="{StaticResource PropertyLabelStyle}" />
-                                        <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding HorizontalProfileOptions}" Text="{Binding SelectedHorizontal.ProfileId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                        <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding HorizontalProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding SelectedHorizontal.ProfileId, Mode=TwoWay}" />
 
                                         <TextBlock Grid.Row="1" Grid.Column="3" Text="Cantidad" Style="{StaticResource PropertyLabelStyle}" />
                                         <TextBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding SelectedHorizontal.Quantity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
@@ -753,16 +824,16 @@
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Punto inicial panel" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding SelectedBracingSegment.StartConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding SelectedBracingSegment.StartConnectionPointId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="0" Grid.Column="3" Text="Punto final panel" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="0" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding SelectedBracingSegment.EndConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="0" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding SelectedBracingSegment.EndConnectionPointId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Placa izquierda" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding LeftPlateConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPlateConnectionPointId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="1" Grid.Column="3" Text="Placa derecha" Style="{StaticResource PropertyLabelStyle}" />
-                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" IsEditable="True" ItemsSource="{Binding ConnectionPointOptions}" Text="{Binding RightPlateConnectionPointId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <ComboBox Grid.Row="1" Grid.Column="4" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding ConnectionPointOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPlateConnectionPointId, Mode=TwoWay}" />
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Panel activo" Style="{StaticResource PropertyLabelStyle}" />
                                     <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding SelectedSegmentSummary, Mode=OneWay}" IsReadOnly="True" Background="#F7F9FB" />
@@ -825,7 +896,7 @@
                         Padding="12"
                         Margin="0,12,0,0">
                     <StackPanel>
-                        <TextBlock Text="Edicion rapida"
+                        <TextBlock Text="Edición rápida"
                                    FontWeight="SemiBold"
                                    Foreground="#1F2933"
                                    Margin="0,0,0,8" />
@@ -897,9 +968,10 @@
                                 <ComboBox Style="{StaticResource CellComboBoxStyle}"
                                           Width="230"
                                           Margin="12,0,8,8"
-                                          IsEditable="True"
                                           ItemsSource="{Binding DiagonalProfileOptions}"
-                                          Text="{Binding BulkProfileId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                          DisplayMemberPath="DisplayName"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding BulkProfileId, Mode=TwoWay}" />
                                 <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar perfil" Click="ApplyBulkProfile_Click" />
                             </WrapPanel>
                         </StackPanel>
@@ -958,9 +1030,10 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <ComboBox Style="{StaticResource CellComboBoxStyle}"
-                                                  IsEditable="True"
                                                   ItemsSource="{Binding DataContext.HorizontalProfileOptions, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                  Text="{Binding ProfileId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                                  DisplayMemberPath="DisplayName"
+                                                  SelectedValuePath="Id"
+                                                  SelectedValue="{Binding ProfileId, Mode=TwoWay}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -1105,9 +1178,10 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <ComboBox Style="{StaticResource CellComboBoxStyle}"
-                                              IsEditable="True"
                                               ItemsSource="{Binding DataContext.DiagonalProfileOptions, RelativeSource={RelativeSource AncestorType=Window}}"
-                                              Text="{Binding BraceProfileId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                              DisplayMemberPath="DisplayName"
+                                              SelectedValuePath="Id"
+                                              SelectedValue="{Binding BraceProfileId, Mode=TwoWay}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -1221,43 +1295,44 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Button Content="Abrir proyecto"
+                            Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="120"
-                            Padding="14,7"
                             Margin="0,0,8,0"
                             ToolTip="Abre una cabecera guardada (.rackcad.json)."
                             Click="OpenProject_Click" />
                     <Button Content="Guardar proyecto"
+                            Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="130"
-                            Padding="14,7"
                             Margin="0,0,8,0"
                             ToolTip="Guarda la cabecera actual como archivo .rackcad.json."
                             Click="SaveProject_Click" />
                     <Button Content="Ver BOM"
+                            Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="100"
-                            Padding="14,7"
                             Margin="0,0,8,0"
                             ToolTip="Muestra la lista de materiales (postes, placas, horizontales, diagonales) y permite exportarla a CSV."
                             Click="ViewBom_Click" />
                     <Button Content="Restaurar cabecera estándar"
+                            Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="190"
-                            Padding="14,7"
                             Margin="0,0,8,0"
+                            ToolTip="Vuelve a la cabecera estándar y descarta las modificaciones manuales."
                             Click="RestoreStandardFrameButton_Click" />
                     <Button Content="Restaurar layout predeterminado"
+                            Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="185"
-                            Padding="14,7"
                             Margin="0,0,8,0"
+                            ToolTip="Restaura el tamaño de paneles y tablas (no toca la configuración técnica)."
                             Click="ResetLayoutButton_Click" />
                     <Button Content="Insertar en AutoCAD"
-                            IsEnabled="False"
-                            ToolTipService.ShowOnDisabled="True"
-                            ToolTip="Disponible en una version futura. El dibujo en AutoCAD aun no esta implementado."
-                            MinWidth="140"
-                            Padding="14,7"
-                            Margin="0,0,8,0" />
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            ToolTip="Dibuja la cabecera lateral configurada en el dibujo activo de AutoCAD (vista lateral, basada en bloques)."
+                            MinWidth="150"
+                            Margin="0,0,8,0"
+                            Click="InsertInAutoCad_Click" />
                     <Button Content="Cerrar"
+                            Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="90"
-                            Padding="14,7"
                             Click="CloseButton_Click" />
                 </StackPanel>
             </Grid>

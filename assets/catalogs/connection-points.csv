@@ -2,3 +2,4 @@ id,displayName,description,role
 MONTAJE_POSTE,Montaje a poste,Punto de mate de la placa al poste (compartible por cualquier placa),BasePlate
 TROQUEL_CELOSIA,Troquel de celosia,Primer troquel de la celosía,Poste
 CELOSIA,Troquel de celosía,Troquel donde se monta la celosía,Truss
+FIN_POSTE,Montaje de refuerzo,Punto de mate de poste y refuerzo,Poste

@@ -93,7 +93,9 @@ namespace RackCad.Application.Bom
 
             if (post.HasReinforcement && !string.IsNullOrWhiteSpace(post.ReinforcementCatalogId))
             {
-                raw.Add(new RawItem(Reinforcement, post.ReinforcementCatalogId, Round(height), 1));
+                // The reinforcement has its own length (its LONGITUD), not the full header height.
+                var reinforcementLength = post.ReinforcementHeight > 0.0 ? post.ReinforcementHeight : height;
+                raw.Add(new RawItem(Reinforcement, post.ReinforcementCatalogId, Round(reinforcementLength), 1));
             }
         }
 

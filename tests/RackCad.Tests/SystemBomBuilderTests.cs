@@ -30,7 +30,7 @@ namespace RackCad.Tests
             var systemBom = SystemBomBuilder.Build(system, Catalog);
 
             Assert.Equal(2 * singleHeader.TotalPieces, systemBom.TotalPieces);
-            Assert.Equal(24, systemBom.TotalPieces);
+            Assert.Equal(22, systemBom.TotalPieces); // 2 headers x 11 pieces (5 travesaños + 2 diagonals + 2 posts + 2 plates)
 
             var post = systemBom.Lines.Single(l => l.Category == BomBuilder.Post && l.ProfileId == "POSTE_OMEGA_3X3");
             Assert.Equal(4, post.Quantity);

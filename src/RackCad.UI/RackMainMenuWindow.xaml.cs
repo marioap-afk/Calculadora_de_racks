@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using RackCad.Application.RackFrames;
+using RackCad.Domain.RackFrames;
 
 namespace RackCad.UI
 {
@@ -11,8 +12,22 @@ namespace RackCad.UI
     /// </summary>
     public partial class RackMainMenuWindow : Window
     {
+        private readonly bool canInsertInAutoCad;
+
+        /// <summary>Set when the user asked to insert the configured header; the host command draws it after
+        /// every modal window (this menu included) has closed, so the placement jig has the editor free.</summary>
+        public bool InsertRequested { get; private set; }
+
+        public RackFrameConfiguration ConfigurationToInsert { get; private set; }
+
         public RackMainMenuWindow()
+            : this(false)
         {
+        }
+
+        public RackMainMenuWindow(bool canInsertInAutoCad)
+        {
+            this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
         }
 
@@ -21,8 +36,16 @@ namespace RackCad.UI
             try
             {
                 var configuration = new HardcodedStandardRackFrameService().CreateDefault();
-                var window = new RackFrameConfiguratorWindow(configuration) { Owner = this };
+                var window = new RackFrameConfiguratorWindow(configuration, canInsertInAutoCad) { Owner = this };
                 window.ShowDialog();
+
+                if (window.InsertRequested)
+                {
+                    // Bubble the request up and close so the host command can run the placement jig.
+                    InsertRequested = true;
+                    ConfigurationToInsert = window.Configuration;
+                    Close();
+                }
             }
             catch (Exception ex)
             {

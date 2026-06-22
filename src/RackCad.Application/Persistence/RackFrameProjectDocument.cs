@@ -102,6 +102,7 @@ namespace RackCad.Application.Persistence
         public string Description { get; set; }
         public bool HasReinforcement { get; set; }
         public string ReinforcementCatalogId { get; set; }
+        public double ReinforcementHeight { get; set; }
 
         public static PostDocument From(PostAssembly post)
         {
@@ -110,7 +111,8 @@ namespace RackCad.Application.Persistence
                 PostCatalogId = post.PostCatalogId,
                 Description = post.Description,
                 HasReinforcement = post.HasReinforcement,
-                ReinforcementCatalogId = post.ReinforcementCatalogId
+                ReinforcementCatalogId = post.ReinforcementCatalogId,
+                ReinforcementHeight = post.ReinforcementHeight
             };
         }
 
@@ -122,7 +124,8 @@ namespace RackCad.Application.Persistence
                 PostCatalogId = PostCatalogId,
                 Description = Description,
                 HasReinforcement = HasReinforcement,
-                ReinforcementCatalogId = ReinforcementCatalogId
+                ReinforcementCatalogId = ReinforcementCatalogId,
+                ReinforcementHeight = ReinforcementHeight
             };
         }
     }

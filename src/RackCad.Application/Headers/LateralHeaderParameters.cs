@@ -38,6 +38,12 @@ namespace RackCad.Application.Headers
         /// <summary>The diagonal ends this many troqueles below the upper horizontal of its panel.</summary>
         public int OffsetDiagonalFinTroqueles { get; set; } = 2;
 
+        /// <summary>Troquel separation between the two parallel diagonals of a double-diagonal panel.</summary>
+        public int DiagonalDoubleSpacingTroqueles { get; set; } = 1;
+
+        /// <summary>Each extra travesaño of a double horizontal sits this many troqueles above the previous.</summary>
+        public int HorizontalDoubleOffsetTroqueles { get; set; } = 1;
+
         // ---- Top closing ----
 
         /// <summary>
@@ -60,13 +66,16 @@ namespace RackCad.Application.Headers
         public string TroquelCelosiaPoint { get; set; } = "TROQUEL_CELOSIA";
         public string CelosiaPoint { get; set; } = "CELOSIA";
 
+        /// <summary>Point on the post where a reinforcement's origin mates (its X gives the reinforcement offset).</summary>
+        public string FinPostePoint { get; set; } = "FIN_POSTE";
+
         // ---- Dynamic-block parameter names ----
 
         /// <summary>Dynamic parameter that stretches the post to the header height.</summary>
         public string PostLengthParameter { get; set; } = "LONGITUD";
 
-        /// <summary>Dynamic parameter that stretches a horizontal/diagonal to its length.</summary>
-        public string MemberLengthParameter { get; set; } = "Distancia1";
+        /// <summary>Dynamic parameter that stretches a horizontal/diagonal to its length (same name as the post).</summary>
+        public string MemberLengthParameter { get; set; } = "LONGITUD";
 
         /// <summary>Orthographic view these blocks live in (lateral by default).</summary>
         public string View { get; set; } = "LATERAL";

@@ -20,6 +20,11 @@ namespace RackCad.Application.Headers
     public sealed class HeaderBlockInstance
     {
         public HeaderBlockRole Role { get; set; }
+
+        /// <summary>Catalog id of the piece this instance draws (post/plate/truss). Used to look up a
+        /// human-readable name when reporting, e.g., a block that is still missing from the drawing.</summary>
+        public string PieceId { get; set; }
+
         public string BlockName { get; set; }
         public string View { get; set; }
 

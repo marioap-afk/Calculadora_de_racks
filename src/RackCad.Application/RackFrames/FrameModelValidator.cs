@@ -45,10 +45,15 @@ namespace RackCad.Application.RackFrames
                 }
             }
 
-            // The preview and future CAD output anchor at elevation 0, so the lowest horizontal should be at 0.
-            if (ordered.Count > 0 && Math.Abs(ordered[0].Elevation) > tolerance)
+            // The celosía starts at the configured start troquel (not at 0), so the lowest horizontal should
+            // land there. Comparing against the expected troquel position keeps the check valid for the
+            // parametric standard model (first travesaño = (CelosiaStartTroquel-1) * PasoTroquel).
+            var paso = configuration.PasoTroquel > 0 ? configuration.PasoTroquel : 2.0;
+            var expectedBase = Math.Max(0.0, (configuration.CelosiaStartTroquel - 1) * paso);
+            if (ordered.Count > 0 && Math.Abs(ordered[0].Elevation - expectedBase) > tolerance)
             {
-                warnings.Add("La horizontal inferior deberia estar en 0; esta en " + FormatInches(ordered[0].Elevation) + ".");
+                warnings.Add("La horizontal inferior deberia estar en el troquel de inicio (" +
+                    FormatInches(expectedBase) + "); esta en " + FormatInches(ordered[0].Elevation) + ".");
             }
 
             AddZeroHeightPanelWarnings(warnings, configuration, ordered, tolerance);

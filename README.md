@@ -2,7 +2,7 @@
 
 Proyecto MVP para una aplicacion profesional de AutoCAD .NET en C# enfocada en configurar cabeceras de racks industriales.
 
-El estado actual no dibuja entidades AutoCAD todavia. El comando `RACKCABECERA` abre una ventana WPF modal dentro de AutoCAD para configurar una cabecera estandar, modificar excepciones y validar visualmente el modelo antes de pasar a generacion CAD.
+El comando `RACKCABECERA` abre una ventana WPF modal dentro de AutoCAD para configurar una cabecera estandar, modificar excepciones y validar visualmente el modelo. Como primer paso de generacion CAD ya existe el dibujo **block-based de la cabecera en vista lateral**: el boton `Insertar en AutoCAD` del configurador (o el comando `RACKCABECERALATERAL`) inserta los bloques anclados a sus puntos de conexion. Requiere que los bloques de AutoCAD esten definidos en el dibujo; los que falten se informan y se omiten. Las vistas frontal/planta y el motor CAD completo siguen pendientes.
 
 ## Estado actual
 
@@ -11,7 +11,7 @@ El estado actual no dibuja entidades AutoCAD todavia. El comando `RACKCABECERA` 
 - UI WPF: `src/RackCad.UI`.
 - Logica de aplicacion: `src/RackCad.Application`.
 - Modelo de dominio: `src/RackCad.Domain`.
-- Comando disponible: `RACKCABECERA`.
+- Comandos disponibles: `RACKCAD` (menu), `RACKCABECERA` (configurador) y `RACKCABECERALATERAL` (dibuja la cabecera estandar en vista lateral).
 - AutoCAD objetivo actual: AutoCAD 2025 completo, no LT.
 - Estandar temporal: cabecera de 132 in de alto, 42 in de fondo, horizontales en 0/44/88/132 in y paneles derivados.
 
@@ -39,19 +39,21 @@ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj
 
 ## Catalogos externos
 
-Los perfiles, placas y puntos de conexion viven como JSON versionado en `assets/catalogs/`:
+Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CSV versionado en `assets/catalogs/` (las plantillas y los defaults siguen en JSON). Tras la unificacion: horizontales y diagonales comparten una sola lista de celosia (`truss-profiles.csv`) y los refuerzos son postes (`post-profiles.csv`); ya no existen `diagonal-profiles` ni `reinforcement-profiles`.
 
-- `post-profiles.json`
-- `horizontal-profiles.json`
-- `diagonal-profiles.json`
-- `reinforcement-profiles.json`
-- `base-plates.json`
-- `connection-points.json`
+- `post-profiles.csv`
+- `truss-profiles.csv` (horizontales y diagonales de celosia)
+- `base-plates.csv`
+- `connection-points.csv`
+- `views.csv`
+- `connection-layout.csv` (posicion 2D de cada punto por pieza y vista)
+- `blocks.csv` (nombre de bloque de AutoCAD por pieza y vista)
+- `defaults.json`
 - `header-templates.json`
 
-Como editar estos archivos: `docs/catalogos-y-plantillas.md`.
+Como editar estos archivos y como se relacionan entre si: `docs/catalogos-y-plantillas.md` y `docs/modelo-de-datos.md`.
 
-Se cargan con `RackCad.Application.Catalogs.JsonRackCatalogProvider` (piezas) y `RackCad.Application.RackFrames.RackFrameTemplateProvider` (plantillas). El plugin y el proyecto de pruebas copian estos archivos a una carpeta `catalogs/` junto al ensamblado, de modo que `JsonRackCatalogProvider.FromBaseDirectory()` los resuelve en runtime. Una prueba (`CatalogStandardConsistencyTests`) garantiza que todo id usado por la cabecera estandar exista en los catalogos antes de migrar los valores hardcodeados.
+Se cargan con `RackCad.Application.Catalogs.JsonRackCatalogProvider` (piezas; lee el `.csv` y, si falta, el `.json`) y `RackCad.Application.RackFrames.RackFrameTemplateProvider` (plantillas). El plugin y el proyecto de pruebas copian estos archivos a una carpeta `catalogs/` junto al ensamblado, de modo que `JsonRackCatalogProvider.FromBaseDirectory()` los resuelve en runtime. Una prueba (`CatalogStandardConsistencyTests`) garantiza que todo id usado por la cabecera estandar exista en los catalogos antes de migrar los valores hardcodeados.
 
 ## Probar en AutoCAD
 
@@ -63,11 +65,15 @@ Se cargan con `RackCad.Application.Catalogs.JsonRackCatalogProvider` (piezas) y 
 src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll
 ```
 
-4. Ejecutar:
+4. Ejecutar uno de los comandos:
 
 ```text
-RACKCABECERA
+RACKCAD                 (menu principal)
+RACKCABECERA            (configurador; el boton "Insertar en AutoCAD" dibuja lo configurado)
+RACKCABECERALATERAL     (dibuja la cabecera estandar en vista lateral, sin dialogo)
 ```
+
+Para que el dibujo lateral inserte piezas, los bloques de AutoCAD referidos en `blocks.csv` (vista `LATERAL`) deben existir en el dibujo, con los parametros dinamicos `LONGITUD` (poste) y `Distancia1` (travesano). Ver `docs/generacion-cabecera-lateral.md`.
 
 ## Documentos de contexto
 
@@ -89,8 +95,8 @@ Documentos historicos/especificacion amplia:
 
 ## Fuera de alcance actualmente
 
-- Dibujo real en AutoCAD.
-- Bloques dinamicos.
+- Dibujo de las vistas frontal y planta (solo existe la cabecera lateral).
+- Definicion automatica de los bloques dinamicos en el DWG (deben existir previamente).
 - SQLite.
 - BOM formal.
 - Exportacion Excel.

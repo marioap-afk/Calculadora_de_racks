@@ -67,14 +67,14 @@ namespace RackCad.UI
             bulkProfileId = defaultDiagonalProfileId;
             memberBuilder = new BracingPanelMemberBuilder();
 
-            PostProfileOptions = ToIdOptions(this.catalog.PostProfiles.Select(profile => profile?.Id));
+            PostProfileOptions = ToCatalogOptions(this.catalog.PostProfiles);
             // Horizontals and diagonals are both truss members: both dropdowns list the same truss catalog.
-            HorizontalProfileOptions = ToIdOptions(this.catalog.TrussProfiles.Select(profile => profile?.Id));
-            DiagonalProfileOptions = ToIdOptions(this.catalog.TrussProfiles.Select(profile => profile?.Id));
+            HorizontalProfileOptions = ToCatalogOptions(this.catalog.TrussProfiles);
+            DiagonalProfileOptions = ToCatalogOptions(this.catalog.TrussProfiles);
             // Reinforcements are posts: the reinforcement dropdown lists the same post catalog.
-            ReinforcementProfileOptions = ToIdOptions(this.catalog.PostProfiles.Select(profile => profile?.Id));
-            BasePlateOptions = ToIdOptions(this.catalog.BasePlates.Select(plate => plate?.Id));
-            ConnectionPointOptions = ToIdOptions(this.catalog.ConnectionPoints.Select(point => point?.Id));
+            ReinforcementProfileOptions = ToCatalogOptions(this.catalog.PostProfiles);
+            BasePlateOptions = ToCatalogOptions(this.catalog.BasePlates);
+            ConnectionPointOptions = ToCatalogOptions(this.catalog.ConnectionPoints);
 
             PatternOptions = Enum.GetValues(typeof(BracingPattern));
             SideOptions = Enum.GetValues(typeof(FrameSide));
@@ -160,12 +160,12 @@ namespace RackCad.UI
         public ObservableCollection<BracingSegmentEditorRow> BracingSegments { get; private set; }
         public ObservableCollection<BracingSegmentEditorRow> SelectedBracingSegments { get; private set; }
         public ObservableCollection<string> HorizontalOptions { get; private set; }
-        public ObservableCollection<string> PostProfileOptions { get; private set; }
-        public ObservableCollection<string> HorizontalProfileOptions { get; private set; }
-        public ObservableCollection<string> DiagonalProfileOptions { get; private set; }
-        public ObservableCollection<string> ReinforcementProfileOptions { get; private set; }
-        public ObservableCollection<string> BasePlateOptions { get; private set; }
-        public ObservableCollection<string> ConnectionPointOptions { get; private set; }
+        public ObservableCollection<CatalogOption> PostProfileOptions { get; private set; }
+        public ObservableCollection<CatalogOption> HorizontalProfileOptions { get; private set; }
+        public ObservableCollection<CatalogOption> DiagonalProfileOptions { get; private set; }
+        public ObservableCollection<CatalogOption> ReinforcementProfileOptions { get; private set; }
+        public ObservableCollection<CatalogOption> BasePlateOptions { get; private set; }
+        public ObservableCollection<CatalogOption> ConnectionPointOptions { get; private set; }
 
         public bool IsAdvancedEditor
         {
@@ -590,6 +590,22 @@ namespace RackCad.UI
             }
         }
 
+        public double LeftPostReinforcementHeight
+        {
+            get => LeftPost?.ReinforcementHeight ?? 0.0;
+            set
+            {
+                if (LeftPost == null || Math.Abs(LeftPost.ReinforcementHeight - value) < 1e-6)
+                {
+                    return;
+                }
+
+                LeftPost.ReinforcementHeight = Math.Max(0.0, value);
+                OnPropertyChanged();
+                MarkConfigurationEdited("Altura de refuerzo izquierdo actualizada.");
+            }
+        }
+
         public string RightPostCatalogId
         {
             get => NormalizeText(RightPost?.PostCatalogId);
@@ -651,6 +667,22 @@ namespace RackCad.UI
                 RightPost.ReinforcementCatalogId = NormalizeText(value);
                 OnPropertyChanged();
                 MarkConfigurationEdited("Tipo de refuerzo derecho actualizado.");
+            }
+        }
+
+        public double RightPostReinforcementHeight
+        {
+            get => RightPost?.ReinforcementHeight ?? 0.0;
+            set
+            {
+                if (RightPost == null || Math.Abs(RightPost.ReinforcementHeight - value) < 1e-6)
+                {
+                    return;
+                }
+
+                RightPost.ReinforcementHeight = Math.Max(0.0, value);
+                OnPropertyChanged();
+                MarkConfigurationEdited("Altura de refuerzo derecho actualizada.");
             }
         }
 
@@ -1794,11 +1826,13 @@ namespace RackCad.UI
             OnPropertyChanged(nameof(LeftPostDescription));
             OnPropertyChanged(nameof(LeftPostHasReinforcement));
             OnPropertyChanged(nameof(LeftPostReinforcementCatalogId));
+            OnPropertyChanged(nameof(LeftPostReinforcementHeight));
             OnPropertyChanged(nameof(RightPost));
             OnPropertyChanged(nameof(RightPostCatalogId));
             OnPropertyChanged(nameof(RightPostDescription));
             OnPropertyChanged(nameof(RightPostHasReinforcement));
             OnPropertyChanged(nameof(RightPostReinforcementCatalogId));
+            OnPropertyChanged(nameof(RightPostReinforcementHeight));
             OnPropertyChanged(nameof(LeftBasePlate));
             OnPropertyChanged(nameof(LeftPlateCatalogId));
             OnPropertyChanged(nameof(LeftPlateConnectionPointId));
@@ -1972,7 +2006,8 @@ namespace RackCad.UI
                 PostCatalogId = source.PostCatalogId,
                 Description = source.Description,
                 HasReinforcement = source.HasReinforcement,
-                ReinforcementCatalogId = source.ReinforcementCatalogId
+                ReinforcementCatalogId = source.ReinforcementCatalogId,
+                ReinforcementHeight = source.ReinforcementHeight
             };
         }
 
@@ -2219,15 +2254,21 @@ namespace RackCad.UI
             }
         }
 
-        private static ObservableCollection<string> ToIdOptions(IEnumerable<string> ids)
+        /// <summary>
+        /// Builds combo options that show the catalog display name (Label = displayName, else description,
+        /// else id) but carry the id as their value, so the UI is readable while the model keeps ids.
+        /// </summary>
+        private static ObservableCollection<CatalogOption> ToCatalogOptions<T>(IEnumerable<T> entries)
+            where T : CatalogEntryBase
         {
-            var distinct = (ids ?? Enumerable.Empty<string>())
-                .Where(id => !string.IsNullOrWhiteSpace(id))
-                .Select(id => id.Trim())
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .OrderBy(id => id, StringComparer.OrdinalIgnoreCase);
+            var options = (entries ?? Enumerable.Empty<T>())
+                .Where(entry => entry != null && !string.IsNullOrWhiteSpace(entry.Id))
+                .GroupBy(entry => entry.Id.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Select(group => group.First())
+                .OrderBy(entry => entry.Label, StringComparer.CurrentCultureIgnoreCase)
+                .Select(entry => new CatalogOption(entry.Id.Trim(), entry.Label));
 
-            return new ObservableCollection<string>(distinct);
+            return new ObservableCollection<CatalogOption>(options);
         }
     }
 }

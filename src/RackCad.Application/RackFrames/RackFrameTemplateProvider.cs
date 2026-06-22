@@ -25,10 +25,10 @@ namespace RackCad.Application.RackFrames
             this.directory = directory ?? throw new ArgumentNullException(nameof(directory));
         }
 
-        /// <summary>Points at the <c>catalogs</c> folder next to the executing assembly.</summary>
+        /// <summary>Points at the <c>catalogs</c> folder next to the executing assembly (see <see cref="Catalogs.CatalogDirectory"/>).</summary>
         public static RackFrameTemplateProvider FromBaseDirectory()
         {
-            return new RackFrameTemplateProvider(Path.Combine(AppContext.BaseDirectory, "catalogs"));
+            return new RackFrameTemplateProvider(Catalogs.CatalogDirectory.Resolve());
         }
 
         public IReadOnlyList<RackFrameTemplate> Load()
