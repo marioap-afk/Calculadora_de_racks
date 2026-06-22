@@ -55,21 +55,21 @@ namespace RackCad.Application.Catalogs
                 ?? catalog.DiagonalProfiles.FindProfile(id)
                 ?? catalog.ReinforcementProfiles.FindProfile(id);
 
-            if (!string.IsNullOrWhiteSpace(profile?.Description))
+            if (profile != null)
             {
-                return profile.Description;
+                return profile.Label; // display name, else description, else id
             }
 
             var plate = catalog.BasePlates.FindBasePlate(id);
-            if (!string.IsNullOrWhiteSpace(plate?.Description))
+            if (plate != null)
             {
-                return plate.Description;
+                return plate.Label;
             }
 
             var point = catalog.ConnectionPoints.FindConnectionPoint(id);
-            if (!string.IsNullOrWhiteSpace(point?.Description))
+            if (point != null)
             {
-                return point.Description;
+                return point.Label;
             }
 
             return id;

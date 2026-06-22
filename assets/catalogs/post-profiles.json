@@ -1,11 +1,28 @@
 [
   {
     "id": "POSTE_OMEGA_3X3",
+    "displayName": "Poste Omega 3x3 cal.14",
     "description": "Poste omega 3x3",
     "family": "OMEGA",
     "width": 3.0,
     "depth": 3.0,
     "thickness": 0.105,
-    "units": "in"
+    "units": "in",
+    "gauge": "cal. 14",
+    "weightPerMeter": 4.2,
+    "material": "Acero A36",
+    "finish": "Galvanizado",
+    "blockName": "POSTE_OMEGA_3X3",
+    "layer": "RACK-POSTES",
+    "color": 5,
+    "partNumber": "PT-OM-3X3-14",
+    "manufacturer": "Generico",
+    "unitCost": 12.5,
+    "currency": "USD",
+    "costUnit": "m",
+    "properties": {
+      "perforacion": "paso 50mm",
+      "norma": "RMI"
+    }
   }
 ]

@@ -165,34 +165,56 @@ Si falta `defaults.json` o esta vacio, se usan valores internos de respaldo equi
 
 ## Catalogos de piezas
 
-### Perfiles (`post-profiles.json`, `horizontal-profiles.json`, `diagonal-profiles.json`, `reinforcement-profiles.json`)
+Todas las piezas (perfiles, placas, puntos de conexion) comparten estos **campos comunes**, todos opcionales salvo `id`:
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `id` | texto | Identificador usado por la cabecera (ej. `POSTE_OMEGA_3X3`). |
-| `description` | texto | Texto legible que se muestra como descripcion. |
+| `id` | texto | **Obligatorio.** Identificador usado por cabeceras/plantillas (ej. `POSTE_OMEGA_3X3`). |
+| `displayName` | texto | Nombre para mostrar en la UI (si falta, usa `description`, luego `id`). |
+| `description` | texto | Descripcion tecnica. |
+| `blockName` | texto | Nombre del bloque de AutoCAD a insertar (fase de dibujo futura). |
+| `layer` | texto | Capa de AutoCAD. |
+| `color` | numero | Indice de color ACAD. |
+| `material` | texto | Material (ej. `Acero A36`). |
+| `partNumber` | texto | Codigo de parte / SKU (BOM/cotizacion). |
+| `manufacturer` | texto | Fabricante. |
+| `finish` | texto | Acabado (galvanizado, pintado...). |
+| `unitCost` / `currency` / `costUnit` | numero/texto | Costo unitario, moneda y unidad (`m`, `pieza`...). |
+| `properties` | objeto | **Bolsa abierta** de pares clave/valor para cualquier propiedad futura, sin tocar el codigo. |
+
+> La bolsa `properties` es la costura de **escalabilidad**: agrega ahi atributos que aun no son campos fijos (norma, paso de perforacion, etc.) y se cargan/guardan sin cambiar el modelo. Cuando un atributo se vuelve comun, se promueve a campo tipado.
+
+### Perfiles (`post-profiles.json`, `horizontal-profiles.json`, `diagonal-profiles.json`, `reinforcement-profiles.json`)
+
+Campos comunes (arriba) **mas**:
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
 | `family` | texto | Familia del perfil (ej. `OMEGA`). |
-| `width` | numero | Ancho en pulgadas. |
+| `width` | numero | Ancho en pulgadas. **El poste ya lo usa** para su espesor en el dibujo. |
 | `depth` | numero | Fondo/peralte en pulgadas. |
 | `thickness` | numero | Espesor en pulgadas. |
+| `gauge` | texto | Calibre (ej. `cal. 14`). |
+| `weightPerMeter` | numero | Peso lineal (kg/m) para BOM/peso. |
 | `units` | texto | Unidad de las medidas (ej. `in`). |
 
 ### Placas base (`base-plates.json`)
 
+Campos comunes **mas**:
+
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `id` | texto | Identificador (ej. `PLACA_BASE_ATORNILLABLE`). |
-| `description` | texto | Texto legible. |
 | `width`, `length`, `thickness` | numero | Medidas en pulgadas. |
 | `connectionPointId` | texto | Punto de conexion asociado (ver siguiente catalogo). |
+| `weightEach` | numero | Peso por pieza (kg). |
 | `units` | texto | Unidad de las medidas. |
 
 ### Puntos de conexion (`connection-points.json`)
 
+Campos comunes **mas**:
+
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `id` | texto | Identificador (ej. `TroquelCelosia_01`). |
-| `description` | texto | Texto legible. |
 | `role` | texto | Rol del punto (ej. `Brace`, `BasePlate`). |
 | `localX` | numero | Offset X (in) del punto dentro de su pieza. Lo usa el solver de posiciones. Por defecto 0. |
 | `localY` | numero | Offset Y (in) del punto dentro de su pieza. Por defecto 0. |

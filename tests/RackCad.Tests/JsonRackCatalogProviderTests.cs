@@ -23,6 +23,31 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Load_ProfileRichFields_AndExtensiblePropertiesRoundTrip()
+        {
+            var post = JsonRackCatalogProvider.FromBaseDirectory().Load().PostProfiles.FindProfile("POSTE_OMEGA_3X3");
+
+            Assert.NotNull(post);
+            Assert.Equal("Poste Omega 3x3 cal.14", post.DisplayName);
+            Assert.Equal("POSTE_OMEGA_3X3", post.BlockName);
+            Assert.Equal("RACK-POSTES", post.Layer);
+            Assert.Equal("Acero A36", post.Material);
+            Assert.True(post.WeightPerMeter > 0);
+            Assert.Equal("Poste Omega 3x3 cal.14", post.Label); // display name preferred
+
+            // Open properties bag carries arbitrary future attributes.
+            Assert.Equal("RMI", post.Properties["norma"]);
+            Assert.Equal("paso 50mm", post.Properties["perforacion"]);
+        }
+
+        [Fact]
+        public void DescribeId_PrefersDisplayName()
+        {
+            var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
+            Assert.Equal("Poste Omega 3x3 cal.14", catalog.DescribeId("POSTE_OMEGA_3X3"));
+        }
+
+        [Fact]
         public void Load_ShippedDefaults_AreReadFromJson()
         {
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();

@@ -1,20 +1,30 @@
 [
   {
     "id": "REFUERZO_OMEGA_3X3",
+    "displayName": "Refuerzo Omega 3x3",
     "description": "Refuerzo omega 3x3",
     "family": "OMEGA",
     "width": 3.0,
     "depth": 3.0,
     "thickness": 0.135,
-    "units": "in"
+    "units": "in",
+    "gauge": "cal. 11",
+    "weightPerMeter": 5.4,
+    "material": "Acero A36",
+    "blockName": "REFUERZO_OMEGA_3X3",
+    "layer": "RACK-REFUERZOS"
   },
   {
     "id": "REFUERZO_PLACA_SOLERA",
+    "displayName": "Refuerzo placa solera",
     "description": "Refuerzo de placa solera",
     "family": "SOLERA",
     "width": 4.0,
     "depth": 0.25,
     "thickness": 0.25,
-    "units": "in"
+    "units": "in",
+    "material": "Acero A36",
+    "blockName": "REFUERZO_PLACA_SOLERA",
+    "layer": "RACK-REFUERZOS"
   }
 ]
