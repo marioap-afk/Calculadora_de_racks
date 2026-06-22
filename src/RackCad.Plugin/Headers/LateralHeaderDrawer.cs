@@ -4,75 +4,142 @@ using System.Globalization;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application.Headers;
+using RackCad.Application.Systems;
 
 namespace RackCad.Plugin.Headers
 {
     /// <summary>
-    /// Thin AutoCAD adapter: turns a pure <see cref="LateralHeaderLayout"/> into a single AutoCAD block whose
-    /// sub-entities are the header pieces. All the geometry/parameters live in the Application layer (testable
-    /// on any OS); this class only touches the AutoCAD API, so it compiles only inside the Plugin.
+    /// Thin AutoCAD adapter: turns a pure plan into AutoCAD block definitions whose sub-entities are the
+    /// pieces. All the geometry/parameters live in the Application layer (testable on any OS); this class only
+    /// touches the AutoCAD API, so it compiles only inside the Plugin.
     ///
-    /// Each piece is appended to a new block definition at its plan origin, rotated, optionally mirrored
-    /// (X scale -1), with its dynamic-block parameters (LONGITUD) set by name. The caller then inserts a
-    /// reference to that block wherever the user clicks.
+    /// Each piece is appended at its plan origin, rotated, optionally mirrored (X scale -1), with its
+    /// dynamic-block parameters (LONGITUD) set by name. For a whole dynamic system, each distinct header is a
+    /// nested block reused at every position; separators/posts are appended directly. The caller jig-inserts a
+    /// reference to the resulting block.
     /// </summary>
     public sealed class LateralHeaderDrawer
     {
         /// <summary>
         /// Build a block definition named <paramref name="blockName"/> (uniquified if it already exists)
-        /// containing every piece of the plan that the drawing actually defines. Returns the new block's id
-        /// plus what was inserted/skipped, so the caller can jig-insert a reference and report missing blocks.
+        /// containing every piece of the plan that the drawing actually defines.
         /// </summary>
         public LateralHeaderBlockResult CreateHeaderBlock(
             Database db, Transaction tr, LateralHeaderLayout layout, string blockName)
         {
             var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
-            var uniqueName = UniqueBlockName(blockTable, blockName);
-
-            var definition = new BlockTableRecord
-            {
-                Name = uniqueName,
-                Origin = Point3d.Origin
-            };
-
-            var definitionId = blockTable.Add(definition);
-            tr.AddNewlyCreatedDBObject(definition, true);
+            var definition = NewBlock(blockTable, tr, blockName, out var uniqueName, out var definitionId);
 
             var missing = new List<HeaderBlockInstance>();
-            var seenMissingKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var inserted = 0;
 
             foreach (var instance in layout.Instances)
             {
-                if (string.IsNullOrWhiteSpace(instance.BlockName) || !blockTable.Has(instance.BlockName))
+                if (AppendInstance(blockTable, definition, tr, instance, missing, seen))
                 {
-                    // Report each missing piece once (several horizontals share one truss block).
-                    var key = (instance.BlockName ?? instance.PieceId ?? instance.Role.ToString()) + "|" + instance.View;
-
-                    if (seenMissingKeys.Add(key))
-                    {
-                        missing.Add(instance);
-                    }
-
-                    continue; // block not defined in the drawing yet — skip rather than throw
+                    inserted++;
                 }
-
-                var reference = new BlockReference(
-                    new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0),
-                    blockTable[instance.BlockName])
-                {
-                    Rotation = instance.RotationRadians,
-                    ScaleFactors = instance.MirroredX ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
-                };
-
-                definition.AppendEntity(reference);
-                tr.AddNewlyCreatedDBObject(reference, true);
-
-                ApplyDynamicParameters(reference, instance.DynamicParameters);
-                inserted++;
             }
 
             return new LateralHeaderBlockResult(definitionId, uniqueName, new LateralHeaderDrawOutcome(layout, inserted, missing));
+        }
+
+        /// <summary>
+        /// Build a dynamic-system block: each distinct header becomes one nested block definition (reused at
+        /// every run position), and separators/derived posts are appended directly. Returns the system block.
+        /// </summary>
+        public LateralHeaderBlockResult CreateSystemBlock(
+            Database db, Transaction tr, DynamicSystemPlan plan, string systemBlockName)
+        {
+            var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
+            var missing = new List<HeaderBlockInstance>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var inserted = 0;
+
+            // 1. One block definition per distinct header.
+            var headerDefs = new List<KeyValuePair<ObjectId, HeaderGroup>>();
+            foreach (var group in plan.Headers)
+            {
+                var headerDef = NewBlock(blockTable, tr, group.Name, out _, out var headerId);
+
+                foreach (var instance in group.Instances)
+                {
+                    if (AppendInstance(blockTable, headerDef, tr, instance, missing, seen))
+                    {
+                        inserted++;
+                    }
+                }
+
+                headerDefs.Add(new KeyValuePair<ObjectId, HeaderGroup>(headerId, group));
+            }
+
+            // 2. The system block: references to each header at its run positions + the loose pieces.
+            var systemDef = NewBlock(blockTable, tr, systemBlockName, out var systemName, out var systemId);
+
+            foreach (var pair in headerDefs)
+            {
+                foreach (var offset in pair.Value.OffsetsX)
+                {
+                    var headerRef = new BlockReference(new Point3d(offset, 0.0, 0.0), pair.Key);
+                    systemDef.AppendEntity(headerRef);
+                    tr.AddNewlyCreatedDBObject(headerRef, true);
+                    inserted++;
+                }
+            }
+
+            foreach (var instance in plan.LooseInstances)
+            {
+                if (AppendInstance(blockTable, systemDef, tr, instance, missing, seen))
+                {
+                    inserted++;
+                }
+            }
+
+            var outcome = new LateralHeaderDrawOutcome(
+                new LateralHeaderLayout(new List<HeaderBlockInstance>(), 0.0, 0, 0, 0.0), inserted, missing);
+            return new LateralHeaderBlockResult(systemId, systemName, outcome);
+        }
+
+        private static BlockTableRecord NewBlock(BlockTable blockTable, Transaction tr, string blockName, out string uniqueName, out ObjectId id)
+        {
+            uniqueName = UniqueBlockName(blockTable, blockName);
+            var definition = new BlockTableRecord { Name = uniqueName, Origin = Point3d.Origin };
+            id = blockTable.Add(definition);
+            tr.AddNewlyCreatedDBObject(definition, true);
+            return definition;
+        }
+
+        /// <summary>Append one piece reference to a block; record (once) the blocks not defined in the drawing.</summary>
+        private static bool AppendInstance(
+            BlockTable blockTable, BlockTableRecord space, Transaction tr,
+            HeaderBlockInstance instance, List<HeaderBlockInstance> missing, HashSet<string> seen)
+        {
+            if (string.IsNullOrWhiteSpace(instance.BlockName) || !blockTable.Has(instance.BlockName))
+            {
+                var key = (instance.BlockName ?? instance.PieceId ?? instance.Role.ToString()) + "|" + instance.View;
+
+                if (seen.Add(key))
+                {
+                    missing.Add(instance);
+                }
+
+                return false; // block not defined in the drawing yet — skip rather than throw
+            }
+
+            var reference = new BlockReference(
+                new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0),
+                blockTable[instance.BlockName])
+            {
+                Rotation = instance.RotationRadians,
+                ScaleFactors = instance.MirroredX ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
+            };
+
+            space.AppendEntity(reference);
+            tr.AddNewlyCreatedDBObject(reference, true);
+
+            ApplyDynamicParameters(reference, instance.DynamicParameters);
+            return true;
         }
 
         /// <summary>Ensure the block name is free; if taken, append _1, _2, … so we never rename another block.</summary>

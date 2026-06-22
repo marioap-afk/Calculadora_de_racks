@@ -26,7 +26,7 @@ namespace RackCad.Tests
         [Fact]
         public void Build_PlacesHeadersAlongTheRun()
         {
-            var layout = new DynamicSystemLateralBuilder().Build(StandardSystem(), Catalog);
+            var layout = new DynamicSystemLateralBuilder().Build(StandardSystem(), Catalog).Flatten();
 
             var postXs = layout.OfRole(HeaderBlockRole.Post)
                 .Select(p => Math.Round(p.Insertion.X, 2))
@@ -43,7 +43,7 @@ namespace RackCad.Tests
         [Fact]
         public void Build_AddsSeparatorsAtEachLevel_WithResolvedBlockAndLength()
         {
-            var layout = new DynamicSystemLateralBuilder().Build(StandardSystem(), Catalog);
+            var layout = new DynamicSystemLateralBuilder().Build(StandardSystem(), Catalog).Flatten();
             var separators = layout.OfRole(HeaderBlockRole.Separator).ToList();
 
             Assert.NotEmpty(separators);
@@ -55,7 +55,7 @@ namespace RackCad.Tests
             Assert.All(separators, s =>
             {
                 Assert.False(string.IsNullOrWhiteSpace(s.BlockName));      // FRONTAL separator block resolved
-                Assert.True(s.DynamicParameters["LONGITUD"] > 0.0);        // spans the separator gap
+                Assert.Equal(48.0, s.DynamicParameters["LONGITUD"], 4);    // LONGITUD = the module length (48"), as shown in the preview
                 Assert.Equal("FRONTAL", s.View);
             });
         }
@@ -69,7 +69,7 @@ namespace RackCad.Tests
                 .FindConnectionLayout(CatalogIds.StandardPost, "TROQUEL_SEPARADOR", "LATERAL").LocalX;
             var firstSeparator = system.Modules.First(m => m.Kind == DynamicRackModuleKind.Separator && m.Length > 0.0);
 
-            var layout = new DynamicSystemLateralBuilder().Build(system, catalog);
+            var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
 
             // Separators of the first gap anchor at moduleStartX - troquelSeparadorX (the previous post's troquel),
             // one per vertical level.
@@ -88,7 +88,7 @@ namespace RackCad.Tests
             var offsets = system.GetDerivedPostOffsets();
             Assert.NotEmpty(offsets); // pallets-deep 4 → one derived post
 
-            var layout = new DynamicSystemLateralBuilder().Build(system, catalog);
+            var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
             var offset = offsets[0];
             var finPosteX = catalog.ConnectionLayout
                 .FindConnectionLayout(CatalogIds.StandardPost, "FIN_POSTE", "LATERAL").LocalX;
@@ -102,9 +102,19 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_GroupsIdenticalHeaders_SharingOneDefinition()
+        {
+            // Pallets-deep 4 → both headers are end headers (length 54) → one shared definition, two placements.
+            var plan = new DynamicSystemLateralBuilder().Build(StandardSystem(), Catalog);
+
+            Assert.Single(plan.Headers);
+            Assert.Equal(2, plan.Headers[0].OffsetsX.Count);
+        }
+
+        [Fact]
         public void Build_NullSystem_ReturnsEmptyPlan()
         {
-            var layout = new DynamicSystemLateralBuilder().Build(null, Catalog);
+            var layout = new DynamicSystemLateralBuilder().Build(null, Catalog).Flatten();
             Assert.Empty(layout.Instances);
         }
     }

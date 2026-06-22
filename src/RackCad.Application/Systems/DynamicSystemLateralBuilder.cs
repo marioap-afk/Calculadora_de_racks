@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Geometry;
 using RackCad.Application.Headers;
@@ -22,40 +24,43 @@ namespace RackCad.Application.Systems
     {
         private readonly LateralHeaderLayoutBuilder headerBuilder = new LateralHeaderLayoutBuilder();
 
-        public LateralHeaderLayout Build(DynamicRackSystem system, RackCatalog catalog)
+        public DynamicSystemPlan Build(DynamicRackSystem system, RackCatalog catalog)
         {
-            var instances = new List<HeaderBlockInstance>();
-
             if (system == null)
             {
-                return new LateralHeaderLayout(instances, 0.0, 0, 0, 0.0);
+                return new DynamicSystemPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
             }
 
             var context = Resolve(system, catalog);
-            var headerCount = 0;
-            var separatorCount = 0;
+            var loose = new List<HeaderBlockInstance>();
+
+            // Group identical headers so each distinct header becomes one shared block definition; record
+            // the run positions (StartX) where each is placed.
+            var groups = new Dictionary<string, HeaderGroupBuilder>();
+            var order = new List<string>();
 
             foreach (var module in system.Modules)
             {
                 if (module.IsHeader && module.AssociatedFrameConfiguration != null)
                 {
-                    var parameters = LateralHeaderParametersFactory.FromConfiguration(module.AssociatedFrameConfiguration);
-                    var layout = headerBuilder.Build(module.AssociatedFrameConfiguration, parameters, catalog);
+                    var signature = Signature(module.AssociatedFrameConfiguration);
 
-                    foreach (var instance in layout.Instances)
+                    if (!groups.TryGetValue(signature, out var group))
                     {
-                        Shift(instance, module.StartX);
-                        instances.Add(instance);
+                        var parameters = LateralHeaderParametersFactory.FromConfiguration(module.AssociatedFrameConfiguration);
+                        var layout = headerBuilder.Build(module.AssociatedFrameConfiguration, parameters, catalog);
+                        group = new HeaderGroupBuilder(HeaderName(module.AssociatedFrameConfiguration), layout.Instances.ToList());
+                        groups[signature] = group;
+                        order.Add(signature);
                     }
 
-                    headerCount++;
+                    group.Offsets.Add(module.StartX);
                 }
                 else if (module.Kind == DynamicRackModuleKind.Separator && module.Length > 0.0 && context.SeparatorBlock != null)
                 {
                     foreach (var level in context.Levels)
                     {
-                        instances.Add(MakeSeparator(context, module.StartX, module.Length, level));
-                        separatorCount++;
+                        loose.Add(MakeSeparator(context, module.StartX, module.Length, level));
                     }
                 }
             }
@@ -64,10 +69,38 @@ namespace RackCad.Application.Systems
             // reinforced full height by default.
             foreach (var offset in system.GetDerivedPostOffsets())
             {
-                AddDerivedPost(instances, context, offset);
+                AddDerivedPost(loose, context, offset);
             }
 
-            return new LateralHeaderLayout(instances, 0.0, headerCount, separatorCount, 0.0);
+            var headers = order.Select(signature => groups[signature].ToGroup()).ToList();
+            return new DynamicSystemPlan(headers, loose);
+        }
+
+        /// <summary>Signature of the layout-affecting fields, so identical headers share one block definition.</summary>
+        private static string Signature(RackFrameConfiguration c)
+        {
+            var sb = new StringBuilder();
+            sb.Append(c.Height.ToString("0.###", CultureInfo.InvariantCulture)).Append('|')
+              .Append(c.Depth.ToString("0.###", CultureInfo.InvariantCulture)).Append('|')
+              .Append(c.LeftPost?.PostCatalogId).Append('|').Append(c.LeftBasePlate?.PlateCatalogId).Append('|')
+              .Append(c.CelosiaStartTroquel).Append('|').Append(c.DiagonalStartOffsetTroqueles).Append('|').Append(c.DiagonalEndOffsetTroqueles);
+
+            foreach (var h in c.Horizontals.OrderBy(item => item.Elevation))
+            {
+                sb.Append("|H").Append(h.Elevation.ToString("0.###", CultureInfo.InvariantCulture)).Append(',').Append(h.Quantity).Append(',').Append(h.ProfileId);
+            }
+
+            foreach (var p in c.BracingPanels.OrderBy(item => item.Number))
+            {
+                sb.Append("|P").Append(p.Arrangement).Append(',').Append(p.DiagonalDirection).Append(',').Append(p.DiagonalProfileId);
+            }
+
+            return sb.ToString();
+        }
+
+        private static string HeaderName(RackFrameConfiguration c)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "Cabecera F{0:0.##} A{1:0.##}", c.Depth, c.Height);
         }
 
         private HeaderContext Resolve(DynamicRackSystem system, RackCatalog catalog)
@@ -106,10 +139,10 @@ namespace RackCad.Application.Systems
         private static HeaderBlockInstance MakeSeparator(HeaderContext context, double moduleStartX, double moduleLength, double level)
         {
             // Anchor the separator's TROQUEL_CABECERA on the previous header's right-post TROQUEL_SEPARADOR
-            // (that post is mirrored, so its troquel sits one offset inside the module start); stretch the
-            // beam so its far end reaches the next post's troquel.
+            // (that post is mirrored, so its troquel sits one offset inside the module start). Its length is
+            // the separation between headers (the module length), as shown in the preview.
             var anchorX = moduleStartX - context.TroquelSeparadorX;
-            var length = moduleLength + 2.0 * context.TroquelSeparadorX;
+            var length = moduleLength;
             var anchor = new Point2D(anchorX, level);
 
             var instance = new HeaderBlockInstance
@@ -173,13 +206,6 @@ namespace RackCad.Application.Systems
             instances.Add(reinforcement);
         }
 
-        /// <summary>Shift a header instance along the run (X), keeping its height (Y).</summary>
-        private static void Shift(HeaderBlockInstance instance, double dx)
-        {
-            instance.Insertion = new Point2D(instance.Insertion.X + dx, instance.Insertion.Y);
-            instance.ConnectionAnchor = new Point2D(instance.ConnectionAnchor.X + dx, instance.ConnectionAnchor.Y);
-        }
-
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
         {
             var entry = catalog?.ConnectionLayout.FindConnectionLayout(pieceId, connectionPointId, view);
@@ -188,6 +214,22 @@ namespace RackCad.Application.Systems
 
         private static string Block(RackCatalog catalog, string pieceId, string view)
             => catalog?.Blocks.FindBlock(pieceId, view)?.BlockName;
+
+        private sealed class HeaderGroupBuilder
+        {
+            public HeaderGroupBuilder(string name, IReadOnlyList<HeaderBlockInstance> instances)
+            {
+                Name = name;
+                Instances = instances;
+                Offsets = new List<double>();
+            }
+
+            public string Name { get; }
+            public IReadOnlyList<HeaderBlockInstance> Instances { get; }
+            public List<double> Offsets { get; }
+
+            public HeaderGroup ToGroup() => new HeaderGroup(Name, Instances, Offsets);
+        }
 
         private sealed class HeaderContext
         {

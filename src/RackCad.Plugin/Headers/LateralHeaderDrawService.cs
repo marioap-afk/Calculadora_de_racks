@@ -63,8 +63,25 @@ namespace RackCad.Plugin.Headers
             try
             {
                 var block = CreateBlock(document, layout, blockName);
-                var placed = PlaceBlockWithJig(document, block.DefinitionId);
+                return PlaceAndReport(document, catalog, block);
+            }
+            catch (Exception ex)
+            {
+                return HeaderPlacementResult.Failure(ex.Message);
+            }
+        }
 
+        /// <summary>Jig-place an already-created block and report the outcome (missing blocks by display name).</summary>
+        public HeaderPlacementResult PlaceAndReport(Document document, RackCatalog catalog, LateralHeaderBlockResult block)
+        {
+            if (document == null)
+            {
+                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
+            }
+
+            try
+            {
+                var placed = PlaceBlockWithJig(document, block.DefinitionId);
                 return new HeaderPlacementResult(true, placed, block.BlockName, DescribeMissing(catalog, block.Outcome), block.Outcome);
             }
             catch (Exception ex)
