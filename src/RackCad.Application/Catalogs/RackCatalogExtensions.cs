@@ -38,5 +38,41 @@ namespace RackCad.Application.Catalogs
             return points.FirstOrDefault(point =>
                 string.Equals(point?.Id, id, StringComparison.OrdinalIgnoreCase));
         }
+
+        /// <summary>
+        /// Human-readable description for a catalog id, searched across every catalog list. Falls
+        /// back to the id itself when not found. Replaces fragile id-prefix string manipulation.
+        /// </summary>
+        public static string DescribeId(this RackCatalog catalog, string id)
+        {
+            if (catalog == null || string.IsNullOrWhiteSpace(id))
+            {
+                return id ?? string.Empty;
+            }
+
+            var profile = catalog.PostProfiles.FindProfile(id)
+                ?? catalog.HorizontalProfiles.FindProfile(id)
+                ?? catalog.DiagonalProfiles.FindProfile(id)
+                ?? catalog.ReinforcementProfiles.FindProfile(id);
+
+            if (!string.IsNullOrWhiteSpace(profile?.Description))
+            {
+                return profile.Description;
+            }
+
+            var plate = catalog.BasePlates.FindBasePlate(id);
+            if (!string.IsNullOrWhiteSpace(plate?.Description))
+            {
+                return plate.Description;
+            }
+
+            var point = catalog.ConnectionPoints.FindConnectionPoint(id);
+            if (!string.IsNullOrWhiteSpace(point?.Description))
+            {
+                return point.Description;
+            }
+
+            return id;
+        }
     }
 }

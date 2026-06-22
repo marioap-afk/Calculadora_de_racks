@@ -23,6 +23,29 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Load_ShippedDefaults_AreReadFromJson()
+        {
+            var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
+
+            Assert.NotNull(catalog.Defaults);
+            Assert.Equal("POSTE_OMEGA_3X3", catalog.Defaults.Post);
+            Assert.Equal("PLACA_BASE_ATORNILLABLE", catalog.Defaults.BasePlate);
+            Assert.Equal(132.0, catalog.Defaults.DefaultHeaderHeight);
+            Assert.Equal(6.0, catalog.Defaults.HeaderEndAllowance);
+        }
+
+        [Fact]
+        public void Load_MissingDefaults_FallsBackToBuiltInValues()
+        {
+            var provider = new JsonRackCatalogProvider(Path.Combine(Path.GetTempPath(), "rackcad-no-defaults-xyz"));
+
+            var defaults = provider.Load().Defaults;
+
+            Assert.NotNull(defaults);
+            Assert.Equal("POSTE_OMEGA_3X3", defaults.Post); // CatalogIds fallback
+        }
+
+        [Fact]
         public void FindProfile_IsCaseInsensitive()
         {
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();

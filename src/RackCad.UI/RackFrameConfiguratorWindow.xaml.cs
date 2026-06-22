@@ -1438,22 +1438,10 @@ namespace RackCad.UI
             return value.ToString("0.##", CultureInfo.InvariantCulture) + " in";
         }
 
-        private static string GetCompactCatalogLabel(string value)
+        private string GetCompactCatalogLabel(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return "-";
-            }
-
-            var normalizedValue = value
-                .Replace("TRAVESANO_DINAMICO_", string.Empty, StringComparison.OrdinalIgnoreCase)
-                .Replace("POSTE_", string.Empty, StringComparison.OrdinalIgnoreCase)
-                .Replace("PLACA_BASE_", "PLACA ", StringComparison.OrdinalIgnoreCase)
-                .Replace("TroquelCelosia_", "TC", StringComparison.OrdinalIgnoreCase)
-                .Replace('_', ' ')
-                .Trim();
-
-            return normalizedValue.Length <= 18 ? normalizedValue : normalizedValue.Substring(0, 18);
+            // Use the catalog description instead of stripping id prefixes.
+            return ViewModel?.DescribeCatalogId(value) ?? (string.IsNullOrWhiteSpace(value) ? "-" : value);
         }
     }
 }

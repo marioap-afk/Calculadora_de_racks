@@ -1,0 +1,11 @@
+{
+  "post": "POSTE_OMEGA_3X3",
+  "basePlate": "PLACA_BASE_ATORNILLABLE",
+  "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
+  "horizontalProfile": "HORIZONTAL_INTERMEDIA",
+  "braceStartConnectionPoint": "TroquelCelosia_01",
+  "braceEndConnectionPoint": "TroquelCelosia_02",
+  "basePlateConnectionPoint": "PlacaBase_01",
+  "defaultHeaderHeight": 132.0,
+  "headerEndAllowance": 6.0
+}

@@ -24,8 +24,6 @@ namespace RackCad.UI
     /// </summary>
     public partial class RackDynamicSystemWindow : Window
     {
-        private const string DefaultPostCatalogId = "POSTE_OMEGA_3X3";
-        private const double DefaultHeaderHeight = 132.0;
         private const string KindHeader = "Cabecera";
         private const string KindSeparator = "Separador";
 
@@ -46,6 +44,8 @@ namespace RackCad.UI
 
         private readonly RackCatalog catalog;
         private readonly DynamicRackSystemBuilder builder;
+        private readonly string defaultPostCatalogId;
+        private readonly double defaultHeaderHeight;
         private DynamicRackSystem system;
         private DynamicRackModule selectedModule;
 
@@ -58,6 +58,8 @@ namespace RackCad.UI
             InitializeComponent();
             catalog = LoadCatalogSafe();
             builder = new DynamicRackSystemBuilder(catalog);
+            defaultPostCatalogId = catalog.Defaults.Post;
+            defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
             KindBox.ItemsSource = new[] { KindHeader, KindSeparator };
             Recompose();
         }
@@ -79,7 +81,7 @@ namespace RackCad.UI
 
             try
             {
-                system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, DefaultPostCatalogId, DefaultHeaderHeight);
+                system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, defaultPostCatalogId, defaultHeaderHeight);
                 selectedModule = null;
                 BindModules();
                 UpdateSelectedPanel();
@@ -192,7 +194,7 @@ namespace RackCad.UI
         private RackFrameConfiguration BuildHeaderConfig(double depth)
         {
             return new RackFrameConfigurationFactory(catalog)
-                .Build(RackFrameTemplateCatalog.Default, DefaultPostCatalogId, DefaultHeaderHeight, depth);
+                .Build(RackFrameTemplateCatalog.Default, defaultPostCatalogId, defaultHeaderHeight, depth);
         }
 
         private bool TryReadInputs(out PalletSpecification pallet, out int palletsDeep, out string error)
@@ -425,7 +427,11 @@ namespace RackCad.UI
             var postCenter = Map(x, height / 2.0);
             var top = Map(x, height).Y;
             var bottom = Map(x, 0).Y;
-            var postWidth = Math.Max(7.0, Math.Min(14.0, moduleWidth * 0.18));
+            // Real post thickness from the catalog profile (its width, in inches), scaled to screen.
+            var profileWidth = catalog.PostProfiles.FindProfile(post?.PostCatalogId)?.Width ?? 0.0;
+            var postWidth = profileWidth > 0.0
+                ? Math.Max(5.0, profileWidth * mapScale)
+                : Math.Max(7.0, Math.Min(14.0, moduleWidth * 0.18));
             var left = postCenter.X - postWidth / 2.0;
 
             AddRectangle(left, top, postWidth, bottom - top, UprightStroke, 1.7, null, PostFill);
@@ -545,7 +551,7 @@ namespace RackCad.UI
         private double HeaderHeight()
         {
             var header = system?.Modules.FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration != null);
-            return header?.AssociatedFrameConfiguration.Height ?? DefaultHeaderHeight;
+            return header?.AssociatedFrameConfiguration.Height ?? defaultHeaderHeight;
         }
 
         private Point Map(double x, double y)

@@ -6,9 +6,9 @@ using RackCad.Domain.RackFrames;
 namespace RackCad.Application.RackFrames
 {
     /// <summary>
-    /// Built-in header templates used as a FALLBACK when the external
-    /// <c>header-templates.json</c> catalog is missing or empty. The JSON catalog is the
-    /// authoritative source at runtime; these keep the configurator usable without it.
+    /// Built-in header templates used as a FALLBACK when <c>header-templates.json</c> is missing or
+    /// empty. The JSON catalog is the authoritative source at runtime; these keep the configurator
+    /// usable without it. Ids mirror the catalog so the built-ins are self-describing too.
     /// </summary>
     public static class RackFrameTemplateCatalog
     {
@@ -20,8 +20,19 @@ namespace RackCad.Application.RackFrames
                 Name = "Estandar (3 paneles)",
                 DefaultHeight = 132.0,
                 DefaultDepth = 42.0,
-                HorizontalElevations = new[] { 0.0, 44.0, 88.0, 132.0 },
-                DefaultArrangement = BracingPattern.SingleDiagonal
+                Horizontals = new[]
+                {
+                    new TemplateHorizontal { Elevation = 0.0, Profile = CatalogIds.LowerHorizontal, Quantity = 2 },
+                    new TemplateHorizontal { Elevation = 44.0, Profile = CatalogIds.IntermediateHorizontal, Quantity = 1 },
+                    new TemplateHorizontal { Elevation = 88.0, Profile = CatalogIds.IntermediateHorizontal, Quantity = 1 },
+                    new TemplateHorizontal { Elevation = 132.0, Profile = CatalogIds.UpperHorizontal, Quantity = 1 }
+                },
+                DefaultArrangement = BracingPattern.SingleDiagonal,
+                DiagonalProfile = CatalogIds.Diagonal,
+                BraceStartConnectionPoint = CatalogIds.BraceStartConnectionPoint,
+                BraceEndConnectionPoint = CatalogIds.BraceEndConnectionPoint,
+                BasePlate = CatalogIds.BasePlate,
+                Post = CatalogIds.StandardPost
             },
             new RackFrameTemplate
             {
@@ -29,8 +40,18 @@ namespace RackCad.Application.RackFrames
                 Name = "Compacta (2 paneles)",
                 DefaultHeight = 96.0,
                 DefaultDepth = 36.0,
-                HorizontalElevations = new[] { 0.0, 48.0, 96.0 },
-                DefaultArrangement = BracingPattern.SingleDiagonal
+                Horizontals = new[]
+                {
+                    new TemplateHorizontal { Elevation = 0.0, Profile = CatalogIds.LowerHorizontal, Quantity = 2 },
+                    new TemplateHorizontal { Elevation = 48.0, Profile = CatalogIds.IntermediateHorizontal, Quantity = 1 },
+                    new TemplateHorizontal { Elevation = 96.0, Profile = CatalogIds.UpperHorizontal, Quantity = 1 }
+                },
+                DefaultArrangement = BracingPattern.SingleDiagonal,
+                DiagonalProfile = CatalogIds.Diagonal,
+                BraceStartConnectionPoint = CatalogIds.BraceStartConnectionPoint,
+                BraceEndConnectionPoint = CatalogIds.BraceEndConnectionPoint,
+                BasePlate = CatalogIds.BasePlate,
+                Post = CatalogIds.StandardPost
             },
             new RackFrameTemplate
             {
@@ -38,8 +59,20 @@ namespace RackCad.Application.RackFrames
                 Name = "Alta (4 paneles, X)",
                 DefaultHeight = 180.0,
                 DefaultDepth = 42.0,
-                HorizontalElevations = new[] { 0.0, 45.0, 90.0, 135.0, 180.0 },
-                DefaultArrangement = BracingPattern.XBracing
+                Horizontals = new[]
+                {
+                    new TemplateHorizontal { Elevation = 0.0, Profile = CatalogIds.LowerHorizontal, Quantity = 2 },
+                    new TemplateHorizontal { Elevation = 45.0, Profile = CatalogIds.IntermediateHorizontal, Quantity = 1 },
+                    new TemplateHorizontal { Elevation = 90.0, Profile = CatalogIds.IntermediateHorizontal, Quantity = 1 },
+                    new TemplateHorizontal { Elevation = 135.0, Profile = CatalogIds.IntermediateHorizontal, Quantity = 1 },
+                    new TemplateHorizontal { Elevation = 180.0, Profile = CatalogIds.UpperHorizontal, Quantity = 1 }
+                },
+                DefaultArrangement = BracingPattern.XBracing,
+                DiagonalProfile = CatalogIds.Diagonal,
+                BraceStartConnectionPoint = CatalogIds.BraceStartConnectionPoint,
+                BraceEndConnectionPoint = CatalogIds.BraceEndConnectionPoint,
+                BasePlate = CatalogIds.BasePlate,
+                Post = CatalogIds.StandardPost
             }
         };
 

@@ -15,10 +15,10 @@ namespace RackCad.UI
     public sealed class RackFrameConfiguratorViewModel : ObservableObject
     {
         private const double HeightTolerance = 0.01;
-        private const string DefaultDiagonalProfileId = "TRAVESANO_DINAMICO_OMEGA_3X3";
-        private const string DefaultHorizontalProfileId = "HORIZONTAL_INTERMEDIA";
-        private const string DefaultStartConnectionPointId = "TroquelCelosia_01";
-        private const string DefaultEndConnectionPointId = "TroquelCelosia_02";
+        private readonly string defaultDiagonalProfileId;
+        private readonly string defaultHorizontalProfileId;
+        private readonly string defaultStartConnectionPointId;
+        private readonly string defaultEndConnectionPointId;
 
         private readonly string standardLeftPostCatalogId;
         private readonly string standardLeftReinforcementCatalogId;
@@ -49,7 +49,7 @@ namespace RackCad.UI
         private string statusBrush = "#415161";
         private BracingPattern bulkPattern = BracingPattern.SingleDiagonal;
         private FrameSide bulkSide = FrameSide.Front;
-        private string bulkProfileId = DefaultDiagonalProfileId;
+        private string bulkProfileId;
 
         public RackFrameConfiguratorViewModel(RackFrameConfiguration configuration)
             : this(configuration, null)
@@ -60,6 +60,11 @@ namespace RackCad.UI
         {
             Configuration = configuration;
             this.catalog = catalog ?? LoadCatalogSafe();
+            defaultDiagonalProfileId = this.catalog.Defaults.DiagonalProfile;
+            defaultHorizontalProfileId = this.catalog.Defaults.HorizontalProfile;
+            defaultStartConnectionPointId = this.catalog.Defaults.BraceStartConnectionPoint;
+            defaultEndConnectionPointId = this.catalog.Defaults.BraceEndConnectionPoint;
+            bulkProfileId = defaultDiagonalProfileId;
             memberBuilder = new BracingPanelMemberBuilder();
 
             PostProfileOptions = ToIdOptions(this.catalog.PostProfiles.Select(profile => profile?.Id));
@@ -759,12 +764,12 @@ namespace RackCad.UI
 
         public void AddCommonSegment(double clearHeight)
         {
-            AddHorizontalAt(ConfiguredHeight + Math.Max(1.0, clearHeight), DefaultHorizontalProfileId, 1, "Horizontal agregada para crear claro de " + FormatInches(clearHeight) + ".");
+            AddHorizontalAt(ConfiguredHeight + Math.Max(1.0, clearHeight), defaultHorizontalProfileId, 1, "Horizontal agregada para crear claro de " + FormatInches(clearHeight) + ".");
         }
 
         public void AddHorizontalSegment()
         {
-            AddHorizontalAt(ConfiguredHeight + 44.0, DefaultHorizontalProfileId, 1, "Horizontal agregada.");
+            AddHorizontalAt(ConfiguredHeight + 44.0, defaultHorizontalProfileId, 1, "Horizontal agregada.");
         }
 
         public void AddHorizontal()
@@ -813,7 +818,7 @@ namespace RackCad.UI
                 return;
             }
 
-            AddHorizontalAt((SelectedBracingSegment.StartElevation + SelectedBracingSegment.EndElevation) / 2.0, DefaultHorizontalProfileId, 1, "Horizontal agregada dentro del panel seleccionado.");
+            AddHorizontalAt((SelectedBracingSegment.StartElevation + SelectedBracingSegment.EndElevation) / 2.0, defaultHorizontalProfileId, 1, "Horizontal agregada dentro del panel seleccionado.");
         }
 
         public void AddSegmentBelowSelected()
@@ -844,7 +849,7 @@ namespace RackCad.UI
 
             AddHorizontalAt(
                 (SelectedBracingSegment.StartElevation + SelectedBracingSegment.EndElevation) / 2.0,
-                DefaultHorizontalProfileId,
+                defaultHorizontalProfileId,
                 1,
                 "Panel dividido con una nueva horizontal intermedia.");
         }
@@ -1053,7 +1058,7 @@ namespace RackCad.UI
                         Id = "H" + (index + 1).ToString(CultureInfo.InvariantCulture),
                         Number = index + 1,
                         Elevation = elevations[index],
-                        ProfileId = index == 0 ? "HORIZONTAL_INFERIOR" : index == elevations.Count - 1 ? "HORIZONTAL_SUPERIOR" : DefaultHorizontalProfileId,
+                        ProfileId = index == 0 ? "HORIZONTAL_INFERIOR" : index == elevations.Count - 1 ? "HORIZONTAL_SUPERIOR" : defaultHorizontalProfileId,
                         Quantity = index == 0 ? 2 : 1,
                         MountingFace = FrameSide.Front,
                         State = FrameComponentState.Standard,
@@ -1337,9 +1342,9 @@ namespace RackCad.UI
                 Arrangement = BracingPattern.SingleDiagonal,
                 MountingFace = FrameSide.Front,
                 DiagonalDirection = DiagonalDirection.AutoAlternating,
-                DiagonalProfileId = DefaultDiagonalProfileId,
-                StartConnectionPointId = DefaultStartConnectionPointId,
-                EndConnectionPointId = DefaultEndConnectionPointId,
+                DiagonalProfileId = defaultDiagonalProfileId,
+                StartConnectionPointId = defaultStartConnectionPointId,
+                EndConnectionPointId = defaultEndConnectionPointId,
                 IsStandard = isStandard,
                 IsException = !isStandard
             };
@@ -2081,6 +2086,20 @@ namespace RackCad.UI
         private static string NormalizeText(string value)
         {
             return value == null ? string.Empty : value.Trim();
+        }
+
+        /// <summary>Short, human-readable label for a catalog id (its description), for the preview.</summary>
+        public string DescribeCatalogId(string id)
+        {
+            var text = catalog.DescribeId(id);
+
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return "-";
+            }
+
+            text = text.Trim();
+            return text.Length <= 18 ? text : text.Substring(0, 18);
         }
 
         private static RackCatalog LoadCatalogSafe()

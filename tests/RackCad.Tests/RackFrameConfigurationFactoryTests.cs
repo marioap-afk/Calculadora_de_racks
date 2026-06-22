@@ -92,7 +92,7 @@ namespace RackCad.Tests
                 Name = "Mala (descendente)",
                 DefaultHeight = 132.0,
                 DefaultDepth = 42.0,
-                HorizontalElevations = new[] { 0.0, 132.0, 44.0 }
+                Horizontals = Horizontals(0.0, 132.0, 44.0)
             };
             var duplicate = new RackFrameTemplate
             {
@@ -100,7 +100,7 @@ namespace RackCad.Tests
                 Name = "Mala (duplicada)",
                 DefaultHeight = 132.0,
                 DefaultDepth = 42.0,
-                HorizontalElevations = new[] { 0.0, 44.0, 44.0, 132.0 }
+                Horizontals = Horizontals(0.0, 44.0, 44.0, 132.0)
             };
 
             Assert.Throws<System.ArgumentException>(() => CreateFactory().Build(descending, "POSTE_OMEGA_3X3", 132.0, 42.0));
@@ -113,7 +113,7 @@ namespace RackCad.Tests
             foreach (var template in RackFrameTemplateCatalog.All)
             {
                 var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", template.DefaultHeight, template.DefaultDepth);
-                Assert.Equal(template.HorizontalElevations.Count, configuration.Horizontals.Count);
+                Assert.Equal(template.Horizontals.Count, configuration.Horizontals.Count);
             }
         }
 
@@ -132,10 +132,18 @@ namespace RackCad.Tests
             Assert.NotNull(RackFrameTemplateCatalog.Default);
             Assert.All(RackFrameTemplateCatalog.All, t =>
             {
-                Assert.NotNull(t.HorizontalElevations);
-                Assert.Equal(0.0, t.HorizontalElevations.First());
-                Assert.Equal(t.DefaultHeight, t.HorizontalElevations.Last());
+                Assert.NotNull(t.Horizontals);
+                Assert.Equal(0.0, t.Horizontals.First().Elevation);
+                Assert.Equal(t.DefaultHeight, t.Horizontals.Last().Elevation);
+                Assert.All(t.Horizontals, h => Assert.False(string.IsNullOrWhiteSpace(h.Profile)));
             });
+        }
+
+        private static System.Collections.Generic.List<TemplateHorizontal> Horizontals(params double[] elevations)
+        {
+            return elevations
+                .Select(e => new TemplateHorizontal { Elevation = e, Profile = "HORIZONTAL_INTERMEDIA", Quantity = 1 })
+                .ToList();
         }
     }
 }

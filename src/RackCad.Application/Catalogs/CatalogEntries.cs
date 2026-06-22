@@ -55,5 +55,6 @@ namespace RackCad.Application.Catalogs
         public IReadOnlyList<ProfileCatalogEntry> ReinforcementProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<BasePlateCatalogEntry> BasePlates { get; set; } = new List<BasePlateCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
+        public RackDefaults Defaults { get; set; } = new RackDefaults();
     }
 }

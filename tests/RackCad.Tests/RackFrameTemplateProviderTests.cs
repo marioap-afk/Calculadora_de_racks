@@ -20,7 +20,11 @@ namespace RackCad.Tests
                 string.Equals(t.Id, "STD-3P", StringComparison.OrdinalIgnoreCase));
 
             Assert.NotNull(standard);
-            Assert.Equal(new[] { 0.0, 44.0, 88.0, 132.0 }, standard.HorizontalElevations);
+            Assert.Equal(new[] { 0.0, 44.0, 88.0, 132.0 }, standard.Horizontals.Select(h => h.Elevation));
+            Assert.Equal(new[] { "HORIZONTAL_INFERIOR", "HORIZONTAL_INTERMEDIA", "HORIZONTAL_INTERMEDIA", "HORIZONTAL_SUPERIOR" }, standard.Horizontals.Select(h => h.Profile));
+            Assert.Equal(2, standard.Horizontals.First().Quantity);
+            Assert.Equal("POSTE_OMEGA_3X3", standard.Post);
+            Assert.Equal("TRAVESANO_DINAMICO_OMEGA_3X3", standard.DiagonalProfile);
             Assert.Equal(BracingPattern.SingleDiagonal, standard.DefaultArrangement);
         }
 
@@ -53,7 +57,9 @@ namespace RackCad.Tests
             var directory = Path.Combine(Path.GetTempPath(), "rackcad-templates-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
             File.WriteAllText(Path.Combine(directory, RackFrameTemplateProvider.TemplatesFile),
-                "[{\"id\":\"CUSTOM\",\"name\":\"Mi cabecera\",\"defaultHeight\":120,\"defaultDepth\":40,\"horizontalElevations\":[0,60,120],\"defaultArrangement\":\"DoubleDiagonal\"}]");
+                "[{\"id\":\"CUSTOM\",\"name\":\"Mi cabecera\",\"defaultHeight\":120,\"defaultDepth\":40," +
+                "\"horizontals\":[{\"elevation\":0,\"profile\":\"HORIZONTAL_INFERIOR\",\"quantity\":2},{\"elevation\":60,\"profile\":\"HORIZONTAL_INTERMEDIA\",\"quantity\":1},{\"elevation\":120,\"profile\":\"HORIZONTAL_SUPERIOR\",\"quantity\":1}]," +
+                "\"defaultArrangement\":\"DoubleDiagonal\",\"post\":\"POSTE_OMEGA_3X3\"}]");
 
             try
             {
@@ -62,6 +68,8 @@ namespace RackCad.Tests
                 Assert.Single(templates);
                 Assert.Equal("Mi cabecera", templates[0].Name);
                 Assert.Equal(BracingPattern.DoubleDiagonal, templates[0].DefaultArrangement);
+                Assert.Equal(3, templates[0].Horizontals.Count);
+                Assert.Equal("HORIZONTAL_INFERIOR", templates[0].Horizontals[0].Profile);
             }
             finally
             {

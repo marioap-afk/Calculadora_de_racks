@@ -6,22 +6,14 @@ using RackCad.Domain.RackFrames;
 namespace RackCad.Application.RackFrames
 {
     /// <summary>
-    /// Builds a <see cref="RackFrameConfiguration"/> from a template plus the four simple
-    /// inputs (template, post type, height, depth). Descriptions are resolved from the
-    /// catalog; the structure comes from the template scaled to the requested height.
+    /// Builds a <see cref="RackFrameConfiguration"/> from a self-describing template plus the
+    /// dimensions (post type, height, depth). The template names every piece (horizontal profiles
+    /// and quantities, diagonal profile, brace connection points, base plate, post); empty ids fall
+    /// back to <see cref="RackDefaults"/>. No catalog ids or profile rules are hardcoded here, so the
+    /// frame is fully defined by the JSON catalogs.
     /// </summary>
     public sealed class RackFrameConfigurationFactory
     {
-        private const string BasePlateCatalogId = CatalogIds.BasePlate;
-        private const string DiagonalProfileId = CatalogIds.Diagonal;
-        private const string LowerHorizontalProfileId = CatalogIds.LowerHorizontal;
-        private const string IntermediateHorizontalProfileId = CatalogIds.IntermediateHorizontal;
-        private const string UpperHorizontalProfileId = CatalogIds.UpperHorizontal;
-        private const string BraceStartConnectionPointId = CatalogIds.BraceStartConnectionPoint;
-        private const string BraceEndConnectionPointId = CatalogIds.BraceEndConnectionPoint;
-        private const string FallbackBasePlateConnectionPointId = CatalogIds.BasePlateConnectionPoint;
-        private const string FallbackPostCatalogId = CatalogIds.StandardPost;
-
         private readonly RackCatalog catalog;
 
         public RackFrameConfigurationFactory()
@@ -41,24 +33,23 @@ namespace RackCad.Application.RackFrames
                 throw new ArgumentNullException(nameof(template));
             }
 
-            var referenceElevations = template.HorizontalElevations;
+            var horizontals = template.Horizontals;
 
-            if (referenceElevations == null || referenceElevations.Count < 2)
+            if (horizontals == null || horizontals.Count < 2)
             {
                 throw new ArgumentException("La plantilla debe tener al menos dos horizontales.", nameof(template));
             }
 
-            for (var index = 1; index < referenceElevations.Count; index++)
+            for (var index = 1; index < horizontals.Count; index++)
             {
-                if (referenceElevations[index] - referenceElevations[index - 1] <= 1e-4)
+                if (horizontals[index].Elevation - horizontals[index - 1].Elevation <= 1e-4)
                 {
                     throw new ArgumentException(
                         "La plantilla debe tener elevaciones estrictamente ascendentes y distintas.", nameof(template));
                 }
             }
 
-            // Strict ascent guarantees the last entry is the maximum.
-            var maxReferenceElevation = referenceElevations[referenceElevations.Count - 1];
+            var maxReferenceElevation = horizontals[horizontals.Count - 1].Elevation;
 
             if (maxReferenceElevation <= 0.0)
             {
@@ -75,9 +66,14 @@ namespace RackCad.Application.RackFrames
                 throw new ArgumentOutOfRangeException(nameof(depth), "El fondo debe ser mayor que cero.");
             }
 
-            var resolvedPostId = string.IsNullOrWhiteSpace(postCatalogId) ? FallbackPostCatalogId : postCatalogId.Trim();
-            var basePlate = catalog.BasePlates.FindBasePlate(BasePlateCatalogId);
-            var basePlateConnectionPointId = NormalizeOrFallback(basePlate?.ConnectionPointId, FallbackBasePlateConnectionPointId);
+            var defaults = catalog.Defaults ?? new RackDefaults();
+            var postId = FirstNonEmpty(postCatalogId, template.Post, defaults.Post);
+            var plateId = FirstNonEmpty(template.BasePlate, defaults.BasePlate);
+            var diagonalId = FirstNonEmpty(template.DiagonalProfile, defaults.DiagonalProfile);
+            var braceStartId = FirstNonEmpty(template.BraceStartConnectionPoint, defaults.BraceStartConnectionPoint);
+            var braceEndId = FirstNonEmpty(template.BraceEndConnectionPoint, defaults.BraceEndConnectionPoint);
+            var basePlate = catalog.BasePlates.FindBasePlate(plateId);
+            var plateConnectionId = FirstNonEmpty(basePlate?.ConnectionPointId, defaults.BasePlateConnectionPoint);
 
             var configuration = new RackFrameConfiguration
             {
@@ -87,39 +83,28 @@ namespace RackCad.Application.RackFrames
                 Depth = depth,
                 StandardBaselineId = "TEMPLATE-" + (template.Id ?? "CUSTOM"),
                 StandardBaselineVersion = "0.1",
-                LeftPost = CreatePost(PostSide.Left, resolvedPostId),
-                RightPost = CreatePost(PostSide.Right, resolvedPostId),
-                LeftBasePlate = CreateBasePlate(PostSide.Left, basePlate, basePlateConnectionPointId),
-                RightBasePlate = CreateBasePlate(PostSide.Right, basePlate, basePlateConnectionPointId)
+                LeftPost = CreatePost(PostSide.Left, postId),
+                RightPost = CreatePost(PostSide.Right, postId),
+                LeftBasePlate = CreateBasePlate(PostSide.Left, plateId, basePlate, plateConnectionId),
+                RightBasePlate = CreateBasePlate(PostSide.Right, plateId, basePlate, plateConnectionId)
             };
 
-            for (var index = 0; index < referenceElevations.Count; index++)
+            for (var index = 0; index < horizontals.Count; index++)
             {
-                var ratio = Math.Clamp(referenceElevations[index] / maxReferenceElevation, 0.0, 1.0);
+                var horizontal = horizontals[index];
+                var ratio = Math.Clamp(horizontal.Elevation / maxReferenceElevation, 0.0, 1.0);
                 var elevation = Math.Round(height * ratio, 4);
-                var profileId = ResolveHorizontalProfile(index, referenceElevations.Count);
-                var quantity = index == 0 ? 2 : 1;
-                AddHorizontal(configuration, index + 1, elevation, profileId, quantity);
+                AddHorizontal(configuration, index + 1, elevation, NormalizeText(horizontal.Profile), Math.Max(1, horizontal.Quantity));
             }
 
-            for (var index = 0; index < referenceElevations.Count - 1; index++)
+            for (var index = 0; index < horizontals.Count - 1; index++)
             {
                 var lowerId = "H" + (index + 1).ToString(CultureInfo.InvariantCulture);
                 var upperId = "H" + (index + 2).ToString(CultureInfo.InvariantCulture);
-                AddPanel(configuration, index + 1, lowerId, upperId, template.DefaultArrangement);
+                AddPanel(configuration, index + 1, lowerId, upperId, template.DefaultArrangement, diagonalId, braceStartId, braceEndId);
             }
 
             return configuration;
-        }
-
-        private static string ResolveHorizontalProfile(int index, int count)
-        {
-            if (index == 0)
-            {
-                return LowerHorizontalProfileId;
-            }
-
-            return index == count - 1 ? UpperHorizontalProfileId : IntermediateHorizontalProfileId;
         }
 
         private PostAssembly CreatePost(PostSide side, string postCatalogId)
@@ -135,12 +120,12 @@ namespace RackCad.Application.RackFrames
             };
         }
 
-        private static BasePlatePlacement CreateBasePlate(PostSide side, BasePlateCatalogEntry plate, string connectionPointId)
+        private static BasePlatePlacement CreateBasePlate(PostSide side, string plateCatalogId, BasePlateCatalogEntry plate, string connectionPointId)
         {
             return new BasePlatePlacement
             {
                 PostSide = side,
-                PlateCatalogId = BasePlateCatalogId,
+                PlateCatalogId = plateCatalogId,
                 Description = NormalizeOrFallback(plate?.Description, "Placa base atornillable"),
                 ConnectionPointId = connectionPointId
             };
@@ -161,7 +146,15 @@ namespace RackCad.Application.RackFrames
             });
         }
 
-        private static void AddPanel(RackFrameConfiguration configuration, int number, string lowerHorizontalId, string upperHorizontalId, BracingPattern arrangement)
+        private static void AddPanel(
+            RackFrameConfiguration configuration,
+            int number,
+            string lowerHorizontalId,
+            string upperHorizontalId,
+            BracingPattern arrangement,
+            string diagonalProfileId,
+            string braceStartConnectionPointId,
+            string braceEndConnectionPointId)
         {
             configuration.BracingPanels.Add(new BracingPanel
             {
@@ -171,10 +164,10 @@ namespace RackCad.Application.RackFrames
                 UpperHorizontalId = upperHorizontalId,
                 Arrangement = arrangement,
                 MountingFace = FrameSide.Front,
-                DiagonalProfileId = DiagonalProfileId,
+                DiagonalProfileId = diagonalProfileId,
                 DiagonalDirection = DiagonalDirection.AutoAlternating,
-                StartConnectionPointId = BraceStartConnectionPointId,
-                EndConnectionPointId = BraceEndConnectionPointId,
+                StartConnectionPointId = braceStartConnectionPointId,
+                EndConnectionPointId = braceEndConnectionPointId,
                 IsStandard = true,
                 IsException = false
             });
@@ -190,6 +183,24 @@ namespace RackCad.Application.RackFrames
             {
                 return new RackCatalog();
             }
+        }
+
+        private static string FirstNonEmpty(params string[] candidates)
+        {
+            foreach (var candidate in candidates)
+            {
+                if (!string.IsNullOrWhiteSpace(candidate))
+                {
+                    return candidate.Trim();
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string NormalizeText(string value)
+        {
+            return value == null ? string.Empty : value.Trim();
         }
 
         private static string NormalizeOrFallback(string value, string fallback)

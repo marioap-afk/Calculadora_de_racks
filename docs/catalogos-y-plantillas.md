@@ -14,7 +14,8 @@ assets/catalogs/
   reinforcement-profiles.json   Perfiles de refuerzo de poste
   base-plates.json              Placas base
   connection-points.json        Puntos de conexion (troqueles)
-  header-templates.json         Plantillas de cabecera (modo rapido)
+  header-templates.json         Plantillas de cabecera (auto-descriptivas)
+  defaults.json                 Receta estandar global (piezas/alto por defecto)
 ```
 
 Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del plugin. La aplicacion los lee al iniciarse.
@@ -38,7 +39,7 @@ Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del
 
 ## Plantillas de cabecera (`header-templates.json`)
 
-Una plantilla define la **forma** de una cabecera para el modo rapido: cuantas horizontales hay, a que alturas y que celosia llevan por defecto. Las dimensiones finales (alto/fondo) las elige el usuario.
+Una plantilla es **auto-descriptiva**: define cuantas horizontales hay, a que altura, **con que perfil y cuantas**, mas que perfil de diagonal, puntos de conexion, placa y poste usa. La factory lee todo de aqui, asi que **no hay ids hardcodeados** en el codigo. Las dimensiones finales (alto/fondo) las elige el usuario.
 
 ### Ejemplo
 
@@ -49,8 +50,18 @@ Una plantilla define la **forma** de una cabecera para el modo rapido: cuantas h
     "name": "Estandar (3 paneles)",
     "defaultHeight": 132.0,
     "defaultDepth": 42.0,
-    "horizontalElevations": [0.0, 44.0, 88.0, 132.0],
-    "defaultArrangement": "SingleDiagonal"
+    "horizontals": [
+      { "elevation": 0.0,   "profile": "HORIZONTAL_INFERIOR",   "quantity": 2 },
+      { "elevation": 44.0,  "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
+      { "elevation": 88.0,  "profile": "HORIZONTAL_INTERMEDIA", "quantity": 1 },
+      { "elevation": 132.0, "profile": "HORIZONTAL_SUPERIOR",   "quantity": 1 }
+    ],
+    "defaultArrangement": "SingleDiagonal",
+    "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
+    "braceStartConnectionPoint": "TroquelCelosia_01",
+    "braceEndConnectionPoint": "TroquelCelosia_02",
+    "basePlate": "PLACA_BASE_ATORNILLABLE",
+    "post": "POSTE_OMEGA_3X3"
   }
 ]
 ```
@@ -63,17 +74,21 @@ Una plantilla define la **forma** de una cabecera para el modo rapido: cuantas h
 | `name` | texto | si | Nombre que se ve en el desplegable "Tipo de cabecera". |
 | `defaultHeight` | numero | si | Alto sugerido en pulgadas. Se precarga al elegir la plantilla. |
 | `defaultDepth` | numero | si | Fondo sugerido en pulgadas. Se precarga al elegir la plantilla. |
-| `horizontalElevations` | lista de numeros | si | Alturas de cada horizontal en pulgadas. Ver abajo. |
+| `horizontals` | lista | si | Una entrada por horizontal: `elevation` (in), `profile` (id de `horizontal-profiles.json`), `quantity`. Ver abajo. |
 | `defaultArrangement` | texto | no | Celosia por defecto de cada panel. Por defecto `SingleDiagonal`. |
+| `diagonalProfile` | texto | no | Perfil de diagonal (id de `diagonal-profiles.json`). Vacio = `defaults.json`. |
+| `braceStartConnectionPoint` / `braceEndConnectionPoint` | texto | no | Puntos de conexion de la celosia. Vacio = `defaults.json`. |
+| `basePlate` | texto | no | Placa base (id de `base-plates.json`). Vacio = `defaults.json`. |
+| `post` | texto | no | Poste por defecto (id de `post-profiles.json`). Vacio = `defaults.json`. |
 
-### Como funcionan las elevaciones (`horizontalElevations`)
+> Los campos opcionales vacios caen a los valores de `defaults.json` (ver mas abajo). Asi no repites el poste/placa/diagonal en cada plantilla si son los mismos.
 
-- Son las **alturas reales de cada horizontal, en pulgadas**, de abajo hacia arriba.
-- Deben empezar en `0` y ser **ascendentes**.
+### Como funcionan las horizontales (`horizontals`)
+
+- Cada entrada tiene `elevation` (altura en pulgadas, de abajo hacia arriba), `profile` (id del perfil) y `quantity`.
+- Deben empezar en `0` y ser **ascendentes** por elevacion.
 - Cada par de horizontales consecutivas forma un **panel**. Con N horizontales hay N-1 paneles.
-- **Escalan con el alto que elija el usuario.** Las elevaciones se usan como proporciones: si la plantilla define `[0, 44, 88, 132]` (cima en 132) y el usuario pide 200 de alto, se reparten a `[0, 66.7, 133.3, 200]`. La cima siempre cae exactamente en el alto pedido.
-
-Por eso conviene que la ultima elevacion coincida con `defaultHeight` (asi al alto por defecto las horizontales quedan en los valores exactos que escribiste).
+- **Escalan con el alto que elija el usuario.** Las elevaciones se usan como proporciones: si defines la cima en 132 y el usuario pide 200, se reparten proporcionalmente y la cima cae exacto en 200. Conviene que la ultima elevacion coincida con `defaultHeight`.
 
 ### Valores validos de `defaultArrangement`
 
@@ -92,10 +107,10 @@ Respeta exactamente estas mayusculas:
 
 1. Abre `assets/catalogs/header-templates.json`.
 2. Copia un bloque `{ ... }` existente y pegalo antes del corchete final, separando con una coma.
-3. Cambia `id` (unico), `name`, dimensiones, `horizontalElevations` y `defaultArrangement`.
+3. Cambia `id` (unico), `name`, dimensiones, `horizontals` y los perfiles. Los campos opcionales que dejes vacios usan `defaults.json`.
 4. Guarda y aplica el cambio (recompila o reinicia AutoCAD segun el caso).
 
-Ejemplo de una cabecera baja de 1 panel sin diagonales:
+Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de `defaults.json`):
 
 ```json
   {
@@ -103,7 +118,10 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales:
     "name": "Base (1 panel)",
     "defaultHeight": 60.0,
     "defaultDepth": 42.0,
-    "horizontalElevations": [0.0, 60.0],
+    "horizontals": [
+      { "elevation": 0.0,  "profile": "HORIZONTAL_INFERIOR", "quantity": 2 },
+      { "elevation": 60.0, "profile": "HORIZONTAL_SUPERIOR", "quantity": 1 }
+    ],
     "defaultArrangement": "NoBracing"
   }
 ```
@@ -111,9 +129,37 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales:
 ### Errores comunes
 
 - Olvidar la coma entre dos plantillas, o dejar una coma de mas antes de `]` o `}` que no sea la final.
-- Empezar `horizontalElevations` en un valor distinto de `0` o ponerlas desordenadas.
+- Empezar `horizontals` en una elevacion distinta de `0` o ponerlas desordenadas.
+- Referenciar un `profile`/`post`/`basePlate` que no existe en su catalogo (la validacion lo avisa).
 - Escribir mal `defaultArrangement` (ej. `xbracing` en vez de `XBracing`).
 - Repetir un `id` ya usado.
+
+## Valores por defecto (`defaults.json`)
+
+`defaults.json` es la "receta estandar" global: que piezas usa la cabecera cuando una plantilla deja un campo vacio, y los defaults de altura y del margen de cabecera. Es un **objeto** (no una lista).
+
+```json
+{
+  "post": "POSTE_OMEGA_3X3",
+  "basePlate": "PLACA_BASE_ATORNILLABLE",
+  "diagonalProfile": "TRAVESANO_DINAMICO_OMEGA_3X3",
+  "horizontalProfile": "HORIZONTAL_INTERMEDIA",
+  "braceStartConnectionPoint": "TroquelCelosia_01",
+  "braceEndConnectionPoint": "TroquelCelosia_02",
+  "basePlateConnectionPoint": "PlacaBase_01",
+  "defaultHeaderHeight": 132.0,
+  "headerEndAllowance": 6.0
+}
+```
+
+| Campo | Descripcion |
+|-------|-------------|
+| `post` / `basePlate` / `diagonalProfile` / `horizontalProfile` | Piezas por defecto cuando la plantilla o el editor no especifican. |
+| `braceStart/EndConnectionPoint`, `basePlateConnectionPoint` | Puntos de conexion por defecto. |
+| `defaultHeaderHeight` | Alto por defecto (lo usa el modo dinamico y la cabecera estandar). |
+| `headerEndAllowance` | Las 6" que cada cabecera de extremo agrega al fondo de tarima. |
+
+Si falta `defaults.json` o esta vacio, se usan valores internos de respaldo equivalentes.
 
 ---
 

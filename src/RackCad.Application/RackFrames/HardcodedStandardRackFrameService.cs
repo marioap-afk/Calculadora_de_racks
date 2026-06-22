@@ -25,7 +25,8 @@ namespace RackCad.Application.RackFrames
         public RackFrameConfiguration CreateDefault()
         {
             var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
-            var configuration = factory.Build(template, CatalogIds.StandardPost, 132.0, 42.0);
+            // Post/height/depth come from the template (and its defaults), not literals.
+            var configuration = factory.Build(template, template.Post, template.DefaultHeight, template.DefaultDepth);
 
             // Preserve the standard's stable identity regardless of the template's own metadata.
             configuration.Name = "Cabecera estandar temporal";

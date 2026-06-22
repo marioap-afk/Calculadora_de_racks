@@ -18,6 +18,7 @@ namespace RackCad.Application.Catalogs
         public const string ReinforcementProfilesFile = "reinforcement-profiles.json";
         public const string BasePlatesFile = "base-plates.json";
         public const string ConnectionPointsFile = "connection-points.json";
+        public const string DefaultsFile = "defaults.json";
 
         private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
         {
@@ -51,8 +52,36 @@ namespace RackCad.Application.Catalogs
                 DiagonalProfiles = ReadArray<ProfileCatalogEntry>(DiagonalProfilesFile),
                 ReinforcementProfiles = ReadArray<ProfileCatalogEntry>(ReinforcementProfilesFile),
                 BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
-                ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile)
+                ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile),
+                Defaults = ReadObject(DefaultsFile, new RackDefaults())
             };
+        }
+
+        private T ReadObject<T>(string fileName, T fallback)
+        {
+            var path = Path.Combine(_directory, fileName);
+
+            if (!File.Exists(path))
+            {
+                return fallback;
+            }
+
+            var json = File.ReadAllText(path);
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return fallback;
+            }
+
+            try
+            {
+                return JsonSerializer.Deserialize<T>(json, SerializerOptions) ?? fallback;
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidOperationException(
+                    "El catalogo '" + fileName + "' no es JSON valido: " + ex.Message, ex);
+            }
         }
 
         private List<T> ReadArray<T>(string fileName)
