@@ -73,6 +73,28 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void ShippedConnectionLayout_PieceHasManyPoints_AndPositionDependsOnView()
+        {
+            var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
+            var plate = "PLACA_BASE_ATORNILLABLE";
+
+            // Cardinality: a plate carries several connection points (mate + floor anchors).
+            var pointIds = catalog.ConnectionLayout.ConnectionLayoutFor(plate)
+                .Select(e => e.ConnectionPointId).Distinct().ToList();
+            Assert.Contains("PlacaBase_01", pointIds);
+            Assert.Contains("ANCLA_PISO", pointIds);
+
+            // View dependency: same point, different 2D position per view.
+            var frontal = catalog.ConnectionLayout.FindConnectionLayout(plate, "PlacaBase_01", "FRONTAL");
+            var planta = catalog.ConnectionLayout.FindConnectionLayout(plate, "PlacaBase_01", "PLANTA");
+            Assert.Equal(0.0, frontal.LocalY);
+            Assert.Equal(3.0, planta.LocalY);
+
+            // The factory picks the mate-to-post anchor (role BasePlate) from the layout.
+            Assert.Equal("PlacaBase_01", catalog.MountConnectionPointId(plate));
+        }
+
+        [Fact]
         public void ShippedBlocks_RelatePieceAndView()
         {
             var blocks = JsonRackCatalogProvider.FromBaseDirectory().Load().Blocks;

@@ -25,6 +25,9 @@ namespace RackCad.Application.Geometry
     /// </summary>
     public static class FramePlacementResolver
     {
+        /// <summary>The header is resolved in its elevation (frontal) view.</summary>
+        private const string ElevationView = "FRONTAL";
+
         public static IReadOnlyList<BasePlatePlacement2D> ResolveBasePlates(RackFrameConfiguration configuration, RackCatalog catalog)
         {
             var results = new List<BasePlatePlacement2D>();
@@ -46,10 +49,10 @@ namespace RackCad.Application.Geometry
                 return;
             }
 
-            var connectionPoint = catalog?.ConnectionPoints.FindConnectionPoint(plate.ConnectionPointId);
-            var local = connectionPoint == null
+            var layout = catalog?.ConnectionLayout.FindConnectionLayout(plate.PlateCatalogId, plate.ConnectionPointId, ElevationView);
+            var local = layout == null
                 ? new Point2D(0.0, 0.0)
-                : new Point2D(connectionPoint.LocalX, connectionPoint.LocalY);
+                : new Point2D(layout.LocalX, layout.LocalY);
             var anchor = new Point2D(anchorX, 0.0);
 
             results.Add(new BasePlatePlacement2D

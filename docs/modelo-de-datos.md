@@ -13,9 +13,10 @@ Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que ot
 | `horizontal-profiles.csv` | `id` | No |
 | `diagonal-profiles.csv` | `id` | No |
 | `reinforcement-profiles.csv` | `id` | No |
-| `connection-points.csv` | `id` | No |
+| `connection-points.csv` | `id` | No (solo define qué es el punto) |
 | `views.csv` | `id` | No |
-| `base-plates.csv` | `id` | → `connection-points` |
+| `base-plates.csv` | `id` | No (su posición de puntos va en `connection-layout`) |
+| `connection-layout.csv` | `pieceId`+`connectionPointId`+`view` | → cualquier pieza, → `connection-points` **y** → `views` |
 | `blocks.csv` | `pieceId`+`view` | → cualquier pieza **y** → `views` |
 | `header-templates.json` | `id` | → perfiles, placa y puntos |
 | `defaults.json` | (única) | → perfiles, placa y puntos |
@@ -59,6 +60,9 @@ Resumen de las **claves foráneas** (FK), una por una:
 - `base-plates.connectionPointId` → `connection-points.id`
 - `blocks.pieceId` → el `id` de cualquier pieza (perfil, placa o punto)
 - `blocks.view` → `views.id`
+- `connection-layout.pieceId` → el `id` de cualquier pieza (p. ej. una placa)
+- `connection-layout.connectionPointId` → `connection-points.id`
+- `connection-layout.view` → `views.id`
 - `header-templates.post` → `post-profiles.id`
 - `header-templates.horizontals[].profile` → `horizontal-profiles.id`
 - `header-templates.diagonalProfile` → `diagonal-profiles.id`
@@ -76,13 +80,16 @@ erDiagram
     DIAGONAL_PROFILES    { string id PK }
     REINFORCEMENT        { string id PK }
     CONNECTION_POINTS    { string id PK }
+    CONNECTION_LAYOUT    { string pieceId FK }
     VIEWS                { string id PK }
     BASE_PLATES          { string id PK }
     BLOCKS               { string pieceId FK }
     HEADER_TEMPLATES     { string id PK }
     DEFAULTS             { string post FK }
 
-    BASE_PLATES      }o--|| CONNECTION_POINTS : connectionPointId
+    CONNECTION_LAYOUT }o--|| CONNECTION_POINTS : connectionPointId
+    CONNECTION_LAYOUT }o--|| VIEWS             : view
+    CONNECTION_LAYOUT }o--|| BASE_PLATES       : "pieceId (cualquier pieza)"
     BLOCKS           }o--|| VIEWS             : view
     BLOCKS           }o--|| POST_PROFILES     : "pieceId (cualquier pieza)"
     HEADER_TEMPLATES }o--|| POST_PROFILES     : post
@@ -143,8 +150,10 @@ Quiero dibujar la cabecera estándar en vista frontal:
 1. `Load()` lee todo → `RackCatalog`.
 2. Tomo la plantilla `STD-3P`. Su campo `post` = `POSTE_OMEGA_3X3`.
 3. `FindProfile("POSTE_OMEGA_3X3")` en `post-profiles.csv` → la pieza con su `width`, `material`, etc.
-4. Su `basePlate` = `PLACA_BASE_ATORNILLABLE`; esa placa tiene `connectionPointId` = `PlacaBase_01`
-   → `FindConnectionPoint("PlacaBase_01")` en `connection-points.csv` (de ahí sale dónde se monta).
+4. Su `basePlate` = `PLACA_BASE_ATORNILLABLE`. ¿Dónde se monta? `MountConnectionPointId("PLACA_BASE_ATORNILLABLE")`
+   busca en `connection-layout.csv` la fila de esa placa con rol `BasePlate` → `PlacaBase_01`. Luego
+   `FindConnectionLayout("PLACA_BASE_ATORNILLABLE","PlacaBase_01","FRONTAL")` → `localX/localY` para el mate.
+   (La placa puede tener más puntos —p. ej. `ANCLA_PISO` en `PLANTA`— sin tocar la fila de la placa.)
 5. (Dibujo) Para ese poste en vista `FRONTAL`: `Blocks.FindBlock("POSTE_OMEGA_3X3","FRONTAL")`
    → `blockName = POSTE_OMEGA_3X3_FRONT`, capa `RACK-POSTES` → se inserta en AutoCAD.
 

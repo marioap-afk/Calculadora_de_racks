@@ -18,6 +18,7 @@ namespace RackCad.Application.Catalogs
         public const string ReinforcementProfilesFile = "reinforcement-profiles.json";
         public const string BasePlatesFile = "base-plates.json";
         public const string ConnectionPointsFile = "connection-points.json";
+        public const string ConnectionLayoutFile = "connection-layout.json";
         public const string ViewsFile = "views.json";
         public const string BlocksFile = "blocks.json";
         public const string DefaultsFile = "defaults.json";
@@ -55,6 +56,7 @@ namespace RackCad.Application.Catalogs
                 ReinforcementProfiles = ReadArray<ProfileCatalogEntry>(ReinforcementProfilesFile),
                 BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
                 ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile),
+                ConnectionLayout = ReadArray<ConnectionLayoutEntry>(ConnectionLayoutFile),
                 Views = ReadArray<ViewCatalogEntry>(ViewsFile),
                 Blocks = ReadArray<BlockCatalogEntry>(BlocksFile),
                 Defaults = ReadObject(DefaultsFile, new RackDefaults())

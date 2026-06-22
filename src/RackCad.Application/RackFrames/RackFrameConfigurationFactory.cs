@@ -73,7 +73,9 @@ namespace RackCad.Application.RackFrames
             var braceStartId = FirstNonEmpty(template.BraceStartConnectionPoint, defaults.BraceStartConnectionPoint);
             var braceEndId = FirstNonEmpty(template.BraceEndConnectionPoint, defaults.BraceEndConnectionPoint);
             var basePlate = catalog.BasePlates.FindBasePlate(plateId);
-            var plateConnectionId = FirstNonEmpty(basePlate?.ConnectionPointId, defaults.BasePlateConnectionPoint);
+            // The plate's mate-to-post anchor now comes from the connection-layout table (a plate can
+            // declare several points per view); fall back to the global default.
+            var plateConnectionId = FirstNonEmpty(catalog.MountConnectionPointId(plateId), defaults.BasePlateConnectionPoint);
 
             var configuration = new RackFrameConfiguration
             {

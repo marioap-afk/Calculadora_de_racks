@@ -50,8 +50,8 @@ namespace RackCad.Tests
             var left = FramePlacementResolver.ResolveBasePlates(configuration, catalog)
                 .Single(p => p.Side == PostSide.Left);
 
-            var connectionPoint = catalog.ConnectionPoints.FindConnectionPoint(left.ConnectionPointId);
-            var local = new Point2D(connectionPoint.LocalX, connectionPoint.LocalY);
+            var layout = catalog.ConnectionLayout.FindConnectionLayout(left.PlateCatalogId, left.ConnectionPointId, "FRONTAL");
+            var local = new Point2D(layout.LocalX, layout.LocalY);
 
             // Once placed, the plate's named point must coincide with the post-base anchor.
             Assert.True(MateSolver.ToWorld(left.Placement, local).ApproxEquals(left.Anchor, Tolerance));

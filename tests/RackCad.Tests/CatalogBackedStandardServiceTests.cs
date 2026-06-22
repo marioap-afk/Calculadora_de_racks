@@ -21,8 +21,21 @@ namespace RackCad.Tests
                     new BasePlateCatalogEntry
                     {
                         Id = "PLACA_BASE_ATORNILLABLE",
-                        Description = "Placa personalizada",
-                        ConnectionPointId = "CP_CUSTOM"
+                        Description = "Placa personalizada"
+                    }
+                },
+                ConnectionPoints = new List<ConnectionPointCatalogEntry>
+                {
+                    new ConnectionPointCatalogEntry { Id = "CP_CUSTOM", Role = "BasePlate" }
+                },
+                // The plate's anchor now lives in the connection-layout table, not on the plate itself.
+                ConnectionLayout = new List<ConnectionLayoutEntry>
+                {
+                    new ConnectionLayoutEntry
+                    {
+                        PieceId = "PLACA_BASE_ATORNILLABLE",
+                        ConnectionPointId = "CP_CUSTOM",
+                        View = "FRONTAL"
                     }
                 }
             };

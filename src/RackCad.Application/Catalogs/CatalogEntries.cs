@@ -63,18 +63,36 @@ namespace RackCad.Application.Catalogs
         public double Width { get; set; }
         public double Length { get; set; }
         public double Thickness { get; set; }
-        public string ConnectionPointId { get; set; }
         public string Units { get; set; }
         public double WeightEach { get; set; }
     }
 
     /// <summary>
-    /// Named connection point (punch/troquel) referenced by members. Carries a local 2D offset
-    /// (inches) within the owning piece's frame so the mate solver can resolve absolute positions.
+    /// Definition of a named connection point (punch/troquel/anchor): just what it IS (<c>Id</c>,
+    /// <c>Role</c>). WHERE it sits on a piece is not here — a piece may carry several and the 2D
+    /// position depends on the view, so positions live in <see cref="ConnectionLayoutEntry"/>.
     /// </summary>
     public sealed class ConnectionPointCatalogEntry : CatalogEntryBase
     {
         public string Role { get; set; }
+    }
+
+    /// <summary>
+    /// Placement of a connection point ON a piece, IN a view (a row of the normalized layout table).
+    /// Key = <see cref="PieceId"/> + <see cref="ConnectionPointId"/> + <see cref="View"/>; a piece can
+    /// have many. The mate solver reads <see cref="LocalX"/>/<see cref="LocalY"/> from here.
+    /// </summary>
+    public sealed class ConnectionLayoutEntry : CatalogEntryBase
+    {
+        /// <summary>Piece that owns this connection point (FK to a plate/profile/etc.).</summary>
+        public string PieceId { get; set; }
+
+        /// <summary>Which connection point (FK to <see cref="ConnectionPointCatalogEntry.Id"/>).</summary>
+        public string ConnectionPointId { get; set; }
+
+        /// <summary>View this 2D position applies to (FK to <see cref="ViewCatalogEntry.Id"/>).</summary>
+        public string View { get; set; }
+
         public double LocalX { get; set; }
         public double LocalY { get; set; }
     }
@@ -123,6 +141,7 @@ namespace RackCad.Application.Catalogs
         public IReadOnlyList<ProfileCatalogEntry> ReinforcementProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<BasePlateCatalogEntry> BasePlates { get; set; } = new List<BasePlateCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
+        public IReadOnlyList<ConnectionLayoutEntry> ConnectionLayout { get; set; } = new List<ConnectionLayoutEntry>();
         public IReadOnlyList<ViewCatalogEntry> Views { get; set; } = new List<ViewCatalogEntry>();
         public IReadOnlyList<BlockCatalogEntry> Blocks { get; set; } = new List<BlockCatalogEntry>();
         public RackDefaults Defaults { get; set; } = new RackDefaults();

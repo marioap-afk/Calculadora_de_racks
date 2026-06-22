@@ -39,6 +39,58 @@ namespace RackCad.Application.Catalogs
                 string.Equals(point?.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
+        /// <summary>The 2D placement of a connection point on a piece for a given view, or null when absent.</summary>
+        public static ConnectionLayoutEntry FindConnectionLayout(
+            this IEnumerable<ConnectionLayoutEntry> layout, string pieceId, string connectionPointId, string view)
+        {
+            if (layout == null || string.IsNullOrWhiteSpace(pieceId) || string.IsNullOrWhiteSpace(connectionPointId))
+            {
+                return null;
+            }
+
+            return layout.FirstOrDefault(entry =>
+                string.Equals(entry?.PieceId, pieceId, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(entry?.ConnectionPointId, connectionPointId, StringComparison.OrdinalIgnoreCase)
+                && (string.IsNullOrWhiteSpace(view) || string.Equals(entry?.View, view, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>Every connection point placed on a piece (across views), in declaration order.</summary>
+        public static IEnumerable<ConnectionLayoutEntry> ConnectionLayoutFor(
+            this IEnumerable<ConnectionLayoutEntry> layout, string pieceId)
+        {
+            if (layout == null || string.IsNullOrWhiteSpace(pieceId))
+            {
+                return Enumerable.Empty<ConnectionLayoutEntry>();
+            }
+
+            return layout.Where(entry => string.Equals(entry?.PieceId, pieceId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// The connection point a piece uses to mate onto its support (role <c>BasePlate</c>), else the
+        /// first one declared for it, else null. Lets the factory pick a plate's anchor from the layout.
+        /// </summary>
+        public static string MountConnectionPointId(this RackCatalog catalog, string pieceId)
+        {
+            if (catalog == null || string.IsNullOrWhiteSpace(pieceId))
+            {
+                return null;
+            }
+
+            var rows = catalog.ConnectionLayout.ConnectionLayoutFor(pieceId).ToList();
+            if (rows.Count == 0)
+            {
+                return null;
+            }
+
+            var mount = rows.FirstOrDefault(row => string.Equals(
+                catalog.ConnectionPoints.FindConnectionPoint(row.ConnectionPointId)?.Role,
+                "BasePlate",
+                StringComparison.OrdinalIgnoreCase));
+
+            return (mount ?? rows[0]).ConnectionPointId;
+        }
+
         public static ViewCatalogEntry FindView(this IEnumerable<ViewCatalogEntry> views, string id)
         {
             if (views == null || string.IsNullOrWhiteSpace(id))

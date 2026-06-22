@@ -18,7 +18,8 @@ assets/catalogs/
   diagonal-profiles.csv         Perfiles de diagonal/celosia (Excel/CSV)
   reinforcement-profiles.csv    Perfiles de refuerzo         (Excel/CSV)
   base-plates.csv               Placas base                  (Excel/CSV)
-  connection-points.csv         Puntos de conexion           (Excel/CSV)
+  connection-points.csv         Puntos de conexion (definicion)(Excel/CSV)
+  connection-layout.csv         Punto por pieza y vista       (Excel/CSV)
   views.csv                     Vistas posibles              (Excel/CSV)
   blocks.csv                    Bloque por pieza y vista      (Excel/CSV)
   header-templates.json         Plantillas de cabecera       (JSON, auto-descriptivas)
@@ -229,19 +230,39 @@ Campos comunes **mas**:
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
 | `width`, `length`, `thickness` | numero | Medidas en pulgadas. |
-| `connectionPointId` | texto | Punto de conexion asociado (ver siguiente catalogo). |
 | `weightEach` | numero | Peso por pieza (kg). |
 | `units` | texto | Unidad de las medidas. |
 
-### Puntos de conexion (`connection-points.json`)
+> La placa **ya no** lleva una columna `connectionPointId`. Una placa puede tener **varios** puntos (mate al poste + barrenos de piso) y su posicion depende de la vista, asi que esa relacion vive en `connection-layout.csv`.
 
-Campos comunes **mas**:
+### Puntos de conexion (`connection-points.csv`) — definicion
+
+Solo **que es** el punto (no donde esta). Campos comunes **mas**:
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `role` | texto | Rol del punto (ej. `Brace`, `BasePlate`). |
-| `localX` | numero | Offset X (in) del punto dentro de su pieza. Lo usa el solver de posiciones. Por defecto 0. |
-| `localY` | numero | Offset Y (in) del punto dentro de su pieza. Por defecto 0. |
+| `role` | texto | Rol del punto (ej. `Brace`, `BasePlate`, `Anchor`). El factory usa `BasePlate` para elegir el anclaje de la placa. |
+
+### Punto por pieza y vista (`connection-layout.csv`) — ubicacion
+
+Tabla **normalizada**, gemela de `blocks.csv`: relaciona **pieza + punto + vista** con su posicion 2D. Una pieza puede tener **muchos** puntos, y la posicion **depende de la vista** (mismo punto 3D se proyecta distinto en frontal vs planta). El solver de posiciones lee `localX/localY` de aqui (vista `FRONTAL`).
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| `pieceId` | texto | Pieza que posee el punto (FK a placa/perfil). |
+| `connectionPointId` | texto | Que punto (FK a `connection-points.csv`). |
+| `view` | texto | Vista a la que aplica esta posicion (FK a `views.csv`). |
+| `localX` | numero | Offset X (in) del punto dentro de la pieza, en esa vista. |
+| `localY` | numero | Offset Y (in) del punto dentro de la pieza, en esa vista. |
+
+### Vistas (`views.csv`)
+
+Catalogo simple de las vistas en que se puede dibujar una pieza. Campos comunes; en la practica solo:
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL_IZQ`, `PLANTA`). Lo referencian `blocks.csv` y `connection-layout.csv`. |
+| `displayName` | texto | Nombre para mostrar (ej. `Frontal`). |
 
 ### Vistas (`views.csv`)
 
