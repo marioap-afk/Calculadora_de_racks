@@ -1002,8 +1002,18 @@ namespace RackCad.UI
 
             if (post.HasReinforcement)
             {
+                // Draw the reinforcement only up to its own height (the reinforced zone), on the inner side.
                 var offset = post.ReinforcementOnRightSide ? 13.0 : -13.0;
-                AddLine(post.X + offset, post.TopY, post.X + offset, post.BottomY, ModifiedStroke, 3.0);
+                var reinforcementTopY = post.ReinforcementTopY > 0.0 && post.ReinforcementTopY < post.BottomY
+                    ? post.ReinforcementTopY
+                    : post.TopY;
+                AddLine(post.X + offset, reinforcementTopY, post.X + offset, post.BottomY, ModifiedStroke, 3.0);
+
+                // A short tick marks where the reinforcement zone ends.
+                if (reinforcementTopY > post.TopY)
+                {
+                    AddLine(post.X + offset - 4.0, reinforcementTopY, post.X + offset + 4.0, reinforcementTopY, ModifiedStroke, 1.5);
+                }
             }
 
             var labelX = post.ReinforcementOnRightSide ? post.X - 24.0 : post.X - 16.0;

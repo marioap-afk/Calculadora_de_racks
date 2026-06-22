@@ -80,7 +80,8 @@ namespace RackCad.UI
                 viewModel.LeftPostCatalogId,
                 viewModel.LeftPostHasReinforcement,
                 viewModel.LeftPostReinforcementCatalogId,
-                true);
+                true,
+                ReinforcementTop(viewModel.LeftPostReinforcementHeight, configuredHeight, topY, bottomY));
             layout.RightPost = new RackFrameEngineeringPreviewPost(
                 rightX,
                 topY,
@@ -88,7 +89,8 @@ namespace RackCad.UI
                 viewModel.RightPostCatalogId,
                 viewModel.RightPostHasReinforcement,
                 viewModel.RightPostReinforcementCatalogId,
-                false);
+                false,
+                ReinforcementTop(viewModel.RightPostReinforcementHeight, configuredHeight, topY, bottomY));
             layout.LeftPlate = new RackFrameEngineeringPreviewPlate(
                 leftX,
                 bottomY,
@@ -139,6 +141,18 @@ namespace RackCad.UI
         public double ToY(double elevation)
         {
             return BottomY - (elevation / ConfiguredHeight * (BottomY - TopY));
+        }
+
+        /// <summary>Pixel Y of the top of a reinforcement of the given height (clamped to the post span).</summary>
+        private static double ReinforcementTop(double reinforcementHeight, double configuredHeight, double topY, double bottomY)
+        {
+            if (reinforcementHeight <= 0.0 || configuredHeight <= 0.0)
+            {
+                return bottomY;
+            }
+
+            var fraction = System.Math.Clamp(reinforcementHeight / configuredHeight, 0.0, 1.0);
+            return bottomY - fraction * (bottomY - topY);
         }
 
         public double ToPanelBoundaryY(double elevation)
@@ -240,7 +254,8 @@ namespace RackCad.UI
             string catalogId,
             bool hasReinforcement,
             string reinforcementCatalogId,
-            bool reinforcementOnRightSide)
+            bool reinforcementOnRightSide,
+            double reinforcementTopY)
         {
             X = x;
             TopY = topY;
@@ -249,6 +264,7 @@ namespace RackCad.UI
             HasReinforcement = hasReinforcement;
             ReinforcementCatalogId = reinforcementCatalogId ?? string.Empty;
             ReinforcementOnRightSide = reinforcementOnRightSide;
+            ReinforcementTopY = reinforcementTopY;
         }
 
         public double X { get; private set; }
@@ -258,6 +274,9 @@ namespace RackCad.UI
         public bool HasReinforcement { get; private set; }
         public string ReinforcementCatalogId { get; private set; }
         public bool ReinforcementOnRightSide { get; private set; }
+
+        /// <summary>Pixel Y where the reinforcement ends (its height); equals BottomY when there is none.</summary>
+        public double ReinforcementTopY { get; private set; }
     }
 
     internal sealed class RackFrameEngineeringPreviewPlate

@@ -45,7 +45,7 @@ namespace RackCad.UI
         private ConfiguratorNavigationItem selectedNavigationItem;
         private BracingSegmentEditorRow selectedBracingSegment;
         private HorizontalEditorRow selectedHorizontal;
-        private string statusMessage = "Configuracion editable en memoria. El dibujo en AutoCAD aun no esta implementado.";
+        private string statusMessage = "Configuración editable en memoria. Usa \"Insertar en AutoCAD\" para dibujar la cabecera.";
         private string statusBrush = "#415161";
         private BracingPattern bulkPattern = BracingPattern.SingleDiagonal;
         private FrameSide bulkSide = FrameSide.Front;

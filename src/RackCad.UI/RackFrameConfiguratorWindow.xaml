@@ -1047,7 +1047,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Estado fisico" Width="125">
+                            <DataGridTemplateColumn Header="Estado físico" Width="125">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <ComboBox Style="{StaticResource CellComboBoxStyle}"
