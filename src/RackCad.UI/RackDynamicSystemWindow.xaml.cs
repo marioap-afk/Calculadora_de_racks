@@ -52,9 +52,22 @@ namespace RackCad.UI
         private double mapScale;
         private double mapOffsetX;
         private double mapBottomY;
+        private readonly bool canInsertInAutoCad;
+
+        /// <summary>Set when the user asks to draw the system in AutoCAD; the host command draws it after this
+        /// window (and the menu) close, so the placement jig has the editor free.</summary>
+        public bool InsertRequested { get; private set; }
+
+        public DynamicRackSystem SystemToInsert { get; private set; }
 
         public RackDynamicSystemWindow()
+            : this(false)
         {
+        }
+
+        public RackDynamicSystemWindow(bool canInsertInAutoCad)
+        {
+            this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
             catalog = LoadCatalogSafe();
             builder = new DynamicRackSystemBuilder(catalog);
@@ -724,6 +737,27 @@ namespace RackCad.UI
             {
                 SetStatus("No se pudo abrir: " + ex.Message, true);
             }
+        }
+
+        private void InsertInAutoCad_Click(object sender, RoutedEventArgs e)
+        {
+            if (!canInsertInAutoCad)
+            {
+                SetStatus("El dibujo en AutoCAD solo esta disponible cuando el sistema se abre desde AutoCAD.", true);
+                return;
+            }
+
+            if (system == null)
+            {
+                SetStatus("Genera la vista antes de insertar en AutoCAD.", true);
+                return;
+            }
+
+            // The placement jig needs the editor free, so only flag the request and close; the host command
+            // draws the system once every modal window is gone.
+            InsertRequested = true;
+            SystemToInsert = system;
+            Close();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)

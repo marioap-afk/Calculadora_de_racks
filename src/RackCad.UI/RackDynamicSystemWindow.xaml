@@ -221,6 +221,8 @@
             <Button Content="Ver BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="100" Margin="0,0,8,0" Click="ViewBom_Click" />
             <Button Content="Abrir sistema" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0" Click="OpenSystem_Click" />
             <Button Content="Guardar sistema" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0" Click="SaveSystem_Click" />
+            <Button Content="Insertar en AutoCAD" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" Margin="0,0,8,0"
+                    ToolTip="Dibuja el sistema (cabeceras + separadores) en el dibujo activo de AutoCAD (vista lateral)." Click="InsertInAutoCad_Click" />
             <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" />
         </StackPanel>
     </Grid>

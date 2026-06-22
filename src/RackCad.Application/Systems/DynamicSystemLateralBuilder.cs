@@ -4,6 +4,7 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Geometry;
 using RackCad.Application.Headers;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
@@ -11,10 +12,11 @@ namespace RackCad.Application.Systems
     /// <summary>
     /// Builds the block plan for a whole dynamic (pallet flow) system in the lateral view: each header
     /// module is the lateral header (reused from <see cref="LateralHeaderLayoutBuilder"/>) shifted to its
-    /// position along the run, and each separator module gets a separator beam at every vertical level
-    /// (<see cref="SeparatorLevelCalculator"/>). Pure: it returns a <see cref="LateralHeaderLayout"/> the
-    /// AutoCAD drawer can turn into one block. Headers use their LATERAL blocks; separators use the FRONTAL
-    /// block (that is how a separator reads in the system's lateral view).
+    /// position along the run; each separator module gets a separator beam at every vertical level
+    /// (<see cref="SeparatorLevelCalculator"/>), anchored on the adjacent post's TROQUEL_SEPARADOR; and a
+    /// derived post (header post + plate, reinforced full height by default) is placed wherever two
+    /// separators meet. Pure: returns a <see cref="LateralHeaderLayout"/> the AutoCAD drawer turns into a
+    /// block. Headers use their LATERAL blocks; separators use the FRONTAL block.
     /// </summary>
     public sealed class DynamicSystemLateralBuilder
     {
@@ -29,8 +31,7 @@ namespace RackCad.Application.Systems
                 return new LateralHeaderLayout(instances, 0.0, 0, 0, 0.0);
             }
 
-            var separatorLevels = ResolveSeparatorLevels(system, catalog, out var separatorBlock, out var separatorMate, out var separatorId);
-
+            var context = Resolve(system, catalog);
             var headerCount = 0;
             var separatorCount = 0;
 
@@ -49,57 +50,127 @@ namespace RackCad.Application.Systems
 
                     headerCount++;
                 }
-                else if (module.Kind == DynamicRackModuleKind.Separator && module.Length > 0.0 && separatorBlock != null)
+                else if (module.Kind == DynamicRackModuleKind.Separator && module.Length > 0.0 && context.SeparatorBlock != null)
                 {
-                    foreach (var level in separatorLevels)
+                    foreach (var level in context.Levels)
                     {
-                        instances.Add(MakeSeparator(separatorId, separatorBlock, separatorMate, module.StartX, level, module.Length));
+                        instances.Add(MakeSeparator(context, module.StartX, module.Length, level));
                         separatorCount++;
                     }
                 }
             }
 
+            // Derived posts: where two separators are consecutive there is a shared post (header post + plate),
+            // reinforced full height by default.
+            foreach (var offset in system.GetDerivedPostOffsets())
+            {
+                AddDerivedPost(instances, context, offset);
+            }
+
             return new LateralHeaderLayout(instances, 0.0, headerCount, separatorCount, 0.0);
         }
 
-        private static IReadOnlyList<double> ResolveSeparatorLevels(
-            DynamicRackSystem system, RackCatalog catalog,
-            out string separatorBlock, out Point2D separatorMate, out string separatorId)
+        private HeaderContext Resolve(DynamicRackSystem system, RackCatalog catalog)
         {
-            separatorId = DynamicRackDefaults.SeparatorCatalogId;
-            separatorBlock = Block(catalog, separatorId, DynamicRackDefaults.SeparatorView);
-            separatorMate = Local(catalog, separatorId, DynamicRackDefaults.SeparatorMatePoint, DynamicRackDefaults.SeparatorView);
+            var context = new HeaderContext
+            {
+                SeparatorId = DynamicRackDefaults.SeparatorCatalogId,
+                SeparatorBlock = Block(catalog, DynamicRackDefaults.SeparatorCatalogId, DynamicRackDefaults.SeparatorView),
+                SeparatorMate = Local(catalog, DynamicRackDefaults.SeparatorCatalogId, DynamicRackDefaults.SeparatorMatePoint, DynamicRackDefaults.SeparatorView),
+                Levels = Array.Empty<double>()
+            };
 
             var headerModule = system.Modules.FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration != null);
             if (headerModule == null)
             {
-                return Array.Empty<double>();
+                return context;
             }
 
             var configuration = headerModule.AssociatedFrameConfiguration;
-            var postId = configuration.LeftPost?.PostCatalogId;
-            var troquelSeparadorY = Local(catalog, postId, DynamicRackDefaults.SeparatorPostPoint, "LATERAL").Y;
-            var paso = configuration.PasoTroquel > 0.0 ? configuration.PasoTroquel : 2.0;
+            context.Height = configuration.Height;
+            context.PostId = configuration.LeftPost?.PostCatalogId;
+            context.PlateId = configuration.LeftBasePlate?.PlateCatalogId;
+            context.Paso = configuration.PasoTroquel > 0.0 ? configuration.PasoTroquel : 2.0;
 
-            return SeparatorLevelCalculator.Levels(configuration.Height, troquelSeparadorY, paso);
+            var troquelSeparador = Local(catalog, context.PostId, DynamicRackDefaults.SeparatorPostPoint, "LATERAL");
+            context.TroquelSeparadorX = troquelSeparador.X;
+            context.Montaje = Local(catalog, context.PlateId, "MONTAJE_POSTE", "LATERAL");
+            context.FinPoste = Local(catalog, context.PostId, "FIN_POSTE", "LATERAL");
+            context.PostBlock = Block(catalog, context.PostId, "LATERAL");
+            context.PlateBlock = Block(catalog, context.PlateId, "LATERAL");
+
+            context.Levels = SeparatorLevelCalculator.Levels(context.Height, troquelSeparador.Y, context.Paso);
+            return context;
         }
 
-        private static HeaderBlockInstance MakeSeparator(
-            string separatorId, string block, Point2D mate, double startX, double level, double length)
+        private static HeaderBlockInstance MakeSeparator(HeaderContext context, double moduleStartX, double moduleLength, double level)
         {
-            var anchor = new Point2D(startX, level);
+            // Anchor the separator's TROQUEL_CABECERA on the previous header's right-post TROQUEL_SEPARADOR
+            // (that post is mirrored, so its troquel sits one offset inside the module start); stretch the
+            // beam so its far end reaches the next post's troquel.
+            var anchorX = moduleStartX - context.TroquelSeparadorX;
+            var length = moduleLength + 2.0 * context.TroquelSeparadorX;
+            var anchor = new Point2D(anchorX, level);
+
             var instance = new HeaderBlockInstance
             {
                 Role = HeaderBlockRole.Separator,
-                PieceId = separatorId,
-                BlockName = block,
+                PieceId = context.SeparatorId,
+                BlockName = context.SeparatorBlock,
                 View = DynamicRackDefaults.SeparatorView,
                 RotationRadians = 0.0,
                 ConnectionAnchor = anchor,
-                Insertion = new Point2D(anchor.X - mate.X, anchor.Y - mate.Y)
+                Insertion = new Point2D(anchor.X - context.SeparatorMate.X, anchor.Y - context.SeparatorMate.Y)
             };
             instance.DynamicParameters["LONGITUD"] = length;
             return instance;
+        }
+
+        private static void AddDerivedPost(ICollection<HeaderBlockInstance> instances, HeaderContext context, double offset)
+        {
+            if (string.IsNullOrWhiteSpace(context.PostId) || context.Height <= 0.0)
+            {
+                return;
+            }
+
+            var origin = new Point2D(offset, 0.0);
+
+            // Base plate (same as the header's), mated at the post origin.
+            instances.Add(new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.BasePlate,
+                PieceId = context.PlateId,
+                BlockName = context.PlateBlock,
+                View = "LATERAL",
+                ConnectionAnchor = origin,
+                Insertion = new Point2D(origin.X - context.Montaje.X, origin.Y - context.Montaje.Y)
+            });
+
+            // The post itself, stretched to the header height.
+            var post = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Post,
+                PieceId = context.PostId,
+                BlockName = context.PostBlock,
+                View = "LATERAL",
+                ConnectionAnchor = origin,
+                Insertion = origin
+            };
+            post.DynamicParameters["LONGITUD"] = context.Height;
+            instances.Add(post);
+
+            // Default reinforcement: a second post mated at FIN_POSTE, full height.
+            var reinforcement = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Post,
+                PieceId = context.PostId,
+                BlockName = context.PostBlock,
+                View = "LATERAL",
+                ConnectionAnchor = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y),
+                Insertion = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y)
+            };
+            reinforcement.DynamicParameters["LONGITUD"] = context.Height;
+            instances.Add(reinforcement);
         }
 
         /// <summary>Shift a header instance along the run (X), keeping its height (Y).</summary>
@@ -117,5 +188,23 @@ namespace RackCad.Application.Systems
 
         private static string Block(RackCatalog catalog, string pieceId, string view)
             => catalog?.Blocks.FindBlock(pieceId, view)?.BlockName;
+
+        private sealed class HeaderContext
+        {
+            public double Height { get; set; }
+            public double Paso { get; set; } = 2.0;
+            public string PostId { get; set; }
+            public string PlateId { get; set; }
+            public string PostBlock { get; set; }
+            public string PlateBlock { get; set; }
+            public Point2D Montaje { get; set; }
+            public Point2D FinPoste { get; set; }
+            public double TroquelSeparadorX { get; set; }
+
+            public string SeparatorId { get; set; }
+            public string SeparatorBlock { get; set; }
+            public Point2D SeparatorMate { get; set; }
+            public IReadOnlyList<double> Levels { get; set; }
+        }
     }
 }

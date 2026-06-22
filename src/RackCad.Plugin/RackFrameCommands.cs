@@ -25,7 +25,14 @@ namespace RackCad.Plugin
 
                 if (menu.InsertRequested)
                 {
-                    DrawAndPlace(menu.ConfigurationToInsert);
+                    if (menu.ConfigurationToInsert != null)
+                    {
+                        DrawAndPlace(menu.ConfigurationToInsert);
+                    }
+                    else if (menu.DynamicSystemToInsert != null)
+                    {
+                        DrawAndPlaceSystem(menu.DynamicSystemToInsert);
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -118,6 +125,20 @@ namespace RackCad.Plugin
             }
 
             var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration);
+            document.Editor.WriteMessage("\n" + Describe(result));
+        }
+
+        /// <summary>Builds the dynamic-system block and runs the placement jig, then reports the outcome.</summary>
+        private static void DrawAndPlaceSystem(DynamicRackSystem system)
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null || system == null)
+            {
+                return;
+            }
+
+            var result = new DynamicSystemDrawService().DrawAndPlace(document, system);
             document.Editor.WriteMessage("\n" + Describe(result));
         }
 

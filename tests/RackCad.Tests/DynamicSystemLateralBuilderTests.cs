@@ -61,6 +61,47 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_SeparatorsAnchorOnThePostTroquel_NotTheModuleEdge()
+        {
+            var catalog = Catalog;
+            var system = StandardSystem();
+            var troquelSeparadorX = catalog.ConnectionLayout
+                .FindConnectionLayout(CatalogIds.StandardPost, "TROQUEL_SEPARADOR", "LATERAL").LocalX;
+            var firstSeparator = system.Modules.First(m => m.Kind == DynamicRackModuleKind.Separator && m.Length > 0.0);
+
+            var layout = new DynamicSystemLateralBuilder().Build(system, catalog);
+
+            // Separators of the first gap anchor at moduleStartX - troquelSeparadorX (the previous post's troquel),
+            // one per vertical level.
+            var anchored = layout.OfRole(HeaderBlockRole.Separator)
+                .Where(s => Math.Abs(s.ConnectionAnchor.X - (firstSeparator.StartX - troquelSeparadorX)) < 1e-3)
+                .ToList();
+
+            Assert.Equal(SeparatorLevelCalculator.Count(132.0), anchored.Count);
+        }
+
+        [Fact]
+        public void Build_DerivedPost_AddsReinforcedPostWithPlate()
+        {
+            var catalog = Catalog;
+            var system = StandardSystem();
+            var offsets = system.GetDerivedPostOffsets();
+            Assert.NotEmpty(offsets); // pallets-deep 4 → one derived post
+
+            var layout = new DynamicSystemLateralBuilder().Build(system, catalog);
+            var offset = offsets[0];
+            var finPosteX = catalog.ConnectionLayout
+                .FindConnectionLayout(CatalogIds.StandardPost, "FIN_POSTE", "LATERAL").LocalX;
+
+            // A base plate at the derived post.
+            Assert.Contains(layout.OfRole(HeaderBlockRole.BasePlate), p => Math.Abs(p.ConnectionAnchor.X - offset) < 1e-3);
+
+            // The post and its full-height reinforcement (mated at FIN_POSTE).
+            Assert.Contains(layout.OfRole(HeaderBlockRole.Post), p => Math.Abs(p.ConnectionAnchor.X - offset) < 1e-3);
+            Assert.Contains(layout.OfRole(HeaderBlockRole.Post), p => Math.Abs(p.ConnectionAnchor.X - (offset + finPosteX)) < 1e-3);
+        }
+
+        [Fact]
         public void Build_NullSystem_ReturnsEmptyPlan()
         {
             var layout = new DynamicSystemLateralBuilder().Build(null, Catalog);

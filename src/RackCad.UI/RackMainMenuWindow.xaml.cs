@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
+using RackCad.Domain.Systems;
 
 namespace RackCad.UI
 {
@@ -19,6 +20,8 @@ namespace RackCad.UI
         public bool InsertRequested { get; private set; }
 
         public RackFrameConfiguration ConfigurationToInsert { get; private set; }
+
+        public DynamicRackSystem DynamicSystemToInsert { get; private set; }
 
         public RackMainMenuWindow()
             : this(false)
@@ -58,8 +61,15 @@ namespace RackCad.UI
         {
             try
             {
-                var window = new RackDynamicSystemWindow { Owner = this };
+                var window = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
                 window.ShowDialog();
+
+                if (window.InsertRequested)
+                {
+                    InsertRequested = true;
+                    DynamicSystemToInsert = window.SystemToInsert;
+                    Close();
+                }
             }
             catch (Exception ex)
             {
