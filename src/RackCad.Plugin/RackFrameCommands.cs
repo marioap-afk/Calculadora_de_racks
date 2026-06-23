@@ -1,7 +1,9 @@
 using System.Globalization;
+using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
+using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
@@ -82,6 +84,113 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
+        /// Quick lateral header straight from the command line: prompts for post, depth and height, then
+        /// builds the header and lets the user place it. Same no-UI style as QUICKCAMA.
+        /// </summary>
+        [CommandMethod("QUICKCABECERA")]
+        public void QuickCabecera()
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null)
+            {
+                return;
+            }
+
+            var editor = document.Editor;
+
+            try
+            {
+                var catalog = LateralHeaderDrawService.LoadCatalog();
+
+                var postId = PromptPostId(editor, catalog);
+                if (postId == null)
+                {
+                    return;
+                }
+
+                var depthOptions = new PromptDistanceOptions("\nFondo (in)")
+                {
+                    DefaultValue = 48.0,
+                    UseDefaultValue = true,
+                    AllowNegative = false,
+                    AllowZero = false
+                };
+                var depthResult = editor.GetDistance(depthOptions);
+                if (depthResult.Status != PromptStatus.OK)
+                {
+                    return;
+                }
+
+                var heightOptions = new PromptDistanceOptions("\nAlto (in)")
+                {
+                    DefaultValue = 132.0,
+                    UseDefaultValue = true,
+                    AllowNegative = false,
+                    AllowZero = false
+                };
+                var heightResult = editor.GetDistance(heightOptions);
+                if (heightResult.Status != PromptStatus.OK)
+                {
+                    return;
+                }
+
+                var configuration = new DynamicRackSystemBuilder(catalog)
+                    .BuildHeaderConfiguration(RackFrameTemplateCatalog.Default, postId, heightResult.Value, depthResult.Value);
+
+                DrawAndPlace(configuration);
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// Prompts for the post: uses the only one if there is a single post in the catalog, otherwise prints a
+        /// numbered list and asks for the index. Returns the post id, or null if the user cancelled.
+        /// </summary>
+        private static string PromptPostId(Editor editor, RackCatalog catalog)
+        {
+            var posts = catalog.PostProfiles
+                .Where(p => p != null && !string.IsNullOrWhiteSpace(p.Id))
+                .GroupBy(p => p.Id, System.StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.First())
+                .ToList();
+
+            if (posts.Count == 0)
+            {
+                return CatalogIds.StandardPost;
+            }
+
+            if (posts.Count == 1)
+            {
+                editor.WriteMessage("\nPoste: " + posts[0].Label);
+                return posts[0].Id;
+            }
+
+            for (var i = 0; i < posts.Count; i++)
+            {
+                editor.WriteMessage(string.Format(CultureInfo.InvariantCulture, "\n  {0}: {1}", i + 1, posts[i].Label));
+            }
+
+            var options = new PromptIntegerOptions("\nPoste #")
+            {
+                DefaultValue = 1,
+                UseDefaultValue = true,
+                LowerLimit = 1,
+                UpperLimit = posts.Count
+            };
+            var result = editor.GetInteger(options);
+            if (result.Status != PromptStatus.OK)
+            {
+                return null;
+            }
+
+            return posts[result.Value - 1].Id;
+        }
+
+        /// <summary>
         /// Draws a preliminary dynamic (pallet flow) system: headers along the run + separators per level,
         /// as one block placed with the mouse. Uses default pallet/height for now (header-height logic TBD).
         /// </summary>
@@ -120,8 +229,8 @@ namespace RackCad.Plugin
         /// Prompts for the bed type, roller, lane depth and (for dynamic beds) pallet depth. Pushback beds
         /// omit the brakes.
         /// </summary>
-        [CommandMethod("RACKCAMA")]
-        public void RackCama()
+        [CommandMethod("QUICKCAMA")]
+        public void QuickCama()
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
