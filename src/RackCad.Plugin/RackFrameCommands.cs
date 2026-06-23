@@ -36,6 +36,10 @@ namespace RackCad.Plugin
                     {
                         DrawAndPlaceSystem(menu.DynamicSystemToInsert);
                     }
+                    else if (menu.FlowBedToInsert != null)
+                    {
+                        DrawAndPlaceBed(menu.FlowBedToInsert);
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -373,6 +377,20 @@ namespace RackCad.Plugin
             }
 
             return summary;
+        }
+
+        /// <summary>Builds the roller-bed block and runs the placement jig, then reports the outcome.</summary>
+        private static void DrawAndPlaceBed(FlowBedConfiguration config)
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null || config == null)
+            {
+                return;
+            }
+
+            var result = new FlowBedDrawService().DrawAndPlace(document, config);
+            document.Editor.WriteMessage("\n" + DescribeBed(result));
         }
 
         private static string DescribeBed(HeaderPlacementResult result)

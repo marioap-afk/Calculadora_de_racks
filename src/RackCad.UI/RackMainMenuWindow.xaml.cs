@@ -23,6 +23,8 @@ namespace RackCad.UI
 
         public DynamicRackSystem DynamicSystemToInsert { get; private set; }
 
+        public FlowBedConfiguration FlowBedToInsert { get; private set; }
+
         public RackMainMenuWindow()
             : this(false)
         {
@@ -74,6 +76,27 @@ namespace RackCad.UI
             catch (Exception ex)
             {
                 MessageBox.Show(this, "No se pudo abrir el sistema dinamico: " + ex.Message,
+                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void DesignFlowBed_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var window = new RackFlowBedWindow(canInsertInAutoCad) { Owner = this };
+                window.ShowDialog();
+
+                if (window.InsertRequested)
+                {
+                    InsertRequested = true;
+                    FlowBedToInsert = window.FlowBedToInsert;
+                    Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "No se pudo abrir la cama de rodamiento: " + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

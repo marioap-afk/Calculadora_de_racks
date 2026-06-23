@@ -1,0 +1,188 @@
+<Window x:Class="RackCad.UI.RackFlowBedWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cama de rodamiento - vista lateral"
+        Height="640"
+        Width="1080"
+        MinHeight="520"
+        MinWidth="860"
+        WindowStartupLocation="CenterOwner"
+        Background="#EEF2F6"
+        FontFamily="Segoe UI">
+    <Window.Resources>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#415161" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,8,0,3" />
+        </Style>
+        <Style x:Key="FieldBox" TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="#C9D2DD" />
+            <Setter Property="Padding" Value="6,4" />
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#1F2933" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="0,12,0,4" />
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#2B6CB0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#2C5282" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#234876" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#A0AEC0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="#2D3748" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#C9D2DD" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,7" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#EDF2F7" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320" />
+            <ColumnDefinition Width="12" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: inputs -->
+        <Border Grid.Row="0" Grid.Column="0" Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Padding="14">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Cama" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
+
+                    <TextBlock Text="Tipo de cama" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="BedTypeBox" SelectionChanged="Input_Changed">
+                        <ComboBoxItem Content="Dinámica" Tag="Dynamic" IsSelected="True" />
+                        <ComboBoxItem Content="Pushback" Tag="Pushback" />
+                    </ComboBox>
+
+                    <TextBlock Text="Rodillo" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="RollerBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" SelectionChanged="Input_Changed" />
+
+                    <Grid Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Fondo del carril (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="LaneDepthBox" Style="{StaticResource FieldBox}" Text="96" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock x:Name="PalletDepthLabel" Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="PalletDepthBox" Style="{StaticResource FieldBox}" Text="48" />
+                        </StackPanel>
+                    </Grid>
+
+                    <WrapPanel Margin="0,12,0,0">
+                        <Button Content="Actualizar vista" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,12,0" />
+                        <CheckBox x:Name="AdvancedToggle" Content="Avanzado" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#2B6CB0"
+                                  Checked="AdvancedToggle_Changed" Unchecked="AdvancedToggle_Changed"
+                                  ToolTip="Opciones finas: paso de rodillo." />
+                    </WrapPanel>
+
+                    <StackPanel x:Name="AdvancedPanel" Visibility="Collapsed">
+                        <TextBlock Text="Paso de rodillo (in)" Style="{StaticResource FieldLabel}" />
+                        <TextBox x:Name="RollerPitchBox" Style="{StaticResource FieldBox}"
+                                 ToolTip="Vacío = el mínimo por diámetro (1.9&quot;→2&quot;, 2.5&quot;→3&quot;)." />
+                    </StackPanel>
+
+                    <TextBlock x:Name="SummaryText" Foreground="#1F2933" FontSize="12" TextWrapping="Wrap" Margin="0,14,0,0" />
+                    <TextBlock x:Name="StatusText" Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0" />
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Right: lateral preview -->
+        <Border Grid.Row="0" Grid.Column="2" Background="White" BorderBrush="#D8DEE6" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Margin="10,8">
+                    <TextBlock Text="Vista lateral (X = fondo del carril). El riel arranca en el tope; los rodillos van al paso, el freno entre rodillos."
+                               Foreground="#617080" FontSize="11" TextWrapping="Wrap" />
+                    <WrapPanel Margin="0,6,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
+                            <Border Width="14" Height="14" CornerRadius="7" BorderBrush="#3DC986" BorderThickness="2" Margin="0,0,5,0" />
+                            <TextBlock Text="rodillo" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
+                            <Border Width="16" Height="16" CornerRadius="8" BorderBrush="#5B8DEF" BorderThickness="2" Margin="0,0,5,0" />
+                            <TextBlock Text="freno" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
+                            <Border Width="10" Height="14" Background="#FF6B6B" Margin="0,0,5,0" />
+                            <TextBlock Text="tope" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="18" Height="6" BorderBrush="#CFDBE8" BorderThickness="1" Margin="0,3,5,0" />
+                            <TextBlock Text="riel" Foreground="#617080" FontSize="10.5" />
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+                <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="#0E1B2A" ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />
+            </Grid>
+        </Border>
+
+        <!-- Actions -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Insertar en AutoCAD" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" Margin="0,0,8,0"
+                    ToolTip="Dibuja la cama en el dibujo activo de AutoCAD (vista lateral)." Click="InsertInAutoCad_Click" />
+            <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" />
+        </StackPanel>
+    </Grid>
+</Window>
