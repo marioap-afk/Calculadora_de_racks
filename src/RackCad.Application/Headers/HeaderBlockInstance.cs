@@ -12,7 +12,17 @@ namespace RackCad.Application.Headers
         ClosingHorizontal,
 
         /// <summary>A separator beam linking two adjacent headers in a dynamic system.</summary>
-        Separator
+        Separator,
+
+        // ---- Roller bed (cama de rodamiento) ----
+        /// <summary>The rail (riel) that runs the lane depth; its length is the LONGITUD parameter.</summary>
+        Rail,
+        /// <summary>A roller (rodillo) on the rail.</summary>
+        Roller,
+        /// <summary>A brake (freno) on a dynamic bed.</summary>
+        Brake,
+        /// <summary>The end stop (tope) at the discharge end of the rail.</summary>
+        Stop
     }
 
     /// <summary>

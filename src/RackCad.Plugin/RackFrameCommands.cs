@@ -1,5 +1,6 @@
 using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
@@ -114,6 +115,100 @@ namespace RackCad.Plugin
             }
         }
 
+        /// <summary>
+        /// Draws one roller bed ("cama de rodamiento") in the lateral view as a block placed with the mouse.
+        /// Prompts for the bed type, roller, lane depth and (for dynamic beds) pallet depth. Pushback beds
+        /// omit the brakes.
+        /// </summary>
+        [CommandMethod("RACKCAMA")]
+        public void RackCama()
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null)
+            {
+                return;
+            }
+
+            var editor = document.Editor;
+
+            try
+            {
+                var typeOptions = new PromptKeywordOptions("\nTipo de cama") { AllowNone = true };
+                typeOptions.Keywords.Add("Dinamica");
+                typeOptions.Keywords.Add("Pushback");
+                typeOptions.Keywords.Default = "Dinamica";
+                var typeResult = editor.GetKeywords(typeOptions);
+                if (typeResult.Status != PromptStatus.OK && typeResult.Status != PromptStatus.None)
+                {
+                    return;
+                }
+
+                var bedType = typeResult.StringResult == "Pushback" ? FlowBedType.Pushback : FlowBedType.Dynamic;
+
+                var rollerOptions = new PromptKeywordOptions("\nRodillo") { AllowNone = true };
+                rollerOptions.Keywords.Add("R19");
+                rollerOptions.Keywords.Add("R25");
+                rollerOptions.Keywords.Default = "R19";
+                var rollerResult = editor.GetKeywords(rollerOptions);
+                if (rollerResult.Status != PromptStatus.OK && rollerResult.Status != PromptStatus.None)
+                {
+                    return;
+                }
+
+                var rollerId = rollerResult.StringResult == "R25"
+                    ? "RODILLO_DE_TUBO_DE_2.5_CALIBRE_14"
+                    : FlowBedDefaults.RollerId;
+
+                var depthOptions = new PromptDistanceOptions("\nFondo del carril (in)")
+                {
+                    DefaultValue = 96.0,
+                    UseDefaultValue = true,
+                    AllowNegative = false,
+                    AllowZero = false
+                };
+                var depthResult = editor.GetDistance(depthOptions);
+                if (depthResult.Status != PromptStatus.OK)
+                {
+                    return;
+                }
+
+                var palletDepth = 0.0;
+                if (bedType == FlowBedType.Dynamic)
+                {
+                    var palletOptions = new PromptDistanceOptions("\nFondo de tarima (in)")
+                    {
+                        DefaultValue = 48.0,
+                        UseDefaultValue = true,
+                        AllowNegative = false,
+                        AllowZero = false
+                    };
+                    var palletResult = editor.GetDistance(palletOptions);
+                    if (palletResult.Status != PromptStatus.OK)
+                    {
+                        return;
+                    }
+
+                    palletDepth = palletResult.Value;
+                }
+
+                var config = new FlowBedConfiguration
+                {
+                    BedType = bedType,
+                    LaneDepth = depthResult.Value,
+                    PalletDepth = palletDepth,
+                    RollerId = rollerId
+                };
+
+                var result = new FlowBedDrawService().DrawAndPlace(document, config);
+                editor.WriteMessage("\n" + DescribeBed(result));
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
         /// <summary>Builds the header block and runs the placement jig, then reports the outcome.</summary>
         private static void DrawAndPlace(RackFrameConfiguration configuration)
         {
@@ -162,6 +257,32 @@ namespace RackCad.Plugin
                 outcome.InsertedCount,
                 outcome.Layout.HorizontalCount,
                 outcome.Layout.DiagonalCount);
+
+            if (result.HasMissingBlocks)
+            {
+                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
+            }
+
+            return summary;
+        }
+
+        private static string DescribeBed(HeaderPlacementResult result)
+        {
+            if (!result.Success)
+            {
+                return "RackCad: no se pudo dibujar la cama de rodamiento. " + result.ErrorMessage;
+            }
+
+            if (!result.Placed)
+            {
+                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
+            }
+
+            var summary = string.Format(
+                CultureInfo.InvariantCulture,
+                "RackCad: cama insertada como bloque '{0}'. {1} piezas.",
+                result.BlockName,
+                result.Outcome.InsertedCount);
 
             if (result.HasMissingBlocks)
             {

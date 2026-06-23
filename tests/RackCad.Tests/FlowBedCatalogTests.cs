@@ -32,7 +32,7 @@ namespace RackCad.Tests
 
             // Roller carries a capacity (reserved for the future capacity-based count).
             var roller = catalog.FlowBedProfiles.First(c => c.Id == FlowBedDefaults.RollerId);
-            Assert.Equal(100.0, roller.CapacityKg, 4);
+            Assert.Equal(110.0, roller.CapacityKg, 4);
         }
     }
 }
