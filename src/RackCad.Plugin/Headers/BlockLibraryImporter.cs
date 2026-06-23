@@ -80,33 +80,42 @@ namespace RackCad.Plugin.Headers
                 return 0;
             }
 
-            using (var source = new Database(false, true))
+            try
             {
-                source.ReadDwgFile(path, FileShare.Read, allowCPConversion: true, password: null);
-
-                var ids = new ObjectIdCollection();
-                using (var sourceTransaction = source.TransactionManager.StartTransaction())
+                using (var source = new Database(false, true))
                 {
-                    var sourceTable = (BlockTable)sourceTransaction.GetObject(source.BlockTableId, OpenMode.ForRead);
-                    foreach (var name in missing)
+                    // OpenForReadAndAllShare so it works even if the library DWG is open in AutoCAD.
+                    source.ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, allowCPConversion: true, password: null);
+
+                    var ids = new ObjectIdCollection();
+                    using (var sourceTransaction = source.TransactionManager.StartTransaction())
                     {
-                        if (sourceTable.Has(name))
+                        var sourceTable = (BlockTable)sourceTransaction.GetObject(source.BlockTableId, OpenMode.ForRead);
+                        foreach (var name in missing)
                         {
-                            ids.Add(sourceTable[name]);
+                            if (sourceTable.Has(name))
+                            {
+                                ids.Add(sourceTable[name]);
+                            }
                         }
+
+                        sourceTransaction.Commit();
                     }
 
-                    sourceTransaction.Commit();
-                }
+                    if (ids.Count == 0)
+                    {
+                        return 0;
+                    }
 
-                if (ids.Count == 0)
-                {
-                    return 0;
+                    var mapping = new IdMapping();
+                    source.WblockCloneObjects(ids, db.BlockTableId, mapping, DuplicateRecordCloning.Ignore, deferTranslation: false);
+                    return ids.Count;
                 }
-
-                var mapping = new IdMapping();
-                source.WblockCloneObjects(ids, db.BlockTableId, mapping, DuplicateRecordCloning.Ignore, deferTranslation: false);
-                return ids.Count;
+            }
+            catch
+            {
+                // Best-effort: a locked/invalid library must not abort the drawing; missing blocks are reported as before.
+                return 0;
             }
         }
     }
