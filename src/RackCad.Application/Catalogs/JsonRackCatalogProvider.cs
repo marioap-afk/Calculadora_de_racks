@@ -15,6 +15,7 @@ namespace RackCad.Application.Catalogs
         public const string PostProfilesFile = "post-profiles.json";
         public const string TrussProfilesFile = "truss-profiles.json";
         public const string BasePlatesFile = "base-plates.json";
+        public const string FlowBedProfilesFile = "flow-bed-profiles.json";
         public const string ConnectionPointsFile = "connection-points.json";
         public const string ConnectionLayoutFile = "connection-layout.json";
         public const string ViewsFile = "views.json";
@@ -52,6 +53,7 @@ namespace RackCad.Application.Catalogs
                 PostProfiles = ReadArray<ProfileCatalogEntry>(PostProfilesFile),
                 TrussProfiles = ReadArray<ProfileCatalogEntry>(TrussProfilesFile),
                 BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
+                FlowBedProfiles = ReadArray<FlowBedComponentCatalogEntry>(FlowBedProfilesFile),
                 ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile),
                 ConnectionLayout = ReadArray<ConnectionLayoutEntry>(ConnectionLayoutFile),
                 Views = ReadArray<ViewCatalogEntry>(ViewsFile),

@@ -57,6 +57,30 @@ namespace RackCad.Application.Catalogs
         public double WeightPerMeter { get; set; }
     }
 
+    /// <summary>
+    /// A fixed component of a roller bed ("cama de rodamiento"): rail, roller, brake or stop. They are
+    /// unique pieces that do not vary; <see cref="Role"/> says which one. The assembly rule (how many
+    /// rollers, the pitch, brakes every N) lives in code, not here. <see cref="CapacityKg"/> is reserved
+    /// for the future capacity-driven roller count.
+    /// </summary>
+    public sealed class FlowBedComponentCatalogEntry : CatalogEntryBase
+    {
+        /// <summary>RIEL, RODILLO, FRENO or TOPE.</summary>
+        public string Role { get; set; }
+        public double Diameter { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+
+        /// <summary>Fixed length (in); empty for the rail, whose length is parametric (= lane depth).</summary>
+        public double Length { get; set; }
+        public string Units { get; set; }
+        public string Gauge { get; set; }
+
+        /// <summary>Load capacity (kg) of a roller; reserved for the future capacity-based count.</summary>
+        public double CapacityKg { get; set; }
+        public double WeightEach { get; set; }
+    }
+
     /// <summary>Base plate that anchors a post to the floor.</summary>
     public sealed class BasePlateCatalogEntry : CatalogEntryBase
     {
@@ -144,6 +168,9 @@ namespace RackCad.Application.Catalogs
         /// </summary>
         public IReadOnlyList<ProfileCatalogEntry> TrussProfiles { get; set; } = new List<ProfileCatalogEntry>();
         public IReadOnlyList<BasePlateCatalogEntry> BasePlates { get; set; } = new List<BasePlateCatalogEntry>();
+
+        /// <summary>Roller-bed components (rail, roller, brake, stop) for flow / pushback beds.</summary>
+        public IReadOnlyList<FlowBedComponentCatalogEntry> FlowBedProfiles { get; set; } = new List<FlowBedComponentCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
         public IReadOnlyList<ConnectionLayoutEntry> ConnectionLayout { get; set; } = new List<ConnectionLayoutEntry>();
         public IReadOnlyList<ViewCatalogEntry> Views { get; set; } = new List<ViewCatalogEntry>();

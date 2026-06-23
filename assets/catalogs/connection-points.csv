@@ -5,3 +5,7 @@ CELOSIA,Troquel de celosía,Troquel donde se monta la celosía,Truss
 FIN_POSTE,Montaje de refuerzo,Punto de mate de poste y refuerzo,Poste
 TROQUEL_SEPARADOR,Troquel de separador en poste,Troquel de separador en poste,Poste
 TROQUEL_CABECERA,Troquel donde va cabecera en separador,Troquel donde va cabecera en separador,Spacer
+MONTAJE_RIEL,Montaje de riel,Punto donde el riel apoya en la cabecera/separador,FlowBed
+POSICION_RODILLO,Posicion de rodillo,Punto base de un rodillo sobre el riel (el codigo lo repite),FlowBed
+POSICION_FRENO,Posicion de freno,Punto base de un freno sobre el riel (bloque distinto al rodillo),FlowBed
+FIN_RIEL,Fin de riel,Extremo de descarga del riel donde va el tope,FlowBed

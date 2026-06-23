@@ -1,0 +1,5 @@
+id,displayName,role,diameter,width,height,length,units,gauge,capacityKg,weightEach,material
+RIEL_CAMA_RODAMIENTO_CAL_12,Riel de cama de rodamiento cal. 12,RIEL,,2.5,3,,in,12,,,
+RODILLO_CAMA_GALV_1_9,"Rodillo galvanizado 1.9""",RODILLO,1.9,,,,in,,100,,
+FRENO_CAMA_VELOCIDAD,Freno de velocidad,FRENO,2.5,,,,in,,,,
+TOPE_CAMA_RODAMIENTO,Tope de cama de rodamiento,TOPE,,3,4,,in,,,,
