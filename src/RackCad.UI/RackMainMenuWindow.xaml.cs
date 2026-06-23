@@ -1,6 +1,8 @@
 using System;
 using System.Windows;
+using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
+using RackCad.Application.Settings;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 
@@ -14,6 +16,7 @@ namespace RackCad.UI
     public partial class RackMainMenuWindow : Window
     {
         private readonly bool canInsertInAutoCad;
+        private readonly UserSettings settings = UserSettingsStore.Load();
 
         /// <summary>Set when the user asked to insert the configured header; the host command draws it after
         /// every modal window (this menu included) has closed, so the placement jig has the editor free.</summary>
@@ -34,6 +37,62 @@ namespace RackCad.UI
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
+            UpdateLibraryPathDisplay();
+        }
+
+        private void UpdateLibraryPathDisplay()
+        {
+            var overridden = !string.IsNullOrWhiteSpace(settings.BlockLibraryPath);
+            LibraryPathBox.Text = BlockLibraryLocator.ResolvePath();
+            LibraryPathBox.ToolTip = overridden
+                ? "Ruta personalizada (guardada)."
+                : "Ruta predeterminada (junto a los catálogos). Usa Examinar… para elegir otra.";
+        }
+
+        private void BrowseLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "Selecciona la biblioteca de bloques",
+                Filter = "Dibujo de AutoCAD (*.dwg)|*.dwg|Todos (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            var current = BlockLibraryLocator.ResolvePath();
+            if (!string.IsNullOrWhiteSpace(current))
+            {
+                try
+                {
+                    var directory = System.IO.Path.GetDirectoryName(current);
+                    if (!string.IsNullOrEmpty(directory) && System.IO.Directory.Exists(directory))
+                    {
+                        dialog.InitialDirectory = directory;
+                    }
+
+                    if (System.IO.File.Exists(current))
+                    {
+                        dialog.FileName = System.IO.Path.GetFileName(current);
+                    }
+                }
+                catch
+                {
+                    // ignore an invalid current path; just open the dialog at its default
+                }
+            }
+
+            if (dialog.ShowDialog(this) == true)
+            {
+                settings.BlockLibraryPath = dialog.FileName;
+                UserSettingsStore.Save(settings);
+                UpdateLibraryPathDisplay();
+            }
+        }
+
+        private void ResetLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            settings.BlockLibraryPath = null;
+            UserSettingsStore.Save(settings);
+            UpdateLibraryPathDisplay();
         }
 
         private void DesignHeader_Click(object sender, RoutedEventArgs e)

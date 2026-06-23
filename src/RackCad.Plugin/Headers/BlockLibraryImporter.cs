@@ -18,9 +18,8 @@ namespace RackCad.Plugin.Headers
     /// </summary>
     public static class BlockLibraryImporter
     {
-        public const string LibraryFileName = "blocks-library.dwg";
-
-        public static string LibraryPath => Path.Combine(CatalogDirectory.Resolve(), LibraryFileName);
+        /// <summary>The library DWG path: the user override (from settings) if set, else the default next to the catalogs.</summary>
+        public static string LibraryPath => BlockLibraryLocator.ResolvePath();
 
         public static int EnsureForLayout(Database db, LateralHeaderLayout layout)
             => EnsureBlocks(db, layout?.Instances.Select(i => i.BlockName));
