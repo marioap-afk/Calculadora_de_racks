@@ -55,11 +55,15 @@ namespace RackCad.Plugin.Systems
             var database = document.Database;
 
             using (document.LockDocument())
-            using (var transaction = database.TransactionManager.StartTransaction())
             {
-                var result = drawer.CreateSystemBlock(database, transaction, plan, blockName);
-                transaction.Commit();
-                return result;
+                BlockLibraryImporter.EnsureForPlan(database, plan);
+
+                using (var transaction = database.TransactionManager.StartTransaction())
+                {
+                    var result = drawer.CreateSystemBlock(database, transaction, plan, blockName);
+                    transaction.Commit();
+                    return result;
+                }
             }
         }
     }

@@ -95,11 +95,16 @@ namespace RackCad.Plugin.Headers
             var database = document.Database;
 
             using (document.LockDocument())
-            using (var transaction = database.TransactionManager.StartTransaction())
             {
-                var result = drawer.CreateHeaderBlock(database, transaction, layout, blockName);
-                transaction.Commit();
-                return result;
+                // Import any block definitions the drawing is missing (from the library DWG) before drawing.
+                BlockLibraryImporter.EnsureForLayout(database, layout);
+
+                using (var transaction = database.TransactionManager.StartTransaction())
+                {
+                    var result = drawer.CreateHeaderBlock(database, transaction, layout, blockName);
+                    transaction.Commit();
+                    return result;
+                }
             }
         }
 

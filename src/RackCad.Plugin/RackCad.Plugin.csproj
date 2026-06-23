@@ -14,7 +14,7 @@
   </ItemGroup>
   <!-- Ship versioned catalogs next to the plugin DLL so JsonRackCatalogProvider.FromBaseDirectory() resolves them. -->
   <ItemGroup>
-    <Content Include="..\..\assets\catalogs\*.json;..\..\assets\catalogs\*.csv" Link="catalogs\%(Filename)%(Extension)">
+    <Content Include="..\..\assets\catalogs\*.json;..\..\assets\catalogs\*.csv;..\..\assets\catalogs\*.dwg" Link="catalogs\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
