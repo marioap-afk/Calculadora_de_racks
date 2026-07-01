@@ -7,8 +7,8 @@ namespace RackCad.Application.RackFrames
     /// </summary>
     public static class CatalogIds
     {
-        public const string StandardPost = "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14";
-        public const string BasePlate = "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16";
+        public const string StandardPost = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
+        public const string BasePlate = "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16";
 
         // Horizontals and diagonals are all the same celosía/truss profile.
         public const string TrussProfile = "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14";
