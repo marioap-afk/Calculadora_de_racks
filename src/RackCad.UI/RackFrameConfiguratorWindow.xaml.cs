@@ -210,11 +210,11 @@ namespace RackCad.UI
                 return;
             }
 
-            if (!ViewModel.IsHeightValid)
+            if (!ViewModel.IsModelConsistent)
             {
                 var proceed = MessageBox.Show(
                     this,
-                    "La altura configurada no es valida segun la validacion del modelo. Deseas dibujar de todos modos?",
+                    "El modelo tiene advertencias de consistencia. Deseas dibujar de todos modos?",
                     "Insertar en AutoCAD",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);
@@ -1042,11 +1042,13 @@ namespace RackCad.UI
 
         private void DrawTargetHeight(RackFrameEngineeringPreviewLayout layout)
         {
+            // The height is derived from the horizontals (top + remate), so this is just the post-top
+            // reference line, not a target to compare against.
             var y = layout.ToY(ViewModel.Height);
-            var stroke = ViewModel.IsHeightValid ? new SolidColorBrush(Color.FromRgb(47, 133, 90)) : TargetStroke;
+            var stroke = new SolidColorBrush(Color.FromRgb(47, 133, 90));
 
-            AddLine(layout.LeftX - 22.0, y, layout.RightX + 22.0, y, stroke, 1.6, ViewModel.IsHeightValid ? null : new DoubleCollection { 5, 4 });
-            AddText("Objetivo", layout.LeftX - 42.0, Math.Max(2.0, y - 18.0), stroke, 10.0);
+            AddLine(layout.LeftX - 22.0, y, layout.RightX + 22.0, y, stroke, 1.6);
+            AddText("Altura", layout.LeftX - 42.0, Math.Max(2.0, y - 18.0), stroke, 10.0);
         }
 
         private void DrawSegmentLabels(RackFrameEngineeringPreviewLayout layout)

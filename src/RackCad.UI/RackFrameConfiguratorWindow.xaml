@@ -291,12 +291,12 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
-                                    <TextBlock Text="Objetivo" Foreground="#617080" FontSize="11" />
-                                    <TextBlock Text="{Binding TargetHeightText}" FontWeight="SemiBold" />
+                                    <TextBlock Text="Altura de poste" Foreground="#617080" FontSize="11" />
+                                    <TextBlock Text="{Binding PostHeightText}" FontWeight="SemiBold" />
                                 </StackPanel>
                                 <StackPanel Grid.Column="1">
-                                    <TextBlock Text="Configurada" Foreground="#617080" FontSize="11" />
-                                    <TextBlock Text="{Binding ConfiguredHeightText}" FontWeight="SemiBold" Foreground="{Binding HeightValidationBrush}" />
+                                    <TextBlock Text="Última horizontal" Foreground="#617080" FontSize="11" />
+                                    <TextBlock Text="{Binding ConfiguredHeightText}" FontWeight="SemiBold" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -1192,7 +1192,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <TextBlock Text="Altura" Foreground="#617080" FontSize="11" />
-                            <TextBlock Text="{Binding ConfiguredHeightText}" FontWeight="SemiBold" Foreground="{Binding HeightValidationBrush}" />
+                            <TextBlock Text="{Binding PostHeightText}" FontWeight="SemiBold" />
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <TextBlock Text="Fondo" Foreground="#617080" FontSize="11" />

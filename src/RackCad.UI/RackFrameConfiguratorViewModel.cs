@@ -15,6 +15,9 @@ namespace RackCad.UI
     public sealed class RackFrameConfiguratorViewModel : ObservableObject
     {
         private const double HeightTolerance = 0.01;
+
+        /// <summary>The post ends this far above the top horizontal (2 troqueles); the height is derived from it.</summary>
+        private const double PostTopRemate = 4.0;
         private readonly string defaultDiagonalProfileId;
         private readonly string defaultHorizontalProfileId;
         private readonly string defaultStartConnectionPointId;
@@ -360,7 +363,7 @@ namespace RackCad.UI
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HeightText));
                 RefreshValidationProperties();
-                MarkConfigurationEdited("Altura objetivo actualizada.");
+                MarkConfigurationEdited("Altura actualizada.");
             }
         }
 
@@ -752,29 +755,25 @@ namespace RackCad.UI
 
         public double ConfiguredHeight => Horizontals.Count == 0 ? 0.0 : Horizontals.Max(horizontal => horizontal.Elevation);
 
-        public double HeightDelta => ConfiguredHeight - Height;
-
-        public bool IsHeightValid => Math.Abs(HeightDelta) <= HeightTolerance;
-
         public bool IsModelConsistent => ModelWarnings.Count == 0;
 
         public string ConfiguredHeightText => FormatInches(ConfiguredHeight);
 
-        public string TargetHeightText => FormatInches(Height);
+        public string PostHeightText => FormatInches(Height);
 
-        public string HeightValidationMessage => !IsHeightValid
-            ? "La altura configurada no coincide. Diferencia: " + FormatSignedInches(HeightDelta)
-            : IsModelConsistent
-                ? "La altura configurada coincide con la altura objetivo. Horizontales y paneles son consistentes."
-                : ModelWarnings.FirstOrDefault();
+        // The height is derived (última horizontal + remate), so there is no target-vs-configured check:
+        // the banner reports only real model inconsistencies.
+        public string HeightValidationMessage => IsModelConsistent
+            ? "Modelo consistente. La altura se recalcula desde las horizontales (ultima + " + FormatInches(PostTopRemate) + ")."
+            : ModelWarnings.FirstOrDefault();
 
-        public string HeightValidationBrush => IsHeightValid && IsModelConsistent ? "#2F855A" : "#B00020";
+        public string HeightValidationBrush => IsModelConsistent ? "#2F855A" : "#B00020";
 
-        public string HeightValidationBackground => IsHeightValid && IsModelConsistent ? "#E8F5E9" : "#FDECEC";
+        public string HeightValidationBackground => IsModelConsistent ? "#E8F5E9" : "#FDECEC";
 
-        public string WarningSummary => IsHeightValid && IsModelConsistent
-            ? "Sin advertencias de altura ni modelo."
-            : "Revisar altura o consistencia del modelo antes de generar dibujo.";
+        public string WarningSummary => IsModelConsistent
+            ? "Sin advertencias de modelo."
+            : "Revisar consistencia del modelo antes de generar dibujo.";
 
         public string SelectedSegmentCountLabel => SelectedBracingSegments.Count == 0
             ? "Sin paneles seleccionados"
@@ -1327,8 +1326,37 @@ namespace RackCad.UI
             GeneratePanelsFromHorizontals(existingPanels);
             LoadPanelRows();
             ResolvePanelElevations();
+            SyncHeightToHorizontals();
             ValidateModelConsistency();
             RefreshValidationProperties();
+        }
+
+        /// <summary>
+        /// The height is derived, not a target: after any structural change the post ends
+        /// <see cref="PostTopRemate"/> above the top horizontal, so editing claros recalculates the
+        /// height (and with it posts, reinforcements and the drawing).
+        /// </summary>
+        private void SyncHeightToHorizontals()
+        {
+            var top = Configuration.Horizontals.Count == 0
+                ? 0.0
+                : Configuration.Horizontals.Max(horizontal => horizontal.Elevation);
+
+            if (top <= 0.0)
+            {
+                return;
+            }
+
+            var derived = Math.Round(top + PostTopRemate, 4);
+
+            if (AreClose(Configuration.Height, derived))
+            {
+                return;
+            }
+
+            Configuration.Height = derived;
+            OnPropertyChanged(nameof(Height));
+            OnPropertyChanged(nameof(HeightText));
         }
 
         private static Dictionary<string, string> CreateSequentialHorizontalIdMap(IList<FrameHorizontal> orderedHorizontals)
@@ -1860,11 +1888,9 @@ namespace RackCad.UI
         private void RefreshValidationProperties()
         {
             OnPropertyChanged(nameof(ConfiguredHeight));
-            OnPropertyChanged(nameof(HeightDelta));
-            OnPropertyChanged(nameof(IsHeightValid));
             OnPropertyChanged(nameof(IsModelConsistent));
             OnPropertyChanged(nameof(ConfiguredHeightText));
-            OnPropertyChanged(nameof(TargetHeightText));
+            OnPropertyChanged(nameof(PostHeightText));
             OnPropertyChanged(nameof(HeightValidationMessage));
             OnPropertyChanged(nameof(HeightValidationBrush));
             OnPropertyChanged(nameof(HeightValidationBackground));
@@ -2172,12 +2198,6 @@ namespace RackCad.UI
         private static string FormatEditableNumber(double value)
         {
             return value.ToString("0.##", CultureInfo.InvariantCulture);
-        }
-
-        private static string FormatSignedInches(double value)
-        {
-            var sign = value > 0.0 ? "+" : string.Empty;
-            return sign + FormatInches(value);
         }
 
         private static string FormatBoolean(bool value)
