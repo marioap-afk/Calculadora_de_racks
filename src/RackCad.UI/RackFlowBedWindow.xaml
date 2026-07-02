@@ -10,78 +10,11 @@
         Background="#EEF2F6"
         FontFamily="Segoe UI">
     <Window.Resources>
-        <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#415161" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Margin" Value="0,8,0,3" />
-        </Style>
-        <Style x:Key="FieldBox" TargetType="TextBox">
-            <Setter Property="BorderBrush" Value="#C9D2DD" />
-            <Setter Property="Padding" Value="6,4" />
-        </Style>
-        <Style x:Key="SectionTitle" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#1F2933" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Margin" Value="0,12,0,4" />
-        </Style>
-
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="#2B6CB0" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Padding" Value="16,8" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#2C5282" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#234876" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="bd" Property="Background" Value="#A0AEC0" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-            <Setter Property="Foreground" Value="#2D3748" />
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#C9D2DD" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="14,7" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#EDF2F7" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="bd" Property="Opacity" Value="0.5" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Margin="16">
@@ -127,7 +60,8 @@
                     </Grid>
 
                     <WrapPanel Margin="0,12,0,0">
-                        <Button Content="Actualizar vista" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,12,0" />
+                        <Button Content="Actualizar vista" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,12,0" IsDefault="True"
+                                ToolTip="Recalcula la cama con los datos capturados (Enter)." />
                         <CheckBox x:Name="AdvancedToggle" Content="Avanzado" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#2B6CB0"
                                   Checked="AdvancedToggle_Changed" Unchecked="AdvancedToggle_Changed"
                                   ToolTip="Opciones finas: paso de rodillo." />
@@ -182,7 +116,7 @@
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Content="Insertar en AutoCAD" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" Margin="0,0,8,0"
                     ToolTip="Dibuja la cama en el dibujo activo de AutoCAD (vista lateral)." Click="InsertInAutoCad_Click" />
-            <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" />
+            <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>

@@ -10,6 +10,10 @@
         Background="#EEF2F6"
         FontFamily="Segoe UI">
     <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
         <!-- Card-style option button. -->
         <Style x:Key="MenuButton" TargetType="Button">
             <Setter Property="Margin" Value="0,0,0,12" />
@@ -50,29 +54,7 @@
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
-        <Style x:Key="CloseButton" TargetType="Button">
-            <Setter Property="Foreground" Value="#2D3748" />
-            <Setter Property="Background" Value="White" />
-            <Setter Property="BorderBrush" Value="#C9D2DD" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="16,8" />
-            <Setter Property="MinWidth" Value="96" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#EDF2F7" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
@@ -141,11 +123,11 @@
                     <TextBox x:Name="LibraryPathBox" Grid.Column="0" IsReadOnly="True" VerticalContentAlignment="Center"
                              Padding="6,4" BorderBrush="#C9D2DD" Background="White"
                              ToolTip="Ruta del DWG con las definiciones de bloque. Se guarda y se usa en todas las inserciones." />
-                    <Button Grid.Column="2" Content="Examinar…" Style="{StaticResource CloseButton}" MinWidth="0" Padding="14,6" Click="BrowseLibrary_Click" />
-                    <Button Grid.Column="4" Content="Restablecer" Style="{StaticResource CloseButton}" MinWidth="0" Padding="14,6"
+                    <Button Grid.Column="2" Content="Examinar…" Style="{StaticResource SecondaryButtonStyle}" MinWidth="0" Padding="14,6" Click="BrowseLibrary_Click" />
+                    <Button Grid.Column="4" Content="Restablecer" Style="{StaticResource SecondaryButtonStyle}" MinWidth="0" Padding="14,6"
                             ToolTip="Vuelve a la ruta predeterminada (junto a los catálogos)." Click="ResetLibrary_Click" />
                 </Grid>
-                <Button Content="Cerrar" Style="{StaticResource CloseButton}" HorizontalAlignment="Right" Margin="0,12,0,0" Click="Close_Click" />
+                <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="96" HorizontalAlignment="Right" Margin="0,12,0,0" Click="Close_Click" />
             </StackPanel>
         </Border>
     </Grid>

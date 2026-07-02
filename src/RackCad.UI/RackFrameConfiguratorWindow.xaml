@@ -12,6 +12,10 @@
         FontFamily="Segoe UI">
     <Grid>
         <Grid.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+                </ResourceDictionary.MergedDictionaries>
             <Style x:Key="PanelBorderStyle" TargetType="Border">
                 <Setter Property="Background" Value="White" />
                 <Setter Property="BorderBrush" Value="#D8DEE6" />
@@ -75,69 +79,8 @@
                 <Setter Property="VerticalContentAlignment" Value="Center" />
             </Style>
 
-            <!-- Accent button for the main calls to action (Generar cabecera, Insertar en AutoCAD). -->
-            <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="Background" Value="#2B6CB0" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Padding" Value="16,8" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="SnapsToDevicePixels" Value="True" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#2C5282" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#234876" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter TargetName="bd" Property="Background" Value="#A0AEC0" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <!-- Subtle outlined button for secondary footer actions. -->
-            <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-                <Setter Property="Foreground" Value="#2D3748" />
-                <Setter Property="Background" Value="White" />
-                <Setter Property="BorderBrush" Value="#C9D2DD" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Padding" Value="14,7" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="SnapsToDevicePixels" Value="True" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#EDF2F7" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="bd" Property="Background" Value="#E2E8F0" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter TargetName="bd" Property="Opacity" Value="0.5" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            </ResourceDictionary>
         </Grid.Resources>
 
         <Grid.RowDefinitions>

@@ -2240,19 +2240,7 @@ namespace RackCad.UI
             return text.Length <= 18 ? text : text.Substring(0, 18);
         }
 
-        private static RackCatalog LoadCatalogSafe()
-        {
-            try
-            {
-                return JsonRackCatalogProvider.FromBaseDirectory().Load();
-            }
-            catch
-            {
-                // The configurator must still open if the catalogs are missing or malformed;
-                // option lists are simply empty and the editable fields fall back to free text.
-                return new RackCatalog();
-            }
-        }
+        private static RackCatalog LoadCatalogSafe() => UiSupport.LoadCatalogSafe();
 
         /// <summary>
         /// Builds combo options that show the catalog display name (Label = displayName, else description,
@@ -2260,15 +2248,6 @@ namespace RackCad.UI
         /// </summary>
         private static ObservableCollection<CatalogOption> ToCatalogOptions<T>(IEnumerable<T> entries)
             where T : CatalogEntryBase
-        {
-            var options = (entries ?? Enumerable.Empty<T>())
-                .Where(entry => entry != null && !string.IsNullOrWhiteSpace(entry.Id))
-                .GroupBy(entry => entry.Id.Trim(), StringComparer.OrdinalIgnoreCase)
-                .Select(group => group.First())
-                .OrderBy(entry => entry.Label, StringComparer.CurrentCultureIgnoreCase)
-                .Select(entry => new CatalogOption(entry.Id.Trim(), entry.Label));
-
-            return new ObservableCollection<CatalogOption>(options);
-        }
+            => new ObservableCollection<CatalogOption>(UiSupport.ToOptions(entries));
     }
 }

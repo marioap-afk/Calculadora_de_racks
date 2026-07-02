@@ -247,6 +247,8 @@ namespace RackCad.Plugin
 
             try
             {
+                var catalog = LateralHeaderDrawService.LoadCatalog();
+
                 var typeOptions = new PromptKeywordOptions("\nTipo de cama") { AllowNone = true };
                 typeOptions.Keywords.Add("Dinamica");
                 typeOptions.Keywords.Add("Pushback");
@@ -259,19 +261,11 @@ namespace RackCad.Plugin
 
                 var bedType = typeResult.StringResult == "Pushback" ? FlowBedType.Pushback : FlowBedType.Dynamic;
 
-                var rollerOptions = new PromptKeywordOptions("\nRodillo") { AllowNone = true };
-                rollerOptions.Keywords.Add("R19");
-                rollerOptions.Keywords.Add("R25");
-                rollerOptions.Keywords.Default = "R19";
-                var rollerResult = editor.GetKeywords(rollerOptions);
-                if (rollerResult.Status != PromptStatus.OK && rollerResult.Status != PromptStatus.None)
+                var rollerId = PromptRollerId(editor, catalog);
+                if (rollerId == null)
                 {
                     return;
                 }
-
-                var rollerId = rollerResult.StringResult == "R25"
-                    ? "RODILLO_DE_TUBO_DE_2.5_CALIBRE_14"
-                    : FlowBedDefaults.RollerId;
 
                 var depthOptions = new PromptDistanceOptions("\nFondo del carril (in)")
                 {
@@ -377,6 +371,52 @@ namespace RackCad.Plugin
             }
 
             return summary;
+        }
+
+        /// <summary>
+        /// Prompts for the roller from the catalog (role RODILLO): auto-picks a single one, otherwise prints a
+        /// numbered list and asks for the index. Returns the roller id, or null if the user cancelled.
+        /// </summary>
+        private static string PromptRollerId(Editor editor, RackCatalog catalog)
+        {
+            var rollers = (catalog?.FlowBedProfiles ?? System.Array.Empty<FlowBedComponentCatalogEntry>())
+                .Where(c => c != null && !string.IsNullOrWhiteSpace(c.Id)
+                    && string.Equals(c.Role, "RODILLO", System.StringComparison.OrdinalIgnoreCase))
+                .GroupBy(c => c.Id, System.StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.First())
+                .OrderBy(c => c.Diameter)
+                .ToList();
+
+            if (rollers.Count == 0)
+            {
+                return FlowBedDefaults.RollerId;
+            }
+
+            if (rollers.Count == 1)
+            {
+                editor.WriteMessage("\nRodillo: " + rollers[0].Label);
+                return rollers[0].Id;
+            }
+
+            for (var i = 0; i < rollers.Count; i++)
+            {
+                editor.WriteMessage(string.Format(CultureInfo.InvariantCulture, "\n  {0}: {1}", i + 1, rollers[i].Label));
+            }
+
+            var options = new PromptIntegerOptions("\nRodillo #")
+            {
+                DefaultValue = 1,
+                UseDefaultValue = true,
+                LowerLimit = 1,
+                UpperLimit = rollers.Count
+            };
+            var result = editor.GetInteger(options);
+            if (result.Status != PromptStatus.OK)
+            {
+                return null;
+            }
+
+            return rollers[result.Value - 1].Id;
         }
 
         /// <summary>Builds the roller-bed block and runs the placement jig, then reports the outcome.</summary>

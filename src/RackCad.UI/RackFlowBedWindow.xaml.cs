@@ -54,7 +54,7 @@ namespace RackCad.UI
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
-            catalog = LoadCatalogSafe();
+            catalog = UiSupport.LoadCatalogSafe();
             RollerBox.ItemsSource = BuildRollerOptions();
             RollerBox.SelectedValue = FlowBedDefaults.RollerId;
             if (RollerBox.SelectedItem == null && RollerBox.Items.Count > 0)
@@ -360,11 +360,8 @@ namespace RackCad.UI
 
         private List<CatalogOption> BuildRollerOptions()
         {
-            return (catalog?.FlowBedProfiles ?? Enumerable.Empty<FlowBedComponentCatalogEntry>())
-                .Where(c => c != null && !string.IsNullOrWhiteSpace(c.Id)
-                    && string.Equals(c.Role, "RODILLO", StringComparison.OrdinalIgnoreCase))
-                .Select(c => new CatalogOption(c.Id, c.Label))
-                .ToList();
+            return UiSupport.ToOptions((catalog?.FlowBedProfiles ?? Enumerable.Empty<FlowBedComponentCatalogEntry>())
+                .Where(c => string.Equals(c?.Role, "RODILLO", StringComparison.OrdinalIgnoreCase)));
         }
 
         private void SetStatus(string message, bool isError)
@@ -375,19 +372,6 @@ namespace RackCad.UI
                 : new SolidColorBrush(Color.FromRgb(0x61, 0x70, 0x80));
         }
 
-        private static bool TryNum(string text, out double value)
-            => double.TryParse((text ?? string.Empty).Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out value);
-
-        private static RackCatalog LoadCatalogSafe()
-        {
-            try
-            {
-                return JsonRackCatalogProvider.FromBaseDirectory().Load();
-            }
-            catch
-            {
-                return new RackCatalog();
-            }
-        }
+        private static bool TryNum(string text, out double value) => UiSupport.TryNum(text, out value);
     }
 }

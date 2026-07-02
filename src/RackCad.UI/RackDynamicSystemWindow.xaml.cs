@@ -76,7 +76,7 @@ namespace RackCad.UI
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
-            catalog = LoadCatalogSafe();
+            catalog = UiSupport.LoadCatalogSafe();
             builder = new DynamicRackSystemBuilder(catalog);
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
@@ -89,16 +89,7 @@ namespace RackCad.UI
         }
 
         /// <summary>Post-type options (DisplayName shown, Id stored) for the basic "Tipo de poste" combo.</summary>
-        private List<CatalogOption> BuildPostOptions()
-        {
-            return (catalog?.PostProfiles ?? Enumerable.Empty<ProfileCatalogEntry>())
-                .Where(p => p != null && !string.IsNullOrWhiteSpace(p.Id))
-                .GroupBy(p => p.Id.Trim(), StringComparer.OrdinalIgnoreCase)
-                .Select(g => g.First())
-                .OrderBy(p => p.Label, StringComparer.CurrentCultureIgnoreCase)
-                .Select(p => new CatalogOption(p.Id.Trim(), p.Label))
-                .ToList();
-        }
+        private List<CatalogOption> BuildPostOptions() => UiSupport.ToOptions(catalog?.PostProfiles);
 
         /// <summary>The selected post id, or the catalog default if the combo has no selection yet.</summary>
         private string SelectedPostId() => PostBox?.SelectedValue as string ?? defaultPostCatalogId;
@@ -531,7 +522,7 @@ namespace RackCad.UI
             AddLine(Map(0, 0), Map(total, 0), FloorStroke, 1.5);
 
             var separatorLevels = SeparatorLevelCalculator.Levels(
-                height, SeparatorBaseY(), 2.0, system.SeparatorCountOverride, system.SeparatorSpacingOverride);
+                height, SeparatorBaseY(), PasoTroquel(), system.SeparatorCountOverride, system.SeparatorSpacingOverride);
             var headerOrdinal = 0;
 
             foreach (var module in system.Modules.Where(m => m.Length > 0.0))
@@ -815,6 +806,14 @@ namespace RackCad.UI
             return header?.AssociatedFrameConfiguration.Height ?? computedHeaderHeight;
         }
 
+        /// <summary>Troquel pitch from the first header's configuration (falls back to the standard 2").</summary>
+        private double PasoTroquel()
+        {
+            var header = system?.Modules.FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration != null);
+            var paso = header?.AssociatedFrameConfiguration.PasoTroquel ?? 0.0;
+            return paso > 0.0 ? paso : 2.0;
+        }
+
         private Point Map(double x, double y)
         {
             return new Point(mapOffsetX + x * mapScale, mapBottomY - y * mapScale);
@@ -1047,22 +1046,6 @@ namespace RackCad.UI
             return value.ToString("0.##", CultureInfo.InvariantCulture);
         }
 
-        private static bool TryNum(string text, out double value)
-        {
-            return double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out value)
-                || double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out value);
-        }
-
-        private static RackCatalog LoadCatalogSafe()
-        {
-            try
-            {
-                return JsonRackCatalogProvider.FromBaseDirectory().Load();
-            }
-            catch
-            {
-                return new RackCatalog();
-            }
-        }
+        private static bool TryNum(string text, out double value) => UiSupport.TryNum(text, out value);
     }
 }
