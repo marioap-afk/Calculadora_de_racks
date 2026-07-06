@@ -267,7 +267,7 @@ namespace RackCad.Plugin
                     return;
                 }
 
-                var depthOptions = new PromptDistanceOptions("\nFondo del carril (in)")
+                var depthOptions = new PromptDistanceOptions("\nFondo de cama (in)")
                 {
                     DefaultValue = 96.0,
                     UseDefaultValue = true,

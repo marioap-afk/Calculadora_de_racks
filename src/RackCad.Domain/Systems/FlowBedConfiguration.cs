@@ -9,7 +9,7 @@ namespace RackCad.Domain.Systems
     {
         public FlowBedType BedType { get; set; } = FlowBedType.Dynamic;
 
-        /// <summary>Rail length = lane depth / fondo del carril (in).</summary>
+        /// <summary>Rail length = lane depth / fondo de cama (in).</summary>
         public double LaneDepth { get; set; }
 
         /// <summary>Pallet depth (in); a dynamic bed places a brake about every pallet depth + 1".</summary>

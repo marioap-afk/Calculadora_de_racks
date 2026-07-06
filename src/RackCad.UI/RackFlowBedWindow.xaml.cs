@@ -120,7 +120,7 @@ namespace RackCad.UI
 
             if (!TryNum(LaneDepthBox.Text, out var laneDepth) || laneDepth <= 0.0)
             {
-                error = "Fondo del carril invalido.";
+                error = "Fondo de cama invalido.";
                 return null;
             }
 
@@ -231,7 +231,7 @@ namespace RackCad.UI
             mapBottomY = topMargin + (usableHeight - drawHeight) / 2.0 + drawHeight;
 
             AddCanvasLabel(mapOffsetX, Math.Max(4.0, mapBottomY - drawHeight - 22.0),
-                "Fondo del carril: " + total.ToString("0.##", CultureInfo.InvariantCulture) + " in", LabelStroke, 12, 280.0, FontWeights.SemiBold);
+                "Fondo de cama: " + total.ToString("0.##", CultureInfo.InvariantCulture) + " in", LabelStroke, 12, 280.0, FontWeights.SemiBold);
 
             // Floor, rail body and troquel reference line.
             AddLine(Map(0, 0), Map(total, 0), FloorStroke, 1.5);

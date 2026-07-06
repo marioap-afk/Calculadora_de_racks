@@ -50,7 +50,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Fondo del carril (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBlock Text="Fondo de cama (in)" Style="{StaticResource FieldLabel}" />
                             <TextBox x:Name="LaneDepthBox" Style="{StaticResource FieldBox}" Text="96" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
@@ -87,7 +87,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Margin="10,8">
-                    <TextBlock Text="Vista lateral (X = fondo del carril). El riel arranca en el tope; los rodillos van al paso, el freno entre rodillos."
+                    <TextBlock Text="Vista lateral (X = fondo de cama). El riel arranca en el tope; los rodillos van al paso, el freno entre rodillos."
                                Foreground="#617080" FontSize="11" TextWrapping="Wrap" />
                     <WrapPanel Margin="0,6,0,0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
