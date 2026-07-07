@@ -81,6 +81,40 @@ namespace RackCad.Application.Catalogs
         public double WeightEach { get; set; }
     }
 
+    /// <summary>
+    /// A load beam ("larguero"/"viga") SKU. Length is NOT stored (it is the block's LONGITUD parameter);
+    /// what defines the SKU is the profile + <see cref="Peralte"/>, plus a fixed end connector
+    /// (<see cref="Mensula"/>, FK to <see cref="MensulaCatalogEntry"/>). BOM weight = WeightPerMeter x length
+    /// + the two ménsulas.
+    /// </summary>
+    public sealed class BeamProfileCatalogEntry : CatalogEntryBase
+    {
+        public string Family { get; set; }
+
+        /// <summary>Profile height (in). Different peralte = different SKU.</summary>
+        public double Peralte { get; set; }
+        public double Width { get; set; }
+        public double Thickness { get; set; }
+        public string Units { get; set; }
+        public string Gauge { get; set; }
+
+        /// <summary>Fixed end connector for this beam (FK to a ménsula id).</summary>
+        public string Mensula { get; set; }
+
+        /// <summary>Weight per unit length; the BOM multiplies it by the beam's LONGITUD.</summary>
+        public double WeightPerMeter { get; set; }
+    }
+
+    /// <summary>End connector ("ménsula") of a beam: a fixed part counted in the BOM (two per beam).</summary>
+    public sealed class MensulaCatalogEntry : CatalogEntryBase
+    {
+        public string Type { get; set; }
+        public double Height { get; set; }
+        public string Units { get; set; }
+        public string Gauge { get; set; }
+        public double WeightEach { get; set; }
+    }
+
     /// <summary>Base plate that anchors a post to the floor.</summary>
     public sealed class BasePlateCatalogEntry : CatalogEntryBase
     {
@@ -171,6 +205,10 @@ namespace RackCad.Application.Catalogs
 
         /// <summary>Roller-bed components (rail, roller, brake, stop) for flow / pushback beds.</summary>
         public IReadOnlyList<FlowBedComponentCatalogEntry> FlowBedProfiles { get; set; } = new List<FlowBedComponentCatalogEntry>();
+
+        /// <summary>Load-beam ("larguero") SKUs and their end connectors ("ménsulas").</summary>
+        public IReadOnlyList<BeamProfileCatalogEntry> BeamProfiles { get; set; } = new List<BeamProfileCatalogEntry>();
+        public IReadOnlyList<MensulaCatalogEntry> Mensulas { get; set; } = new List<MensulaCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
         public IReadOnlyList<ConnectionLayoutEntry> ConnectionLayout { get; set; } = new List<ConnectionLayoutEntry>();
         public IReadOnlyList<ViewCatalogEntry> Views { get; set; } = new List<ViewCatalogEntry>();

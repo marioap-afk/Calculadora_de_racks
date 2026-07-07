@@ -1,0 +1,3 @@
+id,displayName,family,peralte,width,thickness,units,gauge,mensula,weightPerMeter,material,partNumber
+LARGUERO_ESTANDAR_P4_CAL14,"Larguero estándar peralte 4""",Larguero,4,1.5,0.0747,in,14,MENSULA_ESTANDAR,,,
+LARGUERO_ESTANDAR_P5_CAL14,"Larguero estándar peralte 5""",Larguero,5,1.5,0.0747,in,14,MENSULA_ESTANDAR,,,
