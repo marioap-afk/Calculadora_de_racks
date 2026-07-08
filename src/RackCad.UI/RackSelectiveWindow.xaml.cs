@@ -475,6 +475,18 @@ namespace RackCad.UI
         private void ApplyAll_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.All);
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
+        private void ShowBom_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastInstances == null || lastSystem == null)
+            {
+                SetStatus("Genera primero la geometría (revisa tarima/niveles).", true);
+                return;
+            }
+
+            var bom = SelectiveBomBuilder.Build(lastInstances, catalog);
+            new RackBomWindow(bom) { Owner = this }.ShowDialog();
+        }
+
         private void ApplyScope(Scope scope)
         {
             if (!ReadCellEditor(out var values, out var error))
