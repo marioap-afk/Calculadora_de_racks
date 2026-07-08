@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Geometry;
@@ -8,15 +7,17 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Builds the FRONTAL block instances of a selective rack: N+1 cabeceras (posts) with their base plates,
-    /// and, per bay, one larguero at every load level. Pure — returns instances the AutoCAD drawer places.
+    /// Builds the FRONTAL block instances of a RESOLVED selective rack: N+1 cabeceras (posts) with their base
+    /// plates, and, per bay, one larguero at every load level. Pure — returns instances the AutoCAD drawer
+    /// places. The pallet-driven derivation (beam lengths, level Ys, height) already happened in
+    /// <see cref="SelectiveGeometryResolver"/>; this only lays out blocks.
     ///
     /// Geometry: the larguero hooks on the post's TROQUEL_LARGUERO, whose X slides with the post peralte
     /// (the parametric mate: X = localX + slope*peralte). Posts carry troqueles on BOTH sides, so no mirror
     /// is needed. The larguero's LONGITUD is the "A corte" (profile cut length), not the clear span: the
     /// ménsula juts out from each profile end to the hook by INICIO_PERFIL's X. So the far hook lands on the
-    /// next post's troquel when post-to-post = larguero length + 2*(troquelX + inicioPerfilX). Levels snap to
-    /// the troquel grid (first troquel + k*paso). Beams stretch to the bay length (LONGITUD) and peralte (PERALTE).
+    /// next post's troquel when post-to-post = larguero length + 2*(troquelX + inicioPerfilX). Beams stretch to
+    /// the bay length (LONGITUD) and to each level's peralte (PERALTE); each level sits at its resolved Y.
     /// </summary>
     public sealed class SelectiveFrontalBuilder
     {
@@ -30,13 +31,11 @@ namespace RackCad.Application.Systems
             }
 
             var view = SelectiveRackDefaults.View;
-            var paso = SelectiveRackDefaults.TroquelPaso;
 
-            // Post's larguero troquel: X slides with the post peralte, Y is the first troquel (grid base).
+            // Post's larguero troquel: X slides with the post peralte (Y is not needed here — levels are resolved).
             var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = system.PostPeralte };
             var troquel = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, view);
             var troquelX = ResolveX(troquel, postParams);
-            var troquelBaseY = troquel?.LocalY ?? paso;
 
             var postBlock = Block(catalog, system.PostId, view);
             var plateId = catalog?.Defaults?.BasePlate;
@@ -92,27 +91,26 @@ namespace RackCad.Application.Systems
                 instances.Add(plate);
             }
 
-            // Largueros: one per level, at the left post's troquel X, stepping up the troquel grid.
+            // Largueros: one per resolved level, at the left post's troquel X, at the level's resolved Y.
             for (var i = 0; i < system.Bays.Count; i++)
             {
                 var bay = system.Bays[i];
-                var beamBlock = Block(catalog, bay.BeamId, view);
                 var beamX = postX[i] + troquelX;
 
-                foreach (var y in LevelHeights(bay, troquelBaseY, paso))
+                foreach (var level in bay.Levels)
                 {
-                    var at = new Point2D(beamX, y);
+                    var at = new Point2D(beamX, level.Y);
                     var beam = new HeaderBlockInstance
                     {
                         Role = HeaderBlockRole.Beam,
-                        PieceId = bay.BeamId,
-                        BlockName = beamBlock,
+                        PieceId = level.BeamId,
+                        BlockName = Block(catalog, level.BeamId, view),
                         View = view,
                         Insertion = at,
                         ConnectionAnchor = at
                     };
                     beam.DynamicParameters[SelectiveRackDefaults.LengthParam] = bay.BeamLength;
-                    beam.DynamicParameters[SelectiveRackDefaults.PeralteParam] = bay.BeamPeralte;
+                    beam.DynamicParameters[SelectiveRackDefaults.PeralteParam] = level.BeamPeralte;
                     instances.Add(beam);
                 }
             }
@@ -120,33 +118,21 @@ namespace RackCad.Application.Systems
             return instances;
         }
 
-        /// <summary>Level Ys: the first level snapped to the troquel grid, then a troquel-aligned separation apart.</summary>
-        private static IReadOnlyList<double> LevelHeights(SelectiveBay bay, double troquelBaseY, double paso)
-        {
-            var levels = new List<double>();
-            if (bay == null || bay.Levels <= 0)
-            {
-                return levels;
-            }
-
-            var first = Snap(bay.FirstLevel, troquelBaseY, paso);
-            var separation = bay.Separation > 0.0
-                ? Math.Max(paso, Math.Round(bay.Separation / paso, MidpointRounding.AwayFromZero) * paso)
-                : paso;
-
-            for (var j = 0; j < bay.Levels; j++)
-            {
-                levels.Add(first + j * separation);
-            }
-
-            return levels;
-        }
-
-        /// <summary>The larguero's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); 0 if unset.</summary>
+        /// <summary>
+        /// The bay's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); 0 if unset. Post
+        /// spacing is per bay, so it uses the bay's first level as the representative beam (all largueros of a
+        /// bay share one length and connector).
+        /// </summary>
         private static double BeamProfileStartX(RackCatalog catalog, SelectiveBay bay, string view)
         {
-            var entry = catalog?.ConnectionLayout.FindConnectionLayout(bay.BeamId, SelectiveRackDefaults.BeamProfileStartPoint, view);
-            var beamParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = bay.BeamPeralte };
+            if (bay.Levels.Count == 0)
+            {
+                return 0.0;
+            }
+
+            var level = bay.Levels[0];
+            var entry = catalog?.ConnectionLayout.FindConnectionLayout(level.BeamId, SelectiveRackDefaults.BeamProfileStartPoint, view);
+            var beamParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = level.BeamPeralte };
             return ResolveX(entry, beamParams);
         }
 
@@ -167,9 +153,6 @@ namespace RackCad.Application.Systems
 
             return x;
         }
-
-        private static double Snap(double value, double baseY, double paso)
-            => baseY + Math.Round((value - baseY) / paso, MidpointRounding.AwayFromZero) * paso;
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
         {

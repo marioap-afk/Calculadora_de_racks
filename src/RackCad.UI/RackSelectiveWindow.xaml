@@ -33,6 +33,17 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Cabecera" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
+                    <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
+                    <TextBlock Text="Peralte poste (in)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3" />
+
+                    <TextBlock Text="Larguero" Style="{StaticResource SectionTitle}" />
+                    <ComboBox x:Name="BeamBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
+                    <TextBlock Text="Peralte larguero (in)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="BeamPeralteBox" Style="{StaticResource FieldBox}" Text="4" />
+
+                    <TextBlock Text="Tarima" Style="{StaticResource SectionTitle}" />
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -40,18 +51,18 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Altura (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="HeightBox" Style="{StaticResource FieldBox}" Text="240" />
+                            <TextBlock Text="Frente (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="FrenteBox" Style="{StaticResource FieldBox}" Text="40" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Peralte poste (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3" />
+                            <TextBlock Text="Alto (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="AltoBox" Style="{StaticResource FieldBox}" Text="60" />
                         </StackPanel>
                     </Grid>
-                    <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
+                    <TextBlock Text="Tarimas por nivel" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="PalletCountBox" Style="{StaticResource FieldBox}" Text="2" />
 
-                    <TextBlock Text="Bahías (plantilla)" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -61,23 +72,31 @@
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Cantidad de bahías" Style="{StaticResource FieldLabel}" />
                             <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2" />
-                            <TextBlock Text="Longitud larguero (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="BeamLengthBox" Style="{StaticResource FieldBox}" Text="100" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
                             <TextBlock Text="Niveles" Style="{StaticResource FieldLabel}" />
                             <TextBox x:Name="LevelsBox" Style="{StaticResource FieldBox}" Text="4" />
                         </StackPanel>
+                    </Grid>
+                    <TextBlock Text="1er nivel (in)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="FirstLevelBox" Style="{StaticResource FieldBox}" Text="6" />
+
+                    <TextBlock Text="Tolerancias" Style="{StaticResource SectionTitle}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Horizontal (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="ToleranceBox" Style="{StaticResource FieldBox}" Text="4" />
+                        </StackPanel>
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Peralte larguero (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="BeamPeralteBox" Style="{StaticResource FieldBox}" Text="4" />
-                            <TextBlock Text="1er nivel (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="FirstLevelBox" Style="{StaticResource FieldBox}" Text="48" />
-                            <TextBlock Text="Separación (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="SeparationBox" Style="{StaticResource FieldBox}" Text="48" />
+                            <TextBlock Text="Holgura vertical (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="ClearanceBox" Style="{StaticResource FieldBox}" Text="6" />
                         </StackPanel>
                     </Grid>
-
-                    <TextBlock Text="Larguero" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="BeamBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
 
                     <Button Content="Actualizar vista" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
                             HorizontalAlignment="Left" Margin="0,14,0,0" IsDefault="True"

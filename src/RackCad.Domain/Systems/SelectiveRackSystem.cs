@@ -3,13 +3,15 @@ using System.Collections.Generic;
 namespace RackCad.Domain.Systems
 {
     /// <summary>
-    /// A selective rack run in the FRONTAL view: a sequence of bays bounded by shared frames (cabeceras).
-    /// N bays → N+1 cabeceras (each drawn as one post in frontal). Phase 1: all frames share one height and
-    /// post; each bay can differ (its beam, peralte, length and level configuration).
+    /// The RESOLVED geometry of a selective rack run in the FRONTAL view: a sequence of bays bounded by
+    /// shared frames (cabeceras). N bays → N+1 cabeceras (each drawn as one post in frontal). Everything here
+    /// is already computed (beam lengths, level Ys, height) — the pallet-driven rules live in the resolver
+    /// (<c>SelectiveGeometryResolver</c>); this is just what the builder places. Phase 1: all frames share one
+    /// height and post; each bay (and each level within it) can differ.
     /// </summary>
     public sealed class SelectiveRackSystem
     {
-        /// <summary>Height of every cabecera/post (in). Same for the whole run in Phase 1.</summary>
+        /// <summary>Height of every cabecera/post (in). Derived, uniform for the whole run in Phase 1.</summary>
         public double Height { get; set; }
 
         /// <summary>Catalog id of the post used for the cabeceras.</summary>
@@ -22,25 +24,29 @@ namespace RackCad.Domain.Systems
         public IList<SelectiveBay> Bays { get; } = new List<SelectiveBay>();
     }
 
-    /// <summary>One bay of a selective run: its beam (larguero) and the vertical level configuration.</summary>
+    /// <summary>One resolved bay: its beam length (which governs post spacing) and its placed levels.</summary>
     public sealed class SelectiveBay
     {
-        /// <summary>Catalog id of the beam (larguero).</summary>
-        public string BeamId { get; set; }
-
-        /// <summary>Beam peralte (block parameter).</summary>
-        public double BeamPeralte { get; set; }
-
-        /// <summary>Beam length = LONGITUD (A corte + ménsula); the clear span basis.</summary>
+        /// <summary>
+        /// Beam length = LONGITUD (the profile "A corte"), per bay: it fixes the post spacing
+        /// (post-to-post = BeamLength + 2*(troquelX + inicioPerfilX)). All levels of the bay share it.
+        /// </summary>
         public double BeamLength { get; set; }
 
-        /// <summary>Number of load levels (one beam per level).</summary>
-        public int Levels { get; set; }
+        /// <summary>The load levels of this bay, bottom to top, each with its own resolved Y and beam.</summary>
+        public IList<SelectiveLevel> Levels { get; } = new List<SelectiveLevel>();
+    }
 
-        /// <summary>Height of the first level (in). User input in Phase 1; snapped to the troquel grid.</summary>
-        public double FirstLevel { get; set; }
+    /// <summary>One resolved load level of a bay: a larguero at a fixed (already snapped) troquel Y.</summary>
+    public sealed class SelectiveLevel
+    {
+        /// <summary>Troquel Y where the larguero sits (already snapped to the grid by the resolver).</summary>
+        public double Y { get; set; }
 
-        /// <summary>Troquel-to-troquel separation between levels (in); a multiple of the troquel pitch.</summary>
-        public double Separation { get; set; }
+        /// <summary>Catalog id of the beam (larguero) at this level.</summary>
+        public string BeamId { get; set; }
+
+        /// <summary>Beam peralte (block parameter) at this level.</summary>
+        public double BeamPeralte { get; set; }
     }
 }

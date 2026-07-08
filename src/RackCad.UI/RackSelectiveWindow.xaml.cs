@@ -14,9 +14,10 @@ using RackCad.Domain.Systems;
 namespace RackCad.UI
 {
     /// <summary>
-    /// Independent module: a selective rack in the FRONTAL view. Inputs a cabecera (height + post + peralte)
-    /// and a bay template (larguero, peralte, length, levels), builds N bays and previews the run — posts as
-    /// vertical members, largueros per level. Geometry comes from the pure <see cref="SelectiveFrontalBuilder"/>.
+    /// Independent module: a selective rack in the FRONTAL view. The user describes the pallets (frente, alto,
+    /// count) plus post/beam and the tramo size; <see cref="SelectiveGeometryResolver"/> derives the larguero
+    /// length, level separations and post height, and <see cref="SelectiveFrontalBuilder"/> lays out the blocks.
+    /// This template fills the whole bays × levels matrix uniformly; per-cell editing comes next.
     /// </summary>
     public partial class RackSelectiveWindow : Window
     {
@@ -30,6 +31,7 @@ namespace RackCad.UI
 
         private readonly RackCatalog catalog;
         private readonly SelectiveFrontalBuilder builder = new SelectiveFrontalBuilder();
+        private readonly SelectiveGeometryResolver resolver = new SelectiveGeometryResolver();
         private readonly bool canInsertInAutoCad;
 
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
@@ -112,31 +114,48 @@ namespace RackCad.UI
         {
             error = null;
 
-            if (!UiSupport.TryNum(HeightBox.Text, out var height) || height <= 0.0) { error = "Altura invalida."; return null; }
-            if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste invalido."; return null; }
             if (!(PostBox.SelectedValue is string postId) || string.IsNullOrWhiteSpace(postId)) { error = "Selecciona un poste."; return null; }
+            if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste invalido."; return null; }
             if (!(BeamBox.SelectedValue is string beamId) || string.IsNullOrWhiteSpace(beamId)) { error = "Selecciona un larguero."; return null; }
-            if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1) { error = "Cantidad de bahias invalida."; return null; }
-            if (!UiSupport.TryNum(BeamLengthBox.Text, out var beamLength) || beamLength <= 0.0) { error = "Longitud de larguero invalida."; return null; }
             if (!UiSupport.TryNum(BeamPeralteBox.Text, out var beamPeralte) || beamPeralte <= 0.0) { error = "Peralte de larguero invalido."; return null; }
+            if (!UiSupport.TryNum(FrenteBox.Text, out var frente) || frente <= 0.0) { error = "Frente de tarima invalido."; return null; }
+            if (!UiSupport.TryNum(AltoBox.Text, out var alto) || alto <= 0.0) { error = "Alto de tarima invalido."; return null; }
+            if (!TryInt(PalletCountBox.Text, out var palletCount) || palletCount < 1) { error = "Tarimas por nivel invalido."; return null; }
+            if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1) { error = "Cantidad de bahias invalida."; return null; }
             if (!TryInt(LevelsBox.Text, out var levels) || levels < 1) { error = "Niveles invalidos."; return null; }
             if (!UiSupport.TryNum(FirstLevelBox.Text, out var firstLevel) || firstLevel <= 0.0) { error = "1er nivel invalido."; return null; }
-            if (!UiSupport.TryNum(SeparationBox.Text, out var separation) || separation <= 0.0) { error = "Separacion invalida."; return null; }
+            if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
+            if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
 
-            var system = new SelectiveRackSystem { Height = height, PostId = postId, PostPeralte = postPeralte };
-            for (var i = 0; i < bayCount; i++)
+            var design = new SelectivePalletDesign
             {
-                system.Bays.Add(new SelectiveBay
+                PostId = postId,
+                PostPeralte = postPeralte,
+                PalletTolerance = tolerance,
+                VerticalClearance = clearance,
+                FirstLevel = firstLevel
+            };
+
+            // Phase-1 template: fill the whole bays × levels matrix with the same cell. Per-cell editing next.
+            for (var b = 0; b < bayCount; b++)
+            {
+                var bay = new SelectiveBayDesign();
+                for (var l = 0; l < levels; l++)
                 {
-                    BeamId = beamId,
-                    BeamPeralte = beamPeralte,
-                    BeamLength = beamLength,
-                    Levels = levels,
-                    FirstLevel = firstLevel,
-                    Separation = separation
-                });
+                    bay.Levels.Add(new SelectiveCell
+                    {
+                        Pallet = new Tarima { Frente = frente, Alto = alto },
+                        PalletCount = palletCount,
+                        BeamId = beamId,
+                        BeamPeralte = beamPeralte
+                    });
+                }
+
+                design.Bays.Add(bay);
             }
 
+            var system = resolver.Resolve(design, catalog);
+            if (system.Height <= 0.0) { error = "No se pudo derivar la geometria (revisa tarima/niveles)."; return null; }
             return system;
         }
 
@@ -145,10 +164,14 @@ namespace RackCad.UI
             var posts = lastInstances.Count(i => i.Role == HeaderBlockRole.Post);
             var beams = lastInstances.Count(i => i.Role == HeaderBlockRole.Beam);
 
+            var bay0 = lastSystem.Bays.Count > 0 ? lastSystem.Bays[0] : null;
+            var beamLength = bay0?.BeamLength ?? 0.0;
+            var separation = bay0 != null && bay0.Levels.Count > 1 ? bay0.Levels[1].Y - bay0.Levels[0].Y : 0.0;
+
             SummaryText.Text = string.Format(
                 CultureInfo.InvariantCulture,
-                "{0} bahías   ·   {1} cabeceras   ·   {2} largueros   ·   altura {3:0.##}\"",
-                lastSystem.Bays.Count, posts, beams, lastSystem.Height);
+                "{0} bahías · {1} cabeceras · {2} largueros\nDerivado: larguero (A corte) {3:0.##}\" · separación {4:0.##}\" · altura {5:0.##}\"",
+                lastSystem.Bays.Count, posts, beams, beamLength, separation, lastSystem.Height);
         }
 
         // ---- Preview ----

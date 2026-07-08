@@ -15,18 +15,19 @@ namespace RackCad.Tests
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
+        private static readonly double[] LevelYs = { 48.0, 96.0, 144.0, 192.0 };
+
+        /// <summary>A resolved system (levels already placed) so the builder tests exercise placement only.</summary>
         private static SelectiveRackSystem System(double postPeralte = 3.0)
         {
             var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = postPeralte };
-            system.Bays.Add(new SelectiveBay
+            var bay = new SelectiveBay { BeamLength = 100.0 };
+            foreach (var y in LevelYs)
             {
-                BeamId = BeamId,
-                BeamPeralte = 4.0,
-                BeamLength = 100.0,
-                Levels = 4,
-                FirstLevel = 48.0,
-                Separation = 48.0
-            });
+                bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = BeamId, BeamPeralte = 4.0 });
+            }
+
+            system.Bays.Add(bay);
             return system;
         }
 
@@ -107,7 +108,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Build_Levels_SnapToTheTroquelGrid()
+        public void Build_Beams_SitAtTheResolvedLevelYs()
         {
             var ys = new SelectiveFrontalBuilder().Build(System(), Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Beam)
@@ -115,14 +116,8 @@ namespace RackCad.Tests
                 .OrderBy(y => y)
                 .ToList();
 
-            // First level (48) snaps to the nearest troquel (grid base = TROQUEL_LARGUERO.LocalY, pitch 2"),
-            // then steps by a troquel-aligned separation (48 -> 24 pasos). Both read from the catalog.
-            var baseY = Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "FRONTAL").LocalY;
-            var first = baseY + Math.Round((48.0 - baseY) / 2.0, MidpointRounding.AwayFromZero) * 2.0;
-            var expected = new[] { first, first + 48.0, first + 96.0, first + 144.0 }
-                .Select(y => Math.Round(y, 3)).ToList();
-
-            Assert.Equal(expected, ys);
+            // The builder places each larguero at the level's already-resolved Y (no snapping here).
+            Assert.Equal(LevelYs, ys);
         }
     }
 }

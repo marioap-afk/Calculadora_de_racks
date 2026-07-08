@@ -1,0 +1,68 @@
+using System.Collections.Generic;
+
+namespace RackCad.Domain.Systems
+{
+    /// <summary>
+    /// The pallet-driven DESIGN of a selective rack: what the advanced editor edits. The user no longer types
+    /// beam length / separation / height directly — they describe the pallets (frente, alto, count) per cell of
+    /// a bays × levels matrix, and <c>SelectiveGeometryResolver</c> derives the geometry:
+    /// <list type="bullet">
+    /// <item>larguero LONGITUD = Frente*Count + Tolerance*(Count+1) (the widest level governs the bay),</item>
+    /// <item>level separation = roundUpTroquel(roundUpEven(Alto + Clearance) + beam peralte),</item>
+    /// <item>post height = roundUpFoot(topLevelY + topPalletAlto/3).</item>
+    /// </list>
+    /// </summary>
+    public sealed class SelectivePalletDesign
+    {
+        /// <summary>Catalog id of the post used for the cabeceras.</summary>
+        public string PostId { get; set; }
+
+        /// <summary>Peralte of the post (drives the larguero troquel X via the parametric mate).</summary>
+        public double PostPeralte { get; set; }
+
+        /// <summary>Horizontal tolerance per gap between/around pallets (in). Editable; default 4".</summary>
+        public double PalletTolerance { get; set; } = 4.0;
+
+        /// <summary>Vertical clearance ("holgura") above a pallet inside its clear opening (in). Editable; default 6".</summary>
+        public double VerticalClearance { get; set; } = 6.0;
+
+        /// <summary>Y of the first (lowest) level (in). User input; snapped to the troquel grid by the resolver.</summary>
+        public double FirstLevel { get; set; }
+
+        /// <summary>The bays, left to right. Each carries its own column of level cells.</summary>
+        public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
+    }
+
+    /// <summary>One bay's column in the design matrix: its level cells, bottom to top.</summary>
+    public sealed class SelectiveBayDesign
+    {
+        /// <summary>The level cells of this bay, bottom to top. Each cell can differ (pallet, count, beam).</summary>
+        public IList<SelectiveCell> Levels { get; } = new List<SelectiveCell>();
+    }
+
+    /// <summary>One cell of the matrix (a level of a bay): the pallet stored there and its beam.</summary>
+    public sealed class SelectiveCell
+    {
+        /// <summary>The pallet type at this cell (frente drives the beam length, alto the separation above it).</summary>
+        public Tarima Pallet { get; set; } = new Tarima();
+
+        /// <summary>How many pallets sit side by side at this level ("tarimas por nivel").</summary>
+        public int PalletCount { get; set; } = 1;
+
+        /// <summary>Catalog id of the beam (larguero) at this level.</summary>
+        public string BeamId { get; set; }
+
+        /// <summary>Beam peralte (block parameter) at this level.</summary>
+        public double BeamPeralte { get; set; }
+    }
+
+    /// <summary>A pallet ("tarima"). Frontal needs its front and height; depth (fondo) comes with the lateral view.</summary>
+    public sealed class Tarima
+    {
+        /// <summary>Front width of the pallet (in), measured along the beam.</summary>
+        public double Frente { get; set; }
+
+        /// <summary>Height of the pallet + load (in); drives the clear opening to the level above.</summary>
+        public double Alto { get; set; }
+    }
+}
