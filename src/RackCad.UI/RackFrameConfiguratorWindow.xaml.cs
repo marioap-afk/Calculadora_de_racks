@@ -210,6 +210,20 @@ namespace RackCad.UI
                 return;
             }
 
+            // Single-click parity with the other editors: in quick-config mode, "Insertar" also generates the
+            // cabecera from the current inputs first (advanced mode already keeps the config up to date).
+            if (ViewModel.IsSimpleEditor)
+            {
+                RunUiAction(() =>
+                {
+                    ViewModel.ApplySimpleConfiguration();
+                    SyncGridSelectionFromViewModel();
+                    SyncHorizontalGridSelectionFromViewModel();
+                    SyncTreeSelectionFromViewModel();
+                    DrawPreview();
+                });
+            }
+
             if (!ViewModel.IsModelConsistent)
             {
                 var proceed = MessageBox.Show(
