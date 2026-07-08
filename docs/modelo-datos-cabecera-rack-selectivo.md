@@ -1,3 +1,5 @@
+> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+
 # Modelo de datos propuesto para cabeceras de rack selectivo convencional
 
 Fecha: 2026-06-05

@@ -1,13 +1,19 @@
 # Generación de cabecera lateral (block-based)
 
-Esta es la lógica nueva para generar una **cabecera en vista lateral** a partir de **bloques
+Esta es la lógica para generar una **cabecera en vista lateral** a partir de **bloques
 independientes anclados a puntos de conexión** (no una composición visual libre). El **poste es la base
-geométrica**; horizontales y diagonales de celosía cuelgan de la línea de troqueles del poste.
+geométrica**; horizontales y diagonales de celosía cuelgan de la línea de troqueles del poste. La cabecera
+es **uno de los cuatro tipos de rack** que dibuja el plugin (cabecera, sistema dinámico, cama de rodamiento
+y selectivo); el **mismo patrón por bloques + round-trip** descrito aquí sirve a los cuatro (ver
+[Patrón unificado](#patrón-unificado-block-based--round-trip-para-los-4-tipos)).
 
-> **Estado:** la **lógica pura** y el **cableado en AutoCAD (paso 2)** ya están implementados y compilan en
-> Windows. El comando `RACKCABECERALATERAL` y el botón **Insertar en AutoCAD** del configurador ya dibujan
-> la cabecera. Lo único que resta es del lado del **dibujo (DWG)**: que los bloques de AutoCAD existan con
-> sus parámetros dinámicos y verificar el resultado visual. Ver la sección [Paso 2](#paso-2-estado-del-cableado-en-autocad).
+> **Estado:** la **lógica pura** y el **dibujo en AutoCAD** de la cabecera lateral ya están implementados y
+> compilan en Windows (~200 tests verdes). Los comandos `RACKCABECERA` / `RACKCABECERALATERAL` /
+> `QUICKCABECERA` y el botón **Insertar en AutoCAD** del configurador dibujan la cabecera como **un bloque**;
+> `RACKEDITAR` la reabre y la **redefine en sitio** para que todas las copias se actualicen a la vez. Lo único
+> que resta es del lado del **dibujo (DWG)**: **modelar los bloques dinámicos** (poste con `LONGITUD`,
+> travesaños con `Distancia1`) en la biblioteca `blocks-library.dwg` y la verificación visual. Ver la
+> sección [Paso 2](#paso-2-estado-del-cableado-en-autocad).
 
 ## Arquitectura (separación pura ↔ AutoCAD)
 
@@ -21,7 +27,9 @@ RackCad.Application/Headers/            (PURO, testeable en cualquier SO)
   HeaderGeometryResolver      catálogo (connection-layout + blocks) → geometría
 
 RackCad.Plugin/Headers/                (AutoCAD, solo Windows)
-  LateralHeaderDrawer         adapter: ejecuta el plan (InsertBlock + params dinámicos)
+  LateralHeaderDrawer         adapter: convierte el plan en un bloque (InsertBlock + params dinámicos)
+  LateralHeaderDrawService    orquesta: carga catálogo, arma el plan, crea el bloque y lo coloca (jig)
+  BlockLibraryImporter        importa del DWG biblioteca los bloques que falten en el dibujo activo
 ```
 
 Regla de oro: **toda la geometría y los cálculos son puros**; el drawer solo traduce el plan a la API de
@@ -41,7 +49,10 @@ AutoCAD. Así la lógica se prueba sin AutoCAD y el drawer queda mínimo.
 | `ValorClaroTravesano` | auto | Claro sobrante arriba; si `>0` se agrega una horizontal de cierre | auto / opcional |
 
 En el editor, estos viven en `RackFrameConfiguration` (`Height`, `Depth`, `CelosiaStartTroquel`,
-`DiagonalStartOffsetTroqueles`, `DiagonalEndOffsetTroqueles`) y persisten en el proyecto.
+`DiagonalStartOffsetTroqueles`, `DiagonalEndOffsetTroqueles`) y persisten en el proyecto. La **placa base**
+tiene además un **peralte editable por placa** (`BasePlatePlacement.PeralteOverride`; `null` = derivado con
+`StandardPeralte = base + slope·peralte_poste`). En modo **Configuración rápida**, "Insertar" genera la
+cabecera en un clic (igual que el resto de tipos).
 
 ## Puntos de conexión (la lógica se ancla en estos)
 
@@ -78,11 +89,13 @@ horizontales en Y = 4 / 48 / 92 (largo 38), cierre en Y = 132 (sobra 40"), 2 dia
 
 Cada inserción trae: `Role` (BasePlate/Post/Horizontal/Diagonal/ClosingHorizontal), `BlockName`, `View`,
 `Insertion` (origen del bloque), `ConnectionAnchor` (dónde cae su punto de referencia), `RotationRadians`,
-`MirroredX`, y `DynamicParameters` (p. ej. `LONGITUD`, `Distancia1`).
+`MirroredX`, y `DynamicParameters` (p. ej. `LONGITUD`, `Distancia1`). El drawer (`LateralHeaderDrawer`)
+recorre el plan, agrega cada pieza como una `BlockReference` (posición + rotación + espejo `X=-1`) y fija sus
+parámetros dinámicos por nombre; las piezas cuyo bloque no exista en el dibujo se **omiten y se reportan**.
 
 ## Paso 2: estado del cableado en AutoCAD
 
-El drawer (`RackCad.Plugin/Headers/LateralHeaderDrawer.cs`) **ya está cableado**:
+El dibujo (`RackCad.Plugin/Headers/`) **ya está cableado**:
 
 1. ✅ **Mapeo config → parámetros**: `LateralHeaderParametersFactory.FromConfiguration` (capa pura,
    `RackCad.Application/Headers/`, con tests) arma `LateralHeaderParameters` desde la `RackFrameConfiguration`:
@@ -91,19 +104,25 @@ El drawer (`RackCad.Plugin/Headers/LateralHeaderDrawer.cs`) **ya está cableado*
    `OffsetDiagonalFinTroqueles = DiagonalEndOffsetTroqueles`, `ClaroPanel` (derivado del primer claro entre
    horizontales) y los ids reales (`PostId`/`BasePlateId`/`TrussProfileId`).
 2. ✅ **Servicio de dibujo**: `RackCad.Plugin/Headers/LateralHeaderDrawService.cs` carga el catálogo
-   (`JsonRackCatalogProvider.FromBaseDirectory().Load()`), bloquea el documento, abre una transacción y llama
-   `LateralHeaderDrawer.BuildAndDraw(...)`. Implementa la interfaz `RackCad.UI.IHeaderDrawService` para que la
+   (`JsonRackCatalogProvider.FromBaseDirectory().Load()`), bloquea el documento, arma **un bloque** con todas
+   las piezas y lo coloca con el mouse (jig). Implementa la interfaz `RackCad.UI.IHeaderDrawService` para que la
    WPF dispare el dibujo **sin** referenciar las DLLs de AutoCAD (regla de oro: la UI no conoce AutoCAD).
-3. ✅ **Comando del Plugin** `RACKCABECERALATERAL`: dibuja la cabecera estándar directo en el model space
-   (smoke test). El **botón "Insertar en AutoCAD"** del configurador dibuja la cabecera **que el usuario
-   configuró** (toma `Height/Depth` clásico e `InicioCelosia/Claro/offsets` avanzado del editor).
-4. ✅ **Reporte de bloques faltantes**: `BuildAndDraw` devuelve un `LateralHeaderDrawOutcome` con las piezas
-   insertadas y los **bloques referidos pero no definidos en el dibujo** (se omiten en vez de lanzar). El
+3. ✅ **Importación de bloques**: `BlockLibraryImporter.EnsureForLayout` clona en el dibujo activo los bloques
+   que falten desde un DWG biblioteca (`blocks-library.dwg`, junto a los catálogos; ruta configurable). Se lee
+   en una base lateral sin abrirlo en AutoCAD; los bloques que tampoco existan en la biblioteca se omiten.
+4. ✅ **Comandos y botón**: `RACKCABECERALATERAL` dibuja la cabecera estándar (smoke test); `QUICKCABECERA`
+   la pide por línea de comandos (poste/fondo/alto); `RACKCABECERA` abre el configurador. El **botón
+   "Insertar en AutoCAD"** dibuja la cabecera **que el usuario configuró**.
+5. ✅ **Round-trip**: la cabecera se **embebe** en la definición del bloque y `RACKEDITAR` la reabre y la
+   **redefine en sitio** (`LateralHeaderDrawService.RedrawInPlace` → `RedefineSystemBlock` + `Regen`), de modo
+   que todas las copias se actualizan sin moverse (ver [Patrón unificado](#patrón-unificado-block-based--round-trip-para-los-4-tipos)).
+6. ✅ **Reporte de bloques faltantes**: `BuildAndDraw`/`RedrawInPlace` devuelven un `LateralHeaderDrawOutcome`
+   con las piezas insertadas y los **bloques referidos pero no definidos** (se omiten en vez de lanzar). El
    comando y el botón informan al usuario qué bloques faltan modelar.
 
 ### Lo que resta (del lado del DWG, no del código)
 
-- **Definir los bloques de AutoCAD** referidos en `blocks.csv` (vista `LATERAL`) dentro del dibujo:
+- **Modelar los bloques de AutoCAD** referidos en `blocks.csv` (vista `LATERAL`) dentro de `blocks-library.dwg`:
   - el bloque del **poste** con el parámetro dinámico **`LONGITUD`**;
   - los bloques de **travesaño** con **`Distancia1`** (largo);
   - cada bloque con sus **puntos de conexión** y su posición en `connection-layout.csv` para la vista `LATERAL`
@@ -111,6 +130,33 @@ El drawer (`RackCad.Plugin/Headers/LateralHeaderDrawer.cs`) **ya está cableado*
 - **Prueba visual en AutoCAD**: ejecutar `RACKCABECERALATERAL` (o el botón), ver que el poste estira con
   `LONGITUD`, que las horizontales caen en la línea de troquel y abarcan poste a poste, y que las diagonales
   quedan con el ángulo correcto.
+
+## Patrón unificado (block-based + round-trip) para los 4 tipos
+
+El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de la cabecera: son un mecanismo
+único reutilizado por los **cuatro tipos de rack**.
+
+- **Cada rack dibujado = UNA definición de bloque**; las copias son referencias a ella. Redefinir la
+  definición actualiza todas las copias a la vez, sin recolocarlas.
+- **Sobre embebido unificado** `RackEmbedDocument { Kind, Id (GUID), Name, Design (JSON) }` guardado en la
+  **definición** del bloque (diccionario de extensión, `Xrecord` troceado ≤255 vía `RackBlockData`). El `Name`
+  es el nombre del bloque ("Rack A"); el `Id` (GUID) evita colisiones. `Kind` ∈
+  `{ selective, dynamic, cabecera, cama }`.
+- **`RACKEDITAR`**: seleccionas un rack → lee el sobre de su definición → **despacha por `Kind`** → reabre el
+  editor correcto precargado (`LoadExisting`) → al confirmar **redefine la definición en sitio**
+  (`RedefineSystemBlock` + `Regen`).
+- **Servicios de dibujo por tipo** (cada uno con `DrawAndPlace` + `RedrawInPlace`) y **store** del diseño:
+
+  | Kind | Comando | Editor (WPF) | Servicio de dibujo | Store del diseño |
+  |---|---|---|---|---|
+  | `cabecera` | `RACKCABECERA` / `RACKCABECERALATERAL` / `QUICKCABECERA` | `RackFrameConfiguratorWindow` | `LateralHeaderDrawService` | `RackProjectStore` |
+  | `dynamic` | `RACKSISTEMADINAMICO` | `RackDynamicSystemWindow` | `DynamicSystemDrawService` | `RackProjectStore` |
+  | `cama` | `QUICKCAMA` | `RackFlowBedWindow` | `FlowBedDrawService` | `FlowBedConfigurationStore` |
+  | `selective` | `RACKSELECTIVO` | `RackSelectiveWindow` | `SelectiveFrontalDrawService` | `SelectivePalletDesignStore` |
+
+  El menú principal es `RACKCAD`. Vista **LATERAL** para cabecera/dinámico/cama; **FRONTAL** para el selectivo.
+- **Escalable**: agregar un tipo nuevo = su `Kind` + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting` en su
+  ventana + embed/`RedrawInPlace` en su servicio de dibujo.
 
 ## Supuestos de geometría a verificar (pendiente del usuario)
 
@@ -122,11 +168,16 @@ El drawer (`RackCad.Plugin/Headers/LateralHeaderDrawer.cs`) **ya está cableado*
 
 - Lógica pura: `src/RackCad.Application/Headers/` (builder, resolver, parámetros y
   `LateralHeaderParametersFactory` config→parámetros).
-- Adapter AutoCAD: `src/RackCad.Plugin/Headers/LateralHeaderDrawer.cs` (+ `LateralHeaderDrawOutcome.cs`).
+- Adapter AutoCAD: `src/RackCad.Plugin/Headers/LateralHeaderDrawer.cs` (+ `LateralHeaderDrawOutcome.cs`,
+  `LateralHeaderBlockResult.cs`, `BlockLibraryImporter.cs`).
 - Servicio de dibujo (puente UI↔AutoCAD): `src/RackCad.Plugin/Headers/LateralHeaderDrawService.cs`,
   que implementa `src/RackCad.UI/IHeaderDrawService.cs`.
-- Comando: `RACKCABECERALATERAL` en `src/RackCad.Plugin/RackFrameCommands.cs`; botón "Insertar en AutoCAD"
-  en `src/RackCad.UI/RackFrameConfiguratorWindow.xaml(.cs)`.
+- Round-trip: sobre `src/RackCad.Application/Persistence/RackEmbedDocument.cs` (`RackEmbedStore`), embebido con
+  `src/RackCad.Plugin/Systems/RackBlockData.cs`; comandos y despacho en `src/RackCad.Plugin/RackFrameCommands.cs`
+  (`RACKEDITAR`, `EditCabecera`/`EditDynamic`/`EditCama`/`EditSelective`).
+- Comandos de cabecera: `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA` en
+  `src/RackCad.Plugin/RackFrameCommands.cs`; botón "Insertar en AutoCAD" en
+  `src/RackCad.UI/RackFrameConfiguratorWindow.xaml(.cs)`.
 - Tests: `tests/RackCad.Tests/LateralHeaderLayoutBuilderTests.cs` (builder/resolver) y
   `tests/RackCad.Tests/LateralHeaderParametersFactoryTests.cs` (mapeo config→parámetros).
 - Parámetros en el editor: `RackFrameConfiguration` + `RackFrameConfiguratorViewModel` + el panel

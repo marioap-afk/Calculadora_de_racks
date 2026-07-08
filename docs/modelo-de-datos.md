@@ -3,17 +3,26 @@
 Esta guía explica **qué tabla apunta a cuál** (las "conexiones" entre los CSV/JSON) y **cómo se cargan**
 en el código. Es el mapa para entender por qué existen `blocks`, `views`, `post-profiles`, etc.
 
+RackCad ya no es "solo un configurador de cabeceras": dibuja en AutoCAD los **cuatro** tipos de rack
+(cabecera/marco, sistema dinámico, cama de rodamiento y selectivo), y todos comparten este mismo catálogo.
+Los CSV se editan en Excel; el provider los carga a un único `RackCatalog` que consumen los editores y
+los servicios de dibujo.
+
 ## 1. Las tablas y su clave
 
 Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que otras tablas referencian).
 
 | Tabla (archivo) | Clave | ¿Referencia a otras? |
 |---|---|---|
-| `post-profiles.csv` | `id` | No (catálogo hoja) |
-| `truss-profiles.csv` | `id` | No (horizontales y diagonales; los refuerzos usan `post-profiles.csv`) |
+| `post-profiles.csv` | `id` | No (catálogo hoja; los refuerzos son postes y salen de aquí) |
+| `truss-profiles.csv` | `id` | No (UNA lista de celosía: horizontales y diagonales) |
+| `beam-profiles.csv` | `id` | → `mensulas` (columna `mensula`); `peraltes` = valores permitidos (no FK) |
+| `mensulas.csv` | `id` | No (catálogo hoja; conector de extremo del larguero) |
+| `flow-bed-profiles.csv` | `id` | No (componentes de cama: riel/rodillo/freno/tope por `role`) |
+| `spacers-profiles.csv` | `id` | No (separadores de cabecera; CSV presente, **aún no cargado** en `RackCatalog`) |
 | `connection-points.csv` | `id` | No (solo define qué es el punto) |
 | `views.csv` | `id` | No |
-| `base-plates.csv` | `id` | No (su posición de puntos va en `connection-layout`) |
+| `base-plates.csv` | `id` | No (posición de puntos → `connection-layout`; `peralteBase`/`peraltePorPeraltePoste` = peralte estándar derivado del poste) |
 | `connection-layout.csv` | `pieceId`+`connectionPointId`+`view` | → cualquier pieza, → `connection-points` **y** → `views` |
 | `blocks.csv` | `pieceId`+`view` | → cualquier pieza **y** → `views` |
 | `header-templates.json` | `id` | → perfiles, placa y puntos |
@@ -55,11 +64,13 @@ Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos 
 
 Resumen de las **claves foráneas** (FK), una por una:
 
-- `blocks.pieceId` → el `id` de cualquier pieza (perfil, placa o punto)
+- `blocks.pieceId` → el `id` de cualquier pieza (perfil, placa, punto, larguero, ménsula, rodillo…)
 - `blocks.view` → `views.id`
+- `beam-profiles.mensula` → `mensulas.id` (conector de extremo del larguero)
 - `connection-layout.pieceId` → el `id` de cualquier pieza (p. ej. una placa)
 - `connection-layout.connectionPointId` → `connection-points.id`
 - `connection-layout.view` → `views.id`
+- `connection-layout.param` → nombre de un parámetro del bloque (X paramétrica: `X = localX + localXPorParam * valor(param)`; vacío = punto fijo)
 - `header-templates.post` → `post-profiles.id`
 - `header-templates.horizontals[].profile` → `truss-profiles.id`
 - `header-templates.diagonalProfile` → `truss-profiles.id`
@@ -74,6 +85,10 @@ Mismo diagrama en formato Mermaid (se ve en GitHub/VS Code):
 erDiagram
     POST_PROFILES        { string id PK }
     TRUSS_PROFILES       { string id PK }
+    BEAM_PROFILES        { string id PK }
+    MENSULAS             { string id PK }
+    FLOW_BED_PROFILES    { string id PK }
+    SPACERS_PROFILES     { string id PK }
     CONNECTION_POINTS    { string id PK }
     CONNECTION_LAYOUT    { string pieceId FK }
     VIEWS                { string id PK }
@@ -82,6 +97,7 @@ erDiagram
     HEADER_TEMPLATES     { string id PK }
     DEFAULTS             { string post FK }
 
+    BEAM_PROFILES    }o--|| MENSULAS          : mensula
     CONNECTION_LAYOUT }o--|| CONNECTION_POINTS : connectionPointId
     CONNECTION_LAYOUT }o--|| VIEWS             : view
     CONNECTION_LAYOUT }o--|| BASE_PLATES       : "pieceId (cualquier pieza)"
@@ -104,14 +120,18 @@ Todo entra por **un solo punto**: el provider lee la carpeta `catalogs/` y devue
 
 ```
 JsonRackCatalogProvider.FromBaseDirectory().Load()
-   │   (lee cada .csv; si no hay, el .json)
+   │   (Excel-first: lee cada .csv; si no hay, el .json hermano)
    ▼
 RackCatalog {
    PostProfiles, TrussProfiles,
-   BasePlates, ConnectionPoints, Views, Blocks,
+   BasePlates, FlowBedProfiles, BeamProfiles, Mensulas,
+   ConnectionPoints, ConnectionLayout, Views, Blocks,
    Defaults
 }
 ```
+
+(`spacers-profiles.csv` existe en la carpeta pero **todavía no** lo carga el provider: no forma parte de
+`RackCatalog`.)
 
 Las **plantillas** se cargan aparte (son JSON anidado):
 
@@ -129,29 +149,34 @@ RackFrameConfigurationFactory.Build(plantilla, post, alto, fondo)
    ─►  RackFrameConfiguration  =  la cabecera concreta con sus miembros resueltos
 ```
 
-La fase de **dibujo** (aún pendiente) cerrará el círculo usando `blocks` + `views`:
+La fase de **dibujo** ya está implementada para los cuatro tipos de rack (cada uno con su servicio de
+dibujo) y cierra el círculo usando `blocks` + `views`:
 
 ```
-[FUTURO]  por cada miembro de la cabecera y cada vista a dibujar:
+por cada miembro del rack y cada vista a dibujar:
    catalog.Blocks.FindBlock(pieceId, view)
         ─► blockName + layer + scale + rotation
         ─► insertar ese bloque en AutoCAD
 ```
+
+Vista por tipo: FRONTAL para el selectivo; LATERAL para cabecera, sistema dinámico y cama.
+Cada rack dibujado es UNA definición de bloque con un sobre `RackEmbedDocument` embebido (Kind + Id + Name +
+Design JSON); `RACKEDITAR` lo relee, despacha por Kind, reabre el editor correcto y redefine la definición en
+sitio para que todas las copias se actualicen a la vez.
 
 ## 4. Ejemplo trazado de punta a punta
 
 Quiero dibujar la cabecera estándar en vista frontal:
 
 1. `Load()` lee todo → `RackCatalog`.
-2. Tomo la plantilla `STD-3P`. Su campo `post` = `POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14`.
-3. `FindProfile("POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14")` en `post-profiles.csv` → la pieza con su `width`, `material`, etc.
-4. Su `basePlate` = `PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16`. ¿Dónde se monta? `MountConnectionPointId("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16")`
+2. Tomo la plantilla `STD-3P`. Su campo `post` = `POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA`.
+3. `FindProfile("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA")` en `post-profiles.csv` → la pieza con su `width`, `material`, etc.
+4. Su `basePlate` = `PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16`. ¿Dónde se monta? `MountConnectionPointId("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16")`
    busca en `connection-layout.csv` la fila de esa placa con rol `BasePlate` → `MONTAJE_POSTE`. Luego
-   `FindConnectionLayout("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16","MONTAJE_POSTE","FRONTAL")` → `localX/localY` para el mate.
-   (`MONTAJE_POSTE` es compartible: cualquier placa lo usa con su propia posición. La placa puede tener más
-   puntos —p. ej. `ANCLA_1`, `ANCLA_2` en `PLANTA`— sin tocar la fila de la placa.)
-5. (Dibujo) Para ese poste en vista `FRONTAL`: `Blocks.FindBlock("POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14","FRONTAL")`
-   → `blockName = POSTE_OMEGA_3X3_FRONT`, capa `RACK-POSTES` → se inserta en AutoCAD.
+   `FindConnectionLayout("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16","MONTAJE_POSTE","FRONTAL")` → `localX/localY` para el mate.
+   (`MONTAJE_POSTE` es compartible: cualquier placa lo usa con su propia posición por vista, sin tocar la fila de la placa.)
+5. (Dibujo) Para ese poste en vista `FRONTAL`: `Blocks.FindBlock("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA","FRONTAL")`
+   → `blockName = POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_FRONTAL` → se inserta en AutoCAD.
 
 ## 5. Reglas para mantener la integridad
 
@@ -163,6 +188,10 @@ Quiero dibujar la cabecera estándar en vista frontal:
 ## 6. Dónde está en el código
 
 - Carga y modelo de catálogos: `src/RackCad.Application/Catalogs/` (`JsonRackCatalogProvider`,
-  `CsvCatalogReader`, `CatalogEntries`, `RackCatalogExtensions`).
-- Carga de plantillas: `src/RackCad.Application/RackFrames/RackFrameTemplateProvider.cs`.
+  `CsvCatalogReader`, `CatalogEntries` —incluye `RackCatalog`—, `RackCatalogExtensions`, `RackDefaults`).
+- Carga de plantillas: `src/RackCad.Application/RackFrames/RackFrameTemplateProvider.cs`
+  (fallback en `RackFrameTemplateCatalog`).
 - Resolución plantilla+defaults+catálogo → cabecera: `RackFrameConfigurationFactory.cs`.
+- Comandos de AutoCAD (menú y dibujo por tipo): `src/RackCad.Plugin/RackFrameCommands.cs`
+  (`RACKCAD`, `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA`, `RACKSISTEMADINAMICO`, `QUICKCAMA`,
+  `RACKSELECTIVO`, `RACKEDITAR`).

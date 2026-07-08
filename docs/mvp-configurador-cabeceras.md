@@ -1,5 +1,7 @@
 # Especificación actualizada del MVP: configurador manual asistido de cabeceras de rack
 
+> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+
 Actualización de criterio: el MVP debe ser principalmente un configurador manual asistido. No debe intentar resolver automáticamente toda la ingeniería de la cabecera desde el inicio.
 
 Actualización de flujo: la interfaz no debe iniciar desde una cabecera vacía. El sistema debe cargar siempre una cabecera estándar predeterminada basada en las reglas actuales de ingeniería y permitir que el usuario modifique únicamente las excepciones.

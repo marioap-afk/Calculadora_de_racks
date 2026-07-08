@@ -1,5 +1,7 @@
 # Documento técnico: Plataforma AutoCAD .NET para diseño de racks industriales
 
+> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+
 ## 1. Propósito del sistema
 
 El objetivo es construir una plataforma profesional para automatizar tareas de ingeniería y dibujo de sistemas de racks industriales dentro de AutoCAD completo, usando AutoCAD .NET API y C#.

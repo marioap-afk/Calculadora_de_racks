@@ -1,6 +1,26 @@
 # Indice de contexto RackCad
 
-Este indice resume como entender rapidamente el proyecto antes de continuar el desarrollo.
+Este indice resume como entender rapidamente el proyecto y cual es el estado del repo antes de continuar el desarrollo.
+
+RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (~200 tests verdes).
+
+## Los cuatro tipos de rack
+
+El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde se elige el tipo. Cada tipo tiene ademas su comando directo. Comandos en `src/RackCad.Plugin/RackFrameCommands.cs`.
+
+1. **Cabecera (marco)** — `RackFrameConfiguratorWindow`. Un marco = 2 postes + placas base + celosia. Horizontales = fuente de verdad; paneles derivados. El **peralte de la placa base es editable por placa** (`BasePlatePlacement.PeralteOverride`; `null` = derivado, con `StandardPeralte` = base + slope * peralte_poste). Comandos: `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA`.
+2. **Sistema dinamico (pallet flow)** — `RackDynamicSystemWindow`. Cabeceras a lo largo del tramo + separadores por nivel. Comando `RACKSISTEMADINAMICO`.
+3. **Cama de rodamiento (flow bed)** — `RackFlowBedWindow` (riel + rodillos + frenos + tope; dinamica o pushback). Comando `QUICKCAMA`.
+4. **Selectivo (editor avanzado pallet-driven)** — `RackSelectiveWindow`. Matriz **frentes x niveles** (el termino es "frente", no "bahia"). Cada celda = tarima (frente/alto) + tarimas por nivel + larguero + peralte de larguero (combo desde la lista `peraltes` del catalogo). Reglas de geometria en `SelectiveGeometryResolver` (largueros por troquel, claro/separacion por tarima+holgura, altura por frente desde el escalon, datum de piso en Y=0, larguero a piso por frente); overrides manuales opcionales por celda. Cada poste (N frentes -> N+1 postes) puede referenciar una **cabecera por poste** (`RackFrameConfiguration` embebida), de donde sale su placa/peralte. BOM (postes, placas, largueros, mensulas) con `SelectiveBomBuilder` + `RackBomWindow` (grid + export CSV). Comando `RACKSELECTIVO`.
+
+## Identidad y round-trip (los cuatro tipos)
+
+- Cada rack dibujado = **una definicion de bloque**; las copias son referencias a ella.
+- En la **definicion** del bloque se embebe (diccionario de extension, Xrecord troceado <=255, `RackBlockData`) un sobre unificado `RackEmbedDocument { Kind, Id (GUID), Name, Design (JSON del diseno) }`. Kinds: `selective`, `dynamic`, `cabecera`, `cama`.
+- Comando `RACKEDITAR`: seleccionas un rack -> lee el sobre -> **despacha por Kind** -> reabre el editor correcto precargado (`LoadExisting`) -> al confirmar **redefine la definicion en sitio** (`RedefineSystemBlock` + Regen) => todas las copias se actualizan a la vez, ninguna se mueve ni se recoloca.
+- El nombre "Rack A" (campo en cada editor) = nombre del bloque; el GUID va en el sobre (evita colisiones).
+- Stores del diseno: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera), `FlowBedConfigurationStore` (cama). Servicios de dibujo/redraw: `SelectiveFrontalDrawService`, `DynamicSystemDrawService`, `FlowBedDrawService`, `LateralHeaderDrawService`.
+- Escalable: agregar un tipo nuevo = su Kind + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting` en su ventana + embed/`RedrawInPlace` en su draw service.
 
 ## Lectura recomendada
 
@@ -8,7 +28,7 @@ Este indice resume como entender rapidamente el proyecto antes de continuar el d
    - Vista rapida del proyecto, build y prueba con `NETLOAD`.
 
 2. `docs/01-estado-actual-mvp.md`
-   - Que funciona hoy, que no funciona todavia y como se usa el configurador.
+   - Que funciona hoy, que no funciona todavia y como se usan los editores.
 
 3. `docs/02-modelo-tecnico-vigente.md`
    - Modelo actual: horizontales como fuente de verdad, paneles derivados, miembros fisicos y excepciones.
@@ -19,27 +39,33 @@ Este indice resume como entender rapidamente el proyecto antes de continuar el d
 5. `docs/04-roadmap-operativo.md`
    - Siguientes pasos recomendados sin mezclar dibujo, BOM, catalogos y persistencia antes de tiempo.
 
-## Catalogos, datos y generacion de cabecera (estado actual)
+## Catalogos y datos
 
-Estos son los documentos vigentes del modelo de datos y de la nueva logica de cabecera:
+Los catalogos viven en `assets/catalogs/*.csv` (mas `defaults.json` y `header-templates.json`) y los carga `JsonRackCatalogProvider` a `RackCatalog`:
 
-6. `docs/catalogos-y-plantillas.md`
-   - Como editar los catalogos (CSV/Excel) y las plantillas (JSON). Refleja la unificacion:
-     **horizontales y diagonales = una sola lista `truss-profiles.csv` (celosia/truss)** y
-     **los refuerzos son postes** (`post-profiles.csv`); ya no existen `diagonal-profiles.csv` ni
-     `reinforcement-profiles.csv`.
+- `post-profiles.csv` — postes (los refuerzos son postes).
+- `truss-profiles.csv` — **una sola lista de celosia** = horizontales + diagonales.
+- `beam-profiles.csv` — largueros; la columna `peraltes` = valores permitidos (FK a mensula).
+- `mensulas.csv` — mensulas.
+- `base-plates.csv` — `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`.
+- `connection-points.csv` + `connection-layout.csv` — puntos de conexion parametricos (X = localX + slope * param).
+- `blocks.csv` (bloque por pieza y vista), `views.csv`, `flow-bed-profiles.csv`, `spacers-profiles.csv`.
 
-7. `docs/modelo-de-datos.md`
-   - Como se conectan las tablas (FK) y como se cargan (`RackCatalog`), con diagrama ASCII + Mermaid.
+Ya no existen `diagonal-profiles.csv` ni `reinforcement-profiles.csv`. Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 
-8. `docs/generacion-cabecera-lateral.md`
-   - **Logica nueva block-based** de cabecera lateral anclada a puntos de conexion (poste como base).
-     El **"paso 2" (dibujo en AutoCAD) ya esta cableado**: comando `RACKCABECERALATERAL`, boton
-     `Insertar en AutoCAD` y servicio de dibujo. Solo resta definir los bloques en el DWG y la prueba visual.
+Documentos de referencia para el modelo de datos:
+
+- `docs/catalogos-y-plantillas.md` — como editar los catalogos (CSV/Excel) y plantillas (JSON).
+- `docs/modelo-de-datos.md` — como se conectan las tablas (FK) y como se cargan (`RackCatalog`), con diagrama ASCII + Mermaid.
+- `docs/generacion-cabecera-lateral.md` — logica block-based de la cabecera lateral anclada a puntos de conexion.
+
+## Vistas y pendientes
+
+Vista **frontal** para el selectivo; **lateral** para cabecera/dinamico/cama. Pendiente principal: **Fase 5 = vista lateral del selectivo** (cada poste desplegado como su cabecera completa, enlazado por el mismo GUID).
 
 ## Documentos historicos existentes
 
-Estos documentos son utiles para decisiones de arquitectura, pero son mas extensos:
+Utiles para decisiones de arquitectura, pero mas extensos:
 
 - `arquitectura-autocad-racks.md`
 - `mvp-configurador-cabeceras.md`
@@ -53,16 +79,15 @@ Estos documentos son utiles para decisiones de arquitectura, pero son mas extens
 - AutoCAD .NET API.
 - C# y Visual Studio.
 - `net8.0-windows` para UI/plugin.
-- WPF para el configurador modal.
-- El MVP primero valida configuracion y vista previa, no dibujo CAD.
-- El usuario parte de una cabecera estandar y modifica excepciones.
+- WPF para las ventanas editoras (modales).
+- El plugin ya dibuja en AutoCAD los cuatro tipos de rack, con round-trip de edicion (`RACKEDITAR`) que redefine el bloque en sitio.
+- El usuario parte de una configuracion estandar y modifica excepciones.
 - Las horizontales son entidades fisicas y fuente de verdad.
 - Los paneles son espacios derivados entre horizontales consecutivas.
-- Los offsets y puntos de conexion deben terminar en catalogos/configuracion, no hardcodeados en dibujo.
+- Los offsets y puntos de conexion viven en catalogos/configuracion, no hardcodeados en el dibujo.
 
 ## Estado del repositorio
 
-El codigo actual es un prototipo funcional de configurador. Todavia no debe tratarse como motor CAD final.
+Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; ~200 tests verdes en `release/claude-review`. El motor sigue madurando (p. ej. la vista lateral del selectivo esta pendiente).
 
 La carpeta de salida `bin/`, `obj/`, caches locales `.dotnet_home`, `.nuget_packages`, `.appdata` y `.localappdata` no son parte logica del codigo fuente y estan ignoradas por `.gitignore`.
-

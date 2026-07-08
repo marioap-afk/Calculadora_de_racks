@@ -1,5 +1,7 @@
 # Plan de implementación del MVP en C# para AutoCAD .NET
 
+> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+
 ## 1. Objetivo del MVP
 
 Construir el primer prototipo funcional de `RACKCABECERA` como configurador manual asistido basado en:

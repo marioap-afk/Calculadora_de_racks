@@ -2,10 +2,12 @@
 
 Esta guia explica como modificar los catalogos y las plantillas **sin programar**. Hay dos formatos por proposito:
 
-- **CSV (se edita en Excel)** para los datos maestros tabulares: perfiles, placas y puntos de conexion. Una fila = una pieza.
+- **CSV (se edita en Excel)** para los datos maestros tabulares: perfiles (postes, celosia, largueros), placas, ménsulas, componentes de cama de rodamiento y puntos de conexion. Una fila = una pieza.
 - **JSON** para lo anidado/estructurado: plantillas de cabecera y la receta `defaults`.
 
-> Por que esta separacion: los catalogos son tablas que crecen mucho (mejor en Excel/CSV, y luego SQLite); las plantillas/defaults son estructuras anidadas (mejor en JSON). La carga esta detras de una interfaz (`IRackCatalogProvider`), asi que migrar a SQLite despues no cambia el resto de la app.
+> Por que esta separacion: los catalogos son tablas que crecen mucho (mejor en Excel/CSV, y luego SQLite); las plantillas/defaults son estructuras anidadas (mejor en JSON). La carga esta detras de una interfaz (`IRackCatalogProvider` → `JsonRackCatalogProvider` → `RackCatalog`), asi que migrar a SQLite despues no cambia el resto de la app.
+
+> **Contexto:** estos catalogos alimentan a los CUATRO tipos de rack que el plugin diseña y dibuja en AutoCAD — CABECERA (marco), SISTEMA DINÁMICO (pallet flow), CAMA DE RODAMIENTO (flow bed) y SELECTIVO (editor avanzado). Cada tipo tiene su ventana editora y su round-trip de edicion (comando `RACKEDITAR`). Los mismos ids de pieza se comparten entre todos; por eso el catalogo es una sola fuente de verdad.
 
 ## Donde estan los archivos
 
@@ -13,15 +15,19 @@ Fuente versionada (lo que se edita en el repositorio):
 
 ```
 assets/catalogs/
-  post-profiles.csv             Perfiles de poste            (Excel/CSV)
+  post-profiles.csv             Perfiles de poste (los refuerzos son postes) (Excel/CSV)
   truss-profiles.csv            Perfiles de celosia (horizontales y diagonales) (Excel/CSV)
-  base-plates.csv               Placas base                  (Excel/CSV)
-  connection-points.csv         Puntos de conexion (definicion)(Excel/CSV)
-  connection-layout.csv         Punto por pieza y vista       (Excel/CSV)
-  views.csv                     Vistas posibles              (Excel/CSV)
-  blocks.csv                    Bloque por pieza y vista      (Excel/CSV)
-  header-templates.json         Plantillas de cabecera       (JSON, auto-descriptivas)
-  defaults.json                 Receta estandar global       (JSON)
+  beam-profiles.csv             Perfiles de larguero (con lista de peraltes)  (Excel/CSV)
+  mensulas.csv                  Ménsulas (conector de extremo del larguero)   (Excel/CSV)
+  base-plates.csv               Placas base (con peralte estandar)            (Excel/CSV)
+  flow-bed-profiles.csv         Componentes de cama de rodamiento (riel/rodillo/freno/tope) (Excel/CSV)
+  spacers-profiles.csv          Perfiles de separador (sistema dinamico)      (Excel/CSV)
+  connection-points.csv         Puntos de conexion (definicion)               (Excel/CSV)
+  connection-layout.csv         Punto por pieza y vista (posicion 2D)         (Excel/CSV)
+  views.csv                     Vistas posibles                              (Excel/CSV)
+  blocks.csv                    Bloque por pieza y vista                     (Excel/CSV)
+  header-templates.json         Plantillas de cabecera                       (JSON, auto-descriptivas)
+  defaults.json                 Receta estandar global                       (JSON)
 ```
 
 Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del plugin. La aplicacion los lee al iniciarse. Si para un catalogo existen `.csv` y `.json`, **gana el `.csv`**.
@@ -46,7 +52,7 @@ Ejemplo (`post-profiles.csv`):
 
 ```
 id,displayName,width,thickness,material,Ix,Iy
-POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14,Poste Omega 3x3 cal.14,3,0.105,Acero A36,2.5,2.5
+POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA,Poste Omega 3x3 cal.14,3,0.105,Acero A36,2.5,2.5
 ```
 
 `Ix` e `Iy` no son campos fijos -> entran a `properties`.
@@ -84,8 +90,8 @@ Una plantilla es **auto-descriptiva**: define cuantas horizontales hay, a que al
     "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
     "braceStartConnectionPoint": "TROQUEL_CELOSIA",
     "braceEndConnectionPoint": "CELOSIA",
-    "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16",
-    "post": "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14"
+    "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16",
+    "post": "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA"
   }
 ]
 ```
@@ -102,8 +108,8 @@ Una plantilla es **auto-descriptiva**: define cuantas horizontales hay, a que al
 | `defaultArrangement` | texto | no | Celosia por defecto de cada panel. Por defecto `SingleDiagonal`. |
 | `diagonalProfile` | texto | no | Perfil de diagonal (id de `truss-profiles.csv`). Vacio = `defaults.json`. |
 | `braceStartConnectionPoint` / `braceEndConnectionPoint` | texto | no | Puntos de conexion de la celosia. Vacio = `defaults.json`. |
-| `basePlate` | texto | no | Placa base (id de `base-plates.json`). Vacio = `defaults.json`. |
-| `post` | texto | no | Poste por defecto (id de `post-profiles.json`). Vacio = `defaults.json`. |
+| `basePlate` | texto | no | Placa base (id de `base-plates.csv`). Vacio = `defaults.json`. |
+| `post` | texto | no | Poste por defecto (id de `post-profiles.csv`). Vacio = `defaults.json`. |
 
 > Los campos opcionales vacios caen a los valores de `defaults.json` (ver mas abajo). Asi no repites el poste/placa/diagonal en cada plantilla si son los mismos.
 
@@ -164,8 +170,8 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de
 
 ```json
 {
-  "post": "POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14",
-  "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16_DE_4_X_4_13_16",
+  "post": "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA",
+  "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16",
   "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
   "horizontalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
   "braceStartConnectionPoint": "TROQUEL_CELOSIA",
@@ -193,7 +199,7 @@ Todas las piezas (perfiles, placas, puntos de conexion) comparten estos **campos
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `id` | texto | **Obligatorio.** Identificador usado por cabeceras/plantillas (ej. `POSTE_OMEGA_3_X_3_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_DE_CINTA_NEGRA_CALIBRE_14`). |
+| `id` | texto | **Obligatorio.** Identificador usado por cabeceras/plantillas y demas tipos de rack (ej. `POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA`). |
 | `displayName` | texto | Nombre para mostrar en la UI (si falta, usa `description`, luego `id`). |
 | `description` | texto | Descripcion tecnica. |
 | `material` | texto | Material (ej. `Acero A36`). |
@@ -223,7 +229,35 @@ Campos comunes (arriba) **mas**:
 | `weightPerMeter` | numero | Peso lineal (kg/m) para BOM/peso. |
 | `units` | texto | Unidad de las medidas (ej. `in`). |
 
-### Placas base (`base-plates.json`)
+### Largueros (`beam-profiles.csv`)
+
+Un larguero (viga de carga) = **un bloque dinamico**: tanto su LONGITUD como su PERALTE son parametros del bloque (grips), no filas por medida. Cada fila declara un tipo de larguero, los peraltes que admite y su ménsula de extremo. Es el catalogo que consume el editor SELECTIVO (combo de peralte por celda).
+
+Campos comunes **mas**:
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| `family` | texto | Familia del larguero (ej. `Larguero`). |
+| `peraltes` | texto | Valores permitidos del parametro PERALTE, separados por `;` (ej. `3;3.5;4;4.5;5;5.5;6`). El editor selectivo los ofrece en un combo por celda; el numero elegido no crea filas nuevas. |
+| `width`, `thickness` | numero | Medidas en pulgadas. |
+| `units`, `gauge` | texto | Unidad de medidas y calibre. |
+| `mensula` | texto | **FK** a la ménsula de extremo (`id` de `mensulas.csv`). Es el conector fijo de este larguero; se cuentan dos por larguero en el BOM. |
+| `weightPerMeter` | numero | Peso lineal base (el peso por peralte se resolvera en el BOM). |
+
+### Ménsulas (`mensulas.csv`)
+
+Conector de extremo del larguero: pieza fija que el BOM cuenta (dos por larguero). Cada larguero apunta a una via `beam-profiles.mensula`.
+
+Campos comunes **mas**:
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| `type` | texto | Tipo de ménsula (ej. `3 Remaches`). |
+| `height` | numero | Alto en pulgadas. |
+| `units`, `gauge` | texto | Unidad de medidas y calibre. |
+| `weightEach` | numero | Peso por pieza (kg). |
+
+### Placas base (`base-plates.csv`)
 
 Campos comunes **mas**:
 
@@ -232,8 +266,33 @@ Campos comunes **mas**:
 | `width`, `length`, `thickness` | numero | Medidas en pulgadas. |
 | `weightEach` | numero | Peso por pieza (kg). |
 | `units` | texto | Unidad de las medidas. |
+| `peralteBase` | numero | Termino base del peralte de la placa: `peralte = peralteBase + peraltePorPeraltePoste * peralte_poste`. |
+| `peraltePorPeraltePoste` | numero | Pendiente: peralte de placa ganado por cada unidad de peralte del poste. `1` = "poste + base"; `0` = un peralte fijo. |
+
+> **Peralte estandar de la placa.** El peralte no es una constante: sale de `StandardPeralte(peralte_poste) = peralteBase + peraltePorPeraltePoste * peralte_poste`, es decir depende del poste que la placa recibe. En la CABECERA ese peralte estandar es **editable por placa** en el configurador (`BasePlatePlacement.PeralteOverride`; vacio = derivado). El SELECTIVO toma la placa/peralte desde la cabecera embebida en cada poste.
 
 > La placa **ya no** lleva una columna `connectionPointId`. Una placa puede tener **varios** puntos (mate al poste + barrenos de piso) y su posicion depende de la vista, asi que esa relacion vive en `connection-layout.csv`.
+
+### Componentes de cama de rodamiento (`flow-bed-profiles.csv`)
+
+Piezas fijas de una cama de rodillos (flow bed / pushback): riel, rodillo, freno y tope. La **regla de armado** (cuantos rodillos por capacidad, frenos cada N, paso) vive en el codigo, no aqui; cada fila solo describe una pieza. Las consume la ventana de CAMA DE RODAMIENTO.
+
+Campos comunes **mas**:
+
+| Campo | Tipo | Descripcion |
+|-------|------|-------------|
+| `role` | texto | Cual pieza es: `RIEL`, `RODILLO`, `FRENO` o `TOPE`. |
+| `diameter` | numero | Diametro (in), para rodillos/frenos. |
+| `width`, `height`, `length` | numero | Medidas en pulgadas (la longitud del riel es parametrica = fondo del carril, por eso suele ir vacia). |
+| `units`, `gauge` | texto | Unidad de medidas y calibre. |
+| `capacityKg` | numero | Capacidad de carga (kg) del rodillo; base del futuro conteo de rodillos por capacidad. |
+| `weightEach` | numero | Peso por pieza (kg). |
+
+### Separadores (`spacers-profiles.csv`)
+
+Perfil del separador que une cabeceras a lo largo del tramo en el SISTEMA DINÁMICO. Es un CSV **fuente** que se versiona y se copia junto al plugin; hoy el separador se referencia por su `id` (constante `SeparatorCatalogId`) y su dibujo sale de `blocks.csv` + `connection-layout.csv`, asi que este catalogo queda como referencia/reserva (aun no se carga en una lista tipada del `RackCatalog`).
+
+Campos comunes **mas**: `family`, `width`, `depth`, `thickness`, `units`, `gauge`, `weightPerMeter`.
 
 ### Puntos de conexion (`connection-points.csv`) — definicion
 
@@ -245,7 +304,7 @@ Solo **que es** el punto (no donde esta). Campos comunes **mas**:
 
 ### Punto por pieza y vista (`connection-layout.csv`) — ubicacion
 
-Tabla **normalizada**, gemela de `blocks.csv`: relaciona **pieza + punto + vista** con su posicion 2D. Una pieza puede tener **muchos** puntos, y la posicion **depende de la vista** (mismo punto 3D se proyecta distinto en frontal vs planta). El solver de posiciones lee `localX/localY` de aqui (vista `FRONTAL`).
+Tabla **normalizada**, gemela de `blocks.csv`: relaciona **pieza + punto + vista** con su posicion 2D. Una pieza puede tener **muchos** puntos, y la posicion **depende de la vista** (mismo punto 3D se proyecta distinto en frontal vs planta). El solver de posiciones lee `localX/localY` de aqui.
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
@@ -253,7 +312,11 @@ Tabla **normalizada**, gemela de `blocks.csv`: relaciona **pieza + punto + vista
 | `connectionPointId` | texto | Que punto (FK a `connection-points.csv`). |
 | `view` | texto | Vista a la que aplica esta posicion (FK a `views.csv`). |
 | `localX` | numero | Offset X (in) del punto dentro de la pieza, en esa vista. |
+| `localXPorParam` | numero | Pendiente: cuanto se mueve X por cada unidad del parametro de bloque nombrado en `param`. `X = localX + localXPorParam * valor(param)`. `0` (o vacio) = punto fijo. |
+| `param` | texto | Nombre del parametro de bloque que mueve X (ej. `PERALTE`); vacio cuando el punto es fijo. |
 | `localY` | numero | Offset Y (in) del punto dentro de la pieza, en esa vista. |
+
+> `localXPorParam`/`param` capturan como **dato** un punto que se desliza cuando cambia un parametro del bloque (p. ej. el troquel del larguero que se mueve con el PERALTE del poste), en lugar de una fila por cada valor. La Y queda fija.
 
 > **Regla de identidad del `connectionPointId`:** el `id` es el nombre logico del punto; lo que define "misma funcion" es el `role`. Puedes **compartir el mismo `id` entre piezas distintas** (p. ej. `MONTAJE_POSTE` en todas las placas) — la `pieza` desambigua la posicion. Lo unico que NO puedes: repetir el mismo `id` dos veces en la **misma pieza y vista** (la clave `pieza+punto+vista` chocaria). Para varios puntos del mismo tipo en una pieza (p. ej. 4 barrenos), usa ids distintos que comparten el `role`: `ANCLA_1`, `ANCLA_2`, ...
 
@@ -263,7 +326,7 @@ Catalogo simple de las vistas en que se puede dibujar una pieza. Campos comunes;
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL_IZQ`, `PLANTA`). Lo referencian `blocks.csv` y `connection-layout.csv`. |
+| `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL`, `LATERAL_IZQ`, `LATERAL_DER`, `PLANTA`). Lo referencian `blocks.csv` y `connection-layout.csv`. El SELECTIVO se dibuja en `FRONTAL`; cabecera/dinamico/cama en `LATERAL`. |
 | `displayName` | texto | Nombre para mostrar (ej. `Frontal`). |
 
 ### Bloques por vista (`blocks.csv`)
@@ -276,6 +339,7 @@ Tabla **normalizada**: una pieza puede tener **varios bloques**, uno por vista. 
 | `view` | texto | Vista que dibuja (debe existir en `views.csv`). |
 | `blockName` | texto | Nombre del bloque de AutoCAD para esa pieza en esa vista. |
 | `layer` | texto | Capa de insercion. |
+| `color` | numero | Color de indice ACI (opcional). |
 | `scale` | numero | Escala de insercion (por defecto 1). |
 | `rotation` | numero | Rotacion en grados (por defecto 0). |
 
@@ -285,7 +349,23 @@ Tabla **normalizada**: una pieza puede tener **varios bloques**, uno por vista. 
 
 ## Donde mirar en el codigo
 
-- Modelo y carga de catalogos de piezas: `src/RackCad.Application/Catalogs/`.
+Catalogos y plantillas:
+
+- Modelo y carga de catalogos de piezas: `src/RackCad.Application/Catalogs/` (`CatalogEntries.cs` = modelo, `JsonRackCatalogProvider.cs` = carga CSV/JSON, `CsvCatalogReader.cs` = lector CSV).
 - Modelo y carga de plantillas: `src/RackCad.Application/RackFrames/RackFrameTemplate.cs` y `RackFrameTemplateProvider.cs`.
 - Plantillas internas de respaldo: `RackFrameTemplateCatalog.cs`.
 - Construccion de la cabecera a partir de una plantilla: `RackFrameConfigurationFactory.cs`.
+
+Los CUATRO tipos de rack (ventana editora + comando):
+
+| Tipo | Ventana (UI) | Comando(s) |
+|------|--------------|------------|
+| Cabecera (marco) | `RackFrameConfiguratorWindow` | `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA` |
+| Sistema dinamico (pallet flow) | `RackDynamicSystemWindow` | `RACKSISTEMADINAMICO` |
+| Cama de rodamiento (flow bed) | `RackFlowBedWindow` | `QUICKCAMA` |
+| Selectivo (editor avanzado) | `RackSelectiveWindow` (+ `RackBomWindow`) | `RACKSELECTIVO` |
+
+- Menu principal: comando `RACKCAD`. Round-trip de edicion (los cuatro tipos): comando `RACKEDITAR`.
+- Geometria del selectivo: `src/RackCad.Application/Systems/SelectiveGeometryResolver.cs`; BOM: `SelectiveBomBuilder.cs`.
+- Comandos del plugin: `src/RackCad.Plugin/RackFrameCommands.cs`.
+- Identidad + round-trip: el sobre `RackEmbedDocument` (`Kind` = `selective`/`dynamic`/`cabecera`/`cama`, `Id` GUID, `Name`, `Design`) se embebe en la definicion del bloque; ver `src/RackCad.Application/Persistence/RackEmbedDocument.cs`. Stores del diseño: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` → `.rackcad.json` (dinamico/cabecera), `FlowBedConfigurationStore` (cama).
