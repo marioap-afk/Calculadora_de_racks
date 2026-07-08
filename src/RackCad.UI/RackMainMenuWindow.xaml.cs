@@ -26,6 +26,10 @@ namespace RackCad.UI
 
         public DynamicRackSystem DynamicSystemToInsert { get; private set; }
 
+        /// <summary>Identity of the dynamic system to insert (for the drawing round-trip embed).</summary>
+        public string DynamicRackId { get; private set; }
+        public string DynamicRackName { get; private set; }
+
         public FlowBedConfiguration FlowBedToInsert { get; private set; }
 
         public SelectiveRackSystem SelectiveSystemToInsert { get; private set; }
@@ -136,6 +140,8 @@ namespace RackCad.UI
                 {
                     InsertRequested = true;
                     DynamicSystemToInsert = window.SystemToInsert;
+                    DynamicRackId = window.RackId;
+                    DynamicRackName = window.RackName;
                     Close();
                 }
             }

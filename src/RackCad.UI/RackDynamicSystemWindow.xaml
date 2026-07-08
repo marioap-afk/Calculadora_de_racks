@@ -32,7 +32,12 @@
         <Border Grid.Row="0" Grid.Column="0" Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Padding="14">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <TextBlock Text="Tarima" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
+                    <TextBlock Text="Rack" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
+                    <TextBlock Text="Nombre (Rack A)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="NameBox" Style="{StaticResource FieldBox}"
+                             ToolTip="Nombre del rack como lo ve el cliente. Se guarda con el bloque para reabrirlo y editarlo." />
+
+                    <TextBlock Text="Tarima" Style="{StaticResource SectionTitle}" />
 
                     <Grid>
                         <Grid.ColumnDefinitions>

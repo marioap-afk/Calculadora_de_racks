@@ -67,6 +67,13 @@ namespace RackCad.UI
 
         public DynamicRackSystem SystemToInsert { get; private set; }
 
+        /// <summary>Stable id + client name of the system for the drawing round-trip (embed / reopen / edit).</summary>
+        public string RackId { get; private set; }
+        public string RackName { get; private set; }
+
+        private string currentId;
+        private string currentName;
+
         public RackDynamicSystemWindow()
             : this(false)
         {
@@ -967,44 +974,69 @@ namespace RackCad.UI
                     return;
                 }
 
-                system = project.DynamicSystem;
-                selectedModule = null;
-                suppressRecompose = true;
-                try
-                {
-                    FrontBox.Text = Num(system.Pallet.Front);
-                    DepthBox.Text = Num(system.Pallet.Depth);
-                    PalletHeightBox.Text = Num(system.Pallet.Height);
-                    WeightBox.Text = Num(system.Pallet.Weight);
-                    PalletsDeepBox.Text = system.PalletsDeep.ToString(CultureInfo.InvariantCulture);
-
-                    SeparatorCountBox.Text = system.SeparatorCountOverride?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
-                    SeparatorSpacingBox.Text = system.SeparatorSpacingOverride.HasValue ? Num(system.SeparatorSpacingOverride.Value) : string.Empty;
-                    DerivedReinforceBox.IsChecked = system.DerivedPostReinforced;
-                    DerivedReinforcementBox.Text = system.DerivedPostReinforcementHeight.HasValue ? Num(system.DerivedPostReinforcementHeight.Value) : string.Empty;
-
-                    var loadedPostId = system.Modules
-                        .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration?.LeftPost != null)?
-                        .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
-                    if (!string.IsNullOrWhiteSpace(loadedPostId))
-                    {
-                        PostBox.SelectedValue = loadedPostId;
-                    }
-                }
-                finally
-                {
-                    suppressRecompose = false;
-                }
-                BindModules();
-                UpdateSelectedPanel();
-                UpdateSummary();
-                DrawSideView();
+                RestoreFrom(project.DynamicSystem);
                 SetStatus("Sistema abierto: " + System.IO.Path.GetFileName(dialog.FileName), false);
             }
             catch (Exception ex)
             {
                 SetStatus("No se pudo abrir: " + ex.Message, true);
             }
+        }
+
+        /// <summary>Restore the whole editor state from a loaded dynamic system (shared by open-file and round-trip edit).</summary>
+        private void RestoreFrom(DynamicRackSystem loaded)
+        {
+            system = loaded;
+            selectedModule = null;
+            suppressRecompose = true;
+            try
+            {
+                FrontBox.Text = Num(system.Pallet.Front);
+                DepthBox.Text = Num(system.Pallet.Depth);
+                PalletHeightBox.Text = Num(system.Pallet.Height);
+                WeightBox.Text = Num(system.Pallet.Weight);
+                PalletsDeepBox.Text = system.PalletsDeep.ToString(CultureInfo.InvariantCulture);
+
+                SeparatorCountBox.Text = system.SeparatorCountOverride?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
+                SeparatorSpacingBox.Text = system.SeparatorSpacingOverride.HasValue ? Num(system.SeparatorSpacingOverride.Value) : string.Empty;
+                DerivedReinforceBox.IsChecked = system.DerivedPostReinforced;
+                DerivedReinforcementBox.Text = system.DerivedPostReinforcementHeight.HasValue ? Num(system.DerivedPostReinforcementHeight.Value) : string.Empty;
+
+                var loadedPostId = system.Modules
+                    .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration?.LeftPost != null)?
+                    .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
+                if (!string.IsNullOrWhiteSpace(loadedPostId))
+                {
+                    PostBox.SelectedValue = loadedPostId;
+                }
+            }
+            finally
+            {
+                suppressRecompose = false;
+            }
+
+            BindModules();
+            UpdateSelectedPanel();
+            UpdateSummary();
+            DrawSideView();
+        }
+
+        /// <summary>Open the editor pre-loaded with an existing drawn system (from its embedded payload), keeping Id/Name.</summary>
+        public void LoadExisting(DynamicRackSystem loaded, string id, string name)
+        {
+            if (loaded == null)
+            {
+                return;
+            }
+
+            currentId = id;
+            currentName = name;
+            if (NameBox != null)
+            {
+                NameBox.Text = name ?? string.Empty;
+            }
+
+            RestoreFrom(loaded);
         }
 
         private void InsertInAutoCad_Click(object sender, RoutedEventArgs e)
@@ -1023,8 +1055,13 @@ namespace RackCad.UI
 
             // The placement jig needs the editor free, so only flag the request and close; the host command
             // draws the system once every modal window is gone.
+            currentName = NameBox?.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
+
             InsertRequested = true;
             SystemToInsert = system;
+            RackId = currentId;
+            RackName = currentName;
             Close();
         }
 

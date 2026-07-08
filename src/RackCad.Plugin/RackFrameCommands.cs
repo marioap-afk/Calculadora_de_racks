@@ -36,7 +36,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.DynamicSystemToInsert != null)
                     {
-                        DrawAndPlaceSystem(menu.DynamicSystemToInsert);
+                        DrawAndPlaceSystem(menu.DynamicSystemToInsert, BuildDynamicPayload(menu.DynamicSystemToInsert, menu.DynamicRackId, menu.DynamicRackName), menu.DynamicRackName);
                     }
                     else if (menu.FlowBedToInsert != null)
                     {
@@ -44,7 +44,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {
-                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert, BuildPayload(menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName), menu.SelectiveRackName);
+                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert, BuildSelectivePayload(menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName), menu.SelectiveRackName);
                     }
                 }
             }
@@ -225,7 +225,8 @@ namespace RackCad.Plugin
                     headerPostCatalogId: CatalogIds.StandardPost,
                     headerHeight: 132.0);
 
-                var result = new DynamicSystemDrawService().DrawAndPlace(document, system);
+                var payload = BuildDynamicPayload(system, System.Guid.NewGuid().ToString(), null);
+                var result = new DynamicSystemDrawService().DrawAndPlace(document, system, payload);
                 document.Editor.WriteMessage("\n" + Describe(result));
             }
             catch (System.Exception ex)
@@ -337,7 +338,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Builds the dynamic-system block and runs the placement jig, then reports the outcome.</summary>
-        private static void DrawAndPlaceSystem(DynamicRackSystem system)
+        private static void DrawAndPlaceSystem(DynamicRackSystem system, string payloadJson, string rackName)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -346,7 +347,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var result = new DynamicSystemDrawService().DrawAndPlace(document, system);
+            var result = new DynamicSystemDrawService().DrawAndPlace(document, system, payloadJson, rackName);
             document.Editor.WriteMessage("\n" + Describe(result));
         }
 
@@ -436,7 +437,7 @@ namespace RackCad.Plugin
 
                 if (window.InsertRequested)
                 {
-                    DrawAndPlaceSelective(window.SystemToInsert, BuildPayload(window.DesignToInsert, window.RackId, window.RackName), window.RackName);
+                    DrawAndPlaceSelective(window.SystemToInsert, BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName), window.RackName);
                 }
             }
             catch (System.Exception ex)
@@ -480,37 +481,25 @@ namespace RackCad.Plugin
                     transaction.Commit();
                 }
 
-                if (string.IsNullOrEmpty(json))
+                var embed = new RackEmbedStore().Deserialize(json);
+                if (embed == null || string.IsNullOrEmpty(embed.Design))
                 {
                     editor.WriteMessage("\nRackCad: ese bloque no tiene datos de rack editables.");
                     return;
                 }
 
-                SelectivePalletDesignDocument saved;
-                try
+                // Dispatch by rack type — the same round-trip serves selective, dynamic (and later cabecera/cama).
+                switch (embed.Kind)
                 {
-                    saved = new SelectivePalletDesignStore().Deserialize(json);
-                }
-                catch (System.Exception ex)
-                {
-                    editor.WriteMessage("\nRackCad: no se pudieron leer los datos del rack. " + ex.Message);
-                    return;
-                }
-
-                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
-                window.LoadExisting(saved);
-                AcApplication.ShowModalWindow(window);
-
-                if (window.InsertRequested)
-                {
-                    // Redefine the block definition IN PLACE: every copy of this rack updates, none is moved or lost.
-                    var result = new SelectiveFrontalDrawService().RedrawInPlace(
-                        document, blockId, window.SystemToInsert,
-                        BuildPayload(window.DesignToInsert, window.RackId, window.RackName));
-
-                    editor.WriteMessage(result != null && result.Success
-                        ? "\nRackCad: rack actualizado; todas sus copias reflejan el cambio."
-                        : "\nRackCad: no se pudo actualizar el rack. " + (result?.ErrorMessage ?? string.Empty));
+                    case RackEmbedDocument.KindSelective:
+                        EditSelective(document, blockId, embed);
+                        break;
+                    case RackEmbedDocument.KindDynamic:
+                        EditDynamic(document, blockId, embed);
+                        break;
+                    default:
+                        editor.WriteMessage("\nRackCad: tipo de rack no reconocido (" + embed.Kind + ").");
+                        break;
                 }
             }
             catch (System.Exception ex)
@@ -519,15 +508,113 @@ namespace RackCad.Plugin
             }
         }
 
-        /// <summary>Serializes the design + identity into the JSON payload embedded on the drawn block.</summary>
-        private static string BuildPayload(SelectivePalletDesign design, string id, string name)
+        private static void EditSelective(Document document, ObjectId blockId, RackEmbedDocument embed)
+        {
+            var editor = document.Editor;
+
+            SelectivePalletDesignDocument saved;
+            try
+            {
+                saved = new SelectivePalletDesignStore().Deserialize(embed.Design);
+            }
+            catch (System.Exception ex)
+            {
+                editor.WriteMessage("\nRackCad: no se pudieron leer los datos del rack. " + ex.Message);
+                return;
+            }
+
+            var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+            window.LoadExisting(saved);
+            AcApplication.ShowModalWindow(window);
+
+            if (!window.InsertRequested)
+            {
+                return;
+            }
+
+            // Redefine the block definition IN PLACE: every copy of this rack updates, none is moved or lost.
+            var result = new SelectiveFrontalDrawService().RedrawInPlace(
+                document, blockId, window.SystemToInsert,
+                BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName));
+
+            editor.WriteMessage(result != null && result.Success
+                ? "\nRackCad: rack actualizado; todas sus copias reflejan el cambio."
+                : "\nRackCad: no se pudo actualizar el rack. " + (result?.ErrorMessage ?? string.Empty));
+        }
+
+        private static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
+        {
+            var editor = document.Editor;
+
+            RackProject project;
+            try
+            {
+                project = new RackProjectStore().Deserialize(embed.Design);
+            }
+            catch (System.Exception ex)
+            {
+                editor.WriteMessage("\nRackCad: no se pudieron leer los datos del sistema. " + ex.Message);
+                return;
+            }
+
+            if (project?.DynamicSystem == null)
+            {
+                editor.WriteMessage("\nRackCad: datos de sistema dinamico invalidos.");
+                return;
+            }
+
+            var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
+            window.LoadExisting(project.DynamicSystem, embed.Id, embed.Name);
+            AcApplication.ShowModalWindow(window);
+
+            if (!window.InsertRequested)
+            {
+                return;
+            }
+
+            var result = new DynamicSystemDrawService().RedrawInPlace(
+                document, blockId, window.SystemToInsert,
+                BuildDynamicPayload(window.SystemToInsert, window.RackId, window.RackName));
+
+            editor.WriteMessage(result != null && result.Success
+                ? "\nRackCad: sistema actualizado; todas sus copias reflejan el cambio."
+                : "\nRackCad: no se pudo actualizar el sistema. " + (result?.ErrorMessage ?? string.Empty));
+        }
+
+        /// <summary>Wraps a selective design in the uniform embed envelope (kind + id + name + design JSON).</summary>
+        private static string BuildSelectivePayload(SelectivePalletDesign design, string id, string name)
         {
             if (design == null)
             {
                 return null;
             }
 
-            return new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
+            var designJson = new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
+            return new RackEmbedStore().Serialize(new RackEmbedDocument
+            {
+                Kind = RackEmbedDocument.KindSelective,
+                Id = id,
+                Name = name,
+                Design = designJson
+            });
+        }
+
+        /// <summary>Wraps a dynamic system in the uniform embed envelope; reuses the project store for the design JSON.</summary>
+        private static string BuildDynamicPayload(DynamicRackSystem system, string id, string name)
+        {
+            if (system == null)
+            {
+                return null;
+            }
+
+            var designJson = new RackProjectStore().Serialize(RackProject.ForDynamic(system));
+            return new RackEmbedStore().Serialize(new RackEmbedDocument
+            {
+                Kind = RackEmbedDocument.KindDynamic,
+                Id = id,
+                Name = name,
+                Design = designJson
+            });
         }
 
         /// <summary>Builds the selective-rack block and runs the placement jig, then reports the outcome.</summary>
