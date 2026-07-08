@@ -30,6 +30,11 @@ namespace RackCad.UI
 
         public SelectiveRackSystem SelectiveSystemToInsert { get; private set; }
 
+        /// <summary>The selective design + identity that produced <see cref="SelectiveSystemToInsert"/> (for the drawing embed).</summary>
+        public SelectivePalletDesign SelectiveDesignToInsert { get; private set; }
+        public string SelectiveRackId { get; private set; }
+        public string SelectiveRackName { get; private set; }
+
         public RackMainMenuWindow()
             : this(false)
         {
@@ -173,6 +178,9 @@ namespace RackCad.UI
                 {
                     InsertRequested = true;
                     SelectiveSystemToInsert = window.SystemToInsert;
+                    SelectiveDesignToInsert = window.DesignToInsert;
+                    SelectiveRackId = window.RackId;
+                    SelectiveRackName = window.RackName;
                     Close();
                 }
             }

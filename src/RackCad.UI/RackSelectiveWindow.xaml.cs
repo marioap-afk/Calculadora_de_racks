@@ -549,6 +549,7 @@ namespace RackCad.UI
                 return;
             }
 
+            currentName = NameBox.Text?.Trim();
             if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
 
             InsertRequested = true;
@@ -711,6 +712,7 @@ namespace RackCad.UI
             if (document == null) return;
             currentId = document.Id;
             currentName = document.Name;
+            NameBox.Text = document.Name ?? string.Empty;
             LoadDesign(document.ToDomain());
         }
 

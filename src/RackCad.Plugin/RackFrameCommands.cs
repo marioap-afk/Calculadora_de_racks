@@ -1,9 +1,11 @@
 using System.Globalization;
 using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
@@ -42,7 +44,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {
-                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert);
+                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert, BuildPayload(menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName));
                     }
                 }
             }
@@ -434,7 +436,7 @@ namespace RackCad.Plugin
 
                 if (window.InsertRequested)
                 {
-                    DrawAndPlaceSelective(window.SystemToInsert);
+                    DrawAndPlaceSelective(window.SystemToInsert, BuildPayload(window.DesignToInsert, window.RackId, window.RackName));
                 }
             }
             catch (System.Exception ex)
@@ -443,18 +445,115 @@ namespace RackCad.Plugin
             }
         }
 
+        /// <summary>Select an already-drawn selective rack, reopen its editor with all its data, and redraw it.</summary>
+        [CommandMethod("RACKEDITAR")]
+        public void RackEditar()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null)
+                {
+                    return;
+                }
+
+                var editor = document.Editor;
+                var options = new PromptEntityOptions("\nSelecciona un rack para editar: ");
+                options.SetRejectMessage("\nEse objeto no es un rack.");
+                options.AddAllowedClass(typeof(BlockReference), exactMatch: false);
+
+                var selection = editor.GetEntity(options);
+                if (selection.Status != PromptStatus.OK)
+                {
+                    return;
+                }
+
+                string json;
+                using (document.LockDocument())
+                using (var transaction = document.Database.TransactionManager.StartTransaction())
+                {
+                    json = RackBlockData.Read(transaction, selection.ObjectId);
+                    transaction.Commit();
+                }
+
+                if (string.IsNullOrEmpty(json))
+                {
+                    editor.WriteMessage("\nRackCad: ese bloque no tiene datos de rack editables.");
+                    return;
+                }
+
+                SelectivePalletDesignDocument saved;
+                try
+                {
+                    saved = new SelectivePalletDesignStore().Deserialize(json);
+                }
+                catch (System.Exception ex)
+                {
+                    editor.WriteMessage("\nRackCad: no se pudieron leer los datos del rack. " + ex.Message);
+                    return;
+                }
+
+                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                window.LoadExisting(saved);
+                AcApplication.ShowModalWindow(window);
+
+                if (window.InsertRequested)
+                {
+                    // Draw the updated rack first (same Id/Name); only remove the old copy once the new one is placed,
+                    // so a cancelled placement never loses the original.
+                    var result = DrawAndPlaceSelective(window.SystemToInsert, BuildPayload(window.DesignToInsert, window.RackId, window.RackName));
+                    if (result != null && result.Placed)
+                    {
+                        EraseEntity(document, selection.ObjectId);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
+        /// <summary>Serializes the design + identity into the JSON payload embedded on the drawn block.</summary>
+        private static string BuildPayload(SelectivePalletDesign design, string id, string name)
+        {
+            if (design == null)
+            {
+                return null;
+            }
+
+            return new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
+        }
+
         /// <summary>Builds the selective-rack block and runs the placement jig, then reports the outcome.</summary>
-        private static void DrawAndPlaceSelective(SelectiveRackSystem system)
+        private static HeaderPlacementResult DrawAndPlaceSelective(SelectiveRackSystem system, string payloadJson)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
             if (document == null || system == null)
             {
+                return null;
+            }
+
+            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system, payloadJson);
+            document.Editor.WriteMessage("\n" + DescribeSelective(result));
+            return result;
+        }
+
+        private static void EraseEntity(Document document, ObjectId entityId)
+        {
+            if (document == null || entityId.IsNull)
+            {
                 return;
             }
 
-            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system);
-            document.Editor.WriteMessage("\n" + DescribeSelective(result));
+            using (document.LockDocument())
+            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            {
+                var entity = transaction.GetObject(entityId, OpenMode.ForWrite, false);
+                entity.Erase();
+                transaction.Commit();
+            }
         }
 
         private static string DescribeSelective(HeaderPlacementResult result)

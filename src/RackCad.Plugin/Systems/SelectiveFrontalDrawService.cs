@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using RackCad.Plugin.Headers;
@@ -18,7 +19,11 @@ namespace RackCad.Plugin.Systems
         private readonly SelectiveFrontalBuilder builder = new SelectiveFrontalBuilder();
         private readonly LateralHeaderDrawer drawer = new LateralHeaderDrawer();
 
-        public HeaderPlacementResult DrawAndPlace(Document document, SelectiveRackSystem system)
+        /// <summary>
+        /// Draws + places the selective. When <paramref name="payloadJson"/> is given (the serialized design
+        /// with its Id + Name), it is embedded on the placed block so the rack can be reopened and edited.
+        /// </summary>
+        public HeaderPlacementResult DrawAndPlace(Document document, SelectiveRackSystem system, string payloadJson = null)
         {
             if (document == null)
             {
@@ -42,11 +47,30 @@ namespace RackCad.Plugin.Systems
                     system.Height);
 
                 var block = CreateBlock(document, plan, blockName);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
+                var result = new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
+
+                if (result.Success && result.Placed && !result.PlacedId.IsNull && !string.IsNullOrEmpty(payloadJson))
+                {
+                    WritePayload(document, result.PlacedId, payloadJson);
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
                 return HeaderPlacementResult.Failure(ex.Message);
+            }
+        }
+
+        private static void WritePayload(Document document, ObjectId entityId, string payloadJson)
+        {
+            var database = document.Database;
+
+            using (document.LockDocument())
+            using (var transaction = database.TransactionManager.StartTransaction())
+            {
+                RackBlockData.Write(transaction, entityId, payloadJson);
+                transaction.Commit();
             }
         }
 

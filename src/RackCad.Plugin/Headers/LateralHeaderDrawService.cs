@@ -81,8 +81,11 @@ namespace RackCad.Plugin.Headers
 
             try
             {
-                var placed = PlaceBlockWithJig(document, block.DefinitionId);
-                return new HeaderPlacementResult(true, placed, block.BlockName, DescribeMissing(catalog, block.Outcome), block.Outcome);
+                var placedId = PlaceBlockWithJig(document, block.DefinitionId);
+                return new HeaderPlacementResult(true, !placedId.IsNull, block.BlockName, DescribeMissing(catalog, block.Outcome), block.Outcome)
+                {
+                    PlacedId = placedId
+                };
             }
             catch (Exception ex)
             {
@@ -108,8 +111,9 @@ namespace RackCad.Plugin.Headers
             }
         }
 
-        /// <summary>Drag a reference of the block under the cursor; commit it where the user clicks.</summary>
-        private static bool PlaceBlockWithJig(Document document, ObjectId blockDefinitionId)
+        /// <summary>Drag a reference of the block under the cursor; commit it where the user clicks. Returns the
+        /// appended reference's id (or <see cref="ObjectId.Null"/> if the user cancelled) so the caller can tag it.</summary>
+        private static ObjectId PlaceBlockWithJig(Document document, ObjectId blockDefinitionId)
         {
             var database = document.Database;
             var editor = document.Editor;
@@ -125,15 +129,16 @@ namespace RackCad.Plugin.Headers
                 {
                     reference.Dispose();
                     transaction.Commit(); // nothing added; the block definition remains for later reuse
-                    return false;
+                    return ObjectId.Null;
                 }
 
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
                 modelSpace.AppendEntity(reference);
                 transaction.AddNewlyCreatedDBObject(reference, true);
+                var placedId = reference.ObjectId;
                 transaction.Commit();
-                return true;
+                return placedId;
             }
         }
 
@@ -278,6 +283,9 @@ namespace RackCad.Plugin.Headers
         public string[] MissingBlocks { get; }
         public LateralHeaderDrawOutcome Outcome { get; }
         public string ErrorMessage { get; private set; }
+
+        /// <summary>Id of the placed top-level block reference (<see cref="ObjectId.Null"/> if not placed) — used to tag it with the rack payload.</summary>
+        public ObjectId PlacedId { get; set; }
 
         public bool HasMissingBlocks => MissingBlocks.Length > 0;
 
