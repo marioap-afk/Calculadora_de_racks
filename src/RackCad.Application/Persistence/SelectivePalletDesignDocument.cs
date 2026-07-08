@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Persistence
@@ -28,6 +29,9 @@ namespace RackCad.Application.Persistence
 
         public List<SelectiveBayDocument> Bays { get; set; } = new List<SelectiveBayDocument>();
 
+        /// <summary>Per-post cabeceras (one per post; null = run default), each embedded as a frame document.</summary>
+        public List<RackFrameProjectDocument> PostCabeceras { get; set; } = new List<RackFrameProjectDocument>();
+
         public static SelectivePalletDesignDocument From(SelectivePalletDesign design, string id, string name)
         {
             if (design == null)
@@ -51,6 +55,11 @@ namespace RackCad.Application.Persistence
                 document.Bays.Add(SelectiveBayDocument.From(bay));
             }
 
+            foreach (var cabecera in design.PostCabeceras)
+            {
+                document.PostCabeceras.Add(cabecera == null ? null : RackFrameProjectDocument.FromConfiguration(cabecera));
+            }
+
             return document;
         }
 
@@ -68,6 +77,11 @@ namespace RackCad.Application.Persistence
             foreach (var bay in Bays ?? Enumerable.Empty<SelectiveBayDocument>())
             {
                 design.Bays.Add(bay.ToDomain());
+            }
+
+            foreach (var cabecera in PostCabeceras ?? Enumerable.Empty<RackFrameProjectDocument>())
+            {
+                design.PostCabeceras.Add(cabecera?.ToConfiguration());
             }
 
             return design;

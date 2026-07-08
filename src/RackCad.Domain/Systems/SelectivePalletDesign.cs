@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RackCad.Domain.RackFrames;
 
 namespace RackCad.Domain.Systems
 {
@@ -31,6 +32,14 @@ namespace RackCad.Domain.Systems
 
         /// <summary>The bays, left to right. Each carries its own column of level cells (its own count).</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
+
+        /// <summary>
+        /// Optional per-post "cabecera" (frame), one entry per post position (N frentes → N+1 posts). A null
+        /// entry (or a short list) means that post uses the run defaults. The frontal draw uses each cabecera's
+        /// base plate (id + peralte); the future lateral view renders the full cabecera. In the frontal a post is
+        /// this cabecera seen edge-on.
+        /// </summary>
+        public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

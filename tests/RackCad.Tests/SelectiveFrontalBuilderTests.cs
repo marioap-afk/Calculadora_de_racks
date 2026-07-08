@@ -3,6 +3,7 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 using Xunit;
 
@@ -126,6 +127,23 @@ namespace RackCad.Tests
 
             // 3 postes: post0 solo toca la bahía alta (240); post1 toca ambas → máx (240); post2 solo la baja (120).
             Assert.Equal(new[] { 240.0, 240.0, 120.0 }, heights);
+        }
+
+        [Fact]
+        public void Build_PostPlatePeralte_ComesFromTheCabeceraOverrideElseDerived()
+        {
+            var system = System(); // 1 bay -> 2 posts; postPeralte 3 -> default plate peralte 4 (base 1 + 1*3)
+            system.PostCabeceras.Add(new RackFrameConfiguration { LeftBasePlate = new BasePlatePlacement { PeralteOverride = 7.0 } });
+            system.PostCabeceras.Add(null); // post 1 -> run default
+
+            var plates = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.BasePlate)
+                .OrderBy(i => i.Insertion.X)
+                .ToList();
+
+            Assert.Equal(2, plates.Count);
+            Assert.Equal(7.0, plates[0].DynamicParameters["PERALTE"], 4); // from the cabecera
+            Assert.Equal(4.0, plates[1].DynamicParameters["PERALTE"], 4); // derived (StandardPeralte)
         }
 
         [Fact]

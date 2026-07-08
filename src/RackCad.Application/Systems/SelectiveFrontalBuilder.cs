@@ -39,13 +39,7 @@ namespace RackCad.Application.Systems
             var troquelX = ResolveX(troquel, postParams);
 
             var postBlock = Block(catalog, system.PostId, view);
-            var plateId = catalog?.Defaults?.BasePlate;
-            var plateBlock = Block(catalog, plateId, view);
-            var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
-
-            // Standard plate peralte, derived from the post peralte (the advanced editor may override later).
-            var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
-            var platePeralte = plateEntry?.StandardPeralte(system.PostPeralte) ?? 0.0;
+            var defaultPlateId = catalog?.Defaults?.BasePlate;
 
             // Post X positions. The larguero's LONGITUD is the profile "A corte", so the hooks sit an extra
             // ménsula overhang (INICIO_PERFIL's X) beyond each profile end. Post-to-post therefore adds the
@@ -76,12 +70,20 @@ namespace RackCad.Application.Systems
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = system.PostPeralte;
                 instances.Add(post);
 
-                // Base plate: its MONTAJE_POSTE lands on the post origin; PERALTE derived from the post.
+                // Base plate: from this post's cabecera if any, else the run default. PERALTE = the cabecera's manual
+                // override, else derived from the post (StandardPeralte). Its MONTAJE_POSTE lands on the post origin.
+                var cabecera = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
+                var plateId = cabecera?.LeftBasePlate?.PlateCatalogId;
+                if (string.IsNullOrWhiteSpace(plateId)) plateId = defaultPlateId;
+                var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
+                var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(system.PostPeralte) ?? 0.0;
+                var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
+
                 var plate = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.BasePlate,
                     PieceId = plateId,
-                    BlockName = plateBlock,
+                    BlockName = Block(catalog, plateId, view),
                     View = view,
                     ConnectionAnchor = origin,
                     Insertion = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y)

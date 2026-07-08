@@ -10,7 +10,9 @@ using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
 using RackCad.Application.Persistence;
+using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 
 namespace RackCad.UI
@@ -50,6 +52,9 @@ namespace RackCad.UI
 
         /// <summary>Per-bay manual height override (in); null = auto. Parallel to <see cref="bays"/>.</summary>
         private readonly List<double?> bayHeights = new List<double?>();
+
+        /// <summary>Optional per-post cabecera (frame); one entry per post (N frentes → N+1 posts), null = run default.</summary>
+        private readonly List<RackFrameConfiguration> postCabeceras = new List<RackFrameConfiguration>();
 
         private string defaultBeamId;
         private int selBay;
@@ -104,6 +109,7 @@ namespace RackCad.UI
             InitMatrix(2, 4);
             LoadCellEditor();
             RenderMatrix();
+            RefreshPostSelect();
             Recompute();
         }
 
@@ -369,6 +375,61 @@ namespace RackCad.UI
             Recompute();
         }
 
+        // ---- Per-post cabeceras ----
+
+        /// <summary>Keep the per-post cabecera list sized to N+1 (posts), preserving existing entries.</summary>
+        private void SyncPostCabeceras()
+        {
+            var posts = bays.Count + 1;
+            while (postCabeceras.Count < posts) postCabeceras.Add(null);
+            while (postCabeceras.Count > posts) postCabeceras.RemoveAt(postCabeceras.Count - 1);
+        }
+
+        /// <summary>Fill the post selector with "Poste 1..N+1", preserving the selection, then refresh its status.</summary>
+        private void RefreshPostSelect()
+        {
+            SyncPostCabeceras();
+            var previous = PostSelectBox.SelectedIndex;
+            var items = new List<string>();
+            for (var i = 0; i < postCabeceras.Count; i++) items.Add("Poste " + (i + 1).ToString(CultureInfo.InvariantCulture));
+            PostSelectBox.ItemsSource = items;
+            PostSelectBox.SelectedIndex = previous >= 0 && previous < items.Count ? previous : (items.Count > 0 ? 0 : -1);
+            UpdatePostStatus();
+        }
+
+        private void PostSelect_Changed(object sender, SelectionChangedEventArgs e) => UpdatePostStatus();
+
+        private void UpdatePostStatus()
+        {
+            if (PostCabeceraStatus == null) return;
+            var i = PostSelectBox.SelectedIndex;
+            var custom = i >= 0 && i < postCabeceras.Count && postCabeceras[i] != null;
+            PostCabeceraStatus.Text = i < 0 ? string.Empty : (custom ? "Personalizada" : "Por defecto (del tramo)");
+        }
+
+        private void CustomizePost_Click(object sender, RoutedEventArgs e)
+        {
+            var i = PostSelectBox.SelectedIndex;
+            if (i < 0 || i >= postCabeceras.Count) return;
+
+            var seed = postCabeceras[i] ?? new HardcodedStandardRackFrameService().CreateDefault();
+            var window = new RackFrameConfiguratorWindow(seed, canInsertInAutoCad: false) { Owner = this };
+            window.ShowDialog();
+
+            postCabeceras[i] = window.Configuration;
+            UpdatePostStatus();
+            Recompute();
+        }
+
+        private void ResetPost_Click(object sender, RoutedEventArgs e)
+        {
+            var i = PostSelectBox.SelectedIndex;
+            if (i < 0 || i >= postCabeceras.Count) return;
+            postCabeceras[i] = null;
+            UpdatePostStatus();
+            Recompute();
+        }
+
         private static Button SmallButton(string text) => new Button
         {
             Content = text,
@@ -480,6 +541,7 @@ namespace RackCad.UI
             ResizeBays(bayCount);
             LoadCellEditor();
             RenderMatrix();
+            RefreshPostSelect();
             Recompute();
         }
 
@@ -646,6 +708,12 @@ namespace RackCad.UI
                 design.Bays.Add(bay);
             }
 
+            SyncPostCabeceras();
+            foreach (var cabecera in postCabeceras)
+            {
+                design.PostCabeceras.Add(cabecera);
+            }
+
             return design;
         }
 
@@ -697,12 +765,19 @@ namespace RackCad.UI
                 bayHeights.Add(bayDesign.HeightOverride);
             }
 
+            postCabeceras.Clear();
+            foreach (var cabecera in design.PostCabeceras)
+            {
+                postCabeceras.Add(cabecera);
+            }
+
             BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
             selBay = 0;
             selLevel = 0;
             ClampSelection();
             LoadCellEditor();
             RenderMatrix();
+            RefreshPostSelect();
             Recompute();
         }
 

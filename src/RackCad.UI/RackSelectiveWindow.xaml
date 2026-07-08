@@ -43,6 +43,23 @@
                     <TextBlock Text="Peralte poste (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3" />
 
+                    <TextBlock Text="Cabecera por poste (opcional)" Style="{StaticResource FieldLabel}" Margin="0,6,0,0" Foreground="#8B98A6" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="6" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="PostSelectBox" Grid.Column="0" SelectionChanged="PostSelect_Changed" />
+                        <Button x:Name="CustomizePostButton" Grid.Column="2" Content="Personalizar" Click="CustomizePost_Click"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                ToolTip="Abre el configurador de cabeceras para este poste (p. ej. peralte de placa)." />
+                    </Grid>
+                    <TextBlock x:Name="PostCabeceraStatus" Foreground="#617080" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
+                    <Button Content="Restablecer poste" Click="ResetPost_Click" Style="{StaticResource SecondaryButtonStyle}"
+                            HorizontalAlignment="Left" Margin="0,4,0,0"
+                            ToolTip="Quita la cabecera personalizada de este poste (vuelve a la del tramo)." />
+
                     <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2" />

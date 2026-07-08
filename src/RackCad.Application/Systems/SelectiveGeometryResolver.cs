@@ -110,6 +110,14 @@ namespace RackCad.Application.Systems
             }
 
             system.Height = height;
+
+            // Per-post cabeceras (N frentes -> N+1 posts); pad with null so absent ones fall back to the run default.
+            var postCount = design.Bays.Count + 1;
+            for (var i = 0; i < postCount; i++)
+            {
+                system.PostCabeceras.Add(i < design.PostCabeceras.Count ? design.PostCabeceras[i] : null);
+            }
+
             return system;
         }
 

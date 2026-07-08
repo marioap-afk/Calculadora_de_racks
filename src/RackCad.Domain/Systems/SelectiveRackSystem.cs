@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RackCad.Domain.RackFrames;
 
 namespace RackCad.Domain.Systems
 {
@@ -22,6 +23,9 @@ namespace RackCad.Domain.Systems
 
         /// <summary>The bays, left to right. N bays sit between N+1 cabeceras.</summary>
         public IList<SelectiveBay> Bays { get; } = new List<SelectiveBay>();
+
+        /// <summary>Optional per-post cabecera (pass-through from the design), one per post position; null = run default.</summary>
+        public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
     }
 
     /// <summary>One resolved bay: its beam length (which governs post spacing), its height, and its placed levels.</summary>

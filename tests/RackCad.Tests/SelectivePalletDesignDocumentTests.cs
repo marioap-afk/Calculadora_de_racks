@@ -1,4 +1,5 @@
 using RackCad.Application.Persistence;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 using Xunit;
 
@@ -74,6 +75,28 @@ namespace RackCad.Tests
             Assert.Null(b1.Levels[0].BeamLengthOverride);
             Assert.Null(b1.Levels[0].ClearOverride);
             Assert.Equal(5.0, b1.Levels[0].BeamPeralte, 4);
+        }
+
+        [Fact]
+        public void RoundTrip_PreservesPerPostCabeceras()
+        {
+            var design = SampleDesign();
+            design.PostCabeceras.Add(new RackFrameConfiguration
+            {
+                Height = 240.0,
+                Depth = 42.0,
+                LeftBasePlate = new BasePlatePlacement { PostSide = PostSide.Left, PlateCatalogId = "PL", PeralteOverride = 6.5 }
+            });
+            design.PostCabeceras.Add(null); // this post uses the run default
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "Rack A"))).ToDomain();
+
+            Assert.Equal(2, restored.PostCabeceras.Count);
+            Assert.NotNull(restored.PostCabeceras[0]);
+            Assert.True(restored.PostCabeceras[0].LeftBasePlate.PeralteOverride.HasValue);
+            Assert.Equal(6.5, restored.PostCabeceras[0].LeftBasePlate.PeralteOverride.Value, 4);
+            Assert.Null(restored.PostCabeceras[1]);
         }
     }
 }
