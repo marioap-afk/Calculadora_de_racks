@@ -50,6 +50,7 @@ namespace RackCad.UI
         private string defaultBeamId;
         private int selBay;
         private int selLevel;
+        private bool loadingCell;
 
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private SelectiveRackSystem lastSystem;
@@ -81,6 +82,7 @@ namespace RackCad.UI
             CellBeamBox.ItemsSource = UiSupport.ToOptions(catalog?.BeamProfiles);
             if (CellBeamBox.Items.Count > 0) CellBeamBox.SelectedIndex = 0;
             defaultBeamId = CellBeamBox.SelectedValue as string;
+            CellBeamBox.SelectionChanged += (s, e) => OnBeamChanged();
 
             InitMatrix(2, 4);
             LoadCellEditor();
@@ -99,6 +101,12 @@ namespace RackCad.UI
             public string BeamId;
             public double BeamPeralte = 4.0;
 
+            /// <summary>Optional manual overrides (null = auto): larguero length and the clear below this level.</summary>
+            public double? BeamLength;
+            public double? Clear;
+
+            public bool HasOverride => BeamLength.HasValue || Clear.HasValue;
+
             public Cell Clone() => (Cell)MemberwiseClone();
 
             public void CopyFrom(Cell other)
@@ -108,6 +116,8 @@ namespace RackCad.UI
                 PalletCount = other.PalletCount;
                 BeamId = other.BeamId;
                 BeamPeralte = other.BeamPeralte;
+                BeamLength = other.BeamLength;
+                Clear = other.Clear;
             }
         }
 
@@ -337,8 +347,8 @@ namespace RackCad.UI
                 Cursor = Cursors.Hand,
                 Child = new TextBlock
                 {
-                    Text = string.Format(CultureInfo.InvariantCulture, "{0:0.#}×{1:0.#}\n×{2} · P{3:0.#}",
-                        cell.Frente, cell.Alto, cell.PalletCount, cell.BeamPeralte),
+                    Text = string.Format(CultureInfo.InvariantCulture, "{0:0.#}×{1:0.#}\n×{2} · P{3:0.#}{4}",
+                        cell.Frente, cell.Alto, cell.PalletCount, cell.BeamPeralte, cell.HasOverride ? " ✎" : string.Empty),
                     FontSize = 11,
                     Foreground = CellText,
                     TextAlignment = TextAlignment.Center
@@ -361,12 +371,55 @@ namespace RackCad.UI
         {
             if (!TryGetSelected(out var cell)) return;
 
+            loadingCell = true;
             CellHeader.Text = string.Format(CultureInfo.InvariantCulture, "Celda: Bahía {0} · Nivel {1}", selBay + 1, selLevel + 1);
             FrenteBox.Text = cell.Frente.ToString("0.###", CultureInfo.InvariantCulture);
             AltoBox.Text = cell.Alto.ToString("0.###", CultureInfo.InvariantCulture);
             PalletCountBox.Text = cell.PalletCount.ToString(CultureInfo.InvariantCulture);
-            BeamPeralteBox.Text = cell.BeamPeralte.ToString("0.###", CultureInfo.InvariantCulture);
+            BeamLenBox.Text = cell.BeamLength.HasValue ? cell.BeamLength.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+            ClearBox.Text = cell.Clear.HasValue ? cell.Clear.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
             CellBeamBox.SelectedValue = cell.BeamId;
+            RefreshPeralteCombo(cell.BeamPeralte);
+            loadingCell = false;
+        }
+
+        /// <summary>The beam changed in the cell editor: repopulate the allowed peraltes, keeping the current one if it still fits.</summary>
+        private void OnBeamChanged()
+        {
+            if (loadingCell) return;
+            var current = BeamPeralteCombo.SelectedItem as string;
+            RefreshPeralteCombo(UiSupport.TryNum(current, out var v) ? v : (double?)null);
+        }
+
+        /// <summary>Fill the peralte combo with the selected larguero's allowed values; select <paramref name="keep"/> if present, else the first.</summary>
+        private void RefreshPeralteCombo(double? keep)
+        {
+            var options = PeralteOptions(CellBeamBox.SelectedValue as string);
+            BeamPeralteCombo.ItemsSource = options;
+
+            var target = keep.HasValue ? keep.Value.ToString("0.###", CultureInfo.InvariantCulture) : null;
+            if (target != null && options.Contains(target)) BeamPeralteCombo.SelectedItem = target;
+            else if (options.Count > 0) BeamPeralteCombo.SelectedIndex = 0;
+        }
+
+        /// <summary>Allowed PERALTE values declared by a larguero (the catalog's ";"-separated list), formatted for display.</summary>
+        private List<string> PeralteOptions(string beamId)
+        {
+            var options = new List<string>();
+            var raw = catalog?.BeamProfiles.FirstOrDefault(b => string.Equals(b?.Id, beamId, StringComparison.OrdinalIgnoreCase))?.Peraltes;
+            if (!string.IsNullOrWhiteSpace(raw))
+            {
+                foreach (var part in raw.Split(';', ','))
+                {
+                    if (UiSupport.TryNum(part, out var value) && value > 0.0)
+                    {
+                        var text = value.ToString("0.###", CultureInfo.InvariantCulture);
+                        if (!options.Contains(text)) options.Add(text);
+                    }
+                }
+            }
+
+            return options;
         }
 
         // ---- Events ----
@@ -467,10 +520,21 @@ namespace RackCad.UI
             if (!UiSupport.TryNum(FrenteBox.Text, out var frente) || frente <= 0.0) { error = "Frente de tarima invalido."; return false; }
             if (!UiSupport.TryNum(AltoBox.Text, out var alto) || alto <= 0.0) { error = "Alto de tarima invalido."; return false; }
             if (!TryInt(PalletCountBox.Text, out var count) || count < 1) { error = "Tarimas por nivel invalido."; return false; }
-            if (!UiSupport.TryNum(BeamPeralteBox.Text, out var peralte) || peralte <= 0.0) { error = "Peralte de larguero invalido."; return false; }
+            if (!(BeamPeralteCombo.SelectedItem is string peralteText) || !UiSupport.TryNum(peralteText, out var peralte) || peralte <= 0.0) { error = "Selecciona un peralte de larguero."; return false; }
+            if (!TryOptionalNum(BeamLenBox.Text, out var beamLen)) { error = "Longitud de larguero invalida (deja vacio para auto)."; return false; }
+            if (!TryOptionalNum(ClearBox.Text, out var clear)) { error = "Claro invalido (deja vacio para auto)."; return false; }
 
-            values = new Cell { Frente = frente, Alto = alto, PalletCount = count, BeamId = beamId, BeamPeralte = peralte };
+            values = new Cell { Frente = frente, Alto = alto, PalletCount = count, BeamId = beamId, BeamPeralte = peralte, BeamLength = beamLen, Clear = clear };
             return true;
+        }
+
+        /// <summary>Parse an optional positive number: empty/whitespace → null (auto); a valid &gt; 0 value → that; anything else → invalid.</summary>
+        private static bool TryOptionalNum(string text, out double? value)
+        {
+            value = null;
+            if (string.IsNullOrWhiteSpace(text)) return true;
+            if (UiSupport.TryNum(text, out var v) && v > 0.0) { value = v; return true; }
+            return false;
         }
 
         private SelectiveRackSystem BuildSystem(out string error)
@@ -481,6 +545,7 @@ namespace RackCad.UI
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
             if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevacion de larguero a piso invalida."; return null; }
+            if (!TryOptionalNum(PostHeightBox.Text, out var postHeight)) { error = "Altura de poste invalida (deja vacio para auto)."; return null; }
             if (bays.Count == 0 || bays[0].Count == 0) { error = "Define bahias y niveles."; return null; }
 
             var design = new SelectivePalletDesign
@@ -489,7 +554,8 @@ namespace RackCad.UI
                 PostPeralte = postPeralte,
                 PalletTolerance = tolerance,
                 VerticalClearance = clearance,
-                FloorBeamRise = floorRise
+                FloorBeamRise = floorRise,
+                PostHeightOverride = postHeight
             };
 
             for (var b = 0; b < bays.Count; b++)
@@ -502,7 +568,9 @@ namespace RackCad.UI
                         Pallet = new Tarima { Frente = cell.Frente, Alto = cell.Alto },
                         PalletCount = cell.PalletCount,
                         BeamId = cell.BeamId,
-                        BeamPeralte = cell.BeamPeralte
+                        BeamPeralte = cell.BeamPeralte,
+                        BeamLengthOverride = cell.BeamLength,
+                        ClearOverride = cell.Clear
                     });
                 }
 

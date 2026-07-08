@@ -29,6 +29,9 @@ namespace RackCad.Domain.Systems
         /// <summary>How far a "larguero a piso" sits above the lowest troquel (in), so its ménsula clears the base plate. Editable; default 4".</summary>
         public double FloorBeamRise { get; set; } = 4.0;
 
+        /// <summary>Manual override for EVERY post's height (in). Null = auto (per-bay). When set, all posts use it.</summary>
+        public double? PostHeightOverride { get; set; }
+
         /// <summary>The bays, left to right. Each carries its own column of level cells (its own count).</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
     }
@@ -61,6 +64,12 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Beam peralte (block parameter) at this level.</summary>
         public double BeamPeralte { get; set; }
+
+        /// <summary>Manual override for the larguero LONGITUD at this level (in). Null = auto (Frente*Count + tolerance). The bay uses the longest level.</summary>
+        public double? BeamLengthOverride { get; set; }
+
+        /// <summary>Manual override for the clear/separation BELOW this level's beam (in), snapped up to the troquel grid. Null = auto.</summary>
+        public double? ClearOverride { get; set; }
     }
 
     /// <summary>A pallet ("tarima"). Frontal needs its front and height; depth (fondo) comes with the lateral view.</summary>

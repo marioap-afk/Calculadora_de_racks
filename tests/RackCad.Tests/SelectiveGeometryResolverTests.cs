@@ -221,5 +221,50 @@ namespace RackCad.Tests
             Assert.Equal(RoundUpFoot(system.Bays[1].Levels.Last().Y + BeamStartY() + 40.0 / 3.0), system.Bays[1].Height, 4);
             Assert.True(system.Bays[1].Height > system.Bays[0].Height);
         }
+
+        [Fact]
+        public void BeamLengthOverride_GovernsTheBayLength()
+        {
+            var overridden = Cell(40, 60, 2, 4); // auto = 40*2 + 4*3 = 92
+            overridden.BeamLengthOverride = 123.0;
+
+            var bay = ResolveBay(Design(false, overridden, Cell(40, 60, 2, 4)));
+
+            Assert.Equal(123.0, bay.BeamLength, 4);
+        }
+
+        [Fact]
+        public void ClearOverride_SetsTheSeparationSnappedUpToTheTroquel()
+        {
+            var top = Cell(40, 60, 2, 4);
+            top.ClearOverride = 51.0; // odd -> snaps up to 52 (paso 2)
+
+            var bay = ResolveBay(Design(true, Cell(40, 60, 2, 4), top));
+
+            Assert.Equal(GridBase() + 4.0 + 52.0, bay.Levels[1].Y, 4);
+        }
+
+        [Fact]
+        public void ClearOverride_OnFirstBeamNoFloor_PlacesItFromTheFloorOnGrid()
+        {
+            var first = Cell(40, 60, 2, 4);
+            first.ClearOverride = 45.0;
+
+            var bay = ResolveBay(Design(false, Cell(40, 60, 2, 4), first));
+
+            Assert.Equal(SnapUp(45.0), bay.Levels[0].Y, 4);
+        }
+
+        [Fact]
+        public void PostHeightOverride_ForcesEveryBayHeight()
+        {
+            var design = Design(false, Cell(40, 60, 2, 4), Cell(40, 60, 2, 4));
+            design.PostHeightOverride = 250.0;
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            Assert.Equal(250.0, system.Height, 4);
+            Assert.All(system.Bays, b => Assert.Equal(250.0, b.Height, 4));
+        }
     }
 }

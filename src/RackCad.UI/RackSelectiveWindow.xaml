@@ -37,6 +37,9 @@
                     <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
                     <TextBlock Text="Peralte poste (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3" />
+                    <TextBlock Text="Altura poste (in) · vacío = auto" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="PostHeightBox" Style="{StaticResource FieldBox}"
+                             ToolTip="Fuerza la altura de TODOS los postes. Vacío = calculada por bahía." />
 
                     <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Bahías" Style="{StaticResource FieldLabel}" />
@@ -88,7 +91,27 @@
                                     <TextBlock Text="Alto tarima (in)" Style="{StaticResource FieldLabel}" />
                                     <TextBox x:Name="AltoBox" Style="{StaticResource FieldBox}" Text="60" />
                                     <TextBlock Text="Peralte larguero (in)" Style="{StaticResource FieldLabel}" />
-                                    <TextBox x:Name="BeamPeralteBox" Style="{StaticResource FieldBox}" Text="4" />
+                                    <ComboBox x:Name="BeamPeralteCombo" Margin="0,2,0,6"
+                                              ToolTip="Peraltes permitidos por el larguero seleccionado (del catálogo)." />
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="Manual (opcional · vacío = auto)" Style="{StaticResource FieldLabel}" Margin="0,8,0,0"
+                                       Foreground="#8B98A6" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Long. larguero (in)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="BeamLenBox" Style="{StaticResource FieldBox}"
+                                             ToolTip="Longitud del larguero (A corte). Vacío = automático. La bahía usa el nivel más largo." />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Claro debajo (in)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="ClearBox" Style="{StaticResource FieldBox}"
+                                             ToolTip="Claro/separación debajo de este larguero. Vacío = automático. Se ajusta al troquel." />
                                 </StackPanel>
                             </Grid>
                             <TextBlock Text="Aplicar a:" Style="{StaticResource FieldLabel}" Margin="0,6,0,2" />

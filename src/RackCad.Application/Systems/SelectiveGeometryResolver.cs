@@ -81,15 +81,19 @@ namespace RackCad.Application.Systems
                 else
                 {
                     // Ground pallet on the floor: the first larguero only needs to clear the pallet + holgura above
-                    // the FLOOR — there is no beam under it, so no peralte term — snapped up onto the grid.
-                    y = SnapUp(RoundUpToMultiple(PalletAlto(levels[0]) + clearance, 2.0), gridBase, paso);
+                    // the FLOOR — there is no beam under it, so no peralte term — snapped up onto the grid. A manual
+                    // clear override (the distance from the floor) replaces the pallet-derived clear.
+                    var firstClear = levels[1].ClearOverride.HasValue && levels[1].ClearOverride.Value > 0.0
+                        ? levels[1].ClearOverride.Value
+                        : RoundUpToMultiple(PalletAlto(levels[0]) + clearance, 2.0);
+                    y = SnapUp(firstClear, gridBase, paso);
                     AddBeam(bay, y, levels[1]);
                     start = 2;
                 }
 
                 for (var j = start; j < levels.Count; j++)
                 {
-                    y += Separation(PalletAlto(levels[j - 1]), clearance, levels[j].BeamPeralte, paso);
+                    y += SeparationFor(levels[j], PalletAlto(levels[j - 1]), clearance, paso);
                     AddBeam(bay, y, levels[j]);
                 }
 
@@ -103,6 +107,15 @@ namespace RackCad.Application.Systems
             }
 
             system.Height = height;
+
+            // Manual post-height override forces every post (and the run height) to one value.
+            if (design.PostHeightOverride.HasValue && design.PostHeightOverride.Value > 0.0)
+            {
+                var forced = design.PostHeightOverride.Value;
+                system.Height = forced;
+                foreach (var b in system.Bays) b.Height = forced;
+            }
+
             return system;
         }
 
@@ -115,18 +128,40 @@ namespace RackCad.Application.Systems
         private static double BeamProfileStartY(RackCatalog catalog, string beamId, string view)
             => catalog?.ConnectionLayout.FindConnectionLayout(beamId, SelectiveRackDefaults.BeamProfileStartPoint, view)?.LocalY ?? 0.0;
 
-        /// <summary>Bay beam LONGITUD = the widest level's Frente*Count + Tolerance*(Count+1).</summary>
+        /// <summary>
+        /// Bay beam LONGITUD = the longest level, where a level is either its manual override or the auto
+        /// Frente*Count + Tolerance*(Count+1). All beams of a bay share one length (the post spacing).
+        /// </summary>
         private static double BayBeamLength(SelectiveBayDesign bay, double tolerance)
         {
             var max = 0.0;
             foreach (var cell in bay.Levels)
             {
-                var frente = cell.Pallet?.Frente ?? 0.0;
-                var count = Math.Max(1, cell.PalletCount);
-                max = Math.Max(max, frente * count + tolerance * (count + 1));
+                var desired = cell.BeamLengthOverride.HasValue && cell.BeamLengthOverride.Value > 0.0
+                    ? cell.BeamLengthOverride.Value
+                    : AutoBeamLength(cell, tolerance);
+                max = Math.Max(max, desired);
             }
 
             return max;
+        }
+
+        private static double AutoBeamLength(SelectiveCell cell, double tolerance)
+        {
+            var frente = cell.Pallet?.Frente ?? 0.0;
+            var count = Math.Max(1, cell.PalletCount);
+            return frente * count + tolerance * (count + 1);
+        }
+
+        /// <summary>Separation below a level: the manual clear override (snapped up to the troquel grid) if set, else the pallet-derived auto.</summary>
+        private static double SeparationFor(SelectiveCell cell, double palletAltoBelow, double clearance, double paso)
+        {
+            if (cell.ClearOverride.HasValue && cell.ClearOverride.Value > 0.0)
+            {
+                return Math.Max(paso, RoundUpToMultiple(cell.ClearOverride.Value, paso));
+            }
+
+            return Separation(palletAltoBelow, clearance, cell.BeamPeralte, paso);
         }
 
         /// <summary>
