@@ -104,6 +104,68 @@ namespace RackCad.Plugin.Headers
             return new LateralHeaderBlockResult(systemId, systemName, outcome);
         }
 
+        /// <summary>
+        /// Redefine an existing system block IN PLACE: erase its contents and repopulate them from the plan, so
+        /// every reference to it (all the copies of that rack) updates on the next regen. Keeps the same block id
+        /// and name. Selective frontal is all-loose; header groups are handled too for future reuse.
+        /// </summary>
+        public LateralHeaderDrawOutcome RedefineSystemBlock(Database db, Transaction tr, ObjectId blockId, DynamicSystemPlan plan)
+        {
+            var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
+            var systemDef = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForWrite);
+
+            // Clear the current contents (collect first, then erase — don't erase while enumerating).
+            var existing = new List<ObjectId>();
+            foreach (ObjectId id in systemDef)
+            {
+                existing.Add(id);
+            }
+
+            foreach (var id in existing)
+            {
+                ((Entity)tr.GetObject(id, OpenMode.ForWrite)).Erase();
+            }
+
+            var missing = new List<HeaderBlockInstance>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var inserted = 0;
+
+            foreach (var group in plan.Headers)
+            {
+                var headerDef = NewBlock(blockTable, tr, group.Name, out _, out var headerId);
+
+                foreach (var instance in group.Instances)
+                {
+                    if (AppendInstance(blockTable, headerDef, tr, instance, missing, seen))
+                    {
+                        inserted++;
+                    }
+                }
+
+                foreach (var placement in group.Placements)
+                {
+                    var headerRef = new BlockReference(new Point3d(placement.InsertionX, 0.0, 0.0), headerId)
+                    {
+                        ScaleFactors = placement.Mirrored ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
+                    };
+                    systemDef.AppendEntity(headerRef);
+                    tr.AddNewlyCreatedDBObject(headerRef, true);
+                    inserted++;
+                }
+            }
+
+            foreach (var instance in plan.LooseInstances)
+            {
+                if (AppendInstance(blockTable, systemDef, tr, instance, missing, seen))
+                {
+                    inserted++;
+                }
+            }
+
+            return new LateralHeaderDrawOutcome(
+                new LateralHeaderLayout(new List<HeaderBlockInstance>(), 0.0, 0, 0, 0.0), inserted, missing);
+        }
+
         private static BlockTableRecord NewBlock(BlockTable blockTable, Transaction tr, string blockName, out string uniqueName, out ObjectId id)
         {
             uniqueName = UniqueBlockName(blockTable, blockName);

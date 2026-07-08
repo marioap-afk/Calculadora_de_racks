@@ -44,7 +44,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {
-                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert, BuildPayload(menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName));
+                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert, BuildPayload(menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName), menu.SelectiveRackName);
                     }
                 }
             }
@@ -436,7 +436,7 @@ namespace RackCad.Plugin
 
                 if (window.InsertRequested)
                 {
-                    DrawAndPlaceSelective(window.SystemToInsert, BuildPayload(window.DesignToInsert, window.RackId, window.RackName));
+                    DrawAndPlaceSelective(window.SystemToInsert, BuildPayload(window.DesignToInsert, window.RackId, window.RackName), window.RackName);
                 }
             }
             catch (System.Exception ex)
@@ -468,11 +468,15 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                // Read the payload from the block DEFINITION (shared by every copy), found via the selected reference.
+                ObjectId blockId;
                 string json;
                 using (document.LockDocument())
                 using (var transaction = document.Database.TransactionManager.StartTransaction())
                 {
-                    json = RackBlockData.Read(transaction, selection.ObjectId);
+                    var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
+                    blockId = reference.BlockTableRecord;
+                    json = RackBlockData.Read(transaction, blockId);
                     transaction.Commit();
                 }
 
@@ -499,13 +503,14 @@ namespace RackCad.Plugin
 
                 if (window.InsertRequested)
                 {
-                    // Draw the updated rack first (same Id/Name); only remove the old copy once the new one is placed,
-                    // so a cancelled placement never loses the original.
-                    var result = DrawAndPlaceSelective(window.SystemToInsert, BuildPayload(window.DesignToInsert, window.RackId, window.RackName));
-                    if (result != null && result.Placed)
-                    {
-                        EraseEntity(document, selection.ObjectId);
-                    }
+                    // Redefine the block definition IN PLACE: every copy of this rack updates, none is moved or lost.
+                    var result = new SelectiveFrontalDrawService().RedrawInPlace(
+                        document, blockId, window.SystemToInsert,
+                        BuildPayload(window.DesignToInsert, window.RackId, window.RackName));
+
+                    editor.WriteMessage(result != null && result.Success
+                        ? "\nRackCad: rack actualizado; todas sus copias reflejan el cambio."
+                        : "\nRackCad: no se pudo actualizar el rack. " + (result?.ErrorMessage ?? string.Empty));
                 }
             }
             catch (System.Exception ex)
@@ -526,7 +531,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Builds the selective-rack block and runs the placement jig, then reports the outcome.</summary>
-        private static HeaderPlacementResult DrawAndPlaceSelective(SelectiveRackSystem system, string payloadJson)
+        private static HeaderPlacementResult DrawAndPlaceSelective(SelectiveRackSystem system, string payloadJson, string rackName)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -535,25 +540,9 @@ namespace RackCad.Plugin
                 return null;
             }
 
-            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system, payloadJson);
+            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system, payloadJson, rackName);
             document.Editor.WriteMessage("\n" + DescribeSelective(result));
             return result;
-        }
-
-        private static void EraseEntity(Document document, ObjectId entityId)
-        {
-            if (document == null || entityId.IsNull)
-            {
-                return;
-            }
-
-            using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
-            {
-                var entity = transaction.GetObject(entityId, OpenMode.ForWrite, false);
-                entity.Erase();
-                transaction.Commit();
-            }
         }
 
         private static string DescribeSelective(HeaderPlacementResult result)

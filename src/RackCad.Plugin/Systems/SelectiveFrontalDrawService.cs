@@ -20,10 +20,11 @@ namespace RackCad.Plugin.Systems
         private readonly LateralHeaderDrawer drawer = new LateralHeaderDrawer();
 
         /// <summary>
-        /// Draws + places the selective. When <paramref name="payloadJson"/> is given (the serialized design
-        /// with its Id + Name), it is embedded on the placed block so the rack can be reopened and edited.
+        /// Draws + places the selective. The design payload (JSON incl. Id + Name) is embedded on the block
+        /// DEFINITION (not the reference), so every copy of the rack shares it. <paramref name="rackName"/> names
+        /// the block when given.
         /// </summary>
-        public HeaderPlacementResult DrawAndPlace(Document document, SelectiveRackSystem system, string payloadJson = null)
+        public HeaderPlacementResult DrawAndPlace(Document document, SelectiveRackSystem system, string payloadJson = null, string rackName = null)
         {
             if (document == null)
             {
@@ -38,23 +39,10 @@ namespace RackCad.Plugin.Systems
             try
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
-                var instances = builder.Build(system, catalog);
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), instances);
-                var blockName = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "Selectivo frontal - {0} frentes - H{1:0.##}",
-                    system.Bays.Count,
-                    system.Height);
+                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(system, catalog));
 
-                var block = CreateBlock(document, plan, blockName);
-                var result = new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
-
-                if (result.Success && result.Placed && !result.PlacedId.IsNull && !string.IsNullOrEmpty(payloadJson))
-                {
-                    WritePayload(document, result.PlacedId, payloadJson);
-                }
-
-                return result;
+                var block = CreateBlock(document, plan, BlockName(system, rackName), payloadJson);
+                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
             }
             catch (Exception ex)
             {
@@ -62,19 +50,52 @@ namespace RackCad.Plugin.Systems
             }
         }
 
-        private static void WritePayload(Document document, ObjectId entityId, string payloadJson)
+        /// <summary>
+        /// Redraw an existing rack's block DEFINITION in place (found from a selected reference), keeping its id
+        /// and name. Every reference to it — all the copies of that rack — updates on regen.
+        /// </summary>
+        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, SelectiveRackSystem system, string payloadJson)
         {
-            var database = document.Database;
-
-            using (document.LockDocument())
-            using (var transaction = database.TransactionManager.StartTransaction())
+            if (document == null)
             {
-                RackBlockData.Write(transaction, entityId, payloadJson);
-                transaction.Commit();
+                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
+            }
+
+            if (system == null || blockId.IsNull)
+            {
+                return HeaderPlacementResult.Failure("No hay rack para actualizar.");
+            }
+
+            try
+            {
+                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(system, catalog));
+                var database = document.Database;
+
+                LateralHeaderDrawOutcome outcome;
+                using (document.LockDocument())
+                {
+                    BlockLibraryImporter.EnsureForPlan(database, plan);
+
+                    using (var transaction = database.TransactionManager.StartTransaction())
+                    {
+                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan);
+                        RackBlockData.Write(transaction, blockId, payloadJson);
+                        transaction.Commit();
+                    }
+
+                    document.Editor.Regen();
+                }
+
+                return new HeaderPlacementResult(true, true, null, Array.Empty<string>(), outcome);
+            }
+            catch (Exception ex)
+            {
+                return HeaderPlacementResult.Failure(ex.Message);
             }
         }
 
-        private LateralHeaderBlockResult CreateBlock(Document document, DynamicSystemPlan plan, string blockName)
+        private LateralHeaderBlockResult CreateBlock(Document document, DynamicSystemPlan plan, string blockName, string payloadJson)
         {
             var database = document.Database;
 
@@ -85,10 +106,31 @@ namespace RackCad.Plugin.Systems
                 using (var transaction = database.TransactionManager.StartTransaction())
                 {
                     var result = drawer.CreateSystemBlock(database, transaction, plan, blockName);
+
+                    // Payload on the DEFINITION so every reference/copy shares it.
+                    if (!string.IsNullOrEmpty(payloadJson))
+                    {
+                        RackBlockData.Write(transaction, result.DefinitionId, payloadJson);
+                    }
+
                     transaction.Commit();
                     return result;
                 }
             }
+        }
+
+        private static string BlockName(SelectiveRackSystem system, string rackName)
+        {
+            if (!string.IsNullOrWhiteSpace(rackName))
+            {
+                return rackName.Trim();
+            }
+
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "Selectivo frontal - {0} frentes - H{1:0.##}",
+                system.Bays.Count,
+                system.Height);
         }
     }
 }
