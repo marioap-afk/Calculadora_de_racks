@@ -28,6 +28,8 @@ namespace RackCad.UI
 
         public FlowBedConfiguration FlowBedToInsert { get; private set; }
 
+        public SelectiveRackSystem SelectiveSystemToInsert { get; private set; }
+
         public RackMainMenuWindow()
             : this(false)
         {
@@ -156,6 +158,27 @@ namespace RackCad.UI
             catch (Exception ex)
             {
                 MessageBox.Show(this, "No se pudo abrir la cama de rodamiento: " + ex.Message,
+                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void DesignSelective_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var window = new RackSelectiveWindow(canInsertInAutoCad) { Owner = this };
+                window.ShowDialog();
+
+                if (window.InsertRequested)
+                {
+                    InsertRequested = true;
+                    SelectiveSystemToInsert = window.SystemToInsert;
+                    Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "No se pudo abrir el sistema selectivo: " + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

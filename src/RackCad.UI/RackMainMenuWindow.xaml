@@ -93,10 +93,10 @@
                 </StackPanel>
             </Button>
 
-            <Button Style="{StaticResource MenuButton}" IsEnabled="False">
+            <Button Style="{StaticResource MenuButton}" Click="DesignSelective_Click">
                 <StackPanel>
                     <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar sistema selectivo" />
-                    <TextBlock Style="{StaticResource OptionCaption}" Foreground="#9AA7B4" Text="Próximamente." />
+                    <TextBlock Style="{StaticResource OptionCaption}" Text="Vista frontal: cabeceras (postes) + largueros por nivel." />
                 </StackPanel>
             </Button>
 

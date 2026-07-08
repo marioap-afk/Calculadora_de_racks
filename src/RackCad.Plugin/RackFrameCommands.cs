@@ -40,6 +40,10 @@ namespace RackCad.Plugin
                     {
                         DrawAndPlaceBed(menu.FlowBedToInsert);
                     }
+                    else if (menu.SelectiveSystemToInsert != null)
+                    {
+                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert);
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -417,6 +421,66 @@ namespace RackCad.Plugin
             }
 
             return rollers[result.Value - 1].Id;
+        }
+
+        /// <summary>Opens the selective-rack window; draws it after the modal windows close.</summary>
+        [CommandMethod("RACKSELECTIVO")]
+        public void RackSelectivo()
+        {
+            try
+            {
+                var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                AcApplication.ShowModalWindow(window);
+
+                if (window.InsertRequested)
+                {
+                    DrawAndPlaceSelective(window.SystemToInsert);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
+        /// <summary>Builds the selective-rack block and runs the placement jig, then reports the outcome.</summary>
+        private static void DrawAndPlaceSelective(SelectiveRackSystem system)
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null || system == null)
+            {
+                return;
+            }
+
+            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system);
+            document.Editor.WriteMessage("\n" + DescribeSelective(result));
+        }
+
+        private static string DescribeSelective(HeaderPlacementResult result)
+        {
+            if (!result.Success)
+            {
+                return "RackCad: no se pudo dibujar el selectivo. " + result.ErrorMessage;
+            }
+
+            if (!result.Placed)
+            {
+                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
+            }
+
+            var summary = string.Format(
+                CultureInfo.InvariantCulture,
+                "RackCad: selectivo insertado como bloque '{0}'. {1} piezas.",
+                result.BlockName,
+                result.Outcome.InsertedCount);
+
+            if (result.HasMissingBlocks)
+            {
+                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
+            }
+
+            return summary;
         }
 
         /// <summary>Builds the roller-bed block and runs the placement jig, then reports the outcome.</summary>
