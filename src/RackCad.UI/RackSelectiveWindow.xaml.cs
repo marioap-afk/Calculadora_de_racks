@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
@@ -14,10 +15,10 @@ using RackCad.Domain.Systems;
 namespace RackCad.UI
 {
     /// <summary>
-    /// Independent module: a selective rack in the FRONTAL view. The user describes the pallets (frente, alto,
-    /// count) plus post/beam and the tramo size; <see cref="SelectiveGeometryResolver"/> derives the larguero
-    /// length, level separations and post height, and <see cref="SelectiveFrontalBuilder"/> lays out the blocks.
-    /// This template fills the whole bays × levels matrix uniformly; per-cell editing comes next.
+    /// Advanced editor for a selective rack (FRONTAL view). The user edits a bays × levels MATRIX where each
+    /// cell carries its own pallet (frente/alto), count and larguero; <see cref="SelectiveGeometryResolver"/>
+    /// derives the larguero lengths, level separations and post height, and <see cref="SelectiveFrontalBuilder"/>
+    /// lays out the blocks. Click a cell to edit it, then apply the values to the cell / row / column / all.
     /// </summary>
     public partial class RackSelectiveWindow : Window
     {
@@ -29,10 +30,21 @@ namespace RackCad.UI
         private static readonly Brush FloorStroke = new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
         private static readonly Brush LabelStroke = new SolidColorBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
 
+        private static readonly Brush CellStroke = new SolidColorBrush(Color.FromRgb(0xD8, 0xDE, 0xE6));
+        private static readonly Brush CellText = new SolidColorBrush(Color.FromRgb(0x1F, 0x29, 0x33));
+        private static readonly Brush CellSelStroke = new SolidColorBrush(Color.FromRgb(0x2F, 0x6F, 0xED));
+        private static readonly Brush CellSelFill = new SolidColorBrush(Color.FromRgb(0xDB, 0xEA, 0xFE));
+
         private readonly RackCatalog catalog;
         private readonly SelectiveFrontalBuilder builder = new SelectiveFrontalBuilder();
         private readonly SelectiveGeometryResolver resolver = new SelectiveGeometryResolver();
         private readonly bool canInsertInAutoCad;
+
+        /// <summary>The design matrix: <c>bays[bay][level]</c>, level 0 = bottom.</summary>
+        private readonly List<List<Cell>> bays = new List<List<Cell>>();
+        private string defaultBeamId;
+        private int selBay;
+        private int selLevel;
 
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private SelectiveRackSystem lastSystem;
@@ -61,14 +73,247 @@ namespace RackCad.UI
             PostBox.SelectedValue = catalog?.Defaults?.Post;
             if (PostBox.SelectedItem == null && PostBox.Items.Count > 0) PostBox.SelectedIndex = 0;
 
-            BeamBox.ItemsSource = UiSupport.ToOptions(catalog?.BeamProfiles);
-            if (BeamBox.Items.Count > 0) BeamBox.SelectedIndex = 0;
+            CellBeamBox.ItemsSource = UiSupport.ToOptions(catalog?.BeamProfiles);
+            if (CellBeamBox.Items.Count > 0) CellBeamBox.SelectedIndex = 0;
+            defaultBeamId = CellBeamBox.SelectedValue as string;
 
+            InitMatrix(2, 4);
+            LoadCellEditor();
+            RenderMatrix();
             Recompute();
         }
 
-        private void Update_Click(object sender, RoutedEventArgs e) => Recompute();
+        // ---- Matrix model ----
+
+        /// <summary>One editable matrix cell (a bay's level): its pallet, count and beam.</summary>
+        private sealed class Cell
+        {
+            public double Frente = 40.0;
+            public double Alto = 60.0;
+            public int PalletCount = 2;
+            public string BeamId;
+            public double BeamPeralte = 4.0;
+
+            public Cell Clone() => (Cell)MemberwiseClone();
+
+            public void CopyFrom(Cell other)
+            {
+                Frente = other.Frente;
+                Alto = other.Alto;
+                PalletCount = other.PalletCount;
+                BeamId = other.BeamId;
+                BeamPeralte = other.BeamPeralte;
+            }
+        }
+
+        private enum Scope { Cell, Row, Column, All }
+
+        private Cell NewCell() => new Cell { BeamId = defaultBeamId, BeamPeralte = 4.0 };
+
+        private void InitMatrix(int bayCount, int levelCount)
+        {
+            bays.Clear();
+            for (var b = 0; b < bayCount; b++)
+            {
+                var column = new List<Cell>();
+                for (var l = 0; l < levelCount; l++) column.Add(NewCell());
+                bays.Add(column);
+            }
+
+            selBay = 0;
+            selLevel = 0;
+        }
+
+        /// <summary>Grow/shrink the matrix, preserving existing cells; new bays/levels inherit the neighbour's config.</summary>
+        private void ResizeMatrix(int bayCount, int levelCount)
+        {
+            while (bays.Count < bayCount)
+            {
+                var template = bays.Count > 0 ? bays[bays.Count - 1] : null;
+                var column = new List<Cell>();
+                for (var l = 0; l < levelCount; l++)
+                {
+                    column.Add(template != null && l < template.Count ? template[l].Clone() : NewCell());
+                }
+
+                bays.Add(column);
+            }
+
+            while (bays.Count > bayCount) bays.RemoveAt(bays.Count - 1);
+
+            foreach (var column in bays)
+            {
+                while (column.Count < levelCount)
+                {
+                    column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
+                }
+
+                while (column.Count > levelCount) column.RemoveAt(column.Count - 1);
+            }
+
+            selBay = Math.Min(Math.Max(0, selBay), bays.Count - 1);
+            selLevel = Math.Min(Math.Max(0, selLevel), (bays.Count > 0 ? bays[0].Count : 1) - 1);
+        }
+
+        private bool TryGetSelected(out Cell cell)
+        {
+            cell = null;
+            if (selBay < 0 || selBay >= bays.Count) return false;
+            var column = bays[selBay];
+            if (selLevel < 0 || selLevel >= column.Count) return false;
+            cell = column[selLevel];
+            return true;
+        }
+
+        // ---- Matrix rendering ----
+
+        private void RenderMatrix()
+        {
+            MatrixGrid.Children.Clear();
+            MatrixGrid.RowDefinitions.Clear();
+            MatrixGrid.ColumnDefinitions.Clear();
+
+            var bayCount = bays.Count;
+            var levelCount = bayCount > 0 ? bays[0].Count : 0;
+            if (bayCount == 0 || levelCount == 0) return;
+
+            MatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(64) });
+            for (var b = 0; b < bayCount; b++)
+                MatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(96) });
+
+            MatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            for (var r = 0; r < levelCount; r++)
+                MatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            AddToGrid(HeaderCell(string.Empty), 0, 0);
+            for (var b = 0; b < bayCount; b++)
+                AddToGrid(HeaderCell("Bahía " + (b + 1)), 0, b + 1);
+
+            // Top display row = highest level.
+            for (var displayRow = 0; displayRow < levelCount; displayRow++)
+            {
+                var level = levelCount - 1 - displayRow;
+                var gridRow = displayRow + 1;
+                AddToGrid(HeaderCell("Nivel " + (level + 1)), gridRow, 0);
+
+                for (var b = 0; b < bayCount; b++)
+                {
+                    AddToGrid(CellUi(bays[b][level], b, level), gridRow, b + 1);
+                }
+            }
+        }
+
+        private void AddToGrid(UIElement element, int row, int column)
+        {
+            Grid.SetRow(element, row);
+            Grid.SetColumn(element, column);
+            MatrixGrid.Children.Add(element);
+        }
+
+        private static TextBlock HeaderCell(string text) => new TextBlock
+        {
+            Text = text,
+            Foreground = LabelStroke,
+            FontSize = 11,
+            FontWeight = FontWeights.SemiBold,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(2)
+        };
+
+        private UIElement CellUi(Cell cell, int bay, int level)
+        {
+            var selected = bay == selBay && level == selLevel;
+            var border = new Border
+            {
+                Margin = new Thickness(2),
+                Background = selected ? CellSelFill : Brushes.White,
+                BorderBrush = selected ? CellSelStroke : CellStroke,
+                BorderThickness = new Thickness(selected ? 2 : 1),
+                Padding = new Thickness(6, 4, 6, 4),
+                Cursor = Cursors.Hand,
+                Child = new TextBlock
+                {
+                    Text = string.Format(CultureInfo.InvariantCulture, "{0:0.#}×{1:0.#}\n×{2} · P{3:0.#}",
+                        cell.Frente, cell.Alto, cell.PalletCount, cell.BeamPeralte),
+                    FontSize = 11,
+                    Foreground = CellText,
+                    TextAlignment = TextAlignment.Center
+                }
+            };
+
+            border.MouseLeftButtonUp += (s, e) => SelectCell(bay, level);
+            return border;
+        }
+
+        private void SelectCell(int bay, int level)
+        {
+            selBay = bay;
+            selLevel = level;
+            LoadCellEditor();
+            RenderMatrix();
+        }
+
+        private void LoadCellEditor()
+        {
+            if (!TryGetSelected(out var cell)) return;
+
+            CellHeader.Text = string.Format(CultureInfo.InvariantCulture, "Celda: Bahía {0} · Nivel {1}", selBay + 1, selLevel + 1);
+            FrenteBox.Text = cell.Frente.ToString("0.###", CultureInfo.InvariantCulture);
+            AltoBox.Text = cell.Alto.ToString("0.###", CultureInfo.InvariantCulture);
+            PalletCountBox.Text = cell.PalletCount.ToString(CultureInfo.InvariantCulture);
+            BeamPeralteBox.Text = cell.BeamPeralte.ToString("0.###", CultureInfo.InvariantCulture);
+            CellBeamBox.SelectedValue = cell.BeamId;
+        }
+
+        // ---- Events ----
+
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+            if (!ReadStructure(out var bayCount, out var levelCount, out var error))
+            {
+                SetStatus(error, true);
+                return;
+            }
+
+            ResizeMatrix(bayCount, levelCount);
+            LoadCellEditor();
+            RenderMatrix();
+            Recompute();
+        }
+
+        private void ApplyCell_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Cell);
+        private void ApplyRow_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Row);
+        private void ApplyColumn_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Column);
+        private void ApplyAll_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.All);
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+        private void ApplyScope(Scope scope)
+        {
+            if (!ReadCellEditor(out var values, out var error))
+            {
+                SetStatus(error, true);
+                return;
+            }
+
+            var levelCount = bays.Count > 0 ? bays[0].Count : 0;
+            for (var b = 0; b < bays.Count; b++)
+            {
+                for (var l = 0; l < levelCount; l++)
+                {
+                    var inScope =
+                        scope == Scope.All ||
+                        (scope == Scope.Cell && b == selBay && l == selLevel) ||
+                        (scope == Scope.Row && l == selLevel) ||
+                        (scope == Scope.Column && b == selBay);
+
+                    if (inScope) bays[b][l].CopyFrom(values);
+                }
+            }
+
+            RenderMatrix();
+            Recompute();
+        }
 
         private void InsertInAutoCad_Click(object sender, RoutedEventArgs e)
         {
@@ -78,7 +323,7 @@ namespace RackCad.UI
                 return;
             }
 
-            var system = ReadSystem(out var error);
+            var system = BuildSystem(out var error);
             if (system == null)
             {
                 SetStatus(error, true);
@@ -92,7 +337,7 @@ namespace RackCad.UI
 
         private void Recompute()
         {
-            var system = ReadSystem(out var error);
+            var system = BuildSystem(out var error);
             if (system == null)
             {
                 lastSystem = null;
@@ -110,22 +355,41 @@ namespace RackCad.UI
             DrawPreview();
         }
 
-        private SelectiveRackSystem ReadSystem(out string error)
+        // ---- Reading inputs ----
+
+        private bool ReadStructure(out int bayCount, out int levelCount, out string error)
+        {
+            bayCount = 0;
+            levelCount = 0;
+            error = null;
+            if (!TryInt(BayCountBox.Text, out bayCount) || bayCount < 1) { error = "Cantidad de bahias invalida."; return false; }
+            if (!TryInt(LevelsBox.Text, out levelCount) || levelCount < 1) { error = "Niveles invalidos."; return false; }
+            return true;
+        }
+
+        private bool ReadCellEditor(out Cell values, out string error)
+        {
+            values = null;
+            error = null;
+            if (!(CellBeamBox.SelectedValue is string beamId) || string.IsNullOrWhiteSpace(beamId)) { error = "Selecciona un larguero."; return false; }
+            if (!UiSupport.TryNum(FrenteBox.Text, out var frente) || frente <= 0.0) { error = "Frente de tarima invalido."; return false; }
+            if (!UiSupport.TryNum(AltoBox.Text, out var alto) || alto <= 0.0) { error = "Alto de tarima invalido."; return false; }
+            if (!TryInt(PalletCountBox.Text, out var count) || count < 1) { error = "Tarimas por nivel invalido."; return false; }
+            if (!UiSupport.TryNum(BeamPeralteBox.Text, out var peralte) || peralte <= 0.0) { error = "Peralte de larguero invalido."; return false; }
+
+            values = new Cell { Frente = frente, Alto = alto, PalletCount = count, BeamId = beamId, BeamPeralte = peralte };
+            return true;
+        }
+
+        private SelectiveRackSystem BuildSystem(out string error)
         {
             error = null;
-
             if (!(PostBox.SelectedValue is string postId) || string.IsNullOrWhiteSpace(postId)) { error = "Selecciona un poste."; return null; }
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste invalido."; return null; }
-            if (!(BeamBox.SelectedValue is string beamId) || string.IsNullOrWhiteSpace(beamId)) { error = "Selecciona un larguero."; return null; }
-            if (!UiSupport.TryNum(BeamPeralteBox.Text, out var beamPeralte) || beamPeralte <= 0.0) { error = "Peralte de larguero invalido."; return null; }
-            if (!UiSupport.TryNum(FrenteBox.Text, out var frente) || frente <= 0.0) { error = "Frente de tarima invalido."; return null; }
-            if (!UiSupport.TryNum(AltoBox.Text, out var alto) || alto <= 0.0) { error = "Alto de tarima invalido."; return null; }
-            if (!TryInt(PalletCountBox.Text, out var palletCount) || palletCount < 1) { error = "Tarimas por nivel invalido."; return null; }
-            if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1) { error = "Cantidad de bahias invalida."; return null; }
-            if (!TryInt(LevelsBox.Text, out var levels) || levels < 1) { error = "Niveles invalidos."; return null; }
             if (!UiSupport.TryNum(FirstLevelBox.Text, out var firstLevel) || firstLevel <= 0.0) { error = "1er nivel invalido."; return null; }
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
+            if (bays.Count == 0 || bays[0].Count == 0) { error = "Define bahias y niveles."; return null; }
 
             var design = new SelectivePalletDesign
             {
@@ -136,18 +400,17 @@ namespace RackCad.UI
                 FirstLevel = firstLevel
             };
 
-            // Phase-1 template: fill the whole bays × levels matrix with the same cell. Per-cell editing next.
-            for (var b = 0; b < bayCount; b++)
+            foreach (var column in bays)
             {
                 var bay = new SelectiveBayDesign();
-                for (var l = 0; l < levels; l++)
+                foreach (var cell in column)
                 {
                     bay.Levels.Add(new SelectiveCell
                     {
-                        Pallet = new Tarima { Frente = frente, Alto = alto },
-                        PalletCount = palletCount,
-                        BeamId = beamId,
-                        BeamPeralte = beamPeralte
+                        Pallet = new Tarima { Frente = cell.Frente, Alto = cell.Alto },
+                        PalletCount = cell.PalletCount,
+                        BeamId = cell.BeamId,
+                        BeamPeralte = cell.BeamPeralte
                     });
                 }
 
@@ -170,7 +433,7 @@ namespace RackCad.UI
 
             SummaryText.Text = string.Format(
                 CultureInfo.InvariantCulture,
-                "{0} bahías · {1} cabeceras · {2} largueros\nDerivado: larguero (A corte) {3:0.##}\" · separación {4:0.##}\" · altura {5:0.##}\"",
+                "{0} bahías · {1} cabeceras · {2} largueros\nDerivado (bahía 1): larguero {3:0.##}\" · sep. {4:0.##}\" · altura {5:0.##}\"",
                 lastSystem.Bays.Count, posts, beams, beamLength, separation, lastSystem.Height);
         }
 
