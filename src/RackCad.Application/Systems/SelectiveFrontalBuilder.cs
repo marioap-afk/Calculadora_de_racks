@@ -33,29 +33,19 @@ namespace RackCad.Application.Systems
 
             var view = SelectiveRackDefaults.View;
 
-            // Post's larguero troquel: X slides with the post peralte (Y is not needed here — levels are resolved).
-            var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = system.PostPeralte };
-            var troquel = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, view);
-            var troquelX = ResolveX(troquel, postParams);
+            // Post X positions + the post's larguero troquel X (shared with the lateral view so they line up).
+            var layout = SelectivePostGeometry.Compute(system, catalog);
+            var troquelX = layout.TroquelX;
+            var postX = layout.PostXs;
 
             var postBlock = Block(catalog, system.PostId, view);
             var defaultPlateId = catalog?.Defaults?.BasePlate;
-
-            // Post X positions. The larguero's LONGITUD is the profile "A corte", so the hooks sit an extra
-            // ménsula overhang (INICIO_PERFIL's X) beyond each profile end. Post-to-post therefore adds the
-            // troquel offset AND that overhang on both sides: post[i+1] = post[i] + length + 2*(troquelX + inicioX).
-            var postX = new List<double> { 0.0 };
-            foreach (var bay in system.Bays)
-            {
-                var inicioX = BeamProfileStartX(catalog, bay, view);
-                postX.Add(postX[postX.Count - 1] + bay.BeamLength + 2.0 * (troquelX + inicioX));
-            }
 
             // Cabeceras (posts) + their base plates. Each post is as tall as the tallest bay it touches.
             for (var i = 0; i < postX.Count; i++)
             {
                 var origin = new Point2D(postX[i], 0.0);
-                var postHeight = PostHeight(system, i);
+                var postHeight = SelectivePostGeometry.PostHeight(system, i);
 
                 var post = new HeaderBlockInstance
                 {
@@ -120,52 +110,6 @@ namespace RackCad.Application.Systems
             }
 
             return instances;
-        }
-
-        /// <summary>Height of post <paramref name="postIndex"/> = the tallest of the (up to two) bays it bounds.</summary>
-        private static double PostHeight(SelectiveRackSystem system, int postIndex)
-        {
-            var bays = system.Bays;
-            var h = 0.0;
-            if (postIndex - 1 >= 0 && postIndex - 1 < bays.Count) h = Math.Max(h, bays[postIndex - 1].Height); // bay to the left
-            if (postIndex >= 0 && postIndex < bays.Count) h = Math.Max(h, bays[postIndex].Height);              // bay to the right
-            return h > 0.0 ? h : system.Height;
-        }
-
-        /// <summary>
-        /// The bay's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); 0 if unset. Post
-        /// spacing is per bay, so it uses the bay's first level as the representative beam (all largueros of a
-        /// bay share one length and connector).
-        /// </summary>
-        private static double BeamProfileStartX(RackCatalog catalog, SelectiveBay bay, string view)
-        {
-            if (bay.Levels.Count == 0)
-            {
-                return 0.0;
-            }
-
-            var level = bay.Levels[0];
-            var entry = catalog?.ConnectionLayout.FindConnectionLayout(level.BeamId, SelectiveRackDefaults.BeamProfileStartPoint, view);
-            var beamParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = level.BeamPeralte };
-            return ResolveX(entry, beamParams);
-        }
-
-        /// <summary>X of a connection point resolved for the given block parameters (X = localX + slope*param).</summary>
-        private static double ResolveX(ConnectionLayoutEntry entry, IReadOnlyDictionary<string, double> parameters)
-        {
-            if (entry == null)
-            {
-                return 0.0;
-            }
-
-            var x = entry.LocalX;
-            if (entry.LocalXPorParam != 0.0 && !string.IsNullOrWhiteSpace(entry.Param)
-                && parameters != null && parameters.TryGetValue(entry.Param, out var value))
-            {
-                x += entry.LocalXPorParam * value;
-            }
-
-            return x;
         }
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)

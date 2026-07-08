@@ -84,6 +84,9 @@
                     </Grid>
                     <TextBlock Text="Elevación larguero a piso (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FloorRiseBox" Style="{StaticResource FieldBox}" Text="4" />
+                    <TextBlock Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48"
+                             ToolTip="Profundidad de la tarima; define el fondo de las cabeceras en la vista lateral." />
 
                     <Button Content="Actualizar tramo" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
                             HorizontalAlignment="Left" Margin="0,12,0,0" IsDefault="True"

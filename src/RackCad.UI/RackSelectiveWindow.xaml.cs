@@ -684,6 +684,7 @@ namespace RackCad.UI
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
             if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevacion de larguero a piso invalida."; return null; }
+            if (!UiSupport.TryNum(FondoBox.Text, out var fondo) || fondo <= 0.0) { error = "Fondo de tarima invalido."; return null; }
             if (bays.Count == 0 || bays[0].Count == 0) { error = "Define frentes y niveles."; return null; }
 
             var design = new SelectivePalletDesign
@@ -692,7 +693,8 @@ namespace RackCad.UI
                 PostPeralte = postPeralte,
                 PalletTolerance = tolerance,
                 VerticalClearance = clearance,
-                FloorBeamRise = floorRise
+                FloorBeamRise = floorRise,
+                PalletDepth = fondo
             };
 
             for (var b = 0; b < bays.Count; b++)
@@ -744,6 +746,7 @@ namespace RackCad.UI
             ToleranceBox.Text = design.PalletTolerance.ToString("0.###", CultureInfo.InvariantCulture);
             ClearanceBox.Text = design.VerticalClearance.ToString("0.###", CultureInfo.InvariantCulture);
             FloorRiseBox.Text = design.FloorBeamRise.ToString("0.###", CultureInfo.InvariantCulture);
+            FondoBox.Text = (design.PalletDepth > 0.0 ? design.PalletDepth : 48.0).ToString("0.###", CultureInfo.InvariantCulture);
 
             bays.Clear();
             floorBeams.Clear();

@@ -26,6 +26,7 @@ namespace RackCad.Application.Persistence
         public double PalletTolerance { get; set; }
         public double VerticalClearance { get; set; }
         public double FloorBeamRise { get; set; }
+        public double PalletDepth { get; set; }
 
         public List<SelectiveBayDocument> Bays { get; set; } = new List<SelectiveBayDocument>();
 
@@ -47,7 +48,8 @@ namespace RackCad.Application.Persistence
                 PostPeralte = design.PostPeralte,
                 PalletTolerance = design.PalletTolerance,
                 VerticalClearance = design.VerticalClearance,
-                FloorBeamRise = design.FloorBeamRise
+                FloorBeamRise = design.FloorBeamRise,
+                PalletDepth = design.PalletDepth
             };
 
             foreach (var bay in design.Bays)
@@ -71,7 +73,8 @@ namespace RackCad.Application.Persistence
                 PostPeralte = PostPeralte,
                 PalletTolerance = PalletTolerance,
                 VerticalClearance = VerticalClearance,
-                FloorBeamRise = FloorBeamRise
+                FloorBeamRise = FloorBeamRise,
+                PalletDepth = PalletDepth > 0.0 ? PalletDepth : 48.0 // legacy docs had no fondo
             };
 
             foreach (var bay in Bays ?? Enumerable.Empty<SelectiveBayDocument>())

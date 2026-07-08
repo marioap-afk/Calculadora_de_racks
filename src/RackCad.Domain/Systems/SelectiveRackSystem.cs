@@ -21,6 +21,9 @@ namespace RackCad.Domain.Systems
         /// <summary>Peralte of the post (drives the larguero troquel X via the parametric mate).</summary>
         public double PostPeralte { get; set; }
 
+        /// <summary>Pallet depth / fondo (in): the cabeceras' depth in the LATERAL view.</summary>
+        public double PalletDepth { get; set; }
+
         /// <summary>The bays, left to right. N bays sit between N+1 cabeceras.</summary>
         public IList<SelectiveBay> Bays { get; } = new List<SelectiveBay>();
 

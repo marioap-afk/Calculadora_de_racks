@@ -37,6 +37,7 @@ namespace RackCad.Application.Systems
 
             system.PostId = design.PostId;
             system.PostPeralte = design.PostPeralte;
+            system.PalletDepth = design.PalletDepth;
 
             var paso = SelectiveRackDefaults.TroquelPaso;
             var tolerance = design.PalletTolerance;
