@@ -123,6 +123,16 @@ namespace RackCad.Application.Catalogs
         public double Thickness { get; set; }
         public string Units { get; set; }
         public double WeightEach { get; set; }
+
+        // ---- Standard peralte, derived from the mating post ----
+        /// <summary>Base term of the plate PERALTE: <c>peralte = PeralteBase + PeraltePorPeraltePoste * postPeralte</c>.</summary>
+        public double PeralteBase { get; set; }
+
+        /// <summary>Slope: plate PERALTE gained per unit of post peralte (1 = "post + base"; 0 = a fixed peralte).</summary>
+        public double PeraltePorPeraltePoste { get; set; }
+
+        /// <summary>The standard plate PERALTE for a post of <paramref name="postPeralte"/> (the advanced editor may override this).</summary>
+        public double StandardPeralte(double postPeralte) => PeralteBase + PeraltePorPeraltePoste * postPeralte;
     }
 
     /// <summary>

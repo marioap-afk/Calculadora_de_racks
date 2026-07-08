@@ -41,6 +41,10 @@ namespace RackCad.Application.Systems
             var plateBlock = Block(catalog, plateId, view);
             var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
 
+            // Standard plate peralte, derived from the post peralte (the advanced editor may override later).
+            var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
+            var platePeralte = plateEntry?.StandardPeralte(system.PostPeralte) ?? 0.0;
+
             // Post X positions: post[i+1] = post[i] + larguero length + 2*troquelX.
             var postX = new List<double> { 0.0 };
             foreach (var bay in system.Bays)
@@ -66,8 +70,8 @@ namespace RackCad.Application.Systems
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = system.PostPeralte;
                 instances.Add(post);
 
-                // Base plate: its MONTAJE_POSTE lands on the post origin.
-                instances.Add(new HeaderBlockInstance
+                // Base plate: its MONTAJE_POSTE lands on the post origin; PERALTE derived from the post.
+                var plate = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.BasePlate,
                     PieceId = plateId,
@@ -75,7 +79,12 @@ namespace RackCad.Application.Systems
                     View = view,
                     ConnectionAnchor = origin,
                     Insertion = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y)
-                });
+                };
+                if (platePeralte > 0.0)
+                {
+                    plate.DynamicParameters[SelectiveRackDefaults.PeralteParam] = platePeralte;
+                }
+                instances.Add(plate);
             }
 
             // Largueros: one per level, at the left post's troquel X, stepping up the troquel grid.

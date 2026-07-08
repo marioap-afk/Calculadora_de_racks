@@ -87,6 +87,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_Plate_PeralteIsTheStandardDerivedFromThePost()
+        {
+            var plateEntry = Catalog.BasePlates.FindBasePlate(Catalog.Defaults.BasePlate);
+
+            var plate = new SelectiveFrontalBuilder().Build(System(3.0), Catalog)
+                .First(i => i.Role == HeaderBlockRole.BasePlate);
+
+            // Standard plate peralte = peralteBase + peraltePorPeraltePoste * postPeralte (read from base-plates.csv).
+            Assert.Equal(plateEntry.StandardPeralte(3.0), plate.DynamicParameters["PERALTE"], 4);
+        }
+
+        [Fact]
         public void Build_Levels_SnapToTheTroquelGrid()
         {
             var ys = new SelectiveFrontalBuilder().Build(System(), Catalog)
