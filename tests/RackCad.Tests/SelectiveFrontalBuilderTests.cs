@@ -30,6 +30,17 @@ namespace RackCad.Tests
             return system;
         }
 
+        /// <summary>The post's larguero-troquel X resolved from the catalog (base + slope*peralte); never hardcoded.</summary>
+        private static double TroquelX(double peralte)
+        {
+            var entry = Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "FRONTAL");
+            return entry.LocalX + entry.LocalXPorParam * peralte;
+        }
+
+        private static double FirstBeamX(double postPeralte)
+            => new SelectiveFrontalBuilder().Build(System(postPeralte), Catalog)
+                .First(i => i.Role == HeaderBlockRole.Beam).Insertion.X;
+
         [Fact]
         public void Build_ProducesOnePostAndPlatePerCabecera_PlusOneBeamPerLevel()
         {
@@ -48,21 +59,21 @@ namespace RackCad.Tests
                 .OrderBy(i => i.Insertion.X)
                 .ToList();
 
-            // troquelX(peralte 3) = 0.7498 + 0.5*3 = 2.2498 ; spacing = 100 + 2*2.2498
+            // Post-to-post = larguero length (100) + 2*troquelX, read from the catalog.
             Assert.Equal(0.0, posts[0].Insertion.X, 4);
-            Assert.Equal(104.4996, posts[1].Insertion.X, 4);
+            Assert.Equal(100.0 + 2.0 * TroquelX(3.0), posts[1].Insertion.X, 4);
         }
 
-        [Theory]
-        [InlineData(3.0, 2.2498)]
-        [InlineData(5.0, 3.2498)]
-        public void Build_BeamX_FollowsPostPeralte(double postPeralte, double expectedX)
+        [Fact]
+        public void Build_BeamX_FollowsPostPeralte_PerTheCatalog()
         {
-            var beam = new SelectiveFrontalBuilder().Build(System(postPeralte), Catalog)
-                .First(i => i.Role == HeaderBlockRole.Beam);
+            var x3 = FirstBeamX(3.0);
+            var x5 = FirstBeamX(5.0);
 
-            // The parametric mate: X = 0.7498 + 0.5 * peralte.
-            Assert.Equal(expectedX, beam.Insertion.X, 4);
+            // Resolved from the catalog (X = localX + localXPorParam * peralte), and the slope is applied.
+            Assert.Equal(TroquelX(3.0), x3, 4);
+            Assert.Equal(TroquelX(5.0), x5, 4);
+            Assert.True(x5 > x3);
         }
 
         [Fact]
