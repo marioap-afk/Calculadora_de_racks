@@ -26,6 +26,9 @@ namespace RackCad.Domain.Systems
         /// <summary>Vertical clearance ("holgura") above a pallet inside its clear opening (in). Editable; default 6".</summary>
         public double VerticalClearance { get; set; } = 6.0;
 
+        /// <summary>How far a "larguero a piso" sits above the lowest troquel (in), so its ménsula clears the base plate. Editable; default 4".</summary>
+        public double FloorBeamRise { get; set; } = 4.0;
+
         /// <summary>The bays, left to right. Each carries its own column of level cells (its own count).</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
     }

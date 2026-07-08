@@ -32,6 +32,10 @@ namespace RackCad.Tests
         private static double FirstBeamNoFloor(double groundAlto)
             => SnapUp(RoundUp(groundAlto + 6.0, 2.0));
 
+        /// <summary>The larguero's INICIO_PERFIL Y (escalón height where the pallet rests), from the catalog.</summary>
+        private static double BeamStartY()
+            => Catalog.ConnectionLayout.FindConnectionLayout(BeamId, "INICIO_PERFIL", "FRONTAL").LocalY;
+
         private static SelectiveCell Cell(double frente, double alto, int count, double beamPeralte)
             => new SelectiveCell
             {
@@ -113,12 +117,24 @@ namespace RackCad.Tests
         [Fact]
         public void FloorBeamOn_GroundBeamRisesAboveTheLowestTroquel()
         {
-            var bay = ResolveBay(Design(true, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4)));
+            var design = Design(true, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4));
+            var bay = new SelectiveGeometryResolver().Resolve(design, Catalog).Bays[0];
 
             // 2 niveles con larguero a piso -> 2 largueros; el de piso sube FloorBeamRise para librar la placa.
             Assert.Equal(2, bay.Levels.Count);
-            Assert.Equal(GridBase() + SelectiveGeometryResolver.FloorBeamRise, bay.Levels[0].Y, 4);
-            Assert.Equal(GridBase() + SelectiveGeometryResolver.FloorBeamRise + Separation(60.0, 4.0), bay.Levels[1].Y, 4);
+            Assert.Equal(GridBase() + design.FloorBeamRise, bay.Levels[0].Y, 4);
+            Assert.Equal(GridBase() + design.FloorBeamRise + Separation(60.0, 4.0), bay.Levels[1].Y, 4);
+        }
+
+        [Fact]
+        public void FloorBeamRise_IsEditable()
+        {
+            var design = Design(true, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4));
+            design.FloorBeamRise = 8.0;
+
+            var bay = new SelectiveGeometryResolver().Resolve(design, Catalog).Bays[0];
+
+            Assert.Equal(GridBase() + 8.0, bay.Levels[0].Y, 4);
         }
 
         [Fact]
@@ -140,13 +156,25 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void PostHeight_IsTopBeamPlusPalletThirdRoundedUpToFoot()
+        public void PostHeight_IsTopLoadSurfacePlusPalletThirdRoundedUpToFoot()
         {
             var system = new SelectiveGeometryResolver().Resolve(
                 Design(false, Cell(40, 60, 1, 4), Cell(40, 60, 1, 4)), Catalog);
 
-            var topY = system.Bays[0].Levels.Last().Y;
-            Assert.Equal(RoundUpFoot(topY + 60.0 / 3.0), system.Height, 4);
+            // The pallet rests on the beam's escalón (BeamStartY above the troquel); the third is measured from there.
+            var loadSurface = system.Bays[0].Levels.Last().Y + BeamStartY();
+            Assert.Equal(RoundUpFoot(loadSurface + 60.0 / 3.0), system.Height, 4);
+        }
+
+        [Fact]
+        public void PostHeight_CoversAtLeastAThirdOfTheTopPalletAboveItsLoadSurface()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design(true, Cell(40, 60, 1, 4), Cell(40, 60, 1, 4), Cell(40, 60, 1, 4)), Catalog);
+
+            var top = system.Bays[0].Levels.Last();
+            var loadSurface = top.Y + BeamStartY();
+            Assert.True(system.Height - loadSurface >= 60.0 / 3.0 - 1e-6);
         }
 
         [Fact]
@@ -167,7 +195,7 @@ namespace RackCad.Tests
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
 
-            var tallTop = system.Bays[1].Levels.Last().Y + 40.0 / 3.0;
+            var tallTop = system.Bays[1].Levels.Last().Y + BeamStartY() + 40.0 / 3.0;
             Assert.Equal(RoundUpFoot(tallTop), system.Height, 4);
         }
 
@@ -189,8 +217,8 @@ namespace RackCad.Tests
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
 
-            Assert.Equal(RoundUpFoot(system.Bays[0].Levels.Last().Y + 40.0 / 3.0), system.Bays[0].Height, 4);
-            Assert.Equal(RoundUpFoot(system.Bays[1].Levels.Last().Y + 40.0 / 3.0), system.Bays[1].Height, 4);
+            Assert.Equal(RoundUpFoot(system.Bays[0].Levels.Last().Y + BeamStartY() + 40.0 / 3.0), system.Bays[0].Height, 4);
+            Assert.Equal(RoundUpFoot(system.Bays[1].Levels.Last().Y + BeamStartY() + 40.0 / 3.0), system.Bays[1].Height, 4);
             Assert.True(system.Bays[1].Height > system.Bays[0].Height);
         }
     }

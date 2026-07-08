@@ -27,9 +27,6 @@ namespace RackCad.Application.Systems
         /// <summary>Inches in a foot (post height rounds up to this).</summary>
         public const double FootInches = 12.0;
 
-        /// <summary>How far a "larguero a piso" sits above the lowest troquel (in), so its ménsula clears the base plate.</summary>
-        public const double FloorBeamRise = 4.0;
-
         public SelectiveRackSystem Resolve(SelectivePalletDesign design, RackCatalog catalog)
         {
             var system = new SelectiveRackSystem();
@@ -68,14 +65,14 @@ namespace RackCad.Application.Systems
                 int start;
                 if (bayDesign.FloorBeam)
                 {
-                    // The floor larguero sits FloorBeamRise above the lowest troquel so its ménsula clears the base plate.
-                    y = gridBase + FloorBeamRise;
+                    // The floor larguero rises FloorBeamRise above the lowest troquel so its ménsula clears the base plate.
+                    y = gridBase + design.FloorBeamRise;
                     AddBeam(bay, y, levels[0]);
                     start = 1;
                 }
                 else if (levels.Count == 1)
                 {
-                    // Only a ground pallet, no larguero: the post still covers a third of that pallet.
+                    // Only a ground pallet on the floor, no larguero: the post covers a third of it, measured from the floor.
                     bay.Height = RoundUpToFoot(PalletAlto(levels[0]) / 3.0);
                     height = Math.Max(height, bay.Height);
                     system.Bays.Add(bay);
@@ -96,8 +93,11 @@ namespace RackCad.Application.Systems
                     AddBeam(bay, y, levels[j]);
                 }
 
-                // Height this bay needs (top beam Y + a third of its pallet); the run's overall height is the tallest.
-                bay.Height = RoundUpToFoot(y + PalletAlto(levels[levels.Count - 1]) / 3.0);
+                // Height this bay needs. The top pallet rests on the beam's escalón (INICIO_PERFIL's Y above the
+                // troquel), so the third-of-the-pallet coverage is measured from THAT surface, not the troquel.
+                var top = levels[levels.Count - 1];
+                var loadSurface = y + BeamProfileStartY(catalog, top.BeamId, SelectiveRackDefaults.View);
+                bay.Height = RoundUpToFoot(loadSurface + PalletAlto(top) / 3.0);
                 height = Math.Max(height, bay.Height);
                 system.Bays.Add(bay);
             }
@@ -110,6 +110,10 @@ namespace RackCad.Application.Systems
             => bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = cell.BeamId, BeamPeralte = cell.BeamPeralte });
 
         private static double PalletAlto(SelectiveCell cell) => cell.Pallet?.Alto ?? 0.0;
+
+        /// <summary>The larguero's INICIO_PERFIL Y (the escalón height above the troquel where the pallet rests); 0 if unset.</summary>
+        private static double BeamProfileStartY(RackCatalog catalog, string beamId, string view)
+            => catalog?.ConnectionLayout.FindConnectionLayout(beamId, SelectiveRackDefaults.BeamProfileStartPoint, view)?.LocalY ?? 0.0;
 
         /// <summary>Bay beam LONGITUD = the widest level's Frente*Count + Tolerance*(Count+1).</summary>
         private static double BayBeamLength(SelectiveBayDesign bay, double tolerance)

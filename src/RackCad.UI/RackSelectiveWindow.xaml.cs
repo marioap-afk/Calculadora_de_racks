@@ -480,6 +480,7 @@ namespace RackCad.UI
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste invalido."; return null; }
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
+            if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevacion de larguero a piso invalida."; return null; }
             if (bays.Count == 0 || bays[0].Count == 0) { error = "Define bahias y niveles."; return null; }
 
             var design = new SelectivePalletDesign
@@ -487,7 +488,8 @@ namespace RackCad.UI
                 PostId = postId,
                 PostPeralte = postPeralte,
                 PalletTolerance = tolerance,
-                VerticalClearance = clearance
+                VerticalClearance = clearance,
+                FloorBeamRise = floorRise
             };
 
             for (var b = 0; b < bays.Count; b++)
