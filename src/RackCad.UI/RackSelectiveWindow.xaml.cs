@@ -595,8 +595,10 @@ namespace RackCad.UI
                 switch (instance.Role)
                 {
                     case HeaderBlockRole.Post:
-                        var pTop = Map(instance.Insertion.X - postWidth / 2.0, height);
-                        AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, height * mapScale, PostBrush, 1.6, PostFill);
+                        var postH = Param(instance, "LONGITUD");
+                        if (postH <= 0.0) postH = height;
+                        var pTop = Map(instance.Insertion.X - postWidth / 2.0, postH);
+                        AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, postH * mapScale, PostBrush, 1.6, PostFill);
                         break;
                     case HeaderBlockRole.Beam:
                         var length = Param(instance, "LONGITUD");

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Geometry;
@@ -56,10 +57,11 @@ namespace RackCad.Application.Systems
                 postX.Add(postX[postX.Count - 1] + bay.BeamLength + 2.0 * (troquelX + inicioX));
             }
 
-            // Cabeceras (posts) + their base plates.
-            foreach (var x in postX)
+            // Cabeceras (posts) + their base plates. Each post is as tall as the tallest bay it touches.
+            for (var i = 0; i < postX.Count; i++)
             {
-                var origin = new Point2D(x, 0.0);
+                var origin = new Point2D(postX[i], 0.0);
+                var postHeight = PostHeight(system, i);
 
                 var post = new HeaderBlockInstance
                 {
@@ -70,7 +72,7 @@ namespace RackCad.Application.Systems
                     Insertion = origin,
                     ConnectionAnchor = origin
                 };
-                post.DynamicParameters[SelectiveRackDefaults.LengthParam] = system.Height;
+                post.DynamicParameters[SelectiveRackDefaults.LengthParam] = postHeight;
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = system.PostPeralte;
                 instances.Add(post);
 
@@ -116,6 +118,16 @@ namespace RackCad.Application.Systems
             }
 
             return instances;
+        }
+
+        /// <summary>Height of post <paramref name="postIndex"/> = the tallest of the (up to two) bays it bounds.</summary>
+        private static double PostHeight(SelectiveRackSystem system, int postIndex)
+        {
+            var bays = system.Bays;
+            var h = 0.0;
+            if (postIndex - 1 >= 0 && postIndex - 1 < bays.Count) h = Math.Max(h, bays[postIndex - 1].Height); // bay to the left
+            if (postIndex >= 0 && postIndex < bays.Count) h = Math.Max(h, bays[postIndex].Height);              // bay to the right
+            return h > 0.0 ? h : system.Height;
         }
 
         /// <summary>

@@ -27,9 +27,10 @@ namespace RackCad.Tests
         private static double Separation(double alto, double peralte)
             => Math.Max(2.0, RoundUp(RoundUp(alto + 6.0, 2.0) + peralte, 2.0));
 
-        /// <summary>Y of the first larguero when there is no floor beam: snapped up onto the grid above the ground pallet.</summary>
-        private static double FirstBeamNoFloor(double groundAlto, double firstBeamPeralte)
-            => SnapUp(RoundUp(groundAlto + 6.0, 2.0) + firstBeamPeralte);
+        /// <summary>Y of the first larguero when there is no floor beam: the pallet is on the floor, so the
+        /// beam only clears (alto + holgura) — no peralte term — snapped up onto the grid.</summary>
+        private static double FirstBeamNoFloor(double groundAlto)
+            => SnapUp(RoundUp(groundAlto + 6.0, 2.0));
 
         private static SelectiveCell Cell(double frente, double alto, int count, double beamPeralte)
             => new SelectiveCell
@@ -105,18 +106,19 @@ namespace RackCad.Tests
         {
             var bay = ResolveBay(Design(false, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4)));
 
-            Assert.Equal(FirstBeamNoFloor(60.0, 4.0), bay.Levels[0].Y, 4);
+            // No peralte term: the ground pallet is on the floor, so the beam just clears alto + holgura.
+            Assert.Equal(FirstBeamNoFloor(60.0), bay.Levels[0].Y, 4);
         }
 
         [Fact]
-        public void FloorBeamOn_GroundBeamSitsAtTheLowestTroquel()
+        public void FloorBeamOn_GroundBeamRisesAboveTheLowestTroquel()
         {
             var bay = ResolveBay(Design(true, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4)));
 
-            // 2 niveles con larguero a piso -> 2 largueros; el primero en el troquel más bajo.
+            // 2 niveles con larguero a piso -> 2 largueros; el de piso sube FloorBeamRise para librar la placa.
             Assert.Equal(2, bay.Levels.Count);
-            Assert.Equal(GridBase(), bay.Levels[0].Y, 4);
-            Assert.Equal(GridBase() + Separation(60.0, 4.0), bay.Levels[1].Y, 4);
+            Assert.Equal(GridBase() + SelectiveGeometryResolver.FloorBeamRise, bay.Levels[0].Y, 4);
+            Assert.Equal(GridBase() + SelectiveGeometryResolver.FloorBeamRise + Separation(60.0, 4.0), bay.Levels[1].Y, 4);
         }
 
         [Fact]
@@ -167,6 +169,29 @@ namespace RackCad.Tests
 
             var tallTop = system.Bays[1].Levels.Last().Y + 40.0 / 3.0;
             Assert.Equal(RoundUpFoot(tallTop), system.Height, 4);
+        }
+
+        [Fact]
+        public void BayHeight_IsSetPerBaySoPostsCanDiffer()
+        {
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0 };
+
+            var shortBay = new SelectiveBayDesign { FloorBeam = true };
+            shortBay.Levels.Add(Cell(40, 40, 1, 4));
+
+            var tallBay = new SelectiveBayDesign { FloorBeam = true };
+            tallBay.Levels.Add(Cell(40, 40, 1, 4));
+            tallBay.Levels.Add(Cell(40, 40, 1, 4));
+            tallBay.Levels.Add(Cell(40, 40, 1, 4));
+
+            design.Bays.Add(shortBay);
+            design.Bays.Add(tallBay);
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            Assert.Equal(RoundUpFoot(system.Bays[0].Levels.Last().Y + 40.0 / 3.0), system.Bays[0].Height, 4);
+            Assert.Equal(RoundUpFoot(system.Bays[1].Levels.Last().Y + 40.0 / 3.0), system.Bays[1].Height, 4);
+            Assert.True(system.Bays[1].Height > system.Bays[0].Height);
         }
     }
 }

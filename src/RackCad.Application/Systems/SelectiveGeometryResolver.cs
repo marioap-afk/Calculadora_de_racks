@@ -27,6 +27,9 @@ namespace RackCad.Application.Systems
         /// <summary>Inches in a foot (post height rounds up to this).</summary>
         public const double FootInches = 12.0;
 
+        /// <summary>How far a "larguero a piso" sits above the lowest troquel (in), so its ménsula clears the base plate.</summary>
+        public const double FloorBeamRise = 4.0;
+
         public SelectiveRackSystem Resolve(SelectivePalletDesign design, RackCatalog catalog)
         {
             var system = new SelectiveRackSystem();
@@ -65,20 +68,24 @@ namespace RackCad.Application.Systems
                 int start;
                 if (bayDesign.FloorBeam)
                 {
-                    y = gridBase;
+                    // The floor larguero sits FloorBeamRise above the lowest troquel so its ménsula clears the base plate.
+                    y = gridBase + FloorBeamRise;
                     AddBeam(bay, y, levels[0]);
                     start = 1;
                 }
                 else if (levels.Count == 1)
                 {
                     // Only a ground pallet, no larguero: the post still covers a third of that pallet.
-                    height = Math.Max(height, RoundUpToFoot(PalletAlto(levels[0]) / 3.0));
+                    bay.Height = RoundUpToFoot(PalletAlto(levels[0]) / 3.0);
+                    height = Math.Max(height, bay.Height);
                     system.Bays.Add(bay);
                     continue;
                 }
                 else
                 {
-                    y = SnapUp(RoundUpToMultiple(PalletAlto(levels[0]) + clearance, 2.0) + levels[1].BeamPeralte, gridBase, paso);
+                    // Ground pallet on the floor: the first larguero only needs to clear the pallet + holgura above
+                    // the FLOOR — there is no beam under it, so no peralte term — snapped up onto the grid.
+                    y = SnapUp(RoundUpToMultiple(PalletAlto(levels[0]) + clearance, 2.0), gridBase, paso);
                     AddBeam(bay, y, levels[1]);
                     start = 2;
                 }
@@ -89,8 +96,9 @@ namespace RackCad.Application.Systems
                     AddBeam(bay, y, levels[j]);
                 }
 
-                // Post height from the top level (its beam Y + a third of its pallet); the run takes the tallest.
-                height = Math.Max(height, RoundUpToFoot(y + PalletAlto(levels[levels.Count - 1]) / 3.0));
+                // Height this bay needs (top beam Y + a third of its pallet); the run's overall height is the tallest.
+                bay.Height = RoundUpToFoot(y + PalletAlto(levels[levels.Count - 1]) / 3.0);
+                height = Math.Max(height, bay.Height);
                 system.Bays.Add(bay);
             }
 

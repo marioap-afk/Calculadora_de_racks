@@ -21,7 +21,7 @@ namespace RackCad.Tests
         private static SelectiveRackSystem System(double postPeralte = 3.0)
         {
             var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = postPeralte };
-            var bay = new SelectiveBay { BeamLength = 100.0 };
+            var bay = new SelectiveBay { BeamLength = 100.0, Height = 240.0 };
             foreach (var y in LevelYs)
             {
                 bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = BeamId, BeamPeralte = 4.0 });
@@ -105,6 +105,27 @@ namespace RackCad.Tests
 
             // Standard plate peralte = peralteBase + peraltePorPeraltePoste * postPeralte (read from base-plates.csv).
             Assert.Equal(plateEntry.StandardPeralte(3.0), plate.DynamicParameters["PERALTE"], 4);
+        }
+
+        [Fact]
+        public void Build_PostHeight_IsTallestAdjacentBay()
+        {
+            var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = 3.0 };
+            var tallBay = new SelectiveBay { BeamLength = 100.0, Height = 240.0 };
+            tallBay.Levels.Add(new SelectiveLevel { Y = 48.0, BeamId = BeamId, BeamPeralte = 4.0 });
+            var shortBay = new SelectiveBay { BeamLength = 100.0, Height = 120.0 };
+            shortBay.Levels.Add(new SelectiveLevel { Y = 48.0, BeamId = BeamId, BeamPeralte = 4.0 });
+            system.Bays.Add(tallBay);
+            system.Bays.Add(shortBay);
+
+            var heights = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Post)
+                .OrderBy(i => i.Insertion.X)
+                .Select(i => i.DynamicParameters["LONGITUD"])
+                .ToList();
+
+            // 3 postes: post0 solo toca la bahía alta (240); post1 toca ambas → máx (240); post2 solo la baja (120).
+            Assert.Equal(new[] { 240.0, 240.0, 120.0 }, heights);
         }
 
         [Fact]
