@@ -1,2 +1,2 @@
-id,displayName,family,peraltes,width,thickness,units,gauge,mensula,weightPerMeter,material,partNumber
-LARGUERO_ESTANDAR_CAL14,Larguero estÃ¡ndar calibre 14,Larguero,3;3.5;4;4.5;5,1.5,0.0747,in,14,MENSULA_3_REMACHES_CAL_10,,,
+id,displayName,family,peraltes,width,thickness,units,gauge,mensula,material,partNumber
+LARGUERO_ESCALON_CAL14_3_REMACHES,Larguero escalón calibre 14 con ménsula 3 remaches,Larguero,3;3.5;4;4.5;5;5.5;6,,0.0747,in,14,MENSULA_3_REMACHES_CAL_10,,
