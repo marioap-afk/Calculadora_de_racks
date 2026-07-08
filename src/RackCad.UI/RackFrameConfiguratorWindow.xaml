@@ -507,6 +507,9 @@
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Placa asociada" Style="{StaticResource PropertyLabelStyle}" />
                                     <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding BasePlateOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding LeftPlateCatalogId, Mode=TwoWay}" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="Peralte placa" Style="{StaticResource PropertyLabelStyle}" />
+                                    <TextBox Grid.Row="2" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding LeftPlatePeralte, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ToolTip="Peralte de la placa (in). Vacío = derivado del poste." />
                                 </Grid>
                             </Border>
 
@@ -548,6 +551,9 @@
 
                                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Placa asociada" Style="{StaticResource PropertyLabelStyle}" />
                                     <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyComboBoxStyle}" ItemsSource="{Binding BasePlateOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding RightPlateCatalogId, Mode=TwoWay}" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="3" Text="Peralte placa" Style="{StaticResource PropertyLabelStyle}" />
+                                    <TextBox Grid.Row="2" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding RightPlatePeralte, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ToolTip="Peralte de la placa (in). Vacío = derivado del poste." />
                                 </Grid>
                             </Border>
 

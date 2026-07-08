@@ -103,6 +103,19 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void PlatePeralteOverride_SetsThePlatePeralteParameter_OnlyWhenPresent()
+        {
+            var configuration = StandardConfiguration();
+            configuration.LeftBasePlate.PeralteOverride = 5.0; // right stays derived (null)
+
+            var plates = Build(configuration).OfRole(HeaderBlockRole.BasePlate).ToList();
+
+            var withPeralte = plates.Where(p => p.DynamicParameters.ContainsKey("PERALTE")).ToList();
+            Assert.Single(withPeralte);
+            Assert.Equal(5.0, withPeralte[0].DynamicParameters["PERALTE"], 4);
+        }
+
+        [Fact]
         public void Build_RightPost_IsMirroredAtDepth()
         {
             var layout = Build(StandardConfiguration());

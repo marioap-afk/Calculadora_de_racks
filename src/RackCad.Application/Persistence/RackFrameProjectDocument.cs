@@ -136,13 +136,17 @@ namespace RackCad.Application.Persistence
         public string Description { get; set; }
         public string ConnectionPointId { get; set; }
 
+        /// <summary>Manual plate PERALTE override (in). Null in legacy files → derived from the post.</summary>
+        public double? PeralteOverride { get; set; }
+
         public static PlateDocument From(BasePlatePlacement plate)
         {
             return plate == null ? null : new PlateDocument
             {
                 PlateCatalogId = plate.PlateCatalogId,
                 Description = plate.Description,
-                ConnectionPointId = plate.ConnectionPointId
+                ConnectionPointId = plate.ConnectionPointId,
+                PeralteOverride = plate.PeralteOverride
             };
         }
 
@@ -153,7 +157,8 @@ namespace RackCad.Application.Persistence
                 PostSide = side,
                 PlateCatalogId = PlateCatalogId,
                 Description = Description,
-                ConnectionPointId = ConnectionPointId
+                ConnectionPointId = ConnectionPointId,
+                PeralteOverride = PeralteOverride
             };
         }
     }

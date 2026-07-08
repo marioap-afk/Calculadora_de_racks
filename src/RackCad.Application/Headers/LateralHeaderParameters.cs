@@ -77,6 +77,9 @@ namespace RackCad.Application.Headers
         /// <summary>Dynamic parameter that stretches a horizontal/diagonal to its length (same name as the post).</summary>
         public string MemberLengthParameter { get; set; } = "LONGITUD";
 
+        /// <summary>Dynamic parameter for a section's peralte (used when a base plate carries a manual peralte).</summary>
+        public string PeralteParameter { get; set; } = "PERALTE";
+
         /// <summary>Orthographic view these blocks live in (lateral by default).</summary>
         public string View { get; set; } = "LATERAL";
 

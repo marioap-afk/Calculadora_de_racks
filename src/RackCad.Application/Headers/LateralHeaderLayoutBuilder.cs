@@ -47,8 +47,8 @@ namespace RackCad.Application.Headers
             var plateBlock = Block(catalog, plateId, view);
             var leftOrigin = new Point2D(0.0, 0.0);
             var rightOrigin = new Point2D(depth, 0.0);
-            AddPostWithPlate(instances, p, postId, plateId, postBlock, plateBlock, montaje, leftOrigin, height, mirrored: false);
-            AddPostWithPlate(instances, p, postId, plateId, postBlock, plateBlock, montaje, rightOrigin, height, mirrored: true);
+            AddPostWithPlate(instances, p, postId, plateId, postBlock, plateBlock, montaje, leftOrigin, height, mirrored: false, config.LeftBasePlate?.PeralteOverride);
+            AddPostWithPlate(instances, p, postId, plateId, postBlock, plateBlock, montaje, rightOrigin, height, mirrored: true, config.RightBasePlate?.PeralteOverride);
 
             // 3. Troquel grid from the post's TROQUEL_CELOSIA. Its Y is the base of the grid (everything snaps
             // to troquelBaseY + k*paso); its X gives each post's troquel line.
@@ -133,12 +133,12 @@ namespace RackCad.Application.Headers
         private static void AddPostWithPlate(
             ICollection<HeaderBlockInstance> instances, LateralHeaderParameters p,
             string postId, string plateId, string postBlock, string plateBlock,
-            Point2D montaje, Point2D postOrigin, double height, bool mirrored)
+            Point2D montaje, Point2D postOrigin, double height, bool mirrored, double? platePeralte)
         {
             var sign = mirrored ? -1.0 : 1.0;
 
             // Plate first: insert it so its MONTAJE_POSTE coincides with the post origin.
-            instances.Add(new HeaderBlockInstance
+            var plate = new HeaderBlockInstance
             {
                 Role = HeaderBlockRole.BasePlate,
                 PieceId = plateId,
@@ -147,7 +147,15 @@ namespace RackCad.Application.Headers
                 MirroredX = mirrored,
                 ConnectionAnchor = postOrigin,
                 Insertion = new Point2D(postOrigin.X - sign * montaje.X, postOrigin.Y - montaje.Y)
-            });
+            };
+
+            // A manual per-cabecera peralte override drives the plate's PERALTE; otherwise the block keeps its own.
+            if (platePeralte.HasValue && platePeralte.Value > 0.0)
+            {
+                plate.DynamicParameters[p.PeralteParameter] = platePeralte.Value;
+            }
+
+            instances.Add(plate);
 
             // Post: its own origin is the reference; stretch its length parameter to the header height.
             var post = new HeaderBlockInstance

@@ -753,6 +753,39 @@ namespace RackCad.UI
             }
         }
 
+        /// <summary>Manual plate PERALTE (in) for a custom cabecera; empty = derived from the post.</summary>
+        public string LeftPlatePeralte
+        {
+            get => FormatOptional(LeftBasePlate?.PeralteOverride);
+            set
+            {
+                if (LeftBasePlate == null)
+                {
+                    return;
+                }
+
+                LeftBasePlate.PeralteOverride = ParseOptional(value);
+                OnPropertyChanged();
+                MarkConfigurationEdited("Peralte de placa izquierda actualizado.");
+            }
+        }
+
+        public string RightPlatePeralte
+        {
+            get => FormatOptional(RightBasePlate?.PeralteOverride);
+            set
+            {
+                if (RightBasePlate == null)
+                {
+                    return;
+                }
+
+                RightBasePlate.PeralteOverride = ParseOptional(value);
+                OnPropertyChanged();
+                MarkConfigurationEdited("Peralte de placa derecha actualizado.");
+            }
+        }
+
         public double ConfiguredHeight => Horizontals.Count == 0 ? 0.0 : Horizontals.Max(horizontal => horizontal.Elevation);
 
         public bool IsModelConsistent => ModelWarnings.Count == 0;
@@ -1864,9 +1897,11 @@ namespace RackCad.UI
             OnPropertyChanged(nameof(LeftBasePlate));
             OnPropertyChanged(nameof(LeftPlateCatalogId));
             OnPropertyChanged(nameof(LeftPlateConnectionPointId));
+            OnPropertyChanged(nameof(LeftPlatePeralte));
             OnPropertyChanged(nameof(RightBasePlate));
             OnPropertyChanged(nameof(RightPlateCatalogId));
             OnPropertyChanged(nameof(RightPlateConnectionPointId));
+            OnPropertyChanged(nameof(RightPlatePeralte));
             RefreshSelectionProperties();
             RefreshValidationProperties();
             OnPropertyChanged(nameof(ExceptionSummary));
@@ -2049,8 +2084,24 @@ namespace RackCad.UI
                 PostSide = source.PostSide,
                 PlateCatalogId = source.PlateCatalogId,
                 Description = source.Description,
-                ConnectionPointId = source.ConnectionPointId
+                ConnectionPointId = source.ConnectionPointId,
+                PeralteOverride = source.PeralteOverride
             };
+        }
+
+        private static string FormatOptional(double? value)
+            => value.HasValue ? value.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+
+        private static double? ParseOptional(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+
+            return double.TryParse(text.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var value) && value > 0.0
+                ? value
+                : (double?)null;
         }
 
         private static FrameHorizontal CloneHorizontal(FrameHorizontal source)
