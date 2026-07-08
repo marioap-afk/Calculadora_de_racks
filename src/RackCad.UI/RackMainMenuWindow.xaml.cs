@@ -42,6 +42,7 @@ namespace RackCad.UI
         public SelectivePalletDesign SelectiveDesignToInsert { get; private set; }
         public string SelectiveRackId { get; private set; }
         public string SelectiveRackName { get; private set; }
+        public string SelectiveView { get; private set; }
 
         public RackMainMenuWindow()
             : this(false)
@@ -193,6 +194,7 @@ namespace RackCad.UI
                     SelectiveDesignToInsert = window.DesignToInsert;
                     SelectiveRackId = window.RackId;
                     SelectiveRackName = window.RackName;
+                    SelectiveView = window.InsertView;
                     Close();
                 }
             }

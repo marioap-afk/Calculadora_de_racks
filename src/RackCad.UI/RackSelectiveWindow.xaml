@@ -207,8 +207,10 @@
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0"
                     ToolTip="Genera el BOM (postes, placas, largueros y ménsulas) del selectivo actual." Click="ShowBom_Click" />
-            <Button Content="Insertar en AutoCAD" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" Margin="0,0,8,0"
-                    ToolTip="Dibuja el selectivo (postes + largueros) en el dibujo activo de AutoCAD (vista frontal)." Click="InsertInAutoCad_Click" />
+            <Button Content="Insertar frontal" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+                    ToolTip="Dibuja la VISTA FRONTAL del selectivo (postes + largueros) en el dibujo activo." Click="InsertFrontal_Click" />
+            <Button Content="Insertar lateral" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+                    ToolTip="Dibuja la VISTA LATERAL (cada poste como su cabecera). Comparte identidad con la frontal (mismo GUID)." Click="InsertLateral_Click" />
             <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />
         </StackPanel>
     </Grid>

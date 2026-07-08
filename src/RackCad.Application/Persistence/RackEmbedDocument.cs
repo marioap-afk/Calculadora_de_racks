@@ -16,10 +16,16 @@ namespace RackCad.Application.Persistence
         public const string KindCabecera = "cabecera";
         public const string KindCama = "cama";
 
+        public const string ViewFrontal = "frontal";
+        public const string ViewLateral = "lateral";
+
         public string SchemaVersion { get; set; } = "1.0";
 
         /// <summary>Which rack type this is — picks the editor/store on reopen.</summary>
         public string Kind { get; set; }
+
+        /// <summary>Which VIEW this block draws (a rack can have several view-blocks sharing <see cref="Id"/>). Null/empty = frontal.</summary>
+        public string View { get; set; }
 
         /// <summary>Stable identity (GUID) of the rack; kept across edits.</summary>
         public string Id { get; set; }

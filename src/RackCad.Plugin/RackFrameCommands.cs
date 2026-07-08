@@ -44,7 +44,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {
-                        DrawAndPlaceSelective(menu.SelectiveSystemToInsert, BuildSelectivePayload(menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName), menu.SelectiveRackName);
+                        DrawSelectiveView(menu.SelectiveView, menu.SelectiveSystemToInsert, menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName);
                     }
                 }
             }
@@ -495,7 +495,7 @@ namespace RackCad.Plugin
 
                 if (window.InsertRequested)
                 {
-                    DrawAndPlaceSelective(window.SystemToInsert, BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName), window.RackName);
+                    DrawSelectiveView(window.InsertView, window.SystemToInsert, window.DesignToInsert, window.RackId, window.RackName);
                 }
             }
             catch (System.Exception ex)
@@ -596,10 +596,13 @@ namespace RackCad.Plugin
                 return;
             }
 
-            // Redefine the block definition IN PLACE: every copy of this rack updates, none is moved or lost.
-            var result = new SelectiveFrontalDrawService().RedrawInPlace(
-                document, blockId, window.SystemToInsert,
-                BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName));
+            // Redefine THIS block's view in place (its copies all update). The frontal/lateral views are separate
+            // GUID-linked blocks; the selected block keeps its own view.
+            var view = string.IsNullOrWhiteSpace(embed.View) ? RackEmbedDocument.ViewFrontal : embed.View;
+            var payload = BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName, view);
+            var result = view == RackEmbedDocument.ViewLateral
+                ? new SelectiveLateralDrawService().RedrawInPlace(document, blockId, window.SystemToInsert, payload)
+                : new SelectiveFrontalDrawService().RedrawInPlace(document, blockId, window.SystemToInsert, payload);
 
             editor.WriteMessage(result != null && result.Success
                 ? "\nRackCad: rack actualizado; todas sus copias reflejan el cambio."
@@ -645,8 +648,8 @@ namespace RackCad.Plugin
                 : "\nRackCad: no se pudo actualizar el sistema. " + (result?.ErrorMessage ?? string.Empty));
         }
 
-        /// <summary>Wraps a selective design in the uniform embed envelope (kind + id + name + design JSON).</summary>
-        private static string BuildSelectivePayload(SelectivePalletDesign design, string id, string name)
+        /// <summary>Wraps a selective design in the uniform embed envelope (kind + id + name + view + design JSON).</summary>
+        private static string BuildSelectivePayload(SelectivePalletDesign design, string id, string name, string view)
         {
             if (design == null)
             {
@@ -659,6 +662,7 @@ namespace RackCad.Plugin
                 Kind = RackEmbedDocument.KindSelective,
                 Id = id,
                 Name = name,
+                View = string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewFrontal : view,
                 Design = designJson
             });
         }
@@ -681,19 +685,22 @@ namespace RackCad.Plugin
             });
         }
 
-        /// <summary>Builds the selective-rack block and runs the placement jig, then reports the outcome.</summary>
-        private static HeaderPlacementResult DrawAndPlaceSelective(SelectiveRackSystem system, string payloadJson, string rackName)
+        /// <summary>Draws the selective in the requested VIEW (frontal or lateral) as its own GUID-linked block.</summary>
+        private static void DrawSelectiveView(string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
             if (document == null || system == null)
             {
-                return null;
+                return;
             }
 
-            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system, payloadJson, rackName);
+            var payload = BuildSelectivePayload(design, id, name, view);
+            var result = view == RackEmbedDocument.ViewLateral
+                ? new SelectiveLateralDrawService().DrawAndPlace(document, system, payload, name)
+                : new SelectiveFrontalDrawService().DrawAndPlace(document, system, payload, name);
+
             document.Editor.WriteMessage("\n" + DescribeSelective(result));
-            return result;
         }
 
         private static string DescribeSelective(HeaderPlacementResult result)

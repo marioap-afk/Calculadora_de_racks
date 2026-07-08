@@ -88,6 +88,9 @@ namespace RackCad.UI
         /// <summary>Client-facing name of the inserted rack (may be empty).</summary>
         public string RackName { get; private set; }
 
+        /// <summary>Which view the user asked to insert ("frontal" or "lateral").</summary>
+        public string InsertView { get; private set; }
+
         public RackSelectiveWindow()
             : this(false)
         {
@@ -595,7 +598,11 @@ namespace RackCad.UI
             Recompute();
         }
 
-        private void InsertInAutoCad_Click(object sender, RoutedEventArgs e)
+        private void InsertFrontal_Click(object sender, RoutedEventArgs e) => RequestInsert(RackEmbedDocument.ViewFrontal);
+
+        private void InsertLateral_Click(object sender, RoutedEventArgs e) => RequestInsert(RackEmbedDocument.ViewLateral);
+
+        private void RequestInsert(string view)
         {
             if (!canInsertInAutoCad)
             {
@@ -621,6 +628,7 @@ namespace RackCad.UI
             if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
 
             InsertRequested = true;
+            InsertView = view;
             SystemToInsert = system;
             DesignToInsert = design;
             RackId = currentId;
