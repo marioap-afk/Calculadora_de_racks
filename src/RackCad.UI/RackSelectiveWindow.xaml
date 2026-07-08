@@ -37,14 +37,11 @@
                     <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
                     <TextBlock Text="Peralte poste (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3" />
-                    <TextBlock Text="Altura poste (in) · vacío = auto" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="PostHeightBox" Style="{StaticResource FieldBox}"
-                             ToolTip="Fuerza la altura de TODOS los postes. Vacío = calculada por bahía." />
 
                     <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
-                    <TextBlock Text="Bahías" Style="{StaticResource FieldLabel}" />
+                    <TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2" />
-                    <TextBlock Text="Los niveles y 'larguero a piso' se ajustan por bahía en el encabezado de la matriz. El piso arranca en 0."
+                    <TextBlock Text="Los niveles, la altura y 'larguero a piso' se ajustan por frente en el encabezado de la matriz. El piso arranca en 0."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,4,0,0" />
 
                     <TextBlock Text="Tolerancias" Style="{StaticResource SectionTitle}" />
@@ -68,7 +65,7 @@
 
                     <Button Content="Actualizar tramo" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
                             HorizontalAlignment="Left" Margin="0,12,0,0" IsDefault="True"
-                            ToolTip="Aplica bahías/niveles/tolerancias y recalcula (Enter)." />
+                            ToolTip="Aplica frentes/niveles/tolerancias y recalcula (Enter)." />
 
                     <Border Background="#F1F5F9" BorderBrush="#D8DEE6" BorderThickness="1" Margin="0,14,0,0" Padding="12">
                         <StackPanel>
@@ -106,7 +103,7 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Long. larguero (in)" Style="{StaticResource FieldLabel}" />
                                     <TextBox x:Name="BeamLenBox" Style="{StaticResource FieldBox}"
-                                             ToolTip="Longitud del larguero (A corte). Vacío = automático. La bahía usa el nivel más largo." />
+                                             ToolTip="Longitud del larguero (A corte). Vacío = automático. El frente usa el nivel más largo." />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Claro debajo (in)" Style="{StaticResource FieldLabel}" />
@@ -119,9 +116,9 @@
                                 <Button Content="Celda" Click="ApplyCell_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6"
                                         ToolTip="Aplica los valores a la celda seleccionada." />
                                 <Button Content="Fila" Click="ApplyRow_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="60" Margin="0,0,6,6"
-                                        ToolTip="Aplica a todo el nivel (misma fila, todas las bahías)." />
-                                <Button Content="Columna" Click="ApplyColumn_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="72" Margin="0,0,6,6"
-                                        ToolTip="Aplica a toda la bahía (misma columna, todos los niveles)." />
+                                        ToolTip="Aplica a todo el nivel (misma fila, todos los frentes)." />
+                                <Button Content="Frente" Click="ApplyColumn_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="72" Margin="0,0,6,6"
+                                        ToolTip="Aplica a todo el frente (misma columna, todos los niveles)." />
                                 <Button Content="Todas" Click="ApplyAll_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,0,6"
                                         ToolTip="Aplica a todas las celdas del tramo." />
                             </WrapPanel>
@@ -144,7 +141,7 @@
 
             <Border Grid.Row="0" Background="White" BorderBrush="#D8DEE6" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Matriz bahía × nivel — clic en una celda para editarla. En cada encabezado de bahía ajusta niveles (−/+) y 'Piso' (larguero a piso). Nivel 1 abajo."
+                    <TextBlock Text="Matriz frente × nivel — clic en una celda para editarla. En cada encabezado de frente ajusta niveles (−/+), altura y 'Piso' (larguero a piso). Nivel 1 abajo."
                                Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="10,8,10,0" />
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="230">
                         <Grid x:Name="MatrixGrid" Margin="10,8,10,10" />

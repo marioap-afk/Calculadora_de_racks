@@ -54,6 +54,8 @@ namespace RackCad.Application.Systems
                 var levels = bayDesign.Levels;
                 if (levels.Count == 0)
                 {
+                    bay.Height = WithOverride(0.0, bayDesign.HeightOverride);
+                    height = Math.Max(height, bay.Height);
                     system.Bays.Add(bay);
                     continue;
                 }
@@ -73,7 +75,7 @@ namespace RackCad.Application.Systems
                 else if (levels.Count == 1)
                 {
                     // Only a ground pallet on the floor, no larguero: the post covers a third of it, measured from the floor.
-                    bay.Height = RoundUpToFoot(PalletAlto(levels[0]) / 3.0);
+                    bay.Height = WithOverride(RoundUpToFoot(PalletAlto(levels[0]) / 3.0), bayDesign.HeightOverride);
                     height = Math.Max(height, bay.Height);
                     system.Bays.Add(bay);
                     continue;
@@ -99,25 +101,21 @@ namespace RackCad.Application.Systems
 
                 // Height this bay needs. The top pallet rests on the beam's escalón (INICIO_PERFIL's Y above the
                 // troquel), so the third-of-the-pallet coverage is measured from THAT surface, not the troquel.
+                // A manual per-bay override replaces the computed height; the tallest bay still governs a shared post.
                 var top = levels[levels.Count - 1];
                 var loadSurface = y + BeamProfileStartY(catalog, top.BeamId, SelectiveRackDefaults.View);
-                bay.Height = RoundUpToFoot(loadSurface + PalletAlto(top) / 3.0);
+                bay.Height = WithOverride(RoundUpToFoot(loadSurface + PalletAlto(top) / 3.0), bayDesign.HeightOverride);
                 height = Math.Max(height, bay.Height);
                 system.Bays.Add(bay);
             }
 
             system.Height = height;
-
-            // Manual post-height override forces every post (and the run height) to one value.
-            if (design.PostHeightOverride.HasValue && design.PostHeightOverride.Value > 0.0)
-            {
-                var forced = design.PostHeightOverride.Value;
-                system.Height = forced;
-                foreach (var b in system.Bays) b.Height = forced;
-            }
-
             return system;
         }
+
+        /// <summary>The manual override if it is a positive number, else the auto value.</summary>
+        private static double WithOverride(double auto, double? over)
+            => over.HasValue && over.Value > 0.0 ? over.Value : auto;
 
         private static void AddBeam(SelectiveBay bay, double y, SelectiveCell cell)
             => bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = cell.BeamId, BeamPeralte = cell.BeamPeralte });

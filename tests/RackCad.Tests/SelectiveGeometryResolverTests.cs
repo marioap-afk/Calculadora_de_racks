@@ -256,15 +256,21 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void PostHeightOverride_ForcesEveryBayHeight()
+        public void HeightOverride_SetsThatBaysHeight_TallestStillGovernsTheRun()
         {
-            var design = Design(false, Cell(40, 60, 2, 4), Cell(40, 60, 2, 4));
-            design.PostHeightOverride = 250.0;
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0 };
+            var tall = new SelectiveBayDesign { HeightOverride = 300.0 };
+            tall.Levels.Add(Cell(40, 60, 2, 4));
+            var shortBay = new SelectiveBayDesign();
+            shortBay.Levels.Add(Cell(40, 40, 2, 4));
+            design.Bays.Add(tall);
+            design.Bays.Add(shortBay);
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
 
-            Assert.Equal(250.0, system.Height, 4);
-            Assert.All(system.Bays, b => Assert.Equal(250.0, b.Height, 4));
+            Assert.Equal(300.0, system.Bays[0].Height, 4);
+            Assert.True(system.Bays[1].Height < 300.0);
+            Assert.Equal(300.0, system.Height, 4); // run height = tallest bay
         }
     }
 }

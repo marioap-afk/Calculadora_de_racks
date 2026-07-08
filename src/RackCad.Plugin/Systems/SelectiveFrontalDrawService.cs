@@ -37,7 +37,7 @@ namespace RackCad.Plugin.Systems
                 var plan = new DynamicSystemPlan(new List<HeaderGroup>(), instances);
                 var blockName = string.Format(
                     CultureInfo.InvariantCulture,
-                    "Selectivo frontal - {0} bahias - H{1:0.##}",
+                    "Selectivo frontal - {0} frentes - H{1:0.##}",
                     system.Bays.Count,
                     system.Height);
 

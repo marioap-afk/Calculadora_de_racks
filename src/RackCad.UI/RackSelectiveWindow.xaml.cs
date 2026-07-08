@@ -47,6 +47,9 @@ namespace RackCad.UI
         /// <summary>Per-bay "larguero a piso" flag, parallel to <see cref="bays"/>.</summary>
         private readonly List<bool> floorBeams = new List<bool>();
 
+        /// <summary>Per-bay manual height override (in); null = auto. Parallel to <see cref="bays"/>.</summary>
+        private readonly List<double?> bayHeights = new List<double?>();
+
         private string defaultBeamId;
         private int selBay;
         private int selLevel;
@@ -129,12 +132,14 @@ namespace RackCad.UI
         {
             bays.Clear();
             floorBeams.Clear();
+            bayHeights.Clear();
             for (var b = 0; b < bayCount; b++)
             {
                 var column = new List<Cell>();
                 for (var l = 0; l < levelCount; l++) column.Add(NewCell());
                 bays.Add(column);
                 floorBeams.Add(false);
+                bayHeights.Add(null);
             }
 
             selBay = 0;
@@ -150,11 +155,13 @@ namespace RackCad.UI
                 {
                     bays.Add(bays[bays.Count - 1].Select(c => c.Clone()).ToList());
                     floorBeams.Add(floorBeams[floorBeams.Count - 1]);
+                    bayHeights.Add(bayHeights[bayHeights.Count - 1]);
                 }
                 else
                 {
                     bays.Add(new List<Cell> { NewCell() });
                     floorBeams.Add(false);
+                    bayHeights.Add(null);
                 }
             }
 
@@ -162,6 +169,7 @@ namespace RackCad.UI
             {
                 bays.RemoveAt(bays.Count - 1);
                 floorBeams.RemoveAt(floorBeams.Count - 1);
+                bayHeights.RemoveAt(bayHeights.Count - 1);
             }
 
             ClampSelection();
@@ -180,7 +188,7 @@ namespace RackCad.UI
             var column = bays[bay];
             if (column.Count <= 1)
             {
-                SetStatus("Cada bahía necesita al menos un nivel.", true);
+                SetStatus("Cada frente necesita al menos un nivel.", true);
                 return;
             }
 
@@ -280,7 +288,7 @@ namespace RackCad.UI
             var panel = new StackPanel { Margin = new Thickness(2, 2, 2, 6) };
             panel.Children.Add(new TextBlock
             {
-                Text = "Bahía " + (bay + 1),
+                Text = "Frente " + (bay + 1),
                 Foreground = LabelStroke,
                 FontSize = 11,
                 FontWeight = FontWeights.SemiBold,
@@ -321,7 +329,30 @@ namespace RackCad.UI
             floor.Unchecked += (s, e) => SetFloor(bay, false);
             panel.Children.Add(floor);
 
+            var heightRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 3, 0, 0) };
+            heightRow.Children.Add(new TextBlock { Text = "Alto", Foreground = LabelStroke, FontSize = 10.5, Margin = new Thickness(0, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
+            var heightBox = new TextBox
+            {
+                Width = 44,
+                FontSize = 10.5,
+                Text = bayHeights[bay].HasValue ? bayHeights[bay].Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty,
+                ToolTip = "Altura del frente (in). Vacío = auto. El poste toma el frente más alto que toca."
+            };
+            heightBox.LostFocus += (s, e) => SetBayHeight(bay, heightBox.Text);
+            heightBox.KeyDown += (s, e) => { if (e.Key == Key.Enter) SetBayHeight(bay, heightBox.Text); };
+            heightRow.Children.Add(heightBox);
+            panel.Children.Add(heightRow);
+
             return panel;
+        }
+
+        private void SetBayHeight(int bay, string text)
+        {
+            if (bay < 0 || bay >= bayHeights.Count) return;
+            if (!TryOptionalNum(text, out var value)) { SetStatus("Altura de frente invalida (vacio = auto).", true); return; }
+            if (Nullable.Equals(bayHeights[bay], value)) return;
+            bayHeights[bay] = value;
+            Recompute();
         }
 
         private static Button SmallButton(string text) => new Button
@@ -372,7 +403,7 @@ namespace RackCad.UI
             if (!TryGetSelected(out var cell)) return;
 
             loadingCell = true;
-            CellHeader.Text = string.Format(CultureInfo.InvariantCulture, "Celda: Bahía {0} · Nivel {1}", selBay + 1, selLevel + 1);
+            CellHeader.Text = string.Format(CultureInfo.InvariantCulture, "Celda: Frente {0} · Nivel {1}", selBay + 1, selLevel + 1);
             FrenteBox.Text = cell.Frente.ToString("0.###", CultureInfo.InvariantCulture);
             AltoBox.Text = cell.Alto.ToString("0.###", CultureInfo.InvariantCulture);
             PalletCountBox.Text = cell.PalletCount.ToString(CultureInfo.InvariantCulture);
@@ -428,7 +459,7 @@ namespace RackCad.UI
         {
             if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1)
             {
-                SetStatus("Cantidad de bahias invalida.", true);
+                SetStatus("Cantidad de frentes invalida.", true);
                 return;
             }
 
@@ -545,8 +576,7 @@ namespace RackCad.UI
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
             if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevacion de larguero a piso invalida."; return null; }
-            if (!TryOptionalNum(PostHeightBox.Text, out var postHeight)) { error = "Altura de poste invalida (deja vacio para auto)."; return null; }
-            if (bays.Count == 0 || bays[0].Count == 0) { error = "Define bahias y niveles."; return null; }
+            if (bays.Count == 0 || bays[0].Count == 0) { error = "Define frentes y niveles."; return null; }
 
             var design = new SelectivePalletDesign
             {
@@ -554,13 +584,12 @@ namespace RackCad.UI
                 PostPeralte = postPeralte,
                 PalletTolerance = tolerance,
                 VerticalClearance = clearance,
-                FloorBeamRise = floorRise,
-                PostHeightOverride = postHeight
+                FloorBeamRise = floorRise
             };
 
             for (var b = 0; b < bays.Count; b++)
             {
-                var bay = new SelectiveBayDesign { FloorBeam = floorBeams[b] };
+                var bay = new SelectiveBayDesign { FloorBeam = floorBeams[b], HeightOverride = bayHeights[b] };
                 foreach (var cell in bays[b])
                 {
                     bay.Levels.Add(new SelectiveCell
@@ -593,7 +622,7 @@ namespace RackCad.UI
 
             SummaryText.Text = string.Format(
                 CultureInfo.InvariantCulture,
-                "{0} bahías · {1} cabeceras · {2} largueros\nDerivado (bahía 1): larguero {3:0.##}\" · sep. {4:0.##}\" · altura {5:0.##}\"",
+                "{0} frentes · {1} cabeceras · {2} largueros\nDerivado (frente 1): larguero {3:0.##}\" · sep. {4:0.##}\" · altura {5:0.##}\"",
                 lastSystem.Bays.Count, posts, beams, beamLength, separation, lastSystem.Height);
         }
 

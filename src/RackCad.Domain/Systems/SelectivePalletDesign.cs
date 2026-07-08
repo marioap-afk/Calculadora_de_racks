@@ -29,9 +29,6 @@ namespace RackCad.Domain.Systems
         /// <summary>How far a "larguero a piso" sits above the lowest troquel (in), so its ménsula clears the base plate. Editable; default 4".</summary>
         public double FloorBeamRise { get; set; } = 4.0;
 
-        /// <summary>Manual override for EVERY post's height (in). Null = auto (per-bay). When set, all posts use it.</summary>
-        public double? PostHeightOverride { get; set; }
-
         /// <summary>The bays, left to right. Each carries its own column of level cells (its own count).</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
     }
@@ -45,6 +42,9 @@ namespace RackCad.Domain.Systems
         /// the ground level gets a beam at the lowest troquel and the pallet stacks from there.
         /// </summary>
         public bool FloorBeam { get; set; }
+
+        /// <summary>Manual override for this bay's height (in). Null = auto. A post still takes the tallest of the bays it touches.</summary>
+        public double? HeightOverride { get; set; }
 
         /// <summary>The level cells of this bay, bottom to top. Each cell can differ (pallet, count, beam).</summary>
         public IList<SelectiveCell> Levels { get; } = new List<SelectiveCell>();
