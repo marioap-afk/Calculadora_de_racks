@@ -50,7 +50,9 @@ namespace RackCad.Application.Systems
                 var bay = new SelectiveBay { BeamLength = BayBeamLength(bayDesign, tolerance) };
 
                 // Level Ys, bottom-up: first level snapped to the grid, then each separation stacked on.
-                var y = Snap(design.FirstLevel, gridBase, paso);
+                // Clamp to the grid base — there is no troquel below the lowest one, so the first larguero
+                // can never sit under it (guards odd inputs from the per-cell editor / programmatic callers).
+                var y = Math.Max(gridBase, Snap(design.FirstLevel, gridBase, paso));
                 for (var j = 0; j < bayDesign.Levels.Count; j++)
                 {
                     var cell = bayDesign.Levels[j];
@@ -92,11 +94,14 @@ namespace RackCad.Application.Systems
             return max;
         }
 
-        /// <summary>Separation to the level above = roundUpTroquel( roundUpEven(alto + clearance) + beamPeralte ).</summary>
+        /// <summary>
+        /// Separation to the level above = roundUpTroquel( roundUpEven(alto + clearance) + beamPeralte ).
+        /// Floored at one troquel pitch so levels never coincide/invert if a caller passes a degenerate pallet.
+        /// </summary>
         private static double Separation(double palletAlto, double clearance, double beamPeralteAbove, double paso)
         {
             var claroLibre = RoundUpToMultiple(palletAlto + clearance, 2.0);
-            return RoundUpToMultiple(claroLibre + beamPeralteAbove, paso);
+            return Math.Max(paso, RoundUpToMultiple(claroLibre + beamPeralteAbove, paso));
         }
 
         /// <summary>Snap a value to the nearest troquel of the grid (base + k*paso).</summary>
