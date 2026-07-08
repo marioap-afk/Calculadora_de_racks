@@ -39,23 +39,10 @@
                     <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3" />
 
                     <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="Bahías" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="2">
-                            <TextBlock Text="Niveles" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="LevelsBox" Style="{StaticResource FieldBox}" Text="4" />
-                        </StackPanel>
-                    </Grid>
-                    <TextBlock Text="1er nivel (in)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="FirstLevelBox" Style="{StaticResource FieldBox}" Text="6" />
+                    <TextBlock Text="Bahías" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2" />
+                    <TextBlock Text="Los niveles y 'larguero a piso' se ajustan por bahía en el encabezado de la matriz. El piso arranca en 0."
+                               Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,4,0,0" />
 
                     <TextBlock Text="Tolerancias" Style="{StaticResource SectionTitle}" />
                     <Grid>
@@ -132,7 +119,7 @@
 
             <Border Grid.Row="0" Background="White" BorderBrush="#D8DEE6" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Matriz bahía × nivel — clic en una celda para editarla (columnas = bahías, filas = niveles, nivel 1 abajo)."
+                    <TextBlock Text="Matriz bahía × nivel — clic en una celda para editarla. En cada encabezado de bahía ajusta niveles (−/+) y 'Piso' (larguero a piso). Nivel 1 abajo."
                                Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="10,8,10,0" />
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="230">
                         <Grid x:Name="MatrixGrid" Margin="10,8,10,10" />

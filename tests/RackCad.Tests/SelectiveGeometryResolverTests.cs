@@ -7,7 +7,7 @@ using Xunit;
 
 namespace RackCad.Tests
 {
-    /// <summary>Exercises the four pallet-driven derivation rules (larguero length, separation, height, rounding).</summary>
+    /// <summary>Exercises the pallet-driven derivation: larguero length, floor-referenced stacking, separation, height.</summary>
     public class SelectiveGeometryResolverTests
     {
         private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
@@ -15,14 +15,21 @@ namespace RackCad.Tests
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
-        /// <summary>The troquel grid base (first troquel Y), from the catalog — the resolver snaps the first level to it.</summary>
+        /// <summary>The troquel grid base (lowest troquel Y), from the catalog — beams snap onto this grid.</summary>
         private static double GridBase()
             => Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "FRONTAL").LocalY;
 
-        private static double Snap(double v, double baseY, double paso)
-            => baseY + Math.Round((v - baseY) / paso, MidpointRounding.AwayFromZero) * paso;
+        private static double RoundUp(double x, double m) => Math.Ceiling(x / m - 1e-9) * m;
+        private static double RoundUpFoot(double x) => RoundUp(x, 12.0);
+        private static double SnapUp(double v) => GridBase() + RoundUp(v - GridBase(), 2.0);
 
-        private static double RoundUpToFoot(double x) => Math.Ceiling(x / 12.0 - 1e-9) * 12.0;
+        /// <summary>Beam-to-beam separation = roundUpTroquel(roundUpEven(alto + 6) + peralte), floored at one paso.</summary>
+        private static double Separation(double alto, double peralte)
+            => Math.Max(2.0, RoundUp(RoundUp(alto + 6.0, 2.0) + peralte, 2.0));
+
+        /// <summary>Y of the first larguero when there is no floor beam: snapped up onto the grid above the ground pallet.</summary>
+        private static double FirstBeamNoFloor(double groundAlto, double firstBeamPeralte)
+            => SnapUp(RoundUp(groundAlto + 6.0, 2.0) + firstBeamPeralte);
 
         private static SelectiveCell Cell(double frente, double alto, int count, double beamPeralte)
             => new SelectiveCell
@@ -33,18 +40,17 @@ namespace RackCad.Tests
                 BeamPeralte = beamPeralte
             };
 
-        private static SelectivePalletDesign Design(double firstLevel, params SelectiveCell[] levels)
+        private static SelectivePalletDesign Design(bool floorBeam, params SelectiveCell[] levels)
         {
             var design = new SelectivePalletDesign
             {
                 PostId = PostId,
                 PostPeralte = 3.0,
                 PalletTolerance = 4.0,
-                VerticalClearance = 6.0,
-                FirstLevel = firstLevel
+                VerticalClearance = 6.0
             };
 
-            var bay = new SelectiveBayDesign();
+            var bay = new SelectiveBayDesign { FloorBeam = floorBeam };
             foreach (var level in levels)
             {
                 bay.Levels.Add(level);
@@ -54,74 +60,103 @@ namespace RackCad.Tests
             return design;
         }
 
+        private static SelectiveBay ResolveBay(SelectivePalletDesign design)
+            => new SelectiveGeometryResolver().Resolve(design, Catalog).Bays[0];
+
         [Fact]
         public void BeamLength_IsFrenteTimesCountPlusTolerancePerGap()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(6.0, Cell(40, 60, 2, 4)), Catalog);
+            var bay = ResolveBay(Design(false, Cell(40, 60, 2, 4)));
 
             // 2 tarimas de 40" + tolerancia 4" en 3 huecos (izq, entre, der) = 40*2 + 4*3 = 92.
-            Assert.Equal(92.0, system.Bays[0].BeamLength, 4);
+            Assert.Equal(92.0, bay.BeamLength, 4);
         }
 
         [Fact]
         public void BeamLength_WidestLevelGovernsTheBay()
         {
-            var system = new SelectiveGeometryResolver().Resolve(
-                Design(6.0, Cell(40, 60, 1, 4), Cell(48, 50, 2, 4)), Catalog);
+            var bay = ResolveBay(Design(false, Cell(40, 60, 1, 4), Cell(48, 50, 2, 4)));
 
-            // nivel 0: 40 + 4*2 = 48 ; nivel 1: 48*2 + 4*3 = 108 -> gana el más ancho.
-            Assert.Equal(108.0, system.Bays[0].BeamLength, 4);
+            // nivel 0 (piso): 40 + 4*2 = 48 ; nivel 1: 48*2 + 4*3 = 108 -> gana el más ancho.
+            Assert.Equal(108.0, bay.BeamLength, 4);
         }
 
         [Fact]
-        public void FirstLevel_SnapsToTheTroquelGrid()
+        public void FloorBeamOff_GroundHasNoBeam_SoBeamsAreLevelsMinusOne()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(6.0, Cell(40, 60, 1, 4)), Catalog);
+            var bay = ResolveBay(Design(false, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4), Cell(40, 50, 1, 4)));
 
-            Assert.Equal(Snap(6.0, GridBase(), 2.0), system.Bays[0].Levels[0].Y, 4);
+            // 3 niveles, sin larguero a piso -> 2 largueros (niveles 2 y 3).
+            Assert.Equal(2, bay.Levels.Count);
+        }
+
+        [Fact]
+        public void FloorBeamOff_SingleGroundLevel_HasNoBeamsAtAll()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(Design(false, Cell(40, 60, 1, 4)), Catalog);
+
+            Assert.Empty(system.Bays[0].Levels);
+            // Post still covers a third of the ground pallet.
+            Assert.Equal(RoundUpFoot(60.0 / 3.0), system.Height, 4);
+        }
+
+        [Fact]
+        public void FloorBeamOff_FirstBeamSnapsOntoTheGridAboveTheGroundPallet()
+        {
+            var bay = ResolveBay(Design(false, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4)));
+
+            Assert.Equal(FirstBeamNoFloor(60.0, 4.0), bay.Levels[0].Y, 4);
+        }
+
+        [Fact]
+        public void FloorBeamOn_GroundBeamSitsAtTheLowestTroquel()
+        {
+            var bay = ResolveBay(Design(true, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4)));
+
+            // 2 niveles con larguero a piso -> 2 largueros; el primero en el troquel más bajo.
+            Assert.Equal(2, bay.Levels.Count);
+            Assert.Equal(GridBase(), bay.Levels[0].Y, 4);
+            Assert.Equal(GridBase() + Separation(60.0, 4.0), bay.Levels[1].Y, 4);
         }
 
         [Fact]
         public void Separation_IsClearOpeningPlusPeralteRoundedUpToTroquel()
         {
-            // claro libre = redondearPar(60 + 6) = 66 ; + peralte 4 = 70 (par) -> separación 70.
-            var system = new SelectiveGeometryResolver().Resolve(
-                Design(6.0, Cell(40, 60, 1, 4), Cell(40, 60, 1, 4)), Catalog);
+            var bay = ResolveBay(Design(true, Cell(40, 60, 1, 4), Cell(40, 60, 1, 4)));
 
-            var sep = system.Bays[0].Levels[1].Y - system.Bays[0].Levels[0].Y;
-            Assert.Equal(70.0, sep, 4);
+            // claro libre = redondearPar(60 + 6) = 66 ; + peralte 4 = 70 -> separación 70.
+            Assert.Equal(70.0, bay.Levels[1].Y - bay.Levels[0].Y, 4);
         }
 
         [Fact]
         public void Separation_RoundsBothClearOpeningAndPitchUpwardToEven()
         {
-            // claro libre = redondearPar(59 + 6 = 65) = 66 ; + peralte 3 = 69 -> redondearTroquel arriba = 70.
-            var system = new SelectiveGeometryResolver().Resolve(
-                Design(6.0, Cell(40, 59, 1, 3), Cell(40, 59, 1, 3)), Catalog);
+            var bay = ResolveBay(Design(true, Cell(40, 59, 1, 3), Cell(40, 59, 1, 3)));
 
-            var sep = system.Bays[0].Levels[1].Y - system.Bays[0].Levels[0].Y;
-            Assert.Equal(70.0, sep, 4);
+            // claro libre = redondearPar(59 + 6 = 65) = 66 ; + peralte 3 = 69 -> redondearTroquel arriba = 70.
+            Assert.Equal(70.0, bay.Levels[1].Y - bay.Levels[0].Y, 4);
         }
 
         [Fact]
-        public void PostHeight_IsTopLevelPlusPalletThirdRoundedUpToFoot()
+        public void PostHeight_IsTopBeamPlusPalletThirdRoundedUpToFoot()
         {
             var system = new SelectiveGeometryResolver().Resolve(
-                Design(6.0, Cell(40, 60, 1, 4), Cell(40, 60, 1, 4)), Catalog);
+                Design(false, Cell(40, 60, 1, 4), Cell(40, 60, 1, 4)), Catalog);
 
             var topY = system.Bays[0].Levels.Last().Y;
-            Assert.Equal(RoundUpToFoot(topY + 60.0 / 3.0), system.Height, 4);
+            Assert.Equal(RoundUpFoot(topY + 60.0 / 3.0), system.Height, 4);
         }
 
         [Fact]
         public void Height_TakesTheTallestBayForUniformPosts()
         {
-            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, FirstLevel = 6.0 };
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0 };
 
-            var shortBay = new SelectiveBayDesign();
+            var shortBay = new SelectiveBayDesign { FloorBeam = true };
             shortBay.Levels.Add(Cell(40, 40, 1, 4));
 
-            var tallBay = new SelectiveBayDesign();
+            var tallBay = new SelectiveBayDesign { FloorBeam = true };
+            tallBay.Levels.Add(Cell(40, 40, 1, 4));
             tallBay.Levels.Add(Cell(40, 40, 1, 4));
             tallBay.Levels.Add(Cell(40, 40, 1, 4));
 
@@ -131,7 +166,7 @@ namespace RackCad.Tests
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
 
             var tallTop = system.Bays[1].Levels.Last().Y + 40.0 / 3.0;
-            Assert.Equal(RoundUpToFoot(tallTop), system.Height, 4);
+            Assert.Equal(RoundUpFoot(tallTop), system.Height, 4);
         }
     }
 }

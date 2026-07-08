@@ -9,12 +9,15 @@ namespace RackCad.Application.Systems
     /// <see cref="SelectiveRackSystem"/> the builder places. This is where the four derivation rules live:
     /// <list type="number">
     /// <item><b>Larguero</b>: LONGITUD = Frente*Count + Tolerance*(Count+1). Per bay the widest level governs
-    /// (all beams of a bay share one length = the post spacing).</item>
+    /// (all beams of a bay share one length = the post spacing). The ground pallet's frente counts too.</item>
     /// <item><b>Separación</b>: from a pallet of height <c>alto</c> to the level above =
     /// roundUpTroquel( roundUpEven(alto + Clearance) + peralte(beam above) ). The clear opening is the rounded
     /// (alto + holgura); the beam that closes it adds its peralte; the result snaps up to the troquel grid.</item>
+    /// <item><b>Piso</b>: level 0 is the ground. Without "larguero a piso" (default) it has NO beam — its pallet
+    /// rests on the floor (Y=0) and the first larguero snaps up to the grid above it. With it, level 0 gets a
+    /// beam at the lowest troquel and pallets stack from there.</item>
     /// <item><b>Altura de la cabecera</b>: roundUpFoot( topLevelY + topPalletAlto/3 ) — the post covers at least
-    /// the bottom third of the top pallet, then rounds up to a whole foot.</item>
+    /// the bottom third of the top pallet, then rounds up to a whole foot. The tallest bay governs the run.</item>
     /// <item><b>Redondeos</b>: even (troquel pitch 2") upward, and foot (12") upward.</item>
     /// </list>
     /// Pure: no AutoCAD. The only catalog read is the troquel grid base (TROQUEL_LARGUERO.LocalY).
@@ -48,37 +51,57 @@ namespace RackCad.Application.Systems
             foreach (var bayDesign in design.Bays)
             {
                 var bay = new SelectiveBay { BeamLength = BayBeamLength(bayDesign, tolerance) };
-
-                // Level Ys, bottom-up: first level snapped to the grid, then each separation stacked on.
-                // Clamp to the grid base — there is no troquel below the lowest one, so the first larguero
-                // can never sit under it (guards odd inputs from the per-cell editor / programmatic callers).
-                var y = Math.Max(gridBase, Snap(design.FirstLevel, gridBase, paso));
-                for (var j = 0; j < bayDesign.Levels.Count; j++)
+                var levels = bayDesign.Levels;
+                if (levels.Count == 0)
                 {
-                    var cell = bayDesign.Levels[j];
-                    if (j > 0)
-                    {
-                        var below = bayDesign.Levels[j - 1];
-                        y += Separation(below.Pallet?.Alto ?? 0.0, clearance, cell.BeamPeralte, paso);
-                    }
-
-                    bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = cell.BeamId, BeamPeralte = cell.BeamPeralte });
+                    system.Bays.Add(bay);
+                    continue;
                 }
 
-                // Post height from this bay's top level; the run takes the tallest (Phase 1: uniform posts).
-                if (bayDesign.Levels.Count > 0)
+                // Vertical stack. Level 0 is the ground pallet on the floor (Y=0). With "larguero a piso" it also
+                // gets a beam at the lowest troquel; without it (default) the ground carries no beam and the first
+                // larguero snaps up onto the grid above the ground pallet. Upper levels then stack by separation.
+                double y;
+                int start;
+                if (bayDesign.FloorBeam)
                 {
-                    var topAlto = bayDesign.Levels[bayDesign.Levels.Count - 1].Pallet?.Alto ?? 0.0;
-                    var topY = bay.Levels[bay.Levels.Count - 1].Y;
-                    height = Math.Max(height, RoundUpToFoot(topY + topAlto / 3.0));
+                    y = gridBase;
+                    AddBeam(bay, y, levels[0]);
+                    start = 1;
+                }
+                else if (levels.Count == 1)
+                {
+                    // Only a ground pallet, no larguero: the post still covers a third of that pallet.
+                    height = Math.Max(height, RoundUpToFoot(PalletAlto(levels[0]) / 3.0));
+                    system.Bays.Add(bay);
+                    continue;
+                }
+                else
+                {
+                    y = SnapUp(RoundUpToMultiple(PalletAlto(levels[0]) + clearance, 2.0) + levels[1].BeamPeralte, gridBase, paso);
+                    AddBeam(bay, y, levels[1]);
+                    start = 2;
                 }
 
+                for (var j = start; j < levels.Count; j++)
+                {
+                    y += Separation(PalletAlto(levels[j - 1]), clearance, levels[j].BeamPeralte, paso);
+                    AddBeam(bay, y, levels[j]);
+                }
+
+                // Post height from the top level (its beam Y + a third of its pallet); the run takes the tallest.
+                height = Math.Max(height, RoundUpToFoot(y + PalletAlto(levels[levels.Count - 1]) / 3.0));
                 system.Bays.Add(bay);
             }
 
             system.Height = height;
             return system;
         }
+
+        private static void AddBeam(SelectiveBay bay, double y, SelectiveCell cell)
+            => bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = cell.BeamId, BeamPeralte = cell.BeamPeralte });
+
+        private static double PalletAlto(SelectiveCell cell) => cell.Pallet?.Alto ?? 0.0;
 
         /// <summary>Bay beam LONGITUD = the widest level's Frente*Count + Tolerance*(Count+1).</summary>
         private static double BayBeamLength(SelectiveBayDesign bay, double tolerance)
@@ -104,9 +127,9 @@ namespace RackCad.Application.Systems
             return Math.Max(paso, RoundUpToMultiple(claroLibre + beamPeralteAbove, paso));
         }
 
-        /// <summary>Snap a value to the nearest troquel of the grid (base + k*paso).</summary>
-        private static double Snap(double value, double baseY, double paso)
-            => baseY + Math.Round((value - baseY) / paso, MidpointRounding.AwayFromZero) * paso;
+        /// <summary>Smallest troquel of the grid (base + k*paso) that is ≥ <paramref name="value"/>.</summary>
+        private static double SnapUp(double value, double gridBase, double paso)
+            => gridBase + RoundUpToMultiple(value - gridBase, paso);
 
         /// <summary>Smallest multiple of <paramref name="m"/> that is ≥ <paramref name="x"/> (with a tiny epsilon so exact multiples don't jump).</summary>
         private static double RoundUpToMultiple(double x, double m) => Math.Ceiling(x / m - 1e-9) * m;

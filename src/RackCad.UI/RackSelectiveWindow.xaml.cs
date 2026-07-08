@@ -16,8 +16,9 @@ namespace RackCad.UI
 {
     /// <summary>
     /// Advanced editor for a selective rack (FRONTAL view). The user edits a bays × levels MATRIX where each
-    /// cell carries its own pallet (frente/alto), count and larguero; <see cref="SelectiveGeometryResolver"/>
-    /// derives the larguero lengths, level separations and post height, and <see cref="SelectiveFrontalBuilder"/>
+    /// bay has its OWN number of levels and its own "larguero a piso" flag, and each cell carries its own pallet
+    /// (frente/alto), count and larguero. <see cref="SelectiveGeometryResolver"/> derives the larguero lengths,
+    /// the floor-referenced level Ys and the post height (tallest bay governs); <see cref="SelectiveFrontalBuilder"/>
     /// lays out the blocks. Click a cell to edit it, then apply the values to the cell / row / column / all.
     /// </summary>
     public partial class RackSelectiveWindow : Window
@@ -40,8 +41,12 @@ namespace RackCad.UI
         private readonly SelectiveGeometryResolver resolver = new SelectiveGeometryResolver();
         private readonly bool canInsertInAutoCad;
 
-        /// <summary>The design matrix: <c>bays[bay][level]</c>, level 0 = bottom.</summary>
+        /// <summary>The design matrix: <c>bays[bay][level]</c>, level 0 = ground; each bay has its own length.</summary>
         private readonly List<List<Cell>> bays = new List<List<Cell>>();
+
+        /// <summary>Per-bay "larguero a piso" flag, parallel to <see cref="bays"/>.</summary>
+        private readonly List<bool> floorBeams = new List<bool>();
+
         private string defaultBeamId;
         private int selBay;
         private int selLevel;
@@ -113,46 +118,81 @@ namespace RackCad.UI
         private void InitMatrix(int bayCount, int levelCount)
         {
             bays.Clear();
+            floorBeams.Clear();
             for (var b = 0; b < bayCount; b++)
             {
                 var column = new List<Cell>();
                 for (var l = 0; l < levelCount; l++) column.Add(NewCell());
                 bays.Add(column);
+                floorBeams.Add(false);
             }
 
             selBay = 0;
             selLevel = 0;
         }
 
-        /// <summary>Grow/shrink the matrix, preserving existing cells; new bays/levels inherit the neighbour's config.</summary>
-        private void ResizeMatrix(int bayCount, int levelCount)
+        /// <summary>Grow/shrink the number of bays, preserving existing ones; a new bay clones the last (cells + floor flag).</summary>
+        private void ResizeBays(int bayCount)
         {
             while (bays.Count < bayCount)
             {
-                var template = bays.Count > 0 ? bays[bays.Count - 1] : null;
-                var column = new List<Cell>();
-                for (var l = 0; l < levelCount; l++)
+                if (bays.Count > 0)
                 {
-                    column.Add(template != null && l < template.Count ? template[l].Clone() : NewCell());
+                    bays.Add(bays[bays.Count - 1].Select(c => c.Clone()).ToList());
+                    floorBeams.Add(floorBeams[floorBeams.Count - 1]);
                 }
-
-                bays.Add(column);
+                else
+                {
+                    bays.Add(new List<Cell> { NewCell() });
+                    floorBeams.Add(false);
+                }
             }
 
-            while (bays.Count > bayCount) bays.RemoveAt(bays.Count - 1);
-
-            foreach (var column in bays)
+            while (bays.Count > bayCount)
             {
-                while (column.Count < levelCount)
-                {
-                    column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
-                }
-
-                while (column.Count > levelCount) column.RemoveAt(column.Count - 1);
+                bays.RemoveAt(bays.Count - 1);
+                floorBeams.RemoveAt(floorBeams.Count - 1);
             }
 
+            ClampSelection();
+        }
+
+        private void AddLevel(int bay)
+        {
+            var column = bays[bay];
+            column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
+            RenderMatrix();
+            Recompute();
+        }
+
+        private void RemoveLevel(int bay)
+        {
+            var column = bays[bay];
+            if (column.Count <= 1)
+            {
+                SetStatus("Cada bahía necesita al menos un nivel.", true);
+                return;
+            }
+
+            column.RemoveAt(column.Count - 1);
+            ClampSelection();
+            LoadCellEditor();
+            RenderMatrix();
+            Recompute();
+        }
+
+        private void SetFloor(int bay, bool value)
+        {
+            if (bay < 0 || bay >= floorBeams.Count) return;
+            floorBeams[bay] = value;
+            Recompute();
+        }
+
+        private void ClampSelection()
+        {
             selBay = Math.Min(Math.Max(0, selBay), bays.Count - 1);
-            selLevel = Math.Min(Math.Max(0, selLevel), (bays.Count > 0 ? bays[0].Count : 1) - 1);
+            var levelCount = selBay >= 0 && selBay < bays.Count ? bays[selBay].Count : 1;
+            selLevel = Math.Min(Math.Max(0, selLevel), levelCount - 1);
         }
 
         private bool TryGetSelected(out Cell cell)
@@ -174,31 +214,35 @@ namespace RackCad.UI
             MatrixGrid.ColumnDefinitions.Clear();
 
             var bayCount = bays.Count;
-            var levelCount = bayCount > 0 ? bays[0].Count : 0;
-            if (bayCount == 0 || levelCount == 0) return;
+            if (bayCount == 0) return;
+            var maxLevels = bays.Max(c => c.Count);
+            if (maxLevels == 0) return;
 
             MatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(64) });
             for (var b = 0; b < bayCount; b++)
                 MatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(96) });
 
             MatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            for (var r = 0; r < levelCount; r++)
+            for (var r = 0; r < maxLevels; r++)
                 MatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             AddToGrid(HeaderCell(string.Empty), 0, 0);
             for (var b = 0; b < bayCount; b++)
-                AddToGrid(HeaderCell("Bahía " + (b + 1)), 0, b + 1);
+                AddToGrid(BayHeader(b), 0, b + 1);
 
-            // Top display row = highest level.
-            for (var displayRow = 0; displayRow < levelCount; displayRow++)
+            // Top display row = highest level; shorter bays leave the upper rows empty (aligned to the floor).
+            for (var displayRow = 0; displayRow < maxLevels; displayRow++)
             {
-                var level = levelCount - 1 - displayRow;
+                var level = maxLevels - 1 - displayRow;
                 var gridRow = displayRow + 1;
                 AddToGrid(HeaderCell("Nivel " + (level + 1)), gridRow, 0);
 
                 for (var b = 0; b < bayCount; b++)
                 {
-                    AddToGrid(CellUi(bays[b][level], b, level), gridRow, b + 1);
+                    if (level < bays[b].Count)
+                    {
+                        AddToGrid(CellUi(bays[b][level], b, level), gridRow, b + 1);
+                    }
                 }
             }
         }
@@ -219,6 +263,65 @@ namespace RackCad.UI
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(2)
+        };
+
+        private UIElement BayHeader(int bay)
+        {
+            var panel = new StackPanel { Margin = new Thickness(2, 2, 2, 6) };
+            panel.Children.Add(new TextBlock
+            {
+                Text = "Bahía " + (bay + 1),
+                Foreground = LabelStroke,
+                FontSize = 11,
+                FontWeight = FontWeights.SemiBold,
+                HorizontalAlignment = HorizontalAlignment.Center
+            });
+
+            var levelRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 2, 0, 0) };
+            var minus = SmallButton("−");
+            minus.Click += (s, e) => RemoveLevel(bay);
+            var count = new TextBlock
+            {
+                Text = bays[bay].Count.ToString(CultureInfo.InvariantCulture),
+                Foreground = CellText,
+                FontSize = 11,
+                MinWidth = 16,
+                Margin = new Thickness(5, 0, 5, 0),
+                TextAlignment = TextAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            var plus = SmallButton("+");
+            plus.Click += (s, e) => AddLevel(bay);
+            levelRow.Children.Add(minus);
+            levelRow.Children.Add(count);
+            levelRow.Children.Add(plus);
+            panel.Children.Add(levelRow);
+
+            var floor = new CheckBox
+            {
+                Content = "Piso",
+                FontSize = 10.5,
+                Foreground = LabelStroke,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 3, 0, 0),
+                IsChecked = floorBeams[bay],
+                ToolTip = "Larguero a piso: el nivel de piso lleva larguero."
+            };
+            floor.Checked += (s, e) => SetFloor(bay, true);
+            floor.Unchecked += (s, e) => SetFloor(bay, false);
+            panel.Children.Add(floor);
+
+            return panel;
+        }
+
+        private static Button SmallButton(string text) => new Button
+        {
+            Content = text,
+            Width = 20,
+            Height = 18,
+            Padding = new Thickness(0),
+            FontSize = 12,
+            Cursor = Cursors.Hand
         };
 
         private UIElement CellUi(Cell cell, int bay, int level)
@@ -270,13 +373,13 @@ namespace RackCad.UI
 
         private void Update_Click(object sender, RoutedEventArgs e)
         {
-            if (!ReadStructure(out var bayCount, out var levelCount, out var error))
+            if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1)
             {
-                SetStatus(error, true);
+                SetStatus("Cantidad de bahias invalida.", true);
                 return;
             }
 
-            ResizeMatrix(bayCount, levelCount);
+            ResizeBays(bayCount);
             LoadCellEditor();
             RenderMatrix();
             Recompute();
@@ -296,10 +399,9 @@ namespace RackCad.UI
                 return;
             }
 
-            var levelCount = bays.Count > 0 ? bays[0].Count : 0;
             for (var b = 0; b < bays.Count; b++)
             {
-                for (var l = 0; l < levelCount; l++)
+                for (var l = 0; l < bays[b].Count; l++)
                 {
                     var inScope =
                         scope == Scope.All ||
@@ -357,16 +459,6 @@ namespace RackCad.UI
 
         // ---- Reading inputs ----
 
-        private bool ReadStructure(out int bayCount, out int levelCount, out string error)
-        {
-            bayCount = 0;
-            levelCount = 0;
-            error = null;
-            if (!TryInt(BayCountBox.Text, out bayCount) || bayCount < 1) { error = "Cantidad de bahias invalida."; return false; }
-            if (!TryInt(LevelsBox.Text, out levelCount) || levelCount < 1) { error = "Niveles invalidos."; return false; }
-            return true;
-        }
-
         private bool ReadCellEditor(out Cell values, out string error)
         {
             values = null;
@@ -386,7 +478,6 @@ namespace RackCad.UI
             error = null;
             if (!(PostBox.SelectedValue is string postId) || string.IsNullOrWhiteSpace(postId)) { error = "Selecciona un poste."; return null; }
             if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste invalido."; return null; }
-            if (!UiSupport.TryNum(FirstLevelBox.Text, out var firstLevel) || firstLevel <= 0.0) { error = "1er nivel invalido."; return null; }
             if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
             if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
             if (bays.Count == 0 || bays[0].Count == 0) { error = "Define bahias y niveles."; return null; }
@@ -396,14 +487,13 @@ namespace RackCad.UI
                 PostId = postId,
                 PostPeralte = postPeralte,
                 PalletTolerance = tolerance,
-                VerticalClearance = clearance,
-                FirstLevel = firstLevel
+                VerticalClearance = clearance
             };
 
-            foreach (var column in bays)
+            for (var b = 0; b < bays.Count; b++)
             {
-                var bay = new SelectiveBayDesign();
-                foreach (var cell in column)
+                var bay = new SelectiveBayDesign { FloorBeam = floorBeams[b] };
+                foreach (var cell in bays[b])
                 {
                     bay.Levels.Add(new SelectiveCell
                     {

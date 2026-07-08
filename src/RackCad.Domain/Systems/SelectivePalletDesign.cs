@@ -26,16 +26,20 @@ namespace RackCad.Domain.Systems
         /// <summary>Vertical clearance ("holgura") above a pallet inside its clear opening (in). Editable; default 6".</summary>
         public double VerticalClearance { get; set; } = 6.0;
 
-        /// <summary>Y of the first (lowest) level (in). User input; snapped to the troquel grid by the resolver.</summary>
-        public double FirstLevel { get; set; }
-
-        /// <summary>The bays, left to right. Each carries its own column of level cells.</summary>
+        /// <summary>The bays, left to right. Each carries its own column of level cells (its own count).</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
     }
 
-    /// <summary>One bay's column in the design matrix: its level cells, bottom to top.</summary>
+    /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>
     public sealed class SelectiveBayDesign
     {
+        /// <summary>
+        /// Whether the ground level (level 0) carries a larguero ("larguero a piso"). Default false: the ground
+        /// pallet rests on the floor (from Y=0) with no beam, and the first larguero sits above it. When true,
+        /// the ground level gets a beam at the lowest troquel and the pallet stacks from there.
+        /// </summary>
+        public bool FloorBeam { get; set; }
+
         /// <summary>The level cells of this bay, bottom to top. Each cell can differ (pallet, count, beam).</summary>
         public IList<SelectiveCell> Levels { get; } = new List<SelectiveCell>();
     }
