@@ -37,23 +37,23 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Build_PlacesOneCabeceraPerPost_AtTheFrontalPostXs()
+        public void Cortes_OnePerPost_AtTheFrontalPostXs_EachIsACabecera()
         {
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
 
-            var plan = new SelectiveLateralBuilder().Build(system, Catalog);
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
 
-            var placements = plan.Headers.SelectMany(h => h.Placements).ToList();
-            Assert.Equal(3, placements.Count); // 2 frentes -> 3 postes
+            Assert.Equal(3, cortes.Count); // 2 frentes -> 3 postes
 
             var expected = SelectivePostGeometry.Compute(system, Catalog).PostXs.OrderBy(x => x).ToList();
-            var placed = placements.Select(p => p.InsertionX).OrderBy(x => x).ToList();
+            var placed = cortes.Select(c => c.X).OrderBy(x => x).ToList();
             for (var i = 0; i < expected.Count; i++)
             {
                 Assert.Equal(expected[i], placed[i], 4);
             }
 
-            Assert.All(plan.Headers, h => Assert.NotEmpty(h.Instances)); // each cabecera actually has geometry
+            Assert.All(cortes, c => Assert.NotNull(c.Cabecera));       // each corte is its own cabecera
+            Assert.All(cortes, c => Assert.True(c.Cabecera.Height > 0));
         }
     }
 }

@@ -96,6 +96,62 @@ namespace RackCad.Plugin.Headers
         }
 
         /// <summary>
+        /// Draw one cabecera as its own block at a GIVEN point (no jig), embedding its payload on the definition.
+        /// Used to lay out a selective run's lateral "cortes" (one cabecera block per post) in a single action.
+        /// </summary>
+        public HeaderPlacementResult DrawAt(Document document, RackFrameConfiguration configuration, Point3d insertion, string payloadJson = null, string rackName = null)
+        {
+            if (document == null)
+            {
+                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
+            }
+
+            if (configuration == null)
+            {
+                return HeaderPlacementResult.Failure("No hay configuracion para dibujar.");
+            }
+
+            try
+            {
+                var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
+                var catalog = LoadCatalog();
+                var layout = builder.Build(configuration, parameters, catalog);
+                var blockName = string.IsNullOrWhiteSpace(rackName) ? BuildBlockName(catalog, configuration) : rackName.Trim();
+
+                var block = CreateBlock(document, layout, blockName, payloadJson);
+                var placedId = AppendReference(document, block.DefinitionId, insertion);
+
+                return new HeaderPlacementResult(true, !placedId.IsNull, block.BlockName, DescribeMissing(catalog, block.Outcome), block.Outcome)
+                {
+                    PlacedId = placedId
+                };
+            }
+            catch (Exception ex)
+            {
+                return HeaderPlacementResult.Failure(ex.Message);
+            }
+        }
+
+        /// <summary>Append a reference to a block definition at a fixed point (no jig); returns the reference id.</summary>
+        private static ObjectId AppendReference(Document document, ObjectId blockDefinitionId, Point3d insertion)
+        {
+            var database = document.Database;
+
+            using (document.LockDocument())
+            using (var transaction = database.TransactionManager.StartTransaction())
+            {
+                var modelSpace = (BlockTableRecord)transaction.GetObject(
+                    SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
+                var reference = new BlockReference(insertion, blockDefinitionId);
+                modelSpace.AppendEntity(reference);
+                transaction.AddNewlyCreatedDBObject(reference, true);
+                var placedId = reference.ObjectId;
+                transaction.Commit();
+                return placedId;
+            }
+        }
+
+        /// <summary>
         /// Turn an already-built plan into one AutoCAD block and let the user place it with the mouse.
         /// Shared by the single header and the whole dynamic system.
         /// </summary>

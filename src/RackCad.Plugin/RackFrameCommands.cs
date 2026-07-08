@@ -3,6 +3,7 @@ using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
@@ -596,73 +597,14 @@ namespace RackCad.Plugin
                 return;
             }
 
-            // Redraw EVERY view-block of this rack (frontal + lateral) — found by its GUID — so all views and their
-            // copies stay in sync. Each is redefined in place per its own View.
-            var blocks = FindRackBlocks(document, window.RackId);
-            if (blocks.Count == 0)
-            {
-                blocks.Add((blockId, embed));
-            }
+            // The frontal selective is one block; redefine it in place (its copies all update). The lateral cortes
+            // are INDEPENDENT cabecera blocks, so they are edited on their own via the cabecera round-trip.
+            var payload = BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName, RackEmbedDocument.ViewFrontal);
+            var result = new SelectiveFrontalDrawService().RedrawInPlace(document, blockId, window.SystemToInsert, payload);
 
-            var updated = 0;
-            foreach (var block in blocks)
-            {
-                var view = string.IsNullOrWhiteSpace(block.Embed.View) ? RackEmbedDocument.ViewFrontal : block.Embed.View;
-                var payload = BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName, view);
-                var result = view == RackEmbedDocument.ViewLateral
-                    ? new SelectiveLateralDrawService().RedrawInPlace(document, block.BlockId, window.SystemToInsert, payload)
-                    : new SelectiveFrontalDrawService().RedrawInPlace(document, block.BlockId, window.SystemToInsert, payload);
-
-                if (result != null && result.Success)
-                {
-                    updated++;
-                }
-            }
-
-            editor.WriteMessage(updated > 0
-                ? "\nRackCad: rack actualizado en " + updated.ToString(CultureInfo.InvariantCulture) + " vista(s); todas sus copias reflejan el cambio."
-                : "\nRackCad: no se pudo actualizar el rack.");
-        }
-
-        /// <summary>All rack block DEFINITIONS in the drawing whose embedded payload has the given rack id (its views).</summary>
-        private static System.Collections.Generic.List<(ObjectId BlockId, RackEmbedDocument Embed)> FindRackBlocks(Document document, string rackId)
-        {
-            var results = new System.Collections.Generic.List<(ObjectId, RackEmbedDocument)>();
-            if (document == null || string.IsNullOrEmpty(rackId))
-            {
-                return results;
-            }
-
-            var store = new RackEmbedStore();
-            using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
-            {
-                var blockTable = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
-                foreach (ObjectId blockId in blockTable)
-                {
-                    var record = (BlockTableRecord)transaction.GetObject(blockId, OpenMode.ForRead);
-                    if (record.IsLayout || record.IsAnonymous || record.IsFromExternalReference)
-                    {
-                        continue;
-                    }
-
-                    var json = RackBlockData.Read(transaction, blockId);
-                    if (string.IsNullOrEmpty(json))
-                    {
-                        continue;
-                    }
-
-                    var embed = store.Deserialize(json);
-                    if (embed != null && string.Equals(embed.Id, rackId, System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        results.Add((blockId, embed));
-                    }
-                }
-
-                transaction.Commit();
-            }
-
-            return results;
+            editor.WriteMessage(result != null && result.Success
+                ? "\nRackCad: rack actualizado; todas sus copias reflejan el cambio."
+                : "\nRackCad: no se pudo actualizar el rack. " + (result?.ErrorMessage ?? string.Empty));
         }
 
         private static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
@@ -741,7 +683,7 @@ namespace RackCad.Plugin
             });
         }
 
-        /// <summary>Draws the selective in the requested VIEW (frontal or lateral) as its own GUID-linked block.</summary>
+        /// <summary>Draws the selective in the requested VIEW: frontal = one selective block; lateral = one cabecera "corte" per post.</summary>
         private static void DrawSelectiveView(string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
@@ -751,12 +693,66 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var payload = BuildSelectivePayload(design, id, name, view);
-            var result = view == RackEmbedDocument.ViewLateral
-                ? new SelectiveLateralDrawService().DrawAndPlace(document, system, payload, name)
-                : new SelectiveFrontalDrawService().DrawAndPlace(document, system, payload, name);
+            if (view == RackEmbedDocument.ViewLateral)
+            {
+                DrawSelectiveCortes(system, name);
+                return;
+            }
 
+            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal);
+            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system, payload, name);
             document.Editor.WriteMessage("\n" + DescribeSelective(result));
+        }
+
+        /// <summary>
+        /// Draws the selective's LATERAL view as INDEPENDENT cortes: one cabecera block per post, laid out at the
+        /// frontal post Xs from a single base point. Each corte is its own cabecera (own GUID) → RACKEDITAR edits
+        /// that corte alone (via the cabecera round-trip), not the whole rack.
+        /// </summary>
+        private static void DrawSelectiveCortes(SelectiveRackSystem system, string name)
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+            if (document == null || system == null)
+            {
+                return;
+            }
+
+            var editor = document.Editor;
+            var catalog = LateralHeaderDrawService.LoadCatalog();
+
+            var cortes = new SelectiveLateralBuilder().Cortes(system, catalog);
+            if (cortes.Count == 0)
+            {
+                editor.WriteMessage("\nRackCad: no hay cortes laterales que dibujar.");
+                return;
+            }
+
+            var pick = editor.GetPoint("\nPunto base de los cortes laterales: ");
+            if (pick.Status != PromptStatus.OK)
+            {
+                return;
+            }
+
+            var basePoint = pick.Value;
+            var service = new LateralHeaderDrawService();
+            var baseName = string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim();
+            var drawn = 0;
+
+            foreach (var corte in cortes)
+            {
+                var corteName = baseName + " - corte " + (corte.PostIndex + 1).ToString(CultureInfo.InvariantCulture);
+                var payload = BuildCabeceraPayload(corte.Cabecera, System.Guid.NewGuid().ToString(), corteName);
+                var insertion = new Point3d(basePoint.X + corte.X, basePoint.Y, basePoint.Z);
+
+                var result = service.DrawAt(document, corte.Cabecera, insertion, payload, corteName);
+                if (result != null && result.Success)
+                {
+                    drawn++;
+                }
+            }
+
+            editor.WriteMessage("\nRackCad: " + drawn.ToString(CultureInfo.InvariantCulture)
+                + " corte(s) lateral(es) insertado(s); cada uno se edita por separado con RACKEDITAR.");
         }
 
         private static string DescribeSelective(HeaderPlacementResult result)
