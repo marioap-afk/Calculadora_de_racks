@@ -28,6 +28,8 @@ namespace RackCad.UI
     {
         private static readonly Brush PostBrush = new SolidColorBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
         private static readonly Brush PostFill = new SolidColorBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86));
+        private static readonly Brush PostHiBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xC5, 0x3D));
+        private static readonly Brush PostHiFill = new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xC5, 0x3D));
         private static readonly Brush BeamBrush = new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x2B));
         private static readonly Brush BeamFill = new SolidColorBrush(Color.FromArgb(0x66, 0xE0, 0x8A, 0x2B));
         private static readonly Brush PlateFill = new SolidColorBrush(Color.FromRgb(0xB7, 0xC3, 0xCF));
@@ -397,7 +399,11 @@ namespace RackCad.UI
             UpdatePostStatus();
         }
 
-        private void PostSelect_Changed(object sender, SelectionChangedEventArgs e) => UpdatePostStatus();
+        private void PostSelect_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            UpdatePostStatus();
+            DrawPreview(); // re-highlight the picked post
+        }
 
         private void UpdatePostStatus()
         {
@@ -869,6 +875,9 @@ namespace RackCad.UI
             // Floor.
             AddLine(Map(xMin, 0), Map(xMax, 0), FloorStroke, 1.5);
 
+            var selectedPost = PostSelectBox?.SelectedIndex ?? -1;
+            var postIndex = 0;
+
             foreach (var instance in lastInstances)
             {
                 switch (instance.Role)
@@ -877,7 +886,10 @@ namespace RackCad.UI
                         var postH = Param(instance, "LONGITUD");
                         if (postH <= 0.0) postH = height;
                         var pTop = Map(instance.Insertion.X - postWidth / 2.0, postH);
-                        AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, postH * mapScale, PostBrush, 1.6, PostFill);
+                        var hi = postIndex == selectedPost;
+                        AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, postH * mapScale,
+                            hi ? PostHiBrush : PostBrush, hi ? 3.0 : 1.6, hi ? PostHiFill : PostFill);
+                        postIndex++;
                         break;
                     case HeaderBlockRole.Beam:
                         var length = Param(instance, "LONGITUD");
