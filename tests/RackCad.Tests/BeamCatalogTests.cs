@@ -10,12 +10,12 @@ namespace RackCad.Tests
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         [Fact]
-        public void Catalog_LoadsBeamProfiles_WithPeralteAndMensula()
+        public void Catalog_LoadsBeamProfiles_WithPeraltesAndMensula()
         {
             var beams = Catalog.BeamProfiles;
 
             Assert.NotEmpty(beams);
-            Assert.All(beams, beam => Assert.True(beam.Peralte > 0.0));
+            Assert.All(beams, beam => Assert.False(string.IsNullOrWhiteSpace(beam.Peraltes)));
             Assert.All(beams, beam => Assert.False(string.IsNullOrWhiteSpace(beam.Mensula)));
         }
 

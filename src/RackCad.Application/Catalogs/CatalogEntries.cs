@@ -82,17 +82,17 @@ namespace RackCad.Application.Catalogs
     }
 
     /// <summary>
-    /// A load beam ("larguero"/"viga") SKU. Length is NOT stored (it is the block's LONGITUD parameter);
-    /// what defines the SKU is the profile + <see cref="Peralte"/>, plus a fixed end connector
-    /// (<see cref="Mensula"/>, FK to <see cref="MensulaCatalogEntry"/>). BOM weight = WeightPerMeter x length
-    /// + the two ménsulas.
+    /// A load beam ("larguero"/"viga") type = one dynamic block. Both LENGTH and PERALTE are the block's
+    /// parameters (LONGITUD / PERALTE grips), not stored per row; <see cref="Peraltes"/> only DECLARES the
+    /// values the PERALTE grip accepts. Carries a fixed end connector (<see cref="Mensula"/>, FK to
+    /// <see cref="MensulaCatalogEntry"/>). Per-peralte weight/part will live in a companion table at BOM time.
     /// </summary>
     public sealed class BeamProfileCatalogEntry : CatalogEntryBase
     {
         public string Family { get; set; }
 
-        /// <summary>Profile height (in). Different peralte = different SKU.</summary>
-        public double Peralte { get; set; }
+        /// <summary>Allowed values for the block's PERALTE parameter, e.g. "3;3.5;4;4.5;5".</summary>
+        public string Peraltes { get; set; }
         public double Width { get; set; }
         public double Thickness { get; set; }
         public string Units { get; set; }
@@ -101,7 +101,7 @@ namespace RackCad.Application.Catalogs
         /// <summary>Fixed end connector for this beam (FK to a ménsula id).</summary>
         public string Mensula { get; set; }
 
-        /// <summary>Weight per unit length; the BOM multiplies it by the beam's LONGITUD.</summary>
+        /// <summary>Base weight per unit length (per-peralte weight comes later, at BOM time).</summary>
         public double WeightPerMeter { get; set; }
     }
 
