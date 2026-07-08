@@ -596,17 +596,73 @@ namespace RackCad.Plugin
                 return;
             }
 
-            // Redefine THIS block's view in place (its copies all update). The frontal/lateral views are separate
-            // GUID-linked blocks; the selected block keeps its own view.
-            var view = string.IsNullOrWhiteSpace(embed.View) ? RackEmbedDocument.ViewFrontal : embed.View;
-            var payload = BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName, view);
-            var result = view == RackEmbedDocument.ViewLateral
-                ? new SelectiveLateralDrawService().RedrawInPlace(document, blockId, window.SystemToInsert, payload)
-                : new SelectiveFrontalDrawService().RedrawInPlace(document, blockId, window.SystemToInsert, payload);
+            // Redraw EVERY view-block of this rack (frontal + lateral) — found by its GUID — so all views and their
+            // copies stay in sync. Each is redefined in place per its own View.
+            var blocks = FindRackBlocks(document, window.RackId);
+            if (blocks.Count == 0)
+            {
+                blocks.Add((blockId, embed));
+            }
 
-            editor.WriteMessage(result != null && result.Success
-                ? "\nRackCad: rack actualizado; todas sus copias reflejan el cambio."
-                : "\nRackCad: no se pudo actualizar el rack. " + (result?.ErrorMessage ?? string.Empty));
+            var updated = 0;
+            foreach (var block in blocks)
+            {
+                var view = string.IsNullOrWhiteSpace(block.Embed.View) ? RackEmbedDocument.ViewFrontal : block.Embed.View;
+                var payload = BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName, view);
+                var result = view == RackEmbedDocument.ViewLateral
+                    ? new SelectiveLateralDrawService().RedrawInPlace(document, block.BlockId, window.SystemToInsert, payload)
+                    : new SelectiveFrontalDrawService().RedrawInPlace(document, block.BlockId, window.SystemToInsert, payload);
+
+                if (result != null && result.Success)
+                {
+                    updated++;
+                }
+            }
+
+            editor.WriteMessage(updated > 0
+                ? "\nRackCad: rack actualizado en " + updated.ToString(CultureInfo.InvariantCulture) + " vista(s); todas sus copias reflejan el cambio."
+                : "\nRackCad: no se pudo actualizar el rack.");
+        }
+
+        /// <summary>All rack block DEFINITIONS in the drawing whose embedded payload has the given rack id (its views).</summary>
+        private static System.Collections.Generic.List<(ObjectId BlockId, RackEmbedDocument Embed)> FindRackBlocks(Document document, string rackId)
+        {
+            var results = new System.Collections.Generic.List<(ObjectId, RackEmbedDocument)>();
+            if (document == null || string.IsNullOrEmpty(rackId))
+            {
+                return results;
+            }
+
+            var store = new RackEmbedStore();
+            using (document.LockDocument())
+            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            {
+                var blockTable = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
+                foreach (ObjectId blockId in blockTable)
+                {
+                    var record = (BlockTableRecord)transaction.GetObject(blockId, OpenMode.ForRead);
+                    if (record.IsLayout || record.IsAnonymous || record.IsFromExternalReference)
+                    {
+                        continue;
+                    }
+
+                    var json = RackBlockData.Read(transaction, blockId);
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        continue;
+                    }
+
+                    var embed = store.Deserialize(json);
+                    if (embed != null && string.Equals(embed.Id, rackId, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        results.Add((blockId, embed));
+                    }
+                }
+
+                transaction.Commit();
+            }
+
+            return results;
         }
 
         private static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
