@@ -153,6 +153,17 @@ namespace RackCad.Application.Catalogs
 
         public double LocalX { get; set; }
         public double LocalY { get; set; }
+
+        /// <summary>
+        /// Slope: X moves this much per unit of the parameter named in <see cref="Param"/> (Y stays fixed).
+        /// So <c>X = LocalX + LocalXPorParam * value(Param)</c>. 0 = a fixed point (the default for every
+        /// existing/centered mate). Lets a point that slides when a block parameter changes (e.g. the post's
+        /// larguero troquel moving with PERALTE) be captured as data instead of a per-value row.
+        /// </summary>
+        public double LocalXPorParam { get; set; }
+
+        /// <summary>Name of the block parameter that drives the X slope (e.g. "PERALTE"); empty when fixed.</summary>
+        public string Param { get; set; }
     }
 
     /// <summary>

@@ -1,0 +1,90 @@
+using System;
+using System.Linq;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Headers;
+using RackCad.Application.Systems;
+using RackCad.Domain.Systems;
+using Xunit;
+
+namespace RackCad.Tests
+{
+    public class SelectiveFrontalBuilderTests
+    {
+        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
+        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+
+        private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
+
+        private static SelectiveRackSystem System(double postPeralte = 3.0)
+        {
+            var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = postPeralte };
+            system.Bays.Add(new SelectiveBay
+            {
+                BeamId = BeamId,
+                BeamPeralte = 4.0,
+                BeamLength = 100.0,
+                Levels = 4,
+                FirstLevel = 48.0,
+                Separation = 48.0
+            });
+            return system;
+        }
+
+        [Fact]
+        public void Build_ProducesOnePostAndPlatePerCabecera_PlusOneBeamPerLevel()
+        {
+            var instances = new SelectiveFrontalBuilder().Build(System(), Catalog);
+
+            Assert.Equal(2, instances.Count(i => i.Role == HeaderBlockRole.Post));       // N+1 cabeceras
+            Assert.Equal(2, instances.Count(i => i.Role == HeaderBlockRole.BasePlate));
+            Assert.Equal(4, instances.Count(i => i.Role == HeaderBlockRole.Beam));       // 4 levels
+        }
+
+        [Fact]
+        public void Build_PostSpacing_IsBeamLengthPlusTwoTroquelX()
+        {
+            var posts = new SelectiveFrontalBuilder().Build(System(), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Post)
+                .OrderBy(i => i.Insertion.X)
+                .ToList();
+
+            // troquelX(peralte 3) = 0.7498 + 0.5*3 = 2.2498 ; spacing = 100 + 2*2.2498
+            Assert.Equal(0.0, posts[0].Insertion.X, 4);
+            Assert.Equal(104.4996, posts[1].Insertion.X, 4);
+        }
+
+        [Theory]
+        [InlineData(3.0, 2.2498)]
+        [InlineData(5.0, 3.2498)]
+        public void Build_BeamX_FollowsPostPeralte(double postPeralte, double expectedX)
+        {
+            var beam = new SelectiveFrontalBuilder().Build(System(postPeralte), Catalog)
+                .First(i => i.Role == HeaderBlockRole.Beam);
+
+            // The parametric mate: X = 0.7498 + 0.5 * peralte.
+            Assert.Equal(expectedX, beam.Insertion.X, 4);
+        }
+
+        [Fact]
+        public void Build_Beam_CarriesLengthAndPeralte()
+        {
+            var beam = new SelectiveFrontalBuilder().Build(System(), Catalog)
+                .First(i => i.Role == HeaderBlockRole.Beam);
+
+            Assert.Equal(100.0, beam.DynamicParameters["LONGITUD"], 4);
+            Assert.Equal(4.0, beam.DynamicParameters["PERALTE"], 4);
+        }
+
+        [Fact]
+        public void Build_Levels_SnapToTheTroquelGrid()
+        {
+            var ys = new SelectiveFrontalBuilder().Build(System(), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Beam)
+                .Select(i => Math.Round(i.Insertion.Y, 3))
+                .OrderBy(y => y)
+                .ToList();
+
+            Assert.Equal(new[] { 48.0, 96.0, 144.0, 192.0 }, ys);
+        }
+    }
+}

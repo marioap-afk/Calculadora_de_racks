@@ -22,7 +22,10 @@ namespace RackCad.Application.Headers
         /// <summary>A brake (freno) on a dynamic bed.</summary>
         Brake,
         /// <summary>The end stop (tope) at the discharge end of the rail.</summary>
-        Stop
+        Stop,
+
+        /// <summary>A load beam (larguero/viga) spanning a bay in a selective rack.</summary>
+        Beam
     }
 
     /// <summary>
