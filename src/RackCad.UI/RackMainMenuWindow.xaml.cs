@@ -32,6 +32,10 @@ namespace RackCad.UI
 
         public FlowBedConfiguration FlowBedToInsert { get; private set; }
 
+        /// <summary>Identity of the cama to insert (for the drawing round-trip embed).</summary>
+        public string FlowBedRackId { get; private set; }
+        public string FlowBedRackName { get; private set; }
+
         public SelectiveRackSystem SelectiveSystemToInsert { get; private set; }
 
         /// <summary>The selective design + identity that produced <see cref="SelectiveSystemToInsert"/> (for the drawing embed).</summary>
@@ -163,6 +167,8 @@ namespace RackCad.UI
                 {
                     InsertRequested = true;
                     FlowBedToInsert = window.FlowBedToInsert;
+                    FlowBedRackId = window.RackId;
+                    FlowBedRackName = window.RackName;
                     Close();
                 }
             }

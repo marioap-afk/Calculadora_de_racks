@@ -7,7 +7,9 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
+using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
+using RackCad.Plugin.Systems;
 
 namespace RackCad.Plugin.Headers
 {
@@ -22,7 +24,7 @@ namespace RackCad.Plugin.Headers
         private readonly LateralHeaderLayoutBuilder builder = new LateralHeaderLayoutBuilder();
         private readonly LateralHeaderDrawer drawer = new LateralHeaderDrawer();
 
-        public HeaderPlacementResult DrawAndPlace(Document document, RackFrameConfiguration configuration)
+        public HeaderPlacementResult DrawAndPlace(Document document, RackFrameConfiguration configuration, string payloadJson = null, string rackName = null)
         {
             if (document == null)
             {
@@ -39,9 +41,53 @@ namespace RackCad.Plugin.Headers
                 var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
                 var catalog = LoadCatalog();
                 var layout = builder.Build(configuration, parameters, catalog);
-                var blockName = BuildBlockName(catalog, configuration);
+                var blockName = string.IsNullOrWhiteSpace(rackName) ? BuildBlockName(catalog, configuration) : rackName.Trim();
 
-                return PlaceLayout(document, catalog, layout, blockName);
+                return PlaceLayout(document, catalog, layout, blockName, payloadJson);
+            }
+            catch (Exception ex)
+            {
+                return HeaderPlacementResult.Failure(ex.Message);
+            }
+        }
+
+        /// <summary>Redraw an existing cabecera's block DEFINITION in place; every copy updates on regen.</summary>
+        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration configuration, string payloadJson)
+        {
+            if (document == null)
+            {
+                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
+            }
+
+            if (configuration == null || blockId.IsNull)
+            {
+                return HeaderPlacementResult.Failure("No hay cabecera para actualizar.");
+            }
+
+            try
+            {
+                var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
+                var catalog = LoadCatalog();
+                var layout = builder.Build(configuration, parameters, catalog);
+                var plan = new DynamicSystemPlan(new System.Collections.Generic.List<HeaderGroup>(), layout.Instances);
+                var database = document.Database;
+
+                LateralHeaderDrawOutcome outcome;
+                using (document.LockDocument())
+                {
+                    BlockLibraryImporter.EnsureForLayout(database, layout);
+
+                    using (var transaction = database.TransactionManager.StartTransaction())
+                    {
+                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan);
+                        RackBlockData.Write(transaction, blockId, payloadJson);
+                        transaction.Commit();
+                    }
+
+                    document.Editor.Regen();
+                }
+
+                return new HeaderPlacementResult(true, true, null, Array.Empty<string>(), outcome);
             }
             catch (Exception ex)
             {
@@ -53,7 +99,7 @@ namespace RackCad.Plugin.Headers
         /// Turn an already-built plan into one AutoCAD block and let the user place it with the mouse.
         /// Shared by the single header and the whole dynamic system.
         /// </summary>
-        public HeaderPlacementResult PlaceLayout(Document document, RackCatalog catalog, LateralHeaderLayout layout, string blockName)
+        public HeaderPlacementResult PlaceLayout(Document document, RackCatalog catalog, LateralHeaderLayout layout, string blockName, string payloadJson = null)
         {
             if (document == null)
             {
@@ -62,7 +108,7 @@ namespace RackCad.Plugin.Headers
 
             try
             {
-                var block = CreateBlock(document, layout, blockName);
+                var block = CreateBlock(document, layout, blockName, payloadJson);
                 return PlaceAndReport(document, catalog, block);
             }
             catch (Exception ex)
@@ -93,7 +139,7 @@ namespace RackCad.Plugin.Headers
             }
         }
 
-        private LateralHeaderBlockResult CreateBlock(Document document, LateralHeaderLayout layout, string blockName)
+        private LateralHeaderBlockResult CreateBlock(Document document, LateralHeaderLayout layout, string blockName, string payloadJson = null)
         {
             var database = document.Database;
 
@@ -105,6 +151,13 @@ namespace RackCad.Plugin.Headers
                 using (var transaction = database.TransactionManager.StartTransaction())
                 {
                     var result = drawer.CreateHeaderBlock(database, transaction, layout, blockName);
+
+                    // Payload on the DEFINITION so every reference/copy shares it and the cabecera can be reopened.
+                    if (!string.IsNullOrEmpty(payloadJson))
+                    {
+                        RackBlockData.Write(transaction, result.DefinitionId, payloadJson);
+                    }
+
                     transaction.Commit();
                     return result;
                 }

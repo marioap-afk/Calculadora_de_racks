@@ -45,6 +45,13 @@ namespace RackCad.UI
 
         public FlowBedConfiguration FlowBedToInsert { get; private set; }
 
+        /// <summary>Stable id + client name for the drawing round-trip (embed / reopen / edit).</summary>
+        public string RackId { get; private set; }
+        public string RackName { get; private set; }
+
+        private string currentId;
+        private string currentName;
+
         public RackFlowBedWindow()
             : this(false)
         {
@@ -176,9 +183,46 @@ namespace RackCad.UI
                 return;
             }
 
+            currentName = NameBox?.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
+
             InsertRequested = true;
             FlowBedToInsert = config;
+            RackId = currentId;
+            RackName = currentName;
             Close();
+        }
+
+        /// <summary>Open pre-loaded with an existing drawn bed (from its embedded payload), keeping Id/Name.</summary>
+        public void LoadExisting(FlowBedConfiguration config, string id, string name)
+        {
+            if (config == null)
+            {
+                return;
+            }
+
+            currentId = id;
+            currentName = name;
+            if (NameBox != null)
+            {
+                NameBox.Text = name ?? string.Empty;
+            }
+
+            foreach (var item in BedTypeBox.Items)
+            {
+                if (item is ComboBoxItem option && (option.Tag as string) == (config.BedType == FlowBedType.Pushback ? "Pushback" : "Dynamic"))
+                {
+                    BedTypeBox.SelectedItem = option;
+                    break;
+                }
+            }
+
+            RollerBox.SelectedValue = config.RollerId;
+            LaneDepthBox.Text = config.LaneDepth.ToString("0.###", CultureInfo.InvariantCulture);
+            PalletDepthBox.Text = config.PalletDepth > 0.0 ? config.PalletDepth.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+            RollerPitchBox.Text = config.RollerPitchOverride.HasValue ? config.RollerPitchOverride.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+
+            Recompute();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();

@@ -40,7 +40,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.FlowBedToInsert != null)
                     {
-                        DrawAndPlaceBed(menu.FlowBedToInsert);
+                        DrawAndPlaceBed(menu.FlowBedToInsert, BuildCamaPayload(menu.FlowBedToInsert, menu.FlowBedRackId, menu.FlowBedRackName), menu.FlowBedRackName);
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {
@@ -314,7 +314,8 @@ namespace RackCad.Plugin
                     RollerId = rollerId
                 };
 
-                var result = new FlowBedDrawService().DrawAndPlace(document, config);
+                var payload = BuildCamaPayload(config, System.Guid.NewGuid().ToString(), null);
+                var result = new FlowBedDrawService().DrawAndPlace(document, config, payload);
                 editor.WriteMessage("\n" + DescribeBed(result));
             }
             catch (System.Exception ex)
@@ -333,8 +334,65 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration);
+            var payload = BuildCabeceraPayload(configuration, System.Guid.NewGuid().ToString(), configuration.Name);
+            var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name);
             document.Editor.WriteMessage("\n" + Describe(result));
+        }
+
+        /// <summary>Wraps a cabecera (RackFrameConfiguration) in the uniform embed envelope; reuses the project store.</summary>
+        private static string BuildCabeceraPayload(RackFrameConfiguration configuration, string id, string name)
+        {
+            if (configuration == null)
+            {
+                return null;
+            }
+
+            var designJson = new RackProjectStore().Serialize(RackProject.ForSelective(configuration));
+            return new RackEmbedStore().Serialize(new RackEmbedDocument
+            {
+                Kind = RackEmbedDocument.KindCabecera,
+                Id = id,
+                Name = name,
+                Design = designJson
+            });
+        }
+
+        private static void EditCabecera(Document document, ObjectId blockId, RackEmbedDocument embed)
+        {
+            var editor = document.Editor;
+
+            RackProject project;
+            try
+            {
+                project = new RackProjectStore().Deserialize(embed.Design);
+            }
+            catch (System.Exception ex)
+            {
+                editor.WriteMessage("\nRackCad: no se pudieron leer los datos de la cabecera. " + ex.Message);
+                return;
+            }
+
+            if (project?.Header == null)
+            {
+                editor.WriteMessage("\nRackCad: datos de cabecera invalidos.");
+                return;
+            }
+
+            var window = new RackFrameConfiguratorWindow(project.Header, canInsertInAutoCad: true);
+            AcApplication.ShowModalWindow(window);
+
+            if (!window.InsertRequested)
+            {
+                return;
+            }
+
+            var config = window.Configuration;
+            var result = new LateralHeaderDrawService().RedrawInPlace(
+                document, blockId, config, BuildCabeceraPayload(config, embed.Id, config?.Name));
+
+            editor.WriteMessage(result != null && result.Success
+                ? "\nRackCad: cabecera actualizada; todas sus copias reflejan el cambio."
+                : "\nRackCad: no se pudo actualizar la cabecera. " + (result?.ErrorMessage ?? string.Empty));
         }
 
         /// <summary>Builds the dynamic-system block and runs the placement jig, then reports the outcome.</summary>
@@ -496,6 +554,12 @@ namespace RackCad.Plugin
                         break;
                     case RackEmbedDocument.KindDynamic:
                         EditDynamic(document, blockId, embed);
+                        break;
+                    case RackEmbedDocument.KindCabecera:
+                        EditCabecera(document, blockId, embed);
+                        break;
+                    case RackEmbedDocument.KindCama:
+                        EditCama(document, blockId, embed);
                         break;
                     default:
                         editor.WriteMessage("\nRackCad: tipo de rack no reconocido (" + embed.Kind + ").");
@@ -659,7 +723,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Builds the roller-bed block and runs the placement jig, then reports the outcome.</summary>
-        private static void DrawAndPlaceBed(FlowBedConfiguration config)
+        private static void DrawAndPlaceBed(FlowBedConfiguration config, string payloadJson, string rackName)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -668,8 +732,55 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var result = new FlowBedDrawService().DrawAndPlace(document, config);
+            var result = new FlowBedDrawService().DrawAndPlace(document, config, payloadJson, rackName);
             document.Editor.WriteMessage("\n" + DescribeBed(result));
+        }
+
+        /// <summary>Wraps a cama (FlowBedConfiguration) in the uniform embed envelope.</summary>
+        private static string BuildCamaPayload(FlowBedConfiguration config, string id, string name)
+        {
+            if (config == null)
+            {
+                return null;
+            }
+
+            var designJson = new FlowBedConfigurationStore().Serialize(config);
+            return new RackEmbedStore().Serialize(new RackEmbedDocument
+            {
+                Kind = RackEmbedDocument.KindCama,
+                Id = id,
+                Name = name,
+                Design = designJson
+            });
+        }
+
+        private static void EditCama(Document document, ObjectId blockId, RackEmbedDocument embed)
+        {
+            var editor = document.Editor;
+
+            var config = new FlowBedConfigurationStore().Deserialize(embed.Design);
+            if (config == null)
+            {
+                editor.WriteMessage("\nRackCad: datos de cama invalidos.");
+                return;
+            }
+
+            var window = new RackFlowBedWindow(canInsertInAutoCad: true);
+            window.LoadExisting(config, embed.Id, embed.Name);
+            AcApplication.ShowModalWindow(window);
+
+            if (!window.InsertRequested)
+            {
+                return;
+            }
+
+            var result = new FlowBedDrawService().RedrawInPlace(
+                document, blockId, window.FlowBedToInsert,
+                BuildCamaPayload(window.FlowBedToInsert, window.RackId, window.RackName));
+
+            editor.WriteMessage(result != null && result.Success
+                ? "\nRackCad: cama actualizada; todas sus copias reflejan el cambio."
+                : "\nRackCad: no se pudo actualizar la cama. " + (result?.ErrorMessage ?? string.Empty));
         }
 
         private static string DescribeBed(HeaderPlacementResult result)
