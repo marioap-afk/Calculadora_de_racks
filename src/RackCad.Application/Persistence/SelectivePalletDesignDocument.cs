@@ -1,0 +1,155 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RackCad.Domain.Systems;
+
+namespace RackCad.Application.Persistence
+{
+    /// <summary>
+    /// Serializable snapshot of a pallet-driven selective design (the whole state of the advanced editor)
+    /// plus its identity (<see cref="Id"/> + <see cref="Name"/>). This is what gets embedded in the drawing
+    /// so a rack can be reopened and edited later. Round-trips through <see cref="SelectivePalletDesignStore"/>.
+    /// </summary>
+    public sealed class SelectivePalletDesignDocument
+    {
+        public string SchemaVersion { get; set; } = "1.0";
+
+        /// <summary>Stable identity of the rack (GUID string). Kept across edits; assigned by the caller.</summary>
+        public string Id { get; set; }
+
+        /// <summary>Client-facing name ("Rack A"); may be empty (an auto-name is used then).</summary>
+        public string Name { get; set; }
+
+        public string PostId { get; set; }
+        public double PostPeralte { get; set; }
+        public double PalletTolerance { get; set; }
+        public double VerticalClearance { get; set; }
+        public double FloorBeamRise { get; set; }
+
+        public List<SelectiveBayDocument> Bays { get; set; } = new List<SelectiveBayDocument>();
+
+        public static SelectivePalletDesignDocument From(SelectivePalletDesign design, string id, string name)
+        {
+            if (design == null)
+            {
+                throw new ArgumentNullException(nameof(design));
+            }
+
+            var document = new SelectivePalletDesignDocument
+            {
+                Id = id,
+                Name = name,
+                PostId = design.PostId,
+                PostPeralte = design.PostPeralte,
+                PalletTolerance = design.PalletTolerance,
+                VerticalClearance = design.VerticalClearance,
+                FloorBeamRise = design.FloorBeamRise
+            };
+
+            foreach (var bay in design.Bays)
+            {
+                document.Bays.Add(SelectiveBayDocument.From(bay));
+            }
+
+            return document;
+        }
+
+        public SelectivePalletDesign ToDomain()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId,
+                PostPeralte = PostPeralte,
+                PalletTolerance = PalletTolerance,
+                VerticalClearance = VerticalClearance,
+                FloorBeamRise = FloorBeamRise
+            };
+
+            foreach (var bay in Bays ?? Enumerable.Empty<SelectiveBayDocument>())
+            {
+                design.Bays.Add(bay.ToDomain());
+            }
+
+            return design;
+        }
+    }
+
+    /// <summary>One frente (bay) column: its "larguero a piso" flag, optional height override, and level cells.</summary>
+    public sealed class SelectiveBayDocument
+    {
+        public bool FloorBeam { get; set; }
+        public double? HeightOverride { get; set; }
+        public List<SelectiveCellDocument> Levels { get; set; } = new List<SelectiveCellDocument>();
+
+        public static SelectiveBayDocument From(SelectiveBayDesign bay)
+        {
+            var document = new SelectiveBayDocument
+            {
+                FloorBeam = bay.FloorBeam,
+                HeightOverride = bay.HeightOverride
+            };
+
+            foreach (var cell in bay.Levels)
+            {
+                document.Levels.Add(SelectiveCellDocument.From(cell));
+            }
+
+            return document;
+        }
+
+        public SelectiveBayDesign ToDomain()
+        {
+            var bay = new SelectiveBayDesign
+            {
+                FloorBeam = FloorBeam,
+                HeightOverride = HeightOverride
+            };
+
+            foreach (var cell in Levels ?? Enumerable.Empty<SelectiveCellDocument>())
+            {
+                bay.Levels.Add(cell.ToDomain());
+            }
+
+            return bay;
+        }
+    }
+
+    /// <summary>One matrix cell (a level of a frente): pallet, count, beam, and the optional manual overrides.</summary>
+    public sealed class SelectiveCellDocument
+    {
+        public double Frente { get; set; }
+        public double Alto { get; set; }
+        public int PalletCount { get; set; }
+        public string BeamId { get; set; }
+        public double BeamPeralte { get; set; }
+        public double? BeamLengthOverride { get; set; }
+        public double? ClearOverride { get; set; }
+
+        public static SelectiveCellDocument From(SelectiveCell cell)
+        {
+            return new SelectiveCellDocument
+            {
+                Frente = cell.Pallet?.Frente ?? 0.0,
+                Alto = cell.Pallet?.Alto ?? 0.0,
+                PalletCount = cell.PalletCount,
+                BeamId = cell.BeamId,
+                BeamPeralte = cell.BeamPeralte,
+                BeamLengthOverride = cell.BeamLengthOverride,
+                ClearOverride = cell.ClearOverride
+            };
+        }
+
+        public SelectiveCell ToDomain()
+        {
+            return new SelectiveCell
+            {
+                Pallet = new Tarima { Frente = Frente, Alto = Alto },
+                PalletCount = PalletCount,
+                BeamId = BeamId,
+                BeamPeralte = BeamPeralte,
+                BeamLengthOverride = BeamLengthOverride,
+                ClearOverride = ClearOverride
+            };
+        }
+    }
+}

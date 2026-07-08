@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
+using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 
@@ -55,6 +56,10 @@ namespace RackCad.UI
         private int selLevel;
         private bool loadingCell;
 
+        /// <summary>Identity of the rack currently edited: stable id (GUID) + client name. Empty for a brand-new rack.</summary>
+        private string currentId;
+        private string currentName;
+
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private SelectiveRackSystem lastSystem;
 
@@ -66,6 +71,15 @@ namespace RackCad.UI
         public bool InsertRequested { get; private set; }
 
         public SelectiveRackSystem SystemToInsert { get; private set; }
+
+        /// <summary>The design that produced <see cref="SystemToInsert"/> — embedded in the drawing for round-trip editing.</summary>
+        public SelectivePalletDesign DesignToInsert { get; private set; }
+
+        /// <summary>Stable id of the inserted rack (fresh GUID for a new rack, preserved when re-editing).</summary>
+        public string RackId { get; private set; }
+
+        /// <summary>Client-facing name of the inserted rack (may be empty).</summary>
+        public string RackName { get; private set; }
 
         public RackSelectiveWindow()
             : this(false)
@@ -521,15 +535,27 @@ namespace RackCad.UI
                 return;
             }
 
-            var system = BuildSystem(out var error);
-            if (system == null)
+            var design = BuildDesign(out var error);
+            if (design == null)
             {
                 SetStatus(error, true);
                 return;
             }
 
+            var system = resolver.Resolve(design, catalog);
+            if (system.Height <= 0.0)
+            {
+                SetStatus("No se pudo derivar la geometria (revisa tarima/niveles).", true);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
+
             InsertRequested = true;
             SystemToInsert = system;
+            DesignToInsert = design;
+            RackId = currentId;
+            RackName = currentName;
             Close();
         }
 
@@ -580,7 +606,8 @@ namespace RackCad.UI
             return false;
         }
 
-        private SelectiveRackSystem BuildSystem(out string error)
+        /// <summary>Builds the pallet-driven design from the current editor state (globals + matrix), or null + error.</summary>
+        private SelectivePalletDesign BuildDesign(out string error)
         {
             error = null;
             if (!(PostBox.SelectedValue is string postId) || string.IsNullOrWhiteSpace(postId)) { error = "Selecciona un poste."; return null; }
@@ -618,9 +645,73 @@ namespace RackCad.UI
                 design.Bays.Add(bay);
             }
 
+            return design;
+        }
+
+        private SelectiveRackSystem BuildSystem(out string error)
+        {
+            var design = BuildDesign(out error);
+            if (design == null) return null;
+
             var system = resolver.Resolve(design, catalog);
             if (system.Height <= 0.0) { error = "No se pudo derivar la geometria (revisa tarima/niveles)."; return null; }
             return system;
+        }
+
+        /// <summary>Restore the whole editor (globals + matrix) from a saved design, then recompute.</summary>
+        private void LoadDesign(SelectivePalletDesign design)
+        {
+            if (design == null || design.Bays.Count == 0) return;
+
+            PostBox.SelectedValue = design.PostId;
+            if (PostBox.SelectedItem == null && PostBox.Items.Count > 0) PostBox.SelectedIndex = 0;
+            PostPeralteBox.Text = design.PostPeralte.ToString("0.###", CultureInfo.InvariantCulture);
+            ToleranceBox.Text = design.PalletTolerance.ToString("0.###", CultureInfo.InvariantCulture);
+            ClearanceBox.Text = design.VerticalClearance.ToString("0.###", CultureInfo.InvariantCulture);
+            FloorRiseBox.Text = design.FloorBeamRise.ToString("0.###", CultureInfo.InvariantCulture);
+
+            bays.Clear();
+            floorBeams.Clear();
+            bayHeights.Clear();
+            foreach (var bayDesign in design.Bays)
+            {
+                var column = new List<Cell>();
+                foreach (var cell in bayDesign.Levels)
+                {
+                    column.Add(new Cell
+                    {
+                        Frente = cell.Pallet?.Frente ?? 40.0,
+                        Alto = cell.Pallet?.Alto ?? 60.0,
+                        PalletCount = cell.PalletCount,
+                        BeamId = cell.BeamId ?? defaultBeamId,
+                        BeamPeralte = cell.BeamPeralte,
+                        BeamLength = cell.BeamLengthOverride,
+                        Clear = cell.ClearOverride
+                    });
+                }
+
+                if (column.Count == 0) column.Add(NewCell());
+                bays.Add(column);
+                floorBeams.Add(bayDesign.FloorBeam);
+                bayHeights.Add(bayDesign.HeightOverride);
+            }
+
+            BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
+            selBay = 0;
+            selLevel = 0;
+            ClampSelection();
+            LoadCellEditor();
+            RenderMatrix();
+            Recompute();
+        }
+
+        /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
+        public void LoadExisting(SelectivePalletDesignDocument document)
+        {
+            if (document == null) return;
+            currentId = document.Id;
+            currentName = document.Name;
+            LoadDesign(document.ToDomain());
         }
 
         private void UpdateSummary()
