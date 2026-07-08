@@ -12,9 +12,11 @@ namespace RackCad.Application.Systems
     /// and, per bay, one larguero at every load level. Pure — returns instances the AutoCAD drawer places.
     ///
     /// Geometry: the larguero hooks on the post's TROQUEL_LARGUERO, whose X slides with the post peralte
-    /// (the parametric mate: X = localX + slope*peralte). The next post sits so its (mirrored) troquel lands
-    /// on the larguero's far end — i.e. post-to-post = larguero length + 2*troquelX. Levels snap to the
-    /// troquel grid (first troquel + k*paso). Beams stretch to the bay length (LONGITUD) and peralte (PERALTE).
+    /// (the parametric mate: X = localX + slope*peralte). Posts carry troqueles on BOTH sides, so no mirror
+    /// is needed. The larguero's LONGITUD is the "A corte" (profile cut length), not the clear span: the
+    /// ménsula juts out from each profile end to the hook by INICIO_PERFIL's X. So the far hook lands on the
+    /// next post's troquel when post-to-post = larguero length + 2*(troquelX + inicioPerfilX). Levels snap to
+    /// the troquel grid (first troquel + k*paso). Beams stretch to the bay length (LONGITUD) and peralte (PERALTE).
     /// </summary>
     public sealed class SelectiveFrontalBuilder
     {
@@ -45,11 +47,14 @@ namespace RackCad.Application.Systems
             var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
             var platePeralte = plateEntry?.StandardPeralte(system.PostPeralte) ?? 0.0;
 
-            // Post X positions: post[i+1] = post[i] + larguero length + 2*troquelX.
+            // Post X positions. The larguero's LONGITUD is the profile "A corte", so the hooks sit an extra
+            // ménsula overhang (INICIO_PERFIL's X) beyond each profile end. Post-to-post therefore adds the
+            // troquel offset AND that overhang on both sides: post[i+1] = post[i] + length + 2*(troquelX + inicioX).
             var postX = new List<double> { 0.0 };
             foreach (var bay in system.Bays)
             {
-                postX.Add(postX[postX.Count - 1] + bay.BeamLength + 2.0 * troquelX);
+                var inicioX = BeamProfileStartX(catalog, bay, view);
+                postX.Add(postX[postX.Count - 1] + bay.BeamLength + 2.0 * (troquelX + inicioX));
             }
 
             // Cabeceras (posts) + their base plates.
@@ -135,6 +140,14 @@ namespace RackCad.Application.Systems
             }
 
             return levels;
+        }
+
+        /// <summary>The larguero's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); 0 if unset.</summary>
+        private static double BeamProfileStartX(RackCatalog catalog, SelectiveBay bay, string view)
+        {
+            var entry = catalog?.ConnectionLayout.FindConnectionLayout(bay.BeamId, SelectiveRackDefaults.BeamProfileStartPoint, view);
+            var beamParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = bay.BeamPeralte };
+            return ResolveX(entry, beamParams);
         }
 
         /// <summary>X of a connection point resolved for the given block parameters (X = localX + slope*param).</summary>

@@ -9,6 +9,13 @@ namespace RackCad.Domain.Systems
         /// <summary>Connection point ON THE POST where a larguero hooks (its X slides with the post peralte).</summary>
         public const string PostBeamPoint = "TROQUEL_LARGUERO";
 
+        /// <summary>
+        /// Connection point ON THE LARGUERO where the steel profile starts. The larguero's LONGITUD is the
+        /// "A corte" (profile cut length), NOT the clear span: the ménsula juts out from the profile end to the
+        /// hook (the origin), so this point's X is that ménsula overhang. Post-to-post therefore adds it twice.
+        /// </summary>
+        public const string BeamProfileStartPoint = "INICIO_PERFIL";
+
         /// <summary>Troquel pitch on the post (in): levels snap to this grid.</summary>
         public const double TroquelPaso = 2.0;
 

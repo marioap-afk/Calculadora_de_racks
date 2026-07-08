@@ -7,3 +7,4 @@ TROQUEL_SEPARADOR,Troquel de separador en poste,Troquel de separador en poste,Po
 TROQUEL_CABECERA,Troquel donde va cabecera en separador,Troquel donde va cabecera en separador,Spacer
 TROQUEL_TOPE,Troquel donde se coloca el tope,Troquel donde se coloca el or�gen del tope,FlowBed
 TROQUEL_LARGUERO,Troquel donde se coloca el larguero,Eje en Y donde se colocar� el larguero,Poste
+INICIO_PERFIL,Inicio del perfil,Punto donde arranca el perfil del larguero (la mensula sobresale del perfil hasta el hook/troquel),Larguero

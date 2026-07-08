@@ -37,6 +37,13 @@ namespace RackCad.Tests
             return entry.LocalX + entry.LocalXPorParam * peralte;
         }
 
+        /// <summary>The larguero's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); from the catalog.</summary>
+        private static double InicioPerfilX(double beamPeralte = 4.0)
+        {
+            var entry = Catalog.ConnectionLayout.FindConnectionLayout(BeamId, "INICIO_PERFIL", "FRONTAL");
+            return entry == null ? 0.0 : entry.LocalX + entry.LocalXPorParam * beamPeralte;
+        }
+
         private static double FirstBeamX(double postPeralte)
             => new SelectiveFrontalBuilder().Build(System(postPeralte), Catalog)
                 .First(i => i.Role == HeaderBlockRole.Beam).Insertion.X;
@@ -52,16 +59,17 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Build_PostSpacing_IsBeamLengthPlusTwoTroquelX()
+        public void Build_PostSpacing_IsBeamLengthPlusTwoTroquelXPlusTwoInicioPerfilX()
         {
             var posts = new SelectiveFrontalBuilder().Build(System(), Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Post)
                 .OrderBy(i => i.Insertion.X)
                 .ToList();
 
-            // Post-to-post = larguero length (100) + 2*troquelX, read from the catalog.
+            // LONGITUD is the profile "A corte": post-to-post = length (100) + 2*(troquelX + inicioPerfilX),
+            // both offsets read from the catalog. The ménsula overhang (inicioPerfilX) is added on each end.
             Assert.Equal(0.0, posts[0].Insertion.X, 4);
-            Assert.Equal(100.0 + 2.0 * TroquelX(3.0), posts[1].Insertion.X, 4);
+            Assert.Equal(100.0 + 2.0 * (TroquelX(3.0) + InicioPerfilX()), posts[1].Insertion.X, 4);
         }
 
         [Fact]
@@ -107,7 +115,14 @@ namespace RackCad.Tests
                 .OrderBy(y => y)
                 .ToList();
 
-            Assert.Equal(new[] { 48.0, 96.0, 144.0, 192.0 }, ys);
+            // First level (48) snaps to the nearest troquel (grid base = TROQUEL_LARGUERO.LocalY, pitch 2"),
+            // then steps by a troquel-aligned separation (48 -> 24 pasos). Both read from the catalog.
+            var baseY = Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "FRONTAL").LocalY;
+            var first = baseY + Math.Round((48.0 - baseY) / 2.0, MidpointRounding.AwayFromZero) * 2.0;
+            var expected = new[] { first, first + 48.0, first + 96.0, first + 144.0 }
+                .Select(y => Math.Round(y, 3)).ToList();
+
+            Assert.Equal(expected, ys);
         }
     }
 }
