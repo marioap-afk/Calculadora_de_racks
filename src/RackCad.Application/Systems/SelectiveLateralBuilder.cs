@@ -7,10 +7,11 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Turns a resolved selective run into its LATERAL "cortes": one cabecera (cross-section) per post, at the
-    /// post's resolved height and the run's fondo (<see cref="SelectiveRackSystem.PalletDepth"/>), positioned at
-    /// the SAME X as the frontal post (<see cref="SelectivePostGeometry"/>). Each corte is an INDEPENDENT
-    /// cabecera — the AutoCAD side draws each as its own cabecera block, so they can be edited one by one. Pure.
+    /// Turns a resolved selective run into its LATERAL sections: one cross-section (a cabecera frame) per post, at the
+    /// post's resolved height and the run's fondo (<see cref="SelectiveRackSystem.PalletDepth"/>), positioned at the
+    /// SAME X as the frontal post (<see cref="SelectivePostGeometry"/>). The AutoCAD side draws each section as its own
+    /// block, but every section is a view OF the system (shares the rack id/design), so editing the system redraws them
+    /// all. TODO: the section still shows only the cabecera; the largueros (and later safety elements) are pending. Pure.
     /// </summary>
     public sealed class SelectiveLateralBuilder
     {

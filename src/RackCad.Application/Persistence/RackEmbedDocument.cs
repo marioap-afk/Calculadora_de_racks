@@ -27,6 +27,12 @@ namespace RackCad.Application.Persistence
         /// <summary>Which VIEW this block draws (a rack can have several view-blocks sharing <see cref="Id"/>). Null/empty = frontal.</summary>
         public string View { get; set; }
 
+        /// <summary>
+        /// For a multi-block view (the lateral is one block per post/section), which section this block is.
+        /// -1 = not a sectioned view (e.g. the single frontal block). Lets an edit redraw the right section in place.
+        /// </summary>
+        public int Section { get; set; } = -1;
+
         /// <summary>Stable identity (GUID) of the rack; kept across edits.</summary>
         public string Id { get; set; }
 

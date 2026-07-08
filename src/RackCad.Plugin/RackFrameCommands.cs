@@ -597,14 +597,118 @@ namespace RackCad.Plugin
                 return;
             }
 
-            // The frontal selective is one block; redefine it in place (its copies all update). The lateral cortes
-            // are INDEPENDENT cabecera blocks, so they are edited on their own via the cabecera round-trip.
-            var payload = BuildSelectivePayload(window.DesignToInsert, window.RackId, window.RackName, RackEmbedDocument.ViewFrontal);
-            var result = new SelectiveFrontalDrawService().RedrawInPlace(document, blockId, window.SystemToInsert, payload);
+            // Editing the SYSTEM redraws BOTH views. A rack is one frontal block + N lateral section blocks, all sharing
+            // this GUID; find them and redefine each in place (every copy updates). Id comes from the embed (stable); the
+            // client name may have been edited in the window.
+            var design = window.DesignToInsert;
+            var system = window.SystemToInsert;
+            var id = string.IsNullOrEmpty(embed.Id) ? window.RackId : embed.Id;
+            var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
 
-            editor.WriteMessage(result != null && result.Success
-                ? "\nRackCad: rack actualizado; todas sus copias reflejan el cambio."
-                : "\nRackCad: no se pudo actualizar el rack. " + (result?.ErrorMessage ?? string.Empty));
+            var blocks = FindRackBlocks(document, id);
+            var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed)).Select(b => b.BlockId).ToList();
+            var lateralBlocks = blocks.Where(b => IsLateralView(b.Embed)).OrderBy(b => b.Embed.Section).ToList();
+
+            // The clicked block might not carry the GUID scan (defensive): make sure the selected one is handled.
+            if (frontalBlocks.Count == 0 && lateralBlocks.All(b => b.BlockId != blockId) && !IsLateralView(embed))
+            {
+                frontalBlocks.Add(blockId);
+            }
+
+            var updatedFrontal = 0;
+            foreach (var frontalId in frontalBlocks)
+            {
+                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal);
+                var r = new SelectiveFrontalDrawService().RedrawInPlace(document, frontalId, system, payload);
+                if (r != null && r.Success)
+                {
+                    updatedFrontal++;
+                }
+            }
+
+            // Redraw each existing lateral section in place with the section's new geometry (matched by section index).
+            var updatedLateral = 0;
+            if (lateralBlocks.Count > 0)
+            {
+                var cortes = new SelectiveLateralBuilder().Cortes(system, LateralHeaderDrawService.LoadCatalog());
+                var lateralService = new LateralHeaderDrawService();
+                foreach (var lat in lateralBlocks)
+                {
+                    var corte = cortes.FirstOrDefault(c => c.PostIndex == lat.Embed.Section);
+                    if (corte == null)
+                    {
+                        continue; // the design shrank: this section no longer exists
+                    }
+
+                    var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
+                    var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload);
+                    if (r != null && r.Success)
+                    {
+                        updatedLateral++;
+                    }
+                }
+            }
+
+            // If the user asked to insert the lateral and it doesn't exist yet, create it now (tied to this GUID).
+            if (window.InsertView == RackEmbedDocument.ViewLateral && lateralBlocks.Count == 0)
+            {
+                DrawSelectiveLateralSections(document, system, design, id, name);
+                return;
+            }
+
+            editor.WriteMessage(updatedFrontal + updatedLateral > 0
+                ? "\nRackCad: sistema actualizado; frontal y lateral se redibujaron (frontal x"
+                    + updatedFrontal.ToString(CultureInfo.InvariantCulture) + ", secciones laterales x"
+                    + updatedLateral.ToString(CultureInfo.InvariantCulture) + ")."
+                : "\nRackCad: no se pudo actualizar el rack.");
+        }
+
+        /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>
+        private static bool IsLateralView(RackEmbedDocument embed) =>
+            embed != null && string.Equals(embed.View, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Every rack block DEFINITION in the drawing whose embedded payload has the given rack id — i.e. all the
+        /// view-blocks (frontal + lateral sections) of the same rack, so an edit can redraw them together.
+        /// </summary>
+        private static System.Collections.Generic.List<(ObjectId BlockId, RackEmbedDocument Embed)> FindRackBlocks(Document document, string rackId)
+        {
+            var results = new System.Collections.Generic.List<(ObjectId, RackEmbedDocument)>();
+            if (document == null || string.IsNullOrEmpty(rackId))
+            {
+                return results;
+            }
+
+            var store = new RackEmbedStore();
+            using (document.LockDocument())
+            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            {
+                var blockTable = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
+                foreach (ObjectId id in blockTable)
+                {
+                    var record = (BlockTableRecord)transaction.GetObject(id, OpenMode.ForRead);
+                    if (record.IsLayout || record.IsAnonymous || record.IsFromExternalReference)
+                    {
+                        continue;
+                    }
+
+                    var json = RackBlockData.Read(transaction, id);
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        continue;
+                    }
+
+                    var embed = store.Deserialize(json);
+                    if (embed != null && string.Equals(embed.Id, rackId, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        results.Add((id, embed));
+                    }
+                }
+
+                transaction.Commit();
+            }
+
+            return results;
         }
 
         private static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
@@ -646,8 +750,12 @@ namespace RackCad.Plugin
                 : "\nRackCad: no se pudo actualizar el sistema. " + (result?.ErrorMessage ?? string.Empty));
         }
 
-        /// <summary>Wraps a selective design in the uniform embed envelope (kind + id + name + view + design JSON).</summary>
-        private static string BuildSelectivePayload(SelectivePalletDesign design, string id, string name, string view)
+        /// <summary>
+        /// Wraps a selective design in the uniform embed envelope (kind + id + name + view + section + design JSON).
+        /// Every view-block of a rack (the one frontal + each lateral section) carries the SAME full design and Id, so
+        /// RACKEDITAR on any of them reopens the whole system; <paramref name="section"/> tags which lateral section.
+        /// </summary>
+        private static string BuildSelectivePayload(SelectivePalletDesign design, string id, string name, string view, int section = -1)
         {
             if (design == null)
             {
@@ -661,6 +769,7 @@ namespace RackCad.Plugin
                 Id = id,
                 Name = name,
                 View = string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewFrontal : view,
+                Section = section,
                 Design = designJson
             });
         }
@@ -695,7 +804,7 @@ namespace RackCad.Plugin
 
             if (view == RackEmbedDocument.ViewLateral)
             {
-                DrawSelectiveCortes(system, name);
+                DrawSelectiveLateralSections(document, system, design, id, name);
                 return;
             }
 
@@ -705,13 +814,13 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
-        /// Draws the selective's LATERAL view as INDEPENDENT cortes: one cabecera block per post, laid out at the
-        /// frontal post Xs from a single base point. Each corte is its own cabecera (own GUID) → RACKEDITAR edits
-        /// that corte alone (via the cabecera round-trip), not the whole rack.
+        /// Draws the selective's LATERAL view as one block PER SECTION (post), laid out at the frontal post Xs from a
+        /// single base point. Every section carries the SAME rack id + full design (View=lateral, Section=i), so it is
+        /// tied to the system: RACKEDITAR on any section reopens the whole selective and redraws BOTH views. Each
+        /// section is still its own block (movable independently), but it is a view OF the system, not a loose cabecera.
         /// </summary>
-        private static void DrawSelectiveCortes(SelectiveRackSystem system, string name)
+        private static void DrawSelectiveLateralSections(Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
         {
-            var document = AcApplication.DocumentManager.MdiActiveDocument;
             if (document == null || system == null)
             {
                 return;
@@ -723,11 +832,11 @@ namespace RackCad.Plugin
             var cortes = new SelectiveLateralBuilder().Cortes(system, catalog);
             if (cortes.Count == 0)
             {
-                editor.WriteMessage("\nRackCad: no hay cortes laterales que dibujar.");
+                editor.WriteMessage("\nRackCad: no hay secciones laterales que dibujar.");
                 return;
             }
 
-            var pick = editor.GetPoint("\nPunto base de los cortes laterales: ");
+            var pick = editor.GetPoint("\nPunto base de la vista lateral: ");
             if (pick.Status != PromptStatus.OK)
             {
                 return;
@@ -740,19 +849,19 @@ namespace RackCad.Plugin
 
             foreach (var corte in cortes)
             {
-                var corteName = baseName + " - corte " + (corte.PostIndex + 1).ToString(CultureInfo.InvariantCulture);
-                var payload = BuildCabeceraPayload(corte.Cabecera, System.Guid.NewGuid().ToString(), corteName);
+                var sectionName = baseName + " - lateral " + (corte.PostIndex + 1).ToString(CultureInfo.InvariantCulture);
+                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
                 var insertion = new Point3d(basePoint.X + corte.X, basePoint.Y, basePoint.Z);
 
-                var result = service.DrawAt(document, corte.Cabecera, insertion, payload, corteName);
+                var result = service.DrawAt(document, corte.Cabecera, insertion, payload, sectionName);
                 if (result != null && result.Success)
                 {
                     drawn++;
                 }
             }
 
-            editor.WriteMessage("\nRackCad: " + drawn.ToString(CultureInfo.InvariantCulture)
-                + " corte(s) lateral(es) insertado(s); cada uno se edita por separado con RACKEDITAR.");
+            editor.WriteMessage("\nRackCad: vista lateral insertada (" + drawn.ToString(CultureInfo.InvariantCulture)
+                + " secciones), ligada al sistema. RACKEDITAR sobre cualquier vista edita el sistema y redibuja ambas.");
         }
 
         private static string DescribeSelective(HeaderPlacementResult result)
