@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Headers;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
@@ -72,6 +74,28 @@ namespace RackCad.Tests
             var first = cortes.First(c => c.PostIndex == 0);
             Assert.Same(custom, first.Cabecera);
             Assert.Equal(500.0, first.Cabecera.Height, 4);
+        }
+
+        [Fact]
+        public void Cortes_IncludeLateralLargueros_FrontAndBack_AtEachLevelY()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
+
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
+
+            // End frame (post 0) touches one bay: a FRONT (X=0) and a BACK (X=fondo) larguero per level, at level.Y.
+            var end = cortes.First(c => c.PostIndex == 0);
+            var bay0 = system.Bays[0];
+            var depth = system.PalletDepth;
+
+            Assert.Equal(bay0.Levels.Count * 2, end.Largueros.Count);
+            Assert.All(end.Largueros, b => Assert.Equal(HeaderBlockRole.Beam, b.Role));
+
+            foreach (var level in bay0.Levels)
+            {
+                Assert.Contains(end.Largueros, b => Math.Abs(b.Insertion.X - 0.0) < 1e-6 && Math.Abs(b.Insertion.Y - level.Y) < 1e-6);
+                Assert.Contains(end.Largueros, b => Math.Abs(b.Insertion.X - depth) < 1e-6 && Math.Abs(b.Insertion.Y - level.Y) < 1e-6);
+            }
         }
     }
 }

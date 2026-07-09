@@ -641,7 +641,7 @@ namespace RackCad.Plugin
                     }
 
                     var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
-                    var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload);
+                    var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros);
                     if (r != null && r.Success)
                     {
                         updatedLateral++;
@@ -865,7 +865,7 @@ namespace RackCad.Plugin
             var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
             var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
 
-            var result = new LateralHeaderDrawService().DrawAndPlace(document, corte.Cabecera, payload, sectionName);
+            var result = new LateralHeaderDrawService().DrawAndPlace(document, corte.Cabecera, payload, sectionName, corte.Largueros);
             editor.WriteMessage(result != null && result.Success
                 ? "\nRackCad: corte lateral del poste " + pick.Value.ToString(CultureInfo.InvariantCulture) + " insertado y ligado al sistema."
                 : "\nRackCad: no se pudo insertar el corte lateral. " + (result?.ErrorMessage ?? string.Empty));

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Autodesk.AutoCAD.ApplicationServices;
@@ -24,7 +25,7 @@ namespace RackCad.Plugin.Headers
         private readonly LateralHeaderLayoutBuilder builder = new LateralHeaderLayoutBuilder();
         private readonly LateralHeaderDrawer drawer = new LateralHeaderDrawer();
 
-        public HeaderPlacementResult DrawAndPlace(Document document, RackFrameConfiguration configuration, string payloadJson = null, string rackName = null)
+        public HeaderPlacementResult DrawAndPlace(Document document, RackFrameConfiguration configuration, string payloadJson = null, string rackName = null, IReadOnlyList<HeaderBlockInstance> extraInstances = null)
         {
             if (document == null)
             {
@@ -40,7 +41,7 @@ namespace RackCad.Plugin.Headers
             {
                 var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
                 var catalog = LoadCatalog();
-                var layout = builder.Build(configuration, parameters, catalog);
+                var layout = Merge(builder.Build(configuration, parameters, catalog), extraInstances);
                 var blockName = string.IsNullOrWhiteSpace(rackName) ? BuildBlockName(catalog, configuration) : rackName.Trim();
 
                 return PlaceLayout(document, catalog, layout, blockName, payloadJson);
@@ -51,8 +52,9 @@ namespace RackCad.Plugin.Headers
             }
         }
 
-        /// <summary>Redraw an existing cabecera's block DEFINITION in place; every copy updates on regen.</summary>
-        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration configuration, string payloadJson)
+        /// <summary>Redraw an existing cabecera's block DEFINITION in place; every copy updates on regen. Extra
+        /// instances (e.g. a selective corte's largueros) are drawn together with the cabecera.</summary>
+        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration configuration, string payloadJson, IReadOnlyList<HeaderBlockInstance> extraInstances = null)
         {
             if (document == null)
             {
@@ -68,8 +70,8 @@ namespace RackCad.Plugin.Headers
             {
                 var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
                 var catalog = LoadCatalog();
-                var layout = builder.Build(configuration, parameters, catalog);
-                var plan = new DynamicSystemPlan(new System.Collections.Generic.List<HeaderGroup>(), layout.Instances);
+                var layout = Merge(builder.Build(configuration, parameters, catalog), extraInstances);
+                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), layout.Instances);
                 var database = document.Database;
 
                 LateralHeaderDrawOutcome outcome;
@@ -130,6 +132,20 @@ namespace RackCad.Plugin.Headers
             {
                 return HeaderPlacementResult.Failure(ex.Message);
             }
+        }
+
+        /// <summary>Merge extra loose instances (e.g. a selective corte's largueros) into the cabecera layout so they
+        /// draw as one block. Returns the original layout when there is nothing to add.</summary>
+        private static LateralHeaderLayout Merge(LateralHeaderLayout layout, IReadOnlyList<HeaderBlockInstance> extra)
+        {
+            if (extra == null || extra.Count == 0)
+            {
+                return layout;
+            }
+
+            var all = new List<HeaderBlockInstance>(layout.Instances);
+            all.AddRange(extra);
+            return new LateralHeaderLayout(all, layout.HorizontalLength, layout.HorizontalCount, layout.DiagonalCount, layout.ClosingGap);
         }
 
         /// <summary>Append a reference to a block definition at a fixed point (no jig); returns the reference id.</summary>
