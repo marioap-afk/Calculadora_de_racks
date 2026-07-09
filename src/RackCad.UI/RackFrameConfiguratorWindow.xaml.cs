@@ -240,8 +240,14 @@ namespace RackCad.UI
 
             // Single-click parity with the other editors: in quick-config mode, "Insertar" also generates the
             // cabecera from the current inputs first (advanced mode already keeps the config up to date).
+            // Regenerating DISCARDS manual/advanced edits, so ask first when there are any.
             if (ViewModel.IsSimpleEditor)
             {
+                if (!ConfirmDiscard("regenerar la cabecera desde la configuracion rapida"))
+                {
+                    return;
+                }
+
                 RunUiAction(() =>
                 {
                     ViewModel.ApplySimpleConfiguration();

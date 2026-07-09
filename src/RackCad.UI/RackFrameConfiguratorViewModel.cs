@@ -250,6 +250,7 @@ namespace RackCad.UI
                 if (TryParseDimension(value, out var parsedValue) && parsedValue > 0.0)
                 {
                     simpleHeight = parsedValue;
+                    ClearInputError("Alto invalido: escribe un numero mayor que cero.");
                 }
                 else if (!string.IsNullOrWhiteSpace(value))
                 {
@@ -269,6 +270,7 @@ namespace RackCad.UI
                 if (TryParseDimension(value, out var parsedValue) && parsedValue > 0.0)
                 {
                     simpleDepth = parsedValue;
+                    ClearInputError("Fondo invalido: escribe un numero mayor que cero.");
                 }
                 else if (!string.IsNullOrWhiteSpace(value))
                 {
@@ -277,6 +279,15 @@ namespace RackCad.UI
                 }
 
                 OnPropertyChanged();
+            }
+        }
+
+        /// <summary>Clears a sticky input-error status once the offending input becomes valid again.</summary>
+        private void ClearInputError(string message)
+        {
+            if (StatusMessage == message)
+            {
+                StatusMessage = string.Empty;
             }
         }
         public ObservableCollection<FrameExceptionEditorRow> Exceptions { get; private set; }
@@ -1971,7 +1982,16 @@ namespace RackCad.UI
                 LeftBasePlate = CloneBasePlate(source.LeftBasePlate),
                 RightBasePlate = CloneBasePlate(source.RightBasePlate),
                 CreatedAt = source.CreatedAt,
-                UpdatedAt = source.UpdatedAt
+                UpdatedAt = source.UpdatedAt,
+                // Celosía parameters drive the lateral geometry — dropping them on clone silently reset
+                // reopened projects to defaults.
+                CelosiaStartTroquel = source.CelosiaStartTroquel,
+                DiagonalStartOffsetTroqueles = source.DiagonalStartOffsetTroqueles,
+                DiagonalEndOffsetTroqueles = source.DiagonalEndOffsetTroqueles,
+                DiagonalDoubleSpacingTroqueles = source.DiagonalDoubleSpacingTroqueles,
+                HorizontalDoubleOffsetTroqueles = source.HorizontalDoubleOffsetTroqueles,
+                PasoTroquel = source.PasoTroquel,
+                PanelClear = source.PanelClear
             };
 
             foreach (var horizontal in source.Horizontals)
@@ -2022,6 +2042,15 @@ namespace RackCad.UI
             target.RightBasePlate = CloneBasePlate(source.RightBasePlate);
             target.CreatedAt = source.CreatedAt;
             target.UpdatedAt = DateTime.UtcNow;
+            // Celosía parameters drive the lateral geometry — dropping them here silently reset
+            // reopened projects to defaults.
+            target.CelosiaStartTroquel = source.CelosiaStartTroquel;
+            target.DiagonalStartOffsetTroqueles = source.DiagonalStartOffsetTroqueles;
+            target.DiagonalEndOffsetTroqueles = source.DiagonalEndOffsetTroqueles;
+            target.DiagonalDoubleSpacingTroqueles = source.DiagonalDoubleSpacingTroqueles;
+            target.HorizontalDoubleOffsetTroqueles = source.HorizontalDoubleOffsetTroqueles;
+            target.PasoTroquel = source.PasoTroquel;
+            target.PanelClear = source.PanelClear;
 
             target.Horizontals.Clear();
             target.BracingSegments.Clear();

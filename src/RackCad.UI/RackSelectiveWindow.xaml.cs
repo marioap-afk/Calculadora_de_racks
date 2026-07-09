@@ -368,7 +368,9 @@ namespace RackCad.UI
                 ToolTip = "Altura del frente (in). Vacío = auto. El poste toma el frente más alto que toca."
             };
             heightBox.LostFocus += (s, e) => SetBayHeight(bay, heightBox.Text);
-            heightBox.KeyDown += (s, e) => { if (e.Key == Key.Enter) SetBayHeight(bay, heightBox.Text); };
+            // e.Handled: without it Enter ALSO fires the window's default button (double Recompute; the matrix
+            // rebuild steals focus and any validation message is wiped instantly).
+            heightBox.KeyDown += (s, e) => { if (e.Key == Key.Enter) { SetBayHeight(bay, heightBox.Text); e.Handled = true; } };
             heightRow.Children.Add(heightBox);
             panel.Children.Add(heightRow);
 
@@ -431,39 +433,55 @@ namespace RackCad.UI
             var resolvedHeight = ResolvedPostHeight(i);
             var fondo = ResolvedFondo();
 
-            var seed = postCabeceras[i] ?? BuildStandardPostCabecera(resolvedHeight, fondo);
+            // Work on a CLONE and compare before/after: closing the configurator without editing is a real
+            // CANCEL (before, the seed was mutated up-front and any close marked the post "Personalizada").
+            var seed = postCabeceras[i] != null ? CloneCabecera(postCabeceras[i]) : BuildStandardPostCabecera(resolvedHeight, fondo);
+            if (seed == null) return;
             if (resolvedHeight > 0.0) seed.Height = resolvedHeight;
             if (fondo > 0.0) seed.Depth = fondo;
+
+            var store = new RackProjectStore();
+            var before = store.Serialize(RackProject.ForSelective(seed));
 
             var window = new RackFrameConfiguratorWindow(seed, canInsertInAutoCad: false) { Owner = this };
             window.ShowDialog();
 
             var cfg = window.Configuration;
-            if (cfg != null)
+            if (cfg == null || store.Serialize(RackProject.ForSelective(cfg)) == before)
             {
-                // Fondo is locked to the tramo — every cabecera of the rack shares it.
-                if (fondo > 0.0) cfg.Depth = fondo;
-
-                // Height comes from the system; the user MAY override it, but warn it can desynchronize the rack
-                // (the frontal largueros are placed for the resolved height).
-                if (resolvedHeight > 0.0 && Math.Abs(cfg.Height - resolvedHeight) > 0.5)
-                {
-                    MessageBox.Show(
-                        this,
-                        "La altura de la cabecera (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
-                            + " in) difiere del alto resuelto del poste (" + resolvedHeight.ToString("0.##", CultureInfo.InvariantCulture)
-                            + " in).\n\nEl sistema se puede desconfigurar: el frontal coloca los largueros para el alto resuelto, "
-                            + "así que el corte lateral y el frontal pueden dejar de coincidir.",
-                        "Altura de cabecera",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                }
-
-                postCabeceras[i] = cfg;
+                // Nothing was edited: leave the post exactly as it was (default stays default).
+                UpdatePostStatus();
+                return;
             }
 
+            // Fondo is locked to the tramo — every cabecera of the rack shares it.
+            if (fondo > 0.0) cfg.Depth = fondo;
+
+            // Height comes from the system; the user MAY override it, but warn it can desynchronize the rack
+            // (the frontal largueros are placed for the resolved height).
+            if (resolvedHeight > 0.0 && Math.Abs(cfg.Height - resolvedHeight) > 0.5)
+            {
+                MessageBox.Show(
+                    this,
+                    "La altura de la cabecera (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
+                        + " in) difiere del alto resuelto del poste (" + resolvedHeight.ToString("0.##", CultureInfo.InvariantCulture)
+                        + " in).\n\nEl sistema se puede desconfigurar: el frontal coloca los largueros para el alto resuelto, "
+                        + "así que el corte lateral y el frontal pueden dejar de coincidir.",
+                    "Altura de cabecera",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+
+            postCabeceras[i] = cfg;
             UpdatePostStatus();
             Recompute();
+        }
+
+        /// <summary>Deep-clone a cabecera via the project store round-trip (the same serialization RACKEDITAR uses).</summary>
+        private static RackFrameConfiguration CloneCabecera(RackFrameConfiguration configuration)
+        {
+            var store = new RackProjectStore();
+            return store.Deserialize(store.Serialize(RackProject.ForSelective(configuration)))?.Header;
         }
 
         /// <summary>The resolved height of post <paramref name="i"/> (tallest adjacent frente); falls back to the run height.</summary>

@@ -88,9 +88,11 @@
                     <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48"
                              ToolTip="Profundidad de la tarima; define el fondo de las cabeceras en la vista lateral." />
 
+                    <!-- Sin IsDefault: como botón default, Enter en CUALQUIER caja de la ventana (editor de celda,
+                         alturas por frente) lo disparaba y LoadCellEditor revertía lo recién tecleado. -->
                     <Button Content="Actualizar tramo" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
-                            HorizontalAlignment="Left" Margin="0,12,0,0" IsDefault="True"
-                            ToolTip="Aplica frentes/niveles/tolerancias y recalcula (Enter)." />
+                            HorizontalAlignment="Left" Margin="0,12,0,0"
+                            ToolTip="Aplica frentes/niveles/tolerancias y recalcula." />
 
                     <Border Background="#F1F5F9" BorderBrush="#D8DEE6" BorderThickness="1" Margin="0,14,0,0" Padding="12">
                         <StackPanel>

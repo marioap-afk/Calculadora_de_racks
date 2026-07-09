@@ -225,8 +225,19 @@ namespace RackCad.UI
                 selectedModule.AssociatedFrameConfiguration = BuildHeaderConfig(Math.Max(selectedModule.Length, 1.0));
             }
 
+            // Snapshot before the dialog: closing it without editing must NOT accumulate a duplicate
+            // "Personalizada N" preset on every open.
+            var beforeEdit = new RackProjectStore().Serialize(RackProject.ForSelective(selectedModule.AssociatedFrameConfiguration));
+
             var window = new RackFrameConfiguratorWindow(selectedModule.AssociatedFrameConfiguration) { Owner = this };
             window.ShowDialog();
+
+            var afterEdit = new RackProjectStore().Serialize(RackProject.ForSelective(selectedModule.AssociatedFrameConfiguration));
+            if (afterEdit == beforeEdit)
+            {
+                SetStatus("Cabecera sin cambios.", false);
+                return;
+            }
 
             // The header's depth (fondo) edited in the configurator becomes the module length.
             var editedDepth = selectedModule.AssociatedFrameConfiguration.Depth;
