@@ -18,6 +18,7 @@ namespace RackCad.Application.Persistence
 
         public const string ViewFrontal = "frontal";
         public const string ViewLateral = "lateral";
+        public const string ViewPlanta = "planta";
 
         public string SchemaVersion { get; set; } = "1.0";
 

@@ -11,7 +11,7 @@ namespace RackCad.Application.RackFrames
         public const string BasePlate = "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16";
 
         // Horizontals and diagonals are all the same celosía/truss profile.
-        public const string TrussProfile = "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14";
+        public const string TrussProfile = "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14";
         public const string LowerHorizontal = TrussProfile;
         public const string IntermediateHorizontal = TrussProfile;
         public const string UpperHorizontal = TrussProfile;

@@ -38,6 +38,13 @@ namespace RackCad.UI
         /// window closes (the placement jig needs the editor free, so it cannot run while the modal is open).</summary>
         public bool InsertRequested { get; private set; }
 
+        /// <summary>Which view the user asked to insert ("lateral" default, or "planta").</summary>
+        public string InsertView { get; private set; } = "lateral";
+
+        /// <summary>Set by the host when the window was opened on an EXISTING cabecera (RACKEDITAR). The planta view
+        /// can only be inserted then — it links to that cabecera's lateral; inserting it on a new one would orphan it.</summary>
+        public bool IsEditingExisting { get; set; }
+
         public RackFrameConfiguratorWindow(RackFrameConfiguration configuration)
             : this(configuration, false)
         {
@@ -197,7 +204,28 @@ namespace RackCad.UI
             });
         }
 
-        private void InsertInAutoCad_Click(object sender, RoutedEventArgs e)
+        private void InsertInAutoCad_Click(object sender, RoutedEventArgs e) => RequestInsert("lateral");
+
+        private void InsertPlanta_Click(object sender, RoutedEventArgs e)
+        {
+            // The planta is a view OF the cabecera: it must link to an existing lateral. Inserting it on a brand-new
+            // cabecera would orphan it, so require inserting the lateral first and adding the planta via RACKEDITAR.
+            if (!IsEditingExisting)
+            {
+                MessageBox.Show(
+                    this,
+                    "Primero inserta la cabecera lateral. Luego selecciónala con RACKEDITAR y desde ahí agrega la vista "
+                        + "planta: así queda ligada a la misma cabecera (si la insertas sola quedaría huérfana).",
+                    "Vista planta",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            RequestInsert("planta");
+        }
+
+        private void RequestInsert(string view)
         {
             if (!canInsertInAutoCad)
             {
@@ -241,6 +269,7 @@ namespace RackCad.UI
 
             // The placement jig needs the editor free, so we only flag the request and close; the host
             // command draws the block and runs the jig once every modal window is gone.
+            InsertView = view;
             InsertRequested = true;
             Close();
         }

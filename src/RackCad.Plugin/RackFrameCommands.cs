@@ -340,8 +340,10 @@ namespace RackCad.Plugin
             document.Editor.WriteMessage("\n" + Describe(result));
         }
 
-        /// <summary>Wraps a cabecera (RackFrameConfiguration) in the uniform embed envelope; reuses the project store.</summary>
-        private static string BuildCabeceraPayload(RackFrameConfiguration configuration, string id, string name)
+        /// <summary>Wraps a cabecera (RackFrameConfiguration) in the uniform embed envelope; reuses the project store.
+        /// <paramref name="view"/> tags which view this block draws (lateral default, or planta) so a cabecera can have
+        /// several view-blocks sharing its id — the same multi-view round-trip as the selective.</summary>
+        private static string BuildCabeceraPayload(RackFrameConfiguration configuration, string id, string name, string view = null)
         {
             if (configuration == null)
             {
@@ -354,6 +356,7 @@ namespace RackCad.Plugin
                 Kind = RackEmbedDocument.KindCabecera,
                 Id = id,
                 Name = name,
+                View = string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view,
                 Design = designJson
             });
         }
@@ -379,7 +382,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var window = new RackFrameConfiguratorWindow(project.Header, canInsertInAutoCad: true);
+            var window = new RackFrameConfiguratorWindow(project.Header, canInsertInAutoCad: true) { IsEditingExisting = true };
             AcApplication.ShowModalWindow(window);
 
             if (!window.InsertRequested)
@@ -387,14 +390,62 @@ namespace RackCad.Plugin
                 return;
             }
 
+            // Editing the cabecera redraws BOTH its views (lateral + planta), found by the shared GUID — the same
+            // multi-view round-trip as the selective. The planta is a separate block that links to this cabecera.
             var config = window.Configuration;
-            var result = new LateralHeaderDrawService().RedrawInPlace(
-                document, blockId, config, BuildCabeceraPayload(config, embed.Id, config?.Name));
+            var id = string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
+            var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
 
-            editor.WriteMessage(result != null && result.Success
-                ? "\nRackCad: cabecera actualizada; todas sus copias reflejan el cambio."
-                : "\nRackCad: no se pudo actualizar la cabecera. " + (result?.ErrorMessage ?? string.Empty));
+            var blocks = FindRackBlocks(document, id);
+            var lateralBlocks = blocks.Where(b => !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var plantaBlocks = blocks.Where(b => IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+
+            // Make sure the clicked block is handled even if the GUID scan missed it.
+            if (lateralBlocks.Count == 0 && !plantaBlocks.Contains(blockId) && !IsPlantaView(embed))
+            {
+                lateralBlocks.Add(blockId);
+            }
+
+            var updated = 0;
+            foreach (var lateralId in lateralBlocks)
+            {
+                var r = new LateralHeaderDrawService().RedrawInPlace(
+                    document, lateralId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral));
+                if (r != null && r.Success)
+                {
+                    updated++;
+                }
+            }
+
+            foreach (var plantaId in plantaBlocks)
+            {
+                var r = new PlantaHeaderDrawService().RedrawInPlace(
+                    document, plantaId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta));
+                if (r != null && r.Success)
+                {
+                    updated++;
+                }
+            }
+
+            // If the user asked to insert the planta and it doesn't exist yet, create it now (linked to this GUID).
+            if (window.InsertView == RackEmbedDocument.ViewPlanta && plantaBlocks.Count == 0)
+            {
+                var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta);
+                var inserted = new PlantaHeaderDrawService().DrawAndPlace(document, config, payload, name);
+                editor.WriteMessage(inserted != null && inserted.Success
+                    ? "\nRackCad: vista planta insertada y ligada a la cabecera; RACKEDITAR sobre cualquier vista edita ambas."
+                    : "\nRackCad: no se pudo insertar la planta. " + (inserted?.ErrorMessage ?? string.Empty));
+                return;
+            }
+
+            editor.WriteMessage(updated > 0
+                ? "\nRackCad: cabecera actualizada; sus vistas (lateral/planta) se redibujaron."
+                : "\nRackCad: no se pudo actualizar la cabecera.");
         }
+
+        /// <summary>True when a cabecera view-block draws the PLANTA view (so it is the top view, not the lateral).</summary>
+        private static bool IsPlantaView(RackEmbedDocument embed) =>
+            embed != null && string.Equals(embed.View, RackEmbedDocument.ViewPlanta, System.StringComparison.OrdinalIgnoreCase);
 
         /// <summary>Builds the dynamic-system block and runs the placement jig, then reports the outcome.</summary>
         private static void DrawAndPlaceSystem(DynamicRackSystem system, string payloadJson, string rackName)

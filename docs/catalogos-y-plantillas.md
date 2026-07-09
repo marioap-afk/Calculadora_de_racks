@@ -81,13 +81,13 @@ Una plantilla es **auto-descriptiva**: define cuantas horizontales hay, a que al
     "defaultHeight": 132.0,
     "defaultDepth": 42.0,
     "horizontals": [
-      { "elevation": 0.0,   "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 2 },
-      { "elevation": 44.0,  "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
-      { "elevation": 88.0,  "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 },
-      { "elevation": 132.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 }
+      { "elevation": 0.0,   "profile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14", "quantity": 2 },
+      { "elevation": 44.0,  "profile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 88.0,  "profile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14", "quantity": 1 },
+      { "elevation": 132.0, "profile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14", "quantity": 1 }
     ],
     "defaultArrangement": "SingleDiagonal",
-    "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+    "diagonalProfile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14",
     "braceStartConnectionPoint": "TROQUEL_CELOSIA",
     "braceEndConnectionPoint": "CELOSIA",
     "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16",
@@ -149,8 +149,8 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de
     "defaultHeight": 60.0,
     "defaultDepth": 42.0,
     "horizontals": [
-      { "elevation": 0.0,  "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 2 },
-      { "elevation": 60.0, "profile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14", "quantity": 1 }
+      { "elevation": 0.0,  "profile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14", "quantity": 2 },
+      { "elevation": 60.0, "profile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14", "quantity": 1 }
     ],
     "defaultArrangement": "NoBracing"
   }
@@ -172,8 +172,8 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de
 {
   "post": "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA",
   "basePlate": "PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16",
-  "diagonalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
-  "horizontalProfile": "TRAVESAÑO_CINTA_NEGRA_CALIBRE_14_DE_2_X_1_1_8_DE_CINTA_NEGRA_CALIBRE_14",
+  "diagonalProfile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14",
+  "horizontalProfile": "TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14",
   "braceStartConnectionPoint": "TROQUEL_CELOSIA",
   "braceEndConnectionPoint": "CELOSIA",
   "basePlateConnectionPoint": "MONTAJE_POSTE",
