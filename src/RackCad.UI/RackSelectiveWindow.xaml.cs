@@ -1045,33 +1045,14 @@ namespace RackCad.UI
 
         private Point Map(double x, double y) => new Point(mapOffsetX + (x - mapMinX) * mapScale, mapBottomY - y * mapScale);
 
+        private PreviewCanvasPainter previewPainter;
+        private PreviewCanvasPainter Painter => previewPainter ??= new PreviewCanvasPainter(PreviewCanvas);
+
         private void AddLine(Point a, Point b, Brush stroke, double thickness)
-        {
-            PreviewCanvas.Children.Add(new Line
-            {
-                X1 = a.X, Y1 = a.Y, X2 = b.X, Y2 = b.Y,
-                Stroke = stroke, StrokeThickness = thickness,
-                StrokeStartLineCap = PenLineCap.Round, StrokeEndLineCap = PenLineCap.Round
-            });
-        }
+            => Painter.AddLine(a, b, stroke, thickness);
 
         private void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, Brush fill)
-        {
-            if (width <= 0.0 || height <= 0.0)
-            {
-                return;
-            }
-
-            var rectangle = new Rectangle
-            {
-                Width = width, Height = height,
-                Stroke = stroke, StrokeThickness = thickness,
-                Fill = fill ?? Brushes.Transparent
-            };
-            Canvas.SetLeft(rectangle, left);
-            Canvas.SetTop(rectangle, top);
-            PreviewCanvas.Children.Add(rectangle);
-        }
+            => Painter.AddRectangle(left, top, width, height, stroke, thickness, dash: null, fill: fill);
 
         /// <summary>A post's 1-based number, centered under its base; the selected post is highlighted.</summary>
         private void AddPostNumber(double centerX, double top, string text, bool highlighted)

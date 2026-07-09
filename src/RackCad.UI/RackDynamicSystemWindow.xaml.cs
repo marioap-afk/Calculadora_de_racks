@@ -837,42 +837,14 @@ namespace RackCad.UI
             return new Point(mapOffsetX + x * mapScale, mapBottomY - y * mapScale);
         }
 
+        private PreviewCanvasPainter previewPainter;
+        private PreviewCanvasPainter Painter => previewPainter ??= new PreviewCanvasPainter(PreviewCanvas);
+
         private void AddLine(Point a, Point b, Brush stroke, double thickness, DoubleCollection dash = null)
-        {
-            PreviewCanvas.Children.Add(new Line
-            {
-                X1 = a.X,
-                Y1 = a.Y,
-                X2 = b.X,
-                Y2 = b.Y,
-                Stroke = stroke,
-                StrokeThickness = thickness,
-                StrokeDashArray = dash,
-                StrokeStartLineCap = PenLineCap.Round,
-                StrokeEndLineCap = PenLineCap.Round
-            });
-        }
+            => Painter.AddLine(a, b, stroke, thickness, dash);
 
         private void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, DoubleCollection dash, Brush fill = null)
-        {
-            if (width <= 0 || height <= 0)
-            {
-                return;
-            }
-
-            var rectangle = new Rectangle
-            {
-                Width = width,
-                Height = height,
-                Stroke = stroke,
-                StrokeThickness = thickness,
-                StrokeDashArray = dash,
-                Fill = fill ?? Brushes.Transparent
-            };
-            Canvas.SetLeft(rectangle, left);
-            Canvas.SetTop(rectangle, top);
-            PreviewCanvas.Children.Add(rectangle);
-        }
+            => Painter.AddRectangle(left, top, width, height, stroke, thickness, dash, fill);
 
         private void AddCanvasLabel(double left, double top, string text, Brush brush, double size, double maxWidth = 0.0, FontWeight? fontWeight = null)
         {
