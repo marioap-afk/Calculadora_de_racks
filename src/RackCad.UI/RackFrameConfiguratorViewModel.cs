@@ -850,7 +850,6 @@ namespace RackCad.UI
 
         public bool CanRestoreSelectedSegment => SelectedBracingSegment != null && SelectedBracingSegment.IsModified;
         public bool CanAddSegmentNearSelection => Horizontals.Count > 0;
-        public bool CanDeleteSelectedSegments => SelectedBracingSegment != null && Horizontals.Count > 2;
         public bool CanSplitSelectedSegment => SelectedBracingSegment != null && SelectedBracingSegment.ClearHeight > 0.1;
         public bool CanCombineSegments => BracingSegments.Count > 1 && SelectedBracingSegment != null && Horizontals.Count > 2;
         public bool CanDeleteSelectedHorizontal => SelectedHorizontal != null && Horizontals.Count > 2;
@@ -990,34 +989,6 @@ namespace RackCad.UI
                 "Horizontal duplicada.");
         }
 
-        public void AddSegmentAboveSelected()
-        {
-            if (SelectedBracingSegment == null)
-            {
-                AddHorizontalSegment();
-                return;
-            }
-
-            AddHorizontalAt((SelectedBracingSegment.StartElevation + SelectedBracingSegment.EndElevation) / 2.0, defaultHorizontalProfileId, 1, "Horizontal agregada dentro del panel seleccionado.");
-        }
-
-        public void AddSegmentBelowSelected()
-        {
-            AddSegmentAboveSelected();
-        }
-
-        public void DeleteSelectedSegments()
-        {
-            if (SelectedBracingSegment == null)
-            {
-                StatusMessage = "Selecciona un panel antes de eliminar.";
-                StatusBrush = "#B00020";
-                return;
-            }
-
-            RemoveSharedHorizontalForPanel(SelectedBracingSegment);
-        }
-
         public void SplitSelectedSegment()
         {
             if (SelectedBracingSegment == null)
@@ -1058,11 +1029,6 @@ namespace RackCad.UI
                 segment.Pattern = BracingPattern.DoubleDiagonal;
                 segment.SideMode = FrameSide.Front;
             }, "Doble diagonal aplicada a la seleccion.");
-        }
-
-        public void ApplyHorizontalToSelection()
-        {
-            ApplyNoBracingToSelection();
         }
 
         public void ApplyBulkPattern()
@@ -1906,7 +1872,6 @@ namespace RackCad.UI
             OnPropertyChanged(nameof(SelectedSegmentCountLabel));
             OnPropertyChanged(nameof(CanRestoreSelectedSegment));
             OnPropertyChanged(nameof(CanAddSegmentNearSelection));
-            OnPropertyChanged(nameof(CanDeleteSelectedSegments));
             OnPropertyChanged(nameof(CanSplitSelectedSegment));
             OnPropertyChanged(nameof(CanCombineSegments));
             OnPropertyChanged(nameof(CanDeleteSelectedHorizontal));

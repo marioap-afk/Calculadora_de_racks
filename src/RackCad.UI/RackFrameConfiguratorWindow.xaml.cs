@@ -350,16 +350,6 @@ namespace RackCad.UI
             });
         }
 
-        private void AddHorizontalSegment_Click(object sender, RoutedEventArgs e)
-        {
-            RunUiAction(() =>
-            {
-                ViewModel.AddHorizontalSegment();
-                SyncHorizontalGridSelectionFromViewModel();
-                SyncTreeSelectionFromViewModel();
-            });
-        }
-
         private void AddHorizontal_Click(object sender, RoutedEventArgs e)
         {
             RunUiAction(() =>
@@ -387,36 +377,6 @@ namespace RackCad.UI
             {
                 ViewModel.DuplicateSelectedHorizontal();
                 SyncHorizontalGridSelectionFromViewModel();
-                SyncTreeSelectionFromViewModel();
-            });
-        }
-
-        private void AddSegmentAbove_Click(object sender, RoutedEventArgs e)
-        {
-            RunUiAction(() =>
-            {
-                ViewModel.AddSegmentAboveSelected();
-                SyncGridSelectionFromViewModel();
-                SyncTreeSelectionFromViewModel();
-            });
-        }
-
-        private void AddSegmentBelow_Click(object sender, RoutedEventArgs e)
-        {
-            RunUiAction(() =>
-            {
-                ViewModel.AddSegmentBelowSelected();
-                SyncGridSelectionFromViewModel();
-                SyncTreeSelectionFromViewModel();
-            });
-        }
-
-        private void DeleteSelectedSegments_Click(object sender, RoutedEventArgs e)
-        {
-            RunUiAction(() =>
-            {
-                ViewModel.DeleteSelectedSegments();
-                SyncGridSelectionFromViewModel();
                 SyncTreeSelectionFromViewModel();
             });
         }
@@ -449,11 +409,6 @@ namespace RackCad.UI
         private void QuickDoubleBracing_Click(object sender, RoutedEventArgs e)
         {
             RunUiAction(() => ViewModel.ApplyDoubleBracingToSelection());
-        }
-
-        private void QuickHorizontal_Click(object sender, RoutedEventArgs e)
-        {
-            RunUiAction(() => ViewModel.ApplyHorizontalToSelection());
         }
 
         private void ApplyBulkPattern_Click(object sender, RoutedEventArgs e)
