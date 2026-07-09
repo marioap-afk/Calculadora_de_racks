@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
+using RackCad.Application;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
 
@@ -210,7 +211,7 @@ namespace RackCad.Plugin.Headers
         /// <summary>Ensure the block name is free; if taken, append _1, _2, … so we never rename another block.</summary>
         private static string UniqueBlockName(BlockTable blockTable, string baseName)
         {
-            var name = SanitizeBlockName(baseName);
+            var name = BlockNaming.SanitizeBlockName(baseName);
 
             if (!blockTable.Has(name))
             {
@@ -226,25 +227,6 @@ namespace RackCad.Plugin.Headers
                     return candidate;
                 }
             }
-        }
-
-        private static string SanitizeBlockName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return "Cabecera";
-            }
-
-            // AutoCAD block names cannot contain < > / \ " : ; ? * | , = `
-            var invalid = new[] { '<', '>', '/', '\\', '"', ':', ';', '?', '*', '|', ',', '=', '`' };
-            var cleaned = name.Trim();
-
-            foreach (var character in invalid)
-            {
-                cleaned = cleaned.Replace(character, ' ');
-            }
-
-            return cleaned.Trim();
         }
 
         private static void ApplyDynamicParameters(BlockReference reference, IReadOnlyDictionary<string, double> values)

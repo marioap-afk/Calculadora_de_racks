@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using RackCad.Application;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
@@ -313,7 +313,7 @@ namespace RackCad.Plugin.Headers
 
         private static string BuildBlockName(RackCatalog catalog, RackFrameConfiguration configuration)
         {
-            var post = NormalizeWhitespace(catalog.DescribeId(configuration.LeftPost?.PostCatalogId));
+            var post = BlockNaming.NormalizeWhitespace(catalog.DescribeId(configuration.LeftPost?.PostCatalogId));
 
             if (string.IsNullOrWhiteSpace(post))
             {
@@ -336,7 +336,7 @@ namespace RackCad.Plugin.Headers
             for (var index = 0; index < outcome.MissingInstances.Count; index++)
             {
                 var instance = outcome.MissingInstances[index];
-                var displayName = NormalizeWhitespace(catalog.DescribeId(instance.PieceId));
+                var displayName = BlockNaming.NormalizeWhitespace(catalog.DescribeId(instance.PieceId));
 
                 if (string.IsNullOrWhiteSpace(displayName))
                 {
@@ -361,37 +361,6 @@ namespace RackCad.Plugin.Headers
             {
                 return new RackCatalog();
             }
-        }
-
-        /// <summary>Collapses internal newlines/tabs/repeated spaces so a CSV display name reads on one line.</summary>
-        private static string NormalizeWhitespace(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return value;
-            }
-
-            var builder = new StringBuilder(value.Length);
-            var previousWasSpace = false;
-
-            foreach (var character in value)
-            {
-                if (char.IsWhiteSpace(character))
-                {
-                    if (!previousWasSpace)
-                    {
-                        builder.Append(' ');
-                        previousWasSpace = true;
-                    }
-                }
-                else
-                {
-                    builder.Append(character);
-                    previousWasSpace = false;
-                }
-            }
-
-            return builder.ToString().Trim();
         }
 
         /// <summary>Entity jig that keeps the header block under the cursor until the user picks a point.</summary>
