@@ -15,6 +15,14 @@ namespace RackCad.Application.RackFrames
     /// </summary>
     public sealed class RackFrameConfigurationFactory
     {
+        /// <summary>
+        /// The post ends this many inches above the TOP celosía horizontal (the "remate"). So the total height is
+        /// <c>topHorizontal + PostTopRemate</c>: the elevations are computed so the top horizontal lands exactly at
+        /// <c>height - PostTopRemate</c>, which makes the built height equal the requested height (240 in → 240 in,
+        /// not 242). Shared with the configurator VM so both agree on what "height" means.
+        /// </summary>
+        public const double PostTopRemate = 4.0;
+
         private readonly RackCatalog catalog;
 
         public RackFrameConfigurationFactory()
@@ -98,7 +106,7 @@ namespace RackCad.Application.RackFrames
             // is computed), but the template still supplies the profiles, plate, post and connection points.
             var horizontalProfileId = FirstNonEmpty(horizontals[0].Profile, defaults.HorizontalProfile, diagonalId);
             var elevations = ComputeStandardElevations(
-                height, configuration.CelosiaStartTroquel, configuration.PasoTroquel, configuration.PanelClear, out var standardCount);
+                height, configuration.CelosiaStartTroquel, configuration.PasoTroquel, configuration.PanelClear, PostTopRemate, out var standardCount);
 
             for (var index = 0; index < elevations.Count; index++)
             {
@@ -119,31 +127,33 @@ namespace RackCad.Application.RackFrames
 
         /// <summary>
         /// Standard celosía elevations: the first travesaño at the start troquel, then one every
-        /// <paramref name="claro"/>, then up to two closing travesaños. <paramref name="standardCount"/> is the
-        /// number of evenly-spaced travesaños before the closings (the panels among them carry diagonals).
-        ///
-        /// Closing rule (the leftover above the last standard travesaño is split so the closings land on
-        /// troqueles and keep clear of the post top): a large leftover takes two closings, a moderate one
-        /// takes a single closing, and a small one takes none.
+        /// <paramref name="claro"/> up to the top target, then 0/1/2 closing travesaños that land the TOP horizontal
+        /// exactly at <c>height - <paramref name="remate"/></c>. <paramref name="standardCount"/> is the number of
+        /// evenly-spaced travesaños before the closings (the panels among them carry diagonals). Landing the top at
+        /// <c>height - remate</c> makes the built height equal the requested one (post = top horizontal + remate).
         /// </summary>
         private static IReadOnlyList<double> ComputeStandardElevations(
-            double height, int troquelStart, double paso, double claro, out int standardCount)
+            double height, int troquelStart, double paso, double claro, double remate, out int standardCount)
         {
             if (paso <= 0.0) paso = 2.0;
             if (claro <= 0.0) claro = 44.0;
             if (troquelStart < 1) troquelStart = 1;
+            if (remate < 0.0) remate = 0.0;
 
             var yFirst = (troquelStart - 1) * paso;
+            // The top horizontal sits `remate` below the post top, so target it there; then the built height = the
+            // requested height (top + remate) instead of drifting a troquel above it.
+            var topTarget = height - remate;
             var elevations = new List<double>();
 
-            if (yFirst >= height)
+            if (topTarget <= yFirst)
             {
                 standardCount = 1;
-                elevations.Add(0.0);
+                elevations.Add(yFirst < height ? Math.Round(yFirst, 4) : 0.0);
                 return elevations;
             }
 
-            standardCount = (int)Math.Floor((height - yFirst) / claro) + 1;
+            standardCount = (int)Math.Floor((topTarget - yFirst) / claro) + 1;
 
             for (var index = 0; index < standardCount; index++)
             {
@@ -151,17 +161,27 @@ namespace RackCad.Application.RackFrames
             }
 
             var lastStandard = yFirst + (standardCount - 1) * claro;
-            var leftover = height - lastStandard;
+            var gap = topTarget - lastStandard; // in [0, claro): the distance still to reach the top target
 
-            if (leftover >= 26.0)
+            if (gap <= 1e-4)
             {
-                var spacing = (leftover - 2.0) % 4.0 == 0.0 ? (leftover - 2.0) / 2.0 : (leftover - 4.0) / 2.0;
-                elevations.Add(Math.Round(lastStandard + spacing, 4));
-                elevations.Add(Math.Round(lastStandard + 2.0 * spacing, 4));
+                // The last standard IS the top target (a "perfect" height); no closing needed.
+                return elevations;
             }
-            else if (leftover >= 14.0)
+
+            if (gap <= 24.0)
             {
-                elevations.Add(Math.Round(lastStandard + (leftover - 2.0), 4));
+                // One closing travesaño AT the top target.
+                elevations.Add(Math.Round(topTarget, 4));
+            }
+            else
+            {
+                // Two closings: a middle one on an even troquel, then the top target.
+                var middle = lastStandard + Math.Floor(gap / 2.0 / paso) * paso;
+                if (middle <= lastStandard + 1e-4) middle = lastStandard + paso;
+                if (middle >= topTarget - 1e-4) middle = topTarget - paso;
+                elevations.Add(Math.Round(middle, 4));
+                elevations.Add(Math.Round(topTarget, 4));
             }
 
             return elevations;

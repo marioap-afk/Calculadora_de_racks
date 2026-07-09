@@ -67,6 +67,10 @@ namespace RackCad.UI
         private string currentId;
         private string currentName;
 
+        /// <summary>True when the window was opened on an EXISTING rack (RACKEDITAR). The lateral view can only be
+        /// inserted then — it links to that rack's frontal; inserting it on a brand-new rack would orphan it.</summary>
+        private bool isEditingExisting;
+
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private SelectiveRackSystem lastSystem;
 
@@ -667,6 +671,20 @@ namespace RackCad.UI
                 return;
             }
 
+            // The lateral is a view OF the system: it must link to an existing frontal. Inserting it on a brand-new
+            // rack would leave it orphaned, so require inserting the frontal first and adding the lateral via RACKEDITAR.
+            if (view == RackEmbedDocument.ViewLateral && !isEditingExisting)
+            {
+                MessageBox.Show(
+                    this,
+                    "Primero inserta la vista frontal. Luego selecciónala con RACKEDITAR y desde ahí agrega la vista "
+                        + "lateral: así queda ligada al sistema (si la insertas sola quedaría huérfana).",
+                    "Vista lateral",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
             var design = BuildDesign(out var error);
             if (design == null)
             {
@@ -865,6 +883,7 @@ namespace RackCad.UI
             if (document == null) return;
             currentId = document.Id;
             currentName = document.Name;
+            isEditingExisting = true; // opened on an existing rack → the lateral view may be inserted (linked to it)
             NameBox.Text = document.Name ?? string.Empty;
             LoadDesign(document.ToDomain());
         }

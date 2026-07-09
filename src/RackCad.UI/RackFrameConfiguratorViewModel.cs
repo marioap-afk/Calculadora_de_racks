@@ -16,8 +16,9 @@ namespace RackCad.UI
     {
         private const double HeightTolerance = 0.01;
 
-        /// <summary>The post ends this far above the top horizontal (2 troqueles); the height is derived from it.</summary>
-        private const double PostTopRemate = 4.0;
+        /// <summary>The post ends this far above the top horizontal; the height is derived from it. Shared with the
+        /// factory (which places the top horizontal at height - remate) so the built height equals the requested one.</summary>
+        private static readonly double PostTopRemate = RackFrameConfigurationFactory.PostTopRemate;
         private readonly string defaultDiagonalProfileId;
         private readonly string defaultHorizontalProfileId;
         private readonly string defaultStartConnectionPointId;

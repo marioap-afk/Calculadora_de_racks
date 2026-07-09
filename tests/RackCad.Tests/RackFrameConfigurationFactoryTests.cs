@@ -70,11 +70,28 @@ namespace RackCad.Tests
         {
             var template = RackFrameTemplateCatalog.FindById("TALL-4P");
 
-            var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", 180.0, 42.0);
+            // 184 = 4 (start troquel) + 4*44 (four 44" panels) + 4 (remate): the top horizontal lands at 180, so the
+            // five travesaños are evenly spaced with no closing.
+            var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", 184.0, 42.0);
 
-            Assert.Equal(5, configuration.Horizontals.Count);
+            Assert.Equal(new[] { 4.0, 48.0, 92.0, 136.0, 180.0 }, configuration.Horizontals.Select(h => h.Elevation));
             Assert.Equal(4, configuration.BracingPanels.Count);
             Assert.All(configuration.BracingPanels, p => Assert.Equal(BracingPattern.XBracing, p.Arrangement));
+        }
+
+        [Fact]
+        public void Build_TopHorizontalLandsAtHeightMinusRemate_SoBuiltHeightEqualsRequested()
+        {
+            var template = RackFrameTemplateCatalog.FindById("STD-3P");
+
+            // Requesting 240 used to build a 242" frame (the top horizontal drifted a troquel high). Now the top
+            // horizontal lands at 240 - PostTopRemate = 236, so the built height is exactly 240.
+            var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", 240.0, 48.0);
+
+            var top = configuration.Horizontals.Max(h => h.Elevation);
+            Assert.Equal(240.0 - RackFrameConfigurationFactory.PostTopRemate, top, 4);
+            Assert.Equal(240.0, top + RackFrameConfigurationFactory.PostTopRemate, 4);
+            Assert.Equal(240.0, configuration.Height);
         }
 
         [Theory]
