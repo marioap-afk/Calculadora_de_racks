@@ -12,9 +12,6 @@ namespace RackCad.Application.Headers
     /// </summary>
     public static class LateralHeaderParametersFactory
     {
-        /// <summary>Panel clear used when the configuration has fewer than two distinct horizontals.</summary>
-        public const double DefaultClaroPanel = 44.0;
-
         public static LateralHeaderParameters FromConfiguration(RackFrameConfiguration configuration)
         {
             if (configuration == null)
@@ -27,8 +24,6 @@ namespace RackCad.Application.Headers
                 Height = configuration.Height,
                 Depth = configuration.Depth,
                 PasoTroquel = configuration.PasoTroquel > 0 ? configuration.PasoTroquel : 2.0,
-                InicioCelosiaTroquel = configuration.CelosiaStartTroquel,
-                ClaroPanel = ResolveClaroPanel(configuration),
                 OffsetDiagonalInicioTroqueles = configuration.DiagonalStartOffsetTroqueles,
                 OffsetDiagonalFinTroqueles = configuration.DiagonalEndOffsetTroqueles,
                 DiagonalDoubleSpacingTroqueles = configuration.DiagonalDoubleSpacingTroqueles,
@@ -37,33 +32,6 @@ namespace RackCad.Application.Headers
                 BasePlateId = configuration.LeftBasePlate?.PlateCatalogId,
                 TrussProfileId = ResolveTrussProfileId(configuration)
             };
-        }
-
-        /// <summary>
-        /// The standard panel clear is the first positive gap between consecutive horizontals; this keeps
-        /// the lateral builder in step with whatever spacing the user configured (the configurator allows
-        /// non-uniform panels, so we take the first real gap rather than assume 44").
-        /// </summary>
-        private static double ResolveClaroPanel(RackFrameConfiguration configuration)
-        {
-            var elevations = configuration.Horizontals?
-                .Select(horizontal => horizontal.Elevation)
-                .OrderBy(elevation => elevation)
-                .ToList();
-
-            if (elevations != null)
-            {
-                for (var index = 1; index < elevations.Count; index++)
-                {
-                    var gap = elevations[index] - elevations[index - 1];
-                    if (gap > 1e-4)
-                    {
-                        return gap;
-                    }
-                }
-            }
-
-            return DefaultClaroPanel;
         }
 
         /// <summary>

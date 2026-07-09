@@ -48,25 +48,11 @@ namespace RackCad.Application.RackFrames
 
             var horizontals = template.Horizontals;
 
-            if (horizontals == null || horizontals.Count < 2)
+            // Only the first horizontal's PROFILE is consumed (elevations are computed parametrically below),
+            // so the template just needs at least one horizontal — its elevations are no longer validated.
+            if (horizontals == null || horizontals.Count < 1)
             {
-                throw new ArgumentException("La plantilla debe tener al menos dos horizontales.", nameof(template));
-            }
-
-            for (var index = 1; index < horizontals.Count; index++)
-            {
-                if (horizontals[index].Elevation - horizontals[index - 1].Elevation <= 1e-4)
-                {
-                    throw new ArgumentException(
-                        "La plantilla debe tener elevaciones estrictamente ascendentes y distintas.", nameof(template));
-                }
-            }
-
-            var maxReferenceElevation = horizontals[horizontals.Count - 1].Elevation;
-
-            if (maxReferenceElevation <= 0.0)
-            {
-                throw new ArgumentException("La ultima elevacion de la plantilla debe ser mayor que cero.", nameof(template));
+                throw new ArgumentException("La plantilla debe tener al menos una horizontal (para el perfil).", nameof(template));
             }
 
             if (height <= 0.0)

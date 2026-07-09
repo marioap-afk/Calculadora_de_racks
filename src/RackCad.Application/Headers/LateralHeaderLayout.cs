@@ -33,8 +33,6 @@ namespace RackCad.Application.Headers
         /// <summary>ValorClaroTravesaño actually used: leftover clear at the top (0 if none).</summary>
         public double ClosingGap { get; }
 
-        public bool HasClosingHorizontal => ClosingGap > 0.0;
-
         public IEnumerable<HeaderBlockInstance> OfRole(HeaderBlockRole role) =>
             Instances.Where(instance => instance.Role == role);
     }

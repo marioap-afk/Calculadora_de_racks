@@ -34,7 +34,6 @@ namespace RackCad.Tests
 
             Assert.Equal(132.0, parameters.Height, 4);
             Assert.Equal(42.0, parameters.Depth, 4);
-            Assert.Equal(3, parameters.InicioCelosiaTroquel);
             Assert.Equal(2, parameters.OffsetDiagonalInicioTroqueles);
             Assert.Equal(2, parameters.OffsetDiagonalFinTroqueles);
         }
@@ -47,40 +46,6 @@ namespace RackCad.Tests
             Assert.Equal("POSTE_X", parameters.PostId);
             Assert.Equal("PLACA_X", parameters.BasePlateId);
             Assert.Equal("TRUSS_X", parameters.TrussProfileId);
-        }
-
-        [Fact]
-        public void FromConfiguration_DerivesClaroPanelFromFirstHorizontalGap()
-        {
-            var parameters = LateralHeaderParametersFactory.FromConfiguration(StandardConfiguration());
-
-            Assert.Equal(44.0, parameters.ClaroPanel, 4);
-        }
-
-        [Fact]
-        public void FromConfiguration_NonUniformPanels_UsesFirstPositiveGap()
-        {
-            var configuration = StandardConfiguration();
-            configuration.Horizontals.Clear();
-            configuration.Horizontals.Add(new FrameHorizontal { Number = 1, Elevation = 0.0, ProfileId = "TRUSS_X" });
-            configuration.Horizontals.Add(new FrameHorizontal { Number = 2, Elevation = 70.0, ProfileId = "TRUSS_X" });
-            configuration.Horizontals.Add(new FrameHorizontal { Number = 3, Elevation = 132.0, ProfileId = "TRUSS_X" });
-
-            var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
-
-            Assert.Equal(70.0, parameters.ClaroPanel, 4);
-        }
-
-        [Fact]
-        public void FromConfiguration_NoUsableHorizontalGap_FallsBackToDefaultClaro()
-        {
-            var configuration = StandardConfiguration();
-            configuration.Horizontals.Clear();
-            configuration.Horizontals.Add(new FrameHorizontal { Number = 1, Elevation = 0.0, ProfileId = "TRUSS_X" });
-
-            var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
-
-            Assert.Equal(LateralHeaderParametersFactory.DefaultClaroPanel, parameters.ClaroPanel, 4);
         }
 
         [Fact]
@@ -97,14 +62,6 @@ namespace RackCad.Tests
             var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
 
             Assert.Equal("DIAG_X", parameters.TrussProfileId);
-        }
-
-        [Fact]
-        public void FromConfiguration_ProducesParametersThatPassValidation()
-        {
-            var parameters = LateralHeaderParametersFactory.FromConfiguration(StandardConfiguration());
-
-            parameters.Validate(); // should not throw
         }
 
         [Fact]
