@@ -49,7 +49,7 @@ namespace RackCad.UI
         private ConfiguratorNavigationItem selectedNavigationItem;
         private BracingSegmentEditorRow selectedBracingSegment;
         private HorizontalEditorRow selectedHorizontal;
-        private string statusMessage = "Configuración editable en memoria. Usa \"Insertar en AutoCAD\" para dibujar la cabecera.";
+        private string statusMessage = "Configuración editable en memoria. Usa \"Insertar lateral\" para dibujar la cabecera.";
         private string statusBrush = "#415161";
         private BracingPattern bulkPattern = BracingPattern.SingleDiagonal;
         private FrameSide bulkSide = FrameSide.Front;
@@ -190,7 +190,7 @@ namespace RackCad.UI
 
         public bool IsSimpleEditor => !isAdvancedEditor;
 
-        public string EditorModeLabel => isAdvancedEditor ? "Editor avanzado" : "Configuracion rapida";
+        public string EditorModeLabel => isAdvancedEditor ? "Editor avanzado" : "Configuración rápida";
 
         public IReadOnlyList<RackFrameTemplate> HeaderTemplateOptions { get; private set; }
 
@@ -250,11 +250,11 @@ namespace RackCad.UI
                 if (TryParseDimension(value, out var parsedValue) && parsedValue > 0.0)
                 {
                     simpleHeight = parsedValue;
-                    ClearInputError("Alto invalido: escribe un numero mayor que cero.");
+                    ClearInputError("Alto inválido: escribe un número mayor que cero.");
                 }
                 else if (!string.IsNullOrWhiteSpace(value))
                 {
-                    StatusMessage = "Alto invalido: escribe un numero mayor que cero.";
+                    StatusMessage = "Alto inválido: escribe un número mayor que cero.";
                     StatusBrush = "#B00020";
                 }
 
@@ -270,11 +270,11 @@ namespace RackCad.UI
                 if (TryParseDimension(value, out var parsedValue) && parsedValue > 0.0)
                 {
                     simpleDepth = parsedValue;
-                    ClearInputError("Fondo invalido: escribe un numero mayor que cero.");
+                    ClearInputError("Fondo inválido: escribe un número mayor que cero.");
                 }
                 else if (!string.IsNullOrWhiteSpace(value))
                 {
-                    StatusMessage = "Fondo invalido: escribe un numero mayor que cero.";
+                    StatusMessage = "Fondo inválido: escribe un número mayor que cero.";
                     StatusBrush = "#B00020";
                 }
 

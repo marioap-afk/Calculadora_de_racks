@@ -85,7 +85,7 @@
 
                     <WrapPanel Margin="0,12,0,0">
                         <Button Content="Actualizar vista (recalcular)" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,12,0" IsDefault="True"
-                                ToolTip="Recalcula el sistema con los datos capturados (Enter)." />
+                                ToolTip="Recalcula el sistema con los datos capturados (Enter). OJO: elimina los overrides manuales de módulos y las cabeceras personalizadas." />
                         <CheckBox x:Name="AdvancedToggle" Content="Avanzado" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#2B6CB0"
                                   Checked="AdvancedToggle_Changed" Unchecked="AdvancedToggle_Changed"
                                   ToolTip="Muestra el detalle de altura, separadores, tabla de módulos y edición por módulo." />
@@ -119,7 +119,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Niveles (cantidad)" Style="{StaticResource FieldLabel}" />
+                                <TextBlock Text="Separadores (cantidad)" Style="{StaticResource FieldLabel}" />
                                 <TextBox x:Name="SeparatorCountBox" Style="{StaticResource FieldBox}"
                                          ToolTip="Cantidad de separadores por cabecera. Vacío = el cálculo estándar (mín. 2, +1 cada 60&quot;)." />
                             </StackPanel>
@@ -230,11 +230,11 @@
         <!-- Actions -->
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Content="Restaurar layout predeterminado" Style="{StaticResource SecondaryButtonStyle}" MinWidth="210" Margin="0,0,8,0"
-                    ToolTip="Recalcula el sistema desde la tarima y elimina los overrides manuales." Click="RestoreDefault_Click" />
+                    ToolTip="Recalcula el sistema desde la tarima y elimina los overrides manuales (igual que 'Actualizar vista')." Click="RestoreDefault_Click" />
             <Button Content="Exportar BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0" Click="ExportBom_Click" />
-            <Button Content="Ver BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="100" Margin="0,0,8,0" Click="ViewBom_Click" />
-            <Button Content="Abrir sistema" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0" Click="OpenSystem_Click" />
-            <Button Content="Guardar sistema" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0" Click="SaveSystem_Click" />
+            <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,8,0" Click="ViewBom_Click" />
+            <Button Content="Abrir proyecto" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0" Click="OpenSystem_Click" />
+            <Button Content="Guardar proyecto" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0" Click="SaveSystem_Click" />
             <Button Content="Insertar en AutoCAD" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" Margin="0,0,8,0"
                     ToolTip="Dibuja el sistema (cabeceras + separadores) en el dibujo activo de AutoCAD (vista lateral)." Click="InsertInAutoCad_Click" />
             <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />

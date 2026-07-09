@@ -119,7 +119,28 @@ namespace RackCad.UI
             LoadCellEditor();
             RenderMatrix();
             RefreshPostSelect();
+            UpdateInsertButtons();
             Recompute();
+        }
+
+        /// <summary>
+        /// Lateral/planta are views OF an existing system: enabled only when editing one via RACKEDITAR (and
+        /// inside AutoCAD). A disabled button with the reason in its tooltip beats a rejection MessageBox.
+        /// </summary>
+        private void UpdateInsertButtons()
+        {
+            var enabled = isEditingExisting && canInsertInAutoCad;
+            InsertLateralButton.IsEnabled = enabled;
+            InsertPlantaButton.IsEnabled = enabled;
+
+            if (!enabled)
+            {
+                var reason = !canInsertInAutoCad
+                    ? "Disponible solo cuando la ventana se abre desde AutoCAD."
+                    : "Primero inserta la vista frontal; luego selecciónala con RACKEDITAR y agrega esta vista desde ahí.";
+                InsertLateralButton.ToolTip = reason;
+                InsertPlantaButton.ToolTip = reason;
+            }
         }
 
         // ---- Matrix model ----
@@ -380,7 +401,7 @@ namespace RackCad.UI
         private void SetBayHeight(int bay, string text)
         {
             if (bay < 0 || bay >= bayHeights.Count) return;
-            if (!TryOptionalNum(text, out var value)) { SetStatus("Altura de frente invalida (vacio = auto).", true); return; }
+            if (!TryOptionalNum(text, out var value)) { SetStatus("Altura de frente inválida (vacío = auto).", true); return; }
             if (Nullable.Equals(bayHeights[bay], value)) return;
             bayHeights[bay] = value;
             Recompute();
@@ -624,7 +645,7 @@ namespace RackCad.UI
         {
             if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1)
             {
-                SetStatus("Cantidad de frentes invalida.", true);
+                SetStatus("Cantidad de frentes inválida.", true);
                 return;
             }
 
@@ -689,7 +710,7 @@ namespace RackCad.UI
         {
             if (!canInsertInAutoCad)
             {
-                SetStatus("El dibujo en AutoCAD solo esta disponible cuando el selectivo se abre desde AutoCAD.", true);
+                SetStatus("El dibujo en AutoCAD solo está disponible cuando el selectivo se abre desde AutoCAD.", true);
                 return;
             }
 
@@ -717,7 +738,7 @@ namespace RackCad.UI
             var system = resolver.Resolve(design, catalog);
             if (system.Height <= 0.0)
             {
-                SetStatus("No se pudo derivar la geometria (revisa tarima/niveles).", true);
+                SetStatus("No se pudo derivar la geometría (revisa tarima/niveles).", true);
                 return;
             }
 
@@ -905,7 +926,8 @@ namespace RackCad.UI
             if (document == null) return;
             currentId = document.Id;
             currentName = document.Name;
-            isEditingExisting = true; // opened on an existing rack → the lateral view may be inserted (linked to it)
+            isEditingExisting = true; // opened on an existing rack → the lateral/planta views may be inserted (linked to it)
+            UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
             LoadDesign(document.ToDomain());
         }
@@ -1092,10 +1114,11 @@ namespace RackCad.UI
 
         private void SetStatus(string message, bool isError)
         {
+            // Shared status palette across the rack windows: red #B00020 error / green #2F855A ok.
             StatusText.Text = message ?? string.Empty;
             StatusText.Foreground = isError
-                ? new SolidColorBrush(Color.FromRgb(0xC0, 0x39, 0x2B))
-                : new SolidColorBrush(Color.FromRgb(0x61, 0x70, 0x80));
+                ? new SolidColorBrush(Color.FromRgb(0xB0, 0x00, 0x20))
+                : new SolidColorBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
         }
 
         private static bool TryInt(string text, out int value)

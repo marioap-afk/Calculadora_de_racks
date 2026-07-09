@@ -142,7 +142,7 @@
                             <WrapPanel>
                                 <Button Content="Celda" Click="ApplyCell_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6"
                                         ToolTip="Aplica los valores a la celda seleccionada." />
-                                <Button Content="Fila" Click="ApplyRow_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="60" Margin="0,0,6,6"
+                                <Button Content="Nivel" Click="ApplyRow_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="60" Margin="0,0,6,6"
                                         ToolTip="Aplica a todo el nivel (misma fila, todos los frentes)." />
                                 <Button Content="Frente" Click="ApplyColumn_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="72" Margin="0,0,6,6"
                                         ToolTip="Aplica a todo el frente (misma columna, todos los niveles)." />
@@ -211,9 +211,11 @@
                     ToolTip="Genera el BOM (postes, placas, largueros y ménsulas) del selectivo actual." Click="ShowBom_Click" />
             <Button Content="Insertar frontal" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTip="Dibuja la VISTA FRONTAL del selectivo (postes + largueros) en el dibujo activo." Click="InsertFrontal_Click" />
-            <Button Content="Insertar lateral" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+            <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+                    ToolTipService.ShowOnDisabled="True"
                     ToolTip="Dibuja la VISTA LATERAL (cada poste como su cabecera). Comparte identidad con la frontal (mismo GUID)." Click="InsertLateral_Click" />
-            <Button Content="Insertar planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+            <Button x:Name="InsertPlantaButton" Content="Insertar planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+                    ToolTipService.ShowOnDisabled="True"
                     ToolTip="Dibuja la VISTA PLANTA (superior): un marco por frente + largueros. Insértala editando la frontal (RACKEDITAR)." Click="InsertPlanta_Click" />
             <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />
         </StackPanel>

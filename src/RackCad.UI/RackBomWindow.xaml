@@ -7,7 +7,15 @@
         MinHeight="320"
         MinWidth="520"
         WindowStartupLocation="CenterOwner"
+        FontFamily="Segoe UI"
         Background="#F4F6F9">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -24,7 +32,7 @@
                        Foreground="#617080"
                        FontSize="12"
                        Margin="0,4,0,0" />
-            <TextBlock Text="Vista preliminar derivada del modelo. Longitudes y agrupacion se refinaran mas adelante."
+            <TextBlock Text="Vista preliminar derivada del modelo. Longitudes y agrupación se refinarán más adelante."
                        Foreground="#9AA7B4"
                        FontSize="11"
                        Margin="0,2,0,0" />
@@ -42,9 +50,9 @@
                   BorderBrush="#D8DEE6"
                   BorderThickness="1">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Categoria" Binding="{Binding Category}" Width="110" />
+                <DataGridTextColumn Header="Categoría" Binding="{Binding Category}" Width="110" />
                 <DataGridTextColumn Header="Perfil" Binding="{Binding ProfileId}" Width="210" />
-                <DataGridTextColumn Header="Descripcion" Binding="{Binding Description}" Width="*" />
+                <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="*" />
                 <DataGridTextColumn Header="Longitud (in)" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="105" />
                 <DataGridTextColumn Header="Cantidad" Binding="{Binding Quantity}" Width="85" />
             </DataGrid.Columns>
@@ -52,13 +60,13 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Content="Exportar CSV"
+                    Style="{StaticResource PrimaryButtonStyle}"
                     MinWidth="120"
-                    Padding="14,7"
                     Margin="0,0,8,0"
                     Click="ExportCsv_Click" />
             <Button Content="Cerrar"
+                    Style="{StaticResource SecondaryButtonStyle}"
                     MinWidth="90"
-                    Padding="14,7"
                     Click="Close_Click" />
         </StackPanel>
     </Grid>

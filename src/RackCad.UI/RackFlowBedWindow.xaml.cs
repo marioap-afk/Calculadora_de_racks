@@ -410,10 +410,11 @@ namespace RackCad.UI
 
         private void SetStatus(string message, bool isError)
         {
+            // Shared status palette across the rack windows: red #B00020 error / green #2F855A ok.
             StatusText.Text = message ?? string.Empty;
             StatusText.Foreground = isError
-                ? new SolidColorBrush(Color.FromRgb(0xC0, 0x39, 0x2B))
-                : new SolidColorBrush(Color.FromRgb(0x61, 0x70, 0x80));
+                ? new SolidColorBrush(Color.FromRgb(0xB0, 0x00, 0x20))
+                : new SolidColorBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
         }
 
         private static bool TryNum(string text, out double value) => UiSupport.TryNum(text, out value);

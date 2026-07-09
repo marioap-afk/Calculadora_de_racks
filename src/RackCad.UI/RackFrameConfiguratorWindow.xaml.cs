@@ -72,6 +72,17 @@ namespace RackCad.UI
         {
             ApplySavedLayout();
             SyncSelectedSegments();
+
+            // The planta links to an EXISTING lateral cabecera: disabled (with the reason on hover) unless the
+            // window was opened via RACKEDITAR inside AutoCAD.
+            if (!IsEditingExisting || !canInsertInAutoCad)
+            {
+                InsertPlantaButton.IsEnabled = false;
+                InsertPlantaButton.ToolTip = !canInsertInAutoCad
+                    ? "Disponible solo cuando el configurador se abre desde AutoCAD."
+                    : "Primero inserta la cabecera lateral; luego selecciónala con RACKEDITAR y agrega la planta desde ahí.";
+            }
+
             DrawPreview();
         }
 
