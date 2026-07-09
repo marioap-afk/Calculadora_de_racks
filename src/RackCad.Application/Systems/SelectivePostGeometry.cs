@@ -40,7 +40,11 @@ namespace RackCad.Application.Systems
             return h > 0.0 ? h : system.Height;
         }
 
-        /// <summary>The bay's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); 0 if unset.</summary>
+        /// <summary>
+        /// The bay's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); 0 if unset.
+        /// Uses the level whose beam GOVERNED the bay length (the widest) — with mixed beam types per bay,
+        /// another level's overhang would misplace the posts for the beam that actually spans them.
+        /// </summary>
         private static double BeamProfileStartX(RackCatalog catalog, SelectiveBay bay, string view)
         {
             if (bay.Levels.Count == 0)
@@ -49,6 +53,18 @@ namespace RackCad.Application.Systems
             }
 
             var level = bay.Levels[0];
+            if (!string.IsNullOrEmpty(bay.GoverningBeamId))
+            {
+                foreach (var candidate in bay.Levels)
+                {
+                    if (string.Equals(candidate.BeamId, bay.GoverningBeamId, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        level = candidate;
+                        break;
+                    }
+                }
+            }
+
             var entry = catalog?.ConnectionLayout.FindConnectionLayout(level.BeamId, SelectiveRackDefaults.BeamProfileStartPoint, view);
             var beamParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = level.BeamPeralte };
             return ResolveX(entry, beamParams);

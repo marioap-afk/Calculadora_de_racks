@@ -57,6 +57,20 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_Dynamic_WhenBrakeDoesNotFit_FallsBackToPlainRollers()
+        {
+            // With laneDepth 49 (40" pallet, 1.9" rollers): the first brake is due at offset 48, but its trailing
+            // roller would land at 50 > maxOffset 48.5. Instead of stopping the bed at the last pre-brake roller
+            // (offset 43, leaving ~5.5" of rail unsupported), the builder falls back to plain rollers to the end.
+            var instances = new FlowBedLateralBuilder().Build(Config(FlowBedType.Dynamic, Roller19, laneDepth: 49.0), Catalog);
+
+            Assert.DoesNotContain(instances, i => i.Role == HeaderBlockRole.Brake);
+
+            var maxRoller = instances.Where(i => i.Role == HeaderBlockRole.Roller).Max(i => i.Insertion.X);
+            Assert.Equal(47.5, maxRoller, 4); // rollers keep filling the rail past the unfittable brake
+        }
+
+        [Fact]
         public void Build_Pushback_HasNoBrakes()
         {
             var instances = new FlowBedLateralBuilder().Build(Config(FlowBedType.Pushback, Roller19), Catalog);

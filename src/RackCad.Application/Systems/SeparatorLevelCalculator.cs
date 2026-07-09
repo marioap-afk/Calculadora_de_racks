@@ -64,7 +64,15 @@ namespace RackCad.Application.Systems
 
             for (var index = 0; index < count; index++)
             {
-                levels.Add(topLevel - (count - 1 - index) * fullGrid);
+                var y = topLevel - (count - 1 - index) * fullGrid;
+
+                // User overrides (a large count and/or spacing) can push lower levels below the first physical
+                // troquel — even below the floor. There is no post to mount them on: drop them instead of
+                // emitting impossible (negative) heights.
+                if (y >= troquelSeparadorY - 1e-9)
+                {
+                    levels.Add(y);
+                }
             }
 
             return levels;

@@ -51,7 +51,11 @@ namespace RackCad.Application.Systems
             var height = 0.0;
             foreach (var bayDesign in design.Bays)
             {
-                var bay = new SelectiveBay { BeamLength = BayBeamLength(bayDesign, tolerance) };
+                var bay = new SelectiveBay
+                {
+                    BeamLength = BayBeamLength(bayDesign, tolerance, out var governingBeamId),
+                    GoverningBeamId = governingBeamId
+                };
                 var levels = bayDesign.Levels;
                 if (levels.Count == 0)
                 {
@@ -68,8 +72,10 @@ namespace RackCad.Application.Systems
                 int start;
                 if (bayDesign.FloorBeam)
                 {
-                    // The floor larguero rises FloorBeamRise above the lowest troquel so its ménsula clears the base plate.
-                    y = gridBase + design.FloorBeamRise;
+                    // The floor larguero rises FloorBeamRise above the lowest troquel so its ménsula clears the base
+                    // plate. The rise is user-entered, so snap it up to the troquel pitch — otherwise the floor beam
+                    // AND every level stacked above it (separations are always multiples of paso) leave the grid.
+                    y = gridBase + RoundUpToMultiple(design.FloorBeamRise, paso);
                     AddBeam(bay, y, levels[0]);
                     start = 1;
                 }
@@ -138,16 +144,23 @@ namespace RackCad.Application.Systems
         /// <summary>
         /// Bay beam LONGITUD = the longest level, where a level is either its manual override or the auto
         /// Frente*Count + Tolerance*(Count+1). All beams of a bay share one length (the post spacing).
+        /// <paramref name="governingBeamId"/> reports WHICH level's beam set the length, so downstream
+        /// geometry (post spacing) uses that beam's ménsula overhang, not an arbitrary level's.
         /// </summary>
-        private static double BayBeamLength(SelectiveBayDesign bay, double tolerance)
+        private static double BayBeamLength(SelectiveBayDesign bay, double tolerance, out string governingBeamId)
         {
             var max = 0.0;
+            governingBeamId = null;
             foreach (var cell in bay.Levels)
             {
                 var desired = cell.BeamLengthOverride.HasValue && cell.BeamLengthOverride.Value > 0.0
                     ? cell.BeamLengthOverride.Value
                     : AutoBeamLength(cell, tolerance);
-                max = Math.Max(max, desired);
+                if (desired > max)
+                {
+                    max = desired;
+                    governingBeamId = cell.BeamId;
+                }
             }
 
             return max;

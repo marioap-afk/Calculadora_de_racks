@@ -74,8 +74,10 @@ namespace RackCad.Application.Systems
         {
             var result = new List<HeaderBlockInstance>();
 
-            // Beams physically attaching at this frame come from the bays on either side (an interior frame joins two).
-            var byY = new Dictionary<double, SelectiveLevel>();
+            // Beams physically attaching at this frame come from the bays on either side (an interior frame joins
+            // two). Dedupe by (Y, beam, peralte) — NOT by Y alone: adjacent bays can carry DIFFERENT beams at the
+            // same height, and each distinct one deserves its lateral section.
+            var byKey = new Dictionary<(double Y, string BeamId, double Peralte), SelectiveLevel>();
             void Collect(int bayIndex)
             {
                 if (bayIndex < 0 || bayIndex >= system.Bays.Count)
@@ -85,10 +87,10 @@ namespace RackCad.Application.Systems
 
                 foreach (var level in system.Bays[bayIndex].Levels)
                 {
-                    var key = Math.Round(level.Y, 4);
-                    if (!byY.ContainsKey(key))
+                    var key = (Math.Round(level.Y, 4), level.BeamId, Math.Round(level.BeamPeralte, 4));
+                    if (!byKey.ContainsKey(key))
                     {
-                        byY[key] = level;
+                        byKey[key] = level;
                     }
                 }
             }
@@ -96,7 +98,7 @@ namespace RackCad.Application.Systems
             Collect(postIndex - 1);
             Collect(postIndex);
 
-            foreach (var level in byY.Values)
+            foreach (var level in byKey.Values)
             {
                 var block = catalog?.Blocks.FindBlock(level.BeamId, LateralView)?.BlockName;
                 result.Add(MakeLarguero(level, block, x: 0.0, mirrored: false));      // front post

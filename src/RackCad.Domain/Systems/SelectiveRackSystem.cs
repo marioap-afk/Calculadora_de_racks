@@ -40,6 +40,13 @@ namespace RackCad.Domain.Systems
         /// </summary>
         public double BeamLength { get; set; }
 
+        /// <summary>
+        /// Beam id of the level that GOVERNED <see cref="BeamLength"/> (the widest one). Post spacing must use
+        /// THIS beam's ménsula overhang — with mixed beam types per bay, another level's overhang would misplace
+        /// the posts. Null/empty = single-type bay (any level works).
+        /// </summary>
+        public string GoverningBeamId { get; set; }
+
         /// <summary>Height this bay requires (in) = roundUpFoot(topBeamY + topAlto/3). A post uses the tallest bay it touches.</summary>
         public double Height { get; set; }
 

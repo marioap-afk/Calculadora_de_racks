@@ -138,6 +138,32 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void FloorBeamRise_SnapsUpToTheTroquelPitch()
+        {
+            // A user-entered rise of 3" (paso 2") would put the floor beam — and every level stacked above it —
+            // permanently 1" off the troquel grid; the resolver snaps the rise up to 4".
+            var design = Design(true, Cell(40, 60, 1, 4), Cell(40, 50, 1, 4));
+            design.FloorBeamRise = 3.0;
+
+            var bay = new SelectiveGeometryResolver().Resolve(design, Catalog).Bays[0];
+
+            Assert.Equal(GridBase() + 4.0, bay.Levels[0].Y, 4);
+        }
+
+        [Fact]
+        public void GoverningBeamId_IsTheWidestLevelsBeam()
+        {
+            var design = Design(false, Cell(40, 60, 1, 4), Cell(48, 50, 2, 4));
+            design.Bays[0].Levels[1].BeamId = "LARGUERO_ANCHO_HIPOTETICO"; // the widest level carries a distinct beam
+
+            var bay = ResolveBay(design);
+
+            // nivel 0: 40 + 4*2 = 48 ; nivel 1: 48*2 + 4*3 = 108 -> level 1 governs, so ITS beam id is reported.
+            Assert.Equal(108.0, bay.BeamLength, 4);
+            Assert.Equal("LARGUERO_ANCHO_HIPOTETICO", bay.GoverningBeamId);
+        }
+
+        [Fact]
         public void Separation_IsClearOpeningPlusPeralteRoundedUpToTroquel()
         {
             var bay = ResolveBay(Design(true, Cell(40, 60, 1, 4), Cell(40, 60, 1, 4)));

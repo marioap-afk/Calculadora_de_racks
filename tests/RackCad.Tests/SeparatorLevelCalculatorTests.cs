@@ -38,6 +38,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Levels_OversizedOverrides_NeverEmitBelowTheBaseTroquel()
+        {
+            // count=10 + spacing=60 on a 100" header would step 9x60 below the top level — deep into negative
+            // Y. Levels below the first physical troquel have no post to mount on: they must be dropped.
+            var levels = SeparatorLevelCalculator.Levels(
+                100.0, troquelSeparadorY: 2.1563, paso: 2.0, countOverride: 10, spacingOverride: 60.0);
+
+            Assert.NotEmpty(levels);
+            Assert.All(levels, y => Assert.True(y >= 2.1563 - 1e-9, "separator below the base troquel: " + y));
+        }
+
+        [Fact]
         public void Levels_LandOnTheTroquelGrid_EvenSpacing()
         {
             const double baseY = 2.1563; // real TROQUEL_SEPARADOR.Y

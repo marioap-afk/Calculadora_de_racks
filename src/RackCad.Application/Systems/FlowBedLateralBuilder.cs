@@ -78,7 +78,10 @@ namespace RackCad.Application.Systems
                     var nextRoller = brakeOffset + FlowBedDefaults.RollerAfterBrake;
                     if (nextRoller > maxOffset)
                     {
-                        break; // no room for the brake and its trailing roller
+                        // No room for a brake + its trailing roller before the rail end: fall back to plain
+                        // rollers so the loading end stays supported instead of leaving the tail empty.
+                        dynamic = false;
+                        continue;
                     }
 
                     instances.Add(Piece(catalog, HeaderBlockRole.Brake, FlowBedDefaults.BrakeId, new Point2D(originX + brakeOffset, lineY)));

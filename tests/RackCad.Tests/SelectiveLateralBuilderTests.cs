@@ -77,6 +77,27 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Cortes_DistinctBeamsAtTheSameY_EachGetTheirLateralSection()
+        {
+            // An interior frame joins two bays. If both carry a level at the SAME height but with DIFFERENT
+            // beams (here: same beam id, different peralte), the corte must show BOTH sections — deduping by Y
+            // alone would silently drop the right bay's beam and disagree with the frontal.
+            var system = new SelectiveRackSystem { PostId = PostId, PostPeralte = 3.0, PalletDepth = 48.0, Height = 96.0 };
+            var bayA = new SelectiveBay { BeamLength = 92.0, Height = 96.0 };
+            bayA.Levels.Add(new SelectiveLevel { Y = 50.0, BeamId = BeamId, BeamPeralte = 4.0 });
+            var bayB = new SelectiveBay { BeamLength = 92.0, Height = 96.0 };
+            bayB.Levels.Add(new SelectiveLevel { Y = 50.0, BeamId = BeamId, BeamPeralte = 6.0 });
+            system.Bays.Add(bayA);
+            system.Bays.Add(bayB);
+
+            var interior = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 1);
+
+            Assert.Equal(4, interior.Largueros.Count); // 2 distinct beams x (front + back)
+            Assert.Contains(interior.Largueros, b => System.Math.Abs(b.DynamicParameters["PERALTE"] - 4.0) < 1e-6);
+            Assert.Contains(interior.Largueros, b => System.Math.Abs(b.DynamicParameters["PERALTE"] - 6.0) < 1e-6);
+        }
+
+        [Fact]
         public void Planta_OneFramePerPost_PlusFrontAndBackLargueroPerBay()
         {
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);

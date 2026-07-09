@@ -8,8 +8,11 @@ namespace RackCad.Application.Bom
     {
         public static string ToCsv(BillOfMaterials bom)
         {
+            // RFC-4180 mandates CRLF; use it explicitly for header AND rows (AppendLine is OS-dependent).
+            const string NewLine = "\r\n";
+
             var builder = new StringBuilder();
-            builder.AppendLine("Categoria,Perfil,Descripcion,Longitud_in,Cantidad");
+            builder.Append("Categoria,Perfil,Descripcion,Longitud_in,Cantidad").Append(NewLine);
 
             if (bom != null)
             {
@@ -20,7 +23,7 @@ namespace RackCad.Application.Bom
                         .Append(Escape(line.Description)).Append(',')
                         .Append(line.Length.ToString("0.##", CultureInfo.InvariantCulture)).Append(',')
                         .Append(line.Quantity.ToString(CultureInfo.InvariantCulture))
-                        .Append('\n');
+                        .Append(NewLine);
                 }
             }
 

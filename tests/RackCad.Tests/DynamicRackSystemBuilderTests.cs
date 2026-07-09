@@ -31,6 +31,7 @@ namespace RackCad.Tests
         // ---- N modulos; total = N*fondo+12 (solo los extremos llevan +6) ----
 
         [Theory]
+        [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
         [InlineData(5)]
@@ -42,6 +43,18 @@ namespace RackCad.Tests
             Assert.Equal(palletsDeep, system.Modules.Count);
             Assert.Equal(palletsDeep * 48.0 + 12.0, system.TotalLength);
             Assert.Equal(system.TotalLength, system.Modules.Sum(m => m.Length));
+        }
+
+        [Fact]
+        public void BuildDefault_Two_ProducesTwoBackToBackHeaders_NoSeparator()
+        {
+            // N=2 is the supported minimum: both ends must still be headers (the class contract), so the run
+            // degenerates to HeaderStart + HeaderEnd with no separator in between.
+            Assert.Equal(new[]
+            {
+                (DynamicRackModuleKind.HeaderStart, 0.0, 54.0),
+                (DynamicRackModuleKind.HeaderEnd, 54.0, 108.0)
+            }, Build(2).Modules.Select(Triple).ToArray());
         }
 
         [Fact]

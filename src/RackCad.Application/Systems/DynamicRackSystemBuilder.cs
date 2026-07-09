@@ -120,12 +120,19 @@ namespace RackCad.Application.Systems
 
         /// <summary>
         /// Whether the module at <paramref name="position"/> (1-indexed) is a header in the default
-        /// layout. Odd N: strict alternating C-S-C-...-C. Even N: alternating with ONE pair of
+        /// layout. N=2 (the minimum) degenerates to two back-to-back end headers with no separator.
+        /// Odd N: strict alternating C-S-C-...-C. Even N: alternating with ONE pair of
         /// consecutive separators (the derived poste) placed as close to the center as possible —
         /// exactly centered for N divisible by 4, one pallet off-center otherwise.
         /// </summary>
         private static bool IsHeaderPosition(int position, int palletsDeep)
         {
+            if (palletsDeep == 2)
+            {
+                // Both ends must be headers (the class contract); with N=2 there is no room for a separator.
+                return true;
+            }
+
             if (palletsDeep % 2 == 1)
             {
                 return position % 2 == 1;

@@ -22,6 +22,24 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void ToCsv_UsesCrlfForHeaderAndEveryRow()
+        {
+            var bom = new BillOfMaterials(new[]
+            {
+                new BomLine { Category = "Poste", ProfileId = "P1", Description = "Poste", Length = 132.0, Quantity = 2 },
+                new BomLine { Category = "Larguero", ProfileId = "L1", Description = "Larguero", Length = 92.0, Quantity = 4 }
+            });
+
+            var csv = BomCsvExporter.ToCsv(bom);
+
+            // RFC-4180: CRLF everywhere — no lone \n (header and data rows must agree).
+            var lines = csv.Split("\r\n");
+            Assert.Equal(4, lines.Length); // header + 2 rows + trailing empty after the final CRLF
+            Assert.DoesNotMatch("[^\r]\n", csv);
+            Assert.EndsWith("\r\n", csv);
+        }
+
+        [Fact]
         public void Build_GroupsPostsToQuantityTwoWithCatalogDescription()
         {
             var bom = BomBuilder.Build(StandardWithMembers(), Catalog);
