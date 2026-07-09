@@ -980,6 +980,9 @@ namespace RackCad.UI
                         var hi = postIndex == selectedPost;
                         AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, postH * mapScale,
                             hi ? PostHiBrush : PostBrush, hi ? 3.0 : 1.6, hi ? PostHiFill : PostFill);
+                        // Post number under the base (1-based) — matches "Cabecera por poste" and the "insertar lateral" prompt.
+                        var numAt = Map(instance.Insertion.X, 0.0);
+                        AddPostNumber(numAt.X, mapBottomY + 8.0, (postIndex + 1).ToString(CultureInfo.InvariantCulture), hi);
                         postIndex++;
                         break;
                     case HeaderBlockRole.Beam:
@@ -1033,6 +1036,23 @@ namespace RackCad.UI
             Canvas.SetLeft(rectangle, left);
             Canvas.SetTop(rectangle, top);
             PreviewCanvas.Children.Add(rectangle);
+        }
+
+        /// <summary>A post's 1-based number, centered under its base; the selected post is highlighted.</summary>
+        private void AddPostNumber(double centerX, double top, string text, bool highlighted)
+        {
+            var label = new TextBlock
+            {
+                Text = text,
+                Foreground = highlighted ? PostHiBrush : LabelStroke,
+                FontSize = 12.5,
+                FontWeight = FontWeights.Bold,
+                Width = 24.0,
+                TextAlignment = TextAlignment.Center
+            };
+            Canvas.SetLeft(label, centerX - 12.0);
+            Canvas.SetTop(label, top);
+            PreviewCanvas.Children.Add(label);
         }
 
         private void AddCanvasLabel(double left, double top, string text, Brush brush, double size, double maxWidth)

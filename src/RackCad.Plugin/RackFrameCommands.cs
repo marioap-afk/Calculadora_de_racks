@@ -649,10 +649,11 @@ namespace RackCad.Plugin
                 }
             }
 
-            // If the user asked to insert the lateral and it doesn't exist yet, create it now (tied to this GUID).
-            if (window.InsertView == RackEmbedDocument.ViewLateral && lateralBlocks.Count == 0)
+            // If the user asked to insert a lateral, ask which corte and add it (tied to this GUID); the existing
+            // sections were already redrawn above.
+            if (window.InsertView == RackEmbedDocument.ViewLateral)
             {
-                DrawSelectiveLateralSections(document, system, design, id, name);
+                InsertSelectiveLateralSection(document, system, design, id, name);
                 return;
             }
 
@@ -804,7 +805,7 @@ namespace RackCad.Plugin
 
             if (view == RackEmbedDocument.ViewLateral)
             {
-                DrawSelectiveLateralSections(document, system, design, id, name);
+                InsertSelectiveLateralSection(document, system, design, id, name);
                 return;
             }
 
@@ -814,12 +815,12 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
-        /// Draws the selective's LATERAL view as one block PER SECTION (post), laid out at the frontal post Xs from a
-        /// single base point. Every section carries the SAME rack id + full design (View=lateral, Section=i), so it is
-        /// tied to the system: RACKEDITAR on any section reopens the whole selective and redraws BOTH views. Each
-        /// section is still its own block (movable independently), but it is a view OF the system, not a loose cabecera.
+        /// Inserts ONE lateral "corte" (cross-section), chosen by post number, and jig-places it. The section carries
+        /// the SAME rack id + full design (View=lateral, Section=i), so it is tied to the system: RACKEDITAR on it
+        /// reopens the whole selective and redraws BOTH views. It is its own block (movable independently), but a view
+        /// OF the system, not a loose cabecera. Called after inserting the frontal (via RACKEDITAR) so it links to it.
         /// </summary>
-        private static void DrawSelectiveLateralSections(Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
+        private static void InsertSelectiveLateralSection(Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
         {
             if (document == null || system == null)
             {
@@ -832,36 +833,42 @@ namespace RackCad.Plugin
             var cortes = new SelectiveLateralBuilder().Cortes(system, catalog);
             if (cortes.Count == 0)
             {
-                editor.WriteMessage("\nRackCad: no hay secciones laterales que dibujar.");
+                editor.WriteMessage("\nRackCad: no hay cortes laterales que dibujar.");
                 return;
             }
 
-            var pick = editor.GetPoint("\nPunto base de la vista lateral: ");
+            // Ask WHICH post's corte to insert (1-based, matching the frontal preview numbers).
+            var postCount = system.Bays.Count + 1;
+            var options = new PromptIntegerOptions("\n¿Qué corte lateral insertar (número de poste)?")
+            {
+                LowerLimit = 1,
+                UpperLimit = postCount,
+                DefaultValue = 1,
+                UseDefaultValue = true,
+                AllowNone = false
+            };
+
+            var pick = editor.GetInteger(options);
             if (pick.Status != PromptStatus.OK)
             {
                 return;
             }
 
-            var basePoint = pick.Value;
-            var service = new LateralHeaderDrawService();
-            var baseName = string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim();
-            var drawn = 0;
-
-            foreach (var corte in cortes)
+            var corte = cortes.FirstOrDefault(c => c.PostIndex == pick.Value - 1);
+            if (corte == null)
             {
-                var sectionName = baseName + " - lateral " + (corte.PostIndex + 1).ToString(CultureInfo.InvariantCulture);
-                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
-                var insertion = new Point3d(basePoint.X + corte.X, basePoint.Y, basePoint.Z);
-
-                var result = service.DrawAt(document, corte.Cabecera, insertion, payload, sectionName);
-                if (result != null && result.Success)
-                {
-                    drawn++;
-                }
+                editor.WriteMessage("\nRackCad: el poste " + pick.Value.ToString(CultureInfo.InvariantCulture) + " no tiene corte lateral.");
+                return;
             }
 
-            editor.WriteMessage("\nRackCad: vista lateral insertada (" + drawn.ToString(CultureInfo.InvariantCulture)
-                + " secciones), ligada al sistema. RACKEDITAR sobre cualquier vista edita el sistema y redibuja ambas.");
+            var baseName = string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim();
+            var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
+            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
+
+            var result = new LateralHeaderDrawService().DrawAndPlace(document, corte.Cabecera, payload, sectionName);
+            editor.WriteMessage(result != null && result.Success
+                ? "\nRackCad: corte lateral del poste " + pick.Value.ToString(CultureInfo.InvariantCulture) + " insertado y ligado al sistema."
+                : "\nRackCad: no se pudo insertar el corte lateral. " + (result?.ErrorMessage ?? string.Empty));
         }
 
         private static string DescribeSelective(HeaderPlacementResult result)
