@@ -1,9 +1,16 @@
 # Ideas a futuro y deuda técnica conocida
 
-> Actualizado: 2026-07-08 (auditoría nocturna multi-agente + propuestas).
+> Actualizado: 2026-07-09 (limpieza de código muerto ejecutada).
 > Este documento junta (A) mejoras de producto propuestas y (B) hallazgos de la auditoría que se
 > **difirieron a propósito** (necesitan validación en AutoCAD o una decisión de producto). Nada de esto
 > está roto hoy; es el backlog recomendado.
+>
+> **2026-07-09 — hecho:** toda la sección "Limpieza de código (segura pero voluminosa)" quedó aplicada
+> (verificada con recon multi-agente + doble check adversarial antes de borrar). Ver commits
+> `7031a4e` (código muerto del dominio), `ee99a18` (superficie muerta de header-parameters + validación
+> de elevaciones), `c26300d` (handlers muertos del configurador), `cfd6cd3` (partición de
+> `RackFrameCommands` en partials por tipo), `70ccca2` (`BlockNaming` puro y testeable) y `b79e677`
+> (`PreviewCanvasPainter` compartido). 235 tests verdes.
 
 ## A. Propuestas de producto
 
@@ -61,24 +68,16 @@
   se deriva de las horizontales (cualquier cambio estructural la pisa). Decidir: solo lectura, o que
   editarla recalcule las horizontales.
 
-### Limpieza de código (segura pero voluminosa)
-- **Código muerto del dominio**: `RackFrameConfiguration.BracingSegments` (+ clase `BracingSegment` y
-  la rama de migración legacy del VM que nunca corre), `FrameId`/`CreatedAt`/`UpdatedAt` (no se
-  persisten ni se muestran), alias `Index/SideMode/DefaultMemberProfileId` en `BracingPanel`,
-  `FrameMember.PositionRatio`/`MemberId`.
-- **Handlers muertos del configurador**: `AddHorizontalSegment_Click`, `AddSegmentAbove/Below_Click`,
-  `DeleteSelectedSegments_Click`, `QuickHorizontal_Click` (no aparecen en el XAML) y los métodos del
-  VM que solo ellos llamaban.
-- **Superficie muerta en `LateralHeaderParameters`**: `InicioCelosiaTroquel`, `ClaroPanel`,
-  `Validate()`, `HasClosingHorizontal` (la factory los llena; el builder ya no los lee).
-- **La factory valida elevaciones de plantilla que ya no usa** (exige >= 2 horizontales ascendentes
-  aunque solo consume los perfiles).
-- **Partir `RackFrameCommands` (~1,100 líneas)** en `partial class` por tipo de rack
-  (Selective/Cabecera/Dynamic/Cama + shared).
-- **Primitivas de preview triplicadas** (`Map`/`AddLine`/`AddRectangle`/labels) en las ventanas
-  dinámico/cama/selectivo → helper compartido de canvas.
-- **Lógica pura atrapada en el Plugin**: `SanitizeBlockName` y `NormalizeWhitespace` no son testeables
-  desde la suite (el Plugin referencia AutoCAD); moverlas a Application.
+### Limpieza de código — HECHA (2026-07-09)
+
+Toda esta sección quedó aplicada (ver la nota fechada al inicio del documento). Notas de lo que se
+conservó a propósito, por si vuelve a auditarse:
+- Se mantuvo `BracingPanel.Index` (vivo en `RackFrameEngineeringPreviewLayout`); solo se borraron los
+  alias `SideMode`/`DefaultMemberProfileId`. No confundir el `Configuration.BracingSegments` del dominio
+  (borrado) con el `BracingSegments` del ViewModel (`ObservableCollection<BracingSegmentEditorRow>`, UI viva).
+- `FrameMemberEnd.HorizontalPositionRatio` sigue vivo (geometría); solo se borró `FrameMember.PositionRatio`.
+- De las primitivas de preview se compartieron `AddLine`/`AddRectangle` (`PreviewCanvasPainter`); cada
+  ventana conserva su `Map` (proyección propia) y su etiqueta (estilos divergentes).
 
 ### UX menor pendiente
 - Clic en otra celda de la matriz del selectivo descarta lo tecleado sin aplicar/preguntar.
