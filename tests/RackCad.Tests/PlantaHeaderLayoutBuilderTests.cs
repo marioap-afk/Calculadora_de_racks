@@ -55,5 +55,34 @@ namespace RackCad.Tests
             var post = instances.First(i => i.Role == HeaderBlockRole.Post);
             Assert.Equal(3.0, post.DynamicParameters["PERALTE"], 3); // Omega 3x3 post width
         }
+
+        [Fact]
+        public void Build_AsymmetricSides_EachPlateKeepsItsOwnPeralteOverride()
+        {
+            // The configurator edits the plates PER SIDE: the back (right) plate's override must not be
+            // clobbered by the front (left) one's value.
+            var config = Config(48.0);
+            config.LeftBasePlate.PeralteOverride = 5.0;
+            config.RightBasePlate.PeralteOverride = 7.0;
+
+            var instances = new PlantaHeaderLayoutBuilder().Build(config, Catalog);
+            var plates = instances.Where(i => i.Role == HeaderBlockRole.BasePlate).OrderBy(i => i.Insertion.X).ToList();
+
+            Assert.Equal(5.0, plates.First().DynamicParameters["PERALTE"], 3); // front = left
+            Assert.Equal(7.0, plates.Last().DynamicParameters["PERALTE"], 3);  // back = right, its own value
+        }
+
+        [Fact]
+        public void Build_AsymmetricSides_BackPostUsesItsOwnCatalogId()
+        {
+            var config = Config(48.0);
+            config.RightPost.PostCatalogId = "POSTE_DERECHO_HIPOTETICO";
+
+            var instances = new PlantaHeaderLayoutBuilder().Build(config, Catalog);
+            var posts = instances.Where(i => i.Role == HeaderBlockRole.Post).OrderBy(i => i.Insertion.X).ToList();
+
+            Assert.Equal("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA", posts.First().PieceId);
+            Assert.Equal("POSTE_DERECHO_HIPOTETICO", posts.Last().PieceId);
+        }
     }
 }

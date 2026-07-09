@@ -42,20 +42,31 @@ namespace RackCad.Application.Headers
             }
 
             var depth = config.Depth > 0.0 ? config.Depth : 42.0;
+
+            // Each side resolves ITS OWN post/plate/peralte — the configurator edits them per side, and the
+            // lateral view honours that; the planta must not apply the left side's values to both.
             var postId = FirstNonEmpty(config.LeftPost?.PostCatalogId, catalog?.Defaults?.Post);
             var plateId = FirstNonEmpty(config.LeftBasePlate?.PlateCatalogId, catalog?.Defaults?.BasePlate);
+            var backPostId = FirstNonEmpty(config.RightPost?.PostCatalogId, postId);
+            var backPlateId = FirstNonEmpty(config.RightBasePlate?.PlateCatalogId, plateId);
             var trussId = ResolveTrussId(config, catalog);
 
             var postPeralte = PostWidth(catalog, postId);
+            var backPostPeralte = PostWidth(catalog, backPostId);
             var celosiaPeralte = Math.Max(0.0, postPeralte - 1.0);
             var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
+            var backPlateEntry = catalog?.BasePlates.FindBasePlate(backPlateId);
             var platePeralte = config.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
+            var backPlatePeralte = config.RightBasePlate?.PeralteOverride ?? backPlateEntry?.StandardPeralte(backPostPeralte) ?? 0.0;
 
             var postBlock = Block(catalog, postId, View);
             var plateBlock = Block(catalog, plateId, View);
+            var backPostBlock = Block(catalog, backPostId, View);
+            var backPlateBlock = Block(catalog, backPlateId, View);
             var trussBlock = Block(catalog, trussId, View);
 
             var montaje = Local(catalog, plateId, MontajePostePoint, View);
+            var backMontaje = Local(catalog, backPlateId, MontajePostePoint, View);
             var celosia = Local(catalog, trussId, CelosiaPoint, View);
             // The travesaño CUT length matches the frontal/lateral: the beam mates at the post's celosía troquel
             // (inset = its X in the LATERAL view) but its steel overhangs the mate by the ménsula (the CELOSIA point's
@@ -70,8 +81,8 @@ namespace RackCad.Application.Headers
             // library); here we only MIRROR the back one so both omegas open inward.
             AddPost(instances, postId, postBlock, front, postPeralte, mirrored: false);
             AddPlate(instances, plateId, plateBlock, montaje, front, platePeralte, mirrored: false);
-            AddPost(instances, postId, postBlock, back, postPeralte, mirrored: true);
-            AddPlate(instances, plateId, plateBlock, montaje, back, platePeralte, mirrored: true);
+            AddPost(instances, backPostId, backPostBlock, back, backPostPeralte, mirrored: true);
+            AddPlate(instances, backPlateId, backPlateBlock, backMontaje, back, backPlatePeralte, mirrored: true);
 
             // Celosía: one member spanning between the two posts, cut to the travesaño A-corte (mate inset minus the
             // ménsula overhang on each side) — the same length the travesaño has in the lateral view.

@@ -103,6 +103,43 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_AsymmetricSides_RightPostAndPlateUseTheirOwnIds_AndTheRightTroquel()
+        {
+            // The configurator edits post/plate PER SIDE: the right side must resolve its own catalog ids and
+            // its own troquel inset — not silently inherit the left one's.
+            var configuration = StandardConfiguration();
+            configuration.RightPost.PostCatalogId = "PO2";
+            configuration.RightBasePlate.PlateCatalogId = "PL2";
+
+            var catalog = StandardCatalog();
+            ((List<ConnectionLayoutEntry>)catalog.ConnectionLayout).AddRange(new[]
+            {
+                new ConnectionLayoutEntry { PieceId = "PO2", ConnectionPointId = "TROQUEL_CELOSIA", View = "LATERAL", LocalX = 3.0, LocalY = 0.0 },
+                new ConnectionLayoutEntry { PieceId = "PO2", ConnectionPointId = "FIN_POSTE", View = "LATERAL", LocalX = 4.0, LocalY = 0.0 },
+                new ConnectionLayoutEntry { PieceId = "PL2", ConnectionPointId = "MONTAJE_POSTE", View = "LATERAL", LocalX = 0.0, LocalY = 0.0 }
+            });
+            ((List<BlockCatalogEntry>)catalog.Blocks).AddRange(new[]
+            {
+                new BlockCatalogEntry { PieceId = "PO2", View = "LATERAL", BlockName = "PO2_LAT" },
+                new BlockCatalogEntry { PieceId = "PL2", View = "LATERAL", BlockName = "PL2_LAT" }
+            });
+
+            var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
+            var layout = new LateralHeaderLayoutBuilder().Build(configuration, parameters, catalog);
+
+            var posts = layout.OfRole(HeaderBlockRole.Post).OrderBy(p => p.Insertion.X).ToList();
+            Assert.Equal("PO", posts.First().PieceId);
+            Assert.Equal("PO2", posts.Last().PieceId);
+
+            var plates = layout.OfRole(HeaderBlockRole.BasePlate).OrderBy(p => p.ConnectionAnchor.X).ToList();
+            Assert.Equal("PL2", plates.Last().PieceId);
+
+            // Horizontals span left troquel (0 + 2) to the RIGHT post's own troquel (42 - 3): length 37, not 38.
+            var horizontal = layout.OfRole(HeaderBlockRole.Horizontal).First();
+            Assert.Equal(37.0, horizontal.DynamicParameters["LONGITUD"], 4);
+        }
+
+        [Fact]
         public void PlatePeralteOverride_SetsThePlatePeralteParameter_OnlyWhenPresent()
         {
             var configuration = StandardConfiguration();

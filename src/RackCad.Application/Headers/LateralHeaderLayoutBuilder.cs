@@ -36,34 +36,43 @@ namespace RackCad.Application.Headers
             if (height <= 0.0) throw new ArgumentOutOfRangeException(nameof(config), "La altura debe ser > 0.");
             if (depth <= 0.0) throw new ArgumentOutOfRangeException(nameof(config), "El fondo debe ser > 0.");
 
+            // Each side resolves ITS OWN post/plate — the configurator lets the user pick a different post or
+            // plate per side, so the right side must not silently inherit the left one's ids.
             var postId = FirstNonEmpty(config.LeftPost?.PostCatalogId, p.PostId);
             var plateId = FirstNonEmpty(config.LeftBasePlate?.PlateCatalogId, p.BasePlateId);
+            var rightPostId = FirstNonEmpty(config.RightPost?.PostCatalogId, postId);
+            var rightPlateId = FirstNonEmpty(config.RightBasePlate?.PlateCatalogId, plateId);
 
             var instances = new List<HeaderBlockInstance>();
 
             // 1 & 2. Left post + plate at X=0, right post + plate mirrored at X=Depth.
             var montaje = Local(catalog, plateId, p.MontajePostePoint, view);
+            var rightMontaje = Local(catalog, rightPlateId, p.MontajePostePoint, view);
             var postBlock = Block(catalog, postId, view);
             var plateBlock = Block(catalog, plateId, view);
+            var rightPostBlock = Block(catalog, rightPostId, view);
+            var rightPlateBlock = Block(catalog, rightPlateId, view);
             var leftOrigin = new Point2D(0.0, 0.0);
             var rightOrigin = new Point2D(depth, 0.0);
             AddPostWithPlate(instances, p, postId, plateId, postBlock, plateBlock, montaje, leftOrigin, height, mirrored: false, config.LeftBasePlate?.PeralteOverride);
-            AddPostWithPlate(instances, p, postId, plateId, postBlock, plateBlock, montaje, rightOrigin, height, mirrored: true, config.RightBasePlate?.PeralteOverride);
+            AddPostWithPlate(instances, p, rightPostId, rightPlateId, rightPostBlock, rightPlateBlock, rightMontaje, rightOrigin, height, mirrored: true, config.RightBasePlate?.PeralteOverride);
 
-            // 3. Troquel grid from the post's TROQUEL_CELOSIA. Its Y is the base of the grid (everything snaps
-            // to troquelBaseY + k*paso); its X gives each post's troquel line.
+            // 3. Troquel grid from the post's TROQUEL_CELOSIA. The LEFT post's Y is the base of the grid
+            // (everything snaps to troquelBaseY + k*paso); each side's X comes from ITS OWN post profile.
             var troquel = Local(catalog, postId, p.TroquelCelosiaPoint, view);
+            var rightTroquel = Local(catalog, rightPostId, p.TroquelCelosiaPoint, view);
             var finPoste = Local(catalog, postId, p.FinPostePoint, view);
+            var rightFinPoste = Local(catalog, rightPostId, p.FinPostePoint, view);
             var troquelBaseY = troquel.Y;
             var doubleStep = p.HorizontalDoubleOffsetTroqueles * paso;
 
             var leftPostTroquelX = leftOrigin.X + troquel.X;
-            var rightPostTroquelX = rightOrigin.X - troquel.X;
+            var rightPostTroquelX = rightOrigin.X - rightTroquel.X;
 
             // Reinforcements (optional, per side): a second post mated at FIN_POSTE, drawn here, with its inner
             // troquel line used by celosía inside its zone.
             var leftReinf = AddReinforcement(instances, p, catalog, config.LeftPost, leftOrigin, finPoste, troquel, height, mirrored: false);
-            var rightReinf = AddReinforcement(instances, p, catalog, config.RightPost, rightOrigin, finPoste, troquel, height, mirrored: true);
+            var rightReinf = AddReinforcement(instances, p, catalog, config.RightPost, rightOrigin, rightFinPoste, rightTroquel, height, mirrored: true);
 
             double LeftXAt(double y) =>
                 leftReinf.Enabled && y <= leftReinf.Height + Tolerance ? leftReinf.TroquelX : leftPostTroquelX;
