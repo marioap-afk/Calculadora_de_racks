@@ -32,6 +32,27 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_PreservesANonDefaultPalletDepth()
+        {
+            var design = SampleDesign();
+            design.PalletDepth = 42.0; // non-default fondo must survive the trip
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
+
+            Assert.Equal(42.0, restored.PalletDepth, 4);
+        }
+
+        [Fact]
+        public void ToDomain_LegacyDocumentWithoutFondo_FallsBackToTheDefault()
+        {
+            var document = SelectivePalletDesignDocument.From(SampleDesign(), "id", "n");
+            document.PalletDepth = 0.0; // documents older than the fondo field
+
+            Assert.Equal(SelectiveRackDefaults.DefaultPalletDepth, document.ToDomain().PalletDepth, 4);
+        }
+
+        [Fact]
         public void RoundTrip_PreservesIdentityAndEveryField()
         {
             var design = SampleDesign();

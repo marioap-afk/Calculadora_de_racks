@@ -117,6 +117,50 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Planta_LargueroPlacement_TroquelSlideAndBeamLength()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
+
+            var beams = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(i => i.Role == RackCad.Application.Headers.HeaderBlockRole.Beam)
+                .ToList();
+
+            var troquelEntry = Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "PLANTA");
+            var troquel = SelectivePostGeometry.Resolve(
+                troquelEntry, new System.Collections.Generic.Dictionary<string, double> { ["PERALTE"] = system.PostPeralte });
+            var frenteYs = SelectivePostGeometry.Compute(system, Catalog).PostXs;
+            var depth = system.PalletDepth;
+
+            // Front beam at the troquel X (slides with the post peralte via the PLANTA Y-slope), back mirrored
+            // at fondo - troquel.X; mate Y = frame position + troquel Y; LONGITUD = the bay's beam length.
+            Assert.Contains(beams, b => !b.MirroredX
+                && System.Math.Abs(b.Insertion.X - troquel.X) < 1e-6
+                && System.Math.Abs(b.Insertion.Y - (frenteYs[0] + troquel.Y)) < 1e-6);
+            Assert.Contains(beams, b => b.MirroredX && System.Math.Abs(b.Insertion.X - (depth - troquel.X)) < 1e-6);
+            Assert.All(beams, b => Assert.Equal(system.Bays[0].BeamLength, b.DynamicParameters["LONGITUD"], 3));
+        }
+
+        [Fact]
+        public void Planta_CustomPostCabecera_DrivesItsFramesPlate()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
+
+            var template = RackFrameTemplateCatalog.FindStandardOrDefault();
+            var custom = new RackFrameConfigurationFactory(Catalog).Build(template, PostId, 300.0, 48.0);
+            custom.LeftBasePlate.PeralteOverride = 9.0;
+            system.PostCabeceras[0] = custom;
+
+            var frenteYs = SelectivePostGeometry.Compute(system, Catalog).PostXs;
+            var plates = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(i => i.Role == RackCad.Application.Headers.HeaderBlockRole.BasePlate)
+                .ToList();
+
+            // The frame stacked at post 0's frente draws the CUSTOM cabecera, so its front plate carries the override.
+            Assert.Contains(plates, p => System.Math.Abs(p.ConnectionAnchor.Y - frenteYs[0]) < 1e-6
+                && p.DynamicParameters.TryGetValue("PERALTE", out var v) && System.Math.Abs(v - 9.0) < 1e-6);
+        }
+
+        [Fact]
         public void Cortes_IncludeLateralLargueros_FrontAndBack_AtEachLevelY()
         {
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);

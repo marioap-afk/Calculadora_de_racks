@@ -54,6 +54,25 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Read_ConnectionLayout_MapsBothSlopeColumns()
+        {
+            // The current connection-layout schema: paramX drives the X slope, paramY the Y slope. A rename
+            // that misses the model property silently drops the column (it broke the frontal troquel once).
+            var csv =
+                "pieceId,connectionPointId,view,localX,localXPorParam,paramX,localY,localYPorParam,paramY\n" +
+                "P1,TROQUEL_LARGUERO,PLANTA,0,0,,-0.75,0.5,PERALTE\n";
+
+            var entry = Assert.Single(CsvCatalogReader.Read<ConnectionLayoutEntry>(csv));
+
+            Assert.Equal(0.0, entry.LocalX);
+            Assert.Equal(0.0, entry.LocalXPorParam);
+            Assert.True(string.IsNullOrEmpty(entry.ParamX));
+            Assert.Equal(-0.75, entry.LocalY);
+            Assert.Equal(0.5, entry.LocalYPorParam);
+            Assert.Equal("PERALTE", entry.ParamY);
+        }
+
+        [Fact]
         public void ShippedViews_LoadFromCsv()
         {
             var views = JsonRackCatalogProvider.FromBaseDirectory().Load().Views;

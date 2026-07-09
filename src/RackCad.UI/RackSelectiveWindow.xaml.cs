@@ -619,24 +619,13 @@ namespace RackCad.UI
             else if (options.Count > 0) BeamPeralteCombo.SelectedIndex = 0;
         }
 
-        /// <summary>Allowed PERALTE values declared by a larguero (the catalog's ";"-separated list), formatted for display.</summary>
+        /// <summary>Allowed PERALTE values declared by a larguero (parsed by <see cref="PeralteList"/>), formatted for display.</summary>
         private List<string> PeralteOptions(string beamId)
         {
-            var options = new List<string>();
             var raw = catalog?.BeamProfiles.FirstOrDefault(b => string.Equals(b?.Id, beamId, StringComparison.OrdinalIgnoreCase))?.Peraltes;
-            if (!string.IsNullOrWhiteSpace(raw))
-            {
-                foreach (var part in raw.Split(';', ','))
-                {
-                    if (UiSupport.TryNum(part, out var value) && value > 0.0)
-                    {
-                        var text = value.ToString("0.###", CultureInfo.InvariantCulture);
-                        if (!options.Contains(text)) options.Add(text);
-                    }
-                }
-            }
-
-            return options;
+            return PeralteList.Parse(raw)
+                .Select(value => value.ToString("0.###", CultureInfo.InvariantCulture))
+                .ToList();
         }
 
         // ---- Events ----
