@@ -66,6 +66,28 @@ namespace RackCad.Application.Catalogs
             };
         }
 
+        /// <summary>
+        /// Reads a catalog CSV tolerating BOTH encodings Excel produces: UTF-8 (with or without BOM) and the
+        /// legacy ANSI (Windows-1252/Latin-1) that plain "CSV" saves use. Reading an ANSI file as UTF-8 turns
+        /// á/ñ into U+FFFD (the user sees "escal�n" in dropdowns), so we decode strictly as UTF-8 first and
+        /// fall back to Latin-1 — which maps every Spanish accented letter identically to Windows-1252.
+        /// </summary>
+        private static string ReadCsvText(string path)
+        {
+            var bytes = File.ReadAllBytes(path);
+            var offset = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF ? 3 : 0;
+
+            try
+            {
+                var strictUtf8 = new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+                return strictUtf8.GetString(bytes, offset, bytes.Length - offset);
+            }
+            catch (System.Text.DecoderFallbackException)
+            {
+                return System.Text.Encoding.Latin1.GetString(bytes, offset, bytes.Length - offset);
+            }
+        }
+
         private T ReadObject<T>(string fileName, T fallback)
         {
             var path = Path.Combine(_directory, fileName);
@@ -100,7 +122,7 @@ namespace RackCad.Application.Catalogs
 
             if (File.Exists(csvPath))
             {
-                var csv = File.ReadAllText(csvPath);
+                var csv = ReadCsvText(csvPath);
 
                 if (!string.IsNullOrWhiteSpace(csv))
                 {
