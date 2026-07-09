@@ -89,7 +89,8 @@ namespace RackCad.Plugin.Headers
                     document.Editor.Regen();
                 }
 
-                return new HeaderPlacementResult(true, true, null, Array.Empty<string>(), outcome);
+                // Report pieces skipped during the redraw too — an edit can lose blocks just like an insert.
+                return new HeaderPlacementResult(true, true, null, DescribeMissing(catalog, outcome), outcome);
             }
             catch (Exception ex)
             {
@@ -200,6 +201,14 @@ namespace RackCad.Plugin.Headers
             try
             {
                 var placedId = PlaceBlockWithJig(document, block.DefinitionId);
+
+                if (placedId.IsNull)
+                {
+                    // Cancelled placement: the fresh definition — with the rack payload already embedded —
+                    // would linger as a phantom view that RACKEDITAR's GUID scan finds and redraws. Remove it.
+                    EraseUnreferencedDefinition(document, block.DefinitionId);
+                }
+
                 return new HeaderPlacementResult(true, !placedId.IsNull, block.BlockName, DescribeMissing(catalog, block.Outcome), block.Outcome)
                 {
                     PlacedId = placedId
@@ -208,6 +217,37 @@ namespace RackCad.Plugin.Headers
             catch (Exception ex)
             {
                 return HeaderPlacementResult.Failure(ex.Message);
+            }
+        }
+
+        /// <summary>Erase a block DEFINITION nothing references (a cancelled insert's leftover). Best effort.</summary>
+        private static void EraseUnreferencedDefinition(Document document, ObjectId definitionId)
+        {
+            if (definitionId.IsNull)
+            {
+                return;
+            }
+
+            try
+            {
+                using (document.LockDocument())
+                using (var transaction = document.Database.TransactionManager.StartTransaction())
+                {
+                    var record = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
+                    var references = record.GetBlockReferenceIds(directOnly: true, forceValidity: false);
+
+                    if (references == null || references.Count == 0)
+                    {
+                        record.UpgradeOpen();
+                        record.Erase();
+                    }
+
+                    transaction.Commit();
+                }
+            }
+            catch
+            {
+                // Best effort: a leftover definition is preferable to failing the whole command here.
             }
         }
 
@@ -284,7 +324,8 @@ namespace RackCad.Plugin.Headers
                 configuration.Height);
         }
 
-        private static string[] DescribeMissing(RackCatalog catalog, LateralHeaderDrawOutcome outcome)
+        /// <summary>Human-readable lines for the pieces a draw skipped (shared by every draw service).</summary>
+        internal static string[] DescribeMissing(RackCatalog catalog, LateralHeaderDrawOutcome outcome)
         {
             var lines = new string[outcome.MissingInstances.Count];
 

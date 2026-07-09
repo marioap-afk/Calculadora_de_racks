@@ -77,7 +77,7 @@ namespace RackCad.Plugin.Systems
                     document.Editor.Regen();
                 }
 
-                return new HeaderPlacementResult(true, true, null, Array.Empty<string>(), outcome);
+                return new HeaderPlacementResult(true, true, null, LateralHeaderDrawService.DescribeMissing(catalog, outcome), outcome);
             }
             catch (Exception ex)
             {

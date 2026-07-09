@@ -228,7 +228,7 @@ namespace RackCad.Plugin
 
                 var payload = BuildDynamicPayload(system, System.Guid.NewGuid().ToString(), null);
                 var result = new DynamicSystemDrawService().DrawAndPlace(document, system, payload);
-                document.Editor.WriteMessage("\n" + Describe(result));
+                document.Editor.WriteMessage("\n" + DescribeSystem(result));
             }
             catch (System.Exception ex)
             {
@@ -458,7 +458,34 @@ namespace RackCad.Plugin
             }
 
             var result = new DynamicSystemDrawService().DrawAndPlace(document, system, payloadJson, rackName);
-            document.Editor.WriteMessage("\n" + Describe(result));
+            document.Editor.WriteMessage("\n" + DescribeSystem(result));
+        }
+
+        /// <summary>Summary for a dynamic-system insert: right noun, no celosia counts (a system block has none).</summary>
+        private static string DescribeSystem(HeaderPlacementResult result)
+        {
+            if (!result.Success)
+            {
+                return "RackCad: no se pudo dibujar el sistema. " + result.ErrorMessage;
+            }
+
+            if (!result.Placed)
+            {
+                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
+            }
+
+            var summary = string.Format(
+                CultureInfo.InvariantCulture,
+                "RackCad: sistema insertado como bloque '{0}'. {1} piezas.",
+                result.BlockName,
+                result.Outcome.InsertedCount);
+
+            if (result.HasMissingBlocks)
+            {
+                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
+            }
+
+            return summary;
         }
 
         private static string Describe(HeaderPlacementResult result)
@@ -924,7 +951,9 @@ namespace RackCad.Plugin
 
             // Ask WHICH post's corte to insert (1-based, matching the frontal preview numbers).
             var postCount = system.Bays.Count + 1;
-            var options = new PromptIntegerOptions("\n¿Qué corte lateral insertar (número de poste)?")
+            // Sin acentos: los mensajes de línea de comandos de AutoCAD evitan acentos en todo el plugin
+            // (riesgo de mojibake en consolas no-Unicode); solo la UI WPF los lleva.
+            var options = new PromptIntegerOptions("\nQue corte lateral insertar (numero de poste)?")
             {
                 LowerLimit = 1,
                 UpperLimit = postCount,
