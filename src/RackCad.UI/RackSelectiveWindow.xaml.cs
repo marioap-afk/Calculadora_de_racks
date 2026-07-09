@@ -663,6 +663,8 @@ namespace RackCad.UI
 
         private void InsertLateral_Click(object sender, RoutedEventArgs e) => RequestInsert(RackEmbedDocument.ViewLateral);
 
+        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => RequestInsert(RackEmbedDocument.ViewPlanta);
+
         private void RequestInsert(string view)
         {
             if (!canInsertInAutoCad)
@@ -671,15 +673,15 @@ namespace RackCad.UI
                 return;
             }
 
-            // The lateral is a view OF the system: it must link to an existing frontal. Inserting it on a brand-new
-            // rack would leave it orphaned, so require inserting the frontal first and adding the lateral via RACKEDITAR.
-            if (view == RackEmbedDocument.ViewLateral && !isEditingExisting)
+            // The lateral/planta are views OF the system: they must link to an existing frontal. Inserting one on a
+            // brand-new rack would orphan it, so require inserting the frontal first and adding it via RACKEDITAR.
+            if ((view == RackEmbedDocument.ViewLateral || view == RackEmbedDocument.ViewPlanta) && !isEditingExisting)
             {
                 MessageBox.Show(
                     this,
-                    "Primero inserta la vista frontal. Luego selecciónala con RACKEDITAR y desde ahí agrega la vista "
-                        + "lateral: así queda ligada al sistema (si la insertas sola quedaría huérfana).",
-                    "Vista lateral",
+                    "Primero inserta la vista frontal. Luego selecciónala con RACKEDITAR y desde ahí agrega esta vista: "
+                        + "así queda ligada al sistema (si la insertas sola quedaría huérfana).",
+                    "Vista " + view,
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;

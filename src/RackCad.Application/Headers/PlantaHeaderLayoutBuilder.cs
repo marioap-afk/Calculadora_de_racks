@@ -29,7 +29,11 @@ namespace RackCad.Application.Headers
         private const string LengthParam = "LONGITUD";
         private const string PeralteParam = "PERALTE";
 
-        public IReadOnlyList<HeaderBlockInstance> Build(RackFrameConfiguration config, RackCatalog catalog)
+        /// <summary>
+        /// The cabecera's planta instances. <paramref name="origin"/> shifts the whole frame (used by the selective
+        /// planta to stack one frame per frente along Y); default is the frame's own origin.
+        /// </summary>
+        public IReadOnlyList<HeaderBlockInstance> Build(RackFrameConfiguration config, RackCatalog catalog, Point2D origin = default)
         {
             var instances = new List<HeaderBlockInstance>();
             if (config == null)
@@ -59,8 +63,8 @@ namespace RackCad.Application.Headers
             var troquelInset = Local(catalog, postId, TroquelCelosiaPoint, LateralView).X;
             var celosiaY = Local(catalog, postId, TroquelCelosiaPoint, View).Y;
 
-            var front = new Point2D(0.0, 0.0);
-            var back = new Point2D(depth, 0.0);
+            var front = new Point2D(origin.X, origin.Y);
+            var back = new Point2D(origin.X + depth, origin.Y);
 
             // Post footprints + plates. The _PLANTA block already carries the right base orientation (rotated in the
             // library); here we only MIRROR the back one so both omegas open inward.
@@ -74,7 +78,7 @@ namespace RackCad.Application.Headers
             var longitud = depth - 2.0 * (troquelInset - celosia.X);
             if (longitud > 1e-6 && !string.IsNullOrWhiteSpace(trussBlock))
             {
-                var anchor = new Point2D(troquelInset, celosiaY);
+                var anchor = new Point2D(origin.X + troquelInset, origin.Y + celosiaY);
                 var beam = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Horizontal,

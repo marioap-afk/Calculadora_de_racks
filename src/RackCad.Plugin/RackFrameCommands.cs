@@ -657,11 +657,13 @@ namespace RackCad.Plugin
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
 
             var blocks = FindRackBlocks(document, id);
-            var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed)).Select(b => b.BlockId).ToList();
+            var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
             var lateralBlocks = blocks.Where(b => IsLateralView(b.Embed)).OrderBy(b => b.Embed.Section).ToList();
+            var plantaBlocks = blocks.Where(b => IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
 
             // The clicked block might not carry the GUID scan (defensive): make sure the selected one is handled.
-            if (frontalBlocks.Count == 0 && lateralBlocks.All(b => b.BlockId != blockId) && !IsLateralView(embed))
+            if (frontalBlocks.Count == 0 && lateralBlocks.All(b => b.BlockId != blockId) && !plantaBlocks.Contains(blockId)
+                && !IsLateralView(embed) && !IsPlantaView(embed))
             {
                 frontalBlocks.Add(blockId);
             }
@@ -700,18 +702,42 @@ namespace RackCad.Plugin
                 }
             }
 
+            // Redraw the planta block(s) in place (one block for the whole top view).
+            var updatedPlanta = 0;
+            foreach (var plantaId in plantaBlocks)
+            {
+                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta);
+                var r = new SelectivePlantaDrawService().RedrawInPlace(document, plantaId, system, payload);
+                if (r != null && r.Success)
+                {
+                    updatedPlanta++;
+                }
+            }
+
             // If the user asked to insert a lateral, ask which corte and add it (tied to this GUID); the existing
-            // sections were already redrawn above.
+            // views were already redrawn above.
             if (window.InsertView == RackEmbedDocument.ViewLateral)
             {
                 InsertSelectiveLateralSection(document, system, design, id, name);
                 return;
             }
 
-            editor.WriteMessage(updatedFrontal + updatedLateral > 0
-                ? "\nRackCad: sistema actualizado; frontal y lateral se redibujaron (frontal x"
-                    + updatedFrontal.ToString(CultureInfo.InvariantCulture) + ", secciones laterales x"
-                    + updatedLateral.ToString(CultureInfo.InvariantCulture) + ")."
+            // The planta is one block for the whole top view; insert it if requested and none exists yet.
+            if (window.InsertView == RackEmbedDocument.ViewPlanta && plantaBlocks.Count == 0)
+            {
+                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta);
+                var inserted = new SelectivePlantaDrawService().DrawAndPlace(document, system, payload, name);
+                editor.WriteMessage(inserted != null && inserted.Success
+                    ? "\nRackCad: vista planta insertada y ligada al sistema; RACKEDITAR redibuja todas las vistas."
+                    : "\nRackCad: no se pudo insertar la planta. " + (inserted?.ErrorMessage ?? string.Empty));
+                return;
+            }
+
+            editor.WriteMessage(updatedFrontal + updatedLateral + updatedPlanta > 0
+                ? "\nRackCad: sistema actualizado; sus vistas se redibujaron (frontal x"
+                    + updatedFrontal.ToString(CultureInfo.InvariantCulture) + ", lateral x"
+                    + updatedLateral.ToString(CultureInfo.InvariantCulture) + ", planta x"
+                    + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
                 : "\nRackCad: no se pudo actualizar el rack.");
         }
 
@@ -857,6 +883,14 @@ namespace RackCad.Plugin
             if (view == RackEmbedDocument.ViewLateral)
             {
                 InsertSelectiveLateralSection(document, system, design, id, name);
+                return;
+            }
+
+            if (view == RackEmbedDocument.ViewPlanta)
+            {
+                var plantaPayload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta);
+                var plantaResult = new SelectivePlantaDrawService().DrawAndPlace(document, system, plantaPayload, name);
+                document.Editor.WriteMessage("\n" + DescribeSelective(plantaResult));
                 return;
             }
 

@@ -165,15 +165,25 @@ namespace RackCad.Application.Catalogs
         public double LocalY { get; set; }
 
         /// <summary>
-        /// Slope: X moves this much per unit of the parameter named in <see cref="Param"/> (Y stays fixed).
-        /// So <c>X = LocalX + LocalXPorParam * value(Param)</c>. 0 = a fixed point (the default for every
+        /// Slope: X moves this much per unit of the parameter named in <see cref="ParamX"/>.
+        /// So <c>X = LocalX + LocalXPorParam * value(ParamX)</c>. 0 = a fixed point (the default for every
         /// existing/centered mate). Lets a point that slides when a block parameter changes (e.g. the post's
         /// larguero troquel moving with PERALTE) be captured as data instead of a per-value row.
         /// </summary>
         public double LocalXPorParam { get; set; }
 
         /// <summary>Name of the block parameter that drives the X slope (e.g. "PERALTE"); empty when fixed.</summary>
-        public string Param { get; set; }
+        public string ParamX { get; set; }
+
+        /// <summary>
+        /// Slope: Y moves this much per unit of the parameter named in <see cref="ParamY"/>.
+        /// So <c>Y = LocalY + LocalYPorParam * value(ParamY)</c>. Needed in views where a mate slides vertically
+        /// with a parameter (e.g. the post's larguero troquel in PLANTA, whose depth position grows with PERALTE).
+        /// </summary>
+        public double LocalYPorParam { get; set; }
+
+        /// <summary>Name of the block parameter that drives the Y slope (e.g. "PERALTE"); empty when fixed.</summary>
+        public string ParamY { get; set; }
     }
 
     /// <summary>

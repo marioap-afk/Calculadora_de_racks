@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Geometry;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
@@ -53,7 +54,15 @@ namespace RackCad.Application.Systems
             return ResolveX(entry, beamParams);
         }
 
-        /// <summary>X of a connection point resolved for the given block parameters (X = localX + slope*param).</summary>
+        /// <summary>Resolve a connection point to (X,Y) for the given block parameters, applying both slopes.</summary>
+        public static Point2D Resolve(ConnectionLayoutEntry entry, IReadOnlyDictionary<string, double> parameters)
+        {
+            return entry == null
+                ? new Point2D(0.0, 0.0)
+                : new Point2D(ResolveX(entry, parameters), ResolveY(entry, parameters));
+        }
+
+        /// <summary>X of a connection point resolved for the given block parameters (X = localX + slope*paramX).</summary>
         private static double ResolveX(ConnectionLayoutEntry entry, IReadOnlyDictionary<string, double> parameters)
         {
             if (entry == null)
@@ -62,13 +71,31 @@ namespace RackCad.Application.Systems
             }
 
             var x = entry.LocalX;
-            if (entry.LocalXPorParam != 0.0 && !string.IsNullOrWhiteSpace(entry.Param)
-                && parameters != null && parameters.TryGetValue(entry.Param, out var value))
+            if (entry.LocalXPorParam != 0.0 && !string.IsNullOrWhiteSpace(entry.ParamX)
+                && parameters != null && parameters.TryGetValue(entry.ParamX, out var value))
             {
                 x += entry.LocalXPorParam * value;
             }
 
             return x;
+        }
+
+        /// <summary>Y of a connection point resolved for the given block parameters (Y = localY + slope*paramY).</summary>
+        private static double ResolveY(ConnectionLayoutEntry entry, IReadOnlyDictionary<string, double> parameters)
+        {
+            if (entry == null)
+            {
+                return 0.0;
+            }
+
+            var y = entry.LocalY;
+            if (entry.LocalYPorParam != 0.0 && !string.IsNullOrWhiteSpace(entry.ParamY)
+                && parameters != null && parameters.TryGetValue(entry.ParamY, out var value))
+            {
+                y += entry.LocalYPorParam * value;
+            }
+
+            return y;
         }
     }
 

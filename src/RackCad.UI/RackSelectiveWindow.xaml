@@ -211,6 +211,8 @@
                     ToolTip="Dibuja la VISTA FRONTAL del selectivo (postes + largueros) en el dibujo activo." Click="InsertFrontal_Click" />
             <Button Content="Insertar lateral" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTip="Dibuja la VISTA LATERAL (cada poste como su cabecera). Comparte identidad con la frontal (mismo GUID)." Click="InsertLateral_Click" />
+            <Button Content="Insertar planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+                    ToolTip="Dibuja la VISTA PLANTA (superior): un marco por frente + largueros. Insértala editando la frontal (RACKEDITAR)." Click="InsertPlanta_Click" />
             <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />
         </StackPanel>
     </Grid>

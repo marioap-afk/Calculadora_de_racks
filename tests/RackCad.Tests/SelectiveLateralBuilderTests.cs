@@ -77,6 +77,25 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Planta_OneFramePerPost_PlusFrontAndBackLargueroPerBay()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
+
+            var instances = new SelectivePlantaBuilder().Build(system, Catalog);
+
+            var posts = instances.Count(i => i.Role == HeaderBlockRole.Post);
+            var beams = instances.Count(i => i.Role == HeaderBlockRole.Beam);
+
+            Assert.Equal(2 * (system.Bays.Count + 1), posts); // 2 posts (front+back) per frame, N+1 frames
+            Assert.Equal(2 * system.Bays.Count, beams);       // a front + a back larguero per bay
+
+            // Frames are stacked along Y at the frente positions; each larguero carries the beam LONGITUD.
+            var frenteYs = SelectivePostGeometry.Compute(system, Catalog).PostXs;
+            var framePosts = instances.Where(i => i.Role == HeaderBlockRole.Post).Select(i => i.Insertion.Y).Distinct().ToList();
+            Assert.All(frenteYs, y => Assert.Contains(framePosts, py => System.Math.Abs(py - y) < 1e-6));
+        }
+
+        [Fact]
         public void Cortes_IncludeLateralLargueros_FrontAndBack_AtEachLevelY()
         {
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
