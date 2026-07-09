@@ -1223,32 +1223,6 @@ namespace RackCad.UI
 
         private void EnsureModernConfiguration()
         {
-            if (Configuration.Horizontals.Count == 0 && Configuration.BracingSegments.Count > 0)
-            {
-                var elevations = Configuration.BracingSegments
-                    .SelectMany(segment => new[] { segment.StartElevation, segment.EndElevation })
-                    .Distinct()
-                    .OrderBy(elevation => elevation)
-                    .ToList();
-
-                for (var index = 0; index < elevations.Count; index++)
-                {
-                    Configuration.Horizontals.Add(new FrameHorizontal
-                    {
-                        Id = "H" + (index + 1).ToString(CultureInfo.InvariantCulture),
-                        Number = index + 1,
-                        Elevation = elevations[index],
-                        // Always the real catalog profile: "HORIZONTAL_INFERIOR/SUPERIOR" never existed in the
-                        // catalogs, so those migrated horizontals could not resolve a block or a BOM description.
-                        ProfileId = defaultHorizontalProfileId,
-                        Quantity = index == 0 ? 2 : 1,
-                        MountingFace = FrameSide.Front,
-                        State = FrameComponentState.Standard,
-                        IsStandard = true
-                    });
-                }
-            }
-
             if (Configuration.BracingPanels.Count == 0)
             {
                 GeneratePanelsFromHorizontals(new Dictionary<string, BracingPanel>());
@@ -1787,7 +1761,6 @@ namespace RackCad.UI
 
             AddAssemblyExceptions();
             RebuildExceptionGroups();
-            Configuration.UpdatedAt = DateTime.UtcNow;
             OnPropertyChanged(nameof(ExceptionSummary));
         }
 
@@ -1979,7 +1952,6 @@ namespace RackCad.UI
 
             var clone = new RackFrameConfiguration
             {
-                FrameId = source.FrameId,
                 Name = source.Name,
                 Units = source.Units,
                 Height = source.Height,
@@ -1990,8 +1962,6 @@ namespace RackCad.UI
                 RightPost = ClonePost(source.RightPost),
                 LeftBasePlate = CloneBasePlate(source.LeftBasePlate),
                 RightBasePlate = CloneBasePlate(source.RightBasePlate),
-                CreatedAt = source.CreatedAt,
-                UpdatedAt = source.UpdatedAt,
                 // Celosía parameters drive the lateral geometry — dropping them on clone silently reset
                 // reopened projects to defaults.
                 CelosiaStartTroquel = source.CelosiaStartTroquel,
@@ -2006,11 +1976,6 @@ namespace RackCad.UI
             foreach (var horizontal in source.Horizontals)
             {
                 clone.Horizontals.Add(CloneHorizontal(horizontal));
-            }
-
-            foreach (var segment in source.BracingSegments)
-            {
-                clone.BracingSegments.Add(CloneBracingSegment(segment));
             }
 
             foreach (var panel in source.BracingPanels)
@@ -2038,7 +2003,6 @@ namespace RackCad.UI
                 return;
             }
 
-            target.FrameId = source.FrameId;
             target.Name = source.Name;
             target.Units = source.Units;
             target.Height = source.Height;
@@ -2049,8 +2013,6 @@ namespace RackCad.UI
             target.RightPost = ClonePost(source.RightPost);
             target.LeftBasePlate = CloneBasePlate(source.LeftBasePlate);
             target.RightBasePlate = CloneBasePlate(source.RightBasePlate);
-            target.CreatedAt = source.CreatedAt;
-            target.UpdatedAt = DateTime.UtcNow;
             // Celosía parameters drive the lateral geometry — dropping them here silently reset
             // reopened projects to defaults.
             target.CelosiaStartTroquel = source.CelosiaStartTroquel;
@@ -2062,7 +2024,6 @@ namespace RackCad.UI
             target.PanelClear = source.PanelClear;
 
             target.Horizontals.Clear();
-            target.BracingSegments.Clear();
             target.BracingPanels.Clear();
             target.Members.Clear();
             target.Exceptions.Clear();
@@ -2070,11 +2031,6 @@ namespace RackCad.UI
             foreach (var horizontal in source.Horizontals)
             {
                 target.Horizontals.Add(CloneHorizontal(horizontal));
-            }
-
-            foreach (var segment in source.BracingSegments)
-            {
-                target.BracingSegments.Add(CloneBracingSegment(segment));
             }
 
             foreach (var panel in source.BracingPanels)
@@ -2164,28 +2120,6 @@ namespace RackCad.UI
             };
         }
 
-        private static BracingSegment CloneBracingSegment(BracingSegment source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new BracingSegment
-            {
-                Index = source.Index,
-                StartElevation = source.StartElevation,
-                EndElevation = source.EndElevation,
-                ClearHeight = source.ClearHeight,
-                Pattern = source.Pattern,
-                SideMode = source.SideMode,
-                BraceProfileId = source.BraceProfileId,
-                StartConnectionPointId = source.StartConnectionPointId,
-                EndConnectionPointId = source.EndConnectionPointId,
-                IsException = source.IsException
-            };
-        }
-
         private static BracingPanel CloneBracingPanel(BracingPanel source)
         {
             if (source == null)
@@ -2228,14 +2162,12 @@ namespace RackCad.UI
 
             return new FrameMember
             {
-                MemberId = source.MemberId,
                 SourcePanelId = source.SourcePanelId,
                 SourcePanelIndex = source.SourcePanelIndex,
                 MemberType = source.MemberType,
                 CatalogId = source.CatalogId,
                 ProfileId = source.ProfileId,
                 Quantity = source.Quantity,
-                PositionRatio = source.PositionRatio,
                 MountingFace = source.MountingFace,
                 Origin = source.Origin,
                 Start = CloneFrameMemberEnd(source.Start),

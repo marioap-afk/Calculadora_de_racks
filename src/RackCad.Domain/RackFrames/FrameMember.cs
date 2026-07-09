@@ -1,26 +1,21 @@
-using System;
-
 namespace RackCad.Domain.RackFrames
 {
     public sealed class FrameMember
     {
         public FrameMember()
         {
-            MemberId = Guid.NewGuid();
             Quantity = 1;
             Origin = FrameMemberOrigin.Standard;
             Start = new FrameMemberEnd();
             End = new FrameMemberEnd();
         }
 
-        public Guid MemberId { get; set; }
         public string SourcePanelId { get; set; }
         public int SourcePanelIndex { get; set; }
         public FrameMemberType MemberType { get; set; }
         public string CatalogId { get; set; }
         public string ProfileId { get; set; }
         public int Quantity { get; set; }
-        public double PositionRatio { get; set; }
         public FrameSide MountingFace { get; set; }
         public FrameMemberOrigin Origin { get; set; }
         public FrameMemberEnd Start { get; set; }

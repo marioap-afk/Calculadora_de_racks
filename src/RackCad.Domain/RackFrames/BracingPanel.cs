@@ -24,17 +24,7 @@ namespace RackCad.Domain.RackFrames
         public double ClearHeight => EndElevation - StartElevation;
         public BracingPattern Arrangement { get; set; }
         public FrameSide MountingFace { get; set; }
-        public FrameSide SideMode
-        {
-            get => MountingFace;
-            set => MountingFace = value;
-        }
         public string DiagonalProfileId { get; set; }
-        public string DefaultMemberProfileId
-        {
-            get => DiagonalProfileId;
-            set => DiagonalProfileId = value;
-        }
         public DiagonalDirection DiagonalDirection { get; set; }
         public string StartConnectionPointId { get; set; }
         public string EndConnectionPointId { get; set; }

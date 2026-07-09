@@ -97,7 +97,6 @@ namespace RackCad.Application.RackFrames
                 horizontal.State == FrameComponentState.Standard ? FrameMemberOrigin.Standard : FrameMemberOrigin.Manual);
 
             member.Quantity = Math.Max(1, horizontal.Quantity);
-            member.PositionRatio = 0.0;
             return member;
         }
 
@@ -308,7 +307,6 @@ namespace RackCad.Application.RackFrames
                 CatalogId = NormalizeText(profileId),
                 ProfileId = NormalizeText(profileId),
                 Quantity = 1,
-                PositionRatio = 0.0,
                 MountingFace = face,
                 Origin = origin,
                 Start = start,
