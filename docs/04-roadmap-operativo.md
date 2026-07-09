@@ -2,8 +2,8 @@
 
 RackCad ya no es "solo un configurador de cabeceras": es un plugin de AutoCAD
 (.NET, `net8.0-windows`, WPF) que diseña, dibuja y **edita en sitio** cuatro tipos
-de rack. La mayoria de las fases originales de este roadmap ya estan cerradas; lo
-que queda vivo es el refinamiento continuo y **la vista lateral del selectivo**.
+de rack. Las fases originales de este roadmap ya estan cerradas (incluidas las
+vistas lateral y planta del selectivo); lo que queda vivo es el refinamiento continuo.
 
 Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 
@@ -33,14 +33,14 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 - `RackSelectiveWindow`: matriz **FRENTES x niveles** (el termino es "frente",
   no "bahia"). Cada celda = tarima (frente/alto) + tarimas por nivel + larguero +
   peralte de larguero (combo desde la lista `peraltes` del catalogo).
-- Geometria en `SelectiveGeometryResolver` + `SelectiveFrontalBuilder`: largueros por
+- Geometria en `SelectiveGeometryResolver` + builders frontal/lateral/planta: largueros por
   troquel, claro/separacion por tarima + holgura, altura por frente medida desde el
   escalon (1/3 de la tarima superior), datum de PISO en Y=0, "larguero a piso" por
   frente (elevacion editable). Overrides manuales opcionales (vacio = auto): longitud
   de larguero y claro por celda, altura por frente, elevacion de larguero a piso.
 - Cada poste (N frentes -> N+1 postes) puede referenciar una **cabecera por poste**
   (`RackFrameConfiguration` embebida) de la que sale su placa/peralte; en la vista
-  frontal se usa la placa, y es la base para la futura vista lateral.
+  frontal se usa la placa, y de ella sale el corte lateral de ese poste.
 - BOM: `SelectiveBomBuilder` + `RackBomWindow` (postes, placas, largueros, mensulas;
   grid + export CSV).
 - Comando `RACKSELECTIVO`.
@@ -49,8 +49,10 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 
 - Cada rack dibujado = una definicion de bloque; las copias son referencias a ella.
 - En la **definicion** del bloque se embebe (extension dictionary, Xrecord troceado
-  <=255) un sobre unificado `RackEmbedDocument { Kind, Id (GUID), Name, Design }`.
-  Kinds: `selective`, `dynamic`, `cabecera`, `cama`.
+  <=255) un sobre unificado `RackEmbedDocument { SchemaVersion, Kind, View, Section,
+  Id (GUID), Name, Design }`. Kinds: `selective`, `dynamic`, `cabecera`, `cama`;
+  views: `frontal`, `lateral`, `planta` (`Section` = indice de corte lateral del
+  selectivo; -1 = vista no seccionada).
 - Comando `RACKEDITAR`: selecciona un rack -> lee el sobre -> **despacha por Kind** ->
   reabre el editor correcto precargado (`LoadExisting`) -> al confirmar **redefine la
   definicion en sitio** (`RedefineSystemBlock` + Regen) => todas las copias se
@@ -67,18 +69,29 @@ Cargados por `JsonRackCatalogProvider` a `RackCatalog` desde `assets/catalogs/*.
 celosia: horizontales + diagonales), `beam-profiles` (largueros; columna `peraltes` =
 valores permitidos, FK a mensula), `mensulas`, `base-plates` (peralteBase /
 peraltePorPeraltePoste -> `StandardPeralte`), `connection-points` + `connection-layout`
-(X = localX + slope * param), `blocks`, `views`, `flow-bed-profiles`, `spacers-profiles`.
+(por vista, X e Y: local + localPorParam * valor(param)), `blocks`, `views`,
+`flow-bed-profiles`, `spacers-profiles`. Excel-first: el `.csv` gana sobre el `.json`,
+acepta UTF-8 y ANSI, y la cache se invalida por firma de archivos (editar el CSV y
+relanzar el comando recarga).
 Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 
-## Proximo - vista lateral del selectivo (Fase 5)
+### Vistas lateral y planta del selectivo (Fase 5, cerrada)
 
-Objetivo: dibujar el selectivo tambien en vista **LATERAL** (hoy solo hay frontal;
-la lateral existe para cabecera / dinamico / cama).
+El selectivo se dibuja hoy en **TRES vistas** ligadas por el mismo GUID:
 
-- Desplegar cada poste como su cabecera completa (2 postes + placas + celosia),
-  reutilizando la `RackFrameConfiguration` por poste ya embebida.
-- Enlazar frontal y lateral por el **mismo GUID** para round-trip coherente.
-- Integrarse con `RACKEDITAR` sin mover copias.
+- **Frontal**: un bloque (postes + placas + largueros por nivel).
+- **Lateral**: cortes **por poste** — un bloque por poste; cada corte es la
+  cabecera de ese poste en perfil + las secciones de largueros frente/atras por
+  nivel. Al insertar se pregunta que corte (por numero de poste) y se coloca con jig.
+- **Planta**: un bloque (una cabecera-planta por frente apilada en Y + largueros
+  frente/atras por bahia a lo largo de Y; X = fondo, Y = frente).
+
+Las vistas lateral/planta solo se insertan desde `RACKEDITAR` de una vista
+existente (los botones se deshabilitan con tooltip si no aplica), asi nunca
+quedan huerfanas. `RACKEDITAR` sobre cualquier vista reabre el editor del sistema
+completo y al confirmar redibuja **todas** las vistas (encontradas por GUID
+escaneando las definiciones de bloque). La cabecera, por su parte, tiene vistas
+lateral y planta ligadas igual; dinamico y cama dibujan lateral.
 
 ## Refinamientos pendientes (menores, en curso)
 

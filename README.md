@@ -22,7 +22,7 @@ Cada tipo tiene su ventana editora WPF, su servicio de dibujo en AutoCAD y su ro
 | **Cabecera (marco)** | `RackFrameConfiguratorWindow` | Un marco = 2 postes + placas base + celosia. Horizontales = fuente de verdad; paneles derivados. Configuracion rapida ("Insertar" en un clic) + editor avanzado (horizontales, paneles, perfiles, refuerzo de poste, excepciones). El peralte de la placa base es editable por placa (`BasePlatePlacement.PeralteOverride`; null = derivado con `StandardPeralte`). |
 | **Sistema dinamico (pallet flow)** | `RackDynamicSystemWindow` | Vista lateral del sistema completo: cabeceras a lo largo del tramo (celosia espejeada) como bloques anidados compartidos, separadores por nivel, postes derivados con refuerzo opcional, altura de cabecera automatica desde la carga, presets por modulo, BOM. |
 | **Cama de rodamiento (flow bed)** | `RackFlowBedWindow` | Riel (LONGITUD parametrica), tope, rodillos al paso minimo por diametro y frenos segun fondo de tarima; tipo dinamica o pushback (sin frenos). Ventana con vista previa o comando rapido. |
-| **Selectivo (editor avanzado pallet-driven)** | `RackSelectiveWindow` | Vista frontal. Matriz **frentes x niveles**; cada celda = tarima (frente/alto) + tarimas por nivel + larguero + peralte de larguero. Geometria en `SelectiveGeometryResolver` (largueros por troquel, claro por tarima+holgura, altura por frente desde el escalon, datum de piso en Y=0, larguero a piso por frente). Overrides manuales opcionales por celda (vacio = auto). Cada poste (N frentes -> N+1 postes) puede referenciar una cabecera embebida de la que sale su placa/peralte. BOM (postes, placas, largueros, mensulas) con `SelectiveBomBuilder` + `RackBomWindow` (grid + export CSV). |
+| **Selectivo (editor avanzado pallet-driven)** | `RackSelectiveWindow` | Vistas frontal, lateral (cortes por poste) y planta, ligadas por GUID. Matriz **frentes x niveles**; cada celda = tarima (frente/alto) + tarimas por nivel + larguero + peralte de larguero. Geometria en `SelectiveGeometryResolver` (largueros por troquel, claro por tarima+holgura, altura por frente desde el escalon, datum de piso en Y=0, larguero a piso por frente). Overrides manuales opcionales por celda (vacio = auto). Cada poste (N frentes -> N+1 postes) puede referenciar una cabecera embebida de la que sale su placa/peralte. BOM (postes, placas, largueros, mensulas) con `SelectiveBomBuilder` + `RackBomWindow` (grid + export CSV). |
 
 ## Comandos
 
@@ -42,7 +42,7 @@ RACKEDITAR              (selecciona un rack dibujado y reabre su editor precarga
 Los cuatro tipos comparten la misma logica reutilizable de identidad y edicion en sitio:
 
 - Cada rack dibujado es **una** definicion de bloque; las copias son referencias a ella.
-- En la **definicion** del bloque se embebe (diccionario de extension, `Xrecord` troceado en fragmentos <=255 chars) un sobre unificado `RackEmbedDocument { Kind, Id (GUID), Name, Design (JSON del diseno) }`. `Kind` es uno de `selective`, `dynamic`, `cabecera`, `cama`.
+- En la **definicion** del bloque se embebe (diccionario de extension, `Xrecord` troceado en fragmentos <=255 chars) un sobre unificado `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON del diseno) }`. `Kind` es uno de `selective`, `dynamic`, `cabecera`, `cama`; `View` es `frontal`, `lateral` o `planta`; `Section` es el indice de corte lateral del selectivo (-1 = vista no seccionada).
 - `RACKEDITAR` lee el sobre del bloque seleccionado, **despacha por `Kind`** y reabre el editor correcto precargado (`LoadExisting`). Al confirmar, **redefine la definicion en sitio** (`RedefineSystemBlock` + `Regen`): todas las copias se actualizan a la vez y ninguna se mueve.
 - El nombre "Rack A" (campo en cada editor) es el nombre del bloque; el GUID va en el sobre para evitar colisiones.
 - Stores del diseno por tipo: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera), `FlowBedConfigurationStore` (cama).
@@ -82,7 +82,7 @@ Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CS
 - `flow-bed-profiles.csv` (cama de rodamiento: riel/rodillo/freno/tope, columna `role`)
 - `connection-points.csv`
 - `views.csv`
-- `connection-layout.csv` (posicion 2D de cada punto por pieza y vista; X = localX + slope*param)
+- `connection-layout.csv` (posicion 2D de cada punto por pieza y vista; X = localX + localXPorParam*valor(paramX), Y = localY + localYPorParam*valor(paramY))
 - `blocks.csv` (nombre de bloque de AutoCAD por pieza y vista)
 - `defaults.json`
 - `header-templates.json`
@@ -124,13 +124,14 @@ Documentos historicos/especificacion amplia:
 
 ## Vistas
 
-- **Frontal**: selectivo.
-- **Lateral**: cabecera, sistema dinamico y cama de rodamiento.
+- **Selectivo**: frontal, lateral y planta, ligadas por el mismo GUID. La frontal es un bloque (postes + placas + largueros por nivel). La lateral son cortes: un bloque por poste (la cabecera del poste en perfil + las secciones de largueros frente/atras por nivel); al insertar se pregunta que corte por numero de poste y se coloca con jig. La planta es un bloque (una cabecera-planta por frente apilada en Y + largueros frente/atras por bahia; X = fondo, Y = frente).
+- **Cabecera**: lateral y planta, ligadas por GUID (planta = 2 huellas de poste + placas + celosia colapsada a un miembro con longitud = A-corte del travesano).
+- **Sistema dinamico y cama de rodamiento**: lateral.
+
+Las vistas lateral/planta solo se insertan desde `RACKEDITAR` de una vista frontal/lateral existente (los botones se deshabilitan con tooltip si no aplica), para que nunca queden huerfanas. `RACKEDITAR` sobre cualquier vista reabre el editor del sistema completo y al confirmar redibuja todas las vistas (encontradas por GUID escaneando las definiciones de bloque).
 
 ## Fuera de alcance actualmente
 
-- Vista **lateral del selectivo** (Fase 5 pendiente): cada poste desplegado como su cabecera completa, enlazado por el mismo GUID.
-- Dibujo de la vista de planta.
 - Calculo de rodillos/frenos por capacidad (hoy paso minimo por diametro + freno por fondo de tarima; las reglas de capacidad estan definidas para una fase futura).
 - Integracion de la cama de rodamiento dentro del dibujo del sistema dinamico.
 - SQLite.

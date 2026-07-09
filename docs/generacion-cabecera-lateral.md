@@ -8,11 +8,13 @@ y selectivo); el **mismo patrón por bloques + round-trip** descrito aquí sirve
 [Patrón unificado](#patrón-unificado-block-based--round-trip-para-los-4-tipos)).
 
 > **Estado:** la **lógica pura** y el **dibujo en AutoCAD** de la cabecera lateral ya están implementados y
-> compilan en Windows (~200 tests verdes). Los comandos `RACKCABECERA` / `RACKCABECERALATERAL` /
+> compilan en Windows (232 tests verdes). Los comandos `RACKCABECERA` / `RACKCABECERALATERAL` /
 > `QUICKCABECERA` y el botón **Insertar en AutoCAD** del configurador dibujan la cabecera como **un bloque**;
-> `RACKEDITAR` la reabre y la **redefine en sitio** para que todas las copias se actualicen a la vez. Lo único
-> que resta es del lado del **dibujo (DWG)**: **modelar los bloques dinámicos** (poste con `LONGITUD`,
-> travesaños con `Distancia1`) en la biblioteca `blocks-library.dwg` y la verificación visual. Ver la
+> `RACKEDITAR` la reabre y la **redefine en sitio** para que todas las copias se actualicen a la vez. La
+> cabecera tiene además una vista **PLANTA** ligada por GUID a la lateral (solo se inserta desde `RACKEDITAR`
+> de una vista existente, para que nunca quede huérfana); al confirmar una edición se **redibujan todas las
+> vistas** del sistema. Los bloques se resuelven desde la biblioteca vía `blocks.csv`
+> (`FindBlock(pieceId, view)` es la ruta activa). Ver la
 > sección [Paso 2](#paso-2-estado-del-cableado-en-autocad).
 
 ## Arquitectura (separación pura ↔ AutoCAD)
@@ -74,16 +76,19 @@ Ejes en vista lateral: **X = fondo (entre postes), Y = altura**.
 2. **Poste derecho espejeado** con origen en `X = Depth`.
 3. **Línea de troqueles** desde `TROQUEL_CELOSIA` (derecho espejeado):
    `LongitudHorizontal = X_troquel_dcho − X_troquel_izq`.
-4. **Y de horizontales**: `yFirst = Y_troquel0 + (InicioCelosiaTroquel−1)·PasoTroquel`; luego cada
-   `ClaroPanel`. Nº de paneles = `floor((Height − yFirst) / ClaroPanel)`.
+4. **Y de horizontales**: vienen **explícitas** de la `RackFrameConfiguration`; la factory las calcula
+   paramétricamente: primer travesaño en el troquel de inicio
+   (`yFirst = Y_troquel0 + (InicioCelosiaTroquel−1)·PasoTroquel`), paneles de `ClaroPanel` (44") y cierres
+   de 0/1/2. Las elevaciones de las plantillas JSON ya **no** se usan (solo aportan perfiles/placa/poste/
+   puntos) y **no** escalan proporcionalmente.
 5. **Horizontales**: el punto `CELOSIA` cae sobre la línea de troquel a su Y; largo = `LongitudHorizontal`.
 6. **Diagonales** (una por panel): arranca `OffsetInicio` troqueles arriba de la horizontal inferior y
    termina `OffsetFin` troqueles abajo de la superior; **largo y ángulo se calculan de los puntos reales**.
-7. **Horizontal de cierre**: si sobra claro arriba (`ValorClaroTravesano > 0`), se agrega una horizontal en
-   `Y = Height`.
+7. **Horizontal de cierre**: la horizontal superior cae **exacto** en `Y = Height − PostTopRemate`
+   (remate = 4"), de modo que el **alto construido = el alto pedido** (240 → 240).
 
 Ejemplo (Height 132, Depth 42, paso 2, inicio 3, claro 44, troquel local X=2):
-horizontales en Y = 4 / 48 / 92 (largo 38), cierre en Y = 132 (sobra 40"), 2 diagonales.
+horizontales en Y = 4 / 48 / 92 (largo 38), cierre en Y = 128 (= 132 − remate de 4"), 2 diagonales.
 
 ## El plan: `HeaderBlockInstance`
 
@@ -120,16 +125,17 @@ El dibujo (`RackCad.Plugin/Headers/`) **ya está cableado**:
    con las piezas insertadas y los **bloques referidos pero no definidos** (se omiten en vez de lanzar). El
    comando y el botón informan al usuario qué bloques faltan modelar.
 
-### Lo que resta (del lado del DWG, no del código)
+### Bloques y biblioteca (DWG)
 
-- **Modelar los bloques de AutoCAD** referidos en `blocks.csv` (vista `LATERAL`) dentro de `blocks-library.dwg`:
+- Los bloques referidos en `blocks.csv` (vista `LATERAL`) viven en `blocks-library.dwg` y **sí se consumen**
+  al dibujar: `FindBlock(pieceId, view)` es la ruta activa de los 4 tipos. El `blockName` (columna 3) debe
+  coincidir **exacto** con el nombre del bloque en la biblioteca DWG:
   - el bloque del **poste** con el parámetro dinámico **`LONGITUD`**;
   - los bloques de **travesaño** con **`Distancia1`** (largo);
   - cada bloque con sus **puntos de conexión** y su posición en `connection-layout.csv` para la vista `LATERAL`
-    (placa → `MONTAJE_POSTE`, poste → `TROQUEL_CELOSIA`, travesaño → `CELOSIA`: **los tres ya están** en el CSV).
-- **Prueba visual en AutoCAD**: ejecutar `RACKCABECERALATERAL` (o el botón), ver que el poste estira con
-  `LONGITUD`, que las horizontales caen en la línea de troquel y abarcan poste a poste, y que las diagonales
-  quedan con el ángulo correcto.
+    (placa → `MONTAJE_POSTE`, poste → `TROQUEL_CELOSIA`, travesaño → `CELOSIA`).
+- Los catálogos son "Excel-first" (el `.csv` gana sobre el `.json`, acepta UTF-8 y ANSI de Excel) con caché
+  invalidada por firma de archivos: editar el CSV y relanzar el comando recarga.
 
 ## Patrón unificado (block-based + round-trip) para los 4 tipos
 
@@ -138,10 +144,11 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 
 - **Cada rack dibujado = UNA definición de bloque**; las copias son referencias a ella. Redefinir la
   definición actualiza todas las copias a la vez, sin recolocarlas.
-- **Sobre embebido unificado** `RackEmbedDocument { Kind, Id (GUID), Name, Design (JSON) }` guardado en la
-  **definición** del bloque (diccionario de extensión, `Xrecord` troceado ≤255 vía `RackBlockData`). El `Name`
-  es el nombre del bloque ("Rack A"); el `Id` (GUID) evita colisiones. `Kind` ∈
-  `{ selective, dynamic, cabecera, cama }`.
+- **Sobre embebido unificado** `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name,
+  Design (JSON) }` guardado en la **definición** del bloque (diccionario de extensión, `Xrecord` troceado
+  ≤255 vía `RackBlockData`). El `Name` es el nombre del bloque ("Rack A"); el `Id` (GUID) evita colisiones.
+  `Kind` ∈ `{ selective, dynamic, cabecera, cama }`; `View` ∈ `{ frontal, lateral, planta }`; `Section` es el
+  índice de corte lateral del selectivo (−1 = vista no seccionada).
 - **`RACKEDITAR`**: seleccionas un rack → lee el sobre de su definición → **despacha por `Kind`** → reabre el
   editor correcto precargado (`LoadExisting`) → al confirmar **redefine la definición en sitio**
   (`RedefineSystemBlock` + `Regen`).
@@ -154,14 +161,20 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
   | `cama` | `QUICKCAMA` | `RackFlowBedWindow` | `FlowBedDrawService` | `FlowBedConfigurationStore` |
   | `selective` | `RACKSELECTIVO` | `RackSelectiveWindow` | `SelectiveFrontalDrawService` | `SelectivePalletDesignStore` |
 
-  El menú principal es `RACKCAD`. Vista **LATERAL** para cabecera/dinámico/cama; **FRONTAL** para el selectivo.
+  El menú principal es `RACKCAD`. Vistas por tipo (`views.csv`): el selectivo dibuja **FRONTAL + LATERAL +
+  PLANTA** (la lateral es un bloque por poste, con corte elegido por número de poste al insertar); la cabecera
+  **LATERAL + PLANTA**; dinámico y cama solo **LATERAL**. Las vistas lateral/planta se insertan **únicamente**
+  desde `RACKEDITAR` de una vista existente (los botones se deshabilitan con tooltip si no aplica), y
+  `RACKEDITAR` sobre **cualquier** vista reabre el editor del sistema completo y al confirmar redibuja
+  **todas** las vistas (encontradas por GUID escaneando las definiciones de bloque).
 - **Escalable**: agregar un tipo nuevo = su `Kind` + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting` en su
   ventana + embed/`RedrawInPlace` en su servicio de dibujo.
 
-## Supuestos de geometría a verificar (pendiente del usuario)
+## Supuestos de geometría (ya verificados)
 
 1. Eje de espejo del poste derecho: vertical en el fondo ⇒ `LongitudHorizontal = Depth − 2·inset_troquel`.
-2. Nº de paneles: `floor((Height − yFirst)/ClaroPanel)`; el sobrante arriba es `ValorClaroTravesaño` (auto).
+2. Elevaciones **explícitas** de la configuración (paneles de `ClaroPanel` + cierres de 0/1/2); la horizontal
+   superior cae en `Height − PostTopRemate`, así el alto construido = el pedido.
 3. Una diagonal por panel (zigzag estándar); si se requiere alternancia/X, se parametriza.
 
 ## Dónde está en el código

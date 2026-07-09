@@ -59,14 +59,15 @@ assets/
 `RackCad.Plugin`
 
 - Entrada AutoCAD .NET API. Comandos en `RackFrameCommands`.
-- Servicios de dibujo: `LateralHeaderDrawService`, `DynamicSystemDrawService`,
-  `FlowBedDrawService`, `SelectiveFrontalDrawService`.
+- Servicios de dibujo: `LateralHeaderDrawService`, `PlantaHeaderDrawService`,
+  `DynamicSystemDrawService`, `FlowBedDrawService`, `SelectiveFrontalDrawService`,
+  `SelectivePlantaDrawService`.
 - Identidad embebida en la definicion del bloque via `RackBlockData` (Xrecord troceado).
 - Referencias a `AcCoreMgd`, `AcDbMgd`, `AcMgd`.
 
 `RackCad.Tests`
 
-- Suite de pruebas (`net8.0`, xUnit), ~200 tests verdes en `release/claude-review`.
+- Suite de pruebas (`net8.0`, xUnit), 232 tests verdes en `release/claude-review`.
 
 ## Compilar
 
@@ -143,11 +144,18 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 ## Identidad y round-trip
 
 - Cada rack dibujado es UNA definicion de bloque; las copias son referencias a ella.
-- En la definicion del bloque se embebe un sobre `RackEmbedDocument { Kind, Id (GUID),
-  Name, Design (JSON) }`. Kinds: `selective`, `dynamic`, `cabecera`, `cama`.
-- `RACKEDITAR` lee el sobre, despacha por `Kind`, reabre el editor correcto precargado
-  (`LoadExisting`) y al confirmar redefine la definicion en sitio + Regen: todas las
-  copias se actualizan a la vez, ninguna se mueve.
+- En la definicion del bloque se embebe un sobre `RackEmbedDocument { SchemaVersion,
+  Kind, View, Section, Id (GUID), Name, Design (JSON) }`. Kinds: `selective`, `dynamic`,
+  `cabecera`, `cama`. Views: `frontal`, `lateral`, `planta`; `Section` es el indice de
+  corte lateral del selectivo (-1 = vista no seccionada).
+- Un rack puede tener varias vistas ligadas por el mismo GUID: el selectivo tiene
+  frontal + lateral (un bloque por poste/corte) + planta; la cabecera tiene lateral +
+  planta. Las vistas lateral/planta solo se insertan desde `RACKEDITAR` de una vista
+  existente (nunca quedan huerfanas).
+- `RACKEDITAR` sobre cualquier vista lee el sobre, despacha por `Kind`, reabre el editor
+  del sistema completo precargado (`LoadExisting`) y al confirmar redibuja TODAS las
+  vistas ligadas (encontradas por GUID escaneando las definiciones de bloque) en sitio
+  + Regen: todas las copias se actualizan a la vez, ninguna se mueve.
 - El nombre "Rack A" de cada editor es el nombre del bloque; el GUID va en el sobre.
 
 ## Catalogos
@@ -155,8 +163,11 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 `assets/catalogs/*.csv`, cargados por `JsonRackCatalogProvider` a `RackCatalog`:
 `post-profiles`, `truss-profiles`, `beam-profiles` (columna `peraltes` = FK a mensula),
 `mensulas`, `base-plates` (`peralteBase`/`peraltePorPeraltePoste` -> `StandardPeralte`),
-`connection-points` + `connection-layout` (X = localX + slope*param), `blocks`, `views`,
-`flow-bed-profiles`, `spacers-profiles`. Persistencia de proyecto: `RackProjectStore`
+`connection-points` + `connection-layout` (por vista: X = localX + localXPorParam*paramX;
+Y = localY + localYPorParam*paramY), `blocks`, `views`,
+`flow-bed-profiles`, `spacers-profiles`. Excel-first: el `.csv` gana sobre el `.json`;
+acepta UTF-8 y ANSI/Windows-1252 de Excel; cache con invalidacion por firma de archivos
+(editar el CSV y relanzar el comando recarga). Persistencia de proyecto: `RackProjectStore`
 -> `.rackcad.json`.
 
 ## Checklist de validacion
@@ -176,8 +187,15 @@ Configurador de cabecera (`RACKCABECERA`):
 Dibujo y round-trip (los cuatro tipos):
 
 - Cada comando dibuja su bloque y permite colocarlo con el mouse.
-- Reabrir con `RACKEDITAR` carga los datos correctos segun el `Kind`.
+- Reabrir con `RACKEDITAR` carga los datos correctos segun el `Kind`, desde CUALQUIER
+  vista del rack (frontal, lateral o planta).
 - Al confirmar la edicion, todas las copias del rack reflejan el cambio sin recolocarse.
+- Round-trip multi-vista: con frontal + lateral + planta del mismo selectivo insertadas
+  (o lateral + planta de la misma cabecera), editar cualquiera de ellas redibuja TODAS
+  las vistas ligadas por GUID.
+- Insertar lateral del selectivo pregunta QUE corte (numero de poste) y se coloca con jig.
+- Los botones de insertar lateral/planta solo se habilitan desde `RACKEDITAR` de una
+  vista existente (deshabilitados con tooltip si no aplica).
 - `RACKSELECTIVO` abre el BOM (`RackBomWindow`) y exporta CSV.
 
 ## Archivos generados que no deben versionarse

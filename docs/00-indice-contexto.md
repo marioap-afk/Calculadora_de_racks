@@ -2,7 +2,7 @@
 
 Este indice resume como entender rapidamente el proyecto y cual es el estado del repo antes de continuar el desarrollo.
 
-RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (~200 tests verdes).
+RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (232 tests verdes).
 
 ## Los cuatro tipos de rack
 
@@ -16,10 +16,10 @@ El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde s
 ## Identidad y round-trip (los cuatro tipos)
 
 - Cada rack dibujado = **una definicion de bloque**; las copias son referencias a ella.
-- En la **definicion** del bloque se embebe (diccionario de extension, Xrecord troceado <=255, `RackBlockData`) un sobre unificado `RackEmbedDocument { Kind, Id (GUID), Name, Design (JSON del diseno) }`. Kinds: `selective`, `dynamic`, `cabecera`, `cama`.
-- Comando `RACKEDITAR`: seleccionas un rack -> lee el sobre -> **despacha por Kind** -> reabre el editor correcto precargado (`LoadExisting`) -> al confirmar **redefine la definicion en sitio** (`RedefineSystemBlock` + Regen) => todas las copias se actualizan a la vez, ninguna se mueve ni se recoloca.
+- En la **definicion** del bloque se embebe (diccionario de extension, Xrecord troceado <=255, `RackBlockData`) un sobre unificado `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON del diseno) }`. Kinds: `selective`, `dynamic`, `cabecera`, `cama`. Views: `frontal`, `lateral`, `planta`. `Section` = indice del corte lateral del selectivo (`-1` = vista no seccionada).
+- Comando `RACKEDITAR`: seleccionas un rack -> lee el sobre -> **despacha por Kind** -> reabre el editor correcto precargado (`LoadExisting`) -> al confirmar **redefine la definicion en sitio** (`RedefineSystemBlock` + Regen) => todas las copias se actualizan a la vez, ninguna se mueve ni se recoloca. Ademas **redibuja TODAS las vistas** del sistema (frontal/lateral/planta), encontradas por GUID escaneando las definiciones de bloque.
 - El nombre "Rack A" (campo en cada editor) = nombre del bloque; el GUID va en el sobre (evita colisiones).
-- Stores del diseno: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera), `FlowBedConfigurationStore` (cama). Servicios de dibujo/redraw: `SelectiveFrontalDrawService`, `DynamicSystemDrawService`, `FlowBedDrawService`, `LateralHeaderDrawService`.
+- Stores del diseno: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera), `FlowBedConfigurationStore` (cama). Servicios de dibujo/redraw: `SelectiveFrontalDrawService`, `SelectivePlantaDrawService`, `DynamicSystemDrawService`, `FlowBedDrawService`, `LateralHeaderDrawService`, `PlantaHeaderDrawService`.
 - Escalable: agregar un tipo nuevo = su Kind + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting` en su ventana + embed/`RedrawInPlace` en su draw service.
 
 ## Lectura recomendada
@@ -48,7 +48,7 @@ Los catalogos viven en `assets/catalogs/*.csv` (mas `defaults.json` y `header-te
 - `beam-profiles.csv` — largueros; la columna `peraltes` = valores permitidos (FK a mensula).
 - `mensulas.csv` — mensulas.
 - `base-plates.csv` — `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`.
-- `connection-points.csv` + `connection-layout.csv` — puntos de conexion parametricos (X = localX + slope * param).
+- `connection-points.csv` + `connection-layout.csv` — puntos de conexion parametricos en X y Y (X = localX + localXPorParam * valor(paramX); Y = localY + localYPorParam * valor(paramY)).
 - `blocks.csv` (bloque por pieza y vista), `views.csv`, `flow-bed-profiles.csv`, `spacers-profiles.csv`.
 
 Ya no existen `diagonal-profiles.csv` ni `reinforcement-profiles.csv`. Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
@@ -59,9 +59,9 @@ Documentos de referencia para el modelo de datos:
 - `docs/modelo-de-datos.md` — como se conectan las tablas (FK) y como se cargan (`RackCatalog`), con diagrama ASCII + Mermaid.
 - `docs/generacion-cabecera-lateral.md` — logica block-based de la cabecera lateral anclada a puntos de conexion.
 
-## Vistas y pendientes
+## Vistas
 
-Vista **frontal** para el selectivo; **lateral** para cabecera/dinamico/cama. Pendiente principal: **Fase 5 = vista lateral del selectivo** (cada poste desplegado como su cabecera completa, enlazado por el mismo GUID).
+Todas implementadas y ligadas por GUID. El **selectivo** tiene tres vistas: **frontal** (un bloque: postes + placas + largueros por nivel), **lateral** (cortes: un bloque por poste — cada corte es la cabecera del poste en perfil + las secciones de largueros frente/atras por nivel; al insertar se pregunta que corte por numero de poste y se coloca con jig) y **planta** (un bloque: una cabecera-planta por frente apilada en Y + largueros frente/atras por bahia; X = fondo, Y = frente). La **cabecera** tiene dos: **lateral** y **planta** (2 huellas de poste + placas + celosia colapsada a un miembro con longitud = A-corte del travesano). Dinamico y cama dibujan **lateral**. Las vistas lateral/planta SOLO se insertan desde `RACKEDITAR` de una vista frontal/lateral existente (los botones se deshabilitan con tooltip si no aplica), para que nunca queden huerfanas.
 
 ## Documentos historicos existentes
 
@@ -88,6 +88,6 @@ Utiles para decisiones de arquitectura, pero mas extensos:
 
 ## Estado del repositorio
 
-Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; ~200 tests verdes en `release/claude-review`. El motor sigue madurando (p. ej. la vista lateral del selectivo esta pendiente).
+Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 232 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
 
 La carpeta de salida `bin/`, `obj/`, caches locales `.dotnet_home`, `.nuget_packages`, `.appdata` y `.localappdata` no son parte logica del codigo fuente y estan ignoradas por `.gitignore`.

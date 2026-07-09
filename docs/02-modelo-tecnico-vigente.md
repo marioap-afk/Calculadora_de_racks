@@ -8,10 +8,16 @@ uno con su ventana editora, su dibujo real en AutoCAD y round-trip de edicion.
 
 | Tipo | Ventana editora | Vista | Comandos |
 | --- | --- | --- | --- |
-| Cabecera (marco) | `RackFrameConfiguratorWindow` | Lateral | `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA` |
+| Cabecera (marco) | `RackFrameConfiguratorWindow` | Lateral + Planta | `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA` |
 | Sistema dinamico (pallet flow) | `RackDynamicSystemWindow` | Lateral | `RACKSISTEMADINAMICO` |
 | Cama de rodamiento (flow bed) | `RackFlowBedWindow` | Lateral | `QUICKCAMA` |
-| Selectivo (editor avanzado) | `RackSelectiveWindow` | Frontal | `RACKSELECTIVO` |
+| Selectivo (editor avanzado) | `RackSelectiveWindow` | Frontal + Lateral + Planta | `RACKSELECTIVO` |
+
+Las vistas extra (lateral/planta) estan ligadas por el mismo GUID del sistema y solo se
+insertan desde `RACKEDITAR` sobre una vista ya dibujada (los botones se deshabilitan con
+tooltip si no aplica), asi nunca quedan huerfanas. `RACKEDITAR` sobre cualquier vista reabre
+el editor del sistema completo y al confirmar redibuja todas las vistas (encontradas por GUID
+escaneando las definiciones de bloque).
 
 - Menu principal (`[CommandMethod("RACKCAD")]`, `RackMainMenuWindow`): punto de entrada donde
   se elige que disenar e insertar.
@@ -208,7 +214,7 @@ geometria se deriva. El flujo tiene cuatro etapas:
 design  (SelectivePalletDesign)   -> lo que edita el usuario (tarimas por celda)
    -> resolver (SelectiveGeometryResolver)  -> aplica las reglas de geometria
       -> resolved (SelectiveRackSystem)     -> geometria ya calculada, sin AutoCAD
-         -> builder (SelectiveFrontalBuilder + SelectiveFrontalDrawService) -> dibujo CAD
+         -> builders (frontal / lateral / planta + SelectiveFrontalDrawService) -> dibujo CAD
 ```
 
 ### design: `SelectivePalletDesign`
@@ -225,18 +231,22 @@ design  (SelectivePalletDesign)   -> lo que edita el usuario (tarimas por celda)
   frente), `FloorBeam` (larguero a piso por frente).
 - `PostCabeceras`: cabecera opcional por poste (`RackFrameConfiguration` embebida; N frentes ->
   N+1 postes). De ahi sale la placa/peralte de cada poste; en frontal el poste es esa cabecera
-  vista de canto, y es la base para la futura vista lateral.
+  vista de canto, y es la base de los cortes de la vista lateral. "Personalizar" siembra la
+  cabecera resuelta (alto del poste + fondo del tramo bloqueado; warning si cambias el alto;
+  cancelable).
 
 ### resolver: `SelectiveGeometryResolver`
 
 Puro (sin AutoCAD; solo lee del catalogo la base de la rejilla de troquel). Aplica las reglas:
 
 1. **Larguero**: `LONGITUD = Frente*Count + Tolerance*(Count+1)`; por frente gobierna el nivel
-   mas ancho (todos los largueros de un frente comparten longitud = separacion entre postes).
+   mas ancho (todos los largueros de un frente comparten longitud = separacion entre postes,
+   y la mensula de ese nivel gobierna el espaciado de postes).
 2. **Separacion** entre niveles: `roundUpTroquel( roundUpEven(Alto + Clearance) + peralte(larguero de arriba) )`.
 3. **Piso**: el nivel 0 es el suelo, datum en `Y=0`. Por defecto no lleva larguero (la tarima
    descansa en el piso y el primer larguero salta a la rejilla de arriba); con "larguero a piso"
-   el nivel 0 recibe larguero al troquel mas bajo (elevado `FloorBeamRise`).
+   el nivel 0 recibe larguero al troquel mas bajo (elevado `FloorBeamRise`, snappeado al paso
+   de troquel).
 4. **Altura de la cabecera**: `roundUpFoot( superficieDeCarga + altoTarimaSuperior/3 )`, medida
    desde el escalon del larguero superior; el frente mas alto gobierna un poste compartido.
 5. **Redondeos**: par (paso de troquel 2") hacia arriba y pie (12") hacia arriba.
@@ -251,12 +261,21 @@ poste en frontal).
 ### builder + BOM
 
 - `SelectiveFrontalBuilder` produce las instancias de bloque; `SelectiveFrontalDrawService` las
-  dibuja/coloca en AutoCAD (vista **frontal**).
+  dibuja/coloca en AutoCAD. El selectivo tiene **tres vistas** ligadas por GUID:
+  - **frontal**: un bloque (postes + placas + largueros por nivel);
+  - **lateral**: cortes, **un bloque por poste** — cada corte es la cabecera del poste en
+    perfil + las secciones de largueros frente/atras por nivel; al insertar se pregunta que
+    corte por numero de poste y se coloca con jig;
+  - **planta**: un bloque (una cabecera-planta por frente apilada en Y + largueros
+    frente/atras por bahia a lo largo de Y; X = fondo, Y = frente).
 - BOM: `SelectiveBomBuilder` (postes por altura, una placa por poste, largueros por
-  longitud+peralte, dos mensulas por larguero) mostrado en `RackBomWindow` (grid + export CSV).
+  longitud+peralte, dos mensulas por larguero) mostrado en `RackBomWindow` (grid + export CSV
+  con CRLF RFC-4180).
 
-**Pendiente (Fase 5):** vista **lateral** del selectivo: cada poste desplegado como su cabecera
-completa, enlazado por el mismo GUID.
+La cabecera, por su parte, tiene **dos vistas** ligadas por GUID: lateral y planta (planta =
+2 huellas de poste, frente en 0 / atras en fondo, + placas + celosia colapsada a un miembro
+con longitud = A-corte del travesano = fondo - 2*(inset troquel - mensula), p.ej. 38.8125
+para fondo 42; peralte de la celosia = peralte del poste - 1").
 
 ## Identidad y round-trip (los cuatro tipos)
 
@@ -264,9 +283,11 @@ Misma logica reutilizable para cabecera, dinamico, cama y selectivo:
 
 - Cada rack dibujado = **una** definicion de bloque; las copias son referencias a ella.
 - En la **definicion** del bloque (diccionario de extension) se embebe un sobre unificado
-  `RackEmbedDocument { SchemaVersion, Kind, Id (GUID), Name, Design (JSON del diseno) }`,
+  `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON del diseno) }`,
   serializado por `RackEmbedStore` y guardado como `Xrecord` troceado en cadenas <= 255 chars
-  (`RackBlockData`). `Kind` es `"selective"`, `"dynamic"`, `"cabecera"` o `"cama"`.
+  (`RackBlockData`). `Kind` es `"selective"`, `"dynamic"`, `"cabecera"` o `"cama"`; `View` es
+  `"frontal"`, `"lateral"` o `"planta"`; `Section` es el indice de corte lateral del selectivo
+  (`-1` = vista no seccionada).
 - El JSON del diseno lo produce el store propio de cada tipo: `SelectivePalletDesignStore`
   (selectivo), `RackProjectStore` (dinamico/cabecera; persistencia de proyecto en
   `.rackcad.json`), `FlowBedConfigurationStore` (cama). Los `Build*Payload` de
@@ -291,8 +312,15 @@ Misma logica reutilizable para cabecera, dinamico, cama y selectivo:
 - `beam-profiles` (largueros; columna "peraltes" = valores permitidos, FK a mensula).
 - `mensulas`.
 - `base-plates` (`peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`).
-- `connection-points` + `connection-layout` (puntos de conexion parametricos:
-  `X = localX + slope*param`).
-- `blocks` (bloque por pieza y vista), `views`, `flow-bed-profiles`, `spacers-profiles`.
+- `connection-points` + `connection-layout` (puntos de conexion parametricos en X **y** Y:
+  `X = localX + localXPorParam*valor(paramX)`, `Y = localY + localYPorParam*valor(paramY)`;
+  esquema `pieceId,connectionPointId,view,localX,localXPorParam,paramX,localY,localYPorParam,paramY`).
+- `blocks` (bloque por pieza y vista; `blockName` debe coincidir exacto con el nombre del
+  bloque en la libreria DWG — `FindBlock(pieceId, view)` es la ruta activa de los cuatro
+  tipos), `views` (que vistas dibuja cada tipo), `flow-bed-profiles`, `spacers-profiles`.
+
+Los catalogos son "Excel-first": el `.csv` gana sobre el `.json`, se aceptan UTF-8 y
+ANSI/Windows-1252 de Excel, y la cache se invalida por firma de archivos (editar el CSV y
+relanzar el comando recarga).
 
 Persistencia de proyecto: `RackProjectStore` -> archivo `.rackcad.json`.

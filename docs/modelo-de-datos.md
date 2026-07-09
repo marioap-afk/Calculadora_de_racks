@@ -70,7 +70,8 @@ Resumen de las **claves foráneas** (FK), una por una:
 - `connection-layout.pieceId` → el `id` de cualquier pieza (p. ej. una placa)
 - `connection-layout.connectionPointId` → `connection-points.id`
 - `connection-layout.view` → `views.id`
-- `connection-layout.param` → nombre de un parámetro del bloque (X paramétrica: `X = localX + localXPorParam * valor(param)`; vacío = punto fijo)
+- `connection-layout.paramX` / `paramY` → nombre de un parámetro del bloque (posición paramétrica por eje:
+  `X = localX + localXPorParam * valor(paramX)` e `Y = localY + localYPorParam * valor(paramY)`; vacío = punto fijo en ese eje)
 - `header-templates.post` → `post-profiles.id`
 - `header-templates.horizontals[].profile` → `truss-profiles.id`
 - `header-templates.diagonalProfile` → `truss-profiles.id`
@@ -159,10 +160,15 @@ por cada miembro del rack y cada vista a dibujar:
         ─► insertar ese bloque en AutoCAD
 ```
 
-Vista por tipo: FRONTAL para el selectivo; LATERAL para cabecera, sistema dinámico y cama.
-Cada rack dibujado es UNA definición de bloque con un sobre `RackEmbedDocument` embebido (Kind + Id + Name +
-Design JSON); `RACKEDITAR` lo relee, despacha por Kind, reabre el editor correcto y redefine la definición en
-sitio para que todas las copias se actualicen a la vez.
+Vistas por tipo: el selectivo dibuja FRONTAL + LATERAL + PLANTA (tres vistas ligadas por el mismo GUID;
+el lateral es un corte por poste, cada corte es su propio bloque); la cabecera dibuja LATERAL + PLANTA;
+sistema dinámico y cama dibujan LATERAL. Las vistas lateral/planta solo se insertan desde `RACKEDITAR`
+de una vista existente, para que nunca queden huérfanas.
+Cada vista dibujada es UNA definición de bloque con un sobre `RackEmbedDocument` embebido (SchemaVersion +
+Kind + View + Section + Id + Name + Design JSON; `Section` es el índice de corte lateral del selectivo,
+`-1` si la vista no es seccionada); `RACKEDITAR` lo relee, despacha por Kind, reabre el editor del sistema
+completo y al confirmar redibuja TODAS las vistas del mismo GUID (las encuentra escaneando las definiciones
+de bloque), redefiniendo cada definición en sitio para que todas las copias se actualicen a la vez.
 
 ## 4. Ejemplo trazado de punta a punta
 

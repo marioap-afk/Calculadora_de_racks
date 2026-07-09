@@ -452,7 +452,7 @@ Tramo 2
 Claro: 70 in
 Patron: SingleDiagonal
 Lado: Front
-Perfil: TRAVESANO_DINAMICO_OMEGA_3X3
+Perfil: TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14
 Punto inicial: TroquelCelosia_01
 Punto final: TroquelCelosia_02
 ```
@@ -470,7 +470,7 @@ BracingPanel
 
 FrameMember
 - Type: DiagonalBrace
-- ProfileId: TRAVESANO_DINAMICO_OMEGA_3X3
+- ProfileId: TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14
 - SourcePanelId: Panel 2
 - MountingFace: Front
 - StartConnectionPointId: TroquelCelosia_01
@@ -543,9 +543,9 @@ Panel 2 = SingleDiagonal
 Correcto:
 
 ```text
-1 diagonal Omega 3x3, longitud X
+1 diagonal de cinta calibre 14, longitud X
 2 tornillos tipo Y
-1 horizontal Omega 3x3, longitud Z
+1 horizontal de cinta calibre 14, longitud Z
 ```
 
 Por eso `FrameMember` es fundamental antes de construir una BOM seria.

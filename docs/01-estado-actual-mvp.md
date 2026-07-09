@@ -5,7 +5,7 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-esta con ~200 tests verdes.
+esta con 232 tests verdes.
 
 Menu principal: comando `RACKCAD` (`RackMainMenuWindow`), desde donde se elige que disenar e
 insertar. Cada tipo tiene ademas su comando directo.
@@ -53,11 +53,15 @@ piso. Cada poste (N frentes -> N+1 postes) puede referenciar una **cabecera por 
 
 - Cada rack dibujado = **una definicion de bloque**; las copias son referencias a ella.
 - En la definicion del bloque se embebe (diccionario de extension, Xrecord troceado ≤255) un sobre
-  unificado `RackEmbedDocument { Kind, Id (GUID), Name, Design (JSON del diseno) }`. Kinds:
-  `"selective"`, `"dynamic"`, `"cabecera"`, `"cama"`.
-- Comando `RACKEDITAR`: seleccionas un rack -> lee el sobre -> **despacha por Kind** -> reabre el
-  editor correcto precargado (`LoadExisting`) -> al confirmar **redefine la definicion en sitio**
-  (`RedrawInPlace` + Regen) => todas las copias se actualizan a la vez, ninguna se mueve.
+  unificado `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON
+  del diseno) }`. Kinds: `"selective"`, `"dynamic"`, `"cabecera"`, `"cama"`. Views: `"frontal"`,
+  `"lateral"`, `"planta"`. `Section` = indice del corte lateral del selectivo (`-1` = vista no
+  seccionada).
+- Comando `RACKEDITAR`: seleccionas un rack (cualquier vista) -> lee el sobre -> **despacha por
+  Kind** -> reabre el editor del sistema completo precargado (`LoadExisting`) -> al confirmar
+  **redefine la definicion en sitio** (`RedrawInPlace` + Regen) y **redibuja TODAS las vistas del
+  mismo sistema** (encontradas por GUID escaneando las definiciones de bloque) => todas las copias
+  se actualizan a la vez, ninguna se mueve.
 - El nombre "Rack A" (campo en cada editor) es el nombre del bloque; el GUID va en el sobre (evita
   colisiones).
 - Escalable: agregar un tipo nuevo = su `Kind` + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting`
@@ -67,27 +71,41 @@ piso. Cada poste (N frentes -> N+1 postes) puede referenciar una **cabecera por 
 
 ## Catalogos
 
-`assets/catalogs/*.csv`, cargados por `JsonRackCatalogProvider` a `RackCatalog`:
+`assets/catalogs/*.csv`, cargados por `JsonRackCatalogProvider` a `RackCatalog`. "Excel-first": el
+`.csv` gana sobre el `.json`; acepta UTF-8 y ANSI/Windows-1252 de Excel; cache con invalidacion por
+firma de archivos (editar el CSV y relanzar el comando recarga):
 
 - `post-profiles` (postes; los refuerzos son postes).
 - `truss-profiles` (una sola lista de celosia = horizontales + diagonales).
 - `beam-profiles` (largueros; columna `peraltes` = valores permitidos, FK a mensula).
 - `mensulas`, `base-plates` (con `peralteBase`/`peraltePorPeraltePoste` -> `StandardPeralte`).
-- `connection-points` + `connection-layout` (puntos de conexion parametricos: X = localX + slope*param).
-- `blocks` (bloque por pieza y vista), `views`, `flow-bed-profiles`, `spacers-profiles`.
+- `connection-points` + `connection-layout` (puntos de conexion parametricos en X **y en Y**:
+  X = localX + localXPorParam*valor(paramX), Y = localY + localYPorParam*valor(paramY); columnas
+  `pieceId,connectionPointId,view,localX,localXPorParam,paramX,localY,localYPorParam,paramY`).
+- `blocks` (bloque por pieza y vista; `FindBlock(pieceId, view)` es la ruta activa de los cuatro
+  tipos y `blockName` debe coincidir exacto con el nombre del bloque en la libreria DWG), `views`,
+  `flow-bed-profiles`, `spacers-profiles`.
 
 Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 
 ## Vistas y BOM
 
-- Vista **frontal** para el selectivo; vista **lateral** para cabecera / dinamico / cama.
+- **Selectivo**: tres vistas ligadas por el mismo GUID. **Frontal** (un bloque: postes + placas +
+  largueros por nivel). **Lateral** (cortes: un bloque por poste — cada corte es la cabecera del
+  poste en perfil + las secciones de largueros frente/atras por nivel; al insertar se pregunta que
+  corte por numero de poste y se coloca con jig). **Planta** (un bloque: una cabecera-planta por
+  frente apilada en Y + largueros frente/atras por bahia a lo largo de Y; X = fondo, Y = frente).
+- **Cabecera**: dos vistas ligadas por GUID, **lateral** y **planta** (planta = 2 huellas de poste,
+  frente en 0 / atras en fondo, + placas + celosia colapsada a un miembro con longitud = A-corte del
+  travesano = fondo − 2×(inset troquel − mensula); peralte de celosia = peralte del poste − 1").
+- Vista **lateral** para dinamico / cama.
+- Las vistas lateral/planta **solo se insertan desde `RACKEDITAR`** de una vista frontal/lateral
+  existente (los botones se deshabilitan con tooltip si no aplica), para que nunca queden huerfanas.
 - Dibujo block-based en AutoCAD para los cuatro tipos, con jig de colocacion.
-- BOM con exportacion a CSV (selectivo).
+- BOM con exportacion a CSV (selectivo; CRLF RFC-4180).
 
 ## Que falta
 
-- **Fase 5: vista lateral del selectivo** — cada poste desplegado como su cabecera completa,
-  enlazado por el mismo GUID. Pendiente.
 - Definicion de los bloques dinamicos en el DWG (deben existir previamente; los faltantes se
   reportan y se omiten al dibujar).
 - Persistencia en base de datos (SQLite) y exportacion a Excel (hoy el BOM exporta CSV).
