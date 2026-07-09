@@ -31,13 +31,26 @@ namespace RackCad.Application.Systems
 
             for (var i = 0; i < postXs.Count; i++)
             {
-                var height = SelectivePostGeometry.PostHeight(system, i);
-                if (height <= 0.0)
+                // If the user customized this post's cabecera, the corte IS that cabecera (its height + celosía +
+                // plate), so editing it shows in the lateral. Otherwise build a standard frame at the resolved height.
+                // Fondo is shared across the run (enforced when the custom is stored).
+                var custom = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
+                RackFrameConfiguration cabecera;
+                if (custom != null && custom.Height > 0.0)
                 {
-                    continue;
+                    cabecera = custom;
+                }
+                else
+                {
+                    var height = SelectivePostGeometry.PostHeight(system, i);
+                    if (height <= 0.0)
+                    {
+                        continue;
+                    }
+
+                    cabecera = factory.Build(template, system.PostId, height, depth);
                 }
 
-                var cabecera = factory.Build(template, system.PostId, height, depth);
                 cortes.Add(new SelectiveCorte(i, postXs[i], cabecera));
             }
 

@@ -1,5 +1,6 @@
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using Xunit;
@@ -54,6 +55,23 @@ namespace RackCad.Tests
 
             Assert.All(cortes, c => Assert.NotNull(c.Cabecera));       // each corte is its own cabecera
             Assert.All(cortes, c => Assert.True(c.Cabecera.Height > 0));
+        }
+
+        [Fact]
+        public void Cortes_UseThePostsCustomCabecera_WhenOneIsSet()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
+
+            // The user customized post 0's cabecera to a distinct height: the corte IS that cabecera.
+            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
+            var custom = new RackFrameConfigurationFactory(Catalog).Build(template, PostId, height: 500.0, depth: 48.0);
+            system.PostCabeceras[0] = custom;
+
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
+
+            var first = cortes.First(c => c.PostIndex == 0);
+            Assert.Same(custom, first.Cabecera);
+            Assert.Equal(500.0, first.Cabecera.Height, 4);
         }
     }
 }

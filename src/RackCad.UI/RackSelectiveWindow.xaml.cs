@@ -421,13 +421,70 @@ namespace RackCad.UI
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postCabeceras.Count) return;
 
-            var seed = postCabeceras[i] ?? new HardcodedStandardRackFrameService().CreateDefault();
+            // Seed with the RESOLVED cabecera for THIS post: height = the post's resolved height (tallest adjacent
+            // frente), fondo = the tramo's fondo (shared by every cabecera). So "Personalizar" opens the cabecera that
+            // is actually in use (e.g. 312 in / 48 in), not a generic 132/42. A custom one keeps its structural edits.
+            var resolvedHeight = ResolvedPostHeight(i);
+            var fondo = ResolvedFondo();
+
+            var seed = postCabeceras[i] ?? BuildStandardPostCabecera(resolvedHeight, fondo);
+            if (resolvedHeight > 0.0) seed.Height = resolvedHeight;
+            if (fondo > 0.0) seed.Depth = fondo;
+
             var window = new RackFrameConfiguratorWindow(seed, canInsertInAutoCad: false) { Owner = this };
             window.ShowDialog();
 
-            postCabeceras[i] = window.Configuration;
+            var cfg = window.Configuration;
+            if (cfg != null)
+            {
+                // Fondo is locked to the tramo — every cabecera of the rack shares it.
+                if (fondo > 0.0) cfg.Depth = fondo;
+
+                // Height comes from the system; the user MAY override it, but warn it can desynchronize the rack
+                // (the frontal largueros are placed for the resolved height).
+                if (resolvedHeight > 0.0 && Math.Abs(cfg.Height - resolvedHeight) > 0.5)
+                {
+                    MessageBox.Show(
+                        this,
+                        "La altura de la cabecera (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
+                            + " in) difiere del alto resuelto del poste (" + resolvedHeight.ToString("0.##", CultureInfo.InvariantCulture)
+                            + " in).\n\nEl sistema se puede desconfigurar: el frontal coloca los largueros para el alto resuelto, "
+                            + "así que el corte lateral y el frontal pueden dejar de coincidir.",
+                        "Altura de cabecera",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+
+                postCabeceras[i] = cfg;
+            }
+
             UpdatePostStatus();
             Recompute();
+        }
+
+        /// <summary>The resolved height of post <paramref name="i"/> (tallest adjacent frente); falls back to the run height.</summary>
+        private double ResolvedPostHeight(int i)
+        {
+            if (lastSystem == null) return 0.0;
+            var height = SelectivePostGeometry.PostHeight(lastSystem, i);
+            return height > 0.0 ? height : lastSystem.Height;
+        }
+
+        /// <summary>The tramo's fondo (shared by every cabecera): the resolved pallet depth, or 48 in as a fallback.</summary>
+        private double ResolvedFondo()
+        {
+            var fondo = lastSystem?.PalletDepth ?? 0.0;
+            return fondo > 0.0 ? fondo : 48.0;
+        }
+
+        /// <summary>Build a standard cabecera at the given height/fondo using the run's post; the seed when a post has no custom one.</summary>
+        private RackFrameConfiguration BuildStandardPostCabecera(double height, double fondo)
+        {
+            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
+            var postId = PostBox.SelectedValue as string;
+            if (string.IsNullOrWhiteSpace(postId)) postId = lastSystem?.PostId;
+            return new RackFrameConfigurationFactory(catalog).Build(
+                template, postId, height > 0.0 ? height : 132.0, fondo > 0.0 ? fondo : 48.0);
         }
 
         private void ResetPost_Click(object sender, RoutedEventArgs e)
@@ -783,8 +840,12 @@ namespace RackCad.UI
             }
 
             postCabeceras.Clear();
+            var loadedFondo = design.PalletDepth > 0.0 ? design.PalletDepth : 48.0;
             foreach (var cabecera in design.PostCabeceras)
             {
+                // Every cabecera of the rack shares the tramo's fondo — coerce it on load so a legacy/round-tripped
+                // design can't carry a stale depth.
+                if (cabecera != null && loadedFondo > 0.0) cabecera.Depth = loadedFondo;
                 postCabeceras.Add(cabecera);
             }
 

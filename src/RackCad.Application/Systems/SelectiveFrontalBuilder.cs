@@ -45,7 +45,13 @@ namespace RackCad.Application.Systems
             for (var i = 0; i < postX.Count; i++)
             {
                 var origin = new Point2D(postX[i], 0.0);
-                var postHeight = SelectivePostGeometry.PostHeight(system, i);
+
+                // A per-post cabecera (if the user customized it) owns this post's height + base plate, so the frontal
+                // post and the lateral corte agree. Without one, the resolved (matrix-driven) height governs.
+                var cabecera = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
+                var postHeight = cabecera != null && cabecera.Height > 0.0
+                    ? cabecera.Height
+                    : SelectivePostGeometry.PostHeight(system, i);
 
                 var post = new HeaderBlockInstance
                 {
@@ -62,7 +68,6 @@ namespace RackCad.Application.Systems
 
                 // Base plate: from this post's cabecera if any, else the run default. PERALTE = the cabecera's manual
                 // override, else derived from the post (StandardPeralte). Its MONTAJE_POSTE lands on the post origin.
-                var cabecera = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
                 var plateId = cabecera?.LeftBasePlate?.PlateCatalogId;
                 if (string.IsNullOrWhiteSpace(plateId)) plateId = defaultPlateId;
                 var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
