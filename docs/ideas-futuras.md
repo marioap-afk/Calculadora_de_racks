@@ -29,21 +29,31 @@
    pasillo sería un gran ahorro.
 
 ### Gestión de racks
-5. **`RACKLISTA`** — comando que tabula todos los racks del dibujo (Nombre, GUID, tipo, vistas
+5. **`RACKDUPLICAR` — duplicar un rack como uno INDEPENDIENTE** — hoy un `COPY` de AutoCAD comparte la
+   *definición* del bloque y con ella el **mismo GUID** embebido, así que `RACKEDITAR` trata las copias
+   como el mismo rack y editar una edita TODAS (correcto para "réplicas" del mismo rack). Falta el caso
+   opuesto: tomar un rack (elemento o sistema) y crear una copia **nueva e independiente** con su **GUID
+   propio** — para poder editarla sin afectar al original. Implementación: leer el payload embebido
+   (`RackEmbedStore` → `RackProjectStore`/`SelectivePalletDesignStore`), re-serializar con
+   `Guid.NewGuid()` y un nombre nuevo ("Rack A - copia"), y redibujar por el mismo camino de inserción
+   (`DrawSelectiveView` / `DrawAndPlace*`) para que nazca con su propia definición y bloque(s). Debe
+   funcionar para los 4 tipos y arrastrar TODAS las vistas del rack (frontal/lateral/planta) con el GUID
+   nuevo. Es también la base natural del layout de almacén (#4: clonar N veces con espaciado de pasillo).
+6. **`RACKLISTA`** — comando que tabula todos los racks del dibujo (Nombre, GUID, tipo, vistas
    presentes) con zoom-to al seleccionar. El escaneo por GUID ya existe (`FindRackBlocks`).
-6. **Renombrado sincronizado** — cambiar el "Rack A" en cualquier vista debería renombrar los bloques
+7. **Renombrado sincronizado** — cambiar el "Rack A" en cualquier vista debería renombrar los bloques
    de TODAS sus vistas (hoy el nombre viaja en el payload pero el nombre del bloque no se re-sincroniza).
-7. **Biblioteca de diseños** — guardar/cargar diseños con nombre fuera del DWG (carpeta de proyectos
+8. **Biblioteca de diseños** — guardar/cargar diseños con nombre fuera del DWG (carpeta de proyectos
    .rackcad.json ya existe por tipo; falta un navegador unificado).
-8. **Plantillas de usuario** — "Guardar como plantilla" desde el configurador de cabeceras hacia
+9. **Plantillas de usuario** — "Guardar como plantilla" desde el configurador de cabeceras hacia
    `header-templates.json`, para que las cabeceras personalizadas se reutilicen entre proyectos.
 
 ### Ingeniería y datos
-9. **Validación de capacidad de carga** — los CSVs ya llevan columnas Ix/Iy/norma; falta la regla que
-   compare carga por nivel vs. capacidad del larguero/poste y avise en el editor.
-10. **BOM consolidado multi-rack** — un BOM de TODO el dibujo (agrupado por rack via GUID) con
+10. **Validación de capacidad de carga** — los CSVs ya llevan columnas Ix/Iy/norma; falta la regla que
+    compare carga por nivel vs. capacidad del larguero/poste y avise en el editor.
+11. **BOM consolidado multi-rack** — un BOM de TODO el dibujo (agrupado por rack via GUID) con
     exportación a Excel, además del BOM por rack actual.
-11. **Unificar perfiles estructurales** — fusionar post/truss/beam-profiles en un catálogo
+12. **Unificar perfiles estructurales** — fusionar post/truss/beam-profiles en un catálogo
     `secciones.csv` con columna de rol (idea previa, sigue vigente).
 
 ## B. Deuda técnica diferida de la auditoría (2026-07-08)
