@@ -44,8 +44,6 @@ AutoCAD. Así la lógica se prueba sin AutoCAD y el drawer queda mínimo.
 | `Height` | 132 | Altura; mueve el parámetro dinámico `LONGITUD` del poste | Editor **clásico** |
 | `Depth` | 42 | Fondo: separación entre los dos postes | Editor **clásico** |
 | `PasoTroquel` | 2 | Paso entre troqueles del poste | (fijo) |
-| `InicioCelosiaTroquel` | 3 | Troquel (1-based) donde va la primera horizontal → `(3-1)*2 = 4"` | Editor **avanzado** |
-| `ClaroPanel` | 44 | Claro vertical entre horizontales | Editor **avanzado** (segmentos) |
 | `OffsetDiagonalInicioTroqueles` | 2 | La diagonal arranca N troqueles arriba de la horizontal inferior | Editor **avanzado** |
 | `OffsetDiagonalFinTroqueles` | 2 | La diagonal termina N troqueles abajo de la horizontal superior | Editor **avanzado** |
 | `ValorClaroTravesano` | auto | Claro sobrante arriba; si `>0` se agrega una horizontal de cierre | auto / opcional |
@@ -78,7 +76,7 @@ Ejes en vista lateral: **X = fondo (entre postes), Y = altura**.
    `LongitudHorizontal = X_troquel_dcho − X_troquel_izq`.
 4. **Y de horizontales**: vienen **explícitas** de la `RackFrameConfiguration`; la factory las calcula
    paramétricamente: primer travesaño en el troquel de inicio
-   (`yFirst = Y_troquel0 + (InicioCelosiaTroquel−1)·PasoTroquel`), paneles de `ClaroPanel` (44") y cierres
+   (`yFirst = Y_troquel0 + (CelosiaStartTroquel−1)·PasoTroquel`), paneles de `PanelClear` (44") y cierres
    de 0/1/2. Las elevaciones de las plantillas JSON ya **no** se usan (solo aportan perfiles/placa/poste/
    puntos) y **no** escalan proporcionalmente.
 5. **Horizontales**: el punto `CELOSIA` cae sobre la línea de troquel a su Y; largo = `LongitudHorizontal`.
@@ -104,10 +102,10 @@ El dibujo (`RackCad.Plugin/Headers/`) **ya está cableado**:
 
 1. ✅ **Mapeo config → parámetros**: `LateralHeaderParametersFactory.FromConfiguration` (capa pura,
    `RackCad.Application/Headers/`, con tests) arma `LateralHeaderParameters` desde la `RackFrameConfiguration`:
-   `Height`, `Depth`, `InicioCelosiaTroquel = CelosiaStartTroquel`,
+   `Height`, `Depth`,
    `OffsetDiagonalInicioTroqueles = DiagonalStartOffsetTroqueles`,
-   `OffsetDiagonalFinTroqueles = DiagonalEndOffsetTroqueles`, `ClaroPanel` (derivado del primer claro entre
-   horizontales) y los ids reales (`PostId`/`BasePlateId`/`TrussProfileId`).
+   `OffsetDiagonalFinTroqueles = DiagonalEndOffsetTroqueles` y los ids reales
+   (`PostId`/`BasePlateId`/`TrussProfileId`).
 2. ✅ **Servicio de dibujo**: `RackCad.Plugin/Headers/LateralHeaderDrawService.cs` carga el catálogo
    (`JsonRackCatalogProvider.FromBaseDirectory().Load()`), bloquea el documento, arma **un bloque** con todas
    las piezas y lo coloca con el mouse (jig). Implementa la interfaz `RackCad.UI.IHeaderDrawService` para que la
@@ -173,7 +171,7 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 ## Supuestos de geometría (ya verificados)
 
 1. Eje de espejo del poste derecho: vertical en el fondo ⇒ `LongitudHorizontal = Depth − 2·inset_troquel`.
-2. Elevaciones **explícitas** de la configuración (paneles de `ClaroPanel` + cierres de 0/1/2); la horizontal
+2. Elevaciones **explícitas** de la configuración (paneles de `PanelClear` + cierres de 0/1/2); la horizontal
    superior cae en `Height − PostTopRemate`, así el alto construido = el pedido.
 3. Una diagonal por panel (zigzag estándar); si se requiere alternancia/X, se parametriza.
 

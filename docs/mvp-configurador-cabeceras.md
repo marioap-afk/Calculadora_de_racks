@@ -136,6 +136,8 @@ Información recomendada:
 | CreatedAt | Fecha de creación. |
 | UpdatedAt | Fecha de última edición. |
 
+> Nota (2026-07-09): tras una limpieza de código, varios campos de esta tabla histórica ya no existen en el modelo actual. Se retiraron de `RackFrameConfiguration` los campos `FrameId`, `CreatedAt` y `UpdatedAt` (eran write-only; nunca se persistían ni mostraban) y `BracingSegments` como propiedad del dominio. El concepto de tramos y de claro de panel sigue vivo (la UI conserva sus propias colecciones y existe `RackFrameConfiguration.PanelClear`); solo se eliminó lo indicado del dominio.
+
 ### 4.2 Postes
 
 Cada poste debe modelarse como `PostAssembly`, no como simple selección de bloque.
