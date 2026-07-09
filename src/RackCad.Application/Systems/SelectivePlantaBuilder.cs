@@ -20,7 +20,6 @@ namespace RackCad.Application.Systems
         private const string PlantaView = "PLANTA";
 
         private readonly PlantaHeaderLayoutBuilder frameBuilder = new PlantaHeaderLayoutBuilder();
-        private readonly RackFrameConfigurationFactory factory = new RackFrameConfigurationFactory();
 
         public IReadOnlyList<HeaderBlockInstance> Build(SelectiveRackSystem system, RackCatalog catalog)
         {
@@ -29,6 +28,9 @@ namespace RackCad.Application.Systems
             {
                 return instances;
             }
+
+            // Built from the catalog the caller already loaded (a field initializer would trigger its own load).
+            var factory = new RackFrameConfigurationFactory(catalog);
 
             var frenteYs = SelectivePostGeometry.Compute(system, catalog).PostXs; // frente positions, read as Y here
             var depth = system.PalletDepth > 0.0 ? system.PalletDepth : 48.0;

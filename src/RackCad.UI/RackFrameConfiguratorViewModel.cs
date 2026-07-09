@@ -355,7 +355,7 @@ namespace RackCad.UI
 
                 Configuration.Name = normalizedValue;
                 OnPropertyChanged();
-                MarkConfigurationEdited("Nombre de cabecera actualizado.");
+                MarkConfigurationEdited("Nombre de cabecera actualizado.", structural: false);
             }
         }
 
@@ -569,7 +569,7 @@ namespace RackCad.UI
 
                 LeftPost.Description = NormalizeText(value);
                 OnPropertyChanged();
-                MarkConfigurationEdited("Descripcion del poste izquierdo actualizada.");
+                MarkConfigurationEdited("Descripcion del poste izquierdo actualizada.", structural: false);
             }
         }
 
@@ -649,7 +649,7 @@ namespace RackCad.UI
 
                 RightPost.Description = NormalizeText(value);
                 OnPropertyChanged();
-                MarkConfigurationEdited("Descripcion del poste derecho actualizada.");
+                MarkConfigurationEdited("Descripcion del poste derecho actualizada.", structural: false);
             }
         }
 
@@ -1874,10 +1874,16 @@ namespace RackCad.UI
             return new List<BracingSegmentEditorRow>();
         }
 
-        private void MarkConfigurationEdited(string message)
+        /// <summary>Pass <paramref name="structural"/> = false for text-only edits (name, descriptions): they
+        /// must not pay a full physical-model rebuild + exception re-scan.</summary>
+        private void MarkConfigurationEdited(string message, bool structural = true)
         {
-            RefreshPhysicalMembers();
-            RebuildExceptions();
+            if (structural)
+            {
+                RefreshPhysicalMembers();
+                RebuildExceptions();
+            }
+
             StatusMessage = message;
             StatusBrush = "#415161";
         }

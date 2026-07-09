@@ -653,13 +653,34 @@ namespace RackCad.UI
                 SyncTreeSelectionFromViewModel();
             }
 
-            DrawPreview();
+            SchedulePreviewRedraw();
         }
 
         private void BracingSegments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            DrawPreview();
+            SchedulePreviewRedraw();
         }
+
+        /// <summary>
+        /// Coalesces preview redraws: a burst of PropertyChanged notifications (~35 on open/generate/restore)
+        /// used to rebuild the whole canvas once PER notification; now the burst draws ONCE when idle.
+        /// </summary>
+        private void SchedulePreviewRedraw()
+        {
+            if (previewRedrawQueued)
+            {
+                return;
+            }
+
+            previewRedrawQueued = true;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                previewRedrawQueued = false;
+                DrawPreview();
+            }), System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        private bool previewRedrawQueued;
 
         private void Dispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {

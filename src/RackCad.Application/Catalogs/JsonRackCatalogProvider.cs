@@ -33,6 +33,22 @@ namespace RackCad.Application.Catalogs
 
         private readonly string _directory;
 
+        /// <summary>
+        /// Per-directory cache keyed by a signature of every csv/json file (name + size + mtime). Loading the
+        /// catalog several times within one command (or across the test suite) stops re-parsing the folder,
+        /// while an Excel save changes the signature so the very next command picks the edit up — the
+        /// "edit the CSV live, re-run the command" workflow stays intact. Cached instances are SHARED:
+        /// consumers must treat a loaded catalog as read-only (they all do — builders only query it).
+        /// </summary>
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, CacheEntry> Cache =
+            new System.Collections.Concurrent.ConcurrentDictionary<string, CacheEntry>(StringComparer.OrdinalIgnoreCase);
+
+        private sealed class CacheEntry
+        {
+            public string Signature;
+            public RackCatalog Catalog;
+        }
+
         public JsonRackCatalogProvider(string directory)
         {
             _directory = directory ?? throw new ArgumentNullException(nameof(directory));
@@ -50,6 +66,25 @@ namespace RackCad.Application.Catalogs
 
         public RackCatalog Load()
         {
+            var signature = ComputeSignature(_directory);
+            var entry = Cache.GetOrAdd(_directory, _ => new CacheEntry());
+
+            lock (entry)
+            {
+                if (entry.Catalog != null && entry.Signature == signature)
+                {
+                    return entry.Catalog;
+                }
+
+                var catalog = LoadUncached();
+                entry.Signature = signature;
+                entry.Catalog = catalog;
+                return catalog;
+            }
+        }
+
+        private RackCatalog LoadUncached()
+        {
             return new RackCatalog
             {
                 PostProfiles = ReadArray<ProfileCatalogEntry>(PostProfilesFile),
@@ -64,6 +99,36 @@ namespace RackCad.Application.Catalogs
                 Blocks = ReadArray<BlockCatalogEntry>(BlocksFile),
                 Defaults = ReadObject(DefaultsFile, new RackDefaults())
             };
+        }
+
+        /// <summary>Signature of the catalog folder: every csv/json's name + size + last write time.</summary>
+        private static string ComputeSignature(string directory)
+        {
+            try
+            {
+                if (!Directory.Exists(directory))
+                {
+                    return "<missing>";
+                }
+
+                var parts = new List<string>();
+                foreach (var pattern in new[] { "*.csv", "*.json" })
+                {
+                    foreach (var file in Directory.EnumerateFiles(directory, pattern))
+                    {
+                        var info = new FileInfo(file);
+                        parts.Add(info.Name + "|" + info.Length + "|" + info.LastWriteTimeUtc.Ticks);
+                    }
+                }
+
+                parts.Sort(StringComparer.OrdinalIgnoreCase);
+                return string.Join(";", parts);
+            }
+            catch (Exception)
+            {
+                // Unable to stat the folder: return a unique token so this load is NOT cached.
+                return Guid.NewGuid().ToString();
+            }
         }
 
         /// <summary>

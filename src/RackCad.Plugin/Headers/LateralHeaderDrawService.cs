@@ -53,8 +53,9 @@ namespace RackCad.Plugin.Headers
         }
 
         /// <summary>Redraw an existing cabecera's block DEFINITION in place; every copy updates on regen. Extra
-        /// instances (e.g. a selective corte's largueros) are drawn together with the cabecera.</summary>
-        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration configuration, string payloadJson, IReadOnlyList<HeaderBlockInstance> extraInstances = null)
+        /// instances (e.g. a selective corte's largueros) are drawn together with the cabecera. Pass
+        /// <paramref name="regen"/> = false when redrawing several blocks in a loop and regen once at the end.</summary>
+        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration configuration, string payloadJson, IReadOnlyList<HeaderBlockInstance> extraInstances = null, bool regen = true)
         {
             if (document == null)
             {
@@ -86,7 +87,10 @@ namespace RackCad.Plugin.Headers
                         transaction.Commit();
                     }
 
-                    document.Editor.Regen();
+                    if (regen)
+                    {
+                        document.Editor.Regen();
+                    }
                 }
 
                 // Report pieces skipped during the redraw too — an edit can lose blocks just like an insert.

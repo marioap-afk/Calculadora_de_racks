@@ -706,7 +706,8 @@ namespace RackCad.Plugin
                 }
             }
 
-            // Redraw each existing lateral section in place with the section's new geometry (matched by section index).
+            // Redraw each existing lateral section in place with the section's new geometry (matched by section
+            // index). Regen ONCE after the loop — a full drawing regeneration per corte is pure waste.
             var updatedLateral = 0;
             if (lateralBlocks.Count > 0)
             {
@@ -721,11 +722,16 @@ namespace RackCad.Plugin
                     }
 
                     var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
-                    var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros);
+                    var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros, regen: false);
                     if (r != null && r.Success)
                     {
                         updatedLateral++;
                     }
+                }
+
+                if (updatedLateral > 0)
+                {
+                    document.Editor.Regen();
                 }
             }
 

@@ -21,8 +21,6 @@ namespace RackCad.Application.Systems
         /// <summary>View the lateral corte draws in (posts, celosía and largueros share it). See views.csv / blocks.csv.</summary>
         public const string LateralView = "LATERAL";
 
-        private readonly RackFrameConfigurationFactory factory = new RackFrameConfigurationFactory();
-
         public IReadOnlyList<SelectiveCorte> Cortes(SelectiveRackSystem system, RackCatalog catalog)
         {
             var cortes = new List<SelectiveCorte>();
@@ -30,6 +28,9 @@ namespace RackCad.Application.Systems
             {
                 return cortes;
             }
+
+            // Built from the catalog the caller already loaded (a field initializer would trigger its own load).
+            var factory = new RackFrameConfigurationFactory(catalog);
 
             var postXs = SelectivePostGeometry.Compute(system, catalog).PostXs;
             var depth = system.PalletDepth > 0.0 ? system.PalletDepth : 48.0;
