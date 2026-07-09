@@ -62,24 +62,7 @@ namespace RackCad.Plugin.Systems
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog));
-                var database = document.Database;
-
-                LateralHeaderDrawOutcome outcome;
-                using (document.LockDocument())
-                {
-                    BlockLibraryImporter.EnsureForPlan(database, plan);
-
-                    using (var transaction = database.TransactionManager.StartTransaction())
-                    {
-                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan);
-                        RackBlockData.Write(transaction, blockId, payloadJson);
-                        transaction.Commit();
-                    }
-
-                    document.Editor.Regen();
-                }
-
-                return new HeaderPlacementResult(true, true, null, LateralHeaderDrawService.DescribeMissing(catalog, outcome), outcome);
+                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog);
             }
             catch (Exception ex)
             {
@@ -88,27 +71,7 @@ namespace RackCad.Plugin.Systems
         }
 
         private LateralHeaderBlockResult CreateBlock(Document document, DynamicSystemPlan plan, string blockName, string payloadJson)
-        {
-            var database = document.Database;
-
-            using (document.LockDocument())
-            {
-                BlockLibraryImporter.EnsureForPlan(database, plan);
-
-                using (var transaction = database.TransactionManager.StartTransaction())
-                {
-                    var result = drawer.CreateSystemBlock(database, transaction, plan, blockName);
-
-                    if (!string.IsNullOrEmpty(payloadJson))
-                    {
-                        RackBlockData.Write(transaction, result.DefinitionId, payloadJson);
-                    }
-
-                    transaction.Commit();
-                    return result;
-                }
-            }
-        }
+            => SystemBlockWriter.CreateBlock(document, drawer, plan, blockName, payloadJson);
 
         private static string BlockName(FlowBedConfiguration config, string rackName)
         {

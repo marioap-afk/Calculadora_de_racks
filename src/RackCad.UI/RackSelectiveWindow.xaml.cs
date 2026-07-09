@@ -728,17 +728,10 @@ namespace RackCad.UI
                 return;
             }
 
-            var design = BuildDesign(out var error);
-            if (design == null)
+            var system = BuildSystem(out var design, out var error);
+            if (system == null)
             {
                 SetStatus(error, true);
-                return;
-            }
-
-            var system = resolver.Resolve(design, catalog);
-            if (system.Height <= 0.0)
-            {
-                SetStatus("No se pudo derivar la geometría (revisa tarima/niveles).", true);
                 return;
             }
 
@@ -851,13 +844,22 @@ namespace RackCad.UI
             return design;
         }
 
-        private SelectiveRackSystem BuildSystem(out string error)
+        private SelectiveRackSystem BuildSystem(out string error) => BuildSystem(out _, out error);
+
+        /// <summary>Design + resolved system in one pass — RequestInsert and Recompute share this (no duplicated resolve/validation).</summary>
+        private SelectiveRackSystem BuildSystem(out SelectivePalletDesign design, out string error)
         {
-            var design = BuildDesign(out error);
+            design = BuildDesign(out error);
             if (design == null) return null;
 
             var system = resolver.Resolve(design, catalog);
-            if (system.Height <= 0.0) { error = "No se pudo derivar la geometria (revisa tarima/niveles)."; return null; }
+            if (system.Height <= 0.0)
+            {
+                error = "No se pudo derivar la geometría (revisa tarima/niveles).";
+                design = null;
+                return null;
+            }
+
             return system;
         }
 

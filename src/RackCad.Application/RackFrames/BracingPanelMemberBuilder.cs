@@ -181,16 +181,7 @@ namespace RackCad.Application.RackFrames
             }
         }
 
-        private static DiagonalDirection ResolveDirection(BracingPanel panel)
-        {
-            if (panel.DiagonalDirection == DiagonalDirection.UpRight ||
-                panel.DiagonalDirection == DiagonalDirection.UpLeft)
-            {
-                return panel.DiagonalDirection;
-            }
-
-            return panel.Number % 2 == 0 ? DiagonalDirection.UpLeft : DiagonalDirection.UpRight;
-        }
+        private static DiagonalDirection ResolveDirection(BracingPanel panel) => panel.ResolveDiagonalDirection();
 
         private static FrameMember CreateDiagonal(
             BracingPanel panel,

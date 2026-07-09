@@ -295,16 +295,7 @@ namespace RackCad.Application.Headers
         }
 
         /// <summary>Alternate the diagonal per panel when AutoAlternating; otherwise honour the explicit direction.</summary>
-        private static DiagonalDirection ResolveDirection(BracingPanel panel)
-        {
-            if (panel.DiagonalDirection == DiagonalDirection.UpRight ||
-                panel.DiagonalDirection == DiagonalDirection.UpLeft)
-            {
-                return panel.DiagonalDirection;
-            }
-
-            return panel.Number % 2 == 0 ? DiagonalDirection.UpLeft : DiagonalDirection.UpRight;
-        }
+        private static DiagonalDirection ResolveDirection(BracingPanel panel) => panel.ResolveDiagonalDirection();
 
         private static HeaderBlockInstance MakeDiagonal(
             LateralHeaderParameters p, string trussId, string block, Point2D celosia,
@@ -371,13 +362,10 @@ namespace RackCad.Application.Headers
         }
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
-        {
-            var entry = catalog?.ConnectionLayout.FindConnectionLayout(pieceId, connectionPointId, view);
-            return entry == null ? new Point2D(0.0, 0.0) : new Point2D(entry.LocalX, entry.LocalY);
-        }
+            => CatalogLookup.Local(catalog, pieceId, connectionPointId, view);
 
         private static string Block(RackCatalog catalog, string pieceId, string view)
-            => catalog?.Blocks.FindBlock(pieceId, view)?.BlockName;
+            => CatalogLookup.Block(catalog, pieceId, view);
 
         /// <summary>Block origin so that its local CELOSIA point lands on the anchor, accounting for rotation.</summary>
         private static Point2D Insertion(Point2D anchor, Point2D localConnection, double rotation)
@@ -393,18 +381,7 @@ namespace RackCad.Application.Headers
             return new Point2D(p.X * cos - p.Y * sin, p.X * sin + p.Y * cos);
         }
 
-        private static string FirstNonEmpty(params string[] candidates)
-        {
-            foreach (var candidate in candidates)
-            {
-                if (!string.IsNullOrWhiteSpace(candidate))
-                {
-                    return candidate.Trim();
-                }
-            }
-
-            return null;
-        }
+        private static string FirstNonEmpty(params string[] candidates) => CatalogLookup.FirstNonEmpty(candidates);
 
         /// <summary>A side's reinforcement zone: whether present, how high it reaches, and its inner troquel X.</summary>
         private readonly struct ReinforcementZone

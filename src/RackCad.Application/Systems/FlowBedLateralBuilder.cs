@@ -135,12 +135,9 @@ namespace RackCad.Application.Systems
             };
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
-        {
-            var entry = catalog?.ConnectionLayout.FindConnectionLayout(pieceId, connectionPointId, view);
-            return entry == null ? new Point2D(0.0, 0.0) : new Point2D(entry.LocalX, entry.LocalY);
-        }
+            => CatalogLookup.Local(catalog, pieceId, connectionPointId, view);
 
         private static string Block(RackCatalog catalog, string pieceId, string view)
-            => catalog?.Blocks.FindBlock(pieceId, view)?.BlockName;
+            => CatalogLookup.Block(catalog, pieceId, view);
     }
 }
