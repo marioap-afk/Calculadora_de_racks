@@ -74,7 +74,7 @@ namespace RackCad.Application.Persistence
                 PalletTolerance = PalletTolerance,
                 VerticalClearance = VerticalClearance,
                 FloorBeamRise = FloorBeamRise,
-                PalletDepth = PalletDepth > 0.0 ? PalletDepth : 48.0 // legacy docs had no fondo
+                PalletDepth = PalletDepth > 0.0 ? PalletDepth : SelectiveRackDefaults.DefaultPalletDepth // legacy docs had no fondo
             };
 
             foreach (var bay in Bays ?? Enumerable.Empty<SelectiveBayDocument>())

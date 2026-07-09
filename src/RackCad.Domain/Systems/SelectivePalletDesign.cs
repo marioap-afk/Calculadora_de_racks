@@ -30,8 +30,8 @@ namespace RackCad.Domain.Systems
         /// <summary>How far a "larguero a piso" sits above the lowest troquel (in), so its ménsula clears the base plate. Editable; default 4".</summary>
         public double FloorBeamRise { get; set; } = 4.0;
 
-        /// <summary>Pallet depth / fondo (in): the depth of the cabeceras in the LATERAL view. Editable; default 48".</summary>
-        public double PalletDepth { get; set; } = 48.0;
+        /// <summary>Pallet depth / fondo (in): the depth of the cabeceras in the LATERAL view. Editable.</summary>
+        public double PalletDepth { get; set; } = SelectiveRackDefaults.DefaultPalletDepth;
 
         /// <summary>The bays, left to right. Each carries its own column of level cells (its own count).</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();

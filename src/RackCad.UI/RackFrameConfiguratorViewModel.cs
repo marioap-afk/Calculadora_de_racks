@@ -948,7 +948,8 @@ namespace RackCad.UI
 
         public void AddHorizontalSegment()
         {
-            AddHorizontalAt(ConfiguredHeight + 44.0, defaultHorizontalProfileId, 1, "Horizontal agregada.");
+            // New horizontals open the CONFIGURED panel clear, not a re-declared 44" literal.
+            AddHorizontalAt(ConfiguredHeight + Configuration.PanelClear, defaultHorizontalProfileId, 1, "Horizontal agregada.");
         }
 
         public void AddHorizontal()
@@ -983,7 +984,7 @@ namespace RackCad.UI
             }
 
             AddHorizontalAt(
-                SelectedHorizontal.Elevation + 44.0,
+                SelectedHorizontal.Elevation + Configuration.PanelClear,
                 SelectedHorizontal.ProfileId,
                 SelectedHorizontal.Quantity,
                 "Horizontal duplicada.");
@@ -1237,7 +1238,9 @@ namespace RackCad.UI
                         Id = "H" + (index + 1).ToString(CultureInfo.InvariantCulture),
                         Number = index + 1,
                         Elevation = elevations[index],
-                        ProfileId = index == 0 ? "HORIZONTAL_INFERIOR" : index == elevations.Count - 1 ? "HORIZONTAL_SUPERIOR" : defaultHorizontalProfileId,
+                        // Always the real catalog profile: "HORIZONTAL_INFERIOR/SUPERIOR" never existed in the
+                        // catalogs, so those migrated horizontals could not resolve a block or a BOM description.
+                        ProfileId = defaultHorizontalProfileId,
                         Quantity = index == 0 ? 2 : 1,
                         MountingFace = FrameSide.Front,
                         State = FrameComponentState.Standard,

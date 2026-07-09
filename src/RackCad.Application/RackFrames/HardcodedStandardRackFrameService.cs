@@ -24,7 +24,7 @@ namespace RackCad.Application.RackFrames
 
         public RackFrameConfiguration CreateDefault()
         {
-            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
+            var template = RackFrameTemplateCatalog.FindStandardOrDefault();
             // Post/height/depth come from the template (and its defaults), not literals.
             var configuration = factory.Build(template, template.Post, template.DefaultHeight, template.DefaultDepth);
 

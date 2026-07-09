@@ -33,8 +33,8 @@ namespace RackCad.Application.Systems
             var factory = new RackFrameConfigurationFactory(catalog);
 
             var frenteYs = SelectivePostGeometry.Compute(system, catalog).PostXs; // frente positions, read as Y here
-            var depth = system.PalletDepth > 0.0 ? system.PalletDepth : 48.0;
-            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
+            var depth = system.PalletDepth > 0.0 ? system.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
             // One cabecera-planta per frame, stacked at its frente Y (fondo runs along X inside each frame).
             for (var i = 0; i < frenteYs.Count; i++)

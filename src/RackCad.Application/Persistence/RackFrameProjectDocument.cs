@@ -65,15 +65,19 @@ namespace RackCad.Application.Persistence
 
         public RackFrameConfiguration ToConfiguration()
         {
+            // Legacy fallbacks come from the DOMAIN defaults (a fresh configuration), not re-declared
+            // literals: if the standard changes there, loaded legacy projects follow it.
+            var domainDefaults = new RackFrameConfiguration();
+
             var configuration = new RackFrameConfiguration
             {
                 Name = Name,
                 Units = string.IsNullOrWhiteSpace(Units) ? "in" : Units,
                 Height = Height,
                 Depth = Depth,
-                CelosiaStartTroquel = CelosiaStartTroquel ?? 3,
-                DiagonalStartOffsetTroqueles = DiagonalStartOffsetTroqueles ?? 2,
-                DiagonalEndOffsetTroqueles = DiagonalEndOffsetTroqueles ?? 2,
+                CelosiaStartTroquel = CelosiaStartTroquel ?? domainDefaults.CelosiaStartTroquel,
+                DiagonalStartOffsetTroqueles = DiagonalStartOffsetTroqueles ?? domainDefaults.DiagonalStartOffsetTroqueles,
+                DiagonalEndOffsetTroqueles = DiagonalEndOffsetTroqueles ?? domainDefaults.DiagonalEndOffsetTroqueles,
                 StandardBaselineId = StandardBaselineId,
                 StandardBaselineVersion = StandardBaselineVersion,
                 LeftPost = LeftPost?.ToDomain(PostSide.Left),

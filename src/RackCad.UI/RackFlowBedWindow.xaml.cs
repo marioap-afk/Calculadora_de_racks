@@ -405,7 +405,7 @@ namespace RackCad.UI
         private List<CatalogOption> BuildRollerOptions()
         {
             return UiSupport.ToOptions((catalog?.FlowBedProfiles ?? Enumerable.Empty<FlowBedComponentCatalogEntry>())
-                .Where(c => string.Equals(c?.Role, "RODILLO", StringComparison.OrdinalIgnoreCase)));
+                .Where(c => string.Equals(c?.Role, FlowBedDefaults.RollerRole, StringComparison.OrdinalIgnoreCase)));
         }
 
         private void SetStatus(string message, bool isError)

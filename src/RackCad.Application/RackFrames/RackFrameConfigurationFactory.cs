@@ -23,6 +23,10 @@ namespace RackCad.Application.RackFrames
         /// </summary>
         public const double PostTopRemate = 4.0;
 
+        /// <summary>Largest leftover (in) above the last standard travesaño that a SINGLE closing travesaño
+        /// covers; a bigger gap takes two closings so no panel exceeds a safe unbraced clear.</summary>
+        private const double SingleClosingMaxGap = 24.0;
+
         private readonly RackCatalog catalog;
 
         public RackFrameConfigurationFactory()
@@ -169,7 +173,7 @@ namespace RackCad.Application.RackFrames
                 return elevations;
             }
 
-            if (gap <= 24.0)
+            if (gap <= SingleClosingMaxGap)
             {
                 // One closing travesaño AT the top target.
                 elevations.Add(Math.Round(topTarget, 4));

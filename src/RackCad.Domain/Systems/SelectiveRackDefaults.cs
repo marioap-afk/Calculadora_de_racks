@@ -19,6 +19,12 @@ namespace RackCad.Domain.Systems
         /// <summary>Troquel pitch on the post (in): levels snap to this grid.</summary>
         public const double TroquelPaso = 2.0;
 
+        /// <summary>Default pallet depth / fondo (in) when a design does not specify one (legacy documents too).</summary>
+        public const double DefaultPalletDepth = 48.0;
+
+        /// <summary>Default larguero peralte (in) for a fresh design cell.</summary>
+        public const double DefaultBeamPeralte = 4.0;
+
         /// <summary>Block parameter that stretches a piece to a length/height.</summary>
         public const string LengthParam = "LONGITUD";
 

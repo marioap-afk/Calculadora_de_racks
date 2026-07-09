@@ -131,7 +131,7 @@ namespace RackCad.UI
             public double Alto = 60.0;
             public int PalletCount = 2;
             public string BeamId;
-            public double BeamPeralte = 4.0;
+            public double BeamPeralte = SelectiveRackDefaults.DefaultBeamPeralte;
 
             /// <summary>Optional manual overrides (null = auto): larguero length and the clear below this level.</summary>
             public double? BeamLength;
@@ -155,7 +155,7 @@ namespace RackCad.UI
 
         private enum Scope { Cell, Row, Column, All }
 
-        private Cell NewCell() => new Cell { BeamId = defaultBeamId, BeamPeralte = 4.0 };
+        private Cell NewCell() => new Cell { BeamId = defaultBeamId, BeamPeralte = SelectiveRackDefaults.DefaultBeamPeralte };
 
         private void InitMatrix(int bayCount, int levelCount)
         {
@@ -496,17 +496,19 @@ namespace RackCad.UI
         private double ResolvedFondo()
         {
             var fondo = lastSystem?.PalletDepth ?? 0.0;
-            return fondo > 0.0 ? fondo : 48.0;
+            return fondo > 0.0 ? fondo : SelectiveRackDefaults.DefaultPalletDepth;
         }
 
         /// <summary>Build a standard cabecera at the given height/fondo using the run's post; the seed when a post has no custom one.</summary>
         private RackFrameConfiguration BuildStandardPostCabecera(double height, double fondo)
         {
-            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
+            var template = RackFrameTemplateCatalog.FindStandardOrDefault();
             var postId = PostBox.SelectedValue as string;
             if (string.IsNullOrWhiteSpace(postId)) postId = lastSystem?.PostId;
             return new RackFrameConfigurationFactory(catalog).Build(
-                template, postId, height > 0.0 ? height : 132.0, fondo > 0.0 ? fondo : 48.0);
+                template, postId,
+                height > 0.0 ? height : template.DefaultHeight,
+                fondo > 0.0 ? fondo : SelectiveRackDefaults.DefaultPalletDepth);
         }
 
         private void ResetPost_Click(object sender, RoutedEventArgs e)
@@ -849,7 +851,7 @@ namespace RackCad.UI
             ToleranceBox.Text = design.PalletTolerance.ToString("0.###", CultureInfo.InvariantCulture);
             ClearanceBox.Text = design.VerticalClearance.ToString("0.###", CultureInfo.InvariantCulture);
             FloorRiseBox.Text = design.FloorBeamRise.ToString("0.###", CultureInfo.InvariantCulture);
-            FondoBox.Text = (design.PalletDepth > 0.0 ? design.PalletDepth : 48.0).ToString("0.###", CultureInfo.InvariantCulture);
+            FondoBox.Text = (design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
 
             bays.Clear();
             floorBeams.Clear();
@@ -878,7 +880,7 @@ namespace RackCad.UI
             }
 
             postCabeceras.Clear();
-            var loadedFondo = design.PalletDepth > 0.0 ? design.PalletDepth : 48.0;
+            var loadedFondo = design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
             foreach (var cabecera in design.PostCabeceras)
             {
                 // Every cabecera of the rack shares the tramo's fondo — coerce it on load so a legacy/round-tripped

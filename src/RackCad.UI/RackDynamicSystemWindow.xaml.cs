@@ -674,7 +674,7 @@ namespace RackCad.UI
                 .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration != null)?
                 .AssociatedFrameConfiguration.LeftPost?.PostCatalogId ?? defaultPostCatalogId;
 
-            var entry = catalog.ConnectionLayout.FindConnectionLayout(postId, "TROQUEL_SEPARADOR", "LATERAL");
+            var entry = catalog.ConnectionLayout.FindConnectionLayout(postId, DynamicRackDefaults.SeparatorPostPoint, "LATERAL");
             return entry?.LocalY ?? 0.0;
         }
 

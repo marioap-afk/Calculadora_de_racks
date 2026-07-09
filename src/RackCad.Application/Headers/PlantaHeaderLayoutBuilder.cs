@@ -23,11 +23,18 @@ namespace RackCad.Application.Headers
         public const string View = "PLANTA";
         private const string LateralView = "LATERAL";
 
-        private const string MontajePostePoint = "MONTAJE_POSTE";
-        private const string TroquelCelosiaPoint = "TROQUEL_CELOSIA";
-        private const string CelosiaPoint = "CELOSIA";
-        private const string LengthParam = "LONGITUD";
-        private const string PeralteParam = "PERALTE";
+        // Aliases of the shared ids (CatalogIds / SelectiveRackDefaults are the single source of truth).
+        private const string MontajePostePoint = RackFrames.CatalogIds.BasePlateConnectionPoint;
+        private const string TroquelCelosiaPoint = RackFrames.CatalogIds.BraceStartConnectionPoint;
+        private const string CelosiaPoint = RackFrames.CatalogIds.BraceEndConnectionPoint;
+        private const string LengthParam = Domain.Systems.SelectiveRackDefaults.LengthParam;
+        private const string PeralteParam = Domain.Systems.SelectiveRackDefaults.PeralteParam;
+
+        /// <summary>Fallback fondo when a config carries none (the standard template's default depth).</summary>
+        private const double FallbackDepth = 42.0;
+
+        /// <summary>Business rule: the celosía peralte is one inch less than the post peralte.</summary>
+        private const double CelosiaPeralteReduction = 1.0;
 
         /// <summary>
         /// The cabecera's planta instances. <paramref name="origin"/> shifts the whole frame (used by the selective
@@ -41,7 +48,7 @@ namespace RackCad.Application.Headers
                 return instances;
             }
 
-            var depth = config.Depth > 0.0 ? config.Depth : 42.0;
+            var depth = config.Depth > 0.0 ? config.Depth : FallbackDepth;
 
             // Each side resolves ITS OWN post/plate/peralte — the configurator edits them per side, and the
             // lateral view honours that; the planta must not apply the left side's values to both.
@@ -53,7 +60,7 @@ namespace RackCad.Application.Headers
 
             var postPeralte = PostWidth(catalog, postId);
             var backPostPeralte = PostWidth(catalog, backPostId);
-            var celosiaPeralte = Math.Max(0.0, postPeralte - 1.0);
+            var celosiaPeralte = Math.Max(0.0, postPeralte - CelosiaPeralteReduction);
             var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
             var backPlateEntry = catalog?.BasePlates.FindBasePlate(backPlateId);
             var platePeralte = config.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;

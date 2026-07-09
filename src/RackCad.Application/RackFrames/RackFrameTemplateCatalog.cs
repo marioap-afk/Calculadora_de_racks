@@ -12,11 +12,17 @@ namespace RackCad.Application.RackFrames
     /// </summary>
     public static class RackFrameTemplateCatalog
     {
+        /// <summary>Id of the standard template — the seed every default cabecera starts from.</summary>
+        public const string StandardTemplateId = "STD-3P";
+
+        /// <summary>The standard template if present, else the first available (never null).</summary>
+        public static RackFrameTemplate FindStandardOrDefault() => FindById(StandardTemplateId) ?? Default;
+
         public static IReadOnlyList<RackFrameTemplate> All { get; } = new List<RackFrameTemplate>
         {
             new RackFrameTemplate
             {
-                Id = "STD-3P",
+                Id = StandardTemplateId,
                 Name = "Estandar (3 paneles)",
                 DefaultHeight = 132.0,
                 DefaultDepth = 42.0,

@@ -33,8 +33,8 @@ namespace RackCad.Application.Systems
             var factory = new RackFrameConfigurationFactory(catalog);
 
             var postXs = SelectivePostGeometry.Compute(system, catalog).PostXs;
-            var depth = system.PalletDepth > 0.0 ? system.PalletDepth : 48.0;
-            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
+            var depth = system.PalletDepth > 0.0 ? system.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
             for (var i = 0; i < postXs.Count; i++)
             {

@@ -120,9 +120,10 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                // Prompt defaults come from defaults.json (the user-editable standard recipe), not literals.
                 var depthOptions = new PromptDistanceOptions("\nFondo (in)")
                 {
-                    DefaultValue = 48.0,
+                    DefaultValue = SelectiveRackDefaults.DefaultPalletDepth,
                     UseDefaultValue = true,
                     AllowNegative = false,
                     AllowZero = false
@@ -135,7 +136,7 @@ namespace RackCad.Plugin
 
                 var heightOptions = new PromptDistanceOptions("\nAlto (in)")
                 {
-                    DefaultValue = 132.0,
+                    DefaultValue = catalog?.Defaults?.DefaultHeaderHeight > 0.0 ? catalog.Defaults.DefaultHeaderHeight : 132.0,
                     UseDefaultValue = true,
                     AllowNegative = false,
                     AllowZero = false
@@ -171,7 +172,8 @@ namespace RackCad.Plugin
 
             if (posts.Count == 0)
             {
-                return CatalogIds.StandardPost;
+                // Empty catalog: fall back to the defaults.json post first, then the built-in standard.
+                return !string.IsNullOrWhiteSpace(catalog?.Defaults?.Post) ? catalog.Defaults.Post : CatalogIds.StandardPost;
             }
 
             if (posts.Count == 1)
@@ -217,14 +219,15 @@ namespace RackCad.Plugin
 
             try
             {
+                // Demo command: pallet/depth stay illustrative, but post + header height honor defaults.json.
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
                 var system = new DynamicRackSystemBuilder(catalog).BuildDefault(
                     pallet,
                     palletsDeep: 8,
                     headerTemplate: RackFrameTemplateCatalog.Default,
-                    headerPostCatalogId: CatalogIds.StandardPost,
-                    headerHeight: 132.0);
+                    headerPostCatalogId: !string.IsNullOrWhiteSpace(catalog?.Defaults?.Post) ? catalog.Defaults.Post : CatalogIds.StandardPost,
+                    headerHeight: catalog?.Defaults?.DefaultHeaderHeight > 0.0 ? catalog.Defaults.DefaultHeaderHeight : 132.0);
 
                 var payload = BuildDynamicPayload(system, System.Guid.NewGuid().ToString(), null);
                 var result = new DynamicSystemDrawService().DrawAndPlace(document, system, payload);
@@ -525,7 +528,7 @@ namespace RackCad.Plugin
         {
             var rollers = (catalog?.FlowBedProfiles ?? System.Array.Empty<FlowBedComponentCatalogEntry>())
                 .Where(c => c != null && !string.IsNullOrWhiteSpace(c.Id)
-                    && string.Equals(c.Role, "RODILLO", System.StringComparison.OrdinalIgnoreCase))
+                    && string.Equals(c.Role, FlowBedDefaults.RollerRole, System.StringComparison.OrdinalIgnoreCase))
                 .GroupBy(c => c.Id, System.StringComparer.OrdinalIgnoreCase)
                 .Select(g => g.First())
                 .OrderBy(c => c.Diameter)

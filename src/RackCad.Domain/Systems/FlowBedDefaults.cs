@@ -11,6 +11,9 @@ namespace RackCad.Domain.Systems
         /// <summary>Default roller (the smaller 1.9"); the bed can pick the 2.5" one instead.</summary>
         public const string RollerId = "RODILLO_DE_TUBO_DE_1.9_CALIBRE_14";
 
+        /// <summary>Role tag in flow-bed-profiles.csv that marks an entry as a roller (for pickers).</summary>
+        public const string RollerRole = "RODILLO";
+
         // ---- View + connection point used by the lateral drawing ----
         public const string View = "LATERAL";
 
