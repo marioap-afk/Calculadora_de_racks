@@ -163,6 +163,16 @@ namespace RackCad.Plugin.Headers
                 }
             }
 
+            // A redefined definition keeps its references' CACHED geometric extents from the old size. When the
+            // rack grows, the new region draws but AutoCAD still tests selection against the old (smaller) bounding
+            // box, so a window/crossing over the grown part selects nothing. Force each reference to recompute its
+            // graphics AND extents; combined with the caller's Regen this makes the whole redrawn rack selectable.
+            foreach (ObjectId referenceId in systemDef.GetBlockReferenceIds(directOnly: true, forceValidity: true))
+            {
+                var reference = (BlockReference)tr.GetObject(referenceId, OpenMode.ForWrite);
+                reference.RecordGraphicsModified(true);
+            }
+
             return new LateralHeaderDrawOutcome(
                 new LateralHeaderLayout(new List<HeaderBlockInstance>(), 0.0, 0, 0, 0.0), inserted, missing);
         }
