@@ -32,4 +32,21 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
+
+  <!-- Assemble an AutoCAD Autoloader bundle in the output (RackCad.bundle\PackageContents.xml + Contents\{DLLs,catalogs}).
+       Copy that folder to %AppData%\Autodesk\ApplicationPlugins\ (or run deploy\install-bundle.ps1) for auto-load. -->
+  <Target Name="AssembleAutoloaderBundle" AfterTargets="Build">
+    <PropertyGroup>
+      <BundleRoot>$(OutDir)RackCad.bundle</BundleRoot>
+      <BundleContents>$(BundleRoot)\Contents</BundleContents>
+    </PropertyGroup>
+    <ItemGroup>
+      <BundleAssemblies Include="$(OutDir)RackCad.*.dll" />
+      <BundleCatalogFiles Include="$(OutDir)catalogs\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\..\deploy\RackCad.bundle\PackageContents.xml" DestinationFolder="$(BundleRoot)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(BundleAssemblies)" DestinationFolder="$(BundleContents)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(BundleCatalogFiles)" DestinationFiles="@(BundleCatalogFiles->'$(BundleContents)\catalogs\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Message Importance="high" Text="RackCad Autoloader bundle: $(BundleRoot)" />
+  </Target>
 </Project>

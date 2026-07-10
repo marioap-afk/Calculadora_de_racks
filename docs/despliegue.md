@@ -81,15 +81,40 @@ automática, abajo).
 
 ---
 
-## 4. Carga automática (opcional, recomendado para el usuario final)
+## 4. Carga automática (Autoloader bundle — recomendado)
 
-Para no hacer `NETLOAD` cada vez, cualquiera de estas:
+Para que RackCad **cargue solo al abrir AutoCAD** (sin `NETLOAD`), se usa un *bundle* del
+Autoloader: una carpeta **`RackCad.bundle`** con un `PackageContents.xml` + `Contents\` (los
+DLL y `catalogs\`), colocada en un `ApplicationPlugins`.
 
-- **APPLOAD → Suite de inicio (Startup Suite):** comando `APPLOAD`, botón *Contents…* de la
-  Startup Suite, añadir `RackCad.Plugin.dll`. Se carga solo al abrir cada dibujo.
-- **Bundle en `ApplicationPlugins`:** empaquetar como `RackCad.bundle` (carpeta con
-  `PackageContents.xml` + los DLL/catálogos) dentro de
-  `%AppData%\Autodesk\ApplicationPlugins\`. AutoCAD lo autocarga al iniciar.
+**El build ya lo arma solo.** Al compilar el plugin queda en:
+
+```
+src\RackCad.Plugin\bin\Release\net8.0-windows\RackCad.bundle\
+  PackageContents.xml
+  Contents\
+    RackCad.Plugin.dll  (+ Application/Domain/UI)
+    catalogs\  (CSV/JSON + blocks-library.dwg)
+```
+
+### Instalar
+- **Con el script** (compila si pasas `-Build` e instala en el perfil del usuario):
+  ```powershell
+  pwsh deploy\install-bundle.ps1 -Build
+  ```
+  Copia `RackCad.bundle` a `%AppData%\Autodesk\ApplicationPlugins\RackCad.bundle`.
+- **A mano:** copia esa carpeta `RackCad.bundle` a **`%AppData%\Autodesk\ApplicationPlugins\`**
+  (por usuario) o a `%ProgramFiles%\Autodesk\ApplicationPlugins\` (todos los usuarios, requiere
+  admin). Cierra AutoCAD antes: bloquea `RackCad.Plugin.dll`.
+
+Abre AutoCAD 2025+; los comandos (`RACKCAD`, `RACKSELECTIVO`, …) quedan disponibles al arranque.
+
+> El `PackageContents.xml` exige `SeriesMin="R25.0"` (AutoCAD 2025). Para actualizar, cierra
+> AutoCAD, recompila y vuelve a copiar (o corre el script) — la carpeta en `ApplicationPlugins`
+> se reemplaza.
+
+**Alternativa manual:** `APPLOAD` → *Suite de inicio (Startup Suite)* → añadir
+`RackCad.Plugin.dll`. Se carga solo al abrir cada dibujo (pero sin la comodidad del bundle).
 
 ---
 
