@@ -42,24 +42,6 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
-        /// Draws the standard lateral header straight into the drawing (creates the block and lets the user
-        /// place it). Quick path without the configurator; the editor's "Insertar en AutoCAD" button draws
-        /// the edited header instead.
-        /// </summary>
-        [CommandMethod("RACKCABECERALATERAL")]
-        public void RackCabeceraLateral()
-        {
-            try
-            {
-                DrawAndPlace(new HardcodedStandardRackFrameService().CreateDefault());
-            }
-            catch (System.Exception ex)
-            {
-                Report(ex);
-            }
-        }
-
-        /// <summary>
         /// Quick lateral header straight from the command line: prompts for post, depth and height, then
         /// builds the header and lets the user place it. Same no-UI style as QUICKCAMA.
         /// </summary>

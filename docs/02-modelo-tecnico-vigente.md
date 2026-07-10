@@ -8,7 +8,7 @@ uno con su ventana editora, su dibujo real en AutoCAD y round-trip de edicion.
 
 | Tipo | Ventana editora | Vista | Comandos |
 | --- | --- | --- | --- |
-| Cabecera (marco) | `RackFrameConfiguratorWindow` | Lateral + Planta | `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA` |
+| Cabecera (marco) | `RackFrameConfiguratorWindow` | Lateral + Planta | `RACKCABECERA`, `QUICKCABECERA` |
 | Sistema dinamico (pallet flow) | `RackDynamicSystemWindow` | Lateral | `RACKSISTEMADINAMICO` |
 | Cama de rodamiento (flow bed) | `RackFlowBedWindow` | Lateral | `QUICKCAMA` |
 | Selectivo (editor avanzado) | `RackSelectiveWindow` | Frontal + Lateral + Planta | `RACKSELECTIVO` |

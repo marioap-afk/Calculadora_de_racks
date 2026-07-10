@@ -362,7 +362,7 @@ Los CUATRO tipos de rack (ventana editora + comando):
 
 | Tipo | Ventana (UI) | Comando(s) |
 |------|--------------|------------|
-| Cabecera (marco) | `RackFrameConfiguratorWindow` | `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA` |
+| Cabecera (marco) | `RackFrameConfiguratorWindow` | `RACKCABECERA`, `QUICKCABECERA` |
 | Sistema dinamico (pallet flow) | `RackDynamicSystemWindow` | `RACKSISTEMADINAMICO` |
 | Cama de rodamiento (flow bed) | `RackFlowBedWindow` | `QUICKCAMA` |
 | Selectivo (editor avanzado) | `RackSelectiveWindow` (+ `RackBomWindow`) | `RACKSELECTIVO` |

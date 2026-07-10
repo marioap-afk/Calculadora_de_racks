@@ -199,5 +199,5 @@ Quiero dibujar la cabecera estándar en vista frontal:
   (fallback en `RackFrameTemplateCatalog`).
 - Resolución plantilla+defaults+catálogo → cabecera: `RackFrameConfigurationFactory.cs`.
 - Comandos de AutoCAD (menú y dibujo por tipo): `src/RackCad.Plugin/RackFrameCommands.cs`
-  (`RACKCAD`, `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA`, `RACKSISTEMADINAMICO`, `QUICKCAMA`,
-  `RACKSELECTIVO`, `RACKEDITAR`).
+  (`RACKCAD`, `RACKCABECERA`, `QUICKCABECERA`, `RACKSISTEMADINAMICO`, `QUICKCAMA`,
+  `RACKSELECTIVO`, `RACKEDITAR`, `RACKDUPLICAR`).

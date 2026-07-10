@@ -8,8 +8,8 @@ y selectivo); el **mismo patrón por bloques + round-trip** descrito aquí sirve
 [Patrón unificado](#patrón-unificado-block-based--round-trip-para-los-4-tipos)).
 
 > **Estado:** la **lógica pura** y el **dibujo en AutoCAD** de la cabecera lateral ya están implementados y
-> compilan en Windows (232 tests verdes). Los comandos `RACKCABECERA` / `RACKCABECERALATERAL` /
-> `QUICKCABECERA` y el botón **Insertar en AutoCAD** del configurador dibujan la cabecera como **un bloque**;
+> compilan en Windows. Los comandos `RACKCABECERA` / `QUICKCABECERA` y el botón **Insertar en AutoCAD**
+> del configurador dibujan la cabecera como **un bloque**;
 > `RACKEDITAR` la reabre y la **redefine en sitio** para que todas las copias se actualicen a la vez. La
 > cabecera tiene además una vista **PLANTA** ligada por GUID a la lateral (solo se inserta desde `RACKEDITAR`
 > de una vista existente, para que nunca quede huérfana); al confirmar una edición se **redibujan todas las
@@ -113,8 +113,8 @@ El dibujo (`RackCad.Plugin/Headers/`) **ya está cableado**:
 3. ✅ **Importación de bloques**: `BlockLibraryImporter.EnsureForLayout` clona en el dibujo activo los bloques
    que falten desde un DWG biblioteca (`blocks-library.dwg`, junto a los catálogos; ruta configurable). Se lee
    en una base lateral sin abrirlo en AutoCAD; los bloques que tampoco existan en la biblioteca se omiten.
-4. ✅ **Comandos y botón**: `RACKCABECERALATERAL` dibuja la cabecera estándar (smoke test); `QUICKCABECERA`
-   la pide por línea de comandos (poste/fondo/alto); `RACKCABECERA` abre el configurador. El **botón
+4. ✅ **Comandos y botón**: `QUICKCABECERA` pide la cabecera por línea de comandos (poste/fondo/alto);
+   `RACKCABECERA` abre el configurador. El **botón
    "Insertar en AutoCAD"** dibuja la cabecera **que el usuario configuró**.
 5. ✅ **Round-trip**: la cabecera se **embebe** en la definición del bloque y `RACKEDITAR` la reabre y la
    **redefine en sitio** (`LateralHeaderDrawService.RedrawInPlace` → `RedefineSystemBlock` + `Regen`), de modo
@@ -154,7 +154,7 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 
   | Kind | Comando | Editor (WPF) | Servicio de dibujo | Store del diseño |
   |---|---|---|---|---|
-  | `cabecera` | `RACKCABECERA` / `RACKCABECERALATERAL` / `QUICKCABECERA` | `RackFrameConfiguratorWindow` | `LateralHeaderDrawService` | `RackProjectStore` |
+  | `cabecera` | `RACKCABECERA` / `QUICKCABECERA` | `RackFrameConfiguratorWindow` | `LateralHeaderDrawService` | `RackProjectStore` |
   | `dynamic` | `RACKSISTEMADINAMICO` | `RackDynamicSystemWindow` | `DynamicSystemDrawService` | `RackProjectStore` |
   | `cama` | `QUICKCAMA` | `RackFlowBedWindow` | `FlowBedDrawService` | `FlowBedConfigurationStore` |
   | `selective` | `RACKSELECTIVO` | `RackSelectiveWindow` | `SelectiveFrontalDrawService` | `SelectivePalletDesignStore` |
@@ -186,7 +186,7 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 - Round-trip: sobre `src/RackCad.Application/Persistence/RackEmbedDocument.cs` (`RackEmbedStore`), embebido con
   `src/RackCad.Plugin/Systems/RackBlockData.cs`; comandos y despacho en `src/RackCad.Plugin/RackFrameCommands.cs`
   (`RACKEDITAR`, `EditCabecera`/`EditDynamic`/`EditCama`/`EditSelective`).
-- Comandos de cabecera: `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA` en
+- Comandos de cabecera: `RACKCABECERA`, `QUICKCABECERA` en
   `src/RackCad.Plugin/RackFrameCommands.cs`; botón "Insertar en AutoCAD" en
   `src/RackCad.UI/RackFrameConfiguratorWindow.xaml(.cs)`.
 - Tests: `tests/RackCad.Tests/LateralHeaderLayoutBuilderTests.cs` (builder/resolver) y

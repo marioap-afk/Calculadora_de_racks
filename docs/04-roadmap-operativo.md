@@ -16,7 +16,7 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 - Peralte de la placa base **editable por placa** (`BasePlatePlacement.PeralteOverride`;
   `null` = derivado con `StandardPeralte` = base + slope * peralte del poste).
 - Modo "Configuracion rapida": `Insertar` genera de un clic.
-- Comandos: `RACKCABECERA`, `RACKCABECERALATERAL`, `QUICKCABECERA`.
+- Comandos: `RACKCABECERA`, `QUICKCABECERA`.
 
 ### Sistema dinamico (pallet flow)
 

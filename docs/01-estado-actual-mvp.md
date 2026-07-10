@@ -28,8 +28,7 @@ base + slope*peralte_poste). En modo "Configuracion rapida" ademas del alto/fond
 se referencia) **sin abrir el editor avanzado**, y hay un **campo de nombre**; "Insertar" genera de un
 clic.
 
-- Comandos: `RACKCABECERA` (configurador), `RACKCABECERALATERAL` (dibujo directo de la estandar),
-  `QUICKCABECERA` (desde la linea de comandos: poste, fondo, alto).
+- Comandos: `RACKCABECERA` (configurador), `QUICKCABECERA` (desde la linea de comandos: poste, fondo, alto).
 
 ### 2. Sistema dinamico (pallet flow) — `RackDynamicSystemWindow`
 

@@ -123,7 +123,6 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 | --------------------- | -------- |
 | `RACKCAD`             | Menu principal (`RackMainMenuWindow`): elige que disenar e inserta. |
 | `RACKCABECERA`        | Abre el configurador de cabecera (`RackFrameConfiguratorWindow`). |
-| `RACKCABECERALATERAL` | Dibuja la cabecera lateral estandar directo, sin configurador. |
 | `QUICKCABECERA`       | Cabecera lateral desde la linea de comandos (pide poste, fondo, alto). |
 | `RACKSISTEMADINAMICO` | Dibuja un sistema dinamico (pallet flow) preliminar. |
 | `QUICKCAMA`           | Cama de rodamiento (dinamica o pushback) desde la linea de comandos. |

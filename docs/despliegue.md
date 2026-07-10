@@ -180,7 +180,6 @@ un cambio de catálogo. Sí conviene cerrar el archivo en Excel antes de volver 
 |---------|----------|
 | `RACKCAD` | Menú principal (elige el tipo de rack a diseñar). |
 | `RACKCABECERA` | Configurador de cabecera (editor). |
-| `RACKCABECERALATERAL` | Cabecera estándar directa al dibujo. |
 | `QUICKCABECERA` | Cabecera por línea de comandos (pide poste/fondo/alto). |
 | `RACKSISTEMADINAMICO` | Sistema dinámico (pallet flow). |
 | `QUICKCAMA` | Cama de rodamiento. |
