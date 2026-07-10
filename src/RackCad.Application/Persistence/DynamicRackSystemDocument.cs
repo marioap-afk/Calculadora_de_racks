@@ -22,6 +22,7 @@ namespace RackCad.Application.Persistence
         public double? SeparatorSpacingOverride { get; set; }
         public bool DerivedPostReinforced { get; set; } = true;
         public double? DerivedPostReinforcementHeight { get; set; }
+        public double? ManualHeaderHeightOverride { get; set; }
         public List<DynamicRackModuleDocument> Modules { get; set; } = new List<DynamicRackModuleDocument>();
 
         public static DynamicRackSystemDocument From(DynamicRackSystem system)
@@ -37,7 +38,8 @@ namespace RackCad.Application.Persistence
                 SeparatorCountOverride = system.SeparatorCountOverride,
                 SeparatorSpacingOverride = system.SeparatorSpacingOverride,
                 DerivedPostReinforced = system.DerivedPostReinforced,
-                DerivedPostReinforcementHeight = system.DerivedPostReinforcementHeight
+                DerivedPostReinforcementHeight = system.DerivedPostReinforcementHeight,
+                ManualHeaderHeightOverride = system.ManualHeaderHeightOverride
             };
 
             foreach (var module in system.Modules)
@@ -63,7 +65,8 @@ namespace RackCad.Application.Persistence
                 SeparatorCountOverride = SeparatorCountOverride,
                 SeparatorSpacingOverride = SeparatorSpacingOverride,
                 DerivedPostReinforced = DerivedPostReinforced,
-                DerivedPostReinforcementHeight = DerivedPostReinforcementHeight
+                DerivedPostReinforcementHeight = DerivedPostReinforcementHeight,
+                ManualHeaderHeightOverride = ManualHeaderHeightOverride
             };
 
             foreach (var module in Modules ?? Enumerable.Empty<DynamicRackModuleDocument>())

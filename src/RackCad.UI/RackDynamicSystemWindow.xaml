@@ -93,6 +93,14 @@
 
                     <StackPanel x:Name="AdvancedPanel" Visibility="Collapsed">
                         <TextBlock Text="Altura de cabecera (detalle)" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                        <CheckBox x:Name="ManualHeightToggle" Content="Altura manual (fijar en vez de derivar de niveles)"
+                                  Foreground="#415161" Margin="0,4,0,4"
+                                  Checked="ManualHeight_Changed" Unchecked="ManualHeight_Changed"
+                                  ToolTip="Fija a mano la altura de la cabecera/tramo; ignora la altura derivada de los niveles de carga." />
+                        <TextBox x:Name="ManualHeightBox" Style="{StaticResource FieldBox}"
+                                 IsEnabled="{Binding IsChecked, ElementName=ManualHeightToggle}"
+                                 LostFocus="ManualHeight_Changed"
+                                 ToolTip="Altura de cabecera (in) cuando 'Altura manual' está activo." />
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -120,12 +128,12 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="Separadores (cantidad)" Style="{StaticResource FieldLabel}" />
-                                <TextBox x:Name="SeparatorCountBox" Style="{StaticResource FieldBox}"
+                                <TextBox x:Name="SeparatorCountBox" Style="{StaticResource FieldBox}" LostFocus="AdvancedOverride_LostFocus"
                                          ToolTip="Cantidad de separadores por cabecera. Vacío = el cálculo estándar (mín. 2, +1 cada 60&quot;)." />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Separación (in)" Style="{StaticResource FieldLabel}" />
-                                <TextBox x:Name="SeparatorSpacingBox" Style="{StaticResource FieldBox}"
+                                <TextBox x:Name="SeparatorSpacingBox" Style="{StaticResource FieldBox}" LostFocus="AdvancedOverride_LostFocus"
                                          ToolTip="Separación entre niveles. Vacío = el estándar (altura repartida con medios en los extremos)." />
                             </StackPanel>
                         </Grid>
@@ -136,7 +144,7 @@
                               Checked="DerivedReinforce_Changed" Unchecked="DerivedReinforce_Changed"
                               ToolTip="El poste compartido donde se juntan dos separadores. Predeterminado: reforzado a altura completa." />
                     <TextBlock Text="Longitud refuerzo (in)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="DerivedReinforcementBox" Style="{StaticResource FieldBox}"
+                    <TextBox x:Name="DerivedReinforcementBox" Style="{StaticResource FieldBox}" LostFocus="AdvancedOverride_LostFocus"
                              ToolTip="Longitud del refuerzo. Vacío = misma longitud que el poste (altura de cabecera)." />
 
                     <TextBlock Text="Módulos" Style="{StaticResource SectionTitle}" />

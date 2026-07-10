@@ -27,6 +27,9 @@ namespace RackCad.Domain.Systems
         /// <summary>Reinforcement length (in) for the derived post; null/&lt;=0 = full post height.</summary>
         public double? DerivedPostReinforcementHeight { get; set; }
 
+        /// <summary>Optional manual header/tramo height (in) typed by the user; null = derived from the load levels.</summary>
+        public double? ManualHeaderHeightOverride { get; set; }
+
         /// <summary>Ordered, editable modules. Intermediate posts are zero-length entries.</summary>
         public IList<DynamicRackModule> Modules { get; } = new List<DynamicRackModule>();
 

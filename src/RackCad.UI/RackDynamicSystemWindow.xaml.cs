@@ -141,6 +141,7 @@ namespace RackCad.UI
                 system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, SelectedPostId(), computedHeaderHeight);
                 ApplySeparatorOverrides();
                 ApplyDerivedPostOptions();
+                ApplyHeightOverride();
                 selectedModule = null;
                 BindModules();
                 UpdateSelectedPanel();
@@ -287,12 +288,53 @@ namespace RackCad.UI
 
             var result = DynamicHeaderHeightCalculator.Calculate(pallet.Height, levels, firstLevel, beamDepth, totalDepth);
 
-            ComputedHeightText.Text = string.Format(
-                CultureInfo.InvariantCulture,
-                "Altura calculada: {0:0.#}\" → {1:0}\"  (pendiente {2:0.#}\")",
-                result.TheoreticalHeight, result.HeaderHeight, result.Slope);
+            // Manual override wins over the derived height, but we still show what the levels would give.
+            var manual = ManualHeightToggle?.IsChecked == true && TryNum(ManualHeightBox.Text, out var m) && m > 0.0
+                ? m
+                : (double?)null;
 
-            return result.HeaderHeight;
+            ComputedHeightText.Text = manual.HasValue
+                ? string.Format(CultureInfo.InvariantCulture, "Altura manual: {0:0.#}\"  (derivada sería {1:0}\")", manual.Value, result.HeaderHeight)
+                : string.Format(CultureInfo.InvariantCulture, "Altura calculada: {0:0.#}\" → {1:0}\"  (pendiente {2:0.#}\")", result.TheoreticalHeight, result.HeaderHeight, result.Slope);
+
+            return manual ?? result.HeaderHeight;
+        }
+
+        /// <summary>Read the manual-height toggle/box onto the system (null = derived from levels). Non-destructive.</summary>
+        private void ApplyHeightOverride()
+        {
+            if (system == null)
+            {
+                return;
+            }
+
+            system.ManualHeaderHeightOverride =
+                ManualHeightToggle?.IsChecked == true && TryNum(ManualHeightBox.Text, out var h) && h > 0.0 ? h : (double?)null;
+        }
+
+        private void ManualHeight_Changed(object sender, RoutedEventArgs e)
+        {
+            // Changing the header height requires rebuilding the headers at the new height.
+            if (system == null || suppressRecompose)
+            {
+                return;
+            }
+
+            Recompose();
+        }
+
+        /// <summary>Flush the advanced separator/derived-post override boxes onto the model WITHOUT a destructive rebuild.</summary>
+        private void AdvancedOverride_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (system == null || suppressRecompose)
+            {
+                return;
+            }
+
+            ApplySeparatorOverrides();
+            ApplyDerivedPostOptions();
+            UpdateSummary();
+            DrawSideView();
         }
 
         private bool TryReadInputs(out PalletSpecification pallet, out int palletsDeep, out string error)
@@ -922,6 +964,12 @@ namespace RackCad.UI
         {
             if (system == null) { SetStatus("Genera la vista antes de guardar.", true); return; }
 
+            // Commit the advanced fields onto the model first: they only reach `system` on Apply*, so saving without
+            // a prior recompose used to persist stale defaults and lose the user's customizations on reopen.
+            ApplySeparatorOverrides();
+            ApplyDerivedPostOptions();
+            ApplyHeightOverride();
+
             var dialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
@@ -985,6 +1033,10 @@ namespace RackCad.UI
                 DerivedReinforceBox.IsChecked = system.DerivedPostReinforced;
                 DerivedReinforcementBox.Text = system.DerivedPostReinforcementHeight.HasValue ? Num(system.DerivedPostReinforcementHeight.Value) : string.Empty;
 
+                ManualHeightToggle.IsChecked = system.ManualHeaderHeightOverride.HasValue;
+                ManualHeightBox.Text = system.ManualHeaderHeightOverride.HasValue ? Num(system.ManualHeaderHeightOverride.Value) : string.Empty;
+                if (system.ManualHeaderHeightOverride.HasValue) computedHeaderHeight = system.ManualHeaderHeightOverride.Value;
+
                 var loadedPostId = system.Modules
                     .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration?.LeftPost != null)?
                     .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
@@ -1043,6 +1095,12 @@ namespace RackCad.UI
                 SetStatus("Genera la vista antes de insertar en AutoCAD.", true);
                 return;
             }
+
+            // Commit the advanced override fields onto the model before embedding it (same reason as SaveSystem):
+            // otherwise a customization not followed by "Actualizar vista" is lost in the .dwg round-trip.
+            ApplySeparatorOverrides();
+            ApplyDerivedPostOptions();
+            ApplyHeightOverride();
 
             // The placement jig needs the editor free, so only flag the request and close; the host command
             // draws the system once every modal window is gone.
