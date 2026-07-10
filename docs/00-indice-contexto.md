@@ -2,7 +2,7 @@
 
 Este indice resume como entender rapidamente el proyecto y cual es el estado del repo antes de continuar el desarrollo.
 
-RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (249 tests verdes).
+RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (255 tests verdes).
 
 ## Los cuatro tipos de rack
 
@@ -89,6 +89,6 @@ Utiles para decisiones de arquitectura, pero mas extensos:
 
 ## Estado del repositorio
 
-Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 249 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
+Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 255 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
 
 La carpeta de salida `bin/`, `obj/`, caches locales `.dotnet_home`, `.nuget_packages`, `.appdata` y `.localappdata` no son parte logica del codigo fuente y estan ignoradas por `.gitignore`.

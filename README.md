@@ -27,7 +27,7 @@ Cada tipo tiene su ventana editora WPF, su servicio de dibujo en AutoCAD y su ro
 ## Comandos
 
 ```text
-RACKCAD                 (menu principal: cabecera, sistema dinamico, cama, selectivo, biblioteca de bloques)
+RACKCAD                 (menu principal: cabecera, sistema dinamico, cama, selectivo, biblioteca de disenos, biblioteca de bloques)
 RACKCABECERA            (configurador de cabeceras; "Insertar en AutoCAD" dibuja lo configurado)
 QUICKCABECERA           (cabecera sin interfaz: poste, fondo y alto por linea de comandos)
 RACKSISTEMADINAMICO     (dibuja el sistema dinamico por defecto, sin dialogo)
