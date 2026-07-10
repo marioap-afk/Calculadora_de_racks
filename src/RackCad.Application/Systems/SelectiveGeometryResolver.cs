@@ -39,6 +39,9 @@ namespace RackCad.Application.Systems
             system.PostPeralte = design.PostPeralte;
             system.PalletDepth = design.PalletDepth;
             system.DrawBasePlate = design.DrawBasePlate;
+            system.NumberFronts = design.NumberFronts;
+            system.NumberLevels = design.NumberLevels;
+            system.DrawRackName = design.DrawRackName;
 
             // Per-post PERALTE: each post uses its own override (design.PostPeraltes) or the run default.
             var postSlots = design.Bays.Count + 1;

@@ -97,6 +97,7 @@ namespace RackCad.Plugin
             var system = window.SystemToInsert;
             var id = string.IsNullOrEmpty(embed.Id) ? window.RackId : embed.Id;
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
+            system.Name = name; // the "Colocar nombre de rack" annotation draws this
 
             var blocks = FindRackBlocks(document, id);
             var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
@@ -216,6 +217,8 @@ namespace RackCad.Plugin
             {
                 return;
             }
+
+            system.Name = name; // the "Colocar nombre de rack" annotation draws this
 
             if (view == RackEmbedDocument.ViewLateral)
             {

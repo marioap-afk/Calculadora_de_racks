@@ -138,6 +138,43 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_NoAnnotationFlags_EmitsNoText()
+        {
+            var labels = new SelectiveFrontalBuilder().Build(System(), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Annotation);
+            Assert.Empty(labels);
+        }
+
+        [Fact]
+        public void Build_NumberFronts_EmitsANumberPerBay()
+        {
+            var system = TwoBaySystem(3.0, 3.0, 3.0);
+            system.NumberFronts = true;
+
+            var labels = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Annotation)
+                .ToList();
+
+            Assert.Equal(2, labels.Count); // 2 bays → "1", "2"
+            Assert.Contains(labels, l => l.Text == "1");
+            Assert.Contains(labels, l => l.Text == "2");
+        }
+
+        [Fact]
+        public void Build_DrawRackName_EmitsTheNameAboveTheRack()
+        {
+            var system = System();
+            system.DrawRackName = true;
+            system.Name = "Rack A";
+
+            var label = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .First(i => i.Role == HeaderBlockRole.Annotation);
+
+            Assert.Equal("Rack A", label.Text);
+            Assert.True(label.Insertion.Y > system.Height); // drawn above the rack
+        }
+
+        [Fact]
         public void Build_DrawBasePlateOff_OmitsThePlates()
         {
             var system = System();

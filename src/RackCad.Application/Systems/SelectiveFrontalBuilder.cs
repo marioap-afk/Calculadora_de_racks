@@ -119,8 +119,51 @@ namespace RackCad.Application.Systems
                 }
             }
 
+            AddAnnotations(instances, system, view, postX);
             return instances;
         }
+
+        /// <summary>Text labels when the toggles are on: a number centered under each frente (bay), a number to the
+        /// left of each level (of the first bay), and the rack name above the frontal.</summary>
+        private static void AddAnnotations(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view, IReadOnlyList<double> postX)
+        {
+            const double textHeight = 6.0;
+
+            if (system.NumberFronts)
+            {
+                for (var i = 0; i < system.Bays.Count; i++)
+                {
+                    var centerX = (postX[i] + postX[i + 1]) / 2.0;
+                    instances.Add(Annotation(Num(i + 1), view, new Point2D(centerX, -textHeight - 4.0), textHeight));
+                }
+            }
+
+            if (system.NumberLevels && system.Bays.Count > 0)
+            {
+                var levels = system.Bays[0].Levels;
+                for (var j = 0; j < levels.Count; j++)
+                {
+                    instances.Add(Annotation(Num(j + 1), view, new Point2D(postX[0] - textHeight - 4.0, levels[j].Y), textHeight));
+                }
+            }
+
+            if (system.DrawRackName && !string.IsNullOrWhiteSpace(system.Name))
+            {
+                instances.Add(Annotation(system.Name.Trim(), view, new Point2D(postX[0], system.Height + textHeight), textHeight * 1.5));
+            }
+        }
+
+        private static string Num(int n) => n.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        private static HeaderBlockInstance Annotation(string text, string view, Point2D at, double height) => new HeaderBlockInstance
+        {
+            Role = HeaderBlockRole.Annotation,
+            View = view,
+            Text = text,
+            TextHeight = height,
+            Insertion = at,
+            ConnectionAnchor = at
+        };
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
             => CatalogLookup.Local(catalog, pieceId, connectionPointId, view);

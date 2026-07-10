@@ -25,7 +25,10 @@ namespace RackCad.Application.Headers
         Stop,
 
         /// <summary>A load beam (larguero/viga) spanning a bay in a selective rack.</summary>
-        Beam
+        Beam,
+
+        /// <summary>A text label (frente/level number, rack name). Drawn as DBText at <see cref="HeaderBlockInstance.Insertion"/>.</summary>
+        Annotation
     }
 
     /// <summary>
@@ -60,5 +63,11 @@ namespace RackCad.Application.Headers
 
         /// <summary>Dynamic-block parameters to set after insertion (name -&gt; value).</summary>
         public Dictionary<string, double> DynamicParameters { get; } = new Dictionary<string, double>();
+
+        /// <summary>For <see cref="HeaderBlockRole.Annotation"/>: the text to draw. Null/empty for block instances.</summary>
+        public string Text { get; set; }
+
+        /// <summary>For an annotation: text height (in). 0 = the drawer's default.</summary>
+        public double TextHeight { get; set; }
     }
 }

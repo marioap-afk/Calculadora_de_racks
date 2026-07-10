@@ -191,6 +191,25 @@ namespace RackCad.Plugin.Headers
             BlockTable blockTable, BlockTableRecord space, Transaction tr,
             HeaderBlockInstance instance, List<HeaderBlockInstance> missing, HashSet<string> seen)
         {
+            // Text annotations (frente/level numbers, rack name) are DBText, not blocks.
+            if (instance.Role == HeaderBlockRole.Annotation)
+            {
+                if (string.IsNullOrWhiteSpace(instance.Text))
+                {
+                    return false;
+                }
+
+                var label = new DBText
+                {
+                    Position = new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0),
+                    Height = instance.TextHeight > 0.0 ? instance.TextHeight : 3.0,
+                    TextString = instance.Text
+                };
+                space.AppendEntity(label);
+                tr.AddNewlyCreatedDBObject(label, true);
+                return true;
+            }
+
             if (string.IsNullOrWhiteSpace(instance.BlockName) || !blockTable.Has(instance.BlockName))
             {
                 var key = (instance.BlockName ?? instance.PieceId ?? instance.Role.ToString()) + "|" + instance.View;

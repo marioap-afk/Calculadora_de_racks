@@ -35,6 +35,18 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Draw the base plates (frontal/planta). Default true; false omits the plate blocks.</summary>
         public bool DrawBasePlate { get; set; } = true;
+
+        /// <summary>Draw a number under each frente (bay). Text annotation.</summary>
+        public bool NumberFronts { get; set; }
+
+        /// <summary>Draw a number for each load level. Text annotation.</summary>
+        public bool NumberLevels { get; set; }
+
+        /// <summary>Draw the rack name as visible text above the frontal.</summary>
+        public bool DrawRackName { get; set; }
+
+        /// <summary>Client-facing rack name (used by the DrawRackName annotation); set at draw time.</summary>
+        public string Name { get; set; }
     }
 
     /// <summary>One resolved bay: its beam length (which governs post spacing), its height, and its placed levels.</summary>

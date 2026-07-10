@@ -18,19 +18,14 @@
 1. **Cotas automáticas por vista** — al insertar frontal/lateral/planta, dibujar cotas de alto total,
    fondo, largo de tramo y claros entre niveles (AutoCAD `RotatedDimension` en el mismo bloque o en
    un layer de cotas). Es el paso natural después de que las tres vistas ya se generan solas.
-1b. **Pipeline de TEXTO para los toggles de anotación del selectivo** — los toggles "Numerar frentes",
-   "Numerar niveles" y "Colocar nombre de rack" YA existen en la UI y se guardan en el diseño
-   (`SelectivePalletDesign.NumberFronts/NumberLevels/DrawRackName`, round-trip), pero su DIBUJO está
-   pendiente: el Plugin no dibuja ningún texto hoy (`HeaderBlockInstance` solo modela inserciones de
-   bloque; `LateralHeaderDrawer.AppendInstance` solo crea `BlockReference`; grep de `DBText`/`MText` en
-   `src/RackCad.Plugin` = 0). Falta: (a) un tipo de anotación (p.ej. `HeaderBlockRole.Annotation` + `Text`
-   + altura + layer) en Application; (b) que `SelectiveFrontal/Planta/LateralBuilder` lo emitan según los
-   flags (posición: número de frente centrado bajo la base, nivel a la izquierda de cada larguero por
-   `level.Y`, nombre arriba — el preview WPF ya lo hace en `AddPostNumber`); (c) que `LateralHeaderDrawer`
-   lo materialice como `DBText`/`MText` en `AppendInstance` **y** en `RedefineSystemBlock` (borra+repuebla
-   cada edición, el texto se regenera del flag, no se persiste); (d) elegir altura/escala en pulgadas y un
-   layer de anotaciones. Ojo: numerar/nombre habría que replicarlo en las 3 vistas. **Ya hecho:** "Dibujar
-   placa base" (toggle real, salta las instancias de placa en frontal/planta).
+1b. **Pipeline de TEXTO para los toggles de anotación** — **hecho en la vista FRONTAL:** existe
+   `HeaderBlockRole.Annotation` (+ `Text`/`TextHeight` en `HeaderBlockInstance`); `SelectiveFrontalBuilder`
+   emite los números de frente (centrados bajo la bahía), los números de nivel (a la izquierda) y el nombre
+   del rack (arriba); `LateralHeaderDrawer.AppendInstance` los materializa como `DBText` (se regeneran en
+   cada `RedefineSystemBlock`, no se persisten). **Pendiente:** (a) replicar las anotaciones en las vistas
+   LATERAL y PLANTA (hoy solo frontal); (b) opcional: centrar/alinear con `HorizontalMode`/`AlignmentPoint`
+   y un layer de anotaciones dedicado; (c) escala del texto configurable (hoy 6" fijo). También: "Dibujar
+   placa base" (toggle real, salta las instancias de placa en frontal/planta) ya estaba hecho.
 1c. **Dibujar tarima (toggle) — DIFERIDO/no implementable** — la `Tarima` del dominio es abstracta (solo
    `Frente`/`Alto`), sin bloque de catálogo ni representación por vista. Requiere crear un bloque de tarima
    con puntos de conexión (FRONTAL/LATERAL/PLANTA) antes de poder dibujarla. El toggle aún no se expone.
