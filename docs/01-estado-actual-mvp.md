@@ -5,7 +5,7 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-esta con 255 tests verdes.
+esta con 267 tests verdes.
 
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
@@ -67,6 +67,13 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
   redefinicion (no se persisten). "Dibujar tarima" queda diferido (ver ideas-futuras.md).
 - **BOM** (postes, placas, largueros, mensulas) con `SelectiveBomBuilder` y `RackBomWindow`
   (grid + exportacion a CSV).
+- **Rendimiento (validado con ~30 frentes):** la matriz del editor NO se reconstruye por clic (cache de
+  celdas + restyle de 2 bordes; `Recompute` coalescido por gesto; brushes congelados; lookups de catalogo
+  memoizados — equivalencia fijada por `SelectiveTwentyBaysEquivalenceTests`). La vista **planta** usa el
+  patron ARRAY: los marcos identicos se agrupan en UNA definicion anidada (`SelectivePlantaBuilder.BuildPlan`
+  -> `HeaderGroup` + `HeaderPlacement.InsertionY`) referenciada N veces, en vez de insertar cada pieza con
+  sus parametros dinamicos por referencia. El purge de definiciones huerfanas solo verifica las defs que el
+  contenido nuevo ya no referencia (sin coste fijo por redibujo).
 - Comando: `RACKSELECTIVO`.
 
 ## Identidad y round-trip (los cuatro tipos)

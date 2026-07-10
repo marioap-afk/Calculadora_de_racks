@@ -20,6 +20,16 @@
 > entre vistas) y varias parciales (BOM de la cama, recompose que preserva fondos al cambiar la tarima,
 > primer incremento de validación de ingeniería, baseline de cabecera sin placeholder). Se quitó el
 > comando `RACKCABECERALATERAL`. Lo tachado abajo quedó HECHO en este batch.
+>
+> **2026-07-10 — rendimiento + UI/UX + catálogo unificado (267 tests verdes):** (a) editor selectivo fluido
+> con 20-30 frentes (matriz sin rebuild por clic, Recompute coalescido, brushes congelados, memos de catálogo);
+> (b) la vista PLANTA usa el patrón ARRAY (marcos idénticos = una definición anidada referenciada N veces,
+> `SelectivePlantaBuilder.BuildPlan`); (c) el purge de huérfanas ya no paga coste fijo por redibujo (solo
+> verifica defs que el contenido nuevo no re-referencia); (d) ~50 mejoras de UI/UX en las 6 ventanas
+> (Esc cierra, tooltips, foco inicial, errores visibles, acentos, estilos unificados); (e) `secciones.csv`
+> unifica los perfiles (ítem #12). **Mejora futura del mismo patrón:** aplicar la agrupación ARRAY también a
+> la FRONTAL (largueros repetidos por combinación longitud+peralte) y a los cortes laterales si se percibe
+> lentitud en runs muy largos; cachear `blocks-library.dwg` por firma en `BlockLibraryImporter`.
 
 ## A. Propuestas de producto
 
