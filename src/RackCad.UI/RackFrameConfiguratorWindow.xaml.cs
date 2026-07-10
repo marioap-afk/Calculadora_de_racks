@@ -870,6 +870,10 @@ namespace RackCad.UI
                     continue;
                 }
 
+                // Expanding forces the child's containers to generate so we can search under it. Only KEEP the
+                // expansion if the target is in this branch; otherwise restore the node's previous state so
+                // syncing selection never re-expands branches the user had collapsed.
+                var wasExpanded = childContainer.IsExpanded;
                 childContainer.IsExpanded = true;
                 var result = FindTreeViewItem(childContainer, item);
 
@@ -877,6 +881,8 @@ namespace RackCad.UI
                 {
                     return result;
                 }
+
+                childContainer.IsExpanded = wasExpanded;
             }
 
             return null;

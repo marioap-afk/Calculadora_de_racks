@@ -200,15 +200,22 @@ namespace RackCad.Plugin.Headers
                     return false;
                 }
 
+                var anchor = new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0);
                 var label = new DBText
                 {
-                    Position = new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0),
                     Height = instance.TextHeight > 0.0 ? instance.TextHeight : 3.0,
                     TextString = instance.Text,
-                    LayerId = EnsureAnnotationLayer(space.Database, tr)
+                    LayerId = EnsureAnnotationLayer(space.Database, tr),
+                    // Center the label on its anchor (frente/level number, name) instead of using it as the
+                    // bottom-left base point, so numbers sit exactly on the piece they annotate.
+                    HorizontalMode = TextHorizontalMode.TextCenter,
+                    VerticalMode = TextVerticalMode.TextVerticalMid,
+                    Position = anchor,
+                    AlignmentPoint = anchor
                 };
                 space.AppendEntity(label);
                 tr.AddNewlyCreatedDBObject(label, true);
+                label.AdjustAlignment(space.Database); // recompute the drawn position from the alignment modes
                 return true;
             }
 

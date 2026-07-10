@@ -74,21 +74,22 @@ namespace RackCad.Application.Systems
         /// Levels aren't numbered here — in the top-down view they overlap (they only read in frontal/lateral).</summary>
         private static void AddAnnotations(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, IReadOnlyList<double> frenteYs)
         {
-            const double gap = SelectiveAnnotations.TextHeight + SelectiveAnnotations.Margin;
+            var h = SelectiveAnnotations.TextHeightFor(system.AnnotationScale);
+            var gap = h + SelectiveAnnotations.Margin;
 
             if (system.NumberFronts)
             {
                 for (var i = 0; i + 1 < frenteYs.Count; i++) // one per bay (between consecutive frames)
                 {
                     var centerY = (frenteYs[i] + frenteYs[i + 1]) / 2.0;
-                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(i + 1), PlantaView, new Point2D(-gap, centerY)));
+                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(i + 1), PlantaView, new Point2D(-gap, centerY), h));
                 }
             }
 
             if (system.DrawRackName && !string.IsNullOrWhiteSpace(system.Name) && frenteYs.Count > 0)
             {
                 var topY = frenteYs[frenteYs.Count - 1] + gap;
-                instances.Add(SelectiveAnnotations.Label(system.Name.Trim(), PlantaView, new Point2D(0.0, topY), SelectiveAnnotations.TextHeight * 1.5));
+                instances.Add(SelectiveAnnotations.Label(system.Name.Trim(), PlantaView, new Point2D(0.0, topY), h * 1.5));
             }
         }
 

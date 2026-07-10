@@ -127,14 +127,15 @@ namespace RackCad.Application.Systems
         /// left of each level (of the first bay), and the rack name above the frontal.</summary>
         private static void AddAnnotations(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view, IReadOnlyList<double> postX)
         {
-            const double gap = SelectiveAnnotations.TextHeight + SelectiveAnnotations.Margin;
+            var h = SelectiveAnnotations.TextHeightFor(system.AnnotationScale);
+            var gap = h + SelectiveAnnotations.Margin;
 
             if (system.NumberFronts)
             {
                 for (var i = 0; i < system.Bays.Count; i++)
                 {
                     var centerX = (postX[i] + postX[i + 1]) / 2.0;
-                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(i + 1), view, new Point2D(centerX, -gap)));
+                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(i + 1), view, new Point2D(centerX, -gap), h));
                 }
             }
 
@@ -143,13 +144,13 @@ namespace RackCad.Application.Systems
                 var levels = system.Bays[0].Levels;
                 for (var j = 0; j < levels.Count; j++)
                 {
-                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(j + 1), view, new Point2D(postX[0] - gap, levels[j].Y)));
+                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(j + 1), view, new Point2D(postX[0] - gap, levels[j].Y), h));
                 }
             }
 
             if (system.DrawRackName && !string.IsNullOrWhiteSpace(system.Name))
             {
-                instances.Add(SelectiveAnnotations.Label(system.Name.Trim(), view, new Point2D(postX[0], system.Height + SelectiveAnnotations.TextHeight), SelectiveAnnotations.TextHeight * 1.5));
+                instances.Add(SelectiveAnnotations.Label(system.Name.Trim(), view, new Point2D(postX[0], system.Height + h), h * 1.5));
             }
         }
 

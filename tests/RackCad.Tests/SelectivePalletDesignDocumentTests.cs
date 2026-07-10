@@ -60,6 +60,7 @@ namespace RackCad.Tests
             design.NumberFronts = true;
             design.NumberLevels = true;
             design.DrawRackName = true;
+            design.AnnotationScale = 1.75;
 
             var store = new SelectivePalletDesignStore();
             var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
@@ -68,6 +69,7 @@ namespace RackCad.Tests
             Assert.True(restored.NumberFronts);
             Assert.True(restored.NumberLevels);
             Assert.True(restored.DrawRackName);
+            Assert.Equal(1.75, restored.AnnotationScale, 4);
         }
 
         [Fact]
@@ -77,6 +79,15 @@ namespace RackCad.Tests
             document.DrawBasePlate = null; // a design older than the toggle
 
             Assert.True(document.ToDomain().DrawBasePlate);
+        }
+
+        [Fact]
+        public void ToDomain_LegacyWithoutAnnotationScale_DefaultsToOne()
+        {
+            var document = SelectivePalletDesignDocument.From(SampleDesign(), "id", "n");
+            document.AnnotationScale = null; // a design older than the scale field
+
+            Assert.Equal(1.0, document.ToDomain().AnnotationScale, 4);
         }
 
         [Fact]

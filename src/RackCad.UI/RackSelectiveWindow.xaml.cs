@@ -543,8 +543,22 @@ namespace RackCad.UI
             if (fondo > 0.0) cfg.Depth = fondo;
 
             // Height comes from the system; the user MAY override it, but warn it can desynchronize the rack
-            // (the frontal largueros are placed for the resolved height).
-            if (resolvedHeight > 0.0 && Math.Abs(cfg.Height - resolvedHeight) > 0.5)
+            // (the frontal largueros are placed for the resolved height). The SEVERE case is when the cabecera ends
+            // up BELOW the top load level: the top larguero/pallet would stick out above the post — flag it specially.
+            var topLevelY = TopLevelYAtPost(i);
+            if (topLevelY > 0.0 && cfg.Height < topLevelY - 0.5)
+            {
+                MessageBox.Show(
+                    this,
+                    "La cabecera del poste (" + cfg.Height.ToString("0.##", CultureInfo.InvariantCulture)
+                        + " in) queda MÁS BAJA que el nivel de carga superior (" + topLevelY.ToString("0.##", CultureInfo.InvariantCulture)
+                        + " in).\n\nEl larguero/tarima superior sobresaldría por encima del poste. Sube la altura de la cabecera "
+                        + "o revisa los niveles de las bahías vecinas.",
+                    "Cabecera demasiado baja",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+            else if (resolvedHeight > 0.0 && Math.Abs(cfg.Height - resolvedHeight) > 0.5)
             {
                 MessageBox.Show(
                     this,
@@ -584,6 +598,26 @@ namespace RackCad.UI
             if (lastSystem == null) return 0.0;
             var height = SelectivePostGeometry.PostHeight(lastSystem, i);
             return height > 0.0 ? height : lastSystem.Height;
+        }
+
+        /// <summary>The Y of the topmost load level touching post <paramref name="i"/> (max over its adjacent bays); 0 if none.</summary>
+        private double TopLevelYAtPost(int i)
+        {
+            if (lastSystem == null) return 0.0;
+
+            var top = 0.0;
+            void Consider(int bayIndex)
+            {
+                if (bayIndex < 0 || bayIndex >= lastSystem.Bays.Count) return;
+                foreach (var level in lastSystem.Bays[bayIndex].Levels)
+                {
+                    if (level.Y > top) top = level.Y;
+                }
+            }
+
+            Consider(i - 1); // bay to the left of the post
+            Consider(i);     // bay to the right
+            return top;
         }
 
         /// <summary>The tramo's fondo (shared by every cabecera): the resolved pallet depth, or 48 in as a fallback.</summary>
@@ -653,11 +687,58 @@ namespace RackCad.UI
 
         private void SelectCell(int bay, int level)
         {
+            // Don't silently discard what was typed in the current cell: apply it if valid+changed, or ask before
+            // discarding if it is invalid (returning false keeps the user on the current cell).
+            if (!TryCommitEditedCell(out var applied)) return;
+
             selBay = bay;
             selLevel = level;
             LoadCellEditor();
             RenderMatrix();
+            if (applied) Recompute();
         }
+
+        /// <summary>Commit the cell editor into the currently-selected matrix cell before moving away. Returns false only
+        /// when the editor is invalid and the user chooses to stay (cancel the switch); <paramref name="applied"/> is true
+        /// when a real change was written (so the caller recomputes).</summary>
+        private bool TryCommitEditedCell(out bool applied)
+        {
+            applied = false;
+            if (loadingCell || !TryGetSelected(out var current)) return true;
+
+            if (!ReadCellEditor(out var edited, out var error))
+            {
+                var choice = MessageBox.Show(
+                    this,
+                    "La celda actual tiene un valor inválido:\n" + error + "\n\n¿Descartar lo tecleado y continuar?",
+                    "Cambios sin aplicar",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                return choice == MessageBoxResult.Yes; // Yes = discard & continue; No = stay on this cell
+            }
+
+            if (!CellEquals(current, edited))
+            {
+                current.CopyFrom(edited);
+                applied = true;
+            }
+
+            return true;
+        }
+
+        private static bool CellEquals(Cell a, Cell b)
+            => NearEq(a.Frente, b.Frente)
+               && NearEq(a.Alto, b.Alto)
+               && a.PalletCount == b.PalletCount
+               && string.Equals(a.BeamId, b.BeamId, StringComparison.OrdinalIgnoreCase)
+               && NearEq(a.BeamPeralte, b.BeamPeralte)
+               && NearEq(a.BeamLength, b.BeamLength)
+               && NearEq(a.Clear, b.Clear);
+
+        private static bool NearEq(double a, double b) => Math.Abs(a - b) < 1e-6;
+
+        private static bool NearEq(double? a, double? b)
+            => a.HasValue == b.HasValue && (!a.HasValue || NearEq(a.Value, b.Value));
 
         private void LoadCellEditor()
         {
@@ -922,6 +1003,7 @@ namespace RackCad.UI
             design.NumberFronts = NumberFrontsCheck.IsChecked == true;
             design.NumberLevels = NumberLevelsCheck.IsChecked == true;
             design.DrawRackName = DrawRackNameCheck.IsChecked == true;
+            design.AnnotationScale = UiSupport.TryNum(AnnotationScaleBox.Text, out var annScale) && annScale > 0.0 ? annScale : 1.0;
 
             return design;
         }
@@ -1004,6 +1086,7 @@ namespace RackCad.UI
             NumberFrontsCheck.IsChecked = design.NumberFronts;
             NumberLevelsCheck.IsChecked = design.NumberLevels;
             DrawRackNameCheck.IsChecked = design.DrawRackName;
+            AnnotationScaleBox.Text = (design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0).ToString(CultureInfo.InvariantCulture);
 
             BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
             selBay = 0;

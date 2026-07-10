@@ -42,6 +42,7 @@ namespace RackCad.Application.Systems
             system.NumberFronts = design.NumberFronts;
             system.NumberLevels = design.NumberLevels;
             system.DrawRackName = design.DrawRackName;
+            system.AnnotationScale = design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0;
 
             // Per-post PERALTE: each post uses its own override (design.PostPeraltes) or the run default.
             var postSlots = design.Bays.Count + 1;

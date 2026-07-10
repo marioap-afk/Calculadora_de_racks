@@ -64,6 +64,9 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Draw the rack name as visible text. Persisted now; the text drawing is a future pipeline.</summary>
         public bool DrawRackName { get; set; }
+
+        /// <summary>Multiplier on the annotation text height (1 = default 6"). Scales the frente/level/name labels.</summary>
+        public double AnnotationScale { get; set; } = 1.0;
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

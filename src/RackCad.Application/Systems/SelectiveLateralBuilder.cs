@@ -14,7 +14,8 @@ namespace RackCad.Application.Systems
     /// post's resolved height and the run's fondo (<see cref="SelectiveRackSystem.PalletDepth"/>), positioned at the
     /// SAME X as the frontal post (<see cref="SelectivePostGeometry"/>). The AutoCAD side draws each section as its own
     /// block, but every section is a view OF the system (shares the rack id/design), so editing the system redraws them
-    /// all. TODO: the section still shows only the cabecera; the largueros (and later safety elements) are pending. Pure.
+    /// all. Each corte shows the cabecera + its front/back largueros per level; safety elements (protectores/topes/mallas)
+    /// are a future extension that needs their own catalog blocks. Pure.
     /// </summary>
     public sealed class SelectiveLateralBuilder
     {
@@ -114,7 +115,8 @@ namespace RackCad.Application.Systems
         /// (frente) number and the rack name at the top of the corte.</summary>
         private static void AddCorteAnnotations(ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, int postIndex, IEnumerable<SelectiveLevel> levels)
         {
-            const double gap = SelectiveAnnotations.TextHeight + SelectiveAnnotations.Margin;
+            var h = SelectiveAnnotations.TextHeightFor(system.AnnotationScale);
+            var gap = h + SelectiveAnnotations.Margin;
 
             if (system.NumberLevels)
             {
@@ -128,7 +130,7 @@ namespace RackCad.Application.Systems
 
                 for (var j = 0; j < ys.Count; j++)
                 {
-                    result.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(j + 1), LateralView, new Point2D(-gap, ys[j])));
+                    result.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(j + 1), LateralView, new Point2D(-gap, ys[j]), h));
                 }
             }
 
@@ -136,12 +138,12 @@ namespace RackCad.Application.Systems
 
             if (system.NumberFronts)
             {
-                result.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(postIndex + 1), LateralView, new Point2D(0.0, height + gap)));
+                result.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(postIndex + 1), LateralView, new Point2D(0.0, height + gap), h));
             }
 
             if (system.DrawRackName && !string.IsNullOrWhiteSpace(system.Name))
             {
-                result.Add(SelectiveAnnotations.Label(system.Name.Trim(), LateralView, new Point2D(0.0, height + gap + SelectiveAnnotations.TextHeight * 2.0), SelectiveAnnotations.TextHeight * 1.5));
+                result.Add(SelectiveAnnotations.Label(system.Name.Trim(), LateralView, new Point2D(0.0, height + gap + h * 2.0), h * 1.5));
             }
         }
 

@@ -42,6 +42,9 @@ namespace RackCad.Application.Persistence
         public bool NumberLevels { get; set; }
         public bool DrawRackName { get; set; }
 
+        /// <summary>Annotation text scale (1 = default). Nullable so legacy designs (no field) keep scale 1.</summary>
+        public double? AnnotationScale { get; set; }
+
         public static SelectivePalletDesignDocument From(SelectivePalletDesign design, string id, string name)
         {
             if (design == null)
@@ -76,6 +79,7 @@ namespace RackCad.Application.Persistence
             document.NumberFronts = design.NumberFronts;
             document.NumberLevels = design.NumberLevels;
             document.DrawRackName = design.DrawRackName;
+            document.AnnotationScale = design.AnnotationScale;
 
             return document;
         }
@@ -111,6 +115,7 @@ namespace RackCad.Application.Persistence
             design.NumberFronts = NumberFronts;
             design.NumberLevels = NumberLevels;
             design.DrawRackName = DrawRackName;
+            design.AnnotationScale = AnnotationScale.HasValue && AnnotationScale.Value > 0.0 ? AnnotationScale.Value : 1.0;
 
             return design;
         }

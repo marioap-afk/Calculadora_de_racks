@@ -17,6 +17,9 @@ namespace RackCad.Application.Systems
         /// <summary>Margin (in) between a label and the piece it annotates.</summary>
         public const double Margin = 4.0;
 
+        /// <summary>The label text height (in) for a given annotation scale (scale &lt;= 0 falls back to 1).</summary>
+        public static double TextHeightFor(double scale) => TextHeight * (scale > 0.0 ? scale : 1.0);
+
         public static HeaderBlockInstance Label(string text, string view, Point2D at, double height = TextHeight)
             => new HeaderBlockInstance
             {
