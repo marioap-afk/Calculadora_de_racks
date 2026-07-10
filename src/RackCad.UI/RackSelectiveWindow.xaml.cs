@@ -30,6 +30,7 @@ namespace RackCad.UI
         private static readonly Brush PostFill = Frozen(new SolidColorBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86)));
         private static readonly Brush PostHiBrush = Frozen(new SolidColorBrush(Color.FromRgb(0xFF, 0xC5, 0x3D)));
         private static readonly Brush PostHiFill = Frozen(new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xC5, 0x3D)));
+        private static readonly Brush CelosiaBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x2E, 0x9C, 0x66)));
         private static readonly Brush BeamBrush = Frozen(new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x2B)));
         private static readonly Brush BeamFill = Frozen(new SolidColorBrush(Color.FromArgb(0x66, 0xE0, 0x8A, 0x2B)));
         private static readonly Brush PlateFill = Frozen(new SolidColorBrush(Color.FromRgb(0xB7, 0xC3, 0xCF)));
@@ -1694,8 +1695,147 @@ namespace RackCad.UI
 
         private void PreviewCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => DrawPreview();
 
+        private bool previewLateral;
+
+        /// <summary>Toggle the preview between the frontal face and a schematic lateral (side) view.</summary>
+        private void PreviewView_Changed(object sender, RoutedEventArgs e)
+        {
+            previewLateral = PreviewLateralRadio != null && PreviewLateralRadio.IsChecked == true;
+            if (PreviewHint != null)
+            {
+                PreviewHint.Text = previewLateral
+                    ? "Vista lateral (X = fondo, Y = altura). Cada fondo con su cabecera (tarima − 6) y sus largueros."
+                    : "Vista frontal (X = ancho del tramo, Y = altura). Postes (cabeceras) + largueros por nivel.";
+            }
+
+            if (catalog != null) DrawPreview();
+        }
+
+        /// <summary>
+        /// Schematic LATERAL preview: each fondo drawn as its cabecera (front + back post at its OWN depth and height)
+        /// with a larguero mark at every level, stepped along X by the fondo offsets (separadores as gaps). Reuses the
+        /// frontal preview's <see cref="Map"/> mapping so both share the same canvas helpers.
+        /// </summary>
+        private void DrawLateralPreview()
+        {
+            PreviewCanvas.Children.Clear();
+            postRects.Clear();
+            postLabels.Clear();
+
+            if (lastSystem == null || lastSystem.Height <= 0.0)
+            {
+                return;
+            }
+
+            var offsets = SelectiveDepthLayout.Offsets(lastSystem);
+            var fondoCount = offsets.Count;
+            var postWidth = ProfileWidth(lastSystem.PostId);
+
+            var depths = new double[fondoCount];
+            var heights = new double[fondoCount];
+            var levelYs = new List<double>[fondoCount];
+            for (var k = 0; k < fondoCount; k++)
+            {
+                depths[k] = SelectiveDepthLayout.CabeceraDepthOfFondo(lastSystem, k);
+                var bays = SelectiveDepthLayout.BaysOfFondo(lastSystem, k);
+                var maxH = 0.0;
+                var ys = new List<double>();
+                foreach (var bay in bays)
+                {
+                    if (bay.Height > maxH) maxH = bay.Height;
+                    foreach (var level in bay.Levels)
+                    {
+                        var y = Math.Round(level.Y, 4);
+                        if (!ys.Contains(y)) ys.Add(y);
+                    }
+                }
+
+                heights[k] = maxH > 0.0 ? maxH : lastSystem.Height;
+                levelYs[k] = ys;
+            }
+
+            var xMin = -postWidth / 2.0;
+            var xMax = offsets[fondoCount - 1] + depths[fondoCount - 1] + postWidth / 2.0;
+            var totalWidth = Math.Max(1.0, xMax - xMin);
+            var height = lastSystem.Height;
+
+            var availableWidth = PreviewCanvas.ActualWidth;
+            var availableHeight = PreviewCanvas.ActualHeight;
+            if (availableWidth < 20 || availableHeight < 20)
+            {
+                return;
+            }
+
+            const double horizontalMargin = 46.0;
+            const double topMargin = 26.0;
+            const double bottomMargin = 40.0;
+            var usableWidth = Math.Max(1.0, availableWidth - 2 * horizontalMargin);
+            var usableHeight = Math.Max(1.0, availableHeight - topMargin - bottomMargin);
+            mapScale = Math.Min(usableWidth / totalWidth, usableHeight / height);
+            if (mapScale <= 0.0)
+            {
+                return;
+            }
+
+            mapMinX = xMin;
+            var drawWidth = totalWidth * mapScale;
+            var drawHeight = height * mapScale;
+            mapOffsetX = (availableWidth - drawWidth) / 2.0;
+            mapBottomY = topMargin + (usableHeight - drawHeight) / 2.0 + drawHeight;
+
+            AddCanvasLabel(mapOffsetX, Math.Max(4.0, mapBottomY - drawHeight - 22.0),
+                "Vista lateral · " + fondoCount.ToString(CultureInfo.InvariantCulture) + (fondoCount == 1 ? " fondo" : " fondos")
+                    + " · fondo total " + totalWidth.ToString("0.##", CultureInfo.InvariantCulture) + " in",
+                LabelStroke, 12, 360.0);
+
+            AddLine(Map(xMin, 0), Map(xMax, 0), FloorStroke, 1.5); // floor
+
+            for (var k = 0; k < fondoCount; k++)
+            {
+                var frontX = offsets[k];
+                var backX = offsets[k] + depths[k];
+                var h = heights[k];
+
+                // Celosía (schematic): a top travesaño + a diagonal zigzag between the front and back posts, tied to the
+                // level Ys (floor → level 1 → level 2 … → top, alternating sides). Drawn first so the posts sit on top.
+                var sortedYs = new List<double>(levelYs[k]);
+                sortedYs.Sort();
+                AddLine(Map(frontX, h), Map(backX, h), CelosiaBrush, 1.3); // top travesaño
+                var verts = new List<double> { 0.0 };
+                verts.AddRange(sortedYs);
+                if (verts[verts.Count - 1] < h - 1e-6) verts.Add(h);
+                var prevPt = Map(frontX, verts[0]);
+                for (var s = 1; s < verts.Count; s++)
+                {
+                    var pt = Map((s % 2) == 1 ? backX : frontX, verts[s]);
+                    AddLine(prevPt, pt, CelosiaBrush, 1.0);
+                    prevPt = pt;
+                }
+
+                var f = Map(frontX - postWidth / 2.0, h);
+                AddRectangle(f.X, f.Y, postWidth * mapScale, h * mapScale, PostBrush, 1.6, PostFill);
+                var b = Map(backX - postWidth / 2.0, h);
+                AddRectangle(b.X, b.Y, postWidth * mapScale, h * mapScale, PostBrush, 1.6, PostFill);
+
+                var beamW = Math.Max(4.0, postWidth * 1.4 * mapScale);
+                var beamH = Math.Max(2.0, 3.0 * mapScale);
+                foreach (var y in levelYs[k])
+                {
+                    var lf = Map(frontX - postWidth * 0.7, y + 1.5);
+                    AddRectangle(lf.X, lf.Y, beamW, beamH, BeamBrush, 1.2, BeamFill);
+                    var lb = Map(backX - postWidth * 0.7, y + 1.5);
+                    AddRectangle(lb.X, lb.Y, beamW, beamH, BeamBrush, 1.2, BeamFill);
+                }
+
+                var mid = Map((frontX + backX) / 2.0, 0.0);
+                AddCanvasLabel(mid.X - 12.0, mapBottomY + 8.0, "F" + (k + 1).ToString(CultureInfo.InvariantCulture), LabelStroke, 11, 40.0);
+            }
+        }
+
         private void DrawPreview()
         {
+            if (previewLateral) { DrawLateralPreview(); return; }
+
             PreviewCanvas.Children.Clear();
             postRects.Clear();  // right after the canvas clear, so EVERY early return leaves cache+canvas consistent
             postLabels.Clear();

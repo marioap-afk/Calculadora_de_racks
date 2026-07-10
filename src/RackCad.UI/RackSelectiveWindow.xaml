@@ -228,7 +228,13 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="10,8">
-                        <TextBlock Text="Vista frontal (X = ancho del tramo, Y = altura). Postes (cabeceras) + largueros por nivel."
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <RadioButton x:Name="PreviewFrontalRadio" Content="Frontal" IsChecked="True" GroupName="PreviewView"
+                                         Checked="PreviewView_Changed" Foreground="#415161" FontSize="11" Margin="0,0,14,0" />
+                            <RadioButton x:Name="PreviewLateralRadio" Content="Lateral" GroupName="PreviewView"
+                                         Checked="PreviewView_Changed" Foreground="#415161" FontSize="11" />
+                        </StackPanel>
+                        <TextBlock x:Name="PreviewHint" Text="Vista frontal (X = ancho del tramo, Y = altura). Postes (cabeceras) + largueros por nivel."
                                    Foreground="#617080" FontSize="11" TextWrapping="Wrap" />
                         <WrapPanel Margin="0,6,0,0">
                             <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
@@ -239,9 +245,13 @@
                                 <Border Width="16" Height="5" Background="#E08A2B" Margin="0,4,5,0" />
                                 <TextBlock Text="larguero" Foreground="#617080" FontSize="10.5" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
                                 <Border Width="14" Height="6" Background="#B7C3CF" Margin="0,3,5,0" />
                                 <TextBlock Text="placa base" Foreground="#617080" FontSize="10.5" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="14" Height="2" Background="#2E9C66" Margin="0,5,5,0" />
+                                <TextBlock Text="celosía (lateral)" Foreground="#617080" FontSize="10.5" />
                             </StackPanel>
                         </WrapPanel>
                     </StackPanel>

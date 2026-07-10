@@ -102,7 +102,7 @@ namespace RackCad.Plugin
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
             var blocks = FindRackBlocks(document, id);
-            var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !IsPlantaView(b.Embed)).ToList();
             var lateralBlocks = blocks.Where(b => IsLateralView(b.Embed)).OrderBy(b => b.Embed.Section).ToList();
             var plantaBlocks = blocks.Where(b => IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
 
@@ -110,17 +110,30 @@ namespace RackCad.Plugin
             if (frontalBlocks.Count == 0 && lateralBlocks.All(b => b.BlockId != blockId) && !plantaBlocks.Contains(blockId)
                 && !IsLateralView(embed) && !IsPlantaView(embed))
             {
-                frontalBlocks.Add(blockId);
+                frontalBlocks.Add((blockId, embed));
             }
 
+            // Each frontal block draws ONE fondo's face (its Section = fondo index; a legacy block with -1 = fondo 0).
+            var fondoCount = SelectiveDepthLayout.Count(system);
             var updatedFrontal = 0;
-            foreach (var frontalId in frontalBlocks)
+            foreach (var fb in frontalBlocks)
             {
-                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal);
-                var r = new SelectiveFrontalDrawService().RedrawInPlace(document, frontalId, system, payload);
+                var fondo = fb.Embed != null && fb.Embed.Section >= 0 ? fb.Embed.Section : 0;
+                if (fondo >= fondoCount)
+                {
+                    // The design shrank and this fondo no longer exists. Leave the stale block (and its embedded
+                    // Section) untouched — like the lateral path skips a missing corte — so its fondo identity
+                    // survives a shrink/grow cycle instead of being clamped/overwritten to fondo 0.
+                    continue;
+                }
+
+                var fondoView = SelectiveDepthLayout.FondoSystemView(system, fondo);
+                fondoView.Name = name;
+                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal, fondo);
+                var r = new SelectiveFrontalDrawService().RedrawInPlace(document, fb.BlockId, fondoView, payload);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, frontalId, baseName);
+                    RackBlockRenamer.SyncName(document, fb.BlockId, FrontalName(baseName, fondo, fondoCount));
                     updatedFrontal++;
                 }
             }
@@ -240,9 +253,64 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal);
-            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, system, payload, name);
+            InsertSelectiveFrontal(document, system, design, id, name);
+        }
+
+        /// <summary>
+        /// Inserts ONE frontal face, chosen by fondo number (a doble-profundidad rack has a frontal per fondo — each
+        /// back-to-back side its own elevation). Single-fondo racks skip the prompt (fondo 0). The block carries the
+        /// SAME rack id + full design (View=frontal, Section=fondo), so RACKEDITAR on it reopens the whole system and
+        /// redraws every view.
+        /// </summary>
+        private static void InsertSelectiveFrontal(Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
+        {
+            if (document == null || system == null)
+            {
+                return;
+            }
+
+            var editor = document.Editor;
+            var fondoCount = SelectiveDepthLayout.Count(system);
+
+            var fondo = 0;
+            if (fondoCount > 1)
+            {
+                // Sin acentos en los mensajes de linea de comandos (evita mojibake en consolas no-Unicode).
+                var options = new PromptIntegerOptions("\nQue frontal insertar (numero de fondo)?")
+                {
+                    LowerLimit = 1,
+                    UpperLimit = fondoCount,
+                    DefaultValue = 1,
+                    UseDefaultValue = true,
+                    AllowNone = false
+                };
+
+                var pick = editor.GetInteger(options);
+                if (pick.Status != PromptStatus.OK)
+                {
+                    return;
+                }
+
+                fondo = pick.Value - 1;
+            }
+
+            var fondoView = SelectiveDepthLayout.FondoSystemView(system, fondo);
+            fondoView.Name = name;
+            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal, fondo);
+            var blockName = FrontalName(string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim(), fondo, fondoCount);
+            var result = new SelectiveFrontalDrawService().DrawAndPlace(document, fondoView, payload, blockName);
             document.Editor.WriteMessage("\n" + DescribeSelective(result));
+        }
+
+        /// <summary>Block/definition name for a fondo's frontal: the base name, plus a "frente F{n}" suffix only when the rack has more than one fondo.</summary>
+        private static string FrontalName(string baseName, int fondo, int fondoCount)
+        {
+            if (string.IsNullOrWhiteSpace(baseName))
+            {
+                return baseName;
+            }
+
+            return fondoCount > 1 ? baseName + " - frente F" + (fondo + 1).ToString(CultureInfo.InvariantCulture) : baseName;
         }
 
         /// <summary>
