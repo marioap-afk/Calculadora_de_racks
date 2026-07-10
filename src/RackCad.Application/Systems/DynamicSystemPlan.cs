@@ -54,8 +54,10 @@ namespace RackCad.Application.Systems
         private static HeaderBlockInstance PlacedClone(HeaderBlockInstance source, HeaderPlacement placement)
         {
             // A mirrored placement flips around the insertion X (ScaleX = -1): a local X maps to InsertionX - X
-            // and the piece's own mirror flag toggles. A normal placement just shifts by InsertionX.
+            // and the piece's own mirror flag toggles. A normal placement just shifts by InsertionX. Y only
+            // shifts (the mirror is around a vertical axis), by InsertionY (0 for runs along X).
             double WorldX(double localX) => placement.Mirrored ? placement.InsertionX - localX : placement.InsertionX + localX;
+            double WorldY(double localY) => placement.InsertionY + localY;
 
             var clone = new HeaderBlockInstance
             {
@@ -65,8 +67,8 @@ namespace RackCad.Application.Systems
                 View = source.View,
                 RotationRadians = source.RotationRadians,
                 MirroredX = placement.Mirrored ? !source.MirroredX : source.MirroredX,
-                ConnectionAnchor = new Point2D(WorldX(source.ConnectionAnchor.X), source.ConnectionAnchor.Y),
-                Insertion = new Point2D(WorldX(source.Insertion.X), source.Insertion.Y)
+                ConnectionAnchor = new Point2D(WorldX(source.ConnectionAnchor.X), WorldY(source.ConnectionAnchor.Y)),
+                Insertion = new Point2D(WorldX(source.Insertion.X), WorldY(source.Insertion.Y))
             };
 
             foreach (var pair in source.DynamicParameters)
@@ -82,14 +84,19 @@ namespace RackCad.Application.Systems
     /// mirrored (every other header is mirrored so the celosía alternates direction along the line).</summary>
     public readonly struct HeaderPlacement
     {
-        public HeaderPlacement(double insertionX, bool mirrored)
+        public HeaderPlacement(double insertionX, bool mirrored, double insertionY = 0.0)
         {
             InsertionX = insertionX;
             Mirrored = mirrored;
+            InsertionY = insertionY;
         }
 
         /// <summary>X where the block reference is inserted (already accounts for the mirror flip).</summary>
         public double InsertionX { get; }
+
+        /// <summary>Y where the block reference is inserted. Runs along X (dynamic lateral) leave it 0; the
+        /// selective planta stacks one frame per frente along Y, so each placement carries its frente here.</summary>
+        public double InsertionY { get; }
 
         public bool Mirrored { get; }
     }

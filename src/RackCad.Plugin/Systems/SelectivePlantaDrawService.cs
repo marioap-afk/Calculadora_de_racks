@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -11,8 +10,10 @@ namespace RackCad.Plugin.Systems
 {
     /// <summary>
     /// AutoCAD-side orchestration for the selective's PLANTA (top-down) view: one block with a cabecera-planta per
-    /// frame + the front/back largueros. Mirrors <see cref="SelectiveFrontalDrawService"/> (loose instances → plan →
-    /// one jig-placed block, payload embedded on the definition so RACKEDITAR reopens the whole system).
+    /// frame + the front/back largueros, jig-placed with the payload embedded on the definition so RACKEDITAR
+    /// reopens the whole system. Uses <see cref="SelectivePlantaBuilder.BuildPlan"/> so identical frames share ONE
+    /// nested definition referenced per frente (the dynamic system's ARRAY pattern) — a 30-frente run appends the
+    /// frame pieces once instead of 31 times, which is what made the planta slow to generate.
     /// </summary>
     public sealed class SelectivePlantaDrawService
     {
@@ -34,7 +35,7 @@ namespace RackCad.Plugin.Systems
             try
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(system, catalog));
+                var plan = builder.BuildPlan(system, catalog);
                 var block = CreateBlock(document, plan, BlockName(system, rackName), payloadJson);
                 return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
             }
@@ -59,7 +60,7 @@ namespace RackCad.Plugin.Systems
             try
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(system, catalog));
+                var plan = builder.BuildPlan(system, catalog);
                 return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog);
             }
             catch (Exception ex)

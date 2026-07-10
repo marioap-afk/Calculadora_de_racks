@@ -83,7 +83,7 @@ namespace RackCad.Plugin.Headers
             {
                 foreach (var placement in pair.Value.Placements)
                 {
-                    var headerRef = new BlockReference(new Point3d(placement.InsertionX, 0.0, 0.0), pair.Key)
+                    var headerRef = new BlockReference(new Point3d(placement.InsertionX, placement.InsertionY, 0.0), pair.Key)
                     {
                         ScaleFactors = placement.Mirrored ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
                     };
@@ -153,7 +153,7 @@ namespace RackCad.Plugin.Headers
 
                 foreach (var placement in group.Placements)
                 {
-                    var headerRef = new BlockReference(new Point3d(placement.InsertionX, 0.0, 0.0), headerId)
+                    var headerRef = new BlockReference(new Point3d(placement.InsertionX, placement.InsertionY, 0.0), headerId)
                     {
                         ScaleFactors = placement.Mirrored ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
                     };
