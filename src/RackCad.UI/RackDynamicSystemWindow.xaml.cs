@@ -1019,6 +1019,14 @@ namespace RackCad.UI
                 NameBox.Text = name ?? string.Empty;
             }
 
+            // Editing an existing system: the draw button redraws it in place (all copies share the definition+GUID and
+            // update), so it reads "Actualizar". A brand-new system still "Insertar".
+            if (InsertButton != null)
+            {
+                InsertButton.Content = "Actualizar en AutoCAD";
+                InsertButton.ToolTip = "Redibuja el sistema en sitio con tus cambios; todas sus copias en el dibujo se actualizan.";
+            }
+
             RestoreFrom(loaded);
         }
 

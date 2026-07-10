@@ -208,6 +208,14 @@ namespace RackCad.UI
                 NameBox.Text = name ?? string.Empty;
             }
 
+            // Editing an existing bed: the draw button redraws it in place (all copies share the definition+GUID and
+            // update), so it reads "Actualizar". A brand-new bed still "Insertar".
+            if (InsertButton != null)
+            {
+                InsertButton.Content = "Actualizar en AutoCAD";
+                InsertButton.ToolTip = "Redibuja la cama en sitio con tus cambios; todas sus copias en el dibujo se actualizan.";
+            }
+
             foreach (var item in BedTypeBox.Items)
             {
                 if (item is ComboBoxItem option && (option.Tag as string) == (config.BedType == FlowBedType.Pushback ? "Pushback" : "Dynamic"))

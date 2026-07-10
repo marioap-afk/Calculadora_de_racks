@@ -41,6 +41,9 @@ namespace RackCad.UI
         /// <summary>Which view the user asked to insert ("lateral" default, or "planta").</summary>
         public string InsertView { get; private set; } = "lateral";
 
+        /// <summary>True when the user chose "Actualizar" (redraw existing views in place, insert nothing).</summary>
+        public bool UpdateOnly { get; private set; }
+
         /// <summary>Set by the host when the window was opened on an EXISTING cabecera (RACKEDITAR). The planta view
         /// can only be inserted then — it links to that cabecera's lateral; inserting it on a new one would orphan it.</summary>
         public bool IsEditingExisting { get; set; }
@@ -73,14 +76,17 @@ namespace RackCad.UI
             ApplySavedLayout();
             SyncSelectedSegments();
 
-            // The planta links to an EXISTING lateral cabecera: disabled (with the reason on hover) unless the
-            // window was opened via RACKEDITAR inside AutoCAD.
+            // "Actualizar" (redraw existing in place) and the planta view link to an EXISTING cabecera: both are
+            // disabled (with the reason on hover) unless the window was opened via RACKEDITAR inside AutoCAD.
             if (!IsEditingExisting || !canInsertInAutoCad)
             {
-                InsertPlantaButton.IsEnabled = false;
-                InsertPlantaButton.ToolTip = !canInsertInAutoCad
+                var reason = !canInsertInAutoCad
                     ? "Disponible solo cuando el configurador se abre desde AutoCAD."
-                    : "Primero inserta la cabecera lateral; luego selecciónala con RACKEDITAR y agrega la planta desde ahí.";
+                    : "Primero inserta la cabecera lateral; luego selecciónala con RACKEDITAR y actualiza o agrega la planta desde ahí.";
+                UpdateButton.IsEnabled = false;
+                UpdateButton.ToolTip = reason;
+                InsertPlantaButton.IsEnabled = false;
+                InsertPlantaButton.ToolTip = reason;
             }
 
             DrawPreview();
@@ -215,7 +221,10 @@ namespace RackCad.UI
             });
         }
 
-        private void InsertInAutoCad_Click(object sender, RoutedEventArgs e) => RequestInsert("lateral");
+        private void InsertInAutoCad_Click(object sender, RoutedEventArgs e) => RequestDraw("lateral", updateOnly: false);
+
+        /// <summary>"Actualizar": redraw the cabecera's already-drawn views (lateral/planta) in place; insert nothing.</summary>
+        private void UpdateExisting_Click(object sender, RoutedEventArgs e) => RequestDraw(view: null, updateOnly: true);
 
         private void InsertPlanta_Click(object sender, RoutedEventArgs e)
         {
@@ -233,10 +242,14 @@ namespace RackCad.UI
                 return;
             }
 
-            RequestInsert("planta");
+            RequestDraw("planta", updateOnly: false);
         }
 
-        private void RequestInsert(string view)
+        /// <summary>
+        /// Close asking AutoCAD to draw. <paramref name="updateOnly"/> = redraw existing views only (Actualizar);
+        /// otherwise insert a new linked view-block of <paramref name="view"/> AND refresh the existing ones.
+        /// </summary>
+        private void RequestDraw(string view, bool updateOnly)
         {
             if (!canInsertInAutoCad)
             {
@@ -286,7 +299,8 @@ namespace RackCad.UI
 
             // The placement jig needs the editor free, so we only flag the request and close; the host
             // command draws the block and runs the jig once every modal window is gone.
-            InsertView = view;
+            UpdateOnly = updateOnly;
+            InsertView = updateOnly ? null : view;
             InsertRequested = true;
             Close();
         }

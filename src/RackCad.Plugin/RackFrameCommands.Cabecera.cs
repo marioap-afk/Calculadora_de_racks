@@ -312,14 +312,27 @@ namespace RackCad.Plugin
                 }
             }
 
-            // If the user asked to insert the planta and it doesn't exist yet, create it now (linked to this GUID).
-            if (window.InsertView == RackEmbedDocument.ViewPlanta && plantaBlocks.Count == 0)
+            // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the
+            // requested view via the jig. "Actualizar" (UpdateOnly) inserts nothing.
+            if (!window.UpdateOnly)
             {
-                var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta);
-                var inserted = new PlantaHeaderDrawService().DrawAndPlace(document, config, payload, name);
-                editor.WriteMessage(inserted != null && inserted.Success
-                    ? "\nRackCad: vista planta insertada y ligada a la cabecera; RACKEDITAR sobre cualquier vista edita ambas."
-                    : "\nRackCad: no se pudo insertar la planta. " + (inserted?.ErrorMessage ?? string.Empty));
+                if (window.InsertView == RackEmbedDocument.ViewPlanta)
+                {
+                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta);
+                    var inserted = new PlantaHeaderDrawService().DrawAndPlace(document, config, payload, name);
+                    editor.WriteMessage(inserted != null && inserted.Success
+                        ? "\nRackCad: vista planta insertada y ligada a la cabecera; RACKEDITAR sobre cualquier vista edita ambas."
+                        : "\nRackCad: no se pudo insertar la planta. " + (inserted?.ErrorMessage ?? string.Empty));
+                }
+                else
+                {
+                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral);
+                    var inserted = new LateralHeaderDrawService().DrawAndPlace(document, config, payload, name);
+                    editor.WriteMessage(inserted != null && inserted.Success
+                        ? "\nRackCad: cabecera lateral insertada y ligada al mismo rack (mismo GUID)."
+                        : "\nRackCad: no se pudo insertar la cabecera. " + (inserted?.ErrorMessage ?? string.Empty));
+                }
+
                 return;
             }
 
