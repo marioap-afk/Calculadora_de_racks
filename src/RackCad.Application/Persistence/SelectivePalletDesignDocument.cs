@@ -28,7 +28,16 @@ namespace RackCad.Application.Persistence
         public double FloorBeamRise { get; set; }
         public double PalletDepth { get; set; }
 
+        /// <summary>Number of fondos (cabecera-lines in depth). Nullable so legacy documents (no field) load as a single fondo.</summary>
+        public int? DepthCount { get; set; }
+
+        /// <summary>Separations (in) between consecutive fondos, one per gap (DepthCount-1). Empty = defaults apply.</summary>
+        public List<double> SeparatorLengths { get; set; } = new List<double>();
+
         public List<SelectiveBayDocument> Bays { get; set; } = new List<SelectiveBayDocument>();
+
+        /// <summary>Per-fondo level matrices for fondos 1..N-1 (each a list of bays). Empty = every fondo shares fondo 0's <see cref="Bays"/>.</summary>
+        public List<List<SelectiveBayDocument>> ExtraFondoBays { get; set; } = new List<List<SelectiveBayDocument>>();
 
         /// <summary>Per-post cabeceras (one per post; null = run default), each embedded as a frame document.</summary>
         public List<RackFrameProjectDocument> PostCabeceras { get; set; } = new List<RackFrameProjectDocument>();
@@ -61,12 +70,28 @@ namespace RackCad.Application.Persistence
                 PalletTolerance = design.PalletTolerance,
                 VerticalClearance = design.VerticalClearance,
                 FloorBeamRise = design.FloorBeamRise,
-                PalletDepth = design.PalletDepth
+                PalletDepth = design.PalletDepth,
+                DepthCount = design.DepthCount,
+                SeparatorLengths = design.SeparatorLengths.ToList()
             };
 
             foreach (var bay in design.Bays)
             {
                 document.Bays.Add(SelectiveBayDocument.From(bay));
+            }
+
+            foreach (var fondo in design.ExtraFondoBays)
+            {
+                var fondoDoc = new List<SelectiveBayDocument>();
+                if (fondo != null)
+                {
+                    foreach (var bay in fondo)
+                    {
+                        fondoDoc.Add(SelectiveBayDocument.From(bay));
+                    }
+                }
+
+                document.ExtraFondoBays.Add(fondoDoc);
             }
 
             foreach (var cabecera in design.PostCabeceras)
@@ -93,12 +118,29 @@ namespace RackCad.Application.Persistence
                 PalletTolerance = PalletTolerance,
                 VerticalClearance = VerticalClearance,
                 FloorBeamRise = FloorBeamRise,
-                PalletDepth = PalletDepth > 0.0 ? PalletDepth : SelectiveRackDefaults.DefaultPalletDepth // legacy docs had no fondo
+                PalletDepth = PalletDepth > 0.0 ? PalletDepth : SelectiveRackDefaults.DefaultPalletDepth, // legacy docs had no fondo
+                DepthCount = DepthCount.HasValue && DepthCount.Value > 0 ? DepthCount.Value : 1 // legacy docs = single fondo
             };
+
+            foreach (var separator in SeparatorLengths ?? Enumerable.Empty<double>())
+            {
+                design.SeparatorLengths.Add(separator);
+            }
 
             foreach (var bay in Bays ?? Enumerable.Empty<SelectiveBayDocument>())
             {
                 design.Bays.Add(bay.ToDomain());
+            }
+
+            foreach (var fondo in ExtraFondoBays ?? Enumerable.Empty<List<SelectiveBayDocument>>())
+            {
+                var fondoDesign = new List<SelectiveBayDesign>();
+                foreach (var bay in fondo ?? Enumerable.Empty<SelectiveBayDocument>())
+                {
+                    fondoDesign.Add(bay.ToDomain());
+                }
+
+                design.ExtraFondoBays.Add(fondoDesign);
             }
 
             foreach (var cabecera in PostCabeceras ?? Enumerable.Empty<RackFrameProjectDocument>())

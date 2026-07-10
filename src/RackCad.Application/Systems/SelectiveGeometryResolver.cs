@@ -39,6 +39,12 @@ namespace RackCad.Application.Systems
             system.PostId = design.PostId;
             system.PostPeralte = design.PostPeralte;
             system.PalletDepth = design.PalletDepth;
+            system.DepthCount = Math.Max(1, design.DepthCount);
+            foreach (var separator in design.SeparatorLengths)
+            {
+                system.SeparatorLengths.Add(separator);
+            }
+
             system.DrawBasePlate = design.DrawBasePlate;
             system.NumberFronts = design.NumberFronts;
             system.NumberLevels = design.NumberLevels;
@@ -79,8 +85,99 @@ namespace RackCad.Application.Systems
                 return startY;
             }
 
+            // Fondo 0 (the primary/front fondo) defines the shared horizontal grid — bay widths / post positions.
+            // Resolve it first; then each extra fondo (doble profundidad) resolves its OWN vertical levels but ADOPTS
+            // fondo 0's per-bay width, so every fondo's posts land on the same grid. Only the levels/heights differ.
+            var bays0 = ResolveFondo(design.Bays, paso, tolerance, clearance, gridBase, design.FloorBeamRise, CachedBeamStartY);
+            foreach (var bay in bays0)
+            {
+                system.Bays.Add(bay);
+            }
+
+            system.FondoBays.Add(bays0);
+            var overallHeight = MaxHeight(bays0);
+
+            var fondoCount = Math.Max(1, design.DepthCount);
+            for (var k = 1; k < fondoCount; k++)
+            {
+                var baysK = ResolveFondo(BaysForFondo(design, k), paso, tolerance, clearance, gridBase, design.FloorBeamRise, CachedBeamStartY);
+
+                // Align to fondo 0: share each bay's width (so posts coincide) and match the frente count — pad a
+                // shorter fondo with empty frentes (a column that fondo doesn't reach), ignore any extra bays.
+                var aligned = new List<SelectiveBay>(bays0.Count);
+                for (var i = 0; i < bays0.Count; i++)
+                {
+                    if (i < baysK.Count)
+                    {
+                        baysK[i].BeamLength = bays0[i].BeamLength;
+                        baysK[i].GoverningBeamId = bays0[i].GoverningBeamId;
+                        aligned.Add(baysK[i]);
+                    }
+                    else
+                    {
+                        aligned.Add(new SelectiveBay { BeamLength = bays0[i].BeamLength, GoverningBeamId = bays0[i].GoverningBeamId, Height = 0.0 });
+                    }
+                }
+
+                system.FondoBays.Add(aligned);
+                overallHeight = Math.Max(overallHeight, MaxHeight(aligned));
+            }
+
+            system.Height = overallHeight;
+
+            // Per-post cabeceras (N frentes -> N+1 posts); pad with null so absent ones fall back to the run default.
+            var postCount = design.Bays.Count + 1;
+            for (var i = 0; i < postCount; i++)
+            {
+                system.PostCabeceras.Add(i < design.PostCabeceras.Count ? design.PostCabeceras[i] : null);
+            }
+
+            return system;
+        }
+
+        /// <summary>The design bays fondo <paramref name="k"/> uses: its own <see cref="SelectivePalletDesign.ExtraFondoBays"/>
+        /// entry when present, else fondo 0's <see cref="SelectivePalletDesign.Bays"/> (the plain doble-profundidad case).</summary>
+        private static IList<SelectiveBayDesign> BaysForFondo(SelectivePalletDesign design, int k)
+        {
+            if (k <= 0)
+            {
+                return design.Bays;
+            }
+
+            var index = k - 1;
+            if (index < design.ExtraFondoBays.Count && design.ExtraFondoBays[index] != null && design.ExtraFondoBays[index].Count > 0)
+            {
+                return design.ExtraFondoBays[index];
+            }
+
+            return design.Bays;
+        }
+
+        private static double MaxHeight(IReadOnlyList<SelectiveBay> bays)
+        {
             var height = 0.0;
-            foreach (var bayDesign in design.Bays)
+            foreach (var bay in bays)
+            {
+                if (bay.Height > height)
+                {
+                    height = bay.Height;
+                }
+            }
+
+            return height;
+        }
+
+        /// <summary>
+        /// Resolve ONE fondo's design bays into placed bays (each level at its troquel Y, plus the per-bay height).
+        /// The four derivation rules (see the class summary) run here; the caller then shares fondo 0's widths so the
+        /// posts of every fondo align. A bay with no levels stays an empty frente (Height from its override, else 0).
+        /// </summary>
+        private static List<SelectiveBay> ResolveFondo(
+            IList<SelectiveBayDesign> designBays, double paso, double tolerance, double clearance,
+            double gridBase, double floorBeamRise, Func<string, double> cachedBeamStartY)
+        {
+            var bays = new List<SelectiveBay>();
+            foreach (var bayDesign in designBays)
             {
                 var bay = new SelectiveBay
                 {
@@ -91,8 +188,7 @@ namespace RackCad.Application.Systems
                 if (levels.Count == 0)
                 {
                     bay.Height = WithOverride(0.0, bayDesign.HeightOverride);
-                    height = Math.Max(height, bay.Height);
-                    system.Bays.Add(bay);
+                    bays.Add(bay);
                     continue;
                 }
 
@@ -106,7 +202,7 @@ namespace RackCad.Application.Systems
                     // The floor larguero rises FloorBeamRise above the lowest troquel so its ménsula clears the base
                     // plate. The rise is user-entered, so snap it up to the troquel pitch — otherwise the floor beam
                     // AND every level stacked above it (separations are always multiples of paso) leave the grid.
-                    y = gridBase + RoundUpToMultiple(design.FloorBeamRise, paso);
+                    y = gridBase + RoundUpToMultiple(floorBeamRise, paso);
                     AddBeam(bay, y, levels[0]);
                     start = 1;
                 }
@@ -114,8 +210,7 @@ namespace RackCad.Application.Systems
                 {
                     // Only a ground pallet on the floor, no larguero: the post covers a third of it, measured from the floor.
                     bay.Height = WithOverride(RoundUpToFoot(PalletAlto(levels[0]) / 3.0), bayDesign.HeightOverride);
-                    height = Math.Max(height, bay.Height);
-                    system.Bays.Add(bay);
+                    bays.Add(bay);
                     continue;
                 }
                 else
@@ -139,24 +234,14 @@ namespace RackCad.Application.Systems
 
                 // Height this bay needs. The top pallet rests on the beam's escalón (INICIO_PERFIL's Y above the
                 // troquel), so the third-of-the-pallet coverage is measured from THAT surface, not the troquel.
-                // A manual per-bay override replaces the computed height; the tallest bay still governs a shared post.
+                // A manual per-bay override replaces the computed height.
                 var top = levels[levels.Count - 1];
-                var loadSurface = y + CachedBeamStartY(top.BeamId);
+                var loadSurface = y + cachedBeamStartY(top.BeamId);
                 bay.Height = WithOverride(RoundUpToFoot(loadSurface + PalletAlto(top) / 3.0), bayDesign.HeightOverride);
-                height = Math.Max(height, bay.Height);
-                system.Bays.Add(bay);
+                bays.Add(bay);
             }
 
-            system.Height = height;
-
-            // Per-post cabeceras (N frentes -> N+1 posts); pad with null so absent ones fall back to the run default.
-            var postCount = design.Bays.Count + 1;
-            for (var i = 0; i < postCount; i++)
-            {
-                system.PostCabeceras.Add(i < design.PostCabeceras.Count ? design.PostCabeceras[i] : null);
-            }
-
-            return system;
+            return bays;
         }
 
         /// <summary>The manual override if it is a positive number, else the auto value.</summary>

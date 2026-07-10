@@ -45,6 +45,7 @@ namespace RackCad.Application.Systems
 
             var frenteYs = SelectivePostGeometry.Compute(system, catalog).PostXs; // frente positions, read as Y here
             var depth = system.PalletDepth > 0.0 ? system.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            var offsets = SelectiveDepthLayout.Offsets(system, depth); // one X per fondo (doble profundidad)
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
             var groups = new List<PlantaGroupBuilder>();
@@ -78,10 +79,15 @@ namespace RackCad.Application.Systems
                     }
                 }
 
-                group.Placements.Add(new HeaderPlacement(0.0, mirrored: false, insertionY: frenteYs[i]));
+                // One placement per fondo: the SAME cabecera-planta definition repeated along X (the depth axis) at
+                // each fondo offset. A single fondo keeps the historical single placement at X=0.
+                foreach (var offset in offsets)
+                {
+                    group.Placements.Add(new HeaderPlacement(offset, mirrored: false, insertionY: frenteYs[i]));
+                }
             }
 
-            AddLargueros(loose, system, catalog, frenteYs, depth);
+            AddLargueros(loose, system, catalog, frenteYs, depth, offsets);
             AddAnnotations(loose, system, frenteYs);
             return new DynamicSystemPlan(groups.Select(g => g.ToGroup()).ToList(), loose);
         }
@@ -209,39 +215,46 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// Per bay, a FRONT larguero at the front post (X=0) and a BACK one at the back post (X=fondo), running along Y
-        /// from the frame's larguero troquel with LONGITUD = the beam length. The troquel slides with the post peralte
-        /// (its PLANTA Y-slope) and the beam's INICIO_PERFIL (planta) sets the ménsula overhang along Y.
+        /// Per bay and per fondo, a FRONT larguero at that fondo's front post (X=offset) and a BACK one at its back
+        /// post (X=offset+fondo), running along Y from the frame's larguero troquel with LONGITUD = the beam length.
+        /// The troquel slides with the post peralte (its PLANTA Y-slope). EACH fondo uses ITS OWN levels: a fondo whose
+        /// bay has no levels (an empty frente / column) draws no larguero there. A single fondo keeps the historical
+        /// front-at-0 / back-at-fondo pair.
         /// </summary>
-        private static void AddLargueros(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, double depth)
+        private static void AddLargueros(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, double depth, IReadOnlyList<double> offsets)
         {
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, PlantaView);
 
             for (var i = 0; i < system.Bays.Count && i + 1 < frenteYs.Count; i++)
             {
-                var bay = system.Bays[i];
-                if (bay.Levels.Count == 0)
-                {
-                    continue;
-                }
-
-                var level = bay.Levels[0]; // in plan the levels collapse onto one line — one front + one back per bay
-                var block = catalog?.Blocks.FindBlock(level.BeamId, PlantaView)?.BlockName;
-                if (string.IsNullOrWhiteSpace(block))
-                {
-                    continue;
-                }
-
-                // The beam is placed at its troquel exactly like the frontal (its origin = the hook); the ménsula
-                // overhang (INICIO_PERFIL) is already baked into the frame spacing by SelectivePostGeometry, so it is
-                // NOT subtracted here. The troquel slides with THIS frame's post peralte along Y (its PLANTA Y-slope).
+                // The troquel/mate is a horizontal property (shared grid, per-frame peralte) — compute once per bay.
+                // The ménsula overhang (INICIO_PERFIL) is already baked into the frame spacing by SelectivePostGeometry,
+                // so it is NOT subtracted here.
                 var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
                 var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
                 var mateY = frenteYs[i] + troquel.Y;
 
-                // Front post at X=0, back post at X=fondo; LONGITUD runs along Y (= the beam length).
-                AddLarguero(instances, level.BeamId, block, new Point2D(troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: false);
-                AddLarguero(instances, level.BeamId, block, new Point2D(depth - troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: true);
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    var bays = SelectiveDepthLayout.BaysOfFondo(system, k);
+                    if (i >= bays.Count || bays[i].Levels.Count == 0)
+                    {
+                        continue; // empty frente (column) in this fondo
+                    }
+
+                    var bay = bays[i];
+                    var level = bay.Levels[0]; // in plan the levels collapse onto one line — one front + one back per bay
+                    var block = catalog?.Blocks.FindBlock(level.BeamId, PlantaView)?.BlockName;
+                    if (string.IsNullOrWhiteSpace(block))
+                    {
+                        continue;
+                    }
+
+                    // This fondo: front post at X=offset, back post at X=offset+fondo; LONGITUD runs along Y.
+                    var offset = offsets[k];
+                    AddLarguero(instances, level.BeamId, block, new Point2D(offset + troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: false);
+                    AddLarguero(instances, level.BeamId, block, new Point2D(offset + depth - troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: true);
+                }
             }
         }
 

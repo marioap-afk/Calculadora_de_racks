@@ -48,14 +48,35 @@ namespace RackCad.Application.Systems
                 ? system.PostPeraltes[postIndex]
                 : system?.PostPeralte ?? 0.0;
 
-        /// <summary>Height of post <paramref name="postIndex"/> = the tallest of the (up to two) bays it bounds.</summary>
+        /// <summary>Height of post <paramref name="postIndex"/> in fondo 0 = the tallest of the (up to two) bays it
+        /// bounds; empty bays fall back to fondo 0's own tallest bay (not the overall system height, which a taller
+        /// OTHER fondo could inflate), so the frontal and fondo 0's lateral agree.</summary>
         public static double PostHeight(SelectiveRackSystem system, int postIndex)
         {
-            var bays = system.Bays;
+            var fondo0Max = MaxBayHeight(system.Bays);
+            return PostHeight(system.Bays, postIndex, fondo0Max > 0.0 ? fondo0Max : system.Height);
+        }
+
+        private static double MaxBayHeight(IList<SelectiveBay> bays)
+        {
+            var h = 0.0;
+            foreach (var bay in bays)
+            {
+                if (bay.Height > h) h = bay.Height;
+            }
+
+            return h;
+        }
+
+        /// <summary>Height of post <paramref name="postIndex"/> WITHIN a given fondo's bays = the tallest of the (up to
+        /// two) bays it bounds there; falls back to <paramref name="fallbackHeight"/> when both are absent/empty (e.g. a
+        /// column). Lets each fondo of a doble-profundidad rack carry its own cabecera height.</summary>
+        public static double PostHeight(IList<SelectiveBay> bays, int postIndex, double fallbackHeight)
+        {
             var h = 0.0;
             if (postIndex - 1 >= 0 && postIndex - 1 < bays.Count && bays[postIndex - 1].Height > h) h = bays[postIndex - 1].Height; // bay to the left
             if (postIndex >= 0 && postIndex < bays.Count && bays[postIndex].Height > h) h = bays[postIndex].Height;                // bay to the right
-            return h > 0.0 ? h : system.Height;
+            return h > 0.0 ? h : fallbackHeight;
         }
 
         /// <summary>

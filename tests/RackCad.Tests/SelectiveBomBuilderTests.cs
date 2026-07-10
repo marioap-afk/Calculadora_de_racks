@@ -35,11 +35,12 @@ namespace RackCad.Tests
 
             var bom = SelectiveBomBuilder.Build(instances, Catalog);
 
-            // 2 frentes -> 3 postes + 3 placas; 2 x 2 niveles = 4 largueros; 2 ménsulas c/u = 8.
-            Assert.Equal(3, Qty(bom, SelectiveBomBuilder.Post));
-            Assert.Equal(3, Qty(bom, SelectiveBomBuilder.BasePlate));
-            Assert.Equal(4, Qty(bom, SelectiveBomBuilder.Beam));
-            Assert.Equal(8, Qty(bom, SelectiveBomBuilder.Mensula));
+            // El BOM cuenta la profundidad: cada cabecera es de frente Y atras (x2). 2 frentes -> 3 cabeceras ->
+            // 6 postes + 6 placas; 2 x 2 niveles = 4 largueros frontales -> 8 fisicos; 2 ménsulas c/u = 16.
+            Assert.Equal(6, Qty(bom, SelectiveBomBuilder.Post));
+            Assert.Equal(6, Qty(bom, SelectiveBomBuilder.BasePlate));
+            Assert.Equal(8, Qty(bom, SelectiveBomBuilder.Beam));
+            Assert.Equal(16, Qty(bom, SelectiveBomBuilder.Mensula));
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace RackCad.Tests
 
             var beamLines = bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Beam).ToList();
             Assert.Single(beamLines); // all four share length 100 + peralte 4
-            Assert.Equal(4, beamLines[0].Quantity);
+            Assert.Equal(8, beamLines[0].Quantity); // 4 frontales x 2 (frente/atras)
             Assert.Equal(100.0, beamLines[0].Length, 4);
         }
 
@@ -65,8 +66,23 @@ namespace RackCad.Tests
             var bom = SelectiveBomBuilder.Build(instances, Catalog);
 
             var beamLines = bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Beam).ToList();
-            Assert.Equal(2, beamLines.Count); // peralte 4 (x3) and peralte 5 (x1)
-            Assert.Equal(4, beamLines.Sum(l => l.Quantity));
+            Assert.Equal(2, beamLines.Count); // peralte 4 (x3 -> x6) and peralte 5 (x1 -> x2)
+            Assert.Equal(8, beamLines.Sum(l => l.Quantity));
+        }
+
+        [Fact]
+        public void Build_DoubleDepth_CountsEveryFondo()
+        {
+            var instances = new SelectiveFrontalBuilder().Build(TwoBaySystem(), Catalog);
+
+            var single = SelectiveBomBuilder.Build(instances, Catalog, depthCount: 1);
+            var doble = SelectiveBomBuilder.Build(instances, Catalog, depthCount: 2);
+
+            // Cada fondo extra repite postes/placas/largueros/ménsulas: doble profundidad = 2x el sencillo.
+            Assert.Equal(2 * Qty(single, SelectiveBomBuilder.Post), Qty(doble, SelectiveBomBuilder.Post));
+            Assert.Equal(2 * Qty(single, SelectiveBomBuilder.Beam), Qty(doble, SelectiveBomBuilder.Beam));
+            Assert.Equal(12, Qty(doble, SelectiveBomBuilder.Post)); // 3 cabeceras x2 (frente/atras) x2 fondos
+            Assert.Equal(16, Qty(doble, SelectiveBomBuilder.Beam)); // 4 frontales x2 x2
         }
 
         private static int Qty(Application.Bom.BillOfMaterials bom, string category)

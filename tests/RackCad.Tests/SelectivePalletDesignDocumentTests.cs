@@ -91,6 +91,57 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_PreservesDepthCountAndSeparators()
+        {
+            var design = SampleDesign();
+            design.DepthCount = 3; // triple profundidad
+            design.SeparatorLengths.Add(8.0);
+            design.SeparatorLengths.Add(12.0);
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
+
+            Assert.Equal(3, restored.DepthCount);
+            Assert.Equal(new[] { 8.0, 12.0 }, restored.SeparatorLengths);
+        }
+
+        [Fact]
+        public void ToDomain_LegacyWithoutDepthCount_DefaultsToSingleFondo()
+        {
+            var document = SelectivePalletDesignDocument.From(SampleDesign(), "id", "n");
+            document.DepthCount = null; // a design older than the fondos field
+
+            var restored = document.ToDomain();
+            Assert.Equal(1, restored.DepthCount);
+            Assert.Empty(restored.SeparatorLengths);
+        }
+
+        [Fact]
+        public void RoundTrip_PreservesPerFondoLevelMatrices()
+        {
+            var design = SampleDesign(); // fondo 0 = 2 bays
+            design.DepthCount = 2;
+
+            // fondo 1 has its OWN levels (a distinct back-to-back side).
+            var fondo1 = new System.Collections.Generic.List<SelectiveBayDesign>();
+            var bay = new SelectiveBayDesign { FloorBeam = true };
+            bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 44, Alto = 55 }, PalletCount = 1, BeamId = "BEAM_C", BeamPeralte = 5.0 });
+            fondo1.Add(bay);
+            fondo1.Add(new SelectiveBayDesign()); // an empty frente (column) in fondo 1
+            design.ExtraFondoBays.Add(fondo1);
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
+
+            Assert.Single(restored.ExtraFondoBays);
+            Assert.Equal(2, restored.ExtraFondoBays[0].Count);
+            Assert.True(restored.ExtraFondoBays[0][0].FloorBeam);
+            Assert.Equal("BEAM_C", restored.ExtraFondoBays[0][0].Levels[0].BeamId);
+            Assert.Equal(55.0, restored.ExtraFondoBays[0][0].Levels[0].Pallet.Alto, 4);
+            Assert.Empty(restored.ExtraFondoBays[0][1].Levels); // the column stays empty
+        }
+
+        [Fact]
         public void RoundTrip_PreservesPerPostPeraltes()
         {
             var design = SampleDesign(); // 2 bays -> 3 posts

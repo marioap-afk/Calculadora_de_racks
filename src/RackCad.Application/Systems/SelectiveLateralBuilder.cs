@@ -10,17 +10,20 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Turns a resolved selective run into its LATERAL sections: one cross-section (a cabecera frame) per post, at the
-    /// post's resolved height and the run's fondo (<see cref="SelectiveRackSystem.PalletDepth"/>), positioned at the
-    /// SAME X as the frontal post (<see cref="SelectivePostGeometry"/>). The AutoCAD side draws each section as its own
-    /// block, but every section is a view OF the system (shares the rack id/design), so editing the system redraws them
-    /// all. Each corte shows the cabecera + its front/back largueros per level; safety elements (protectores/topes/mallas)
-    /// are a future extension that needs their own catalog blocks. Pure.
+    /// Turns a resolved selective run into its LATERAL sections: one cross-section per post, positioned at the SAME X
+    /// as the frontal post (<see cref="SelectivePostGeometry"/>). For a doble-profundidad rack the corte shows EVERY
+    /// fondo along the depth axis (<see cref="SelectiveDepthLayout"/>): each fondo is its own cabecera at ITS OWN height
+    /// (a side can be taller or shorter) with ITS OWN front/back largueros (its own levels). fondo 0's cabecera is the
+    /// corte's <see cref="SelectiveCorte.Cabecera"/> (drawn by the AutoCAD side); the extra fondos + all largueros are
+    /// loose instances so the corte stays a single block. Safety elements (protectores/topes/mallas) are a future
+    /// extension that needs their own catalog blocks. Pure.
     /// </summary>
     public sealed class SelectiveLateralBuilder
     {
         /// <summary>View the lateral corte draws in (posts, celosía and largueros share it). See views.csv / blocks.csv.</summary>
         public const string LateralView = "LATERAL";
+
+        private readonly LateralHeaderLayoutBuilder layoutBuilder = new LateralHeaderLayoutBuilder();
 
         public IReadOnlyList<SelectiveCorte> Cortes(SelectiveRackSystem system, RackCatalog catalog)
         {
@@ -35,13 +38,24 @@ namespace RackCad.Application.Systems
 
             var postXs = SelectivePostGeometry.Compute(system, catalog).PostXs;
             var depth = system.PalletDepth > 0.0 ? system.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            var offsets = SelectiveDepthLayout.Offsets(system, depth); // one X per fondo (doble profundidad)
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
+
+            // Each fondo has its OWN bays (own levels/heights). Resolve them + a per-fondo height fallback once.
+            var fondoBays = new IList<SelectiveBay>[offsets.Count];
+            var fondoFallback = new double[offsets.Count];
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                fondoBays[k] = SelectiveDepthLayout.BaysOfFondo(system, k);
+                var m = 0.0;
+                foreach (var bay in fondoBays[k]) if (bay.Height > m) m = bay.Height;
+                fondoFallback[k] = m > 0.0 ? m : system.Height;
+            }
 
             for (var i = 0; i < postXs.Count; i++)
             {
-                // If the user customized this post's cabecera, the corte IS that cabecera (its height + celosía +
-                // plate), so editing it shows in the lateral. Otherwise build a standard frame at the resolved height.
-                // Fondo is shared across the run (enforced when the custom is stored).
+                // fondo 0's cabecera is drawn from `cabecera` (at X=0) by the AutoCAD side. A per-post custom cabecera
+                // wins for fondo 0 (its height + celosía + plate). Otherwise a standard frame at fondo 0's own height.
                 var custom = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
                 RackFrameConfiguration cabecera;
                 if (custom != null && custom.Height > 0.0)
@@ -50,44 +64,91 @@ namespace RackCad.Application.Systems
                 }
                 else
                 {
-                    var height = SelectivePostGeometry.PostHeight(system, i);
-                    if (height <= 0.0)
+                    var height0 = SelectivePostGeometry.PostHeight(fondoBays[0], i, fondoFallback[0]);
+                    if (height0 <= 0.0)
                     {
                         continue;
                     }
 
-                    cabecera = factory.Build(template, system.PostId, height, depth);
+                    cabecera = factory.Build(template, system.PostId, height0, depth);
                 }
 
-                var largueros = BuildLargueros(system, i, depth, catalog);
-                cortes.Add(new SelectiveCorte(i, postXs[i], cabecera, largueros));
+                var extras = new List<HeaderBlockInstance>();
+
+                // Extra fondos (doble profundidad): each is its OWN cabecera at ITS OWN height — a side can be taller
+                // or shorter — translated to its X offset. Fase 1 uses the standard frame per extra fondo (per-post
+                // custom cabeceras stay on fondo 0).
+                for (var k = 1; k < offsets.Count; k++)
+                {
+                    var heightK = SelectivePostGeometry.PostHeight(fondoBays[k], i, fondoFallback[k]);
+                    if (heightK <= 0.0)
+                    {
+                        continue;
+                    }
+
+                    AddCabeceraAtOffset(extras, factory.Build(template, system.PostId, heightK, depth), offsets[k], catalog);
+                }
+
+                // Largueros: every fondo contributes its OWN levels (its own heights) at its own X offset.
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    BuildLargueros(extras, fondoBays[k], i, depth, offsets[k], catalog);
+                }
+
+                // Annotations once, from fondo 0's levels (the primary face) and fondo 0's height.
+                AddCorteAnnotations(extras, system, i, CollectLevels(fondoBays[0], i));
+                cortes.Add(new SelectiveCorte(i, postXs[i], cabecera, extras));
             }
 
             return cortes;
         }
 
-        /// <summary>
-        /// The lateral larguero sections that attach at frame <paramref name="postIndex"/>: for each level of the
-        /// adjacent bays (deduped by Y), a FRONT section at the front post (X=0) and a BACK section at the back post
-        /// (X=fondo), at the SAME Y as the frontal (the beam's lateral block origin is its mate, so no offset). The
-        /// beam PERALTE carries over. In a lateral view the beam is seen end-on, so LONGITUD is irrelevant.
-        /// </summary>
-        private static IReadOnlyList<HeaderBlockInstance> BuildLargueros(SelectiveRackSystem system, int postIndex, double depth, RackCatalog catalog)
+        /// <summary>Build one fondo's cabecera geometry and translate it to its X offset (fondo 0 is drawn from its config).</summary>
+        private void AddCabeceraAtOffset(ICollection<HeaderBlockInstance> result, RackFrameConfiguration cabecera, double offset, RackCatalog catalog)
         {
-            var result = new List<HeaderBlockInstance>();
+            if (cabecera == null || cabecera.Height <= 0.0 || cabecera.Depth <= 0.0)
+            {
+                return;
+            }
 
-            // Beams physically attaching at this frame come from the bays on either side (an interior frame joins
-            // two). Dedupe by (Y, beam, peralte) — NOT by Y alone: adjacent bays can carry DIFFERENT beams at the
-            // same height, and each distinct one deserves its lateral section.
+            var parameters = LateralHeaderParametersFactory.FromConfiguration(cabecera);
+            var layout = layoutBuilder.Build(cabecera, parameters, catalog);
+            foreach (var instance in layout.Instances)
+            {
+                result.Add(Translate(instance, offset));
+            }
+        }
+
+        /// <summary>
+        /// The lateral larguero sections that attach at frame <paramref name="postIndex"/> for ONE fondo (its own
+        /// <paramref name="bays"/>): each distinct level of the adjacent bays gets a FRONT section at the fondo's front
+        /// post (X=<paramref name="offset"/>) and a BACK section at its back post (X=offset+fondo), at the level's Y.
+        /// The beam PERALTE carries over. In a lateral view the beam is seen end-on, so LONGITUD is irrelevant.
+        /// </summary>
+        private static void BuildLargueros(ICollection<HeaderBlockInstance> result, IList<SelectiveBay> bays, int postIndex, double depth, double offset, RackCatalog catalog)
+        {
+            foreach (var level in CollectLevels(bays, postIndex))
+            {
+                var block = catalog?.Blocks.FindBlock(level.BeamId, LateralView)?.BlockName;
+                result.Add(MakeLarguero(level, block, x: offset, mirrored: false));          // front post of this fondo
+                result.Add(MakeLarguero(level, block, x: offset + depth, mirrored: true));    // back post of this fondo
+            }
+        }
+
+        /// <summary>The distinct levels attaching at post <paramref name="postIndex"/> from the (up to two) bays it
+        /// bounds, deduped by (Y, beam, peralte) — NOT by Y alone: adjacent bays can carry DIFFERENT beams at the same
+        /// height, and each distinct one deserves its lateral section.</summary>
+        private static IReadOnlyList<SelectiveLevel> CollectLevels(IList<SelectiveBay> bays, int postIndex)
+        {
             var byKey = new Dictionary<(double Y, string BeamId, double Peralte), SelectiveLevel>();
             void Collect(int bayIndex)
             {
-                if (bayIndex < 0 || bayIndex >= system.Bays.Count)
+                if (bayIndex < 0 || bayIndex >= bays.Count)
                 {
                     return;
                 }
 
-                foreach (var level in system.Bays[bayIndex].Levels)
+                foreach (var level in bays[bayIndex].Levels)
                 {
                     var key = (Math.Round(level.Y, 4), level.BeamId, Math.Round(level.BeamPeralte, 4));
                     if (!byKey.ContainsKey(key))
@@ -99,16 +160,32 @@ namespace RackCad.Application.Systems
 
             Collect(postIndex - 1);
             Collect(postIndex);
+            return new List<SelectiveLevel>(byKey.Values);
+        }
 
-            foreach (var level in byKey.Values)
+        /// <summary>Clone an instance shifted by <paramref name="dx"/> along X — used to repeat a cabecera at each extra fondo.</summary>
+        private static HeaderBlockInstance Translate(HeaderBlockInstance source, double dx)
+        {
+            var clone = new HeaderBlockInstance
             {
-                var block = catalog?.Blocks.FindBlock(level.BeamId, LateralView)?.BlockName;
-                result.Add(MakeLarguero(level, block, x: 0.0, mirrored: false));      // front post
-                result.Add(MakeLarguero(level, block, x: depth, mirrored: true));     // back post
+                Role = source.Role,
+                PieceId = source.PieceId,
+                BlockName = source.BlockName,
+                View = source.View,
+                RotationRadians = source.RotationRadians,
+                MirroredX = source.MirroredX,
+                Text = source.Text,
+                TextHeight = source.TextHeight,
+                ConnectionAnchor = new Point2D(source.ConnectionAnchor.X + dx, source.ConnectionAnchor.Y),
+                Insertion = new Point2D(source.Insertion.X + dx, source.Insertion.Y)
+            };
+
+            foreach (var pair in source.DynamicParameters)
+            {
+                clone.DynamicParameters[pair.Key] = pair.Value;
             }
 
-            AddCorteAnnotations(result, system, postIndex, byKey.Values);
-            return result;
+            return clone;
         }
 
         /// <summary>Lateral-corte text labels (when the toggles are on): a number per level on the left, the post

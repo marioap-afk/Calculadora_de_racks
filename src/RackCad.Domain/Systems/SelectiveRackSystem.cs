@@ -24,8 +24,23 @@ namespace RackCad.Domain.Systems
         /// <summary>Pallet depth / fondo (in): the cabeceras' depth in the LATERAL view.</summary>
         public double PalletDepth { get; set; }
 
-        /// <summary>The bays, left to right. N bays sit between N+1 cabeceras.</summary>
+        /// <summary>Number of cabecera-lines in depth (1 = sencillo; 2/3/4 = doble profundidad). Pass-through from the design.</summary>
+        public int DepthCount { get; set; } = 1;
+
+        /// <summary>Separations (in) between consecutive fondos (one per gap; short list / missing = fall back to the last value, else the default). Pass-through.</summary>
+        public IList<double> SeparatorLengths { get; } = new List<double>();
+
+        /// <summary>The bays of fondo 0 (the primary/front fondo), left to right. N bays sit between N+1 cabeceras.</summary>
         public IList<SelectiveBay> Bays { get; } = new List<SelectiveBay>();
+
+        /// <summary>
+        /// The resolved bays of EACH fondo (index 0 is the same content as <see cref="Bays"/>, the primary fondo).
+        /// Every fondo shares the same per-bay <see cref="SelectiveBay.BeamLength"/> (the horizontal grid from fondo 0,
+        /// so the posts align), but carries its OWN levels and per-bay height — doble profundidad with distinct level
+        /// configs. A fondo's bay with no levels is an empty frente (e.g. a building column). One entry per fondo
+        /// (<see cref="DepthCount"/>); a single fondo leaves this with just fondo 0.
+        /// </summary>
+        public IList<IList<SelectiveBay>> FondoBays { get; } = new List<IList<SelectiveBay>>();
 
         /// <summary>Optional per-post cabecera (pass-through from the design), one per post position; null = run default.</summary>
         public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();

@@ -10,9 +10,12 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Preliminary bill of materials for a RESOLVED selective rack, aggregated from the placed block instances:
+    /// Preliminary bill of materials for a RESOLVED selective rack, aggregated from the FRONTAL block instances:
     /// posts by height, one base plate per post, largueros by length + peralte, and two ménsulas per larguero.
-    /// Grouped by (category, piece, length, peralte) with quantities summed. Pure and unit-testable; no AutoCAD.
+    /// The frontal is a single elevation, so each post/plate/larguero it shows stands for the front AND back of the
+    /// cabecera (×2), repeated at every fondo of a doble-profundidad rack (×DepthCount): the physical count
+    /// multiplies the aggregated quantities by <c>2·fondos</c>. Grouped by (category, piece, length, peralte) with
+    /// quantities summed. Pure and unit-testable; no AutoCAD.
     /// </summary>
     public static class SelectiveBomBuilder
     {
@@ -21,8 +24,36 @@ namespace RackCad.Application.Systems
         public const string Beam = "Larguero";
         public const string Mensula = "Ménsula";
 
-        public static BillOfMaterials Build(IReadOnlyList<HeaderBlockInstance> instances, RackCatalog catalog)
+        /// <summary>
+        /// Builds the physical BOM of a RESOLVED system, summing EVERY fondo's real content — each fondo can carry its
+        /// own levels (doble profundidad with distinct level configs), so a flat ×fondos multiplier no longer holds.
+        /// Each fondo's frontal face is aggregated and then doubled for its front + back cabeceras.
+        /// </summary>
+        public static BillOfMaterials Build(SelectiveRackSystem system, RackCatalog catalog)
         {
+            if (system == null || system.Bays.Count == 0)
+            {
+                return new BillOfMaterials(new List<BomLine>());
+            }
+
+            var frontalBuilder = new SelectiveFrontalBuilder();
+            var all = new List<HeaderBlockInstance>();
+            var fondoCount = SelectiveDepthLayout.Count(system);
+            for (var k = 0; k < fondoCount; k++)
+            {
+                all.AddRange(frontalBuilder.Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog));
+            }
+
+            // Every fondo is already summed above; ×2 for the front AND back cabecera of each.
+            return Build(all, catalog, depthCount: 1);
+        }
+
+        /// <summary>Builds the physical BOM from an already-laid-out FRONTAL instance list. <paramref name="depthCount"/>
+        /// multiplies the aggregated quantities by 2·fondos (front/back × fondos) — valid only when every fondo is
+        /// identical; for per-fondo level configs use the <see cref="Build(SelectiveRackSystem, RackCatalog)"/> overload.</summary>
+        public static BillOfMaterials Build(IReadOnlyList<HeaderBlockInstance> instances, RackCatalog catalog, int depthCount = 1)
+        {
+            var multiplier = 2 * Math.Max(1, depthCount);
             var raw = new List<RawItem>();
 
             foreach (var instance in instances ?? Enumerable.Empty<HeaderBlockInstance>())
@@ -59,7 +90,7 @@ namespace RackCad.Application.Systems
                     Category = group.Key.Category,
                     ProfileId = group.Key.PieceId,
                     Length = group.Key.Length,
-                    Quantity = group.Sum(item => item.Quantity),
+                    Quantity = group.Sum(item => item.Quantity) * multiplier,
                     Description = Describe(catalog, group.Key.Category, group.Key.PieceId, group.Key.Peralte)
                 })
                 .OrderBy(line => Order(line.Category))

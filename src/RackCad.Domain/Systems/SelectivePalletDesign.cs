@@ -33,8 +33,34 @@ namespace RackCad.Domain.Systems
         /// <summary>Pallet depth / fondo (in): the depth of the cabeceras in the LATERAL view. Editable.</summary>
         public double PalletDepth { get; set; } = SelectiveRackDefaults.DefaultPalletDepth;
 
-        /// <summary>The bays, left to right. Each carries its own column of level cells (its own count).</summary>
+        /// <summary>
+        /// Number of cabecera-lines in DEPTH: 1 = single fondo (sencillo); 2/3/4 = doble/triple/cuádruple
+        /// profundidad (espalda con espalda). Each extra fondo repeats the whole depth structure (cabecera +
+        /// front/back largueros) offset by <see cref="PalletDepth"/> + the gap. Only the LATERAL and PLANTA views
+        /// (and the BOM) change; the FRONTAL elevation is identical. Editable; default 1.
+        /// </summary>
+        public int DepthCount { get; set; } = 1;
+
+        /// <summary>
+        /// Separations (in) between consecutive fondos — one value per gap (<see cref="DepthCount"/> - 1 gaps),
+        /// front to back. A gap with no value (or a short list) falls back to the last given value, else
+        /// <see cref="SelectiveRackDefaults.DefaultSeparator"/>. The physical separador block is not drawn yet;
+        /// this is only the empty space left between adjacent cabecera-lines. Editable per gap.
+        /// </summary>
+        public IList<double> SeparatorLengths { get; } = new List<double>();
+
+        /// <summary>The bays of fondo 0 (the primary/front fondo), left to right. Each carries its own column of level cells.</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
+
+        /// <summary>
+        /// Per-fondo level matrices for fondos 1..N-1 (a doble-profundidad rack where each side faces a different
+        /// aisle and can carry its OWN levels/heights). Entry <c>k-1</c> is fondo <c>k</c>'s bays; a missing or empty
+        /// entry means that fondo inherits fondo 0's <see cref="Bays"/>. The horizontal grid (bay widths / post
+        /// positions) is defined by fondo 0 and shared, so the posts of every fondo align — only the vertical (levels)
+        /// varies here. A fondo's bay with no levels is an empty frente (e.g. a building column). Frente count follows
+        /// fondo 0. Empty = every fondo shares fondo 0's matrix (the plain doble-profundidad case).
+        /// </summary>
+        public IList<IList<SelectiveBayDesign>> ExtraFondoBays { get; } = new List<IList<SelectiveBayDesign>>();
 
         /// <summary>
         /// Optional per-post "cabecera" (frame), one entry per post position (N frentes → N+1 posts). A null

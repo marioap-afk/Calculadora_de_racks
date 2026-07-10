@@ -114,6 +114,14 @@
                     <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48"
                              ToolTip="Profundidad de la tarima; define el fondo de las cabeceras en la vista lateral." />
 
+                    <TextBlock Text="Número de fondos" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="FondosBox" Style="{StaticResource FieldBox}" Text="1" LostFocus="Fondos_LostFocus"
+                             ToolTip="Cabeceras en profundidad: 1 = sencillo; 2/3/4 = doble profundidad / espalda con espalda. Cada fondo tiene su propia matriz de niveles. Afecta lateral, planta y BOM (no la frontal)." />
+                    <StackPanel x:Name="SeparatorsSection" Visibility="Collapsed" Margin="0,6,0,0">
+                        <TextBlock Text="Separación por hueco (in)" Style="{StaticResource FieldLabel}" />
+                        <StackPanel x:Name="SeparatorsHost" />
+                    </StackPanel>
+
                     <!-- Sin IsDefault: como botón default, Enter en CUALQUIER caja de la ventana (editor de celda,
                          alturas por frente) lo disparaba y LoadCellEditor revertía lo recién tecleado. -->
                     <Button Content="Recalcular tramo" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
@@ -199,6 +207,11 @@
                 <StackPanel>
                     <TextBlock Text="Matriz frente × nivel — clic en una celda para editarla. En cada encabezado de frente ajusta niveles (−/+), altura y 'Piso' (larguero a piso). Nivel 1 abajo."
                                Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="10,8,10,0" />
+                    <StackPanel x:Name="FondoSelectorPanel" Orientation="Horizontal" Margin="10,6,10,0" Visibility="Collapsed">
+                        <TextBlock Text="Editando fondo:" Foreground="#415161" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <ComboBox x:Name="FondoSelectorBox" Width="120" SelectionChanged="FondoSelector_Changed" />
+                        <TextBlock Text="(los frentes se definen en el Fondo 1)" Foreground="#8A97A4" FontSize="11" VerticalAlignment="Center" Margin="10,0,0,0" />
+                    </StackPanel>
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="230">
                         <Grid x:Name="MatrixGrid" Margin="10,8,10,10" />
                     </ScrollViewer>

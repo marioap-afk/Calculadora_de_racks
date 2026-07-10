@@ -22,6 +22,12 @@ namespace RackCad.Domain.Systems
         /// <summary>Default pallet depth / fondo (in) when a design does not specify one (legacy documents too).</summary>
         public const double DefaultPalletDepth = 48.0;
 
+        /// <summary>Default separation (in) between consecutive fondos in a doble-profundidad rack when a gap has no value.</summary>
+        public const double DefaultSeparator = 8.0;
+
+        /// <summary>Maximum number of fondos (cabecera-lines in depth) the editor allows (1 = sencillo).</summary>
+        public const int MaxDepthCount = 4;
+
         /// <summary>Default larguero peralte (in) for a fresh design cell.</summary>
         public const double DefaultBeamPeralte = 4.0;
 
