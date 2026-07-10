@@ -139,13 +139,20 @@ namespace RackCad.Plugin.Headers
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var inserted = 0;
 
+            // Defs the NEW content references. Catalog piece blocks are re-referenced under the SAME ObjectId and
+            // the fresh header defs are created here, so subtracting this set from priorReferencedDefs leaves only
+            // the genuinely stale defs — sparing the purge its expensive whole-drawing reference scan on catalog
+            // blocks (referenced hundreds of times) that always concluded "still referenced, keep".
+            var newReferencedDefs = new HashSet<ObjectId>();
+
             foreach (var group in plan.Headers)
             {
                 var headerDef = NewBlock(blockTable, tr, group.Name, out _, out var headerId);
+                newReferencedDefs.Add(headerId);
 
                 foreach (var instance in group.Instances)
                 {
-                    if (AppendInstance(blockTable, headerDef, tr, instance, missing, seen))
+                    if (AppendInstance(blockTable, headerDef, tr, instance, missing, seen, newReferencedDefs))
                     {
                         inserted++;
                     }
@@ -165,7 +172,7 @@ namespace RackCad.Plugin.Headers
 
             foreach (var instance in plan.LooseInstances)
             {
-                if (AppendInstance(blockTable, systemDef, tr, instance, missing, seen))
+                if (AppendInstance(blockTable, systemDef, tr, instance, missing, seen, newReferencedDefs))
                 {
                     inserted++;
                 }
@@ -181,6 +188,9 @@ namespace RackCad.Plugin.Headers
                 reference.RecordGraphicsModified(true);
             }
 
+            // Only defs the new content did NOT re-reference can be stale (cheap set difference); everything the
+            // repopulated block still uses is trivially alive and needs no reference scan at all.
+            priorReferencedDefs.ExceptWith(newReferencedDefs);
             PurgeStaleNestedDefinitions(tr, priorReferencedDefs);
 
             return new LateralHeaderDrawOutcome(
@@ -190,12 +200,14 @@ namespace RackCad.Plugin.Headers
         /// <summary>
         /// Erase the previously-referenced definitions that no longer have ANY reference after a redefine. This clears the
         /// stale nested header defs a rewrite leaves behind (each one is freshly uniquified — <c>nombre_1</c>, <c>_2</c>, …
-        /// — so without this they accumulate in the block table forever). Catalog piece blocks stay referenced by the new
-        /// loose pieces, and blocks still used by any other rack keep their references, so both are left untouched.
+        /// — so without this they accumulate in the block table forever). Blocks still used by any other rack keep their
+        /// references, so they are left untouched. The caller already subtracted everything the new content re-references
+        /// (catalog piece blocks in particular), so the expensive whole-drawing reference scan below only runs on the
+        /// handful of truly stale candidates — not on every catalog block per redraw.
         /// </summary>
-        private static void PurgeStaleNestedDefinitions(Transaction tr, HashSet<ObjectId> priorReferencedDefs)
+        private static void PurgeStaleNestedDefinitions(Transaction tr, HashSet<ObjectId> staleCandidateDefs)
         {
-            foreach (var defId in priorReferencedDefs)
+            foreach (var defId in staleCandidateDefs)
             {
                 if (defId.IsNull || defId.IsErased)
                 {
@@ -227,10 +239,13 @@ namespace RackCad.Plugin.Headers
             return definition;
         }
 
-        /// <summary>Append one piece reference to a block; record (once) the blocks not defined in the drawing.</summary>
+        /// <summary>Append one piece reference to a block; record (once) the blocks not defined in the drawing.
+        /// When <paramref name="referencedDefs"/> is given, the id of every definition actually referenced is added
+        /// to it (the redefine path uses this to know which prior defs are still alive without scanning them).</summary>
         private static bool AppendInstance(
             BlockTable blockTable, BlockTableRecord space, Transaction tr,
-            HeaderBlockInstance instance, List<HeaderBlockInstance> missing, HashSet<string> seen)
+            HeaderBlockInstance instance, List<HeaderBlockInstance> missing, HashSet<string> seen,
+            HashSet<ObjectId> referencedDefs = null)
         {
             // Text annotations (frente/level numbers, rack name) are DBText, not blocks.
             if (instance.Role == HeaderBlockRole.Annotation)
@@ -271,9 +286,12 @@ namespace RackCad.Plugin.Headers
                 return false; // block not defined in the drawing yet — skip rather than throw
             }
 
+            var definitionId = blockTable[instance.BlockName];
+            referencedDefs?.Add(definitionId);
+
             var reference = new BlockReference(
                 new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0),
-                blockTable[instance.BlockName])
+                definitionId)
             {
                 Rotation = instance.RotationRadians,
                 ScaleFactors = instance.MirroredX ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
