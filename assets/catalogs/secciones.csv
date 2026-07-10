@@ -1,0 +1,6 @@
+rol,id,displayName,description,family,peraltes,mensula,width,depth,thickness,units,gauge,weightPerMeter,material,finish,partNumber,manufacturer,unitCost,currency,costUnit,Ix,Iy,norma,perforacion
+POSTE,POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA,"Poste omega atornillable con
+troquel gota de agua de cinta
+calibre 14 ",Poste Omega 3x3 calibre 14,Omega,,,3,3,0.0747,in,14,,,,,,,,,,,,
+CELOSIA,TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14,Travesaño para poste Omega 3x3,Travesaño,OMEGA,,,2,1 1/8,0.0747,in,14,,,,,,,,,,,,
+LARGUERO,LARGUERO_ESCALON_CAL14_3_REMACHES,Larguero escalón calibre 14 con ménsula 3 remaches,,Larguero,3;3.5;4;4.5;5;5.5;6,MENSULA_3_REMACHES_CAL_10,,,0.0747,in,14,,,,,,,,,,,,

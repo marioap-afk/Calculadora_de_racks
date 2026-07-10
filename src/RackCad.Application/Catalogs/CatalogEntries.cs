@@ -58,6 +58,34 @@ namespace RackCad.Application.Catalogs
     }
 
     /// <summary>
+    /// One row of the UNIFIED structural-profile catalog (<c>secciones.csv</c>): posts, celosía members and
+    /// load beams live in ONE Excel sheet distinguished by <see cref="Rol"/> (POSTE / CELOSIA / LARGUERO).
+    /// The provider splits rows into the legacy typed lists (<see cref="RackCatalog.PostProfiles"/>,
+    /// <see cref="RackCatalog.TrussProfiles"/>, <see cref="RackCatalog.BeamProfiles"/>) at load time, so every
+    /// consumer keeps its API. Superset schema: beam-only columns (peraltes/mensula) stay empty on posts, etc.
+    /// </summary>
+    public sealed class SeccionCatalogEntry : CatalogEntryBase
+    {
+        /// <summary>POSTE, CELOSIA (accent tolerated) or LARGUERO.</summary>
+        public string Rol { get; set; }
+
+        public string Family { get; set; }
+        public double Width { get; set; }
+        public double Depth { get; set; }
+        public double Thickness { get; set; }
+        public string Units { get; set; }
+        public string Gauge { get; set; }
+        public double WeightPerMeter { get; set; }
+
+        // ---- Beam-only (empty on posts/celosía) ----
+        /// <summary>Allowed values for the beam block's PERALTE parameter, e.g. "3;3.5;4".</summary>
+        public string Peraltes { get; set; }
+
+        /// <summary>Fixed end connector for a beam (FK to a ménsula id).</summary>
+        public string Mensula { get; set; }
+    }
+
+    /// <summary>
     /// A fixed component of a roller bed ("cama de rodamiento"): rail, roller, brake or stop. They are
     /// unique pieces that do not vary; <see cref="Role"/> says which one. The assembly rule (how many
     /// rollers, the pitch, brakes every N) lives in code, not here. <see cref="CapacityKg"/> is reserved

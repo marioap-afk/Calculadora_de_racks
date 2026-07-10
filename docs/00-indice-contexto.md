@@ -44,9 +44,11 @@ El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde s
 
 Los catalogos viven en `assets/catalogs/*.csv` (mas `defaults.json` y `header-templates.json`) y los carga `JsonRackCatalogProvider` a `RackCatalog`:
 
-- `post-profiles.csv` — postes (los refuerzos son postes).
-- `truss-profiles.csv` — **una sola lista de celosia** = horizontales + diagonales.
-- `beam-profiles.csv` — largueros; la columna `peraltes` = valores permitidos (FK a mensula).
+- `secciones.csv` — **TODOS los perfiles estructurales en una hoja** con columna `rol` (POSTE | CELOSIA |
+  LARGUERO). Los refuerzos son postes; horizontales + diagonales comparten la celosia; los largueros llevan
+  `peraltes` (valores permitidos) y `mensula` (FK). El provider los separa en las tres listas de siempre
+  (`PostProfiles`/`TrussProfiles`/`BeamProfiles`), asi que el codigo consumidor no cambio; los tres CSV
+  legacy siguen leyendose como fallback si `secciones.csv` no existe.
 - `mensulas.csv` — mensulas.
 - `base-plates.csv` — `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`.
 - `connection-points.csv` + `connection-layout.csv` — puntos de conexion parametricos en X y Y (X = localX + localXPorParam * valor(paramX); Y = localY + localYPorParam * valor(paramY)).

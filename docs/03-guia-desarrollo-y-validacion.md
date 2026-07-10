@@ -160,7 +160,7 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 ## Catalogos
 
 `assets/catalogs/*.csv`, cargados por `JsonRackCatalogProvider` a `RackCatalog`:
-`post-profiles`, `truss-profiles`, `beam-profiles` (columna `peraltes` = FK a mensula),
+`secciones` (todos los perfiles en una hoja, columna `rol`; los largueros llevan `peraltes` + `mensula`),
 `mensulas`, `base-plates` (`peralteBase`/`peraltePorPeraltePoste` -> `StandardPeralte`),
 `connection-points` + `connection-layout` (por vista: X = localX + localXPorParam*paramX;
 Y = localY + localYPorParam*paramY), `blocks`, `views`,

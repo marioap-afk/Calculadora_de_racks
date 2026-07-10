@@ -15,9 +15,7 @@ Fuente versionada (lo que se edita en el repositorio):
 
 ```
 assets/catalogs/
-  post-profiles.csv             Perfiles de poste (los refuerzos son postes) (Excel/CSV)
-  truss-profiles.csv            Perfiles de celosia (horizontales y diagonales) (Excel/CSV)
-  beam-profiles.csv             Perfiles de larguero (con lista de peraltes)  (Excel/CSV)
+  secciones.csv                 TODOS los perfiles estructurales en una hoja (columna rol: POSTE | CELOSIA | LARGUERO)
   mensulas.csv                  Ménsulas (conector de extremo del larguero)   (Excel/CSV)
   base-plates.csv               Placas base (con peralte estandar)            (Excel/CSV)
   flow-bed-profiles.csv         Componentes de cama de rodamiento (riel/rodillo/freno/tope) (Excel/CSV)
@@ -48,7 +46,7 @@ Cada CSV tiene una **fila de encabezados** que nombra las columnas. Reglas:
 - Campos con coma o comillas: enciérralos en comillas dobles (`"Acero, A36"`). Excel lo hace solo al guardar como CSV.
 - Una celda vacia deja el campo en su valor por defecto.
 
-Ejemplo (`post-profiles.csv`):
+Ejemplo (filas de `secciones.csv`):
 
 ```
 id,displayName,width,thickness,material,Ix,Iy
@@ -104,12 +102,12 @@ Una plantilla es **auto-descriptiva**: define que perfil usan las horizontales, 
 | `name` | texto | si | Nombre que se ve en el desplegable "Tipo de cabecera". |
 | `defaultHeight` | numero | si | Alto sugerido en pulgadas. Se precarga al elegir la plantilla. |
 | `defaultDepth` | numero | si | Fondo sugerido en pulgadas. Se precarga al elegir la plantilla. |
-| `horizontals` | lista | si | Una entrada por horizontal: `elevation` (in), `profile` (id de `truss-profiles.csv`), `quantity`. Ver abajo. |
+| `horizontals` | lista | si | Una entrada por horizontal: `elevation` (in), `profile` (id de `secciones.csv` (rol CELOSIA)), `quantity`. Ver abajo. |
 | `defaultArrangement` | texto | no | Celosia por defecto de cada panel. Por defecto `SingleDiagonal`. |
-| `diagonalProfile` | texto | no | Perfil de diagonal (id de `truss-profiles.csv`). Vacio = `defaults.json`. |
+| `diagonalProfile` | texto | no | Perfil de diagonal (id de `secciones.csv` (rol CELOSIA)). Vacio = `defaults.json`. |
 | `braceStartConnectionPoint` / `braceEndConnectionPoint` | texto | no | Puntos de conexion de la celosia. Vacio = `defaults.json`. |
 | `basePlate` | texto | no | Placa base (id de `base-plates.csv`). Vacio = `defaults.json`. |
-| `post` | texto | no | Poste por defecto (id de `post-profiles.csv`). Vacio = `defaults.json`. |
+| `post` | texto | no | Poste por defecto (id de `secciones.csv` (rol POSTE)). Vacio = `defaults.json`. |
 
 > Los campos opcionales vacios caen a los valores de `defaults.json` (ver mas abajo). Asi no repites el poste/placa/diagonal en cada plantilla si son los mismos.
 
@@ -213,11 +211,16 @@ Todas las piezas (perfiles, placas, puntos de conexion) comparten estos **campos
 
 > La bolsa `properties` es la costura de **escalabilidad**: agrega ahi atributos que aun no son campos fijos (norma, paso de perforacion, etc.) y se cargan/guardan sin cambiar el modelo. Cuando un atributo se vuelve comun, se promueve a campo tipado.
 
-### Perfiles (`post-profiles.csv`, `truss-profiles.csv`)
+### Perfiles estructurales (`secciones.csv` — UNA hoja para postes, celosia y largueros)
 
-> Horizontales y diagonales **no son catalogos distintos**: ambas son miembros de celosia y salen del unico `truss-profiles.csv`. Los **refuerzos son postes**, asi que se toman de `post-profiles.csv` (no hay un catalogo de refuerzos aparte).
+> **Todos los perfiles estructurales viven en un solo CSV** con una columna `rol` que dice que es cada fila:
+> `POSTE`, `CELOSIA` o `LARGUERO`. El provider separa las filas en las tres listas de siempre, asi que el
+> resto de la app no cambio. Horizontales y diagonales **no son catalogos distintos** (ambas son celosia,
+> filas `rol=CELOSIA`); los **refuerzos son postes** (filas `rol=POSTE`). Las columnas exclusivas de
+> largueros (`peraltes`, `mensula`) se dejan vacias en las demas filas. Si `secciones.csv` no existe, se
+> leen los tres CSV legacy (`post-profiles.csv`, `truss-profiles.csv`, `beam-profiles.csv`) como fallback.
 
-Campos comunes (arriba) **mas**:
+Campos comunes (arriba) **mas** `rol` y, para postes/celosia:
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
@@ -229,7 +232,7 @@ Campos comunes (arriba) **mas**:
 | `weightPerMeter` | numero | Peso lineal (kg/m) para BOM/peso. |
 | `units` | texto | Unidad de las medidas (ej. `in`). |
 
-### Largueros (`beam-profiles.csv`)
+### Largueros (filas `rol=LARGUERO` de `secciones.csv`)
 
 Un larguero (viga de carga) = **un bloque dinamico**: tanto su LONGITUD como su PERALTE son parametros del bloque (grips), no filas por medida. Cada fila declara un tipo de larguero, los peraltes que admite y su ménsula de extremo. Es el catalogo que consume el editor SELECTIVO (combo de peralte por celda).
 
@@ -246,7 +249,7 @@ Campos comunes **mas**:
 
 ### Ménsulas (`mensulas.csv`)
 
-Conector de extremo del larguero: pieza fija que el BOM cuenta (dos por larguero). Cada larguero apunta a una via `beam-profiles.mensula`.
+Conector de extremo del larguero: pieza fija que el BOM cuenta (dos por larguero). Cada larguero apunta a una via la columna `mensula` de su fila en `secciones.csv`.
 
 Campos comunes **mas**:
 

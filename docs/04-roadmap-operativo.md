@@ -65,8 +65,8 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 ### Catalogos externos
 
 Cargados por `JsonRackCatalogProvider` a `RackCatalog` desde `assets/catalogs/*.csv`:
-`post-profiles` (postes; refuerzos = postes), `truss-profiles` (una sola lista de
-celosia: horizontales + diagonales), `beam-profiles` (largueros; columna `peraltes` =
+`secciones` (todos los perfiles estructurales en una hoja con columna `rol`: POSTE = postes
+y refuerzos, CELOSIA = horizontales + diagonales, LARGUERO = largueros; columna `peraltes` =
 valores permitidos, FK a mensula), `mensulas`, `base-plates` (peralteBase /
 peraltePorPeraltePoste -> `StandardPeralte`), `connection-points` + `connection-layout`
 (por vista, X e Y: local + localPorParam * valor(param)), `blocks`, `views`,

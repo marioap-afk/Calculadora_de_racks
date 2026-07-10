@@ -12,6 +12,10 @@ namespace RackCad.Application.Catalogs
     /// </summary>
     public sealed class JsonRackCatalogProvider : IRackCatalogProvider
     {
+        /// <summary>Unified structural-profile catalog (posts + celosía + beams in one sheet, split by "rol").</summary>
+        public const string SeccionesFile = "secciones.json";
+
+        // Legacy split files, still read as a fallback when secciones.csv/json is absent (older deployed folders).
         public const string PostProfilesFile = "post-profiles.json";
         public const string TrussProfilesFile = "truss-profiles.json";
         public const string BasePlatesFile = "base-plates.json";
@@ -85,13 +89,31 @@ namespace RackCad.Application.Catalogs
 
         private RackCatalog LoadUncached()
         {
+            // Unified profiles first (secciones.csv: one Excel sheet with a "rol" column); when it is absent,
+            // fall back to the legacy split files so older deployed catalog folders keep working unchanged.
+            var secciones = ReadArray<SeccionCatalogEntry>(SeccionesFile);
+            var posts = new List<ProfileCatalogEntry>();
+            var truss = new List<ProfileCatalogEntry>();
+            var beams = new List<BeamProfileCatalogEntry>();
+
+            if (secciones.Count > 0)
+            {
+                SplitSecciones(secciones, posts, truss, beams);
+            }
+            else
+            {
+                posts = ReadArray<ProfileCatalogEntry>(PostProfilesFile);
+                truss = ReadArray<ProfileCatalogEntry>(TrussProfilesFile);
+                beams = ReadArray<BeamProfileCatalogEntry>(BeamProfilesFile);
+            }
+
             return new RackCatalog
             {
-                PostProfiles = ReadArray<ProfileCatalogEntry>(PostProfilesFile),
-                TrussProfiles = ReadArray<ProfileCatalogEntry>(TrussProfilesFile),
+                PostProfiles = posts,
+                TrussProfiles = truss,
                 BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
                 FlowBedProfiles = ReadArray<FlowBedComponentCatalogEntry>(FlowBedProfilesFile),
-                BeamProfiles = ReadArray<BeamProfileCatalogEntry>(BeamProfilesFile),
+                BeamProfiles = beams,
                 Mensulas = ReadArray<MensulaCatalogEntry>(MensulasFile),
                 ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile),
                 ConnectionLayout = ReadArray<ConnectionLayoutEntry>(ConnectionLayoutFile),
@@ -99,6 +121,83 @@ namespace RackCad.Application.Catalogs
                 Blocks = ReadArray<BlockCatalogEntry>(BlocksFile),
                 Defaults = ReadObject(DefaultsFile, new RackDefaults())
             };
+        }
+
+        /// <summary>Split the unified rows into the legacy typed lists by "rol", so every consumer of
+        /// <see cref="RackCatalog"/> keeps its API. Unknown/empty roles are skipped (tolerant, like the rest
+        /// of the catalog): a typo in Excel drops that row instead of breaking the load.</summary>
+        private static void SplitSecciones(
+            List<SeccionCatalogEntry> secciones,
+            List<ProfileCatalogEntry> posts,
+            List<ProfileCatalogEntry> truss,
+            List<BeamProfileCatalogEntry> beams)
+        {
+            foreach (var row in secciones)
+            {
+                var rol = (row.Rol ?? string.Empty).Trim().ToUpperInvariant();
+
+                switch (rol)
+                {
+                    case "POSTE":
+                        posts.Add(ToProfile(row));
+                        break;
+                    case "CELOSIA":
+                    case "CELOSÍA":
+                        truss.Add(ToProfile(row));
+                        break;
+                    case "LARGUERO":
+                        beams.Add(ToBeam(row));
+                        break;
+                }
+            }
+        }
+
+        private static ProfileCatalogEntry ToProfile(SeccionCatalogEntry row)
+        {
+            var entry = new ProfileCatalogEntry
+            {
+                Family = row.Family,
+                Width = row.Width,
+                Depth = row.Depth,
+                Thickness = row.Thickness,
+                Units = row.Units,
+                Gauge = row.Gauge,
+                WeightPerMeter = row.WeightPerMeter
+            };
+            CopyBase(row, entry);
+            return entry;
+        }
+
+        private static BeamProfileCatalogEntry ToBeam(SeccionCatalogEntry row)
+        {
+            var entry = new BeamProfileCatalogEntry
+            {
+                Family = row.Family,
+                Peraltes = row.Peraltes,
+                Width = row.Width,
+                Thickness = row.Thickness,
+                Units = row.Units,
+                Gauge = row.Gauge,
+                Mensula = row.Mensula,
+                WeightPerMeter = row.WeightPerMeter
+            };
+            CopyBase(row, entry);
+            return entry;
+        }
+
+        private static void CopyBase(CatalogEntryBase from, CatalogEntryBase to)
+        {
+            to.Id = from.Id;
+            to.DisplayName = from.DisplayName;
+            to.Description = from.Description;
+            to.Material = from.Material;
+            to.PartNumber = from.PartNumber;
+            to.Manufacturer = from.Manufacturer;
+            to.Finish = from.Finish;
+            to.UnitCost = from.UnitCost;
+            to.Currency = from.Currency;
+            to.CostUnit = from.CostUnit;
+            to.Properties = from.Properties; // extra Excel columns (Ix/Iy/norma/...) travel untouched
         }
 
         /// <summary>Signature of the catalog folder: every csv/json's name + size + last write time.</summary>

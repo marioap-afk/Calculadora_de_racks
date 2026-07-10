@@ -35,9 +35,7 @@ RackCad.Application.dll    ┐
 RackCad.Domain.dll         ├─ hermanos: AutoCAD los resuelve desde la misma carpeta
 RackCad.UI.dll             ┘
 catalogs\                  ← datos maestros + geometría
-  post-profiles.csv
-  truss-profiles.csv
-  beam-profiles.csv
+  secciones.csv
   mensulas.csv
   base-plates.csv
   flow-bed-profiles.csv

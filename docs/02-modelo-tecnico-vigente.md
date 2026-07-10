@@ -307,9 +307,9 @@ Misma logica reutilizable para cabecera, dinamico, cama y selectivo:
 `assets/catalogs/*.csv` (+ algunos `.json`), cargados por `JsonRackCatalogProvider` a
 `RackCatalog`:
 
-- `post-profiles` (postes; los refuerzos son postes).
-- `truss-profiles` (una sola lista de celosia = horizontales + diagonales).
-- `beam-profiles` (largueros; columna "peraltes" = valores permitidos, FK a mensula).
+- `secciones` (TODOS los perfiles estructurales en una hoja, columna `rol` = POSTE | CELOSIA | LARGUERO;
+  el provider los separa en las tres listas de siempre. Los refuerzos son postes; los largueros llevan
+  `peraltes` = valores permitidos y `mensula` = FK).
 - `mensulas`.
 - `base-plates` (`peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`).
 - `connection-points` + `connection-layout` (puntos de conexion parametricos en X **y** Y:

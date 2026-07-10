@@ -78,8 +78,9 @@
 11. **BOM consolidado multi-rack** — los 4 tipos ya tienen BOM por rack (selectivo, dinámico, cabecera y
     **cama** — `FlowBedBomBuilder`, 2026-07-09). Falta el BOM de TODO el dibujo (agrupado por rack via
     GUID) y la exportación a Excel (hoy CSV).
-12. **Unificar perfiles estructurales** — fusionar post/truss/beam-profiles en un catálogo
-    `secciones.csv` con columna de rol (idea previa, sigue vigente).
+12. ~~**Unificar perfiles estructurales**~~ — ✅ **HECHO (2026-07-10):** `secciones.csv` es la única hoja de
+    perfiles (columna `rol` = POSTE | CELOSIA | LARGUERO). El provider separa las filas en las tres listas
+    de siempre (API de `RackCatalog` intacta) y mantiene los tres CSV legacy como fallback de lectura.
 
 ## B. Deuda técnica diferida de la auditoría (2026-07-08)
 

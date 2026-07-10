@@ -104,9 +104,9 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
 `.csv` gana sobre el `.json`; acepta UTF-8 y ANSI/Windows-1252 de Excel; cache con invalidacion por
 firma de archivos (editar el CSV y relanzar el comando recarga):
 
-- `post-profiles` (postes; los refuerzos son postes).
-- `truss-profiles` (una sola lista de celosia = horizontales + diagonales).
-- `beam-profiles` (largueros; columna `peraltes` = valores permitidos, FK a mensula).
+- `secciones` (TODOS los perfiles estructurales en una hoja con columna `rol` = POSTE | CELOSIA | LARGUERO;
+  el provider los separa en `PostProfiles`/`TrussProfiles`/`BeamProfiles`, API intacta; los tres CSV legacy
+  siguen leyendose como fallback). Los refuerzos son postes; los largueros llevan `peraltes` + `mensula` (FK).
 - `mensulas`, `base-plates` (con `peralteBase`/`peraltePorPeraltePoste` -> `StandardPeralte`).
 - `connection-points` + `connection-layout` (puntos de conexion parametricos en X **y en Y**:
   X = localX + localXPorParam*valor(paramX), Y = localY + localYPorParam*valor(paramY); columnas

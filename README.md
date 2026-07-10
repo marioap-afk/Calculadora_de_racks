@@ -73,11 +73,9 @@ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj
 
 ## Catalogos externos
 
-Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CSV versionado en `assets/catalogs/` (las plantillas y los defaults siguen en JSON). Horizontales y diagonales comparten una sola lista de celosia (`truss-profiles.csv`) y los refuerzos son postes (`post-profiles.csv`).
+Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CSV versionado en `assets/catalogs/` (las plantillas y los defaults siguen en JSON). Todos los perfiles estructurales (postes, celosia y largueros) viven en UN solo `secciones.csv` con columna `rol`; horizontales y diagonales comparten la celosia y los refuerzos son postes.
 
-- `post-profiles.csv` (postes; los refuerzos son postes)
-- `truss-profiles.csv` (una sola lista de celosia: horizontales y diagonales)
-- `beam-profiles.csv` (largueros; columna `peraltes` = valores permitidos, FK a mensula)
+- `secciones.csv` (TODOS los perfiles estructurales en una hoja, columna `rol` = POSTE | CELOSIA | LARGUERO; los refuerzos son postes, horizontales y diagonales comparten la celosia, y los largueros llevan `peraltes` = valores permitidos y `mensula` = FK a mensulas)
 - `mensulas.csv` (mensulas del selectivo)
 - `base-plates.csv` (con `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`)
 - `spacers-profiles.csv` (separadores de cabecera del sistema dinamico)
