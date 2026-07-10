@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using RackCad.Application.Persistence;
 
 namespace RackCad.UI
@@ -18,6 +19,7 @@ namespace RackCad.UI
             InitializeComponent();
             this.folder = folder;
             FolderText.Text = "Carpeta: " + (folder ?? string.Empty);
+            FolderText.ToolTip = folder;
             Reload();
         }
 
@@ -28,9 +30,16 @@ namespace RackCad.UI
         {
             var entries = RackDesignLibrary.List(folder);
             DesignsGrid.ItemsSource = entries;
-            StatusText.Text = entries.Count == 0
+            SetStatus(entries.Count == 0
                 ? "No hay diseños guardados en esta carpeta."
-                : entries.Count + " diseño(s).";
+                : entries.Count + " diseño(s).", false);
+
+            // Preselect the first design so Enter ("Abrir") works without a prior click.
+            if (entries.Count > 0)
+            {
+                DesignsGrid.SelectedIndex = 0;
+                DesignsGrid.Focus();
+            }
         }
 
         private void Open_Click(object sender, RoutedEventArgs e) => TryOpenSelected();
@@ -41,7 +50,7 @@ namespace RackCad.UI
         {
             if (!(DesignsGrid.SelectedItem is RackDesignLibraryEntry entry))
             {
-                StatusText.Text = "Selecciona un diseño de la lista.";
+                SetStatus("Selecciona un diseño de la lista.", true);
                 return;
             }
 
@@ -53,5 +62,14 @@ namespace RackCad.UI
         private void Refresh_Click(object sender, RoutedEventArgs e) => Reload();
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+        private void SetStatus(string message, bool isError)
+        {
+            // Shared status palette across the rack windows: red #B00020 error / green #2F855A ok.
+            StatusText.Text = message ?? string.Empty;
+            StatusText.Foreground = isError
+                ? new SolidColorBrush(Color.FromRgb(0xB0, 0x00, 0x20))
+                : new SolidColorBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
+        }
     }
 }

@@ -153,7 +153,7 @@ namespace RackCad.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "No se pudo abrir el sistema dinamico: " + ex.Message,
+                MessageBox.Show(this, "No se pudo abrir el sistema dinámico: " + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

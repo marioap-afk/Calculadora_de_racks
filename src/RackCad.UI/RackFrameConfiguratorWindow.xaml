@@ -277,9 +277,9 @@
                             <HierarchicalDataTemplate DataType="{x:Type ui:ConfiguratorNavigationItem}"
                                                       ItemsSource="{Binding Children}">
                                 <Border Padding="8,7">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="#1F2933" />
-                                        <TextBlock Text="{Binding Subtitle}" Foreground="#617080" FontSize="11" Margin="0,2,0,0" />
+                                    <StackPanel ToolTip="{Binding Subtitle}">
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="#1F2933" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding Subtitle}" Foreground="#617080" FontSize="11" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
                                     </StackPanel>
                                 </Border>
                             </HierarchicalDataTemplate>
@@ -488,13 +488,16 @@
                                     <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding Units, Mode=OneWay}" IsReadOnly="True" Background="#F7F9FB" />
 
                                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Inicio celosía (troquel)" Style="{StaticResource PropertyLabelStyle}" />
-                                    <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding CelosiaStartTroquelText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding CelosiaStartTroquelText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                             ToolTip="Número de troquel del poste donde arranca la celosía (número de troquel, no pulgadas)." />
 
                                     <TextBlock Grid.Row="3" Grid.Column="3" Text="Offset diag. inicio (troqueles)" Style="{StaticResource PropertyLabelStyle}" />
-                                    <TextBox Grid.Row="3" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding DiagonalStartOffsetText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBox Grid.Row="3" Grid.Column="4" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding DiagonalStartOffsetText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                             ToolTip="Troqueles de separación entre la horizontal y el arranque de la diagonal (número de troqueles, no pulgadas)." />
 
                                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Offset diag. fin (troqueles)" Style="{StaticResource PropertyLabelStyle}" />
-                                    <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding DiagonalEndOffsetText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding DiagonalEndOffsetText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                             ToolTip="Troqueles de separación entre la horizontal y el remate de la diagonal (número de troqueles, no pulgadas)." />
                                 </Grid>
                             </Border>
 
@@ -771,8 +774,8 @@
                                     </Grid>
                                     <WrapPanel>
                                         <Button Style="{StaticResource CompactButtonStyle}" Content="Agregar horizontal" Click="AddHorizontal_Click" />
-                                        <Button Style="{StaticResource CompactButtonStyle}" Content="Eliminar horizontal" IsEnabled="{Binding CanDeleteSelectedHorizontal}" Click="DeleteSelectedHorizontal_Click" />
-                                        <Button Style="{StaticResource CompactButtonStyle}" Content="Duplicar horizontal" IsEnabled="{Binding CanDuplicateSelectedHorizontal}" Click="DuplicateSelectedHorizontal_Click" />
+                                        <Button Style="{StaticResource CompactButtonStyle}" Content="Eliminar horizontal" IsEnabled="{Binding CanDeleteSelectedHorizontal}" ToolTipService.ShowOnDisabled="True" ToolTip="Elimina la horizontal elegida. Selecciona una horizontal en la tabla superior." Click="DeleteSelectedHorizontal_Click" />
+                                        <Button Style="{StaticResource CompactButtonStyle}" Content="Duplicar horizontal" IsEnabled="{Binding CanDuplicateSelectedHorizontal}" ToolTipService.ShowOnDisabled="True" ToolTip="Duplica la horizontal elegida. Selecciona una horizontal en la tabla superior." Click="DuplicateSelectedHorizontal_Click" />
                                     </WrapPanel>
 
                                     <Border BorderBrush="#E1E7EE" BorderThickness="0,1,0,0" Margin="0,10,0,0" Padding="0,10,0,0">
@@ -781,9 +784,9 @@
                                             <TextBlock Text="Edición en lote: selecciona varias horizontales en la tabla (Ctrl/Shift) y aplica un cambio a todas."
                                                        Style="{StaticResource MutedTextStyle}" FontSize="10.5" Margin="0,2,0,8" />
                                             <WrapPanel>
-                                                <ComboBox Width="150" Margin="0,0,6,8" ItemsSource="{Binding HorizontalProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding BulkHorizontalProfileId}" />
+                                                <ComboBox Width="150" Margin="0,0,6,8" ToolTip="Perfil a aplicar a las horizontales seleccionadas." ItemsSource="{Binding HorizontalProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding BulkHorizontalProfileId}" />
                                                 <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar perfil" Click="ApplyBulkHorizontalProfile_Click" />
-                                                <ComboBox Width="120" Margin="0,0,6,8" ItemsSource="{Binding SideOptions}" SelectedItem="{Binding BulkHorizontalFace}" />
+                                                <ComboBox Width="120" Margin="0,0,6,8" ToolTip="Cara de montaje a aplicar a las horizontales seleccionadas." ItemsSource="{Binding SideOptions}" SelectedItem="{Binding BulkHorizontalFace}" />
                                                 <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar cara" Click="ApplyBulkHorizontalFace_Click" />
                                                 <TextBox Width="55" Margin="0,0,6,8" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding BulkHorizontalQuantity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ToolTip="Cantidad a aplicar" />
                                                 <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar cantidad" Click="ApplyBulkHorizontalQuantity_Click" />
@@ -899,20 +902,20 @@
                                    Margin="0,0,0,8" />
                         <WrapPanel>
                             <Button Style="{StaticResource CompactButtonStyle}" Content="Agregar horizontal" Click="AddHorizontal_Click" />
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Nuevo claro 44 in" Click="Add44Segment_Click" />
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Nuevo claro 70 in" Click="Add70Segment_Click" />
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Sin celosía" Click="QuickNoBracing_Click" />
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Doble diagonal" Click="QuickDoubleBracing_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Nuevo claro 44 in" ToolTip="Agrega una horizontal creando un claro de 44 in sobre la última." Click="Add44Segment_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Nuevo claro 70 in" ToolTip="Agrega una horizontal creando un claro de 70 in sobre la última." Click="Add70Segment_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Sin celosía" ToolTip="Quita la celosía de los paneles seleccionados en la tabla inferior." Click="QuickNoBracing_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Doble diagonal" ToolTip="Aplica doble diagonal a los paneles seleccionados en la tabla inferior." Click="QuickDoubleBracing_Click" />
                         </WrapPanel>
                         <TextBlock Text="Herramientas de paneles y horizontales"
                                    FontWeight="SemiBold"
                                    Foreground="#1F2933"
                                    Margin="0,4,0,8" />
                         <WrapPanel>
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Eliminar horizontal" IsEnabled="{Binding CanDeleteSelectedHorizontal}" Click="DeleteSelectedHorizontal_Click" />
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Duplicar horizontal" IsEnabled="{Binding CanDuplicateSelectedHorizontal}" Click="DuplicateSelectedHorizontal_Click" />
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Dividir panel" IsEnabled="{Binding CanSplitSelectedSegment}" Click="SplitSelectedSegment_Click" />
-                            <Button Style="{StaticResource CompactButtonStyle}" Content="Combinar paneles" IsEnabled="{Binding CanCombineSegments}" Click="CombineSelectedSegments_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Eliminar horizontal" IsEnabled="{Binding CanDeleteSelectedHorizontal}" ToolTipService.ShowOnDisabled="True" ToolTip="Elimina la horizontal elegida. Selecciona una horizontal en la tabla superior." Click="DeleteSelectedHorizontal_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Duplicar horizontal" IsEnabled="{Binding CanDuplicateSelectedHorizontal}" ToolTipService.ShowOnDisabled="True" ToolTip="Duplica la horizontal elegida. Selecciona una horizontal en la tabla superior." Click="DuplicateSelectedHorizontal_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Dividir panel" IsEnabled="{Binding CanSplitSelectedSegment}" ToolTipService.ShowOnDisabled="True" ToolTip="Divide el panel elegido en dos. Selecciona un panel en la tabla inferior." Click="SplitSelectedSegment_Click" />
+                            <Button Style="{StaticResource CompactButtonStyle}" Content="Combinar paneles" IsEnabled="{Binding CanCombineSegments}" ToolTipService.ShowOnDisabled="True" ToolTip="Combina los paneles elegidos en uno. Selecciona dos o más paneles contiguos en la tabla inferior." Click="CombineSelectedSegments_Click" />
                         </WrapPanel>
                     </StackPanel>
                 </Border>
@@ -951,6 +954,7 @@
                                 <ComboBox Style="{StaticResource CellComboBoxStyle}"
                                           Width="140"
                                           Margin="0,0,8,8"
+                                          ToolTip="Arreglo de celosía a aplicar a los paneles seleccionados."
                                           ItemsSource="{Binding PatternOptions}"
                                           SelectedItem="{Binding BulkPattern, Mode=TwoWay}" />
                                 <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar arreglo" Click="ApplyBulkPattern_Click" />
@@ -958,6 +962,7 @@
                                 <ComboBox Style="{StaticResource CellComboBoxStyle}"
                                           Width="110"
                                           Margin="12,0,8,8"
+                                          ToolTip="Cara de montaje a aplicar a los paneles seleccionados."
                                           ItemsSource="{Binding SideOptions}"
                                           SelectedItem="{Binding BulkSide, Mode=TwoWay}" />
                                 <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar cara" Click="ApplyBulkSide_Click" />
@@ -965,6 +970,7 @@
                                 <ComboBox Style="{StaticResource CellComboBoxStyle}"
                                           Width="230"
                                           Margin="12,0,8,8"
+                                          ToolTip="Perfil de diagonal a aplicar a los paneles seleccionados."
                                           ItemsSource="{Binding DiagonalProfileOptions}"
                                           DisplayMemberPath="DisplayName"
                                           SelectedValuePath="Id"
@@ -976,6 +982,8 @@
                         <Button Grid.Column="1"
                                 Content="Restaurar panel activo"
                                 IsEnabled="{Binding CanRestoreSelectedSegment}"
+                                ToolTipService.ShowOnDisabled="True"
+                                ToolTip="Regresa el panel activo a su estado estándar. Selecciona un panel modificado en la tabla inferior."
                                 Padding="12,7"
                                 Margin="16,0,0,0"
                                 VerticalAlignment="Top"
@@ -1279,10 +1287,19 @@
                 BorderThickness="0,1,0,0"
                 Padding="20,12">
             <Grid>
+                <!-- Status arriba y botones abajo (WrapPanel): así los mensajes largos nunca quedan
+                     tapados por los botones y estos bajan de fila cuando la ventana se angosta. -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="{Binding StatusMessage}"
-                               Foreground="{Binding StatusBrush}" />
-                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                               Foreground="{Binding StatusBrush}"
+                               TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0"
+                                Visibility="{Binding IsAdvancedEditor, Converter={StaticResource BoolToVis}}">
                         <Border Background="#FFF4D6" BorderBrush="#E3E8EF" BorderThickness="1" Width="14" Height="14" VerticalAlignment="Center" />
                         <TextBlock Text="Fila modificada" Foreground="#617080" FontSize="11" Margin="5,0,16,0" VerticalAlignment="Center" />
                         <Border Background="#DCEBFF" BorderBrush="#2B6CB0" BorderThickness="1" Width="14" Height="14" VerticalAlignment="Center" />
@@ -1290,7 +1307,7 @@
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <WrapPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0,8,0,0">
                     <Button Content="Abrir proyecto"
                             Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="120"
@@ -1309,15 +1326,15 @@
                             Margin="0,0,8,0"
                             ToolTip="Muestra la lista de materiales (postes, placas, horizontales, diagonales) y permite exportarla a CSV."
                             Click="ViewBom_Click" />
-                    <Button Content="Restaurar cabecera estándar"
+                    <Button Content="Restaurar estándar"
                             Style="{StaticResource SecondaryButtonStyle}"
-                            MinWidth="190"
+                            MinWidth="140"
                             Margin="0,0,8,0"
                             ToolTip="Vuelve a la cabecera estándar y descarta las modificaciones manuales."
                             Click="RestoreStandardFrameButton_Click" />
-                    <Button Content="Restablecer paneles de la ventana"
+                    <Button Content="Restablecer paneles"
                             Style="{StaticResource SecondaryButtonStyle}"
-                            MinWidth="185"
+                            MinWidth="140"
                             Margin="0,0,8,0"
                             ToolTip="Restaura el tamaño de paneles y tablas de ESTA ventana (no toca la configuración técnica)."
                             Click="ResetLayoutButton_Click" />
@@ -1346,8 +1363,9 @@
                     <Button Content="Cerrar"
                             Style="{StaticResource SecondaryButtonStyle}"
                             MinWidth="90"
+                            IsCancel="True"
                             Click="CloseButton_Click" />
-                </StackPanel>
+                </WrapPanel>
             </Grid>
         </Border>
     </Grid>

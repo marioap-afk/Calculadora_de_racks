@@ -1,14 +1,15 @@
 <Window x:Class="RackCad.UI.RackSelectiveWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Rack selectivo - editor avanzado (vista frontal)"
+        Title="RackCad – Rack selectivo: editor avanzado (vista frontal)"
         Height="740"
         Width="1300"
         MinHeight="600"
         MinWidth="1060"
         WindowStartupLocation="CenterOwner"
         Background="#EEF2F6"
-        FontFamily="Segoe UI">
+        FontFamily="Segoe UI"
+        FocusManager.FocusedElement="{Binding ElementName=NameBox}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -57,7 +58,8 @@
                     <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
                     <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
                     <TextBlock Text="Peralte poste (in)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3" />
+                    <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3"
+                             ToolTip="Peralte (fondo) del poste en pulgadas; afecta la vista frontal y la planta." />
 
                     <TextBlock Text="Cabecera por poste (opcional)" Style="{StaticResource FieldLabel}" Margin="0,6,0,0" Foreground="#8B98A6" />
                     <Grid>
@@ -73,6 +75,7 @@
                     </Grid>
                     <TextBlock Text="Peralte de este poste (in)" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
                     <TextBox x:Name="PostPeralteOverrideBox" Style="{StaticResource FieldBox}" LostFocus="PostPeralteOverride_LostFocus"
+                             KeyDown="PostPeralteOverride_KeyDown"
                              ToolTip="Peralte solo del poste seleccionado. Déjalo vacío para usar el peralte global de arriba." />
                     <TextBlock x:Name="PostCabeceraStatus" Foreground="#617080" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
                     <Button Content="Restablecer poste" Click="ResetPost_Click" Style="{StaticResource SecondaryButtonStyle}"
@@ -81,11 +84,12 @@
 
                     <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2" />
+                    <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2"
+                             ToolTip="Número de frentes (bahías) del tramo. Pulsa 'Recalcular tramo' para aplicarlo." />
                     <TextBlock Text="Los niveles, la altura y 'larguero a piso' se ajustan por frente en el encabezado de la matriz. El piso arranca en 0."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,4,0,0" />
 
-                    <TextBlock Text="Tolerancias" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="Tolerancias y medidas" Style="{StaticResource SectionTitle}" />
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -94,22 +98,25 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Horizontal (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="ToleranceBox" Style="{StaticResource FieldBox}" Text="4" />
+                            <TextBox x:Name="ToleranceBox" Style="{StaticResource FieldBox}" Text="4"
+                                     ToolTip="Tolerancia horizontal total entre tarimas y postes; define el largo del larguero." />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Holgura vertical (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="ClearanceBox" Style="{StaticResource FieldBox}" Text="6" />
+                            <TextBox x:Name="ClearanceBox" Style="{StaticResource FieldBox}" Text="6"
+                                     ToolTip="Espacio libre sobre la tarima hasta el siguiente larguero." />
                         </StackPanel>
                     </Grid>
                     <TextBlock Text="Elevación larguero a piso (in)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="FloorRiseBox" Style="{StaticResource FieldBox}" Text="4" />
+                    <TextBox x:Name="FloorRiseBox" Style="{StaticResource FieldBox}" Text="4"
+                             ToolTip="Altura del larguero a piso cuando el frente tiene marcada la casilla 'Piso'." />
                     <TextBlock Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48"
                              ToolTip="Profundidad de la tarima; define el fondo de las cabeceras en la vista lateral." />
 
                     <!-- Sin IsDefault: como botón default, Enter en CUALQUIER caja de la ventana (editor de celda,
                          alturas por frente) lo disparaba y LoadCellEditor revertía lo recién tecleado. -->
-                    <Button Content="Actualizar tramo" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
+                    <Button Content="Recalcular tramo" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
                             HorizontalAlignment="Left" Margin="0,12,0,0"
                             ToolTip="Aplica frentes/niveles/tolerancias y recalcula." />
 
@@ -126,13 +133,16 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Frente tarima (in)" Style="{StaticResource FieldLabel}" />
-                                    <TextBox x:Name="FrenteBox" Style="{StaticResource FieldBox}" Text="40" />
+                                    <TextBox x:Name="FrenteBox" Style="{StaticResource FieldBox}" Text="40"
+                                             ToolTip="Ancho (frente) de la tarima de esta celda." />
                                     <TextBlock Text="Tarimas por nivel" Style="{StaticResource FieldLabel}" />
-                                    <TextBox x:Name="PalletCountBox" Style="{StaticResource FieldBox}" Text="2" />
+                                    <TextBox x:Name="PalletCountBox" Style="{StaticResource FieldBox}" Text="2"
+                                             ToolTip="Tarimas que caben lado a lado en el nivel; define el largo del larguero." />
                                 </StackPanel>
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Alto tarima (in)" Style="{StaticResource FieldLabel}" />
-                                    <TextBox x:Name="AltoBox" Style="{StaticResource FieldBox}" Text="60" />
+                                    <TextBox x:Name="AltoBox" Style="{StaticResource FieldBox}" Text="60"
+                                             ToolTip="Alto de la tarima con carga; define la separación entre niveles." />
                                     <TextBlock Text="Peralte larguero (in)" Style="{StaticResource FieldLabel}" />
                                     <ComboBox x:Name="BeamPeralteCombo" Margin="0,2,0,6"
                                               ToolTip="Peraltes permitidos por el larguero seleccionado (del catálogo)." />
@@ -231,7 +241,7 @@
                     ToolTip="Redibuja en sitio las vistas ya dibujadas de este rack con tus cambios (no inserta nada). Disponible al editar con RACKEDITAR." Click="UpdateExisting_Click" />
             <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0"
                     ToolTip="Genera el BOM (postes, placas, largueros y ménsulas) del selectivo actual." Click="ShowBom_Click" />
-            <Button Content="Insertar frontal" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+            <Button Content="Insertar frontal" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTip="Inserta una VISTA FRONTAL (postes + largueros) enlazada a este rack (mismo GUID) y refresca las demás vistas." Click="InsertFrontal_Click" />
             <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTipService.ShowOnDisabled="True"

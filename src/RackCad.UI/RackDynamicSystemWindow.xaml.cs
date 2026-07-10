@@ -83,6 +83,16 @@ namespace RackCad.UI
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
+
+            // Same pattern as the selective window: a CTA that can never succeed reads as disabled, with the reason
+            // in the tooltip, instead of failing on click.
+            if (!canInsertInAutoCad)
+            {
+                InsertButton.IsEnabled = false;
+                ToolTipService.SetShowOnDisabled(InsertButton, true);
+                InsertButton.ToolTip = "Disponible solo cuando el sistema se abre desde AutoCAD.";
+            }
+
             catalog = UiSupport.LoadCatalogSafe();
             builder = new DynamicRackSystemBuilder(catalog);
             defaultPostCatalogId = catalog.Defaults.Post;
@@ -171,9 +181,9 @@ namespace RackCad.UI
                 UpdateSummary();
                 DrawSideView();
                 SetStatus(
-                    !mustRebuild ? "Altura actualizada; se conservaron los modulos (fondos y cabeceras)."
+                    !mustRebuild ? "Altura actualizada; se conservaron los módulos (fondos y cabeceras)."
                     : restoredFondos > 0 ? "Vista recalculada; se conservaron los fondos personalizados de las cabeceras."
-                    : "Vista recalculada (layout estandar).", false);
+                    : "Vista recalculada (layout estándar).", false);
             }
             catch (Exception ex)
             {
@@ -294,7 +304,7 @@ namespace RackCad.UI
 
             if (!TryNum(ModuleLengthBox.Text, out var length) || length <= 0)
             {
-                SetStatus("Longitud invalida (debe ser mayor que cero).", true);
+                SetStatus("Longitud inválida (debe ser mayor que cero).", true);
                 return;
             }
 
@@ -330,14 +340,14 @@ namespace RackCad.UI
             UpdateSelectedPanel();
             UpdateSummary();
             DrawSideView();
-            SetStatus("Modulo actualizado.", false);
+            SetStatus("Módulo actualizado.", false);
         }
 
         private void EditHeader_Click(object sender, RoutedEventArgs e)
         {
             if (selectedModule == null || !selectedModule.IsHeader)
             {
-                SetStatus("Selecciona un modulo de cabecera para editarlo.", true);
+                SetStatus("Selecciona un módulo de cabecera para editarlo.", true);
                 return;
             }
 
@@ -380,7 +390,7 @@ namespace RackCad.UI
             UpdateSelectedPanel();
             UpdateSummary();
             DrawSideView();
-            SetStatus("Cabecera del modulo actualizada (fondo " + editedDepth.ToString("0.##", CultureInfo.InvariantCulture) + " in).", false);
+            SetStatus("Cabecera del módulo actualizada (fondo " + editedDepth.ToString("0.##", CultureInfo.InvariantCulture) + " in).", false);
         }
 
         private void RestoreDefault_Click(object sender, RoutedEventArgs e)
@@ -464,10 +474,10 @@ namespace RackCad.UI
             palletsDeep = 0;
             error = null;
 
-            if (!TryNum(FrontBox.Text, out var front) || front <= 0) { error = "Frente invalido."; return false; }
-            if (!TryNum(DepthBox.Text, out var depth) || depth <= 0) { error = "Fondo invalido."; return false; }
-            if (!TryNum(PalletHeightBox.Text, out var palletHeight) || palletHeight <= 0) { error = "Altura de tarima invalida."; return false; }
-            if (!TryNum(WeightBox.Text, out var weight) || weight < 0) { error = "Peso invalido."; return false; }
+            if (!TryNum(FrontBox.Text, out var front) || front <= 0) { error = "Frente inválido."; return false; }
+            if (!TryNum(DepthBox.Text, out var depth) || depth <= 0) { error = "Fondo inválido."; return false; }
+            if (!TryNum(PalletHeightBox.Text, out var palletHeight) || palletHeight <= 0) { error = "Altura de tarima inválida."; return false; }
+            if (!TryNum(WeightBox.Text, out var weight) || weight < 0) { error = "Peso inválido."; return false; }
             if (!int.TryParse(PalletsDeepBox.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out palletsDeep) || palletsDeep < 2)
             {
                 error = "Las tarimas de fondo deben ser un entero >= 2.";
@@ -632,7 +642,7 @@ namespace RackCad.UI
 
             SummaryText.Text = string.Format(
                 CultureInfo.InvariantCulture,
-                "Longitud total: {0:0.##} in   (regla: N x fondo + 12)\nModulos: {1}   |   {2} cabeceras, {3} separadores   |   postes derivados: {4}",
+                "Longitud total: {0:0.##} in   (regla: N x fondo + 12)\nMódulos: {1}   |   {2} cabeceras, {3} separadores   |   postes derivados: {4}",
                 system.TotalLength,
                 system.Modules.Count,
                 headers,
@@ -828,37 +838,37 @@ namespace RackCad.UI
             var count = SeparatorCountBox.Text?.Trim();
             if (!string.IsNullOrWhiteSpace(count) && !(int.TryParse(count, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) && n >= 1))
             {
-                error = "Cantidad de separadores invalida (entero >= 1, o vacio para estandar).";
+                error = "Cantidad de separadores inválida (entero >= 1, o vacío para estándar).";
                 return false;
             }
 
             if (!UiSupport.TryOptionalNum(SeparatorSpacingBox.Text, out _))
             {
-                error = "Separacion de separadores invalida (deja vacio para estandar).";
+                error = "Separación de separadores inválida (deja vacío para estándar).";
                 return false;
             }
 
             if (!UiSupport.TryOptionalNum(DerivedReinforcementBox.Text, out _))
             {
-                error = "Altura de refuerzo del poste derivado invalida (deja vacio para altura completa).";
+                error = "Altura de refuerzo del poste derivado inválida (deja vacío para altura completa).";
                 return false;
             }
 
             if (!IsBlankOrNumber(FirstLevelHeightBox.Text))
             {
-                error = "Altura del primer nivel invalida (deja vacio para 0).";
+                error = "Altura del primer nivel inválida (deja vacío para 0).";
                 return false;
             }
 
             if (!IsBlankOrNumber(BeamDepthBox.Text))
             {
-                error = "Peralte de viga invalido (deja vacio para 0).";
+                error = "Peralte de larguero inválido (deja vacío para 0).";
                 return false;
             }
 
             if (ManualHeightToggle?.IsChecked == true && !(UiSupport.TryNum(ManualHeightBox.Text, out var m) && m > 0.0))
             {
-                error = "Altura manual invalida (debe ser mayor que cero).";
+                error = "Altura manual inválida (debe ser mayor que cero).";
                 return false;
             }
 
@@ -1179,7 +1189,7 @@ namespace RackCad.UI
                 var project = new RackProjectStore().Load(dialog.FileName);
                 if (project.Kind != RackSystemKind.PalletFlow || project.DynamicSystem == null)
                 {
-                    SetStatus("El archivo no es un sistema dinamico.", true);
+                    SetStatus("El archivo no es un sistema dinámico.", true);
                     return;
                 }
 
@@ -1281,7 +1291,7 @@ namespace RackCad.UI
         {
             if (!canInsertInAutoCad)
             {
-                SetStatus("El dibujo en AutoCAD solo esta disponible cuando el sistema se abre desde AutoCAD.", true);
+                SetStatus("El dibujo en AutoCAD solo está disponible cuando el sistema se abre desde AutoCAD.", true);
                 return;
             }
 

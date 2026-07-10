@@ -40,6 +40,24 @@ namespace RackCad.Application.Systems
             var postBlock = Block(catalog, system.PostId, view);
             var defaultPlateId = catalog?.Defaults?.BasePlate;
 
+            // Blocks.FindBlock is a linear scan and the run repeats the same 1-2 beam/plate ids across ~100
+            // levels + 21 plates, so memoize the RESULT of the existing lookup per piece id, scoped to this Build
+            // (view is constant here; caching the FirstOrDefault result keeps first-match-wins on duplicate rows,
+            // and the comparer matches FindBlock's OrdinalIgnoreCase). Null/blank ids bypass the cache: they keep
+            // FindBlock's null result and Dictionary would reject the key.
+            var blockByPieceId = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            string CachedBlock(string pieceId)
+            {
+                if (string.IsNullOrWhiteSpace(pieceId)) return Block(catalog, pieceId, view);
+                if (!blockByPieceId.TryGetValue(pieceId, out var block))
+                {
+                    block = Block(catalog, pieceId, view);
+                    blockByPieceId[pieceId] = block;
+                }
+
+                return block;
+            }
+
             // Cabeceras (posts) + their base plates. Each post is as tall as the tallest bay it touches.
             for (var i = 0; i < postX.Count; i++)
             {
@@ -82,7 +100,7 @@ namespace RackCad.Application.Systems
                     {
                         Role = HeaderBlockRole.BasePlate,
                         PieceId = plateId,
-                        BlockName = Block(catalog, plateId, view),
+                        BlockName = CachedBlock(plateId),
                         View = view,
                         ConnectionAnchor = origin,
                         Insertion = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y)
@@ -108,7 +126,7 @@ namespace RackCad.Application.Systems
                     {
                         Role = HeaderBlockRole.Beam,
                         PieceId = level.BeamId,
-                        BlockName = Block(catalog, level.BeamId, view),
+                        BlockName = CachedBlock(level.BeamId),
                         View = view,
                         Insertion = at,
                         ConnectionAnchor = at

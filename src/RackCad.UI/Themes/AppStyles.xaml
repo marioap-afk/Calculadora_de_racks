@@ -3,6 +3,9 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <!-- Shared window background so every RackCad window uses the same gray. -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F4F6F9" />
+
     <!-- Field caption above an input. -->
     <Style x:Key="FieldLabel" TargetType="TextBlock">
         <Setter Property="Foreground" Value="#415161" />

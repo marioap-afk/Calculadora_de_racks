@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using RackCad.Application.Catalogs;
 using RackCad.Domain.Systems;
 
@@ -60,6 +61,23 @@ namespace RackCad.Application.Systems
             var troquel = catalog?.ConnectionLayout.FindConnectionLayout(
                 design.PostId, SelectiveRackDefaults.PostBeamPoint, SelectiveRackDefaults.View);
             var gridBase = troquel?.LocalY ?? paso;
+
+            // BeamProfileStartY is a linear catalog scan per bay and the run repeats 1-2 beam ids: memoize the
+            // RESULT of the same lookup, local to this Resolve so a catalog reload can never serve stale values.
+            // The comparer matches FindConnectionLayout's OrdinalIgnoreCase; blank ids keep the 0.0 fallback
+            // (FindConnectionLayout returns null for them and the ?? 0.0 applies) without touching the Dictionary.
+            var beamStartYById = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            double CachedBeamStartY(string beamId)
+            {
+                if (string.IsNullOrWhiteSpace(beamId)) return 0.0;
+                if (!beamStartYById.TryGetValue(beamId, out var startY))
+                {
+                    startY = BeamProfileStartY(catalog, beamId, SelectiveRackDefaults.View);
+                    beamStartYById[beamId] = startY;
+                }
+
+                return startY;
+            }
 
             var height = 0.0;
             foreach (var bayDesign in design.Bays)
@@ -123,7 +141,7 @@ namespace RackCad.Application.Systems
                 // troquel), so the third-of-the-pallet coverage is measured from THAT surface, not the troquel.
                 // A manual per-bay override replaces the computed height; the tallest bay still governs a shared post.
                 var top = levels[levels.Count - 1];
-                var loadSurface = y + BeamProfileStartY(catalog, top.BeamId, SelectiveRackDefaults.View);
+                var loadSurface = y + CachedBeamStartY(top.BeamId);
                 bay.Height = WithOverride(RoundUpToFoot(loadSurface + PalletAlto(top) / 3.0), bayDesign.HeightOverride);
                 height = Math.Max(height, bay.Height);
                 system.Bays.Add(bay);

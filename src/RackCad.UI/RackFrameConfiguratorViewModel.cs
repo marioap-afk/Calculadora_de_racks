@@ -92,7 +92,7 @@ namespace RackCad.UI
             HorizontalStateOptions = Enum.GetValues(typeof(FrameComponentState));
 
             panelsNavigationItem = new ConfiguratorNavigationItem("Segments", "Paneles", "Espacios entre horizontales");
-            horizontalsNavigationItem = new ConfiguratorNavigationItem("Horizontals", "Horizontales", "Piezas fisicas independientes");
+            horizontalsNavigationItem = new ConfiguratorNavigationItem("Horizontals", "Horizontales", "Piezas físicas independientes");
             NavigationItems = new ObservableCollection<ConfiguratorNavigationItem>
             {
                 new ConfiguratorNavigationItem("Header", "Cabecera", "Datos generales"),
@@ -101,7 +101,7 @@ namespace RackCad.UI
                 panelsNavigationItem,
                 horizontalsNavigationItem,
                 new ConfiguratorNavigationItem("Reinforcements", "Refuerzos", "Refuerzos por poste"),
-                new ConfiguratorNavigationItem("Plates", "Placas", "Placa base y conexion"),
+                new ConfiguratorNavigationItem("Plates", "Placas", "Placa base y conexión"),
                 new ConfiguratorNavigationItem("Connections", "Conexiones", "Puntos y offsets"),
                 new ConfiguratorNavigationItem("Other", "Otros elementos", "Reservado")
             };
@@ -489,7 +489,7 @@ namespace RackCad.UI
                 Configuration.CelosiaStartTroquel = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(CelosiaStartTroquelText));
-                MarkConfigurationEdited("Inicio de celosia actualizado.");
+                MarkConfigurationEdited("Inicio de celosía actualizado.");
             }
         }
 
@@ -581,7 +581,7 @@ namespace RackCad.UI
         public PostAssembly RightPost => Configuration.RightPost;
         public BasePlatePlacement LeftBasePlate => Configuration.LeftBasePlate;
         public BasePlatePlacement RightBasePlate => Configuration.RightBasePlate;
-        public string TemplateSummary => StandardBaselineId + " / version " + StandardBaselineVersion;
+        public string TemplateSummary => StandardBaselineId + " / versión " + StandardBaselineVersion;
 
         public string LeftPostCatalogId
         {
@@ -618,7 +618,7 @@ namespace RackCad.UI
 
                 LeftPost.Description = NormalizeText(value);
                 OnPropertyChanged();
-                MarkConfigurationEdited("Descripcion del poste izquierdo actualizada.", structural: false);
+                MarkConfigurationEdited("Descripción del poste izquierdo actualizada.", structural: false);
             }
         }
 
@@ -698,7 +698,7 @@ namespace RackCad.UI
 
                 RightPost.Description = NormalizeText(value);
                 OnPropertyChanged();
-                MarkConfigurationEdited("Descripcion del poste derecho actualizada.", structural: false);
+                MarkConfigurationEdited("Descripción del poste derecho actualizada.", structural: false);
             }
         }
 
@@ -858,7 +858,7 @@ namespace RackCad.UI
         // The height is derived (última horizontal + remate), so there is no target-vs-configured check:
         // the banner reports only real model inconsistencies.
         public string HeightValidationMessage => IsModelConsistent
-            ? "Modelo consistente. La altura se recalcula desde las horizontales (ultima + " + FormatInches(PostTopRemate) + ")."
+            ? "Modelo consistente. La altura se recalcula desde las horizontales (última + " + FormatInches(PostTopRemate) + ")."
             : ModelWarnings.FirstOrDefault();
 
         public string HeightValidationBrush => IsModelConsistent ? "#2F855A" : "#B00020";
@@ -1108,7 +1108,7 @@ namespace RackCad.UI
 
         public void ApplyNoBracingToSelection()
         {
-            ApplyToTargetSegments(segment => segment.Pattern = BracingPattern.NoBracing, "Sin celosia aplicado a la seleccion.");
+            ApplyToTargetSegments(segment => segment.Pattern = BracingPattern.NoBracing, "Sin celosía aplicado a la selección.");
         }
 
         public void ApplyDoubleBracingToSelection()
@@ -1117,29 +1117,29 @@ namespace RackCad.UI
             {
                 segment.Pattern = BracingPattern.DoubleDiagonal;
                 segment.SideMode = FrameSide.Front;
-            }, "Doble diagonal aplicada a la seleccion.");
+            }, "Doble diagonal aplicada a la selección.");
         }
 
         public void ApplyBulkPattern()
         {
-            ApplyToTargetSegments(segment => segment.Pattern = BulkPattern, "Arreglo de panel aplicado a la seleccion.");
+            ApplyToTargetSegments(segment => segment.Pattern = BulkPattern, "Arreglo de panel aplicado a la selección.");
         }
 
         public void ApplyBulkSide()
         {
-            ApplyToTargetSegments(segment => segment.SideMode = BulkSide, "Cara de montaje aplicada a la seleccion.");
+            ApplyToTargetSegments(segment => segment.SideMode = BulkSide, "Cara de montaje aplicada a la selección.");
         }
 
         public void ApplyBulkProfile()
         {
             if (string.IsNullOrWhiteSpace(BulkProfileId))
             {
-                StatusMessage = "Captura un perfil antes de aplicar edicion masiva.";
+                StatusMessage = "Captura un perfil antes de aplicar edición masiva.";
                 StatusBrush = "#B00020";
                 return;
             }
 
-            ApplyToTargetSegments(segment => segment.BraceProfileId = BulkProfileId.Trim(), "Perfil aplicado a la seleccion.");
+            ApplyToTargetSegments(segment => segment.BraceProfileId = BulkProfileId.Trim(), "Perfil aplicado a la selección.");
         }
 
         // ---- Edición masiva de HORIZONTALES (espeja el patrón de paneles) ----
@@ -1148,7 +1148,7 @@ namespace RackCad.UI
         {
             if (string.IsNullOrWhiteSpace(BulkHorizontalProfileId))
             {
-                StatusMessage = "Elige un perfil antes de aplicar edicion masiva de horizontales.";
+                StatusMessage = "Elige un perfil antes de aplicar edición masiva de horizontales.";
                 StatusBrush = "#B00020";
                 return;
             }
@@ -1167,12 +1167,12 @@ namespace RackCad.UI
             var delta = BulkHorizontalElevationOffset;
             if (Math.Abs(delta) < 1e-9)
             {
-                StatusMessage = "Indica un desplazamiento de elevacion distinto de cero.";
+                StatusMessage = "Indica un desplazamiento de elevación distinto de cero.";
                 StatusBrush = "#B00020";
                 return;
             }
 
-            ApplyToTargetHorizontals(h => h.Elevation = Math.Max(0.0, h.Elevation + delta), "Elevacion desplazada en las horizontales seleccionadas.");
+            ApplyToTargetHorizontals(h => h.Elevation = Math.Max(0.0, h.Elevation + delta), "Elevación desplazada en las horizontales seleccionadas.");
         }
 
         public void RestoreSelectedSegment()
@@ -1198,7 +1198,7 @@ namespace RackCad.UI
                 ? panelsNavigationItem
                 : GetNavigationItemForSegment(SelectedBracingSegment) ?? panelsNavigationItem;
             RefreshAllConfigurationProperties();
-            StatusMessage = "Cabecera estandar restaurada. Modificaciones y excepciones limpiadas.";
+            StatusMessage = "Cabecera estándar restaurada. Modificaciones y excepciones limpiadas.";
             StatusBrush = "#2F855A";
         }
 
@@ -1343,7 +1343,7 @@ namespace RackCad.UI
         {
             if (FrameModelValidator.CollidesWithExisting(Configuration.Horizontals.Select(h => h.Elevation), elevation, HeightTolerance))
             {
-                StatusMessage = "Ya existe una horizontal en " + FormatInches(elevation) + " (o muy cerca). No se agrego para evitar un panel de altura cero.";
+                StatusMessage = "Ya existe una horizontal en " + FormatInches(elevation) + " (o muy cerca). No se agregó para evitar un panel de altura cero.";
                 StatusBrush = "#B00020";
                 return;
             }
@@ -1386,7 +1386,7 @@ namespace RackCad.UI
 
             if (upperHorizontal == null || Horizontals.Count <= 2)
             {
-                StatusMessage = "No se encontro una horizontal compartida para combinar.";
+                StatusMessage = "No se encontró una horizontal compartida para combinar.";
                 StatusBrush = "#B00020";
                 return;
             }
@@ -1882,9 +1882,9 @@ namespace RackCad.UI
             AddTextException("Poste derecho", "Refuerzo", ExceptionType.Reinforcement, FormatBoolean(standardRightHasReinforcement), FormatBoolean(RightPostHasReinforcement));
             AddTextException("Poste derecho", "Tipo de refuerzo", ExceptionType.Reinforcement, standardRightReinforcementCatalogId, RightPostReinforcementCatalogId);
             AddTextException("Placa izquierda", "Placa", ExceptionType.PlateChange, standardLeftPlateCatalogId, LeftPlateCatalogId);
-            AddTextException("Placa izquierda", "Punto de conexion", ExceptionType.ConnectionPointChange, standardLeftPlateConnectionPointId, LeftPlateConnectionPointId);
+            AddTextException("Placa izquierda", "Punto de conexión", ExceptionType.ConnectionPointChange, standardLeftPlateConnectionPointId, LeftPlateConnectionPointId);
             AddTextException("Placa derecha", "Placa", ExceptionType.PlateChange, standardRightPlateCatalogId, RightPlateCatalogId);
-            AddTextException("Placa derecha", "Punto de conexion", ExceptionType.ConnectionPointChange, standardRightPlateConnectionPointId, RightPlateConnectionPointId);
+            AddTextException("Placa derecha", "Punto de conexión", ExceptionType.ConnectionPointChange, standardRightPlateConnectionPointId, RightPlateConnectionPointId);
         }
 
         private void AddTextException(string targetId, string fieldName, ExceptionType exceptionType, string standardValue, string overrideValue)
@@ -1915,7 +1915,7 @@ namespace RackCad.UI
 
             if (targetSegments.Count == 0)
             {
-                StatusMessage = "Selecciona uno o varios paneles antes de aplicar esta accion.";
+                StatusMessage = "Selecciona uno o varios paneles antes de aplicar esta acción.";
                 StatusBrush = "#B00020";
                 return;
             }
@@ -1952,7 +1952,7 @@ namespace RackCad.UI
 
             if (targets.Count == 0)
             {
-                StatusMessage = "Selecciona una o varias horizontales antes de aplicar esta accion.";
+                StatusMessage = "Selecciona una o varias horizontales antes de aplicar esta acción.";
                 StatusBrush = "#B00020";
                 return;
             }

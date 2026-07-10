@@ -36,11 +36,13 @@ namespace RackCad.UI
             });
         }
 
-        public void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, DoubleCollection dash = null, Brush fill = null)
+        /// <summary>Returns the created Rectangle (or null for a degenerate size) so callers that later restyle a
+        /// shape in place — e.g. the selectivo's post highlight — can keep a reference; most callers ignore it.</summary>
+        public Rectangle AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, DoubleCollection dash = null, Brush fill = null)
         {
             if (width <= 0.0 || height <= 0.0)
             {
-                return;
+                return null;
             }
 
             var rectangle = new Rectangle
@@ -55,6 +57,7 @@ namespace RackCad.UI
             Canvas.SetLeft(rectangle, left);
             Canvas.SetTop(rectangle, top);
             canvas.Children.Add(rectangle);
+            return rectangle;
         }
     }
 }

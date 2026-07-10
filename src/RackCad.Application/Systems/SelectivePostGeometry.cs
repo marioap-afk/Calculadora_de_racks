@@ -19,19 +19,24 @@ namespace RackCad.Application.Systems
             var troquel = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, view);
 
             // Each post's larguero troquel X slides with ITS OWN peralte (per-post), so posts of different peralte
-            // land correctly and the bay between them absorbs both troquel offsets.
-            double TroquelXFor(int postIndex)
-                => ResolveX(troquel, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = PostPeralteAt(system, postIndex) });
+            // land correctly and the bay between them absorbs both troquel offsets. Resolved ONCE per post up
+            // front: the loop below reads interior posts 3 times, and every resolve allocated a parameter
+            // Dictionary. (One Dictionary per post is kept on purpose — reusing a mutated one would rely on
+            // ResolveX never retaining the reference.)
+            var troquelXs = new List<double>(system.Bays.Count + 1);
+            for (var i = 0; i <= system.Bays.Count; i++)
+            {
+                troquelXs.Add(ResolveX(troquel, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = PostPeralteAt(system, i) }));
+            }
 
             var xs = new List<double> { 0.0 };
-            var troquelXs = new List<double> { TroquelXFor(0) };
             for (var b = 0; b < system.Bays.Count; b++)
             {
                 var bay = system.Bays[b];
                 var inicioX = BeamProfileStartX(catalog, bay, view);
-                // post b's RIGHT troquel + post b+1's LEFT troquel, each with its own peralte.
-                xs.Add(xs[xs.Count - 1] + bay.BeamLength + (TroquelXFor(b) + inicioX) + (TroquelXFor(b + 1) + inicioX));
-                troquelXs.Add(TroquelXFor(b + 1));
+                // post b's RIGHT troquel + post b+1's LEFT troquel, each with its own peralte. Same expression
+                // SHAPE as before the precompute, so the floating-point sums stay bit-identical.
+                xs.Add(xs[xs.Count - 1] + bay.BeamLength + (troquelXs[b] + inicioX) + (troquelXs[b + 1] + inicioX));
             }
 
             return new SelectivePostLayout(xs, troquelXs);

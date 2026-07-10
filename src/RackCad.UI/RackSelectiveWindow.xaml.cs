@@ -26,20 +26,28 @@ namespace RackCad.UI
     /// </summary>
     public partial class RackSelectiveWindow : Window
     {
-        private static readonly Brush PostBrush = new SolidColorBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
-        private static readonly Brush PostFill = new SolidColorBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86));
-        private static readonly Brush PostHiBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xC5, 0x3D));
-        private static readonly Brush PostHiFill = new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xC5, 0x3D));
-        private static readonly Brush BeamBrush = new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x2B));
-        private static readonly Brush BeamFill = new SolidColorBrush(Color.FromArgb(0x66, 0xE0, 0x8A, 0x2B));
-        private static readonly Brush PlateFill = new SolidColorBrush(Color.FromRgb(0xB7, 0xC3, 0xCF));
-        private static readonly Brush FloorStroke = new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
-        private static readonly Brush LabelStroke = new SolidColorBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
+        private static readonly Brush PostBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x3D, 0xC9, 0x86)));
+        private static readonly Brush PostFill = Frozen(new SolidColorBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86)));
+        private static readonly Brush PostHiBrush = Frozen(new SolidColorBrush(Color.FromRgb(0xFF, 0xC5, 0x3D)));
+        private static readonly Brush PostHiFill = Frozen(new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xC5, 0x3D)));
+        private static readonly Brush BeamBrush = Frozen(new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x2B)));
+        private static readonly Brush BeamFill = Frozen(new SolidColorBrush(Color.FromArgb(0x66, 0xE0, 0x8A, 0x2B)));
+        private static readonly Brush PlateFill = Frozen(new SolidColorBrush(Color.FromRgb(0xB7, 0xC3, 0xCF)));
+        private static readonly Brush FloorStroke = Frozen(new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A)));
+        private static readonly Brush LabelStroke = Frozen(new SolidColorBrush(Color.FromRgb(0x9A, 0xA7, 0xB4)));
 
-        private static readonly Brush CellStroke = new SolidColorBrush(Color.FromRgb(0xD8, 0xDE, 0xE6));
-        private static readonly Brush CellText = new SolidColorBrush(Color.FromRgb(0x1F, 0x29, 0x33));
-        private static readonly Brush CellSelStroke = new SolidColorBrush(Color.FromRgb(0x2F, 0x6F, 0xED));
-        private static readonly Brush CellSelFill = new SolidColorBrush(Color.FromRgb(0xDB, 0xEA, 0xFE));
+        private static readonly Brush CellStroke = Frozen(new SolidColorBrush(Color.FromRgb(0xD8, 0xDE, 0xE6)));
+        private static readonly Brush CellText = Frozen(new SolidColorBrush(Color.FromRgb(0x1F, 0x29, 0x33)));
+        private static readonly Brush CellSelStroke = Frozen(new SolidColorBrush(Color.FromRgb(0x2F, 0x6F, 0xED)));
+        private static readonly Brush CellSelFill = Frozen(new SolidColorBrush(Color.FromRgb(0xDB, 0xEA, 0xFE)));
+
+        /// <summary>Freeze a constant brush: a frozen Freezable is shared without per-element change handlers,
+        /// so the hundreds of matrix/preview elements that reuse these stop registering listeners on them.</summary>
+        private static Brush Frozen(Brush brush)
+        {
+            brush.Freeze();
+            return brush;
+        }
 
         private readonly RackCatalog catalog;
         private readonly SelectiveFrontalBuilder builder = new SelectiveFrontalBuilder();
@@ -64,6 +72,22 @@ namespace RackCad.UI
         private int selLevel;
         private bool loadingCell;
 
+        /// <summary>Cell Border by (bay, level). Repopulated ONLY inside <see cref="RenderMatrix"/> (the single
+        /// structural source, so it can never go stale) and used by <see cref="SelectCell"/>/<see cref="ApplyScope"/>
+        /// to restyle/retext just the affected cells instead of rebuilding the whole matrix per click.</summary>
+        private readonly Dictionary<(int Bay, int Level), Border> cellBorders = new Dictionary<(int Bay, int Level), Border>();
+
+        /// <summary>The preview's post Rectangle + number TextBlock per post index. Repopulated ONLY inside
+        /// <see cref="DrawPreview"/> so <see cref="UpdatePostHighlight"/> can move the picked-post highlight
+        /// without destroying and recreating the whole canvas.</summary>
+        private readonly List<Rectangle> postRects = new List<Rectangle>();
+        private readonly List<TextBlock> postLabels = new List<TextBlock>();
+
+        /// <summary>Coalescing state for <see cref="DeferRecompute"/>: while depth &gt; 0, <see cref="Recompute"/>
+        /// only latches <see cref="recomputePending"/>; the outermost scope runs the single pending pass on close.</summary>
+        private int recomputeDeferDepth;
+        private bool recomputePending;
+
         /// <summary>Identity of the rack currently edited: stable id (GUID) + client name. Empty for a brand-new rack.</summary>
         private string currentId;
         private string currentName;
@@ -71,6 +95,12 @@ namespace RackCad.UI
         /// <summary>True when the window was opened on an EXISTING rack (RACKEDITAR). The lateral view can only be
         /// inserted then — it links to that rack's frontal; inserting it on a brand-new rack would orphan it.</summary>
         private bool isEditingExisting;
+
+        /// <summary>Descriptive XAML tooltips of Actualizar/Insertar lateral/Insertar planta, captured before
+        /// <see cref="UpdateInsertButtons"/> swaps them for the disabled reason, so enabling restores them.</summary>
+        private readonly object updateButtonTip;
+        private readonly object insertLateralTip;
+        private readonly object insertPlantaTip;
 
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private SelectiveRackSystem lastSystem;
@@ -108,6 +138,9 @@ namespace RackCad.UI
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
+            updateButtonTip = UpdateButton.ToolTip;
+            insertLateralTip = InsertLateralButton.ToolTip;
+            insertPlantaTip = InsertPlantaButton.ToolTip;
             catalog = UiSupport.LoadCatalogSafe();
 
             PostBox.ItemsSource = UiSupport.ToOptions(catalog?.PostProfiles);
@@ -149,6 +182,13 @@ namespace RackCad.UI
                 UpdateButton.ToolTip = reason;
                 InsertLateralButton.ToolTip = reason;
                 InsertPlantaButton.ToolTip = reason;
+            }
+            else
+            {
+                // Re-enabled (RACKEDITAR): put back the descriptive tooltips, or the disabled reason would linger.
+                UpdateButton.ToolTip = updateButtonTip;
+                InsertLateralButton.ToolTip = insertLateralTip;
+                InsertPlantaButton.ToolTip = insertPlantaTip;
             }
         }
 
@@ -236,10 +276,13 @@ namespace RackCad.UI
 
         private void AddLevel(int bay)
         {
-            var column = bays[bay];
-            column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
-            RenderMatrix();
-            Recompute();
+            using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
+            {
+                var column = bays[bay];
+                column.Add(column.Count > 0 ? column[column.Count - 1].Clone() : NewCell());
+                RenderMatrix();
+                Recompute();
+            }
         }
 
         private void RemoveLevel(int bay)
@@ -251,11 +294,14 @@ namespace RackCad.UI
                 return;
             }
 
-            column.RemoveAt(column.Count - 1);
-            ClampSelection();
-            LoadCellEditor();
-            RenderMatrix();
-            Recompute();
+            using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
+            {
+                column.RemoveAt(column.Count - 1);
+                ClampSelection();
+                LoadCellEditor();
+                RenderMatrix();
+                Recompute();
+            }
         }
 
         private void SetFloor(int bay, bool value)
@@ -289,6 +335,7 @@ namespace RackCad.UI
             MatrixGrid.Children.Clear();
             MatrixGrid.RowDefinitions.Clear();
             MatrixGrid.ColumnDefinitions.Clear();
+            cellBorders.Clear(); // repopulated below by CellUi — cleared FIRST so every early return stays consistent
 
             var bayCount = bays.Count;
             if (bayCount == 0) return;
@@ -356,6 +403,7 @@ namespace RackCad.UI
 
             var levelRow = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 2, 0, 0) };
             var minus = SmallButton("−");
+            minus.ToolTip = "Quitar el nivel superior de este frente.";
             minus.Click += (s, e) => RemoveLevel(bay);
             var count = new TextBlock
             {
@@ -368,6 +416,7 @@ namespace RackCad.UI
                 VerticalAlignment = VerticalAlignment.Center
             };
             var plus = SmallButton("+");
+            plus.ToolTip = "Agregar un nivel arriba (clona el último).";
             plus.Click += (s, e) => AddLevel(bay);
             levelRow.Children.Add(minus);
             levelRow.Children.Add(count);
@@ -444,7 +493,45 @@ namespace RackCad.UI
         {
             UpdatePostStatus();
             ShowPostPeralteOverride();
-            DrawPreview(); // re-highlight the picked post
+            UpdatePostHighlight(); // re-highlight the picked post (in place — geometry did not change)
+        }
+
+        /// <summary>
+        /// Move the picked-post highlight by restyling the cached post shapes instead of redrawing the whole
+        /// canvas. Restyles EVERY post from the current SelectedIndex (≤21 brush writes), so it can never go
+        /// stale after the combo's ItemsSource resets; falls back to the full <see cref="DrawPreview"/> (the old
+        /// behavior) whenever the cache is empty or inconsistent. Geometry changes still redraw via Recompute.
+        /// </summary>
+        private void UpdatePostHighlight()
+        {
+            if (postRects.Count == 0 || postRects.Count != postLabels.Count)
+            {
+                DrawPreview();
+                return;
+            }
+
+            var selected = PostSelectBox?.SelectedIndex ?? -1; // same source DrawPreview reads
+            for (var i = 0; i < postRects.Count; i++)
+            {
+                StylePost(postRects[i], postLabels[i], i == selected);
+            }
+        }
+
+        /// <summary>Highlight styling of a preview post (rectangle + number) — single source of truth shared by
+        /// <see cref="DrawPreview"/> and <see cref="UpdatePostHighlight"/>, so the two paths cannot diverge.</summary>
+        private static void StylePost(Rectangle rect, TextBlock number, bool highlighted)
+        {
+            if (rect != null)
+            {
+                rect.Stroke = highlighted ? PostHiBrush : PostBrush;
+                rect.StrokeThickness = highlighted ? 3.0 : 1.6;
+                rect.Fill = highlighted ? PostHiFill : PostFill;
+            }
+
+            if (number != null)
+            {
+                number.Foreground = highlighted ? PostHiBrush : LabelStroke;
+            }
         }
 
         /// <summary>Show the selected post's peralte override in its box (empty when the post inherits the global).</summary>
@@ -465,7 +552,18 @@ namespace RackCad.UI
         }
 
         /// <summary>Store the per-post peralte override for the selected post; empty (or = global) means inherit.</summary>
-        private void PostPeralteOverride_LostFocus(object sender, RoutedEventArgs e)
+        private void PostPeralteOverride_LostFocus(object sender, RoutedEventArgs e) => CommitPostPeralteOverride();
+
+        /// <summary>Enter commits the override too (same as the per-bay height box); e.Handled keeps the key
+        /// from bubbling further up the window.</summary>
+        private void PostPeralteOverride_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+            CommitPostPeralteOverride();
+            e.Handled = true;
+        }
+
+        private void CommitPostPeralteOverride()
         {
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postPeraltes.Count) return;
@@ -478,7 +576,7 @@ namespace RackCad.UI
             }
             else if (!UiSupport.TryNum(text, out value) || value <= 0.0)
             {
-                SetStatus("Peralte de poste invalido (deja vacio para usar el peralte global).", true);
+                SetStatus("Peralte de poste inválido (deja vacío para usar el peralte global).", true);
                 ShowPostPeralteOverride();
                 return;
             }
@@ -662,40 +760,107 @@ namespace RackCad.UI
 
         private UIElement CellUi(Cell cell, int bay, int level)
         {
-            var selected = bay == selBay && level == selLevel;
             var border = new Border
             {
                 Margin = new Thickness(2),
-                Background = selected ? CellSelFill : Brushes.White,
-                BorderBrush = selected ? CellSelStroke : CellStroke,
-                BorderThickness = new Thickness(selected ? 2 : 1),
                 Padding = new Thickness(6, 4, 6, 4),
                 Cursor = Cursors.Hand,
                 Child = new TextBlock
                 {
-                    Text = string.Format(CultureInfo.InvariantCulture, "{0:0.#}×{1:0.#}\n×{2} · P{3:0.#}{4}",
-                        cell.Frente, cell.Alto, cell.PalletCount, cell.BeamPeralte, cell.HasOverride ? " ✎" : string.Empty),
                     FontSize = 11,
                     Foreground = CellText,
                     TextAlignment = TextAlignment.Center
                 }
             };
 
+            StyleCellBorder(border, bay == selBay && level == selLevel);
+            RefreshCellVisual(border, cell);
+
             border.MouseLeftButtonUp += (s, e) => SelectCell(bay, level);
+            cellBorders[(bay, level)] = border;
             return border;
+        }
+
+        /// <summary>The terse matrix-cell text ("40×60 / ×2 · P3 ✎"). SINGLE source of truth shared by the full
+        /// rebuild (<see cref="CellUi"/>) and the partial refresh paths, so they cannot drift apart.</summary>
+        private static string CellLabel(Cell cell)
+            => string.Format(CultureInfo.InvariantCulture, "{0:0.#}×{1:0.#}\n×{2} · P{3:0.#}{4}",
+                cell.Frente, cell.Alto, cell.PalletCount, cell.BeamPeralte, cell.HasOverride ? " ✎" : string.Empty);
+
+        /// <summary>Long-form reading of the terse cell text for new users — same single-source rule as <see cref="CellLabel"/>.</summary>
+        private static string CellToolTip(Cell cell)
+            => string.Format(
+                CultureInfo.InvariantCulture,
+                "Tarima {0:0.#}×{1:0.#} in · {2} tarima(s) por nivel · peralte de larguero {3:0.#} in{4}",
+                cell.Frente, cell.Alto, cell.PalletCount, cell.BeamPeralte,
+                cell.HasOverride ? " · con ajustes manuales (✎)" : string.Empty);
+
+        /// <summary>Selection styling of a matrix cell — single source for <see cref="CellUi"/> and <see cref="SelectCell"/>.</summary>
+        private static void StyleCellBorder(Border border, bool selected)
+        {
+            border.Background = selected ? CellSelFill : Brushes.White;
+            border.BorderBrush = selected ? CellSelStroke : CellStroke;
+            border.BorderThickness = new Thickness(selected ? 2 : 1);
+        }
+
+        /// <summary>Refresh a cell's text AND tooltip from its data (the tooltip reads the same values, so a
+        /// partial refresh must update both or the hover text would go stale).</summary>
+        private static void RefreshCellVisual(Border border, Cell cell)
+        {
+            if (border.Child is TextBlock text) text.Text = CellLabel(cell);
+            border.ToolTip = CellToolTip(cell);
+        }
+
+        /// <summary>
+        /// The full matrix rebuild used to DESTROY a focused bay-height box, firing its LostFocus commit
+        /// (SetBayHeight → Recompute) within the same gesture. The partial-refresh paths keep the box alive, so
+        /// they call this where RenderMatrix used to run: moving focus to the window fires the exact same commit.
+        /// </summary>
+        private void CommitFocusedMatrixTextBox()
+        {
+            if (Keyboard.FocusedElement is TextBox box && MatrixGrid.IsAncestorOf(box))
+            {
+                Focus();
+            }
         }
 
         private void SelectCell(int bay, int level)
         {
-            // Don't silently discard what was typed in the current cell: apply it if valid+changed, or ask before
-            // discarding if it is invalid (returning false keeps the user on the current cell).
-            if (!TryCommitEditedCell(out var applied)) return;
+            using (DeferRecompute())
+            {
+                // Don't silently discard what was typed in the current cell: apply it if valid+changed, or ask before
+                // discarding if it is invalid (returning false keeps the user on the current cell).
+                if (!TryCommitEditedCell(out var applied)) return;
 
-            selBay = bay;
-            selLevel = level;
-            LoadCellEditor();
-            RenderMatrix();
-            if (applied) Recompute();
+                var prevBay = selBay;
+                var prevLevel = selLevel;
+                selBay = bay;
+                selLevel = level;
+                LoadCellEditor();
+
+                // Same effect the full rebuild had here: a focused bay-height box commits (LostFocus) before the
+                // visuals change; its Recompute coalesces with the one below.
+                CommitFocusedMatrixTextBox();
+
+                // A click only changes the selection visuals (and, when applied, the OLD cell's committed text):
+                // restyle those two cells in place instead of rebuilding ~400 elements. Structure never changes here.
+                if (cellBorders.TryGetValue((prevBay, prevLevel), out var previous)
+                    && cellBorders.TryGetValue((bay, level), out var current))
+                {
+                    StyleCellBorder(previous, selected: false);
+                    StyleCellBorder(current, selected: true);
+                    if (applied && prevBay < bays.Count && prevLevel < bays[prevBay].Count)
+                    {
+                        RefreshCellVisual(previous, bays[prevBay][prevLevel]); // the commit wrote into the OLD cell
+                    }
+                }
+                else
+                {
+                    RenderMatrix(); // defensive fallback: cache out of sync → old full-rebuild behavior
+                }
+
+                if (applied) Recompute();
+            }
         }
 
         /// <summary>Commit the cell editor into the currently-selected matrix cell before moving away. Returns false only
@@ -794,11 +959,14 @@ namespace RackCad.UI
                 return;
             }
 
-            ResizeBays(bayCount);
-            LoadCellEditor();
-            RenderMatrix();
-            RefreshPostSelect();
-            Recompute();
+            using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
+            {
+                ResizeBays(bayCount);
+                LoadCellEditor();
+                RenderMatrix();
+                RefreshPostSelect();
+                Recompute();
+            }
         }
 
         private void ApplyCell_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Cell);
@@ -827,22 +995,43 @@ namespace RackCad.UI
                 return;
             }
 
-            for (var b = 0; b < bays.Count; b++)
+            var applied = 0;
+            using (DeferRecompute())
             {
-                for (var l = 0; l < bays[b].Count; l++)
+                var stale = false;
+                for (var b = 0; b < bays.Count; b++)
                 {
-                    var inScope =
-                        scope == Scope.All ||
-                        (scope == Scope.Cell && b == selBay && l == selLevel) ||
-                        (scope == Scope.Row && l == selLevel) ||
-                        (scope == Scope.Column && b == selBay);
+                    for (var l = 0; l < bays[b].Count; l++)
+                    {
+                        var inScope =
+                            scope == Scope.All ||
+                            (scope == Scope.Cell && b == selBay && l == selLevel) ||
+                            (scope == Scope.Row && l == selLevel) ||
+                            (scope == Scope.Column && b == selBay);
 
-                    if (inScope) bays[b][l].CopyFrom(values);
+                        if (inScope)
+                        {
+                            bays[b][l].CopyFrom(values);
+                            applied++;
+
+                            // The scope rewrites cell VALUES, never the matrix shape: refresh the touched cells in place.
+                            if (cellBorders.TryGetValue((b, l), out var border)) RefreshCellVisual(border, bays[b][l]);
+                            else stale = true;
+                        }
+                    }
                 }
+
+                if (stale) RenderMatrix(); // defensive fallback: cache out of sync → old full-rebuild behavior
+                CommitFocusedMatrixTextBox(); // the rebuild used to commit a focused bay-height box here; keep that
+                Recompute();
             }
 
-            RenderMatrix();
-            Recompute();
+            // Recompute says a generic "Vista actualizada."; tell the user HOW MANY cells the scope touched
+            // (only on success — an error status from Recompute must stay visible).
+            if (lastSystem != null)
+            {
+                SetStatus(string.Format(CultureInfo.InvariantCulture, "Aplicado a {0} celda(s).", applied), false);
+            }
         }
 
         private void InsertFrontal_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewFrontal, updateOnly: false);
@@ -900,8 +1089,46 @@ namespace RackCad.UI
             Close();
         }
 
+        /// <summary>
+        /// Coalesce every <see cref="Recompute"/> issued while the returned scope is open into AT MOST ONE run when
+        /// the outermost scope closes — still synchronous, inside the same gesture, so lastSystem/lastInstances and
+        /// the status are already fresh for any follow-up reader (Ver BOM, Personalizar poste, RequestDraw). This
+        /// collapses the double pipeline of composite gestures (e.g. a matrix click whose focus move first commits a
+        /// pending bay height via LostFocus). ALWAYS dispose via <c>using</c>: TryCommitEditedCell has early returns
+        /// and can pump a nested message loop (MessageBox), and a leaked depth would freeze the preview forever.
+        /// </summary>
+        private IDisposable DeferRecompute() => new RecomputeDeferral(this);
+
+        private sealed class RecomputeDeferral : IDisposable
+        {
+            private RackSelectiveWindow owner;
+
+            public RecomputeDeferral(RackSelectiveWindow owner)
+            {
+                this.owner = owner;
+                owner.recomputeDeferDepth++;
+            }
+
+            public void Dispose()
+            {
+                var window = owner;
+                if (window == null) return; // tolerate double-dispose
+                owner = null;
+                window.recomputeDeferDepth--;
+                if (window.recomputeDeferDepth > 0 || !window.recomputePending) return;
+                window.recomputePending = false;
+                window.Recompute();
+            }
+        }
+
         private void Recompute()
         {
+            if (recomputeDeferDepth > 0)
+            {
+                recomputePending = true; // latched: the enclosing DeferRecompute scope runs one pass on close
+                return;
+            }
+
             var system = BuildSystem(out var error);
             if (system == null)
             {
@@ -909,6 +1136,8 @@ namespace RackCad.UI
                 lastInstances = null;
                 SummaryText.Text = string.Empty;
                 PreviewCanvas.Children.Clear();
+                postRects.Clear();
+                postLabels.Clear();
                 SetStatus(error, true);
                 return;
             }
@@ -927,12 +1156,12 @@ namespace RackCad.UI
             values = null;
             error = null;
             if (!(CellBeamBox.SelectedValue is string beamId) || string.IsNullOrWhiteSpace(beamId)) { error = "Selecciona un larguero."; return false; }
-            if (!UiSupport.TryNum(FrenteBox.Text, out var frente) || frente <= 0.0) { error = "Frente de tarima invalido."; return false; }
-            if (!UiSupport.TryNum(AltoBox.Text, out var alto) || alto <= 0.0) { error = "Alto de tarima invalido."; return false; }
-            if (!TryInt(PalletCountBox.Text, out var count) || count < 1) { error = "Tarimas por nivel invalido."; return false; }
+            if (!UiSupport.TryNum(FrenteBox.Text, out var frente) || frente <= 0.0) { error = "Frente de tarima inválido."; return false; }
+            if (!UiSupport.TryNum(AltoBox.Text, out var alto) || alto <= 0.0) { error = "Alto de tarima inválido."; return false; }
+            if (!TryInt(PalletCountBox.Text, out var count) || count < 1) { error = "Tarimas por nivel inválido."; return false; }
             if (!(BeamPeralteCombo.SelectedItem is string peralteText) || !UiSupport.TryNum(peralteText, out var peralte) || peralte <= 0.0) { error = "Selecciona un peralte de larguero."; return false; }
-            if (!TryOptionalNum(BeamLenBox.Text, out var beamLen)) { error = "Longitud de larguero invalida (deja vacio para auto)."; return false; }
-            if (!TryOptionalNum(ClearBox.Text, out var clear)) { error = "Claro invalido (deja vacio para auto)."; return false; }
+            if (!TryOptionalNum(BeamLenBox.Text, out var beamLen)) { error = "Longitud de larguero inválida (deja vacío para auto)."; return false; }
+            if (!TryOptionalNum(ClearBox.Text, out var clear)) { error = "Claro inválido (deja vacío para auto)."; return false; }
 
             values = new Cell { Frente = frente, Alto = alto, PalletCount = count, BeamId = beamId, BeamPeralte = peralte, BeamLength = beamLen, Clear = clear };
             return true;
@@ -952,11 +1181,11 @@ namespace RackCad.UI
         {
             error = null;
             if (!(PostBox.SelectedValue is string postId) || string.IsNullOrWhiteSpace(postId)) { error = "Selecciona un poste."; return null; }
-            if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste invalido."; return null; }
-            if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal invalida."; return null; }
-            if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical invalida."; return null; }
-            if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevacion de larguero a piso invalida."; return null; }
-            if (!UiSupport.TryNum(FondoBox.Text, out var fondo) || fondo <= 0.0) { error = "Fondo de tarima invalido."; return null; }
+            if (!UiSupport.TryNum(PostPeralteBox.Text, out var postPeralte) || postPeralte <= 0.0) { error = "Peralte de poste inválido."; return null; }
+            if (!UiSupport.TryNum(ToleranceBox.Text, out var tolerance) || tolerance < 0.0) { error = "Tolerancia horizontal inválida."; return null; }
+            if (!UiSupport.TryNum(ClearanceBox.Text, out var clearance) || clearance < 0.0) { error = "Holgura vertical inválida."; return null; }
+            if (!UiSupport.TryNum(FloorRiseBox.Text, out var floorRise) || floorRise < 0.0) { error = "Elevación de larguero a piso inválida."; return null; }
+            if (!UiSupport.TryNum(FondoBox.Text, out var fondo) || fondo <= 0.0) { error = "Fondo de tarima inválido."; return null; }
             if (bays.Count == 0 || bays[0].Count == 0) { error = "Define frentes y niveles."; return null; }
 
             var design = new SelectivePalletDesign
@@ -1031,6 +1260,10 @@ namespace RackCad.UI
         private void LoadDesign(SelectivePalletDesign design)
         {
             if (design == null || design.Bays.Count == 0) return;
+
+            // Assigning the toggles below (e.g. DrawBasePlateCheck) fires DrawToggle_Changed → Recompute on the
+            // half-loaded state; defer so the whole load runs exactly ONE pipeline (the explicit call at the end).
+            using var deferral = DeferRecompute();
 
             PostBox.SelectedValue = design.PostId;
             if (PostBox.SelectedItem == null && PostBox.Items.Count > 0) PostBox.SelectedIndex = 0;
@@ -1132,6 +1365,8 @@ namespace RackCad.UI
         private void DrawPreview()
         {
             PreviewCanvas.Children.Clear();
+            postRects.Clear();  // right after the canvas clear, so EVERY early return leaves cache+canvas consistent
+            postLabels.Clear();
 
             if (lastInstances == null || lastSystem == null || lastSystem.Height <= 0.0)
             {
@@ -1141,18 +1376,29 @@ namespace RackCad.UI
             var postWidth = ProfileWidth(lastSystem.PostId);
             var height = lastSystem.Height;
 
+            // ONE pass over the instances gathers the extents AND the per-instance draw data that the paint loop
+            // below consumes (the extents and paint passes used to iterate + re-read the parameters twice).
             var xMin = -postWidth / 2.0;
             var xMax = xMin;
+            var items = new List<(HeaderBlockRole Role, double X, double Y, double Size, double Peralte)>(lastInstances.Count);
             foreach (var instance in lastInstances)
             {
-                if (instance.Role == HeaderBlockRole.Post)
+                switch (instance.Role)
                 {
-                    xMax = Math.Max(xMax, instance.Insertion.X + postWidth / 2.0);
-                }
-                else if (instance.Role == HeaderBlockRole.Beam)
-                {
-                    var length = Param(instance, "LONGITUD");
-                    xMax = Math.Max(xMax, instance.Insertion.X + length);
+                    case HeaderBlockRole.Post:
+                        var postH = Param(instance, "LONGITUD");
+                        if (postH <= 0.0) postH = height;
+                        xMax = Math.Max(xMax, instance.Insertion.X + postWidth / 2.0);
+                        items.Add((instance.Role, instance.Insertion.X, instance.Insertion.Y, postH, 0.0));
+                        break;
+                    case HeaderBlockRole.Beam:
+                        var length = Param(instance, "LONGITUD");
+                        xMax = Math.Max(xMax, instance.Insertion.X + length);
+                        items.Add((instance.Role, instance.Insertion.X, instance.Insertion.Y, length, Param(instance, "PERALTE")));
+                        break;
+                    case HeaderBlockRole.BasePlate:
+                        items.Add((instance.Role, instance.ConnectionAnchor.X, 0.0, 0.0, 0.0));
+                        break;
                 }
             }
 
@@ -1191,30 +1437,29 @@ namespace RackCad.UI
             var selectedPost = PostSelectBox?.SelectedIndex ?? -1;
             var postIndex = 0;
 
-            foreach (var instance in lastInstances)
+            foreach (var item in items)
             {
-                switch (instance.Role)
+                switch (item.Role)
                 {
                     case HeaderBlockRole.Post:
-                        var postH = Param(instance, "LONGITUD");
-                        if (postH <= 0.0) postH = height;
-                        var pTop = Map(instance.Insertion.X - postWidth / 2.0, postH);
-                        var hi = postIndex == selectedPost;
-                        AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, postH * mapScale,
-                            hi ? PostHiBrush : PostBrush, hi ? 3.0 : 1.6, hi ? PostHiFill : PostFill);
+                        // Drawn with the base style; StylePost applies the highlight, so this path and
+                        // UpdatePostHighlight share one styling source and cannot diverge.
+                        var pTop = Map(item.X - postWidth / 2.0, item.Size);
+                        var rect = AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, item.Size * mapScale, PostBrush, 1.6, PostFill);
                         // Post number under the base (1-based) — matches "Cabecera por poste" and the "insertar lateral" prompt.
-                        var numAt = Map(instance.Insertion.X, 0.0);
-                        AddPostNumber(numAt.X, mapBottomY + 8.0, (postIndex + 1).ToString(CultureInfo.InvariantCulture), hi);
+                        var numAt = Map(item.X, 0.0);
+                        var number = AddPostNumber(numAt.X, mapBottomY + 8.0, (postIndex + 1).ToString(CultureInfo.InvariantCulture));
+                        postRects.Add(rect); // even a null rect is added so indexes stay aligned with the post numbers
+                        postLabels.Add(number);
+                        StylePost(rect, number, postIndex == selectedPost);
                         postIndex++;
                         break;
                     case HeaderBlockRole.Beam:
-                        var length = Param(instance, "LONGITUD");
-                        var peralte = Param(instance, "PERALTE");
-                        var bTop = Map(instance.Insertion.X, instance.Insertion.Y + peralte / 2.0);
-                        AddRectangle(bTop.X, bTop.Y, length * mapScale, Math.Max(2.0, peralte * mapScale), BeamBrush, 1.2, BeamFill);
+                        var bTop = Map(item.X, item.Y + item.Peralte / 2.0);
+                        AddRectangle(bTop.X, bTop.Y, item.Size * mapScale, Math.Max(2.0, item.Peralte * mapScale), BeamBrush, 1.2, BeamFill);
                         break;
                     case HeaderBlockRole.BasePlate:
-                        var plate = Map(instance.ConnectionAnchor.X - postWidth * 0.7, 0);
+                        var plate = Map(item.X - postWidth * 0.7, 0);
                         AddRectangle(plate.X, plate.Y, postWidth * 1.4 * mapScale, Math.Max(3.0, 0.3 * mapScale + 4.0), PlateFill, 1.0, PlateFill);
                         break;
                 }
@@ -1238,16 +1483,16 @@ namespace RackCad.UI
         private void AddLine(Point a, Point b, Brush stroke, double thickness)
             => Painter.AddLine(a, b, stroke, thickness);
 
-        private void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, Brush fill)
+        private Rectangle AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, Brush fill)
             => Painter.AddRectangle(left, top, width, height, stroke, thickness, dash: null, fill: fill);
 
-        /// <summary>A post's 1-based number, centered under its base; the selected post is highlighted.</summary>
-        private void AddPostNumber(double centerX, double top, string text, bool highlighted)
+        /// <summary>A post's 1-based number, centered under its base; <see cref="StylePost"/> applies the highlight.</summary>
+        private TextBlock AddPostNumber(double centerX, double top, string text)
         {
             var label = new TextBlock
             {
                 Text = text,
-                Foreground = highlighted ? PostHiBrush : LabelStroke,
+                Foreground = LabelStroke,
                 FontSize = 12.5,
                 FontWeight = FontWeights.Bold,
                 Width = 24.0,
@@ -1256,6 +1501,7 @@ namespace RackCad.UI
             Canvas.SetLeft(label, centerX - 12.0);
             Canvas.SetTop(label, top);
             PreviewCanvas.Children.Add(label);
+            return label;
         }
 
         private void AddCanvasLabel(double left, double top, string text, Brush brush, double size, double maxWidth)
@@ -1278,6 +1524,10 @@ namespace RackCad.UI
             StatusText.Foreground = isError
                 ? new SolidColorBrush(Color.FromRgb(0xB0, 0x00, 0x20))
                 : new SolidColorBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
+
+            // StatusText lives at the BOTTOM of the left panel's ScrollViewer: scroll an error into view or the
+            // user (positioned further up, e.g. clicking the bottom action row) never sees the red message.
+            if (isError) StatusText.BringIntoView();
         }
 
         private static bool TryInt(string text, out int value)

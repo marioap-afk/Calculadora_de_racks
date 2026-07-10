@@ -8,7 +8,7 @@
         MinWidth="520"
         WindowStartupLocation="CenterOwner"
         FontFamily="Segoe UI"
-        Background="#F4F6F9">
+        Background="{DynamicResource WindowBackgroundBrush}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

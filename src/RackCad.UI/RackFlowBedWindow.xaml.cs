@@ -61,6 +61,13 @@ namespace RackCad.UI
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
+            if (!canInsertInAutoCad)
+            {
+                // Same pattern as the sibling windows: disabled CTA with the reason on the tooltip.
+                InsertButton.IsEnabled = false;
+                InsertButton.ToolTip = "Disponible solo cuando la cama se abre desde AutoCAD.";
+            }
+
             catalog = UiSupport.LoadCatalogSafe();
             RollerBox.ItemsSource = BuildRollerOptions();
             RollerBox.SelectedValue = FlowBedDefaults.RollerId;
@@ -70,6 +77,10 @@ namespace RackCad.UI
             }
 
             Recompute();
+            if (RollerBox.Items.Count == 0)
+            {
+                SetStatus("No se encontró el catálogo de rodillos; revisa los CSV del catálogo.", true);
+            }
         }
 
         // ---- Inputs ----
@@ -78,10 +89,11 @@ namespace RackCad.UI
 
         private void ShowBom_Click(object sender, RoutedEventArgs e)
         {
+            // The BOM must reflect the fields on screen, like the AutoCAD insert (which re-reads the config).
+            Recompute();
             if (lastInstances == null || lastConfig == null)
             {
-                SetStatus("Genera la cama antes de ver el BOM.", true);
-                return;
+                return; // Recompute already reported the specific input error in the status.
             }
 
             var bom = FlowBedBomBuilder.Build(lastInstances, catalog);
@@ -90,6 +102,15 @@ namespace RackCad.UI
 
         private void Input_Changed(object sender, SelectionChangedEventArgs e)
         {
+            if (IsLoaded)
+            {
+                Recompute();
+            }
+        }
+
+        private void NumericBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // Keep the preview live for the numeric fields too (the combos already recompute on change).
             if (IsLoaded)
             {
                 Recompute();
@@ -139,21 +160,21 @@ namespace RackCad.UI
 
             if (!TryNum(LaneDepthBox.Text, out var laneDepth) || laneDepth <= 0.0)
             {
-                error = "Fondo de cama invalido.";
+                error = "Fondo de cama inválido.";
                 return null;
             }
 
             var palletDepth = 0.0;
             if (bedType == FlowBedType.Dynamic && (!TryNum(PalletDepthBox.Text, out palletDepth) || palletDepth <= 0.0))
             {
-                error = "Fondo de tarima invalido.";
+                error = "Fondo de tarima inválido.";
                 return null;
             }
 
             // Optional roller pitch: empty = automatic; report garbage instead of silently falling back to auto.
             if (!UiSupport.TryOptionalNum(RollerPitchBox.Text, out var pitch))
             {
-                error = "Paso de rodillo invalido (deja vacio para el paso automatico).";
+                error = "Paso de rodillo inválido (deja vacío para el paso automático).";
                 return null;
             }
 
@@ -185,7 +206,7 @@ namespace RackCad.UI
         {
             if (!canInsertInAutoCad)
             {
-                SetStatus("El dibujo en AutoCAD solo esta disponible cuando la cama se abre desde AutoCAD.", true);
+                SetStatus("El dibujo en AutoCAD solo está disponible cuando la cama se abre desde AutoCAD.", true);
                 return;
             }
 

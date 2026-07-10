@@ -170,7 +170,7 @@ namespace RackCad.UI
 
             var result = MessageBox.Show(
                 this,
-                "Hay cambios manuales o excepciones que se perderan al " + action + ". Deseas continuar?",
+                "Hay cambios manuales o excepciones que se perderán al " + action + ". ¿Deseas continuar?",
                 "Confirmar",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -180,7 +180,7 @@ namespace RackCad.UI
 
         private void RestoreStandardFrameButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!ConfirmDiscard("restaurar la cabecera estandar"))
+            if (!ConfirmDiscard("restaurar la cabecera estándar"))
             {
                 return;
             }
@@ -255,7 +255,7 @@ namespace RackCad.UI
             {
                 MessageBox.Show(
                     this,
-                    "El dibujo en AutoCAD solo esta disponible cuando el configurador se abre desde AutoCAD.",
+                    "El dibujo en AutoCAD solo está disponible cuando el configurador se abre desde AutoCAD.",
                     "Insertar en AutoCAD",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
@@ -267,7 +267,7 @@ namespace RackCad.UI
             // Regenerating DISCARDS manual/advanced edits, so ask first when there are any.
             if (ViewModel.IsSimpleEditor)
             {
-                if (!ConfirmDiscard("regenerar la cabecera desde la configuracion rapida"))
+                if (!ConfirmDiscard("regenerar la cabecera desde la configuración rápida"))
                 {
                     return;
                 }
@@ -286,7 +286,7 @@ namespace RackCad.UI
             {
                 var proceed = MessageBox.Show(
                     this,
-                    "El modelo tiene advertencias de consistencia. Deseas dibujar de todos modos?",
+                    "El modelo tiene advertencias de consistencia. ¿Deseas dibujar de todos modos?",
                     "Insertar en AutoCAD",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);

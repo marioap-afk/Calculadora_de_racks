@@ -5,10 +5,11 @@
         Height="700"
         Width="1180"
         MinHeight="540"
-        MinWidth="900"
+        MinWidth="1080"
         WindowStartupLocation="CenterOwner"
         Background="#EEF2F6"
-        FontFamily="Segoe UI">
+        FontFamily="Segoe UI"
+        FocusManager.FocusedElement="{Binding ElementName=NameBox}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,7 +31,13 @@
 
         <!-- Left: inputs + module table + properties -->
         <Border Grid.Row="0" Grid.Column="0" Background="White" BorderBrush="#D8DEE6" BorderThickness="1" Padding="14">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <!-- Summary/status quedan FUERA del ScrollViewer para que el feedback siempre sea visible. -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock Text="Rack" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
                     <TextBlock Text="Nombre (Rack A)" Style="{StaticResource FieldLabel}" />
@@ -47,17 +54,22 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Frente (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="FrontBox" Style="{StaticResource FieldBox}" Text="42" />
+                            <TextBox x:Name="FrontBox" Style="{StaticResource FieldBox}" Text="42"
+                                     ToolTip="Frente de la tarima (in), sentido transversal al flujo." />
                             <TextBlock Text="Altura tarima (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="PalletHeightBox" Style="{StaticResource FieldBox}" Text="60" />
+                            <TextBox x:Name="PalletHeightBox" Style="{StaticResource FieldBox}" Text="60"
+                                     ToolTip="Altura de la tarima con carga (in); define la altura de cabecera." />
                             <TextBlock Text="Tarimas de fondo" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="PalletsDeepBox" Style="{StaticResource FieldBox}" Text="8" />
+                            <TextBox x:Name="PalletsDeepBox" Style="{StaticResource FieldBox}" Text="8"
+                                     ToolTip="Tarimas en el sentido del flujo (mín. 2). Define la longitud total: N x fondo + 12&quot;." />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Fondo (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="DepthBox" Style="{StaticResource FieldBox}" Text="48" />
-                            <TextBlock Text="Peso (kg)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="WeightBox" Style="{StaticResource FieldBox}" Text="1000" />
+                            <TextBox x:Name="DepthBox" Style="{StaticResource FieldBox}" Text="48"
+                                     ToolTip="Fondo de la tarima (in), sentido del flujo." />
+                            <TextBlock Text="Peso por tarima (kg)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="WeightBox" Style="{StaticResource FieldBox}" Text="1000"
+                                     ToolTip="Peso de cada tarima (kg); define la capacidad requerida." />
                         </StackPanel>
                     </Grid>
 
@@ -75,7 +87,7 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Tipo de poste" Style="{StaticResource FieldLabel}" />
-                            <ComboBox x:Name="PostBox" Margin="0,8,0,0"
+                            <ComboBox x:Name="PostBox"
                                       SelectedValuePath="Id" DisplayMemberPath="DisplayName"
                                       SelectionChanged="PostBox_SelectionChanged" />
                         </StackPanel>
@@ -85,7 +97,7 @@
 
                     <WrapPanel Margin="0,12,0,0">
                         <Button Content="Actualizar vista (recalcular)" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,12,0" IsDefault="True"
-                                ToolTip="Recalcula el sistema con los datos capturados (Enter). OJO: elimina los overrides manuales de módulos y las cabeceras personalizadas." />
+                                ToolTip="Recalcula con los datos capturados (Enter). Conserva los fondos y cabeceras personalizados; usa 'Restaurar layout' para descartarlos." />
                         <CheckBox x:Name="AdvancedToggle" Content="Avanzado" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#2B6CB0"
                                   Checked="AdvancedToggle_Changed" Unchecked="AdvancedToggle_Changed"
                                   ToolTip="Muestra el detalle de altura, separadores, tabla de módulos y edición por módulo." />
@@ -162,9 +174,13 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="32" />
                             <DataGridTextColumn Header="Tipo" Binding="{Binding Kind}" Width="*" />
-                            <DataGridTextColumn Header="Long" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="55" />
-                            <DataGridTextColumn Header="X0" Binding="{Binding StartX, StringFormat={}{0:0.##}}" Width="55" />
-                            <DataGridTextColumn Header="Ovr" Binding="{Binding IsManualOverride}" Width="40" />
+                            <DataGridTextColumn Header="Long (in)" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="62" />
+                            <DataGridTextColumn Header="X0 (in)" Binding="{Binding StartX, StringFormat={}{0:0.##}}" Width="55" />
+                            <DataGridTextColumn Binding="{Binding IsManualOverride}" Width="56">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock Text="Manual" ToolTip="Longitud del módulo editada a mano (override)." />
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -190,11 +206,14 @@
                         </StackPanel>
                     </Border>
                     </StackPanel>
+                </StackPanel>
+                </ScrollViewer>
 
+                <StackPanel Grid.Row="1">
                     <TextBlock x:Name="SummaryText" Foreground="#1F2933" FontSize="12" TextWrapping="Wrap" Margin="0,12,0,0" />
                     <TextBlock x:Name="StatusText" Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="0,8,0,0" />
                 </StackPanel>
-            </ScrollViewer>
+            </Grid>
         </Border>
 
         <!-- Right: side view -->
@@ -205,7 +224,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Margin="10,8">
-                    <TextBlock Text="Vista lateral (X = longitud del sistema, Y = altura de cabecera). Clic en un módulo para seleccionarlo."
+                    <TextBlock Text="Vista lateral (X = longitud del sistema, Y = altura de cabecera). Clic en un módulo para seleccionarlo; activa &quot;Avanzado&quot; para ver la tabla y editarlo."
                                Foreground="#617080" FontSize="11" TextWrapping="Wrap" />
                     <WrapPanel Margin="0,6,0,0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,14,0">
@@ -237,10 +256,12 @@
 
         <!-- Actions -->
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="Restaurar layout predeterminado" Style="{StaticResource SecondaryButtonStyle}" MinWidth="210" Margin="0,0,8,0"
-                    ToolTip="Recalcula el sistema desde la tarima y elimina los overrides manuales (igual que 'Actualizar vista')." Click="RestoreDefault_Click" />
-            <Button Content="Exportar BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0" Click="ExportBom_Click" />
-            <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,8,0" Click="ViewBom_Click" />
+            <Button Content="Restaurar layout" Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,8,0"
+                    ToolTip="Recalcula el sistema desde la tarima y elimina los overrides manuales de módulos y las cabeceras personalizadas." Click="RestoreDefault_Click" />
+            <Button Content="Exportar BOM (CSV)" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0" Click="ExportBom_Click"
+                    ToolTip="Guarda la lista de materiales del sistema como archivo CSV." />
+            <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,8,0" Click="ViewBom_Click"
+                    ToolTip="Abre la lista de materiales (BOM) del sistema en una ventana." />
             <Button Content="Abrir proyecto" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0" Click="OpenSystem_Click" />
             <Button Content="Guardar proyecto" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0" Click="SaveSystem_Click" />
             <Button x:Name="InsertButton" Content="Insertar en AutoCAD" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" Margin="0,0,8,0"

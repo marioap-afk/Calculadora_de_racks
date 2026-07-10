@@ -8,7 +8,8 @@
         MinWidth="860"
         WindowStartupLocation="CenterOwner"
         Background="#EEF2F6"
-        FontFamily="Segoe UI">
+        FontFamily="Segoe UI"
+        FocusManager.FocusedElement="{Binding ElementName=NameBox}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -40,13 +41,15 @@
                     <TextBlock Text="Cama" Style="{StaticResource SectionTitle}" />
 
                     <TextBlock Text="Tipo de cama" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="BedTypeBox" SelectionChanged="Input_Changed">
+                    <ComboBox x:Name="BedTypeBox" SelectionChanged="Input_Changed"
+                              ToolTip="Dinámica: lleva frenos según el fondo de tarima. Pushback: sin frenos; el fondo de tarima no aplica.">
                         <ComboBoxItem Content="Dinámica" Tag="Dynamic" IsSelected="True" />
                         <ComboBoxItem Content="Pushback" Tag="Pushback" />
                     </ComboBox>
 
                     <TextBlock Text="Rodillo" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="RollerBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" SelectionChanged="Input_Changed" />
+                    <ComboBox x:Name="RollerBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" SelectionChanged="Input_Changed"
+                              ToolTip="Rodillo del catálogo. Su diámetro define el paso automático (1.9&quot;→2&quot;, 2.5&quot;→3&quot;)." />
 
                     <Grid Margin="0,0,0,0">
                         <Grid.ColumnDefinitions>
@@ -56,11 +59,14 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Fondo de cama (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="LaneDepthBox" Style="{StaticResource FieldBox}" Text="96" />
+                            <TextBox x:Name="LaneDepthBox" Style="{StaticResource FieldBox}" Text="96" LostFocus="NumericBox_LostFocus"
+                                     ToolTip="Profundidad total del carril en pulgadas: define el largo del riel y cuántos rodillos caben." />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock x:Name="PalletDepthLabel" Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
-                            <TextBox x:Name="PalletDepthBox" Style="{StaticResource FieldBox}" Text="48" />
+                            <TextBox x:Name="PalletDepthBox" Style="{StaticResource FieldBox}" Text="48" LostFocus="NumericBox_LostFocus"
+                                     ToolTipService.ShowOnDisabled="True"
+                                     ToolTip="Fondo de la tarima (in). Solo aplica a cama Dinámica: define la posición de los frenos. En Pushback no se usa." />
                         </StackPanel>
                     </Grid>
 
@@ -74,7 +80,7 @@
 
                     <StackPanel x:Name="AdvancedPanel" Visibility="Collapsed">
                         <TextBlock Text="Paso de rodillo (in)" Style="{StaticResource FieldLabel}" />
-                        <TextBox x:Name="RollerPitchBox" Style="{StaticResource FieldBox}"
+                        <TextBox x:Name="RollerPitchBox" Style="{StaticResource FieldBox}" LostFocus="NumericBox_LostFocus"
                                  ToolTip="Vacío = el mínimo por diámetro (1.9&quot;→2&quot;, 2.5&quot;→3&quot;)." />
                     </StackPanel>
 
@@ -119,9 +125,10 @@
 
         <!-- Actions -->
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="Ver BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,8,0"
+            <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,8,0"
                     ToolTip="Lista de materiales de la cama (riel, tope, rodillos, frenos)." Click="ShowBom_Click" />
             <Button x:Name="InsertButton" Content="Insertar en AutoCAD" Style="{StaticResource PrimaryButtonStyle}" MinWidth="160" Margin="0,0,8,0"
+                    ToolTipService.ShowOnDisabled="True"
                     ToolTip="Dibuja la cama en el dibujo activo de AutoCAD (vista lateral)." Click="InsertInAutoCad_Click" />
             <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />
         </StackPanel>

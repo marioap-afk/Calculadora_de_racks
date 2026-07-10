@@ -8,7 +8,7 @@
         MinWidth="520"
         WindowStartupLocation="CenterOwner"
         FontFamily="Segoe UI"
-        Background="#F4F6F9">
+        Background="{DynamicResource WindowBackgroundBrush}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -53,8 +53,22 @@
                 <DataGridTextColumn Header="Categoría" Binding="{Binding Category}" Width="110" />
                 <DataGridTextColumn Header="Perfil" Binding="{Binding ProfileId}" Width="210" />
                 <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="*" />
-                <DataGridTextColumn Header="Longitud (in)" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="105" />
-                <DataGridTextColumn Header="Cantidad" Binding="{Binding Quantity}" Width="85" />
+                <DataGridTextColumn Header="Longitud (in)" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="105">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Right" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Cantidad" Binding="{Binding Quantity}" Width="85">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Right" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -67,7 +81,8 @@
             <Button Content="Cerrar"
                     Style="{StaticResource SecondaryButtonStyle}"
                     MinWidth="90"
-                    Click="Close_Click" />
+                    Click="Close_Click"
+                    IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>
