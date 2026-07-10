@@ -34,6 +34,12 @@ namespace RackCad.Application.Persistence
         /// <summary>Separations (in) between consecutive fondos, one per gap (DepthCount-1). Empty = defaults apply.</summary>
         public List<double> SeparatorLengths { get; set; } = new List<double>();
 
+        /// <summary>Per-fondo pallet depth for fondos 1..N-1 (&lt;=0 = inherit fondo 0's PalletDepth). Empty = all share PalletDepth.</summary>
+        public List<double> ExtraFondoDepths { get; set; } = new List<double>();
+
+        /// <summary>Optional custom cabecera-depth per fondo (index k; &lt;=0 = derived by the rule). Empty = every fondo derived.</summary>
+        public List<double> CabeceraFondoOverrides { get; set; } = new List<double>();
+
         public List<SelectiveBayDocument> Bays { get; set; } = new List<SelectiveBayDocument>();
 
         /// <summary>Per-fondo level matrices for fondos 1..N-1 (each a list of bays). Empty = every fondo shares fondo 0's <see cref="Bays"/>.</summary>
@@ -72,7 +78,9 @@ namespace RackCad.Application.Persistence
                 FloorBeamRise = design.FloorBeamRise,
                 PalletDepth = design.PalletDepth,
                 DepthCount = design.DepthCount,
-                SeparatorLengths = design.SeparatorLengths.ToList()
+                SeparatorLengths = design.SeparatorLengths.ToList(),
+                ExtraFondoDepths = design.ExtraFondoDepths.ToList(),
+                CabeceraFondoOverrides = design.CabeceraFondoOverrides.ToList()
             };
 
             foreach (var bay in design.Bays)
@@ -125,6 +133,16 @@ namespace RackCad.Application.Persistence
             foreach (var separator in SeparatorLengths ?? Enumerable.Empty<double>())
             {
                 design.SeparatorLengths.Add(separator);
+            }
+
+            foreach (var fondoDepth in ExtraFondoDepths ?? Enumerable.Empty<double>())
+            {
+                design.ExtraFondoDepths.Add(fondoDepth);
+            }
+
+            foreach (var cabeceraOverride in CabeceraFondoOverrides ?? Enumerable.Empty<double>())
+            {
+                design.CabeceraFondoOverrides.Add(cabeceraOverride);
             }
 
             foreach (var bay in Bays ?? Enumerable.Empty<SelectiveBayDocument>())

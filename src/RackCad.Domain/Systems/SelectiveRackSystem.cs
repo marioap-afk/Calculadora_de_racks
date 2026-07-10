@@ -30,6 +30,12 @@ namespace RackCad.Domain.Systems
         /// <summary>Separations (in) between consecutive fondos (one per gap; short list / missing = fall back to the last value, else the default). Pass-through.</summary>
         public IList<double> SeparatorLengths { get; } = new List<double>();
 
+        /// <summary>Resolved pallet depth (in) of each fondo (one per fondo; index 0 = the primary fondo's <see cref="PalletDepth"/>). Each back-to-back line can have its own fondo.</summary>
+        public IList<double> FondoDepths { get; } = new List<double>();
+
+        /// <summary>Resolved CUSTOM cabecera-depth override per fondo (index k; &lt;= 0 = derived by the rule, pallet − allowance). Pass-through.</summary>
+        public IList<double> FondoCabeceraOverrides { get; } = new List<double>();
+
         /// <summary>The bays of fondo 0 (the primary/front fondo), left to right. N bays sit between N+1 cabeceras.</summary>
         public IList<SelectiveBay> Bays { get; } = new List<SelectiveBay>();
 

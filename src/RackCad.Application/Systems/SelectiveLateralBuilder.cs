@@ -37,8 +37,7 @@ namespace RackCad.Application.Systems
             var factory = new RackFrameConfigurationFactory(catalog);
 
             var postXs = SelectivePostGeometry.Compute(system, catalog).PostXs;
-            var depth = system.PalletDepth > 0.0 ? system.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
-            var offsets = SelectiveDepthLayout.Offsets(system, depth); // one X per fondo (doble profundidad)
+            var offsets = SelectiveDepthLayout.Offsets(system); // one X per fondo (doble profundidad), per-fondo depth
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
             // Each fondo has its OWN bays (own levels/heights). Resolve them + a per-fondo height fallback once.
@@ -70,14 +69,14 @@ namespace RackCad.Application.Systems
                         continue;
                     }
 
-                    cabecera = factory.Build(template, system.PostId, height0, depth);
+                    cabecera = factory.Build(template, system.PostId, height0, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0));
                 }
 
                 var extras = new List<HeaderBlockInstance>();
 
-                // Extra fondos (doble profundidad): each is its OWN cabecera at ITS OWN height — a side can be taller
-                // or shorter — translated to its X offset. Fase 1 uses the standard frame per extra fondo (per-post
-                // custom cabeceras stay on fondo 0).
+                // Extra fondos (doble profundidad): each is its OWN cabecera at ITS OWN height AND its own fondo (depth) —
+                // a side can be taller/shorter and deeper/shallower — translated to its X offset. Fase 1 uses the standard
+                // frame per extra fondo (per-post custom cabeceras stay on fondo 0).
                 for (var k = 1; k < offsets.Count; k++)
                 {
                     var heightK = SelectivePostGeometry.PostHeight(fondoBays[k], i, fondoFallback[k]);
@@ -86,13 +85,13 @@ namespace RackCad.Application.Systems
                         continue;
                     }
 
-                    AddCabeceraAtOffset(extras, factory.Build(template, system.PostId, heightK, depth), offsets[k], catalog);
+                    AddCabeceraAtOffset(extras, factory.Build(template, system.PostId, heightK, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k)), offsets[k], catalog);
                 }
 
-                // Largueros: every fondo contributes its OWN levels (its own heights) at its own X offset.
+                // Largueros: every fondo contributes its OWN levels (its own heights) at its own X offset + depth.
                 for (var k = 0; k < offsets.Count; k++)
                 {
-                    BuildLargueros(extras, fondoBays[k], i, depth, offsets[k], catalog);
+                    BuildLargueros(extras, fondoBays[k], i, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k), offsets[k], catalog);
                 }
 
                 // Annotations once, from fondo 0's levels (the primary face) and fondo 0's height.

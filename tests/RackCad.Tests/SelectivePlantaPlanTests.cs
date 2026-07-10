@@ -178,7 +178,7 @@ namespace RackCad.Tests
             var factory = new RackFrameConfigurationFactory(Catalog);
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
             var frameBuilder = new PlantaHeaderLayoutBuilder();
-            var depth = system.PalletDepth;
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0); // the planta draws the frame at tarima − 6
 
             var legacy = new List<HeaderBlockInstance>();
             for (var i = 0; i < frenteYs.Count; i++)

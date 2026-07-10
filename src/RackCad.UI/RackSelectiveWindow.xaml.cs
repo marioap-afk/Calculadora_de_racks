@@ -80,12 +80,14 @@ namespace RackCad.UI
         /// <summary>The dynamic per-gap separator textboxes (one per hueco between consecutive fondos).</summary>
         private readonly List<TextBox> separatorBoxes = new List<TextBox>();
 
-        /// <summary>A saved copy of one fondo's level matrix (bays/floor flags/height overrides), parallel by bay.</summary>
+        /// <summary>A saved copy of one fondo's level matrix (bays/floor flags/height overrides) + its own fondo (depth).</summary>
         private sealed class FondoMatrix
         {
             public List<List<Cell>> Bays { get; } = new List<List<Cell>>();
             public List<bool> FloorBeams { get; } = new List<bool>();
             public List<double?> BayHeights { get; } = new List<double?>();
+            public double Depth { get; set; } = SelectiveRackDefaults.DefaultPalletDepth;
+            public double CabeceraOverride { get; set; } // custom cabecera fondo; 0 = auto (tarima − allowance)
         }
 
         private string defaultBeamId;
@@ -223,7 +225,7 @@ namespace RackCad.UI
         /// <summary>One editable matrix cell (a bay's level): its pallet, count and beam.</summary>
         private sealed class Cell
         {
-            public double Frente = 40.0;
+            public double Frente = 42.0;
             public double Alto = 60.0;
             public int PalletCount = 2;
             public string BeamId;
@@ -275,17 +277,19 @@ namespace RackCad.UI
 
         private static List<Cell> CloneColumn(List<Cell> column) => column.Select(c => c.Clone()).ToList();
 
-        /// <summary>Snapshot the live working matrix (the selected fondo) into a saveable copy.</summary>
+        /// <summary>Snapshot the live working matrix (the selected fondo) — including its fondo (depth) box — into a saveable copy.</summary>
         private FondoMatrix SnapshotWorking()
         {
             var snap = new FondoMatrix();
             foreach (var column in bays) snap.Bays.Add(CloneColumn(column));
             snap.FloorBeams.AddRange(floorBeams);
             snap.BayHeights.AddRange(bayHeights);
+            snap.Depth = UiSupport.TryNum(FondoBox.Text, out var d) && d > 0.0 ? d : SelectiveRackDefaults.DefaultPalletDepth;
+            snap.CabeceraOverride = UiSupport.TryNum(CabeceraFondoBox.Text, out var co) && co > 0.0 ? co : 0.0; // blank/invalid = auto
             return snap;
         }
 
-        /// <summary>Load a saved fondo matrix into the live working matrix (deep-cloned so edits stay isolated).</summary>
+        /// <summary>Load a saved fondo matrix into the live working matrix (deep-cloned so edits stay isolated), incl. its fondo box.</summary>
         private void RestoreWorkingFrom(FondoMatrix snap)
         {
             bays.Clear();
@@ -295,6 +299,8 @@ namespace RackCad.UI
             floorBeams.AddRange(snap.FloorBeams);
             bayHeights.AddRange(snap.BayHeights);
             if (bays.Count == 0) { bays.Add(new List<Cell> { NewCell() }); floorBeams.Add(false); bayHeights.Add(null); }
+            FondoBox.Text = (snap.Depth > 0.0 ? snap.Depth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
+            CabeceraFondoBox.Text = snap.CabeceraOverride > 0.0 ? snap.CabeceraOverride.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
             ClampSelection();
         }
 
@@ -310,7 +316,7 @@ namespace RackCad.UI
         /// bays are dropped. Keeps every fondo's posts aligned on the shared grid.</summary>
         private FondoMatrix CloneAligned(FondoMatrix source, int bayCount, FondoMatrix widthSeed)
         {
-            var m = new FondoMatrix();
+            var m = new FondoMatrix { Depth = source.Depth, CabeceraOverride = source.CabeceraOverride };
             for (var b = 0; b < bayCount; b++)
             {
                 if (b < source.Bays.Count)
@@ -379,7 +385,7 @@ namespace RackCad.UI
                 {
                     column.Add(new Cell
                     {
-                        Frente = cell.Pallet?.Frente ?? 40.0,
+                        Frente = cell.Pallet?.Frente ?? 42.0,
                         Alto = cell.Pallet?.Alto ?? 60.0,
                         PalletCount = cell.PalletCount,
                         BeamId = cell.BeamId ?? defaultBeamId,
@@ -517,6 +523,13 @@ namespace RackCad.UI
                 RenderMatrix();
                 Recompute();
             }
+        }
+
+        /// <summary>The "Fondo de tarima" is per-fondo now (it belongs to the selected fondo); recompute so the change lands.</summary>
+        private void FondoDepth_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (catalog == null) return; // ignore the initial value set during InitializeComponent
+            Recompute(); // BuildDesign -> SaveWorkingToSelected captures this fondo's depth into its slot
         }
 
         private void Fondos_LostFocus(object sender, RoutedEventArgs e)
@@ -1006,11 +1019,15 @@ namespace RackCad.UI
             return top;
         }
 
-        /// <summary>The tramo's fondo (shared by every cabecera): the resolved pallet depth, or 48 in as a fallback.</summary>
+        /// <summary>The CABECERA fondo of fondo 0 = its pallet depth minus the cabecera allowance (rule: cabecera =
+        /// tarima − 6"). This is what a per-post custom cabecera is drawn at; its fondo obeys the rule and is not set
+        /// independently, so we coerce it to this value.</summary>
         private double ResolvedFondo()
         {
-            var fondo = lastSystem?.PalletDepth ?? 0.0;
-            return fondo > 0.0 ? fondo : SelectiveRackDefaults.DefaultPalletDepth;
+            var pallet = lastSystem?.PalletDepth ?? 0.0;
+            if (pallet <= 0.0) pallet = SelectiveRackDefaults.DefaultPalletDepth;
+            var cabecera = pallet - SelectiveRackDefaults.CabeceraFondoAllowance;
+            return cabecera > 0.0 ? cabecera : pallet;
         }
 
         /// <summary>Build a standard cabecera at the given height/fondo using the run's post; the seed when a post has no custom one.</summary>
@@ -1497,7 +1514,7 @@ namespace RackCad.UI
                 PalletTolerance = tolerance,
                 VerticalClearance = clearance,
                 FloorBeamRise = floorRise,
-                PalletDepth = fondo,
+                PalletDepth = fondo0.Depth > 0.0 ? fondo0.Depth : fondo, // fondo 0's own depth
                 DepthCount = depthCount
             };
 
@@ -1511,11 +1528,15 @@ namespace RackCad.UI
                 design.Bays.Add(bay);
             }
 
-            // Extra fondos: each carries its OWN levels, aligned to fondo 0's frente count so the posts stay on the grid.
+            design.CabeceraFondoOverrides.Add(fondo0.CabeceraOverride); // fondo 0's custom cabecera fondo (0 = auto)
+
+            // Extra fondos: each carries its OWN levels + its OWN fondo (depth) + its OWN cabecera override, aligned to fondo 0's frente count.
             for (var k = 1; k < depthCount; k++)
             {
                 var m = k < fondoMatrices.Count ? AlignToFondo0(fondoMatrices[k]) : AlignToFondo0(fondo0);
                 design.ExtraFondoBays.Add(BuildBayDesigns(m));
+                design.ExtraFondoDepths.Add(m.Depth);
+                design.CabeceraFondoOverrides.Add(m.CabeceraOverride);
             }
 
             SyncPostCabeceras();
@@ -1587,6 +1608,21 @@ namespace RackCad.UI
                     : CloneAligned(fondoMatrices[0], fondoMatrices[0].Bays.Count, fondoMatrices[0]));
             }
 
+            // Per-fondo depth: fondo 0 = PalletDepth; each extra fondo its own override, else fondo 0's.
+            var baseDepth = design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            fondoMatrices[0].Depth = baseDepth;
+            for (var k = 1; k < fondoMatrices.Count; k++)
+            {
+                var over = (k - 1) < design.ExtraFondoDepths.Count ? design.ExtraFondoDepths[k - 1] : 0.0;
+                fondoMatrices[k].Depth = over > 0.0 ? over : baseDepth;
+            }
+
+            // Per-fondo custom cabecera fondo (0 = auto/derived).
+            for (var k = 0; k < fondoMatrices.Count; k++)
+            {
+                fondoMatrices[k].CabeceraOverride = k < design.CabeceraFondoOverrides.Count ? design.CabeceraFondoOverrides[k] : 0.0;
+            }
+
             selectedFondo = 0;
             RestoreWorkingFrom(fondoMatrices[0]);
             RebuildFondoSelector();
@@ -1594,12 +1630,14 @@ namespace RackCad.UI
             SetSeparatorValues(design.SeparatorLengths);
 
             postCabeceras.Clear();
-            var loadedFondo = design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            var loadedPallet = design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            var loadedCabeceraFondo = loadedPallet - SelectiveRackDefaults.CabeceraFondoAllowance;
+            if (loadedCabeceraFondo <= 0.0) loadedCabeceraFondo = loadedPallet;
             foreach (var cabecera in design.PostCabeceras)
             {
-                // Every cabecera of the rack shares the tramo's fondo — coerce it on load so a legacy/round-tripped
-                // design can't carry a stale depth.
-                if (cabecera != null && loadedFondo > 0.0) cabecera.Depth = loadedFondo;
+                // A per-post cabecera's fondo obeys the rule (cabecera = tarima − 6"): coerce it on load so a
+                // legacy/round-tripped design can't carry a stale/independently-set depth.
+                if (cabecera != null) cabecera.Depth = loadedCabeceraFondo;
                 postCabeceras.Add(cabecera);
             }
 

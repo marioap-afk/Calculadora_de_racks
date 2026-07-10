@@ -129,7 +129,7 @@ namespace RackCad.Tests
             var troquel = SelectivePostGeometry.Resolve(
                 troquelEntry, new System.Collections.Generic.Dictionary<string, double> { ["PERALTE"] = system.PostPeralte });
             var frenteYs = SelectivePostGeometry.Compute(system, Catalog).PostXs;
-            var depth = system.PalletDepth;
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0); // the DRAWN frame depth = tarima − 6
 
             // Front beam at the troquel X (slides with the post peralte via the PLANTA Y-slope), back mirrored
             // at fondo - troquel.X; mate Y = frame position + troquel Y; LONGITUD = the bay's beam length.
@@ -191,7 +191,7 @@ namespace RackCad.Tests
             // End frame (post 0) touches one bay: a FRONT (X=0) and a BACK (X=fondo) larguero per level, at level.Y.
             var end = cortes.First(c => c.PostIndex == 0);
             var bay0 = system.Bays[0];
-            var depth = system.PalletDepth;
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0); // the DRAWN frame depth = tarima − 6
 
             Assert.Equal(bay0.Levels.Count * 2, end.Largueros.Count);
             Assert.All(end.Largueros, b => Assert.Equal(HeaderBlockRole.Beam, b.Role));

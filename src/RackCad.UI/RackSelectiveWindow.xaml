@@ -111,8 +111,11 @@
                     <TextBox x:Name="FloorRiseBox" Style="{StaticResource FieldBox}" Text="4"
                              ToolTip="Altura del larguero a piso cuando el frente tiene marcada la casilla 'Piso'." />
                     <TextBlock Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
-                    <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48"
-                             ToolTip="Profundidad de la tarima; define el fondo de las cabeceras en la vista lateral." />
+                    <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48" LostFocus="FondoDepth_LostFocus"
+                             ToolTip="Profundidad de la TARIMA (por fondo). La cabecera se dibuja 6&quot; menos (regla: cabecera = tarima − 6&quot;). Con 2+ fondos aplica al fondo elegido en 'Editando fondo'." />
+                    <TextBlock Text="Fondo de cabecera (in, opcional)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="CabeceraFondoBox" Style="{StaticResource FieldBox}" Text="" LostFocus="FondoDepth_LostFocus"
+                             ToolTip="Fondo de la CABECERA (marco) de este fondo. Vacío = calculado de la tarima (tarima − 6&quot;). Escribe un valor para forzar otro fondo de cabecera en esta línea." />
 
                     <TextBlock Text="Número de fondos" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FondosBox" Style="{StaticResource FieldBox}" Text="1" LostFocus="Fondos_LostFocus"
@@ -141,7 +144,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Frente tarima (in)" Style="{StaticResource FieldLabel}" />
-                                    <TextBox x:Name="FrenteBox" Style="{StaticResource FieldBox}" Text="40"
+                                    <TextBox x:Name="FrenteBox" Style="{StaticResource FieldBox}" Text="42"
                                              ToolTip="Ancho (frente) de la tarima de esta celda." />
                                     <TextBlock Text="Tarimas por nivel" Style="{StaticResource FieldLabel}" />
                                     <TextBox x:Name="PalletCountBox" Style="{StaticResource FieldBox}" Text="2"

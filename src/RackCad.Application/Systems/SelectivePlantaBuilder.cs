@@ -44,14 +44,14 @@ namespace RackCad.Application.Systems
             var factory = new RackFrameConfigurationFactory(catalog);
 
             var frenteYs = SelectivePostGeometry.Compute(system, catalog).PostXs; // frente positions, read as Y here
-            var depth = system.PalletDepth > 0.0 ? system.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
-            var offsets = SelectiveDepthLayout.Offsets(system, depth); // one X per fondo (doble profundidad)
+            var offsets = SelectiveDepthLayout.Offsets(system); // one X per fondo (doble profundidad), per-fondo depth
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
             var groups = new List<PlantaGroupBuilder>();
             var shared = new Dictionary<string, PlantaGroupBuilder>(StringComparer.Ordinal);
 
-            // One cabecera-planta per frame, stacked at its frente Y (fondo runs along X inside each frame).
+            // One cabecera-planta per (frame, fondo), stacked at its frente Y (fondo runs along X). Each fondo can have
+            // its OWN depth, so its footprint (front post at offset, back at offset+depth) differs — grouped by depth too.
             for (var i = 0; i < frenteYs.Count; i++)
             {
                 var custom = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
@@ -59,35 +59,34 @@ namespace RackCad.Application.Systems
                 // Each frame draws with ITS post's peralte (per-post override, else the run default) so the planta
                 // grows the post/celosía/plate exactly like the frontal (matches SelectiveFrontalBuilder).
                 var framePeralte = SelectivePostGeometry.PostPeralteAt(system, i);
+                var height = SelectivePostGeometry.PostHeight(system, i);
+                var resolvedHeight = height > 0.0 ? height : system.Height;
 
-                PlantaGroupBuilder group;
-                if (custom != null && custom.Height > 0.0)
+                for (var k = 0; k < offsets.Count; k++)
                 {
-                    // Custom cabecera: never shared, even with an identical twin — editing one must not move both.
-                    group = NewGroup(groups, custom, catalog, framePeralte, system.DrawBasePlate);
-                }
-                else
-                {
-                    var height = SelectivePostGeometry.PostHeight(system, i);
-                    var resolvedHeight = height > 0.0 ? height : system.Height;
-                    var key = GroupKey(resolvedHeight, framePeralte, depth);
-                    if (!shared.TryGetValue(key, out group))
+                    var depthK = SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
+                    PlantaGroupBuilder group;
+                    if (k == 0 && custom != null && custom.Height > 0.0)
                     {
-                        var cabecera = factory.Build(template, system.PostId, resolvedHeight, depth);
-                        group = NewGroup(groups, cabecera, catalog, framePeralte, system.DrawBasePlate);
-                        shared[key] = group;
+                        // Custom cabecera (fondo 0 only): never shared, even with an identical twin — editing one must not move both.
+                        group = NewGroup(groups, custom, catalog, framePeralte, system.DrawBasePlate);
                     }
-                }
+                    else
+                    {
+                        var key = GroupKey(resolvedHeight, framePeralte, depthK);
+                        if (!shared.TryGetValue(key, out group))
+                        {
+                            var cabecera = factory.Build(template, system.PostId, resolvedHeight, depthK);
+                            group = NewGroup(groups, cabecera, catalog, framePeralte, system.DrawBasePlate);
+                            shared[key] = group;
+                        }
+                    }
 
-                // One placement per fondo: the SAME cabecera-planta definition repeated along X (the depth axis) at
-                // each fondo offset. A single fondo keeps the historical single placement at X=0.
-                foreach (var offset in offsets)
-                {
-                    group.Placements.Add(new HeaderPlacement(offset, mirrored: false, insertionY: frenteYs[i]));
+                    group.Placements.Add(new HeaderPlacement(offsets[k], mirrored: false, insertionY: frenteYs[i]));
                 }
             }
 
-            AddLargueros(loose, system, catalog, frenteYs, depth, offsets);
+            AddLargueros(loose, system, catalog, frenteYs, offsets);
             AddAnnotations(loose, system, frenteYs);
             return new DynamicSystemPlan(groups.Select(g => g.ToGroup()).ToList(), loose);
         }
@@ -221,7 +220,7 @@ namespace RackCad.Application.Systems
         /// bay has no levels (an empty frente / column) draws no larguero there. A single fondo keeps the historical
         /// front-at-0 / back-at-fondo pair.
         /// </summary>
-        private static void AddLargueros(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, double depth, IReadOnlyList<double> offsets)
+        private static void AddLargueros(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets)
         {
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, PlantaView);
 
@@ -250,10 +249,11 @@ namespace RackCad.Application.Systems
                         continue;
                     }
 
-                    // This fondo: front post at X=offset, back post at X=offset+fondo; LONGITUD runs along Y.
+                    // This fondo: front post at X=offset, back post at X=offset+ITS fondo (depth); LONGITUD runs along Y.
                     var offset = offsets[k];
+                    var depthK = SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
                     AddLarguero(instances, level.BeamId, block, new Point2D(offset + troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: false);
-                    AddLarguero(instances, level.BeamId, block, new Point2D(offset + depth - troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: true);
+                    AddLarguero(instances, level.BeamId, block, new Point2D(offset + depthK - troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: true);
                 }
             }
         }

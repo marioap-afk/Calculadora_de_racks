@@ -142,6 +142,34 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_PreservesPerFondoDepths()
+        {
+            var design = SampleDesign();
+            design.DepthCount = 3;
+            design.ExtraFondoDepths.Add(40.0); // fondo 1 shallower
+            design.ExtraFondoDepths.Add(0.0);  // fondo 2 inherits fondo 0
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
+
+            Assert.Equal(new[] { 40.0, 0.0 }, restored.ExtraFondoDepths);
+        }
+
+        [Fact]
+        public void RoundTrip_PreservesCabeceraFondoOverrides()
+        {
+            var design = SampleDesign();
+            design.DepthCount = 2;
+            design.CabeceraFondoOverrides.Add(30.0); // fondo 0 custom cabecera fondo
+            design.CabeceraFondoOverrides.Add(0.0);  // fondo 1 derived (rule)
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
+
+            Assert.Equal(new[] { 30.0, 0.0 }, restored.CabeceraFondoOverrides);
+        }
+
+        [Fact]
         public void RoundTrip_PreservesPerPostPeraltes()
         {
             var design = SampleDesign(); // 2 bays -> 3 posts

@@ -23,7 +23,11 @@ namespace RackCad.Domain.Systems
         public const double DefaultPalletDepth = 48.0;
 
         /// <summary>Default separation (in) between consecutive fondos in a doble-profundidad rack when a gap has no value.</summary>
-        public const double DefaultSeparator = 8.0;
+        public const double DefaultSeparator = 12.0;
+
+        /// <summary>How much shallower the cabecera (frame) is than the pallet it holds (in): the frame fondo = pallet
+        /// fondo − this allowance. Real-world rule: a 48" pallet sits on a 42" cabecera (6" less).</summary>
+        public const double CabeceraFondoAllowance = 6.0;
 
         /// <summary>Maximum number of fondos (cabecera-lines in depth) the editor allows (1 = sencillo).</summary>
         public const int MaxDepthCount = 4;

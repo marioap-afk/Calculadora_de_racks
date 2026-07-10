@@ -45,6 +45,16 @@ namespace RackCad.Application.Systems
                 system.SeparatorLengths.Add(separator);
             }
 
+            // Per-fondo depth: fondo 0 = PalletDepth; each extra fondo its own override (else inherits fondo 0).
+            // Plus each fondo's optional custom cabecera-depth override (<=0 = derived by the rule downstream).
+            var baseDepth = design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
+            for (var k = 0; k < system.DepthCount; k++)
+            {
+                var over = k >= 1 && (k - 1) < design.ExtraFondoDepths.Count ? design.ExtraFondoDepths[k - 1] : 0.0;
+                system.FondoDepths.Add(over > 0.0 ? over : baseDepth);
+                system.FondoCabeceraOverrides.Add(k < design.CabeceraFondoOverrides.Count ? design.CabeceraFondoOverrides[k] : 0.0);
+            }
+
             system.DrawBasePlate = design.DrawBasePlate;
             system.NumberFronts = design.NumberFronts;
             system.NumberLevels = design.NumberLevels;

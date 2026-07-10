@@ -72,8 +72,8 @@ namespace RackCad.Tests
         public void Lateral_EachFondoDrawsItsOwnLevelsAndCabecera()
         {
             var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
-            var depth = system.PalletDepth;
-            var offsets = SelectiveDepthLayout.Offsets(system, depth); // [0, 56]
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0); // frame depth = tarima 48 − 6 = 42
+            var offsets = SelectiveDepthLayout.Offsets(system); // [0, 50]
 
             var corte = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 0);
 
@@ -106,7 +106,7 @@ namespace RackCad.Tests
             design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2), Bay(0) });
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
-            var offsets = SelectiveDepthLayout.Offsets(system, system.PalletDepth); // [0, 56]
+            var offsets = SelectiveDepthLayout.Offsets(system); // [0, 56]
 
             var beams = new SelectivePlantaBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Beam).ToList();
 
@@ -152,6 +152,74 @@ namespace RackCad.Tests
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
 
             Assert.Equal(system.FondoBays[0][0].BeamLength, system.FondoBays[1][0].BeamLength, 4);
+        }
+
+        [Fact]
+        public void Resolve_PerFondoDepth_DrivesOffsetsAndFondoDepths()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 3
+            };
+            design.SeparatorLengths.Add(8.0);
+            design.SeparatorLengths.Add(8.0);
+            design.ExtraFondoDepths.Add(40.0); // fondo 1 = 40; fondo 0 = 48 (PalletDepth); fondo 2 inherits 48
+            design.Bays.Add(Bay(2));
+            design.Bays.Add(Bay(2));
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            Assert.Equal(new[] { 48.0, 40.0, 48.0 }, system.FondoDepths); // pallet depths (unchanged by the rule)
+            Assert.Equal(40.0, SelectiveDepthLayout.DepthOfFondo(system, 1), 4);       // pallet
+            Assert.Equal(34.0, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 1), 4); // cabecera = 40 − 6
+
+            var offsets = SelectiveDepthLayout.Offsets(system);
+            Assert.Equal(0.0, offsets[0], 4);
+            Assert.Equal(50.0, offsets[1], 4); // 0 + cabecera(fondo 0)=42 + sep=8
+            Assert.Equal(92.0, offsets[2], 4); // 50 + cabecera(fondo 1)=34 + sep=8
+        }
+
+        [Fact]
+        public void CabeceraDepth_UsesTheOverrideWhenSet_ElseTheRule()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            design.SeparatorLengths.Add(8.0);
+            design.CabeceraFondoOverrides.Add(30.0); // fondo 0: custom cabecera fondo (ignores the rule)
+            design.CabeceraFondoOverrides.Add(0.0);  // fondo 1: blank -> derived (48 − 6 = 42)
+            design.Bays.Add(Bay(2));
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            Assert.Equal(30.0, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0), 4); // override wins
+            Assert.Equal(42.0, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 1), 4); // rule: tarima 48 − 6
+            Assert.Equal(48.0, SelectiveDepthLayout.DepthOfFondo(system, 0), 4);          // the pallet is untouched
+        }
+
+        [Fact]
+        public void Lateral_PerFondoDepth_BackAtEachFondosOwnDepth()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            design.SeparatorLengths.Add(8.0);
+            design.ExtraFondoDepths.Add(40.0); // fondo 1 is shallower (its own fondo)
+            design.Bays.Add(Bay(2));
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var offsets = SelectiveDepthLayout.Offsets(system); // [0, 56]
+
+            var corte = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 0);
+
+            // Cabecera depths: fondo 0 = 48−6 = 42, fondo 1 = 40−6 = 34. Back at 0+42 and offsets[1]+34 — beams AND fondo 1's cabecera post.
+            var cab0 = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0); // 42
+            var cab1 = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 1); // 34
+            Assert.Contains(corte.Largueros, b => b.Role == HeaderBlockRole.Beam && System.Math.Abs(b.Insertion.X - cab0) < 1e-6);
+            Assert.Contains(corte.Largueros, b => b.Role == HeaderBlockRole.Beam && System.Math.Abs(b.Insertion.X - (offsets[1] + cab1)) < 1e-6);
+            Assert.Contains(corte.Largueros, p => p.Role == HeaderBlockRole.Post && System.Math.Abs(p.Insertion.X - (offsets[1] + cab1)) < 1e-6);
         }
 
         [Fact]

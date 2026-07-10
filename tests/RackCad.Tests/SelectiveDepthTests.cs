@@ -54,10 +54,10 @@ namespace RackCad.Tests
             system.SeparatorLengths.Add(8.0);
             system.SeparatorLengths.Add(12.0);
 
-            var offsets = SelectiveDepthLayout.Offsets(system, 48.0);
+            var offsets = SelectiveDepthLayout.Offsets(system);
 
-            // 0, 0+48+8, 56+48+12
-            Assert.Equal(new[] { 0.0, 56.0, 116.0 }, offsets);
+            // Steps by the CABECERA depth (pallet 48 − 6 = 42): 0, 0+42+8, 50+42+12
+            Assert.Equal(new[] { 0.0, 50.0, 104.0 }, offsets);
         }
 
         [Fact]
@@ -66,7 +66,8 @@ namespace RackCad.Tests
             var system = new SelectiveRackSystem { DepthCount = 3, PalletDepth = 48.0 };
             system.SeparatorLengths.Add(8.0); // only one value given -> reused for both gaps
 
-            Assert.Equal(new[] { 0.0, 56.0, 112.0 }, SelectiveDepthLayout.Offsets(system, 48.0));
+            // Cabecera depth 42 (48 − 6): 0, 42+8, 50+42+8
+            Assert.Equal(new[] { 0.0, 50.0, 100.0 }, SelectiveDepthLayout.Offsets(system));
         }
 
         [Fact]
@@ -74,15 +75,26 @@ namespace RackCad.Tests
         {
             var system = new SelectiveRackSystem { DepthCount = 4, PalletDepth = 48.0 };
 
-            var step = 48.0 + SelectiveRackDefaults.DefaultSeparator;
-            Assert.Equal(new[] { 0.0, step, 2 * step, 3 * step }, SelectiveDepthLayout.Offsets(system, 48.0));
+            // Step = cabecera depth (48 − 6 = 42) + the default separator.
+            var step = (48.0 - SelectiveRackDefaults.CabeceraFondoAllowance) + SelectiveRackDefaults.DefaultSeparator;
+            Assert.Equal(new[] { 0.0, step, 2 * step, 3 * step }, SelectiveDepthLayout.Offsets(system));
         }
 
         [Fact]
         public void Offsets_SingleFondo_IsJustTheOrigin()
         {
             var system = new SelectiveRackSystem { DepthCount = 1, PalletDepth = 48.0 };
-            Assert.Equal(new[] { 0.0 }, SelectiveDepthLayout.Offsets(system, 48.0));
+            Assert.Equal(new[] { 0.0 }, SelectiveDepthLayout.Offsets(system));
+        }
+
+        [Fact]
+        public void CabeceraDepth_IsPalletMinusTheAllowance()
+        {
+            var system = new SelectiveRackSystem { DepthCount = 1, PalletDepth = 48.0 };
+
+            Assert.Equal(48.0, SelectiveDepthLayout.DepthOfFondo(system, 0), 4); // pallet (Fondo de tarima)
+            Assert.Equal(48.0 - SelectiveRackDefaults.CabeceraFondoAllowance, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0), 4);
+            Assert.Equal(42.0, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0), 4); // the real rule: 48 → 42
         }
 
         // ---- Resolver pass-through ----
@@ -123,12 +135,12 @@ namespace RackCad.Tests
         public void Lateral_DoubleDepth_RepeatsTheCabeceraAndLargueros_AtEachFondo()
         {
             var system = new SelectiveGeometryResolver().Resolve(DepthDesign(2, 8.0), Catalog);
-            var depth = system.PalletDepth;
-            var offsets = SelectiveDepthLayout.Offsets(system, depth); // [0, 56]
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0); // frame depth = tarima 48 − 6 = 42
+            var offsets = SelectiveDepthLayout.Offsets(system); // [0, 50]
 
             var end = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 0);
 
-            // Fondo 1's cabecera (fondo 0 is `corte.Cabecera`) shows up translated: its front post at X=56, back at 104.
+            // Fondo 1's cabecera (fondo 0 is `corte.Cabecera`) shows up translated: its front post at offsets[1], back at +42.
             var extraPosts = end.Largueros.Where(i => i.Role == HeaderBlockRole.Post).ToList();
             Assert.Contains(extraPosts, p => Math.Abs(p.Insertion.X - offsets[1]) < 1e-6);
             Assert.Contains(extraPosts, p => Math.Abs(p.Insertion.X - (offsets[1] + depth)) < 1e-6);
@@ -154,8 +166,8 @@ namespace RackCad.Tests
         public void Planta_DoubleDepth_RepeatsFramesAndLargueros_OffsetInX()
         {
             var system = new SelectiveGeometryResolver().Resolve(DepthDesign(2, 8.0), Catalog);
-            var depth = system.PalletDepth;
-            var offsets = SelectiveDepthLayout.Offsets(system, depth); // [0, 56]
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0); // frame depth = tarima 48 − 6 = 42
+            var offsets = SelectiveDepthLayout.Offsets(system); // [0, 50]
 
             var instances = new SelectivePlantaBuilder().Build(system, Catalog);
             var posts = instances.Count(i => i.Role == HeaderBlockRole.Post);

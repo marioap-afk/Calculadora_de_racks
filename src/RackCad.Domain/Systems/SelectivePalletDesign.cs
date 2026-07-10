@@ -49,6 +49,20 @@ namespace RackCad.Domain.Systems
         /// </summary>
         public IList<double> SeparatorLengths { get; } = new List<double>();
 
+        /// <summary>
+        /// Per-fondo pallet depth (in) for fondos 1..N-1: entry <c>k-1</c> is fondo <c>k</c>'s own fondo. A value &lt;= 0
+        /// (or a short list) means that fondo inherits fondo 0's <see cref="PalletDepth"/>. Lets each back-to-back line
+        /// carry its own depth (one side deeper than the other). Fondo 0's depth is <see cref="PalletDepth"/>.
+        /// </summary>
+        public IList<double> ExtraFondoDepths { get; } = new List<double>();
+
+        /// <summary>
+        /// Optional CUSTOM cabecera (frame) depth per fondo (in), index <c>k</c> = fondo <c>k</c> (fondo 0 included). A
+        /// value &lt;= 0 (or a short list) leaves that fondo's cabecera depth DERIVED by the rule (pallet depth −
+        /// <see cref="SelectiveRackDefaults.CabeceraFondoAllowance"/>). Lets a line override the tarima − 6 rule.
+        /// </summary>
+        public IList<double> CabeceraFondoOverrides { get; } = new List<double>();
+
         /// <summary>The bays of fondo 0 (the primary/front fondo), left to right. Each carries its own column of level cells.</summary>
         public IList<SelectiveBayDesign> Bays { get; } = new List<SelectiveBayDesign>();
 

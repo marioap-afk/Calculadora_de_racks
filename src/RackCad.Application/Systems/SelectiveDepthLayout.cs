@@ -88,17 +88,50 @@ namespace RackCad.Application.Systems
             return SelectiveRackDefaults.DefaultSeparator;
         }
 
+        /// <summary>PALLET depth (in) of fondo <paramref name="k"/> ("Fondo de tarima"): its resolved
+        /// <see cref="SelectiveRackSystem.FondoDepths"/> entry when positive, else the run
+        /// <see cref="SelectiveRackSystem.PalletDepth"/>, else the default. Each back-to-back line carries its own.
+        /// The DRAWN frame is <see cref="CabeceraDepthOfFondo"/> (this minus the cabecera allowance).</summary>
+        public static double DepthOfFondo(SelectiveRackSystem system, int k)
+        {
+            if (system != null && k >= 0 && k < system.FondoDepths.Count && system.FondoDepths[k] > 0.0)
+            {
+                return system.FondoDepths[k];
+            }
+
+            var fallback = system?.PalletDepth ?? 0.0;
+            return fallback > 0.0 ? fallback : SelectiveRackDefaults.DefaultPalletDepth;
+        }
+
+        /// <summary>The CABECERA (frame) depth of fondo <paramref name="k"/> (in): a per-fondo custom override when set
+        /// (<see cref="SelectiveRackSystem.FondoCabeceraOverrides"/> &gt; 0); otherwise the rule — pallet depth minus the
+        /// cabecera allowance (<see cref="SelectiveRackDefaults.CabeceraFondoAllowance"/>), so a 48" pallet → a 42"
+        /// cabecera, falling back to the pallet depth if the reduction would be non-positive. THIS is the depth the
+        /// lateral/planta draw and that the fondo offsets step by.</summary>
+        public static double CabeceraDepthOfFondo(SelectiveRackSystem system, int k)
+        {
+            if (system != null && k >= 0 && k < system.FondoCabeceraOverrides.Count && system.FondoCabeceraOverrides[k] > 0.0)
+            {
+                return system.FondoCabeceraOverrides[k]; // custom "Fondo de cabecera" for this line
+            }
+
+            var pallet = DepthOfFondo(system, k);
+            var cabecera = pallet - SelectiveRackDefaults.CabeceraFondoAllowance;
+            return cabecera > 0.0 ? cabecera : pallet;
+        }
+
         /// <summary>
         /// Cumulative X offset of each fondo along the depth axis: fondo 0 at 0, fondo k at
-        /// offset[k-1] + <paramref name="depth"/> + separator(gap k-1). Length = <see cref="Count"/>.
+        /// offset[k-1] + cabeceraDepth(fondo k-1) + separator(gap k-1). Steps by the FRAME depth (each fondo can have
+        /// its own). Length = <see cref="Count"/>.
         /// </summary>
-        public static IReadOnlyList<double> Offsets(SelectiveRackSystem system, double depth)
+        public static IReadOnlyList<double> Offsets(SelectiveRackSystem system)
         {
             var count = Count(system);
             var offsets = new double[count];
             for (var k = 1; k < count; k++)
             {
-                offsets[k] = offsets[k - 1] + depth + Separator(system?.SeparatorLengths, k - 1);
+                offsets[k] = offsets[k - 1] + CabeceraDepthOfFondo(system, k - 1) + Separator(system?.SeparatorLengths, k - 1);
             }
 
             return offsets;
