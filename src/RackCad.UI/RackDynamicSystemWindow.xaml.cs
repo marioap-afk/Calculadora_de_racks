@@ -127,7 +127,7 @@ namespace RackCad.UI
             Recompose();
         }
 
-        private void Recompose()
+        private void Recompose(bool forceRebuild = false)
         {
             if (!TryReadInputs(out var pallet, out var palletsDeep, out var error))
             {
@@ -138,7 +138,23 @@ namespace RackCad.UI
             try
             {
                 computedHeaderHeight = ComputeHeaderHeight(pallet, palletsDeep);
-                system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, SelectedPostId(), computedHeaderHeight);
+
+                // A full rebuild (BuildDefault, from scratch) is only needed when the pallet or the number of fondos
+                // changes — that changes the module SEQUENCE. When only the height inputs change (niveles / peralte /
+                // 1er nivel / altura manual, or the post), update the header height IN PLACE so the per-module edits
+                // (custom fondo/length, cabeceras) survive instead of reverting to the calculated defaults.
+                var mustRebuild = forceRebuild || system == null || system.Modules.Count == 0
+                    || !SamePallet(system.Pallet, pallet) || system.PalletsDeep != palletsDeep;
+
+                if (mustRebuild)
+                {
+                    system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, SelectedPostId(), computedHeaderHeight);
+                }
+                else
+                {
+                    UpdateHeaderHeightInPlace(computedHeaderHeight);
+                }
+
                 ApplySeparatorOverrides();
                 ApplyDerivedPostOptions();
                 ApplyHeightOverride();
@@ -147,7 +163,9 @@ namespace RackCad.UI
                 UpdateSelectedPanel();
                 UpdateSummary();
                 DrawSideView();
-                SetStatus("Vista recalculada (layout estandar).", false);
+                SetStatus(mustRebuild
+                    ? "Vista recalculada (layout estandar)."
+                    : "Altura actualizada; se conservaron los modulos (fondos y cabeceras).", false);
             }
             catch (Exception ex)
             {
@@ -156,6 +174,43 @@ namespace RackCad.UI
                 PreviewCanvas.Children.Clear();
                 SetStatus("No se pudo generar el sistema: " + ex.Message, true);
             }
+        }
+
+        /// <summary>
+        /// Update the header height on the EXISTING modules (rebuild each header config at the new height but its
+        /// CURRENT fondo), so a levels/height change keeps the module lengths and sequence — the fondo the user set on
+        /// a cabecera survives. Deep structural cabecera edits are rebuilt to the standard for the new height.
+        /// </summary>
+        private void UpdateHeaderHeightInPlace(double newHeight)
+        {
+            var factory = new RackFrameConfigurationFactory(catalog);
+            var postId = SelectedPostId();
+
+            foreach (var module in system.Modules)
+            {
+                if (!module.IsHeader)
+                {
+                    continue;
+                }
+
+                var fondo = module.Length > 0.0 ? module.Length : system.DefaultHeaderLength;
+                module.AssociatedFrameConfiguration = factory.Build(RackFrameTemplateCatalog.Default, postId, newHeight, fondo);
+            }
+
+            builder.Refresh(system);
+        }
+
+        private static bool SamePallet(PalletSpecification a, PalletSpecification b)
+        {
+            if (a == null || b == null)
+            {
+                return false;
+            }
+
+            return Math.Abs(a.Front - b.Front) < 1e-6
+                && Math.Abs(a.Depth - b.Depth) < 1e-6
+                && Math.Abs(a.Height - b.Height) < 1e-6
+                && Math.Abs(a.Weight - b.Weight) < 1e-6;
         }
 
         private void ModulesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -265,7 +320,8 @@ namespace RackCad.UI
 
         private void RestoreDefault_Click(object sender, RoutedEventArgs e)
         {
-            Recompose();
+            // Explicit "restore standard": a full rebuild that DOES discard the per-module overrides.
+            Recompose(forceRebuild: true);
         }
 
         private RackFrameConfiguration BuildHeaderConfig(double depth)
@@ -706,7 +762,11 @@ namespace RackCad.UI
                 return;
             }
 
-            Recompose();
+            // Just a scalar option — apply it without a rebuild so per-module overrides survive.
+            ApplyDerivedPostOptions();
+            builder.Refresh(system);
+            UpdateSummary();
+            DrawSideView();
         }
 
         /// <summary>Y of the post's first separator troquel (TROQUEL_SEPARADOR), the base of the separator grid.</summary>
