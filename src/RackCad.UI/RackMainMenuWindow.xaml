@@ -72,10 +72,10 @@
         </Border>
 
         <StackPanel Grid.Row="1" Margin="24,20,24,8">
-            <Button Style="{StaticResource MenuButton}" Click="DesignHeader_Click">
+            <Button Style="{StaticResource MenuButton}" Click="DesignSelective_Click">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar cabecera" />
-                    <TextBlock Style="{StaticResource OptionCaption}" Text="Configurador de cabeceras (componente)." />
+                    <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar sistema selectivo" />
+                    <TextBlock Style="{StaticResource OptionCaption}" Text="Vista frontal: cabeceras (postes) + largueros por nivel." />
                 </StackPanel>
             </Button>
 
@@ -86,17 +86,17 @@
                 </StackPanel>
             </Button>
 
+            <Button Style="{StaticResource MenuButton}" Click="DesignHeader_Click">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar cabecera" />
+                    <TextBlock Style="{StaticResource OptionCaption}" Text="Configurador de cabeceras (componente)." />
+                </StackPanel>
+            </Button>
+
             <Button Style="{StaticResource MenuButton}" Click="DesignFlowBed_Click">
                 <StackPanel>
                     <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar cama de rodamiento" />
                     <TextBlock Style="{StaticResource OptionCaption}" Text="Riel, rodillos, frenos y tope (dinámica o pushback); vista lateral." />
-                </StackPanel>
-            </Button>
-
-            <Button Style="{StaticResource MenuButton}" Click="DesignSelective_Click">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar sistema selectivo" />
-                    <TextBlock Style="{StaticResource OptionCaption}" Text="Vista frontal: cabeceras (postes) + largueros por nivel." />
                 </StackPanel>
             </Button>
 
