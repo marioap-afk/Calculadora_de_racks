@@ -51,11 +51,34 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
   rejilla horizontal del fondo 0** (anchos de frente -> posicion de postes) para que los postes
   alineen; un frente sin niveles = **columna vacia** (no dibuja larguero ahi). El sistema resuelto
   expone `FondoBays` (bahias por fondo) y el helper puro `SelectiveDepthLayout` calcula
-  offsets/separadores (`BaysOfFondo`, `FondoSystemView`). La **frontal** sigue mostrando el fondo 0;
-  **lateral y planta dibujan TODOS los fondos** (cada uno con su altura de cabecera y sus largueros).
-  El **BOM suma el contenido real de CADA fondo x2** (frente/atras), no un multiplicador plano por
-  numero de fondos. UI: selector "Editando fondo" (los frentes se editan en Fondo 1, compartidos por
-  todos) + campos de separador por hueco; la vista previa frontal sigue al fondo en edicion.
+  offsets/separadores (`BaysOfFondo`, `FondoSystemView`). La **frontal** dibuja un fondo (el fondo 0
+  u otro; ver "Frontal por fondo"); **lateral y planta dibujan TODOS los fondos** (cada uno con su
+  altura de cabecera y sus largueros). El **BOM suma el contenido real de CADA fondo x2** (frente/atras),
+  no un multiplicador plano por numero de fondos. UI: selector "Editando fondo" (los frentes se editan
+  en Fondo 1, compartidos por todos) + campos de separador por hueco; la vista previa frontal sigue al
+  fondo en edicion.
+- **Fondo (profundidad) por fondo**: cada fondo tiene su PROPIO fondo de tarima ("Fondo de tarima"), no
+  solo el fondo 0. Diseno `ExtraFondoDepths`; sistema resuelto `FondoDepths`. Los offsets, la lateral y
+  la planta avanzan cada uno segun el fondo propio de ese fondo. El **frente de tarima por defecto es 42**
+  (antes 40) y la **separacion entre fondos por defecto es 12** (antes 8).
+- **Regla del fondo de cabecera**: la cabecera dibujada (marco) usa un fondo = fondo de tarima −
+  `SelectiveRackDefaults.CabeceraFondoAllowance` (6"). Asi una tarima de 48" ("Fondo de tarima") da una
+  cabecera de 42". TODA la geometria (offsets, lateral, planta y la vista previa de fondo) usa el fondo de
+  CABECERA (`SelectiveDepthLayout.CabeceraDepthOfFondo`); "Fondo de tarima" sigue siendo la tarima. La
+  cabecera personalizada por poste tambien obedece esta regla (su fondo ya no se fija aparte).
+- **Override de fondo de cabecera por linea**: campo opcional por fondo "Fondo de cabecera (in, opcional)".
+  Vacio = derivado por la regla; un valor fuerza ese fondo de cabecera en esa linea. Diseno
+  `CabeceraFondoOverrides`; sistema `FondoCabeceraOverrides`. `CabeceraDepthOfFondo` = el override cuando
+  es > 0, si no la regla.
+- **Frontal por fondo**: se puede insertar una **frontal por cada fondo** (cada cara espalda-con-espalda
+  con su propia elevacion). El bloque frontal lleva su fondo en el campo `Section` del sobre; al insertar
+  se pregunta el numero de fondo solo si hay 2+ fondos, y `RACKEDITAR` redibuja cada frontal en su fondo.
+  Comando `RACKSELECTIVO` (frontal) via `InsertSelectiveFrontal` (`RackFrameCommands.Selective.cs`); el
+  dibujo sale de `SelectiveDepthLayout.FondoSystemView`.
+- **Vista previa de lateral en el editor**: `RackSelectiveWindow` tiene un toggle **Frontal/Lateral** sobre
+  la vista previa. La lateral es una vista de costado **esquematica**: cada fondo se dibuja como su cabecera
+  (poste frente + poste atras a su propio fondo/altura) con una celosia en zigzag y marcas de larguero. El
+  patron real de celosia sigue apareciendo solo en la vista lateral insertada.
 - Comando `RACKSELECTIVO`.
 
 ### Identidad + round-trip (los cuatro tipos)
@@ -141,7 +164,9 @@ BOM y cotizacion:
 Selectivo (doble profundidad):
 
 - ✅ Fase 1 (espalda con espalda): N fondos con niveles por fondo, rejilla horizontal compartida del
-  fondo 0, separadores por hueco y BOM que suma el contenido real de cada fondo.
+  fondo 0, separadores por hueco y BOM que suma el contenido real de cada fondo. Ahora tambien: **fondo
+  de tarima por fondo**, la regla **cabecera = tarima − 6"** (con override por linea), **frontal por
+  fondo** y **vista previa lateral** (toggle Frontal/Lateral) en el editor.
 - Pendiente (Fase 2): **"medio frente"** — un fondo que subdivide una bahia con un poste intermedio
   (media carga) y realinea en el siguiente poste compartido. El bloque separador fisico tambien queda
   pendiente de dibujar (hoy solo se deja el hueco).

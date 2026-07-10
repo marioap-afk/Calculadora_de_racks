@@ -5,7 +5,7 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-esta con 301 tests verdes.
+esta con 307 tests verdes.
 
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
@@ -72,9 +72,15 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
   separador aun no se dibuja, solo se deja el hueco). **Cada fondo tiene sus propios niveles/alturas**
   (`ExtraFondoBays`; vacio = hereda las `Bays` del fondo 0), pero **todos comparten la rejilla
   horizontal del fondo 0** para que los postes alineen; un frente sin niveles = **columna vacia**. La
-  **frontal** muestra el fondo 0; **lateral y planta dibujan todos los fondos** (`FondoBays`), y el
-  **BOM suma el contenido real de cada fondo x2** (frente/atras). En el editor: selector "Editando
-  fondo" + separadores por hueco. Pendiente (Fase 2): "medio frente".
+  **frontal se puede insertar por fondo** (cada cara con su elevacion; el fondo va en `Section` del
+  sobre); **lateral y planta dibujan todos los fondos** (`FondoBays`), y el **BOM suma el contenido
+  real de cada fondo x2** (frente/atras). Ademas **cada fondo tiene su propio fondo de tarima**
+  (`ExtraFondoDepths`/`FondoDepths`) y el marco dibujado usa **fondo de cabecera = fondo de tarima −
+  6"** (`SelectiveRackDefaults.CabeceraFondoAllowance`, via `SelectiveDepthLayout.CabeceraDepthOfFondo`),
+  con override opcional por linea "Fondo de cabecera" (`CabeceraFondoOverrides`/`FondoCabeceraOverrides`).
+  Defaults nuevos: frente de tarima 42, separacion entre fondos 12. En el editor: selector "Editando
+  fondo" + separadores por hueco + un toggle **Frontal/Lateral** sobre la vista previa (la lateral es
+  esquematica: cada fondo como su cabecera con celosia en zigzag). Pendiente (Fase 2): "medio frente".
 - **Rendimiento (validado con ~30 frentes):** la matriz del editor NO se reconstruye por clic (cache de
   celdas + restyle de 2 bordes; `Recompute` coalescido por gesto; brushes congelados; lookups de catalogo
   memoizados — equivalencia fijada por `SelectiveTwentyBaysEquivalenceTests`). La vista **planta** usa el

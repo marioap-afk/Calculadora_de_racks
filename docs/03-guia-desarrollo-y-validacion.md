@@ -70,7 +70,7 @@ assets/
 
 `RackCad.Tests`
 
-- Suite de pruebas (`net8.0`, xUnit), 301 tests verdes en `release/claude-review`.
+- Suite de pruebas (`net8.0`, xUnit), 307 tests verdes en `release/claude-review`.
 
 ## Compilar
 
@@ -145,8 +145,12 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
    tarima + larguero + peralte de larguero; geometria en `SelectiveGeometryResolver`,
    BOM en `SelectiveBomBuilder`. Cada poste puede referenciar una cabecera por poste.
    Soporta **doble profundidad** (espalda con espalda, Fase 1): N fondos (`DepthCount`),
-   niveles por fondo (`ExtraFondoBays`/`FondoBays`) y separadores por hueco; lateral y planta
-   dibujan todos los fondos. Fase 2 pendiente: "medio frente".
+   niveles por fondo (`ExtraFondoBays`/`FondoBays`), fondo de tarima por fondo
+   (`ExtraFondoDepths`/`FondoDepths`) y separadores por hueco; el marco dibujado usa
+   **fondo de cabecera = fondo de tarima − 6"** (`CabeceraFondoAllowance`), con override por linea
+   (`CabeceraFondoOverrides`/`FondoCabeceraOverrides`). La **frontal se inserta por fondo** (el fondo
+   va en `Section` del sobre) y el editor tiene un toggle **Frontal/Lateral** con vista previa lateral
+   esquematica; lateral y planta dibujan todos los fondos. Fase 2 pendiente: "medio frente".
 
 ## Identidad y round-trip
 
