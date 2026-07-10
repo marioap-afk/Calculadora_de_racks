@@ -94,6 +94,31 @@ namespace RackCad.Plugin
             return summary;
         }
 
+        /// <summary>Duplicate a dynamic system as an independent copy (new GUID/name), placed with the jig.</summary>
+        private static void DuplicateDynamic(Document document, RackEmbedDocument embed, string newId, string newName)
+        {
+            var editor = document.Editor;
+
+            RackProject project;
+            try
+            {
+                project = new RackProjectStore().Deserialize(embed.Design);
+            }
+            catch (System.Exception ex)
+            {
+                editor.WriteMessage("\nRackCad: no se pudieron leer los datos del sistema. " + ex.Message);
+                return;
+            }
+
+            if (project?.DynamicSystem == null)
+            {
+                editor.WriteMessage("\nRackCad: datos de sistema dinamico invalidos.");
+                return;
+            }
+
+            DrawAndPlaceSystem(project.DynamicSystem, BuildDynamicPayload(project.DynamicSystem, newId, newName), newName);
+        }
+
         private static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;

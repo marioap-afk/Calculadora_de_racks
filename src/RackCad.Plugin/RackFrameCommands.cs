@@ -73,29 +73,11 @@ namespace RackCad.Plugin
                 }
 
                 var editor = document.Editor;
-                var options = new PromptEntityOptions("\nSelecciona un rack para editar: ");
-                options.SetRejectMessage("\nEse objeto no es un rack.");
-                options.AddAllowedClass(typeof(BlockReference), exactMatch: false);
-
-                var selection = editor.GetEntity(options);
-                if (selection.Status != PromptStatus.OK)
+                if (!PickRackBlock(document, "\nSelecciona un rack para editar: ", out var embed, out var blockId))
                 {
                     return;
                 }
 
-                // Read the payload from the block DEFINITION (shared by every copy), found via the selected reference.
-                ObjectId blockId;
-                string json;
-                using (document.LockDocument())
-                using (var transaction = document.Database.TransactionManager.StartTransaction())
-                {
-                    var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
-                    blockId = reference.BlockTableRecord;
-                    json = RackBlockData.Read(transaction, blockId);
-                    transaction.Commit();
-                }
-
-                var embed = new RackEmbedStore().Deserialize(json);
                 if (embed == null || string.IsNullOrEmpty(embed.Design))
                 {
                     editor.WriteMessage("\nRackCad: ese bloque no tiene datos de rack editables.");
@@ -126,6 +108,104 @@ namespace RackCad.Plugin
             {
                 Report(ex);
             }
+        }
+
+        /// <summary>
+        /// Duplicate the selected rack as an INDEPENDENT copy: the same design, but a NEW GUID and a "- copia" name,
+        /// drawn as its own block via the normal insertion path (jig). Because the copy carries a different GUID,
+        /// RACKEDITAR on it reopens ONLY the copy — the original is never touched. Duplicates the clicked block's view.
+        /// </summary>
+        [CommandMethod("RACKDUPLICAR")]
+        public void RackDuplicar()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null)
+                {
+                    return;
+                }
+
+                var editor = document.Editor;
+                if (!PickRackBlock(document, "\nSelecciona un rack para duplicar: ", out var embed, out _))
+                {
+                    return;
+                }
+
+                if (embed == null || string.IsNullOrEmpty(embed.Design))
+                {
+                    editor.WriteMessage("\nRackCad: ese bloque no tiene datos de rack para duplicar.");
+                    return;
+                }
+
+                // A fresh GUID makes the copy an independent rack; the name gets a "- copia" suffix.
+                var newId = System.Guid.NewGuid().ToString();
+                var newName = CopyName(embed.Name);
+
+                switch (embed.Kind)
+                {
+                    case RackEmbedDocument.KindSelective:
+                        DuplicateSelective(document, embed, newId, newName);
+                        break;
+                    case RackEmbedDocument.KindDynamic:
+                        DuplicateDynamic(document, embed, newId, newName);
+                        break;
+                    case RackEmbedDocument.KindCabecera:
+                        DuplicateCabecera(document, embed, newId, newName);
+                        break;
+                    case RackEmbedDocument.KindCama:
+                        DuplicateCama(document, embed, newId, newName);
+                        break;
+                    default:
+                        editor.WriteMessage("\nRackCad: tipo de rack no reconocido (" + embed.Kind + ").");
+                        break;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
+        /// <summary>
+        /// Prompt the user to pick a rack block and read its embedded payload from the DEFINITION. Returns false only
+        /// when the user cancelled the selection; a picked-but-non-rack block returns true with a null <paramref
+        /// name="embed"/> so the caller can report it. Shared by RACKEDITAR and RACKDUPLICAR.
+        /// </summary>
+        private static bool PickRackBlock(Document document, string prompt, out RackEmbedDocument embed, out ObjectId blockId)
+        {
+            embed = null;
+            blockId = ObjectId.Null;
+
+            var options = new PromptEntityOptions(prompt);
+            options.SetRejectMessage("\nEse objeto no es un rack.");
+            options.AddAllowedClass(typeof(BlockReference), exactMatch: false);
+
+            var selection = document.Editor.GetEntity(options);
+            if (selection.Status != PromptStatus.OK)
+            {
+                return false;
+            }
+
+            string json;
+            using (document.LockDocument())
+            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            {
+                var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
+                blockId = reference.BlockTableRecord;
+                json = RackBlockData.Read(transaction, blockId);
+                transaction.Commit();
+            }
+
+            embed = new RackEmbedStore().Deserialize(json);
+            return true;
+        }
+
+        /// <summary>The client name for a duplicate: the original plus a "- copia" suffix.</summary>
+        private static string CopyName(string name)
+        {
+            var baseName = string.IsNullOrWhiteSpace(name) ? "Rack" : name.Trim();
+            return baseName + " - copia";
         }
 
         /// <summary>True when a cabecera view-block draws the PLANTA view (so it is the top view, not the lateral).</summary>

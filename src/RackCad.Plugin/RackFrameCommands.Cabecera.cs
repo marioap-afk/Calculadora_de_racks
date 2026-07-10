@@ -204,6 +204,48 @@ namespace RackCad.Plugin
             });
         }
 
+        /// <summary>Duplicate a cabecera as an independent copy (new GUID/name), drawn in the clicked view (lateral/planta).</summary>
+        private static void DuplicateCabecera(Document document, RackEmbedDocument embed, string newId, string newName)
+        {
+            var editor = document.Editor;
+
+            RackProject project;
+            try
+            {
+                project = new RackProjectStore().Deserialize(embed.Design);
+            }
+            catch (System.Exception ex)
+            {
+                editor.WriteMessage("\nRackCad: no se pudieron leer los datos de la cabecera. " + ex.Message);
+                return;
+            }
+
+            if (project?.Header == null)
+            {
+                editor.WriteMessage("\nRackCad: datos de cabecera invalidos.");
+                return;
+            }
+
+            var config = project.Header;
+            config.Name = newName;
+
+            HeaderPlacementResult result;
+            if (IsPlantaView(embed))
+            {
+                result = new PlantaHeaderDrawService().DrawAndPlace(
+                    document, config, BuildCabeceraPayload(config, newId, newName, RackEmbedDocument.ViewPlanta), newName);
+            }
+            else
+            {
+                result = new LateralHeaderDrawService().DrawAndPlace(
+                    document, config, BuildCabeceraPayload(config, newId, newName, RackEmbedDocument.ViewLateral), newName);
+            }
+
+            editor.WriteMessage(result != null && result.Success
+                ? "\nRackCad: cabecera duplicada como copia independiente ('" + newName + "')."
+                : "\nRackCad: no se pudo duplicar la cabecera. " + (result?.ErrorMessage ?? string.Empty));
+        }
+
         private static void EditCabecera(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
