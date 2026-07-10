@@ -57,6 +57,7 @@ namespace RackCad.Application.RackFrames
             }
 
             AddZeroHeightPanelWarnings(warnings, configuration, ordered, tolerance);
+            AddReinforcementHeightWarnings(warnings, configuration);
 
             if (catalog != null)
             {
@@ -84,6 +85,29 @@ namespace RackCad.Application.RackFrames
                     warnings.Add("Panel " + label + " de altura insuficiente.");
                 }
             }
+        }
+
+        /// <summary>A first structural sanity check (to grow gradually with capacity/holgura rules): a post reinforcement
+        /// taller than the frame itself is physically impossible — the refuerzo cannot exceed the post it braces.</summary>
+        private static void AddReinforcementHeightWarnings(List<string> warnings, RackFrameConfiguration configuration)
+        {
+            var height = configuration.Height;
+            if (height <= 0.0)
+            {
+                return;
+            }
+
+            void Check(PostAssembly post, string side)
+            {
+                if (post != null && post.HasReinforcement && post.ReinforcementHeight > height + 1e-6)
+                {
+                    warnings.Add("El refuerzo del poste " + side + " (" + FormatInches(post.ReinforcementHeight)
+                        + ") supera la altura del marco (" + FormatInches(height) + ").");
+                }
+            }
+
+            Check(configuration.LeftPost, "izquierdo");
+            Check(configuration.RightPost, "derecho");
         }
 
         private static void AddUnknownCatalogIdWarnings(List<string> warnings, RackFrameConfiguration configuration, RackCatalog catalog)

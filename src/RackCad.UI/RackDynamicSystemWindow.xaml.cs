@@ -146,9 +146,16 @@ namespace RackCad.UI
                 var mustRebuild = forceRebuild || system == null || system.Modules.Count == 0
                     || !SamePallet(system.Pallet, pallet) || system.PalletsDeep != palletsDeep;
 
+                // A pallet/fondos change forces a full rebuild that would discard the custom fondos the user set on
+                // headers. Snapshot them (in header order) so they survive — UNLESS this is an explicit "restaurar
+                // estandar" (forceRebuild), which is meant to reset everything.
+                var savedFondos = mustRebuild && !forceRebuild ? SnapshotHeaderFondos() : null;
+                var restoredFondos = 0;
+
                 if (mustRebuild)
                 {
                     system = builder.BuildDefault(pallet, palletsDeep, RackFrameTemplateCatalog.Default, SelectedPostId(), computedHeaderHeight);
+                    restoredFondos = RestoreHeaderFondos(savedFondos, computedHeaderHeight);
                 }
                 else
                 {
@@ -163,9 +170,10 @@ namespace RackCad.UI
                 UpdateSelectedPanel();
                 UpdateSummary();
                 DrawSideView();
-                SetStatus(mustRebuild
-                    ? "Vista recalculada (layout estandar)."
-                    : "Altura actualizada; se conservaron los modulos (fondos y cabeceras).", false);
+                SetStatus(
+                    !mustRebuild ? "Altura actualizada; se conservaron los modulos (fondos y cabeceras)."
+                    : restoredFondos > 0 ? "Vista recalculada; se conservaron los fondos personalizados de las cabeceras."
+                    : "Vista recalculada (layout estandar).", false);
             }
             catch (Exception ex)
             {
@@ -198,6 +206,63 @@ namespace RackCad.UI
             }
 
             builder.Refresh(system);
+        }
+
+        /// <summary>Snapshot the custom fondo of each header module, in header order (null = that header used the default),
+        /// so a full rebuild (pallet/fondos change) can restore the user's per-header fondos afterwards.</summary>
+        private List<double?> SnapshotHeaderFondos()
+        {
+            var fondos = new List<double?>();
+            if (system == null)
+            {
+                return fondos;
+            }
+
+            foreach (var module in system.Modules.Where(m => m.IsHeader))
+            {
+                fondos.Add(module.IsManualOverride && module.Length > 0.0 ? module.Length : (double?)null);
+            }
+
+            return fondos;
+        }
+
+        /// <summary>Re-apply the snapshot fondos to the freshly-rebuilt header modules by header order (only where the
+        /// header still exists), rebuilding each restored cabecera at the NEW height. Returns how many were restored.
+        /// Deep structural cabecera edits are not preserved (they are rebuilt to the standard for the new mesh).</summary>
+        private int RestoreHeaderFondos(List<double?> savedFondos, double newHeight)
+        {
+            if (savedFondos == null || savedFondos.Count == 0 || system == null)
+            {
+                return 0;
+            }
+
+            var factory = new RackFrameConfigurationFactory(catalog);
+            var postId = SelectedPostId();
+            var ordinal = 0;
+            var restored = 0;
+
+            foreach (var module in system.Modules.Where(m => m.IsHeader))
+            {
+                if (ordinal < savedFondos.Count && savedFondos[ordinal].HasValue)
+                {
+                    var fondo = savedFondos[ordinal].Value;
+                    module.Length = fondo;
+                    module.IsManualOverride = true;
+                    module.IsCalculated = false;
+                    module.AssociatedFrameConfiguration = factory.Build(RackFrameTemplateCatalog.Default, postId, newHeight, fondo);
+                    restored++;
+                }
+
+                ordinal++;
+            }
+
+            if (restored > 0)
+            {
+                system.RecalculatePositions();
+                builder.Refresh(system);
+            }
+
+            return restored;
         }
 
         private static bool SamePallet(PalletSpecification a, PalletSpecification b)

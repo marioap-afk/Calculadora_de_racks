@@ -103,6 +103,23 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Validate_ReinforcementTallerThanFrame_Warns()
+        {
+            var config = StandardConfig(); // 132" frame
+            config.LeftPost.HasReinforcement = true;
+            config.LeftPost.ReinforcementCatalogId = CatalogIds.StandardPost;
+            config.LeftPost.ReinforcementHeight = 200.0; // taller than the 132" frame -> impossible
+
+            var warnings = FrameModelValidator.Validate(config, ShippedCatalog(), Tolerance);
+            Assert.Contains(warnings, w => w.Contains("refuerzo del poste izquierdo") && w.Contains("supera la altura del marco"));
+
+            // A reinforcement within the frame height raises no such warning.
+            config.LeftPost.ReinforcementHeight = 60.0;
+            var ok = FrameModelValidator.Validate(config, ShippedCatalog(), Tolerance);
+            Assert.DoesNotContain(ok, w => w.Contains("supera la altura del marco"));
+        }
+
+        [Fact]
         public void Validate_NullConfiguration_ReturnsEmpty()
         {
             Assert.Empty(FrameModelValidator.Validate(null, ShippedCatalog(), Tolerance));
