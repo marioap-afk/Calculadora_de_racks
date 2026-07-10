@@ -141,6 +141,27 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Planta_PostPeralte_GrowsWithTheDesignPeralte_NotTheProfileWidth()
+        {
+            // The design peralte (5) differs from the POSTE_OMEGA catalog width (3): the planta must draw the design
+            // value, like the frontal — the bug was it used the fixed profile width, so a grown peralte never showed.
+            var design = TwoBayDesign();
+            design.PostPeralte = 5.0;
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var frontalPeralte = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .First(i => i.Role == HeaderBlockRole.Post).DynamicParameters[SelectiveRackDefaults.PeralteParam];
+
+            var plantaPosts = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Post)
+                .ToList();
+
+            Assert.NotEmpty(plantaPosts);
+            Assert.Equal(5.0, frontalPeralte, 4); // sanity: frontal already grows
+            Assert.All(plantaPosts, p => Assert.Equal(5.0, p.DynamicParameters[SelectiveRackDefaults.PeralteParam], 4));
+        }
+
+        [Fact]
         public void Planta_CustomPostCabecera_DrivesItsFramesPlate()
         {
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);

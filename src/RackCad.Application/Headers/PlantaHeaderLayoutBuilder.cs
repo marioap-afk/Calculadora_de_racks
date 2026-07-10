@@ -40,7 +40,12 @@ namespace RackCad.Application.Headers
         /// The cabecera's planta instances. <paramref name="origin"/> shifts the whole frame (used by the selective
         /// planta to stack one frame per frente along Y); default is the frame's own origin.
         /// </summary>
-        public IReadOnlyList<HeaderBlockInstance> Build(RackFrameConfiguration config, RackCatalog catalog, Point2D origin = default)
+        /// <param name="postPeralteOverride">
+        /// The post PERALTE to draw when it is a DESIGN value rather than the profile's width. The selective drives
+        /// its post peralte from the design (<c>system.PostPeralte</c>) independent of the post profile, so the planta
+        /// must honor it to match the frontal view; standalone cabeceras pass 0 and fall back to the profile width.
+        /// </param>
+        public IReadOnlyList<HeaderBlockInstance> Build(RackFrameConfiguration config, RackCatalog catalog, Point2D origin = default, double postPeralteOverride = 0.0)
         {
             var instances = new List<HeaderBlockInstance>();
             if (config == null)
@@ -58,8 +63,10 @@ namespace RackCad.Application.Headers
             var backPlateId = FirstNonEmpty(config.RightBasePlate?.PlateCatalogId, plateId);
             var trussId = ResolveTrussId(config, catalog);
 
-            var postPeralte = PostWidth(catalog, postId);
-            var backPostPeralte = PostWidth(catalog, backPostId);
+            // A design peralte (selective) wins over the profile width; the celosía (post-1") and the plate's
+            // StandardPeralte then track it, exactly like the frontal view.
+            var postPeralte = postPeralteOverride > 0.0 ? postPeralteOverride : PostWidth(catalog, postId);
+            var backPostPeralte = postPeralteOverride > 0.0 ? postPeralteOverride : PostWidth(catalog, backPostId);
             var celosiaPeralte = Math.Max(0.0, postPeralte - CelosiaPeralteReduction);
             var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
             var backPlateEntry = catalog?.BasePlates.FindBasePlate(backPlateId);

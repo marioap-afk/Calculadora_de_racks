@@ -51,7 +51,9 @@ namespace RackCad.Application.Systems
                     cabecera = factory.Build(template, system.PostId, height > 0.0 ? height : system.Height, depth);
                 }
 
-                foreach (var instance in frameBuilder.Build(cabecera, catalog, new Point2D(0.0, frenteYs[i])))
+                // The selective's post peralte is a design value (system.PostPeralte), not the profile width — pass it
+                // so the planta grows the post/celosía/plate exactly like the frontal (matches SelectiveFrontalBuilder).
+                foreach (var instance in frameBuilder.Build(cabecera, catalog, new Point2D(0.0, frenteYs[i]), system.PostPeralte))
                 {
                     instances.Add(instance);
                 }
