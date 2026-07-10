@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
@@ -203,7 +204,8 @@ namespace RackCad.Plugin.Headers
                 {
                     Position = new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0),
                     Height = instance.TextHeight > 0.0 ? instance.TextHeight : 3.0,
-                    TextString = instance.Text
+                    TextString = instance.Text,
+                    LayerId = EnsureAnnotationLayer(space.Database, tr)
                 };
                 space.AppendEntity(label);
                 tr.AddNewlyCreatedDBObject(label, true);
@@ -235,6 +237,29 @@ namespace RackCad.Plugin.Headers
 
             ApplyDynamicParameters(reference, instance.DynamicParameters);
             return true;
+        }
+
+        /// <summary>Layer the text annotations (frente/level numbers, rack name) live on, so they can be toggled/frozen apart.</summary>
+        private const string AnnotationLayer = "RACKCAD_ANOTACIONES";
+
+        /// <summary>Ensure the annotations layer exists (yellow); returns its id so the text draws on it (ByLayer).</summary>
+        private static ObjectId EnsureAnnotationLayer(Database db, Transaction tr)
+        {
+            var layerTable = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
+            if (layerTable.Has(AnnotationLayer))
+            {
+                return layerTable[AnnotationLayer];
+            }
+
+            layerTable.UpgradeOpen();
+            var record = new LayerTableRecord
+            {
+                Name = AnnotationLayer,
+                Color = Color.FromColorIndex(ColorMethod.ByAci, 2) // yellow
+            };
+            var id = layerTable.Add(record);
+            tr.AddNewlyCreatedDBObject(record, true);
+            return id;
         }
 
         /// <summary>Ensure the block name is free; if taken, append _1, _2, … so we never rename another block.</summary>

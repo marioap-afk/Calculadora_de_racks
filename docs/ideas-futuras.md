@@ -18,14 +18,14 @@
 1. **Cotas automáticas por vista** — al insertar frontal/lateral/planta, dibujar cotas de alto total,
    fondo, largo de tramo y claros entre niveles (AutoCAD `RotatedDimension` en el mismo bloque o en
    un layer de cotas). Es el paso natural después de que las tres vistas ya se generan solas.
-1b. **Pipeline de TEXTO para los toggles de anotación** — **hecho en la vista FRONTAL:** existe
-   `HeaderBlockRole.Annotation` (+ `Text`/`TextHeight` en `HeaderBlockInstance`); `SelectiveFrontalBuilder`
-   emite los números de frente (centrados bajo la bahía), los números de nivel (a la izquierda) y el nombre
-   del rack (arriba); `LateralHeaderDrawer.AppendInstance` los materializa como `DBText` (se regeneran en
-   cada `RedefineSystemBlock`, no se persisten). **Pendiente:** (a) replicar las anotaciones en las vistas
-   LATERAL y PLANTA (hoy solo frontal); (b) opcional: centrar/alinear con `HorizontalMode`/`AlignmentPoint`
-   y un layer de anotaciones dedicado; (c) escala del texto configurable (hoy 6" fijo). También: "Dibujar
-   placa base" (toggle real, salta las instancias de placa en frontal/planta) ya estaba hecho.
+1b. **Pipeline de TEXTO para los toggles de anotación** — **hecho (frontal, planta y lateral):** existe
+   `HeaderBlockRole.Annotation` (+ `Text`/`TextHeight`); un helper compartido `SelectiveAnnotations` emite las
+   etiquetas y los tres builders las producen según los flags (frontal: frentes+niveles+nombre; planta:
+   frentes+nombre; lateral por corte: niveles+poste+nombre). `LateralHeaderDrawer.AppendInstance` las
+   materializa como `DBText` en la capa dedicada **`RACKCAD_ANOTACIONES`** (amarilla), regeneradas en cada
+   `RedefineSystemBlock` (no se persisten). **Pendiente/opcional:** (a) centrar/alinear con
+   `HorizontalMode`/`AlignmentPoint` (hoy la posición es el punto base del texto); (b) escala del texto
+   configurable (hoy 6" fijo). "Dibujar placa base" es un toggle real de geometría (frontal/planta).
 1c. **Dibujar tarima (toggle) — DIFERIDO/no implementable** — la `Tarima` del dominio es abstracta (solo
    `Frente`/`Alto`), sin bloque de catálogo ni representación por vista. Requiere crear un bloque de tarima
    con puntos de conexión (FRONTAL/LATERAL/PLANTA) antes de poder dibujarla. El toggle aún no se expone.

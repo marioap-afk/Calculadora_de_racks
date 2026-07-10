@@ -106,7 +106,43 @@ namespace RackCad.Application.Systems
                 result.Add(MakeLarguero(level, block, x: depth, mirrored: true));     // back post
             }
 
+            AddCorteAnnotations(result, system, postIndex, byKey.Values);
             return result;
+        }
+
+        /// <summary>Lateral-corte text labels (when the toggles are on): a number per level on the left, the post
+        /// (frente) number and the rack name at the top of the corte.</summary>
+        private static void AddCorteAnnotations(ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, int postIndex, IEnumerable<SelectiveLevel> levels)
+        {
+            const double gap = SelectiveAnnotations.TextHeight + SelectiveAnnotations.Margin;
+
+            if (system.NumberLevels)
+            {
+                var ys = new List<double>();
+                foreach (var level in levels)
+                {
+                    var y = Math.Round(level.Y, 4);
+                    if (!ys.Contains(y)) ys.Add(y);
+                }
+                ys.Sort();
+
+                for (var j = 0; j < ys.Count; j++)
+                {
+                    result.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(j + 1), LateralView, new Point2D(-gap, ys[j])));
+                }
+            }
+
+            var height = SelectivePostGeometry.PostHeight(system, postIndex);
+
+            if (system.NumberFronts)
+            {
+                result.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(postIndex + 1), LateralView, new Point2D(0.0, height + gap)));
+            }
+
+            if (system.DrawRackName && !string.IsNullOrWhiteSpace(system.Name))
+            {
+                result.Add(SelectiveAnnotations.Label(system.Name.Trim(), LateralView, new Point2D(0.0, height + gap + SelectiveAnnotations.TextHeight * 2.0), SelectiveAnnotations.TextHeight * 1.5));
+            }
         }
 
         private static HeaderBlockInstance MakeLarguero(SelectiveLevel level, string block, double x, bool mirrored)

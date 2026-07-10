@@ -202,5 +202,36 @@ namespace RackCad.Tests
                 Assert.Contains(end.Largueros, b => Math.Abs(b.Insertion.X - depth) < 1e-6 && Math.Abs(b.Insertion.Y - level.Y) < 1e-6);
             }
         }
+
+        [Fact]
+        public void Planta_NumberFronts_EmitsANumberPerBay()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
+            system.NumberFronts = true;
+
+            var labels = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Annotation)
+                .ToList();
+
+            Assert.Equal(2, labels.Count); // 2 bays
+            Assert.Contains(labels, l => l.Text == "1");
+            Assert.Contains(labels, l => l.Text == "2");
+        }
+
+        [Fact]
+        public void Lateral_NumberLevels_EmitsOneNumberPerDistinctLevelInTheCorte()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
+            system.NumberLevels = true;
+
+            var corte = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 0);
+            var labels = corte.Largueros.Where(i => i.Role == HeaderBlockRole.Annotation).ToList();
+            var distinctLevelYs = corte.Largueros.Where(i => i.Role == HeaderBlockRole.Beam)
+                .Select(i => Math.Round(i.Insertion.Y, 4)).Distinct().Count();
+
+            Assert.NotEqual(0, distinctLevelYs);
+            Assert.Equal(distinctLevelYs, labels.Count); // one level number per distinct larguero height
+            Assert.Equal("1", labels.OrderBy(l => l.Text).First().Text);
+        }
     }
 }

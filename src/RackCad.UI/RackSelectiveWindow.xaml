@@ -42,12 +42,12 @@
                               Foreground="#415161" Checked="DrawToggle_Changed" Unchecked="DrawToggle_Changed"
                               ToolTip="Dibuja las placas base bajo los postes (frontal y planta)." />
                     <CheckBox x:Name="NumberFrontsCheck" Content="Numerar frentes" Margin="0,4,0,0" Foreground="#415161"
-                              ToolTip="Dibuja un número bajo cada frente (bahía) en la vista frontal." />
+                              ToolTip="Dibuja un número por frente (bahía) en frontal, planta y lateral." />
                     <CheckBox x:Name="NumberLevelsCheck" Content="Numerar niveles" Margin="0,4,0,0" Foreground="#415161"
-                              ToolTip="Dibuja un número por nivel de carga (a la izquierda) en la vista frontal." />
+                              ToolTip="Dibuja un número por nivel de carga en frontal y lateral (en planta no aplica)." />
                     <CheckBox x:Name="DrawRackNameCheck" Content="Colocar nombre de rack" Margin="0,4,0,0" Foreground="#415161"
-                              ToolTip="Dibuja el nombre del rack como texto sobre la vista frontal." />
-                    <TextBlock Text="La numeración y el nombre se dibujan como texto en la vista frontal."
+                              ToolTip="Dibuja el nombre del rack como texto en las tres vistas." />
+                    <TextBlock Text="La numeración y el nombre se dibujan como texto en la capa RACKCAD_ANOTACIONES (las tres vistas)."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
 
                     <TextBlock Text="Cabecera" Style="{StaticResource SectionTitle}" />
