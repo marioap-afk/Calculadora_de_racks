@@ -43,6 +43,19 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
   frontal se usa la placa, y de ella sale el corte lateral de ese poste.
 - BOM: `SelectiveBomBuilder` + `RackBomWindow` (postes, placas, largueros, mensulas;
   grid + export CSV).
+- **Doble profundidad (espalda con espalda), Fase 1**: `DepthCount` (1..4 fondos; 1 = sencillo
+  clasico) a lo largo del eje de fondo, unidos por separadores **por hueco** (`SeparatorLengths`,
+  uno por hueco entre fondos consecutivos; el bloque separador aun NO se dibuja, solo se deja el
+  hueco vacio). **Cada fondo tiene sus propios niveles/alturas** (`ExtraFondoBays` guarda la matriz
+  de los fondos 1..N-1; vacio = ese fondo hereda las `Bays` del fondo 0), pero **todos comparten la
+  rejilla horizontal del fondo 0** (anchos de frente -> posicion de postes) para que los postes
+  alineen; un frente sin niveles = **columna vacia** (no dibuja larguero ahi). El sistema resuelto
+  expone `FondoBays` (bahias por fondo) y el helper puro `SelectiveDepthLayout` calcula
+  offsets/separadores (`BaysOfFondo`, `FondoSystemView`). La **frontal** sigue mostrando el fondo 0;
+  **lateral y planta dibujan TODOS los fondos** (cada uno con su altura de cabecera y sus largueros).
+  El **BOM suma el contenido real de CADA fondo x2** (frente/atras), no un multiplicador plano por
+  numero de fondos. UI: selector "Editando fondo" (los frentes se editan en Fondo 1, compartidos por
+  todos) + campos de separador por hueco; la vista previa frontal sigue al fondo en edicion.
 - Comando `RACKSELECTIVO`.
 
 ### Identidad + round-trip (los cuatro tipos)
@@ -124,6 +137,14 @@ BOM y cotizacion:
 - ✅ Agrupacion por perfil/longitud/cantidad extendida a los 4 tipos (cama: `FlowBedBomBuilder`).
 - Pendiente: integrar con el archivo cotizador existente; BOM consolidado multi-rack + export a Excel.
 - Validaciones de ingenieria: seguir agregando reglas (capacidad de carga, holguras) de forma gradual.
+
+Selectivo (doble profundidad):
+
+- ✅ Fase 1 (espalda con espalda): N fondos con niveles por fondo, rejilla horizontal compartida del
+  fondo 0, separadores por hueco y BOM que suma el contenido real de cada fondo.
+- Pendiente (Fase 2): **"medio frente"** — un fondo que subdivide una bahia con un poste intermedio
+  (media carga) y realinea en el siguiente poste compartido. El bloque separador fisico tambien queda
+  pendiente de dibujar (hoy solo se deja el hueco).
 
 ## Como agregar un tipo de rack nuevo
 

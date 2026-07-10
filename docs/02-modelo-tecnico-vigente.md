@@ -234,6 +234,15 @@ design  (SelectivePalletDesign)   -> lo que edita el usuario (tarimas por celda)
   vista de canto, y es la base de los cortes de la vista lateral. "Personalizar" siembra la
   cabecera resuelta (alto del poste + fondo del tramo bloqueado; warning si cambias el alto;
   cancelable).
+- **Doble profundidad (espalda con espalda, Fase 1)**: `DepthCount` (numero de fondos, 1..4;
+  1 = sencillo clasico) a lo largo del eje de fondo, y `SeparatorLengths` (**una por hueco** entre
+  fondos consecutivos, no un valor global; el bloque separador fisico aun NO se dibuja, solo se deja
+  el hueco vacio). `ExtraFondoBays` guarda la matriz de niveles de los fondos 1..N-1 (vacio = ese
+  fondo hereda las `Bays` del fondo 0). **Cada fondo tiene sus propios niveles/alturas**, pero el
+  **fondo 0 define la rejilla horizontal compartida** (anchos de frente -> posicion de postes) que
+  usan todos, para que los postes alineen; un frente sin niveles = **columna vacia** (no dibuja
+  larguero). El helper puro `SelectiveDepthLayout` calcula offsets/separadores por fondo
+  (`BaysOfFondo`, `FondoSystemView`).
 
 ### resolver: `SelectiveGeometryResolver`
 
@@ -256,7 +265,8 @@ Puro (sin AutoCAD; solo lee del catalogo la base de la rejilla de troquel). Apli
 Geometria ya calculada que consume el builder: `Bays` (`SelectiveBay` con `BeamLength`,
 `Height` y `Levels`), cada `SelectiveLevel` con su `Y` ya snappeada al troquel, `BeamId` y
 `BeamPeralte`; mas `PostCabeceras` pasadas tal cual. N frentes -> N+1 cabeceras (cada una un
-poste en frontal).
+poste en frontal). En doble profundidad expone ademas `FondoBays`: las bahias ya resueltas de
+cada fondo (el fondo 0 define la rejilla horizontal compartida por todos).
 
 ### builder + BOM
 
@@ -271,6 +281,12 @@ poste en frontal).
 - BOM: `SelectiveBomBuilder` (postes por altura, una placa por poste, largueros por
   longitud+peralte, dos mensulas por larguero) mostrado en `RackBomWindow` (grid + export CSV
   con CRLF RFC-4180).
+- **Doble profundidad (Fase 1)**: la **frontal** dibuja el fondo 0 (la cara frontal); **lateral y
+  planta recorren TODOS los fondos** (cada uno con su altura de cabecera y sus largueros, separados
+  por el hueco de `SeparatorLengths`). El **BOM suma el contenido real de CADA fondo x2** (frente/atras),
+  no un multiplicador plano por numero de fondos. La persistencia hace round-trip de `ExtraFondoBays`
+  (los disenos legacy sin `DepthCount` caen a un solo fondo). Fase 2 pendiente: "medio frente" (un fondo
+  que subdivide una bahia con un poste intermedio y realinea en el siguiente poste compartido).
 
 La cabecera, por su parte, tiene **dos vistas** ligadas por GUID: lateral y planta (planta =
 2 huellas de poste, frente en 0 / atras en fondo, + placas + celosia colapsada a un miembro

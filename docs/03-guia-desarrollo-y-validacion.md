@@ -70,7 +70,7 @@ assets/
 
 `RackCad.Tests`
 
-- Suite de pruebas (`net8.0`, xUnit), 281 tests verdes en `release/claude-review`.
+- Suite de pruebas (`net8.0`, xUnit), 301 tests verdes en `release/claude-review`.
 
 ## Compilar
 
@@ -144,6 +144,9 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 4. SELECTIVO: matriz FRENTES x niveles (el termino es "frente", no "bahia"). Cada celda =
    tarima + larguero + peralte de larguero; geometria en `SelectiveGeometryResolver`,
    BOM en `SelectiveBomBuilder`. Cada poste puede referenciar una cabecera por poste.
+   Soporta **doble profundidad** (espalda con espalda, Fase 1): N fondos (`DepthCount`),
+   niveles por fondo (`ExtraFondoBays`/`FondoBays`) y separadores por hueco; lateral y planta
+   dibujan todos los fondos. Fase 2 pendiente: "medio frente".
 
 ## Identidad y round-trip
 
