@@ -32,6 +32,9 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Resolved per-post PERALTE, one per post (N+1). Each is the post's override or the run's <see cref="PostPeralte"/>.</summary>
         public IList<double> PostPeraltes { get; } = new List<double>();
+
+        /// <summary>Draw the base plates (frontal/planta). Default true; false omits the plate blocks.</summary>
+        public bool DrawBasePlate { get; set; } = true;
     }
 
     /// <summary>One resolved bay: its beam length (which governs post spacing), its height, and its placed levels.</summary>

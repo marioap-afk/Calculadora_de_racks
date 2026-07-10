@@ -56,6 +56,11 @@ namespace RackCad.Application.Systems
                 var framePeralte = SelectivePostGeometry.PostPeralteAt(system, i);
                 foreach (var instance in frameBuilder.Build(cabecera, catalog, new Point2D(0.0, frenteYs[i]), framePeralte))
                 {
+                    if (!system.DrawBasePlate && instance.Role == HeaderBlockRole.BasePlate)
+                    {
+                        continue; // "Dibujar placa base" toggle off
+                    }
+
                     instances.Add(instance);
                 }
             }

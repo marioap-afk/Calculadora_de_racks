@@ -50,6 +50,20 @@ namespace RackCad.Domain.Systems
         /// own peralte in the frontal/planta; the larguero spacing adapts to each post's troquel.
         /// </summary>
         public IList<double> PostPeraltes { get; } = new List<double>();
+
+        // ---- Annotation / drawing toggles ----
+
+        /// <summary>Draw the base plates. Default true; turning it off omits the plate blocks in frontal/planta.</summary>
+        public bool DrawBasePlate { get; set; } = true;
+
+        /// <summary>Number the frentes (posts). Persisted now; the text drawing is a future pipeline.</summary>
+        public bool NumberFronts { get; set; }
+
+        /// <summary>Number the load levels. Persisted now; the text drawing is a future pipeline.</summary>
+        public bool NumberLevels { get; set; }
+
+        /// <summary>Draw the rack name as visible text. Persisted now; the text drawing is a future pipeline.</summary>
+        public bool DrawRackName { get; set; }
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

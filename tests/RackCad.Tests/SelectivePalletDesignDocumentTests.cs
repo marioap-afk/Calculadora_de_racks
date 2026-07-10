@@ -53,6 +53,33 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_PreservesDrawingToggles()
+        {
+            var design = SampleDesign();
+            design.DrawBasePlate = false;
+            design.NumberFronts = true;
+            design.NumberLevels = true;
+            design.DrawRackName = true;
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
+
+            Assert.False(restored.DrawBasePlate);
+            Assert.True(restored.NumberFronts);
+            Assert.True(restored.NumberLevels);
+            Assert.True(restored.DrawRackName);
+        }
+
+        [Fact]
+        public void ToDomain_LegacyWithoutDrawBasePlate_DefaultsToDrawingIt()
+        {
+            var document = SelectivePalletDesignDocument.From(SampleDesign(), "id", "n");
+            document.DrawBasePlate = null; // a design older than the toggle
+
+            Assert.True(document.ToDomain().DrawBasePlate);
+        }
+
+        [Fact]
         public void RoundTrip_PreservesPerPostPeraltes()
         {
             var design = SampleDesign(); // 2 bays -> 3 posts

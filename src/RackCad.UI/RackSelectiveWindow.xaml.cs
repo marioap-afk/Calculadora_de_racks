@@ -456,6 +456,14 @@ namespace RackCad.UI
             PostPeralteOverrideBox.Text = over > 0.0 ? over.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
         }
 
+        /// <summary>"Dibujar placa base" changes the drawn geometry, so recompute the preview. (The numbering/name
+        /// toggles only persist for now — their text drawing is a future pipeline — so they need no handler.)</summary>
+        private void DrawToggle_Changed(object sender, RoutedEventArgs e)
+        {
+            if (catalog == null) return; // ignore the initial IsChecked set during InitializeComponent
+            Recompute();
+        }
+
         /// <summary>Store the per-post peralte override for the selected post; empty (or = global) means inherit.</summary>
         private void PostPeralteOverride_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -910,6 +918,11 @@ namespace RackCad.UI
                 design.PostPeraltes.Add(peralte);
             }
 
+            design.DrawBasePlate = DrawBasePlateCheck.IsChecked == true;
+            design.NumberFronts = NumberFrontsCheck.IsChecked == true;
+            design.NumberLevels = NumberLevelsCheck.IsChecked == true;
+            design.DrawRackName = DrawRackNameCheck.IsChecked == true;
+
             return design;
         }
 
@@ -986,6 +999,11 @@ namespace RackCad.UI
             {
                 postPeraltes.Add(peralte);
             }
+
+            DrawBasePlateCheck.IsChecked = design.DrawBasePlate;
+            NumberFrontsCheck.IsChecked = design.NumberFronts;
+            NumberLevelsCheck.IsChecked = design.NumberLevels;
+            DrawRackNameCheck.IsChecked = design.DrawRackName;
 
             BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
             selBay = 0;

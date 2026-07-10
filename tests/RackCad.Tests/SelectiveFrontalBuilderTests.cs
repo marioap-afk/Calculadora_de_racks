@@ -138,6 +138,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_DrawBasePlateOff_OmitsThePlates()
+        {
+            var system = System();
+            system.DrawBasePlate = false;
+
+            var instances = new SelectiveFrontalBuilder().Build(system, Catalog);
+
+            Assert.Empty(instances.Where(i => i.Role == HeaderBlockRole.BasePlate));
+            Assert.NotEmpty(instances.Where(i => i.Role == HeaderBlockRole.Post)); // posts still there
+        }
+
+        [Fact]
         public void Build_Beam_CarriesLengthAndPeralte()
         {
             var beam = new SelectiveFrontalBuilder().Build(System(), Catalog)

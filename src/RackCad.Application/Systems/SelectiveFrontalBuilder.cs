@@ -68,28 +68,31 @@ namespace RackCad.Application.Systems
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
                 instances.Add(post);
 
-                // Base plate: from this post's cabecera if any, else the run default. PERALTE = the cabecera's manual
-                // override, else derived from the post (StandardPeralte). Its MONTAJE_POSTE lands on the post origin.
-                var plateId = cabecera?.LeftBasePlate?.PlateCatalogId;
-                if (string.IsNullOrWhiteSpace(plateId)) plateId = defaultPlateId;
-                var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
-                var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
-                var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
+                // Base plate (unless the "Dibujar placa base" toggle is off): from this post's cabecera if any, else
+                // the run default. PERALTE = the cabecera's manual override, else derived from the post (StandardPeralte).
+                if (system.DrawBasePlate)
+                {
+                    var plateId = cabecera?.LeftBasePlate?.PlateCatalogId;
+                    if (string.IsNullOrWhiteSpace(plateId)) plateId = defaultPlateId;
+                    var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
+                    var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
+                    var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
 
-                var plate = new HeaderBlockInstance
-                {
-                    Role = HeaderBlockRole.BasePlate,
-                    PieceId = plateId,
-                    BlockName = Block(catalog, plateId, view),
-                    View = view,
-                    ConnectionAnchor = origin,
-                    Insertion = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y)
-                };
-                if (platePeralte > 0.0)
-                {
-                    plate.DynamicParameters[SelectiveRackDefaults.PeralteParam] = platePeralte;
+                    var plate = new HeaderBlockInstance
+                    {
+                        Role = HeaderBlockRole.BasePlate,
+                        PieceId = plateId,
+                        BlockName = Block(catalog, plateId, view),
+                        View = view,
+                        ConnectionAnchor = origin,
+                        Insertion = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y)
+                    };
+                    if (platePeralte > 0.0)
+                    {
+                        plate.DynamicParameters[SelectiveRackDefaults.PeralteParam] = platePeralte;
+                    }
+                    instances.Add(plate);
                 }
-                instances.Add(plate);
             }
 
             // Largueros: one per resolved level, at the left post's troquel X, at the level's resolved Y.
