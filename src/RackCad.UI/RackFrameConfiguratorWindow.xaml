@@ -161,6 +161,11 @@
                                    TextWrapping="Wrap"
                                    Margin="0,4,0,16" />
 
+                        <TextBlock Text="Nombre (Rack A)" Style="{StaticResource PropertyLabelStyle}" />
+                        <TextBox Style="{StaticResource PropertyValueTextBoxStyle}"
+                                 Text="{Binding SimpleNameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 ToolTip="Nombre del rack como lo ve el cliente. Se guarda con el bloque para poder reabrirlo y editarlo." />
+
                         <TextBlock Text="Tipo de cabecera" Style="{StaticResource PropertyLabelStyle}" />
                         <ComboBox Style="{StaticResource PropertyComboBoxStyle}"
                                   ItemsSource="{Binding HeaderTemplateOptions}"

@@ -47,6 +47,7 @@ namespace RackCad.UI
         private double simpleHeight;
         private double simpleDepth;
         private double simplePostPeralte; // 0 = inherit the post profile width
+        private string simpleName;
         private ConfiguratorNavigationItem selectedNavigationItem;
         private BracingSegmentEditorRow selectedBracingSegment;
         private HorizontalEditorRow selectedHorizontal;
@@ -139,6 +140,7 @@ namespace RackCad.UI
             simpleHeight = configuration.Height;
             simpleDepth = configuration.Depth;
             simplePostPeralte = configuration.PostPeralte;
+            simpleName = configuration.Name;
 
             EnsureModernConfiguration();
             LoadRowsFromConfiguration();
@@ -280,6 +282,18 @@ namespace RackCad.UI
                     StatusBrush = "#B00020";
                 }
 
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>Client-facing rack name (like the selective's). Stored on the configuration and used to name the block.</summary>
+        public string SimpleNameText
+        {
+            get => simpleName ?? string.Empty;
+            set
+            {
+                simpleName = value;
+                if (Configuration != null) Configuration.Name = value;
                 OnPropertyChanged();
             }
         }
@@ -1117,6 +1131,7 @@ namespace RackCad.UI
                 var generated = new RackFrameConfigurationFactory(catalog)
                     .Build(template, SimplePostCatalogId, simpleHeight, simpleDepth);
                 generated.PostPeralte = simplePostPeralte; // carry the quick-config post peralte (0 = inherit)
+                if (!string.IsNullOrWhiteSpace(simpleName)) generated.Name = simpleName.Trim(); // keep the user's rack name
 
                 ReplaceConfigurationAndReload(
                     generated,
@@ -1185,10 +1200,12 @@ namespace RackCad.UI
             simpleHeight = Configuration.Height;
             simplePostPeralte = Configuration.PostPeralte;
             simpleDepth = Configuration.Depth;
+            simpleName = Configuration.Name;
             simplePostCatalogId = NormalizeText(Configuration.LeftPost?.PostCatalogId);
             OnPropertyChanged(nameof(SimpleHeightText));
             OnPropertyChanged(nameof(SimpleDepthText));
             OnPropertyChanged(nameof(SimplePostPeralteText));
+            OnPropertyChanged(nameof(SimpleNameText));
             OnPropertyChanged(nameof(SimplePostCatalogId));
 
             RefreshAllConfigurationProperties();
