@@ -55,6 +55,9 @@
                                 Style="{StaticResource SecondaryButtonStyle}"
                                 ToolTip="Abre el configurador de cabeceras para este poste (p. ej. peralte de placa)." />
                     </Grid>
+                    <TextBlock Text="Peralte de este poste (in)" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
+                    <TextBox x:Name="PostPeralteOverrideBox" Style="{StaticResource FieldBox}" LostFocus="PostPeralteOverride_LostFocus"
+                             ToolTip="Peralte solo del poste seleccionado. Déjalo vacío para usar el peralte global de arriba." />
                     <TextBlock x:Name="PostCabeceraStatus" Foreground="#617080" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
                     <Button Content="Restablecer poste" Click="ResetPost_Click" Style="{StaticResource SecondaryButtonStyle}"
                             HorizontalAlignment="Left" Margin="0,4,0,0"

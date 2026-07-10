@@ -16,19 +16,32 @@ namespace RackCad.Application.Systems
         public static SelectivePostLayout Compute(SelectiveRackSystem system, RackCatalog catalog)
         {
             var view = SelectiveRackDefaults.View;
-            var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = system.PostPeralte };
             var troquel = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, view);
-            var troquelX = ResolveX(troquel, postParams);
+
+            // Each post's larguero troquel X slides with ITS OWN peralte (per-post), so posts of different peralte
+            // land correctly and the bay between them absorbs both troquel offsets.
+            double TroquelXFor(int postIndex)
+                => ResolveX(troquel, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = PostPeralteAt(system, postIndex) });
 
             var xs = new List<double> { 0.0 };
-            foreach (var bay in system.Bays)
+            var troquelXs = new List<double> { TroquelXFor(0) };
+            for (var b = 0; b < system.Bays.Count; b++)
             {
+                var bay = system.Bays[b];
                 var inicioX = BeamProfileStartX(catalog, bay, view);
-                xs.Add(xs[xs.Count - 1] + bay.BeamLength + 2.0 * (troquelX + inicioX));
+                // post b's RIGHT troquel + post b+1's LEFT troquel, each with its own peralte.
+                xs.Add(xs[xs.Count - 1] + bay.BeamLength + (TroquelXFor(b) + inicioX) + (TroquelXFor(b + 1) + inicioX));
+                troquelXs.Add(TroquelXFor(b + 1));
             }
 
-            return new SelectivePostLayout(xs, troquelX);
+            return new SelectivePostLayout(xs, troquelXs);
         }
+
+        /// <summary>The effective PERALTE of post <paramref name="postIndex"/>: its resolved per-post value, else the run peralte.</summary>
+        public static double PostPeralteAt(SelectiveRackSystem system, int postIndex)
+            => system != null && postIndex >= 0 && postIndex < system.PostPeraltes.Count && system.PostPeraltes[postIndex] > 0.0
+                ? system.PostPeraltes[postIndex]
+                : system?.PostPeralte ?? 0.0;
 
         /// <summary>Height of post <paramref name="postIndex"/> = the tallest of the (up to two) bays it bounds.</summary>
         public static double PostHeight(SelectiveRackSystem system, int postIndex)
@@ -115,16 +128,18 @@ namespace RackCad.Application.Systems
         }
     }
 
-    /// <summary>Result of <see cref="SelectivePostGeometry.Compute"/>: the N+1 post Xs and the post's troquel X.</summary>
+    /// <summary>Result of <see cref="SelectivePostGeometry.Compute"/>: the N+1 post Xs and each post's larguero troquel X.</summary>
     public sealed class SelectivePostLayout
     {
-        public SelectivePostLayout(IReadOnlyList<double> postXs, double troquelX)
+        public SelectivePostLayout(IReadOnlyList<double> postXs, IReadOnlyList<double> troquelXs)
         {
             PostXs = postXs;
-            TroquelX = troquelX;
+            TroquelXs = troquelXs;
         }
 
         public IReadOnlyList<double> PostXs { get; }
-        public double TroquelX { get; }
+
+        /// <summary>The larguero troquel X of each post (N+1), sliding with that post's own peralte.</summary>
+        public IReadOnlyList<double> TroquelXs { get; }
     }
 }

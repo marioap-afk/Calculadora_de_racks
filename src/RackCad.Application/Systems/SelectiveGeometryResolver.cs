@@ -39,6 +39,14 @@ namespace RackCad.Application.Systems
             system.PostPeralte = design.PostPeralte;
             system.PalletDepth = design.PalletDepth;
 
+            // Per-post PERALTE: each post uses its own override (design.PostPeraltes) or the run default.
+            var postSlots = design.Bays.Count + 1;
+            for (var i = 0; i < postSlots; i++)
+            {
+                var over = i < design.PostPeraltes.Count ? design.PostPeraltes[i] : 0.0;
+                system.PostPeraltes.Add(over > 0.0 ? over : design.PostPeralte);
+            }
+
             var paso = SelectiveRackDefaults.TroquelPaso;
             var tolerance = design.PalletTolerance;
             var clearance = design.VerticalClearance;

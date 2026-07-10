@@ -32,6 +32,30 @@ namespace RackCad.Tests
             return system;
         }
 
+        /// <summary>A resolved TWO-bay system (3 posts) with an explicit per-post peralte for each post.</summary>
+        private static SelectiveRackSystem TwoBaySystem(double p0, double p1, double p2)
+        {
+            var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = p0 };
+            for (var b = 0; b < 2; b++)
+            {
+                var bay = new SelectiveBay { BeamLength = 100.0, Height = 240.0 };
+                bay.Levels.Add(new SelectiveLevel { Y = 48.0, BeamId = BeamId, BeamPeralte = 4.0 });
+                system.Bays.Add(bay);
+            }
+
+            system.PostPeraltes.Add(p0);
+            system.PostPeraltes.Add(p1);
+            system.PostPeraltes.Add(p2);
+            return system;
+        }
+
+        private static System.Collections.Generic.List<double> PostXs(SelectiveRackSystem system)
+            => new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Post)
+                .Select(i => i.Insertion.X)
+                .OrderBy(x => x)
+                .ToList();
+
         /// <summary>The post's larguero-troquel X resolved from the catalog (base + slope*peralte); never hardcoded.</summary>
         private static double TroquelX(double peralte)
         {
@@ -84,6 +108,33 @@ namespace RackCad.Tests
             Assert.Equal(TroquelX(3.0), x3, 4);
             Assert.Equal(TroquelX(5.0), x5, 4);
             Assert.True(x5 > x3);
+        }
+
+        [Fact]
+        public void Build_PerPostPeralte_EachPostCarriesItsOwn()
+        {
+            var posts = new SelectiveFrontalBuilder().Build(TwoBaySystem(3.0, 6.0, 4.0), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Post)
+                .OrderBy(i => i.Insertion.X)
+                .ToList();
+
+            Assert.Equal(3, posts.Count);
+            Assert.Equal(3.0, posts[0].DynamicParameters["PERALTE"], 4);
+            Assert.Equal(6.0, posts[1].DynamicParameters["PERALTE"], 4);
+            Assert.Equal(4.0, posts[2].DynamicParameters["PERALTE"], 4);
+        }
+
+        [Fact]
+        public void Build_PerPostPeralte_BiggerMiddlePostWidensBothAdjacentBays()
+        {
+            var uniform = PostXs(TwoBaySystem(3.0, 3.0, 3.0));
+            var varied = PostXs(TwoBaySystem(3.0, 6.0, 3.0)); // only the middle post is bigger
+
+            // post 0 anchored at 0 in both. The middle post's LEFT troquel grew → bay 0 wider; its RIGHT troquel grew
+            // → bay 1 wider too. Each bay adapts to the peralte of the posts that bound it.
+            Assert.Equal(uniform[0], varied[0], 4);
+            Assert.True(varied[1] > uniform[1]);                                   // bay 0 widened
+            Assert.True(varied[2] - varied[1] > uniform[2] - uniform[1]);          // bay 1 widened
         }
 
         [Fact]

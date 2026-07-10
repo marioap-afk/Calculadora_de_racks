@@ -53,6 +53,20 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_PreservesPerPostPeraltes()
+        {
+            var design = SampleDesign(); // 2 bays -> 3 posts
+            design.PostPeraltes.Add(0.0); // post 0 inherits the global
+            design.PostPeraltes.Add(6.0); // post 1 override
+            design.PostPeraltes.Add(4.0); // post 2 override
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "n"))).ToDomain();
+
+            Assert.Equal(new[] { 0.0, 6.0, 4.0 }, restored.PostPeraltes);
+        }
+
+        [Fact]
         public void RoundTrip_PreservesIdentityAndEveryField()
         {
             var design = SampleDesign();

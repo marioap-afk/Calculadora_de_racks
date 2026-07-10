@@ -29,6 +29,9 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Optional per-post cabecera (pass-through from the design), one per post position; null = run default.</summary>
         public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
+
+        /// <summary>Resolved per-post PERALTE, one per post (N+1). Each is the post's override or the run's <see cref="PostPeralte"/>.</summary>
+        public IList<double> PostPeraltes { get; } = new List<double>();
     }
 
     /// <summary>One resolved bay: its beam length (which governs post spacing), its height, and its placed levels.</summary>

@@ -57,6 +57,7 @@ namespace RackCad.UI
 
         /// <summary>Optional per-post cabecera (frame); one entry per post (N frentes → N+1 posts), null = run default.</summary>
         private readonly List<RackFrameConfiguration> postCabeceras = new List<RackFrameConfiguration>();
+        private readonly List<double> postPeraltes = new List<double>(); // per-post PERALTE override; 0 = inherit the global
 
         private string defaultBeamId;
         private int selBay;
@@ -423,6 +424,8 @@ namespace RackCad.UI
             var posts = bays.Count + 1;
             while (postCabeceras.Count < posts) postCabeceras.Add(null);
             while (postCabeceras.Count > posts) postCabeceras.RemoveAt(postCabeceras.Count - 1);
+            while (postPeraltes.Count < posts) postPeraltes.Add(0.0);
+            while (postPeraltes.Count > posts) postPeraltes.RemoveAt(postPeraltes.Count - 1);
         }
 
         /// <summary>Fill the post selector with "Poste 1..N+1", preserving the selection, then refresh its status.</summary>
@@ -440,7 +443,47 @@ namespace RackCad.UI
         private void PostSelect_Changed(object sender, SelectionChangedEventArgs e)
         {
             UpdatePostStatus();
+            ShowPostPeralteOverride();
             DrawPreview(); // re-highlight the picked post
+        }
+
+        /// <summary>Show the selected post's peralte override in its box (empty when the post inherits the global).</summary>
+        private void ShowPostPeralteOverride()
+        {
+            if (PostPeralteOverrideBox == null) return;
+            var i = PostSelectBox.SelectedIndex;
+            var over = i >= 0 && i < postPeraltes.Count ? postPeraltes[i] : 0.0;
+            PostPeralteOverrideBox.Text = over > 0.0 ? over.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+        }
+
+        /// <summary>Store the per-post peralte override for the selected post; empty (or = global) means inherit.</summary>
+        private void PostPeralteOverride_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var i = PostSelectBox.SelectedIndex;
+            if (i < 0 || i >= postPeraltes.Count) return;
+
+            var text = PostPeralteOverrideBox.Text;
+            double value;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                value = 0.0; // empty → inherit the global peralte
+            }
+            else if (!UiSupport.TryNum(text, out value) || value <= 0.0)
+            {
+                SetStatus("Peralte de poste invalido (deja vacio para usar el peralte global).", true);
+                ShowPostPeralteOverride();
+                return;
+            }
+
+            // A value equal to the global is just the default → store as inherit (0) so it tracks the global if it changes.
+            if (value > 0.0 && UiSupport.TryNum(PostPeralteBox.Text, out var global) && Math.Abs(value - global) < 1e-6)
+            {
+                value = 0.0;
+            }
+
+            postPeraltes[i] = value;
+            ShowPostPeralteOverride();
+            Recompute();
         }
 
         private void UpdatePostStatus()
@@ -545,7 +588,9 @@ namespace RackCad.UI
             var i = PostSelectBox.SelectedIndex;
             if (i < 0 || i >= postCabeceras.Count) return;
             postCabeceras[i] = null;
+            if (i < postPeraltes.Count) postPeraltes[i] = 0.0; // back to the global peralte too
             UpdatePostStatus();
+            ShowPostPeralteOverride();
             Recompute();
         }
 
@@ -846,6 +891,11 @@ namespace RackCad.UI
                 design.PostCabeceras.Add(cabecera);
             }
 
+            foreach (var peralte in postPeraltes)
+            {
+                design.PostPeraltes.Add(peralte);
+            }
+
             return design;
         }
 
@@ -915,6 +965,12 @@ namespace RackCad.UI
                 // design can't carry a stale depth.
                 if (cabecera != null && loadedFondo > 0.0) cabecera.Depth = loadedFondo;
                 postCabeceras.Add(cabecera);
+            }
+
+            postPeraltes.Clear();
+            foreach (var peralte in design.PostPeraltes)
+            {
+                postPeraltes.Add(peralte);
             }
 
             BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);

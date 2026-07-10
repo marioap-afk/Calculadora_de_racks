@@ -51,9 +51,10 @@ namespace RackCad.Application.Systems
                     cabecera = factory.Build(template, system.PostId, height > 0.0 ? height : system.Height, depth);
                 }
 
-                // The selective's post peralte is a design value (system.PostPeralte), not the profile width — pass it
-                // so the planta grows the post/celosía/plate exactly like the frontal (matches SelectiveFrontalBuilder).
-                foreach (var instance in frameBuilder.Build(cabecera, catalog, new Point2D(0.0, frenteYs[i]), system.PostPeralte))
+                // Each frame draws with ITS post's peralte (per-post override, else the run default) so the planta
+                // grows the post/celosía/plate exactly like the frontal (matches SelectiveFrontalBuilder).
+                var framePeralte = SelectivePostGeometry.PostPeralteAt(system, i);
+                foreach (var instance in frameBuilder.Build(cabecera, catalog, new Point2D(0.0, frenteYs[i]), framePeralte))
                 {
                     instances.Add(instance);
                 }
@@ -70,9 +71,7 @@ namespace RackCad.Application.Systems
         /// </summary>
         private static void AddLargueros(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, double depth)
         {
-            var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = system.PostPeralte };
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, PlantaView);
-            var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
 
             for (var i = 0; i < system.Bays.Count && i + 1 < frenteYs.Count; i++)
             {
@@ -91,7 +90,9 @@ namespace RackCad.Application.Systems
 
                 // The beam is placed at its troquel exactly like the frontal (its origin = the hook); the ménsula
                 // overhang (INICIO_PERFIL) is already baked into the frame spacing by SelectivePostGeometry, so it is
-                // NOT subtracted here. The troquel slides with the post peralte along Y (its PLANTA Y-slope).
+                // NOT subtracted here. The troquel slides with THIS frame's post peralte along Y (its PLANTA Y-slope).
+                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
+                var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
                 var mateY = frenteYs[i] + troquel.Y;
 
                 // Front post at X=0, back post at X=fondo; LONGITUD runs along Y (= the beam length).

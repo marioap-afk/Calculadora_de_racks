@@ -43,6 +43,13 @@ namespace RackCad.Domain.Systems
         /// this cabecera seen edge-on.
         /// </summary>
         public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
+
+        /// <summary>
+        /// Optional per-post PERALTE override, one entry per post position (N frentes → N+1 posts). An entry
+        /// &lt;= 0 (or a short list) means that post inherits <see cref="PostPeralte"/>. Lets each post carry its
+        /// own peralte in the frontal/planta; the larguero spacing adapts to each post's troquel.
+        /// </summary>
+        public IList<double> PostPeraltes { get; } = new List<double>();
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

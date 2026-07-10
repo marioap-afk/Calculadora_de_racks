@@ -33,6 +33,9 @@ namespace RackCad.Application.Persistence
         /// <summary>Per-post cabeceras (one per post; null = run default), each embedded as a frame document.</summary>
         public List<RackFrameProjectDocument> PostCabeceras { get; set; } = new List<RackFrameProjectDocument>();
 
+        /// <summary>Per-post PERALTE overrides (one per post; &lt;= 0 = inherit <see cref="PostPeralte"/>).</summary>
+        public List<double> PostPeraltes { get; set; } = new List<double>();
+
         public static SelectivePalletDesignDocument From(SelectivePalletDesign design, string id, string name)
         {
             if (design == null)
@@ -62,6 +65,8 @@ namespace RackCad.Application.Persistence
                 document.PostCabeceras.Add(cabecera == null ? null : RackFrameProjectDocument.FromConfiguration(cabecera));
             }
 
+            document.PostPeraltes = design.PostPeraltes.ToList();
+
             return document;
         }
 
@@ -85,6 +90,11 @@ namespace RackCad.Application.Persistence
             foreach (var cabecera in PostCabeceras ?? Enumerable.Empty<RackFrameProjectDocument>())
             {
                 design.PostCabeceras.Add(cabecera?.ToConfiguration());
+            }
+
+            foreach (var peralte in PostPeraltes ?? Enumerable.Empty<double>())
+            {
+                design.PostPeraltes.Add(peralte);
             }
 
             return design;

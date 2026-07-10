@@ -33,9 +33,8 @@ namespace RackCad.Application.Systems
 
             var view = SelectiveRackDefaults.View;
 
-            // Post X positions + the post's larguero troquel X (shared with the lateral view so they line up).
+            // Post X positions + each post's larguero troquel X (per-post; slides with that post's peralte).
             var layout = SelectivePostGeometry.Compute(system, catalog);
-            var troquelX = layout.TroquelX;
             var postX = layout.PostXs;
 
             var postBlock = Block(catalog, system.PostId, view);
@@ -53,6 +52,9 @@ namespace RackCad.Application.Systems
                     ? cabecera.Height
                     : SelectivePostGeometry.PostHeight(system, i);
 
+                // This post's peralte (its per-post override, else the run default) drives the PERALTE param and plate.
+                var postPeralte = SelectivePostGeometry.PostPeralteAt(system, i);
+
                 var post = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Post,
@@ -63,7 +65,7 @@ namespace RackCad.Application.Systems
                     ConnectionAnchor = origin
                 };
                 post.DynamicParameters[SelectiveRackDefaults.LengthParam] = postHeight;
-                post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = system.PostPeralte;
+                post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
                 instances.Add(post);
 
                 // Base plate: from this post's cabecera if any, else the run default. PERALTE = the cabecera's manual
@@ -71,7 +73,7 @@ namespace RackCad.Application.Systems
                 var plateId = cabecera?.LeftBasePlate?.PlateCatalogId;
                 if (string.IsNullOrWhiteSpace(plateId)) plateId = defaultPlateId;
                 var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
-                var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(system.PostPeralte) ?? 0.0;
+                var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
                 var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
 
                 var plate = new HeaderBlockInstance
@@ -94,7 +96,7 @@ namespace RackCad.Application.Systems
             for (var i = 0; i < system.Bays.Count; i++)
             {
                 var bay = system.Bays[i];
-                var beamX = postX[i] + troquelX;
+                var beamX = postX[i] + layout.TroquelXs[i]; // hook on THIS post's troquel (per-post peralte)
 
                 foreach (var level in bay.Levels)
                 {
