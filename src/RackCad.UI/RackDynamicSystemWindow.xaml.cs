@@ -754,6 +754,54 @@ namespace RackCad.UI
                 TryNum(DerivedReinforcementBox.Text, out var length) && length > 0.0 ? length : (double?)null;
         }
 
+        /// <summary>Validate the OPTIONAL numeric fields so invalid text is reported instead of silently defaulting (the
+        /// selective validates the same way). Empty stays valid (= the field's default); only garbage/out-of-range fails.</summary>
+        private bool TryValidateOptionalInputs(out string error)
+        {
+            error = null;
+
+            var count = SeparatorCountBox.Text?.Trim();
+            if (!string.IsNullOrWhiteSpace(count) && !(int.TryParse(count, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) && n >= 1))
+            {
+                error = "Cantidad de separadores invalida (entero >= 1, o vacio para estandar).";
+                return false;
+            }
+
+            if (!UiSupport.TryOptionalNum(SeparatorSpacingBox.Text, out _))
+            {
+                error = "Separacion de separadores invalida (deja vacio para estandar).";
+                return false;
+            }
+
+            if (!UiSupport.TryOptionalNum(DerivedReinforcementBox.Text, out _))
+            {
+                error = "Altura de refuerzo del poste derivado invalida (deja vacio para altura completa).";
+                return false;
+            }
+
+            if (!IsBlankOrNumber(FirstLevelHeightBox.Text))
+            {
+                error = "Altura del primer nivel invalida (deja vacio para 0).";
+                return false;
+            }
+
+            if (!IsBlankOrNumber(BeamDepthBox.Text))
+            {
+                error = "Peralte de viga invalido (deja vacio para 0).";
+                return false;
+            }
+
+            if (ManualHeightToggle?.IsChecked == true && !(UiSupport.TryNum(ManualHeightBox.Text, out var m) && m > 0.0))
+            {
+                error = "Altura manual invalida (debe ser mayor que cero).";
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsBlankOrNumber(string text) => string.IsNullOrWhiteSpace(text) || UiSupport.TryNum(text, out _);
+
         private void DerivedReinforce_Changed(object sender, RoutedEventArgs e)
         {
             // Ignore the initial state set during construction and changes applied while syncing a load.
@@ -1023,6 +1071,7 @@ namespace RackCad.UI
         private void SaveSystem_Click(object sender, RoutedEventArgs e)
         {
             if (system == null) { SetStatus("Genera la vista antes de guardar.", true); return; }
+            if (!TryValidateOptionalInputs(out var invalid)) { SetStatus(invalid, true); return; }
 
             // Commit the advanced fields onto the model first: they only reach `system` on Apply*, so saving without
             // a prior recompose used to persist stale defaults and lose the user's customizations on reopen.
@@ -1155,6 +1204,8 @@ namespace RackCad.UI
                 SetStatus("Genera la vista antes de insertar en AutoCAD.", true);
                 return;
             }
+
+            if (!TryValidateOptionalInputs(out var invalid)) { SetStatus(invalid, true); return; }
 
             // Commit the advanced override fields onto the model before embedding it (same reason as SaveSystem):
             // otherwise a customization not followed by "Actualizar vista" is lost in the .dwg round-trip.

@@ -153,6 +153,11 @@ namespace RackCad.Plugin
                 document, blockId, window.SystemToInsert,
                 BuildDynamicPayload(window.SystemToInsert, window.RackId, window.RackName));
 
+            if (result != null && result.Success)
+            {
+                RackBlockRenamer.SyncName(document, blockId, string.IsNullOrWhiteSpace(window.RackName) ? null : window.RackName.Trim());
+            }
+
             editor.WriteMessage(result != null && result.Success
                 ? "\nRackCad: sistema actualizado; todas sus copias reflejan el cambio."
                 : "\nRackCad: no se pudo actualizar el sistema. " + (result?.ErrorMessage ?? string.Empty));

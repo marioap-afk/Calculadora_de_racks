@@ -138,10 +138,11 @@ namespace RackCad.UI
                 return null;
             }
 
-            double? pitch = null;
-            if (TryNum(RollerPitchBox.Text, out var p) && p > 0.0)
+            // Optional roller pitch: empty = automatic; report garbage instead of silently falling back to auto.
+            if (!UiSupport.TryOptionalNum(RollerPitchBox.Text, out var pitch))
             {
-                pitch = p;
+                error = "Paso de rodillo invalido (deja vacio para el paso automatico).";
+                return null;
             }
 
             return new FlowBedConfiguration

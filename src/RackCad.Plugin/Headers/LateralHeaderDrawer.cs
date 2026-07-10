@@ -116,11 +116,18 @@ namespace RackCad.Plugin.Headers
             var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
             var systemDef = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForWrite);
 
-            // Clear the current contents (collect first, then erase — don't erase while enumerating).
+            // Clear the current contents (collect first, then erase — don't erase while enumerating). Capture the
+            // nested definitions the block references BEFORE erasing: each redefine creates fresh uniquified header
+            // defs, so the old ones must be purged afterwards or they pile up in the block table forever (nombre_1, _2…).
             var existing = new List<ObjectId>();
+            var priorReferencedDefs = new HashSet<ObjectId>();
             foreach (ObjectId id in systemDef)
             {
                 existing.Add(id);
+                if (tr.GetObject(id, OpenMode.ForRead) is BlockReference nestedRef && !nestedRef.BlockTableRecord.IsNull)
+                {
+                    priorReferencedDefs.Add(nestedRef.BlockTableRecord);
+                }
             }
 
             foreach (var id in existing)
@@ -174,8 +181,41 @@ namespace RackCad.Plugin.Headers
                 reference.RecordGraphicsModified(true);
             }
 
+            PurgeStaleNestedDefinitions(tr, priorReferencedDefs);
+
             return new LateralHeaderDrawOutcome(
                 new LateralHeaderLayout(new List<HeaderBlockInstance>(), 0.0, 0, 0, 0.0), inserted, missing);
+        }
+
+        /// <summary>
+        /// Erase the previously-referenced definitions that no longer have ANY reference after a redefine. This clears the
+        /// stale nested header defs a rewrite leaves behind (each one is freshly uniquified — <c>nombre_1</c>, <c>_2</c>, …
+        /// — so without this they accumulate in the block table forever). Catalog piece blocks stay referenced by the new
+        /// loose pieces, and blocks still used by any other rack keep their references, so both are left untouched.
+        /// </summary>
+        private static void PurgeStaleNestedDefinitions(Transaction tr, HashSet<ObjectId> priorReferencedDefs)
+        {
+            foreach (var defId in priorReferencedDefs)
+            {
+                if (defId.IsNull || defId.IsErased)
+                {
+                    continue;
+                }
+
+                var def = (BlockTableRecord)tr.GetObject(defId, OpenMode.ForRead);
+                if (def.IsLayout) // never touch model/paper space
+                {
+                    continue;
+                }
+
+                if (def.GetBlockReferenceIds(directOnly: false, forceValidity: true).Count > 0)
+                {
+                    continue; // still referenced somewhere in the drawing
+                }
+
+                def.UpgradeOpen();
+                def.Erase();
+            }
         }
 
         private static BlockTableRecord NewBlock(BlockTable blockTable, Transaction tr, string blockName, out string uniqueName, out ObjectId id)

@@ -34,6 +34,25 @@ namespace RackCad.UI
                 || double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out value);
         }
 
+        /// <summary>Parses an OPTIONAL positive number: empty/whitespace → null (auto); a valid &gt; 0 value → that value;
+        /// anything else (non-numeric or &lt;= 0) → false, so the caller can report an error instead of silently defaulting.</summary>
+        public static bool TryOptionalNum(string text, out double? value)
+        {
+            value = null;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return true;
+            }
+
+            if (TryNum(text, out var v) && v > 0.0)
+            {
+                value = v;
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>Distinct, ordered DisplayName/Id options for a combo (skips blank ids).</summary>
         public static List<CatalogOption> ToOptions<T>(IEnumerable<T> entries) where T : CatalogEntryBase
         {

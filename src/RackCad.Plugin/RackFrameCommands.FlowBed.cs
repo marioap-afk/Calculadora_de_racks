@@ -221,6 +221,11 @@ namespace RackCad.Plugin
                 document, blockId, window.FlowBedToInsert,
                 BuildCamaPayload(window.FlowBedToInsert, window.RackId, window.RackName));
 
+            if (result != null && result.Success)
+            {
+                RackBlockRenamer.SyncName(document, blockId, string.IsNullOrWhiteSpace(window.RackName) ? null : window.RackName.Trim());
+            }
+
             editor.WriteMessage(result != null && result.Success
                 ? "\nRackCad: cama actualizada; todas sus copias reflejan el cambio."
                 : "\nRackCad: no se pudo actualizar la cama. " + (result?.ErrorMessage ?? string.Empty));

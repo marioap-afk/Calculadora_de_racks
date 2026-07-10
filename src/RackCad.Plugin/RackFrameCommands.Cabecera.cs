@@ -280,6 +280,7 @@ namespace RackCad.Plugin
             var config = window.Configuration;
             var id = string.IsNullOrEmpty(embed.Id) ? System.Guid.NewGuid().ToString() : embed.Id;
             var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
+            var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
             var blocks = FindRackBlocks(document, id);
             var lateralBlocks = blocks.Where(b => !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
@@ -298,6 +299,7 @@ namespace RackCad.Plugin
                     document, lateralId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral));
                 if (r != null && r.Success)
                 {
+                    RackBlockRenamer.SyncName(document, lateralId, baseName);
                     updated++;
                 }
             }
@@ -308,6 +310,7 @@ namespace RackCad.Plugin
                     document, plantaId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta));
                 if (r != null && r.Success)
                 {
+                    RackBlockRenamer.SyncName(document, plantaId, baseName == null ? null : baseName + " - planta");
                     updated++;
                 }
             }

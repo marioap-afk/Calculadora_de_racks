@@ -98,6 +98,8 @@ namespace RackCad.Plugin
             var id = string.IsNullOrEmpty(embed.Id) ? window.RackId : embed.Id;
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             system.Name = name; // the "Colocar nombre de rack" annotation draws this
+            // Base name for syncing the block-definition names across views (null = keep each view's descriptive default).
+            var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
             var blocks = FindRackBlocks(document, id);
             var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
@@ -118,6 +120,7 @@ namespace RackCad.Plugin
                 var r = new SelectiveFrontalDrawService().RedrawInPlace(document, frontalId, system, payload);
                 if (r != null && r.Success)
                 {
+                    RackBlockRenamer.SyncName(document, frontalId, baseName);
                     updatedFrontal++;
                 }
             }
@@ -141,6 +144,8 @@ namespace RackCad.Plugin
                     var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros, regen: false);
                     if (r != null && r.Success)
                     {
+                        RackBlockRenamer.SyncName(document, lat.BlockId,
+                            baseName == null ? null : baseName + " - lateral " + (corte.PostIndex + 1).ToString(CultureInfo.InvariantCulture));
                         updatedLateral++;
                     }
                 }
@@ -159,6 +164,7 @@ namespace RackCad.Plugin
                 var r = new SelectivePlantaDrawService().RedrawInPlace(document, plantaId, system, payload);
                 if (r != null && r.Success)
                 {
+                    RackBlockRenamer.SyncName(document, plantaId, baseName == null ? null : baseName + " - planta");
                     updatedPlanta++;
                 }
             }
