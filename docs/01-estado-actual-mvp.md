@@ -5,7 +5,7 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-esta con 267 tests verdes.
+esta con 276 tests verdes.
 
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
@@ -100,6 +100,9 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
   - **`RACKDUPLICAR`** = copia **independiente** (GUID nuevo, nombre "- copia"); editar la copia no
     toca al original. Distinto del `COPY` de AutoCAD, que comparte la definicion y por ende el GUID
     (esas copias se editan juntas, que es lo correcto para "replicas").
+- Comando `RACKLISTA`: tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, numero
+  de copias). `RackListBuilder` (puro, testeado) agrupa los sobres por GUID; "Ir al rack" hace zoom
+  a la primera referencia en el modelo (vista frontal si existe).
 - Escalable: agregar un tipo nuevo = su `Kind` + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting`
   en su ventana + embed/RedrawInPlace en su draw service. Stores del diseno:
   `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera),

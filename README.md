@@ -35,6 +35,7 @@ QUICKCAMA               (cama sin interfaz: tipo, rodillo, fondo del carril y de
 RACKSELECTIVO           (abre el editor selectivo; dibuja la vista frontal al confirmar)
 RACKEDITAR              (selecciona un rack dibujado y reabre su editor precargado; ver Round-trip)
 RACKDUPLICAR            (copia un rack como uno INDEPENDIENTE, con GUID nuevo; ver Round-trip)
+RACKLISTA               (tabla de todos los racks del dibujo: nombre, tipo, vistas, copias; zoom al elegido)
 ```
 
 ## Identidad y round-trip (RACKEDITAR)

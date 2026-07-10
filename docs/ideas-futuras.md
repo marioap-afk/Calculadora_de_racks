@@ -69,8 +69,9 @@
    bloque seleccionado y funciona para los 4 tipos. **Decisión (2026-07-09):** duplicar SOLO la vista
    clicada (guardando el sistema completo en el embed) es el comportamiento deseado — no se duplican todas
    las vistas. Mejora futura: usarlo como base del layout de almacén (#4: clonar N veces con pasillo).
-6. **`RACKLISTA`** — comando que tabula todos los racks del dibujo (Nombre, GUID, tipo, vistas
-   presentes) con zoom-to al seleccionar. El escaneo por GUID ya existe (`FindRackBlocks`).
+6. ~~**`RACKLISTA`**~~ — ✅ **HECHO (2026-07-10):** ventana con la tabla de todos los racks del dibujo
+   (Nombre, Tipo, Vistas presentes, nº de copias); `RackListBuilder` (puro, testeado) agrupa los sobres
+   por GUID y "Ir al rack" hace zoom a la primera referencia en el modelo (frontal si existe).
 7. ~~**Renombrado sincronizado**~~ — ✅ **HECHO (2026-07-09):** al editar/renombrar un rack, `RackBlockRenamer`
    sincroniza el nombre del bloque en TODAS sus vistas (frontal, lateral N, planta) en los 4 tipos
    (best-effort: no lanza, uniquifica evitando colisiones; las referencias apuntan por id, no se rompen).

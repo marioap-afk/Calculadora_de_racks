@@ -21,6 +21,6 @@
         Version="1.0.0"
         ModuleName="./Contents/RackCad.Plugin.dll"
         LoadOnAutoCADStartup="True"
-        AppDescription="Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR." />
+        AppDescription="Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR, RACKLISTA." />
   </Components>
 </ApplicationPackage>
