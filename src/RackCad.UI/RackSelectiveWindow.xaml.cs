@@ -70,6 +70,7 @@ namespace RackCad.UI
         /// <summary>True when the window was opened on an EXISTING rack (RACKEDITAR). The lateral view can only be
         /// inserted then — it links to that rack's frontal; inserting it on a brand-new rack would orphan it.</summary>
         private bool isEditingExisting;
+        private System.Collections.Generic.IReadOnlyCollection<string> existingViews;
 
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private SelectiveRackSystem lastSystem;
@@ -133,6 +134,12 @@ namespace RackCad.UI
             InsertLateralButton.IsEnabled = enabled;
             InsertPlantaButton.IsEnabled = enabled;
 
+            // When editing (RACKEDITAR), a view that is ALREADY drawn is redrawn in place on confirm, so its button
+            // reads "Actualizar …"; a view not yet drawn still "Insertar …". A brand-new rack always inserts.
+            InsertFrontalButton.Content = ViewActionLabel(RackEmbedDocument.ViewFrontal, "frontal");
+            InsertLateralButton.Content = ViewActionLabel(RackEmbedDocument.ViewLateral, "lateral");
+            InsertPlantaButton.Content = ViewActionLabel(RackEmbedDocument.ViewPlanta, "planta");
+
             if (!enabled)
             {
                 var reason = !canInsertInAutoCad
@@ -141,6 +148,15 @@ namespace RackCad.UI
                 InsertLateralButton.ToolTip = reason;
                 InsertPlantaButton.ToolTip = reason;
             }
+        }
+
+        /// <summary>"Actualizar {noun}" when editing a rack that already has this view drawn (confirm redraws it in
+        /// place); otherwise "Insertar {noun}".</summary>
+        private string ViewActionLabel(string view, string noun)
+        {
+            var updates = isEditingExisting && existingViews != null
+                && existingViews.Contains(view, System.StringComparer.OrdinalIgnoreCase);
+            return (updates ? "Actualizar " : "Insertar ") + noun;
         }
 
         // ---- Matrix model ----
@@ -911,13 +927,16 @@ namespace RackCad.UI
             Recompute();
         }
 
-        /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
-        public void LoadExisting(SelectivePalletDesignDocument document)
+        /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.
+        /// <paramref name="viewsAlreadyDrawn"/> are the views (frontal/lateral/planta) already in the drawing, so their
+        /// buttons read "Actualizar" instead of "Insertar".</summary>
+        public void LoadExisting(SelectivePalletDesignDocument document, System.Collections.Generic.IReadOnlyCollection<string> viewsAlreadyDrawn = null)
         {
             if (document == null) return;
             currentId = document.Id;
             currentName = document.Name;
             isEditingExisting = true; // opened on an existing rack → the lateral/planta views may be inserted (linked to it)
+            existingViews = viewsAlreadyDrawn;
             UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
             LoadDesign(document.ToDomain());

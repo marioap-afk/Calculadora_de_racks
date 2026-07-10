@@ -209,7 +209,7 @@
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
             <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0"
                     ToolTip="Genera el BOM (postes, placas, largueros y ménsulas) del selectivo actual." Click="ShowBom_Click" />
-            <Button Content="Insertar frontal" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+            <Button x:Name="InsertFrontalButton" Content="Insertar frontal" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTip="Dibuja la VISTA FRONTAL del selectivo (postes + largueros) en el dibujo activo." Click="InsertFrontal_Click" />
             <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTipService.ShowOnDisabled="True"
