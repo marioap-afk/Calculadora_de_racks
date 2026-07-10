@@ -57,6 +57,34 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_ConfigPostPeralte_OverridesTheProfileWidth()
+        {
+            // A standalone cabecera with its own PostPeralte (design value) draws the posts at that peralte, not the
+            // profile width (3). Celosia = post-1 tracks it too.
+            var config = Config(42.0);
+            config.PostPeralte = 5.0;
+
+            var instances = new PlantaHeaderLayoutBuilder().Build(config, Catalog);
+
+            Assert.All(instances.Where(i => i.Role == HeaderBlockRole.Post),
+                p => Assert.Equal(5.0, p.DynamicParameters["PERALTE"], 3));
+            Assert.Equal(4.0, instances.First(i => i.Role == HeaderBlockRole.Horizontal).DynamicParameters["PERALTE"], 3); // 5 - 1
+        }
+
+        [Fact]
+        public void Build_CallerOverride_BeatsConfigPostPeralte()
+        {
+            // The selective passes a per-post override that must win over the cabecera's own PostPeralte.
+            var config = Config(42.0);
+            config.PostPeralte = 5.0;
+
+            var instances = new PlantaHeaderLayoutBuilder().Build(config, Catalog, postPeralteOverride: 7.0);
+
+            Assert.All(instances.Where(i => i.Role == HeaderBlockRole.Post),
+                p => Assert.Equal(7.0, p.DynamicParameters["PERALTE"], 3));
+        }
+
+        [Fact]
         public void Build_AsymmetricSides_EachPlateKeepsItsOwnPeralteOverride()
         {
             // The configurator edits the plates PER SIDE: the back (right) plate's override must not be

@@ -512,6 +512,11 @@ namespace RackCad.UI
             if (resolvedHeight > 0.0) seed.Height = resolvedHeight;
             if (fondo > 0.0) seed.Depth = fondo;
 
+            // Seed the cabecera's post peralte with THIS post's effective value (its override, else the global) so the
+            // configurator shows/edits it; the write-back below keeps the selective's PostPeraltes the source of truth.
+            var globalPeralte = UiSupport.TryNum(PostPeralteBox.Text, out var gp) && gp > 0.0 ? gp : 0.0;
+            seed.PostPeralte = (i < postPeraltes.Count && postPeraltes[i] > 0.0) ? postPeraltes[i] : globalPeralte;
+
             var store = new RackProjectStore();
             var before = store.Serialize(RackProject.ForSelective(seed));
 
@@ -542,6 +547,15 @@ namespace RackCad.UI
                     "Altura de cabecera",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
+            }
+
+            // Sync the post peralte edited in the cabecera back to the selective's per-post source of truth (0 = global,
+            // so it keeps tracking the global peralte). The frontal/planta read PostPeraltes, so this avoids divergence.
+            if (i < postPeraltes.Count)
+            {
+                var edited = cfg.PostPeralte;
+                postPeraltes[i] = (edited > 0.0 && Math.Abs(edited - globalPeralte) > 1e-6) ? edited : 0.0;
+                ShowPostPeralteOverride();
             }
 
             postCabeceras[i] = cfg;

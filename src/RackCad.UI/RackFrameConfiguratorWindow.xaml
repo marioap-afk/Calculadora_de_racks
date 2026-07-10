@@ -192,6 +192,11 @@
                             </StackPanel>
                         </Grid>
 
+                        <TextBlock Text="Peralte de poste (in)" Style="{StaticResource PropertyLabelStyle}" Margin="0,8,0,0" />
+                        <TextBox Style="{StaticResource PropertyValueTextBoxStyle}" HorizontalAlignment="Left" MinWidth="120"
+                                 Text="{Binding SimplePostPeralteText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 ToolTip="Peralte del poste (in). Vacío = ancho del perfil. Afecta la planta y, en selectivo, el frontal (no la lateral)." />
+
                         <Button Content="Generar cabecera"
                                 Click="ApplySimpleHeader_Click"
                                 Style="{StaticResource PrimaryButtonStyle}"

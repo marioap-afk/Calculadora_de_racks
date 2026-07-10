@@ -17,6 +17,9 @@ namespace RackCad.Application.Persistence
         public double Height { get; set; }
         public double Depth { get; set; }
 
+        /// <summary>Post peralte (in); nullable so legacy projects fall back to 0 = inherit the profile width.</summary>
+        public double? PostPeralte { get; set; }
+
         // Nullable so legacy projects without these fields fall back to the built-in defaults.
         public int? CelosiaStartTroquel { get; set; }
         public int? DiagonalStartOffsetTroqueles { get; set; }
@@ -39,6 +42,7 @@ namespace RackCad.Application.Persistence
                 Units = configuration.Units,
                 Height = configuration.Height,
                 Depth = configuration.Depth,
+                PostPeralte = configuration.PostPeralte,
                 CelosiaStartTroquel = configuration.CelosiaStartTroquel,
                 DiagonalStartOffsetTroqueles = configuration.DiagonalStartOffsetTroqueles,
                 DiagonalEndOffsetTroqueles = configuration.DiagonalEndOffsetTroqueles,
@@ -75,6 +79,7 @@ namespace RackCad.Application.Persistence
                 Units = string.IsNullOrWhiteSpace(Units) ? "in" : Units,
                 Height = Height,
                 Depth = Depth,
+                PostPeralte = PostPeralte ?? 0.0, // legacy: 0 = inherit the profile width
                 CelosiaStartTroquel = CelosiaStartTroquel ?? domainDefaults.CelosiaStartTroquel,
                 DiagonalStartOffsetTroqueles = DiagonalStartOffsetTroqueles ?? domainDefaults.DiagonalStartOffsetTroqueles,
                 DiagonalEndOffsetTroqueles = DiagonalEndOffsetTroqueles ?? domainDefaults.DiagonalEndOffsetTroqueles,

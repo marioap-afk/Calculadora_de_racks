@@ -46,6 +46,7 @@ namespace RackCad.UI
         private string simplePostCatalogId;
         private double simpleHeight;
         private double simpleDepth;
+        private double simplePostPeralte; // 0 = inherit the post profile width
         private ConfiguratorNavigationItem selectedNavigationItem;
         private BracingSegmentEditorRow selectedBracingSegment;
         private HorizontalEditorRow selectedHorizontal;
@@ -137,6 +138,7 @@ namespace RackCad.UI
             simplePostCatalogId = NormalizeText(configuration.LeftPost?.PostCatalogId);
             simpleHeight = configuration.Height;
             simpleDepth = configuration.Depth;
+            simplePostPeralte = configuration.PostPeralte;
 
             EnsureModernConfiguration();
             LoadRowsFromConfiguration();
@@ -275,6 +277,33 @@ namespace RackCad.UI
                 else if (!string.IsNullOrWhiteSpace(value))
                 {
                     StatusMessage = "Fondo inválido: escribe un número mayor que cero.";
+                    StatusBrush = "#B00020";
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>Post peralte for the quick config (in). Empty = inherit the post profile width. Affects the planta
+        /// (and, when this is a selective per-post cabecera, the frontal).</summary>
+        public string SimplePostPeralteText
+        {
+            get => simplePostPeralte > 0.0 ? FormatEditableNumber(simplePostPeralte) : string.Empty;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    simplePostPeralte = 0.0; // inherit the profile width
+                    ClearInputError("Peralte de poste inválido: escribe un número mayor que cero.");
+                }
+                else if (TryParseDimension(value, out var parsedValue) && parsedValue > 0.0)
+                {
+                    simplePostPeralte = parsedValue;
+                    ClearInputError("Peralte de poste inválido: escribe un número mayor que cero.");
+                }
+                else
+                {
+                    StatusMessage = "Peralte de poste inválido: escribe un número mayor que cero.";
                     StatusBrush = "#B00020";
                 }
 
@@ -1087,6 +1116,7 @@ namespace RackCad.UI
                 var template = SelectedHeaderTemplate ?? RackFrameTemplateCatalog.Default;
                 var generated = new RackFrameConfigurationFactory(catalog)
                     .Build(template, SimplePostCatalogId, simpleHeight, simpleDepth);
+                generated.PostPeralte = simplePostPeralte; // carry the quick-config post peralte (0 = inherit)
 
                 ReplaceConfigurationAndReload(
                     generated,
@@ -1153,10 +1183,12 @@ namespace RackCad.UI
                 : GetNavigationItemForSegment(SelectedBracingSegment) ?? panelsNavigationItem;
 
             simpleHeight = Configuration.Height;
+            simplePostPeralte = Configuration.PostPeralte;
             simpleDepth = Configuration.Depth;
             simplePostCatalogId = NormalizeText(Configuration.LeftPost?.PostCatalogId);
             OnPropertyChanged(nameof(SimpleHeightText));
             OnPropertyChanged(nameof(SimpleDepthText));
+            OnPropertyChanged(nameof(SimplePostPeralteText));
             OnPropertyChanged(nameof(SimplePostCatalogId));
 
             RefreshAllConfigurationProperties();
@@ -1921,6 +1953,7 @@ namespace RackCad.UI
                 Units = source.Units,
                 Height = source.Height,
                 Depth = source.Depth,
+                PostPeralte = source.PostPeralte,
                 StandardBaselineId = source.StandardBaselineId,
                 StandardBaselineVersion = source.StandardBaselineVersion,
                 LeftPost = ClonePost(source.LeftPost),
@@ -1972,6 +2005,7 @@ namespace RackCad.UI
             target.Units = source.Units;
             target.Height = source.Height;
             target.Depth = source.Depth;
+            target.PostPeralte = source.PostPeralte;
             target.StandardBaselineId = source.StandardBaselineId;
             target.StandardBaselineVersion = source.StandardBaselineVersion;
             target.LeftPost = ClonePost(source.LeftPost);

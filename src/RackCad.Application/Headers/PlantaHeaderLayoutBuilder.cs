@@ -63,10 +63,12 @@ namespace RackCad.Application.Headers
             var backPlateId = FirstNonEmpty(config.RightBasePlate?.PlateCatalogId, plateId);
             var trussId = ResolveTrussId(config, catalog);
 
-            // A design peralte (selective) wins over the profile width; the celosía (post-1") and the plate's
-            // StandardPeralte then track it, exactly like the frontal view.
-            var postPeralte = postPeralteOverride > 0.0 ? postPeralteOverride : PostWidth(catalog, postId);
-            var backPostPeralte = postPeralteOverride > 0.0 ? postPeralteOverride : PostWidth(catalog, backPostId);
+            // Peralte priority: the caller override (selective per-post) wins; else the cabecera's own PostPeralte
+            // (a standalone cabecera design value); else the post profile's catalog width. The celosía (post-1") and
+            // the plate's StandardPeralte then track it, exactly like the frontal view.
+            var configPeralte = config.PostPeralte > 0.0 ? config.PostPeralte : 0.0;
+            var postPeralte = postPeralteOverride > 0.0 ? postPeralteOverride : (configPeralte > 0.0 ? configPeralte : PostWidth(catalog, postId));
+            var backPostPeralte = postPeralteOverride > 0.0 ? postPeralteOverride : (configPeralte > 0.0 ? configPeralte : PostWidth(catalog, backPostId));
             var celosiaPeralte = Math.Max(0.0, postPeralte - CelosiaPeralteReduction);
             var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
             var backPlateEntry = catalog?.BasePlates.FindBasePlate(backPlateId);

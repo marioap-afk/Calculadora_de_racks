@@ -17,6 +17,13 @@ namespace RackCad.Domain.RackFrames
         public double Height { get; set; }
         public double Depth { get; set; }
 
+        /// <summary>
+        /// Post peralte (in) as a design value. 0 = inherit the post profile's catalog width. Not visible in the
+        /// LATERAL (the post is seen edge-on) but drives the PLANTA post/celosía/plate — and, when this frame is a
+        /// selective per-post cabecera, the frontal too.
+        /// </summary>
+        public double PostPeralte { get; set; }
+
         // ---- Celosía / diagonal parameters (advanced editor; drive the lateral header builder) ----
         /// <summary>1-based troquel index where the first horizontal of the celosía sits.</summary>
         public int CelosiaStartTroquel { get; set; } = 3;
