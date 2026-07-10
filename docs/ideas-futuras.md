@@ -80,9 +80,12 @@
 - **Validación de esquema en los stores**: hoy `Deserialize("{}")` produce una configuración vacía
   (alto 0) sin error, y `SchemaVersion` se escribe pero nunca se lee. Definir política de versionado
   /migración y validar campos mínimos.
-- **`Recompose` del dinámico borra overrides**: alternar "Reforzar poste derivado" o cambiar el tipo
-  de poste reconstruye el sistema y pierde overrides manuales y cabeceras personalizadas. Preservar
-  overrides re-aplicándolos tras el rebuild (mapeo por índice/posición).
+- **`Recompose` del dinámico borra overrides — mayormente resuelto (2026-07-09):** cambiar
+  niveles/altura o alternar "Reforzar poste derivado" ya es **no destructivo** (`UpdateHeaderHeightInPlace`
+  reconstruye cada cabecera a la nueva altura conservando su fondo/`module.Length`), y las
+  personalizaciones sobreviven a guardar/reabrir. Solo queda el caso de cambiar la **especificación de
+  tarima** (o `PalletsDeep`), que sí fuerza `BuildDefault` completo y descarta overrides — es inherente
+  (cambia la malla de módulos); si se quiere, re-aplicar overrides por índice/posición tras ese rebuild.
 - **Altura editable en el editor avanzado de cabecera**: el campo Altura es editable pero la altura
   se deriva de las horizontales (cualquier cambio estructural la pisa). Decidir: solo lectura, o que
   editarla recalcule las horizontales.

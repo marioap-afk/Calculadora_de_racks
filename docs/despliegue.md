@@ -116,6 +116,29 @@ Abre AutoCAD 2025+; los comandos (`RACKCAD`, `RACKSELECTIVO`, …) quedan dispon
 **Alternativa manual:** `APPLOAD` → *Suite de inicio (Startup Suite)* → añadir
 `RackCad.Plugin.dll`. Se carga solo al abrir cada dibujo (pero sin la comodidad del bundle).
 
+### Compartir la app y publicar versiones nuevas
+
+El bundle **no es un artefacto que se mantenga a mano**: el build (target `AssembleAutoloaderBundle`
+del `.csproj`) **regenera solo** `RackCad.bundle\Contents\` (DLLs frescos + `catalogs\`) en cada
+`dotnet build`, y `PackageContents.xml` es estático (solo se toca en un *release* si quieres subir
+`AppVersion`). Así que "actualizar el bundle" = simplemente **recompilar**.
+
+Para pasar una versión nueva a otra persona:
+
+1. Cierra AutoCAD (bloquea `RackCad.Plugin.dll`).
+2. `pwsh deploy\install-bundle.ps1 -Build` (o `dotnet build -c Release`).
+3. Comparte la carpeta `RackCad.bundle` (o un `.zip`); la otra persona la pega en su
+   `%AppData%\Autodesk\ApplicationPlugins\` **reemplazando** la anterior. Al reabrir AutoCAD carga sola.
+
+Dos matices que evitan re-desplegar:
+
+- **Cambios solo de datos NO requieren bundle nuevo.** Los catálogos son CSV/JSON que RackCad **lee en
+  vivo** (recarga por fecha/tamaño al re-ejecutar el comando). Ajustar un perfil, peralte o bloque =
+  editar el CSV dentro de su `Contents\catalogs\`, sin recompilar ni recompartir. Solo los cambios de
+  **código** (features/bugs) exigen un bundle nuevo.
+- **Librería/catálogo central compartido:** si apuntas la ruta de la librería de bloques a un disco/red
+  común (menú `RACKCAD`, ver §5), un cambio de bloques lo ven todas las máquinas sin re-desplegar.
+
 ---
 
 ## 5. Catálogo y librería de bloques (la "base de datos")

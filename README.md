@@ -35,6 +35,7 @@ RACKSISTEMADINAMICO     (dibuja el sistema dinamico por defecto, sin dialogo)
 QUICKCAMA               (cama sin interfaz: tipo, rodillo, fondo del carril y de tarima)
 RACKSELECTIVO           (abre el editor selectivo; dibuja la vista frontal al confirmar)
 RACKEDITAR              (selecciona un rack dibujado y reabre su editor precargado; ver Round-trip)
+RACKDUPLICAR            (copia un rack como uno INDEPENDIENTE, con GUID nuevo; ver Round-trip)
 ```
 
 ## Identidad y round-trip (RACKEDITAR)
@@ -44,6 +45,8 @@ Los cuatro tipos comparten la misma logica reutilizable de identidad y edicion e
 - Cada rack dibujado es **una** definicion de bloque; las copias son referencias a ella.
 - En la **definicion** del bloque se embebe (diccionario de extension, `Xrecord` troceado en fragmentos <=255 chars) un sobre unificado `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON del diseno) }`. `Kind` es uno de `selective`, `dynamic`, `cabecera`, `cama`; `View` es `frontal`, `lateral` o `planta`; `Section` es el indice de corte lateral del selectivo (-1 = vista no seccionada).
 - `RACKEDITAR` lee el sobre del bloque seleccionado, **despacha por `Kind`** y reabre el editor correcto precargado (`LoadExisting`). Al confirmar, **redefine la definicion en sitio** (`RedefineSystemBlock` + `Regen`): todas las copias se actualizan a la vez y ninguna se mueve.
+- **Botones Actualizar / Insertar (convencion permanente en las cuatro ventanas):** **Actualizar** redibuja en sitio las vistas existentes (solo edicion); **Insertar {vista}** agrega una vista nueva **enlazada** (mismo GUID) y refresca las demas. En racks de una sola vista (dinamico, cama) el boton alterna su etiqueta segun si la vista ya existe.
+- **`RACKDUPLICAR`** hace una copia **independiente** (GUID nuevo, nombre "- copia"): editar la copia no afecta al original. Distinto del `COPY` de AutoCAD, que comparte la definicion y por ende el GUID (esas copias se editan juntas).
 - El nombre "Rack A" (campo en cada editor) es el nombre del bloque; el GUID va en el sobre para evitar colisiones.
 - Stores del diseno por tipo: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera), `FlowBedConfigurationStore` (cama).
 
@@ -103,6 +106,8 @@ src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll
 ```
 
 4. Ejecutar cualquiera de los comandos de la seccion Comandos. Los bloques que falten se importan de la biblioteca; los parametros dinamicos (`LONGITUD`, `Distancia1`) se asignan al insertar. Ver `docs/generacion-cabecera-lateral.md`.
+
+Para que RackCad **cargue solo al abrir AutoCAD** (sin `NETLOAD` por sesion), instala el bundle del Autoloader con `pwsh deploy\install-bundle.ps1 -Build` (AutoCAD cerrado). Detalle de despliegue, carga automatica y como compartir la app: `docs/despliegue.md`.
 
 ## Documentos de contexto
 

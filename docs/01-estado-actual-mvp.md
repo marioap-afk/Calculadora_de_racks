@@ -5,7 +5,13 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-esta con 232 tests verdes.
+esta con 249 tests verdes.
+
+**Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
+cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
+(c) generacion desde el menu `RACKCAD` o desde su comando directo. RackCad puede **cargarse solo al
+abrir AutoCAD** con el bundle del Autoloader (ver [despliegue.md](despliegue.md#4-carga-automatica-autoloader-bundle--recomendado));
+si no, se hace `NETLOAD` por sesion.
 
 Menu principal: comando `RACKCAD` (`RackMainMenuWindow`), desde donde se elige que disenar e
 insertar. Cada tipo tiene ademas su comando directo.
@@ -17,14 +23,22 @@ insertar. Cada tipo tiene ademas su comando directo.
 Un marco = 2 postes + placas base + celosia. Las **horizontales son la fuente de verdad**; los
 paneles se derivan entre horizontales consecutivas. El **peralte de la placa base es editable por
 placa** (`BasePlatePlacement.PeralteOverride`; `null` = derivado del poste con `StandardPeralte` =
-base + slope*peralte_poste). En modo "Configuracion rapida", "Insertar" genera de un clic.
+base + slope*peralte_poste). En modo "Configuracion rapida" ademas del alto/fondo se puede fijar el
+**peralte del poste** (`PostPeralte`, afecta la planta y la frontal del selectivo cuando esta cabecera
+se referencia) **sin abrir el editor avanzado**, y hay un **campo de nombre**; "Insertar" genera de un
+clic.
 
 - Comandos: `RACKCABECERA` (configurador), `RACKCABECERALATERAL` (dibujo directo de la estandar),
   `QUICKCABECERA` (desde la linea de comandos: poste, fondo, alto).
 
 ### 2. Sistema dinamico (pallet flow) — `RackDynamicSystemWindow`
 
-Cabeceras a lo largo del tramo + separadores por nivel.
+Cabeceras a lo largo del tramo + separadores por nivel. La altura de la cabecera se deriva de los
+niveles, pero tambien se puede **editar a mano** (`ManualHeaderHeightOverride`). El recomponer es
+**no destructivo**: cambiar niveles/altura o alternar "reforzar poste derivado" preserva los fondos
+de las cabeceras personalizadas (`UpdateHeaderHeightInPlace`); solo cambiar la especificacion de
+tarima (o `PalletsDeep`) fuerza un rebuild completo. Las personalizaciones avanzadas sobreviven a
+guardar y reabrir.
 
 - Comando: `RACKSISTEMADINAMICO` + opcion del menu.
 
@@ -43,8 +57,15 @@ tarima+holgura, altura por frente medida desde el escalon (1/3 de la tarima supe
 en Y=0, "larguero a piso" por frente (elevacion editable), etc. Overrides manuales opcionales
 (vacio = auto): longitud de larguero y claro por celda, altura por frente, elevacion de larguero a
 piso. Cada poste (N frentes -> N+1 postes) puede referenciar una **cabecera por poste**
-(`RackFrameConfiguration` embebida), de donde sale su placa/peralte.
+(`RackFrameConfiguration` embebida), de donde sale su placa/peralte. El **peralte del poste es por
+poste** (no uno solo para todo el frente): `SelectivePostGeometry.Compute` devuelve un `TroquelXs`
+por poste y las bahias entre postes de distinto peralte se espacian bien.
 
+- **Toggles de dibujo** (seccion propia en el editor): "Numerar frentes", "Numerar niveles",
+  "Colocar nombre de rack" y "Dibujar placa base" (real). Las tres anotaciones de texto se dibujan en
+  una **capa dedicada `RACKCAD_ANOTACIONES`** (amarilla) via `SelectiveAnnotations` +
+  `HeaderBlockRole.Annotation`, presentes en frontal, planta y lateral, y se regeneran en cada
+  redefinicion (no se persisten). "Dibujar tarima" queda diferido (ver ideas-futuras.md).
 - **BOM** (postes, placas, largueros, mensulas) con `SelectiveBomBuilder` y `RackBomWindow`
   (grid + exportacion a CSV).
 - Comando: `RACKSELECTIVO`.
@@ -64,6 +85,15 @@ piso. Cada poste (N frentes -> N+1 postes) puede referenciar una **cabecera por 
   se actualizan a la vez, ninguna se mueve.
 - El nombre "Rack A" (campo en cada editor) es el nombre del bloque; el GUID va en el sobre (evita
   colisiones).
+- **Convencion de botones (permanente en las cuatro ventanas):**
+  - **Actualizar** = redibuja en sitio las vistas existentes del sistema (mismo GUID); es solo edicion.
+  - **Insertar {vista}** = agrega una vista NUEVA **enlazada** (mismo GUID) y ademas **refresca** las
+    vistas ya presentes. En racks multi-vista (selectivo, cabecera) aparece "Actualizar" + un
+    "Insertar" por vista; en los de una sola vista (dinamico, cama) el unico boton alterna su etiqueta
+    Insertar <-> Actualizar segun si esa vista ya existe.
+  - **`RACKDUPLICAR`** = copia **independiente** (GUID nuevo, nombre "- copia"); editar la copia no
+    toca al original. Distinto del `COPY` de AutoCAD, que comparte la definicion y por ende el GUID
+    (esas copias se editan juntas, que es lo correcto para "replicas").
 - Escalable: agregar un tipo nuevo = su `Kind` + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting`
   en su ventana + embed/RedrawInPlace en su draw service. Stores del diseno:
   `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera),

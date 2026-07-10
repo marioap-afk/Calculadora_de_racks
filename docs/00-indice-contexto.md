@@ -2,7 +2,7 @@
 
 Este indice resume como entender rapidamente el proyecto y cual es el estado del repo antes de continuar el desarrollo.
 
-RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (232 tests verdes).
+RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (249 tests verdes).
 
 ## Los cuatro tipos de rack
 
@@ -18,6 +18,7 @@ El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde s
 - Cada rack dibujado = **una definicion de bloque**; las copias son referencias a ella.
 - En la **definicion** del bloque se embebe (diccionario de extension, Xrecord troceado <=255, `RackBlockData`) un sobre unificado `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON del diseno) }`. Kinds: `selective`, `dynamic`, `cabecera`, `cama`. Views: `frontal`, `lateral`, `planta`. `Section` = indice del corte lateral del selectivo (`-1` = vista no seccionada).
 - Comando `RACKEDITAR`: seleccionas un rack -> lee el sobre -> **despacha por Kind** -> reabre el editor correcto precargado (`LoadExisting`) -> al confirmar **redefine la definicion en sitio** (`RedefineSystemBlock` + Regen) => todas las copias se actualizan a la vez, ninguna se mueve ni se recoloca. Ademas **redibuja TODAS las vistas** del sistema (frontal/lateral/planta), encontradas por GUID escaneando las definiciones de bloque.
+- **Botones Actualizar / Insertar (convencion permanente en las cuatro ventanas):** **Actualizar** = redibuja en sitio las vistas existentes (solo edicion); **Insertar {vista}** = agrega una vista NUEVA enlazada (mismo GUID) y refresca las demas. En racks de una sola vista (dinamico, cama) el boton alterna su etiqueta segun si la vista ya existe. **`RACKDUPLICAR`** hace una copia **independiente** (GUID nuevo), distinta del `COPY` de AutoCAD (que comparte definicion/GUID y edita todas las copias juntas).
 - El nombre "Rack A" (campo en cada editor) = nombre del bloque; el GUID va en el sobre (evita colisiones).
 - Stores del diseno: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` (dinamico/cabecera), `FlowBedConfigurationStore` (cama). Servicios de dibujo/redraw: `SelectiveFrontalDrawService`, `SelectivePlantaDrawService`, `DynamicSystemDrawService`, `FlowBedDrawService`, `LateralHeaderDrawService`, `PlantaHeaderDrawService`.
 - Escalable: agregar un tipo nuevo = su Kind + `Edit<Kind>` en `RackFrameCommands` + `LoadExisting` en su ventana + embed/`RedrawInPlace` en su draw service.
@@ -88,6 +89,6 @@ Utiles para decisiones de arquitectura, pero mas extensos:
 
 ## Estado del repositorio
 
-Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 232 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
+Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 249 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
 
 La carpeta de salida `bin/`, `obj/`, caches locales `.dotnet_home`, `.nuget_packages`, `.appdata` y `.localappdata` no son parte logica del codigo fuente y estan ignoradas por `.gitignore`.
