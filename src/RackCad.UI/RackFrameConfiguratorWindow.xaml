@@ -774,6 +774,24 @@
                                         <Button Style="{StaticResource CompactButtonStyle}" Content="Eliminar horizontal" IsEnabled="{Binding CanDeleteSelectedHorizontal}" Click="DeleteSelectedHorizontal_Click" />
                                         <Button Style="{StaticResource CompactButtonStyle}" Content="Duplicar horizontal" IsEnabled="{Binding CanDuplicateSelectedHorizontal}" Click="DuplicateSelectedHorizontal_Click" />
                                     </WrapPanel>
+
+                                    <Border BorderBrush="#E1E7EE" BorderThickness="0,1,0,0" Margin="0,10,0,0" Padding="0,10,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding SelectedHorizontalCountLabel}" FontWeight="SemiBold" Foreground="#415161" />
+                                            <TextBlock Text="Edición en lote: selecciona varias horizontales en la tabla (Ctrl/Shift) y aplica un cambio a todas."
+                                                       Style="{StaticResource MutedTextStyle}" FontSize="10.5" Margin="0,2,0,8" />
+                                            <WrapPanel>
+                                                <ComboBox Width="150" Margin="0,0,6,8" ItemsSource="{Binding HorizontalProfileOptions}" DisplayMemberPath="DisplayName" SelectedValuePath="Id" SelectedValue="{Binding BulkHorizontalProfileId}" />
+                                                <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar perfil" Click="ApplyBulkHorizontalProfile_Click" />
+                                                <ComboBox Width="120" Margin="0,0,6,8" ItemsSource="{Binding SideOptions}" SelectedItem="{Binding BulkHorizontalFace}" />
+                                                <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar cara" Click="ApplyBulkHorizontalFace_Click" />
+                                                <TextBox Width="55" Margin="0,0,6,8" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding BulkHorizontalQuantity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ToolTip="Cantidad a aplicar" />
+                                                <Button Style="{StaticResource CompactButtonStyle}" Content="Aplicar cantidad" Click="ApplyBulkHorizontalQuantity_Click" />
+                                                <TextBox Width="65" Margin="0,0,6,8" Style="{StaticResource PropertyValueTextBoxStyle}" Text="{Binding BulkHorizontalElevationOffset, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ToolTip="Desplazamiento de elevación (in), +/-" />
+                                                <Button Style="{StaticResource CompactButtonStyle}" Content="Desplazar elevación" Click="ApplyBulkHorizontalElevationOffset_Click" />
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
                             </Border>
 
@@ -989,7 +1007,7 @@
                               GridLinesVisibility="Horizontal"
                               HeadersVisibility="Column"
                               RowHeaderWidth="0"
-                              SelectionMode="Single"
+                              SelectionMode="Extended"
                               SelectionUnit="FullRow"
                               SelectionChanged="HorizontalsGrid_SelectionChanged"
                               ScrollViewer.HorizontalScrollBarVisibility="Auto"

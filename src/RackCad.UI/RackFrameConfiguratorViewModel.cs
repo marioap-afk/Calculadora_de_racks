@@ -56,6 +56,10 @@ namespace RackCad.UI
         private BracingPattern bulkPattern = BracingPattern.SingleDiagonal;
         private FrameSide bulkSide = FrameSide.Front;
         private string bulkProfileId;
+        private string bulkHorizontalProfileId;
+        private FrameSide bulkHorizontalFace = FrameSide.Front;
+        private int bulkHorizontalQuantity = 1;
+        private double bulkHorizontalElevationOffset;
 
         public RackFrameConfiguratorViewModel(RackFrameConfiguration configuration)
             : this(configuration, null)
@@ -105,6 +109,7 @@ namespace RackCad.UI
             Horizontals = new ObservableCollection<HorizontalEditorRow>();
             BracingSegments = new ObservableCollection<BracingSegmentEditorRow>();
             SelectedBracingSegments = new ObservableCollection<BracingSegmentEditorRow>();
+            SelectedHorizontals = new ObservableCollection<HorizontalEditorRow>();
             HorizontalOptions = new ObservableCollection<string>();
             Exceptions = new ObservableCollection<FrameExceptionEditorRow>();
             ExceptionGroups = new ObservableCollection<FrameExceptionGroup>();
@@ -167,6 +172,7 @@ namespace RackCad.UI
         public ObservableCollection<HorizontalEditorRow> Horizontals { get; private set; }
         public ObservableCollection<BracingSegmentEditorRow> BracingSegments { get; private set; }
         public ObservableCollection<BracingSegmentEditorRow> SelectedBracingSegments { get; private set; }
+        public ObservableCollection<HorizontalEditorRow> SelectedHorizontals { get; private set; }
         public ObservableCollection<string> HorizontalOptions { get; private set; }
         public ObservableCollection<CatalogOption> PostProfileOptions { get; private set; }
         public ObservableCollection<CatalogOption> HorizontalProfileOptions { get; private set; }
@@ -867,6 +873,10 @@ namespace RackCad.UI
             ? "Sin paneles seleccionados"
             : SelectedBracingSegments.Count.ToString(CultureInfo.InvariantCulture) + " panel(es) seleccionado(s)";
 
+        public string SelectedHorizontalCountLabel => SelectedHorizontals.Count == 0
+            ? "Sin horizontales seleccionadas"
+            : SelectedHorizontals.Count.ToString(CultureInfo.InvariantCulture) + " horizontal(es) seleccionada(s)";
+
         public BracingSegmentEditorRow SelectedBracingSegment
         {
             get => selectedBracingSegment;
@@ -941,6 +951,42 @@ namespace RackCad.UI
         {
             get => bulkProfileId;
             set => SetProperty(ref bulkProfileId, value);
+        }
+
+        public string BulkHorizontalProfileId
+        {
+            get => bulkHorizontalProfileId;
+            set => SetProperty(ref bulkHorizontalProfileId, value);
+        }
+
+        public FrameSide BulkHorizontalFace
+        {
+            get => bulkHorizontalFace;
+            set => SetProperty(ref bulkHorizontalFace, value);
+        }
+
+        public int BulkHorizontalQuantity
+        {
+            get => bulkHorizontalQuantity;
+            set => SetProperty(ref bulkHorizontalQuantity, value);
+        }
+
+        public double BulkHorizontalElevationOffset
+        {
+            get => bulkHorizontalElevationOffset;
+            set => SetProperty(ref bulkHorizontalElevationOffset, value);
+        }
+
+        /// <summary>Set the multi-selection of horizontals from the grid (mirrors <see cref="SetSelectedSegments"/>).</summary>
+        public void SetSelectedHorizontals(IEnumerable<HorizontalEditorRow> selectedHorizontals)
+        {
+            SelectedHorizontals.Clear();
+            foreach (var horizontal in (selectedHorizontals ?? Enumerable.Empty<HorizontalEditorRow>()).Where(h => h != null))
+            {
+                SelectedHorizontals.Add(horizontal);
+            }
+
+            OnPropertyChanged(nameof(SelectedHorizontalCountLabel));
         }
 
         public void SetSelectedSegments(IEnumerable<BracingSegmentEditorRow> selectedSegments)
@@ -1094,6 +1140,39 @@ namespace RackCad.UI
             }
 
             ApplyToTargetSegments(segment => segment.BraceProfileId = BulkProfileId.Trim(), "Perfil aplicado a la seleccion.");
+        }
+
+        // ---- Edición masiva de HORIZONTALES (espeja el patrón de paneles) ----
+
+        public void ApplyBulkHorizontalProfile()
+        {
+            if (string.IsNullOrWhiteSpace(BulkHorizontalProfileId))
+            {
+                StatusMessage = "Elige un perfil antes de aplicar edicion masiva de horizontales.";
+                StatusBrush = "#B00020";
+                return;
+            }
+
+            ApplyToTargetHorizontals(h => h.ProfileId = BulkHorizontalProfileId.Trim(), "Perfil aplicado a las horizontales seleccionadas.");
+        }
+
+        public void ApplyBulkHorizontalFace()
+            => ApplyToTargetHorizontals(h => h.MountingFace = BulkHorizontalFace, "Cara aplicada a las horizontales seleccionadas.");
+
+        public void ApplyBulkHorizontalQuantity()
+            => ApplyToTargetHorizontals(h => h.Quantity = Math.Max(1, BulkHorizontalQuantity), "Cantidad aplicada a las horizontales seleccionadas.");
+
+        public void ApplyBulkHorizontalElevationOffset()
+        {
+            var delta = BulkHorizontalElevationOffset;
+            if (Math.Abs(delta) < 1e-9)
+            {
+                StatusMessage = "Indica un desplazamiento de elevacion distinto de cero.";
+                StatusBrush = "#B00020";
+                return;
+            }
+
+            ApplyToTargetHorizontals(h => h.Elevation = Math.Max(0.0, h.Elevation + delta), "Elevacion desplazada en las horizontales seleccionadas.");
         }
 
         public void RestoreSelectedSegment()
@@ -1865,6 +1944,49 @@ namespace RackCad.UI
             return new List<BracingSegmentEditorRow>();
         }
 
+        /// <summary>Apply a change to every target horizontal. Mutates the DOMAIN horizontal directly (not the row's
+        /// setters) so it does NOT trigger a per-edit normalize mid-loop — the collection is rebuilt ONCE at the end.</summary>
+        private void ApplyToTargetHorizontals(Action<FrameHorizontal> apply, string successMessage)
+        {
+            var targets = GetTargetHorizontals();
+
+            if (targets.Count == 0)
+            {
+                StatusMessage = "Selecciona una o varias horizontales antes de aplicar esta accion.";
+                StatusBrush = "#B00020";
+                return;
+            }
+
+            foreach (var row in targets)
+            {
+                var domain = row?.DomainHorizontal;
+                if (domain != null)
+                {
+                    apply(domain);
+                }
+            }
+
+            SelectedHorizontals.Clear(); // rows get recreated below; the old references are stale
+            NormalizeHorizontalsAndPanels(preservePanelOverrides: true);
+            RefreshAfterStructureChange(successMessage);
+            OnPropertyChanged(nameof(SelectedHorizontalCountLabel));
+        }
+
+        private IList<HorizontalEditorRow> GetTargetHorizontals()
+        {
+            if (SelectedHorizontals.Count > 0)
+            {
+                return SelectedHorizontals.ToList();
+            }
+
+            if (SelectedHorizontal != null)
+            {
+                return new List<HorizontalEditorRow> { SelectedHorizontal };
+            }
+
+            return new List<HorizontalEditorRow>();
+        }
+
         /// <summary>Pass <paramref name="structural"/> = false for text-only edits (name, descriptions): they
         /// must not pay a full physical-model rebuild + exception re-scan.</summary>
         private void MarkConfigurationEdited(string message, bool structural = true)
@@ -1919,6 +2041,7 @@ namespace RackCad.UI
         private void RefreshSelectionProperties()
         {
             OnPropertyChanged(nameof(SelectedSegmentCountLabel));
+            OnPropertyChanged(nameof(SelectedHorizontalCountLabel));
             OnPropertyChanged(nameof(CanRestoreSelectedSegment));
             OnPropertyChanged(nameof(CanAddSegmentNearSelection));
             OnPropertyChanged(nameof(CanSplitSelectedSegment));

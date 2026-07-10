@@ -440,6 +440,26 @@ namespace RackCad.UI
             RunUiAction(() => ViewModel.ApplyBulkProfile());
         }
 
+        private void ApplyBulkHorizontalProfile_Click(object sender, RoutedEventArgs e)
+        {
+            RunUiAction(() => ViewModel.ApplyBulkHorizontalProfile());
+        }
+
+        private void ApplyBulkHorizontalFace_Click(object sender, RoutedEventArgs e)
+        {
+            RunUiAction(() => ViewModel.ApplyBulkHorizontalFace());
+        }
+
+        private void ApplyBulkHorizontalQuantity_Click(object sender, RoutedEventArgs e)
+        {
+            RunUiAction(() => ViewModel.ApplyBulkHorizontalQuantity());
+        }
+
+        private void ApplyBulkHorizontalElevationOffset_Click(object sender, RoutedEventArgs e)
+        {
+            RunUiAction(() => ViewModel.ApplyBulkHorizontalElevationOffset());
+        }
+
         private void BracingSegmentsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (syncingGridSelection)
@@ -474,8 +494,15 @@ namespace RackCad.UI
                 return;
             }
 
+            var selectedHorizontals = HorizontalsGrid.SelectedItems.OfType<HorizontalEditorRow>().ToList();
             var activeHorizontal = HorizontalsGrid.SelectedItem as HorizontalEditorRow;
+            if (activeHorizontal == null && selectedHorizontals.Count > 0)
+            {
+                activeHorizontal = selectedHorizontals[0];
+            }
+
             ViewModel.SelectedHorizontal = activeHorizontal;
+            ViewModel.SetSelectedHorizontals(selectedHorizontals);
 
             if (activeHorizontal != null)
             {
@@ -1175,16 +1202,20 @@ namespace RackCad.UI
 
                 if (segment.Members.Count == 0)
                 {
-                    AddConnectionPoint(layout.LeftX, segment.StartY, radius, fallbackBrush, segment.StartConnectionPointId);
-                    AddConnectionPoint(layout.RightX, segment.EndY, radius, fallbackBrush, segment.EndConnectionPointId);
+                    AddConnectionPoint(layout.LeftX, segment.StartY, radius, fallbackBrush, segment.StartConnectionPointId,
+                        segment.Source, "Punto de conexion: " + (segment.StartConnectionPointId ?? "(sin punto)"));
+                    AddConnectionPoint(layout.RightX, segment.EndY, radius, fallbackBrush, segment.EndConnectionPointId,
+                        segment.Source, "Punto de conexion: " + (segment.EndConnectionPointId ?? "(sin punto)"));
                     continue;
                 }
 
                 foreach (var member in segment.Members)
                 {
                     var brush = segment.IsSelected ? ActiveElementStroke : GetSideBrush(member.MountingFace);
-                    AddConnectionPoint(GetMemberEndX(layout, member.Start) + GetMountingFaceOffset(member.MountingFace), layout.ToMemberY(member.Start.Elevation), radius, brush, member.Start.ConnectionPointId);
-                    AddConnectionPoint(GetMemberEndX(layout, member.End) + GetMountingFaceOffset(member.MountingFace), layout.ToMemberY(member.End.Elevation), radius, brush, member.End.ConnectionPointId);
+                    AddConnectionPoint(GetMemberEndX(layout, member.Start) + GetMountingFaceOffset(member.MountingFace), layout.ToMemberY(member.Start.Elevation), radius, brush, member.Start.ConnectionPointId,
+                        segment.Source, ConnectionPointTooltip(member.Start, member.MountingFace));
+                    AddConnectionPoint(GetMemberEndX(layout, member.End) + GetMountingFaceOffset(member.MountingFace), layout.ToMemberY(member.End.Elevation), radius, brush, member.End.ConnectionPointId,
+                        segment.Source, ConnectionPointTooltip(member.End, member.MountingFace));
                 }
             }
         }
@@ -1382,7 +1413,7 @@ namespace RackCad.UI
             PreviewCanvas.Children.Add(rectangle);
         }
 
-        private void AddCircle(double centerX, double centerY, double radius, Brush stroke)
+        private void AddCircle(double centerX, double centerY, double radius, Brush stroke, object hitTag = null, string tooltip = null)
         {
             var ellipse = new Ellipse
             {
@@ -1393,14 +1424,29 @@ namespace RackCad.UI
                 StrokeThickness = 2.0
             };
 
+            // When given a tag, the point is SELECTABLE: it sits above the segment hit-areas (ZIndex), shows its info
+            // on hover and, on click, selects its owning panel (reusing the segment click handler).
+            if (hitTag != null)
+            {
+                ellipse.Tag = hitTag;
+                ellipse.Cursor = System.Windows.Input.Cursors.Hand;
+                ellipse.MouseLeftButtonDown += PreviewSegment_MouseLeftButtonDown;
+                Panel.SetZIndex(ellipse, 10);
+            }
+
+            if (!string.IsNullOrWhiteSpace(tooltip))
+            {
+                ellipse.ToolTip = tooltip;
+            }
+
             Canvas.SetLeft(ellipse, centerX - radius);
             Canvas.SetTop(ellipse, centerY - radius);
             PreviewCanvas.Children.Add(ellipse);
         }
 
-        private void AddConnectionPoint(double centerX, double centerY, double radius, Brush stroke, string label)
+        private void AddConnectionPoint(double centerX, double centerY, double radius, Brush stroke, string label, object hitTag = null, string tooltip = null)
         {
-            AddCircle(centerX, centerY, radius, stroke);
+            AddCircle(centerX, centerY, radius, stroke, hitTag, tooltip);
 
             if (string.IsNullOrWhiteSpace(label))
             {
@@ -1409,6 +1455,10 @@ namespace RackCad.UI
 
             AddText(GetCompactCatalogLabel(label), centerX + radius + 3.0, centerY - 7.0, stroke, 7.5);
         }
+
+        private static string ConnectionPointTooltip(FrameMemberEnd end, FrameSide face)
+            => "Punto de conexion: " + (string.IsNullOrWhiteSpace(end?.ConnectionPointId) ? "(sin punto)" : end.ConnectionPointId)
+               + "  ·  cara " + face + "  ·  elev " + (end?.Elevation ?? 0.0).ToString("0.##", CultureInfo.InvariantCulture) + " in";
 
         private void PreviewSegment_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

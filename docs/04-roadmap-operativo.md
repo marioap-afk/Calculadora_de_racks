@@ -93,24 +93,26 @@ completo y al confirmar redibuja **todas** las vistas (encontradas por GUID
 escaneando las definiciones de bloque). La cabecera, por su parte, tiene vistas
 lateral y planta ligadas igual; dinamico y cama dibujan lateral.
 
-## Refinamientos pendientes (menores, en curso)
+## Refinamientos (estado 2026-07-09)
 
 Configurador de cabecera:
 
-- Probar casos con muchas horizontales y mejorar la edicion masiva.
-- Validar seleccion multiple de paneles y advertencias de duplicados de elevacion.
-- Confirmar que restaurar estandar cubre todos los campos tecnicos.
+- ✅ Multiseleccion de paneles + aviso de elevacion duplicada (ya implementado; `SelectionMode=Extended` +
+  `FrameModelValidator`).
+- ✅ Restaurar estandar cubre todos los campos tecnicos (verificado: `CopyConfiguration` clona campo por campo).
+- ✅ Edicion masiva de HORIZONTALES (multiseleccion + aplicar perfil/cantidad/cara/offset de elevacion en lote).
+- ✅ Primer incremento de validacion de ingenieria: el refuerzo del poste no puede superar la altura del marco.
 
 Vista previa / dibujo:
 
-- Diferenciar mejor cara Front/Back/Both y horizontales dobles.
-- Dibujar puntos de conexion seleccionables.
+- ✅ Cara Front/Back/Both y horizontales dobles se diferencian en el preview (colores + offset).
+- ✅ Puntos de conexion seleccionables en el preview (clic sobre el punto lo selecciona en el editor).
 
 BOM y cotizacion:
 
-- Extender agrupacion por perfil/longitud/cantidad/origen a los demas tipos.
-- Integrar con el archivo cotizador existente.
-- Agregar validaciones de ingenieria de forma gradual.
+- ✅ Agrupacion por perfil/longitud/cantidad extendida a los 4 tipos (cama: `FlowBedBomBuilder`).
+- Pendiente: integrar con el archivo cotizador existente; BOM consolidado multi-rack + export a Excel.
+- Validaciones de ingenieria: seguir agregando reglas (capacidad de carga, holguras) de forma gradual.
 
 ## Como agregar un tipo de rack nuevo
 
