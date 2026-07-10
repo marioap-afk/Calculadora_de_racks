@@ -207,16 +207,19 @@
 
         <!-- Actions -->
         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="120" Margin="0,0,8,0"
+                    ToolTipService.ShowOnDisabled="True"
+                    ToolTip="Redibuja en sitio las vistas ya dibujadas de este rack con tus cambios (no inserta nada). Disponible al editar con RACKEDITAR." Click="UpdateExisting_Click" />
             <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0"
                     ToolTip="Genera el BOM (postes, placas, largueros y ménsulas) del selectivo actual." Click="ShowBom_Click" />
-            <Button x:Name="InsertFrontalButton" Content="Insertar frontal" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
-                    ToolTip="Dibuja la VISTA FRONTAL del selectivo (postes + largueros) en el dibujo activo." Click="InsertFrontal_Click" />
+            <Button Content="Insertar frontal" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
+                    ToolTip="Inserta una VISTA FRONTAL (postes + largueros) enlazada a este rack (mismo GUID) y refresca las demás vistas." Click="InsertFrontal_Click" />
             <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTipService.ShowOnDisabled="True"
-                    ToolTip="Dibuja la VISTA LATERAL (cada poste como su cabecera). Comparte identidad con la frontal (mismo GUID)." Click="InsertLateral_Click" />
+                    ToolTip="Inserta una VISTA LATERAL (un corte de poste) enlazada a este rack (mismo GUID) y refresca las demás vistas." Click="InsertLateral_Click" />
             <Button x:Name="InsertPlantaButton" Content="Insertar planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTipService.ShowOnDisabled="True"
-                    ToolTip="Dibuja la VISTA PLANTA (superior): un marco por frente + largueros. Insértala editando la frontal (RACKEDITAR)." Click="InsertPlanta_Click" />
+                    ToolTip="Inserta una VISTA PLANTA (superior) enlazada a este rack (mismo GUID) y refresca las demás vistas." Click="InsertPlanta_Click" />
             <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />
         </StackPanel>
     </Grid>

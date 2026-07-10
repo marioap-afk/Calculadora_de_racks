@@ -70,7 +70,6 @@ namespace RackCad.UI
         /// <summary>True when the window was opened on an EXISTING rack (RACKEDITAR). The lateral view can only be
         /// inserted then — it links to that rack's frontal; inserting it on a brand-new rack would orphan it.</summary>
         private bool isEditingExisting;
-        private System.Collections.Generic.IReadOnlyCollection<string> existingViews;
 
         private IReadOnlyList<HeaderBlockInstance> lastInstances;
         private SelectiveRackSystem lastSystem;
@@ -93,8 +92,11 @@ namespace RackCad.UI
         /// <summary>Client-facing name of the inserted rack (may be empty).</summary>
         public string RackName { get; private set; }
 
-        /// <summary>Which view the user asked to insert ("frontal" or "lateral").</summary>
+        /// <summary>Which view the user asked to insert ("frontal"/"lateral"/"planta"); null when only updating.</summary>
         public string InsertView { get; private set; }
+
+        /// <summary>True when the user chose "Actualizar" (redraw existing views in place, insert nothing).</summary>
+        public bool UpdateOnly { get; private set; }
 
         public RackSelectiveWindow()
             : this(false)
@@ -130,33 +132,23 @@ namespace RackCad.UI
         /// </summary>
         private void UpdateInsertButtons()
         {
+            // "Actualizar" (redraw existing views in place) and adding a linked lateral/planta only make sense on an
+            // existing rack, so they light up only when editing via RACKEDITAR (and inside AutoCAD). A new rack starts
+            // with "Insertar frontal", which creates the first block.
             var enabled = isEditingExisting && canInsertInAutoCad;
+            UpdateButton.IsEnabled = enabled;
             InsertLateralButton.IsEnabled = enabled;
             InsertPlantaButton.IsEnabled = enabled;
-
-            // When editing (RACKEDITAR), a view that is ALREADY drawn is redrawn in place on confirm, so its button
-            // reads "Actualizar …"; a view not yet drawn still "Insertar …". A brand-new rack always inserts.
-            InsertFrontalButton.Content = ViewActionLabel(RackEmbedDocument.ViewFrontal, "frontal");
-            InsertLateralButton.Content = ViewActionLabel(RackEmbedDocument.ViewLateral, "lateral");
-            InsertPlantaButton.Content = ViewActionLabel(RackEmbedDocument.ViewPlanta, "planta");
 
             if (!enabled)
             {
                 var reason = !canInsertInAutoCad
                     ? "Disponible solo cuando la ventana se abre desde AutoCAD."
-                    : "Primero inserta la vista frontal; luego selecciónala con RACKEDITAR y agrega esta vista desde ahí.";
+                    : "Primero inserta la vista frontal; luego selecciónala con RACKEDITAR y actualiza o agrega vistas desde ahí.";
+                UpdateButton.ToolTip = reason;
                 InsertLateralButton.ToolTip = reason;
                 InsertPlantaButton.ToolTip = reason;
             }
-        }
-
-        /// <summary>"Actualizar {noun}" when editing a rack that already has this view drawn (confirm redraws it in
-        /// place); otherwise "Insertar {noun}".</summary>
-        private string ViewActionLabel(string view, string noun)
-        {
-            var updates = isEditingExisting && existingViews != null
-                && existingViews.Contains(view, System.StringComparer.OrdinalIgnoreCase);
-            return (updates ? "Actualizar " : "Insertar ") + noun;
         }
 
         // ---- Matrix model ----
@@ -705,13 +697,20 @@ namespace RackCad.UI
             Recompute();
         }
 
-        private void InsertFrontal_Click(object sender, RoutedEventArgs e) => RequestInsert(RackEmbedDocument.ViewFrontal);
+        private void InsertFrontal_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewFrontal, updateOnly: false);
 
-        private void InsertLateral_Click(object sender, RoutedEventArgs e) => RequestInsert(RackEmbedDocument.ViewLateral);
+        private void InsertLateral_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewLateral, updateOnly: false);
 
-        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => RequestInsert(RackEmbedDocument.ViewPlanta);
+        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => RequestDraw(RackEmbedDocument.ViewPlanta, updateOnly: false);
 
-        private void RequestInsert(string view)
+        /// <summary>"Actualizar": redraw the rack's already-drawn views in place with the current edits, inserting nothing.</summary>
+        private void UpdateExisting_Click(object sender, RoutedEventArgs e) => RequestDraw(view: null, updateOnly: true);
+
+        /// <summary>
+        /// Close the window asking AutoCAD to draw. <paramref name="updateOnly"/> = redraw existing views only (Actualizar);
+        /// otherwise insert a new linked view-block of <paramref name="view"/> AND refresh the existing ones.
+        /// </summary>
+        private void RequestDraw(string view, bool updateOnly)
         {
             if (!canInsertInAutoCad)
             {
@@ -719,15 +718,15 @@ namespace RackCad.UI
                 return;
             }
 
-            // The lateral/planta are views OF the system: they must link to an existing frontal. Inserting one on a
-            // brand-new rack would orphan it, so require inserting the frontal first and adding it via RACKEDITAR.
-            if ((view == RackEmbedDocument.ViewLateral || view == RackEmbedDocument.ViewPlanta) && !isEditingExisting)
+            // Updating, and adding a linked lateral/planta, only make sense on an existing system (a new rack has no GUID
+            // to link to yet): insert the frontal first, then add the rest via RACKEDITAR.
+            if (!isEditingExisting && (updateOnly || view == RackEmbedDocument.ViewLateral || view == RackEmbedDocument.ViewPlanta))
             {
                 MessageBox.Show(
                     this,
-                    "Primero inserta la vista frontal. Luego selecciónala con RACKEDITAR y desde ahí agrega esta vista: "
-                        + "así queda ligada al sistema (si la insertas sola quedaría huérfana).",
-                    "Vista " + view,
+                    "Primero inserta la vista frontal. Luego selecciónala con RACKEDITAR y desde ahí actualiza o agrega "
+                        + "las demás vistas: así quedan ligadas al sistema (mismo GUID).",
+                    updateOnly ? "Actualizar" : "Vista " + view,
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
                 return;
@@ -744,7 +743,8 @@ namespace RackCad.UI
             if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
 
             InsertRequested = true;
-            InsertView = view;
+            UpdateOnly = updateOnly;
+            InsertView = updateOnly ? null : view;
             SystemToInsert = system;
             DesignToInsert = design;
             RackId = currentId;
@@ -927,16 +927,13 @@ namespace RackCad.UI
             Recompute();
         }
 
-        /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.
-        /// <paramref name="viewsAlreadyDrawn"/> are the views (frontal/lateral/planta) already in the drawing, so their
-        /// buttons read "Actualizar" instead of "Insertar".</summary>
-        public void LoadExisting(SelectivePalletDesignDocument document, System.Collections.Generic.IReadOnlyCollection<string> viewsAlreadyDrawn = null)
+        /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
+        public void LoadExisting(SelectivePalletDesignDocument document)
         {
             if (document == null) return;
             currentId = document.Id;
             currentName = document.Name;
-            isEditingExisting = true; // opened on an existing rack → the lateral/planta views may be inserted (linked to it)
-            existingViews = viewsAlreadyDrawn;
+            isEditingExisting = true; // opened on an existing rack → "Actualizar" + linked lateral/planta become available
             UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
             LoadDesign(document.ToDomain());

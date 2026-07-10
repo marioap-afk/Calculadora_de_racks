@@ -82,7 +82,7 @@ namespace RackCad.Plugin
             }
 
             var window = new RackSelectiveWindow(canInsertInAutoCad: true);
-            window.LoadExisting(saved, ExistingSelectiveViews(document, embed));
+            window.LoadExisting(saved);
             AcApplication.ShowModalWindow(window);
 
             if (!window.InsertRequested)
@@ -162,22 +162,12 @@ namespace RackCad.Plugin
                 }
             }
 
-            // If the user asked to insert a lateral, ask which corte and add it (tied to this GUID); the existing
-            // views were already redrawn above.
-            if (window.InsertView == RackEmbedDocument.ViewLateral)
+            // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the
+            // requested view via the normal insertion path (jig). DrawSelectiveView writes its own outcome. "Actualizar"
+            // (UpdateOnly) inserts nothing — the refresh above is the whole action.
+            if (!window.UpdateOnly)
             {
-                InsertSelectiveLateralSection(document, system, design, id, name);
-                return;
-            }
-
-            // The planta is one block for the whole top view; insert it if requested and none exists yet.
-            if (window.InsertView == RackEmbedDocument.ViewPlanta && plantaBlocks.Count == 0)
-            {
-                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta);
-                var inserted = new SelectivePlantaDrawService().DrawAndPlace(document, system, payload, name);
-                editor.WriteMessage(inserted != null && inserted.Success
-                    ? "\nRackCad: vista planta insertada y ligada al sistema; RACKEDITAR redibuja todas las vistas."
-                    : "\nRackCad: no se pudo insertar la planta. " + (inserted?.ErrorMessage ?? string.Empty));
+                DrawSelectiveView(window.InsertView, system, design, id, name);
                 return;
             }
 
@@ -187,29 +177,6 @@ namespace RackCad.Plugin
                     + updatedLateral.ToString(CultureInfo.InvariantCulture) + ", planta x"
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
                 : "\nRackCad: no se pudo actualizar el rack.");
-        }
-
-        /// <summary>
-        /// Which views (frontal/lateral/planta) of this rack are ALREADY drawn — so the editor can label each view
-        /// button "Actualizar" (redraw in place) vs "Insertar" (add it). The clicked block's own view is always
-        /// included (defensive if the GUID scan can't match it).
-        /// </summary>
-        private static System.Collections.Generic.List<string> ExistingSelectiveViews(Document document, RackEmbedDocument embed)
-        {
-            var views = new System.Collections.Generic.List<string>();
-            var blocks = FindRackBlocks(document, embed?.Id);
-
-            if (blocks.Any(b => !IsLateralView(b.Embed) && !IsPlantaView(b.Embed))) views.Add(RackEmbedDocument.ViewFrontal);
-            if (blocks.Any(b => IsLateralView(b.Embed))) views.Add(RackEmbedDocument.ViewLateral);
-            if (blocks.Any(b => IsPlantaView(b.Embed))) views.Add(RackEmbedDocument.ViewPlanta);
-
-            var clicked = string.IsNullOrWhiteSpace(embed?.View) ? RackEmbedDocument.ViewFrontal : embed.View;
-            if (!views.Contains(clicked, System.StringComparer.OrdinalIgnoreCase))
-            {
-                views.Add(clicked);
-            }
-
-            return views;
         }
 
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>
