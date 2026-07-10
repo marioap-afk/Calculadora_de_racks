@@ -76,6 +76,18 @@ namespace RackCad.UI
 
         private void Update_Click(object sender, RoutedEventArgs e) => Recompute();
 
+        private void ShowBom_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastInstances == null || lastConfig == null)
+            {
+                SetStatus("Genera la cama antes de ver el BOM.", true);
+                return;
+            }
+
+            var bom = FlowBedBomBuilder.Build(lastInstances, catalog);
+            new RackBomWindow(bom) { Owner = this }.ShowDialog();
+        }
+
         private void Input_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (IsLoaded)
