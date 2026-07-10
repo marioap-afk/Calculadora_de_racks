@@ -227,6 +227,31 @@
                                 Margin="0,8,0,0"
                                 ToolTip="Genera la cabecera con el tipo, poste, alto y fondo elegidos. 'Insertar lateral' también la genera antes de dibujar." />
 
+                        <Border BorderBrush="#D8DEE6"
+                                BorderThickness="0,1,0,0"
+                                Margin="0,16,0,0"
+                                Padding="0,14,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Guardar como plantilla" Style="{StaticResource PropertyLabelStyle}" />
+                                <TextBlock Text="Guarda la cabecera actual como plantilla reutilizable entre proyectos."
+                                           Style="{StaticResource MutedTextStyle}"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           Margin="0,2,0,6" />
+                                <TextBox x:Name="TemplateNameBox"
+                                         Style="{StaticResource PropertyValueTextBoxStyle}"
+                                         Text=""
+                                         ToolTip="Nombre de la plantilla como aparecerá en el desplegable «Tipo de cabecera»." />
+                                <Button Content="Guardar como plantilla"
+                                        Click="SaveAsTemplate_Click"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        HorizontalAlignment="Left"
+                                        MinWidth="150"
+                                        Margin="0,8,0,0"
+                                        ToolTip="Guarda la forma, perfiles, poste y placa actuales como plantilla de usuario (en %AppData%\RackCad). No se guardan las excepciones por panel." />
+                            </StackPanel>
+                        </Border>
+
                         <Border Background="#F1F4F8"
                                 BorderBrush="#D8DEE6"
                                 BorderThickness="1"

@@ -212,6 +212,16 @@ namespace RackCad.UI
             });
         }
 
+        private void SaveAsTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            RunUiAction(() =>
+            {
+                // The view model validates the name and reports success/error on the status line; the out
+                // error is already surfaced there, so nothing extra is needed here.
+                ViewModel.SaveAsUserTemplate(TemplateNameBox.Text, out _);
+            });
+        }
+
         private void ViewBom_Click(object sender, RoutedEventArgs e)
         {
             RunUiAction(() =>

@@ -42,6 +42,7 @@ namespace RackCad.UI
         private RackFrameConfiguration standardConfigurationSnapshot;
 
         private bool isAdvancedEditor;
+        private IReadOnlyList<RackFrameTemplate> headerTemplateOptions;
         private RackFrameTemplate selectedHeaderTemplate;
         private string simplePostCatalogId;
         private double simpleHeight;
@@ -126,18 +127,8 @@ namespace RackCad.UI
             standardRightPlateCatalogId = NormalizeText(configuration.RightBasePlate?.PlateCatalogId);
             standardRightPlateConnectionPointId = NormalizeText(configuration.RightBasePlate?.ConnectionPointId);
 
-            IReadOnlyList<RackFrameTemplate> headerTemplates;
-            string templateLoadWarning = null;
-
-            try
-            {
-                headerTemplates = RackFrameTemplateProvider.FromBaseDirectory().Load();
-            }
-            catch (Exception ex)
-            {
-                headerTemplates = RackFrameTemplateCatalog.All;
-                templateLoadWarning = "Plantillas: " + ex.Message + " Se usaron las plantillas internas.";
-            }
+            // Merge the shared catalog/built-in templates with the user's saved ones (%APPDATA%\RackCad).
+            var headerTemplates = LoadMergedHeaderTemplates(out var templateLoadWarning);
 
             HeaderTemplateOptions = headerTemplates;
             selectedHeaderTemplate = headerTemplates.Count > 0 ? headerTemplates[0] : RackFrameTemplateCatalog.Default;
@@ -202,7 +193,11 @@ namespace RackCad.UI
 
         public string EditorModeLabel => isAdvancedEditor ? "Editor avanzado" : "Configuración rápida";
 
-        public IReadOnlyList<RackFrameTemplate> HeaderTemplateOptions { get; private set; }
+        public IReadOnlyList<RackFrameTemplate> HeaderTemplateOptions
+        {
+            get => headerTemplateOptions;
+            private set => SetProperty(ref headerTemplateOptions, value);
+        }
 
         public RackFrameTemplate SelectedHeaderTemplate
         {
@@ -1221,6 +1216,131 @@ namespace RackCad.UI
                 StatusMessage = "No se pudo generar la cabecera: " + ex.Message;
                 StatusBrush = "#B00020";
             }
+        }
+
+        /// <summary>
+        /// Saves the CURRENT cabecera as a reusable user template under
+        /// <c>%APPDATA%\RackCad\user-templates.json</c>, then refreshes the "Tipo de cabecera" dropdown and
+        /// selects the new one. Only the standard shape/profiles/post/plate are stored — per-panel exceptions
+        /// are NOT part of a template. <paramref name="error"/> is null on success, or the reason on failure
+        /// (also mirrored to the red status line so the UI shows it either way).
+        /// </summary>
+        public void SaveAsUserTemplate(string name, out string error)
+        {
+            error = null;
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                error = "Escribe un nombre para la plantilla.";
+                StatusMessage = error;
+                StatusBrush = "#B00020";
+                return;
+            }
+
+            var trimmedName = name.Trim();
+            var id = "USER-" + Guid.NewGuid().ToString("N").Substring(0, 8);
+            var template = RackFrameTemplateFactory.FromConfiguration(Configuration, id, trimmedName);
+
+            try
+            {
+                new UserTemplateStore(UserTemplateStore.DefaultPath).Save(template);
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                StatusMessage = "No se pudo guardar la plantilla: " + ex.Message;
+                StatusBrush = "#B00020";
+                return;
+            }
+
+            // Refresh from disk and select the one we just created. Match by id: the merged list holds the
+            // freshly deserialized instance (which the ComboBox uses), not our local `template` reference.
+            HeaderTemplateOptions = LoadMergedHeaderTemplates(out _);
+            SelectedHeaderTemplate = FindTemplateById(HeaderTemplateOptions, id) ?? SelectedHeaderTemplate;
+
+            StatusMessage = "Plantilla '" + trimmedName + "' guardada. Se guarda la forma/perfiles/poste/placa actuales; no las excepciones por panel.";
+            StatusBrush = "#2F855A";
+        }
+
+        /// <summary>
+        /// The templates shown in "Tipo de cabecera": the shared catalog/built-in templates MERGED with the
+        /// user's saved ones (<c>%APPDATA%\RackCad\user-templates.json</c>). Catalog templates keep their order
+        /// (so the standard stays the default selection); a user template with the same id OVERRIDES it (user
+        /// wins), and remaining user templates are appended. <paramref name="loadWarning"/> reports a catalog
+        /// parse failure (else null); the user library is best-effort and never throws.
+        /// </summary>
+        private IReadOnlyList<RackFrameTemplate> LoadMergedHeaderTemplates(out string loadWarning)
+        {
+            loadWarning = null;
+            IReadOnlyList<RackFrameTemplate> catalogTemplates;
+
+            try
+            {
+                catalogTemplates = RackFrameTemplateProvider.FromBaseDirectory().Load();
+            }
+            catch (Exception ex)
+            {
+                catalogTemplates = RackFrameTemplateCatalog.All;
+                loadWarning = "Plantillas: " + ex.Message + " Se usaron las plantillas internas.";
+            }
+
+            var userTemplates = new UserTemplateStore(UserTemplateStore.DefaultPath).Load();
+
+            var merged = new List<RackFrameTemplate>();
+            var placedIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // Catalog first (keeps the standard as [0]); a colliding user id replaces it in place (user wins).
+            foreach (var template in catalogTemplates)
+            {
+                if (template == null)
+                {
+                    continue;
+                }
+
+                var chosen = FindTemplateById(userTemplates, template.Id) ?? template;
+                merged.Add(chosen);
+
+                if (!string.IsNullOrWhiteSpace(template.Id))
+                {
+                    placedIds.Add(template.Id);
+                }
+            }
+
+            // Append user templates that don't collide with a catalog id.
+            foreach (var template in userTemplates)
+            {
+                if (template == null || (!string.IsNullOrWhiteSpace(template.Id) && placedIds.Contains(template.Id)))
+                {
+                    continue;
+                }
+
+                merged.Add(template);
+
+                if (!string.IsNullOrWhiteSpace(template.Id))
+                {
+                    placedIds.Add(template.Id);
+                }
+            }
+
+            return merged;
+        }
+
+        private static RackFrameTemplate FindTemplateById(IReadOnlyList<RackFrameTemplate> templates, string id)
+        {
+            if (templates == null || string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            foreach (var template in templates)
+            {
+                if (template != null && string.Equals(template.Id, id, StringComparison.OrdinalIgnoreCase))
+                {
+                    return template;
+                }
+            }
+
+            return null;
         }
 
         public BillOfMaterials BuildBom()

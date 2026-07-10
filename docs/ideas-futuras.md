@@ -80,8 +80,13 @@
    configurada) con nombre + tipo (`RackDesignLibrary`), y al elegir uno reabre el editor correcto precargado.
    Guardar cabecera/dinámico apunta por defecto a esa carpeta. Pendiente: incluir selectivo y cama (hoy solo
    viven embebidos en el DWG — les falta persistencia a disco) y miniaturas/vista previa.
-9. **Plantillas de usuario** — "Guardar como plantilla" desde el configurador de cabeceras hacia
-   `header-templates.json`, para que las cabeceras personalizadas se reutilicen entre proyectos.
+9. ~~**Plantillas de usuario**~~ — ✅ **HECHO (2026-07-10):** "Guardar como plantilla" en la configuración
+   rápida del configurador de cabeceras guarda la cabecera actual como `RackFrameTemplate` reutilizable en
+   `%AppData%\RackCad\user-templates.json` (ubicación escribible por usuario, no el `header-templates.json`
+   compartido). `RackFrameTemplateFactory.FromConfiguration` es el inverso de la factory (captura forma,
+   perfiles, poste, placa, diagonal y puntos de conexión; **no** las excepciones por panel); `UserTemplateStore`
+   persiste (upsert por id). El desplegable "Tipo de cabecera" mezcla catálogo/internas + usuario (usuario gana
+   por id).
 
 ### Ingeniería y datos
 10. **Validación de capacidad de carga** — los CSVs ya llevan columnas Ix/Iy/norma; falta la regla que

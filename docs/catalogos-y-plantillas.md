@@ -162,6 +162,22 @@ Ejemplo de una cabecera baja de 1 panel sin diagonales (poste/placa heredados de
 - Escribir mal `defaultArrangement` (ej. `xbracing` en vez de `XBracing`).
 - Repetir un `id` ya usado.
 
+### Plantillas de usuario (desde el configurador)
+
+Ademas de editar `header-templates.json` a mano, ahora se pueden **guardar plantillas de usuario desde el
+configurador de cabeceras** sin tocar archivos: en la **configuracion rapida** hay un campo "Nombre de
+plantilla" y un boton **"Guardar como plantilla"** que guarda la cabecera actual como una plantilla
+reutilizable entre proyectos.
+
+- Se guardan en `%AppData%\RackCad\user-templates.json` (ubicacion **escribible por usuario**, no el
+  `header-templates.json` compartido junto al DLL, que es de solo lectura). El formato es el mismo (una lista de
+  plantillas auto-descriptivas), con id automatico tipo `USER-xxxxxxxx`.
+- El desplegable "Tipo de cabecera" **mezcla** las plantillas del catalogo/internas con las del usuario; si un id
+  coincide, **gana la del usuario**.
+- Se guarda la **forma actual** (perfiles, poste, placa, diagonal, puntos de conexion, alto/fondo). **No** se
+  guardan las **excepciones por panel** (son ajustes por proyecto, no parte de la plantilla estandar): al aplicar
+  la plantilla, la factory regenera las elevaciones parametricamente.
+
 ## Valores por defecto (`defaults.json`)
 
 `defaults.json` es la "receta estandar" global: que piezas usa la cabecera cuando una plantilla deja un campo vacio, y los defaults de altura y del margen de cabecera. Es un **objeto** (no una lista).
