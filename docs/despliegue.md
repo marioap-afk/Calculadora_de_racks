@@ -138,6 +138,7 @@ un cambio de catálogo. Sí conviene cerrar el archivo en Excel antes de volver 
 | `QUICKCAMA` | Cama de rodamiento. |
 | `RACKSELECTIVO` | Editor de rack selectivo (matriz frentes × niveles). |
 | `RACKEDITAR` | Seleccionar un rack ya dibujado y reabrir su editor; al confirmar redibuja todas sus vistas. |
+| `RACKDUPLICAR` | Copiar un rack seleccionado como uno **independiente** (GUID nuevo); editar la copia no afecta al original. |
 
 ---
 

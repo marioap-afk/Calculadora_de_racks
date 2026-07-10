@@ -29,16 +29,14 @@
    pasillo sería un gran ahorro.
 
 ### Gestión de racks
-5. **`RACKDUPLICAR` — duplicar un rack como uno INDEPENDIENTE** — hoy un `COPY` de AutoCAD comparte la
-   *definición* del bloque y con ella el **mismo GUID** embebido, así que `RACKEDITAR` trata las copias
-   como el mismo rack y editar una edita TODAS (correcto para "réplicas" del mismo rack). Falta el caso
-   opuesto: tomar un rack (elemento o sistema) y crear una copia **nueva e independiente** con su **GUID
-   propio** — para poder editarla sin afectar al original. Implementación: leer el payload embebido
-   (`RackEmbedStore` → `RackProjectStore`/`SelectivePalletDesignStore`), re-serializar con
-   `Guid.NewGuid()` y un nombre nuevo ("Rack A - copia"), y redibujar por el mismo camino de inserción
-   (`DrawSelectiveView` / `DrawAndPlace*`) para que nazca con su propia definición y bloque(s). Debe
-   funcionar para los 4 tipos y arrastrar TODAS las vistas del rack (frontal/lateral/planta) con el GUID
-   nuevo. Es también la base natural del layout de almacén (#4: clonar N veces con espaciado de pasillo).
+5. **`RACKDUPLICAR` — duplicar un rack como uno INDEPENDIENTE** — ✅ **HECHO (2026-07-09, commit `1547254`).**
+   Un `COPY` de AutoCAD comparte la *definición* del bloque y con ella el mismo GUID, así que `RACKEDITAR`
+   edita todas las copias juntas (correcto para "réplicas"). `RACKDUPLICAR` cubre el caso opuesto: toma un
+   rack, lee su diseño embebido y lo redibuja por el camino de inserción (jig) con un **GUID nuevo** y
+   nombre "- copia", como su propio bloque; editar la copia no toca al original. Duplica la vista del
+   bloque seleccionado y funciona para los 4 tipos. Pendiente/mejora: duplicar TODAS las vistas de una vez
+   (hoy duplica la del bloque clicado) y usarlo como base del layout de almacén (#4: clonar N veces con
+   espaciado de pasillo).
 6. **`RACKLISTA`** — comando que tabula todos los racks del dibujo (Nombre, GUID, tipo, vistas
    presentes) con zoom-to al seleccionar. El escaneo por GUID ya existe (`FindRackBlocks`).
 7. **Renombrado sincronizado** — cambiar el "Rack A" en cualquier vista debería renombrar los bloques
