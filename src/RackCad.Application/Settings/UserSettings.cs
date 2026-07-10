@@ -9,6 +9,9 @@ namespace RackCad.Application.Settings
     {
         /// <summary>Override path to the block library DWG; null/empty = use the default next to the catalogs.</summary>
         public string BlockLibraryPath { get; set; }
+
+        /// <summary>Folder for the design library (named .rackcad.json designs); null/empty = the default under %APPDATA%\RackCad\Designs.</summary>
+        public string DesignLibraryPath { get; set; }
     }
 
     /// <summary>Loads/saves <see cref="UserSettings"/> as a best-effort JSON file; failures fall back to defaults.</summary>
@@ -22,6 +25,19 @@ namespace RackCad.Application.Settings
 
         public static string SettingsPath => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RackCad", "settings.json");
+
+        /// <summary>The configured design-library folder, or the default (%APPDATA%\RackCad\Designs) when unset.</summary>
+        public static string ResolveDesignLibraryPath(UserSettings settings)
+        {
+            var configured = settings?.DesignLibraryPath;
+            if (!string.IsNullOrWhiteSpace(configured))
+            {
+                return configured;
+            }
+
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RackCad", "Designs");
+        }
 
         public static UserSettings Load()
         {

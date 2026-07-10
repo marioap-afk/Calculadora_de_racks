@@ -64,8 +64,11 @@
 7. ~~**Renombrado sincronizado**~~ — ✅ **HECHO (2026-07-09):** al editar/renombrar un rack, `RackBlockRenamer`
    sincroniza el nombre del bloque en TODAS sus vistas (frontal, lateral N, planta) en los 4 tipos
    (best-effort: no lanza, uniquifica evitando colisiones; las referencias apuntan por id, no se rompen).
-8. **Biblioteca de diseños** — guardar/cargar diseños con nombre fuera del DWG (carpeta de proyectos
-   .rackcad.json ya existe por tipo; falta un navegador unificado).
+8. ~~**Biblioteca de diseños**~~ — ✅ **HECHO (2026-07-09):** "Abrir de la biblioteca de diseños" en el menú
+   `RACKCAD` lista los diseños `.rackcad.json` de una carpeta gestionada (`%AppData%\RackCad\Designs`, o la
+   configurada) con nombre + tipo (`RackDesignLibrary`), y al elegir uno reabre el editor correcto precargado.
+   Guardar cabecera/dinámico apunta por defecto a esa carpeta. Pendiente: incluir selectivo y cama (hoy solo
+   viven embebidos en el DWG — les falta persistencia a disco) y miniaturas/vista previa.
 9. **Plantillas de usuario** — "Guardar como plantilla" desde el configurador de cabeceras hacia
    `header-templates.json`, para que las cabeceras personalizadas se reutilicen entre proyectos.
 

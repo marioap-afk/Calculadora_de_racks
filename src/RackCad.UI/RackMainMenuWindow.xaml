@@ -100,6 +100,13 @@
                 </StackPanel>
             </Button>
 
+            <Button Style="{StaticResource MenuButton}" Click="OpenDesignLibrary_Click">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource OptionTitle}" Text="Abrir de la biblioteca de diseños" />
+                    <TextBlock Style="{StaticResource OptionCaption}" Text="Reabre un diseño de cabecera o sistema dinámico guardado con nombre." />
+                </StackPanel>
+            </Button>
+
             <Button Style="{StaticResource MenuButton}" IsEnabled="False">
                 <StackPanel>
                     <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar drive-in" />

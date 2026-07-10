@@ -307,10 +307,14 @@ namespace RackCad.UI
 
         private void SaveProject_Click(object sender, RoutedEventArgs e)
         {
+            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
+            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
+
             var dialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
-                FileName = "cabecera" + RackCad.Application.Persistence.RackFrameProjectStore.FileExtension
+                FileName = "cabecera" + RackCad.Application.Persistence.RackFrameProjectStore.FileExtension,
+                InitialDirectory = libraryFolder
             };
 
             if (dialog.ShowDialog(this) == true)

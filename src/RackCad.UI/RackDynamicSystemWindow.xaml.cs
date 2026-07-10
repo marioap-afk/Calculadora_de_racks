@@ -1144,10 +1144,14 @@ namespace RackCad.UI
             ApplyDerivedPostOptions();
             ApplyHeightOverride();
 
+            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
+            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
+
             var dialog = new Microsoft.Win32.SaveFileDialog
             {
                 Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
-                FileName = "sistema" + RackProjectStore.FileExtension
+                FileName = "sistema" + RackProjectStore.FileExtension,
+                InitialDirectory = libraryFolder
             };
             if (dialog.ShowDialog(this) != true) { return; }
 
@@ -1251,6 +1255,23 @@ namespace RackCad.UI
             {
                 InsertButton.Content = "Actualizar en AutoCAD";
                 InsertButton.ToolTip = "Redibuja el sistema en sitio con tus cambios; todas sus copias en el dibujo se actualizan.";
+            }
+
+            RestoreFrom(loaded);
+        }
+
+        /// <summary>Load a design opened from the library as a NEW insert: keeps the "Insertar" button and mints a fresh
+        /// GUID on insert (unlike <see cref="LoadExisting"/>, which is the in-place round-trip edit).</summary>
+        public void LoadDesignForNew(DynamicRackSystem loaded, string name)
+        {
+            if (loaded == null)
+            {
+                return;
+            }
+
+            if (NameBox != null && !string.IsNullOrWhiteSpace(name))
+            {
+                NameBox.Text = name.Trim();
             }
 
             RestoreFrom(loaded);

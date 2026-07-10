@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Settings;
 using RackCad.Domain.RackFrames;
@@ -153,6 +154,59 @@ namespace RackCad.UI
             catch (Exception ex)
             {
                 MessageBox.Show(this, "No se pudo abrir el sistema dinamico: " + ex.Message,
+                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void OpenDesignLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var folder = UserSettingsStore.ResolveDesignLibraryPath(settings);
+                var library = new RackDesignLibraryWindow(folder) { Owner = this };
+                if (library.ShowDialog() != true || library.SelectedDesign == null)
+                {
+                    return;
+                }
+
+                var project = new RackProjectStore().Load(library.SelectedDesign.Path);
+
+                if (library.SelectedDesign.Kind == RackDesignKind.Dinamico && project.DynamicSystem != null)
+                {
+                    var editor = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
+                    editor.LoadDesignForNew(project.DynamicSystem, library.SelectedDesign.Name);
+                    editor.ShowDialog();
+
+                    if (editor.InsertRequested)
+                    {
+                        InsertRequested = true;
+                        DynamicSystemToInsert = editor.SystemToInsert;
+                        DynamicRackId = editor.RackId;
+                        DynamicRackName = editor.RackName;
+                        Close();
+                    }
+                }
+                else if (project.Header != null)
+                {
+                    var editor = new RackFrameConfiguratorWindow(project.Header, canInsertInAutoCad) { Owner = this };
+                    editor.ShowDialog();
+
+                    if (editor.InsertRequested)
+                    {
+                        InsertRequested = true;
+                        ConfigurationToInsert = editor.Configuration;
+                        Close();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(this, "El diseño seleccionado no se pudo interpretar.",
+                        "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "No se pudo abrir la biblioteca de diseños: " + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
