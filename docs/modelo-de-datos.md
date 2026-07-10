@@ -1,7 +1,7 @@
 # Modelo de datos: cómo se conectan los catálogos
 
 Esta guía explica **qué tabla apunta a cuál** (las "conexiones" entre los CSV/JSON) y **cómo se cargan**
-en el código. Es el mapa para entender por qué existen `blocks`, `views`, `post-profiles`, etc.
+en el código. Es el mapa para entender por qué existen `blocks`, `views`, `secciones`, etc.
 
 RackCad ya no es "solo un configurador de cabeceras": dibuja en AutoCAD los **cuatro** tipos de rack
 (cabecera/marco, sistema dinámico, cama de rodamiento y selectivo), y todos comparten este mismo catálogo.
@@ -14,9 +14,7 @@ Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que ot
 
 | Tabla (archivo) | Clave | ¿Referencia a otras? |
 |---|---|---|
-| `post-profiles.csv` | `id` | No (catálogo hoja; los refuerzos son postes y salen de aquí) |
-| `truss-profiles.csv` | `id` | No (UNA lista de celosía: horizontales y diagonales) |
-| `beam-profiles.csv` | `id` | → `mensulas` (columna `mensula`); `peraltes` = valores permitidos (no FK) |
+| `secciones.csv` | `id` | → `mensulas` (columna `mensula`, solo en filas `rol=LARGUERO`); la columna `rol` = POSTE\|CELOSIA\|LARGUERO parte esta hoja única en postes/refuerzos, celosía (horizontales y diagonales) y largueros; `peraltes` (largueros) = valores permitidos (no FK) |
 | `mensulas.csv` | `id` | No (catálogo hoja; conector de extremo del larguero) |
 | `flow-bed-profiles.csv` | `id` | No (componentes de cama: riel/rodillo/freno/tope por `role`) |
 | `spacers-profiles.csv` | `id` | No (separadores de cabecera; CSV presente, **aún no cargado** en `RackCatalog`) |
@@ -28,6 +26,10 @@ Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que ot
 | `header-templates.json` | `id` | → perfiles, placa y puntos |
 | `defaults.json` | (única) | → perfiles, placa y puntos |
 
+> **Nota (compatibilidad):** los tres CSV separados `post-profiles.csv`, `truss-profiles.csv` y
+> `beam-profiles.csv` son **fallback legacy** (mismos `id` y mismos campos que las filas de `secciones.csv`).
+> Solo se leen si **falta** `secciones.csv`; con la hoja unificada presente se ignoran.
+
 Las **hojas** (perfiles, puntos, vistas) no dependen de nadie: son el vocabulario base.
 Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos `id`.
 
@@ -36,9 +38,9 @@ Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos 
 ```
         CATÁLOGOS HOJA (clave = id, no dependen de nadie)
         ┌──────────────────────┐ ┌────────────────────────┐ ┌───────────────┐
-        │ post-profiles.csv    │ │ truss-profiles.csv     │ │ views.csv     │
-        │ (POSTE_*, refuerzos) │ │ (horizontales/diag.)   │ │ (FRONTAL,     │
-        │                      │ │ connection-points.csv  │ │  PLANTA, ...) │
+        │ secciones.csv        │ │ secciones.csv          │ │ views.csv     │
+        │ rol=POSTE            │ │ rol=CELOSIA (h/diag)   │ │ (FRONTAL,     │
+        │ (POSTE_*, refuerzos) │ │ connection-points.csv  │ │  PLANTA, ...) │
         └──────────▲───────────┘ └───────────▲────────────┘ └───────▲───────┘
                    │                          │                      │
    ┌───────────────┼──────────────┬───────────┼──────────┐           │
@@ -62,6 +64,12 @@ Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos 
    └───────────────────────────────────────────────────────────────────────────────────────
 ```
 
+> Los recuadros `post-profiles` / `truss-profiles` de arriba son en realidad **slices** de
+> `secciones.csv`: `rol=POSTE` (postes y refuerzos), `rol=CELOSIA` (horizontales y diagonales) y
+> `rol=LARGUERO` (largueros, con su columna `mensula`). Las FK que este documento escribe como
+> `-> post-profiles` / `-> truss-profiles` se resuelven contra esos slices; los `id` **no cambiaron**,
+> así que plantillas y `defaults` siguen apuntando a los mismos `id`.
+
 Resumen de las **claves foráneas** (FK), una por una:
 
 - `blocks.pieceId` → el `id` de cualquier pieza (perfil, placa, punto, larguero, ménsula, rodillo…)
@@ -84,6 +92,7 @@ Mismo diagrama en formato Mermaid (se ve en GitHub/VS Code):
 
 ```mermaid
 erDiagram
+    SECCIONES            { string id PK }
     POST_PROFILES        { string id PK }
     TRUSS_PROFILES       { string id PK }
     BEAM_PROFILES        { string id PK }
@@ -98,6 +107,9 @@ erDiagram
     HEADER_TEMPLATES     { string id PK }
     DEFAULTS             { string post FK }
 
+    SECCIONES        ||--o{ POST_PROFILES     : "rol=POSTE"
+    SECCIONES        ||--o{ TRUSS_PROFILES    : "rol=CELOSIA"
+    SECCIONES        ||--o{ BEAM_PROFILES     : "rol=LARGUERO"
     BEAM_PROFILES    }o--|| MENSULAS          : mensula
     CONNECTION_LAYOUT }o--|| CONNECTION_POINTS : connectionPointId
     CONNECTION_LAYOUT }o--|| VIEWS             : view
@@ -122,6 +134,11 @@ Todo entra por **un solo punto**: el provider lee la carpeta `catalogs/` y devue
 ```
 JsonRackCatalogProvider.FromBaseDirectory().Load()
    │   (Excel-first: lee cada .csv; si no hay, el .json hermano)
+   │
+   │   secciones.csv --SplitSecciones(rol)--> PostProfiles  (filas rol=POSTE)
+   │                                          TrussProfiles (filas rol=CELOSIA)
+   │                                          BeamProfiles  (filas rol=LARGUERO, +Mensula)
+   │   (si falta secciones.csv -> lee post-/truss-/beam-profiles legacy en su lugar)
    ▼
 RackCatalog {
    PostProfiles, TrussProfiles,
@@ -172,17 +189,19 @@ de bloque), redefiniendo cada definición en sitio para que todas las copias se 
 
 ## 4. Ejemplo trazado de punta a punta
 
-Quiero dibujar la cabecera estándar en vista frontal:
+Quiero dibujar la cabecera estándar en vista lateral (la cabecera dibuja LATERAL + PLANTA; `FRONTAL`
+es del selectivo). El ejemplo ilustra sobre todo cómo se **resuelven los `id`**; la vista concreta solo
+cambia qué fila de `connection-layout`/`blocks` se elige:
 
 1. `Load()` lee todo → `RackCatalog`.
 2. Tomo la plantilla `STD-3P`. Su campo `post` = `POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA`.
-3. `FindProfile("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA")` en `post-profiles.csv` → la pieza con su `width`, `material`, etc.
+3. `FindProfile("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA")` en `secciones.csv` (filas `rol=POSTE`) → la pieza con su `width`, `material`, etc.
 4. Su `basePlate` = `PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16`. ¿Dónde se monta? `MountConnectionPointId("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16")`
    busca en `connection-layout.csv` la fila de esa placa con rol `BasePlate` → `MONTAJE_POSTE`. Luego
-   `FindConnectionLayout("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16","MONTAJE_POSTE","FRONTAL")` → `localX/localY` para el mate.
+   `FindConnectionLayout("PLACA_BASE_DE_CABECERA_ATORNILLABLE_DE_PLACA_CALIBRE_3_16","MONTAJE_POSTE","LATERAL")` → `localX/localY` para el mate.
    (`MONTAJE_POSTE` es compartible: cualquier placa lo usa con su propia posición por vista, sin tocar la fila de la placa.)
-5. (Dibujo) Para ese poste en vista `FRONTAL`: `Blocks.FindBlock("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA","FRONTAL")`
-   → `blockName = POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_FRONTAL` → se inserta en AutoCAD.
+5. (Dibujo) Para ese poste en vista `LATERAL`: `Blocks.FindBlock("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA","LATERAL")`
+   → `blockName = POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA_LATERAL` → se inserta en AutoCAD.
 
 ## 5. Reglas para mantener la integridad
 
@@ -201,3 +220,5 @@ Quiero dibujar la cabecera estándar en vista frontal:
 - Comandos de AutoCAD (menú y dibujo por tipo): `src/RackCad.Plugin/RackFrameCommands.cs`
   (`RACKCAD`, `RACKCABECERA`, `QUICKCABECERA`, `RACKSISTEMADINAMICO`, `QUICKCAMA`,
   `RACKSELECTIVO`, `RACKEDITAR`, `RACKDUPLICAR`).
+- Inventario de racks del dibujo (tabla de todos los racks con zoom al elegido): `RACKLISTA`
+  en `src/RackCad.Plugin/RackFrameCommands.List.cs`.

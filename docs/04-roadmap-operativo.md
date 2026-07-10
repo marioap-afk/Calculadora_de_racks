@@ -57,6 +57,12 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
   reabre el editor correcto precargado (`LoadExisting`) -> al confirmar **redefine la
   definicion en sitio** (`RedefineSystemBlock` + Regen) => todas las copias se
   actualizan a la vez, ninguna se mueve.
+- **`RACKDUPLICAR`**: copia un rack como INDEPENDIENTE (GUID nuevo, nombre "- copia");
+  editar la copia no afecta al original. Distinto del `COPY` de AutoCAD, que comparte
+  definicion/GUID y edita todas las copias juntas.
+- **`RACKLISTA`**: tabla de todos los racks del dibujo (nombre, tipo, vistas presentes,
+  numero de copias; `RackListBuilder` agrupa los sobres por GUID) con zoom a la primera
+  referencia del rack elegido.
 - El nombre "Rack A" (campo en cada editor) = nombre del bloque; el GUID va en el
   sobre para evitar colisiones.
 - Stores del diseno: `SelectivePalletDesignStore` (selectivo),
@@ -93,7 +99,12 @@ completo y al confirmar redibuja **todas** las vistas (encontradas por GUID
 escaneando las definiciones de bloque). La cabecera, por su parte, tiene vistas
 lateral y planta ligadas igual; dinamico y cama dibujan lateral.
 
-## Refinamientos (estado 2026-07-09)
+Convencion permanente de botones del editor: **Actualizar** redibuja la vista en
+sitio (redefine su definicion, sin mover copias); **Insertar {vista}** agrega una
+vista nueva enlazada al mismo rack (mismo GUID) y refresca. Asi el editor distingue
+"actualizar lo que ya existe" de "agregar una vista mas del mismo rack".
+
+## Refinamientos (estado 2026-07-10)
 
 Configurador de cabecera:
 

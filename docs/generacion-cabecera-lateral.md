@@ -21,17 +21,25 @@ y selectivo); el **mismo patrón por bloques + round-trip** descrito aquí sirve
 
 ```
 RackCad.Application/Headers/            (PURO, testeable en cualquier SO)
-  LateralHeaderParameters     parámetros editables (sin números mágicos)
-  HeaderConnectionGeometry    coords locales de los puntos + nombres de bloque
-  HeaderBlockInstance         una inserción del plan (qué, dónde, params dinámicos)
-  LateralHeaderLayout         el plan completo + totales
-  LateralHeaderLayoutBuilder  la lógica (7 pasos)
-  HeaderGeometryResolver      catálogo (connection-layout + blocks) → geometría
+  LateralHeaderParameters         parámetros editables (sin números mágicos)
+  LateralHeaderParametersFactory  config → parámetros (mapea RackFrameConfiguration → LateralHeaderParameters)
+  HeaderBlockInstance             una inserción del plan (qué, dónde, params dinámicos)
+  LateralHeaderLayout             el plan completo + totales
+  LateralHeaderLayoutBuilder      la lógica (7 pasos)
+  PlantaHeaderLayoutBuilder       el plan de la vista PLANTA (huellas de poste + celosía colapsada)
+
+  La geometría de los puntos NO tiene una clase "resolver": se resuelve con
+  CatalogLookup (RackCad.Application/Catalogs), que lee connection-layout.csv
+  (coords locales por vista) y blocks.csv (nombres de bloque por vista).
 
 RackCad.Plugin/Headers/                (AutoCAD, solo Windows)
   LateralHeaderDrawer         adapter: convierte el plan en un bloque (InsertBlock + params dinámicos)
   LateralHeaderDrawService    orquesta: carga catálogo, arma el plan, crea el bloque y lo coloca (jig)
+  PlantaHeaderDrawService     dibuja la vista PLANTA como bloque, ligada por GUID a la lateral (jig)
+  LateralHeaderDrawOutcome    resultado del dibujo: piezas insertadas + bloques referidos pero no definidos
+  LateralHeaderBlockResult    el bloque creado (definición + nombre final) que devuelve el drawer
   BlockLibraryImporter        importa del DWG biblioteca los bloques que falten en el dibujo activo
+  RackBlockRenamer            sincroniza el nombre de la definición del bloque con el nombre del rack
 ```
 
 Regla de oro: **toda la geometría y los cálculos son puros**; el drawer solo traduce el plan a la API de
@@ -43,10 +51,13 @@ AutoCAD. Así la lógica se prueba sin AutoCAD y el drawer queda mínimo.
 |---|---|---|---|
 | `Height` | 132 | Altura; mueve el parámetro dinámico `LONGITUD` del poste | Editor **clásico** |
 | `Depth` | 42 | Fondo: separación entre los dos postes | Editor **clásico** |
-| `PasoTroquel` | 2 | Paso entre troqueles del poste | (fijo) |
+| `PasoTroquel` | 2 | Paso entre troqueles del poste | Configurable (`config.PasoTroquel`) |
 | `OffsetDiagonalInicioTroqueles` | 2 | La diagonal arranca N troqueles arriba de la horizontal inferior | Editor **avanzado** |
 | `OffsetDiagonalFinTroqueles` | 2 | La diagonal termina N troqueles abajo de la horizontal superior | Editor **avanzado** |
-| `ValorClaroTravesano` | auto | Claro sobrante arriba; si `>0` se agrega una horizontal de cierre | auto / opcional |
+| `DiagonalDoubleSpacingTroqueles` | 1 | Separación en troqueles entre las dos diagonales paralelas de un panel de doble diagonal | Editor **avanzado** |
+| `HorizontalDoubleOffsetTroqueles` | 1 | Cada travesaño extra de una horizontal doble (`Quantity > 1`) sube N troqueles sobre el anterior | Editor **avanzado** |
+| `PeralteParameter` | `PERALTE` | Nombre del parámetro dinámico de peralte que recibe el override manual de la placa base | (nombre de parámetro) |
+| `ValorClaroTravesano` | auto | Claro sobrante arriba (legado: existe pero el builder ya **no** lo usa; el cierre es `closingGap` calculado, ver Paso 7) | auto / opcional |
 
 En el editor, estos viven en `RackFrameConfiguration` (`Height`, `Depth`, `CelosiaStartTroquel`,
 `DiagonalStartOffsetTroqueles`, `DiagonalEndOffsetTroqueles`) y persisten en el proyecto. La **placa base**
@@ -60,6 +71,7 @@ cabecera en un clic (igual que el resto de tipos).
 |---|---|---|
 | `MONTAJE_POSTE` | placa base | El `(0,0)` del poste coincide aquí |
 | `TROQUEL_CELOSIA` | poste | Primer troquel = línea de referencia de la celosía |
+| `FIN_POSTE` | poste | Punto donde encaja el origen de un refuerzo; su X da el desplazamiento del troquel interno del refuerzo |
 | `CELOSIA` | travesaño (celosía) | El punto del travesaño que cae sobre la línea de troqueles |
 
 Sus posiciones 2D por vista están en `connection-layout.csv` y los nombres de bloque por vista en
@@ -74,19 +86,43 @@ Ejes en vista lateral: **X = fondo (entre postes), Y = altura**.
 2. **Poste derecho espejeado** con origen en `X = Depth`.
 3. **Línea de troqueles** desde `TROQUEL_CELOSIA` (derecho espejeado):
    `LongitudHorizontal = X_troquel_dcho − X_troquel_izq`.
-4. **Y de horizontales**: vienen **explícitas** de la `RackFrameConfiguration`; la factory las calcula
-   paramétricamente: primer travesaño en el troquel de inicio
-   (`yFirst = Y_troquel0 + (CelosiaStartTroquel−1)·PasoTroquel`), paneles de `PanelClear` (44") y cierres
-   de 0/1/2. Las elevaciones de las plantillas JSON ya **no** se usan (solo aportan perfiles/placa/poste/
-   puntos) y **no** escalan proporcionalmente.
+4. **Y de horizontales**: vienen **explícitas** de la `RackFrameConfiguration`;
+   **`RackFrameConfigurationFactory`** es quien calcula esas elevaciones paramétricamente: primer travesaño en
+   el troquel de inicio (`yFirst = Y_troquel0 + (CelosiaStartTroquel−1)·PasoTroquel`), paneles de `PanelClear`
+   (44") y cierres de 0/1/2. **`LateralHeaderParametersFactory` solo mapea** la `RackFrameConfiguration` a
+   `LateralHeaderParameters` (ids, offsets, paso…); **no** calcula elevaciones. Las elevaciones de las
+   plantillas JSON ya **no** se usan (solo aportan perfiles/placa/poste/puntos) y **no** escalan
+   proporcionalmente.
 5. **Horizontales**: el punto `CELOSIA` cae sobre la línea de troquel a su Y; largo = `LongitudHorizontal`.
 6. **Diagonales** (una por panel): arranca `OffsetInicio` troqueles arriba de la horizontal inferior y
    termina `OffsetFin` troqueles abajo de la superior; **largo y ángulo se calculan de los puntos reales**.
-7. **Horizontal de cierre**: la horizontal superior cae **exacto** en `Y = Height − PostTopRemate`
-   (remate = 4"), de modo que el **alto construido = el alto pedido** (240 → 240).
+7. **Cierre**: el builder ya **no** agrega una "Horizontal de cierre" (rol `ClosingHorizontal`); solo calcula
+   `closingGap = max(0, Height − topHorizontalY)`. Las elevaciones —incluida la que hace que la horizontal
+   superior caiga **exacto** en `Y = Height − PostTopRemate` (remate = 4")— las precalcula
+   `RackFrameConfigurationFactory` (`const PostTopRemate = 4.0`), y el builder **solo lee** `config.Horizontals`.
+   Así el **alto construido = el alto pedido** (240 → 240).
 
 Ejemplo (Height 132, Depth 42, paso 2, inicio 3, claro 44, troquel local X=2):
 horizontales en Y = 4 / 48 / 92 (largo 38), cierre en Y = 128 (= 132 − remate de 4"), 2 diagonales.
+
+### Capacidades del builder (además del caso base)
+
+El builder no se limita al poste-poste con una diagonal por panel; sobre el mismo plan por bloques soporta:
+
+- **Postes y placas INDEPENDIENTES por lado**: cada lado resuelve su propio poste/placa (izquierdo desde
+  `config.LeftPost`/`LeftBasePlate`, derecho desde `config.RightPost`/`RightBasePlate`); el lado derecho **no**
+  hereda en silencio los ids del izquierdo, y cada placa acepta su `PeralteOverride`.
+- **Refuerzos por lado**: opcionalmente un lado lleva un **segundo poste** anclado en `FIN_POSTE` (`Y=0`) con su
+  propio `LONGITUD`, que cubre la zona inferior. La celosía que cae dentro de la zona reforzada se ancla al
+  **troquel interno del refuerzo** (una anchura de poste más adentro) en vez del troquel del poste base.
+- **Horizontales dobles**: una horizontal con `Quantity > 1` apila travesaños extra, cada uno
+  `HorizontalDoubleOffsetTroqueles` troqueles arriba del anterior.
+- **Cuatro patrones de arriostramiento** por panel (`BracingPanel.Arrangement`): `SingleDiagonal` (una diagonal
+  en la dirección del panel), `DoubleDiagonal` (dos diagonales paralelas separadas por
+  `DiagonalDoubleSpacingTroqueles`), `XBracing` (una `UpRight` + una `UpLeft` cruzadas) y `AutoAlternating`
+  (alterna la dirección de la diagonal panel a panel). Cada extremo toma el troquel más interno disponible
+  (refuerzo donde exista, si no el poste), así una diagonal puede arrancar en el refuerzo y terminar en el
+  poste liso.
 
 ## El plan: `HeaderBlockInstance`
 
@@ -173,12 +209,14 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 1. Eje de espejo del poste derecho: vertical en el fondo ⇒ `LongitudHorizontal = Depth − 2·inset_troquel`.
 2. Elevaciones **explícitas** de la configuración (paneles de `PanelClear` + cierres de 0/1/2); la horizontal
    superior cae en `Height − PostTopRemate`, así el alto construido = el pedido.
-3. Una diagonal por panel (zigzag estándar); si se requiere alternancia/X, se parametriza.
+3. Una diagonal por panel es el caso base (zigzag estándar), pero la **alternancia** (`AutoAlternating`) y la
+   **X** (`XBracing`) **ya están implementadas** por panel (no diferidas), igual que la doble diagonal.
 
 ## Dónde está en el código
 
-- Lógica pura: `src/RackCad.Application/Headers/` (builder, resolver, parámetros y
-  `LateralHeaderParametersFactory` config→parámetros).
+- Lógica pura: `src/RackCad.Application/Headers/` (builder, parámetros, `LateralHeaderParametersFactory`
+  config→parámetros y `PlantaHeaderLayoutBuilder` para la vista PLANTA); la geometría de los puntos la resuelve
+  `CatalogLookup` en `src/RackCad.Application/Catalogs/` (connection-layout.csv + blocks.csv).
 - Adapter AutoCAD: `src/RackCad.Plugin/Headers/LateralHeaderDrawer.cs` (+ `LateralHeaderDrawOutcome.cs`,
   `LateralHeaderBlockResult.cs`, `BlockLibraryImporter.cs`).
 - Servicio de dibujo (puente UI↔AutoCAD): `src/RackCad.Plugin/Headers/LateralHeaderDrawService.cs`,
@@ -189,7 +227,7 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 - Comandos de cabecera: `RACKCABECERA`, `QUICKCABECERA` en
   `src/RackCad.Plugin/RackFrameCommands.cs`; botón "Insertar en AutoCAD" en
   `src/RackCad.UI/RackFrameConfiguratorWindow.xaml(.cs)`.
-- Tests: `tests/RackCad.Tests/LateralHeaderLayoutBuilderTests.cs` (builder/resolver) y
+- Tests: `tests/RackCad.Tests/LateralHeaderLayoutBuilderTests.cs` (builder) y
   `tests/RackCad.Tests/LateralHeaderParametersFactoryTests.cs` (mapeo config→parámetros).
 - Parámetros en el editor: `RackFrameConfiguration` + `RackFrameConfiguratorViewModel` + el panel
   "Header" del editor avanzado en `RackFrameConfiguratorWindow.xaml`.

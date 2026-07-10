@@ -42,7 +42,8 @@ assets/
 
 - Servicios de aplicacion, catalogos y persistencia.
 - `JsonRackCatalogProvider` carga los CSV de `assets/catalogs/` en un `RackCatalog`.
-- Geometria del selectivo en `SelectiveGeometryResolver`; BOM en `SelectiveBomBuilder`.
+- Geometria del selectivo en `SelectiveGeometryResolver`; el BOM cubre los cuatro tipos
+  con `SelectiveBomBuilder`, `SystemBomBuilder`, `FlowBedBomBuilder` y `BomBuilder` (cabecera).
 - Sobre unificado de identidad `RackEmbedDocument` y stores de diseno.
 
 `RackCad.UI`
@@ -53,7 +54,9 @@ assets/
   - `RackDynamicSystemWindow` (sistema dinamico / pallet flow).
   - `RackFlowBedWindow` (cama de rodamiento).
   - `RackSelectiveWindow` (selectivo, matriz frentes x niveles).
-  - `RackBomWindow` (grid + export CSV del BOM del selectivo).
+  - `RackBomWindow` (grid + export CSV del BOM; se abre desde los cuatro editores).
+  - `RackDesignLibraryWindow` (biblioteca de disenos).
+  - `RackListWindow` (tabla de todos los racks del dibujo).
 - ViewModels, tablas, arbol, panel de propiedades y vista previa.
 
 `RackCad.Plugin`
@@ -67,7 +70,7 @@ assets/
 
 `RackCad.Tests`
 
-- Suite de pruebas (`net8.0`, xUnit), 232 tests verdes en `release/claude-review`.
+- Suite de pruebas (`net8.0`, xUnit), 281 tests verdes en `release/claude-review`.
 
 ## Compilar
 
@@ -128,6 +131,8 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 | `QUICKCAMA`           | Cama de rodamiento (dinamica o pushback) desde la linea de comandos. |
 | `RACKSELECTIVO`       | Editor selectivo avanzado (`RackSelectiveWindow`), matriz frentes x niveles. |
 | `RACKEDITAR`          | Selecciona un rack dibujado, lo reabre en su editor y lo redefine en sitio. |
+| `RACKDUPLICAR`        | Copia INDEPENDIENTE del rack (GUID nuevo, nombre `- copia`), distinta del COPY de AutoCAD que comparte definicion/GUID. |
+| `RACKLISTA`           | Tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, numero de copias; `RackListBuilder` agrupa por GUID) con zoom al elegido. |
 
 ## Los cuatro tipos de rack
 
@@ -195,7 +200,8 @@ Dibujo y round-trip (los cuatro tipos):
 - Insertar lateral del selectivo pregunta QUE corte (numero de poste) y se coloca con jig.
 - Los botones de insertar lateral/planta solo se habilitan desde `RACKEDITAR` de una
   vista existente (deshabilitados con tooltip si no aplica).
-- `RACKSELECTIVO` abre el BOM (`RackBomWindow`) y exporta CSV.
+- Los cuatro editores abren el BOM (`RackBomWindow`) y exporta CSV; cada tipo usa su
+  builder (`SelectiveBomBuilder`, `SystemBomBuilder`, `FlowBedBomBuilder`, `BomBuilder`).
 
 ## Archivos generados que no deben versionarse
 

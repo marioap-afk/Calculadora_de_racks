@@ -319,7 +319,7 @@ Solo **que es** el punto (no donde esta). Campos comunes **mas**:
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `role` | texto | Rol del punto (ej. `Brace`, `BasePlate`, `Anchor`). El factory usa `BasePlate` para elegir el anclaje de la placa. |
+| `role` | texto | Rol del punto (ej. `BasePlate`, `Poste`, `Truss`, `Spacer`, `FlowBed`, `Larguero`). El factory usa `BasePlate` para elegir el anclaje de la placa. |
 
 ### Punto por pieza y vista (`connection-layout.csv`) — ubicacion
 
