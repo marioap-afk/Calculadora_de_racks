@@ -113,7 +113,13 @@ namespace RackCad.Plugin
                 frontalBlocks.Add((blockId, embed));
             }
 
+            // The design JSON is identical for every view-block (only the envelope's view/section differ), so
+            // serialize the full design ONCE — not once per frontal + corte + planta.
+            var designJson = SerializeSelectiveDesign(design, id, name);
+
             // Each frontal block draws ONE fondo's face (its Section = fondo index; a legacy block with -1 = fondo 0).
+            // Every loop below redraws with regen:false and the drawing regenerates ONCE at the end — a full
+            // regeneration per view-block is pure waste on multi-view racks.
             var fondoCount = SelectiveDepthLayout.Count(system);
             var updatedFrontal = 0;
             foreach (var fb in frontalBlocks)
@@ -129,8 +135,8 @@ namespace RackCad.Plugin
 
                 var fondoView = SelectiveDepthLayout.FondoSystemView(system, fondo);
                 fondoView.Name = name;
-                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal, fondo);
-                var r = new SelectiveFrontalDrawService().RedrawInPlace(document, fb.BlockId, fondoView, payload);
+                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewFrontal, fondo);
+                var r = new SelectiveFrontalDrawService().RedrawInPlace(document, fb.BlockId, fondoView, payload, regen: false);
                 if (r != null && r.Success)
                 {
                     RackBlockRenamer.SyncName(document, fb.BlockId, FrontalName(baseName, fondo, fondoCount));
@@ -138,8 +144,7 @@ namespace RackCad.Plugin
                 }
             }
 
-            // Redraw each existing lateral section in place with the section's new geometry (matched by section
-            // index). Regen ONCE after the loop — a full drawing regeneration per corte is pure waste.
+            // Redraw each existing lateral section in place with the section's new geometry (matched by section index).
             var updatedLateral = 0;
             if (lateralBlocks.Count > 0)
             {
@@ -153,7 +158,7 @@ namespace RackCad.Plugin
                         continue; // the design shrank: this section no longer exists
                     }
 
-                    var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
+                    var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
                     var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros, regen: false);
                     if (r != null && r.Success)
                     {
@@ -162,24 +167,24 @@ namespace RackCad.Plugin
                         updatedLateral++;
                     }
                 }
-
-                if (updatedLateral > 0)
-                {
-                    document.Editor.Regen();
-                }
             }
 
             // Redraw the planta block(s) in place (one block for the whole top view).
             var updatedPlanta = 0;
             foreach (var plantaId in plantaBlocks)
             {
-                var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta);
-                var r = new SelectivePlantaDrawService().RedrawInPlace(document, plantaId, system, payload);
+                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewPlanta);
+                var r = new SelectivePlantaDrawService().RedrawInPlace(document, plantaId, system, payload, regen: false);
                 if (r != null && r.Success)
                 {
                     RackBlockRenamer.SyncName(document, plantaId, baseName == null ? null : baseName + " - planta");
                     updatedPlanta++;
                 }
+            }
+
+            if (updatedFrontal + updatedLateral + updatedPlanta > 0)
+            {
+                document.Editor.Regen(); // ONE regeneration refreshes every redefined view-block
             }
 
             // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the
@@ -209,13 +214,21 @@ namespace RackCad.Plugin
         /// RACKEDITAR on any of them reopens the whole system; <paramref name="section"/> tags which lateral section.
         /// </summary>
         private static string BuildSelectivePayload(SelectivePalletDesign design, string id, string name, string view, int section = -1)
+            => design == null ? null : WrapSelectivePayload(SerializeSelectiveDesign(design, id, name), id, name, view, section);
+
+        /// <summary>The full design serialized once; every view-block carries this SAME JSON (see <see cref="WrapSelectivePayload"/>).</summary>
+        private static string SerializeSelectiveDesign(SelectivePalletDesign design, string id, string name)
+            => design == null ? null : new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
+
+        /// <summary>Wraps an ALREADY-serialized design in the per-view embed envelope — multi-view redraws reuse one
+        /// design JSON instead of re-serializing the whole design per view-block.</summary>
+        private static string WrapSelectivePayload(string designJson, string id, string name, string view, int section = -1)
         {
-            if (design == null)
+            if (string.IsNullOrEmpty(designJson))
             {
                 return null;
             }
 
-            var designJson = new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
             return new RackEmbedStore().Serialize(new RackEmbedDocument
             {
                 Kind = RackEmbedDocument.KindSelective,

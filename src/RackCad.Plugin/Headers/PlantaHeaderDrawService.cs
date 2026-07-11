@@ -45,7 +45,7 @@ namespace RackCad.Plugin.Headers
         }
 
         /// <summary>Redraw an existing planta block DEFINITION in place (all copies update on regen).</summary>
-        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration config, string payloadJson)
+        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration config, string payloadJson, bool regen = true)
         {
             if (document == null)
             {
@@ -61,7 +61,7 @@ namespace RackCad.Plugin.Headers
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog));
-                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog);
+                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
             }
             catch (Exception ex)
             {

@@ -274,11 +274,12 @@ namespace RackCad.Plugin
                 lateralBlocks.Add(blockId);
             }
 
+            // Redraw with regen:false and regenerate ONCE below — a full drawing regen per view-block is pure waste.
             var updated = 0;
             foreach (var lateralId in lateralBlocks)
             {
                 var r = new LateralHeaderDrawService().RedrawInPlace(
-                    document, lateralId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral));
+                    document, lateralId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral), regen: false);
                 if (r != null && r.Success)
                 {
                     RackBlockRenamer.SyncName(document, lateralId, baseName);
@@ -289,12 +290,17 @@ namespace RackCad.Plugin
             foreach (var plantaId in plantaBlocks)
             {
                 var r = new PlantaHeaderDrawService().RedrawInPlace(
-                    document, plantaId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta));
+                    document, plantaId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta), regen: false);
                 if (r != null && r.Success)
                 {
                     RackBlockRenamer.SyncName(document, plantaId, baseName == null ? null : baseName + " - planta");
                     updated++;
                 }
+            }
+
+            if (updated > 0)
+            {
+                document.Editor.Regen(); // ONE regeneration refreshes every redefined view-block
             }
 
             // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the

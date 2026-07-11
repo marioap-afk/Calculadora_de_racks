@@ -54,7 +54,7 @@ namespace RackCad.Plugin.Systems
         /// Redraw an existing rack's block DEFINITION in place (found from a selected reference), keeping its id
         /// and name. Every reference to it — all the copies of that rack — updates on regen.
         /// </summary>
-        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, SelectiveRackSystem system, string payloadJson)
+        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, SelectiveRackSystem system, string payloadJson, bool regen = true)
         {
             if (document == null)
             {
@@ -70,7 +70,7 @@ namespace RackCad.Plugin.Systems
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(system, catalog));
-                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog);
+                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
             }
             catch (Exception ex)
             {

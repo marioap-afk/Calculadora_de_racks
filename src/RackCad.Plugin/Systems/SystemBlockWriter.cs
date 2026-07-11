@@ -39,10 +39,12 @@ namespace RackCad.Plugin.Systems
             }
         }
 
-        /// <summary>Redefine an existing block DEFINITION in place from a plan; every copy updates on regen.</summary>
+        /// <summary>Redefine an existing block DEFINITION in place from a plan; every copy updates on regen.
+        /// Pass <paramref name="regen"/> = false when redrawing several blocks in a loop and regen ONCE after —
+        /// a full drawing regeneration per block is pure waste (same pattern as LateralHeaderDrawService).</summary>
         internal static HeaderPlacementResult RedrawInPlace(
             Document document, LateralHeaderDrawer drawer, ObjectId blockId, DynamicSystemPlan plan,
-            string payloadJson, RackCatalog catalog)
+            string payloadJson, RackCatalog catalog, bool regen = true)
         {
             try
             {
@@ -60,7 +62,10 @@ namespace RackCad.Plugin.Systems
                         transaction.Commit();
                     }
 
-                    document.Editor.Regen();
+                    if (regen)
+                    {
+                        document.Editor.Regen();
+                    }
                 }
 
                 // Report pieces skipped during the redraw too — an edit can lose blocks just like an insert.

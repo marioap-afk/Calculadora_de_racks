@@ -45,7 +45,7 @@ namespace RackCad.Plugin.Systems
             }
         }
 
-        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, SelectiveRackSystem system, string payloadJson)
+        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, SelectiveRackSystem system, string payloadJson, bool regen = true)
         {
             if (document == null)
             {
@@ -61,7 +61,7 @@ namespace RackCad.Plugin.Systems
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var plan = builder.BuildPlan(system, catalog);
-                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog);
+                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
             }
             catch (Exception ex)
             {
