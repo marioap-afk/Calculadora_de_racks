@@ -296,8 +296,25 @@ namespace RackCad.UI
             snap.FloorBeams.AddRange(floorBeams);
             snap.BayHeights.AddRange(bayHeights);
             foreach (var segments in baySegments) snap.BaySegments.Add(CloneSegments(segments));
-            snap.Depth = UiSupport.TryNum(FondoBox.Text, out var d) && d > 0.0 ? d : SelectiveRackDefaults.DefaultPalletDepth;
-            snap.CabeceraOverride = UiSupport.TryNum(CabeceraFondoBox.Text, out var co) && co > 0.0 ? co : 0.0; // blank/invalid = auto
+
+            // Invalid text falls back to the fondo's PREVIOUSLY SAVED value (not the global default) so a typo while
+            // switching fondos doesn't silently reset this line's depth/override; blank cabecera stays auto (0).
+            var previous = selectedFondo >= 0 && selectedFondo < fondoMatrices.Count ? fondoMatrices[selectedFondo] : null;
+            if (UiSupport.TryNum(FondoBox.Text, out var d) && d > 0.0) snap.Depth = d;
+            else
+            {
+                snap.Depth = previous != null && previous.Depth > 0.0 ? previous.Depth : SelectiveRackDefaults.DefaultPalletDepth;
+                if (!string.IsNullOrWhiteSpace(FondoBox.Text)) SetStatus("Fondo de tarima inválido; se conserva el anterior.", true);
+            }
+
+            if (string.IsNullOrWhiteSpace(CabeceraFondoBox.Text)) snap.CabeceraOverride = 0.0; // blank = auto (rule tarima − 6)
+            else if (UiSupport.TryNum(CabeceraFondoBox.Text, out var co) && co > 0.0) snap.CabeceraOverride = co;
+            else
+            {
+                snap.CabeceraOverride = previous?.CabeceraOverride ?? 0.0;
+                SetStatus("Fondo de cabecera inválido (vacío = auto); se conserva el anterior.", true);
+            }
+
             return snap;
         }
 
@@ -419,7 +436,14 @@ namespace RackCad.UI
                     });
                 }
 
-                if (column.Count == 0) column.Add(NewCell());
+                if (column.Count == 0)
+                {
+                    // The matrix editor needs >=1 cell per frente, but a persisted design CAN carry an empty frente
+                    // (a building column, honored by resolver/planta/BOM). Pad it so the editor works, and COUNT it so
+                    // the load warns instead of silently converting the column into a loaded frente.
+                    column.Add(NewCell());
+                    paddedEmptyFrentesOnLoad++;
+                }
                 m.Bays.Add(column);
                 m.FloorBeams.Add(bayDesign.FloorBeam);
                 m.BayHeights.Add(bayDesign.HeightOverride);
@@ -486,9 +510,24 @@ namespace RackCad.UI
         private List<double> ReadSeparators()
         {
             var result = new List<double>();
-            foreach (var box in separatorBoxes)
+            for (var g = 0; g < separatorBoxes.Count; g++)
             {
-                result.Add(UiSupport.TryNum(box.Text, out var v) && v > 0.0 ? v : SelectiveRackDefaults.DefaultSeparator);
+                var box = separatorBoxes[g];
+                if (UiSupport.TryNum(box.Text, out var v) && v > 0.0)
+                {
+                    result.Add(v);
+                }
+                else
+                {
+                    // Don't silently swallow a typo: fall back to the default, SAY so, and resync the box so what the
+                    // user sees is what the drawing will use.
+                    result.Add(SelectiveRackDefaults.DefaultSeparator);
+                    if (!string.IsNullOrWhiteSpace(box.Text))
+                    {
+                        SetStatus("Separación " + (g + 1).ToString(CultureInfo.InvariantCulture) + " inválida; se usa la default.", true);
+                        box.Text = SelectiveRackDefaults.DefaultSeparator.ToString("0.###", CultureInfo.InvariantCulture);
+                    }
+                }
             }
 
             return result;
@@ -497,9 +536,16 @@ namespace RackCad.UI
         /// <summary>Read "Número de fondos", resize the fondo list (new fondos clone fondo 0), rebuild the combo + separators.</summary>
         private void ApplyFondoCountFromBox()
         {
-            var n = UiSupport.TryNum(FondosBox.Text, out var f) && f >= 1.0
-                ? Math.Min(SelectiveRackDefaults.MaxDepthCount, (int)Math.Round(f))
-                : 1;
+            // An invalid/blank count must NOT shrink the list — the old fallback to 1 silently DELETED the extra
+            // fondos' level matrices before any validation could run. Keep the current count and say why.
+            if (!UiSupport.TryNum(FondosBox.Text, out var f) || f < 1.0)
+            {
+                SetStatus("Número de fondos inválido (mínimo 1); se conserva el actual.", true);
+                FondosBox.Text = Math.Max(1, fondoMatrices.Count).ToString(CultureInfo.InvariantCulture);
+                return;
+            }
+
+            var n = Math.Min(SelectiveRackDefaults.MaxDepthCount, (int)Math.Round(f));
 
             SaveWorkingToSelected();
             if (fondoMatrices.Count == 0) fondoMatrices.Add(SnapshotWorking());
@@ -1097,15 +1143,21 @@ namespace RackCad.UI
             return top;
         }
 
-        /// <summary>The CABECERA fondo of fondo 0 = its pallet depth minus the cabecera allowance (rule: cabecera =
-        /// tarima − 6"). This is what a per-post custom cabecera is drawn at; its fondo obeys the rule and is not set
-        /// independently, so we coerce it to this value.</summary>
+        /// <summary>The CABECERA fondo of fondo 0: the per-line "Fondo de cabecera" override when set, else the rule
+        /// (cabecera = tarima − 6"). This is what a per-post custom cabecera is drawn at; its fondo is not set
+        /// independently, so we coerce it to this value. Delegates to <see cref="SelectiveDepthLayout.CabeceraDepthOfFondo"/>
+        /// (the single home of override→rule→fallback) so "Personalizar" matches the drawn geometry.</summary>
         private double ResolvedFondo()
         {
-            var pallet = lastSystem?.PalletDepth ?? 0.0;
-            if (pallet <= 0.0) pallet = SelectiveRackDefaults.DefaultPalletDepth;
-            var cabecera = pallet - SelectiveRackDefaults.CabeceraFondoAllowance;
-            return cabecera > 0.0 ? cabecera : pallet;
+            if (lastSystem != null)
+            {
+                var cabecera = SelectiveDepthLayout.CabeceraDepthOfFondo(lastSystem, 0);
+                if (cabecera > 0.0) return cabecera;
+            }
+
+            var pallet = SelectiveRackDefaults.DefaultPalletDepth;
+            var derived = pallet - SelectiveRackDefaults.CabeceraFondoAllowance;
+            return derived > 0.0 ? derived : pallet;
         }
 
         /// <summary>Build a standard cabecera at the given height/fondo using the run's post; the seed when a post has no custom one.</summary>
@@ -1658,10 +1710,16 @@ namespace RackCad.UI
             return system;
         }
 
+        /// <summary>Empty frentes (columns) that the current load had to pad with a default cell (the matrix can't edit
+        /// zero-level columns yet); &gt; 0 makes <see cref="LoadDesign"/> warn instead of silently converting them.</summary>
+        private int paddedEmptyFrentesOnLoad;
+
         /// <summary>Restore the whole editor (globals + matrix) from a saved design, then recompute.</summary>
         private void LoadDesign(SelectivePalletDesign design)
         {
             if (design == null || design.Bays.Count == 0) return;
+
+            paddedEmptyFrentesOnLoad = 0;
 
             // Assigning the toggles below (e.g. DrawBasePlateCheck) fires DrawToggle_Changed → Recompute on the
             // half-loaded state; defer so the whole load runs exactly ONE pipeline (the explicit call at the end).
@@ -1711,7 +1769,10 @@ namespace RackCad.UI
 
             postCabeceras.Clear();
             var loadedPallet = design.PalletDepth > 0.0 ? design.PalletDepth : SelectiveRackDefaults.DefaultPalletDepth;
-            var loadedCabeceraFondo = loadedPallet - SelectiveRackDefaults.CabeceraFondoAllowance;
+            // Fondo 0's custom "Fondo de cabecera" override wins over the rule (tarima − 6") — same precedence as
+            // SelectiveDepthLayout.CabeceraDepthOfFondo, so a persisted custom cabecera keeps the override's depth.
+            var loadedOverride = design.CabeceraFondoOverrides.Count > 0 ? design.CabeceraFondoOverrides[0] : 0.0;
+            var loadedCabeceraFondo = loadedOverride > 0.0 ? loadedOverride : loadedPallet - SelectiveRackDefaults.CabeceraFondoAllowance;
             if (loadedCabeceraFondo <= 0.0) loadedCabeceraFondo = loadedPallet;
             foreach (var cabecera in design.PostCabeceras)
             {
@@ -1741,6 +1802,13 @@ namespace RackCad.UI
             RenderMatrix();
             RefreshPostSelect();
             Recompute();
+
+            if (paddedEmptyFrentesOnLoad > 0)
+            {
+                // After Recompute so the warning isn't overwritten by its status message.
+                SetStatus(paddedEmptyFrentesOnLoad.ToString(CultureInfo.InvariantCulture)
+                    + " frente(s) vacío(s) (columna) del diseño se cargaron con un nivel default — el editor aún no maneja columnas; revisa antes de redibujar.", true);
+            }
         }
 
         /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
@@ -2037,6 +2105,10 @@ namespace RackCad.UI
 
             var selectedPost = PostSelectBox?.SelectedIndex ?? -1;
             var postIndex = 0;
+            // The frontal builder emits the SHARED grid posts first and appends medio-frente INTERMEDIATE posts after
+            // them. Only the shared ones get a number/cache entry — numbering intermediates would desync the preview
+            // from "Cabecera por poste" and the "insertar lateral" prompt (which only know shared posts).
+            var sharedPosts = SelectiveDepthLayout.BaysOfFondo(lastSystem, selectedFondo).Count + 1;
 
             foreach (var item in items)
             {
@@ -2047,6 +2119,11 @@ namespace RackCad.UI
                         // UpdatePostHighlight share one styling source and cannot diverge.
                         var pTop = Map(item.X - postWidth / 2.0, item.Size);
                         var rect = AddRectangle(pTop.X, pTop.Y, postWidth * mapScale, item.Size * mapScale, PostBrush, 1.6, PostFill);
+                        if (postIndex >= sharedPosts)
+                        {
+                            break; // intermediate (medio frente): visible, but unnumbered and outside the post cache
+                        }
+
                         // Post number under the base (1-based) — matches "Cabecera por poste" and the "insertar lateral" prompt.
                         var numAt = Map(item.X, 0.0);
                         var number = AddPostNumber(numAt.X, mapBottomY + 8.0, (postIndex + 1).ToString(CultureInfo.InvariantCulture));
