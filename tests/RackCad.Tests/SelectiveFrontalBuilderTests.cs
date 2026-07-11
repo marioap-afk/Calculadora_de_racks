@@ -182,8 +182,8 @@ namespace RackCad.Tests
 
             var instances = new SelectiveFrontalBuilder().Build(system, Catalog);
 
-            Assert.Empty(instances.Where(i => i.Role == HeaderBlockRole.BasePlate));
-            Assert.NotEmpty(instances.Where(i => i.Role == HeaderBlockRole.Post)); // posts still there
+            Assert.DoesNotContain(instances, i => i.Role == HeaderBlockRole.BasePlate);
+            Assert.Contains(instances, i => i.Role == HeaderBlockRole.Post); // posts still there
         }
 
         [Fact]
