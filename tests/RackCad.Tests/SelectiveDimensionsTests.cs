@@ -37,18 +37,21 @@ namespace RackCad.Tests
             return design;
         }
 
+        private static SelectiveRackSystem Resolve(DimensionDetail detail)
+            => new SelectiveGeometryResolver().Resolve(Design(detail), Catalog);
+
         private static List<HeaderBlockInstance> Dims(DimensionDetail detail)
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(detail), Catalog);
             // Go through the SAME per-fondo projection the insert/redraw path uses (InsertSelectiveFrontal →
             // FondoSystemView), so a projection that drops the Dimensions flag is caught here.
-            var fondoView = SelectiveDepthLayout.FondoSystemView(system, 0);
+            var fondoView = SelectiveDepthLayout.FondoSystemView(Resolve(detail), 0);
             return new SelectiveFrontalBuilder().Build(fondoView, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Dimension).ToList();
         }
 
         private static bool IsHorizontal(HeaderBlockInstance d) => Math.Abs(d.Insertion.Y - d.ConnectionAnchor.Y) < 1e-6;
         private static bool IsVertical(HeaderBlockInstance d) => Math.Abs(d.Insertion.X - d.ConnectionAnchor.X) < 1e-6;
+        private static double Span(HeaderBlockInstance d) => Math.Abs(d.ConnectionAnchor.X - d.Insertion.X);
 
         [Fact]
         public void None_EmitsNoDimensions()
@@ -78,6 +81,19 @@ namespace RackCad.Tests
             Assert.Equal(Bays + 1, dims.Count(IsHorizontal));
             // Vertical: floor→L1, L1→L2, … (beamRows of them) + the overall height.
             Assert.Equal(beamRows + 1, dims.Count(IsVertical));
+        }
+
+        [Fact]
+        public void Standard_PerFrenteCota_MeasuresLargueroCutLength_NotPostSpacing()
+        {
+            var system = Resolve(DimensionDetail.Standard);
+            var beamLength = system.Bays[0].BeamLength; // uniform bays → same cut length
+            var horizontal = Dims(DimensionDetail.Standard).Where(IsHorizontal).ToList();
+
+            // Bays cotas measure the larguero cut length; exactly one (the overall width) is wider (post-to-post).
+            Assert.Equal(Bays, horizontal.Count(d => Math.Abs(Span(d) - beamLength) < 1e-6));
+            var overall = Assert.Single(horizontal.Where(d => Span(d) > beamLength + 1e-6));
+            Assert.True(Span(overall) > beamLength, "el ancho total (post a post) debe ser mayor que el largo de corte del larguero");
         }
 
         [Fact]

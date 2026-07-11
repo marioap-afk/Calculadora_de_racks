@@ -16,17 +16,25 @@ namespace RackCad.Application.Systems
     internal static class SelectiveDimensions
     {
         /// <summary>Gap (in, ×scale) from the geometry to the nearest (breakdown) dimension line.</summary>
-        private const double NearOffset = 14.0;
+        private const double ChainGap = 14.0;
 
-        /// <summary>Extra gap (in, ×scale) each further-out dimension chain steps by (overall, then per-level elevations).</summary>
-        private const double Step = 11.0;
+        /// <summary>Gap (in, ×scale) between the breakdown chain and the overall dimension line — wide enough that the
+        /// overall value (e.g. the total height) doesn't crowd the horizontal breakdown text (the level separations).</summary>
+        private const double OverallGap = 22.0;
+
+        /// <summary>Step (in, ×scale) between the stacked per-level elevation lines (Detailed).</summary>
+        private const double ElevationStep = 14.0;
 
         /// <summary>
-        /// FRONTAL cotas. Minimal = overall height + overall width. Standard adds the per-frente widths (a chain along
-        /// the bottom) and the level separations (a chain up the left). Detailed adds each level's elevation from the
-        /// floor. Breakdown chains sit near the geometry; the overall dimensions sit one step further out.
+        /// FRONTAL cotas. Minimal = overall height + overall width. Standard adds the per-frente LARGUERO cut lengths
+        /// (positioned under each larguero, NOT post-to-post) and the level separations (a chain up the left). Detailed
+        /// adds each level's elevation from the floor. Breakdown chains sit near the geometry; the overall dimensions
+        /// sit further out so their text clears the breakdown. <paramref name="troquelXs"/> are the per-bay larguero
+        /// hook offsets (from the left post), so a cota lands on the actual larguero span.
         /// </summary>
-        public static void AddFrontal(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view, IReadOnlyList<double> postX)
+        public static void AddFrontal(
+            ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view,
+            IReadOnlyList<double> postX, IReadOnlyList<double> troquelXs)
         {
             var detail = system.Dimensions;
             if (detail == DimensionDetail.None || postX == null || postX.Count < 2 || system.Height <= 0.0)
@@ -36,9 +44,8 @@ namespace RackCad.Application.Systems
 
             var scale = system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
             var h = SelectiveAnnotations.TextHeightFor(scale);
-            var near = NearOffset * scale;
-            var far = (NearOffset + Step) * scale;
-            var farther = (NearOffset + 2.0 * Step) * scale;
+            var near = ChainGap * scale;
+            var far = (ChainGap + OverallGap) * scale;
 
             var leftX = postX[0];
             var rightX = postX[postX.Count - 1];
@@ -48,14 +55,21 @@ namespace RackCad.Application.Systems
             if (detail == DimensionDetail.Minimal)
             {
                 AddVertical(instances, view, leftX, 0.0, height, -near, h);   // alto total (izquierda)
-                AddHorizontal(instances, view, leftX, rightX, 0.0, -near, h); // ancho total (abajo)
+                AddHorizontal(instances, view, leftX, rightX, 0.0, -near, h); // ancho total post-a-post (abajo)
                 return;
             }
 
-            // Ancho por frente (cadena, abajo) + ancho total un paso más afuera.
-            for (var i = 0; i + 1 < postX.Count; i++)
+            // Largo de corte del larguero por frente (bajo el larguero real), + ancho total post-a-post más afuera.
+            for (var i = 0; i < system.Bays.Count && i < postX.Count && troquelXs != null && i < troquelXs.Count; i++)
             {
-                AddHorizontal(instances, view, postX[i], postX[i + 1], 0.0, -near, h);
+                var beamLength = system.Bays[i].BeamLength;
+                if (beamLength <= 0.0)
+                {
+                    continue;
+                }
+
+                var beamLeft = postX[i] + troquelXs[i];
+                AddHorizontal(instances, view, beamLeft, beamLeft + beamLength, 0.0, -near, h);
             }
 
             AddHorizontal(instances, view, leftX, rightX, 0.0, -far, h);
@@ -68,16 +82,16 @@ namespace RackCad.Application.Systems
                 previous = y;
             }
 
-            AddVertical(instances, view, leftX, 0.0, height, -far, h); // alto total, más afuera
+            AddVertical(instances, view, leftX, 0.0, height, -far, h); // alto total, más afuera para no pegarse a los claros
 
             if (detail == DimensionDetail.Detailed)
             {
                 // Elevación de CADA nivel desde el piso. Todas parten del piso, así que cada una va en su PROPIA
-                // columna (escalonadas hacia afuera) para no encimarse en una sola línea.
-                var step = Step * scale;
+                // columna (escalonada hacia afuera) para no encimarse en una sola línea.
+                var elevationStep = ElevationStep * scale;
                 for (var i = 0; i < levelYs.Count; i++)
                 {
-                    AddVertical(instances, view, leftX, 0.0, levelYs[i], -(farther + i * step), h);
+                    AddVertical(instances, view, leftX, 0.0, levelYs[i], -(far + (i + 1) * elevationStep), h);
                 }
             }
         }

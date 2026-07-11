@@ -134,7 +134,7 @@ namespace RackCad.Application.Systems
             }
 
             AddAnnotations(instances, system, view, postX);
-            SelectiveDimensions.AddFrontal(instances, system, view, postX);
+            SelectiveDimensions.AddFrontal(instances, system, view, postX, layout.TroquelXs);
             return instances;
         }
 
