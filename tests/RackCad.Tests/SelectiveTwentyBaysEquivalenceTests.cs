@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
@@ -101,6 +103,48 @@ namespace RackCad.Tests
             {
                 Assert.True(postXs[p] > postXs[p - 1], "las X de los postes deben crecer de izquierda a derecha");
             }
+        }
+
+        [Fact]
+        public void BuildPlan_TwentyBays_FlattensToSameInstancesAsBuild_AndGroupsIdenticalPieces()
+        {
+            var catalog = Catalog;
+            var system = new SelectiveGeometryResolver().Resolve(Design(), catalog);
+            var builder = new SelectiveFrontalBuilder();
+
+            var flat = builder.Build(system, catalog);
+            var plan = builder.BuildPlan(system, catalog);
+            var flattened = plan.Flatten().Instances;
+
+            // The ARRAY grouping is drawing-only: flattening the plan must reproduce Build's instances EXACTLY (as a
+            // multiset). If grouping ever changed geometry, this breaks first.
+            Assert.Equal(Multiset(flat), Multiset(flattened));
+
+            // And it actually collapsed identical pieces: at least one nested definition is reused (>=2 placements),
+            // and the count of pieces that get dynamic parameters set (the dominant AutoCAD cost) drops below the flat
+            // count — that reduction IS the performance win.
+            Assert.Contains(plan.Headers, g => g.Placements.Count >= 2);
+            var flatParamPieces = flat.Count(i => i.DynamicParameters.Count > 0);
+            var planParamPieces = plan.Headers.Sum(g => g.Instances.Count(i => i.DynamicParameters.Count > 0))
+                + plan.LooseInstances.Count(i => i.DynamicParameters.Count > 0);
+            Assert.True(planParamPieces < flatParamPieces,
+                "el patrón ARRAY debe reducir las piezas con parámetros dinámicos (menos re-evaluaciones de bloque)");
+        }
+
+        private static List<string> Multiset(IEnumerable<HeaderBlockInstance> instances)
+            => instances.Select(InstanceKey).OrderBy(s => s, System.StringComparer.Ordinal).ToList();
+
+        private static string InstanceKey(HeaderBlockInstance i)
+        {
+            var parameters = string.Join(";", i.DynamicParameters
+                .OrderBy(k => k.Key, System.StringComparer.Ordinal)
+                .Select(k => k.Key + "=" + k.Value.ToString("R", CultureInfo.InvariantCulture)));
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}|{1}|{2}|{3}|{4:R},{5:R}|{6:R},{7:R}|{8:R}|{9}|{10}",
+                (int)i.Role, i.BlockName, i.PieceId, i.View,
+                i.Insertion.X, i.Insertion.Y, i.ConnectionAnchor.X, i.ConnectionAnchor.Y,
+                i.RotationRadians, i.MirroredX ? 1 : 0, parameters);
         }
 
         [Fact]

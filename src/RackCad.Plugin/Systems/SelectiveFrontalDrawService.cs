@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -39,7 +38,7 @@ namespace RackCad.Plugin.Systems
             try
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(system, catalog));
+                var plan = builder.BuildPlan(system, catalog); // ARRAY pattern: identical pieces share one nested def
 
                 var block = CreateBlock(document, plan, BlockName(system, rackName), payloadJson);
                 return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
@@ -69,7 +68,7 @@ namespace RackCad.Plugin.Systems
             try
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(system, catalog));
+                var plan = builder.BuildPlan(system, catalog); // ARRAY pattern: identical pieces share one nested def
                 return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
             }
             catch (Exception ex)

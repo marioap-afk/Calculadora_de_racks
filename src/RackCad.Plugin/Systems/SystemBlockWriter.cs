@@ -51,16 +51,21 @@ namespace RackCad.Plugin.Systems
                 var database = document.Database;
 
                 LateralHeaderDrawOutcome outcome;
+                System.Collections.Generic.IReadOnlyCollection<ObjectId> staleDefs;
                 using (document.LockDocument())
                 {
                     BlockLibraryImporter.EnsureForPlan(database, plan);
 
                     using (var transaction = database.TransactionManager.StartTransaction())
                     {
-                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan);
+                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan, out staleDefs);
                         RackBlockData.Write(transaction, blockId, payloadJson);
                         transaction.Commit();
                     }
+
+                    // Purge the nested defs the rewrite orphaned AFTER commit: on the committed state Database.Purge
+                    // filters to the genuinely unreferenced ones in one optimized pass (no per-def whole-drawing scan).
+                    LateralHeaderDrawer.PurgeUnreferenced(database, staleDefs);
 
                     if (regen)
                     {

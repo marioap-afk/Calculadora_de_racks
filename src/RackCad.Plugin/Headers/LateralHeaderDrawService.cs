@@ -76,16 +76,20 @@ namespace RackCad.Plugin.Headers
                 var database = document.Database;
 
                 LateralHeaderDrawOutcome outcome;
+                IReadOnlyCollection<ObjectId> staleDefs;
                 using (document.LockDocument())
                 {
                     BlockLibraryImporter.EnsureForLayout(database, layout);
 
                     using (var transaction = database.TransactionManager.StartTransaction())
                     {
-                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan);
+                        outcome = drawer.RedefineSystemBlock(database, transaction, blockId, plan, out staleDefs);
                         RackBlockData.Write(transaction, blockId, payloadJson);
                         transaction.Commit();
                     }
+
+                    // Post-commit purge of the orphaned nested defs (Database.Purge on committed state; see the drawer note).
+                    LateralHeaderDrawer.PurgeUnreferenced(database, staleDefs);
 
                     if (regen)
                     {

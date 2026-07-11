@@ -111,7 +111,8 @@ namespace RackCad.Plugin.Headers
         /// every reference to it (all the copies of that rack) updates on the next regen. Keeps the same block id
         /// and name. Selective frontal is all-loose; header groups are handled too for future reuse.
         /// </summary>
-        public LateralHeaderDrawOutcome RedefineSystemBlock(Database db, Transaction tr, ObjectId blockId, DynamicSystemPlan plan)
+        public LateralHeaderDrawOutcome RedefineSystemBlock(
+            Database db, Transaction tr, ObjectId blockId, DynamicSystemPlan plan, out IReadOnlyCollection<ObjectId> staleDefs)
         {
             var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
             var systemDef = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForWrite);
@@ -189,44 +190,68 @@ namespace RackCad.Plugin.Headers
             }
 
             // Only defs the new content did NOT re-reference can be stale (cheap set difference); everything the
-            // repopulated block still uses is trivially alive and needs no reference scan at all.
+            // repopulated block still uses is trivially alive. The caller purges these AFTER the transaction commits,
+            // when Database.Purge can compute purgeability in ONE optimized pass over the committed state (no per-def
+            // whole-drawing reference scan). The old references are erased above, so post-commit they are truly gone.
             priorReferencedDefs.ExceptWith(newReferencedDefs);
-            PurgeStaleNestedDefinitions(tr, priorReferencedDefs);
+            staleDefs = priorReferencedDefs;
 
             return new LateralHeaderDrawOutcome(
                 new LateralHeaderLayout(new List<HeaderBlockInstance>(), 0.0, 0, 0, 0.0), inserted, missing);
         }
 
         /// <summary>
-        /// Erase the previously-referenced definitions that no longer have ANY reference after a redefine. This clears the
-        /// stale nested header defs a rewrite leaves behind (each one is freshly uniquified — <c>nombre_1</c>, <c>_2</c>, …
-        /// — so without this they accumulate in the block table forever). Blocks still used by any other rack keep their
-        /// references, so they are left untouched. The caller already subtracted everything the new content re-references
-        /// (catalog piece blocks in particular), so the expensive whole-drawing reference scan below only runs on the
-        /// handful of truly stale candidates — not on every catalog block per redraw.
+        /// Erase the block DEFINITIONS a redraw left unreferenced (the freshly-uniquified nested header defs a rewrite
+        /// abandons — <c>nombre_1</c>, <c>_2</c>, … — which would otherwise pile up in the block table). Meant to run on
+        /// the COMMITTED drawing (its own transaction) so <see cref="Database.Purge"/> filters the candidates to those
+        /// with no remaining references in ONE optimized pass — cheaper than a per-def
+        /// <c>GetBlockReferenceIds(forceValidity:true)</c> whole-drawing scan (see the autocad-insert-perf memory) and
+        /// correct because the old references are already committed as erased. Defs still used by another rack survive
+        /// the filter untouched. Best effort — a lingering def is preferable to failing the redraw.
         /// </summary>
-        private static void PurgeStaleNestedDefinitions(Transaction tr, HashSet<ObjectId> staleCandidateDefs)
+        internal static void PurgeUnreferenced(Database db, IReadOnlyCollection<ObjectId> candidates)
         {
-            foreach (var defId in staleCandidateDefs)
+            if (db == null || candidates == null || candidates.Count == 0)
             {
-                if (defId.IsNull || defId.IsErased)
-                {
-                    continue;
-                }
+                return;
+            }
 
-                var def = (BlockTableRecord)tr.GetObject(defId, OpenMode.ForRead);
-                if (def.IsLayout) // never touch model/paper space
+            try
+            {
+                using (var tr = db.TransactionManager.StartTransaction())
                 {
-                    continue;
-                }
+                    var ids = new ObjectIdCollection();
+                    foreach (var id in candidates)
+                    {
+                        if (id.IsNull || id.IsErased)
+                        {
+                            continue;
+                        }
 
-                if (def.GetBlockReferenceIds(directOnly: false, forceValidity: true).Count > 0)
-                {
-                    continue; // still referenced somewhere in the drawing
-                }
+                        if (tr.GetObject(id, OpenMode.ForRead) is BlockTableRecord def && !def.IsLayout)
+                        {
+                            ids.Add(id); // never enqueue model/paper space
+                        }
+                    }
 
-                def.UpgradeOpen();
-                def.Erase();
+                    if (ids.Count > 0)
+                    {
+                        db.Purge(ids); // edits the collection down to only the purgeable (0-reference) defs
+                        foreach (ObjectId id in ids)
+                        {
+                            if (!id.IsNull && !id.IsErased)
+                            {
+                                ((BlockTableRecord)tr.GetObject(id, OpenMode.ForWrite)).Erase();
+                            }
+                        }
+                    }
+
+                    tr.Commit();
+                }
+            }
+            catch
+            {
+                // Best effort: a lingering nested def is preferable to failing the redraw.
             }
         }
 

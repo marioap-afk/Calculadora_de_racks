@@ -121,15 +121,19 @@ namespace RackCad.Plugin
             // Every loop below redraws with regen:false and the drawing regenerates ONCE at the end — a full
             // regeneration per view-block is pure waste on multi-view racks.
             var fondoCount = SelectiveDepthLayout.Count(system);
+
+            // View-blocks whose fondo/corte no longer exists after a shrink: erased below instead of left as phantoms.
+            // (User's choice: their peak geometry + GUID payload otherwise linger in every future Regen and
+            // RACKEDITAR scan. A later re-grow re-inserts that fondo's frontal / that post's corte via the jig.)
+            var staleViewBlocks = new System.Collections.Generic.List<ObjectId>();
+
             var updatedFrontal = 0;
             foreach (var fb in frontalBlocks)
             {
                 var fondo = fb.Embed != null && fb.Embed.Section >= 0 ? fb.Embed.Section : 0;
                 if (fondo >= fondoCount)
                 {
-                    // The design shrank and this fondo no longer exists. Leave the stale block (and its embedded
-                    // Section) untouched — like the lateral path skips a missing corte — so its fondo identity
-                    // survives a shrink/grow cycle instead of being clamped/overwritten to fondo 0.
+                    staleViewBlocks.Add(fb.BlockId); // this fondo is gone — erase the phantom frontal
                     continue;
                 }
 
@@ -155,7 +159,8 @@ namespace RackCad.Plugin
                     var corte = cortes.FirstOrDefault(c => c.PostIndex == lat.Embed.Section);
                     if (corte == null)
                     {
-                        continue; // the design shrank: this section no longer exists
+                        staleViewBlocks.Add(lat.BlockId); // this section is gone — erase the phantom lateral (see note above)
+                        continue;
                     }
 
                     var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
@@ -182,9 +187,25 @@ namespace RackCad.Plugin
                 }
             }
 
-            if (updatedFrontal + updatedLateral + updatedPlanta > 0)
+            // Erase the phantom view-blocks a shrink left behind (fondos/cortes that no longer exist) — but ONLY when
+            // at least one view-block SURVIVES the edit. The rack's GUID + embedded design live on these blocks, so
+            // erasing the last one would destroy the rack irrecoverably (no surviving block to RACKEDITAR). When nothing
+            // survives, keep the phantoms — the rack stays editable and the user can insert a fresh view.
+            var survivors = frontalBlocks.Count + lateralBlocks.Count + plantaBlocks.Count - staleViewBlocks.Count;
+            var erasedPhantoms = 0;
+            if (staleViewBlocks.Count > 0 && survivors > 0)
             {
-                document.Editor.Regen(); // ONE regeneration refreshes every redefined view-block
+                erasedPhantoms = EraseViewBlocks(document, staleViewBlocks);
+            }
+            else if (staleViewBlocks.Count > 0)
+            {
+                editor.WriteMessage("\nRackCad: las vistas del sistema ya no corresponden al diseno encogido, pero son las unicas del rack: "
+                    + "se conservan para no perderlo. Inserta una vista valida (RACKEDITAR) y borra las viejas a mano si lo deseas.");
+            }
+
+            if (updatedFrontal + updatedLateral + updatedPlanta + erasedPhantoms > 0)
+            {
+                document.Editor.Regen(); // ONE regeneration refreshes every redefined (and drops every erased) view-block
             }
 
             // "Insertar": after refreshing the existing views above, place a NEW linked view-block (same GUID) of the
@@ -196,12 +217,88 @@ namespace RackCad.Plugin
                 return;
             }
 
-            editor.WriteMessage(updatedFrontal + updatedLateral + updatedPlanta > 0
+            editor.WriteMessage(updatedFrontal + updatedLateral + updatedPlanta + erasedPhantoms > 0
                 ? "\nRackCad: sistema actualizado; sus vistas se redibujaron (frontal x"
                     + updatedFrontal.ToString(CultureInfo.InvariantCulture) + ", lateral x"
                     + updatedLateral.ToString(CultureInfo.InvariantCulture) + ", planta x"
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
+                    + (erasedPhantoms > 0 ? " Vistas obsoletas retiradas: x" + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + "." : string.Empty)
                 : "\nRackCad: no se pudo actualizar el rack.");
+        }
+
+        /// <summary>
+        /// Erase the view-block DEFINITIONS listed (a shrink's phantom fondos/cortes) together with their model-space
+        /// references (the copies) AND the nested ARRAY defs each one owned (SEL_FRONTAL_*), which erasing the owner only
+        /// dereferences. Its own locked transaction — like <see cref="LateralHeaderDrawService"/>'s cancelled-insert
+        /// cleanup — so it composes with the per-view redraw transactions above; the nested defs are purged post-commit
+        /// via <see cref="LateralHeaderDrawer.PurgeUnreferenced"/> (Database.Purge keeps any still shared, e.g. catalog
+        /// pieces). Best effort: a lingering phantom is preferable to failing the edit. Returns how many defs were erased.
+        /// </summary>
+        private static int EraseViewBlocks(Document document, System.Collections.Generic.IReadOnlyList<ObjectId> definitionIds)
+        {
+            if (document == null || definitionIds == null || definitionIds.Count == 0)
+            {
+                return 0;
+            }
+
+            var erased = 0;
+            var orphanedNestedDefs = new System.Collections.Generic.HashSet<ObjectId>();
+            try
+            {
+                using (document.LockDocument())
+                {
+                    using (var transaction = document.Database.TransactionManager.StartTransaction())
+                    {
+                        foreach (var definitionId in definitionIds)
+                        {
+                            if (definitionId.IsNull || definitionId.IsErased)
+                            {
+                                continue;
+                            }
+
+                            if (!(transaction.GetObject(definitionId, OpenMode.ForRead) is BlockTableRecord definition) || definition.IsLayout)
+                            {
+                                continue; // never touch model/paper space
+                            }
+
+                            // Capture the defs this view-block nests (its ARRAY groups + catalog pieces) BEFORE erasing it,
+                            // so the now-orphan group defs can be purged afterwards (Database.Purge spares the still-shared).
+                            foreach (ObjectId childId in definition)
+                            {
+                                if (transaction.GetObject(childId, OpenMode.ForRead) is BlockReference nested && !nested.BlockTableRecord.IsNull)
+                                {
+                                    orphanedNestedDefs.Add(nested.BlockTableRecord);
+                                }
+                            }
+
+                            // Erase every model-space reference (the rack's copies of this view) first, then the owner def.
+                            foreach (ObjectId referenceId in definition.GetBlockReferenceIds(directOnly: true, forceValidity: true))
+                            {
+                                if (transaction.GetObject(referenceId, OpenMode.ForWrite) is BlockReference reference)
+                                {
+                                    reference.Erase();
+                                }
+                            }
+
+                            definition.UpgradeOpen();
+                            definition.Erase();
+                            erased++;
+                        }
+
+                        transaction.Commit();
+                    }
+
+                    // Post-commit: the owner defs are gone, so their nested ARRAY defs are unreferenced — purge them.
+                    // Database.Purge filters out anything still referenced (catalog pieces other views use survive).
+                    LateralHeaderDrawer.PurgeUnreferenced(document.Database, orphanedNestedDefs);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                document.Editor.WriteMessage("\nRackCad: no se pudieron retirar algunas vistas obsoletas. " + ex.Message);
+            }
+
+            return erased;
         }
 
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>

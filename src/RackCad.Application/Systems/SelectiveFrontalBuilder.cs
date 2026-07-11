@@ -22,6 +22,19 @@ namespace RackCad.Application.Systems
     /// </summary>
     public sealed class SelectiveFrontalBuilder
     {
+        /// <summary>Nested-definition name prefix for the ARRAY grouping of the frontal (see <see cref="BuildPlan"/>).</summary>
+        private const string GroupPrefix = "SEL_FRONTAL";
+
+        /// <summary>
+        /// The frontal as a structured plan (the ARRAY pattern): identical postes/largueros/placas collapse into ONE
+        /// nested block definition referenced at every position, so AutoCAD sets each distinct piece's dynamic
+        /// parameters ONCE instead of per piece — the dominant cost when inserting/redrawing many frentes. Geometry is
+        /// identical to <see cref="Build"/> (which the WPF preview still consumes flat); the drawer already knows how to
+        /// nest <see cref="DynamicSystemPlan.Headers"/>.
+        /// </summary>
+        public DynamicSystemPlan BuildPlan(SelectiveRackSystem system, RackCatalog catalog)
+            => HeaderInstanceGrouper.Group(Build(system, catalog), GroupPrefix);
+
         public IReadOnlyList<HeaderBlockInstance> Build(SelectiveRackSystem system, RackCatalog catalog)
         {
             var instances = new List<HeaderBlockInstance>();
