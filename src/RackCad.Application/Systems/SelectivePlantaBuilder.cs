@@ -134,6 +134,11 @@ namespace RackCad.Application.Systems
 
             AddLargueros(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
             AddAnnotations(loose, system, frenteYs);
+
+            var fondoDepths = new List<double>(offsets.Count);
+            for (var k = 0; k < offsets.Count; k++) fondoDepths.Add(SelectiveDepthLayout.CabeceraDepthOfFondo(system, k));
+            SelectiveDimensions.AddPlanta(loose, system, PlantaView, frenteYs, offsets, fondoDepths);
+
             return new DynamicSystemPlan(groups.Select(g => g.ToGroup()).ToList(), loose);
         }
 

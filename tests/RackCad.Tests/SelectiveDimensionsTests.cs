@@ -49,6 +49,19 @@ namespace RackCad.Tests
                 .Where(i => i.Role == HeaderBlockRole.Dimension).ToList();
         }
 
+        private static List<HeaderBlockInstance> PlantaDims(DimensionDetail detail)
+            => new SelectivePlantaBuilder().Build(Resolve(detail), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Dimension).ToList();
+
+        /// <summary>Dimension instances of the FIRST lateral corte (each corte carries its own cotas).</summary>
+        private static List<HeaderBlockInstance> LateralCorteDims(DimensionDetail detail)
+        {
+            var cortes = new SelectiveLateralBuilder().Cortes(Resolve(detail), Catalog);
+            return cortes.Count == 0
+                ? new List<HeaderBlockInstance>()
+                : cortes[0].Largueros.Where(i => i.Role == HeaderBlockRole.Dimension).ToList();
+        }
+
         private static bool IsHorizontal(HeaderBlockInstance d) => Math.Abs(d.Insertion.Y - d.ConnectionAnchor.Y) < 1e-6;
         private static bool IsVertical(HeaderBlockInstance d) => Math.Abs(d.Insertion.X - d.ConnectionAnchor.X) < 1e-6;
         private static double Span(HeaderBlockInstance d) => Math.Abs(d.ConnectionAnchor.X - d.Insertion.X);
@@ -65,8 +78,8 @@ namespace RackCad.Tests
             var dims = Dims(DimensionDetail.Minimal);
 
             Assert.Equal(2, dims.Count);
-            Assert.Single(dims.Where(IsHorizontal)); // ancho total
-            var vertical = Assert.Single(dims.Where(IsVertical)); // alto total
+            Assert.Single(dims, IsHorizontal); // ancho total
+            var vertical = dims.Single(IsVertical); // alto total
             Assert.Equal(0.0, Math.Min(vertical.Insertion.Y, vertical.ConnectionAnchor.Y), 3); // desde el piso
             Assert.True(dims.All(d => d.DimensionOffset < 0.0)); // cotas fuera de la geometría (abajo/izquierda)
         }
@@ -94,7 +107,7 @@ namespace RackCad.Tests
             // Bays cotas measure the larguero cut length; exactly one (the overall width) is wider (post-to-post).
             var larguero = horizontal.Where(d => Math.Abs(Span(d) - beamLength) < 1e-6).OrderBy(d => Math.Min(d.Insertion.X, d.ConnectionAnchor.X)).ToList();
             Assert.Equal(Bays, larguero.Count);
-            var overall = Assert.Single(horizontal.Where(d => Span(d) > beamLength + 1e-6));
+            var overall = horizontal.Single(d => Span(d) > beamLength + 1e-6);
             Assert.True(Span(overall) > beamLength, "el ancho total (post a post) debe ser mayor que el largo de corte del larguero");
 
             // The larguero cota starts at the PROFILE cut (troquel + the ménsula overhang INICIO_PERFIL), NOT at the
@@ -125,6 +138,41 @@ namespace RackCad.Tests
             // elevation cota (each stepped to its own line). Overlapping elevations would collapse these.
             var distinctLines = vertical.Select(d => Math.Round(d.DimensionOffset, 3)).Distinct().Count();
             Assert.Equal(beamRows + 2, distinctLines);
+        }
+
+        [Fact]
+        public void Planta_None_EmitsNoDimensions() => Assert.Empty(PlantaDims(DimensionDetail.None));
+
+        [Fact]
+        public void Planta_Minimal_EmitsOverallLengthAndDepthOnly()
+        {
+            var dims = PlantaDims(DimensionDetail.Minimal);
+            Assert.Equal(2, dims.Count);
+            Assert.Single(dims, IsVertical);   // largo total (a lo largo de los frentes)
+            Assert.Single(dims, IsHorizontal); // fondo total
+        }
+
+        [Fact]
+        public void Planta_Standard_AddsPerFrenteAndPerFondo()
+        {
+            var dims = PlantaDims(DimensionDetail.Standard);
+            // Vertical (largo): one per frente + the overall length. Horizontal (fondo): per fondo (1 here) + total.
+            Assert.Equal(Bays + 1, dims.Count(IsVertical));
+            Assert.Equal(2, dims.Count(IsHorizontal));
+        }
+
+        [Fact]
+        public void Lateral_None_EmitsNoDimensions() => Assert.Empty(LateralCorteDims(DimensionDetail.None));
+
+        [Fact]
+        public void Lateral_Standard_EmitsHeightDepthAndLevelChains()
+        {
+            var beamRows = Levels - 1;
+            var dims = LateralCorteDims(DimensionDetail.Standard);
+
+            // Vertical (alto): level separations (beamRows) + overall height. Horizontal (fondo): per fondo (1) + total.
+            Assert.Equal(beamRows + 1, dims.Count(IsVertical));
+            Assert.Equal(2, dims.Count(IsHorizontal));
         }
 
         [Fact]

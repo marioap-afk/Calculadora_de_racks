@@ -126,6 +126,35 @@ namespace RackCad.Application.Systems
 
                 // Annotations once, from the primary (anchor) fondo's levels + its height.
                 AddCorteAnnotations(extras, system, i, CollectLevels(fondoBays[firstReaching], i), fondoBays[firstReaching], fondoFallback[firstReaching]);
+
+                // Cotas for this corte: the reaching fondos' anchor-relative depths (X = depth axis), the anchor
+                // fondo's larguero rows, and the corte's total height (the tallest reaching fondo).
+                var reachingFrontXs = new List<double>();
+                var reachingDepths = new List<double>();
+                var corteHeight = 0.0;
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    if (i > fondoBays[k].Count)
+                    {
+                        continue; // this fondo doesn't reach the corte
+                    }
+
+                    reachingFrontXs.Add(offsets[k] - anchorOffset);
+                    reachingDepths.Add(SelectiveDepthLayout.CabeceraDepthOfFondo(system, k));
+                    var heightK = SelectivePostGeometry.PostHeight(fondoBays[k], i, fondoFallback[k]);
+                    if (heightK > corteHeight) corteHeight = heightK;
+                }
+
+                var corteLevelYs = new List<double>();
+                foreach (var level in CollectLevels(fondoBays[firstReaching], i))
+                {
+                    var y = Math.Round(level.Y, 4);
+                    if (y > 1e-6 && !corteLevelYs.Contains(y)) corteLevelYs.Add(y);
+                }
+                corteLevelYs.Sort();
+
+                SelectiveDimensions.AddLateralCorte(extras, system, LateralView, reachingFrontXs, reachingDepths, corteLevelYs, corteHeight);
+
                 cortes.Add(new SelectiveCorte(i, postXs[i], cabecera, extras));
             }
 

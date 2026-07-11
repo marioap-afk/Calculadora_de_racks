@@ -100,6 +100,127 @@ namespace RackCad.Application.Systems
             }
         }
 
+        /// <summary>
+        /// LATERAL-corte cotas (one corte = one cross-section along the DEPTH axis at a post). X = fondo depth
+        /// (anchor-relative: the primary fondo's front is 0), Y = height. Minimal = overall height + overall depth.
+        /// Standard adds each fondo's depth (a chain along the bottom) and the level separations (a chain up the left).
+        /// Detailed adds each level's elevation from the floor. <paramref name="fondoFrontXs"/>/<paramref name="fondoDepths"/>
+        /// are the reaching fondos' anchor-relative front X and depth; <paramref name="levelYs"/> the corte's larguero
+        /// rows; <paramref name="height"/> the corte's total height.
+        /// </summary>
+        public static void AddLateralCorte(
+            ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view,
+            IReadOnlyList<double> fondoFrontXs, IReadOnlyList<double> fondoDepths, IReadOnlyList<double> levelYs, double height)
+        {
+            var detail = system.Dimensions;
+            if (detail == DimensionDetail.None || fondoFrontXs == null || fondoFrontXs.Count == 0 || fondoDepths == null || height <= 0.0)
+            {
+                return;
+            }
+
+            var scale = system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
+            var h = SelectiveAnnotations.TextHeightFor(scale);
+            var near = ChainGap * scale;
+            var far = (ChainGap + OverallGap) * scale;
+            var style = system.DimensionStyle;
+
+            var frontX = fondoFrontXs[0];
+            var last = fondoFrontXs.Count - 1;
+            var backX = fondoFrontXs[last] + (last < fondoDepths.Count ? fondoDepths[last] : 0.0);
+
+            if (detail == DimensionDetail.Minimal)
+            {
+                AddVertical(instances, view, frontX, 0.0, height, -near, h, style);     // alto total (izquierda)
+                AddHorizontal(instances, view, frontX, backX, 0.0, -near, h, style);    // fondo total (abajo)
+                return;
+            }
+
+            // Fondo por cabecera (cadena, abajo) + fondo total más afuera.
+            for (var k = 0; k < fondoFrontXs.Count && k < fondoDepths.Count; k++)
+            {
+                if (fondoDepths[k] > 0.0)
+                {
+                    AddHorizontal(instances, view, fondoFrontXs[k], fondoFrontXs[k] + fondoDepths[k], 0.0, -near, h, style);
+                }
+            }
+
+            AddHorizontal(instances, view, frontX, backX, 0.0, -far, h, style);
+
+            // Separaciones entre niveles (cadena, izquierda) + alto total más afuera.
+            var previous = 0.0;
+            foreach (var y in levelYs ?? new List<double>())
+            {
+                AddVertical(instances, view, frontX, previous, y, -near, h, style);
+                previous = y;
+            }
+
+            AddVertical(instances, view, frontX, 0.0, height, -far, h, style);
+
+            if (detail == DimensionDetail.Detailed && levelYs != null)
+            {
+                var elevationStep = ElevationStep * scale;
+                for (var i = 0; i < levelYs.Count; i++)
+                {
+                    AddVertical(instances, view, frontX, 0.0, levelYs[i], -(far + (i + 1) * elevationStep), h, style);
+                }
+            }
+        }
+
+        /// <summary>
+        /// PLANTA (top view) cotas. X = fondo depth, Y = frente width. Minimal = overall length (all frentes, along Y)
+        /// + overall depth (all fondos, along X). Standard adds the per-frente widths (a chain up the left) and each
+        /// fondo's depth (a chain along the bottom). Detailed matches Standard (no per-level in plan). Breakdown chains
+        /// sit near the geometry; the overalls sit further out.
+        /// </summary>
+        public static void AddPlanta(
+            ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view,
+            IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets, IReadOnlyList<double> fondoDepths)
+        {
+            var detail = system.Dimensions;
+            if (detail == DimensionDetail.None || frenteYs == null || frenteYs.Count < 2 || offsets == null || offsets.Count == 0 || fondoDepths == null)
+            {
+                return;
+            }
+
+            var scale = system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
+            var h = SelectiveAnnotations.TextHeightFor(scale);
+            var near = ChainGap * scale;
+            var far = (ChainGap + OverallGap) * scale;
+            var style = system.DimensionStyle;
+
+            var firstY = frenteYs[0];
+            var lastY = frenteYs[frenteYs.Count - 1];
+            var frontX = offsets[0];
+            var lastFondo = offsets.Count - 1;
+            var backX = offsets[lastFondo] + (lastFondo < fondoDepths.Count ? fondoDepths[lastFondo] : 0.0);
+
+            if (detail == DimensionDetail.Minimal)
+            {
+                AddVertical(instances, view, frontX, firstY, lastY, -near, h, style);   // largo total (todos los frentes)
+                AddHorizontal(instances, view, frontX, backX, firstY, -near, h, style);  // fondo total (todos los fondos)
+                return;
+            }
+
+            // Ancho por frente (cadena, izquierda) + largo total más afuera.
+            for (var i = 0; i + 1 < frenteYs.Count; i++)
+            {
+                AddVertical(instances, view, frontX, frenteYs[i], frenteYs[i + 1], -near, h, style);
+            }
+
+            AddVertical(instances, view, frontX, firstY, lastY, -far, h, style);
+
+            // Fondo por fondo (cadena, abajo) + fondo total más afuera.
+            for (var k = 0; k < offsets.Count && k < fondoDepths.Count; k++)
+            {
+                if (fondoDepths[k] > 0.0)
+                {
+                    AddHorizontal(instances, view, offsets[k], offsets[k] + fondoDepths[k], firstY, -near, h, style);
+                }
+            }
+
+            AddHorizontal(instances, view, frontX, backX, firstY, -far, h, style);
+        }
+
         /// <summary>Distinct larguero elevations (Y &gt; 0) across every bay, ascending — the rows a frontal dimensions.</summary>
         private static List<double> FrontalLevelYs(SelectiveRackSystem system)
         {
