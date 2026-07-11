@@ -50,8 +50,16 @@
                               ToolTip="Dibuja el nombre del rack como texto en las tres vistas." />
                     <TextBlock Text="Escala de texto (1 = 6&quot;)" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
                     <TextBox x:Name="AnnotationScaleBox" Style="{StaticResource FieldBox}" Text="1"
-                             ToolTip="Multiplica el tamaño del texto de las anotaciones (números y nombre)." />
-                    <TextBlock Text="La numeración y el nombre se dibujan como texto en la capa RACKCAD_ANOTACIONES (las tres vistas)."
+                             ToolTip="Multiplica el tamaño del texto de las anotaciones (números y nombre) y de las cotas." />
+                    <TextBlock Text="Cotas" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
+                    <ComboBox x:Name="DimensionsBox" SelectionChanged="Dimensions_Changed"
+                              ToolTip="Cotas automáticas por vista. Ninguna = sin cotas. Mínimo = alto/ancho totales. Estándar = + ancho por frente y separaciones. Detallado = + elevación de cada nivel. Se dibujan en la capa RACKCAD_COTAS y escalan con la escala de texto.">
+                        <ComboBoxItem Content="Ninguna" />
+                        <ComboBoxItem Content="Mínimo" />
+                        <ComboBoxItem Content="Estándar" />
+                        <ComboBoxItem Content="Detallado" />
+                    </ComboBox>
+                    <TextBlock Text="La numeración y el nombre se dibujan en RACKCAD_ANOTACIONES; las cotas en RACKCAD_COTAS (las tres vistas)."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
 
                     <TextBlock Text="Cabecera" Style="{StaticResource SectionTitle}" />

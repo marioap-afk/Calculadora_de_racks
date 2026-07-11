@@ -69,6 +69,9 @@ namespace RackCad.Domain.Systems
         /// <summary>Multiplier on the annotation text height (1 = default 6"). Scales the frente/level/name labels.</summary>
         public double AnnotationScale { get; set; } = 1.0;
 
+        /// <summary>How much automatic dimensioning to draw per view (None = off).</summary>
+        public DimensionDetail Dimensions { get; set; } = DimensionDetail.None;
+
         /// <summary>Client-facing rack name (used by the DrawRackName annotation); set at draw time.</summary>
         public string Name { get; set; }
     }

@@ -28,7 +28,12 @@ namespace RackCad.Application.Headers
         Beam,
 
         /// <summary>A text label (frente/level number, rack name). Drawn as DBText at <see cref="HeaderBlockInstance.Insertion"/>.</summary>
-        Annotation
+        Annotation,
+
+        /// <summary>A linear dimension between <see cref="HeaderBlockInstance.Insertion"/> (p1) and
+        /// <see cref="HeaderBlockInstance.ConnectionAnchor"/> (p2), its dimension line offset by
+        /// <see cref="HeaderBlockInstance.DimensionOffset"/>. Drawn as a RotatedDimension on the dimensions layer.</summary>
+        Dimension
     }
 
     /// <summary>
@@ -67,7 +72,12 @@ namespace RackCad.Application.Headers
         /// <summary>For <see cref="HeaderBlockRole.Annotation"/>: the text to draw. Null/empty for block instances.</summary>
         public string Text { get; set; }
 
-        /// <summary>For an annotation: text height (in). 0 = the drawer's default.</summary>
+        /// <summary>For an annotation: text height (in). 0 = the drawer's default. For a dimension: its text height.</summary>
         public double TextHeight { get; set; }
+
+        /// <summary>For a <see cref="HeaderBlockRole.Dimension"/>: signed perpendicular distance from the measured
+        /// segment (Insertion→ConnectionAnchor) to the dimension line. Its axis (horizontal vs vertical) is derived
+        /// from the two points; the sign chooses the side (e.g. below/left of the geometry).</summary>
+        public double DimensionOffset { get; set; }
     }
 }

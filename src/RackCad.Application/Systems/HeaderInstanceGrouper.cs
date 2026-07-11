@@ -33,8 +33,11 @@ namespace RackCad.Application.Systems
 
             foreach (var instance in instances)
             {
-                // Annotations are DBText (not blocks) and a blank-block piece can't be nested — keep them loose.
-                if (instance.Role == HeaderBlockRole.Annotation || string.IsNullOrWhiteSpace(instance.BlockName))
+                // Annotations (DBText) and dimensions (RotatedDimension) aren't blocks, and a blank-block piece can't be
+                // nested — keep them all loose.
+                if (instance.Role == HeaderBlockRole.Annotation
+                    || instance.Role == HeaderBlockRole.Dimension
+                    || string.IsNullOrWhiteSpace(instance.BlockName))
                 {
                     loose.Add(instance);
                     continue;

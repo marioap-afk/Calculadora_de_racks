@@ -60,6 +60,9 @@ namespace RackCad.Application.Persistence
         /// <summary>Annotation text scale (1 = default). Nullable so legacy designs (no field) keep scale 1.</summary>
         public double? AnnotationScale { get; set; }
 
+        /// <summary>Dimension detail (0=None..3=Detailed). Nullable so legacy designs (no field) keep dimensions off.</summary>
+        public int? Dimensions { get; set; }
+
         public static SelectivePalletDesignDocument From(SelectivePalletDesign design, string id, string name)
         {
             if (design == null)
@@ -113,6 +116,7 @@ namespace RackCad.Application.Persistence
             document.NumberLevels = design.NumberLevels;
             document.DrawRackName = design.DrawRackName;
             document.AnnotationScale = design.AnnotationScale;
+            document.Dimensions = (int)design.Dimensions;
 
             return document;
         }
@@ -176,8 +180,18 @@ namespace RackCad.Application.Persistence
             design.NumberLevels = NumberLevels;
             design.DrawRackName = DrawRackName;
             design.AnnotationScale = AnnotationScale.HasValue && AnnotationScale.Value > 0.0 ? AnnotationScale.Value : 1.0;
+            design.Dimensions = ToDimensionDetail(Dimensions);
 
             return design;
+        }
+
+        /// <summary>Map the persisted int to <see cref="DimensionDetail"/>, clamping out-of-range/legacy values to None.</summary>
+        private static DimensionDetail ToDimensionDetail(int? value)
+        {
+            if (!value.HasValue) return DimensionDetail.None; // legacy docs (no field) draw no dimensions
+            return value.Value >= (int)DimensionDetail.None && value.Value <= (int)DimensionDetail.Detailed
+                ? (DimensionDetail)value.Value
+                : DimensionDetail.None;
         }
     }
 

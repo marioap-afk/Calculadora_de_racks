@@ -187,6 +187,7 @@ namespace RackCad.UI
             RenderMatrix();
             RefreshPostSelect();
             UpdateInsertButtons();
+            DimensionsBox.SelectedIndex = 0; // "Ninguna" — cotas off by default
             initialized = true; // from here on, field edits live-apply (see GlobalScalar_* / Post_Changed / BayCount_*)
             Recompute();
         }
@@ -1450,6 +1451,14 @@ namespace RackCad.UI
             Recompute();
         }
 
+        /// <summary>The dimension-detail combo. Cotas don't render in the schematic WPF preview (only in AutoCAD), but
+        /// recompute so <c>lastSystem.Dimensions</c> is fresh for the next draw and the status reflects the change.</summary>
+        private void Dimensions_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (!initialized) return;
+            Recompute();
+        }
+
         private void BayCount_LostFocus(object sender, RoutedEventArgs e) => ApplyBayCount();
 
         private void BayCount_KeyDown(object sender, KeyEventArgs e)
@@ -1799,6 +1808,7 @@ namespace RackCad.UI
             design.NumberLevels = NumberLevelsCheck.IsChecked == true;
             design.DrawRackName = DrawRackNameCheck.IsChecked == true;
             design.AnnotationScale = UiSupport.TryNum(AnnotationScaleBox.Text, out var annScale) && annScale > 0.0 ? annScale : 1.0;
+            design.Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex));
 
             return design;
         }
@@ -1910,6 +1920,7 @@ namespace RackCad.UI
             NumberLevelsCheck.IsChecked = design.NumberLevels;
             DrawRackNameCheck.IsChecked = design.DrawRackName;
             AnnotationScaleBox.Text = (design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0).ToString(CultureInfo.InvariantCulture);
+            DimensionsBox.SelectedIndex = (int)design.Dimensions;
 
             BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
             selBay = 0;

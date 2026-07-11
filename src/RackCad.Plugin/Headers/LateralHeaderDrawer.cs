@@ -125,9 +125,16 @@ namespace RackCad.Plugin.Headers
             foreach (ObjectId id in systemDef)
             {
                 existing.Add(id);
-                if (tr.GetObject(id, OpenMode.ForRead) is BlockReference nestedRef && !nestedRef.BlockTableRecord.IsNull)
+                var obj = tr.GetObject(id, OpenMode.ForRead);
+                if (obj is BlockReference nestedRef && !nestedRef.BlockTableRecord.IsNull)
                 {
                     priorReferencedDefs.Add(nestedRef.BlockTableRecord);
+                }
+                else if (obj is Dimension dimension && !dimension.DimBlockId.IsNull)
+                {
+                    // A dimension owns an anonymous *D block for its graphics; erasing the dimension orphans it, so
+                    // enqueue it for the post-commit purge or the block table grows one *D per cota per redraw.
+                    priorReferencedDefs.Add(dimension.DimBlockId);
                 }
             }
 
@@ -299,6 +306,15 @@ namespace RackCad.Plugin.Headers
                 return true;
             }
 
+            // Linear dimensions (cotas) are RotatedDimensions, not blocks. p1=Insertion, p2=ConnectionAnchor; the
+            // segment is axis-aligned, so a horizontal measure shares Y (rotation 0) and a vertical one shares X
+            // (rotation 90°). DimensionOffset (signed) places the dimension line to one side.
+            if (instance.Role == HeaderBlockRole.Dimension)
+            {
+                AppendDimension(space, tr, instance);
+                return true;
+            }
+
             if (string.IsNullOrWhiteSpace(instance.BlockName) || !blockTable.Has(instance.BlockName))
             {
                 var key = (instance.BlockName ?? instance.PieceId ?? instance.Role.ToString()) + "|" + instance.View;
@@ -332,24 +348,69 @@ namespace RackCad.Plugin.Headers
         /// <summary>Layer the text annotations (frente/level numbers, rack name) live on, so they can be toggled/frozen apart.</summary>
         private const string AnnotationLayer = "RACKCAD_ANOTACIONES";
 
+        /// <summary>Layer the dimensions (cotas) live on, so they can be frozen/plotted apart from the geometry.</summary>
+        private const string DimensionLayer = "RACKCAD_COTAS";
+
         /// <summary>Ensure the annotations layer exists (yellow); returns its id so the text draws on it (ByLayer).</summary>
         private static ObjectId EnsureAnnotationLayer(Database db, Transaction tr)
+            => EnsureLayer(db, tr, AnnotationLayer, 2); // yellow
+
+        /// <summary>Ensure a named layer exists with the given ACI color; returns its id (existing or freshly created).</summary>
+        private static ObjectId EnsureLayer(Database db, Transaction tr, string name, short aci)
         {
             var layerTable = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
-            if (layerTable.Has(AnnotationLayer))
+            if (layerTable.Has(name))
             {
-                return layerTable[AnnotationLayer];
+                return layerTable[name];
             }
 
             layerTable.UpgradeOpen();
             var record = new LayerTableRecord
             {
-                Name = AnnotationLayer,
-                Color = Color.FromColorIndex(ColorMethod.ByAci, 2) // yellow
+                Name = name,
+                Color = Color.FromColorIndex(ColorMethod.ByAci, aci)
             };
             var id = layerTable.Add(record);
             tr.AddNewlyCreatedDBObject(record, true);
             return id;
+        }
+
+        /// <summary>
+        /// Materialize a <see cref="HeaderBlockRole.Dimension"/> as a RotatedDimension on the dimensions layer. Text,
+        /// arrows and gaps are sized to the instance's (annotation-scaled) text height via per-dimension DIMVAR
+        /// overrides, so cotas stay proportional to the numbers regardless of the drawing's current DIMSTYLE.
+        /// </summary>
+        private static void AppendDimension(BlockTableRecord space, Transaction tr, HeaderBlockInstance instance)
+        {
+            var db = space.Database;
+            var p1 = new Point3d(instance.Insertion.X, instance.Insertion.Y, 0.0);
+            var p2 = new Point3d(instance.ConnectionAnchor.X, instance.ConnectionAnchor.Y, 0.0);
+
+            // Axis-aligned: a horizontal measure shares Y (extension lines drop down), a vertical one shares X.
+            var horizontal = Math.Abs(p2.Y - p1.Y) <= Math.Abs(p2.X - p1.X);
+            var rotation = horizontal ? 0.0 : Math.PI / 2.0;
+            var dimLine = horizontal
+                ? new Point3d((p1.X + p2.X) / 2.0, p1.Y + instance.DimensionOffset, 0.0)
+                : new Point3d(p1.X + instance.DimensionOffset, (p1.Y + p2.Y) / 2.0, 0.0);
+
+            var dimension = new RotatedDimension(rotation, p1, p2, dimLine, string.Empty, db.Dimstyle)
+            {
+                LayerId = EnsureLayer(db, tr, DimensionLayer, 1) // red
+            };
+
+            space.AppendEntity(dimension);
+            tr.AddNewlyCreatedDBObject(dimension, true);
+
+            var textHeight = instance.TextHeight > 0.0 ? instance.TextHeight : 3.0; // fallback if the builder set none
+            dimension.Dimscale = 1.0;                 // sizes below are absolute, not multiplied by the current DIMSTYLE
+            dimension.Dimtxt = textHeight;            // text height
+            dimension.Dimasz = textHeight * 0.7;      // arrowhead size
+            dimension.Dimexe = textHeight * 0.4;      // extension line beyond the dimension line
+            dimension.Dimexo = textHeight * 0.4;      // extension line offset from the origin points
+            dimension.Dimgap = textHeight * 0.3;      // gap around the text
+            dimension.Dimtad = 1;                     // text above the dimension line
+            dimension.Dimdec = 2;                     // 2 decimal places
+            dimension.RecomputeDimensionBlock(true);  // rebuild the dimension geometry with these overrides
         }
 
         /// <summary>Ensure the block name is free; if taken, append _1, _2, … so we never rename another block.</summary>
