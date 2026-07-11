@@ -25,19 +25,17 @@ namespace RackCad.Application.Systems
         /// <summary>Step (in, ×scale) between the stacked per-level elevation lines (Detailed).</summary>
         private const double ElevationStep = 14.0;
 
-        /// <summary>Gap (in, ×scale) above a bay's top larguero where its cut-length cota sits (attached to the larguero).</summary>
-        private const double LargueroGap = 8.0;
-
         /// <summary>
         /// FRONTAL cotas. Minimal = overall height + overall width. Standard adds the per-frente LARGUERO cut lengths
-        /// (positioned under each larguero, NOT post-to-post) and the level separations (a chain up the left). Detailed
-        /// adds each level's elevation from the floor. Breakdown chains sit near the geometry; the overall dimensions
-        /// sit further out so their text clears the breakdown. <paramref name="troquelXs"/> are the per-bay larguero
-        /// hook offsets (from the left post), so a cota lands on the actual larguero span.
+        /// (along the bottom, spanning the profile cut — NOT post-to-post) and the level separations (a chain up the
+        /// left). Detailed adds each level's elevation from the floor. Breakdown chains sit near the geometry; the
+        /// overall dimensions sit further out so their text clears the breakdown. <paramref name="beamStartXs"/> is the
+        /// per-bay absolute X where the larguero PROFILE cut starts (hook troquel + the ménsula overhang INICIO_PERFIL),
+        /// so the cota spans the true cut, not the hook-to-hook distance.
         /// </summary>
         public static void AddFrontal(
             ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view,
-            IReadOnlyList<double> postX, IReadOnlyList<double> troquelXs)
+            IReadOnlyList<double> postX, IReadOnlyList<double> beamStartXs)
         {
             var detail = system.Dimensions;
             if (detail == DimensionDetail.None || postX == null || postX.Count < 2 || system.Height <= 0.0)
@@ -63,21 +61,19 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            // Largo de corte del larguero por frente, PEGADO al larguero (a la altura del larguero superior de la
-            // bahía, un poco por encima), no en el piso — así se entiende a qué larguero pertenece y el hueco de la
-            // ménsula no confunde. El ancho total post-a-post va abajo, más afuera.
-            var largueroGap = LargueroGap * scale;
-            for (var i = 0; i < system.Bays.Count && i < postX.Count && troquelXs != null && i < troquelXs.Count; i++)
+            // Largo de CORTE del larguero por frente, abajo (en el piso): la cota abarca el perfil real (desde el
+            // inicio del corte, ya con la ménsula descontada), no de troquel a troquel. El ancho total post-a-post va
+            // más afuera.
+            for (var i = 0; i < system.Bays.Count && beamStartXs != null && i < beamStartXs.Count; i++)
             {
-                var bay = system.Bays[i];
-                if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
+                var beamLength = system.Bays[i].BeamLength;
+                if (beamLength <= 0.0)
                 {
                     continue;
                 }
 
-                var beamLeft = postX[i] + troquelXs[i];
-                var beamY = bay.Levels[bay.Levels.Count - 1].Y; // larguero superior de esta bahía
-                AddHorizontal(instances, view, beamLeft, beamLeft + bay.BeamLength, beamY, largueroGap, h, style);
+                var start = beamStartXs[i];
+                AddHorizontal(instances, view, start, start + beamLength, 0.0, -near, h, style);
             }
 
             AddHorizontal(instances, view, leftX, rightX, 0.0, -far, h, style);

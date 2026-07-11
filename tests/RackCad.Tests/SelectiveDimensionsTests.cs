@@ -87,18 +87,23 @@ namespace RackCad.Tests
         public void Standard_PerFrenteCota_MeasuresLargueroCutLength_NotPostSpacing()
         {
             var system = Resolve(DimensionDetail.Standard);
-            var beamLength = system.Bays[0].BeamLength; // uniform bays → same cut length
+            var fondoView = SelectiveDepthLayout.FondoSystemView(system, 0);
+            var beamLength = fondoView.Bays[0].BeamLength; // uniform bays → same cut length
             var horizontal = Dims(DimensionDetail.Standard).Where(IsHorizontal).ToList();
 
             // Bays cotas measure the larguero cut length; exactly one (the overall width) is wider (post-to-post).
-            var larguero = horizontal.Where(d => Math.Abs(Span(d) - beamLength) < 1e-6).ToList();
+            var larguero = horizontal.Where(d => Math.Abs(Span(d) - beamLength) < 1e-6).OrderBy(d => Math.Min(d.Insertion.X, d.ConnectionAnchor.X)).ToList();
             Assert.Equal(Bays, larguero.Count);
             var overall = Assert.Single(horizontal.Where(d => Span(d) > beamLength + 1e-6));
             Assert.True(Span(overall) > beamLength, "el ancho total (post a post) debe ser mayor que el largo de corte del larguero");
 
-            // The larguero cota sits at its larguero's height (not the floor); the overall width sits on the floor.
-            Assert.All(larguero, d => Assert.True(d.Insertion.Y > 0.0, "la cota del larguero va a la altura del larguero, no en el piso"));
-            Assert.Equal(0.0, overall.Insertion.Y, 3);
+            // The larguero cota starts at the PROFILE cut (troquel + the ménsula overhang INICIO_PERFIL), NOT at the
+            // troquel — otherwise it would end short by the ménsula.
+            var layout = SelectivePostGeometry.Compute(fondoView, Catalog);
+            var inicioX0 = SelectivePostGeometry.BeamProfileStartX(Catalog, fondoView.Bays[0], SelectiveRackDefaults.View);
+            var expectedStart0 = layout.PostXs[0] + layout.TroquelXs[0] + inicioX0;
+            Assert.Equal(expectedStart0, Math.Min(larguero[0].Insertion.X, larguero[0].ConnectionAnchor.X), 3);
+            Assert.True(inicioX0 > 0.0, "la ménsula sí descuenta (INICIO_PERFIL > 0), si no la prueba no distingue el arreglo");
         }
 
         [Fact]

@@ -134,7 +134,17 @@ namespace RackCad.Application.Systems
             }
 
             AddAnnotations(instances, system, view, postX);
-            SelectiveDimensions.AddFrontal(instances, system, view, postX, layout.TroquelXs);
+
+            // Where each bay's larguero PROFILE cut starts (hook troquel + the ménsula overhang INICIO_PERFIL) — the
+            // larguero cotas span the true cut from here, not from the troquel (which would end short by the ménsula).
+            var beamStartXs = new List<double>(system.Bays.Count);
+            for (var i = 0; i < system.Bays.Count; i++)
+            {
+                var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, system.Bays[i], view);
+                beamStartXs.Add(postX[i] + layout.TroquelXs[i] + inicioX);
+            }
+
+            SelectiveDimensions.AddFrontal(instances, system, view, postX, beamStartXs);
             return instances;
         }
 
