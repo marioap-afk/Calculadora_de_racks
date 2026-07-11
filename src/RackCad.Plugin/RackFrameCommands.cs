@@ -262,6 +262,42 @@ namespace RackCad.Plugin
             document?.Editor.WriteMessage("\nRackCad error: " + ex.Message);
         }
 
+        /// <summary>The names of the dimension styles defined in the drawing (for the cotas style combo). Sorted,
+        /// best-effort — a read failure just yields an empty list so the editor falls back to "(Automático)".</summary>
+        private static System.Collections.Generic.List<string> ReadDimensionStyleNames(Document document)
+        {
+            var names = new System.Collections.Generic.List<string>();
+            if (document == null)
+            {
+                return names;
+            }
+
+            try
+            {
+                using (document.LockDocument())
+                using (var transaction = document.Database.TransactionManager.StartTransaction())
+                {
+                    var table = (DimStyleTable)transaction.GetObject(document.Database.DimStyleTableId, OpenMode.ForRead);
+                    foreach (ObjectId id in table)
+                    {
+                        if (transaction.GetObject(id, OpenMode.ForRead) is DimStyleTableRecord record && !record.IsErased)
+                        {
+                            names.Add(record.Name);
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+            }
+            catch
+            {
+                // Best effort: no styles listed → the editor uses "(Automático)".
+            }
+
+            names.Sort(System.StringComparer.OrdinalIgnoreCase);
+            return names;
+        }
+
         /// <summary>The ONE insert-outcome summary (failure / canceled jig / inserted + missing blocks) — the per-kind
         /// Describe* methods only supply the noun phrases. Sin acentos: mensajes de linea de comandos de AutoCAD.</summary>
         private static string DescribePlacement(HeaderPlacementResult result, string failNoun, string insertedPhrase)

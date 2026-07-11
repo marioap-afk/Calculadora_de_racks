@@ -393,7 +393,10 @@ namespace RackCad.Plugin.Headers
                 ? new Point3d((p1.X + p2.X) / 2.0, p1.Y + instance.DimensionOffset, 0.0)
                 : new Point3d(p1.X + instance.DimensionOffset, (p1.Y + p2.Y) / 2.0, 0.0);
 
-            var dimension = new RotatedDimension(rotation, p1, p2, dimLine, string.Empty, db.Dimstyle)
+            // A named style (chosen by the user) is respected as-is; otherwise use the drawing's current style and
+            // size the cota to the annotation-scaled text height via per-dimension DIMVAR overrides.
+            var chosenStyle = ResolveDimStyle(db, tr, instance.DimensionStyleName);
+            var dimension = new RotatedDimension(rotation, p1, p2, dimLine, string.Empty, chosenStyle.StyleId)
             {
                 LayerId = EnsureLayer(db, tr, DimensionLayer, 1) // red
             };
@@ -401,16 +404,36 @@ namespace RackCad.Plugin.Headers
             space.AppendEntity(dimension);
             tr.AddNewlyCreatedDBObject(dimension, true);
 
-            var textHeight = instance.TextHeight > 0.0 ? instance.TextHeight : 3.0; // fallback if the builder set none
-            dimension.Dimscale = 1.0;                 // sizes below are absolute, not multiplied by the current DIMSTYLE
-            dimension.Dimtxt = textHeight;            // text height
-            dimension.Dimasz = textHeight * 0.7;      // arrowhead size
-            dimension.Dimexe = textHeight * 0.4;      // extension line beyond the dimension line
-            dimension.Dimexo = textHeight * 0.4;      // extension line offset from the origin points
-            dimension.Dimgap = textHeight * 0.3;      // gap around the text
-            dimension.Dimtad = 1;                     // text above the dimension line
-            dimension.Dimdec = 2;                     // 2 decimal places
-            dimension.RecomputeDimensionBlock(true);  // rebuild the dimension geometry with these overrides
+            if (!chosenStyle.IsNamed)
+            {
+                var textHeight = instance.TextHeight > 0.0 ? instance.TextHeight : 3.0; // fallback if the builder set none
+                dimension.Dimscale = 1.0;                 // sizes below are absolute, not multiplied by the current DIMSTYLE
+                dimension.Dimtxt = textHeight;            // text height
+                dimension.Dimasz = textHeight * 0.7;      // arrowhead size
+                dimension.Dimexe = textHeight * 0.4;      // extension line beyond the dimension line
+                dimension.Dimexo = textHeight * 0.4;      // extension line offset from the origin points
+                dimension.Dimgap = textHeight * 0.3;      // gap around the text
+                dimension.Dimtad = 1;                     // text above the dimension line
+                dimension.Dimdec = 2;                     // 2 decimal places
+            }
+
+            dimension.RecomputeDimensionBlock(true);  // rebuild the dimension geometry with the style/overrides
+        }
+
+        /// <summary>Resolve the dimension style to use: the named style when given AND present in the drawing (respected
+        /// as-is), else the drawing's current style (IsNamed = false → the caller applies scaled DIMVAR overrides).</summary>
+        private static (ObjectId StyleId, bool IsNamed) ResolveDimStyle(Database db, Transaction tr, string styleName)
+        {
+            if (!string.IsNullOrWhiteSpace(styleName))
+            {
+                var table = (DimStyleTable)tr.GetObject(db.DimStyleTableId, OpenMode.ForRead);
+                if (table.Has(styleName))
+                {
+                    return (table[styleName], true);
+                }
+            }
+
+            return (db.Dimstyle, false);
         }
 
         /// <summary>Ensure the block name is free; if taken, append _1, _2, … so we never rename another block.</summary>

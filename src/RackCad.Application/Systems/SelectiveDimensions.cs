@@ -46,6 +46,7 @@ namespace RackCad.Application.Systems
             var h = SelectiveAnnotations.TextHeightFor(scale);
             var near = ChainGap * scale;
             var far = (ChainGap + OverallGap) * scale;
+            var style = system.DimensionStyle;
 
             var leftX = postX[0];
             var rightX = postX[postX.Count - 1];
@@ -54,8 +55,8 @@ namespace RackCad.Application.Systems
 
             if (detail == DimensionDetail.Minimal)
             {
-                AddVertical(instances, view, leftX, 0.0, height, -near, h);   // alto total (izquierda)
-                AddHorizontal(instances, view, leftX, rightX, 0.0, -near, h); // ancho total post-a-post (abajo)
+                AddVertical(instances, view, leftX, 0.0, height, -near, h, style);   // alto total (izquierda)
+                AddHorizontal(instances, view, leftX, rightX, 0.0, -near, h, style); // ancho total post-a-post (abajo)
                 return;
             }
 
@@ -69,20 +70,20 @@ namespace RackCad.Application.Systems
                 }
 
                 var beamLeft = postX[i] + troquelXs[i];
-                AddHorizontal(instances, view, beamLeft, beamLeft + beamLength, 0.0, -near, h);
+                AddHorizontal(instances, view, beamLeft, beamLeft + beamLength, 0.0, -near, h, style);
             }
 
-            AddHorizontal(instances, view, leftX, rightX, 0.0, -far, h);
+            AddHorizontal(instances, view, leftX, rightX, 0.0, -far, h, style);
 
             // Separaciones entre niveles (cadena, izquierda): piso → nivel 1 → nivel 2 …
             var previous = 0.0;
             foreach (var y in levelYs)
             {
-                AddVertical(instances, view, leftX, previous, y, -near, h);
+                AddVertical(instances, view, leftX, previous, y, -near, h, style);
                 previous = y;
             }
 
-            AddVertical(instances, view, leftX, 0.0, height, -far, h); // alto total, más afuera para no pegarse a los claros
+            AddVertical(instances, view, leftX, 0.0, height, -far, h, style); // alto total, más afuera para no pegarse a los claros
 
             if (detail == DimensionDetail.Detailed)
             {
@@ -91,7 +92,7 @@ namespace RackCad.Application.Systems
                 var elevationStep = ElevationStep * scale;
                 for (var i = 0; i < levelYs.Count; i++)
                 {
-                    AddVertical(instances, view, leftX, 0.0, levelYs[i], -(far + (i + 1) * elevationStep), h);
+                    AddVertical(instances, view, leftX, 0.0, levelYs[i], -(far + (i + 1) * elevationStep), h, style);
                 }
             }
         }
@@ -114,27 +115,27 @@ namespace RackCad.Application.Systems
             return ys.ToList();
         }
 
-        private static void AddHorizontal(ICollection<HeaderBlockInstance> instances, string view, double x1, double x2, double y, double offset, double height)
+        private static void AddHorizontal(ICollection<HeaderBlockInstance> instances, string view, double x1, double x2, double y, double offset, double height, string style)
         {
             if (Math.Abs(x2 - x1) < 1e-6)
             {
                 return; // skip a zero-length dimension
             }
 
-            instances.Add(Dim(view, new Point2D(x1, y), new Point2D(x2, y), offset, height));
+            instances.Add(Dim(view, new Point2D(x1, y), new Point2D(x2, y), offset, height, style));
         }
 
-        private static void AddVertical(ICollection<HeaderBlockInstance> instances, string view, double x, double y1, double y2, double offset, double height)
+        private static void AddVertical(ICollection<HeaderBlockInstance> instances, string view, double x, double y1, double y2, double offset, double height, string style)
         {
             if (Math.Abs(y2 - y1) < 1e-6)
             {
                 return;
             }
 
-            instances.Add(Dim(view, new Point2D(x, y1), new Point2D(x, y2), offset, height));
+            instances.Add(Dim(view, new Point2D(x, y1), new Point2D(x, y2), offset, height, style));
         }
 
-        private static HeaderBlockInstance Dim(string view, Point2D p1, Point2D p2, double offset, double height)
+        private static HeaderBlockInstance Dim(string view, Point2D p1, Point2D p2, double offset, double height, string style)
             => new HeaderBlockInstance
             {
                 Role = HeaderBlockRole.Dimension,
@@ -142,7 +143,8 @@ namespace RackCad.Application.Systems
                 Insertion = p1,
                 ConnectionAnchor = p2,
                 DimensionOffset = offset,
-                TextHeight = height
+                TextHeight = height,
+                DimensionStyleName = style
             };
     }
 }

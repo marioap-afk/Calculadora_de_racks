@@ -188,6 +188,8 @@ namespace RackCad.UI
             RefreshPostSelect();
             UpdateInsertButtons();
             DimensionsBox.SelectedIndex = 0; // "Ninguna" — cotas off by default
+            DimStyleBox.Items.Add(AutoDimStyle); // populated with the drawing's styles later via SetDimensionStyles
+            DimStyleBox.SelectedIndex = 0;
             initialized = true; // from here on, field edits live-apply (see GlobalScalar_* / Post_Changed / BayCount_*)
             Recompute();
         }
@@ -1459,6 +1461,52 @@ namespace RackCad.UI
             Recompute();
         }
 
+        /// <summary>The "(Automático)" entry: the current DIMSTYLE sized to the annotation scale (no named style).</summary>
+        private const string AutoDimStyle = "(Automático)";
+
+        /// <summary>Fill the dimension-style combo with the drawing's styles (called by the plugin, which has the
+        /// document). Keeps "(Automático)" first and preserves the current selection when it still exists.</summary>
+        public void SetDimensionStyles(IEnumerable<string> styleNames)
+        {
+            var previous = DimStyleBox.SelectedItem as string;
+            DimStyleBox.Items.Clear();
+            DimStyleBox.Items.Add(AutoDimStyle);
+            if (styleNames != null)
+            {
+                foreach (var name in styleNames)
+                {
+                    if (!string.IsNullOrWhiteSpace(name) && !DimStyleBox.Items.Contains(name.Trim()))
+                    {
+                        DimStyleBox.Items.Add(name.Trim());
+                    }
+                }
+            }
+
+            DimStyleBox.SelectedItem = previous != null && DimStyleBox.Items.Contains(previous) ? previous : AutoDimStyle;
+        }
+
+        /// <summary>The chosen dimension style name, or null when "(Automático)".</summary>
+        private string SelectedDimStyle()
+        {
+            var name = DimStyleBox.SelectedItem as string;
+            return string.IsNullOrEmpty(name) || name == AutoDimStyle ? null : name;
+        }
+
+        /// <summary>Select a saved style in the combo; add it if the current drawing doesn't have it (so it round-trips),
+        /// and fall back to "(Automático)" when none.</summary>
+        private void SelectDimStyle(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                DimStyleBox.SelectedItem = AutoDimStyle;
+                return;
+            }
+
+            var trimmed = name.Trim();
+            if (!DimStyleBox.Items.Contains(trimmed)) DimStyleBox.Items.Add(trimmed);
+            DimStyleBox.SelectedItem = trimmed;
+        }
+
         private void BayCount_LostFocus(object sender, RoutedEventArgs e) => ApplyBayCount();
 
         private void BayCount_KeyDown(object sender, KeyEventArgs e)
@@ -1809,6 +1857,7 @@ namespace RackCad.UI
             design.DrawRackName = DrawRackNameCheck.IsChecked == true;
             design.AnnotationScale = UiSupport.TryNum(AnnotationScaleBox.Text, out var annScale) && annScale > 0.0 ? annScale : 1.0;
             design.Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex));
+            design.DimensionStyle = SelectedDimStyle();
 
             return design;
         }
@@ -1921,6 +1970,7 @@ namespace RackCad.UI
             DrawRackNameCheck.IsChecked = design.DrawRackName;
             AnnotationScaleBox.Text = (design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0).ToString(CultureInfo.InvariantCulture);
             DimensionsBox.SelectedIndex = (int)design.Dimensions;
+            SelectDimStyle(design.DimensionStyle);
 
             BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
             selBay = 0;

@@ -79,6 +79,7 @@ namespace RackCad.Application.Systems
                 DrawRackName = system.DrawRackName,
                 AnnotationScale = system.AnnotationScale,
                 Dimensions = system.Dimensions,
+                DimensionStyle = system.DimensionStyle,
                 Name = system.Name
             };
 

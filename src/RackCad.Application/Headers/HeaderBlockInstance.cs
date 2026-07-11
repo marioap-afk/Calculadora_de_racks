@@ -79,5 +79,9 @@ namespace RackCad.Application.Headers
         /// segment (Insertion→ConnectionAnchor) to the dimension line. Its axis (horizontal vs vertical) is derived
         /// from the two points; the sign chooses the side (e.g. below/left of the geometry).</summary>
         public double DimensionOffset { get; set; }
+
+        /// <summary>For a <see cref="HeaderBlockRole.Dimension"/>: the AutoCAD dimension style name to use; null/empty
+        /// = automatic (the drawing's current style, sized to the annotation scale).</summary>
+        public string DimensionStyleName { get; set; }
     }
 }

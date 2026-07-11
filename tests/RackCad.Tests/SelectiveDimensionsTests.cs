@@ -120,12 +120,15 @@ namespace RackCad.Tests
         [Fact]
         public void Dimensions_RoundTripThroughDocument()
         {
-            var document = SelectivePalletDesignDocument.From(Design(DimensionDetail.Detailed), "id-1", "Rack A");
+            var design = Design(DimensionDetail.Detailed);
+            design.DimensionStyle = "MI_ESTILO";
+            var document = SelectivePalletDesignDocument.From(design, "id-1", "Rack A");
             var store = new SelectivePalletDesignStore();
 
             var restored = store.Deserialize(store.Serialize(document)).ToDomain();
 
             Assert.Equal(DimensionDetail.Detailed, restored.Dimensions);
+            Assert.Equal("MI_ESTILO", restored.DimensionStyle); // el estilo de cota elegido sobrevive el round-trip
         }
 
         [Fact]

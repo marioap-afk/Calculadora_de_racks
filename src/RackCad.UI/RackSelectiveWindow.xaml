@@ -59,6 +59,9 @@
                         <ComboBoxItem Content="Estándar" />
                         <ComboBoxItem Content="Detallado" />
                     </ComboBox>
+                    <TextBlock Text="Estilo de cota" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
+                    <ComboBox x:Name="DimStyleBox" SelectionChanged="Dimensions_Changed"
+                              ToolTip="Estilo de cota tomado de la tabla de estilos del dibujo actual de AutoCAD. «(Automático)» usa el estilo vigente con el tamaño según la escala de texto; un estilo elegido se respeta tal cual." />
                     <TextBlock Text="La numeración y el nombre se dibujan en RACKCAD_ANOTACIONES; las cotas en RACKCAD_COTAS (las tres vistas)."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
 

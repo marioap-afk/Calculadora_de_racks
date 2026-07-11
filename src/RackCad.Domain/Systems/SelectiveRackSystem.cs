@@ -72,6 +72,9 @@ namespace RackCad.Domain.Systems
         /// <summary>How much automatic dimensioning to draw per view (None = off).</summary>
         public DimensionDetail Dimensions { get; set; } = DimensionDetail.None;
 
+        /// <summary>Name of the AutoCAD dimension style for the cotas; null/empty = automatic (current style, scaled).</summary>
+        public string DimensionStyle { get; set; }
+
         /// <summary>Client-facing rack name (used by the DrawRackName annotation); set at draw time.</summary>
         public string Name { get; set; }
     }

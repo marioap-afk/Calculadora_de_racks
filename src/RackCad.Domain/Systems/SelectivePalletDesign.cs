@@ -110,6 +110,10 @@ namespace RackCad.Domain.Systems
 
         /// <summary>How much automatic dimensioning to draw per view (None = off). Scaled by <see cref="AnnotationScale"/>.</summary>
         public DimensionDetail Dimensions { get; set; } = DimensionDetail.None;
+
+        /// <summary>Name of the AutoCAD dimension style to use for the cotas; null/empty = automatic (the drawing's
+        /// current style, sized to <see cref="AnnotationScale"/>). A chosen style is respected as-is.</summary>
+        public string DimensionStyle { get; set; }
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

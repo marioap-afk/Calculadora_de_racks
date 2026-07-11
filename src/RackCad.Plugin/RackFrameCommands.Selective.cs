@@ -24,6 +24,7 @@ namespace RackCad.Plugin
             try
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+                window.SetDimensionStyles(ReadDimensionStyleNames(AcApplication.DocumentManager.MdiActiveDocument));
                 AcApplication.ShowModalWindow(window);
 
                 if (window.InsertRequested)
@@ -82,6 +83,7 @@ namespace RackCad.Plugin
             }
 
             var window = new RackSelectiveWindow(canInsertInAutoCad: true);
+            window.SetDimensionStyles(ReadDimensionStyleNames(document)); // before LoadExisting so a saved style selects
             window.LoadExisting(saved);
             AcApplication.ShowModalWindow(window);
 
