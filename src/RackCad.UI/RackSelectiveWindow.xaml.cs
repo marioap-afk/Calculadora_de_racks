@@ -42,9 +42,6 @@ namespace RackCad.UI
         private static readonly Brush CellSelStroke = UiSupport.FrozenBrush(Color.FromRgb(0x2F, 0x6F, 0xED));
         private static readonly Brush CellSelFill = UiSupport.FrozenBrush(Color.FromRgb(0xDB, 0xEA, 0xFE));
 
-        /// <summary>Freeze a constant brush: a frozen Freezable is shared without per-element change handlers,
-        /// so the hundreds of matrix/preview elements that reuse these stop registering listeners on them.</summary>
-
         private readonly RackCatalog catalog;
         private readonly SelectiveFrontalBuilder builder = new SelectiveFrontalBuilder();
         private readonly SelectiveGeometryResolver resolver = new SelectiveGeometryResolver();
@@ -299,7 +296,7 @@ namespace RackCad.UI
             else
             {
                 snap.Depth = previous != null && previous.Depth > 0.0 ? previous.Depth : SelectiveRackDefaults.DefaultPalletDepth;
-                if (!string.IsNullOrWhiteSpace(FondoBox.Text)) SetStatus("Fondo de tarima inválido; se conserva el anterior.", true);
+                if (!string.IsNullOrWhiteSpace(FondoBox.Text)) pendingWarning = "Fondo de tarima inválido; se conserva el anterior.";
             }
 
             if (string.IsNullOrWhiteSpace(CabeceraFondoBox.Text)) snap.CabeceraOverride = 0.0; // blank = auto (rule tarima − 6)
@@ -307,7 +304,7 @@ namespace RackCad.UI
             else
             {
                 snap.CabeceraOverride = previous?.CabeceraOverride ?? 0.0;
-                SetStatus("Fondo de cabecera inválido (vacío = auto); se conserva el anterior.", true);
+                pendingWarning = "Fondo de cabecera inválido (vacío = auto); se conserva el anterior.";
             }
 
             return snap;
@@ -519,7 +516,7 @@ namespace RackCad.UI
                     result.Add(SelectiveRackDefaults.DefaultSeparator);
                     if (!string.IsNullOrWhiteSpace(box.Text))
                     {
-                        SetStatus("Separación " + (g + 1).ToString(CultureInfo.InvariantCulture) + " inválida; se usa la default.", true);
+                        pendingWarning = "Separación " + (g + 1).ToString(CultureInfo.InvariantCulture) + " inválida; se usa la default.";
                         box.Text = SelectiveRackDefaults.DefaultSeparator.ToString("0.###", CultureInfo.InvariantCulture);
                     }
                 }
@@ -531,19 +528,21 @@ namespace RackCad.UI
         /// <summary>Read "Número de fondos", resize the fondo list (new fondos clone fondo 0), rebuild the combo + separators.</summary>
         private void ApplyFondoCountFromBox()
         {
+            // Commit the working matrix to its slot FIRST — the callers reload from the slots afterwards
+            // (LoadFondo), so bailing out before this save would silently revert uncommitted matrix edits.
+            SaveWorkingToSelected();
+            if (fondoMatrices.Count == 0) fondoMatrices.Add(SnapshotWorking());
+
             // An invalid/blank count must NOT shrink the list — the old fallback to 1 silently DELETED the extra
             // fondos' level matrices before any validation could run. Keep the current count and say why.
             if (!UiSupport.TryNum(FondosBox.Text, out var f) || f < 1.0)
             {
-                SetStatus("Número de fondos inválido (mínimo 1); se conserva el actual.", true);
+                pendingWarning = "Número de fondos inválido (mínimo 1); se conserva el actual.";
                 FondosBox.Text = Math.Max(1, fondoMatrices.Count).ToString(CultureInfo.InvariantCulture);
                 return;
             }
 
             var n = Math.Min(SelectiveRackDefaults.MaxDepthCount, (int)Math.Round(f));
-
-            SaveWorkingToSelected();
-            if (fondoMatrices.Count == 0) fondoMatrices.Add(SnapshotWorking());
 
             while (fondoMatrices.Count < n) fondoMatrices.Add(CloneAligned(fondoMatrices[0], fondoMatrices[0].Bays.Count, fondoMatrices[0]));
             while (fondoMatrices.Count > n) fondoMatrices.RemoveAt(fondoMatrices.Count - 1);
@@ -1575,6 +1574,7 @@ namespace RackCad.UI
                 PreviewCanvas.Children.Clear();
                 postRects.Clear();
                 postLabels.Clear();
+                pendingWarning = null; // the validation error supersedes any latched input warning
                 SetStatus(error, true);
                 return;
             }
@@ -1583,7 +1583,16 @@ namespace RackCad.UI
             // The frontal preview shows the fondo being edited (each fondo has its own levels); fondo 0 is the default.
             lastInstances = builder.Build(SelectiveDepthLayout.FondoSystemView(system, selectedFondo), catalog);
             UpdateSummary();
-            SetStatus(selectedFondo == 0 ? "Vista actualizada." : "Vista actualizada (Fondo " + (selectedFondo + 1).ToString(CultureInfo.InvariantCulture) + ").", false);
+            if (pendingWarning != null)
+            {
+                SetStatus(pendingWarning, true); // the view DID update, but with a kept-previous/default fallback — say so
+                pendingWarning = null;
+            }
+            else
+            {
+                SetStatus(selectedFondo == 0 ? "Vista actualizada." : "Vista actualizada (Fondo " + (selectedFondo + 1).ToString(CultureInfo.InvariantCulture) + ").", false);
+            }
+
             DrawPreview();
         }
 
@@ -1700,6 +1709,11 @@ namespace RackCad.UI
         /// zero-level columns yet); &gt; 0 makes <see cref="LoadDesign"/> warn instead of silently converting them.</summary>
         private int paddedEmptyFrentesOnLoad;
 
+        /// <summary>A warning latched by input-normalizing code (invalid fondo/cabecera/separador/conteo kept-previous
+        /// fallbacks): the pipeline always ends in <see cref="Recompute"/>, whose final status would overwrite a direct
+        /// SetStatus, so Recompute emits THIS instead of the generic success message when set.</summary>
+        private string pendingWarning;
+
         /// <summary>Restore the whole editor (globals + matrix) from a saved design, then recompute.</summary>
         private void LoadDesign(SelectivePalletDesign design)
         {
@@ -1787,14 +1801,16 @@ namespace RackCad.UI
             LoadCellEditor();
             RenderMatrix();
             RefreshPostSelect();
-            Recompute();
 
             if (paddedEmptyFrentesOnLoad > 0)
             {
-                // After Recompute so the warning isn't overwritten by its status message.
-                SetStatus(paddedEmptyFrentesOnLoad.ToString(CultureInfo.InvariantCulture)
-                    + " frente(s) vacío(s) (columna) del diseño se cargaron con un nivel default — el editor aún no maneja columnas; revisa antes de redibujar.", true);
+                // Latched (not SetStatus): the method runs under DeferRecompute, so the REAL Recompute fires at the
+                // using-scope exit and would overwrite a direct status; the latch makes it the FINAL message instead.
+                pendingWarning = paddedEmptyFrentesOnLoad.ToString(CultureInfo.InvariantCulture)
+                    + " frente(s) vacío(s) (columna) del diseño se cargaron con un nivel default — el editor aún no maneja columnas; revisa antes de redibujar.";
             }
+
+            Recompute();
         }
 
         /// <summary>Open the editor pre-loaded with an existing rack (from an embedded/saved document), keeping its Id/Name.</summary>
