@@ -27,16 +27,28 @@
 > `SelectivePlantaBuilder.BuildPlan`); (c) el purge de huérfanas ya no paga coste fijo por redibujo (solo
 > verifica defs que el contenido nuevo no re-referencia); (d) ~50 mejoras de UI/UX en las 6 ventanas
 > (Esc cierra, tooltips, foco inicial, errores visibles, acentos, estilos unificados); (e) `secciones.csv`
-> unifica los perfiles (ítem #12). **Mejora futura del mismo patrón:** aplicar la agrupación ARRAY también a
-> la FRONTAL (largueros repetidos por combinación longitud+peralte) y a los cortes laterales si se percibe
-> lentitud en runs muy largos; cachear `blocks-library.dwg` por firma en `BlockLibraryImporter`.
+> unifica los perfiles (ítem #12). **La agrupación ARRAY en la FRONTAL quedó HECHA (2026-07-11).** Mejora
+> futura del mismo patrón: aplicar ARRAY a los cortes laterales si se percibe lentitud en runs muy largos;
+> cachear `blocks-library.dwg` por firma en `BlockLibraryImporter`.
+
+> **2026-07-11 — rendimiento del selectivo + cotas automáticas (347 tests verdes):** (a) el patrón ARRAY
+> ya cubre la FRONTAL (`HeaderInstanceGrouper`, blindado por `Flatten==Build`), no solo la planta; (b) al
+> encoger un rack se retiran las vistas fantasma y la purga de definiciones huérfanas usa `Database.Purge`
+> post-commit (más barato y correcto); (c) **cotas automáticas por vista HECHO** — ver ítem #1. UX del editor:
+> los escalares del tramo aplican al salir del campo y hay aviso de cambios sin aplicar antes de dibujar.
 
 ## A. Propuestas de producto
 
 ### Vistas y dibujo
-1. **Cotas automáticas por vista** — al insertar frontal/lateral/planta, dibujar cotas de alto total,
-   fondo, largo de tramo y claros entre niveles (AutoCAD `RotatedDimension` en el mismo bloque o en
-   un layer de cotas). Es el paso natural después de que las tres vistas ya se generan solas.
+1. ~~**Cotas automáticas por vista**~~ — ✅ **HECHO (2026-07-11):** las TRES vistas (frontal/lateral/planta)
+   dibujan cotas según un combobox **Cotas** (Ninguna/Mínimo/Estándar/Detallado, persistido) + un combobox
+   **Estilo de cota** (tomado de la `DimStyleTable` del dibujo abierto; "(Automático)" = estilo vigente
+   escalado por la escala de anotación). `SelectiveDimensions` (puro, `HeaderBlockRole.Dimension`) emite las
+   cotas y `LateralHeaderDrawer.AppendDimension` las materializa como `RotatedDimension` en la capa
+   **`RACKCAD_COTAS`**. Frontal: alto/ancho totales, largo de CORTE del larguero por frente (desde el inicio
+   del perfil, no el troquel), separaciones entre niveles, elevaciones (Detallado). Lateral (por corte): alto,
+   fondo por cabecera, separaciones. Planta: largo total, ancho por frente, fondo total, fondo por fondo. El
+   `*D` anónimo de cada cota se purga al redibujar. Pendiente: cotas en dinámico/cama si se piden.
 1b. **Pipeline de TEXTO para los toggles de anotación** — **hecho (frontal, planta y lateral):** existe
    `HeaderBlockRole.Annotation` (+ `Text`/`TextHeight`); un helper compartido `SelectiveAnnotations` emite las
    etiquetas y los tres builders las producen según los flags (frontal: frentes+niveles+nombre; planta:

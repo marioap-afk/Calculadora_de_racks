@@ -65,6 +65,14 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
   una **capa dedicada `RACKCAD_ANOTACIONES`** (amarilla) via `SelectiveAnnotations` +
   `HeaderBlockRole.Annotation`, presentes en frontal, planta y lateral, y se regeneran en cada
   redefinicion (no se persisten). "Dibujar tarima" queda diferido (ver ideas-futuras.md).
+- **Cotas automaticas por vista** (2026-07-11): combobox **Cotas** (Ninguna/Minimo/Estandar/Detallado,
+  persistido) + combobox **Estilo de cota** (de la `DimStyleTable` del dibujo abierto; "(Automatico)" usa el
+  estilo vigente escalado por la escala de anotacion). `SelectiveDimensions` (puro, `HeaderBlockRole.Dimension`)
+  emite las cotas por vista y `LateralHeaderDrawer.AppendDimension` las materializa como `RotatedDimension` en
+  la capa **`RACKCAD_COTAS`** (roja). Frontal: alto/ancho totales, largo de CORTE del larguero por frente
+  (desde el inicio del perfil), separaciones entre niveles, elevaciones (Detallado). Lateral (por corte): alto,
+  fondo por cabecera, separaciones. Planta: largo total, ancho por frente, fondo total, fondo por fondo. Se
+  regeneran en cada redibujo (el `*D` anonimo de cada cota se purga).
 - **BOM por componentes**: cabeceras + largueros como **componentes expandibles a piezas**
   (`BomComponent`; `SelectiveBomBuilder` + `RackBomWindow` con arbol; CSV a dos niveles).
   `RACKBOMTOTAL` genera el **BOM consolidado de TODO el dibujo** (desglose por rack x copias +
