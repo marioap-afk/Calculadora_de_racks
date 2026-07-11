@@ -9,7 +9,10 @@ namespace RackCad.Application.Persistence
     public enum RackDesignKind
     {
         Cabecera,
-        Dinamico
+        Dinamico,
+        Selectivo,
+        Cama,
+        Larguero
     }
 
     /// <summary>One design file in the library: its path, the display name, its type and last-modified time.</summary>
@@ -31,7 +34,20 @@ namespace RackCad.Application.Persistence
         /// <summary>Last-modified time in local time, for display.</summary>
         public DateTime Modified => ModifiedUtc.ToLocalTime();
 
-        public string KindLabel => Kind == RackDesignKind.Dinamico ? "Sistema dinámico" : "Cabecera";
+        public string KindLabel
+        {
+            get
+            {
+                switch (Kind)
+                {
+                    case RackDesignKind.Dinamico: return "Sistema dinámico";
+                    case RackDesignKind.Selectivo: return "Selectivo";
+                    case RackDesignKind.Cama: return "Cama de rodamiento";
+                    case RackDesignKind.Larguero: return "Larguero";
+                    default: return "Cabecera";
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -55,11 +71,14 @@ namespace RackCad.Application.Persistence
                 try
                 {
                     var project = store.Load(path);
-                    var kind = project.Kind == RackSystemKind.PalletFlow ? RackDesignKind.Dinamico : RackDesignKind.Cabecera;
+                    var kind = MapKind(project.Kind);
                     var fallback = StripExtension(path);
-                    var name = kind == RackDesignKind.Cabecera && !string.IsNullOrWhiteSpace(project.Header?.Name)
-                        ? project.Header.Name.Trim()
-                        : fallback;
+
+                    // Prefer the payload's own name when it has one; otherwise the file name.
+                    var payloadName = project.Header?.Name
+                        ?? project.SelectiveRack?.Name
+                        ?? project.Larguero?.Name;
+                    var name = !string.IsNullOrWhiteSpace(payloadName) ? payloadName.Trim() : fallback;
 
                     entries.Add(new RackDesignLibraryEntry(path, name, kind, File.GetLastWriteTimeUtc(path)));
                 }
@@ -70,6 +89,18 @@ namespace RackCad.Application.Persistence
             }
 
             return entries.OrderByDescending(entry => entry.ModifiedUtc).ToList();
+        }
+
+        private static RackDesignKind MapKind(RackSystemKind kind)
+        {
+            switch (kind)
+            {
+                case RackSystemKind.PalletFlow: return RackDesignKind.Dinamico;
+                case RackSystemKind.SelectiveRack: return RackDesignKind.Selectivo;
+                case RackSystemKind.Cama: return RackDesignKind.Cama;
+                case RackSystemKind.Larguero: return RackDesignKind.Larguero;
+                default: return RackDesignKind.Cabecera;
+            }
         }
 
         /// <summary>Base file name without the <c>.rackcad.json</c> double extension (which <c>GetFileNameWithoutExtension</c> only half-strips).</summary>

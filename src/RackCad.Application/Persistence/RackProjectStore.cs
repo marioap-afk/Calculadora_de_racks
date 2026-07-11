@@ -34,6 +34,18 @@ namespace RackCad.Application.Persistence
             {
                 document.DynamicSystem = DynamicRackSystemDocument.From(project.DynamicSystem);
             }
+            else if (project.Kind == RackSystemKind.SelectiveRack && project.SelectiveRack != null)
+            {
+                document.SelectiveRack = project.SelectiveRack;
+            }
+            else if (project.Kind == RackSystemKind.Cama && project.FlowBed != null)
+            {
+                document.FlowBed = project.FlowBed;
+            }
+            else if (project.Kind == RackSystemKind.Larguero && project.Larguero != null)
+            {
+                document.Larguero = project.Larguero;
+            }
             else
             {
                 document.Kind = RackSystemKind.Selective;
@@ -111,6 +123,21 @@ namespace RackCad.Application.Persistence
                 }
 
                 return RackProject.ForDynamic(system);
+            }
+
+            if (document.Kind == RackSystemKind.SelectiveRack && document.SelectiveRack != null)
+            {
+                return RackProject.ForSelectiveRack(document.SelectiveRack);
+            }
+
+            if (document.Kind == RackSystemKind.Cama && document.FlowBed != null)
+            {
+                return RackProject.ForCama(document.FlowBed);
+            }
+
+            if (document.Kind == RackSystemKind.Larguero && document.Larguero != null)
+            {
+                return RackProject.ForLarguero(document.Larguero);
             }
 
             var header = document.Header?.ToConfiguration();

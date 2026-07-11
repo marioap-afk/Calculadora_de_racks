@@ -186,6 +186,45 @@ namespace RackCad.UI
                         Close();
                     }
                 }
+                else if (library.SelectedDesign.Kind == RackDesignKind.Selectivo && project.SelectiveRack != null)
+                {
+                    var editor = new RackSelectiveWindow(canInsertInAutoCad) { Owner = this };
+                    editor.LoadForNew(project.SelectiveRack);
+                    editor.ShowDialog();
+
+                    if (editor.InsertRequested)
+                    {
+                        InsertRequested = true;
+                        SelectiveSystemToInsert = editor.SystemToInsert;
+                        SelectiveDesignToInsert = editor.DesignToInsert;
+                        SelectiveRackId = editor.RackId;
+                        SelectiveRackName = editor.RackName;
+                        SelectiveView = editor.InsertView;
+                        Close();
+                    }
+                }
+                else if (library.SelectedDesign.Kind == RackDesignKind.Cama && project.FlowBed != null)
+                {
+                    var editor = new RackFlowBedWindow(canInsertInAutoCad) { Owner = this };
+                    editor.LoadForNew(project.FlowBed, library.SelectedDesign.Name);
+                    editor.ShowDialog();
+
+                    if (editor.InsertRequested)
+                    {
+                        InsertRequested = true;
+                        FlowBedToInsert = editor.FlowBedToInsert;
+                        FlowBedRackId = editor.RackId;
+                        FlowBedRackName = editor.RackName;
+                        Close();
+                    }
+                }
+                else if (library.SelectedDesign.Kind == RackDesignKind.Larguero && project.Larguero != null)
+                {
+                    // Larguero is visual-only (no AutoCAD block) — just open its editor pre-loaded.
+                    var editor = new RackLargueroWindow { Owner = this };
+                    editor.LoadExisting(project.Larguero);
+                    editor.ShowDialog();
+                }
                 else if (project.Header != null)
                 {
                     var editor = new RackFrameConfiguratorWindow(project.Header, canInsertInAutoCad) { Owner = this };
@@ -255,6 +294,20 @@ namespace RackCad.UI
             catch (Exception ex)
             {
                 MessageBox.Show(this, "No se pudo abrir el sistema selectivo: " + ex.Message,
+                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void DesignLarguero_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Visual + BOM only (no AutoCAD block yet): opens, previews, and saves to the library. Never inserts.
+                new RackLargueroWindow { Owner = this }.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "No se pudo abrir el editor de largueros: " + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

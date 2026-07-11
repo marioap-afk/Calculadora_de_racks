@@ -1,0 +1,185 @@
+using System;
+using System.Collections.Generic;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Runtime;
+using RackCad.Application.Bom;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Persistence;
+using RackCad.Application.Systems;
+using RackCad.Plugin.Headers;
+using RackCad.Plugin.Systems;
+using RackCad.UI;
+using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
+
+namespace RackCad.Plugin
+{
+    /// <summary>
+    /// RACKBOMTOTAL — the whole-drawing bill of materials. Scans every rack block (grouped by GUID like RACKLISTA),
+    /// rebuilds each rack's BOM from its embedded design (per kind), and shows a per-rack breakdown + grand total.
+    /// </summary>
+    public sealed partial class RackFrameCommands
+    {
+        [CommandMethod("RACKBOMTOTAL")]
+        public void RackBomTotal()
+        {
+            try
+            {
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                if (document == null)
+                {
+                    return;
+                }
+
+                var editor = document.Editor;
+                var store = new RackEmbedStore();
+
+                // One representative embed per rack GUID (every view-block carries the same full design) + its placement
+                // count = the MAX BlockReference count across the rack's view-blocks (a rack copied N times shows N).
+                var byRack = new Dictionary<string, RackAggregate>(StringComparer.OrdinalIgnoreCase);
+                var order = new List<string>();
+
+                using (document.LockDocument())
+                using (var transaction = document.Database.TransactionManager.StartTransaction())
+                {
+                    var blockTable = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
+                    foreach (ObjectId id in blockTable)
+                    {
+                        var record = (BlockTableRecord)transaction.GetObject(id, OpenMode.ForRead);
+                        if (record.IsLayout || record.IsAnonymous || record.IsFromExternalReference)
+                        {
+                            continue;
+                        }
+
+                        var json = RackBlockData.Read(transaction, id);
+                        if (string.IsNullOrEmpty(json))
+                        {
+                            continue;
+                        }
+
+                        var embed = store.Deserialize(json);
+                        if (embed == null || string.IsNullOrWhiteSpace(embed.Id) || string.IsNullOrWhiteSpace(embed.Kind))
+                        {
+                            continue;
+                        }
+
+                        var copies = record.GetBlockReferenceIds(directOnly: true, forceValidity: false).Count;
+                        if (!byRack.TryGetValue(embed.Id, out var aggregate))
+                        {
+                            byRack[embed.Id] = new RackAggregate { Embed = embed, Copies = copies };
+                            order.Add(embed.Id);
+                        }
+                        else if (copies > aggregate.Copies)
+                        {
+                            aggregate.Copies = copies;
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+
+                if (byRack.Count == 0)
+                {
+                    editor.WriteMessage("\nRackCad: no hay racks en el dibujo para listar.");
+                    return;
+                }
+
+                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var racks = new List<ConsolidatedRackBom>();
+                foreach (var id in order)
+                {
+                    var aggregate = byRack[id];
+                    if (aggregate.Copies <= 0)
+                    {
+                        continue; // a defined-but-unplaced rack (drawn then erased, not yet purged) isn't in the drawing
+                    }
+
+                    var bom = BuildRackBom(aggregate.Embed, catalog);
+                    if (bom == null)
+                    {
+                        continue; // a foreign/unreadable rack is skipped, not fatal
+                    }
+
+                    racks.Add(new ConsolidatedRackBom
+                    {
+                        Name = string.IsNullOrWhiteSpace(aggregate.Embed.Name) ? "(sin nombre)" : aggregate.Embed.Name.Trim(),
+                        Kind = KindLabel(aggregate.Embed.Kind),
+                        Copies = aggregate.Copies,
+                        Bom = bom
+                    });
+                }
+
+                if (racks.Count == 0)
+                {
+                    editor.WriteMessage("\nRackCad: no se pudo interpretar ningun rack del dibujo.");
+                    return;
+                }
+
+                var consolidated = ConsolidatedBomBuilder.Build(racks);
+                AcApplication.ShowModalWindow(new RackConsolidatedBomWindow(consolidated));
+            }
+            catch (System.Exception ex)
+            {
+                Report(ex);
+            }
+        }
+
+        /// <summary>Rebuild ONE rack's bill of materials from its embedded design, dispatching on kind (mirrors RACKEDITAR).</summary>
+        private static BillOfMaterials BuildRackBom(RackEmbedDocument embed, RackCatalog catalog)
+        {
+            try
+            {
+                switch (embed.Kind)
+                {
+                    case RackEmbedDocument.KindSelective:
+                    {
+                        var design = new SelectivePalletDesignStore().Deserialize(embed.Design)?.ToDomain();
+                        if (design == null) return null;
+                        var system = new SelectiveGeometryResolver().Resolve(design, catalog);
+                        return SelectiveBomBuilder.Build(system, catalog);
+                    }
+                    case RackEmbedDocument.KindDynamic:
+                    {
+                        var system = new RackProjectStore().Deserialize(embed.Design)?.DynamicSystem;
+                        return system == null ? null : SystemBomBuilder.Build(system, catalog);
+                    }
+                    case RackEmbedDocument.KindCabecera:
+                    {
+                        var header = new RackProjectStore().Deserialize(embed.Design)?.Header;
+                        return header == null ? null : BomBuilder.Build(header, catalog);
+                    }
+                    case RackEmbedDocument.KindCama:
+                    {
+                        var config = new FlowBedConfigurationStore().Deserialize(embed.Design);
+                        if (config == null) return null;
+                        var instances = new FlowBedLateralBuilder().Build(config, catalog);
+                        return FlowBedBomBuilder.Build(instances, catalog);
+                    }
+                    default:
+                        return null;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string KindLabel(string kind)
+        {
+            switch (kind)
+            {
+                case RackEmbedDocument.KindSelective: return "Selectivo";
+                case RackEmbedDocument.KindDynamic: return "Dinámico";
+                case RackEmbedDocument.KindCabecera: return "Cabecera";
+                case RackEmbedDocument.KindCama: return "Cama";
+                default: return kind ?? string.Empty;
+            }
+        }
+
+        private sealed class RackAggregate
+        {
+            public RackEmbedDocument Embed { get; set; }
+            public int Copies { get; set; }
+        }
+    }
+}

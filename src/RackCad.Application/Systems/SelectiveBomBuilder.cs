@@ -1,21 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
+using RackCad.Application.RackFrames;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Preliminary bill of materials for a RESOLVED selective rack, aggregated from the FRONTAL block instances:
-    /// posts by height, one base plate per post, largueros by length + peralte, and two ménsulas per larguero.
-    /// The frontal is a single elevation, so each post/plate/larguero it shows stands for the front AND back of the
-    /// cabecera (×2), repeated at every fondo of a doble-profundidad rack (×DepthCount): the physical count
-    /// multiplies the aggregated quantities by <c>2·fondos</c>. Grouped by (category, piece, length, peralte) with
-    /// quantities summed. Pure and unit-testable; no AutoCAD.
+    /// Bill of materials for a RESOLVED selective rack, expressed by COMPONENT: every frame position (and medio-frente
+    /// intermediate post) is a <b>cabecera</b> (a full frame — 2 posts + base plates + celosía, via <see cref="BomBuilder"/>,
+    /// the same module the standalone cabecera uses), and every load beam is a <b>larguero</b> component (its profile +
+    /// 2 ménsulas). Each component expands to its per-unit pieces; <see cref="BillOfMaterials"/> flattens ×quantity for the
+    /// piece total. Cabecera frames already include front AND back posts, so they are counted once per frame; largueros
+    /// double for the front + back of each bay. Every fondo contributes its OWN content (doble profundidad). Pure; no AutoCAD.
     /// </summary>
     public static class SelectiveBomBuilder
     {
@@ -24,149 +25,154 @@ namespace RackCad.Application.Systems
         public const string Beam = "Larguero";
         public const string Mensula = "Ménsula";
 
-        /// <summary>
-        /// Builds the physical BOM of a RESOLVED system, summing EVERY fondo's real content — each fondo can carry its
-        /// own levels (doble profundidad with distinct level configs), so a flat ×fondos multiplier no longer holds.
-        /// Each fondo's frontal face is aggregated and then doubled for its front + back cabeceras.
-        /// </summary>
+        /// <summary>The component BOM of a resolved system: cabeceras (per frame) + largueros (per beam), each with its pieces.</summary>
         public static BillOfMaterials Build(SelectiveRackSystem system, RackCatalog catalog)
         {
             if (system == null || system.Bays.Count == 0)
             {
-                return new BillOfMaterials(new List<BomLine>());
+                return new BillOfMaterials(new List<BomComponent>());
             }
 
+            var components = new List<BomComponent>();
+            AddCabeceraComponents(components, system, catalog);
+            AddLargueroComponents(components, system, catalog);
+            return new BillOfMaterials(components);
+        }
+
+        // ---- Cabeceras: one component per distinct frame (grouped by its exact piece recipe) ----
+
+        private static void AddCabeceraComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
+        {
+            // Each selective frame IS a cabecera; reuse the same component grouping the standalone/dynamic cabecera BOM uses.
+            components.AddRange(BomBuilder.Components(EnumerateCabeceras(system, catalog), catalog));
+        }
+
+        /// <summary>Every cabecera (frame) in the system: per fondo, one per frame position (custom on fondo 0, else a
+        /// standard frame at that fondo's height/depth) plus one per medio-frente tramo boundary. Mirrors the planta.</summary>
+        private static IEnumerable<RackFrameConfiguration> EnumerateCabeceras(SelectiveRackSystem system, RackCatalog catalog)
+        {
+            var factory = new RackFrameConfigurationFactory(catalog);
+            var memberBuilder = new BracingPanelMemberBuilder(); // materializes the celosía into Members so the BOM counts it
+            var template = RackFrameTemplateCatalog.FindStandardOrDefault();
+            var fondoCount = SelectiveDepthLayout.Count(system);
+            var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs; // for the medio-frente tramo layout
+
+            for (var k = 0; k < fondoCount; k++)
+            {
+                var bays = SelectiveDepthLayout.BaysOfFondo(system, k);
+                var depthK = SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
+                var fallbackK = FondoFallbackHeight(bays, system.Height);
+
+                // Shared posts (frame positions): a fondo with C bays has C+1 posts.
+                for (var i = 0; i < bays.Count + 1; i++)
+                {
+                    var custom = k == 0 && i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
+                    if (custom != null && custom.Height > 0.0)
+                    {
+                        // A custom cabecera restored from persistence carries Horizontals + BracingPanels but an EMPTY
+                        // Members list (derived data is regenerated on load), so materialize its celosía too — otherwise
+                        // its travesaños/diagonales are silently dropped from the BOM (unlike a standard cabecera).
+                        if (custom.Members == null || custom.Members.Count == 0)
+                        {
+                            memberBuilder.RefreshPhysicalModel(custom);
+                        }
+
+                        yield return custom;
+                    }
+                    else
+                    {
+                        var height = SelectivePostGeometry.PostHeight(bays, i, fallbackK);
+                        if (height > 0.0)
+                        {
+                            yield return StandardCabecera(factory, memberBuilder, template, system.PostId, height, depthK);
+                        }
+                    }
+                }
+
+                // Medio frente: each tramo boundary plants an intermediate cabecera (same height/depth as its bay).
+                for (var i = 0; i < bays.Count && i < troquelXs.Count; i++)
+                {
+                    var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bays[i], SelectiveRackDefaults.View);
+                    var tramos = SelectiveMedioFrente.Resolve(bays[i], troquelXs[i], inicioX);
+                    if (tramos == null)
+                    {
+                        continue;
+                    }
+
+                    var height = bays[i].Height > 0.0 ? bays[i].Height : system.Height;
+                    for (var t = 1; t < tramos.Count; t++)
+                    {
+                        yield return StandardCabecera(factory, memberBuilder, template, system.PostId, height, depthK);
+                    }
+                }
+            }
+        }
+
+        /// <summary>A standard frame with its celosía materialized into Members (a fresh config, so it's safe to mutate),
+        /// so <see cref="BomBuilder"/> counts the horizontals + diagonals — not just the posts + plates.</summary>
+        private static RackFrameConfiguration StandardCabecera(
+            RackFrameConfigurationFactory factory, BracingPanelMemberBuilder memberBuilder,
+            RackFrameTemplate template, string postId, double height, double depth)
+        {
+            var cabecera = factory.Build(template, postId, height, depth);
+            memberBuilder.RefreshPhysicalModel(cabecera);
+            return cabecera;
+        }
+
+        // ---- Largueros: one component per distinct beam (profile + 2 ménsulas), doubled for front + back ----
+
+        private static void AddLargueroComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
+        {
             var frontalBuilder = new SelectiveFrontalBuilder();
-            var all = new List<HeaderBlockInstance>();
+            var quantities = new Dictionary<(string Id, double Length, double Peralte), int>();
+            var order = new List<(string, double, double)>();
+
             var fondoCount = SelectiveDepthLayout.Count(system);
             for (var k = 0; k < fondoCount; k++)
             {
-                all.AddRange(frontalBuilder.Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog));
-            }
-
-            // Every fondo is already summed above; ×2 for the front AND back cabecera of each.
-            return Build(all, catalog, depthCount: 1);
-        }
-
-        /// <summary>Builds the physical BOM from an already-laid-out FRONTAL instance list. <paramref name="depthCount"/>
-        /// multiplies the aggregated quantities by 2·fondos (front/back × fondos) — valid only when every fondo is
-        /// identical; for per-fondo level configs use the <see cref="Build(SelectiveRackSystem, RackCatalog)"/> overload.</summary>
-        public static BillOfMaterials Build(IReadOnlyList<HeaderBlockInstance> instances, RackCatalog catalog, int depthCount = 1)
-        {
-            var multiplier = 2 * Math.Max(1, depthCount);
-            var raw = new List<RawItem>();
-
-            foreach (var instance in instances ?? Enumerable.Empty<HeaderBlockInstance>())
-            {
-                switch (instance.Role)
+                foreach (var instance in frontalBuilder.Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog))
                 {
-                    case HeaderBlockRole.Post:
-                        raw.Add(new RawItem(Post, instance.PieceId, Round(Param(instance, SelectiveRackDefaults.LengthParam)), 0.0, 1));
-                        break;
-                    case HeaderBlockRole.BasePlate:
-                        // Plates of different peralte are different parts; carry the peralte in the grouping key.
-                        raw.Add(new RawItem(BasePlate, instance.PieceId, 0.0, Round(Param(instance, SelectiveRackDefaults.PeralteParam)), 1));
-                        break;
-                    case HeaderBlockRole.Beam:
-                        var length = Round(Param(instance, SelectiveRackDefaults.LengthParam));
-                        var peralte = Round(Param(instance, SelectiveRackDefaults.PeralteParam));
-                        raw.Add(new RawItem(Beam, instance.PieceId, length, peralte, 1));
+                    if (instance.Role != HeaderBlockRole.Beam)
+                    {
+                        continue;
+                    }
 
-                        var mensula = catalog?.BeamProfiles
-                            .FirstOrDefault(b => string.Equals(b?.Id, instance.PieceId, StringComparison.OrdinalIgnoreCase))?.Mensula;
-                        if (!string.IsNullOrWhiteSpace(mensula))
-                        {
-                            raw.Add(new RawItem(Mensula, mensula, 0.0, 0.0, 2));
-                        }
+                    var key = (instance.PieceId, Round(Param(instance, SelectiveRackDefaults.LengthParam)), Round(Param(instance, SelectiveRackDefaults.PeralteParam)));
+                    if (!quantities.ContainsKey(key))
+                    {
+                        quantities[key] = 0;
+                        order.Add(key);
+                    }
 
-                        break;
+                    quantities[key] += 2; // the frontal shows the front larguero; ×2 for the back one of the bay
                 }
             }
 
-            var lines = raw
-                .GroupBy(item => (item.Category, item.PieceId, item.Length, item.Peralte))
-                .Select(group => new BomLine
-                {
-                    Category = group.Key.Category,
-                    ProfileId = group.Key.PieceId,
-                    Length = group.Key.Length,
-                    Quantity = group.Sum(item => item.Quantity) * multiplier,
-                    Description = Describe(catalog, group.Key.Category, group.Key.PieceId, group.Key.Peralte)
-                })
-                .OrderBy(line => Order(line.Category))
-                .ThenBy(line => line.ProfileId, StringComparer.OrdinalIgnoreCase)
-                .ThenBy(line => line.Length)
-                .ToList();
-
-            return new BillOfMaterials(lines);
+            foreach (var key in order.OrderBy(k => k.Item2))
+            {
+                var (beamId, length, peralte) = key;
+                // Reuse the single "one larguero = perfil + 2 ménsulas" recipe (also used by the standalone larguero editor).
+                components.Add(LargueroBomBuilder.Component(catalog, beamId, length, peralte, mensulaOverride: null, quantity: quantities[key]));
+            }
         }
 
-        private static string Describe(RackCatalog catalog, string category, string id, double peralte)
+        private static double FondoFallbackHeight(IList<SelectiveBay> bays, double systemHeight)
         {
-            if (catalog == null || string.IsNullOrWhiteSpace(id))
+            var h = 0.0;
+            if (bays != null)
             {
-                return id ?? string.Empty;
+                foreach (var bay in bays)
+                {
+                    if (bay.Height > h) h = bay.Height;
+                }
             }
 
-            string label;
-            switch (category)
-            {
-                case Post:
-                    label = catalog.PostProfiles.FindProfile(id)?.Label ?? id;
-                    break;
-                case BasePlate:
-                    label = catalog.BasePlates.FindBasePlate(id)?.Label ?? id;
-                    break;
-                case Beam:
-                    label = catalog.BeamProfiles.FirstOrDefault(b => string.Equals(b?.Id, id, StringComparison.OrdinalIgnoreCase))?.Label ?? id;
-                    break;
-                case Mensula:
-                    label = catalog.Mensulas.FirstOrDefault(m => string.Equals(m?.Id, id, StringComparison.OrdinalIgnoreCase))?.Label ?? id;
-                    break;
-                default:
-                    label = id;
-                    break;
-            }
-
-            // The peralte distinguishes otherwise-identical largueros and plates.
-            return peralte > 0.0
-                ? label + " · P" + peralte.ToString("0.###", CultureInfo.InvariantCulture)
-                : label;
+            return h > 0.0 ? h : systemHeight;
         }
 
         private static double Param(HeaderBlockInstance instance, string name)
             => instance.DynamicParameters.TryGetValue(name, out var value) ? value : 0.0;
 
         private static double Round(double value) => Math.Round(value, 2);
-
-        private static int Order(string category)
-        {
-            switch (category)
-            {
-                case Post: return 0;
-                case BasePlate: return 1;
-                case Beam: return 2;
-                case Mensula: return 3;
-                default: return 4;
-            }
-        }
-
-        private readonly struct RawItem
-        {
-            public RawItem(string category, string pieceId, double length, double peralte, int quantity)
-            {
-                Category = category;
-                PieceId = pieceId;
-                Length = length;
-                Peralte = peralte;
-                Quantity = quantity;
-            }
-
-            public string Category { get; }
-            public string PieceId { get; }
-            public double Length { get; }
-            public double Peralte { get; }
-            public int Quantity { get; }
-        }
     }
 }

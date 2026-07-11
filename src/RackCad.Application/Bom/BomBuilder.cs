@@ -18,6 +18,58 @@ namespace RackCad.Application.Bom
         public const string BasePlate = "Placa base";
         public const string Horizontal = "Horizontal";
         public const string Diagonal = "Diagonal";
+        public const string Cabecera = "Cabecera";
+
+        /// <summary>
+        /// Groups a set of cabeceras (frames) into BOM COMPONENTS: identical frames (same piece recipe) collapse into one
+        /// <see cref="BomComponent"/> whose <see cref="BomComponent.Pieces"/> are that cabecera's pieces and whose
+        /// <see cref="BomComponent.Quantity"/> is the count. Used by the selective and dynamic system BOMs so a "cabecera"
+        /// shows as one component (not loose posts/plates). Ordered by height.
+        /// </summary>
+        public static IReadOnlyList<BomComponent> Components(IEnumerable<RackFrameConfiguration> cabeceras, RackCatalog catalog)
+        {
+            var bySignature = new Dictionary<string, BomComponent>(StringComparer.Ordinal);
+            var order = new List<string>();
+
+            foreach (var cabecera in cabeceras ?? Enumerable.Empty<RackFrameConfiguration>())
+            {
+                if (cabecera == null)
+                {
+                    continue;
+                }
+
+                var pieces = Build(cabecera, catalog).Lines;
+                var signature = Signature(pieces);
+                if (!bySignature.TryGetValue(signature, out var component))
+                {
+                    component = new BomComponent
+                    {
+                        Category = Cabecera,
+                        ProfileId = cabecera.LeftPost?.PostCatalogId,
+                        Description = DescribeCabecera(cabecera),
+                        Length = Round(cabecera.Height),
+                        Quantity = 0,
+                        Pieces = pieces
+                    };
+                    bySignature[signature] = component;
+                    order.Add(signature);
+                }
+
+                component.Quantity++;
+            }
+
+            return order.Select(sig => bySignature[sig]).OrderBy(c => c.Length).ToList();
+        }
+
+        private static string Signature(IReadOnlyList<BomLine> pieces)
+            => string.Join("|", pieces
+                .OrderBy(p => p.Category, StringComparer.Ordinal)
+                .ThenBy(p => p.ProfileId, StringComparer.Ordinal)
+                .ThenBy(p => p.Length)
+                .Select(p => string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}~{1}~{2:0.##}~{3}", p.Category, p.ProfileId, p.Length, p.Quantity)));
+
+        private static string DescribeCabecera(RackFrameConfiguration cabecera)
+            => string.Format(System.Globalization.CultureInfo.InvariantCulture, "Cabecera {0:0.#}\" · fondo {1:0.#}\"", cabecera.Height, cabecera.Depth);
 
         public static BillOfMaterials Build(RackFrameConfiguration configuration, RackCatalog catalog)
         {

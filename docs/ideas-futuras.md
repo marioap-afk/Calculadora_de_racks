@@ -75,11 +75,12 @@
 7. ~~**Renombrado sincronizado**~~ — ✅ **HECHO (2026-07-09):** al editar/renombrar un rack, `RackBlockRenamer`
    sincroniza el nombre del bloque en TODAS sus vistas (frontal, lateral N, planta) en los 4 tipos
    (best-effort: no lanza, uniquifica evitando colisiones; las referencias apuntan por id, no se rompen).
-8. ~~**Biblioteca de diseños**~~ — ✅ **HECHO (2026-07-09):** "Abrir de la biblioteca de diseños" en el menú
-   `RACKCAD` lista los diseños `.rackcad.json` de una carpeta gestionada (`%AppData%\RackCad\Designs`, o la
-   configurada) con nombre + tipo (`RackDesignLibrary`), y al elegir uno reabre el editor correcto precargado.
-   Guardar cabecera/dinámico apunta por defecto a esa carpeta. Pendiente: incluir selectivo y cama (hoy solo
-   viven embebidos en el DWG — les falta persistencia a disco) y miniaturas/vista previa.
+8. ~~**Biblioteca de diseños**~~ — ✅ **HECHO (2026-07-09; ampliada 2026-07-10):** "Abrir de la biblioteca de
+   diseños" en el menú `RACKCAD` lista los diseños `.rackcad.json` de una carpeta gestionada
+   (`%AppData%\RackCad\Designs`, o la configurada) con nombre + tipo (`RackDesignLibrary`), y al elegir uno
+   reabre el editor correcto precargado. **2026-07-10:** incluye TODOS los tipos — selectivo, cama y larguero
+   ganaron persistencia a disco (`RackSystemKind.SelectiveRack/Cama/Larguero` en `RackProjectStore`), botón
+   "Guardar en biblioteca" en selectivo/cama y apertura como rack nuevo (`LoadForNew`). Pendiente: miniaturas.
 9. ~~**Plantillas de usuario**~~ — ✅ **HECHO (2026-07-10):** "Guardar como plantilla" en la configuración
    rápida del configurador de cabeceras guarda la cabecera actual como `RackFrameTemplate` reutilizable en
    `%AppData%\RackCad\user-templates.json` (ubicación escribible por usuario, no el `header-templates.json`
@@ -91,9 +92,12 @@
 ### Ingeniería y datos
 10. **Validación de capacidad de carga** — los CSVs ya llevan columnas Ix/Iy/norma; falta la regla que
     compare carga por nivel vs. capacidad del larguero/poste y avise en el editor.
-11. **BOM consolidado multi-rack** — los 4 tipos ya tienen BOM por rack (selectivo, dinámico, cabecera y
-    **cama** — `FlowBedBomBuilder`, 2026-07-09). Falta el BOM de TODO el dibujo (agrupado por rack via
-    GUID) y la exportación a Excel (hoy CSV).
+11. ~~**BOM consolidado multi-rack**~~ — ✅ **HECHO (2026-07-10):** los BOM son **por COMPONENTES**
+    (cabeceras + largueros como sub-ensambles expandibles a piezas; `BomComponent`, árbol en `RackBomWindow`)
+    y el comando `RACKBOMTOTAL` genera el BOM de TODO el dibujo (desglose por rack via GUID x copias + gran
+    total por componente, `RackConsolidatedBomWindow`). También existe el editor de **larguero** como
+    componente (`RackLargueroWindow`, solo visual/BOM — sin bloque de AutoCAD todavía). Pendiente: exportación
+    a Excel (hoy CSV) y el bloque de AutoCAD del larguero.
 12. ~~**Unificar perfiles estructurales**~~ — ✅ **HECHO (2026-07-10):** `secciones.csv` es la única hoja de
     perfiles (columna `rol` = POSTE | CELOSIA | LARGUERO). El provider separa las filas en las tres listas
     de siempre (API de `RackCatalog` intacta) y mantiene los tres CSV legacy como fallback de lectura.

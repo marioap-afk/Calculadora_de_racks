@@ -292,9 +292,31 @@ tramos del "medio frente", ver mas abajo).
     corte por numero de poste y se coloca con jig;
   - **planta**: un bloque (una cabecera-planta por frente apilada en Y + largueros
     frente/atras por bahia a lo largo de Y; X = fondo, Y = frente).
-- BOM: `SelectiveBomBuilder` (postes por altura, una placa por poste, largueros por
-  longitud+peralte, dos mensulas por larguero) mostrado en `RackBomWindow` (grid + export CSV
-  con CRLF RFC-4180).
+- **BOM por COMPONENTES**: `BomLine` (pieza) + `BomComponent` (sub-ensamble con `Pieces` = receta por
+  unidad); `BillOfMaterials` tiene dos constructores (lineas planas / componentes) y en el modo componente
+  `Lines` es el total de piezas aplanado (`FlattenToPieceTotals`, x cantidad). Los BOM de SISTEMA listan
+  componentes: el **selectivo** = **cabeceras** (una por posicion de marco por fondo + intermedias de medio
+  frente, via `BomBuilder.Components` — marcos identicos por receta colapsan; incluye SU celosia, materializada
+  con `RefreshPhysicalModel` si viene de persistencia) + **largueros** (perfil + 2 mensulas, receta unica en
+  `LargueroBomBuilder.Component`); el **dinamico** = sus cabeceras como componentes. La cabecera y la cama
+  standalone siguen siendo BOM de piezas (ellas SON el componente). `RackBomWindow` muestra arbol
+  (fila por componente -> RowDetails con sus piezas) o grid plano segun `IsComponentBased`; CSV a dos niveles
+  (fila `Componente` + filas `Pieza` con total = por-unidad x cantidad), CRLF RFC-4180.
+- **BOM consolidado del dibujo**: comando `RACKBOMTOTAL` (`RackFrameCommands.BomTotal.cs`) — escanea las
+  definiciones de bloque como RACKLISTA, toma UN representante por GUID (toda vista lleva el diseno completo),
+  copias = MAX de referencias entre las vistas del rack (0 colocadas = se salta: definicion sin purgar),
+  reconstruye el BOM por tipo (selectivo->resolver, dinamico, cabecera, cama->`FlowBedLateralBuilder`) y
+  muestra `RackConsolidatedBomWindow`: desglose por rack (doble clic abre su BOM) + **gran total POR
+  COMPONENTE** (`ConsolidatedBomBuilder` fusiona componentes identicos x copias; una cama/cabecera suelta
+  cuenta como UN componente de su tipo) + export CSV (`ConsolidatedBomCsvExporter`).
+- **Larguero como componente con editor**: `LargueroDesign` (perfil + peralte + longitud a corte + mensula
+  override; SOLO visual/BOM — aun sin bloque de AutoCAD) editado en `RackLargueroWindow` (menu "Disenar
+  larguero": esquema + BOM + guardar en biblioteca).
+- **Biblioteca de disenos ampliada**: `RackSystemKind` gano `SelectiveRack`/`Cama`/`Larguero`;
+  `RackProject`/`RackProjectDocument`/`RackProjectStore` cargan esos payloads con round-trip probado, y
+  `RackDesignLibrary` los lista. El selectivo y la cama tienen boton **"Guardar en biblioteca"**, y "Abrir de
+  la biblioteca" abre el editor correcto: selectivo/cama precargados como rack NUEVO (`LoadForNew`, GUID
+  fresco al insertar), larguero con `LoadExisting`.
 - **Doble profundidad (Fase 1)**: la **frontal se puede insertar por fondo** (cada cara espalda-con-espalda
   con su propia elevacion); el bloque frontal lleva su numero de fondo en el campo `Section` del sobre, al
   insertar se pregunta el fondo solo si hay 2+ fondos, y `RACKEDITAR` redibuja cada frontal en su fondo

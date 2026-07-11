@@ -101,10 +101,17 @@
                     </StackPanel>
                 </Button>
 
+                <Button Style="{StaticResource MenuButton}" Click="DesignLarguero_Click">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar larguero" />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="Larguero (componente = perfil + 2 ménsulas); vista y BOM (aún sin bloque de AutoCAD)." />
+                    </StackPanel>
+                </Button>
+
                 <Button Style="{StaticResource MenuButton}" Click="OpenDesignLibrary_Click">
                     <StackPanel>
                         <TextBlock Style="{StaticResource OptionTitle}" Text="Abrir de la biblioteca de diseños" />
-                        <TextBlock Style="{StaticResource OptionCaption}" Text="Reabre un diseño de cabecera o sistema dinámico guardado con nombre." />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="Reabre cualquier diseño guardado: cabecera, dinámico, selectivo, cama o larguero." />
                     </StackPanel>
                 </Button>
 

@@ -266,7 +266,9 @@
                     ToolTipService.ShowOnDisabled="True"
                     ToolTip="Redibuja en sitio las vistas ya dibujadas de este rack con tus cambios (no inserta nada). Disponible al editar con RACKEDITAR." Click="UpdateExisting_Click" />
             <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0"
-                    ToolTip="Genera el BOM (postes, placas, largueros y ménsulas) del selectivo actual." Click="ShowBom_Click" />
+                    ToolTip="Genera el BOM por componentes (cabeceras + largueros) del selectivo actual." Click="ShowBom_Click" />
+            <Button Content="Guardar en biblioteca" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0"
+                    ToolTip="Guarda este diseño selectivo como archivo reutilizable en la biblioteca de diseños." Click="SaveToLibrary_Click" />
             <Button Content="Insertar frontal" Style="{StaticResource PrimaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"
                     ToolTip="Inserta una VISTA FRONTAL (postes + largueros) enlazada a este rack (mismo GUID) y refresca las demás vistas." Click="InsertFrontal_Click" />
             <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0"

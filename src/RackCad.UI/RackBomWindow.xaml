@@ -38,6 +38,80 @@
                        Margin="0,2,0,0" />
         </StackPanel>
 
+        <!-- Component (tree) view: one row per componente; click a row to expand its pieces. Shown for system BOMs. -->
+        <DataGrid Grid.Row="1"
+                  x:Name="ComponentGrid"
+                  Visibility="Collapsed"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  RowBackground="White"
+                  AlternatingRowBackground="#F7F9FB"
+                  BorderBrush="#D8DEE6"
+                  BorderThickness="1"
+                  SelectionMode="Single"
+                  RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Componente" Binding="{Binding Category}" Width="130" FontWeight="SemiBold" />
+                <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="*" />
+                <DataGridTextColumn Header="Longitud (in)" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="105">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Right" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Cantidad" Binding="{Binding Quantity}" Width="85">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Right" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border Margin="24,4,8,10" Padding="10" Background="#F0F4F8" BorderBrush="#D8DEE6" BorderThickness="1" CornerRadius="3">
+                        <StackPanel>
+                            <TextBlock Text="Piezas (por unidad):" FontWeight="SemiBold" Foreground="#617080" FontSize="11" Margin="0,0,0,5" />
+                            <DataGrid ItemsSource="{Binding Pieces}"
+                                      AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                                      HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                                      Background="Transparent" RowBackground="Transparent" BorderThickness="0"
+                                      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Pieza" Binding="{Binding Category}" Width="120" />
+                                    <DataGridTextColumn Header="Perfil" Binding="{Binding ProfileId}" Width="200" />
+                                    <DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="*" />
+                                    <DataGridTextColumn Header="Longitud (in)" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="95">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextAlignment" Value="Right" />
+                                                <Setter Property="Margin" Value="0,0,6,0" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Cant./u" Binding="{Binding Quantity}" Width="70">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextAlignment" Value="Right" />
+                                                <Setter Property="Margin" Value="0,0,6,0" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+
+        <!-- Flat (piece) view: a single cabecera or cama on its own. -->
         <DataGrid Grid.Row="1"
                   x:Name="BomGrid"
                   AutoGenerateColumns="False"

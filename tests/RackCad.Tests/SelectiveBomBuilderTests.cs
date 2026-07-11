@@ -1,12 +1,14 @@
 using System.Linq;
+using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
+using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using Xunit;
 
 namespace RackCad.Tests
 {
-    /// <summary>Aggregating a resolved selective rack's placed instances into a bill of materials.</summary>
+    /// <summary>Aggregating a resolved selective rack into a COMPONENT bill of materials: cabeceras + largueros.</summary>
     public class SelectiveBomBuilderTests
     {
         private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
@@ -16,7 +18,7 @@ namespace RackCad.Tests
 
         private static SelectiveRackSystem TwoBaySystem()
         {
-            var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = 3.0 };
+            var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = 3.0, PalletDepth = 48.0 };
             for (var b = 0; b < 2; b++)
             {
                 var bay = new SelectiveBay { BeamLength = 100.0, Height = 240.0 };
@@ -28,64 +30,77 @@ namespace RackCad.Tests
             return system;
         }
 
+        // ---- Component BOM (Build(system)): cabeceras + largueros ----
+
         [Fact]
-        public void Build_CountsPostsPlatesBeamsAndMensulas()
+        public void BuildSystem_IsComponentBased_WithCabecerasAndLargueros()
         {
-            var instances = new SelectiveFrontalBuilder().Build(TwoBaySystem(), Catalog);
+            var bom = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);
 
-            var bom = SelectiveBomBuilder.Build(instances, Catalog);
+            Assert.True(bom.IsComponentBased);
+            var cabeceras = bom.Components.Where(c => c.Category == BomBuilder.Cabecera).ToList();
+            var largueros = bom.Components.Where(c => c.Category == SelectiveBomBuilder.Beam).ToList();
 
-            // El BOM cuenta la profundidad: cada cabecera es de frente Y atras (x2). 2 frentes -> 3 cabeceras ->
-            // 6 postes + 6 placas; 2 x 2 niveles = 4 largueros frontales -> 8 fisicos; 2 ménsulas c/u = 16.
-            Assert.Equal(6, Qty(bom, SelectiveBomBuilder.Post));
-            Assert.Equal(6, Qty(bom, SelectiveBomBuilder.BasePlate));
-            Assert.Equal(8, Qty(bom, SelectiveBomBuilder.Beam));
-            Assert.Equal(16, Qty(bom, SelectiveBomBuilder.Mensula));
+            Assert.Single(cabeceras);
+            Assert.Equal(3, cabeceras[0].Quantity); // 2 bays -> 3 frame positions, all identical
+            Assert.Single(largueros);
+            Assert.Equal(8, largueros[0].Quantity); // 4 frontal beams × 2 (front/back)
         }
 
         [Fact]
-        public void Build_GroupsIdenticalLarguerosIntoOneLine()
+        public void BuildSystem_CabeceraComponent_HasBothPostsBothPlatesAndCelosia()
         {
-            var instances = new SelectiveFrontalBuilder().Build(TwoBaySystem(), Catalog);
+            var bom = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);
 
-            var bom = SelectiveBomBuilder.Build(instances, Catalog);
-
-            var beamLines = bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Beam).ToList();
-            Assert.Single(beamLines); // all four share length 100 + peralte 4
-            Assert.Equal(8, beamLines[0].Quantity); // 4 frontales x 2 (frente/atras)
-            Assert.Equal(100.0, beamLines[0].Length, 4);
+            var cabecera = bom.Components.First(c => c.Category == BomBuilder.Cabecera);
+            Assert.Equal(2, cabecera.Pieces.Where(p => p.Category == SelectiveBomBuilder.Post).Sum(p => p.Quantity)); // front + back post
+            Assert.Equal(2, cabecera.Pieces.Where(p => p.Category == SelectiveBomBuilder.BasePlate).Sum(p => p.Quantity));
+            // The cabecera brings its celosía — the OLD post+plate BOM omitted it.
+            Assert.Contains(cabecera.Pieces, p => p.Category == BomBuilder.Diagonal || p.Category == BomBuilder.Horizontal);
         }
 
         [Fact]
-        public void Build_SeparatesLarguerosByPeralte()
+        public void BuildSystem_LargueroComponent_IsOneProfilePlusTwoMensulas()
+        {
+            var bom = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);
+
+            var larguero = bom.Components.First(c => c.Category == SelectiveBomBuilder.Beam);
+            Assert.Equal(1, larguero.Pieces.Where(p => p.Category == LargueroBomBuilder.Perfil).Sum(p => p.Quantity));
+            Assert.Equal(2, larguero.Pieces.Where(p => p.Category == LargueroBomBuilder.Mensula).Sum(p => p.Quantity));
+        }
+
+        [Fact]
+        public void BuildSystem_FlattenedLines_AreComponentQtyTimesPerUnit()
+        {
+            var bom = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);
+
+            // Ménsulas: 2 per larguero × 8 largueros = 16; Postes: 2 per cabecera × 3 cabeceras = 6.
+            Assert.Equal(16, bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Mensula).Sum(l => l.Quantity));
+            Assert.Equal(6, bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Post).Sum(l => l.Quantity));
+        }
+
+        [Fact]
+        public void BuildSystem_CustomCabeceraWithoutMaterializedMembers_StillCountsCelosia()
         {
             var system = TwoBaySystem();
-            system.Bays[1].Levels[0].BeamPeralte = 5.0; // one different-peralte larguero
 
-            var instances = new SelectiveFrontalBuilder().Build(system, Catalog);
-            var bom = SelectiveBomBuilder.Build(instances, Catalog);
+            // A custom per-post cabecera as it arrives from a load / RACKEDITAR round-trip: Horizontals + BracingPanels
+            // populated by the factory, but Members NOT materialized (derived data is regenerated on load).
+            var custom = new RackFrameConfigurationFactory(Catalog)
+                .Build(RackFrameTemplateCatalog.FindStandardOrDefault(), PostId, 240.0, 42.0);
+            Assert.Empty(custom.Members); // precondition: the celosía isn't materialized yet
 
-            var beamLines = bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Beam).ToList();
-            Assert.Equal(2, beamLines.Count); // peralte 4 (x3 -> x6) and peralte 5 (x1 -> x2)
-            Assert.Equal(8, beamLines.Sum(l => l.Quantity));
+            system.PostCabeceras.Clear();
+            for (var i = 0; i < system.Bays.Count + 1; i++)
+            {
+                system.PostCabeceras.Add(i == 0 ? custom : null);
+            }
+
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+            var cabeceras = bom.Components.Where(c => c.Category == BomBuilder.Cabecera).ToList();
+
+            // EVERY cabecera (the custom one included) counts its celosía — the custom one used to drop it.
+            Assert.All(cabeceras, c => Assert.Contains(c.Pieces, p => p.Category == BomBuilder.Diagonal || p.Category == BomBuilder.Horizontal));
         }
-
-        [Fact]
-        public void Build_DoubleDepth_CountsEveryFondo()
-        {
-            var instances = new SelectiveFrontalBuilder().Build(TwoBaySystem(), Catalog);
-
-            var single = SelectiveBomBuilder.Build(instances, Catalog, depthCount: 1);
-            var doble = SelectiveBomBuilder.Build(instances, Catalog, depthCount: 2);
-
-            // Cada fondo extra repite postes/placas/largueros/ménsulas: doble profundidad = 2x el sencillo.
-            Assert.Equal(2 * Qty(single, SelectiveBomBuilder.Post), Qty(doble, SelectiveBomBuilder.Post));
-            Assert.Equal(2 * Qty(single, SelectiveBomBuilder.Beam), Qty(doble, SelectiveBomBuilder.Beam));
-            Assert.Equal(12, Qty(doble, SelectiveBomBuilder.Post)); // 3 cabeceras x2 (frente/atras) x2 fondos
-            Assert.Equal(16, Qty(doble, SelectiveBomBuilder.Beam)); // 4 frontales x2 x2
-        }
-
-        private static int Qty(Application.Bom.BillOfMaterials bom, string category)
-            => bom.Lines.Where(l => l.Category == category).Sum(l => l.Quantity);
     }
 }

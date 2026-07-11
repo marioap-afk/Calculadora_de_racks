@@ -13,5 +13,14 @@ namespace RackCad.Application.Persistence
         public RackSystemKind Kind { get; set; } = RackSystemKind.Selective;
         public RackFrameProjectDocument Header { get; set; }
         public DynamicRackSystemDocument DynamicSystem { get; set; }
+
+        /// <summary>Selective pallet-rack design (schema-versioned DTO); set when Kind is SelectiveRack.</summary>
+        public SelectivePalletDesignDocument SelectiveRack { get; set; }
+
+        /// <summary>Flow bed (cama) config; set when Kind is Cama. A flat POCO, serialized directly.</summary>
+        public FlowBedConfiguration FlowBed { get; set; }
+
+        /// <summary>Larguero component; set when Kind is Larguero. A flat POCO, serialized directly.</summary>
+        public LargueroDesign Larguero { get; set; }
     }
 }

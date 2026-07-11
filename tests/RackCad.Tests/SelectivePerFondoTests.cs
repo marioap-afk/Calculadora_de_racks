@@ -122,7 +122,8 @@ namespace RackCad.Tests
             var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
 
             var bom = SelectiveBomBuilder.Build(system, Catalog);
-            var beamQty = bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Beam).Sum(l => l.Quantity);
+            // Largueros are COMPONENTS now (perfil + 2 ménsulas); their total quantity is the beam count.
+            var beamQty = bom.Components.Where(c => c.Category == SelectiveBomBuilder.Beam).Sum(c => c.Quantity);
 
             var f0Beams = system.FondoBays[0].Sum(b => b.Levels.Count);
             var f1Beams = system.FondoBays[1].Sum(b => b.Levels.Count);
@@ -132,7 +133,7 @@ namespace RackCad.Tests
             // NOT the naive "fondo 0 × 2 fondos" (which would over-count the shorter fondo 1).
             Assert.NotEqual(2 * 2 * f0Beams, beamQty);
 
-            // Posts: (frentes+1) per fondo × 2 (front/back) × 2 fondos — post count doesn't depend on levels.
+            // Posts (flattened piece total): each cabecera component = 2 posts; (frentes+1) cabeceras per fondo × 2 fondos.
             var postQty = bom.Lines.Where(l => l.Category == SelectiveBomBuilder.Post).Sum(l => l.Quantity);
             Assert.Equal((system.Bays.Count + 1) * 2 * 2, postQty);
         }

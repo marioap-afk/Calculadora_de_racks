@@ -267,6 +267,74 @@ namespace RackCad.UI
             Recompute();
         }
 
+        /// <summary>Open pre-loaded from a LIBRARY template as a NEW bed — a fresh GUID on insert (keeps "Insertar"),
+        /// unlike <see cref="LoadExisting"/> which edits a drawn bed in place.</summary>
+        public void LoadForNew(FlowBedConfiguration config, string name)
+        {
+            if (config == null)
+            {
+                return;
+            }
+
+            currentId = null;
+            currentName = name;
+            if (NameBox != null)
+            {
+                NameBox.Text = name ?? string.Empty;
+            }
+
+            foreach (var item in BedTypeBox.Items)
+            {
+                if (item is ComboBoxItem option && (option.Tag as string) == (config.BedType == FlowBedType.Pushback ? "Pushback" : "Dynamic"))
+                {
+                    BedTypeBox.SelectedItem = option;
+                    break;
+                }
+            }
+
+            RollerBox.SelectedValue = config.RollerId;
+            LaneDepthBox.Text = config.LaneDepth.ToString("0.###", CultureInfo.InvariantCulture);
+            PalletDepthBox.Text = config.PalletDepth > 0.0 ? config.PalletDepth.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+            RollerPitchBox.Text = config.RollerPitchOverride.HasValue ? config.RollerPitchOverride.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+
+            Recompute();
+        }
+
+        /// <summary>Save this cama to the on-disk design library (a reusable <c>.rackcad.json</c>).</summary>
+        private void SaveToLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            var config = ReadConfig(out var error);
+            if (config == null)
+            {
+                SetStatus(error, true);
+                return;
+            }
+
+            var name = string.IsNullOrWhiteSpace(NameBox?.Text) ? currentName : NameBox.Text.Trim();
+            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
+            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
+
+            var suggested = string.IsNullOrWhiteSpace(name) ? "cama" : string.Join("_", name.Split(System.IO.Path.GetInvalidFileNameChars()));
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
+                FileName = suggested + RackCad.Application.Persistence.RackProjectStore.FileExtension,
+                InitialDirectory = libraryFolder
+            };
+            if (dialog.ShowDialog(this) != true) return;
+
+            try
+            {
+                new RackCad.Application.Persistence.RackProjectStore()
+                    .Save(RackCad.Application.Persistence.RackProject.ForCama(config), dialog.FileName);
+                SetStatus("Cama guardada en la biblioteca: " + System.IO.Path.GetFileName(dialog.FileName), false);
+            }
+            catch (Exception ex)
+            {
+                SetStatus("No se pudo guardar: " + ex.Message, true);
+            }
+        }
+
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
         // ---- Preview ----

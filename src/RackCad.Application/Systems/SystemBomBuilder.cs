@@ -7,10 +7,10 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Aggregates a whole dynamic system into one bill of materials by merging the BOM of every
-    /// header module (each with its own associated configuration). Separators and intermediate
-    /// posts contribute nothing yet (no profiled members); when they gain rails/rollers they simply
-    /// add to the same merge.
+    /// Aggregates a whole dynamic system into a COMPONENT bill of materials: every header module is a <b>cabecera</b>
+    /// component (identical frames collapse, via <see cref="BomBuilder.Components"/>), each expanding to its pieces.
+    /// Separators and intermediate posts contribute nothing yet (no profiled members); when they gain rails/rollers
+    /// they add their own components.
     /// </summary>
     public static class SystemBomBuilder
     {
@@ -18,14 +18,14 @@ namespace RackCad.Application.Systems
         {
             if (system == null)
             {
-                return new BillOfMaterials(new List<BomLine>());
+                return new BillOfMaterials(new List<BomComponent>());
             }
 
-            var headerBoms = system.Modules
+            var cabeceras = system.Modules
                 .Where(module => module.IsHeader && module.AssociatedFrameConfiguration != null)
-                .Select(module => BomBuilder.Build(module.AssociatedFrameConfiguration, catalog));
+                .Select(module => module.AssociatedFrameConfiguration);
 
-            return BomBuilder.Merge(headerBoms);
+            return new BillOfMaterials(BomBuilder.Components(cabeceras, catalog));
         }
     }
 }

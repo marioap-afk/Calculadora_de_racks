@@ -14,9 +14,24 @@ namespace RackCad.UI
         {
             InitializeComponent();
             this.bom = bom ?? new BillOfMaterials(new List<BomLine>());
-            BomGrid.ItemsSource = this.bom.Lines;
-            SummaryText.Text = this.bom.TotalPieces.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                + " piezas en " + this.bom.Lines.Count.ToString(System.Globalization.CultureInfo.InvariantCulture) + " líneas.";
+
+            var ic = System.Globalization.CultureInfo.InvariantCulture;
+            if (this.bom.IsComponentBased)
+            {
+                // System BOM: show componentes (cabeceras, largueros…); click one to expand its pieces.
+                ComponentGrid.ItemsSource = this.bom.Components;
+                ComponentGrid.Visibility = Visibility.Visible;
+                BomGrid.Visibility = Visibility.Collapsed;
+                SummaryText.Text = this.bom.TotalComponents.ToString(ic) + " componentes · "
+                    + this.bom.TotalPieces.ToString(ic) + " piezas. Clic en un componente para ver sus piezas.";
+            }
+            else
+            {
+                // Piece BOM: a single cabecera or cama on its own.
+                BomGrid.ItemsSource = this.bom.Lines;
+                SummaryText.Text = this.bom.TotalPieces.ToString(ic)
+                    + " piezas en " + this.bom.Lines.Count.ToString(ic) + " líneas.";
+            }
         }
 
         private void ExportCsv_Click(object sender, RoutedEventArgs e)

@@ -3,17 +3,34 @@ using System.Text;
 
 namespace RackCad.Application.Bom
 {
-    /// <summary>Renders a <see cref="BillOfMaterials"/> as RFC-4180 CSV (InvariantCulture numbers).</summary>
+    /// <summary>Renders a <see cref="BillOfMaterials"/> as RFC-4180 CSV (InvariantCulture numbers). A component BOM
+    /// exports two levels (a "Componente" row per component, then its "Pieza" rows with TOTAL quantities = per-unit ×
+    /// component qty); a flat/piece BOM keeps the classic single-level columns.</summary>
     public static class BomCsvExporter
     {
+        // RFC-4180 mandates CRLF; use it explicitly for header AND rows (AppendLine is OS-dependent).
+        private const string NewLine = "\r\n";
+
         public static string ToCsv(BillOfMaterials bom)
         {
-            // RFC-4180 mandates CRLF; use it explicitly for header AND rows (AppendLine is OS-dependent).
-            const string NewLine = "\r\n";
-
             var builder = new StringBuilder();
-            builder.Append("Categoria,Perfil,Descripcion,Longitud_in,Cantidad").Append(NewLine);
 
+            if (bom != null && bom.IsComponentBased)
+            {
+                builder.Append("Nivel,Categoria,Perfil,Descripcion,Longitud_in,Cantidad").Append(NewLine);
+                foreach (var component in bom.Components)
+                {
+                    AppendRow(builder, "Componente", component.Category, component.ProfileId, component.Description, component.Length, component.Quantity);
+                    foreach (var piece in component.Pieces)
+                    {
+                        AppendRow(builder, "Pieza", piece.Category, piece.ProfileId, piece.Description, piece.Length, piece.Quantity * component.Quantity);
+                    }
+                }
+
+                return builder.ToString();
+            }
+
+            builder.Append("Categoria,Perfil,Descripcion,Longitud_in,Cantidad").Append(NewLine);
             if (bom != null)
             {
                 foreach (var line in bom.Lines)
@@ -28,6 +45,17 @@ namespace RackCad.Application.Bom
             }
 
             return builder.ToString();
+        }
+
+        private static void AppendRow(StringBuilder builder, string level, string category, string profileId, string description, double length, int quantity)
+        {
+            builder.Append(Escape(level)).Append(',')
+                .Append(Escape(category)).Append(',')
+                .Append(Escape(profileId)).Append(',')
+                .Append(Escape(description)).Append(',')
+                .Append(length.ToString("0.##", CultureInfo.InvariantCulture)).Append(',')
+                .Append(quantity.ToString(CultureInfo.InvariantCulture))
+                .Append(NewLine);
         }
 
         private static string Escape(string value)

@@ -1755,6 +1755,56 @@ namespace RackCad.UI
             LoadDesign(document.ToDomain());
         }
 
+        /// <summary>Open pre-loaded from a LIBRARY template as a NEW rack — a fresh GUID on insert (not an in-place update),
+        /// mirroring the dynamic editor's library open. Keeps the "Insertar" flow.</summary>
+        public void LoadForNew(SelectivePalletDesignDocument document)
+        {
+            if (document == null) return;
+            currentId = null;
+            currentName = document.Name;
+            isEditingExisting = false; // a library template inserts as its own rack, not an update of one in the drawing
+            UpdateInsertButtons();
+            NameBox.Text = document.Name ?? string.Empty;
+            LoadDesign(document.ToDomain());
+        }
+
+        /// <summary>Save this selective design to the on-disk design library (a reusable <c>.rackcad.json</c>).</summary>
+        private void SaveToLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            var design = BuildDesign(out var error);
+            if (design == null)
+            {
+                SetStatus(error ?? "Define frentes y niveles.", true);
+                return;
+            }
+
+            var id = string.IsNullOrWhiteSpace(currentId) ? Guid.NewGuid().ToString() : currentId;
+            var name = string.IsNullOrWhiteSpace(NameBox.Text) ? currentName : NameBox.Text.Trim();
+            var document = SelectivePalletDesignDocument.From(design, id, name);
+
+            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
+            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
+
+            var suggested = string.IsNullOrWhiteSpace(name) ? "selectivo" : string.Join("_", name.Split(System.IO.Path.GetInvalidFileNameChars()));
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
+                FileName = suggested + RackProjectStore.FileExtension,
+                InitialDirectory = libraryFolder
+            };
+            if (dialog.ShowDialog(this) != true) return;
+
+            try
+            {
+                new RackProjectStore().Save(RackProject.ForSelectiveRack(document), dialog.FileName);
+                SetStatus("Selectivo guardado en la biblioteca: " + System.IO.Path.GetFileName(dialog.FileName), false);
+            }
+            catch (Exception ex)
+            {
+                SetStatus("No se pudo guardar: " + ex.Message, true);
+            }
+        }
+
         private void UpdateSummary()
         {
             var posts = lastInstances.Count(i => i.Role == HeaderBlockRole.Post);
