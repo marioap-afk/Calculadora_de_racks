@@ -52,8 +52,8 @@ namespace RackCad.Application.Persistence
 
     /// <summary>
     /// Lists the named designs saved as <c>.rackcad.json</c> in a folder, inferring each one's type and display name by
-    /// reading it. Today only cabecera and sistema-dinámico persist to disk (selectivo y cama viven embebidos en el DWG),
-    /// so those are the two kinds the library shows. Pure and unit-testable; no AutoCAD, no WPF.
+    /// reading it. Every kind persists to disk now: cabecera, sistema dinámico, selectivo, cama and larguero
+    /// (see <see cref="RackSystemKind"/> / <see cref="RackProjectStore"/>). Pure and unit-testable; no AutoCAD, no WPF.
     /// </summary>
     public static class RackDesignLibrary
     {

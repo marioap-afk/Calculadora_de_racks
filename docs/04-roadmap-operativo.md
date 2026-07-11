@@ -41,22 +41,28 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 - Cada poste (N frentes -> N+1 postes) puede referenciar una **cabecera por poste**
   (`RackFrameConfiguration` embebida) de la que sale su placa/peralte; en la vista
   frontal se usa la placa, y de ella sale el corte lateral de ese poste.
-- BOM: `SelectiveBomBuilder` + `RackBomWindow` (postes, placas, largueros, mensulas;
-  grid + export CSV).
+- BOM por componentes: `SelectiveBomBuilder` + `RackBomWindow` (cabeceras + largueros como
+  componentes expandibles a piezas; arbol + CSV a dos niveles). `RACKBOMTOTAL` da el BOM
+  consolidado de TODO el dibujo (desglose por rack x copias + gran total por componente,
+  `RackConsolidatedBomWindow`, export CSV); ademas hay editor de larguero (`RackLargueroWindow`,
+  menu "Disenar larguero"; solo visual/BOM, sin bloque de AutoCAD aun).
 - **Doble profundidad (espalda con espalda), Fase 1**: `DepthCount` (1..4 fondos; 1 = sencillo
   clasico) a lo largo del eje de fondo, unidos por separadores **por hueco** (`SeparatorLengths`,
   uno por hueco entre fondos consecutivos; el bloque separador aun NO se dibuja, solo se deja el
   hueco vacio). **Cada fondo tiene sus propios niveles/alturas** (`ExtraFondoBays` guarda la matriz
-  de los fondos 1..N-1; vacio = ese fondo hereda las `Bays` del fondo 0), pero **todos comparten la
-  rejilla horizontal del fondo 0** (anchos de frente -> posicion de postes) para que los postes
-  alineen; un frente sin niveles = **columna vacia** (no dibuja larguero ahi). El sistema resuelto
+  de los fondos 1..N-1; vacio = ese fondo hereda las `Bays` del fondo 0) **y su propio numero de
+  frentes** (layout en esquina); el **fondo mas largo define la rejilla horizontal compartida**
+  (anchos de frente -> posicion de postes) y los mas cortos son un **prefijo** de ella, asi los
+  postes que se traslapan alinean; un frente sin niveles = **columna vacia** (no dibuja larguero
+  ahi; si el frente maestro es una columna vacia, su ancho lo da la bahia real mas ancha de los
+  otros fondos en ese indice). El sistema resuelto
   expone `FondoBays` (bahias por fondo) y el helper puro `SelectiveDepthLayout` calcula
   offsets/separadores (`BaysOfFondo`, `FondoSystemView`). La **frontal** dibuja un fondo (el fondo 0
   u otro; ver "Frontal por fondo"); **lateral y planta dibujan TODOS los fondos** (cada uno con su
   altura de cabecera y sus largueros). El **BOM suma el contenido real de CADA fondo x2** (frente/atras),
-  no un multiplicador plano por numero de fondos. UI: selector "Editando fondo" (los frentes se editan
-  en Fondo 1, compartidos por todos) + campos de separador por hueco; la vista previa frontal sigue al
-  fondo en edicion.
+  no un multiplicador plano por numero de fondos. UI: selector "Editando fondo" (el numero de frentes
+  se edita **por fondo**: `BayCountBox` habilitado en cualquier fondo, layouts en esquina) + campos de
+  separador por hueco; la vista previa frontal sigue al fondo en edicion.
 - **Fondo (profundidad) por fondo**: cada fondo tiene su PROPIO fondo de tarima ("Fondo de tarima"), no
   solo el fondo 0. Diseno `ExtraFondoDepths`; sistema resuelto `FondoDepths`. Los offsets, la lateral y
   la planta avanzan cada uno segun el fondo propio de ese fondo. El **frente de tarima por defecto es 42**
@@ -158,18 +164,25 @@ Vista previa / dibujo:
 BOM y cotizacion:
 
 - ✅ Agrupacion por perfil/longitud/cantidad extendida a los 4 tipos (cama: `FlowBedBomBuilder`).
-- Pendiente: integrar con el archivo cotizador existente; BOM consolidado multi-rack + export a Excel.
+- ✅ BOM consolidado multi-rack: comando `RACKBOMTOTAL` (desglose por rack x copias + gran total
+  por componente, `RackConsolidatedBomWindow`, export CSV).
+- Pendiente: integrar con el archivo cotizador existente; export a Excel.
 - Validaciones de ingenieria: seguir agregando reglas (capacidad de carga, holguras) de forma gradual.
 
 Selectivo (doble profundidad):
 
-- ✅ Fase 1 (espalda con espalda): N fondos con niveles por fondo, rejilla horizontal compartida del
-  fondo 0, separadores por hueco y BOM que suma el contenido real de cada fondo. Ahora tambien: **fondo
+- ✅ Fase 1 (espalda con espalda): N fondos con niveles y numero de frentes por fondo, rejilla
+  horizontal compartida definida por el **fondo mas largo** (los mas cortos son un prefijo; layout
+  en esquina), separadores por hueco y BOM que suma el contenido real de cada fondo. Ahora tambien: **fondo
   de tarima por fondo**, la regla **cabecera = tarima − 6"** (con override por linea), **frontal por
   fondo** y **vista previa lateral** (toggle Frontal/Lateral) en el editor.
-- Pendiente (Fase 2): **"medio frente"** — un fondo que subdivide una bahia con un poste intermedio
-  (media carga) y realinea en el siguiente poste compartido. El bloque separador fisico tambien queda
-  pendiente de dibujar (hoy solo se deja el hueco).
+- ✅ Fase 2, **"medio frente"** (generalizado a N tramos): un frente se parte en N tramos con N-1
+  postes intermedios (solo de ese fondo, asi los postes compartidos siguen alineados) y el ultimo
+  tramo calculado; si los tramos no caben se dibuja el frente completo. `SelectiveMedioFrente.Resolve`
+  centraliza el layout (frontal y planta consumen el mismo helper), boton "Medio frente..." por
+  frente abre `SelectiveSegmentsWindow` y el round-trip va via `SelectiveSegmentDocument`
+  (+ fallback del `MedioFrenteLength` legacy).
+- Pendiente: dibujar el bloque separador fisico entre fondos (hoy solo se deja el hueco).
 
 ## Como agregar un tipo de rack nuevo
 

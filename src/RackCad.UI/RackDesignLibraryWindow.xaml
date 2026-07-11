@@ -26,7 +26,7 @@
         <StackPanel Grid.Row="0" Margin="0,0,0,12">
             <TextBlock Text="Biblioteca de diseños" FontSize="18" FontWeight="SemiBold" Foreground="#1F2933" />
             <TextBlock x:Name="FolderText" Foreground="#617080" FontSize="12" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" />
-            <TextBlock Text="Diseños de cabecera y sistema dinámico guardados como .rackcad.json. (El selectivo y la cama viven embebidos en el dibujo.)"
+            <TextBlock Text="Diseños guardados como .rackcad.json: cabecera, sistema dinámico, selectivo, cama y larguero."
                        Foreground="#9AA7B4" FontSize="11" Margin="0,2,0,0" TextWrapping="Wrap" />
         </StackPanel>
 

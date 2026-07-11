@@ -43,7 +43,9 @@ assets/
 - Servicios de aplicacion, catalogos y persistencia.
 - `JsonRackCatalogProvider` carga los CSV de `assets/catalogs/` en un `RackCatalog`.
 - Geometria del selectivo en `SelectiveGeometryResolver`; el BOM cubre los cuatro tipos
-  con `SelectiveBomBuilder`, `SystemBomBuilder`, `FlowBedBomBuilder` y `BomBuilder` (cabecera).
+  con `SelectiveBomBuilder`, `SystemBomBuilder`, `FlowBedBomBuilder` y `BomBuilder` (cabecera),
+  mas `LargueroBomBuilder` (el larguero como componente) y `ConsolidatedBomBuilder` (BOM
+  consolidado de todo el dibujo).
 - Sobre unificado de identidad `RackEmbedDocument` y stores de diseno.
 
 `RackCad.UI`
@@ -55,6 +57,9 @@ assets/
   - `RackFlowBedWindow` (cama de rodamiento).
   - `RackSelectiveWindow` (selectivo, matriz frentes x niveles).
   - `RackBomWindow` (grid + export CSV del BOM; se abre desde los cuatro editores).
+  - `RackConsolidatedBomWindow` (BOM consolidado de TODO el dibujo; comando `RACKBOMTOTAL`).
+  - `RackLargueroWindow` (editor de larguero, menu "Disenar larguero"; solo visual/BOM).
+  - `SelectiveSegmentsWindow` (tramos del "medio frente" por frente del selectivo).
   - `RackDesignLibraryWindow` (biblioteca de disenos).
   - `RackListWindow` (tabla de todos los racks del dibujo).
 - ViewModels, tablas, arbol, panel de propiedades y vista previa.
@@ -70,7 +75,7 @@ assets/
 
 `RackCad.Tests`
 
-- Suite de pruebas (`net8.0`, xUnit), 307 tests verdes en `release/claude-review`.
+- Suite de pruebas (`net8.0`, xUnit), 329 tests verdes en `release/claude-review`.
 
 ## Compilar
 
@@ -133,6 +138,7 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 | `RACKEDITAR`          | Selecciona un rack dibujado, lo reabre en su editor y lo redefine en sitio. |
 | `RACKDUPLICAR`        | Copia INDEPENDIENTE del rack (GUID nuevo, nombre `- copia`), distinta del COPY de AutoCAD que comparte definicion/GUID. |
 | `RACKLISTA`           | Tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, numero de copias; `RackListBuilder` agrupa por GUID) con zoom al elegido. |
+| `RACKBOMTOTAL`        | BOM consolidado de TODO el dibujo: desglose por rack x copias + gran total por componente (`RackConsolidatedBomWindow`), con export CSV. |
 
 ## Los cuatro tipos de rack
 
@@ -150,7 +156,9 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
    **fondo de cabecera = fondo de tarima − 6"** (`CabeceraFondoAllowance`), con override por linea
    (`CabeceraFondoOverrides`/`FondoCabeceraOverrides`). La **frontal se inserta por fondo** (el fondo
    va en `Section` del sobre) y el editor tiene un toggle **Frontal/Lateral** con vista previa lateral
-   esquematica; lateral y planta dibujan todos los fondos. Fase 2 pendiente: "medio frente".
+   esquematica; lateral y planta dibujan todos los fondos. El "medio frente" ya esta hecho,
+   generalizado a N tramos (`SelectiveMedioFrente` + `SelectiveSegmentsWindow`, con round-trip);
+   solo queda pendiente dibujar el bloque separador fisico entre fondos.
 
 ## Identidad y round-trip
 
