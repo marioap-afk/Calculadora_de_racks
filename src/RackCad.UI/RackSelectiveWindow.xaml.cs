@@ -64,6 +64,9 @@ namespace RackCad.UI
         /// <summary>Per-bay manual height override (in); null = auto. Parallel to <see cref="bays"/>.</summary>
         private readonly List<double?> bayHeights = new List<double?>();
 
+        /// <summary>Per-bay "medio frente" tramos (N tramos, the last calculated); empty = normal full-width bay. Parallel to <see cref="bays"/>.</summary>
+        private readonly List<List<SelectiveSegment>> baySegments = new List<List<SelectiveSegment>>();
+
         /// <summary>Optional per-post cabecera (frame); one entry per post (N frentes → N+1 posts), null = run default.</summary>
         private readonly List<RackFrameConfiguration> postCabeceras = new List<RackFrameConfiguration>();
         private readonly List<double> postPeraltes = new List<double>(); // per-post PERALTE override; 0 = inherit the global
@@ -87,6 +90,7 @@ namespace RackCad.UI
             public List<List<Cell>> Bays { get; } = new List<List<Cell>>();
             public List<bool> FloorBeams { get; } = new List<bool>();
             public List<double?> BayHeights { get; } = new List<double?>();
+            public List<List<SelectiveSegment>> BaySegments { get; } = new List<List<SelectiveSegment>>();
             public double Depth { get; set; } = SelectiveRackDefaults.DefaultPalletDepth;
             public double CabeceraOverride { get; set; } // custom cabecera fondo; 0 = auto (tarima − allowance)
         }
@@ -261,6 +265,7 @@ namespace RackCad.UI
             bays.Clear();
             floorBeams.Clear();
             bayHeights.Clear();
+            baySegments.Clear();
             for (var b = 0; b < bayCount; b++)
             {
                 var column = new List<Cell>();
@@ -268,6 +273,7 @@ namespace RackCad.UI
                 bays.Add(column);
                 floorBeams.Add(false);
                 bayHeights.Add(null);
+                baySegments.Add(new List<SelectiveSegment>());
             }
 
             selBay = 0;
@@ -278,6 +284,10 @@ namespace RackCad.UI
 
         private static List<Cell> CloneColumn(List<Cell> column) => column.Select(c => c.Clone()).ToList();
 
+        /// <summary>Deep-clone a bay's medio-frente tramos so edits stay isolated per fondo/snapshot.</summary>
+        private static List<SelectiveSegment> CloneSegments(IEnumerable<SelectiveSegment> segments)
+            => segments?.Select(s => new SelectiveSegment { Length = s.Length, Loaded = s.Loaded }).ToList() ?? new List<SelectiveSegment>();
+
         /// <summary>Snapshot the live working matrix (the selected fondo) — including its fondo (depth) box — into a saveable copy.</summary>
         private FondoMatrix SnapshotWorking()
         {
@@ -285,6 +295,7 @@ namespace RackCad.UI
             foreach (var column in bays) snap.Bays.Add(CloneColumn(column));
             snap.FloorBeams.AddRange(floorBeams);
             snap.BayHeights.AddRange(bayHeights);
+            foreach (var segments in baySegments) snap.BaySegments.Add(CloneSegments(segments));
             snap.Depth = UiSupport.TryNum(FondoBox.Text, out var d) && d > 0.0 ? d : SelectiveRackDefaults.DefaultPalletDepth;
             snap.CabeceraOverride = UiSupport.TryNum(CabeceraFondoBox.Text, out var co) && co > 0.0 ? co : 0.0; // blank/invalid = auto
             return snap;
@@ -296,10 +307,13 @@ namespace RackCad.UI
             bays.Clear();
             floorBeams.Clear();
             bayHeights.Clear();
+            baySegments.Clear();
             foreach (var column in snap.Bays) bays.Add(CloneColumn(column));
             floorBeams.AddRange(snap.FloorBeams);
             bayHeights.AddRange(snap.BayHeights);
-            if (bays.Count == 0) { bays.Add(new List<Cell> { NewCell() }); floorBeams.Add(false); bayHeights.Add(null); }
+            foreach (var segments in snap.BaySegments) baySegments.Add(CloneSegments(segments));
+            if (bays.Count == 0) { bays.Add(new List<Cell> { NewCell() }); floorBeams.Add(false); bayHeights.Add(null); baySegments.Add(new List<SelectiveSegment>()); }
+            while (baySegments.Count < bays.Count) baySegments.Add(new List<SelectiveSegment>()); // defensive: keep parallel to bays (legacy snapshots)
             FondoBox.Text = (snap.Depth > 0.0 ? snap.Depth : SelectiveRackDefaults.DefaultPalletDepth).ToString("0.###", CultureInfo.InvariantCulture);
             CabeceraFondoBox.Text = snap.CabeceraOverride > 0.0 ? snap.CabeceraOverride.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
             ClampSelection();
@@ -325,28 +339,25 @@ namespace RackCad.UI
                     m.Bays.Add(CloneColumn(source.Bays[b]));
                     m.FloorBeams.Add(source.FloorBeams[b]);
                     m.BayHeights.Add(source.BayHeights[b]);
+                    m.BaySegments.Add(b < source.BaySegments.Count ? CloneSegments(source.BaySegments[b]) : new List<SelectiveSegment>());
                 }
                 else
                 {
                     m.Bays.Add(widthSeed != null && b < widthSeed.Bays.Count ? CloneColumn(widthSeed.Bays[b]) : new List<Cell> { NewCell() });
                     m.FloorBeams.Add(false);
                     m.BayHeights.Add(null);
+                    m.BaySegments.Add(new List<SelectiveSegment>());
                 }
             }
 
             return m;
         }
 
-        /// <summary>Align a fondo to fondo 0's frente count (fondo 0 is the master).</summary>
-        private FondoMatrix AlignToFondo0(FondoMatrix source)
-            => fondoMatrices.Count > 0 ? CloneAligned(source, fondoMatrices[0].Bays.Count, fondoMatrices[0]) : source;
-
-        /// <summary>Load fondo <paramref name="k"/> into the working matrix, aligned to fondo 0's frente count.</summary>
+        /// <summary>Load fondo <paramref name="k"/> into the working matrix. Each fondo keeps its OWN frente count (a
+        /// corner layout); the resolver aligns the overlapping widths to the longest fondo, so nothing is forced here.</summary>
         private void LoadFondo(int k)
         {
-            var m = fondoMatrices[k];
-            if (k != 0) { m = AlignToFondo0(m); fondoMatrices[k] = m; }
-            RestoreWorkingFrom(m);
+            RestoreWorkingFrom(fondoMatrices[k]);
         }
 
         /// <summary>Turn a fondo matrix into design bays (the shape the resolver consumes).</summary>
@@ -355,7 +366,19 @@ namespace RackCad.UI
             var result = new List<SelectiveBayDesign>();
             for (var b = 0; b < m.Bays.Count; b++)
             {
-                var bay = new SelectiveBayDesign { FloorBeam = m.FloorBeams[b], HeightOverride = m.BayHeights[b] };
+                var bay = new SelectiveBayDesign
+                {
+                    FloorBeam = m.FloorBeams[b],
+                    HeightOverride = m.BayHeights[b]
+                };
+                if (b < m.BaySegments.Count)
+                {
+                    foreach (var segment in m.BaySegments[b])
+                    {
+                        bay.Segments.Add(new SelectiveSegment { Length = segment.Length, Loaded = segment.Loaded });
+                    }
+                }
+
                 foreach (var cell in m.Bays[b])
                 {
                     bay.Levels.Add(new SelectiveCell
@@ -400,9 +423,10 @@ namespace RackCad.UI
                 m.Bays.Add(column);
                 m.FloorBeams.Add(bayDesign.FloorBeam);
                 m.BayHeights.Add(bayDesign.HeightOverride);
+                m.BaySegments.Add(CloneSegments(bayDesign.Segments));
             }
 
-            if (m.Bays.Count == 0) { m.Bays.Add(new List<Cell> { NewCell() }); m.FloorBeams.Add(false); m.BayHeights.Add(null); }
+            if (m.Bays.Count == 0) { m.Bays.Add(new List<Cell> { NewCell() }); m.FloorBeams.Add(false); m.BayHeights.Add(null); m.BaySegments.Add(new List<SelectiveSegment>()); }
             return m;
         }
 
@@ -488,14 +512,13 @@ namespace RackCad.UI
             RebuildSeparatorFields(n);
         }
 
-        /// <summary>Frentes (bay count) are edited on fondo 0 only, so every fondo stays aligned on the shared grid.</summary>
+        /// <summary>Frentes (bay count) are edited PER FONDO now: each line can have its own count (a corner layout).
+        /// The longest fondo defines the shared grid, so overlapping frentes still align at their posts.</summary>
         private void UpdateFrenteEditingEnabled()
         {
-            var isFondo0 = selectedFondo == 0;
-            BayCountBox.IsEnabled = isFondo0;
-            BayCountBox.ToolTip = isFondo0
-                ? "Número de frentes (bahías) del tramo. Pulsa 'Recalcular tramo' para aplicarlo."
-                : "Los frentes se definen en el Fondo 1 (compartidos por todos los fondos, para que los postes alineen).";
+            BayCountBox.IsEnabled = true;
+            BayCountBox.ToolTip = "Número de frentes (bahías) de ESTE fondo. Cada fondo puede tener su propio número (p. ej. esquina); "
+                + "el fondo más largo define la rejilla y los frentes que se traslapan alinean sus postes. Pulsa 'Recalcular tramo' para aplicarlo.";
         }
 
         private void FondoSelector_Changed(object sender, SelectionChangedEventArgs e)
@@ -541,8 +564,13 @@ namespace RackCad.UI
             {
                 ApplyFondoCountFromBox();  // may reset selectedFondo when the count shrinks
                 LoadFondo(selectedFondo);  // always reload the working matrix for the (possibly new) selection
+                // Resync the frente-count box + post selector to the reloaded fondo — a shrink can switch fondos, and a
+                // stale BayCountBox would make the next 'Recalcular' resize the wrong fondo (matches the other handlers).
+                BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
+                UpdateFrenteEditingEnabled();
                 LoadCellEditor();
                 RenderMatrix();
+                RefreshPostSelect();
                 Recompute();
             }
         }
@@ -557,18 +585,21 @@ namespace RackCad.UI
                     bays.Add(bays[bays.Count - 1].Select(c => c.Clone()).ToList());
                     floorBeams.Add(floorBeams[floorBeams.Count - 1]);
                     bayHeights.Add(bayHeights[bayHeights.Count - 1]);
+                    baySegments.Add(CloneSegments(baySegments[baySegments.Count - 1]));
                 }
                 else
                 {
                     bays.Add(new List<Cell> { NewCell() });
                     floorBeams.Add(false);
                     bayHeights.Add(null);
+                    baySegments.Add(new List<SelectiveSegment>());
                 }
             }
 
             while (bays.Count > bayCount)
             {
                 bays.RemoveAt(bays.Count - 1);
+                baySegments.RemoveAt(baySegments.Count - 1);
                 floorBeams.RemoveAt(floorBeams.Count - 1);
                 bayHeights.RemoveAt(bayHeights.Count - 1);
             }
@@ -755,6 +786,20 @@ namespace RackCad.UI
             heightRow.Children.Add(heightBox);
             panel.Children.Add(heightRow);
 
+            // "Medio frente" (N tramos): a button opens the tramos dialog. No tramos = normal full-width bay.
+            var segCount = bay < baySegments.Count ? baySegments[bay].Count : 0;
+            var tramosBtn = new Button
+            {
+                Content = segCount >= 2 ? "½fr: " + segCount + " tramos" : "Medio frente…",
+                FontSize = 10.5,
+                Margin = new Thickness(0, 3, 0, 0),
+                Padding = new Thickness(6, 1, 6, 1),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                ToolTip = "Medio frente: parte el frente en tramos con postes intermedios (el último se calcula). Sin tramos = frente completo."
+            };
+            tramosBtn.Click += (s, e) => EditTramos(bay);
+            panel.Children.Add(tramosBtn);
+
             return panel;
         }
 
@@ -767,12 +812,44 @@ namespace RackCad.UI
             Recompute();
         }
 
+        /// <summary>Open the tramos ("medio frente" generalizado) editor for a frente and apply the result.</summary>
+        private void EditTramos(int bay)
+        {
+            if (bay < 0 || bay >= baySegments.Count) return;
+
+            // Best-effort full bay width (shared across fondos) so the dialog can show the calculated last tramo + warn.
+            var fullWidth = lastSystem != null && bay < lastSystem.Bays.Count ? lastSystem.Bays[bay].BeamLength : 0.0;
+
+            var dialog = new SelectiveSegmentsWindow(bay + 1, baySegments[bay], fullWidth) { Owner = this };
+            if (dialog.ShowDialog() != true) return;
+
+            baySegments[bay] = dialog.Result.Select(s => new SelectiveSegment { Length = s.Length, Loaded = s.Loaded }).ToList();
+            RenderMatrix(); // refresh the button label (tramo count)
+            Recompute();
+        }
+
         // ---- Per-post cabeceras ----
 
-        /// <summary>Keep the per-post cabecera list sized to N+1 (posts), preserving existing entries.</summary>
+        /// <summary>The largest frente count across all fondos (the master grid). Uses the LIVE working matrix for the
+        /// selected fondo (its slot is stale mid-edit) and the saved slots for the rest.</summary>
+        private int MaxFrenteCount()
+        {
+            var max = bays.Count;
+            for (var k = 0; k < fondoMatrices.Count; k++)
+            {
+                if (k == selectedFondo) continue; // the working copy is live in `bays`; the slot is stale
+                if (fondoMatrices[k].Bays.Count > max) max = fondoMatrices[k].Bays.Count;
+            }
+
+            return max;
+        }
+
+        /// <summary>Keep the per-post cabecera + peralte lists sized to the MASTER grid's posts (masterFrentes+1),
+        /// preserving existing entries. Sizing to the LONGEST fondo (not the working one) means switching to a shorter
+        /// fondo never truncates and loses fondo 0's custom cabeceras / per-post peraltes.</summary>
         private void SyncPostCabeceras()
         {
-            var posts = bays.Count + 1;
+            var posts = MaxFrenteCount() + 1;
             while (postCabeceras.Count < posts) postCabeceras.Add(null);
             while (postCabeceras.Count > posts) postCabeceras.RemoveAt(postCabeceras.Count - 1);
             while (postPeraltes.Count < posts) postPeraltes.Add(0.0);
@@ -1269,10 +1346,11 @@ namespace RackCad.UI
 
             using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
             {
-                // Frentes are edited on fondo 0 only (BayCountBox is disabled elsewhere), so this resizes the master grid.
-                if (selectedFondo == 0) ResizeBays(bayCount);
+                // Frentes are per-fondo now: resize THIS fondo's bays. Each fondo can differ (a corner layout); the
+                // resolver aligns the overlapping widths to the longest fondo.
+                ResizeBays(bayCount);
                 ApplyFondoCountFromBox();      // apply "Número de fondos" (rebuild combo + separators; may reset selectedFondo)
-                LoadFondo(selectedFondo);      // reload the working matrix, aligned to fondo 0's (possibly new) frente count
+                LoadFondo(selectedFondo);      // reload the working matrix for the (possibly new) selected fondo
                 BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
                 LoadCellEditor();
                 RenderMatrix();
@@ -1531,10 +1609,11 @@ namespace RackCad.UI
 
             design.CabeceraFondoOverrides.Add(fondo0.CabeceraOverride); // fondo 0's custom cabecera fondo (0 = auto)
 
-            // Extra fondos: each carries its OWN levels + its OWN fondo (depth) + its OWN cabecera override, aligned to fondo 0's frente count.
+            // Extra fondos: each carries its OWN levels + its OWN fondo (depth) + its OWN cabecera override AND its OWN
+            // frente count (a corner layout). The resolver aligns the overlapping widths to the longest fondo.
             for (var k = 1; k < depthCount; k++)
             {
-                var m = k < fondoMatrices.Count ? AlignToFondo0(fondoMatrices[k]) : AlignToFondo0(fondo0);
+                var m = k < fondoMatrices.Count ? fondoMatrices[k] : fondo0;
                 design.ExtraFondoBays.Add(BuildBayDesigns(m));
                 design.ExtraFondoDepths.Add(m.Depth);
                 design.CabeceraFondoOverrides.Add(m.CabeceraOverride);

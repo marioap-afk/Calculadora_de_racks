@@ -36,11 +36,12 @@ namespace RackCad.Application.Systems
             // Built from the catalog the caller already loaded (a field initializer would trigger its own load).
             var factory = new RackFrameConfigurationFactory(catalog);
 
-            var postXs = SelectivePostGeometry.Compute(system, catalog).PostXs;
+            var postXs = SelectiveDepthLayout.MasterGrid(system, catalog).PostXs; // longest fondo defines the frente grid
             var offsets = SelectiveDepthLayout.Offsets(system); // one X per fondo (doble profundidad), per-fondo depth
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
-            // Each fondo has its OWN bays (own levels/heights). Resolve them + a per-fondo height fallback once.
+            // Each fondo has its OWN bays (own levels/heights AND its own frente count). Resolve them + a per-fondo
+            // height fallback once.
             var fondoBays = new IList<SelectiveBay>[offsets.Count];
             var fondoFallback = new double[offsets.Count];
             for (var k = 0; k < offsets.Count; k++)
@@ -53,9 +54,29 @@ namespace RackCad.Application.Systems
 
             for (var i = 0; i < postXs.Count; i++)
             {
-                // fondo 0's cabecera is drawn from `cabecera` (at X=0) by the AutoCAD side. A per-post custom cabecera
-                // wins for fondo 0 (its height + celosía + plate). Otherwise a standard frame at fondo 0's own height.
-                var custom = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
+                // A fondo with C bays has posts 0..C, so it "reaches" post i when i <= its bay count. In a corner layout
+                // a shorter fondo drops out of the far cortes. The FIRST reaching fondo anchors this corte's depth (its
+                // cabecera is the primary, drawn at the block origin by the AutoCAD side); the rest translate relative to
+                // it, so a corte where fondo 0 doesn't reach still has a valid primary.
+                var firstReaching = -1;
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    if (i <= fondoBays[k].Count)
+                    {
+                        firstReaching = k;
+                        break;
+                    }
+                }
+
+                if (firstReaching < 0)
+                {
+                    continue; // no fondo reaches this post (shouldn't happen within the master grid)
+                }
+
+                var anchorOffset = offsets[firstReaching];
+
+                // Primary cabecera = the first reaching fondo. A per-post custom cabecera wins, but only for fondo 0.
+                var custom = firstReaching == 0 && i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
                 RackFrameConfiguration cabecera;
                 if (custom != null && custom.Height > 0.0)
                 {
@@ -63,39 +84,48 @@ namespace RackCad.Application.Systems
                 }
                 else
                 {
-                    var height0 = SelectivePostGeometry.PostHeight(fondoBays[0], i, fondoFallback[0]);
-                    if (height0 <= 0.0)
+                    var heightP = SelectivePostGeometry.PostHeight(fondoBays[firstReaching], i, fondoFallback[firstReaching]);
+                    if (heightP <= 0.0)
                     {
                         continue;
                     }
 
-                    cabecera = factory.Build(template, system.PostId, height0, SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0));
+                    cabecera = factory.Build(template, system.PostId, heightP, SelectiveDepthLayout.CabeceraDepthOfFondo(system, firstReaching));
                 }
 
                 var extras = new List<HeaderBlockInstance>();
 
-                // Extra fondos (doble profundidad): each is its OWN cabecera at ITS OWN height AND its own fondo (depth) —
-                // a side can be taller/shorter and deeper/shallower — translated to its X offset. Fase 1 uses the standard
-                // frame per extra fondo (per-post custom cabeceras stay on fondo 0).
-                for (var k = 1; k < offsets.Count; k++)
+                // The OTHER reaching fondos: each its OWN cabecera at its OWN height AND its own fondo (depth) — a side
+                // can be taller/shorter and deeper/shallower — translated to its X offset relative to the anchor.
+                for (var k = 0; k < offsets.Count; k++)
                 {
+                    if (k == firstReaching || i > fondoBays[k].Count)
+                    {
+                        continue;
+                    }
+
                     var heightK = SelectivePostGeometry.PostHeight(fondoBays[k], i, fondoFallback[k]);
                     if (heightK <= 0.0)
                     {
                         continue;
                     }
 
-                    AddCabeceraAtOffset(extras, factory.Build(template, system.PostId, heightK, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k)), offsets[k], catalog);
+                    AddCabeceraAtOffset(extras, factory.Build(template, system.PostId, heightK, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k)), offsets[k] - anchorOffset, catalog);
                 }
 
-                // Largueros: every fondo contributes its OWN levels (its own heights) at its own X offset + depth.
+                // Largueros: every REACHING fondo contributes its OWN levels at its own X offset + depth (anchor-relative).
                 for (var k = 0; k < offsets.Count; k++)
                 {
-                    BuildLargueros(extras, fondoBays[k], i, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k), offsets[k], catalog);
+                    if (i > fondoBays[k].Count)
+                    {
+                        continue;
+                    }
+
+                    BuildLargueros(extras, fondoBays[k], i, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k), offsets[k] - anchorOffset, catalog);
                 }
 
-                // Annotations once, from fondo 0's levels (the primary face) and fondo 0's height.
-                AddCorteAnnotations(extras, system, i, CollectLevels(fondoBays[0], i));
+                // Annotations once, from the primary (anchor) fondo's levels + its height.
+                AddCorteAnnotations(extras, system, i, CollectLevels(fondoBays[firstReaching], i), fondoBays[firstReaching], fondoFallback[firstReaching]);
                 cortes.Add(new SelectiveCorte(i, postXs[i], cabecera, extras));
             }
 
@@ -189,7 +219,7 @@ namespace RackCad.Application.Systems
 
         /// <summary>Lateral-corte text labels (when the toggles are on): a number per level on the left, the post
         /// (frente) number and the rack name at the top of the corte.</summary>
-        private static void AddCorteAnnotations(ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, int postIndex, IEnumerable<SelectiveLevel> levels)
+        private static void AddCorteAnnotations(ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, int postIndex, IEnumerable<SelectiveLevel> levels, IList<SelectiveBay> primaryBays, double primaryFallback)
         {
             var h = SelectiveAnnotations.TextHeightFor(system.AnnotationScale);
             var gap = h + SelectiveAnnotations.Margin;
@@ -210,7 +240,7 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            var height = SelectivePostGeometry.PostHeight(system, postIndex);
+            var height = SelectivePostGeometry.PostHeight(primaryBays, postIndex, primaryFallback);
 
             if (system.NumberFronts)
             {

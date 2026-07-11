@@ -73,67 +73,50 @@ namespace RackCad.Application.Systems
                 // This post's peralte (its per-post override, else the run default) drives the PERALTE param and plate.
                 var postPeralte = SelectivePostGeometry.PostPeralteAt(system, i);
 
-                var post = new HeaderBlockInstance
-                {
-                    Role = HeaderBlockRole.Post,
-                    PieceId = system.PostId,
-                    BlockName = postBlock,
-                    View = view,
-                    Insertion = origin,
-                    ConnectionAnchor = origin
-                };
-                post.DynamicParameters[SelectiveRackDefaults.LengthParam] = postHeight;
-                post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
-                instances.Add(post);
+                // Base plate (unless the toggle is off): from this post's cabecera if any, else the run default.
+                // PERALTE = the cabecera's manual override, else derived from the post (StandardPeralte).
+                var plateId = cabecera?.LeftBasePlate?.PlateCatalogId;
+                if (string.IsNullOrWhiteSpace(plateId)) plateId = defaultPlateId;
+                var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
+                var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
 
-                // Base plate (unless the "Dibujar placa base" toggle is off): from this post's cabecera if any, else
-                // the run default. PERALTE = the cabecera's manual override, else derived from the post (StandardPeralte).
-                if (system.DrawBasePlate)
-                {
-                    var plateId = cabecera?.LeftBasePlate?.PlateCatalogId;
-                    if (string.IsNullOrWhiteSpace(plateId)) plateId = defaultPlateId;
-                    var plateEntry = catalog?.BasePlates.FindBasePlate(plateId);
-                    var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
-                    var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
-
-                    var plate = new HeaderBlockInstance
-                    {
-                        Role = HeaderBlockRole.BasePlate,
-                        PieceId = plateId,
-                        BlockName = CachedBlock(plateId),
-                        View = view,
-                        ConnectionAnchor = origin,
-                        Insertion = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y)
-                    };
-                    if (platePeralte > 0.0)
-                    {
-                        plate.DynamicParameters[SelectiveRackDefaults.PeralteParam] = platePeralte;
-                    }
-                    instances.Add(plate);
-                }
+                AddPostWithPlate(instances, catalog, view, system.PostId, postBlock, CachedBlock, origin, postHeight, postPeralte, plateId, platePeralte, system.DrawBasePlate);
             }
 
-            // Largueros: one per resolved level, at the left post's troquel X, at the level's resolved Y.
+            // Largueros: one per resolved level, at the left post's troquel X, at the level's resolved Y. A "medio
+            // frente" bay is split into tramos: each LOADED tramo gets largueros of its own length (from its left
+            // post), and an INTERMEDIATE post is planted at every tramo boundary. The shared end posts stay put.
             for (var i = 0; i < system.Bays.Count; i++)
             {
                 var bay = system.Bays[i];
-                var beamX = postX[i] + layout.TroquelXs[i]; // hook on THIS post's troquel (per-post peralte)
+                var postPeralte = SelectivePostGeometry.PostPeralteAt(system, i);
+                var troquelX = layout.TroquelXs[i]; // hook on THIS post's troquel (per-post peralte)
+                var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
+                var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
 
-                foreach (var level in bay.Levels)
+                if (tramos == null)
                 {
-                    var at = new Point2D(beamX, level.Y);
-                    var beam = new HeaderBlockInstance
-                    {
-                        Role = HeaderBlockRole.Beam,
-                        PieceId = level.BeamId,
-                        BlockName = CachedBlock(level.BeamId),
-                        View = view,
-                        Insertion = at,
-                        ConnectionAnchor = at
-                    };
-                    beam.DynamicParameters[SelectiveRackDefaults.LengthParam] = bay.BeamLength;
-                    beam.DynamicParameters[SelectiveRackDefaults.PeralteParam] = level.BeamPeralte;
-                    instances.Add(beam);
+                    // Normal full bay: one larguero per level spanning the whole bay.
+                    AddLargueros(instances, bay.Levels, CachedBlock, view, postX[i] + troquelX, bay.BeamLength);
+                    continue;
+                }
+
+                foreach (var tramo in tramos)
+                {
+                    if (!tramo.Loaded) continue;
+                    AddLargueros(instances, bay.Levels, CachedBlock, view, postX[i] + tramo.StartOffset + troquelX, tramo.Length);
+                }
+
+                // Intermediate posts = the left post of every tramo except the first (Tramos[k].StartOffset, k>=1).
+                // A level-less bay (a column) can still be split; fall back to the run height like the planta so the
+                // intermediate post is never a degenerate zero-height post.
+                var intermediateHeight = bay.Height > 0.0 ? bay.Height : system.Height;
+                var plateEntry = catalog?.BasePlates.FindBasePlate(defaultPlateId);
+                var platePeralte = plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
+                for (var k = 1; k < tramos.Count; k++)
+                {
+                    var origin = new Point2D(postX[i] + tramos[k].StartOffset, 0.0);
+                    AddPostWithPlate(instances, catalog, view, system.PostId, postBlock, CachedBlock, origin, intermediateHeight, postPeralte, defaultPlateId, platePeralte, system.DrawBasePlate);
                 }
             }
 
@@ -170,6 +153,74 @@ namespace RackCad.Application.Systems
             {
                 instances.Add(SelectiveAnnotations.Label(system.Name.Trim(), view, new Point2D(postX[0], system.Height + h), h * 1.5));
             }
+        }
+
+        /// <summary>Adds one larguero per level at <paramref name="beamX"/> (the tramo's left-post troquel X), each
+        /// stretched to <paramref name="beamLongitud"/> and to its level's peralte, sitting at the level's resolved Y.</summary>
+        private static void AddLargueros(
+            ICollection<HeaderBlockInstance> instances, IEnumerable<SelectiveLevel> levels,
+            Func<string, string> cachedBlock, string view, double beamX, double beamLongitud)
+        {
+            foreach (var level in levels)
+            {
+                var at = new Point2D(beamX, level.Y);
+                var beam = new HeaderBlockInstance
+                {
+                    Role = HeaderBlockRole.Beam,
+                    PieceId = level.BeamId,
+                    BlockName = cachedBlock(level.BeamId),
+                    View = view,
+                    Insertion = at,
+                    ConnectionAnchor = at
+                };
+                beam.DynamicParameters[SelectiveRackDefaults.LengthParam] = beamLongitud;
+                beam.DynamicParameters[SelectiveRackDefaults.PeralteParam] = level.BeamPeralte;
+                instances.Add(beam);
+            }
+        }
+
+        /// <summary>A frontal post at <paramref name="origin"/> (LONGITUD = height, PERALTE = peralte) plus its base
+        /// plate (mated on the post origin) unless drawing plates is off. Shared by the run posts and a medio-frente
+        /// intermediate post.</summary>
+        private static void AddPostWithPlate(
+            ICollection<HeaderBlockInstance> instances, RackCatalog catalog, string view, string postId, string postBlock,
+            Func<string, string> cachedBlock, Point2D origin, double postHeight, double postPeralte,
+            string plateId, double platePeralte, bool drawPlate)
+        {
+            var post = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Post,
+                PieceId = postId,
+                BlockName = postBlock,
+                View = view,
+                Insertion = origin,
+                ConnectionAnchor = origin
+            };
+            post.DynamicParameters[SelectiveRackDefaults.LengthParam] = postHeight;
+            post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
+            instances.Add(post);
+
+            if (!drawPlate || string.IsNullOrWhiteSpace(plateId))
+            {
+                return;
+            }
+
+            var plateMate = Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
+            var plate = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.BasePlate,
+                PieceId = plateId,
+                BlockName = cachedBlock(plateId),
+                View = view,
+                ConnectionAnchor = origin,
+                Insertion = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y)
+            };
+            if (platePeralte > 0.0)
+            {
+                plate.DynamicParameters[SelectiveRackDefaults.PeralteParam] = platePeralte;
+            }
+
+            instances.Add(plate);
         }
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)

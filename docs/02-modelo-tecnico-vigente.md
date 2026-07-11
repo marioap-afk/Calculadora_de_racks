@@ -238,10 +238,14 @@ design  (SelectivePalletDesign)   -> lo que edita el usuario (tarimas por celda)
   1 = sencillo clasico) a lo largo del eje de fondo, y `SeparatorLengths` (**una por hueco** entre
   fondos consecutivos, no un valor global; el bloque separador fisico aun NO se dibuja, solo se deja
   el hueco vacio). `ExtraFondoBays` guarda la matriz de niveles de los fondos 1..N-1 (vacio = ese
-  fondo hereda las `Bays` del fondo 0). **Cada fondo tiene sus propios niveles/alturas**, pero el
-  **fondo 0 define la rejilla horizontal compartida** (anchos de frente -> posicion de postes) que
-  usan todos, para que los postes alineen; un frente sin niveles = **columna vacia** (no dibuja
-  larguero). Ademas cada fondo tiene su **propio fondo de tarima**: `ExtraFondoDepths` (fondos 1..N-1;
+  fondo hereda las `Bays` del fondo 0). **Cada fondo tiene sus propios niveles/alturas Y su propio
+  numero de frentes** (layout en esquina: p. ej. una linea con 3 frentes y otra con 6, unidas solo en
+  los 3 que se traslapan). El **fondo MAS LARGO define la rejilla horizontal compartida** (anchos de
+  frente -> posicion de postes); cada fondo mas corto es un **prefijo** de esa rejilla, asi los postes
+  que se traslapan alinean y una linea mas larga simplemente se extiende. Si el frente maestro de un
+  indice es una **columna vacia** (sin niveles, ancho 0), el ancho lo da la bahia real mas ancha de los
+  otros fondos en ese indice (una columna nunca colapsa la rejilla); un frente sin niveles = **columna
+  vacia** (no dibuja larguero). Ademas cada fondo tiene su **propio fondo de tarima**: `ExtraFondoDepths` (fondos 1..N-1;
   vacio = el del fondo 0). El **fondo de cabecera** (marco dibujado) = fondo de tarima −
   `SelectiveRackDefaults.CabeceraFondoAllowance` (6"); `CabeceraFondoOverrides` fuerza, por linea, un
   fondo de cabecera concreto (vacio = la regla). Defaults del run: frente de tarima 42, separacion
@@ -272,9 +276,11 @@ Geometria ya calculada que consume el builder: `Bays` (`SelectiveBay` con `BeamL
 `Height` y `Levels`), cada `SelectiveLevel` con su `Y` ya snappeada al troquel, `BeamId` y
 `BeamPeralte`; mas `PostCabeceras` pasadas tal cual. N frentes -> N+1 cabeceras (cada una un
 poste en frontal). En doble profundidad expone ademas `FondoBays` (las bahias ya resueltas de
-cada fondo; el fondo 0 define la rejilla horizontal compartida por todos), `FondoDepths` (el fondo de
-tarima de cada fondo) y `FondoCabeceraOverrides` (el override de fondo de cabecera por linea; vacio =
-derivado por la regla tarima − 6").
+cada fondo, cada uno con su PROPIO numero de frentes; el fondo mas largo define la rejilla y los mas
+cortos son un prefijo de ella — `SelectiveDepthLayout.MasterFondoIndex` / `MasterGrid`), `FondoDepths`
+(el fondo de tarima de cada fondo) y `FondoCabeceraOverrides` (el override de fondo de cabecera por
+linea; vacio = derivado por la regla tarima − 6"). Cada `SelectiveBay` lleva ademas `Segments` (los
+tramos del "medio frente", ver mas abajo).
 
 ### builder + BOM
 
@@ -296,9 +302,24 @@ derivado por la regla tarima − 6").
   `RackFrameCommands.Selective.cs`). **Lateral y planta recorren TODOS los fondos** (cada uno con su fondo
   de cabecera propio y sus largueros, separados por el hueco de `SeparatorLengths`). El **BOM suma el
   contenido real de CADA fondo x2** (frente/atras), no un multiplicador plano por numero de fondos. La
-  persistencia hace round-trip de `ExtraFondoBays`, `ExtraFondoDepths` y `CabeceraFondoOverrides` (los
-  disenos legacy sin `DepthCount` caen a un solo fondo). Fase 2 pendiente: "medio frente" (un fondo que
-  subdivide una bahia con un poste intermedio y realinea en el siguiente poste compartido).
+  persistencia hace round-trip de `ExtraFondoBays`, `ExtraFondoDepths`, `CabeceraFondoOverrides` y los
+  `Segments` por frente (los disenos legacy sin `DepthCount` caen a un solo fondo).
+- **Frentes por fondo (layout en esquina)**: cada fondo tiene su **propio numero de frentes**; el fondo
+  mas largo es el maestro de la rejilla y los mas cortos son un prefijo. La **planta** dibuja cada linea
+  con su tramo real (cada fondo coloca sus marcos + largueros hasta SU conteo, sobre la rejilla maestra);
+  la **lateral** genera un corte por poste del maestro y cada corte lejano se **ancla al primer fondo que
+  llega** a ese frente (asi siempre hay cabecera primaria valida aunque el fondo 0 no alcance). En la UI,
+  el numero de frentes se edita **por fondo** (`BayCountBox` habilitado en cualquier fondo).
+- **Medio frente (generalizado a N tramos)**: un frente se parte en **N tramos** con N-1 **postes
+  intermedios** (solo de ese fondo, asi los fondos siguen alineados en los postes compartidos). Cada
+  `SelectiveSegment` lleva `Length` + `Loaded`; el **ultimo tramo es calculado** (el resto de la bahia,
+  descontando lo que consume cada poste intermedio). Marcar que tramos cargan largueros permite amarrar
+  un lado, el otro o ambos (modulo intermedio). `SelectiveMedioFrente.Resolve(bay, troquelX, inicioX)`
+  centraliza el layout y devuelve null cuando no hay tramos o **no caben** (se dibuja el frente completo
+  — esa es la validacion "el larguero especial no puede exceder el completo"). Frontal y planta consumen
+  el mismo helper, asi postes/cabeceras intermedias coinciden entre vistas. UI: boton "Medio frente..."
+  por frente abre `SelectiveSegmentsWindow` (lista de tramos, el ultimo "(resto)"). Round-trip via
+  `SelectiveSegmentDocument` (+ fallback del `MedioFrenteLength` escalar viejo).
 
 La cabecera, por su parte, tiene **dos vistas** ligadas por GUID: lateral y planta (planta =
 2 huellas de poste, frente en 0 / atras en fondo, + placas + celosia colapsada a un miembro

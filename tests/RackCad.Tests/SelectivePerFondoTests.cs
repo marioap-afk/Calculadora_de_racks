@@ -223,7 +223,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Resolve_ShortFondoBayList_PadsWithEmptyFrentes_KeepingFondo0Count()
+        public void Resolve_ShorterFondo_KeepsOwnCount_SharesMasterPrefixWidths()
         {
             var design = new SelectivePalletDesign
             {
@@ -231,16 +231,110 @@ namespace RackCad.Tests
             };
             design.Bays.Add(Bay(3));
             design.Bays.Add(Bay(3));
-            design.Bays.Add(Bay(3)); // fondo 0: 3 bays
-            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2) }); // fondo 1 only defines 1 bay
+            design.Bays.Add(Bay(3)); // fondo 0: 3 frentes (the longest → master)
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2) }); // fondo 1: only 1 frente
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
 
-            // fondo 1 is padded to fondo 0's frente count; the padded bays are empty frentes with the shared width.
-            Assert.Equal(system.Bays.Count, system.FondoBays[1].Count);
-            Assert.Empty(system.FondoBays[1][1].Levels);
-            Assert.Empty(system.FondoBays[1][2].Levels);
-            Assert.Equal(system.FondoBays[0][1].BeamLength, system.FondoBays[1][1].BeamLength, 4);
+            // Each fondo keeps its OWN frente count now (no padding to fondo 0). Fondo 0 is the longest (the master).
+            Assert.Equal(3, system.FondoBays[0].Count);
+            Assert.Single(system.FondoBays[1]);
+            Assert.Equal(0, SelectiveDepthLayout.MasterFondoIndex(system));
+            // Its one overlapping frente shares the master width so the posts coincide.
+            Assert.Equal(system.FondoBays[0][0].BeamLength, system.FondoBays[1][0].BeamLength, 4);
+        }
+
+        [Fact]
+        public void Resolve_LongerExtraFondo_IsMaster_ShorterFondoAdoptsItsWidths()
+        {
+            // A corner layout: fondo 0 has 3 frentes @ 40", fondo 1 has 6 frentes @ 48" (the longest → the width master).
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            design.Bays.Add(Bay(2, 40.0));
+            design.Bays.Add(Bay(2, 40.0));
+            design.Bays.Add(Bay(2, 40.0));
+            var fondo1 = new List<SelectiveBayDesign>();
+            for (var i = 0; i < 6; i++) fondo1.Add(Bay(2, 48.0));
+            design.ExtraFondoBays.Add(fondo1);
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            Assert.Equal(3, system.FondoBays[0].Count); // fondo 0 keeps its 3 frentes
+            Assert.Equal(6, system.FondoBays[1].Count); // fondo 1 keeps its 6 — no truncation
+            Assert.Equal(1, SelectiveDepthLayout.MasterFondoIndex(system)); // fondo 1 is the longest
+
+            // Fondo 0's overlapping frentes adopt the MASTER (fondo 1, 48") widths so the shared posts coincide.
+            for (var i = 0; i < 3; i++)
+            {
+                Assert.Equal(system.FondoBays[1][i].BeamLength, system.FondoBays[0][i].BeamLength, 4);
+            }
+
+            // The master width (48" pallets ×2) is wider than fondo 0's own 40" frente would have been.
+            Assert.True(system.FondoBays[0][0].BeamLength > 40.0 * 2);
+        }
+
+        [Fact]
+        public void Resolve_EmptyColumnInMasterFondo_DoesNotZeroOtherFondosWidth()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            design.Bays.Add(Bay(3)); // fondo 0: 1 loaded frente
+            // fondo 1: 3 frentes → the longest (master); its FIRST frente is an empty column (no levels → BeamLength 0).
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(0), Bay(2), Bay(2) });
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            Assert.Equal(1, SelectiveDepthLayout.MasterFondoIndex(system)); // fondo 1 is the longest
+            // The master's empty column must NOT collapse fondo 0's real frente to zero width.
+            Assert.True(system.FondoBays[0][0].BeamLength > 0.0);
+            // Both fondos share that (real) width at the overlapping index so their posts still coincide.
+            Assert.Equal(system.FondoBays[0][0].BeamLength, system.FondoBays[1][0].BeamLength, 4);
+        }
+
+        [Fact]
+        public void Planta_CornerLayout_PlacesEachFondosOwnFrames_OnMasterGrid()
+        {
+            // fondo 0: 3 frentes (4 posts); fondo 1: 6 frentes (7 posts). Master grid = fondo 1's.
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            for (var i = 0; i < 3; i++) design.Bays.Add(Bay(2));
+            var fondo1 = new List<SelectiveBayDesign>();
+            for (var i = 0; i < 6; i++) fondo1.Add(Bay(2));
+            design.ExtraFondoBays.Add(fondo1);
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var instances = new SelectivePlantaBuilder().Build(system, Catalog);
+
+            // Each planta cabecera-frame is 2 posts (front + back along depth). fondo 0's 4 frames + fondo 1's 7 frames
+            // = 11 frames × 2 = 22 posts.
+            Assert.Equal((4 + 7) * 2, instances.Count(i => i.Role == HeaderBlockRole.Post));
+        }
+
+        [Fact]
+        public void Lateral_CornerLayout_HasOneCortePerMasterPost()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            for (var i = 0; i < 3; i++) design.Bays.Add(Bay(2));
+            var fondo1 = new List<SelectiveBayDesign>();
+            for (var i = 0; i < 6; i++) fondo1.Add(Bay(2));
+            design.ExtraFondoBays.Add(fondo1);
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
+
+            // The master (fondo 1) has 6 frentes → 7 posts → 7 cortes.
+            Assert.Equal(7, cortes.Count);
+            // The far cortes (beyond fondo 0's 3 frentes) exist and are anchored on fondo 1 (fondo 0 doesn't reach them).
+            Assert.All(cortes, c => Assert.NotNull(c.Cabecera));
         }
     }
 }

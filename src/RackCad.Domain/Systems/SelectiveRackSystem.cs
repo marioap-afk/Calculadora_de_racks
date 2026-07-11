@@ -92,6 +92,12 @@ namespace RackCad.Domain.Systems
         /// <summary>Height this bay requires (in) = roundUpFoot(topBeamY + topAlto/3). A post uses the tallest bay it touches.</summary>
         public double Height { get; set; }
 
+        /// <summary>"Medio frente" generalizado: N tramos with N-1 intermediate posts (of this fondo only). Each tramo
+        /// carries a larguero length and a loaded flag; the LAST tramo's length is CALCULATED (the remainder). Fewer
+        /// than 2 tramos = a normal full-width bay. Does NOT change the bay's <see cref="BeamLength"/> (post spacing) —
+        /// the shared end posts stay aligned across fondos. See <c>SelectiveMedioFrente</c> for the tramo layout.</summary>
+        public IList<SelectiveSegment> Segments { get; } = new List<SelectiveSegment>();
+
         /// <summary>The load levels of this bay, bottom to top, each with its own resolved Y and beam.</summary>
         public IList<SelectiveLevel> Levels { get; } = new List<SelectiveLevel>();
     }

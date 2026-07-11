@@ -122,8 +122,31 @@ namespace RackCad.Domain.Systems
         /// <summary>Manual override for this bay's height (in). Null = auto. A post still takes the tallest of the bays it touches.</summary>
         public double? HeightOverride { get; set; }
 
+        /// <summary>
+        /// "Medio frente" generalizado: partition this bay into N tramos with N-1 INTERMEDIATE posts (of this fondo
+        /// only, so the fondos stay aligned at the shared end posts). Each tramo has a larguero length and a loaded
+        /// flag; the LAST tramo's length is CALCULATED (the remainder of the bay). Fewer than 2 tramos = a normal
+        /// full-width bay. Lengths are free measures, NOT tied to a pallet count — a triple/quad frente can store
+        /// fewer pallets. Marking which tramos carry largueros lets you tie one side, the other, or both. Per fondo.
+        /// </summary>
+        public IList<SelectiveSegment> Segments { get; } = new List<SelectiveSegment>();
+
         /// <summary>The level cells of this bay, bottom to top. Each cell can differ (pallet, count, beam).</summary>
         public IList<SelectiveCell> Levels { get; } = new List<SelectiveCell>();
+    }
+
+    /// <summary>
+    /// One "tramo" of a split frente ("medio frente" generalizado). A larguero of length <see cref="Length"/> that
+    /// either carries largueros (<see cref="Loaded"/>) or stays empty. A bay's tramos are separated by intermediate
+    /// posts; the LAST tramo's length is CALCULATED (the remainder), so its <see cref="Length"/> is ignored.
+    /// </summary>
+    public sealed class SelectiveSegment
+    {
+        /// <summary>Larguero length (in) of this tramo. Ignored for the last tramo (calculated from the remainder).</summary>
+        public double Length { get; set; }
+
+        /// <summary>Whether this tramo carries largueros (a load position) or stays empty. Lets you tie one side, the other, or both.</summary>
+        public bool Loaded { get; set; } = true;
     }
 
     /// <summary>One cell of the matrix (a level of a bay): the pallet stored there and its beam.</summary>

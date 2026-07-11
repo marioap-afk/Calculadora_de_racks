@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RackCad.Application.Catalogs;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
@@ -23,6 +24,35 @@ namespace RackCad.Application.Systems
             => system != null && k >= 0 && k < system.FondoBays.Count && system.FondoBays[k] != null
                 ? system.FondoBays[k]
                 : system?.Bays;
+
+        /// <summary>
+        /// Index of the MASTER fondo — the one with the most frentes. Each fondo can have its OWN frente count (a
+        /// corner layout), and the longest fondo defines the shared horizontal grid: every shorter fondo is a prefix
+        /// of it (their overlapping frentes share its widths, resolved in <see cref="SelectiveGeometryResolver"/>).
+        /// Fondo 0 when it ties (the common single-count case). Ties resolve to the lowest index.
+        /// </summary>
+        public static int MasterFondoIndex(SelectiveRackSystem system)
+        {
+            var best = 0;
+            var bestCount = system?.Bays?.Count ?? 0;
+            var count = Count(system);
+            for (var k = 1; k < count; k++)
+            {
+                var c = BaysOfFondo(system, k)?.Count ?? 0;
+                if (c > bestCount)
+                {
+                    bestCount = c;
+                    best = k;
+                }
+            }
+
+            return best;
+        }
+
+        /// <summary>The MASTER post grid (X positions + troquel Xs) of the longest fondo — every fondo's posts are a
+        /// prefix of it. The planta and lateral place each fondo's frames up to ITS OWN post count on this grid.</summary>
+        public static SelectivePostLayout MasterGrid(SelectiveRackSystem system, RackCatalog catalog)
+            => SelectivePostGeometry.Compute(FondoSystemView(system, MasterFondoIndex(system)), catalog);
 
         /// <summary>
         /// A shallow one-fondo VIEW of the system: its own bays (levels/heights) plus the shared run settings, so the

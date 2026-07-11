@@ -336,8 +336,13 @@ namespace RackCad.Plugin
                 return;
             }
 
-            // Ask WHICH post's corte to insert (1-based, matching the frontal preview numbers).
-            var postCount = system.Bays.Count + 1;
+            // Ask WHICH post's corte to insert (1-based, matching the frontal preview numbers). The lateral spans the
+            // MASTER grid — a corner layout has more cortes than fondo 0's frentes — so bound the pick by the cortes.
+            var postCount = 1;
+            foreach (var c in cortes)
+            {
+                if (c.PostIndex + 1 > postCount) postCount = c.PostIndex + 1;
+            }
             // Sin acentos: los mensajes de línea de comandos de AutoCAD evitan acentos en todo el plugin
             // (riesgo de mojibake en consolas no-Unicode); solo la UI WPF los lleva.
             var options = new PromptIntegerOptions("\nQue corte lateral insertar (numero de poste)?")

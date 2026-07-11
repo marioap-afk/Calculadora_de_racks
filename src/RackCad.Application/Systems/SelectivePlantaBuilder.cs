@@ -43,28 +43,41 @@ namespace RackCad.Application.Systems
             // Built from the catalog the caller already loaded (a field initializer would trigger its own load).
             var factory = new RackFrameConfigurationFactory(catalog);
 
-            var frenteYs = SelectivePostGeometry.Compute(system, catalog).PostXs; // frente positions, read as Y here
+            var layout = SelectiveDepthLayout.MasterGrid(system, catalog); // longest fondo defines the frente grid
+            var frenteYs = layout.PostXs; // master frente positions, read as Y here
             var offsets = SelectiveDepthLayout.Offsets(system); // one X per fondo (doble profundidad), per-fondo depth
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
             var groups = new List<PlantaGroupBuilder>();
             var shared = new Dictionary<string, PlantaGroupBuilder>(StringComparer.Ordinal);
 
+            // Each fondo's own height fallback (a fondo with only level-less bays still needs a post height).
+            var fondoFallbacks = new double[offsets.Count];
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                fondoFallbacks[k] = FondoHeightFallback(SelectiveDepthLayout.BaysOfFondo(system, k), system.Height);
+            }
+
             // One cabecera-planta per (frame, fondo), stacked at its frente Y (fondo runs along X). Each fondo can have
-            // its OWN depth, so its footprint (front post at offset, back at offset+depth) differs — grouped by depth too.
+            // its OWN depth AND its OWN frente count (a corner layout): a shorter fondo places fewer frames — its posts
+            // are a prefix of the master grid, so it just stops early. Height/peralte are per fondo too.
             for (var i = 0; i < frenteYs.Count; i++)
             {
                 var custom = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
-
-                // Each frame draws with ITS post's peralte (per-post override, else the run default) so the planta
-                // grows the post/celosía/plate exactly like the frontal (matches SelectiveFrontalBuilder).
                 var framePeralte = SelectivePostGeometry.PostPeralteAt(system, i);
-                var height = SelectivePostGeometry.PostHeight(system, i);
-                var resolvedHeight = height > 0.0 ? height : system.Height;
 
                 for (var k = 0; k < offsets.Count; k++)
                 {
+                    var baysK = SelectiveDepthLayout.BaysOfFondo(system, k);
+                    if (i >= baysK.Count + 1)
+                    {
+                        continue; // fondo k doesn't reach this frente post (it has fewer frentes)
+                    }
+
                     var depthK = SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
+                    var height = SelectivePostGeometry.PostHeight(baysK, i, fondoFallbacks[k]);
+                    var resolvedHeight = height > 0.0 ? height : system.Height;
+
                     PlantaGroupBuilder group;
                     if (k == 0 && custom != null && custom.Height > 0.0)
                     {
@@ -86,7 +99,40 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            AddLargueros(loose, system, catalog, frenteYs, offsets);
+            // Medio frente: an intermediate cabecera-planta at EVERY tramo boundary (per fondo) — like the frontal's
+            // intermediate posts but along Y. Reuses the frame groups (same footprint).
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                var bays = SelectiveDepthLayout.BaysOfFondo(system, k);
+                var depthK = SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
+                for (var i = 0; i < bays.Count && i < frenteYs.Count; i++)
+                {
+                    var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bays[i], SelectiveRackDefaults.View);
+                    var tramos = SelectiveMedioFrente.Resolve(bays[i], layout.TroquelXs[i], inicioX);
+                    if (tramos == null)
+                    {
+                        continue; // not split (or the tramos don't fit) → no intermediate cabecera
+                    }
+
+                    var framePeralte = SelectivePostGeometry.PostPeralteAt(system, i);
+                    var h = bays[i].Height > 0.0 ? bays[i].Height : system.Height;
+                    var key = GroupKey(h, framePeralte, depthK);
+                    if (!shared.TryGetValue(key, out var group))
+                    {
+                        var cabecera = factory.Build(template, system.PostId, h, depthK);
+                        group = NewGroup(groups, cabecera, catalog, framePeralte, system.DrawBasePlate);
+                        shared[key] = group;
+                    }
+
+                    // One intermediate cabecera per tramo boundary = the left post of every tramo except the first.
+                    for (var t = 1; t < tramos.Count; t++)
+                    {
+                        group.Placements.Add(new HeaderPlacement(offsets[k], mirrored: false, insertionY: frenteYs[i] + tramos[t].StartOffset));
+                    }
+                }
+            }
+
+            AddLargueros(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
             AddAnnotations(loose, system, frenteYs);
             return new DynamicSystemPlan(groups.Select(g => g.ToGroup()).ToList(), loose);
         }
@@ -154,6 +200,21 @@ namespace RackCad.Application.Systems
         private static string GroupKey(double resolvedHeight, double framePeralte, double depth)
             => string.Format(CultureInfo.InvariantCulture, "{0:R}|{1:R}|{2:R}", Math.Round(resolvedHeight, 4), framePeralte, depth);
 
+        /// <summary>A fondo's post-height fallback: the tallest of its bays, else the run height (for a level-less fondo).</summary>
+        private static double FondoHeightFallback(IList<SelectiveBay> bays, double systemHeight)
+        {
+            var h = 0.0;
+            if (bays != null)
+            {
+                foreach (var bay in bays)
+                {
+                    if (bay.Height > h) h = bay.Height;
+                }
+            }
+
+            return h > 0.0 ? h : systemHeight;
+        }
+
         /// <summary>Builds a frame's pieces ONCE at the local origin (Y=0) and registers the group.</summary>
         private PlantaGroupBuilder NewGroup(List<PlantaGroupBuilder> groups, RackFrameConfiguration cabecera, RackCatalog catalog, double framePeralte, bool drawBasePlate)
         {
@@ -217,14 +278,17 @@ namespace RackCad.Application.Systems
         /// Per bay and per fondo, a FRONT larguero at that fondo's front post (X=offset) and a BACK one at its back
         /// post (X=offset+fondo), running along Y from the frame's larguero troquel with LONGITUD = the beam length.
         /// The troquel slides with the post peralte (its PLANTA Y-slope). EACH fondo uses ITS OWN levels: a fondo whose
-        /// bay has no levels (an empty frente / column) draws no larguero there. A single fondo keeps the historical
+        /// bay has no levels (an empty frente / column) draws no larguero there. A "medio frente" bay draws a front+back
+        /// larguero per LOADED tramo, each at that tramo's left post along Y. A single fondo keeps the historical
         /// front-at-0 / back-at-fondo pair.
         /// </summary>
-        private static void AddLargueros(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets)
+        private static void AddLargueros(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets, IReadOnlyList<double> troquelXs)
         {
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveRackDefaults.PostBeamPoint, PlantaView);
 
-            for (var i = 0; i < system.Bays.Count && i + 1 < frenteYs.Count; i++)
+            // Iterate the MASTER frente count (frenteYs = longest fondo). A fondo shorter than the master simply has no
+            // bay at frente i (the inner `i >= bays.Count` guard skips it), so a corner layout draws each row's real span.
+            for (var i = 0; i + 1 < frenteYs.Count; i++)
             {
                 // The troquel/mate is a horizontal property (shared grid, per-frame peralte) — compute once per bay.
                 // The ménsula overhang (INICIO_PERFIL) is already baked into the frame spacing by SelectivePostGeometry,
@@ -252,8 +316,25 @@ namespace RackCad.Application.Systems
                     // This fondo: front post at X=offset, back post at X=offset+ITS fondo (depth); LONGITUD runs along Y.
                     var offset = offsets[k];
                     var depthK = SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
-                    AddLarguero(instances, level.BeamId, block, new Point2D(offset + troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: false);
-                    AddLarguero(instances, level.BeamId, block, new Point2D(offset + depthK - troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: true);
+                    var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, SelectiveRackDefaults.View);
+                    var tramos = SelectiveMedioFrente.Resolve(bay, troquelXs[i], inicioX);
+
+                    if (tramos == null)
+                    {
+                        // Full bay: one front + one back larguero spanning the bay.
+                        AddLarguero(instances, level.BeamId, block, new Point2D(offset + troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: false);
+                        AddLarguero(instances, level.BeamId, block, new Point2D(offset + depthK - troquel.X, mateY), bay.BeamLength, level.BeamPeralte, mirrored: true);
+                        continue;
+                    }
+
+                    // Split bay: a front + back larguero per LOADED tramo, each at its left post's troquel along Y.
+                    foreach (var tramo in tramos)
+                    {
+                        if (!tramo.Loaded) continue;
+                        var tramoY = mateY + tramo.StartOffset;
+                        AddLarguero(instances, level.BeamId, block, new Point2D(offset + troquel.X, tramoY), tramo.Length, level.BeamPeralte, mirrored: false);
+                        AddLarguero(instances, level.BeamId, block, new Point2D(offset + depthK - troquel.X, tramoY), tramo.Length, level.BeamPeralte, mirrored: true);
+                    }
                 }
             }
         }

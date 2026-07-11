@@ -181,11 +181,19 @@ namespace RackCad.Application.Persistence
         }
     }
 
-    /// <summary>One frente (bay) column: its "larguero a piso" flag, optional height override, and level cells.</summary>
+    /// <summary>One frente (bay) column: its "larguero a piso" flag, optional height override, medio-frente tramos, and level cells.</summary>
     public sealed class SelectiveBayDocument
     {
         public bool FloorBeam { get; set; }
         public double? HeightOverride { get; set; }
+
+        /// <summary>"Medio frente" generalizado: N tramos (each length + loaded); the last length is calculated. Empty = full bay.</summary>
+        public List<SelectiveSegmentDocument> Segments { get; set; } = new List<SelectiveSegmentDocument>();
+
+        /// <summary>LEGACY (pre-N-way) single medio-frente length (in). Read-only fallback: when <see cref="Segments"/> is
+        /// empty and this is &gt; 0, it maps to a loaded tramo + an empty calculated remainder. Newer docs use Segments.</summary>
+        public double MedioFrenteLength { get; set; }
+
         public List<SelectiveCellDocument> Levels { get; set; } = new List<SelectiveCellDocument>();
 
         public static SelectiveBayDocument From(SelectiveBayDesign bay)
@@ -195,6 +203,11 @@ namespace RackCad.Application.Persistence
                 FloorBeam = bay.FloorBeam,
                 HeightOverride = bay.HeightOverride
             };
+
+            foreach (var segment in bay.Segments)
+            {
+                document.Segments.Add(new SelectiveSegmentDocument { Length = segment.Length, Loaded = segment.Loaded });
+            }
 
             foreach (var cell in bay.Levels)
             {
@@ -212,6 +225,20 @@ namespace RackCad.Application.Persistence
                 HeightOverride = HeightOverride
             };
 
+            if (Segments != null && Segments.Count > 0)
+            {
+                foreach (var segment in Segments)
+                {
+                    bay.Segments.Add(new SelectiveSegment { Length = segment.Length, Loaded = segment.Loaded });
+                }
+            }
+            else if (MedioFrenteLength > 0.0)
+            {
+                // Legacy single medio frente: a custom LOADED tramo + an empty CALCULATED remainder (the classic ½frente).
+                bay.Segments.Add(new SelectiveSegment { Length = MedioFrenteLength, Loaded = true });
+                bay.Segments.Add(new SelectiveSegment { Length = 0.0, Loaded = false });
+            }
+
             foreach (var cell in Levels ?? Enumerable.Empty<SelectiveCellDocument>())
             {
                 bay.Levels.Add(cell.ToDomain());
@@ -219,6 +246,13 @@ namespace RackCad.Application.Persistence
 
             return bay;
         }
+    }
+
+    /// <summary>One serialized medio-frente tramo: a larguero length + whether it carries largueros (the last tramo's length is calculated).</summary>
+    public sealed class SelectiveSegmentDocument
+    {
+        public double Length { get; set; }
+        public bool Loaded { get; set; } = true;
     }
 
     /// <summary>One matrix cell (a level of a frente): pallet, count, beam, and the optional manual overrides.</summary>

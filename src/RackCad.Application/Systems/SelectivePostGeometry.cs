@@ -83,8 +83,9 @@ namespace RackCad.Application.Systems
         /// The bay's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); 0 if unset.
         /// Uses the level whose beam GOVERNED the bay length (the widest) — with mixed beam types per bay,
         /// another level's overhang would misplace the posts for the beam that actually spans them.
+        /// Public so a "medio frente" can place its intermediate post at the special larguero's far hook.
         /// </summary>
-        private static double BeamProfileStartX(RackCatalog catalog, SelectiveBay bay, string view)
+        public static double BeamProfileStartX(RackCatalog catalog, SelectiveBay bay, string view)
         {
             if (bay.Levels.Count == 0)
             {

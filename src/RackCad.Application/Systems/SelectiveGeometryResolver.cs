@@ -61,8 +61,16 @@ namespace RackCad.Application.Systems
             system.DrawRackName = design.DrawRackName;
             system.AnnotationScale = design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0;
 
-            // Per-post PERALTE: each post uses its own override (design.PostPeraltes) or the run default.
-            var postSlots = design.Bays.Count + 1;
+            // Per-post PERALTE: each post uses its own override (design.PostPeraltes) or the run default. Sized to the
+            // MASTER grid — the longest fondo (most frentes) has the most posts; a shorter fondo is a prefix of it.
+            var fondoCountForSlots = Math.Max(1, design.DepthCount);
+            var masterDesignCount = design.Bays.Count;
+            for (var k = 1; k < fondoCountForSlots; k++)
+            {
+                masterDesignCount = Math.Max(masterDesignCount, BaysForFondo(design, k).Count);
+            }
+
+            var postSlots = masterDesignCount + 1;
             for (var i = 0; i < postSlots; i++)
             {
                 var over = i < design.PostPeraltes.Count ? design.PostPeraltes[i] : 0.0;
@@ -95,9 +103,8 @@ namespace RackCad.Application.Systems
                 return startY;
             }
 
-            // Fondo 0 (the primary/front fondo) defines the shared horizontal grid — bay widths / post positions.
-            // Resolve it first; then each extra fondo (doble profundidad) resolves its OWN vertical levels but ADOPTS
-            // fondo 0's per-bay width, so every fondo's posts land on the same grid. Only the levels/heights differ.
+            // Each fondo (doble profundidad) resolves its OWN vertical levels AND its OWN frente count — a corner
+            // layout can have, say, 3 frentes on one line and 6 on the next. Fondo 0 is the primary/front face.
             var bays0 = ResolveFondo(design.Bays, paso, tolerance, clearance, gridBase, design.FloorBeamRise, CachedBeamStartY);
             foreach (var bay in bays0)
             {
@@ -105,38 +112,64 @@ namespace RackCad.Application.Systems
             }
 
             system.FondoBays.Add(bays0);
-            var overallHeight = MaxHeight(bays0);
 
             var fondoCount = Math.Max(1, design.DepthCount);
             for (var k = 1; k < fondoCount; k++)
             {
-                var baysK = ResolveFondo(BaysForFondo(design, k), paso, tolerance, clearance, gridBase, design.FloorBeamRise, CachedBeamStartY);
+                // Keep each fondo's OWN frente count (no padding/truncation). Its overlapping frentes are aligned below.
+                system.FondoBays.Add(ResolveFondo(BaysForFondo(design, k), paso, tolerance, clearance, gridBase, design.FloorBeamRise, CachedBeamStartY));
+            }
 
-                // Align to fondo 0: share each bay's width (so posts coincide) and match the frente count — pad a
-                // shorter fondo with empty frentes (a column that fondo doesn't reach), ignore any extra bays.
-                var aligned = new List<SelectiveBay>(bays0.Count);
-                for (var i = 0; i < bays0.Count; i++)
+            // The LONGEST fondo (most frentes) is the width master: every fondo adopts its per-bay width for the frentes
+            // they overlap, so the shared prefix's posts coincide (the fondos "join" there) and a longer fondo simply
+            // extends past the shorter ones. Fondo 0's bays are the same objects as system.Bays, so this updates both.
+            var master = system.FondoBays[0];
+            foreach (var fondo in system.FondoBays)
+            {
+                if (fondo.Count > master.Count) master = fondo;
+            }
+
+            // Align each overlapping frente to a single shared width so the posts coincide. The MASTER (longest fondo)
+            // governs — EXCEPT where its bay is an empty "column" (a frente with no levels, BeamLength 0): a 0 there
+            // would collapse the grid and zero out shorter fondos' real frentes, so the widest real bay among the fondos
+            // governs that index instead (the column just spans the shared width).
+            for (var i = 0; i < master.Count; i++)
+            {
+                var width = master[i].BeamLength;
+                var governing = master[i].GoverningBeamId;
+                if (width <= 0.0)
                 {
-                    if (i < baysK.Count)
+                    foreach (var fondo in system.FondoBays)
                     {
-                        baysK[i].BeamLength = bays0[i].BeamLength;
-                        baysK[i].GoverningBeamId = bays0[i].GoverningBeamId;
-                        aligned.Add(baysK[i]);
-                    }
-                    else
-                    {
-                        aligned.Add(new SelectiveBay { BeamLength = bays0[i].BeamLength, GoverningBeamId = bays0[i].GoverningBeamId, Height = 0.0 });
+                        if (i < fondo.Count && fondo[i].BeamLength > width)
+                        {
+                            width = fondo[i].BeamLength;
+                            governing = fondo[i].GoverningBeamId;
+                        }
                     }
                 }
 
-                system.FondoBays.Add(aligned);
-                overallHeight = Math.Max(overallHeight, MaxHeight(aligned));
+                foreach (var fondo in system.FondoBays)
+                {
+                    if (i < fondo.Count)
+                    {
+                        fondo[i].BeamLength = width;
+                        fondo[i].GoverningBeamId = governing;
+                    }
+                }
+            }
+
+            var overallHeight = 0.0;
+            foreach (var fondo in system.FondoBays)
+            {
+                overallHeight = Math.Max(overallHeight, MaxHeight(fondo));
             }
 
             system.Height = overallHeight;
 
-            // Per-post cabeceras (N frentes -> N+1 posts); pad with null so absent ones fall back to the run default.
-            var postCount = design.Bays.Count + 1;
+            // Per-post cabeceras span the MASTER grid (masterCount frentes -> masterCount+1 posts); pad with null so
+            // absent ones fall back to the run default. Custom cabeceras are still authored on fondo 0's posts only.
+            var postCount = master.Count + 1;
             for (var i = 0; i < postCount; i++)
             {
                 system.PostCabeceras.Add(i < design.PostCabeceras.Count ? design.PostCabeceras[i] : null);
@@ -163,7 +196,7 @@ namespace RackCad.Application.Systems
             return design.Bays;
         }
 
-        private static double MaxHeight(IReadOnlyList<SelectiveBay> bays)
+        private static double MaxHeight(IEnumerable<SelectiveBay> bays)
         {
             var height = 0.0;
             foreach (var bay in bays)
@@ -194,6 +227,13 @@ namespace RackCad.Application.Systems
                     BeamLength = BayBeamLength(bayDesign, tolerance, out var governingBeamId),
                     GoverningBeamId = governingBeamId
                 };
+                // Copy the medio-frente tramos verbatim (free measures, not derived from pallets). Geometry validity
+                // (do the specified tramos + intermediate posts fit the bay?) is resolved later against the SHARED
+                // BeamLength in SelectiveMedioFrente — extra fondos adopt fondo 0's width, which isn't known here.
+                foreach (var segment in bayDesign.Segments)
+                {
+                    bay.Segments.Add(new SelectiveSegment { Length = segment.Length, Loaded = segment.Loaded });
+                }
                 var levels = bayDesign.Levels;
                 if (levels.Count == 0)
                 {
