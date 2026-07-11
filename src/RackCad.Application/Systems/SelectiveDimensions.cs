@@ -25,6 +25,9 @@ namespace RackCad.Application.Systems
         /// <summary>Step (in, ×scale) between the stacked per-level elevation lines (Detailed).</summary>
         private const double ElevationStep = 14.0;
 
+        /// <summary>Gap (in, ×scale) above a bay's top larguero where its cut-length cota sits (attached to the larguero).</summary>
+        private const double LargueroGap = 8.0;
+
         /// <summary>
         /// FRONTAL cotas. Minimal = overall height + overall width. Standard adds the per-frente LARGUERO cut lengths
         /// (positioned under each larguero, NOT post-to-post) and the level separations (a chain up the left). Detailed
@@ -60,17 +63,21 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            // Largo de corte del larguero por frente (bajo el larguero real), + ancho total post-a-post más afuera.
+            // Largo de corte del larguero por frente, PEGADO al larguero (a la altura del larguero superior de la
+            // bahía, un poco por encima), no en el piso — así se entiende a qué larguero pertenece y el hueco de la
+            // ménsula no confunde. El ancho total post-a-post va abajo, más afuera.
+            var largueroGap = LargueroGap * scale;
             for (var i = 0; i < system.Bays.Count && i < postX.Count && troquelXs != null && i < troquelXs.Count; i++)
             {
-                var beamLength = system.Bays[i].BeamLength;
-                if (beamLength <= 0.0)
+                var bay = system.Bays[i];
+                if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
                 {
                     continue;
                 }
 
                 var beamLeft = postX[i] + troquelXs[i];
-                AddHorizontal(instances, view, beamLeft, beamLeft + beamLength, 0.0, -near, h, style);
+                var beamY = bay.Levels[bay.Levels.Count - 1].Y; // larguero superior de esta bahía
+                AddHorizontal(instances, view, beamLeft, beamLeft + bay.BeamLength, beamY, largueroGap, h, style);
             }
 
             AddHorizontal(instances, view, leftX, rightX, 0.0, -far, h, style);

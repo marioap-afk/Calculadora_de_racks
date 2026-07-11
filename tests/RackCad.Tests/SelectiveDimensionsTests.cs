@@ -91,9 +91,14 @@ namespace RackCad.Tests
             var horizontal = Dims(DimensionDetail.Standard).Where(IsHorizontal).ToList();
 
             // Bays cotas measure the larguero cut length; exactly one (the overall width) is wider (post-to-post).
-            Assert.Equal(Bays, horizontal.Count(d => Math.Abs(Span(d) - beamLength) < 1e-6));
+            var larguero = horizontal.Where(d => Math.Abs(Span(d) - beamLength) < 1e-6).ToList();
+            Assert.Equal(Bays, larguero.Count);
             var overall = Assert.Single(horizontal.Where(d => Span(d) > beamLength + 1e-6));
             Assert.True(Span(overall) > beamLength, "el ancho total (post a post) debe ser mayor que el largo de corte del larguero");
+
+            // The larguero cota sits at its larguero's height (not the floor); the overall width sits on the floor.
+            Assert.All(larguero, d => Assert.True(d.Insertion.Y > 0.0, "la cota del larguero va a la altura del larguero, no en el piso"));
+            Assert.Equal(0.0, overall.Insertion.Y, 3);
         }
 
         [Fact]
