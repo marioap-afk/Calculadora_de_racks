@@ -40,7 +40,10 @@ namespace RackCad.Tests
         private static List<HeaderBlockInstance> Dims(DimensionDetail detail)
         {
             var system = new SelectiveGeometryResolver().Resolve(Design(detail), Catalog);
-            return new SelectiveFrontalBuilder().Build(system, Catalog)
+            // Go through the SAME per-fondo projection the insert/redraw path uses (InsertSelectiveFrontal →
+            // FondoSystemView), so a projection that drops the Dimensions flag is caught here.
+            var fondoView = SelectiveDepthLayout.FondoSystemView(system, 0);
+            return new SelectiveFrontalBuilder().Build(fondoView, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Dimension).ToList();
         }
 
