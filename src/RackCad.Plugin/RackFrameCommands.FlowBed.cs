@@ -232,29 +232,6 @@ namespace RackCad.Plugin
         }
 
         private static string DescribeBed(HeaderPlacementResult result)
-        {
-            if (!result.Success)
-            {
-                return "RackCad: no se pudo dibujar la cama de rodamiento. " + result.ErrorMessage;
-            }
-
-            if (!result.Placed)
-            {
-                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
-            }
-
-            var summary = string.Format(
-                CultureInfo.InvariantCulture,
-                "RackCad: cama insertada como bloque '{0}'. {1} piezas.",
-                result.BlockName,
-                result.Outcome.InsertedCount);
-
-            if (result.HasMissingBlocks)
-            {
-                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
-            }
-
-            return summary;
-        }
+            => DescribePlacement(result, "la cama de rodamiento", "cama insertada");
     }
 }

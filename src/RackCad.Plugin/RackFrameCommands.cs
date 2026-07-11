@@ -261,5 +261,34 @@ namespace RackCad.Plugin
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             document?.Editor.WriteMessage("\nRackCad error: " + ex.Message);
         }
+
+        /// <summary>The ONE insert-outcome summary (failure / canceled jig / inserted + missing blocks) — the per-kind
+        /// Describe* methods only supply the noun phrases. Sin acentos: mensajes de linea de comandos de AutoCAD.</summary>
+        private static string DescribePlacement(HeaderPlacementResult result, string failNoun, string insertedPhrase)
+        {
+            if (!result.Success)
+            {
+                return "RackCad: no se pudo dibujar " + failNoun + ". " + result.ErrorMessage;
+            }
+
+            if (!result.Placed)
+            {
+                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
+            }
+
+            var summary = string.Format(
+                System.Globalization.CultureInfo.InvariantCulture,
+                "RackCad: {0} como bloque '{1}'. {2} piezas.",
+                insertedPhrase,
+                result.BlockName,
+                result.Outcome.InsertedCount);
+
+            if (result.HasMissingBlocks)
+            {
+                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
+            }
+
+            return summary;
+        }
     }
 }

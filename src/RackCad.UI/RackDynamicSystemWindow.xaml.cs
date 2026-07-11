@@ -1154,21 +1154,13 @@ namespace RackCad.UI
             ApplyDerivedPostOptions();
             ApplyHeightOverride();
 
-            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
-            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
-
-            var dialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
-                FileName = "sistema" + RackProjectStore.FileExtension,
-                InitialDirectory = libraryFolder
-            };
-            if (dialog.ShowDialog(this) != true) { return; }
+            var path = UiSupport.PromptSaveToLibrary(this, NameBox?.Text, "sistema");
+            if (path == null) { return; }
 
             try
             {
-                new RackProjectStore().Save(RackProject.ForDynamic(system), dialog.FileName);
-                SetStatus("Sistema guardado: " + System.IO.Path.GetFileName(dialog.FileName), false);
+                new RackProjectStore().Save(RackProject.ForDynamic(system), path);
+                SetStatus("Sistema guardado: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
             {
@@ -1328,11 +1320,7 @@ namespace RackCad.UI
 
         // ---- Helpers ----
 
-        private void SetStatus(string message, bool isError)
-        {
-            StatusText.Text = message;
-            StatusText.Foreground = new SolidColorBrush(isError ? Color.FromRgb(0xB0, 0x00, 0x20) : Color.FromRgb(0x2F, 0x85, 0x5A));
-        }
+        private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
 
         private static string Num(double value)
         {

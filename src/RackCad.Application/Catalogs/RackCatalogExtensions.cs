@@ -102,18 +102,6 @@ namespace RackCad.Application.Catalogs
                 string.Equals(view?.Id, id, StringComparison.OrdinalIgnoreCase));
         }
 
-        /// <summary>Every block defined for a piece, in no particular order (one per available view).</summary>
-        public static IEnumerable<BlockCatalogEntry> BlocksFor(this IEnumerable<BlockCatalogEntry> blocks, string pieceId)
-        {
-            if (blocks == null || string.IsNullOrWhiteSpace(pieceId))
-            {
-                return Enumerable.Empty<BlockCatalogEntry>();
-            }
-
-            return blocks.Where(block =>
-                string.Equals(block?.PieceId, pieceId, StringComparison.OrdinalIgnoreCase));
-        }
-
         /// <summary>The block for a given piece in a given view, or null when that combination is absent.</summary>
         public static BlockCatalogEntry FindBlock(this IEnumerable<BlockCatalogEntry> blocks, string pieceId, string view)
         {

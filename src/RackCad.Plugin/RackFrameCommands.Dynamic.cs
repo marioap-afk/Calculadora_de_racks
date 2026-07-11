@@ -67,32 +67,9 @@ namespace RackCad.Plugin
             document.Editor.WriteMessage("\n" + DescribeSystem(result));
         }
 
-        /// <summary>Summary for a dynamic-system insert: right noun, no celosia counts (a system block has none).</summary>
+        /// <summary>Summary for a dynamic-system insert (shared shape in <see cref="DescribePlacement"/>).</summary>
         private static string DescribeSystem(HeaderPlacementResult result)
-        {
-            if (!result.Success)
-            {
-                return "RackCad: no se pudo dibujar el sistema. " + result.ErrorMessage;
-            }
-
-            if (!result.Placed)
-            {
-                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
-            }
-
-            var summary = string.Format(
-                CultureInfo.InvariantCulture,
-                "RackCad: sistema insertado como bloque '{0}'. {1} piezas.",
-                result.BlockName,
-                result.Outcome.InsertedCount);
-
-            if (result.HasMissingBlocks)
-            {
-                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
-            }
-
-            return summary;
-        }
+            => DescribePlacement(result, "el sistema", "sistema insertado");
 
         /// <summary>Duplicate a dynamic system as an independent copy (new GUID/name), placed with the jig.</summary>
         private static void DuplicateDynamic(Document document, RackEmbedDocument embed, string newId, string newName)

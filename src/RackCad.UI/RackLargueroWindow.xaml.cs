@@ -21,8 +21,15 @@ namespace RackCad.UI
     /// </summary>
     public partial class RackLargueroWindow : Window
     {
+        // Frozen once — DrawPreview runs per keystroke/selection change and used to allocate fresh brushes each time.
+        private static readonly Brush BeamBrush = UiSupport.FrozenBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
+        private static readonly Brush MensulaBrush = UiSupport.FrozenBrush(Color.FromRgb(0x2E, 0x9C, 0x66));
+        private static readonly Brush LabelBrush = UiSupport.FrozenBrush(Color.FromRgb(0x61, 0x70, 0x80));
+
         private readonly RackCatalog catalog;
         private bool ready;
+
+        private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
 
         public RackLargueroWindow()
         {
@@ -110,30 +117,27 @@ namespace RackCad.UI
             var design = CurrentDesign();
             if (string.IsNullOrWhiteSpace(design.BeamProfileId))
             {
-                StatusText.Text = "Elige un perfil de larguero primero.";
+                SetStatus("Elige un perfil de larguero primero.", true);
                 return;
             }
 
-            var libraryFolder = UserSettingsStore.ResolveDesignLibraryPath(UserSettingsStore.Load());
-            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
-
-            var suggested = string.IsNullOrWhiteSpace(design.Name) ? "larguero" : SanitizeFileName(design.Name);
-            var dialog = new Microsoft.Win32.SaveFileDialog
+            if (design.Length <= 0.0)
             {
-                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
-                FileName = suggested + RackProjectStore.FileExtension,
-                InitialDirectory = libraryFolder
-            };
-            if (dialog.ShowDialog(this) != true) return;
+                SetStatus("Longitud a corte inválida (debe ser mayor que 0).", true);
+                return;
+            }
+
+            var path = UiSupport.PromptSaveToLibrary(this, design.Name, "larguero");
+            if (path == null) return;
 
             try
             {
-                new RackProjectStore().Save(RackProject.ForLarguero(design), dialog.FileName);
-                StatusText.Text = "Larguero guardado: " + System.IO.Path.GetFileName(dialog.FileName);
+                new RackProjectStore().Save(RackProject.ForLarguero(design), path);
+                SetStatus("Larguero guardado: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
             {
-                StatusText.Text = "No se pudo guardar: " + ex.Message;
+                SetStatus("No se pudo guardar: " + ex.Message, true);
             }
         }
 
@@ -147,9 +151,6 @@ namespace RackCad.UI
             if (w < 40 || h < 40) return;
 
             var design = CurrentDesign();
-            var beamBrush = Freeze(new SolidColorBrush(Color.FromRgb(0x3D, 0xC9, 0x86)));
-            var mensulaBrush = Freeze(new SolidColorBrush(Color.FromRgb(0x2E, 0x9C, 0x66)));
-            var labelBrush = Freeze(new SolidColorBrush(Color.FromRgb(0x61, 0x70, 0x80)));
 
             const double margin = 54.0;
             const double beamH = 18.0;
@@ -158,7 +159,7 @@ namespace RackCad.UI
             var x1 = Math.Max(margin + 40.0, w - margin);
 
             // Beam profile.
-            var beam = new Rectangle { Width = x1 - x0, Height = beamH, Fill = beamBrush, Stroke = mensulaBrush, StrokeThickness = 1.2 };
+            var beam = new Rectangle { Width = x1 - x0, Height = beamH, Fill = BeamBrush, Stroke = MensulaBrush, StrokeThickness = 1.2 };
             Canvas.SetLeft(beam, x0);
             Canvas.SetTop(beam, y - beamH / 2.0);
             PreviewCanvas.Children.Add(beam);
@@ -166,20 +167,20 @@ namespace RackCad.UI
             // A ménsula (bracket) hanging at each end.
             foreach (var mx in new[] { x0, x1 - 14.0 })
             {
-                var mensula = new Rectangle { Width = 14.0, Height = 28.0, Fill = mensulaBrush };
+                var mensula = new Rectangle { Width = 14.0, Height = 28.0, Fill = MensulaBrush };
                 Canvas.SetLeft(mensula, mx);
                 Canvas.SetTop(mensula, y + beamH / 2.0);
                 PreviewCanvas.Children.Add(mensula);
             }
 
             AddLabel(design.Length > 0.0 ? design.Length.ToString("0.#", CultureInfo.InvariantCulture) + "\" a corte" : "(longitud)",
-                (x0 + x1) / 2.0 - 40.0, y - beamH / 2.0 - 26.0, labelBrush);
+                (x0 + x1) / 2.0 - 40.0, y - beamH / 2.0 - 26.0, LabelBrush);
             if (design.Peralte > 0.0)
             {
-                AddLabel("P" + design.Peralte.ToString("0.#", CultureInfo.InvariantCulture), x0, y - beamH / 2.0 - 26.0, labelBrush);
+                AddLabel("P" + design.Peralte.ToString("0.#", CultureInfo.InvariantCulture), x0, y - beamH / 2.0 - 26.0, LabelBrush);
             }
 
-            AddLabel("2 ménsulas", (x0 + x1) / 2.0 - 34.0, y + beamH / 2.0 + 32.0, labelBrush);
+            AddLabel("2 ménsulas", (x0 + x1) / 2.0 - 34.0, y + beamH / 2.0 + 32.0, LabelBrush);
         }
 
         private void AddLabel(string text, double x, double y, Brush brush)
@@ -189,15 +190,6 @@ namespace RackCad.UI
             Canvas.SetTop(label, y);
             PreviewCanvas.Children.Add(label);
         }
-
-        private static Brush Freeze(Brush brush)
-        {
-            if (brush.CanFreeze) brush.Freeze();
-            return brush;
-        }
-
-        private static string SanitizeFileName(string name)
-            => string.Join("_", name.Split(System.IO.Path.GetInvalidFileNameChars()));
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
     }

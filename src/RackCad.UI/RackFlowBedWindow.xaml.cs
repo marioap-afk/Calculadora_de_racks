@@ -311,23 +311,14 @@ namespace RackCad.UI
             }
 
             var name = string.IsNullOrWhiteSpace(NameBox?.Text) ? currentName : NameBox.Text.Trim();
-            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
-            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
-
-            var suggested = string.IsNullOrWhiteSpace(name) ? "cama" : string.Join("_", name.Split(System.IO.Path.GetInvalidFileNameChars()));
-            var dialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
-                FileName = suggested + RackCad.Application.Persistence.RackProjectStore.FileExtension,
-                InitialDirectory = libraryFolder
-            };
-            if (dialog.ShowDialog(this) != true) return;
+            var path = UiSupport.PromptSaveToLibrary(this, name, "cama");
+            if (path == null) return;
 
             try
             {
                 new RackCad.Application.Persistence.RackProjectStore()
-                    .Save(RackCad.Application.Persistence.RackProject.ForCama(config), dialog.FileName);
-                SetStatus("Cama guardada en la biblioteca: " + System.IO.Path.GetFileName(dialog.FileName), false);
+                    .Save(RackCad.Application.Persistence.RackProject.ForCama(config), path);
+                SetStatus("Cama guardada en la biblioteca: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
             {
@@ -490,14 +481,7 @@ namespace RackCad.UI
                 .Where(c => string.Equals(c?.Role, FlowBedDefaults.RollerRole, StringComparison.OrdinalIgnoreCase)));
         }
 
-        private void SetStatus(string message, bool isError)
-        {
-            // Shared status palette across the rack windows: red #B00020 error / green #2F855A ok.
-            StatusText.Text = message ?? string.Empty;
-            StatusText.Foreground = isError
-                ? new SolidColorBrush(Color.FromRgb(0xB0, 0x00, 0x20))
-                : new SolidColorBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
-        }
+        private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
 
         private static bool TryNum(string text, out double value) => UiSupport.TryNum(text, out value);
     }

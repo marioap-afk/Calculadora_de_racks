@@ -52,13 +52,6 @@ namespace RackCad.UI
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
-        private void SetStatus(string message, bool isError)
-        {
-            // Shared status palette across the rack windows: red #B00020 error / green #2F855A ok.
-            StatusText.Text = message ?? string.Empty;
-            StatusText.Foreground = isError
-                ? new SolidColorBrush(Color.FromRgb(0xB0, 0x00, 0x20))
-                : new SolidColorBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
-        }
+        private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
     }
 }

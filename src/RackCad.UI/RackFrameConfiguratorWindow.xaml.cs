@@ -18,7 +18,6 @@ namespace RackCad.UI
         private static readonly Brush StandardStroke = new SolidColorBrush(Color.FromRgb(53, 84, 110));
         private static readonly Brush ModifiedStroke = new SolidColorBrush(Color.FromRgb(183, 121, 31));
         private static readonly Brush HorizontalStroke = new SolidColorBrush(Color.FromRgb(56, 128, 111));
-        private static readonly Brush TargetStroke = new SolidColorBrush(Color.FromRgb(176, 0, 32));
         private static readonly Brush PostStroke = new SolidColorBrush(Color.FromRgb(31, 41, 51));
         private static readonly Brush PostFill = new SolidColorBrush(Color.FromRgb(230, 235, 240));
         private static readonly Brush SegmentBoundaryStroke = new SolidColorBrush(Color.FromRgb(187, 197, 209));
@@ -27,7 +26,6 @@ namespace RackCad.UI
         private static readonly Brush FrontSideStroke = new SolidColorBrush(Color.FromRgb(43, 108, 176));
         private static readonly Brush RearSideStroke = new SolidColorBrush(Color.FromRgb(197, 48, 48));
         private static readonly Brush BothSideStroke = new SolidColorBrush(Color.FromRgb(128, 90, 213));
-        private static readonly Brush NoneSideStroke = new SolidColorBrush(Color.FromRgb(160, 174, 192));
         private static readonly Brush ActiveElementStroke = new SolidColorBrush(Color.FromRgb(49, 130, 206));
 
         private bool syncingTreeSelection;
@@ -317,19 +315,10 @@ namespace RackCad.UI
 
         private void SaveProject_Click(object sender, RoutedEventArgs e)
         {
-            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
-            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
-
-            var dialog = new Microsoft.Win32.SaveFileDialog
+            var path = UiSupport.PromptSaveToLibrary(this, ViewModel?.Configuration?.Name, "cabecera");
+            if (path != null)
             {
-                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
-                FileName = "cabecera" + RackCad.Application.Persistence.RackFrameProjectStore.FileExtension,
-                InitialDirectory = libraryFolder
-            };
-
-            if (dialog.ShowDialog(this) == true)
-            {
-                RunUiAction(() => ViewModel.SaveProjectTo(dialog.FileName));
+                RunUiAction(() => ViewModel.SaveProjectTo(path));
             }
         }
 

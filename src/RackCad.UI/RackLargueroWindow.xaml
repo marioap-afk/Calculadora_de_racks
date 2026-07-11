@@ -8,6 +8,7 @@
         MinWidth="640"
         WindowStartupLocation="CenterOwner"
         FontFamily="Segoe UI"
+        FocusManager.FocusedElement="{Binding ElementName=NameBox}"
         Background="{DynamicResource WindowBackgroundBrush}">
     <Window.Resources>
         <ResourceDictionary>

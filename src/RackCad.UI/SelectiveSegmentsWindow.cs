@@ -48,6 +48,11 @@ namespace RackCad.UI
             SizeToContent = SizeToContent.Height;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             ResizeMode = ResizeMode.NoResize;
+            FontFamily = new FontFamily("Segoe UI");
+
+            // Same look as every other RackCad window (this one is code-built, so merge the shared styles by hand).
+            Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
+            if (TryFindResource("WindowBackgroundBrush") is Brush background) Background = background;
 
             var root = new StackPanel { Margin = new Thickness(14) };
 
@@ -65,6 +70,7 @@ namespace RackCad.UI
 
             var addBtn = new Button
             {
+                Style = TryFindResource("SecondaryButtonStyle") as Style,
                 Content = "+ Agregar tramo",
                 Margin = new Thickness(0, 8, 0, 0),
                 Padding = new Thickness(10, 3, 10, 3),
@@ -93,15 +99,15 @@ namespace RackCad.UI
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Margin = new Thickness(0, 14, 0, 0)
             };
-            var clearBtn = new Button { Content = "Sin medio frente", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
+            var clearBtn = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Sin medio frente", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
             clearBtn.Click += (s, e) =>
             {
                 Result = new List<SelectiveSegment>();
                 DialogResult = true;
             };
-            var okBtn = new Button { Content = "Aceptar", Padding = new Thickness(16, 3, 16, 3), IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
+            var okBtn = new Button { Style = TryFindResource("PrimaryButtonStyle") as Style, Content = "Aceptar", Padding = new Thickness(16, 3, 16, 3), IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
             okBtn.Click += (s, e) => OnOk();
-            var cancelBtn = new Button { Content = "Cancelar", Padding = new Thickness(10, 3, 10, 3), IsCancel = true };
+            var cancelBtn = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Cancelar", Padding = new Thickness(10, 3, 10, 3), IsCancel = true };
             buttons.Children.Add(clearBtn);
             buttons.Children.Add(okBtn);
             buttons.Children.Add(cancelBtn);

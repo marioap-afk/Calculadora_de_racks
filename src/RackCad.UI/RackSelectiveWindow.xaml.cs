@@ -26,29 +26,24 @@ namespace RackCad.UI
     /// </summary>
     public partial class RackSelectiveWindow : Window
     {
-        private static readonly Brush PostBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x3D, 0xC9, 0x86)));
-        private static readonly Brush PostFill = Frozen(new SolidColorBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86)));
-        private static readonly Brush PostHiBrush = Frozen(new SolidColorBrush(Color.FromRgb(0xFF, 0xC5, 0x3D)));
-        private static readonly Brush PostHiFill = Frozen(new SolidColorBrush(Color.FromArgb(0x55, 0xFF, 0xC5, 0x3D)));
-        private static readonly Brush CelosiaBrush = Frozen(new SolidColorBrush(Color.FromRgb(0x2E, 0x9C, 0x66)));
-        private static readonly Brush BeamBrush = Frozen(new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x2B)));
-        private static readonly Brush BeamFill = Frozen(new SolidColorBrush(Color.FromArgb(0x66, 0xE0, 0x8A, 0x2B)));
-        private static readonly Brush PlateFill = Frozen(new SolidColorBrush(Color.FromRgb(0xB7, 0xC3, 0xCF)));
-        private static readonly Brush FloorStroke = Frozen(new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A)));
-        private static readonly Brush LabelStroke = Frozen(new SolidColorBrush(Color.FromRgb(0x9A, 0xA7, 0xB4)));
+        private static readonly Brush PostBrush = UiSupport.FrozenBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
+        private static readonly Brush PostFill = UiSupport.FrozenBrush(Color.FromArgb(0x30, 0x3D, 0xC9, 0x86));
+        private static readonly Brush PostHiBrush = UiSupport.FrozenBrush(Color.FromRgb(0xFF, 0xC5, 0x3D));
+        private static readonly Brush PostHiFill = UiSupport.FrozenBrush(Color.FromArgb(0x55, 0xFF, 0xC5, 0x3D));
+        private static readonly Brush CelosiaBrush = UiSupport.FrozenBrush(Color.FromRgb(0x2E, 0x9C, 0x66));
+        private static readonly Brush BeamBrush = UiSupport.FrozenBrush(Color.FromRgb(0xE0, 0x8A, 0x2B));
+        private static readonly Brush BeamFill = UiSupport.FrozenBrush(Color.FromArgb(0x66, 0xE0, 0x8A, 0x2B));
+        private static readonly Brush PlateFill = UiSupport.FrozenBrush(Color.FromRgb(0xB7, 0xC3, 0xCF));
+        private static readonly Brush FloorStroke = UiSupport.FrozenBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
+        private static readonly Brush LabelStroke = UiSupport.FrozenBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
 
-        private static readonly Brush CellStroke = Frozen(new SolidColorBrush(Color.FromRgb(0xD8, 0xDE, 0xE6)));
-        private static readonly Brush CellText = Frozen(new SolidColorBrush(Color.FromRgb(0x1F, 0x29, 0x33)));
-        private static readonly Brush CellSelStroke = Frozen(new SolidColorBrush(Color.FromRgb(0x2F, 0x6F, 0xED)));
-        private static readonly Brush CellSelFill = Frozen(new SolidColorBrush(Color.FromRgb(0xDB, 0xEA, 0xFE)));
+        private static readonly Brush CellStroke = UiSupport.FrozenBrush(Color.FromRgb(0xD8, 0xDE, 0xE6));
+        private static readonly Brush CellText = UiSupport.FrozenBrush(Color.FromRgb(0x1F, 0x29, 0x33));
+        private static readonly Brush CellSelStroke = UiSupport.FrozenBrush(Color.FromRgb(0x2F, 0x6F, 0xED));
+        private static readonly Brush CellSelFill = UiSupport.FrozenBrush(Color.FromRgb(0xDB, 0xEA, 0xFE));
 
         /// <summary>Freeze a constant brush: a frozen Freezable is shared without per-element change handlers,
         /// so the hundreds of matrix/preview elements that reuse these stop registering listeners on them.</summary>
-        private static Brush Frozen(Brush brush)
-        {
-            brush.Freeze();
-            return brush;
-        }
 
         private readonly RackCatalog catalog;
         private readonly SelectiveFrontalBuilder builder = new SelectiveFrontalBuilder();
@@ -852,7 +847,7 @@ namespace RackCad.UI
         private void SetBayHeight(int bay, string text)
         {
             if (bay < 0 || bay >= bayHeights.Count) return;
-            if (!TryOptionalNum(text, out var value)) { SetStatus("Altura de frente inválida (vacío = auto).", true); return; }
+            if (!UiSupport.TryOptionalNum(text, out var value)) { SetStatus("Altura de frente inválida (vacío = auto).", true); return; }
             if (Nullable.Equals(bayHeights[bay], value)) return;
             bayHeights[bay] = value;
             Recompute();
@@ -1603,20 +1598,11 @@ namespace RackCad.UI
             if (!UiSupport.TryNum(AltoBox.Text, out var alto) || alto <= 0.0) { error = "Alto de tarima inválido."; return false; }
             if (!TryInt(PalletCountBox.Text, out var count) || count < 1) { error = "Tarimas por nivel inválido."; return false; }
             if (!(BeamPeralteCombo.SelectedItem is string peralteText) || !UiSupport.TryNum(peralteText, out var peralte) || peralte <= 0.0) { error = "Selecciona un peralte de larguero."; return false; }
-            if (!TryOptionalNum(BeamLenBox.Text, out var beamLen)) { error = "Longitud de larguero inválida (deja vacío para auto)."; return false; }
-            if (!TryOptionalNum(ClearBox.Text, out var clear)) { error = "Claro inválido (deja vacío para auto)."; return false; }
+            if (!UiSupport.TryOptionalNum(BeamLenBox.Text, out var beamLen)) { error = "Longitud de larguero inválida (deja vacío para auto)."; return false; }
+            if (!UiSupport.TryOptionalNum(ClearBox.Text, out var clear)) { error = "Claro inválido (deja vacío para auto)."; return false; }
 
             values = new Cell { Frente = frente, Alto = alto, PalletCount = count, BeamId = beamId, BeamPeralte = peralte, BeamLength = beamLen, Clear = clear };
             return true;
-        }
-
-        /// <summary>Parse an optional positive number: empty/whitespace → null (auto); a valid &gt; 0 value → that; anything else → invalid.</summary>
-        private static bool TryOptionalNum(string text, out double? value)
-        {
-            value = null;
-            if (string.IsNullOrWhiteSpace(text)) return true;
-            if (UiSupport.TryNum(text, out var v) && v > 0.0) { value = v; return true; }
-            return false;
         }
 
         /// <summary>Builds the pallet-driven design from the current editor state (globals + matrix), or null + error.</summary>
@@ -1850,22 +1836,13 @@ namespace RackCad.UI
             var name = string.IsNullOrWhiteSpace(NameBox.Text) ? currentName : NameBox.Text.Trim();
             var document = SelectivePalletDesignDocument.From(design, id, name);
 
-            var libraryFolder = RackCad.Application.Settings.UserSettingsStore.ResolveDesignLibraryPath(RackCad.Application.Settings.UserSettingsStore.Load());
-            try { System.IO.Directory.CreateDirectory(libraryFolder); } catch { /* best-effort default folder */ }
-
-            var suggested = string.IsNullOrWhiteSpace(name) ? "selectivo" : string.Join("_", name.Split(System.IO.Path.GetInvalidFileNameChars()));
-            var dialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "Proyecto RackCad (*.rackcad.json)|*.rackcad.json|JSON (*.json)|*.json",
-                FileName = suggested + RackProjectStore.FileExtension,
-                InitialDirectory = libraryFolder
-            };
-            if (dialog.ShowDialog(this) != true) return;
+            var path = UiSupport.PromptSaveToLibrary(this, name, "selectivo");
+            if (path == null) return;
 
             try
             {
-                new RackProjectStore().Save(RackProject.ForSelectiveRack(document), dialog.FileName);
-                SetStatus("Selectivo guardado en la biblioteca: " + System.IO.Path.GetFileName(dialog.FileName), false);
+                new RackProjectStore().Save(RackProject.ForSelectiveRack(document), path);
+                SetStatus("Selectivo guardado en la biblioteca: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
             {
@@ -2197,11 +2174,7 @@ namespace RackCad.UI
 
         private void SetStatus(string message, bool isError)
         {
-            // Shared status palette across the rack windows: red #B00020 error / green #2F855A ok.
-            StatusText.Text = message ?? string.Empty;
-            StatusText.Foreground = isError
-                ? new SolidColorBrush(Color.FromRgb(0xB0, 0x00, 0x20))
-                : new SolidColorBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
+            UiSupport.SetStatus(StatusText, message, isError);
 
             // StatusText lives at the BOTTOM of the left panel's ScrollViewer: scroll an error into view or the
             // user (positioned further up, e.g. clicking the bottom action row) never sees the red message.
