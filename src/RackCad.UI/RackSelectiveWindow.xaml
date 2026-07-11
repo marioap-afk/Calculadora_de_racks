@@ -56,10 +56,11 @@
 
                     <TextBlock Text="Cabecera" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" />
+                    <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" SelectionChanged="Post_Changed" />
                     <TextBlock Text="Peralte poste (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3"
-                             ToolTip="Peralte (fondo) del poste en pulgadas; afecta la vista frontal y la planta." />
+                             LostFocus="GlobalScalar_LostFocus" KeyDown="GlobalScalar_KeyDown"
+                             ToolTip="Peralte (fondo) del poste en pulgadas; afecta la vista frontal y la planta. Se aplica al salir del campo." />
 
                     <TextBlock Text="Cabecera por poste (opcional)" Style="{StaticResource FieldLabel}" Margin="0,6,0,0" Foreground="#8B98A6" />
                     <Grid>
@@ -85,7 +86,8 @@
                     <TextBlock Text="Tramo" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="BayCountBox" Style="{StaticResource FieldBox}" Text="2"
-                             ToolTip="Número de frentes (bahías) del tramo. Pulsa 'Recalcular tramo' para aplicarlo." />
+                             LostFocus="BayCount_LostFocus" KeyDown="BayCount_KeyDown"
+                             ToolTip="Número de frentes (bahías) del tramo. Se aplica al salir del campo (o con 'Recalcular tramo')." />
                     <TextBlock Text="Los niveles, la altura y 'larguero a piso' se ajustan por frente en el encabezado de la matriz. El piso arranca en 0."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,4,0,0" />
 
@@ -99,17 +101,20 @@
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Horizontal (in)" Style="{StaticResource FieldLabel}" />
                             <TextBox x:Name="ToleranceBox" Style="{StaticResource FieldBox}" Text="4"
-                                     ToolTip="Tolerancia horizontal total entre tarimas y postes; define el largo del larguero." />
+                                     LostFocus="GlobalScalar_LostFocus" KeyDown="GlobalScalar_KeyDown"
+                                     ToolTip="Tolerancia horizontal total entre tarimas y postes; define el largo del larguero. Se aplica al salir del campo." />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Holgura vertical (in)" Style="{StaticResource FieldLabel}" />
                             <TextBox x:Name="ClearanceBox" Style="{StaticResource FieldBox}" Text="6"
-                                     ToolTip="Espacio libre sobre la tarima hasta el siguiente larguero." />
+                                     LostFocus="GlobalScalar_LostFocus" KeyDown="GlobalScalar_KeyDown"
+                                     ToolTip="Espacio libre sobre la tarima hasta el siguiente larguero. Se aplica al salir del campo." />
                         </StackPanel>
                     </Grid>
                     <TextBlock Text="Elevación larguero a piso (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FloorRiseBox" Style="{StaticResource FieldBox}" Text="4"
-                             ToolTip="Altura del larguero a piso cuando el frente tiene marcada la casilla 'Piso'." />
+                             LostFocus="GlobalScalar_LostFocus" KeyDown="GlobalScalar_KeyDown"
+                             ToolTip="Altura del larguero a piso cuando el frente tiene marcada la casilla 'Piso'. Se aplica al salir del campo." />
                     <TextBlock Text="Fondo de tarima (in)" Style="{StaticResource FieldLabel}" />
                     <TextBox x:Name="FondoBox" Style="{StaticResource FieldBox}" Text="48" LostFocus="FondoDepth_LostFocus"
                              ToolTip="Profundidad de la TARIMA (por fondo). La cabecera se dibuja 6&quot; menos (regla: cabecera = tarima − 6&quot;). Con 2+ fondos aplica al fondo elegido en 'Editando fondo'." />
@@ -129,7 +134,7 @@
                          alturas por frente) lo disparaba y LoadCellEditor revertía lo recién tecleado. -->
                     <Button Content="Recalcular tramo" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}"
                             HorizontalAlignment="Left" Margin="0,12,0,0"
-                            ToolTip="Aplica frentes/niveles/tolerancias y recalcula." />
+                            ToolTip="Fuerza el recálculo completo del tramo. Ya no es obligatorio: cada campo (frentes, poste, tolerancias…) se aplica al salir de él; el editor de celda usa 'Aplicar a:'." />
 
                     <Border Background="#F1F5F9" BorderBrush="#D8DEE6" BorderThickness="1" Margin="0,14,0,0" Padding="12">
                         <StackPanel>

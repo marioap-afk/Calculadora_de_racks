@@ -92,6 +92,11 @@ namespace RackCad.UI
         private int selLevel;
         private bool loadingCell;
 
+        /// <summary>False until the constructor finished wiring the UI. The live-apply handlers (poste, tolerancias,
+        /// frentes…) check this so the ItemsSource/SelectedValue assignments during construction don't fire a
+        /// premature Recompute on a half-built matrix.</summary>
+        private bool initialized;
+
         /// <summary>Cell Border by (bay, level). Repopulated ONLY inside <see cref="RenderMatrix"/> (the single
         /// structural source, so it can never go stale) and used by <see cref="SelectCell"/>/<see cref="ApplyScope"/>
         /// to restyle/retext just the affected cells instead of rebuilding the whole matrix per click.</summary>
@@ -182,6 +187,7 @@ namespace RackCad.UI
             RenderMatrix();
             RefreshPostSelect();
             UpdateInsertButtons();
+            initialized = true; // from here on, field edits live-apply (see GlobalScalar_* / Post_Changed / BayCount_*)
             Recompute();
         }
 
@@ -558,7 +564,7 @@ namespace RackCad.UI
         {
             BayCountBox.IsEnabled = true;
             BayCountBox.ToolTip = "Número de frentes (bahías) de ESTE fondo. Cada fondo puede tener su propio número (p. ej. esquina); "
-                + "el fondo más largo define la rejilla y los frentes que se traslapan alinean sus postes. Pulsa 'Recalcular tramo' para aplicarlo.";
+                + "el fondo más largo define la rejilla y los frentes que se traslapan alinean sus postes. Se aplica al salir del campo.";
         }
 
         private void FondoSelector_Changed(object sender, SelectionChangedEventArgs e)
@@ -1380,20 +1386,34 @@ namespace RackCad.UI
 
         // ---- Events ----
 
-        private void Update_Click(object sender, RoutedEventArgs e)
+        private void Update_Click(object sender, RoutedEventArgs e) => ApplyBayCount();
+
+        /// <summary>Apply the "Frentes" count to THIS fondo's matrix (resize bays), then reconcile fondos/posts and
+        /// recompute. Shared by the explicit "Recalcular tramo" button and the live BayCountBox commit (LostFocus/Enter)
+        /// so both paths behave identically. Frentes are per-fondo (a corner layout); the resolver aligns overlapping
+        /// widths to the longest fondo.</summary>
+        private void ApplyBayCount()
         {
+            if (!initialized) return;
+
             if (!TryInt(BayCountBox.Text, out var bayCount) || bayCount < 1)
             {
-                SetStatus("Cantidad de frentes inválida.", true);
+                // Keep the current count (don't wipe the matrix on a typo) and say why, latched so Recompute shows it.
+                pendingWarning = "Cantidad de frentes inválida (mínimo 1); se conserva la actual.";
+                BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
+                Recompute();
                 return;
             }
 
-            if (!TryCommitEditedCell(out _)) return; // don't discard typed cell input on 'Recalcular tramo'
+            if (bayCount == bays.Count && !TryCellEditorDiffersFromSelected())
+            {
+                return; // no structural change and nothing typed pending — avoid a redundant rebuild on tab-out
+            }
+
+            if (!TryCommitEditedCell(out _)) return; // don't discard typed cell input on a frente-count change
 
             using (DeferRecompute()) // the rebuild can fire a height box LostFocus → coalesce its Recompute with ours
             {
-                // Frentes are per-fondo now: resize THIS fondo's bays. Each fondo can differ (a corner layout); the
-                // resolver aligns the overlapping widths to the longest fondo.
                 ResizeBays(bayCount);
                 ApplyFondoCountFromBox();      // apply "Número de fondos" (rebuild combo + separators; may reset selectedFondo)
                 LoadFondo(selectedFondo);      // reload the working matrix for the (possibly new) selected fondo
@@ -1403,6 +1423,48 @@ namespace RackCad.UI
                 RefreshPostSelect();
                 Recompute();
             }
+        }
+
+        /// <summary>The global tramo scalars (poste peralte, tolerancia, holgura, elevación) live-apply on leave-field
+        /// now — same pattern the "Fondo de tarima"/height boxes already used — so the preview never lags behind a typed
+        /// value and the user isn't left guessing which field needs "Recalcular tramo".</summary>
+        private void GlobalScalar_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!initialized) return;
+            Recompute();
+        }
+
+        /// <summary>Enter also commits a global scalar (it doesn't move focus, so LostFocus wouldn't fire); e.Handled
+        /// keeps the key from bubbling to the window.</summary>
+        private void GlobalScalar_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter || !initialized) return;
+            Recompute();
+            e.Handled = true;
+        }
+
+        /// <summary>Changing the poste profile re-scales the frontal/planta (post width), so live-apply it too.</summary>
+        private void Post_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (!initialized) return;
+            Recompute();
+        }
+
+        private void BayCount_LostFocus(object sender, RoutedEventArgs e) => ApplyBayCount();
+
+        private void BayCount_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+            ApplyBayCount();
+            e.Handled = true;
+        }
+
+        /// <summary>True when the cell editor holds a valid value that differs from the selected cell (a pending, unapplied
+        /// edit). Used to avoid a redundant rebuild when nothing changed, and by the pre-draw guard.</summary>
+        private bool TryCellEditorDiffersFromSelected()
+        {
+            if (loadingCell || !TryGetSelected(out var current)) return false;
+            return ReadCellEditor(out var edited, out _) && !CellEquals(current, edited);
         }
 
         private void ApplyCell_Click(object sender, RoutedEventArgs e) => ApplyScope(Scope.Cell);
@@ -1505,6 +1567,11 @@ namespace RackCad.UI
                 return;
             }
 
+            // The cell editor's "Aplicar a:" is manual (it carries a scope choice), so the user can type new cell
+            // values and hit Actualizar/Insertar without applying them. Ask before drawing the OLD values instead of
+            // silently losing the edit.
+            if (!ConfirmPendingCellEdits()) return;
+
             var system = BuildSystem(out var design, out var error);
             if (system == null)
             {
@@ -1523,6 +1590,56 @@ namespace RackCad.UI
             RackId = currentId;
             RackName = currentName;
             Close();
+        }
+
+        /// <summary>
+        /// Before drawing (Actualizar/Insertar), catch cell-editor values the user typed but never applied with
+        /// "Aplicar a:". Returns true to proceed, false to cancel and stay in the editor. On a valid pending edit it
+        /// offers Aplicar (Sí) / Actualizar sin aplicar (No) / Cancelar; on an invalid one, ignore-and-draw or stay.
+        /// (Global scalars already committed via their LostFocus when the button took focus, so only the manual cell
+        /// editor can be pending here.)
+        /// </summary>
+        private bool ConfirmPendingCellEdits()
+        {
+            if (loadingCell || !TryGetSelected(out var current)) return true;
+
+            var cellRef = string.Format(CultureInfo.InvariantCulture, "Frente {0} · Nivel {1}", selBay + 1, selLevel + 1);
+
+            if (!ReadCellEditor(out var edited, out var error))
+            {
+                var invalid = MessageBox.Show(
+                    this,
+                    "El editor de celda (" + cellRef + ") tiene un valor sin aplicar que además es inválido:\n" + error
+                        + "\n\n¿Dibujar de todos modos, ignorando ese cambio?\n\n"
+                        + "«Sí»: actualiza el dibujo y descarta lo tecleado.\n"
+                        + "«No»: vuelve al editor para corregirlo.",
+                    "Cambios sin aplicar",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                return invalid == MessageBoxResult.Yes;
+            }
+
+            if (CellEquals(current, edited)) return true; // nothing pending — proceed
+
+            var choice = MessageBox.Show(
+                this,
+                "Tienes cambios sin aplicar en la celda seleccionada (" + cellRef + ").\n\n"
+                    + "«Sí»: aplícalos a esa celda y actualiza el dibujo.\n"
+                    + "«No»: actualiza el dibujo SIN esos cambios (se descartan).\n"
+                    + "«Cancelar»: vuelve al editor sin dibujar.",
+                "Cambios sin aplicar",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Warning);
+
+            if (choice == MessageBoxResult.Cancel) return false;
+            if (choice == MessageBoxResult.Yes)
+            {
+                current.CopyFrom(edited);
+                if (cellBorders.TryGetValue((selBay, selLevel), out var border)) RefreshCellVisual(border, current);
+                Recompute(); // so the just-applied value is what BuildSystem reads next
+            }
+
+            return true; // Yes (applied) or No (discard) → proceed to draw
         }
 
         /// <summary>
