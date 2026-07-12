@@ -56,8 +56,13 @@ namespace RackCad.Application.Systems
 
             if (detail == DimensionDetail.Minimal)
             {
-                AddVertical(instances, view, leftX, 0.0, height, -near, h, style);   // alto total (izquierda)
-                AddHorizontal(instances, view, leftX, rightX, 0.0, -near, h, style); // ancho total post-a-post (abajo)
+                AddVertical(instances, view, leftX, 0.0, height, -near, h, style); // alto total (izquierda)
+                // Largo de CORTE del larguero representativo (frente 0), no poste a poste — igual que la planta.
+                if (beamStartXs != null && beamStartXs.Count > 0 && system.Bays.Count > 0 && system.Bays[0].BeamLength > 0.0)
+                {
+                    AddHorizontal(instances, view, beamStartXs[0], beamStartXs[0] + system.Bays[0].BeamLength, 0.0, -near, h, style);
+                }
+
                 return;
             }
 

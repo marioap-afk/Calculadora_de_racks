@@ -74,12 +74,14 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Minimal_EmitsOverallHeightAndWidthOnly()
+        public void Minimal_EmitsOverallHeightAndLargueroCut()
         {
+            var beamLength = Resolve(DimensionDetail.Minimal).Bays[0].BeamLength;
             var dims = Dims(DimensionDetail.Minimal);
 
             Assert.Equal(2, dims.Count);
-            Assert.Single(dims, IsHorizontal); // ancho total
+            var cut = dims.Single(IsHorizontal); // larguero de corte representativo (NO poste a poste)
+            Assert.Equal(beamLength, Span(cut), 3);
             var vertical = dims.Single(IsVertical); // alto total
             Assert.Equal(0.0, Math.Min(vertical.Insertion.Y, vertical.ConnectionAnchor.Y), 3); // desde el piso
             Assert.True(dims.All(d => d.DimensionOffset < 0.0)); // cotas fuera de la geometría (abajo/izquierda)
