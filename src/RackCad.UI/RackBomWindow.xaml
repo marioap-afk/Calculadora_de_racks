@@ -147,8 +147,13 @@
         </DataGrid>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-            <Button Content="Exportar CSV"
+            <Button Content="Exportar Excel"
                     Style="{StaticResource PrimaryButtonStyle}"
+                    MinWidth="120"
+                    Margin="0,0,8,0"
+                    Click="ExportExcel_Click" />
+            <Button Content="Exportar CSV"
+                    Style="{StaticResource SecondaryButtonStyle}"
                     MinWidth="120"
                     Margin="0,0,8,0"
                     Click="ExportCsv_Click" />

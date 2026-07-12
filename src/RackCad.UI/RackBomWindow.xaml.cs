@@ -34,6 +34,32 @@ namespace RackCad.UI
             }
         }
 
+        private void ExportExcel_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "Exportar lista de materiales a Excel",
+                Filter = "Excel (*.xlsx)|*.xlsx|Todos (*.*)|*.*",
+                FileName = "lista-materiales.xlsx",
+                DefaultExt = ".xlsx"
+            };
+
+            if (dialog.ShowDialog(this) != true)
+            {
+                return;
+            }
+
+            try
+            {
+                File.WriteAllBytes(dialog.FileName, BomXlsxExporter.ToXlsx(bom));
+                MessageBox.Show(this, "Lista exportada a:\n" + dialog.FileName, "RackCad", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "No se pudo exportar: " + ex.Message, "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void ExportCsv_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new Microsoft.Win32.SaveFileDialog

@@ -108,8 +108,11 @@
     (cabeceras + largueros como sub-ensambles expandibles a piezas; `BomComponent`, árbol en `RackBomWindow`)
     y el comando `RACKBOMTOTAL` genera el BOM de TODO el dibujo (desglose por rack via GUID x copias + gran
     total por componente, `RackConsolidatedBomWindow`). También existe el editor de **larguero** como
-    componente (`RackLargueroWindow`, solo visual/BOM — sin bloque de AutoCAD todavía). Pendiente: exportación
-    a Excel (hoy CSV) y el bloque de AutoCAD del larguero.
+    componente (`RackLargueroWindow`, solo visual/BOM — sin bloque de AutoCAD todavía). **Export a Excel HECHO
+    (2026-07-12):** botón "Exportar Excel" en ambas ventanas de BOM; `XlsxWriter` escribe un `.xlsx` real (OOXML,
+    ZIP de XML con `System.IO.Compression`, SIN dependencias NuGet); `BomXlsxExporter` (1 hoja) y
+    `ConsolidatedBomXlsxExporter` (hoja "Por rack" + hoja "Total del dibujo"). El CSV sigue disponible. Pendiente:
+    el bloque de AutoCAD del larguero.
 12. ~~**Unificar perfiles estructurales**~~ — ✅ **HECHO (2026-07-10):** `secciones.csv` es la única hoja de
     perfiles (columna `rol` = POSTE | CELOSIA | LARGUERO). El provider separa las filas en las tres listas
     de siempre (API de `RackCatalog` intacta) y mantiene los tres CSV legacy como fallback de lectura.
