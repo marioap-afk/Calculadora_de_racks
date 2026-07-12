@@ -64,7 +64,8 @@ namespace RackCad.Tests
 
         private static bool IsHorizontal(HeaderBlockInstance d) => Math.Abs(d.Insertion.Y - d.ConnectionAnchor.Y) < 1e-6;
         private static bool IsVertical(HeaderBlockInstance d) => Math.Abs(d.Insertion.X - d.ConnectionAnchor.X) < 1e-6;
-        private static double Span(HeaderBlockInstance d) => Math.Abs(d.ConnectionAnchor.X - d.Insertion.X);
+        private static double Span(HeaderBlockInstance d) => Math.Abs(d.ConnectionAnchor.X - d.Insertion.X);   // horizontal dims
+        private static double VSpan(HeaderBlockInstance d) => Math.Abs(d.ConnectionAnchor.Y - d.Insertion.Y); // vertical dims
 
         [Fact]
         public void None_EmitsNoDimensions()
@@ -144,20 +145,28 @@ namespace RackCad.Tests
         public void Planta_None_EmitsNoDimensions() => Assert.Empty(PlantaDims(DimensionDetail.None));
 
         [Fact]
-        public void Planta_Minimal_EmitsOverallLengthAndDepthOnly()
+        public void Planta_Minimal_EmitsLargueroCutAndOverallDepth()
         {
+            var beamLength = new SelectiveGeometryResolver().Resolve(Design(DimensionDetail.Minimal), Catalog).Bays[0].BeamLength;
             var dims = PlantaDims(DimensionDetail.Minimal);
+
             Assert.Equal(2, dims.Count);
-            Assert.Single(dims, IsVertical);   // largo total (a lo largo de los frentes)
-            Assert.Single(dims, IsHorizontal); // fondo total
+            var cut = dims.Single(IsVertical);              // representative larguero cut (along Y), NOT the whole run
+            Assert.Equal(beamLength, VSpan(cut), 3);
+            Assert.Single(dims, IsHorizontal);              // fondo total
         }
 
         [Fact]
-        public void Planta_Standard_AddsPerFrenteAndPerFondo()
+        public void Planta_Standard_PerFrenteCota_IsLargueroCut_NotPostPitch()
         {
+            var beamLength = new SelectiveGeometryResolver().Resolve(Design(DimensionDetail.Standard), Catalog).Bays[0].BeamLength;
             var dims = PlantaDims(DimensionDetail.Standard);
-            // Vertical (largo): one per frente + the overall length. Horizontal (fondo): per fondo (1 here) + total.
-            Assert.Equal(Bays + 1, dims.Count(IsVertical));
+
+            // Vertical (largo): one larguero cut per frente — each measures the CUT length, not the post pitch.
+            var cuts = dims.Where(IsVertical).ToList();
+            Assert.Equal(Bays, cuts.Count);
+            Assert.All(cuts, d => Assert.Equal(beamLength, VSpan(d), 3));
+            // Horizontal (fondo): per fondo (1 here) + the overall depth.
             Assert.Equal(2, dims.Count(IsHorizontal));
         }
 

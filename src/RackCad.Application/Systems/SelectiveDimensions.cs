@@ -167,14 +167,16 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// PLANTA (top view) cotas. X = fondo depth, Y = frente width. Minimal = overall length (all frentes, along Y)
-        /// + overall depth (all fondos, along X). Standard adds the per-frente widths (a chain up the left) and each
-        /// fondo's depth (a chain along the bottom). Detailed matches Standard (no per-level in plan). Breakdown chains
-        /// sit near the geometry; the overalls sit further out.
+        /// PLANTA (top view) cotas. X = fondo depth, Y = frente. The larguero runs along Y, so the Y cotas show the
+        /// larguero CUT length (centered in its frente pitch — the fabrication dimension, NOT the post-to-post pitch or
+        /// the whole-system run). Minimal = one representative cut (Y) + overall depth (X). Standard adds a cut per
+        /// frente and each fondo's depth (a chain along the bottom). <paramref name="beamLengths"/> is the governing
+        /// larguero cut length per frente.
         /// </summary>
         public static void AddPlanta(
             ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, string view,
-            IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets, IReadOnlyList<double> fondoDepths)
+            IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets, IReadOnlyList<double> fondoDepths,
+            IReadOnlyList<double> beamLengths)
         {
             var detail = system.Dimensions;
             if (detail == DimensionDetail.None || frenteYs == null || frenteYs.Count < 2 || offsets == null || offsets.Count == 0 || fondoDepths == null)
@@ -189,25 +191,36 @@ namespace RackCad.Application.Systems
             var style = system.DimensionStyle;
 
             var firstY = frenteYs[0];
-            var lastY = frenteYs[frenteYs.Count - 1];
             var frontX = offsets[0];
             var lastFondo = offsets.Count - 1;
             var backX = offsets[lastFondo] + (lastFondo < fondoDepths.Count ? fondoDepths[lastFondo] : 0.0);
 
+            // A frente's larguero CUT cota (Y), centered in its post pitch: the pitch is cut + 2×(troquel+ménsula),
+            // symmetric, so the larguero sits centered — no need to resolve the planta connection points.
+            void AddCut(int i)
+            {
+                if (i < 0 || i + 1 >= frenteYs.Count || beamLengths == null || i >= beamLengths.Count || beamLengths[i] <= 0.0)
+                {
+                    return;
+                }
+
+                var pitch = frenteYs[i + 1] - frenteYs[i];
+                var start = frenteYs[i] + (pitch - beamLengths[i]) / 2.0;
+                AddVertical(instances, view, frontX, start, start + beamLengths[i], -near, h, style);
+            }
+
             if (detail == DimensionDetail.Minimal)
             {
-                AddVertical(instances, view, frontX, firstY, lastY, -near, h, style);   // largo total (todos los frentes)
-                AddHorizontal(instances, view, frontX, backX, firstY, -near, h, style);  // fondo total (todos los fondos)
+                AddCut(0); // larguero de corte representativo
+                AddHorizontal(instances, view, frontX, backX, firstY, -near, h, style); // fondo total
                 return;
             }
 
-            // Ancho por frente (cadena, izquierda) + largo total más afuera.
+            // Largo de corte del larguero por frente (Y).
             for (var i = 0; i + 1 < frenteYs.Count; i++)
             {
-                AddVertical(instances, view, frontX, frenteYs[i], frenteYs[i + 1], -near, h, style);
+                AddCut(i);
             }
-
-            AddVertical(instances, view, frontX, firstY, lastY, -far, h, style);
 
             // Fondo por fondo (cadena, abajo) + fondo total más afuera.
             for (var k = 0; k < offsets.Count && k < fondoDepths.Count; k++)

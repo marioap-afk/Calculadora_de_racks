@@ -137,7 +137,23 @@ namespace RackCad.Application.Systems
 
             var fondoDepths = new List<double>(offsets.Count);
             for (var k = 0; k < offsets.Count; k++) fondoDepths.Add(SelectiveDepthLayout.CabeceraDepthOfFondo(system, k));
-            SelectiveDimensions.AddPlanta(loose, system, PlantaView, frenteYs, offsets, fondoDepths);
+
+            // Governing larguero cut length per master frente (the widest bay across fondos — it set the post pitch),
+            // so the planta cotas measure the cut, not the post-to-post spacing.
+            var beamLengths = new List<double>();
+            for (var i = 0; i + 1 < frenteYs.Count; i++)
+            {
+                var maxLen = 0.0;
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    var baysK = SelectiveDepthLayout.BaysOfFondo(system, k);
+                    if (i < baysK.Count && baysK[i].BeamLength > maxLen) maxLen = baysK[i].BeamLength;
+                }
+
+                beamLengths.Add(maxLen);
+            }
+
+            SelectiveDimensions.AddPlanta(loose, system, PlantaView, frenteYs, offsets, fondoDepths, beamLengths);
 
             return new DynamicSystemPlan(groups.Select(g => g.ToGroup()).ToList(), loose);
         }
