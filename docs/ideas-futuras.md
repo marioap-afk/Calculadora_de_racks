@@ -85,9 +85,13 @@
    `SelectiveSafetyPlacement`, mismo espejo al centro del fondo, eje del fondo) pero (a) con LONGITUD = fondo de la
    cabecera (`SelectiveDepthLayout.TotalFondoDepth`/span del frente en planta/lateral), y (b) donde va REEMPLAZA a las
    botas de ese frente (`DrawsAt` → se dibuja el lateral y se omiten las botas). Diálogo: fila LATERAL solo con "Por
-   poste…", pre-sembrado con las orillas (primer y último frente, Ambos) la primera vez. BOM: es su propio componente
-   y las botas ya no cuentan en esos frentes (el conteo sale de la planta). **Pendiente:** validar en AutoCAD el
-   espejo/orientación/longitud de los bloques; los demás elementos (desviadores, topes, guardas, parrillas).
+   poste…", pre-sembrado con las orillas (primer frente=Izquierda, último=Derecha) la primera vez. **El bloque del
+   lateral YA trae la bota espejeada** (una sola pieza que cubre el fondo): se dibuja UN bloque con la longitud, NO dos
+   como la bota. Izquierda/Derecha/Ambas = lado de la GUÍA de canal (Derecha = el bloque espejeado; Ambas = guía en los
+   dos lados, para un frente-puente). BOM: es su propio componente; los elementos DIBUJABLES (bota/lateral) se cuentan
+   SOLO del dibujo (0 = no se listan; una bota totalmente reemplazada por laterales no aparece), la cantidad manual es
+   fallback solo para no-dibujables. **Pendiente:** validar en AutoCAD el espejo/orientación/longitud; los demás
+   elementos (desviadores, topes, guardas, parrillas).
 4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
    "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
    pasillo sería un gran ahorro.

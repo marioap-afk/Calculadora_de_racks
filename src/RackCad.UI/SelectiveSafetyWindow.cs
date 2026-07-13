@@ -140,7 +140,7 @@ namespace RackCad.UI
                             Margin = new Thickness(6, 0, 0, 0),
                             VerticalAlignment = VerticalAlignment.Center,
                             ToolTip = isLateral
-                                ? "Elige en qué postes va el protector lateral y de qué lado (por defecto: primer y último frente). Reemplaza las botas de ese frente."
+                                ? "Elige en qué postes va el protector lateral y de qué lado queda la GUÍA de canal (Izquierda/Derecha = guía a un lado o al otro; Ambos = guía en los dos lados, para un frente-puente). Por defecto: primer y último frente, con la guía en lados opuestos. Reemplaza las botas de ese frente."
                                 : "Elige por poste cuáles llevan bota y en qué lado (los no personalizados usan el lado general)."
                         };
                         perPost.Click += (s, e) => EditPerPost(row);
@@ -194,13 +194,14 @@ namespace RackCad.UI
             row.PerPost.Content = PerPostLabel(row.PostSides.Count);
         }
 
-        /// <summary>Default posts for a protector lateral: the two orillas (first and last frente), on both sides.</summary>
+        /// <summary>Default posts for a protector lateral: the two orillas (first and last frente), the guide on opposite
+        /// sides — the first frente as-is (Left), the last mirrored (Right) — ONE block each. "Ambos" is for a bridge.</summary>
         private static List<SafetyPostSide> OrillaDefaults(int postCount)
         {
-            var result = new List<SafetyPostSide> { new SafetyPostSide { PostIndex = 0, Side = SafetySide.Both } };
+            var result = new List<SafetyPostSide> { new SafetyPostSide { PostIndex = 0, Side = SafetySide.Left } };
             if (postCount > 1)
             {
-                result.Add(new SafetyPostSide { PostIndex = postCount - 1, Side = SafetySide.Both });
+                result.Add(new SafetyPostSide { PostIndex = postCount - 1, Side = SafetySide.Right });
             }
 
             return result;
@@ -291,7 +292,7 @@ namespace RackCad.UI
                 if (post != null && post.PostIndex >= 0) byPost[post.PostIndex] = post.Side;
             }
 
-            Title = "Bota por poste";
+            Title = string.IsNullOrWhiteSpace(elementLabel) ? "Lado por poste" : elementLabel;
             Width = 340;
             Height = 460;
             MinWidth = 300;
@@ -303,10 +304,13 @@ namespace RackCad.UI
 
             var root = new DockPanel { Margin = new Thickness(14) };
 
+            // A bota has a general side, so "(por defecto)" means "use it"; a lateral has none, so it means "no lleva".
+            var perDefault = defaultSide == SafetySide.None
+                ? "\"(por defecto)\" = no lleva."
+                : "\"(por defecto)\" usa el lado general (" + SideName(defaultSide) + ").";
             var intro = new TextBlock
             {
-                Text = (string.IsNullOrWhiteSpace(elementLabel) ? "Bota" : elementLabel) + " — lado por poste. \"(por defecto)\" usa el lado general ("
-                     + SideName(defaultSide) + ").",
+                Text = (string.IsNullOrWhiteSpace(elementLabel) ? "Lado por poste" : elementLabel) + " — lado por poste. " + perDefault,
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
             DockPanel.SetDock(intro, Dock.Top);

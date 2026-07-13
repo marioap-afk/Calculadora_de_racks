@@ -149,15 +149,16 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Frontal_Lateral_ReplacesBotasAtItsFrente()
+        public void Frontal_Lateral_IsOneBlock_ReplacesBotasAtItsFrente()
         {
-            // 2 frentes = 3 posts. Bota Both on all; a protector lateral on frente 0 → frente 0 has laterales, NO botas.
+            // 2 frentes = 3 posts. Bota Both on all; a protector lateral (Left = ONE block, the block already spans the
+            // fondo) on frente 0 → frente 0 has 1 lateral, NO botas.
             var system = new SelectiveGeometryResolver().Resolve(
-                DesignWithLateral(2, SafetySide.Both, (0, SafetySide.Both)), Catalog);
+                DesignWithLateral(2, SafetySide.Both, (0, SafetySide.Left)), Catalog);
             var instances = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog).ToList();
             var safety = instances.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
 
-            Assert.Equal(2, safety.Count(s => s.BlockName == "PROTECTOR_LATERAL_BOTA_H_3_16_18_FRONTAL")); // frente 0, Both = 2
+            Assert.Equal(1, safety.Count(s => s.BlockName == "PROTECTOR_LATERAL_BOTA_H_3_16_18_FRONTAL")); // ONE block, not two
             Assert.Equal(4, safety.Count(s => s.BlockName == "PROTECTOR_BOTA_H_3_16_18_FRONTAL"));         // frentes 1 & 2 only
         }
 
@@ -165,29 +166,56 @@ namespace RackCad.Tests
         public void Planta_Lateral_SpansTheFondoDepth_ViaLongitudParam()
         {
             var system = new SelectiveGeometryResolver().Resolve(
-                DesignWithLateral(2, SafetySide.None, (0, SafetySide.Both)), Catalog);
+                DesignWithLateral(2, SafetySide.None, (0, SafetySide.Left)), Catalog);
             var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
             var laterales = new SelectivePlantaBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Safety).ToList();
 
-            Assert.NotEmpty(laterales);
-            Assert.All(laterales, l => Assert.Equal(depth, l.DynamicParameters[SelectiveRackDefaults.LengthParam], 3));
+            var lateral = Assert.Single(laterales); // ONE block spanning the fondo
+            Assert.Equal(depth, lateral.DynamicParameters[SelectiveRackDefaults.LengthParam], 3);
+        }
+
+        [Fact]
+        public void Planta_Lateral_Orillas_OneBlockPerEnd_OppositeGuides()
+        {
+            // The default orillas: first frente Left (as-is), last frente Right (guide mirrored). ONE block each.
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithLateral(3, SafetySide.None, (0, SafetySide.Left), (3, SafetySide.Right)), Catalog);
+            var laterales = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            Assert.Equal(2, laterales.Count);                 // one per orilla, not doubled
+            Assert.Single(laterales, l => !l.MirroredX);      // first orilla (Left)
+            Assert.Single(laterales, l => l.MirroredX);       // last orilla (Right, guide flipped)
         }
 
         [Fact]
         public void Bom_Lateral_IsOwnComponent_AndSuppressesBotasThere()
         {
-            // Bota Both on all 3 frentes (posts 0..2) + a lateral on frente 0. Botas count = frentes 1 & 2 only.
+            // Bota Both on all 3 frentes (posts 0..2) + a lateral on frente 0 (Left). Botas count = frentes 1 & 2 only.
             var system = new SelectiveGeometryResolver().Resolve(
-                DesignWithLateral(2, SafetySide.Both, (0, SafetySide.Both)), Catalog);
+                DesignWithLateral(2, SafetySide.Both, (0, SafetySide.Left)), Catalog);
             var bom = SelectiveBomBuilder.Build(system, Catalog);
 
             var lateral = bom.Components.Single(c => c.ProfileId == LateralId);
             Assert.Equal(SelectiveBomBuilder.Safety, lateral.Category);
-            Assert.Equal(2, lateral.Quantity); // frente 0, Both
+            Assert.Equal(1, lateral.Quantity); // frente 0, one block
 
             var bota = bom.Components.Single(c => c.ProfileId == "PROTECTOR_BOTA_H_3_16_18");
             Assert.Equal(4, bota.Quantity);    // frentes 1 & 2 (Both) — NOT 6; frente 0's botas are suppressed
+        }
+
+        [Fact]
+        public void Bom_Bota_FullySuppressedByLaterales_NotListed()
+        {
+            // 1 bay = 2 posts. Bota Both + laterales on BOTH posts → every frente has a lateral → NO botas drawn.
+            // The bota must NOT appear in the BOM (no phantom from the manual quantity).
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithLateral(1, SafetySide.Both, (0, SafetySide.Left), (1, SafetySide.Right)), Catalog);
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+
+            Assert.DoesNotContain(bom.Components, c => c.ProfileId == "PROTECTOR_BOTA_H_3_16_18"); // no phantom bota
+            Assert.Contains(bom.Components, c => c.ProfileId == LateralId);                         // laterales are listed
         }
 
         [Fact]

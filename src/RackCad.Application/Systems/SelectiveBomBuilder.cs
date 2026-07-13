@@ -72,13 +72,21 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var quantity = drawn.TryGetValue(selection.ElementId, out var drawnCount) ? drawnCount : selection.Quantity;
+                var element = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
+
+                // A DRAWABLE element (bota/lateral) is counted ONLY from the drawing — 0 if it draws nothing (e.g. a bota
+                // fully replaced by laterales). The manual quantity is the fallback ONLY for elements with no draw rule yet.
+                var drawable = element != null
+                    && (string.Equals(element.Type, SelectiveSafetyPlacement.BotaType, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(element.Type, SelectiveSafetyPlacement.LateralType, StringComparison.OrdinalIgnoreCase));
+                var quantity = drawable
+                    ? (drawn.TryGetValue(selection.ElementId, out var drawnCount) ? drawnCount : 0)
+                    : selection.Quantity;
                 if (quantity <= 0)
                 {
                     continue;
                 }
 
-                var element = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
                 var label = element?.Label ?? selection.ElementId;
                 components.Add(new BomComponent
                 {
