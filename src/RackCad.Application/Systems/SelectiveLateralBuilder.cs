@@ -129,6 +129,9 @@ namespace RackCad.Application.Systems
                 }
 
                 // Botas: each reaching fondo's front-post base (anchor-relative X=offset), on the side post i resolves to.
+                // The mirrored (Right) copy reflects about the center of THIS corte's total fondo (depth) span — the
+                // primary front at X=0 to the backmost reaching fondo — so multi-fondo cortes mirror correctly.
+                var backmostDepth = 0.0;
                 for (var k = 0; k < offsets.Count; k++)
                 {
                     if (i > fondoBays[k].Count)
@@ -136,7 +139,19 @@ namespace RackCad.Application.Systems
                         continue;
                     }
 
-                    SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, new Point2D(offsets[k] - anchorOffset, 0.0), defaultPlateId, i);
+                    var back = (offsets[k] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
+                    if (back > backmostDepth) backmostDepth = back;
+                }
+
+                var depthCenterX = backmostDepth / 2.0; // the primary front post is at anchor-relative X = 0
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    if (i > fondoBays[k].Count)
+                    {
+                        continue;
+                    }
+
+                    SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, new Point2D(offsets[k] - anchorOffset, 0.0), defaultPlateId, i, depthCenterX);
                 }
 
                 // Annotations once, from the primary (anchor) fondo's levels + its height.

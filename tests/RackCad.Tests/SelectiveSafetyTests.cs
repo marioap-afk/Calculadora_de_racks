@@ -158,15 +158,20 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Lateral_DrawsBotaAtCorteBase_WithLateralBlock()
+        public void Lateral_Both_MirrorsAboutFondoDepthCenter()
         {
             var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
             var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
 
             Assert.NotEmpty(cortes);
             var botas = cortes[0].Largueros.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
-            Assert.Equal(2, botas.Count); // Both = one per side at the corte's front post
+            Assert.Equal(2, botas.Count); // Both = front upright + its mirror at the back
             Assert.All(botas, b => Assert.Equal("PROTECTOR_BOTA_H_3_16_18_LATERAL", b.BlockName));
+            Assert.Single(botas, b => b.MirroredX);
+            Assert.Single(botas, b => !b.MirroredX);
+            // Reflection about the depth center (front at X=0): the two X's sum to the total fondo depth.
+            Assert.Equal(depth, botas[0].Insertion.X + botas[1].Insertion.X, 3);
         }
 
         [Fact]
@@ -190,6 +195,26 @@ namespace RackCad.Tests
                 DesignWithPostSides(2, SafetySide.Left, (0, SafetySide.None)), Catalog);
             var botas = new SelectivePlantaBuilder().Build(system, Catalog).Count(i => i.Role == HeaderBlockRole.Safety);
             Assert.Equal(2, botas);
+        }
+
+        [Fact]
+        public void Planta_Both_MirrorsAboutFondoDepthCenter()
+        {
+            // Single fondo, Both: each frame gets a front bota + its mirror; the pair reflects about the depth center.
+            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
+            var botas = new SelectivePlantaBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            Assert.NotEmpty(botas);
+            Assert.Equal(0, botas.Count % 2); // a front + a mirrored per frame
+            foreach (var frame in botas.GroupBy(b => Math.Round(b.Insertion.Y, 3)))
+            {
+                var pair = frame.ToList();
+                Assert.Equal(2, pair.Count);
+                Assert.Single(pair, b => b.MirroredX);
+                Assert.Single(pair, b => !b.MirroredX);
+                Assert.Equal(depth, pair[0].Insertion.X + pair[1].Insertion.X, 3); // reflected about depth/2
+            }
         }
     }
 }

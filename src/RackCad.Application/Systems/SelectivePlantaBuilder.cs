@@ -56,6 +56,17 @@ namespace RackCad.Application.Systems
             var botas = SelectiveSafetyPlacement.EnabledBotas(system, catalog, PlantaView);
             var defaultPlateId = catalog?.Defaults?.BasePlate;
 
+            // The mirrored (Right) bota reflects about the center of the system's TOTAL fondo (depth) span: frontmost
+            // post at X=0 (offsets[0]) to the backmost post across all fondos. So a multi-fondo rack mirrors correctly.
+            var backmostDepth = 0.0;
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                var back = offsets[k] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k);
+                if (back > backmostDepth) backmostDepth = back;
+            }
+
+            var depthCenterX = (offsets[0] + backmostDepth) / 2.0;
+
             // Each fondo's own height fallback (a fondo with only level-less bays still needs a post height).
             var fondoFallbacks = new double[offsets.Count];
             for (var k = 0; k < offsets.Count; k++)
@@ -102,8 +113,9 @@ namespace RackCad.Application.Systems
 
                     group.Placements.Add(new HeaderPlacement(offsets[k], mirrored: false, insertionY: frenteYs[i]));
 
-                    // Bota at this fondo's front-post base (X = offset), on the side post i resolves to.
-                    SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, new Point2D(offsets[k], frenteYs[i]), defaultPlateId, i);
+                    // Bota at this fondo's front-post base (X = offset), on the side post i resolves to; the mirrored
+                    // (Right) copy reflects about the system's total-fondo center (depthCenterX).
+                    SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, new Point2D(offsets[k], frenteYs[i]), defaultPlateId, i, depthCenterX);
                 }
             }
 
