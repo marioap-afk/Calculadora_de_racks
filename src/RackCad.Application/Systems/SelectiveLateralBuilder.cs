@@ -137,6 +137,9 @@ namespace RackCad.Application.Systems
                 // GAP between adjacent reaching fondos — same logic as the dynamic's separadores, but 100" instead of 60".
                 AddSeparadores(extras, system, catalog, fondoBays, fondoFallback, offsets, anchorOffset, i);
 
+                // Larguero topes (rear pallet stops): at the central fondo's back post, one per larguero level.
+                AddTopes(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
+
                 // Botas belong to the SYSTEM, not each cabecera: ONE at the corte's frontmost post (anchor-relative
                 // X=0) for Left, reflected to the backmost post for Right, about the center of THIS corte's total fondo
                 // span (the backmost reaching fondo). Never one per fondo.
@@ -301,6 +304,51 @@ namespace RackCad.Application.Systems
                     };
                     separador.DynamicParameters[SelectiveRackDefaults.LengthParam] = gap;
                     result.Add(separador);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Larguero topes (rear pallet stops) for this corte: at the CENTRAL fondo's back post, one per larguero level,
+        /// 4" above the larguero, mated on the (mirrored) back post's <c>TROQUEL_SEPARADOR</c>. SAQUE = 3" default. In
+        /// the lateral the tope is seen end-on, so LONGITUD is irrelevant here (it matters in planta/frontal). Loose.
+        /// </summary>
+        private void AddTopes(
+            ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
+            IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+        {
+            var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.TopeType);
+            if (topes.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
+            {
+                return;
+            }
+
+            var c = SelectiveSafetyPlacement.CentralFondo(offsets.Count); // the central fondo carries the tope
+            if (postIndex > fondoBays[c].Count)
+            {
+                return; // fondo c doesn't reach this corte
+            }
+
+            var backX = (offsets[c] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, c); // its back post
+            var troquel = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
+            var mateX = backX - troquel.X; // the (mirrored) back post's TROQUEL_SEPARADOR, the tope's origin in X
+
+            foreach (var tope in topes)
+            {
+                foreach (var level in CollectLevels(fondoBays[c], postIndex))
+                {
+                    var at = new Point2D(mateX, level.Y + SelectiveSafetyPlacement.TopeYOffset);
+                    var instance = new HeaderBlockInstance
+                    {
+                        Role = HeaderBlockRole.Tope,
+                        PieceId = tope.PieceId,
+                        BlockName = tope.Block,
+                        View = LateralView,
+                        ConnectionAnchor = at,
+                        Insertion = at
+                    };
+                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = SelectiveSafetyPlacement.DefaultSaque;
+                    result.Add(instance);
                 }
             }
         }

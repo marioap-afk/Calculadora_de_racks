@@ -173,6 +173,7 @@ namespace RackCad.Application.Systems
 
             AddLargueros(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
             AddSeparadores(loose, system, catalog, frenteYs, offsets);
+            AddTopes(loose, system, catalog, frenteYs, offsets);
             AddAnnotations(loose, system, frenteYs);
 
             var fondoDepths = new List<double>(offsets.Count);
@@ -464,6 +465,56 @@ namespace RackCad.Application.Systems
                     separador.DynamicParameters[SelectiveRackDefaults.LengthParam] = gap;
                     instances.Add(separador);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Larguero topes (rear pallet stops) in PLANTA: at the CENTRAL fondo's back post, one per bay (the vertical
+        /// stack the lateral shows collapses to a line in top view), spanning the frente (Y) with LONGITUD = the bay's
+        /// larguero + ¼". Anchored on the (mirrored) back post's PLANTA <c>TROQUEL_SEPARADOR</c> (Y slides with peralte).
+        /// </summary>
+        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets)
+        {
+            var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, PlantaView, SelectiveSafetyPlacement.TopeType);
+            if (topes.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
+            {
+                return;
+            }
+
+            var c = SelectiveSafetyPlacement.CentralFondo(offsets.Count); // the central fondo carries the tope
+            var bays = SelectiveDepthLayout.BaysOfFondo(system, c);
+            if (bays.Count == 0)
+            {
+                return;
+            }
+
+            var backX = offsets[c] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, c); // its back post
+            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, DynamicRackDefaults.SeparatorPostPoint, PlantaView);
+            var tope = topes[0];
+
+            for (var i = 0; i < bays.Count && i < frenteYs.Count; i++)
+            {
+                var beamLength = bays[i].BeamLength;
+                if (beamLength <= 0.0)
+                {
+                    continue;
+                }
+
+                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
+                var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
+                var at = new Point2D(backX - troquel.X, frenteYs[i] + troquel.Y);
+                var instance = new HeaderBlockInstance
+                {
+                    Role = HeaderBlockRole.Tope,
+                    PieceId = tope.PieceId,
+                    BlockName = tope.Block,
+                    View = PlantaView,
+                    Insertion = at,
+                    ConnectionAnchor = at
+                };
+                instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = beamLength + SelectiveSafetyPlacement.TopeLengthAllowance;
+                instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = SelectiveSafetyPlacement.DefaultSaque;
+                instances.Add(instance);
             }
         }
 

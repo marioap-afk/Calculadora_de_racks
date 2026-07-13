@@ -31,6 +31,7 @@ namespace RackCad.UI
             public string Label;
             public bool IsBota;                      // BOTA: general side on every frente
             public bool IsLateral;                   // LATERAL: per-post only (defaults to the orillas), replaces botas
+            public bool IsTope;                      // TOPE: on/off (rear pallet stop at the central fondo)
             public ComboBox Side;                    // BOTA: default side
             public Button PerPost;                   // BOTA/LATERAL: "Por poste…"
             public List<SafetyPostSide> PostSides;   // BOTA/LATERAL: per-post overrides (working copy)
@@ -106,7 +107,8 @@ namespace RackCad.UI
                     currentById.TryGetValue(element.Id, out var existing);
                     var isBota = string.Equals(element.Type, "BOTA", StringComparison.OrdinalIgnoreCase);
                     var isLateral = string.Equals(element.Type, "LATERAL", StringComparison.OrdinalIgnoreCase);
-                    var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota, IsLateral = isLateral };
+                    var isTope = string.Equals(element.Type, "TOPE", StringComparison.OrdinalIgnoreCase);
+                    var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope };
 
                     var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -117,7 +119,18 @@ namespace RackCad.UI
                     Grid.SetColumn(label, 0);
                     grid.Children.Add(label);
 
-                    if (isBota || isLateral)
+                    if (isTope)
+                    {
+                        // A tope is on/off for now (shared central, all levels); the shared/side + level config is a later phase.
+                        var combo = new ComboBox { VerticalAlignment = VerticalAlignment.Center, ToolTip = "Larguero tope trasero: dibuja uno por larguero en el fondo central (lateral y planta). La frontal tiene su propio toggle." };
+                        combo.Items.Add("No");
+                        combo.Items.Add("Sí");
+                        combo.SelectedIndex = existing != null && existing.Side != SafetySide.None ? 1 : 0;
+                        Grid.SetColumn(combo, 1);
+                        grid.Children.Add(combo);
+                        row.Side = combo;
+                    }
+                    else if (isBota || isLateral)
                     {
                         row.PostSides = existing?.PostSides?.Where(p => p != null).Select(p => new SafetyPostSide { PostIndex = p.PostIndex, Side = p.Side }).ToList()
                                         ?? new List<SafetyPostSide>();
@@ -226,6 +239,17 @@ namespace RackCad.UI
             var result = new List<SelectiveSafetySelection>();
             foreach (var row in rows)
             {
+                if (row.IsTope)
+                {
+                    // On/off for now: "Sí" (index 1) enables the tope (stored as Both, meaning "drawn").
+                    if (row.Side.SelectedIndex >= 1)
+                    {
+                        result.Add(new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1 });
+                    }
+
+                    continue;
+                }
+
                 if (row.IsBota || row.IsLateral)
                 {
                     // A bota has a general side; a lateral is per-post only (Side stays None).

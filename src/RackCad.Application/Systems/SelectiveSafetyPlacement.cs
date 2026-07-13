@@ -28,6 +28,22 @@ namespace RackCad.Application.Systems
     {
         public const string BotaType = "BOTA";
         public const string LateralType = "LATERAL";
+        public const string TopeType = "TOPE";
+
+        /// <summary>The "larguero tope" (rear pallet stop) block parameter for its stick-out ("saque").</summary>
+        public const string SaqueParam = "SAQUE";
+
+        /// <summary>Default SAQUE (stick-out) of a larguero tope, inches.</summary>
+        public const double DefaultSaque = 3.0;
+
+        /// <summary>A larguero tope sits this many inches ABOVE its larguero level.</summary>
+        public const double TopeYOffset = 4.0;
+
+        /// <summary>A larguero tope's LONGITUD = its larguero's length + this (inches).</summary>
+        public const double TopeLengthAllowance = 0.25;
+
+        /// <summary>The fondo whose back carries the tope: the central one. 1 fondo → 0 (back); 2 → 0 (center); 4 → 1 (central pair).</summary>
+        public static int CentralFondo(int fondoCount) => fondoCount > 0 ? (fondoCount - 1) / 2 : 0;
 
         /// <summary>A protector lateral's manufactured length exceeds its drawn LONGITUD (= the fondo) by this much (the
         /// guide/flanges overhang the posts). The BOM reports drawnLongitud + this.</summary>

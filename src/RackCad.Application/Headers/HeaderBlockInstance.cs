@@ -35,9 +35,13 @@ namespace RackCad.Application.Headers
         /// <see cref="HeaderBlockInstance.DimensionOffset"/>. Drawn as a RotatedDimension on the dimensions layer.</summary>
         Dimension,
 
-        /// <summary>A safety accessory (protector de bota, protector lateral, tope…) — an ordinary block reference,
+        /// <summary>A safety accessory (protector de bota, protector lateral…) — an ordinary block reference,
         /// placed by its own rule (e.g. a bota at each post's base plate). Drawn like any catalog block.</summary>
-        Safety
+        Safety,
+
+        /// <summary>A "larguero tope" — a rear pallet-stop beam, one per larguero level at the rack's back, mated on the
+        /// post's TROQUEL_SEPARADOR, with SAQUE + LONGITUD parameters. Counted on its own (per larguero), not as Safety.</summary>
+        Tope
     }
 
     /// <summary>

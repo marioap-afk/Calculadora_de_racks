@@ -92,6 +92,45 @@ namespace RackCad.Tests
             Assert.Equal(lateralStack, separadores.Sum(c => c.Quantity));
         }
 
+        private const string TopeId = "LARGUERO_ESCALON_TOPE_DE_3";
+
+        [Fact]
+        public void Lateral_Tope_DrawsPerLevelAtCentralBack_WithSaque()
+        {
+            var design = PerFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var topes = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .SelectMany(c => c.Largueros).Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+
+            Assert.NotEmpty(topes);
+            Assert.All(topes, t => Assert.Equal("LARGUERO_ESCALON_TOPE_DE_3_LATERAL", t.BlockName));
+            Assert.All(topes, t => Assert.Equal(3.0, t.DynamicParameters["SAQUE"], 3)); // default saque
+        }
+
+        [Fact]
+        public void Planta_Tope_DrawsAtCentralBack_WithLongitud()
+        {
+            var design = PerFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var topes = new SelectivePlantaBuilder().Build(system, Catalog).Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+
+            Assert.NotEmpty(topes);
+            Assert.All(topes, t => Assert.Equal("LARGUERO_ESCALON_TOPE_DE_3_PLANTA", t.BlockName));
+            Assert.All(topes, t => Assert.True(t.DynamicParameters[SelectiveRackDefaults.LengthParam] > 0.0)); // LONGITUD = larguero + ¼"
+        }
+
+        [Fact]
+        public void Tope_NotSelected_NoneDrawn()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
+            Assert.DoesNotContain(new SelectivePlantaBuilder().Build(system, Catalog), x => x.Role == HeaderBlockRole.Tope);
+            Assert.DoesNotContain(new SelectiveLateralBuilder().Cortes(system, Catalog).SelectMany(c => c.Largueros), x => x.Role == HeaderBlockRole.Tope);
+        }
+
         [Fact]
         public void Lateral_SingleFondo_HasNoSeparadores()
         {
