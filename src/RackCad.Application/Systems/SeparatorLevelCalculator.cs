@@ -18,15 +18,17 @@ namespace RackCad.Application.Systems
         /// <summary>Minimum number of separators per header.</summary>
         public const int MinCount = 2;
 
-        /// <summary>Separators needed for a header of the given height: max(2, floor(height/60) + 1).</summary>
-        public static int Count(double headerHeight)
+        /// <summary>Separators needed for a header of the given height: max(2, floor(height/spacing) + 1). The nominal
+        /// <paramref name="maxSpacing"/> defaults to the dynamic rack's 60"; the selectivo passes its own (100").</summary>
+        public static int Count(double headerHeight, double maxSpacing = MaxSpacing)
         {
             if (headerHeight <= 0.0)
             {
                 return MinCount;
             }
 
-            return Math.Max(MinCount, (int)Math.Floor(headerHeight / MaxSpacing) + 1);
+            var spacing = maxSpacing > 0.0 ? maxSpacing : MaxSpacing;
+            return Math.Max(MinCount, (int)Math.Floor(headerHeight / spacing) + 1);
         }
 
         /// <summary>
@@ -36,7 +38,7 @@ namespace RackCad.Application.Systems
         /// </summary>
         public static IReadOnlyList<double> Levels(
             double headerHeight, double troquelSeparadorY, double paso,
-            int? countOverride = null, double? spacingOverride = null)
+            int? countOverride = null, double? spacingOverride = null, double maxSpacing = MaxSpacing)
         {
             var levels = new List<double>();
 
@@ -50,8 +52,8 @@ namespace RackCad.Application.Systems
                 paso = 2.0;
             }
 
-            // Defaults follow the standard rule; an explicit count and/or spacing override them.
-            var count = countOverride.HasValue && countOverride.Value >= 1 ? countOverride.Value : Count(headerHeight);
+            // Defaults follow the standard rule (one per maxSpacing); an explicit count and/or spacing override them.
+            var count = countOverride.HasValue && countOverride.Value >= 1 ? countOverride.Value : Count(headerHeight, maxSpacing);
             var full = spacingOverride.HasValue && spacingOverride.Value > 0.0 ? spacingOverride.Value : headerHeight / count;
             var half = full / 2.0;
 

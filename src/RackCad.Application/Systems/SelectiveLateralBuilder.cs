@@ -23,6 +23,9 @@ namespace RackCad.Application.Systems
         /// <summary>View the lateral corte draws in (posts, celosía and largueros share it). See views.csv / blocks.csv.</summary>
         public const string LateralView = "LATERAL";
 
+        /// <summary>Nominal vertical spacing between the doble-profundidad separadores (the dynamic uses 60"; here 100").</summary>
+        public const double SeparatorMaxSpacing = 100.0;
+
         private readonly LateralHeaderLayoutBuilder layoutBuilder = new LateralHeaderLayoutBuilder();
 
         public IReadOnlyList<SelectiveCorte> Cortes(SelectiveRackSystem system, RackCatalog catalog)
@@ -130,6 +133,10 @@ namespace RackCad.Application.Systems
                     BuildLargueros(extras, fondoBays[k], i, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k), offsets[k] - anchorOffset, catalog);
                 }
 
+                // Separadores (doble profundidad): spacer beams stacked vertically every ~100" of height that span the
+                // GAP between adjacent reaching fondos — same logic as the dynamic's separadores, but 100" instead of 60".
+                AddSeparadores(extras, system, catalog, fondoBays, fondoFallback, offsets, anchorOffset, i);
+
                 // Botas belong to the SYSTEM, not each cabecera: ONE at the corte's frontmost post (anchor-relative
                 // X=0) for Left, reflected to the backmost post for Right, about the center of THIS corte's total fondo
                 // span (the backmost reaching fondo). Never one per fondo.
@@ -221,6 +228,80 @@ namespace RackCad.Application.Systems
                 var block = catalog?.Blocks.FindBlock(level.BeamId, LateralView)?.BlockName;
                 result.Add(MakeLarguero(level, block, x: offset, mirrored: false));          // front post of this fondo
                 result.Add(MakeLarguero(level, block, x: offset + depth, mirrored: true));    // back post of this fondo
+            }
+        }
+
+        /// <summary>
+        /// Separadores between adjacent REACHING fondos (doble profundidad) for this corte: spacer beams stacked
+        /// vertically (one per ~<see cref="SeparatorMaxSpacing"/>" of height, the dynamic's distribution) that span the
+        /// GAP between fondo k's back post and fondo k+1's front post. Each beam is the <c>SEPARADOR</c> block (FRONTAL,
+        /// like the dynamic), anchored on the back post's <c>TROQUEL_SEPARADOR</c>, with LONGITUD = the gap. Loose.
+        /// </summary>
+        private void AddSeparadores(
+            ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
+            IList<SelectiveBay>[] fondoBays, double[] fondoFallback, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+        {
+            // Reaching fondos, in depth order; need at least two to have a gap.
+            var reaching = new List<int>();
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                if (postIndex <= fondoBays[k].Count) reaching.Add(k);
+            }
+
+            if (reaching.Count < 2 || string.IsNullOrWhiteSpace(system.PostId))
+            {
+                return;
+            }
+
+            var separatorBlock = CatalogLookup.Block(catalog, DynamicRackDefaults.SeparatorCatalogId, DynamicRackDefaults.SeparatorView);
+            if (string.IsNullOrWhiteSpace(separatorBlock))
+            {
+                return; // no separador block defined yet
+            }
+
+            var separatorMate = CatalogLookup.Local(catalog, DynamicRackDefaults.SeparatorCatalogId, DynamicRackDefaults.SeparatorMatePoint, DynamicRackDefaults.SeparatorView);
+            var troquelSeparador = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
+            const double paso = 2.0; // the standard troquel pitch (as in the dynamic default)
+
+            for (var r = 0; r + 1 < reaching.Count; r++)
+            {
+                var k = reaching[r];
+                var kNext = reaching[r + 1];
+
+                var backX = (offsets[k] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k); // fondo k's back post
+                var frontXNext = offsets[kNext] - anchorOffset;                                                 // fondo k+1's front post
+                var gap = frontXNext - backX;
+                if (gap <= 0.0)
+                {
+                    continue;
+                }
+
+                // Tie up to where BOTH fondos exist (the shorter one).
+                var height = Math.Min(
+                    SelectivePostGeometry.PostHeight(fondoBays[k], postIndex, fondoFallback[k]),
+                    SelectivePostGeometry.PostHeight(fondoBays[kNext], postIndex, fondoFallback[kNext]));
+                if (height <= 0.0)
+                {
+                    continue;
+                }
+
+                var levels = SeparatorLevelCalculator.Levels(height, troquelSeparador.Y, paso, maxSpacing: SeparatorMaxSpacing);
+                foreach (var level in levels)
+                {
+                    // Anchor on the (mirrored) back post's TROQUEL_SEPARADOR, one troquel inside the post; span the gap.
+                    var anchor = new Point2D(backX - troquelSeparador.X, level);
+                    var separador = new HeaderBlockInstance
+                    {
+                        Role = HeaderBlockRole.Separator,
+                        PieceId = DynamicRackDefaults.SeparatorCatalogId,
+                        BlockName = separatorBlock,
+                        View = DynamicRackDefaults.SeparatorView,
+                        ConnectionAnchor = anchor,
+                        Insertion = new Point2D(anchor.X - separatorMate.X, anchor.Y - separatorMate.Y)
+                    };
+                    separador.DynamicParameters[SelectiveRackDefaults.LengthParam] = gap;
+                    result.Add(separador);
+                }
             }
         }
 

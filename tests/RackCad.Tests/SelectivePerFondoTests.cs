@@ -47,6 +47,39 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Lateral_DobleProfundidad_DrawsSeparadoresInTheGap()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
+
+            Assert.NotEmpty(cortes);
+            var separadores = cortes[0].Largueros.Where(x => x.Role == HeaderBlockRole.Separator).ToList();
+            Assert.True(separadores.Count >= 2); // stacked vertically, at least MinCount
+            Assert.All(separadores, s => Assert.Equal("SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12_FRONTAL", s.BlockName));
+            Assert.All(separadores, s => Assert.True(s.DynamicParameters[SelectiveRackDefaults.LengthParam] > 0.0)); // span the gap
+        }
+
+        [Fact]
+        public void Lateral_SingleFondo_HasNoSeparadores()
+        {
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0 };
+            design.Bays.Add(Bay(3));
+            design.Bays.Add(Bay(3));
+            var cortes = new SelectiveLateralBuilder().Cortes(new SelectiveGeometryResolver().Resolve(design, Catalog), Catalog);
+
+            Assert.All(cortes, c => Assert.DoesNotContain(c.Largueros, x => x.Role == HeaderBlockRole.Separator));
+        }
+
+        [Fact]
+        public void SeparatorLevelCalculator_100_CountsOneEvery100()
+        {
+            Assert.Equal(2, SeparatorLevelCalculator.Count(100, 100.0)); // floor(100/100)+1
+            Assert.Equal(3, SeparatorLevelCalculator.Count(200, 100.0)); // floor(200/100)+1
+            Assert.Equal(2, SeparatorLevelCalculator.Count(80, 100.0));  // min 2
+            Assert.Equal(3, SeparatorLevelCalculator.Count(120));        // the dynamic default (60) is unchanged
+        }
+
+        [Fact]
         public void Resolve_PopulatesFondoBays_SharesWidths_KeepsOwnLevelsAndHeights()
         {
             var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
