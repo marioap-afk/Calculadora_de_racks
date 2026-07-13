@@ -176,17 +176,34 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Planta_Lateral_Orillas_OneBlockPerEnd_OppositeGuides()
+        public void Planta_Lateral_Orillas_OneBlockPerEnd_GuideFlippedByY()
         {
-            // The default orillas: first frente Left (as-is), last frente Right (guide mirrored). ONE block each.
+            // Default orillas: first frente Left (as-is), last frente Right. ONE block each; in planta the guide flips
+            // via a Y-flip IN PLACE (the block already spans the fondo — no X-reflection to the back post).
             var system = new SelectiveGeometryResolver().Resolve(
                 DesignWithLateral(3, SafetySide.None, (0, SafetySide.Left), (3, SafetySide.Right)), Catalog);
             var laterales = new SelectivePlantaBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Safety).ToList();
 
-            Assert.Equal(2, laterales.Count);                 // one per orilla, not doubled
-            Assert.Single(laterales, l => !l.MirroredX);      // first orilla (Left)
-            Assert.Single(laterales, l => l.MirroredX);       // last orilla (Right, guide flipped)
+            Assert.Equal(2, laterales.Count);                    // one per orilla, not doubled
+            Assert.All(laterales, l => Assert.False(l.MirroredX)); // planta flips the guide in Y, never X
+            Assert.Single(laterales, l => !l.MirroredY);         // first orilla (Left)
+            Assert.Single(laterales, l => l.MirroredY);          // last orilla (Right, guide flipped)
+            // Both sit at the front post (same depth X) — the Right one is NOT reflected to the back.
+            Assert.Single(laterales.Select(l => Math.Round(l.Insertion.X, 3)).Distinct());
+        }
+
+        [Fact]
+        public void Bom_Lateral_ReportsLongitudPlusAllowance()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithLateral(2, SafetySide.None, (0, SafetySide.Left)), Catalog);
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+
+            var lateral = bom.Components.Single(c => c.ProfileId == LateralId);
+            Assert.Equal(depth + 4.0, lateral.Length, 3);       // the given LONGITUD (= fondo) + 4"
+            Assert.Contains(bom.Lines, l => l.ProfileId == LateralId && Math.Abs(l.Length - (depth + 4.0)) < 1e-3);
         }
 
         [Fact]

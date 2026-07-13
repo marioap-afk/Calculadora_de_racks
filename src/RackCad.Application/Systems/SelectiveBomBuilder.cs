@@ -54,6 +54,7 @@ namespace RackCad.Application.Systems
             // SYSTEM-level element (front + back of the whole depth, not per fondo), so count them from the PLANTA, which
             // carries that placement. An element that draws nothing yet (no block/rule) falls back to its manual quantity.
             var drawn = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var drawnLongitud = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
             foreach (var instance in new SelectivePlantaBuilder().Build(system, catalog))
             {
                 if (instance.Role != HeaderBlockRole.Safety || string.IsNullOrWhiteSpace(instance.PieceId))
@@ -62,6 +63,10 @@ namespace RackCad.Application.Systems
                 }
 
                 drawn[instance.PieceId] = drawn.TryGetValue(instance.PieceId, out var count) ? count + 1 : 1;
+                if (instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var lp) && lp > 0.0)
+                {
+                    drawnLongitud[instance.PieceId] = lp; // the LONGITUD the lateral was drawn with (= the fondo)
+                }
             }
 
             // Each safety element is its OWN component named after the piece (not wrapped under a generic node).
@@ -88,16 +93,25 @@ namespace RackCad.Application.Systems
                 }
 
                 var label = element?.Label ?? selection.ElementId;
+
+                // A protector lateral reports a LENGTH = its drawn LONGITUD (the fondo) + the guide overhang; a bota has none.
+                var length = 0.0;
+                var isLateral = element != null && string.Equals(element.Type, SelectiveSafetyPlacement.LateralType, StringComparison.OrdinalIgnoreCase);
+                if (isLateral && drawnLongitud.TryGetValue(selection.ElementId, out var longitud))
+                {
+                    length = longitud + SelectiveSafetyPlacement.LateralLengthAllowance;
+                }
+
                 components.Add(new BomComponent
                 {
                     Category = Safety,
                     ProfileId = selection.ElementId,
                     Description = label,
-                    Length = 0.0,
+                    Length = length,
                     Quantity = quantity,
                     Pieces = new List<BomLine>
                     {
-                        new BomLine { Category = Safety, ProfileId = selection.ElementId, Description = label, Length = 0.0, Quantity = 1 }
+                        new BomLine { Category = Safety, ProfileId = selection.ElementId, Description = label, Length = length, Quantity = 1 }
                     }
                 });
             }

@@ -29,6 +29,10 @@ namespace RackCad.Application.Systems
         public const string BotaType = "BOTA";
         public const string LateralType = "LATERAL";
 
+        /// <summary>A protector lateral's manufactured length exceeds its drawn LONGITUD (= the fondo) by this much (the
+        /// guide/flanges overhang the posts). The BOM reports drawnLongitud + this.</summary>
+        public const double LateralLengthAllowance = 4.0;
+
         public sealed class SafetyElement
         {
             public string PieceId;
@@ -92,7 +96,7 @@ namespace RackCad.Application.Systems
         public static void AppendAtPost(
             ICollection<HeaderBlockInstance> target, RackCatalog catalog, string view,
             IReadOnlyList<SafetyElement> elements,
-            Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null)
+            Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null, bool mirrorYInPlace = false)
         {
             if (elements == null || elements.Count == 0)
             {
@@ -104,25 +108,28 @@ namespace RackCad.Application.Systems
                 : CatalogLookup.Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
             var at = new Point2D(postOrigin.X - plateMate.X, postOrigin.Y - plateMate.Y);
 
-            // Mirrored copy: reflect about the axis (moves across it) when given, else flip about the block origin (in place).
-            var mirroredAt = mirrorAxisX.HasValue ? new Point2D(2.0 * mirrorAxisX.Value - at.X, at.Y) : at;
+            // The mirrored (Right) copy. A LATERAL block already spans the fondo, so it stays IN PLACE and only its guide
+            // flips — a Y-flip in the depth views (mirrorYInPlace). A point element (bota) instead reflects about the
+            // mirror axis (moves across it), or flips about the block origin in the frontal (mirrorAxisX null).
+            var reflectedAt = mirrorAxisX.HasValue ? new Point2D(2.0 * mirrorAxisX.Value - at.X, at.Y) : at;
+            var mirroredAt = mirrorYInPlace ? at : reflectedAt;
 
             foreach (var element in elements)
             {
                 var side = element.Selection.SideForPost(postIndex);
                 if (side == SafetySide.Left || side == SafetySide.Both)
                 {
-                    target.Add(Piece(element.PieceId, element.Block, view, at, mirrored: false, longitud));
+                    target.Add(Piece(element.PieceId, element.Block, view, at, mirroredX: false, mirroredY: false, longitud));
                 }
 
                 if (side == SafetySide.Right || side == SafetySide.Both)
                 {
-                    target.Add(Piece(element.PieceId, element.Block, view, mirroredAt, mirrored: true, longitud));
+                    target.Add(Piece(element.PieceId, element.Block, view, mirroredAt, mirroredX: !mirrorYInPlace, mirroredY: mirrorYInPlace, longitud));
                 }
             }
         }
 
-        private static HeaderBlockInstance Piece(string pieceId, string block, string view, Point2D at, bool mirrored, double? longitud)
+        private static HeaderBlockInstance Piece(string pieceId, string block, string view, Point2D at, bool mirroredX, bool mirroredY, double? longitud)
         {
             var instance = new HeaderBlockInstance
             {
@@ -130,7 +137,8 @@ namespace RackCad.Application.Systems
                 PieceId = pieceId,
                 BlockName = block,
                 View = view,
-                MirroredX = mirrored,
+                MirroredX = mirroredX,
+                MirroredY = mirroredY,
                 Insertion = at,
                 ConnectionAnchor = at
             };

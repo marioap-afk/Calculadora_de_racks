@@ -335,7 +335,7 @@ namespace RackCad.Plugin.Headers
                 definitionId)
             {
                 Rotation = instance.RotationRadians,
-                ScaleFactors = instance.MirroredX ? new Scale3d(-1.0, 1.0, 1.0) : new Scale3d(1.0)
+                ScaleFactors = new Scale3d(instance.MirroredX ? -1.0 : 1.0, instance.MirroredY ? -1.0 : 1.0, 1.0)
             };
 
             space.AppendEntity(reference);

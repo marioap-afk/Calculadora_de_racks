@@ -95,7 +95,9 @@ namespace RackCad.Application.Systems
                     var at = new Point2D(frenteFront, frenteYs[i]);
                     if (SelectiveSafetyPlacement.DrawsAt(laterales, i))
                     {
-                        SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, laterales, at, defaultPlateId, i, frenteCenterX, longitud: frenteBack - frenteFront);
+                        // The lateral block already spans the fondo; it stays at the front post and only its GUIDE flips
+                        // side (a Y-flip in place), not the bota's X-reflection to the back.
+                        SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, laterales, at, defaultPlateId, i, longitud: frenteBack - frenteFront, mirrorYInPlace: true);
                     }
                     else
                     {

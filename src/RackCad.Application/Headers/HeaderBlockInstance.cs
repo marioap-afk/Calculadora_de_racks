@@ -70,6 +70,9 @@ namespace RackCad.Application.Headers
         /// <summary>Insert with X scale -1 (the right post and its plate are mirrored).</summary>
         public bool MirroredX { get; set; }
 
+        /// <summary>Insert with Y scale -1 (used to flip an element about its X axis — e.g. a protector lateral's guide side in planta).</summary>
+        public bool MirroredY { get; set; }
+
         /// <summary>Dynamic-block parameters to set after insertion (name -&gt; value).</summary>
         public Dictionary<string, double> DynamicParameters { get; } = new Dictionary<string, double>();
 
