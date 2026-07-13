@@ -1,2 +1,3 @@
 id,displayName,type,units,weightEach,material,partNumber,unitCost,currency,costUnit
 PROTECTOR_BOTA_H_3_16_18,Protector bota tipo H,BOTA,in,0,Acero,,0,MXN,pieza
+PROTECTOR_LATERAL_BOTA_H_3_16_18,Protector lateral bota tipo H,LATERAL,in,0,Acero,,0,MXN,pieza

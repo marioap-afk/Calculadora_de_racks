@@ -29,10 +29,11 @@ namespace RackCad.UI
         {
             public string Id;
             public string Label;
-            public bool IsBota;
+            public bool IsBota;                      // BOTA: general side on every frente
+            public bool IsLateral;                   // LATERAL: per-post only (defaults to the orillas), replaces botas
             public ComboBox Side;                    // BOTA: default side
-            public Button PerPost;                   // BOTA: "Por poste…"
-            public List<SafetyPostSide> PostSides;   // BOTA: per-post overrides (working copy)
+            public Button PerPost;                   // BOTA/LATERAL: "Por poste…"
+            public List<SafetyPostSide> PostSides;   // BOTA/LATERAL: per-post overrides (working copy)
             public TextBox Quantity;                 // non-drawable
         }
 
@@ -104,7 +105,8 @@ namespace RackCad.UI
 
                     currentById.TryGetValue(element.Id, out var existing);
                     var isBota = string.Equals(element.Type, "BOTA", StringComparison.OrdinalIgnoreCase);
-                    var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota };
+                    var isLateral = string.Equals(element.Type, "LATERAL", StringComparison.OrdinalIgnoreCase);
+                    var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota, IsLateral = isLateral };
 
                     var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -115,17 +117,20 @@ namespace RackCad.UI
                     Grid.SetColumn(label, 0);
                     grid.Children.Add(label);
 
-                    if (isBota)
+                    if (isBota || isLateral)
                     {
-                        var combo = new ComboBox { VerticalAlignment = VerticalAlignment.Center, ToolTip = "Lado general de la bota (Ninguno = no lleva). Se puede afinar por poste." };
-                        foreach (var side in SideLabels) combo.Items.Add(side);
-                        combo.SelectedIndex = existing != null ? (int)existing.Side : (int)SafetySide.None;
-                        Grid.SetColumn(combo, 1);
-                        grid.Children.Add(combo);
-                        row.Side = combo;
-
                         row.PostSides = existing?.PostSides?.Where(p => p != null).Select(p => new SafetyPostSide { PostIndex = p.PostIndex, Side = p.Side }).ToList()
                                         ?? new List<SafetyPostSide>();
+
+                        if (isBota)
+                        {
+                            var combo = new ComboBox { VerticalAlignment = VerticalAlignment.Center, ToolTip = "Lado general de la bota (Ninguno = no lleva). Se puede afinar por poste." };
+                            foreach (var side in SideLabels) combo.Items.Add(side);
+                            combo.SelectedIndex = existing != null ? (int)existing.Side : (int)SafetySide.None;
+                            Grid.SetColumn(combo, 1);
+                            grid.Children.Add(combo);
+                            row.Side = combo;
+                        }
 
                         var perPost = new Button
                         {
@@ -134,10 +139,12 @@ namespace RackCad.UI
                             Padding = new Thickness(8, 2, 8, 2),
                             Margin = new Thickness(6, 0, 0, 0),
                             VerticalAlignment = VerticalAlignment.Center,
-                            ToolTip = "Elige por poste cuáles llevan bota y en qué lado (los no personalizados usan el lado general)."
+                            ToolTip = isLateral
+                                ? "Elige en qué postes va el protector lateral y de qué lado (por defecto: primer y último frente). Reemplaza las botas de ese frente."
+                                : "Elige por poste cuáles llevan bota y en qué lado (los no personalizados usan el lado general)."
                         };
                         perPost.Click += (s, e) => EditPerPost(row);
-                        Grid.SetColumn(perPost, 2);
+                        Grid.SetColumn(perPost, isBota ? 2 : 1);
                         grid.Children.Add(perPost);
                         row.PerPost = perPost;
                     }
@@ -168,8 +175,16 @@ namespace RackCad.UI
 
         private void EditPerPost(Row row)
         {
-            var defaultSide = (SafetySide)Math.Max(0, row.Side.SelectedIndex);
-            var dialog = new SafetyPerPostWindow(row.Label, postCount, defaultSide, row.PostSides) { Owner = this };
+            // A bota has a general side ("(por defecto)" in the per-post editor); a lateral has none, and defaults to the
+            // orillas (first + last frente) the first time it's configured.
+            var defaultSide = row.IsBota ? (SafetySide)Math.Max(0, row.Side.SelectedIndex) : SafetySide.None;
+            var current = row.PostSides;
+            if (row.IsLateral && (current == null || current.Count == 0))
+            {
+                current = OrillaDefaults(postCount);
+            }
+
+            var dialog = new SafetyPerPostWindow(row.Label, postCount, defaultSide, current) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -177,6 +192,18 @@ namespace RackCad.UI
 
             row.PostSides = dialog.Result.ToList();
             row.PerPost.Content = PerPostLabel(row.PostSides.Count);
+        }
+
+        /// <summary>Default posts for a protector lateral: the two orillas (first and last frente), on both sides.</summary>
+        private static List<SafetyPostSide> OrillaDefaults(int postCount)
+        {
+            var result = new List<SafetyPostSide> { new SafetyPostSide { PostIndex = 0, Side = SafetySide.Both } };
+            if (postCount > 1)
+            {
+                result.Add(new SafetyPostSide { PostIndex = postCount - 1, Side = SafetySide.Both });
+            }
+
+            return result;
         }
 
         private static string GroupTitle(string type)
@@ -198,14 +225,15 @@ namespace RackCad.UI
             var result = new List<SelectiveSafetySelection>();
             foreach (var row in rows)
             {
-                if (row.IsBota)
+                if (row.IsBota || row.IsLateral)
                 {
-                    var side = (SafetySide)Math.Max(0, row.Side.SelectedIndex);
+                    // A bota has a general side; a lateral is per-post only (Side stays None).
+                    var side = row.IsBota ? (SafetySide)Math.Max(0, row.Side.SelectedIndex) : SafetySide.None;
                     var overrides = row.PostSides ?? new List<SafetyPostSide>();
                     var drawsSomewhere = side != SafetySide.None || overrides.Any(p => p != null && p.Side != SafetySide.None);
                     if (!drawsSomewhere)
                     {
-                        continue; // nothing draws for this bota
+                        continue; // nothing draws for this element
                     }
 
                     var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = side, Quantity = 1 };

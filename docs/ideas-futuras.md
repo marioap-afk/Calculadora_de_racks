@@ -80,8 +80,14 @@
    se traslapan (espejo sobre el origen del poste). Helper compartido `SelectiveSafetyPlacement` (mirrorAxisX null =
    frontal, con valor = reflexión). **BOM:** cada elemento es su PROPIO componente (la bota ES el componente, no un nodo
    "Elementos de seguridad"); el conteo sale de la PLANTA (placement real system-level). Diálogo: combo de lado general
-   + "Por poste…". **Ojo:** `FondoSystemView` y el resolver copian `SafetySelections` con sus `PostSides`. **Pendiente:**
-   validar en AutoCAD el espejo/orientación de los bloques LATERAL y PLANTA; los demás elementos (dependen de su bloque).
+   + "Por poste…". **Ojo:** `FondoSystemView` y el resolver copian `SafetySelections` con sus `PostSides`.
+   **Protector lateral HECHO (2026-07-13):** type=LATERAL en seguridad.csv; se coloca IGUAL que la bota (mismo helper
+   `SelectiveSafetyPlacement`, mismo espejo al centro del fondo, eje del fondo) pero (a) con LONGITUD = fondo de la
+   cabecera (`SelectiveDepthLayout.TotalFondoDepth`/span del frente en planta/lateral), y (b) donde va REEMPLAZA a las
+   botas de ese frente (`DrawsAt` → se dibuja el lateral y se omiten las botas). Diálogo: fila LATERAL solo con "Por
+   poste…", pre-sembrado con las orillas (primer y último frente, Ambos) la primera vez. BOM: es su propio componente
+   y las botas ya no cuentan en esos frentes (el conteo sale de la planta). **Pendiente:** validar en AutoCAD el
+   espejo/orientación/longitud de los bloques; los demás elementos (desviadores, topes, guardas, parrillas).
 4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
    "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
    pasillo sería un gran ahorro.

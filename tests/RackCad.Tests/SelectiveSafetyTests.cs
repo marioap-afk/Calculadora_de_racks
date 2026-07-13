@@ -35,6 +35,24 @@ namespace RackCad.Tests
             return bay;
         }
 
+        private const string LateralId = "PROTECTOR_LATERAL_BOTA_H_3_16_18";
+
+        /// <summary>A design of N frentes with a bota (general side, all frentes) + a protector lateral on chosen posts.</summary>
+        private static SelectivePalletDesign DesignWithLateral(int frentes, SafetySide botaSide, params (int Post, SafetySide Side)[] lateralPosts)
+        {
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletDepth = 48.0 };
+            for (var i = 0; i < frentes; i++) design.Bays.Add(Bay());
+            if (botaSide != SafetySide.None)
+            {
+                design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Side = botaSide });
+            }
+
+            var lateral = new SelectiveSafetySelection { ElementId = LateralId, Side = SafetySide.None };
+            foreach (var (post, side) in lateralPosts) lateral.PostSides.Add(new SafetyPostSide { PostIndex = post, Side = side });
+            design.SafetySelections.Add(lateral);
+            return design;
+        }
+
         /// <summary>A design of N frentes (N+1 posts) with one bota selection carrying per-post side overrides.</summary>
         private static SelectivePalletDesign DesignWithPostSides(int frentes, SafetySide defaultSide, params (int Post, SafetySide Side)[] overrides)
         {
@@ -128,6 +146,48 @@ namespace RackCad.Tests
         {
             var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 0, SafetySide.None)), Catalog);
             Assert.Empty(system.SafetySelections);
+        }
+
+        [Fact]
+        public void Frontal_Lateral_ReplacesBotasAtItsFrente()
+        {
+            // 2 frentes = 3 posts. Bota Both on all; a protector lateral on frente 0 → frente 0 has laterales, NO botas.
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithLateral(2, SafetySide.Both, (0, SafetySide.Both)), Catalog);
+            var instances = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog).ToList();
+            var safety = instances.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            Assert.Equal(2, safety.Count(s => s.BlockName == "PROTECTOR_LATERAL_BOTA_H_3_16_18_FRONTAL")); // frente 0, Both = 2
+            Assert.Equal(4, safety.Count(s => s.BlockName == "PROTECTOR_BOTA_H_3_16_18_FRONTAL"));         // frentes 1 & 2 only
+        }
+
+        [Fact]
+        public void Planta_Lateral_SpansTheFondoDepth_ViaLongitudParam()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithLateral(2, SafetySide.None, (0, SafetySide.Both)), Catalog);
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
+            var laterales = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            Assert.NotEmpty(laterales);
+            Assert.All(laterales, l => Assert.Equal(depth, l.DynamicParameters[SelectiveRackDefaults.LengthParam], 3));
+        }
+
+        [Fact]
+        public void Bom_Lateral_IsOwnComponent_AndSuppressesBotasThere()
+        {
+            // Bota Both on all 3 frentes (posts 0..2) + a lateral on frente 0. Botas count = frentes 1 & 2 only.
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithLateral(2, SafetySide.Both, (0, SafetySide.Both)), Catalog);
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+
+            var lateral = bom.Components.Single(c => c.ProfileId == LateralId);
+            Assert.Equal(SelectiveBomBuilder.Safety, lateral.Category);
+            Assert.Equal(2, lateral.Quantity); // frente 0, Both
+
+            var bota = bom.Components.Single(c => c.ProfileId == "PROTECTOR_BOTA_H_3_16_18");
+            Assert.Equal(4, bota.Quantity);    // frentes 1 & 2 (Both) — NOT 6; frente 0's botas are suppressed
         }
 
         [Fact]

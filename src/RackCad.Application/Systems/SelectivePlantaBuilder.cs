@@ -51,9 +51,11 @@ namespace RackCad.Application.Systems
             var groups = new List<PlantaGroupBuilder>();
             var shared = new Dictionary<string, PlantaGroupBuilder>(StringComparer.Ordinal);
 
-            // Enabled botas (planta blocks) + the default plate whose PLANTA mate places them at the front-post base.
-            // Loose (not grouped): a per-post side may differ, and the frames stay shared for the ARRAY pattern.
-            var botas = SelectiveSafetyPlacement.EnabledBotas(system, catalog, PlantaView);
+            // Safety elements (planta blocks) + the default plate whose PLANTA mate places them at the front-post base.
+            // Loose (not grouped): a per-post side may differ, and the frames stay shared for the ARRAY pattern. A LATERAL
+            // (end-of-row guard, LONGITUD = the frente's depth span) REPLACES the botas at its frente.
+            var botas = SelectiveSafetyPlacement.EnabledOfType(system, catalog, PlantaView, SelectiveSafetyPlacement.BotaType);
+            var laterales = SelectiveSafetyPlacement.EnabledOfType(system, catalog, PlantaView, SelectiveSafetyPlacement.LateralType);
             var defaultPlateId = catalog?.Defaults?.BasePlate;
 
             // Each fondo's own height fallback (a fondo with only level-less bays still needs a post height).
@@ -87,9 +89,18 @@ namespace RackCad.Application.Systems
 
                 if (frenteFront <= frenteBack)
                 {
-                    // One bota at the system front post (Left), reflected to the system back (Right) about the center.
+                    // One element at the system front post (Left), reflected to the system back (Right) about the center.
+                    // A LATERAL at this frente replaces the botas and spans the frente's depth (LONGITUD).
                     var frenteCenterX = (frenteFront + frenteBack) / 2.0;
-                    SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, new Point2D(frenteFront, frenteYs[i]), defaultPlateId, i, frenteCenterX);
+                    var at = new Point2D(frenteFront, frenteYs[i]);
+                    if (SelectiveSafetyPlacement.DrawsAt(laterales, i))
+                    {
+                        SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, laterales, at, defaultPlateId, i, frenteCenterX, longitud: frenteBack - frenteFront);
+                    }
+                    else
+                    {
+                        SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, at, defaultPlateId, i, frenteCenterX);
+                    }
                 }
 
                 for (var k = 0; k < offsets.Count; k++)

@@ -53,9 +53,12 @@ namespace RackCad.Application.Systems
             var postBlock = Block(catalog, system.PostId, view);
             var defaultPlateId = catalog?.Defaults?.BasePlate;
 
-            // Enabled "protector de bota" safety elements: drawn at each post, origin coincident with the base plate's
-            // origin (the user's rule), on the side that post resolves to (default side, or its per-post override).
-            var botas = SelectiveSafetyPlacement.EnabledBotas(system, catalog, view);
+            // Safety elements at each post, origin coincident with the base plate's origin (the user's rule), on the
+            // side that post resolves to. A LATERAL (end-of-row guard, LONGITUD = the total fondo) REPLACES the botas at
+            // its frente. In the frontal the guard is seen edge-on (its length goes into the depth).
+            var botas = SelectiveSafetyPlacement.EnabledOfType(system, catalog, view, SelectiveSafetyPlacement.BotaType);
+            var laterales = SelectiveSafetyPlacement.EnabledOfType(system, catalog, view, SelectiveSafetyPlacement.LateralType);
+            var systemDepth = SelectiveDepthLayout.TotalFondoDepth(system);
 
             // Blocks.FindBlock is a linear scan and the run repeats the same 1-2 beam/plate ids across ~100
             // levels + 21 plates, so memoize the RESULT of the existing lookup per piece id, scoped to this Build
@@ -98,7 +101,16 @@ namespace RackCad.Application.Systems
                 var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
 
                 AddPostWithPlate(instances, catalog, view, system.PostId, postBlock, CachedBlock, origin, postHeight, postPeralte, plateId, platePeralte, system.DrawBasePlate);
-                SelectiveSafetyPlacement.AppendAtPost(instances, catalog, view, botas, origin, plateId, i);
+
+                // A LATERAL at this frente replaces the botas; otherwise the botas draw.
+                if (SelectiveSafetyPlacement.DrawsAt(laterales, i))
+                {
+                    SelectiveSafetyPlacement.AppendAtPost(instances, catalog, view, laterales, origin, plateId, i, mirrorAxisX: null, longitud: systemDepth);
+                }
+                else
+                {
+                    SelectiveSafetyPlacement.AppendAtPost(instances, catalog, view, botas, origin, plateId, i);
+                }
             }
 
             // Largueros: one per resolved level, at the left post's troquel X, at the level's resolved Y. A "medio

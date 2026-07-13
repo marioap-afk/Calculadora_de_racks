@@ -9,26 +9,39 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Places "protector de bota" safety elements at post bases, identically across views (frontal/lateral/planta).
-    /// A bota's origin coincides with the base plate's origin — post origin minus the plate's MONTAJE_POSTE mate for
-    /// that view (the user's rule; the bota has no mate of its own). The side chooses the mirror: Left = as-is,
-    /// Right = mirrored, Both = one of each. The side is per-post: a post uses its
-    /// <see cref="SelectiveSafetySelection.SideForPost"/> override, else the selection default.
+    /// Places post-base safety elements (BOTA = "protector de bota"; LATERAL = "protector lateral", an end-of-row guard)
+    /// identically across views (frontal/lateral/planta). An element's origin coincides with the base plate's origin —
+    /// post origin minus the plate's MONTAJE_POSTE mate for that view (the user's rule; the element has no mate of its
+    /// own). The side chooses the mirror: Left = as-is, Right = mirrored, Both = one of each. The side is per-post: a
+    /// post uses its <see cref="SelectiveSafetySelection.SideForPost"/> override, else the selection default.
     ///
-    /// The mirror reference differs by view. In the FRONTAL a post is its own symmetric unit, so the mirrored copy
-    /// flips about the block's own origin (X scale −1), in place. In the depth views (PLANTA/LATERAL) the whole system
-    /// is symmetric about the CENTER of its total fondo (depth) span — a rack can have several fondos — so the mirrored
-    /// copy is a true reflection about that vertical line: it flips AND moves to the reflected X. Callers pass that
-    /// center as <c>mirrorAxisX</c> (null = flip about the origin). Shared so the rule stays identical per view.
+    /// A LATERAL is placed like a BOTA but carries a LONGITUD = the frame fondo (depth) and, where present, REPLACES the
+    /// botas at that frente (an end-guard covers the uprights, so no botas there).
+    ///
+    /// The mirror reference differs by view. In the FRONTAL a post is its own symmetric unit, so the mirrored copy flips
+    /// about the block's own origin (X scale −1), in place. In the depth views (PLANTA/LATERAL) the whole system is
+    /// symmetric about the CENTER of its total fondo (depth) span — a rack can have several fondos — so the mirrored copy
+    /// is a true reflection about that vertical line: it flips AND moves to the reflected X. Callers pass that center as
+    /// <c>mirrorAxisX</c> (null = flip about the origin). Shared so the rule stays identical per view.
     /// </summary>
     internal static class SelectiveSafetyPlacement
     {
-        /// <summary>The enabled botas for a view: catalog Type == BOTA, a drawn side (default OR any per-post override),
-        /// and a block defined for the view (else it can't be drawn). Returns (pieceId, block, selection) so the caller
-        /// resolves the per-post side at each post.</summary>
-        public static List<(string PieceId, string Block, SelectiveSafetySelection Selection)> EnabledBotas(SelectiveRackSystem system, RackCatalog catalog, string view)
+        public const string BotaType = "BOTA";
+        public const string LateralType = "LATERAL";
+
+        public sealed class SafetyElement
         {
-            var result = new List<(string, string, SelectiveSafetySelection)>();
+            public string PieceId;
+            public string Block;
+            public SelectiveSafetySelection Selection;
+        }
+
+        /// <summary>The enabled safety elements of a catalog <paramref name="type"/> for a view: a drawn side (default OR
+        /// any per-post override) and a block defined for the view (else it can't be drawn). The caller resolves the
+        /// per-post side at each post.</summary>
+        public static List<SafetyElement> EnabledOfType(SelectiveRackSystem system, RackCatalog catalog, string view, string type)
+        {
+            var result = new List<SafetyElement>();
             if (system?.SafetySelections == null || catalog?.SafetyElements == null)
             {
                 return result;
@@ -50,7 +63,7 @@ namespace RackCad.Application.Systems
                 }
 
                 var element = catalog.SafetyElements.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
-                if (element == null || !string.Equals(element.Type, "BOTA", StringComparison.OrdinalIgnoreCase))
+                if (element == null || !string.Equals(element.Type, type, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
@@ -58,24 +71,30 @@ namespace RackCad.Application.Systems
                 var block = CatalogLookup.Block(catalog, selection.ElementId, view);
                 if (!string.IsNullOrWhiteSpace(block))
                 {
-                    result.Add((selection.ElementId, block, selection));
+                    result.Add(new SafetyElement { PieceId = selection.ElementId, Block = block, Selection = selection });
                 }
             }
 
             return result;
         }
 
-        /// <summary>Append the botas for ONE post (index <paramref name="postIndex"/>) at <paramref name="postOrigin"/>:
+        /// <summary>True if any of these elements draws at post <paramref name="postIndex"/> — used so a LATERAL frente
+        /// suppresses its botas.</summary>
+        public static bool DrawsAt(IReadOnlyList<SafetyElement> elements, int postIndex)
+            => elements != null && elements.Any(e => e.Selection.SideForPost(postIndex) != SafetySide.None);
+
+        /// <summary>Append the elements for ONE post (index <paramref name="postIndex"/>) at <paramref name="postOrigin"/>:
         /// each sits at the base plate origin (postOrigin − the plate's <paramref name="view"/> mate), on the side this
-        /// post resolves to. <paramref name="plateId"/> may be blank (no plate) → the bota sits on the post origin.
+        /// post resolves to. <paramref name="plateId"/> may be blank (no plate) → it sits on the post origin.
         /// <paramref name="mirrorAxisX"/> is the reflection line for the mirrored (Right) copy: null flips about the
-        /// block origin in place (frontal); a value reflects position + orientation about that X (planta/lateral).</summary>
+        /// block origin in place (frontal); a value reflects position + orientation about that X (planta/lateral).
+        /// <paramref name="longitud"/>, when set, becomes the piece's LONGITUD dynamic param (the LATERAL spans the fondo).</summary>
         public static void AppendAtPost(
             ICollection<HeaderBlockInstance> target, RackCatalog catalog, string view,
-            IReadOnlyList<(string PieceId, string Block, SelectiveSafetySelection Selection)> botas,
-            Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null)
+            IReadOnlyList<SafetyElement> elements,
+            Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null)
         {
-            if (botas == null || botas.Count == 0)
+            if (elements == null || elements.Count == 0)
             {
                 return;
             }
@@ -88,23 +107,24 @@ namespace RackCad.Application.Systems
             // Mirrored copy: reflect about the axis (moves across it) when given, else flip about the block origin (in place).
             var mirroredAt = mirrorAxisX.HasValue ? new Point2D(2.0 * mirrorAxisX.Value - at.X, at.Y) : at;
 
-            foreach (var (pieceId, block, selection) in botas)
+            foreach (var element in elements)
             {
-                var side = selection.SideForPost(postIndex);
+                var side = element.Selection.SideForPost(postIndex);
                 if (side == SafetySide.Left || side == SafetySide.Both)
                 {
-                    target.Add(Bota(pieceId, block, view, at, mirrored: false));
+                    target.Add(Piece(element.PieceId, element.Block, view, at, mirrored: false, longitud));
                 }
 
                 if (side == SafetySide.Right || side == SafetySide.Both)
                 {
-                    target.Add(Bota(pieceId, block, view, mirroredAt, mirrored: true));
+                    target.Add(Piece(element.PieceId, element.Block, view, mirroredAt, mirrored: true, longitud));
                 }
             }
         }
 
-        private static HeaderBlockInstance Bota(string pieceId, string block, string view, Point2D at, bool mirrored)
-            => new HeaderBlockInstance
+        private static HeaderBlockInstance Piece(string pieceId, string block, string view, Point2D at, bool mirrored, double? longitud)
+        {
+            var instance = new HeaderBlockInstance
             {
                 Role = HeaderBlockRole.Safety,
                 PieceId = pieceId,
@@ -114,5 +134,13 @@ namespace RackCad.Application.Systems
                 Insertion = at,
                 ConnectionAnchor = at
             };
+
+            if (longitud.HasValue && longitud.Value > 0.0)
+            {
+                instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = longitud.Value;
+            }
+
+            return instance;
+        }
     }
 }

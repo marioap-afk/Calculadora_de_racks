@@ -163,6 +163,28 @@ namespace RackCad.Application.Systems
             return cabecera > 0.0 ? cabecera : pallet;
         }
 
+        /// <summary>The total fondo (depth) span of the whole system: frontmost post (offsets[0]=0) to the backmost post
+        /// across all fondos. Used as a LATERAL guard's LONGITUD (it runs the full depth).</summary>
+        public static double TotalFondoDepth(SelectiveRackSystem system)
+        {
+            var offsets = Offsets(system);
+            if (offsets.Count == 0)
+            {
+                return 0.0;
+            }
+
+            var front = offsets[0];
+            var back = 0.0;
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                if (offsets[k] < front) front = offsets[k];
+                var b = offsets[k] + CabeceraDepthOfFondo(system, k);
+                if (b > back) back = b;
+            }
+
+            return back - front;
+        }
+
         /// <summary>
         /// Cumulative X offset of each fondo along the depth axis: fondo 0 at 0, fondo k at
         /// offset[k-1] + cabeceraDepth(fondo k-1) + separator(gap k-1). Steps by the FRAME depth (each fondo can have

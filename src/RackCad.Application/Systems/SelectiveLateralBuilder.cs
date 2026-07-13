@@ -40,8 +40,10 @@ namespace RackCad.Application.Systems
             var offsets = SelectiveDepthLayout.Offsets(system); // one X per fondo (doble profundidad), per-fondo depth
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
-            // Enabled botas (lateral blocks) + the default plate whose LATERAL mate places them at the front-post base.
-            var botas = SelectiveSafetyPlacement.EnabledBotas(system, catalog, LateralView);
+            // Safety elements (lateral blocks) + the default plate whose LATERAL mate places them at the front-post base.
+            // A LATERAL (end-of-row guard, LONGITUD = the corte's depth) REPLACES the botas at its frente.
+            var botas = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.BotaType);
+            var laterales = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.LateralType);
             var defaultPlateId = catalog?.Defaults?.BasePlate;
 
             // Each fondo has its OWN bays (own levels/heights AND its own frente count). Resolve them + a per-fondo
@@ -143,7 +145,15 @@ namespace RackCad.Application.Systems
                     if (back > backmostDepth) backmostDepth = back;
                 }
 
-                SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, new Point2D(0.0, 0.0), defaultPlateId, i, backmostDepth / 2.0);
+                var corteFront = new Point2D(0.0, 0.0);
+                if (SelectiveSafetyPlacement.DrawsAt(laterales, i))
+                {
+                    SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, laterales, corteFront, defaultPlateId, i, backmostDepth / 2.0, longitud: backmostDepth);
+                }
+                else
+                {
+                    SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, corteFront, defaultPlateId, i, backmostDepth / 2.0);
+                }
 
                 // Annotations once, from the primary (anchor) fondo's levels + its height.
                 AddCorteAnnotations(extras, system, i, CollectLevels(fondoBays[firstReaching], i), fondoBays[firstReaching], fondoFallback[firstReaching]);
