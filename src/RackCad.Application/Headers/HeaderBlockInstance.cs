@@ -33,7 +33,11 @@ namespace RackCad.Application.Headers
         /// <summary>A linear dimension between <see cref="HeaderBlockInstance.Insertion"/> (p1) and
         /// <see cref="HeaderBlockInstance.ConnectionAnchor"/> (p2), its dimension line offset by
         /// <see cref="HeaderBlockInstance.DimensionOffset"/>. Drawn as a RotatedDimension on the dimensions layer.</summary>
-        Dimension
+        Dimension,
+
+        /// <summary>A safety accessory (protector de bota, protector lateral, tope…) — an ordinary block reference,
+        /// placed by its own rule (e.g. a bota at each post's base plate). Drawn like any catalog block.</summary>
+        Safety
     }
 
     /// <summary>

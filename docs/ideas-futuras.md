@@ -68,10 +68,13 @@
    poste tope, guardas traseras, parrillas. **Fase 0 HECHA (2026-07-12, selectivo):** catálogo propio
    `seguridad.csv` (`SafetyElementCatalogEntry` → `RackCatalog.SafetyElements`), selección por cantidad en el
    editor (botón "Elementos de seguridad…" → `SelectiveSafetyWindow`), round-trip en el diseño, y entran al
-   **BOM** como un componente "Seguridad" (peso/costo del catálogo; también en `RACKBOMTOTAL`). **Pendiente
-   (Fase 1):** DIBUJARLOS en las vistas — necesita el bloque de AutoCAD de cada uno + sus puntos de conexión en
-   `blocks.csv`/`connection-layout.csv` + las reglas de colocación por familia (base de poste / extremo / fondo /
-   deck). Dependencia de assets, no de código.
+   **BOM** como un componente "Seguridad". **Fase 1 arrancó (2026-07-12): la BOTA se DIBUJA en la frontal** —
+   `HeaderBlockRole.Safety`; `SelectiveFrontalBuilder` coloca cada bota tipo BOTA habilitada (qty>0) en CADA
+   poste, con su origen coincidente con el de la placa base (`origin − MONTAJE_POSTE`); bloque por convención
+   `<id>_<VISTA>` (`blocks.csv`); el BOM cuenta lo DIBUJADO (no la cantidad manual). **Ojo:** `FondoSystemView`
+   debe copiar `SafetySelections` (como Dimensions) o no dibuja. **Pendiente Fase 1:** personalización POR POSTE
+   (cuál sí/cuál no, un lado o ambos; lateral solo en orillas), lateral/planta, y los demás elementos
+   (dependen de su bloque). Sin puntos de conexión: la bota usa su propio origen.
 4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
    "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
    pasillo sería un gran ahorro.

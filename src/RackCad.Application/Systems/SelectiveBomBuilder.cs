@@ -50,6 +50,24 @@ namespace RackCad.Application.Systems
                 return;
             }
 
+            // Count what the drawing actually places (per its placement rule), by piece id — "en base al dibujo sería el
+            // BOM". A selection that draws nothing yet (no block/rule) falls back to its manual quantity.
+            var drawn = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var frontalBuilder = new SelectiveFrontalBuilder();
+            var fondoCount = SelectiveDepthLayout.Count(system);
+            for (var k = 0; k < fondoCount; k++)
+            {
+                foreach (var instance in frontalBuilder.Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog))
+                {
+                    if (instance.Role != HeaderBlockRole.Safety || string.IsNullOrWhiteSpace(instance.PieceId))
+                    {
+                        continue;
+                    }
+
+                    drawn[instance.PieceId] = drawn.TryGetValue(instance.PieceId, out var count) ? count + 1 : 1;
+                }
+            }
+
             var pieces = new List<BomLine>();
             foreach (var selection in system.SafetySelections)
             {
@@ -65,7 +83,7 @@ namespace RackCad.Application.Systems
                     ProfileId = selection.ElementId,
                     Description = element?.Label ?? selection.ElementId,
                     Length = 0.0,
-                    Quantity = selection.Quantity
+                    Quantity = drawn.TryGetValue(selection.ElementId, out var drawnCount) ? drawnCount : selection.Quantity
                 });
             }
 

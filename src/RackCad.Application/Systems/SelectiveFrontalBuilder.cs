@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Geometry;
 using RackCad.Application.Headers;
@@ -53,6 +54,10 @@ namespace RackCad.Application.Systems
             var postBlock = Block(catalog, system.PostId, view);
             var defaultPlateId = catalog?.Defaults?.BasePlate;
 
+            // Enabled "protector de bota" safety elements: drawn one per (shared) post, its origin coincident with the
+            // base plate's origin (the user's rule). Default = every post; per-post customization is a later increment.
+            var botas = EnabledBotas(system, catalog, view);
+
             // Blocks.FindBlock is a linear scan and the run repeats the same 1-2 beam/plate ids across ~100
             // levels + 21 plates, so memoize the RESULT of the existing lookup per piece id, scoped to this Build
             // (view is constant here; caching the FirstOrDefault result keeps first-match-wins on duplicate rows,
@@ -94,6 +99,7 @@ namespace RackCad.Application.Systems
                 var platePeralte = cabecera?.LeftBasePlate?.PeralteOverride ?? plateEntry?.StandardPeralte(postPeralte) ?? 0.0;
 
                 AddPostWithPlate(instances, catalog, view, system.PostId, postBlock, CachedBlock, origin, postHeight, postPeralte, plateId, platePeralte, system.DrawBasePlate);
+                AddBotas(instances, catalog, view, origin, plateId, botas);
             }
 
             // Largueros: one per resolved level, at the left post's troquel X, at the level's resolved Y. A "medio
@@ -245,6 +251,65 @@ namespace RackCad.Application.Systems
             }
 
             instances.Add(plate);
+        }
+
+        /// <summary>The enabled "protector de bota" safety elements (id + block) for this view: selected with quantity &gt; 0,
+        /// catalog type BOTA, and with a block defined for the view (else it can't be drawn and is skipped).</summary>
+        private static List<(string PieceId, string Block)> EnabledBotas(SelectiveRackSystem system, RackCatalog catalog, string view)
+        {
+            var result = new List<(string, string)>();
+            if (system.SafetySelections == null || catalog?.SafetyElements == null)
+            {
+                return result;
+            }
+
+            foreach (var selection in system.SafetySelections)
+            {
+                if (selection == null || selection.Quantity <= 0 || string.IsNullOrWhiteSpace(selection.ElementId))
+                {
+                    continue;
+                }
+
+                var element = catalog.SafetyElements.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
+                if (element == null || !string.Equals(element.Type, "BOTA", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var block = Block(catalog, selection.ElementId, view);
+                if (!string.IsNullOrWhiteSpace(block))
+                {
+                    result.Add((selection.ElementId, block));
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>Place each enabled bota at this post, its origin coincident with the base plate's origin
+        /// (post origin − the plate's MONTAJE_POSTE mate); the bota has no mate of its own (its insertion IS its origin).</summary>
+        private static void AddBotas(ICollection<HeaderBlockInstance> instances, RackCatalog catalog, string view, Point2D origin, string plateId, List<(string PieceId, string Block)> botas)
+        {
+            if (botas.Count == 0)
+            {
+                return;
+            }
+
+            var plateMate = string.IsNullOrWhiteSpace(plateId) ? new Point2D(0.0, 0.0) : Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
+            var at = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y);
+
+            foreach (var (pieceId, block) in botas)
+            {
+                instances.Add(new HeaderBlockInstance
+                {
+                    Role = HeaderBlockRole.Safety,
+                    PieceId = pieceId,
+                    BlockName = block,
+                    View = view,
+                    Insertion = at,
+                    ConnectionAnchor = at
+                });
+            }
         }
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
