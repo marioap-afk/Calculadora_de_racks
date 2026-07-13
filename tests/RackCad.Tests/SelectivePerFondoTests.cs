@@ -60,6 +60,19 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Planta_DobleProfundidad_DrawsSeparadoresInTheGap()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
+            var separadores = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(x => x.Role == HeaderBlockRole.Separator).ToList();
+
+            // 2 fondos reaching all 3 frente posts, one gap → one separador per frente post.
+            Assert.Equal(3, separadores.Count);
+            Assert.All(separadores, s => Assert.Equal("SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12_PLANTA", s.BlockName));
+            Assert.All(separadores, s => Assert.True(s.DynamicParameters[SelectiveRackDefaults.LengthParam] > 0.0)); // span the gap
+        }
+
+        [Fact]
         public void Lateral_SingleFondo_HasNoSeparadores()
         {
             var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0 };

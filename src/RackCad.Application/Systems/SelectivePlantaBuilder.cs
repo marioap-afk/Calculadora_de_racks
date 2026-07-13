@@ -172,6 +172,7 @@ namespace RackCad.Application.Systems
             }
 
             AddLargueros(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
+            AddSeparadores(loose, system, catalog, frenteYs, offsets);
             AddAnnotations(loose, system, frenteYs);
 
             var fondoDepths = new List<double>(offsets.Count);
@@ -395,6 +396,73 @@ namespace RackCad.Application.Systems
                         AddLarguero(instances, level.BeamId, block, new Point2D(offset + troquel.X, tramoY), tramo.Length, level.BeamPeralte, mirrored: false);
                         AddLarguero(instances, level.BeamId, block, new Point2D(offset + depthK - troquel.X, tramoY), tramo.Length, level.BeamPeralte, mirrored: true);
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Separadores in PLANTA (doble profundidad): per frente post, one spacer per GAP between adjacent reaching
+        /// fondos, spanning X from fondo k's back post to fondo k+1's front post (LONGITUD = the gap). The vertical
+        /// stack that the lateral shows collapses to one line in top view. Anchored on the back post's PLANTA
+        /// <c>TROQUEL_SEPARADOR</c> (its Y slides with the post peralte), mated by the separador's <c>TROQUEL_CABECERA</c>.
+        /// </summary>
+        private static void AddSeparadores(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets)
+        {
+            if (offsets.Count < 2)
+            {
+                return; // needs a gap
+            }
+
+            var block = catalog?.Blocks.FindBlock(DynamicRackDefaults.SeparatorCatalogId, PlantaView)?.BlockName;
+            if (string.IsNullOrWhiteSpace(block))
+            {
+                return; // no PLANTA separador block yet
+            }
+
+            var separatorMate = CatalogLookup.Local(catalog, DynamicRackDefaults.SeparatorCatalogId, DynamicRackDefaults.SeparatorMatePoint, PlantaView);
+            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, DynamicRackDefaults.SeparatorPostPoint, PlantaView);
+
+            for (var i = 0; i < frenteYs.Count; i++)
+            {
+                // Reaching fondos at this frente post, in depth order; need at least two for a gap.
+                var reaching = new List<int>();
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    if (i <= SelectiveDepthLayout.BaysOfFondo(system, k).Count) reaching.Add(k);
+                }
+
+                if (reaching.Count < 2)
+                {
+                    continue;
+                }
+
+                // The post's TROQUEL_SEPARADOR (PLANTA) — its Y slides with the post peralte, so resolve with it.
+                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
+                var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
+
+                for (var r = 0; r + 1 < reaching.Count; r++)
+                {
+                    var k = reaching[r];
+                    var kNext = reaching[r + 1];
+                    var backX = offsets[k] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k); // fondo k's back post
+                    var gap = offsets[kNext] - backX;                                              // to fondo k+1's front post
+                    if (gap <= 0.0)
+                    {
+                        continue;
+                    }
+
+                    var anchor = new Point2D(backX - troquel.X, frenteYs[i] + troquel.Y);
+                    var separador = new HeaderBlockInstance
+                    {
+                        Role = HeaderBlockRole.Separator,
+                        PieceId = DynamicRackDefaults.SeparatorCatalogId,
+                        BlockName = block,
+                        View = PlantaView,
+                        ConnectionAnchor = anchor,
+                        Insertion = new Point2D(anchor.X - separatorMate.X, anchor.Y - separatorMate.Y)
+                    };
+                    separador.DynamicParameters[SelectiveRackDefaults.LengthParam] = gap;
+                    instances.Add(separador);
                 }
             }
         }
