@@ -469,9 +469,10 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// Larguero topes (rear pallet stops) in PLANTA: at the CENTRAL fondo's back post, one per bay (the vertical
-        /// stack the lateral shows collapses to a line in top view), spanning the frente (Y) with LONGITUD = the bay's
-        /// larguero + ¼". Anchored on the (mirrored) back post's PLANTA <c>TROQUEL_SEPARADOR</c> (Y slides with peralte).
+        /// Larguero topes (rear pallet stops) in PLANTA: at the back post of each tope fondo (central shared, or the
+        /// central pair per-fondo), one per bay whose (frente,level) grid has any level on (the lateral's vertical stack
+        /// collapses to a line in top view), spanning the frente (Y) with LONGITUD = the bay's larguero + ¼". Anchored on
+        /// the (mirrored) back post's PLANTA <c>TROQUEL_SEPARADOR</c> (Y slides with peralte).
         /// </summary>
         private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets)
         {
@@ -481,53 +482,57 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            var c = SelectiveSafetyPlacement.CentralFondo(offsets.Count); // the central fondo carries the tope
-            var bays = SelectiveDepthLayout.BaysOfFondo(system, c);
-            if (bays.Count == 0)
-            {
-                return;
-            }
-
-            var backX = offsets[c] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, c); // its back post
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, DynamicRackDefaults.SeparatorPostPoint, PlantaView);
             var tope = topes[0];
             var selection = tope.Selection;
+            var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
 
-            for (var i = 0; i < bays.Count && i < frenteYs.Count; i++)
+            foreach (var f in SelectiveSafetyPlacement.TopeFondos(selection, offsets.Count))
             {
-                var beamLength = bays[i].BeamLength;
-                if (beamLength <= 0.0)
+                if (f < 0 || f >= offsets.Count)
                 {
                     continue;
                 }
 
-                // The vertical stack collapses to one planta line: draw it if ANY of this frente's levels has a tope.
-                var anyOn = false;
-                for (var level = 0; level < bays[i].Levels.Count; level++)
-                {
-                    if (selection.TopeAt(i, level)) { anyOn = true; break; }
-                }
+                var bays = SelectiveDepthLayout.BaysOfFondo(system, f);
+                var backX = offsets[f] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f); // fondo f's back post
 
-                if (!anyOn)
+                for (var i = 0; i < bays.Count && i < frenteYs.Count; i++)
                 {
-                    continue;
-                }
+                    var beamLength = bays[i].BeamLength;
+                    if (beamLength <= 0.0)
+                    {
+                        continue;
+                    }
 
-                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
-                var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
-                var at = new Point2D(backX - troquel.X, frenteYs[i] + troquel.Y);
-                var instance = new HeaderBlockInstance
-                {
-                    Role = HeaderBlockRole.Tope,
-                    PieceId = tope.PieceId,
-                    BlockName = tope.Block,
-                    View = PlantaView,
-                    Insertion = at,
-                    ConnectionAnchor = at
-                };
-                instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = beamLength + SelectiveSafetyPlacement.TopeLengthAllowance;
-                instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
-                instances.Add(instance);
+                    // The vertical stack collapses to one planta line: draw it if ANY of this frente's levels has a tope.
+                    var anyOn = false;
+                    for (var level = 0; level < bays[i].Levels.Count; level++)
+                    {
+                        if (selection.TopeAt(i, level)) { anyOn = true; break; }
+                    }
+
+                    if (!anyOn)
+                    {
+                        continue;
+                    }
+
+                    var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
+                    var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
+                    var at = new Point2D(backX - troquel.X, frenteYs[i] + troquel.Y);
+                    var instance = new HeaderBlockInstance
+                    {
+                        Role = HeaderBlockRole.Tope,
+                        PieceId = tope.PieceId,
+                        BlockName = tope.Block,
+                        View = PlantaView,
+                        Insertion = at,
+                        ConnectionAnchor = at
+                    };
+                    instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = beamLength + SelectiveSafetyPlacement.TopeLengthAllowance;
+                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
+                    instances.Add(instance);
+                }
             }
         }
 

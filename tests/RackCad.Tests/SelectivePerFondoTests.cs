@@ -165,8 +165,12 @@ namespace RackCad.Tests
             Assert.False(rsel.TopeAt(0, 0)); // the off cell
             Assert.True(rsel.TopeAt(0, 1));  // still on
 
-            // BOM: the off cell drops one tope from the total.
-            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            // BOM (shared): the off cell drops one tope from the central fondo's total.
+            var sharedDesign = PerFondoDesign();
+            var s2 = new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = true };
+            s2.TopeOffCells.Add(new SelectiveGridCell { Frente = 0, Level = 0 });
+            sharedDesign.SafetySelections.Add(s2);
+            var system = new SelectiveGeometryResolver().Resolve(sharedDesign, Catalog);
             var total = SelectiveBomBuilder.Build(system, Catalog).Components.Where(c => c.ProfileId == TopeId).Sum(c => c.Quantity);
             var allOn = SelectiveDepthLayout.BaysOfFondo(system, 0).Sum(b => b.Levels.Count);
             Assert.Equal(allOn - 1, total);
@@ -187,6 +191,27 @@ namespace RackCad.Tests
                 .SelectMany(c => c.Largueros).Where(x => x.Role == HeaderBlockRole.Tope).ToList();
             Assert.NotEmpty(topes);
             Assert.All(topes, t => Assert.Equal(5.0, t.DynamicParameters["SAQUE"], 3)); // the configured saque, not the default
+        }
+
+        [Fact]
+        public void Tope_PerFondo_Both_CountsBothCentralBacks()
+        {
+            var design = PerFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = false });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var total = SelectiveBomBuilder.Build(system, Catalog).Components.Where(c => c.ProfileId == TopeId).Sum(c => c.Quantity);
+            // Per-fondo Both (2 fondos) = the central pair (fondos 0 and 1): both fondos' largueros carry a tope.
+            var expected = SelectiveDepthLayout.BaysOfFondo(system, 0).Sum(b => b.Levels.Count)
+                         + SelectiveDepthLayout.BaysOfFondo(system, 1).Sum(b => b.Levels.Count);
+            Assert.Equal(expected, total);
+
+            // Shared draws fewer (only the central fondo).
+            design.SafetySelections.Clear();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = true });
+            var sharedSystem = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var shared = SelectiveBomBuilder.Build(sharedSystem, Catalog).Components.Where(c => c.ProfileId == TopeId).Sum(c => c.Quantity);
+            Assert.True(shared < total);
         }
 
         [Fact]

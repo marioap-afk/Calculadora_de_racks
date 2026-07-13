@@ -309,9 +309,10 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// Larguero topes (rear pallet stops) for this corte: at the CENTRAL fondo's back post, one per larguero level,
-        /// 4" above the larguero, mated on the (mirrored) back post's <c>TROQUEL_SEPARADOR</c>. SAQUE = 3" default. In
-        /// the lateral the tope is seen end-on, so LONGITUD is irrelevant here (it matters in planta/frontal). Loose.
+        /// Larguero topes (rear pallet stops) for this corte: at the back post of each tope fondo (central shared, or
+        /// the central pair per-fondo), one per larguero level whose (frente,level) grid cell is on, ~8" above the
+        /// larguero, mated on the (mirrored) back post's <c>TROQUEL_SEPARADOR</c>, SAQUE from the config. Loose; the
+        /// levels of the two bays a corte bounds are deduped by Y so the same height isn't drawn twice.
         /// </summary>
         private void AddTopes(
             ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
@@ -323,36 +324,53 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            var c = SelectiveSafetyPlacement.CentralFondo(offsets.Count); // the central fondo carries the tope
-            if (postIndex > fondoBays[c].Count)
-            {
-                return; // fondo c doesn't reach this corte
-            }
-
-            var backX = (offsets[c] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, c); // its back post
             var troquel = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
-            var mateX = backX - troquel.X; // the (mirrored) back post's TROQUEL_SEPARADOR, the tope's origin in X
-            const double paso = 2.0;       // the tope must land on a separador troquel: mate.Y + a whole number of pasos
+            const double paso = 2.0; // the tope must land on a separador troquel: mate.Y + a whole number of pasos
 
             foreach (var tope in topes)
             {
-                var saque = tope.Selection.TopeSaque > 0.0 ? tope.Selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
-                foreach (var level in CollectLevels(fondoBays[c], postIndex))
+                var selection = tope.Selection;
+                var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+
+                foreach (var f in SelectiveSafetyPlacement.TopeFondos(selection, offsets.Count))
                 {
-                    // Rise ~6" above the larguero, then snap to the TROQUEL_SEPARADOR grid (an even number of pasos from the mate).
-                    var y = troquel.Y + Math.Round((level.Y + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
-                    var at = new Point2D(mateX, y);
-                    var instance = new HeaderBlockInstance
+                    if (f < 0 || f >= fondoBays.Length || postIndex > fondoBays[f].Count)
                     {
-                        Role = HeaderBlockRole.Tope,
-                        PieceId = tope.PieceId,
-                        BlockName = tope.Block,
-                        View = LateralView,
-                        ConnectionAnchor = at,
-                        Insertion = at
-                    };
-                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-                    result.Add(instance);
+                        continue; // fondo f doesn't reach this corte
+                    }
+
+                    var backX = (offsets[f] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
+                    var mateX = backX - troquel.X; // the (mirrored) back post's TROQUEL_SEPARADOR
+
+                    // Grid-filtered distinct larguero heights of the (up to two) bays this corte bounds.
+                    var ys = new HashSet<double>();
+                    var bays = fondoBays[f];
+                    for (var b = postIndex - 1; b <= postIndex; b++)
+                    {
+                        if (b < 0 || b >= bays.Count) continue;
+                        for (var lvl = 0; lvl < bays[b].Levels.Count; lvl++)
+                        {
+                            if (selection.TopeAt(b, lvl)) ys.Add(Math.Round(bays[b].Levels[lvl].Y, 4));
+                        }
+                    }
+
+                    foreach (var y0 in ys)
+                    {
+                        // Rise ~8" above the larguero, then snap to the TROQUEL_SEPARADOR grid (a whole number of pasos from the mate).
+                        var y = troquel.Y + Math.Round((y0 + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
+                        var at = new Point2D(mateX, y);
+                        var instance = new HeaderBlockInstance
+                        {
+                            Role = HeaderBlockRole.Tope,
+                            PieceId = tope.PieceId,
+                            BlockName = tope.Block,
+                            View = LateralView,
+                            ConnectionAnchor = at,
+                            Insertion = at
+                        };
+                        instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
+                        result.Add(instance);
+                    }
                 }
             }
         }

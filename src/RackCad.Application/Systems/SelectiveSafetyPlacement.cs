@@ -37,13 +37,35 @@ namespace RackCad.Application.Systems
         public const double DefaultSaque = 3.0;
 
         /// <summary>A larguero tope's nominal rise ABOVE its larguero level (then snapped to the TROQUEL_SEPARADOR grid).</summary>
-        public const double TopeYOffset = 6.0;
+        public const double TopeYOffset = 8.0;
 
         /// <summary>A larguero tope's LONGITUD = its larguero's length + this (inches).</summary>
         public const double TopeLengthAllowance = 0.25;
 
         /// <summary>The fondo whose back carries the tope: the central one. 1 fondo → 0 (back); 2 → 0 (center); 4 → 1 (central pair).</summary>
         public static int CentralFondo(int fondoCount) => fondoCount > 0 ? (fondoCount - 1) / 2 : 0;
+
+        /// <summary>The fondo(s) whose BACK carries a tope: shared → just the central one; per-fondo → the central pair
+        /// (c and c+1), filtered by <see cref="SelectiveSafetySelection.Side"/> (Left = c, Right = c+1, Both = both).</summary>
+        public static IEnumerable<int> TopeFondos(SelectiveSafetySelection selection, int fondoCount)
+        {
+            var c = CentralFondo(fondoCount);
+            if (selection == null || selection.TopeShared)
+            {
+                yield return c;
+                yield break;
+            }
+
+            if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)
+            {
+                yield return c;
+            }
+
+            if ((selection.Side == SafetySide.Right || selection.Side == SafetySide.Both) && c + 1 < fondoCount)
+            {
+                yield return c + 1;
+            }
+        }
 
         /// <summary>A protector lateral's manufactured length exceeds its drawn LONGITUD (= the fondo) by this much (the
         /// guide/flanges overhang the posts). The BOM reports drawnLongitud + this.</summary>
