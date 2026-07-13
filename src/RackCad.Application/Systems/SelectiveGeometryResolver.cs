@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Domain.Systems;
 
@@ -64,9 +65,17 @@ namespace RackCad.Application.Systems
             system.DimensionStyle = design.DimensionStyle;
             foreach (var safety in design.SafetySelections)
             {
-                if (safety != null && (safety.Quantity > 0 || safety.Side != SafetySide.None) && !string.IsNullOrWhiteSpace(safety.ElementId))
+                // Keep a selection if it counts (quantity), draws by default (a side), OR draws on some post (an override).
+                var hasPostSide = safety?.PostSides != null && safety.PostSides.Any(p => p != null && p.Side != SafetySide.None);
+                if (safety != null && (safety.Quantity > 0 || safety.Side != SafetySide.None || hasPostSide) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    system.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
+                    var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side };
+                    foreach (var post in safety.PostSides)
+                    {
+                        if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
+                    }
+
+                    system.SafetySelections.Add(copy);
                 }
             }
 

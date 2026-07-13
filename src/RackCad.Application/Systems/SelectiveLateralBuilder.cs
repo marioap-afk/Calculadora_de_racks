@@ -40,6 +40,10 @@ namespace RackCad.Application.Systems
             var offsets = SelectiveDepthLayout.Offsets(system); // one X per fondo (doble profundidad), per-fondo depth
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
 
+            // Enabled botas (lateral blocks) + the default plate whose LATERAL mate places them at the front-post base.
+            var botas = SelectiveSafetyPlacement.EnabledBotas(system, catalog, LateralView);
+            var defaultPlateId = catalog?.Defaults?.BasePlate;
+
             // Each fondo has its OWN bays (own levels/heights AND its own frente count). Resolve them + a per-fondo
             // height fallback once.
             var fondoBays = new IList<SelectiveBay>[offsets.Count];
@@ -122,6 +126,17 @@ namespace RackCad.Application.Systems
                     }
 
                     BuildLargueros(extras, fondoBays[k], i, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k), offsets[k] - anchorOffset, catalog);
+                }
+
+                // Botas: each reaching fondo's front-post base (anchor-relative X=offset), on the side post i resolves to.
+                for (var k = 0; k < offsets.Count; k++)
+                {
+                    if (i > fondoBays[k].Count)
+                    {
+                        continue;
+                    }
+
+                    SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, new Point2D(offsets[k] - anchorOffset, 0.0), defaultPlateId, i);
                 }
 
                 // Annotations once, from the primary (anchor) fondo's levels + its height.

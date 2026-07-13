@@ -1182,21 +1182,37 @@ namespace RackCad.UI
         /// <summary>Open the safety-accessories dialog (catalog elements × quantity); store the selection for the BOM.</summary>
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections) { Owner = this };
+            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
             }
 
             safetySelections.Clear();
-            safetySelections.AddRange(dialog.Result.Select(s => new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side }));
+            safetySelections.AddRange(dialog.Result.Select(CopySafety));
             UpdateSafetyButton();
         }
+
+        /// <summary>A deep copy of a safety selection, carrying its per-post side overrides.</summary>
+        private static SelectiveSafetySelection CopySafety(SelectiveSafetySelection s)
+        {
+            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side };
+            foreach (var post in s.PostSides)
+            {
+                if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
+            }
+
+            return copy;
+        }
+
+        /// <summary>A selection contributes to the drawing/BOM: it has a quantity, a default drawn side, or any post override that draws.</summary>
+        private static bool SafetyDraws(SelectiveSafetySelection s)
+            => s != null && (s.Quantity > 0 || s.Side != SafetySide.None || s.PostSides.Any(p => p != null && p.Side != SafetySide.None));
 
         /// <summary>Reflect the number of chosen safety accessories on the button label.</summary>
         private void UpdateSafetyButton()
         {
-            var count = safetySelections.Count(s => s.Quantity > 0 || s.Side != SafetySide.None);
+            var count = safetySelections.Count(SafetyDraws);
             SafetyButton.Content = count > 0
                 ? "Elementos de seguridad (" + count.ToString(CultureInfo.InvariantCulture) + ")…"
                 : "Elementos de seguridad…";
@@ -1887,9 +1903,9 @@ namespace RackCad.UI
             design.DimensionStyle = SelectedDimStyle();
             foreach (var safety in safetySelections)
             {
-                if ((safety.Quantity > 0 || safety.Side != SafetySide.None) && !string.IsNullOrWhiteSpace(safety.ElementId))
+                if (SafetyDraws(safety) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
+                    design.SafetySelections.Add(CopySafety(safety));
                 }
             }
 
@@ -2009,9 +2025,9 @@ namespace RackCad.UI
             safetySelections.Clear();
             foreach (var safety in design.SafetySelections)
             {
-                if (safety != null && (safety.Quantity > 0 || safety.Side != SafetySide.None) && !string.IsNullOrWhiteSpace(safety.ElementId))
+                if (SafetyDraws(safety) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    safetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
+                    safetySelections.Add(CopySafety(safety));
                 }
             }
 

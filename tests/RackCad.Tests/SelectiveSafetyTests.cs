@@ -27,6 +27,23 @@ namespace RackCad.Tests
             return design;
         }
 
+        /// <summary>A design of N frentes (N+1 posts) with one bota selection carrying per-post side overrides.</summary>
+        private static SelectivePalletDesign DesignWithPostSides(int frentes, SafetySide defaultSide, params (int Post, SafetySide Side)[] overrides)
+        {
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletDepth = 48.0 };
+            for (var i = 0; i < frentes; i++)
+            {
+                var bay = new SelectiveBayDesign();
+                bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 42.0, Alto = 60.0 }, PalletCount = 2, BeamId = BeamId, BeamPeralte = 4.0 });
+                design.Bays.Add(bay);
+            }
+
+            var selection = new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Quantity = 1, Side = defaultSide };
+            foreach (var (post, side) in overrides) selection.PostSides.Add(new SafetyPostSide { PostIndex = post, Side = side });
+            design.SafetySelections.Add(selection);
+            return design;
+        }
+
         [Fact]
         public void Catalog_LoadsSafetyElements_FromCsv()
         {
@@ -110,6 +127,69 @@ namespace RackCad.Tests
         {
             var system = new SelectiveGeometryResolver().Resolve(Design(), Catalog);
             Assert.DoesNotContain(SelectiveBomBuilder.Build(system, Catalog).Components, c => c.Category == SelectiveBomBuilder.Safety);
+        }
+
+        [Fact]
+        public void Frontal_PerPostSide_OverridesOnlyTheNamedPosts()
+        {
+            // 3 frentes = 4 posts. Default Left (1 bota/post, unmirrored); post 1 → Right (mirrored), post 2 → None (off).
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithPostSides(3, SafetySide.Left, (1, SafetySide.Right), (2, SafetySide.None)), Catalog);
+            var instances = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog).ToList();
+
+            var botas = instances.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+            Assert.Equal(3, botas.Count);                          // posts 0 & 3 (Left) + post 1 (Right); post 2 off
+            Assert.Equal(1, botas.Count(b => b.MirroredX));        // only post 1 (Right) is mirrored
+            Assert.Equal(2, botas.Count(b => !b.MirroredX));       // posts 0 & 3 (Left)
+        }
+
+        [Fact]
+        public void PostSides_RoundTripThroughDocument()
+        {
+            var store = new SelectivePalletDesignStore();
+            var design = DesignWithPostSides(2, SafetySide.Left, (0, SafetySide.None), (1, SafetySide.Right));
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id-1", "Rack A"))).ToDomain();
+
+            var selection = Assert.Single(restored.SafetySelections);
+            Assert.Equal(SafetySide.Left, selection.Side);
+            Assert.Equal(SafetySide.None, selection.SideForPost(0));   // override survives
+            Assert.Equal(SafetySide.Right, selection.SideForPost(1));  // override survives
+            Assert.Equal(SafetySide.Left, selection.SideForPost(5));   // unlisted post → default
+        }
+
+        [Fact]
+        public void Lateral_DrawsBotaAtCorteBase_WithLateralBlock()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
+
+            Assert.NotEmpty(cortes);
+            var botas = cortes[0].Largueros.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+            Assert.Equal(2, botas.Count); // Both = one per side at the corte's front post
+            Assert.All(botas, b => Assert.Equal("PROTECTOR_BOTA_H_3_16_18_LATERAL", b.BlockName));
+        }
+
+        [Fact]
+        public void Planta_DrawsOneBotaPerFrame_WithPlantaBlock()
+        {
+            // 2 frentes = 3 posts, single fondo, default Left → one bota per frame post.
+            var system = new SelectiveGeometryResolver().Resolve(DesignWithPostSides(2, SafetySide.Left), Catalog);
+            var instances = new SelectivePlantaBuilder().Build(system, Catalog).ToList();
+
+            var botas = instances.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+            Assert.Equal(3, botas.Count);
+            Assert.All(botas, b => Assert.False(b.MirroredX)); // Left
+            Assert.All(botas, b => Assert.Equal("PROTECTOR_BOTA_H_3_16_18_PLANTA", b.BlockName));
+        }
+
+        [Fact]
+        public void Planta_PerPostNone_SkipsThatFramesBota()
+        {
+            // Default Left, but post 0 turned off → only posts 1 & 2 carry a bota.
+            var system = new SelectiveGeometryResolver().Resolve(
+                DesignWithPostSides(2, SafetySide.Left, (0, SafetySide.None)), Catalog);
+            var botas = new SelectivePlantaBuilder().Build(system, Catalog).Count(i => i.Role == HeaderBlockRole.Safety);
+            Assert.Equal(2, botas);
         }
     }
 }

@@ -71,12 +71,16 @@
    **BOM** como un componente "Seguridad". **Fase 1 arrancó (2026-07-12): la BOTA se DIBUJA en la frontal** —
    `HeaderBlockRole.Safety`; `SelectiveFrontalBuilder` coloca cada bota tipo BOTA habilitada (qty>0) en CADA
    poste, con su origen coincidente con el de la placa base (`origin − MONTAJE_POSTE`); bloque por convención
-   `<id>_<VISTA>` (`blocks.csv`); el BOM cuenta lo DIBUJADO (no la cantidad manual). **Lado HECHO (2026-07-12):**
-   `SafetySide` {None/Left/Right/Both} en la selección (combo en el diálogo, round-trip); Left = sin espejo,
-   Right = espejo (X −1), Both = ambas; por defecto en TODOS los postes. **Ojo:** `FondoSystemView` debe copiar
-   `SafetySelections` (como Dimensions) o no dibuja. **Pendiente Fase 1:** personalización POR POSTE (cuál sí/cuál
-   no) — el modelo ya soporta el lado por poste, falta la UI; **lateral y planta** (hay que engancharlas donde
-   colocan la placa base); y los demás elementos (dependen de su bloque).
+   `<id>_<VISTA>` (`blocks.csv`); el BOM cuenta lo DIBUJADO (no la cantidad manual). **Lado + por-poste + 3 vistas
+   HECHO (2026-07-12):** `SafetySide` {None/Left/Right/Both} con `SelectiveSafetySelection.SideForPost(i)` (override
+   por poste, si no el lado general); Left = sin espejo, Right = espejo (X −1), Both = ambos; por defecto en TODOS los
+   postes. Diálogo: combo de lado general + "Por poste…" (subventana con un combo por poste, "(por defecto)" = usa el
+   general). Se dibuja en las **3 vistas** con la misma regla (bota coincide con el origen de la placa base = origen del
+   poste − mate MONTAJE_POSTE de esa vista): frontal en el poste, lateral/planta en el poste FRONTAL (aisle) de cada
+   marco/fondo. Helper compartido `SelectiveSafetyPlacement`. **Ojo:** `FondoSystemView` y el resolver deben copiar
+   `SafetySelections` con sus `PostSides` (como Dimensions) o no dibuja. **Pendiente:** validar en AutoCAD el
+   espejo/orientación de los bloques LATERAL y PLANTA (posición y lado); ¿bota también en el poste TRASERO del marco?
+   (hoy solo el frontal, para que el conteo cuadre con la frontal); los demás elementos (dependen de su bloque).
 4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
    "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
    pasillo sería un gran ahorro.

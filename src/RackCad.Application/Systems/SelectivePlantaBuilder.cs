@@ -51,6 +51,11 @@ namespace RackCad.Application.Systems
             var groups = new List<PlantaGroupBuilder>();
             var shared = new Dictionary<string, PlantaGroupBuilder>(StringComparer.Ordinal);
 
+            // Enabled botas (planta blocks) + the default plate whose PLANTA mate places them at the front-post base.
+            // Loose (not grouped): a per-post side may differ, and the frames stay shared for the ARRAY pattern.
+            var botas = SelectiveSafetyPlacement.EnabledBotas(system, catalog, PlantaView);
+            var defaultPlateId = catalog?.Defaults?.BasePlate;
+
             // Each fondo's own height fallback (a fondo with only level-less bays still needs a post height).
             var fondoFallbacks = new double[offsets.Count];
             for (var k = 0; k < offsets.Count; k++)
@@ -96,6 +101,9 @@ namespace RackCad.Application.Systems
                     }
 
                     group.Placements.Add(new HeaderPlacement(offsets[k], mirrored: false, insertionY: frenteYs[i]));
+
+                    // Bota at this fondo's front-post base (X = offset), on the side post i resolves to.
+                    SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, new Point2D(offsets[k], frenteYs[i]), defaultPlateId, i);
                 }
             }
 

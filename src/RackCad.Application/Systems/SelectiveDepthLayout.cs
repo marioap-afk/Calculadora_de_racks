@@ -85,7 +85,13 @@ namespace RackCad.Application.Systems
 
             foreach (var safety in system.SafetySelections)
             {
-                view.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
+                var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side };
+                foreach (var post in safety.PostSides)
+                {
+                    if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
+                }
+
+                view.SafetySelections.Add(copy);
             }
 
             foreach (var bay in BaysOfFondo(system, k)) view.Bays.Add(bay);

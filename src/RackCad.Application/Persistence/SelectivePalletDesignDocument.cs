@@ -125,7 +125,13 @@ namespace RackCad.Application.Persistence
             document.Dimensions = (int)design.Dimensions;
             document.DimensionStyle = design.DimensionStyle;
             document.SafetySelections = design.SafetySelections
-                .Select(s => new SafetySelectionDocument { ElementId = s.ElementId, Quantity = s.Quantity, Side = (int)s.Side }).ToList();
+                .Select(s => new SafetySelectionDocument
+                {
+                    ElementId = s.ElementId,
+                    Quantity = s.Quantity,
+                    Side = (int)s.Side,
+                    PostSides = s.PostSides.Where(p => p != null).Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList()
+                }).ToList();
 
             return document;
         }
@@ -195,12 +201,21 @@ namespace RackCad.Application.Persistence
             {
                 if (safety != null && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    design.SafetySelections.Add(new SelectiveSafetySelection
+                    var selection = new SelectiveSafetySelection
                     {
                         ElementId = safety.ElementId,
                         Quantity = safety.Quantity,
                         Side = ToSafetySide(safety.Side)
-                    });
+                    };
+                    foreach (var post in safety.PostSides ?? Enumerable.Empty<PostSideDocument>())
+                    {
+                        if (post != null && post.PostIndex >= 0)
+                        {
+                            selection.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = ToSafetySide(post.Side) });
+                        }
+                    }
+
+                    design.SafetySelections.Add(selection);
                 }
             }
 
@@ -300,12 +315,20 @@ namespace RackCad.Application.Persistence
         public bool Loaded { get; set; } = true;
     }
 
-    /// <summary>One selected safety accessory: its catalog id, quantity, and (drawable elements) the side. Side is
-    /// nullable so legacy designs (no field) default to Both.</summary>
+    /// <summary>One selected safety accessory: its catalog id, quantity, the default side, and per-post side overrides.
+    /// Side is nullable so legacy designs (no field) default to Both; PostSides is null/empty when there are none.</summary>
     public sealed class SafetySelectionDocument
     {
         public string ElementId { get; set; }
         public int Quantity { get; set; }
+        public int? Side { get; set; }
+        public List<PostSideDocument> PostSides { get; set; }
+    }
+
+    /// <summary>A per-post side override for a safety selection (post index → side int).</summary>
+    public sealed class PostSideDocument
+    {
+        public int PostIndex { get; set; }
         public int? Side { get; set; }
     }
 

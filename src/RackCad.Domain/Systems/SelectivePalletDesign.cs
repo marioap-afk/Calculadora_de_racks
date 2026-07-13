@@ -130,14 +130,36 @@ namespace RackCad.Domain.Systems
     }
 
     /// <summary>One safety accessory chosen for a rack: its catalog id, a manual quantity (BOM fallback for elements
-    /// with no drawing rule yet), and — for a DRAWABLE element (bota) — the <see cref="Side"/> it sits on at each post.</summary>
+    /// with no drawing rule yet), and — for a DRAWABLE element (bota) — the <see cref="Side"/> it sits on at each post,
+    /// with optional <see cref="PostSides"/> exceptions for specific posts.</summary>
     public sealed class SelectiveSafetySelection
     {
         public string ElementId { get; set; }
         public int Quantity { get; set; }
 
-        /// <summary>Default side for a drawable element (applied to every post; per-post overrides are a later phase).</summary>
+        /// <summary>Default side for a drawable element, applied to every post unless overridden in <see cref="PostSides"/>.</summary>
         public SafetySide Side { get; set; } = SafetySide.Both;
+
+        /// <summary>Per-post overrides (post index → side); a post not listed uses <see cref="Side"/>.</summary>
+        public IList<SafetyPostSide> PostSides { get; } = new List<SafetyPostSide>();
+
+        /// <summary>The side for post <paramref name="postIndex"/>: its override if present, else the default <see cref="Side"/>.</summary>
+        public SafetySide SideForPost(int postIndex)
+        {
+            foreach (var over in PostSides)
+            {
+                if (over != null && over.PostIndex == postIndex) return over.Side;
+            }
+
+            return Side;
+        }
+    }
+
+    /// <summary>A per-post side override for a safety selection.</summary>
+    public sealed class SafetyPostSide
+    {
+        public int PostIndex { get; set; }
+        public SafetySide Side { get; set; }
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>
