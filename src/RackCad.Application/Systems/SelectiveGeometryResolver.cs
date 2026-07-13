@@ -69,7 +69,7 @@ namespace RackCad.Application.Systems
                 var hasPostSide = safety?.PostSides != null && safety.PostSides.Any(p => p != null && p.Side != SafetySide.None);
                 if (safety != null && (safety.Quantity > 0 || safety.Side != SafetySide.None || hasPostSide) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side, TopeShared = safety.TopeShared };
+                    var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side, TopeShared = safety.TopeShared, TopeSaque = safety.TopeSaque };
                     foreach (var post in safety.PostSides)
                     {
                         if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });

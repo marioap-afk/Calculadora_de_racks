@@ -336,6 +336,7 @@ namespace RackCad.Application.Systems
 
             foreach (var tope in topes)
             {
+                var saque = tope.Selection.TopeSaque > 0.0 ? tope.Selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
                 foreach (var level in CollectLevels(fondoBays[c], postIndex))
                 {
                     // Rise ~6" above the larguero, then snap to the TROQUEL_SEPARADOR grid (an even number of pasos from the mate).
@@ -350,7 +351,7 @@ namespace RackCad.Application.Systems
                         ConnectionAnchor = at,
                         Insertion = at
                     };
-                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = SelectiveSafetyPlacement.DefaultSaque;
+                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
                     result.Add(instance);
                 }
             }

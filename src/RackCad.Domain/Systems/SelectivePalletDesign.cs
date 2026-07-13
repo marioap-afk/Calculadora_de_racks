@@ -159,6 +159,9 @@ namespace RackCad.Domain.Systems
         /// <summary>TOPE: one shared central tope (true) vs one per fondo of the central pair (false, guided by <see cref="Side"/>).</summary>
         public bool TopeShared { get; set; } = true;
 
+        /// <summary>TOPE: the block's SAQUE (stick-out) parameter, inches (&lt;= 0 → the default 3").</summary>
+        public double TopeSaque { get; set; } = 3.0;
+
         /// <summary>TOPE: the (frente, level) cells with NO tope (default empty = a tope at every larguero).</summary>
         public IList<SelectiveGridCell> TopeOffCells { get; } = new List<SelectiveGridCell>();
 

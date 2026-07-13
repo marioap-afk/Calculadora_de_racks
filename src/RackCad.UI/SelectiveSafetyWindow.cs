@@ -24,6 +24,7 @@ namespace RackCad.UI
         private readonly List<Row> rows = new List<Row>();
         private readonly TextBlock error;
         private readonly int postCount;
+        private readonly IReadOnlyList<int> levelsPerFrente;
 
         private sealed class Row
         {
@@ -31,18 +32,27 @@ namespace RackCad.UI
             public string Label;
             public bool IsBota;                      // BOTA: general side on every frente
             public bool IsLateral;                   // LATERAL: per-post only (defaults to the orillas), replaces botas
-            public bool IsTope;                      // TOPE: on/off (rear pallet stop at the central fondo)
+            public bool IsTope;                      // TOPE: rear pallet stop at the central fondo (grid config)
             public ComboBox Side;                    // BOTA: default side
             public Button PerPost;                   // BOTA/LATERAL: "Por poste…"
             public List<SafetyPostSide> PostSides;   // BOTA/LATERAL: per-post overrides (working copy)
             public TextBox Quantity;                 // non-drawable
+
+            // ---- TOPE working config (edited via the grid dialog) ----
+            public bool TopeConfigured;
+            public bool TopeShared = true;
+            public SafetySide TopeSide = SafetySide.Both;
+            public double TopeSaque = 3.0;
+            public List<SelectiveGridCell> TopeOffCells = new List<SelectiveGridCell>();
+            public Button TopeButton;
         }
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null)
         {
             this.postCount = Math.Max(1, postCount);
+            this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             elements ??= new List<SafetyElementCatalogEntry>();
             var currentById = new Dictionary<string, SelectiveSafetySelection>(StringComparer.OrdinalIgnoreCase);
             foreach (var selection in current ?? Enumerable.Empty<SelectiveSafetySelection>())
@@ -121,14 +131,27 @@ namespace RackCad.UI
 
                     if (isTope)
                     {
-                        // A tope is on/off for now (shared central, all levels); the shared/side + level config is a later phase.
-                        var combo = new ComboBox { VerticalAlignment = VerticalAlignment.Center, ToolTip = "Larguero tope trasero: dibuja uno por larguero en el fondo central (lateral y planta). La frontal tiene su propio toggle." };
-                        combo.Items.Add("No");
-                        combo.Items.Add("Sí");
-                        combo.SelectedIndex = existing != null && existing.Side != SafetySide.None ? 1 : 0;
-                        Grid.SetColumn(combo, 1);
-                        grid.Children.Add(combo);
-                        row.Side = combo;
+                        if (existing != null)
+                        {
+                            row.TopeConfigured = true;
+                            row.TopeShared = existing.TopeShared;
+                            row.TopeSide = existing.Side == SafetySide.None ? SafetySide.Both : existing.Side;
+                            row.TopeSaque = existing.TopeSaque > 0.0 ? existing.TopeSaque : 3.0;
+                            row.TopeOffCells = existing.TopeOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList() ?? new List<SelectiveGridCell>();
+                        }
+
+                        var button = new Button
+                        {
+                            Style = TryFindResource("SecondaryButtonStyle") as Style,
+                            Content = TopeLabel(row),
+                            Padding = new Thickness(10, 3, 10, 3),
+                            VerticalAlignment = VerticalAlignment.Center,
+                            ToolTip = "Larguero tope trasero: elige por frente y nivel, compartido o por fondo, y el saque. Se dibuja en lateral y planta."
+                        };
+                        button.Click += (s, e) => EditTope(row);
+                        Grid.SetColumn(button, 1);
+                        grid.Children.Add(button);
+                        row.TopeButton = button;
                     }
                     else if (isBota || isLateral)
                     {
@@ -207,6 +230,25 @@ namespace RackCad.UI
             row.PerPost.Content = PerPostLabel(row.PostSides.Count);
         }
 
+        private static string TopeLabel(Row row) => row.TopeConfigured ? "Configurado ✓…" : "Configurar…";
+
+        private void EditTope(Row row)
+        {
+            var dialog = new SafetyTopeGridWindow(row.Label, levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeOffCells) { Owner = this };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var r = dialog.Result;
+            row.TopeConfigured = true;
+            row.TopeShared = r.Shared;
+            row.TopeSide = r.Side;
+            row.TopeSaque = r.Saque;
+            row.TopeOffCells = r.OffCells;
+            row.TopeButton.Content = TopeLabel(row);
+        }
+
         /// <summary>Default posts for a protector lateral: the two orillas (first and last frente), the guide on opposite
         /// sides — the first frente as-is (Left), the last mirrored (Right) — ONE block each. "Ambos" is for a bridge.</summary>
         private static List<SafetyPostSide> OrillaDefaults(int postCount)
@@ -241,10 +283,22 @@ namespace RackCad.UI
             {
                 if (row.IsTope)
                 {
-                    // On/off for now: "Sí" (index 1) enables the tope (stored as Both, meaning "drawn").
-                    if (row.Side.SelectedIndex >= 1)
+                    if (row.TopeConfigured)
                     {
-                        result.Add(new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1 });
+                        // Disabled when every (frente,level) cell is off.
+                        var total = 0;
+                        foreach (var n in levelsPerFrente) total += n;
+                        var allOff = total > 0 && row.TopeOffCells.Count >= total;
+                        if (!allOff)
+                        {
+                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque };
+                            foreach (var c in row.TopeOffCells)
+                            {
+                                if (c != null) selection.TopeOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
+                            }
+
+                            result.Add(selection);
+                        }
                     }
 
                     continue;

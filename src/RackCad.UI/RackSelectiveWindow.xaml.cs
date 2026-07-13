@@ -1182,7 +1182,9 @@ namespace RackCad.UI
         /// <summary>Open the safety-accessories dialog (catalog elements × quantity); store the selection for the BOM.</summary>
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1) { Owner = this };
+            // The tope grid needs the matrix dimensions (levels per frente) of fondo 0 (the main matrix).
+            var levelsPerFrente = bays.Select(b => b.Count).ToList();
+            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -1193,13 +1195,18 @@ namespace RackCad.UI
             UpdateSafetyButton();
         }
 
-        /// <summary>A deep copy of a safety selection, carrying its per-post side overrides.</summary>
+        /// <summary>A deep copy of a safety selection, carrying its per-post side overrides + the tope grid config.</summary>
         private static SelectiveSafetySelection CopySafety(SelectiveSafetySelection s)
         {
-            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side };
+            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque };
             foreach (var post in s.PostSides)
             {
                 if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
+            }
+
+            foreach (var cell in s.TopeOffCells)
+            {
+                if (cell != null) copy.TopeOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
             }
 
             return copy;

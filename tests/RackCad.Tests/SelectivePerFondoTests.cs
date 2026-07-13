@@ -173,6 +173,23 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Tope_CustomSaque_RoundTrips_AndDrawn()
+        {
+            var design = PerFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeSaque = 5.0 });
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "R"))).ToDomain();
+            Assert.Equal(5.0, restored.SafetySelections.Single(s => s.ElementId == TopeId).TopeSaque, 3);
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var topes = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .SelectMany(c => c.Largueros).Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+            Assert.NotEmpty(topes);
+            Assert.All(topes, t => Assert.Equal(5.0, t.DynamicParameters["SAQUE"], 3)); // the configured saque, not the default
+        }
+
+        [Fact]
         public void Tope_NotSelected_NoneDrawn()
         {
             var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);

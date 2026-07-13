@@ -526,7 +526,7 @@ namespace RackCad.Application.Systems
                     ConnectionAnchor = at
                 };
                 instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = beamLength + SelectiveSafetyPlacement.TopeLengthAllowance;
-                instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = SelectiveSafetyPlacement.DefaultSaque;
+                instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
                 instances.Add(instance);
             }
         }
