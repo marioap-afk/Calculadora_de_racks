@@ -182,24 +182,34 @@ namespace RackCad.Application.Systems
 
             // One tope per larguero (bay × level) at the CENTRAL fondo — counted from the model, NOT the lateral (which
             // shows each tope end-on at BOTH its posts) nor the planta (which collapses the levels to one line per bay).
+            var selection = topes[0].Selection;
             var central = SelectiveDepthLayout.BaysOfFondo(system, SelectiveSafetyPlacement.CentralFondo(SelectiveDepthLayout.Count(system)));
             var byLength = new Dictionary<double, int>();
             var order = new List<double>();
-            foreach (var bay in central)
+            for (var b = 0; b < central.Count; b++)
             {
+                var bay = central[b];
                 if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
                 {
                     continue;
                 }
 
                 var length = Round(bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance);
-                if (!byLength.ContainsKey(length))
+                for (var level = 0; level < bay.Levels.Count; level++)
                 {
-                    byLength[length] = 0;
-                    order.Add(length);
-                }
+                    if (!selection.TopeAt(b, level))
+                    {
+                        continue; // this (frente, level) cell is turned off in the grid
+                    }
 
-                byLength[length] += bay.Levels.Count; // one per larguero level
+                    if (!byLength.ContainsKey(length))
+                    {
+                        byLength[length] = 0;
+                        order.Add(length);
+                    }
+
+                    byLength[length]++; // one per larguero level that is on
+                }
             }
 
             if (byLength.Count == 0)

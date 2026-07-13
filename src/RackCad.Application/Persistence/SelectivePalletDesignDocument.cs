@@ -130,7 +130,9 @@ namespace RackCad.Application.Persistence
                     ElementId = s.ElementId,
                     Quantity = s.Quantity,
                     Side = (int)s.Side,
-                    PostSides = s.PostSides.Where(p => p != null).Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList()
+                    PostSides = s.PostSides.Where(p => p != null).Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList(),
+                    TopeShared = s.TopeShared,
+                    TopeOffCells = s.TopeOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList()
                 }).ToList();
 
             return document;
@@ -205,13 +207,22 @@ namespace RackCad.Application.Persistence
                     {
                         ElementId = safety.ElementId,
                         Quantity = safety.Quantity,
-                        Side = ToSafetySide(safety.Side)
+                        Side = ToSafetySide(safety.Side),
+                        TopeShared = safety.TopeShared ?? true // legacy docs (no field) default to shared
                     };
                     foreach (var post in safety.PostSides ?? Enumerable.Empty<PostSideDocument>())
                     {
                         if (post != null && post.PostIndex >= 0)
                         {
                             selection.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = ToSafetySide(post.Side) });
+                        }
+                    }
+
+                    foreach (var cell in safety.TopeOffCells ?? Enumerable.Empty<GridCellDocument>())
+                    {
+                        if (cell != null && cell.Frente >= 0 && cell.Level >= 0)
+                        {
+                            selection.TopeOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
                         }
                     }
 
@@ -323,6 +334,17 @@ namespace RackCad.Application.Persistence
         public int Quantity { get; set; }
         public int? Side { get; set; }
         public List<PostSideDocument> PostSides { get; set; }
+
+        /// <summary>TOPE-only: shared central tope vs one per fondo (nullable = legacy → shared). And the skipped cells.</summary>
+        public bool? TopeShared { get; set; }
+        public List<GridCellDocument> TopeOffCells { get; set; }
+    }
+
+    /// <summary>A serialized (frente, level) cell — a tope cell that is turned off.</summary>
+    public sealed class GridCellDocument
+    {
+        public int Frente { get; set; }
+        public int Level { get; set; }
     }
 
     /// <summary>A per-post side override for a safety selection (post index → side int).</summary>

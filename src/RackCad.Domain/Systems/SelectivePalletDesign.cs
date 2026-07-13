@@ -153,6 +153,25 @@ namespace RackCad.Domain.Systems
 
             return Side;
         }
+
+        // ---- TOPE-only config (larguero tope): shared vs per-fondo, and the (frente,level) cells to SKIP ----
+
+        /// <summary>TOPE: one shared central tope (true) vs one per fondo of the central pair (false, guided by <see cref="Side"/>).</summary>
+        public bool TopeShared { get; set; } = true;
+
+        /// <summary>TOPE: the (frente, level) cells with NO tope (default empty = a tope at every larguero).</summary>
+        public IList<SelectiveGridCell> TopeOffCells { get; } = new List<SelectiveGridCell>();
+
+        /// <summary>TOPE: true if a tope is drawn at (frente, level) — i.e. that cell is not in <see cref="TopeOffCells"/>.</summary>
+        public bool TopeAt(int frente, int level)
+        {
+            foreach (var off in TopeOffCells)
+            {
+                if (off != null && off.Frente == frente && off.Level == level) return false;
+            }
+
+            return true;
+        }
     }
 
     /// <summary>A per-post side override for a safety selection.</summary>
@@ -160,6 +179,13 @@ namespace RackCad.Domain.Systems
     {
         public int PostIndex { get; set; }
         public SafetySide Side { get; set; }
+    }
+
+    /// <summary>A (frente, level) cell reference — used to mark which larguero cells carry (or skip) a tope.</summary>
+    public sealed class SelectiveGridCell
+    {
+        public int Frente { get; set; }
+        public int Level { get; set; }
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
+using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using Xunit;
@@ -146,6 +147,29 @@ namespace RackCad.Tests
             // One per larguero at the central fondo (fondo 0).
             var expected = SelectiveDepthLayout.BaysOfFondo(system, 0).Sum(b => b.Levels.Count);
             Assert.Equal(expected, topes.Sum(c => c.Quantity));
+        }
+
+        [Fact]
+        public void Tope_GridOffCell_DropsFromBom_AndRoundTrips()
+        {
+            var design = PerFondoDesign();
+            var sel = new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = false };
+            sel.TopeOffCells.Add(new SelectiveGridCell { Frente = 0, Level = 0 }); // turn one cell off
+            design.SafetySelections.Add(sel);
+
+            // Round-trip preserves the off-cell + the shared flag.
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "Rack"))).ToDomain();
+            var rsel = restored.SafetySelections.Single(s => s.ElementId == TopeId);
+            Assert.False(rsel.TopeShared);
+            Assert.False(rsel.TopeAt(0, 0)); // the off cell
+            Assert.True(rsel.TopeAt(0, 1));  // still on
+
+            // BOM: the off cell drops one tope from the total.
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var total = SelectiveBomBuilder.Build(system, Catalog).Components.Where(c => c.ProfileId == TopeId).Sum(c => c.Quantity);
+            var allOn = SelectiveDepthLayout.BaysOfFondo(system, 0).Sum(b => b.Levels.Count);
+            Assert.Equal(allOn - 1, total);
         }
 
         [Fact]

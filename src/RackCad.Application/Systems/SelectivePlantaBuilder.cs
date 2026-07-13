@@ -491,11 +491,24 @@ namespace RackCad.Application.Systems
             var backX = offsets[c] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, c); // its back post
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, DynamicRackDefaults.SeparatorPostPoint, PlantaView);
             var tope = topes[0];
+            var selection = tope.Selection;
 
             for (var i = 0; i < bays.Count && i < frenteYs.Count; i++)
             {
                 var beamLength = bays[i].BeamLength;
                 if (beamLength <= 0.0)
+                {
+                    continue;
+                }
+
+                // The vertical stack collapses to one planta line: draw it if ANY of this frente's levels has a tope.
+                var anyOn = false;
+                for (var level = 0; level < bays[i].Levels.Count; level++)
+                {
+                    if (selection.TopeAt(i, level)) { anyOn = true; break; }
+                }
+
+                if (!anyOn)
                 {
                     continue;
                 }
