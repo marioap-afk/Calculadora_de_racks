@@ -75,6 +75,9 @@ namespace RackCad.Domain.Systems
         /// <summary>Name of the AutoCAD dimension style for the cotas; null/empty = automatic (current style, scaled).</summary>
         public string DimensionStyle { get; set; }
 
+        /// <summary>Safety accessories chosen for this rack (catalog id + quantity), carried through to the BOM.</summary>
+        public IList<SelectiveSafetySelection> SafetySelections { get; } = new List<SelectiveSafetySelection>();
+
         /// <summary>Client-facing rack name (used by the DrawRackName annotation); set at draw time.</summary>
         public string Name { get; set; }
     }

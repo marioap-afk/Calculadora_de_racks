@@ -22,6 +22,7 @@ namespace RackCad.Application.Catalogs
         public const string FlowBedProfilesFile = "flow-bed-profiles.json";
         public const string BeamProfilesFile = "beam-profiles.json";
         public const string MensulasFile = "mensulas.json";
+        public const string SafetyElementsFile = "seguridad.json";
         public const string ConnectionPointsFile = "connection-points.json";
         public const string ConnectionLayoutFile = "connection-layout.json";
         public const string ViewsFile = "views.json";
@@ -115,6 +116,7 @@ namespace RackCad.Application.Catalogs
                 FlowBedProfiles = ReadArray<FlowBedComponentCatalogEntry>(FlowBedProfilesFile),
                 BeamProfiles = beams,
                 Mensulas = ReadArray<MensulaCatalogEntry>(MensulasFile),
+                SafetyElements = ReadArray<SafetyElementCatalogEntry>(SafetyElementsFile),
                 ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile),
                 ConnectionLayout = ReadArray<ConnectionLayoutEntry>(ConnectionLayoutFile),
                 Views = ReadArray<ViewCatalogEntry>(ViewsFile),

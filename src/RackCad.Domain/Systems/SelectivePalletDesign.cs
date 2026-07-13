@@ -114,6 +114,17 @@ namespace RackCad.Domain.Systems
         /// <summary>Name of the AutoCAD dimension style to use for the cotas; null/empty = automatic (the drawing's
         /// current style, sized to <see cref="AnnotationScale"/>). A chosen style is respected as-is.</summary>
         public string DimensionStyle { get; set; }
+
+        /// <summary>Safety accessories chosen for this rack (catalog id + quantity), for the BOM. Drawing them in the
+        /// views is a future phase (needs their AutoCAD blocks); for now they are catalog + selection + BOM.</summary>
+        public IList<SelectiveSafetySelection> SafetySelections { get; } = new List<SelectiveSafetySelection>();
+    }
+
+    /// <summary>One safety accessory chosen for a rack: its catalog id and how many. Quantity ≤ 0 = not included.</summary>
+    public sealed class SelectiveSafetySelection
+    {
+        public string ElementId { get; set; }
+        public int Quantity { get; set; }
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

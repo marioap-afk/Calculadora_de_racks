@@ -64,10 +64,14 @@
 2. **Planta del sistema dinámico y de camas** — replicar la lógica multi-vista (GUID + View) que ya
    comparten selectivo y cabecera. El patrón está listo: builder puro + draw service + rama en
    `RACKEDITAR`.
-3. **Elementos de seguridad en los cortes laterales** — protectores de poste, topes de tarima, mallas
-   anticaída. Los **largueros** del corte lateral ya se dibujan (`SelectiveLateralBuilder.BuildLargueros`);
-   falta solo la seguridad, que necesita bloques `_LATERAL` nuevos + puntos de conexión en el catálogo
-   (dependencia de assets, no de código).
+3. **Elementos de seguridad** — protector bota H/C, protector lateral H/C, desviador L/C, larguero tope,
+   poste tope, guardas traseras, parrillas. **Fase 0 HECHA (2026-07-12, selectivo):** catálogo propio
+   `seguridad.csv` (`SafetyElementCatalogEntry` → `RackCatalog.SafetyElements`), selección por cantidad en el
+   editor (botón "Elementos de seguridad…" → `SelectiveSafetyWindow`), round-trip en el diseño, y entran al
+   **BOM** como un componente "Seguridad" (peso/costo del catálogo; también en `RACKBOMTOTAL`). **Pendiente
+   (Fase 1):** DIBUJARLOS en las vistas — necesita el bloque de AutoCAD de cada uno + sus puntos de conexión en
+   `blocks.csv`/`connection-layout.csv` + las reglas de colocación por familia (base de poste / extremo / fondo /
+   deck). Dependencia de assets, no de código.
 4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
    "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
    pasillo sería un gran ahorro.

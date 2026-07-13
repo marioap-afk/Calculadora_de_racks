@@ -59,6 +59,10 @@ namespace RackCad.UI
         /// <summary>Per-bay "medio frente" tramos (N tramos, the last calculated); empty = normal full-width bay. Parallel to <see cref="bays"/>.</summary>
         private readonly List<List<SelectiveSegment>> baySegments = new List<List<SelectiveSegment>>();
 
+        /// <summary>Safety accessories chosen for this rack (id + quantity), for the BOM. Edited via the "Elementos de
+        /// seguridad" dialog; drawing them is a future phase (needs their AutoCAD blocks).</summary>
+        private readonly List<SelectiveSafetySelection> safetySelections = new List<SelectiveSafetySelection>();
+
         /// <summary>Optional per-post cabecera (frame); one entry per post (N frentes → N+1 posts), null = run default.</summary>
         private readonly List<RackFrameConfiguration> postCabeceras = new List<RackFrameConfiguration>();
         private readonly List<double> postPeraltes = new List<double>(); // per-post PERALTE override; 0 = inherit the global
@@ -1175,6 +1179,29 @@ namespace RackCad.UI
                 fondo > 0.0 ? fondo : SelectiveRackDefaults.DefaultPalletDepth);
         }
 
+        /// <summary>Open the safety-accessories dialog (catalog elements × quantity); store the selection for the BOM.</summary>
+        private void Safety_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections) { Owner = this };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            safetySelections.Clear();
+            safetySelections.AddRange(dialog.Result.Select(s => new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity }));
+            UpdateSafetyButton();
+        }
+
+        /// <summary>Reflect the total number of safety accessories on the button label.</summary>
+        private void UpdateSafetyButton()
+        {
+            var total = safetySelections.Sum(s => s.Quantity);
+            SafetyButton.Content = total > 0
+                ? "Elementos de seguridad (" + total.ToString(CultureInfo.InvariantCulture) + ")…"
+                : "Elementos de seguridad…";
+        }
+
         private void ResetPost_Click(object sender, RoutedEventArgs e)
         {
             var i = PostSelectBox.SelectedIndex;
@@ -1858,6 +1885,13 @@ namespace RackCad.UI
             design.AnnotationScale = UiSupport.TryNum(AnnotationScaleBox.Text, out var annScale) && annScale > 0.0 ? annScale : 1.0;
             design.Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex));
             design.DimensionStyle = SelectedDimStyle();
+            foreach (var safety in safetySelections)
+            {
+                if (safety.Quantity > 0 && !string.IsNullOrWhiteSpace(safety.ElementId))
+                {
+                    design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                }
+            }
 
             return design;
         }
@@ -1971,6 +2005,17 @@ namespace RackCad.UI
             AnnotationScaleBox.Text = (design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0).ToString(CultureInfo.InvariantCulture);
             DimensionsBox.SelectedIndex = (int)design.Dimensions;
             SelectDimStyle(design.DimensionStyle);
+
+            safetySelections.Clear();
+            foreach (var safety in design.SafetySelections)
+            {
+                if (safety != null && safety.Quantity > 0 && !string.IsNullOrWhiteSpace(safety.ElementId))
+                {
+                    safetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                }
+            }
+
+            UpdateSafetyButton();
 
             BayCountBox.Text = bays.Count.ToString(CultureInfo.InvariantCulture);
             selBay = 0;

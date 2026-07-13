@@ -66,6 +66,9 @@ namespace RackCad.Application.Persistence
         /// <summary>Chosen AutoCAD dimension style name (null/empty = automatic).</summary>
         public string DimensionStyle { get; set; }
 
+        /// <summary>Selected safety accessories (id + quantity). Null/empty for legacy designs (no field).</summary>
+        public List<SafetySelectionDocument> SafetySelections { get; set; }
+
         public static SelectivePalletDesignDocument From(SelectivePalletDesign design, string id, string name)
         {
             if (design == null)
@@ -121,6 +124,8 @@ namespace RackCad.Application.Persistence
             document.AnnotationScale = design.AnnotationScale;
             document.Dimensions = (int)design.Dimensions;
             document.DimensionStyle = design.DimensionStyle;
+            document.SafetySelections = design.SafetySelections
+                .Select(s => new SafetySelectionDocument { ElementId = s.ElementId, Quantity = s.Quantity }).ToList();
 
             return document;
         }
@@ -186,6 +191,13 @@ namespace RackCad.Application.Persistence
             design.AnnotationScale = AnnotationScale.HasValue && AnnotationScale.Value > 0.0 ? AnnotationScale.Value : 1.0;
             design.Dimensions = ToDimensionDetail(Dimensions);
             design.DimensionStyle = string.IsNullOrWhiteSpace(DimensionStyle) ? null : DimensionStyle.Trim();
+            foreach (var safety in SafetySelections ?? Enumerable.Empty<SafetySelectionDocument>())
+            {
+                if (safety != null && !string.IsNullOrWhiteSpace(safety.ElementId))
+                {
+                    design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                }
+            }
 
             return design;
         }
@@ -272,6 +284,13 @@ namespace RackCad.Application.Persistence
     {
         public double Length { get; set; }
         public bool Loaded { get; set; } = true;
+    }
+
+    /// <summary>One selected safety accessory: its catalog id and how many.</summary>
+    public sealed class SafetySelectionDocument
+    {
+        public string ElementId { get; set; }
+        public int Quantity { get; set; }
     }
 
     /// <summary>One matrix cell (a level of a frente): pallet, count, beam, and the optional manual overrides.</summary>

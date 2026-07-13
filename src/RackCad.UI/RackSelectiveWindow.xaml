@@ -65,6 +65,11 @@
                     <TextBlock Text="La numeración y el nombre se dibujan en RACKCAD_ANOTACIONES; las cotas en RACKCAD_COTAS (las tres vistas)."
                                Foreground="#8B98A6" FontSize="10.5" TextWrapping="Wrap" Margin="0,3,0,0" />
 
+                    <TextBlock Text="Seguridad" Style="{StaticResource SectionTitle}" />
+                    <Button x:Name="SafetyButton" Content="Elementos de seguridad…" Click="Safety_Click"
+                            Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Left" Margin="0,2,0,0"
+                            ToolTip="Protectores, desviadores, topes, guardas y parrillas. Entran a la lista de materiales; dibujarlos es una fase posterior (falta el bloque de cada uno)." />
+
                     <TextBlock Text="Cabecera" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
                     <ComboBox x:Name="PostBox" SelectedValuePath="Id" DisplayMemberPath="DisplayName" SelectionChanged="Post_Changed" />

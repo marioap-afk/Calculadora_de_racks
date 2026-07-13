@@ -143,6 +143,19 @@ namespace RackCad.Application.Catalogs
         public double WeightEach { get; set; }
     }
 
+    /// <summary>
+    /// A SAFETY accessory added to a rack (protector de bota, protector lateral, desviador, tope, guarda trasera,
+    /// parrilla). Not structural — it carries commercial data (weight/cost) so it can enter the BOM. Drawing it in the
+    /// views is a future phase (needs its own AutoCAD block + connection points); for now it is catalog + selection + BOM.
+    /// </summary>
+    public sealed class SafetyElementCatalogEntry : CatalogEntryBase
+    {
+        /// <summary>Grouping/placement family: BOTA | LATERAL | DESVIADOR | TOPE | TRASERA | DECK.</summary>
+        public string Type { get; set; }
+        public string Units { get; set; }
+        public double WeightEach { get; set; }
+    }
+
     /// <summary>Base plate that anchors a post to the floor.</summary>
     public sealed class BasePlateCatalogEntry : CatalogEntryBase
     {
@@ -268,6 +281,9 @@ namespace RackCad.Application.Catalogs
         /// <summary>Load-beam ("larguero") SKUs and their end connectors ("ménsulas").</summary>
         public IReadOnlyList<BeamProfileCatalogEntry> BeamProfiles { get; set; } = new List<BeamProfileCatalogEntry>();
         public IReadOnlyList<MensulaCatalogEntry> Mensulas { get; set; } = new List<MensulaCatalogEntry>();
+
+        /// <summary>Safety accessories (protectores, desviadores, topes, guardas, parrillas) — for selection + BOM.</summary>
+        public IReadOnlyList<SafetyElementCatalogEntry> SafetyElements { get; set; } = new List<SafetyElementCatalogEntry>();
         public IReadOnlyList<ConnectionPointCatalogEntry> ConnectionPoints { get; set; } = new List<ConnectionPointCatalogEntry>();
         public IReadOnlyList<ConnectionLayoutEntry> ConnectionLayout { get; set; } = new List<ConnectionLayoutEntry>();
         public IReadOnlyList<ViewCatalogEntry> Views { get; set; } = new List<ViewCatalogEntry>();

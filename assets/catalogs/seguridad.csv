@@ -1,0 +1,11 @@
+id,displayName,type,units,weightEach,material,partNumber,unitCost,currency,costUnit
+PROTECTOR_BOTA_H,Protector bota tipo H,BOTA,in,0,Acero,,0,MXN,pieza
+PROTECTOR_BOTA_C,Protector bota tipo C,BOTA,in,0,Acero,,0,MXN,pieza
+PROTECTOR_LATERAL_H,Protector lateral H,LATERAL,in,0,Acero,,0,MXN,pieza
+PROTECTOR_LATERAL_C,Protector lateral C,LATERAL,in,0,Acero,,0,MXN,pieza
+DESVIADOR_L,Desviador L,DESVIADOR,in,0,Acero,,0,MXN,pieza
+DESVIADOR_C,Desviador C,DESVIADOR,in,0,Acero,,0,MXN,pieza
+LARGUERO_TOPE,Larguero tope,TOPE,in,0,Acero,,0,MXN,pieza
+POSTE_TOPE,Poste tope,TOPE,in,0,Acero,,0,MXN,pieza
+GUARDA_TRASERA,Guardas traseras,TRASERA,in,0,Acero,,0,MXN,pieza
+PARRILLA,Parrillas,DECK,in,0,Acero,,0,MXN,pieza

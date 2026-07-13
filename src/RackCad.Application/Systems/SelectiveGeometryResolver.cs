@@ -62,6 +62,13 @@ namespace RackCad.Application.Systems
             system.AnnotationScale = design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0;
             system.Dimensions = design.Dimensions;
             system.DimensionStyle = design.DimensionStyle;
+            foreach (var safety in design.SafetySelections)
+            {
+                if (safety != null && safety.Quantity > 0 && !string.IsNullOrWhiteSpace(safety.ElementId))
+                {
+                    system.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                }
+            }
 
             // Per-post PERALTE: each post uses its own override (design.PostPeraltes) or the run default. Sized to the
             // MASTER grid — the longest fondo (most frentes) has the most posts; a shorter fondo is a prefix of it.

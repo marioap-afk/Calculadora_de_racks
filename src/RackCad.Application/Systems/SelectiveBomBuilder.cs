@@ -24,6 +24,7 @@ namespace RackCad.Application.Systems
         public const string BasePlate = "Placa base";
         public const string Beam = "Larguero";
         public const string Mensula = "Ménsula";
+        public const string Safety = "Seguridad";
 
         /// <summary>The component BOM of a resolved system: cabeceras (per frame) + largueros (per beam), each with its pieces.</summary>
         public static BillOfMaterials Build(SelectiveRackSystem system, RackCatalog catalog)
@@ -36,7 +37,52 @@ namespace RackCad.Application.Systems
             var components = new List<BomComponent>();
             AddCabeceraComponents(components, system, catalog);
             AddLargueroComponents(components, system, catalog);
+            AddSafetyComponents(components, system, catalog);
             return new BillOfMaterials(components);
+        }
+
+        // ---- Safety accessories: the user's selection (id + quantity), grouped under one "Seguridad" component ----
+
+        private static void AddSafetyComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
+        {
+            if (system.SafetySelections == null || system.SafetySelections.Count == 0)
+            {
+                return;
+            }
+
+            var pieces = new List<BomLine>();
+            foreach (var selection in system.SafetySelections)
+            {
+                if (selection == null || selection.Quantity <= 0 || string.IsNullOrWhiteSpace(selection.ElementId))
+                {
+                    continue;
+                }
+
+                var element = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
+                pieces.Add(new BomLine
+                {
+                    Category = Safety,
+                    ProfileId = selection.ElementId,
+                    Description = element?.Label ?? selection.ElementId,
+                    Length = 0.0,
+                    Quantity = selection.Quantity
+                });
+            }
+
+            if (pieces.Count == 0)
+            {
+                return;
+            }
+
+            components.Add(new BomComponent
+            {
+                Category = Safety,
+                ProfileId = string.Empty,
+                Description = "Elementos de seguridad",
+                Length = 0.0,
+                Quantity = 1,
+                Pieces = pieces
+            });
         }
 
         // ---- Cabeceras: one component per distinct frame (grouped by its exact piece recipe) ----
