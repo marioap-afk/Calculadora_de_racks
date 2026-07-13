@@ -83,6 +83,12 @@ namespace RackCad.Application.Systems
 
                 var element = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
 
+                // A TOPE is counted as its own component (AddTopeComponents), not under "Seguridad".
+                if (element != null && string.Equals(element.Type, SelectiveSafetyPlacement.TopeType, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 // A DRAWABLE element (bota/lateral) is counted ONLY from the drawing — 0 if it draws nothing (e.g. a bota
                 // fully replaced by laterales). The manual quantity is the fallback ONLY for elements with no draw rule yet.
                 var drawable = element != null

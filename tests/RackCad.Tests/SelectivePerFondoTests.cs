@@ -142,7 +142,8 @@ namespace RackCad.Tests
 
             var topes = bom.Components.Where(c => c.ProfileId == TopeId).ToList();
             Assert.NotEmpty(topes);
-            Assert.All(topes, c => Assert.Equal(SelectiveBomBuilder.Tope, c.Category));
+            Assert.All(topes, c => Assert.Equal(SelectiveBomBuilder.Tope, c.Category)); // ONLY under "Tope", never "Seguridad"
+            Assert.DoesNotContain(bom.Components, c => c.Category == SelectiveBomBuilder.Safety && c.ProfileId == TopeId);
             Assert.All(topes, c => Assert.True(c.Length > 0.0)); // larguero + ¼"
             // One per larguero at the central fondo (fondo 0).
             var expected = SelectiveDepthLayout.BaysOfFondo(system, 0).Sum(b => b.Levels.Count);
