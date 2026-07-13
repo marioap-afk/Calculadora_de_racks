@@ -30,6 +30,9 @@ namespace RackCad.Application.Systems
         public const string LateralType = "LATERAL";
         public const string TopeType = "TOPE";
 
+        /// <summary>The post connection point the larguero tope mates on (its own troquel, distinct from the separador's).</summary>
+        public const string TopePostPoint = "TROQUEL_TOPE";
+
         /// <summary>The "larguero tope" (rear pallet stop) block parameter for its stick-out ("saque").</summary>
         public const string SaqueParam = "SAQUE";
 
@@ -45,25 +48,35 @@ namespace RackCad.Application.Systems
         /// <summary>The fondo whose back carries the tope: the central one. 1 fondo → 0 (back); 2 → 0 (center); 4 → 1 (central pair).</summary>
         public static int CentralFondo(int fondoCount) => fondoCount > 0 ? (fondoCount - 1) / 2 : 0;
 
-        /// <summary>The fondo(s) whose BACK carries a tope: shared → just the central one; per-fondo → the central pair
-        /// (c and c+1), filtered by <see cref="SelectiveSafetySelection.Side"/> (Left = c, Right = c+1, Both = both).</summary>
-        public static IEnumerable<int> TopeFondos(SelectiveSafetySelection selection, int fondoCount)
+        /// <summary>One tope position: the fondo whose largueros it follows, whether it sits at that fondo's FRONT post
+        /// (else its back), and whether the block is mirrored. Both spots of a per-fondo pair sit in the SAME central gap.</summary>
+        public struct TopeSpot
+        {
+            public int Fondo;
+            public bool AtFront;
+            public bool Mirror;
+        }
+
+        /// <summary>The tope position(s): shared → one at the central fondo's back (facing the gap). Per-fondo → the two
+        /// posts flanking the CENTRAL GAP — fondo c's back and fondo c+1's FRONT (back-to-back) — filtered by side
+        /// (Left = c's back, Right = c+1's front, Both = both). So a per-fondo pair lands in the same gap, not two depths.</summary>
+        public static IEnumerable<TopeSpot> TopeSpots(SelectiveSafetySelection selection, int fondoCount)
         {
             var c = CentralFondo(fondoCount);
             if (selection == null || selection.TopeShared)
             {
-                yield return c;
+                yield return new TopeSpot { Fondo = c, AtFront = false, Mirror = false };
                 yield break;
             }
 
             if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)
             {
-                yield return c;
+                yield return new TopeSpot { Fondo = c, AtFront = false, Mirror = false };
             }
 
             if ((selection.Side == SafetySide.Right || selection.Side == SafetySide.Both) && c + 1 < fondoCount)
             {
-                yield return c + 1;
+                yield return new TopeSpot { Fondo = c + 1, AtFront = true, Mirror = true }; // the other cabecera facing the same gap
             }
         }
 

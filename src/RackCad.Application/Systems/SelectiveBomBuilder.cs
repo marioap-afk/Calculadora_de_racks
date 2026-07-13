@@ -186,9 +186,9 @@ namespace RackCad.Application.Systems
             var fondoCount = SelectiveDepthLayout.Count(system);
             var byLength = new Dictionary<double, int>();
             var order = new List<double>();
-            foreach (var f in SelectiveSafetyPlacement.TopeFondos(selection, fondoCount))
+            foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, fondoCount))
             {
-                var bays = SelectiveDepthLayout.BaysOfFondo(system, f);
+                var bays = SelectiveDepthLayout.BaysOfFondo(system, spot.Fondo);
                 for (var b = 0; b < bays.Count; b++)
                 {
                     var bay = bays[b];

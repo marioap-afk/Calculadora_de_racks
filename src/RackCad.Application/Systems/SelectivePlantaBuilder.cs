@@ -482,20 +482,22 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, DynamicRackDefaults.SeparatorPostPoint, PlantaView);
+            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, PlantaView);
             var tope = topes[0];
             var selection = tope.Selection;
             var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
 
-            foreach (var f in SelectiveSafetyPlacement.TopeFondos(selection, offsets.Count))
+            foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
             {
+                var f = spot.Fondo;
                 if (f < 0 || f >= offsets.Count)
                 {
                     continue;
                 }
 
                 var bays = SelectiveDepthLayout.BaysOfFondo(system, f);
-                var backX = offsets[f] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f); // fondo f's back post
+                // Both spots of a per-fondo pair flank the CENTRAL GAP: fondo c's back post, and fondo c+1's FRONT post.
+                var postX = spot.AtFront ? offsets[f] : offsets[f] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
 
                 for (var i = 0; i < bays.Count && i < frenteYs.Count; i++)
                 {
@@ -519,13 +521,15 @@ namespace RackCad.Application.Systems
 
                     var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
                     var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
-                    var at = new Point2D(backX - troquel.X, frenteYs[i] + troquel.Y);
+                    var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
+                    var at = new Point2D(mateX, frenteYs[i] + troquel.Y);
                     var instance = new HeaderBlockInstance
                     {
                         Role = HeaderBlockRole.Tope,
                         PieceId = tope.PieceId,
                         BlockName = tope.Block,
                         View = PlantaView,
+                        MirroredX = spot.Mirror,
                         Insertion = at,
                         ConnectionAnchor = at
                     };

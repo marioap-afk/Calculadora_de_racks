@@ -4,6 +4,7 @@ TROQUEL_CELOSIA,Troquel de celosia,Primer troquel de la celosía,Poste
 CELOSIA,Troquel de celosía,Troquel donde se monta la celosía,Truss
 FIN_POSTE,Montaje de refuerzo,Punto de mate de poste y refuerzo,Poste
 TROQUEL_SEPARADOR,Troquel de separador en poste,Troquel de separador en poste,Poste
+TROQUEL_TOPE,Troquel de tope en poste,Troquel de tope en poste,Poste
 TROQUEL_CABECERA,Troquel donde va cabecera en separador,Troquel donde va cabecera en separador,Spacer
 TROQUEL_TOPE,Troquel donde se coloca el tope,Troquel donde se coloca el or�gen del tope,FlowBed
 TROQUEL_LARGUERO,Troquel donde se coloca el larguero,Eje en Y donde se colocar� el larguero,Poste

@@ -324,23 +324,26 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            var troquel = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
-            const double paso = 2.0; // the tope must land on a separador troquel: mate.Y + a whole number of pasos
+            var troquel = CatalogLookup.Local(catalog, system.PostId, SelectiveSafetyPlacement.TopePostPoint, LateralView);
+            const double paso = 2.0; // the tope must land on a tope troquel: mate.Y + a whole number of pasos
 
             foreach (var tope in topes)
             {
                 var selection = tope.Selection;
                 var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
 
-                foreach (var f in SelectiveSafetyPlacement.TopeFondos(selection, offsets.Count))
+                foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
                 {
+                    var f = spot.Fondo;
                     if (f < 0 || f >= fondoBays.Length || postIndex > fondoBays[f].Count)
                     {
                         continue; // fondo f doesn't reach this corte
                     }
 
-                    var backX = (offsets[f] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
-                    var mateX = backX - troquel.X; // the (mirrored) back post's TROQUEL_SEPARADOR
+                    // Both spots of a per-fondo pair flank the CENTRAL GAP: fondo c's back post, and fondo c+1's FRONT post.
+                    var frontX = offsets[f] - anchorOffset;
+                    var postX = spot.AtFront ? frontX : frontX + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
+                    var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
 
                     // Grid-filtered distinct larguero heights of the (up to two) bays this corte bounds.
                     var ys = new HashSet<double>();
@@ -356,7 +359,7 @@ namespace RackCad.Application.Systems
 
                     foreach (var y0 in ys)
                     {
-                        // Rise ~8" above the larguero, then snap to the TROQUEL_SEPARADOR grid (a whole number of pasos from the mate).
+                        // Rise ~8" above the larguero, then snap to the TROQUEL_TOPE grid (a whole number of pasos from the mate).
                         var y = troquel.Y + Math.Round((y0 + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
                         var at = new Point2D(mateX, y);
                         var instance = new HeaderBlockInstance
@@ -365,6 +368,7 @@ namespace RackCad.Application.Systems
                             PieceId = tope.PieceId,
                             BlockName = tope.Block,
                             View = LateralView,
+                            MirroredX = spot.Mirror,
                             ConnectionAnchor = at,
                             Insertion = at
                         };
