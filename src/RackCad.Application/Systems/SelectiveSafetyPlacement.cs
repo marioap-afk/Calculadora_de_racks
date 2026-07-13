@@ -36,8 +36,8 @@ namespace RackCad.Application.Systems
         /// <summary>Default SAQUE (stick-out) of a larguero tope, inches.</summary>
         public const double DefaultSaque = 3.0;
 
-        /// <summary>A larguero tope sits this many inches ABOVE its larguero level.</summary>
-        public const double TopeYOffset = 4.0;
+        /// <summary>A larguero tope's nominal rise ABOVE its larguero level (then snapped to the TROQUEL_SEPARADOR grid).</summary>
+        public const double TopeYOffset = 6.0;
 
         /// <summary>A larguero tope's LONGITUD = its larguero's length + this (inches).</summary>
         public const double TopeLengthAllowance = 0.25;

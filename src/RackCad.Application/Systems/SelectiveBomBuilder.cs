@@ -26,6 +26,7 @@ namespace RackCad.Application.Systems
         public const string Mensula = "Ménsula";
         public const string Safety = "Seguridad";
         public const string Separador = "Separador";
+        public const string Tope = "Tope";
 
         /// <summary>The component BOM of a resolved system: cabeceras (per frame) + largueros (per beam), each with its pieces.</summary>
         public static BillOfMaterials Build(SelectiveRackSystem system, RackCatalog catalog)
@@ -40,6 +41,7 @@ namespace RackCad.Application.Systems
             AddLargueroComponents(components, system, catalog);
             AddSafetyComponents(components, system, catalog);
             AddSeparadorComponents(components, system, catalog);
+            AddTopeComponents(components, system, catalog);
             return new BillOfMaterials(components);
         }
 
@@ -163,6 +165,63 @@ namespace RackCad.Application.Systems
                     Pieces = new List<BomLine>
                     {
                         new BomLine { Category = Separador, ProfileId = id, Description = label, Length = length, Quantity = 1 }
+                    }
+                });
+            }
+        }
+
+        // ---- Larguero topes: one per (bay, level) at the central fondo's back; grouped by length ----
+
+        private static void AddTopeComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
+        {
+            var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, SelectiveLateralBuilder.LateralView, SelectiveSafetyPlacement.TopeType);
+            if (topes.Count == 0)
+            {
+                return;
+            }
+
+            // One tope per larguero (bay × level) at the CENTRAL fondo — counted from the model, NOT the lateral (which
+            // shows each tope end-on at BOTH its posts) nor the planta (which collapses the levels to one line per bay).
+            var central = SelectiveDepthLayout.BaysOfFondo(system, SelectiveSafetyPlacement.CentralFondo(SelectiveDepthLayout.Count(system)));
+            var byLength = new Dictionary<double, int>();
+            var order = new List<double>();
+            foreach (var bay in central)
+            {
+                if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
+                {
+                    continue;
+                }
+
+                var length = Round(bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance);
+                if (!byLength.ContainsKey(length))
+                {
+                    byLength[length] = 0;
+                    order.Add(length);
+                }
+
+                byLength[length] += bay.Levels.Count; // one per larguero level
+            }
+
+            if (byLength.Count == 0)
+            {
+                return;
+            }
+
+            var id = topes[0].PieceId;
+            var label = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, id, StringComparison.OrdinalIgnoreCase))?.Label ?? id;
+            foreach (var length in order.OrderBy(l => l))
+            {
+                var quantity = byLength[length];
+                components.Add(new BomComponent
+                {
+                    Category = Tope,
+                    ProfileId = id,
+                    Description = label,
+                    Length = length,
+                    Quantity = quantity,
+                    Pieces = new List<BomLine>
+                    {
+                        new BomLine { Category = Tope, ProfileId = id, Description = label, Length = length, Quantity = 1 }
                     }
                 });
             }

@@ -332,12 +332,15 @@ namespace RackCad.Application.Systems
             var backX = (offsets[c] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, c); // its back post
             var troquel = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
             var mateX = backX - troquel.X; // the (mirrored) back post's TROQUEL_SEPARADOR, the tope's origin in X
+            const double paso = 2.0;       // the tope must land on a separador troquel: mate.Y + a whole number of pasos
 
             foreach (var tope in topes)
             {
                 foreach (var level in CollectLevels(fondoBays[c], postIndex))
                 {
-                    var at = new Point2D(mateX, level.Y + SelectiveSafetyPlacement.TopeYOffset);
+                    // Rise ~6" above the larguero, then snap to the TROQUEL_SEPARADOR grid (an even number of pasos from the mate).
+                    var y = troquel.Y + Math.Round((level.Y + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
+                    var at = new Point2D(mateX, y);
                     var instance = new HeaderBlockInstance
                     {
                         Role = HeaderBlockRole.Tope,

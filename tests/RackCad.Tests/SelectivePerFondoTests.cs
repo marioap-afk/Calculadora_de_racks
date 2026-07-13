@@ -107,6 +107,14 @@ namespace RackCad.Tests
             Assert.NotEmpty(topes);
             Assert.All(topes, t => Assert.Equal("LARGUERO_ESCALON_TOPE_DE_3_LATERAL", t.BlockName));
             Assert.All(topes, t => Assert.Equal(3.0, t.DynamicParameters["SAQUE"], 3)); // default saque
+
+            // Each tope lands ON the TROQUEL_SEPARADOR grid: (Y − mateBase) is a whole number of pasos (2").
+            const double mateBaseY = 2.1563, paso = 2.0;
+            Assert.All(topes, t =>
+            {
+                var k = (t.Insertion.Y - mateBaseY) / paso;
+                Assert.Equal(System.Math.Round(k), k, 3);
+            });
         }
 
         [Fact]
@@ -121,6 +129,23 @@ namespace RackCad.Tests
             Assert.NotEmpty(topes);
             Assert.All(topes, t => Assert.Equal("LARGUERO_ESCALON_TOPE_DE_3_PLANTA", t.BlockName));
             Assert.All(topes, t => Assert.True(t.DynamicParameters[SelectiveRackDefaults.LengthParam] > 0.0)); // LONGITUD = larguero + ¼"
+        }
+
+        [Fact]
+        public void Bom_Tope_CountsPerBayPerLevelAtCentralFondo()
+        {
+            var design = PerFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+
+            var topes = bom.Components.Where(c => c.ProfileId == TopeId).ToList();
+            Assert.NotEmpty(topes);
+            Assert.All(topes, c => Assert.Equal(SelectiveBomBuilder.Tope, c.Category));
+            Assert.All(topes, c => Assert.True(c.Length > 0.0)); // larguero + ¼"
+            // One per larguero at the central fondo (fondo 0).
+            var expected = SelectiveDepthLayout.BaysOfFondo(system, 0).Sum(b => b.Levels.Count);
+            Assert.Equal(expected, topes.Sum(c => c.Quantity));
         }
 
         [Fact]
