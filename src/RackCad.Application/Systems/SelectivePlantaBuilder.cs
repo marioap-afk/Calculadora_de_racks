@@ -71,9 +71,10 @@ namespace RackCad.Application.Systems
                 var custom = i < system.PostCabeceras.Count ? system.PostCabeceras[i] : null;
                 var framePeralte = SelectivePostGeometry.PostPeralteAt(system, i);
 
-                // Mirror center for THIS frente: over the fondos that REACH it (a corner layout drops deeper fondos at
-                // far frentes), matching the lateral's per-corte center — else a mirrored bota floats behind a post
-                // that doesn't exist at this frente, and the two views disagree.
+                // Botas belong to the SYSTEM, not each cabecera: "Izquierda/Derecha/Ambos" is the FRONT vs BACK aisle
+                // of the whole depth. So one bota goes at the system's frontmost post and its mirror at the backmost —
+                // never one per fondo. Span THIS frente over the fondos that REACH it (a corner layout drops deeper
+                // fondos at far frentes); the frontmost front post and the backmost back post bound it, center between.
                 var frenteFront = double.MaxValue;
                 var frenteBack = 0.0;
                 for (var k = 0; k < offsets.Count; k++)
@@ -84,7 +85,12 @@ namespace RackCad.Application.Systems
                     if (back > frenteBack) frenteBack = back;
                 }
 
-                var frenteCenterX = frenteFront <= frenteBack ? (frenteFront + frenteBack) / 2.0 : 0.0;
+                if (frenteFront <= frenteBack)
+                {
+                    // One bota at the system front post (Left), reflected to the system back (Right) about the center.
+                    var frenteCenterX = (frenteFront + frenteBack) / 2.0;
+                    SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, new Point2D(frenteFront, frenteYs[i]), defaultPlateId, i, frenteCenterX);
+                }
 
                 for (var k = 0; k < offsets.Count; k++)
                 {
@@ -116,10 +122,6 @@ namespace RackCad.Application.Systems
                     }
 
                     group.Placements.Add(new HeaderPlacement(offsets[k], mirrored: false, insertionY: frenteYs[i]));
-
-                    // Bota at this fondo's front-post base (X = offset), on the side post i resolves to; the mirrored
-                    // (Right) copy reflects about this frente's fondo center (over the fondos that reach it).
-                    SelectiveSafetyPlacement.AppendAtPost(loose, catalog, PlantaView, botas, new Point2D(offsets[k], frenteYs[i]), defaultPlateId, i, frenteCenterX);
                 }
             }
 

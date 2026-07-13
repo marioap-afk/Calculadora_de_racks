@@ -41,7 +41,7 @@ namespace RackCad.Application.Systems
             return new BillOfMaterials(components);
         }
 
-        // ---- Safety accessories: the user's selection (id + quantity), grouped under one "Seguridad" component ----
+        // ---- Safety accessories: one component per element (the bota itself IS the component), counted from the drawing ----
 
         private static void AddSafetyComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
         {
@@ -50,57 +50,49 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            // Count what the drawing actually places (per its placement rule), by piece id — "en base al dibujo sería el
-            // BOM". A selection that draws nothing yet (no block/rule) falls back to its manual quantity.
+            // Count what the drawing actually places, by piece id — "en base al dibujo sería el BOM". Botas are a
+            // SYSTEM-level element (front + back of the whole depth, not per fondo), so count them from the PLANTA, which
+            // carries that placement. An element that draws nothing yet (no block/rule) falls back to its manual quantity.
             var drawn = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            var frontalBuilder = new SelectiveFrontalBuilder();
-            var fondoCount = SelectiveDepthLayout.Count(system);
-            for (var k = 0; k < fondoCount; k++)
+            foreach (var instance in new SelectivePlantaBuilder().Build(system, catalog))
             {
-                foreach (var instance in frontalBuilder.Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog))
+                if (instance.Role != HeaderBlockRole.Safety || string.IsNullOrWhiteSpace(instance.PieceId))
                 {
-                    if (instance.Role != HeaderBlockRole.Safety || string.IsNullOrWhiteSpace(instance.PieceId))
-                    {
-                        continue;
-                    }
-
-                    drawn[instance.PieceId] = drawn.TryGetValue(instance.PieceId, out var count) ? count + 1 : 1;
+                    continue;
                 }
+
+                drawn[instance.PieceId] = drawn.TryGetValue(instance.PieceId, out var count) ? count + 1 : 1;
             }
 
-            var pieces = new List<BomLine>();
+            // Each safety element is its OWN component named after the piece (not wrapped under a generic node).
             foreach (var selection in system.SafetySelections)
             {
-                if (selection == null || selection.Quantity <= 0 || string.IsNullOrWhiteSpace(selection.ElementId))
+                if (selection == null || string.IsNullOrWhiteSpace(selection.ElementId))
+                {
+                    continue;
+                }
+
+                var quantity = drawn.TryGetValue(selection.ElementId, out var drawnCount) ? drawnCount : selection.Quantity;
+                if (quantity <= 0)
                 {
                     continue;
                 }
 
                 var element = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
-                pieces.Add(new BomLine
+                var label = element?.Label ?? selection.ElementId;
+                components.Add(new BomComponent
                 {
                     Category = Safety,
                     ProfileId = selection.ElementId,
-                    Description = element?.Label ?? selection.ElementId,
+                    Description = label,
                     Length = 0.0,
-                    Quantity = drawn.TryGetValue(selection.ElementId, out var drawnCount) ? drawnCount : selection.Quantity
+                    Quantity = quantity,
+                    Pieces = new List<BomLine>
+                    {
+                        new BomLine { Category = Safety, ProfileId = selection.ElementId, Description = label, Length = 0.0, Quantity = 1 }
+                    }
                 });
             }
-
-            if (pieces.Count == 0)
-            {
-                return;
-            }
-
-            components.Add(new BomComponent
-            {
-                Category = Safety,
-                ProfileId = string.Empty,
-                Description = "Elementos de seguridad",
-                Length = 0.0,
-                Quantity = 1,
-                Pieces = pieces
-            });
         }
 
         // ---- Cabeceras: one component per distinct frame (grouped by its exact piece recipe) ----

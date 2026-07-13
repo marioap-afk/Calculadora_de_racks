@@ -128,9 +128,9 @@ namespace RackCad.Application.Systems
                     BuildLargueros(extras, fondoBays[k], i, SelectiveDepthLayout.CabeceraDepthOfFondo(system, k), offsets[k] - anchorOffset, catalog);
                 }
 
-                // Botas: each reaching fondo's front-post base (anchor-relative X=offset), on the side post i resolves to.
-                // The mirrored (Right) copy reflects about the center of THIS corte's total fondo (depth) span — the
-                // primary front at X=0 to the backmost reaching fondo — so multi-fondo cortes mirror correctly.
+                // Botas belong to the SYSTEM, not each cabecera: ONE at the corte's frontmost post (anchor-relative
+                // X=0) for Left, reflected to the backmost post for Right, about the center of THIS corte's total fondo
+                // span (the backmost reaching fondo). Never one per fondo.
                 var backmostDepth = 0.0;
                 for (var k = 0; k < offsets.Count; k++)
                 {
@@ -143,16 +143,7 @@ namespace RackCad.Application.Systems
                     if (back > backmostDepth) backmostDepth = back;
                 }
 
-                var depthCenterX = backmostDepth / 2.0; // the primary front post is at anchor-relative X = 0
-                for (var k = 0; k < offsets.Count; k++)
-                {
-                    if (i > fondoBays[k].Count)
-                    {
-                        continue;
-                    }
-
-                    SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, new Point2D(offsets[k] - anchorOffset, 0.0), defaultPlateId, i, depthCenterX);
-                }
+                SelectiveSafetyPlacement.AppendAtPost(extras, catalog, LateralView, botas, new Point2D(0.0, 0.0), defaultPlateId, i, backmostDepth / 2.0);
 
                 // Annotations once, from the primary (anchor) fondo's levels + its height.
                 AddCorteAnnotations(extras, system, i, CollectLevels(fondoBays[firstReaching], i), fondoBays[firstReaching], fondoFallback[firstReaching]);

@@ -62,9 +62,10 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
-                Text = "La bota se dibuja en la base de cada poste según el lado. El lado general aplica a todos los postes; usa "
-                     + "\"Por poste…\" para personalizar cuáles llevan y en qué lado. El BOM se cuenta del dibujo. Los demás "
-                     + "elementos usan una cantidad manual.",
+                Text = "La bota va en los postes EXTREMOS del sistema (no en cada fondo): Izquierda = frente (pasillo), Derecha "
+                     + "= fondo, Ambos = los dos extremos. El lado general aplica a todos los frentes; usa \"Por poste…\" para "
+                     + "personalizar cuáles llevan y en qué lado. El BOM se cuenta del dibujo. Los demás elementos usan una "
+                     + "cantidad manual.",
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
             DockPanel.SetDock(intro, Dock.Top);

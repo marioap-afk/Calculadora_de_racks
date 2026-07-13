@@ -236,6 +236,42 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Planta_MultiFondo_TwoBotasPerFrente_NotPerFondo()
+        {
+            // 2 fondos reaching every frente, Both: the bota is a SYSTEM element → exactly 2 per frente (system front +
+            // back), NOT one per fondo (which drew 4). This is the user's "en 4 fondos deberían ser 2" bug.
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            design.Bays.Add(Bay());
+            design.Bays.Add(Bay());                                                    // fondo 0: 2 frentes → 3 posts
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(), Bay() });   // fondo 1: 2 frentes
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Side = SafetySide.Both });
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var offsets = SelectiveDepthLayout.Offsets(system);
+            var systemBack = offsets[1] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, 1);
+            var botas = new SelectivePlantaBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            Assert.Equal(6, botas.Count); // 3 frentes × 2 (system front + back), NOT × 2 fondos
+            // Every bota sits at the system front (X≈0) or system back (X≈systemBack), never on an interior fondo post.
+            Assert.All(botas, b => Assert.True(b.Insertion.X < 1.0 || b.Insertion.X > systemBack - 1.0));
+        }
+
+        [Fact]
+        public void Bom_BotaIsItsOwnComponent_NamedAfterThePiece()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+
+            var safety = bom.Components.Single(c => c.Category == SelectiveBomBuilder.Safety);
+            Assert.Equal("PROTECTOR_BOTA_H_3_16_18", safety.ProfileId);           // the component IS the bota
+            Assert.NotEqual("Elementos de seguridad", safety.Description);         // not the old generic wrapper
+            Assert.True(safety.Quantity > 0);                                     // counted from the drawing
+        }
+
+        [Fact]
         public void Planta_Both_MirrorsAboutFondoDepthCenter()
         {
             // Single fondo, Both: each frame gets a front bota + its mirror; the pair reflects about the depth center.
