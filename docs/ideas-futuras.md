@@ -71,10 +71,12 @@
    **BOM** como un componente "Seguridad". **Fase 1 arrancó (2026-07-12): la BOTA se DIBUJA en la frontal** —
    `HeaderBlockRole.Safety`; `SelectiveFrontalBuilder` coloca cada bota tipo BOTA habilitada (qty>0) en CADA
    poste, con su origen coincidente con el de la placa base (`origin − MONTAJE_POSTE`); bloque por convención
-   `<id>_<VISTA>` (`blocks.csv`); el BOM cuenta lo DIBUJADO (no la cantidad manual). **Ojo:** `FondoSystemView`
-   debe copiar `SafetySelections` (como Dimensions) o no dibuja. **Pendiente Fase 1:** personalización POR POSTE
-   (cuál sí/cuál no, un lado o ambos; lateral solo en orillas), lateral/planta, y los demás elementos
-   (dependen de su bloque). Sin puntos de conexión: la bota usa su propio origen.
+   `<id>_<VISTA>` (`blocks.csv`); el BOM cuenta lo DIBUJADO (no la cantidad manual). **Lado HECHO (2026-07-12):**
+   `SafetySide` {None/Left/Right/Both} en la selección (combo en el diálogo, round-trip); Left = sin espejo,
+   Right = espejo (X −1), Both = ambas; por defecto en TODOS los postes. **Ojo:** `FondoSystemView` debe copiar
+   `SafetySelections` (como Dimensions) o no dibuja. **Pendiente Fase 1:** personalización POR POSTE (cuál sí/cuál
+   no) — el modelo ya soporta el lado por poste, falta la UI; **lateral y planta** (hay que engancharlas donde
+   colocan la placa base); y los demás elementos (dependen de su bloque).
 4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
    "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
    pasillo sería un gran ahorro.

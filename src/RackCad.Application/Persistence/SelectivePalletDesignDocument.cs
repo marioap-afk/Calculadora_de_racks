@@ -125,7 +125,7 @@ namespace RackCad.Application.Persistence
             document.Dimensions = (int)design.Dimensions;
             document.DimensionStyle = design.DimensionStyle;
             document.SafetySelections = design.SafetySelections
-                .Select(s => new SafetySelectionDocument { ElementId = s.ElementId, Quantity = s.Quantity }).ToList();
+                .Select(s => new SafetySelectionDocument { ElementId = s.ElementId, Quantity = s.Quantity, Side = (int)s.Side }).ToList();
 
             return document;
         }
@@ -195,11 +195,25 @@ namespace RackCad.Application.Persistence
             {
                 if (safety != null && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                    design.SafetySelections.Add(new SelectiveSafetySelection
+                    {
+                        ElementId = safety.ElementId,
+                        Quantity = safety.Quantity,
+                        Side = ToSafetySide(safety.Side)
+                    });
                 }
             }
 
             return design;
+        }
+
+        /// <summary>Map the persisted int to <see cref="SafetySide"/>; null/out-of-range (legacy) defaults to Both.</summary>
+        private static SafetySide ToSafetySide(int? value)
+        {
+            if (!value.HasValue) return SafetySide.Both; // legacy designs (no field) kept the default
+            return value.Value >= (int)SafetySide.None && value.Value <= (int)SafetySide.Both
+                ? (SafetySide)value.Value
+                : SafetySide.Both;
         }
 
         /// <summary>Map the persisted int to <see cref="DimensionDetail"/>, clamping out-of-range/legacy values to None.</summary>
@@ -286,11 +300,13 @@ namespace RackCad.Application.Persistence
         public bool Loaded { get; set; } = true;
     }
 
-    /// <summary>One selected safety accessory: its catalog id and how many.</summary>
+    /// <summary>One selected safety accessory: its catalog id, quantity, and (drawable elements) the side. Side is
+    /// nullable so legacy designs (no field) default to Both.</summary>
     public sealed class SafetySelectionDocument
     {
         public string ElementId { get; set; }
         public int Quantity { get; set; }
+        public int? Side { get; set; }
     }
 
     /// <summary>One matrix cell (a level of a frente): pallet, count, beam, and the optional manual overrides.</summary>

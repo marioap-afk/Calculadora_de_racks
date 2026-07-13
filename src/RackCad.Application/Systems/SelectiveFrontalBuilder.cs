@@ -253,11 +253,11 @@ namespace RackCad.Application.Systems
             instances.Add(plate);
         }
 
-        /// <summary>The enabled "protector de bota" safety elements (id + block) for this view: selected with quantity &gt; 0,
-        /// catalog type BOTA, and with a block defined for the view (else it can't be drawn and is skipped).</summary>
-        private static List<(string PieceId, string Block)> EnabledBotas(SelectiveRackSystem system, RackCatalog catalog, string view)
+        /// <summary>The enabled "protector de bota" safety elements (id + block + side) for this view: catalog type BOTA,
+        /// side ≠ None, and with a block defined for the view (else it can't be drawn and is skipped).</summary>
+        private static List<(string PieceId, string Block, SafetySide Side)> EnabledBotas(SelectiveRackSystem system, RackCatalog catalog, string view)
         {
-            var result = new List<(string, string)>();
+            var result = new List<(string, string, SafetySide)>();
             if (system.SafetySelections == null || catalog?.SafetyElements == null)
             {
                 return result;
@@ -265,7 +265,7 @@ namespace RackCad.Application.Systems
 
             foreach (var selection in system.SafetySelections)
             {
-                if (selection == null || selection.Quantity <= 0 || string.IsNullOrWhiteSpace(selection.ElementId))
+                if (selection == null || selection.Side == SafetySide.None || string.IsNullOrWhiteSpace(selection.ElementId))
                 {
                     continue;
                 }
@@ -279,16 +279,17 @@ namespace RackCad.Application.Systems
                 var block = Block(catalog, selection.ElementId, view);
                 if (!string.IsNullOrWhiteSpace(block))
                 {
-                    result.Add((selection.ElementId, block));
+                    result.Add((selection.ElementId, block, selection.Side));
                 }
             }
 
             return result;
         }
 
-        /// <summary>Place each enabled bota at this post, its origin coincident with the base plate's origin
-        /// (post origin − the plate's MONTAJE_POSTE mate); the bota has no mate of its own (its insertion IS its origin).</summary>
-        private static void AddBotas(ICollection<HeaderBlockInstance> instances, RackCatalog catalog, string view, Point2D origin, string plateId, List<(string PieceId, string Block)> botas)
+        /// <summary>Place each enabled bota at this post, its origin coincident with the base plate's origin (post origin −
+        /// the plate's MONTAJE_POSTE mate; the bota has no mate of its own). The side chooses the mirror: Left = as-is,
+        /// Right = mirrored (X scale −1), Both = one of each.</summary>
+        private static void AddBotas(ICollection<HeaderBlockInstance> instances, RackCatalog catalog, string view, Point2D origin, string plateId, List<(string PieceId, string Block, SafetySide Side)> botas)
         {
             if (botas.Count == 0)
             {
@@ -298,19 +299,31 @@ namespace RackCad.Application.Systems
             var plateMate = string.IsNullOrWhiteSpace(plateId) ? new Point2D(0.0, 0.0) : Local(catalog, plateId, SelectiveRackDefaults.PlateMatePoint, view);
             var at = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y);
 
-            foreach (var (pieceId, block) in botas)
+            foreach (var (pieceId, block, side) in botas)
             {
-                instances.Add(new HeaderBlockInstance
+                if (side == SafetySide.Left || side == SafetySide.Both)
                 {
-                    Role = HeaderBlockRole.Safety,
-                    PieceId = pieceId,
-                    BlockName = block,
-                    View = view,
-                    Insertion = at,
-                    ConnectionAnchor = at
-                });
+                    instances.Add(Bota(pieceId, block, view, at, mirrored: false));
+                }
+
+                if (side == SafetySide.Right || side == SafetySide.Both)
+                {
+                    instances.Add(Bota(pieceId, block, view, at, mirrored: true));
+                }
             }
         }
+
+        private static HeaderBlockInstance Bota(string pieceId, string block, string view, Point2D at, bool mirrored)
+            => new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Safety,
+                PieceId = pieceId,
+                BlockName = block,
+                View = view,
+                MirroredX = mirrored,
+                Insertion = at,
+                ConnectionAnchor = at
+            };
 
         private static Point2D Local(RackCatalog catalog, string pieceId, string connectionPointId, string view)
             => CatalogLookup.Local(catalog, pieceId, connectionPointId, view);

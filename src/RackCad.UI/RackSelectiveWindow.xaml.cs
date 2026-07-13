@@ -1189,16 +1189,16 @@ namespace RackCad.UI
             }
 
             safetySelections.Clear();
-            safetySelections.AddRange(dialog.Result.Select(s => new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity }));
+            safetySelections.AddRange(dialog.Result.Select(s => new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side }));
             UpdateSafetyButton();
         }
 
-        /// <summary>Reflect the total number of safety accessories on the button label.</summary>
+        /// <summary>Reflect the number of chosen safety accessories on the button label.</summary>
         private void UpdateSafetyButton()
         {
-            var total = safetySelections.Sum(s => s.Quantity);
-            SafetyButton.Content = total > 0
-                ? "Elementos de seguridad (" + total.ToString(CultureInfo.InvariantCulture) + ")…"
+            var count = safetySelections.Count(s => s.Quantity > 0 || s.Side != SafetySide.None);
+            SafetyButton.Content = count > 0
+                ? "Elementos de seguridad (" + count.ToString(CultureInfo.InvariantCulture) + ")…"
                 : "Elementos de seguridad…";
         }
 
@@ -1887,9 +1887,9 @@ namespace RackCad.UI
             design.DimensionStyle = SelectedDimStyle();
             foreach (var safety in safetySelections)
             {
-                if (safety.Quantity > 0 && !string.IsNullOrWhiteSpace(safety.ElementId))
+                if ((safety.Quantity > 0 || safety.Side != SafetySide.None) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                    design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
                 }
             }
 
@@ -2009,9 +2009,9 @@ namespace RackCad.UI
             safetySelections.Clear();
             foreach (var safety in design.SafetySelections)
             {
-                if (safety != null && safety.Quantity > 0 && !string.IsNullOrWhiteSpace(safety.ElementId))
+                if (safety != null && (safety.Quantity > 0 || safety.Side != SafetySide.None) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    safetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                    safetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
                 }
             }
 

@@ -83,7 +83,10 @@ namespace RackCad.Application.Systems
                 Name = system.Name
             };
 
-            foreach (var safety in system.SafetySelections) view.SafetySelections.Add(safety);
+            foreach (var safety in system.SafetySelections)
+            {
+                view.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
+            }
 
             foreach (var bay in BaysOfFondo(system, k)) view.Bays.Add(bay);
             foreach (var peralte in system.PostPeraltes) view.PostPeraltes.Add(peralte);

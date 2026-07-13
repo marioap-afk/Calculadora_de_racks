@@ -64,9 +64,9 @@ namespace RackCad.Application.Systems
             system.DimensionStyle = design.DimensionStyle;
             foreach (var safety in design.SafetySelections)
             {
-                if (safety != null && safety.Quantity > 0 && !string.IsNullOrWhiteSpace(safety.ElementId))
+                if (safety != null && (safety.Quantity > 0 || safety.Side != SafetySide.None) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    system.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity });
+                    system.SafetySelections.Add(new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side });
                 }
             }
 

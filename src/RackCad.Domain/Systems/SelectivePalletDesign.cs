@@ -120,11 +120,24 @@ namespace RackCad.Domain.Systems
         public IList<SelectiveSafetySelection> SafetySelections { get; } = new List<SelectiveSafetySelection>();
     }
 
-    /// <summary>One safety accessory chosen for a rack: its catalog id and how many. Quantity ≤ 0 = not included.</summary>
+    /// <summary>Which side(s) of a post a drawable safety accessory (e.g. a bota) sits on. None = not drawn.</summary>
+    public enum SafetySide
+    {
+        None = 0,
+        Left = 1,
+        Right = 2,
+        Both = 3
+    }
+
+    /// <summary>One safety accessory chosen for a rack: its catalog id, a manual quantity (BOM fallback for elements
+    /// with no drawing rule yet), and — for a DRAWABLE element (bota) — the <see cref="Side"/> it sits on at each post.</summary>
     public sealed class SelectiveSafetySelection
     {
         public string ElementId { get; set; }
         public int Quantity { get; set; }
+
+        /// <summary>Default side for a drawable element (applied to every post; per-post overrides are a later phase).</summary>
+        public SafetySide Side { get; set; } = SafetySide.Both;
     }
 
     /// <summary>One bay's column in the design matrix: its level cells (its own count), bottom to top.</summary>

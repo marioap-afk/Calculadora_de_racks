@@ -11,31 +11,41 @@ using RackCad.Domain.Systems;
 namespace RackCad.UI
 {
     /// <summary>
-    /// Selection of SAFETY accessories for a selective rack (Fase 0: catalog + selection + BOM, drawing is a future
-    /// phase). Lists the catalog's safety elements grouped by type; the user sets a QUANTITY per element (blank/0 = not
-    /// included). On OK, <see cref="Result"/> holds the selections with quantity &gt; 0. Built in code (no XAML), like
-    /// the tramos dialog.
+    /// Selection of SAFETY accessories for a selective rack. A DRAWABLE element (type BOTA) is chosen by SIDE
+    /// (Ninguno / Izquierda / Derecha / Ambas) — it's drawn at every post's base plate on that side and counted from
+    /// the drawing; a non-drawable element keeps a manual QUANTITY for the BOM. On OK, <see cref="Result"/> holds the
+    /// selections. Built in code (no XAML), like the tramos dialog. Per-post customization is a later phase.
     /// </summary>
     public sealed class SelectiveSafetyWindow : Window
     {
-        private readonly List<(string Id, TextBox Box)> rows = new List<(string, TextBox)>();
+        private static readonly string[] SideLabels = { "Ninguno", "Izquierda", "Derecha", "Ambas" };
+
+        private readonly List<Row> rows = new List<Row>();
         private readonly TextBlock error;
+
+        private sealed class Row
+        {
+            public string Id;
+            public bool IsBota;
+            public ComboBox Side;   // BOTA
+            public TextBox Quantity; // non-drawable
+        }
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
         public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current)
         {
             elements ??= new List<SafetyElementCatalogEntry>();
-            var currentById = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var currentById = new Dictionary<string, SelectiveSafetySelection>(StringComparer.OrdinalIgnoreCase);
             foreach (var selection in current ?? Enumerable.Empty<SelectiveSafetySelection>())
             {
-                if (selection != null && !string.IsNullOrWhiteSpace(selection.ElementId)) currentById[selection.ElementId] = selection.Quantity;
+                if (selection != null && !string.IsNullOrWhiteSpace(selection.ElementId)) currentById[selection.ElementId] = selection;
             }
 
             Title = "Elementos de seguridad";
-            Width = 430;
+            Width = 460;
             Height = 540;
-            MinWidth = 360;
+            MinWidth = 380;
             MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             FontFamily = new FontFamily("Segoe UI");
@@ -46,8 +56,8 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
-                Text = "Cantidad de cada elemento de seguridad para este rack (vacío o 0 = ninguno). Entran a la lista de "
-                     + "materiales; dibujarlos en las vistas es una fase posterior (falta el bloque de AutoCAD de cada uno).",
+                Text = "La bota se dibuja en la base de CADA poste según el lado (por ahora todos los postes; la opción por "
+                     + "poste viene después). El BOM se cuenta del dibujo. Los demás elementos usan una cantidad manual.",
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
             DockPanel.SetDock(intro, Dock.Top);
@@ -84,25 +94,42 @@ namespace RackCad.UI
                         list.Children.Add(new TextBlock { Text = GroupTitle(element.Type), FontWeight = FontWeights.SemiBold, Foreground = Brushes.Gray, FontSize = 11, Margin = new Thickness(0, 8, 0, 2) });
                     }
 
-                    var row = new Grid { Margin = new Thickness(0, 2, 0, 2) };
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(70) });
+                    var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
 
                     var label = new TextBlock { Text = element.Label, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap };
                     Grid.SetColumn(label, 0);
-                    row.Children.Add(label);
+                    grid.Children.Add(label);
 
-                    var box = new TextBox
+                    currentById.TryGetValue(element.Id, out var existing);
+                    var isBota = string.Equals(element.Type, "BOTA", StringComparison.OrdinalIgnoreCase);
+                    var row = new Row { Id = element.Id, IsBota = isBota };
+
+                    if (isBota)
                     {
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Text = currentById.TryGetValue(element.Id, out var q) && q > 0 ? q.ToString(CultureInfo.InvariantCulture) : string.Empty,
-                        ToolTip = "Cantidad (vacío o 0 = no incluir)."
-                    };
-                    Grid.SetColumn(box, 1);
-                    row.Children.Add(box);
+                        var combo = new ComboBox { VerticalAlignment = VerticalAlignment.Center, ToolTip = "Lado de la bota en cada poste (Ninguno = no lleva)." };
+                        foreach (var side in SideLabels) combo.Items.Add(side);
+                        combo.SelectedIndex = existing != null ? (int)existing.Side : (int)SafetySide.None;
+                        Grid.SetColumn(combo, 1);
+                        grid.Children.Add(combo);
+                        row.Side = combo;
+                    }
+                    else
+                    {
+                        var box = new TextBox
+                        {
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Text = existing != null && existing.Quantity > 0 ? existing.Quantity.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                            ToolTip = "Cantidad (vacío o 0 = no incluir)."
+                        };
+                        Grid.SetColumn(box, 1);
+                        grid.Children.Add(box);
+                        row.Quantity = box;
+                    }
 
-                    list.Children.Add(row);
-                    rows.Add((element.Id, box));
+                    list.Children.Add(grid);
+                    rows.Add(row);
                 }
             }
 
@@ -127,9 +154,20 @@ namespace RackCad.UI
         private void OnOk()
         {
             var result = new List<SelectiveSafetySelection>();
-            foreach (var (id, box) in rows)
+            foreach (var row in rows)
             {
-                var text = (box.Text ?? string.Empty).Trim();
+                if (row.IsBota)
+                {
+                    var side = (SafetySide)Math.Max(0, row.Side.SelectedIndex);
+                    if (side != SafetySide.None)
+                    {
+                        result.Add(new SelectiveSafetySelection { ElementId = row.Id, Side = side, Quantity = 1 });
+                    }
+
+                    continue;
+                }
+
+                var text = (row.Quantity.Text ?? string.Empty).Trim();
                 if (text.Length == 0)
                 {
                     continue;
@@ -137,13 +175,13 @@ namespace RackCad.UI
 
                 if (!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var quantity) || quantity < 0)
                 {
-                    error.Text = "Cantidad inválida en '" + id + "': usa un entero ≥ 0 (vacío = ninguno).";
+                    error.Text = "Cantidad inválida en '" + row.Id + "': usa un entero ≥ 0 (vacío = ninguno).";
                     return;
                 }
 
                 if (quantity > 0)
                 {
-                    result.Add(new SelectiveSafetySelection { ElementId = id, Quantity = quantity });
+                    result.Add(new SelectiveSafetySelection { ElementId = row.Id, Quantity = quantity, Side = SafetySide.None });
                 }
             }
 
