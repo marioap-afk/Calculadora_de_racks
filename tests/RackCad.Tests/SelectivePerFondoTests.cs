@@ -73,6 +73,23 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Bom_Separador_CountsFromLateralStack()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+
+            var separadores = bom.Components.Where(c => c.ProfileId == DynamicRackDefaults.SeparatorCatalogId).ToList();
+            Assert.NotEmpty(separadores);
+            Assert.All(separadores, c => Assert.Equal(SelectiveBomBuilder.Separador, c.Category));
+            Assert.All(separadores, c => Assert.True(c.Length > 0.0)); // the fondo gap
+
+            // The BOM total equals the drawn lateral stack (frentes × gaps × levels), NOT the planta's collapsed count.
+            var lateralStack = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .Sum(c => c.Largueros.Count(x => x.Role == HeaderBlockRole.Separator));
+            Assert.Equal(lateralStack, separadores.Sum(c => c.Quantity));
+        }
+
+        [Fact]
         public void Lateral_SingleFondo_HasNoSeparadores()
         {
             var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0 };
