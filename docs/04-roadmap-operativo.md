@@ -48,8 +48,9 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
   menu "Disenar larguero"; solo visual/BOM, sin bloque de AutoCAD aun).
 - **Doble profundidad (espalda con espalda), Fase 1**: `DepthCount` (1..4 fondos; 1 = sencillo
   clasico) a lo largo del eje de fondo, unidos por separadores **por hueco** (`SeparatorLengths`,
-  uno por hueco entre fondos consecutivos; el bloque separador aun NO se dibuja, solo se deja el
-  hueco vacio). **Cada fondo tiene sus propios niveles/alturas** (`ExtraFondoBays` guarda la matriz
+  uno por hueco entre fondos consecutivos; el bloque separador ya se dibuja en lateral y planta y entra
+  al BOM (componente "Separador"); en la frontal solo se deja el hueco vacio, a proposito). **Cada fondo
+  tiene sus propios niveles/alturas** (`ExtraFondoBays` guarda la matriz
   de los fondos 1..N-1; vacio = ese fondo hereda las `Bays` del fondo 0) **y su propio numero de
   frentes** (layout en esquina); el **fondo mas largo define la rejilla horizontal compartida**
   (anchos de frente -> posicion de postes) y los mas cortos son un **prefijo** de ella, asi los
@@ -166,7 +167,9 @@ BOM y cotizacion:
 - ✅ Agrupacion por perfil/longitud/cantidad extendida a los 4 tipos (cama: `FlowBedBomBuilder`).
 - ✅ BOM consolidado multi-rack: comando `RACKBOMTOTAL` (desglose por rack x copias + gran total
   por componente, `RackConsolidatedBomWindow`, export CSV).
-- Pendiente: integrar con el archivo cotizador existente; export a Excel.
+- ✅ Export a Excel (.xlsx) desde las ventanas de BOM y consolidado (`XlsxWriter` propio, OOXML sin
+  dependencias NuGet).
+- Pendiente: integrar con el archivo cotizador existente.
 - Validaciones de ingenieria: seguir agregando reglas (capacidad de carga, holguras) de forma gradual.
 
 Selectivo (doble profundidad):
@@ -182,7 +185,8 @@ Selectivo (doble profundidad):
   centraliza el layout (frontal y planta consumen el mismo helper), boton "Medio frente..." por
   frente abre `SelectiveSegmentsWindow` y el round-trip va via `SelectiveSegmentDocument`
   (+ fallback del `MedioFrenteLength` legacy).
-- Pendiente: dibujar el bloque separador fisico entre fondos (hoy solo se deja el hueco).
+- ✅ El bloque separador fisico entre fondos ya se dibuja en lateral y planta y entra al BOM (componente
+  "Separador"); en la frontal solo se deja el hueco, a proposito.
 
 ## Como agregar un tipo de rack nuevo
 

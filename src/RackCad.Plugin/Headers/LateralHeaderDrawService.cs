@@ -72,14 +72,16 @@ namespace RackCad.Plugin.Headers
                 var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
                 var catalog = LoadCatalog();
                 var layout = Merge(builder.Build(configuration, parameters, catalog), extraInstances);
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), layout.Instances);
                 var database = document.Database;
 
                 LateralHeaderDrawOutcome outcome;
                 IReadOnlyCollection<ObjectId> staleDefs;
                 using (document.LockDocument())
                 {
-                    BlockLibraryImporter.EnsureForLayout(database, layout);
+                    // ARRAY pattern: group identical pieces of the corte into nested defs referenced N times (same
+                    // optimization as frontal/planta). The redefine creates fresh nested defs and purges the prior run's.
+                    var plan = HeaderInstanceGrouper.Group(layout.Instances, ReadBlockName(database, blockId));
+                    BlockLibraryImporter.EnsureForPlan(database, plan);
 
                     using (var transaction = database.TransactionManager.StartTransaction())
                     {
@@ -228,7 +230,9 @@ namespace RackCad.Plugin.Headers
             }
         }
 
-        /// <summary>Erase a block DEFINITION nothing references (a cancelled insert's leftover). Best effort.</summary>
+        /// <summary>Erase a block DEFINITION nothing references (a cancelled insert's leftover), plus the private nested
+        /// header defs it held — a grouped insert creates those, and erasing only the top-level def would orphan them in
+        /// the block table. Best effort.</summary>
         private static void EraseUnreferencedDefinition(Document document, ObjectId definitionId)
         {
             if (definitionId.IsNull)
@@ -238,19 +242,37 @@ namespace RackCad.Plugin.Headers
 
             try
             {
-                using (document.LockDocument())
-                using (var transaction = document.Database.TransactionManager.StartTransaction())
-                {
-                    var record = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
-                    var references = record.GetBlockReferenceIds(directOnly: true, forceValidity: false);
+                var database = document.Database;
+                var nestedDefs = new List<ObjectId>();
 
-                    if (references == null || references.Count == 0)
+                using (document.LockDocument())
+                {
+                    using (var transaction = database.TransactionManager.StartTransaction())
                     {
-                        record.UpgradeOpen();
-                        record.Erase();
+                        var record = (BlockTableRecord)transaction.GetObject(definitionId, OpenMode.ForRead);
+                        var references = record.GetBlockReferenceIds(directOnly: true, forceValidity: false);
+
+                        if (references == null || references.Count == 0)
+                        {
+                            // Capture the nested header defs this block referenced BEFORE erasing it, so they can be
+                            // purged too (a cancelled grouped insert would otherwise leave them unreferenced).
+                            foreach (ObjectId id in record)
+                            {
+                                if (transaction.GetObject(id, OpenMode.ForRead) is BlockReference nested && !nested.BlockTableRecord.IsNull)
+                                {
+                                    nestedDefs.Add(nested.BlockTableRecord);
+                                }
+                            }
+
+                            record.UpgradeOpen();
+                            record.Erase();
+                        }
+
+                        transaction.Commit();
                     }
 
-                    transaction.Commit();
+                    // Post-commit: with the top-level def's references erased, its private nested defs are now purgeable.
+                    LateralHeaderDrawer.PurgeUnreferenced(database, nestedDefs);
                 }
             }
             catch
@@ -263,14 +285,19 @@ namespace RackCad.Plugin.Headers
         {
             var database = document.Database;
 
+            // ARRAY pattern: collapse identical pieces (largueros, postes…) into nested defs referenced N times, so N
+            // pieces cost ONE dynamic-parameter evaluation instead of N (see the autocad-insert-perf memory). Singletons,
+            // annotations and cotas stay loose. Matters most for a selective corte with many equal largueros per nivel.
+            var plan = HeaderInstanceGrouper.Group(layout.Instances, blockName);
+
             using (document.LockDocument())
             {
                 // Import any block definitions the drawing is missing (from the library DWG) before drawing.
-                BlockLibraryImporter.EnsureForLayout(database, layout);
+                BlockLibraryImporter.EnsureForPlan(database, plan);
 
                 using (var transaction = database.TransactionManager.StartTransaction())
                 {
-                    var result = drawer.CreateHeaderBlock(database, transaction, layout, blockName);
+                    var result = drawer.CreateSystemBlock(database, transaction, plan, blockName);
 
                     // Payload on the DEFINITION so every reference/copy shares it and the cabecera can be reopened.
                     if (!string.IsNullOrEmpty(payloadJson))
@@ -279,8 +306,33 @@ namespace RackCad.Plugin.Headers
                     }
 
                     transaction.Commit();
-                    return result;
+
+                    // CreateSystemBlock reports an EMPTY layout and an InsertedCount that also tallies the nested-def
+                    // prototypes (proto + N refs), which would inflate the single cabecera's "N piezas". Rebuild the
+                    // outcome with the REAL layout (for the horizontal/diagonal counts RackFrameCommands.Cabecera reads)
+                    // and the real drawn-piece count (all pieces present = layout size; less any whose block was missing).
+                    var drawnPieces = layout.Instances.Count - result.Outcome.MissingInstances.Count;
+                    var outcome = new LateralHeaderDrawOutcome(layout, drawnPieces, result.Outcome.MissingInstances);
+                    return new LateralHeaderBlockResult(result.DefinitionId, result.BlockName, outcome);
                 }
+            }
+        }
+
+        /// <summary>Best-effort read of a block definition's name (used as a stable nested-def prefix on redraw); "Corte" on failure.</summary>
+        private static string ReadBlockName(Database database, ObjectId blockId)
+        {
+            try
+            {
+                using (var transaction = database.TransactionManager.StartOpenCloseTransaction())
+                {
+                    var name = ((BlockTableRecord)transaction.GetObject(blockId, OpenMode.ForRead)).Name;
+                    transaction.Commit();
+                    return string.IsNullOrWhiteSpace(name) ? "Corte" : name;
+                }
+            }
+            catch
+            {
+                return "Corte";
             }
         }
 

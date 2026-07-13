@@ -236,8 +236,9 @@ design  (SelectivePalletDesign)   -> lo que edita el usuario (tarimas por celda)
   cancelable).
 - **Doble profundidad (espalda con espalda, Fase 1)**: `DepthCount` (numero de fondos, 1..4;
   1 = sencillo clasico) a lo largo del eje de fondo, y `SeparatorLengths` (**una por hueco** entre
-  fondos consecutivos, no un valor global; el bloque separador fisico aun NO se dibuja, solo se deja
-  el hueco vacio). `ExtraFondoBays` guarda la matriz de niveles de los fondos 1..N-1 (vacio = ese
+  fondos consecutivos, no un valor global; el bloque separador fisico ya se dibuja en las vistas lateral
+  y planta y entra al BOM (componente "Separador"); en la frontal solo se deja el hueco vacio, a
+  proposito). `ExtraFondoBays` guarda la matriz de niveles de los fondos 1..N-1 (vacio = ese
   fondo hereda las `Bays` del fondo 0). **Cada fondo tiene sus propios niveles/alturas Y su propio
   numero de frentes** (layout en esquina: p. ej. una linea con 3 frentes y otra con 6, unidas solo en
   los 3 que se traslapan). El **fondo MAS LARGO define la rejilla horizontal compartida** (anchos de

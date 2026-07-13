@@ -157,8 +157,9 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
    (`CabeceraFondoOverrides`/`FondoCabeceraOverrides`). La **frontal se inserta por fondo** (el fondo
    va en `Section` del sobre) y el editor tiene un toggle **Frontal/Lateral** con vista previa lateral
    esquematica; lateral y planta dibujan todos los fondos. El "medio frente" ya esta hecho,
-   generalizado a N tramos (`SelectiveMedioFrente` + `SelectiveSegmentsWindow`, con round-trip);
-   solo queda pendiente dibujar el bloque separador fisico entre fondos.
+   generalizado a N tramos (`SelectiveMedioFrente` + `SelectiveSegmentsWindow`, con round-trip).
+   El bloque separador fisico entre fondos ya se dibuja en lateral y planta y entra al BOM (componente
+   "Separador"); en la frontal solo se deja el hueco, a proposito.
 
 ## Identidad y round-trip
 

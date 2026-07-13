@@ -27,9 +27,11 @@
 > `SelectivePlantaBuilder.BuildPlan`); (c) el purge de huérfanas ya no paga coste fijo por redibujo (solo
 > verifica defs que el contenido nuevo no re-referencia); (d) ~50 mejoras de UI/UX en las 6 ventanas
 > (Esc cierra, tooltips, foco inicial, errores visibles, acentos, estilos unificados); (e) `secciones.csv`
-> unifica los perfiles (ítem #12). **La agrupación ARRAY en la FRONTAL quedó HECHA (2026-07-11).** Mejora
-> futura del mismo patrón: aplicar ARRAY a los cortes laterales si se percibe lentitud en runs muy largos;
-> cachear `blocks-library.dwg` por firma en `BlockLibraryImporter`.
+> unifica los perfiles (ítem #12). **La agrupación ARRAY en la FRONTAL quedó HECHA (2026-07-11).** **Del mismo
+> patrón, ya HECHO:** el patrón ARRAY también cubre los cortes laterales (`LateralHeaderDrawer.CreateSystemBlock`
+> agrupa los cortes idénticos en una definición anidada referenciada N veces), antes solo frontal/planta; y
+> `BlockLibraryImporter` cachea `blocks-library.dwg` por firma (ruta + fecha de modificación + tamaño),
+> reutilizando el `Database` parseado entre dibujos hasta que el archivo cambie.
 
 > **2026-07-11 — rendimiento del selectivo + cotas automáticas (347 tests verdes):** (a) el patrón ARRAY
 > ya cubre la FRONTAL (`HeaderInstanceGrouper`, blindado por `Flatten==Build`), no solo la planta; (b) al
@@ -90,8 +92,12 @@
    como la bota. Izquierda/Derecha/Ambas = lado de la GUÍA de canal (Derecha = el bloque espejeado; Ambas = guía en los
    dos lados, para un frente-puente). BOM: es su propio componente; los elementos DIBUJABLES (bota/lateral) se cuentan
    SOLO del dibujo (0 = no se listan; una bota totalmente reemplazada por laterales no aparece), la cantidad manual es
-   fallback solo para no-dibujables. **Pendiente:** validar en AutoCAD el espejo/orientación/longitud; los demás
-   elementos (desviadores, topes, guardas, parrillas).
+   fallback solo para no-dibujables. **Larguero tope y separador HECHO (2026-07-13):** el larguero tope se dibuja en
+   las tres vistas (frontal con toggle "Dibujar en frontal", lateral y planta), con su propio componente "Tope" en el
+   BOM, rejilla nivel×frente, compartido o uno-por-fondo, lado izq/der/ambos, SAQUE configurable y LONGITUD = larguero
+   + ¼" (mate en el punto `TROQUEL_TOPE`); el separador físico entre fondos se dibuja en lateral y planta (componente
+   "Separador", cada 100"; en la frontal solo se deja el hueco, a propósito). **Pendiente:** validar en AutoCAD el
+   espejo/orientación/longitud; los demás elementos (desviadores, guardas traseras, parrillas).
 4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
    "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
    pasillo sería un gran ahorro.

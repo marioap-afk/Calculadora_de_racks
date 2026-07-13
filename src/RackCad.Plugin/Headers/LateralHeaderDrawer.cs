@@ -23,31 +23,6 @@ namespace RackCad.Plugin.Headers
     public sealed class LateralHeaderDrawer
     {
         /// <summary>
-        /// Build a block definition named <paramref name="blockName"/> (uniquified if it already exists)
-        /// containing every piece of the plan that the drawing actually defines.
-        /// </summary>
-        public LateralHeaderBlockResult CreateHeaderBlock(
-            Database db, Transaction tr, LateralHeaderLayout layout, string blockName)
-        {
-            var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
-            var definition = NewBlock(blockTable, tr, blockName, out var uniqueName, out var definitionId);
-
-            var missing = new List<HeaderBlockInstance>();
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var inserted = 0;
-
-            foreach (var instance in layout.Instances)
-            {
-                if (AppendInstance(blockTable, definition, tr, instance, missing, seen))
-                {
-                    inserted++;
-                }
-            }
-
-            return new LateralHeaderBlockResult(definitionId, uniqueName, new LateralHeaderDrawOutcome(layout, inserted, missing));
-        }
-
-        /// <summary>
         /// Build a dynamic-system block: each distinct header becomes one nested block definition (reused at
         /// every run position), and separators/derived posts are appended directly. Returns the system block.
         /// </summary>

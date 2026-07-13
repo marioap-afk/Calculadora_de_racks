@@ -81,7 +81,8 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
   AutoCAD aun).
 - **Doble profundidad (espalda con espalda), Fase 1:** `DepthCount` (1..4 fondos; 1 = sencillo
   clasico) a lo largo del fondo, con separadores **por hueco** (`SeparatorLengths`; el bloque
-  separador aun no se dibuja, solo se deja el hueco). **Cada fondo tiene sus propios niveles/alturas**
+  separador ya se dibuja en las vistas lateral y planta y entra al BOM como su propio componente
+  "Separador"; en la frontal solo se deja el hueco, a proposito). **Cada fondo tiene sus propios niveles/alturas**
   (`ExtraFondoBays`; vacio = hereda las `Bays` del fondo 0) **y su propio numero de frentes**
   (`BayCountBox` habilitado en cualquier fondo; layout en esquina): el **fondo mas largo define la
   rejilla horizontal compartida** y los mas cortos son un **prefijo** de ella, asi los postes que se
@@ -174,10 +175,10 @@ Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 - Las vistas lateral/planta **solo se insertan desde `RACKEDITAR`** de una vista frontal/lateral
   existente (los botones se deshabilitan con tooltip si no aplica), para que nunca queden huerfanas.
 - Dibujo block-based en AutoCAD para los cuatro tipos, con jig de colocacion.
-- BOM con exportacion a CSV (selectivo; CRLF RFC-4180).
+- BOM con exportacion a CSV y a Excel (.xlsx) (selectivo; CRLF RFC-4180).
 
 ## Que falta
 
 - Definicion de los bloques dinamicos en el DWG (deben existir previamente; los faltantes se
   reportan y se omiten al dibujar).
-- Persistencia en base de datos (SQLite) y exportacion a Excel (hoy el BOM exporta CSV).
+- Persistencia en base de datos (SQLite).

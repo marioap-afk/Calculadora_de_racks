@@ -78,6 +78,7 @@ namespace RackCad.Application.Systems
                     View = prototype.View,
                     RotationRadians = prototype.RotationRadians,
                     MirroredX = prototype.MirroredX,
+                    MirroredY = prototype.MirroredY,
                     ConnectionAnchor = new Point2D(0.0, 0.0),
                     Insertion = new Point2D(
                         prototype.Insertion.X - prototype.ConnectionAnchor.X,
@@ -116,6 +117,7 @@ namespace RackCad.Application.Systems
                 .Append(instance.View).Append('|')
                 .Append(Key(instance.RotationRadians)).Append('|')
                 .Append(instance.MirroredX ? '1' : '0').Append('|')
+                .Append(instance.MirroredY ? '1' : '0').Append('|')
                 .Append(Key(instance.Insertion.X - instance.ConnectionAnchor.X)).Append(',')
                 .Append(Key(instance.Insertion.Y - instance.ConnectionAnchor.Y)).Append('|');
 

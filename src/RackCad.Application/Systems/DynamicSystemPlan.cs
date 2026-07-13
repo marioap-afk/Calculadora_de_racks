@@ -67,6 +67,7 @@ namespace RackCad.Application.Systems
                 View = source.View,
                 RotationRadians = source.RotationRadians,
                 MirroredX = placement.Mirrored ? !source.MirroredX : source.MirroredX,
+                MirroredY = source.MirroredY, // a Y-axis flip carries through unchanged (placements only shift/X-mirror)
                 ConnectionAnchor = new Point2D(WorldX(source.ConnectionAnchor.X), WorldY(source.ConnectionAnchor.Y)),
                 Insertion = new Point2D(WorldX(source.Insertion.X), WorldY(source.Insertion.Y))
             };

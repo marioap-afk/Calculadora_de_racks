@@ -144,9 +144,11 @@ El dibujo (`RackCad.Plugin/Headers/`) **ya está cableado**:
    (`PostId`/`BasePlateId`/`TrussProfileId`).
 2. ✅ **Servicio de dibujo**: `RackCad.Plugin/Headers/LateralHeaderDrawService.cs` carga el catálogo
    (`JsonRackCatalogProvider.FromBaseDirectory().Load()`), bloquea el documento, arma **un bloque** con todas
-   las piezas y lo coloca con el mouse (jig). Implementa la interfaz `RackCad.UI.IHeaderDrawService` para que la
+   las piezas (`LateralHeaderDrawer.CreateSystemBlock` agrupa los cortes idénticos en UNA definición anidada
+   referenciada N veces — patrón ARRAY, igual que frontal/planta) y lo coloca con el mouse (jig). Implementa la
+   interfaz `RackCad.UI.IHeaderDrawService` para que la
    WPF dispare el dibujo **sin** referenciar las DLLs de AutoCAD (regla de oro: la UI no conoce AutoCAD).
-3. ✅ **Importación de bloques**: `BlockLibraryImporter.EnsureForLayout` clona en el dibujo activo los bloques
+3. ✅ **Importación de bloques**: `BlockLibraryImporter.EnsureForPlan` clona en el dibujo activo los bloques
    que falten desde un DWG biblioteca (`blocks-library.dwg`, junto a los catálogos; ruta configurable). Se lee
    en una base lateral sin abrirlo en AutoCAD; los bloques que tampoco existan en la biblioteca se omiten.
 4. ✅ **Comandos y botón**: `QUICKCABECERA` pide la cabecera por línea de comandos (poste/fondo/alto);

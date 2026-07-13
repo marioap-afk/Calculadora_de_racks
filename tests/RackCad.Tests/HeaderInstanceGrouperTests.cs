@@ -64,6 +64,52 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Group_DoesNotMergePiecesDifferingOnlyInMirroredY()
+        {
+            // The protector lateral flips its guide via MirroredY (Y scale -1). Two otherwise-identical pieces that
+            // differ only in MirroredY are NOT interchangeable and must land in separate nested definitions.
+            HeaderBlockInstance Guard(double x, bool mirroredY) => new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Safety,
+                PieceId = "GUARD",
+                BlockName = "GUARD_BLOCK",
+                View = "planta",
+                Insertion = new Point2D(x, 0),
+                ConnectionAnchor = new Point2D(x, 0),
+                MirroredY = mirroredY
+            };
+
+            var instances = new[] { Guard(0, false), Guard(50, false), Guard(0, true), Guard(50, true) };
+
+            var plan = HeaderInstanceGrouper.Group(instances, "T");
+
+            Assert.Equal(2, plan.Headers.Count);                        // one group per MirroredY value, not a merge
+            Assert.All(plan.Headers, g => Assert.Single(g.Instances));
+            Assert.All(plan.Headers, g => Assert.Equal(2, g.Placements.Count));
+        }
+
+        [Fact]
+        public void Group_PreservesMirroredY_InDefinitionAndThroughFlatten()
+        {
+            HeaderBlockInstance Guard(double x) => new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Safety,
+                PieceId = "GUARD",
+                BlockName = "GUARD_BLOCK",
+                View = "planta",
+                Insertion = new Point2D(x, 0),
+                ConnectionAnchor = new Point2D(x, 0),
+                MirroredY = true
+            };
+
+            var plan = HeaderInstanceGrouper.Group(new[] { Guard(0), Guard(50) }, "T");
+
+            var group = Assert.Single(plan.Headers);
+            Assert.True(group.Instances[0].MirroredY);                  // the nested definition bakes in the Y-mirror
+            Assert.All(plan.Flatten().Instances, i => Assert.True(i.MirroredY)); // and it survives reconstruction
+        }
+
+        [Fact]
         public void Group_PreservesInsertionAnchorOffset_ForPlateLikePieces()
         {
             // A base plate: its Insertion is offset from its ConnectionAnchor by the mate point. Grouping must land
