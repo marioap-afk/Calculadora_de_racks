@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
@@ -25,6 +26,13 @@ namespace RackCad.Tests
             design.Bays.Add(bay);
             foreach (var (id, qty, side) in safety) design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = id, Quantity = qty, Side = side });
             return design;
+        }
+
+        private static SelectiveBayDesign Bay()
+        {
+            var bay = new SelectiveBayDesign();
+            bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 42.0, Alto = 60.0 }, PalletCount = 2, BeamId = BeamId, BeamPeralte = 4.0 });
+            return bay;
         }
 
         /// <summary>A design of N frentes (N+1 posts) with one bota selection carrying per-post side overrides.</summary>
@@ -195,6 +203,36 @@ namespace RackCad.Tests
                 DesignWithPostSides(2, SafetySide.Left, (0, SafetySide.None)), Catalog);
             var botas = new SelectivePlantaBuilder().Build(system, Catalog).Count(i => i.Role == HeaderBlockRole.Safety);
             Assert.Equal(2, botas);
+        }
+
+        [Fact]
+        public void Planta_CornerLayout_MirrorsAboutReachingFondosOnly()
+        {
+            // Corner: fondo 0 = 3 frentes, fondo 1 = 1 frente. At the far frente only fondo 0 reaches, so the mirror
+            // must center over fondo 0 ALONE — not over the deeper global span (which would float the bota behind
+            // a post that doesn't exist there, disagreeing with the lateral corte).
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 2
+            };
+            design.Bays.Add(Bay());
+            design.Bays.Add(Bay());
+            design.Bays.Add(Bay());                                             // fondo 0: 3 frentes (posts 0..3)
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay() });  // fondo 1: 1 frente (posts 0..1)
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Side = SafetySide.Both });
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var depth0 = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
+            var offsets = SelectiveDepthLayout.Offsets(system);
+            var globalBackmost = offsets[1] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, 1);
+
+            var botas = new SelectivePlantaBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            // Farthest frente (largest Y): only fondo 0 reaches → Both = a front + its mirror, reflected about depth0/2.
+            var farFrente = botas.GroupBy(b => Math.Round(b.Insertion.Y, 3)).OrderBy(g => g.Key).Last().ToList();
+            Assert.Equal(2, farFrente.Count);
+            Assert.Equal(depth0, farFrente[0].Insertion.X + farFrente[1].Insertion.X, 3);   // reflected about fondo 0 only
+            Assert.All(farFrente, b => Assert.True(b.Insertion.X < globalBackmost - 1.0));   // never floats to the global backmost
         }
 
         [Fact]
