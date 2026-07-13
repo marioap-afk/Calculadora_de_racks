@@ -1198,7 +1198,7 @@ namespace RackCad.UI
         /// <summary>A deep copy of a safety selection, carrying its per-post side overrides + the tope grid config.</summary>
         private static SelectiveSafetySelection CopySafety(SelectiveSafetySelection s)
         {
-            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque };
+            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque, TopeFrontal = s.TopeFrontal };
             foreach (var post in s.PostSides)
             {
                 if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });

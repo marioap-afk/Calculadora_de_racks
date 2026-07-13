@@ -150,6 +150,7 @@ namespace RackCad.Application.Systems
                 }
             }
 
+            AddTopes(instances, system, catalog, postX, view);
             AddAnnotations(instances, system, view, postX);
 
             // Where each bay's larguero PROFILE cut starts (hook troquel + the ménsula overhang INICIO_PERFIL) — the
@@ -163,6 +164,67 @@ namespace RackCad.Application.Systems
 
             SelectiveDimensions.AddFrontal(instances, system, view, postX, beamStartXs);
             return instances;
+        }
+
+        /// <summary>
+        /// Larguero topes in the FRONTAL (opt-in via the TopeFrontal toggle): the rear stop seen edge-on, one per
+        /// larguero whose (frente,level) grid cell is on, spanning the bay (LONGITUD = larguero + ¼"), ~8" above the
+        /// larguero and snapped to the TROQUEL_TOPE grid, at the left post's TROQUEL_TOPE (its X slides with the peralte).
+        /// </summary>
+        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, string view)
+        {
+            var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, view, SelectiveSafetyPlacement.TopeType);
+            if (topes.Count == 0)
+            {
+                return;
+            }
+
+            var tope = topes[0];
+            var selection = tope.Selection;
+            if (!selection.TopeFrontal)
+            {
+                return; // the frontal is an opt-in toggle (lateral + planta always draw the tope)
+            }
+
+            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, view);
+            var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+            const double paso = 2.0;
+
+            for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
+            {
+                var bay = system.Bays[i];
+                if (bay.BeamLength <= 0.0)
+                {
+                    continue;
+                }
+
+                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
+                var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
+                var xStart = postX[i] + troquel.X;
+
+                for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+                {
+                    if (!selection.TopeAt(i, lvl))
+                    {
+                        continue; // this (frente, level) cell is off
+                    }
+
+                    var y = troquel.Y + Math.Round((bay.Levels[lvl].Y + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
+                    var at = new Point2D(xStart, y);
+                    var instance = new HeaderBlockInstance
+                    {
+                        Role = HeaderBlockRole.Tope,
+                        PieceId = tope.PieceId,
+                        BlockName = tope.Block,
+                        View = view,
+                        Insertion = at,
+                        ConnectionAnchor = at
+                    };
+                    instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance;
+                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
+                    instances.Add(instance);
+                }
+            }
         }
 
         /// <summary>Text labels when the toggles are on: a number centered under each frente (bay), a number to the

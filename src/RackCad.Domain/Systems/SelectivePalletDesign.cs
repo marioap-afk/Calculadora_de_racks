@@ -162,6 +162,9 @@ namespace RackCad.Domain.Systems
         /// <summary>TOPE: the block's SAQUE (stick-out) parameter, inches (&lt;= 0 → the default 3").</summary>
         public double TopeSaque { get; set; } = 3.0;
 
+        /// <summary>TOPE: also draw it in the FRONTAL view (lateral + planta always draw it; the frontal is a toggle).</summary>
+        public bool TopeFrontal { get; set; }
+
         /// <summary>TOPE: the (frente, level) cells with NO tope (default empty = a tope at every larguero).</summary>
         public IList<SelectiveGridCell> TopeOffCells { get; } = new List<SelectiveGridCell>();
 

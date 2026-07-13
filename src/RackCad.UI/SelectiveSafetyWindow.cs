@@ -43,6 +43,7 @@ namespace RackCad.UI
             public bool TopeShared = true;
             public SafetySide TopeSide = SafetySide.Both;
             public double TopeSaque = 3.0;
+            public bool TopeFrontal;
             public List<SelectiveGridCell> TopeOffCells = new List<SelectiveGridCell>();
             public Button TopeButton;
         }
@@ -137,6 +138,7 @@ namespace RackCad.UI
                             row.TopeShared = existing.TopeShared;
                             row.TopeSide = existing.Side == SafetySide.None ? SafetySide.Both : existing.Side;
                             row.TopeSaque = existing.TopeSaque > 0.0 ? existing.TopeSaque : 3.0;
+                            row.TopeFrontal = existing.TopeFrontal;
                             row.TopeOffCells = existing.TopeOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList() ?? new List<SelectiveGridCell>();
                         }
 
@@ -234,7 +236,7 @@ namespace RackCad.UI
 
         private void EditTope(Row row)
         {
-            var dialog = new SafetyTopeGridWindow(row.Label, levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeOffCells) { Owner = this };
+            var dialog = new SafetyTopeGridWindow(row.Label, levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeFrontal, row.TopeOffCells) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -245,6 +247,7 @@ namespace RackCad.UI
             row.TopeShared = r.Shared;
             row.TopeSide = r.Side;
             row.TopeSaque = r.Saque;
+            row.TopeFrontal = r.Frontal;
             row.TopeOffCells = r.OffCells;
             row.TopeButton.Content = TopeLabel(row);
         }
@@ -291,7 +294,7 @@ namespace RackCad.UI
                         var allOff = total > 0 && row.TopeOffCells.Count >= total;
                         if (!allOff)
                         {
-                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque };
+                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal };
                             foreach (var c in row.TopeOffCells)
                             {
                                 if (c != null) selection.TopeOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });

@@ -215,6 +215,28 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Frontal_Tope_OnlyWhenToggleOn()
+        {
+            var offDesign = PerFondoDesign();
+            offDesign.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, TopeShared = true, TopeFrontal = false });
+            var offSystem = new SelectiveGeometryResolver().Resolve(offDesign, Catalog);
+            Assert.DoesNotContain(
+                new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(offSystem, 0), Catalog),
+                x => x.Role == HeaderBlockRole.Tope);
+
+            var onDesign = PerFondoDesign();
+            onDesign.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, TopeShared = true, TopeFrontal = true, TopeSaque = 3.0 });
+            var onSystem = new SelectiveGeometryResolver().Resolve(onDesign, Catalog);
+            var topes = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(onSystem, 0), Catalog)
+                .Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+
+            Assert.NotEmpty(topes);
+            Assert.All(topes, t => Assert.Equal("LARGUERO_ESCALON_TOPE_DE_3_FRONTAL", t.BlockName));
+            Assert.All(topes, t => Assert.True(t.DynamicParameters[SelectiveRackDefaults.LengthParam] > 0.0)); // spans the bay
+            Assert.All(topes, t => Assert.Equal(3.0, t.DynamicParameters["SAQUE"], 3));
+        }
+
+        [Fact]
         public void Tope_NotSelected_NoneDrawn()
         {
             var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);

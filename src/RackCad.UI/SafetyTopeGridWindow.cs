@@ -30,12 +30,15 @@ namespace RackCad.UI
             public bool Shared;
             public SafetySide Side;
             public double Saque;
+            public bool Frontal;
             public List<SelectiveGridCell> OffCells = new List<SelectiveGridCell>();
         }
 
+        private readonly CheckBox frontal;
+
         public TopeResult Result { get; private set; }
 
-        public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, IEnumerable<SelectiveGridCell> offCells)
+        public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, bool frontal, IEnumerable<SelectiveGridCell> offCells)
         {
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             var off = new HashSet<(int, int)>();
@@ -48,10 +51,10 @@ namespace RackCad.UI
             var maxLevels = frentes > 0 ? this.levelsPerFrente.Max() : 0;
 
             Title = string.IsNullOrWhiteSpace(label) ? "Larguero tope" : label;
-            Width = Math.Min(900, 220 + frentes * 46);
+            Width = Math.Max(560, Math.Min(900, 260 + frentes * 46));
             Height = Math.Min(640, 260 + maxLevels * 30);
-            MinWidth = 360;
-            MinHeight = 280;
+            MinWidth = 540; // the options row (compartido + lado + saque + frontal) must fit without clipping
+            MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             FontFamily = new FontFamily("Segoe UI");
             Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
@@ -68,9 +71,9 @@ namespace RackCad.UI
             DockPanel.SetDock(intro, Dock.Top);
             root.Children.Add(intro);
 
-            // ---- Bottom: options (shared, side, saque) + buttons ----
-            var options = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 10, 0, 0), VerticalAlignment = VerticalAlignment.Center };
-            this.shared = new CheckBox { Content = "Compartido (uno central)", IsChecked = shared, VerticalAlignment = VerticalAlignment.Center, ToolTip = "Un solo tope central para ambos fondos; desmarcado = uno por fondo (según el lado)." };
+            // ---- Bottom: options (shared, side, saque, frontal) — a WrapPanel so nothing clips on a narrow window ----
+            var options = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 10, 0, 0) };
+            this.shared = new CheckBox { Content = "Compartido (uno central)", IsChecked = shared, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4, 0, 4), ToolTip = "Un solo tope central para ambos fondos; desmarcado = uno por fondo (según el lado)." };
             options.Children.Add(this.shared);
 
             options.Children.Add(new TextBlock { Text = "Lado:", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
@@ -82,6 +85,9 @@ namespace RackCad.UI
             options.Children.Add(new TextBlock { Text = "Saque (in):", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
             this.saque = new TextBox { Width = 56, VerticalAlignment = VerticalAlignment.Center, Text = (saque > 0 ? saque : 3.0).ToString(CultureInfo.InvariantCulture) };
             options.Children.Add(this.saque);
+
+            this.frontal = new CheckBox { Content = "Dibujar en frontal", IsChecked = frontal, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(16, 4, 0, 4), ToolTip = "Además de lateral y planta, dibujarlo también en la vista frontal." };
+            options.Children.Add(this.frontal);
             DockPanel.SetDock(options, Dock.Bottom);
             root.Children.Add(options);
 
@@ -189,7 +195,8 @@ namespace RackCad.UI
             {
                 Shared = shared.IsChecked == true,
                 Side = SideFromIndex(side.SelectedIndex),
-                Saque = saqueValue
+                Saque = saqueValue,
+                Frontal = frontal.IsChecked == true
             };
 
             for (var f = 0; f < cells.Length; f++)

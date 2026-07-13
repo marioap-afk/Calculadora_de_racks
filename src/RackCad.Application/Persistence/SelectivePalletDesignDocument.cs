@@ -133,6 +133,7 @@ namespace RackCad.Application.Persistence
                     PostSides = s.PostSides.Where(p => p != null).Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList(),
                     TopeShared = s.TopeShared,
                     TopeSaque = s.TopeSaque,
+                    TopeFrontal = s.TopeFrontal,
                     TopeOffCells = s.TopeOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList()
                 }).ToList();
 
@@ -210,7 +211,8 @@ namespace RackCad.Application.Persistence
                         Quantity = safety.Quantity,
                         Side = ToSafetySide(safety.Side),
                         TopeShared = safety.TopeShared ?? true, // legacy docs (no field) default to shared
-                        TopeSaque = safety.TopeSaque.HasValue && safety.TopeSaque.Value > 0.0 ? safety.TopeSaque.Value : 3.0
+                        TopeSaque = safety.TopeSaque.HasValue && safety.TopeSaque.Value > 0.0 ? safety.TopeSaque.Value : 3.0,
+                        TopeFrontal = safety.TopeFrontal ?? false
                     };
                     foreach (var post in safety.PostSides ?? Enumerable.Empty<PostSideDocument>())
                     {
@@ -337,9 +339,11 @@ namespace RackCad.Application.Persistence
         public int? Side { get; set; }
         public List<PostSideDocument> PostSides { get; set; }
 
-        /// <summary>TOPE-only: shared central tope vs one per fondo (nullable = legacy → shared), the SAQUE, and skipped cells.</summary>
+        /// <summary>TOPE-only: shared central tope vs one per fondo (nullable = legacy → shared), the SAQUE, whether it draws
+        /// in the frontal, and the skipped cells.</summary>
         public bool? TopeShared { get; set; }
         public double? TopeSaque { get; set; }
+        public bool? TopeFrontal { get; set; }
         public List<GridCellDocument> TopeOffCells { get; set; }
     }
 
