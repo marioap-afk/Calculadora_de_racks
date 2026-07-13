@@ -17,7 +17,7 @@ Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que ot
 | `secciones.csv` | `id` | → `mensulas` (columna `mensula`, solo en filas `rol=LARGUERO`); la columna `rol` = POSTE\|CELOSIA\|LARGUERO parte esta hoja única en postes/refuerzos, celosía (horizontales y diagonales) y largueros; `peraltes` (largueros) = valores permitidos (no FK) |
 | `mensulas.csv` | `id` | No (catálogo hoja; conector de extremo del larguero) |
 | `flow-bed-profiles.csv` | `id` | No (componentes de cama: riel/rodillo/freno/tope por `role`) |
-| `spacers-profiles.csv` | `id` | No (separadores de cabecera; CSV presente, **aún no cargado** en `RackCatalog`) |
+| `secciones.csv` (rol `SEPARADOR`) | `id` | Sí — el perfil del separador de cabecera se carga en `RackCatalog.SpacerProfiles` |
 | `connection-points.csv` | `id` | No (solo define qué es el punto) |
 | `views.csv` | `id` | No |
 | `base-plates.csv` | `id` | No (posición de puntos → `connection-layout`; `peralteBase`/`peraltePorPeraltePoste` = peralte estándar derivado del poste) |
@@ -148,8 +148,8 @@ RackCatalog {
 }
 ```
 
-(`spacers-profiles.csv` existe en la carpeta pero **todavía no** lo carga el provider: no forma parte de
-`RackCatalog`.)
+(El perfil del separador de cabecera vive en `secciones.csv` con rol `SEPARADOR`; el provider lo carga en
+`RackCatalog.SpacerProfiles`. El antiguo `spacers-profiles.csv` — huérfano, nunca leído — se eliminó.)
 
 Las **plantillas** se cargan aparte (son JSON anidado):
 

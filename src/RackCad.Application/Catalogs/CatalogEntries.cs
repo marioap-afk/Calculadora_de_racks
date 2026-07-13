@@ -66,7 +66,7 @@ namespace RackCad.Application.Catalogs
     /// </summary>
     public sealed class SeccionCatalogEntry : CatalogEntryBase
     {
-        /// <summary>POSTE, CELOSIA (accent tolerated) or LARGUERO.</summary>
+        /// <summary>POSTE, CELOSIA (accent tolerated), LARGUERO or SEPARADOR.</summary>
         public string Rol { get; set; }
 
         public string Family { get; set; }
@@ -281,6 +281,9 @@ namespace RackCad.Application.Catalogs
         /// <summary>Load-beam ("larguero") SKUs and their end connectors ("ménsulas").</summary>
         public IReadOnlyList<BeamProfileCatalogEntry> BeamProfiles { get; set; } = new List<BeamProfileCatalogEntry>();
         public IReadOnlyList<MensulaCatalogEntry> Mensulas { get; set; } = new List<MensulaCatalogEntry>();
+
+        /// <summary>Spacer ("separador de cabecera") profiles that tie adjacent frames (dynamic) or fondos (selectivo doble profundidad).</summary>
+        public IReadOnlyList<ProfileCatalogEntry> SpacerProfiles { get; set; } = new List<ProfileCatalogEntry>();
 
         /// <summary>Safety accessories (protectores, desviadores, topes, guardas, parrillas) — for selection + BOM.</summary>
         public IReadOnlyList<SafetyElementCatalogEntry> SafetyElements { get; set; } = new List<SafetyElementCatalogEntry>();

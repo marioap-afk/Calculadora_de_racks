@@ -148,6 +148,8 @@ namespace RackCad.Application.Systems
             }
 
             var id = DynamicRackDefaults.SeparatorCatalogId;
+            var profile = catalog?.SpacerProfiles?.FirstOrDefault(s => string.Equals(s?.Id, id, StringComparison.OrdinalIgnoreCase));
+            var label = profile?.Label ?? id;
             foreach (var length in order.OrderBy(l => l))
             {
                 var quantity = byLength[length];
@@ -155,12 +157,12 @@ namespace RackCad.Application.Systems
                 {
                     Category = Separador,
                     ProfileId = id,
-                    Description = id,
+                    Description = label,
                     Length = length,
                     Quantity = quantity,
                     Pieces = new List<BomLine>
                     {
-                        new BomLine { Category = Separador, ProfileId = id, Description = id, Length = length, Quantity = 1 }
+                        new BomLine { Category = Separador, ProfileId = id, Description = label, Length = length, Quantity = 1 }
                     }
                 });
             }

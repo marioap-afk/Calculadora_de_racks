@@ -388,7 +388,8 @@ Misma logica reutilizable para cabecera, dinamico, cama y selectivo:
   esquema `pieceId,connectionPointId,view,localX,localXPorParam,paramX,localY,localYPorParam,paramY`).
 - `blocks` (bloque por pieza y vista; `blockName` debe coincidir exacto con el nombre del
   bloque en la libreria DWG — `FindBlock(pieceId, view)` es la ruta activa de los cuatro
-  tipos), `views` (que vistas dibuja cada tipo), `flow-bed-profiles`, `spacers-profiles`.
+  tipos), `views` (que vistas dibuja cada tipo), `flow-bed-profiles`. El perfil del separador de cabecera
+  vive en `secciones` con rol `SEPARADOR` (cargado en `RackCatalog.SpacerProfiles`).
 
 Los catalogos son "Excel-first": el `.csv` gana sobre el `.json`, se aceptan UTF-8 y
 ANSI/Windows-1252 de Excel, y la cache se invalida por firma de archivos (editar el CSV y

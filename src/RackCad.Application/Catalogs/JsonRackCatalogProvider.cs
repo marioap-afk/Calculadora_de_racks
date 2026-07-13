@@ -96,10 +96,11 @@ namespace RackCad.Application.Catalogs
             var posts = new List<ProfileCatalogEntry>();
             var truss = new List<ProfileCatalogEntry>();
             var beams = new List<BeamProfileCatalogEntry>();
+            var spacers = new List<ProfileCatalogEntry>();
 
             if (secciones.Count > 0)
             {
-                SplitSecciones(secciones, posts, truss, beams);
+                SplitSecciones(secciones, posts, truss, beams, spacers);
             }
             else
             {
@@ -115,6 +116,7 @@ namespace RackCad.Application.Catalogs
                 BasePlates = ReadArray<BasePlateCatalogEntry>(BasePlatesFile),
                 FlowBedProfiles = ReadArray<FlowBedComponentCatalogEntry>(FlowBedProfilesFile),
                 BeamProfiles = beams,
+                SpacerProfiles = spacers,
                 Mensulas = ReadArray<MensulaCatalogEntry>(MensulasFile),
                 SafetyElements = ReadArray<SafetyElementCatalogEntry>(SafetyElementsFile),
                 ConnectionPoints = ReadArray<ConnectionPointCatalogEntry>(ConnectionPointsFile),
@@ -132,7 +134,8 @@ namespace RackCad.Application.Catalogs
             List<SeccionCatalogEntry> secciones,
             List<ProfileCatalogEntry> posts,
             List<ProfileCatalogEntry> truss,
-            List<BeamProfileCatalogEntry> beams)
+            List<BeamProfileCatalogEntry> beams,
+            List<ProfileCatalogEntry> spacers)
         {
             foreach (var row in secciones)
             {
@@ -149,6 +152,9 @@ namespace RackCad.Application.Catalogs
                         break;
                     case "LARGUERO":
                         beams.Add(ToBeam(row));
+                        break;
+                    case "SEPARADOR":
+                        spacers.Add(ToProfile(row));
                         break;
                 }
             }

@@ -19,7 +19,6 @@ assets/catalogs/
   mensulas.csv                  Ménsulas (conector de extremo del larguero)   (Excel/CSV)
   base-plates.csv               Placas base (con peralte estandar)            (Excel/CSV)
   flow-bed-profiles.csv         Componentes de cama de rodamiento (riel/rodillo/freno/tope) (Excel/CSV)
-  spacers-profiles.csv          Perfiles de separador (sistema dinamico)      (Excel/CSV)
   connection-points.csv         Puntos de conexion (definicion)               (Excel/CSV)
   connection-layout.csv         Punto por pieza y vista (posicion 2D)         (Excel/CSV)
   views.csv                     Vistas posibles                              (Excel/CSV)
@@ -307,9 +306,9 @@ Campos comunes **mas**:
 | `capacityKg` | numero | Capacidad de carga (kg) del rodillo; base del futuro conteo de rodillos por capacidad. |
 | `weightEach` | numero | Peso por pieza (kg). |
 
-### Separadores (`spacers-profiles.csv`)
+### Separadores (`secciones.csv`, rol `SEPARADOR`)
 
-Perfil del separador que une cabeceras a lo largo del tramo en el SISTEMA DINÁMICO. Es un CSV **fuente** que se versiona y se copia junto al plugin; hoy el separador se referencia por su `id` (constante `SeparatorCatalogId`) y su dibujo sale de `blocks.csv` + `connection-layout.csv`, asi que este catalogo queda como referencia/reserva (aun no se carga en una lista tipada del `RackCatalog`).
+Perfil del separador que une cabeceras a lo largo del tramo (SISTEMA DINÁMICO) o fondos adyacentes (SELECTIVO doble profundidad). Vive en `secciones.csv` con rol `SEPARADOR` y el provider lo carga en `RackCatalog.SpacerProfiles`; el dibujo sale de `blocks.csv` + `connection-layout.csv` y su `id` es la constante `SeparatorCatalogId`. El BOM del selectivo usa su `displayName` desde ahí. (El antiguo `spacers-profiles.csv`, huérfano, se eliminó.)
 
 Campos comunes **mas**: `family`, `width`, `depth`, `thickness`, `units`, `gauge`, `weightPerMeter`.
 

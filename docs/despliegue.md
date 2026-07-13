@@ -39,7 +39,6 @@ catalogs\                  ← datos maestros + geometría
   mensulas.csv
   base-plates.csv
   flow-bed-profiles.csv
-  spacers-profiles.csv
   connection-points.csv
   connection-layout.csv
   views.csv

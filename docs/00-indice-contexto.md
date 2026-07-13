@@ -53,7 +53,7 @@ Los catalogos viven en `assets/catalogs/*.csv` (mas `defaults.json` y `header-te
 - `mensulas.csv` — mensulas.
 - `base-plates.csv` — `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`.
 - `connection-points.csv` + `connection-layout.csv` — puntos de conexion parametricos en X y Y (X = localX + localXPorParam * valor(paramX); Y = localY + localYPorParam * valor(paramY)).
-- `blocks.csv` (bloque por pieza y vista), `views.csv`, `flow-bed-profiles.csv`, `spacers-profiles.csv`.
+- `blocks.csv` (bloque por pieza y vista), `views.csv`, `flow-bed-profiles.csv`.
 
 Ya no existen `diagonal-profiles.csv` ni `reinforcement-profiles.csv`. Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 

@@ -82,6 +82,9 @@ namespace RackCad.Tests
             Assert.NotEmpty(separadores);
             Assert.All(separadores, c => Assert.Equal(SelectiveBomBuilder.Separador, c.Category));
             Assert.All(separadores, c => Assert.True(c.Length > 0.0)); // the fondo gap
+            // Its description is the real display name from secciones.csv (not the hardcoded id).
+            Assert.All(separadores, c => Assert.Equal("Separador de cabecera formado calibre 12", c.Description));
+            Assert.Contains(Catalog.SpacerProfiles, s => s.Id == DynamicRackDefaults.SeparatorCatalogId); // loaded into the catalog
 
             // The BOM total equals the drawn lateral stack (frentes × gaps × levels), NOT the planta's collapsed count.
             var lateralStack = new SelectiveLateralBuilder().Cortes(system, Catalog)

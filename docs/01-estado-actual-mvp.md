@@ -156,7 +156,7 @@ firma de archivos (editar el CSV y relanzar el comando recarga):
   `pieceId,connectionPointId,view,localX,localXPorParam,paramX,localY,localYPorParam,paramY`).
 - `blocks` (bloque por pieza y vista; `FindBlock(pieceId, view)` es la ruta activa de los cuatro
   tipos y `blockName` debe coincidir exacto con el nombre del bloque en la libreria DWG), `views`,
-  `flow-bed-profiles`, `spacers-profiles`.
+  `flow-bed-profiles`.
 
 Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 

@@ -79,7 +79,6 @@ Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CS
 - `secciones.csv` (TODOS los perfiles estructurales en una hoja, columna `rol` = POSTE | CELOSIA | LARGUERO; los refuerzos son postes, horizontales y diagonales comparten la celosia, y los largueros llevan `peraltes` = valores permitidos y `mensula` = FK a mensulas)
 - `mensulas.csv` (mensulas del selectivo)
 - `base-plates.csv` (con `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`)
-- `spacers-profiles.csv` (separadores de cabecera del sistema dinamico)
 - `flow-bed-profiles.csv` (cama de rodamiento: riel/rodillo/freno/tope, columna `role`)
 - `connection-points.csv`
 - `views.csv`

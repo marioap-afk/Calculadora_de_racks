@@ -118,7 +118,7 @@ y refuerzos, CELOSIA = horizontales + diagonales, LARGUERO = largueros; columna 
 valores permitidos, FK a mensula), `mensulas`, `base-plates` (peralteBase /
 peraltePorPeraltePoste -> `StandardPeralte`), `connection-points` + `connection-layout`
 (por vista, X e Y: local + localPorParam * valor(param)), `blocks`, `views`,
-`flow-bed-profiles`, `spacers-profiles`. Excel-first: el `.csv` gana sobre el `.json`,
+`flow-bed-profiles`. Excel-first: el `.csv` gana sobre el `.json`,
 acepta UTF-8 y ANSI, y la cache se invalida por firma de archivos (editar el CSV y
 relanzar el comando recarga).
 Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.

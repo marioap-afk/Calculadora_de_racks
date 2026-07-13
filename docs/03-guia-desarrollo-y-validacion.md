@@ -184,7 +184,7 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 `mensulas`, `base-plates` (`peralteBase`/`peraltePorPeraltePoste` -> `StandardPeralte`),
 `connection-points` + `connection-layout` (por vista: X = localX + localXPorParam*paramX;
 Y = localY + localYPorParam*paramY), `blocks`, `views`,
-`flow-bed-profiles`, `spacers-profiles`. Excel-first: el `.csv` gana sobre el `.json`;
+`flow-bed-profiles`. Excel-first: el `.csv` gana sobre el `.json`;
 acepta UTF-8 y ANSI/Windows-1252 de Excel; cache con invalidacion por firma de archivos
 (editar el CSV y relanzar el comando recarga). Persistencia de proyecto: `RackProjectStore`
 -> `.rackcad.json`.
