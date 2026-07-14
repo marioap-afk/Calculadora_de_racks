@@ -271,12 +271,11 @@ namespace RackCad.Application.Headers
 
             if (panel.Arrangement == BracingPattern.DoubleDiagonal)
             {
-                // Two parallel diagonals, one a troquel above the other (V-style celosía). The lower one keeps
-                // the start offset and pushes its end up by the spacing; the upper one mirrors that.
-                yield return MakeDiagonal(p, trussId, block, celosia,
-                    startBaseY + startOffset, endBaseY - (endOffset + doubleSpacing), direction, leftXAt, rightXAt);
-                yield return MakeDiagonal(p, trussId, block, celosia,
-                    startBaseY + (startOffset + doubleSpacing), endBaseY - endOffset, direction, leftXAt, rightXAt);
+                // Two parallel diagonals, one a troquel above the other (V-style celosía). Uses the SHARED rule
+                // (BracingDiagonalGeometry) so the preview/BOM member builder draws exactly the same geometry.
+                var e = BracingDiagonalGeometry.DoubleDiagonal(startBaseY, endBaseY, startOffset, endOffset, doubleSpacing);
+                yield return MakeDiagonal(p, trussId, block, celosia, e.LowerStart, e.LowerEnd, direction, leftXAt, rightXAt);
+                yield return MakeDiagonal(p, trussId, block, celosia, e.UpperStart, e.UpperEnd, direction, leftXAt, rightXAt);
                 yield break;
             }
 

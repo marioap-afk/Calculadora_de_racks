@@ -164,9 +164,14 @@
 - ~~**Definiciones huérfanas al editar el dinámico**~~ — ✅ **HECHO (2026-07-09):** `RedefineSystemBlock`
   purga las definiciones anidadas que quedan sin referencia tras redefinir (los bloques de catálogo y los
   usados por otros racks se conservan). Conviene una verificación visual final en AutoCAD.
-- **Doble diagonal: preview vs dibujo** (`BracingPanelMemberBuilder` ratios 0.14/0.86 vs
-  `DiagonalDoubleSpacingTroqueles` del builder lateral): las dos geometrías de doble diagonal se
-  calculan distinto; unificar sobre la regla de troqueles y verificar visualmente.
+- ~~**Doble diagonal: preview vs dibujo**~~ — ✅ **HECHO (2026-07-13):** el preview/BOM
+  (`BracingPanelMemberBuilder.CreateDoubleDiagonal`) usaba un offset **horizontal** 0.14·fondo a altura
+  completa; ahora usa la **regla de troqueles** (dos diagonales de fondo completo, offset **vertical** por
+  `DiagonalDoubleSpacingTroqueles`, con retranqueo start/end) vía un helper compartido en el dominio
+  (`BracingDiagonalGeometry.DoubleDiagonal`) que **también** llama el builder lateral, así no pueden volver a
+  divergir. El dibujo queda byte-idéntico; cambia la longitud de la doble diagonal en el BOM (ahora la real,
+  fondo-completo). Con tests. Nota: el member builder no hace el *snap* a troqueles (necesitaría la Y-base del
+  poste), así que preview y dibujo coinciden salvo ese ajuste sub-pulgada. **Verificar visualmente en AutoCAD.**
 
 ### Decisiones de producto pendientes
 - ~~**Validación de esquema en los stores**~~ — ✅ **HECHO (2026-07-13):** `SchemaGuard.CheckReadable` rechaza

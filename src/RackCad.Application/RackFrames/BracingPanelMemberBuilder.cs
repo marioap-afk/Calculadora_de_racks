@@ -17,8 +17,9 @@ namespace RackCad.Application.RackFrames
 
             ResolvePanelElevations(configuration);
 
+            var offsets = DiagonalOffsets.From(configuration);
             var members = BuildHorizontalMembers(configuration.Horizontals, configuration.Depth)
-                .Concat(BuildPanelDiagonalMembers(configuration.BracingPanels, configuration.Depth))
+                .Concat(BuildPanelDiagonalMembers(configuration.BracingPanels, configuration.Depth, offsets))
                 .ToList();
 
             configuration.Members.Clear();
@@ -116,7 +117,31 @@ namespace RackCad.Application.RackFrames
             return FrameMemberType.IntermediateHorizontal;
         }
 
-        private static IEnumerable<FrameMember> BuildPanelDiagonalMembers(IEnumerable<BracingPanel> panels, double frameDepth)
+        /// <summary>Troquel-derived diagonal setbacks/spacing (in inches), shared with the lateral drawer's rule.</summary>
+        private readonly struct DiagonalOffsets
+        {
+            private DiagonalOffsets(double startOffset, double endOffset, double doubleSpacing)
+            {
+                StartOffset = startOffset;
+                EndOffset = endOffset;
+                DoubleSpacing = doubleSpacing;
+            }
+
+            public double StartOffset { get; }
+            public double EndOffset { get; }
+            public double DoubleSpacing { get; }
+
+            public static DiagonalOffsets From(RackFrameConfiguration configuration)
+            {
+                var paso = configuration.PasoTroquel > 0.0 ? configuration.PasoTroquel : 2.0;
+                return new DiagonalOffsets(
+                    configuration.DiagonalStartOffsetTroqueles * paso,
+                    configuration.DiagonalEndOffsetTroqueles * paso,
+                    configuration.DiagonalDoubleSpacingTroqueles * paso);
+            }
+        }
+
+        private static IEnumerable<FrameMember> BuildPanelDiagonalMembers(IEnumerable<BracingPanel> panels, double frameDepth, DiagonalOffsets offsets)
         {
             if (panels == null)
             {
@@ -133,7 +158,7 @@ namespace RackCad.Application.RackFrames
 
                 foreach (var face in GetPhysicalFaces(panel.MountingFace))
                 {
-                    foreach (var member in BuildPanelDiagonalMembers(panel, face, frameDepth))
+                    foreach (var member in BuildPanelDiagonalMembers(panel, face, frameDepth, offsets))
                     {
                         yield return member;
                     }
@@ -141,7 +166,7 @@ namespace RackCad.Application.RackFrames
             }
         }
 
-        private static IEnumerable<FrameMember> BuildPanelDiagonalMembers(BracingPanel panel, FrameSide face, double frameDepth)
+        private static IEnumerable<FrameMember> BuildPanelDiagonalMembers(BracingPanel panel, FrameSide face, double frameDepth, DiagonalOffsets offsets)
         {
             var bottomElevation = Math.Min(panel.StartElevation, panel.EndElevation);
             var topElevation = Math.Max(panel.StartElevation, panel.EndElevation);
@@ -156,7 +181,7 @@ namespace RackCad.Application.RackFrames
 
             if (panel.Arrangement == BracingPattern.DoubleDiagonal)
             {
-                foreach (var member in CreateDoubleDiagonal(panel, face, direction, bottomElevation, topElevation, frameDepth))
+                foreach (var member in CreateDoubleDiagonal(panel, face, direction, bottomElevation, topElevation, frameDepth, offsets))
                 {
                     yield return member;
                 }
@@ -224,17 +249,29 @@ namespace RackCad.Application.RackFrames
             DiagonalDirection direction,
             double bottomElevation,
             double topElevation,
-            double frameDepth)
+            double frameDepth,
+            DiagonalOffsets offsets)
         {
-            if (direction == DiagonalDirection.UpLeft)
-            {
-                yield return CreateMember(panel.PanelId, panel.Number, FrameMemberType.DiagonalBrace, face, panel.DiagonalProfileId, CreateCustomEnd(1.0, bottomElevation, panel.StartConnectionPointId), CreateCustomEnd(0.14, topElevation, panel.EndConnectionPointId), frameDepth, panel.IsStandard, panel.IsException ? FrameMemberOrigin.Exception : FrameMemberOrigin.Standard);
-                yield return CreateMember(panel.PanelId, panel.Number, FrameMemberType.DiagonalBrace, face, panel.DiagonalProfileId, CreateCustomEnd(0.86, bottomElevation, panel.StartConnectionPointId), CreateCustomEnd(0.0, topElevation, panel.EndConnectionPointId), frameDepth, panel.IsStandard, panel.IsException ? FrameMemberOrigin.Exception : FrameMemberOrigin.Standard);
-                yield break;
-            }
+            // Match what the lateral drawer actually draws (shared rule, BracingDiagonalGeometry): two FULL-depth
+            // diagonals offset VERTICALLY by the double spacing (V-style celosía), set back the start/end offsets from the
+            // panel's horizontals. The preview used to offset them HORIZONTALLY by 0.14·fondo across the full panel height
+            // — a different geometry than what got drawn, so the preview and the BOM length disagreed with the DWG.
+            var e = BracingDiagonalGeometry.DoubleDiagonal(bottomElevation, topElevation, offsets.StartOffset, offsets.EndOffset, offsets.DoubleSpacing);
 
-            yield return CreateMember(panel.PanelId, panel.Number, FrameMemberType.DiagonalBrace, face, panel.DiagonalProfileId, CreateCustomEnd(0.0, bottomElevation, panel.StartConnectionPointId), CreateCustomEnd(0.86, topElevation, panel.EndConnectionPointId), frameDepth, panel.IsStandard, panel.IsException ? FrameMemberOrigin.Exception : FrameMemberOrigin.Standard);
-            yield return CreateMember(panel.PanelId, panel.Number, FrameMemberType.DiagonalBrace, face, panel.DiagonalProfileId, CreateCustomEnd(0.14, bottomElevation, panel.StartConnectionPointId), CreateCustomEnd(1.0, topElevation, panel.EndConnectionPointId), frameDepth, panel.IsStandard, panel.IsException ? FrameMemberOrigin.Exception : FrameMemberOrigin.Standard);
+            // UpRight rises left(0.0)→right(1.0); UpLeft mirrors to right(1.0)→left(0.0). Both diagonals share it.
+            var startRatio = direction == DiagonalDirection.UpLeft ? 1.0 : 0.0;
+            var endRatio = direction == DiagonalDirection.UpLeft ? 0.0 : 1.0;
+            var origin = panel.IsException ? FrameMemberOrigin.Exception : FrameMemberOrigin.Standard;
+
+            yield return CreateMember(panel.PanelId, panel.Number, FrameMemberType.DiagonalBrace, face, panel.DiagonalProfileId,
+                CreateCustomEnd(startRatio, e.LowerStart, panel.StartConnectionPointId),
+                CreateCustomEnd(endRatio, e.LowerEnd, panel.EndConnectionPointId),
+                frameDepth, panel.IsStandard, origin);
+
+            yield return CreateMember(panel.PanelId, panel.Number, FrameMemberType.DiagonalBrace, face, panel.DiagonalProfileId,
+                CreateCustomEnd(startRatio, e.UpperStart, panel.StartConnectionPointId),
+                CreateCustomEnd(endRatio, e.UpperEnd, panel.EndConnectionPointId),
+                frameDepth, panel.IsStandard, origin);
         }
 
         private static IEnumerable<FrameMember> CreateKBracing(

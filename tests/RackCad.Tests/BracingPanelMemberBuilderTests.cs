@@ -135,6 +135,48 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void DoubleDiagonal_TwoFullDepthDiagonals_OffsetVerticallyBySpacing_WithSetbacks()
+        {
+            // Regression against the old preview bug: the double diagonal used to offset the two braces HORIZONTALLY by
+            // 0.14·fondo across the full height. Now it matches the DWG — full-depth braces offset VERTICALLY by the
+            // troquel spacing, set back start/end. P1: elevations 4..48, rises UpRight; defaults paso 2, offsets 2/2, spacing 1.
+            var configuration = new HardcodedStandardRackFrameService().CreateDefault();
+            var target = configuration.BracingPanels.First();
+            target.Arrangement = BracingPattern.DoubleDiagonal;
+
+            Builder.RefreshPhysicalModel(configuration);
+
+            Assert.Equal(2, target.Members.Count);
+
+            // Both diagonals span the FULL depth (post to post), not a 0.14-offset partial span.
+            Assert.All(target.Members, m =>
+            {
+                var ratios = new[] { m.Start.HorizontalPositionRatio, m.End.HorizontalPositionRatio }.OrderBy(r => r).ToArray();
+                Assert.Equal(0.0, ratios[0], 6);
+                Assert.Equal(1.0, ratios[1], 6);
+            });
+
+            var lower = target.Members.OrderBy(m => m.Start.Elevation).First();
+            var upper = target.Members.OrderBy(m => m.Start.Elevation).Last();
+            Assert.Equal(8.0, lower.Start.Elevation, 6);   // 4 (bottom) + 4 (start setback)
+            Assert.Equal(42.0, lower.End.Elevation, 6);    // 48 (top) − 4 (end) − 2 (spacing)
+            Assert.Equal(10.0, upper.Start.Elevation, 6);  // lower + 2" (1 troquel) spacing
+            Assert.Equal(44.0, upper.End.Elevation, 6);
+            Assert.Equal(lower.Length, upper.Length, 6);   // parallel
+        }
+
+        [Fact]
+        public void BracingDiagonalGeometry_OffsetsVerticallyAndSetsBack()
+        {
+            var e = BracingDiagonalGeometry.DoubleDiagonal(bottomElevation: 4, topElevation: 48, startOffset: 4, endOffset: 4, doubleSpacing: 2);
+
+            Assert.Equal(8.0, e.LowerStart, 6);
+            Assert.Equal(42.0, e.LowerEnd, 6);
+            Assert.Equal(10.0, e.UpperStart, 6);
+            Assert.Equal(44.0, e.UpperEnd, 6);
+        }
+
+        [Fact]
         public void Custom_ArrangementProducesNoDerivedDiagonals()
         {
             var configuration = new HardcodedStandardRackFrameService().CreateDefault();
