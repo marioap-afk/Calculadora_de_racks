@@ -5,6 +5,7 @@ using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application;
@@ -83,13 +84,23 @@ namespace RackCad.Plugin
                     seed.FootprintX, seed.FootprintY,
                     choice.Rows, choice.Cols,
                     choice.AisleBetweenRows, choice.AisleBetweenCols,
-                    seed.OriginX, seed.OriginY);
+                    seed.OriginX, seed.OriginY,
+                    choice.BackToBack ? RowPairing.BackToBack : RowPairing.Single,
+                    choice.BackGap);
+
+                // Optional fit check: does the grid stay inside a building of the given size (its corner at the seed)?
+                if (choice.BuildingWidth > 0.0 && choice.BuildingDepth > 0.0 && !ConfirmFits(editor, plan, seed, choice))
+                {
+                    return; // doesn't fit and the user declined to place it anyway
+                }
 
                 var placed = PlaceGrid(document, plan, seed, embed, choice.Independent);
 
                 editor.WriteMessage(string.Format(CultureInfo.InvariantCulture,
-                    "\nRackCad: layout colocado — {0} racks nuevos ({1} filas × {2} columnas, {3}).",
-                    placed, choice.Rows, choice.Cols, choice.Independent ? "independientes" : "enlazados"));
+                    "\nRackCad: layout colocado — {0} racks nuevos ({1} filas × {2} columnas, {3}{4}).",
+                    placed, choice.Rows, choice.Cols,
+                    choice.Independent ? "independientes" : "enlazados",
+                    choice.BackToBack && choice.Rows > 1 ? ", espalda-con-espalda" : string.Empty));
             }
             catch (System.Exception ex)
             {
@@ -98,6 +109,36 @@ namespace RackCad.Plugin
         }
 
         private static bool IsPlantaViewBlock((ObjectId BlockId, RackEmbedDocument Embed) block) => IsPlantaView(block.Embed);
+
+        /// <summary>Bounds fit check against a building envelope whose near corner is anchored at the seed rack's own
+        /// corner (so the grid fills from there). If the grid doesn't fit, list the violations and ask whether to place
+        /// it anyway. Returns true to proceed (fits, or the user confirmed), false to abort.</summary>
+        private static bool ConfirmFits(Editor editor, WarehouseGridPlan plan, PlantaSeed seed, RackWarehouseLayoutWindow.LayoutResult choice)
+        {
+            var site = new WarehouseSite(
+                choice.BuildingWidth, choice.BuildingDepth,
+                originX: seed.OriginX + seed.OffsetX, originY: seed.OriginY + seed.OffsetY);
+
+            var fit = WarehouseFitChecker.Check(plan, seed.FootprintX, seed.FootprintY, site, seed.OffsetX, seed.OffsetY);
+            if (fit.Fits)
+            {
+                return true;
+            }
+
+            editor.WriteMessage("\nRackCad: la rejilla NO cabe en el edificio indicado:");
+            foreach (var violation in fit.Violations)
+            {
+                editor.WriteMessage("\n  · " + violation.Message);
+            }
+
+            var options = new PromptKeywordOptions("\n¿Colocar la rejilla de todos modos?");
+            options.Keywords.Add("Si");
+            options.Keywords.Add("No");
+            options.Keywords.Default = "No";
+            options.AllowNone = true;
+            var result = editor.GetKeywords(options);
+            return result.Status == PromptStatus.OK && string.Equals(result.StringResult, "Si", StringComparison.OrdinalIgnoreCase);
+        }
 
         /// <summary>The seed rack read from the drawing: its planta definition, insertion origin, footprint span, and
         /// the (origin → bbox-min) offset used to centre the labels.</summary>
@@ -178,9 +219,13 @@ namespace RackCad.Plugin
                             definitionId = CloneDefinition(database, transaction, seed.DefinitionId, copyName, payload);
                         }
 
+                        // Every copy keeps the seed's orientation/mirror. NOTE (back-to-back v1): the paired row is placed
+                        // at the correct spacing (shared flue) but is NOT flipped to face the opposite aisle — a real
+                        // back-to-back mirrors the pair. In planta that facing is usually cosmetic; a true mirror (a 180°
+                        // turn + bbox-shift accounting) is a future refinement.
                         var reference = new BlockReference(new Point3d(cell.X, cell.Y, 0.0), definitionId)
                         {
-                            Rotation = seed.Rotation,     // match the seed's orientation/mirror so the whole grid is consistent
+                            Rotation = seed.Rotation,
                             ScaleFactors = seed.Scale
                         };
                         modelSpace.AppendEntity(reference);
