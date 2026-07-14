@@ -38,35 +38,6 @@ namespace RackCad.Plugin
             }
         }
 
-        /// <summary>Duplicate a selective rack as an independent copy (new GUID/name), drawn in the clicked view.</summary>
-        private static void DuplicateSelective(Document document, RackEmbedDocument embed, string newId, string newName)
-        {
-            var editor = document.Editor;
-
-            SelectivePalletDesignDocument saved;
-            try
-            {
-                saved = new SelectivePalletDesignStore().Deserialize(embed.Design);
-            }
-            catch (System.Exception ex)
-            {
-                editor.WriteMessage("\nRackCad: no se pudieron leer los datos del rack. " + ex.Message);
-                return;
-            }
-
-            var design = saved?.ToDomain();
-            if (design == null)
-            {
-                editor.WriteMessage("\nRackCad: datos de selectivo invalidos.");
-                return;
-            }
-
-            var system = new SelectiveGeometryResolver().Resolve(design, LateralHeaderDrawService.LoadCatalog());
-            // Draw a NEW block through the normal insertion path with the fresh id/name (DrawSelectiveView writes the
-            // outcome). The copy is independent: RACKEDITAR on it finds only itself by the new GUID.
-            DrawSelectiveView(embed.View, system, design, newId, newName);
-        }
-
         private static void EditSelective(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;

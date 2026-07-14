@@ -184,19 +184,6 @@ namespace RackCad.Plugin
             });
         }
 
-        /// <summary>Duplicate a cama de rodamiento as an independent copy (new GUID/name), placed with the jig.</summary>
-        private static void DuplicateCama(Document document, RackEmbedDocument embed, string newId, string newName)
-        {
-            var config = new FlowBedConfigurationStore().Deserialize(embed.Design);
-            if (config == null)
-            {
-                document.Editor.WriteMessage("\nRackCad: datos de cama invalidos.");
-                return;
-            }
-
-            DrawAndPlaceBed(config, BuildCamaPayload(config, newId, newName), newName);
-        }
-
         private static void EditCama(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;

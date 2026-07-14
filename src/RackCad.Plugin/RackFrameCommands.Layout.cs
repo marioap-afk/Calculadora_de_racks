@@ -216,7 +216,7 @@ namespace RackCad.Plugin
                         {
                             var copyName = ComposeCopyName(embed.Name, cell.Label);
                             var payload = RestampEnvelope(seed.Payload, copyName);
-                            definitionId = CloneDefinition(database, transaction, seed.DefinitionId, copyName, payload);
+                            definitionId = CloneDefinition(database, transaction, seed.DefinitionId, copyName, payload, embed.Name, copyName);
                         }
 
                         // Every copy keeps the seed's orientation/mirror. NOTE (back-to-back v1): the paired row is placed
@@ -270,9 +270,11 @@ namespace RackCad.Plugin
         /// <summary>
         /// Duplicate a rack's block DEFINITION for an INDEPENDENT copy: a fresh named BlockTableRecord holding clones of
         /// the source's entities (nested ARRAY defs are shared, not duplicated) and the restamped payload (new GUID +
-        /// name). Returns the new definition id.
+        /// name). When <paramref name="labelFrom"/>/<paramref name="labelTo"/> are given, the drawn rack-name annotation
+        /// (a DBText equal to the source's name) is renamed so the copy isn't visually labeled as the original.
+        /// Returns the new definition id.
         /// </summary>
-        private static ObjectId CloneDefinition(Database database, Transaction transaction, ObjectId sourceDefId, string copyName, string payload)
+        private static ObjectId CloneDefinition(Database database, Transaction transaction, ObjectId sourceDefId, string copyName, string payload, string labelFrom = null, string labelTo = null)
         {
             var blockTable = (BlockTable)transaction.GetObject(database.BlockTableId, OpenMode.ForWrite);
             var source = (BlockTableRecord)transaction.GetObject(sourceDefId, OpenMode.ForRead);
@@ -295,6 +297,20 @@ namespace RackCad.Plugin
                 database.DeepCloneObjects(entityIds, cloneId, mapping, false);
             }
 
+            // Rename the drawn rack-name annotation (if any): the clone carries the ORIGINAL's DBText label.
+            if (!string.IsNullOrWhiteSpace(labelFrom) && !string.IsNullOrWhiteSpace(labelTo))
+            {
+                foreach (ObjectId id in clone)
+                {
+                    if (transaction.GetObject(id, OpenMode.ForRead) is DBText text &&
+                        string.Equals(text.TextString?.Trim(), labelFrom.Trim(), StringComparison.Ordinal))
+                    {
+                        text.UpgradeOpen();
+                        text.TextString = labelTo;
+                    }
+                }
+            }
+
             RackBlockData.Write(transaction, cloneId, payload); // replace the cloned (old) payload → independent rack
             return cloneId;
         }
@@ -303,16 +319,60 @@ namespace RackCad.Plugin
         private static string ComposeCopyName(string baseName, string label)
             => (string.IsNullOrWhiteSpace(baseName) ? "Rack" : baseName.Trim()) + " " + label;
 
-        /// <summary>Copy the planta payload with a FRESH GUID and the per-cell name so the copy is an independent rack.
-        /// The inner design keeps its own id (harmless: the envelope drives identity and is corrected on first edit).
-        /// The caller guarantees <paramref name="payload"/> deserializes (guarded before PlaceGrid).</summary>
+        /// <summary>Copy a rack payload with a FRESH GUID and the copy's name so it is an independent rack. The
+        /// KIND-SPECIFIC design inside is re-stamped too (selective: Id+Name; cabecera: Header.Name) — otherwise the
+        /// first RACKEDITAR on the copy would show and silently write back the ORIGINAL's name (its editor loads the
+        /// name from the inner design). The caller guarantees <paramref name="payload"/> deserializes.</summary>
         private static string RestampEnvelope(string payload, string copyName)
         {
             var store = new RackEmbedStore();
             var embed = store.Deserialize(payload);
             embed.Id = System.Guid.NewGuid().ToString();
             embed.Name = copyName;
+            embed.Design = RestampDesign(embed.Kind, embed.Design, embed.Id, copyName);
             return store.Serialize(embed);
+        }
+
+        /// <summary>Re-stamp the identity the kind-specific design carries. Dynamic and cama designs hold no display
+        /// identity of their own (their editors take the envelope's name). Best effort: an unreadable inner design is
+        /// returned untouched — the envelope-only restamp still applies.</summary>
+        private static string RestampDesign(string kind, string designJson, string newId, string copyName)
+        {
+            if (string.IsNullOrEmpty(designJson))
+            {
+                return designJson;
+            }
+
+            try
+            {
+                if (string.Equals(kind, RackEmbedDocument.KindSelective, StringComparison.OrdinalIgnoreCase))
+                {
+                    var store = new SelectivePalletDesignStore();
+                    var design = store.Deserialize(designJson);
+                    design.Id = newId;
+                    design.Name = copyName;
+                    return store.Serialize(design);
+                }
+
+                if (string.Equals(kind, RackEmbedDocument.KindCabecera, StringComparison.OrdinalIgnoreCase))
+                {
+                    var store = new RackProjectStore();
+                    var project = store.Deserialize(designJson);
+                    if (project?.Header == null)
+                    {
+                        return designJson;
+                    }
+
+                    project.Header.Name = copyName;
+                    return store.Serialize(project);
+                }
+            }
+            catch
+            {
+                // Best effort: keep the original design JSON; the copy still gets its own GUID/envelope name.
+            }
+
+            return designJson;
         }
 
         /// <summary>A block name not yet in the table; if taken, append " (1)", " (2)", … so no other block is renamed.</summary>
