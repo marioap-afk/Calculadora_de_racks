@@ -140,8 +140,13 @@ namespace RackCad.Plugin
             ignoredLarge = 0;
             problem = null;
 
-            Polyline envelope = null;
+            var envelopeId = ObjectId.Null;
+            List<Point2D> envelopePoints = null;
             var envelopeArea = 0.0;
+            var openOutlines = 0;
+            var looseLines = 0;
+            var splines = 0;
+            var anythingOnLayer = 0;
             var obstacleRects = new List<(double X, double Y, double W, double D, string Label)>();
 
             using (document.LockDocument())
@@ -150,7 +155,10 @@ namespace RackCad.Plugin
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(document.Database), OpenMode.ForRead);
 
-                // First pass: the largest closed polyline on the layer is the envelope.
+                // First pass: the largest CLOSED outline on the layer is the envelope. "Closed" means the Closed flag
+                // OR coincident endpoints (a nave traced back to its start without the "Cerrar" option). Light
+                // (LWPOLYLINE), heavy (2D) and 3D polylines are all accepted; anything else is counted so the error
+                // message can say what WAS found and how to fix it.
                 foreach (ObjectId id in modelSpace)
                 {
                     if (!(transaction.GetObject(id, OpenMode.ForRead) is Entity entity) ||
@@ -159,35 +167,50 @@ namespace RackCad.Plugin
                         continue;
                     }
 
-                    if (entity is Polyline polyline && polyline.Closed && polyline.NumberOfVertices >= 3)
+                    anythingOnLayer++;
+                    if (TryGetClosedOutline(transaction, entity, out var points))
                     {
-                        var area = BoundingArea(polyline);
+                        var area = BoundingArea(entity);
                         if (area > envelopeArea)
                         {
-                            envelope = polyline;
+                            envelopeId = id;
+                            envelopePoints = points;
                             envelopeArea = area;
                         }
                     }
+                    else if (entity is Polyline || entity is Polyline2d || entity is Polyline3d)
+                    {
+                        openOutlines++;
+                    }
+                    else if (entity is Line)
+                    {
+                        looseLines++;
+                    }
+                    else if (entity is Spline)
+                    {
+                        splines++;
+                    }
                 }
 
-                if (envelope == null)
+                if (envelopePoints == null)
                 {
                     transaction.Commit();
-                    problem = "no encontré una polilínea CERRADA en la capa '" + layerName + "' que sirva de contorno del sitio.";
+                    problem = OutlineProblem(layerName, anythingOnLayer, openOutlines, looseLines, splines);
                     return false;
                 }
 
                 // Second pass: everything else on the layer is an obstacle (by bounding box).
                 foreach (ObjectId id in modelSpace)
                 {
-                    if (!(transaction.GetObject(id, OpenMode.ForRead) is Entity entity) ||
-                        !string.Equals(entity.Layer, layerName, StringComparison.OrdinalIgnoreCase) ||
-                        ReferenceEquals(entity, envelope))
+                    if (id == envelopeId ||
+                        !(transaction.GetObject(id, OpenMode.ForRead) is Entity entity) ||
+                        !string.Equals(entity.Layer, layerName, StringComparison.OrdinalIgnoreCase))
                     {
                         continue;
                     }
 
-                    if (!(entity is Circle) && !(entity is Polyline) && !(entity is BlockReference))
+                    if (!(entity is Circle) && !(entity is Polyline) && !(entity is Polyline2d) &&
+                        !(entity is Polyline3d) && !(entity is Ellipse) && !(entity is BlockReference))
                     {
                         continue; // lines/text/dimensions on the layer are ignored
                     }
@@ -217,33 +240,7 @@ namespace RackCad.Plugin
                     }
                 }
 
-                boundary = new List<Point2D>(envelope.NumberOfVertices);
-                for (var i = 0; i < envelope.NumberOfVertices; i++)
-                {
-                    var vertex = envelope.GetPoint2dAt(i);
-                    boundary.Add(new Point2D(vertex.X, vertex.Y));
-
-                    // An arc segment (bulge ≠ 0) is SAMPLED into short chords instead of being replaced by its chord:
-                    // on a wall curving INTO the building, the plain chord would gain illegal floor area and racks
-                    // would be placed through the real wall. 16 sub-chords keep the residual error tiny.
-                    if (Math.Abs(envelope.GetBulgeAt(i)) > 1e-9)
-                    {
-                        const int Samples = 16;
-                        for (var k = 1; k < Samples; k++)
-                        {
-                            try
-                            {
-                                var point = envelope.GetPointAtParameter(i + (double)k / Samples);
-                                boundary.Add(new Point2D(point.X, point.Y));
-                            }
-                            catch
-                            {
-                                break; // best effort: fall back to the plain vertices for this segment
-                            }
-                        }
-                    }
-                }
-
+                boundary = envelopePoints;
                 transaction.Commit();
             }
 
@@ -256,6 +253,156 @@ namespace RackCad.Plugin
             }
 
             return true;
+        }
+
+        /// <summary>Endpoint closeness (in) under which an outline counts as closed even without the Closed flag
+        /// (a nave traced back to its starting point without using the "Cerrar" option).</summary>
+        private const double OutlineCloseTolerance = 0.01;
+
+        /// <summary>
+        /// Extract a CLOSED outline's vertices from an entity: light polylines (LWPOLYLINE — arc segments SAMPLED into
+        /// 16 sub-chords, since the plain chord would gain illegal floor area on a wall curving inward), heavy 2D
+        /// polylines and 3D polylines (flattened to XY). Closed by flag OR by coincident endpoints. False otherwise.
+        /// </summary>
+        private static bool TryGetClosedOutline(Transaction transaction, Entity entity, out List<Point2D> points)
+        {
+            points = null;
+
+            if (entity is Polyline light && light.NumberOfVertices >= 3)
+            {
+                var raw = new List<Point2D>(light.NumberOfVertices);
+                for (var i = 0; i < light.NumberOfVertices; i++)
+                {
+                    var vertex = light.GetPoint2dAt(i);
+                    raw.Add(new Point2D(vertex.X, vertex.Y));
+
+                    // The segment AFTER the last vertex only exists when the polyline is flagged Closed.
+                    var lastVertex = i == light.NumberOfVertices - 1;
+                    if ((!lastVertex || light.Closed) && Math.Abs(light.GetBulgeAt(i)) > 1e-9)
+                    {
+                        const int Samples = 16;
+                        for (var k = 1; k < Samples; k++)
+                        {
+                            try
+                            {
+                                var point = light.GetPointAtParameter(i + (double)k / Samples);
+                                raw.Add(new Point2D(point.X, point.Y));
+                            }
+                            catch
+                            {
+                                break; // best effort: fall back to the plain vertices for this segment
+                            }
+                        }
+                    }
+                }
+
+                return FinishOutline(raw, light.Closed, out points);
+            }
+
+            if (entity is Polyline2d heavy)
+            {
+                var raw = new List<Point2D>();
+                foreach (ObjectId vertexId in heavy)
+                {
+                    if (transaction.GetObject(vertexId, OpenMode.ForRead) is Vertex2d vertex &&
+                        (vertex.VertexType == Vertex2dType.SimpleVertex || vertex.VertexType == Vertex2dType.CurveFitVertex))
+                    {
+                        raw.Add(new Point2D(vertex.Position.X, vertex.Position.Y));
+                    }
+                }
+
+                return FinishOutline(raw, heavy.Closed, out points);
+            }
+
+            if (entity is Polyline3d poly3d)
+            {
+                var raw = new List<Point2D>();
+                foreach (ObjectId vertexId in poly3d)
+                {
+                    if (transaction.GetObject(vertexId, OpenMode.ForRead) is PolylineVertex3d vertex &&
+                        vertex.VertexType == Vertex3dType.SimpleVertex)
+                    {
+                        raw.Add(new Point2D(vertex.Position.X, vertex.Position.Y)); // flattened to XY
+                    }
+                }
+
+                return FinishOutline(raw, poly3d.Closed, out points);
+            }
+
+            return false;
+        }
+
+        /// <summary>Validate/normalize an outline: closed by flag or by coincident endpoints; drops the duplicate
+        /// closing vertex and consecutive duplicates. False when open or fewer than 3 distinct vertices remain.</summary>
+        private static bool FinishOutline(List<Point2D> raw, bool closedFlag, out List<Point2D> points)
+        {
+            points = null;
+            if (raw == null || raw.Count < 3)
+            {
+                return false;
+            }
+
+            var first = raw[0];
+            var last = raw[raw.Count - 1];
+            var coincident = Math.Abs(first.X - last.X) <= OutlineCloseTolerance &&
+                             Math.Abs(first.Y - last.Y) <= OutlineCloseTolerance;
+            if (!closedFlag && !coincident)
+            {
+                return false;
+            }
+
+            if (coincident)
+            {
+                raw.RemoveAt(raw.Count - 1); // the duplicate closing vertex
+            }
+
+            // Consecutive duplicates would create zero-length polygon edges; drop them.
+            var cleaned = new List<Point2D>(raw.Count);
+            foreach (var point in raw)
+            {
+                if (cleaned.Count == 0 ||
+                    Math.Abs(point.X - cleaned[cleaned.Count - 1].X) > 1e-9 ||
+                    Math.Abs(point.Y - cleaned[cleaned.Count - 1].Y) > 1e-9)
+                {
+                    cleaned.Add(point);
+                }
+            }
+
+            if (cleaned.Count < 3)
+            {
+                return false;
+            }
+
+            points = cleaned;
+            return true;
+        }
+
+        /// <summary>A useful "no envelope" message: says WHAT was found on the layer and how to arreglarlo.</summary>
+        private static string OutlineProblem(string layerName, int anything, int openOutlines, int looseLines, int splines)
+        {
+            if (anything == 0)
+            {
+                return "no hay entidades en la capa '" + layerName + "'. Revisa el nombre de la capa y que el contorno " +
+                       "esté en el MODELO (no dentro de un bloque ni de un xref).";
+            }
+
+            var message = "no encontré una polilínea CERRADA en la capa '" + layerName + "' que sirva de contorno del sitio.";
+            if (openOutlines > 0)
+            {
+                message += " Hay " + openOutlines + " polilínea(s) ABIERTA(s): ciérrala con PEDIT → Cerrar, o termina el trazo exactamente en el punto inicial.";
+            }
+
+            if (looseLines > 0)
+            {
+                message += " Hay " + looseLines + " línea(s) sueltas: únelas en una polilínea cerrada (PEDIT → Juntar).";
+            }
+
+            if (splines > 0)
+            {
+                message += " Hay " + splines + " spline(s): conviértela a polilínea (PEDIT → asumir/convertir, o FLATTEN).";
+            }
+
+            return message;
         }
 
         private static double BoundingArea(Entity entity)
