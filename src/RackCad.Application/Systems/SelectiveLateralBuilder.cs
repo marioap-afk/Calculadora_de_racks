@@ -140,6 +140,9 @@ namespace RackCad.Application.Systems
                 // Larguero topes (rear pallet stops): at the central fondo's back post, one per larguero level.
                 AddTopes(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
 
+                // Tarimas (visual reference): one per reaching fondo per level, spanning the fondo along the depth axis.
+                AddTarimas(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
+
                 // Botas belong to the SYSTEM, not each cabecera: ONE at the corte's frontmost post (anchor-relative
                 // X=0) for Left, reflected to the backmost post for Right, about the center of THIS corte's total fondo
                 // span (the backmost reaching fondo). Never one per fondo.
@@ -377,6 +380,107 @@ namespace RackCad.Application.Systems
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Tarimas (pallet visual reference) for this corte when DrawPallets is on: one pallet per REACHING fondo per
+        /// level, seen edge-on so it spans the fondo along the DEPTH axis (its LONGITUD param carries the fondo, its
+        /// ALTURA the pallet alto). All the pallets of a level across the frente overlap into one in the lateral
+        /// projection, so a single pallet per fondo/level is drawn. Centred on the cabecera depth, resting on the same
+        /// load surface (INICIO_PERFIL Y) the frontal uses. Plus the floor pallet, if the fondo has one. Never in the BOM.
+        /// The "TARIMA_GENERICA" catalog block for the LATERAL view; if that row is missing, nothing is drawn.
+        /// </summary>
+        private static void AddTarimas(
+            ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
+            IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+        {
+            if (!system.DrawPallets)
+            {
+                return;
+            }
+
+            var block = catalog?.Blocks.FindBlock(SelectiveRackDefaults.PalletPieceId, LateralView)?.BlockName;
+            if (string.IsNullOrWhiteSpace(block))
+            {
+                return; // "TARIMA_GENERICA" not wired for the LATERAL view — nothing to draw
+            }
+
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                if (postIndex > fondoBays[k].Count)
+                {
+                    continue; // this fondo doesn't reach this corte
+                }
+
+                var palletFondo = SelectiveDepthLayout.DepthOfFondo(system, k); // the pallet's depth = LONGITUD in lateral
+                if (palletFondo <= 0.0)
+                {
+                    continue;
+                }
+
+                // Centre the pallet on the cabecera span (front post at offsetRel, back post at +cabeceraDepth); a pallet
+                // deeper than the frame overhangs the beams front and back, as real pallets do.
+                var offsetRel = offsets[k] - anchorOffset;
+                var startX = offsetRel + (SelectiveDepthLayout.CabeceraDepthOfFondo(system, k) - palletFondo) / 2.0;
+
+                // Dedup by Y ALONE: CollectLevels keeps distinct beams at the same height (each larguero needs its own
+                // end-section), but a tarima is one visual reference per load height — two beams at one Y = one pallet.
+                var seenY = new HashSet<double>();
+                foreach (var level in CollectLevels(fondoBays[k], postIndex))
+                {
+                    if (level.PalletAlto <= 0.0 || !seenY.Add(Math.Round(level.Y, 4)))
+                    {
+                        continue;
+                    }
+
+                    // Height (INICIO_PERFIL Y above the troquel) is view-independent, so reuse the frontal load surface.
+                    var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, SelectiveRackDefaults.View);
+                    result.Add(MakePallet(block, startX, surfaceY, palletFondo, level.PalletAlto));
+                }
+
+                var floorAlto = FloorPalletAltoOf(fondoBays[k], postIndex);
+                if (floorAlto > 0.0)
+                {
+                    result.Add(MakePallet(block, startX, 0.0, palletFondo, floorAlto)); // the ground pallet rests on the floor
+                }
+            }
+        }
+
+        /// <summary>The floor pallet ALTURA of the (up to two) bays post <paramref name="postIndex"/> bounds — the ground
+        /// pallet that rests on the floor with no larguero — or 0 if neither has one.</summary>
+        private static double FloorPalletAltoOf(IList<SelectiveBay> bays, int postIndex)
+        {
+            for (var b = postIndex - 1; b <= postIndex; b++)
+            {
+                if (b < 0 || b >= bays.Count)
+                {
+                    continue;
+                }
+
+                if (bays[b].FloorPalletCount > 0 && bays[b].FloorPalletAlto > 0.0)
+                {
+                    return bays[b].FloorPalletAlto;
+                }
+            }
+
+            return 0.0;
+        }
+
+        private static HeaderBlockInstance MakePallet(string block, double x, double y, double fondo, double alto)
+        {
+            var at = new Point2D(x, y);
+            var pallet = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Pallet,
+                PieceId = SelectiveRackDefaults.PalletPieceId,
+                BlockName = block,
+                View = LateralView,
+                Insertion = at,
+                ConnectionAnchor = at
+            };
+            pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam] = fondo; // LONGITUD = fondo in the lateral view
+            pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] = alto;
+            return pallet;
         }
 
         /// <summary>The distinct levels attaching at post <paramref name="postIndex"/> from the (up to two) bays it

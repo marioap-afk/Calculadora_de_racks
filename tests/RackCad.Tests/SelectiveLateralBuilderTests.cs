@@ -219,6 +219,53 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Cortes_DrawPalletsOff_EmitNoPallets()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog); // DrawPallets false by default
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
+            Assert.DoesNotContain(cortes.SelectMany(c => c.Largueros), i => i.Role == HeaderBlockRole.Pallet);
+        }
+
+        [Fact]
+        public void Cortes_DrawPallets_OnePerFondoPerLevel_LongitudIsTheFondo()
+        {
+            var design = TwoBayDesign(); // PalletDepth 48, pallet alto 60
+            design.DrawPallets = true;
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var end = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 0);
+            var pallets = end.Largueros.Where(i => i.Role == HeaderBlockRole.Pallet).ToList();
+
+            Assert.NotEmpty(pallets);
+            // Seen edge-on, LONGITUD carries the fondo (pallet depth 48), ALTURA the pallet alto (60).
+            Assert.All(pallets, p => Assert.Equal(48.0, p.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam], 3));
+            Assert.All(pallets, p => Assert.Equal(60.0, p.DynamicParameters[SelectiveRackDefaults.PalletAltoParam], 3));
+            Assert.Contains(pallets, p => Math.Abs(p.Insertion.Y) < 1e-6);  // the ground pallet rests on the floor
+            Assert.Contains(pallets, p => p.Insertion.Y > 1e-6);            // a level pallet rests on a larguero
+        }
+
+        [Fact]
+        public void Cortes_DrawPallets_OnePalletPerHeight_EvenWhenAdjacentBaysUseDifferentBeams()
+        {
+            // An interior frame bounds two bays that carry a level at the SAME Y with DIFFERENT beams. The largueros
+            // draw both (distinct end-sections), but a tarima is one visual reference per load height — not two
+            // overlapping blocks. Regression guard for the CollectLevels-dedups-by-(Y,beam) double-draw.
+            var system = new SelectiveRackSystem { PostId = PostId, PostPeralte = 3.0, PalletDepth = 48.0, Height = 96.0, DrawPallets = true };
+            var bayA = new SelectiveBay { BeamLength = 92.0, Height = 96.0 };
+            bayA.Levels.Add(new SelectiveLevel { Y = 50.0, BeamId = BeamId, BeamPeralte = 4.0, PalletAlto = 60.0, PalletCount = 1 });
+            var bayB = new SelectiveBay { BeamLength = 92.0, Height = 96.0 };
+            bayB.Levels.Add(new SelectiveLevel { Y = 50.0, BeamId = BeamId, BeamPeralte = 6.0, PalletAlto = 60.0, PalletCount = 1 });
+            system.Bays.Add(bayA);
+            system.Bays.Add(bayB);
+
+            var interior = new SelectiveLateralBuilder().Cortes(system, Catalog).First(c => c.PostIndex == 1);
+            var pallets = interior.Largueros.Where(i => i.Role == HeaderBlockRole.Pallet).ToList();
+
+            Assert.Equal(4, interior.Largueros.Count(i => i.Role == HeaderBlockRole.Beam)); // 2 distinct beams × (front+back)
+            Assert.Single(pallets); // but only ONE tarima for the single load height
+        }
+
+        [Fact]
         public void Lateral_NumberLevels_EmitsOneNumberPerDistinctLevelInTheCorte()
         {
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);

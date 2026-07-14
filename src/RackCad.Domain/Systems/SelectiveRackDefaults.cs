@@ -52,12 +52,12 @@ namespace RackCad.Domain.Systems
         public const string PalletPieceId = "TARIMA_GENERICA";
 
         /// <summary>Block parameter that stretches the pallet HORIZONTALLY: in the FRONTAL view this is the pallet's
-        /// frente; in the (future) LATERAL view the same param carries the fondo. Ignored if the block lacks it. Matched
-        /// case-insensitively against the block's parameter names, so casing (e.g. "longitud") does not have to be exact.</summary>
-        public const string PalletFrenteParam = "longitud";
+        /// frente; in the LATERAL view the same param carries the fondo. Ignored if the block lacks it. Matched
+        /// case-insensitively against the block's parameter names, so casing does not have to be exact.</summary>
+        public const string PalletFrenteParam = "LONGITUD";
 
         /// <summary>Block parameter that stretches the pallet VERTICALLY (its alto). Ignored if the block lacks it.
         /// Matched case-insensitively against the block's parameter names.</summary>
-        public const string PalletAltoParam = "Alto";
+        public const string PalletAltoParam = "ALTURA";
     }
 }
