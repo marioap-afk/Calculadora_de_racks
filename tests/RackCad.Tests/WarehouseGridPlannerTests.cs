@@ -75,6 +75,58 @@ namespace RackCad.Tests
             Assert.Equal(expected, WarehouseGridPlanner.Label(row, col));
         }
 
+        [Fact]
+        public void Plan_BackToBack_PairsRowsWithFlue_AndAisleBetweenPairs()
+        {
+            // rack 40 deep; pick aisle 96; back-to-back flue 6. Rows pair up: [0,1] share the flue, [2,3] the next pair.
+            var plan = WarehouseGridPlanner.Plan(footprintX: 40, footprintY: 100, rows: 4, cols: 1,
+                aisleX: 96, aisleY: 0, pairing: RowPairing.BackToBack, backGap: 6);
+
+            double X(int r) => plan.Cells.Single(c => c.Row == r && c.Col == 0).X;
+            Assert.Equal(0.0, X(0), 6);
+            Assert.Equal(46.0, X(1), 6);    // 40 (depth) + 6 (flue)
+            Assert.Equal(182.0, X(2), 6);   // 86 (end of pair 0) + 96 (pick aisle)
+            Assert.Equal(228.0, X(3), 6);
+
+            Assert.Equal(6.0, X(1) - (X(0) + 40), 6);    // within-pair gap = flue
+            Assert.Equal(96.0, X(2) - (X(1) + 40), 6);   // between-pair gap = pick aisle
+            Assert.Equal(268.0, plan.TotalX, 6);         // X(3) + footprint, no trailing aisle
+            Assert.Equal(RackOrientation.AlongDepth, plan.Orientation);
+        }
+
+        [Fact]
+        public void Plan_BackToBack_OddRows_LastRowStartsALonePair()
+        {
+            var plan = WarehouseGridPlanner.Plan(40, 100, rows: 3, cols: 1, aisleX: 96, aisleY: 0,
+                pairing: RowPairing.BackToBack, backGap: 6);
+
+            double X(int r) => plan.Cells.Single(c => c.Row == r).X;
+            Assert.Equal(46.0, X(1), 6);
+            Assert.Equal(182.0, X(2), 6); // the lone third row opens the next pair, after the pick aisle
+        }
+
+        [Fact]
+        public void PlanForRack_Rotated_SwapsExtents_AndRecordsOrientation()
+        {
+            // rack 40 deep x 100 wide, 2 rows flush. AlongDepth spaces rows by depth (40); Rotated by width (100).
+            var along = WarehouseGridPlanner.PlanForRack(rackDepth: 40, rackWidth: 100, RackOrientation.AlongDepth,
+                rows: 2, cols: 1, aisleBetweenRows: 0, aisleBetweenCols: 0);
+            var rotated = WarehouseGridPlanner.PlanForRack(rackDepth: 40, rackWidth: 100, RackOrientation.Rotated,
+                rows: 2, cols: 1, aisleBetweenRows: 0, aisleBetweenCols: 0);
+
+            Assert.Equal(40.0, along.Cells.Single(c => c.Row == 1).X, 6);
+            Assert.Equal(100.0, rotated.Cells.Single(c => c.Row == 1).X, 6);
+            Assert.Equal(RackOrientation.AlongDepth, along.Orientation);
+            Assert.Equal(RackOrientation.Rotated, rotated.Orientation);
+        }
+
+        [Fact]
+        public void Plan_RejectsNegativeBackGap()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                WarehouseGridPlanner.Plan(40, 100, 2, 2, 10, 10, pairing: RowPairing.BackToBack, backGap: -1));
+        }
+
         [Theory]
         [InlineData(0, 100, 2, 2, 10, 10)] // footprintX <= 0
         [InlineData(40, 0, 2, 2, 10, 10)]  // footprintY <= 0

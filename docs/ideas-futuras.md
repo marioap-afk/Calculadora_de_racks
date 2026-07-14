@@ -109,7 +109,9 @@
    con tests): envolvente + columnas/obstáculos + holgura a muros + pasillo mínimo, y un validador de factibilidad
    (dentro de límites, libra obstáculos, pasillos ≥ mínimo) sobre un `WarehouseGridPlan`. Es la mitad "¿es factible?"
    del optimizador; falta la mitad "¿qué tan bueno?" (capacidad/costo) + de dónde sale el sitio (leer muros/columnas
-   del dibujo, eso ya tocaría AutoCAD) + el optimizador en sí.
+   del dibujo, eso ya tocaría AutoCAD) + el optimizador en sí. El `WarehouseGridPlanner` (2026-07-13) ya soporta
+   **hileras back-to-back** (pares que comparten flue, pasillo solo entre pares) y **orientación** (registrada en el
+   plan) como ENTRADAS; falta ofrecerlas en el diálogo de `RACKLAYOUT` (AutoCAD) y elegirlas automáticamente (optimizador).
 
 ### Gestión de racks
 5. **`RACKDUPLICAR` — duplicar un rack como uno INDEPENDIENTE** — ✅ **HECHO (2026-07-09, commit `1547254`).**
