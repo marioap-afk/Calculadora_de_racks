@@ -180,6 +180,7 @@ comando completo o cambia el atajo en `RackFrameCommands.Aliases.cs`.
 | Comando | Atajo | Qué hace |
 |---------|-------|----------|
 | `RACKCAD` | `RK` | Menú principal (elige el tipo de rack a diseñar). |
+| `RACKAYUDA` | `RA` | Ventana con **todos los comandos y sus atajos** dentro de AutoCAD (esta tabla, viva). |
 | `RACKCABECERA` | `RCB` | Configurador de cabecera (editor). |
 | `QUICKCABECERA` | `QCB` | Cabecera por línea de comandos (pide poste/fondo/alto). |
 | `RACKSISTEMADINAMICO` | `RSD` | Sistema dinámico (pallet flow). |

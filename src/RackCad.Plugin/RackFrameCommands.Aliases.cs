@@ -23,5 +23,6 @@ namespace RackCad.Plugin
         [CommandMethod("RB")]  public void AliasRackBomTotal() => RackBomTotal();          // RACKBOMTOTAL
         [CommandMethod("RLY")] public void AliasRackLayout() => RackLayout();              // RACKLAYOUT
         [CommandMethod("RR")]  public void AliasRackRellenar() => RackRellenar();          // RACKRELLENAR
+        [CommandMethod("RA")]  public void AliasRackAyuda() => RackAyuda();                // RACKAYUDA
     }
 }
