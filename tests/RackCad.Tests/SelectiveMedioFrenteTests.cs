@@ -176,5 +176,67 @@ namespace RackCad.Tests
             Assert.True(segs[0].Loaded); // the custom tramo carries largueros
             Assert.False(segs[1].Loaded); // the calculated remainder stays empty (the classic ½frente)
         }
+
+        // ---- Larguero topes follow the tramos of a medio-frente bay (like the largueros) ----
+
+        private const string TopeId = "LARGUERO_ESCALON_TOPE_DE_3";
+        private const double TopeAllowance = 0.25;
+
+        private static SelectivePalletDesign SegmentsDesignWithTope(bool frontal, params (double length, bool loaded)[] segments)
+        {
+            var design = SegmentsDesign(segments);
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = true, TopeFrontal = frontal, TopeSaque = 3.0 });
+            return design;
+        }
+
+        private static double[] TopeLengths(System.Collections.Generic.IEnumerable<HeaderBlockInstance> instances)
+            => instances.Where(i => i.Role == HeaderBlockRole.Tope).Select(i => i.DynamicParameters[LengthParam]).ToArray();
+
+        [Fact]
+        public void Tope_Frontal_MedioFrente_OneTopePerLoadedTramoPerLevel()
+        {
+            // 2 loaded tramos (30 + remainder), 2 levels, tope on frontal.
+            var system = Resolve(SegmentsDesignWithTope(frontal: true, (30.0, true), (0.0, true)));
+            var topes = new SelectiveFrontalBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Tope).ToList();
+
+            Assert.Equal(4, topes.Count); // 2 loaded tramos × 2 levels (was 2 bay-complete before the fix)
+            var lengths = TopeLengths(topes);
+            Assert.Contains(lengths, l => System.Math.Abs(l - (30.0 + TopeAllowance)) < 1e-6); // the 30" tramo's own length
+            Assert.All(lengths, l => Assert.True(l < system.Bays[0].BeamLength)); // none spans the whole split bay
+        }
+
+        [Fact]
+        public void Tope_Frontal_MedioFrente_SkipsUnloadedTramos()
+        {
+            // Only the left 30" tramo is loaded → its tope only (2 levels), the empty remainder none.
+            var system = Resolve(SegmentsDesignWithTope(frontal: true, (30.0, true), (0.0, false)));
+            var topes = new SelectiveFrontalBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Tope).ToList();
+
+            Assert.Equal(2, topes.Count); // 1 loaded tramo × 2 levels
+            Assert.All(TopeLengths(topes), l => Assert.Equal(30.0 + TopeAllowance, l, 4));
+        }
+
+        [Fact]
+        public void Tope_Frontal_FullBay_StillSpansTheWholeBay()
+        {
+            var system = Resolve(SegmentsDesignWithTope(frontal: true)); // no segments = full bay
+            var topes = new SelectiveFrontalBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Tope).ToList();
+
+            Assert.NotEmpty(topes);
+            Assert.All(TopeLengths(topes), l => Assert.Equal(system.Bays[0].BeamLength + TopeAllowance, l, 4)); // bay-complete
+        }
+
+        [Fact]
+        public void Tope_Planta_MedioFrente_OneTopePerLoadedTramo()
+        {
+            var system = Resolve(SegmentsDesignWithTope(frontal: false, (30.0, true), (0.0, true)));
+            var topes = new SelectivePlantaBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Tope).ToList();
+
+            // Planta collapses the level stack to one line → ONE tope per loaded tramo (2 loaded tramos, 1 shared fondo).
+            Assert.Equal(2, topes.Count);
+            var lengths = TopeLengths(topes);
+            Assert.Contains(lengths, l => System.Math.Abs(l - (30.0 + TopeAllowance)) < 1e-6);
+            Assert.All(lengths, l => Assert.True(l < system.Bays[0].BeamLength));
+        }
     }
 }

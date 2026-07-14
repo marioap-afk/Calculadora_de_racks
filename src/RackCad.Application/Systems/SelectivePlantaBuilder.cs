@@ -173,7 +173,7 @@ namespace RackCad.Application.Systems
 
             AddLargueros(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
             AddSeparadores(loose, system, catalog, frenteYs, offsets);
-            AddTopes(loose, system, catalog, frenteYs, offsets);
+            AddTopes(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
             AddAnnotations(loose, system, frenteYs);
 
             var fondoDepths = new List<double>(offsets.Count);
@@ -472,9 +472,10 @@ namespace RackCad.Application.Systems
         /// Larguero topes (rear pallet stops) in PLANTA: at the back post of each tope fondo (central shared, or the
         /// central pair per-fondo), one per bay whose (frente,level) grid has any level on (the lateral's vertical stack
         /// collapses to a line in top view), spanning the frente (Y) with LONGITUD = the bay's larguero + ¼". Anchored on
-        /// the (mirrored) back post's PLANTA <c>TROQUEL_SEPARADOR</c> (Y slides with peralte).
+        /// the (mirrored) back post's PLANTA <c>TROQUEL_TOPE</c> (Y slides with peralte). A "medio frente" bay draws a
+        /// tope per LOADED tramo (its own length, at that tramo's post along Y), like the largueros do.
         /// </summary>
-        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets)
+        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets, IReadOnlyList<double> troquelXs)
         {
             var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, PlantaView, SelectiveSafetyPlacement.TopeType);
             if (topes.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
@@ -522,22 +523,43 @@ namespace RackCad.Application.Systems
                     var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
                     var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
                     var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
-                    var at = new Point2D(mateX, frenteYs[i] + troquel.Y);
-                    var instance = new HeaderBlockInstance
+
+                    var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bays[i], SelectiveRackDefaults.View);
+                    var tramos = SelectiveMedioFrente.Resolve(bays[i], troquelXs[i], inicioX);
+
+                    if (tramos == null)
                     {
-                        Role = HeaderBlockRole.Tope,
-                        PieceId = tope.PieceId,
-                        BlockName = tope.Block,
-                        View = PlantaView,
-                        MirroredX = spot.Mirror,
-                        Insertion = at,
-                        ConnectionAnchor = at
-                    };
-                    instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = beamLength + SelectiveSafetyPlacement.TopeLengthAllowance;
-                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-                    instances.Add(instance);
+                        PlaceTope(instances, tope.PieceId, tope.Block, mateX, frenteYs[i] + troquel.Y, beamLength + SelectiveSafetyPlacement.TopeLengthAllowance, saque, spot.Mirror);
+                        continue;
+                    }
+
+                    foreach (var tramo in tramos)
+                    {
+                        if (!tramo.Loaded) continue;
+                        PlaceTope(instances, tope.PieceId, tope.Block, mateX, frenteYs[i] + tramo.StartOffset + troquel.Y, tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance, saque, spot.Mirror);
+                    }
                 }
             }
+        }
+
+        /// <summary>One larguero-tope block (PLANTA) at (<paramref name="x"/>, <paramref name="y"/>), LONGITUD along Y,
+        /// with the SAQUE stick-out; mirrored for the back/right spot facing the gap.</summary>
+        private static void PlaceTope(ICollection<HeaderBlockInstance> instances, string pieceId, string block, double x, double y, double longitud, double saque, bool mirror)
+        {
+            var at = new Point2D(x, y);
+            var instance = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Tope,
+                PieceId = pieceId,
+                BlockName = block,
+                View = PlantaView,
+                MirroredX = mirror,
+                Insertion = at,
+                ConnectionAnchor = at
+            };
+            instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = longitud;
+            instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
+            instances.Add(instance);
         }
 
         private static void AddLarguero(ICollection<HeaderBlockInstance> instances, string beamId, string block, Point2D insertion, double longitud, double peralte, bool mirrored)

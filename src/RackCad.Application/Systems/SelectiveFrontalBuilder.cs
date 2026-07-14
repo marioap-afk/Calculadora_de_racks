@@ -150,7 +150,7 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            AddTopes(instances, system, catalog, postX, view);
+            AddTopes(instances, system, catalog, postX, layout, view);
             AddTarimas(instances, system, catalog, postX, layout, view, CachedBlock);
             AddAnnotations(instances, system, view, postX);
 
@@ -171,8 +171,10 @@ namespace RackCad.Application.Systems
         /// Larguero topes in the FRONTAL (opt-in via the TopeFrontal toggle): the rear stop seen edge-on, one per
         /// larguero whose (frente,level) grid cell is on, spanning the bay (LONGITUD = larguero + ¼"), ~8" above the
         /// larguero and snapped to the TROQUEL_TOPE grid, at the left post's TROQUEL_TOPE (its X slides with the peralte).
+        /// A "medio frente" bay draws a tope per LOADED tramo — its own length, at that tramo's left post — like the
+        /// largueros and tarimas do (the tope must sit over the larguero it stops, not span the whole split bay).
         /// </summary>
-        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, string view)
+        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, SelectivePostLayout layout, string view)
         {
             var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, view, SelectiveSafetyPlacement.TopeType);
             if (topes.Count == 0)
@@ -201,7 +203,9 @@ namespace RackCad.Application.Systems
 
                 var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
                 var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
-                var xStart = postX[i] + troquel.X;
+
+                var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
+                var tramos = SelectiveMedioFrente.Resolve(bay, layout.TroquelXs[i], inicioX);
 
                 for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
                 {
@@ -211,21 +215,39 @@ namespace RackCad.Application.Systems
                     }
 
                     var y = troquel.Y + Math.Round((bay.Levels[lvl].Y + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
-                    var at = new Point2D(xStart, y);
-                    var instance = new HeaderBlockInstance
+
+                    if (tramos == null)
                     {
-                        Role = HeaderBlockRole.Tope,
-                        PieceId = tope.PieceId,
-                        BlockName = tope.Block,
-                        View = view,
-                        Insertion = at,
-                        ConnectionAnchor = at
-                    };
-                    instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance;
-                    instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-                    instances.Add(instance);
+                        PlaceTope(instances, tope.PieceId, tope.Block, view, postX[i] + troquel.X, y, bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance, saque);
+                        continue;
+                    }
+
+                    foreach (var tramo in tramos)
+                    {
+                        if (!tramo.Loaded) continue;
+                        PlaceTope(instances, tope.PieceId, tope.Block, view, postX[i] + tramo.StartOffset + troquel.X, y, tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance, saque);
+                    }
                 }
             }
+        }
+
+        /// <summary>One larguero-tope block at (<paramref name="x"/>, <paramref name="y"/>) with LONGITUD =
+        /// <paramref name="longitud"/> and the SAQUE stick-out.</summary>
+        private static void PlaceTope(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double x, double y, double longitud, double saque)
+        {
+            var at = new Point2D(x, y);
+            var instance = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Tope,
+                PieceId = pieceId,
+                BlockName = block,
+                View = view,
+                Insertion = at,
+                ConnectionAnchor = at
+            };
+            instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = longitud;
+            instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
+            instances.Add(instance);
         }
 
         /// <summary>Text labels when the toggles are on: a number centered under each frente (bay), a number to the
