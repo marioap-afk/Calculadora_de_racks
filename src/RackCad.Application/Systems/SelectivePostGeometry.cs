@@ -110,6 +110,15 @@ namespace RackCad.Application.Systems
             return ResolveX(entry, beamParams);
         }
 
+        /// <summary>The larguero's INICIO_PERFIL Y (the escalón height above the troquel where a pallet rests) for a
+        /// given beam id + peralte; 0 if unset. Public so the pallet visual reference can sit a tarima on the load surface.</summary>
+        public static double BeamProfileStartY(RackCatalog catalog, string beamId, double beamPeralte, string view)
+        {
+            var entry = catalog?.ConnectionLayout.FindConnectionLayout(beamId, SelectiveRackDefaults.BeamProfileStartPoint, view);
+            var beamParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = beamPeralte };
+            return Resolve(entry, beamParams).Y;
+        }
+
         /// <summary>Resolve a connection point to (X,Y) for the given block parameters, applying both slopes.</summary>
         public static Point2D Resolve(ConnectionLayoutEntry entry, IReadOnlyDictionary<string, double> parameters)
         {

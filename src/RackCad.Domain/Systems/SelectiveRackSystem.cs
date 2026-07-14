@@ -66,6 +66,10 @@ namespace RackCad.Domain.Systems
         /// <summary>Draw the rack name as visible text above the frontal.</summary>
         public bool DrawRackName { get; set; }
 
+        /// <summary>Draw the pallets (tarimas) as a visual reference on the load levels + floor. The "TARIMA" catalog
+        /// block; never in the BOM.</summary>
+        public bool DrawPallets { get; set; }
+
         /// <summary>Multiplier on the annotation text height (1 = default 6"). Scales the frente/level/name labels.</summary>
         public double AnnotationScale { get; set; } = 1.0;
 
@@ -109,6 +113,12 @@ namespace RackCad.Domain.Systems
 
         /// <summary>The load levels of this bay, bottom to top, each with its own resolved Y and beam.</summary>
         public IList<SelectiveLevel> Levels { get; } = new List<SelectiveLevel>();
+
+        /// <summary>A pallet that rests directly on the FLOOR (Y=0), with NO larguero — only present when the bottom
+        /// pallet is not on a floor beam (so it is not one of <see cref="Levels"/>). 0 count = none. For DrawPallets.</summary>
+        public double FloorPalletFrente { get; set; }
+        public double FloorPalletAlto { get; set; }
+        public int FloorPalletCount { get; set; }
     }
 
     /// <summary>One resolved load level of a bay: a larguero at a fixed (already snapped) troquel Y.</summary>
@@ -122,5 +132,11 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Beam peralte (block parameter) at this level.</summary>
         public double BeamPeralte { get; set; }
+
+        /// <summary>Pallet width (frente), height (alto) and count on this level — carried from the design cell so the
+        /// pallet visual reference (DrawPallets) can place them without re-reading the design. 0 = no pallet drawn.</summary>
+        public double PalletFrente { get; set; }
+        public double PalletAlto { get; set; }
+        public int PalletCount { get; set; }
     }
 }

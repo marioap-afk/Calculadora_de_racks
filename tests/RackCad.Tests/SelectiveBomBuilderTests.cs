@@ -70,6 +70,35 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void BuildSystem_DrawPallets_DoesNotChangeTheBom()
+        {
+            // Tarimas are a VISUAL reference only ("Solo visual (no BOM)"): turning DrawPallets on must not add,
+            // remove, or re-quantify a single BOM component. The BOM is component-driven (bays/levels/safety), so
+            // the frontal pallet instances never reach it — this test guards that invariant against refactors.
+            var withoutPallets = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);
+
+            var withPallets = TwoBaySystem();
+            withPallets.DrawPallets = true;
+            foreach (var bay in withPallets.Bays)
+            {
+                foreach (var level in bay.Levels)
+                {
+                    level.PalletFrente = 40.0;
+                    level.PalletAlto = 48.0;
+                    level.PalletCount = 2;
+                }
+            }
+
+            var bom = SelectiveBomBuilder.Build(withPallets, Catalog);
+
+            Assert.Equal(withoutPallets.Components.Count, bom.Components.Count);
+            Assert.Equal(
+                withoutPallets.Components.Sum(c => c.Quantity),
+                bom.Components.Sum(c => c.Quantity));
+            Assert.DoesNotContain(bom.Components, c => c.Category == SelectiveRackDefaults.PalletPieceId);
+        }
+
+        [Fact]
         public void BuildSystem_FlattenedLines_AreComponentQtyTimesPerUnit()
         {
             var bom = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);

@@ -258,5 +258,185 @@ namespace RackCad.Tests
             // The builder places each larguero at the level's already-resolved Y (no snapping here).
             Assert.Equal(LevelYs, ys);
         }
+
+        // ---- Tarimas (pallet visual reference; DrawPallets) ----
+
+        /// <summary>A resolved system whose levels each carry a pallet (frente/alto/count), for the tarima tests.</summary>
+        private static SelectiveRackSystem PalletSystem(int perLevelCount = 2, double frente = 40.0, double alto = 48.0)
+        {
+            var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = 3.0 };
+            var bay = new SelectiveBay { BeamLength = 100.0, Height = 240.0 };
+            foreach (var y in LevelYs)
+            {
+                bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = BeamId, BeamPeralte = 4.0, PalletFrente = frente, PalletAlto = alto, PalletCount = perLevelCount });
+            }
+
+            system.Bays.Add(bay);
+            return system;
+        }
+
+        [Fact]
+        public void Build_DrawPalletsOff_EmitsNoPallets()
+        {
+            var pallets = new SelectiveFrontalBuilder().Build(PalletSystem(), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet);
+            Assert.Empty(pallets); // default (DrawPallets false) draws nothing
+        }
+
+        [Fact]
+        public void Build_DrawPallets_EmitsCountPalletsPerLevel()
+        {
+            var system = PalletSystem(perLevelCount: 2);
+            system.DrawPallets = true;
+
+            var pallets = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet)
+                .ToList();
+
+            Assert.Equal(2 * LevelYs.Length, pallets.Count); // 2 pallets × 4 levels
+        }
+
+        [Fact]
+        public void Build_DrawPallets_CarryFrenteAndAlto()
+        {
+            var system = PalletSystem(perLevelCount: 1, frente: 42.0, alto: 50.0);
+            system.DrawPallets = true;
+
+            var pallet = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .First(i => i.Role == HeaderBlockRole.Pallet);
+
+            Assert.Equal(42.0, pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam], 4);
+            Assert.Equal(50.0, pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam], 4);
+        }
+
+        [Fact]
+        public void Build_DrawPallets_SitOnTheLoadSurfaceAboveEachLevel()
+        {
+            var system = PalletSystem(perLevelCount: 1);
+            system.DrawPallets = true;
+
+            var surface = SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL");
+            var ys = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet)
+                .Select(i => Math.Round(i.Insertion.Y, 3))
+                .OrderBy(y => y)
+                .ToList();
+
+            // Each pallet's bottom sits at its level's Y plus the beam's escalón (INICIO_PERFIL Y).
+            Assert.Equal(LevelYs.Select(y => Math.Round(y + surface, 3)), ys);
+        }
+
+        [Fact]
+        public void Build_DrawPallets_DistributedEvenlyWithinTheBay()
+        {
+            var system = PalletSystem(perLevelCount: 2, frente: 40.0);
+            system.DrawPallets = true;
+
+            var layout = SelectivePostGeometry.Compute(system, Catalog);
+            // The pallet rests on the larguero PROFILE, which starts at the ménsula overhang (INICIO_PERFIL X) past the troquel.
+            var anchorX = layout.PostXs[0] + layout.TroquelXs[0] + InicioPerfilX();
+
+            var xs = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet)
+                .Where(i => Math.Abs(i.Insertion.Y - (LevelYs[0] + SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL"))) < 0.001)
+                .Select(i => i.Insertion.X)
+                .OrderBy(x => x)
+                .ToList();
+
+            // 2 pallets of 40 across span 100 → gap = (100 - 80)/3 = 6.667. Pallet 0 at anchor+gap, pallet 1 at anchor+2*gap+40.
+            var gap = (100.0 - 2 * 40.0) / 3.0;
+            Assert.Equal(2, xs.Count);
+            Assert.Equal(anchorX + gap, xs[0], 3);
+            Assert.Equal(anchorX + 2 * gap + 40.0, xs[1], 3);
+        }
+
+        [Fact]
+        public void Build_DrawPallets_FloorPalletSitsOnTheFloor()
+        {
+            var system = new SelectiveRackSystem { Height = 60.0, PostId = PostId, PostPeralte = 3.0, DrawPallets = true };
+            var bay = new SelectiveBay { BeamLength = 100.0, Height = 60.0, FloorPalletFrente = 40.0, FloorPalletAlto = 48.0, FloorPalletCount = 2 };
+            system.Bays.Add(bay); // a floor-only bay: no larguero levels, just a ground pallet
+
+            var pallets = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet)
+                .ToList();
+
+            Assert.Equal(2, pallets.Count);
+            Assert.All(pallets, p => Assert.Equal(0.0, p.Insertion.Y, 4)); // rests on the floor
+        }
+
+        [Fact]
+        public void Build_DrawPallets_RestOnTheLargueroProfile_NotTheBareTroquel()
+        {
+            var system = PalletSystem(perLevelCount: 1, frente: 40.0);
+            system.DrawPallets = true;
+
+            var layout = SelectivePostGeometry.Compute(system, Catalog);
+            var pallet = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .First(i => i.Role == HeaderBlockRole.Pallet);
+
+            // 1 pallet of 40 across span 100 → gap = (100-40)/2 = 30. Anchor is the PROFILE start (troquel + INICIO_PERFIL),
+            // the same datum the larguero rests on — NOT the bare troquel. Guards the X-offset fix.
+            var profileX = layout.PostXs[0] + layout.TroquelXs[0] + InicioPerfilX();
+            Assert.Equal(profileX + 30.0, pallet.Insertion.X, 3);
+        }
+
+        [Fact]
+        public void Build_DrawPallets_MedioFrente_DrawsPalletsOnEachLoadedTramo()
+        {
+            var system = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = 3.0, DrawPallets = true };
+            var bay = new SelectiveBay { BeamLength = 200.0, Height = 240.0 };
+            bay.Levels.Add(new SelectiveLevel { Y = 48.0, BeamId = BeamId, BeamPeralte = 4.0, PalletFrente = 40.0, PalletAlto = 48.0, PalletCount = 3 });
+            bay.Segments.Add(new SelectiveSegment { Length = 60.0, Loaded = true });  // tramo 1: loaded
+            bay.Segments.Add(new SelectiveSegment { Length = 0.0, Loaded = true });   // tramo 2: remainder, loaded
+            system.Bays.Add(bay);
+
+            var pallets = new SelectiveFrontalBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet)
+                .ToList();
+
+            // Both tramos are loaded and each is wider than one 40" pallet, so a medio-frente bay now DRAWS pallets
+            // (regression: it used to skip them entirely while still drawing largueros).
+            Assert.True(pallets.Count >= 2, $"expected at least one pallet per loaded tramo, got {pallets.Count}");
+        }
+
+        [Fact]
+        public void Build_DrawPallets_MedioFrente_SkipsUnloadedTramos()
+        {
+            var loadedOnly = new SelectiveRackSystem { Height = 240.0, PostId = PostId, PostPeralte = 3.0, DrawPallets = true };
+            var bay = new SelectiveBay { BeamLength = 200.0, Height = 240.0 };
+            bay.Levels.Add(new SelectiveLevel { Y = 48.0, BeamId = BeamId, BeamPeralte = 4.0, PalletFrente = 40.0, PalletAlto = 48.0, PalletCount = 3 });
+            bay.Segments.Add(new SelectiveSegment { Length = 60.0, Loaded = true });   // loaded
+            bay.Segments.Add(new SelectiveSegment { Length = 0.0, Loaded = false });   // remainder, NOT loaded
+            loadedOnly.Bays.Add(bay);
+
+            var pallets = new SelectiveFrontalBuilder().Build(loadedOnly, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet)
+                .ToList();
+
+            // Only the 60" tramo is loaded → floor(60/40) = 1 pallet; the unloaded remainder draws none.
+            Assert.Single(pallets);
+        }
+
+        [Fact]
+        public void Build_DrawPallets_SurvivesTheFondoSystemViewProjection()
+        {
+            // The insert/redraw path draws through SelectiveDepthLayout.FondoSystemView, NOT the whole system. Exercise
+            // that SAME projection so a future edit that drops `DrawPallets = system.DrawPallets` (SelectiveDepthLayout)
+            // is caught here — otherwise every inserted rack would silently lose its tarimas with the suite still green.
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletDepth = 48.0, DrawPallets = true };
+            var bay = new SelectiveBayDesign();
+            bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 42.0, Alto = 60.0 }, PalletCount = 2, BeamId = BeamId, BeamPeralte = 4.0 });
+            bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 42.0, Alto = 60.0 }, PalletCount = 2, BeamId = BeamId, BeamPeralte = 4.0 });
+            design.Bays.Add(bay);
+
+            var resolved = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var fondoView = SelectiveDepthLayout.FondoSystemView(resolved, 0);
+
+            Assert.True(fondoView.DrawPallets); // the projection must carry the flag
+            var pallets = new SelectiveFrontalBuilder().Build(fondoView, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Pallet);
+            Assert.NotEmpty(pallets);
+        }
     }
 }

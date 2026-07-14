@@ -60,6 +60,7 @@ namespace RackCad.Application.Systems
             system.NumberFronts = design.NumberFronts;
             system.NumberLevels = design.NumberLevels;
             system.DrawRackName = design.DrawRackName;
+            system.DrawPallets = design.DrawPallets;
             system.AnnotationScale = design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0;
             system.Dimensions = design.Dimensions;
             system.DimensionStyle = design.DimensionStyle;
@@ -282,6 +283,7 @@ namespace RackCad.Application.Systems
                 else if (levels.Count == 1)
                 {
                     // Only a ground pallet on the floor, no larguero: the post covers a third of it, measured from the floor.
+                    SetFloorPallet(bay, levels[0]);
                     bay.Height = WithOverride(RoundUpToFoot(PalletAlto(levels[0]) / 3.0), bayDesign.HeightOverride);
                     bays.Add(bay);
                     continue;
@@ -291,6 +293,7 @@ namespace RackCad.Application.Systems
                     // Ground pallet on the floor: the first larguero only needs to clear the pallet + holgura above
                     // the FLOOR — there is no beam under it, so no peralte term — snapped up onto the grid. A manual
                     // clear override (the distance from the floor) replaces the pallet-derived clear.
+                    SetFloorPallet(bay, levels[0]); // the bottom pallet rests on the floor, not a beam
                     var firstClear = levels[1].ClearOverride.HasValue && levels[1].ClearOverride.Value > 0.0
                         ? levels[1].ClearOverride.Value
                         : RoundUpToMultiple(PalletAlto(levels[0]) + clearance, 2.0);
@@ -322,7 +325,23 @@ namespace RackCad.Application.Systems
             => over.HasValue && over.Value > 0.0 ? over.Value : auto;
 
         private static void AddBeam(SelectiveBay bay, double y, SelectiveCell cell)
-            => bay.Levels.Add(new SelectiveLevel { Y = y, BeamId = cell.BeamId, BeamPeralte = cell.BeamPeralte });
+            => bay.Levels.Add(new SelectiveLevel
+            {
+                Y = y,
+                BeamId = cell.BeamId,
+                BeamPeralte = cell.BeamPeralte,
+                PalletFrente = cell.Pallet?.Frente ?? 0.0,
+                PalletAlto = cell.Pallet?.Alto ?? 0.0,
+                PalletCount = Math.Max(1, cell.PalletCount)
+            });
+
+        /// <summary>Record a pallet that rests on the FLOOR (no larguero under it) so the visual reference can draw it.</summary>
+        private static void SetFloorPallet(SelectiveBay bay, SelectiveCell cell)
+        {
+            bay.FloorPalletFrente = cell.Pallet?.Frente ?? 0.0;
+            bay.FloorPalletAlto = cell.Pallet?.Alto ?? 0.0;
+            bay.FloorPalletCount = Math.Max(1, cell.PalletCount);
+        }
 
         private static double PalletAlto(SelectiveCell cell) => cell.Pallet?.Alto ?? 0.0;
 

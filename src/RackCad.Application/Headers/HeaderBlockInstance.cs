@@ -41,7 +41,11 @@ namespace RackCad.Application.Headers
 
         /// <summary>A "larguero tope" — a rear pallet-stop beam, one per larguero level at the rack's back, mated on the
         /// post's TROQUEL_SEPARADOR, with SAQUE + LONGITUD parameters. Counted on its own (per larguero), not as Safety.</summary>
-        Tope
+        Tope,
+
+        /// <summary>A pallet (tarima) drawn as a VISUAL reference on a load level or the floor. Never in the BOM
+        /// (SelectiveBomBuilder counts only Beam/Safety/Separator/Tope + cabecera frames).</summary>
+        Pallet
     }
 
     /// <summary>

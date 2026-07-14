@@ -151,6 +151,7 @@ namespace RackCad.Application.Systems
             }
 
             AddTopes(instances, system, catalog, postX, view);
+            AddTarimas(instances, system, catalog, postX, layout, view, CachedBlock);
             AddAnnotations(instances, system, view, postX);
 
             // Where each bay's larguero PROFILE cut starts (hook troquel + the ménsula overhang INICIO_PERFIL) — the
@@ -255,6 +256,132 @@ namespace RackCad.Application.Systems
             if (system.DrawRackName && !string.IsNullOrWhiteSpace(system.Name))
             {
                 instances.Add(SelectiveAnnotations.Label(system.Name.Trim(), view, new Point2D(postX[0], system.Height + h), h * 1.5));
+            }
+        }
+
+        /// <summary>
+        /// Pallets (tarimas) as a VISUAL reference when DrawPallets is on: one pallet block per load position, resting on
+        /// its beam's load surface (INICIO_PERFIL above the troquel) — the SAME X datum the larguero profile uses, so a
+        /// pallet sits centred on the beam it rests on. Full bays use the design's per-level (and floor) pallet counts;
+        /// a medio-frente bay draws pallets on each LOADED tramo, fitting as many as the tramo length allows (its tramos
+        /// are free measures, not pallet-count driven). The "TARIMA" catalog block; if that row is missing in blocks.csv
+        /// for this view, nothing is drawn. Never in the BOM (Role.Pallet).
+        /// </summary>
+        private static void AddTarimas(
+            ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog,
+            IReadOnlyList<double> postX, SelectivePostLayout layout, string view, Func<string, string> cachedBlock)
+        {
+            if (!system.DrawPallets)
+            {
+                return;
+            }
+
+            var palletBlock = cachedBlock(SelectiveRackDefaults.PalletPieceId);
+            if (string.IsNullOrWhiteSpace(palletBlock))
+            {
+                return; // "TARIMA" not wired in blocks.csv for this view — nothing to draw
+            }
+
+            for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
+            {
+                var bay = system.Bays[i];
+                if (bay.BeamLength <= 0.0)
+                {
+                    continue;
+                }
+
+                var troquelX = layout.TroquelXs[i];
+                var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
+                // The pallet rests on the larguero PROFILE, which starts at the ménsula overhang (INICIO_PERFIL X) past
+                // the troquel — the same datum the larguero cotas use (beamStartXs) and the Y path uses (BeamProfileStartY).
+                var profileX = postX[i] + troquelX + inicioX;
+
+                var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
+                if (tramos == null)
+                {
+                    // Normal full bay: the design's counts drive the rows across the whole profile.
+                    if (bay.FloorPalletCount > 0 && bay.FloorPalletFrente > 0.0)
+                    {
+                        PlacePalletRow(instances, palletBlock, view, profileX, bay.BeamLength, 0.0,
+                            bay.FloorPalletFrente, bay.FloorPalletAlto, bay.FloorPalletCount);
+                    }
+
+                    foreach (var level in bay.Levels)
+                    {
+                        if (level.PalletCount <= 0 || level.PalletFrente <= 0.0)
+                        {
+                            continue;
+                        }
+
+                        var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
+                        PlacePalletRow(instances, palletBlock, view, profileX, bay.BeamLength, surfaceY,
+                            level.PalletFrente, level.PalletAlto, level.PalletCount);
+                    }
+
+                    continue;
+                }
+
+                // Medio frente: pallets follow the largueros — one row per level per LOADED tramo, fitting as many as
+                // the tramo length holds (the tramos are free measures, so the count is derived from geometry).
+                foreach (var tramo in tramos)
+                {
+                    if (!tramo.Loaded)
+                    {
+                        continue;
+                    }
+
+                    var tramoX = postX[i] + tramo.StartOffset + troquelX + inicioX;
+                    var floorFit = PalletFit(tramo.Length, bay.FloorPalletFrente);
+                    if (bay.FloorPalletCount > 0 && floorFit > 0)
+                    {
+                        PlacePalletRow(instances, palletBlock, view, tramoX, tramo.Length, 0.0,
+                            bay.FloorPalletFrente, bay.FloorPalletAlto, floorFit);
+                    }
+
+                    foreach (var level in bay.Levels)
+                    {
+                        var fit = PalletFit(tramo.Length, level.PalletFrente);
+                        if (level.PalletCount <= 0 || fit <= 0)
+                        {
+                            continue;
+                        }
+
+                        var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
+                        PlacePalletRow(instances, palletBlock, view, tramoX, tramo.Length, surfaceY,
+                            level.PalletFrente, level.PalletAlto, fit);
+                    }
+                }
+            }
+        }
+
+        /// <summary>How many pallets of width <paramref name="frente"/> fit in <paramref name="span"/> (0 if the frente is
+        /// non-positive or wider than the span). Used only for medio-frente tramos, whose free length is not pallet-driven.</summary>
+        private static int PalletFit(double span, double frente)
+            => frente > 0.0 && frente <= span ? (int)Math.Floor(span / frente) : 0;
+
+        /// <summary>Distribute <paramref name="count"/> pallets of width <paramref name="frente"/> evenly across
+        /// [<paramref name="anchorX"/>, +<paramref name="span"/>] at <paramref name="bottomY"/> (the pallet's bottom).
+        /// Each block's origin lands at its bottom-left corner; optional FRENTE/ALTO block params size it if present.</summary>
+        private static void PlacePalletRow(
+            ICollection<HeaderBlockInstance> instances, string block, string view,
+            double anchorX, double span, double bottomY, double frente, double alto, int count)
+        {
+            var gap = Math.Max(0.0, (span - count * frente) / (count + 1));
+            for (var k = 0; k < count; k++)
+            {
+                var at = new Point2D(anchorX + gap * (k + 1) + frente * k, bottomY);
+                var pallet = new HeaderBlockInstance
+                {
+                    Role = HeaderBlockRole.Pallet,
+                    PieceId = SelectiveRackDefaults.PalletPieceId,
+                    BlockName = block,
+                    View = view,
+                    Insertion = at,
+                    ConnectionAnchor = at
+                };
+                pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam] = frente;
+                pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] = alto;
+                instances.Add(pallet);
             }
         }
 

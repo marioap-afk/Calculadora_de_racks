@@ -43,5 +43,20 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Connection point on the base plate that mates to the post (lands on the post origin).</summary>
         public const string PlateMatePoint = "MONTAJE_POSTE";
+
+        // ---- Pallet (tarima) visual reference ----
+
+        /// <summary>Catalog pieceId (blocks.csv) for the visual-reference pallet block, resolved per view. If the row
+        /// is missing for a view, the pallet is simply not drawn there (never in the BOM).</summary>
+        public const string PalletPieceId = "TARIMA";
+
+        /// <summary>Optional block parameter on the pallet block: its width (frente). Ignored if the block lacks it.</summary>
+        public const string PalletFrenteParam = "FRENTE";
+
+        /// <summary>Optional block parameter on the pallet block: its height (alto). Ignored if the block lacks it.</summary>
+        public const string PalletAltoParam = "ALTO";
+
+        /// <summary>Optional block parameter on the pallet block: its depth (fondo). Ignored if the block lacks it.</summary>
+        public const string PalletFondoParam = "FONDO";
     }
 }

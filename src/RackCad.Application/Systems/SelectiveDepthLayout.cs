@@ -77,6 +77,7 @@ namespace RackCad.Application.Systems
                 NumberFronts = system.NumberFronts,
                 NumberLevels = system.NumberLevels,
                 DrawRackName = system.DrawRackName,
+                DrawPallets = system.DrawPallets,
                 AnnotationScale = system.AnnotationScale,
                 Dimensions = system.Dimensions,
                 DimensionStyle = system.DimensionStyle,

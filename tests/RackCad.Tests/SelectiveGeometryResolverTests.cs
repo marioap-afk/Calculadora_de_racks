@@ -105,6 +105,46 @@ namespace RackCad.Tests
             Assert.Equal(RoundUpFoot(60.0 / 3.0), system.Height, 4);
         }
 
+        // ---- Pallet visual reference propagation (DrawPallets) ----
+
+        [Fact]
+        public void Resolve_PropagatesPalletFieldsToResolvedLevels()
+        {
+            // With a floor beam every design level becomes a resolved larguero level carrying its own pallet.
+            var bay = ResolveBay(Design(true, Cell(42, 48, 2, 4), Cell(40, 50, 3, 4)));
+
+            Assert.Equal(2, bay.Levels.Count);
+            Assert.Equal(42.0, bay.Levels[0].PalletFrente, 4);
+            Assert.Equal(48.0, bay.Levels[0].PalletAlto, 4);
+            Assert.Equal(2, bay.Levels[0].PalletCount);
+            Assert.Equal(3, bay.Levels[1].PalletCount);
+        }
+
+        [Fact]
+        public void Resolve_GroundPalletWithoutBeam_BecomesTheFloorPallet()
+        {
+            // No floor beam + multiple levels: level 0 rests on the floor (no larguero) → recorded as the floor pallet.
+            var bay = ResolveBay(Design(false, Cell(44, 60, 2, 4), Cell(40, 50, 1, 4)));
+
+            Assert.Equal(44.0, bay.FloorPalletFrente, 4);
+            Assert.Equal(60.0, bay.FloorPalletAlto, 4);
+            Assert.Equal(2, bay.FloorPalletCount);
+            // The floor pallet is NOT double-counted as a resolved level (levels start at design level 1).
+            Assert.Single(bay.Levels);
+            Assert.Equal(40.0, bay.Levels[0].PalletFrente, 4);
+        }
+
+        [Fact]
+        public void Resolve_DrawPalletsFlag_FlowsToTheSystem()
+        {
+            var design = Design(false, Cell(40, 60, 1, 4));
+            design.DrawPallets = true;
+
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            Assert.True(system.DrawPallets);
+        }
+
         [Fact]
         public void FloorBeamOff_FirstBeamSnapsOntoTheGridAboveTheGroundPallet()
         {

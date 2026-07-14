@@ -59,6 +59,7 @@ namespace RackCad.Application.Persistence
         public bool NumberFronts { get; set; }
         public bool NumberLevels { get; set; }
         public bool DrawRackName { get; set; }
+        public bool DrawPallets { get; set; }
 
         /// <summary>Annotation text scale (1 = default). Nullable so legacy designs (no field) keep scale 1.</summary>
         public double? AnnotationScale { get; set; }
@@ -124,6 +125,7 @@ namespace RackCad.Application.Persistence
             document.NumberFronts = design.NumberFronts;
             document.NumberLevels = design.NumberLevels;
             document.DrawRackName = design.DrawRackName;
+            document.DrawPallets = design.DrawPallets;
             document.AnnotationScale = design.AnnotationScale;
             document.Dimensions = (int)design.Dimensions;
             document.DimensionStyle = design.DimensionStyle;
@@ -201,6 +203,7 @@ namespace RackCad.Application.Persistence
             design.NumberFronts = NumberFronts;
             design.NumberLevels = NumberLevels;
             design.DrawRackName = DrawRackName;
+            design.DrawPallets = DrawPallets;
             design.AnnotationScale = AnnotationScale.HasValue && AnnotationScale.Value > 0.0 ? AnnotationScale.Value : 1.0;
             design.Dimensions = ToDimensionDetail(Dimensions);
             design.DimensionStyle = string.IsNullOrWhiteSpace(DimensionStyle) ? null : DimensionStyle.Trim();

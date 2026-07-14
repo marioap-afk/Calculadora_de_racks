@@ -34,6 +34,8 @@ namespace RackCad.UI
         private static readonly Brush BeamBrush = UiSupport.FrozenBrush(Color.FromRgb(0xE0, 0x8A, 0x2B));
         private static readonly Brush BeamFill = UiSupport.FrozenBrush(Color.FromArgb(0x66, 0xE0, 0x8A, 0x2B));
         private static readonly Brush PlateFill = UiSupport.FrozenBrush(Color.FromRgb(0xB7, 0xC3, 0xCF));
+        private static readonly Brush PalletBrush = UiSupport.FrozenBrush(Color.FromRgb(0xB0, 0x8D, 0x57));
+        private static readonly Brush PalletFill = UiSupport.FrozenBrush(Color.FromArgb(0x33, 0xB0, 0x8D, 0x57));
         private static readonly Brush FloorStroke = UiSupport.FrozenBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
         private static readonly Brush LabelStroke = UiSupport.FrozenBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
 
@@ -1905,6 +1907,7 @@ namespace RackCad.UI
             design.NumberFronts = NumberFrontsCheck.IsChecked == true;
             design.NumberLevels = NumberLevelsCheck.IsChecked == true;
             design.DrawRackName = DrawRackNameCheck.IsChecked == true;
+            design.DrawPallets = DrawPalletsCheck.IsChecked == true;
             design.AnnotationScale = UiSupport.TryNum(AnnotationScaleBox.Text, out var annScale) && annScale > 0.0 ? annScale : 1.0;
             design.Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex));
             design.DimensionStyle = SelectedDimStyle();
@@ -2025,6 +2028,7 @@ namespace RackCad.UI
             NumberFrontsCheck.IsChecked = design.NumberFronts;
             NumberLevelsCheck.IsChecked = design.NumberLevels;
             DrawRackNameCheck.IsChecked = design.DrawRackName;
+            DrawPalletsCheck.IsChecked = design.DrawPallets;
             AnnotationScaleBox.Text = (design.AnnotationScale > 0.0 ? design.AnnotationScale : 1.0).ToString(CultureInfo.InvariantCulture);
             DimensionsBox.SelectedIndex = (int)design.Dimensions;
             SelectDimStyle(design.DimensionStyle);
@@ -2307,6 +2311,12 @@ namespace RackCad.UI
                     case HeaderBlockRole.BasePlate:
                         items.Add((instance.Role, instance.ConnectionAnchor.X, 0.0, 0.0, 0.0));
                         break;
+                    case HeaderBlockRole.Pallet:
+                        var palFrente = Param(instance, SelectiveRackDefaults.PalletFrenteParam);
+                        var palAlto = Param(instance, SelectiveRackDefaults.PalletAltoParam);
+                        xMax = Math.Max(xMax, instance.Insertion.X + palFrente);
+                        items.Add((instance.Role, instance.Insertion.X, instance.Insertion.Y, palFrente, palAlto));
+                        break;
                 }
             }
 
@@ -2378,6 +2388,12 @@ namespace RackCad.UI
                     case HeaderBlockRole.BasePlate:
                         var plate = Map(item.X - postWidth * 0.7, 0);
                         AddRectangle(plate.X, plate.Y, postWidth * 1.4 * mapScale, Math.Max(3.0, 0.3 * mapScale + 4.0), PlateFill, 1.0, PlateFill);
+                        break;
+                    case HeaderBlockRole.Pallet:
+                        // Visual reference only: outlined box from the load surface (Insertion = bottom-left), item.Size =
+                        // frente, item.Peralte = alto. Painted after the beams so a tarima sits on its larguero.
+                        var palTop = Map(item.X, item.Y + item.Peralte);
+                        AddRectangle(palTop.X, palTop.Y, item.Size * mapScale, Math.Max(2.0, item.Peralte * mapScale), PalletBrush, 1.0, PalletFill);
                         break;
                 }
             }

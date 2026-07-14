@@ -105,6 +105,10 @@ namespace RackCad.Domain.Systems
         /// <summary>Draw the rack name as visible text. Persisted now; the text drawing is a future pipeline.</summary>
         public bool DrawRackName { get; set; }
 
+        /// <summary>Draw the pallets (tarimas) as a VISUAL reference on the load levels (and the floor). Default off;
+        /// the block is the catalog "TARIMA" piece and never enters the BOM.</summary>
+        public bool DrawPallets { get; set; }
+
         /// <summary>Multiplier on the annotation text height (1 = default 6"). Scales the frente/level/name labels AND the dimensions.</summary>
         public double AnnotationScale { get; set; } = 1.0;
 

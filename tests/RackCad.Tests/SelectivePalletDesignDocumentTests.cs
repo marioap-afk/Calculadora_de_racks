@@ -60,6 +60,7 @@ namespace RackCad.Tests
             design.NumberFronts = true;
             design.NumberLevels = true;
             design.DrawRackName = true;
+            design.DrawPallets = true;
             design.AnnotationScale = 1.75;
 
             var store = new SelectivePalletDesignStore();
@@ -69,6 +70,7 @@ namespace RackCad.Tests
             Assert.True(restored.NumberFronts);
             Assert.True(restored.NumberLevels);
             Assert.True(restored.DrawRackName);
+            Assert.True(restored.DrawPallets);
             Assert.Equal(1.75, restored.AnnotationScale, 4);
         }
 
