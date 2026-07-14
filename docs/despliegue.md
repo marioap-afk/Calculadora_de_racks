@@ -185,6 +185,7 @@ un cambio de catálogo. Sí conviene cerrar el archivo en Excel antes de volver 
 | `RACKDUPLICAR` | Copiar un rack seleccionado como uno **independiente** (GUID nuevo); editar la copia no afecta al original. |
 | `RACKLISTA` | Tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, nº de copias) con zoom al seleccionado. |
 | `RACKLAYOUT` | Replica la vista en **planta** de un rack en una rejilla de almacén: filas × columnas + pasillos + numeración automática (A1, B2…). Copias **enlazadas** (un bloque, editar una edita todas; el BOM las cuenta) o **independientes** (GUID/nombre propio por copia). Opcional: hileras **espalda-con-espalda** (pares con flue, pasillo solo entre pares) y **verificar encaje** contra un edificio (ancho × largo) — avisa si la rejilla no cabe. La orientación se hereda del rack (rótalo antes para girar la rejilla). |
+| `RACKRELLENAR` | **Rellena automáticamente** el área disponible con un rack: dibuja el contorno de la nave como **polilínea cerrada** en la capa `RACKCAD_SITIO` (acepta formas en L; los arcos se aproximan por vértices) y las **columnas** ahí mismo (círculos, rectángulos o bloques — se libran por su caja + holgura). Calcula la rejilla máxima que cabe (prueba ambas orientaciones, opcional espalda-con-espalda), reporta cuántos racks caben y cuántas celdas se omiten, y al confirmar coloca las copias **enlazadas** + etiquetas. |
 
 ---
 

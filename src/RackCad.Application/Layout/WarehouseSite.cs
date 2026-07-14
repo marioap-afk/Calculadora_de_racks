@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RackCad.Application.Geometry;
 
 namespace RackCad.Application.Layout
 {
@@ -44,7 +45,8 @@ namespace RackCad.Application.Layout
             double width, double depth,
             double originX = 0.0, double originY = 0.0,
             double wallClearance = 0.0, double minAisle = 0.0,
-            IReadOnlyList<SiteObstacle> obstacles = null)
+            IReadOnlyList<SiteObstacle> obstacles = null,
+            IReadOnlyList<Point2D> boundary = null)
         {
             Width = width;
             Depth = depth;
@@ -53,6 +55,35 @@ namespace RackCad.Application.Layout
             WallClearance = wallClearance;
             MinAisle = minAisle;
             Obstacles = obstacles ?? Array.Empty<SiteObstacle>();
+            Boundary = boundary;
+        }
+
+        /// <summary>Build a site from an IRREGULAR envelope polygon (an L-shaped nave, notches): the rectangular
+        /// Origin/Width/Depth become the polygon's bounding box (used to seed the fill grid) and the polygon itself
+        /// is kept for the exact inside test. Vertices in any winding order; at least 3.</summary>
+        public static WarehouseSite FromBoundary(
+            IReadOnlyList<Point2D> boundary,
+            double wallClearance = 0.0, double minAisle = 0.0,
+            IReadOnlyList<SiteObstacle> obstacles = null)
+        {
+            if (boundary == null || boundary.Count < 3)
+            {
+                throw new ArgumentException("El contorno debe tener al menos 3 vértices.", nameof(boundary));
+            }
+
+            var minX = double.MaxValue;
+            var minY = double.MaxValue;
+            var maxX = double.MinValue;
+            var maxY = double.MinValue;
+            foreach (var point in boundary)
+            {
+                if (point.X < minX) minX = point.X;
+                if (point.Y < minY) minY = point.Y;
+                if (point.X > maxX) maxX = point.X;
+                if (point.Y > maxY) maxY = point.Y;
+            }
+
+            return new WarehouseSite(maxX - minX, maxY - minY, minX, minY, wallClearance, minAisle, obstacles, boundary);
         }
 
         /// <summary>Usable envelope extent along X (the rows/depth axis).</summary>
@@ -71,5 +102,9 @@ namespace RackCad.Application.Layout
         public double MinAisle { get; }
 
         public IReadOnlyList<SiteObstacle> Obstacles { get; }
+
+        /// <summary>The exact envelope polygon when the site is irregular (null = the rectangular envelope). When set,
+        /// Origin/Width/Depth hold its bounding box and the inside test uses the polygon.</summary>
+        public IReadOnlyList<Point2D> Boundary { get; }
     }
 }

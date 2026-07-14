@@ -111,7 +111,13 @@
    del optimizador; falta la mitad "¿qué tan bueno?" (capacidad/costo) + de dónde sale el sitio (leer muros/columnas
    del dibujo, eso ya tocaría AutoCAD) + el optimizador en sí. El `WarehouseGridPlanner` (2026-07-13) ya soporta
    **hileras back-to-back** (pares que comparten flue, pasillo solo entre pares) y **orientación** (registrada en el
-   plan) como ENTRADAS; falta ofrecerlas en el diálogo de `RACKLAYOUT` (AutoCAD) y elegirlas automáticamente (optimizador).
+   plan) como ENTRADAS, ofrecidas en el diálogo de `RACKLAYOUT`. **Y el AUTO-RELLENO ya existe (2026-07-13):**
+   comando `RACKRELLENAR` — lee el sitio de la capa `RACKCAD_SITIO` (polilínea cerrada = contorno, acepta naves en L
+   vía `PolygonGeometry`/`WarehouseSite.FromBoundary`; círculos/rectángulos/bloques = columnas por bbox + holgura),
+   calcula la **rejilla máxima que cabe** (`WarehouseAutoFill`: prueba ambas orientaciones, descarta celdas fuera del
+   contorno o sobre columnas, opcional back-to-back) y coloca copias enlazadas + etiquetas. Es la primera versión
+   determinista del optimizador (maximiza conteo). **Siguiente:** puntuar por beneficio/costo en vez de conteo
+   (necesita la mitad "capacidad + costo"), anclajes alternativos de la rejilla (hoy: esquina del bbox), y el agente IA.
 
 ### Gestión de racks
 5. **`RACKDUPLICAR` — duplicar un rack como uno INDEPENDIENTE** — ✅ **HECHO (2026-07-09, commit `1547254`).**

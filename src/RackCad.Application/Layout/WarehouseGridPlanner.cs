@@ -122,8 +122,9 @@ namespace RackCad.Application.Layout
         /// <summary>The X offset (from the seed) of row <paramref name="r"/> along the depth axis: a uniform pitch when
         /// Single; paired when BackToBack — the two rows of a pair share a <paramref name="backGap"/> flue and the pick
         /// aisle sits only BETWEEN pairs (an odd last row is a lone rack). Pairing is along the rows/depth axis, so it is
-        /// a true back-to-back only in the AlongDepth orientation.</summary>
-        private static double RowOffset(int r, double footprintX, double aisleX, RowPairing pairing, double backGap)
+        /// a true back-to-back only in the AlongDepth orientation. Public so the auto-fill can count how many rows fit
+        /// a span with the SAME spacing rule (no duplicated math).</summary>
+        public static double RowOffset(int r, double footprintX, double aisleX, RowPairing pairing, double backGap)
         {
             if (pairing == RowPairing.BackToBack)
             {
