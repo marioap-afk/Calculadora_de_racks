@@ -316,15 +316,15 @@ namespace RackCad.Tests
             system.DrawPallets = true;
 
             var surface = SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL");
-            // Insertion is the pallet CENTRE (centre-origin block); its bottom (centre − alto/2) rests on the load surface.
-            var bottoms = new SelectiveFrontalBuilder().Build(system, Catalog)
+            // Bottom-centre origin: Insertion.Y IS the pallet bottom, which rests on the level's load surface.
+            var ys = new SelectiveFrontalBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Pallet)
-                .Select(i => Math.Round(i.Insertion.Y - i.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] / 2.0, 3))
+                .Select(i => Math.Round(i.Insertion.Y, 3))
                 .OrderBy(y => y)
                 .ToList();
 
             // Each pallet's bottom sits at its level's Y plus the beam's escalón (INICIO_PERFIL Y).
-            Assert.Equal(LevelYs.Select(y => Math.Round(y + surface, 3)), bottoms);
+            Assert.Equal(LevelYs.Select(y => Math.Round(y + surface, 3)), ys);
         }
 
         [Fact]
@@ -337,11 +337,11 @@ namespace RackCad.Tests
             // The pallet rests on the larguero PROFILE, which starts at the ménsula overhang (INICIO_PERFIL X) past the troquel.
             var anchorX = layout.PostXs[0] + layout.TroquelXs[0] + InicioPerfilX();
 
-            // Level-0 pallets: centre Y = level.Y + surface + alto/2 (48/2 = 24, centre-origin block).
-            var centreY0 = LevelYs[0] + SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL") + 24.0;
+            // Level-0 pallets: bottom Y = level.Y + surface (bottom-centre origin, Insertion.Y is the bottom).
+            var bottomY0 = LevelYs[0] + SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL");
             var xs = new SelectiveFrontalBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Pallet)
-                .Where(i => Math.Abs(i.Insertion.Y - centreY0) < 0.001)
+                .Where(i => Math.Abs(i.Insertion.Y - bottomY0) < 0.001)
                 .Select(i => i.Insertion.X)
                 .OrderBy(x => x)
                 .ToList();
@@ -365,8 +365,8 @@ namespace RackCad.Tests
                 .ToList();
 
             Assert.Equal(2, pallets.Count);
-            // Centre-origin block: the floor pallet's centre is at alto/2 (48/2), so its bottom rests on the floor (Y=0).
-            Assert.All(pallets, p => Assert.Equal(24.0, p.Insertion.Y, 4));
+            // Bottom-centre origin: Insertion.Y is the pallet bottom, which rests on the floor (Y=0).
+            Assert.All(pallets, p => Assert.Equal(0.0, p.Insertion.Y, 4));
         }
 
         [Fact]

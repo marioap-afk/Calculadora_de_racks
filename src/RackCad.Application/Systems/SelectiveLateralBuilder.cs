@@ -468,8 +468,8 @@ namespace RackCad.Application.Systems
 
         private static HeaderBlockInstance MakePallet(string block, double x, double y, double fondo, double alto)
         {
-            // The TARIMA block's origin is at its CENTRE, so insert at the centre of the footprint (x,y) = bottom-left.
-            var at = new Point2D(x + fondo / 2.0, y + alto / 2.0);
+            // The TARIMA block's origin is BOTTOM-CENTRE: centre it in X (depth), keep its bottom at y (the load surface).
+            var at = new Point2D(x + fondo / 2.0, y);
             var pallet = new HeaderBlockInstance
             {
                 Role = HeaderBlockRole.Pallet,
