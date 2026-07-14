@@ -104,7 +104,12 @@
    puro en `RackCad.Application.Layout.WarehouseGridPlanner` (con tests). **Es el prerrequisito del optimizador
    de layout con IA + reglas** (el optimizador decide la rejilla; esto la materializa). **Pendiente v2+:** modelo
    de sitio/envolvente (muros, columnas), orientación frente-a-frente / back-to-back automática, y el optimizador
-   (motor de reglas + puntuación beneficio/costo con un agente que propone candidatos).
+   (motor de reglas + puntuación beneficio/costo con un agente que propone candidatos). **Cimiento HECHO (2026-07-13):**
+   el **modelo de sitio + chequeo de encaje** puro (`RackCad.Application.Layout.WarehouseSite` + `WarehouseFitChecker`,
+   con tests): envolvente + columnas/obstáculos + holgura a muros + pasillo mínimo, y un validador de factibilidad
+   (dentro de límites, libra obstáculos, pasillos ≥ mínimo) sobre un `WarehouseGridPlan`. Es la mitad "¿es factible?"
+   del optimizador; falta la mitad "¿qué tan bueno?" (capacidad/costo) + de dónde sale el sitio (leer muros/columnas
+   del dibujo, eso ya tocaría AutoCAD) + el optimizador en sí.
 
 ### Gestión de racks
 5. **`RACKDUPLICAR` — duplicar un rack como uno INDEPENDIENTE** — ✅ **HECHO (2026-07-09, commit `1547254`).**
