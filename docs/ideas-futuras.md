@@ -98,9 +98,13 @@
    + ¼" (mate en el punto `TROQUEL_TOPE`); el separador físico entre fondos se dibuja en lateral y planta (componente
    "Separador", cada 100"; en la frontal solo se deja el hueco, a propósito). **Pendiente:** validar en AutoCAD el
    espejo/orientación/longitud; los demás elementos (desviadores, guardas traseras, parrillas).
-4. **Layout de almacén** — colocar varios racks con pasillos y numeración automática ("Rack A",
-   "Rack B"...); hoy el nombre es manual. Un comando que clone un rack N veces con espaciado de
-   pasillo sería un gran ahorro.
+4. **Layout de almacén** — **v1 HECHO (2026-07-13):** comando `RACKLAYOUT` replica la vista en planta de
+   un rack en una rejilla filas × columnas con pasillos + numeración automática (A1, B2…), copias enlazadas
+   o independientes; footprint leído de los extents del bloque; alimenta el BOM consolidado. Motor de rejilla
+   puro en `RackCad.Application.Layout.WarehouseGridPlanner` (con tests). **Es el prerrequisito del optimizador
+   de layout con IA + reglas** (el optimizador decide la rejilla; esto la materializa). **Pendiente v2+:** modelo
+   de sitio/envolvente (muros, columnas), orientación frente-a-frente / back-to-back automática, y el optimizador
+   (motor de reglas + puntuación beneficio/costo con un agente que propone candidatos).
 
 ### Gestión de racks
 5. **`RACKDUPLICAR` — duplicar un rack como uno INDEPENDIENTE** — ✅ **HECHO (2026-07-09, commit `1547254`).**

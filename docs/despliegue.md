@@ -184,6 +184,7 @@ un cambio de catálogo. Sí conviene cerrar el archivo en Excel antes de volver 
 | `RACKEDITAR` | Seleccionar un rack ya dibujado y reabrir su editor; al confirmar redibuja todas sus vistas. |
 | `RACKDUPLICAR` | Copiar un rack seleccionado como uno **independiente** (GUID nuevo); editar la copia no afecta al original. |
 | `RACKLISTA` | Tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, nº de copias) con zoom al seleccionado. |
+| `RACKLAYOUT` | Replica la vista en **planta** de un rack en una rejilla de almacén: filas × columnas + pasillos + numeración automática (A1, B2…). Copias **enlazadas** (un bloque, editar una edita todas; el BOM las cuenta) o **independientes** (GUID/nombre propio por copia). |
 
 ---
 
