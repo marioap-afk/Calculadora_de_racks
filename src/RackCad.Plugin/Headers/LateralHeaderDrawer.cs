@@ -448,12 +448,23 @@ namespace RackCad.Plugin.Headers
                 lookup[pair.Key] = pair.Value;
             }
 
+            var applied = false;
             foreach (DynamicBlockReferenceProperty property in reference.DynamicBlockReferencePropertyCollection)
             {
                 if (!property.ReadOnly && lookup.TryGetValue(property.PropertyName, out var value))
                 {
                     property.Value = value;
+                    applied = true;
                 }
+            }
+
+            // Setting a parameter's Value moves its grip but does not always re-run the associated action (stretch),
+            // so a block can end up with the new parameter but its OLD geometry — the "el origen del stretch se mueve
+            // pero no los elementos" case (some blocks fire on Value set, others only on a graphics recompute). Force
+            // the reference to recompute its graphics so every action re-evaluates against the values just set.
+            if (applied)
+            {
+                reference.RecordGraphicsModified(true);
             }
         }
     }
