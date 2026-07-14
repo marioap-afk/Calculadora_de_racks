@@ -367,20 +367,20 @@ Tabla **normalizada**: una pieza puede tener **varios bloques**, uno por vista. 
 
 > Los `id` que use una cabecera deben existir en estos catalogos. La prueba automatica `CatalogStandardConsistencyTests` verifica que la cabecera estandar no referencie ids inexistentes.
 
-### Tarima como referencia visual (`TARIMA`)
+### Tarima como referencia visual (`TARIMA_GENERICA`)
 
 La tarima es un **accesorio de referencia visual**: el selectivo la dibuja automaticamente, una por posicion de carga, cuando se enciende el toggle **"Mostrar tarimas"** del editor. **No entra en el BOM** (es solo dibujo; el BOM se arma por componentes: cabeceras + largueros + seguridad, no por las tarimas). Se apoya sobre la superficie de carga del larguero (el escalon `INICIO_PERFIL`) y, si el nivel de piso descansa directo en el suelo, sobre `Y=0`.
 
-Para conectarla basta **una fila** en `blocks.csv` con `pieceId = TARIMA` (la constante `SelectiveRackDefaults.PalletPieceId`). **v1 dibuja solo en la vista `FRONTAL`** (lateral/planta quedan para una version futura):
+Para conectarla basta **una fila** en `blocks.csv` con `pieceId = TARIMA_GENERICA` (la constante `SelectiveRackDefaults.PalletPieceId`). **v1 dibuja solo en la vista `FRONTAL`** (lateral/planta quedan para una version futura):
 
 ```
 pieceId,view,blockName,layer,scale,rotation
-TARIMA,FRONTAL,TARIMA_FRONTAL,,1,0
+TARIMA_GENERICA,FRONTAL,TARIMA_GENERICA,,1,0
 ```
 
-- `blockName` debe coincidir **exacto** con el nombre del bloque en la libreria DWG (`blocks-library.dwg`). Aqui se asume `TARIMA_FRONTAL` por convencion; si el bloque de la libreria tiene otro nombre, ajusta esta celda (o renombra el bloque).
-- El bloque puede ser **dinamico** con parametros `FRENTE` y `ALTO` (constantes `PalletFrenteParam`/`PalletAltoParam`): el plugin los estira al frente y alto de la tarima de cada celda. Si el bloque no es parametrico, se inserta con su tamaño nominal. El **origen** del bloque debe estar en la **esquina inferior-izquierda** (el plugin inserta ahi y estira hacia arriba/derecha).
-- Si **no existe** la fila `TARIMA` en `blocks.csv`, el toggle no dibuja nada (sin error): la funcion se degrada de forma silenciosa.
+- `blockName` debe coincidir **exacto** con el nombre del bloque en la libreria DWG (`blocks-library.dwg`). En este proyecto el bloque se llama `TARIMA_GENERICA`. Si en tu libreria tiene otro nombre, ajusta esta celda (cambio de solo-datos: recarga en vivo, sin recompilar) o cambia la constante `PalletPieceId`/`blockName` para que cuadren.
+- El bloque es **dinamico** con dos parametros de estirado: **`longitud`** (horizontal) y **`Alto`** (vertical). El plugin los estira a la tarima de cada celda. Importante: `longitud` es **el frente en la vista FRONTAL** y sera **el fondo en la vista LATERAL** (v2) — es el mismo parametro con distinto significado por vista. Los nombres se comparan **sin distinguir mayusculas/minusculas**, asi que `longitud`/`LONGITUD`/`Longitud` (y `Alto`/`ALTO`) funcionan igual. Si el bloque no fuera parametrico, se inserta a su tamaño nominal. El **origen** del bloque debe estar en la **esquina inferior-izquierda** (el plugin inserta ahi y estira hacia arriba/derecha).
+- Si **no existe** la fila en `blocks.csv` (o el `pieceId`/`blockName` no cuadran), el toggle no dibuja nada (sin error): la funcion se degrada de forma silenciosa.
 
 ## Donde mirar en el codigo
 

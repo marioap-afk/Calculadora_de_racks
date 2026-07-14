@@ -439,9 +439,18 @@ namespace RackCad.Plugin.Headers
                 return;
             }
 
+            // Match case-insensitively: a dynamic block's parameter names are author-defined and their casing varies
+            // block to block (e.g. a tarima with "longitud"/"Alto" vs a larguero with "LONGITUD"). Exact-case matching
+            // would silently drop the value and leave the piece un-stretched at its default size.
+            var lookup = new Dictionary<string, double>(values.Count, StringComparer.OrdinalIgnoreCase);
+            foreach (var pair in values)
+            {
+                lookup[pair.Key] = pair.Value;
+            }
+
             foreach (DynamicBlockReferenceProperty property in reference.DynamicBlockReferencePropertyCollection)
             {
-                if (!property.ReadOnly && values.TryGetValue(property.PropertyName, out var value))
+                if (!property.ReadOnly && lookup.TryGetValue(property.PropertyName, out var value))
                 {
                     property.Value = value;
                 }

@@ -47,16 +47,17 @@ namespace RackCad.Domain.Systems
         // ---- Pallet (tarima) visual reference ----
 
         /// <summary>Catalog pieceId (blocks.csv) for the visual-reference pallet block, resolved per view. If the row
-        /// is missing for a view, the pallet is simply not drawn there (never in the BOM).</summary>
-        public const string PalletPieceId = "TARIMA";
+        /// is missing for a view, the pallet is simply not drawn there (never in the BOM). Must match the pieceId column
+        /// of the TARIMA row in blocks.csv (its blockName points at the actual library block, e.g. TARIMA_GENERICA).</summary>
+        public const string PalletPieceId = "TARIMA_GENERICA";
 
-        /// <summary>Optional block parameter on the pallet block: its width (frente). Ignored if the block lacks it.</summary>
-        public const string PalletFrenteParam = "FRENTE";
+        /// <summary>Block parameter that stretches the pallet HORIZONTALLY: in the FRONTAL view this is the pallet's
+        /// frente; in the (future) LATERAL view the same param carries the fondo. Ignored if the block lacks it. Matched
+        /// case-insensitively against the block's parameter names, so casing (e.g. "longitud") does not have to be exact.</summary>
+        public const string PalletFrenteParam = "longitud";
 
-        /// <summary>Optional block parameter on the pallet block: its height (alto). Ignored if the block lacks it.</summary>
-        public const string PalletAltoParam = "ALTO";
-
-        /// <summary>Optional block parameter on the pallet block: its depth (fondo). Ignored if the block lacks it.</summary>
-        public const string PalletFondoParam = "FONDO";
+        /// <summary>Block parameter that stretches the pallet VERTICALLY (its alto). Ignored if the block lacks it.
+        /// Matched case-insensitively against the block's parameter names.</summary>
+        public const string PalletAltoParam = "Alto";
     }
 }
