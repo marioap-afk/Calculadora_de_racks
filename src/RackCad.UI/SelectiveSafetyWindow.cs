@@ -34,6 +34,7 @@ namespace RackCad.UI
             public bool IsBota;                      // BOTA: general side on every frente
             public bool IsLateral;                   // LATERAL: per-post only (defaults to the orillas), replaces botas
             public bool IsTope;                      // TOPE: rear pallet stop at the central fondo (grid config)
+            public bool IsParrilla;                  // PARRILLA: deck per (frente,level) grid, drawn frontal/lateral
             public ComboBox Side;                    // BOTA: default side
             public Button PerPost;                   // BOTA/LATERAL: "Por poste…"
             public List<SafetyPostSide> PostSides;   // BOTA/LATERAL: per-post overrides (working copy)
@@ -48,6 +49,13 @@ namespace RackCad.UI
             public int TopeFondo = -1;
             public List<SelectiveGridCell> TopeOffCells = new List<SelectiveGridCell>();
             public Button TopeButton;
+
+            // ---- PARRILLA working config (edited via its grid dialog) ----
+            public bool ParrillaConfigured;
+            public bool ParrillaFrontal = true;
+            public bool ParrillaLateral = true;
+            public List<SelectiveGridCell> ParrillaOffCells = new List<SelectiveGridCell>();
+            public Button ParrillaButton;
         }
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
@@ -122,7 +130,8 @@ namespace RackCad.UI
                     var isBota = string.Equals(element.Type, "BOTA", StringComparison.OrdinalIgnoreCase);
                     var isLateral = string.Equals(element.Type, "LATERAL", StringComparison.OrdinalIgnoreCase);
                     var isTope = string.Equals(element.Type, "TOPE", StringComparison.OrdinalIgnoreCase);
-                    var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope };
+                    var isParrilla = string.Equals(element.Type, "PARRILLA", StringComparison.OrdinalIgnoreCase);
+                    var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsParrilla = isParrilla };
 
                     var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -158,6 +167,29 @@ namespace RackCad.UI
                         Grid.SetColumn(button, 1);
                         grid.Children.Add(button);
                         row.TopeButton = button;
+                    }
+                    else if (isParrilla)
+                    {
+                        if (existing != null)
+                        {
+                            row.ParrillaConfigured = true;
+                            row.ParrillaFrontal = existing.ParrillaFrontal;
+                            row.ParrillaLateral = existing.ParrillaLateral;
+                            row.ParrillaOffCells = existing.ParrillaOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList() ?? new List<SelectiveGridCell>();
+                        }
+
+                        var button = new Button
+                        {
+                            Style = TryFindResource("SecondaryButtonStyle") as Style,
+                            Content = ParrillaLabel(row),
+                            Padding = new Thickness(10, 3, 10, 3),
+                            VerticalAlignment = VerticalAlignment.Center,
+                            ToolTip = "Parrilla / deck: elige por frente y nivel dónde va, y en qué vistas (frontal / lateral). Se apoya sobre los largueros; el BOM cuenta las seleccionadas."
+                        };
+                        button.Click += (s, e) => EditParrilla(row);
+                        Grid.SetColumn(button, 1);
+                        grid.Children.Add(button);
+                        row.ParrillaButton = button;
                     }
                     else if (isBota || isLateral)
                     {
@@ -257,6 +289,24 @@ namespace RackCad.UI
             row.TopeButton.Content = TopeLabel(row);
         }
 
+        private static string ParrillaLabel(Row row) => row.ParrillaConfigured ? "Configurado ✓…" : "Configurar…";
+
+        private void EditParrilla(Row row)
+        {
+            var dialog = new SafetyParrillaGridWindow(row.Label, levelsPerFrente, row.ParrillaFrontal, row.ParrillaLateral, row.ParrillaOffCells) { Owner = this };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var r = dialog.Result;
+            row.ParrillaConfigured = true;
+            row.ParrillaFrontal = r.Frontal;
+            row.ParrillaLateral = r.Lateral;
+            row.ParrillaOffCells = r.OffCells;
+            row.ParrillaButton.Content = ParrillaLabel(row);
+        }
+
         /// <summary>Default posts for a protector lateral: the two orillas (first and last frente), the guide on opposite
         /// sides — the first frente as-is (Left), the last mirrored (Right) — ONE block each. "Ambos" is for a bridge.</summary>
         private static List<SafetyPostSide> OrillaDefaults(int postCount)
@@ -279,6 +329,7 @@ namespace RackCad.UI
                 case "DESVIADOR": return "Desviadores";
                 case "TOPE": return "Topes";
                 case "TRASERA": return "Guardas traseras";
+                case "PARRILLA":
                 case "DECK": return "Parrillas / deck";
                 default: return string.IsNullOrWhiteSpace(type) ? "Otros" : type;
             }
@@ -303,6 +354,32 @@ namespace RackCad.UI
                             foreach (var c in row.TopeOffCells)
                             {
                                 if (c != null) selection.TopeOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
+                            }
+
+                            result.Add(selection);
+                        }
+                    }
+
+                    continue;
+                }
+
+                if (row.IsParrilla)
+                {
+                    // The grid drives the BOM regardless of the view toggles (a deck counts even if you hide both views),
+                    // so gate ONLY on being configured — the per-view toggles gate the drawing, not BOM membership.
+                    if (row.ParrillaConfigured)
+                    {
+                        // Disabled when every (frente,level) cell is off.
+                        var total = 0;
+                        foreach (var n in levelsPerFrente) total += n;
+                        var allOff = total > 0 && row.ParrillaOffCells.Count >= total;
+                        if (!allOff)
+                        {
+                            // Side = Both makes EnabledOfType treat it as "drawn"; the per-view toggles gate the actual draw.
+                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral };
+                            foreach (var c in row.ParrillaOffCells)
+                            {
+                                if (c != null) selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
                             }
 
                             result.Add(selection);

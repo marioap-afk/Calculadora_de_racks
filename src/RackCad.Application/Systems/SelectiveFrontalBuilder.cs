@@ -152,6 +152,7 @@ namespace RackCad.Application.Systems
 
             AddTopes(instances, system, catalog, postX, layout, view);
             AddTarimas(instances, system, catalog, postX, layout, view, CachedBlock);
+            AddParrillas(instances, system, catalog, postX, layout, view);
             AddAnnotations(instances, system, view, postX);
 
             // Where each bay's larguero PROFILE cut starts (hook troquel + the ménsula overhang INICIO_PERFIL) — the
@@ -229,6 +230,81 @@ namespace RackCad.Application.Systems
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Parrillas (decks) in the FRONTAL when the element is selected and its ParrillaFrontal toggle is on: one deck
+        /// per (frente, level) grid cell that is ON, seen edge-on with FRENTE = the larguero span, its origin at the
+        /// bottom-left (the larguero profile start, on the load surface — exactly under the tarima). A medio-frente bay
+        /// draws a deck per LOADED tramo. Role.Safety; counted in the BOM from the grid, not from these instances.
+        /// </summary>
+        private static void AddParrillas(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, SelectivePostLayout layout, string view)
+        {
+            var parrillas = SelectiveSafetyPlacement.EnabledOfType(system, catalog, view, SelectiveSafetyPlacement.ParrillaType);
+            if (parrillas.Count == 0)
+            {
+                return;
+            }
+
+            var parrilla = parrillas[0];
+            if (!parrilla.Selection.ParrillaFrontal)
+            {
+                return; // the frontal draw is a per-view toggle
+            }
+
+            for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
+            {
+                var bay = system.Bays[i];
+                if (bay.BeamLength <= 0.0)
+                {
+                    continue;
+                }
+
+                var troquelX = layout.TroquelXs[i];
+                var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
+                var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
+
+                for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+                {
+                    if (!parrilla.Selection.ParrillaAt(i, lvl))
+                    {
+                        continue; // this (frente, level) cell has no deck
+                    }
+
+                    var level = bay.Levels[lvl];
+                    var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
+
+                    if (tramos == null)
+                    {
+                        PlaceParrilla(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + troquelX + inicioX, surfaceY, SelectiveSafetyPlacement.ParrillaFrenteParam, bay.BeamLength);
+                        continue;
+                    }
+
+                    foreach (var tramo in tramos)
+                    {
+                        if (!tramo.Loaded) continue;
+                        PlaceParrilla(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + tramo.StartOffset + troquelX + inicioX, surfaceY, SelectiveSafetyPlacement.ParrillaFrenteParam, tramo.Length);
+                    }
+                }
+            }
+        }
+
+        /// <summary>One deck block at its bottom-left (<paramref name="x"/>, <paramref name="bottomY"/>) stretched to
+        /// <paramref name="span"/> via <paramref name="spanParam"/> (FRENTE in frontal, FONDO in lateral).</summary>
+        private static void PlaceParrilla(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double x, double bottomY, string spanParam, double span)
+        {
+            var at = new Point2D(x, bottomY);
+            var instance = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Safety,
+                PieceId = pieceId,
+                BlockName = block,
+                View = view,
+                Insertion = at,
+                ConnectionAnchor = at
+            };
+            instance.DynamicParameters[spanParam] = span;
+            instances.Add(instance);
         }
 
         /// <summary>One larguero-tope block at (<paramref name="x"/>, <paramref name="y"/>) with LONGITUD =

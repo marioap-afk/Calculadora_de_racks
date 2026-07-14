@@ -395,5 +395,107 @@ namespace RackCad.Tests
                 Assert.Equal(depth, pair[0].Insertion.X + pair[1].Insertion.X, 3); // reflected about depth/2
             }
         }
+
+        // ---- Parrillas (decks): grid per (frente, level), drawn frontal/lateral, counted in the BOM ----
+
+        private const string ParrillaId = "PARRILLA_GENERICA";
+
+        private static SelectivePalletDesign ParrillaDesign(int frentes, int levelsPerBay, bool frontal, bool lateral, params (int f, int l)[] offCells)
+        {
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0 };
+            for (var i = 0; i < frentes; i++)
+            {
+                var bay = new SelectiveBayDesign { FloorBeam = true }; // FloorBeam so cells == resolved levels
+                for (var l = 0; l < levelsPerBay; l++)
+                {
+                    bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 40, Alto = 45 }, PalletCount = 2, BeamId = BeamId, BeamPeralte = 4.0 });
+                }
+
+                design.Bays.Add(bay);
+            }
+
+            var sel = new SelectiveSafetySelection { ElementId = ParrillaId, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = frontal, ParrillaLateral = lateral };
+            foreach (var (f, l) in offCells) sel.ParrillaOffCells.Add(new SelectiveGridCell { Frente = f, Level = l });
+            design.SafetySelections.Add(sel);
+            return design;
+        }
+
+        private static List<HeaderBlockInstance> FrontalParrillas(SelectivePalletDesign design)
+        {
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            return new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId).ToList();
+        }
+
+        [Fact]
+        public void Parrilla_Frontal_OnePerOnCell_WithFrenteSpan()
+        {
+            var design = ParrillaDesign(2, 2, frontal: true, lateral: true);
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var parrillas = FrontalParrillas(design);
+
+            Assert.Equal(4, parrillas.Count); // 2 frentes × 2 levels
+            Assert.All(parrillas, p => Assert.True(p.DynamicParameters.ContainsKey("FRENTE")));
+            Assert.Contains(parrillas, p => Math.Abs(p.DynamicParameters["FRENTE"] - system.Bays[0].BeamLength) < 1e-6);
+        }
+
+        [Fact]
+        public void Parrilla_Frontal_SkipsOffGridCells()
+        {
+            Assert.Equal(3, FrontalParrillas(ParrillaDesign(2, 2, true, true, (0, 0))).Count); // 4 − 1 off
+        }
+
+        [Fact]
+        public void Parrilla_FrontalToggleOff_DrawsNoneInFrontal()
+        {
+            Assert.Empty(FrontalParrillas(ParrillaDesign(2, 2, frontal: false, lateral: true)));
+        }
+
+        [Fact]
+        public void Parrilla_Lateral_OnePerFondoLevel_WithFondoSpan()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(ParrillaDesign(2, 2, true, true), Catalog);
+            var parrillas = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .SelectMany(c => c.Largueros).Where(i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId).ToList();
+
+            Assert.NotEmpty(parrillas);
+            var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
+            Assert.All(parrillas, p => Assert.Equal(depth, p.DynamicParameters["FONDO"], 4)); // FONDO = the deck span
+        }
+
+        [Fact]
+        public void Parrilla_LateralToggleOff_DrawsNoneInLateral()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(ParrillaDesign(2, 2, frontal: true, lateral: false), Catalog);
+            Assert.DoesNotContain(
+                new SelectiveLateralBuilder().Cortes(system, Catalog).SelectMany(c => c.Largueros),
+                i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId);
+        }
+
+        [Fact]
+        public void Parrilla_Bom_CountsOnCells_AndNotUnderSeguridad()
+        {
+            var system = new SelectiveGeometryResolver().Resolve(ParrillaDesign(2, 2, true, true, (1, 1)), Catalog);
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+
+            var parrilla = bom.Components.Where(c => c.Category == SelectiveBomBuilder.Parrilla).ToList();
+            Assert.Equal(3, parrilla.Sum(c => c.Quantity)); // 2×2 − 1 off, 1 fondo
+            // Not double-counted under the generic "Seguridad" (manual-quantity fallback).
+            Assert.DoesNotContain(bom.Components, c => c.Category == SelectiveBomBuilder.Safety && c.ProfileId == ParrillaId);
+        }
+
+        [Fact]
+        public void Parrilla_Config_RoundTrips()
+        {
+            var design = ParrillaDesign(2, 2, frontal: true, lateral: false, (0, 1));
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "R"))).ToDomain();
+
+            var sel = restored.SafetySelections.Single(s => s.ElementId == ParrillaId);
+            Assert.True(sel.ParrillaFrontal);
+            Assert.False(sel.ParrillaLateral);
+            Assert.False(sel.ParrillaAt(0, 1)); // the off cell survives
+            Assert.True(sel.ParrillaAt(0, 0));
+        }
     }
 }

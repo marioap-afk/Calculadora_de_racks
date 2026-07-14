@@ -86,7 +86,7 @@ namespace RackCad.Application.Systems
 
             foreach (var safety in system.SafetySelections)
             {
-                var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side, TopeShared = safety.TopeShared, TopeSaque = safety.TopeSaque, TopeFrontal = safety.TopeFrontal, TopeFondo = safety.TopeFondo };
+                var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side, TopeShared = safety.TopeShared, TopeSaque = safety.TopeSaque, TopeFrontal = safety.TopeFrontal, TopeFondo = safety.TopeFondo, ParrillaFrontal = safety.ParrillaFrontal, ParrillaLateral = safety.ParrillaLateral };
                 foreach (var post in safety.PostSides)
                 {
                     if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
@@ -95,6 +95,11 @@ namespace RackCad.Application.Systems
                 foreach (var off in safety.TopeOffCells)
                 {
                     if (off != null) copy.TopeOffCells.Add(new SelectiveGridCell { Frente = off.Frente, Level = off.Level });
+                }
+
+                foreach (var off in safety.ParrillaOffCells)
+                {
+                    if (off != null) copy.ParrillaOffCells.Add(new SelectiveGridCell { Frente = off.Frente, Level = off.Level });
                 }
 
                 view.SafetySelections.Add(copy);

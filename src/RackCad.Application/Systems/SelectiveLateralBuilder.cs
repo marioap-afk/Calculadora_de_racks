@@ -143,6 +143,9 @@ namespace RackCad.Application.Systems
                 // Tarimas (visual reference): one per reaching fondo per level, spanning the fondo along the depth axis.
                 AddTarimas(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
 
+                // Parrillas (decks): one per reaching fondo per grid-ON level, spanning the fondo (FONDO param), seen edge-on.
+                AddParrillas(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
+
                 // Botas belong to the SYSTEM, not each cabecera: ONE at the corte's frontmost post (anchor-relative
                 // X=0) for Left, reflected to the backmost post for Right, about the center of THIS corte's total fondo
                 // span (the backmost reaching fondo). Never one per fondo.
@@ -482,6 +485,87 @@ namespace RackCad.Application.Systems
             pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam] = fondo; // LONGITUD = fondo in the lateral view
             pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] = alto;
             return pallet;
+        }
+
+        /// <summary>
+        /// Parrillas (decks) in the LATERAL when the element is selected and its ParrillaLateral toggle is on: one deck
+        /// per REACHING fondo per distinct level whose (frente,level) grid cell is ON (checked across the two bays the
+        /// corte bounds, like the topes), seen edge-on with FONDO = the cabecera depth. Origin bottom-left = the fondo's
+        /// FRONT post, on the load surface. Role.Safety; the BOM counts the grid, not these instances.
+        /// </summary>
+        private static void AddParrillas(
+            ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
+            IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+        {
+            var parrillas = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.ParrillaType);
+            if (parrillas.Count == 0)
+            {
+                return;
+            }
+
+            var parrilla = parrillas[0];
+            if (!parrilla.Selection.ParrillaLateral)
+            {
+                return; // the lateral draw is a per-view toggle
+            }
+
+            for (var k = 0; k < offsets.Count; k++)
+            {
+                if (postIndex > fondoBays[k].Count)
+                {
+                    continue;
+                }
+
+                var fondo = SelectiveDepthLayout.CabeceraDepthOfFondo(system, k); // the deck spans post-to-post
+                if (fondo <= 0.0)
+                {
+                    continue;
+                }
+
+                var offsetRel = offsets[k] - anchorOffset; // the deck's front (left) edge
+                var bays = fondoBays[k];
+                var seenY = new HashSet<double>();
+                for (var b = postIndex - 1; b <= postIndex; b++)
+                {
+                    if (b < 0 || b >= bays.Count)
+                    {
+                        continue;
+                    }
+
+                    for (var lvl = 0; lvl < bays[b].Levels.Count; lvl++)
+                    {
+                        if (!parrilla.Selection.ParrillaAt(b, lvl))
+                        {
+                            continue; // this (frente, level) cell has no deck
+                        }
+
+                        var level = bays[b].Levels[lvl];
+                        if (!seenY.Add(Math.Round(level.Y, 4)))
+                        {
+                            continue; // the level stack collapses to one deck per height in the lateral
+                        }
+
+                        var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, SelectiveRackDefaults.View);
+                        result.Add(MakeParrilla(parrilla.Block, parrilla.PieceId, offsetRel, surfaceY, fondo));
+                    }
+                }
+            }
+        }
+
+        private static HeaderBlockInstance MakeParrilla(string block, string pieceId, double x, double bottomY, double fondo)
+        {
+            var at = new Point2D(x, bottomY); // origin bottom-left (front edge, on the load surface)
+            var instance = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Safety,
+                PieceId = pieceId,
+                BlockName = block,
+                View = LateralView,
+                Insertion = at,
+                ConnectionAnchor = at
+            };
+            instance.DynamicParameters[SelectiveSafetyPlacement.ParrillaFondoParam] = fondo;
+            return instance;
         }
 
         /// <summary>The distinct levels attaching at post <paramref name="postIndex"/> from the (up to two) bays it

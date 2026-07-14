@@ -30,6 +30,15 @@ namespace RackCad.Application.Systems
         public const string LateralType = "LATERAL";
         public const string TopeType = "TOPE";
 
+        /// <summary>Deck / grating safety family (the catalog types it as this).</summary>
+        public const string ParrillaType = "PARRILLA";
+
+        /// <summary>PARRILLA block param that stretches its width (the frente span, used in FRONTAL).</summary>
+        public const string ParrillaFrenteParam = "FRENTE";
+
+        /// <summary>PARRILLA block param that stretches its depth (the fondo span, used in LATERAL).</summary>
+        public const string ParrillaFondoParam = "FONDO";
+
         /// <summary>The post connection point the larguero tope mates on (its own troquel, distinct from the separador's).</summary>
         public const string TopePostPoint = "TROQUEL_TOPE";
 

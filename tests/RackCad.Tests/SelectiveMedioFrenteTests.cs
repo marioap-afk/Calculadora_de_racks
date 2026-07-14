@@ -238,5 +238,22 @@ namespace RackCad.Tests
             Assert.Contains(lengths, l => System.Math.Abs(l - (30.0 + TopeAllowance)) < 1e-6);
             Assert.All(lengths, l => Assert.True(l < system.Bays[0].BeamLength));
         }
+
+        [Fact]
+        public void Parrilla_Bom_MedioFrente_CountsPerLoadedTramo_MatchingTheDraw()
+        {
+            var design = SegmentsDesign((30.0, true), (0.0, true)); // 2 loaded tramos, 2 levels
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PARRILLA_GENERICA", Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = true, ParrillaLateral = true });
+            var system = Resolve(design);
+
+            var drawn = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == "PARRILLA_GENERICA");
+            var bom = SelectiveBomBuilder.Build(system, Catalog).Components.Where(c => c.Category == SelectiveBomBuilder.Parrilla).ToList();
+
+            Assert.Equal(4, drawn);                       // 2 loaded tramos × 2 levels drawn in the frontal
+            Assert.Equal(drawn, bom.Sum(c => c.Quantity)); // the BOM agrees with the drawing (was 2 @ full bay before the fix)
+            Assert.Contains(bom, c => System.Math.Abs(c.Length - 30.0) < 1e-6); // the 30" tramo is its own line
+            Assert.All(bom, c => Assert.True(c.Length < system.Bays[0].BeamLength));
+        }
     }
 }

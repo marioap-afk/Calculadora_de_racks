@@ -27,6 +27,7 @@ namespace RackCad.Application.Systems
         public const string Safety = "Seguridad";
         public const string Separador = "Separador";
         public const string Tope = "Tope";
+        public const string Parrilla = "Parrilla";
 
         /// <summary>The component BOM of a resolved system: cabeceras (per frame) + largueros (per beam), each with its pieces.</summary>
         public static BillOfMaterials Build(SelectiveRackSystem system, RackCatalog catalog)
@@ -42,6 +43,7 @@ namespace RackCad.Application.Systems
             AddSafetyComponents(components, system, catalog);
             AddSeparadorComponents(components, system, catalog);
             AddTopeComponents(components, system, catalog);
+            AddParrillaComponents(components, system, catalog);
             return new BillOfMaterials(components);
         }
 
@@ -83,8 +85,10 @@ namespace RackCad.Application.Systems
 
                 var element = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
 
-                // A TOPE is counted as its own component (AddTopeComponents), not under "Seguridad".
-                if (element != null && string.Equals(element.Type, SelectiveSafetyPlacement.TopeType, StringComparison.OrdinalIgnoreCase))
+                // A TOPE / PARRILLA is counted as its own component (AddTope/AddParrillaComponents), not under "Seguridad".
+                if (element != null
+                    && (string.Equals(element.Type, SelectiveSafetyPlacement.TopeType, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(element.Type, SelectiveSafetyPlacement.ParrillaType, StringComparison.OrdinalIgnoreCase)))
                 {
                     continue;
                 }
@@ -186,10 +190,11 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            // One tope per larguero (bay × level) at the CENTRAL fondo — counted from the model, NOT the lateral (which
-            // shows each tope end-on at BOTH its posts) nor the planta (which collapses the levels to one line per bay).
+            // One tope per larguero (bay × level, per loaded tramo of a medio-frente bay) at the CENTRAL fondo — counted
+            // from the model, matching the per-tramo drawing (the lateral shows each end-on, the planta splits by tramo).
             var selection = topes[0].Selection;
             var fondoCount = SelectiveDepthLayout.Count(system);
+            var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs;
             var byLength = new Dictionary<double, int>();
             var order = new List<double>();
             foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, fondoCount))
@@ -197,28 +202,8 @@ namespace RackCad.Application.Systems
                 var bays = SelectiveDepthLayout.BaysOfFondo(system, spot.Fondo);
                 for (var b = 0; b < bays.Count; b++)
                 {
-                    var bay = bays[b];
-                    if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    var length = Round(bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance);
-                    for (var level = 0; level < bay.Levels.Count; level++)
-                    {
-                        if (!selection.TopeAt(b, level))
-                        {
-                            continue; // this (frente, level) cell is turned off in the grid
-                        }
-
-                        if (!byLength.ContainsKey(length))
-                        {
-                            byLength[length] = 0;
-                            order.Add(length);
-                        }
-
-                        byLength[length]++; // one per larguero level that is on
-                    }
+                    var frente = b;
+                    TallyByTramo(bays[b], troquelXs, b, catalog, lvl => selection.TopeAt(frente, lvl), SelectiveSafetyPlacement.TopeLengthAllowance, byLength, order);
                 }
             }
 
@@ -244,6 +229,125 @@ namespace RackCad.Application.Systems
                         new BomLine { Category = Tope, ProfileId = id, Description = label, Length = length, Quantity = 1 }
                     }
                 });
+            }
+        }
+
+        // ---- Parrillas (decks): one per (frente, level) grid-ON cell on every fondo, grouped by the frente width ----
+
+        private static void AddParrillaComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
+        {
+            if (system.SafetySelections == null)
+            {
+                return;
+            }
+
+            SelectiveSafetySelection selection = null;
+            foreach (var sel in system.SafetySelections)
+            {
+                if (sel == null || string.IsNullOrWhiteSpace(sel.ElementId))
+                {
+                    continue;
+                }
+
+                var el = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, sel.ElementId, StringComparison.OrdinalIgnoreCase));
+                if (el != null && string.Equals(el.Type, SelectiveSafetyPlacement.ParrillaType, StringComparison.OrdinalIgnoreCase))
+                {
+                    selection = sel;
+                    break;
+                }
+            }
+
+            if (selection == null)
+            {
+                return;
+            }
+
+            // One deck per (frente, level) grid-ON cell, on EVERY fondo (a deck sits on each fondo's largueros); grouped
+            // by the deck's FRENTE width — the tramo length in a medio-frente bay (matching the drawing), else the bay.
+            var byLength = new Dictionary<double, int>();
+            var order = new List<double>();
+            var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs;
+            var fondoCount = SelectiveDepthLayout.Count(system);
+            for (var k = 0; k < fondoCount; k++)
+            {
+                var bays = SelectiveDepthLayout.BaysOfFondo(system, k);
+                for (var b = 0; b < bays.Count; b++)
+                {
+                    var frente = b;
+                    TallyByTramo(bays[b], troquelXs, b, catalog, lvl => selection.ParrillaAt(frente, lvl), 0.0, byLength, order);
+                }
+            }
+
+            if (byLength.Count == 0)
+            {
+                return;
+            }
+
+            var id = selection.ElementId;
+            var label = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, id, StringComparison.OrdinalIgnoreCase))?.Label ?? id;
+            foreach (var length in order.OrderBy(l => l))
+            {
+                components.Add(new BomComponent
+                {
+                    Category = Parrilla,
+                    ProfileId = id,
+                    Description = label,
+                    Length = length,
+                    Quantity = byLength[length],
+                    Pieces = new List<BomLine>
+                    {
+                        new BomLine { Category = Parrilla, ProfileId = id, Description = label, Length = length, Quantity = 1 }
+                    }
+                });
+            }
+        }
+
+        /// <summary>Tally, for one bay, ONE unit per (level that <paramref name="levelOn"/> accepts × loaded tramo) into
+        /// <paramref name="byLength"/>, keyed by the piece length (the tramo length in a medio-frente bay, else the whole
+        /// bay) + <paramref name="allowance"/>. Shared by the tope and parrilla BOM so both agree with the per-tramo
+        /// drawing of a split bay. <paramref name="troquelXs"/> are the shared master-grid post troqueles.</summary>
+        private static void TallyByTramo(SelectiveBay bay, IReadOnlyList<double> troquelXs, int bayIndex, RackCatalog catalog, Func<int, bool> levelOn, double allowance, Dictionary<double, int> byLength, List<double> order)
+        {
+            if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
+            {
+                return;
+            }
+
+            var onLevels = 0;
+            for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+            {
+                if (levelOn(lvl)) onLevels++;
+            }
+
+            if (onLevels == 0)
+            {
+                return;
+            }
+
+            void Add(double pieceLength)
+            {
+                var key = Round(pieceLength);
+                if (!byLength.ContainsKey(key))
+                {
+                    byLength[key] = 0;
+                    order.Add(key);
+                }
+
+                byLength[key] += onLevels; // one piece per accepted level of this tramo (the vertical stack)
+            }
+
+            var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, SelectiveRackDefaults.View);
+            var troquelX = bayIndex >= 0 && bayIndex < troquelXs.Count ? troquelXs[bayIndex] : 0.0;
+            var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
+            if (tramos == null)
+            {
+                Add(bay.BeamLength + allowance);
+                return;
+            }
+
+            foreach (var tramo in tramos)
+            {
+                if (tramo.Loaded) Add(tramo.Length + allowance);
             }
         }
 

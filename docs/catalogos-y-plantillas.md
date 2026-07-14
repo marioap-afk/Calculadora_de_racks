@@ -384,6 +384,18 @@ TARIMA_GENERICA,LATERAL,TARIMA_GENERICA,,1,0
 - En **frontal** se dibuja una tarima por posicion de carga (frente × niveles + piso). En **lateral** se dibuja una tarima por fondo por nivel (las tarimas de un mismo nivel a lo ancho se solapan de canto en una sola), abarcando el fondo del rack.
 - Si **no existe** la fila para una vista en `blocks.csv` (o el `pieceId`/`blockName` no cuadran), el toggle no dibuja nada en esa vista (sin error): la funcion se degrada de forma silenciosa.
 
+### Parrilla / deck (`PARRILLA_GENERICA`)
+
+La parrilla es un **elemento de seguridad** (`seguridad.csv` con `type = PARRILLA`) que **sí entra al BOM**. Se configura desde el diálogo **"Elementos de seguridad"** con una **rejilla frente × nivel** (elige en qué posiciones va) y dos toggles **"Dibujar en frontal / lateral"** (en planta no se dibuja). Se coloca como la tarima original: **origen inferior-izquierda coincidente** con el inicio del larguero, sobre la superficie de carga (queda justo bajo la tarima). Necesita **una fila por vista** en `blocks.csv`:
+
+```
+PARRILLA_GENERICA,FRONTAL,PARRILLA_GENERICA_FRONTAL,,1,0
+PARRILLA_GENERICA,LATERAL,PARRILLA_GENERICA_LATERAL,,1,0
+```
+
+- Bloque **por vista** (`_FRONTAL` / `_LATERAL`), con parámetros dinámicos **`FRENTE`** (frontal, = el ancho del frente = largo del larguero) y **`FONDO`** (lateral, = el fondo de la cabecera). En un frente **medio-frente**, se dibuja una parrilla por **tramo cargado** (su propio ancho).
+- El **BOM** cuenta las celdas encendidas de la rejilla en **todos los fondos** (por tramo en medio-frente), independientemente de los toggles de vista — apagar ambas vistas la deja en el BOM pero no la dibuja. La constante del tipo (`SelectiveSafetyPlacement.ParrillaType`) es `PARRILLA`.
+
 ## Donde mirar en el codigo
 
 Catalogos y plantillas:

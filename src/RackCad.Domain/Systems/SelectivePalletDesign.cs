@@ -186,6 +186,28 @@ namespace RackCad.Domain.Systems
 
             return true;
         }
+
+        // ---- PARRILLA-only config (deck): which views draw it, and the (frente,level) cells that carry one ----
+
+        /// <summary>PARRILLA: draw the deck in the FRONTAL view (seen edge-on, FRENTE = the frente width). Default true.</summary>
+        public bool ParrillaFrontal { get; set; } = true;
+
+        /// <summary>PARRILLA: draw the deck in the LATERAL view (seen edge-on, FONDO = the depth). Default true.</summary>
+        public bool ParrillaLateral { get; set; } = true;
+
+        /// <summary>PARRILLA: the (frente, level) cells with NO deck (default empty = a deck at every load position).</summary>
+        public IList<SelectiveGridCell> ParrillaOffCells { get; } = new List<SelectiveGridCell>();
+
+        /// <summary>PARRILLA: true if a deck sits at (frente, level) — i.e. that cell is not in <see cref="ParrillaOffCells"/>.</summary>
+        public bool ParrillaAt(int frente, int level)
+        {
+            foreach (var off in ParrillaOffCells)
+            {
+                if (off != null && off.Frente == frente && off.Level == level) return false;
+            }
+
+            return true;
+        }
     }
 
     /// <summary>A per-post side override for a safety selection.</summary>

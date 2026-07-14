@@ -140,7 +140,10 @@ namespace RackCad.Application.Persistence
                     TopeSaque = s.TopeSaque,
                     TopeFrontal = s.TopeFrontal,
                     TopeFondo = s.TopeFondo,
-                    TopeOffCells = s.TopeOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList()
+                    TopeOffCells = s.TopeOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList(),
+                    ParrillaFrontal = s.ParrillaFrontal,
+                    ParrillaLateral = s.ParrillaLateral,
+                    ParrillaOffCells = s.ParrillaOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList()
                 }).ToList();
 
             return document;
@@ -220,7 +223,9 @@ namespace RackCad.Application.Persistence
                         TopeShared = safety.TopeShared ?? true, // legacy docs (no field) default to shared
                         TopeSaque = safety.TopeSaque.HasValue && safety.TopeSaque.Value > 0.0 ? safety.TopeSaque.Value : 3.0,
                         TopeFrontal = safety.TopeFrontal ?? false,
-                        TopeFondo = safety.TopeFondo ?? -1 // legacy docs (no field) default to the automatic central fondo
+                        TopeFondo = safety.TopeFondo ?? -1, // legacy docs (no field) default to the automatic central fondo
+                        ParrillaFrontal = safety.ParrillaFrontal ?? true, // legacy docs default to drawing in both views
+                        ParrillaLateral = safety.ParrillaLateral ?? true
                     };
                     foreach (var post in safety.PostSides ?? Enumerable.Empty<PostSideDocument>())
                     {
@@ -235,6 +240,14 @@ namespace RackCad.Application.Persistence
                         if (cell != null && cell.Frente >= 0 && cell.Level >= 0)
                         {
                             selection.TopeOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
+                        }
+                    }
+
+                    foreach (var cell in safety.ParrillaOffCells ?? Enumerable.Empty<GridCellDocument>())
+                    {
+                        if (cell != null && cell.Frente >= 0 && cell.Level >= 0)
+                        {
+                            selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
                         }
                     }
 
@@ -354,6 +367,9 @@ namespace RackCad.Application.Persistence
         public bool? TopeFrontal { get; set; }
         public int? TopeFondo { get; set; }
         public List<GridCellDocument> TopeOffCells { get; set; }
+        public bool? ParrillaFrontal { get; set; }
+        public bool? ParrillaLateral { get; set; }
+        public List<GridCellDocument> ParrillaOffCells { get; set; }
     }
 
     /// <summary>A serialized (frente, level) cell — a tope cell that is turned off.</summary>
