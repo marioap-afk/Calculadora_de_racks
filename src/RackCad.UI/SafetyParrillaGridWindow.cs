@@ -20,17 +20,19 @@ namespace RackCad.UI
         private readonly IReadOnlyList<int> levelsPerFrente;
         private readonly CheckBox frontal;
         private readonly CheckBox lateral;
+        private readonly TextBox frenteBox;
 
         public sealed class ParrillaResult
         {
             public bool Frontal;
             public bool Lateral;
+            public double Frente; // 0 = one deck per tarima at the tarima's own frente
             public List<SelectiveGridCell> OffCells = new List<SelectiveGridCell>();
         }
 
         public ParrillaResult Result { get; private set; }
 
-        public SafetyParrillaGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool frontal, bool lateral, IEnumerable<SelectiveGridCell> offCells)
+        public SafetyParrillaGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool frontal, bool lateral, double frente, IEnumerable<SelectiveGridCell> offCells)
         {
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             var off = new HashSet<(int, int)>();
@@ -66,9 +68,13 @@ namespace RackCad.UI
             // ---- Bottom: the two view toggles ----
             var options = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 10, 0, 0) };
             this.frontal = new CheckBox { Content = "Dibujar en frontal", IsChecked = frontal, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4, 16, 4) };
-            this.lateral = new CheckBox { Content = "Dibujar en lateral", IsChecked = lateral, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4, 0, 4) };
+            this.lateral = new CheckBox { Content = "Dibujar en lateral", IsChecked = lateral, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4, 16, 4) };
             options.Children.Add(this.frontal);
             options.Children.Add(this.lateral);
+
+            options.Children.Add(new TextBlock { Text = "Frente parrilla (in):", Margin = new Thickness(0, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
+            this.frenteBox = new TextBox { Width = 64, VerticalAlignment = VerticalAlignment.Center, Text = frente > 0.0 ? frente.ToString(CultureInfo.InvariantCulture) : string.Empty, ToolTip = "Vacío = una parrilla por tarima (mismo frente que la tarima). Un valor fija ese ancho y ajusta cuántas caben (p.ej. 2 parrillas bajo 3 tarimas)." };
+            options.Children.Add(this.frenteBox);
             DockPanel.SetDock(options, Dock.Bottom);
             root.Children.Add(options);
 
@@ -141,10 +147,19 @@ namespace RackCad.UI
 
         private void OnOk()
         {
+            var frenteText = (frenteBox.Text ?? string.Empty).Trim();
+            var frente = 0.0;
+            if (frenteText.Length > 0 && (!double.TryParse(frenteText, NumberStyles.Float, CultureInfo.InvariantCulture, out frente) || frente <= 0.0))
+            {
+                MessageBox.Show(this, "Frente de parrilla inválido: deja vacío (una por tarima) o usa un número > 0.", "Parrilla", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var result = new ParrillaResult
             {
                 Frontal = frontal.IsChecked == true,
-                Lateral = lateral.IsChecked == true
+                Lateral = lateral.IsChecked == true,
+                Frente = frente
             };
 
             for (var f = 0; f < cells.Length; f++)

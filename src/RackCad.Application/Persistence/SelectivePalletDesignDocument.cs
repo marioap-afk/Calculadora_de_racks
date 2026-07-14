@@ -143,6 +143,7 @@ namespace RackCad.Application.Persistence
                     TopeOffCells = s.TopeOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList(),
                     ParrillaFrontal = s.ParrillaFrontal,
                     ParrillaLateral = s.ParrillaLateral,
+                    ParrillaFrente = s.ParrillaFrente,
                     ParrillaOffCells = s.ParrillaOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList()
                 }).ToList();
 
@@ -225,7 +226,8 @@ namespace RackCad.Application.Persistence
                         TopeFrontal = safety.TopeFrontal ?? false,
                         TopeFondo = safety.TopeFondo ?? -1, // legacy docs (no field) default to the automatic central fondo
                         ParrillaFrontal = safety.ParrillaFrontal ?? true, // legacy docs default to drawing in both views
-                        ParrillaLateral = safety.ParrillaLateral ?? true
+                        ParrillaLateral = safety.ParrillaLateral ?? true,
+                        ParrillaFrente = safety.ParrillaFrente ?? 0.0 // legacy docs (no field) default to one deck per tarima
                     };
                     foreach (var post in safety.PostSides ?? Enumerable.Empty<PostSideDocument>())
                     {
@@ -369,6 +371,7 @@ namespace RackCad.Application.Persistence
         public List<GridCellDocument> TopeOffCells { get; set; }
         public bool? ParrillaFrontal { get; set; }
         public bool? ParrillaLateral { get; set; }
+        public double? ParrillaFrente { get; set; }
         public List<GridCellDocument> ParrillaOffCells { get; set; }
     }
 

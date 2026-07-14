@@ -54,6 +54,7 @@ namespace RackCad.UI
             public bool ParrillaConfigured;
             public bool ParrillaFrontal = true;
             public bool ParrillaLateral = true;
+            public double ParrillaFrente; // 0 = one deck per tarima
             public List<SelectiveGridCell> ParrillaOffCells = new List<SelectiveGridCell>();
             public Button ParrillaButton;
         }
@@ -175,6 +176,7 @@ namespace RackCad.UI
                             row.ParrillaConfigured = true;
                             row.ParrillaFrontal = existing.ParrillaFrontal;
                             row.ParrillaLateral = existing.ParrillaLateral;
+                            row.ParrillaFrente = existing.ParrillaFrente;
                             row.ParrillaOffCells = existing.ParrillaOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList() ?? new List<SelectiveGridCell>();
                         }
 
@@ -293,7 +295,7 @@ namespace RackCad.UI
 
         private void EditParrilla(Row row)
         {
-            var dialog = new SafetyParrillaGridWindow(row.Label, levelsPerFrente, row.ParrillaFrontal, row.ParrillaLateral, row.ParrillaOffCells) { Owner = this };
+            var dialog = new SafetyParrillaGridWindow(row.Label, levelsPerFrente, row.ParrillaFrontal, row.ParrillaLateral, row.ParrillaFrente, row.ParrillaOffCells) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -303,6 +305,7 @@ namespace RackCad.UI
             row.ParrillaConfigured = true;
             row.ParrillaFrontal = r.Frontal;
             row.ParrillaLateral = r.Lateral;
+            row.ParrillaFrente = r.Frente;
             row.ParrillaOffCells = r.OffCells;
             row.ParrillaButton.Content = ParrillaLabel(row);
         }
@@ -376,7 +379,7 @@ namespace RackCad.UI
                         if (!allOff)
                         {
                             // Side = Both makes EnabledOfType treat it as "drawn"; the per-view toggles gate the actual draw.
-                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral };
+                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente };
                             foreach (var c in row.ParrillaOffCells)
                             {
                                 if (c != null) selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });

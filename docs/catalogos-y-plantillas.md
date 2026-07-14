@@ -386,15 +386,18 @@ TARIMA_GENERICA,LATERAL,TARIMA_GENERICA,,1,0
 
 ### Parrilla / deck (`PARRILLA_GENERICA`)
 
-La parrilla es un **elemento de seguridad** (`seguridad.csv` con `type = PARRILLA`) que **sí entra al BOM**. Se configura desde el diálogo **"Elementos de seguridad"** con una **rejilla frente × nivel** (elige en qué posiciones va) y dos toggles **"Dibujar en frontal / lateral"** (en planta no se dibuja). Se coloca como la tarima original: **origen inferior-izquierda coincidente** con el inicio del larguero, sobre la superficie de carga (queda justo bajo la tarima). Necesita **una fila por vista** en `blocks.csv`:
+La parrilla es un **elemento de seguridad** (`seguridad.csv` con `type = PARRILLA`) que **sí entra al BOM**. Va **una parrilla por tarima** (3 tarimas → 3 parrillas), justo **debajo** de cada una. Se configura desde el diálogo **"Elementos de seguridad"** con una **rejilla frente × nivel** (elige en qué posiciones va), dos toggles **"Dibujar en frontal / lateral"** (en planta no se dibuja) y el campo **"Frente parrilla (in)"**. Se coloca con **origen inferior-izquierda coincidente** con el inicio del larguero, sobre la superficie de carga. Necesita **una fila por vista** en `blocks.csv`:
 
 ```
 PARRILLA_GENERICA,FRONTAL,PARRILLA_GENERICA_FRONTAL,,1,0
 PARRILLA_GENERICA,LATERAL,PARRILLA_GENERICA_LATERAL,,1,0
 ```
 
-- Bloque **por vista** (`_FRONTAL` / `_LATERAL`), con parámetros dinámicos **`FRENTE`** (frontal, = el ancho del frente = largo del larguero) y **`FONDO`** (lateral, = el fondo de la cabecera). En un frente **medio-frente**, se dibuja una parrilla por **tramo cargado** (su propio ancho).
-- El **BOM** cuenta las celdas encendidas de la rejilla en **todos los fondos** (por tramo en medio-frente), independientemente de los toggles de vista — apagar ambas vistas la deja en el BOM pero no la dibuja. La constante del tipo (`SelectiveSafetyPlacement.ParrillaType`) es `PARRILLA`.
+- Bloque **por vista** (`_FRONTAL` / `_LATERAL`), con parámetros dinámicos **`FRENTE`** (frontal) y **`FONDO`** (lateral, = el fondo de la cabecera).
+- **Medida por defecto** (campo "Frente parrilla" vacío, `ParrillaFrente = 0`): `FRENTE` = el **frente de la tarima** de esa celda, y van **tantas parrillas como tarimas** hay en el nivel. En un frente **medio-frente** se reparten por **tramo cargado**, cabiendo las que quepan (`floor(tramo / frente)`) — exactamente las mismas que tarimas, así el dibujo y el BOM concuerdan.
+- **Medida manual** (`ParrillaFrente > 0`): fija ese ancho y recalcula cuántas caben (`floor(claro / frente)`). Así se logra p. ej. **2 parrillas bajo 3 tarimas**. Ojo: el valor es **uno para todo el rack**, y donde no quepa (un frente angosto, o mayor que el claro) **no se dibuja ninguna** — ni en el BOM.
+- En la **lateral** la fila se ve de canto y colapsa a **una sola parrilla por fondo y altura**, pero primero pregunta si la fila **existe** (`SelectiveFrontalBuilder.ParrillaExistsAt`, la misma regla del frontal y el BOM): si no cabe ninguna, la lateral tampoco dibuja. Cero es cero en las tres salidas.
+- El **BOM** cuenta por tarima en **todos los fondos**, independientemente de los toggles de vista — apagar ambas vistas la deja en el BOM pero no la dibuja. La constante del tipo (`SelectiveSafetyPlacement.ParrillaType`) es `PARRILLA`. La regla de conteo vive en un solo sitio, `SelectiveFrontalBuilder.ParrillaRow`, que consumen el builder y el BOM.
 
 ## Donde mirar en el codigo
 

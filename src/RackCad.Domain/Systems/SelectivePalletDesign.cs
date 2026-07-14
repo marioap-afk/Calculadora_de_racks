@@ -195,6 +195,10 @@ namespace RackCad.Domain.Systems
         /// <summary>PARRILLA: draw the deck in the LATERAL view (seen edge-on, FONDO = the depth). Default true.</summary>
         public bool ParrillaLateral { get; set; } = true;
 
+        /// <summary>PARRILLA: manual deck width (FRENTE, inches); &lt;= 0 = one deck per tarima at the tarima's own frente.
+        /// A positive value overrides it (e.g. 2 wider decks under 3 pallets), fitting as many as the span holds.</summary>
+        public double ParrillaFrente { get; set; }
+
         /// <summary>PARRILLA: the (frente, level) cells with NO deck (default empty = a deck at every load position).</summary>
         public IList<SelectiveGridCell> ParrillaOffCells { get; } = new List<SelectiveGridCell>();
 

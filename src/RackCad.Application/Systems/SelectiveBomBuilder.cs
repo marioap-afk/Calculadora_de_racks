@@ -262,19 +262,65 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            // One deck per (frente, level) grid-ON cell, on EVERY fondo (a deck sits on each fondo's largueros); grouped
-            // by the deck's FRENTE width — the tramo length in a medio-frente bay (matching the drawing), else the bay.
+            // ONE deck per tarima (the level's frente/count, or the manual override width), on every fondo's grid-ON
+            // cells, grouped by the deck FRENTE — exactly the rows SelectiveFrontalBuilder draws, so the BOM agrees.
             var byLength = new Dictionary<double, int>();
             var order = new List<double>();
             var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs;
+            var overrideFrente = selection.ParrillaFrente;
             var fondoCount = SelectiveDepthLayout.Count(system);
+
+            void AddRow(double span, SelectiveLevel level, bool fitToSpan)
+            {
+                var (frente, count) = SelectiveFrontalBuilder.ParrillaRow(span, level.PalletFrente, level.PalletCount, overrideFrente, fitToSpan);
+                if (frente <= 0.0 || count <= 0)
+                {
+                    return;
+                }
+
+                var key = Round(frente);
+                if (!byLength.ContainsKey(key))
+                {
+                    byLength[key] = 0;
+                    order.Add(key);
+                }
+
+                byLength[key] += count;
+            }
+
             for (var k = 0; k < fondoCount; k++)
             {
                 var bays = SelectiveDepthLayout.BaysOfFondo(system, k);
                 for (var b = 0; b < bays.Count; b++)
                 {
-                    var frente = b;
-                    TallyByTramo(bays[b], troquelXs, b, catalog, lvl => selection.ParrillaAt(frente, lvl), 0.0, byLength, order);
+                    var bay = bays[b];
+                    if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, SelectiveRackDefaults.View);
+                    var troquelX = b >= 0 && b < troquelXs.Count ? troquelXs[b] : 0.0;
+                    var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
+                    for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+                    {
+                        if (!selection.ParrillaAt(b, lvl))
+                        {
+                            continue;
+                        }
+
+                        var level = bay.Levels[lvl];
+                        if (tramos == null)
+                        {
+                            AddRow(bay.BeamLength, level, false);
+                            continue;
+                        }
+
+                        foreach (var tramo in tramos)
+                        {
+                            if (tramo.Loaded) AddRow(tramo.Length, level, true);
+                        }
+                    }
                 }
             }
 

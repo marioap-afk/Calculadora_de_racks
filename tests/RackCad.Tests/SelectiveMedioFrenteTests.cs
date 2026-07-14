@@ -240,20 +240,24 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Parrilla_Bom_MedioFrente_CountsPerLoadedTramo_MatchingTheDraw()
+        public void Parrilla_Bom_MedioFrente_OnePerTarima_MatchingTheDraw()
         {
-            var design = SegmentsDesign((30.0, true), (0.0, true)); // 2 loaded tramos, 2 levels
+            // 40" first tramo fits exactly one 40" tarima; the remainder fits as many as its length holds. The parrilla
+            // is ONE PER TARIMA, so its count must equal the drawn tarimas — per loaded tramo — not one-per-tramo.
+            var design = SegmentsDesign((40.0, true), (0.0, true)); // 2 loaded tramos, 2 levels
+            design.DrawPallets = true;
             design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PARRILLA_GENERICA", Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = true, ParrillaLateral = true });
             var system = Resolve(design);
 
-            var drawn = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
-                .Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == "PARRILLA_GENERICA");
+            var instances = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog);
+            var tarimas = instances.Count(i => i.Role == HeaderBlockRole.Pallet);
+            var parrillas = instances.Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == "PARRILLA_GENERICA");
             var bom = SelectiveBomBuilder.Build(system, Catalog).Components.Where(c => c.Category == SelectiveBomBuilder.Parrilla).ToList();
 
-            Assert.Equal(4, drawn);                       // 2 loaded tramos × 2 levels drawn in the frontal
-            Assert.Equal(drawn, bom.Sum(c => c.Quantity)); // the BOM agrees with the drawing (was 2 @ full bay before the fix)
-            Assert.Contains(bom, c => System.Math.Abs(c.Length - 30.0) < 1e-6); // the 30" tramo is its own line
-            Assert.All(bom, c => Assert.True(c.Length < system.Bays[0].BeamLength));
+            Assert.True(tarimas > 0, $"expected tarimas drawn, got {tarimas}");
+            Assert.Equal(tarimas, parrillas);              // ONE deck per tarima, per loaded tramo
+            Assert.Equal(parrillas, bom.Sum(c => c.Quantity)); // the BOM agrees with the drawing
+            Assert.All(bom, c => Assert.True(c.Length < system.Bays[0].BeamLength)); // each deck is a tarima frente, not a full bay
         }
     }
 }

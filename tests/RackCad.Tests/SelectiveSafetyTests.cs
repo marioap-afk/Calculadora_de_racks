@@ -428,21 +428,38 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Parrilla_Frontal_OnePerOnCell_WithFrenteSpan()
+        public void Parrilla_Frontal_OnePerTarima_AtTarimaFrente()
         {
             var design = ParrillaDesign(2, 2, frontal: true, lateral: true);
-            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
             var parrillas = FrontalParrillas(design);
 
-            Assert.Equal(4, parrillas.Count); // 2 frentes × 2 levels
+            // One deck PER TARIMA: 2 frentes × 2 levels × PalletCount(2) = 8, each at the tarima's own frente (40),
+            // NOT one wide deck at the larguero length.
+            Assert.Equal(8, parrillas.Count);
             Assert.All(parrillas, p => Assert.True(p.DynamicParameters.ContainsKey("FRENTE")));
-            Assert.Contains(parrillas, p => Math.Abs(p.DynamicParameters["FRENTE"] - system.Bays[0].BeamLength) < 1e-6);
+            Assert.All(parrillas, p => Assert.Equal(40.0, p.DynamicParameters["FRENTE"], 4));
         }
 
         [Fact]
         public void Parrilla_Frontal_SkipsOffGridCells()
         {
-            Assert.Equal(3, FrontalParrillas(ParrillaDesign(2, 2, true, true, (0, 0))).Count); // 4 − 1 off
+            // 3 ON cells × PalletCount(2) = 6 (the (0,0) cell drops its 2 decks).
+            Assert.Equal(6, FrontalParrillas(ParrillaDesign(2, 2, true, true, (0, 0))).Count);
+        }
+
+        [Fact]
+        public void Parrilla_Frontal_ManualFrente_OverridesCountPerBay()
+        {
+            // 3 tarimas per bay, but a manual 60" deck fits only floor(136/60)=2 per bay → "2 parrillas, 3 tarimas".
+            var design = ParrillaDesign(2, 1, frontal: true, lateral: true);
+            foreach (var bay in design.Bays)
+                foreach (var level in bay.Levels) { level.PalletCount = 3; }
+            var sel = design.SafetySelections.Single(s => s.ElementId == ParrillaId);
+            sel.ParrillaFrente = 60.0;
+
+            var parrillas = FrontalParrillas(design);
+            Assert.Equal(4, parrillas.Count); // 2 frentes × 1 level × 2 decks-that-fit
+            Assert.All(parrillas, p => Assert.Equal(60.0, p.DynamicParameters["FRENTE"], 4));
         }
 
         [Fact]
@@ -464,6 +481,61 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Parrilla_Lateral_DrawsNothingWhereTheFrontalAndBomHaveNone()
+        {
+            // Regression: a manual frente WIDER than the claro (92") fits zero decks, so the frontal draws none and the
+            // BOM counts none. The lateral collapses the row end-on, but zero must stay zero — it used to gate only on the
+            // grid cell and emit a phantom deck per level that appeared in no frontal view and on no BOM line.
+            var design = ParrillaDesign(2, 2, frontal: true, lateral: true);
+            design.SafetySelections.Single(s => s.ElementId == ParrillaId).ParrillaFrente = 150.0;
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId);
+            var lateral = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .SelectMany(c => c.Largueros).Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId);
+            var bom = SelectiveBomBuilder.Build(system, Catalog).Components
+                .Where(c => c.Category == SelectiveBomBuilder.Parrilla).Sum(c => c.Quantity);
+
+            Assert.Equal(0, frontal);
+            Assert.Equal(0, bom);
+            Assert.Equal(0, lateral); // was 6 phantom decks before the fix
+        }
+
+        [Fact]
+        public void Parrilla_Lateral_NarrowBayThatFitsNoDeck_DrawsNoneInItsOwnCorte()
+        {
+            // The manual frente is ONE value for the whole run: 60" fits the 92" frente (1 deck) but not the 48" one, so
+            // the frontal and the BOM give the narrow frente zero. Its far corte bounds ONLY that frente — it must stay
+            // empty rather than invent a deck. This needs no absurd input, just two frentes of different widths.
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0 };
+            foreach (var count in new[] { 2, 1 }) // frente 0 -> BeamLength 92", frente 1 -> 48"
+            {
+                var bay = new SelectiveBayDesign { FloorBeam = true };
+                bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 40, Alto = 45 }, PalletCount = count, BeamId = BeamId, BeamPeralte = 4.0 });
+                design.Bays.Add(bay);
+            }
+
+            design.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = ParrillaId, Side = SafetySide.Both, Quantity = 1,
+                ParrillaFrontal = true, ParrillaLateral = true, ParrillaFrente = 60.0
+            });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId);
+            var bom = SelectiveBomBuilder.Build(system, Catalog).Components
+                .Where(c => c.Category == SelectiveBomBuilder.Parrilla).Sum(c => c.Quantity);
+            Assert.Equal(1, frontal); // only the 92" frente holds a 60" deck
+            Assert.Equal(1, bom);
+
+            var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog).ToList();
+            var lastCorte = cortes[cortes.Count - 1]; // the far post bounds ONLY the narrow 48" frente
+            Assert.DoesNotContain(lastCorte.Largueros, i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId);
+        }
+
+        [Fact]
         public void Parrilla_LateralToggleOff_DrawsNoneInLateral()
         {
             var system = new SelectiveGeometryResolver().Resolve(ParrillaDesign(2, 2, frontal: true, lateral: false), Catalog);
@@ -479,7 +551,7 @@ namespace RackCad.Tests
             var bom = SelectiveBomBuilder.Build(system, Catalog);
 
             var parrilla = bom.Components.Where(c => c.Category == SelectiveBomBuilder.Parrilla).ToList();
-            Assert.Equal(3, parrilla.Sum(c => c.Quantity)); // 2×2 − 1 off, 1 fondo
+            Assert.Equal(6, parrilla.Sum(c => c.Quantity)); // (2×2 − 1 off) ON cells × PalletCount(2), 1 fondo
             // Not double-counted under the generic "Seguridad" (manual-quantity fallback).
             Assert.DoesNotContain(bom.Components, c => c.Category == SelectiveBomBuilder.Safety && c.ProfileId == ParrillaId);
         }
@@ -488,12 +560,14 @@ namespace RackCad.Tests
         public void Parrilla_Config_RoundTrips()
         {
             var design = ParrillaDesign(2, 2, frontal: true, lateral: false, (0, 1));
+            design.SafetySelections.Single(s => s.ElementId == ParrillaId).ParrillaFrente = 36.0;
             var store = new SelectivePalletDesignStore();
             var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "R"))).ToDomain();
 
             var sel = restored.SafetySelections.Single(s => s.ElementId == ParrillaId);
             Assert.True(sel.ParrillaFrontal);
             Assert.False(sel.ParrillaLateral);
+            Assert.Equal(36.0, sel.ParrillaFrente, 4); // the manual frente override round-trips
             Assert.False(sel.ParrillaAt(0, 1)); // the off cell survives
             Assert.True(sel.ParrillaAt(0, 0));
         }
