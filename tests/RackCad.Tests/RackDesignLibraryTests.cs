@@ -4,6 +4,7 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
+using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using Xunit;
 
@@ -27,9 +28,11 @@ namespace RackCad.Tests
                 header.Name = "Cabecera A";
                 store.Save(RackProject.ForSelective(header), Path.Combine(dir, "cab" + RackProjectStore.FileExtension));
 
-                // A dynamic system -> inferred as Dinamico.
-                store.Save(RackProject.ForDynamic(new DynamicRackSystem { PalletsDeep = 2 }),
-                    Path.Combine(dir, "sistema" + RackProjectStore.FileExtension));
+                // A (valid) dynamic system -> inferred as Dinamico.
+                var dynamic = new DynamicRackSystemBuilder(JsonRackCatalogProvider.FromBaseDirectory().Load())
+                    .BuildDefault(new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"), palletsDeep: 2,
+                        headerTemplate: RackFrameTemplateCatalog.Default, headerPostCatalogId: CatalogIds.StandardPost, headerHeight: 132.0);
+                store.Save(RackProject.ForDynamic(dynamic), Path.Combine(dir, "sistema" + RackProjectStore.FileExtension));
 
                 // A foreign file -> skipped, not thrown.
                 File.WriteAllText(Path.Combine(dir, "ruido.txt"), "no soy un diseño");

@@ -162,9 +162,13 @@
   calculan distinto; unificar sobre la regla de troqueles y verificar visualmente.
 
 ### Decisiones de producto pendientes
-- **Validación de esquema en los stores**: hoy `Deserialize("{}")` produce una configuración vacía
-  (alto 0) sin error, y `SchemaVersion` se escribe pero nunca se lee. Definir política de versionado
-  /migración y validar campos mínimos.
+- ~~**Validación de esquema en los stores**~~ — ✅ **HECHO (2026-07-13):** `SchemaGuard.CheckReadable` rechaza
+  archivos con un MAJOR de esquema más nuevo que el que este build entiende (mensaje claro); `RackDesignValidation`
+  aporta los chequeos de mínimos por tipo (cabecera Height/Depth>0 + postes; selectivo con frentes; cama con largo
+  de riel; larguero con perfil; dinámico con módulos) y `RackProjectStore`/`SelectivePalletDesignStore` lanzan
+  `InvalidOperationException` en degenerado (antes `{}` daba una cabecera con alto 0 en silencio); el store de cama
+  (tolerante) devuelve null. Migración: la retro-compat de los documentos (fallbacks legacy) es el camino de upgrade
+  hoy; el gancho de transformación irá en `SchemaGuard` cuando aterrice el primer cambio de MAJOR. Con tests.
 - ~~**`Recompose` del dinámico borra overrides**~~ — ✅ **HECHO (2026-07-09):** cambiar niveles/altura o
   alternar "Reforzar poste derivado" es no destructivo (`UpdateHeaderHeightInPlace`), y al cambiar la
   **especificación de tarima**/`PalletsDeep` (rebuild completo) ahora se **conservan los fondos

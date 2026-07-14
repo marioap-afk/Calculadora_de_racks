@@ -13,7 +13,10 @@ namespace RackCad.Application.Persistence
     /// </summary>
     public sealed class SelectivePalletDesignDocument
     {
-        public string SchemaVersion { get; set; } = "1.0";
+        /// <summary>Schema version this build writes; a file with a higher MAJOR is rejected (see <see cref="SchemaGuard"/>).</summary>
+        public const string CurrentSchemaVersion = "1.0";
+
+        public string SchemaVersion { get; set; } = CurrentSchemaVersion;
 
         /// <summary>Stable identity of the rack (GUID string). Kept across edits; assigned by the caller.</summary>
         public string Id { get; set; }

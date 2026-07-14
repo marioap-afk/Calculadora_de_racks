@@ -30,14 +30,24 @@ namespace RackCad.Application.Persistence
                 throw new InvalidOperationException("El diseño del selectivo está vacío.");
             }
 
+            SelectivePalletDesignDocument document;
             try
             {
-                return JsonSerializer.Deserialize<SelectivePalletDesignDocument>(json, SerializerOptions);
+                document = JsonSerializer.Deserialize<SelectivePalletDesignDocument>(json, SerializerOptions);
             }
             catch (JsonException ex)
             {
                 throw new InvalidOperationException("El diseño del selectivo no es un JSON válido: " + ex.Message, ex);
             }
+
+            SchemaGuard.CheckReadable(document?.SchemaVersion, SelectivePalletDesignDocument.CurrentSchemaVersion, "El diseño del selectivo");
+
+            if (!RackDesignValidation.IsUsableSelective(document))
+            {
+                throw new InvalidOperationException("El diseño del selectivo no tiene frentes (¿archivo vacío o incompleto?).");
+            }
+
+            return document;
         }
 
         private static JsonSerializerOptions CreateOptions()

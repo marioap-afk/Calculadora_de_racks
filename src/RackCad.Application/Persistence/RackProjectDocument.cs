@@ -9,7 +9,10 @@ namespace RackCad.Application.Persistence
     /// </summary>
     public sealed class RackProjectDocument
     {
-        public string SchemaVersion { get; set; } = "2.0";
+        /// <summary>Schema version this build writes; a file with a higher MAJOR is rejected (see <see cref="SchemaGuard"/>).</summary>
+        public const string CurrentSchemaVersion = "2.0";
+
+        public string SchemaVersion { get; set; } = CurrentSchemaVersion;
         public RackSystemKind Kind { get; set; } = RackSystemKind.Selective;
         public RackFrameProjectDocument Header { get; set; }
         public DynamicRackSystemDocument DynamicSystem { get; set; }

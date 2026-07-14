@@ -29,7 +29,11 @@ namespace RackCad.Application.Persistence
 
             try
             {
-                return JsonSerializer.Deserialize<FlowBedConfiguration>(json, SerializerOptions);
+                var config = JsonSerializer.Deserialize<FlowBedConfiguration>(json, SerializerOptions);
+
+                // This store is tolerant by contract (its callers treat null as "no cama"); a degenerate/empty bed
+                // (e.g. {} → length 0) is treated as absent rather than a drawable 0-length bed.
+                return RackDesignValidation.IsUsableFlowBed(config) ? config : null;
             }
             catch (JsonException)
             {

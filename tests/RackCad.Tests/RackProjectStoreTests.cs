@@ -104,6 +104,28 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Deserialize_EmptyObject_Throws()
+        {
+            // "{}" used to load as a header with height 0 (a degenerate, un-drawable rack); now it is rejected.
+            Assert.Throws<System.InvalidOperationException>(() => new RackProjectStore().Deserialize("{}"));
+        }
+
+        [Fact]
+        public void Deserialize_KindWithoutPayload_Throws()
+        {
+            // A wrapper that declares a type but omits its data is corrupt/truncated — fail clearly, not silently.
+            Assert.Throws<System.InvalidOperationException>(() => new RackProjectStore().Deserialize("{\"kind\":\"Cama\"}"));
+        }
+
+        [Fact]
+        public void Deserialize_FutureSchemaVersion_Throws()
+        {
+            var ex = Assert.Throws<System.InvalidOperationException>(
+                () => new RackProjectStore().Deserialize("{\"schemaVersion\":\"99.0\",\"kind\":\"Selective\"}"));
+            Assert.Contains("más nueva", ex.Message);
+        }
+
+        [Fact]
         public void SaveLoad_Dynamic_RoundTripsThroughDisk()
         {
             var store = new RackProjectStore();

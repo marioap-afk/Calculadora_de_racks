@@ -110,44 +110,51 @@ namespace RackCad.Application.Persistence
                 throw new InvalidOperationException("El proyecto esta vacio o es invalido.");
             }
 
-            if (document.Kind == RackSystemKind.PalletFlow && document.DynamicSystem != null)
-            {
-                var system = document.DynamicSystem.ToDomain();
+            SchemaGuard.CheckReadable(document.SchemaVersion, RackProjectDocument.CurrentSchemaVersion, "El proyecto");
 
-                foreach (var module in system.Modules)
-                {
-                    if (module.AssociatedFrameConfiguration != null)
+            var project = BuildProject(document);
+            ValidateProject(project);
+            return project;
+        }
+
+        private RackProject BuildProject(RackProjectDocument document)
+        {
+            switch (document.Kind)
+            {
+                case RackSystemKind.PalletFlow:
+                    RequirePayload(document.DynamicSystem, "sistema dinámico");
+                    var system = document.DynamicSystem.ToDomain();
+                    foreach (var module in system.Modules)
                     {
-                        builder.RefreshPhysicalModel(module.AssociatedFrameConfiguration);
+                        if (module.AssociatedFrameConfiguration != null)
+                        {
+                            builder.RefreshPhysicalModel(module.AssociatedFrameConfiguration);
+                        }
                     }
-                }
 
-                return RackProject.ForDynamic(system);
+                    return RackProject.ForDynamic(system);
+
+                case RackSystemKind.SelectiveRack:
+                    RequirePayload(document.SelectiveRack, "rack selectivo");
+                    return RackProject.ForSelectiveRack(document.SelectiveRack);
+
+                case RackSystemKind.Cama:
+                    RequirePayload(document.FlowBed, "cama");
+                    return RackProject.ForCama(document.FlowBed);
+
+                case RackSystemKind.Larguero:
+                    RequirePayload(document.Larguero, "larguero");
+                    return RackProject.ForLarguero(document.Larguero);
+
+                default:
+                    var header = document.Header?.ToConfiguration();
+                    if (header != null)
+                    {
+                        builder.RefreshPhysicalModel(header);
+                    }
+
+                    return RackProject.ForSelective(header);
             }
-
-            if (document.Kind == RackSystemKind.SelectiveRack && document.SelectiveRack != null)
-            {
-                return RackProject.ForSelectiveRack(document.SelectiveRack);
-            }
-
-            if (document.Kind == RackSystemKind.Cama && document.FlowBed != null)
-            {
-                return RackProject.ForCama(document.FlowBed);
-            }
-
-            if (document.Kind == RackSystemKind.Larguero && document.Larguero != null)
-            {
-                return RackProject.ForLarguero(document.Larguero);
-            }
-
-            var header = document.Header?.ToConfiguration();
-
-            if (header != null)
-            {
-                builder.RefreshPhysicalModel(header);
-            }
-
-            return RackProject.ForSelective(header);
         }
 
         private RackProject DeserializeLegacyHeader(string json)
@@ -163,15 +170,50 @@ namespace RackCad.Application.Persistence
                 throw new InvalidOperationException("El proyecto no es un JSON valido: " + ex.Message, ex);
             }
 
-            var header = document?.ToConfiguration();
+            SchemaGuard.CheckReadable(document?.SchemaVersion, RackFrameProjectDocument.CurrentSchemaVersion, "La cabecera");
 
-            if (header != null)
+            var header = document?.ToConfiguration();
+            if (!RackDesignValidation.IsUsableHeader(header))
             {
-                builder.RefreshPhysicalModel(header);
+                throw Degenerate("la cabecera");
             }
 
+            builder.RefreshPhysicalModel(header);
             return RackProject.ForSelective(header);
         }
+
+        /// <summary>A wrapper that names a type but omits its payload is corrupt/truncated — fail clearly, don't silently degrade.</summary>
+        private static void RequirePayload(object payload, string typeName)
+        {
+            if (payload == null)
+            {
+                throw new InvalidOperationException("El proyecto declara tipo '" + typeName + "' pero no contiene sus datos.");
+            }
+        }
+
+        /// <summary>Reject a semantically-empty project (e.g. <c>{}</c> → a header with height 0) instead of returning it.</summary>
+        private static void ValidateProject(RackProject project)
+        {
+            bool usable;
+            string what;
+
+            switch (project.Kind)
+            {
+                case RackSystemKind.PalletFlow: usable = RackDesignValidation.IsUsableDynamic(project.DynamicSystem); what = "el sistema dinámico"; break;
+                case RackSystemKind.SelectiveRack: usable = RackDesignValidation.IsUsableSelective(project.SelectiveRack); what = "el rack selectivo"; break;
+                case RackSystemKind.Cama: usable = RackDesignValidation.IsUsableFlowBed(project.FlowBed); what = "la cama"; break;
+                case RackSystemKind.Larguero: usable = RackDesignValidation.IsUsableLarguero(project.Larguero); what = "el larguero"; break;
+                default: usable = RackDesignValidation.IsUsableHeader(project.Header); what = "la cabecera"; break;
+            }
+
+            if (!usable)
+            {
+                throw Degenerate(what);
+            }
+        }
+
+        private static InvalidOperationException Degenerate(string what)
+            => new InvalidOperationException("El proyecto no tiene datos válidos para " + what + " (¿archivo vacío o incompleto?).");
 
         private static bool LooksLikeWrapper(JsonElement root)
         {
