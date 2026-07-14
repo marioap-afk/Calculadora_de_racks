@@ -240,8 +240,9 @@ namespace RackCad.Tests
             // Seen edge-on, LONGITUD carries the fondo (pallet depth 48), ALTURA the pallet alto (60).
             Assert.All(pallets, p => Assert.Equal(48.0, p.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam], 3));
             Assert.All(pallets, p => Assert.Equal(60.0, p.DynamicParameters[SelectiveRackDefaults.PalletAltoParam], 3));
-            Assert.Contains(pallets, p => Math.Abs(p.Insertion.Y) < 1e-6);  // the ground pallet rests on the floor
-            Assert.Contains(pallets, p => p.Insertion.Y > 1e-6);            // a level pallet rests on a larguero
+            // Centre-origin block: the ground pallet's centre is at alto/2 (60/2), so its bottom rests on the floor.
+            Assert.Contains(pallets, p => Math.Abs(p.Insertion.Y - 30.0) < 1e-6);   // ground pallet (bottom on the floor)
+            Assert.Contains(pallets, p => p.Insertion.Y > 30.0 + 1e-6);            // a level pallet higher up
         }
 
         [Fact]

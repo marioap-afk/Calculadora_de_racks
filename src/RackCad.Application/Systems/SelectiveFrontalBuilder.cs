@@ -360,8 +360,9 @@ namespace RackCad.Application.Systems
             => frente > 0.0 && frente <= span ? (int)Math.Floor(span / frente) : 0;
 
         /// <summary>Distribute <paramref name="count"/> pallets of width <paramref name="frente"/> evenly across
-        /// [<paramref name="anchorX"/>, +<paramref name="span"/>] at <paramref name="bottomY"/> (the pallet's bottom).
-        /// Each block's origin lands at its bottom-left corner; optional FRENTE/ALTO block params size it if present.</summary>
+        /// [<paramref name="anchorX"/>, +<paramref name="span"/>] resting at <paramref name="bottomY"/> (the pallet's
+        /// bottom). The TARIMA block's origin is at its CENTRE, so each pallet is inserted at the centre of its footprint
+        /// (bottom-left + half size); the LONGITUD/ALTURA params size it.</summary>
         private static void PlacePalletRow(
             ICollection<HeaderBlockInstance> instances, string block, string view,
             double anchorX, double span, double bottomY, double frente, double alto, int count)
@@ -369,7 +370,8 @@ namespace RackCad.Application.Systems
             var gap = Math.Max(0.0, (span - count * frente) / (count + 1));
             for (var k = 0; k < count; k++)
             {
-                var at = new Point2D(anchorX + gap * (k + 1) + frente * k, bottomY);
+                // Origin at the pallet CENTRE: footprint left = anchorX + gap*(k+1) + frente*k, bottom = bottomY.
+                var at = new Point2D(anchorX + gap * (k + 1) + frente * k + frente / 2.0, bottomY + alto / 2.0);
                 var pallet = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Pallet,

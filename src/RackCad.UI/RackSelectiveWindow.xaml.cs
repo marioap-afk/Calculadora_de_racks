@@ -2314,7 +2314,7 @@ namespace RackCad.UI
                     case HeaderBlockRole.Pallet:
                         var palFrente = Param(instance, SelectiveRackDefaults.PalletFrenteParam);
                         var palAlto = Param(instance, SelectiveRackDefaults.PalletAltoParam);
-                        xMax = Math.Max(xMax, instance.Insertion.X + palFrente);
+                        xMax = Math.Max(xMax, instance.Insertion.X + palFrente / 2.0); // centre origin
                         items.Add((instance.Role, instance.Insertion.X, instance.Insertion.Y, palFrente, palAlto));
                         break;
                 }
@@ -2390,9 +2390,9 @@ namespace RackCad.UI
                         AddRectangle(plate.X, plate.Y, postWidth * 1.4 * mapScale, Math.Max(3.0, 0.3 * mapScale + 4.0), PlateFill, 1.0, PlateFill);
                         break;
                     case HeaderBlockRole.Pallet:
-                        // Visual reference only: outlined box from the load surface (Insertion = bottom-left), item.Size =
+                        // Visual reference only: outlined box centred on Insertion (the block's CENTRE origin); item.Size =
                         // frente, item.Peralte = alto. Painted after the beams so a tarima sits on its larguero.
-                        var palTop = Map(item.X, item.Y + item.Peralte);
+                        var palTop = Map(item.X - item.Size / 2.0, item.Y + item.Peralte / 2.0);
                         AddRectangle(palTop.X, palTop.Y, item.Size * mapScale, Math.Max(2.0, item.Peralte * mapScale), PalletBrush, 1.0, PalletFill);
                         break;
                 }

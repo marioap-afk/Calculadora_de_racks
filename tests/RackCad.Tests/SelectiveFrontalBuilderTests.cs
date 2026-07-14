@@ -316,14 +316,15 @@ namespace RackCad.Tests
             system.DrawPallets = true;
 
             var surface = SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL");
-            var ys = new SelectiveFrontalBuilder().Build(system, Catalog)
+            // Insertion is the pallet CENTRE (centre-origin block); its bottom (centre − alto/2) rests on the load surface.
+            var bottoms = new SelectiveFrontalBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Pallet)
-                .Select(i => Math.Round(i.Insertion.Y, 3))
+                .Select(i => Math.Round(i.Insertion.Y - i.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] / 2.0, 3))
                 .OrderBy(y => y)
                 .ToList();
 
             // Each pallet's bottom sits at its level's Y plus the beam's escalón (INICIO_PERFIL Y).
-            Assert.Equal(LevelYs.Select(y => Math.Round(y + surface, 3)), ys);
+            Assert.Equal(LevelYs.Select(y => Math.Round(y + surface, 3)), bottoms);
         }
 
         [Fact]
@@ -336,18 +337,20 @@ namespace RackCad.Tests
             // The pallet rests on the larguero PROFILE, which starts at the ménsula overhang (INICIO_PERFIL X) past the troquel.
             var anchorX = layout.PostXs[0] + layout.TroquelXs[0] + InicioPerfilX();
 
+            // Level-0 pallets: centre Y = level.Y + surface + alto/2 (48/2 = 24, centre-origin block).
+            var centreY0 = LevelYs[0] + SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL") + 24.0;
             var xs = new SelectiveFrontalBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Pallet)
-                .Where(i => Math.Abs(i.Insertion.Y - (LevelYs[0] + SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL"))) < 0.001)
+                .Where(i => Math.Abs(i.Insertion.Y - centreY0) < 0.001)
                 .Select(i => i.Insertion.X)
                 .OrderBy(x => x)
                 .ToList();
 
-            // 2 pallets of 40 across span 100 → gap = (100 - 80)/3 = 6.667. Pallet 0 at anchor+gap, pallet 1 at anchor+2*gap+40.
+            // 2 pallets of 40 across span 100 → gap = (100 - 80)/3 = 6.667. Insertion is the CENTRE = footprint-left + 20.
             var gap = (100.0 - 2 * 40.0) / 3.0;
             Assert.Equal(2, xs.Count);
-            Assert.Equal(anchorX + gap, xs[0], 3);
-            Assert.Equal(anchorX + 2 * gap + 40.0, xs[1], 3);
+            Assert.Equal(anchorX + gap + 20.0, xs[0], 3);
+            Assert.Equal(anchorX + 2 * gap + 40.0 + 20.0, xs[1], 3);
         }
 
         [Fact]
@@ -362,7 +365,8 @@ namespace RackCad.Tests
                 .ToList();
 
             Assert.Equal(2, pallets.Count);
-            Assert.All(pallets, p => Assert.Equal(0.0, p.Insertion.Y, 4)); // rests on the floor
+            // Centre-origin block: the floor pallet's centre is at alto/2 (48/2), so its bottom rests on the floor (Y=0).
+            Assert.All(pallets, p => Assert.Equal(24.0, p.Insertion.Y, 4));
         }
 
         [Fact]
@@ -376,9 +380,10 @@ namespace RackCad.Tests
                 .First(i => i.Role == HeaderBlockRole.Pallet);
 
             // 1 pallet of 40 across span 100 → gap = (100-40)/2 = 30. Anchor is the PROFILE start (troquel + INICIO_PERFIL),
-            // the same datum the larguero rests on — NOT the bare troquel. Guards the X-offset fix.
+            // the same datum the larguero rests on — NOT the bare troquel. Guards the X-offset fix. Insertion is the
+            // pallet CENTRE = profile start + gap(30) + frente/2(20) = the bay centre.
             var profileX = layout.PostXs[0] + layout.TroquelXs[0] + InicioPerfilX();
-            Assert.Equal(profileX + 30.0, pallet.Insertion.X, 3);
+            Assert.Equal(profileX + 50.0, pallet.Insertion.X, 3);
         }
 
         [Fact]
