@@ -556,5 +556,61 @@ namespace RackCad.Tests
             // The far cortes (beyond fondo 0's 3 frentes) exist and are anchored on fondo 1 (fondo 0 doesn't reach them).
             Assert.All(cortes, c => Assert.NotNull(c.Cabecera));
         }
+
+        /// <summary>3 fondos (uniform), shared tope. Default → central fondo (1); choosing fondo 0 moves the tope FORWARD
+        /// (smaller depth X). The chosen fondo also round-trips.</summary>
+        private static SelectivePalletDesign ThreeFondoDesign()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0, DepthCount = 3
+            };
+            design.SeparatorLengths.Add(8.0);
+            design.Bays.Add(Bay(2));
+            design.Bays.Add(Bay(2));
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2), Bay(2) }); // fondo 1
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2), Bay(2) }); // fondo 2
+            return design;
+        }
+
+        [Fact]
+        public void Tope_ChosenFondo_RoundTrips_AndMovesTheTopeForward()
+        {
+            var design = ThreeFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = true, TopeFondo = 0 });
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "R"))).ToDomain();
+            Assert.Equal(0, restored.SafetySelections.Single(s => s.ElementId == TopeId).TopeFondo);
+
+            double MinTopeX(int fondo)
+            {
+                var d = ThreeFondoDesign();
+                d.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = true, TopeFondo = fondo });
+                var sys = new SelectiveGeometryResolver().Resolve(d, Catalog);
+                var topes = new SelectiveLateralBuilder().Cortes(sys, Catalog)
+                    .SelectMany(c => c.Largueros).Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+                Assert.NotEmpty(topes);
+                return topes.Min(t => t.Insertion.X);
+            }
+
+            // fondo 0 (front) sits forward of the automatic central fondo (index 1) → smaller depth X.
+            Assert.True(MinTopeX(0) < MinTopeX(-1));
+        }
+
+        [Fact]
+        public void Tope_ChosenFondoOutOfRange_FallsBackToCentral()
+        {
+            double MinTopeX(int fondo)
+            {
+                var d = ThreeFondoDesign();
+                d.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = true, TopeFondo = fondo });
+                var sys = new SelectiveGeometryResolver().Resolve(d, Catalog);
+                return new SelectiveLateralBuilder().Cortes(sys, Catalog)
+                    .SelectMany(c => c.Largueros).Where(x => x.Role == HeaderBlockRole.Tope).Min(t => t.Insertion.X);
+            }
+
+            Assert.Equal(MinTopeX(-1), MinTopeX(99), 4); // out-of-range == automatic central
+        }
     }
 }

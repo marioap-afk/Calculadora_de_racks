@@ -237,10 +237,14 @@ namespace RackCad.Application.Systems
 
             if (system.NumberFronts)
             {
+                // Drop the frente number BELOW the cotas when they're on, so the number and the frente width measure
+                // don't overlap just under the rack; without cotas it sits right under the rack.
+                var reach = SelectiveDimensions.FrontalBottomReach(system);
+                var numberY = reach > 0.0 ? -(reach + gap) : -gap;
                 for (var i = 0; i < system.Bays.Count; i++)
                 {
                     var centerX = (postX[i] + postX[i + 1]) / 2.0;
-                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(i + 1), view, new Point2D(centerX, -gap), h));
+                    instances.Add(SelectiveAnnotations.Label(SelectiveAnnotations.Num(i + 1), view, new Point2D(centerX, numberY), h));
                 }
             }
 

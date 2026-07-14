@@ -86,7 +86,7 @@ namespace RackCad.Application.Systems
 
             foreach (var safety in system.SafetySelections)
             {
-                var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side, TopeShared = safety.TopeShared, TopeSaque = safety.TopeSaque, TopeFrontal = safety.TopeFrontal };
+                var copy = new SelectiveSafetySelection { ElementId = safety.ElementId, Quantity = safety.Quantity, Side = safety.Side, TopeShared = safety.TopeShared, TopeSaque = safety.TopeSaque, TopeFrontal = safety.TopeFrontal, TopeFondo = safety.TopeFondo };
                 foreach (var post in safety.PostSides)
                 {
                     if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });

@@ -161,6 +161,24 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Build_NumberFronts_DropBelowTheCotas_WhenDimensionsOn()
+        {
+            var system = TwoBaySystem(3.0, 3.0, 3.0);
+            system.NumberFronts = true;
+
+            double MinFrenteNumberY(SelectiveRackSystem s) => new SelectiveFrontalBuilder().Build(s, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Annotation && (i.Text == "1" || i.Text == "2"))
+                .Min(i => i.Insertion.Y);
+
+            var withoutDims = MinFrenteNumberY(system);
+            system.Dimensions = DimensionDetail.Detailed;
+            var withDims = MinFrenteNumberY(system);
+
+            // With cotas on, the frente number drops well below the rack (past the cotas) so it never overlaps them.
+            Assert.True(withDims < withoutDims - 10.0, $"expected the frente number to drop below the cotas (was {withDims} vs {withoutDims})");
+        }
+
+        [Fact]
         public void Build_DrawRackName_EmitsTheNameAboveTheRack()
         {
             var system = System();

@@ -24,6 +24,7 @@ namespace RackCad.UI
         private readonly List<Row> rows = new List<Row>();
         private readonly TextBlock error;
         private readonly int postCount;
+        private readonly int fondoCount;
         private readonly IReadOnlyList<int> levelsPerFrente;
 
         private sealed class Row
@@ -44,15 +45,17 @@ namespace RackCad.UI
             public SafetySide TopeSide = SafetySide.Both;
             public double TopeSaque = 3.0;
             public bool TopeFrontal;
+            public int TopeFondo = -1;
             public List<SelectiveGridCell> TopeOffCells = new List<SelectiveGridCell>();
             public Button TopeButton;
         }
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1)
         {
             this.postCount = Math.Max(1, postCount);
+            this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             elements ??= new List<SafetyElementCatalogEntry>();
             var currentById = new Dictionary<string, SelectiveSafetySelection>(StringComparer.OrdinalIgnoreCase);
@@ -139,6 +142,7 @@ namespace RackCad.UI
                             row.TopeSide = existing.Side == SafetySide.None ? SafetySide.Both : existing.Side;
                             row.TopeSaque = existing.TopeSaque > 0.0 ? existing.TopeSaque : 3.0;
                             row.TopeFrontal = existing.TopeFrontal;
+                            row.TopeFondo = existing.TopeFondo;
                             row.TopeOffCells = existing.TopeOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList() ?? new List<SelectiveGridCell>();
                         }
 
@@ -236,7 +240,7 @@ namespace RackCad.UI
 
         private void EditTope(Row row)
         {
-            var dialog = new SafetyTopeGridWindow(row.Label, levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeFrontal, row.TopeOffCells) { Owner = this };
+            var dialog = new SafetyTopeGridWindow(row.Label, levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeFrontal, row.TopeOffCells, fondoCount, row.TopeFondo) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -248,6 +252,7 @@ namespace RackCad.UI
             row.TopeSide = r.Side;
             row.TopeSaque = r.Saque;
             row.TopeFrontal = r.Frontal;
+            row.TopeFondo = r.Fondo;
             row.TopeOffCells = r.OffCells;
             row.TopeButton.Content = TopeLabel(row);
         }
@@ -294,7 +299,7 @@ namespace RackCad.UI
                         var allOff = total > 0 && row.TopeOffCells.Count >= total;
                         if (!allOff)
                         {
-                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal };
+                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal, TopeFondo = row.TopeFondo };
                             foreach (var c in row.TopeOffCells)
                             {
                                 if (c != null) selection.TopeOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });

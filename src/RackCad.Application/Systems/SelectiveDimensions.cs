@@ -25,6 +25,20 @@ namespace RackCad.Application.Systems
         /// <summary>Step (in, ×scale) between the stacked per-level elevation lines (Detailed).</summary>
         private const double ElevationStep = 14.0;
 
+        /// <summary>How far below Y=0 the FRONTAL cotas reach (a positive magnitude), so an annotation (the frente number)
+        /// can be placed clear of them; 0 when dimensions are off. Minimal stops at the near chain; Standard/Detailed go
+        /// out to the overall (far) line.</summary>
+        public static double FrontalBottomReach(SelectiveRackSystem system)
+        {
+            if (system == null || system.Dimensions == DimensionDetail.None)
+            {
+                return 0.0;
+            }
+
+            var scale = system.AnnotationScale > 0.0 ? system.AnnotationScale : 1.0;
+            return system.Dimensions == DimensionDetail.Minimal ? ChainGap * scale : (ChainGap + OverallGap) * scale;
+        }
+
         /// <summary>
         /// FRONTAL cotas. Minimal = overall height + overall width. Standard adds the per-frente LARGUERO cut lengths
         /// (along the bottom, spanning the profile cut — NOT post-to-post) and the level separations (a chain up the

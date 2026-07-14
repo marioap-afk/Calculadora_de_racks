@@ -22,6 +22,7 @@ namespace RackCad.UI
         private readonly IReadOnlyList<int> levelsPerFrente;
         private readonly CheckBox shared;
         private readonly ComboBox side;
+        private readonly ComboBox fondoBox; // null when there is a single fondo (no choice)
         private readonly TextBox saque;
         private readonly TextBlock error;
 
@@ -31,6 +32,7 @@ namespace RackCad.UI
             public SafetySide Side;
             public double Saque;
             public bool Frontal;
+            public int Fondo = -1; // -1 = automatic central fondo
             public List<SelectiveGridCell> OffCells = new List<SelectiveGridCell>();
         }
 
@@ -38,7 +40,7 @@ namespace RackCad.UI
 
         public TopeResult Result { get; private set; }
 
-        public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, bool frontal, IEnumerable<SelectiveGridCell> offCells)
+        public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, bool frontal, IEnumerable<SelectiveGridCell> offCells, int fondoCount = 1, int fondo = -1)
         {
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             var off = new HashSet<(int, int)>();
@@ -85,6 +87,17 @@ namespace RackCad.UI
             options.Children.Add(new TextBlock { Text = "Saque (in):", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
             this.saque = new TextBox { Width = 56, VerticalAlignment = VerticalAlignment.Center, Text = (saque > 0 ? saque : 3.0).ToString(CultureInfo.InvariantCulture) };
             options.Children.Add(this.saque);
+
+            // Fondo picker only when there is a real choice (2+ fondos); "Central (auto)" keeps the automatic middle.
+            if (fondoCount >= 2)
+            {
+                options.Children.Add(new TextBlock { Text = "Fondo:", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
+                this.fondoBox = new ComboBox { Width = 120, VerticalAlignment = VerticalAlignment.Center, ToolTip = "En qué fondo va el tope. 'Central (auto)' elige el fondo del medio." };
+                this.fondoBox.Items.Add("Central (auto)");
+                for (var k = 0; k < fondoCount; k++) this.fondoBox.Items.Add("Fondo " + (k + 1).ToString(CultureInfo.InvariantCulture));
+                this.fondoBox.SelectedIndex = fondo >= 0 && fondo < fondoCount ? fondo + 1 : 0;
+                options.Children.Add(this.fondoBox);
+            }
 
             this.frontal = new CheckBox { Content = "Dibujar en frontal", IsChecked = frontal, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(16, 4, 0, 4), ToolTip = "Además de lateral y planta, dibujarlo también en la vista frontal." };
             options.Children.Add(this.frontal);
@@ -196,7 +209,8 @@ namespace RackCad.UI
                 Shared = shared.IsChecked == true,
                 Side = SideFromIndex(side.SelectedIndex),
                 Saque = saqueValue,
-                Frontal = frontal.IsChecked == true
+                Frontal = frontal.IsChecked == true,
+                Fondo = fondoBox == null || fondoBox.SelectedIndex <= 0 ? -1 : fondoBox.SelectedIndex - 1
             };
 
             for (var f = 0; f < cells.Length; f++)

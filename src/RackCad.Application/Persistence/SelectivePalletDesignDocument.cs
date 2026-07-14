@@ -139,6 +139,7 @@ namespace RackCad.Application.Persistence
                     TopeShared = s.TopeShared,
                     TopeSaque = s.TopeSaque,
                     TopeFrontal = s.TopeFrontal,
+                    TopeFondo = s.TopeFondo,
                     TopeOffCells = s.TopeOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList()
                 }).ToList();
 
@@ -218,7 +219,8 @@ namespace RackCad.Application.Persistence
                         Side = ToSafetySide(safety.Side),
                         TopeShared = safety.TopeShared ?? true, // legacy docs (no field) default to shared
                         TopeSaque = safety.TopeSaque.HasValue && safety.TopeSaque.Value > 0.0 ? safety.TopeSaque.Value : 3.0,
-                        TopeFrontal = safety.TopeFrontal ?? false
+                        TopeFrontal = safety.TopeFrontal ?? false,
+                        TopeFondo = safety.TopeFondo ?? -1 // legacy docs (no field) default to the automatic central fondo
                     };
                     foreach (var post in safety.PostSides ?? Enumerable.Empty<PostSideDocument>())
                     {
@@ -350,6 +352,7 @@ namespace RackCad.Application.Persistence
         public bool? TopeShared { get; set; }
         public double? TopeSaque { get; set; }
         public bool? TopeFrontal { get; set; }
+        public int? TopeFondo { get; set; }
         public List<GridCellDocument> TopeOffCells { get; set; }
     }
 

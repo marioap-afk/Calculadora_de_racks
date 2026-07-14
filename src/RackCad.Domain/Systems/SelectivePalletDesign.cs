@@ -163,6 +163,10 @@ namespace RackCad.Domain.Systems
         /// <summary>TOPE: one shared central tope (true) vs one per fondo of the central pair (false, guided by <see cref="Side"/>).</summary>
         public bool TopeShared { get; set; } = true;
 
+        /// <summary>TOPE: which fondo (0-based) carries the tope; &lt; 0 = the automatic central fondo. Lets the user pick,
+        /// e.g. the first fondo instead of the middle when there are 3.</summary>
+        public int TopeFondo { get; set; } = -1;
+
         /// <summary>TOPE: the block's SAQUE (stick-out) parameter, inches (&lt;= 0 → the default 3").</summary>
         public double TopeSaque { get; set; } = 3.0;
 

@@ -62,7 +62,10 @@ namespace RackCad.Application.Systems
         /// (Left = c's back, Right = c+1's front, Both = both). So a per-fondo pair lands in the same gap, not two depths.</summary>
         public static IEnumerable<TopeSpot> TopeSpots(SelectiveSafetySelection selection, int fondoCount)
         {
-            var c = CentralFondo(fondoCount);
+            // The user's chosen fondo (0-based) if valid, else the automatic central one.
+            var c = selection != null && selection.TopeFondo >= 0 && selection.TopeFondo < fondoCount
+                ? selection.TopeFondo
+                : CentralFondo(fondoCount);
             if (selection == null || selection.TopeShared)
             {
                 yield return new TopeSpot { Fondo = c, AtFront = false, Mirror = false };

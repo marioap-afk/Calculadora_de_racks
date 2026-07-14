@@ -1184,9 +1184,13 @@ namespace RackCad.UI
         /// <summary>Open the safety-accessories dialog (catalog elements × quantity); store the selection for the BOM.</summary>
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
-            // The tope grid needs the matrix dimensions (levels per frente) of fondo 0 (the main matrix).
+            // The tope grid needs the matrix dimensions (levels per frente) of fondo 0 (the main matrix), and the fondo
+            // count so its "Fondo" picker can offer the real fondos (doble/triple profundidad).
             var levelsPerFrente = bays.Select(b => b.Count).ToList();
-            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente) { Owner = this };
+            var depthCount = UiSupport.TryNum(FondosBox.Text, out var fondosNum) && fondosNum >= 1.0
+                ? Math.Min(SelectiveRackDefaults.MaxDepthCount, Math.Max(1, (int)Math.Round(fondosNum)))
+                : 1;
+            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -1200,7 +1204,7 @@ namespace RackCad.UI
         /// <summary>A deep copy of a safety selection, carrying its per-post side overrides + the tope grid config.</summary>
         private static SelectiveSafetySelection CopySafety(SelectiveSafetySelection s)
         {
-            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque, TopeFrontal = s.TopeFrontal };
+            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque, TopeFrontal = s.TopeFrontal, TopeFondo = s.TopeFondo };
             foreach (var post in s.PostSides)
             {
                 if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
