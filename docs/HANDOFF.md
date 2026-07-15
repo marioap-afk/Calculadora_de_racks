@@ -57,7 +57,7 @@ Los siete desviadores A/L estan implementados, cubiertos por pruebas y validados
 | Layout de almacen v1 (`RACKLAYOUT`, `RACKRELLENAR`) | completo (v1) | `WarehouseGridPlanner`, comandos en Plugin | `Warehouse*Tests` | Solo motor de colocacion; el optimizador IA es meta futura |
 | Bibliotecas (disenos + bloques DWG) | completo | `RackDesignLibrary*`, settings en `%APPDATA%\RackCad\settings.json` | — | `blocks-library.dwg` NO esta en el repo (ver seccion 6) |
 | Validacion de cargas / capacidad | **diferido a proposito** | — | — | Ira con RAM Elements; NO re-proponer |
-| Guardas traseras (seguridad) | pendiente | — | — | Siguiente familia de seguridad |
+| Guardas traseras (seguridad) | pendiente, prioridad final | — | — | No retomarlas hasta cerrar las areas funcionales prioritarias |
 | Rejilla de seguridad vs niveles resueltos | **corregido, testeado y verificado en AutoCAD** | `SelectiveSafetyGrid`, `RackSelectiveWindow.Safety_Click` | `SelectiveSafetyGridTests` | Ver secciones 8-10 |
 
 ## 4. Arquitectura
@@ -236,12 +236,17 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 
 ## 11. Siguientes tareas recomendadas
 
-1. **Elementos de seguridad faltantes**: guardas traseras; confirmar contratos antes de implementar.
-2. **Tarima y parrilla en la vista de PLANTA** (hoy solo frontal/lateral). Empezar en
-   `SelectivePlantaBuilder`. Criterio: mismas reglas de conteo (`ParrillaRow`), BOM sin duplicar.
-3. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10) si el usuario lo pide.
-4. **Integracion BOM -> cotizador** (los CSV de seguridad ya llevan costo/moneda/unidad): explorar con el
-   usuario que formato de cotizacion necesita.
+1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria. Abrir una tarea/worktree
+   propia y empezar por auditar el flujo actual completo antes de implementar. El nucleo existente ya cubre editor,
+   vista lateral, BOM, persistencia y edicion en sitio; la cama de rodamiento aun vive como sistema separado y su
+   integracion con el dinamico es la brecha funcional principal documentada.
+2. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10): mantener a mediano plazo; hoy los valores
+   globales son suficientes, pero el control por celda puede aportar valor en configuraciones heterogeneas.
+3. **Guardas traseras**: mantener pendientes hasta el final; no son prioridad de producto.
+
+Quedan diferidos sin prioridad actual: tarima/parrilla en PLANTA, integracion BOM -> cotizador, distribucion formal
+de `blocks-library.dwg` y reconstruccion del bundle Release. El BOM actual es suficiente; el cotizador real es un
+Excel delicado y no justifica el riesgo de integracion. No es necesario desplegar la aplicacion todavia.
 
 No tomar sin confirmar con el usuario: validacion de cargas (diferida a RAM Elements) y el optimizador IA
 de layout (meta futura, no inmediata).
@@ -265,9 +270,9 @@ de layout (meta futura, no inmediata).
 
 ## 13. Preguntas abiertas
 
-1. ¿La cantidad de parrilla debe poder variar por frente/nivel, o basta el valor global? (usuario, segun uso real)
-2. ¿Que formato final necesita el cotizador que consumira el BOM? (futuro)
-3. ¿Como se distribuye/versiona oficialmente `blocks-library.dwg` fuera de Git? (operacion/despliegue)
+1. ¿Que alcance exacto debe tener el cierre del sistema dinamico, especialmente la integracion de sus camas de
+   rodamiento? Resolverlo al iniciar la siguiente tarea mediante auditoria del flujo actual y contratos del usuario.
+2. ¿La cantidad de parrilla debe poder variar por frente/nivel, o basta el valor global? (mediano plazo, segun uso real)
 
 ## 14. Como reanudar el trabajo
 
