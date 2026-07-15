@@ -1,9 +1,9 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-15**. El arbol actual agrega variantes de Bota C, Lateral C, Poste tope y la familia
-> completa de desviadores A/L sobre la base publicada de `release/claude-review`: 546 tests y builds Debug verdes.
-> Bota C, Poste tope, Lateral C y los siete desviadores A/L estan confirmados en AutoCAD.
+> Actualizado: **2026-07-15**. La rama `release/claude-review` incluye las variantes de Bota C, Lateral C,
+> Poste tope y la familia completa de desviadores A/L: 546 tests y builds Debug verdes. Bota C, Poste tope,
+> Lateral C y los siete desviadores A/L estan confirmados en AutoCAD; ultimo commit funcional `a9f1c13`.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
@@ -35,6 +35,7 @@ Los siete desviadores A/L estan implementados, cubiertos por pruebas y validados
 | Validacion estatica del arbol actual | OK | sintaxis 233 C#; semantica Domain/Application (114), Domain/Application/UI (146 fuentes + 11 XAML generados previos) y Domain/Application/tests (173); 12 XML/XAML bien formados |
 | Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Bota C 4/6, Poste tope, Lateral C 4/6 y los siete desviadores A/L confirmados, 2026-07-15 |
 | Commits `b1cfce2`..`95e25f2` (tope medio-frente, parrilla) | Implementado, testeado y verificado en AutoCAD | Ver seccion 9 |
+| Commits `aa42986`, `c11a267`, `a9f1c13` (variantes de seguridad y desviadores) | Implementados, testeados, verificados en AutoCAD y publicados | Ver secciones 8-9 |
 | Release build / bundle de despliegue | No reconstruido en la ultima sesion | `deploy/install-bundle.ps1 -Build` requiere AutoCAD cerrado |
 
 ## 3. Estado por funcionalidad
@@ -170,7 +171,7 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Regresion verificada con el fix temporalmente desactivado: 5/14 casos dirigidos fallaron (multi-fondo,
   duplicados/indices invalidos y parsing decimal/agrupadores); despues de restaurarlo, 503/503 verdes.
 
-**Trabajo actual — variantes Bota C / Lateral C / Poste tope:**
+**Lote cerrado 2026-07-15 — variantes Bota C / Lateral C / Poste tope (publicado):**
 
 - Se incorporaron los bloques `PROTECTOR_BOTA_C_4`, `PROTECTOR_BOTA_C_6` y `POSTE_3_1_5_8_TOPE` en las tres vistas.
 - `seguridad.csv` los tipa como variantes `BOTA` / `TOPE`; reutilizan sin duplicar las reglas existentes.
@@ -184,7 +185,7 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Regresion de Lateral C comprobada antes de catalogar: 4 de 8 casos dirigidos fallaron; despues pasan los 8 y la
   suite completa queda en 516/516. Plugin Debug compila y el usuario confirmo ambos laterales en AutoCAD.
 
-**Trabajo actual — familia de desviadores A/L:**
+**Lote cerrado 2026-07-15 — familia de desviadores A/L (publicado):**
 
 - `seguridad.csv` cataloga `DESVIADOR_A_3`, `DESVIADOR_A_4`, `DESVIADOR_L_3`, `_L_3_5`, `_L_4`, `_L_4_5` y
   `_L_5`; cada id tiene bloques `FRONTAL`, `LATERAL` y `PLANTA`. El usuario confirmo que los siete reutilizan
