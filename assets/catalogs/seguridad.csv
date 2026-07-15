@@ -8,3 +8,10 @@ PROTECTOR_LATERAL_BOTA_C_6,Protector lateral bota tipo C6,LATERAL,in,0,Acero,,0,
 LARGUERO_ESCALON_TOPE_DE_3,Larguero tope de 3,TOPE,in,0,Acero,,0,MXN,pieza
 POSTE_3_1_5_8_TOPE,Poste tope de 3 x 1 5/8,TOPE,in,0,Acero,,0,MXN,pieza
 PARRILLA_GENERICA,Parrilla,PARRILLA,in,0,Acero,,0,MXN,pieza
+DESVIADOR_A_3,"Desviador A para poste de 3""",DESVIADOR,in,0,Acero,,0,MXN,pieza
+DESVIADOR_A_4,"Desviador A para poste de 4""",DESVIADOR,in,0,Acero,,0,MXN,pieza
+DESVIADOR_L_3,"Desviador L para poste de 3""",DESVIADOR,in,0,Acero,,0,MXN,pieza
+DESVIADOR_L_3_5,"Desviador L para poste de 3.5""",DESVIADOR,in,0,Acero,,0,MXN,pieza
+DESVIADOR_L_4,"Desviador L para poste de 4""",DESVIADOR,in,0,Acero,,0,MXN,pieza
+DESVIADOR_L_4_5,"Desviador L para poste de 4.5""",DESVIADOR,in,0,Acero,,0,MXN,pieza
+DESVIADOR_L_5,"Desviador L para poste de 5""",DESVIADOR,in,0,Acero,,0,MXN,pieza

@@ -41,6 +41,7 @@ namespace RackCad.Application.Systems
             AddCabeceraComponents(components, system, catalog);
             AddLargueroComponents(components, system, catalog);
             AddSafetyComponents(components, system, catalog);
+            AddDesviadorComponents(components, system, catalog);
             AddSeparadorComponents(components, system, catalog);
             AddTopeComponents(components, system, catalog);
             AddParrillaComponents(components, system, catalog);
@@ -85,10 +86,11 @@ namespace RackCad.Application.Systems
 
                 var element = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
 
-                // A TOPE / PARRILLA is counted as its own component (AddTope/AddParrillaComponents), not under "Seguridad".
+                // Grid-driven families are counted by their pure placement plans, not from the collapsed PLANTA view.
                 if (element != null
                     && (SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.TopeType)
-                        || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.ParrillaType)))
+                        || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.ParrillaType)
+                        || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DesviadorType)))
                 {
                     continue;
                 }
@@ -129,6 +131,46 @@ namespace RackCad.Application.Systems
                     }
                 });
             }
+        }
+
+        private static void AddDesviadorComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
+        {
+            var selection = SelectiveSafetyFamilies.SelectedOfType(
+                system?.SafetySelections,
+                catalog?.SafetyElements,
+                SelectiveSafetyDefaults.DesviadorType);
+            if (selection == null)
+            {
+                return;
+            }
+
+            var plan = SelectiveDesviadorPlan.Build(system, catalog, selection);
+            if (plan.PhysicalQuantity <= 0)
+            {
+                return;
+            }
+
+            var label = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase))?.Label
+                        ?? selection.ElementId;
+            components.Add(new BomComponent
+            {
+                Category = Safety,
+                ProfileId = selection.ElementId,
+                Description = label,
+                Length = plan.Longitud,
+                Quantity = plan.PhysicalQuantity,
+                Pieces = new List<BomLine>
+                {
+                    new BomLine
+                    {
+                        Category = Safety,
+                        ProfileId = selection.ElementId,
+                        Description = label,
+                        Length = plan.Longitud,
+                        Quantity = 1
+                    }
+                }
+            });
         }
 
         // ---- Separadores (doble profundidad): the drawn spacer beams, one component per distinct length ----

@@ -386,11 +386,42 @@ Variantes catalogadas actualmente:
 | `PROTECTOR_LATERAL_BOTA_C_6` | `LATERAL` | Exactamente la misma regla del Lateral H |
 | `LARGUERO_ESCALON_TOPE_DE_3` | `TOPE` | Rejilla/configuracion de tope |
 | `POSTE_3_1_5_8_TOPE` | `TOPE` | Exactamente la misma rejilla/configuracion del larguero tope |
+| `DESVIADOR_A_3` | `DESVIADOR` | Rejilla poste x nivel y colocacion en las dos caras exteriores |
+| `DESVIADOR_A_4` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
+| `DESVIADOR_L_3` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
+| `DESVIADOR_L_3_5` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
+| `DESVIADOR_L_4` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
+| `DESVIADOR_L_4_5` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
+| `DESVIADOR_L_5` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
 
 Cada una de estas variantes tiene filas `FRONTAL`, `LATERAL` y `PLANTA` en `blocks.csv`; el `blockName` debe coincidir
 exactamente con la biblioteca DWG. Dibujo y BOM resuelven una sola variante por familia. Si un documento anomalo
 contiene dos ids de la misma familia, se usa el primero en el orden persistido de forma consistente en todas las vistas
 y en el BOM.
+
+#### Familia de desviadores A/L (`DESVIADOR`)
+
+Las siete variantes A/L comparten exactamente la misma regla y se eligen en un unico selector mutuamente exclusivo.
+El `ElementId` persistido decide el bloque; no cambia la geometria. El desviador se configura con una rejilla
+**poste x nivel de carga** (todos activos por defecto). Incluye los postes
+intermedios creados por medio frente. El selector de lado permite `Izquierdo`, `Derecho` o `Ambas`: por cada celda
+activa se cuenta una pieza fisica cuando se elige un lado y dos cuando se eligen ambos. En frontal las dos caras pueden
+proyectarse sobre una sola referencia; en planta se colapsan los niveles. El BOM conserva siempre la cantidad fisica
+completa derivada por `SelectiveDesviadorPlan`.
+
+- `Izquierdo` = cara exterior frontal del fondo; `Derecho` = cara exterior posterior espejeada; `Ambas` = las dos.
+  Los documentos anteriores conservan `Ambas` como fallback.
+- En frontal y lateral, el origen hace mate con `TROQUEL_LARGUERO` del poste. En planta, el origen del
+  desviador hace mate directamente con el origen del poste; no se aplica el offset del troquel.
+- Nivel 1: altura configurable sobre el primer troquel, `18"` por defecto, incluso sin larguero a piso.
+- Niveles superiores: `6"` debajo del troquel del larguero correspondiente.
+- Parametro dinamico exacto: `LONGITUD`, `18"` por defecto.
+- `LONGITUD` y la altura del primer nivel aceptan solo pulgadas enteras pares mayores de `8"`.
+- Si el claro entre posiciones seleccionadas es menor que `LONGITUD`, la rejilla muestra una nota con una longitud
+  par menor sugerida; el usuario puede reducirla o desactivar la celda.
+
+Cada `id` requiere sus tres filas exactas de `blocks.csv`, con bloques `{id}_FRONTAL`, `{id}_LATERAL` y
+`{id}_PLANTA`. El `ElementId`, el lado, las dos dimensiones y las celdas apagadas sobreviven `RACKEDITAR`.
 
 ### Tarima como referencia visual (`TARIMA_GENERICA`)
 

@@ -141,6 +141,9 @@ namespace RackCad.Application.Persistence
                     TopeFrontal = s.TopeFrontal,
                     TopeFondo = s.TopeFondo,
                     TopeOffCells = s.TopeOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList(),
+                    DesviadorLongitud = s.DesviadorLongitud,
+                    DesviadorPrimerNivelAltura = s.DesviadorPrimerNivelAltura,
+                    DesviadorOffCells = s.DesviadorOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList(),
                     ParrillaFrontal = s.ParrillaFrontal,
                     ParrillaLateral = s.ParrillaLateral,
                     ParrillaFrente = s.ParrillaFrente,
@@ -226,6 +229,12 @@ namespace RackCad.Application.Persistence
                         TopeSaque = safety.TopeSaque.HasValue && safety.TopeSaque.Value > 0.0 ? safety.TopeSaque.Value : SelectiveSafetyDefaults.TopeSaque,
                         TopeFrontal = safety.TopeFrontal ?? false,
                         TopeFondo = safety.TopeFondo ?? -1, // legacy docs (no field) default to the automatic central fondo
+                        DesviadorLongitud = safety.DesviadorLongitud.HasValue && safety.DesviadorLongitud.Value > 0.0
+                            ? safety.DesviadorLongitud.Value
+                            : SelectiveSafetyDefaults.DesviadorLongitud,
+                        DesviadorPrimerNivelAltura = safety.DesviadorPrimerNivelAltura.HasValue && safety.DesviadorPrimerNivelAltura.Value > 0.0
+                            ? safety.DesviadorPrimerNivelAltura.Value
+                            : SelectiveSafetyDefaults.DesviadorPrimerNivelAltura,
                         ParrillaFrontal = safety.ParrillaFrontal ?? true, // legacy docs default to drawing in both views
                         ParrillaLateral = safety.ParrillaLateral ?? true,
                         ParrillaFrente = safety.ParrillaFrente ?? 0.0, // legacy docs (no field) default to one deck per tarima
@@ -252,6 +261,14 @@ namespace RackCad.Application.Persistence
                         if (cell != null && cell.Frente >= 0 && cell.Level >= 0)
                         {
                             selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
+                        }
+                    }
+
+                    foreach (var cell in safety.DesviadorOffCells ?? Enumerable.Empty<GridCellDocument>())
+                    {
+                        if (cell != null && cell.Frente >= 0 && cell.Level >= 0)
+                        {
+                            selection.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
                         }
                     }
 
@@ -371,6 +388,9 @@ namespace RackCad.Application.Persistence
         public bool? TopeFrontal { get; set; }
         public int? TopeFondo { get; set; }
         public List<GridCellDocument> TopeOffCells { get; set; }
+        public double? DesviadorLongitud { get; set; }
+        public double? DesviadorPrimerNivelAltura { get; set; }
+        public List<GridCellDocument> DesviadorOffCells { get; set; }
         public bool? ParrillaFrontal { get; set; }
         public bool? ParrillaLateral { get; set; }
         public double? ParrillaFrente { get; set; }

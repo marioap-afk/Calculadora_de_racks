@@ -174,6 +174,7 @@ namespace RackCad.Application.Systems
             AddLargueros(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
             AddSeparadores(loose, system, catalog, frenteYs, offsets);
             AddTopes(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
+            SelectiveDesviadorDrawing.AppendPlanta(loose, system, catalog, PlantaView);
             AddAnnotations(loose, system, frenteYs);
 
             var fondoDepths = new List<double>(offsets.Count);

@@ -5,9 +5,9 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Defines the ONE safety grid consumed by the editor, drawing and BOM. Grid rows are resolved BEAM levels: a
-    /// design's floor-pallet row is intentionally absent when it has no floor beam. When fondos differ, the grid shows
-    /// the maximum real level count at each frente so a load position is never active but invisible in the editor.
+    /// Shared safety-grid utilities. The classic frente × level grid uses resolved BEAM levels: a design's floor-pallet
+    /// row is intentionally absent when it has no floor beam. DESVIADOR supplies its own post × load-level counts through
+    /// <see cref="SelectiveDesviadorPlan"/>, but reuses the same validated off-cell helpers.
     /// </summary>
     public static class SelectiveSafetyGrid
     {

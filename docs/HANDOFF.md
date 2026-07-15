@@ -1,9 +1,9 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-15**. El arbol actual agrega variantes de Bota C, Lateral C y Poste tope sobre la base
-> publicada de `release/claude-review`: 516 tests y builds Debug verdes. Bota C, Poste tope y Lateral C estan
-> confirmados en AutoCAD.
+> Actualizado: **2026-07-15**. El arbol actual agrega variantes de Bota C, Lateral C, Poste tope y la familia
+> completa de desviadores A/L sobre la base publicada de `release/claude-review`: 546 tests y builds Debug verdes.
+> Bota C, Poste tope, Lateral C y los siete desviadores A/L estan confirmados en AutoCAD.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
@@ -20,19 +20,20 @@ selectivo), cada uno con ventana editora WPF, dibujo por bloques en AutoCAD y **
 matriz frentes x niveles dirigida por tarima, tres vistas (frontal/lateral/planta) ligadas por GUID,
 doble profundidad, medio frente, cotas, elementos de seguridad y BOM por componentes con export CSV/XLSX.
 
-**Estado**: activo y funcional. El arbol actual tiene **516/516 tests verdes** y build Debug completo con 0 errores;
+**Estado**: activo y funcional. El arbol actual tiene **546/546 tests verdes** y build Debug completo con 0 errores;
 solo aparecen los `MSB3277` conocidos de las referencias de AutoCAD. La base publicada conserva su validacion manual
 de parrilla, larguero tope, rejilla, persistencia, biblioteca y rendimiento. Las variantes nuevas Bota C 4/6, Poste
 tope y Lateral C 4/6 tambien estan verificadas por pruebas, compilacion y comprobacion visual del usuario en AutoCAD.
+Los siete desviadores A/L estan implementados, cubiertos por pruebas y validados con sus bloques DWG reales.
 
 ## 2. Estado comprobado
 
 | Aspecto | Estado | Evidencia |
 |---|---|---|
 | Compilacion Debug (Domain/Application/UI/Plugin) | **OK, 0 errores** | `dotnet build RackCad.sln -c Debug`; 2 familias MSB3277 conocidas, 2026-07-15 |
-| Pruebas unitarias | **516/516 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
+| Pruebas unitarias | **546/546 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
 | Validacion estatica del arbol actual | OK | sintaxis 233 C#; semantica Domain/Application (114), Domain/Application/UI (146 fuentes + 11 XAML generados previos) y Domain/Application/tests (173); 12 XML/XAML bien formados |
-| Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Bota C 4/6, Poste tope y Lateral C 4/6 confirmados por el usuario, 2026-07-15 |
+| Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Bota C 4/6, Poste tope, Lateral C 4/6 y los siete desviadores A/L confirmados, 2026-07-15 |
 | Commits `b1cfce2`..`95e25f2` (tope medio-frente, parrilla) | Implementado, testeado y verificado en AutoCAD | Ver seccion 9 |
 | Release build / bundle de despliegue | No reconstruido en la ultima sesion | `deploy/install-bundle.ps1 -Build` requiere AutoCAD cerrado |
 
@@ -48,13 +49,14 @@ tope y Lateral C 4/6 tambien estan verificadas por pruebas, compilacion y compro
 | Seguridad: bota, protector lateral, separador, tope de larguero | completo | `SelectiveSafetyPlacement`, `SelectiveSafetyWindow`, `SafetyTopeGridWindow` | `SelectiveSafetyTests` | Catalogo en `assets/catalogs/seguridad.csv` |
 | Seguridad: **Bota C 4/6 + Poste tope** | completo y verificado en AutoCAD | `SelectiveSafetyFamilies`, `SelectiveSafetyWindow`, builders existentes | `SelectiveSafetyTests`, `SelectivePerFondoTests` | Variantes por `ElementId`; una seleccion exclusiva por familia |
 | Seguridad: **Lateral C 4/6** | completo y verificado en AutoCAD | catalogos + regla `LATERAL` existente | `SelectiveSafetyTests` | Reutiliza colocacion, reemplazo de botas, BOM y selector del Lateral H |
+| Seguridad: **Desviadores A/L** | completo y verificado en AutoCAD | `SelectiveDesviadorPlan`, `SelectiveDesviadorDrawing`, `SafetyDesviadorGridWindow` | `SelectiveDesviadorTests` | 7 variantes por `ElementId`; una regla/rejilla comun; lado Izquierdo/Derecho/Ambas |
 | Seguridad: **parrilla / deck** (una por tarima, frente y cantidad manuales, cuenta en vivo) | completo y verificado en AutoCAD | `SelectiveFrontalBuilder.ParrillaRow`, `SelectiveParrillaPlan`, `SafetyParrillaGridWindow` | `SelectiveSafetyTests` (Parrilla_*), `SelectiveMedioFrenteTests` | Ver secciones 8-9 |
 | Tarima como referencia visual (frontal + lateral, sin BOM) | completo | `SelectiveFrontalBuilder.AddPallets`, bloque `TARIMA_GENERICA` | `SelectiveFrontalBuilderTests` | Planta = futuro |
 | Identidad + round-trip (GUID en Xrecord, `RACKEDITAR`, `RACKDUPLICAR`, `RACKLISTA`) | completo | `RackEmbedDocument`, `RackFrameCommands` | round-trip tests por store | Convencion Actualizar/Insertar en las 4 ventanas |
 | Layout de almacen v1 (`RACKLAYOUT`, `RACKRELLENAR`) | completo (v1) | `WarehouseGridPlanner`, comandos en Plugin | `Warehouse*Tests` | Solo motor de colocacion; el optimizador IA es meta futura |
 | Bibliotecas (disenos + bloques DWG) | completo | `RackDesignLibrary*`, settings en `%APPDATA%\RackCad\settings.json` | — | `blocks-library.dwg` NO esta en el repo (ver seccion 6) |
 | Validacion de cargas / capacidad | **diferido a proposito** | — | — | Ira con RAM Elements; NO re-proponer |
-| Desviadores y guardas traseras (seguridad) | pendiente | — | — | Siguientes elementos naturales |
+| Guardas traseras (seguridad) | pendiente | — | — | Siguiente familia de seguridad |
 | Rejilla de seguridad vs niveles resueltos | **corregido, testeado y verificado en AutoCAD** | `SelectiveSafetyGrid`, `RackSelectiveWindow.Safety_Click` | `SelectiveSafetyGridTests` | Ver secciones 8-10 |
 
 ## 4. Arquitectura
@@ -182,6 +184,25 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Regresion de Lateral C comprobada antes de catalogar: 4 de 8 casos dirigidos fallaron; despues pasan los 8 y la
   suite completa queda en 516/516. Plugin Debug compila y el usuario confirmo ambos laterales en AutoCAD.
 
+**Trabajo actual — familia de desviadores A/L:**
+
+- `seguridad.csv` cataloga `DESVIADOR_A_3`, `DESVIADOR_A_4`, `DESVIADOR_L_3`, `_L_3_5`, `_L_4`, `_L_4_5` y
+  `_L_5`; cada id tiene bloques `FRONTAL`, `LATERAL` y `PLANTA`. El usuario confirmo que los siete reutilizan
+  exactamente el mismo contrato de colocacion, parametros, espejo y BOM.
+- `SelectiveDesviadorPlan` centraliza la rejilla poste x nivel, incluidos postes intermedios de medio frente, las dos
+  caras exteriores expuestas al pasillo, el espejo posterior, el primer nivel sobre troquel y los niveles superiores
+  6" debajo del larguero. El selector `Izquierdo/Derecho/Ambas` filtra la cara frontal/posterior o conserva ambas;
+  dibujo, BOM y UI consumen el mismo plan y legacy cae en `Ambas`.
+- `LONGITUD` y la altura del primer nivel son globales, 18" por defecto y aceptan solo enteros pares mayores de 8".
+  La rejilla muestra una nota cuando el claro seleccionado es menor que la longitud y sugiere un par menor.
+- Dibuja los bloques catalogados en frontal/lateral/planta; en planta el origen del desviador coincide con el origen
+  del poste (sin offset `TROQUEL_LARGUERO`). El BOM cuenta las piezas fisicas de ambos frentes aunque frontal/planta
+  colapsen proyecciones superpuestas. `ElementId`, dimensiones y celdas apagadas hacen round-trip.
+- Regresion comprobada con la resolucion multi-variante desconectada: A4 y los cinco L dieron cantidad 0 en vez de
+  12 (6/7 fallos esperados); restaurada la regla por `type`, pasan 30/30 casos dirigidos y 546/546 en la suite.
+- Solucion y Plugin Debug compilan con 0 errores (solo las 2 familias MSB3277 conocidas). El usuario valido en
+  AutoCAD los siete bloques, selector, rejilla, lados, dibujo, BOM y round-trip el 2026-07-15.
+
 ## 9. Ultima validacion manual
 
 - **AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
@@ -189,7 +210,8 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Rejilla sin larguero a piso: filas resueltas correctas, sin fila muerta ni desplazamiento.
 - Parrilla: frente/cantidad, posicion en frontal/lateral y BOM correctos.
 - Tope: rejilla, posicion y opciones correctas.
-- Variantes de seguridad: selectores exclusivos, Bota C 4/6, Poste tope y Lateral C 4/6 funcionan correctamente.
+- Variantes de seguridad: selectores exclusivos, Bota C 4/6, Poste tope, Lateral C 4/6 y los siete desviadores A/L
+  funcionan correctamente en sus vistas y BOM.
 - Persistencia/round-trip: configuracion conservada tras `RACKEDITAR` y actualizar.
 - Rendimiento: sin degradacion perceptible en el escenario probado.
 
@@ -213,10 +235,7 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 
 ## 11. Siguientes tareas recomendadas
 
-1. **Elementos de seguridad faltantes**: desviadores y guardas traseras. Patron a seguir:
-   `seguridad.csv` (tipo nuevo) -> `SelectiveSafetyPlacement` -> builders -> `DeepCopy` + DTO persistente
-   (ver AGENTS.md) -> BOM -> dialogo. Referencia: como se hizo el TOPE y la PARRILLA.
-   Validar: tests + AutoCAD.
+1. **Elementos de seguridad faltantes**: guardas traseras; confirmar contratos antes de implementar.
 2. **Tarima y parrilla en la vista de PLANTA** (hoy solo frontal/lateral). Empezar en
    `SelectivePlantaBuilder`. Criterio: mismas reglas de conteo (`ParrillaRow`), BOM sin duplicar.
 3. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10) si el usuario lo pide.
@@ -232,12 +251,16 @@ de layout (meta futura, no inmediata).
 |---|---|---|---|
 | Build Debug (todo) | `dotnet build RackCad.sln -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15, Windows 11, SDK 8.0.423 por usuario |
 | Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15 |
-| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **516/516 verdes**, 0 omitidas | 2026-07-15 |
+| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **546/546 verdes**, 0 omitidas | 2026-07-15 |
 | Regresion con fix desactivado | filtro `SelectiveSafetyGridTests|LocalizedNumberParserTests` | **5 fallos esperados de 14**; fix restaurado y suite completa verde | 2026-07-15 |
+| Regresion Desviador A3 con integracion desconectada | `SelectiveDesviadorTests.Drawing_ProjectsTheSamePlanInThreeViews_AndBomKeepsPhysicalLevelCount` | **1 fallo esperado:** frontal 0 vs 6; fix restaurado, 17/17 dirigidas y suite verde | 2026-07-15 |
+| Regresion origen A3 en planta | mismo caso dirigido, exigiendo insercion igual al origen del poste | **1 fallo esperado:** 4/4 referencias conservaban offset del troquel; fix restaurado y suite verde | 2026-07-15 |
+| Regresion lado A3 | `SelectiveDesviadorTests.SideChoice_FiltersAisleFacesForDrawingAndBom` | **2 fallos esperados:** Izquierdo/Derecho daban 12 piezas en vez de 6; fix restaurado, 3/3 y suite verde | 2026-07-15 |
+| Regresion variantes A/L | `SelectiveDesviadorTests.EveryVariant_ReusesTheSamePlanDrawingAndBomRule` | **6/7 fallos esperados:** A4/L daban 0 piezas al limitar la resolucion a la primera variante; restaurado, 7/7 verdes | 2026-07-15 |
 | Validacion estatica auxiliar | Roslyn de PowerShell + referencias .NET 8/xUnit en cache; parse XML | **OK:** sintaxis 233 C#; semantica Domain/Application, UI y tests; 12 XML/XAML bien formados | 2026-07-15; no sustituye `dotnet build/test` ni la generacion XAML actual |
 | Lint / format | — | no aplica (no hay linters configurados) | — |
 | Release / bundle | `pwsh deploy/install-bundle.ps1 -Build` | **no ejecutada** en esta sesion (requiere AutoCAD cerrado y no era necesaria) | — |
-| Verificacion manual AutoCAD | NETLOAD + `RACKCAD`/`RACKSELECTIVO`/`RACKEDITAR` | lote anterior + Bota C/Tope/Lateral C **OK** | 2026-07-15 |
+| Verificacion manual AutoCAD | NETLOAD + `RACKCAD`/`RACKSELECTIVO`/`RACKEDITAR` | Bota C/Tope/Lateral C + siete desviadores A/L **OK** | 2026-07-15 |
 
 ## 13. Preguntas abiertas
 
@@ -251,7 +274,7 @@ de layout (meta futura, no inmediata).
 2. `git log --oneline -5` y comparar con la seccion 8 de este archivo (¿hubo push nuevo?).
 3. Leer en orden: este archivo -> [README.md](../README.md) -> [AGENTS.md](../AGENTS.md) ->
    [docs/00-indice-contexto.md](00-indice-contexto.md).
-4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 516+ y quedar verde).
+4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 546+ y quedar verde).
 5. Tomar la primera tarea de la seccion 11 que siga abierta.
 
 **Prompt de reanudacion (copiar en un chat nuevo de Claude o Codex):**
@@ -259,7 +282,7 @@ de layout (meta futura, no inmediata).
 ```
 Trabajo en RackCad (D:\Documentos\Codex\Calculadora de racks), plugin de AutoCAD 2025 en C#/.NET8,
 rama release/claude-review. Lee primero docs/HANDOFF.md, luego README.md y AGENTS.md; verifica el
-estado real con git log y dotnet test (516 tests verdes en este arbol). El contexto de estado, bugs conocidos
+estado real con git log y dotnet test (546 tests verdes en este arbol). El contexto de estado, bugs conocidos
 y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con: [elige la tarea o pega la
 seccion 11]. Respeta las convenciones de AGENTS.md (en especial: DeepCopy + DTO para flags de
 seguridad, tests de regresion verificados fallando, y no hacer push sin verificacion en AutoCAD).

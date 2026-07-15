@@ -1200,7 +1200,7 @@ namespace RackCad.UI
                 : bays.Select((bay, i) => Math.Max(0, bay.Count - (i < floorBeams.Count && floorBeams[i] ? 0 : 1))).ToList();
             var parrillaPlan = resolved != null ? SelectiveParrillaPlan.Cells(resolved, catalog) : null;
 
-            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount, parrillaPlan) { Owner = this };
+            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount, parrillaPlan, catalog, resolved) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;

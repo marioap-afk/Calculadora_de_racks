@@ -79,6 +79,12 @@ namespace RackCad.Domain.Systems
         /// <summary>Default TOPE stick-out (SAQUE), inches.</summary>
         public const double TopeSaque = 3.0;
 
+        /// <summary>Default DESVIADOR dynamic LONGITUD, inches. The editor only accepts even values above 8.</summary>
+        public const double DesviadorLongitud = 18.0;
+
+        /// <summary>Default height of the first DESVIADOR above the post's first TROQUEL_LARGUERO, inches.</summary>
+        public const double DesviadorPrimerNivelAltura = 18.0;
+
         /// <summary>Case-insensitive family match, including the legacy DECK alias for PARRILLA.</summary>
         public static bool IsType(string actual, string expected)
         {

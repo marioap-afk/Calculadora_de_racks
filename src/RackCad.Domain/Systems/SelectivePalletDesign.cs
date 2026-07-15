@@ -187,6 +187,29 @@ namespace RackCad.Domain.Systems
             return true;
         }
 
+        // ---- DESVIADOR-only config: post x load-level grid plus its two global dimensions ----
+
+        /// <summary>DESVIADOR: dynamic LONGITUD (in). Invalid/legacy values fall back to 18 in Application.</summary>
+        public double DesviadorLongitud { get; set; } = SelectiveSafetyDefaults.DesviadorLongitud;
+
+        /// <summary>DESVIADOR: first load-level height above the first TROQUEL_LARGUERO (in). The first piece exists
+        /// even when the floor pallet has no beam; invalid/legacy values fall back to 18 in Application.</summary>
+        public double DesviadorPrimerNivelAltura { get; set; } = SelectiveSafetyDefaults.DesviadorPrimerNivelAltura;
+
+        /// <summary>DESVIADOR: disabled (post, load-level) cells. <see cref="SelectiveGridCell.Frente"/> stores the
+        /// resolved post-column index here; reusing the generic persisted grid cell avoids another DTO shape.</summary>
+        public IList<SelectiveGridCell> DesviadorOffCells { get; } = new List<SelectiveGridCell>();
+
+        public bool DesviadorAt(int post, int level)
+        {
+            foreach (var off in DesviadorOffCells)
+            {
+                if (off != null && off.Frente == post && off.Level == level) return false;
+            }
+
+            return true;
+        }
+
         // ---- PARRILLA-only config (deck): which views draw it, and the (frente,level) cells that carry one ----
 
         /// <summary>PARRILLA: draw the deck in the FRONTAL view (seen edge-on, FRENTE = the frente width). Default true.</summary>
@@ -235,6 +258,8 @@ namespace RackCad.Domain.Systems
                 TopeFondo = TopeFondo,
                 TopeSaque = TopeSaque,
                 TopeFrontal = TopeFrontal,
+                DesviadorLongitud = DesviadorLongitud,
+                DesviadorPrimerNivelAltura = DesviadorPrimerNivelAltura,
                 ParrillaFrontal = ParrillaFrontal,
                 ParrillaLateral = ParrillaLateral,
                 ParrillaFrente = ParrillaFrente,
@@ -250,6 +275,7 @@ namespace RackCad.Domain.Systems
             }
 
             CopyCells(TopeOffCells, copy.TopeOffCells);
+            CopyCells(DesviadorOffCells, copy.DesviadorOffCells);
             CopyCells(ParrillaOffCells, copy.ParrillaOffCells);
             return copy;
         }

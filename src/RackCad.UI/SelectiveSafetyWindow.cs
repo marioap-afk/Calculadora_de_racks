@@ -26,6 +26,8 @@ namespace RackCad.UI
         private readonly int fondoCount;
         private readonly IReadOnlyList<int> levelsPerFrente;
         private readonly IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan; // resolved load rows; null = counts unavailable
+        private readonly RackCatalog catalog;
+        private readonly SelectiveRackSystem resolvedSystem;
 
         private sealed class Row
         {
@@ -35,6 +37,7 @@ namespace RackCad.UI
             public bool IsBota;                      // BOTA: general side on every frente
             public bool IsLateral;                   // LATERAL: per-post only (defaults to the orillas), replaces botas
             public bool IsTope;                      // TOPE: rear pallet stop at the central fondo (grid config)
+            public bool IsDesviador;                 // DESVIADOR: post x load-level grid, two exterior aisle faces
             public bool IsParrilla;                  // PARRILLA: deck per (frente,level) grid, drawn frontal/lateral
             public ComboBox Side;                    // BOTA: default side
             public Button PerPost;                   // BOTA/LATERAL: "Por poste…"
@@ -51,6 +54,15 @@ namespace RackCad.UI
             public List<SelectiveGridCell> TopeOffCells = new List<SelectiveGridCell>();
             public Button TopeButton;
 
+            // ---- DESVIADOR working config ----
+            public bool DesviadorConfigured;
+            public SafetySide DesviadorSide = SafetySide.Both;
+            public double DesviadorLongitud = SelectiveSafetyDefaults.DesviadorLongitud;
+            public double DesviadorPrimerNivelAltura = SelectiveSafetyDefaults.DesviadorPrimerNivelAltura;
+            public List<SelectiveGridCell> DesviadorOffCells = new List<SelectiveGridCell>();
+            public IReadOnlyList<int> DesviadorLevelCounts = new List<int>();
+            public Button DesviadorButton;
+
             // ---- PARRILLA working config (edited via its grid dialog) ----
             public bool ParrillaConfigured;
             public bool ParrillaFrontal = true;
@@ -63,12 +75,14 @@ namespace RackCad.UI
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null)
         {
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             this.parrillaPlan = parrillaPlan;
+            this.catalog = catalog;
+            this.resolvedSystem = resolvedSystem;
             elements ??= new List<SafetyElementCatalogEntry>();
             var currentSelections = (current ?? Enumerable.Empty<SelectiveSafetySelection>())
                 .Where(s => s != null && !string.IsNullOrWhiteSpace(s.ElementId))
@@ -95,7 +109,7 @@ namespace RackCad.UI
             {
                 Text = "La bota se aplica a los postes del sistema según el lado general; usa \"Por poste…\" para apagarla o "
                      + "cambiar el lado en posiciones concretas. El protector lateral se configura por poste y reemplaza las "
-                     + "botas de ese frente. Topes y parrillas se eligen por nivel de carga. El BOM se calcula del dibujo.",
+                     + "botas de ese frente. Topes, desviadores y parrillas se eligen por su rejilla. El BOM se calcula del dibujo.",
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
             DockPanel.SetDock(intro, Dock.Top);
@@ -159,8 +173,9 @@ namespace RackCad.UI
                     var isBota = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.BotaType);
                     var isLateral = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.LateralType);
                     var isTope = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType);
+                    var isDesviador = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DesviadorType);
                     var isParrilla = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType);
-                    var row = new Row { Id = rowElement.Id, Label = rowElement.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsParrilla = isParrilla };
+                    var row = new Row { Id = rowElement.Id, Label = rowElement.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsDesviador = isDesviador, IsParrilla = isParrilla };
 
                     var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -230,6 +245,35 @@ namespace RackCad.UI
                         Grid.SetColumn(button, 1);
                         grid.Children.Add(button);
                         row.TopeButton = button;
+                    }
+                    else if (isDesviador)
+                    {
+                        if (existing != null)
+                        {
+                            row.DesviadorConfigured = true;
+                            row.DesviadorSide = existing.Side == SafetySide.Left || existing.Side == SafetySide.Right
+                                ? existing.Side
+                                : SafetySide.Both;
+                            row.DesviadorLongitud = existing.DesviadorLongitud;
+                            row.DesviadorPrimerNivelAltura = existing.DesviadorPrimerNivelAltura;
+                            row.DesviadorOffCells = existing.DesviadorOffCells?.Where(c => c != null)
+                                .Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList()
+                                ?? new List<SelectiveGridCell>();
+                            row.DesviadorLevelCounts = SelectiveDesviadorPlan.Build(resolvedSystem, catalog, existing).LevelCounts;
+                        }
+
+                        var button = new Button
+                        {
+                            Style = TryFindResource("SecondaryButtonStyle") as Style,
+                            Content = DesviadorLabel(row),
+                            Padding = new Thickness(10, 3, 10, 3),
+                            VerticalAlignment = VerticalAlignment.Center,
+                            ToolTip = "Desviador: elige poste y nivel, lado exterior (Izquierdo/Derecho/Ambas), LONGITUD y altura del primer nivel."
+                        };
+                        button.Click += (s, e) => EditDesviador(row);
+                        Grid.SetColumn(button, 1);
+                        grid.Children.Add(button);
+                        row.DesviadorButton = button;
                     }
                     else if (isParrilla)
                     {
@@ -330,6 +374,7 @@ namespace RackCad.UI
             if (row.PerPost != null) row.PerPost.IsEnabled = enabled;
             if (row.Quantity != null) row.Quantity.IsEnabled = enabled;
             if (row.TopeButton != null) row.TopeButton.IsEnabled = enabled;
+            if (row.DesviadorButton != null) row.DesviadorButton.IsEnabled = enabled;
             if (row.ParrillaButton != null) row.ParrillaButton.IsEnabled = enabled;
         }
 
@@ -379,6 +424,47 @@ namespace RackCad.UI
         }
 
         private static string ParrillaLabel(Row row) => row.ParrillaConfigured ? "Configurado ✓…" : "Configurar…";
+
+        private static string DesviadorLabel(Row row)
+            => row.DesviadorConfigured ? "Configurado ✓ (" + DesviadorSideName(row.DesviadorSide) + ")…" : "Configurar…";
+
+        private static string DesviadorSideName(SafetySide side)
+        {
+            switch (side)
+            {
+                case SafetySide.Left: return "Izquierdo";
+                case SafetySide.Right: return "Derecho";
+                default: return "Ambas";
+            }
+        }
+
+        private void EditDesviador(Row row)
+        {
+            var dialog = new SafetyDesviadorGridWindow(
+                SelectedElementId(row),
+                SelectedElementLabel(row),
+                resolvedSystem,
+                catalog,
+                row.DesviadorLongitud,
+                row.DesviadorPrimerNivelAltura,
+                row.DesviadorSide,
+                row.DesviadorOffCells,
+                postCount,
+                levelsPerFrente) { Owner = this };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var result = dialog.Result;
+            row.DesviadorConfigured = true;
+            row.DesviadorSide = result.Side;
+            row.DesviadorLongitud = result.Longitud;
+            row.DesviadorPrimerNivelAltura = result.FirstLevelHeight;
+            row.DesviadorOffCells = result.OffCells;
+            row.DesviadorLevelCounts = result.LevelCounts;
+            row.DesviadorButton.Content = DesviadorLabel(row);
+        }
 
         private void EditParrilla(Row row)
         {
@@ -475,6 +561,30 @@ namespace RackCad.UI
 
                             result.Add(selection);
                         }
+                    }
+
+                    continue;
+                }
+
+                if (row.IsDesviador)
+                {
+                    if (row.DesviadorConfigured
+                        && !SelectiveSafetyGrid.AllCellsOff(row.DesviadorLevelCounts, row.DesviadorOffCells))
+                    {
+                        var selection = new SelectiveSafetySelection
+                        {
+                            ElementId = elementId,
+                            Quantity = 1,
+                            Side = row.DesviadorSide,
+                            DesviadorLongitud = row.DesviadorLongitud,
+                            DesviadorPrimerNivelAltura = row.DesviadorPrimerNivelAltura
+                        };
+                        foreach (var cell in row.DesviadorOffCells)
+                        {
+                            if (cell != null) selection.DesviadorOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
+                        }
+
+                        result.Add(selection);
                     }
 
                     continue;

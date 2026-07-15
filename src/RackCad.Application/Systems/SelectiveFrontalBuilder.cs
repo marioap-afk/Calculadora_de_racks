@@ -150,6 +150,7 @@ namespace RackCad.Application.Systems
                 }
             }
 
+            SelectiveDesviadorDrawing.AppendFrontal(instances, system, catalog, view);
             AddTopes(instances, system, catalog, postX, layout, view);
             AddTarimas(instances, system, catalog, postX, layout, view, CachedBlock);
             AddParrillas(instances, system, catalog, postX, layout, view);

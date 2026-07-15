@@ -67,6 +67,8 @@ namespace RackCad.Tests
                 TopeFondo = 2,
                 TopeSaque = 7.5,
                 TopeFrontal = true,
+                DesviadorLongitud = 20.0,
+                DesviadorPrimerNivelAltura = 22.0,
                 ParrillaFrontal = false,
                 ParrillaLateral = true,
                 ParrillaFrente = 60.0,
@@ -74,6 +76,7 @@ namespace RackCad.Tests
             };
             source.PostSides.Add(new SafetyPostSide { PostIndex = 3, Side = SafetySide.Left });
             source.TopeOffCells.Add(new SelectiveGridCell { Frente = 1, Level = 2 });
+            source.DesviadorOffCells.Add(new SelectiveGridCell { Frente = 3, Level = 1 });
             source.ParrillaOffCells.Add(new SelectiveGridCell { Frente = 2, Level = 1 });
 
             var copy = source.DeepCopy();
@@ -85,18 +88,23 @@ namespace RackCad.Tests
             Assert.Equal(source.TopeFondo, copy.TopeFondo);
             Assert.Equal(source.TopeSaque, copy.TopeSaque);
             Assert.Equal(source.TopeFrontal, copy.TopeFrontal);
+            Assert.Equal(source.DesviadorLongitud, copy.DesviadorLongitud);
+            Assert.Equal(source.DesviadorPrimerNivelAltura, copy.DesviadorPrimerNivelAltura);
             Assert.Equal(source.ParrillaFrontal, copy.ParrillaFrontal);
             Assert.Equal(source.ParrillaLateral, copy.ParrillaLateral);
             Assert.Equal(source.ParrillaFrente, copy.ParrillaFrente);
             Assert.Equal(source.ParrillaCantidad, copy.ParrillaCantidad);
             Assert.NotSame(source.PostSides[0], copy.PostSides[0]);
             Assert.NotSame(source.TopeOffCells[0], copy.TopeOffCells[0]);
+            Assert.NotSame(source.DesviadorOffCells[0], copy.DesviadorOffCells[0]);
             Assert.NotSame(source.ParrillaOffCells[0], copy.ParrillaOffCells[0]);
 
             copy.PostSides[0].PostIndex = 99;
             copy.TopeOffCells[0].Level = 99;
+            copy.DesviadorOffCells[0].Level = 99;
             Assert.Equal(3, source.PostSides[0].PostIndex);
             Assert.Equal(2, source.TopeOffCells[0].Level);
+            Assert.Equal(1, source.DesviadorOffCells[0].Level);
         }
 
         [Fact]

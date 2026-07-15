@@ -147,6 +147,9 @@ namespace RackCad.Application.Systems
                 // Larguero topes (rear pallet stops): at the central fondo's back post, one per larguero level.
                 AddTopes(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
 
+                // Desviadores: one physical piece on each exterior aisle face for every selected load level.
+                SelectiveDesviadorDrawing.AppendLateral(extras, system, catalog, i, postXs[i], anchorOffset);
+
                 // Tarimas (visual reference): one per reaching fondo per level, spanning the fondo along the depth axis.
                 AddTarimas(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
 
