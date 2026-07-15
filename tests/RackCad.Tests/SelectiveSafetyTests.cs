@@ -480,6 +480,109 @@ namespace RackCad.Tests
             Assert.All(parrillas, p => Assert.Equal(depth, p.DynamicParameters["FONDO"], 4)); // FONDO = the deck span
         }
 
+        /// <summary>A one-frente design with <paramref name="tarimas"/> pallets of 40" (tolerance 4" → claro 136").</summary>
+        private static SelectivePalletDesign ParrillaCantidadDesign(int tarimas, double frente, int cantidad)
+        {
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0 };
+            var bay = new SelectiveBayDesign { FloorBeam = true };
+            bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 40, Alto = 45 }, PalletCount = tarimas, BeamId = BeamId, BeamPeralte = 4.0 });
+            design.Bays.Add(bay);
+            design.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = ParrillaId, Side = SafetySide.Both, Quantity = 1,
+                ParrillaFrontal = true, ParrillaLateral = true, ParrillaFrente = frente, ParrillaCantidad = cantidad
+            });
+            return design;
+        }
+
+        [Fact]
+        public void Parrilla_ManualCantidad_KeepsTheTarimaFrente()
+        {
+            // "2 parrillas bajo 3 tarimas" said as a COUNT: the decks stay the standard tarima width (40"), just fewer.
+            var parrillas = FrontalParrillas(ParrillaCantidadDesign(tarimas: 3, frente: 0.0, cantidad: 2));
+
+            Assert.Equal(2, parrillas.Count);
+            Assert.All(parrillas, p => Assert.Equal(40.0, p.DynamicParameters["FRENTE"], 4));
+        }
+
+        [Fact]
+        public void Parrilla_ManualCantidad_AndFrente_UsesBoth()
+        {
+            var parrillas = FrontalParrillas(ParrillaCantidadDesign(tarimas: 3, frente: 50.0, cantidad: 2));
+
+            Assert.Equal(2, parrillas.Count); // 2 × 50" = 100" fits the 136" claro
+            Assert.All(parrillas, p => Assert.Equal(50.0, p.DynamicParameters["FRENTE"], 4));
+        }
+
+        [Fact]
+        public void Parrilla_ManualCantidad_ThatDoesNotFit_IsClampedNotOverflowed()
+        {
+            // The editor refuses this, but the bay can be narrowed AFTER configuring: 3 × 60" = 180" > 136" claro.
+            // Drawing decks past the frame (or with a negative gap) is never right — clamp to what fits, and the BOM
+            // must report the clamped truth, not the wish.
+            var design = ParrillaCantidadDesign(tarimas: 3, frente: 60.0, cantidad: 3);
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var drawn = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId);
+            var bom = SelectiveBomBuilder.Build(system, Catalog).Components
+                .Where(c => c.Category == SelectiveBomBuilder.Parrilla).Sum(c => c.Quantity);
+
+            Assert.Equal(2, drawn); // floor(136/60) = 2, not the forced 3
+            Assert.Equal(drawn, bom);
+        }
+
+        [Fact]
+        public void Parrilla_Plan_CountAndMaxMatchTheDraw()
+        {
+            // The editor's live count and its "no cabe" guard must agree with the builder, cell by cell.
+            var design = ParrillaCantidadDesign(tarimas: 3, frente: 0.0, cantidad: 0);
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var plan = SelectiveParrillaPlan.Cells(system, Catalog);
+
+            var cell = Assert.Single(plan);
+            Assert.Equal(3, SelectiveParrillaPlan.CountIn(cell, 0.0, 0));   // una por tarima
+            Assert.Equal(2, SelectiveParrillaPlan.CountIn(cell, 60.0, 0));  // 60" → floor(136/60)
+            Assert.Equal(2, SelectiveParrillaPlan.CountIn(cell, 0.0, 2));   // cantidad forzada
+            Assert.Equal(3, SelectiveParrillaPlan.MaxCountIn(cell, 40.0));  // caben 3 de 40"
+            Assert.Equal(2, SelectiveParrillaPlan.MaxCountIn(cell, 60.0));  // solo 2 de 60"
+            Assert.Equal(0, SelectiveParrillaPlan.MaxCountIn(cell, 150.0)); // ninguna de 150"
+
+            // And the count the plan reports IS what the frontal draws.
+            Assert.Equal(
+                SelectiveParrillaPlan.CountIn(cell, 60.0, 0),
+                FrontalParrillas(ParrillaCantidadDesign(3, 60.0, 0)).Count);
+        }
+
+        [Fact]
+        public void Parrilla_Plan_NarrowTramo_DoesNotVetoTheWholeCell()
+        {
+            // Regression: a medio frente whose 30" tramo holds no 40" tarima (so no deck either) while the remainder
+            // holds several. The cell is NOT empty — the count is the SUM over the tramos. MaxCountIn must skip the
+            // inherently-empty tramo instead of collapsing to 0, or the editor paints a real count in the cell and
+            // simultaneously warns in red that none fits, and a forced cantidad the wide tramo could take gets vetoed.
+            var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0, PalletDepth = 48.0 };
+            var bay = new SelectiveBayDesign { FloorBeam = true };
+            bay.Segments.Add(new SelectiveSegment { Length = 30.0, Loaded = true }); // no 40" tarima fits here
+            bay.Segments.Add(new SelectiveSegment { Length = 0.0, Loaded = true });  // the remainder does
+            bay.Levels.Add(new SelectiveCell { Pallet = new Tarima { Frente = 40, Alto = 45 }, PalletCount = 3, BeamId = BeamId, BeamPeralte = 4.0 });
+            design.Bays.Add(bay);
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = ParrillaId, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = true, ParrillaLateral = true });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var cell = Assert.Single(SelectiveParrillaPlan.Cells(system, Catalog));
+            Assert.True(cell.Rows.Count > 1, "expected the medio frente to resolve into several load rows");
+
+            var drawn = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == ParrillaId);
+            var count = SelectiveParrillaPlan.CountIn(cell, 0.0, 0);
+
+            Assert.True(count > 0, "the wide tramo carries decks, so the cell is not empty");
+            Assert.Equal(drawn, count);                                     // the number shown IS the number drawn
+            Assert.True(SelectiveParrillaPlan.MaxCountIn(cell, 0.0) > 0,    // the 30" tramo must not veto the cell
+                "the narrow tramo holds no tarima either — it must not drag the forceable max to 0");
+        }
+
         [Fact]
         public void Parrilla_Lateral_DrawsNothingWhereTheFrontalAndBomHaveNone()
         {
@@ -560,7 +663,9 @@ namespace RackCad.Tests
         public void Parrilla_Config_RoundTrips()
         {
             var design = ParrillaDesign(2, 2, frontal: true, lateral: false, (0, 1));
-            design.SafetySelections.Single(s => s.ElementId == ParrillaId).ParrillaFrente = 36.0;
+            var sel0 = design.SafetySelections.Single(s => s.ElementId == ParrillaId);
+            sel0.ParrillaFrente = 36.0;
+            sel0.ParrillaCantidad = 2;
             var store = new SelectivePalletDesignStore();
             var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "R"))).ToDomain();
 
@@ -568,6 +673,7 @@ namespace RackCad.Tests
             Assert.True(sel.ParrillaFrontal);
             Assert.False(sel.ParrillaLateral);
             Assert.Equal(36.0, sel.ParrillaFrente, 4); // the manual frente override round-trips
+            Assert.Equal(2, sel.ParrillaCantidad);      // and so does the manual cantidad
             Assert.False(sel.ParrillaAt(0, 1)); // the off cell survives
             Assert.True(sel.ParrillaAt(0, 0));
         }

@@ -144,6 +144,7 @@ namespace RackCad.Application.Persistence
                     ParrillaFrontal = s.ParrillaFrontal,
                     ParrillaLateral = s.ParrillaLateral,
                     ParrillaFrente = s.ParrillaFrente,
+                    ParrillaCantidad = s.ParrillaCantidad,
                     ParrillaOffCells = s.ParrillaOffCells.Where(c => c != null).Select(c => new GridCellDocument { Frente = c.Frente, Level = c.Level }).ToList()
                 }).ToList();
 
@@ -227,7 +228,8 @@ namespace RackCad.Application.Persistence
                         TopeFondo = safety.TopeFondo ?? -1, // legacy docs (no field) default to the automatic central fondo
                         ParrillaFrontal = safety.ParrillaFrontal ?? true, // legacy docs default to drawing in both views
                         ParrillaLateral = safety.ParrillaLateral ?? true,
-                        ParrillaFrente = safety.ParrillaFrente ?? 0.0 // legacy docs (no field) default to one deck per tarima
+                        ParrillaFrente = safety.ParrillaFrente ?? 0.0, // legacy docs (no field) default to one deck per tarima
+                        ParrillaCantidad = safety.ParrillaCantidad ?? 0 // legacy docs (no field) derive the count from the width
                     };
                     foreach (var post in safety.PostSides ?? Enumerable.Empty<PostSideDocument>())
                     {
@@ -372,6 +374,7 @@ namespace RackCad.Application.Persistence
         public bool? ParrillaFrontal { get; set; }
         public bool? ParrillaLateral { get; set; }
         public double? ParrillaFrente { get; set; }
+        public int? ParrillaCantidad { get; set; }
         public List<GridCellDocument> ParrillaOffCells { get; set; }
     }
 

@@ -199,6 +199,13 @@ namespace RackCad.Domain.Systems
         /// A positive value overrides it (e.g. 2 wider decks under 3 pallets), fitting as many as the span holds.</summary>
         public double ParrillaFrente { get; set; }
 
+        /// <summary>PARRILLA: manual deck count PER LOAD ROW (a full bay, or each loaded tramo of a medio frente);
+        /// &lt;= 0 = derived from the width (how many fit). A positive value forces it — with a blank
+        /// <see cref="ParrillaFrente"/> the decks keep the tarima's own width, so "2" under 3 tarimas means 2 standard
+        /// decks. CLAMPED to what physically fits: the editor refuses a count that does not fit, but narrowing a bay
+        /// AFTER configuring must degrade to the fit rather than draw decks past the frame.</summary>
+        public int ParrillaCantidad { get; set; }
+
         /// <summary>PARRILLA: the (frente, level) cells with NO deck (default empty = a deck at every load position).</summary>
         public IList<SelectiveGridCell> ParrillaOffCells { get; } = new List<SelectiveGridCell>();
 

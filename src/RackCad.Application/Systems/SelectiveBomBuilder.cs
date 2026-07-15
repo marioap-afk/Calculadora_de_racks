@@ -268,11 +268,12 @@ namespace RackCad.Application.Systems
             var order = new List<double>();
             var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs;
             var overrideFrente = selection.ParrillaFrente;
+            var overrideCount = selection.ParrillaCantidad;
             var fondoCount = SelectiveDepthLayout.Count(system);
 
             void AddRow(double span, SelectiveLevel level, bool fitToSpan)
             {
-                var (frente, count) = SelectiveFrontalBuilder.ParrillaRow(span, level.PalletFrente, level.PalletCount, overrideFrente, fitToSpan);
+                var (frente, count) = SelectiveFrontalBuilder.ParrillaRow(span, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan);
                 if (frente <= 0.0 || count <= 0)
                 {
                     return;

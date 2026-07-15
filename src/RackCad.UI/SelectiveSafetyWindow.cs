@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 
 namespace RackCad.UI
@@ -26,6 +27,7 @@ namespace RackCad.UI
         private readonly int postCount;
         private readonly int fondoCount;
         private readonly IReadOnlyList<int> levelsPerFrente;
+        private readonly IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan; // resolved load rows; null = counts unavailable
 
         private sealed class Row
         {
@@ -54,18 +56,20 @@ namespace RackCad.UI
             public bool ParrillaConfigured;
             public bool ParrillaFrontal = true;
             public bool ParrillaLateral = true;
-            public double ParrillaFrente; // 0 = one deck per tarima
+            public double ParrillaFrente; // 0 = one deck per tarima at the tarima's own frente
+            public int ParrillaCantidad; // 0 = as many as fit
             public List<SelectiveGridCell> ParrillaOffCells = new List<SelectiveGridCell>();
             public Button ParrillaButton;
         }
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null)
         {
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
+            this.parrillaPlan = parrillaPlan;
             elements ??= new List<SafetyElementCatalogEntry>();
             var currentById = new Dictionary<string, SelectiveSafetySelection>(StringComparer.OrdinalIgnoreCase);
             foreach (var selection in current ?? Enumerable.Empty<SelectiveSafetySelection>())
@@ -177,6 +181,7 @@ namespace RackCad.UI
                             row.ParrillaFrontal = existing.ParrillaFrontal;
                             row.ParrillaLateral = existing.ParrillaLateral;
                             row.ParrillaFrente = existing.ParrillaFrente;
+                            row.ParrillaCantidad = existing.ParrillaCantidad;
                             row.ParrillaOffCells = existing.ParrillaOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList() ?? new List<SelectiveGridCell>();
                         }
 
@@ -295,7 +300,7 @@ namespace RackCad.UI
 
         private void EditParrilla(Row row)
         {
-            var dialog = new SafetyParrillaGridWindow(row.Label, levelsPerFrente, row.ParrillaFrontal, row.ParrillaLateral, row.ParrillaFrente, row.ParrillaOffCells) { Owner = this };
+            var dialog = new SafetyParrillaGridWindow(row.Label, levelsPerFrente, row.ParrillaFrontal, row.ParrillaLateral, row.ParrillaFrente, row.ParrillaCantidad, row.ParrillaOffCells, parrillaPlan) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -306,6 +311,7 @@ namespace RackCad.UI
             row.ParrillaFrontal = r.Frontal;
             row.ParrillaLateral = r.Lateral;
             row.ParrillaFrente = r.Frente;
+            row.ParrillaCantidad = r.Cantidad;
             row.ParrillaOffCells = r.OffCells;
             row.ParrillaButton.Content = ParrillaLabel(row);
         }
@@ -379,7 +385,7 @@ namespace RackCad.UI
                         if (!allOff)
                         {
                             // Side = Both makes EnabledOfType treat it as "drawn"; the per-view toggles gate the actual draw.
-                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente };
+                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente, ParrillaCantidad = row.ParrillaCantidad };
                             foreach (var c in row.ParrillaOffCells)
                             {
                                 if (c != null) selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });

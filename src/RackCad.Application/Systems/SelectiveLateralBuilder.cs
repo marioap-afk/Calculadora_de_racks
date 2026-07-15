@@ -518,6 +518,7 @@ namespace RackCad.Application.Systems
             }
 
             var overrideFrente = parrilla.Selection.ParrillaFrente;
+            var overrideCount = parrilla.Selection.ParrillaCantidad;
 
             for (var k = 0; k < offsets.Count; k++)
             {
@@ -556,7 +557,7 @@ namespace RackCad.Application.Systems
                         // to one deck, but zero decks must stay zero).
                         var troquelX = troquelXs != null && b < troquelXs.Count ? troquelXs[b] : 0.0;
                         var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bays[b], SelectiveRackDefaults.View);
-                        if (!SelectiveFrontalBuilder.ParrillaExistsAt(bays[b], level, troquelX, inicioX, overrideFrente))
+                        if (!SelectiveFrontalBuilder.ParrillaExistsAt(bays[b], level, troquelX, inicioX, overrideFrente, overrideCount))
                         {
                             continue;
                         }

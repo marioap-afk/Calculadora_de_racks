@@ -1190,7 +1190,13 @@ namespace RackCad.UI
             var depthCount = UiSupport.TryNum(FondosBox.Text, out var fondosNum) && fondosNum >= 1.0
                 ? Math.Min(SelectiveRackDefaults.MaxDepthCount, Math.Max(1, (int)Math.Round(fondosNum)))
                 : 1;
-            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount) { Owner = this };
+            // The parrilla grid shows a live deck count per cell, which needs the RESOLVED claros (and the medio-frente
+            // tramos). Resolve once here; if the design doesn't resolve yet (BuildSystem returns null), the dialog still
+            // configures — it just omits the counts.
+            var resolved = BuildSystem(out _);
+            var parrillaPlan = resolved != null ? SelectiveParrillaPlan.Cells(resolved, catalog) : null;
+
+            var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount, parrillaPlan) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -1204,7 +1210,7 @@ namespace RackCad.UI
         /// <summary>A deep copy of a safety selection, carrying its per-post side overrides + the tope grid config.</summary>
         private static SelectiveSafetySelection CopySafety(SelectiveSafetySelection s)
         {
-            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque, TopeFrontal = s.TopeFrontal, TopeFondo = s.TopeFondo, ParrillaFrontal = s.ParrillaFrontal, ParrillaLateral = s.ParrillaLateral, ParrillaFrente = s.ParrillaFrente };
+            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque, TopeFrontal = s.TopeFrontal, TopeFondo = s.TopeFondo, ParrillaFrontal = s.ParrillaFrontal, ParrillaLateral = s.ParrillaLateral, ParrillaFrente = s.ParrillaFrente, ParrillaCantidad = s.ParrillaCantidad };
             foreach (var post in s.PostSides)
             {
                 if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });

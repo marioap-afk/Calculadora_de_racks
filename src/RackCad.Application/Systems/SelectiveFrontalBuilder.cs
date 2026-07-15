@@ -253,6 +253,7 @@ namespace RackCad.Application.Systems
             }
 
             var overrideFrente = parrilla.Selection.ParrillaFrente;
+            var overrideCount = parrilla.Selection.ParrillaCantidad;
 
             for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
             {
@@ -278,14 +279,14 @@ namespace RackCad.Application.Systems
 
                     if (tramos == null)
                     {
-                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + troquelX + inicioX, bay.BeamLength, surfaceY, level, overrideFrente, fitToSpan: false);
+                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + troquelX + inicioX, bay.BeamLength, surfaceY, level, overrideFrente, overrideCount, fitToSpan: false);
                         continue;
                     }
 
                     foreach (var tramo in tramos)
                     {
                         if (!tramo.Loaded) continue;
-                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + tramo.StartOffset + troquelX + inicioX, tramo.Length, surfaceY, level, overrideFrente, fitToSpan: true);
+                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + tramo.StartOffset + troquelX + inicioX, tramo.Length, surfaceY, level, overrideFrente, overrideCount, fitToSpan: true);
                     }
                 }
             }
@@ -294,9 +295,9 @@ namespace RackCad.Application.Systems
         /// <summary>Distribute a ROW of deck blocks over [<paramref name="anchorX"/>, +<paramref name="span"/>] at
         /// <paramref name="bottomY"/>: by default one deck per tarima (each at its bottom-left corner, exactly under the
         /// tarima), else <paramref name="overrideFrente"/>-wide decks fitting the span. FRENTE param sizes each.</summary>
-        private static void PlaceParrillaRow(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double anchorX, double span, double bottomY, SelectiveLevel level, double overrideFrente, bool fitToSpan)
+        private static void PlaceParrillaRow(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double anchorX, double span, double bottomY, SelectiveLevel level, double overrideFrente, int overrideCount, bool fitToSpan)
         {
-            var (frente, count) = ParrillaRow(span, level.PalletFrente, level.PalletCount, overrideFrente, fitToSpan);
+            var (frente, count) = ParrillaRow(span, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan);
             if (frente <= 0.0 || count <= 0)
             {
                 return;
@@ -320,22 +321,35 @@ namespace RackCad.Application.Systems
             }
         }
 
-        /// <summary>The (frente, count) of a parrilla row over <paramref name="span"/>: the manual
-        /// <paramref name="overrideFrente"/> width (fitting as many as hold) if positive, else ONE deck per tarima — the
-        /// level's pallet frente with its design count (or, in a tramo, how many fit). Shared with the BOM so both agree.</summary>
-        internal static (double frente, int count) ParrillaRow(double span, double palletFrente, int palletCount, double overrideFrente, bool fitToSpan)
+        /// <summary>
+        /// The (frente, count) of ONE parrilla load row over <paramref name="span"/> — the SINGLE rule the frontal draw,
+        /// the BOM and the editor's live count all go through, so they agree by construction. Width: the manual
+        /// <paramref name="overrideFrente"/> if positive, else the tarima's own frente. Count: the manual
+        /// <paramref name="overrideCount"/> if positive, else how many decks fit (<paramref name="fitToSpan"/>, a tramo)
+        /// or the level's design tarima count (a full bay) — i.e. ONE deck per tarima.
+        /// A forced count is CLAMPED to what fits: the editor refuses one that doesn't, but the bay can be narrowed
+        /// afterwards and drawing decks past the frame (or a negative gap) is never right.
+        /// </summary>
+        internal static (double frente, int count) ParrillaRow(double span, double palletFrente, int palletCount, double overrideFrente, int overrideCount, bool fitToSpan)
         {
+            var frente = overrideFrente > 0.0 ? overrideFrente : palletFrente;
+            if (frente <= 0.0)
+            {
+                return (0.0, 0); // no manual width and no tarima to copy it from
+            }
+
+            var fit = PalletFit(span, frente);
+            if (overrideCount > 0)
+            {
+                return (frente, Math.Min(overrideCount, fit));
+            }
+
             if (overrideFrente > 0.0)
             {
-                return (overrideFrente, PalletFit(span, overrideFrente));
+                return (frente, fit); // a manual width alone: as many as hold
             }
 
-            if (palletFrente <= 0.0 || palletCount <= 0)
-            {
-                return (0.0, 0);
-            }
-
-            return (palletFrente, fitToSpan ? PalletFit(span, palletFrente) : palletCount);
+            return palletCount > 0 ? (frente, fitToSpan ? fit : palletCount) : (0.0, 0);
         }
 
         /// <summary>Whether ANY deck lands on <paramref name="bay"/>'s <paramref name="level"/> — the same rule the frontal
@@ -343,7 +357,7 @@ namespace RackCad.Application.Systems
         /// this too: it collapses the row end-on to ONE deck, so it must still ask whether the row exists at all, or a level
         /// the frontal and the BOM leave empty (a manual frente wider than the claro, or a tarima that fits no tramo) grows
         /// a phantom deck in the corte.</summary>
-        internal static bool ParrillaExistsAt(SelectiveBay bay, SelectiveLevel level, double troquelX, double inicioX, double overrideFrente)
+        internal static bool ParrillaExistsAt(SelectiveBay bay, SelectiveLevel level, double troquelX, double inicioX, double overrideFrente, int overrideCount)
         {
             if (bay == null || level == null)
             {
@@ -353,12 +367,12 @@ namespace RackCad.Application.Systems
             var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
             if (tramos == null)
             {
-                return ParrillaRow(bay.BeamLength, level.PalletFrente, level.PalletCount, overrideFrente, fitToSpan: false).count > 0;
+                return ParrillaRow(bay.BeamLength, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan: false).count > 0;
             }
 
             foreach (var tramo in tramos)
             {
-                if (tramo.Loaded && ParrillaRow(tramo.Length, level.PalletFrente, level.PalletCount, overrideFrente, fitToSpan: true).count > 0)
+                if (tramo.Loaded && ParrillaRow(tramo.Length, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan: true).count > 0)
                 {
                     return true;
                 }
