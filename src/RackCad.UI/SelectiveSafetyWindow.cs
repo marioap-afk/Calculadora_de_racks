@@ -31,6 +31,7 @@ namespace RackCad.UI
         {
             public string Id;
             public string Label;
+            public ComboBox Variant;                 // mutually-exclusive ElementId within a catalog family
             public bool IsBota;                      // BOTA: general side on every frente
             public bool IsLateral;                   // LATERAL: per-post only (defaults to the orillas), replaces botas
             public bool IsTope;                      // TOPE: rear pallet stop at the central fondo (grid config)
@@ -69,10 +70,13 @@ namespace RackCad.UI
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             this.parrillaPlan = parrillaPlan;
             elements ??= new List<SafetyElementCatalogEntry>();
+            var currentSelections = (current ?? Enumerable.Empty<SelectiveSafetySelection>())
+                .Where(s => s != null && !string.IsNullOrWhiteSpace(s.ElementId))
+                .ToList();
             var currentById = new Dictionary<string, SelectiveSafetySelection>(StringComparer.OrdinalIgnoreCase);
-            foreach (var selection in current ?? Enumerable.Empty<SelectiveSafetySelection>())
+            foreach (var selection in currentSelections)
             {
-                if (selection != null && !string.IsNullOrWhiteSpace(selection.ElementId)) currentById[selection.ElementId] = selection;
+                currentById[selection.ElementId] = selection;
             }
 
             Title = "Elementos de seguridad";
@@ -118,9 +122,17 @@ namespace RackCad.UI
             else
             {
                 string lastType = null;
+                var emittedExclusiveTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var element in elements)
                 {
                     if (string.IsNullOrWhiteSpace(element?.Id)) continue;
+
+                    var exclusiveFamily = SelectiveSafetyFamilies.IsExclusive(element.Type);
+                    var normalizedType = (element.Type ?? string.Empty).Trim();
+                    if (exclusiveFamily && !emittedExclusiveTypes.Add(normalizedType))
+                    {
+                        continue; // the first row owns the whole family's variant combo
+                    }
 
                     if (!string.Equals(element.Type, lastType, StringComparison.OrdinalIgnoreCase))
                     {
@@ -128,21 +140,70 @@ namespace RackCad.UI
                         list.Children.Add(new TextBlock { Text = GroupTitle(element.Type), FontWeight = FontWeights.SemiBold, Foreground = Brushes.Gray, FontSize = 11, Margin = new Thickness(0, 8, 0, 2) });
                     }
 
-                    currentById.TryGetValue(element.Id, out var existing);
+                    var variants = exclusiveFamily
+                        ? SelectiveSafetyFamilies.VariantsOfType(elements, element.Type)
+                        : new List<SafetyElementCatalogEntry> { element };
+                    SelectiveSafetySelection existing;
+                    if (exclusiveFamily)
+                    {
+                        existing = SelectiveSafetyFamilies.SelectedOfType(currentSelections, elements, element.Type);
+                    }
+                    else
+                    {
+                        currentById.TryGetValue(element.Id, out existing);
+                    }
+
+                    var rowElement = existing == null
+                        ? element
+                        : variants.FirstOrDefault(v => string.Equals(v.Id, existing.ElementId, StringComparison.OrdinalIgnoreCase)) ?? element;
                     var isBota = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.BotaType);
                     var isLateral = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.LateralType);
                     var isTope = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType);
                     var isParrilla = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType);
-                    var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsParrilla = isParrilla };
+                    var row = new Row { Id = rowElement.Id, Label = rowElement.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsParrilla = isParrilla };
 
                     var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-                    var label = new TextBlock { Text = element.Label, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap };
-                    Grid.SetColumn(label, 0);
-                    grid.Children.Add(label);
+                    if (exclusiveFamily)
+                    {
+                        var variant = new ComboBox
+                        {
+                            VerticalAlignment = VerticalAlignment.Center,
+                            ToolTip = "Elige una sola variante de esta familia (Ninguno = no incluir)."
+                        };
+                        variant.Items.Add(new CatalogOption(null, "Ninguno"));
+                        foreach (var option in variants)
+                        {
+                            variant.Items.Add(new CatalogOption(option.Id, option.Label));
+                        }
+
+                        variant.SelectedIndex = 0;
+                        if (existing != null)
+                        {
+                            for (var index = 1; index < variant.Items.Count; index++)
+                            {
+                                if (variant.Items[index] is CatalogOption option
+                                    && string.Equals(option.Id, existing.ElementId, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    variant.SelectedIndex = index;
+                                    break;
+                                }
+                            }
+                        }
+
+                        Grid.SetColumn(variant, 0);
+                        grid.Children.Add(variant);
+                        row.Variant = variant;
+                    }
+                    else
+                    {
+                        var label = new TextBlock { Text = element.Label, VerticalAlignment = VerticalAlignment.Center, TextWrapping = TextWrapping.Wrap };
+                        Grid.SetColumn(label, 0);
+                        grid.Children.Add(label);
+                    }
 
                     if (isTope)
                     {
@@ -163,7 +224,7 @@ namespace RackCad.UI
                             Content = TopeLabel(row),
                             Padding = new Thickness(10, 3, 10, 3),
                             VerticalAlignment = VerticalAlignment.Center,
-                            ToolTip = "Larguero tope trasero: elige por frente y nivel, compartido o por fondo, y el saque. Se dibuja en lateral y planta."
+                            ToolTip = "Tope trasero: elige por frente y nivel, compartido o por fondo, y el saque. Se dibuja en lateral y planta."
                         };
                         button.Click += (s, e) => EditTope(row);
                         Grid.SetColumn(button, 1);
@@ -239,6 +300,12 @@ namespace RackCad.UI
                         row.Quantity = box;
                     }
 
+                    if (row.Variant != null)
+                    {
+                        row.Variant.SelectionChanged += (s, e) => RefreshVariantControls(row);
+                        RefreshVariantControls(row);
+                    }
+
                     list.Children.Add(grid);
                     rows.Add(row);
                 }
@@ -246,6 +313,24 @@ namespace RackCad.UI
 
             root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Content = list });
             Content = root;
+        }
+
+        private static string SelectedElementId(Row row)
+            => row?.Variant?.SelectedItem is CatalogOption option ? option.Id : row?.Id;
+
+        private static string SelectedElementLabel(Row row)
+            => row?.Variant?.SelectedItem is CatalogOption option && !string.IsNullOrWhiteSpace(option.Id)
+                ? option.DisplayName
+                : row?.Label;
+
+        private static void RefreshVariantControls(Row row)
+        {
+            var enabled = !string.IsNullOrWhiteSpace(SelectedElementId(row));
+            if (row.Side != null) row.Side.IsEnabled = enabled;
+            if (row.PerPost != null) row.PerPost.IsEnabled = enabled;
+            if (row.Quantity != null) row.Quantity.IsEnabled = enabled;
+            if (row.TopeButton != null) row.TopeButton.IsEnabled = enabled;
+            if (row.ParrillaButton != null) row.ParrillaButton.IsEnabled = enabled;
         }
 
         private static string PerPostLabel(int overrides)
@@ -262,7 +347,7 @@ namespace RackCad.UI
                 current = OrillaDefaults(postCount);
             }
 
-            var dialog = new SafetyPerPostWindow(row.Label, postCount, defaultSide, current) { Owner = this };
+            var dialog = new SafetyPerPostWindow(SelectedElementLabel(row), postCount, defaultSide, current) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -276,7 +361,7 @@ namespace RackCad.UI
 
         private void EditTope(Row row)
         {
-            var dialog = new SafetyTopeGridWindow(row.Label, levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeFrontal, row.TopeOffCells, fondoCount, row.TopeFondo) { Owner = this };
+            var dialog = new SafetyTopeGridWindow(SelectedElementLabel(row), levelsPerFrente, row.TopeShared, row.TopeSide, row.TopeSaque, row.TopeFrontal, row.TopeOffCells, fondoCount, row.TopeFondo) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -346,6 +431,12 @@ namespace RackCad.UI
             var result = new List<SelectiveSafetySelection>();
             foreach (var row in rows)
             {
+                var elementId = SelectedElementId(row);
+                if (string.IsNullOrWhiteSpace(elementId))
+                {
+                    continue;
+                }
+
                 if (row.IsTope)
                 {
                     if (row.TopeConfigured)
@@ -353,7 +444,7 @@ namespace RackCad.UI
                         // Disabled when every (frente,level) cell is off.
                         if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.TopeOffCells))
                         {
-                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal, TopeFondo = row.TopeFondo };
+                            var selection = new SelectiveSafetySelection { ElementId = elementId, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal, TopeFondo = row.TopeFondo };
                             foreach (var c in row.TopeOffCells)
                             {
                                 if (c != null) selection.TopeOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
@@ -376,7 +467,7 @@ namespace RackCad.UI
                         if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.ParrillaOffCells))
                         {
                             // Side = Both makes EnabledOfType treat it as "drawn"; the per-view toggles gate the actual draw.
-                            var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente, ParrillaCantidad = row.ParrillaCantidad };
+                            var selection = new SelectiveSafetySelection { ElementId = elementId, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente, ParrillaCantidad = row.ParrillaCantidad };
                             foreach (var c in row.ParrillaOffCells)
                             {
                                 if (c != null) selection.ParrillaOffCells.Add(new SelectiveGridCell { Frente = c.Frente, Level = c.Level });
@@ -400,7 +491,7 @@ namespace RackCad.UI
                         continue; // nothing draws for this element
                     }
 
-                    var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = side, Quantity = 1 };
+                    var selection = new SelectiveSafetySelection { ElementId = elementId, Side = side, Quantity = 1 };
                     foreach (var post in overrides)
                     {
                         if (post != null && post.PostIndex >= 0) selection.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
@@ -418,13 +509,13 @@ namespace RackCad.UI
 
                 if (!UiSupport.TryInt(text, out var quantity) || quantity < 0)
                 {
-                    error.Text = "Cantidad inválida en '" + row.Id + "': usa un entero ≥ 0 (vacío = ninguno).";
+                    error.Text = "Cantidad inválida en '" + elementId + "': usa un entero ≥ 0 (vacío = ninguno).";
                     return;
                 }
 
                 if (quantity > 0)
                 {
-                    result.Add(new SelectiveSafetySelection { ElementId = row.Id, Quantity = quantity, Side = SafetySide.None });
+                    result.Add(new SelectiveSafetySelection { ElementId = elementId, Quantity = quantity, Side = SafetySide.None });
                 }
             }
 

@@ -1,5 +1,8 @@
 id,displayName,type,units,weightEach,material,partNumber,unitCost,currency,costUnit
 PROTECTOR_BOTA_H_3_16_18,Protector bota tipo H,BOTA,in,0,Acero,,0,MXN,pieza
+PROTECTOR_BOTA_C_4,Protector bota tipo C4,BOTA,in,0,Acero,,0,MXN,pieza
+PROTECTOR_BOTA_C_6,Protector bota tipo C6,BOTA,in,0,Acero,,0,MXN,pieza
 PROTECTOR_LATERAL_BOTA_H_3_16_18,Protector lateral bota tipo H,LATERAL,in,0,Acero,,0,MXN,pieza
 LARGUERO_ESCALON_TOPE_DE_3,Larguero tope de 3,TOPE,in,0,Acero,,0,MXN,pieza
+POSTE_3_1_5_8_TOPE,Poste tope de 3 x 1 5/8,TOPE,in,0,Acero,,0,MXN,pieza
 PARRILLA_GENERICA,Parrilla,PARRILLA,in,0,Acero,,0,MXN,pieza

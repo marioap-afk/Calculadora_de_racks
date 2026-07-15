@@ -36,6 +36,10 @@ namespace RackCad.Tests
         }
 
         private const string LateralId = "PROTECTOR_LATERAL_BOTA_H_3_16_18";
+        private const string BotaHId = "PROTECTOR_BOTA_H_3_16_18";
+        private const string BotaC4Id = "PROTECTOR_BOTA_C_4";
+        private const string BotaC6Id = "PROTECTOR_BOTA_C_6";
+        private const string PosteTopeId = "POSTE_3_1_5_8_TOPE";
 
         /// <summary>A design of N frentes with a bota (general side, all frentes) + a protector lateral on chosen posts.</summary>
         private static SelectivePalletDesign DesignWithLateral(int frentes, SafetySide botaSide, params (int Post, SafetySide Side)[] lateralPosts)
@@ -76,6 +80,62 @@ namespace RackCad.Tests
             var elements = Catalog.SafetyElements;
             Assert.NotEmpty(elements);
             Assert.Contains(elements, e => string.Equals(e.Type, "BOTA", System.StringComparison.OrdinalIgnoreCase));
+        }
+
+        [Theory]
+        [InlineData(BotaC4Id, SelectiveSafetyDefaults.BotaType)]
+        [InlineData(BotaC6Id, SelectiveSafetyDefaults.BotaType)]
+        [InlineData(PosteTopeId, SelectiveSafetyDefaults.TopeType)]
+        public void Catalog_LoadsAddedSafetyVariants_WithAllThreeViews(string id, string type)
+        {
+            var element = Assert.Single(Catalog.SafetyElements, e => string.Equals(e.Id, id, StringComparison.OrdinalIgnoreCase));
+            Assert.True(SelectiveSafetyDefaults.IsType(element.Type, type));
+            Assert.Equal(id + "_FRONTAL", CatalogLookup.Block(Catalog, id, "FRONTAL"));
+            Assert.Equal(id + "_LATERAL", CatalogLookup.Block(Catalog, id, "LATERAL"));
+            Assert.Equal(id + "_PLANTA", CatalogLookup.Block(Catalog, id, "PLANTA"));
+        }
+
+        [Theory]
+        [InlineData(BotaC4Id)]
+        [InlineData(BotaC6Id)]
+        public void BotaCVariant_ReusesBotaPlacementBomAndRoundTrip(string id)
+        {
+            var design = Design((id, 1, SafetySide.Left));
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            Assert.NotEmpty(frontal);
+            Assert.All(frontal, b =>
+            {
+                Assert.Equal(id, b.PieceId);
+                Assert.Equal(id + "_FRONTAL", b.BlockName);
+                Assert.False(b.MirroredX);
+            });
+
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+            var component = Assert.Single(bom.Components, c => c.ProfileId == id);
+            Assert.Equal(frontal.Count, component.Quantity);
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "Rack"))).ToDomain();
+            Assert.Equal(id, Assert.Single(restored.SafetySelections).ElementId);
+        }
+
+        [Fact]
+        public void BotaFamily_MalformedDuplicateSelections_UsesOnlyTheFirstVariant()
+        {
+            var design = Design((BotaHId, 1, SafetySide.Left), (BotaC4Id, 1, SafetySide.Right));
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+
+            Assert.NotEmpty(frontal);
+            Assert.All(frontal, b => Assert.Equal(BotaHId, b.PieceId));
+
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+            Assert.Contains(bom.Components, c => c.ProfileId == BotaHId);
+            Assert.DoesNotContain(bom.Components, c => c.ProfileId == BotaC4Id);
         }
 
         [Fact]

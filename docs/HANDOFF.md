@@ -1,8 +1,8 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-15**, rama `release/claude-review`, HEAD publicado con el lote de
-> correccion/escalabilidad validado con 503 tests, build Debug completo y prueba manual en AutoCAD.
+> Actualizado: **2026-07-15**. El arbol actual agrega variantes de Bota C y Poste tope sobre la base publicada de
+> `release/claude-review`: 511 tests, builds Debug verdes y validacion manual de las variantes confirmada en AutoCAD.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
@@ -19,19 +19,19 @@ selectivo), cada uno con ventana editora WPF, dibujo por bloques en AutoCAD y **
 matriz frentes x niveles dirigida por tarima, tres vistas (frontal/lateral/planta) ligadas por GUID,
 doble profundidad, medio frente, cotas, elementos de seguridad y BOM por componentes con export CSV/XLSX.
 
-**Estado**: activo y funcional. El arbol actual tiene **503/503 tests verdes** (14 nuevos) y build Debug completo
-con 0 errores; solo aparecen los `MSB3277` conocidos de las referencias de AutoCAD. El SDK 8.0.423 esta instalado
-por usuario. La rama esta sincronizada con `origin` al cierre del lote. La verificacion manual de parrilla, tope,
-rejilla, persistencia, biblioteca y rendimiento fue confirmada por el usuario.
+**Estado**: activo y funcional. El arbol actual tiene **511/511 tests verdes** y build Debug completo con 0 errores;
+solo aparecen los `MSB3277` conocidos de las referencias de AutoCAD. La base publicada conserva su validacion manual
+de parrilla, larguero tope, rejilla, persistencia, biblioteca y rendimiento. Las variantes nuevas Bota C 4/6 y Poste
+tope tambien estan verificadas por pruebas, compilacion y comprobacion visual del usuario.
 
 ## 2. Estado comprobado
 
 | Aspecto | Estado | Evidencia |
 |---|---|---|
 | Compilacion Debug (Domain/Application/UI/Plugin) | **OK, 0 errores** | `dotnet build RackCad.sln -c Debug`; 2 familias MSB3277 conocidas, 2026-07-15 |
-| Pruebas unitarias | **503/503 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
+| Pruebas unitarias | **511/511 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
 | Validacion estatica del arbol actual | OK | sintaxis 233 C#; semantica Domain/Application (114), Domain/Application/UI (146 fuentes + 11 XAML generados previos) y Domain/Application/tests (173); 12 XML/XAML bien formados |
-| Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Validacion manual del usuario 2026-07-15; ver seccion 9 |
+| Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Bota C 4/6 y Poste tope confirmados por el usuario, 2026-07-15; ver seccion 9 |
 | Commits `b1cfce2`..`95e25f2` (tope medio-frente, parrilla) | Implementado, testeado y verificado en AutoCAD | Ver seccion 9 |
 | Release build / bundle de despliegue | No reconstruido en la ultima sesion | `deploy/install-bundle.ps1 -Build` requiere AutoCAD cerrado |
 
@@ -45,13 +45,14 @@ rejilla, persistencia, biblioteca y rendimiento fue confirmada por el usuario.
 | Selectivo: matriz, 3 vistas, doble profundidad, medio frente, cotas | completo | `RackSelectiveWindow`, `src/RackCad.Application/Systems/Selective*` | `Selective*Tests` | El modulo mas activo |
 | BOM por componentes + consolidado (`RACKBOMTOTAL`) + export CSV/XLSX | completo | `SelectiveBomBuilder`, `RackBomWindow`, `XlsxWriter` | `SelectiveBomBuilderTests`, `Xlsx*Tests` | XLSX es OOXML escrito a mano, sin dependencias |
 | Seguridad: bota, protector lateral, separador, tope de larguero | completo | `SelectiveSafetyPlacement`, `SelectiveSafetyWindow`, `SafetyTopeGridWindow` | `SelectiveSafetyTests` | Catalogo en `assets/catalogs/seguridad.csv` |
+| Seguridad: **Bota C 4/6 + Poste tope** | completo y verificado en AutoCAD | `SelectiveSafetyFamilies`, `SelectiveSafetyWindow`, builders existentes | `SelectiveSafetyTests`, `SelectivePerFondoTests` | Variantes por `ElementId`; una seleccion exclusiva por familia |
 | Seguridad: **parrilla / deck** (una por tarima, frente y cantidad manuales, cuenta en vivo) | completo y verificado en AutoCAD | `SelectiveFrontalBuilder.ParrillaRow`, `SelectiveParrillaPlan`, `SafetyParrillaGridWindow` | `SelectiveSafetyTests` (Parrilla_*), `SelectiveMedioFrenteTests` | Ver secciones 8-9 |
 | Tarima como referencia visual (frontal + lateral, sin BOM) | completo | `SelectiveFrontalBuilder.AddPallets`, bloque `TARIMA_GENERICA` | `SelectiveFrontalBuilderTests` | Planta = futuro |
 | Identidad + round-trip (GUID en Xrecord, `RACKEDITAR`, `RACKDUPLICAR`, `RACKLISTA`) | completo | `RackEmbedDocument`, `RackFrameCommands` | round-trip tests por store | Convencion Actualizar/Insertar en las 4 ventanas |
 | Layout de almacen v1 (`RACKLAYOUT`, `RACKRELLENAR`) | completo (v1) | `WarehouseGridPlanner`, comandos en Plugin | `Warehouse*Tests` | Solo motor de colocacion; el optimizador IA es meta futura |
 | Bibliotecas (disenos + bloques DWG) | completo | `RackDesignLibrary*`, settings en `%APPDATA%\RackCad\settings.json` | — | `blocks-library.dwg` NO esta en el repo (ver seccion 6) |
 | Validacion de cargas / capacidad | **diferido a proposito** | — | — | Ira con RAM Elements; NO re-proponer |
-| Desviadores, poste tope, guardas traseras (seguridad) | pendiente | — | — | Siguientes elementos naturales |
+| Desviadores, Lateral C, guardas traseras (seguridad) | pendiente | — | — | Siguientes elementos naturales |
 | Rejilla de seguridad vs niveles resueltos | **corregido, testeado y verificado en AutoCAD** | `SelectiveSafetyGrid`, `RackSelectiveWindow.Safety_Click` | `SelectiveSafetyGridTests` | Ver secciones 8-10 |
 
 ## 4. Arquitectura
@@ -165,6 +166,16 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Regresion verificada con el fix temporalmente desactivado: 5/14 casos dirigidos fallaron (multi-fondo,
   duplicados/indices invalidos y parsing decimal/agrupadores); despues de restaurarlo, 503/503 verdes.
 
+**Trabajo actual — variantes Bota C / Poste tope:**
+
+- Se incorporaron los bloques `PROTECTOR_BOTA_C_4`, `PROTECTOR_BOTA_C_6` y `POSTE_3_1_5_8_TOPE` en las tres vistas.
+- `seguridad.csv` los tipa como variantes `BOTA` / `TOPE`; reutilizan sin duplicar las reglas existentes.
+- `SelectiveSafetyFamilies` centraliza la exclusividad y hace que dibujo, BOM y UI elijan el mismo `ElementId`.
+- El dialogo muestra `Ninguno` + variantes en un combo por familia; los ids legacy H/larguero reabren seleccionados.
+- Regresion comprobada antes del fix: 6 pruebas fallaron sin catalogacion; tras agregar los CSV pasaron. Luego 2
+  pruebas de duplicados fallaron dibujando simultaneamente ambas variantes; con la regla central pasan. Total 511/511.
+- UI y Plugin Debug compilan; el usuario confirmo en AutoCAD dibujo, seleccion y funcionamiento de Bota C 4/6 y Poste tope.
+
 ## 9. Ultima validacion manual
 
 - **AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
@@ -172,6 +183,7 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Rejilla sin larguero a piso: filas resueltas correctas, sin fila muerta ni desplazamiento.
 - Parrilla: frente/cantidad, posicion en frontal/lateral y BOM correctos.
 - Tope: rejilla, posicion y opciones correctas.
+- Variantes de seguridad: selectores exclusivos, Bota C 4/6 y Poste tope funcionan correctamente.
 - Persistencia/round-trip: configuracion conservada tras `RACKEDITAR` y actualizar.
 - Rendimiento: sin degradacion perceptible en el escenario probado.
 
@@ -195,7 +207,7 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 
 ## 11. Siguientes tareas recomendadas
 
-1. **Elementos de seguridad faltantes**: desviadores, poste tope, guardas traseras. Patron a seguir:
+1. **Elementos de seguridad faltantes**: desviadores, Lateral C y guardas traseras. Patron a seguir:
    `seguridad.csv` (tipo nuevo) -> `SelectiveSafetyPlacement` -> builders -> `DeepCopy` + DTO persistente
    (ver AGENTS.md) -> BOM -> dialogo. Referencia: como se hizo el TOPE y la PARRILLA.
    Validar: tests + AutoCAD.
@@ -214,12 +226,12 @@ de layout (meta futura, no inmediata).
 |---|---|---|---|
 | Build Debug (todo) | `dotnet build RackCad.sln -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15, Windows 11, SDK 8.0.423 por usuario |
 | Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15 |
-| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **503/503 verdes**, 0 omitidas | 2026-07-15 |
+| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **511/511 verdes**, 0 omitidas | 2026-07-15 |
 | Regresion con fix desactivado | filtro `SelectiveSafetyGridTests|LocalizedNumberParserTests` | **5 fallos esperados de 14**; fix restaurado y suite completa verde | 2026-07-15 |
 | Validacion estatica auxiliar | Roslyn de PowerShell + referencias .NET 8/xUnit en cache; parse XML | **OK:** sintaxis 233 C#; semantica Domain/Application, UI y tests; 12 XML/XAML bien formados | 2026-07-15; no sustituye `dotnet build/test` ni la generacion XAML actual |
 | Lint / format | — | no aplica (no hay linters configurados) | — |
 | Release / bundle | `pwsh deploy/install-bundle.ps1 -Build` | **no ejecutada** en esta sesion (requiere AutoCAD cerrado y no era necesaria) | — |
-| Verificacion manual AutoCAD | NETLOAD + `RACKCAD`/`RACKSELECTIVO`/`RACKEDITAR` | **OK:** biblioteca, rejilla, parrilla, tope, persistencia y rendimiento | 2026-07-15, confirmada por el usuario |
+| Verificacion manual AutoCAD | NETLOAD + `RACKCAD`/`RACKSELECTIVO`/`RACKEDITAR` | **OK:** lote anterior + Bota C 4/6 y Poste tope | 2026-07-15, confirmada por el usuario |
 
 ## 13. Preguntas abiertas
 
@@ -233,7 +245,7 @@ de layout (meta futura, no inmediata).
 2. `git log --oneline -5` y comparar con la seccion 8 de este archivo (¿hubo push nuevo?).
 3. Leer en orden: este archivo -> [README.md](../README.md) -> [AGENTS.md](../AGENTS.md) ->
    [docs/00-indice-contexto.md](00-indice-contexto.md).
-4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 503+ y quedar verde).
+4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 511+ y quedar verde).
 5. Tomar la primera tarea de la seccion 11 que siga abierta.
 
 **Prompt de reanudacion (copiar en un chat nuevo de Claude o Codex):**
@@ -241,7 +253,7 @@ de layout (meta futura, no inmediata).
 ```
 Trabajo en RackCad (D:\Documentos\Codex\Calculadora de racks), plugin de AutoCAD 2025 en C#/.NET8,
 rama release/claude-review. Lee primero docs/HANDOFF.md, luego README.md y AGENTS.md; verifica el
-estado real con git log y dotnet test (503 tests verdes en este arbol). El contexto de estado, bugs conocidos
+estado real con git log y dotnet test (511 tests verdes en este arbol). El contexto de estado, bugs conocidos
 y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con: [elige la tarea o pega la
 seccion 11]. Respeta las convenciones de AGENTS.md (en especial: DeepCopy + DTO para flags de
 seguridad, tests de regresion verificados fallando, y no hacer push sin verificacion en AutoCAD).

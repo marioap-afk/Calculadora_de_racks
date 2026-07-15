@@ -94,6 +94,59 @@ namespace RackCad.Tests
         }
 
         private const string TopeId = "LARGUERO_ESCALON_TOPE_DE_3";
+        private const string PosteTopeId = "POSTE_3_1_5_8_TOPE";
+
+        [Fact]
+        public void PosteTopeVariant_ReusesTopePlacementBomAndRoundTrip()
+        {
+            var design = PerFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = PosteTopeId,
+                Side = SafetySide.Both,
+                TopeFrontal = true
+            });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+            var lateral = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .SelectMany(c => c.Largueros).Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+            var planta = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+
+            Assert.NotEmpty(frontal);
+            Assert.NotEmpty(lateral);
+            Assert.NotEmpty(planta);
+            Assert.All(frontal, x => Assert.Equal(PosteTopeId + "_FRONTAL", x.BlockName));
+            Assert.All(lateral, x => Assert.Equal(PosteTopeId + "_LATERAL", x.BlockName));
+            Assert.All(planta, x => Assert.Equal(PosteTopeId + "_PLANTA", x.BlockName));
+
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+            Assert.Contains(bom.Components, c => c.ProfileId == PosteTopeId);
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "Rack"))).ToDomain();
+            Assert.Equal(PosteTopeId, Assert.Single(restored.SafetySelections).ElementId);
+        }
+
+        [Fact]
+        public void TopeFamily_MalformedDuplicateSelections_UsesOnlyTheFirstVariant()
+        {
+            var design = PerFondoDesign();
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both });
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = PosteTopeId, Side = SafetySide.Both });
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var lateral = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .SelectMany(c => c.Largueros).Where(x => x.Role == HeaderBlockRole.Tope).ToList();
+            Assert.NotEmpty(lateral);
+            Assert.All(lateral, x => Assert.Equal(TopeId, x.PieceId));
+
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+            Assert.Contains(bom.Components, c => c.ProfileId == TopeId);
+            Assert.DoesNotContain(bom.Components, c => c.ProfileId == PosteTopeId);
+        }
 
         [Fact]
         public void Lateral_Tope_DrawsPerLevelAtCentralBack_WithSaque()
