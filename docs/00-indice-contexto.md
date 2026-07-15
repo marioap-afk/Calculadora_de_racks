@@ -2,7 +2,7 @@
 
 Este indice resume como entender rapidamente el proyecto y cual es el estado del repo antes de continuar el desarrollo.
 
-RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (329 tests verdes).
+RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (489 tests verdes). El estado vivo (trabajo reciente, bugs conocidos, siguientes tareas) se mantiene en `docs/HANDOFF.md`.
 
 ## Los cuatro tipos de rack
 
@@ -26,6 +26,9 @@ El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde s
 
 ## Lectura recomendada
 
+0. `docs/HANDOFF.md`
+   - Estado actual y continuidad entre sesiones (leer SIEMPRE primero). Convenciones estables: `AGENTS.md`.
+
 1. `README.md`
    - Vista rapida del proyecto, build y prueba con `NETLOAD`.
 
@@ -46,7 +49,7 @@ El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde s
 Los catalogos viven en `assets/catalogs/*.csv` (mas `defaults.json` y `header-templates.json`) y los carga `JsonRackCatalogProvider` a `RackCatalog`:
 
 - `secciones.csv` — **TODOS los perfiles estructurales en una hoja** con columna `rol` (POSTE | CELOSIA |
-  LARGUERO). Los refuerzos son postes; horizontales + diagonales comparten la celosia; los largueros llevan
+  LARGUERO | SEPARADOR). Los refuerzos son postes; horizontales + diagonales comparten la celosia; los largueros llevan
   `peraltes` (valores permitidos) y `mensula` (FK). El provider los separa en las tres listas de siempre
   (`PostProfiles`/`TrussProfiles`/`BeamProfiles`), asi que el codigo consumidor no cambio; los tres CSV
   legacy siguen leyendose como fallback si `secciones.csv` no existe.
@@ -54,6 +57,7 @@ Los catalogos viven en `assets/catalogs/*.csv` (mas `defaults.json` y `header-te
 - `base-plates.csv` — `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`.
 - `connection-points.csv` + `connection-layout.csv` — puntos de conexion parametricos en X y Y (X = localX + localXPorParam * valor(paramX); Y = localY + localYPorParam * valor(paramY)).
 - `blocks.csv` (bloque por pieza y vista), `views.csv`, `flow-bed-profiles.csv`.
+- `seguridad.csv` — elementos de seguridad (bota, protector lateral, tope, parrilla) con costo/moneda/unidad.
 
 Ya no existen `diagonal-profiles.csv` ni `reinforcement-profiles.csv`. Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 
@@ -92,6 +96,6 @@ Utiles para decisiones de arquitectura, pero mas extensos:
 
 ## Estado del repositorio
 
-Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 329 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
+Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 489 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
 
 La carpeta de salida `bin/`, `obj/`, caches locales `.dotnet_home`, `.nuget_packages`, `.appdata` y `.localappdata` no son parte logica del codigo fuente y estan ignoradas por `.gitignore`.

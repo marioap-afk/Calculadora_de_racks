@@ -75,7 +75,7 @@ assets/
 
 `RackCad.Tests`
 
-- Suite de pruebas (`net8.0`, xUnit), 329 tests verdes en `release/claude-review`.
+- Suite de pruebas (`net8.0`, xUnit), 489 tests verdes en `release/claude-review`.
 
 ## Compilar
 

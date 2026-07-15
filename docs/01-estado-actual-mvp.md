@@ -5,7 +5,7 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-esta con 329 tests verdes.
+esta con 489 tests verdes (estado vivo en `docs/HANDOFF.md`).
 
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y

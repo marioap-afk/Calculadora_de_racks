@@ -22,7 +22,7 @@ Cada tipo tiene su ventana editora WPF, su servicio de dibujo en AutoCAD y su ro
 | **Cabecera (marco)** | `RackFrameConfiguratorWindow` | Un marco = 2 postes + placas base + celosia. Horizontales = fuente de verdad; paneles derivados. Configuracion rapida ("Insertar" en un clic) + editor avanzado (horizontales, paneles, perfiles, refuerzo de poste, excepciones). El peralte de la placa base es editable por placa (`BasePlatePlacement.PeralteOverride`; null = derivado con `StandardPeralte`). |
 | **Sistema dinamico (pallet flow)** | `RackDynamicSystemWindow` | Vista lateral del sistema completo: cabeceras a lo largo del tramo (celosia espejeada) como bloques anidados compartidos, separadores por nivel, postes derivados con refuerzo opcional, altura de cabecera automatica desde la carga, presets por modulo, BOM. |
 | **Cama de rodamiento (flow bed)** | `RackFlowBedWindow` | Riel (LONGITUD parametrica), tope, rodillos al paso minimo por diametro y frenos segun fondo de tarima; tipo dinamica o pushback (sin frenos). Ventana con vista previa o comando rapido. |
-| **Selectivo (editor avanzado pallet-driven)** | `RackSelectiveWindow` | Vistas frontal, lateral (cortes por poste) y planta, ligadas por GUID. Matriz **frentes x niveles**; cada celda = tarima (frente/alto) + tarimas por nivel + larguero + peralte de larguero. Geometria en `SelectiveGeometryResolver` (largueros por troquel, claro por tarima+holgura, altura por frente desde el escalon, datum de piso en Y=0, larguero a piso por frente). Overrides manuales opcionales por celda (vacio = auto). Cada poste (N frentes -> N+1 postes) puede referenciar una cabecera embebida de la que sale su placa/peralte. BOM (postes, placas, largueros, mensulas) con `SelectiveBomBuilder` + `RackBomWindow` (grid + export CSV). |
+| **Selectivo (editor avanzado pallet-driven)** | `RackSelectiveWindow` | Vistas frontal, lateral (cortes por poste) y planta, ligadas por GUID. Matriz **frentes x niveles**; cada celda = tarima (frente/alto) + tarimas por nivel + larguero + peralte de larguero. Geometria en `SelectiveGeometryResolver` (largueros por troquel, claro por tarima+holgura, altura por frente desde el escalon, datum de piso en Y=0, larguero a piso por frente). Overrides manuales opcionales por celda (vacio = auto). Cada poste (N frentes -> N+1 postes) puede referenciar una cabecera embebida de la que sale su placa/peralte. BOM (postes, placas, largueros, mensulas) con `SelectiveBomBuilder` + `RackBomWindow` (arbol + export CSV/XLSX). Elementos de seguridad (bota, protector lateral, separador, tope, parrilla) desde el dialogo "Seguridad", con dibujo y BOM. |
 
 ## Comandos
 
@@ -36,6 +36,10 @@ RACKSELECTIVO           (abre el editor selectivo; dibuja la vista frontal al co
 RACKEDITAR              (selecciona un rack dibujado y reabre su editor precargado; ver Round-trip)
 RACKDUPLICAR            (copia un rack como uno INDEPENDIENTE, con GUID nuevo; ver Round-trip)
 RACKLISTA               (tabla de todos los racks del dibujo: nombre, tipo, vistas, copias; zoom al elegido)
+RACKBOMTOTAL            (BOM consolidado de TODO el dibujo: desglose por rack x copias + gran total)
+RACKLAYOUT              (layout de almacen v1: rejilla de racks + pasillos + numeracion)
+RACKRELLENAR            (lee el sitio de una capa y auto-rellena con racks)
+RACKAYUDA               (ventana in-app con todos los comandos y sus atajos cortos: RS, RED, RD, RL, ...)
 ```
 
 ## Identidad y round-trip (RACKEDITAR)
@@ -74,9 +78,9 @@ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj
 
 ## Catalogos externos
 
-Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CSV versionado en `assets/catalogs/` (las plantillas y los defaults siguen en JSON). Todos los perfiles estructurales (postes, celosia y largueros) viven en UN solo `secciones.csv` con columna `rol`; horizontales y diagonales comparten la celosia y los refuerzos son postes.
+Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CSV versionado en `assets/catalogs/` (las plantillas y los defaults siguen en JSON). Todos los perfiles estructurales (postes, celosia, largueros y separadores) viven en UN solo `secciones.csv` con columna `rol`; horizontales y diagonales comparten la celosia y los refuerzos son postes.
 
-- `secciones.csv` (TODOS los perfiles estructurales en una hoja, columna `rol` = POSTE | CELOSIA | LARGUERO; los refuerzos son postes, horizontales y diagonales comparten la celosia, y los largueros llevan `peraltes` = valores permitidos y `mensula` = FK a mensulas)
+- `secciones.csv` (TODOS los perfiles estructurales en una hoja, columna `rol` = POSTE | CELOSIA | LARGUERO | SEPARADOR; los refuerzos son postes, horizontales y diagonales comparten la celosia, y los largueros llevan `peraltes` = valores permitidos y `mensula` = FK a mensulas)
 - `mensulas.csv` (mensulas del selectivo)
 - `base-plates.csv` (con `peralteBase` / `peraltePorPeraltePoste` -> `StandardPeralte`)
 - `flow-bed-profiles.csv` (cama de rodamiento: riel/rodillo/freno/tope, columna `role`)
@@ -86,7 +90,8 @@ Los perfiles, placas, puntos, vistas, bloques y layout de conexion viven como CS
 - `blocks.csv` (nombre de bloque de AutoCAD por pieza y vista)
 - `defaults.json`
 - `header-templates.json`
-- `blocks-library.dwg` (definiciones de bloque; ver seccion Biblioteca de bloques)
+- `seguridad.csv` (elementos de seguridad: bota, protector lateral, tope, parrilla; con costo/moneda/unidad para cotizacion)
+- `blocks-library.dwg` (definiciones de bloque; **NO versionado** — es el DWG del usuario, ver seccion Biblioteca de bloques)
 
 Como editar estos archivos y como se relacionan entre si: `docs/catalogos-y-plantillas.md` y `docs/modelo-de-datos.md`.
 
@@ -110,6 +115,8 @@ Para que RackCad **cargue solo al abrir AutoCAD** (sin `NETLOAD` por sesion), in
 
 Leer primero:
 
+- `docs/HANDOFF.md` (estado actual, trabajo reciente y siguientes tareas — el documento de continuidad)
+- `AGENTS.md` (convenciones obligatorias para agentes y desarrolladores) y `CLAUDE.md` (indice para Claude)
 - `docs/00-indice-contexto.md`
 - `docs/01-estado-actual-mvp.md`
 - `docs/02-modelo-tecnico-vigente.md`
@@ -137,4 +144,3 @@ Las vistas lateral/planta solo se insertan desde `RACKEDITAR` de una vista front
 - Calculo de rodillos/frenos por capacidad (hoy paso minimo por diametro + freno por fondo de tarima; las reglas de capacidad estan definidas para una fase futura).
 - Integracion de la cama de rodamiento dentro del dibujo del sistema dinamico.
 - SQLite.
-- Exportacion Excel (el BOM se exporta a CSV).
