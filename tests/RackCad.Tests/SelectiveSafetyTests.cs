@@ -36,6 +36,8 @@ namespace RackCad.Tests
         }
 
         private const string LateralId = "PROTECTOR_LATERAL_BOTA_H_3_16_18";
+        private const string LateralC4Id = "PROTECTOR_LATERAL_BOTA_C_4";
+        private const string LateralC6Id = "PROTECTOR_LATERAL_BOTA_C_6";
         private const string BotaHId = "PROTECTOR_BOTA_H_3_16_18";
         private const string BotaC4Id = "PROTECTOR_BOTA_C_4";
         private const string BotaC6Id = "PROTECTOR_BOTA_C_6";
@@ -43,6 +45,9 @@ namespace RackCad.Tests
 
         /// <summary>A design of N frentes with a bota (general side, all frentes) + a protector lateral on chosen posts.</summary>
         private static SelectivePalletDesign DesignWithLateral(int frentes, SafetySide botaSide, params (int Post, SafetySide Side)[] lateralPosts)
+            => DesignWithLateralVariant(LateralId, frentes, botaSide, lateralPosts);
+
+        private static SelectivePalletDesign DesignWithLateralVariant(string lateralId, int frentes, SafetySide botaSide, params (int Post, SafetySide Side)[] lateralPosts)
         {
             var design = new SelectivePalletDesign { PostId = PostId, PostPeralte = 3.0, PalletDepth = 48.0 };
             for (var i = 0; i < frentes; i++) design.Bays.Add(Bay());
@@ -51,7 +56,7 @@ namespace RackCad.Tests
                 design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Side = botaSide });
             }
 
-            var lateral = new SelectiveSafetySelection { ElementId = LateralId, Side = SafetySide.None };
+            var lateral = new SelectiveSafetySelection { ElementId = lateralId, Side = SafetySide.None };
             foreach (var (post, side) in lateralPosts) lateral.PostSides.Add(new SafetyPostSide { PostIndex = post, Side = side });
             design.SafetySelections.Add(lateral);
             return design;
@@ -85,6 +90,8 @@ namespace RackCad.Tests
         [Theory]
         [InlineData(BotaC4Id, SelectiveSafetyDefaults.BotaType)]
         [InlineData(BotaC6Id, SelectiveSafetyDefaults.BotaType)]
+        [InlineData(LateralC4Id, SelectiveSafetyDefaults.LateralType)]
+        [InlineData(LateralC6Id, SelectiveSafetyDefaults.LateralType)]
         [InlineData(PosteTopeId, SelectiveSafetyDefaults.TopeType)]
         public void Catalog_LoadsAddedSafetyVariants_WithAllThreeViews(string id, string type)
         {
@@ -136,6 +143,57 @@ namespace RackCad.Tests
             var bom = SelectiveBomBuilder.Build(system, Catalog);
             Assert.Contains(bom.Components, c => c.ProfileId == BotaHId);
             Assert.DoesNotContain(bom.Components, c => c.ProfileId == BotaC4Id);
+        }
+
+        [Theory]
+        [InlineData(LateralC4Id)]
+        [InlineData(LateralC6Id)]
+        public void LateralCVariant_ReusesLateralPlacementBomAndRoundTrip(string id)
+        {
+            var design = DesignWithLateralVariant(id, 2, SafetySide.None, (0, SafetySide.Left));
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety && i.PieceId == id).ToList();
+            var lateral = new SelectiveLateralBuilder().Cortes(system, Catalog)
+                .SelectMany(c => c.Largueros).Where(i => i.Role == HeaderBlockRole.Safety && i.PieceId == id).ToList();
+            var planta = new SelectivePlantaBuilder().Build(system, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety && i.PieceId == id).ToList();
+
+            Assert.NotEmpty(frontal);
+            Assert.NotEmpty(lateral);
+            Assert.NotEmpty(planta);
+            Assert.All(frontal, i => Assert.Equal(id + "_FRONTAL", i.BlockName));
+            Assert.All(lateral, i => Assert.Equal(id + "_LATERAL", i.BlockName));
+            Assert.All(planta, i => Assert.Equal(id + "_PLANTA", i.BlockName));
+
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+            var component = Assert.Single(bom.Components, c => c.ProfileId == id);
+            Assert.Equal(frontal.Count, component.Quantity);
+            Assert.True(component.Length > 0.0);
+
+            var store = new SelectivePalletDesignStore();
+            var restored = store.Deserialize(store.Serialize(SelectivePalletDesignDocument.From(design, "id", "Rack"))).ToDomain();
+            Assert.Equal(id, Assert.Single(restored.SafetySelections).ElementId);
+        }
+
+        [Fact]
+        public void LateralFamily_MalformedDuplicateSelections_UsesOnlyTheFirstVariant()
+        {
+            var design = DesignWithLateralVariant(LateralId, 2, SafetySide.None, (0, SafetySide.Left));
+            var duplicate = new SelectiveSafetySelection { ElementId = LateralC4Id, Side = SafetySide.None };
+            duplicate.PostSides.Add(new SafetyPostSide { PostIndex = 1, Side = SafetySide.Right });
+            design.SafetySelections.Add(duplicate);
+            var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
+
+            var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Safety).ToList();
+            Assert.NotEmpty(frontal);
+            Assert.All(frontal, i => Assert.Equal(LateralId, i.PieceId));
+
+            var bom = SelectiveBomBuilder.Build(system, Catalog);
+            Assert.Contains(bom.Components, c => c.ProfileId == LateralId);
+            Assert.DoesNotContain(bom.Components, c => c.ProfileId == LateralC4Id);
         }
 
         [Fact]

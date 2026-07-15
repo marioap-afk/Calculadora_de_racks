@@ -382,6 +382,8 @@ Variantes catalogadas actualmente:
 | `PROTECTOR_BOTA_C_4` | `BOTA` | Exactamente la misma regla de Bota H |
 | `PROTECTOR_BOTA_C_6` | `BOTA` | Exactamente la misma regla de Bota H |
 | `PROTECTOR_LATERAL_BOTA_H_3_16_18` | `LATERAL` | Protector lateral por poste |
+| `PROTECTOR_LATERAL_BOTA_C_4` | `LATERAL` | Exactamente la misma regla del Lateral H |
+| `PROTECTOR_LATERAL_BOTA_C_6` | `LATERAL` | Exactamente la misma regla del Lateral H |
 | `LARGUERO_ESCALON_TOPE_DE_3` | `TOPE` | Rejilla/configuracion de tope |
 | `POSTE_3_1_5_8_TOPE` | `TOPE` | Exactamente la misma rejilla/configuracion del larguero tope |
 
