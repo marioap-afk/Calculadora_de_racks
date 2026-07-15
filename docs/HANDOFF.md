@@ -1,7 +1,7 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-15**, rama `release/claude-review`, HEAD local con el lote de
+> Actualizado: **2026-07-15**, rama `release/claude-review`, HEAD publicado con el lote de
 > correccion/escalabilidad validado con 503 tests, build Debug completo y prueba manual en AutoCAD.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
@@ -21,8 +21,8 @@ doble profundidad, medio frente, cotas, elementos de seguridad y BOM por compone
 
 **Estado**: activo y funcional. El arbol actual tiene **503/503 tests verdes** (14 nuevos) y build Debug completo
 con 0 errores; solo aparecen los `MSB3277` conocidos de las referencias de AutoCAD. El SDK 8.0.423 esta instalado
-por usuario. La rama contiene un commit local aun no publicado en `origin`. La verificacion manual de parrilla,
-tope, rejilla, persistencia, biblioteca y rendimiento fue confirmada por el usuario.
+por usuario. La rama esta sincronizada con `origin` al cierre del lote. La verificacion manual de parrilla, tope,
+rejilla, persistencia, biblioteca y rendimiento fue confirmada por el usuario.
 
 ## 2. Estado comprobado
 
@@ -150,7 +150,7 @@ Verificacion realizada: 489 tests verdes; los tests de regresion se verificaron 
 desactivado antes de darlos por buenos; dos revisiones adversariales multi-agente (los hallazgos
 confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 
-**Lote cerrado 2026-07-15 (commit local, build/tests verdes):**
+**Lote cerrado 2026-07-15 (publicado, build/tests verdes):**
 
 - `SelectiveSafetyGrid.LevelCounts` deriva las filas de niveles RESUELTOS y expone el maximo real entre fondos;
   elimina la fila de tarima de piso cuando no existe larguero.
