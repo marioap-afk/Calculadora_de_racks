@@ -367,6 +367,29 @@ Tabla **normalizada**: una pieza puede tener **varios bloques**, uno por vista. 
 
 > Los `id` que use una cabecera deben existir en estos catalogos. La prueba automatica `CatalogStandardConsistencyTests` verifica que la cabecera estandar no referencie ids inexistentes.
 
+### Variantes de seguridad (`seguridad.csv` + `blocks.csv`)
+
+En seguridad, `type` identifica la **familia y su regla de colocacion**; `id` identifica la variante concreta que se
+persiste en el rack. El dialogo muestra un solo combo (`Ninguno` + variantes) para cada familia mutuamente exclusiva:
+`BOTA`, `LATERAL`, `TOPE` y `DESVIADOR`. Cambiar la variante conserva la configuracion comun de la familia y cambia
+solo `ElementId`; un documento existente vuelve a seleccionar su id exacto.
+
+Variantes catalogadas actualmente:
+
+| `id` | `type` | Regla reutilizada |
+|---|---|---|
+| `PROTECTOR_BOTA_H_3_16_18` | `BOTA` | Bota en base de poste |
+| `PROTECTOR_BOTA_C_4` | `BOTA` | Exactamente la misma regla de Bota H |
+| `PROTECTOR_BOTA_C_6` | `BOTA` | Exactamente la misma regla de Bota H |
+| `PROTECTOR_LATERAL_BOTA_H_3_16_18` | `LATERAL` | Protector lateral por poste |
+| `LARGUERO_ESCALON_TOPE_DE_3` | `TOPE` | Rejilla/configuracion de tope |
+| `POSTE_3_1_5_8_TOPE` | `TOPE` | Exactamente la misma rejilla/configuracion del larguero tope |
+
+Cada una de estas variantes tiene filas `FRONTAL`, `LATERAL` y `PLANTA` en `blocks.csv`; el `blockName` debe coincidir
+exactamente con la biblioteca DWG. Dibujo y BOM resuelven una sola variante por familia. Si un documento anomalo
+contiene dos ids de la misma familia, se usa el primero en el orden persistido de forma consistente en todas las vistas
+y en el BOM.
+
 ### Tarima como referencia visual (`TARIMA_GENERICA`)
 
 La tarima es un **accesorio de referencia visual**: el selectivo la dibuja automaticamente, una por posicion de carga, cuando se enciende el toggle **"Mostrar tarimas"** del editor, en las vistas **frontal y lateral**. **No entra en el BOM** (es solo dibujo; el BOM se arma por componentes: cabeceras + largueros + seguridad, no por las tarimas). Se apoya sobre la superficie de carga del larguero (el escalon `INICIO_PERFIL`) y, si el nivel de piso descansa directo en el suelo, sobre `Y=0`.

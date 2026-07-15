@@ -114,32 +114,26 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
-            foreach (var selection in system.SafetySelections)
+            // A catalog type is one family with one active ElementId. Resolve it once so malformed legacy documents
+            // containing two variants cannot draw both (or make the lateral disagree with frontal/planta/BOM).
+            var selection = SelectiveSafetyFamilies.SelectedOfType(system.SafetySelections, catalog.SafetyElements, type);
+            if (selection == null || string.IsNullOrWhiteSpace(selection.ElementId))
             {
-                if (selection == null || string.IsNullOrWhiteSpace(selection.ElementId))
-                {
-                    continue;
-                }
+                return result;
+            }
 
-                // Drawn if the default side draws OR some post overrides to a drawn side.
-                var drawsSomewhere = selection.Side != SafetySide.None
-                    || selection.PostSides.Any(p => p != null && p.Side != SafetySide.None);
-                if (!drawsSomewhere)
-                {
-                    continue;
-                }
+            // Drawn if the default side draws OR some post overrides to a drawn side.
+            var drawsSomewhere = selection.Side != SafetySide.None
+                || selection.PostSides.Any(p => p != null && p.Side != SafetySide.None);
+            if (!drawsSomewhere)
+            {
+                return result;
+            }
 
-                var element = catalog.SafetyElements.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
-                if (element == null || !SelectiveSafetyDefaults.IsType(element.Type, type))
-                {
-                    continue;
-                }
-
-                var block = CatalogLookup.Block(catalog, selection.ElementId, view);
-                if (!string.IsNullOrWhiteSpace(block))
-                {
-                    result.Add(new SafetyElement { PieceId = selection.ElementId, Block = block, Selection = selection });
-                }
+            var block = CatalogLookup.Block(catalog, selection.ElementId, view);
+            if (!string.IsNullOrWhiteSpace(block))
+            {
+                result.Add(new SafetyElement { PieceId = selection.ElementId, Block = block, Selection = selection });
             }
 
             return result;
