@@ -15,8 +15,8 @@ namespace RackCad.Application.Systems
     /// fondo along the depth axis (<see cref="SelectiveDepthLayout"/>): each fondo is its own cabecera at ITS OWN height
     /// (a side can be taller or shorter) with ITS OWN front/back largueros (its own levels). fondo 0's cabecera is the
     /// corte's <see cref="SelectiveCorte.Cabecera"/> (drawn by the AutoCAD side); the extra fondos + all largueros are
-    /// loose instances so the corte stays a single block. Safety elements (protectores/topes/mallas) are a future
-    /// extension that needs their own catalog blocks. Pure.
+    /// loose instances so the corte stays a single block. Implemented safety families (protectores, topes and
+    /// parrillas) are appended from their catalog blocks. Pure.
     /// </summary>
     public sealed class SelectiveLateralBuilder
     {
@@ -344,6 +344,7 @@ namespace RackCad.Application.Systems
             {
                 var selection = tope.Selection;
                 var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+                var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
 
                 foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
                 {
@@ -366,7 +367,7 @@ namespace RackCad.Application.Systems
                         if (b < 0 || b >= bays.Count) continue;
                         for (var lvl = 0; lvl < bays[b].Levels.Count; lvl++)
                         {
-                            if (selection.TopeAt(b, lvl)) ys.Add(Math.Round(bays[b].Levels[lvl].Y, 4));
+                            if (!offCells.Contains((b, lvl))) ys.Add(Math.Round(bays[b].Levels[lvl].Y, 4));
                         }
                     }
 
@@ -519,6 +520,7 @@ namespace RackCad.Application.Systems
 
             var overrideFrente = parrilla.Selection.ParrillaFrente;
             var overrideCount = parrilla.Selection.ParrillaCantidad;
+            var offCells = SelectiveSafetyGrid.OffCellKeys(parrilla.Selection.ParrillaOffCells);
 
             for (var k = 0; k < offsets.Count; k++)
             {
@@ -545,7 +547,7 @@ namespace RackCad.Application.Systems
 
                     for (var lvl = 0; lvl < bays[b].Levels.Count; lvl++)
                     {
-                        if (!parrilla.Selection.ParrillaAt(b, lvl))
+                        if (offCells.Contains((b, lvl)))
                         {
                             continue; // this (frente, level) cell has no deck
                         }

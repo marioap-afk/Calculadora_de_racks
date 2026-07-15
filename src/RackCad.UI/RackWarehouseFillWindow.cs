@@ -189,6 +189,6 @@ namespace RackCad.UI
         }
 
         private static bool TryParseLength(string text, out double value)
-            => double.TryParse((text ?? string.Empty).Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out value) && value >= 0.0;
+            => UiSupport.TryNum(text, out value) && value >= 0.0;
     }
 }

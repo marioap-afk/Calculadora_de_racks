@@ -412,7 +412,7 @@ namespace RackCad.UI
         /// </summary>
         private double ComputeHeaderHeight(PalletSpecification pallet, int palletsDeep)
         {
-            var levels = int.TryParse(LoadLevelsBox.Text?.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) && n >= 1 ? n : 1;
+            var levels = UiSupport.TryInt(LoadLevelsBox.Text, out var n) && n >= 1 ? n : 1;
             var firstLevel = TryNum(FirstLevelHeightBox.Text, out var f) && f >= 0.0 ? f : 0.0;
             var beamDepth = TryNum(BeamDepthBox.Text, out var b) && b >= 0.0 ? b : 0.0;
             var totalDepth = palletsDeep * pallet.Depth + 2.0 * DynamicRackDefaults.HeaderEndAllowance;
@@ -478,7 +478,7 @@ namespace RackCad.UI
             if (!TryNum(DepthBox.Text, out var depth) || depth <= 0) { error = "Fondo inválido."; return false; }
             if (!TryNum(PalletHeightBox.Text, out var palletHeight) || palletHeight <= 0) { error = "Altura de tarima inválida."; return false; }
             if (!TryNum(WeightBox.Text, out var weight) || weight < 0) { error = "Peso inválido."; return false; }
-            if (!int.TryParse(PalletsDeepBox.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out palletsDeep) || palletsDeep < 2)
+            if (!UiSupport.TryInt(PalletsDeepBox.Text, out palletsDeep) || palletsDeep < 2)
             {
                 error = "Las tarimas de fondo deben ser un entero >= 2.";
                 return false;
@@ -811,7 +811,7 @@ namespace RackCad.UI
             }
 
             system.SeparatorCountOverride =
-                int.TryParse(SeparatorCountBox.Text?.Trim(), out var count) && count >= 1 ? count : (int?)null;
+                UiSupport.TryInt(SeparatorCountBox.Text, out var count) && count >= 1 ? count : (int?)null;
             system.SeparatorSpacingOverride =
                 TryNum(SeparatorSpacingBox.Text, out var spacing) && spacing > 0.0 ? spacing : (double?)null;
         }
@@ -836,7 +836,7 @@ namespace RackCad.UI
             error = null;
 
             var count = SeparatorCountBox.Text?.Trim();
-            if (!string.IsNullOrWhiteSpace(count) && !(int.TryParse(count, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) && n >= 1))
+            if (!string.IsNullOrWhiteSpace(count) && !(UiSupport.TryInt(count, out var n) && n >= 1))
             {
                 error = "Cantidad de separadores inválida (entero >= 1, o vacío para estándar).";
                 return false;

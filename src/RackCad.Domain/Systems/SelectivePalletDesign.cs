@@ -44,8 +44,8 @@ namespace RackCad.Domain.Systems
         /// <summary>
         /// Separations (in) between consecutive fondos — one value per gap (<see cref="DepthCount"/> - 1 gaps),
         /// front to back. A gap with no value (or a short list) falls back to the last given value, else
-        /// <see cref="SelectiveRackDefaults.DefaultSeparator"/>. The physical separador block is not drawn yet;
-        /// this is only the empty space left between adjacent cabecera-lines. Editable per gap.
+        /// <see cref="SelectiveRackDefaults.DefaultSeparator"/>. The same value drives the physical separador blocks in
+        /// lateral/planta and their BOM component; the frontal intentionally shows only the gap. Editable per gap.
         /// </summary>
         public IList<double> SeparatorLengths { get; } = new List<double>();
 
@@ -79,8 +79,8 @@ namespace RackCad.Domain.Systems
         /// <summary>
         /// Optional per-post "cabecera" (frame), one entry per post position (N frentes → N+1 posts). A null
         /// entry (or a short list) means that post uses the run defaults. The frontal draw uses each cabecera's
-        /// base plate (id + peralte); the future lateral view renders the full cabecera. In the frontal a post is
-        /// this cabecera seen edge-on.
+        /// base plate (id + peralte); lateral/planta render the full cabecera. In the frontal a post is this cabecera
+        /// seen edge-on.
         /// </summary>
         public IList<RackFrameConfiguration> PostCabeceras { get; } = new List<RackFrameConfiguration>();
 
@@ -96,13 +96,13 @@ namespace RackCad.Domain.Systems
         /// <summary>Draw the base plates. Default true; turning it off omits the plate blocks in frontal/planta.</summary>
         public bool DrawBasePlate { get; set; } = true;
 
-        /// <summary>Number the frentes (posts). Persisted now; the text drawing is a future pipeline.</summary>
+        /// <summary>Number the frentes in the generated annotations.</summary>
         public bool NumberFronts { get; set; }
 
-        /// <summary>Number the load levels. Persisted now; the text drawing is a future pipeline.</summary>
+        /// <summary>Number the load levels in frontal/lateral annotations.</summary>
         public bool NumberLevels { get; set; }
 
-        /// <summary>Draw the rack name as visible text. Persisted now; the text drawing is a future pipeline.</summary>
+        /// <summary>Draw the rack name as visible text in the generated views.</summary>
         public bool DrawRackName { get; set; }
 
         /// <summary>Draw the pallets (tarimas) as a VISUAL reference on the load levels (and the floor). Default off;
@@ -119,8 +119,8 @@ namespace RackCad.Domain.Systems
         /// current style, sized to <see cref="AnnotationScale"/>). A chosen style is respected as-is.</summary>
         public string DimensionStyle { get; set; }
 
-        /// <summary>Safety accessories chosen for this rack (catalog id + quantity), for the BOM. Drawing them in the
-        /// views is a future phase (needs their AutoCAD blocks); for now they are catalog + selection + BOM.</summary>
+        /// <summary>Safety accessories chosen for this rack. Implemented families drive their view blocks and BOM;
+        /// unknown/future families retain a manual BOM quantity until their placement rule exists.</summary>
         public IList<SelectiveSafetySelection> SafetySelections { get; } = new List<SelectiveSafetySelection>();
     }
 
@@ -167,8 +167,8 @@ namespace RackCad.Domain.Systems
         /// e.g. the first fondo instead of the middle when there are 3.</summary>
         public int TopeFondo { get; set; } = -1;
 
-        /// <summary>TOPE: the block's SAQUE (stick-out) parameter, inches (&lt;= 0 → the default 3").</summary>
-        public double TopeSaque { get; set; } = 3.0;
+        /// <summary>TOPE: the block's SAQUE (stick-out) parameter, inches (&lt;= 0 → the domain default).</summary>
+        public double TopeSaque { get; set; } = SelectiveSafetyDefaults.TopeSaque;
 
         /// <summary>TOPE: also draw it in the FRONTAL view (lateral + planta always draw it; the frontal is a toggle).</summary>
         public bool TopeFrontal { get; set; }
@@ -218,6 +218,51 @@ namespace RackCad.Domain.Systems
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Deep working copy used when a selection crosses the design/resolver/view/UI boundaries. New safety fields
+        /// belong here once; persistence remains an explicit DTO mapping so legacy fallbacks stay visible and tested.
+        /// </summary>
+        public SelectiveSafetySelection DeepCopy()
+        {
+            var copy = new SelectiveSafetySelection
+            {
+                ElementId = ElementId,
+                Quantity = Quantity,
+                Side = Side,
+                TopeShared = TopeShared,
+                TopeFondo = TopeFondo,
+                TopeSaque = TopeSaque,
+                TopeFrontal = TopeFrontal,
+                ParrillaFrontal = ParrillaFrontal,
+                ParrillaLateral = ParrillaLateral,
+                ParrillaFrente = ParrillaFrente,
+                ParrillaCantidad = ParrillaCantidad
+            };
+
+            foreach (var post in PostSides)
+            {
+                if (post != null)
+                {
+                    copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
+                }
+            }
+
+            CopyCells(TopeOffCells, copy.TopeOffCells);
+            CopyCells(ParrillaOffCells, copy.ParrillaOffCells);
+            return copy;
+        }
+
+        private static void CopyCells(IEnumerable<SelectiveGridCell> source, ICollection<SelectiveGridCell> target)
+        {
+            foreach (var cell in source)
+            {
+                if (cell != null)
+                {
+                    target.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
+                }
+            }
         }
     }
 

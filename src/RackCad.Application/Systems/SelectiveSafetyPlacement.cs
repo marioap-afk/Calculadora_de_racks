@@ -26,12 +26,12 @@ namespace RackCad.Application.Systems
     /// </summary>
     internal static class SelectiveSafetyPlacement
     {
-        public const string BotaType = "BOTA";
-        public const string LateralType = "LATERAL";
-        public const string TopeType = "TOPE";
+        public const string BotaType = SelectiveSafetyDefaults.BotaType;
+        public const string LateralType = SelectiveSafetyDefaults.LateralType;
+        public const string TopeType = SelectiveSafetyDefaults.TopeType;
 
         /// <summary>Deck / grating safety family (the catalog types it as this).</summary>
-        public const string ParrillaType = "PARRILLA";
+        public const string ParrillaType = SelectiveSafetyDefaults.ParrillaType;
 
         /// <summary>PARRILLA block param that stretches its width (the frente span, used in FRONTAL).</summary>
         public const string ParrillaFrenteParam = "FRENTE";
@@ -46,7 +46,7 @@ namespace RackCad.Application.Systems
         public const string SaqueParam = "SAQUE";
 
         /// <summary>Default SAQUE (stick-out) of a larguero tope, inches.</summary>
-        public const double DefaultSaque = 3.0;
+        public const double DefaultSaque = SelectiveSafetyDefaults.TopeSaque;
 
         /// <summary>A larguero tope's nominal rise ABOVE its larguero level (then snapped to the TROQUEL_SEPARADOR grid).</summary>
         public const double TopeYOffset = 8.0;
@@ -130,7 +130,7 @@ namespace RackCad.Application.Systems
                 }
 
                 var element = catalog.SafetyElements.FirstOrDefault(s => string.Equals(s?.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
-                if (element == null || !string.Equals(element.Type, type, StringComparison.OrdinalIgnoreCase))
+                if (element == null || !SelectiveSafetyDefaults.IsType(element.Type, type))
                 {
                     continue;
                 }

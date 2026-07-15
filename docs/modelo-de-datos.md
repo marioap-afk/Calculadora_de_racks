@@ -208,7 +208,8 @@ cambia qué fila de `connection-layout`/`blocks` se elige:
 - Un `id` que una tabla referencia **debe existir** en la tabla destino (si no, no se resuelve).
 - Borrar una pieza referenciada por una plantilla/`defaults`/`blocks` deja esa referencia "colgando".
 - La prueba `CatalogStandardConsistencyTests` verifica que la cabecera estándar no apunte a `id` inexistentes.
-- Cuando esto pase a SQLite, estas FK serán claves foráneas reales (mismo modelo, validación automática).
+- Si un requisito futuro justificara migrar el catálogo a una base de datos, estas relaciones pasarían a claves
+  foráneas reales. SQLite no forma parte del alcance actual.
 
 ## 6. Dónde está en el código
 

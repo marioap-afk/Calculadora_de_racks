@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using RackCad.Application.Formatting;
 using RackCad.Domain.RackFrames;
 
 namespace RackCad.UI
@@ -258,15 +259,7 @@ namespace RackCad.UI
                 .Replace("\"", string.Empty)
                 .Trim();
 
-            if (double.TryParse(normalizedValue, NumberStyles.Float, CultureInfo.CurrentCulture, out dimension) ||
-                double.TryParse(normalizedValue, NumberStyles.Float, CultureInfo.InvariantCulture, out dimension))
-            {
-                return dimension >= 0.0;
-            }
-
-            var invariantValue = normalizedValue.Replace(',', '.');
-
-            if (double.TryParse(invariantValue, NumberStyles.Float, CultureInfo.InvariantCulture, out dimension))
+            if (LocalizedNumberParser.TryDouble(normalizedValue, out dimension))
             {
                 return dimension >= 0.0;
             }

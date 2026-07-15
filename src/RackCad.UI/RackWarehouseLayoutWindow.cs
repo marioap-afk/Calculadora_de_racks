@@ -228,12 +228,12 @@ namespace RackCad.UI
         }
 
         private static bool TryParseCount(string text, out int value)
-            => int.TryParse((text ?? string.Empty).Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value) && value >= 1;
+            => UiSupport.TryInt(text, out value) && value >= 1;
 
         private static bool TryParseLength(string text, out double value)
-            => double.TryParse((text ?? string.Empty).Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out value) && value >= 0.0;
+            => UiSupport.TryNum(text, out value) && value >= 0.0;
 
         private static bool TryParsePositive(string text, out double value)
-            => double.TryParse((text ?? string.Empty).Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out value) && value > 0.0;
+            => UiSupport.TryNum(text, out value) && value > 0.0;
     }
 }

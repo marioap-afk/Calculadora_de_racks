@@ -66,7 +66,7 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
-                Text = "Marca en qué frente y nivel va el tope (todos por defecto). Va en el fondo central; puedes compartir "
+                Text = "Marca en qué frente y nivel de larguero va el tope (todos por defecto; la tarima de piso sin larguero no aparece). Va en el fondo central; puedes compartir "
                      + "uno central o uno por fondo (con el lado), y fijar el SAQUE.",
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
@@ -85,7 +85,7 @@ namespace RackCad.UI
             options.Children.Add(this.side);
 
             options.Children.Add(new TextBlock { Text = "Saque (in):", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
-            this.saque = new TextBox { Width = 56, VerticalAlignment = VerticalAlignment.Center, Text = (saque > 0 ? saque : 3.0).ToString(CultureInfo.InvariantCulture) };
+            this.saque = new TextBox { Width = 56, VerticalAlignment = VerticalAlignment.Center, Text = (saque > 0 ? saque : SelectiveSafetyDefaults.TopeSaque).ToString(CultureInfo.InvariantCulture) };
             options.Children.Add(this.saque);
 
             // Fondo picker only when there is a real choice (2+ fondos); "Central (auto)" keeps the automatic middle.
@@ -144,7 +144,7 @@ namespace RackCad.UI
             for (var l = maxLevels - 1; l >= 0; l--)
             {
                 var rowIndex = maxLevels - l; // level 0 at the bottom
-                var lbl = new TextBlock { Text = "Nivel " + (l + 1).ToString(CultureInfo.InvariantCulture), FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
+                var lbl = new TextBlock { Text = "Larg. " + (l + 1).ToString(CultureInfo.InvariantCulture), FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
                 Grid.SetRow(lbl, rowIndex);
                 Grid.SetColumn(lbl, 0);
                 grid.Children.Add(lbl);
@@ -198,7 +198,7 @@ namespace RackCad.UI
         private void OnOk()
         {
             var text = (saque.Text ?? string.Empty).Trim();
-            if (!double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var saqueValue) || saqueValue <= 0.0)
+            if (!UiSupport.TryNum(text, out var saqueValue) || saqueValue <= 0.0)
             {
                 error.Text = "Saque inválido: usa un número > 0.";
                 return;

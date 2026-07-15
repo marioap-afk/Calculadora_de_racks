@@ -487,6 +487,7 @@ namespace RackCad.Application.Systems
             var tope = topes[0];
             var selection = tope.Selection;
             var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
 
             foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
             {
@@ -512,7 +513,7 @@ namespace RackCad.Application.Systems
                     var anyOn = false;
                     for (var level = 0; level < bays[i].Levels.Count; level++)
                     {
-                        if (selection.TopeAt(i, level)) { anyOn = true; break; }
+                        if (!offCells.Contains((i, level))) { anyOn = true; break; }
                     }
 
                     if (!anyOn)

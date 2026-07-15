@@ -5,7 +5,7 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-esta con 489 tests verdes (estado vivo en `docs/HANDOFF.md`).
+tiene **503/503 tests verdes** y build Debug completo con 0 errores (estado vivo en `docs/HANDOFF.md`).
 
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
@@ -64,7 +64,8 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
   "Colocar nombre de rack" y "Dibujar placa base" (real). Las tres anotaciones de texto se dibujan en
   una **capa dedicada `RACKCAD_ANOTACIONES`** (amarilla) via `SelectiveAnnotations` +
   `HeaderBlockRole.Annotation`, presentes en frontal, planta y lateral, y se regeneran en cada
-  redefinicion (no se persisten). "Dibujar tarima" queda diferido (ver ideas-futuras.md).
+  redefinicion (no se persisten). "Dibujar tarima" coloca la referencia visual en frontal y lateral; planta sigue
+  pendiente. La tarima no entra al BOM.
 - **Cotas automaticas por vista** (2026-07-11): combobox **Cotas** (Ninguna/Minimo/Estandar/Detallado,
   persistido) + combobox **Estilo de cota** (de la `DimStyleTable` del dibujo abierto; "(Automatico)" usa el
   estilo vigente escalado por la escala de anotacion). `SelectiveDimensions` (puro, `HeaderBlockRole.Dimension`)
@@ -177,8 +178,9 @@ Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 - Dibujo block-based en AutoCAD para los cuatro tipos, con jig de colocacion.
 - BOM con exportacion a CSV y a Excel (.xlsx) (selectivo; CRLF RFC-4180).
 
-## Que falta
+## Que falta / queda fuera del alcance actual
 
 - Definicion de los bloques dinamicos en el DWG (deben existir previamente; los faltantes se
   reportan y se omiten al dibujar).
-- Persistencia en base de datos (SQLite).
+- No hay base de datos y no se necesita para el alcance local actual: disenos/configuracion viven en JSON y DWG. Una
+  migracion futura a SQLite solo tendria sentido si el volumen, consultas o gobierno de catalogos lo justifican.

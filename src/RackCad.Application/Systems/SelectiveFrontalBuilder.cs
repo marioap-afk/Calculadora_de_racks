@@ -192,6 +192,7 @@ namespace RackCad.Application.Systems
 
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, view);
             var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
             const double paso = 2.0;
 
             for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
@@ -210,7 +211,7 @@ namespace RackCad.Application.Systems
 
                 for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
                 {
-                    if (!selection.TopeAt(i, lvl))
+                    if (offCells.Contains((i, lvl)))
                     {
                         continue; // this (frente, level) cell is off
                     }
@@ -254,6 +255,7 @@ namespace RackCad.Application.Systems
 
             var overrideFrente = parrilla.Selection.ParrillaFrente;
             var overrideCount = parrilla.Selection.ParrillaCantidad;
+            var offCells = SelectiveSafetyGrid.OffCellKeys(parrilla.Selection.ParrillaOffCells);
 
             for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
             {
@@ -269,7 +271,7 @@ namespace RackCad.Application.Systems
 
                 for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
                 {
-                    if (!parrilla.Selection.ParrillaAt(i, lvl))
+                    if (offCells.Contains((i, lvl)))
                     {
                         continue; // this (frente, level) cell has no deck
                     }

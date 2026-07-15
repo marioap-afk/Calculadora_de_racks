@@ -45,7 +45,7 @@ catalogs\                  ← datos maestros + geometría
   blocks.csv
   header-templates.json
   defaults.json
-  blocks-library.dwg       ← la geometría real de cada pieza (imprescindible para dibujar)
+  blocks-library.dwg       ← OPCIONAL en el bundle: activo del usuario, no versionado; ver §5
 ```
 
 > Copia la carpeta **entera**. Si copias solo `RackCad.Plugin.dll`, AutoCAD no encontrará
@@ -91,7 +91,7 @@ src\RackCad.Plugin\bin\Release\net8.0-windows\RackCad.bundle\
   PackageContents.xml
   Contents\
     RackCad.Plugin.dll  (+ Application/Domain/UI)
-    catalogs\  (CSV/JSON + blocks-library.dwg)
+    catalogs\  (CSV/JSON; + blocks-library.dwg solo si el usuario lo proporcionó antes del build)
 ```
 
 ### Instalar
@@ -140,13 +140,13 @@ Dos matices que evitan re-desplegar:
 
 ## 5. Catálogo y librería de bloques (la "base de datos")
 
-Son **dos** cosas, y **ambas se encuentran solas** si copiaste la carpeta completa:
+Son **dos** cosas. El catálogo sí forma parte del bundle; la biblioteca DWG es un activo externo del usuario:
 
 1. **Catálogo (CSV/JSON):** se busca en la carpeta `catalogs` **junto al propio DLL**
    (`CatalogDirectory.Resolve()`). Sin configuración.
-2. **Librería de bloques (`blocks-library.dwg`):** por defecto también **junto a los
-   catálogos** (`BlockLibraryLocator`). Contiene las definiciones de bloque que se clonan al
-   dibujo cuando faltan.
+2. **Librería de bloques (`blocks-library.dwg`):** NO está versionada ni se genera. `BlockLibraryLocator` busca la
+   ruta elegida por el usuario y, como fallback, un archivo con ese nombre junto a los catálogos. Contiene las
+   definiciones de bloque que se clonan al dibujo cuando faltan.
 
 **Apuntar a una ubicación compartida (opcional):** desde el menú `RACKCAD` se puede ver y
 elegir la ruta de la librería de bloques. La ruta elegida se guarda por usuario en:
@@ -155,7 +155,9 @@ elegir la ruta de la librería de bloques. La ruta elegida se guarda por usuario
 %AppData%\RackCad\settings.json
 ```
 
-Si no se configura nada, se usa el `blocks-library.dwg` que está junto a los catálogos.
+Si no se configura nada, se intenta usar `blocks-library.dwg` junto a los catálogos; el instalador no garantiza que
+exista. Para un despliegue reproducible, configurar explícitamente la biblioteca aprobada en cada perfil o copiar el
+activo del usuario al bundle antes de instalarlo.
 
 > **Importante:** la columna `blockName` de `blocks.csv` debe coincidir **exactamente** con
 > el nombre del bloque dentro de `blocks-library.dwg`. Si un bloque no existe en el dibujo ni

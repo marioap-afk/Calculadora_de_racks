@@ -1,9 +1,11 @@
+using System;
+
 namespace RackCad.Domain.Systems
 {
-    /// <summary>Domain-level constants for the selective rack (frontal view).</summary>
+    /// <summary>Domain-level constants for the selective rack.</summary>
     public static class SelectiveRackDefaults
     {
-        /// <summary>The only view built so far.</summary>
+        /// <summary>Catalog view used by the frontal resolver and builder.</summary>
         public const string View = "FRONTAL";
 
         /// <summary>Connection point ON THE POST where a larguero hooks (its X slides with the post peralte).</summary>
@@ -59,5 +61,31 @@ namespace RackCad.Domain.Systems
         /// <summary>Block parameter that stretches the pallet VERTICALLY (its alto). Ignored if the block lacks it.
         /// Matched case-insensitively against the block's parameter names.</summary>
         public const string PalletAltoParam = "ALTURA";
+    }
+
+    /// <summary>
+    /// Stable catalog codes and defaults shared by the safety editor, geometry and persistence. Keeping these values
+    /// at the domain boundary prevents a catalog family or a legacy fallback from being spelled differently per layer.
+    /// </summary>
+    public static class SelectiveSafetyDefaults
+    {
+        public const string BotaType = "BOTA";
+        public const string LateralType = "LATERAL";
+        public const string TopeType = "TOPE";
+        public const string ParrillaType = "PARRILLA";
+        public const string DeckLegacyType = "DECK";
+
+        /// <summary>Default TOPE stick-out (SAQUE), inches.</summary>
+        public const double TopeSaque = 3.0;
+
+        /// <summary>Case-insensitive family match, including the legacy DECK alias for PARRILLA.</summary>
+        public static bool IsType(string actual, string expected)
+        {
+            if (string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase)) return true;
+            return (string.Equals(actual, ParrillaType, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(expected, DeckLegacyType, StringComparison.OrdinalIgnoreCase))
+                   || (string.Equals(actual, DeckLegacyType, StringComparison.OrdinalIgnoreCase)
+                       && string.Equals(expected, ParrillaType, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

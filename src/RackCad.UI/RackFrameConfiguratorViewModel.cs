@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Formatting;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
@@ -566,7 +567,7 @@ namespace RackCad.UI
 
         private static bool TryParseIntAtLeast(string text, int minimum, out int value)
         {
-            return int.TryParse((text ?? string.Empty).Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value)
+            return LocalizedNumberParser.TryInteger(text, out value)
                 && value >= minimum;
         }
 
@@ -2353,7 +2354,7 @@ namespace RackCad.UI
                 return null;
             }
 
-            return double.TryParse(text.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out var value) && value > 0.0
+            return LocalizedNumberParser.TryDouble(text, out var value) && value > 0.0
                 ? value
                 : (double?)null;
         }
@@ -2501,15 +2502,7 @@ namespace RackCad.UI
                 .Replace("\"", string.Empty)
                 .Trim();
 
-            if (double.TryParse(normalizedValue, NumberStyles.Float, CultureInfo.CurrentCulture, out dimension) ||
-                double.TryParse(normalizedValue, NumberStyles.Float, CultureInfo.InvariantCulture, out dimension))
-            {
-                return dimension > 0.0;
-            }
-
-            var invariantValue = normalizedValue.Replace(',', '.');
-
-            if (double.TryParse(invariantValue, NumberStyles.Float, CultureInfo.InvariantCulture, out dimension))
+            if (LocalizedNumberParser.TryDouble(normalizedValue, out dimension))
             {
                 return dimension > 0.0;
             }

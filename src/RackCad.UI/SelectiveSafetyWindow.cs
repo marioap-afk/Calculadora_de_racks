@@ -12,11 +12,9 @@ using RackCad.Domain.Systems;
 namespace RackCad.UI
 {
     /// <summary>
-    /// Selection of SAFETY accessories for a selective rack. A DRAWABLE element (type BOTA) is chosen by SIDE
-    /// (Ninguno / Izquierda / Derecha / Ambas) — it's drawn at every post's base plate on that side and counted from
-    /// the drawing — with an optional "Por poste…" override for specific posts; a non-drawable element keeps a manual
-    /// QUANTITY for the BOM. On OK, <see cref="Result"/> holds the selections. Built in code (no XAML), like the tramos
-    /// dialog.
+    /// Selection of SAFETY accessories for a selective rack. Known families have specialized editors and placement
+    /// rules; an unknown/future catalog family remains a manual BOM quantity. On OK, <see cref="Result"/> holds an
+    /// isolated working copy. Built in code (no XAML), like the tramos dialog.
     /// </summary>
     public sealed class SelectiveSafetyWindow : Window
     {
@@ -46,7 +44,7 @@ namespace RackCad.UI
             public bool TopeConfigured;
             public bool TopeShared = true;
             public SafetySide TopeSide = SafetySide.Both;
-            public double TopeSaque = 3.0;
+            public double TopeSaque = SelectiveSafetyDefaults.TopeSaque;
             public bool TopeFrontal;
             public int TopeFondo = -1;
             public List<SelectiveGridCell> TopeOffCells = new List<SelectiveGridCell>();
@@ -91,10 +89,9 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
-                Text = "La bota va en los postes EXTREMOS del sistema (no en cada fondo): Izquierda = frente (pasillo), Derecha "
-                     + "= fondo, Ambos = los dos extremos. El lado general aplica a todos los frentes; usa \"Por poste…\" para "
-                     + "personalizar cuáles llevan y en qué lado. El BOM se cuenta del dibujo. Los demás elementos usan una "
-                     + "cantidad manual.",
+                Text = "La bota se aplica a los postes del sistema según el lado general; usa \"Por poste…\" para apagarla o "
+                     + "cambiar el lado en posiciones concretas. El protector lateral se configura por poste y reemplaza las "
+                     + "botas de ese frente. Topes y parrillas se eligen por nivel de carga. El BOM se calcula del dibujo.",
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
             DockPanel.SetDock(intro, Dock.Top);
@@ -132,10 +129,10 @@ namespace RackCad.UI
                     }
 
                     currentById.TryGetValue(element.Id, out var existing);
-                    var isBota = string.Equals(element.Type, "BOTA", StringComparison.OrdinalIgnoreCase);
-                    var isLateral = string.Equals(element.Type, "LATERAL", StringComparison.OrdinalIgnoreCase);
-                    var isTope = string.Equals(element.Type, "TOPE", StringComparison.OrdinalIgnoreCase);
-                    var isParrilla = string.Equals(element.Type, "PARRILLA", StringComparison.OrdinalIgnoreCase);
+                    var isBota = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.BotaType);
+                    var isLateral = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.LateralType);
+                    var isTope = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType);
+                    var isParrilla = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType);
                     var row = new Row { Id = element.Id, Label = element.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsParrilla = isParrilla };
 
                     var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
@@ -154,7 +151,7 @@ namespace RackCad.UI
                             row.TopeConfigured = true;
                             row.TopeShared = existing.TopeShared;
                             row.TopeSide = existing.Side == SafetySide.None ? SafetySide.Both : existing.Side;
-                            row.TopeSaque = existing.TopeSaque > 0.0 ? existing.TopeSaque : 3.0;
+                            row.TopeSaque = existing.TopeSaque > 0.0 ? existing.TopeSaque : SelectiveSafetyDefaults.TopeSaque;
                             row.TopeFrontal = existing.TopeFrontal;
                             row.TopeFondo = existing.TopeFondo;
                             row.TopeOffCells = existing.TopeOffCells?.Where(c => c != null).Select(c => new SelectiveGridCell { Frente = c.Frente, Level = c.Level }).ToList() ?? new List<SelectiveGridCell>();
@@ -333,13 +330,13 @@ namespace RackCad.UI
         {
             switch ((type ?? string.Empty).Trim().ToUpperInvariant())
             {
-                case "BOTA": return "Protectores de bota (base de poste)";
-                case "LATERAL": return "Protectores laterales (extremos)";
+                case SelectiveSafetyDefaults.BotaType: return "Protectores de bota (base de poste)";
+                case SelectiveSafetyDefaults.LateralType: return "Protectores laterales (extremos)";
                 case "DESVIADOR": return "Desviadores";
-                case "TOPE": return "Topes";
+                case SelectiveSafetyDefaults.TopeType: return "Topes";
                 case "TRASERA": return "Guardas traseras";
-                case "PARRILLA":
-                case "DECK": return "Parrillas / deck";
+                case SelectiveSafetyDefaults.ParrillaType:
+                case SelectiveSafetyDefaults.DeckLegacyType: return "Parrillas / deck";
                 default: return string.IsNullOrWhiteSpace(type) ? "Otros" : type;
             }
         }
@@ -354,10 +351,7 @@ namespace RackCad.UI
                     if (row.TopeConfigured)
                     {
                         // Disabled when every (frente,level) cell is off.
-                        var total = 0;
-                        foreach (var n in levelsPerFrente) total += n;
-                        var allOff = total > 0 && row.TopeOffCells.Count >= total;
-                        if (!allOff)
+                        if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.TopeOffCells))
                         {
                             var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = row.TopeSide, Quantity = 1, TopeShared = row.TopeShared, TopeSaque = row.TopeSaque, TopeFrontal = row.TopeFrontal, TopeFondo = row.TopeFondo };
                             foreach (var c in row.TopeOffCells)
@@ -379,10 +373,7 @@ namespace RackCad.UI
                     if (row.ParrillaConfigured)
                     {
                         // Disabled when every (frente,level) cell is off.
-                        var total = 0;
-                        foreach (var n in levelsPerFrente) total += n;
-                        var allOff = total > 0 && row.ParrillaOffCells.Count >= total;
-                        if (!allOff)
+                        if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.ParrillaOffCells))
                         {
                             // Side = Both makes EnabledOfType treat it as "drawn"; the per-view toggles gate the actual draw.
                             var selection = new SelectiveSafetySelection { ElementId = row.Id, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = row.ParrillaFrontal, ParrillaLateral = row.ParrillaLateral, ParrillaFrente = row.ParrillaFrente, ParrillaCantidad = row.ParrillaCantidad };
@@ -425,7 +416,7 @@ namespace RackCad.UI
                     continue;
                 }
 
-                if (!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var quantity) || quantity < 0)
+                if (!UiSupport.TryInt(text, out var quantity) || quantity < 0)
                 {
                     error.Text = "Cantidad inválida en '" + row.Id + "': usa un entero ≥ 0 (vacío = ninguno).";
                     return;

@@ -87,8 +87,8 @@ namespace RackCad.Application.Systems
 
                 // A TOPE / PARRILLA is counted as its own component (AddTope/AddParrillaComponents), not under "Seguridad".
                 if (element != null
-                    && (string.Equals(element.Type, SelectiveSafetyPlacement.TopeType, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(element.Type, SelectiveSafetyPlacement.ParrillaType, StringComparison.OrdinalIgnoreCase)))
+                    && (SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.TopeType)
+                        || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.ParrillaType)))
                 {
                     continue;
                 }
@@ -96,8 +96,8 @@ namespace RackCad.Application.Systems
                 // A DRAWABLE element (bota/lateral) is counted ONLY from the drawing — 0 if it draws nothing (e.g. a bota
                 // fully replaced by laterales). The manual quantity is the fallback ONLY for elements with no draw rule yet.
                 var drawable = element != null
-                    && (string.Equals(element.Type, SelectiveSafetyPlacement.BotaType, StringComparison.OrdinalIgnoreCase)
-                        || string.Equals(element.Type, SelectiveSafetyPlacement.LateralType, StringComparison.OrdinalIgnoreCase));
+                    && (SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.BotaType)
+                        || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.LateralType));
                 var quantity = drawable
                     ? (drawn.TryGetValue(selection.ElementId, out var drawnCount) ? drawnCount : 0)
                     : selection.Quantity;
@@ -110,7 +110,7 @@ namespace RackCad.Application.Systems
 
                 // A protector lateral reports a LENGTH = its drawn LONGITUD (the fondo) + the guide overhang; a bota has none.
                 var length = 0.0;
-                var isLateral = element != null && string.Equals(element.Type, SelectiveSafetyPlacement.LateralType, StringComparison.OrdinalIgnoreCase);
+                var isLateral = element != null && SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyPlacement.LateralType);
                 if (isLateral && drawnLongitud.TryGetValue(selection.ElementId, out var longitud))
                 {
                     length = longitud + SelectiveSafetyPlacement.LateralLengthAllowance;
@@ -195,6 +195,7 @@ namespace RackCad.Application.Systems
             var selection = topes[0].Selection;
             var fondoCount = SelectiveDepthLayout.Count(system);
             var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs;
+            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
             var byLength = new Dictionary<double, int>();
             var order = new List<double>();
             foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, fondoCount))
@@ -203,7 +204,7 @@ namespace RackCad.Application.Systems
                 for (var b = 0; b < bays.Count; b++)
                 {
                     var frente = b;
-                    TallyByTramo(bays[b], troquelXs, b, catalog, lvl => selection.TopeAt(frente, lvl), SelectiveSafetyPlacement.TopeLengthAllowance, byLength, order);
+                    TallyByTramo(bays[b], troquelXs, b, catalog, lvl => !offCells.Contains((frente, lvl)), SelectiveSafetyPlacement.TopeLengthAllowance, byLength, order);
                 }
             }
 
@@ -250,7 +251,7 @@ namespace RackCad.Application.Systems
                 }
 
                 var el = catalog?.SafetyElements?.FirstOrDefault(s => string.Equals(s?.Id, sel.ElementId, StringComparison.OrdinalIgnoreCase));
-                if (el != null && string.Equals(el.Type, SelectiveSafetyPlacement.ParrillaType, StringComparison.OrdinalIgnoreCase))
+                if (el != null && SelectiveSafetyDefaults.IsType(el.Type, SelectiveSafetyPlacement.ParrillaType))
                 {
                     selection = sel;
                     break;
@@ -269,6 +270,7 @@ namespace RackCad.Application.Systems
             var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs;
             var overrideFrente = selection.ParrillaFrente;
             var overrideCount = selection.ParrillaCantidad;
+            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.ParrillaOffCells);
             var fondoCount = SelectiveDepthLayout.Count(system);
 
             void AddRow(double span, SelectiveLevel level, bool fitToSpan)
@@ -305,7 +307,7 @@ namespace RackCad.Application.Systems
                     var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
                     for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
                     {
-                        if (!selection.ParrillaAt(b, lvl))
+                        if (offCells.Contains((b, lvl)))
                         {
                             continue;
                         }

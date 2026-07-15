@@ -145,12 +145,12 @@ namespace RackCad.Application.Catalogs
 
     /// <summary>
     /// A SAFETY accessory added to a rack (protector de bota, protector lateral, desviador, tope, guarda trasera,
-    /// parrilla). Not structural — it carries commercial data (weight/cost) so it can enter the BOM. Drawing it in the
-    /// views is a future phase (needs its own AutoCAD block + connection points); for now it is catalog + selection + BOM.
+    /// parrilla). Not structural — it carries commercial data (weight/cost) for the BOM. Families with a placement rule
+    /// and view block are drawn; unknown/future families remain manual-quantity BOM entries.
     /// </summary>
     public sealed class SafetyElementCatalogEntry : CatalogEntryBase
     {
-        /// <summary>Grouping/placement family: BOTA | LATERAL | DESVIADOR | TOPE | TRASERA | DECK.</summary>
+        /// <summary>Grouping/placement family: BOTA | LATERAL | DESVIADOR | TOPE | TRASERA | PARRILLA (DECK is legacy).</summary>
         public string Type { get; set; }
         public string Units { get; set; }
         public double WeightEach { get; set; }

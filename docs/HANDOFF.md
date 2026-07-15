@@ -1,7 +1,8 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-14**, rama `release/claude-review`, commit `95e25f2`.
+> Actualizado: **2026-07-15**, rama `release/claude-review`, HEAD local con el lote de
+> correccion/escalabilidad validado con 503 tests, build Debug completo y prueba manual en AutoCAD.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
@@ -18,17 +19,20 @@ selectivo), cada uno con ventana editora WPF, dibujo por bloques en AutoCAD y **
 matriz frentes x niveles dirigida por tarima, tres vistas (frontal/lateral/planta) ligadas por GUID,
 doble profundidad, medio frente, cotas, elementos de seguridad y BOM por componentes con export CSV/XLSX.
 
-**Estado**: activo y funcional. 489 tests verdes. Hay 4 commits locales por encima de `origin` (tope
-medio-frente + parrilla) cuya verificacion manual en AutoCAD esta pendiente (ver seccion 9).
+**Estado**: activo y funcional. El arbol actual tiene **503/503 tests verdes** (14 nuevos) y build Debug completo
+con 0 errores; solo aparecen los `MSB3277` conocidos de las referencias de AutoCAD. El SDK 8.0.423 esta instalado
+por usuario. La rama contiene un commit local aun no publicado en `origin`. La verificacion manual de parrilla,
+tope, rejilla, persistencia, biblioteca y rendimiento fue confirmada por el usuario.
 
 ## 2. Estado comprobado
 
 | Aspecto | Estado | Evidencia |
 |---|---|---|
-| Compilacion Debug (Domain/Application/UI/Plugin) | OK, 0 errores, 0 advertencias propias | `dotnet build` 2026-07-14; solo avisos MSB3277 conocidos en Plugin (refs AutoCAD) |
-| Pruebas unitarias | **489/489 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-14, Windows 11 / .NET SDK 10 (TFM net8.0) |
-| Carga en AutoCAD (NETLOAD del Debug) | Verificado por el usuario hasta el commit `6b1f715` | Flujo de trabajo habitual del usuario |
-| Commits `b1cfce2`..`95e25f2` (tope medio-frente, parrilla) | Implementado y testeado, **pendiente verificacion manual en AutoCAD** | Ver seccion 9 |
+| Compilacion Debug (Domain/Application/UI/Plugin) | **OK, 0 errores** | `dotnet build RackCad.sln -c Debug`; 2 familias MSB3277 conocidas, 2026-07-15 |
+| Pruebas unitarias | **503/503 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
+| Validacion estatica del arbol actual | OK | sintaxis 233 C#; semantica Domain/Application (114), Domain/Application/UI (146 fuentes + 11 XAML generados previos) y Domain/Application/tests (173); 12 XML/XAML bien formados |
+| Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Validacion manual del usuario 2026-07-15; ver seccion 9 |
+| Commits `b1cfce2`..`95e25f2` (tope medio-frente, parrilla) | Implementado, testeado y verificado en AutoCAD | Ver seccion 9 |
 | Release build / bundle de despliegue | No reconstruido en la ultima sesion | `deploy/install-bundle.ps1 -Build` requiere AutoCAD cerrado |
 
 ## 3. Estado por funcionalidad
@@ -41,14 +45,14 @@ medio-frente + parrilla) cuya verificacion manual en AutoCAD esta pendiente (ver
 | Selectivo: matriz, 3 vistas, doble profundidad, medio frente, cotas | completo | `RackSelectiveWindow`, `src/RackCad.Application/Systems/Selective*` | `Selective*Tests` | El modulo mas activo |
 | BOM por componentes + consolidado (`RACKBOMTOTAL`) + export CSV/XLSX | completo | `SelectiveBomBuilder`, `RackBomWindow`, `XlsxWriter` | `SelectiveBomBuilderTests`, `Xlsx*Tests` | XLSX es OOXML escrito a mano, sin dependencias |
 | Seguridad: bota, protector lateral, separador, tope de larguero | completo | `SelectiveSafetyPlacement`, `SelectiveSafetyWindow`, `SafetyTopeGridWindow` | `SelectiveSafetyTests` | Catalogo en `assets/catalogs/seguridad.csv` |
-| Seguridad: **parrilla / deck** (una por tarima, frente y cantidad manuales, cuenta en vivo) | completo (codigo) / **pendiente verificacion AutoCAD** | `SelectiveFrontalBuilder.ParrillaRow`, `SelectiveParrillaPlan`, `SafetyParrillaGridWindow` | `SelectiveSafetyTests` (Parrilla_*), `SelectiveMedioFrenteTests` | Ver secciones 8-9 |
+| Seguridad: **parrilla / deck** (una por tarima, frente y cantidad manuales, cuenta en vivo) | completo y verificado en AutoCAD | `SelectiveFrontalBuilder.ParrillaRow`, `SelectiveParrillaPlan`, `SafetyParrillaGridWindow` | `SelectiveSafetyTests` (Parrilla_*), `SelectiveMedioFrenteTests` | Ver secciones 8-9 |
 | Tarima como referencia visual (frontal + lateral, sin BOM) | completo | `SelectiveFrontalBuilder.AddPallets`, bloque `TARIMA_GENERICA` | `SelectiveFrontalBuilderTests` | Planta = futuro |
 | Identidad + round-trip (GUID en Xrecord, `RACKEDITAR`, `RACKDUPLICAR`, `RACKLISTA`) | completo | `RackEmbedDocument`, `RackFrameCommands` | round-trip tests por store | Convencion Actualizar/Insertar en las 4 ventanas |
 | Layout de almacen v1 (`RACKLAYOUT`, `RACKRELLENAR`) | completo (v1) | `WarehouseGridPlanner`, comandos en Plugin | `Warehouse*Tests` | Solo motor de colocacion; el optimizador IA es meta futura |
 | Bibliotecas (disenos + bloques DWG) | completo | `RackDesignLibrary*`, settings en `%APPDATA%\RackCad\settings.json` | — | `blocks-library.dwg` NO esta en el repo (ver seccion 6) |
 | Validacion de cargas / capacidad | **diferido a proposito** | — | — | Ira con RAM Elements; NO re-proponer |
 | Desviadores, poste tope, guardas traseras (seguridad) | pendiente | — | — | Siguientes elementos naturales |
-| Rejilla de seguridad vs niveles resueltos (desfase) | **bug conocido, preexistente** | `RackSelectiveWindow.Safety_Click` | — | Ver seccion 10, item 1 |
+| Rejilla de seguridad vs niveles resueltos | **corregido, testeado y verificado en AutoCAD** | `SelectiveSafetyGrid`, `RackSelectiveWindow.Safety_Click` | `SelectiveSafetyGridTests` | Ver secciones 8-10 |
 
 ## 4. Arquitectura
 
@@ -98,8 +102,10 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
 
 - **Requisitos**: Windows, .NET 8 SDK (o superior con TFM net8.0), AutoCAD 2025 completo (no LT) solo
   para probar el plugin. Las pruebas y los proyectos Domain/Application corren en cualquier OS.
-- **Sin variables de entorno ni secretos.** La unica configuracion runtime es
+- **RackCad no requiere variables de entorno ni secretos.** La unica configuracion runtime de la aplicacion es
   `%APPDATA%\RackCad\settings.json` (ruta de la biblioteca de bloques DWG; se edita desde el menu `RACKCAD`).
+- En esta workstation, el SDK 8.0.423 esta instalado por usuario en `%LOCALAPPDATA%\Microsoft\dotnet`; el perfil
+  PowerShell de usuario antepone esa ruta y define `DOTNET_ROOT` porque `C:\Program Files\dotnet` solo tiene runtime.
 - **`blocks-library.dwg` NO esta versionado**: es el DWG del usuario con los bloques reales
   (p. ej. `TARIMA_GENERICA`, `PARRILLA_GENERICA_*`). Sin el, el dibujo reporta piezas faltantes y las
   omite (no aborta). Los nombres deben coincidir con `blockName` de `blocks.csv`.
@@ -120,11 +126,13 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
 | Parametros dinamicos por patron ARRAY (HeaderGroup) al insertar | Fijar params por referencia era el cuello de botella | vigente |
 | Cero dependencias NuGet en el codigo de producto (el XLSX es OOXML a mano) | Despliegue simple del plugin | vigente |
 | **Parrilla: una por tarima; la regla de conteo vive en UN sitio** (`SelectiveFrontalBuilder.ParrillaRow`), consumida por frontal, BOM, lateral y editor | Dibujo, BOM y UI concuerdan por construccion, no por coincidencia | vigente (2026-07-14) |
+| Copia de `SelectiveSafetySelection` centralizada en `DeepCopy` | Evita agregar un flag en resolver/UI/vista y olvidarlo en otro camino; el DTO sigue explicito por compatibilidad | vigente (2026-07-15) |
+| Entrada numerica localizada sin separadores de miles | Acepta punto/coma sin convertir `96,5` en `965` | vigente (2026-07-15) |
 | Cantidad de parrilla forzada: el dialogo la RECHAZA si no cabe; el builder ademas la ACOTA | El dialogo valida contra la matriz de ese momento; angostar despues degrada en vez de dibujar fuera del marco | vigente |
 | Validacion de cargas DIFERIDA (ira con RAM Elements) | Decision explicita del usuario; no re-proponer | vigente |
 | Optimizador IA de layout = meta futura; `RACKLAYOUT` es solo el motor de colocacion | El BOM ya da el costo; falta el optimizador beneficio/costo | planeado |
 
-## 8. Trabajo realizado recientemente (los 4 commits locales)
+## 8. Trabajo realizado recientemente
 
 1. **`b1cfce2` Tope medio-frente**: los topes de larguero siguen los tramos de un frente partido
    (frontal + planta), un tope por tramo cargado.
@@ -142,27 +150,38 @@ Verificacion realizada: 489 tests verdes; los tests de regresion se verificaron 
 desactivado antes de darlos por buenos; dos revisiones adversariales multi-agente (los hallazgos
 confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 
-## 9. Trabajo en progreso
+**Lote cerrado 2026-07-15 (commit local, build/tests verdes):**
 
-- **Verificacion manual en AutoCAD de la parrilla** (unico paso abierto de la feature):
-  - Objetivo: confirmar en pantalla que cada parrilla cae exactamente bajo su tarima (origenes distintos:
-    tarima BASE-CENTRO vs parrilla inferior-izquierda; en teoria calzan) y que frente/cantidad manuales
-    se comportan como se espera.
-  - Como: NETLOAD de `src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`, `RACKSELECTIVO`,
-    activar "Mostrar tarimas", agregar PARRILLA en "Elementos de seguridad", probar vacio / frente=60 /
-    cantidad=2.
-  - Criterio de aceptacion: dibujo correcto en frontal y lateral; BOM coincide con lo dibujado.
-  - Al confirmar: hacer push de la rama (politica de la sesion: no publicar features sin verificar en AutoCAD).
+- `SelectiveSafetyGrid.LevelCounts` deriva las filas de niveles RESUELTOS y expone el maximo real entre fondos;
+  elimina la fila de tarima de piso cuando no existe larguero.
+- `AllCellsOff` ignora duplicados/indices legacy invalidos; evita descartar una seleccion por conteo inflado.
+- Builders y BOM convierten `OffCells` una vez a `HashSet`; dejan de recorrer toda la lista por cada bloque/celda.
+- `SelectiveSafetySelection.DeepCopy` centraliza la copia usada por resolver, vista por fondo y UI. Persistencia
+  permanece explicita y con fallback.
+- `LocalizedNumberParser` acepta punto/coma, prohibe agrupadores ambiguos y se usa en seguridad/layout.
+- UX: textos de seguridad corregidos, aviso cuando la geometria no permite conteo, tipos/defaults sin literales
+  repetidos; docs y manifest de comandos alineados.
+- 14 casos nuevos (`LocalizedNumberParserTests`, `SelectiveSafetyGridTests`), total **503/503 verdes**.
+- Regresion verificada con el fix temporalmente desactivado: 5/14 casos dirigidos fallaron (multi-fondo,
+  duplicados/indices invalidos y parsing decimal/agrupadores); despues de restaurarlo, 503/503 verdes.
+
+## 9. Ultima validacion manual
+
+- **AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
+- Biblioteca: disponible y reportada correctamente por `RACKCAD`.
+- Rejilla sin larguero a piso: filas resueltas correctas, sin fila muerta ni desplazamiento.
+- Parrilla: frente/cantidad, posicion en frontal/lateral y BOM correctos.
+- Tope: rejilla, posicion y opciones correctas.
+- Persistencia/round-trip: configuracion conservada tras `RACKEDITAR` y actualizar.
+- Rendimiento: sin degradacion perceptible en el escenario probado.
 
 ## 10. Problemas conocidos y deuda tecnica
 
-1. **Desfase rejilla de seguridad <-> niveles resueltos** (preexistente, detectado 2026-07-14, prioridad alta):
-   con "larguero a piso" APAGADO (default), `Safety_Click` construye la rejilla con los niveles de DISENO
-   pero los builders indexan los niveles RESUELTOS (el resolver quita la celda de piso). Medido: 3 celdas
-   de diseno -> 3 filas de rejilla pero 2 niveles reales; la casilla "Nivel 1" controla otro nivel y la
-   fila superior esta muerta. Afecta a tope Y parrilla. Arreglo posible: pasar los niveles resueltos
-   (`Safety_Click` ya resuelve el sistema); OJO: cambia el significado de los `OffCells` ya guardados —
-   decidir migracion con el usuario. Detalle completo en la tarea pendiente del repositorio de sesion.
+1. **Desfase rejilla de seguridad <-> niveles resueltos: corregido, testeado y verificado en AutoCAD**. La UI usa
+   `SelectiveSafetyGrid.LevelCounts(resolved)`; sin larguero a piso, 3 filas de diseno producen 2 filas reales.
+   Compatibilidad: los builders siempre interpretaron `Level` como indice RESUELTO, por lo que se conserva el
+   significado efectivo de `OffCells`; referencias a la antigua fila superior muerta se ignoran y desaparecen al
+   volver a guardar. Tests y validacion visual de tope/parrilla estan verdes.
 2. **`ParrillaFrente`/`ParrillaCantidad` son un valor unico para TODO el rack**: en racks con frentes de
    anchos distintos, un ancho que no cabe en el frente angosto deja ese frente sin parrilla (consistente
    en dibujo y BOM, y el dialogo lo avisa). Si el usuario necesita valores por frente/nivel, mover el
@@ -176,20 +195,14 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 
 ## 11. Siguientes tareas recomendadas
 
-1. **Verificar la parrilla en AutoCAD y hacer push** — ver seccion 9 (criterio y pasos ahi). Es del usuario;
-   un agente puede acompanar corrigiendo lo que aparezca.
-2. **Arreglar el desfase rejilla <-> niveles resueltos** (item 1 de la seccion 10). Empezar en
-   `src/RackCad.UI/RackSelectiveWindow.xaml.cs` (`Safety_Click`); anadir test de regresion que fije la
-   correspondencia con "larguero a piso" apagado y verificarlo fallando sin el fix; consultar al usuario
-   la migracion de `OffCells` guardados. Validar: `dotnet test`.
-3. **Elementos de seguridad faltantes**: desviadores, poste tope, guardas traseras. Patron a seguir:
-   `seguridad.csv` (tipo nuevo) -> `SelectiveSafetyPlacement` -> builders -> los **4 sitios de copia**
+1. **Elementos de seguridad faltantes**: desviadores, poste tope, guardas traseras. Patron a seguir:
+   `seguridad.csv` (tipo nuevo) -> `SelectiveSafetyPlacement` -> builders -> `DeepCopy` + DTO persistente
    (ver AGENTS.md) -> BOM -> dialogo. Referencia: como se hizo el TOPE y la PARRILLA.
    Validar: tests + AutoCAD.
-4. **Tarima y parrilla en la vista de PLANTA** (hoy solo frontal/lateral). Empezar en
+2. **Tarima y parrilla en la vista de PLANTA** (hoy solo frontal/lateral). Empezar en
    `SelectivePlantaBuilder`. Criterio: mismas reglas de conteo (`ParrillaRow`), BOM sin duplicar.
-5. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10) si el usuario lo pide.
-6. **Integracion BOM -> cotizador** (los CSV de seguridad ya llevan costo/moneda/unidad): explorar con el
+3. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10) si el usuario lo pide.
+4. **Integracion BOM -> cotizador** (los CSV de seguridad ya llevan costo/moneda/unidad): explorar con el
    usuario que formato de cotizacion necesita.
 
 No tomar sin confirmar con el usuario: validacion de cargas (diferida a RAM Elements) y el optimizador IA
@@ -199,17 +212,20 @@ de layout (meta futura, no inmediata).
 
 | Verificacion | Comando | Resultado | Fecha/entorno |
 |---|---|---|---|
-| Build Debug (todo) | `dotnet build RackCad.sln -v:minimal` | OK (0 errores; MSB3277 esperados) | 2026-07-14, Windows 11, SDK 10.0.301 |
-| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **489/489 verdes**, ~0.6 s | 2026-07-14, idem. NOTA: la carpeta `sdk` de .NET desaparecio de la maquina A MITAD de la sesion de cierre (evento externo, probablemente un actualizador); la ultima corrida real fue ANTES de los cambios de documentacion (que no tocan codigo). Primer paso en una maquina nueva: reinstalar el .NET 8 SDK y re-ejecutar este comando. |
-| Lint / format / type-check | — | no aplica (no hay linters configurados; el compilador C# es el type-check) | — |
+| Build Debug (todo) | `dotnet build RackCad.sln -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15, Windows 11, SDK 8.0.423 por usuario |
+| Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15 |
+| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **503/503 verdes**, 0 omitidas | 2026-07-15 |
+| Regresion con fix desactivado | filtro `SelectiveSafetyGridTests|LocalizedNumberParserTests` | **5 fallos esperados de 14**; fix restaurado y suite completa verde | 2026-07-15 |
+| Validacion estatica auxiliar | Roslyn de PowerShell + referencias .NET 8/xUnit en cache; parse XML | **OK:** sintaxis 233 C#; semantica Domain/Application, UI y tests; 12 XML/XAML bien formados | 2026-07-15; no sustituye `dotnet build/test` ni la generacion XAML actual |
+| Lint / format | — | no aplica (no hay linters configurados) | — |
 | Release / bundle | `pwsh deploy/install-bundle.ps1 -Build` | **no ejecutada** en esta sesion (requiere AutoCAD cerrado y no era necesaria) | — |
-| Verificacion manual AutoCAD (parrilla) | NETLOAD + `RACKSELECTIVO` | **pendiente** (seccion 9) | — |
+| Verificacion manual AutoCAD | NETLOAD + `RACKCAD`/`RACKSELECTIVO`/`RACKEDITAR` | **OK:** biblioteca, rejilla, parrilla, tope, persistencia y rendimiento | 2026-07-15, confirmada por el usuario |
 
 ## 13. Preguntas abiertas
 
-1. ¿Migrar los `OffCells` guardados al arreglar el desfase de la rejilla, o aceptarlos como estan? (usuario)
-2. ¿La cantidad de parrilla debe poder variar por frente/nivel, o basta el valor global? (usuario, segun uso real)
-3. ¿Que formato final necesita el cotizador que consumira el BOM? (futuro)
+1. ¿La cantidad de parrilla debe poder variar por frente/nivel, o basta el valor global? (usuario, segun uso real)
+2. ¿Que formato final necesita el cotizador que consumira el BOM? (futuro)
+3. ¿Como se distribuye/versiona oficialmente `blocks-library.dwg` fuera de Git? (operacion/despliegue)
 
 ## 14. Como reanudar el trabajo
 
@@ -217,7 +233,7 @@ de layout (meta futura, no inmediata).
 2. `git log --oneline -5` y comparar con la seccion 8 de este archivo (¿hubo push nuevo?).
 3. Leer en orden: este archivo -> [README.md](../README.md) -> [AGENTS.md](../AGENTS.md) ->
    [docs/00-indice-contexto.md](00-indice-contexto.md).
-4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe dar 489+ verdes).
+4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 503+ y quedar verde).
 5. Tomar la primera tarea de la seccion 11 que siga abierta.
 
 **Prompt de reanudacion (copiar en un chat nuevo de Claude o Codex):**
@@ -225,8 +241,8 @@ de layout (meta futura, no inmediata).
 ```
 Trabajo en RackCad (D:\Documentos\Codex\Calculadora de racks), plugin de AutoCAD 2025 en C#/.NET8,
 rama release/claude-review. Lee primero docs/HANDOFF.md, luego README.md y AGENTS.md; verifica el
-estado real con git log y dotnet test (489 tests esperados). El contexto de estado, bugs conocidos
+estado real con git log y dotnet test (503 tests verdes en este arbol). El contexto de estado, bugs conocidos
 y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con: [elige la tarea o pega la
-seccion 11]. Respeta las convenciones de AGENTS.md (en especial: los 4 sitios de copia de flags de
+seccion 11]. Respeta las convenciones de AGENTS.md (en especial: DeepCopy + DTO para flags de
 seguridad, tests de regresion verificados fallando, y no hacer push sin verificacion en AutoCAD).
 ```

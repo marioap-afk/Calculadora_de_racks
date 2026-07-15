@@ -1184,9 +1184,8 @@ namespace RackCad.UI
         /// <summary>Open the safety-accessories dialog (catalog elements × quantity); store the selection for the BOM.</summary>
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
-            // The tope grid needs the matrix dimensions (levels per frente) of fondo 0 (the main matrix), and the fondo
-            // count so its "Fondo" picker can offer the real fondos (doble/triple profundidad).
-            var levelsPerFrente = bays.Select(b => b.Count).ToList();
+            // The safety grid needs the resolved matrix dimensions and the fondo count so the tope picker can offer the
+            // real fondos (doble/triple profundidad).
             var depthCount = UiSupport.TryNum(FondosBox.Text, out var fondosNum) && fondosNum >= 1.0
                 ? Math.Min(SelectiveRackDefaults.MaxDepthCount, Math.Max(1, (int)Math.Round(fondosNum)))
                 : 1;
@@ -1194,6 +1193,11 @@ namespace RackCad.UI
             // tramos). Resolve once here; if the design doesn't resolve yet (BuildSystem returns null), the dialog still
             // configures — it just omits the counts.
             var resolved = BuildSystem(out _);
+            // Drawing/BOM index RESOLVED beam levels. The design's first row may be a floor pallet with no beam; using
+            // design row counts made the top checkbox dead and shifted every visible safety choice by one level.
+            var levelsPerFrente = resolved != null
+                ? SelectiveSafetyGrid.LevelCounts(resolved)
+                : bays.Select((bay, i) => Math.Max(0, bay.Count - (i < floorBeams.Count && floorBeams[i] ? 0 : 1))).ToList();
             var parrillaPlan = resolved != null ? SelectiveParrillaPlan.Cells(resolved, catalog) : null;
 
             var dialog = new SelectiveSafetyWindow(catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>(), safetySelections, MaxFrenteCount() + 1, levelsPerFrente, depthCount, parrillaPlan) { Owner = this };
@@ -1203,30 +1207,8 @@ namespace RackCad.UI
             }
 
             safetySelections.Clear();
-            safetySelections.AddRange(dialog.Result.Select(CopySafety));
+            safetySelections.AddRange(dialog.Result.Select(selection => selection.DeepCopy()));
             UpdateSafetyButton();
-        }
-
-        /// <summary>A deep copy of a safety selection, carrying its per-post side overrides + the tope grid config.</summary>
-        private static SelectiveSafetySelection CopySafety(SelectiveSafetySelection s)
-        {
-            var copy = new SelectiveSafetySelection { ElementId = s.ElementId, Quantity = s.Quantity, Side = s.Side, TopeShared = s.TopeShared, TopeSaque = s.TopeSaque, TopeFrontal = s.TopeFrontal, TopeFondo = s.TopeFondo, ParrillaFrontal = s.ParrillaFrontal, ParrillaLateral = s.ParrillaLateral, ParrillaFrente = s.ParrillaFrente, ParrillaCantidad = s.ParrillaCantidad };
-            foreach (var post in s.PostSides)
-            {
-                if (post != null) copy.PostSides.Add(new SafetyPostSide { PostIndex = post.PostIndex, Side = post.Side });
-            }
-
-            foreach (var cell in s.TopeOffCells)
-            {
-                if (cell != null) copy.TopeOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
-            }
-
-            foreach (var cell in s.ParrillaOffCells)
-            {
-                if (cell != null) copy.ParrillaOffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
-            }
-
-            return copy;
         }
 
         /// <summary>A selection contributes to the drawing/BOM: it has a quantity, a default drawn side, or any post override that draws.</summary>
@@ -1930,7 +1912,7 @@ namespace RackCad.UI
             {
                 if (SafetyDraws(safety) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    design.SafetySelections.Add(CopySafety(safety));
+                    design.SafetySelections.Add(safety.DeepCopy());
                 }
             }
 
@@ -2053,7 +2035,7 @@ namespace RackCad.UI
             {
                 if (SafetyDraws(safety) && !string.IsNullOrWhiteSpace(safety.ElementId))
                 {
-                    safetySelections.Add(CopySafety(safety));
+                    safetySelections.Add(safety.DeepCopy());
                 }
             }
 
@@ -2475,6 +2457,6 @@ namespace RackCad.UI
         }
 
         private static bool TryInt(string text, out int value)
-            => int.TryParse((text ?? string.Empty).Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
+            => UiSupport.TryInt(text, out value);
     }
 }

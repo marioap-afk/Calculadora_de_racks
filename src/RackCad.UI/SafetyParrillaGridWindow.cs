@@ -71,7 +71,7 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
-                Text = "Va UNA PARRILLA POR TARIMA. Marca en qué frente y nivel van (todas por defecto); el número junto a "
+                Text = "Va UNA PARRILLA POR TARIMA. Marca en qué frente y nivel de larguero van (la tarima de piso sin larguero no aparece); el número junto a "
                      + "cada casilla es cuántas se dibujan ahí. Elige en qué vistas dibujarlas (en planta no se dibuja).",
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
@@ -153,7 +153,7 @@ namespace RackCad.UI
             for (var l = maxLevels - 1; l >= 0; l--)
             {
                 var rowIndex = maxLevels - l; // level 0 at the bottom
-                var lbl = new TextBlock { Text = "Nivel " + (l + 1).ToString(CultureInfo.InvariantCulture), FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
+                var lbl = new TextBlock { Text = "Larg. " + (l + 1).ToString(CultureInfo.InvariantCulture), FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
                 Grid.SetRow(lbl, rowIndex);
                 Grid.SetColumn(lbl, 0);
                 grid.Children.Add(lbl);
@@ -205,15 +205,14 @@ namespace RackCad.UI
             cantidad = 0;
 
             var frenteText = (frenteBox.Text ?? string.Empty).Trim();
-            if (frenteText.Length > 0 && (!double.TryParse(frenteText, NumberStyles.Float, CultureInfo.InvariantCulture, out frente)
-                                          || double.IsNaN(frente) || double.IsInfinity(frente) || frente <= 0.0))
+            if (frenteText.Length > 0 && (!UiSupport.TryNum(frenteText, out frente) || frente <= 0.0))
             {
                 frente = 0.0;
                 return "Frente inválido: déjalo vacío (el frente de la tarima) o usa un número > 0.";
             }
 
             var cantidadText = (cantidadBox.Text ?? string.Empty).Trim();
-            if (cantidadText.Length > 0 && (!int.TryParse(cantidadText, NumberStyles.Integer, CultureInfo.InvariantCulture, out cantidad) || cantidad <= 0))
+            if (cantidadText.Length > 0 && (!UiSupport.TryInt(cantidadText, out cantidad) || cantidad <= 0))
             {
                 cantidad = 0;
                 return "Cantidad inválida: déjala vacía (las que quepan) o usa un entero > 0.";
@@ -240,8 +239,8 @@ namespace RackCad.UI
             var complaint = ReadInputs(out var frente, out var cantidad);
             if (plan == null)
             {
-                summary.Text = complaint ?? string.Empty; // no resolved geometry: the dialog still configures, just without counts
-                summary.Foreground = WarnBrush(complaint != null);
+                summary.Text = complaint ?? "La geometría aún no es válida; puedes guardar la selección, pero el conteo se mostrará al resolver el rack.";
+                summary.Foreground = WarnBrush(true);
                 return;
             }
 

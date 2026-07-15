@@ -44,11 +44,10 @@ dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug   # el DLL que se
 2. **Regla en un solo sitio**: cuando el dibujo, el BOM y la UI deben coincidir en un numero, la regla vive
    en UNA funcion de Application que todos consumen (ej.: `SelectiveFrontalBuilder.ParrillaRow`). Nunca
    duplicar la aritmetica en la UI ni en el BOM.
-3. **Flags de seguridad del selectivo — 4 sitios de copia**: todo campo nuevo en `SelectiveSafetySelection`
-   (Domain) DEBE copiarse en: `SelectiveGeometryResolver` (design->system),
-   `SelectiveDepthLayout.FondoSystemView` (system->vista de fondo, EL camino de dibujo de produccion),
-   `RackSelectiveWindow.CopySafety` (UI) y `SelectivePalletDesignDocument` From/ToDomain (persistencia,
-   con fallback legacy en el DTO nullable). Omitir uno rompe en silencio.
+3. **Flags de seguridad del selectivo — copia centralizada**: todo campo nuevo en `SelectiveSafetySelection`
+   (Domain) DEBE copiarse en `SelectiveSafetySelection.DeepCopy`; resolver, vista por fondo y UI consumen esa copia.
+   Ademas debe mapearse explicitamente en `SelectivePalletDesignDocument` From/ToDomain (persistencia), con fallback
+   legacy en el DTO nullable y test de round-trip. Omitir cualquiera de esos dos limites rompe en silencio.
 4. **Persistencia versionada**: los DTO (`*Document`) llevan campos nullable para compatibilidad con
    documentos viejos; todo campo nuevo define su fallback legacy y se cubre con test de round-trip.
 5. **Bloques de AutoCAD**: un bloque por pieza y vista (`blocks.csv`, `blockName` = nombre EXACTO del DWG).

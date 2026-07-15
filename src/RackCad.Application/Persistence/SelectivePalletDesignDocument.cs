@@ -223,7 +223,7 @@ namespace RackCad.Application.Persistence
                         Quantity = safety.Quantity,
                         Side = ToSafetySide(safety.Side),
                         TopeShared = safety.TopeShared ?? true, // legacy docs (no field) default to shared
-                        TopeSaque = safety.TopeSaque.HasValue && safety.TopeSaque.Value > 0.0 ? safety.TopeSaque.Value : 3.0,
+                        TopeSaque = safety.TopeSaque.HasValue && safety.TopeSaque.Value > 0.0 ? safety.TopeSaque.Value : SelectiveSafetyDefaults.TopeSaque,
                         TopeFrontal = safety.TopeFrontal ?? false,
                         TopeFondo = safety.TopeFondo ?? -1, // legacy docs (no field) default to the automatic central fondo
                         ParrillaFrontal = safety.ParrillaFrontal ?? true, // legacy docs default to drawing in both views

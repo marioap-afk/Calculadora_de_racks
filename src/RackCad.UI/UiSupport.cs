@@ -5,12 +5,13 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Formatting;
 
 namespace RackCad.UI
 {
     /// <summary>
     /// Small helpers shared by every window/view-model so they are not re-implemented per file:
-    /// resilient catalog loading, invariant numeric parsing of user input, building the
+    /// resilient catalog loading, culture-tolerant numeric parsing of user input, building the
     /// DisplayName/Id options the combos bind to, and the shared status-bar styling.
     /// </summary>
     internal static class UiSupport
@@ -74,13 +75,13 @@ namespace RackCad.UI
             }
         }
 
-        /// <summary>Parses a user-typed number: invariant first, then the user's culture (so "96.5" and "96,5" both work).</summary>
+        /// <summary>Parses a user-typed measurement without allowing ambiguous thousands separators.</summary>
         public static bool TryNum(string text, out double value)
-        {
-            text = (text ?? string.Empty).Trim();
-            return double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out value)
-                || double.TryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out value);
-        }
+            => LocalizedNumberParser.TryDouble(text, out value);
+
+        /// <summary>Parses an integer in either the current or invariant culture.</summary>
+        public static bool TryInt(string text, out int value)
+            => LocalizedNumberParser.TryInteger(text, out value);
 
         /// <summary>Parses an OPTIONAL positive number: empty/whitespace → null (auto); a valid &gt; 0 value → that value;
         /// anything else (non-numeric or &lt;= 0) → false, so the caller can report an error instead of silently defaulting.</summary>

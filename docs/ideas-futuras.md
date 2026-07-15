@@ -1,6 +1,6 @@
 # Ideas a futuro y deuda técnica conocida
 
-> Actualizado: 2026-07-09 (limpieza de código muerto ejecutada).
+> Actualizado: 2026-07-15 (rejilla de seguridad resuelta y backlog de escalabilidad consolidado).
 > Este documento junta (A) mejoras de producto propuestas y (B) hallazgos de la auditoría que se
 > **difirieron a propósito** (necesitan validación en AutoCAD o una decisión de producto). Nada de esto
 > está roto hoy; es el backlog recomendado.
@@ -60,9 +60,8 @@
    (2026-07-09):** el `DBText` se centra con `HorizontalMode`/`VerticalMode` + `AdjustAlignment`, y la
    escala del texto es un campo del selectivo (`AnnotationScale`, persistido). "Dibujar placa base" es un
    toggle real de geometría (frontal/planta).
-1c. **Dibujar tarima (toggle) — DIFERIDO/no implementable** — la `Tarima` del dominio es abstracta (solo
-   `Frente`/`Alto`), sin bloque de catálogo ni representación por vista. Requiere crear un bloque de tarima
-   con puntos de conexión (FRONTAL/LATERAL/PLANTA) antes de poder dibujarla. El toggle aún no se expone.
+1c. **Dibujar tarima (toggle) — HECHO parcial** — `TARIMA_GENERICA` se dibuja como referencia visual en
+   FRONTAL y LATERAL, incluida la tarima de piso, y nunca entra al BOM. Pendiente: bloque/regla de PLANTA.
 2. **Planta del sistema dinámico y de camas** — replicar la lógica multi-vista (GUID + View) que ya
    comparten selectivo y cabecera. El patrón está listo: builder puro + draw service + rama en
    `RACKEDITAR`.
@@ -96,8 +95,9 @@
    las tres vistas (frontal con toggle "Dibujar en frontal", lateral y planta), con su propio componente "Tope" en el
    BOM, rejilla nivel×frente, compartido o uno-por-fondo, lado izq/der/ambos, SAQUE configurable y LONGITUD = larguero
    + ¼" (mate en el punto `TROQUEL_TOPE`); el separador físico entre fondos se dibuja en lateral y planta (componente
-   "Separador", cada 100"; en la frontal solo se deja el hueco, a propósito). **Pendiente:** validar en AutoCAD el
-   espejo/orientación/longitud; los demás elementos (desviadores, guardas traseras, parrillas).
+   "Separador", cada 100"; en la frontal solo se deja el hueco, a propósito). **Parrilla HECHA en codigo
+   (2026-07-14; validada en AutoCAD 2026-07-15):** frontal+lateral+BOM, una por tarima, ancho/cantidad manual
+   y conteo vivo; falta PLANTA. **Pendiente:** desviadores, poste tope y guardas traseras.
 4. **Layout de almacén** — **v1 HECHO (2026-07-13):** comando `RACKLAYOUT` replica la vista en planta de
    un rack en una rejilla filas × columnas con pasillos + numeración automática (A1, B2…), copias enlazadas
    o independientes; footprint leído de los extents del bloque; alimenta el BOM consolidado. Motor de rejilla
@@ -163,6 +163,27 @@
 12. ~~**Unificar perfiles estructurales**~~ — ✅ **HECHO (2026-07-10):** `secciones.csv` es la única hoja de
     perfiles (columna `rol` = POSTE | CELOSIA | LARGUERO). El provider separa las filas en las tres listas
     de siempre (API de `RackCatalog` intacta) y mantiene los tres CSV legacy como fallback de lectura.
+
+### Escalabilidad y problemas futuros anticipados
+
+13. **Identidad estable de celdas de seguridad** — hoy `OffCells` usa indices `(frente,nivel)`. Insertar o quitar
+    filas cambia su significado. Evolucionar a ids persistentes de frente/nivel (con migrador desde indices) antes de
+    habilitar overrides por celda o edicion colaborativa de catalogos.
+14. **Validador de catalogos con severidades** — validar ids duplicados, FKs, vistas/bloques faltantes, parametros
+    requeridos y unidades al cargar. Mostrar un diagnostico unico en UI y permitir modo estricto para despliegues.
+15. **Manifest de biblioteca DWG** — guardar junto al DWG una version/hash y la lista de bloques/parametros esperados.
+    Asi un catálogo y una biblioteca incompatibles fallan antes de producir un dibujo parcial.
+16. **CI por capas** — ejecutar Domain/Application/tests en cualquier runner y reservar un smoke test Windows con
+    AutoCAD para releases. El Plugin no debe impedir que las reglas puras tengan gate continuo.
+17. **Benchmarks y presupuestos de complejidad** — medir resolver/builders/BOM con 10/30/100 frentes y el layout con
+    5,000 candidatos. Convertir regresiones de tiempo/memoria en pruebas de benchmark antes de ampliar los limites UI.
+18. **Migraciones de schema explicitas** — `SchemaGuard` hoy cubre compatibilidad por fallback. Antes del primer 2.x,
+    crear una cadena de migradores idempotentes con fixtures de todos los documentos historicos soportados.
+19. **Diagnostico por rack** — acumular piezas omitidas, parametros no aplicados y fallbacks usados en un reporte
+    exportable asociado al GUID, en vez de depender solo de mensajes de la linea de comandos.
+20. **Limites configurables con guardas** — `MaxDepthCount`, maximo de candidatos y tolerancias son limites de
+    producto/rendimiento, no datos de geometria. Hacerlos configurables solo cuando existan benchmarks y validacion de
+    compatibilidad; no eliminar las guardas para aparentar escalabilidad.
 
 ## B. Deuda técnica diferida de la auditoría (2026-07-08)
 

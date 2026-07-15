@@ -5,7 +5,7 @@ Esta guia explica como modificar los catalogos y las plantillas **sin programar*
 - **CSV (se edita en Excel)** para los datos maestros tabulares: perfiles (postes, celosia, largueros), placas, ménsulas, componentes de cama de rodamiento y puntos de conexion. Una fila = una pieza.
 - **JSON** para lo anidado/estructurado: plantillas de cabecera y la receta `defaults`.
 
-> Por que esta separacion: los catalogos son tablas que crecen mucho (mejor en Excel/CSV, y luego SQLite); las plantillas/defaults son estructuras anidadas (mejor en JSON). La carga esta detras de una interfaz (`IRackCatalogProvider` → `JsonRackCatalogProvider` → `RackCatalog`), asi que migrar a SQLite despues no cambia el resto de la app.
+> Por que esta separacion: los catalogos son tablas que crecen mucho (mejor en Excel/CSV); las plantillas/defaults son estructuras anidadas (mejor en JSON). La carga esta detras de una interfaz (`IRackCatalogProvider` → `JsonRackCatalogProvider` → `RackCatalog`), asi que una migracion a otro almacenamiento seria posible si un requisito futuro la justifica; SQLite no forma parte del alcance actual.
 
 > **Contexto:** estos catalogos alimentan a los CUATRO tipos de rack que el plugin diseña y dibuja en AutoCAD — CABECERA (marco), SISTEMA DINÁMICO (pallet flow), CAMA DE RODAMIENTO (flow bed) y SELECTIVO (editor avanzado). Cada tipo tiene su ventana editora y su round-trip de edicion (comando `RACKEDITAR`). Los mismos ids de pieza se comparten entre todos; por eso el catalogo es una sola fuente de verdad.
 
@@ -386,7 +386,7 @@ TARIMA_GENERICA,LATERAL,TARIMA_GENERICA,,1,0
 
 ### Parrilla / deck (`PARRILLA_GENERICA`)
 
-La parrilla es un **elemento de seguridad** (`seguridad.csv` con `type = PARRILLA`) que **sí entra al BOM**. Va **una parrilla por tarima** (3 tarimas → 3 parrillas), justo **debajo** de cada una. Se configura desde el diálogo **"Elementos de seguridad"** con una **rejilla frente × nivel** (elige en qué posiciones va), dos toggles **"Dibujar en frontal / lateral"** (en planta no se dibuja) y el campo **"Frente parrilla (in)"**. Se coloca con **origen inferior-izquierda coincidente** con el inicio del larguero, sobre la superficie de carga. Necesita **una fila por vista** en `blocks.csv`:
+La parrilla es un **elemento de seguridad** (`seguridad.csv` con `type = PARRILLA`) que **sí entra al BOM**. Va **una parrilla por tarima** (3 tarimas → 3 parrillas), justo **debajo** de cada una. Se configura desde el diálogo **"Elementos de seguridad"** con una **rejilla frente × nivel de larguero resuelto** (elige en qué posiciones va), dos toggles **"Dibujar en frontal / lateral"** (en planta no se dibuja) y campos opcionales de **frente** y **cantidad**. Se coloca con **origen inferior-izquierda coincidente** con el inicio del larguero, sobre la superficie de carga. Necesita **una fila por vista** en `blocks.csv`:
 
 ```
 PARRILLA_GENERICA,FRONTAL,PARRILLA_GENERICA_FRONTAL,,1,0

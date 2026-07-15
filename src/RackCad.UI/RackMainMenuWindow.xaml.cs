@@ -60,10 +60,19 @@ namespace RackCad.UI
         private void UpdateLibraryPathDisplay()
         {
             var overridden = !string.IsNullOrWhiteSpace(settings.BlockLibraryPath);
-            LibraryPathBox.Text = BlockLibraryLocator.ResolvePath();
-            LibraryPathBox.ToolTip = overridden
+            var path = BlockLibraryLocator.ResolvePath();
+            var exists = !string.IsNullOrWhiteSpace(path) && System.IO.File.Exists(path);
+            LibraryPathBox.Text = path ?? string.Empty;
+            LibraryPathBox.ToolTip = (overridden
                 ? "Ruta personalizada (guardada)."
-                : "Ruta predeterminada (junto a los catálogos). Usa Examinar… para elegir otra.";
+                : "Ruta predeterminada (junto a los catálogos). Usa Examinar… para elegir otra.")
+                + (exists ? string.Empty : " El archivo no existe en esa ubicación.");
+            UiSupport.SetStatus(
+                LibraryStatusText,
+                exists
+                    ? "Biblioteca disponible."
+                    : "Biblioteca no encontrada: las piezas que no existan en el dibujo activo se omitirán.",
+                !exists);
         }
 
         private void BrowseLibrary_Click(object sender, RoutedEventArgs e)

@@ -139,6 +139,9 @@ Todos estan registrados con `[CommandMethod]` en `RackFrameCommands`.
 | `RACKDUPLICAR`        | Copia INDEPENDIENTE del rack (GUID nuevo, nombre `- copia`), distinta del COPY de AutoCAD que comparte definicion/GUID. |
 | `RACKLISTA`           | Tabla de todos los racks del dibujo (nombre, tipo, vistas presentes, numero de copias; `RackListBuilder` agrupa por GUID) con zoom al elegido. |
 | `RACKBOMTOTAL`        | BOM consolidado de TODO el dibujo: desglose por rack x copias + gran total por componente (`RackConsolidatedBomWindow`), con export CSV. |
+| `RACKLAYOUT`          | Replica una vista planta en una rejilla de almacen con pasillos, orientacion y numeracion. |
+| `RACKRELLENAR`        | Lee el sitio de `RACKCAD_SITIO` y propone el relleno determinista que coloca mas racks. |
+| `RACKAYUDA`           | Referencia dentro de AutoCAD con comandos y atajos vigentes. |
 
 ## Los cuatro tipos de rack
 
