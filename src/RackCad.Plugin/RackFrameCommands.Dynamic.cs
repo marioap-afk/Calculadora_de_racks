@@ -18,8 +18,8 @@ namespace RackCad.Plugin
     public sealed partial class RackFrameCommands
     {
         /// <summary>
-        /// Draws a preliminary dynamic (pallet flow) system: headers along the run + separators per level,
-        /// as one block placed with the mouse. Uses default pallet/height for now (header-height logic TBD).
+        /// Draws the current lateral representation of a dynamic (pallet flow) system as one block placed with the
+        /// mouse. Editable inputs are embedded separately from resolved geometry for deterministic reopen/edit.
         /// </summary>
         [CommandMethod("RACKSISTEMADINAMICO")]
         public void RackSistemaDinamico()
@@ -36,14 +36,23 @@ namespace RackCad.Plugin
                 // Demo command: pallet/depth stay illustrative, but post + header height honor defaults.json.
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
+                var postId = !string.IsNullOrWhiteSpace(catalog?.Defaults?.Post) ? catalog.Defaults.Post : CatalogIds.StandardPost;
+                var headerHeight = catalog?.Defaults?.DefaultHeaderHeight > 0.0 ? catalog.Defaults.DefaultHeaderHeight : 132.0;
                 var system = new DynamicRackSystemBuilder(catalog).BuildDefault(
                     pallet,
                     palletsDeep: 8,
                     headerTemplate: RackFrameTemplateCatalog.Default,
-                    headerPostCatalogId: !string.IsNullOrWhiteSpace(catalog?.Defaults?.Post) ? catalog.Defaults.Post : CatalogIds.StandardPost,
-                    headerHeight: catalog?.Defaults?.DefaultHeaderHeight > 0.0 ? catalog.Defaults.DefaultHeaderHeight : 132.0);
+                    headerPostCatalogId: postId,
+                    headerHeight: headerHeight);
+                system.ManualHeaderHeightOverride = headerHeight;
 
-                var payload = BuildDynamicPayload(system, System.Guid.NewGuid().ToString(), null);
+                var design = new DynamicRackSystemResolver(catalog).Snapshot(
+                    system,
+                    DynamicRackDefaults.DefaultLoadLevels,
+                    DynamicRackDefaults.DefaultFirstLevelHeight,
+                    DynamicRackDefaults.DefaultBeamDepth,
+                    postId);
+                var payload = BuildDynamicPayload(design, System.Guid.NewGuid().ToString(), null);
                 var result = new DynamicSystemDrawService().DrawAndPlace(document, system, payload);
                 document.Editor.WriteMessage("\n" + DescribeSystem(result));
             }
@@ -86,14 +95,14 @@ namespace RackCad.Plugin
                 return;
             }
 
-            if (project?.DynamicSystem == null)
+            if (project?.DynamicDesign == null)
             {
                 editor.WriteMessage("\nRackCad: datos de sistema dinamico invalidos.");
                 return;
             }
 
             var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
-            window.LoadExisting(project.DynamicSystem, embed.Id, embed.Name);
+            window.LoadExisting(project.DynamicDesign, embed.Id, embed.Name);
             AcApplication.ShowModalWindow(window);
 
             if (!window.InsertRequested)
@@ -103,7 +112,7 @@ namespace RackCad.Plugin
 
             var result = new DynamicSystemDrawService().RedrawInPlace(
                 document, blockId, window.SystemToInsert,
-                BuildDynamicPayload(window.SystemToInsert, window.RackId, window.RackName));
+                BuildDynamicPayload(window.DesignToInsert, window.RackId, window.RackName));
 
             if (result != null && result.Success)
             {
@@ -116,14 +125,14 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Wraps a dynamic system in the uniform embed envelope; reuses the project store for the design JSON.</summary>
-        private static string BuildDynamicPayload(DynamicRackSystem system, string id, string name)
+        private static string BuildDynamicPayload(DynamicRackDesign design, string id, string name)
         {
-            if (system == null)
+            if (design == null)
             {
                 return null;
             }
 
-            var designJson = new RackProjectStore().Serialize(RackProject.ForDynamic(system));
+            var designJson = new RackProjectStore().Serialize(RackProject.ForDynamic(design));
             return new RackEmbedStore().Serialize(new RackEmbedDocument
             {
                 Kind = RackEmbedDocument.KindDynamic,

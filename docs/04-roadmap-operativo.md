@@ -21,6 +21,13 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 ### Sistema dinamico (pallet flow)
 
 - `RackDynamicSystemWindow`: cabeceras a lo largo del tramo + separadores por nivel.
+- Base modular: `DynamicRackDesign` (entradas editables) -> `DynamicRackSystemResolver` -> sistema lateral resuelto.
+- Persistencia y payload DWG guardan el diseno; cabeceras calculadas se regeneran y las personalizadas se conservan.
+- Pendiente de producto: varios frentes/anchos, frontal, planta y cama dinamica integrada. No definir bloques ni
+  offsets hasta recibir la reconfiguracion real. La cama se compondra reutilizando el subsistema FlowBed y el BOM
+  inicial contara solo componentes `Cama`, sin despiece.
+- Siguiente secuencia confirmada: colocar primero los largueros especiales de entrada/salida y despues los
+  intermedios. Esperar los bloques y CSV preparados por el usuario; no inventar nombres ni parametros.
 - Comando `RACKSISTEMADINAMICO` (y opcion en el menu).
 
 ### Cama de rodamiento (flow bed)

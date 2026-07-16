@@ -1,7 +1,7 @@
 <Window x:Class="RackCad.UI.RackDynamicSystemWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Sistema dinámico (Pallet Flow) - vista lateral preliminar"
+        Title="Sistema dinámico (Pallet Flow) - editor modular (vista lateral)"
         Height="700"
         Width="1180"
         MinHeight="540"

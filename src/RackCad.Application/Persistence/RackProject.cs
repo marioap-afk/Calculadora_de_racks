@@ -17,6 +17,9 @@ namespace RackCad.Application.Persistence
         public RackFrameConfiguration Header { get; private set; }
         public DynamicRackSystem DynamicSystem { get; private set; }
 
+        /// <summary>The editable pallet-flow inputs that produced <see cref="DynamicSystem"/>.</summary>
+        public DynamicRackDesign DynamicDesign { get; private set; }
+
         /// <summary>The selective pallet-rack design (its persisted document, with Id + Name); set when <see cref="Kind"/> is SelectiveRack.</summary>
         public SelectivePalletDesignDocument SelectiveRack { get; private set; }
 
@@ -33,7 +36,14 @@ namespace RackCad.Application.Persistence
 
         public static RackProject ForDynamic(DynamicRackSystem system)
         {
-            return new RackProject { Kind = RackSystemKind.PalletFlow, DynamicSystem = system };
+            var design = system == null ? null : DynamicRackSystemDocument.From(system).ToDesign();
+            return new RackProject { Kind = RackSystemKind.PalletFlow, DynamicSystem = system, DynamicDesign = design };
+        }
+
+        public static RackProject ForDynamic(DynamicRackDesign design, DynamicRackSystem system = null)
+        {
+            var resolved = system ?? (design == null ? null : DynamicRackSystemDocument.From(design).ToDomain());
+            return new RackProject { Kind = RackSystemKind.PalletFlow, DynamicSystem = resolved, DynamicDesign = design };
         }
 
         public static RackProject ForSelectiveRack(SelectivePalletDesignDocument design)

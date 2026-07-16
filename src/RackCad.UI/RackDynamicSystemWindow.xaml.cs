@@ -45,10 +45,12 @@ namespace RackCad.UI
 
         private readonly RackCatalog catalog;
         private readonly DynamicRackSystemBuilder builder;
+        private readonly DynamicRackSystemResolver resolver;
         private readonly string defaultPostCatalogId;
         private readonly double defaultHeaderHeight;
         private double computedHeaderHeight;
         private DynamicRackSystem system;
+        private DynamicRackDesign design;
         private DynamicRackModule selectedModule;
 
         private const string ConfigCalculated = "Calculada";
@@ -66,6 +68,9 @@ namespace RackCad.UI
         public bool InsertRequested { get; private set; }
 
         public DynamicRackSystem SystemToInsert { get; private set; }
+
+        /// <summary>The editable inputs that produced <see cref="SystemToInsert"/>; this is what the DWG persists.</summary>
+        public DynamicRackDesign DesignToInsert { get; private set; }
 
         /// <summary>Stable id + client name of the system for the drawing round-trip (embed / reopen / edit).</summary>
         public string RackId { get; private set; }
@@ -95,6 +100,7 @@ namespace RackCad.UI
 
             catalog = UiSupport.LoadCatalogSafe();
             builder = new DynamicRackSystemBuilder(catalog);
+            resolver = new DynamicRackSystemResolver(catalog);
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
             computedHeaderHeight = defaultHeaderHeight;
@@ -137,17 +143,23 @@ namespace RackCad.UI
             Recompose();
         }
 
-        private void Recompose(bool forceRebuild = false)
+        private bool Recompose(bool forceRebuild = false)
         {
             if (!TryReadInputs(out var pallet, out var palletsDeep, out var error))
             {
                 SetStatus(error, true);
-                return;
+                return false;
+            }
+
+            if (!TryReadHeightInputs(out var levels, out var firstLevel, out var beamDepth, out error))
+            {
+                SetStatus(error, true);
+                return false;
             }
 
             try
             {
-                computedHeaderHeight = ComputeHeaderHeight(pallet, palletsDeep);
+                computedHeaderHeight = ComputeHeaderHeight(pallet, palletsDeep, levels, firstLevel, beamDepth);
 
                 // A full rebuild (BuildDefault, from scratch) is only needed when the pallet or the number of fondos
                 // changes — that changes the module SEQUENCE. When only the height inputs change (niveles / peralte /
@@ -175,6 +187,7 @@ namespace RackCad.UI
                 ApplySeparatorOverrides();
                 ApplyDerivedPostOptions();
                 ApplyHeightOverride();
+                design = resolver.Snapshot(system, levels, firstLevel, beamDepth, SelectedPostId());
                 selectedModule = null;
                 BindModules();
                 UpdateSelectedPanel();
@@ -184,6 +197,7 @@ namespace RackCad.UI
                     !mustRebuild ? "Altura actualizada; se conservaron los módulos (fondos y cabeceras)."
                     : restoredFondos > 0 ? "Vista recalculada; se conservaron los fondos personalizados de las cabeceras."
                     : "Vista recalculada (layout estándar).", false);
+                return true;
             }
             catch (Exception ex)
             {
@@ -191,13 +205,13 @@ namespace RackCad.UI
                 ModulesGrid.ItemsSource = null;
                 PreviewCanvas.Children.Clear();
                 SetStatus("No se pudo generar el sistema: " + ex.Message, true);
+                return false;
             }
         }
 
         /// <summary>
-        /// Update the header height on the EXISTING modules (rebuild each header config at the new height but its
-        /// CURRENT fondo), so a levels/height change keeps the module lengths and sequence — the fondo the user set on
-        /// a cabecera survives. Deep structural cabecera edits are rebuilt to the standard for the new height.
+        /// Update calculated cabeceras on the EXISTING modules. Custom cabeceras remain untouched, matching the
+        /// selective editor's contract: calculated inputs may regenerate defaults but never overwrite explicit edits.
         /// </summary>
         private void UpdateHeaderHeightInPlace(double newHeight)
         {
@@ -206,7 +220,7 @@ namespace RackCad.UI
 
             foreach (var module in system.Modules)
             {
-                if (!module.IsHeader)
+                if (!module.IsHeader || !module.UseCalculatedHeaderConfiguration)
                 {
                     continue;
                 }
@@ -259,6 +273,7 @@ namespace RackCad.UI
                     module.Length = fondo;
                     module.IsManualOverride = true;
                     module.IsCalculated = false;
+                    module.UseCalculatedHeaderConfiguration = true;
                     module.AssociatedFrameConfiguration = factory.Build(RackFrameTemplateCatalog.Default, postId, newHeight, fondo);
                     restored++;
                 }
@@ -327,12 +342,14 @@ namespace RackCad.UI
                 if (selectedModule.AssociatedFrameConfiguration == null)
                 {
                     selectedModule.AssociatedFrameConfiguration = BuildHeaderConfig(Math.Max(length, 1.0));
+                    selectedModule.UseCalculatedHeaderConfiguration = true;
                 }
             }
             else
             {
                 selectedModule.Kind = DynamicRackModuleKind.Separator;
                 selectedModule.AssociatedFrameConfiguration = null;
+                selectedModule.UseCalculatedHeaderConfiguration = true;
             }
 
             builder.Refresh(system);
@@ -369,6 +386,8 @@ namespace RackCad.UI
                 SetStatus("Cabecera sin cambios.", false);
                 return;
             }
+
+            selectedModule.UseCalculatedHeaderConfiguration = false;
 
             // The header's depth (fondo) edited in the configurator becomes the module length.
             var editedDepth = selectedModule.AssociatedFrameConfiguration.Depth;
@@ -410,11 +429,13 @@ namespace RackCad.UI
         /// Load height = the pallet height; total depth (the slope run) = the full run length we already
         /// derive (tarimas x fondo + 12"). Levels/first-level/beam-depth come from the new fields.
         /// </summary>
-        private double ComputeHeaderHeight(PalletSpecification pallet, int palletsDeep)
+        private double ComputeHeaderHeight(
+            PalletSpecification pallet,
+            int palletsDeep,
+            int levels,
+            double firstLevel,
+            double beamDepth)
         {
-            var levels = UiSupport.TryInt(LoadLevelsBox.Text, out var n) && n >= 1 ? n : 1;
-            var firstLevel = TryNum(FirstLevelHeightBox.Text, out var f) && f >= 0.0 ? f : 0.0;
-            var beamDepth = TryNum(BeamDepthBox.Text, out var b) && b >= 0.0 ? b : 0.0;
             var totalDepth = palletsDeep * pallet.Depth + 2.0 * DynamicRackDefaults.HeaderEndAllowance;
 
             var result = DynamicHeaderHeightCalculator.Calculate(pallet.Height, levels, firstLevel, beamDepth, totalDepth);
@@ -429,6 +450,45 @@ namespace RackCad.UI
                 : string.Format(CultureInfo.InvariantCulture, "Altura calculada: {0:0.#}\" → {1:0}\"  (pendiente {2:0.#}\")", result.TheoreticalHeight, result.HeaderHeight, result.Slope);
 
             return manual ?? result.HeaderHeight;
+        }
+
+        private bool TryReadHeightInputs(out int levels, out double firstLevel, out double beamDepth, out string error)
+        {
+            levels = 0;
+            firstLevel = 0.0;
+            beamDepth = 0.0;
+            error = null;
+
+            if (!UiSupport.TryInt(LoadLevelsBox.Text, out levels) || levels < 1)
+            {
+                error = "Los niveles de carga deben ser un entero >= 1.";
+                return false;
+            }
+
+            if (!TryOptionalNonNegative(FirstLevelHeightBox.Text, out firstLevel))
+            {
+                error = "La altura del primer nivel debe ser un número >= 0 (vacío = 0).";
+                return false;
+            }
+
+            if (!TryOptionalNonNegative(BeamDepthBox.Text, out beamDepth))
+            {
+                error = "El peralte de larguero debe ser un número >= 0 (vacío = 0).";
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool TryOptionalNonNegative(string text, out double value)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                value = 0.0;
+                return true;
+            }
+
+            return TryNum(text, out value) && value >= 0.0;
         }
 
         /// <summary>Read the manual-height toggle/box onto the system (null = derived from levels). Non-destructive.</summary>
@@ -587,6 +647,7 @@ namespace RackCad.UI
             {
                 applied = BuildHeaderConfig(Math.Max(selectedModule.Length, 1.0));
                 selectedModule.IsManualOverride = false;
+                selectedModule.UseCalculatedHeaderConfiguration = true;
             }
             else
             {
@@ -599,6 +660,7 @@ namespace RackCad.UI
                 // Copy the configuration only — keep the module's own length (Refresh sets Depth = Length).
                 applied = Clone(preset.Config);
                 selectedModule.IsManualOverride = true;
+                selectedModule.UseCalculatedHeaderConfiguration = false;
             }
 
             selectedModule.AssociatedFrameConfiguration = applied;
@@ -835,6 +897,11 @@ namespace RackCad.UI
         {
             error = null;
 
+            if (!TryReadHeightInputs(out _, out _, out _, out error))
+            {
+                return false;
+            }
+
             var count = SeparatorCountBox.Text?.Trim();
             if (!string.IsNullOrWhiteSpace(count) && !(UiSupport.TryInt(count, out var n) && n >= 1))
             {
@@ -854,18 +921,6 @@ namespace RackCad.UI
                 return false;
             }
 
-            if (!IsBlankOrNumber(FirstLevelHeightBox.Text))
-            {
-                error = "Altura del primer nivel inválida (deja vacío para 0).";
-                return false;
-            }
-
-            if (!IsBlankOrNumber(BeamDepthBox.Text))
-            {
-                error = "Peralte de larguero inválido (deja vacío para 0).";
-                return false;
-            }
-
             if (ManualHeightToggle?.IsChecked == true && !(UiSupport.TryNum(ManualHeightBox.Text, out var m) && m > 0.0))
             {
                 error = "Altura manual inválida (debe ser mayor que cero).";
@@ -874,8 +929,6 @@ namespace RackCad.UI
 
             return true;
         }
-
-        private static bool IsBlankOrNumber(string text) => string.IsNullOrWhiteSpace(text) || UiSupport.TryNum(text, out _);
 
         private void DerivedReinforce_Changed(object sender, RoutedEventArgs e)
         {
@@ -1147,19 +1200,14 @@ namespace RackCad.UI
         {
             if (system == null) { SetStatus("Genera la vista antes de guardar.", true); return; }
             if (!TryValidateOptionalInputs(out var invalid)) { SetStatus(invalid, true); return; }
-
-            // Commit the advanced fields onto the model first: they only reach `system` on Apply*, so saving without
-            // a prior recompose used to persist stale defaults and lose the user's customizations on reopen.
-            ApplySeparatorOverrides();
-            ApplyDerivedPostOptions();
-            ApplyHeightOverride();
+            if (!Recompose()) { return; }
 
             var path = UiSupport.PromptSaveToLibrary(this, NameBox?.Text, "sistema");
             if (path == null) { return; }
 
             try
             {
-                new RackProjectStore().Save(RackProject.ForDynamic(system), path);
+                new RackProjectStore().Save(RackProject.ForDynamic(design, system), path);
                 SetStatus("Sistema guardado: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
@@ -1179,13 +1227,13 @@ namespace RackCad.UI
             try
             {
                 var project = new RackProjectStore().Load(dialog.FileName);
-                if (project.Kind != RackSystemKind.PalletFlow || project.DynamicSystem == null)
+                if (project.Kind != RackSystemKind.PalletFlow || project.DynamicDesign == null)
                 {
                     SetStatus("El archivo no es un sistema dinámico.", true);
                     return;
                 }
 
-                RestoreFrom(project.DynamicSystem);
+                RestoreFrom(project.DynamicDesign);
                 SetStatus("Sistema abierto: " + System.IO.Path.GetFileName(dialog.FileName), false);
             }
             catch (Exception ex)
@@ -1194,10 +1242,17 @@ namespace RackCad.UI
             }
         }
 
-        /// <summary>Restore the whole editor state from a loaded dynamic system (shared by open-file and round-trip edit).</summary>
-        private void RestoreFrom(DynamicRackSystem loaded)
+        /// <summary>Restore the whole editor from persisted editable inputs, then resolve one fresh system.</summary>
+        private void RestoreFrom(DynamicRackDesign loaded)
         {
-            system = loaded;
+            if (loaded == null)
+            {
+                return;
+            }
+
+            var resolution = resolver.Resolve(loaded);
+            design = loaded;
+            system = resolution.System;
             selectedModule = null;
             suppressRecompose = true;
             try
@@ -1207,6 +1262,9 @@ namespace RackCad.UI
                 PalletHeightBox.Text = Num(system.Pallet.Height);
                 WeightBox.Text = Num(system.Pallet.Weight);
                 PalletsDeepBox.Text = system.PalletsDeep.ToString(CultureInfo.InvariantCulture);
+                LoadLevelsBox.Text = loaded.LoadLevels.ToString(CultureInfo.InvariantCulture);
+                FirstLevelHeightBox.Text = Num(loaded.FirstLevelHeight);
+                BeamDepthBox.Text = Num(loaded.BeamDepth);
 
                 SeparatorCountBox.Text = system.SeparatorCountOverride?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
                 SeparatorSpacingBox.Text = system.SeparatorSpacingOverride.HasValue ? Num(system.SeparatorSpacingOverride.Value) : string.Empty;
@@ -1215,11 +1273,18 @@ namespace RackCad.UI
 
                 ManualHeightToggle.IsChecked = system.ManualHeaderHeightOverride.HasValue;
                 ManualHeightBox.Text = system.ManualHeaderHeightOverride.HasValue ? Num(system.ManualHeaderHeightOverride.Value) : string.Empty;
-                if (system.ManualHeaderHeightOverride.HasValue) computedHeaderHeight = system.ManualHeaderHeightOverride.Value;
+                computedHeaderHeight = system.ManualHeaderHeightOverride ?? resolution.Height.HeaderHeight;
+                ComputedHeightText.Text = system.ManualHeaderHeightOverride.HasValue
+                    ? string.Format(CultureInfo.InvariantCulture, "Altura manual: {0:0.#}\"  (derivada sería {1:0}\")", system.ManualHeaderHeightOverride.Value, resolution.Height.HeaderHeight)
+                    : string.Format(CultureInfo.InvariantCulture, "Altura calculada: {0:0.#}\" → {1:0}\"  (pendiente {2:0.#}\")", resolution.Height.TheoreticalHeight, resolution.Height.HeaderHeight, resolution.Height.Slope);
 
-                var loadedPostId = system.Modules
-                    .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration?.LeftPost != null)?
-                    .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
+                var loadedPostId = loaded.HeaderPostCatalogId;
+                if (string.IsNullOrWhiteSpace(loadedPostId))
+                {
+                    loadedPostId = system.Modules
+                        .FirstOrDefault(m => m.IsHeader && m.AssociatedFrameConfiguration?.LeftPost != null)?
+                        .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
+                }
                 if (!string.IsNullOrWhiteSpace(loadedPostId))
                 {
                     PostBox.SelectedValue = loadedPostId;
@@ -1237,7 +1302,7 @@ namespace RackCad.UI
         }
 
         /// <summary>Open the editor pre-loaded with an existing drawn system (from its embedded payload), keeping Id/Name.</summary>
-        public void LoadExisting(DynamicRackSystem loaded, string id, string name)
+        public void LoadExisting(DynamicRackDesign loaded, string id, string name)
         {
             if (loaded == null)
             {
@@ -1264,7 +1329,7 @@ namespace RackCad.UI
 
         /// <summary>Load a design opened from the library as a NEW insert: keeps the "Insertar" button and mints a fresh
         /// GUID on insert (unlike <see cref="LoadExisting"/>, which is the in-place round-trip edit).</summary>
-        public void LoadDesignForNew(DynamicRackSystem loaded, string name)
+        public void LoadDesignForNew(DynamicRackDesign loaded, string name)
         {
             if (loaded == null)
             {
@@ -1294,12 +1359,7 @@ namespace RackCad.UI
             }
 
             if (!TryValidateOptionalInputs(out var invalid)) { SetStatus(invalid, true); return; }
-
-            // Commit the advanced override fields onto the model before embedding it (same reason as SaveSystem):
-            // otherwise a customization not followed by "Actualizar vista" is lost in the .dwg round-trip.
-            ApplySeparatorOverrides();
-            ApplyDerivedPostOptions();
-            ApplyHeightOverride();
+            if (!Recompose()) { return; }
 
             // The placement jig needs the editor free, so only flag the request and close; the host command
             // draws the system once every modal window is gone.
@@ -1308,6 +1368,7 @@ namespace RackCad.UI
 
             InsertRequested = true;
             SystemToInsert = system;
+            DesignToInsert = design;
             RackId = currentId;
             RackName = currentName;
             Close();

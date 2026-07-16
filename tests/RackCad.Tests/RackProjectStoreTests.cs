@@ -72,6 +72,57 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void RoundTrip_DynamicDesign_PreservesHeightInputsAndHeaderProvenance()
+        {
+            var resolver = new DynamicRackSystemResolver(Catalog);
+            var system = DynamicSystem();
+            system.Modules.First(m => m.IsHeader).UseCalculatedHeaderConfiguration = false;
+            var design = resolver.Snapshot(system, 5, 18.0, 6.0, "POSTE_OMEGA_3X3");
+
+            var loaded = new RackProjectStore()
+                .Deserialize(new RackProjectStore().Serialize(RackProject.ForDynamic(design, system)));
+
+            Assert.NotNull(loaded.DynamicDesign);
+            Assert.Equal(5, loaded.DynamicDesign.LoadLevels);
+            Assert.Equal(18.0, loaded.DynamicDesign.FirstLevelHeight);
+            Assert.Equal(6.0, loaded.DynamicDesign.BeamDepth);
+            Assert.Equal("POSTE_OMEGA_3X3", loaded.DynamicDesign.HeaderPostCatalogId);
+            Assert.False(loaded.DynamicDesign.Modules.First(m => m.IsHeader).UseCalculatedHeaderConfiguration);
+        }
+
+        [Fact]
+        public void DynamicDocument_LegacyMissingHeightInputs_UsesHistoricalDefaults()
+        {
+            var legacy = DynamicRackSystemDocument.From(DynamicSystem());
+            legacy.LoadLevels = null;
+            legacy.FirstLevelHeight = null;
+            legacy.BeamDepth = null;
+
+            var design = legacy.ToDesign();
+
+            Assert.Equal(DynamicRackDefaults.DefaultLoadLevels, design.LoadLevels);
+            Assert.Equal(DynamicRackDefaults.DefaultFirstLevelHeight, design.FirstLevelHeight);
+            Assert.Equal(DynamicRackDefaults.DefaultBeamDepth, design.BeamDepth);
+        }
+
+        [Fact]
+        public void DynamicDocument_LegacyHeaderWithoutProvenance_IsPreservedAsCustom()
+        {
+            var legacy = DynamicRackSystemDocument.From(DynamicSystem());
+            var header = legacy.Modules.First(m => m.Kind == DynamicRackModuleKind.HeaderStart);
+            header.UseCalculatedHeaderConfiguration = null;
+            header.IsManualOverride = false;
+            header.Header.Height = 150.0;
+
+            var design = legacy.ToDesign();
+            design.LoadLevels = 5;
+            var resolved = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
+
+            Assert.False(design.Modules.First(m => m.IsHeader).UseCalculatedHeaderConfiguration);
+            Assert.Equal(150.0, resolved.Modules.First(m => m.IsHeader).AssociatedFrameConfiguration.Height, 4);
+        }
+
+        [Fact]
         public void RoundTrip_SelectiveHeader_PreservesHeader()
         {
             var store = new RackProjectStore();

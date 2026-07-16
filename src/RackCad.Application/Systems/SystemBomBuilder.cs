@@ -9,8 +9,8 @@ namespace RackCad.Application.Systems
     /// <summary>
     /// Aggregates a whole dynamic system into a COMPONENT bill of materials: every header module is a <b>cabecera</b>
     /// component (identical frames collapse, via <see cref="BomBuilder.Components"/>), each expanding to its pieces.
-    /// Separators and intermediate posts contribute nothing yet (no profiled members); when they gain rails/rollers
-    /// they add their own components.
+    /// Separators and intermediate posts contribute nothing yet (no profiled members); the future integrated bed will
+    /// be added as one component per physical bed without exposing its internal drawing recipe in this BOM.
     /// </summary>
     public static class SystemBomBuilder
     {
