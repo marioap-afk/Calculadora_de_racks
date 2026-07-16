@@ -166,6 +166,7 @@ namespace RackCad.Application.Systems
                 Kind = kind,
                 Length = length,
                 IsCalculated = true,
+                UseCalculatedHeaderConfiguration = true,
                 AssociatedFrameConfiguration = BuildHeaderConfiguration(template, postCatalogId, headerHeight, length)
             };
         }

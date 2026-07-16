@@ -13,6 +13,11 @@ uno con su ventana editora, su dibujo real en AutoCAD y round-trip de edicion.
 | Cama de rodamiento (flow bed) | `RackFlowBedWindow` | Lateral | `QUICKCAMA` |
 | Selectivo (editor avanzado) | `RackSelectiveWindow` | Frontal + Lateral + Planta | `RACKSELECTIVO` |
 
+El dinamico ya separa `DynamicRackDesign` (intencion editable, sin coordenadas) de `DynamicRackSystem`
+(representacion lateral resuelta). `DynamicRackSystemResolver` valida y materializa el layout; UI, biblioteca y
+payload DWG persisten el diseno. La separacion permite agregar despues varios frentes/anchos y builders frontal/planta
+sin convertir la geometria AutoCAD en fuente de verdad. Esas vistas y la cama integrada aun no existen.
+
 Las vistas extra (lateral/planta) estan ligadas por el mismo GUID del sistema y solo se
 insertan desde `RACKEDITAR` sobre una vista ya dibujada (los botones se deshabilitan con
 tooltip si no aplica), asi nunca quedan huerfanas. `RACKEDITAR` sobre cualquier vista reabre
@@ -299,7 +304,8 @@ tramos del "medio frente", ver mas abajo).
   componentes: el **selectivo** = **cabeceras** (una por posicion de marco por fondo + intermedias de medio
   frente, via `BomBuilder.Components` — marcos identicos por receta colapsan; incluye SU celosia, materializada
   con `RefreshPhysicalModel` si viene de persistencia) + **largueros** (perfil + 2 mensulas, receta unica en
-  `LargueroBomBuilder.Component`); el **dinamico** = sus cabeceras como componentes. La cabecera y la cama
+  `LargueroBomBuilder.Component`); el **dinamico** = por ahora sus cabeceras como componentes. Al integrar las camas,
+  el BOM inicial agregara una unidad de componente **Cama** por cama, sin despiece interno. La cabecera y la cama
   standalone siguen siendo BOM de piezas (ellas SON el componente). `RackBomWindow` muestra arbol
   (fila por componente -> RowDetails con sus piezas) o grid plano segun `IsComponentBased`; CSV a dos niveles
   (fila `Componente` + filas `Pieza` con total = por-unidad x cantidad), CRLF RFC-4180.

@@ -3,6 +3,9 @@ namespace RackCad.Domain.Systems
     /// <summary>Domain-level constants for dynamic (pallet flow) systems.</summary>
     public static class DynamicRackDefaults
     {
+        public const int DefaultLoadLevels = 3;
+        public const double DefaultFirstLevelHeight = 6.0;
+        public const double DefaultBeamDepth = 4.0;
         /// <summary>Extra length each header adds beyond the pallet depth (the +12 split across both ends).</summary>
         public const double HeaderEndAllowance = 6.0;
 

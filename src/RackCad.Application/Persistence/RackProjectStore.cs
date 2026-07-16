@@ -30,9 +30,11 @@ namespace RackCad.Application.Persistence
 
             var document = new RackProjectDocument { Kind = project.Kind };
 
-            if (project.Kind == RackSystemKind.PalletFlow && project.DynamicSystem != null)
+            if (project.Kind == RackSystemKind.PalletFlow && (project.DynamicDesign != null || project.DynamicSystem != null))
             {
-                document.DynamicSystem = DynamicRackSystemDocument.From(project.DynamicSystem);
+                document.DynamicSystem = project.DynamicDesign != null
+                    ? DynamicRackSystemDocument.From(project.DynamicDesign)
+                    : DynamicRackSystemDocument.From(project.DynamicSystem);
             }
             else if (project.Kind == RackSystemKind.SelectiveRack && project.SelectiveRack != null)
             {
@@ -123,6 +125,7 @@ namespace RackCad.Application.Persistence
             {
                 case RackSystemKind.PalletFlow:
                     RequirePayload(document.DynamicSystem, "sistema dinámico");
+                    var design = document.DynamicSystem.ToDesign();
                     var system = document.DynamicSystem.ToDomain();
                     foreach (var module in system.Modules)
                     {
@@ -132,7 +135,7 @@ namespace RackCad.Application.Persistence
                         }
                     }
 
-                    return RackProject.ForDynamic(system);
+                    return RackProject.ForDynamic(design, system);
 
                 case RackSystemKind.SelectiveRack:
                     RequirePayload(document.SelectiveRack, "rack selectivo");
@@ -199,7 +202,7 @@ namespace RackCad.Application.Persistence
 
             switch (project.Kind)
             {
-                case RackSystemKind.PalletFlow: usable = RackDesignValidation.IsUsableDynamic(project.DynamicSystem); what = "el sistema dinámico"; break;
+                case RackSystemKind.PalletFlow: usable = RackDesignValidation.IsUsableDynamic(project.DynamicDesign, project.DynamicSystem); what = "el sistema dinámico"; break;
                 case RackSystemKind.SelectiveRack: usable = RackDesignValidation.IsUsableSelective(project.SelectiveRack); what = "el rack selectivo"; break;
                 case RackSystemKind.Cama: usable = RackDesignValidation.IsUsableFlowBed(project.FlowBed); what = "la cama"; break;
                 case RackSystemKind.Larguero: usable = RackDesignValidation.IsUsableLarguero(project.Larguero); what = "el larguero"; break;

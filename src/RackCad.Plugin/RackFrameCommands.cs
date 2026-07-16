@@ -42,7 +42,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.DynamicSystemToInsert != null)
                     {
-                        DrawAndPlaceSystem(menu.DynamicSystemToInsert, BuildDynamicPayload(menu.DynamicSystemToInsert, menu.DynamicRackId, menu.DynamicRackName), menu.DynamicRackName);
+                        DrawAndPlaceSystem(menu.DynamicSystemToInsert, BuildDynamicPayload(menu.DynamicDesignToInsert, menu.DynamicRackId, menu.DynamicRackName), menu.DynamicRackName);
                     }
                     else if (menu.FlowBedToInsert != null)
                     {

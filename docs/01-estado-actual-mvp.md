@@ -5,7 +5,7 @@
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
 editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-tiene **503/503 tests verdes** y build Debug completo con 0 errores (estado vivo en `docs/HANDOFF.md`).
+tiene **553/553 tests verdes** y build Debug completo con 0 errores (estado vivo en `docs/HANDOFF.md`).
 
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
@@ -38,6 +38,12 @@ niveles, pero tambien se puede **editar a mano** (`ManualHeaderHeightOverride`).
 de las cabeceras personalizadas (`UpdateHeaderHeightInPlace`); solo cambiar la especificacion de
 tarima (o `PalletsDeep`) fuerza un rebuild completo. Las personalizaciones avanzadas sobreviven a
 guardar y reabrir.
+
+La base interna ya sigue el patron del selectivo: `DynamicRackDesign` conserva las entradas editables y
+`DynamicRackSystemResolver` produce un `DynamicRackSystem` lateral resuelto. Coordenadas y miembros fisicos se
+regeneran; los campos nuevos tienen fallback legacy y las cabeceras personalizadas no se reemplazan al recalcular.
+El producto sigue teniendo **solo vista lateral**: varios frentes/anchos, frontal, planta y cama integrada son la
+siguiente fase y no tienen aun reglas de bloque inventadas.
 
 - Comando: `RACKSISTEMADINAMICO` + opcion del menu.
 

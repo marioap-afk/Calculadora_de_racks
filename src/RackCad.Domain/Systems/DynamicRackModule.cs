@@ -5,7 +5,7 @@ namespace RackCad.Domain.Systems
     /// <summary>
     /// One editable longitudinal module of a dynamic system. The default view is calculated from the
     /// pallet rule, but each module can be edited (kind, length, associated header configuration).
-    /// Intermediate posts are zero-length modules (Length = 0); they are selectable but add no length.
+    /// Intermediate posts are derived drawing pieces and do not belong to the editable module list.
     /// </summary>
     public sealed class DynamicRackModule
     {
@@ -30,6 +30,12 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Header configuration for header modules; null for separators and posts.</summary>
         public RackFrameConfiguration AssociatedFrameConfiguration { get; set; }
+
+        /// <summary>
+        /// Whether the header configuration is still derived from the design inputs. A customized configuration is
+        /// preserved across recalculation instead of being silently replaced by a new standard cabecera.
+        /// </summary>
+        public bool UseCalculatedHeaderConfiguration { get; set; } = true;
 
         public string Notes { get; set; }
 

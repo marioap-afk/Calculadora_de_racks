@@ -1,9 +1,10 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-15**. La rama `release/claude-review` incluye las variantes de Bota C, Lateral C,
-> Poste tope y la familia completa de desviadores A/L: 546 tests y builds Debug verdes. Bota C, Poste tope,
-> Lateral C y los siete desviadores A/L estan confirmados en AutoCAD; ultimo commit funcional `a9f1c13`.
+> Actualizado: **2026-07-15**. Sobre la base `release/claude-review`, el worktree del dinamico separa ya
+> diseno editable y sistema resuelto: 553 tests y builds Debug verdes. Bota C, Poste tope,
+> Lateral C, los siete desviadores A/L y la base modular del dinamico estan confirmados en AutoCAD; base del
+> worktree `cd20200`.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
@@ -20,7 +21,7 @@ selectivo), cada uno con ventana editora WPF, dibujo por bloques en AutoCAD y **
 matriz frentes x niveles dirigida por tarima, tres vistas (frontal/lateral/planta) ligadas por GUID,
 doble profundidad, medio frente, cotas, elementos de seguridad y BOM por componentes con export CSV/XLSX.
 
-**Estado**: activo y funcional. El arbol actual tiene **546/546 tests verdes** y build Debug completo con 0 errores;
+**Estado**: activo y funcional. El arbol actual tiene **553/553 tests verdes** y build Debug completo con 0 errores;
 solo aparecen los `MSB3277` conocidos de las referencias de AutoCAD. La base publicada conserva su validacion manual
 de parrilla, larguero tope, rejilla, persistencia, biblioteca y rendimiento. Las variantes nuevas Bota C 4/6, Poste
 tope y Lateral C 4/6 tambien estan verificadas por pruebas, compilacion y comprobacion visual del usuario en AutoCAD.
@@ -31,9 +32,9 @@ Los siete desviadores A/L estan implementados, cubiertos por pruebas y validados
 | Aspecto | Estado | Evidencia |
 |---|---|---|
 | Compilacion Debug (Domain/Application/UI/Plugin) | **OK, 0 errores** | `dotnet build RackCad.sln -c Debug`; 2 familias MSB3277 conocidas, 2026-07-15 |
-| Pruebas unitarias | **546/546 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
+| Pruebas unitarias | **553/553 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
 | Validacion estatica del arbol actual | OK | sintaxis 233 C#; semantica Domain/Application (114), Domain/Application/UI (146 fuentes + 11 XAML generados previos) y Domain/Application/tests (173); 12 XML/XAML bien formados |
-| Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Bota C 4/6, Poste tope, Lateral C 4/6 y los siete desviadores A/L confirmados, 2026-07-15 |
+| Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Seguridad publicada + base modular del dinamico confirmadas, 2026-07-15 |
 | Commits `b1cfce2`..`95e25f2` (tope medio-frente, parrilla) | Implementado, testeado y verificado en AutoCAD | Ver seccion 9 |
 | Commits `aa42986`, `c11a267`, `a9f1c13` (variantes de seguridad y desviadores) | Implementados, testeados, verificados en AutoCAD y publicados | Ver secciones 8-9 |
 | Release build / bundle de despliegue | No reconstruido en la ultima sesion | `deploy/install-bundle.ps1 -Build` requiere AutoCAD cerrado |
@@ -43,7 +44,7 @@ Los siete desviadores A/L estan implementados, cubiertos por pruebas y validados
 | Funcionalidad | Estado | Codigo principal | Pruebas | Observaciones |
 |---|---|---|---|---|
 | Cabecera (marco): editor + dibujo + round-trip | completo | `src/RackCad.UI/RackFrameConfiguratorWindow*`, `src/RackCad.Plugin/Headers/` | `tests/RackCad.Tests/*Frame*` | Peralte de placa editable por placa |
-| Sistema dinamico (pallet flow) | completo | `RackDynamicSystemWindow`, `DynamicSystem*` | `Dynamic*Tests` | Patron ARRAY para perf |
+| Sistema dinamico (pallet flow) | lateral funcional; cierre multiplavista pendiente | `RackDynamicSystemWindow`, `DynamicRackDesign`, `DynamicRackSystemResolver`, `DynamicSystem*` | `Dynamic*Tests` | Base modular diseno -> resuelto; aun sin frontal/planta, varios frentes/anchos ni cama integrada |
 | Cama de rodamiento (flow bed) | completo | `RackFlowBedWindow`, `FlowBed*` | `FlowBed*Tests` | Rodillos por paso minimo; capacidad = fase futura |
 | Selectivo: matriz, 3 vistas, doble profundidad, medio frente, cotas | completo | `RackSelectiveWindow`, `src/RackCad.Application/Systems/Selective*` | `Selective*Tests` | El modulo mas activo |
 | BOM por componentes + consolidado (`RACKBOMTOTAL`) + export CSV/XLSX | completo | `SelectiveBomBuilder`, `RackBomWindow`, `XlsxWriter` | `SelectiveBomBuilderTests`, `Xlsx*Tests` | XLSX es OOXML escrito a mano, sin dependencias |
@@ -78,6 +79,11 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
   -> `SelectiveGeometryResolver.Resolve` -> `SelectiveRackSystem` (resuelto) -> builders puros
   (`SelectiveFrontalBuilder` / `SelectiveLateralBuilder` / `SelectivePlantaBuilder`) -> lista de
   `HeaderBlockInstance` -> drawers del Plugin que materializan bloques de AutoCAD.
+- **Flujo del dinamico** (base modular vigente): `DynamicRackDesign` (Domain, entradas editables y modulos sin
+  coordenadas) -> `DynamicRackSystemResolver.Resolve` (Application) -> `DynamicRackSystem` (lateral resuelto) ->
+  `DynamicSystemLateralBuilder` -> `DynamicSystemPlan` -> `DynamicSystemDrawService`. El DWG y la biblioteca
+  persisten el diseno; `StartX`/`EndX` se regeneran. Este limite prepara frontal/planta y varios frentes/anchos,
+  pero esos contratos fisicos aun no estan implementados.
 - **Persistencia**: el diseno viaja EN el DWG — sobre `RackEmbedDocument` (JSON + GUID + nombre) en un
   Xrecord del diccionario de extension de la definicion de bloque. Stores por tipo
   (`SelectivePalletDesignStore`, `RackProjectStore`, `FlowBedConfigurationStore`) con version de esquema.
@@ -204,6 +210,21 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Solucion y Plugin Debug compilan con 0 errores (solo las 2 familias MSB3277 conocidas). El usuario valido en
   AutoCAD los siete bloques, selector, rejilla, lados, dibujo, BOM y round-trip el 2026-07-15.
 
+**Lote cerrado 2026-07-15 — base modular del sistema dinamico (validado en AutoCAD):**
+
+- `DynamicRackDesign` separa las entradas editables (`Pallet`, fondos, niveles, alturas, poste y modulos) de
+  `DynamicRackSystem`, que conserva exclusivamente el sistema lateral resuelto y sus coordenadas calculadas.
+- `DynamicRackSystemResolver` es la frontera pura compartida: valida, calcula altura, deriva el layout estandar,
+  regenera solo cabeceras calculadas y preserva por copia las cabeceras personalizadas.
+- La UI, biblioteca y payload del DWG persisten el diseno, no las coordenadas. Los nuevos campos del DTO son nullable
+  con fallback legacy; una cabecera legacy sin procedencia se conserva como personalizada para no perder ediciones.
+- La validacion numerica de niveles/alturas ya no degrada silenciosamente valores invalidos a otros defaults.
+- Alcance deliberado: no se agregaron bloques, reglas de ancho/frentes, frontal/planta ni cama integrada; el BOM
+  vigente sigue listando cabeceras. Cuando se integre la cama, el contrato aprobado es un componente `Cama` por cama,
+  sin despiece comercial en esta primera etapa.
+- 7 pruebas nuevas; total **553/553 verdes**. Regresiones observadas con el fix desactivado: cabecera personalizada
+  150 -> 324 al recalcular; niveles persistidos 5 -> 3 al reabrir; cabecera legacy se marcaba calculada y se perdia.
+
 ## 9. Ultima validacion manual
 
 - **AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
@@ -215,6 +236,7 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
   funcionan correctamente en sus vistas y BOM.
 - Persistencia/round-trip: configuracion conservada tras `RACKEDITAR` y actualizar.
 - Rendimiento: sin degradacion perceptible en el escenario probado.
+- Sistema dinamico modular: **OK confirmado por el usuario** tras probar el DLL Debug; no se cambio ningun bloque DWG.
 
 ## 10. Problemas conocidos y deuda tecnica
 
@@ -233,16 +255,26 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
    no bloquean.
 5. Documentos historicos amplios en `docs/` (arquitectura, MVP, analisis VBA): utiles como referencia de
    decisiones, pero NO reflejan el estado actual; el indice los marca como historicos.
+6. **Dinamico aun es solo lateral**: faltan el modelo de varios frentes y anchos, builders frontal/planta y la
+   composicion de la cama completa. No definir offsets ni nombres de bloque hasta que el usuario reconfigure y
+   confirme los bloques reales.
+7. **Fallback legacy conservador**: una cabecera dinamica de un documento antiguo no declaraba si era calculada;
+   se abre como personalizada para evitar perdida de datos. `Restaurar estandar` o `Calculada` vuelve a derivarla.
 
 ## 11. Siguientes tareas recomendadas
 
-1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria. Abrir una tarea/worktree
-   propia y empezar por auditar el flujo actual completo antes de implementar. El nucleo existente ya cubre editor,
-   vista lateral, BOM, persistencia y edicion en sitio; la cama de rodamiento aun vive como sistema separado y su
-   integracion con el dinamico es la brecha funcional principal documentada.
-2. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10): mantener a mediano plazo; hoy los valores
+1. **Largueros especiales de entrada y salida del dinamico**: siguiente paso acordado. Esperar a que el usuario
+   cree los bloques reales y modifique los CSV; despues implementar primero su colocacion en la vista lateral,
+   consumiendo exclusivamente nombres/parametros catalogados.
+2. **Largueros intermedios del dinamico**: abordar despues de validar entrada/salida. No anticipar su geometria ni
+   reutilizar por suposicion un bloque de larguero selectivo.
+3. **Componer la cama dinamica dentro del diseno/resolucion del sistema** reutilizando `FlowBedLateralBuilder`, no
+   duplicandolo. Su builder dibujara la cama completa; el BOM inicial solo contara componentes `Cama`.
+4. **Varios frentes/anchos y vistas frontal/planta**: continuar sobre `DynamicRackDesign -> DynamicRackSystemResolver`
+   cuando esten confirmadas sus referencias fisicas; no acoplar esos ejes a los modulos longitudinales de la lateral.
+5. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10): mantener a mediano plazo; hoy los valores
    globales son suficientes, pero el control por celda puede aportar valor en configuraciones heterogeneas.
-3. **Guardas traseras**: mantener pendientes hasta el final; no son prioridad de producto.
+6. **Guardas traseras**: mantener pendientes hasta el final; no son prioridad de producto.
 
 Quedan diferidos sin prioridad actual: tarima/parrilla en PLANTA, integracion BOM -> cotizador, distribucion formal
 de `blocks-library.dwg` y reconstruccion del bundle Release. El BOM actual es suficiente; el cotizador real es un
@@ -257,7 +289,11 @@ de layout (meta futura, no inmediata).
 |---|---|---|---|
 | Build Debug (todo) | `dotnet build RackCad.sln -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15, Windows 11, SDK 8.0.423 por usuario |
 | Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15 |
-| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **546/546 verdes**, 0 omitidas | 2026-07-15 |
+| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **553/553 verdes**, 0 omitidas | 2026-07-15 |
+| Build UI aislado | `dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -o %TEMP%/RackCad-ui-dynamic-modular` | **OK, 0 errores, 0 advertencias** | 2026-07-15 |
+| Regresion dinamico: cabecera personalizada | `DynamicRackSystemResolverTests.Resolve_RecalculatesStandardHeaders_ButPreservesACustomHeader` | **1 fallo esperado:** 150 se regeneraba como 324; fix restaurado | 2026-07-15 |
+| Regresion dinamico: entradas persistidas | `RackProjectStoreTests.RoundTrip_DynamicDesign_PreservesHeightInputsAndHeaderProvenance` | **1 fallo esperado:** niveles 5 reabrian como 3; fix restaurado | 2026-07-15 |
+| Regresion dinamico: cabecera legacy | `RackProjectStoreTests.DynamicDocument_LegacyHeaderWithoutProvenance_IsPreservedAsCustom` | **1 fallo esperado:** se marcaba calculada; fix restaurado | 2026-07-15 |
 | Regresion con fix desactivado | filtro `SelectiveSafetyGridTests|LocalizedNumberParserTests` | **5 fallos esperados de 14**; fix restaurado y suite completa verde | 2026-07-15 |
 | Regresion Desviador A3 con integracion desconectada | `SelectiveDesviadorTests.Drawing_ProjectsTheSamePlanInThreeViews_AndBomKeepsPhysicalLevelCount` | **1 fallo esperado:** frontal 0 vs 6; fix restaurado, 17/17 dirigidas y suite verde | 2026-07-15 |
 | Regresion origen A3 en planta | mismo caso dirigido, exigiendo insercion igual al origen del poste | **1 fallo esperado:** 4/4 referencias conservaban offset del troquel; fix restaurado y suite verde | 2026-07-15 |
@@ -266,12 +302,12 @@ de layout (meta futura, no inmediata).
 | Validacion estatica auxiliar | Roslyn de PowerShell + referencias .NET 8/xUnit en cache; parse XML | **OK:** sintaxis 233 C#; semantica Domain/Application, UI y tests; 12 XML/XAML bien formados | 2026-07-15; no sustituye `dotnet build/test` ni la generacion XAML actual |
 | Lint / format | — | no aplica (no hay linters configurados) | — |
 | Release / bundle | `pwsh deploy/install-bundle.ps1 -Build` | **no ejecutada** en esta sesion (requiere AutoCAD cerrado y no era necesaria) | — |
-| Verificacion manual AutoCAD | NETLOAD + `RACKCAD`/`RACKSELECTIVO`/`RACKEDITAR` | Bota C/Tope/Lateral C + siete desviadores A/L **OK** | 2026-07-15 |
+| Verificacion manual AutoCAD | NETLOAD + `RACKCAD`/`RACKEDITAR` | Seguridad publicada + base modular del dinamico **OK, confirmado por el usuario** | 2026-07-15 |
 
 ## 13. Preguntas abiertas
 
-1. ¿Que alcance exacto debe tener el cierre del sistema dinamico, especialmente la integracion de sus camas de
-   rodamiento? Resolverlo al iniciar la siguiente tarea mediante auditoria del flujo actual y contratos del usuario.
+1. Cuando existan los bloques reconfigurados: confirmar origen/parametros de frontal, lateral, planta y cama, y la
+   relacion geometrica de varios frentes/anchos. No es bloqueante para la base modular actual.
 2. ¿La cantidad de parrilla debe poder variar por frente/nivel, o basta el valor global? (mediano plazo, segun uso real)
 
 ## 14. Como reanudar el trabajo
@@ -280,7 +316,7 @@ de layout (meta futura, no inmediata).
 2. `git log --oneline -5` y comparar con la seccion 8 de este archivo (¿hubo push nuevo?).
 3. Leer en orden: este archivo -> [README.md](../README.md) -> [AGENTS.md](../AGENTS.md) ->
    [docs/00-indice-contexto.md](00-indice-contexto.md).
-4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 546+ y quedar verde).
+4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 553+ y quedar verde).
 5. Tomar la primera tarea de la seccion 11 que siga abierta.
 
 **Prompt de reanudacion (copiar en un chat nuevo de Claude o Codex):**

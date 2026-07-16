@@ -26,6 +26,7 @@ namespace RackCad.UI
         public RackFrameConfiguration ConfigurationToInsert { get; private set; }
 
         public DynamicRackSystem DynamicSystemToInsert { get; private set; }
+        public DynamicRackDesign DynamicDesignToInsert { get; private set; }
 
         /// <summary>Identity of the dynamic system to insert (for the drawing round-trip embed).</summary>
         public string DynamicRackId { get; private set; }
@@ -155,6 +156,7 @@ namespace RackCad.UI
                 {
                     InsertRequested = true;
                     DynamicSystemToInsert = window.SystemToInsert;
+                    DynamicDesignToInsert = window.DesignToInsert;
                     DynamicRackId = window.RackId;
                     DynamicRackName = window.RackName;
                     Close();
@@ -180,16 +182,17 @@ namespace RackCad.UI
 
                 var project = new RackProjectStore().Load(library.SelectedDesign.Path);
 
-                if (library.SelectedDesign.Kind == RackDesignKind.Dinamico && project.DynamicSystem != null)
+                if (library.SelectedDesign.Kind == RackDesignKind.Dinamico && project.DynamicDesign != null)
                 {
                     var editor = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
-                    editor.LoadDesignForNew(project.DynamicSystem, library.SelectedDesign.Name);
+                    editor.LoadDesignForNew(project.DynamicDesign, library.SelectedDesign.Name);
                     editor.ShowDialog();
 
                     if (editor.InsertRequested)
                     {
                         InsertRequested = true;
                         DynamicSystemToInsert = editor.SystemToInsert;
+                        DynamicDesignToInsert = editor.DesignToInsert;
                         DynamicRackId = editor.RackId;
                         DynamicRackName = editor.RackName;
                         Close();
