@@ -19,6 +19,29 @@ namespace RackCad.Tests
             => new FlowBedConfiguration { BedType = type, LaneDepth = laneDepth, PalletDepth = palletDepth, RollerId = rollerId };
 
         [Fact]
+        public void Build_TinyPitchOverride_IsClampedToTheTroquelGrid()
+        {
+            // Regression: a typo like "0.01" used to drive the placement loop directly -> hundreds of
+            // thousands of rollers, freezing the editor. Rollers hook ON troqueles, so the pitch can
+            // never go below the grid.
+            var config = Config(FlowBedType.Pushback, Roller19);
+            config.RollerPitchOverride = 0.01;
+
+            var rollers = new FlowBedLateralBuilder().Build(config, Catalog)
+                .Where(i => i.Role == HeaderBlockRole.Roller)
+                .OrderBy(i => i.Insertion.X)
+                .ToList();
+
+            // 100" lane at >= FlowBedDefaults.TroquelPitch (1") pitch: bounded, never hundreds of thousands.
+            Assert.InRange(rollers.Count, 1, 120);
+            for (var k = 1; k < rollers.Count; k++)
+            {
+                Assert.True(rollers[k].Insertion.X - rollers[k - 1].Insertion.X >= FlowBedDefaults.TroquelPitch - 1e-9,
+                    "roller pitch fell below the troquel grid");
+            }
+        }
+
+        [Fact]
         public void Build_PlacesRailWithLongitudAndStopAtTroquelTope()
         {
             var instances = new FlowBedLateralBuilder().Build(Config(FlowBedType.Pushback, Roller19), Catalog);

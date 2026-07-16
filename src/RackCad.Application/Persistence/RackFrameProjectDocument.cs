@@ -27,6 +27,10 @@ namespace RackCad.Application.Persistence
         public int? CelosiaStartTroquel { get; set; }
         public int? DiagonalStartOffsetTroqueles { get; set; }
         public int? DiagonalEndOffsetTroqueles { get; set; }
+        public int? DiagonalDoubleSpacingTroqueles { get; set; }
+        public int? HorizontalDoubleOffsetTroqueles { get; set; }
+        public double? PasoTroquel { get; set; }
+        public double? PanelClear { get; set; }
 
         public string StandardBaselineId { get; set; }
         public string StandardBaselineVersion { get; set; }
@@ -49,6 +53,10 @@ namespace RackCad.Application.Persistence
                 CelosiaStartTroquel = configuration.CelosiaStartTroquel,
                 DiagonalStartOffsetTroqueles = configuration.DiagonalStartOffsetTroqueles,
                 DiagonalEndOffsetTroqueles = configuration.DiagonalEndOffsetTroqueles,
+                DiagonalDoubleSpacingTroqueles = configuration.DiagonalDoubleSpacingTroqueles,
+                HorizontalDoubleOffsetTroqueles = configuration.HorizontalDoubleOffsetTroqueles,
+                PasoTroquel = configuration.PasoTroquel,
+                PanelClear = configuration.PanelClear,
                 StandardBaselineId = configuration.StandardBaselineId,
                 StandardBaselineVersion = configuration.StandardBaselineVersion,
                 LeftPost = PostDocument.From(configuration.LeftPost),
@@ -86,6 +94,10 @@ namespace RackCad.Application.Persistence
                 CelosiaStartTroquel = CelosiaStartTroquel ?? domainDefaults.CelosiaStartTroquel,
                 DiagonalStartOffsetTroqueles = DiagonalStartOffsetTroqueles ?? domainDefaults.DiagonalStartOffsetTroqueles,
                 DiagonalEndOffsetTroqueles = DiagonalEndOffsetTroqueles ?? domainDefaults.DiagonalEndOffsetTroqueles,
+                DiagonalDoubleSpacingTroqueles = DiagonalDoubleSpacingTroqueles ?? domainDefaults.DiagonalDoubleSpacingTroqueles,
+                HorizontalDoubleOffsetTroqueles = HorizontalDoubleOffsetTroqueles ?? domainDefaults.HorizontalDoubleOffsetTroqueles,
+                PasoTroquel = PasoTroquel ?? domainDefaults.PasoTroquel,
+                PanelClear = PanelClear ?? domainDefaults.PanelClear,
                 StandardBaselineId = StandardBaselineId,
                 StandardBaselineVersion = StandardBaselineVersion,
                 LeftPost = LeftPost?.ToDomain(PostSide.Left),

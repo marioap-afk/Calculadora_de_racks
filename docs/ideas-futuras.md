@@ -185,6 +185,71 @@
     producto/rendimiento, no datos de geometria. Hacerlos configurables solo cuando existan benchmarks y validacion de
     compatibilidad; no eliminar las guardas para aparentar escalabilidad.
 
+### Features nuevas no mapeadas antes (propuestas de la revisión 2026-07-15)
+
+Ninguna de estas existía en este backlog; ordenadas por cercanía al flujo actual (cotizar → dibujar → instalar):
+
+21. **Cotizador integrado** — los CSVs ya llevan `unitCost`/`currency`/`costUnit` (seguridad.csv) y el BOM ya
+    exporta XLSX: falta la hoja de COTIZACIÓN (precios × cantidades + margen + IVA + totales por rack y por
+    dibujo). Extender costos a secciones.csv/mensulas.csv y agregar una hoja "Cotización" al export.
+22. **Peso por componente y total** — agregar peso/pie a `secciones.csv` (seguridad.csv ya tiene `weightEach`);
+    el BOM sumaría peso por rack y del dibujo (dato de flete/instalación que hoy se calcula a mano).
+23. **Anclas y tornillería en el BOM** — contar anclas por placa base (y tornillería por unión) como piezas
+    del BOM + checklist de instalación exportable.
+24. **Tabla-resumen de racks EN el dibujo** — una Table de AutoCAD auto-generada (nombre, tipo, tamaño,
+    copias) desde los sobres embebidos, que se refresca al editar; hoy esa tabla se hace a mano en cada plano.
+25. **Continuar hilera / snapping entre racks** — al insertar junto a un rack existente, ofrecer alinear al
+    grid del vecino (o extender la hilera con pasillo estándar), en vez de colocar a pulso.
+26. **Detección de colisiones en planta** — reutilizar `WarehouseFitChecker` contra los footprints de los
+    racks YA dibujados para avisar traslapes/pasillos angostos al insertar o mover.
+27. **Clear height del edificio** — agregar altura al modelo de sitio y verificar rack vs altura libre (con
+    holgura a sprinklers) en `RACKLAYOUT`/`RACKRELLENAR`; hoy el sitio es solo 2D.
+28. **Verificación normativa de pasillos/flue** — reglas configurables (incendios: flue space entre
+    back-to-back, anchos mínimos por tipo de montacargas) evaluadas sobre el `WarehouseGridPlan`.
+29. **Deshacer/rehacer en los editores** — snapshot del diseño por acción en las ventanas (la matriz del
+    selectivo primero); hoy un cambio accidental de matriz no tiene vuelta atrás.
+30. **Duplicar/copiar filas y columnas de la matriz** — duplicar un frente o un nivel con todo su contenido
+    (celdas, tramos, overrides) en un clic.
+31. **Actualización masiva por catálogo** — al cambiar un perfil en `secciones.csv`, comando que localice
+    todos los racks del dibujo que lo usan y los regenere (batch `RACKEDITAR`), con reporte de qué cambió.
+32. **Paquete de intercambio de diseño** — exportar `.rackcad.json` + el subconjunto de catálogo que usa
+    (y la lista de bloques requeridos) en un solo archivo, para compartir entre máquinas sin desalinear
+    catálogos. Complementa el manifest de biblioteca (#15).
+33. **Plano de fabricación por pieza (shop drawings)** — dibujo de detalle por perfil (cortes, perforaciones,
+    saques) generado desde el BOM; hoy el detalle de fabricación se dibuja aparte.
+34. **Vista 3D / export IFC** — todo es 2D por diseño; un export 3D básico (extrusión de las vistas) abriría
+    Navisworks/BIM para revisión de interferencias del cliente.
+
+### Hallazgos de la revisión de código 2026-07-15
+
+**Corregidos en el momento** (con test de regresión verificado fallando): lector CSV tomaba la primera fila
+como header aunque fuera una fila en blanco (catálogo se vaciaba en silencio); paso de rodillo sin acotar
+(un typo congelaba la UI); `RackFrameProjectDocument` perdía 4 campos de celosía/grid al guardar;
+`RackFrameProjectStore` sin guard de esquema ni validación de degenerado ("{}" cargaba una cabecera de alto
+0); el BOM materializaba tarimas/cotas/anotaciones solo para descartarlas (ahora las vistas de conteo van
+sin decoración, con test de equivalencia); `RACKLISTA` sumaba referencias de TODAS las vistas como "Copias"
+(ahora usa el máximo, igual que `RACKBOMTOTAL`).
+
+**Diferidos con evidencia (implementar cuando toque, ya diagnosticados):**
+- El reporte de inserción descuenta 1 por TIPO de bloque faltante, no por pieza omitida
+  (`LateralHeaderDrawService.CreateBlock` vs dedup de `AppendInstance`): contador real de saltos.
+- El catálogo se re-stat-ea por CADA vista en el redraw multi-vista (~290 stats de archivo por Actualizar
+  con carpeta compartida): pasar el `RackCatalog` ya cargado a los `RedrawInPlace`.
+- `Database.Purge` corre una vez POR VISTA en vez de una por edición: acumular candidatos y purgar una vez
+  (medir antes, puede ser barato).
+- Constantes de negocio hardcodeadas (alza del tope 8", holgura del lateral 4", paso del separador 100",
+  tarima default 42×60×2): moverlas a `defaults.json`/columnas de `seguridad.csv` con los valores actuales
+  como fallback.
+
+**Señalados pero NO verificados** (la verificación adversarial no alcanzó a correr; validar antes de actuar):
+posible coma decimal mal parseada en campos del configurador; el editor del dinámico podría resetear
+cabeceras custom en el round-trip; el redraw multi-vista parcial podría dejar vistas con diseños divergentes
+tragándose el error; `RACKEDITAR` sobre capas bloqueadas (falta `forceOpenOnLockedLayer`); conteo de copias
+de `RACKBOMTOTAL` confía en el cache sin validar; plan de desviadores reconstruido por corte (O(frentes²));
+fórmula del snap-Y del tope duplicada en frontal/lateral; predicado "esta selección contribuye" duplicado
+UI/resolver; ~13 puntos de contacto para agregar una familia de seguridad; dos costuras de extracción en
+`RackSelectiveWindow.xaml.cs` (2,462 líneas): render del preview y máquina de estados de la matriz por fondo.
+
 ## B. Deuda técnica diferida de la auditoría (2026-07-08)
 
 ### Necesitan validación en AutoCAD (no tocar sin probar dibujando)

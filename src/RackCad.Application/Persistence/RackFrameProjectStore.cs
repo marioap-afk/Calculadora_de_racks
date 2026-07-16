@@ -53,7 +53,17 @@ namespace RackCad.Application.Persistence
                 throw new InvalidOperationException("El proyecto esta vacio o es invalido.");
             }
 
+            // Same guards as RackProjectStore's cabecera branch: a file written by a NEWER major schema is
+            // rejected with a clear message (instead of loading half-understood), and a degenerate document
+            // ({} used to load as a 0-height cabecera in silence) is refused instead of drawn.
+            SchemaGuard.CheckReadable(document.SchemaVersion, RackFrameProjectDocument.CurrentSchemaVersion, "El proyecto");
+
             var configuration = document.ToConfiguration();
+            if (!RackDesignValidation.IsUsableHeader(configuration))
+            {
+                throw new InvalidOperationException("El proyecto no contiene una cabecera usable (alto, fondo y postes).");
+            }
+
             builder.RefreshPhysicalModel(configuration);
             return configuration;
         }

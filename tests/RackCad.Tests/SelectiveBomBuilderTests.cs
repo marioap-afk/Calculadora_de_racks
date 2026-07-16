@@ -99,6 +99,45 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void BuildSystem_DecorationsAndFlagsRestored_DoNotChangeTheBom()
+        {
+            // The BOM strips the decoration flags on its counting views (BuildForCounting) purely for speed —
+            // component identity, order and quantities must be identical, AND the caller's system must come back
+            // with its flags untouched (the planta path mutates+restores the REAL system).
+            var plain = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);
+
+            var decorated = TwoBaySystem();
+            decorated.DrawPallets = true;
+            decorated.Dimensions = DimensionDetail.Detailed;
+            decorated.NumberFronts = decorated.NumberLevels = decorated.DrawRackName = true;
+            foreach (var bay in decorated.Bays)
+            {
+                foreach (var level in bay.Levels)
+                {
+                    level.PalletFrente = 40.0;
+                    level.PalletAlto = 48.0;
+                    level.PalletCount = 2;
+                }
+            }
+
+            decorated.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Quantity = 1, Side = SafetySide.Left });
+
+            var bom = SelectiveBomBuilder.Build(decorated, Catalog);
+
+            var plainSignature = plain.Components.Select(c => (c.Category, c.ProfileId, c.Length, c.Quantity)).ToList();
+            var decoratedSignature = bom.Components
+                .Where(c => !string.Equals(c.ProfileId, "PROTECTOR_BOTA_H_3_16_18", System.StringComparison.OrdinalIgnoreCase))
+                .Select(c => (c.Category, c.ProfileId, c.Length, c.Quantity)).ToList();
+            Assert.Equal(plainSignature, decoratedSignature);
+            Assert.Contains(bom.Components, c => c.Quantity > 0 && string.Equals(c.ProfileId, "PROTECTOR_BOTA_H_3_16_18", System.StringComparison.OrdinalIgnoreCase)); // the safety path really ran
+
+            // The caller's flags survived the counting pass.
+            Assert.True(decorated.DrawPallets);
+            Assert.Equal(DimensionDetail.Detailed, decorated.Dimensions);
+            Assert.True(decorated.NumberFronts && decorated.NumberLevels && decorated.DrawRackName);
+        }
+
+        [Fact]
         public void BuildSystem_FlattenedLines_AreComponentQtyTimesPerUnit()
         {
             var bom = SelectiveBomBuilder.Build(TwoBaySystem(), Catalog);

@@ -73,9 +73,11 @@ namespace RackCad.Plugin
 
                         blocks.Add((id, embed));
 
-                        // Copies = placed references of the rack's view-blocks. forceValidity stays FALSE: the true
-                        // variant revalidates every reference and is expensive on large drawings.
-                        copiesByRack[embed.Id] += record.GetBlockReferenceIds(directOnly: true, forceValidity: false).Count;
+                        // Copies = PHYSICAL placements of the rack: the MAX reference count across its view-blocks,
+                        // the same aggregation RACKBOMTOTAL uses. Summing instead counted every view as a copy (a rack
+                        // with frontal + 2 cortes + planta showed "4" here while the BOM said 1). forceValidity stays
+                        // FALSE: the true variant revalidates every reference and is expensive on large drawings.
+                        copiesByRack[embed.Id] = Math.Max(copiesByRack[embed.Id], record.GetBlockReferenceIds(directOnly: true, forceValidity: false).Count);
                     }
 
                     transaction.Commit();

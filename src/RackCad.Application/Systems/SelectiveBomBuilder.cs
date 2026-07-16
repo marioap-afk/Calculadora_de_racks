@@ -48,6 +48,38 @@ namespace RackCad.Application.Systems
             return new BillOfMaterials(components);
         }
 
+        /// <summary>
+        /// Runs a view <paramref name="build"/> with the DECORATION flags off (tarimas, cotas, numeracion, nombre) and
+        /// restores them after. The BOM only keeps Beam/Safety roles, so decorations never enter a count — but a
+        /// 20-frente x 4-fondo rack with "Mostrar tarimas" on used to materialize thousands of pallet/dimension
+        /// instances per BOM build just to be discarded, and RACKBOMTOTAL multiplies that by every rack in the drawing.
+        /// </summary>
+        private static IReadOnlyList<HeaderBlockInstance> BuildForCounting(SelectiveRackSystem system, Func<SelectiveRackSystem, IReadOnlyList<HeaderBlockInstance>> build)
+        {
+            var pallets = system.DrawPallets;
+            var dimensions = system.Dimensions;
+            var fronts = system.NumberFronts;
+            var levels = system.NumberLevels;
+            var name = system.DrawRackName;
+            system.DrawPallets = false;
+            system.Dimensions = DimensionDetail.None;
+            system.NumberFronts = false;
+            system.NumberLevels = false;
+            system.DrawRackName = false;
+            try
+            {
+                return build(system);
+            }
+            finally
+            {
+                system.DrawPallets = pallets;
+                system.Dimensions = dimensions;
+                system.NumberFronts = fronts;
+                system.NumberLevels = levels;
+                system.DrawRackName = name;
+            }
+        }
+
         // ---- Safety accessories: one component per element (the bota itself IS the component), counted from the drawing ----
 
         private static void AddSafetyComponents(List<BomComponent> components, SelectiveRackSystem system, RackCatalog catalog)
@@ -62,7 +94,7 @@ namespace RackCad.Application.Systems
             // carries that placement. An element that draws nothing yet (no block/rule) falls back to its manual quantity.
             var drawn = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             var drawnLongitud = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
-            foreach (var instance in new SelectivePlantaBuilder().Build(system, catalog))
+            foreach (var instance in BuildForCounting(system, s => new SelectivePlantaBuilder().Build(s, catalog)))
             {
                 if (instance.Role != HeaderBlockRole.Safety || string.IsNullOrWhiteSpace(instance.PieceId))
                 {
@@ -533,7 +565,11 @@ namespace RackCad.Application.Systems
             var fondoCount = SelectiveDepthLayout.Count(system);
             for (var k = 0; k < fondoCount; k++)
             {
-                foreach (var instance in frontalBuilder.Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog))
+                var countingView = SelectiveDepthLayout.FondoSystemView(system, k); // a fresh copy: safe to strip
+                countingView.DrawPallets = false;
+                countingView.Dimensions = DimensionDetail.None;
+                countingView.NumberFronts = countingView.NumberLevels = countingView.DrawRackName = false;
+                foreach (var instance in frontalBuilder.Build(countingView, catalog))
                 {
                     if (instance.Role != HeaderBlockRole.Beam)
                     {

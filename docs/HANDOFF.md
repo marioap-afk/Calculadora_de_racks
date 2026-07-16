@@ -204,6 +204,29 @@ confirmados se corrigieron; el resto fue refutado con evidencia empirica).
 - Solucion y Plugin Debug compilan con 0 errores (solo las 2 familias MSB3277 conocidas). El usuario valido en
   AutoCAD los siete bloques, selector, rejilla, lados, dibujo, BOM y round-trip el 2026-07-15.
 
+**Revision exhaustiva de codigo (2026-07-15, multi-agente + verificacion en linea; 554 tests):**
+
+1. **Lector CSV — fila en blanco antes del header**: `CsvCatalogReader` tomaba `rows[0]` como header
+   incondicionalmente; una fila en blanco (o de solo comas) que Excel deja arriba vaciaba TODO el catalogo en
+   silencio (y `secciones.Count > 0` suprimia el fallback legacy). Ahora el header es la primera fila con
+   contenido. Tests: `Read_SkipsLeadingBlankRows_BeforeTheHeader`, `Read_AllBlankRows_ReturnsEmpty`.
+2. **Cama — paso de rodillo sin acotar**: un override diminuto ("0.01") generaba cientos de miles de
+   instancias y congelaba la UI. El paso manual se acota al troquel (`Math.Max(grid, override)`).
+3. **Persistencia de cabecera — 4 campos perdidos**: `RackFrameProjectDocument` no guardaba
+   `DiagonalDoubleSpacingTroqueles`, `HorizontalDoubleOffsetTroqueles`, `PasoTroquel` ni `PanelClear`
+   (geometria real; el clone del dinamico pasa por este store). Mapeados con fallback legacy + round-trip test.
+4. **`RackFrameProjectStore` sin guardas**: ahora aplica `SchemaGuard.CheckReadable` + `IsUsableHeader`
+   como sus hermanos ("{}" cargaba una cabecera degenerada de alto 0 en silencio).
+5. **Perf del BOM**: las vistas de conteo se construyen SIN decoracion (tarimas/cotas/numeracion) — un rack
+   grande con "Mostrar tarimas" materializaba miles de instancias solo para descartarlas, multiplicado por
+   `RACKBOMTOTAL`. Con test de equivalencia (BOM identico y flags del caller restaurados).
+6. **`RACKLISTA` — "Copias" coherente con el BOM**: sumaba las referencias de todas las vistas (frontal + 2
+   cortes + planta = "4 copias"); ahora usa el maximo entre vistas, la misma agregacion que `RACKBOMTOTAL`.
+
+Los hallazgos diferidos y los NO verificados (la verificacion adversarial agoto su limite de sesion a mitad
+de la corrida) quedaron registrados en `docs/ideas-futuras.md` ("Hallazgos de la revision de codigo
+2026-07-15"), junto con 14 features nuevas no mapeadas antes (items 21-34).
+
 ## 9. Ultima validacion manual
 
 - **AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
@@ -257,7 +280,8 @@ de layout (meta futura, no inmediata).
 |---|---|---|---|
 | Build Debug (todo) | `dotnet build RackCad.sln -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15, Windows 11, SDK 8.0.423 por usuario |
 | Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15 |
-| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **546/546 verdes**, 0 omitidas | 2026-07-15 |
+| Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **554/554 verdes**, 0 omitidas | 2026-07-15 (revision exhaustiva) |
+| Regresion de la revision exhaustiva (CSV header en blanco / paso de rodillo / DTO cabecera) | filtro `SkipsLeadingBlankRows\|TinyPitchOverride\|PreservesGridAndDoubleMember` con los fixes en stash | **3 fallos esperados de 3**; fixes restaurados y suite completa verde | 2026-07-15 |
 | Regresion con fix desactivado | filtro `SelectiveSafetyGridTests|LocalizedNumberParserTests` | **5 fallos esperados de 14**; fix restaurado y suite completa verde | 2026-07-15 |
 | Regresion Desviador A3 con integracion desconectada | `SelectiveDesviadorTests.Drawing_ProjectsTheSamePlanInThreeViews_AndBomKeepsPhysicalLevelCount` | **1 fallo esperado:** frontal 0 vs 6; fix restaurado, 17/17 dirigidas y suite verde | 2026-07-15 |
 | Regresion origen A3 en planta | mismo caso dirigido, exigiendo insercion igual al origen del poste | **1 fallo esperado:** 4/4 referencias conservaban offset del troquel; fix restaurado y suite verde | 2026-07-15 |

@@ -27,6 +27,29 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Read_SkipsLeadingBlankRows_BeforeTheHeader()
+        {
+            // Regression: Excel sometimes leaves a blank (or comma-only) first row. Taking it as the header
+            // mapped NO columns, so every entry loaded with a null Id and the whole catalog silently emptied
+            // (and secciones.Count > 0 suppressed the legacy fallback on top).
+            var blankLine = "\n" + "id,displayName,width\n" + "POSTE_X,Poste X,3\n";
+            var commasOnly = ",,\n" + "id,displayName,width\n" + "POSTE_X,Poste X,3\n";
+
+            foreach (var csv in new[] { blankLine, commasOnly })
+            {
+                var entry = Assert.Single(CsvCatalogReader.Read<ProfileCatalogEntry>(csv));
+                Assert.Equal("POSTE_X", entry.Id);
+                Assert.Equal(3.0, entry.Width);
+            }
+        }
+
+        [Fact]
+        public void Read_AllBlankRows_ReturnsEmpty()
+        {
+            Assert.Empty(CsvCatalogReader.Read<ProfileCatalogEntry>("\n,,\n\n"));
+        }
+
+        [Fact]
         public void Read_HandlesQuotedFieldsWithCommas()
         {
             var csv =

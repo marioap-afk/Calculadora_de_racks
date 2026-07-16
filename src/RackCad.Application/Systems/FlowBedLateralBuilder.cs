@@ -104,12 +104,15 @@ namespace RackCad.Application.Systems
             return instances;
         }
 
-        /// <summary>Roller pitch: the override if valid, else the minimum the diameter allows (rounded up to a troquel).</summary>
+        /// <summary>Roller pitch: the override if valid, else the minimum the diameter allows (rounded up to a troquel).
+        /// The override is floored at the troquel grid: rollers hook ON troqueles, so a sub-grid pitch is physically
+        /// impossible — and letting one through turns the placement loop into hundreds of thousands of instances
+        /// (a typo like "0.01" froze the editor and AutoCAD's UI thread).</summary>
         private static double RollerPitch(FlowBedConfiguration config, RackCatalog catalog, string rollerId, double grid)
         {
             if (config.RollerPitchOverride.HasValue && config.RollerPitchOverride.Value > 0.0)
             {
-                return config.RollerPitchOverride.Value;
+                return Math.Max(grid, config.RollerPitchOverride.Value);
             }
 
             var diameter = catalog?.FlowBedProfiles

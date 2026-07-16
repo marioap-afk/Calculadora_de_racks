@@ -20,18 +20,27 @@ namespace RackCad.Application.Catalogs
             var result = new List<T>();
             var rows = ParseCsv(text);
 
-            if (rows.Count < 1)
+            // Excel sometimes leaves a blank (or comma-only) first row after an edit. Taking it as the header
+            // would map NO columns and load N entries with every field default — the whole catalog silently
+            // empties. The header is the FIRST row with any content.
+            var headerIndex = 0;
+            while (headerIndex < rows.Count && rows[headerIndex].All(string.IsNullOrWhiteSpace))
+            {
+                headerIndex++;
+            }
+
+            if (headerIndex >= rows.Count)
             {
                 return result;
             }
 
-            var headers = rows[0].Select(h => h.Trim()).ToArray();
+            var headers = rows[headerIndex].Select(h => h.Trim()).ToArray();
             var writableProperties = typeof(T)
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(property => property.CanWrite && property.Name != nameof(CatalogEntryBase.Properties))
                 .ToDictionary(property => property.Name, property => property, StringComparer.OrdinalIgnoreCase);
 
-            for (var r = 1; r < rows.Count; r++)
+            for (var r = headerIndex + 1; r < rows.Count; r++)
             {
                 var cells = rows[r];
 
