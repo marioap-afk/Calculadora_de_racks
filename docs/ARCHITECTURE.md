@@ -226,8 +226,10 @@ OOXML sin dependencia de producto externa.
 
 `JsonRackCatalogProvider` carga `assets/catalogs/*.csv` y JSON auxiliares. Los CSV prevalecen, aceptan
 UTF-8 o Windows-1252 y la caché se invalida por firma de archivos. Las claves y FKs se documentan en
-[modelo-de-datos.md](modelo-de-datos.md); la edición se documenta en
-[catalogos-y-plantillas.md](catalogos-y-plantillas.md).
+[guias/modelo-de-datos.md](guias/modelo-de-datos.md); la edición se documenta en
+[guias/catalogos-y-plantillas.md](guias/catalogos-y-plantillas.md). Los puntos y layouts de conexión
+son datos por pieza y vista; una coordenada puede derivarse como valor local más un factor por
+parámetro dinámico. Esta relación no se duplica en los drawers.
 
 Cada pieza y vista se resuelve por `blocks.csv`; `blockName` coincide exactamente con la definición
 del DWG. Los parámetros dinámicos se buscan case-insensitive. Si un stretch funciona manualmente y
@@ -258,7 +260,9 @@ reciben planes ya calculados. Para rendimiento:
 ## 6. Build y validación
 
 Los comandos canónicos y la definición de terminado viven en AGENTS. El detalle de instalación está
-en [despliegue.md](despliegue.md). Restricciones que condicionan arquitectura:
+en [guias/despliegue.md](guias/despliegue.md) y el procedimiento de comprobación está en
+[guias/validacion-manual-autocad.md](guias/validacion-manual-autocad.md). Restricciones que
+condicionan arquitectura:
 
 - Domain, Application y sus pruebas no requieren AutoCAD ni Windows;
 - UI y Plugin usan `net8.0-windows`;
@@ -267,8 +271,8 @@ en [despliegue.md](despliegue.md). Restricciones que condicionan arquitectura:
 - los avisos MSB3277 de las referencias de AutoCAD son conocidos; errores propios no se aceptan;
 - la validación real del dibujo y de los bloques DWG corresponde a AutoCAD y al dueño.
 
-El checklist manual detallado se extraerá de la guía 03 a
-`docs/guias/validacion-manual-autocad.md` durante la fase de migración aprobada de I-06.
+Un build verde no equivale a comportamiento validado en AutoCAD. La evidencia manual identifica el
+commit, el DLL Debug exacto del worktree, los bloques reales y los escenarios recorridos.
 
 ## 7. Arquitectura objetivo
 
@@ -368,11 +372,15 @@ lista de ediciones compartidas.
 | 02: dinámico modular y cama | §§3.3-3.4 |
 | 02: identidad, round-trip, BOM y catálogos | §4 |
 | Auditoría arquitectónica §4 | §7 |
-| Guía 03: entorno, build y bloqueo de DLL | §6 |
+| Guía 03: entorno, build, bloqueo de DLL y validación | §6 y `guias/validacion-manual-autocad.md` |
 | Guía 04: patrón “agregar un tipo” | §8 |
 | Seguridad vigente | §§3.2 y 3.3 |
 | Layout de almacén | §4.5 |
 | Cotas y anotaciones | §§3.2 y 3.3 |
 
-Esta tabla permite verificar la absorción antes de archivar 02. El archivo fuente no se mueve en la
-fase 3 de I-06.
+La comparación de I-06 confirmó además cobertura explícita de dirección de dependencias, las cuatro
+capas, arquitectura vigente/objetivo, cabeceras, selectivo, dinámico, cama, seguridad, layout, cotas,
+persistencia, identidad, vistas ligadas, round-trip, BOM, catálogos, bloques, el flujo
+diseño→resolver→plan→dibujo/BOM, restricciones de AutoCAD, compatibilidad/versionado y el patrón
+temporal para agregar un tipo. El documento 02 queda preservado en el archivo de transición como
+evidencia histórica, no como fuente vigente.
