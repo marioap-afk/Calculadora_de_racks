@@ -1,10 +1,10 @@
 # ADR-0002 — Paso 0: evidencia de evaluación de `codex/dinamico-modular`
 
-- **Fecha de evaluación:** 2026-07-17
+- **Fechas:** evidencia automatizada 2026-07-17; validación manual del dueño 2026-07-17
 - **Iniciativa:** I-01 (`docs/decision-dinamico-modular`)
 - **Hash evaluado:** `9f19a8cbe194d4f66d00ab96e8c2672c2dc9ed24` (punta de `codex/dinamico-modular`)
-- **Estado:** evidencia automatizada completa; validación manual del dueño PENDIENTE
-- **Regla:** este documento NO decide A/B; la decisión espera los resultados manuales del dueño.
+- **Estado:** Paso 0 COMPLETO (evidencia automatizada + manual). Recomendación técnica emitida (sección 7).
+  ADR-0002 sigue **propuesto**: la decisión final A/B es del dueño.
 
 ## 1. Verificación de la rama evaluada
 
@@ -13,10 +13,10 @@
 | Worktree | `C:\Users\alejandra-mendoza\.codex\worktrees\c21e\Calculadora de racks` |
 | Rama / HEAD | `codex/dinamico-modular` @ `9f19a8c` |
 | Upstream / divergencia | `origin/codex/dinamico-modular`, 0/0 |
-| Working tree | limpio, sin archivos sin rastrear |
+| Working tree | limpio, sin archivos sin rastrear (verificado antes y después de toda la evaluación) |
 | Merge-base con `main` | `cd20200` |
 | Commits propios | 3 (`ee50526`, `b8bb469`, `9f19a8c`) — +12,621 / −503 en 85 archivos |
-| Commits de `main` que NO tiene | 8 (de `eaede44` a `457326d`), incluidos los 6 arreglos de la revisión exhaustiva que tocan `RackFrameProjectDocument`/`RackFrameProjectStore` |
+| Commits de `main` que NO tiene | 8 (de `eaede44` a `457326d`) |
 | Tag `archive/catalogos-dinamico-local-pre-i00-2026-07-17` | subconjunto estricto de la rama (la rama tiene 6 filas más y el encoding correcto); no hay contenido valioso exclusivo del tag |
 
 ## 2. Inventario técnico de la rama
@@ -24,10 +24,11 @@
 - **Comandos AutoCAD:** el editor dinámico se abre desde `RACKCAD` (alias `RK`) → "Sistema dinámico"
   (→ `RackDynamicSystemWindow`); `RACKSISTEMADINAMICO` (alias `RSD`) dibuja un sistema demo sin diálogo;
   `RACKEDITAR` (alias `RED`) reabre por GUID; `RACKBOMTOTAL`, `RACKLISTA`, `RACKDUPLICAR` aplican igual.
-- **DLL para NETLOAD (compilado DENTRO del worktree dinámico):**
+- **DLL evaluado (compilado DENTRO del worktree dinámico):**
   `C:\Users\alejandra-mendoza\.codex\worktrees\c21e\Calculadora de racks\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`
   — regenerado 2026-07-17 10:21 desde `9f19a8c`; SHA-256
-  `A6566E3373532B4AD9D39E6B419D01B7F70CEA64952B9C92B4353FA87DD53611`.
+  `A6566E3373532B4AD9D39E6B419D01B7F70CEA64952B9C92B4353FA87DD53611`. Es el mismo DLL que el dueño
+  cargó con NETLOAD para la validación manual.
 - **Flujo modular:** `DynamicRackDesign` (Domain) → `DynamicRackSystemResolver` (Application) →
   `DynamicRackSystem` → builders puros (`DynamicSystemLateralBuilder` / `DynamicSystemFrontalBuilder` /
   `DynamicSystemPlantaBuilder` / `DynamicFlowBedLateralBuilder` / `DynamicIntermediateBeamLateralBuilder` /
@@ -49,16 +50,9 @@
   ("cinta negra" → "cinta"), `secciones.csv` +2, `seguridad.csv` +2 (`GUIA_ENTRADA`, `DEFENSA_MONTACARGAS`).
 - **Bloques nuevos requeridos en `blocks-library.dwg`** (18 pares bloque/vista): `LARGUERO_IN_OUT_C6_*`,
   `LARGUERO_ESCALON_INFINITO_*`, `MENSULA_TROQUEL_REDONDO_CAL_10_*`, `MENSULA_AJUSTE_INFINITO_CAL_10_*`,
-  `GUIA_ENTRADA_*`, `DEFENSA_MONTACARGAS_*` (FRONTAL/LATERAL/PLANTA cada uno). Según el HANDOFF de la rama,
-  el usuario ya validó estos bloques progresivamente; un bloque faltante se reporta y se omite (no aborta).
-- **Informe de cierre de la rama** (HANDOFF de `9f19a8c` §9-12): validación progresiva del usuario en AutoCAD
-  confirmada para editor multi-frente, matriz, BFR, IN/OUT, cama integrada, intermedios, poste derivado
-  centrado, vistas, cotas, BOM y seguridad. **Único pendiente manual declarado:** reconfirmar que el
-  desviador de la frontal de entrada conserva la orientación del bloque sin `MirroredX` (la regresión
-  `FrontalEntrance_KeepsTheAuthoredDesviadorOrientationWithoutMirroring` está verde, pero el criterio final
-  es el bloque DWG real).
+  `GUIA_ENTRADA_*`, `DEFENSA_MONTACARGAS_*` (FRONTAL/LATERAL/PLANTA cada uno).
 
-## 3. Validación automatizada (2026-07-17, este equipo)
+## 3. Evidencia automatizada (2026-07-17, workstation del dueño)
 
 Precondición verificada: AutoCAD no estaba en ejecución (proceso `acad` ausente).
 
@@ -71,62 +65,136 @@ Precondición verificada: AutoCAD no estaba en ejecución (proceso `acad` ausent
 | Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug` | **0 errores**, solo las 2 familias `MSB3277` conocidas (3.0 s) |
 | Higiene | `git diff --check` + `git status` tras los builds | sin problemas de whitespace; **ningún cambio versionado** |
 
-Defectos automatizados encontrados: **ninguno** (no hubo fallos de tests ni de builds).
+Defectos automatizados encontrados: **ninguno**.
 
-## 4. Checklist manual para el dueño
+## 4. Evidencia manual (2026-07-17, dueño del repositorio)
 
-Cargar SIEMPRE el DLL del worktree dinámico (ruta de la sección 2). Cerrar AutoCAD antes de cualquier
-rebuild. Registrar evidencia = captura de pantalla o anotación breve por prueba.
+- **Entorno:** AutoCAD 2025, NETLOAD del DLL de la sección 2 (Debug del worktree dinámico), sobre
+  `codex/dinamico-modular` en `9f19a8c` — es decir, **ANTES de cualquier rebase sobre `main`**.
+- **Fuente de la evidencia:** validación declarada por el dueño del repositorio (checklist de 17 pruebas
+  recorrido personalmente). No existen capturas ni DWG adjuntos en el repo; la declaración del dueño es
+  la evidencia, conforme al criterio de AGENTS.md ("el dibujo real es el criterio final").
+- **Resultado global:** las 17 pruebas informadas **OK**; sin fallos bloqueantes, sin pérdida de
+  información, BOM coherente con lo dibujado, round-trip y actualización en sitio correctos, desviador de
+  la frontal de entrada con orientación correcta (sin espejo ni desplazamiento — era el único pendiente
+  declarado por la rama), sin bloques faltantes atribuibles al código, sin errores silenciosos,
+  rendimiento aceptable.
 
-| # | Prueba | Cómo | Resultado esperado | Severidad si falla |
+| # | Prueba | Resultado | Observaciones del dueño | Severidad |
 |---|---|---|---|---|
-| 1 | Carga NETLOAD | `NETLOAD` → DLL del worktree dinámico → `RACKCAD` | Menú abre; biblioteca de bloques reportada | Bloqueante |
-| 2 | Editor dinámico | `RACKCAD` → "Sistema dinámico" | `RackDynamicSystemWindow` abre con defaults y seguridad preseleccionada | Bloqueante |
-| 3 | Sistema multi-frente | 3+ frentes; fondos distintos (p. ej. 8/6/8) e inicio distinto; niveles variables por frente | El frente más corto gobierna los dos `+6"`; frentes mayores prolongan el patrón; alturas por frente | Bloqueante |
-| 4 | Camas y rodillos | Revisar cama inclinada por nivel en la lateral | Salida baja izquierda, entrada alta derecha; `LONGITUD = tramo − 4"`; apoyada en `TROQUEL_IN → TROQUEL_CAMA` | Alta |
-| 5 | Largueros IN/OUT e intermedios | Ver extremos y postes internos en lateral | Pareja C6 completa por nivel en X=0 y X=TotalLength (entrada espejeada, sin ±6"); un intermedio por poste interno sobre el origen del riel; central sin espejo | Alta |
-| 6 | Frontal de salida | Insertar frontal salida (Section 0) | Corte con postes/placas + IN/OUT; altura adyacente por poste | Alta |
-| 7 | Frontal de entrada | Insertar frontal entrada (Section 1) | Ídem, lado de entrada | Alta |
-| 8 | Laterales por poste | Insertar lateral pidiendo nº de poste (extremo y medio) | Cada corte usa solo profundidad/altura/niveles de frentes adyacentes | Alta |
-| 9 | Planta | Insertar planta | Sin camas; refuerzo continúa tras el poste principal, misma línea, sin espejo | Alta |
-| 10 | Seguridad | Diálogo Seguridad: botas, laterales, desviadores, DEFENSA (lados/longitudes salida-entrada), GUIA (frente/nivel) | Se dibujan en las vistas aplicables; DEFENSA usa el piso de la placa; GUIA 8" sobre IN/OUT de entrada con LONGITUD del tramo | Alta |
-| 11 | BOM | Botón BOM + `RACKBOMTOTAL` | Cabeceras/postes/placas, separadores, IN/OUT por frente-nivel, intermedios, 1 Cama/nivel con longitud/BFR sin despiece, seguridad física sin duplicar por vista | Bloqueante |
-| 12 | Guardado y persistencia | Guardar DWG, cerrarlo y reabrirlo | El diseño viaja en el DWG; sin errores al reabrir | Bloqueante |
-| 13 | Round-trip | `RACKEDITAR` sobre cualquier vista | Editor precargado con matriz, fondos, peraltes, seguridad y overrides intactos | Bloqueante |
-| 14 | Actualizar en sitio | Cambiar algo (p. ej. niveles) → Actualizar | Todas las vistas ligadas se redibujan; ninguna copia se mueve | Bloqueante |
-| 15 | Legacy | `RACKEDITAR` sobre un dinámico dibujado con el trunk (si existe DWG previo seguro) | Abre sin pérdida; cabecera legacy aparece como personalizada (fallback deliberado) | Alta |
-| 16 | **Desviador frontal de entrada** | Insertar frontal de entrada con desviadores activos | El bloque conserva su orientación dibujada, SIN espejo (`MirroredX`) ni desplazamiento — ÚNICO pendiente declarado por la rama | Alta |
-| 17 | Revisión visual general | Recorrer todas las vistas y la línea de comandos | Sin bloques faltantes, mensajes de error ni avisos silenciosos | Media |
+| 1 | NETLOAD del DLL y comando RACKCAD | OK | El plugin cargó y el menú respondió correctamente | Bloqueante |
+| 2 | Apertura del editor dinámico | OK | El editor abrió y permitió trabajar normalmente | Bloqueante |
+| 3 | Frentes, fondos, inicios y niveles variables | OK | Se verificaron configuraciones heterogéneas | Bloqueante |
+| 4 | Camas inclinadas por nivel | OK | Geometría y colocación correctas | Alta |
+| 5 | Largueros IN, OUT e intermedios | OK | Se generaron en las posiciones correspondientes | Alta |
+| 6 | Frontal de salida | OK | Vista correcta | Alta |
+| 7 | Frontal de entrada | OK | Vista correcta | Alta |
+| 8 | Laterales por poste | OK | Se representaron los frentes adyacentes correspondientes | Alta |
+| 9 | Vista de planta | OK | Representación correcta | Alta |
+| 10 | Elementos de seguridad | OK | Selección, dibujo y colocación correctos | Alta |
+| 11 | BOM físico y RACKBOMTOTAL | OK | Cantidades coherentes con el dibujo | Bloqueante |
+| 12 | Guardar, cerrar y reabrir el DWG | OK | No se perdió información | Bloqueante |
+| 13 | Round-trip mediante RACKEDITAR | OK | La configuración fue recuperada correctamente | Bloqueante |
+| 14 | Actualización en sitio | OK | Conservó identidad, posición y configuración | Bloqueante |
+| 15 | Compatibilidad con configuración legacy | OK | El escenario probado abrió y se comportó correctamente | Alta |
+| 16 | Desviador de entrada sin espejo ni desplazamiento | OK | Orientación y posición correctas | Alta |
+| 17 | Bloques faltantes, mensajes y revisión visual general | OK | No se detectaron anomalías bloqueantes | Media |
 
-### Tabla de resultados (llenar por el dueño)
+**Limitaciones de esta validación:**
 
-| # | Prueba | Resultado (OK / Falla / No probada) | Observaciones | Severidad | Evidencia |
-|---|---|---|---|---|---|
-| 1-17 | (una fila por prueba) | | | | |
+1. Se ejecutó **pre-rebase** (sobre `9f19a8c`, sin los 8 commits de `main`). Vale para decidir A/B; la
+   integración (I-02) exige re-validar en AutoCAD sobre el árbol YA rebasado (WORKFLOW §4.5.3).
+2. La evidencia es declarativa (sin artefactos adjuntos); el alcance es el escenario recorrido por el
+   dueño, no una matriz exhaustiva de configuraciones.
+3. La prueba 15 cubrió el escenario legacy probado, no todos los documentos históricos posibles; el
+   fallback conservador (cabecera legacy → personalizada) sigue siendo el comportamiento previsto.
 
-## 5. Riesgos conocidos
+## 5. Evaluación técnica por área
 
-1. **La rama está 8 commits detrás de `main`**, incluidos los 6 arreglos de `eaede44` que tocan la
-   persistencia de cabecera (`RackFrameProjectDocument` con 4 campos nuevos, `SchemaGuard` en
-   `RackFrameProjectStore`) — la rama reescribió esos mismos archivos: el rebase de I-02 tendrá conflictos
-   semánticos ahí, en `SystemBomBuilder`, stores y los 6 CSV de catálogo.
-2. Esta validación es **pre-rebase**: vale para decidir A/B, pero la integración (I-02) exigirá re-validar
-   sobre el árbol ya rebasado (WORKFLOW §4.5.3).
-3. `RackDynamicSystemWindow.xaml.cs` (3,318 líneas) reproduce el patrón code-behind que la Fase 5 del
-   ROADMAP quiere erradicar (I-21 ya lo contempla).
-4. `mensulas.csv` edita una fila existente (no es 100% append-only); riesgo bajo, revisar en el rebase.
-5. Los 18 bloques nuevos dependen de `blocks-library.dwg` del dueño (no versionado); sin ellos el dibujo
-   omite piezas sin abortar.
+| Área | Evidencia automatizada | Evidencia manual | Veredicto |
+|---|---|---|---|
+| Editor dinámico (matriz, alcances, celdas) | tests de resolver/scope verdes | pruebas 2-3 OK | Funcional |
+| Geometría de frentes y fondos (frente corto gobierna `+6"`) | `DynamicDepthGeometryTests`, `DynamicFrontGeometryTests` | prueba 3 OK | Funcional |
+| Niveles variables por frente | resolver + multivista verdes | prueba 3 OK | Funcional |
+| Camas (pendiente invertida, `LONGITUD = tramo − 4"`, mates) | `DynamicFlowBedLateralBuilderTests` | prueba 4 OK | Funcional |
+| Largueros IN/OUT C6 e intermedios | `DynamicLoadBeamGeometryTests`, lateral builder | prueba 5 OK | Funcional |
+| Frontal de salida / frontal de entrada | `DynamicSystemMultiViewBuilderTests` | pruebas 6-7 OK | Funcional |
+| Laterales por poste (solo frentes adyacentes) | `Cortes_UseOnlyTheHeightAndLevels…` | prueba 8 OK | Funcional |
+| Planta (sin camas, refuerzo sin espejo) | multivista + `Planta_…` | prueba 9 OK | Funcional |
+| Seguridad (botas/laterales/desviadores/DEFENSA/GUIA) | `DynamicSafety*`, defaults, BOM | prueba 10 OK | Funcional |
+| BOM físico + RACKBOMTOTAL | `SystemBomBuilderTests` (todas las familias) | prueba 11 OK | Funcional |
+| Persistencia (diseño en DWG, DTO nullable, fallbacks) | `RackProjectStoreTests` round-trip/legacy | prueba 12 OK | Funcional |
+| RACKEDITAR (round-trip por GUID) | round-trip tests | prueba 13 OK | Funcional |
+| Actualización en sitio (redefinición de bloque) | — (requiere AutoCAD) | prueba 14 OK | Funcional |
+| Compatibilidad legacy | `DynamicDocument_LegacyHeader…` | prueba 15 OK | Funcional (fallback conservador deliberado) |
+| Desviador de entrada (orientación) | `FrontalEntrance_KeepsTheAuthoredDesviadorOrientation…` | prueba 16 OK | **Cerrado** (era el único pendiente de la rama) |
+| Rendimiento | — | declarado aceptable por el dueño | Aceptable |
 
-## 6. Criterios preliminares (sin decidir todavía)
+### Observaciones residuales, clasificadas
 
-**Opción A razonable si:** los flujos principales del checklist funcionan; BOM y round-trip correctos; los
-fallos restantes son acotados; la rama puede estabilizarse previsiblemente durante I-02 (criterio de corte
-del ROADMAP: 3 sesiones).
+| Observación | Clasificación |
+|---|---|
+| La rama carece de los 8 commits de `main`; hay que rebasar y conservar los arreglos de `eaede44` | **Riesgo del rebase** (corregible durante I-02) |
+| Conflictos textuales del rebase: SOLO 7 archivos de documentación (`README.md`, `docs/00/01/03`, `docs/HANDOFF.md`, `docs/catalogos-y-plantillas.md`, `docs/ideas-futuras.md`). Ningún archivo de código ni catálogo fue tocado por ambos lados: `eaede44` vive en `RackFrameProjectDocument/Store`, `CsvCatalogReader`, `FlowBedLateralBuilder`, `SelectiveBomBuilder`, `RackFrameCommands.List.cs` — ninguno modificado por la rama | **Riesgo del rebase** (menor de lo temido por ADR-0002) |
+| Interacciones SEMÁNTICAS a re-verificar tras el rebase: (a) `DynamicFlowBedLateralBuilder` compone `FlowBedLateralBuilder`, que `eaede44` modificó (acote de paso de rodillo); (b) las cabeceras embebidas del dinámico pasan por `RackFrameProjectDocument`, que gana 4 campos y `SchemaGuard`; (c) BOM del dinámico junto a la optimización sin-decoración de `SelectiveBomBuilder` | **Riesgo del rebase** (cubierto por la suite combinada: los tests de ambos lados deben quedar verdes juntos) |
+| `RackDynamicSystemWindow.xaml.cs` con 3,318 líneas de code-behind y tubería clonada | **Riesgo de arquitectura / deuda posterior** — ya modelado como I-21 en el ROADMAP; NO invalida la funcionalidad validada |
+| `mensulas.csv` edita el `displayName` de una fila existente (no 100% append-only) | **Riesgo del rebase** (bajo; sin conflicto textual porque `main` no tocó el archivo) |
+| 18 bloques nuevos dependen de `blocks-library.dwg` del dueño (no versionado) | **Problema de entorno o catálogo** (mitigado: el dueño validó con sus bloques reales) |
+| Cabecera legacy sin procedencia abre como personalizada | **Deuda posterior** (comportamiento deliberado y documentado; `Restaurar estándar` la re-deriva) |
+| Fallos bloqueantes | **Ninguno encontrado** |
 
-**Opción B razonable si:** fallan flujos fundamentales; BOM o persistencia no confiables; hay pérdida de
-datos; la funcionalidad está lejos de ser utilizable; corregir antes del rebase ≈ reimplementar.
+## 6. Resultado del Paso 0
 
-Contexto actual: la evidencia automatizada es íntegramente verde y el informe de cierre de la rama declara
-validación progresiva del usuario con UN pendiente puntual (prueba 16). La palabra final es del dueño con
-el checklist de la sección 4.
+La evidencia que ADR-0002 pedía ya existe y es uniforme: la rama **fue validada en AutoCAD por el dueño**
+(17/17 OK, incluido el desviador de entrada), la suite completa y el subconjunto dinámico están verdes,
+los builds compilan limpios y no hay pérdida de datos ni fallos bloqueantes.
+
+## 7. Recomendación técnica: **OPCIÓN A** (integrar primero mediante I-02)
+
+Derivación desde la evidencia (no desde la preferencia previa de ADR-0002):
+
+- Los criterios de la opción B **no se cumplen**: no fallan flujos fundamentales, BOM y persistencia son
+  confiables, no hay pérdida de datos y la funcionalidad no solo es utilizable — está validada de punta a
+  punta por el dueño sobre bloques DWG reales.
+- Los criterios de la opción A **se cumplen todos**: flujos principales funcionando, BOM y round-trip
+  correctos, cero fallos restantes (no "acotados": cero), y la estabilización durante I-02 es previsible
+  porque el conflicto textual del rebase quedó medido: solo documentación.
+- Re-implementar (B) descartaría ~12,600 líneas funcionando y validadas para volver a escribirlas después
+  del registro de sistemas; el costo que B pretendía evitar (un rebase impagable) resultó, con datos, un
+  rebase de documentación más una re-validación semántica que la suite ya cubre.
+- La deuda real de la rama (code-behind de 3,318 líneas) es de arquitectura, no de funcionalidad, y el
+  ROADMAP ya la tiene modelada (I-21) para después del editor shell — igual que ocurre hoy con el selectivo.
+
+### Alcance preliminar de I-02 (`feature/dinamico-modular`) — NO ejecutado todavía
+
+1. Preservar el estado actual: antes de tocar nada, tag de resguardo sobre `9f19a8c`
+   (p. ej. `archive/dinamico-modular-pre-rebase`), sin borrar la rama remota hasta el merge confirmado.
+2. Renombrar la rama a `feature/dinamico-modular` (ADR-0001) en su mismo worktree.
+3. Rebase sobre `origin/main` actualizado; publicar con `--force-with-lease`.
+4. Resolver los conflictos (esperados solo en los 7 docs): estructura de `main` gana (HANDOFF/README
+   post-I-00); el estado del dinámico se re-registra en HANDOFF §8-12 en la sesión de integración.
+5. Integrar catálogos: las +38 filas de la rama se re-aplican append-only; revisar la edición de
+   `displayName` en `mensulas.csv` y el encoding Latin-1/UTF-8 al re-guardar.
+6. Conservar los arreglos de `eaede44` (no revertir nada de `RackFrameProjectDocument/Store`,
+   `CsvCatalogReader`, `FlowBedLateralBuilder`, `SelectiveBomBuilder`, `RackFrameCommands.List.cs`).
+7. Suite completa + subconjunto dinámico verdes sobre el árbol rebasado (se esperan ~627 de la rama +
+   los casos nuevos de `main`: `RackFrameProjectStoreTests`, `CsvCatalogReaderTests`, etc.).
+8. Build Debug de UI y Plugin con 0 errores (solo MSB3277).
+9. **Re-validación manual en AutoCAD sobre el árbol YA rebasado** (WORKFLOW §4.5.3), con foco en las
+   interacciones semánticas: round-trip de cabecera dinámica (4 campos nuevos del DTO), cama del dinámico
+   (compone el builder con acote de paso), BOM/RACKBOMTOTAL, y un smoke del resto del checklist.
+10. Merge `--no-ff` a `main` con HANDOFF §8-12 y ROADMAP actualizados como último commit de la rama;
+    limpieza segura de rama y worktree.
+11. **Criterio de corte del ROADMAP:** si el rebase no estabiliza en 3 sesiones, volver a ADR-0002 y
+    re-evaluar B.
+
+Archivos/áreas de mayor riesgo del rebase: `docs/HANDOFF.md` (reescrito por ambos lados; el de `main`
+post-I-00 es la estructura vigente), `README.md` y `docs/00/01/03/04` (la rama documenta el dinámico sobre
+la estructura documental vieja), y las tres interacciones semánticas de la sección 5 (flow bed compuesto,
+DTO de cabecera con campos nuevos, BOM sin decoración).
+
+## 8. Referencias
+
+- Evidencia automatizada registrada originalmente en el commit `f020608` de `docs/decision-dinamico-modular`.
+- Informe de cierre de la rama: `docs/HANDOFF.md` de `9f19a8c` (§8-12).
+- ADR-0002 (propuesto), ROADMAP I-01/I-02, WORKFLOW §4.5-4.6.
