@@ -4,8 +4,9 @@
 
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
 "solo un configurador de cabeceras": maneja **cuatro tipos de rack**, cada uno con su ventana
-editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. La rama `release/claude-review`
-tiene **553/553 tests verdes** y build Debug completo con 0 errores (estado vivo en `docs/HANDOFF.md`).
+editora, su dibujo en AutoCAD y **round-trip de edicion en sitio**. El cierre tecnico de
+`codex/dinamico-modular` tiene **627/627 tests verdes** y build Debug completo con 0 errores
+(estado vivo en `docs/HANDOFF.md`).
 
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
@@ -39,11 +40,83 @@ de las cabeceras personalizadas (`UpdateHeaderHeightInPlace`); solo cambiar la e
 tarima (o `PalletsDeep`) fuerza un rebuild completo. Las personalizaciones avanzadas sobreviven a
 guardar y reabrir.
 
+El campo global **Peralte de poste** se persiste en `DynamicRackDesign.PostPeralte` y se aplica a todas las cabeceras,
+incluidas las personalizadas. Un documento anterior sin el campo hereda el ancho del perfil de poste del catalogo.
+
+Cuando dos separadores consecutivos derivan un poste intermedio reforzado, el limite comun coincide con
+`FIN_POSTE`: el poste principal se desplaza a la izquierda ese offset y el refuerzo comienza en el limite. Asi el
+conjunto queda centrado; si se desactiva el refuerzo, el poste sencillo conserva su origen directamente en el limite.
+
 La base interna ya sigue el patron del selectivo: `DynamicRackDesign` conserva las entradas editables y
-`DynamicRackSystemResolver` produce un `DynamicRackSystem` lateral resuelto. Coordenadas y miembros fisicos se
+`DynamicRackSystemResolver` produce un `DynamicRackSystem` resuelto. Coordenadas y miembros fisicos se
 regeneran; los campos nuevos tienen fallback legacy y las cabeceras personalizadas no se reemplazan al recalcular.
-El producto sigue teniendo **solo vista lateral**: varios frentes/anchos, frontal, planta y cama integrada son la
-siguiente fase y no tienen aun reglas de bloque inventadas.
+Cada nivel resuelto incluye un larguero completo `LARGUERO_IN_OUT_C6` en entrada y otro en salida. Ambos hacen
+mate por el origen del bloque: salida baja/no espejeada en `X=0` y entrada alta/espejeada en `X=TotalLength`.
+El peralte C6 se resuelve desde `secciones.csv`; no se ensambla ni cuenta una mensula separada.
+La cama completa del nivel reutiliza `FlowBedLateralBuilder`: su `TROQUEL_IN` se atornilla al `TROQUEL_CAMA`
+del larguero izquierdo y el conjunto gira con la pendiente resuelta entre largueros. La longitud comercial no se
+deduce de esa diagonal: es siempre el tramo longitudinal propio del frente menos `4"`. Una definicion anidada se
+comparte entre niveles. El BOM del sistema cuenta una unidad `Cama` por posicion
+transversal y por nivel configurado en cada frente, sin despiece interno, y muestra en ella la longitud y el BFR.
+Tambien repite las cabeceras por cada linea transversal de postes, cuenta ambos perfiles/placas de un apoyo reforzado,
+los separadores, los IN/OUT por frente/nivel y los largueros intermedios por longitud/peralte. Botas, protectores laterales y desviadores
+reutilizan las familias catalogadas y el editor de seguridad del selectivo. Se proyectan tambien en frontal y planta
+con la misma seleccion; el protector lateral sustituye las botas de su vista y los desviadores respetan los niveles
+reales de los frentes adyacentes. El BOM toma BOTA/LATERAL de planta y DESVIADOR de salida + entrada como inventario
+fisico; un lateral sustituye ambas botas de su linea de poste y ninguna proyeccion multiplica una
+pieza por aparecer tambien en lateral o planta. Esas piezas sobreviven
+guardar/abrir/RACKEDITAR.
+
+La familia dinamica `DEFENSA` agrega `DEFENSA_MONTACARGAS`: un grid por poste permite activar o apagar de forma
+independiente la salida y la entrada y asignar una `LONGITUD` distinta a cada extremo. Los defaults son 12" por lado
+en postes de orilla y 36" por lado en intermedios. Lateral/planta usan el offset `ORIGEN_POSTE` catalogado (-4.75" en
+X); frontal coincide con el origen del poste. El BOM cuenta las piezas fisicas desde planta, agrupadas por longitud.
+
+La familia `GUIA` agrega `GUIA_ENTRADA` solo en el extremo de entrada. Su grid frente x nivel nace activo en todas
+las celdas, coloca una pareja espejeada 8" sobre el IN/OUT y fija `LONGITUD` al ultimo tramo longitudinal ocupado por
+ese frente. Lateral, frontal de entrada y planta consumen el mismo plan; el BOM toma la frontal de entrada para contar
+las dos piezas fisicas sin duplicarlas por las otras proyecciones.
+
+El editor recibe la cantidad total de frentes como un entero; al aumentarla, conserva los existentes y copia el frente
+seleccionado para crear los nuevos. Usa una matriz frente x nivel y una celda seleccionada real. La ficha separa dos
+contratos: posiciones, niveles, fondos, inicio longitudinal e inicio del primer larguero pertenecen solo al frente
+seleccionado; claro libre, frente/alto/peso de tarima, largo manual y tipo/peralte de IN/OUT e intermedio pertenecen
+a la celda. Celda/Nivel/Frente/Todas copia exclusivamente estos ultimos valores; `Frente` nunca modifica otra columna.
+Ctrl + clic mantiene una seleccion multiple: `Seleccionadas` aplica los datos de celda solo a esas coordenadas. Los
+datos estructurales ofrecen `Este frente`, `Frentes seleccionados` (frentes con alguna celda marcada) y
+`Todos los frentes`, por lo que fondos, posiciones, niveles o primer larguero se pueden uniformar explicitamente.
+El largo fisico entre postes es el mayor solicitado por los niveles de ese frente. El frente con
+menos fondos gobierna el intervalo base: sus extremos reciben los dos `+6"` y su patron cabecera/separador se prolonga
+hacia los fondos extra. Todos los frentes contienen ese intervalo compartido. Un extremo que cae en separador conserva
+ese tipo y recibe un poste limite independiente, sin convertirse en cabecera. Cada frente resuelve sus propios X de
+salida/entrada, pendiente, cama y soportes. La lateral se genera como un corte por poste: cada corte usa la union de
+profundidad y el maximo de altura, niveles y peraltes intermedios de los uno o dos frentes que toca. En los cortes
+frontales cada poste aplica la misma regla de altura adyacente.
+Para cada posicion `BFR = frenteTarima + 2"` y el largo IN/OUT automatico es
+`BFR * posiciones + 6"` (40" de frente -> BFR 42" -> larguero 48" para una posicion), con override manual opcional.
+`DynamicFrontGeometry` almacena el BFR resuelto y alimenta la frontal y la planta. La UI incluye selector de poste en la preliminar lateral,
+frontal salida y frontal entrada, ademas de numeracion de frentes/niveles, nombre del rack y cotas configurables.
+
+Hay dos cortes frontales: salida usa las elevaciones bajas y entrada las elevaciones altas; ambos dibujan solo
+postes/placas y `LARGUERO_IN_OUT_C6`. Un poste compartido toma la altura comercial del frente adyacente mas alto, sin
+propagar el maximo a postes ajenos. La planta repite la estructura lateral en cada limite de frente, dibuja IN/OUT e
+intermedios colapsados por nivel y **no coloca camas**. En planta, el poste derivado principal termina en el limite
+definido por `FIN_POSTE` y el refuerzo comienza ahi: ambos estan en la misma linea transversal, consecutivos sobre X
+y conservan la misma orientacion. Cada limite
+interno entre modulos representa una posicion de poste y recibe un solo
+`LARGUERO_ESCALON_INFINITO` por nivel; los limites `X=0`/`X=TotalLength` quedan reservados para IN/OUT. El segundo
+poste de una cabecera usa el bloque espejeado con `INICIO_DERECHO`; el primero usa el normal con
+`INICIO_IZQUIERDO`. El poste derivado reforzado central cuenta como una sola posicion y conserva un unico bloque
+normal sobre su perfil principal. A diferencia del armado principal por troqueles, esos mates superiores tocan la
+linea del **origen del riel**. La ranura vertical no se ajusta a un troquel discreto en altura y el preview consume
+las colocaciones puras de Application.
+
+El tipo y peralte de ambos largueros se eligen en la celda frente x nivel; cada frente conserva sus configuraciones
+y los botones de alcance replican la celda sin duplicar aritmetica. Las opciones compatibles salen de `secciones.csv`
+(`3;3.5;4;4.5;5;5.5;6`); Application valida y coloca
+`PERALTE` en cada bloque lateral. Cada corte lateral usa el mayor valor entre sus frentes adyacentes activos en cada
+nivel; la planta usa la envolvente del frente que esta dibujando. El DTO guarda una lista de celdas nullable por
+frente y acepta como fallback tanto las listas anteriores como los valores globales de documentos mas antiguos.
 
 - Comando: `RACKSISTEMADINAMICO` + opcion del menu.
 
@@ -123,8 +196,8 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
 - En la definicion del bloque se embebe (diccionario de extension, Xrecord troceado ≤255) un sobre
   unificado `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON
   del diseno) }`. Kinds: `"selective"`, `"dynamic"`, `"cabecera"`, `"cama"`. Views: `"frontal"`,
-  `"lateral"`, `"planta"`. `Section` = indice del corte lateral del selectivo (`-1` = vista no
-  seccionada).
+  `"lateral"`, `"planta"`. `Section` = indice de fondo/corte segun la vista; en lateral selectivo y dinamico es el
+  indice de poste (`-1` = vista no seccionada o payload legacy).
 - Comando `RACKEDITAR`: seleccionas un rack (cualquier vista) -> lee el sobre -> **despacha por
   Kind** -> reabre el editor del sistema completo precargado (`LoadExisting`) -> al confirmar
   **redefine la definicion en sitio** (`RedrawInPlace` + Regen) y **redibuja TODAS las vistas del
@@ -135,9 +208,8 @@ por poste y las bahias entre postes de distinto peralte se espacian bien.
 - **Convencion de botones (permanente en las cuatro ventanas):**
   - **Actualizar** = redibuja en sitio las vistas existentes del sistema (mismo GUID); es solo edicion.
   - **Insertar {vista}** = agrega una vista NUEVA **enlazada** (mismo GUID) y ademas **refresca** las
-    vistas ya presentes. En racks multi-vista (selectivo, cabecera) aparece "Actualizar" + un
-    "Insertar" por vista; en los de una sola vista (dinamico, cama) el unico boton alterna su etiqueta
-    Insertar <-> Actualizar segun si esa vista ya existe.
+    vistas ya presentes. En racks multi-vista (selectivo, dinamico, cabecera) aparece "Actualizar" + un
+    "Insertar" por vista; la cama conserva una sola vista.
   - **`RACKDUPLICAR`** = copia **independiente** (GUID nuevo, nombre "- copia"); editar la copia no
     toca al original. Distinto del `COPY` de AutoCAD, que comparte la definicion y por ende el GUID
     (esas copias se editan juntas, que es lo correcto para "replicas").
@@ -178,7 +250,7 @@ Persistencia de proyecto: `RackProjectStore` -> `.rackcad.json`.
 - **Cabecera**: dos vistas ligadas por GUID, **lateral** y **planta** (planta = 2 huellas de poste,
   frente en 0 / atras en fondo, + placas + celosia colapsada a un miembro con longitud = A-corte del
   travesano = fondo − 2×(inset troquel − mensula); peralte de celosia = peralte del poste − 1").
-- Vista **lateral** para dinamico / cama.
+- **Dinamico**: laterales por poste + frontal salida/entrada + planta; **cama**: lateral unica.
 - Las vistas lateral/planta **solo se insertan desde `RACKEDITAR`** de una vista frontal/lateral
   existente (los botones se deshabilitan con tooltip si no aplica), para que nunca queden huerfanas.
 - Dibujo block-based en AutoCAD para los cuatro tipos, con jig de colocacion.

@@ -9,16 +9,69 @@ uno con su ventana editora, su dibujo real en AutoCAD y round-trip de edicion.
 | Tipo | Ventana editora | Vista | Comandos |
 | --- | --- | --- | --- |
 | Cabecera (marco) | `RackFrameConfiguratorWindow` | Lateral + Planta | `RACKCABECERA`, `QUICKCABECERA` |
-| Sistema dinamico (pallet flow) | `RackDynamicSystemWindow` | Lateral | `RACKSISTEMADINAMICO` |
+| Sistema dinamico (pallet flow) | `RackDynamicSystemWindow` | Lateral + Frontal salida/entrada + Planta | `RACKSISTEMADINAMICO` |
 | Cama de rodamiento (flow bed) | `RackFlowBedWindow` | Lateral | `QUICKCAMA` |
 | Selectivo (editor avanzado) | `RackSelectiveWindow` | Frontal + Lateral + Planta | `RACKSELECTIVO` |
 
-El dinamico ya separa `DynamicRackDesign` (intencion editable, sin coordenadas) de `DynamicRackSystem`
-(representacion lateral resuelta). `DynamicRackSystemResolver` valida y materializa el layout; UI, biblioteca y
-payload DWG persisten el diseno. La separacion permite agregar despues varios frentes/anchos y builders frontal/planta
-sin convertir la geometria AutoCAD en fuente de verdad. Esas vistas y la cama integrada aun no existen.
+El dinamico separa `DynamicRackDesign` (intencion editable, sin coordenadas) de `DynamicRackSystem`
+(representacion resuelta). `DynamicRackSystemResolver` valida y materializa el layout; UI, biblioteca y
+payload DWG persisten el diseno. `DynamicFrontGeometry` resuelve frentes con distinto numero de posiciones y niveles:
+calcula `BFR = frenteTarima + 2"`, largo IN/OUT `= BFR * posiciones + 6"` (o su override manual) y comparte la reticula de postes entre `DynamicSystemFrontalBuilder` y
+`DynamicSystemPlantaBuilder`. `PostPeralte` es global al rack y el resolver lo impone sobre todas las cabeceras,
+incluidas las personalizadas; si falta en un documento legacy, hereda el ancho catalogado del poste.
+`DynamicDepthGeometry` resuelve `PalletsDeep` y `DepthStartPosition` por frente. El rango mas corto define los dos
+modulos con `+6"` y el patron estructural base; todos los rangos mayores deben contenerlo y solo prolongan el patron.
+Por eso un extremo de frente puede ser separador: se conserva como separador y se agrega el poste limite sencillo.
+El helper tambien entrega el rango por linea transversal y las coordenadas `StartX/EndX` que consumen dibujo, camas,
+seguridad y BOM. `DynamicRackLevelGeometry` resuelve la celda frente x nivel: tarima, claro, tipo/peralte de IN/OUT,
+tipo/peralte intermedio y largo manual. El frente conserva posiciones, niveles, fondos, inicio longitudinal e inicio
+del primer larguero; su largo fisico es la envolvente maxima de sus celdas. Los campos nuevos del DTO son nullable:
+documentos legacy heredan los valores globales, el fondo global y el inicio 1.
+`DynamicLoadBeamGeometry` resuelve una pareja IN/OUT por
+nivel y frente: perfil fijo C6 desde catalogo, salida en `StartX`, entrada elevada por la pendiente propia en `EndX`
+y bloque de entrada espejeado en X. Las elevaciones nominales de salida y entrada se ajustan
+al `TROQUEL_LARGUERO` mas cercano (base catalogada + paso de 2"); la altura comercial se recalcula desde esos mates
+reales. `DynamicFlowBedLateralBuilder` compone la cama completa
+existente por nivel: hace mate `TROQUEL_IN` (riel) -> `TROQUEL_CAMA` (larguero de salida), gira el conjunto con la
+pendiente resuelta y reutiliza una definicion anidada entre niveles. `DynamicFlowBedGeometry` fija ademas la regla
+comercial unica `LONGITUD = (EndX - StartX) - 4"`; los offsets de catalogo y la diagonal no cambian ese corte. El
+helper conserva tanto la linea de troqueles como la linea paralela del **origen del riel**. `DynamicIntermediateBeamGeometry`
+enumera todos los limites internos entre modulos y excluye los dos extremos IN/OUT;
+`DynamicIntermediateBeamLateralBuilder` coloca exactamente un `LARGUERO_ESCALON_INFINITO` por posicion y nivel.
+Un segundo poste usa `INICIO_DERECHO` y espejo; un primer poste usa `INICIO_IZQUIERDO` sin espejo; el derivado
+reforzado central cuenta como una posicion y conserva solo el normal del perfil principal. El mate superior se eleva hasta
+la linea del origen del riel, no hasta `TROQUEL_IN/TROQUEL_CAMA`. Los dos cortes frontales usan las elevaciones de
+salida/entrada y solo dibujan IN/OUT; la planta repite las cabeceras longitudinales en cada limite transversal y omite
+las camas. El refuerzo derivado de planta conserva la misma linea transversal del poste principal: este termina en
+el limite `FIN_POSTE` y el segundo perfil/placa comienza ahi, consecutivo sobre X y sin espejo.
+Todas las vistas comparten GUID y se redibujan con un solo `Regen`.
+`DynamicDerivedPostGeometry` centra los postes intermedios reforzados haciendo coincidir el limite entre separadores
+con `FIN_POSTE`, que es la interfaz fisica entre el poste principal y su refuerzo.
+`DynamicSafetyLateralBuilder` compone el corte longitudinal y `DynamicSafetyMultiViewBuilder` proyecta la misma
+seleccion sobre frontal y planta. Toman los origenes reales de los postes/placas, colocan BOTA, dejan que LATERAL
+sustituya esas botas, proyectan DESVIADOR segun los niveles reales y agregan DEFENSA con longitudes independientes
+de salida/entrada por poste mediante `DynamicForkliftDefensePlan`. `DynamicEntranceGuidePlan` coloca GUIA por
+frente/nivel en la entrada, 8" sobre el IN/OUT, con una pareja espejeada cuya `LONGITUD` es el ultimo tramo
+longitudinal ocupado por ese frente. `DynamicRackDesign` persiste las
+mismas `SelectiveSafetySelection` mediante `SafetySelectionDocument`, con lista nula como fallback legacy vacio.
+`DynamicViewDecorations` centraliza numeracion, nombre y cotas de las vistas ligadas; la cota del corte IN/OUT arranca
+en el `INICIO_PERFIL` catalogado, no en el troquel del poste. Detalle, escala y estilo de cota forman parte del diseno versionado.
+`DynamicIntermediateBeamGeometry.ResolvePeraltes` normaliza un peralte catalogado por frente y nivel. Cada lateral
+por poste envia a cada apoyo el maximo de sus frentes adyacentes activos en ese nivel; la planta usa el maximo de los niveles
+del frente dibujado. La lista nullable de cada frente acepta la lista comun de la version anterior y cae a 3.5" por
+nivel en documentos mas antiguos.
+`DynamicRackSystemResolver` calcula la altura comercial requerida por cada frente. `DynamicFrontGeometry.PostHeight`
+aplica al poste el maximo de sus frentes adyacentes, igual que el contrato del selectivo. `DynamicSystemLateralBuilder.Cortes`
+produce N+1 cortes para N frentes; cada bloque lateral persiste `Section=postIndex`, se inserta eligiendo numero de poste y
+se redibuja con su propia altura/niveles. Un payload dinamico legacy sin seccion se migra al poste 0 al actualizar.
+`DynamicSystemPreviewGeometry` expone a WPF las mismas alturas adyacentes, rango longitudinal y plan lateral puro.
+Por eso la preliminar lateral no vuelve a dibujar el largo global y los frontales no inflan todos los postes a la
+altura maxima. La seleccion WPF es una celda frente x nivel; Celda/Nivel/Frente/Todas replica solo tarima, claro y
+ambos largueros. Posiciones, niveles, fondos, inicio longitudinal e inicio del primer larguero se editan aparte y
+pertenecen exclusivamente al frente seleccionado. Ctrl + clic conserva una seleccion multiple de celdas; el editor
+puede aplicar la celda a las seleccionadas y los datos estructurales a sus frentes distintos o a todos los frentes.
 
-Las vistas extra (lateral/planta) estan ligadas por el mismo GUID del sistema y solo se
+Las vistas extra (laterales por poste/planta) estan ligadas por el mismo GUID del sistema y solo se
 insertan desde `RACKEDITAR` sobre una vista ya dibujada (los botones se deshabilitan con
 tooltip si no aplica), asi nunca quedan huerfanas. `RACKEDITAR` sobre cualquier vista reabre
 el editor del sistema completo y al confirmar redibuja todas las vistas (encontradas por GUID
@@ -304,8 +357,14 @@ tramos del "medio frente", ver mas abajo).
   componentes: el **selectivo** = **cabeceras** (una por posicion de marco por fondo + intermedias de medio
   frente, via `BomBuilder.Components` — marcos identicos por receta colapsan; incluye SU celosia, materializada
   con `RefreshPhysicalModel` si viene de persistencia) + **largueros** (perfil + 2 mensulas, receta unica en
-  `LargueroBomBuilder.Component`); el **dinamico** = por ahora sus cabeceras como componentes. Al integrar las camas,
-  el BOM inicial agregara una unidad de componente **Cama** por cama, sin despiece interno. La cabecera y la cama
+  `LargueroBomBuilder.Component`); el **dinamico** = cabeceras repetidas por cada linea transversal de postes +
+  apoyos derivados (identificados como reforzados cuando llevan dos perfiles/placas) + separadores por corte/nivel +
+  largueros IN/OUT por frente/nivel/extremo + intermedios agrupados por longitud/peralte + una unidad de componente
+  **Cama** por posicion y nivel + botas/laterales/desviadores/defensas/guias de entrada. BOTA/LATERAL/DEFENSA se
+  cuentan desde planta (un lateral sustituye ambas botas de su linea), DESVIADOR desde la union fisica de salida y
+  entrada, y GUIA solo desde la frontal de entrada para conservar sus dos piezas fisicas por celda frente x nivel sin
+  duplicar proyecciones. Cada `Cama` muestra longitud y BFR y no tiene receta interna; el IN/OUT
+  es el bloque completo y no agrega una mensula separada. La cabecera y la cama
   standalone siguen siendo BOM de piezas (ellas SON el componente). `RackBomWindow` muestra arbol
   (fila por componente -> RowDetails con sus piezas) o grid plano segun `IsComponentBased`; CSV a dos niveles
   (fila `Componente` + filas `Pieza` con total = por-unidad x cantidad), CRLF RFC-4180.
@@ -364,8 +423,8 @@ Misma logica reutilizable para cabecera, dinamico, cama y selectivo:
   `RackEmbedDocument { SchemaVersion, Kind, View, Section, Id (GUID), Name, Design (JSON del diseno) }`,
   serializado por `RackEmbedStore` y guardado como `Xrecord` troceado en cadenas <= 255 chars
   (`RackBlockData`). `Kind` es `"selective"`, `"dynamic"`, `"cabecera"` o `"cama"`; `View` es
-  `"frontal"`, `"lateral"` o `"planta"`; `Section` es el indice de corte lateral del selectivo
-  (`-1` = vista no seccionada).
+  `"frontal"`, `"lateral"` o `"planta"`; `Section` es el indice de corte/fondo segun la vista (en lateral
+  selectivo y dinamico, indice de poste; `-1` = vista no seccionada o legacy).
 - El JSON del diseno lo produce el store propio de cada tipo: `SelectivePalletDesignStore`
   (selectivo), `RackProjectStore` (dinamico/cabecera; persistencia de proyecto en
   `.rackcad.json`), `FlowBedConfigurationStore` (cama). Los `Build*Payload` de

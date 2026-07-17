@@ -50,7 +50,8 @@
    **`RACKCAD_COTAS`**. Frontal: alto/ancho totales, largo de CORTE del larguero por frente (desde el inicio
    del perfil, no el troquel), separaciones entre niveles, elevaciones (Detallado). Lateral (por corte): alto,
    fondo por cabecera, separaciones. Planta: largo total, ancho por frente, fondo total, fondo por fondo. El
-   `*D` anónimo de cada cota se purga al redibujar. Pendiente: cotas en dinámico/cama si se piden.
+   `*D` anónimo de cada cota se purga al redibujar. **Dinamico HECHO 2026-07-16:** numeracion, nombre y cotas
+   centralizadas para lateral, frontal salida/entrada y planta. Cama independiente sigue diferida.
 1b. **Pipeline de TEXTO para los toggles de anotación** — **hecho (frontal, planta y lateral):** existe
    `HeaderBlockRole.Annotation` (+ `Text`/`TextHeight`); un helper compartido `SelectiveAnnotations` emite las
    etiquetas y los tres builders las producen según los flags (frontal: frentes+niveles+nombre; planta:
@@ -62,9 +63,9 @@
    toggle real de geometría (frontal/planta).
 1c. **Dibujar tarima (toggle) — HECHO parcial** — `TARIMA_GENERICA` se dibuja como referencia visual en
    FRONTAL y LATERAL, incluida la tarima de piso, y nunca entra al BOM. Pendiente: bloque/regla de PLANTA.
-2. **Planta del sistema dinámico y de camas** — replicar la lógica multi-vista (GUID + View) que ya
-   comparten selectivo y cabecera. El patrón está listo: builder puro + draw service + rama en
-   `RACKEDITAR`.
+2. **Planta del sistema dinámico y de camas** — **dinámico HECHO (2026-07-16):** builder puro, draw service,
+   GUID/View/Section, `RACKEDITAR`, cotas y seguridad; por contrato no dibuja las camas. La planta de la cama
+   independiente sigue diferida.
 3. **Elementos de seguridad** — protector bota H/C, protector lateral H/C, desviador L/C, larguero tope,
    poste tope, guardas traseras, parrillas. **Fase 0 HECHA (2026-07-12, selectivo):** catálogo propio
    `seguridad.csv` (`SafetyElementCatalogEntry` → `RackCatalog.SafetyElements`), selección por cantidad en el
@@ -97,7 +98,7 @@
    + ¼" (mate en el punto `TROQUEL_TOPE`); el separador físico entre fondos se dibuja en lateral y planta (componente
    "Separador", cada 100"; en la frontal solo se deja el hueco, a propósito). **Parrilla HECHA en codigo
    (2026-07-14; validada en AutoCAD 2026-07-15):** frontal+lateral+BOM, una por tarima, ancho/cantidad manual
-   y conteo vivo; falta PLANTA. **Pendiente:** desviadores, poste tope y guardas traseras.
+   y conteo vivo; falta PLANTA. **Desviadores y poste tope HECHOS. Pendiente:** guardas traseras.
 4. **Layout de almacén** — **v1 HECHO (2026-07-13):** comando `RACKLAYOUT` replica la vista en planta de
    un rack en una rejilla filas × columnas con pasillos + numeración automática (A1, B2…), copias enlazadas
    o independientes; footprint leído de los extents del bloque; alimenta el BOM consolidado. Motor de rejilla
