@@ -46,7 +46,8 @@ namespace RackCad.UI
             SafetySide side,
             IEnumerable<SelectiveGridCell> offCells,
             int fallbackPostCount,
-            IReadOnlyList<int> fallbackLevelsPerFrente)
+            IReadOnlyList<int> fallbackLevelsPerFrente,
+            bool fallbackLevelsArePerPost = false)
         {
             this.elementId = elementId;
             this.system = system;
@@ -67,7 +68,7 @@ namespace RackCad.UI
             var plan = SelectiveDesviadorPlan.Build(system, catalog, gridSelection);
             levelsPerPost = plan.LevelCounts.Count > 0
                 ? plan.LevelCounts
-                : FallbackCounts(fallbackPostCount, fallbackLevelsPerFrente);
+                : FallbackCounts(fallbackPostCount, fallbackLevelsPerFrente, fallbackLevelsArePerPost);
 
             var off = SelectiveSafetyGrid.OffCellKeys(offCells);
             var posts = levelsPerPost.Count;
@@ -355,12 +356,20 @@ namespace RackCad.UI
         private static SafetySide EffectiveSide(SafetySide value)
             => value == SafetySide.Left || value == SafetySide.Right ? value : SafetySide.Both;
 
-        private static IReadOnlyList<int> FallbackCounts(int postCount, IReadOnlyList<int> levelsPerFrente)
+        private static IReadOnlyList<int> FallbackCounts(int postCount, IReadOnlyList<int> levelsPerFrente, bool levelsArePerPost)
         {
             var count = Math.Max(1, postCount);
             var result = new int[count];
             for (var post = 0; post < count; post++)
             {
+                if (levelsArePerPost)
+                {
+                    result[post] = levelsPerFrente != null && post < levelsPerFrente.Count
+                        ? Math.Max(1, levelsPerFrente[post])
+                        : 1;
+                    continue;
+                }
+
                 var left = post > 0 && levelsPerFrente != null && post - 1 < levelsPerFrente.Count ? levelsPerFrente[post - 1] : 0;
                 var right = levelsPerFrente != null && post < levelsPerFrente.Count ? levelsPerFrente[post] : 0;
                 result[post] = Math.Max(1, Math.Max(left, right) + 1);

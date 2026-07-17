@@ -139,7 +139,10 @@ namespace RackCad.Plugin
                     }
                     case RackEmbedDocument.KindDynamic:
                     {
-                        var system = new RackProjectStore().Deserialize(embed.Design)?.DynamicSystem;
+                        var project = new RackProjectStore().Deserialize(embed.Design);
+                        var system = project?.DynamicDesign == null
+                            ? project?.DynamicSystem
+                            : new DynamicRackSystemResolver(catalog).Resolve(project.DynamicDesign).System;
                         return system == null ? null : SystemBomBuilder.Build(system, catalog);
                     }
                     case RackEmbedDocument.KindCabecera:

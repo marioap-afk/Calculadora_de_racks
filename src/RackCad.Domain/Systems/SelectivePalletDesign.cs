@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RackCad.Domain.RackFrames;
 
 namespace RackCad.Domain.Systems
@@ -210,6 +211,24 @@ namespace RackCad.Domain.Systems
             return true;
         }
 
+        // ---- DEFENSA-only config: one physical pair per transverse post line, with a length per post ----
+
+        /// <summary>DEFENSA: explicit per-post lengths. A zero length disables that post; missing posts use the
+        /// dynamic-system defaults resolved by Application (12 in at the edges, 36 in at intermediate posts).</summary>
+        public IList<SafetyPostDefense> DefensaPosts { get; } = new List<SafetyPostDefense>();
+
+        // ---- GUIA-only config: disabled (frente, level) cells; empty means every available level ----
+
+        /// <summary>GUIA: zero-based frente/level cells without entrance guides. Missing/empty enables every cell.</summary>
+        public IList<SelectiveGridCell> GuiaEntradaOffCells { get; } = new List<SelectiveGridCell>();
+
+        public bool GuiaEntradaAt(int frontIndex, int levelIndex)
+            => frontIndex >= 0
+               && levelIndex >= 0
+               && !GuiaEntradaOffCells.Any(cell => cell != null
+                                                   && cell.Frente == frontIndex
+                                                   && cell.Level == levelIndex);
+
         // ---- PARRILLA-only config (deck): which views draw it, and the (frente,level) cells that carry one ----
 
         /// <summary>PARRILLA: draw the deck in the FRONTAL view (seen edge-on, FRENTE = the frente width). Default true.</summary>
@@ -277,6 +296,19 @@ namespace RackCad.Domain.Systems
             CopyCells(TopeOffCells, copy.TopeOffCells);
             CopyCells(DesviadorOffCells, copy.DesviadorOffCells);
             CopyCells(ParrillaOffCells, copy.ParrillaOffCells);
+            CopyCells(GuiaEntradaOffCells, copy.GuiaEntradaOffCells);
+            foreach (var post in DefensaPosts)
+            {
+                if (post != null)
+                {
+                    copy.DefensaPosts.Add(new SafetyPostDefense
+                    {
+                        PostIndex = post.PostIndex,
+                        ExitLength = post.ExitLength,
+                        EntranceLength = post.EntranceLength
+                    });
+                }
+            }
             return copy;
         }
 
@@ -297,6 +329,14 @@ namespace RackCad.Domain.Systems
     {
         public int PostIndex { get; set; }
         public SafetySide Side { get; set; }
+    }
+
+    /// <summary>An explicit dynamic forklift-defense length at one transverse post; zero means disabled.</summary>
+    public sealed class SafetyPostDefense
+    {
+        public int PostIndex { get; set; }
+        public double ExitLength { get; set; }
+        public double EntranceLength { get; set; }
     }
 
     /// <summary>A (frente, level) cell reference — used to mark which larguero cells carry (or skip) a tope.</summary>

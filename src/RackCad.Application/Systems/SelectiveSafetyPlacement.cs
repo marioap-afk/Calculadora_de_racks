@@ -107,16 +107,25 @@ namespace RackCad.Application.Systems
         /// any per-post override) and a block defined for the view (else it can't be drawn). The caller resolves the
         /// per-post side at each post.</summary>
         public static List<SafetyElement> EnabledOfType(SelectiveRackSystem system, RackCatalog catalog, string view, string type)
+            => EnabledOfType(system?.SafetySelections, catalog, view, type);
+
+        /// <summary>System-neutral overload for rack families that compose the same catalog-driven safety subsystem.</summary>
+        public static List<SafetyElement> EnabledOfType(
+            IEnumerable<SelectiveSafetySelection> selections,
+            RackCatalog catalog,
+            string view,
+            string type,
+            bool allowEmptySide = false)
         {
             var result = new List<SafetyElement>();
-            if (system?.SafetySelections == null || catalog?.SafetyElements == null)
+            if (selections == null || catalog?.SafetyElements == null)
             {
                 return result;
             }
 
             // A catalog type is one family with one active ElementId. Resolve it once so malformed legacy documents
             // containing two variants cannot draw both (or make the lateral disagree with frontal/planta/BOM).
-            var selection = SelectiveSafetyFamilies.SelectedOfType(system.SafetySelections, catalog.SafetyElements, type);
+            var selection = SelectiveSafetyFamilies.SelectedOfType(selections, catalog.SafetyElements, type);
             if (selection == null || string.IsNullOrWhiteSpace(selection.ElementId))
             {
                 return result;
@@ -125,7 +134,7 @@ namespace RackCad.Application.Systems
             // Drawn if the default side draws OR some post overrides to a drawn side.
             var drawsSomewhere = selection.Side != SafetySide.None
                 || selection.PostSides.Any(p => p != null && p.Side != SafetySide.None);
-            if (!drawsSomewhere)
+            if (!drawsSomewhere && !allowEmptySide)
             {
                 return result;
             }
@@ -153,7 +162,8 @@ namespace RackCad.Application.Systems
         public static void AppendAtPost(
             ICollection<HeaderBlockInstance> target, RackCatalog catalog, string view,
             IReadOnlyList<SafetyElement> elements,
-            Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null, bool mirrorYInPlace = false)
+            Point2D postOrigin, string plateId, int postIndex, double? mirrorAxisX = null, double? longitud = null,
+            bool mirrorYInPlace = false, SafetySide? sideOverride = null)
         {
             if (elements == null || elements.Count == 0)
             {
@@ -173,7 +183,7 @@ namespace RackCad.Application.Systems
 
             foreach (var element in elements)
             {
-                var side = element.Selection.SideForPost(postIndex);
+                var side = sideOverride ?? element.Selection.SideForPost(postIndex);
                 if (side == SafetySide.Left || side == SafetySide.Both)
                 {
                     target.Add(Piece(element.PieceId, element.Block, view, at, mirroredX: false, mirroredY: false, longitud));

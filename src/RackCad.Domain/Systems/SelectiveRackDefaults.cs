@@ -73,6 +73,8 @@ namespace RackCad.Domain.Systems
         public const string LateralType = "LATERAL";
         public const string TopeType = "TOPE";
         public const string DesviadorType = "DESVIADOR";
+        public const string DefensaType = "DEFENSA";
+        public const string GuiaType = "GUIA";
         public const string ParrillaType = "PARRILLA";
         public const string DeckLegacyType = "DECK";
 
