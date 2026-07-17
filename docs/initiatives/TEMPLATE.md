@@ -78,6 +78,27 @@ Decisiones, dependencias, conflictos, fallos o expansiones de alcance que obliga
 Titulo, estado draft, contenido minimo y revisores o decisiones requeridas. El merge automatico esta
 prohibido.
 
+Todo Pull Request gestionado por el ejecutor contiene exactamente un bloque de estado estructurado:
+
+```yaml
+automation_state:
+  initiative:
+  branch:
+  claim_id:
+  current_phase:
+  state:
+  gate:
+  attempts:
+  next_action:
+  last_evidence_commit:
+```
+
+`initiative`, `branch` y `claim_id` se copian del reclamo y no cambian. `state` y `gate` usan los
+valores definidos en `docs/AUTOMATION_PLAN.md`; `attempts` es un entero no negativo y
+`last_evidence_commit` es el SHA completo que respalda el estado. El bloque se actualiza en el mismo
+Pull Request despues de cada fase, correccion de CI o cambio de gate. Nunca se abre un segundo Pull
+Request para la iniciativa.
+
 ## 14. Evidencia final
 
 Commits, archivos, pruebas, builds, checks, validaciones pendientes, intentos y confirmacion de que
