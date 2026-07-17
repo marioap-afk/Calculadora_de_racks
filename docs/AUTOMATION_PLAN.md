@@ -49,6 +49,22 @@ trabajo de esa iniciativa. Esa version no puede cambiar unilateralmente concurre
 reclamo, reintentos, gates, seguridad ni ninguna otra regla global. Ante una contradiccion se aplican
 las reglas de `origin/main` y se detiene el punto conflictivo para revision.
 
+### Precedencia obligatoria
+
+De mayor a menor autoridad, el ejecutor aplica:
+
+1. Estado real de Git y resultados verificables, incluidos ramas, commits, checks y builds.
+2. `AGENTS.md` para convenciones tecnicas.
+3. `docs/WORKFLOW.md` para el proceso.
+4. ADRs aceptados.
+5. `docs/AUTOMATION_PLAN.md`.
+6. Contrato detallado de la iniciativa.
+7. Cuerpo del Pull Request, incluido `automation_state`.
+
+El modo bootstrap cambia la ubicacion temporal desde la que se lee el plan, no esta precedencia.
+Una contradiccion material obliga a detenerse y reportar las fuentes en conflicto; el ejecutor no
+elige silenciosamente una interpretacion.
+
 ## 3. Limites de seguridad
 
 - Nunca trabajar directamente sobre `main`, hacer merge, activar auto-merge, cerrar un Pull Request
@@ -63,8 +79,8 @@ las reglas de `origin/main` y se detiene el punto conflictivo para revision.
   externos ni afirmar una validacion en AutoCAD que no realizo el dueno.
 - Preservar cambios ajenos y detenerse ante un arbol sucio, una operacion Git en curso o una
   divergencia que no pueda explicarse con el historial remoto.
-- Respetar `AGENTS.md`, `WORKFLOW.md`, las dependencias del repositorio y el contrato de la
-  iniciativa. Si se contradicen, se aplica la precedencia de `WORKFLOW.md`.
+- Respetar la precedencia obligatoria, las dependencias del repositorio y el contrato de la
+  iniciativa.
 
 ## 4. Estado derivado
 
@@ -91,10 +107,10 @@ En cada ejecucion el agente:
 1. Ejecuta `git fetch origin --tags --prune` y deriva primero las iniciativas activas desde ramas
    remotas y Pull Requests. Valida su bloque `automation_state` contra la rama, el Claim-Id y el
    ultimo commit publicado.
-2. Busca una iniciativa activa que pueda continuar sin intervencion humana. Una iniciativa con
-   `gate: owner-decision`, `owner-validation`, `autocad` o `plugin-build-unavailable` no es
-   reanudable hasta que exista evidencia posterior a `last_evidence_commit` de que el gate fue
-   resuelto.
+2. Busca una iniciativa activa que pueda continuar sin intervencion humana. Cualquier `gate`
+   distinto de `none` impide reanudarla hasta que exista evidencia de que fue resuelto. El estado
+   `ci-failed` con `gate: none` si permite una correccion de CI; `gate: ci` significa que se espera
+   un check o una accion externa y no autoriza otro intento.
 3. Reutiliza la rama, el Pull Request y el worktree registrados de la iniciativa reanudable. Si el
    worktree no existe, esta ocupado o no coincide con la rama, se detiene: nunca crea un reemplazo
    silencioso para una iniciativa activa.
@@ -143,6 +159,18 @@ recalcula la elegibilidad en lugar de continuar con datos obsoletos.
 El primer push aceptado es el reclamo. La misma rama y el mismo worktree se reutilizan en sesiones
 posteriores, siempre de forma secuencial.
 
+### Reutilizacion del worktree
+
+Antes de operar sobre una iniciativa activa se consulta `git worktree list --porcelain` y el
+registro de la ejecucion anterior:
+
+1. Si la rama activa ya esta registrada en un worktree accesible y limpio, se usa ese worktree.
+2. No se intenta hacer checkout de la misma rama en otro worktree.
+3. Si el worktree esta ocupado por otra sesion, la ejecucion se detiene.
+4. Si el worktree registrado no existe fisicamente o quedo obsoleto, la primera version del
+   ejecutor no lo elimina ni lo recrea automaticamente: reporta el problema al dueno.
+5. Solo se crea un worktree nuevo como parte del reclamo atomico de una iniciativa nueva.
+
 ## 8. Implementacion, commits y Pull Requests
 
 El agente implementa solo las fases y archivos autorizados por el contrato. Al reanudar una rama,
@@ -176,25 +204,28 @@ automation_state:
   last_evidence_commit:
 ```
 
-El bloque se actualiza despues de cada fase, correccion de CI o cambio de gate. Sus campos siguen
-estas reglas:
+Codex actualiza el bloque al terminar cada ejecucion, incluso si la ejecucion solo verifico un gate
+o se detuvo sin cambiar archivos. Sus campos siguen estas reglas:
 
 - `initiative`, `branch` y `claim_id` son inmutables y deben coincidir con el reclamo remoto.
-- `current_phase` identifica una fase del contrato o una correccion acotada, sin texto multilinea.
-- `state` usa uno de `claimed`, `in-progress`, `ci-failed`, `waiting`, `ready-for-owner` o
-  `ready-for-integration`.
-- `gate` usa `none`, `owner-decision`, `owner-validation`, `autocad` o
-  `plugin-build-unavailable`.
-- `attempts` es un entero no negativo para la fase o fallo actual; aumenta con cada reintento y
-  vuelve a cero solo al avanzar de fase o resolver el fallo.
+- `current_phase` apunta a la siguiente fase pendiente o a la fase actualmente detenida.
+- `state` usa uno de `claimed`, `implementing`, `validating`, `ci-failed`, `waiting`,
+  `review-ready`, `integration-ready` o `completed`.
+- `gate` usa `none`, `owner-decision`, `owner-validation`, `autocad`, `plugin-build`, `ci`,
+  `dependency`, `conflict`, `permissions` o `scope`.
+- `attempts` es un entero no negativo y se incrementa unicamente al intentar corregir un fallo; una
+  verificacion, una fase normal o la espera de un gate no lo incrementan.
 - `next_action` describe una sola accion siguiente, en una linea.
 - `last_evidence_commit` es el SHA completo del commit publicado que respalda el estado.
+- `completed` significa que el trabajo de la iniciativa termino en su rama; no significa integrada.
+  La integracion sigue siendo manual.
 
-El bloque es estado operativo estructurado, no reemplaza la evidencia real de `origin/main`, ramas,
-commits, checks y revisiones. Un gate del dueno solo se considera resuelto con comentario o revision
-explicita posterior a `last_evidence_commit`; AutoCAD debe identificar el commit/DLL validado y el
-build local debe registrar el commit y resultado. En la siguiente reanudacion el agente verifica esa
-evidencia antes de cambiar `gate` a `none`.
+El bloque es estado transitorio, no una fuente de verdad unica. El estado real de Git y los
+resultados verificables prevalecen cuando contradicen el bloque: `main`, ramas, commits, checks y
+revisiones se inspeccionan antes de actuar. Un gate del dueno solo se considera resuelto con
+comentario o revision explicita; AutoCAD debe identificar el commit/DLL validado y el build local
+debe registrar el commit y resultado. En la siguiente reanudacion el agente verifica esa evidencia
+antes de cambiar `gate` a `none`.
 
 ## 9. CI fallido y reintentos
 

@@ -93,11 +93,16 @@ automation_state:
   last_evidence_commit:
 ```
 
-`initiative`, `branch` y `claim_id` se copian del reclamo y no cambian. `state` y `gate` usan los
-valores definidos en `docs/AUTOMATION_PLAN.md`; `attempts` es un entero no negativo y
-`last_evidence_commit` es el SHA completo que respalda el estado. El bloque se actualiza en el mismo
-Pull Request despues de cada fase, correccion de CI o cambio de gate. Nunca se abre un segundo Pull
-Request para la iniciativa.
+`initiative`, `branch` y `claim_id` se copian del reclamo y no cambian. `state` usa `claimed`,
+`implementing`, `validating`, `ci-failed`, `waiting`, `review-ready`, `integration-ready` o
+`completed`. `gate` usa `none`, `owner-decision`, `owner-validation`, `autocad`, `plugin-build`,
+`ci`, `dependency`, `conflict`, `permissions` o `scope`.
+
+El bloque es estado transitorio: Git y los resultados verificables prevalecen si lo contradicen.
+`current_phase` apunta a la siguiente fase pendiente o a la actualmente detenida; `attempts` solo
+aumenta al intentar corregir un fallo; `last_evidence_commit` es el SHA completo que respalda el
+estado. Codex actualiza el mismo bloque al terminar cada ejecucion y nunca abre un segundo Pull
+Request para la iniciativa. `completed` no significa integrada: la integracion sigue siendo manual.
 
 ## 14. Evidencia final
 
