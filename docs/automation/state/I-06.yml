@@ -3,16 +3,17 @@ automation_state:
   initiative: I-06
   branch: docs/reestructura
   claim_id: 6cdf1e76-7943-4bfb-b1fa-b4c8bb88a050
-  current_phase: 3
+  current_phase: 4
   state: implementing
   gate: none
   attempts: 0
-  next_action: create-architecture-context-packs-glossary
-  last_evidence_commit: cca45a920e484dd7c0b4e314b4c0a17bb75920dc
+  next_action: reduce-handoff-move-guides-history
+  last_evidence_commit: 4285c0b1f70b593dfd06c5bbe4495661197ec96b
 execution_context:
   mode: bootstrap-git-only
   worktree: rackcad-docs-reestructura
   pull_request: 1
+  last_run: docs/automation/runs/I-06-2026-07-17-phase-3.md
 decision_evidence:
   path: docs/automation/decisions/I-06.md
   commit: cca45a920e484dd7c0b4e314b4c0a17bb75920dc
