@@ -35,8 +35,9 @@ las ramas existentes con esos nombres se resuelven en la migración (sección 9)
 - Se abre una rama solo si: (a) la iniciativa está en ROADMAP.md, o (b) es un `fix/` puntual, o
   (c) es un `experiment/` con pregunta concreta que responder.
 - **El registro vivo del trabajo en curso son las ramas del REMOTO** (`git fetch && git branch -r`),
-  no las locales. Por eso el reclamo de una iniciativa es su **push inicial** (sección 4.1): si el
-  push falla porque `origin/<rama>` ya existe, la iniciativa está tomada por otra sesión.
+  no las locales. Por eso el reclamo de una iniciativa es su **commit de reclamo + primer push
+  aceptado, sin force** (sección 4.1): crear la rama local no reclama nada — dos sesiones pueden
+  partir del mismo commit y solo el remoto decide quién llegó primero.
 - Dos iniciativas en paralelo no deben tocar el mismo archivo caliente (sección 7). La columna
   "se estorba con" del ROADMAP codifica esto: **"independiente" significa sin dependencias previas,
   pero los estorbos declarados siguen aplicando** — una iniciativa de relleno solo arranca si sus
@@ -48,24 +49,47 @@ las ramas existentes con esos nombres se resuelven en la migración (sección 9)
   (`git fetch` primero). Nombre de carpeta = `<tipo>-<slug>` (ej. `architecture-system-registry`).
   Viven fuera del árbol versionado (las herramientas ya usan `.claude/worktrees/` y
   `%USERPROFILE%\.codex\worktrees`; ambas ubicaciones sirven).
-- **Nunca** dos sesiones sobre el mismo worktree, ni un worktree para dos iniciativas.
+- **El worktree vive lo que vive la iniciativa**: una iniciativa conserva EL MISMO worktree toda su
+  vida y puede acumular varias sesiones **secuenciales** sobre él — Claude, Codex u otra herramienta
+  pueden relevarse en ese mismo worktree. Lo prohibido es tener dos sesiones **activas a la vez**
+  sobre el mismo worktree (o la misma rama). No se crea un worktree nuevo por sesión.
+- **Relevo entre sesiones** (misma herramienta u otra): la sesión saliente deja commit + push +
+  `git status` limpio + resumen del estado en el cuerpo del commit. La sesión entrante empieza
+  verificando rama (`git branch --show-current`), upstream y divergencia (`git branch -vv`),
+  `git status` y los últimos commits (`git log --oneline -5`) antes de escribir nada.
 - El worktree principal (`D:\Documentos\Codex\Calculadora de racks`) es del humano: los agentes no
   dejan ahí cambios sin commitear. Un CSV editado "en vivo" en el principal se commitea o descarta
   el mismo día (es invisible para los demás worktrees mientras tanto).
-- **Eliminar** el worktree en el mismo acto en que su rama muere (integración o abandono):
-  `git worktree remove` + `git branch -D` + `git push origin --delete` (este último solo si la rama
-  existe en origin).
+- **Eliminar** el worktree en el mismo acto en que su rama muere (integración o abandono formal),
+  con **borrado seguro por defecto**: `git worktree remove` + `git branch -d` — la `-d` minúscula
+  falla si la rama no está contenida en el HEAD actual, y esa falla ES la protección (investigar,
+  no forzar). `git branch -D` queda reservado para: (a) iniciativas abandonadas con autorización
+  explícita del dueño, (b) ramas ya archivadas con tag verificado, y (c) reclamos locales
+  rechazados que nunca se publicaron (sección 4.1). El borrado REMOTO (`git push origin --delete`)
+  solo procede tras confirmar que el merge existe en `main` (`git branch -r --merged main` la
+  lista) o que la rama fue archivada deliberadamente con tag.
 
 ## 4. Ciclo de vida de una iniciativa (el proceso repetible)
 
 ```
-ROADMAP → rama + push inicial (reclamo) + worktree → sesiones (rebase al abrir, push al cerrar)
+ROADMAP → rama + commit de reclamo + push (reclamo) → sesiones (rebase al abrir, push al cerrar)
        → sesión de integración (rebase final → CI → validación → HANDOFF/ROADMAP → merge) → limpieza
 ```
 
-1. **Abrir**: elegir iniciativa del ROADMAP cuyos estorbos no estén en curso → `git fetch` → crear
-   rama de la punta del trunk → **push inmediato de la rama (aunque esté vacía): ese push ES el
-   reclamo atómico** → crear worktree.
+1. **Abrir (reclamo atómico)**: elegir iniciativa del ROADMAP cuyos estorbos no estén en curso →
+   `git fetch origin` → crear rama y worktree desde **`origin/main`** (la punta REMOTA del trunk,
+   no la local) → **commit vacío de reclamo** (`git commit --allow-empty`) cuyo mensaje incluye:
+   el ID de iniciativa (p. ej. `I-26`), el nombre de la rama, un trailer `Claim-Id:` único
+   (UUID) y el trailer de procedencia del agente (`Co-Authored-By`) → `git push -u origin <rama>`
+   **sin force**. **El primer push que el remoto ACEPTA es el reclamo**; crear la rama local no
+   reclama nada.
+   - Si el push del reclamo es rechazado porque otra sesión ya creó `origin/<rama>`: no usar
+     force, no sobrescribir la rama remota; eliminar SOLO el worktree y la rama local del reclamo
+     rechazado (`git worktree remove` + `git branch -D`, caso (c) del borrado — nunca se publicó)
+     y elegir otra iniciativa.
+   - El commit de reclamo forma parte del historial normal de la iniciativa (convención por
+     defecto: se CONSERVA — es vacío, no estorba al bisect, y deja trazables fecha, agente y
+     Claim-Id de la apertura). Eliminarlo en el rebase final antes de integrar es opcional.
 2. **Cada sesión — al abrir**: si el trunk avanzó, **rebase** sobre su punta antes de escribir una
    línea. Una rama que se queda atrás acumula conflictos semánticos (caso real: la rama del dinámico
    bifurcó justo antes de fixes de persistencia de su propia área).
@@ -91,7 +115,8 @@ ROADMAP → rama + push inicial (reclamo) + worktree → sesiones (rebase al abr
    - Protección de `main`: contra force-push y borrado, **sin** "required status checks" (el commit
      de merge local no tendría CI previo y GitHub lo rechazaría). El requisito "CI verde en la rama"
      del paso 2 es la compuerta real y la verifica la sesión de integración.
-6. **Limpiar**: borrar rama local + remota + worktree.
+6. **Limpiar**: borrar rama local (`git branch -d` — el merge la contiene), remota (procede: el
+   merge ya existe en `main`) y el worktree, según las reglas de borrado seguro de la sección 3.
 
 `experiment/*` tiene un final distinto: se cierra con una **conclusión escrita** (en el ADR o
 iniciativa a la que alimenta, o en ideas-futuras.md) y la rama se borra. Su código no se mergea;
@@ -162,8 +187,9 @@ cualquier iniciativa que los toque.
    verificar con `git status`/`git log`).
 3. Integrar la rama de esta auditoría/planificación: `git merge --no-ff
    claude/rackcad-architecture-audit-cd4046` **sobre `release/claude-review`** (antes del
-   fast-forward de `main` del paso 5); borrar después esa rama y su worktree (no tiene remoto, no
-   requiere `push --delete`).
+   fast-forward de `main` del paso 5); borrar después esa rama con `git branch -d` (el merge la
+   contiene), su respaldo temporal en origin (`git push origin --delete`, procede: el merge existe
+   en el trunk) y su worktree.
 4. Decidir [ADR-0002](adr/0002-secuencia-dinamico-modular.md) — empezando por su **Paso 0** (probar
    la rama en AutoCAD). Si opción A: renombrar `codex/dinamico-modular` a `feature/dinamico-modular`
    al rebasarla — muere el último nombre-por-herramienta.

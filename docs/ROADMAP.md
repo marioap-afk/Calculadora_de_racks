@@ -194,7 +194,7 @@ principio 4); una iniciativa de relleno solo arranca si sus estorbos no están e
 | 1. Orden de casa Git | Sí | Ahora incluye retirar `claude/*`/`codex/*` (ADR-0001) y el barrido documental del retiro de `release/claude-review`; queda como I-00 |
 | 2. Decidir dinámico-modular | Sí, **sigue siendo el gate** | Formalizada como ADR-0002 con **Paso 0 nuevo** (probar la rama en AutoCAD: la evidencia que decide A/B no existía). El diff real de la rama amplió su radio: I-09/I-14/I-16/I-17 también esperan |
 | 3. CI mínimo | Sí | Ya committeado; activarlo pasa a I-00. Trigger simplificado a todo push (una lista de ramas duplicada en ci.yml divergía de WORKFLOW) |
-| 4. Flujo multi-agente | Sí, con cambio mayor | **Ramas por iniciativa** (ADR-0001); sin `wip/*` (la rama se pushea al abrir = reclamo atómico, y al cerrar cada sesión = respaldo); integración serializada con rebase + `--force-with-lease` + `--no-ff`; HANDOFF/ROADMAP solo en la sesión de integración (se corrigieron AGENTS/CLAUDE que decían lo contrario) |
+| 4. Flujo multi-agente | Sí, con cambio mayor | **Ramas por iniciativa** (ADR-0001); sin `wip/*` (apertura = commit vacío de reclamo con Claim-Id + push sin force: el primer push aceptado reclama; push al cerrar cada sesión = respaldo); integración serializada con rebase + `--force-with-lease` + `--no-ff`; HANDOFF/ROADMAP solo en la sesión de integración (se corrigieron AGENTS/CLAUDE que decían lo contrario) |
 | 5. Guardrail INSUNITS | Sí | Adelantada a Fase 1 (I-05) |
 | 6. Logging + escrituras atómicas | Sí | Juntas en I-03 (mismo tema, mismos archivos) |
 | 7. Fix install-bundle | Sí | Sin cambios (I-04) |
@@ -241,7 +241,8 @@ de ruta incluye el barrido de referentes en la misma rama. La auditoría 2026-07
 
 1. Ejecutar I-00 y decidir ADR-0002 (con su Paso 0) **antes de abrir cualquier otra rama**.
 2. Estrenar el flujo con una iniciativa pequeña y sin estorbos (I-26 o I-04) para validar el ciclo
-   completo (rama → push-reclamo → worktree → CI → rebase → integración → limpieza) con riesgo cero.
+   completo (rama → commit de reclamo + push → CI → rebase → integración → limpieza segura) con
+   riesgo cero.
 3. **Si ADR-0002=A, no abrir I-08/I-09/I-11/I-14/I-15/I-16/I-17 hasta integrar I-02**: el diff real
    de la rama toca los archivos de todas ellas.
 4. Mantener las pistas por capa y la cola de validación del dueño (máx. 1-2 ✋ pendientes); las

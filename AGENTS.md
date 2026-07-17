@@ -73,12 +73,16 @@ dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug   # el DLL que se
 Proceso completo (ramas, worktrees, integracion, archivos calientes, limpieza): [docs/WORKFLOW.md](docs/WORKFLOW.md).
 Plan de iniciativas: [docs/ROADMAP.md](docs/ROADMAP.md). Decisiones: [docs/adr/](docs/adr/README.md).
 Reglas rapidas: las ramas se nombran por INICIATIVA, nunca por herramienta (ADR-0001; la lista de
-prefijos vive en WORKFLOW seccion 1 — no la copies); 1 iniciativa = 1 rama = 1 worktree; bifurcar
-SIEMPRE de la punta actualizada del trunk (fetch antes) y pushear la rama de inmediato (el push
-inicial ES el reclamo de la iniciativa); rebase al abrir sesion si el trunk avanzo (republicar con
+prefijos vive en WORKFLOW seccion 1 — no la copies); 1 iniciativa = 1 rama = 1 worktree (el MISMO
+worktree toda la vida de la iniciativa, con sesiones secuenciales y relevo entre herramientas —
+nunca dos sesiones activas a la vez); abrir = bifurcar de `origin/<trunk>` tras fetch + commit
+vacio de reclamo (ID de iniciativa + Claim-Id UUID + Co-Authored-By) + `git push -u` sin force —
+el primer push ACEPTADO es el reclamo; si el remoto ya tiene la rama, no forzar: borrar el reclamo
+local y elegir otra iniciativa; rebase al abrir sesion si el trunk avanzo (republicar con
 `--force-with-lease`); push de la rama al cerrar CADA sesion (push de rama != integrar); la
-integracion es serializada (rebase final + CI + validacion + merge --no-ff, WORKFLOW seccion 4.5) y
-al terminar se borra rama + worktree; todo commit de agente lleva trailer de identificacion
+integracion es serializada (rebase final + CI + validacion + merge --no-ff, WORKFLOW seccion 4.5);
+al cerrar, borrado SEGURO: `git branch -d` (nunca `-D` salvo los casos de WORKFLOW seccion 3) y el
+remoto solo tras confirmar el merge en `main`; todo commit de agente lleva trailer de identificacion
 (Co-Authored-By), tambien los de Codex. No copiar conteos de tests ni hashes de commit fuera de
 `docs/HANDOFF.md` (seccion 12): los numeros copiados divergen.
 
