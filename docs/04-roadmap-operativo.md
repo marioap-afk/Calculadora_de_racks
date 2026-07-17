@@ -21,13 +21,49 @@ Menu principal: comando `RACKCAD` (`RackMainMenuWindow`).
 ### Sistema dinamico (pallet flow)
 
 - `RackDynamicSystemWindow`: cabeceras a lo largo del tramo + separadores por nivel.
-- Base modular: `DynamicRackDesign` (entradas editables) -> `DynamicRackSystemResolver` -> sistema lateral resuelto.
+- Base modular: `DynamicRackDesign` (entradas editables) -> `DynamicRackSystemResolver` -> sistema resuelto multivista.
 - Persistencia y payload DWG guardan el diseno; cabeceras calculadas se regeneran y las personalizadas se conservan.
-- Pendiente de producto: varios frentes/anchos, frontal, planta y cama dinamica integrada. No definir bloques ni
-  offsets hasta recibir la reconfiguracion real. La cama se compondra reutilizando el subsistema FlowBed y el BOM
-  inicial contara solo componentes `Cama`, sin despiece.
-- Siguiente secuencia confirmada: colocar primero los largueros especiales de entrada/salida y despues los
-  intermedios. Esperar los bloques y CSV preparados por el usuario; no inventar nombres ni parametros.
+- Largueros especiales de entrada/salida: una pareja completa `LARGUERO_IN_OUT_C6` por nivel, mate por origen en
+  `X=0` y `X=TotalLength`, salida baja a la izquierda y entrada alta/espejeada a la derecha. El peralte sale del catalogo;
+  no se dibuja una mensula separada. El BOM cuenta el bloque completo por frente, nivel y extremo, con longitud/peralte.
+- Cama dinamica integrada en lateral: `DynamicFlowBedLateralBuilder` reutiliza la cama completa de
+  `FlowBedLateralBuilder`, alinea `TROQUEL_IN` con `TROQUEL_CAMA`, conserva la pendiente resuelta, fija
+  `LONGITUD = tramo longitudinal del frente - 4"` y comparte una
+  definicion entre niveles. El BOM cuenta componentes `Cama` por posicion/nivel, sin despiece, con longitud y BFR.
+- Poste derivado reforzado centrado en el limite entre separadores: `FIN_POSTE` del perfil principal coincide con
+  ese limite y el refuerzo comienza ahi; el poste sencillo no se desplaza.
+- Largueros intermedios en lateral: un `LARGUERO_ESCALON_INFINITO` por limite interno de modulo/poste y nivel; los
+  extremos son IN/OUT y el derivado reforzado central cuenta como una sola posicion. El segundo poste usa espejo y
+  `INICIO_DERECHO`; el primero usa `INICIO_IZQUIERDO`. Los contactos siguen la linea inclinada del **origen del
+  riel**, no la linea de troqueles, y se agrupan por orientacion para compartir definiciones.
+- Varios frentes/anchos/niveles: cantidad total por input entero, matriz frente x nivel y editor de celda inspirado en
+  el selectivo. Posiciones/niveles/fondos/inicio/largo siguen al frente; el peralte intermedio se aplica a celda,
+  nivel, frente o todas.
+  Al aumentar la cantidad se conservan los frentes existentes y los nuevos copian el seleccionado. Cada posicion usa
+  `BFR = frenteTarima + 2"`; el IN/OUT automatico mide `BFR * posiciones + 6"`, con override manual opcional.
+  `DynamicFrontGeometry` comparte la reticula con frontal y planta y el DTO conserva fallback legacy de un frente.
+- Fondos variables por frente: `Fondos` + `Inicio en fondo` viven en el panel de celda. `DynamicDepthGeometry`
+  hace que el frente mas corto gobierne los dos `+6"` y el patron estructural; los frentes mayores contienen ese rango
+  y prolongan la estructura. Un extremo en separador recibe poste limite sin cambiar el modulo a cabecera. Pendiente,
+  camas, IN/OUT, intermedios, seguridad, cortes laterales y BOM consumen los rangos `StartX/EndX` resueltos.
+- Peralte global de poste: campo numerico junto al tipo de poste, aplicado a cabeceras calculadas y personalizadas;
+  el DTO nullable conserva documentos anteriores mediante el ancho del perfil catalogado.
+- Frontal: dos cortes ligados (`Section=0` salida, `Section=1` entrada), solo postes/placas e IN/OUT; cada poste usa
+  la altura del frente adyacente mas alto, no el maximo global.
+- Planta: estructura longitudinal repetida en los limites de frente, IN/OUT e intermedios; camas omitidas por contrato.
+  El refuerzo derivado continua despues del perfil principal sobre X, en la misma linea transversal y sin espejo.
+- Peralte intermedio por frente y nivel: selector de celda + botones Celda/Nivel/Frente/Todas, con opciones de `secciones.csv`;
+  lateral aplica el maximo de los frentes activos del nivel y planta el maximo del frente dibujado.
+- Seguridad multivista: BOTA, LATERAL, DESVIADOR, DEFENSA y GUIA se resuelven desde una sola seleccion. DEFENSA
+  conserva activacion/longitud independientes por poste y extremo; GUIA se habilita por frente/nivel en la entrada.
+- Preliminares lateral/frontal salida/frontal entrada: lateral limitada al rango real del poste, frontales con alturas
+  por adyacencia y resaltado de celda; numeracion de frentes/niveles, nombre y cotas configurables.
+- BOM dinamico por componentes: cabeceras por linea transversal, apoyos derivados con estado reforzado, separadores,
+  IN/OUT por frente/nivel/extremo, intermedios por longitud/peralte, camas por longitud/BFR y BOTA/LATERAL/DESVIADOR.
+  BOTA/LATERAL usan planta como inventario fisico; DESVIADOR usa salida + entrada para conservar sus niveles. Ninguna
+  familia se duplica por proyecciones alternativas.
+- Estado de producto: el usuario valido visualmente el lote durante su desarrollo. Solo queda reconfirmar con los
+  bloques DWG reales la correccion final que evita espejar el desviador en la frontal de entrada.
 - Comando `RACKSISTEMADINAMICO` (y opcion en el menu).
 
 ### Cama de rodamiento (flow bed)
