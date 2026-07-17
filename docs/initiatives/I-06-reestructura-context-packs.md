@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-06
 title: Reestructura documental y Context Packs
 type: docs
-status: claimed
+status: waiting
 branch: docs/reestructura
 base_branch: main
 priority: 10
@@ -32,11 +32,13 @@ El estado operativo se deriva de `origin/docs/reestructura` y de su Pull Request
 ## Estado del piloto
 
 - El bootstrap del contrato y el reclamo remoto de I-06 ya terminaron.
-- La siguiente fase pendiente es la fase 1, auditoria documental.
+- La fase 1, auditoria documental, termino. Su evidencia versionada esta en
+  [I-06-auditoria-documental.md](I-06-auditoria-documental.md).
+- La siguiente fase pendiente es la fase 2: decision del dueno sobre taxonomia de Context Packs y
+  destinos ambiguos. No debe continuar sin resolver ese gate.
 - El piloto se ejecutara manualmente antes de programar horarios o crear una automatizacion.
 - Mientras el sistema documental no este integrado en `main`, el modo bootstrap solo puede reanudar
   I-06 en `docs/reestructura`, su worktree y su Pull Request existentes.
-- La auditoria documental aun no se ha iniciado.
 
 ## 1. Objetivo
 
