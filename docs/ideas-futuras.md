@@ -1,6 +1,6 @@
 # Ideas a futuro y deuda técnica conocida
 
-> Actualizado: 2026-07-15 (rejilla de seguridad resuelta y backlog de escalabilidad consolidado).
+> Actualizado: 2026-07-17 (incluye separacion futura entre catalogos de producto y overrides de usuario).
 > Este documento junta (A) mejoras de producto propuestas y (B) hallazgos de la auditoría que se
 > **difirieron a propósito** (necesitan validación en AutoCAD o una decisión de producto). Nada de esto
 > está roto hoy; es el backlog recomendado.
@@ -185,6 +185,15 @@
 20. **Limites configurables con guardas** — `MaxDepthCount`, maximo de candidatos y tolerancias son limites de
     producto/rendimiento, no datos de geometria. Hacerlos configurables solo cuando existan benchmarks y validacion de
     compatibilidad; no eliminar las guardas para aparentar escalabilidad.
+
+### Datos de producto y datos del usuario
+
+- **Iniciativa futura: separar catalogos base y overrides de usuario** (`architecture/catalogos-usuario`) — hoy los
+  CSV/JSON viven dentro de `RackCad.bundle` y cumplen dos papeles incompatibles: son datos versionados del producto,
+  pero tambien pueden editarse localmente en una instalacion. I-04 mantiene el instalador simple y seguro: actualiza
+  los catalogos como producto y solo preserva `blocks-library.dwg`. Disenar una capa separada y escribible bajo
+  `%AppData%\RackCad` para overrides, con precedencia, validacion, migracion y una UI que muestre el origen efectivo de
+  cada dato. No resolverlo mediante fusion oportunista de CSV durante la instalacion.
 
 ### Features nuevas no mapeadas antes (propuestas de la revisión 2026-07-15)
 

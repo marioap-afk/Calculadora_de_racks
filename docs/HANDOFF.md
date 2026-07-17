@@ -149,6 +149,28 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
 
 ## 8. Trabajo realizado recientemente
 
+**I-04 — instalacion segura del bundle (`fix/install-bundle-preserva-datos`) — completada el 2026-07-17:**
+
+- `deploy/install-bundle.ps1` valida el bundle nuevo antes de tocar el destino, prepara un staging
+  unico, mueve la instalacion anterior a un respaldo recuperable y activa el staging. Si la
+  activacion o su verificacion fallan, restaura automaticamente el respaldo; si el rollback no
+  puede completarse, conserva e informa las rutas exactas de recuperacion y diagnostico.
+- Los catalogos CSV/JSON son datos del producto: cada actualizacion instala los del bundle nuevo,
+  sin fusion ni reserializacion. Un `Contents\catalogs\blocks-library.dwg` ya instalado se copia
+  byte por byte al staging y se verifica por SHA-256 antes y despues de activar el bundle.
+- El build elimina y regenera `RackCad.bundle` en cada ejecucion, incluye solo los cuatro DLL del
+  producto y toma los catalogos directamente de `assets/catalogs`; asi no sobreviven archivos
+  legacy de una compilacion anterior.
+- El harness reproducible trabaja solo bajo `%TEMP%` y cubre primera instalacion, actualizacion de
+  catalogos, DWG preservado, destino parcial, archivo bloqueado, rollback, idempotencia, origen
+  incompleto y rutas explicitas. La regresion del instalador anterior se comprobo antes del fix.
+- La politica y la recuperacion manual estan documentadas en [despliegue.md](despliegue.md). La
+  separacion formal entre catalogos base y overrides del usuario quedo registrada como iniciativa
+  arquitectonica futura en [ideas-futuras.md](ideas-futuras.md), no como logica del instalador.
+- No se ejecuto una instalacion real ni se requirio validacion manual en AutoCAD: I-04 no cambia
+  geometria, comandos, persistencia de dibujos ni comportamiento runtime del plugin. Evidencia
+  automatizada y CI en la seccion 12.
+
 **I-02 — integracion del sistema dinamico modular (`feature/dinamico-modular`) — completada el 2026-07-17:**
 
 - Ejecuto ADR-0002 opcion A en una sesion (de las 3 permitidas): la punta validada `9f19a8c` se
@@ -369,48 +391,56 @@ superada por la validacion post-rebase de arriba.
 7. **Fallback legacy conservador del dinamico**: una cabecera dinamica de un documento antiguo no
    declaraba si era calculada; se abre como personalizada para evitar perdida de datos.
    `Restaurar estandar` o `Calculada` vuelve a derivarla.
+8. **Catalogos de producto y overrides de usuario aun comparten ubicacion**: los CSV/JSON dentro del
+   bundle son reemplazables por version y una edicion local se pierde al actualizar. I-04 conserva
+   unicamente `blocks-library.dwg`; la separacion de capas de datos queda diferida a la iniciativa
+   futura `architecture/catalogos-usuario`, sin fusion oportunista en el instalador.
 
 ## 11. Siguientes tareas recomendadas
 
 > El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](ROADMAP.md); esta seccion
-> apunta a lo INMEDIATO. I-00, I-01 e I-02 ya estan cerradas (seccion 8).
+> apunta a lo INMEDIATO. I-00, I-01, I-02 e I-04 ya estan cerradas (seccion 8).
 
 1. **Elegir la siguiente iniciativa de la Fase 1 conforme a [ROADMAP.md](ROADMAP.md)** (quedan
-   I-03/I-04/I-05/I-06/I-07/I-13/I-26): la eleccion es del dueno. Con I-02 integrada, las
-   dependencias de I-08/I-09/I-11/I-14/I-16/I-17 quedaron satisfechas (ninguna esta iniciada);
-   la limpieza post-merge de I-02 (rama, worktree) sigue las reglas de borrado seguro de
-   WORKFLOW seccion 3 — el tag `archive/dinamico-modular-pre-rebase-9f19a8c` NO se elimina.
+   I-03/I-05/I-06/I-07/I-13/I-26): la eleccion es del dueno. Con I-02 integrada, las
+   dependencias de I-08/I-09/I-11/I-14/I-16/I-17 quedaron satisfechas; ninguna iniciativa nueva
+   esta iniciada.
 2. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10): mantener a mediano plazo; hoy los valores
    globales son suficientes, pero el control por celda puede aportar valor en configuraciones heterogeneas.
 3. **Guardas traseras**: mantener pendientes hasta el final; no son prioridad de producto.
 
 Quedan diferidos sin prioridad actual: tarima/parrilla en PLANTA, integracion BOM -> cotizador, distribucion formal
-de `blocks-library.dwg` y reconstruccion del bundle Release. El BOM actual es suficiente; el cotizador real es un
-Excel delicado y no justifica el riesgo de integracion. No es necesario desplegar la aplicacion todavia.
+de `blocks-library.dwg` y separacion entre catalogos base y overrides de usuario. El BOM actual es suficiente; el
+cotizador real es un Excel delicado y no justifica el riesgo de integracion. No es necesario desplegar la aplicacion
+todavia.
 
 No tomar sin confirmar con el usuario: validacion de cargas (diferida a RAM Elements) y el optimizador IA
 de layout (meta futura, no inmediata).
 
 ## 12. Verificacion del proyecto (ultima ejecucion real)
 
-**Baseline vigente — arbol rebasado de I-02, `feature/dinamico-modular` en `b0de31d` (la
-validacion POST-rebase que habilita el merge):**
+**Baseline vigente — I-04, `fix/install-bundle-preserva-datos` en `f82a49f` (instalador y bundle;
+no cambia comportamiento de dibujo y no requiere validacion manual en AutoCAD):**
 
 | Verificacion | Comando | Resultado | Fecha/entorno |
 |---|---|---|---|
+| Harness del instalador | `pwsh deploy/test-install-bundle.ps1` | **25/25 verificaciones superadas** bajo `%TEMP%`; no toco `ApplicationPlugins` real | 2026-07-17, Windows 11, PowerShell 7 |
+| Regresion del instalador anterior | harness temporal ejecutado contra la version previa de `install-bundle.ps1` | **fallo esperado confirmado:** la actualizacion anterior eliminaba `blocks-library.dwg`; fix restaurado y harness verde | 2026-07-17 |
 | Suite completa | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **635/635 verdes, 0 fallos, 0 omitidas** | 2026-07-17, Windows 11, SDK 8.0.423 por usuario |
-| Subconjunto dinamico | filtro `Dynamic\|RackProjectStore\|SystemBomBuilder\|CatalogStandardConsistency` | **138/138 verdes** | 2026-07-17 |
-| Dirigidas por clase | `RackFrameProjectStore` / `RackProjectStore` / `CsvCatalogReader` / `FlowBed` / `SystemBomBuilder` / `SelectiveBomBuilder` / `CatalogStandardConsistency` | **11/11, 21/21, 9/9, 21/21, 16/16, 7/7, 5/5** | 2026-07-17 |
 | Build UI Debug | `dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug` | **OK, 0 errores, 0 advertencias** | 2026-07-17 |
 | Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug` | **OK, 0 errores**, solo las 2 familias MSB3277 conocidas | 2026-07-17 |
+| Build Plugin Release | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release` | **OK, 0 errores**, solo las 2 familias MSB3277 conocidas | 2026-07-17 |
+| Inventario Release | inspeccion recursiva de `RackCad.bundle` contra `assets/catalogs` | **16 archivos:** manifiesto, exactamente **4 DLL** y **11 catalogos**; sin archivos legacy; `blocks-library.dwg` ausente tanto en fuente como en bundle | 2026-07-17 |
+| Reproducibilidad del bundle | segunda compilacion Release + comparacion de inventario | **mismo inventario, 16/16 rutas identicas** | 2026-07-17 |
 | Higiene del arbol | `git diff --check` + `git status` tras builds | limpios, sin cambios versionados generados | 2026-07-17 |
-| CI (workflow `CI`) | tests ubuntu + build UI windows, push de `b0de31d` | **Success, confirmado por el dueno** | 2026-07-17 |
-| Validacion manual AutoCAD | NETLOAD del DLL Debug del worktree dinamico (`src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`, SHA-256 `44CA6C759BCD6E7C36796B771C66DFA9CD54A9BE4C511C33A91F78ACDBDCA6F6`) + checklist post-rebase | **13/13 puntos OK informados por el dueno** (seccion 9) | 2026-07-17, AutoCAD 2025 |
+| CI funcional (workflow `CI`) | push exacto de `f82a49f` | **Success** (run `29613647447`) | 2026-07-17, GitHub Actions |
+| Instalacion real / AutoCAD | no ejecutada por alcance | **no requerida:** todas las pruebas del instalador usan rutas temporales; sin cambio de runtime o dibujo | 2026-07-17 |
 
 **Corridas anteriores (historia; NO son la baseline actual):**
 
 | Verificacion | Comando | Resultado | Fecha/entorno |
 |---|---|---|---|
+| **[I-02 POST-rebase — superada]** suite / builds / CI / manual | suite completa; UI y Plugin Debug; workflow `CI`; checklist en AutoCAD | 635/635; UI 0/0; Plugin 0 errores; CI Success; 13/13 puntos OK del dueno | 2026-07-17; detalle en secciones 8-9 |
 | **[I-01 Paso 0, PRE-rebase, `9f19a8c` — superada]** Suite completa | `dotnet test` en el worktree del dinamico | 627/627 verdes, 0 omitidas | 2026-07-17 (I-01 Paso 0) |
 | **[I-01 Paso 0, PRE-rebase, `9f19a8c` — superada]** Subconjunto dinamico / builds / manual | filtro dinamico; builds UI y Plugin; checklist de 17 pruebas | 138/138; UI 0/0; Plugin 0 errores; 17/17 OK del dueno | 2026-07-17; detalle en adr/0002-paso0-evidencia.md |
 | Build Debug (todo) | `dotnet build RackCad.sln -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15, Windows 11, SDK 8.0.423 por usuario |
