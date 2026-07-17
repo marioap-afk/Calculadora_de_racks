@@ -6,8 +6,10 @@
 > adversarial de cada hallazgo alta/media contra el código real (47 verificados, 47 confirmados,
 > 0 refutados) + un crítico de completitud transversal. Total: 55 agentes, ~93 hallazgos.
 >
-> Este documento es el informe de referencia. El flujo Git/worktrees derivado vive en
-> [flujo-multi-agente.md](flujo-multi-agente.md). Los hallazgos ya conocidos y diferidos siguen en
+> Este documento es el informe de referencia (registro de la auditoría; no se re-edita). El flujo
+> Git/worktrees derivado vive en [WORKFLOW.md](WORKFLOW.md) y el plan ejecutable por fases e
+> iniciativas en [ROADMAP.md](ROADMAP.md) (2026-07-16: el roadmap de la sección 6 quedó superado por
+> ese plan, que re-validó cada recomendación). Los hallazgos ya conocidos y diferidos siguen en
 > [ideas-futuras.md](ideas-futuras.md) (esta auditoría los confirma y NO los duplica).
 
 ## 1. Resumen ejecutivo
@@ -258,7 +260,7 @@ Formato: **[beneficio | costo | riesgo | impacto | momento]**.
 
 1. **Orden de casa Git** (G1-G3, G5): commitear los 6 CSVs, push del trunk, fast-forward de `main`,
    default branch, borrar zombies, tags a partir de ahora. [Respaldo + base común para todos los
-   agentes | horas | nulo | alto | YA — checklist en flujo-multi-agente.md §7, requiere al dueño]
+   agentes | horas | nulo | alto | YA — checklist en WORKFLOW.md §9, requiere al dueño]
 2. **Decidir e integrar/descartar `codex/dinamico-modular`** (G4, §5). [Desbloquea todos los
    refactors | 1-2 sesiones | medio (conflictos semánticos; mitigado por suite + validación AutoCAD)
    | crítico | antes de cualquier refactor]
@@ -318,7 +320,8 @@ cotizador Excel, SQLite antes de tiempo.
 ## 7. Cambios aplicados en esta auditoría (pequeños, seguros, reversibles)
 
 - **Nuevo** `docs/auditoria-arquitectura-2026-07.md` (este documento).
-- **Nuevo** `docs/flujo-multi-agente.md` (flujo Git/worktrees multi-IA + checklist de migración).
+- **Nuevo** `docs/flujo-multi-agente.md` (flujo Git/worktrees multi-IA + checklist de migración;
+  renombrado después a `docs/WORKFLOW.md` en la fase de planificación).
 - **Nuevo** `.github/workflows/ci.yml` (suite en ubuntu + build de UI en windows; inerte hasta el push).
 - Consistencia de docs: conteos de tests unificados (el número vive solo en HANDOFF §12; encabezado
   y prompt de reanudación de HANDOFF corregidos a 554/`eaede44`), `seguridad.csv` añadido a
@@ -328,7 +331,7 @@ cotizador Excel, SQLite antes de tiempo.
 
 ## 8. Cambios que requieren aprobación del dueño (NO ejecutados)
 
-1. Migración Git (flujo-multi-agente.md §7): push del trunk, fast-forward de `main`, default branch,
+1. Migración Git (WORKFLOW.md §9): push del trunk, fast-forward de `main`, default branch,
    borrado de ramas/worktrees zombie, decisión sobre `codex/app-tooling-catalogs-logging`.
 2. Integración o descarte de `codex/dinamico-modular` (§5) — la decisión de secuencia.
 3. Registro de sistemas / handlers / módulos de editor (refactor grande, §4.1).

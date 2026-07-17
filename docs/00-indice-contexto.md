@@ -52,10 +52,17 @@ El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde s
      features nuevas**: evita re-descubrir hallazgos ya diagnosticados o re-proponer trabajo diferido a proposito.
 
 8. `docs/auditoria-arquitectura-2026-07.md`
-   - Auditoria arquitectonica completa (2026-07-16): hallazgos verificados, arquitectura objetivo y roadmap.
+   - Auditoria arquitectonica completa (2026-07-16): hallazgos verificados y arquitectura objetivo.
 
-9. `docs/flujo-multi-agente.md`
-   - Flujo Git/worktrees para trabajo simultaneo de varios agentes (Claude, Codex) y humanos.
+9. `docs/WORKFLOW.md`
+   - Proceso de desarrollo: ramas POR INICIATIVA (ADR-0001), worktrees, integracion y trabajo
+     simultaneo de varios agentes (Claude, Codex) y humanos.
+
+10. `docs/ROADMAP.md`
+    - Plan de ejecucion por fases e iniciativas independientes (con dependencias y estado).
+
+11. `docs/adr/`
+    - Decisiones de arquitectura (ADR): proceso en `adr/README.md`, una decision por archivo.
 
 ## Catalogos y datos
 

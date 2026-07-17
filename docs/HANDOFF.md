@@ -259,7 +259,12 @@ de la corrida) quedaron registrados en `docs/ideas-futuras.md` ("Hallazgos de la
 
 ## 11. Siguientes tareas recomendadas
 
-1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria. Abrir una tarea/worktree
+> El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](ROADMAP.md) (2026-07-16); esta
+> seccion apunta a lo INMEDIATO. Primero: la migracion Git (WORKFLOW.md seccion 9) y la decision
+> [ADR-0002](adr/0002-secuencia-dinamico-modular.md) sobre la rama del dinamico modular.
+
+1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria — y EMPIEZA por
+   decidir ADR-0002 (la rama `codex/dinamico-modular` existente). Abrir una tarea/worktree
    propia y empezar por auditar el flujo actual completo antes de implementar. El nucleo existente ya cubre editor,
    vista lateral, BOM, persistencia y edicion en sitio; la cama de rodamiento aun vive como sistema separado y su
    integracion con el dinamico es la brecha funcional principal documentada.

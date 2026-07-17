@@ -4,10 +4,11 @@
 # lo que valida transitivamente Domain y Application contra cambios de API.
 name: CI
 
+# Corre en TODO push (sin lista de ramas: una copia de los prefijos de WORKFLOW §1 aquí divergiría,
+# y el checklist de cierre exige "CI verde en la rama" para cualquier iniciativa). Sin trigger
+# pull_request para no duplicar corridas; la compuerta de integración es el CI del push (WORKFLOW §4.5).
 on:
   push:
-    branches: ["main", "release/**", "claude/**", "codex/**", "wip/**"]
-  pull_request:
 
 jobs:
   tests:

@@ -142,5 +142,6 @@ Las vistas lateral/planta solo se insertan desde `RACKEDITAR` de una vista front
 ## Fuera de alcance actualmente
 
 - Calculo de rodillos/frenos por capacidad (hoy paso minimo por diametro + freno por fondo de tarima; las reglas de capacidad estan definidas para una fase futura).
-- Integracion de la cama de rodamiento dentro del dibujo del sistema dinamico.
+- Integracion de la cama de rodamiento dentro del dibujo del sistema dinamico (planificada:
+  iniciativa I-27 en `docs/ROADMAP.md`; es la brecha funcional prioritaria de HANDOFF seccion 11).
 - SQLite.
