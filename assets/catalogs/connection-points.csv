@@ -9,3 +9,5 @@ TROQUEL_CABECERA,Troquel donde va cabecera en separador,Troquel donde va cabecer
 TROQUEL_TOPE,Troquel donde se coloca el tope,Troquel donde se coloca el or�gen del tope,FlowBed
 TROQUEL_LARGUERO,Troquel donde se coloca el larguero,Eje en Y donde se colocar� el larguero,Poste
 INICIO_PERFIL,Inicio del perfil,Punto donde arranca el perfil del larguero (la mensula sobresale del perfil hasta el hook/troquel),Larguero
+TROQUEL_IN,Mate del in n out,Mate del in n out,FlowBed
+TROQUEL_CAMA,Mate de la cama,Mate de la cama,Larguero

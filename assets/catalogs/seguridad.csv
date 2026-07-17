@@ -15,3 +15,5 @@ DESVIADOR_L_3_5,"Desviador L para poste de 3.5""",DESVIADOR,in,0,Acero,,0,MXN,pi
 DESVIADOR_L_4,"Desviador L para poste de 4""",DESVIADOR,in,0,Acero,,0,MXN,pieza
 DESVIADOR_L_4_5,"Desviador L para poste de 4.5""",DESVIADOR,in,0,Acero,,0,MXN,pieza
 DESVIADOR_L_5,"Desviador L para poste de 5""",DESVIADOR,in,0,Acero,,0,MXN,pieza
+GUIA_ENTRADA,Guía de entrada,GUIA,in,0,Acero,,0,MXN,pieza
+DEFENSA_MONTACARGAS,Defensa de montacargas,DEFENSA,in,0,Acero,,0,MXN,pieza
