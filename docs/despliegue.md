@@ -92,7 +92,7 @@ src\RackCad.Plugin\bin\Release\net8.0-windows\RackCad.bundle\
   PackageContents.xml
   Contents\
     RackCad.Plugin.dll  (+ Application/Domain/UI)
-    catalogs\  (CSV/JSON; + blocks-library.dwg solo si el usuario lo proporcionó antes del build)
+    catalogs\  (CSV/JSON de producto; blocks-library.dwg es opcional y pertenece al usuario)
 ```
 
 ### Instalar
@@ -100,16 +100,48 @@ src\RackCad.Plugin\bin\Release\net8.0-windows\RackCad.bundle\
   ```powershell
   pwsh deploy\install-bundle.ps1 -Build
   ```
-  Copia `RackCad.bundle` a `%AppData%\Autodesk\ApplicationPlugins\RackCad.bundle`.
+  Instala `RackCad.bundle` en `%AppData%\Autodesk\ApplicationPlugins\RackCad.bundle` mediante
+  staging + respaldo + sustitución verificada. Si ya existe
+  `Contents\catalogs\blocks-library.dwg`, lo conserva byte por byte.
 - **A mano:** copia esa carpeta `RackCad.bundle` a **`%AppData%\Autodesk\ApplicationPlugins\`**
   (por usuario) o a `%ProgramFiles%\Autodesk\ApplicationPlugins\` (todos los usuarios, requiere
-  admin). Cierra AutoCAD antes: bloquea `RackCad.Plugin.dll`.
+  admin). Cierra AutoCAD antes: bloquea `RackCad.Plugin.dll`. Una copia manual no ofrece el
+  respaldo/rollback del script y debe resguardar primero la biblioteca DWG.
 
 Abre AutoCAD 2025+; los comandos (`RACKCAD`, `RACKSELECTIVO`, …) quedan disponibles al arranque.
 
 > El `PackageContents.xml` exige `SeriesMin="R25.0"` (AutoCAD 2025). Para actualizar, cierra
-> AutoCAD, recompila y vuelve a copiar (o corre el script) — la carpeta en `ApplicationPlugins`
-> se reemplaza.
+> AutoCAD y ejecuta de nuevo el script. Los DLL y catálogos CSV/JSON se sustituyen por los del
+> bundle nuevo; `blocks-library.dwg` se preserva.
+
+### Comportamiento seguro al actualizar
+
+`install-bundle.ps1` no modifica la instalación en sitio. El flujo es:
+
+1. valida que el bundle nuevo tenga manifiesto, los cuatro DLL y catálogos;
+2. copia y verifica el bundle en una carpeta de staging única junto al destino;
+3. copia al staging el `blocks-library.dwg` de la instalación existente, si lo hay, y verifica su hash;
+4. renombra la instalación anterior a un respaldo recuperable;
+5. activa el staging y vuelve a validar la instalación;
+6. elimina el respaldo únicamente después de terminar las verificaciones.
+
+Si falla después de crear el respaldo, el script intenta restaurar automáticamente la instalación
+anterior. Si no puede, imprime la ruta exacta de la carpeta `.RackCad.bundle.backup-*` que debe
+renombrarse manualmente a `RackCad.bundle`. Un bundle fallido apartado queda como
+`.RackCad.bundle.failed-*` para diagnóstico. AutoCAD abierto se considera error: el script termina
+con código no cero sin tocar el destino.
+
+La política actual es deliberadamente simple:
+
+| Contenido | Política de actualización |
+|---|---|
+| `PackageContents.xml`, DLLs y catálogos CSV/JSON | Producto: se usa la versión del bundle nuevo. No hay fusión. |
+| `Contents\catalogs\blocks-library.dwg` | Usuario: se conserva la versión ya instalada. |
+| `%AppData%\RackCad\` y biblioteca configurada en otra ruta | Fuera del bundle: el instalador no los toca. |
+
+La separación formal entre catálogos base del producto y overrides del usuario queda como iniciativa
+arquitectónica futura; hasta entonces, una edición directa de CSV/JSON dentro del bundle funciona en
+runtime, pero **se reemplaza en la siguiente actualización**.
 
 **Alternativa manual:** `APPLOAD` → *Suite de inicio (Startup Suite)* → añadir
 `RackCad.Plugin.dll`. Se carga solo al abrir cada dibujo (pero sin la comodidad del bundle).
@@ -117,23 +149,27 @@ Abre AutoCAD 2025+; los comandos (`RACKCAD`, `RACKSELECTIVO`, …) quedan dispon
 ### Compartir la app y publicar versiones nuevas
 
 El bundle **no es un artefacto que se mantenga a mano**: el build (target `AssembleAutoloaderBundle`
-del `.csproj`) **regenera solo** `RackCad.bundle\Contents\` (DLLs frescos + `catalogs\`) en cada
-`dotnet build`, y `PackageContents.xml` es estático (solo se toca en un *release* si quieres subir
-`AppVersion`). Así que "actualizar el bundle" = simplemente **recompilar**.
+del `.csproj`) elimina y **regenera completo** `RackCad.bundle` (DLLs frescos + `catalogs\`) en cada
+`dotnet build`. Esto evita que sobrevivan archivos de configuraciones anteriores. `PackageContents.xml`
+es estático (solo se toca en un *release* si quieres subir `AppVersion`). Así que "actualizar el bundle"
+= simplemente **recompilar**.
 
 Para pasar una versión nueva a otra persona:
 
 1. Cierra AutoCAD (bloquea `RackCad.Plugin.dll`).
 2. `pwsh deploy\install-bundle.ps1 -Build` (o `dotnet build -c Release`).
 3. Comparte la carpeta `RackCad.bundle` (o un `.zip`); la otra persona la pega en su
-   `%AppData%\Autodesk\ApplicationPlugins\` **reemplazando** la anterior. Al reabrir AutoCAD carga sola.
+   `%AppData%\Autodesk\ApplicationPlugins\`. Para una actualización segura en una máquina con el
+   repositorio, debe usar `install-bundle.ps1`; si solo recibe el ZIP, debe respaldar manualmente
+   `blocks-library.dwg` antes de reemplazar. Al reabrir AutoCAD carga sola.
 
 Dos matices que evitan re-desplegar:
 
-- **Cambios solo de datos NO requieren bundle nuevo.** Los catálogos son CSV/JSON que RackCad **lee en
-  vivo** (recarga por fecha/tamaño al re-ejecutar el comando). Ajustar un perfil, peralte o bloque =
-  editar el CSV dentro de su `Contents\catalogs\`, sin recompilar ni recompartir. Solo los cambios de
-  **código** (features/bugs) exigen un bundle nuevo.
+- **Cambios solo de datos NO requieren reiniciar AutoCAD.** Los catálogos son CSV/JSON que RackCad **lee
+  en vivo** (recarga por fecha/tamaño al re-ejecutar el comando). Se pueden editar dentro de
+  `Contents\catalogs\` para una prueba local, pero hoy son archivos de producto: el instalador los
+  reemplaza en la siguiente actualización. Para conservar un cambio hay que aplicarlo también a la
+  fuente controlada que produce el bundle.
 - **Librería/catálogo central compartido:** si apuntas la ruta de la librería de bloques a un disco/red
   común (menú `RACKCAD`, ver §5), un cambio de bloques lo ven todas las máquinas sin re-desplegar.
 
@@ -156,9 +192,10 @@ elegir la ruta de la librería de bloques. La ruta elegida se guarda por usuario
 %AppData%\RackCad\settings.json
 ```
 
-Si no se configura nada, se intenta usar `blocks-library.dwg` junto a los catálogos; el instalador no garantiza que
-exista. Para un despliegue reproducible, configurar explícitamente la biblioteca aprobada en cada perfil o copiar el
-activo del usuario al bundle antes de instalarlo.
+Si no se configura nada, se intenta usar `blocks-library.dwg` junto a los catálogos. La primera instalación no
+garantiza que exista; en actualizaciones posteriores, el instalador conserva el archivo que ya esté en esa ruta.
+Para un despliegue reproducible, configurar explícitamente la biblioteca aprobada en cada perfil o proporcionar el
+activo del usuario después de la primera instalación.
 
 > **Importante:** la columna `blockName` de `blocks.csv` debe coincidir **exactamente** con
 > el nombre del bloque dentro de `blocks-library.dwg`. Si un bloque no existe en el dibujo ni
@@ -169,8 +206,21 @@ activo del usuario al bundle antes de instalarlo.
 En una instalación ya desplegada se puede editar cualquier CSV/JSON dentro de la carpeta
 `catalogs\` junto al DLL. RackCad recarga el catálogo al re-ejecutar el comando (la caché se
 invalida por fecha/tamaño de los archivos), así que **no hace falta reiniciar AutoCAD** para
-un cambio de catálogo. Sí conviene cerrar el archivo en Excel antes de volver a dibujar.
+un cambio de catálogo. Sí conviene cerrar el archivo en Excel antes de volver a dibujar. Esta edición
+es local y temporal respecto al despliegue: una actualización instala de nuevo los catálogos de producto
+y no intenta fusionar el CSV/JSON editado.
 (Detalle de formatos y columnas: ver [catalogos-y-plantillas.md](catalogos-y-plantillas.md).)
+
+### Prueba reproducible del instalador
+
+El harness crea únicamente bundles falsos bajo `%TEMP%`; no toca la instalación real:
+
+```powershell
+pwsh deploy\test-install-bundle.ps1
+```
+
+Cubre primera instalación, catálogo sustituido, biblioteca preservada, destino parcial, archivo
+bloqueado, rollback tras respaldo, segunda ejecución, rutas con espacios y origen incompleto.
 
 ---
 

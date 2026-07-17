@@ -15,7 +15,7 @@
   <!-- Ship versioned catalogs next to the plugin DLL so JsonRackCatalogProvider.FromBaseDirectory() resolves them. -->
   <ItemGroup>
     <Content Include="..\..\assets\catalogs\*.json;..\..\assets\catalogs\*.csv;..\..\assets\catalogs\*.dwg" Link="catalogs\%(Filename)%(Extension)">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -41,9 +41,12 @@
       <BundleContents>$(BundleRoot)\Contents</BundleContents>
     </PropertyGroup>
     <ItemGroup>
-      <BundleAssemblies Include="$(OutDir)RackCad.*.dll" />
-      <BundleCatalogFiles Include="$(OutDir)catalogs\**\*.*" />
+      <BundleAssemblies Include="$(OutDir)RackCad.Plugin.dll;$(OutDir)RackCad.Application.dll;$(OutDir)RackCad.Domain.dll;$(OutDir)RackCad.UI.dll" />
+      <BundleCatalogFiles Include="$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.json;$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.csv;$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.dwg" />
     </ItemGroup>
+    <!-- The bundle is generated output, not a writable source. Recreate it on every build so
+         removed catalogs and assemblies cannot survive from an older configuration. -->
+    <RemoveDir Directories="$(BundleRoot)" />
     <Copy SourceFiles="$(MSBuildProjectDirectory)\..\..\deploy\RackCad.bundle\PackageContents.xml" DestinationFolder="$(BundleRoot)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(BundleAssemblies)" DestinationFolder="$(BundleContents)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(BundleCatalogFiles)" DestinationFiles="@(BundleCatalogFiles->'$(BundleContents)\catalogs\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
