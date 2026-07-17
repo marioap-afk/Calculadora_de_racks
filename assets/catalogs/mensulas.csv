@@ -1,2 +1,4 @@
 id,displayName,type,height,units,gauge,weightEach,material,partNumber
-MENSULA_3_REMACHES_CAL_10,Ménsula 3 remaches de cinta negra calibre 10,3 Remaches,6,in,10,,,
+MENSULA_3_REMACHES_CAL_10,Ménsula 3 remaches de cinta calibre 10,3 Remaches,6,in,10,,,
+MENSULA_TROQUEL_REDONDO_CAL_10,Ménsula troquel redondo de cinta calibre 10,Troquel redondo,8,in,10,,,
+MENSULA_AJUSTE_INFINITO_CAL_10,Ménsula ajuste infinito de cinta calibre 10,Ajuste infinito,8,in,10,,,

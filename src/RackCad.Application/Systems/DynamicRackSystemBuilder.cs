@@ -12,10 +12,10 @@ namespace RackCad.Application.Systems
     /// Builds the default editable dynamic system and keeps it consistent after edits.
     ///
     /// Default layout (alternating headers/separators):
-    ///   N modules. The two ends are headers of length depth+6. Every other module is depth.
+    ///   The shortest front owns two modules of length depth+6. Every other module is depth.
     ///   A module is a CABECERA when its distance to the nearest end is even, else a SEPARADOR
-    ///   (so the pattern reads cabecera-separador-cabecera-...). Total = N x depth + 12" always
-    ///   (only the two ends carry the +6). Intermediate posts are NOT modules; they are derived
+    ///   (so the pattern reads cabecera-separador-cabecera-...). The shared envelope is extended from that base
+    ///   without forcing a longer front's own ends to be headers. Intermediate posts are NOT modules; they are derived
     ///   where two separators are consecutive (only happens for some even N).
     ///
     /// Header modules get their own header configuration built through the existing
@@ -47,7 +47,26 @@ namespace RackCad.Application.Systems
             int palletsDeep,
             RackFrameTemplate headerTemplate,
             string headerPostCatalogId,
-            double headerHeight)
+            double headerHeight,
+            double postPeralte = 0.0)
+            => BuildDefault(
+                pallet,
+                new DynamicDepthLayout(
+                    new DynamicDepthRange(1, palletsDeep),
+                    palletsDeep,
+                    new[] { new DynamicDepthRange(1, palletsDeep) }),
+                headerTemplate,
+                headerPostCatalogId,
+                headerHeight,
+                postPeralte);
+
+        public DynamicRackSystem BuildDefault(
+            PalletSpecification pallet,
+            DynamicDepthLayout depthLayout,
+            RackFrameTemplate headerTemplate,
+            string headerPostCatalogId,
+            double headerHeight,
+            double postPeralte = 0.0)
         {
             if (pallet == null)
             {
@@ -59,32 +78,45 @@ namespace RackCad.Application.Systems
                 throw new ArgumentOutOfRangeException(nameof(pallet), "El fondo de tarima debe ser mayor que cero.");
             }
 
-            if (palletsDeep < 2)
+            if (depthLayout == null || depthLayout.TotalPositions < 2)
             {
-                throw new ArgumentOutOfRangeException(nameof(palletsDeep), "Se requieren al menos 2 tarimas de fondo.");
+                throw new ArgumentOutOfRangeException(nameof(depthLayout), "Se requieren al menos 2 tarimas de fondo.");
             }
 
             var depth = pallet.Depth;
-            var endLength = depth + DynamicRackDefaults.HeaderEndAllowance;
             var template = headerTemplate ?? RackFrameTemplateCatalog.Default;
 
-            var system = new DynamicRackSystem { Pallet = pallet, PalletsDeep = palletsDeep };
-
-            for (var position = 1; position <= palletsDeep; position++)
+            var system = new DynamicRackSystem
             {
-                var isEnd = position == 1 || position == palletsDeep;
-                var isHeader = IsHeaderPosition(position, palletsDeep);
-                var length = isEnd ? endLength : depth;
+                Pallet = pallet,
+                PalletsDeep = depthLayout.TotalPositions,
+                BaseDepthStartPosition = depthLayout.BaseRange.StartPosition,
+                BasePalletsDeep = depthLayout.BaseRange.PalletsDeep,
+                PostPeralte = postPeralte
+            };
+
+            for (var position = 1; position <= depthLayout.TotalPositions; position++)
+            {
+                var isHeader = depthLayout.IsHeaderPosition(position);
+                var length = depth + (depthLayout.IsAllowancePosition(position)
+                    ? DynamicRackDefaults.HeaderEndAllowance
+                    : 0.0);
 
                 if (isHeader)
                 {
                     var kind = position == 1
                         ? DynamicRackModuleKind.HeaderStart
-                        : position == palletsDeep
+                        : position == depthLayout.TotalPositions
                             ? DynamicRackModuleKind.HeaderEnd
                             : DynamicRackModuleKind.HeaderIntermediate;
 
-                    system.Modules.Add(CreateHeader(kind, length, template, headerPostCatalogId, headerHeight));
+                    system.Modules.Add(CreateHeader(
+                        kind,
+                        length,
+                        template,
+                        headerPostCatalogId,
+                        headerHeight,
+                        postPeralte));
                 }
                 else
                 {
@@ -125,33 +157,39 @@ namespace RackCad.Application.Systems
         /// consecutive separators (the derived poste) placed as close to the center as possible —
         /// exactly centered for N divisible by 4, one pallet off-center otherwise.
         /// </summary>
-        private static bool IsHeaderPosition(int position, int palletsDeep)
-        {
-            if (palletsDeep == 2)
-            {
-                // Both ends must be headers (the class contract); with N=2 there is no room for a separator.
-                return true;
-            }
-
-            if (palletsDeep % 2 == 1)
-            {
-                return position % 2 == 1;
-            }
-
-            // doublingStart = largest even number <= N/2; modules doublingStart and doublingStart+1 are the
-            // two consecutive separators (the poste boundary), kept nearest the center.
-            var doublingStart = 2 * (palletsDeep / 4);
-            return position <= doublingStart
-                ? position % 2 == 1
-                : (position - doublingStart) % 2 == 0;
-        }
-
         /// <summary>Builds a header configuration for a module at the given depth.</summary>
-        public RackFrameConfiguration BuildHeaderConfiguration(RackFrameTemplate template, string postCatalogId, double height, double depth)
+        public RackFrameConfiguration BuildHeaderConfiguration(
+            RackFrameTemplate template,
+            string postCatalogId,
+            double height,
+            double depth,
+            double postPeralte = 0.0)
         {
             var header = headerFactory.Build(template ?? RackFrameTemplateCatalog.Default, postCatalogId, height, depth);
+            if (postPeralte > 0.0)
+            {
+                header.PostPeralte = postPeralte;
+            }
             memberBuilder.RefreshPhysicalModel(header);
             return header;
+        }
+
+        /// <summary>Applies the rack-wide post PERALTE without replacing custom header configurations.</summary>
+        public void ApplyPostPeralte(DynamicRackSystem system, double postPeralte)
+        {
+            if (system == null || postPeralte <= 0.0)
+            {
+                return;
+            }
+
+            system.PostPeralte = postPeralte;
+            foreach (var configuration in system.Modules
+                         .Where(module => module.IsHeader && module.AssociatedFrameConfiguration != null)
+                         .Select(module => module.AssociatedFrameConfiguration))
+            {
+                configuration.PostPeralte = postPeralte;
+                memberBuilder.RefreshPhysicalModel(configuration);
+            }
         }
 
         private DynamicRackModule CreateHeader(
@@ -159,7 +197,8 @@ namespace RackCad.Application.Systems
             double length,
             RackFrameTemplate template,
             string postCatalogId,
-            double headerHeight)
+            double headerHeight,
+            double postPeralte)
         {
             return new DynamicRackModule
             {
@@ -167,7 +206,12 @@ namespace RackCad.Application.Systems
                 Length = length,
                 IsCalculated = true,
                 UseCalculatedHeaderConfiguration = true,
-                AssociatedFrameConfiguration = BuildHeaderConfiguration(template, postCatalogId, headerHeight, length)
+                AssociatedFrameConfiguration = BuildHeaderConfiguration(
+                    template,
+                    postCatalogId,
+                    headerHeight,
+                    length,
+                    postPeralte)
             };
         }
 

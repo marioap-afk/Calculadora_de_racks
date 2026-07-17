@@ -19,7 +19,9 @@ namespace RackCad.Application.Systems
             => SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.BotaType)
                || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.LateralType)
                || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.TopeType)
-               || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DesviadorType);
+               || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DesviadorType)
+               || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DefensaType)
+               || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.GuiaType);
 
         /// <summary>Catalog variants of <paramref name="type"/>, preserving their catalog order.</summary>
         public static IReadOnlyList<SafetyElementCatalogEntry> VariantsOfType(

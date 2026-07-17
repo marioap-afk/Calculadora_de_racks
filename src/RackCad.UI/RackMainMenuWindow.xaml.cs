@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
@@ -17,6 +19,7 @@ namespace RackCad.UI
     public partial class RackMainMenuWindow : Window
     {
         private readonly bool canInsertInAutoCad;
+        private readonly IReadOnlyList<string> dimensionStyles;
         private readonly UserSettings settings = UserSettingsStore.Load();
 
         /// <summary>Set when the user asked to insert the configured header; the host command draws it after
@@ -31,6 +34,8 @@ namespace RackCad.UI
         /// <summary>Identity of the dynamic system to insert (for the drawing round-trip embed).</summary>
         public string DynamicRackId { get; private set; }
         public string DynamicRackName { get; private set; }
+        public string DynamicView { get; private set; } = RackEmbedDocument.ViewLateral;
+        public int DynamicSection { get; private set; } = -1;
 
         public FlowBedConfiguration FlowBedToInsert { get; private set; }
 
@@ -47,13 +52,19 @@ namespace RackCad.UI
         public string SelectiveView { get; private set; }
 
         public RackMainMenuWindow()
-            : this(false)
+            : this(false, null)
         {
         }
 
         public RackMainMenuWindow(bool canInsertInAutoCad)
+            : this(canInsertInAutoCad, null)
+        {
+        }
+
+        public RackMainMenuWindow(bool canInsertInAutoCad, IEnumerable<string> dimensionStyles)
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
+            this.dimensionStyles = (dimensionStyles ?? Enumerable.Empty<string>()).ToList();
             InitializeComponent();
             UpdateLibraryPathDisplay();
         }
@@ -150,6 +161,7 @@ namespace RackCad.UI
             try
             {
                 var window = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
+                window.SetDimensionStyles(dimensionStyles);
                 window.ShowDialog();
 
                 if (window.InsertRequested)
@@ -159,6 +171,8 @@ namespace RackCad.UI
                     DynamicDesignToInsert = window.DesignToInsert;
                     DynamicRackId = window.RackId;
                     DynamicRackName = window.RackName;
+                    DynamicView = window.InsertView;
+                    DynamicSection = window.InsertSection;
                     Close();
                 }
             }
@@ -185,6 +199,7 @@ namespace RackCad.UI
                 if (library.SelectedDesign.Kind == RackDesignKind.Dinamico && project.DynamicDesign != null)
                 {
                     var editor = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
+                    editor.SetDimensionStyles(dimensionStyles);
                     editor.LoadDesignForNew(project.DynamicDesign, library.SelectedDesign.Name);
                     editor.ShowDialog();
 
@@ -195,12 +210,15 @@ namespace RackCad.UI
                         DynamicDesignToInsert = editor.DesignToInsert;
                         DynamicRackId = editor.RackId;
                         DynamicRackName = editor.RackName;
+                        DynamicView = editor.InsertView;
+                        DynamicSection = editor.InsertSection;
                         Close();
                     }
                 }
                 else if (library.SelectedDesign.Kind == RackDesignKind.Selectivo && project.SelectiveRack != null)
                 {
                     var editor = new RackSelectiveWindow(canInsertInAutoCad) { Owner = this };
+                    editor.SetDimensionStyles(dimensionStyles);
                     editor.LoadForNew(project.SelectiveRack);
                     editor.ShowDialog();
 

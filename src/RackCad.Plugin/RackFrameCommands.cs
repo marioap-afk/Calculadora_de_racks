@@ -31,7 +31,10 @@ namespace RackCad.Plugin
         {
             try
             {
-                var menu = new RackMainMenuWindow(canInsertInAutoCad: true);
+                var document = AcApplication.DocumentManager.MdiActiveDocument;
+                var menu = new RackMainMenuWindow(
+                    canInsertInAutoCad: true,
+                    dimensionStyles: ReadDimensionStyleNames(document));
                 AcApplication.ShowModalWindow(menu);
 
                 if (menu.InsertRequested)
@@ -42,7 +45,13 @@ namespace RackCad.Plugin
                     }
                     else if (menu.DynamicSystemToInsert != null)
                     {
-                        DrawAndPlaceSystem(menu.DynamicSystemToInsert, BuildDynamicPayload(menu.DynamicDesignToInsert, menu.DynamicRackId, menu.DynamicRackName), menu.DynamicRackName);
+                        DrawDynamicView(
+                            menu.DynamicView,
+                            menu.DynamicSection,
+                            menu.DynamicSystemToInsert,
+                            menu.DynamicDesignToInsert,
+                            menu.DynamicRackId,
+                            menu.DynamicRackName);
                     }
                     else if (menu.FlowBedToInsert != null)
                     {

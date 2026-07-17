@@ -24,7 +24,12 @@ namespace RackCad.Plugin.Systems
         /// Draws + places the dynamic system. The design payload (JSON incl. Id + Name) is embedded on the block
         /// DEFINITION so every copy shares it and the rack can be reopened/edited; <paramref name="rackName"/> names it.
         /// </summary>
-        public HeaderPlacementResult DrawAndPlace(Document document, DynamicRackSystem system, string payloadJson = null, string rackName = null)
+        public HeaderPlacementResult DrawAndPlace(
+            Document document,
+            DynamicRackSystem system,
+            string payloadJson = null,
+            string rackName = null,
+            int postIndex = -1)
         {
             if (document == null)
             {
@@ -39,7 +44,9 @@ namespace RackCad.Plugin.Systems
             try
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = builder.Build(system, catalog);
+                var plan = postIndex >= 0
+                    ? builder.Build(system, catalog, postIndex)
+                    : builder.Build(system, catalog);
                 var block = CreateSystemBlock(document, plan, BlockName(system, rackName), payloadJson);
                 return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
             }
@@ -50,7 +57,13 @@ namespace RackCad.Plugin.Systems
         }
 
         /// <summary>Redraw an existing dynamic system's block DEFINITION in place; every copy updates on regen.</summary>
-        public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, DynamicRackSystem system, string payloadJson)
+        public HeaderPlacementResult RedrawInPlace(
+            Document document,
+            ObjectId blockId,
+            DynamicRackSystem system,
+            string payloadJson,
+            bool regen = true,
+            int postIndex = -1)
         {
             if (document == null)
             {
@@ -65,8 +78,10 @@ namespace RackCad.Plugin.Systems
             try
             {
                 var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = builder.Build(system, catalog);
-                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog);
+                var plan = postIndex >= 0
+                    ? builder.Build(system, catalog, postIndex)
+                    : builder.Build(system, catalog);
+                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
             }
             catch (Exception ex)
             {
