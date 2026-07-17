@@ -1,10 +1,10 @@
 # WORKFLOW — flujo Git, worktrees y trabajo multi-agente
 
-> Actualizado: 2026-07-16 (fase de planificación post-auditoría, revisado con crítica adversarial).
+> Actualizado: 2026-07-17 (I-00 ejecutada: `main` es el trunk único).
 > Proceso repetible para que varias IAs (Claude, Codex, futuras) y el humano desarrollen RackCad en
 > paralelo durante años sin pisarse. Las ramas se nombran por INICIATIVA técnica, nunca por
 > herramienta ([ADR-0001](adr/0001-ramas-por-iniciativa.md)). El plan de iniciativas vive en
-> [ROADMAP.md](ROADMAP.md); la migración inicial está en la sección 9.
+> [ROADMAP.md](ROADMAP.md); la migración inicial ya se ejecutó (nota en la sección 9).
 
 ## 1. Estrategia de ramas
 
@@ -25,7 +25,9 @@
 Reglas de nombre: kebab-case, español (como el resto del repo), y el slug describe la **iniciativa**,
 no la sesión ni la herramienta. La procedencia de la IA vive en los **trailers de commit**
 (`Co-Authored-By`), no en el nombre de la rama. Los prefijos `claude/*` y `codex/*` quedan retirados;
-las ramas existentes con esos nombres se resuelven en la migración (sección 9), no se renombran en masa.
+tras la migración (sección 9) la única rama restante con esos nombres es `codex/dinamico-modular`,
+que se resuelve con [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (opción A la renombra al
+rebasarla; opción B la archiva).
 
 ## 2. Iniciativas: la unidad de trabajo
 
@@ -177,35 +179,18 @@ cualquier iniciativa que los toque.
 | Hallazgo fuera de alcance de la iniciativa | `docs/ideas-futuras.md` | Al detectarlo |
 | Conteos de tests / hashes de commit | SOLO `docs/HANDOFF.md` §12 | Nunca copiarlos a otros docs; en ROADMAP la marca de cierre es `integrada (fecha)`, sin hash |
 
-## 9. Migración inicial (una sola vez — requiere aprobación del dueño)
+## 9. Migración inicial — ejecutada el 2026-07-17
 
-> Al ejecutarla, sustituir esta sección por una nota "ejecutada el AAAA-MM-DD" con enlace a
-> HANDOFF; el detalle de estado (hashes, ramas pendientes) vive en HANDOFF, no aquí.
+La migración Git inicial (I-00) se ejecutó el **2026-07-17**: `main` es el **trunk único** de
+integración, es la rama por defecto en GitHub y está protegida contra force-push y borrado (sin
+required checks — sección 4.5); `release/claude-review` y las ramas heredadas por-herramienta
+quedaron retiradas (sus puntas se preservaron con tags `archive/*`). El detalle del estado
+(hashes, tags de recuperación, ramas restantes y el prompt de reanudación) vive en
+[HANDOFF.md](HANDOFF.md) §8 y §14, no aquí.
 
-1. En el worktree principal: commitear o descartar los CSVs de catálogo modificados sin commitear.
-2. Push de `release/claude-review` (a la fecha de este documento, el remoto está atrás del local;
-   verificar con `git status`/`git log`).
-3. Integrar la rama de esta auditoría/planificación: `git merge --no-ff
-   claude/rackcad-architecture-audit-cd4046` **sobre `release/claude-review`** (antes del
-   fast-forward de `main` del paso 5); borrar después esa rama con `git branch -d` (el merge la
-   contiene), su respaldo temporal en origin (`git push origin --delete`, procede: el merge existe
-   en el trunk) y su worktree.
-4. Decidir [ADR-0002](adr/0002-secuencia-dinamico-modular.md) — empezando por su **Paso 0** (probar
-   la rama en AutoCAD). Si opción A: renombrar `codex/dinamico-modular` a `feature/dinamico-modular`
-   al rebasarla — muere el último nombre-por-herramienta.
-5. Fast-forward de `main` (`git checkout main && git merge --ff-only release/claude-review &&
-   git push`), confirmar `main` como default branch en GitHub y protegerla contra force-push y
-   borrado (sin required checks — ver sección 4.5).
-6. Borrar ramas muertas y sus worktrees: `codex/seguridad-variantes-topes-botas` (zombie: contenido
-   ya integrado con otros hashes) y decidir `codex/app-tooling-catalogs-logging` (huérfana desde el
-   commit inicial: rescatar por cherry-pick o archivar con tag `archive/app-tooling` y borrar).
-7. **Barrido documental del retiro de `release/claude-review`**: actualizar HANDOFF §14 (pasos de
-   reanudación + prompt canónico) y las menciones de "rama de trabajo" en los docs de arranque
-   (00-indice, 01, 03) para que apunten a `main` — sin este paso, el prompt oficial seguiría
-   mandando a las IAs nuevas a una rama retirada. Retirar también los prefijos `claude/**`/`codex/**`
-   del trigger de `.github/workflows/ci.yml` cuando esas ramas ya no existan.
-8. A partir de aquí: `release/claude-review` se retira; `main` es el trunk; toda rama nueva sigue la
-   convención de la sección 1.
+La única rama de agente restante es `codex/dinamico-modular`, pendiente de
+[ADR-0002](adr/0002-secuencia-dinamico-modular.md) (iniciativa I-01, empezando por su Paso 0:
+probar la rama en AutoCAD). Toda rama nueva sigue la convención de la sección 1.
 
 ## 10. Precedencia de documentos
 

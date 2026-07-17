@@ -1,6 +1,6 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-16 (revisado con crítica adversarial multi-agente). Convierte la
+> Actualizado: 2026-07-17 (I-00 integrada; revisado con crítica adversarial multi-agente). Convierte la
 > [auditoría 2026-07](auditoria-arquitectura-2026-07.md) en un plan ejecutable por iniciativas
 > independientes (1 iniciativa = 1 rama = 1 worktree, ver [WORKFLOW.md](WORKFLOW.md)).
 > Jerarquía de "qué sigue": **este documento = el plan**; HANDOFF §11 = lo inmediato;
@@ -55,7 +55,7 @@ cerrar (cuenta contra la cola del principio 4).
 
 | ID | Iniciativa | Qué incluye | Tamaño | Depende de | Estado |
 |---|---|---|---|---|---|
-| I-00 | **Migración Git** (operación, no rama) | Checklist WORKFLOW §9 completo, incluido el barrido documental del retiro de `release/claude-review` (paso 7) y `global.json` | S | aprobación del dueño | pendiente |
+| I-00 | **Migración Git** (operación, no rama) | Checklist WORKFLOW §9 completo, incluido el barrido documental del retiro de `release/claude-review` (paso 7) y `global.json` | S | aprobación del dueño | integrada (2026-07-17) |
 | I-01 | **ADR-0002: decidir el dinámico** | **Paso 0 primero** (probar la rama en AutoCAD, media sesión); luego aceptar opción A o B | decisión | I-00 (push previo) | pendiente |
 
 ### Fase 1 — Robustez y limpieza
@@ -239,7 +239,8 @@ de ruta incluye el barrido de referentes en la misma rama. La auditoría 2026-07
 
 ## Recomendaciones finales antes de la primera implementación
 
-1. Ejecutar I-00 y decidir ADR-0002 (con su Paso 0) **antes de abrir cualquier otra rama**.
+1. I-00 ya está integrada (2026-07-17); decidir ADR-0002 (I-01, con su Paso 0) **antes de abrir
+   cualquier otra rama**.
 2. Estrenar el flujo con una iniciativa pequeña y sin estorbos (I-26 o I-04) para validar el ciclo
    completo (rama → commit de reclamo + push → CI → rebase → integración → limpieza segura) con
    riesgo cero.

@@ -1,9 +1,10 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-16**. La rama `release/claude-review` incluye las variantes de seguridad completas
-> (Bota C, Lateral C, Poste tope, desviadores A/L) y la revision exhaustiva de codigo (6 arreglos verificados):
-> 554 tests y builds Debug verdes; ultimo commit funcional `eaede44`. Las variantes estan confirmadas en AutoCAD.
+> Actualizado: **2026-07-17**. **`main` es el trunk unico** (migracion Git I-00 ejecutada; ver seccion 8).
+> El trunk incluye las variantes de seguridad completas (Bota C, Lateral C, Poste tope, desviadores A/L)
+> y la revision exhaustiva de codigo (6 arreglos verificados): 554 tests y builds Debug verdes.
+> Las variantes estan confirmadas en AutoCAD.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
@@ -140,6 +141,30 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
 
 ## 8. Trabajo realizado recientemente
 
+**Migracion Git I-00 — ejecutada y cerrada el 2026-07-17:**
+
+- **`main` es el trunk unico de integracion** (rama por defecto en GitHub, protegida contra
+  force-push y borrado, sin required checks). `release/claude-review` quedo retirada.
+- Checkpoint 1 validado sobre `e47e81e`: merge de planificacion `99ebfa1` (auditoria + WORKFLOW +
+  ROADMAP + ADRs) mas `global.json` (SDK .NET 8 fijado) incluido en `e47e81e`. Tests **554/554**
+  verdes; build UI con **0 errores y 0 advertencias**; build Plugin con **0 errores** y las 2
+  familias `MSB3277` conocidas.
+- Tags de recuperacion creados en origin ANTES de la migracion:
+  `archive/pre-i00-main-2026-07-17`, `archive/pre-i00-release-claude-review-2026-07-17` y
+  `archive/catalogos-dinamico-local-pre-i00-2026-07-17` (este ultimo preserva los seis CSV de
+  catalogo con el estado local del worktree del dinamico; NO integrar).
+- Retiradas en esta misma operacion (todas archivadas o contenidas en `main`):
+  `release/claude-review`, `claude/rackcad-architecture-audit-cd4046` (rama + worktree de la
+  auditoria/planificacion), `codex/seguridad-variantes-topes-botas` (zombie: contenido ya
+  integrado con otros hashes; arbol verificado equivalente a `c11a267` y punta preservada en
+  `archive/seguridad-variantes-topes-botas-2026-07-17`) y `codex/app-tooling-catalogs-logging`
+  (tooling historico de la era MVP, preservado en `archive/app-tooling-catalogs-logging-2026-07-17`).
+- **`codex/dinamico-modular` es el unico worktree de agente restante**, intacta en `9f19a8c`,
+  pendiente de [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (**todavia propuesto**, ni
+  aceptado ni rechazado).
+- **Siguiente paso exacto: I-01 — Paso 0 de ADR-0002** (probar la rama del dinamico en AutoCAD)
+  y despues decidir opcion A o B.
+
 1. **`b1cfce2` Tope medio-frente**: los topes de larguero siguen los tramos de un frente partido
    (frontal + planta), un tope por tramo cargado.
 2. **`38572c6` Parrilla v1**: elemento de seguridad PARRILLA (deck) dibujable en frontal + lateral,
@@ -259,9 +284,10 @@ de la corrida) quedaron registrados en `docs/ideas-futuras.md` ("Hallazgos de la
 
 ## 11. Siguientes tareas recomendadas
 
-> El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](ROADMAP.md) (2026-07-16); esta
-> seccion apunta a lo INMEDIATO. Primero: la migracion Git (WORKFLOW.md seccion 9) y la decision
-> [ADR-0002](adr/0002-secuencia-dinamico-modular.md) sobre la rama del dinamico modular.
+> El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](ROADMAP.md); esta seccion
+> apunta a lo INMEDIATO. La migracion Git (I-00) ya esta integrada (seccion 8); lo primero ahora
+> es **I-01: la decision [ADR-0002](adr/0002-secuencia-dinamico-modular.md)** sobre la rama del
+> dinamico modular, empezando por su Paso 0 (probar la rama en AutoCAD).
 
 1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria — y EMPIEZA por
    decidir ADR-0002 (la rama `codex/dinamico-modular` existente). Abrir una tarea/worktree
@@ -305,20 +331,26 @@ de layout (meta futura, no inmediata).
 
 ## 14. Como reanudar el trabajo
 
-1. Clonar `https://github.com/marioap-afk/Calculadora_de_racks.git` y abrir la rama `release/claude-review`.
-2. `git log --oneline -5` y comparar con la seccion 8 de este archivo (¿hubo push nuevo?).
+1. Clonar `https://github.com/marioap-afk/Calculadora_de_racks.git` — la rama por defecto es
+   **`main`** (el trunk unico). NUNCA reanudar desde `release/claude-review` (retirada en I-00).
+2. `git fetch origin && git log --oneline -5` y comparar con la seccion 8 de este archivo
+   (¿hubo push nuevo?); `git branch -r` para ver las iniciativas en curso.
 3. Leer en orden: este archivo -> [README.md](../README.md) -> [AGENTS.md](../AGENTS.md) ->
-   [docs/00-indice-contexto.md](00-indice-contexto.md).
+   [docs/WORKFLOW.md](WORKFLOW.md) -> [docs/00-indice-contexto.md](00-indice-contexto.md).
 4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 554+ y quedar verde).
-5. Tomar la primera tarea de la seccion 11 que siga abierta.
+5. Tomar la primera tarea de la seccion 11 que siga abierta, abriendo rama + worktree por
+   iniciativa segun [WORKFLOW.md](WORKFLOW.md) (nunca desarrollar directo sobre `main`).
 
 **Prompt de reanudacion (copiar en un chat nuevo de Claude o Codex):**
 
 ```
-Trabajo en RackCad (D:\Documentos\Codex\Calculadora de racks), plugin de AutoCAD 2025 en C#/.NET8,
-rama release/claude-review. Lee primero docs/HANDOFF.md, luego README.md y AGENTS.md; verifica el
-estado real con git log y dotnet test (la suite completa debe quedar verde; el conteo vive en la seccion 12). El contexto de estado, bugs conocidos
-y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con: [elige la tarea o pega la
-seccion 11]. Respeta las convenciones de AGENTS.md (en especial: DeepCopy + DTO para flags de
-seguridad, tests de regresion verificados fallando, y no hacer push sin verificacion en AutoCAD).
+Trabajo en RackCad (D:\Documentos\Codex\Calculadora de racks), plugin de AutoCAD 2025 en C#/.NET8.
+El trunk es main (nunca release/claude-review, que fue retirada). Lee primero docs/HANDOFF.md,
+luego README.md, AGENTS.md y docs/WORKFLOW.md; verifica el estado real con git log y dotnet test
+(la suite completa debe quedar verde; el conteo vive en la seccion 12). El contexto de estado,
+bugs conocidos y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con: [elige la
+tarea o pega la seccion 11], abriendo rama y worktree por iniciativa segun docs/WORKFLOW.md (no
+trabajes directo sobre main). Respeta las convenciones de AGENTS.md (en especial: DeepCopy + DTO
+para flags de seguridad, tests de regresion verificados fallando, y no integrar a main sin
+verificacion en AutoCAD).
 ```
