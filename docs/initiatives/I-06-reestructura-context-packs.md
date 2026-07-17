@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-06
 title: Reestructura documental y Context Packs
 type: docs
-status: waiting
+status: implementing
 branch: docs/reestructura
 base_branch: main
 priority: 10
@@ -11,7 +11,11 @@ size: M
 depends_on: []
 conflicts_with:
   - I-07
-context_packs: []
+context_packs:
+  - documentation-governance
+automation_state_path: docs/automation/state/I-06.yml
+decision_paths:
+  - docs/automation/decisions/I-06.md
 requires_ci: true
 requires_plugin_build: false
 requires_autocad: false
@@ -25,20 +29,25 @@ automation:
 
 # I-06 — Reestructura documental y Context Packs
 
-Este archivo define el trabajo futuro de I-06. Crear este contrato no ejecuta ninguna de sus fases.
-El estado operativo se deriva de `origin/docs/reestructura` y de su Pull Request, no solo del campo
-`status`.
+Este archivo define el trabajo de I-06. El estado operativo se valida contra
+`origin/docs/reestructura` y se registra en `docs/automation/state/I-06.yml`; el Pull Request puede
+contener una copia opcional, pero no es la fuente legible por el ejecutor.
 
 ## Estado del piloto
 
 - El bootstrap del contrato y el reclamo remoto de I-06 ya terminaron.
 - La fase 1, auditoria documental, termino. Su evidencia versionada esta en
   [I-06-auditoria-documental.md](I-06-auditoria-documental.md).
-- La siguiente fase pendiente es la fase 2: decision del dueno sobre taxonomia de Context Packs y
-  destinos ambiguos. No debe continuar sin resolver ese gate.
+- La fase 2 termino: la decision del dueno se verifico desde
+  [docs/automation/decisions/I-06.md](../automation/decisions/I-06.md) en la rama remota y resolvio
+  CP-01, CP-02 y DOC-01 a DOC-06.
+- La fase 3 termino con `ARCHITECTURE.md`, los nueve Context Packs y el glosario aprobados.
+- La siguiente fase pendiente es la fase 4. No se ejecuta en la misma iteracion que la fase 3.
 - El piloto se ejecutara manualmente antes de programar horarios o crear una automatizacion.
 - Mientras el sistema documental no este integrado en `main`, el modo bootstrap solo puede reanudar
   I-06 en `docs/reestructura`, su worktree y su Pull Request existentes.
+- En modo Git-only, la incapacidad de leer o actualizar la descripcion del PR no bloquea commit,
+  push y estado versionado. El ejecutor no depende de GitHub CLI.
 
 ## 1. Objetivo
 
@@ -87,10 +96,12 @@ Leer completamente antes de editar:
 - `docs/04-roadmap-operativo.md`;
 - `docs/auditoria-arquitectura-2026-07.md`, en particular su seccion 4;
 - `docs/adr/README.md` y ADRs aceptados;
+- `docs/automation/state/I-06.yml`;
+- `docs/automation/decisions/I-06.md`;
 - todos los referentes obtenidos con una busqueda global de las rutas que se moveran.
 
-Los Context Packs concretos se diseñan durante la iniciativa y requieren decision del dueno antes
-de fijar su taxonomia o contrato estable.
+La taxonomia y el contrato ligero de Context Packs fueron aprobados por el dueno. Una iniciativa
+puede usar multiples packs; cada pack puede resumir invariantes esenciales sin copiar capitulos.
 
 ## 6. Dependencias
 
@@ -100,8 +111,8 @@ actual de `origin/main` y conservarse como `docs/reestructura`.
 
 Entradas del dueno:
 
-- aprobar la taxonomia y granularidad de los Context Packs;
-- resolver cualquier contenido unico cuyo destino no sea evidente;
+- taxonomia, granularidad y destinos ambiguos: resueltos en
+  `docs/automation/decisions/I-06.md`;
 - validar que HANDOFF reducido siga siendo suficiente para continuidad real.
 
 ## 7. Archivos esperados
@@ -119,11 +130,12 @@ No se esperan cambios bajo `src/`, `tests/`, `assets/` o `deploy/`.
 
 ## 8. Fases
 
-1. **Auditoria documental:** inventariar documentos, propositos, contenido unico y todos los
-   referentes mediante busqueda global; proponer el mapa final sin mover archivos.
-2. Presentar al dueno las decisiones de taxonomia de Context Packs y destinos ambiguos. Detenerse
-   hasta recibirlas.
-3. Crear `ARCHITECTURE.md`, Context Packs y glosario; verificar que cada tema tenga una fuente.
+1. **Completada — auditoria documental:** inventariar documentos, propositos, contenido unico y todos
+   los referentes mediante busqueda global; proponer el mapa final sin mover archivos.
+2. **Completada — decision del dueno:** taxonomia de Context Packs y destinos ambiguos aprobados en
+   la evidencia versionada.
+3. **Completada — fuentes nuevas:** crear `ARCHITECTURE.md`, Context Packs y glosario; verificar que
+   cada tema tenga una fuente.
 4. Reducir HANDOFF, mover guias e historicos y conservar el contenido unico identificado.
 5. Corregir en la misma rama todos los enlaces y rutas; repetir la busqueda hasta eliminar
    referentes obsoletos.
@@ -139,7 +151,13 @@ No se esperan cambios bajo `src/`, `tests/`, `assets/` o `deploy/`.
 - `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` como guardia del repositorio.
 - CI verde sobre la rama.
 
-No requiere build local de UI o Plugin porque el alcance es exclusivamente documental.
+En una ejecucion Git-only que no pueda consultar checks remotos, registrar esa limitacion y ejecutar
+localmente la suite y el build Debug de UI equivalentes a los dos jobs del workflow. La falta de
+lectura remota no impide publicar el commit y el estado versionado; nunca se inventa un resultado de
+CI.
+
+No requiere build local del Plugin ni AutoCAD. El build de UI solo se usa como equivalente local del
+job de CI cuando los checks remotos no son consultables.
 
 ## 10. Validacion manual
 
@@ -173,12 +191,14 @@ No requiere AutoCAD. El dueno debe revisar y confirmar:
 - CI falla por una causa no documental o se consumen tres intentos de correccion con evidencia.
 - La rama remota, el Pull Request o `origin/main` muestran trabajo concurrente incompatible.
 
-## 13. Entrega del Pull Request
+## 13. Estado versionado y entrega del Pull Request
 
-Abrir o actualizar un Pull Request draft hacia `main` con titulo `[I-06] Reestructura documental y
-Context Packs`. Debe incluir Claim-Id, mapa antes/despues, documentos creados/movidos, decisiones del
-dueno, busquedas de referentes, validaciones, CI, hallazgos fuera de alcance y confirmacion de que no
-se hizo merge. `automation.auto_merge` permanece siempre en `false`.
+Reutilizar el Pull Request draft #1 hacia `main`; nunca abrir otro. El estado canonico se publica en
+`docs/automation/state/I-06.yml`. Si existe una integracion capaz de actualizar la descripcion del PR,
+puede sincronizar una copia, pero esa operacion es opcional y no requiere GitHub CLI. El estado y el
+informe incluyen Claim-Id, mapa antes/despues, documentos creados/movidos, decisiones del dueno,
+validaciones, hallazgos fuera de alcance y confirmacion de que no se hizo merge.
+`automation.auto_merge` permanece siempre en `false`.
 
 ## 14. Evidencia final
 
@@ -193,3 +213,4 @@ Entregar:
 7. Decisiones y validacion manual del dueno.
 8. Intentos consumidos y cualquier bloqueo restante.
 9. Confirmacion de que no se modifico `main`, no se implemento codigo y no hubo merge automatico.
+10. Contenido final de `docs/automation/state/I-06.yml`.
