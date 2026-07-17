@@ -127,7 +127,8 @@ namespace RackCad.Application.Catalogs
             }
 
             var profile = catalog.PostProfiles.FindProfile(id)
-                ?? catalog.TrussProfiles.FindProfile(id);
+                ?? catalog.TrussProfiles.FindProfile(id)
+                ?? catalog.SpacerProfiles.FindProfile(id);
 
             if (profile != null)
             {

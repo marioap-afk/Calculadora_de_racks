@@ -78,6 +78,7 @@ namespace RackCad.Tests
             source.TopeOffCells.Add(new SelectiveGridCell { Frente = 1, Level = 2 });
             source.DesviadorOffCells.Add(new SelectiveGridCell { Frente = 3, Level = 1 });
             source.ParrillaOffCells.Add(new SelectiveGridCell { Frente = 2, Level = 1 });
+            source.GuiaEntradaOffCells.Add(new SelectiveGridCell { Frente = 4, Level = 2 });
 
             var copy = source.DeepCopy();
 
@@ -98,6 +99,7 @@ namespace RackCad.Tests
             Assert.NotSame(source.TopeOffCells[0], copy.TopeOffCells[0]);
             Assert.NotSame(source.DesviadorOffCells[0], copy.DesviadorOffCells[0]);
             Assert.NotSame(source.ParrillaOffCells[0], copy.ParrillaOffCells[0]);
+            Assert.NotSame(source.GuiaEntradaOffCells[0], copy.GuiaEntradaOffCells[0]);
 
             copy.PostSides[0].PostIndex = 99;
             copy.TopeOffCells[0].Level = 99;

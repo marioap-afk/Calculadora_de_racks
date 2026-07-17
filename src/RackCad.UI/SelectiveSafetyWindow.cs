@@ -28,6 +28,8 @@ namespace RackCad.UI
         private readonly IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan; // resolved load rows; null = counts unavailable
         private readonly RackCatalog catalog;
         private readonly SelectiveRackSystem resolvedSystem;
+        private readonly bool fallbackLevelsArePerPost;
+        private readonly bool useDynamicSafetyDefaults;
 
         private sealed class Row
         {
@@ -38,6 +40,8 @@ namespace RackCad.UI
             public bool IsLateral;                   // LATERAL: per-post only (defaults to the orillas), replaces botas
             public bool IsTope;                      // TOPE: rear pallet stop at the central fondo (grid config)
             public bool IsDesviador;                 // DESVIADOR: post x load-level grid, two exterior aisle faces
+            public bool IsDefensa;                   // DEFENSA: independent exit/entrance length at each transverse post
+            public bool IsGuia;                      // GUIA: mirrored pair at selected entrance frente/level cells
             public bool IsParrilla;                  // PARRILLA: deck per (frente,level) grid, drawn frontal/lateral
             public ComboBox Side;                    // BOTA: default side
             public Button PerPost;                   // BOTA/LATERAL: "Por poste…"
@@ -63,6 +67,16 @@ namespace RackCad.UI
             public IReadOnlyList<int> DesviadorLevelCounts = new List<int>();
             public Button DesviadorButton;
 
+            // ---- DEFENSA working config ----
+            public bool DefensaConfigured;
+            public List<SafetyPostDefense> DefensaPosts = new List<SafetyPostDefense>();
+            public Button DefensaButton;
+
+            // ---- GUIA working config ----
+            public bool GuiaConfigured;
+            public List<SelectiveGridCell> GuiaOffCells = new List<SelectiveGridCell>();
+            public Button GuiaButton;
+
             // ---- PARRILLA working config (edited via its grid dialog) ----
             public bool ParrillaConfigured;
             public bool ParrillaFrontal = true;
@@ -75,7 +89,7 @@ namespace RackCad.UI
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false)
         {
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
@@ -83,6 +97,8 @@ namespace RackCad.UI
             this.parrillaPlan = parrillaPlan;
             this.catalog = catalog;
             this.resolvedSystem = resolvedSystem;
+            this.fallbackLevelsArePerPost = fallbackLevelsArePerPost;
+            this.useDynamicSafetyDefaults = useDynamicSafetyDefaults;
             elements ??= new List<SafetyElementCatalogEntry>();
             var currentSelections = (current ?? Enumerable.Empty<SelectiveSafetySelection>())
                 .Where(s => s != null && !string.IsNullOrWhiteSpace(s.ElementId))
@@ -107,9 +123,11 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
-                Text = "La bota se aplica a los postes del sistema según el lado general; usa \"Por poste…\" para apagarla o "
-                     + "cambiar el lado en posiciones concretas. El protector lateral se configura por poste y reemplaza las "
-                     + "botas de ese frente. Topes, desviadores y parrillas se eligen por su rejilla. El BOM se calcula del dibujo.",
+                Text = string.IsNullOrWhiteSpace(introduction)
+                    ? "La bota se aplica a los postes del sistema según el lado general; usa \"Por poste…\" para apagarla o "
+                      + "cambiar el lado en posiciones concretas. El protector lateral se configura por poste y reemplaza las "
+                      + "botas de ese frente. Topes, desviadores y parrillas se eligen por su rejilla. El BOM se calcula del dibujo."
+                    : introduction,
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
             DockPanel.SetDock(intro, Dock.Top);
@@ -140,6 +158,10 @@ namespace RackCad.UI
                 foreach (var element in elements)
                 {
                     if (string.IsNullOrWhiteSpace(element?.Id)) continue;
+                    if (!includeDefensa
+                        && SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DefensaType)) continue;
+                    if (!includeGuia
+                        && SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType)) continue;
 
                     var exclusiveFamily = SelectiveSafetyFamilies.IsExclusive(element.Type);
                     var normalizedType = (element.Type ?? string.Empty).Trim();
@@ -174,8 +196,10 @@ namespace RackCad.UI
                     var isLateral = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.LateralType);
                     var isTope = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType);
                     var isDesviador = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DesviadorType);
+                    var isDefensa = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DefensaType);
+                    var isGuia = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType);
                     var isParrilla = SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType);
-                    var row = new Row { Id = rowElement.Id, Label = rowElement.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsDesviador = isDesviador, IsParrilla = isParrilla };
+                    var row = new Row { Id = rowElement.Id, Label = rowElement.Label, IsBota = isBota, IsLateral = isLateral, IsTope = isTope, IsDesviador = isDesviador, IsDefensa = isDefensa, IsGuia = isGuia, IsParrilla = isParrilla };
 
                     var grid = new Grid { Margin = new Thickness(0, 2, 0, 2) };
                     grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -300,6 +324,56 @@ namespace RackCad.UI
                         grid.Children.Add(button);
                         row.ParrillaButton = button;
                     }
+                    else if (isDefensa)
+                    {
+                        if (existing != null)
+                        {
+                            row.DefensaConfigured = true;
+                            row.DefensaPosts = existing.DefensaPosts?.Where(post => post != null)
+                                .Select(post => new SafetyPostDefense
+                                {
+                                    PostIndex = post.PostIndex,
+                                    ExitLength = post.ExitLength,
+                                    EntranceLength = post.EntranceLength
+                                }).ToList() ?? new List<SafetyPostDefense>();
+                        }
+
+                        var button = new Button
+                        {
+                            Style = TryFindResource("SecondaryButtonStyle") as Style,
+                            Content = DefensaLabel(row),
+                            Padding = new Thickness(10, 3, 10, 3),
+                            VerticalAlignment = VerticalAlignment.Center,
+                            ToolTip = "Defensa de montacargas: elige Salida y Entrada por poste, con una LONGITUD independiente en cada extremo."
+                        };
+                        button.Click += (s, e) => EditDefensa(row);
+                        Grid.SetColumn(button, 1);
+                        grid.Children.Add(button);
+                        row.DefensaButton = button;
+                    }
+                    else if (isGuia)
+                    {
+                        if (existing != null)
+                        {
+                            row.GuiaConfigured = true;
+                            row.GuiaOffCells = existing.GuiaEntradaOffCells?.Where(cell => cell != null)
+                                .Select(cell => new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level })
+                                .ToList() ?? new List<SelectiveGridCell>();
+                        }
+
+                        var button = new Button
+                        {
+                            Style = TryFindResource("SecondaryButtonStyle") as Style,
+                            Content = GuiaLabel(row),
+                            Padding = new Thickness(10, 3, 10, 3),
+                            VerticalAlignment = VerticalAlignment.Center,
+                            ToolTip = "Guía de entrada: elige los niveles de cada frente. Todos se incluyen por defecto."
+                        };
+                        button.Click += (s, e) => EditGuia(row);
+                        Grid.SetColumn(button, 1);
+                        grid.Children.Add(button);
+                        row.GuiaButton = button;
+                    }
                     else if (isBota || isLateral)
                     {
                         row.PostSides = existing?.PostSides?.Where(p => p != null).Select(p => new SafetyPostSide { PostIndex = p.PostIndex, Side = p.Side }).ToList()
@@ -375,6 +449,8 @@ namespace RackCad.UI
             if (row.Quantity != null) row.Quantity.IsEnabled = enabled;
             if (row.TopeButton != null) row.TopeButton.IsEnabled = enabled;
             if (row.DesviadorButton != null) row.DesviadorButton.IsEnabled = enabled;
+            if (row.DefensaButton != null) row.DefensaButton.IsEnabled = enabled;
+            if (row.GuiaButton != null) row.GuiaButton.IsEnabled = enabled;
             if (row.ParrillaButton != null) row.ParrillaButton.IsEnabled = enabled;
         }
 
@@ -428,6 +504,40 @@ namespace RackCad.UI
         private static string DesviadorLabel(Row row)
             => row.DesviadorConfigured ? "Configurado ✓ (" + DesviadorSideName(row.DesviadorSide) + ")…" : "Configurar…";
 
+        private static string DefensaLabel(Row row)
+            => row.DefensaConfigured ? "Configurada ✓…" : "Configurar…";
+
+        private static string GuiaLabel(Row row)
+            => row.GuiaConfigured ? "Configurada ✓…" : "Todos los niveles…";
+
+        private void EditDefensa(Row row)
+        {
+            var dialog = new SafetyDefensaGridWindow(
+                SelectedElementLabel(row), postCount, row.DefensaPosts) { Owner = this };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            row.DefensaConfigured = true;
+            row.DefensaPosts = dialog.Result.ToList();
+            row.DefensaButton.Content = DefensaLabel(row);
+        }
+
+        private void EditGuia(Row row)
+        {
+            var dialog = new SafetyGuiaEntradaGridWindow(
+                SelectedElementLabel(row), levelsPerFrente, row.GuiaOffCells) { Owner = this };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            row.GuiaConfigured = true;
+            row.GuiaOffCells = dialog.Result.ToList();
+            row.GuiaButton.Content = GuiaLabel(row);
+        }
+
         private static string DesviadorSideName(SafetySide side)
         {
             switch (side)
@@ -450,7 +560,8 @@ namespace RackCad.UI
                 row.DesviadorSide,
                 row.DesviadorOffCells,
                 postCount,
-                levelsPerFrente) { Owner = this };
+                levelsPerFrente,
+                fallbackLevelsArePerPost) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -504,6 +615,8 @@ namespace RackCad.UI
                 case SelectiveSafetyDefaults.BotaType: return "Protectores de bota (base de poste)";
                 case SelectiveSafetyDefaults.LateralType: return "Protectores laterales (extremos)";
                 case "DESVIADOR": return "Desviadores";
+                case SelectiveSafetyDefaults.DefensaType: return "Defensas de montacargas";
+                case SelectiveSafetyDefaults.GuiaType: return "Guías de entrada";
                 case SelectiveSafetyDefaults.TopeType: return "Topes";
                 case "TRASERA": return "Guardas traseras";
                 case SelectiveSafetyDefaults.ParrillaType:
@@ -590,12 +703,74 @@ namespace RackCad.UI
                     continue;
                 }
 
+                if (row.IsDefensa)
+                {
+                    var selection = new SelectiveSafetySelection
+                    {
+                        ElementId = elementId,
+                        Quantity = 1,
+                        Side = SafetySide.None
+                    };
+                    foreach (var post in row.DefensaPosts ?? new List<SafetyPostDefense>())
+                    {
+                        if (post != null && post.PostIndex >= 0)
+                        {
+                            selection.DefensaPosts.Add(new SafetyPostDefense
+                            {
+                                PostIndex = post.PostIndex,
+                                ExitLength = post.ExitLength,
+                                EntranceLength = post.EntranceLength
+                            });
+                        }
+                    }
+
+                    var drawsSomewhere = Enumerable.Range(0, postCount)
+                        .Select(post => DynamicForkliftDefensePlan.At(selection.DefensaPosts, post, postCount))
+                        .Any(setting => setting.DrawsExit || setting.DrawsEntrance);
+                    if (drawsSomewhere)
+                    {
+                        result.Add(selection);
+                    }
+
+                    continue;
+                }
+
+                if (row.IsGuia)
+                {
+                    if (!SelectiveSafetyGrid.AllCellsOff(levelsPerFrente, row.GuiaOffCells))
+                    {
+                        var selection = new SelectiveSafetySelection
+                        {
+                            ElementId = elementId,
+                            Quantity = 1,
+                            Side = SafetySide.None
+                        };
+                        foreach (var cell in row.GuiaOffCells ?? new List<SelectiveGridCell>())
+                        {
+                            if (cell != null)
+                            {
+                                selection.GuiaEntradaOffCells.Add(new SelectiveGridCell
+                                {
+                                    Frente = cell.Frente,
+                                    Level = cell.Level
+                                });
+                            }
+                        }
+
+                        result.Add(selection);
+                    }
+
+                    continue;
+                }
+
                 if (row.IsBota || row.IsLateral)
                 {
                     // A bota has a general side; a lateral is per-post only (Side stays None).
                     var side = row.IsBota ? (SafetySide)Math.Max(0, row.Side.SelectedIndex) : SafetySide.None;
                     var overrides = row.PostSides ?? new List<SafetyPostSide>();
-                    var drawsSomewhere = side != SafetySide.None || overrides.Any(p => p != null && p.Side != SafetySide.None);
+                    var drawsSomewhere = side != SafetySide.None
+                                         || overrides.Any(p => p != null && p.Side != SafetySide.None)
+                                         || (row.IsLateral && useDynamicSafetyDefaults && overrides.Count == 0);
                     if (!drawsSomewhere)
                     {
                         continue; // nothing draws for this element

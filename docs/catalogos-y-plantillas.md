@@ -263,6 +263,51 @@ Campos comunes **mas**:
 | `mensula` | texto | **FK** a la ménsula de extremo (`id` de `mensulas.csv`). Es el conector fijo de este larguero; se cuentan dos por larguero en el BOM. |
 | `weightPerMeter` | numero | Peso lineal base (el peso por peralte se resolvera en el BOM). |
 
+#### Larguero IN/OUT del dinamico (`LARGUERO_IN_OUT_C6`)
+
+La primera etapa del pallet flow habilita solo `LARGUERO_IN_OUT_C6`, con peralte unico `6` tomado de la columna
+`peraltes`. En la vista lateral el bloque es la **pieza completa**: no se inserta ni se contabiliza aparte la
+`MENSULA_TROQUEL_REDONDO_CAL_10` referenciada por el perfil. Entrada y salida hacen mate directamente por el origen
+del bloque para su colocacion. Esos origenes se ubican en los limites completos del sistema (`X=0` y
+`X=TotalLength`): la salida baja izquierda no se espejea y la entrada alta derecha usa el mismo bloque espejeado
+en X. La fila LATERAL `TROQUEL_CAMA` no mueve el larguero; describe el mate local que recibe el `TROQUEL_IN` del
+riel. Las filas `FRONTAL` y `PLANTA` ya se consumen: los cortes frontal de salida/entrada estiran `LONGITUD` al
+largo resuelto de cada frente y `PERALTE` al C6; la planta dibuja un IN/OUT colapsado por niveles en cada extremo.
+
+La regla geometrica no usa la holgura del selectivo. Por cada posicion, `BFR = frente de tarima + 2"`; el corte
+automatico completo es `BFR * posiciones + 6"`. Asi, una tarima de 40" produce BFR 42" y un larguero de 48" para
+una posicion. `Bfr` se guarda en el documento dinamico; no se muestra como dato comercial del larguero, pero el
+componente `Cama` ya lo informa junto con su longitud. Un largo manual sustituye
+solo el corte final, no el BFR calculado.
+
+Los campos comerciales vacios son validos en esta etapa. El BOM del dinamico cuenta el bloque IN/OUT completo por
+frente, nivel y extremo, agrupado por longitud/peralte; no agrega ni cotiza una mensula separada.
+
+#### Larguero intermedio del dinamico (`LARGUERO_ESCALON_INFINITO`)
+
+El bloque lateral es la pieza completa con `MENSULA_AJUSTE_INFINITO_CAL_10`; la mensula no se inserta aparte. Se
+coloca uno por cada poste interno y nivel; los dos extremos usan `LARGUERO_IN_OUT_C6` y no reciben este bloque. El
+poste derivado reforzado central representa una sola posicion y tambien recibe uno solo, normal sobre el perfil principal.
+Cuando la posicion corresponde al primer poste de una cabecera, el bloque es normal y usa `INICIO_IZQUIERDO`; en
+el segundo poste se espejea en X y usa `INICIO_DERECHO`.
+
+El origen del bloque queda sobre el eje vertical del poste. La altura se obtiene evaluando la linea inclinada del
+**origen del bloque de riel** en la X mundial del punto de contacto y restando su `localY`. Esa linea no es
+`TROQUEL_IN -> TROQUEL_CAMA`: los troqueles gobiernan el armado de la cama completa, pero el larguero intermedio
+apoya contra el origen del riel. No se busca una altura discreta de poste porque la mensula tiene una ranura
+vertical.
+
+La columna `peraltes` de `secciones.csv` es la fuente de las opciones por frente y nivel. Para el catalogo actual son
+`3;3.5;4;4.5;5;5.5;6`. El editor las muestra en `Frente seleccionado` y el builder lateral envia como parametro
+dinamico `PERALTE` el mayor valor de los frentes activos de ese nivel, porque su proyeccion los superpone. La planta
+usa el mayor peralte de los niveles del frente dibujado. El DTO acepta la lista comun escrita por la version
+inmediatamente anterior; documentos mas antiguos sin ninguna lista usan 3.5" en todos sus niveles.
+
+`connection-points.csv` debe declarar ambos ids y `connection-layout.csv` debe dar sus coordenadas para
+`LARGUERO_ESCALON_INFINITO,LATERAL`. Si falta cualquiera de los dos mates o el bloque lateral, el builder omite todos
+los apoyos intermedios en vez de dibujar una geometria parcial. El BOM del dinamico cuenta el larguero intermedio
+completo por longitud/peralte y cantidad fisica; su mensula integrada no se desglosa ni se cotiza aparte.
+
 ### Ménsulas (`mensulas.csv`)
 
 Conector de extremo del larguero: pieza fija que el BOM cuenta (dos por larguero). Cada larguero apunta a una via la columna `mensula` de su fila en `secciones.csv`.
@@ -295,6 +340,10 @@ Campos comunes **mas**:
 ### Componentes de cama de rodamiento (`flow-bed-profiles.csv`)
 
 Piezas fijas de una cama de rodillos (flow bed / pushback): riel, rodillo, freno y tope. La **regla de armado** (cuantos rodillos por capacidad, frenos cada N, paso) vive en el codigo, no aqui; cada fila solo describe una pieza. Las consume la ventana de CAMA DE RODAMIENTO.
+
+Para componer una cama dentro del SISTEMA DINAMICO, `connection-points.csv` declara `TROQUEL_IN` (riel) y
+`TROQUEL_CAMA` (larguero), y `connection-layout.csv` guarda sus coordenadas LATERAL por pieza. El builder alinea
+esos mates y gira la cama completa; los offsets no se duplican ni se codifican en UI/Plugin.
 
 Campos comunes **mas**:
 
@@ -347,7 +396,7 @@ Catalogo simple de las vistas en que se puede dibujar una pieza. Campos comunes;
 
 | Campo | Tipo | Descripcion |
 |-------|------|-------------|
-| `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL`, `LATERAL_IZQ`, `LATERAL_DER`, `PLANTA`). Lo referencian `blocks.csv` y `connection-layout.csv`. El SELECTIVO se dibuja en `FRONTAL` + `LATERAL` + `PLANTA`; la cabecera en `LATERAL` + `PLANTA`; dinamico y cama en `LATERAL`. |
+| `id` | texto | Codigo de la vista (ej. `FRONTAL`, `LATERAL`, `LATERAL_IZQ`, `LATERAL_DER`, `PLANTA`). Lo referencian `blocks.csv` y `connection-layout.csv`. SELECTIVO y DINAMICO consumen `FRONTAL` + `LATERAL` + `PLANTA`; la cabecera `LATERAL` + `PLANTA`; cama `LATERAL`. |
 | `displayName` | texto | Nombre para mostrar (ej. `Frontal`). |
 
 ### Bloques por vista (`blocks.csv`)
@@ -372,7 +421,7 @@ Tabla **normalizada**: una pieza puede tener **varios bloques**, uno por vista. 
 
 En seguridad, `type` identifica la **familia y su regla de colocacion**; `id` identifica la variante concreta que se
 persiste en el rack. El dialogo muestra un solo combo (`Ninguno` + variantes) para cada familia mutuamente exclusiva:
-`BOTA`, `LATERAL`, `TOPE` y `DESVIADOR`. Cambiar la variante conserva la configuracion comun de la familia y cambia
+`BOTA`, `LATERAL`, `TOPE`, `DESVIADOR`, `DEFENSA` y `GUIA`. Cambiar la variante conserva la configuracion comun de la familia y cambia
 solo `ElementId`; un documento existente vuelve a seleccionar su id exacto.
 
 Variantes catalogadas actualmente:
@@ -394,6 +443,8 @@ Variantes catalogadas actualmente:
 | `DESVIADOR_L_4` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
 | `DESVIADOR_L_4_5` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
 | `DESVIADOR_L_5` | `DESVIADOR` | Exactamente la misma regla del Desviador A3 |
+| `DEFENSA_MONTACARGAS` | `DEFENSA` | Grid por poste con salida/entrada y longitud independientes |
+| `GUIA_ENTRADA` | `GUIA` | Pareja espejeada por frente y nivel, solo en la entrada del dinamico |
 
 Cada una de estas variantes tiene filas `FRONTAL`, `LATERAL` y `PLANTA` en `blocks.csv`; el `blockName` debe coincidir
 exactamente con la biblioteca DWG. Dibujo y BOM resuelven una sola variante por familia. Si un documento anomalo
@@ -423,6 +474,38 @@ completa derivada por `SelectiveDesviadorPlan`.
 
 Cada `id` requiere sus tres filas exactas de `blocks.csv`, con bloques `{id}_FRONTAL`, `{id}_LATERAL` y
 `{id}_PLANTA`. El `ElementId`, el lado, las dos dimensiones y las celdas apagadas sobreviven `RACKEDITAR`.
+
+#### Seguridad multivista del sistema dinamico
+
+El dinamico reutiliza las familias `BOTA`, `LATERAL` y `DESVIADOR` y agrega `DEFENSA_MONTACARGAS` (`DEFENSA`) y
+`GUIA_ENTRADA` (`GUIA`). Su editor filtra esas cinco familias y guarda la misma `SelectiveSafetySelection`. La rejilla usa los postes
+transversales y el maximo de niveles de los frentes adyacentes; la misma intencion se proyecta en lateral, frontal y
+planta con los bloques catalogados de cada vista.
+
+Un sistema dinamico nuevo selecciona por defecto la primera variante catalogada de las cinco familias. BOTA y
+DESVIADOR nacen en ambos lados; LATERAL en la primera orilla de salida y ultima orilla de entrada; DEFENSA en ambos
+extremos de cada poste; GUIA en todas las celdas frente x nivel. El usuario puede elegir `Ninguno` o apagar posiciones
+desde cada grid. Mientras LATERAL no se edite explicitamente, sus dos orillas se recalculan al cambiar los frentes.
+
+- `Izquierda` = extremo de salida (`X=0`); `Derecha` = extremo de entrada (`X=TotalLength`).
+- BOTA coincide con el origen real de la placa base del extremo, incluida una cabecera espejeada/custom.
+- LATERAL sustituye las botas del corte y recibe `LONGITUD = TotalLength`; el BOM conserva el sobrelargo de 4".
+- DESVIADOR conserva el contrato selectivo: primer nivel sobre `TROQUEL_LARGUERO`, superiores 6" debajo de IN/OUT,
+  `LONGITUD` configurable y celdas apagadas segun la rejilla. En las frontales de salida y entrada conserva la
+  orientacion original del bloque; el corte de entrada no lo espejea.
+- DEFENSA ofrece una fila por poste y dos extremos independientes. Salida y entrada pueden apagarse o recibir
+  `LONGITUD` distinta; defaults 12"/12" en orillas y 36"/36" en intermedios. En LATERAL/PLANTA su origen queda en el
+  offset catalogado `ORIGEN_POSTE = (-4.75, 0)` y la entrada se refleja. En FRONTAL y LATERAL, Y=0 se toma del origen
+  real de la placa base (piso), no del origen del poste; X conserva la referencia al poste. En PLANTA no cambia el datum.
+- GUIA solo se proyecta en la entrada. Cada celda frente x nivel activa crea una pareja, una pieza en cada poste del
+  frente, con la segunda espejeada. Todas las celdas estan activas por defecto. Su origen coincide en X con
+  `TROQUEL_LARGUERO` y queda 8" arriba del larguero IN/OUT de entrada del nivel. `LONGITUD` siempre es la longitud del
+  ultimo tramo longitudinal (cabecera/separador) que ocupa ese frente. FRONTAL y LATERAL conservan las elevaciones;
+  PLANTA colapsa los niveles coincidentes a una referencia por lado.
+- En planta, niveles coincidentes se colapsan en una referencia visible por poste/extremo; en frontal conservan sus
+  elevaciones. El protector lateral sustituye las botas correspondientes en cada vista.
+- El BOM cuenta las instancias que produce el builder; para GUIA toma la frontal de entrada y conserva las dos piezas
+  fisicas por celda, sin duplicarlas por las otras vistas. Nunca usa la cantidad manual ni una segunda formula.
 
 ### Tarima como referencia visual (`TARIMA_GENERICA`)
 
@@ -479,4 +562,4 @@ Los CUATRO tipos de rack (ventana editora + comando):
 - Menu principal: comando `RACKCAD`. Round-trip de edicion (los cuatro tipos): comando `RACKEDITAR`.
 - Geometria del selectivo: `src/RackCad.Application/Systems/SelectiveGeometryResolver.cs`; BOM: `SelectiveBomBuilder.cs`.
 - Comandos del plugin: `src/RackCad.Plugin/RackFrameCommands.cs`.
-- Identidad + round-trip: el sobre `RackEmbedDocument` (`SchemaVersion`, `Kind` = `selective`/`dynamic`/`cabecera`/`cama`, `View` = `frontal`/`lateral`/`planta`, `Section` = indice de corte lateral del selectivo (`-1` = vista no seccionada), `Id` GUID estable, `Name`, `Design`) se embebe en la definicion del bloque; ver `src/RackCad.Application/Persistence/RackEmbedDocument.cs`. Stores del diseño: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` → `.rackcad.json` (dinamico/cabecera), `FlowBedConfigurationStore` (cama).
+- Identidad + round-trip: el sobre `RackEmbedDocument` (`SchemaVersion`, `Kind` = `selective`/`dynamic`/`cabecera`/`cama`, `View` = `frontal`/`lateral`/`planta`, `Section` = indice de corte; en dinamico `0=salida` y `1=entrada`; `-1` = vista no seccionada, `Id` GUID estable, `Name`, `Design`) se embebe en la definicion del bloque; ver `src/RackCad.Application/Persistence/RackEmbedDocument.cs`. Stores del diseño: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` → `.rackcad.json` (dinamico/cabecera), `FlowBedConfigurationStore` (cama).

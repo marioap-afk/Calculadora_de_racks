@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
 {
@@ -31,7 +34,7 @@ namespace RackCad.Application.Systems
     public static class DynamicHeaderHeightCalculator
     {
         /// <summary>Clear span required above a load, over its own height (in).</summary>
-        public const double ClearAllowance = 6.0;
+        public const double ClearAllowance = DynamicRackDefaults.DefaultClearHeight;
 
         /// <summary>Fraction of a clear span kept over the top level (no full span needed there).</summary>
         public const double TopFinishFraction = 1.0 / 3.0;
@@ -69,7 +72,7 @@ namespace RackCad.Application.Systems
             var betweenLevels = (levels - 1) * clearSpace;   // a full clear span between each pair of levels
             var topFinish = clearSpace * TopFinishFraction;  // only a third over the top level
             var beamsHeight = levels * beamDepth;            // the beams themselves take vertical room
-            var slope = (totalDepth / CommercialFoot) * (SlopeRise / SlopeRun);
+            var slope = CalculateSlope(totalDepth);
 
             var theoretical = firstLevelHeight + beamsHeight + betweenLevels + topFinish + slope;
 
@@ -81,6 +84,64 @@ namespace RackCad.Application.Systems
                 HeaderHeight = RoundUpToCommercialFoot(theoretical)
             };
         }
+
+        /// <summary>
+        /// Computes the commercial height from already-resolved beam mates. This keeps the header above the actual
+        /// snapped top entrance instead of repeating the nominal first-level and slope arithmetic.
+        /// </summary>
+        public static DynamicHeaderHeightResult CalculateResolved(
+            double loadHeight,
+            IReadOnlyList<DynamicLoadBeamLevel> levels,
+            double beamDepth)
+        {
+            if (levels == null || levels.Count == 0)
+            {
+                return Calculate(loadHeight, 1, 0.0, beamDepth, 0.0);
+            }
+
+            var ordered = levels.OrderBy(level => level.LevelNumber).ToList();
+            var first = ordered[0];
+            var top = ordered[ordered.Count - 1];
+            var clearSpace = loadHeight + ClearAllowance;
+            var slope = Math.Max(0.0, first.EntranceElevation - first.ExitElevation);
+            var theoretical = top.EntranceElevation + beamDepth + clearSpace * TopFinishFraction;
+            return new DynamicHeaderHeightResult
+            {
+                ClearSpace = clearSpace,
+                Slope = slope,
+                TheoreticalHeight = theoretical,
+                HeaderHeight = RoundUpToCommercialFoot(theoretical)
+            };
+        }
+
+        /// <summary>Computes the header height from a front whose pallet, clear and beam depth may vary by level.</summary>
+        public static DynamicHeaderHeightResult CalculateResolved(DynamicRackFront front)
+        {
+            if (front?.LoadBeamLevels == null || front.LoadBeamLevels.Count == 0)
+            {
+                return Calculate(0.0, 1, 0.0, 0.0, 0.0);
+            }
+
+            var ordered = front.LoadBeamLevels.OrderBy(level => level.LevelNumber).ToList();
+            var first = ordered[0];
+            var top = ordered[ordered.Count - 1];
+            var topCell = DynamicRackLevelGeometry.At(null, front, top.LevelNumber);
+            var clearSpace = topCell.Pallet.Height + topCell.ClearHeight;
+            var slope = Math.Max(0.0, first.EntranceElevation - first.ExitElevation);
+            var theoretical = top.EntranceElevation
+                              + topCell.InOutBeamDepth
+                              + clearSpace * TopFinishFraction;
+            return new DynamicHeaderHeightResult
+            {
+                ClearSpace = clearSpace,
+                Slope = slope,
+                TheoreticalHeight = theoretical,
+                HeaderHeight = RoundUpToCommercialFoot(theoretical)
+            };
+        }
+
+        public static double CalculateSlope(double totalDepth)
+            => (Math.Max(0.0, totalDepth) / CommercialFoot) * (SlopeRise / SlopeRun);
 
         /// <summary>Rounds a height up to the next whole commercial foot (e.g. 145" → 156", 144" → 144").</summary>
         public static double RoundUpToCommercialFoot(double height)

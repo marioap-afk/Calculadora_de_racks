@@ -31,5 +31,12 @@ namespace RackCad.Application.Persistence
 
         public static bool IsUsableDynamic(DynamicRackSystem system)
             => system != null && system.Modules != null && system.Modules.Count > 0;
+
+        public static bool IsUsableDynamic(DynamicRackDesign design, DynamicRackSystem system)
+            => design != null
+               && design.Pallet != null
+               && design.Pallet.Depth > 0.0
+               && design.PalletsDeep >= 2
+               && IsUsableDynamic(system);
     }
 }

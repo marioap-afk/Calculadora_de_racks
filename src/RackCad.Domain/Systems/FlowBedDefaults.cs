@@ -20,6 +20,9 @@ namespace RackCad.Domain.Systems
         /// <summary>Connection point ON THE RAIL of the first troquel (where the tope's origin lands).</summary>
         public const string RailTopePoint = "TROQUEL_TOPE";
 
+        /// <summary>Connection point on the rail that bolts the complete bed to the dynamic IN/OUT beam.</summary>
+        public const string RailInOutMatePoint = "TROQUEL_IN";
+
         // ---- Assembly geometry (troquel grid + clearances) ----
         /// <summary>Troquel pitch on the rail (in): elements can be placed every 1".</summary>
         public const double TroquelPitch = 1.0;

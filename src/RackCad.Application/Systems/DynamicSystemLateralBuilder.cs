@@ -16,21 +16,50 @@ namespace RackCad.Application.Systems
     /// position along the run; each separator module gets a separator beam at every vertical level
     /// (<see cref="SeparatorLevelCalculator"/>), anchored on the adjacent post's TROQUEL_SEPARADOR; and a
     /// derived post (header post + plate, reinforced full height by default) is placed wherever two
-    /// separators meet. Pure: returns a <see cref="LateralHeaderLayout"/> the AutoCAD drawer turns into a
-    /// block. Headers use their LATERAL blocks; separators use the FRONTAL block.
+    /// separators meet. Every resolved load level also receives one complete IN beam, one complete OUT beam and one
+    /// complete roller bed composed by <see cref="DynamicFlowBedLateralBuilder"/>. Pure: returns a
+    /// <see cref="DynamicSystemPlan"/> the AutoCAD drawer turns into a block. Headers, beds and IN/OUT beams use
+    /// LATERAL blocks; separators use the FRONTAL block.
     /// </summary>
     public sealed class DynamicSystemLateralBuilder
     {
         private readonly LateralHeaderLayoutBuilder headerBuilder = new LateralHeaderLayoutBuilder();
+        private readonly DynamicFlowBedLateralBuilder flowBedBuilder = new DynamicFlowBedLateralBuilder();
+        private readonly DynamicIntermediateBeamLateralBuilder intermediateBeamBuilder = new DynamicIntermediateBeamLateralBuilder();
+        private readonly DynamicSafetyLateralBuilder safetyBuilder = new DynamicSafetyLateralBuilder();
 
         public DynamicSystemPlan Build(DynamicRackSystem system, RackCatalog catalog)
+            => BuildCore(system, catalog, -1);
+
+        /// <summary>Builds the lateral section at one transverse post of the front grid.</summary>
+        public DynamicSystemPlan Build(DynamicRackSystem system, RackCatalog catalog, int postIndex)
+        {
+            if (system == null || postIndex < 0 || postIndex > system.Fronts.Count)
+            {
+                return new DynamicSystemPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
+            }
+
+            return BuildCore(system, catalog, postIndex);
+        }
+
+        private DynamicSystemPlan BuildCore(DynamicRackSystem system, RackCatalog catalog, int postIndex)
         {
             if (system == null)
             {
                 return new DynamicSystemPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
             }
 
-            var context = Resolve(system, catalog);
+            var sectioned = postIndex >= 0;
+            var levelCount = sectioned
+                ? DynamicFrontGeometry.LoadLevelsAtPost(system, postIndex)
+                : system.LoadBeamLevels.Count;
+            var sectionHeight = sectioned
+                ? DynamicFrontGeometry.PostHeight(system, postIndex)
+                : DynamicFrontGeometry.Height(system);
+            var sectionRange = sectioned
+                ? DynamicDepthGeometry.AtPost(system, postIndex)
+                : new DynamicDepthRange(1, system.PalletsDeep);
+            var context = Resolve(system, catalog, sectionHeight);
             var loose = new List<HeaderBlockInstance>();
 
             // Group identical headers so each distinct header becomes one shared block definition; record the
@@ -40,19 +69,23 @@ namespace RackCad.Application.Systems
             var order = new List<string>();
             var headerOrdinal = 0;
 
-            foreach (var module in system.Modules)
+            foreach (var module in DynamicDepthGeometry.ModulesInRange(system, sectionRange))
             {
                 if (module.IsHeader && module.AssociatedFrameConfiguration != null)
                 {
+                    var configuration = sectioned
+                        ? DynamicFrontGeometry.HeaderConfigurationAtPost(system, module, catalog, postIndex)
+                        : module.AssociatedFrameConfiguration;
+
                     // Build the header and key the group on the resulting geometry, so two headers share a
                     // definition only when their drawing is truly identical (any edit separates them).
-                    var parameters = LateralHeaderParametersFactory.FromConfiguration(module.AssociatedFrameConfiguration);
-                    var layout = headerBuilder.Build(module.AssociatedFrameConfiguration, parameters, catalog);
+                    var parameters = LateralHeaderParametersFactory.FromConfiguration(configuration);
+                    var layout = headerBuilder.Build(configuration, parameters, catalog);
                     var signature = LayoutSignature(layout.Instances);
 
                     if (!groups.TryGetValue(signature, out var group))
                     {
-                        group = new HeaderGroupBuilder(HeaderName(module.AssociatedFrameConfiguration), layout.Instances.ToList());
+                        group = new HeaderGroupBuilder(HeaderName(configuration), layout.Instances.ToList());
                         groups[signature] = group;
                         order.Add(signature);
                     }
@@ -68,20 +101,117 @@ namespace RackCad.Application.Systems
                 {
                     foreach (var level in context.Levels)
                     {
-                        loose.Add(MakeSeparator(context, module.StartX, module.Length, level));
+                        loose.Add(MakeSeparator(
+                            context,
+                            module.StartX,
+                            module.Length,
+                            level,
+                            module.Index + 1 == sectionRange.StartPosition));
                     }
                 }
             }
 
             // Derived posts: where two separators are consecutive there is a shared post (header post + plate),
             // reinforced full height by default.
-            foreach (var offset in system.GetDerivedPostOffsets())
+            var rangeStartX = system.Modules.FirstOrDefault(module => module.Index + 1 == sectionRange.StartPosition)?.StartX ?? 0.0;
+            var rangeEndX = system.Modules.FirstOrDefault(module => module.Index + 1 == sectionRange.EndPosition)?.EndX ?? system.TotalLength;
+            foreach (var offset in system.GetDerivedPostOffsets().Where(offset => offset > rangeStartX && offset < rangeEndX))
             {
-                AddDerivedPost(loose, context, offset);
+                AddDerivedPost(loose, context, offset, context.ReinforceDerivedPost);
+            }
+            foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, sectionRange))
+            {
+                AddDerivedPost(loose, context, offset, reinforced: false);
+            }
+
+            var intermediateBeams = intermediateBeamBuilder.Build(system, catalog, postIndex, levelCount);
+            loose.AddRange(intermediateBeams.LooseInstances);
+
+            var placements = sectioned
+                ? DynamicFrontGeometry.AdjacentFronts(system, postIndex)
+                    .SelectMany(front => DynamicLoadBeamGeometry.Placements(system, front))
+                : DynamicLoadBeamGeometry.Placements(system);
+            foreach (var placement in placements
+                         .Where(placement => placement.LevelNumber <= levelCount)
+                         .GroupBy(placement => string.Join("|",
+                             placement.LevelNumber,
+                             placement.IsEntrance,
+                             placement.X.ToString("0.####", CultureInfo.InvariantCulture),
+                             placement.Y.ToString("0.####", CultureInfo.InvariantCulture),
+                             placement.BeamCatalogId,
+                             placement.BeamDepth.ToString("0.####", CultureInfo.InvariantCulture)))
+                         .Select(group => group.First()))
+            {
+                var beam = MakeLoadBeam(catalog, placement);
+                if (!string.IsNullOrWhiteSpace(beam.BlockName))
+                {
+                    loose.Add(beam);
+                }
             }
 
             var headers = order.Select(signature => groups[signature].ToGroup()).ToList();
+            headers.AddRange(intermediateBeams.Headers);
+            IReadOnlyList<DynamicRackFront> bedFronts = sectioned
+                ? DynamicFrontGeometry.AdjacentFronts(system, postIndex)
+                : Array.Empty<DynamicRackFront>();
+            if (bedFronts.Count == 0)
+            {
+                var flowBed = flowBedBuilder.Build(system, catalog, levelCount);
+                if (flowBed != null)
+                {
+                    headers.Add(flowBed);
+                }
+            }
+            else
+            {
+                foreach (var front in bedFronts
+                             .GroupBy(front => string.Join("|", front.StartX, front.EndX, front.LoadLevels))
+                             .Select(group => group.First()))
+                {
+                    var flowBed = flowBedBuilder.Build(system, catalog, front, Math.Min(levelCount, front.LoadLevels));
+                    if (flowBed != null)
+                    {
+                        headers.Add(flowBed);
+                    }
+                }
+            }
+
+            // Endpoint safety uses the plate/post instances after every header placement has been transformed. This
+            // keeps custom/mirrored cabeceras authoritative instead of reproducing their plate offsets a second time.
+            var structuralPlan = new DynamicSystemPlan(headers, loose);
+            loose.AddRange(safetyBuilder.Build(
+                system,
+                catalog,
+                structuralPlan.Flatten().Instances,
+                sectioned ? postIndex : 0,
+                levelCount,
+                rangeStartX,
+                rangeEndX,
+                sectioned ? DynamicFrontGeometry.AdjacentFronts(system, postIndex) : null));
+            DynamicViewDecorations.AppendLateral(
+                loose,
+                system,
+                sectionHeight,
+                levelCount,
+                rangeStartX,
+                rangeEndX);
+
             return new DynamicSystemPlan(headers, loose);
+        }
+
+        public IReadOnlyList<DynamicLateralCorte> Cortes(DynamicRackSystem system, RackCatalog catalog)
+        {
+            var result = new List<DynamicLateralCorte>();
+            var layout = DynamicFrontGeometry.Compute(system, catalog);
+            for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
+            {
+                result.Add(new DynamicLateralCorte(
+                    postIndex,
+                    layout.PostPositions[postIndex],
+                    Build(system, catalog, postIndex)));
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -111,7 +241,7 @@ namespace RackCad.Application.Systems
             return string.Format(CultureInfo.InvariantCulture, "Cabecera F{0:0.##} A{1:0.##}", c.Depth, c.Height);
         }
 
-        private HeaderContext Resolve(DynamicRackSystem system, RackCatalog catalog)
+        private HeaderContext Resolve(DynamicRackSystem system, RackCatalog catalog, double height)
         {
             var context = new HeaderContext
             {
@@ -128,11 +258,9 @@ namespace RackCad.Application.Systems
             }
 
             var configuration = headerModule.AssociatedFrameConfiguration;
-            context.Height = configuration.Height;
+            context.Height = height > 0.0 ? height : configuration.Height;
             context.PostId = configuration.LeftPost?.PostCatalogId;
             context.PlateId = configuration.LeftBasePlate?.PlateCatalogId;
-            context.Paso = configuration.PasoTroquel > 0.0 ? configuration.PasoTroquel : 2.0;
-
             var troquelSeparador = Local(catalog, context.PostId, DynamicRackDefaults.SeparatorPostPoint, "LATERAL");
             context.TroquelSeparadorX = troquelSeparador.X;
             context.Montaje = Local(catalog, context.PlateId, "MONTAJE_POSTE", "LATERAL");
@@ -140,9 +268,7 @@ namespace RackCad.Application.Systems
             context.PostBlock = Block(catalog, context.PostId, "LATERAL");
             context.PlateBlock = Block(catalog, context.PlateId, "LATERAL");
 
-            context.Levels = SeparatorLevelCalculator.Levels(
-                context.Height, troquelSeparador.Y, context.Paso,
-                system.SeparatorCountOverride, system.SeparatorSpacingOverride);
+            context.Levels = DynamicSeparatorGeometry.Levels(system, catalog, context.Height);
 
             context.ReinforceDerivedPost = system.DerivedPostReinforced;
             context.DerivedReinforcementHeight =
@@ -152,12 +278,19 @@ namespace RackCad.Application.Systems
             return context;
         }
 
-        private static HeaderBlockInstance MakeSeparator(HeaderContext context, double moduleStartX, double moduleLength, double level)
+        private static HeaderBlockInstance MakeSeparator(
+            HeaderContext context,
+            double moduleStartX,
+            double moduleLength,
+            double level,
+            bool startsAtBoundaryPost)
         {
             // Anchor the separator's TROQUEL_CABECERA on the previous header's right-post TROQUEL_SEPARADOR
             // (that post is mirrored, so its troquel sits one offset inside the module start). Its length is
             // the separation between headers (the module length), as shown in the preview.
-            var anchorX = moduleStartX - context.TroquelSeparadorX;
+            var anchorX = startsAtBoundaryPost
+                ? moduleStartX + context.TroquelSeparadorX
+                : moduleStartX - context.TroquelSeparadorX;
             var length = moduleLength;
             var anchor = new Point2D(anchorX, level);
 
@@ -175,14 +308,41 @@ namespace RackCad.Application.Systems
             return instance;
         }
 
-        private static void AddDerivedPost(ICollection<HeaderBlockInstance> instances, HeaderContext context, double offset)
+        private static HeaderBlockInstance MakeLoadBeam(RackCatalog catalog, DynamicLoadBeamPlacement placement)
+        {
+            var origin = new Point2D(placement.X, placement.Y);
+            var beamId = string.IsNullOrWhiteSpace(placement.BeamCatalogId)
+                ? DynamicRackDefaults.InOutBeamCatalogId
+                : placement.BeamCatalogId;
+            var result = new HeaderBlockInstance
+            {
+                Role = HeaderBlockRole.Beam,
+                PieceId = beamId,
+                BlockName = Block(catalog, beamId, DynamicRackDefaults.InOutBeamView),
+                View = DynamicRackDefaults.InOutBeamView,
+                ConnectionAnchor = origin,
+                Insertion = origin,
+                MirroredX = placement.MirroredX
+            };
+            return result;
+        }
+
+        private static void AddDerivedPost(
+            ICollection<HeaderBlockInstance> instances,
+            HeaderContext context,
+            double offset,
+            bool reinforced)
         {
             if (string.IsNullOrWhiteSpace(context.PostId) || context.Height <= 0.0)
             {
                 return;
             }
 
-            var origin = new Point2D(offset, 0.0);
+            var placement = DynamicDerivedPostGeometry.Resolve(
+                offset,
+                reinforced,
+                context.FinPoste);
+            var origin = placement.PrimaryOrigin;
 
             // Base plate (same as the header's), mated at the post origin.
             instances.Add(new HeaderBlockInstance
@@ -209,16 +369,17 @@ namespace RackCad.Application.Systems
             instances.Add(post);
 
             // Optional reinforcement: a second post mated at FIN_POSTE (reinforced by default, full height).
-            if (context.ReinforceDerivedPost)
+            if (placement.HasReinforcement)
             {
+                var reinforcementOrigin = placement.ReinforcementOrigin;
                 var reinforcement = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Post,
                     PieceId = context.PostId,
                     BlockName = context.PostBlock,
                     View = "LATERAL",
-                    ConnectionAnchor = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y),
-                    Insertion = new Point2D(origin.X + context.FinPoste.X, origin.Y + context.FinPoste.Y)
+                    ConnectionAnchor = reinforcementOrigin,
+                    Insertion = reinforcementOrigin
                 };
                 reinforcement.DynamicParameters["LONGITUD"] = context.DerivedReinforcementHeight;
                 instances.Add(reinforcement);
@@ -250,7 +411,6 @@ namespace RackCad.Application.Systems
         private sealed class HeaderContext
         {
             public double Height { get; set; }
-            public double Paso { get; set; } = 2.0;
             public string PostId { get; set; }
             public string PlateId { get; set; }
             public string PostBlock { get; set; }
@@ -263,6 +423,7 @@ namespace RackCad.Application.Systems
             public string SeparatorBlock { get; set; }
             public Point2D SeparatorMate { get; set; }
             public IReadOnlyList<double> Levels { get; set; }
+
 
             public bool ReinforceDerivedPost { get; set; } = true;
             public double DerivedReinforcementHeight { get; set; }
