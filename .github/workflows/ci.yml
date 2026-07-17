@@ -1,0 +1,33 @@
+# CI mínimo de RackCad (auditoría 2026-07-16).
+# El Plugin queda fuera: sus referencias (AcCoreMgd/AcDbMgd/AcMgd) requieren AutoCAD instalado.
+# La suite corre en ubuntu (Domain/Application son net8.0 puro); la UI compila en windows (WPF),
+# lo que valida transitivamente Domain y Application contra cambios de API.
+name: CI
+
+on:
+  push:
+    branches: ["main", "release/**", "claude/**", "codex/**", "wip/**"]
+  pull_request:
+
+jobs:
+  tests:
+    name: Tests (Domain + Application)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: dotnet test
+        run: dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug -v:minimal
+
+  build-ui:
+    name: Build UI (WPF, valida API de Application)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: dotnet build UI
+        run: dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal

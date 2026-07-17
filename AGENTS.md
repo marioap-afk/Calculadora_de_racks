@@ -68,6 +68,14 @@ dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug   # el DLL que se
 - Commits: espanol, asunto `Area: que cambio` (ver `git log`); cuerpo explicando el porque. Sin
   Conventional Commits.
 
+## Flujo Git multi-agente
+
+Ramas, worktrees, integracion, archivos calientes y limpieza: [docs/flujo-multi-agente.md](docs/flujo-multi-agente.md).
+Reglas rapidas: bifurcar SIEMPRE de la punta actualizada del trunk (fetch antes); rebase si el trunk
+avanzo; al integrar, borrar rama + worktree; todo commit de agente lleva trailer de identificacion
+(Co-Authored-By), tambien los de Codex. No copiar conteos de tests ni hashes de commit fuera de
+`docs/HANDOFF.md` (seccion 12): los numeros copiados divergen.
+
 ## Dependencias
 
 **Politica: cero paquetes NuGet en el codigo de producto** (el export XLSX es OOXML escrito a mano por esta

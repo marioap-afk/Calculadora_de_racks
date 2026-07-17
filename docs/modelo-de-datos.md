@@ -23,6 +23,7 @@ Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que ot
 | `base-plates.csv` | `id` | No (posición de puntos → `connection-layout`; `peralteBase`/`peraltePorPeraltePoste` = peralte estándar derivado del poste) |
 | `connection-layout.csv` | `pieceId`+`connectionPointId`+`view` | → cualquier pieza, → `connection-points` **y** → `views` |
 | `blocks.csv` | `pieceId`+`view` | → cualquier pieza **y** → `views` |
+| `seguridad.csv` | `id` | No como FK explícita; **convención**: cada elemento dibujable usa los bloques `<id>_<VISTA>` de `blocks.csv` (FRONTAL/LATERAL/PLANTA). Lleva costo (`unitCost`/`currency`/`costUnit`) y peso (`weightEach`) para el cotizador futuro |
 | `header-templates.json` | `id` | → perfiles, placa y puntos |
 | `defaults.json` | (única) | → perfiles, placa y puntos |
 

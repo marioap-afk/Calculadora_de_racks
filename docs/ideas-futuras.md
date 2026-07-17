@@ -97,7 +97,7 @@
    + ¼" (mate en el punto `TROQUEL_TOPE`); el separador físico entre fondos se dibuja en lateral y planta (componente
    "Separador", cada 100"; en la frontal solo se deja el hueco, a propósito). **Parrilla HECHA en codigo
    (2026-07-14; validada en AutoCAD 2026-07-15):** frontal+lateral+BOM, una por tarima, ancho/cantidad manual
-   y conteo vivo; falta PLANTA. **Pendiente:** desviadores, poste tope y guardas traseras.
+   y conteo vivo; falta PLANTA. **Pendiente:** guardas traseras (prioridad final). Desviadores A/L y poste tope: ✅ HECHOS (2026-07-15, ver HANDOFF §3 y §8).
 4. **Layout de almacén** — **v1 HECHO (2026-07-13):** comando `RACKLAYOUT` replica la vista en planta de
    un rack en una rejilla filas × columnas con pasillos + numeración automática (A1, B2…), copias enlazadas
    o independientes; footprint leído de los extents del bloque; alimenta el BOM consolidado. Motor de rejilla

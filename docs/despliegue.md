@@ -43,6 +43,7 @@ catalogs\                  ← datos maestros + geometría
   connection-layout.csv
   views.csv
   blocks.csv
+  seguridad.csv
   header-templates.json
   defaults.json
   blocks-library.dwg       ← OPCIONAL en el bundle: activo del usuario, no versionado; ver §5
