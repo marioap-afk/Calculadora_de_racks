@@ -23,6 +23,7 @@ assets/catalogs/
   connection-layout.csv         Punto por pieza y vista (posicion 2D)         (Excel/CSV)
   views.csv                     Vistas posibles                              (Excel/CSV)
   blocks.csv                    Bloque por pieza y vista                     (Excel/CSV)
+  seguridad.csv                 Elementos de seguridad (bota/lateral/tope/desviador/parrilla) con costo y peso (Excel/CSV)
   header-templates.json         Plantillas de cabecera                       (JSON, auto-descriptivas)
   defaults.json                 Receta estandar global                       (JSON)
 ```

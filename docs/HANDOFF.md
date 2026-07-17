@@ -1,9 +1,9 @@
 # Project Handoff
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
-> Actualizado: **2026-07-15**. La rama `release/claude-review` incluye las variantes de Bota C, Lateral C,
-> Poste tope y la familia completa de desviadores A/L: 546 tests y builds Debug verdes. Bota C, Poste tope,
-> Lateral C y los siete desviadores A/L estan confirmados en AutoCAD; ultimo commit funcional `a9f1c13`.
+> Actualizado: **2026-07-16**. La rama `release/claude-review` incluye las variantes de seguridad completas
+> (Bota C, Lateral C, Poste tope, desviadores A/L) y la revision exhaustiva de codigo (6 arreglos verificados):
+> 554 tests y builds Debug verdes; ultimo commit funcional `eaede44`. Las variantes estan confirmadas en AutoCAD.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
 > [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
@@ -20,7 +20,7 @@ selectivo), cada uno con ventana editora WPF, dibujo por bloques en AutoCAD y **
 matriz frentes x niveles dirigida por tarima, tres vistas (frontal/lateral/planta) ligadas por GUID,
 doble profundidad, medio frente, cotas, elementos de seguridad y BOM por componentes con export CSV/XLSX.
 
-**Estado**: activo y funcional. El arbol actual tiene **546/546 tests verdes** y build Debug completo con 0 errores;
+**Estado**: activo y funcional. El arbol actual tiene **554/554 tests verdes** y build Debug completo con 0 errores;
 solo aparecen los `MSB3277` conocidos de las referencias de AutoCAD. La base publicada conserva su validacion manual
 de parrilla, larguero tope, rejilla, persistencia, biblioteca y rendimiento. Las variantes nuevas Bota C 4/6, Poste
 tope y Lateral C 4/6 tambien estan verificadas por pruebas, compilacion y comprobacion visual del usuario en AutoCAD.
@@ -31,7 +31,7 @@ Los siete desviadores A/L estan implementados, cubiertos por pruebas y validados
 | Aspecto | Estado | Evidencia |
 |---|---|---|
 | Compilacion Debug (Domain/Application/UI/Plugin) | **OK, 0 errores** | `dotnet build RackCad.sln -c Debug`; 2 familias MSB3277 conocidas, 2026-07-15 |
-| Pruebas unitarias | **546/546 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-15 |
+| Pruebas unitarias | **554/554 verdes** | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug`, 2026-07-16 (re-verificado en auditoria) |
 | Validacion estatica del arbol actual | OK | sintaxis 233 C#; semantica Domain/Application (114), Domain/Application/UI (146 fuentes + 11 XAML generados previos) y Domain/Application/tests (173); 12 XML/XAML bien formados |
 | Carga en AutoCAD (NETLOAD del Debug) | **OK en el arbol actual** | Bota C 4/6, Poste tope, Lateral C 4/6 y los siete desviadores A/L confirmados, 2026-07-15 |
 | Commits `b1cfce2`..`95e25f2` (tope medio-frente, parrilla) | Implementado, testeado y verificado en AutoCAD | Ver seccion 9 |
@@ -259,7 +259,12 @@ de la corrida) quedaron registrados en `docs/ideas-futuras.md` ("Hallazgos de la
 
 ## 11. Siguientes tareas recomendadas
 
-1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria. Abrir una tarea/worktree
+> El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](ROADMAP.md) (2026-07-16); esta
+> seccion apunta a lo INMEDIATO. Primero: la migracion Git (WORKFLOW.md seccion 9) y la decision
+> [ADR-0002](adr/0002-secuencia-dinamico-modular.md) sobre la rama del dinamico modular.
+
+1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria — y EMPIEZA por
+   decidir ADR-0002 (la rama `codex/dinamico-modular` existente). Abrir una tarea/worktree
    propia y empezar por auditar el flujo actual completo antes de implementar. El nucleo existente ya cubre editor,
    vista lateral, BOM, persistencia y edicion en sitio; la cama de rodamiento aun vive como sistema separado y su
    integracion con el dinamico es la brecha funcional principal documentada.
@@ -304,7 +309,7 @@ de layout (meta futura, no inmediata).
 2. `git log --oneline -5` y comparar con la seccion 8 de este archivo (¿hubo push nuevo?).
 3. Leer en orden: este archivo -> [README.md](../README.md) -> [AGENTS.md](../AGENTS.md) ->
    [docs/00-indice-contexto.md](00-indice-contexto.md).
-4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 546+ y quedar verde).
+4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 554+ y quedar verde).
 5. Tomar la primera tarea de la seccion 11 que siga abierta.
 
 **Prompt de reanudacion (copiar en un chat nuevo de Claude o Codex):**
@@ -312,7 +317,7 @@ de layout (meta futura, no inmediata).
 ```
 Trabajo en RackCad (D:\Documentos\Codex\Calculadora de racks), plugin de AutoCAD 2025 en C#/.NET8,
 rama release/claude-review. Lee primero docs/HANDOFF.md, luego README.md y AGENTS.md; verifica el
-estado real con git log y dotnet test (546 tests verdes en este arbol). El contexto de estado, bugs conocidos
+estado real con git log y dotnet test (la suite completa debe quedar verde; el conteo vive en la seccion 12). El contexto de estado, bugs conocidos
 y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con: [elige la tarea o pega la
 seccion 11]. Respeta las convenciones de AGENTS.md (en especial: DeepCopy + DTO para flags de
 seguridad, tests de regresion verificados fallando, y no hacer push sin verificacion en AutoCAD).

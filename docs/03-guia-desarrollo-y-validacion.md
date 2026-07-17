@@ -75,7 +75,7 @@ assets/
 
 `RackCad.Tests`
 
-- Suite de pruebas (`net8.0`, xUnit), 489 tests verdes en `release/claude-review`.
+- Suite de pruebas (`net8.0`, xUnit) completa y verde en `release/claude-review` (conteo real: `docs/HANDOFF.md` sección 12).
 
 ## Compilar
 

@@ -2,7 +2,7 @@
 
 Este indice resume como entender rapidamente el proyecto y cual es el estado del repo antes de continuar el desarrollo.
 
-RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review` (489 tests verdes). El estado vivo (trabajo reciente, bugs conocidos, siguientes tareas) se mantiene en `docs/HANDOFF.md`.
+RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. Rama de trabajo: `release/claude-review`. El estado vivo (trabajo reciente, bugs conocidos, siguientes tareas y la última corrida real de tests) se mantiene en `docs/HANDOFF.md`.
 
 ## Los cuatro tipos de rack
 
@@ -43,6 +43,26 @@ El comando `RACKCAD` abre el menu principal (`RackMainMenuWindow`) desde donde s
 
 5. `docs/04-roadmap-operativo.md`
    - Siguientes pasos recomendados sin mezclar dibujo, BOM, catalogos y persistencia antes de tiempo.
+
+6. `docs/despliegue.md`
+   - Instalacion, bundle del Autoloader, catalogos en la maquina destino y como compartir la app.
+
+7. `docs/ideas-futuras.md`
+   - Backlog priorizado + deuda tecnica diferida CON evidencia. **Leer antes de proponer refactors o
+     features nuevas**: evita re-descubrir hallazgos ya diagnosticados o re-proponer trabajo diferido a proposito.
+
+8. `docs/auditoria-arquitectura-2026-07.md`
+   - Auditoria arquitectonica completa (2026-07-16): hallazgos verificados y arquitectura objetivo.
+
+9. `docs/WORKFLOW.md`
+   - Proceso de desarrollo: ramas POR INICIATIVA (ADR-0001), worktrees, integracion y trabajo
+     simultaneo de varios agentes (Claude, Codex) y humanos.
+
+10. `docs/ROADMAP.md`
+    - Plan de ejecucion por fases e iniciativas independientes (con dependencias y estado).
+
+11. `docs/adr/`
+    - Decisiones de arquitectura (ADR): proceso en `adr/README.md`, una decision por archivo.
 
 ## Catalogos y datos
 
@@ -96,6 +116,6 @@ Utiles para decisiones de arquitectura, pero mas extensos:
 
 ## Estado del repositorio
 
-Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; 489 tests verdes en `release/claude-review`. El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
+Cuatro tipos de rack (cabecera, dinamico, cama, selectivo) con ventana editora, dibujo en AutoCAD y round-trip de edicion; la suite completa de tests esta verde (conteo real: `docs/HANDOFF.md` seccion 12). El selectivo ya dibuja frontal, lateral y planta; la cabecera, lateral y planta.
 
 La carpeta de salida `bin/`, `obj/`, caches locales `.dotnet_home`, `.nuget_packages`, `.appdata` y `.localappdata` no son parte logica del codigo fuente y estan ignoradas por `.gitignore`.

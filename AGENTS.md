@@ -68,6 +68,24 @@ dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug   # el DLL que se
 - Commits: espanol, asunto `Area: que cambio` (ver `git log`); cuerpo explicando el porque. Sin
   Conventional Commits.
 
+## Flujo Git multi-agente
+
+Proceso completo (ramas, worktrees, integracion, archivos calientes, limpieza): [docs/WORKFLOW.md](docs/WORKFLOW.md).
+Plan de iniciativas: [docs/ROADMAP.md](docs/ROADMAP.md). Decisiones: [docs/adr/](docs/adr/README.md).
+Reglas rapidas: las ramas se nombran por INICIATIVA, nunca por herramienta (ADR-0001; la lista de
+prefijos vive en WORKFLOW seccion 1 — no la copies); 1 iniciativa = 1 rama = 1 worktree (el MISMO
+worktree toda la vida de la iniciativa, con sesiones secuenciales y relevo entre herramientas —
+nunca dos sesiones activas a la vez); abrir = bifurcar de `origin/<trunk>` tras fetch + commit
+vacio de reclamo (ID de iniciativa + Claim-Id UUID + Co-Authored-By) + `git push -u` sin force —
+el primer push ACEPTADO es el reclamo; si el remoto ya tiene la rama, no forzar: borrar el reclamo
+local y elegir otra iniciativa; rebase al abrir sesion si el trunk avanzo (republicar con
+`--force-with-lease`); push de la rama al cerrar CADA sesion (push de rama != integrar); la
+integracion es serializada (rebase final + CI + validacion + merge --no-ff, WORKFLOW seccion 4.5);
+al cerrar, borrado SEGURO: `git branch -d` (nunca `-D` salvo los casos de WORKFLOW seccion 3) y el
+remoto solo tras confirmar el merge en `main`; todo commit de agente lleva trailer de identificacion
+(Co-Authored-By), tambien los de Codex. No copiar conteos de tests ni hashes de commit fuera de
+`docs/HANDOFF.md` (seccion 12): los numeros copiados divergen.
+
 ## Dependencias
 
 **Politica: cero paquetes NuGet en el codigo de producto** (el export XLSX es OOXML escrito a mano por esta
@@ -83,10 +101,13 @@ Un cambio de comportamiento esta terminado cuando:
    vio fallar no prueba nada).
 3. Build de UI + Plugin en Debug con 0 errores (el usuario prueba via NETLOAD del Debug, no del Release).
 4. Documentacion tocada si cambio comportamiento visible (`docs/catalogos-y-plantillas.md` para catalogos
-   y elementos; `docs/HANDOFF.md` secciones 8-12 al cerrar la sesion).
-5. **No hacer push de features sin la verificacion manual del usuario en AutoCAD** (el dibujo real es el
-   criterio final; los tests no ven los bloques DWG reales). Commits locales si; push cuando el usuario
-   confirme.
+   y elementos). `docs/HANDOFF.md` secciones 8-12 se actualizan **al INTEGRAR la iniciativa** (ultimo
+   commit de la rama, en la sesion de integracion — docs/WORKFLOW.md seccion 4.5), nunca desde ramas
+   paralelas; el cierre de una sesion intermedia se registra en el cuerpo del commit.
+5. **No INTEGRAR features al trunk sin la verificacion manual del usuario en AutoCAD** (el dibujo real es
+   el criterio final; los tests no ven los bloques DWG reales). El push de la RAMA de iniciativa es
+   respaldo y se hace al cerrar CADA sesion (push de rama != integrado); la integracion a `main` espera
+   la confirmacion del usuario (docs/WORKFLOW.md secciones 4 y 6).
 
 ## Seguridad y datos
 
