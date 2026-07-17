@@ -25,9 +25,9 @@
 Reglas de nombre: kebab-case, español (como el resto del repo), y el slug describe la **iniciativa**,
 no la sesión ni la herramienta. La procedencia de la IA vive en los **trailers de commit**
 (`Co-Authored-By`), no en el nombre de la rama. Los prefijos `claude/*` y `codex/*` quedan retirados;
-tras la migración (sección 9) la única rama restante con esos nombres es `codex/dinamico-modular`,
-resuelta por [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (**aceptado con la opción A el
-2026-07-17**): I-02 la renombrará a `feature/dinamico-modular` al rebasarla.
+la última rama con esos nombres, `codex/dinamico-modular`, fue resuelta por
+[ADR-0002](adr/0002-secuencia-dinamico-modular.md) (**aceptado con la opción A**) y renombrada e
+integrada por I-02 como `feature/dinamico-modular` (sección 9).
 
 ## 2. Iniciativas: la unidad de trabajo
 
@@ -188,10 +188,11 @@ quedaron retiradas (sus puntas se preservaron con tags `archive/*`). El detalle 
 (hashes, tags de recuperación, ramas restantes y el prompt de reanudación) vive en
 [HANDOFF.md](HANDOFF.md) §8 y §14, no aquí.
 
-La única rama de agente restante es `codex/dinamico-modular`. Su destino ya está decidido:
-[ADR-0002](adr/0002-secuencia-dinamico-modular.md) fue **aceptado con la opción A** (2026-07-17,
-iniciativa I-01: Paso 0 ejecutado y validado por el dueño en AutoCAD) — la iniciativa I-02 la
-renombrará a `feature/dinamico-modular`, la rebasará sobre `main` y la integrará. `main` continúa
+**I-02 resolvió la última rama heredada por herramienta** (2026-07-17): `codex/dinamico-modular`
+fue renombrada a `feature/dinamico-modular`, rebasada sobre `main` e integrada conforme a
+[ADR-0002](adr/0002-secuencia-dinamico-modular.md) (opción A). Su punta pre-rebase permanece
+preservada en el tag `archive/dinamico-modular-pre-rebase-9f19a8c` (no se elimina). Tras el merge
+y la limpieza de I-02, ninguna rama activa por-herramienta forma parte del flujo. `main` continúa
 siendo el trunk único. Toda rama nueva sigue la convención de la sección 1.
 
 ## 10. Precedencia de documentos

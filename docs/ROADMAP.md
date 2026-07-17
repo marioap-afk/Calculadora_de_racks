@@ -1,7 +1,8 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-17 (I-00 e I-01 integradas; **ADR-0002 aceptado con la opción A**: I-02 es
-> la siguiente iniciativa). Convierte la
+> Actualizado: 2026-07-17 (I-00, I-01 e **I-02 integradas**; ADR-0002=A ejecutada — el sistema
+> dinámico modular está en el trunk. La siguiente iniciativa de la Fase 1 la elige el dueño).
+> Convierte la
 > [auditoría 2026-07](auditoria-arquitectura-2026-07.md) en un plan ejecutable por iniciativas
 > independientes (1 iniciativa = 1 rama = 1 worktree, ver [WORKFLOW.md](WORKFLOW.md)).
 > Jerarquía de "qué sigue": **este documento = el plan**; HANDOFF §11 = lo inmediato;
@@ -38,7 +39,7 @@
 |---|---|---|---|
 | 0 | Preparación del proyecto — **CERRADA (2026-07-17)** | Proceso sano: trunk real, CI, flujo nuevo, decisión del dinámico | CUMPLIDO: main = trunk protegido; ADR-0002 aceptado (opción A, tras su Paso 0); cero ramas zombie |
 | 1 | Robustez y limpieza | Cerrar riesgos latentes baratos + resolver la rama del dinámico | I-02 resuelta; fallos diagnosticables; docs reestructurados; I-13 concluido |
-| 2 | Arquitectura base + producto dinámico | Contratos/registros que abaratan el sistema N+1; cerrar la brecha cama↔dinámico | Alta de un Kind sin tocar stores/switches; persistencia uniforme; I-27 entregada |
+| 2 | Arquitectura base + producto dinámico | Contratos/registros que abaratan el sistema N+1 (la brecha cama↔dinámico quedó cerrada por I-02) | Alta de un Kind sin tocar stores/switches; persistencia uniforme (I-27 quedó absorbida por I-02) |
 | 3 | Componentes reutilizables | UI y Plugin componibles (controles, shell, draw service genérico) | Un editor nuevo cuesta ~300 líneas; rejilla de seguridad única |
 | 4 | Primer sistema nuevo | Push Back sobre la arquitectura nueva + guía validada | Push Back completo sin editar código de otros sistemas |
 | 5 | Migración progresiva | Los sistemas existentes adoptan la arquitectura, uno a uno | Editores migrados al shell; namespaces finales; lista de archivos calientes reducida |
@@ -62,7 +63,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 
 | ID | Iniciativa (rama) | Qué incluye (hallazgos) | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
-| I-02 | `feature/dinamico-modular` ✋ | **ADR-0002=A decidido (2026-07-17)**: tag de resguardo sobre la punta actual, renombrar la rama (ADR-0001), rebase sobre el trunk conservando los arreglos de main (conflictos textuales esperados solo en 7 docs), catálogos append-only, suite + builds + **re-validación AutoCAD sobre el árbol rebasado**, merge --no-ff (G4). Alcance completo en ADR-0002. **Criterio de corte: si no se estabiliza en 3 sesiones, detener I-02 y redactar un nuevo ADR que proponga reemplazar ADR-0002 por la opción B** | M-L | I-01=A (cumplida) | I-08, I-09, I-11, I-14, I-16, I-17 (esperan a que se resuelva) | pendiente |
+| I-02 | `feature/dinamico-modular` ✋ | **ADR-0002=A ejecutada**: tag de resguardo sobre la punta validada, rama renombrada (ADR-0001), rebase sobre el trunk conservando los arreglos de main (los conflictos fueron solo los 7 docs previstos), catálogos append-only intactos, suite + builds + CI + **re-validación AutoCAD sobre el árbol rebasado** completas (HANDOFF §8-12). Estabilizada en 1 de las 3 sesiones permitidas; la contingencia (opción B) no se activó. Absorbe I-27 | M-L | I-01=A (cumplida) | I-08, I-09, I-11, I-14, I-16, I-17 (quedaron desbloqueadas al integrarse) | integrada (2026-07-17) |
 | I-03 | `refactor/fallos-silenciosos` | Logger mínimo a `%AppData%\RackCad\logs`; los 14 catch del Plugin + los de Persistence registran; `Report()` con stack; aviso de catálogo vacío; escritura atómica temp+`File.Replace` en los 4 stores; carga distingue "no existe" de "ilegible" (P1, D2) | M | — | I-11 | pendiente |
 | I-04 | `fix/install-bundle-preserva-datos` | Backup/preservación de `Contents\catalogs` y blocks-library.dwg antes del Remove-Item (G7) | S | — | — | pendiente |
 | I-05 | `feature/guardrail-unidades` ✋ | Leer `INSUNITS` al insertar/RACKLAYOUT/RACKRELLENAR y avisar si ≠ pulgadas; ADR de estrategia de unidades a largo plazo (D4) | S | — | — | pendiente |
@@ -75,21 +76,21 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 
 | ID | Iniciativa (rama) | Qué incluye (hallazgos) | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
-| I-08 | `architecture/system-registry` | Descriptor de sistema + `SystemRegistry` en Application; `RackProjectStore`/validación/`RackDesignLibrary` consumen el registro (mueren los 3 switches y el enum paralelo) (E1) | M | I-02 (ADR-0002=A) | I-10, I-11 | pendiente |
-| I-09 | `refactor/plugin-commands` | Partir `RackFrameCommands` en clases por área; promover helpers a `RackBlockFinder`/`RackCloner`/`LayerHelper`; unificar el escaneo de envelopes triplicado; helpers `InDocumentTransaction`. Sin cambio de comportamiento: diff mecánico revisable (P2, P5) | M | I-02 resuelta | I-02, I-10, I-16 | pendiente |
+| I-08 | `architecture/system-registry` | Descriptor de sistema + `SystemRegistry` en Application; `RackProjectStore`/validación/`RackDesignLibrary` consumen el registro (mueren los 3 switches y el enum paralelo) (E1) | M | I-02 (integrada 2026-07-17) | I-10, I-11 | pendiente |
+| I-09 | `refactor/plugin-commands` | Partir `RackFrameCommands` en clases por área; promover helpers a `RackBlockFinder`/`RackCloner`/`LayerHelper`; unificar el escaneo de envelopes triplicado; helpers `InDocumentTransaction`. Sin cambio de comportamiento: diff mecánico revisable (P2, P5) | M | I-02 (integrada 2026-07-17) | I-10, I-16 | pendiente |
 | I-10 | `architecture/kind-handlers` | `IRackKindHandler` + registro en el **Plugin** (pista Plugin, no Application); RACKEDITAR/RACKBOMTOTAL/RACKLAYOUT/restamp despachan por registro; Kind no registrado = error visible (E2) | M | I-08, I-09 | I-09, I-16 | pendiente |
-| I-11 | `architecture/persistencia-uniforme` | `FlowBedDocument`/`LargueroDocument` versionados con lectura legacy; versión de app en el envelope del Xrecord; preservar campos desconocidos al re-guardar (D1, D3) | M | I-02 (ADR-0002=A) | I-03, I-08 | pendiente |
+| I-11 | `architecture/persistencia-uniforme` | `FlowBedDocument`/`LargueroDocument` versionados con lectura legacy; versión de app en el envelope del Xrecord; preservar campos desconocidos al re-guardar (D1, D3) | M | I-02 (integrada 2026-07-17) | I-03, I-08 | pendiente |
 | I-12 | `refactor/versionado` | `<Version>` única en Directory.Build.props + SHA estampado; `PackageContents.xml` generado; bundle por `dotnet publish`; centralizar LangVersion/Nullable en Build.props; **ADR corto "estrategia de versiones de AutoCAD"** (SeriesMax, política de recompilación anual — AutoCAD 2026/2027 llegan dentro del horizonte del plan) (G5, G8, G9) | S-M | — | — | pendiente |
-| I-27 | `feature/dinamico-camas` ✋ | **La prioridad #1 de producto (HANDOFF §11.1)**: integrar la cama de rodamiento dentro del dibujo del sistema dinámico (la "brecha funcional principal", pregunta abierta §13.1). Además sirve de prueba temprana de composición entre sistemas (la noción de sub-módulos compartidos que I-18 necesitará). Al cerrar: actualizar la línea "Fuera de alcance" del README | M | I-02 si A; si B, se fusiona con I-28 | I-21 | pendiente |
+| I-27 | `feature/dinamico-camas` ✋ | **Absorbida por la implementación dinámica de I-02**: la cama de rodamiento quedó integrada dentro del dibujo del sistema dinámico (`DynamicFlowBedLateralBuilder` compone `FlowBedLateralBuilder` sin duplicarlo; BOM con componente `Cama` sin despiece), validada en pruebas y en AutoCAD, y la línea "Fuera de alcance" del README quedó actualizada. También cumplió la prueba temprana de composición entre sistemas que I-18 necesitará. Sin alcance restante — no se mantiene como iniciativa separada | M | I-02 (la absorbió) | — | integrada por I-02 (2026-07-17) |
 
 ### Fase 3 — Componentes reutilizables
 
 | ID | Iniciativa (rama) | Qué incluye (hallazgos) | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
-| I-14 | `architecture/ui-controls` | `SelectionMatrix` (mata las rejillas duplicadas: 3 hoy, 5-6 tras I-02), `NumericField`, `CatalogCombo`, clase base `RackDialogWindow`, `PreviewCanvas` con proyección/paleta compartida. **Incluye crear `tests/RackCad.UI.Tests` (net8.0-windows) + su job de CI: los controles nacen con tests** (U5-U7, parte de U3) | M | I-02 resuelta | I-02, I-15, I-17 | pendiente |
+| I-14 | `architecture/ui-controls` | `SelectionMatrix` (mata las rejillas duplicadas: 3 hoy, 5-6 tras I-02), `NumericField`, `CatalogCombo`, clase base `RackDialogWindow`, `PreviewCanvas` con proyección/paleta compartida. **Incluye crear `tests/RackCad.UI.Tests` (net8.0-windows) + su job de CI: los controles nacen con tests** (U5-U7, parte de U3) | M | I-02 (integrada 2026-07-17) | I-15, I-17 | pendiente |
 | I-15 | `architecture/editor-shell` | `RackEditorSession` (catálogo, identidad, Recompute coalescido, contrato de inserción) + `IRackEditorModule` + registro de módulos que el menú y la biblioteca consumen (mata las 13 propiedades O(N)) (E3, E5, U1 parcial) | M | I-08, I-14 | I-14 | pendiente |
-| I-16 | `refactor/draw-services` | `ViewBlockDrawService` genérico (colapsa los DrawServices idénticos: 5 hoy, 7 tras I-02); extraer `BlockPlacementService` + catálogo de `LateralHeaderDrawService`; uniformar `regen`. **Con tests golden de equivalencia de planes** (E4, P3) | M | I-09 | I-02, I-09, I-10 | pendiente |
-| I-17 | `refactor/clon-unico-cabecera` | Un solo deep-clone de `RackFrameConfiguration` vía store de serialización; borrar las 3 copias de la UI (VM del configurador, selectivo, dinámico) + test de equivalencia (U4). **No es relleno: toca 2 archivos calientes y un archivo que I-02 reescribe** | S | I-02 resuelta | I-02, I-14; no en paralelo con trabajo en selectivo/configurador | pendiente |
+| I-16 | `refactor/draw-services` | `ViewBlockDrawService` genérico (colapsa los DrawServices idénticos: 5 hoy, 7 tras I-02); extraer `BlockPlacementService` + catálogo de `LateralHeaderDrawService`; uniformar `regen`. **Con tests golden de equivalencia de planes** (E4, P3) | M | I-09 | I-09, I-10 | pendiente |
+| I-17 | `refactor/clon-unico-cabecera` | Un solo deep-clone de `RackFrameConfiguration` vía store de serialización; borrar las 3 copias de la UI (VM del configurador, selectivo, dinámico) + test de equivalencia (U4). **No es relleno: toca 2 archivos calientes y un archivo que I-02 reescribe** | S | I-02 (integrada 2026-07-17) | I-14; no en paralelo con trabajo en selectivo/configurador | pendiente |
 
 ### Fase 4 — Primer sistema nuevo
 
@@ -104,7 +105,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | ID | Iniciativa (rama) | Qué incluye | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
 | I-20 | `refactor/selective-editor-state` | Extraer `FondoMatrix`/`Cell`/`ApplyScope`/`BuildDesign` a Application (testeables); la ventana queda observando/pintando (U1, U3) | M | I-15 | I-22 (orden fijo: I-20 primero) | pendiente |
-| I-21 | `refactor/dynamic-editor-state` | Ídem para el editor dinámico (~3,318 líneas si A; 1,332 si B). Partir por vistas si excede | M-L | I-15 + (I-02 si A / I-28 si B) | I-27, I-28 | pendiente |
+| I-21 | `refactor/dynamic-editor-state` | Ídem para el editor dinámico (~3,318 líneas si A; 1,332 si B). Partir por vistas si excede | M-L | I-15 + I-02 (A ejecutada e integrada; I-28 solo si un ADR futuro reemplaza ADR-0002) | I-28 | pendiente |
 | I-22 | `refactor/safety-placement` | Servicios de colocación por familia (Tope/Parrilla/Tarima…) parametrizados por vista; subtipos de `SelectiveSafetySelection` con DTO por subtipo; paso de troquel en UNA constante; las rejillas adoptan `SelectionMatrix` (E6, E7) | M | I-14, I-20 (orden fijo) | I-20 | pendiente |
 | I-23 | `refactor/namespaces-sistemas` | `Systems.Selective/Dynamic/FlowBed/Shared`; renombres fósiles (`Headers`→`Drawing`, `DynamicSystemPlan`→`SystemPlan`); .editorconfig — mecánico, con tests golden, **cierra la Fase 5: depende de TODAS las demás** (E8) | M | I-08, I-15, I-16, I-20, I-21, I-22 | toda la Fase 5 | pendiente |
 | I-24 | `refactor/ui-tests-editores` | Tests de ViewModels y estados de editor sobre `tests/RackCad.UI.Tests` (el proyecto nace en I-14) (U3) | S | I-15, I-20 | — | pendiente |
@@ -171,13 +172,13 @@ I-05, I-06/I-07 (se estorban entre sí), I-12, I-13, I-19, I-26.
 
 ```
 Semana 0:      I-00 + I-01 (dueño; Paso 0 de ADR-0002 incluido; bloquea todo)
-Fase 1:        Pista única intensa: I-02 (si A) — NADIE abre I-08/I-09/I-11/I-14/I-16/I-17 mientras
-               Relleno paralelo (no tocan lo que I-02 toca): I-03, I-04, I-05, I-13, I-26
+Fase 1:        I-02 integrada (2026-07-17) — I-08/I-09/I-11/I-14/I-16/I-17 quedaron desbloqueadas
+               Relleno restante: I-03, I-04, I-05, I-13, I-26
                Docs: I-06 → I-07
 Fase 2/3:      Pista A (Application): I-08 → I-11
                Pista B (Plugin):      I-09 → I-16 → I-10   ← serializadas: se estorban entre sí
                Pista C (UI):          I-14 → I-15
-               Pista producto (dueño+1 IA): I-27 (la prioridad de producto corre aquí, no espera a Fase 4)
+               (La pista de producto I-27 quedó absorbida por I-02: la cama ya está integrada)
                Relleno: I-12, I-17 (tras I-02 y sin trabajo paralelo en selectivo/configurador), I-19
 Fase 4:        I-18 (Push Back; su prerequisito de bloques DWG arranca ANTES, en Fase 2-3)
                (si ADR-0002=B: I-28 sustituye/precede a I-18 como primer gran módulo)
@@ -212,7 +213,7 @@ principio 4); una iniciativa de relleno solo arranca si sus estorbos no están e
 | BAJA: TestCatalogIds + coverage | Sí | I-26, estreno recomendado del flujo |
 | BAJA: validador catálogos + manifest | Sí | Subida a Fase 4 (I-19), cerca de Push Back |
 | BAJA: ADR costos / limpieza assets | Sí | Siguen en backlog (ideas-futuras); el ADR de costos se dispara cuando el cotizador entre al plan |
-| — (nuevo, de la crítica) | — | **I-27 `feature/dinamico-camas`**: la prioridad #1 de producto (HANDOFF §11.1) no tenía iniciativa — el plan la omitía y ROADMAP se declara "el plan". Corre en su propia pista en Fase 2 |
+| — (nuevo, de la crítica) | — | **I-27 `feature/dinamico-camas`**: la prioridad #1 de producto no tenía iniciativa — el plan la omitía y ROADMAP se declara "el plan". Finalmente quedó absorbida por I-02: la implementación dinámica integró la cama |
 | — (nuevo, de la crítica) | — | **I-28 `feature/dinamico-v2`** (condicional): la opción B de ADR-0002 no estaba modelada — I-11/I-21 quedaban con dependencias colgantes |
 
 ## Arquitectura documental objetivo (se ejecuta en I-06)
@@ -240,13 +241,13 @@ de ruta incluye el barrido de referentes en la misma rama. La auditoría 2026-07
 
 ## Recomendaciones finales antes de la primera implementación
 
-1. I-00 e I-01 ya están integradas (2026-07-17) y ADR-0002 quedó aceptado con la opción A: la
-   siguiente rama es **I-02**, y ninguna de las iniciativas que se estorban con ella se abre antes.
+1. I-00, I-01 e I-02 ya están integradas (2026-07-17); ADR-0002=A quedó ejecutada. La siguiente
+   iniciativa de la Fase 1 la elige el dueño (quedan I-03/I-04/I-05/I-06/I-07/I-13/I-26).
 2. Estrenar el flujo con una iniciativa pequeña y sin estorbos (I-26 o I-04) para validar el ciclo
    completo (rama → commit de reclamo + push → CI → rebase → integración → limpieza segura) con
    riesgo cero.
-3. **Si ADR-0002=A, no abrir I-08/I-09/I-11/I-14/I-15/I-16/I-17 hasta integrar I-02**: el diff real
-   de la rama toca los archivos de todas ellas.
+3. **Cumplida**: I-02 quedó integrada (2026-07-17), así que I-08/I-09/I-11/I-14/I-15/I-16/I-17
+   quedaron desbloqueadas respecto a ella (ninguna está iniciada; sus estorbos mutuos siguen aplicando).
 4. Mantener las pistas por capa y la cola de validación del dueño (máx. 1-2 ✋ pendientes); las
    iniciativas de relleno son el amortiguador cuando una pista se bloquea.
 5. Los bloques DWG de Push Back son trabajo del dueño con tiempo propio: calendarizarlos en

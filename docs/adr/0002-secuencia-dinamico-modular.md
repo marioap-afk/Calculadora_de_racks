@@ -88,3 +88,10 @@ retroactivamente (ADR aceptado = ADR inmutable).
 Auditoría 2026-07 §5 y hallazgo G4; crítico de completitud (hallazgo "rama subestimada");
 HANDOFF §11.1; WORKFLOW.md §8; evidencia del Paso 0:
 [0002-paso0-evidencia.md](0002-paso0-evidencia.md); decisión del dueño del repo (2026-07-17).
+
+## Notas posteriores
+
+**2026-07-17** — I-02 ejecutó la decisión A: completó el rebase sobre `main`, la suite combinada
+quedó verde y la validación manual post-rebase del dueño en AutoCAD quedó OK. La opción A se
+ejecutó correctamente en una sola sesión de estabilización; la contingencia (opción B) no se
+activó. El detalle vive en HANDOFF §8-12.
