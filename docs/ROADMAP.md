@@ -65,7 +65,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 |---|---|---|---|---|---|---|
 | I-02 | `feature/dinamico-modular` ✋ | **ADR-0002=A ejecutada**: tag de resguardo sobre la punta validada, rama renombrada (ADR-0001), rebase sobre el trunk conservando los arreglos de main (los conflictos fueron solo los 7 docs previstos), catálogos append-only intactos, suite + builds + CI + **re-validación AutoCAD sobre el árbol rebasado** completas (HANDOFF §8-12). Estabilizada en 1 de las 3 sesiones permitidas; la contingencia (opción B) no se activó. Absorbe I-27 | M-L | I-01=A (cumplida) | I-08, I-09, I-11, I-14, I-16, I-17 (quedaron desbloqueadas al integrarse) | integrada (2026-07-17) |
 | I-03 | `refactor/fallos-silenciosos` | Logger mínimo a `%AppData%\RackCad\logs`; los 14 catch del Plugin + los de Persistence registran; `Report()` con stack; aviso de catálogo vacío; escritura atómica temp+`File.Replace` en los 4 stores; carga distingue "no existe" de "ilegible" (P1, D2) | M | — | I-11 | pendiente |
-| I-04 | `fix/install-bundle-preserva-datos` | Backup/preservación de `Contents\catalogs` y blocks-library.dwg antes del Remove-Item (G7) | S | — | — | pendiente |
+| I-04 | `fix/install-bundle-preserva-datos` | Instalación transaccional con validación previa, staging, respaldo y rollback; reemplaza catálogos CSV/JSON de producto sin fusionarlos, preserva `blocks-library.dwg` byte por byte y regenera un bundle limpio/reproducible (G7) | S | — | — | integrada (2026-07-17) |
 | I-05 | `feature/guardrail-unidades` ✋ | Leer `INSUNITS` al insertar/RACKLAYOUT/RACKRELLENAR y avisar si ≠ pulgadas; ADR de estrategia de unidades a largo plazo (D4) | S | — | — | pendiente |
 | I-06 | `docs/reestructura` | Ejecutar la arquitectura documental (abajo): ARCHITECTURE.md desde 02 + auditoría §4; retirar 00/01/03/04 a `archivo/` **con barrido de TODOS los referentes** (CLAUDE, AGENTS, README, HANDOFF §14, WORKFLOW §8) **en la misma rama** (WORKFLOW §8 = tabla de documentos); mapear el contenido único de 03 (entorno/validación) a su destino; conservar el patrón "agregar un tipo" de 04 hasta que I-18 entregue la guía; mover históricos; glosario (C2-C4) | M | — | I-07 | pendiente |
 | I-07 | `docs/adr-retroactivos` | Retro-documentar las ~13 decisiones de HANDOFF §7 como ADRs de una página (C4) | S | — | I-06 | pendiente |
@@ -165,7 +165,7 @@ graph LR
   I20 --> I24
 ```
 
-Sin dependencias previas (pero sus estorbos aplican — principio 7): I-03 (estorba I-11), I-04,
+Sin dependencias previas (pero sus estorbos aplican — principio 7): I-03 (estorba I-11),
 I-05, I-06/I-07 (se estorban entre sí), I-12, I-13, I-19, I-26.
 
 ## Orden recomendado y paralelismo (para 2-3 IAs simultáneas)
@@ -173,7 +173,7 @@ I-05, I-06/I-07 (se estorban entre sí), I-12, I-13, I-19, I-26.
 ```
 Semana 0:      I-00 + I-01 (dueño; Paso 0 de ADR-0002 incluido; bloquea todo)
 Fase 1:        I-02 integrada (2026-07-17) — I-08/I-09/I-11/I-14/I-16/I-17 quedaron desbloqueadas
-               Relleno restante: I-03, I-04, I-05, I-13, I-26
+               I-04 integrada (2026-07-17); relleno restante: I-03, I-05, I-13, I-26
                Docs: I-06 → I-07
 Fase 2/3:      Pista A (Application): I-08 → I-11
                Pista B (Plugin):      I-09 → I-16 → I-10   ← serializadas: se estorban entre sí
@@ -199,7 +199,7 @@ principio 4); una iniciativa de relleno solo arranca si sus estorbos no están e
 | 4. Flujo multi-agente | Sí, con cambio mayor | **Ramas por iniciativa** (ADR-0001); sin `wip/*` (apertura = commit vacío de reclamo con Claim-Id + push sin force: el primer push aceptado reclama; push al cerrar cada sesión = respaldo); integración serializada con rebase + `--force-with-lease` + `--no-ff`; HANDOFF/ROADMAP solo en la sesión de integración (se corrigieron AGENTS/CLAUDE que decían lo contrario) |
 | 5. Guardrail INSUNITS | Sí | Adelantada a Fase 1 (I-05) |
 | 6. Logging + escrituras atómicas | Sí | Juntas en I-03 (mismo tema, mismos archivos) |
-| 7. Fix install-bundle | Sí | Sin cambios (I-04) |
+| 7. Fix install-bundle | Sí | Integrado con staging, respaldo, rollback y preservación del DWG (I-04, 2026-07-17) |
 | 8. Registro de sistemas | Sí | **Dividida en 2** (I-08 Application, I-10 Plugin); I-10 corre en la pista Plugin DESPUÉS de I-09/I-16 (se estorban) |
 | 9. Editor Shell | Sí | **Dividida en 3**: controles (I-14, que además crea el proyecto de tests de UI), shell (I-15), y extracción de estado por editor en Fase 5 (I-20/I-21) |
 | 10. DrawServices + comandos | Sí | Dividida en I-09 → I-16 (misma pista, serializadas); ambas con red de tests golden de equivalencia |
@@ -241,11 +241,11 @@ de ruta incluye el barrido de referentes en la misma rama. La auditoría 2026-07
 
 ## Recomendaciones finales antes de la primera implementación
 
-1. I-00, I-01 e I-02 ya están integradas (2026-07-17); ADR-0002=A quedó ejecutada. La siguiente
-   iniciativa de la Fase 1 la elige el dueño (quedan I-03/I-04/I-05/I-06/I-07/I-13/I-26).
-2. Estrenar el flujo con una iniciativa pequeña y sin estorbos (I-26 o I-04) para validar el ciclo
-   completo (rama → commit de reclamo + push → CI → rebase → integración → limpieza segura) con
-   riesgo cero.
+1. I-00, I-01, I-02 e I-04 ya están integradas (2026-07-17); ADR-0002=A quedó ejecutada. La siguiente
+   iniciativa de la Fase 1 la elige el dueño (quedan I-03/I-05/I-06/I-07/I-13/I-26).
+2. **Cumplida por I-04:** el flujo completo de una iniciativa pequeña y sin estorbos quedó ejercitado
+   (rama → commit de reclamo + push → CI → integración → limpieza segura). I-26 permanece disponible
+   como iniciativa pequeña, pero no está iniciada.
 3. **Cumplida**: I-02 quedó integrada (2026-07-17), así que I-08/I-09/I-11/I-14/I-15/I-16/I-17
    quedaron desbloqueadas respecto a ella (ninguna está iniciada; sus estorbos mutuos siguen aplicando).
 4. Mantener las pistas por capa y la cola de validación del dueño (máx. 1-2 ✋ pendientes); las
