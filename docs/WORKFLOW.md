@@ -26,8 +26,8 @@ Reglas de nombre: kebab-case, español (como el resto del repo), y el slug descr
 no la sesión ni la herramienta. La procedencia de la IA vive en los **trailers de commit**
 (`Co-Authored-By`), no en el nombre de la rama. Los prefijos `claude/*` y `codex/*` quedan retirados;
 tras la migración (sección 9) la única rama restante con esos nombres es `codex/dinamico-modular`,
-que se resuelve con [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (opción A la renombra al
-rebasarla; opción B la archiva).
+resuelta por [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (**aceptado con la opción A el
+2026-07-17**): I-02 la renombrará a `feature/dinamico-modular` al rebasarla.
 
 ## 2. Iniciativas: la unidad de trabajo
 
@@ -188,9 +188,11 @@ quedaron retiradas (sus puntas se preservaron con tags `archive/*`). El detalle 
 (hashes, tags de recuperación, ramas restantes y el prompt de reanudación) vive en
 [HANDOFF.md](HANDOFF.md) §8 y §14, no aquí.
 
-La única rama de agente restante es `codex/dinamico-modular`, pendiente de
-[ADR-0002](adr/0002-secuencia-dinamico-modular.md) (iniciativa I-01, empezando por su Paso 0:
-probar la rama en AutoCAD). Toda rama nueva sigue la convención de la sección 1.
+La única rama de agente restante es `codex/dinamico-modular`. Su destino ya está decidido:
+[ADR-0002](adr/0002-secuencia-dinamico-modular.md) fue **aceptado con la opción A** (2026-07-17,
+iniciativa I-01: Paso 0 ejecutado y validado por el dueño en AutoCAD) — la iniciativa I-02 la
+renombrará a `feature/dinamico-modular`, la rebasará sobre `main` y la integrará. `main` continúa
+siendo el trunk único. Toda rama nueva sigue la convención de la sección 1.
 
 ## 10. Precedencia de documentos
 

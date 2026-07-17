@@ -2,6 +2,8 @@
 
 > Documento canonico de continuidad entre sesiones (Claude, Codex o un desarrollador nuevo).
 > Actualizado: **2026-07-17**. **`main` es el trunk unico** (migracion Git I-00 ejecutada; ver seccion 8).
+> **ADR-0002 fue aceptado con la opcion A el 2026-07-17** (I-01 completo su Paso 0; ver secciones 8 y 11):
+> la rama del dinamico se integra primero, mediante I-02 (`feature/dinamico-modular`).
 > El trunk incluye las variantes de seguridad completas (Bota C, Lateral C, Poste tope, desviadores A/L)
 > y la revision exhaustiva de codigo (6 arreglos verificados): 554 tests y builds Debug verdes.
 > Las variantes estan confirmadas en AutoCAD.
@@ -151,8 +153,9 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
   familias `MSB3277` conocidas.
 - Tags de recuperacion creados en origin ANTES de la migracion:
   `archive/pre-i00-main-2026-07-17`, `archive/pre-i00-release-claude-review-2026-07-17` y
-  `archive/catalogos-dinamico-local-pre-i00-2026-07-17` (este ultimo preserva los seis CSV de
-  catalogo con el estado local del worktree del dinamico; NO integrar).
+  `archive/catalogos-dinamico-local-pre-i00-2026-07-17` (este ultimo preserva los seis CSV
+  relacionados con el dinamico encontrados en el worktree principal antes de I-00; NO integrar —
+  I-01 verifico que es subconjunto estricto de la rama del dinamico, sin contenido exclusivo).
 - Retiradas en esta misma operacion (todas archivadas o contenidas en `main`):
   `release/claude-review`, `claude/rackcad-architecture-audit-cd4046` (rama + worktree de la
   auditoria/planificacion), `codex/seguridad-variantes-topes-botas` (zombie: contenido ya
@@ -160,10 +163,33 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
   `archive/seguridad-variantes-topes-botas-2026-07-17`) y `codex/app-tooling-catalogs-logging`
   (tooling historico de la era MVP, preservado en `archive/app-tooling-catalogs-logging-2026-07-17`).
 - **`codex/dinamico-modular` es el unico worktree de agente restante**, intacta en `9f19a8c`,
-  pendiente de [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (**todavia propuesto**, ni
-  aceptado ni rechazado).
-- **Siguiente paso exacto: I-01 — Paso 0 de ADR-0002** (probar la rama del dinamico en AutoCAD)
-  y despues decidir opcion A o B.
+  resuelta por [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (**aceptado, opcion A**):
+  I-02 la renombrara a `feature/dinamico-modular` y la integrara.
+
+**I-01 — decision ADR-0002 (Paso 0 + aceptacion) — completada el 2026-07-17:**
+
+- Rama de la iniciativa: `docs/decision-dinamico-modular` (solo documentacion). La evidencia
+  completa vive en [adr/0002-paso0-evidencia.md](adr/0002-paso0-evidencia.md).
+- **Evidencia automatizada** sobre `codex/dinamico-modular` en `9f19a8c` (AutoCAD cerrado,
+  verificado por proceso): restore OK; suite completa **627/627 verde, 0 omitidas**; subconjunto
+  dinamico **138/138**; build UI Debug **0 errores / 0 advertencias**; build Plugin Debug
+  **0 errores** (solo las 2 familias `MSB3277` conocidas); `git diff --check` y status limpios
+  tras los builds. Ningun defecto automatizado.
+- **Evidencia manual**: el dueno recorrio personalmente el checklist de 17 pruebas en AutoCAD 2025
+  (NETLOAD del DLL Debug compilado dentro del worktree dinamico) y las informo **17/17 OK**:
+  editor multi-frente, geometria de frentes/fondos/niveles variables, camas, largueros IN/OUT e
+  intermedios, frontales de salida y entrada, laterales por poste, planta, seguridad, **BOM
+  coherente**, **persistencia sin perdida**, **RACKEDITAR correcto**, **actualizacion en sitio
+  correcta**, legacy, y el **desviador de la frontal de entrada con orientacion correcta** (el
+  unico pendiente que la rama declaraba). Sin fallos bloqueantes.
+- **La validacion fue PRE-rebase** (sobre `9f19a8c`, sin los 8 commits de `main`): vale para la
+  decision; I-02 debe re-validar en AutoCAD sobre el arbol ya rebasado (WORKFLOW seccion 4.5.3).
+  El conteo 627/627 es DE LA RAMA; la baseline propia de `main` sigue siendo la de la seccion 12.
+- **Decision del dueno (2026-07-17): opcion A** — integrar primero mediante I-02. El alcance de
+  I-02 y la contingencia (si no estabiliza en 3 sesiones: detener y redactar un ADR nuevo que
+  proponga reemplazar ADR-0002 por la opcion B) quedaron en el ADR y en la evidencia.
+- **Siguiente paso exacto: I-02 — `feature/dinamico-modular`** (reutilizando el worktree existente
+  del dinamico). Mientras no se integre, NO abrir I-08/I-09/I-11/I-14/I-15/I-16/I-17.
 
 1. **`b1cfce2` Tope medio-frente**: los topes de larguero siguen los tramos de un frente partido
    (frontal + planta), un tope por tramo cargado.
@@ -254,7 +280,12 @@ de la corrida) quedaron registrados en `docs/ideas-futuras.md` ("Hallazgos de la
 
 ## 9. Ultima validacion manual
 
-- **AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
+**Rama `codex/dinamico-modular` en `9f19a8c` (NO el trunk) — 2026-07-17, AutoCAD 2025, NETLOAD del
+DLL Debug del worktree dinamico:** el dueno recorrio el checklist de 17 pruebas de I-01 y las
+informo 17/17 OK (detalle y tabla completa en [adr/0002-paso0-evidencia.md](adr/0002-paso0-evidencia.md);
+resumen en la seccion 8). Validacion PRE-rebase: I-02 re-valida sobre el arbol rebasado.
+
+**Trunk `main` — AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
 - Biblioteca: disponible y reportada correctamente por `RACKCAD`.
 - Rejilla sin larguero a piso: filas resueltas correctas, sin fila muerta ni desplazamiento.
 - Parrilla: frente/cantidad, posicion en frontal/lateral y BOM correctos.
@@ -285,15 +316,17 @@ de la corrida) quedaron registrados en `docs/ideas-futuras.md` ("Hallazgos de la
 ## 11. Siguientes tareas recomendadas
 
 > El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](ROADMAP.md); esta seccion
-> apunta a lo INMEDIATO. La migracion Git (I-00) ya esta integrada (seccion 8); lo primero ahora
-> es **I-01: la decision [ADR-0002](adr/0002-secuencia-dinamico-modular.md)** sobre la rama del
-> dinamico modular, empezando por su Paso 0 (probar la rama en AutoCAD).
+> apunta a lo INMEDIATO. I-00 e I-01 ya estan integradas (seccion 8); **ADR-0002 esta aceptado
+> con la opcion A**: lo primero ahora es **I-02 (`feature/dinamico-modular`)**.
 
-1. **Terminar el area del sistema dinamico**: es la siguiente iniciativa prioritaria — y EMPIEZA por
-   decidir ADR-0002 (la rama `codex/dinamico-modular` existente). Abrir una tarea/worktree
-   propia y empezar por auditar el flujo actual completo antes de implementar. El nucleo existente ya cubre editor,
-   vista lateral, BOM, persistencia y edicion en sitio; la cama de rodamiento aun vive como sistema separado y su
-   integracion con el dinamico es la brecha funcional principal documentada.
+1. **I-02 — integrar la rama del dinamico modular** (alcance completo en
+   [ADR-0002](adr/0002-secuencia-dinamico-modular.md)): reutilizar el worktree EXISTENTE del
+   dinamico (`%USERPROFILE%\.codex\worktrees\c21e\...`); tag de resguardo sobre `9f19a8c`;
+   renombrar a `feature/dinamico-modular`; rebase sobre `origin/main` conservando los arreglos de
+   `eaede44` (conflictos textuales esperados SOLO en 7 docs); suite + builds; **re-validacion en
+   AutoCAD sobre el arbol rebasado**; merge `--no-ff`; limpieza segura. Contingencia: si no
+   estabiliza en 3 sesiones, detener y redactar un ADR nuevo que proponga reemplazar ADR-0002 por
+   la opcion B. Mientras I-02 no se integre, NO abrir I-08/I-09/I-11/I-14/I-15/I-16/I-17.
 2. **Overrides de parrilla por frente/nivel** (item 2 de la seccion 10): mantener a mediano plazo; hoy los valores
    globales son suficientes, pero el control por celda puede aportar valor en configuraciones heterogeneas.
 3. **Guardas traseras**: mantener pendientes hasta el final; no son prioridad de producto.
@@ -309,6 +342,11 @@ de layout (meta futura, no inmediata).
 
 | Verificacion | Comando | Resultado | Fecha/entorno |
 |---|---|---|---|
+| **[rama dinamica `9f19a8c`]** Suite completa | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` en el worktree del dinamico | **627/627 verdes, 0 omitidas** | 2026-07-17 (I-01 Paso 0), Windows 11, SDK 8.0.423 por usuario |
+| **[rama dinamica `9f19a8c`]** Subconjunto dinamico | filtro `Dynamic\|RackProjectStore\|SystemBomBuilder\|CatalogStandardConsistency` | **138/138 verdes** | 2026-07-17 (I-01 Paso 0) |
+| **[rama dinamica `9f19a8c`]** Build UI Debug | `dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug` | **OK, 0 errores, 0 advertencias** | 2026-07-17 (I-01 Paso 0) |
+| **[rama dinamica `9f19a8c`]** Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug` | **OK, 0 errores**, solo las 2 familias MSB3277 conocidas | 2026-07-17 (I-01 Paso 0) |
+| **[rama dinamica `9f19a8c`]** Validacion manual AutoCAD | NETLOAD del DLL Debug del worktree dinamico + checklist I-01 | **17/17 OK informadas por el dueno** (PRE-rebase) | 2026-07-17; detalle en adr/0002-paso0-evidencia.md |
 | Build Debug (todo) | `dotnet build RackCad.sln -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15, Windows 11, SDK 8.0.423 por usuario |
 | Build Plugin Debug | `dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug -v:minimal` | **OK, 0 errores, 2 advertencias MSB3277 conocidas** | 2026-07-15 |
 | Pruebas | `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug` | **554/554 verdes**, 0 omitidas | 2026-07-15 (revision exhaustiva) |
@@ -348,9 +386,12 @@ Trabajo en RackCad (D:\Documentos\Codex\Calculadora de racks), plugin de AutoCAD
 El trunk es main (nunca release/claude-review, que fue retirada). Lee primero docs/HANDOFF.md,
 luego README.md, AGENTS.md y docs/WORKFLOW.md; verifica el estado real con git log y dotnet test
 (la suite completa debe quedar verde; el conteo vive en la seccion 12). El contexto de estado,
-bugs conocidos y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con: [elige la
-tarea o pega la seccion 11], abriendo rama y worktree por iniciativa segun docs/WORKFLOW.md (no
-trabajes directo sobre main). Respeta las convenciones de AGENTS.md (en especial: DeepCopy + DTO
-para flags de seguridad, tests de regresion verificados fallando, y no integrar a main sin
-verificacion en AutoCAD).
+bugs conocidos y siguientes tareas esta en las secciones 9-11 del HANDOFF. Continua con:
+I-02 (feature/dinamico-modular) — integrar la rama codex/dinamico-modular conforme a ADR-0002
+(aceptado, opcion A): reutiliza el worktree existente del dinamico, tag de resguardo sobre su
+punta, renombra la rama, rebase sobre origin/main conservando los arreglos de main, suite +
+builds, re-validacion en AutoCAD sobre el arbol rebasado, merge --no-ff. No abras
+I-08/I-09/I-11/I-14/I-15/I-16/I-17 mientras I-02 no se integre. Respeta las convenciones de
+AGENTS.md (en especial: DeepCopy + DTO para flags de seguridad, tests de regresion verificados
+fallando, y no integrar a main sin verificacion en AutoCAD).
 ```

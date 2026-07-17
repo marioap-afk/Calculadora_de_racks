@@ -3,8 +3,9 @@
 - **Fechas:** evidencia automatizada 2026-07-17; validación manual del dueño 2026-07-17
 - **Iniciativa:** I-01 (`docs/decision-dinamico-modular`)
 - **Hash evaluado:** `9f19a8cbe194d4f66d00ab96e8c2672c2dc9ed24` (punta de `codex/dinamico-modular`)
-- **Estado:** Paso 0 COMPLETO (evidencia automatizada + manual). Recomendación técnica emitida (sección 7).
-  ADR-0002 sigue **propuesto**: la decisión final A/B es del dueño.
+- **Estado:** Paso 0 COMPLETO (evidencia automatizada + manual). El dueño del repositorio **aceptó la
+  opción A el 2026-07-17** con base en esta evidencia; ADR-0002 queda **aceptado**. La siguiente
+  validación funcional será la de I-02, en AutoCAD y sobre el árbol YA rebasado sobre `main`.
 
 ## 1. Verificación de la rama evaluada
 
@@ -185,8 +186,9 @@ Derivación desde la evidencia (no desde la preferencia previa de ADR-0002):
    (compone el builder con acote de paso), BOM/RACKBOMTOTAL, y un smoke del resto del checklist.
 10. Merge `--no-ff` a `main` con HANDOFF §8-12 y ROADMAP actualizados como último commit de la rama;
     limpieza segura de rama y worktree.
-11. **Criterio de corte del ROADMAP:** si el rebase no estabiliza en 3 sesiones, volver a ADR-0002 y
-    re-evaluar B.
+11. **Criterio de corte:** si I-02 no se estabiliza dentro de tres sesiones, detener la iniciativa y
+    redactar un ADR nuevo que proponga reemplazar ADR-0002 por la opción B. ADR-0002, ya aceptado,
+    no se modifica retroactivamente.
 
 Archivos/áreas de mayor riesgo del rebase: `docs/HANDOFF.md` (reescrito por ambos lados; el de `main`
 post-I-00 es la estructura vigente), `README.md` y `docs/00/01/03/04` (la rama documenta el dinámico sobre
