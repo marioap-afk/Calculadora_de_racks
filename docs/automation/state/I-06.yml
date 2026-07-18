@@ -8,7 +8,7 @@ automation_state:
   gate: owner-validation
   attempts: 0
   next_action: owner-review-and-integrate
-  last_evidence_commit: 1290fd9bcb1b760356331908667ef5c6a35c4f67
+  last_evidence_commit: 679aa50d62cfe455530b4ee36fe4a75e89648989
 execution_context:
   mode: manual-git-only
   worktree: rackcad-docs-reestructura
