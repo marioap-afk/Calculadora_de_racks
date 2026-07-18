@@ -4,10 +4,10 @@ automation_state:
   branch: docs/reestructura
   claim_id: 6cdf1e76-7943-4bfb-b1fa-b4c8bb88a050
   current_phase: 6
-  state: integration-ready
-  gate: owner-validation
+  state: completed
+  gate: none
   attempts: 0
-  next_action: owner-review-and-integrate
+  next_action: integrate-manually
   last_evidence_commit: 679aa50d62cfe455530b4ee36fe4a75e89648989
 execution_context:
   mode: manual-git-only

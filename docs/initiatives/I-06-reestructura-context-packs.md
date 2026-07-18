@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-06
 title: Reestructura documental y Context Packs
 type: docs
-status: integration-ready
+status: completed
 branch: docs/reestructura
 base_branch: main
 priority: 10
@@ -46,10 +46,12 @@ contener una copia opcional, pero no es la fuente legible por el ejecutor.
   movieron a `docs/guias/` y la transicion/historia se preservo en `docs/archivo/`.
 - La fase 5 termino: las rutas y enlaces fueron barridos, la navegacion quedo corregida y los nueve
   Context Packs apuntan a fuentes existentes.
-- La fase 6 termino tecnicamente: alcance, fuentes, enlaces, pruebas y build UI quedaron revisados.
-- I-06 esta `integration-ready`, detenida en `owner-validation`. No esta integrada y ROADMAP conserva
-  su estado pendiente hasta la sesion manual de integracion.
-- El piloto se ejecutara manualmente antes de programar horarios o crear una automatizacion.
+- La fase 6 termino: alcance, fuentes, enlaces, pruebas y builds Debug de UI y Plugin quedaron
+  revisados.
+- La validacion del dueno fue aceptada para preparar la integracion final. I-06 esta `completed`, sin
+  gate operativo; el merge sigue pendiente y la marca de ROADMAP se hace efectiva solo al integrar.
+- La automatizacion permanece pausada; cualquier piloto posterior sera manual y requerira nueva
+  aprobacion antes de programar horarios.
 - Mientras el sistema documental no este integrado en `main`, el modo bootstrap solo puede reanudar
   I-06 en `docs/reestructura`, su worktree y su Pull Request existentes.
 - En modo Git-only, la incapacidad de leer o actualizar la descripcion del PR no bloquea commit,
@@ -147,9 +149,9 @@ No se esperan cambios bajo `src/`, `tests/`, `assets/` o `deploy/`.
    unico identificado.
 5. **Completada — referencias:** corregir enlaces y rutas; repetir la busqueda y justificar las
    referencias historicas conservadas.
-6. **Completada tecnicamente — cierre:** navegacion Markdown, alcance, pruebas, build UI y evidencia
-   final revisados. El estado `integration-ready` espera validacion del dueno; en modo Git-only el
-   PR recibe los commits, pero no se manipula directamente.
+6. **Completada — cierre:** navegacion Markdown, alcance, pruebas, builds Debug de UI y Plugin y
+   evidencia final revisados. La validacion del dueno fue aceptada para preparar la integracion; el
+   merge manual sigue pendiente y el PR no se manipula directamente en modo Git-only.
 
 ## 9. Pruebas y builds
 
@@ -178,8 +180,8 @@ No requiere AutoCAD. El dueno debe revisar y confirmar:
 - que la navegacion desde README, AGENTS y CLAUDE llega a los destinos correctos;
 - que ningun documento vigente fue archivado por error.
 
-Esta revision es el gate final `owner-validation`. La implementacion tecnica completa no debe
-confundirse con integracion: ROADMAP y `main` solo cambian en una sesion manual posterior.
+Esta revision del dueno fue aceptada para la preparacion final. La iniciativa completada no debe
+confundirse con integracion: `main` solo cambia cuando el dueño ejecuta el merge manual posterior.
 
 ## 11. Criterios de aceptacion
 

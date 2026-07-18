@@ -16,10 +16,10 @@ El producto mantiene cuatro familias operativas: cabecera, selectivo, dinámico 
 rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
-I-06 (`docs/reestructura`) está técnicamente completa y `integration-ready`, detenida en
-`owner-validation`. Su rama reorganiza las fuentes y no cambia comportamiento de producto; no está
-integrada hasta que el dueño valide el resultado y ejecute la sesión manual de integración descrita
-en WORKFLOW.
+I-06 (`docs/reestructura`) está completada y preparada para integración. La validación del dueño fue
+aceptada para esta preparación final; su rama reorganiza las fuentes y no cambia comportamiento de
+producto. El merge todavía está pendiente y `main` no contiene I-06 hasta que el dueño ejecute la
+integración manual descrita en WORKFLOW.
 
 ## 2. Última validación real
 
@@ -48,21 +48,30 @@ La guía vigente para futuras validaciones está en
 
 ## 4. Siguiente acción
 
-El dueño debe revisar I-06 en el PR draft #1: suficiencia de este HANDOFF reducido, exactitud de
-ARCHITECTURE, utilidad de los nueve Context Packs, navegación y clasificación de documentos. Si la
-validación es satisfactoria, la integración a `main` se realiza manualmente conforme a WORKFLOW; no
-se debe ejecutar I-07 antes de esa integración.
+El dueño debe comprobar desde el navegador que GitHub Actions esté verde para el SHA final de
+`docs/reestructura` y, solo entonces, integrar I-06 manualmente conforme a WORKFLOW. Después del
+merge efectivo debe limpiar la rama y el worktree de I-06 y seleccionar manualmente una iniciativa
+compatible; I-07 queda disponible solo después de ese merge.
+
+La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
+desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
+un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
 
-**Cierre técnico de I-06 — rama `docs/reestructura`, 2026-07-17:**
+**Preparación final de I-06 — rama `docs/reestructura`, 2026-07-17:**
 
 - suite `RackCad.Tests`: **635/635 verdes**, sin fallos ni omitidas;
 - build UI Debug: **0 errores y 0 advertencias**;
-- `git diff --check`: limpio;
+- build Plugin Debug: **0 errores**; dos advertencias `MSB3277` conocidas por conflictos de
+  `Microsoft.VisualBasic` y `System.Drawing`;
+- `git diff origin/main --check`: limpio;
 - enlaces Markdown locales: cero destinos rotos;
+- Context Packs: nueve IDs únicos, con rutas, globs, gates y exclusiones válidos;
 - diff bajo `src/`: solo el comentario XML autorizado en `RackCommandReference.cs`;
-- CI remoto y AutoCAD: no consultados ni requeridos para esta iniciativa documental.
+- CI remoto: no consultado ni declarado verde; el dueño debe verificar el SHA final antes de
+  integrar;
+- AutoCAD: no ejecutado ni requerido para esta iniciativa documental.
 
 La baseline integrada de `main` corresponde a I-04 (`8e52828` como punta de integración):
 

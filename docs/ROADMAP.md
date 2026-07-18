@@ -1,7 +1,8 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-17 (I-00, I-01 e **I-02 integradas**; ADR-0002=A ejecutada — el sistema
-> dinámico modular está en el trunk. La siguiente iniciativa de la Fase 1 la elige el dueño).
+> Actualizado: 2026-07-17 (I-06 completada y preparada en el último commit documental de su rama;
+> la marca `integrada` que lleva este documento se hace efectiva con el merge manual. I-07 queda
+> desbloqueada solo después de ese merge).
 > Convierte la
 > [auditoría 2026-07](auditoria-arquitectura-2026-07.md) en un plan ejecutable por iniciativas
 > independientes (1 iniciativa = 1 rama = 1 worktree, ver [WORKFLOW.md](WORKFLOW.md)).
@@ -67,7 +68,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-03 | `refactor/fallos-silenciosos` | Logger mínimo a `%AppData%\RackCad\logs`; los 14 catch del Plugin + los de Persistence registran; `Report()` con stack; aviso de catálogo vacío; escritura atómica temp+`File.Replace` en los 4 stores; carga distingue "no existe" de "ilegible" (P1, D2) | M | — | I-11 | pendiente |
 | I-04 | `fix/install-bundle-preserva-datos` | Instalación transaccional con validación previa, staging, respaldo y rollback; reemplaza catálogos CSV/JSON de producto sin fusionarlos, preserva `blocks-library.dwg` byte por byte y regenera un bundle limpio/reproducible (G7) | S | — | — | integrada (2026-07-17) |
 | I-05 | `feature/guardrail-unidades` ✋ | Leer `INSUNITS` al insertar/RACKLAYOUT/RACKRELLENAR y avisar si ≠ pulgadas; ADR de estrategia de unidades a largo plazo (D4) | S | — | — | pendiente |
-| I-06 | `docs/reestructura` | Ejecutar la arquitectura documental (abajo): ARCHITECTURE.md desde 02 + auditoría §4; retirar 00/01/03/04 a `archivo/` **con barrido de TODOS los referentes** (CLAUDE, AGENTS, README, HANDOFF §14, WORKFLOW §8) **en la misma rama** (WORKFLOW §8 = tabla de documentos); mapear el contenido único de 03 (entorno/validación) a su destino; conservar el patrón "agregar un tipo" de 04 hasta que I-18 entregue la guía; mover históricos; glosario (C2-C4) | M | — | I-07 | pendiente |
+| I-06 | `docs/reestructura` | Entregó `ARCHITECTURE.md`, nueve Context Packs, glosario y guías vigentes, archivo histórico, HANDOFF reducido y automatización documentada pero pausada; preservó el contenido único y corrigió rutas y navegación. I-07 se desbloquea solo tras el merge efectivo | M | — | I-07 | integrada (2026-07-17) |
 | I-07 | `docs/adr-retroactivos` | Retro-documentar las ~13 decisiones de HANDOFF §7 como ADRs de una página (C4) | S | — | I-06 | pendiente |
 | I-13 | `experiment/refs-autocad-ci` | Probar reference assemblies / paquete de build para compilar el Plugin sin AutoCAD; conclusión → ADR (excepción cero-NuGet) + adopción si funciona (G6). **Concluir ANTES de abrir I-09/I-10/I-16: son fases Plugin-pesadas donde el CI hoy es ciego** | S | — | — | pendiente |
 | I-26 | `refactor/test-catalog-ids` | `TestCatalogIds` centralizados + test guardián "los IDs canónicos existen" + coverlet en CI. Buen estreno del flujo nuevo | S | — | — | pendiente |
@@ -174,7 +175,7 @@ I-05, I-06/I-07 (se estorban entre sí), I-12, I-13, I-19, I-26.
 Semana 0:      I-00 + I-01 (dueño; Paso 0 de ADR-0002 incluido; bloquea todo)
 Fase 1:        I-02 integrada (2026-07-17) — I-08/I-09/I-11/I-14/I-16/I-17 quedaron desbloqueadas
                I-04 integrada (2026-07-17); relleno restante: I-03, I-05, I-13, I-26
-               Docs: I-06 → I-07
+               Docs: I-06 preparada para merge → I-07 solo después del merge efectivo
 Fase 2/3:      Pista A (Application): I-08 → I-11
                Pista B (Plugin):      I-09 → I-16 → I-10   ← serializadas: se estorban entre sí
                Pista C (UI):          I-14 → I-15
@@ -241,8 +242,9 @@ de ruta incluye el barrido de referentes en la misma rama. La auditoría 2026-07
 
 ## Recomendaciones finales antes de la primera implementación
 
-1. I-00, I-01, I-02 e I-04 ya están integradas (2026-07-17); ADR-0002=A quedó ejecutada. La siguiente
-   iniciativa de la Fase 1 la elige el dueño (quedan I-03/I-05/I-06/I-07/I-13/I-26).
+1. I-00, I-01, I-02 e I-04 ya están integradas (2026-07-17); I-06 está preparada para su merge
+   manual. Después de ese merge el dueño elige la siguiente iniciativa de la Fase 1 entre
+   I-03/I-05/I-07/I-13/I-26, respetando estorbos y capacidad.
 2. **Cumplida por I-04:** el flujo completo de una iniciativa pequeña y sin estorbos quedó ejercitado
    (rama → commit de reclamo + push → CI → integración → limpieza segura). I-26 permanece disponible
    como iniciativa pequeña, pero no está iniciada.
