@@ -17,6 +17,7 @@ Cada manifiesto declara:
 - cuándo cargarlo;
 - documentos requeridos y opcionales;
 - globs de código que delimitan la inspección inicial;
+- gates manuales habituales que pueden bloquear cierre o integración;
 - exclusiones para evitar ampliar alcance;
 - una sección breve de invariantes esenciales.
 

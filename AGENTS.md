@@ -8,7 +8,8 @@ Este archivo contiene SOLO convenciones estables. El estado vivo del proyecto es
 
 1. [docs/HANDOFF.md](docs/HANDOFF.md) — estado actual, bugs conocidos, siguientes tareas.
 2. [README.md](README.md) — que es, comandos de AutoCAD, build, pruebas.
-3. [docs/00-indice-contexto.md](docs/00-indice-contexto.md) — indice del resto de la documentacion.
+3. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — arquitectura vigente y objetivo; cargar despues
+   los [Context Packs](docs/context-packs/README.md) declarados por la iniciativa.
 4. Verificar el estado REAL con `git log --oneline -10` y `dotnet test` antes de asumir nada.
 
 ## Mapa de carpetas
@@ -35,7 +36,8 @@ dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug   # el DLL que se
   propias (los `MSB3277` de las referencias de AutoCAD en el Plugin son conocidos y se ignoran).
 - **Trampa**: con AutoCAD abierto y el plugin cargado, los DLL del bin quedan bloqueados y el build falla
   en el paso de copia (MSB3021/MSB3027). Para validar solo codigo: compilar a una carpeta temporal
-  (`dotnet build src/RackCad.UI/RackCad.UI.csproj -o <temp>`) y correr las pruebas.
+  (`dotnet build src/RackCad.UI/RackCad.UI.csproj -o <temp>`) y correr las pruebas. El procedimiento
+  manual completo vive en [docs/guias/validacion-manual-autocad.md](docs/guias/validacion-manual-autocad.md).
 
 ## Convenciones arquitectonicas (obligatorias)
 
@@ -100,7 +102,7 @@ Un cambio de comportamiento esta terminado cuando:
 2. Todo bugfix lleva **test de regresion verificado FALLANDO** con el fix desactivado (un test que nunca se
    vio fallar no prueba nada).
 3. Build de UI + Plugin en Debug con 0 errores (el usuario prueba via NETLOAD del Debug, no del Release).
-4. Documentacion tocada si cambio comportamiento visible (`docs/catalogos-y-plantillas.md` para catalogos
+4. Documentacion tocada si cambio comportamiento visible (`docs/guias/catalogos-y-plantillas.md` para catalogos
    y elementos). `docs/HANDOFF.md` secciones 8-12 se actualizan **al INTEGRAR la iniciativa** (ultimo
    commit de la rama, en la sesion de integracion — docs/WORKFLOW.md seccion 4.5), nunca desde ramas
    paralelas; el cierre de una sesion intermedia se registra en el cuerpo del commit.
@@ -122,8 +124,8 @@ Un cambio de comportamiento esta terminado cuando:
 | Tema | Fuente |
 |---|---|
 | Estado del proyecto, bugs, backlog | `docs/HANDOFF.md` |
-| Datos de perfiles/bloques/seguridad | `assets/catalogs/*.csv` (+ como editarlos: `docs/catalogos-y-plantillas.md`) |
+| Datos de perfiles/bloques/seguridad | `assets/catalogs/*.csv` (+ como editarlos: `docs/guias/catalogos-y-plantillas.md`) |
 | Reglas de geometria del selectivo | `src/RackCad.Application/Systems/Selective*.cs` (los XML-doc explican cada regla) |
-| Modelo de datos / FKs de catalogos | `docs/modelo-de-datos.md` |
-| Despliegue / Autoloader | `docs/despliegue.md` |
-| Decisiones historicas | `docs/arquitectura-autocad-racks.md` y demas historicos (marcados en el indice) |
+| Modelo de datos / FKs de catalogos | `docs/guias/modelo-de-datos.md` |
+| Despliegue / Autoloader | `docs/guias/despliegue.md` |
+| Decisiones historicas | `docs/adr/` para decisiones vigentes; `docs/archivo/` solo para historia |

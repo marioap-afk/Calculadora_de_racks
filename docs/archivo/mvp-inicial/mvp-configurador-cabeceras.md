@@ -1,6 +1,7 @@
 # Especificación actualizada del MVP: configurador manual asistido de cabeceras de rack
 
-> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+> **Archivo histórico; no es una fuente vigente.** Consulta [ARCHITECTURE](../../ARCHITECTURE.md)
+> y [HANDOFF](../../HANDOFF.md).
 
 Actualización de criterio: el MVP debe ser principalmente un configurador manual asistido. No debe intentar resolver automáticamente toda la ingeniería de la cabecera desde el inicio.
 

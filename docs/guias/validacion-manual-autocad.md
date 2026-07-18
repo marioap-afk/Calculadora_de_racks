@@ -190,4 +190,3 @@ Confirmación explícita del validador:
 
 Una validación parcial no desbloquea un gate que exige el checklist completo. Después de un rebase
 final, la evidencia anterior solo sigue siendo válida si `main` no avanzó desde el árbol validado.
-

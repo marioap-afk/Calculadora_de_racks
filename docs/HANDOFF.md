@@ -91,4 +91,3 @@ usar GitHub CLI ni API, la sesión de cierre no declara estado de CI remoto.
 | Cantidad de parrilla: UI rechaza si no cabe y builder acota | Evita dibujo fuera del marco y degrada de forma segura tras cambios. |
 | Validación de cargas diferida a RAM Elements | No debe re-proponerse dentro del alcance actual. |
 | Optimizador IA de layout diferido | `RACKLAYOUT` es el motor determinista vigente, no el optimizador futuro. |
-

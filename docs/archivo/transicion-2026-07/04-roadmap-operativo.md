@@ -1,5 +1,8 @@
 # Roadmap operativo
 
+> **Archivo de transición; no es una fuente vigente.** El plan ejecutable está en
+> [ROADMAP](../../ROADMAP.md) y el estado vivo en [HANDOFF](../../HANDOFF.md).
+
 RackCad ya no es "solo un configurador de cabeceras": es un plugin de AutoCAD
 (.NET, `net8.0-windows`, WPF) que diseña, dibuja y **edita en sitio** cuatro tipos
 de rack. Las fases originales de este roadmap ya estan cerradas (incluidas las

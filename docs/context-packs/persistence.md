@@ -5,11 +5,13 @@ when_to_load: DTO, stores, schemas, identidad, round-trip o compatibilidad legac
 required_docs:
   - docs/ARCHITECTURE.md
 optional_docs:
-  - docs/modelo-de-datos.md
+  - docs/guias/modelo-de-datos.md
 code_globs:
   - src/RackCad.Application/Persistence/**/*.cs
   - tests/RackCad.Tests/**/*DocumentTests.cs
   - tests/RackCad.Tests/**/*StoreTests.cs
+usual_gates:
+  - owner-validation
 excludes:
   - cambios de formato sin fallback y prueba legacy
 ---

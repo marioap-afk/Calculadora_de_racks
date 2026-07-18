@@ -1,6 +1,7 @@
 # Plan de implementación del MVP en C# para AutoCAD .NET
 
-> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+> **Archivo histórico; no es una fuente vigente.** Consulta [ROADMAP](../../ROADMAP.md) y
+> [WORKFLOW](../../WORKFLOW.md).
 
 ## 1. Objetivo del MVP
 

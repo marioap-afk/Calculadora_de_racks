@@ -4,11 +4,15 @@ id: autocad-plugin
 when_to_load: comandos, transacciones, jigs, bloques, Xrecords o DrawServices
 required_docs:
   - docs/ARCHITECTURE.md
-  - docs/generacion-cabecera-lateral.md
+  - docs/guias/generacion-cabecera-lateral.md
 optional_docs:
-  - docs/despliegue.md
+  - docs/guias/despliegue.md
+  - docs/guias/validacion-manual-autocad.md
 code_globs:
   - src/RackCad.Plugin/**/*.cs
+usual_gates:
+  - plugin-build
+  - autocad
 excludes:
   - reglas de geometría o BOM que puedan probarse en Application
 ---

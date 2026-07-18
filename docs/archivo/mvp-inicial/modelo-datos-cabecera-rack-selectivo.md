@@ -1,4 +1,5 @@
-> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+> **Archivo histórico; no es una fuente vigente.** Consulta [ARCHITECTURE](../../ARCHITECTURE.md)
+> y la [guía de datos](../../guias/modelo-de-datos.md).
 
 # Modelo de datos propuesto para cabeceras de rack selectivo convencional
 

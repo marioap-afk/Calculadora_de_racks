@@ -5,7 +5,7 @@ when_to_load: dinámico, camas, largueros IN/OUT, seguridad o BOM asociado
 required_docs:
   - docs/ARCHITECTURE.md
 optional_docs:
-  - docs/catalogos-y-plantillas.md
+  - docs/guias/catalogos-y-plantillas.md
 code_globs:
   - src/RackCad.Domain/Systems/Dynamic*.cs
   - src/RackCad.Domain/Systems/FlowBed*.cs
@@ -17,6 +17,9 @@ code_globs:
   - src/RackCad.Plugin/Systems/FlowBed*.cs
   - tests/RackCad.Tests/Dynamic*.cs
   - tests/RackCad.Tests/FlowBed*.cs
+usual_gates:
+  - plugin-build
+  - autocad
 excludes:
   - reabrir ADR-0002 sin un ADR sustituto
 ---

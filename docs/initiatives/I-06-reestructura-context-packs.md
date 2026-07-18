@@ -42,7 +42,11 @@ contener una copia opcional, pero no es la fuente legible por el ejecutor.
   [docs/automation/decisions/I-06.md](../automation/decisions/I-06.md) en la rama remota y resolvio
   CP-01, CP-02 y DOC-01 a DOC-06.
 - La fase 3 termino con `ARCHITECTURE.md`, los nueve Context Packs y el glosario aprobados.
-- La siguiente fase pendiente es la fase 4. No se ejecuta en la misma iteracion que la fase 3.
+- La fase 4 termino: HANDOFF fue reducido, se creo la guia de validacion, las guias vigentes se
+  movieron a `docs/guias/` y la transicion/historia se preservo en `docs/archivo/`.
+- La fase 5 termino: las rutas y enlaces fueron barridos, la navegacion quedo corregida y los nueve
+  Context Packs apuntan a fuentes existentes.
+- La siguiente fase pendiente es la fase 6, cierre tecnico y validacion.
 - El piloto se ejecutara manualmente antes de programar horarios o crear una automatizacion.
 - Mientras el sistema documental no este integrado en `main`, el modo bootstrap solo puede reanudar
   I-06 en `docs/reestructura`, su worktree y su Pull Request existentes.
@@ -64,12 +68,12 @@ separadas.
 
 ## 3. Alcance
 
-- Crear `docs/ARCHITECTURE.md` desde `docs/02-modelo-tecnico-vigente.md` y la seccion 4 de la
-  auditoria arquitectonica, actualizada con seguridad, layout y cotas.
+- Crear `docs/ARCHITECTURE.md` desde la fuente de transicion ahora preservada en
+  `docs/archivo/transicion-2026-07/02-modelo-tecnico-vigente.md` y la seccion 4 de la auditoria
+  arquitectonica, actualizada con seguridad, layout y cotas.
 - Definir Context Packs y el mecanismo documental para seleccionar el contexto por iniciativa.
 - Reducir HANDOFF para que conserve unicamente estado vivo.
-- Retirar `docs/00-indice-contexto.md`, `docs/01-estado-actual-mvp.md`,
-  `docs/03-guia-desarrollo-y-validacion.md` y `docs/04-roadmap-operativo.md` a `docs/archivo/`.
+- Retirar las fuentes 00, 01, 03 y 04 a `docs/archivo/transicion-2026-07/`.
 - Mapear el contenido unico de la guia 03 a su destino antes de archivarla.
 - Conservar el patron "agregar un tipo" de la guia 04 hasta que I-18 entregue la guia definitiva.
 - Mover los documentos historicos previstos por la arquitectura documental y crear el glosario.
@@ -91,9 +95,10 @@ Leer completamente antes de editar:
 - `docs/WORKFLOW.md`;
 - `docs/ROADMAP.md`, especialmente la arquitectura documental objetivo;
 - `docs/HANDOFF.md` solo para separar estado vivo de historia;
-- `docs/02-modelo-tecnico-vigente.md`;
-- `docs/03-guia-desarrollo-y-validacion.md`;
-- `docs/04-roadmap-operativo.md`;
+- `docs/archivo/transicion-2026-07/02-modelo-tecnico-vigente.md`;
+- `docs/archivo/transicion-2026-07/03-guia-desarrollo-y-validacion.md`;
+- `docs/archivo/transicion-2026-07/04-roadmap-operativo.md`;
+- `docs/guias/validacion-manual-autocad.md`;
 - `docs/auditoria-arquitectura-2026-07.md`, en particular su seccion 4;
 - `docs/adr/README.md` y ADRs aceptados;
 - `docs/automation/state/I-06.yml`;
@@ -136,11 +141,13 @@ No se esperan cambios bajo `src/`, `tests/`, `assets/` o `deploy/`.
    la evidencia versionada.
 3. **Completada — fuentes nuevas:** crear `ARCHITECTURE.md`, Context Packs y glosario; verificar que
    cada tema tenga una fuente.
-4. Reducir HANDOFF, mover guias e historicos y conservar el contenido unico identificado.
-5. Corregir en la misma rama todos los enlaces y rutas; repetir la busqueda hasta eliminar
-   referentes obsoletos.
-6. Renderizar o revisar la navegacion Markdown, ejecutar validaciones, publicar y actualizar el
-   Pull Request draft para validacion del dueno.
+4. **Completada — migracion:** reducir HANDOFF, mover guias e historicos y conservar el contenido
+   unico identificado.
+5. **Completada — referencias:** corregir enlaces y rutas; repetir la busqueda y justificar las
+   referencias historicas conservadas.
+6. **Pendiente — cierre tecnico:** revisar navegacion Markdown, ejecutar validaciones y publicar el
+   estado `integration-ready` para validacion del dueno. En modo Git-only el PR recibe los commits,
+   pero no se manipula directamente.
 
 ## 9. Pruebas y builds
 

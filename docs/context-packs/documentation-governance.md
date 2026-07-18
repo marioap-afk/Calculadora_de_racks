@@ -12,6 +12,9 @@ optional_docs:
 code_globs:
   - '*.md'
   - docs/**/*.md
+usual_gates:
+  - owner-decision
+  - owner-validation
 excludes:
   - cambios de código salvo excepción explícita del dueño
 ---

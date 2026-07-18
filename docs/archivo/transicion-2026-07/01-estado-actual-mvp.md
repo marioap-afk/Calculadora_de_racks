@@ -1,5 +1,8 @@
 # Estado actual del MVP
 
+> **Archivo de transición; no es una fuente vigente.** El estado vivo está en
+> [HANDOFF](../../HANDOFF.md) y la arquitectura actual en [ARCHITECTURE](../../ARCHITECTURE.md).
+
 ## Que es hoy
 
 Plugin de AutoCAD (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya no es
@@ -10,7 +13,8 @@ tiene la **suite completa de tests verde** y build Debug con 0 errores (conteo y
 **Todas las ventanas editoras** comparten hoy: (a) un campo de **nombre** ("Rack A", como lo ve el
 cliente), (b) el patron de botones **Actualizar / Insertar** (ver "Identidad y round-trip") y
 (c) generacion desde el menu `RACKCAD` o desde su comando directo. RackCad puede **cargarse solo al
-abrir AutoCAD** con el bundle del Autoloader (ver [despliegue.md](despliegue.md#4-carga-automatica-autoloader-bundle--recomendado));
+abrir AutoCAD** con el bundle del Autoloader (ver
+[despliegue](../../guias/despliegue.md#4-carga-automatica-autoloader-bundle--recomendado));
 si no, se hace `NETLOAD` por sesion.
 
 Menu principal: comando `RACKCAD` (`RackMainMenuWindow`), desde donde se elige que disenar e

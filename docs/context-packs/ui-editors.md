@@ -5,10 +5,12 @@ when_to_load: WPF, ViewModels, controles, previews, selección o Editor Shell
 required_docs:
   - docs/ARCHITECTURE.md
 optional_docs:
-  - docs/03-guia-desarrollo-y-validacion.md
+  - docs/guias/validacion-manual-autocad.md
 code_globs:
   - src/RackCad.UI/**/*
-  - src/RackCad.Application/Systems/**/*Editor*.cs
+usual_gates:
+  - owner-validation
+  - autocad
 excludes:
   - API de AutoCAD
   - geometría duplicada en code-behind

@@ -10,6 +10,8 @@ optional_docs:
 code_globs:
   - src/RackCad.Domain/**/*.cs
   - src/RackCad.Application/**/*.cs
+usual_gates:
+  - owner-decision
 excludes:
   - cambios de producto no declarados por la iniciativa
 ---

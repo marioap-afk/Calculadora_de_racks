@@ -16,7 +16,7 @@
 > El arbol incluye el sistema dinamico modular multivista completo, las variantes de seguridad
 > (Bota C, Lateral C, Poste tope, desviadores A/L) y los 6 arreglos de la revision exhaustiva.
 > Regla de mantenimiento: este archivo describe ESTADO y CONTEXTO; las convenciones estables viven en
-> [AGENTS.md](../AGENTS.md) y la vista general en [README.md](../README.md). Al cerrar una sesion de trabajo
+> [AGENTS.md](../../../AGENTS.md) y la vista general en [README.md](../../../README.md). Al cerrar una sesion de trabajo
 > significativa, actualizar las secciones 8-12 de este archivo.
 
 ## 1. Resumen ejecutivo
@@ -99,7 +99,8 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
   (`SelectivePalletDesignStore`, `RackProjectStore`, `FlowBedConfigurationStore`) con version de esquema.
 - **Catalogos**: CSV editables en Excel en `assets/catalogs/` (encoding con fallback Latin-1, cache por
   mtime). Se copian junto al ensamblado; `JsonRackCatalogProvider.FromBaseDirectory()` los resuelve en
-  runtime. Detalle: [catalogos-y-plantillas.md](catalogos-y-plantillas.md) y [modelo-de-datos.md](modelo-de-datos.md).
+  runtime. Detalle: [catalogos-y-plantillas.md](../../guias/catalogos-y-plantillas.md) y
+  [modelo-de-datos.md](../../guias/modelo-de-datos.md).
 - **Bloques**: cada pieza tiene un bloque por vista (`blocks.csv`); los que faltan se importan de una
   biblioteca DWG externa. Los parametros dinamicos se fijan por nombre case-insensitive
   (`ApplyDynamicParameters` + `RecordGraphicsModified`).
@@ -171,9 +172,10 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
 - El harness reproducible trabaja solo bajo `%TEMP%` y cubre primera instalacion, actualizacion de
   catalogos, DWG preservado, destino parcial, archivo bloqueado, rollback, idempotencia, origen
   incompleto y rutas explicitas. La regresion del instalador anterior se comprobo antes del fix.
-- La politica y la recuperacion manual estan documentadas en [despliegue.md](despliegue.md). La
+- La politica y la recuperacion manual estan documentadas en
+  [despliegue.md](../../guias/despliegue.md). La
   separacion formal entre catalogos base y overrides del usuario quedo registrada como iniciativa
-  arquitectonica futura en [ideas-futuras.md](ideas-futuras.md), no como logica del instalador.
+  arquitectonica futura en [ideas-futuras.md](../../ideas-futuras.md), no como logica del instalador.
 - No se ejecuto una instalacion real ni se requirio validacion manual en AutoCAD: I-04 no cambia
   geometria, comandos, persistencia de dibujos ni comportamiento runtime del plugin. Evidencia
   automatizada y CI en la seccion 12.
@@ -229,13 +231,13 @@ RackCad.Plugin (net8.0-windows)        UNICO proyecto que toca la API de AutoCAD
   `archive/seguridad-variantes-topes-botas-2026-07-17`) y `codex/app-tooling-catalogs-logging`
   (tooling historico de la era MVP, preservado en `archive/app-tooling-catalogs-logging-2026-07-17`).
 - `codex/dinamico-modular` quedo entonces como el unico worktree de agente restante, intacta en
-  `9f19a8c`, resuelta por [ADR-0002](adr/0002-secuencia-dinamico-modular.md) (**aceptado, opcion
+  `9f19a8c`, resuelta por [ADR-0002](../../adr/0002-secuencia-dinamico-modular.md) (**aceptado, opcion
   A**). I-02 la renombro a `feature/dinamico-modular` y la integro (ver la entrada de I-02 arriba).
 
 **I-01 — decision ADR-0002 (Paso 0 + aceptacion) — completada el 2026-07-17:**
 
 - Rama de la iniciativa: `docs/decision-dinamico-modular` (solo documentacion). La evidencia
-  completa vive en [adr/0002-paso0-evidencia.md](adr/0002-paso0-evidencia.md).
+  completa vive en [adr/0002-paso0-evidencia.md](../../adr/0002-paso0-evidencia.md).
 - **Evidencia automatizada** sobre `codex/dinamico-modular` en `9f19a8c` (AutoCAD cerrado,
   verificado por proceso): restore OK; suite completa **627/627 verde, 0 omitidas**; subconjunto
   dinamico **138/138**; build UI Debug **0 errores / 0 advertencias**; build Plugin Debug
@@ -363,7 +365,8 @@ checklist post-rebase de 13 puntos y los informo TODOS OK.** Es la validacion qu
 **Validaciones anteriores (historia):**
 
 **Rama `codex/dinamico-modular` en `9f19a8c` — 2026-07-17 (I-01 Paso 0, PRE-rebase):** 17/17 OK
-informadas por el dueno (detalle en [adr/0002-paso0-evidencia.md](adr/0002-paso0-evidencia.md));
+informadas por el dueno (detalle en
+[adr/0002-paso0-evidencia.md](../../adr/0002-paso0-evidencia.md));
 superada por la validacion post-rebase de arriba.
 
 **Trunk `main` — AutoCAD 2025, NETLOAD del Debug, 2026-07-15: OK confirmado por el usuario.**
@@ -405,10 +408,10 @@ superada por la validacion post-rebase de arriba.
 
 ## 11. Siguientes tareas recomendadas
 
-> El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](ROADMAP.md); esta seccion
+> El plan de ejecucion por fases e iniciativas vive en [ROADMAP.md](../../ROADMAP.md); esta seccion
 > apunta a lo INMEDIATO. I-00, I-01, I-02 e I-04 ya estan cerradas (seccion 8).
 
-1. **Elegir la siguiente iniciativa de la Fase 1 conforme a [ROADMAP.md](ROADMAP.md)** (quedan
+1. **Elegir la siguiente iniciativa de la Fase 1 conforme a [ROADMAP.md](../../ROADMAP.md)** (quedan
    I-03/I-05/I-06/I-07/I-13/I-26): la eleccion es del dueno. Con I-02 integrada, las
    dependencias de I-08/I-09/I-11/I-14/I-16/I-17 quedaron satisfechas; ninguna iniciativa nueva
    esta iniciada.
@@ -478,11 +481,12 @@ componente `Cama` sin despiece, y validada en pruebas y en AutoCAD.)
    **`main`** (el trunk unico). NUNCA reanudar desde `release/claude-review` (retirada en I-00).
 2. `git fetch origin && git log --oneline -5` y comparar con la seccion 8 de este archivo
    (¿hubo push nuevo?); `git branch -r` para ver las iniciativas en curso.
-3. Leer en orden: este archivo -> [README.md](../README.md) -> [AGENTS.md](../AGENTS.md) ->
-   [docs/WORKFLOW.md](WORKFLOW.md) -> [docs/00-indice-contexto.md](00-indice-contexto.md).
+3. Leer en orden: este archivo -> [README.md](../../../README.md) ->
+   [AGENTS.md](../../../AGENTS.md) -> [docs/WORKFLOW.md](../../WORKFLOW.md) ->
+   [docs/00-indice-contexto.md](00-indice-contexto.md).
 4. `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` (debe descubrir 635+ y quedar verde).
 5. Tomar la primera tarea de la seccion 11 que siga abierta, abriendo rama + worktree por
-   iniciativa segun [WORKFLOW.md](WORKFLOW.md) (nunca desarrollar directo sobre `main`).
+   iniciativa segun [WORKFLOW.md](../../WORKFLOW.md) (nunca desarrollar directo sobre `main`).
 
 **Prompt de reanudacion (copiar en un chat nuevo de Claude o Codex):**
 
