@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-06
 title: Reestructura documental y Context Packs
 type: docs
-status: implementing
+status: integration-ready
 branch: docs/reestructura
 base_branch: main
 priority: 10
@@ -22,7 +22,7 @@ requires_autocad: false
 requires_owner_decision: true
 requires_owner_validation: true
 automation:
-  enabled: true
+  enabled: false
   auto_merge: false
   max_attempts: 3
 ---
@@ -46,7 +46,9 @@ contener una copia opcional, pero no es la fuente legible por el ejecutor.
   movieron a `docs/guias/` y la transicion/historia se preservo en `docs/archivo/`.
 - La fase 5 termino: las rutas y enlaces fueron barridos, la navegacion quedo corregida y los nueve
   Context Packs apuntan a fuentes existentes.
-- La siguiente fase pendiente es la fase 6, cierre tecnico y validacion.
+- La fase 6 termino tecnicamente: alcance, fuentes, enlaces, pruebas y build UI quedaron revisados.
+- I-06 esta `integration-ready`, detenida en `owner-validation`. No esta integrada y ROADMAP conserva
+  su estado pendiente hasta la sesion manual de integracion.
 - El piloto se ejecutara manualmente antes de programar horarios o crear una automatizacion.
 - Mientras el sistema documental no este integrado en `main`, el modo bootstrap solo puede reanudar
   I-06 en `docs/reestructura`, su worktree y su Pull Request existentes.
@@ -145,9 +147,9 @@ No se esperan cambios bajo `src/`, `tests/`, `assets/` o `deploy/`.
    unico identificado.
 5. **Completada — referencias:** corregir enlaces y rutas; repetir la busqueda y justificar las
    referencias historicas conservadas.
-6. **Pendiente — cierre tecnico:** revisar navegacion Markdown, ejecutar validaciones y publicar el
-   estado `integration-ready` para validacion del dueno. En modo Git-only el PR recibe los commits,
-   pero no se manipula directamente.
+6. **Completada tecnicamente — cierre:** navegacion Markdown, alcance, pruebas, build UI y evidencia
+   final revisados. El estado `integration-ready` espera validacion del dueno; en modo Git-only el
+   PR recibe los commits, pero no se manipula directamente.
 
 ## 9. Pruebas y builds
 
@@ -175,6 +177,9 @@ No requiere AutoCAD. El dueno debe revisar y confirmar:
 - que HANDOFF conserva el estado necesario y ya no duplica historia o arquitectura;
 - que la navegacion desde README, AGENTS y CLAUDE llega a los destinos correctos;
 - que ningun documento vigente fue archivado por error.
+
+Esta revision es el gate final `owner-validation`. La implementacion tecnica completa no debe
+confundirse con integracion: ROADMAP y `main` solo cambian en una sesion manual posterior.
 
 ## 11. Criterios de aceptacion
 

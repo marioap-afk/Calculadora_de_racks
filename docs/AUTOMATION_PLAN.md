@@ -10,6 +10,28 @@ El estado operativo legible por el ejecutor se versiona en
 versionarse en `docs/automation/decisions/<initiative>.md`. Un bloque `automation_state` en el Pull
 Request es una copia opcional: nunca sustituye el archivo de estado de la rama.
 
+## Estado actual de activacion
+
+La infraestructura documental, los contratos, estados, decisiones y evidencias quedaron preparados
+por I-06, pero **no existe actualmente una automatizacion nocturna activa**. I-06 no programa tareas,
+horarios, recordatorios ni ejecuciones recurrentes.
+
+La variante Git-only fue un mecanismo acotado de bootstrap y cierre manual de I-06. Demostro que
+commit, push y estado versionado no dependen de GitHub CLI, pero no sustituye una integracion capaz
+de consultar de forma confiable Pull Requests, comentarios y checks. Esa automatizacion conectada
+queda aplazada hasta que exista GitHub CLI o un mecanismo equivalente aprobado por el dueno.
+
+Antes de activar cualquier ejecutor se requiere:
+
+1. elegir y aprobar el mecanismo de integracion con GitHub;
+2. ejecutar un nuevo piloto controlado sobre una iniciativa apta;
+3. comprobar lectura de gates, checks, reintentos, estado y ausencia de trabajo concurrente;
+4. aprobar expresamente el horario y la operacion recurrente.
+
+Hasta entonces, el desarrollo continua manualmente bajo `docs/WORKFLOW.md`. Los contratos,
+decisiones, estados y evidencias de `docs/automation/` se conservan como base para retomar el piloto.
+Ninguna modalidad presente o futura autoriza merge automatico.
+
 ## 1. Proposito
 
 El ejecutor puede leer el plan, elegir como maximo una iniciativa nueva elegible por ejecucion,
@@ -37,8 +59,9 @@ versionado. Este modo solo puede reanudar I-06 en su rama, Pull Request y worktr
 ejecuta el algoritmo de seleccion, no reclama otra iniciativa y no crea otra rama, worktree o Pull
 Request.
 
-El modo bootstrap termina cuando el sistema documental queda integrado en `origin/main`. No se
-activa para otras ramas ni permite que una rama sustituya las reglas globales del ejecutor.
+El modo bootstrap termina cuando el sistema documental queda integrado en `origin/main`. La
+variante Git-only usada para cerrar manualmente I-06 no se activa para otras ramas ni permite que
+una rama sustituya las reglas globales del ejecutor. Su existencia tampoco programa ejecuciones.
 
 ### Modo normal
 

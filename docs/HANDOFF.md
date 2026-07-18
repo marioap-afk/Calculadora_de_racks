@@ -16,9 +16,10 @@ El producto mantiene cuatro familias operativas: cabecera, selectivo, dinámico 
 rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
-I-06 (`docs/reestructura`) está en revisión documental. Su rama reorganiza las fuentes y no cambia
-comportamiento de producto; no está integrada hasta que el dueño valide el resultado y ejecute la
-sesión manual de integración descrita en WORKFLOW.
+I-06 (`docs/reestructura`) está técnicamente completa y `integration-ready`, detenida en
+`owner-validation`. Su rama reorganiza las fuentes y no cambia comportamiento de producto; no está
+integrada hasta que el dueño valide el resultado y ejecute la sesión manual de integración descrita
+en WORKFLOW.
 
 ## 2. Última validación real
 
@@ -53,6 +54,15 @@ validación es satisfactoria, la integración a `main` se realiza manualmente co
 se debe ejecutar I-07 antes de esa integración.
 
 ## 5. Última verificación vigente
+
+**Cierre técnico de I-06 — rama `docs/reestructura`, 2026-07-17:**
+
+- suite `RackCad.Tests`: **635/635 verdes**, sin fallos ni omitidas;
+- build UI Debug: **0 errores y 0 advertencias**;
+- `git diff --check`: limpio;
+- enlaces Markdown locales: cero destinos rotos;
+- diff bajo `src/`: solo el comentario XML autorizado en `RackCommandReference.cs`;
+- CI remoto y AutoCAD: no consultados ni requeridos para esta iniciativa documental.
 
 La baseline integrada de `main` corresponde a I-04 (`8e52828` como punta de integración):
 

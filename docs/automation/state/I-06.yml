@@ -4,16 +4,16 @@ automation_state:
   branch: docs/reestructura
   claim_id: 6cdf1e76-7943-4bfb-b1fa-b4c8bb88a050
   current_phase: 6
-  state: implementing
-  gate: none
+  state: integration-ready
+  gate: owner-validation
   attempts: 0
-  next_action: validate-and-close-documentation
-  last_evidence_commit: c2cbce5f2a695ef52b7682958a7ee22d0772991f
+  next_action: owner-review-and-integrate
+  last_evidence_commit: 1290fd9bcb1b760356331908667ef5c6a35c4f67
 execution_context:
   mode: manual-git-only
   worktree: rackcad-docs-reestructura
   pull_request: 1
-  last_run: docs/automation/runs/I-06-2026-07-17-phase-5.md
+  last_run: docs/automation/runs/I-06-2026-07-17-phase-6.md
 decision_evidence:
   path: docs/automation/decisions/I-06.md
   commit: cca45a920e484dd7c0b4e314b4c0a17bb75920dc
