@@ -1,5 +1,8 @@
 # Modelo tecnico vigente
 
+> **Archivo de transición; no es una fuente vigente.** Su contenido fue absorbido y verificado en
+> [ARCHITECTURE](../../ARCHITECTURE.md); se conserva para trazabilidad de I-06.
+
 ## Vision general
 
 RackCad es un plugin de AutoCAD (.NET `net8.0-windows`, WPF) para disenar **y dibujar**

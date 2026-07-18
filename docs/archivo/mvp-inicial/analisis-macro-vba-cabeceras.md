@@ -1,6 +1,7 @@
 # Analisis tecnico de macro VBA: generacion de cabecera de rack
 
-> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+> **Archivo histórico; no es una fuente vigente.** Consulta [ARCHITECTURE](../../ARCHITECTURE.md)
+> y [HANDOFF](../../HANDOFF.md).
 
 Archivo analizado: `C:\Users\alejandra-mendoza\Desktop\PruebaCabeceras.dvb`
 

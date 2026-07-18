@@ -1,5 +1,9 @@
 # Guia de desarrollo y validacion
 
+> **Archivo de transición; no es una fuente vigente.** El procedimiento actual está en
+> [validación manual de AutoCAD](../../guias/validacion-manual-autocad.md); los comandos canónicos,
+> en [AGENTS](../../../AGENTS.md).
+
 RackCad es un plugin de AutoCAD (.NET, `net8.0-windows`, WPF) para disenar y dibujar
 racks. Ya no es solo un configurador de cabeceras: maneja CUATRO tipos de rack, cada
 uno con su ventana editora, su dibujo en AutoCAD e identidad + round-trip de edicion.

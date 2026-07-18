@@ -139,6 +139,9 @@ si el resultado se adopta, se re-implementa limpio en una rama `architecture/`/`
 
 ## 6. Validación manual en AutoCAD (a mitad o al cierre de una iniciativa)
 
+- El procedimiento detallado, los escenarios y el formato de evidencia viven en
+  [guias/validacion-manual-autocad.md](guias/validacion-manual-autocad.md). Esta sección conserva
+  únicamente los gates del proceso.
 - El usuario carga con NETLOAD **el DLL compilado DENTRO del worktree de la iniciativa**:
   `<worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` (la ruta de CLAUDE.md
   apunta al worktree principal y NO sirve para validar una rama; la misma rama no puede hacerse
@@ -170,7 +173,7 @@ cualquier iniciativa que los toque.
 
 | Evento | Documento | Cuándo |
 |---|---|---|
-| Cambia comportamiento visible, catálogos o elementos | `docs/catalogos-y-plantillas.md` / guía correspondiente | En la misma rama, antes de integrar |
+| Cambia comportamiento visible, catálogos o elementos | `docs/guias/catalogos-y-plantillas.md` / guía correspondiente | En la misma rama, antes de integrar |
 | Cambian comandos de AutoCAD, build o superficie de uso | `README.md` | En la misma rama |
 | Se toma una decisión de arquitectura (criterios en adr/README.md) | `docs/adr/NNNN-*.md` | ANTES de implementarla |
 | Cierre de iniciativa | `docs/HANDOFF.md` §8-12 y estado en `docs/ROADMAP.md` | En la sesión de integración, como último commit de la rama (sección 4.5.4) |

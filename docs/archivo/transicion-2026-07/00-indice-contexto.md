@@ -1,5 +1,9 @@
 # Indice de contexto RackCad
 
+> **Archivo de transición; no es una fuente vigente.** Para navegar el repositorio usa
+> [README](../../../README.md), [HANDOFF](../../HANDOFF.md),
+> [ARCHITECTURE](../../ARCHITECTURE.md) y los [Context Packs](../../context-packs/README.md).
+
 Este indice resume como entender rapidamente el proyecto y cual es el estado del repo antes de continuar el desarrollo.
 
 RackCad es un **plugin de AutoCAD** (.NET `net8.0-windows`, WPF) para **disenar y dibujar racks**. Ya **no es solo un configurador de cabeceras**: maneja **cuatro tipos de rack**, cada uno con su ventana editora, su dibujo en AutoCAD y **round-trip de edicion** sobre el DWG. El trunk de integracion es **`main`**; el trabajo se hace en ramas por iniciativa (`docs/WORKFLOW.md`). El estado vivo (trabajo reciente, bugs conocidos, siguientes tareas y la última corrida real de tests) se mantiene en `docs/HANDOFF.md`.

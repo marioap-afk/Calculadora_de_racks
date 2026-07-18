@@ -1,0 +1,20 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-06
+  branch: docs/reestructura
+  claim_id: 6cdf1e76-7943-4bfb-b1fa-b4c8bb88a050
+  current_phase: 6
+  state: completed
+  gate: none
+  attempts: 0
+  next_action: verify-main-ci-and-cleanup
+  last_evidence_commit: 679aa50d62cfe455530b4ee36fe4a75e89648989
+execution_context:
+  mode: manual-git-only
+  worktree: rackcad-docs-reestructura
+  pull_request: 1
+  last_run: docs/automation/runs/I-06-2026-07-17-phase-6.md
+decision_evidence:
+  path: docs/automation/decisions/I-06.md
+  commit: cca45a920e484dd7c0b4e314b4c0a17bb75920dc
+  resolved_gate: owner-decision

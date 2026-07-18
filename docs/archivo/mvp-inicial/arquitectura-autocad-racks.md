@@ -1,6 +1,7 @@
 # Documento técnico: Plataforma AutoCAD .NET para diseño de racks industriales
 
-> Estado: documento histórico de una etapa previa. Para el estado vigente ver docs/00-indice-contexto.md y docs/01-estado-actual-mvp.md.
+> **Archivo histórico; no es una fuente vigente.** Consulta [ARCHITECTURE](../../ARCHITECTURE.md)
+> y los [ADRs](../../adr/README.md).
 
 ## 1. Propósito del sistema
 

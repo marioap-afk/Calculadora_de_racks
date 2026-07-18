@@ -21,7 +21,7 @@ namespace RackCad.UI
 
     /// <summary>
     /// The single source of truth for the command/alias reference shown by RACKAYUDA (and mirrored in
-    /// docs/despliegue.md). When a command or its alias changes (see RackFrameCommands.Aliases.cs), update this list.
+    /// docs/guias/despliegue.md). When a command or its alias changes (see RackFrameCommands.Aliases.cs), update this list.
     /// </summary>
     public static class RackCommandReference
     {
