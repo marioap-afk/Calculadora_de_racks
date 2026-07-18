@@ -11,8 +11,8 @@ namespace RackCad.Tests
     /// <summary>Aggregating a resolved selective rack into a COMPONENT bill of materials: cabeceras + largueros.</summary>
     public class SelectiveBomBuilderTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
@@ -95,7 +95,8 @@ namespace RackCad.Tests
             Assert.Equal(
                 withoutPallets.Components.Sum(c => c.Quantity),
                 bom.Components.Sum(c => c.Quantity));
-            Assert.DoesNotContain(bom.Components, c => c.Category == SelectiveRackDefaults.PalletPieceId);
+            Assert.DoesNotContain(bom.Components,
+                c => c.Category == TestCatalogIds.BlockOnlyPieces.Pallet);
         }
 
         [Fact]
@@ -120,16 +121,27 @@ namespace RackCad.Tests
                 }
             }
 
-            decorated.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Quantity = 1, Side = SafetySide.Left });
+            decorated.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = TestCatalogIds.Safety.Boots.H3_16_18,
+                Quantity = 1,
+                Side = SafetySide.Left
+            });
 
             var bom = SelectiveBomBuilder.Build(decorated, Catalog);
 
             var plainSignature = plain.Components.Select(c => (c.Category, c.ProfileId, c.Length, c.Quantity)).ToList();
             var decoratedSignature = bom.Components
-                .Where(c => !string.Equals(c.ProfileId, "PROTECTOR_BOTA_H_3_16_18", System.StringComparison.OrdinalIgnoreCase))
+                .Where(c => !string.Equals(
+                    c.ProfileId,
+                    TestCatalogIds.Safety.Boots.H3_16_18,
+                    System.StringComparison.OrdinalIgnoreCase))
                 .Select(c => (c.Category, c.ProfileId, c.Length, c.Quantity)).ToList();
             Assert.Equal(plainSignature, decoratedSignature);
-            Assert.Contains(bom.Components, c => c.Quantity > 0 && string.Equals(c.ProfileId, "PROTECTOR_BOTA_H_3_16_18", System.StringComparison.OrdinalIgnoreCase)); // the safety path really ran
+            Assert.Contains(bom.Components, c => c.Quantity > 0 && string.Equals(
+                c.ProfileId,
+                TestCatalogIds.Safety.Boots.H3_16_18,
+                System.StringComparison.OrdinalIgnoreCase)); // the safety path really ran
 
             // The caller's flags survived the counting pass.
             Assert.True(decorated.DrawPallets);

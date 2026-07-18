@@ -87,7 +87,7 @@ namespace RackCad.Tests
             Assert.Equal(5, loaded.DynamicDesign.LoadLevels);
             Assert.Equal(18.0, loaded.DynamicDesign.FirstLevelHeight);
             Assert.Equal(6.0, loaded.DynamicDesign.BeamDepth);
-            Assert.Equal(DynamicRackDefaults.InOutBeamCatalogId, loaded.DynamicDesign.InOutBeamCatalogId);
+            Assert.Equal(TestCatalogIds.Profiles.Beams.DynamicInOut, loaded.DynamicDesign.InOutBeamCatalogId);
             Assert.Equal("POSTE_OMEGA_3X3", loaded.DynamicDesign.HeaderPostCatalogId);
             Assert.False(loaded.DynamicDesign.Modules.First(m => m.IsHeader).UseCalculatedHeaderConfiguration);
         }
@@ -229,10 +229,10 @@ namespace RackCad.Tests
                 PalletHeight = 55.0,
                 PalletWeight = 900.0,
                 ClearHeight = 5.0,
-                InOutBeamCatalogId = DynamicRackDefaults.InOutBeamCatalogId,
+                InOutBeamCatalogId = TestCatalogIds.Profiles.Beams.DynamicInOut,
                 InOutBeamDepth = 6.0,
                 BeamLengthOverride = 100.0,
-                IntermediateBeamCatalogId = DynamicRackDefaults.IntermediateBeamCatalogId,
+                IntermediateBeamCatalogId = TestCatalogIds.Profiles.Beams.DynamicIntermediate,
                 IntermediateBeamDepth = 4.0
             });
             front.Levels.Add(new DynamicRackLevelDesign
@@ -241,9 +241,9 @@ namespace RackCad.Tests
                 PalletHeight = 65.0,
                 PalletWeight = 1100.0,
                 ClearHeight = 7.0,
-                InOutBeamCatalogId = DynamicRackDefaults.InOutBeamCatalogId,
+                InOutBeamCatalogId = TestCatalogIds.Profiles.Beams.DynamicInOut,
                 InOutBeamDepth = 6.0,
-                IntermediateBeamCatalogId = DynamicRackDefaults.IntermediateBeamCatalogId,
+                IntermediateBeamCatalogId = TestCatalogIds.Profiles.Beams.DynamicIntermediate,
                 IntermediateBeamDepth = 5.0
             });
             design.Fronts.Add(front);
@@ -251,7 +251,7 @@ namespace RackCad.Tests
             var store = new RackProjectStore();
             var resolver = new DynamicRackSystemResolver(Catalog);
             var system = resolver.Resolve(design).System;
-            design = resolver.Snapshot(system, 2, 6.0, 6.0, CatalogIds.StandardPost);
+            design = resolver.Snapshot(system, 2, 6.0, 6.0, TestCatalogIds.Profiles.Posts.Standard);
             var restored = store.Deserialize(store.Serialize(RackProject.ForDynamic(design, system))).DynamicDesign;
             var restoredFront = Assert.Single(restored.Fronts);
 
@@ -279,7 +279,7 @@ namespace RackCad.Tests
             var design = resolver.Snapshot(DynamicSystem(), 3, 6.0, 6.0, "POSTE_OMEGA_3X3");
             var safety = new SelectiveSafetySelection
             {
-                ElementId = "DESVIADOR_A_3",
+                ElementId = TestCatalogIds.Safety.Deviators.A3,
                 Quantity = 1,
                 Side = SafetySide.Both,
                 DesviadorLongitud = 20.0,
@@ -294,7 +294,7 @@ namespace RackCad.Tests
             var store = new RackProjectStore();
             var loaded = store.Deserialize(store.Serialize(RackProject.ForDynamic(design))).DynamicDesign;
             var restored = Assert.Single(loaded.SafetySelections);
-            Assert.Equal("DESVIADOR_A_3", restored.ElementId);
+            Assert.Equal(TestCatalogIds.Safety.Deviators.A3, restored.ElementId);
             Assert.Equal(20.0, restored.DesviadorLongitud);
             Assert.Equal(22.0, restored.DesviadorPrimerNivelAltura);
             Assert.Single(restored.DesviadorOffCells);
@@ -326,7 +326,7 @@ namespace RackCad.Tests
             Assert.Equal(DynamicRackDefaults.DefaultLoadLevels, design.LoadLevels);
             Assert.Equal(DynamicRackDefaults.DefaultFirstLevelHeight, design.FirstLevelHeight);
             Assert.Equal(DynamicRackDefaults.LegacyDefaultBeamDepth, design.BeamDepth);
-            Assert.Equal(DynamicRackDefaults.InOutBeamCatalogId, design.InOutBeamCatalogId);
+            Assert.Equal(TestCatalogIds.Profiles.Beams.DynamicInOut, design.InOutBeamCatalogId);
         }
 
         [Fact]

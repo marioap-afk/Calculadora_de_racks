@@ -16,8 +16,8 @@ namespace RackCad.Tests
     /// </summary>
     public class SelectiveMedioFrenteTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
         private const string LengthParam = "LONGITUD";
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
@@ -179,7 +179,7 @@ namespace RackCad.Tests
 
         // ---- Larguero topes follow the tramos of a medio-frente bay (like the largueros) ----
 
-        private const string TopeId = "LARGUERO_ESCALON_TOPE_DE_3";
+        private const string TopeId = TestCatalogIds.Safety.Stops.Beam;
         private const double TopeAllowance = 0.25;
 
         private static SelectivePalletDesign SegmentsDesignWithTope(bool frontal, params (double length, bool loaded)[] segments)
@@ -246,12 +246,20 @@ namespace RackCad.Tests
             // is ONE PER TARIMA, so its count must equal the drawn tarimas — per loaded tramo — not one-per-tramo.
             var design = SegmentsDesign((40.0, true), (0.0, true)); // 2 loaded tramos, 2 levels
             design.DrawPallets = true;
-            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PARRILLA_GENERICA", Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = true, ParrillaLateral = true });
+            design.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = TestCatalogIds.Safety.Decks.Generic,
+                Side = SafetySide.Both,
+                Quantity = 1,
+                ParrillaFrontal = true,
+                ParrillaLateral = true
+            });
             var system = Resolve(design);
 
             var instances = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog);
             var tarimas = instances.Count(i => i.Role == HeaderBlockRole.Pallet);
-            var parrillas = instances.Count(i => i.Role == HeaderBlockRole.Safety && i.PieceId == "PARRILLA_GENERICA");
+            var parrillas = instances.Count(i => i.Role == HeaderBlockRole.Safety
+                && i.PieceId == TestCatalogIds.Safety.Decks.Generic);
             var bom = SelectiveBomBuilder.Build(system, Catalog).Components.Where(c => c.Category == SelectiveBomBuilder.Parrilla).ToList();
 
             Assert.True(tarimas > 0, $"expected tarimas drawn, got {tarimas}");

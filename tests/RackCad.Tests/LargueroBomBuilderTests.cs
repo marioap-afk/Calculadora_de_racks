@@ -9,7 +9,7 @@ namespace RackCad.Tests
     /// <summary>A standalone larguero component: one profile + two ménsulas, as a component BOM.</summary>
     public class LargueroBomBuilderTests
     {
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 

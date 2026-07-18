@@ -92,14 +92,14 @@ namespace RackCad.Tests
             var troquel = SelectivePostGeometry.Resolve(
                 Catalog.ConnectionLayout.FindConnectionLayout(
                     postId,
-                    SelectiveRackDefaults.PostBeamPoint,
-                    "PLANTA"),
+                    TestCatalogIds.ConnectionPoints.BeamPunch,
+                    TestCatalogIds.Views.Plan),
                 new System.Collections.Generic.Dictionary<string, double>
                 {
                     [SelectiveRackDefaults.PeralteParam] = peralte
                 });
             var plantaBeams = new DynamicSystemPlantaBuilder().Build(system, Catalog)
-                .Where(instance => instance.PieceId == DynamicRackDefaults.InOutBeamCatalogId)
+                .Where(instance => instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicInOut)
                 .ToList();
 
             Assert.Equal(4, plantaBeams.Count);
@@ -113,7 +113,7 @@ namespace RackCad.Tests
             var lateralBeams = new DynamicSystemLateralBuilder().Build(system, Catalog, postIndex: 2)
                 .Flatten().Instances
                 .Where(instance => instance.Role == HeaderBlockRole.Beam
-                                   && instance.PieceId == DynamicRackDefaults.InOutBeamCatalogId)
+                                   && instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicInOut)
                 .ToList();
             Assert.Contains(lateralBeams, beam => Math.Abs(beam.Insertion.X - shortFront.StartX) < 1e-4);
             Assert.Contains(lateralBeams, beam => Math.Abs(beam.Insertion.X - shortFront.EndX) < 1e-4);

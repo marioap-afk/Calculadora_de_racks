@@ -35,7 +35,7 @@ namespace RackCad.Tests
 
             Assert.Equal(4, result.System.Modules.Count);
             Assert.Equal(204.0, result.System.TotalLength, 4);
-            Assert.Equal(DynamicRackDefaults.InOutBeamCatalogId, result.System.InOutBeamCatalogId);
+            Assert.Equal(TestCatalogIds.Profiles.Beams.DynamicInOut, result.System.InOutBeamCatalogId);
             Assert.Equal(6.0, result.System.InOutBeamDepth, 4);
             Assert.Equal(3, result.System.LoadBeamLevels.Count);
             Assert.Equal(6.0, result.System.LoadBeamLevels[0].ExitElevation, 4);
@@ -111,7 +111,7 @@ namespace RackCad.Tests
             var design = Design();
             var safety = new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.Boots.C6,
                 Quantity = 1,
                 Side = SafetySide.Both
             };

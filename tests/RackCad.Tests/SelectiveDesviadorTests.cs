@@ -12,9 +12,9 @@ namespace RackCad.Tests
 {
     public sealed class SelectiveDesviadorTests
     {
-        private const string DesviadorId = "DESVIADOR_A_3";
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string DesviadorId = TestCatalogIds.Safety.Deviators.A3;
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         private static SelectivePalletDesign Design(
@@ -64,31 +64,34 @@ namespace RackCad.Tests
             => new SelectiveGeometryResolver().Resolve(design, Catalog);
 
         [Theory]
-        [InlineData("DESVIADOR_A_3")]
-        [InlineData("DESVIADOR_A_4")]
-        [InlineData("DESVIADOR_L_3")]
-        [InlineData("DESVIADOR_L_3_5")]
-        [InlineData("DESVIADOR_L_4")]
-        [InlineData("DESVIADOR_L_4_5")]
-        [InlineData("DESVIADOR_L_5")]
+        [InlineData(TestCatalogIds.Safety.Deviators.A3)]
+        [InlineData(TestCatalogIds.Safety.Deviators.A4)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L3)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L3Point5)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L4)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L4Point5)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L5)]
         public void Catalog_LoadsEveryVariantAsExclusiveDesviador_WithExactThreeViewBlocks(string desviadorId)
         {
             var entry = Assert.Single(Catalog.SafetyElements, e => e.Id == desviadorId);
             Assert.Equal(SelectiveSafetyDefaults.DesviadorType, entry.Type);
             Assert.True(SelectiveSafetyFamilies.IsExclusive(entry.Type));
-            Assert.Equal(desviadorId + "_FRONTAL", Catalog.Blocks.FindBlock(desviadorId, "FRONTAL").BlockName);
-            Assert.Equal(desviadorId + "_LATERAL", Catalog.Blocks.FindBlock(desviadorId, "LATERAL").BlockName);
-            Assert.Equal(desviadorId + "_PLANTA", Catalog.Blocks.FindBlock(desviadorId, "PLANTA").BlockName);
+            Assert.Equal(desviadorId + "_FRONTAL",
+                Catalog.Blocks.FindBlock(desviadorId, TestCatalogIds.Views.Front).BlockName);
+            Assert.Equal(desviadorId + "_LATERAL",
+                Catalog.Blocks.FindBlock(desviadorId, TestCatalogIds.Views.Lateral).BlockName);
+            Assert.Equal(desviadorId + "_PLANTA",
+                Catalog.Blocks.FindBlock(desviadorId, TestCatalogIds.Views.Plan).BlockName);
         }
 
         [Theory]
-        [InlineData("DESVIADOR_A_3")]
-        [InlineData("DESVIADOR_A_4")]
-        [InlineData("DESVIADOR_L_3")]
-        [InlineData("DESVIADOR_L_3_5")]
-        [InlineData("DESVIADOR_L_4")]
-        [InlineData("DESVIADOR_L_4_5")]
-        [InlineData("DESVIADOR_L_5")]
+        [InlineData(TestCatalogIds.Safety.Deviators.A3)]
+        [InlineData(TestCatalogIds.Safety.Deviators.A4)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L3)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L3Point5)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L4)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L4Point5)]
+        [InlineData(TestCatalogIds.Safety.Deviators.L5)]
         public void EveryVariant_ReusesTheSamePlanDrawingAndBomRule(string desviadorId)
         {
             var system = Resolve(Design(desviadorId: desviadorId));
@@ -141,7 +144,10 @@ namespace RackCad.Tests
             var selection = Assert.Single(system.SafetySelections);
             var first = Assert.Single(plan.Spots, s => s.PostIndex == 0 && s.Level == 0 && s.Face == SelectiveDesviadorPlan.AisleFace.Front);
             var upper = Assert.Single(plan.Spots, s => s.PostIndex == 0 && s.Level == 1 && s.Face == SelectiveDesviadorPlan.AisleFace.Front);
-            var troquel = Catalog.ConnectionLayout.FindConnectionLayout(PostId, SelectiveRackDefaults.PostBeamPoint, SelectiveRackDefaults.View);
+            var troquel = Catalog.ConnectionLayout.FindConnectionLayout(
+                PostId,
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Front);
             var firstTroquelY = SelectivePostGeometry.Resolve(troquel, new Dictionary<string, double>
             {
                 [SelectiveRackDefaults.PeralteParam] = system.PostPeralte
@@ -248,7 +254,10 @@ namespace RackCad.Tests
 
             Assert.Equal(new[] { 3, 3 }, plan.LevelCounts);
             var first = Assert.Single(plan.Spots, s => s.PostIndex == 0 && s.Level == 0 && s.Face == SelectiveDesviadorPlan.AisleFace.Front);
-            var troquel = Catalog.ConnectionLayout.FindConnectionLayout(PostId, SelectiveRackDefaults.PostBeamPoint, SelectiveRackDefaults.View);
+            var troquel = Catalog.ConnectionLayout.FindConnectionLayout(
+                PostId,
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Front);
             Assert.Equal(troquel.LocalY + 22.0, first.Y, 4);
             Assert.DoesNotContain(plan.Spots, s => Math.Abs(s.Y - (system.Bays[0].Levels[0].Y - SelectiveDesviadorPlan.BeamYOffset)) < 1e-4);
         }

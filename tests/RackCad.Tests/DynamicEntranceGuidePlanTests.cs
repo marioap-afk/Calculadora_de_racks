@@ -17,7 +17,11 @@ namespace RackCad.Tests
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 2, PalletsDeep = 2 });
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 3, PalletsDeep = 3 });
             var system = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
-            var selection = new SelectiveSafetySelection { ElementId = "GUIA_ENTRADA", Quantity = 1 };
+            var selection = new SelectiveSafetySelection
+            {
+                ElementId = TestCatalogIds.Safety.Dynamic.EntranceGuide,
+                Quantity = 1
+            };
 
             var plan = DynamicEntranceGuidePlan.Build(system, selection);
 
@@ -46,7 +50,11 @@ namespace RackCad.Tests
             design.Fronts.Add(new DynamicRackFrontDesign { LoadLevels = 3 });
             design.Fronts.Add(new DynamicRackFrontDesign { LoadLevels = 2 });
             var system = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
-            var selection = new SelectiveSafetySelection { ElementId = "GUIA_ENTRADA", Quantity = 1 };
+            var selection = new SelectiveSafetySelection
+            {
+                ElementId = TestCatalogIds.Safety.Dynamic.EntranceGuide,
+                Quantity = 1
+            };
             selection.GuiaEntradaOffCells.Add(new SelectiveGridCell { Frente = 0, Level = 1 });
 
             var plan = DynamicEntranceGuidePlan.Build(system, selection);

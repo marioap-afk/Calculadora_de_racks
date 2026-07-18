@@ -13,8 +13,8 @@ namespace RackCad.Tests
     /// <summary>Frontal dimensioning (cotas): the detail levels emit the expected set, and the detail round-trips.</summary>
     public class SelectiveDimensionsTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
         private const int Bays = 3;
         private const int Levels = 4; // 4 pallets, ground on floor, no floor beam → 3 beam rows
 
@@ -116,7 +116,10 @@ namespace RackCad.Tests
             // The larguero cota starts at the PROFILE cut (troquel + the ménsula overhang INICIO_PERFIL), NOT at the
             // troquel — otherwise it would end short by the ménsula.
             var layout = SelectivePostGeometry.Compute(fondoView, Catalog);
-            var inicioX0 = SelectivePostGeometry.BeamProfileStartX(Catalog, fondoView.Bays[0], SelectiveRackDefaults.View);
+            var inicioX0 = SelectivePostGeometry.BeamProfileStartX(
+                Catalog,
+                fondoView.Bays[0],
+                TestCatalogIds.Views.Front);
             var expectedStart0 = layout.PostXs[0] + layout.TroquelXs[0] + inicioX0;
             Assert.Equal(expectedStart0, Math.Min(larguero[0].Insertion.X, larguero[0].ConnectionAnchor.X), 3);
             Assert.True(inicioX0 > 0.0, "la ménsula sí descuenta (INICIO_PERFIL > 0), si no la prueba no distingue el arreglo");

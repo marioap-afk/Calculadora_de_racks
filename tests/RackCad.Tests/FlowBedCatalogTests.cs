@@ -25,13 +25,15 @@ namespace RackCad.Tests
         {
             var catalog = Catalog;
 
-            Assert.NotNull(catalog.Blocks.FindBlock(FlowBedDefaults.RailId, FlowBedDefaults.View));
-            Assert.NotNull(catalog.Blocks.FindBlock(FlowBedDefaults.RollerId, FlowBedDefaults.View));
-            Assert.NotNull(catalog.Blocks.FindBlock(FlowBedDefaults.BrakeId, FlowBedDefaults.View));
-            Assert.NotNull(catalog.Blocks.FindBlock(FlowBedDefaults.StopId, FlowBedDefaults.View));
+            Assert.NotNull(catalog.Blocks.FindBlock(TestCatalogIds.FlowBed.Rail, TestCatalogIds.Views.Lateral));
+            Assert.NotNull(catalog.Blocks.FindBlock(
+                TestCatalogIds.FlowBed.Roller1Point9,
+                TestCatalogIds.Views.Lateral));
+            Assert.NotNull(catalog.Blocks.FindBlock(TestCatalogIds.FlowBed.Brake, TestCatalogIds.Views.Lateral));
+            Assert.NotNull(catalog.Blocks.FindBlock(TestCatalogIds.FlowBed.Stop, TestCatalogIds.Views.Lateral));
 
             // Roller carries a capacity (reserved for the future capacity-based count).
-            var roller = catalog.FlowBedProfiles.First(c => c.Id == FlowBedDefaults.RollerId);
+            var roller = catalog.FlowBedProfiles.First(c => c.Id == TestCatalogIds.FlowBed.Roller1Point9);
             Assert.Equal(110.0, roller.CapacityKg, 4);
         }
     }

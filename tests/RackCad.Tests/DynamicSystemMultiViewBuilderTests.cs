@@ -36,7 +36,7 @@ namespace RackCad.Tests
             Assert.Equal(system.Fronts.Count * system.LoadBeamLevels.Count, exitBeams.Count);
             Assert.Equal(exitBeams.Count, entranceBeams.Count);
             Assert.All(exitBeams.Concat(entranceBeams), beam =>
-                Assert.Equal(DynamicRackDefaults.InOutBeamCatalogId, beam.PieceId));
+                Assert.Equal(TestCatalogIds.Profiles.Beams.DynamicInOut, beam.PieceId));
             Assert.Equal(system.LoadBeamLevels[0].ExitElevation, exitBeams.Min(beam => beam.Insertion.Y), 4);
             Assert.Equal(system.LoadBeamLevels[0].EntranceElevation, entranceBeams.Min(beam => beam.Insertion.Y), 4);
             Assert.DoesNotContain(exit, instance => instance.Role == HeaderBlockRole.Rail
@@ -102,17 +102,21 @@ namespace RackCad.Tests
             var instances = new DynamicSystemPlantaBuilder().Build(system, Catalog);
             var supports = DynamicIntermediateBeamGeometry.Supports(
                 system,
-                CatalogLookup.Local(Catalog, DynamicFrontGeometry.PostId(system, Catalog), "FIN_POSTE", "LATERAL"));
+                CatalogLookup.Local(
+                    Catalog,
+                    DynamicFrontGeometry.PostId(system, Catalog),
+                    TestCatalogIds.ConnectionPoints.PostEnd,
+                    TestCatalogIds.Views.Lateral));
 
-            Assert.All(instances, instance => Assert.Equal("PLANTA", instance.View));
+            Assert.All(instances, instance => Assert.Equal(TestCatalogIds.Views.Plan, instance.View));
             Assert.DoesNotContain(instances, instance => instance.Role == HeaderBlockRole.Rail
                                                          || instance.Role == HeaderBlockRole.Roller
                                                          || instance.Role == HeaderBlockRole.Brake
                                                          || instance.Role == HeaderBlockRole.Stop);
             Assert.Equal(system.Fronts.Count * 2, instances.Count(instance =>
-                instance.PieceId == DynamicRackDefaults.InOutBeamCatalogId));
+                instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicInOut));
             Assert.Equal(system.Fronts.Count * supports.Count, instances.Count(instance =>
-                instance.PieceId == DynamicRackDefaults.IntermediateBeamCatalogId));
+                instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicIntermediate));
             Assert.True(instances.Count(instance => instance.Role == HeaderBlockRole.Post)
                         >= system.Fronts.Count + 1);
         }
@@ -137,15 +141,15 @@ namespace RackCad.Tests
             var postPeralte = DynamicFrontGeometry.PostPeralte(system, Catalog, postId);
             var troquelEntry = Catalog.ConnectionLayout.FindConnectionLayout(
                 postId,
-                SelectiveRackDefaults.PostBeamPoint,
-                "PLANTA");
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Plan);
             var troquel = SelectivePostGeometry.Resolve(troquelEntry, new Dictionary<string, double>
             {
                 [SelectiveRackDefaults.PeralteParam] = postPeralte
             });
 
             var beams = new DynamicSystemPlantaBuilder().Build(system, Catalog)
-                .Where(instance => instance.PieceId == DynamicRackDefaults.IntermediateBeamCatalogId)
+                .Where(instance => instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicIntermediate)
                 .ToList();
 
             var firstY = layout.PostPositions[0] + troquel.Y;
@@ -169,7 +173,11 @@ namespace RackCad.Tests
             var postId = DynamicFrontGeometry.PostId(system, Catalog);
             var peralte = DynamicFrontGeometry.PostPeralte(system, Catalog, postId);
             var boundary = Assert.Single(system.GetDerivedPostOffsets());
-            var finPoste = CatalogLookup.Local(Catalog, postId, "FIN_POSTE", "LATERAL");
+            var finPoste = CatalogLookup.Local(
+                Catalog,
+                postId,
+                TestCatalogIds.ConnectionPoints.PostEnd,
+                TestCatalogIds.Views.Lateral);
             var primaryX = boundary - finPoste.X;
             var reinforcementX = boundary;
             var posts = instances.Where(instance => instance.Role == HeaderBlockRole.Post
@@ -205,13 +213,13 @@ namespace RackCad.Tests
             var system = System();
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.Boots.C6,
                 Side = SafetySide.Both,
                 Quantity = 1
             });
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "DESVIADOR_A_3",
+                ElementId = TestCatalogIds.Safety.Deviators.A3,
                 Side = SafetySide.Both,
                 Quantity = 1,
                 DesviadorLongitud = 18.0,
@@ -222,13 +230,13 @@ namespace RackCad.Tests
             var planta = new DynamicSystemPlantaBuilder().Build(system, Catalog);
 
             Assert.Contains(frontal, instance => instance.Role == HeaderBlockRole.Safety
-                                                 && instance.PieceId == "PROTECTOR_BOTA_C_6");
+                && instance.PieceId == TestCatalogIds.Safety.Boots.C6);
             Assert.Contains(frontal, instance => instance.Role == HeaderBlockRole.Safety
-                                                 && instance.PieceId == "DESVIADOR_A_3");
+                && instance.PieceId == TestCatalogIds.Safety.Deviators.A3);
             Assert.Contains(planta, instance => instance.Role == HeaderBlockRole.Safety
-                                                && instance.PieceId == "PROTECTOR_BOTA_C_6");
+                && instance.PieceId == TestCatalogIds.Safety.Boots.C6);
             Assert.Contains(planta, instance => instance.Role == HeaderBlockRole.Safety
-                                                && instance.PieceId == "DESVIADOR_A_3");
+                && instance.PieceId == TestCatalogIds.Safety.Deviators.A3);
         }
 
         [Fact]
@@ -237,7 +245,7 @@ namespace RackCad.Tests
             var system = System();
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "DESVIADOR_A_3",
+                ElementId = TestCatalogIds.Safety.Deviators.A3,
                 Side = SafetySide.Both,
                 Quantity = 1,
                 DesviadorLongitud = 18.0,
@@ -245,10 +253,10 @@ namespace RackCad.Tests
             });
 
             var exit = new DynamicSystemFrontalBuilder().Build(system, Catalog, DynamicRackEnd.Exit)
-                .Where(instance => instance.PieceId == "DESVIADOR_A_3")
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Deviators.A3)
                 .ToList();
             var entrance = new DynamicSystemFrontalBuilder().Build(system, Catalog, DynamicRackEnd.Entrance)
-                .Where(instance => instance.PieceId == "DESVIADOR_A_3")
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Deviators.A3)
                 .ToList();
 
             Assert.NotEmpty(exit);
@@ -263,17 +271,17 @@ namespace RackCad.Tests
             var system = System(); // two fronts -> three transverse post lines
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "DEFENSA_MONTACARGAS",
+                ElementId = TestCatalogIds.Safety.Dynamic.ForkliftDefense,
                 Quantity = 1,
                 Side = SafetySide.None
             });
 
             var exit = new DynamicSystemFrontalBuilder().Build(system, Catalog, DynamicRackEnd.Exit)
-                .Where(instance => instance.PieceId == "DEFENSA_MONTACARGAS").ToList();
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.ForkliftDefense).ToList();
             var entrance = new DynamicSystemFrontalBuilder().Build(system, Catalog, DynamicRackEnd.Entrance)
-                .Where(instance => instance.PieceId == "DEFENSA_MONTACARGAS").ToList();
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.ForkliftDefense).ToList();
             var planta = new DynamicSystemPlantaBuilder().Build(system, Catalog)
-                .Where(instance => instance.PieceId == "DEFENSA_MONTACARGAS").ToList();
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.ForkliftDefense).ToList();
 
             Assert.Equal(3, exit.Count);
             Assert.Equal(3, entrance.Count);
@@ -295,20 +303,21 @@ namespace RackCad.Tests
             var system = System();
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "GUIA_ENTRADA",
+                ElementId = TestCatalogIds.Safety.Dynamic.EntranceGuide,
                 Quantity = 1,
                 Side = SafetySide.None
             });
 
             var exit = new DynamicSystemFrontalBuilder().Build(system, Catalog, DynamicRackEnd.Exit)
-                .Where(instance => instance.PieceId == "GUIA_ENTRADA").ToList();
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.EntranceGuide).ToList();
             var entrance = new DynamicSystemFrontalBuilder().Build(system, Catalog, DynamicRackEnd.Entrance)
-                .Where(instance => instance.PieceId == "GUIA_ENTRADA").ToList();
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.EntranceGuide).ToList();
             var planta = new DynamicSystemPlantaBuilder().Build(system, Catalog)
-                .Where(instance => instance.PieceId == "GUIA_ENTRADA").ToList();
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.EntranceGuide).ToList();
             var physical = DynamicEntranceGuidePlan.Build(
                 system,
-                system.SafetySelections.Single(selection => selection.ElementId == "GUIA_ENTRADA"));
+                system.SafetySelections.Single(selection =>
+                    selection.ElementId == TestCatalogIds.Safety.Dynamic.EntranceGuide));
 
             Assert.Empty(exit);
             Assert.Equal(physical.Count, entrance.Count);
@@ -373,8 +382,8 @@ namespace RackCad.Tests
             var profileStart = SelectivePostGeometry.Resolve(
                 catalog.ConnectionLayout.FindConnectionLayout(
                     system.InOutBeamCatalogId,
-                    SelectiveRackDefaults.BeamProfileStartPoint,
-                    "FRONTAL"),
+                    TestCatalogIds.ConnectionPoints.ProfileStart,
+                    TestCatalogIds.Views.Front),
                 new Dictionary<string, double>
                 {
                     [SelectiveRackDefaults.PeralteParam] = system.InOutBeamDepth

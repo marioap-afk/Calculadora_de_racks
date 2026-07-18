@@ -16,7 +16,7 @@ namespace RackCad.Tests
         {
             var depth = DynamicLoadBeamGeometry.ResolveBeamDepth(
                 Catalog,
-                DynamicRackDefaults.InOutBeamCatalogId,
+                TestCatalogIds.Profiles.Beams.DynamicInOut,
                 requestedDepth: 4.0);
 
             Assert.Equal(6.0, depth, 4);
@@ -47,7 +47,7 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
 
             var resolution = new DynamicRackSystemResolver(catalog).Resolve(design);
@@ -56,8 +56,8 @@ namespace RackCad.Tests
             var peralte = DynamicFrontGeometry.PostPeralte(system, catalog, postId);
             var troquelEntry = catalog.ConnectionLayout.FindConnectionLayout(
                 postId,
-                SelectiveRackDefaults.PostBeamPoint,
-                "FRONTAL");
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Front);
             var gridBase = SelectivePostGeometry.Resolve(troquelEntry, new System.Collections.Generic.Dictionary<string, double>
             {
                 [SelectiveRackDefaults.PeralteParam] = peralte

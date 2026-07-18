@@ -12,8 +12,8 @@ namespace RackCad.Tests
     /// <summary>The selective lateral draws one cabecera per post at the frontal post Xs (so the views line up).</summary>
     public class SelectiveLateralBuilderTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
@@ -65,7 +65,8 @@ namespace RackCad.Tests
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
 
             // The user customized post 0's cabecera to a distinct height: the corte IS that cabecera.
-            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
+            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Standard)
+                ?? RackFrameTemplateCatalog.Default;
             var custom = new RackFrameConfigurationFactory(Catalog).Build(template, PostId, height: 500.0, depth: 48.0);
             system.PostCabeceras[0] = custom;
 
@@ -125,7 +126,10 @@ namespace RackCad.Tests
                 .Where(i => i.Role == RackCad.Application.Headers.HeaderBlockRole.Beam)
                 .ToList();
 
-            var troquelEntry = Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "PLANTA");
+            var troquelEntry = Catalog.ConnectionLayout.FindConnectionLayout(
+                PostId,
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Plan);
             var troquel = SelectivePostGeometry.Resolve(
                 troquelEntry, new System.Collections.Generic.Dictionary<string, double> { ["PERALTE"] = system.PostPeralte });
             var frenteYs = SelectivePostGeometry.Compute(system, Catalog).PostXs;

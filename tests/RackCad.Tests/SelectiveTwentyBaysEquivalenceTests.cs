@@ -16,8 +16,8 @@ namespace RackCad.Tests
     /// </summary>
     public class SelectiveTwentyBaysEquivalenceTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
         private const int BayCount = 20;
         private const int LevelCount = 5;
 
