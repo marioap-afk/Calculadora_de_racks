@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-26
 title: TestCatalogIds y cobertura de catálogos
 type: refactor
-status: implementing
+status: review-ready
 branch: refactor/test-catalog-ids
 base_branch: main
 priority: 20
@@ -106,12 +106,12 @@ No se esperan cambios bajo `src`, `assets/catalogs`, `deploy`, `docs/HANDOFF.md`
 ## 8. Fases
 
 - [x] F0. Reclamo atómico y baseline.
-- [ ] F1. Publicar este contrato detallado.
-- [ ] F2. Crear `TestCatalogIds` con sólo expectativas canónicas justificadas.
-- [ ] F3. Migrar tests por ocurrencia y contexto sin alterar su intención.
-- [ ] F4. Añadir el guardián y demostrar temporalmente su fallo ante un ID ausente.
-- [ ] F5. Añadir Coverlet, normalización y artifact de Cobertura al CI existente.
-- [ ] F6. Ejecutar la validación completa y dejar la rama `review-ready`.
+- [x] F1. Publicar este contrato detallado.
+- [x] F2. Crear `TestCatalogIds` con sólo expectativas canónicas justificadas.
+- [x] F3. Migrar tests por ocurrencia y contexto sin alterar su intención.
+- [x] F4. Añadir el guardián y demostrar temporalmente su fallo ante un ID ausente.
+- [x] F5. Añadir Coverlet, normalización y artifact de Cobertura al CI existente.
+- [x] F6. Ejecutar la validación completa y dejar la rama `review-ready`.
 - [ ] F7. Integración y limpieza en una sesión manual separada.
 
 ## 9. Pruebas y cobertura
@@ -174,7 +174,13 @@ pasos pertenece a F1–F6.
 
 ## 14. Evidencia final
 
-Al cerrar F6 se registrarán aquí las fases completadas, la validación local, el estado pendiente de
-CI remoto y owner-validation, y la confirmación de que `main`, producto y catálogos no se
-modificaron. Los conteos de pruebas y hashes viven únicamente en el informe de sesión y, tras la
-integración, en `docs/HANDOFF.md` según WORKFLOW.
+F1-F6 están completas. La suite, el guardián, el build UI Debug y la generación/normalización local
+de Cobertura terminaron correctamente. La prueba negativa retiró temporalmente el poste estándar
+de la copia ignorada de `secciones.csv`: el fallo acumuló el ID y las relaciones de plantillas
+afectadas; la reconstrucción restauró la copia antes de repetir el guardián en verde.
+
+La rama no modifica producto, catálogos distribuidos, Plugin, deploy, HANDOFF ni ROADMAP. La
+automatización continúa deshabilitada. Permanecen pendientes la observación del CI remoto sobre la
+punta final, la validación del artifact por el dueño y F7 en una sesión de integración separada.
+Los conteos de pruebas y hashes viven únicamente en el informe de sesión y, tras la integración, en
+`docs/HANDOFF.md` según WORKFLOW.
