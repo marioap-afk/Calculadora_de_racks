@@ -48,8 +48,9 @@ contener una copia opcional, pero no es la fuente legible por el ejecutor.
   Context Packs apuntan a fuentes existentes.
 - La fase 6 termino: alcance, fuentes, enlaces, pruebas y builds Debug de UI y Plugin quedaron
   revisados.
-- La validacion del dueno fue aceptada para preparar la integracion final. I-06 esta `completed`, sin
-  gate operativo; el merge sigue pendiente y la marca de ROADMAP se hace efectiva solo al integrar.
+- La validacion del dueno esta completada y la integracion manual fue autorizada. I-06 esta
+  `completed`, sin gate operativo; el merge sigue pendiente fisicamente hasta la sesion separada y
+  la marca de ROADMAP se hace efectiva al incorporar la rama a `main`.
 - La automatizacion permanece pausada; cualquier piloto posterior sera manual y requerira nueva
   aprobacion antes de programar horarios.
 - Mientras el sistema documental no este integrado en `main`, el modo bootstrap solo puede reanudar
@@ -150,8 +151,9 @@ No se esperan cambios bajo `src/`, `tests/`, `assets/` o `deploy/`.
 5. **Completada — referencias:** corregir enlaces y rutas; repetir la busqueda y justificar las
    referencias historicas conservadas.
 6. **Completada — cierre:** navegacion Markdown, alcance, pruebas, builds Debug de UI y Plugin y
-   evidencia final revisados. La validacion del dueno fue aceptada para preparar la integracion; el
-   merge manual sigue pendiente y el PR no se manipula directamente en modo Git-only.
+   evidencia final revisados. La validacion del dueno esta completada y la integracion fue
+   autorizada; el merge manual sigue pendiente fisicamente y el PR no se manipula directamente en
+   modo Git-only.
 
 ## 9. Pruebas y builds
 
@@ -180,8 +182,8 @@ No requiere AutoCAD. El dueno debe revisar y confirmar:
 - que la navegacion desde README, AGENTS y CLAUDE llega a los destinos correctos;
 - que ningun documento vigente fue archivado por error.
 
-Esta revision del dueno fue aceptada para la preparacion final. La iniciativa completada no debe
-confundirse con integracion: `main` solo cambia cuando el dueño ejecuta el merge manual posterior.
+Esta revision del dueno esta completada y autoriza la integracion manual. La iniciativa completada
+no debe confundirse con el merge fisico: `main` solo cambia en la sesion separada posterior.
 
 ## 11. Criterios de aceptacion
 
@@ -191,8 +193,8 @@ confundirse con integracion: `main` solo cambia cuando el dueño ejecuta el merg
 - El contenido unico de las guias retiradas se preserva en un destino explicito.
 - No quedan enlaces rotos ni referentes obsoletos a rutas movidas.
 - No hay cambios fuera de documentacion.
-- Pruebas y CI estan verdes.
-- El dueno completo la validacion manual y las decisiones requeridas.
+- Pruebas locales verdes; CI de la punta final debe confirmarse verde antes del merge.
+- El dueno completo la validacion manual, tomo las decisiones requeridas y autorizo la integracion.
 - El Pull Request sigue draft y no se hizo merge.
 
 ## 12. Condiciones para detenerse

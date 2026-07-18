@@ -16,10 +16,11 @@ El producto mantiene cuatro familias operativas: cabecera, selectivo, dinámico 
 rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
-I-06 (`docs/reestructura`) está completada y preparada para integración. La validación del dueño fue
-aceptada para esta preparación final; su rama reorganiza las fuentes y no cambia comportamiento de
-producto. El merge todavía está pendiente y `main` no contiene I-06 hasta que el dueño ejecute la
-integración manual descrita en WORKFLOW.
+I-06 (`docs/reestructura`) está cerrada e integrada con fecha **2026-07-17**, estado efectivo al
+incorporarse esta rama a `main`. Entregó `ARCHITECTURE.md`, nueve Context Packs, guías vigentes,
+archivo histórico y este HANDOFF reducido. La iniciativa reorganizó documentación y no cambió
+comportamiento de producto. No se debe ejecutar I-07 antes de que el commit que contiene este estado
+esté contenido en `main`.
 
 ## 2. Última validación real
 
@@ -48,10 +49,9 @@ La guía vigente para futuras validaciones está en
 
 ## 4. Siguiente acción
 
-El dueño debe comprobar desde el navegador que GitHub Actions esté verde para el SHA final de
-`docs/reestructura` y, solo entonces, integrar I-06 manualmente conforme a WORKFLOW. Después del
-merge efectivo debe limpiar la rama y el worktree de I-06 y seleccionar manualmente una iniciativa
-compatible; I-07 queda disponible solo después de ese merge.
+Después del merge, el dueño debe comprobar que CI de `main` esté verde y limpiar la rama y el
+worktree de I-06 conforme a WORKFLOW. Solo cuando este commit esté contenido en `main` y termine esa
+limpieza se puede elegir otra iniciativa manual compatible; I-07 no debe ejecutarse antes.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
@@ -59,21 +59,21 @@ un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
 
-**Preparación final de I-06 — rama `docs/reestructura`, 2026-07-17:**
+**Baseline documental de I-06 que lleva este merge — 2026-07-17:**
 
+- punta validada de `docs/reestructura`: `39cd54189457e8737f08cf95dbf948bc2e564dd3`;
 - suite `RackCad.Tests`: **635/635 verdes**, sin fallos ni omitidas;
 - build UI Debug: **0 errores y 0 advertencias**;
-- build Plugin Debug: **0 errores**; dos advertencias `MSB3277` conocidas por conflictos de
-  `Microsoft.VisualBasic` y `System.Drawing`;
+- build Plugin Debug: **0 errores**; únicamente los `MSB3277` conocidos;
 - `git diff origin/main --check`: limpio;
-- enlaces Markdown locales: cero destinos rotos;
+- documentación Markdown: **52 documentos**, **123 enlaces locales** y **0 enlaces rotos**;
 - Context Packs: nueve IDs únicos, con rutas, globs, gates y exclusiones válidos;
 - diff bajo `src/`: solo el comentario XML autorizado en `RackCommandReference.cs`;
-- CI remoto: no consultado ni declarado verde; el dueño debe verificar el SHA final antes de
-  integrar;
+- CI de rama: verde para `39cd54189457e8737f08cf95dbf948bc2e564dd3`, según la confirmación del
+  dueño; la corrección administrativa posterior requiere repetir CI antes del nuevo merge;
 - AutoCAD: no ejecutado ni requerido para esta iniciativa documental.
 
-La baseline integrada de `main` corresponde a I-04 (`8e52828` como punta de integración):
+La baseline integrada anterior correspondía a I-04 (`8e52828` como punta de integración):
 
 - suite `RackCad.Tests`: **635/635 verdes**, sin fallos ni omitidas;
 - build UI Debug: **0 errores y 0 advertencias**;
@@ -81,8 +81,8 @@ La baseline integrada de `main` corresponde a I-04 (`8e52828` como punta de inte
 - harness del instalador: **25/25 verificaciones** en rutas temporales;
 - CI de I-04: Success sobre `f82a49f`.
 
-La evidencia técnica de la rama I-06 se conserva bajo [automation/runs/](automation/runs/). Al no
-usar GitHub CLI ni API, la sesión de cierre no declara estado de CI remoto.
+La evidencia técnica de la rama I-06 se conserva bajo [automation/runs/](automation/runs/). Este
+documento no inventa el SHA futuro del merge de `main`.
 
 ## 6. Preguntas abiertas
 

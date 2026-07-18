@@ -19,6 +19,18 @@ Claim-Id: `6cdf1e76-7943-4bfb-b1fa-b4c8bb88a050`
 - No se ejecutó rebase ni se reescribió el historial; tampoco se usó force ni
   `--force-with-lease`.
 
+## Intento de integración descartado
+
+El intento local de merge `878e6c6...` fue descartado sin publicarse. Se detuvo porque el HANDOFF
+preparado por `39cd54189457e8737f08cf95dbf948bc2e564dd3` todavía describía I-06 como no integrada,
+indicaba integrar I-06 como siguiente acción y presentaba I-04 como baseline actual; ese contenido
+habría quedado obsoleto inmediatamente después del merge.
+
+La corrección se realiza en `docs/reestructura` antes de repetir la integración. El descarte no
+perdió código ni alteró `origin/main`, que continúa en
+`8e52828c5470af7f09b49a0b0cddce2a03ea3bbe`. Debe repetirse CI de la rama sobre el nuevo SHA antes
+de crear otro merge.
+
 ## Validación local
 
 AutoCAD 2025 estaba cerrado. Las validaciones se ejecutaron con el SDK .NET 8.0.423 instalado por
@@ -35,7 +47,9 @@ usuario y el Plugin se compiló contra `C:\Program Files\Autodesk\AutoCAD 2025`.
   válidos.
 - Cambios prohibidos: cero bajo `assets/`, `deploy/`, `tests/`, solución o proyectos.
 - AutoCAD no se ejecutó porque I-06 no cambia comportamiento.
-- CI remoto no se consultó y no se declara verde.
+- CI de la rama fue confirmado verde por el dueño para
+  `39cd54189457e8737f08cf95dbf948bc2e564dd3`; el nuevo commit administrativo debe volver a pasar CI
+  antes del merge.
 
 ## Diff completo bajo `src/`
 
@@ -55,21 +69,25 @@ ejecutable ni comportamiento.
   bloqueada hasta ese momento.
 - `docs/HANDOFF.md` registra el cierre, la automatización pausada y la siguiente acción posterior al
   merge.
-- `docs/automation/state/I-06.yml` queda en `completed`, sin gate y con integración manual como
-  siguiente acción.
+- `docs/automation/state/I-06.yml` queda en `completed`, sin gate y con verificación de CI de `main`
+  y limpieza como siguiente acción post-merge.
 - `docs/initiatives/I-06-reestructura-context-packs.md` registra completas las fases 1 a 6, la
   validación del dueño aceptada y el merge pendiente.
 - Esta evidencia conserva la base, las validaciones y las restricciones de la sesión.
 
 ## Validación del dueño y detención
 
-La instrucción explícita que abrió esta sesión acepta la validación del dueño para preparar la
-integración final. Esa aceptación resuelve `owner-validation`, pero no sustituye el gate de CI que
-el dueño debe comprobar antes del merge.
+La validación del dueño está completada y la integración manual está autorizada. Esa autorización
+resuelve `owner-validation`, pero no sustituye la repetición de CI para la nueva punta antes del
+merge.
 
 No se hizo merge, no se modificó `main`, no se eliminó la rama ni el worktree y no se consultó o
 modificó el Pull Request. La automatización sigue pausada y el desarrollo posterior continúa
 manualmente bajo WORKFLOW.
 
-Antes de integrar, el dueño debe verificar en GitHub Actions que CI esté verde para el SHA final de
-`docs/reestructura` publicado por el commit que contiene esta evidencia.
+`last_evidence_commit` puede continuar en el commit técnico de fase 6
+`679aa50d62cfe455530b4ee36fe4a75e89648989`: los commits administrativos posteriores no pueden
+autorreferenciar su propio SHA.
+
+Antes de repetir el merge, el dueño debe verificar en GitHub Actions que CI esté verde para el nuevo
+SHA final de `docs/reestructura` publicado por el commit que contiene esta corrección.
