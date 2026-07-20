@@ -9,9 +9,9 @@
 | Claim-Id | `526b69aa-a56e-4da4-acd7-b96d0d8d1409` |
 | Commit del paquete P1 entregado | `195cc8b26e58e191eeb4c3f5af8fa325ad43a77d` |
 | Fecha de entrega interna | 2026-07-20 |
-| Estado | Revision preliminar P3 completada; decision formal pendiente |
-| Decision | Pendiente |
-| A/B/C/D | Sin seleccionar |
+| Estado | P4 completada; iniciativa documental cerrada |
+| Decision | B. Aprobado con restricciones |
+| A/B/C/D | B seleccionada por el Owner |
 
 ## 2. Objeto de la entrega
 
@@ -41,7 +41,7 @@ politica cero NuGet y no autoriza el merge de I-13.
 | Owner | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Identificado |
 | Technical preparer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Identificado |
 | Internal licensing reviewer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Identificado |
-| Final approver | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Identificado; decisión pendiente |
+| Final approver | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Identificado; decision B registrada |
 
 ## 6. Declaracion sobre concentracion de funciones
 
@@ -80,8 +80,8 @@ y autorizacion legal o contractual.
 
 Las quince preguntas exactas cuentan con evaluacion y respuesta interna propuesta en la
 [hoja de revision interna](I-29-hoja-revision-interna.md) y trazabilidad ampliada en la
-[matriz maestra](I-29-matriz-evidencia-evaluacion.md). Cada respuesta es preliminar y permanece
-pendiente de decision formal de Mario Pérez.
+[matriz maestra](I-29-matriz-evidencia-evaluacion.md). Cada respuesta se conserva como propuesta
+historica de P3 y fue sustituida como decision de gestion por B en P4.
 
 ## 10. Evidencia revalidada
 
@@ -98,16 +98,19 @@ La composicion observada es mixta: siete assemblies con `ReferenceAssemblyAttrib
 atributo. Las tres referencias principales no contienen el atributo y contienen cuerpos. CI #54/#55
 continua registrado como declarado, no verificado independientemente por P1/P2/P3.
 
-## 11. Resultado pendiente
+## 11. Resultado final P4
 
-No se selecciono A, B, C o D. No existe decision firmada ni declaracion de suficiencia. ADR-0003
-permanece propuesto, la excepcion cero NuGet no esta vigente e I-13 continua bloqueada.
+El 2026-07-20 Mario Pérez selecciono **B. Aprobado con restricciones** como decision interna de
+gestion del riesgo para RackCad. La instruccion escrita del Owner, este registro y el commit P4 son
+el mecanismo verificable. La recomendacion D de P3 se conserva como antecedente y fue sustituida por
+B. No existe autorizacion expresa localizada para GitHub-hosted runners; ese punto permanece como
+riesgo residual aceptado internamente. ADR-0003 permanece propuesto, la excepcion cero NuGet no esta
+vigente, I-13 continua abierta y el merge sigue bloqueado.
 
-## 12. Proximo paso P4
+## 12. Efectos y trabajo posterior
 
-P4 permanece bloqueada hasta que Mario Pérez revise las propuestas, seleccione formalmente A/B/C/D,
-registre firma, fecha, autoridad, vigencia y efecto sobre ADR-0003, cero NuGet, I-13 y el merge. P3
-no ejecuta ni autoriza esas acciones.
+I-29 queda cerrada documentalmente. Una iniciativa o sesion posterior, con autorizacion expresa,
+podra decidir ADR-0003, la excepcion cero NuGet, I-13 y la promocion. P4 no ejecuta esas acciones.
 
 ## 13. Registro de recepcion
 
@@ -127,18 +130,18 @@ Mecanismo de entrega:
 
 Este registro no afirma envio por correo, Teams, carta ni entrega de un documento firmado.
 
-## 14. Campos pendientes de aprobacion
+## 14. Registro de aprobacion interna
 
 | Campo | Estado |
 |---|---|
-| Respuestas a las quince preguntas | Pendiente |
-| Fuentes finales revisadas | Pendiente |
-| Opcion A/B/C/D | Sin seleccionar |
-| Restricciones | Pendiente |
+| Respuestas a las quince preguntas | Registradas en plantilla y hoja; incertidumbres aceptadas como riesgo interno |
+| Fuentes finales revisadas | Matriz P3 y paquete P4 |
+| Opcion A/B/C/D | B seleccionada |
+| Restricciones | Catorce restricciones obligatorias y simultaneas registradas |
 | Autoridad corporativa adicional | No proporcionada |
-| Firma | No proporcionada |
-| Fecha de firma | No proporcionada |
-| Vigencia y revision | Pendiente |
-| Registro corporativo | No proporcionado |
+| Firma/mecanismo verificable | Instruccion escrita del Owner incorporada al registro y commit P4 |
+| Fecha de decision | 2026-07-20 |
+| Vigencia y revision | Vigente desde 2026-07-20; cambio material o maximo 2027-07-20 |
+| Registro corporativo | Documentos I-29 y commit P4 de la rama canonica |
 | Conflictos de interes | No declarado |
-| Efecto final sobre ADR-0003 e I-13 | Pendiente |
+| Efecto final sobre ADR-0003 e I-13 | ADR propuesto; I-13 y merge bloqueados; sin cambios |

@@ -2,11 +2,11 @@
 
 Este paquete solicita una decision interna sobre el uso de referencias Autodesk durante la
 compilacion de RackCad. No ofrece asesoramiento legal, no responde en nombre del reviewer y no
-selecciona una salida. Los detalles tecnicos completos permanecen en I-13; aqui se presenta solo la
-informacion necesaria para decidir.
+registra una decision juridica. Los detalles tecnicos completos permanecen en I-13; aqui se presenta
+la evidencia que sustento la decision interna de riesgo del Owner.
 
-Version del paquete: P3 preliminar, 2026-07-20. Estado: evaluacion interna disponible, decision
-humana pendiente; gate L2 abierto.
+Version del paquete: P4 final, 2026-07-20. Estado: **B. Aprobado con restricciones** como decision
+interna de gestion del riesgo; gobernanza tecnica e integracion bloqueadas.
 
 ## 1. Resumen ejecutivo
 
@@ -25,16 +25,14 @@ GitHub puede procesarlas, si pueden conservarse locks/hashes o que obligaciones 
 interno y distribucion externa. Tampoco modifica la politica interna que hoy prohibe paquetes NuGet
 en codigo de producto.
 
-Por eso el merge sigue bloqueado. Se solicita que personas identificadas y con autoridad suficiente
-revisen las fuentes, respondan las quince preguntas y seleccionen exactamente una salida:
+Por eso el merge sigue bloqueado. El Owner reviso las fuentes, las quince propuestas y la
+recomendacion preliminar D de P3, y selecciono:
 
-- A. Aprobado.
-- B. Aprobado con restricciones.
-- C. Rechazado.
-- D. Requiere asesoria legal externa.
+- **B. Aprobado con restricciones.**
 
-Este paquete no favorece ninguna salida. ADR-0003 permanece propuesto, la excepcion cero NuGet no
-esta vigente e I-13 no esta cerrada.
+La decision es interna, limitada a RackCad, uso interno, las versiones auditadas y compile-only. No
+afirma autorizacion expresa de Autodesk ni constituye interpretacion legal definitiva. ADR-0003
+permanece propuesto, la excepcion cero NuGet no esta vigente e I-13 no esta cerrada.
 
 ## 2. Arquitectura tecnica propuesta
 
@@ -99,10 +97,10 @@ fin del job -> destruccion del runner y de su cache local
 ```
 
 Nuget.org conserva el paquete publicado. GitHub aloja y procesa la copia de trabajo en la VM. El
-job puede leerla durante la compilacion. Bajo el diseño solicitado, RackCad no la sube como artifact,
-no la guarda en Git ni en un feed y no la copia al bundle. La eliminacion del runner corresponde al
-ciclo de vida de la infraestructura alojada; la autorizacion contractual para ese flujo es una de
-las preguntas pendientes.
+job puede leerla durante la compilacion. Bajo el diseño aprobado internamente, RackCad no la sube
+como artifact, no la guarda en Git ni en un feed y no la copia al bundle. La eliminacion del runner
+corresponde al ciclo de vida de la infraestructura alojada; la falta de autorizacion contractual
+expresa localizada para ese flujo permanece como riesgo residual aceptado por el Owner.
 
 ## 5. Material que no se conserva
 
@@ -111,7 +109,7 @@ las preguntas pendientes.
 E1/E2 y la promocion declaran cero DLL Autodesk en `ReferenceCopyLocalPaths`, `bin`, bundle o
 artifacts del job de Plugin. E2 uso un lock temporal y un cache de paquetes aislado.
 
-### Restricciones cuya adopcion se solicita
+### Restricciones aprobadas
 
 - no versionar DLL Autodesk;
 - no versionar archivos `.nupkg`;
@@ -122,8 +120,10 @@ artifacts del job de Plugin. E2 uso un lock temporal y un cache de paquetes aisl
 - no conservar la cache del runner entre jobs o runs; y
 - no redistribuir assemblies Autodesk con RackCad.
 
-Estas son restricciones del diseño propuesto, no una conclusion de P1 sobre lo que la licencia
-permite o prohibe.
+Estas restricciones son obligatorias y simultaneas. Ademas, la aprobacion solo cubre RackCad, uso
+interno, las tres versiones auditadas y compilacion; exige `Private=false`, `CopyLocal=false`, hashes
+y origen fijados, rollback documentado y nueva revision ante cualquier version o escenario distinto
+o documentacion Autodesk incompatible. No son una conclusion sobre lo que la licencia permite.
 
 ## 6. Guardas tecnicas
 
@@ -131,7 +131,7 @@ permite o prohibe.
 |---|---|---|
 | Versiones exactas | Evitar actualizaciones flotantes | 25.0.1/25.0.0/25.0.0 en promocion |
 | Fuente unica | Limitar restore a nuget.org | Configuracion temporal fail-closed |
-| Lock temporal/locked mode | Confirmar el grafo exacto | Probado en E2; permanencia pendiente de decision |
+| Lock temporal/locked mode | Confirmar el grafo exacto | Permitido como metadata sin bytes Autodesk; diseño tecnico posterior requerido |
 | SHA-256 y contentHash | Detectar cambio de bytes | Revalidados y coincidentes en P3 |
 | Firma de autor | Aportar integridad y procedencia tecnica | CMS valida de Autodesk, Inc., revalidada en P3 |
 | Firma de repositorio | Aportar integridad del canal | CMS valida de NuGet.org Repository by Microsoft, revalidada en P3 |
@@ -159,22 +159,23 @@ La excepcion solicitada seria estrecha:
 - sin extenderse a otro proyecto, paquete, version o uso; y
 - con revision al cambiar AutoCAD, .NET, runner, fuente o guardas.
 
-La excepcion no esta vigente. Requiere una decision L2 suficiente y ADR-0003 aceptado por el dueño
-cuando corresponda. No crea una categoria general de dependencias de build.
+La decision B satisface el registro interno L2, pero la excepcion no esta vigente: requiere una
+fase tecnica posterior autorizada y ADR-0003 aceptado por el dueño cuando corresponda. No crea una
+categoria general de dependencias de build.
 
-## 8. Casos de uso cuya autorizacion se solicita
+## 8. Casos de uso aprobados internamente
 
-| Caso | Autorizacion solicitada | Controles | Respuesta pendiente |
+| Caso | Alcance aprobado | Controles | Resultado P4 |
 |---|---|---|---|
-| Descarga desde nuget.org | Obtener las tres versiones exactas durante el job | Fuente unica, versiones y grafo fijados | Reviewer y approver |
-| GitHub-hosted runner | Procesar el material en una VM Windows alojada por GitHub | Runner sin AutoCAD, permisos minimos | Reviewer y approver |
-| Copia efimera | Mantener el paquete extraido solo durante el job | `NUGET_PACKAGES` aislado y destruccion al finalizar | Reviewer |
-| Compilacion interna | Usar assemblies como referencias compile-only | `Private=false`, `CopyLocal=false`, runtime excluido | Reviewer y approver |
-| Hashes/contentHash | Conservar metadata de integridad sin conservar assemblies | Sin bytes del paquete en Git | Reviewer |
-| `packages.lock.json` | Conservar o no un lock permanente para locked mode | Ubicacion y alcance por definir | Reviewer y approver |
-| Distribuir RackCad sin material Autodesk | Entregar solo DLL RackCad, catalogos y manifiesto | Inspeccion recursiva y bundle limpio | Reviewer y approver |
-| Uso interno | Usar el build dentro de la organizacion | Audiencia y responsables por definir | Reviewer y approver |
-| Distribucion externa sin assemblies Autodesk | Entregar RackCad que depende de AutoCAD instalado | No redistribuir DLL Autodesk; avisos por definir | Reviewer y approver |
+| Descarga desde nuget.org | Obtener las tres versiones exactas durante el job | Fuente unica, versiones y grafo fijados | Aprobado con restricciones |
+| GitHub-hosted runner | Procesar el material en una VM Windows alojada por GitHub | Runner sin AutoCAD, permisos minimos | Riesgo aceptado internamente; sin autorizacion Autodesk expresa localizada |
+| Copia efimera | Mantener el paquete extraido solo durante el job | `NUGET_PACKAGES` aislado y destruccion al finalizar | Aprobada con restricciones |
+| Compilacion interna | Usar assemblies como referencias compile-only | `Private=false`, `CopyLocal=false`, runtime excluido | Aprobada con restricciones |
+| Hashes/contentHash | Conservar metadata de integridad sin conservar assemblies | Sin bytes del paquete en Git | Aprobado |
+| `packages.lock.json` | Conservar metadata para locked mode | Sin bytes Autodesk; versiones y origen fijados | Aprobado condicionalmente |
+| Distribuir RackCad sin material Autodesk | Uso interno del bundle limpio | Inspeccion recursiva y bundle limpio | Aprobado solo para uso interno |
+| Uso interno | Usar el build dentro de Industrias Montilla | Mario Pérez como responsable | Aprobado con restricciones |
+| Distribucion externa sin assemblies Autodesk | Fuera del alcance aprobado | No redistribuir DLL Autodesk | No autorizada por P4 |
 
 ## 9. Casos expresamente prohibidos o no solicitados
 
@@ -192,27 +193,27 @@ El paquete no solicita autorizacion para:
 - ampliar automaticamente la excepcion a futuras dependencias.
 
 Una decision futura podria tratar alguno de estos casos, pero tendria que hacerlo de forma expresa;
-el silencio no los incorpora al alcance solicitado.
+la decision B no los incorpora.
 
-## 10. Preguntas que requieren decision humana
+## 10. Preguntas revisadas por el Owner
 
 | Nº | Categoria | Pregunta | Evidencia disponible | Rol que debe responder | Estado |
 |---:|---|---|---|---|---|
-| 1 | Licencia/infraestructura | ¿La licencia permite descargar y usar estos assemblies en runners GitHub-hosted? | Licencia ObjectARX heredada, E2 y documentacion GitHub | Reviewer y approver | Pendiente de respuesta humana |
-| 2 | Licencia/caching | ¿La copia efimera en `NUGET_PACKAGES` es una copia de desarrollo permitida? | Flujo E2 y licencia heredada | Reviewer | Pendiente de respuesta humana |
-| 3 | Infraestructura | ¿Puede GitHub actuar como proveedor de infraestructura para ese uso? | Ciclo de vida de hosted runners | Reviewer y approver | Pendiente de respuesta humana |
-| 4 | Caching | ¿Puede usarse `actions/cache`? | Documentacion oficial de caching | Reviewer y approver | Pendiente de respuesta humana |
-| 5 | Integridad | ¿Puede conservarse `packages.lock.json`? | Lock temporal E2 | Reviewer y preparer | Pendiente de respuesta humana |
-| 6 | Integridad | ¿Pueden conservarse `contentHash` y hashes? | Hashes heredados de I-13 | Reviewer | Pendiente de respuesta humana |
-| 7 | Material/licencia | ¿Es admisible que el paquete contenga assemblies de implementacion? | Inventario PE heredado de E1 | Reviewer | Pendiente de respuesta humana |
-| 8 | Procedencia | ¿NuGet es un canal autorizado por Autodesk? | Owner, firmas y tutorial APS; enlace exacto incompleto | Reviewer y approver | Pendiente de respuesta humana |
-| 9 | Procedencia | ¿`verified=false` requiere validacion adicional? | Prefijo no verificado; firmas/hashes heredados | Reviewer y approver | Pendiente de respuesta humana |
-| 10 | Caching/redistribucion | ¿Puede usarse un feed privado? | Escenario no probado; copia persistente | Reviewer y approver | Pendiente de respuesta humana |
-| 11 | Infraestructura | ¿Puede usarse un runner autohospedado? | Alternativa no probada | Reviewer, owner y operaciones | Pendiente de respuesta humana |
-| 12 | Obligaciones | ¿Hay obligaciones de avisos o atribucion? | Clausulas y avisos descritos en evidencia heredada | Reviewer | Pendiente de respuesta humana |
-| 13 | Distribucion | ¿RackCad puede distribuirse sin material Autodesk y depender de AutoCAD instalado? | Bundle limpio y `CopyLocal=false` | Reviewer y approver | Pendiente de respuesta humana |
-| 14 | Uso interno/externo | ¿Difiere uso interno de distribucion externa? | Audiencias no resueltas por evidencia tecnica | Reviewer y approver | Pendiente de respuesta humana |
-| 15 | Licencias AutoCAD | ¿Se requiere una licencia AutoCAD por cada entorno de build? | E2 no instalo ni ejecuto AutoCAD | Reviewer | Pendiente de respuesta humana |
+| 1 | Licencia/infraestructura | ¿La licencia permite descargar y usar estos assemblies en runners GitHub-hosted? | Licencia ObjectARX heredada, E2 y documentacion GitHub | Owner | Riesgo aceptado internamente; sin afirmacion juridica |
+| 2 | Licencia/caching | ¿La copia efimera en `NUGET_PACKAGES` es una copia de desarrollo permitida? | Flujo E2 y licencia heredada | Owner | Tratada como uso interno aceptable solo bajo restricciones |
+| 3 | Infraestructura | ¿Puede GitHub actuar como proveedor de infraestructura para ese uso? | Ciclo de vida de hosted runners | Owner | Riesgo aceptado para el flujo efimero aprobado |
+| 4 | Caching | ¿Puede usarse `actions/cache`? | Documentacion oficial de caching | Owner | No autorizado |
+| 5 | Integridad | ¿Puede conservarse `packages.lock.json`? | Lock temporal E2 | Owner | Permitido como metadata sin material Autodesk |
+| 6 | Integridad | ¿Pueden conservarse `contentHash` y hashes? | Hashes revalidados en P3 | Owner | Permitido como evidencia de integridad |
+| 7 | Material/licencia | ¿Es admisible que el paquete contenga assemblies de implementacion? | Composicion mixta revalidada | Owner | Aceptado solo para compile-only y sin redistribucion |
+| 8 | Procedencia | ¿NuGet es un canal autorizado por Autodesk? | Owner, firmas y tutorial APS; enlace exacto incompleto | Owner | nuget.org aceptado internamente como fuente unica; incertidumbre residual |
+| 9 | Procedencia | ¿`verified=false` requiere validacion adicional? | Prefijo no verificado; firmas/hashes revalidados | Owner | Controles P3 obligatorios y repetibles |
+| 10 | Caching/redistribucion | ¿Puede usarse un feed privado? | Escenario no probado; copia persistente | Owner | No autorizado |
+| 11 | Infraestructura | ¿Puede usarse un runner autohospedado? | Alternativa no probada | Owner | Fuera de alcance; requiere nueva revision |
+| 12 | Obligaciones | ¿Hay obligaciones de avisos o atribucion? | Clausulas y avisos revisados | Owner | Conservar acuerdo y avisos en toda copia permitida |
+| 13 | Distribucion | ¿RackCad puede distribuirse sin material Autodesk y depender de AutoCAD instalado? | Bundle limpio y `CopyLocal=false` | Owner | Solo uso interno aprobado; distribucion externa fuera de alcance |
+| 14 | Uso interno/externo | ¿Difiere uso interno de distribucion externa? | Audiencias separadas en P3 | Owner | Si para P4: uso interno aprobado; externo no autorizado |
+| 15 | Licencias AutoCAD | ¿Se requiere una licencia AutoCAD por cada entorno de build? | E2 no instalo ni ejecuto AutoCAD | Owner | Sin conclusion; runner aprobado no instala ni ejecuta AutoCAD |
 
 ## 11. Alternativas
 
@@ -243,7 +244,7 @@ bloqueada hasta recuperar un bundle limpio.
 El rollback debe registrar responsable, fecha, causa, commits, validaciones y efecto sobre I-13 y
 ADR-0003. P1 solo define este procedimiento; no lo ejecuta.
 
-## 13. Recomendacion preliminar y decision solicitada
+## 13. Recomendacion preliminar historica y decision final
 
 P3 recomienda preliminarmente **D. Requiere asesoria legal externa**, con confianza media. No se
 marca formalmente esa opcion. El fundamento es que las fuentes primarias permiten copias para
@@ -252,51 +253,49 @@ recibir y procesar esas copias ni si nuget.org es el canal autorizado para las v
 La composicion mixta eleva la cautela sobre el material principal, pero no invalida E1/E2 ni es por
 si sola motivo de rechazo.
 
-Mientras se obtiene esa respuesta, permanecen propuestas las restricciones de las secciones 5, 7,
-8 y 9. Una eventual salida B solo seria razonable si la respuesta externa confirma el restore
-efimero alojado y se conservan todas las guardas. A se descarta provisionalmente por las
-ambiguedades materiales; C, porque no se encontro prohibicion expresa y E1/E2 siguen validos; B,
-como decision inmediata, porque depende precisamente de resolver esas ambiguedades.
+P3 razono que, mientras se obtenia esa respuesta, debian mantenerse las restricciones de las
+secciones 5, 7, 8 y 9, y que B solo seria proporcional con todas las guardas. Descarto
+provisionalmente A por las ambiguedades materiales y C porque no se encontro prohibicion expresa y
+E1/E2 seguian validos. Este razonamiento se conserva como antecedente, no como decision vigente.
 
-El final approver debe seleccionar exactamente una salida en la
-[plantilla de decision](I-29-plantilla-decision.md):
+El Owner reviso esa recomendacion y el 2026-07-20 decidio **B. Aprobado con restricciones**. La
+decision acepta internamente el riesgo residual de no haber localizado autorizacion expresa para
+GitHub-hosted runners. Se limita a RackCad, uso interno, Mario Pérez como mantenedor, las versiones
+auditadas y el flujo compile-only. Cualquier cambio de proyecto, audiencia, versiones, fuente,
+runner, caching, artifacts, distribucion o documentacion aplicable exige nueva revision.
 
-- A. Aprobado.
-- B. Aprobado con restricciones.
-- C. Rechazado.
-- D. Requiere asesoria legal externa.
+La [plantilla de decision](I-29-plantilla-decision.md) registra B y estos efectos:
 
-La respuesta debe indicar expresamente:
-
-| Tema | Efecto que debe registrar la decision |
+| Tema | Efecto P4 |
 |---|---|
-| ADR-0003 | Si puede avanzar, debe cambiar, debe rechazarse o sigue propuesto |
-| Politica cero NuGet | Si existe una excepcion, su alcance; de lo contrario, continuidad de la regla |
-| I-13 | Si avanza a cierre, requiere trabajo adicional o activa rollback |
-| Merge de promocion | Autorizado solo bajo condiciones expresas o permanece bloqueado |
+| ADR-0003 | Permanece propuesto y sin modificar |
+| Politica cero NuGet | Permanece vigente; la excepcion tecnica no esta activa |
+| I-13 | Permanece abierta, bloqueada y sin modificar |
+| Merge de promocion | Permanece bloqueado y no autorizado por P4 |
 
-P3 recomienda D de forma preliminar, pero no selecciona ninguna opcion ni autoriza el merge.
+P4 selecciona B exclusivamente como decision interna de riesgo. No acepta ADR-0003, no activa la
+excepcion cero NuGet, no cierra I-13 y no autoriza el merge.
 
 ## 14. Firmas y aprobaciones
 
 | Rol | Nombre | Cargo | Organizacion | Autoridad | Fecha | Firma/mecanismo verificable |
 |---|---|---|---|---|---|---|
-| Owner | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
-| Technical preparer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
-| Internal licensing reviewer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
-| Final approver | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
+| Owner | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Gestion interna de RackCad | 2026-07-20 | Instruccion escrita del Owner registrada en P4 |
+| Technical preparer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Preparacion tecnica de RackCad | 2026-07-20 | Registro versionado P1-P4 |
+| Internal licensing reviewer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Revision interna de riesgo; no juridica profesional | 2026-07-20 | Instruccion escrita del Owner registrada en P4 |
+| Final approver | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | Decision interna de gestion del riesgo de RackCad | 2026-07-20 | Instruccion escrita del Owner registrada en P4 |
 
 La misma persona ocupa los cuatro roles y el Owner acepta esa concentracion para I-29. No existe
 independencia entre preparer, reviewer y approver. La revision interna se limita a riesgo, licencia
 y gobernanza del proyecto; no constituye asesoria legal profesional. La salida D sigue disponible
 cuando se requiera criterio juridico externo.
 
-Vigencia: ____________________
+Vigencia: desde 2026-07-20 mientras se mantengan simultaneamente alcance y restricciones.
 
-Fecha de revision: ____________________
+Fecha de revision: ante cualquier cambio material y, como maximo, 2027-07-20.
 
-Registro corporativo: ____________________
+Registro corporativo: documentos I-29 y commit P4 de la rama canonica.
 
-Conflictos de interes declarados: ____________________
+Conflictos de interes declarados: no declarados en la instruccion P4.
 
-Fuentes revisadas y version del paquete documental: ____________________
+Fuentes revisadas y version del paquete documental: matriz P3 y paquete P4 final.

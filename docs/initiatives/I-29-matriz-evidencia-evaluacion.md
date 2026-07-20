@@ -1,10 +1,9 @@
 # I-29 — Matriz maestra de evidencia y evaluacion
 
-Fecha de ejecucion: 2026-07-20. Estado: P3 preliminar completada; decision formal pendiente.
+Fecha de ejecucion P3: 2026-07-20. Estado P4: decision B registrada el 2026-07-20.
 
-Este documento es una evaluacion interna de riesgo, licencia y gobernanza. No constituye asesoria
-legal profesional, no selecciona A/B/C/D y no autoriza cambios en I-13, ADR-0003, la politica cero
-NuGet ni el merge de la promocion.
+Este documento conserva la evaluacion preliminar P3 y registra su resultado P4. No constituye
+asesoria legal profesional ni autoriza cambios en I-13, ADR-0003, la politica cero NuGet o el merge.
 
 ## 1. Alcance
 
@@ -21,7 +20,7 @@ redistribucion de assemblies, otras versiones y cualquier conclusion sobre licen
 3. Se registro la revalidacion independiente ya ejecutada sobre los tres nupkg exactos, sin volver a
    descargarlos ni conservar binarios o temporales.
 4. Se revisaron fuentes primarias de Autodesk, NuGet/Microsoft y GitHub vigentes el 2026-07-20.
-5. Para cada pregunta se separaron hechos, inferencias, limites, riesgo y decision pendiente.
+5. Para cada pregunta se separaron hechos, inferencias, limites y riesgo antes de la decision P4.
 
 ## 3. Fuentes internas
 
@@ -129,8 +128,8 @@ E1 y E2 no quedan automaticamente invalidadas: sus pruebas operaron sobre estos 
 
 ## 9. Evaluacion de las quince preguntas
 
-Cada respuesta conserva esta marca: **Propuesta preliminar; pendiente de decision formal de Mario
-Pérez.**
+Cada respuesta conserva su naturaleza P3 con esta marca: **Propuesta preliminar historica de P3;
+sustituida como decision de gestion por B en P4.**
 
 ### Pregunta 1
 
@@ -151,7 +150,7 @@ Pérez.**
 | Respuesta interna propuesta | No autorizar el merge hasta obtener confirmacion escrita competente sobre el runner alojado. |
 | Restricciones propuestas | Solo restore efimero, compile-only, sin AutoCAD, cache persistente, artifacts ni redistribucion. |
 | ¿Requiere asesoría legal externa? | Si. |
-| Justificación | Cuestion contractual material sin fuente primaria suficientemente directa. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | Cuestion contractual material sin fuente primaria suficientemente directa. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 2
 
@@ -172,7 +171,7 @@ Pérez.**
 | Respuesta interna propuesta | Mantenerla bloqueada salvo confirmacion conjunta con la pregunta 1. |
 | Restricciones propuestas | Ruta fuera del checkout, acceso del job, borrado con VM y auditoria de salidas. |
 | ¿Requiere asesoría legal externa? | Si. |
-| Justificación | La finalidad parece alineada, pero la modalidad no esta nombrada. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La finalidad parece alineada, pero la modalidad no esta nombrada. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 3
 
@@ -193,7 +192,7 @@ Pérez.**
 | Respuesta interna propuesta | No reconocer a GitHub como proveedor autorizado sin criterio escrito competente. |
 | Restricciones propuestas | Si se confirma, permisos minimos, VM efimera, sin secrets ni persistencia Autodesk. |
 | ¿Requiere asesoría legal externa? | Si. |
-| Justificación | La licencia no resuelve el papel de GitHub. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La licencia no resuelve el papel de GitHub. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 4
 
@@ -214,7 +213,7 @@ Pérez.**
 | Respuesta interna propuesta | No; mantenerlo prohibido para material Autodesk. |
 | Restricciones propuestas | Ninguna excepcion implicita; una solicitud futura exige evaluacion separada. |
 | ¿Requiere asesoría legal externa? | No para mantener la prohibicion; si para solicitarlo en el futuro. |
-| Justificación | La politica conservadora resuelve el alcance actual sin afirmar prohibicion legal. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La politica conservadora resuelve el alcance actual sin afirmar prohibicion legal. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 5
 
@@ -235,7 +234,7 @@ Pérez.**
 | Respuesta interna propuesta | Si, solo tras aprobar la excepcion y un diseño de lock permanente correcto. |
 | Restricciones propuestas | Solo metadata; sin bytes; revision de cambios; locked mode; ubicacion aprobada. |
 | ¿Requiere asesoría legal externa? | No como decision tecnica interna; incluirla en la consulta si se busca certeza contractual completa. |
-| Justificación | NuGet recomienda locks para CI, pero eso no decide Autodesk. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | NuGet recomienda locks para CI, pero eso no decide Autodesk. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 6
 
@@ -256,7 +255,7 @@ Pérez.**
 | Respuesta interna propuesta | Si, como evidencia de integridad y nunca como permiso. |
 | Restricciones propuestas | Conservar solo valores y contexto; no contenido codificado ni paquetes. |
 | ¿Requiere asesoría legal externa? | No para el alcance interno propuesto. |
-| Justificación | La separacion entre hash y bytes es tecnica y la politica permite la evidencia. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La separacion entre hash y bytes es tecnica y la politica permite la evidencia. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 7
 
@@ -277,7 +276,7 @@ Pérez.**
 | Respuesta interna propuesta | Tratar conservadoramente las seis DLL como material completo hasta criterio competente. |
 | Restricciones propuestas | Nunca ejecutar, copiar, cachear persistentemente, publicar o redistribuir. |
 | ¿Requiere asesoría legal externa? | Si. |
-| Justificación | La propiedad tecnica corrige precision, pero no concede uso. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La propiedad tecnica corrige precision, pero no concede uso. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 8
 
@@ -298,7 +297,7 @@ Pérez.**
 | Respuesta interna propuesta | Solicitar confirmacion escrita de Autodesk o asesor competente antes del merge. |
 | Restricciones propuestas | Versiones y hashes exactos; nuget.org unico; firmas obligatorias; fail-closed. |
 | ¿Requiere asesoría legal externa? | Si, salvo confirmacion primaria directa de Autodesk. |
-| Justificación | Procedencia robusta no equivale a autorizacion de canal. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | Procedencia robusta no equivale a autorizacion de canal. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 9
 
@@ -319,7 +318,7 @@ Pérez.**
 | Respuesta interna propuesta | Si requiere controles compensatorios; los aplicados son suficientes para procedencia tecnica, no legal. |
 | Restricciones propuestas | Mantener verificacion CMS, hashes y owner en cada cambio de version. |
 | ¿Requiere asesoría legal externa? | No para interpretar `verified`; la pregunta 8 sigue abierta. |
-| Justificación | Microsoft define de forma expresa el indicador. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | Microsoft define de forma expresa el indicador. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 10
 
@@ -340,7 +339,7 @@ Pérez.**
 | Respuesta interna propuesta | No usar feed privado. |
 | Restricciones propuestas | Cualquier solicitud futura requiere evaluacion contractual, acceso, avisos y retencion separados. |
 | ¿Requiere asesoría legal externa? | No para mantener la prohibicion actual. |
-| Justificación | No forma parte del caso solicitado. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | No forma parte del caso solicitado. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 11
 
@@ -361,7 +360,7 @@ Pérez.**
 | Respuesta interna propuesta | No autorizar dentro de I-29/P3; evaluar como alternativa independiente. |
 | Restricciones propuestas | Inventario de software, identidad de usuarios, aislamiento, retencion, licencias y auditoria. |
 | ¿Requiere asesoría legal externa? | Si, si el diseño usa copias Autodesk o AutoCAD instalado. |
-| Justificación | La topologia concreta no existe y puede activar acuerdos distintos. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La topologia concreta no existe y puede activar acuerdos distintos. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 12
 
@@ -382,7 +381,7 @@ Pérez.**
 | Respuesta interna propuesta | Conservar acuerdo y avisos en toda copia Autodesk permitida; no añadir material al bundle RackCad. |
 | Restricciones propuestas | Paquete intacto en cache efimero; prohibida redistribucion; revisar avisos de RackCad por separado si cambia el modelo. |
 | ¿Requiere asesoría legal externa? | No para la obligacion expresa; si se pretende redistribuir o definir avisos del producto final. |
-| Justificación | El acuerdo exige conservar acuerdo y avisos en copias entregadas. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | El acuerdo exige conservar acuerdo y avisos en copias entregadas. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 13
 
@@ -403,7 +402,7 @@ Pérez.**
 | Respuesta interna propuesta | Mantener el modelo tecnico, pero no usar P3 como autorizacion contractual de distribucion. |
 | Restricciones propuestas | Cero material Autodesk, dependencia runtime documentada, inspeccion recursiva y validacion en AutoCAD licenciado. |
 | ¿Requiere asesoría legal externa? | Si para una confirmacion material de distribucion. |
-| Justificación | La limpieza del bundle no concede el derecho sobre la aplicacion resultante. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La limpieza del bundle no concede el derecho sobre la aplicacion resultante. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 14
 
@@ -424,7 +423,7 @@ Pérez.**
 | Respuesta interna propuesta | Separar ambos escenarios y no autorizar distribucion externa por analogia. |
 | Restricciones propuestas | Alcance, destinatarios, avisos, soporte y ausencia de material Autodesk documentados por separado. |
 | ¿Requiere asesoría legal externa? | Si. |
-| Justificación | La evidencia tecnica no decide audiencias contractuales. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | La evidencia tecnica no decide audiencias contractuales. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ### Pregunta 15
 
@@ -445,7 +444,7 @@ Pérez.**
 | Respuesta interna propuesta | No concluir si o no; solicitar confirmacion expresa antes de adoptar el entorno. |
 | Restricciones propuestas | Runner sin AutoCAD ni servicios; no usar credenciales o licencias de producto hasta resolver. |
 | ¿Requiere asesoría legal externa? | Si. |
-| Justificación | Es una cuestion de producto distinta del permiso ObjectARX. Propuesta preliminar; pendiente de decision formal de Mario Pérez. |
+| Justificación | Es una cuestion de producto distinta del permiso ObjectARX. Propuesta preliminar historica de P3; sustituida como decision de gestion por B en P4. |
 
 ## 10. Riesgos transversales
 
@@ -456,7 +455,7 @@ Pérez.**
 - Confundir compilacion verde con runtime, redistribucion o licencia AutoCAD.
 - Tomar una decision sin independencia, autoridad documentada, vigencia o mecanismo verificable.
 
-## 11. Recomendacion preliminar
+## 11. Recomendacion preliminar historica y decision P4
 
 Opcion recomendada para decision humana: **D. Requiere asesoria legal externa**. Confianza: media.
 No se marca formalmente la opcion.
@@ -479,25 +478,32 @@ las restricciones: copia efimera, compile-only, runner sin AutoCAD, nuget.org y 
 sin `actions/cache`, feeds, artifacts ni redistribucion, bundle limpio, guardas fail-closed y
 rollback coordinado.
 
-## 12. Elementos pendientes de decision formal
+El Owner reviso esta recomendacion y selecciono **B. Aprobado con restricciones** el 2026-07-20.
+La decision es interna, no juridica, y acepta el riesgo residual de no haber localizado autorizacion
+expresa para GitHub-hosted runners. Solo cubre RackCad, uso interno, Mario Pérez como mantenedor, las
+versiones auditadas y compile-only, bajo las catorce restricciones de la
+[decision P4](I-29-plantilla-decision.md).
 
-- seleccion formal A/B/C/D;
-- respuestas atribuidas de Mario Pérez a las quince preguntas;
-- firma, fecha de aprobacion, autoridad, registro corporativo y conflictos;
-- vigencia, revision y responsable de cumplimiento;
-- aceptacion, cambio o rechazo de ADR-0003;
-- excepcion expresa a cero NuGet;
-- autorizacion o bloqueo final del merge de I-13;
-- cierre o rollback de I-13.
+## 12. Resultado y limites de P4
 
-Hasta entonces ADR-0003 permanece propuesto, cero NuGet sigue vigente, I-13 sigue abierta y
-bloqueada y P4 no puede ejecutarse.
+- B seleccionada por Mario Pérez como Owner y final approver;
+- instruccion escrita P4 como mecanismo verificable;
+- vigencia desde 2026-07-20, revision ante cambio material y como maximo 2027-07-20;
+- ADR-0003 permanece propuesto;
+- cero NuGet permanece vigente y su excepcion tecnica no esta activa;
+- I-13 permanece abierta y bloqueada;
+- el merge permanece bloqueado;
+- no existe conclusion juridica ni autorizacion Autodesk expresa localizada.
+
+I-29 queda cerrada documentalmente. La gobernanza o implementacion posterior requiere autorizacion
+separada y no forma parte de P4.
 
 ## 13. Deuda documental de I-13
 
 > La documentación heredada de I-13 contiene una generalización sobre la naturaleza de los trece
 > assemblies que debe corregirse posteriormente. La corrección deberá realizarse en P4 o en una
-> ejecución documental específica autorizada, manteniendo trazabilidad con la revalidación de I-29.
+> ejecución documental específica posterior y autorizada, manteniendo trazabilidad con la
+> revalidación de I-29.
 
 | Campo | Registro |
 |---|---|
@@ -505,4 +511,4 @@ bloqueada y P4 no puede ejecutarse.
 | Caracterizacion corregida | Siete contienen `ReferenceAssemblyAttribute`; seis no; las tres principales estan entre las seis y contienen cuerpos. |
 | Archivos potencialmente afectados | Documento I-13 en `experiment/refs-autocad-ci` y documentos derivados en `architecture/referencias-autocad-ci`. |
 | Por que no se corrigen en P3 | Esas ramas son estrictamente de solo lectura y el alcance autoriza solo documentacion I-29. |
-| Condicion futura | P4 o ejecucion documental especifica autorizada, sin alterar evidencia tecnica y con trazabilidad a esta matriz. |
+| Condicion futura | Ejecucion documental posterior y especifica autorizada, sin alterar evidencia tecnica y con trazabilidad a esta matriz. |

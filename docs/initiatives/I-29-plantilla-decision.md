@@ -1,187 +1,167 @@
-# I-29 — Plantilla de decision interna
+# I-29 — Decision interna
 
-Formulario neutral para registrar la decision sobre referencias AutoCAD de compilacion en CI. No
-debe firmarse hasta revisar el [paquete de decision](I-29-paquete-decision-interna.md) y responder
-las quince preguntas. Marcar exactamente una opcion.
-
-P3 agrego una recomendacion preliminar en la matriz maestra y la hoja de revision. Esta plantilla
-permanece deliberadamente sin seleccionar, sin firma, sin fecha de aprobacion y sin vigencia.
+Registro final P4 sobre referencias AutoCAD de compilacion en CI. Esta decision es una medida
+interna de gestion del riesgo para RackCad. No constituye asesoria legal, no afirma que Autodesk
+autorice expresamente el mecanismo y no modifica ADR-0003, cero NuGet, I-13 ni el merge.
 
 ## Identificacion
 
 | Campo | Valor |
 |---|---|
 | Iniciativa | I-29 — Licencia y procedencia de referencias AutoCAD para CI |
-| Fecha |  |
-| Version del paquete documental |  |
-| Fuentes revisadas |  |
+| Fecha | 2026-07-20 |
+| Version del paquete documental | P4 final |
+| Fuentes revisadas | Paquete I-29, matriz P3, hoja de revision, evidencia E1/E2, licencia incluida y fuentes oficiales registradas |
 | Owner | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
 | Technical preparer | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
 | Internal licensing reviewer | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
 | Final approver | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
-| Registro corporativo |  |
-| Mecanismo verificable de aprobacion |  |
+| Autoridad ejercida | Gestion interna del proyecto RackCad; no autoridad juridica profesional |
+| Registro verificable | Instruccion escrita del Owner incorporada a este documento y al commit P4 |
+
+Los cuatro roles permanecen concentrados en Mario Pérez. Esta concentracion reduce la independencia
+de la revision y fue aceptada por el Owner para I-29.
 
 ## Salida seleccionada
 
 - [ ] A. Aprobado.
-- [ ] B. Aprobado con restricciones.
+- [x] B. Aprobado con restricciones.
 - [ ] C. Rechazado.
 - [ ] D. Requiere asesoria legal externa.
 
-La misma persona ocupa los cuatro roles. Esta concentracion, aceptada por el Owner para I-29,
-reduce la independencia de la revision. La revision interna no constituye asesoria legal
-profesional y la salida D permanece disponible cuando se requiera criterio juridico externo.
+P3 recomendo D de forma preliminar, con confianza media. El Owner reviso esa recomendacion y decidio
+adoptar B como gestion interna del riesgo. D se conserva exclusivamente como antecedente historico.
 
-## Campos obligatorios para A o B
+## Fundamento
 
-| Campo | Respuesta |
+E1/E2 demostraron que `RackCad.Plugin` compila contra los paquetes auditados sin AutoCAD instalado,
+con `Private=false`, `CopyLocal=false` y un bundle sin assemblies Autodesk. P3 revalido integridad,
+procedencia y composicion mixta. No se localizo autorizacion expresa de Autodesk para
+GitHub-hosted runners. El Owner acepta esa incertidumbre residual solo para el alcance restringido
+de esta decision, sin convertirla en conclusion juridica.
+
+## Alcance aprobado
+
+| Campo | Decision |
 |---|---|
-| Alcance |  |
-| Restricciones |  |
-| Paquetes y versiones cubiertas |  |
-| GitHub-hosted runners |  |
-| Copia efimera |  |
-| Obtencion desde nuget.org |  |
-| `NUGET_PACKAGES` |  |
-| `actions/cache` |  |
-| `packages.lock.json` |  |
-| Hashes/contentHash |  |
-| Artifacts |  |
-| Feeds privados |  |
-| Uso interno |  |
-| Uso externo |  |
-| Distribucion de RackCad |  |
-| Redistribucion de material Autodesk |  |
-| Avisos y atribuciones |  |
-| Evidencia que debe conservarse |  |
-| Vigencia |  |
-| Fecha de revision anual |  |
-| Responsable de cumplimiento |  |
-| Condiciones de revocacion |  |
-| Rollback |  |
-| Efecto sobre ADR-0003 |  |
-| Efecto sobre I-13 |  |
-| Autorizacion o bloqueo del merge |  |
+| Proyecto | Unicamente RackCad |
+| Organizacion y audiencia | Uso interno de Industrias Montilla |
+| Responsable | Mario Pérez |
+| Proyecto tecnico | Unicamente `RackCad.Plugin` |
+| Finalidad | Compilacion compile-only en CI |
+| Paquetes | `AutoCAD.NET` 25.0.1, `AutoCAD.NET.Core` 25.0.0 y `AutoCAD.NET.Model` 25.0.0 |
+| GitHub-hosted runners | Aceptados como riesgo interno solo para el flujo efimero restringido |
+| AutoCAD | No instalar, ejecutar ni licenciar por inferencia en el runner |
+| Uso externo | No autorizado por esta decision |
 
-Para B, cada restriccion debe ser verificable y debe identificar responsable, fecha y consecuencia
-del incumplimiento. Para A, los campos siguen siendo obligatorios: una aprobacion sin alcance no es
-suficiente.
+## Restricciones obligatorias
 
-## Campos obligatorios para C
+Las catorce condiciones son simultaneas:
 
-| Campo | Respuesta |
+1. Unicamente para RackCad; no autoriza otros proyectos.
+2. Unicamente para `AutoCAD.NET` 25.0.1, `AutoCAD.NET.Core` 25.0.0 y
+   `AutoCAD.NET.Model` 25.0.0; toda nueva version requiere revision.
+3. Solo para compilacion; no para ejecutar AutoCAD.
+4. `Private=false` efectivo.
+5. `CopyLocal=false` efectivo.
+6. Ningun assembly Autodesk en el bundle final.
+7. Ningun artifact con material Autodesk.
+8. No usar `actions/cache` para estos paquetes.
+9. No usar feeds privados.
+10. No redistribuir DLL Autodesk.
+11. Mantener hashes, versiones y origen fijados.
+12. Mantener rollback documentado.
+13. Revisar la decision si Autodesk publica documentacion incompatible.
+14. No presentar la aprobacion como interpretacion legal definitiva.
+
+## Controles operativos
+
+| Tema | Respuesta final |
 |---|---|
-| Causa |  |
-| Fuente contractual o politica |  |
-| Alcance del rechazo |  |
-| Rollback requerido |  |
-| Alternativa tecnica requerida |  |
-| Efecto sobre I-13 |  |
-| Responsable de ejecutar el rollback |  |
-| Fecha objetivo |  |
+| Copia efimera | Solo en `NUGET_PACKAGES` aislado durante el job; destruccion con el runner |
+| Obtencion | Solo nuget.org y versiones exactas auditadas |
+| `actions/cache` | Prohibido |
+| `packages.lock.json` | Permitido como metadata sin bytes Autodesk, sujeto al diseño tecnico posterior |
+| Hashes/contentHash | Permitidos y obligatorios como evidencia de integridad |
+| Artifacts | Prohibidos si contienen DLL, nupkg, cache o contenido extraido Autodesk |
+| Artifacts RackCad | Solo si una guarda demuestra ausencia total de material Autodesk |
+| Feeds privados | Prohibidos |
+| Distribucion de RackCad | Solo uso interno y bundle limpio dentro del alcance P4 |
+| Redistribucion Autodesk | Prohibida |
+| Avisos | Conservar acuerdo y avisos en toda copia Autodesk permitida |
+| Evidencia | Versiones, hashes, firmas, owner, origen, guardas y resultados sanitizados |
+| Responsable de cumplimiento | Mario Pérez |
+| Revocacion | Cambio de version, fuente, runner, audiencia, finalidad, guardas o documentacion incompatible |
+| Rollback | Retirar coordinadamente PackageReference, job, script y excepcion documental propuesta |
 
-## Campos obligatorios para D
+## Respuestas a las quince preguntas
 
-| Campo | Respuesta |
+| Nº | Pregunta exacta | Respuesta atribuida al Owner | Restricciones o acciones |
+|---:|---|---|---|
+| 1 | ¿La licencia permite descargar y usar estos assemblies en runners GitHub-hosted? | Se acepta internamente el restore alojado como riesgo restringido; no se afirma permiso expreso de Autodesk. | Aplican las catorce restricciones. |
+| 2 | ¿La copia efimera en `NUGET_PACKAGES` es una copia de desarrollo permitida? | La copia efimera se trata como riesgo de desarrollo aceptable para RackCad. | Aislada, solo durante el job y destruida con la VM. |
+| 3 | ¿Puede GitHub actuar como proveedor de infraestructura para ese uso? | GitHub puede usarse como infraestructura solo dentro del flujo aprobado. | Sin AutoCAD, persistencia Autodesk ni ampliacion de audiencia. |
+| 4 | ¿Puede usarse `actions/cache`? | No puede usarse `actions/cache`. | Prohibicion expresa. |
+| 5 | ¿Puede conservarse `packages.lock.json`? | Puede conservarse `packages.lock.json` como metadata. | Sin bytes Autodesk; locked mode y revision de cambios. |
+| 6 | ¿Pueden conservarse `contentHash` y hashes? | Pueden conservarse `contentHash` y hashes. | Solo evidencia de integridad, nunca autorizacion. |
+| 7 | ¿Es admisible que el paquete contenga assemblies de implementacion? | La composicion mixta se acepta para compile-only. | No ejecutar, copiar al output, cachear persistentemente ni redistribuir. |
+| 8 | ¿NuGet es un canal autorizado por Autodesk? | nuget.org se acepta internamente como fuente unica para las versiones auditadas. | Persiste la falta de autorizacion Autodesk expresa localizada. |
+| 9 | ¿`verified=false` requiere validacion adicional? | `verified=false` exige los controles compensatorios de P3. | Firmas CMS, hashes, owner, nuspec, licencia y versiones. |
+| 10 | ¿Puede usarse un feed privado? | No puede usarse feed privado. | Prohibicion expresa. |
+| 11 | ¿Puede usarse un runner autohospedado? | El runner autohospedado queda fuera de alcance. | Requiere nueva revision. |
+| 12 | ¿Hay obligaciones de avisos o atribucion? | Deben conservarse acuerdo y avisos en las copias permitidas. | No inventar atribuciones ni redistribuir. |
+| 13 | ¿RackCad puede distribuirse sin material Autodesk y depender de AutoCAD instalado? | RackCad puede usarse internamente con bundle limpio y AutoCAD instalado en runtime. | Distribucion externa no autorizada por P4. |
+| 14 | ¿Difiere uso interno de distribucion externa? | Si: P4 distingue uso interno aprobado de distribucion externa no autorizada. | Toda ampliacion de audiencia requiere revision. |
+| 15 | ¿Se requiere una licencia AutoCAD por cada entorno de build? | P4 no concluye si cada entorno de build requiere licencia AutoCAD. | El runner aprobado no instala ni ejecuta AutoCAD. |
+
+## Riesgo residual aceptado
+
+- no existe autorizacion expresa localizada para GitHub-hosted runners;
+- la decision se adopta exclusivamente por gestion interna del riesgo;
+- el riesgo se acepta solo bajo todas las restricciones aprobadas;
+- integridad, firmas, owner y disponibilidad publica no equivalen a autorizacion juridica;
+- cualquier modificacion futura del escenario obliga a nueva revision.
+
+## Vigencia y revision
+
+| Campo | Valor |
 |---|---|
-| Tipo de asesor requerido |  |
-| Documentacion que se entregara |  |
-| Responsable de coordinacion |  |
-| Fecha objetivo |  |
-| Registro previsto para la respuesta |  |
-| Confirmacion de que ADR-0003 continua propuesto |  |
-| Confirmacion de que I-13 y su merge continúan bloqueados |  |
+| Inicio de vigencia | 2026-07-20 |
+| Condicion de vigencia | Permanecen sin cambio alcance, versiones, fuente, flujo y catorce restricciones |
+| Revision ordinaria maxima | 2027-07-20 |
+| Revision anticipada | Antes de cualquier cambio material o ante documentacion Autodesk incompatible |
+| Responsable | Mario Pérez |
 
-Preguntas exactas a remitir; marcar solo las que formaran parte de la consulta y copiarlas sin
-reformular en el registro enviado:
+## Efectos de gobernanza
 
-- [ ] ¿La licencia permite descargar y usar estos assemblies en runners GitHub-hosted?
-- [ ] ¿La copia efimera en `NUGET_PACKAGES` es una copia de desarrollo permitida?
-- [ ] ¿Puede GitHub actuar como proveedor de infraestructura para ese uso?
-- [ ] ¿Puede usarse `actions/cache`?
-- [ ] ¿Puede conservarse `packages.lock.json`?
-- [ ] ¿Pueden conservarse `contentHash` y hashes?
-- [ ] ¿Es admisible que el paquete contenga assemblies de implementacion?
-- [ ] ¿NuGet es un canal autorizado por Autodesk?
-- [ ] ¿`verified=false` requiere validacion adicional?
-- [ ] ¿Puede usarse un feed privado?
-- [ ] ¿Puede usarse un runner autohospedado?
-- [ ] ¿Hay obligaciones de avisos o atribucion?
-- [ ] ¿RackCad puede distribuirse sin material Autodesk y depender de AutoCAD instalado?
-- [ ] ¿Difiere uso interno de distribucion externa?
-- [ ] ¿Se requiere una licencia AutoCAD por cada entorno de build?
-
-## Matriz de respuestas a las quince preguntas
-
-Esta matriz debe completarse para A, B o C. En D puede registrar que la respuesta se difiere a la
-consulta externa, junto con la referencia exacta al expediente enviado.
-
-| Nº | Respuesta atribuida | Fuente | Responsable | Restricciones o acciones |
-|---:|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
-| 6 |  |  |  |  |
-| 7 |  |  |  |  |
-| 8 |  |  |  |  |
-| 9 |  |  |  |  |
-| 10 |  |  |  |  |
-| 11 |  |  |  |  |
-| 12 |  |  |  |  |
-| 13 |  |  |  |  |
-| 14 |  |  |  |  |
-| 15 |  |  |  |  |
+| Tema | Efecto P4 |
+|---|---|
+| I-29 | Cerrada documentalmente |
+| ADR-0003 | Permanece propuesto; no modificado ni aceptado |
+| Politica cero NuGet | Permanece vigente; la excepcion tecnica aun no esta activa |
+| I-13 | Permanece abierta y bloqueada; no modificada |
+| Promocion | Merge bloqueado y no autorizado por P4 |
+| P3 | Evaluacion y recomendacion D conservadas como historial |
 
 ## Declaraciones de control
 
-- [ ] La persona aprobadora esta identificada y su autoridad fue comprobada.
-- [ ] Las fuentes revisadas y su fecha quedaron registradas.
-- [ ] La decision distingue evidencia tecnica, integridad, procedencia, politica interna y
-  autorizacion legal/contractual.
-- [ ] El alcance interno/externo, caching, artifacts, distribucion y redistribucion quedaron
-  respondidos expresamente.
-- [ ] Los efectos sobre ADR-0003, cero NuGet, I-13 y el merge quedaron definidos.
-- [ ] La vigencia, revision, cumplimiento, revocacion y rollback quedaron definidos.
+- [x] Owner, reviewer y approver estan identificados, con concentracion de roles documentada.
+- [x] Las fuentes revisadas y la fecha quedaron registradas.
+- [x] La decision distingue evidencia tecnica, procedencia, politica y riesgo contractual.
+- [x] Caching, artifacts, distribucion y redistribucion quedaron definidos.
+- [x] Los efectos sobre ADR-0003, cero NuGet, I-13 y el merge quedaron definidos.
+- [x] La vigencia, revision, cumplimiento, revocacion y rollback quedaron definidos.
+- [x] La decision se limita a gestion interna del riesgo y no se presenta como conclusion juridica.
 
-## Firmas
+## Registro del Owner y roles acumulados
 
-### Owner
+| Rol | Nombre | Cargo | Organizacion | Fecha | Mecanismo verificable |
+|---|---|---|---|---|---|
+| Owner | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | 2026-07-20 | Instruccion escrita registrada en P4 |
+| Technical preparer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | 2026-07-20 | Documentacion versionada P1-P4 |
+| Internal licensing reviewer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | 2026-07-20 | Instruccion escrita registrada en P4 |
+| Final approver | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla | 2026-07-20 | Seleccion expresa B registrada en P4 |
 
-Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
+Registro corporativo: documentos I-29 y commit P4 de la rama canonica.
 
-Organizacion: Industrias Montilla  Alcance de autoridad: ____________________
-
-Fecha: ____________________  Firma o mecanismo verificable: ____________________
-
-### Technical preparer
-
-Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
-
-Organizacion: Industrias Montilla  Declaracion de completitud: ____________________
-
-Fecha: ____________________  Firma o mecanismo verificable: ____________________
-
-### Internal licensing reviewer
-
-Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
-
-Organizacion: Industrias Montilla  Alcance interno/autoridad: ____________________
-
-Fecha: ____________________  Firma o mecanismo verificable: ____________________
-
-### Final approver
-
-Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
-
-Organizacion: Industrias Montilla  Alcance de autoridad: ____________________
-
-Fecha: ____________________  Firma o mecanismo verificable: ____________________
-
-Vigencia: ____________________  Proxima revision: ____________________
-
-Registro corporativo: ____________________
-
-Conflictos de interes: ____________________
+Conflictos de interes: no declarados en la instruccion P4.
