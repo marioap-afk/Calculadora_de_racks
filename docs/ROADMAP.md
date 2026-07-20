@@ -72,6 +72,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-07 | `docs/adr-retroactivos` | Retro-documentar las ~13 decisiones de HANDOFF §7 como ADRs de una página (C4) | S | — | I-06 | pendiente |
 | I-13 | `experiment/refs-autocad-ci` | Probar reference assemblies / paquete de build para compilar el Plugin sin AutoCAD; conclusión → ADR (excepción cero-NuGet) + adopción si funciona (G6). **Concluir ANTES de abrir I-09/I-10/I-16: son fases Plugin-pesadas donde el CI hoy es ciego** | S | — | — | pendiente |
 | I-26 | `refactor/test-catalog-ids` | `TestCatalogIds` centralizados; guardián de IDs y relaciones esenciales contra los catálogos distribuidos; cobertura Cobertura publicada como artifact de CI | S | — | — | integrada (2026-07-19) |
+| I-29 | `docs/licencia-procedencia-autocad-ci` | Resolver el gate L2 de licencia y procedencia de las referencias AutoCAD para CI; bloquea la aceptación de ADR-0003 y el merge de I-13, sin implementar código ni emitir una conclusión legal por Codex | S | — (usa evidencia técnica de I-13) | — | pendiente / bloqueante |
 
 ### Fase 2 — Arquitectura base + producto dinámico
 

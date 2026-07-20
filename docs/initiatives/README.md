@@ -43,3 +43,5 @@ Planes disponibles:
   `../automation/state/I-06.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
+- [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): contrato
+  documental pendiente y bloqueante para resolver licencia y procedencia antes del merge de I-13.
