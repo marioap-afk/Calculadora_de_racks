@@ -972,3 +972,262 @@ quedan pendientes:
 
 Hasta resolver esos puntos, la clasificacion es B, la rama experimental se conserva como evidencia
 y ningun resultado de esta seccion debe interpretarse como integracion o adopcion definitiva.
+
+## 35. Gate de licencia, procedencia y cero NuGet
+
+Fecha de auditoria: 2026-07-20. Este gate separa hechos verificables, interpretaciones tecnicas,
+riesgos y preguntas que requieren decision competente. No constituye asesoramiento ni aprobacion
+legal. La clasificacion tecnica de I-13 permanece **B — viable con restricciones y decision
+adicional**.
+
+### 35.1 Fuentes primarias consultadas
+
+- licencia `LICENSE.txt`, metadatos, manifiestos, contenido y firmas incluidos en los tres paquetes;
+- paginas oficiales de [AutoCAD.NET 25.0.1](https://www.nuget.org/packages/AutoCAD.NET/25.0.1),
+  [AutoCAD.NET.Core 25.0.0](https://www.nuget.org/packages/AutoCAD.NET.Core/25.0.0) y
+  [AutoCAD.NET.Model 25.0.0](https://www.nuget.org/packages/AutoCAD.NET.Model/25.0.0);
+- [licencia ObjectARX publicada por Autodesk](https://aps.autodesk.com/developer/overview/autocad-objectarx-sdk-licensing),
+  [pagina oficial del SDK](https://aps.autodesk.com/developer/overview/objectarx-autocad-sdk),
+  [componentes de la API .NET de AutoCAD 2025](https://help.autodesk.com/cloudhelp/2025/PLK/OARX-DevGuide-Managed/files/GUID-8657D153-0120-4881-A3C8-E00ED139E0D3.htm),
+  [compatibilidad Managed .NET de AutoCAD 2025](https://help.autodesk.com/cloudhelp/2025/ENU/AutoCAD-Customization/files/GUID-A6C680F2-DE2E-418A-A182-E4884073338A.htm)
+  y [tutorial oficial APS](https://get-started.aps.autodesk.com/tutorials/design-automation/prepare-plugin/);
+- documentacion NuGet sobre
+  [propietarios](https://learn.microsoft.com/nuget/nuget-org/publish-a-package#manage-package-owners-on-nugetorg),
+  [prefijos reservados y el indicador `verified`](https://learn.microsoft.com/nuget/nuget-org/id-prefix-reservation),
+  [PackageReference, assets y lock](https://learn.microsoft.com/nuget/consume-packages/package-references-in-project-files),
+  [paquetes firmados](https://learn.microsoft.com/nuget/reference/signed-packages-reference),
+  [limites de confianza](https://learn.microsoft.com/nuget/consume-packages/installing-signed-packages),
+  [verificacion](https://learn.microsoft.com/dotnet/core/tools/dotnet-nuget-verify) y
+  [unlisting/eliminacion](https://learn.microsoft.com/nuget/nuget-org/policies/deleting-packages);
+- documentacion GitHub sobre
+  [runners alojados](https://docs.github.com/actions/reference/runners/github-hosted-runners),
+  [cache de dependencias](https://docs.github.com/actions/reference/workflows-and-actions/dependency-caching)
+  y [artifacts](https://docs.github.com/actions/tutorials/store-and-share-data);
+- `AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/HANDOFF.md`, `docs/ROADMAP.md`,
+  `docs/WORKFLOW.md`, los context packs aplicables, guias de despliegue, ADR vigentes,
+  configuracion NuGet/MSBuild y archivos de E1/E2 de este repositorio.
+
+No se usaron foros, blogs ni paquetes de terceros para sustentar las conclusiones.
+
+### 35.2 Inventario exacto
+
+| Campo | AutoCAD.NET | AutoCAD.NET.Core | AutoCAD.NET.Model |
+|---|---|---|---|
+| ID | `AutoCAD.NET` | `AutoCAD.NET.Core` | `AutoCAD.NET.Model` |
+| Version | 25.0.1 | 25.0.0 | 25.0.0 |
+| Propietario mostrado | Autodesk | Autodesk | Autodesk |
+| Autor del nuspec | `AutoCAD Team` | `AutoCAD Team` | `AutoCAD Team` |
+| `owners` del nuspec | `Autodesk, Inc.` | `Autodesk, Inc.` | `Autodesk, Inc.` |
+| Verified owner | `false`, observado en la busqueda V3 de E1 | `false`, observado en la busqueda V3 de E1 | `false`, observado en la busqueda V3 de E1 |
+| Fecha de publicacion | 2024-03-29 | 2024-03-27 | 2024-03-27 |
+| TFM | `net8.0` | `net8.0` | `net8.0` |
+| Dependencias | `AutoCAD.NET.Core [25.0.0]` | `AutoCAD.NET.Model [25.0.0]` | Ninguna |
+| Ubicacion de assemblies | `lib/net8.0`, diez archivos | `lib/net8.0`, un archivo | `lib/net8.0`, dos archivos |
+| Licencia incluida | `LICENSE.txt`, ObjectARX | La misma | La misma |
+| URL oficial | Pagina NuGet enlazada arriba | Pagina NuGet enlazada arriba | Pagina NuGet enlazada arriba |
+| SHA-256 de E1 | `b629f09e10bb7f414460e1ad47e4efa6d24d2815d00def388a64b10570ccd4c1` | `167a3b003d30230197cc150911080815bd5299e8e28fa411c64498e8e830ea53` | `06779a73f5da2eed6a98c063ea13cde4eb07056b088772fca91c93ecdc770283` |
+| SHA-512/contentHash | Recalculado y coincidente con catalogo/lock; no se reproduce el valor codificado | Igual | Igual |
+| Scripts incluidos | `tools/install.ps1` | `tools/install.ps1` | `tools/install.ps1` |
+| Assets runtime | `lib/net8.0`; elegibles por defecto, sin carpeta `runtimes` | Igual | Igual |
+| Assets compile | `lib/net8.0`; no hay carpeta `ref` | Igual | Igual |
+
+Los assemblies no son reference assemblies formales: estan en `lib`, no en `ref`, y E1 encontro
+implementacion significativa. Los scripts heredados solo ponen `CopyLocal=false` al instalarse en
+el modelo antiguo de Visual Studio; E1/E2 no los ejecutaron. En el candidato de RackCad,
+`ExcludeAssets=runtime` evita seleccionar esos archivos como assets runtime y `PrivateAssets=all`
+evita que la dependencia se propague a consumidores. Ninguno de esos metadatos altera el contenido
+del paquete ni convierte los assemblies en stubs.
+
+### 35.3 Auditoria de la licencia incluida
+
+Los tres textos son byte-a-byte equivalentes para el alcance de esta auditoria y su SHA-256 es
+`df90a4dd078e9674a5f2b7be32664c85ec4bc516a415cfc06080e8cb69df1709`. El texto corresponde al
+acuerdo ObjectARX para AutoCAD 2025, 2024, 2023 y 2022 incluido en los paquetes. La pagina vigente
+de Autodesk conserva las mismas clausulas materiales para AutoCAD 2025.
+
+| Tema | Sentido verificable | Interpretacion tecnica | Incertidumbre |
+|---|---|---|---|
+| Uso para desarrollo | Concede licencia limitada, no exclusiva, para usar y copiar el software; las copias entregadas deben usarse para desarrollar aplicaciones sobre productos Autodesk basados en AutoCAD, con exclusiones expresas | Compilar un plugin de AutoCAD encaja en el proposito de desarrollo | No menciona CI ni runners de terceros |
+| Copias | Permite instalacion en una ubicacion, uso mediante servidor de archivos/red, backups y copias ilimitadas sujetas a proposito y avisos | Una copia de trabajo puede ser necesaria para compilar | No define cache efimero, cache persistente ni multiplicidad de VMs alojadas |
+| Redistribucion del software | Permite dar copias a personas o entidades solo para el desarrollo indicado y conservando acuerdo y avisos | Transferir el paquete completo es materialmente distinto de restaurarlo para un job | No autoriza de forma especifica artifacts publicables, Git o un feed privado |
+| Samples, headers, libraries y assemblies | El acuerdo usa el termino global `Software`; no separa derechos por tipo de archivo | Deben tratarse como parte del software licenciado | No existe una concesion separada para assemblies dentro de los paquetes |
+| Sublicencia | No se localizo concesion expresa de sublicencia; solo la copia condicionada anterior | No debe inferirse una facultad general de sublicenciar | Requiere interpretacion legal si un proveedor de CI interviene |
+| Modificacion | El termino software incluye versiones modificadas licenciadas por Autodesk; no se localizo una concesion general para modificar | RackCad solo los consume para compilacion | No debe confundirse esa definicion con permiso de alterar binarios |
+| Aplicaciones desarrolladas | Autoriza copias para desarrollar aplicaciones, pero no regula de forma expresa la distribucion de la aplicacion resultante | RackCad puede evitar distribuir componentes Autodesk y depender de AutoCAD en runtime | Debe confirmarse el derecho de distribuir RackCad bajo ese modelo |
+| Componentes redistribuibles | No enumera componentes ni designa estos assemblies como redistribuibles | `Copy Local=False` y el bundle limpio son consistentes con no redistribuir | No se localizo lista primaria que convierta estos archivos en redistribuibles |
+| Infraestructura remota | No menciona servicios alojados, GitHub Actions, contenedores ni imagenes | Un runner crea al menos una copia de desarrollo en infraestructura de un tercero | Se requiere decision legal sobre proveedor, control y territorio |
+| Terminacion | El acuerdo termina automaticamente por incumplimiento | Las guardas reducen el riesgo de una copia fuera del alcance acordado | El efecto concreto ante un error de CI es materia legal |
+| Propiedad intelectual | Autodesk y sus licenciantes retienen titularidad; solo existen derechos expresos y el codigo/estructura se trata como secreto comercial | Hashes y metadata no transfieren el codigo; binarios y paquetes si contienen el software | No se debe inferir derecho alguno por disponibilidad publica en NuGet |
+| Territorio y producto | Impone controles de exportacion de EE. UU.; excluye AutoCAD LT, DWG TrueConvert y DWG TrueView del desarrollo autorizado | El destino declarado de RackCad es AutoCAD 2025 completo | No aclara geografia del runner ni necesidad de asiento AutoCAD para build |
+| Licencias adicionales | Menciona derechos de Autodesk y sus licenciantes, y el acuerdo completo; no identifica licencias adicionales por componente | La licencia incluida es la unica encontrada dentro de estos paquetes | No demuestra que no existan obligaciones externas aplicables al usuario o servicio |
+
+Hecho contractual: existe permiso condicionado para uso y copias de desarrollo. Interpretacion
+tecnica: el restore compile-only parece mas cercano a ese proposito que cualquier publicacion o
+redistribucion. Riesgo: el texto no describe GitHub-hosted runners, persistencia administrada por
+GitHub, containers ni feeds. Pregunta legal: si esas modalidades quedan dentro de la copia de
+desarrollo permitida y bajo que avisos, controles y licencias.
+
+### 35.4 Matriz de escenarios
+
+| Escenario | Estado tecnico | Estado de licencia | Politica RackCad | Recomendacion |
+|---|---|---|---|---|
+| A. Restore efimero en runner GitHub-hosted | Probado por E2 | Aparentemente alineado con desarrollo, pero ambiguo por infraestructura alojada; requiere decision legal | Excepcion de producto/build aun no aprobada | Permitir solo provisionalmente en rama no integrable |
+| B. Cache durante un unico job | Probado por E2 mediante `NUGET_PACKAGES` aislado | Misma ambiguedad; copia descartable del job | Mismo conflicto | Permitir provisionalmente, borrar con el runner y auditar salidas |
+| C. `actions/cache` persistente | Tecnicamente posible, no probado en E2 | Ambiguo: conserva copias entre runs y amplia lectores posibles | No autorizado | Prohibir por defecto hasta decision legal y del dueño |
+| D. Descarga desde NuGet en cada run | Probado por E2 | Aparentemente compatible con uso de desarrollo, con ambiguedad del runner | Excepcion pendiente | Preferir a cache persistente durante la fase provisional |
+| E. Hashes y metadata en Git | Probado y sin bytes de assemblies | No se localizo restriccion; sirven a integridad | Compatible con documentacion/evidencia | Permitir, sin codificar contenido ni incluir paquetes |
+| F. `packages.lock.json` | Probado temporalmente en E2; mecanismo oficial | Contiene IDs, grafo y contentHash, no assemblies; no tratado por licencia | Estrategia permanente no decidida | Permitir solo al adoptar locked mode y revisar su lugar correcto |
+| G. Assemblies Autodesk como artifact | Tecnicamente posible; E2 lo prohibio | No autorizado por evidencia para este publico y modalidad | Prohibido | No publicar |
+| H. Paquetes Autodesk como artifact | Tecnicamente posible; E2 lo prohibio | Redistribuye el software completo; no autorizado por evidencia | Prohibido | No publicar |
+| I. Assemblies Autodesk en bundle | Tecnicamente evitable y ausentes en E1/E2 | Autodesk indica que los archivos ya acompañan al producto; no hay concesion especifica para este bundle | Prohibido por despliegue | Mantener guarda fail-closed |
+| J. Feed privado interno | Tecnicamente posible, no probado | La licencia permite ciertas copias para desarrollo con avisos, pero no demuestra que cualquier feed cumpla | No autorizado | No asumir que resuelve la licencia; requiere revision legal y diseño de acceso |
+| K. Assemblies Autodesk en Git | Tecnicamente posible | Copia persistente y distribuida; no autorizada por evidencia para este uso | Prohibido | No versionar |
+| L. Runner autohospedado con AutoCAD | Tecnicamente posible, no probado en CI | Puede acercarse al baseline local, pero no resuelve asiento, host ni automatizacion | Requeriria nueva decision y operacion | Evaluar solo como alternativa con revision de licenciamiento AutoCAD |
+| M. Contenedor o imagen con assemblies | Tecnicamente posible, no probado | Copia persistente y replicable no descrita | No autorizado | No usar |
+| N. Compile-only; AutoCAD requerido en runtime | Probado por E2 y por bundle limpio | Es el caso de menor redistribucion y mas cercano al desarrollo permitido; aun ambiguo para CI alojado | Excepcion NuGet pendiente | Candidato condicionado; nunca presentar los paquetes como runtime |
+
+No se recomienda versionar o publicar assemblies, publicar paquetes, incluir material Autodesk en el
+bundle ni considerar un feed privado como solucion automatica de licencia.
+
+### 35.5 Procedencia NuGet por capas
+
+| Capa | Evidencia | Estado |
+|---|---|---|
+| 1. Nombre y propietario mostrado | Las tres paginas de nuget.org muestran propietario `Autodesk` | Demostrada como propiedad de galeria; el propietario puede administrar/publicar, no equivale por si solo a identidad corporativa criptografica |
+| 2. Autor/owner del nuspec | `AutoCAD Team` y `Autodesk, Inc.` | Demostrada como metadata declarada; NuGet aclara que `authors`/`owners` del nuspec no determinan la propiedad de galeria |
+| 3. SHA-256 | Fijados en E1 y revalidados | Demostrada para los bytes auditados |
+| 4. SHA-512/contentHash | Coincidencia entre paquete, metadata y lock temporal | Demostrada para integridad/reproducibilidad; no es prueba independiente de autoridad editorial |
+| 5. Firma del paquete | Los tres contienen firma de autor y de repositorio; `dotnet nuget verify --all` termino con codigo 0 | Demostrada. La firma de autor identifica `Autodesk, Inc.` y la de repositorio `NuGet.org Repository by Microsoft`; no se publican certificados ni huellas completas |
+| 6. Verified owner | `verified=false` observado por E1 | Ausente. NuGet define `verified` como indicador de prefijo reservado; `false` significa que no se demostro esa reserva, no demuestra por si solo que el paquete sea no oficial |
+| 7. Licencia incluida | Texto ObjectARX identico en los tres, hash fijado, y concordante materialmente con la pagina Autodesk | Demostrada como contenido incluido; su aplicacion al runner sigue siendo ambigua |
+| 8. Reconocimiento Autodesk | La documentacion oficial del SDK ofrece las bibliotecas para desarrollo y el tutorial APS usa `AutoCAD.NET.Core`/`Model`; no se localizo una pagina Autodesk no-blog que enlace especificamente la version 25.0.1 | Parcial; falta un enlace oficial no-blog versionado al paquete exacto |
+
+NuGet no permite normalmente borrar permanentemente una version porque rompería restores, y una
+version no listada sigue disponible por version exacta. Existen excepciones de eliminacion, entre
+ellas contenido dañino o infractor; por ello disponibilidad futura no es garantia absoluta. El lock
+oficial fija el cierre del grafo y `--locked-mode` restaura exactamente ese grafo o falla ante
+cambios. Las firmas protegen integridad y aportan evidencia de origen; NuGet permite endurecer la
+confianza con `signatureValidationMode=require` y `trustedSigners`. Esa politica no esta implantada
+todavia en RackCad y no debe agregarse fuera de una promocion autorizada.
+
+### 35.6 Respuestas de documentacion oficial Autodesk
+
+| Pregunta | Respuesta verificable |
+|---|---|
+| ¿Autodesk documenta los paquetes AutoCAD.NET? | Parcialmente. El tutorial APS oficial instruye instalar `AutoCAD.NET.Core` y `AutoCAD.NET.Model`; no se localizo documentacion no-blog versionada para los tres paquetes 25.0.x |
+| ¿Autodesk enlaza oficialmente las paginas NuGet exactas? | No localizado en fuentes primarias no-blog para 25.0.1/25.0.0 |
+| ¿ObjectARX presenta estos assemblies como redistribuibles? | No. La ayuda los presenta como referencias disponibles con AutoCAD o el SDK, y la licencia regula copias de desarrollo; no los etiqueta como componentes redistribuibles |
+| ¿Las bibliotecas simplificadas se recomiendan solo para build? | La ayuda recomienda referenciar las versiones simplificadas del SDK; no usa la expresion `solo para build` ni las identifica con el contenido de estos paquetes |
+| ¿Autodesk exige `Copy Local=False`? | Si. La ayuda de AutoCAD 2025 dice que debe ser falso porque los archivos ya se entregan con el producto y copiarlos puede causar resultados inesperados |
+| ¿AutoCAD 2025 usa .NET 8 oficialmente? | Si. La tabla oficial de compatibilidad vincula AutoCAD 2025/SDK 25.0 con .NET 8.0 |
+| ¿El SDK puede descargarse separadamente de AutoCAD? | Si. Autodesk ofrece ObjectARX como descarga sujeta a su licencia |
+| ¿Que componentes declara redistribuibles? | No localizado en las fuentes primarias consultadas para estos assemblies |
+| ¿Existe guia oficial para CI con estos paquetes? | No localizado en fuentes primarias |
+| ¿Existe soporte oficial para GitHub-hosted runners? | No localizado en fuentes primarias |
+
+### 35.7 Modalidades de almacenamiento y caching
+
+| Modalidad | Bytes, duracion y acceso | ¿Redistribuye/publica? | Evidencia de licencia y riesgos | Recomendacion provisional |
+|---|---|---|---|---|
+| Cache de proceso | Buffers/descargas transitorias durante el proceso; acceso del proceso/job | No se publica | No mencionado; riesgo tecnico bajo y riesgo legal residual | Permitir dentro del job |
+| `NUGET_PACKAGES` del job | Paquete, assemblies extraidos, metadata y hashes hasta destruir la VM; acceso de pasos y cuenta del job | No se publica, pero crea copia en infraestructura GitHub | La licencia permite copias de desarrollo pero no nombra CI; verificar que nada salga de la VM | Permitir de forma aislada y efimera |
+| Persistencia entre jobs/runs | El mismo contenido conservado fuera de la VM para reutilizacion | Se almacena para otros jobs/runs | Caso no mencionado; amplia duracion y sujetos con acceso | No permitir sin revision |
+| `actions/cache` | Archiva las rutas elegidas; accesible por alcances de rama/base/default branch; entradas sin acceso por mas de 7 dias se eliminan, sujeto a limites | No es artifact, pero GitHub conserva y sirve copias; lectores de PR pueden alcanzar caches base segun el modelo oficial | Cache no firmado/verificado por GitHub y con riesgo de poisoning; licencia silenciosa | Prohibir para material Autodesk |
+| Artifact | Archiva archivos despues del job con retencion configurable y descarga autorizada | Si, publica el archivo como salida del workflow dentro del alcance del repositorio | No existe autorizacion demostrada para assemblies o paquetes Autodesk | Prohibir material Autodesk |
+| Feed privado | Copia completa persistente servida a usuarios/runners internos | Redistribuye internamente a sus consumidores | Podria caer bajo copias de desarrollo condicionadas, pero no esta demostrado y exige avisos/control | No usar sin revision legal |
+| Git | Copia completa, historica e indefinida para toda audiencia del repositorio | Si, distribuye con clones/fetch | NuGet recomienda omitir paquetes del control de versiones; RackCad lo prohibe | Prohibir assemblies y paquetes; admitir solo hashes/metadata/lock aprobados |
+
+GitHub documenta que cada job Windows estandar corre en una VM alojada, mientras `actions/cache`
+conserva archivos entre runs y permite lecturas segun alcance de rama, incluso desde ciertos PR.
+Tambien distingue cache de artifacts: el primero reutiliza dependencias y el segundo conserva
+salidas del job. Por ello se confirma la recomendacion predeterminada: cache solo efimero dentro del
+job, sin `actions/cache`, artifacts, feed ni almacenamiento externo para material Autodesk.
+
+### 35.8 Conflicto con cero NuGet
+
+| Categoria | Aplica a AutoCAD.NET | Fundamento |
+|---|---|---|
+| Dependencia runtime | No | AutoCAD instalado debe proporcionar los assemblies; `ExcludeAssets=runtime` y las guardas impiden copiarlos |
+| Dependencia de producto distribuido | No, en el diseño probado | Bundle E1/E2 sin material Autodesk |
+| Dependencia de compilacion | Si | El Plugin compila contra los assets `lib/net8.0` |
+| Dependencia CI | Si | El runner restaura los paquetes para compilar |
+| Dependencia de tests | No | Los tests no consumen estos paquetes de forma directa |
+| Herramienta de build | No estrictamente | Son referencias/API de compilacion, no un ejecutable que transforme el build |
+| Componente redistribuido | No | Debe permanecer fuera de outputs, bundle y artifacts |
+
+La politica escrita es **A dentro de los proyectos de producto**: cero paquetes NuGet en codigo de
+producto; solo el proyecto de tests tiene la excepcion expresa. No existe distincion escrita entre
+runtime y compile-only para el producto, de modo que un `PackageReference` condicional en
+`RackCad.Plugin` sigue siendo una excepcion. La dependencia privada de tests no es precedente
+equivalente: es precisamente la excepcion nombrada. El dueño puede aceptar o rechazar la excepcion;
+una excepcion permanente requiere decision explicita y ADR aceptado antes del merge.
+
+| Politica posible | Ventajas | Riesgos/consecuencia |
+|---|---|---|
+| Estricta: cero NuGet en producto y build | Regla simple; elimina dependencia del canal y este gate | Descarta la solucion E2 y conserva CI del Plugin dependiente de instalacion/otra provision |
+| Excepcion de build limitada | Resuelve el build con condicion explicita, compile-only, versiones fijadas, cero runtime/artifacts y guardas | Crea excepcion estrecha que exige dueño, ADR, mantenimiento anual, procedencia y gate legal |
+| Categoria general de dependencias de build | Permite gobernar futuras referencias/herramientas con criterios comunes | Amplia superficie de supply chain y puede normalizar excepciones mas alla de I-13 |
+
+La alternativa proporcional a la evidencia actual es evaluar la excepcion limitada, no redefinir
+todavia una politica general. Esta auditoria no la aprueba.
+
+### 35.9 Preguntas cerradas para revision legal
+
+| # | Pregunta | Por que importa y evidencia disponible | Riesgo si si | Riesgo si no | Decision tecnica resultante |
+|---:|---|---|---|---|---|
+| 1 | ¿La licencia permite descargar y usar estos assemblies en runners GitHub-hosted? | E2 lo probo; el acuerdo permite copias de desarrollo pero no nombra CI | Adoptar sin controles suficientes de proveedor/territorio | Perder esta ruta de build alojado | Si: definir controles; no: descartar GitHub-hosted |
+| 2 | ¿La copia efimera en `NUGET_PACKAGES` es una copia de desarrollo permitida? | Es el almacenamiento minimo de E2 | Conservar bytes mas alla del alcance autorizado por error | Ningun restore alojado seria admisible | Si: aislar/destruir/auditar; no: cambiar de runner |
+| 3 | ¿Puede GitHub actuar como proveedor de infraestructura para ese uso? | GitHub aloja la VM y procesa los bytes | Omitir condiciones contractuales aplicables al proveedor | Aun un restore efimero alojado quedaria bloqueado | Si: documentar proveedor; no: usar infraestructura autorizada o abandonar mecanismo |
+| 4 | ¿Puede usarse `actions/cache`? | GitHub conserva copias entre runs con alcance de ramas/PR | Ampliar retencion y lectores de material Autodesk | Mayor latencia y dependencia de disponibilidad NuGet | Si: limitar acceso/retencion; no: mantener prohibicion |
+| 5 | ¿Puede conservarse `packages.lock.json`? | Solo contiene grafo y contentHash | Tratar como libre metadata que pudiera estar sujeta a condiciones | Perder locked mode como control directo | Si: versionarlo en su lugar correcto; no: usar otra guarda reproducible |
+| 6 | ¿Pueden conservarse contentHash y hashes? | No contienen los assemblies y soportan integridad | Exponer metadata que un criterio legal considere restringida | Debilitar deteccion de sustitucion de bytes | Si: conservarlos; no: fijar versiones y verificar por otro medio |
+| 7 | ¿Es admisible que el paquete contenga assemblies de implementacion? | Estan en `lib`, no `ref`; la firma valida esos bytes | Aplicar controles insuficientes por tratarlos como stubs | Los paquetes no servirian como referencias CI | Si: reforzar guardas; no: descartar paquetes |
+| 8 | ¿NuGet es un canal autorizado por Autodesk? | Propietario, firma de autor Autodesk, licencia y tutorial oficial general; falta enlace no-blog exacto | Confiar en una autoridad editorial insuficientemente documentada | Bloquear un canal firmado y tecnicamente probado | Si: permitir solo nuget.org; no: exigir confirmacion Autodesk/SDK u otro canal |
+| 9 | ¿`verified=false` requiere validacion adicional? | Es ausencia de prefijo reservado, compensada parcialmente por firma | Aceptar una brecha de identidad de galeria sin compensacion suficiente | Crear costo de validacion adicional o bloquear adopcion | Si: definir evidencia adicional; no: aceptar firma+hash+documentacion como umbral |
+| 10 | ¿Puede usarse un feed privado? | Implicaria copia persistente y entrega interna | Redistribuir sin avisos, alcance o retencion adecuados | Depender de nuget.org en cada run | Si: diseñar controles; no: descargar cada run o descartar solucion |
+| 11 | ¿Puede usarse un runner autohospedado? | Alternativa mas controlada, aun con copia/licencia AutoCAD | Operar una maquina sin aislamiento/licencias suficientes | Perder la principal alternativa al runner alojado | Si: gobernar operacion/licencias; no: mantener hosted condicionado o no compilar Plugin en CI |
+| 12 | ¿Hay obligaciones de avisos o atribucion? | Las copias entregadas deben conservar acuerdo y avisos | Incumplir por omitir avisos | Sobrecargar el flujo con avisos innecesarios | Si: preservar avisos donde corresponda; no: no añadir atribucion inventada |
+| 13 | ¿RackCad puede distribuirse sin material Autodesk y depender de AutoCAD instalado? | Autodesk exige `Copy Local=False`; E1/E2 demostraron bundle limpio | Distribuir una aplicacion bajo un supuesto contractual incompleto | El modelo actual de despliegue requeriria revision | Si: documentar runtime y validar NETLOAD; no: bloquear distribucion hasta rediseño |
+| 14 | ¿Difiere uso interno de distribucion externa? | El acuerdo habla de personas/entidades, no del modelo comercial de RackCad | Aplicar la respuesta al publico equivocado | Limitar innecesariamente uno de los modelos | Si: separar politicas; no: aplicar un unico criterio conservador |
+| 15 | ¿Se requiere una licencia AutoCAD por cada entorno de build? | E2 no instalo ni ejecuto AutoCAD; el acuerdo ObjectARX no resuelve asientos del producto | Hacer inviable o costoso el CI alojado | Omitir una licencia que realmente fuera necesaria | Si: usar entorno licenciado/controlado; no: documentar que el build SDK no consume asiento |
+
+### 35.10 Recomendacion, promocion y gate
+
+Clasificacion independiente del gate:
+
+> **L2 — ambiguedad material; el merge debe permanecer bloqueado.**
+
+No se encontro una prohibicion expresa de usar las copias para desarrollar un plugin, y las firmas
+fortalecen sustancialmente la procedencia. Sin embargo, las fuentes no autorizan inequivocamente el
+uso en runners GitHub-hosted ni la persistencia administrada por GitHub, y la politica interna aun
+prohibe el `PackageReference` en el Plugin. Por ello la recomendacion no legal es:
+
+> **D + A condicionada**: registrar o abrir un gate separado de licencia/procedencia y permitir que,
+> solo con autorizacion del dueño, se prepare una promocion limpia provisional; no integrar hasta
+> cerrar licencia, procedencia, excepcion NuGet y ADR.
+
+Puede crearse una rama limpia para implementacion tecnica y validacion, pero el merge queda
+bloqueado. Conforme a los prefijos reales de `WORKFLOW.md`, el nombre propuesto es
+`architecture/referencias-autocad-ci`, creada desde la punta vigente de `origin/main` y con un
+reclamo nuevo. No se crea en esta ejecucion. La rama experimental se conserva como evidencia y no
+debe ser la fuente directa de merge.
+
+Condicion de merge: revision de licencia/procedencia cerrada por responsable competente, excepcion
+de build aprobada por el dueño, ADR aceptado, diff limpio y reducido, CI verde, cero material
+Autodesk fuera del cache efimero, rollback documentado y proceso anual de actualizacion.
+
+### 35.11 Decisiones pendientes del dueño
+
+Responder si/no; ninguna decision se ejecuta desde este gate:
+
+1. ¿Autoriza crear una rama limpia de promocion desde `main`?
+2. ¿Autoriza implementar la solucion reducida en esa rama?
+3. ¿Confirma que el merge seguira bloqueado hasta cerrar licencia/procedencia?
+4. ¿Autoriza una excepcion provisional de build a cero NuGet?
+5. ¿Prohibe `actions/cache` para paquetes Autodesk?
+6. ¿Desea revision legal interna o externa?
+7. ¿Autoriza crear un ADR provisional despues de validar la rama limpia?
+8. ¿Desea abrir una iniciativa separada para licencia/procedencia?
+
+Este gate no cierra I-13, no cambia su clasificacion B, no adopta NuGet, no autoriza un merge y no
+declara que el uso evaluado sea legal o ilegal.
