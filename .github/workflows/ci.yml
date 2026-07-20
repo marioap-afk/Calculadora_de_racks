@@ -50,3 +50,62 @@ jobs:
           dotnet-version: "8.0.x"
       - name: dotnet build UI
         run: dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal
+
+  build-plugin:
+    name: Build Plugin without AutoCAD
+    if: github.ref == 'refs/heads/architecture/referencias-autocad-ci'
+    needs:
+      - tests
+      - build-ui
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Prepare isolated build paths
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP "rackcad-i13"
+          $packages = Join-Path $root "nuget-packages"
+          $emptyAutoCAD = Join-Path $root "empty-autocad"
+          $httpCache = Join-Path $root "nuget-http-cache"
+          $scratch = Join-Path $root "nuget-scratch"
+          $cliHome = Join-Path $root "dotnet-home"
+          $nugetConfig = Join-Path $root "NuGet.Config"
+          $lockFile = Join-Path $root "packages.lock.json"
+
+          New-Item -ItemType Directory -Force -Path $packages, $emptyAutoCAD, $httpCache, $scratch, $cliHome | Out-Null
+          @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <packageSources>
+              <clear />
+              <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+            </packageSources>
+          </configuration>
+          "@ | Set-Content -LiteralPath $nugetConfig -Encoding utf8
+
+          "I13_NUGET_PACKAGES=$packages" >> $env:GITHUB_ENV
+          "I13_EMPTY_AUTOCAD_DIR=$emptyAutoCAD" >> $env:GITHUB_ENV
+          "I13_NUGET_CONFIG=$nugetConfig" >> $env:GITHUB_ENV
+          "I13_LOCK_FILE=$lockFile" >> $env:GITHUB_ENV
+          "NUGET_PACKAGES=$packages" >> $env:GITHUB_ENV
+          "NUGET_HTTP_CACHE_PATH=$httpCache" >> $env:GITHUB_ENV
+          "NUGET_SCRATCH=$scratch" >> $env:GITHUB_ENV
+          "DOTNET_CLI_HOME=$cliHome" >> $env:GITHUB_ENV
+          "DOTNET_CLI_TELEMETRY_OPTOUT=1" >> $env:GITHUB_ENV
+          "DOTNET_NOLOGO=1" >> $env:GITHUB_ENV
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1" >> $env:GITHUB_ENV
+      - name: Verify AutoCAD compile references
+        shell: pwsh
+        run: |
+          ./eng/ci/verify-autocad-references.ps1 `
+            -RepositoryRoot $env:GITHUB_WORKSPACE `
+            -NuGetPackages $env:I13_NUGET_PACKAGES `
+            -EmptyAutoCADDir $env:I13_EMPTY_AUTOCAD_DIR `
+            -NuGetConfig $env:I13_NUGET_CONFIG `
+            -LockFile $env:I13_LOCK_FILE

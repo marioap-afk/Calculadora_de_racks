@@ -6,7 +6,16 @@
     <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
     <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
+    <UseAutoCADNuGetReferences Condition="'$(UseAutoCADNuGetReferences)' == ''">false</UseAutoCADNuGetReferences>
   </PropertyGroup>
+  <!-- Compile-only references for CI. AutoCAD remains required at runtime; Autodesk runtime
+       assets are excluded and its DLLs must not be redistributed. -->
+  <ItemGroup Condition="'$(UseAutoCADNuGetReferences)' == 'true'">
+    <PackageReference Include="AutoCAD.NET"
+                      Version="[25.0.1]"
+                      PrivateAssets="all"
+                      ExcludeAssets="runtime" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RackCad.Domain\RackCad.Domain.csproj" />
     <ProjectReference Include="..\RackCad.Application\RackCad.Application.csproj" />
@@ -18,7 +27,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(UseAutoCADNuGetReferences)' != 'true'">
     <Reference Include="AcCoreMgd">
       <HintPath>$(AutoCADInstallDir)\AcCoreMgd.dll</HintPath>
       <Private>false</Private>
