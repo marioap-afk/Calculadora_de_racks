@@ -174,7 +174,8 @@ jobs:
             throw "Negative control populated the isolated package cache before the positive restore."
           }
 
-          Write-Host "Negative control accepted: exit code $negativeExitCode; causal CS0234/CS0246 Autodesk errors observed."
+          Write-Host "Negative control passed: Plugin cannot compile without Autodesk references."
+          exit 0
 
       - name: Restore locked graph and verify packages
         shell: pwsh
