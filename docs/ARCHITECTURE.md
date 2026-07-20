@@ -29,7 +29,9 @@ Fuentes de apoyo:
 7. **El dibujo se deriva.** Las vistas de un rack comparten identidad y se redibujan desde el diseño,
    no se editan como geometría independiente.
 8. **Producto sin paquetes NuGet.** Las dependencias externas del código de producto requieren una
-   decisión explícita.
+   decisión explícita. La única excepción vigente es la referencia condicional compile-only de
+   `RackCad.Plugin` definida por [ADR-0003](adr/0003-referencias-autocad-para-ci.md); no cubre
+   runtime, distribución ni otros paquetes.
 
 ## 2. Solución y dirección de dependencias
 
@@ -268,6 +270,8 @@ condicionan arquitectura:
 - UI y Plugin usan `net8.0-windows`;
 - AutoCAD abierto puede bloquear los DLL del directorio Debug;
 - `AutoCADInstallDir` permite apuntar el build a otra instalación;
+- el build CI puede activar la excepción compile-only de ADR-0003; sus paquetes no son assets de
+  runtime ni pueden entrar al output, bundle o artifacts;
 - los avisos MSB3277 de las referencias de AutoCAD son conocidos; errores propios no se aceptan;
 - la validación real del dibujo y de los bloques DWG corresponde a AutoCAD y al dueño.
 

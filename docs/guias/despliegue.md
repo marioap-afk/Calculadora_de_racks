@@ -17,6 +17,12 @@ solo hace falta "apuntar" una ruta si quieres una ubicación compartida.
 No hace falta instalar las DLL de AutoCAD: las pone AutoCAD en tiempo de ejecución (por eso
 `AcCoreMgd/AcDbMgd/AcMgd` **no** se copian a la carpeta de salida).
 
+El build de CI puede usar la excepción condicional compile-only de
+[ADR-0003](../adr/0003-referencias-autocad-para-ci.md). Esa ruta excluye assets de runtime y no
+autoriza incluir paquetes o DLL Autodesk en outputs, artifacts o bundle. La instalación y ejecución
+siguen requiriendo AutoCAD; cualquier cambio de versiones, fuente, runner, audiencia o finalidad
+exige nueva revisión.
+
 ---
 
 ## 2. Qué copiar
