@@ -43,15 +43,10 @@ Planes disponibles:
   `../automation/state/I-06.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
-- [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): contrato
-  cerrada documentalmente tras P1-P4; decision interna B registrada con restricciones.
-- [`I-29-paquete-decision-interna.md`](I-29-paquete-decision-interna.md): paquete neutral para la
-  revision interna y decision B del Owner, sin conclusion juridica.
-- [`I-29-plantilla-decision.md`](I-29-plantilla-decision.md): registro formal de B con alcance,
-  restricciones, vigencia, revision y efectos de gobernanza.
-- [`I-29-registro-entrega-revision.md`](I-29-registro-entrega-revision.md): evidencia versionada de
-  la entrega P2, el receptor identificado y la concentracion de roles aceptada por el Owner.
-- [`I-29-hoja-revision-interna.md`](I-29-hoja-revision-interna.md): hoja de trabajo para P3 con las
-  quince propuestas preliminares conservadas como historial y resultado P4 del Owner.
-- [`I-29-matriz-evidencia-evaluacion.md`](I-29-matriz-evidencia-evaluacion.md): matriz maestra de
-  revalidacion, composicion mixta, evaluacion, recomendacion D historica y decision B posterior.
+- I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
+  revalidada, autorizada e integrada en `main` el 2026-07-20.
+- [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
+  cerrada documentalmente con decision B y restricciones; no autoriza por si sola el merge de I-13.
+  La [decision final del Owner](../automation/decisions/I-29.md) es la fuente canonica vigente.
+- La evidencia P1-P4 se conserva en el
+  [archivo de auditoria I-29](../archivo/auditorias/I-29/README.md).
