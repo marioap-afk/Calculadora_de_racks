@@ -741,3 +741,234 @@ El rollback experimental consiste en revertir conjuntamente el job y la ruta con
 Plugin, sin tocar los jobs de I-26 ni promover el lock temporal. Aun con E2 verde, I-13 permanece
 en clasificacion B hasta que el dueño decida adopcion o descarte, licencia, procedencia, excepcion
 NuGet, lock/guardas permanentes y necesidad de ADR.
+
+## 23. Resultado de E2
+
+Estado: **E2 tecnicamente exitoso en GitHub Actions**.
+
+| Campo | Evidencia aceptada |
+|---|---|
+| Run | [CI #50, run 29753642014](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/29753642014) |
+| Commit | `1c49aab483d522e32c1f69f6c3d5ad7a6732ba79` |
+| Runner | `windows-latest`, imagen Windows 2025 vigente |
+| SDK | 8.0.423 |
+| AutoCAD | No instalado |
+| Cache | Cache NuGet aislado; primera ejecucion sin `actions/cache` |
+
+La ejecucion aceptada produjo estos resultados:
+
+- el control negativo fallo por la causa esperada: el Plugin no compila sin referencias Autodesk;
+- el restore inicial y el restore locked terminaron correctamente;
+- se resolvieron `AutoCAD.NET` 25.0.1, `AutoCAD.NET.Core` 25.0.0 y
+  `AutoCAD.NET.Model` 25.0.0;
+- la procedencia observada de los tres paquetes fue nuget.org;
+- `library-packs` se acepto unicamente como fuente adicional propia del SDK, se valido en su ruta
+  canonica y no contenia material Autodesk;
+- `ResolveReferences` obtuvo las referencias Autodesk desde el cache aislado, con
+  `Private=false`, `CopyLocal=false` y cero entradas Autodesk en `ReferenceCopyLocalPaths`;
+- el Plugin y la solucion compilaron correctamente en Release;
+- la suite Windows termino 636/636, sin fallos ni omitidas, y el guardian dirigido termino 1/1;
+- no aparecio ninguna DLL Autodesk fuera del cache aislado;
+- el bundle generado contuvo solamente las cuatro DLL RackCad esperadas;
+- E2 publico cero artifacts; el unico artifact del workflow fue
+  `rackcad-coverage-cobertura`, perteneciente al job estable y sin cambios.
+
+La evidencia versionada que condujo al run aceptado comprende la preparacion en
+`1f0d59edc13b62f97a0dc5fde33bcf1353814f52`, la correccion del control negativo en
+`fb6035e55441882803529574784ce87ec2054636`, las guardas de lock y outputs en
+`990e3a57a942f65da758c3a358c4d74bc77e19b0`, la instrumentacion sanitizada de fuentes en
+`e36dcf071fa9b45cdf35fc3656ee824f94f4cb9c` y la validacion estricta de `library-packs` y
+procedencia en `1c49aab483d522e32c1f69f6c3d5ad7a6732ba79`.
+
+## 24. Respuesta experimental
+
+**Si, `RackCad.Plugin` puede compilarse de forma reproducible en GitHub Actions sin una instalacion
+completa de AutoCAD, utilizando los paquetes Autodesk fijados como referencias de compilacion y
+excluyendo sus runtime assets.**
+
+Este resultado se limita a compilacion. AutoCAD real sigue siendo necesario en runtime; E2 no
+ejecuto `NETLOAD`, no realizo validacion funcional en AutoCAD y no demostro compatibilidad con
+AutoCAD 2026 o 2027. Un build verde no valida bloques reales, comandos, transacciones, WPF dentro
+del host ni comportamiento runtime.
+
+## 25. Clasificacion
+
+La clasificacion permanece:
+
+> **B — viable con restricciones y decision adicional.**
+
+E2 resuelve la pregunta tecnica de reproducibilidad del build en el entorno probado. No satisface
+los gates de licencia, procedencia autorizada, excepcion a cero NuGet, diseño mantenible ni
+integracion. Por esas razones no corresponde clasificar el resultado como A.
+
+## 26. Decision del dueño
+
+El dueño selecciono la **opcion B — adopcion provisional**.
+
+El alcance autorizado es:
+
+- mantener temporalmente un build experimental o reducido del Plugin en CI;
+- no reconocer todavia el mecanismo como politica arquitectonica permanente;
+- revisar licencia y procedencia antes de una adopcion definitiva;
+- preparar una promocion limpia desde `main`, con un diff minimo y auditable;
+- mantener un rollback sencillo que retire conjuntamente el job y la ruta condicional.
+
+La decision no implica una excepcion permanente a cero NuGet, integracion directa del YAML
+experimental completo, aprobacion legal, ADR definitivo ni cierre de I-13. Tampoco autoriza por si
+sola una promocion, merge, limpieza de la rama experimental o cambio de las versiones probadas.
+
+## 27. Inventario de componentes experimentales
+
+| Componente | Estado provisional | Accion futura propuesta |
+|---|---|---|
+| `PackageReference` condicional | Candidato a conservar | Revisar y promover limpiamente |
+| Versiones exactas | Conservar | Añadir politica de actualizacion |
+| `PrivateAssets=all` | Conservar | Convertir en guarda permanente |
+| `ExcludeAssets=runtime` | Conservar | Convertir en guarda permanente |
+| Job Windows separado | Conservar provisionalmente | Simplificar |
+| Control negativo | Conservar | Reducir manteniendo causalidad |
+| Restore locked temporal | Evaluar | Decidir estrategia estable |
+| Hashes y metadata | Conservar parcialmente | Reducir a controles mantenibles |
+| Instrumentacion de sources | Reducir | Mantener solo diagnostico util |
+| `library-packs` | Permitir de forma estricta | Documentar la dependencia del SDK |
+| Matrices 16/16, 11/11 y 10/10 | No ejecutar en cada CI permanente | Conservar como evidencia experimental |
+| Auditoria de outputs | Conservar | Simplificar sin debilitar |
+| Ausencia de artifacts E2 | Conservar | Convertir en politica permanente |
+| Documento experimental | Conservar | Usar como base verificable del ADR futuro |
+
+## 28. Reduccion del YAML experimental
+
+El YAML de E2 fue diseñado para resolver incertidumbres y producir evidencia, no como forma final
+del job. Ninguna reduccion debe ejecutarse antes de conservar el resultado aceptado, las causas de
+los fallos corregidos y las guardas que hicieron valido el run #50.
+
+| Categoria | Contenido | Tratamiento futuro |
+|---|---|---|
+| Guardas de seguridad permanentes | Versiones exactas; origen autorizado; cache aislado; exclusiones runtime; `Private=false`; `CopyLocal=false`; ausencia de DLL Autodesk y artifacts del Plugin; referencias locales como default | Conservar en una forma corta, explicita y fail-closed |
+| Diagnosticos solo de investigacion | Inventario extenso del entorno; volcados sanitizados de propiedades y sources; mensajes detallados del SDK; ramas de diagnostico para fallos ya comprendidos | Retirar del camino normal despues de preservar evidencia; mantener solo salida accionable ante fallo |
+| Regresiones ocasionales | Control negativo completo; matrices 16/16, 11/11 y 10/10; inspeccion exhaustiva de paquetes, licencia, metadata, `library-packs`, lock y bundle | Ejecutar manualmente, al cambiar versiones/SDK o en un workflow programado que el dueño autorice |
+| Evidencia historica | Secuencia de commits, fallos de infraestructura corregidos, run #50, conteos e inventarios exactos del experimento | Conservar en este documento; no reejecutar ni copiar literalmente al job permanente |
+
+No deben promoverse literalmente la instrumentacion extensa del entorno, las matrices
+autocontenidas en cada push, los mensajes de investigacion, las verificaciones duplicadas, la
+logica especifica de fallos ya comprendidos ni pasos cuyo costo de mantenimiento exceda el riesgo
+que controlan. Reducir no significa debilitar: toda eliminacion futura debe mapearse a una guarda
+equivalente, una prueba ocasional o evidencia documental.
+
+## 29. Propuesta de promocion limpia y reversible
+
+La promocion futura debe implementarse desde `main` en una rama distinta, reaplicando solo los
+cambios autorizados. No debe integrar ni recortar en sitio la historia experimental.
+
+### 29.1 Proyecto Plugin
+
+- conservar `UseAutoCADNuGetReferences` como propiedad explicita;
+- agregar el `PackageReference` condicional con versiones exactas;
+- conservar `PrivateAssets=all` y `ExcludeAssets=runtime`;
+- mantener las referencias locales como comportamiento predeterminado para desarrollo;
+- dejar un comentario minimo que separe referencias de compilacion de dependencias runtime.
+
+### 29.2 CI
+
+El job Windows permanente o provisional reducido deberia limitarse a:
+
+1. checkout;
+2. setup de .NET;
+3. verificacion de ausencia de AutoCAD;
+4. cache aislado;
+5. restore exacto;
+6. validacion mantenible de procedencia de los paquetes Autodesk;
+7. build Release del Plugin;
+8. build Release de la solucion;
+9. pruebas y guardian, o dependencia explicita de los jobs existentes si evita duplicacion sin
+   perder cobertura;
+10. comprobacion de ausencia de DLL Autodesk fuera del cache;
+11. prohibicion de publicar artifacts del Plugin.
+
+### 29.3 Documentacion
+
+La promocion debe documentar la excepcion provisional, versiones soportadas, instrucciones de
+actualizacion anual, riesgo y tratamiento de `library-packs`, diferencia entre compilar y ejecutar,
+y procedimiento de rollback. El rollback minimo debe retirar juntos el job y la seleccion NuGet,
+dejando intacto el flujo local basado en una instalacion de AutoCAD.
+
+## 30. Estrategia de rama
+
+| Opcion | Ventajas | Riesgos |
+|---|---|---|
+| A. Reducir `experiment/refs-autocad-ci` | Conserva continuidad inmediata y requiere menos reaplicacion | Mezcla evidencia de investigacion con implementacion permanente, dificulta revisar el diff final y favorece integrar deuda experimental |
+| B. Crear una rama limpia desde `main` | Produce un diff minimo, revisable y reversible; separa experimento de adopcion | Exige reaplicar y volver a validar las guardas autorizadas |
+| C. Crear una iniciativa posterior a la revision legal | Hace explicitos los gates de gobierno y evita confundir exito tecnico con adopcion | Puede demorar la promocion si se trata como bloqueo total de trabajo que solo necesita compilacion provisional |
+
+La recomendacion es conservar I-13 y su rama experimental como evidencia, no integrarla
+directamente y usar este documento como especificacion verificable para la opcion B cuando el dueño
+autorice la promocion. La opcion C puede gobernar la adopcion definitiva y el ADR sin invalidar un
+build provisional separado. Esta secuencia conserva un rollback claro: la rama de promocion puede
+revertirse sin reescribir ni perder la evidencia experimental.
+
+## 31. Gate de licencia y procedencia
+
+Este gate formula preguntas; no emite una conclusion legal.
+
+| # | Pregunta pendiente | Clasificacion primaria | Decision necesaria |
+|---:|---|---|---|
+| 1 | ¿La licencia ObjectARX permite restauracion automatizada en CI alojado? | Legal | Revision competente antes de adopcion definitiva |
+| 2 | ¿Permite caching efimero del paquete en el runner? | Legal | Confirmar alcance del uso temporal |
+| 3 | ¿Permite caching persistente mediante `actions/cache`? | Legal / decision del dueño | Mantenerlo prohibido hasta resolverlo |
+| 4 | ¿Permite conservar hashes y metadata sin conservar DLL? | Legal / tecnica | Validar que la evidencia no redistribuya contenido restringido |
+| 5 | ¿NuGet es un canal suficientemente autorizado pese a `verified=false`? | Decision del dueño / tecnica | Definir el umbral de procedencia aceptable |
+| 6 | ¿Debe exigirse revision legal interna? | Decision del dueño | Identificar responsable y evidencia de cierre |
+| 7 | ¿Debe prohibirse `actions/cache` hasta cerrar la revision? | Decision del dueño / legal | Conservar la prohibicion provisional actual |
+| 8 | ¿Debe mantenerse nuget.org como unica procedencia Autodesk? | Tecnica / mantenimiento | Definir fuentes permitidas y comportamiento fail-closed |
+| 9 | ¿Que ocurre si Autodesk retira o sustituye el paquete? | Mantenimiento / tecnica | Definir contingencia, hashes, alertas y rollback |
+| 10 | ¿Como se valida una actualizacion a AutoCAD 2026 o 2027? | Mantenimiento / tecnica | Repetir protocolo experimental y validacion runtime para cada version |
+
+El gate debe registrar quien acepta el riesgo, el alcance exacto autorizado, fuentes y caches
+permitidos, evidencia de licencia/procedencia revisada, politica ante retirada o sustitucion y
+criterio de renovacion anual. Hasta entonces no se afirma aprobacion legal ni autenticidad oficial
+de los paquetes.
+
+## 32. Condiciones de adopcion definitiva
+
+La clasificacion solo podra pasar a A cuando se cumplan todas estas condiciones:
+
+- licencia y procedencia aceptadas por los responsables correspondientes;
+- excepcion a la politica cero NuGet aprobada expresamente;
+- ADR aprobado;
+- implementacion reducida y mantenible en una rama limpia;
+- CI verde sobre esa rama limpia;
+- ausencia de DLL Autodesk fuera del cache comprobada;
+- rollback documentado y probado en proporcion al cambio;
+- proceso de actualizacion anual definido;
+- integracion autorizada conforme a WORKFLOW;
+- evidencia experimental conservada y limpieza completa ejecutada solo despues del merge.
+
+## 33. Impacto sobre I-09, I-10 e I-16
+
+I-09, I-10 e I-16 podran comenzar con mayor seguridad una vez que exista un build provisional
+disponible: CI detectara errores de compilacion del Plugin antes de la validacion manual. Este gate
+no las declara abiertas automaticamente ni sustituye las autorizaciones y dependencias de ROADMAP.
+
+El build tampoco sustituye AutoCAD. Todo cambio runtime, de bloques, comandos, transacciones,
+persistencia embebida o interaccion WPF sigue requiriendo `NETLOAD` y pruebas funcionales con el
+host real. La revision legal puede separarse del trabajo preparatorio para no bloquearlo
+innecesariamente, pero cualquier dependencia permanente del mecanismo debe esperar el gate de
+licencia/procedencia, la excepcion NuGet y la promocion autorizada.
+
+## 34. Estado de cierre
+
+I-13 **todavia no esta cerrada**. E2 tiene resultado tecnico aceptado y decision provisional, pero
+quedan pendientes:
+
+- revision de licencia y procedencia;
+- decision sobre la excepcion a cero NuGet;
+- decision y autorizacion de una promocion limpia;
+- posible ADR y su aceptacion o rechazo;
+- implementacion provisional reducida;
+- CI de la rama de promocion;
+- integracion autorizada;
+- rollback o limpieza de la implementacion experimental en el momento correcto;
+- conclusion final A/B/C/D.
+
+Hasta resolver esos puntos, la clasificacion es B, la rama experimental se conserva como evidencia
+y ningun resultado de esta seccion debe interpretarse como integracion o adopcion definitiva.
