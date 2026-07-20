@@ -9,7 +9,7 @@
 | Claim-Id | `526b69aa-a56e-4da4-acd7-b96d0d8d1409` |
 | Commit del paquete P1 entregado | `195cc8b26e58e191eeb4c3f5af8fa325ad43a77d` |
 | Fecha de entrega interna | 2026-07-20 |
-| Estado | Recibido para revision interna |
+| Estado | Revision preliminar P3 completada; decision formal pendiente |
 | Decision | Pendiente |
 | A/B/C/D | Sin seleccionar |
 
@@ -78,13 +78,14 @@ y autorizacion legal o contractual.
 
 ## 9. Estado de las quince preguntas
 
-Las quince preguntas exactas permanecen sin respuesta. La
-[hoja de revision interna](I-29-hoja-revision-interna.md) se crea para documentar su evaluacion en
-P3. Ninguna respuesta, restriccion o fuente decisoria fue completada en P2.
+Las quince preguntas exactas cuentan con evaluacion y respuesta interna propuesta en la
+[hoja de revision interna](I-29-hoja-revision-interna.md) y trazabilidad ampliada en la
+[matriz maestra](I-29-matriz-evidencia-evaluacion.md). Cada respuesta es preliminar y permanece
+pendiente de decision formal de Mario Pérez.
 
-## 10. Evidencia pendiente de revalidacion
+## 10. Evidencia revalidada
 
-Continua como **evidencia heredada de I-13, pendiente de revalidacion independiente**:
+P3 revalido independientemente el 2026-07-20:
 
 - licencia incluida en los paquetes;
 - nuspec y metadata declarada;
@@ -93,18 +94,20 @@ Continua como **evidencia heredada de I-13, pendiente de revalidacion independie
 - firma de autor; y
 - firma de repositorio.
 
-CI #54/#55 continua registrado como declarado, no verificado independientemente por P1/P2.
+La composicion observada es mixta: siete assemblies con `ReferenceAssemblyAttribute` y seis sin el
+atributo. Las tres referencias principales no contienen el atributo y contienen cuerpos. CI #54/#55
+continua registrado como declarado, no verificado independientemente por P1/P2/P3.
 
 ## 11. Resultado pendiente
 
 No se selecciono A, B, C o D. No existe decision firmada ni declaracion de suficiencia. ADR-0003
 permanece propuesto, la excepcion cero NuGet no esta vigente e I-13 continua bloqueada.
 
-## 12. Proximo paso P3
+## 12. Proximo paso P4
 
-P3 debe evaluar las quince preguntas, registrar fuentes y riesgos, determinar si se requiere
-asesoria externa y preparar una decision atribuida. P2 no ejecuta esa evaluacion ni anticipa su
-resultado.
+P4 permanece bloqueada hasta que Mario Pérez revise las propuestas, seleccione formalmente A/B/C/D,
+registre firma, fecha, autoridad, vigencia y efecto sobre ADR-0003, cero NuGet, I-13 y el merge. P3
+no ejecuta ni autoriza esas acciones.
 
 ## 13. Registro de recepcion
 

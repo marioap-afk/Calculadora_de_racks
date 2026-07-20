@@ -4,6 +4,9 @@ Formulario neutral para registrar la decision sobre referencias AutoCAD de compi
 debe firmarse hasta revisar el [paquete de decision](I-29-paquete-decision-interna.md) y responder
 las quince preguntas. Marcar exactamente una opcion.
 
+P3 agrego una recomendacion preliminar en la matriz maestra y la hoja de revision. Esta plantilla
+permanece deliberadamente sin seleccionar, sin firma, sin fecha de aprobacion y sin vigencia.
+
 ## Identificacion
 
 | Campo | Valor |

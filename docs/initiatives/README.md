@@ -44,7 +44,7 @@ Planes disponibles:
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): contrato
-  reclamado; P1 esta publicada, P2 entregada internamente y P3 permanece pendiente.
+  reclamado; P1 y P2 estan publicadas, P3 preliminar esta completada y P4 permanece bloqueada.
 - [`I-29-paquete-decision-interna.md`](I-29-paquete-decision-interna.md): paquete neutral para la
   revision interna, recibido por el responsable del proyecto con decision pendiente.
 - [`I-29-plantilla-decision.md`](I-29-plantilla-decision.md): formulario A/B/C/D sin seleccionar
@@ -52,4 +52,6 @@ Planes disponibles:
 - [`I-29-registro-entrega-revision.md`](I-29-registro-entrega-revision.md): evidencia versionada de
   la entrega P2, el receptor identificado y la concentracion de roles aceptada por el Owner.
 - [`I-29-hoja-revision-interna.md`](I-29-hoja-revision-interna.md): hoja de trabajo para P3 con las
-  quince preguntas pendientes; ADR-0003 y el merge de I-13 continúan bloqueados.
+  quince propuestas preliminares; ADR-0003 y el merge de I-13 continúan bloqueados.
+- [`I-29-matriz-evidencia-evaluacion.md`](I-29-matriz-evidencia-evaluacion.md): matriz maestra de
+  revalidacion, composicion mixta, evaluacion y recomendacion preliminar no vinculante.

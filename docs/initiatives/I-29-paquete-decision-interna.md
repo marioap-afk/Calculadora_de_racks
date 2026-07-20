@@ -5,7 +5,8 @@ compilacion de RackCad. No ofrece asesoramiento legal, no responde en nombre del
 selecciona una salida. Los detalles tecnicos completos permanecen en I-13; aqui se presenta solo la
 informacion necesaria para decidir.
 
-Version del paquete: P1, 2026-07-20. Estado: decision humana pendiente; gate L2 abierto.
+Version del paquete: P3 preliminar, 2026-07-20. Estado: evaluacion interna disponible, decision
+humana pendiente; gate L2 abierto.
 
 ## 1. Resumen ejecutivo
 
@@ -62,14 +63,17 @@ transacciones, WPF dentro del host, bloques reales y validacion funcional.
 
 | Paquete | Version | Finalidad tecnica | Material observado | Estado de revalidacion |
 |---|---:|---|---|---|
-| `AutoCAD.NET` | 25.0.1 | Referencia directa; aporta `AcMgd` y otros compile assets | Assemblies bajo `lib/net8.0` | Evidencia heredada de I-13, pendiente de revalidacion independiente |
-| `AutoCAD.NET.Core` | 25.0.0 | Dependencia transitiva; aporta `AcCoreMgd` | Assembly bajo `lib/net8.0` | Evidencia heredada de I-13, pendiente de revalidacion independiente |
-| `AutoCAD.NET.Model` | 25.0.0 | Dependencia transitiva; aporta `AcDbMgd` y `acdbmgdbrep` | Assemblies bajo `lib/net8.0` | Evidencia heredada de I-13, pendiente de revalidacion independiente |
+| `AutoCAD.NET` | 25.0.1 | Referencia directa; aporta `AcMgd` y otros compile assets | Diez assemblies bajo `lib/net8.0` | Revalidado independientemente en P3 |
+| `AutoCAD.NET.Core` | 25.0.0 | Dependencia transitiva; aporta `AcCoreMgd` | Un assembly bajo `lib/net8.0` | Revalidado independientemente en P3 |
+| `AutoCAD.NET.Model` | 25.0.0 | Dependencia transitiva; aporta `AcDbMgd` y `acdbmgdbrep` | Dos assemblies bajo `lib/net8.0` | Revalidado independientemente en P3 |
 
-I-13 observo trece DLL administradas en total y concluyo que no son reference assemblies formales:
-estan en `lib`, no en `ref`, y contienen implementacion significativa. Ese hecho tecnico no decide
-por si solo el permiso aplicable. Las versiones son especificas; cualquier cambio requiere nueva
-revision tecnica, de procedencia y de licencia.
+La revalidacion independiente de P3 conto trece DLL con composicion mixta. Siete contienen
+`ReferenceAssemblyAttribute`: `AcCui`, `AcDx`, `AcMr`, `AcSeamless`, `AcWindows`, `AdUIMgd` y
+`AdUiPalettes`. Seis no contienen el atributo: `AcMgd`, `AcTcMgd`, `AdWindows`, `AcCoreMgd`,
+`AcDbMgd` y `acdbmgdbrep`. Las tres referencias principales de RackCad pertenecen al segundo grupo
+y contienen cuerpos de metodos. El atributo no concede licencia y su ausencia no prueba
+redistribuibilidad ni naturaleza runtime. Las versiones son especificas; cualquier cambio requiere
+nueva revision tecnica, de procedencia y de licencia.
 
 ## 4. Flujo de bytes
 
@@ -128,9 +132,9 @@ permite o prohibe.
 | Versiones exactas | Evitar actualizaciones flotantes | 25.0.1/25.0.0/25.0.0 en promocion |
 | Fuente unica | Limitar restore a nuget.org | Configuracion temporal fail-closed |
 | Lock temporal/locked mode | Confirmar el grafo exacto | Probado en E2; permanencia pendiente de decision |
-| SHA-256 y contentHash | Detectar cambio de bytes | Evidencia heredada de I-13 pendiente de revalidacion |
-| Firma de autor | Aportar integridad y procedencia tecnica | Evidencia heredada, atribuida en I-13 a Autodesk, Inc. |
-| Firma de repositorio | Aportar integridad del canal | Evidencia heredada, atribuida a NuGet.org Repository by Microsoft |
+| SHA-256 y contentHash | Detectar cambio de bytes | Revalidados y coincidentes en P3 |
+| Firma de autor | Aportar integridad y procedencia tecnica | CMS valida de Autodesk, Inc., revalidada en P3 |
+| Firma de repositorio | Aportar integridad del canal | CMS valida de NuGet.org Repository by Microsoft, revalidada en P3 |
 | `Private=false` | Evitar copia local de referencias resueltas | Verificado por el script propuesto |
 | `CopyLocal=false` | Evitar que DLL Autodesk entren al output | Verificado por el script propuesto |
 | Inventario de outputs | Fallar ante DLL Autodesk fuera de cache | Script de promocion |
@@ -239,7 +243,20 @@ bloqueada hasta recuperar un bundle limpio.
 El rollback debe registrar responsable, fecha, causa, commits, validaciones y efecto sobre I-13 y
 ADR-0003. P1 solo define este procedimiento; no lo ejecuta.
 
-## 13. Decision solicitada
+## 13. Recomendacion preliminar y decision solicitada
+
+P3 recomienda preliminarmente **D. Requiere asesoria legal externa**, con confianza media. No se
+marca formalmente esa opcion. El fundamento es que las fuentes primarias permiten copias para
+desarrollo, pero no responden de forma suficientemente directa si un runner GitHub-hosted puede
+recibir y procesar esas copias ni si nuget.org es el canal autorizado para las versiones exactas.
+La composicion mixta eleva la cautela sobre el material principal, pero no invalida E1/E2 ni es por
+si sola motivo de rechazo.
+
+Mientras se obtiene esa respuesta, permanecen propuestas las restricciones de las secciones 5, 7,
+8 y 9. Una eventual salida B solo seria razonable si la respuesta externa confirma el restore
+efimero alojado y se conservan todas las guardas. A se descarta provisionalmente por las
+ambiguedades materiales; C, porque no se encontro prohibicion expresa y E1/E2 siguen validos; B,
+como decision inmediata, porque depende precisamente de resolver esas ambiguedades.
 
 El final approver debe seleccionar exactamente una salida en la
 [plantilla de decision](I-29-plantilla-decision.md):
@@ -258,7 +275,7 @@ La respuesta debe indicar expresamente:
 | I-13 | Si avanza a cierre, requiere trabajo adicional o activa rollback |
 | Merge de promocion | Autorizado solo bajo condiciones expresas o permanece bloqueado |
 
-P1 no selecciona ni recomienda una opcion y no autoriza el merge.
+P3 recomienda D de forma preliminar, pero no selecciona ninguna opcion ni autoriza el merge.
 
 ## 14. Firmas y aprobaciones
 

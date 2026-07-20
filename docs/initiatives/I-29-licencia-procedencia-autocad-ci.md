@@ -44,9 +44,9 @@ automation:
 | Gate | L2 — licencia y procedencia pendientes de decision competente |
 | ADR relacionado | ADR-0003, estado `propuesto` |
 
-I-29 esta **reclamada**. P1 completo el paquete documental y P2 registro su entrega interna
-versionada a Mario Pérez, Coordinador de Desarrollo de Proyectos de Industrias Montilla. La revision
-interna esta iniciada y la decision humana permanece pendiente. I-13 y el merge de
+I-29 esta **reclamada**. P1 completo el paquete documental, P2 registro su entrega interna
+versionada y P3 completo la evaluacion preliminar y la revalidacion independiente el 2026-07-20.
+La recomendacion preliminar esta disponible, pero la decision humana permanece pendiente. I-13 y el merge de
 `architecture/referencias-autocad-ci` continúan bloqueados. Este documento no acepta el ADR, no
 activa una excepcion a cero NuGet y no contiene una conclusion legal.
 
@@ -83,7 +83,7 @@ El [paquete de decision](I-29-paquete-decision-interna.md) presenta el caso para
 
 ## 5. Alcance
 
-- licencia ObjectARX y uso de assemblies observados como material de implementacion;
+- licencia ObjectARX y composicion tecnica mixta de los assemblies observados;
 - restore desde nuget.org en un runner GitHub-hosted efimero;
 - cache local `NUGET_PACKAGES` durante un job;
 - metadata, lock, hashes y firmas;
@@ -135,21 +135,21 @@ La fuente detallada de E1/E2 es `docs/initiatives/I-13-referencias-autocad-ci.md
 `experiment/refs-autocad-ci`. La promocion y sus archivos se leen desde
 `architecture/referencias-autocad-ci`; ninguna de esas ramas fue modificada por P1.
 
-## 9. Evidencia heredada pendiente de revalidacion
+## 9. Revalidacion independiente
 
-Durante la apertura de I-29 no estaban disponibles los tres paquetes en la cache global ni bajo los
-worktrees inspeccionados. Por ello estos elementos se conservan como **evidencia heredada de I-13,
-pendiente de revalidacion independiente**:
+P3 revalido de forma independiente los paquetes exactos el 2026-07-20. Coincidieron los SHA-256 de
+E1, los SHA-512 del catalogo NuGet, el contenido y hash de `LICENSE.txt`, las firmas CMS de autor y
+repositorio, el owner mostrado y `verified=false`. La inspeccion conto trece DLL y corrigio su
+caracterizacion:
 
-- `LICENSE.txt` incluido en los paquetes y su hash;
-- propietarios y autores del nuspec;
-- `verified=false` observado mediante el servicio de busqueda;
-- SHA-256 de los nupkg y coincidencia SHA-512/contentHash;
-- firma de autor atribuida a Autodesk, Inc.; y
-- firma de repositorio atribuida a NuGet.org Repository by Microsoft.
+> Los paquetes auditados contienen una composicion mixta: siete assemblies estan marcados mediante
+> `ReferenceAssemblyAttribute` y seis no contienen esa marca. Las tres referencias principales
+> utilizadas por `RackCad.Plugin` —`AcMgd`, `AcCoreMgd` y `AcDbMgd`— no contienen
+> `ReferenceAssemblyAttribute` y contienen cuerpos de metodos.
 
-P1 no presenta esos datos como hallazgos nuevos. Las paginas oficiales de Autodesk, NuGet,
-Microsoft y GitHub aportan contexto primario, pero no sustituyen la decision competente solicitada.
+La presencia o ausencia del atributo es una propiedad tecnica, no una licencia. La revalidacion no
+conservo paquetes, DLL ni temporales. La evidencia, sus limites y la evaluacion de las quince
+preguntas se registran en la [matriz maestra](I-29-matriz-evidencia-evaluacion.md).
 
 ## 10. Capas que no deben confundirse
 
@@ -181,7 +181,8 @@ Estas preguntas se copian sin reformular del contrato preparado en la rama de pr
 14. ¿Difiere uso interno de distribucion externa?
 15. ¿Se requiere una licencia AutoCAD por cada entorno de build?
 
-Todas permanecen pendientes de respuesta humana.
+Todas cuentan con una propuesta preliminar de P3. Ninguna constituye respuesta formal atribuida,
+firma o decision vigente de Mario Pérez.
 
 ## 12. Estado de ADR-0003
 
@@ -220,8 +221,8 @@ tecnica presentada como autorizacion legal.
 |---|---|---|
 | P1 — Crear paquete documental | Completada | Contrato, paquete, plantilla e indice publicados |
 | P2 — Entregar al reviewer interno | Completada | Entrega interna versionada, receptor y concentracion de roles registrados |
-| P3 — Registrar la decision | No ejecutada | Opcion A/B/C/D fechada y suficiente |
-| P4 — Gobernar ADR e I-13 | No ejecutada | Actualizacion autorizada y decision de merge o rollback |
+| P3 — Evaluar evidencia y preparar recomendacion | Completada preliminarmente | Revalidacion, matriz, quince propuestas y recomendacion no vinculante |
+| P4 — Registrar decision y gobernar ADR e I-13 | Bloqueada | Espera seleccion formal, firma, vigencia y autorizacion humana |
 
 ## 16. Condiciones de bloqueo
 
@@ -242,10 +243,11 @@ tecnica presentada como autorizacion legal.
 | Promocion documental | `31e146ded403fefc45f1b7e7302c98957773fec8` | ADR propuesto; merge bloqueado |
 | Reclamo I-29 | `715d473721d216b55b21fc4aa80eea13da218371` | Publicado |
 | P1 | `195cc8b26e58e191eeb4c3f5af8fa325ad43a77d` | Completada y publicada |
-| P2 | [Registro de entrega](I-29-registro-entrega-revision.md) y [hoja de revision](I-29-hoja-revision-interna.md) | Entrega registrada; decision pendiente |
+| P2 | [Registro de entrega](I-29-registro-entrega-revision.md) | Entrega registrada |
+| P3 | [Matriz maestra](I-29-matriz-evidencia-evaluacion.md) y [hoja de revision](I-29-hoja-revision-interna.md) | Evaluacion preliminar completa; decision pendiente |
 
 ## 18. Pruebas y entrega
 
-P1 requiere validacion documental, enlaces relativos, `git diff --check`, revision de las quince
-preguntas y confirmacion de que solo se tocaron documentos autorizados. No requiere build del
-Plugin, restore, AutoCAD ni modificacion de CI. El push de P1 no equivale a integracion ni ejecuta P2.
+P3 requiere validacion documental, enlaces relativos, `git diff --check`, revision literal de las
+quince preguntas y confirmacion de que solo se tocaron documentos autorizados. No requiere build
+del Plugin, restore, AutoCAD ni modificacion de CI. Su push no equivale a integracion ni ejecuta P4.
