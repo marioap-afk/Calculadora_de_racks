@@ -43,3 +43,9 @@ Planes disponibles:
   `../automation/state/I-06.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
+- [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): contrato
+  reclamado para preparar y obtener una decision interna sobre referencias AutoCAD en CI.
+- [`I-29-paquete-decision-interna.md`](I-29-paquete-decision-interna.md): paquete neutral para la
+  revision interna, con evidencia, preguntas, alternativas, rollback y campos de aprobacion.
+- [`I-29-plantilla-decision.md`](I-29-plantilla-decision.md): formulario A/B/C/D sin seleccionar
+  para registrar una decision humana suficiente y atribuida.
