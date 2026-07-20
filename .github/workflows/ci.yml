@@ -222,27 +222,74 @@ jobs:
           if ($frameworks.Count -ne 1) {
             throw "Expected one locked target framework, found $($frameworks.Count)."
           }
-          $lockedPackages = @($frameworks[0].Value.PSObject.Properties)
-          $lockedNames = @($lockedPackages.Name | Sort-Object)
-          $expectedNames = @($expected.Keys | Sort-Object)
-          if (@(Compare-Object $expectedNames $lockedNames).Count -ne 0) {
-            throw "Temporary lock contains a missing or unexpected package: $($lockedNames -join ', ')."
+          $frameworkEntries = @($frameworks[0].Value.PSObject.Properties)
+          $allowedEntryTypes = @("Direct", "Transitive", "Project")
+          $unknownTypeEntries = @(
+            $frameworkEntries |
+              Where-Object { [string]$_.Value.type -notin $allowedEntryTypes }
+          )
+          if ($unknownTypeEntries.Count -ne 0) {
+            $unknownTypes = @($unknownTypeEntries | ForEach-Object { "$($_.Name)=$($_.Value.type)" })
+            throw "Temporary lock contains an entry with an unexpected type: $($unknownTypes -join ', ')."
           }
+
+          $packageEntries = @($frameworkEntries | Where-Object { [string]$_.Value.type -ne "Project" })
+          $projectEntries = @($frameworkEntries | Where-Object { [string]$_.Value.type -eq "Project" })
+          $lockedPackageNames = @($packageEntries.Name | Sort-Object)
+          $lockedProjectNames = @($projectEntries.Name | Sort-Object)
+          $expectedPackageNames = @($expected.Keys | Sort-Object)
+          $expectedProjectNames = @(
+            @("rackcad.application", "rackcad.domain", "rackcad.ui") | Sort-Object
+          )
+          if (@(Compare-Object $expectedPackageNames $lockedPackageNames -CaseSensitive:$false).Count -ne 0) {
+            throw "Temporary lock contains a missing or unexpected NuGet package: $($lockedPackageNames -join ', ')."
+          }
+          if (@(Compare-Object $expectedProjectNames $lockedProjectNames -CaseSensitive:$false).Count -ne 0) {
+            throw "Temporary lock contains a missing or unexpected project reference: $($lockedProjectNames -join ', ')."
+          }
+
           $lockByName = @{}
-          foreach ($lockedPackage in $lockedPackages) {
-            $lockByName[$lockedPackage.Name] = $lockedPackage.Value
-            if ([string]$lockedPackage.Value.resolved -ne $expected[$lockedPackage.Name].Version) {
-              throw "Unexpected locked version for $($lockedPackage.Name): $($lockedPackage.Value.resolved)."
+          foreach ($frameworkEntry in $frameworkEntries) {
+            $lockByName[$frameworkEntry.Name] = $frameworkEntry.Value
+          }
+          $expectedPackageTypes = @{
+            "AutoCAD.NET" = "Direct"
+            "AutoCAD.NET.Core" = "Transitive"
+            "AutoCAD.NET.Model" = "Transitive"
+          }
+          foreach ($packageName in $expected.Keys) {
+            $entry = $lockByName[$packageName]
+            if ($null -eq $entry) {
+              throw "Missing lock entry for $packageName."
+            }
+            if ([string]$entry.type -ne $expectedPackageTypes[$packageName]) {
+              throw "Unexpected lock type for ${packageName}: $($entry.type)."
+            }
+            if ([string]$entry.resolved -ne $expected[$packageName].Version) {
+              throw "Unexpected resolved version for ${packageName}: $($entry.resolved)."
+            }
+            if ([string]::IsNullOrWhiteSpace([string]$entry.contentHash)) {
+              throw "Missing content hash for $packageName."
             }
           }
-          if ([string]$lockByName["AutoCAD.NET"].type -ne "Direct" -or
-              [string]$lockByName["AutoCAD.NET.Core"].type -ne "Transitive" -or
-              [string]$lockByName["AutoCAD.NET.Model"].type -ne "Transitive") {
-            throw "The temporary lock does not contain the expected direct/transitive graph."
+          foreach ($projectName in $expectedProjectNames) {
+            if ([string]$lockByName[$projectName].type -ne "Project") {
+              throw "Unexpected lock type for project reference ${projectName}: $($lockByName[$projectName].type)."
+            }
+          }
+
+          # resolved is the stable version gate; requested is informative and may vary only in whitespace or bare/range form.
+          $requestedAutoCAD = [string]$lockByName["AutoCAD.NET"].requested -replace "\s", ""
+          if (-not [string]::IsNullOrWhiteSpace($requestedAutoCAD) -and
+              $requestedAutoCAD -notin @("[25.0.1,)", "25.0.1")) {
+            throw "Unexpected requested version for AutoCAD.NET: $($lockByName['AutoCAD.NET'].requested)."
           }
           $autoCADDependency = [string]$lockByName["AutoCAD.NET"].dependencies."AutoCAD.NET.Core"
           $coreDependency = [string]$lockByName["AutoCAD.NET.Core"].dependencies."AutoCAD.NET.Model"
-          if ($autoCADDependency -notmatch "25\.0\.0" -or $coreDependency -notmatch "25\.0\.0") {
+          $normalizedAutoCADDependency = $autoCADDependency -replace "\s", ""
+          $normalizedCoreDependency = $coreDependency -replace "\s", ""
+          if ($normalizedAutoCADDependency -notin @("[25.0.0]", "25.0.0") -or
+              $normalizedCoreDependency -notin @("[25.0.0]", "25.0.0")) {
             throw "The temporary lock does not preserve the expected exact transitive versions."
           }
 
@@ -253,8 +300,9 @@ jobs:
             $packageDirectory = Join-Path $env:NUGET_PACKAGES "$($packageId.ToLowerInvariant())\$($package.Version)"
             $nupkgs = @(Get-ChildItem -LiteralPath $packageDirectory -File -Filter "*.nupkg")
             $shaSidecars = @(Get-ChildItem -LiteralPath $packageDirectory -File -Filter "*.nupkg.sha512")
-            if ($nupkgs.Count -ne 1 -or $shaSidecars.Count -ne 1) {
-              throw "Expected one nupkg and one SHA-512 sidecar for $packageId $($package.Version)."
+            $metadataFiles = @(Get-ChildItem -LiteralPath $packageDirectory -File -Filter ".nupkg.metadata")
+            if ($nupkgs.Count -ne 1 -or $shaSidecars.Count -ne 1 -or $metadataFiles.Count -ne 1) {
+              throw "Expected one nupkg, one SHA-512 sidecar, and one metadata file for $packageId $($package.Version)."
             }
 
             $actualSha256 = (Get-FileHash -LiteralPath $nupkgs[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -263,8 +311,15 @@ jobs:
             }
             $actualSha512 = [Convert]::ToBase64String([Security.Cryptography.SHA512]::HashData([IO.File]::ReadAllBytes($nupkgs[0].FullName)))
             $sidecarSha512 = (Get-Content -LiteralPath $shaSidecars[0].FullName -Raw).Trim()
-            if ($actualSha512 -ne $sidecarSha512 -or $actualSha512 -ne [string]$lockByName[$packageId].contentHash) {
-              throw "SHA-512 mismatch between package, sidecar, and lock for $packageId."
+            if ($actualSha512 -ne $sidecarSha512) {
+              throw "SHA-512 mismatch between package and sidecar for $packageId."
+            }
+            $packageMetadata = Get-Content -LiteralPath $metadataFiles[0].FullName -Raw | ConvertFrom-Json
+            if ([string]$packageMetadata.contentHash -ne [string]$lockByName[$packageId].contentHash) {
+              throw "NuGet content hash mismatch between metadata and lock for $packageId."
+            }
+            if ([string]$packageMetadata.source -ne "https://api.nuget.org/v3/index.json") {
+              throw "Unexpected package metadata source for $packageId."
             }
 
             $archive = [IO.Compression.ZipFile]::OpenRead($nupkgs[0].FullName)
@@ -305,7 +360,7 @@ jobs:
             Write-Host "$packageId $($package.Version): SHA-256/SHA-512, metadata, license, and package layout verified."
           }
 
-          & dotnet restore $project --configfile $env:E2_NUGET_CONFIG --no-cache --locked-mode --lock-file-path $env:E2_LOCK_FILE @positiveProperties -p:Configuration=Release -v:minimal
+          & dotnet restore $project --configfile $env:E2_NUGET_CONFIG --no-cache --locked-mode --lock-file-path $env:E2_LOCK_FILE @positiveProperties -p:RestoreRecursive=false -p:Configuration=Release -v:minimal
           if ($LASTEXITCODE -ne 0) {
             throw "Locked positive restore failed."
           }
@@ -455,7 +510,7 @@ jobs:
             Get-Content -LiteralPath $diagnosticPath -Tail 100
             throw "Diagnostic ResolveReferences failed."
           }
-          $localInstallMatches = @(Select-String -LiteralPath $diagnosticPath -Pattern "C:\Program Files\Autodesk", "AutoCAD 2025")
+          $localInstallMatches = @(Select-String -LiteralPath $diagnosticPath -Pattern "C:\Program Files\Autodesk", "AutoCAD 2025" -SimpleMatch)
           if ($localInstallMatches.Count -ne 0) {
             throw "ResolveReferences diagnostic log contains a local AutoCAD installation path."
           }
@@ -538,15 +593,76 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
-          $autodeskAssemblyNames = @(Get-ChildItem -LiteralPath $env:NUGET_PACKAGES -Recurse -File -Filter "*.dll" |
-            Select-Object -ExpandProperty Name -Unique)
+          $expectedAutodeskPackages = [ordered]@{
+            "AutoCAD.NET" = @{ Folder = "autocad.net"; Version = "25.0.1" }
+            "AutoCAD.NET.Core" = @{ Folder = "autocad.net.core"; Version = "25.0.0" }
+            "AutoCAD.NET.Model" = @{ Folder = "autocad.net.model"; Version = "25.0.0" }
+          }
+          $lock = Get-Content -LiteralPath $env:E2_LOCK_FILE -Raw | ConvertFrom-Json
+          $frameworks = @($lock.dependencies.PSObject.Properties)
+          if ($frameworks.Count -ne 1) {
+            throw "Expected one locked target framework while guarding outputs."
+          }
+          $lockedGraph = $frameworks[0].Value
+          $autodeskPackageRoots = @()
+          foreach ($packageId in $expectedAutodeskPackages.Keys) {
+            $package = $expectedAutodeskPackages[$packageId]
+            $packageBase = Join-Path $env:NUGET_PACKAGES $package.Folder
+            if (-not (Test-Path -LiteralPath $packageBase -PathType Container)) {
+              throw "Expected Autodesk package directory is missing: $packageBase"
+            }
+            $versionDirectories = @(Get-ChildItem -LiteralPath $packageBase -Directory)
+            if ($versionDirectories.Count -ne 1 -or $versionDirectories[0].Name -ne $package.Version) {
+              throw "Unexpected installed versions for ${packageId}: $($versionDirectories.Name -join ', ')."
+            }
+            $packageRoot = Join-Path $packageBase $package.Version
+            $lockEntry = $lockedGraph.PSObject.Properties[$packageId]
+            if ($null -eq $lockEntry -or [string]$lockEntry.Value.resolved -ne $package.Version) {
+              throw "Output guard package path does not match the lock for $packageId."
+            }
+            $metadataPath = Join-Path $packageRoot ".nupkg.metadata"
+            if (-not (Test-Path -LiteralPath $metadataPath -PathType Leaf)) {
+              throw "Expected package metadata is missing for $packageId."
+            }
+            $metadata = Get-Content -LiteralPath $metadataPath -Raw | ConvertFrom-Json
+            if ([string]$metadata.contentHash -ne [string]$lockEntry.Value.contentHash -or
+                [string]$metadata.source -ne "https://api.nuget.org/v3/index.json") {
+              throw "Output guard package metadata does not match the validated lock/source for $packageId."
+            }
+            $autodeskPackageRoots += $packageRoot
+          }
+
+          $autodeskAssemblyNames = @($autodeskPackageRoots | ForEach-Object {
+            Get-ChildItem -LiteralPath $_ -Recurse -File -Filter "*.dll" |
+              Select-Object -ExpandProperty Name
+          } | Sort-Object -Unique)
+          if ($autodeskAssemblyNames.Count -eq 0) {
+            throw "The Autodesk assembly inventory is empty."
+          }
+          foreach ($requiredAssembly in "AcCoreMgd.dll", "AcDbMgd.dll", "AcMgd.dll") {
+            if ($requiredAssembly -notin $autodeskAssemblyNames) {
+              throw "Required Autodesk assembly is missing from the package inventory: $requiredAssembly"
+            }
+          }
+          $foreignAssemblyNames = @($autodeskAssemblyNames | Where-Object {
+            $_ -ieq "testhost.dll" -or $_ -ieq "Newtonsoft.Json.dll" -or
+              $_ -ilike "xunit*.dll" -or $_ -ilike "Microsoft.TestPlatform*.dll"
+          })
+          if ($foreignAssemblyNames.Count -ne 0) {
+            throw "Non-Autodesk package assemblies contaminated the Autodesk inventory: $($foreignAssemblyNames -join ', ')."
+          }
+          $autodeskAssemblyNameSet = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+          foreach ($assemblyName in $autodeskAssemblyNames) {
+            [void]$autodeskAssemblyNameSet.Add($assemblyName)
+          }
+          Write-Host "Autodesk package inventory: $($autodeskAssemblyNames.Count) DLLs from three exact package roots."
           function IsAutodeskAssembly([IO.FileInfo]$file) {
-            return $file.Name -in $autodeskAssemblyNames -or $file.Name -cmatch "^(Ac[A-Z]|Ad[A-Z]|Autodesk).+\.dll$"
+            return $autodeskAssemblyNameSet.Contains($file.Name) -or $file.Name -cmatch "^(Ac[A-Z]|Ad[A-Z]|Autodesk).+\.dll$"
           }
 
           $roots = @("src", "tests", "deploy")
           $outputDlls = @($roots | ForEach-Object {
-            Get-ChildItem -LiteralPath $_ -Recurse -File -Filter "*.dll"
+            Get-ChildItem -LiteralPath $_ -Recurse -File | Where-Object { $_.Extension -ieq ".dll" }
           })
           $forbiddenDlls = @($outputDlls | Where-Object { IsAutodeskAssembly $_ })
           if ($forbiddenDlls.Count -ne 0) {
@@ -570,6 +686,9 @@ jobs:
           }
           $bundle = $bundles[0]
           $bundleDlls = @(Get-ChildItem -LiteralPath (Join-Path $bundle.FullName "Contents") -Recurse -File -Filter "*.dll")
+          $bundleDlls | Sort-Object Name | ForEach-Object {
+            Write-Host "Bundle DLL: $($_.Name) ($($_.Length) bytes)"
+          }
           $expectedBundleDlls = @("RackCad.Application.dll", "RackCad.Domain.dll", "RackCad.Plugin.dll", "RackCad.UI.dll") | Sort-Object
           $actualBundleDlls = @($bundleDlls.Name | Sort-Object)
           if (@(Compare-Object $expectedBundleDlls $actualBundleDlls).Count -ne 0) {
