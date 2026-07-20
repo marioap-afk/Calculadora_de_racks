@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
@@ -205,7 +204,7 @@ namespace RackCad.Plugin
             {
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
-                var labelLayer = EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan
+                var labelLayer = LayerHelper.EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan
 
                 foreach (var cell in plan.Cells)
                 {
@@ -392,21 +391,6 @@ namespace RackCad.Plugin
                     return candidate;
                 }
             }
-        }
-
-        private static ObjectId EnsureLayer(Database database, Transaction transaction, string name, short aci)
-        {
-            var layerTable = (LayerTable)transaction.GetObject(database.LayerTableId, OpenMode.ForRead);
-            if (layerTable.Has(name))
-            {
-                return layerTable[name];
-            }
-
-            layerTable.UpgradeOpen();
-            var record = new LayerTableRecord { Name = name, Color = Color.FromColorIndex(ColorMethod.ByAci, aci) };
-            var id = layerTable.Add(record);
-            transaction.AddNewlyCreatedDBObject(record, true);
-            return id;
         }
     }
 }

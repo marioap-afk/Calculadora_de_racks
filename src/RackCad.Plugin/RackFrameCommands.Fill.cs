@@ -437,7 +437,7 @@ namespace RackCad.Plugin
             {
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
-                var labelLayer = EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan, shared with RACKLAYOUT
+                var labelLayer = LayerHelper.EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan, shared with RACKLAYOUT
 
                 foreach (var cell in fill.Cells)
                 {
