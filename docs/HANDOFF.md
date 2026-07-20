@@ -91,9 +91,11 @@ un nuevo piloto controlado.
 - build Plugin Debug: **0 errores**; únicamente las dos familias `MSB3277` conocidas;
 - CI de rama #61: tests, build UI y build Plugin without AutoCAD verdes; único artifact
   `rackcad-coverage-cobertura`, sin artifacts del Plugin ni material Autodesk;
+- la validación post-merge #63 detectó que el job conservaba la condición temporal de la rama de
+  promoción; I-13 la retiró antes de la limpieza para que el Plugin se compile en cada push;
 - las tres anotaciones de CI son la deprecación heredada de Node.js 20 en las acciones usadas;
 - ADR-0003 aceptado con decisión I-29 B, matriz 14/14, rollback y nueva revisión obligatoria;
-- AutoCAD: no ejecutado ni requerido porque la iniciativa cambia infraestructura de compilacion y
+- AutoCAD: no ejecutado ni requerido porque la iniciativa cambia infraestructura de compilación y
   documentación, no dibujo ni runtime;
 - el commit documental final requiere su propio CI verde antes del merge.
 
