@@ -368,6 +368,220 @@ jobs:
           $assetsPath = "src/RackCad.Plugin/obj/project.assets.json"
           $assets = Get-Content -LiteralPath $assetsPath -Raw | ConvertFrom-Json
           $sources = @($assets.project.restore.sources.PSObject.Properties.Name)
+
+          $script:E2EffectiveDotnetRoot = $null
+
+          function ConvertTo-SanitizedPath {
+            param([AllowEmptyString()][string]$Value)
+
+            if ([string]::IsNullOrWhiteSpace($Value)) {
+              return "<empty>"
+            }
+
+            $result = $Value
+            $replacementRoots = [ordered]@{}
+            if (-not [string]::IsNullOrWhiteSpace($env:RUNNER_TEMP)) {
+              $replacementRoots[$env:RUNNER_TEMP] = "<RUNNER_TEMP>"
+            }
+            if (-not [string]::IsNullOrWhiteSpace($env:GITHUB_WORKSPACE)) {
+              $replacementRoots[$env:GITHUB_WORKSPACE] = "<GITHUB_WORKSPACE>"
+            }
+            if (-not [string]::IsNullOrWhiteSpace($env:DOTNET_ROOT)) {
+              $replacementRoots[$env:DOTNET_ROOT] = "<DOTNET_ROOT>"
+            }
+            if (-not [string]::IsNullOrWhiteSpace($script:E2EffectiveDotnetRoot)) {
+              $replacementRoots[$script:E2EffectiveDotnetRoot] = "<DOTNET_ROOT>"
+            }
+
+            foreach ($replacement in $replacementRoots.GetEnumerator()) {
+              foreach ($candidate in @($replacement.Key, $replacement.Key.Replace('\', '/'))) {
+                if (-not [string]::IsNullOrWhiteSpace($candidate)) {
+                  $result = $result.Replace(
+                    $candidate,
+                    $replacement.Value,
+                    [System.StringComparison]::OrdinalIgnoreCase)
+                }
+              }
+            }
+            return $result
+          }
+
+          function ConvertTo-SanitizedUri {
+            param([AllowEmptyString()][string]$Value)
+
+            if ([string]::IsNullOrWhiteSpace($Value)) {
+              return "<empty>"
+            }
+            if ([IO.Path]::IsPathRooted($Value)) {
+              return ConvertTo-SanitizedPath $Value
+            }
+
+            $uri = $null
+            if (-not [Uri]::TryCreate($Value, [UriKind]::Absolute, [ref]$uri)) {
+              return ConvertTo-SanitizedPath $Value
+            }
+
+            $builder = [UriBuilder]::new($uri)
+            $builder.UserName = ""
+            $builder.Password = ""
+            $builder.Query = ""
+            return ConvertTo-SanitizedPath $builder.Uri.AbsoluteUri
+          }
+
+          function ConvertTo-SanitizedSourceList {
+            param([AllowEmptyString()][string]$Value)
+
+            $items = @($Value -split ';' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+            if ($items.Count -eq 0) {
+              return @("<empty>")
+            }
+            return @($items | ForEach-Object { ConvertTo-SanitizedUri $_.Trim() })
+          }
+
+          function ConvertTo-SanitizedPathList {
+            param([AllowEmptyString()][string]$Value)
+
+            $items = @($Value -split ';' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+            if ($items.Count -eq 0) {
+              return @("<empty>")
+            }
+            return @($items | ForEach-Object { ConvertTo-SanitizedPath $_.Trim() })
+          }
+
+          function ConvertTo-SanitizedText {
+            param([AllowEmptyString()][string]$Value)
+
+            if ([string]::IsNullOrWhiteSpace($Value)) {
+              return "<empty>"
+            }
+            if ($Value -match "(?i)\b(password|token|secret|credential|api[-_]?key)\b\s*[:=]") {
+              return "<redacted>"
+            }
+
+            $result = ConvertTo-SanitizedPath $Value
+            $matches = @([regex]::Matches($result, "https?://\S+"))
+            for ($index = $matches.Count - 1; $index -ge 0; $index--) {
+              $match = $matches[$index]
+              $safeUri = ConvertTo-SanitizedUri $match.Value
+              $result = $result.Remove($match.Index, $match.Length).Insert($match.Index, $safeUri)
+            }
+            return $result
+          }
+
+          function Write-SanitizedList {
+            param(
+              [string]$Label,
+              [object[]]$Values,
+              [ValidateSet("Path", "Source", "Text")][string]$Kind
+            )
+
+            Write-Host ($Label + ":")
+            $items = @($Values | Where-Object { $null -ne $_ })
+            if ($items.Count -eq 0) {
+              Write-Host "- <none>"
+              return
+            }
+            foreach ($item in $items) {
+              $safeValue = switch ($Kind) {
+                "Path" { ConvertTo-SanitizedPath ([string]$item) }
+                "Source" { ConvertTo-SanitizedUri ([string]$item) }
+                default { ConvertTo-SanitizedText ([string]$item) }
+              }
+              Write-Host "- $safeValue"
+            }
+          }
+
+          $msbuildPropertyOutput = @(
+            & dotnet msbuild $project `
+              @positiveProperties `
+              -p:Configuration=Release `
+              "-p:RestoreConfigFile=$env:E2_NUGET_CONFIG" `
+              "-getProperty:RestoreSources,RestoreAdditionalProjectSources,RestoreFallbackFolders,RestoreAdditionalProjectFallbackFolders,MSBuildSDKsPath" 2>&1
+          )
+          if ($LASTEXITCODE -ne 0) {
+            throw "Unable to query effective MSBuild restore properties."
+          }
+          try {
+            $msbuildPropertyResult = $msbuildPropertyOutput -join [Environment]::NewLine | ConvertFrom-Json
+          } catch {
+            throw "Unable to parse effective MSBuild restore properties."
+          }
+          $msbuildRestoreProperties = $msbuildPropertyResult.Properties
+          $sdkPath = [string]$msbuildRestoreProperties.MSBuildSDKsPath
+          if (-not [string]::IsNullOrWhiteSpace($env:DOTNET_ROOT)) {
+            $script:E2EffectiveDotnetRoot = $env:DOTNET_ROOT
+          } elseif (-not [string]::IsNullOrWhiteSpace($sdkPath)) {
+            $script:E2EffectiveDotnetRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $sdkPath))
+          }
+
+          $sdkVersionOutput = @(& dotnet --version 2>&1)
+          if ($LASTEXITCODE -ne 0 -or $sdkVersionOutput.Count -eq 0) {
+            throw "Unable to identify the effective .NET SDK version."
+          }
+          $sdkVersion = [string]$sdkVersionOutput[-1]
+          $libraryPacksPath = if ([string]::IsNullOrWhiteSpace($script:E2EffectiveDotnetRoot)) {
+            $null
+          } else {
+            Join-Path $script:E2EffectiveDotnetRoot "library-packs"
+          }
+          $libraryPacksExists = -not [string]::IsNullOrWhiteSpace($libraryPacksPath) -and
+            (Test-Path -LiteralPath $libraryPacksPath -PathType Container)
+          $libraryPackEntries = if ($libraryPacksExists) {
+            @(Get-ChildItem -LiteralPath $libraryPacksPath -Force | Select-Object -ExpandProperty Name | Sort-Object)
+          } else {
+            @()
+          }
+
+          [xml]$experimentalNuGetConfig = Get-Content -LiteralPath $env:E2_NUGET_CONFIG -Raw
+          $configuredSources = @(
+            $experimentalNuGetConfig.configuration.packageSources.add |
+              ForEach-Object { [string]$_.value }
+          )
+          $nugetListSourceOutput = @(
+            & dotnet nuget list source --configfile $env:E2_NUGET_CONFIG 2>&1
+          )
+          if ($LASTEXITCODE -ne 0) {
+            throw "Unable to list sources from the experimental NuGet.Config."
+          }
+
+          $packageFolderDiagnostics = @($assets.packageFolders.PSObject.Properties.Name)
+          $fallbackFolderDiagnostics = if ($null -eq $assets.project.restore.fallbackFolders) {
+            @()
+          } else {
+            @($assets.project.restore.fallbackFolders.PSObject.Properties.Name)
+          }
+          $configFileDiagnostics = @($assets.project.restore.configFilePaths)
+          $assetFrameworkDiagnostics = @($assets.project.restore.frameworks.PSObject.Properties.Name)
+
+          Write-Host "--- E2 NuGet source diagnostics: begin ---"
+          Write-SanitizedList "project.restore.sources" $sources "Source"
+          Write-Host ""
+          Write-SanitizedList "packageFolders" $packageFolderDiagnostics "Path"
+          Write-Host ""
+          Write-SanitizedList "fallbackFolders" $fallbackFolderDiagnostics "Path"
+          Write-Host ""
+          Write-SanitizedList "configFilePaths" $configFileDiagnostics "Path"
+          Write-Host ""
+          Write-SanitizedList "assets frameworks" $assetFrameworkDiagnostics "Text"
+          Write-Host ""
+          Write-Host "MSBuild restore properties:"
+          Write-Host "- RestoreSources: $((ConvertTo-SanitizedSourceList ([string]$msbuildRestoreProperties.RestoreSources)) -join '; ')"
+          Write-Host "- RestoreAdditionalProjectSources: $((ConvertTo-SanitizedSourceList ([string]$msbuildRestoreProperties.RestoreAdditionalProjectSources)) -join '; ')"
+          Write-Host "- RestoreFallbackFolders: $((ConvertTo-SanitizedPathList ([string]$msbuildRestoreProperties.RestoreFallbackFolders)) -join '; ')"
+          Write-Host "- RestoreAdditionalProjectFallbackFolders: $((ConvertTo-SanitizedPathList ([string]$msbuildRestoreProperties.RestoreAdditionalProjectFallbackFolders)) -join '; ')"
+          Write-Host ""
+          Write-Host ".NET:"
+          Write-Host "- DOTNET_ROOT: $(ConvertTo-SanitizedPath ([string]$env:DOTNET_ROOT))"
+          Write-Host "- SDK: $(ConvertTo-SanitizedText $sdkVersion)"
+          Write-Host "- SDK path: $(ConvertTo-SanitizedPath $sdkPath)"
+          Write-Host "- library-packs exists: $($libraryPacksExists.ToString().ToLowerInvariant())"
+          Write-SanitizedList "library-packs entries" $libraryPackEntries "Text"
+          Write-Host ""
+          Write-SanitizedList "NuGet.Config sources" $configuredSources "Source"
+          Write-Host ""
+          Write-SanitizedList "dotnet nuget list source" $nugetListSourceOutput "Text"
+          Write-Host "--- E2 NuGet source diagnostics: end ---"
+
           if ($sources.Count -ne 1 -or $sources[0].TrimEnd('/') -ne "https://api.nuget.org/v3/index.json") {
             throw "project.assets.json contains an unexpected NuGet source."
           }
