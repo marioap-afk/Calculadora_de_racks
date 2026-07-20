@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-19**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-20**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -16,16 +16,21 @@ El producto mantiene cuatro familias operativas: cabecera, selectivo, dinámico 
 rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
-I-06 (`docs/reestructura`) está cerrada e integrada con fecha **2026-07-17**, estado efectivo al
-incorporarse esta rama a `main`. Entregó `ARCHITECTURE.md`, nueve Context Packs, guías vigentes,
-archivo histórico y este HANDOFF reducido. La iniciativa reorganizó documentación y no cambió
-comportamiento de producto. No se debe ejecutar I-07 antes de que el commit que contiene este estado
-esté contenido en `main`.
+I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
+`ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
+La iniciativa reorganizó documentación y no cambió comportamiento de producto.
 
-I-26 (`refactor/test-catalog-ids`) está completada y preparada para integración, con estado
-`integrada (2026-07-19)` efectivo únicamente cuando esta rama se incorpore a `main`. Centraliza las
-expectativas canónicas de tests, añade un guardián de IDs y relaciones esenciales y publica cobertura
-Cobertura como artifact; no cambia producto ni catálogos distribuidos.
+I-26 (`refactor/test-catalog-ids`) está integrada desde el **2026-07-19**. Centraliza las
+expectativas canónicas de tests, añade un guardián de IDs y relaciones esenciales y publica
+cobertura Cobertura como artifact; no cambia producto ni catálogos distribuidos.
+
+I-13 queda integrada con este cierre el **2026-07-20** mediante
+`architecture/referencias-autocad-ci`; el estado se hace efectivo cuando el merge autorizado entra
+en `main`. CI compila ahora `RackCad.Plugin` sin AutoCAD instalado con
+referencias condicionales compile-only, versiones y origen fijados y guardas que impiden copiar o
+publicar material Autodesk. ADR-0003 registra la única excepción autorizada a la política cero
+NuGet. I-29 concluyó con decisión B, aprobada con catorce restricciones para uso interno como
+aceptación interna de riesgo; no constituye conclusión jurídica ni autorización expresa de Autodesk.
 
 ## 2. Última validación real
 
@@ -38,9 +43,12 @@ su alcance es documental.
 La guía vigente para futuras validaciones está en
 [guias/validacion-manual-autocad.md](guias/validacion-manual-autocad.md).
 
-I-26 no requiere validación en AutoCAD. El dueño confirmó el CI de rama, incluidos tests y build UI,
-y descargó el artifact de cobertura con el XML esperado antes de autorizar esta preparación de
-integración.
+I-26 no requirió validación en AutoCAD. El dueño confirmó el CI de rama, incluidos tests y build UI,
+y descargó el artifact de cobertura con el XML esperado antes de autorizar su integración.
+
+I-13 tampoco cambia dibujo ni comportamiento de runtime. El dueño autorizó la integración después
+de verificar el build limpio del Plugin y la aplicación documental de I-29; no se requiere una
+validación adicional mediante NETLOAD.
 
 ## 3. Problemas y riesgos activos
 
@@ -55,13 +63,18 @@ integración.
   pérdida de datos.
 - Los catálogos de producto y los overrides del usuario aún comparten ubicación; I-04 preserva el
   DWG de bloques, pero la separación de capas de datos sigue diferida.
+- La compilación del Plugin en GitHub-hosted runners depende de la excepción limitada de ADR-0003.
+  Debe revisarse a más tardar el 2027-07-20 o antes ante cambios de proyecto, versiones, source,
+  runner, caching, artifacts, audiencia, finalidad o documentación incompatible de Autodesk.
+- GitHub Actions advierte que las acciones actuales basadas en Node.js 20 se ejecutan forzadamente
+  sobre Node.js 24; es una deuda de infraestructura separada de I-13.
 
 ## 4. Siguiente acción
 
-El siguiente paso es integrar I-26 manualmente, comprobar que CI de `main` esté verde y limpiar su
-rama y worktree conforme a WORKFLOW. La rama experimental I-13 puede rebasarse sobre `main` después
-de ese merge antes de continuar cualquier trabajo sobre `ci.yml`; sus cambios no se incorporan ni
-se mezclan con I-26.
+Con I-13 integrada y limpia, el siguiente paso es continuar las iniciativas ya reclamadas en sus
+worktrees o elegir otra iniciativa permitida por el ROADMAP. I-09/I-10/I-16 dejan de estar
+bloqueadas por la falta de compilación del Plugin en CI, aunque conservan sus dependencias y
+estorbos.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
@@ -69,7 +82,22 @@ un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
 
-**Baseline de I-26 preparada para integración — 2026-07-19:**
+**Baseline de I-13 preparada para integración — 2026-07-20:**
+
+- punta técnica y documental validada de `architecture/referencias-autocad-ci`:
+  `76b6246c89688dd1546cacc9c9eef10d8cbf366b`;
+- suite `RackCad.Tests`: **636/636 verdes**, sin fallos ni omitidas;
+- build UI Debug: **0 errores y 0 advertencias**;
+- build Plugin Debug: **0 errores**; únicamente las dos familias `MSB3277` conocidas;
+- CI de rama #61: tests, build UI y build Plugin without AutoCAD verdes; único artifact
+  `rackcad-coverage-cobertura`, sin artifacts del Plugin ni material Autodesk;
+- las tres anotaciones de CI son la deprecación heredada de Node.js 20 en las acciones usadas;
+- ADR-0003 aceptado con decisión I-29 B, matriz 14/14, rollback y nueva revisión obligatoria;
+- AutoCAD: no ejecutado ni requerido porque la iniciativa cambia infraestructura de compilacion y
+  documentación, no dibujo ni runtime;
+- el commit documental final requiere su propio CI verde antes del merge.
+
+**Baseline integrada de I-26 — 2026-07-19:**
 
 - punta de implementación validada de `refactor/test-catalog-ids`:
   `2cf3f12684dbe495403f0a16eeaa882e4873e3c6`;
@@ -130,7 +158,7 @@ documento no inventa el SHA futuro del merge de `main`.
 | Identidad por GUID embebido en DWG | El nombre visible no es una identidad estable. |
 | `Actualizar` redibuja; `Insertar` agrega una vista ligada | Convención permanente de los cuatro editores. |
 | Parámetros dinámicos mediante patrón ARRAY | Evita fijar parámetros repetidamente por referencia. |
-| Cero dependencias NuGet en producto | Mantiene simple el despliegue; toda excepción requiere decisión explícita. |
+| Cero dependencias NuGet en producto, salvo ADR-0003 | La única excepción es `AutoCAD.NET [25.0.1]` condicional y compile-only en `RackCad.Plugin`, con versiones transitivas fijadas, sin runtime ni distribución y sujeta a nueva revisión. |
 | Parrilla: una por tarima y regla en `SelectiveFrontalBuilder.ParrillaRow` | Dibujo, BOM y UI concuerdan por construcción. |
 | Copia de `SelectiveSafetySelection` centralizada en `DeepCopy` | El DTO sigue explícito para compatibilidad y round-trip. |
 | Entrada numérica localizada sin agrupadores | Acepta punto o coma decimal sin transformar valores ambiguos. |

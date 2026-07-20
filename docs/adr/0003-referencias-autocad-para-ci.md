@@ -7,7 +7,8 @@
 
 Este ADR acepta una excepcion especifica y revocable a la politica cero NuGet. La decision queda
 preparada en la rama de promocion; no forma parte de `main` hasta que esa rama se integre. El merge
-de I-13 continua bloqueado hasta revalidar la promocion y obtener autorizacion final del dueno.
+de I-13 fue autorizado por el dueno el 2026-07-20 despues de revalidar la promocion; la excepcion
+solo se vuelve politica vigente de `main` cuando entra ese merge.
 
 ## Contexto
 
@@ -158,9 +159,9 @@ historica.
 
 ## Estado del merge
 
-I-29 esta cerrada documentalmente e I-13 permanece abierta. La aceptacion de este ADR no autoriza el
-merge. La promocion solo puede solicitar el gate final despues de actualizar la documentacion,
-revalidar la rama y obtener autorizacion explicita del dueno.
+I-29 esta cerrada documentalmente. El dueno autorizo la integracion de I-13 el 2026-07-20 despues de
+actualizar la documentacion y revalidar la rama. Esa autorizacion cubre exclusivamente la promocion
+auditada; no amplía el alcance material del ADR ni autoriza cambios futuros sin nueva revision.
 
 ## Referencias
 

@@ -32,7 +32,8 @@ automation:
 Estado: **cerrada documentalmente**. El 2026-07-20 Mario Perez, Coordinador de Desarrollo de
 Proyectos de Industrias Montilla y Owner de RackCad, selecciono **B. Aprobado con restricciones**.
 Es una aceptacion interna de riesgo para uso interno; no es una conclusion juridica ni una
-afirmacion de autorizacion expresa de Autodesk. I-13 y el merge continúan bloqueados.
+afirmacion de autorizacion expresa de Autodesk. Tras la revalidacion, el Owner autorizo por separado
+la integracion de I-13 el 2026-07-20; el estado se hace efectivo con el merge en `main`.
 
 ## 1. Objetivo
 
@@ -159,7 +160,8 @@ una decision manual conforme a WORKFLOW.
 
 La evidencia final registra decision B, Owner, fuentes, quince respuestas, usos permitidos y
 prohibidos, politica de caching/artifacts, obligaciones, vigencia y revision. ADR-0003 aplica ahora
-la decision; I-13 permanece abierta y el merge bloqueado hasta la revalidacion y autorizacion final.
+la decision. La promocion de I-13 fue revalidada y su integracion autorizada por el Owner el
+2026-07-20; esta autorizacion separada no modifica las restricciones de I-29.
 
 ### Fuentes minimas para la revision
 

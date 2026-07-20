@@ -1,8 +1,8 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-17 (I-06 completada y preparada en el último commit documental de su rama;
-> la marca `integrada` que lleva este documento se hace efectiva con el merge manual. I-07 queda
-> desbloqueada solo después de ese merge).
+> Actualizado: 2026-07-20 (I-13 completada y preparada en el último commit documental de su rama;
+> la marca `integrada` que lleva este documento se hace efectiva con el merge manual. La decisión
+> documental de I-29 queda aplicada por I-13).
 > Convierte la
 > [auditoría 2026-07](auditoria-arquitectura-2026-07.md) en un plan ejecutable por iniciativas
 > independientes (1 iniciativa = 1 rama = 1 worktree, ver [WORKFLOW.md](WORKFLOW.md)).
@@ -70,9 +70,9 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-05 | `feature/guardrail-unidades` ✋ | Leer `INSUNITS` al insertar/RACKLAYOUT/RACKRELLENAR y avisar si ≠ pulgadas; ADR de estrategia de unidades a largo plazo (D4) | S | — | — | pendiente |
 | I-06 | `docs/reestructura` | Entregó `ARCHITECTURE.md`, nueve Context Packs, glosario y guías vigentes, archivo histórico, HANDOFF reducido y automatización documentada pero pausada; preservó el contenido único y corrigió rutas y navegación. I-07 se desbloquea solo tras el merge efectivo | M | — | I-07 | integrada (2026-07-17) |
 | I-07 | `docs/adr-retroactivos` | Retro-documentar las ~13 decisiones de HANDOFF §7 como ADRs de una página (C4) | S | — | I-06 | pendiente |
-| I-13 | `experiment/refs-autocad-ci` | Probar reference assemblies / paquete de build para compilar el Plugin sin AutoCAD; conclusión → ADR (excepción cero-NuGet) + adopción si funciona (G6). **Concluir ANTES de abrir I-09/I-10/I-16: son fases Plugin-pesadas donde el CI hoy es ciego** | S | — | — | pendiente |
+| I-13 | `architecture/referencias-autocad-ci` | Promovió la evidencia de `experiment/refs-autocad-ci` a un build limpio del Plugin sin AutoCAD en CI: referencias condicionales compile-only, versiones/hashes/origen fijados, guardas fail-closed, bundle y artifacts sin material Autodesk. ADR-0003 acepta la excepción cero-NuGet limitada conforme a I-29 | S | — | — | integrada (2026-07-20) |
 | I-26 | `refactor/test-catalog-ids` | `TestCatalogIds` centralizados; guardián de IDs y relaciones esenciales contra los catálogos distribuidos; cobertura Cobertura publicada como artifact de CI | S | — | — | integrada (2026-07-19) |
-| I-29 | `docs/licencia-procedencia-autocad-ci` | Resolver el gate L2 de licencia y procedencia de las referencias AutoCAD para CI; bloquea la aceptación de ADR-0003 y el merge de I-13, sin implementar código ni emitir una conclusión legal por Codex | S | — (usa evidencia técnica de I-13) | — | pendiente / bloqueante |
+| I-29 | `docs/licencia-procedencia-autocad-ci` | Decisión B: aprobada con restricciones para uso interno de RackCad como aceptación interna de riesgo; no es conclusión jurídica ni autorización expresa de Autodesk. Sus catorce restricciones y revisión obligatoria quedaron aplicadas en ADR-0003 | S | — (usa evidencia técnica de I-13) | — | integrada por I-13 (2026-07-20) |
 
 ### Fase 2 — Arquitectura base + producto dinámico
 
@@ -168,15 +168,15 @@ graph LR
 ```
 
 Sin dependencias previas (pero sus estorbos aplican — principio 7): I-03 (estorba I-11),
-I-05, I-06/I-07 (se estorban entre sí), I-12, I-13, I-19, I-26.
+I-05, I-06/I-07 (se estorban entre sí), I-12 e I-19.
 
 ## Orden recomendado y paralelismo (para 2-3 IAs simultáneas)
 
 ```
 Semana 0:      I-00 + I-01 (dueño; Paso 0 de ADR-0002 incluido; bloquea todo)
-Fase 1:        I-02 integrada (2026-07-17) — I-08/I-09/I-11/I-14/I-16/I-17 quedaron desbloqueadas
-               I-04 e I-26 integradas; relleno restante: I-03, I-05, I-13
-               Docs: I-06 preparada para merge → I-07 solo después del merge efectivo
+Fase 1:        I-02 e I-13 integradas — I-08/I-09/I-11/I-14/I-16/I-17 quedaron desbloqueadas
+               I-04 e I-26 integradas; relleno restante: I-03 e I-05
+               Docs: I-06 integrada → I-07 desbloqueada
 Fase 2/3:      Pista A (Application): I-08 → I-11
                Pista B (Plugin):      I-09 → I-16 → I-10   ← serializadas: se estorban entre sí
                Pista C (UI):          I-14 → I-15
@@ -208,7 +208,7 @@ principio 4); una iniciativa de relleno solo arranca si sus estorbos no están e
 | 11. Persistencia uniforme | Sí | Retrasada hasta resolver ADR-0002 (la rama reescribe esos documentos); dependencia condicional A/B explícita |
 | 12. Colocación por familia + subtipos | Sí | Fase 5 (I-22), con orden fijo tras I-20 (tocan el mismo código del selectivo) |
 | 13. Des-duplicación documental | Sí | I-06 con alcance ampliado: barrido de referentes y mapeo del contenido único de 03 en la misma rama |
-| 14. Refs AutoCAD para CI | Sí | **Adelantada a Fase 1** como `experiment/` (I-13): las fases 2-3 son Plugin-pesadas y el CI es ciego al Plugin hasta resolverla |
+| 14. Refs AutoCAD para CI | Sí | **Integrada por I-13**: el experimento fue promovido limpiamente y CI compila el Plugin sin AutoCAD bajo ADR-0003 y las restricciones de I-29 |
 | 15. Versionado real | Sí | I-12 absorbe además el ADR de estrategia de versiones de AutoCAD (SeriesMax/ciclo anual: cita con fecha conocida dentro del horizonte del plan) |
 | BAJA: namespaces | Sí | I-23 **cierra la Fase 5** (depende de todas las migraciones, no solo de I-08/I-15/I-16) |
 | BAJA: Nullable/editorconfig | Sí, matizada | Nullable=enable para proyectos nuevos entra con I-12; .editorconfig con I-23 |
@@ -243,14 +243,14 @@ de ruta incluye el barrido de referentes en la misma rama. La auditoría 2026-07
 
 ## Recomendaciones finales antes de la primera implementación
 
-1. I-00, I-01, I-02 e I-04 ya están integradas (2026-07-17); I-06 está preparada para su merge
-   manual. Después de ese merge el dueño elige la siguiente iniciativa de la Fase 1 entre
-   I-03/I-05/I-07/I-13, respetando estorbos y capacidad.
+1. I-00, I-01, I-02, I-04, I-06, I-13 e I-26 están integradas. Continuar I-07 en su worktree ya
+   reclamado o elegir otra iniciativa permitida, respetando dependencias, estorbos y capacidad.
 2. **Cumplida por I-04 e I-26:** el flujo completo de una iniciativa pequeña y sin estorbos quedó
    ejercitado (rama → commit de reclamo + push → CI → integración → limpieza segura). I-26 añadió
    además el guardián canónico y la publicación de cobertura en CI.
-3. **Cumplida**: I-02 quedó integrada (2026-07-17), así que I-08/I-09/I-11/I-14/I-15/I-16/I-17
-   quedaron desbloqueadas respecto a ella (ninguna está iniciada; sus estorbos mutuos siguen aplicando).
+3. **Cumplida**: I-02 e I-13 están integradas, así que I-08/I-09/I-11/I-14/I-15/I-16/I-17
+   quedaron desbloqueadas respecto a ellas; sus dependencias restantes y estorbos mutuos siguen
+   aplicando.
 4. Mantener las pistas por capa y la cola de validación del dueño (máx. 1-2 ✋ pendientes); las
    iniciativas de relleno son el amortiguador cuando una pista se bloquea.
 5. Los bloques DWG de Push Back son trabajo del dueño con tiempo propio: calendarizarlos en
