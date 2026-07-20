@@ -35,8 +35,11 @@ Reestructurar la superficie de comandos del Plugin **sin cambiar comportamiento*
 promover a tipos reutilizables los helpers de bloques, clonación, capas y transacciones
 (`RackBlockFinder`, `RackCloner`, `LayerHelper` y un helper `InDocumentTransaction`); y unificar en un
 único punto el escaneo de envelopes hoy triplicado. El resultado es un diff mecánico revisable que
-preserva exactamente comandos, geometría dibujada, BOM, persistencia, identidad/round-trip y UX,
-respaldado por la suite verde y por tests golden de equivalencia de planes.
+preserva exactamente comandos, geometría dibujada, BOM, persistencia, identidad/round-trip y UX. Como
+I-09 refactoriza infraestructura AutoCAD del Plugin y **no cambia los planes puros de Application**, la
+equivalencia se sostiene con un inventario antes/después de todos los `[CommandMethod]` (comandos,
+alias, prompts, keywords y mensajes idénticos), la suite existente completa, los builds Debug de UI y
+Plugin y una revisión mecánica del refactor, no con planes golden nuevos.
 
 ## 2. Problema
 
@@ -44,7 +47,7 @@ respaldado por la suite verde y por tests golden de equivalencia de planes.
 (`RackFrameCommands.cs` + `.Aliases`, `.BomTotal`, `.Cabecera`, `.Duplicar`, `.Dynamic`, `.Fill`,
 `.FlowBed`, `.Help`, `.Layout`, `.List`, `.Selective`) con helpers estáticos cruzados que cada
 iniciativa del Plugin debe tocar. El escaneo de referencias de bloque para leer el envelope embebido
-por GUID aparece repetido entre comandos (`RACKLIST`, `RACKBOMTOTAL`, `RACKLAYOUT` y las rutas de
+por GUID aparece repetido entre comandos (`RACKLISTA`, `RACKBOMTOTAL`, `RACKLAYOUT` y las rutas de
 edición/restamp), la búsqueda y clonación de bloques y el manejo de capas se resuelven en línea, y
 cada comando abre y gestiona su propia transacción de documento. Esa duplicación es la causa de que
 I-10 e I-16 declaren estorbo con esta área y de que la lista de archivos calientes no encoja. La
@@ -56,19 +59,26 @@ Estrictamente el alcance de I-09 en ROADMAP, sin ampliaciones laterales:
 
 - **Partir `RackFrameCommands` en clases por área** (una por familia de comandos), conservando
   exactamente los nombres de comando (`CommandMethod`), sus alias y su firma de invocación.
-- **Promover helpers a tipos reutilizables** hoy inline o estáticos cruzados: `RackBlockFinder`
-  (localización de definiciones y referencias de bloque), `RackCloner` (clonación de definiciones,
-  enlazada o independiente según la convención vigente) y `LayerHelper` (creación y selección de
-  capas).
+- **Promover helpers a tipos reutilizables** hoy inline o estáticos cruzados:
+  - `RackBlockFinder`: localización de definiciones y referencias de bloque.
+  - `RackCloner`: clona definiciones **únicamente para copias independientes**; las copias enlazadas
+    siguen creando referencias a la definición existente. Preserva las **dos políticas vigentes** de
+    nombres únicos, layers, rotación, escala y restamp **sin unificarlas semánticamente**.
+  - `LayerHelper`: creación y selección de capas.
 - **Introducir un helper `InDocumentTransaction`** que encapsule el patrón repetido de apertura,
-  commit y disposición de la transacción de documento.
+  commit y disposición de la transacción de documento, **solo en operaciones simples y equivalentes**:
+  ningún `DBObject` escapa de la transacción; no engloba `Regen`, purgas posteriores al commit ni
+  flujos de varias fases; y no cambia locks, `OpenMode`, `forceValidity` ni el orden de commit.
 - **Unificar el escaneo de envelopes** (lectura del `RackEmbedDocument` por GUID sobre las
   referencias de bloque) en un único punto consumido por los comandos que hoy lo triplican.
 - **Preservar exactamente el comportamiento observable**: comandos, alias, geometría dibujada, BOM
   (plano y por componentes, consolidado por GUID), persistencia y round-trip de identidad, y UX
-  (prompts, mensajes, selección y capas resultantes).
-- **Red de equivalencia**: apoyar el refactor en la suite completa y en tests golden de equivalencia
-  de planes (snapshot del plan de bloques antes vs. después, patrón «ARRAY == plano» ya existente).
+  (prompts, keywords, mensajes, selección y capas resultantes).
+- **Red de equivalencia (sin planes golden nuevos)**: la evidencia es un inventario antes/después de
+  todos los `[CommandMethod]` (comandos y alias idénticos; prompts, keywords y mensajes preservados),
+  la suite existente completa, los builds Debug de UI y Plugin, y una revisión mecánica de scans,
+  clonación/restamp, layers, transacciones, purgas y `Regen`. Se añaden tests nuevos **solo si** se
+  extrae lógica pura realmente testeable sin AutoCAD.
 
 ## 4. Fuera de alcance
 
@@ -80,6 +90,9 @@ Estrictamente el alcance de I-09 en ROADMAP, sin ampliaciones laterales:
   quedan intactos.
 - **Cualquier cambio funcional**: ninguna geometría nueva, comando nuevo, cambio de BOM, de
   persistencia/schema, de catálogos ni de UX; ningún ajuste de comportamiento «de paso».
+- **Unificar semánticamente las políticas de clonación**: las dos políticas de nombres únicos, layers,
+  rotación, escala y restamp se conservan; `RackCloner` solo extrae el código común, no fusiona
+  comportamientos.
 - Cambios bajo `src/RackCad.Domain`, `src/RackCad.Application`, `src/RackCad.UI`,
   `assets/catalogs`, `deploy` o el contenido de `blocks-library.dwg`.
 - Actualizar `docs/HANDOFF.md` o `docs/ROADMAP.md` (solo en la sesión de integración, WORKFLOW §4.5).
@@ -96,7 +109,8 @@ Estrictamente el alcance de I-09 en ROADMAP, sin ampliaciones laterales:
   (`RackBlockData.cs`, `SystemBlockWriter.cs`, los `*DrawService` como consumidores, sin modificarlos);
   el sobre `RackEmbedDocument`/`RackEmbedStore` en Application (lectura para entender el formato; no se
   modifica).
-- Los tests golden existentes de equivalencia de planes como referencia del contrato de equivalencia.
+- La suite existente `tests/RackCad.Tests` como red de regresión; los tests de plan puros de
+  Application permanecen sin cambios (I-09 no toca esa capa).
 
 No se cargan Context Packs de UI, selectivo ni dinámico como objetivo de edición: el alcance no
 cambia esas capas.
@@ -127,8 +141,8 @@ Modificados:
 - Los parciales de `RackFrameCommands` (redistribución mecánica; comandos y alias no cambian de nombre
   ni de firma).
 - `docs/initiatives/README.md` para enlazar este contrato.
-- Tests golden nuevos en `tests/RackCad.Tests` que capturen la equivalencia de planes (sin alterar la
-  intención de los tests existentes).
+- Tests en `tests/RackCad.Tests` **solo si** se extrae lógica pura realmente testeable sin AutoCAD; no
+  se añaden planes golden nuevos (los planes puros de Application no cambian).
 
 No se esperan cambios bajo `src/RackCad.Domain`, `src/RackCad.Application` (más allá de su lectura),
 `src/RackCad.UI`, `assets/catalogs`, `deploy`, `docs/HANDOFF.md` ni `docs/ROADMAP.md`. Una desviación
@@ -140,12 +154,16 @@ material obliga a detenerse.
   aceptado sin force; baseline verde de `origin/main` verificada.
 - [x] F1. Publicar este contrato detallado en la rama.
 - [ ] F2. Extraer los helpers reutilizables (`RackBlockFinder`, `RackCloner`, `LayerHelper`,
-  `InDocumentTransaction`) sin cambiar las llamadas de comando; verde en cada paso.
+  `InDocumentTransaction`) sin cambiar las llamadas de comando; verde en cada paso. `RackCloner`
+  conserva las dos políticas de clonación; `InDocumentTransaction` solo envuelve operaciones simples y
+  equivalentes.
 - [ ] F3. Unificar el escaneo de envelopes en un único escáner y migrar los comandos que hoy lo
   duplican.
 - [ ] F4. Partir `RackFrameCommands` en clases por área conservando comandos, alias y firmas.
-- [ ] F5. Añadir/afinar los tests golden de equivalencia de planes y correr la suite completa más los
-  builds Debug de UI y Plugin.
+- [ ] F5. Verificar equivalencia: inventario antes/después de todos los `[CommandMethod]` (comandos,
+  alias, prompts, keywords y mensajes), revisión mecánica de scans, clonación/restamp, layers,
+  transacciones, purgas y `Regen`, suite existente completa y builds Debug de UI y Plugin. Tests
+  nuevos solo si se extrajo lógica pura sin AutoCAD.
 - [ ] Paso posterior. Preparación de integración manual (rebase final, CI, muestreo de validación,
   HANDOFF/ROADMAP como último commit) y merge por el dueño.
 
@@ -158,31 +176,41 @@ dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug
 git diff origin/main --check
 ```
 
-- La suite completa permanece verde en cada fase (no solo los tests nuevos).
+- La suite existente completa permanece verde en cada fase (no solo los tests nuevos).
 - Build Debug de UI y Plugin con 0 errores; los `MSB3277` conocidos de las referencias de AutoCAD no
   cuentan.
 - CI de rama verde (Tests, Build UI, Build Plugin without AutoCAD) al cerrar cada sesión.
-- Tests golden de equivalencia de planes: el snapshot del plan de bloques antes vs. después debe ser
-  idéntico; cualquier diferencia detiene la fase.
+- Equivalencia sin planes golden nuevos: inventario antes/después de los `[CommandMethod]` con
+  comandos, alias, prompts, keywords y mensajes idénticos, más una revisión mecánica de scans,
+  clonación/restamp, layers, transacciones, purgas y `Regen`. Cualquier diferencia observable detiene
+  la fase. Se añaden tests solo si se extrae lógica pura realmente testeable sin AutoCAD.
 
 ## 10. Validación manual
 
-I-09 no está marcada con ✋ en ROADMAP. La equivalencia de comportamiento se garantiza por
-construcción con la suite y los tests golden de equivalencia de planes; la validación humana en
-AutoCAD queda en **muestreo** al integrar (ROADMAP, principio 4). No se requiere una validación
-NETLOAD completa como gate de la implementación. Si un cambio dejara de ser mecánicamente equivalente,
-se convierte en cambio de comportamiento y sale del alcance (detenerse, no «arreglar de paso»).
+I-09 no está marcada con ✋ en ROADMAP. La equivalencia de comportamiento se sostiene con el inventario
+antes/después de los `[CommandMethod]`, la revisión mecánica del refactor y la suite existente; la
+validación humana en AutoCAD queda en **muestreo** al integrar (ROADMAP, principio 4). No se requiere
+una validación NETLOAD completa como gate de la implementación. Si un cambio dejara de ser
+mecánicamente equivalente, se convierte en cambio de comportamiento y sale del alcance (detenerse, no
+«arreglar de paso»).
 
 ## 11. Criterios de aceptación
 
-- Todos los comandos y alias existentes conservan nombre, firma y comportamiento observable.
+- Todos los comandos y alias existentes conservan nombre, firma y comportamiento observable (prompts,
+  keywords y mensajes incluidos), verificado con un inventario antes/después de los `[CommandMethod]`.
 - `RackBlockFinder`, `RackCloner`, `LayerHelper` e `InDocumentTransaction` existen como tipos
   reutilizables y son el único sitio de su lógica; los comandos los consumen.
+- `RackCloner` clona definiciones solo para copias independientes; las copias enlazadas siguen creando
+  referencias a la definición existente; conserva las dos políticas vigentes de nombres únicos, layers,
+  rotación, escala y restamp sin unificarlas semánticamente.
+- `InDocumentTransaction` solo envuelve operaciones simples y equivalentes; ningún `DBObject` escapa de
+  la transacción; no engloba `Regen`, purgas posteriores al commit ni flujos de varias fases; no cambia
+  locks, `OpenMode`, `forceValidity` ni el orden de commit.
 - El escaneo de envelopes vive en un único punto consumido por los comandos que antes lo triplicaban.
 - `RackFrameCommands` queda partido en clases por área; ningún archivo concentra la clase completa.
-- La suite completa, el build Debug de UI y el build Debug de Plugin terminan sin fallos ni
-  errores/advertencias propias.
-- Los tests golden de equivalencia de planes confirman un plan de bloques idéntico antes vs. después.
+- La suite existente completa, el build Debug de UI y el build Debug de Plugin terminan sin fallos ni
+  errores/advertencias propias; no se añaden planes golden nuevos y solo se agregan tests si se extrae
+  lógica pura testeable sin AutoCAD.
 - No hay cambios funcionales ni cambios bajo Domain, Application, UI, `assets/catalogs` o `deploy`; ni
   en `docs/HANDOFF.md`/`docs/ROADMAP.md` fuera de la sesión de integración.
 
@@ -191,11 +219,16 @@ se convierte en cambio de comportamiento y sale del alcance (detenerse, no «arr
 - Un paso exige un cambio de comportamiento observable (geometría, BOM, persistencia, comandos o UX).
 - La partición o la promoción de helpers obligaría a introducir `IRackKindHandler`/registro (I-10) o a
   tocar los `*DrawService` (I-16).
+- `RackCloner` no puede extraer el código común sin fusionar las dos políticas de clonación, o
+  `InDocumentTransaction` tendría que envolver `Regen`, purgas post-commit, flujos multifase o alterar
+  locks/`OpenMode`/`forceValidity`/orden de commit.
 - Aparece en `origin` la rama de I-10 (`architecture/kind-handlers`) o de I-16
   (`refactor/draw-services`): estorbo activo.
 - `origin/main` avanza con conflictos semánticos, o aparece otra sesión activa sobre este worktree o
   esta rama.
-- Un test golden detecta una divergencia de plan que no se explica por un cambio puramente mecánico.
+- El inventario de `[CommandMethod]` o la revisión mecánica detectan una divergencia observable
+  (comando, alias, prompt, keyword, mensaje o comportamiento) que no se explica por un cambio puramente
+  mecánico.
 - Se descubre que un helper no puede unificarse sin alterar comportamiento: se anota en
   `docs/ideas-futuras.md` y se detiene.
 
