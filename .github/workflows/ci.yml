@@ -491,6 +491,208 @@ jobs:
             }
           }
 
+          # E2 source policy helpers: begin
+          function Get-E2CanonicalNativePath {
+            param([string]$Value)
+
+            if ([string]::IsNullOrWhiteSpace($Value) -or -not [IO.Path]::IsPathRooted($Value)) {
+              throw "Expected an absolute native path."
+            }
+            return [IO.Path]::GetFullPath($Value).TrimEnd([char[]]@('\', '/'))
+          }
+
+          function Get-E2CanonicalHttpsSource {
+            param([string]$Value)
+
+            $uri = $null
+            if (-not [Uri]::TryCreate($Value, [UriKind]::Absolute, [ref]$uri) -or
+                $uri.Scheme -ne [Uri]::UriSchemeHttps) {
+              return $null
+            }
+            return $uri.AbsoluteUri.TrimEnd('/')
+          }
+
+          function Split-E2PropertyList {
+            param([AllowEmptyString()][string]$Value)
+
+            return @($Value -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+          }
+
+          function Test-E2SamePath {
+            param([string]$Left, [string]$Right)
+
+            return [string]::Equals(
+              (Get-E2CanonicalNativePath $Left),
+              (Get-E2CanonicalNativePath $Right),
+              [StringComparison]::OrdinalIgnoreCase)
+          }
+
+          function Test-E2PathWithin {
+            param([string]$Candidate, [string]$Root)
+
+            $canonicalCandidate = Get-E2CanonicalNativePath $Candidate
+            $canonicalRoot = Get-E2CanonicalNativePath $Root
+            $rootPrefix = $canonicalRoot + [IO.Path]::DirectorySeparatorChar
+            return $canonicalCandidate.StartsWith($rootPrefix, [StringComparison]::OrdinalIgnoreCase)
+          }
+
+          function Assert-E2SourcePolicy {
+            param(
+              [string[]]$EffectiveSources,
+              [AllowEmptyString()][string]$RestoreSources,
+              [AllowEmptyString()][string]$RestoreAdditionalProjectSources,
+              [string[]]$AssetFallbackFolders,
+              [AllowEmptyString()][string]$RestoreFallbackFolders,
+              [AllowEmptyString()][string]$RestoreAdditionalProjectFallbackFolders,
+              [string]$ExpectedLibraryPacks
+            )
+
+            $expectedNuGetSource = [Uri]"https://api.nuget.org/v3/index.json"
+            $expectedNuGetCanonical = $expectedNuGetSource.AbsoluteUri.TrimEnd('/')
+            $expectedLibraryPacksCanonical = Get-E2CanonicalNativePath $ExpectedLibraryPacks
+            $httpsSources = @()
+            $localSources = @()
+            $invalidSources = @()
+            $canonicalKeys = @()
+
+            foreach ($source in @($EffectiveSources)) {
+              if ([IO.Path]::IsPathRooted($source)) {
+                $canonical = Get-E2CanonicalNativePath $source
+                $localSources += $canonical
+                $canonicalKeys += "path:$($canonical.ToLowerInvariant())"
+                continue
+              }
+
+              $canonical = Get-E2CanonicalHttpsSource $source
+              if ($null -ne $canonical) {
+                $httpsSources += $canonical
+                $canonicalKeys += "https:$($canonical.ToLowerInvariant())"
+              } else {
+                $invalidSources += $source
+              }
+            }
+
+            $additionalSources = @(Split-E2PropertyList $RestoreAdditionalProjectSources)
+            $libraryPacksDeclared = $additionalSources.Count -eq 1 -and
+              [IO.Path]::IsPathRooted($additionalSources[0]) -and
+              (Test-E2SamePath $additionalSources[0] $expectedLibraryPacksCanonical)
+            $restoreSourceItems = @(Split-E2PropertyList $RestoreSources)
+            $restoreSourcesCoherent = $restoreSourceItems.Count -eq 0 -or
+              ($restoreSourceItems.Count -eq 1 -and
+               [string]::Equals(
+                 (Get-E2CanonicalHttpsSource $restoreSourceItems[0]),
+                 $expectedNuGetCanonical,
+                 [StringComparison]::OrdinalIgnoreCase))
+            $fallbacksEmpty = @($AssetFallbackFolders | Where-Object { $_ }).Count -eq 0 -and
+              (Split-E2PropertyList $RestoreFallbackFolders).Count -eq 0 -and
+              (Split-E2PropertyList $RestoreAdditionalProjectFallbackFolders).Count -eq 0
+            $effectiveSetValid = @($EffectiveSources).Count -eq $(if ($libraryPacksDeclared) { 2 } else { 1 }) -and
+              $invalidSources.Count -eq 0 -and
+              $httpsSources.Count -eq 1 -and
+              [string]::Equals($httpsSources[0], $expectedNuGetCanonical, [StringComparison]::OrdinalIgnoreCase) -and
+              $localSources.Count -eq $(if ($libraryPacksDeclared) { 1 } else { 0 }) -and
+              (-not $libraryPacksDeclared -or (Test-E2SamePath $localSources[0] $expectedLibraryPacksCanonical)) -and
+              @($canonicalKeys | Sort-Object -Unique).Count -eq $canonicalKeys.Count
+
+            if (-not $effectiveSetValid -or
+                ($additionalSources.Count -ne 0 -and -not $libraryPacksDeclared) -or
+                -not $restoreSourcesCoherent -or
+                -not $fallbacksEmpty) {
+              $safeSources = @($EffectiveSources | ForEach-Object { ConvertTo-SanitizedUri $_ })
+              if ($safeSources.Count -eq 0) { $safeSources = @("<none>") }
+              throw "Unexpected effective NuGet restore sources:`n- $($safeSources -join "`n- ")"
+            }
+
+            return $libraryPacksDeclared
+          }
+
+          function Assert-E2LibraryPacksLocation {
+            param([string]$DotnetRoot, [string]$LibraryPacksPath)
+
+            $canonicalRoot = Get-E2CanonicalNativePath $DotnetRoot
+            $canonicalLibraryPacks = Get-E2CanonicalNativePath $LibraryPacksPath
+            $expectedLibraryPacks = Get-E2CanonicalNativePath (Join-Path $canonicalRoot "library-packs")
+            if (-not (Test-E2SamePath $canonicalLibraryPacks $expectedLibraryPacks) -or
+                -not (Test-E2SamePath (Split-Path -Parent $canonicalLibraryPacks) $canonicalRoot) -or
+                -not (Test-Path -LiteralPath $canonicalLibraryPacks -PathType Container)) {
+              throw "The SDK library-packs source is not the expected directory."
+            }
+
+            $item = Get-Item -LiteralPath $canonicalLibraryPacks -Force
+            if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 -or
+                -not [string]::IsNullOrWhiteSpace([string]$item.LinkType) -or
+                $null -ne $item.Target) {
+              throw "The SDK library-packs source must not be a link or reparse point."
+            }
+          }
+
+          function Assert-E2LibraryPacksInventory {
+            param([string]$LibraryPacksPath)
+
+            $items = @(Get-ChildItem -LiteralPath $LibraryPacksPath -Force)
+            if ($items.Count -eq 0 -or
+                @($items | Where-Object { $_ -isnot [IO.FileInfo] -or $_.Extension -ne ".nupkg" }).Count -ne 0) {
+              throw "The SDK library-packs inventory must contain only first-level nupkg files."
+            }
+
+            foreach ($packageFile in $items) {
+              if ($packageFile.BaseName -match "(?i)^(AutoCAD\.NET(?:\.Core|\.Model)?|Autodesk)(?:[._-]|$)") {
+                throw "Autodesk package content is forbidden in the SDK library-packs source."
+              }
+              $archive = [IO.Compression.ZipFile]::OpenRead($packageFile.FullName)
+              try {
+                $forbiddenDlls = @(
+                  $archive.Entries |
+                    ForEach-Object { [IO.Path]::GetFileName($_.FullName) } |
+                    Where-Object { $_ -match "(?i)^(Ac|Ad|Autodesk).*\.dll$" }
+                )
+                if ($forbiddenDlls.Count -ne 0) {
+                  throw "Autodesk DLL content is forbidden in the SDK library-packs source."
+                }
+              } finally {
+                $archive.Dispose()
+              }
+            }
+          }
+
+          function Assert-E2AutodeskPackageProvenance {
+            param(
+              [string]$PackageId,
+              [string]$Version,
+              [string]$ExpectedContentHash,
+              [string]$NuGetPackagesRoot,
+              [AllowEmptyString()][string]$LibraryPacksPath
+            )
+
+            $packageDirectory = Join-Path $NuGetPackagesRoot "$($PackageId.ToLowerInvariant())\$Version"
+            if (-not (Test-E2PathWithin $packageDirectory $NuGetPackagesRoot) -or
+                (-not [string]::IsNullOrWhiteSpace($LibraryPacksPath) -and
+                 (Test-E2PathWithin $packageDirectory $LibraryPacksPath))) {
+              throw "Autodesk package is outside the isolated NuGet package cache."
+            }
+
+            $metadataPath = Join-Path $packageDirectory ".nupkg.metadata"
+            if (-not (Test-Path -LiteralPath $metadataPath -PathType Leaf)) {
+              throw "Autodesk package provenance metadata is missing for $PackageId."
+            }
+            $metadata = Get-Content -LiteralPath $metadataPath -Raw | ConvertFrom-Json
+            $source = Get-E2CanonicalHttpsSource ([string]$metadata.source)
+            $expectedSource = ([Uri]"https://api.nuget.org/v3/index.json").AbsoluteUri.TrimEnd('/')
+            if ([string]::IsNullOrWhiteSpace([string]$metadata.source) -or
+                $null -eq $source -or
+                -not [string]::Equals($source, $expectedSource, [StringComparison]::OrdinalIgnoreCase) -or
+                [string]$metadata.contentHash -ne $ExpectedContentHash) {
+              throw "Unexpected Autodesk package provenance for $PackageId."
+            }
+
+            if (-not [string]::IsNullOrWhiteSpace($LibraryPacksPath) -and
+                (Test-Path -LiteralPath $LibraryPacksPath -PathType Container) -and
+                @(Get-ChildItem -LiteralPath $LibraryPacksPath -File -Filter "$PackageId.$Version.nupkg").Count -ne 0) {
+              throw "Autodesk package is duplicated in the SDK library-packs source."
+            }
+          }
+          # E2 source policy helpers: end
+
           $msbuildPropertyOutput = @(
             & dotnet msbuild $project `
               @positiveProperties `
@@ -582,13 +784,41 @@ jobs:
           Write-SanitizedList "dotnet nuget list source" $nugetListSourceOutput "Text"
           Write-Host "--- E2 NuGet source diagnostics: end ---"
 
-          if ($sources.Count -ne 1 -or $sources[0].TrimEnd('/') -ne "https://api.nuget.org/v3/index.json") {
-            throw "project.assets.json contains an unexpected NuGet source."
+          if ([string]::IsNullOrWhiteSpace($env:DOTNET_ROOT) -or
+              -not [IO.Path]::IsPathRooted($env:DOTNET_ROOT)) {
+            throw "DOTNET_ROOT must be an absolute path for E2."
           }
+          $canonicalDotnetRoot = Get-E2CanonicalNativePath $env:DOTNET_ROOT
+          $expectedLibraryPacks = Get-E2CanonicalNativePath (Join-Path $canonicalDotnetRoot "library-packs")
+          $libraryPacksDeclared = Assert-E2SourcePolicy `
+            $sources `
+            ([string]$msbuildRestoreProperties.RestoreSources) `
+            ([string]$msbuildRestoreProperties.RestoreAdditionalProjectSources) `
+            $fallbackFolderDiagnostics `
+            ([string]$msbuildRestoreProperties.RestoreFallbackFolders) `
+            ([string]$msbuildRestoreProperties.RestoreAdditionalProjectFallbackFolders) `
+            $expectedLibraryPacks
+          if ($libraryPacksDeclared) {
+            Assert-E2LibraryPacksLocation $canonicalDotnetRoot $expectedLibraryPacks
+            Assert-E2LibraryPacksInventory $expectedLibraryPacks
+            Write-Host "SDK library-packs source validated without Autodesk content."
+          }
+
+          Write-Host "Autodesk package provenance:"
+          foreach ($packageId in $expected.Keys) {
+            $package = $expected[$packageId]
+            Assert-E2AutodeskPackageProvenance `
+              $packageId `
+              $package.Version `
+              ([string]$lockByName[$packageId].contentHash) `
+              $env:NUGET_PACKAGES `
+              $(if ($libraryPacksDeclared) { $expectedLibraryPacks } else { "" })
+            Write-Host "- $packageId $($package.Version): nuget.org"
+          }
+
           $packageFolders = @($assets.packageFolders.PSObject.Properties.Name)
-          $assetPackageFolder = [IO.Path]::GetFullPath($packageFolders[0].TrimEnd([char[]]@('\', '/')))
-          $expectedPackageFolder = [IO.Path]::GetFullPath($env:NUGET_PACKAGES)
-          if ($packageFolders.Count -ne 1 -or $assetPackageFolder -ne $expectedPackageFolder) {
+          if ($packageFolders.Count -ne 1 -or
+              -not (Test-E2SamePath $packageFolders[0] $env:NUGET_PACKAGES)) {
             throw "project.assets.json does not use only the isolated package folder."
           }
 
