@@ -18,22 +18,23 @@ namespace RackCad.Tests
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
 
             // Posts: the omega post with its dimensions and the Ix/Iy/norma columns still in the open bag.
-            var post = catalog.PostProfiles.FindProfile("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA");
+            var post = catalog.PostProfiles.FindProfile(TestCatalogIds.Profiles.Posts.Standard);
             Assert.NotNull(post);
             Assert.Equal(3.0, post.Width, 4);
             Assert.Equal(3.0, post.Depth, 4);
             Assert.Equal("14", post.Gauge);
 
             // Celosía: the travesaño with its accented display name intact (UTF-8 path).
-            var truss = catalog.TrussProfiles.FindProfile("TRAVESANO_PARA_POSTE_OMEGA_DE_CINTA_CALIBRE_14");
+            var truss = catalog.TrussProfiles.FindProfile(TestCatalogIds.Profiles.Truss.Standard);
             Assert.NotNull(truss);
             Assert.Contains("Travesaño", truss.Label);
 
             // Beams: peraltes list and ménsula FK survive the unified read.
-            var beam = catalog.BeamProfiles.FirstOrDefault(b => b.Id == "LARGUERO_ESCALON_CAL14_3_REMACHES");
+            var beam = catalog.BeamProfiles.FirstOrDefault(
+                b => b.Id == TestCatalogIds.Profiles.Beams.SelectiveThreeRivet);
             Assert.NotNull(beam);
             Assert.Equal("3;3.5;4;4.5;5;5.5;6", beam.Peraltes);
-            Assert.Equal("MENSULA_3_REMACHES_CAL_10", beam.Mensula);
+            Assert.Equal(TestCatalogIds.Mensulas.ThreeRivet, beam.Mensula);
             Assert.Contains("escalón", beam.Label);
         }
 

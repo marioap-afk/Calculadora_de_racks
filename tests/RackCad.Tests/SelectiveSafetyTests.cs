@@ -13,8 +13,8 @@ namespace RackCad.Tests
     /// <summary>Safety accessories (Fase 0): the catalog loads them, the selection round-trips, and they enter the BOM.</summary>
     public class SelectiveSafetyTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
@@ -35,13 +35,13 @@ namespace RackCad.Tests
             return bay;
         }
 
-        private const string LateralId = "PROTECTOR_LATERAL_BOTA_H_3_16_18";
-        private const string LateralC4Id = "PROTECTOR_LATERAL_BOTA_C_4";
-        private const string LateralC6Id = "PROTECTOR_LATERAL_BOTA_C_6";
-        private const string BotaHId = "PROTECTOR_BOTA_H_3_16_18";
-        private const string BotaC4Id = "PROTECTOR_BOTA_C_4";
-        private const string BotaC6Id = "PROTECTOR_BOTA_C_6";
-        private const string PosteTopeId = "POSTE_3_1_5_8_TOPE";
+        private const string LateralId = TestCatalogIds.Safety.SideProtectors.H3_16_18;
+        private const string LateralC4Id = TestCatalogIds.Safety.SideProtectors.C4;
+        private const string LateralC6Id = TestCatalogIds.Safety.SideProtectors.C6;
+        private const string BotaHId = TestCatalogIds.Safety.Boots.H3_16_18;
+        private const string BotaC4Id = TestCatalogIds.Safety.Boots.C4;
+        private const string BotaC6Id = TestCatalogIds.Safety.Boots.C6;
+        private const string PosteTopeId = TestCatalogIds.Safety.Stops.Post;
 
         /// <summary>A design of N frentes with a bota (general side, all frentes) + a protector lateral on chosen posts.</summary>
         private static SelectivePalletDesign DesignWithLateral(int frentes, SafetySide botaSide, params (int Post, SafetySide Side)[] lateralPosts)
@@ -53,7 +53,7 @@ namespace RackCad.Tests
             for (var i = 0; i < frentes; i++) design.Bays.Add(Bay());
             if (botaSide != SafetySide.None)
             {
-                design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Side = botaSide });
+                design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = BotaHId, Side = botaSide });
             }
 
             var lateral = new SelectiveSafetySelection { ElementId = lateralId, Side = SafetySide.None };
@@ -73,7 +73,12 @@ namespace RackCad.Tests
                 design.Bays.Add(bay);
             }
 
-            var selection = new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Quantity = 1, Side = defaultSide };
+            var selection = new SelectiveSafetySelection
+            {
+                ElementId = BotaHId,
+                Quantity = 1,
+                Side = defaultSide
+            };
             foreach (var (post, side) in overrides) selection.PostSides.Add(new SafetyPostSide { PostIndex = post, Side = side });
             design.SafetySelections.Add(selection);
             return design;
@@ -97,9 +102,9 @@ namespace RackCad.Tests
         {
             var element = Assert.Single(Catalog.SafetyElements, e => string.Equals(e.Id, id, StringComparison.OrdinalIgnoreCase));
             Assert.True(SelectiveSafetyDefaults.IsType(element.Type, type));
-            Assert.Equal(id + "_FRONTAL", CatalogLookup.Block(Catalog, id, "FRONTAL"));
-            Assert.Equal(id + "_LATERAL", CatalogLookup.Block(Catalog, id, "LATERAL"));
-            Assert.Equal(id + "_PLANTA", CatalogLookup.Block(Catalog, id, "PLANTA"));
+            Assert.Equal(id + "_FRONTAL", CatalogLookup.Block(Catalog, id, TestCatalogIds.Views.Front));
+            Assert.Equal(id + "_LATERAL", CatalogLookup.Block(Catalog, id, TestCatalogIds.Views.Lateral));
+            Assert.Equal(id + "_PLANTA", CatalogLookup.Block(Catalog, id, TestCatalogIds.Views.Plan));
         }
 
         [Theory]
@@ -200,12 +205,15 @@ namespace RackCad.Tests
         public void SafetySelections_RoundTripThroughDocument()
         {
             var store = new SelectivePalletDesignStore();
-            var document = SelectivePalletDesignDocument.From(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Right)), "id-1", "Rack A");
+            var document = SelectivePalletDesignDocument.From(
+                Design((BotaHId, 1, SafetySide.Right)),
+                "id-1",
+                "Rack A");
 
             var restored = store.Deserialize(store.Serialize(document)).ToDomain();
 
             var selection = Assert.Single(restored.SafetySelections);
-            Assert.Equal("PROTECTOR_BOTA_H_3_16_18", selection.ElementId);
+            Assert.Equal(BotaHId, selection.ElementId);
             Assert.Equal(SafetySide.Right, selection.Side); // the chosen side survives the round-trip
         }
 
@@ -222,7 +230,9 @@ namespace RackCad.Tests
         [Fact]
         public void Frontal_Left_DrawsOneBotaPerPost_CoincidentWithBasePlate()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Left)), Catalog);
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design((BotaHId, 1, SafetySide.Left)),
+                Catalog);
             var instances = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog).ToList();
 
             var botas = instances.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
@@ -238,7 +248,9 @@ namespace RackCad.Tests
         [Fact]
         public void Frontal_Both_DrawsTwoBotasPerPost_OneMirrored()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design((BotaHId, 1, SafetySide.Both)),
+                Catalog);
             var instances = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog).ToList();
 
             var botas = instances.Where(i => i.Role == HeaderBlockRole.Safety).ToList();
@@ -250,10 +262,12 @@ namespace RackCad.Tests
         [Fact]
         public void Bom_DrawableBota_CountsFromDrawing_NotManualQuantity()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 99, SafetySide.Left)), Catalog);
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design((BotaHId, 99, SafetySide.Left)),
+                Catalog);
             var posts = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, 0), Catalog).Count(i => i.Role == HeaderBlockRole.Post);
 
-            var line = SelectiveBomBuilder.Build(system, Catalog).Lines.Single(l => l.ProfileId == "PROTECTOR_BOTA_H_3_16_18");
+            var line = SelectiveBomBuilder.Build(system, Catalog).Lines.Single(l => l.ProfileId == BotaHId);
 
             Assert.Equal(posts, line.Quantity); // the drawn count (one side), NOT the manual 99
             Assert.NotEqual(99, line.Quantity);
@@ -262,7 +276,9 @@ namespace RackCad.Tests
         [Fact]
         public void Resolver_SkipsSafetyWithNoSideAndNoQuantity()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 0, SafetySide.None)), Catalog);
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design((BotaHId, 0, SafetySide.None)),
+                Catalog);
             Assert.Empty(system.SafetySelections);
         }
 
@@ -336,7 +352,7 @@ namespace RackCad.Tests
             Assert.Equal(SelectiveBomBuilder.Safety, lateral.Category);
             Assert.Equal(1, lateral.Quantity); // frente 0, one block
 
-            var bota = bom.Components.Single(c => c.ProfileId == "PROTECTOR_BOTA_H_3_16_18");
+            var bota = bom.Components.Single(c => c.ProfileId == BotaHId);
             Assert.Equal(4, bota.Quantity);    // frentes 1 & 2 (Both) — NOT 6; frente 0's botas are suppressed
         }
 
@@ -349,7 +365,7 @@ namespace RackCad.Tests
                 DesignWithLateral(1, SafetySide.Both, (0, SafetySide.Left), (1, SafetySide.Right)), Catalog);
             var bom = SelectiveBomBuilder.Build(system, Catalog);
 
-            Assert.DoesNotContain(bom.Components, c => c.ProfileId == "PROTECTOR_BOTA_H_3_16_18"); // no phantom bota
+            Assert.DoesNotContain(bom.Components, c => c.ProfileId == BotaHId); // no phantom bota
             Assert.Contains(bom.Components, c => c.ProfileId == LateralId);                         // laterales are listed
         }
 
@@ -391,7 +407,9 @@ namespace RackCad.Tests
         [Fact]
         public void Lateral_Both_MirrorsAboutFondoDepthCenter()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design((BotaHId, 1, SafetySide.Both)),
+                Catalog);
             var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
             var cortes = new SelectiveLateralBuilder().Cortes(system, Catalog);
 
@@ -442,7 +460,11 @@ namespace RackCad.Tests
             design.Bays.Add(Bay());
             design.Bays.Add(Bay());                                             // fondo 0: 3 frentes (posts 0..3)
             design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay() });  // fondo 1: 1 frente (posts 0..1)
-            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Side = SafetySide.Both });
+            design.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = BotaHId,
+                Side = SafetySide.Both
+            });
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
             var depth0 = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
@@ -470,7 +492,11 @@ namespace RackCad.Tests
             design.Bays.Add(Bay());
             design.Bays.Add(Bay());                                                    // fondo 0: 2 frentes → 3 posts
             design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(), Bay() });   // fondo 1: 2 frentes
-            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Side = SafetySide.Both });
+            design.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = BotaHId,
+                Side = SafetySide.Both
+            });
 
             var system = new SelectiveGeometryResolver().Resolve(design, Catalog);
             var offsets = SelectiveDepthLayout.Offsets(system);
@@ -485,11 +511,13 @@ namespace RackCad.Tests
         [Fact]
         public void Bom_BotaIsItsOwnComponent_NamedAfterThePiece()
         {
-            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design((BotaHId, 1, SafetySide.Both)),
+                Catalog);
             var bom = SelectiveBomBuilder.Build(system, Catalog);
 
             var safety = bom.Components.Single(c => c.Category == SelectiveBomBuilder.Safety);
-            Assert.Equal("PROTECTOR_BOTA_H_3_16_18", safety.ProfileId);           // the component IS the bota
+            Assert.Equal(BotaHId, safety.ProfileId);           // the component IS the bota
             Assert.NotEqual("Elementos de seguridad", safety.Description);         // not the old generic wrapper
             Assert.True(safety.Quantity > 0);                                     // counted from the drawing
         }
@@ -498,7 +526,9 @@ namespace RackCad.Tests
         public void Planta_Both_MirrorsAboutFondoDepthCenter()
         {
             // Single fondo, Both: each frame gets a front bota + its mirror; the pair reflects about the depth center.
-            var system = new SelectiveGeometryResolver().Resolve(Design(("PROTECTOR_BOTA_H_3_16_18", 1, SafetySide.Both)), Catalog);
+            var system = new SelectiveGeometryResolver().Resolve(
+                Design((BotaHId, 1, SafetySide.Both)),
+                Catalog);
             var depth = SelectiveDepthLayout.CabeceraDepthOfFondo(system, 0);
             var botas = new SelectivePlantaBuilder().Build(system, Catalog).Where(i => i.Role == HeaderBlockRole.Safety).ToList();
 
@@ -516,7 +546,7 @@ namespace RackCad.Tests
 
         // ---- Parrillas (decks): grid per (frente, level), drawn frontal/lateral, counted in the BOM ----
 
-        private const string ParrillaId = "PARRILLA_GENERICA";
+        private const string ParrillaId = TestCatalogIds.Safety.Decks.Generic;
 
         private static SelectivePalletDesign ParrillaDesign(int frentes, int levelsPerBay, bool frontal, bool lateral, params (int f, int l)[] offCells)
         {

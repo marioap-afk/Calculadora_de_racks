@@ -10,8 +10,8 @@ namespace RackCad.Tests
 {
     public class FlowBedLateralBuilderTests
     {
-        private const string Roller19 = "RODILLO_DE_TUBO_DE_1.9_CALIBRE_14";
-        private const string Roller25 = "RODILLO_DE_TUBO_DE_2.5_CALIBRE_14";
+        private const string Roller19 = TestCatalogIds.FlowBed.Roller1Point9;
+        private const string Roller25 = TestCatalogIds.FlowBed.Roller2Point5;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 

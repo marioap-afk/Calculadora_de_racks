@@ -17,15 +17,16 @@ namespace RackCad.Tests
             Assert.NotEmpty(templates);
 
             var standard = templates.FirstOrDefault(t =>
-                string.Equals(t.Id, "STD-3P", StringComparison.OrdinalIgnoreCase));
+                string.Equals(t.Id, TestCatalogIds.Templates.Standard, StringComparison.OrdinalIgnoreCase));
 
             Assert.NotNull(standard);
             Assert.Equal(new[] { 0.0, 44.0, 88.0, 132.0 }, standard.Horizontals.Select(h => h.Elevation));
             // Horizontals are all the unified celosía/truss profile now.
-            Assert.All(standard.Horizontals, h => Assert.Equal(CatalogIds.TrussProfile, h.Profile));
+            Assert.All(standard.Horizontals, h =>
+                Assert.Equal(TestCatalogIds.Profiles.Truss.Standard, h.Profile));
             Assert.Equal(2, standard.Horizontals.First().Quantity);
-            Assert.Equal(CatalogIds.StandardPost, standard.Post);
-            Assert.Equal(CatalogIds.TrussProfile, standard.DiagonalProfile);
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, standard.Post);
+            Assert.Equal(TestCatalogIds.Profiles.Truss.Standard, standard.DiagonalProfile);
             Assert.Equal(BracingPattern.SingleDiagonal, standard.DefaultArrangement);
         }
 
@@ -35,7 +36,7 @@ namespace RackCad.Tests
             var templates = RackFrameTemplateProvider.FromBaseDirectory().Load();
 
             var tall = templates.FirstOrDefault(t =>
-                string.Equals(t.Id, "TALL-4P", StringComparison.OrdinalIgnoreCase));
+                string.Equals(t.Id, TestCatalogIds.Templates.Tall, StringComparison.OrdinalIgnoreCase));
 
             Assert.NotNull(tall);
             Assert.Equal(BracingPattern.XBracing, tall.DefaultArrangement);
@@ -49,7 +50,10 @@ namespace RackCad.Tests
             var templates = provider.Load();
 
             Assert.Equal(RackFrameTemplateCatalog.All.Count, templates.Count);
-            Assert.Contains(templates, t => string.Equals(t.Id, "STD-3P", StringComparison.OrdinalIgnoreCase));
+            Assert.Contains(templates, t => string.Equals(
+                t.Id,
+                TestCatalogIds.Templates.Standard,
+                StringComparison.OrdinalIgnoreCase));
         }
 
         [Fact]

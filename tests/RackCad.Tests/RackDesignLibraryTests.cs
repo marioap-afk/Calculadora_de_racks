@@ -24,14 +24,20 @@ namespace RackCad.Tests
 
                 // A cabecera WITH a name -> the entry uses the name.
                 var header = new RackFrameConfigurationFactory(JsonRackCatalogProvider.FromBaseDirectory().Load())
-                    .Build(RackFrameTemplateCatalog.Default, CatalogIds.StandardPost, 132.0, 42.0);
+                    .Build(
+                        RackFrameTemplateCatalog.Default,
+                        TestCatalogIds.Profiles.Posts.Standard,
+                        132.0,
+                        42.0);
                 header.Name = "Cabecera A";
                 store.Save(RackProject.ForSelective(header), Path.Combine(dir, "cab" + RackProjectStore.FileExtension));
 
                 // A (valid) dynamic system -> inferred as Dinamico.
                 var dynamic = new DynamicRackSystemBuilder(JsonRackCatalogProvider.FromBaseDirectory().Load())
                     .BuildDefault(new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"), palletsDeep: 2,
-                        headerTemplate: RackFrameTemplateCatalog.Default, headerPostCatalogId: CatalogIds.StandardPost, headerHeight: 132.0);
+                        headerTemplate: RackFrameTemplateCatalog.Default,
+                        headerPostCatalogId: TestCatalogIds.Profiles.Posts.Standard,
+                        headerHeight: 132.0);
                 store.Save(RackProject.ForDynamic(dynamic), Path.Combine(dir, "sistema" + RackProjectStore.FileExtension));
 
                 // A foreign file -> skipped, not thrown.

@@ -13,7 +13,11 @@ namespace RackCad.Tests
         public void FromConfiguration_CapturesPostPlateDiagonalProfileArrangementAndDimensions()
         {
             var template = RackFrameTemplateCatalog.FindStandardOrDefault();
-            var config = new RackFrameConfigurationFactory().Build(template, CatalogIds.StandardPost, 132.0, 42.0);
+            var config = new RackFrameConfigurationFactory().Build(
+                template,
+                TestCatalogIds.Profiles.Posts.Standard,
+                132.0,
+                42.0);
 
             var result = RackFrameTemplateFactory.FromConfiguration(config, "USER-TEST", "Mi plantilla");
 

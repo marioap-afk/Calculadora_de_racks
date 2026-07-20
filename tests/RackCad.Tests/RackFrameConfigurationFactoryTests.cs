@@ -18,7 +18,7 @@ namespace RackCad.Tests
         [Fact]
         public void Build_StandardTemplateAtDefaultDimensions_UsesParametricCelosiaWithClosings()
         {
-            var template = RackFrameTemplateCatalog.FindById("STD-3P");
+            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Standard);
 
             var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", 132.0, 42.0);
 
@@ -35,7 +35,7 @@ namespace RackCad.Tests
         [Fact]
         public void Build_FirstTravesanoAtTroquel_PanelsEvery44_RegardlessOfHeight()
         {
-            var template = RackFrameTemplateCatalog.FindById("STD-3P");
+            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Standard);
 
             var configuration = CreateFactory().Build(template, "POSTE_OMEGA_3X3", 300.0, 48.0);
             var elevations = configuration.Horizontals.Select(h => h.Elevation).OrderBy(e => e).ToList();
@@ -68,7 +68,7 @@ namespace RackCad.Tests
         [Fact]
         public void Build_TallTemplate_ProducesFiveHorizontalsAndFourXPanels()
         {
-            var template = RackFrameTemplateCatalog.FindById("TALL-4P");
+            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Tall);
 
             // 184 = 4 (start troquel) + 4*44 (four 44" panels) + 4 (remate): the top horizontal lands at 180, so the
             // five travesaños are evenly spaced with no closing.
@@ -82,7 +82,7 @@ namespace RackCad.Tests
         [Fact]
         public void Build_TopHorizontalLandsAtHeightMinusRemate_SoBuiltHeightEqualsRequested()
         {
-            var template = RackFrameTemplateCatalog.FindById("STD-3P");
+            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Standard);
 
             // Requesting 240 used to build a 242" frame (the top horizontal drifted a troquel high). Now the top
             // horizontal lands at 240 - PostTopRemate = 236, so the built height is exactly 240.
@@ -123,7 +123,7 @@ namespace RackCad.Tests
         {
             var configuration = CreateFactory().Build(RackFrameTemplateCatalog.Default, null, 132.0, 42.0);
 
-            Assert.Equal(CatalogIds.StandardPost, configuration.LeftPost.PostCatalogId);
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, configuration.LeftPost.PostCatalogId);
         }
 
         [Fact]

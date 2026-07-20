@@ -19,8 +19,26 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
-      - name: dotnet test
-        run: dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug -v:minimal
+      - name: dotnet test with Cobertura
+        run: dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug -v:minimal --collect:"XPlat Code Coverage" --results-directory artifacts/TestResults -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+      - name: Normalize coverage path
+        shell: pwsh
+        run: |
+          $coverageFiles = @(Get-ChildItem -LiteralPath artifacts/TestResults -Recurse -File -Filter coverage.cobertura.xml)
+          if ($coverageFiles.Count -ne 1) {
+            throw "Expected exactly one coverage.cobertura.xml, found $($coverageFiles.Count)."
+          }
+
+          $destination = "artifacts/coverage/coverage.cobertura.xml"
+          New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
+          Copy-Item -LiteralPath $coverageFiles[0].FullName -Destination $destination
+      - name: Upload Cobertura coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: rackcad-coverage-cobertura
+          path: artifacts/coverage/coverage.cobertura.xml
+          if-no-files-found: error
+          retention-days: 14
 
   build-ui:
     name: Build UI (WPF, valida API de Application)

@@ -72,7 +72,7 @@ namespace RackCad.Tests
             Assert.Equal(DynamicFlowBedGeometry.ResolveBedLength(system), bed.Length, 4);
             Assert.Contains("BFR 44", bed.Description);
             Assert.Empty(bed.Pieces);
-            Assert.DoesNotContain(bom.Lines, line => line.ProfileId == FlowBedDefaults.RailId);
+            Assert.DoesNotContain(bom.Lines, line => line.ProfileId == TestCatalogIds.FlowBed.Rail);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 3 });
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 2, LoadLevels = 3 });
@@ -97,7 +97,8 @@ namespace RackCad.Tests
             var bom = SystemBomBuilder.Build(system, Catalog);
 
             Assert.Equal(regularPosts + derivedPosts, bom.Lines
-                .Where(line => line.Category == BomBuilder.Post && line.ProfileId == CatalogIds.StandardPost)
+                .Where(line => line.Category == BomBuilder.Post
+                    && line.ProfileId == TestCatalogIds.Profiles.Posts.Standard)
                 .Sum(line => line.Quantity));
             var reinforced = Assert.Single(bom.Components,
                 component => component.Category == "Poste reforzado");
@@ -114,7 +115,7 @@ namespace RackCad.Tests
                 LoadLevels = 2,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             var front = new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 2 };
             front.IntermediateBeamDepths.Add(3.5);
@@ -123,7 +124,11 @@ namespace RackCad.Tests
             var system = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
             var supportCount = DynamicIntermediateBeamGeometry.Supports(
                 system,
-                CatalogLookup.Local(Catalog, CatalogIds.StandardPost, "FIN_POSTE", "LATERAL")).Count;
+                CatalogLookup.Local(
+                    Catalog,
+                    TestCatalogIds.Profiles.Posts.Standard,
+                    TestCatalogIds.ConnectionPoints.PostEnd,
+                    TestCatalogIds.Views.Lateral)).Count;
 
             var beams = SystemBomBuilder.Build(system, Catalog).Components
                 .Where(component => component.Category == "Larguero intermedio")
@@ -147,7 +152,7 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 2 });
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 3, LoadLevels = 3 });
@@ -163,7 +168,8 @@ namespace RackCad.Tests
             Assert.Equal(4, beams[0].Quantity); // Entrada + salida por cada uno de los 2 niveles.
             Assert.Equal(system.Fronts[1].BeamLength, beams[1].Length, 4);
             Assert.Equal(6, beams[1].Quantity); // Entrada + salida por cada uno de los 3 niveles.
-            Assert.All(beams, component => Assert.Equal(DynamicRackDefaults.InOutBeamCatalogId, component.ProfileId));
+            Assert.All(beams, component =>
+                Assert.Equal(TestCatalogIds.Profiles.Beams.DynamicInOut, component.ProfileId));
             Assert.All(beams, component => Assert.Contains("Peralte 6", component.Description));
         }
 
@@ -177,7 +183,7 @@ namespace RackCad.Tests
                 LoadLevels = 2,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             var front = new DynamicRackFrontDesign { PalletCount = 2, LoadLevels = 2 };
             front.Levels.Add(new DynamicRackLevelDesign
@@ -225,12 +231,12 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             }).System;
             var expected = new DynamicSystemLateralBuilder().Cortes(system, Catalog)
                 .SelectMany(corte => corte.Plan.Flatten().Instances)
                 .Count(instance => instance.Role == HeaderBlockRole.Separator
-                                   && instance.PieceId == DynamicRackDefaults.SeparatorCatalogId);
+                                   && instance.PieceId == TestCatalogIds.Profiles.Spacers.Header);
 
             var separators = SystemBomBuilder.Build(system, Catalog).Components
                 .Where(component => component.Category == SystemBomBuilder.Separator)
@@ -240,7 +246,7 @@ namespace RackCad.Tests
             Assert.Equal(expected, separators.Sum(component => component.Quantity));
             Assert.All(separators, component => Assert.True(component.Length > 0.0));
             Assert.All(separators, component => Assert.Equal(
-                Catalog.SpacerProfiles.FindProfile(DynamicRackDefaults.SeparatorCatalogId).Label,
+                Catalog.SpacerProfiles.FindProfile(TestCatalogIds.Profiles.Spacers.Header).Label,
                 component.Description));
         }
 
@@ -296,17 +302,17 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             }).System;
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.Boots.C6,
                 Quantity = 1,
                 Side = SafetySide.Both
             });
             var lateral = new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_LATERAL_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.SideProtectors.C6,
                 Quantity = 1,
                 Side = SafetySide.None
             };
@@ -314,7 +320,7 @@ namespace RackCad.Tests
             system.SafetySelections.Add(lateral);
             var desviador = new SelectiveSafetySelection
             {
-                ElementId = "DESVIADOR_A_3",
+                ElementId = TestCatalogIds.Safety.Deviators.A3,
                 Quantity = 1,
                 Side = SafetySide.Both,
                 DesviadorLongitud = 18.0,
@@ -324,12 +330,15 @@ namespace RackCad.Tests
             system.SafetySelections.Add(desviador);
 
             var bom = SystemBomBuilder.Build(system, Catalog);
-            var boot = Assert.Single(bom.Components, component => component.ProfileId == "PROTECTOR_BOTA_C_6");
+            var boot = Assert.Single(bom.Components,
+                component => component.ProfileId == TestCatalogIds.Safety.Boots.C6);
             Assert.Equal(2, boot.Quantity); // La guarda completa sustituye las dos botas de la linea del poste 0.
-            var guard = Assert.Single(bom.Components, component => component.ProfileId == "PROTECTOR_LATERAL_BOTA_C_6");
+            var guard = Assert.Single(bom.Components,
+                component => component.ProfileId == TestCatalogIds.Safety.SideProtectors.C6);
             Assert.Equal(1, guard.Quantity);
             Assert.Equal(system.TotalLength + 4.0, guard.Length, 4);
-            var diverter = Assert.Single(bom.Components, component => component.ProfileId == "DESVIADOR_A_3");
+            var diverter = Assert.Single(bom.Components,
+                component => component.ProfileId == TestCatalogIds.Safety.Deviators.A3);
             Assert.Equal(8, diverter.Quantity); // 2 postes x 2 extremos x 2 niveles habilitados.
             Assert.Equal(18.0, diverter.Length, 4);
         }
@@ -342,14 +351,14 @@ namespace RackCad.Tests
                 Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
                 PalletsDeep = 4,
                 LoadLevels = 3,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1 });
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1 });
             var system = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
             var defense = new SelectiveSafetySelection
             {
-                ElementId = "DEFENSA_MONTACARGAS",
+                ElementId = TestCatalogIds.Safety.Dynamic.ForkliftDefense,
                 Quantity = 1,
                 Side = SafetySide.None
             };
@@ -358,7 +367,7 @@ namespace RackCad.Tests
             system.SafetySelections.Add(defense);
 
             var components = SystemBomBuilder.Build(system, Catalog).Components
-                .Where(component => component.ProfileId == "DEFENSA_MONTACARGAS")
+                .Where(component => component.ProfileId == TestCatalogIds.Safety.Dynamic.ForkliftDefense)
                 .OrderBy(component => component.Length)
                 .ToList();
 
@@ -379,18 +388,22 @@ namespace RackCad.Tests
                 Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
                 PalletsDeep = 4,
                 LoadLevels = 3,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             design.Fronts.Add(new DynamicRackFrontDesign { LoadLevels = 2, PalletsDeep = 2 });
             design.Fronts.Add(new DynamicRackFrontDesign { LoadLevels = 3, PalletsDeep = 3 });
             var system = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
-            var guide = new SelectiveSafetySelection { ElementId = "GUIA_ENTRADA", Quantity = 1 };
+            var guide = new SelectiveSafetySelection
+            {
+                ElementId = TestCatalogIds.Safety.Dynamic.EntranceGuide,
+                Quantity = 1
+            };
             guide.GuiaEntradaOffCells.Add(new SelectiveGridCell { Frente = 0, Level = 1 });
             system.SafetySelections.Add(guide);
 
             var expected = DynamicEntranceGuidePlan.Build(system, guide);
             var components = SystemBomBuilder.Build(system, Catalog).Components
-                .Where(component => component.ProfileId == "GUIA_ENTRADA")
+                .Where(component => component.ProfileId == TestCatalogIds.Safety.Dynamic.EntranceGuide)
                 .ToList();
 
             Assert.Equal(expected.Count, components.Sum(component => component.Quantity));
@@ -405,7 +418,7 @@ namespace RackCad.Tests
                 Pallet = new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
                 PalletsDeep = 4,
                 LoadLevels = 3,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             design.Fronts.Add(new DynamicRackFrontDesign { LoadLevels = 3 });
             design.Fronts.Add(new DynamicRackFrontDesign { LoadLevels = 3 });
@@ -432,7 +445,7 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             for (var front = 0; front < 4; front++)
             {
@@ -442,13 +455,13 @@ namespace RackCad.Tests
             var system = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.Boots.C6,
                 Quantity = 1,
                 Side = SafetySide.Both
             });
             var lateral = new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_LATERAL_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.SideProtectors.C6,
                 Quantity = 1,
                 Side = SafetySide.None
             };
@@ -459,9 +472,9 @@ namespace RackCad.Tests
             var bom = SystemBomBuilder.Build(system, Catalog);
 
             Assert.Equal(2, Assert.Single(bom.Components,
-                component => component.ProfileId == "PROTECTOR_LATERAL_BOTA_C_6").Quantity);
+                component => component.ProfileId == TestCatalogIds.Safety.SideProtectors.C6).Quantity);
             Assert.Equal(6, Assert.Single(bom.Components,
-                component => component.ProfileId == "PROTECTOR_BOTA_C_6").Quantity);
+                component => component.ProfileId == TestCatalogIds.Safety.Boots.C6).Quantity);
         }
 
         [Fact]
@@ -474,11 +487,11 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             }).System;
             var boot = new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.Boots.C6,
                 Quantity = 1,
                 Side = SafetySide.None
             };
@@ -486,7 +499,7 @@ namespace RackCad.Tests
             system.SafetySelections.Add(boot);
             var diverter = new SelectiveSafetySelection
             {
-                ElementId = "DESVIADOR_A_3",
+                ElementId = TestCatalogIds.Safety.Deviators.A3,
                 Quantity = 1,
                 Side = SafetySide.None,
                 DesviadorLongitud = 18.0,
@@ -498,9 +511,9 @@ namespace RackCad.Tests
             var bom = SystemBomBuilder.Build(system, Catalog);
 
             Assert.Equal(2, Assert.Single(bom.Components,
-                component => component.ProfileId == "PROTECTOR_BOTA_C_6").Quantity);
+                component => component.ProfileId == TestCatalogIds.Safety.Boots.C6).Quantity);
             Assert.Equal(6, Assert.Single(bom.Components,
-                component => component.ProfileId == "DESVIADOR_A_3").Quantity);
+                component => component.ProfileId == TestCatalogIds.Safety.Deviators.A3).Quantity);
         }
     }
 }

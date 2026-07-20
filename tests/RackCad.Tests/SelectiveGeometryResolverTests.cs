@@ -10,14 +10,17 @@ namespace RackCad.Tests
     /// <summary>Exercises the pallet-driven derivation: larguero length, floor-referenced stacking, separation, height.</summary>
     public class SelectiveGeometryResolverTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         /// <summary>The troquel grid base (lowest troquel Y), from the catalog — beams snap onto this grid.</summary>
         private static double GridBase()
-            => Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "FRONTAL").LocalY;
+            => Catalog.ConnectionLayout.FindConnectionLayout(
+                PostId,
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Front).LocalY;
 
         private static double RoundUp(double x, double m) => Math.Ceiling(x / m - 1e-9) * m;
         private static double RoundUpFoot(double x) => RoundUp(x, 12.0);
@@ -34,7 +37,10 @@ namespace RackCad.Tests
 
         /// <summary>The larguero's INICIO_PERFIL Y (escalón height where the pallet rests), from the catalog.</summary>
         private static double BeamStartY()
-            => Catalog.ConnectionLayout.FindConnectionLayout(BeamId, "INICIO_PERFIL", "FRONTAL").LocalY;
+            => Catalog.ConnectionLayout.FindConnectionLayout(
+                BeamId,
+                TestCatalogIds.ConnectionPoints.ProfileStart,
+                TestCatalogIds.Views.Front).LocalY;
 
         private static SelectiveCell Cell(double frente, double alto, int count, double beamPeralte)
             => new SelectiveCell

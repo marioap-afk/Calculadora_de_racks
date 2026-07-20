@@ -14,8 +14,13 @@ namespace RackCad.Tests
 
         private static RackFrameConfiguration Config(double depth)
         {
-            var template = RackFrameTemplateCatalog.FindById("STD-3P") ?? RackFrameTemplateCatalog.Default;
-            return new RackFrameConfigurationFactory(Catalog).Build(template, "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA", 132.0, depth);
+            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Standard)
+                ?? RackFrameTemplateCatalog.Default;
+            return new RackFrameConfigurationFactory(Catalog).Build(
+                template,
+                TestCatalogIds.Profiles.Posts.Standard,
+                132.0,
+                depth);
         }
 
         [Fact]
@@ -39,9 +44,15 @@ namespace RackCad.Tests
             // the SAME length it has in the lateral view; carries peralte = post peralte (3) - 1 = 2.
             var celosia = celosias[0];
             var troquelInset = Catalog.ConnectionLayout
-                .FindConnectionLayout("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA", "TROQUEL_CELOSIA", "LATERAL").LocalX;
+                .FindConnectionLayout(
+                    TestCatalogIds.Profiles.Posts.Standard,
+                    TestCatalogIds.ConnectionPoints.TrussPunch,
+                    TestCatalogIds.Views.Lateral).LocalX;
             var mensula = Catalog.ConnectionLayout
-                .FindConnectionLayout(Catalog.Defaults.HorizontalProfile, "CELOSIA", "PLANTA").LocalX;
+                .FindConnectionLayout(
+                    Catalog.Defaults.HorizontalProfile,
+                    TestCatalogIds.ConnectionPoints.TrussEnd,
+                    TestCatalogIds.Views.Plan).LocalX;
             Assert.Equal(48.0 - 2.0 * (troquelInset - mensula), celosia.DynamicParameters["LONGITUD"], 3);
             Assert.True(celosia.DynamicParameters["LONGITUD"] < 48.0); // shorter than the fondo
             Assert.Equal(2.0, celosia.DynamicParameters["PERALTE"], 3);
@@ -109,7 +120,7 @@ namespace RackCad.Tests
             var instances = new PlantaHeaderLayoutBuilder().Build(config, Catalog);
             var posts = instances.Where(i => i.Role == HeaderBlockRole.Post).OrderBy(i => i.Insertion.X).ToList();
 
-            Assert.Equal("POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA", posts.First().PieceId);
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, posts.First().PieceId);
             Assert.Equal("POSTE_DERECHO_HIPOTETICO", posts.Last().PieceId);
         }
     }

@@ -19,7 +19,7 @@ namespace RackCad.Tests
                 new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
                 palletsDeep: 4,
                 headerTemplate: RackFrameTemplateCatalog.Default,
-                headerPostCatalogId: CatalogIds.StandardPost,
+                headerPostCatalogId: TestCatalogIds.Profiles.Posts.Standard,
                 headerHeight: 132.0);
         }
 
@@ -32,8 +32,8 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 4.0,
-                InOutBeamCatalogId = DynamicRackDefaults.InOutBeamCatalogId,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                InOutBeamCatalogId = TestCatalogIds.Profiles.Beams.DynamicInOut,
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             }).System;
         }
 
@@ -70,7 +70,7 @@ namespace RackCad.Tests
             {
                 Assert.False(string.IsNullOrWhiteSpace(s.BlockName));      // FRONTAL separator block resolved
                 Assert.Equal(48.0, s.DynamicParameters["LONGITUD"], 4);    // LONGITUD = the module length (48"), as shown in the preview
-                Assert.Equal("FRONTAL", s.View);
+                Assert.Equal(TestCatalogIds.Views.Front, s.View);
             });
         }
 
@@ -80,7 +80,10 @@ namespace RackCad.Tests
             var catalog = Catalog;
             var system = StandardSystem();
             var troquelSeparadorX = catalog.ConnectionLayout
-                .FindConnectionLayout(CatalogIds.StandardPost, "TROQUEL_SEPARADOR", "LATERAL").LocalX;
+                .FindConnectionLayout(
+                    TestCatalogIds.Profiles.Posts.Standard,
+                    TestCatalogIds.ConnectionPoints.SpacerPunch,
+                    TestCatalogIds.Views.Lateral).LocalX;
             var firstSeparator = system.Modules.First(m => m.Kind == DynamicRackModuleKind.Separator && m.Length > 0.0);
 
             var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
@@ -105,7 +108,10 @@ namespace RackCad.Tests
             var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
             var offset = offsets[0];
             var finPosteX = catalog.ConnectionLayout
-                .FindConnectionLayout(CatalogIds.StandardPost, "FIN_POSTE", "LATERAL").LocalX;
+                .FindConnectionLayout(
+                    TestCatalogIds.Profiles.Posts.Standard,
+                    TestCatalogIds.ConnectionPoints.PostEnd,
+                    TestCatalogIds.Views.Lateral).LocalX;
             var primaryX = offset - finPosteX;
             var reinforcementX = offset;
 
@@ -127,7 +133,10 @@ namespace RackCad.Tests
             system.DerivedPostReinforced = false;
             var offset = system.GetDerivedPostOffsets()[0];
             var finPosteX = catalog.ConnectionLayout
-                .FindConnectionLayout(CatalogIds.StandardPost, "FIN_POSTE", "LATERAL").LocalX;
+                .FindConnectionLayout(
+                    TestCatalogIds.Profiles.Posts.Standard,
+                    TestCatalogIds.ConnectionPoints.PostEnd,
+                    TestCatalogIds.Views.Lateral).LocalX;
 
             var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
 
@@ -144,7 +153,10 @@ namespace RackCad.Tests
             system.DerivedPostReinforcementHeight = 60.0;
             var offset = system.GetDerivedPostOffsets()[0];
             var finPosteX = catalog.ConnectionLayout
-                .FindConnectionLayout(CatalogIds.StandardPost, "FIN_POSTE", "LATERAL").LocalX;
+                .FindConnectionLayout(
+                    TestCatalogIds.Profiles.Posts.Standard,
+                    TestCatalogIds.ConnectionPoints.PostEnd,
+                    TestCatalogIds.Views.Lateral).LocalX;
             var reinforcementX = offset;
 
             var layout = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten();
@@ -173,7 +185,7 @@ namespace RackCad.Tests
                 new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg"),
                 palletsDeep: 6,
                 headerTemplate: RackFrameTemplateCatalog.Default,
-                headerPostCatalogId: CatalogIds.StandardPost,
+                headerPostCatalogId: TestCatalogIds.Profiles.Posts.Standard,
                 headerHeight: 132.0);
 
             var plan = new DynamicSystemLateralBuilder().Build(system, Catalog);
@@ -198,15 +210,15 @@ namespace RackCad.Tests
 
             var beams = new DynamicSystemLateralBuilder().Build(system, Catalog).Flatten()
                 .OfRole(HeaderBlockRole.Beam)
-                .Where(beam => beam.PieceId == DynamicRackDefaults.InOutBeamCatalogId)
+                .Where(beam => beam.PieceId == TestCatalogIds.Profiles.Beams.DynamicInOut)
                 .ToList();
 
             Assert.Equal(6, beams.Count);
             Assert.All(beams, beam =>
             {
-                Assert.Equal(DynamicRackDefaults.InOutBeamCatalogId, beam.PieceId);
+                Assert.Equal(TestCatalogIds.Profiles.Beams.DynamicInOut, beam.PieceId);
                 Assert.Equal("LARGUERO_IN_OUT_C6_LATERAL", beam.BlockName);
-                Assert.Equal(DynamicRackDefaults.InOutBeamView, beam.View);
+                Assert.Equal(TestCatalogIds.Views.Lateral, beam.View);
                 Assert.Equal(beam.ConnectionAnchor.X, beam.Insertion.X, 4);
                 Assert.Equal(beam.ConnectionAnchor.Y, beam.Insertion.Y, 4);
                 Assert.Empty(beam.DynamicParameters);
@@ -243,25 +255,26 @@ namespace RackCad.Tests
             var catalog = Catalog;
             var system = ResolvedSystem();
             var leftMate = catalog.ConnectionLayout.FindConnectionLayout(
-                "LARGUERO_ESCALON_INFINITO",
-                "INICIO_IZQUIERDO",
-                "LATERAL");
+                TestCatalogIds.Profiles.Beams.DynamicIntermediate,
+                TestCatalogIds.ConnectionPoints.LeftStart,
+                TestCatalogIds.Views.Lateral);
             var rightMate = catalog.ConnectionLayout.FindConnectionLayout(
-                "LARGUERO_ESCALON_INFINITO",
-                "INICIO_DERECHO",
-                "LATERAL");
+                TestCatalogIds.Profiles.Beams.DynamicIntermediate,
+                TestCatalogIds.ConnectionPoints.RightStart,
+                TestCatalogIds.Views.Lateral);
             var finPoste = catalog.ConnectionLayout.FindConnectionLayout(
-                CatalogIds.StandardPost,
-                "FIN_POSTE",
-                "LATERAL");
+                TestCatalogIds.Profiles.Posts.Standard,
+                TestCatalogIds.ConnectionPoints.PostEnd,
+                TestCatalogIds.Views.Lateral);
 
             var plan = new DynamicSystemLateralBuilder().Build(system, catalog);
             var intermediateGroups = plan.Headers
-                .Where(group => group.Instances.Any(instance => instance.PieceId == "LARGUERO_ESCALON_INFINITO"))
+                .Where(group => group.Instances.Any(instance =>
+                    instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicIntermediate))
                 .ToList();
             var intermediate = plan.Flatten()
                 .OfRole(HeaderBlockRole.Beam)
-                .Where(instance => instance.PieceId == "LARGUERO_ESCALON_INFINITO")
+                .Where(instance => instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicIntermediate)
                 .ToList();
             var rails = plan.Flatten().OfRole(HeaderBlockRole.Rail)
                 .OrderBy(instance => instance.Insertion.Y)
@@ -324,7 +337,7 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             var firstFront = new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 3 };
             firstFront.IntermediateBeamDepths.Add(3.0);
@@ -339,11 +352,15 @@ namespace RackCad.Tests
             var system = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
             var supportCount = DynamicIntermediateBeamGeometry.Supports(
                 system,
-                CatalogLookup.Local(Catalog, CatalogIds.StandardPost, "FIN_POSTE", "LATERAL")).Count;
+                CatalogLookup.Local(
+                    Catalog,
+                    TestCatalogIds.Profiles.Posts.Standard,
+                    TestCatalogIds.ConnectionPoints.PostEnd,
+                    TestCatalogIds.Views.Lateral)).Count;
 
             var intermediate = new DynamicSystemLateralBuilder().Build(system, Catalog).Flatten()
                 .OfRole(HeaderBlockRole.Beam)
-                .Where(instance => instance.PieceId == DynamicRackDefaults.IntermediateBeamCatalogId)
+                .Where(instance => instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicIntermediate)
                 .ToList();
 
             Assert.Equal(new[] { 3.0, 4.0, 5.0 }, system.Fronts[0].IntermediateBeamDepths);
@@ -362,14 +379,14 @@ namespace RackCad.Tests
             var system = ResolvedSystem();
             system.SafetySelections.Add(new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.Boots.C6,
                 Quantity = 1,
                 Side = SafetySide.Both
             });
 
             var withBoots = new DynamicSystemLateralBuilder().Build(system, Catalog).Flatten();
             var boots = withBoots.OfRole(HeaderBlockRole.Safety)
-                .Where(instance => instance.PieceId == "PROTECTOR_BOTA_C_6")
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Boots.C6)
                 .OrderBy(instance => instance.Insertion.X)
                 .ToList();
             var endpointPlates = withBoots.OfRole(HeaderBlockRole.BasePlate)
@@ -387,7 +404,7 @@ namespace RackCad.Tests
 
             var lateral = new SelectiveSafetySelection
             {
-                ElementId = "PROTECTOR_LATERAL_BOTA_C_6",
+                ElementId = TestCatalogIds.Safety.SideProtectors.C6,
                 Quantity = 1,
                 Side = SafetySide.None
             };
@@ -395,9 +412,10 @@ namespace RackCad.Tests
             system.SafetySelections.Add(lateral);
 
             var withLateral = new DynamicSystemLateralBuilder().Build(system, Catalog).Flatten();
-            Assert.DoesNotContain(withLateral.OfRole(HeaderBlockRole.Safety), instance => instance.PieceId == "PROTECTOR_BOTA_C_6");
+            Assert.DoesNotContain(withLateral.OfRole(HeaderBlockRole.Safety),
+                instance => instance.PieceId == TestCatalogIds.Safety.Boots.C6);
             var guard = Assert.Single(withLateral.OfRole(HeaderBlockRole.Safety),
-                instance => instance.PieceId == "PROTECTOR_LATERAL_BOTA_C_6");
+                instance => instance.PieceId == TestCatalogIds.Safety.SideProtectors.C6);
             Assert.Equal(system.TotalLength, guard.DynamicParameters[SelectiveRackDefaults.LengthParam], 4);
             Assert.False(guard.MirroredX);
         }
@@ -408,7 +426,7 @@ namespace RackCad.Tests
             var system = ResolvedSystem();
             var defense = new SelectiveSafetySelection
             {
-                ElementId = "DEFENSA_MONTACARGAS",
+                ElementId = TestCatalogIds.Safety.Dynamic.ForkliftDefense,
                 Quantity = 1,
                 Side = SafetySide.None
             };
@@ -422,7 +440,7 @@ namespace RackCad.Tests
 
             var pieces = new DynamicSystemLateralBuilder().Build(system, Catalog).Flatten()
                 .OfRole(HeaderBlockRole.Safety)
-                .Where(instance => instance.PieceId == "DEFENSA_MONTACARGAS")
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.ForkliftDefense)
                 .OrderBy(instance => instance.Insertion.X)
                 .ToList();
 
@@ -447,13 +465,17 @@ namespace RackCad.Tests
         public void Build_EntranceGuideUsesSelectedLevelsEightInchesAboveEntranceBeam()
         {
             var system = ResolvedSystem();
-            var guide = new SelectiveSafetySelection { ElementId = "GUIA_ENTRADA", Quantity = 1 };
+            var guide = new SelectiveSafetySelection
+            {
+                ElementId = TestCatalogIds.Safety.Dynamic.EntranceGuide,
+                Quantity = 1
+            };
             guide.GuiaEntradaOffCells.Add(new SelectiveGridCell { Frente = 0, Level = 1 });
             system.SafetySelections.Add(guide);
 
             var pieces = new DynamicSystemLateralBuilder().Build(system, Catalog).Flatten()
                 .OfRole(HeaderBlockRole.Safety)
-                .Where(instance => instance.PieceId == "GUIA_ENTRADA")
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Dynamic.EntranceGuide)
                 .OrderBy(instance => instance.Insertion.Y)
                 .ToList();
 
@@ -473,7 +495,7 @@ namespace RackCad.Tests
             var system = ResolvedSystem();
             var selection = new SelectiveSafetySelection
             {
-                ElementId = "DESVIADOR_A_3",
+                ElementId = TestCatalogIds.Safety.Deviators.A3,
                 Quantity = 1,
                 Side = SafetySide.Both,
                 DesviadorLongitud = 18.0,
@@ -484,12 +506,12 @@ namespace RackCad.Tests
 
             var pieces = new DynamicSystemLateralBuilder().Build(system, catalog).Flatten()
                 .OfRole(HeaderBlockRole.Safety)
-                .Where(instance => instance.PieceId == "DESVIADOR_A_3")
+                .Where(instance => instance.PieceId == TestCatalogIds.Safety.Deviators.A3)
                 .ToList();
             var troquel = catalog.ConnectionLayout.FindConnectionLayout(
-                CatalogIds.StandardPost,
-                SelectiveRackDefaults.PostBeamPoint,
-                SelectiveRackDefaults.View);
+                TestCatalogIds.Profiles.Posts.Standard,
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Front);
             var firstY = troquel.LocalY + 18.0;
 
             Assert.Equal(4, pieces.Count); // 3 levels x 2 ends, with the middle grid cell disabled on both faces.
@@ -519,7 +541,7 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                HeaderPostCatalogId = CatalogIds.StandardPost
+                HeaderPostCatalogId = TestCatalogIds.Profiles.Posts.Standard
             };
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 3 });
             design.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 5 });
@@ -547,6 +569,6 @@ namespace RackCad.Tests
 
         private static int LoadBeamCount(DynamicSystemPlan plan)
             => plan.Flatten().OfRole(HeaderBlockRole.Beam)
-                .Count(instance => instance.PieceId == DynamicRackDefaults.InOutBeamCatalogId);
+                .Count(instance => instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicInOut);
     }
 }

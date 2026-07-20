@@ -14,7 +14,7 @@ namespace RackCad.Tests
         private static RackFrameConfiguration StandardConfig()
         {
             return new RackFrameConfigurationFactory(JsonRackCatalogProvider.FromBaseDirectory().Load())
-                .Build(RackFrameTemplateCatalog.Default, CatalogIds.StandardPost, 132.0, 42.0);
+                .Build(RackFrameTemplateCatalog.Default, TestCatalogIds.Profiles.Posts.Standard, 132.0, 42.0);
         }
 
         private static RackCatalog ShippedCatalog()
@@ -107,7 +107,7 @@ namespace RackCad.Tests
         {
             var config = StandardConfig(); // 132" frame
             config.LeftPost.HasReinforcement = true;
-            config.LeftPost.ReinforcementCatalogId = CatalogIds.StandardPost;
+            config.LeftPost.ReinforcementCatalogId = TestCatalogIds.Profiles.Posts.Standard;
             config.LeftPost.ReinforcementHeight = 200.0; // taller than the 132" frame -> impossible
 
             var warnings = FrameModelValidator.Validate(config, ShippedCatalog(), Tolerance);

@@ -16,8 +16,8 @@ namespace RackCad.Tests
     /// </summary>
     public class SelectivePerFondoTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
@@ -79,13 +79,15 @@ namespace RackCad.Tests
             var system = new SelectiveGeometryResolver().Resolve(PerFondoDesign(), Catalog);
             var bom = SelectiveBomBuilder.Build(system, Catalog);
 
-            var separadores = bom.Components.Where(c => c.ProfileId == DynamicRackDefaults.SeparatorCatalogId).ToList();
+            var separadores = bom.Components.Where(
+                c => c.ProfileId == TestCatalogIds.Profiles.Spacers.Header).ToList();
             Assert.NotEmpty(separadores);
             Assert.All(separadores, c => Assert.Equal(SelectiveBomBuilder.Separador, c.Category));
             Assert.All(separadores, c => Assert.True(c.Length > 0.0)); // the fondo gap
             // Its description is the real display name from secciones.csv (not the hardcoded id).
             Assert.All(separadores, c => Assert.Equal("Separador de cabecera formado calibre 12", c.Description));
-            Assert.Contains(Catalog.SpacerProfiles, s => s.Id == DynamicRackDefaults.SeparatorCatalogId); // loaded into the catalog
+            Assert.Contains(Catalog.SpacerProfiles,
+                s => s.Id == TestCatalogIds.Profiles.Spacers.Header); // loaded into the catalog
 
             // The BOM total equals the drawn lateral stack (frentes × gaps × levels), NOT the planta's collapsed count.
             var lateralStack = new SelectiveLateralBuilder().Cortes(system, Catalog)
@@ -93,8 +95,8 @@ namespace RackCad.Tests
             Assert.Equal(lateralStack, separadores.Sum(c => c.Quantity));
         }
 
-        private const string TopeId = "LARGUERO_ESCALON_TOPE_DE_3";
-        private const string PosteTopeId = "POSTE_3_1_5_8_TOPE";
+        private const string TopeId = TestCatalogIds.Safety.Stops.Beam;
+        private const string PosteTopeId = TestCatalogIds.Safety.Stops.Post;
 
         [Fact]
         public void PosteTopeVariant_ReusesTopePlacementBomAndRoundTrip()

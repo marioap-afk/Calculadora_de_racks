@@ -22,7 +22,7 @@ namespace RackCad.Tests
                 LoadLevels = 3,
                 FirstLevelHeight = 6.0,
                 BeamDepth = 6.0,
-                InOutBeamCatalogId = DynamicRackDefaults.InOutBeamCatalogId
+                InOutBeamCatalogId = TestCatalogIds.Profiles.Beams.DynamicInOut
             }).System;
         }
 
@@ -69,13 +69,13 @@ namespace RackCad.Tests
                 .First();
 
             var beamMate = catalog.ConnectionLayout.FindConnectionLayout(
-                DynamicRackDefaults.InOutBeamCatalogId,
-                DynamicRackDefaults.InOutBeamBedMatePoint,
-                DynamicRackDefaults.InOutBeamView);
+                TestCatalogIds.Profiles.Beams.DynamicInOut,
+                TestCatalogIds.ConnectionPoints.BedMate,
+                TestCatalogIds.Views.Lateral);
             var railMate = catalog.ConnectionLayout.FindConnectionLayout(
-                FlowBedDefaults.RailId,
-                FlowBedDefaults.RailInOutMatePoint,
-                FlowBedDefaults.View);
+                TestCatalogIds.FlowBed.Rail,
+                TestCatalogIds.ConnectionPoints.RailInOut,
+                TestCatalogIds.Views.Lateral);
             var level = system.LoadBeamLevels[0];
             var expectedExit = new Point2D(beamMate.LocalX, level.ExitElevation + beamMate.LocalY);
 

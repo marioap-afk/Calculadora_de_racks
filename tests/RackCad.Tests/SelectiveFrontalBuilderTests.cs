@@ -11,8 +11,8 @@ namespace RackCad.Tests
 {
     public class SelectiveFrontalBuilderTests
     {
-        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
-        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string PostId = TestCatalogIds.Profiles.Posts.Standard;
+        private const string BeamId = TestCatalogIds.Profiles.Beams.SelectiveThreeRivet;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
@@ -59,14 +59,20 @@ namespace RackCad.Tests
         /// <summary>The post's larguero-troquel X resolved from the catalog (base + slope*peralte); never hardcoded.</summary>
         private static double TroquelX(double peralte)
         {
-            var entry = Catalog.ConnectionLayout.FindConnectionLayout(PostId, "TROQUEL_LARGUERO", "FRONTAL");
+            var entry = Catalog.ConnectionLayout.FindConnectionLayout(
+                PostId,
+                TestCatalogIds.ConnectionPoints.BeamPunch,
+                TestCatalogIds.Views.Front);
             return entry.LocalX + entry.LocalXPorParam * peralte;
         }
 
         /// <summary>The larguero's INICIO_PERFIL X (ménsula overhang from the hook to the profile start); from the catalog.</summary>
         private static double InicioPerfilX(double beamPeralte = 4.0)
         {
-            var entry = Catalog.ConnectionLayout.FindConnectionLayout(BeamId, "INICIO_PERFIL", "FRONTAL");
+            var entry = Catalog.ConnectionLayout.FindConnectionLayout(
+                BeamId,
+                TestCatalogIds.ConnectionPoints.ProfileStart,
+                TestCatalogIds.Views.Front);
             return entry == null ? 0.0 : entry.LocalX + entry.LocalXPorParam * beamPeralte;
         }
 
@@ -333,7 +339,11 @@ namespace RackCad.Tests
             var system = PalletSystem(perLevelCount: 1);
             system.DrawPallets = true;
 
-            var surface = SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL");
+            var surface = SelectivePostGeometry.BeamProfileStartY(
+                Catalog,
+                BeamId,
+                4.0,
+                TestCatalogIds.Views.Front);
             // Bottom-centre origin: Insertion.Y IS the pallet bottom, which rests on the level's load surface.
             var ys = new SelectiveFrontalBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Pallet)
@@ -356,7 +366,11 @@ namespace RackCad.Tests
             var anchorX = layout.PostXs[0] + layout.TroquelXs[0] + InicioPerfilX();
 
             // Level-0 pallets: bottom Y = level.Y + surface (bottom-centre origin, Insertion.Y is the bottom).
-            var bottomY0 = LevelYs[0] + SelectivePostGeometry.BeamProfileStartY(Catalog, BeamId, 4.0, "FRONTAL");
+            var bottomY0 = LevelYs[0] + SelectivePostGeometry.BeamProfileStartY(
+                Catalog,
+                BeamId,
+                4.0,
+                TestCatalogIds.Views.Front);
             var xs = new SelectiveFrontalBuilder().Build(system, Catalog)
                 .Where(i => i.Role == HeaderBlockRole.Pallet)
                 .Where(i => Math.Abs(i.Insertion.Y - bottomY0) < 0.001)

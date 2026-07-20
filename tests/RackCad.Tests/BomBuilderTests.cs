@@ -16,7 +16,7 @@ namespace RackCad.Tests
         private static RackFrameConfiguration StandardWithMembers()
         {
             var configuration = new RackFrameConfigurationFactory(Catalog)
-                .Build(RackFrameTemplateCatalog.Default, CatalogIds.StandardPost, 132.0, 42.0);
+                .Build(RackFrameTemplateCatalog.Default, TestCatalogIds.Profiles.Posts.Standard, 132.0, 42.0);
             new BracingPanelMemberBuilder().RefreshPhysicalModel(configuration);
             return configuration;
         }
@@ -44,7 +44,8 @@ namespace RackCad.Tests
         {
             var bom = BomBuilder.Build(StandardWithMembers(), Catalog);
 
-            var post = bom.Lines.Single(l => l.Category == BomBuilder.Post && l.ProfileId == CatalogIds.StandardPost);
+            var post = bom.Lines.Single(l => l.Category == BomBuilder.Post
+                && l.ProfileId == TestCatalogIds.Profiles.Posts.Standard);
             Assert.Equal(2, post.Quantity);
             Assert.Equal(132.0, post.Length);
             Assert.Equal(PostDescription, post.Description);
@@ -75,12 +76,12 @@ namespace RackCad.Tests
         {
             var configuration = StandardWithMembers();
             configuration.LeftPost.HasReinforcement = true;
-            configuration.LeftPost.ReinforcementCatalogId = CatalogIds.StandardPost; // reinforcements are posts
+            configuration.LeftPost.ReinforcementCatalogId = TestCatalogIds.Profiles.Posts.Standard; // reinforcements are posts
 
             var bom = BomBuilder.Build(configuration, Catalog);
 
             var reinforcement = bom.Lines.Single(l => l.Category == BomBuilder.Reinforcement);
-            Assert.Equal(CatalogIds.StandardPost, reinforcement.ProfileId);
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, reinforcement.ProfileId);
             Assert.Equal(PostDescription, reinforcement.Description);
         }
 
@@ -90,7 +91,7 @@ namespace RackCad.Tests
             var csv = BomCsvExporter.ToCsv(BomBuilder.Build(StandardWithMembers(), Catalog));
 
             Assert.StartsWith("Categoria,Perfil,Descripcion,Longitud_in,Cantidad", csv);
-            Assert.Contains(CatalogIds.StandardPost, csv);
+            Assert.Contains(TestCatalogIds.Profiles.Posts.Standard, csv);
             Assert.Contains(PostDescription, csv);
         }
     }

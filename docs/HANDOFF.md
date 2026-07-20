@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-17**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-19**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -22,6 +22,11 @@ archivo histórico y este HANDOFF reducido. La iniciativa reorganizó documentac
 comportamiento de producto. No se debe ejecutar I-07 antes de que el commit que contiene este estado
 esté contenido en `main`.
 
+I-26 (`refactor/test-catalog-ids`) está completada y preparada para integración, con estado
+`integrada (2026-07-19)` efectivo únicamente cuando esta rama se incorpore a `main`. Centraliza las
+expectativas canónicas de tests, añade un guardián de IDs y relaciones esenciales y publica cobertura
+Cobertura como artifact; no cambia producto ni catálogos distribuidos.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -32,6 +37,10 @@ su alcance es documental.
 
 La guía vigente para futuras validaciones está en
 [guias/validacion-manual-autocad.md](guias/validacion-manual-autocad.md).
+
+I-26 no requiere validación en AutoCAD. El dueño confirmó el CI de rama, incluidos tests y build UI,
+y descargó el artifact de cobertura con el XML esperado antes de autorizar esta preparación de
+integración.
 
 ## 3. Problemas y riesgos activos
 
@@ -49,15 +58,33 @@ La guía vigente para futuras validaciones está en
 
 ## 4. Siguiente acción
 
-Después del merge, el dueño debe comprobar que CI de `main` esté verde y limpiar la rama y el
-worktree de I-06 conforme a WORKFLOW. Solo cuando este commit esté contenido en `main` y termine esa
-limpieza se puede elegir otra iniciativa manual compatible; I-07 no debe ejecutarse antes.
+El siguiente paso es integrar I-26 manualmente, comprobar que CI de `main` esté verde y limpiar su
+rama y worktree conforme a WORKFLOW. La rama experimental I-13 puede rebasarse sobre `main` después
+de ese merge antes de continuar cualquier trabajo sobre `ci.yml`; sus cambios no se incorporan ni
+se mezclan con I-26.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline de I-26 preparada para integración — 2026-07-19:**
+
+- punta de implementación validada de `refactor/test-catalog-ids`:
+  `2cf3f12684dbe495403f0a16eeaa882e4873e3c6`;
+- suite `RackCad.Tests`: **636/636 verdes**, sin fallos ni omitidas;
+- guardián de catálogos canónicos: verde contra IDs, bloques/vistas, conexiones, relaciones
+  esenciales, defaults, plantillas y constantes equivalentes de producto;
+- build UI Debug: **0 errores y 0 advertencias**;
+- cobertura local observada: **91.77 % de líneas** y **75.26 % de ramas** en `RackCad.Domain` y
+  `RackCad.Application`; es evidencia, no un umbral contractual;
+- CI de rama #40: verde sobre la punta validada, según confirmación del dueño; el artifact
+  `rackcad-coverage-cobertura` fue descargado y contiene `coverage.cobertura.xml`;
+- diff bajo `src/`, `assets/catalogs/` y `deploy/`: vacío; no hubo cambios de producto ni datos;
+- AutoCAD: no ejecutado ni requerido para esta iniciativa de infraestructura de pruebas;
+- el commit documental final de integración requiere su propio CI antes del merge y no se declara
+  verde anticipadamente.
 
 **Baseline documental de I-06 que lleva este merge — 2026-07-17:**
 

@@ -59,25 +59,25 @@ namespace RackCad.Tests
         {
             var catalog = Catalog;
             var beam = catalog.BeamProfiles.Single(entry => string.Equals(
-                entry.Id, DynamicRackDefaults.InOutBeamCatalogId, StringComparison.OrdinalIgnoreCase));
+                entry.Id, TestCatalogIds.Profiles.Beams.DynamicInOut, StringComparison.OrdinalIgnoreCase));
 
             Assert.Equal(new[] { 6.0 }, PeralteList.Parse(beam.Peraltes));
             Assert.Contains(catalog.Mensulas, entry => string.Equals(entry.Id, beam.Mensula, StringComparison.OrdinalIgnoreCase));
             Assert.Equal(
                 "LARGUERO_IN_OUT_C6_LATERAL",
-                catalog.Blocks.FindBlock(beam.Id, DynamicRackDefaults.InOutBeamView)?.BlockName);
+                catalog.Blocks.FindBlock(beam.Id, TestCatalogIds.Views.Lateral)?.BlockName);
 
-            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(DynamicRackDefaults.InOutBeamBedMatePoint));
-            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(FlowBedDefaults.RailInOutMatePoint));
+            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(TestCatalogIds.ConnectionPoints.BedMate));
+            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(TestCatalogIds.ConnectionPoints.RailInOut));
 
             var beamMate = catalog.ConnectionLayout.FindConnectionLayout(
                 beam.Id,
-                DynamicRackDefaults.InOutBeamBedMatePoint,
-                DynamicRackDefaults.InOutBeamView);
+                TestCatalogIds.ConnectionPoints.BedMate,
+                TestCatalogIds.Views.Lateral);
             var railMate = catalog.ConnectionLayout.FindConnectionLayout(
-                FlowBedDefaults.RailId,
-                FlowBedDefaults.RailInOutMatePoint,
-                FlowBedDefaults.View);
+                TestCatalogIds.FlowBed.Rail,
+                TestCatalogIds.ConnectionPoints.RailInOut,
+                TestCatalogIds.Views.Lateral);
             Assert.NotNull(beamMate);
             Assert.Equal(3.7544, beamMate.LocalX, 4);
             Assert.Equal(1.8783, beamMate.LocalY, 4);
@@ -91,19 +91,25 @@ namespace RackCad.Tests
         {
             var catalog = Catalog;
             var beam = catalog.BeamProfiles.Single(entry => string.Equals(
-                entry.Id, "LARGUERO_ESCALON_INFINITO", StringComparison.OrdinalIgnoreCase));
+                entry.Id, TestCatalogIds.Profiles.Beams.DynamicIntermediate, StringComparison.OrdinalIgnoreCase));
 
             Assert.Equal(new[] { 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0 }, PeralteList.Parse(beam.Peraltes));
             Assert.Contains(catalog.Mensulas, entry => string.Equals(
                 entry.Id, beam.Mensula, StringComparison.OrdinalIgnoreCase));
             Assert.Equal(
                 "LARGUERO_ESCALON_INFINITO_LATERAL",
-                catalog.Blocks.FindBlock(beam.Id, "LATERAL")?.BlockName);
-            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint("INICIO_IZQUIERDO"));
-            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint("INICIO_DERECHO"));
+                catalog.Blocks.FindBlock(beam.Id, TestCatalogIds.Views.Lateral)?.BlockName);
+            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(TestCatalogIds.ConnectionPoints.LeftStart));
+            Assert.NotNull(catalog.ConnectionPoints.FindConnectionPoint(TestCatalogIds.ConnectionPoints.RightStart));
 
-            var left = catalog.ConnectionLayout.FindConnectionLayout(beam.Id, "INICIO_IZQUIERDO", "LATERAL");
-            var right = catalog.ConnectionLayout.FindConnectionLayout(beam.Id, "INICIO_DERECHO", "LATERAL");
+            var left = catalog.ConnectionLayout.FindConnectionLayout(
+                beam.Id,
+                TestCatalogIds.ConnectionPoints.LeftStart,
+                TestCatalogIds.Views.Lateral);
+            var right = catalog.ConnectionLayout.FindConnectionLayout(
+                beam.Id,
+                TestCatalogIds.ConnectionPoints.RightStart,
+                TestCatalogIds.Views.Lateral);
             Assert.NotNull(left);
             Assert.Equal(0.2214, left.LocalX, 4);
             Assert.Equal(6.1972, left.LocalY, 4);

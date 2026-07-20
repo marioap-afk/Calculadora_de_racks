@@ -14,13 +14,17 @@ namespace RackCad.Tests
             {
                 PostProfiles = new List<ProfileCatalogEntry>
                 {
-                    new ProfileCatalogEntry { Id = CatalogIds.StandardPost, Description = "Poste personalizado" }
+                    new ProfileCatalogEntry
+                    {
+                        Id = TestCatalogIds.Profiles.Posts.Standard,
+                        Description = "Poste personalizado"
+                    }
                 },
                 BasePlates = new List<BasePlateCatalogEntry>
                 {
                     new BasePlateCatalogEntry
                     {
-                        Id = CatalogIds.BasePlate,
+                        Id = TestCatalogIds.BasePlates.Standard,
                         Description = "Placa personalizada"
                     }
                 },
@@ -33,9 +37,9 @@ namespace RackCad.Tests
                 {
                     new ConnectionLayoutEntry
                     {
-                        PieceId = CatalogIds.BasePlate,
+                        PieceId = TestCatalogIds.BasePlates.Standard,
                         ConnectionPointId = "CP_CUSTOM",
-                        View = "FRONTAL"
+                        View = TestCatalogIds.Views.Front
                     }
                 }
             };
@@ -54,9 +58,9 @@ namespace RackCad.Tests
             var configuration = new HardcodedStandardRackFrameService(new RackCatalog()).CreateDefault();
 
             // With no catalog the post description falls back to its id; the plate keeps a literal fallback.
-            Assert.Equal(CatalogIds.StandardPost, configuration.LeftPost.Description);
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, configuration.LeftPost.Description);
             Assert.Equal("Placa base atornillable", configuration.LeftBasePlate.Description);
-            Assert.Equal(CatalogIds.BasePlateConnectionPoint, configuration.LeftBasePlate.ConnectionPointId);
+            Assert.Equal(TestCatalogIds.ConnectionPoints.PostMount, configuration.LeftBasePlate.ConnectionPointId);
         }
 
         [Fact]
@@ -64,7 +68,7 @@ namespace RackCad.Tests
         {
             var configuration = new HardcodedStandardRackFrameService((RackCatalog)null).CreateDefault();
 
-            Assert.Equal(CatalogIds.StandardPost, configuration.LeftPost.Description);
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, configuration.LeftPost.Description);
             // Structure is unchanged regardless of catalog: 3 standard travesaños + 2 closings, 4 panels.
             Assert.Equal(5, configuration.Horizontals.Count);
             Assert.Equal(4, configuration.BracingPanels.Count);

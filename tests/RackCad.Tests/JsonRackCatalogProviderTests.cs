@@ -17,8 +17,8 @@ namespace RackCad.Tests
             Assert.NotEmpty(catalog.BasePlates);
             Assert.NotEmpty(catalog.ConnectionPoints);
 
-            Assert.NotNull(catalog.PostProfiles.FindProfile(CatalogIds.StandardPost));
-            Assert.NotNull(catalog.BasePlates.FindBasePlate(CatalogIds.BasePlate));
+            Assert.NotNull(catalog.PostProfiles.FindProfile(TestCatalogIds.Profiles.Posts.Standard));
+            Assert.NotNull(catalog.BasePlates.FindBasePlate(TestCatalogIds.BasePlates.Standard));
         }
 
         [Fact]
@@ -27,8 +27,8 @@ namespace RackCad.Tests
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
 
             Assert.NotNull(catalog.Defaults);
-            Assert.Equal(CatalogIds.StandardPost, catalog.Defaults.Post);
-            Assert.Equal(CatalogIds.BasePlate, catalog.Defaults.BasePlate);
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, catalog.Defaults.Post);
+            Assert.Equal(TestCatalogIds.BasePlates.Standard, catalog.Defaults.BasePlate);
             Assert.Equal(132.0, catalog.Defaults.DefaultHeaderHeight);
             Assert.Equal(6.0, catalog.Defaults.HeaderEndAllowance);
         }
@@ -41,7 +41,7 @@ namespace RackCad.Tests
             var defaults = provider.Load().Defaults;
 
             Assert.NotNull(defaults);
-            Assert.Equal(CatalogIds.StandardPost, defaults.Post); // CatalogIds fallback
+            Assert.Equal(TestCatalogIds.Profiles.Posts.Standard, defaults.Post); // built-in fallback
         }
 
         [Fact]
@@ -49,7 +49,8 @@ namespace RackCad.Tests
         {
             var catalog = JsonRackCatalogProvider.FromBaseDirectory().Load();
 
-            Assert.NotNull(catalog.PostProfiles.FindProfile(CatalogIds.StandardPost.ToLowerInvariant()));
+            Assert.NotNull(catalog.PostProfiles.FindProfile(
+                TestCatalogIds.Profiles.Posts.Standard.ToLowerInvariant()));
         }
 
         [Fact]

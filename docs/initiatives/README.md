@@ -41,3 +41,5 @@ Planes disponibles:
 - `I-06-reestructura-context-packs.md`: contrato del piloto documental I-06. Bootstrap, reclamo,
   auditoria y decision de taxonomia ya terminaron; el estado actual vive en
   `../automation/state/I-06.yml`.
+- [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
+  canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
