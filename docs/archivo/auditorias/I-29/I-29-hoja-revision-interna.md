@@ -1,3 +1,17 @@
+> **Archivo de auditoria; papel de trabajo historico, no fuente operativa vigente.**
+>
+> - Naturaleza: papel de trabajo de la revision interna P3.
+> - Fecha de corte: 2026-07-20.
+> - Estado: archivado.
+> - Decision final: B. Aprobado con restricciones.
+> - Nota posterior: I-13 fue integrada y cerrada despues de estos documentos; ADR-0003 fue aceptado
+>   posteriormente y la excepcion limitada a cero NuGet quedo vigente bajo su alcance.
+> - Fuentes vigentes: [decision final](../../../automation/decisions/I-29.md) y
+>   [contrato canonico](../../../initiatives/I-29-licencia-procedencia-autocad-ci.md).
+>
+> Las propuestas y la recomendacion D se conservan como historial de P3; no describen el estado
+> actual de I-13, ADR-0003 ni la promocion.
+
 # I-29 — Hoja de revision interna
 
 ## Identificacion de la revision

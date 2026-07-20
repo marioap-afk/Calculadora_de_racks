@@ -16,7 +16,7 @@ context_packs:
 automation_state_path:
 decision_paths:
   - docs/adr/0003-referencias-autocad-para-ci.md
-  - docs/initiatives/I-29-plantilla-decision.md
+  - docs/automation/decisions/I-29.md
 requires_ci: true
 requires_plugin_build: false
 requires_autocad: false
@@ -30,142 +30,86 @@ automation:
 
 # I-29 — Licencia y procedencia de referencias AutoCAD para CI
 
-## 1. Identificacion y estado actual
+Estado: **cerrada documentalmente**. El 2026-07-20 Mario Perez, Coordinador de Desarrollo de
+Proyectos de Industrias Montilla y Owner de RackCad, selecciono **B. Aprobado con restricciones**.
+Es una aceptacion interna de riesgo para uso interno; no es una conclusion juridica ni una
+afirmacion de autorizacion expresa de Autodesk. Tras la revalidacion, el Owner autorizo por separado
+la integracion de I-13, completada en `main` el 2026-07-20.
 
-| Campo | Valor |
-|---|---|
-| Iniciativa | I-29 |
-| Rama canonica | `docs/licencia-procedencia-autocad-ci` |
-| Worktree canonico | `D:\Documentos\Codex\docs-licencia-procedencia-autocad-ci` |
-| Base | `1ffebcb07553661acba2eac4a0722c8781666bdf` |
-| Commit de reclamo | `715d473721d216b55b21fc4aa80eea13da218371` |
-| Claim-Id | `526b69aa-a56e-4da4-acd7-b96d0d8d1409` |
-| Iniciativa relacionada | I-13 — Referencias de AutoCAD para CI |
-| Gate | L2 — decision interna B registrada; gobernanza tecnica posterior bloqueada |
-| ADR relacionado | ADR-0003, estado `propuesto` |
+La [decision final del Owner](../automation/decisions/I-29.md) es la fuente canonica de la decision.
+La evidencia P1-P4 se conserva en el [archivo de auditoria](../archivo/auditorias/I-29/README.md).
 
-I-29 completo P1-P4. El 2026-07-20 Mario Pérez, Coordinador de Desarrollo de Proyectos de Industrias
-Montilla y Owner de RackCad, selecciono **B. Aprobado con restricciones** como decision interna de
-gestion del riesgo. La decision sustituye la recomendacion preliminar D de P3, sin borrarla del
-historial. No es una conclusion juridica ni afirma autorizacion expresa de Autodesk. I-13 y el merge
-de `architecture/referencias-autocad-ci` continúan bloqueados. Este documento no acepta el ADR ni
-activa una excepcion a cero NuGet.
+## 1. Objetivo
+
+Obtener una decision interna fechada sobre el uso de paquetes Autodesk en runners GitHub-hosted y
+su efecto sobre I-13 y la aplicacion de ADR-0003.
 
 ## 2. Problema
 
-I-13 demostro tecnicamente que `RackCad.Plugin` puede compilarse en un runner Windows alojado por
-GitHub sin AutoCAD instalado, usando tres paquetes Autodesk como referencias condicionales de
-compilacion. La prueba tecnica no decide si la licencia y los acuerdos aplicables permiten la
-descarga, las copias efimeras, el uso de infraestructura de terceros o cada modalidad de
-almacenamiento evaluada.
+I-13 demostro tecnicamente una compilacion del Plugin sin AutoCAD instalado, pero el gate L2 conserva
+ambiguedad material sobre licencia, procedencia, copias efimeras y terceros que alojan el build. La
+promocion en CI #54 no convierte esa evidencia tecnica en autorizacion legal.
 
-La propuesta tambien contradice la regla vigente de cero paquetes NuGet en codigo de producto.
-Por ello requiere una decision interna atribuida, un ADR aceptado cuando corresponda y controles
-que separen compilacion, runtime y distribucion.
+I-29 acepta esa incertidumbre residual solo bajo las restricciones registradas en ADR-0003. La
+vigencia inicia el 2026-07-20 y exige revision ante un cambio material o, como maximo, el 2027-07-20.
 
-## 3. Objetivo
+## 3. Alcance
 
-Registrar una decision interna fechada y verificable del Owner sobre el uso restringido de los
-paquetes Autodesk evaluados, y registrar su efecto sobre I-13, ADR-0003 y la politica cero NuGet.
+- licencia ObjectARX y composicion mixta de los assemblies;
+- restore efimero en runners GitHub-hosted;
+- nuget.org, firmas, propietario verificado y metadata de lock;
+- caching, artifacts y feeds privados;
+- distribucion interna/externa, avisos y atribucion; y
+- necesidad de licencia AutoCAD por entorno de build.
 
-El [paquete de decision](I-29-paquete-decision-interna.md) presenta el caso para revision y la
-[plantilla](I-29-plantilla-decision.md) registra la respuesta futura.
+### Caracterizacion tecnica corregida
 
-## 4. No objetivos
+Los trece assemblies tienen composicion mixta. `AcCui`, `AcDx`, `AcMr`, `AcSeamless`, `AcWindows`,
+`AdUIMgd` y `AdUiPalettes` contienen `ReferenceAssemblyAttribute`. `AcMgd`, `AcTcMgd`, `AdWindows`,
+`AcCoreMgd`, `AcDbMgd` y `acdbmgdbrep` no lo contienen. Las tres referencias principales del Plugin
+—`AcMgd`, `AcCoreMgd` y `AcDbMgd`— carecen del atributo y contienen cuerpos de metodos.
 
-- interpretar definitivamente una licencia o emitir asesoramiento legal;
-- elegir una salida en nombre del reviewer o del aprobador;
-- modificar producto, CI, proyectos, paquetes, versiones o dependencias;
-- aceptar o modificar ADR-0003;
-- integrar o cerrar I-13;
-- ejecutar AutoCAD o sustituir sus licencias; y
-- autorizar redistribucion, caching persistente o uso de versiones no evaluadas.
+La composicion heterogenea no invalida E1/E2 ni las guardas de compilacion y no constituye una
+conclusion legal.
 
-## 5. Alcance
+## 4. Fuera de alcance
 
-- licencia ObjectARX y composicion tecnica mixta de los assemblies observados;
-- restore desde nuget.org en un runner GitHub-hosted efimero;
-- cache local `NUGET_PACKAGES` durante un job;
-- metadata, lock, hashes y firmas;
-- caching persistente, artifacts y feeds privados;
-- distribucion interna o externa de RackCad sin material Autodesk;
-- avisos y atribucion; y
-- posible necesidad de licencia AutoCAD por entorno de build.
+- implementacion tecnica o cambios de codigo;
+- compra de licencias;
+- AutoCAD 2026/2027;
+- certificacion de runtime; y
+- interpretacion legal por Codex.
 
-Las versiones evaluadas son `AutoCAD.NET` 25.0.1, `AutoCAD.NET.Core` 25.0.0 y
-`AutoCAD.NET.Model` 25.0.0. Otras versiones requieren una nueva evaluacion.
+## 5. Contexto requerido
 
-## 6. Salidas posibles
+Leer el ADR-0003 aceptado en `main`; la evidencia I-13 archivada en
+`archive/i-13-experiment-final-4e084d2`;
+los Context Packs `autocad-plugin` y `delivery-validation`; la guia de despliegue; y la evidencia de
+E2/CI #50 y de la promocion/CI #54.
 
-La decision seleccionada por el Owner es:
+## 6. Dependencias y responsables
 
-- A. Aprobado — no seleccionado.
-- **B. Aprobado con restricciones — seleccionado.**
-- C. Rechazado — no seleccionado.
-- D. Requiere asesoria legal externa — recomendacion preliminar historica de P3, no seleccionada.
+- **Owner, reviewer y aprobador:** Mario Perez, Coordinador de Desarrollo de Proyectos, Industrias
+  Montilla. La concentracion de roles fue aceptada para esta decision interna.
+- **Entradas requeridas:** I-13, ADR-0003 aceptado, evidencia E2 y promocion CI #54. I-13 aporta
+  evidencia, pero no es una dependencia que deba integrarse: su merge espera precisamente a I-29.
 
-## 7. Roles requeridos
+La rama canonica `docs/licencia-procedencia-autocad-ci` queda congelada como evidencia P1-P4.
+Su commit final es `2fa1d5b9716a601eea3d6f0fd8d9e90658c29fbf`.
 
-| Rol | Responsabilidad | Identificacion actual |
-|---|---|---|
-| Owner | Patrocinar la solicitud y confirmar su alcance organizacional | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla |
-| Technical preparer | Reunir evidencia tecnica y declarar sus limites | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla |
-| Internal licensing reviewer | Realizar la revision interna de riesgo, licencia y gobernanza | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla |
-| Final approver | Seleccionar A/B/C/D y gobernar sus efectos | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla; decision B registrada |
+## 7. Archivos esperados
 
-Mario Pérez ocupa los cuatro roles. El Owner acepta esta concentracion para I-29, pero no existe
-independencia entre preparer, reviewer y approver. La revision interna no es asesoria legal
-profesional; la salida D permanece disponible cuando se requiera criterio juridico externo.
-La autoridad registrada se limita a la gestion interna del proyecto RackCad. La fecha es
-2026-07-20 y el mecanismo verificable es la instruccion escrita del Owner incorporada al registro y
-commit P4. No se declara autoridad juridica profesional ni autoridad corporativa adicional. Los
-conflictos de interes no fueron declarados en la instruccion.
+La decision interna quedo versionada en la rama canonica y ADR-0003 registra su aplicacion. No se
+esperan cambios de producto, CI ni paquetes.
 
-## 8. Evidencia tecnica disponible
+## 8. Fases
 
-- E1: build local aislado, control negativo, versiones exactas y bundle sin DLL Autodesk.
-- E2: build declarado exitoso en GitHub Actions sobre runner Windows sin AutoCAD, con cache aislado,
-  restore bloqueado, referencias `Private=false` y `CopyLocal=false`, y cero material Autodesk fuera
-  del cache del job.
-- Promocion limpia: commit tecnico
-  `fae0b150fa3bb4f3c9ea6d5473c027c021e9a3c2` y commit documental
-  `31e146ded403fefc45f1b7e7302c98957773fec8`.
-- CI #54 y #55: declarados verdes en el encargo y la evidencia relacionada, pero no verificados de
-  forma independiente durante P1.
+1. Identificar reviewer competente y las fuentes vigentes — completada.
+2. Responder las quince preguntas de cierre con fuente y responsable — completada.
+3. Registrar usos permitidos/prohibidos, obligaciones y fecha de revision — completada.
+4. Emitir una salida suficiente para aprobar, restringir, rechazar o escalar — B seleccionada.
 
-La fuente detallada de E1/E2 es `docs/initiatives/I-13-referencias-autocad-ci.md` en
-`experiment/refs-autocad-ci`. La promocion y sus archivos se leen desde
-`architecture/referencias-autocad-ci`; ninguna de esas ramas fue modificada por P1.
-
-## 9. Revalidacion independiente
-
-P3 revalido de forma independiente los paquetes exactos el 2026-07-20. Coincidieron los SHA-256 de
-E1, los SHA-512 del catalogo NuGet, el contenido y hash de `LICENSE.txt`, las firmas CMS de autor y
-repositorio, el owner mostrado y `verified=false`. La inspeccion conto trece DLL y corrigio su
-caracterizacion:
-
-> Los paquetes auditados contienen una composicion mixta: siete assemblies estan marcados mediante
-> `ReferenceAssemblyAttribute` y seis no contienen esa marca. Las tres referencias principales
-> utilizadas por `RackCad.Plugin` —`AcMgd`, `AcCoreMgd` y `AcDbMgd`— no contienen
-> `ReferenceAssemblyAttribute` y contienen cuerpos de metodos.
-
-La presencia o ausencia del atributo es una propiedad tecnica, no una licencia. La revalidacion no
-conservo paquetes, DLL ni temporales. La evidencia, sus limites y la evaluacion de las quince
-preguntas se registran en la [matriz maestra](I-29-matriz-evidencia-evaluacion.md).
-
-## 10. Capas que no deben confundirse
-
-| Capa | Pregunta que responde | Limite |
-|---|---|---|
-| Funcionamiento tecnico | ¿El mecanismo compila y mantiene limpio el output? | No concede permisos de uso |
-| Integridad | ¿Los bytes coinciden con hashes o firmas auditados? | No define el alcance contractual |
-| Procedencia | ¿Que canal, owner y firmas se observaron? | No equivale por si sola a autorizacion legal |
-| Politica interna | ¿RackCad admite hoy esa dependencia? | La excepcion aun no esta vigente |
-| Autorizacion legal/contractual | ¿La organizacion puede usar el material de esta manera? | Solo la decide un responsable competente |
-
-## 11. Quince preguntas de cierre
-
-Estas preguntas se copian sin reformular del contrato preparado en la rama de promocion:
+### Preguntas de cierre
 
 1. ¿La licencia permite descargar y usar estos assemblies en runners GitHub-hosted?
 2. ¿La copia efimera en `NUGET_PACKAGES` es una copia de desarrollo permitida?
@@ -183,79 +127,50 @@ Estas preguntas se copian sin reformular del contrato preparado en la rama de pr
 14. ¿Difiere uso interno de distribucion externa?
 15. ¿Se requiere una licencia AutoCAD por cada entorno de build?
 
-Las propuestas de P3 se conservan como historial. P4 registra la decision B del Owner y las
-respuestas operativas en la [plantilla de decision](I-29-plantilla-decision.md). Las incertidumbres
-contractuales se aceptan como riesgo residual interno; no se presentan como resueltas juridicamente.
+## 9. Pruebas y builds
 
-## 12. Estado de ADR-0003
+No requiere build del Plugin ni AutoCAD. Validar Markdown, enlaces, `git diff --check` y el CI
+documental de la rama. La evidencia tecnica existente no se repite.
 
-ADR-0003 existe solo en `architecture/referencias-autocad-ci` y su estado textual es `propuesto`.
-No es politica vigente de `main`, no autoriza el mecanismo y no fue modificado por P1-P4. Una decision
-suficiente debe indicar si puede aceptarse, debe restringirse, debe rechazarse o requiere trabajo
-adicional; el cambio de estado corresponde a una fase posterior autorizada.
+## 10. Validacion manual
 
-## 13. Estado de la politica cero NuGet
+El Owner registro responsable, fuentes, respuestas, restricciones, obligaciones, vigencia y fecha de
+revision. La validacion en AutoCAD no aplica a esta iniciativa documental.
 
-`AGENTS.md`, `docs/ARCHITECTURE.md` y `docs/HANDOFF.md` mantienen la regla: cero paquetes NuGet en
-codigo de producto y toda excepcion requiere decision explicita. El `PackageReference` condicional
-en `RackCad.Plugin` sigue siendo una excepcion propuesta, aunque no sea dependencia runtime ni se
-copie al bundle. P1-P4 no cambian esa politica.
+## 11. Criterios de aceptacion
 
-## 14. Criterio de suficiencia
+La decision interna fechada identifica responsable y fuentes, define usos permitidos y prohibidos,
+caching, artifacts, obligaciones y fecha de revision, y decide el efecto sobre I-13/ADR-0003. La
+salida registrada es aprobar la excepcion con restricciones. Las salidas posibles eran:
 
-Una decision suficiente debe incluir:
+- aprobar la excepcion;
+- aprobarla con restricciones;
+- rechazarla y ejecutar rollback; o
+- requerir asesoria externa.
 
-- fecha, persona identificada, cargo, organizacion y autoridad;
-- mecanismo verificable de aprobacion y fuentes revisadas;
-- respuestas expresas sobre hosted runners, nuget.org, copia efimera, caching, lock y artifacts;
-- alcance de distribucion/redistribucion, uso interno/externo, avisos y atribuciones;
-- paquetes, versiones y materiales cubiertos;
-- vigencia, revision anual, responsable de cumplimiento y conflictos de interes;
-- efecto explicito sobre ADR-0003, politica cero NuGet, I-13 y su merge; y
-- condiciones de rollback, revocacion o cambio de version.
+## 12. Condiciones para detenerse
 
-No bastan una conversacion informal, una aprobacion verbal, una respuesta anonima o sin autoridad,
-una respuesta sin fecha, una respuesta que omita caching/artifacts/distribucion, ni una conclusion
-tecnica presentada como autorizacion legal.
+La decision se revoca o vuelve a revision ante un cambio de proyecto, versiones, source, runner,
+caching, artifacts, audiencia, finalidad, guardas o documentacion incompatible de Autodesk. I-29
+no autoriza por si sola el merge de `architecture/referencias-autocad-ci`.
 
-P4 satisface este criterio como registro interno de gestion del riesgo mediante la instruccion
-escrita del Owner. No satisface ni pretende sustituir una conclusion juridica externa.
+## 13. Estado versionado y entrega del Pull Request
 
-## 15. Fases
+I-29 esta completada en su rama canonica, con automatizacion deshabilitada y sin merge automatico.
+La rama se conserva en solo lectura. Su decision se integro mediante I-13 por autorizacion manual
+conforme a WORKFLOW.
 
-| Fase | Estado | Resultado |
-|---|---|---|
-| P1 — Crear paquete documental | Completada | Contrato, paquete, plantilla e indice publicados |
-| P2 — Entregar al reviewer interno | Completada | Entrega interna versionada, receptor y concentracion de roles registrados |
-| P3 — Evaluar evidencia y preparar recomendacion | Completada preliminarmente | Revalidacion, matriz, quince propuestas y recomendacion no vinculante |
-| P4 — Registrar decision final de I-29 | Completada | Decision B, restricciones, vigencia y revision registradas; ADR/I-13/merge sin modificar |
+## 14. Evidencia final
 
-## 16. Bloqueos posteriores a I-29
+La evidencia final registra decision B, Owner, fuentes, quince respuestas, usos permitidos y
+prohibidos, politica de caching/artifacts, obligaciones, vigencia y revision. ADR-0003 aplica ahora
+la decision. La promocion de I-13 fue revalidada, autorizada por el Owner e integrada en `main` el
+2026-07-20; esta autorizacion separada no modifica las restricciones de I-29.
 
-- ADR-0003 permanece propuesto;
-- la politica cero NuGet permanece vigente y la excepcion tecnica no esta activa;
-- I-13 permanece abierta y bloqueada;
-- la promocion no tiene autorizacion de merge;
-- cualquier incumplimiento de las catorce restricciones revoca el alcance aprobado; y
-- cualquier version, fuente, audiencia, runner, finalidad o documentacion incompatible exige nueva
-  revision antes de trabajo tecnico o integracion.
+### Fuentes minimas para la revision
 
-## 17. Trazabilidad minima
-
-| Hito | Referencia | Estado |
-|---|---|---|
-| Evidencia experimental I-13 | `experiment/refs-autocad-ci` @ `4e084d250c5385f04ec452f5a17499ff68a42367` | Solo lectura; no integrada |
-| Promocion tecnica | `fae0b150fa3bb4f3c9ea6d5473c027c021e9a3c2` | Merge bloqueado |
-| Promocion documental | `31e146ded403fefc45f1b7e7302c98957773fec8` | ADR propuesto; merge bloqueado |
-| Reclamo I-29 | `715d473721d216b55b21fc4aa80eea13da218371` | Publicado |
-| P1 | `195cc8b26e58e191eeb4c3f5af8fa325ad43a77d` | Completada y publicada |
-| P2 | [Registro de entrega](I-29-registro-entrega-revision.md) | Entrega registrada |
-| P3 | [Matriz maestra](I-29-matriz-evidencia-evaluacion.md) y [hoja de revision](I-29-hoja-revision-interna.md) | Evaluacion preliminar y recomendacion D conservadas como historial |
-| P4 | [Plantilla de decision](I-29-plantilla-decision.md) y [registro](I-29-registro-entrega-revision.md) | Decision B registrada; iniciativa documental cerrada |
-
-## 18. Pruebas y entrega
-
-P4 requiere validacion documental, enlaces relativos, `git diff --check` y confirmacion de que solo
-se tocaron los siete documentos I-29 autorizados. No requiere build, restore, AutoCAD ni CI. Su push
-no equivale a integracion: ADR-0003 permanece propuesto, cero NuGet sigue vigente, I-13 sigue abierta
-y el merge continua bloqueado.
+- licencia incluida en los paquetes;
+- documentacion Autodesk APS/ObjectARX;
+- paginas de los paquetes NuGet y sus firmas;
+- documentacion de GitHub Actions; y
+- politicas internas aplicables.

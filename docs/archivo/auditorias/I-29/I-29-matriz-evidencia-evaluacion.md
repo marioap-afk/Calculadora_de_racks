@@ -1,3 +1,18 @@
+> **Archivo de auditoria; evidencia historica, no fuente operativa vigente.**
+>
+> - Naturaleza: auditoria de evidencia y evaluacion P3/P4.
+> - Fecha de corte: 2026-07-20.
+> - Estado: archivado.
+> - Decision final: B. Aprobado con restricciones.
+> - Nota posterior: I-13 fue integrada y cerrada despues de estos documentos; ADR-0003 fue aceptado
+>   posteriormente y la excepcion limitada a cero NuGet quedo vigente bajo su alcance.
+> - Fuentes vigentes: [decision final](../../../automation/decisions/I-29.md) y
+>   [contrato canonico](../../../initiatives/I-29-licencia-procedencia-autocad-ci.md).
+>
+> La evidencia y las incertidumbres de P3/P4 se conservan al corte. Las afirmaciones sobre gates,
+> ramas y trabajo posterior no deben interpretarse como estado actual de I-13, ADR-0003 ni la
+> promocion.
+
 # I-29 — Matriz maestra de evidencia y evaluacion
 
 Fecha de ejecucion P3: 2026-07-20. Estado P4: decision B registrada el 2026-07-20.
@@ -26,11 +41,11 @@ redistribucion de assemblies, otras versiones y cualquier conclusion sobre licen
 
 | ID | Fuente | Uso |
 |---|---|---|
-| I1 | [Contrato I-29](I-29-licencia-procedencia-autocad-ci.md) | Alcance, preguntas y gates |
+| I1 | [Contrato I-29](../../../initiatives/I-29-licencia-procedencia-autocad-ci.md) | Alcance, preguntas y gates |
 | I2 | [Paquete de decision](I-29-paquete-decision-interna.md) | Flujo de bytes, guardas y rollback |
 | I3 | [Registro de entrega](I-29-registro-entrega-revision.md) | Roles y limites de la revision |
-| I4 | Evidencia I-13 en `experiment/refs-autocad-ci` | E1, E2, hashes, licencia, firmas e inventario |
-| I5 | Promocion en `architecture/referencias-autocad-ci` | Proyecto, CI, script fail-closed y ADR propuesto |
+| I4 | Evidencia I-13 en `experiment/refs-autocad-ci` | E1, E2, hashes, licencia, firmas e inventario al corte |
+| I5 | Promocion en `architecture/referencias-autocad-ci` | Proyecto, CI, script fail-closed y ADR propuesto al corte |
 | I6 | `AGENTS.md`, `docs/ARCHITECTURE.md` y `docs/HANDOFF.md` | Politica cero NuGet vigente |
 
 I4 e I5 se consultaron sin modificar sus ramas. CI #54/#55 permanece como evidencia declarada, no
@@ -482,7 +497,7 @@ El Owner reviso esta recomendacion y selecciono **B. Aprobado con restricciones*
 La decision es interna, no juridica, y acepta el riesgo residual de no haber localizado autorizacion
 expresa para GitHub-hosted runners. Solo cubre RackCad, uso interno, Mario Pérez como mantenedor, las
 versiones auditadas y compile-only, bajo las catorce restricciones de la
-[decision P4](I-29-plantilla-decision.md).
+[decision P4](../../../automation/decisions/I-29.md).
 
 ## 12. Resultado y limites de P4
 

@@ -1,3 +1,17 @@
+> **Archivo de auditoria; evidencia historica, no fuente operativa vigente.**
+>
+> - Naturaleza: evidencia historica de entrega y revision interna.
+> - Fecha de corte: 2026-07-20.
+> - Estado: archivado.
+> - Decision final: B. Aprobado con restricciones.
+> - Nota posterior: I-13 fue integrada y cerrada despues de estos documentos; ADR-0003 fue aceptado
+>   posteriormente y la excepcion limitada a cero NuGet quedo vigente bajo su alcance.
+> - Fuentes vigentes: [decision final](../../../automation/decisions/I-29.md) y
+>   [contrato canonico](../../../initiatives/I-29-licencia-procedencia-autocad-ci.md).
+>
+> Las afirmaciones de este documento describen el estado de la entrega y revision P1-P4 al corte;
+> no deben interpretarse como estado actual de I-13, ADR-0003 ni la promocion.
+
 # I-29 — Registro de entrega y revision interna
 
 ## 1. Identificacion
@@ -21,9 +35,9 @@ politica cero NuGet y no autoriza el merge de I-13.
 
 ## 3. Documentos entregados
 
-- [Contrato principal I-29](I-29-licencia-procedencia-autocad-ci.md).
+- [Contrato principal I-29](../../../initiatives/I-29-licencia-procedencia-autocad-ci.md).
 - [Paquete de decision interna](I-29-paquete-decision-interna.md).
-- [Plantilla de decision](I-29-plantilla-decision.md).
+- [Decision final](../../../automation/decisions/I-29.md).
 
 ## 4. Identificacion del receptor
 
