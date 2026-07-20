@@ -44,9 +44,11 @@ automation:
 | Gate | L2 — licencia y procedencia pendientes de decision competente |
 | ADR relacionado | ADR-0003, estado `propuesto` |
 
-I-29 esta **reclamada** y P1 preparo el paquete documental. La decision humana permanece pendiente.
-I-13 y el merge de `architecture/referencias-autocad-ci` continúan bloqueados. Este documento no
-acepta el ADR, no activa una excepcion a cero NuGet y no contiene una conclusion legal.
+I-29 esta **reclamada**. P1 completo el paquete documental y P2 registro su entrega interna
+versionada a Mario Pérez, Coordinador de Desarrollo de Proyectos de Industrias Montilla. La revision
+interna esta iniciada y la decision humana permanece pendiente. I-13 y el merge de
+`architecture/referencias-autocad-ci` continúan bloqueados. Este documento no acepta el ADR, no
+activa una excepcion a cero NuGet y no contiene una conclusion legal.
 
 ## 2. Problema
 
@@ -106,13 +108,16 @@ La decision debe seleccionar exactamente una salida, sin que P1 recomiende ningu
 
 | Rol | Responsabilidad | Identificacion actual |
 |---|---|---|
-| Owner | Patrocinar la solicitud y confirmar su alcance organizacional | Nombre, cargo y autoridad pendientes |
-| Technical preparer | Reunir evidencia tecnica y declarar sus limites | Persona responsable por designar; Codex preparo P1 sin autoridad decisoria |
-| Legal/licensing reviewer | Responder las preguntas contractuales con fuentes | Persona interna competente por designar |
-| Final approver | Seleccionar A/B/C/D y gobernar sus efectos | Dueño o rol definido por politica; persona y autoridad pendientes |
+| Owner | Patrocinar la solicitud y confirmar su alcance organizacional | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla |
+| Technical preparer | Reunir evidencia tecnica y declarar sus limites | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla |
+| Internal licensing reviewer | Realizar la revision interna de riesgo, licencia y gobernanza | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla |
+| Final approver | Seleccionar A/B/C/D y gobernar sus efectos | Mario Pérez, Coordinador de Desarrollo de Proyectos, Industrias Montilla; decision pendiente |
 
-Cada rol humano debe registrar nombre, cargo, organizacion, autoridad, fecha, firma o mecanismo
-verificable, vigencia, fecha de revision, conflictos de interes y referencia al registro corporativo.
+Mario Pérez ocupa los cuatro roles. El Owner acepta esta concentracion para I-29, pero no existe
+independencia entre preparer, reviewer y approver. La revision interna no es asesoria legal
+profesional; la salida D permanece disponible cuando se requiera criterio juridico externo.
+Continuan pendientes autoridad adicional, fecha de firma, firma o mecanismo verificable, vigencia,
+fecha de revision, conflictos de interes y referencia al registro corporativo.
 
 ## 8. Evidencia tecnica disponible
 
@@ -213,8 +218,8 @@ tecnica presentada como autorizacion legal.
 
 | Fase | Estado | Resultado |
 |---|---|---|
-| P1 — Crear paquete documental | Preparado en esta rama | Contrato, paquete, plantilla e indice listos para revision |
-| P2 — Entregar al reviewer interno | No ejecutada | Recepcion formal y autoridad del reviewer registradas |
+| P1 — Crear paquete documental | Completada | Contrato, paquete, plantilla e indice publicados |
+| P2 — Entregar al reviewer interno | Completada | Entrega interna versionada, receptor y concentracion de roles registrados |
 | P3 — Registrar la decision | No ejecutada | Opcion A/B/C/D fechada y suficiente |
 | P4 — Gobernar ADR e I-13 | No ejecutada | Actualizacion autorizada y decision de merge o rollback |
 
@@ -236,7 +241,8 @@ tecnica presentada como autorizacion legal.
 | Promocion tecnica | `fae0b150fa3bb4f3c9ea6d5473c027c021e9a3c2` | Merge bloqueado |
 | Promocion documental | `31e146ded403fefc45f1b7e7302c98957773fec8` | ADR propuesto; merge bloqueado |
 | Reclamo I-29 | `715d473721d216b55b21fc4aa80eea13da218371` | Publicado |
-| P1 | Este paquete documental | Preparado; decision pendiente |
+| P1 | `195cc8b26e58e191eeb4c3f5af8fa325ad43a77d` | Completada y publicada |
+| P2 | [Registro de entrega](I-29-registro-entrega-revision.md) y [hoja de revision](I-29-hoja-revision-interna.md) | Entrega registrada; decision pendiente |
 
 ## 18. Pruebas y entrega
 

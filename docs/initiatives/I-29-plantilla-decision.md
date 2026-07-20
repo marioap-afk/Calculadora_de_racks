@@ -12,10 +12,10 @@ las quince preguntas. Marcar exactamente una opcion.
 | Fecha |  |
 | Version del paquete documental |  |
 | Fuentes revisadas |  |
-| Owner |  |
-| Technical preparer |  |
-| Legal/licensing reviewer |  |
-| Final approver |  |
+| Owner | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
+| Technical preparer | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
+| Internal licensing reviewer | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
+| Final approver | Mario Pérez — Coordinador de Desarrollo de Proyectos — Industrias Montilla |
 | Registro corporativo |  |
 | Mecanismo verificable de aprobacion |  |
 
@@ -25,6 +25,10 @@ las quince preguntas. Marcar exactamente una opcion.
 - [ ] B. Aprobado con restricciones.
 - [ ] C. Rechazado.
 - [ ] D. Requiere asesoria legal externa.
+
+La misma persona ocupa los cuatro roles. Esta concentracion, aceptada por el Owner para I-29,
+reduce la independencia de la revision. La revision interna no constituye asesoria legal
+profesional y la salida D permanece disponible cuando se requiera criterio juridico externo.
 
 ## Campos obligatorios para A o B
 
@@ -143,33 +147,33 @@ consulta externa, junto con la referencia exacta al expediente enviado.
 
 ### Owner
 
-Nombre: ____________________  Cargo: ____________________
+Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
 
-Organizacion: ____________________  Alcance de autoridad: ____________________
+Organizacion: Industrias Montilla  Alcance de autoridad: ____________________
 
 Fecha: ____________________  Firma o mecanismo verificable: ____________________
 
 ### Technical preparer
 
-Nombre: ____________________  Cargo: ____________________
+Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
 
-Organizacion: ____________________  Declaracion de completitud: ____________________
+Organizacion: Industrias Montilla  Declaracion de completitud: ____________________
 
 Fecha: ____________________  Firma o mecanismo verificable: ____________________
 
-### Legal/licensing reviewer
+### Internal licensing reviewer
 
-Nombre: ____________________  Cargo: ____________________
+Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
 
-Organizacion: ____________________  Competencia/autoridad: ____________________
+Organizacion: Industrias Montilla  Alcance interno/autoridad: ____________________
 
 Fecha: ____________________  Firma o mecanismo verificable: ____________________
 
 ### Final approver
 
-Nombre: ____________________  Cargo: ____________________
+Nombre: Mario Pérez  Cargo: Coordinador de Desarrollo de Proyectos
 
-Organizacion: ____________________  Alcance de autoridad: ____________________
+Organizacion: Industrias Montilla  Alcance de autoridad: ____________________
 
 Fecha: ____________________  Firma o mecanismo verificable: ____________________
 

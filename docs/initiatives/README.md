@@ -44,8 +44,12 @@ Planes disponibles:
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): contrato
-  reclamado para preparar y obtener una decision interna sobre referencias AutoCAD en CI.
+  reclamado; P1 esta publicada, P2 entregada internamente y P3 permanece pendiente.
 - [`I-29-paquete-decision-interna.md`](I-29-paquete-decision-interna.md): paquete neutral para la
-  revision interna, con evidencia, preguntas, alternativas, rollback y campos de aprobacion.
+  revision interna, recibido por el responsable del proyecto con decision pendiente.
 - [`I-29-plantilla-decision.md`](I-29-plantilla-decision.md): formulario A/B/C/D sin seleccionar
   para registrar una decision humana suficiente y atribuida.
+- [`I-29-registro-entrega-revision.md`](I-29-registro-entrega-revision.md): evidencia versionada de
+  la entrega P2, el receptor identificado y la concentracion de roles aceptada por el Owner.
+- [`I-29-hoja-revision-interna.md`](I-29-hoja-revision-interna.md): hoja de trabajo para P3 con las
+  quince preguntas pendientes; ADR-0003 y el merge de I-13 continúan bloqueados.

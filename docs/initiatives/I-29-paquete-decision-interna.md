@@ -264,10 +264,15 @@ P1 no selecciona ni recomienda una opcion y no autoriza el merge.
 
 | Rol | Nombre | Cargo | Organizacion | Autoridad | Fecha | Firma/mecanismo verificable |
 |---|---|---|---|---|---|---|
-| Owner |  |  |  |  |  |  |
-| Technical preparer |  |  |  |  |  |  |
-| Legal/licensing reviewer |  |  |  |  |  |  |
-| Final approver |  |  |  |  |  |  |
+| Owner | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
+| Technical preparer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
+| Internal licensing reviewer | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
+| Final approver | Mario Pérez | Coordinador de Desarrollo de Proyectos | Industrias Montilla |  |  |  |
+
+La misma persona ocupa los cuatro roles y el Owner acepta esa concentracion para I-29. No existe
+independencia entre preparer, reviewer y approver. La revision interna se limita a riesgo, licencia
+y gobernanza del proyecto; no constituye asesoria legal profesional. La salida D sigue disponible
+cuando se requiera criterio juridico externo.
 
 Vigencia: ____________________
 
