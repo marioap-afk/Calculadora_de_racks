@@ -173,7 +173,7 @@ namespace RackCad.Plugin
             using (var transaction = database.TransactionManager.StartTransaction())
             {
                 var payload = RestampEnvelope(source.Payload, copyName);
-                var definitionId = CloneDefinition(database, transaction, source.DefinitionId, copyName, payload, sourceName, copyName);
+                var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, payload, sourceName, copyName);
 
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
