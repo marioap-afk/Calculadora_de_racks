@@ -139,17 +139,15 @@ namespace RackCad.Plugin
                 return false;
             }
 
-            string json;
-            using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            var picked = InDocumentTransaction.Run(document, transaction =>
             {
                 var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
-                blockId = reference.BlockTableRecord;
-                json = RackBlockData.Read(transaction, blockId);
-                transaction.Commit();
-            }
+                var definitionId = reference.BlockTableRecord;
+                return (BlockId: definitionId, Json: RackBlockData.Read(transaction, definitionId));
+            });
 
-            embed = new RackEmbedStore().Deserialize(json);
+            blockId = picked.BlockId;
+            embed = new RackEmbedStore().Deserialize(picked.Json);
             return true;
         }
 

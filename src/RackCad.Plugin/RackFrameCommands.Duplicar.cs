@@ -145,18 +145,20 @@ namespace RackCad.Plugin
                 return false;
             }
 
-            using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            source = InDocumentTransaction.Run(document, transaction =>
             {
                 var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
-                source.DefinitionId = reference.BlockTableRecord;
-                source.Position = reference.Position;
-                source.Rotation = reference.Rotation;
-                source.Scale = reference.ScaleFactors;
-                source.LayerId = reference.LayerId;
-                source.Payload = RackBlockData.Read(transaction, source.DefinitionId);
-                transaction.Commit();
-            }
+                var snapshot = new DuplicateSource
+                {
+                    DefinitionId = reference.BlockTableRecord,
+                    Position = reference.Position,
+                    Rotation = reference.Rotation,
+                    Scale = reference.ScaleFactors,
+                    LayerId = reference.LayerId
+                };
+                snapshot.Payload = RackBlockData.Read(transaction, snapshot.DefinitionId);
+                return snapshot;
+            });
 
             embed = new RackEmbedStore().Deserialize(source.Payload);
             return true;
@@ -169,8 +171,7 @@ namespace RackCad.Plugin
         {
             var database = document.Database;
 
-            using (document.LockDocument())
-            using (var transaction = database.TransactionManager.StartTransaction())
+            InDocumentTransaction.Run(document, transaction =>
             {
                 var payload = RestampEnvelope(source.Payload, copyName);
                 var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, payload, sourceName, copyName);
@@ -185,9 +186,7 @@ namespace RackCad.Plugin
                 };
                 modelSpace.AppendEntity(reference);
                 transaction.AddNewlyCreatedDBObject(reference, true);
-
-                transaction.Commit();
-            }
+            });
         }
     }
 }
