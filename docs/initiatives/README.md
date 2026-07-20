@@ -43,6 +43,10 @@ Planes disponibles:
   `../automation/state/I-06.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
+- [`I-09-refactor-plugin-commands.md`](I-09-refactor-plugin-commands.md): contrato para partir
+  `RackFrameCommands` por área, promover helpers de bloques/clonación/capas/transacciones y unificar
+  el escaneo de envelopes triplicado, preservando comandos, geometría, BOM, persistencia y UX. Fuera
+  de alcance I-10 e I-16 y cualquier cambio funcional.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
