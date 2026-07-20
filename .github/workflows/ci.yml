@@ -1,7 +1,8 @@
 # CI mínimo de RackCad (auditoría 2026-07-16).
-# El Plugin queda fuera: sus referencias (AcCoreMgd/AcDbMgd/AcMgd) requieren AutoCAD instalado.
-# La suite corre en ubuntu (Domain/Application son net8.0 puro); la UI compila en windows (WPF),
-# lo que valida transitivamente Domain y Application contra cambios de API.
+# Los jobs estables dejan fuera al Plugin: sus referencias requieren AutoCAD instalado. I-13 agrega
+# abajo una prueba experimental aislada y limitada a su rama. La suite corre en ubuntu
+# (Domain/Application son net8.0 puro); la UI compila en windows (WPF), lo que valida
+# transitivamente Domain y Application contra cambios de API.
 name: CI
 
 # Corre en TODO push (sin lista de ramas: una copia de los prefijos de WORKFLOW §1 aquí divergiría,
@@ -50,3 +51,537 @@ jobs:
           dotnet-version: "8.0.x"
       - name: dotnet build UI
         run: dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal
+
+  plugin-autocad-references-experiment:
+    name: Experimental Plugin build (AutoCAD compile references)
+    if: github.ref == 'refs/heads/experiment/refs-autocad-ci'
+    runs-on: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Identify clean runner and isolate NuGet
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $knownPaths = @(
+            "C:\Program Files\Autodesk\AutoCAD 2025",
+            "C:\Program Files\Autodesk\AutoCAD 2025\acad.exe"
+          )
+          $knownRegistryKeys = @(
+            "HKLM:\SOFTWARE\Autodesk\AutoCAD\R25.0",
+            "HKLM:\SOFTWARE\WOW6432Node\Autodesk\AutoCAD\R25.0"
+          )
+          $autoCADSignals = @(
+            $knownPaths | Where-Object { Test-Path -LiteralPath $_ }
+            $knownRegistryKeys | Where-Object { Test-Path -LiteralPath $_ }
+            Get-Command acad.exe -ErrorAction SilentlyContinue | ForEach-Object { $_.Source }
+          )
+          if ($autoCADSignals.Count -ne 0) {
+            $autoCADSignals | ForEach-Object { Write-Host "Unexpected AutoCAD signal: $_" }
+            throw "E2 requires a runner without AutoCAD."
+          }
+
+          $root = Join-Path $env:RUNNER_TEMP "rackcad-i13-e2"
+          $packages = Join-Path $root "nuget-packages"
+          $httpCache = Join-Path $root "nuget-http-cache"
+          $scratch = Join-Path $root "nuget-scratch"
+          $cliHome = Join-Path $root "dotnet-home"
+          $emptyAutoCAD = Join-Path $root "NO-AUTOCAD-INSTALLED"
+          $testResults = Join-Path $root "test-results"
+          $nugetConfig = Join-Path $root "NuGet.Config"
+          $lockFile = Join-Path $root "packages.lock.json"
+
+          New-Item -ItemType Directory -Force -Path $root, $packages, $httpCache, $scratch, $cliHome, $emptyAutoCAD, $testResults | Out-Null
+          if (@(Get-ChildItem -LiteralPath $packages -Force).Count -ne 0) {
+            throw "The isolated NuGet cache was not empty at E2 start."
+          }
+          foreach ($assembly in "AcCoreMgd.dll", "AcDbMgd.dll", "AcMgd.dll") {
+            if (Test-Path -LiteralPath (Join-Path $emptyAutoCAD $assembly)) {
+              throw "The empty AutoCAD directory contains $assembly."
+            }
+          }
+
+          @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <packageSources>
+              <clear />
+              <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+            </packageSources>
+          </configuration>
+          "@ | Set-Content -LiteralPath $nugetConfig -Encoding utf8
+
+          "E2_ROOT=$root" >> $env:GITHUB_ENV
+          "E2_EMPTY_AUTOCAD_DIR=$emptyAutoCAD" >> $env:GITHUB_ENV
+          "E2_NUGET_CONFIG=$nugetConfig" >> $env:GITHUB_ENV
+          "E2_LOCK_FILE=$lockFile" >> $env:GITHUB_ENV
+          "E2_TEST_RESULTS=$testResults" >> $env:GITHUB_ENV
+          "NUGET_PACKAGES=$packages" >> $env:GITHUB_ENV
+          "NUGET_HTTP_CACHE_PATH=$httpCache" >> $env:GITHUB_ENV
+          "NUGET_SCRATCH=$scratch" >> $env:GITHUB_ENV
+          "DOTNET_CLI_HOME=$cliHome" >> $env:GITHUB_ENV
+          "DOTNET_CLI_TELEMETRY_OPTOUT=1" >> $env:GITHUB_ENV
+          "DOTNET_NOLOGO=1" >> $env:GITHUB_ENV
+          "DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1" >> $env:GITHUB_ENV
+
+          $os = Get-CimInstance Win32_OperatingSystem
+          Write-Host "Commit: $env:GITHUB_SHA"
+          Write-Host "Runner image: $env:ImageOS $env:ImageVersion"
+          Write-Host "Windows: $($os.Caption) $($os.Version) build $($os.BuildNumber)"
+          Write-Host "Architecture: $env:PROCESSOR_ARCHITECTURE"
+          Write-Host "NuGet source: https://api.nuget.org/v3/index.json"
+          Write-Host "AutoCAD signals: none"
+          dotnet --info
+
+      - name: Negative control without AutoCAD references
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $project = "src/RackCad.Plugin/RackCad.Plugin.csproj"
+          $commonProperties = @(
+            "-p:UseAutoCADNuGetReferences=false",
+            "-p:AutoCADInstallDir=$env:E2_EMPTY_AUTOCAD_DIR",
+            "-p:RestorePackagesPath=$env:NUGET_PACKAGES"
+          )
+
+          & dotnet restore $project --configfile $env:E2_NUGET_CONFIG --no-cache --force @commonProperties -p:Configuration=Release -v:minimal
+          if ($LASTEXITCODE -ne 0) {
+            throw "Negative-control restore failed before the causal compile check."
+          }
+
+          $negativeOutput = @(& dotnet build $project -c Release --no-restore @commonProperties -v:minimal 2>&1)
+          $negativeExitCode = $LASTEXITCODE
+          $negativeOutput | ForEach-Object { Write-Host $_ }
+          $negativeText = $negativeOutput -join [Environment]::NewLine
+
+          if ($negativeExitCode -eq 0) {
+            throw "Negative control compiled unexpectedly without AutoCAD references."
+          }
+          if ($negativeText -match "(?im)\berror\s+(MSB|NU|NETSDK)\d+\b") {
+            throw "Negative control failed for MSBuild, NuGet, or SDK infrastructure rather than missing Autodesk references."
+          }
+          if ($negativeText -notmatch "(?im)\berror\s+CS0(234|246)\b.*\bAutodesk\b") {
+            throw "Negative control did not contain the expected missing Autodesk namespace/type cause."
+          }
+          if (@(Get-ChildItem -LiteralPath $env:NUGET_PACKAGES -Recurse -File -Force).Count -ne 0) {
+            throw "Negative control populated the isolated package cache before the positive restore."
+          }
+
+          Write-Host "Negative control accepted: exit code $negativeExitCode; causal CS0234/CS0246 Autodesk errors observed."
+
+      - name: Restore locked graph and verify packages
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $project = "src/RackCad.Plugin/RackCad.Plugin.csproj"
+          $positiveProperties = @(
+            "-p:UseAutoCADNuGetReferences=true",
+            "-p:AutoCADInstallDir=$env:E2_EMPTY_AUTOCAD_DIR",
+            "-p:RestorePackagesPath=$env:NUGET_PACKAGES"
+          )
+          $expected = [ordered]@{
+            "AutoCAD.NET" = @{
+              Version = "25.0.1"
+              Sha256 = "b629f09e10bb7f414460e1ad47e4efa6d24d2815d00def388a64b10570ccd4c1"
+              Compile = "lib/net8.0/AcMgd.dll"
+            }
+            "AutoCAD.NET.Core" = @{
+              Version = "25.0.0"
+              Sha256 = "167a3b003d30230197cc150911080815bd5299e8e28fa411c64498e8e830ea53"
+              Compile = "lib/net8.0/AcCoreMgd.dll"
+            }
+            "AutoCAD.NET.Model" = @{
+              Version = "25.0.0"
+              Sha256 = "06779a73f5da2eed6a98c063ea13cde4eb07056b088772fca91c93ecdc770283"
+              Compile = "lib/net8.0/AcDbMgd.dll"
+            }
+          }
+
+          if (@(Get-ChildItem -LiteralPath $env:NUGET_PACKAGES -Recurse -File -Force).Count -ne 0) {
+            throw "The positive restore did not start from an empty package cache."
+          }
+
+          & dotnet restore $project --configfile $env:E2_NUGET_CONFIG --no-cache --force --use-lock-file --lock-file-path $env:E2_LOCK_FILE @positiveProperties -p:Configuration=Release -v:minimal
+          if ($LASTEXITCODE -ne 0) {
+            throw "Initial positive restore failed."
+          }
+          if (-not (Test-Path -LiteralPath $env:E2_LOCK_FILE -PathType Leaf)) {
+            throw "The temporary lock file was not generated."
+          }
+
+          $lock = Get-Content -LiteralPath $env:E2_LOCK_FILE -Raw | ConvertFrom-Json
+          $frameworks = @($lock.dependencies.PSObject.Properties)
+          if ($frameworks.Count -ne 1) {
+            throw "Expected one locked target framework, found $($frameworks.Count)."
+          }
+          $lockedPackages = @($frameworks[0].Value.PSObject.Properties)
+          $lockedNames = @($lockedPackages.Name | Sort-Object)
+          $expectedNames = @($expected.Keys | Sort-Object)
+          if (@(Compare-Object $expectedNames $lockedNames).Count -ne 0) {
+            throw "Temporary lock contains a missing or unexpected package: $($lockedNames -join ', ')."
+          }
+          $lockByName = @{}
+          foreach ($lockedPackage in $lockedPackages) {
+            $lockByName[$lockedPackage.Name] = $lockedPackage.Value
+            if ([string]$lockedPackage.Value.resolved -ne $expected[$lockedPackage.Name].Version) {
+              throw "Unexpected locked version for $($lockedPackage.Name): $($lockedPackage.Value.resolved)."
+            }
+          }
+          if ([string]$lockByName["AutoCAD.NET"].type -ne "Direct" -or
+              [string]$lockByName["AutoCAD.NET.Core"].type -ne "Transitive" -or
+              [string]$lockByName["AutoCAD.NET.Model"].type -ne "Transitive") {
+            throw "The temporary lock does not contain the expected direct/transitive graph."
+          }
+          $autoCADDependency = [string]$lockByName["AutoCAD.NET"].dependencies."AutoCAD.NET.Core"
+          $coreDependency = [string]$lockByName["AutoCAD.NET.Core"].dependencies."AutoCAD.NET.Model"
+          if ($autoCADDependency -notmatch "25\.0\.0" -or $coreDependency -notmatch "25\.0\.0") {
+            throw "The temporary lock does not preserve the expected exact transitive versions."
+          }
+
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $licenseSha256 = "df90a4dd078e9674a5f2b7be32664c85ec4bc516a415cfc06080e8cb69df1709"
+          foreach ($packageId in $expected.Keys) {
+            $package = $expected[$packageId]
+            $packageDirectory = Join-Path $env:NUGET_PACKAGES "$($packageId.ToLowerInvariant())\$($package.Version)"
+            $nupkgs = @(Get-ChildItem -LiteralPath $packageDirectory -File -Filter "*.nupkg")
+            $shaSidecars = @(Get-ChildItem -LiteralPath $packageDirectory -File -Filter "*.nupkg.sha512")
+            if ($nupkgs.Count -ne 1 -or $shaSidecars.Count -ne 1) {
+              throw "Expected one nupkg and one SHA-512 sidecar for $packageId $($package.Version)."
+            }
+
+            $actualSha256 = (Get-FileHash -LiteralPath $nupkgs[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($actualSha256 -ne $package.Sha256) {
+              throw "SHA-256 mismatch for $packageId $($package.Version)."
+            }
+            $actualSha512 = [Convert]::ToBase64String([Security.Cryptography.SHA512]::HashData([IO.File]::ReadAllBytes($nupkgs[0].FullName)))
+            $sidecarSha512 = (Get-Content -LiteralPath $shaSidecars[0].FullName -Raw).Trim()
+            if ($actualSha512 -ne $sidecarSha512 -or $actualSha512 -ne [string]$lockByName[$packageId].contentHash) {
+              throw "SHA-512 mismatch between package, sidecar, and lock for $packageId."
+            }
+
+            $archive = [IO.Compression.ZipFile]::OpenRead($nupkgs[0].FullName)
+            try {
+              $entryNames = @($archive.Entries.FullName)
+              $nuspecEntries = @($archive.Entries | Where-Object { $_.FullName -like "*.nuspec" })
+              if ($nuspecEntries.Count -ne 1 -or "LICENSE.txt" -notin $entryNames) {
+                throw "Expected nuspec or LICENSE.txt is missing from $packageId."
+              }
+              if (@($entryNames | Where-Object { $_ -match "(?i)^(ref|runtimes|build|buildTransitive)/|\.(props|targets|exe|arx|dbx)$" }).Count -ne 0) {
+                throw "Unexpected reference/runtime/build/native content appeared in $packageId."
+              }
+
+              $reader = [IO.StreamReader]::new($nuspecEntries[0].Open())
+              try { [xml]$nuspec = $reader.ReadToEnd() } finally { $reader.Dispose() }
+              $owners = $nuspec.SelectSingleNode("//*[local-name()='metadata']/*[local-name()='owners']").InnerText
+              $authors = $nuspec.SelectSingleNode("//*[local-name()='metadata']/*[local-name()='authors']").InnerText
+              if ($owners -ne "Autodesk, Inc." -or $authors -ne "AutoCAD Team") {
+                throw "Package metadata changed for $packageId (owners/authors)."
+              }
+
+              $licenseEntry = $archive.GetEntry("LICENSE.txt")
+              $licenseStream = $licenseEntry.Open()
+              $sha = [Security.Cryptography.SHA256]::Create()
+              try {
+                $actualLicenseHash = [Convert]::ToHexString($sha.ComputeHash($licenseStream)).ToLowerInvariant()
+              } finally {
+                $sha.Dispose()
+                $licenseStream.Dispose()
+              }
+              if ($actualLicenseHash -ne $licenseSha256) {
+                throw "LICENSE.txt changed for $packageId."
+              }
+            } finally {
+              $archive.Dispose()
+            }
+
+            Write-Host "$packageId $($package.Version): SHA-256/SHA-512, metadata, license, and package layout verified."
+          }
+
+          & dotnet restore $project --configfile $env:E2_NUGET_CONFIG --no-cache --locked-mode --lock-file-path $env:E2_LOCK_FILE @positiveProperties -p:Configuration=Release -v:minimal
+          if ($LASTEXITCODE -ne 0) {
+            throw "Locked positive restore failed."
+          }
+
+          $assetsPath = "src/RackCad.Plugin/obj/project.assets.json"
+          $assets = Get-Content -LiteralPath $assetsPath -Raw | ConvertFrom-Json
+          $sources = @($assets.project.restore.sources.PSObject.Properties.Name)
+          if ($sources.Count -ne 1 -or $sources[0].TrimEnd('/') -ne "https://api.nuget.org/v3/index.json") {
+            throw "project.assets.json contains an unexpected NuGet source."
+          }
+          $packageFolders = @($assets.packageFolders.PSObject.Properties.Name)
+          $assetPackageFolder = [IO.Path]::GetFullPath($packageFolders[0].TrimEnd([char[]]@('\', '/')))
+          $expectedPackageFolder = [IO.Path]::GetFullPath($env:NUGET_PACKAGES)
+          if ($packageFolders.Count -ne 1 -or $assetPackageFolder -ne $expectedPackageFolder) {
+            throw "project.assets.json does not use only the isolated package folder."
+          }
+
+          $assetPackages = @($assets.libraries.PSObject.Properties | Where-Object { $_.Value.type -eq "package" })
+          $assetPackageNames = @($assetPackages.Name | Sort-Object)
+          $expectedAssetNames = @($expected.Keys | ForEach-Object { "$_/$($expected[$_].Version)" } | Sort-Object)
+          if (@(Compare-Object $expectedAssetNames $assetPackageNames).Count -ne 0) {
+            throw "project.assets.json contains a missing or unexpected package: $($assetPackageNames -join ', ')."
+          }
+          $targets = @($assets.targets.PSObject.Properties)
+          if ($targets.Count -ne 1) {
+            throw "Expected one target graph in project.assets.json."
+          }
+          foreach ($packageId in $expected.Keys) {
+            $key = "$packageId/$($expected[$packageId].Version)"
+            $targetPackage = $targets[0].Value.PSObject.Properties[$key].Value
+            $compileAssets = @($targetPackage.compile.PSObject.Properties.Name)
+            $runtimeAssets = @($targetPackage.runtime.PSObject.Properties.Name)
+            if ($expected[$packageId].Compile -notin $compileAssets) {
+              throw "Expected compile asset missing for $key."
+            }
+            if (@($runtimeAssets | Where-Object { $_ -match "(?i)\.dll$" }).Count -ne 0 -or
+                @($runtimeAssets | Where-Object { $_ -notmatch "(?i)/_\._$" }).Count -ne 0) {
+              throw "Unexpected runtime assets selected for $key."
+            }
+            Write-Host "$key compile assets: $($compileAssets -join ', ')"
+            Write-Host "$key runtime assets: $($runtimeAssets -join ', ')"
+          }
+          Write-Host "Effective target: $($targets[0].Name)"
+          Write-Host "Package folder: <RUNNER_TEMP>/rackcad-i13-e2/nuget-packages"
+          Write-Host "Temporary lock reviewed; second restore completed in locked mode."
+
+      - name: Resolve and audit Autodesk references
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $project = "src/RackCad.Plugin/RackCad.Plugin.csproj"
+          $properties = @(
+            "-p:Configuration=Release",
+            "-p:UseAutoCADNuGetReferences=true",
+            "-p:AutoCADInstallDir=$env:E2_EMPTY_AUTOCAD_DIR",
+            "-p:RestorePackagesPath=$env:NUGET_PACKAGES"
+          )
+          $structuredOutput = @(& dotnet msbuild $project -t:ResolveReferences @properties -getProperty:TargetFramework,AutoCADInstallDir,UseAutoCADNuGetReferences -getItem:ReferencePath,ReferenceCopyLocalPaths 2>&1)
+          if ($LASTEXITCODE -ne 0) {
+            $structuredOutput | ForEach-Object { Write-Host $_ }
+            throw "Structured ResolveReferences failed."
+          }
+          $structuredText = $structuredOutput -join [Environment]::NewLine
+          $jsonStart = $structuredText.IndexOf('{')
+          $jsonEnd = $structuredText.LastIndexOf('}')
+          if ($jsonStart -lt 0 -or $jsonEnd -le $jsonStart) {
+            throw "Structured ResolveReferences did not return JSON."
+          }
+          $resolved = $structuredText.Substring($jsonStart, $jsonEnd - $jsonStart + 1) | ConvertFrom-Json
+          $referencePaths = @($resolved.Items.ReferencePath)
+          $copyLocalPaths = @($resolved.Items.ReferenceCopyLocalPaths)
+
+          function Metadata([object]$item, [string]$name) {
+            $property = $item.PSObject.Properties[$name]
+            if ($null -eq $property) { return "" }
+            return [string]$property.Value
+          }
+          function ItemPath([object]$item) {
+            $fullPath = Metadata $item "FullPath"
+            if ($fullPath) { return $fullPath }
+            return [string]$item.Identity
+          }
+          $autodeskAssemblyNames = @(Get-ChildItem -LiteralPath $env:NUGET_PACKAGES -Recurse -File -Filter "*.dll" |
+            Select-Object -ExpandProperty Name -Unique)
+          if ($autodeskAssemblyNames.Count -ne 13) {
+            throw "Expected 13 Autodesk assemblies in the isolated packages, found $($autodeskAssemblyNames.Count)."
+          }
+          function IsAutodeskAssembly([string]$path) {
+            $name = [IO.Path]::GetFileName($path)
+            return $name -in $autodeskAssemblyNames -or $name -cmatch "^(Ac[A-Z]|Ad[A-Z]|Autodesk).+\.dll$"
+          }
+
+          $autodeskReferences = @($referencePaths | Where-Object {
+            (Metadata $_ "NuGetPackageId") -like "AutoCAD.NET*" -or (IsAutodeskAssembly (ItemPath $_))
+          })
+          if ($autodeskReferences.Count -ne 13) {
+            throw "Expected 13 Autodesk compile references, found $($autodeskReferences.Count)."
+          }
+          $cacheRoot = [IO.Path]::GetFullPath($env:NUGET_PACKAGES).TrimEnd('\') + '\'
+          foreach ($reference in $autodeskReferences) {
+            $path = [IO.Path]::GetFullPath((ItemPath $reference))
+            if (-not $path.StartsWith($cacheRoot, [StringComparison]::OrdinalIgnoreCase)) {
+              throw "Autodesk reference resolved outside the isolated cache: $path"
+            }
+            if ($path -match "(?i)C:\\Program Files\\Autodesk|AutoCAD 2025") {
+              throw "Autodesk reference resolved from a local AutoCAD installation: $path"
+            }
+            if ((Metadata $reference "Private").ToLowerInvariant() -ne "false" -or
+                (Metadata $reference "CopyLocal").ToLowerInvariant() -ne "false") {
+              throw "Autodesk reference is not Private=false and CopyLocal=false: $path"
+            }
+          }
+
+          $principal = [ordered]@{
+            "AcCoreMgd.dll" = "AutoCAD.NET.Core"
+            "AcDbMgd.dll" = "AutoCAD.NET.Model"
+            "AcMgd.dll" = "AutoCAD.NET"
+          }
+          foreach ($assembly in $principal.Keys) {
+            $matches = @($autodeskReferences | Where-Object { [IO.Path]::GetFileName((ItemPath $_)) -ceq $assembly })
+            if ($matches.Count -ne 1) {
+              throw "Expected exactly one resolved $assembly reference."
+            }
+            $reference = $matches[0]
+            $path = ItemPath $reference
+            if ((Metadata $reference "NuGetPackageId") -ne $principal[$assembly]) {
+              throw "$assembly came from an unexpected package."
+            }
+            $assemblyVersion = [Reflection.AssemblyName]::GetAssemblyName($path).Version.ToString()
+            if ($assemblyVersion -ne "25.0.0.0") {
+              throw "$assembly has unexpected assembly version $assemblyVersion."
+            }
+            Write-Host "$assembly => <NUGET_PACKAGES>/$($principal[$assembly]); Version=$assemblyVersion; Private=false; CopyLocal=false; Runtime=false"
+          }
+
+          $autodeskCopyLocal = @($copyLocalPaths | Where-Object {
+            (Metadata $_ "NuGetPackageId") -like "AutoCAD.NET*" -or (IsAutodeskAssembly (ItemPath $_))
+          })
+          if ($autodeskCopyLocal.Count -ne 0) {
+            $autodeskCopyLocal | ForEach-Object { Write-Host "Unexpected ReferenceCopyLocalPaths: $(ItemPath $_)" }
+            throw "ReferenceCopyLocalPaths contains Autodesk assemblies."
+          }
+
+          $diagnosticPath = Join-Path $env:E2_ROOT "resolve-references.diag.log"
+          & dotnet msbuild $project -t:ResolveReferences @properties -v:diag *> $diagnosticPath
+          if ($LASTEXITCODE -ne 0) {
+            Get-Content -LiteralPath $diagnosticPath -Tail 100
+            throw "Diagnostic ResolveReferences failed."
+          }
+          $localInstallMatches = @(Select-String -LiteralPath $diagnosticPath -Pattern "C:\Program Files\Autodesk", "AutoCAD 2025")
+          if ($localInstallMatches.Count -ne 0) {
+            throw "ResolveReferences diagnostic log contains a local AutoCAD installation path."
+          }
+          Write-Host "ResolveReferences audit passed: 13 compile references in isolated cache; 0 Autodesk ReferenceCopyLocalPaths entries."
+
+      - name: Build Plugin and solution in Release
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $properties = @(
+            "-p:UseAutoCADNuGetReferences=true",
+            "-p:AutoCADInstallDir=$env:E2_EMPTY_AUTOCAD_DIR",
+            "-p:RestorePackagesPath=$env:NUGET_PACKAGES"
+          )
+
+          $pluginTimer = [Diagnostics.Stopwatch]::StartNew()
+          $pluginOutput = @(& dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Release --no-restore @properties -v:minimal 2>&1)
+          $pluginExitCode = $LASTEXITCODE
+          $pluginTimer.Stop()
+          $pluginOutput | ForEach-Object { Write-Host $_ }
+          $pluginWarnings = @($pluginOutput | Select-String -Pattern "\bwarning\s+(MSB|CS|NU|NETSDK)\d+\b")
+          if ($pluginExitCode -ne 0 -or $pluginWarnings.Count -ne 0) {
+            throw "Plugin Release build failed or introduced warnings (exit=$pluginExitCode, warnings=$($pluginWarnings.Count))."
+          }
+          Write-Host "Plugin Release: exit=0, warnings=0, elapsed=$($pluginTimer.Elapsed)."
+
+          $restoreOutput = @(& dotnet restore RackCad.sln --configfile $env:E2_NUGET_CONFIG --no-cache --force @properties -p:Configuration=Release -v:minimal 2>&1)
+          $restoreExitCode = $LASTEXITCODE
+          $restoreOutput | ForEach-Object { Write-Host $_ }
+          $restoreWarnings = @($restoreOutput | Select-String -Pattern "\bwarning\s+(MSB|CS|NU|NETSDK)\d+\b")
+          if ($restoreExitCode -ne 0 -or $restoreWarnings.Count -ne 0) {
+            throw "Solution restore failed or introduced warnings (exit=$restoreExitCode, warnings=$($restoreWarnings.Count))."
+          }
+
+          $solutionTimer = [Diagnostics.Stopwatch]::StartNew()
+          $solutionOutput = @(& dotnet build RackCad.sln -c Release --no-restore @properties -v:minimal 2>&1)
+          $solutionExitCode = $LASTEXITCODE
+          $solutionTimer.Stop()
+          $solutionOutput | ForEach-Object { Write-Host $_ }
+          $solutionWarnings = @($solutionOutput | Select-String -Pattern "\bwarning\s+(MSB|CS|NU|NETSDK)\d+\b")
+          if ($solutionExitCode -ne 0 -or $solutionWarnings.Count -ne 0) {
+            throw "Solution Release build failed or introduced warnings (exit=$solutionExitCode, warnings=$($solutionWarnings.Count))."
+          }
+          Write-Host "Solution Release: exit=0, warnings=0, elapsed=$($solutionTimer.Elapsed)."
+
+      - name: Run Windows tests and catalog guardian
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $testProject = "tests/RackCad.Tests/RackCad.Tests.csproj"
+
+          & dotnet test $testProject -c Release --no-build --no-restore -v:minimal --logger "trx;LogFileName=e2-full.trx" --results-directory $env:E2_TEST_RESULTS
+          if ($LASTEXITCODE -ne 0) {
+            throw "Full Windows test suite failed."
+          }
+          [xml]$fullTrx = Get-Content -LiteralPath (Join-Path $env:E2_TEST_RESULTS "e2-full.trx") -Raw
+          $fullCounters = $fullTrx.SelectSingleNode("//*[local-name()='Counters']")
+          $fullTotal = [int]$fullCounters.total
+          $fullPassed = [int]$fullCounters.passed
+          $fullNotExecuted = [int]$fullCounters.notExecuted
+          if ($fullTotal -lt 636 -or $fullPassed -ne $fullTotal -or $fullNotExecuted -ne 0 -or
+              [int]$fullCounters.failed -ne 0 -or [int]$fullCounters.error -ne 0 -or
+              [int]$fullCounters.timeout -ne 0 -or [int]$fullCounters.aborted -ne 0) {
+            throw "Windows suite did not meet the baseline: total=$fullTotal passed=$fullPassed notExecuted=$fullNotExecuted."
+          }
+
+          $guardian = "FullyQualifiedName=RackCad.Tests.CatalogCanonicalIdsTests.ShippedCatalogs_MatchCanonicalTestExpectations"
+          & dotnet test $testProject -c Release --no-build --no-restore -v:minimal --filter $guardian --logger "trx;LogFileName=e2-guardian.trx" --results-directory $env:E2_TEST_RESULTS
+          if ($LASTEXITCODE -ne 0) {
+            throw "Canonical catalog guardian failed."
+          }
+          [xml]$guardianTrx = Get-Content -LiteralPath (Join-Path $env:E2_TEST_RESULTS "e2-guardian.trx") -Raw
+          $guardianCounters = $guardianTrx.SelectSingleNode("//*[local-name()='Counters']")
+          if ([int]$guardianCounters.total -ne 1 -or [int]$guardianCounters.passed -ne 1 -or [int]$guardianCounters.notExecuted -ne 0) {
+            throw "Canonical catalog guardian did not produce the expected 1/1 result."
+          }
+          Write-Host "Windows tests: $fullPassed/$fullTotal passed; 0 failed; 0 not executed. Guardian: 1/1."
+
+      - name: Guard outputs and bundle
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $autodeskAssemblyNames = @(Get-ChildItem -LiteralPath $env:NUGET_PACKAGES -Recurse -File -Filter "*.dll" |
+            Select-Object -ExpandProperty Name -Unique)
+          function IsAutodeskAssembly([IO.FileInfo]$file) {
+            return $file.Name -in $autodeskAssemblyNames -or $file.Name -cmatch "^(Ac[A-Z]|Ad[A-Z]|Autodesk).+\.dll$"
+          }
+
+          $roots = @("src", "tests", "deploy")
+          $outputDlls = @($roots | ForEach-Object {
+            Get-ChildItem -LiteralPath $_ -Recurse -File -Filter "*.dll"
+          })
+          $forbiddenDlls = @($outputDlls | Where-Object { IsAutodeskAssembly $_ })
+          if ($forbiddenDlls.Count -ne 0) {
+            $forbiddenDlls | ForEach-Object { Write-Host "Forbidden Autodesk output: $($_.FullName)" }
+            throw "Autodesk DLLs were copied outside the isolated NuGet cache."
+          }
+
+          $repositoryPackages = @(Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Recurse -File | Where-Object {
+            $_.Name -like "*.nupkg" -or $_.Name -eq "packages.lock.json"
+          })
+          if ($repositoryPackages.Count -ne 0) {
+            $repositoryPackages | ForEach-Object { Write-Host "Unexpected repository package/lock: $($_.FullName)" }
+            throw "A package or temporary lock escaped into the checkout."
+          }
+
+          $bundles = @(Get-ChildItem -LiteralPath "src" -Recurse -Directory -Filter "RackCad.bundle" | Where-Object {
+            $_.FullName -match "[\\/]bin[\\/]"
+          })
+          if ($bundles.Count -ne 1) {
+            throw "Expected exactly one generated RackCad.bundle, found $($bundles.Count)."
+          }
+          $bundle = $bundles[0]
+          $bundleDlls = @(Get-ChildItem -LiteralPath (Join-Path $bundle.FullName "Contents") -Recurse -File -Filter "*.dll")
+          $expectedBundleDlls = @("RackCad.Application.dll", "RackCad.Domain.dll", "RackCad.Plugin.dll", "RackCad.UI.dll") | Sort-Object
+          $actualBundleDlls = @($bundleDlls.Name | Sort-Object)
+          if (@(Compare-Object $expectedBundleDlls $actualBundleDlls).Count -ne 0) {
+            throw "The generated bundle DLL inventory changed: $($actualBundleDlls -join ', ')."
+          }
+          if (-not (Test-Path -LiteralPath (Join-Path $bundle.FullName "PackageContents.xml")) -or
+              -not (Test-Path -LiteralPath (Join-Path $bundle.FullName "Contents\catalogs"))) {
+            throw "The generated bundle is missing its manifest or catalogs."
+          }
+
+          $generatedArchives = @(Get-ChildItem -LiteralPath $env:GITHUB_WORKSPACE -Recurse -File -Filter "*.zip")
+          if ($generatedArchives.Count -ne 0) {
+            $generatedArchives | ForEach-Object { Write-Host "Unexpected ZIP: $($_.FullName)" }
+            throw "E2 generated an unexpected ZIP/deliverable."
+          }
+          Write-Host "Output guard passed: 0 Autodesk DLLs outside cache; bundle contains only four RackCad DLLs; no package, lock, or ZIP escaped."

@@ -663,3 +663,81 @@ I-13 no se considera concluida hasta que exista:
 
 Hasta entonces se mantiene la clasificacion provisional B y la rama experimental no se integra
 directamente como implementacion.
+
+## 22. Preparacion de E2 en GitHub Actions
+
+Estado al preparar esta seccion: **E2 pendiente de ejecucion**. Nada de lo descrito aqui constituye
+adopcion del mecanismo, aceptacion de licencia/procedencia ni excepcion permanente a la politica de
+cero paquetes NuGet en producto.
+
+### 22.1 Gate P completado
+
+La rama remota seguia exactamente en
+`a6febd2bbc63e6392bdd88efdbbfaf659fbfa1e5` despues de `git fetch --prune origin`; `origin/main`
+seguia en `1ffebcb07553661acba2eac4a0722c8781666bdf`, el worktree estaba limpio y el backup local
+`backup/i-13-pre-rebase-a6febd2` conservaba el commit anterior. Se publico el rebase mediante un
+unico push con lease explicito para ese hash. Despues del push, HEAD local, tracking y
+`git ls-remote` coincidieron en `c7d5841e49778e619845e743df083bd74819b907`, sin divergencia.
+No se uso `--force` indiscriminado y los pushes posteriores deben ser normales.
+
+### 22.2 Diseño implementado
+
+| Elemento | Implementacion experimental |
+|---|---|
+| Job | `plugin-autocad-references-experiment`, `windows-latest`, limitado a `refs/heads/experiment/refs-autocad-ci` |
+| Jobs de I-26 | `tests`, Cobertura, su artifact y `build-ui` permanecen sin cambios |
+| Modo local | `UseAutoCADNuGetReferences=false` por defecto; conserva los tres `HintPath` originales |
+| Modo E2 | `AutoCAD.NET` 25.0.1, `PrivateAssets=all`, `ExcludeAssets=runtime`; Core y Model quedan transitivos |
+| Runner | Comprueba rutas, comando y claves acotadas de AutoCAD; no instala ni ejecuta AutoCAD |
+| Control negativo | Compila con referencias NuGet desactivadas y una carpeta AutoCAD vacia; exige fallo causal `CS0234`/`CS0246` y descarta fallos de infraestructura |
+| Restore | `NuGet.Config` efimero con solo nuget.org y caches de paquetes, HTTP, scratch y CLI aislados bajo `RUNNER_TEMP`, inicialmente vacios |
+| Procedencia provisional | Revisa grafo y versiones, SHA-256 fijados por E1, SHA-512 contra sidecar y lock, owners/authors, licencia y layout de los tres paquetes |
+| Resolucion | Audita las 13 compile references y las tres DLL principales; exige cache aislado, version 25.0.0.0, `Private=false`, `CopyLocal=false` y cero Autodesk en `ReferenceCopyLocalPaths` |
+| Build y pruebas | Plugin y solucion Release con `--no-restore`; suite Windows de al menos 636/636 y guardian dirigido 1/1 |
+| Outputs | Falla ante cualquier DLL de los paquetes Autodesk fuera del cache; valida las cuatro DLL RackCad del bundle y ausencia de nupkg, lock o ZIP en el checkout |
+| Cache/artifacts | No usa `actions/cache` ni publica artifacts desde E2 |
+
+El lock se genera temporalmente fuera del checkout, se inspecciona y se usa en un segundo restore
+con `--locked-mode`. No se versiona en E2: el mismo proyecto representa dos grafos mutuamente
+excluyentes y su modo predeterminado no tiene el PackageReference, por lo que un lock en la raiz
+seria ruido para el flujo local y podria sugerir que el restore local esta gobernado por un grafo
+que no aplica. Esta decision usa los mecanismos oficiales `--use-lock-file`, `--lock-file-path` y
+`--locked-mode` documentados por NuGet en
+[PackageReference y bloqueo de dependencias](https://learn.microsoft.com/nuget/consume-packages/package-references-in-project-files#locking-dependencies).
+La limitacion es expresa: si el mecanismo se adopta, la estrategia de lock permanente debe
+rediseñarse y aprobarse por separado.
+
+### 22.3 Alcance del commit experimental
+
+El unico commit de preparacion se identifica por el asunto
+`CI: prepara experimento E2 de referencias AutoCAD`, por `Experiment: E2` y
+`Status: pending-ci`; su SHA es necesariamente el `github.sha` que se verificara en la ejecucion,
+porque un commit no puede contener su propio hash. Incluye exclusivamente:
+
+- `.github/workflows/ci.yml`;
+- `src/RackCad.Plugin/RackCad.Plugin.csproj`;
+- `docs/initiatives/I-13-referencias-autocad-ci.md`.
+
+No incluye lock, paquete, cache, binario, log ni artifact.
+
+### 22.4 Validacion previa local
+
+Con AutoCAD 2025 instalado y el modo predeterminado se ejecutaron restore de la solucion, build
+Release sin restore y tests Release sin build/restore. El restore fue correcto, el build termino
+con cero errores y solo las dos familias `MSB3277` conocidas de las referencias locales, y la suite
+termino 636/636, sin fallos ni omitidas. Los ocho bloques PowerShell multilínea del workflow se
+analizaron como `ScriptBlock` sin errores; `git diff --check` quedo limpio. Esta validacion confirma
+que el flujo local no cambio, pero no sustituye E2 en un runner limpio.
+
+### 22.5 Exito, rollback y siguiente decision
+
+E2 solo sera exitoso si el run del commit exacto cumple todos los criterios de la seccion 19.6,
+mantiene verdes `tests`/Cobertura y `build-ui`, publica unicamente
+`rackcad-coverage-cobertura` y deja cero DLL Autodesk fuera del cache. Ante el primer fallo no se
+reintenta automaticamente ni se relaja una guarda: se conserva la causa en evidencia sanitizada y
+se detiene para decidir correccion o descarte.
+
+El rollback experimental consiste en revertir conjuntamente el job y la ruta condicional del
+Plugin, sin tocar los jobs de I-26 ni promover el lock temporal. Aun con E2 verde, I-13 permanece
+en clasificacion B hasta que el dueño decida adopcion o descarte, licencia, procedencia, excepcion
+NuGet, lock/guardas permanentes y necesidad de ADR.
