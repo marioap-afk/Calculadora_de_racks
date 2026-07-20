@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-29
 title: Licencia y procedencia de referencias AutoCAD para CI
 type: docs
-status: pending
+status: completed
 branch: docs/licencia-procedencia-autocad-ci
 base_branch: main
 priority: 10
@@ -29,13 +29,15 @@ automation:
 
 # I-29 — Licencia y procedencia de referencias AutoCAD para CI
 
-Estado: **pendiente y bloqueante para el merge de I-13**. Este contrato formula las preguntas para
-una revision competente; no contiene interpretacion ni conclusion legal de Codex.
+Estado: **cerrada documentalmente**. El 2026-07-20 Mario Perez, Coordinador de Desarrollo de
+Proyectos de Industrias Montilla y Owner de RackCad, selecciono **B. Aprobado con restricciones**.
+Es una aceptacion interna de riesgo para uso interno; no es una conclusion juridica ni una
+afirmacion de autorizacion expresa de Autodesk. I-13 y el merge continúan bloqueados.
 
 ## 1. Objetivo
 
 Obtener una decision interna fechada sobre el uso de paquetes Autodesk en runners GitHub-hosted y
-su efecto sobre I-13 y el ADR-0003 propuesto.
+su efecto sobre I-13 y la aplicacion de ADR-0003.
 
 ## 2. Problema
 
@@ -43,14 +45,27 @@ I-13 demostro tecnicamente una compilacion del Plugin sin AutoCAD instalado, per
 ambiguedad material sobre licencia, procedencia, copias efimeras y terceros que alojan el build. La
 promocion en CI #54 no convierte esa evidencia tecnica en autorizacion legal.
 
+I-29 acepta esa incertidumbre residual solo bajo las restricciones registradas en ADR-0003. La
+vigencia inicia el 2026-07-20 y exige revision ante un cambio material o, como maximo, el 2027-07-20.
+
 ## 3. Alcance
 
-- licencia ObjectARX y uso de assemblies de implementacion;
+- licencia ObjectARX y composicion mixta de los assemblies;
 - restore efimero en runners GitHub-hosted;
 - nuget.org, firmas, propietario verificado y metadata de lock;
 - caching, artifacts y feeds privados;
 - distribucion interna/externa, avisos y atribucion; y
 - necesidad de licencia AutoCAD por entorno de build.
+
+### Caracterizacion tecnica corregida
+
+Los trece assemblies tienen composicion mixta. `AcCui`, `AcDx`, `AcMr`, `AcSeamless`, `AcWindows`,
+`AdUIMgd` y `AdUiPalettes` contienen `ReferenceAssemblyAttribute`. `AcMgd`, `AcTcMgd`, `AdWindows`,
+`AcCoreMgd`, `AcDbMgd` y `acdbmgdbrep` no lo contienen. Las tres referencias principales del Plugin
+—`AcMgd`, `AcCoreMgd` y `AcDbMgd`— carecen del atributo y contienen cuerpos de metodos.
+
+La composicion heterogenea no invalida E1/E2 ni las guardas de compilacion y no constituye una
+conclusion legal.
 
 ## 4. Fuera de alcance
 
@@ -62,30 +77,32 @@ promocion en CI #54 no convierte esa evidencia tecnica en autorizacion legal.
 
 ## 5. Contexto requerido
 
-Leer el ADR-0003 propuesto; la evidencia I-13 en la rama congelada `experiment/refs-autocad-ci`;
+Leer el ADR-0003 aceptado en la rama de promocion; la evidencia I-13 en la rama congelada
+`experiment/refs-autocad-ci`;
 los Context Packs `autocad-plugin` y `delivery-validation`; la guia de despliegue; y la evidencia de
 E2/CI #50 y de la promocion/CI #54.
 
 ## 6. Dependencias y responsables
 
-- **Owner:** dueno del repositorio.
-- **Reviewer:** por designar, persona interna competente en licenciamiento/legal.
-- **Entradas requeridas:** I-13, ADR-0003 propuesto, evidencia E2 y promocion CI #54. I-13 aporta
+- **Owner, reviewer y aprobador:** Mario Perez, Coordinador de Desarrollo de Proyectos, Industrias
+  Montilla. La concentracion de roles fue aceptada para esta decision interna.
+- **Entradas requeridas:** I-13, ADR-0003 aceptado, evidencia E2 y promocion CI #54. I-13 aporta
   evidencia, pero no es una dependencia que deba integrarse: su merge espera precisamente a I-29.
 
-La rama futura propuesta es `docs/licencia-procedencia-autocad-ci`; este contrato no la crea.
+La rama canonica `docs/licencia-procedencia-autocad-ci` queda congelada como evidencia P1-P4.
+Su commit final es `2fa1d5b9716a601eea3d6f0fd8d9e90658c29fbf`.
 
 ## 7. Archivos esperados
 
-Una decision interna versionada en la ruta que se defina al reclamar I-29 y, segun su resultado, la
-actualizacion o rechazo del ADR-0003. No se esperan cambios de producto, CI ni paquetes.
+La decision interna quedo versionada en la rama canonica y ADR-0003 registra su aplicacion. No se
+esperan cambios de producto, CI ni paquetes.
 
 ## 8. Fases
 
-1. Identificar reviewer competente y las fuentes vigentes.
-2. Responder las quince preguntas de cierre con fuente y responsable.
-3. Registrar usos permitidos/prohibidos, obligaciones y fecha de revision.
-4. Emitir una salida suficiente para aprobar, restringir, rechazar o escalar la propuesta.
+1. Identificar reviewer competente y las fuentes vigentes — completada.
+2. Responder las quince preguntas de cierre con fuente y responsable — completada.
+3. Registrar usos permitidos/prohibidos, obligaciones y fecha de revision — completada.
+4. Emitir una salida suficiente para aprobar, restringir, rechazar o escalar — B seleccionada.
 
 ### Preguntas de cierre
 
@@ -112,14 +129,14 @@ documental de la rama. La evidencia tecnica existente no se repite.
 
 ## 10. Validacion manual
 
-El dueno valida que el responsable, las fuentes, todas las respuestas, restricciones, obligaciones y
-fecha de revision sean suficientes. La validacion en AutoCAD no aplica a esta iniciativa documental.
+El Owner registro responsable, fuentes, respuestas, restricciones, obligaciones, vigencia y fecha de
+revision. La validacion en AutoCAD no aplica a esta iniciativa documental.
 
 ## 11. Criterios de aceptacion
 
 La decision interna fechada identifica responsable y fuentes, define usos permitidos y prohibidos,
-caching, artifacts, obligaciones y fecha de revision, y decide el efecto sobre I-13/ADR-0003. Debe
-permitir una de estas salidas:
+caching, artifacts, obligaciones y fecha de revision, y decide el efecto sobre I-13/ADR-0003. La
+salida registrada es aprobar la excepcion con restricciones. Las salidas posibles eran:
 
 - aprobar la excepcion;
 - aprobarla con restricciones;
@@ -128,22 +145,21 @@ permitir una de estas salidas:
 
 ## 12. Condiciones para detenerse
 
-Detenerse ante falta de reviewer competente, fuentes insuficientes, una respuesta ambigua que no
-permita gobernar I-13, expansion a implementacion tecnica o necesidad de asesoria externa. Mientras
-I-29 no cierre con decision suficiente, no aceptar ADR-0003, no integrar
-`architecture/referencias-autocad-ci` y no declarar vigente la excepcion.
+La decision se revoca o vuelve a revision ante un cambio de proyecto, versiones, source, runner,
+caching, artifacts, audiencia, finalidad, guardas o documentacion incompatible de Autodesk. I-29
+no autoriza por si sola el merge de `architecture/referencias-autocad-ci`.
 
 ## 13. Estado versionado y entrega del Pull Request
 
-I-29 permanece pendiente, con automatizacion deshabilitada y sin rama, archivo de estado ni Pull
-Request creados. Al reclamarse debe seguir WORKFLOW, registrar su estado canonico y mantener
-`auto_merge: false`; la integracion sera una decision manual.
+I-29 esta completada en su rama canonica, con automatizacion deshabilitada y sin merge automatico.
+La rama se conserva en solo lectura. `completed` no significa integrada; cualquier integracion sera
+una decision manual conforme a WORKFLOW.
 
 ## 14. Evidencia final
 
-Entregar la decision interna fechada, su responsable, fuentes, matriz de respuestas, usos
-permitidos/prohibidos, politica de caching/artifacts, obligaciones, fecha de revision y decision
-sobre I-13/ADR-0003. Confirmar que no se modificaron producto, CI ni `main`.
+La evidencia final registra decision B, Owner, fuentes, quince respuestas, usos permitidos y
+prohibidos, politica de caching/artifacts, obligaciones, vigencia y revision. ADR-0003 aplica ahora
+la decision; I-13 permanece abierta y el merge bloqueado hasta la revalidacion y autorizacion final.
 
 ### Fuentes minimas para la revision
 

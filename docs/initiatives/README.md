@@ -43,5 +43,7 @@ Planes disponibles:
   `../automation/state/I-06.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
-- [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): contrato
-  documental pendiente y bloqueante para resolver licencia y procedencia antes del merge de I-13.
+- I-13 conserva su evidencia detallada en la rama congelada `experiment/refs-autocad-ci`; su
+  promocion esta revalidando el gate final y el merge permanece bloqueado.
+- [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
+  cerrada documentalmente con decision B y restricciones; no autoriza por si sola el merge de I-13.

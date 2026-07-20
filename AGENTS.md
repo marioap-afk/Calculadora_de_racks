@@ -90,9 +90,12 @@ remoto solo tras confirmar el merge en `main`; todo commit de agente lleva trail
 
 ## Dependencias
 
-**Politica: cero paquetes NuGet en el codigo de producto** (el export XLSX es OOXML escrito a mano por esta
-razon). Solo el proyecto de tests usa paquetes (xunit, Test SDK). No agregar dependencias sin acuerdo
-explicito del usuario.
+**Politica general: cero paquetes NuGet en el codigo de producto** (el export XLSX es OOXML escrito
+a mano por esta razon). La unica excepcion es la referencia condicional compile-only de
+`RackCad.Plugin` a `AutoCAD.NET [25.0.1]` y sus versiones transitivas fijadas, gobernada por
+[ADR-0003](docs/adr/0003-referencias-autocad-para-ci.md). No cubre runtime, distribucion ni otros
+paquetes; cualquier cambio material exige nueva revision. Fuera de esa excepcion, solo el proyecto
+de tests usa paquetes (xunit, Test SDK). No agregar dependencias sin acuerdo explicito del usuario.
 
 ## Pruebas — definicion de terminado
 
