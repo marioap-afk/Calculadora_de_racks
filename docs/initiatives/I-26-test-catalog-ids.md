@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-26
 title: TestCatalogIds y cobertura de catálogos
 type: refactor
-status: review-ready
+status: completed
 branch: refactor/test-catalog-ids
 base_branch: main
 priority: 20
@@ -112,7 +112,8 @@ No se esperan cambios bajo `src`, `assets/catalogs`, `deploy`, `docs/HANDOFF.md`
 - [x] F4. Añadir el guardián y demostrar temporalmente su fallo ante un ID ausente.
 - [x] F5. Añadir Coverlet, normalización y artifact de Cobertura al CI existente.
 - [x] F6. Ejecutar la validación completa y dejar la rama `review-ready`.
-- [ ] F7. Integración y limpieza en una sesión manual separada.
+- [x] F7. Preparar la integración manual y dejar documentados sus gates.
+- [ ] Paso posterior. Merge manual, CI de `main` y limpieza segura de rama/worktree.
 
 ## 9. Pruebas y cobertura
 
@@ -134,8 +135,9 @@ no se añade a ningún proyecto de producto.
 
 ## 10. Validación manual
 
-AutoCAD: no aplica. El dueño debe revisar el CI del SHA final, confirmar que el artifact
-`rackcad-coverage-cobertura` existe y comprobar que contiene el XML normalizado descargable.
+AutoCAD: no aplica. El dueño confirmó CI #40 verde sobre la punta de implementación, incluidos los
+jobs de tests y build UI, y descargó `rackcad-coverage-cobertura` con el XML normalizado esperado.
+El nuevo commit documental de preparación debe recibir su propio CI verde antes del merge.
 
 ## 11. Criterios de aceptación
 
@@ -165,12 +167,13 @@ AutoCAD: no aplica. El dueño debe revisar el CI del SHA final, confirmar que el
 ## 13. Entrega e integración manual
 
 Cada fase coherente termina en commit con trailer `Co-Authored-By` y push normal de
-`refactor/test-catalog-ids`. La automatización permanece deshabilitada; no existe archivo de estado
-automatizado ni Pull Request para esta iniciativa. La implementación se detiene en `review-ready`.
+`refactor/test-catalog-ids`. La implementación queda `completed`; la automatización continúa
+deshabilitada, no existe archivo de estado automatizado ni Pull Request y el merge sigue siendo una
+operación manual externa a este contrato.
 
-La integración se realiza en una sesión posterior: rebase final, observación del CI, validación del
-dueño, actualización final de HANDOFF/ROADMAP, merge `--no-ff` y limpieza segura. Ninguno de esos
-pasos pertenece a F1–F6.
+La preparación de integración comprobó la base final, repitió las validaciones y actualizó
+HANDOFF/ROADMAP. El merge `--no-ff`, el CI posterior de `main` y la limpieza segura permanecen
+pendientes y requieren autorización separada del dueño.
 
 ## 14. Evidencia final
 
@@ -179,8 +182,8 @@ de Cobertura terminaron correctamente. La prueba negativa retiró temporalmente 
 de la copia ignorada de `secciones.csv`: el fallo acumuló el ID y las relaciones de plantillas
 afectadas; la reconstrucción restauró la copia antes de repetir el guardián en verde.
 
-La rama no modifica producto, catálogos distribuidos, Plugin, deploy, HANDOFF ni ROADMAP. La
-automatización continúa deshabilitada. Permanecen pendientes la observación del CI remoto sobre la
-punta final, la validación del artifact por el dueño y F7 en una sesión de integración separada.
-Los conteos de pruebas y hashes viven únicamente en el informe de sesión y, tras la integración, en
-`docs/HANDOFF.md` según WORKFLOW.
+La rama no modifica producto, catálogos distribuidos, Plugin ni deploy. La validación del dueño y la
+preparación documental de HANDOFF/ROADMAP están completas; la automatización continúa deshabilitada.
+Permanecen pendientes el CI remoto del commit documental final, el merge manual, el CI de `main` y
+la limpieza de rama/worktree. Los conteos de pruebas y hashes canónicos viven en `docs/HANDOFF.md`
+según WORKFLOW.
