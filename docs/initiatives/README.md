@@ -47,3 +47,6 @@ Planes disponibles:
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
   cerrada documentalmente con decision B y restricciones; no autoriza por si sola el merge de I-13.
+  La [decision final del Owner](../automation/decisions/I-29.md) es la fuente canonica vigente.
+- La evidencia P1-P4 se conserva en el
+  [archivo de auditoria I-29](../archivo/auditorias/I-29/README.md).

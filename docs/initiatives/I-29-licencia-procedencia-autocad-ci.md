@@ -16,6 +16,7 @@ context_packs:
 automation_state_path:
 decision_paths:
   - docs/adr/0003-referencias-autocad-para-ci.md
+  - docs/automation/decisions/I-29.md
 requires_ci: true
 requires_plugin_build: false
 requires_autocad: false
@@ -34,6 +35,9 @@ Proyectos de Industrias Montilla y Owner de RackCad, selecciono **B. Aprobado co
 Es una aceptacion interna de riesgo para uso interno; no es una conclusion juridica ni una
 afirmacion de autorizacion expresa de Autodesk. Tras la revalidacion, el Owner autorizo por separado
 la integracion de I-13, completada en `main` el 2026-07-20.
+
+La [decision final del Owner](../automation/decisions/I-29.md) es la fuente canonica de la decision.
+La evidencia P1-P4 se conserva en el [archivo de auditoria](../archivo/auditorias/I-29/README.md).
 
 ## 1. Objetivo
 
