@@ -29,10 +29,11 @@ automation:
 
 # I-13 — Referencias de AutoCAD para CI
 
-Este documento conserva la conclusion sanitizada y reproducible del experimento E1. No contiene
-assemblies, paquetes, caches, outputs ni logs completos. Tampoco adopta el mecanismo probado: la
-politica vigente sigue siendo cero paquetes NuGet en codigo de producto hasta que el dueno tome una
-decision explicita y, si corresponde, acepte un ADR.
+Este documento conserva la conclusion sanitizada y reproducible del experimento E1 y el gate tecnico
+posterior a la integracion de I-26. No contiene assemblies, paquetes, caches, outputs ni logs
+completos. Tampoco adopta el mecanismo probado: la politica vigente sigue siendo cero paquetes NuGet
+en codigo de producto hasta que el dueno tome una decision explicita y, si corresponde, acepte un
+ADR.
 
 ## 1. Identificacion
 
@@ -40,8 +41,11 @@ decision explicita y, si corresponde, acepte un ADR.
 |---|---|
 | Iniciativa | I-13 — Referencias de AutoCAD para CI |
 | Rama | `experiment/refs-autocad-ci` |
-| Commit base original | `1e2a8b0cecdc92d8d5a6b96ea61912217ca3ba16` |
-| Commit de reclamo | `cc7b9d297352accb2de6977bc5b3873c9f4063ff` |
+| Commit base original de E1 | `1e2a8b0cecdc92d8d5a6b96ea61912217ca3ba16` |
+| Base actual tras el rebase local post-I-26 | `1ffebcb07553661acba2eac4a0722c8781666bdf` |
+| Commit de reclamo original | `cc7b9d297352accb2de6977bc5b3873c9f4063ff` |
+| Commit de reclamo reescrito | `9403f06602a4efc9e22eeceedbc87f38c455fb00` |
+| Evidencia E1 original / reescrita | `a6febd2bbc63e6392bdd88efdbbfaf659fbfa1e5` / `3f604dd53a0954821069e1c228c20cf44b52de77` |
 | Claim-Id | `2e85a57f-de29-4c2c-a6b9-5dfa43190496` |
 | Fecha de E1 | 2026-07-19, zona America/Mexico_City |
 | Naturaleza | Experimento local aislado; no es una implementacion de producto |
@@ -61,12 +65,16 @@ La iniciativa procede del hallazgo G6 de la
 ```text
 E1 aceptado.
 
+I-26 integrada en main y auditada.
+Rebase local de I-13 sobre la nueva main completado sin conflictos.
+
 Conclusion provisional:
 B — tecnicamente plausible con restricciones y pruebas adicionales.
 
 No adoptado.
 No integrado.
 No probado todavia en CI ni en una maquina limpia.
+E2 no ejecutado: espera decisiones expresas del dueno.
 ```
 
 El resultado aceptado debe describirse como:
@@ -75,9 +83,12 @@ El resultado aceptado debe describirse como:
 > de AutoCAD deliberadamente inutilizadas.
 
 La rama sigue siendo `experiment/*`. El `PackageReference` de E1 existio solamente en una copia
-temporal no Git y no esta presente en `RackCad.Plugin.csproj` de esta rama.
+temporal no Git y no esta presente en `RackCad.Plugin.csproj` de esta rama. El rebase no cambia la
+naturaleza, los limites ni la clasificacion provisional de E1.
 
-## 3. Baseline previa
+## 3. Baselines
+
+### 3.1 Baseline previa a E1
 
 Antes de E1 se comprobo la baseline vigente:
 
@@ -93,6 +104,24 @@ Antes de E1 se comprobo la baseline vigente:
 
 Esta baseline demostraba que el repositorio compilaba con AutoCAD instalado. No demostraba que el
 Plugin pudiera compilar sin AutoCAD ni que las referencias fueran reproducibles en CI.
+
+### 3.2 Baseline post-I-26 y post-rebase
+
+Despues de rebasar sobre `main` se comprobo en el worktree canonico de I-13:
+
+- restore de `RackCad.sln` correcto con el SDK 8.0.423 fijado por `global.json`;
+- build Release de la solucion correcto, con 0 errores y solo las dos familias `MSB3277` conocidas;
+- 636/636 pruebas Release correctas, sin fallos ni omitidas;
+- guardian `ShippedCatalogs_MatchCanonicalTestExpectations`: 1/1 correcto;
+- ejecucion Debug con la configuracion exacta de cobertura de CI: 636/636 correctas;
+- exactamente un `coverage.cobertura.xml` normalizado, version 1.9, con
+  `RackCad.Application` y `RackCad.Domain`;
+- cobertura observada de 91.77 % de lineas y 75.26 % de ramas, sin umbral contractual.
+
+El diff entre la base original y la nueva `main` es vacio para `RackCad.Plugin.csproj`,
+`Directory.Build.*`, `NuGet.Config`, `global.json`, `RackCad.sln` y `deploy`. El blob de
+`RackCad.Plugin.csproj` es identico en ambas bases. Por tanto E1 sigue vigente sin repetirlo como
+E1b: I-26 cambio tests, cobertura y documentacion, no la resolucion de referencias ni el bundle.
 
 ## 4. Hipotesis de E1
 
@@ -435,12 +464,16 @@ E1 no demuestra:
 
 ### Decisiones pendientes
 
-- aceptar o rechazar NuGet como canal de procedencia para estas referencias;
-- permitir cache de los paquetes en runners;
-- permitir su restauracion en infraestructura de GitHub;
-- determinar si el mecanismo constituye una excepcion a cero NuGet;
-- solicitar o no una revision legal adicional;
-- decidir si se exige otro canal o firma de Autodesk antes de adoptar.
+- autorizar o rechazar la ejecucion de E2;
+- autorizar o rechazar cambios experimentales acotados en `ci.yml` y
+  `RackCad.Plugin.csproj` para habilitar el job aislado;
+- permitir o rechazar la restauracion de estos paquetes desde NuGet en infraestructura de GitHub;
+- aceptar o rechazar una primera ejecucion sin cache y gobernar cualquier cache posterior por lock;
+- aceptar el umbral provisional de procedencia de la seccion 19.5, exigir otro canal/firma de
+  Autodesk o solicitar revision legal adicional;
+- resolver la publicacion de la historia rebasada de I-13 conforme a WORKFLOW;
+- solo despues de E2, aceptar o rechazar NuGet como mecanismo permanente y la excepcion a cero
+  NuGet mediante el ADR correspondiente.
 
 Solo el dueno puede tomar estas decisiones y aceptar o rechazar el ADR que corresponda.
 
@@ -478,75 +511,128 @@ Sin implementar aun, una adopcion deberia exigir:
 - documentacion explicita de que compilar no equivale a ejecutar en AutoCAD;
 - ADR propuesto y decision del dueno antes de modificar el proyecto real o el workflow.
 
-## 19. E2 propuesto
+## 19. Diseño definitivo de E2 post-I-26
 
 Definicion:
 
-> Build y pruebas en Windows limpio, sin AutoCAD instalado, con cache NuGet inicialmente vacio y
-> las mismas versiones exactas.
+> Build y pruebas en un runner Windows efimero sin AutoCAD instalado, con cache NuGet inicialmente
+> vacio, las mismas versiones exactas de E1 y cero publicacion de assemblies o bundles.
 
-Estado obligatorio:
+### 19.1 Estado del gate
 
 ```text
-BLOQUEADO HASTA:
-- integracion de I-26;
-- rebase de I-13 sobre la nueva punta de main;
-- revision de los cambios de ci.yml;
-- autorizacion expresa del dueno.
+GATES TECNICOS CUMPLIDOS LOCALMENTE:
+- I-26 esta contenida en main;
+- I-13 fue rebasada sobre la nueva punta de main;
+- el CI post-I-26 fue auditado;
+- la baseline post-rebase esta verde;
+- E1 sigue vigente y no requiere E1b.
+
+GATES ACTIVOS:
+- autorizacion expresa del dueno para ejecutar E2;
+- autorizacion para restaurar los paquetes en infraestructura de GitHub;
+- aceptacion provisional del umbral de procedencia descrito abajo;
+- resolucion de la publicacion de la rama rebasada conforme a WORKFLOW.
 ```
 
-No se ejecuta E2 ni se diseña YAML definitivo en esta fase. El protocolo propuesto es:
+E2 no fue ejecutado. Cumplir sus gates tampoco adopta el mecanismo ni acepta una excepcion
+permanente a cero NuGet.
 
-1. Confirmar que I-26 esta contenida en `origin/main`, que I-13 fue rebasada y publicada de acuerdo
-   con WORKFLOW, y que el dueno autorizo E2 y el uso de los paquetes en infraestructura de prueba.
-2. Usar un runner o VM Windows efimero sin AutoCAD, con checkout del commit exacto de I-13 y SDK
-   compatible con `global.json`.
-3. Registrar commit, imagen del runner, version y build del sistema operativo, arquitectura,
-   `dotnet --info`, variables relevantes y evidencia de ausencia de AutoCAD. Sanitizar nombres y
-   rutas personales.
-4. Crear bajo `<TEMP_E2>` dos copias no Git del checkout: `<NEGATIVE_E2>` original y
-   `<POSITIVE_E2>` con exactamente el diff conceptual de la seccion 6. No modificar el checkout que
-   conserva la evidencia Git.
-5. Crear `<NUGET_CACHE_E2>`, cache HTTP, scratch, `DOTNET_CLI_HOME` y `<EMPTY_AUTOCAD_DIR>` vacios.
-   Registrar que el cache de paquetes tiene cero entradas antes del primer restore.
-6. Ejecutar el control negativo en `<NEGATIVE_E2>` con `AutoCADInstallDir` vacio y sin
-   `PackageReference`. Debe fallar por referencias Autodesk ausentes; el numero exacto de errores
-   puede cambiar con el codigo, pero la causa debe conservarse.
-7. En `<POSITIVE_E2>`, aplicar solamente la condicion y el `PackageReference` de la seccion 6. Fijar
-   la unica fuente a `https://api.nuget.org/v3/index.json` y usar las versiones exactas.
-8. Restaurar primero el Plugin con cache vacio, sin fallback local. Recalcular SHA-256 de los tres
-   `.nupkg` y comparar SHA-512 con NuGet y con la seccion 7.
-9. Ejecutar `ResolveReferences` estructurado y diagnostico. Las tres referencias principales deben
-   quedar bajo `<NUGET_CACHE_E2>`, con `Private=false`, `CopyLocal=false`, cero entradas Autodesk en
-   `ReferenceCopyLocalPaths` y cero rutas de AutoCAD instalado.
-10. Compilar el Plugin Release; si falla, no continuar con la solucion.
-11. Restaurar y compilar `RackCad.sln` Release con las mismas propiedades. No modificar el proyecto
-    de pruebas.
-12. Ejecutar la suite completa en Windows. Deben pasar 635 o mas pruebas, conforme al estado
-    actualizado despues de I-26, sin fallos ni omitidas inesperadas.
-13. Inspeccionar recursivamente `bin`, `obj`, bundle, staging, ZIP y cualquier output. Fallar E2 si
-    aparece una DLL Autodesk fuera del cache temporal.
-14. No ejecutar AutoCAD, `NETLOAD`, Linux ni validacion funcional. No publicar el bundle o sus DLL
-    como artifact.
-15. Conservar solo un resumen sanitizado: comandos, codigos, tiempos, warnings, errores, hashes,
-    rutas logicas, inventario textual y entorno. No conservar DLL, paquetes, caches o logs completos
-    en Git.
+### 19.2 CI vigente que debe preservarse
 
-Criterios de aceptacion de E2:
+| Job | SO | Contrato actual | Relacion con E2 |
+|---|---|---|---|
+| `tests` | Ubuntu | Ejecuta una vez la suite Debug, incluido el guardian; genera, normaliza y publica `rackcad-coverage-cobertura` por 14 dias | Se conserva sin cambios; no compila Plugin |
+| `build-ui` | Windows | Restaura y compila UI Debug, validando transitivamente Domain/Application | Se conserva sin cambios; no recibe el experimento |
+| Plugin | — | No existe job; `ci.yml` lo excluye expresamente | E2 cubre esta brecha en aislamiento |
 
-1. el control negativo falla por referencias Autodesk ausentes;
-2. el restore positivo usa solamente NuGet y un cache inicialmente vacio;
-3. el Plugin compila;
-4. la solucion compila;
-5. pasan 635 o mas pruebas, conforme al estado actualizado;
-6. ninguna DLL Autodesk aparece en outputs;
-7. no se publica artifact propietario;
-8. los logs no contienen rutas de AutoCAD instalado;
-9. versiones y hashes coinciden con E1;
-10. el entorno queda identificado de forma reproducible.
+I-26 no agrego cache de paquetes, lock files, propiedades MSBuild para Windows ni cambios de TFM.
+`EnableWindowsTargeting` no es necesario para E2 porque su runner es Windows; no se propone ejecutar
+el Plugin en Linux.
+
+### 19.3 Topologia recomendada
+
+| Opcion | Ventaja | Riesgo | Decision tecnica |
+|---|---|---|---|
+| Job Windows experimental separado | Aisla los controles negativo/positivo, no altera cobertura ni UI y permite retirar el experimento limpiamente | Consume otro runner y repite la suite en Windows con un proposito distinto | **Recomendada para E2** |
+| Extender `build-ui` | Reutiliza el runner Windows existente | Mezcla un job estable con una prueba de supply chain que espera un fallo negativo y complica su diagnostico | No recomendada |
+| Mover `tests` a Windows o insertar E2 en ese job | Evita un job adicional | Pierde la señal Linux vigente, mezcla cobertura con referencias propietarias y amplia el radio de fallo | Descartada |
+
+El job separado debe limitarse a la rama experimental durante E2. La suite se repite en Windows
+porque valida el arbol positivo y el entorno objetivo; Cobertura y su artifact siguen perteneciendo
+unicamente al job Ubuntu existente.
+
+### 19.4 Protocolo del job experimental
+
+1. Confirmar que el commit exacto pertenece a `experiment/refs-autocad-ci` y registrar imagen del
+   runner, version/build de Windows, arquitectura, `dotnet --info` y SHA de Git.
+2. Comprobar y registrar ausencia de `acad.exe`, rutas conocidas y claves de registro de AutoCAD. Si
+   existe cualquier señal de instalacion, detener E2: no reinterpretar el runner como limpio.
+3. Crear bajo `RUNNER_TEMP` las copias no Git `<NEGATIVE_E2>` y `<POSITIVE_E2>`, un
+   `<NUGET_CACHE_E2>` inicialmente vacio, caches HTTP/scratch/CLI aislados y
+   `<EMPTY_AUTOCAD_DIR>`. El checkout versionado permanece sin cambios.
+4. Usar un `NuGet.Config` temporal con `clear` y solo `https://api.nuget.org/v3/index.json`. No usar
+   `actions/cache` ni ningun cache precalentado en la primera ejecucion aceptable de E2.
+5. En `<NEGATIVE_E2>`, conservar el proyecto original y compilar con
+   `AutoCADInstallDir=<EMPTY_AUTOCAD_DIR>`. Exigir codigo no cero y causas `CS0246`/tipos Autodesk
+   ausentes; un fallo por red, SDK o sintaxis no satisface el control.
+6. En `<POSITIVE_E2>`, aplicar solamente el diff conceptual de la seccion 6. Las propiedades
+   experimentales son `UseAutoCADNuGetReferences=true`,
+   `AutoCADInstallDir=<EMPTY_AUTOCAD_DIR>` y
+   `RestorePackagesPath=<NUGET_CACHE_E2>`; las referencias locales y NuGet deben ser mutuamente
+   excluyentes.
+7. Restaurar primero `RackCad.Plugin.csproj` desde cache vacio. Fijar `AutoCAD.NET` 25.0.1,
+   `AutoCAD.NET.Core` 25.0.0 y `AutoCAD.NET.Model` 25.0.0, sin rangos ni flotantes.
+8. Recalcular los SHA-256 de los tres `.nupkg` y compararlos con la seccion 7. Recalcular SHA-512 y
+   compararlo con el sidecar generado por NuGet. Verificar ademas IDs/versiones, propietarios del
+   `.nuspec`, licencia y ausencia de carpetas o targets nuevos respecto de E1.
+9. Generar un `packages.lock.json` solo en la copia temporal, revisar que el grafo sea exactamente el
+   esperado y repetir el restore con `RestoreLockedMode=true`. Si E2 se adopta, el lock revisado y el
+   restore bloqueado pasan a ser requisitos de la implementacion real; no se versionan como efecto
+   lateral del experimento.
+10. Ejecutar `ResolveReferences` estructurado y diagnostico. Las referencias Autodesk deben proceder
+    exclusivamente de `<NUGET_CACHE_E2>`, con `Private=false`, `CopyLocal=false`, cero entradas en
+    `ReferenceCopyLocalPaths` y cero rutas de una instalacion AutoCAD.
+11. Compilar `RackCad.Plugin` Release. Si falla, detenerse antes de restaurar la solucion.
+12. Restaurar y compilar `RackCad.sln` Release con las mismas propiedades y cache. No modificar el
+    proyecto de pruebas ni agregar `EnableWindowsTargeting`.
+13. Ejecutar la suite completa Release en Windows y el guardian dirigido. La referencia actual es
+    636 pruebas sin fallos ni omitidas y 1/1 para el guardian; un conteo futuro distinto exige
+    contrastarlo con HANDOFF, no relajar el gate.
+14. Inspeccionar recursivamente `bin`, `obj`, bundle, staging, ZIP y cualquier output fuera del cache.
+    Fallar si aparece una DLL Autodesk, un `.nupkg` o una copia inesperada. Verificar tambien que el
+    bundle conserva solo los cuatro DLL RackCad, catalogos y manifiesto esperados.
+15. No ejecutar AutoCAD, `NETLOAD`, Linux ni validacion funcional. No publicar artifacts desde el job
+    E2; en particular no subir bundle, DLL, paquete, cache, lock temporal o log completo.
+16. Conservar solo un resumen sanitizado con comandos, codigos, tiempos, warnings/errores, hashes,
+    rutas logicas, inventario textual y entorno. GitHub Actions retiene su log operativo, pero el
+    repositorio no conserva assemblies, paquetes, caches ni outputs.
+
+### 19.5 Umbral provisional de procedencia
+
+Para autorizar **solo E2**, la aceptacion minima propuesta es: versiones exactas; SHA-256 fijados en
+la seccion 7; SHA-512 recalculado consistente con NuGet; metadatos/licencia sin cambios; restore desde
+la unica fuente declarada; y reconocimiento expreso de que el propietario observado no esta
+verificado criptograficamente por Autodesk. Esto detecta sustituciones respecto de E1, pero no prueba
+autenticidad oficial ni resuelve la licencia. Si el dueno no acepta ese riesgo provisional, E2 se
+descarta o se exige primero un canal/firma oficial de Autodesk.
+
+### 19.6 Criterios de aceptacion
+
+1. el runner no tiene AutoCAD y el control negativo falla por referencias Autodesk ausentes;
+2. el restore positivo usa solo NuGet y un cache inicialmente vacio;
+3. versiones, grafo, hashes y metadatos coinciden con E1;
+4. el Plugin y la solucion compilan en Release;
+5. la suite Windows y el guardian quedan verdes contra la baseline vigente;
+6. ninguna DLL Autodesk o paquete aparece fuera del cache temporal;
+7. no se publica artifact desde E2 y el artifact Cobertura existente no cambia;
+8. los logs no contienen rutas de AutoCAD instalado y el entorno queda identificado;
+9. el checkout versionado solo contiene los cambios de CI/proyecto que el dueno haya autorizado para
+   habilitar el experimento, no sus copias, caches u outputs.
 
 Si un criterio falla, E2 no se clasifica como exito parcial silencioso: se documenta la primera
-causa y se detiene antes de adopcion.
+causa y se detiene antes de adopcion. Un E2 verde sigue siendo evidencia experimental B; la adopcion,
+el ADR y la excepcion permanente a cero NuGet requieren una decision posterior separada.
 
 ## 20. Impacto sobre iniciativas posteriores
 
