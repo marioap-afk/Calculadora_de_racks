@@ -43,8 +43,7 @@ Planes disponibles:
   `../automation/state/I-06.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
-- I-13 conserva su evidencia detallada en la rama congelada `experiment/refs-autocad-ci`; su
-  promocion fue revalidada y el Owner autorizo la integracion el 2026-07-20. El estado se hace
-  efectivo con el merge en `main`.
+- I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
+  revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
   cerrada documentalmente con decision B y restricciones; no autoriza por si sola el merge de I-13.
