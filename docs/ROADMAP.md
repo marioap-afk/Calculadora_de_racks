@@ -1,8 +1,7 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-20 (I-13 completada y preparada en el último commit documental de su rama;
-> la marca `integrada` que lleva este documento se hace efectiva con el merge manual. La decisión
-> documental de I-29 queda aplicada por I-13).
+> Actualizado: 2026-07-20 (I-13 integrada y validada en `main`; la decisión documental de I-29
+> quedó aplicada por I-13).
 > Convierte la
 > [auditoría 2026-07](auditoria-arquitectura-2026-07.md) en un plan ejecutable por iniciativas
 > independientes (1 iniciativa = 1 rama = 1 worktree, ver [WORKFLOW.md](WORKFLOW.md)).
@@ -70,7 +69,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-05 | `feature/guardrail-unidades` ✋ | Leer `INSUNITS` al insertar/RACKLAYOUT/RACKRELLENAR y avisar si ≠ pulgadas; ADR de estrategia de unidades a largo plazo (D4) | S | — | — | pendiente |
 | I-06 | `docs/reestructura` | Entregó `ARCHITECTURE.md`, nueve Context Packs, glosario y guías vigentes, archivo histórico, HANDOFF reducido y automatización documentada pero pausada; preservó el contenido único y corrigió rutas y navegación. I-07 se desbloquea solo tras el merge efectivo | M | — | I-07 | integrada (2026-07-17) |
 | I-07 | `docs/adr-retroactivos` | Retro-documentar las ~13 decisiones de HANDOFF §7 como ADRs de una página (C4) | S | — | I-06 | pendiente |
-| I-13 | `architecture/referencias-autocad-ci` | Promovió la evidencia de `experiment/refs-autocad-ci` a un build limpio del Plugin sin AutoCAD en CI: referencias condicionales compile-only, versiones/hashes/origen fijados, guardas fail-closed, bundle y artifacts sin material Autodesk. ADR-0003 acepta la excepción cero-NuGet limitada conforme a I-29 | S | — | — | integrada (2026-07-20) |
+| I-13 | `architecture/referencias-autocad-ci` | Promovió la evidencia conservada en `archive/i-13-experiment-final-4e084d2` a un build limpio del Plugin sin AutoCAD en CI: referencias condicionales compile-only, versiones/hashes/origen fijados, guardas fail-closed, bundle y artifacts sin material Autodesk. ADR-0003 acepta la excepción cero-NuGet limitada conforme a I-29 | S | — | — | integrada (2026-07-20) |
 | I-26 | `refactor/test-catalog-ids` | `TestCatalogIds` centralizados; guardián de IDs y relaciones esenciales contra los catálogos distribuidos; cobertura Cobertura publicada como artifact de CI | S | — | — | integrada (2026-07-19) |
 | I-29 | `docs/licencia-procedencia-autocad-ci` | Decisión B: aprobada con restricciones para uso interno de RackCad como aceptación interna de riesgo; no es conclusión jurídica ni autorización expresa de Autodesk. Sus catorce restricciones y revisión obligatoria quedaron aplicadas en ADR-0003 | S | — (usa evidencia técnica de I-13) | — | integrada por I-13 (2026-07-20) |
 

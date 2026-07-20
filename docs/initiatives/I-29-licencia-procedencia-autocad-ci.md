@@ -33,7 +33,7 @@ Estado: **cerrada documentalmente**. El 2026-07-20 Mario Perez, Coordinador de D
 Proyectos de Industrias Montilla y Owner de RackCad, selecciono **B. Aprobado con restricciones**.
 Es una aceptacion interna de riesgo para uso interno; no es una conclusion juridica ni una
 afirmacion de autorizacion expresa de Autodesk. Tras la revalidacion, el Owner autorizo por separado
-la integracion de I-13 el 2026-07-20; el estado se hace efectivo con el merge en `main`.
+la integracion de I-13, completada en `main` el 2026-07-20.
 
 ## 1. Objetivo
 
@@ -78,8 +78,8 @@ conclusion legal.
 
 ## 5. Contexto requerido
 
-Leer el ADR-0003 aceptado en la rama de promocion; la evidencia I-13 en la rama congelada
-`experiment/refs-autocad-ci`;
+Leer el ADR-0003 aceptado en `main`; la evidencia I-13 archivada en
+`archive/i-13-experiment-final-4e084d2`;
 los Context Packs `autocad-plugin` y `delivery-validation`; la guia de despliegue; y la evidencia de
 E2/CI #50 y de la promocion/CI #54.
 
@@ -153,14 +153,14 @@ no autoriza por si sola el merge de `architecture/referencias-autocad-ci`.
 ## 13. Estado versionado y entrega del Pull Request
 
 I-29 esta completada en su rama canonica, con automatizacion deshabilitada y sin merge automatico.
-La rama se conserva en solo lectura. `completed` no significa integrada; cualquier integracion sera
-una decision manual conforme a WORKFLOW.
+La rama se conserva en solo lectura. Su decision se integro mediante I-13 por autorizacion manual
+conforme a WORKFLOW.
 
 ## 14. Evidencia final
 
 La evidencia final registra decision B, Owner, fuentes, quince respuestas, usos permitidos y
 prohibidos, politica de caching/artifacts, obligaciones, vigencia y revision. ADR-0003 aplica ahora
-la decision. La promocion de I-13 fue revalidada y su integracion autorizada por el Owner el
+la decision. La promocion de I-13 fue revalidada, autorizada por el Owner e integrada en `main` el
 2026-07-20; esta autorizacion separada no modifica las restricciones de I-29.
 
 ### Fuentes minimas para la revision

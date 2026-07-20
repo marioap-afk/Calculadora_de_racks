@@ -5,10 +5,9 @@
 - **Decisores:** Mario Perez, dueno del repositorio; redactado por Codex
 - **Iniciativas relacionadas:** I-13 e I-29
 
-Este ADR acepta una excepcion especifica y revocable a la politica cero NuGet. La decision queda
-preparada en la rama de promocion; no forma parte de `main` hasta que esa rama se integre. El merge
-de I-13 fue autorizado por el dueno el 2026-07-20 despues de revalidar la promocion; la excepcion
-solo se vuelve politica vigente de `main` cuando entra ese merge.
+Este ADR acepta una excepcion especifica y revocable a la politica cero NuGet. El merge de I-13 fue
+autorizado por el dueno e integrado en `main` el 2026-07-20 despues de revalidar la promocion; desde
+ese cierre la excepcion es politica vigente del trunk bajo las restricciones registradas aqui.
 
 ## Contexto
 
@@ -165,7 +164,7 @@ auditada; no amplía el alcance material del ADR ni autoriza cambios futuros sin
 
 ## Referencias
 
-- I-13, evidencia tecnica congelada en `experiment/refs-autocad-ci`.
+- I-13, evidencia tecnica archivada en `archive/i-13-experiment-final-4e084d2`.
 - [I-29 — Licencia y procedencia de referencias AutoCAD para CI](../initiatives/I-29-licencia-procedencia-autocad-ci.md), con decision P4 en la rama congelada `docs/licencia-procedencia-autocad-ci`.
 - CI #50 (experimento E2) y CI #54/#55 (promocion limpia y gate documental).
 - `.github/workflows/ci.yml`, `eng/ci/verify-autocad-references.ps1` y

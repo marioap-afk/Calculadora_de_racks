@@ -24,9 +24,8 @@ I-26 (`refactor/test-catalog-ids`) está integrada desde el **2026-07-19**. Cent
 expectativas canónicas de tests, añade un guardián de IDs y relaciones esenciales y publica
 cobertura Cobertura como artifact; no cambia producto ni catálogos distribuidos.
 
-I-13 queda integrada con este cierre el **2026-07-20** mediante
-`architecture/referencias-autocad-ci`; el estado se hace efectivo cuando el merge autorizado entra
-en `main`. CI compila ahora `RackCad.Plugin` sin AutoCAD instalado con
+I-13 quedó integrada el **2026-07-20** mediante `architecture/referencias-autocad-ci`. CI compila
+ahora `RackCad.Plugin` sin AutoCAD instalado con
 referencias condicionales compile-only, versiones y origen fijados y guardas que impiden copiar o
 publicar material Autodesk. ADR-0003 registra la única excepción autorizada a la política cero
 NuGet. I-29 concluyó con decisión B, aprobada con catorce restricciones para uso interno como
@@ -82,22 +81,26 @@ un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
 
-**Baseline de I-13 preparada para integración — 2026-07-20:**
+**Baseline integrada de I-13 — 2026-07-20:**
 
-- punta técnica y documental validada de `architecture/referencias-autocad-ci`:
-  `76b6246c89688dd1546cacc9c9eef10d8cbf366b`;
+- punta técnica final `849dff931ac5055c955ea2371c2388ec279b74b4`, contenida en `main` por
+  `773feea3732497e04746c45451eb1b4e775d8961`;
 - suite `RackCad.Tests`: **636/636 verdes**, sin fallos ni omitidas;
 - build UI Debug: **0 errores y 0 advertencias**;
 - build Plugin Debug: **0 errores**; únicamente las dos familias `MSB3277` conocidas;
-- CI de rama #61: tests, build UI y build Plugin without AutoCAD verdes; único artifact
+- CI de rama #64: tests, build UI y build Plugin without AutoCAD verdes; único artifact
   `rackcad-coverage-cobertura`, sin artifacts del Plugin ni material Autodesk;
 - la validación post-merge #63 detectó que el job conservaba la condición temporal de la rama de
   promoción; I-13 la retiró antes de la limpieza para que el Plugin se compile en cada push;
+- CI post-merge #65 verde sobre `773feea3732497e04746c45451eb1b4e775d8961`: ejecutó los tres
+  jobs, incluido Build Plugin without AutoCAD, y publicó solo la cobertura Cobertura;
 - las tres anotaciones de CI son la deprecación heredada de Node.js 20 en las acciones usadas;
 - ADR-0003 aceptado con decisión I-29 B, matriz 14/14, rollback y nueva revisión obligatoria;
 - AutoCAD: no ejecutado ni requerido porque la iniciativa cambia infraestructura de compilación y
   documentación, no dibujo ni runtime;
-- el commit documental final requiere su propio CI verde antes del merge.
+- evidencia experimental y respaldo pre-rebase conservados en las etiquetas
+  `archive/i-13-experiment-final-4e084d2` y `archive/i-13-pre-rebase-a6febd2` antes de retirar las
+  ramas y worktrees de I-13.
 
 **Baseline integrada de I-26 — 2026-07-19:**
 
