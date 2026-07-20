@@ -163,7 +163,7 @@ namespace RackCad.Plugin
                 using (document.LockDocument())
                 using (var transaction = document.Database.TransactionManager.StartTransaction())
                 {
-                    var reference = FindFirstModelSpaceReference(transaction, document.Database, plantaBlocks);
+                    var reference = RackBlockFinder.FindFirstModelSpaceReference(transaction, document.Database, plantaBlocks);
                     if (reference == null)
                     {
                         transaction.Commit();

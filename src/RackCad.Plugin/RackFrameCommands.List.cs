@@ -121,7 +121,7 @@ namespace RackCad.Plugin
                 using (document.LockDocument())
                 using (var transaction = document.Database.TransactionManager.StartTransaction())
                 {
-                    var reference = FindFirstModelSpaceReference(transaction, document.Database, blocks);
+                    var reference = RackBlockFinder.FindFirstModelSpaceReference(transaction, document.Database, blocks);
                     if (reference == null)
                     {
                         editor.WriteMessage("\nRackCad: el rack no tiene copias insertadas en el modelo.");
@@ -149,29 +149,6 @@ namespace RackCad.Plugin
             {
                 editor.WriteMessage("\nRackCad: no se pudo hacer zoom al rack. " + ex.Message);
             }
-        }
-
-        /// <summary>First model-space reference among the rack's view-blocks, frontal first (scan order otherwise).</summary>
-        private static BlockReference FindFirstModelSpaceReference(Transaction transaction, Database database, List<(ObjectId BlockId, RackEmbedDocument Embed)> blocks)
-        {
-            var modelSpaceId = SymbolUtilityServices.GetBlockModelSpaceId(database);
-            var ordered = blocks.OrderBy(block =>
-                string.Equals(block.Embed.View, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase) ? 0 : 1);
-
-            foreach (var block in ordered)
-            {
-                var record = (BlockTableRecord)transaction.GetObject(block.BlockId, OpenMode.ForRead);
-                foreach (ObjectId referenceId in record.GetBlockReferenceIds(directOnly: true, forceValidity: false))
-                {
-                    var reference = (BlockReference)transaction.GetObject(referenceId, OpenMode.ForRead);
-                    if (reference.OwnerId == modelSpaceId)
-                    {
-                        return reference;
-                    }
-                }
-            }
-
-            return null;
         }
     }
 }
