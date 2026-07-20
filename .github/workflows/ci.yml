@@ -53,7 +53,6 @@ jobs:
 
   build-plugin:
     name: Build Plugin without AutoCAD
-    if: github.ref == 'refs/heads/architecture/referencias-autocad-ci'
     needs:
       - tests
       - build-ui
