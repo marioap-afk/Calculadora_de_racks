@@ -19,8 +19,8 @@ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj `
 ## Resultado de la suite (2026-07-21)
 
 - `dotnet build` de `RackCad.Application`: **0 errores, 0 advertencias**.
-- `dotnet test` (suite completa): **822 pruebas, 822 superadas, 0 fallidas, 0 omitidas** (31 nuevas de I-19
-  sobre la línea base de 791 en `de72287`).
+- `dotnet test` (suite completa): **839 pruebas, 839 superadas, 0 fallidas, 0 omitidas** (48 nuevas de I-19
+  sobre la línea base de 791 en `de72287`; la primera ronda dejó 822, la ronda de correcciones sube a 839).
 
 ## Diagnóstico del validador sobre el catálogo REAL distribuido
 
@@ -35,7 +35,40 @@ Validación de catálogo: 1 error(es), 2 advertencia(s), 0 informativa(s).
 ```
 
 Manifiesto esperado de `blocks-library.dwg` construido desde el catálogo:
-**90 bloques**, huella `540d623b68a864629d715e0c1722aaf5d894a8cd754f983479c89d174e5d17e4`.
+**90 bloques**, huella `0352c75e8c258769a5abbcc1ec92dc881f55bab29acefbe5055f7cb2926e174a`.
+
+> La huella cambió respecto de la primera ronda (`540d623b…`) porque el manifiesto ahora exige los
+> parámetros dinámicos reales por bloque (LONGITUD, PERALTE, ALTURA, SAQUE, FRENTE/FONDO), no sólo los
+> `paramX`/`paramY` del layout. El número de bloques (90) no cambia.
+
+### Parámetros esperados por bloque (muestra sobre el catálogo real)
+
+| Pieza | FRONTAL | LATERAL | PLANTA |
+|---|---|---|---|
+| Riel (`RIEL_DE_CINTA_CALIBRE_12`) | — | `LONGITUD` | — |
+| Poste (`POSTE_OMEGA_…`) | `LONGITUD`,`PERALTE` | `LONGITUD` | `PERALTE` |
+| Separador (`SEPARADOR_…`) | — | `LONGITUD` | `LONGITUD` |
+| Larguero (`LARGUERO_ESCALON_CAL14_3_REMACHES`) | `LONGITUD`,`PERALTE` | — | `LONGITUD`,`PERALTE` |
+| Placa base (`PLACA_BASE_…`) | `PERALTE` | `PERALTE` | `PERALTE` |
+| Tarima (`TARIMA_GENERICA`) | `LONGITUD`,`ALTURA` | `LONGITUD`,`ALTURA` | — |
+| Ménsula (`MENSULA_3_REMACHES_CAL_10`) | ∅ | ∅ | ∅ |
+
+El poste exige `PERALTE` en FRONTAL/PLANTA pero **no** en LATERAL (exactitud por vista); la ménsula y la
+placa **no** exigen `LONGITUD` (bloques ajenos). Verificado en `CatalogBlockParametersTests`.
+
+## Correcciones de la revisión (ronda 2)
+
+| Defecto | Corrección | Prueba |
+|---|---|---|
+| 1. Exactitud de parámetros | El manifiesto deriva los parámetros por **uso exacto** de bloque (pieceId+view+blockName), no por PieceId global; los `paramX`/`paramY` sólo aplican a la misma pieza y vista | `CatalogBlockManifestTests.BuildExpected_LayoutParams_ApplyOnlyToTheSamePieceAndView`; `CatalogBlockParametersTests.ExpectedParameters_Post_IsViewExact` |
+| 2. Parámetros dinámicos reales | Fuente compartida `CatalogBlockParameters` con nombres de los constantes de dominio (`SelectiveRackDefaults`/`SelectiveSafetyDefaults`) que los productores también usan; incluye `LONGITUD` del riel/postes/separadores, `PERALTE`, `ALTURA`, `SAQUE`, `FRENTE`/`FONDO` | `CatalogBlockParametersTests.*` (incl. `Manifest_ExpectsEveryParameterTheRailBuilderActuallyApplies`, guardia contra divergencia) |
+| 3. Versión y huella | `Compare` aborta ante esquema incompatible (`MANIFEST_SCHEMA_INCOMPATIBLE`) y marca huella ausente/alterada (`MANIFEST_FINGERPRINT_MISMATCH`) | `CatalogBlockManifestTests.Compare_IncompatibleSchemaVersion_IsErrorAndAborts` / `_MissingFingerprint_IsError` / `_TamperedJson_…` / `_ValidLibraryManifest_HasNoIssues` |
+| 4. Campos obligatorios vacíos | `ConnectionLayoutEntry` con `PieceId`/`ConnectionPointId`/`View` vacío = error (`EMPTY_LAYOUT_FIELD`); el bloque genérico sin pieza sigue siendo advertencia (`UNRESOLVED_BLOCK_PIECE`) | `CatalogValidatorTests.Validate_LayoutWithEmpty{PieceId,ConnectionPointId,View}_IsError` + `…AllMandatoryFields_HasNoEmptyFieldError` |
+
+Consolidación de nombres (defecto 2): los literales `"LONGITUD"`/`"PERALTE"` dispersos en
+`LateralHeaderParameters`, `DynamicSystemLateralBuilder` y `FlowBedLateralBuilder`, y los nombres `SAQUE`/
+`FRENTE`/`FONDO` de `SelectiveSafetyPlacement`, ahora referencian las constantes de dominio. Comportamiento
+idéntico (la suite completa lo respalda).
 
 Lectura:
 

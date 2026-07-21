@@ -179,7 +179,29 @@ Evidencia reproducible y verbatim en
 [`docs/automation/evidence/I-19-validador-catalogos.md`](../automation/evidence/I-19-validador-catalogos.md).
 
 - **Build**: `RackCad.Application` con 0 errores / 0 advertencias.
-- **Pruebas**: suite completa **822/822** verde (31 nuevas sobre la línea base 791 en `de72287`).
+- **Pruebas**: suite completa **839/839** verde (48 nuevas sobre la línea base 791 en `de72287`; 822 en la
+  primera ronda, 839 tras la ronda de correcciones).
+
+### Ronda 2 — correcciones de la revisión (2026-07-21)
+
+1. **Exactitud del manifiesto**: los parámetros esperados se derivan por **uso exacto** de bloque
+   (pieceId+view), nunca por PieceId global; los `paramX`/`paramY` sólo aplican a la misma pieza y vista.
+2. **Parámetros dinámicos reales**: fuente compartida `CatalogBlockParameters` (nombres desde
+   `SelectiveRackDefaults`/`SelectiveSafetyDefaults`, los mismos que usan los productores) que incluye
+   `LONGITUD` del riel/postes/separadores, `PERALTE`, `ALTURA`, `SAQUE`, `FRENTE`/`FONDO`. Se consolidaron
+   los literales dispersos de nombre de parámetro hacia el dominio (sin cambiar geometría ni reglas). Una
+   guardia (`Manifest_ExpectsEveryParameterTheRailBuilderActuallyApplies`) cruza la salida real del builder
+   del riel contra el manifiesto para prevenir divergencias.
+3. **Versión/huella operativas**: `Compare` aborta ante esquema incompatible
+   (`MANIFEST_SCHEMA_INCOMPATIBLE`) y marca huella ausente o alterada (`MANIFEST_FINGERPRINT_MISMATCH`).
+4. **Campos obligatorios vacíos**: `ConnectionLayoutEntry` con `PieceId`/`ConnectionPointId`/`View` vacío es
+   error (`EMPTY_LAYOUT_FIELD`); el bloque genérico sin pieza sigue siendo advertencia.
+
+Archivos nuevos de la ronda 2: `src/RackCad.Application/Catalogs/CatalogBlockParameters.cs`,
+`tests/RackCad.Tests/CatalogBlockParametersTests.cs`. Editados: los cuatro productores que definían nombres
+de parámetro por literal (`SelectiveRackDefaults` del dominio, `SelectiveSafetyPlacement`,
+`LateralHeaderParameters`, `DynamicSystemLateralBuilder`, `FlowBedLateralBuilder`). La huella esperada del
+catálogo distribuido cambió a `0352c75e…` (bloques: 90).
 - **Categorías cubiertas** con prueba positiva y negativa (matriz en la evidencia): ids duplicados,
   referencias/relaciones inválidas, bloques/vistas faltantes, filas descartadas por rol y manifiesto,
   más modo estricto y el paso extremo a extremo por la costura del proveedor.
