@@ -51,6 +51,19 @@ jobs:
       - name: dotnet build UI
         run: dotnet build src/RackCad.UI/RackCad.UI.csproj -c Debug -v:minimal
 
+  ui-tests:
+    name: UI Tests (WPF controls, net8.0-windows)
+    # The reusable controls (I-14) are born with tests; WPF needs a Windows runner and STA, so this is
+    # a dedicated job (the Domain/Application suite stays on ubuntu). It does not gate the Plugin build.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: dotnet test UI controls
+        run: dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug -v:minimal
+
   build-plugin:
     name: Build Plugin without AutoCAD
     needs:
