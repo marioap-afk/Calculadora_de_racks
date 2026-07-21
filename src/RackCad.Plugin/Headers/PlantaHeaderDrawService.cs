@@ -20,57 +20,26 @@ namespace RackCad.Plugin.Headers
         private readonly LateralHeaderDrawer drawer = new LateralHeaderDrawer();
 
         public HeaderPlacementResult DrawAndPlace(Document document, RackFrameConfiguration config, string payloadJson = null, string rackName = null)
-        {
-            if (document == null)
-            {
-                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            }
-
-            if (config == null)
-            {
-                return HeaderPlacementResult.Failure("No hay configuracion para dibujar.");
-            }
-
-            try
-            {
-                var catalog = RackCatalogLoader.Load();
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog));
-                var block = CreateBlock(document, plan, BlockName(rackName), payloadJson);
-                return BlockPlacement.PlaceAndReport(document, catalog, block);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
+            => ViewBlockDraw.DrawAndPlace(
+                document,
+                config != null,
+                "No hay configuracion para dibujar.",
+                drawer,
+                catalog => new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog)),
+                () => BlockName(rackName),
+                payloadJson);
 
         /// <summary>Redraw an existing planta block DEFINITION in place (all copies update on regen).</summary>
         public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, RackFrameConfiguration config, string payloadJson, bool regen = true)
-        {
-            if (document == null)
-            {
-                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            }
-
-            if (config == null || blockId.IsNull)
-            {
-                return HeaderPlacementResult.Failure("No hay cabecera para actualizar.");
-            }
-
-            try
-            {
-                var catalog = RackCatalogLoader.Load();
-                var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog));
-                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
-
-        private LateralHeaderBlockResult CreateBlock(Document document, DynamicSystemPlan plan, string blockName, string payloadJson)
-            => SystemBlockWriter.CreateBlock(document, drawer, plan, blockName, payloadJson);
+            => ViewBlockDraw.RedrawInPlace(
+                document,
+                blockId,
+                config != null && !blockId.IsNull,
+                "No hay cabecera para actualizar.",
+                drawer,
+                catalog => new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog)),
+                payloadJson,
+                regen);
 
         private static string BlockName(string rackName)
             => string.IsNullOrWhiteSpace(rackName) ? "Cabecera planta" : rackName.Trim() + " - planta";
