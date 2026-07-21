@@ -21,7 +21,7 @@ decision_paths: []
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: true
+requires_owner_decision: false
 requires_owner_validation: true
 automation:
   enabled: false
@@ -225,15 +225,17 @@ Explícitamente NO se toca (pertenece a otras iniciativas o excede D1/D3):
   fuente a los editores y **expone** `DynamicSourceProjectToInsert`/`FlowBedSourceDocumentToInsert`/
   `ConfigurationSourceProjectToInsert` para la inserción biblioteca→DWG). Sin rediseño de UI.
 
-**Frontera de la cabecera de biblioteca (gate `owner-decision`)**: la biblioteca de cabecera guarda por
-`RackFrameProjectStore`/`RackFrameProjectDocument` (un DTO **distinto**, esquema 1.0, cabecera desnuda), que
-**no** es uno de los cuatro límites de I-11 y por diseño **nunca** produce un `RackProjectDocument`. No es un
-diferimiento sino un límite de alcance factual: preservar `RackFrameProjectDocument` sería un **quinto** límite
-(exigiría añadirle `JsonExtensionData`). Por eso `requires_owner_decision: true` y el gate **owner-decision**:
-el dueño aprueba o rechaza excluir `RackFrameProjectDocument` como quinto límite. Si aprueba la exclusión,
-`requires_owner_decision` vuelve a `false` y la aprobación se registra en la evidencia. Si ordena incluirlo,
-la implementación se **detiene** antes de ampliar el alcance (§12) y se reporta. La cabecera **embebida** en el
-dibujo sí reconstruye un `RackProjectDocument` interior y **sí** se preserva (arriba).
+**Frontera de la cabecera de biblioteca (gate `owner-decision` — RESUELTO, aprobado)**: la biblioteca de
+cabecera guarda por `RackFrameProjectStore`/`RackFrameProjectDocument` (un DTO **distinto**, esquema 1.0,
+cabecera desnuda), que **no** es uno de los cuatro límites de I-11 y por diseño **nunca** produce un
+`RackProjectDocument`. Preservar `RackFrameProjectDocument` sería un **quinto** límite (exigiría añadirle
+`JsonExtensionData`). El dueño **aprobó excluir** `RackFrameProjectDocument` y la persistencia de cabecera
+desnuda vía `RackFrameProjectStore` del alcance de I-11 (evidencia:
+[`docs/automation/decisions/I-11.md`](../automation/decisions/I-11.md)); por eso
+`requires_owner_decision: false`. I-11 queda limitada a los cuatro límites documentados. La preservación de
+campos desconocidos en `RackFrameProjectDocument` se registra como **deuda/iniciativa posterior** (no se
+cancela permanentemente). La cabecera **embebida** en el dibujo sí reconstruye un `RackProjectDocument`
+interior y **sí** se preserva (arriba).
 
 **Limitación explícita**: `JsonExtensionData` **no** es preservación recursiva de todos los DTO anidados. Se
 preservan los campos desconocidos SOLO en los cuatro límites de I-11 (`RackEmbedDocument`,
