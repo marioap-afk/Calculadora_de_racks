@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-16
 title: Refactor de Draw Services del Plugin
 type: refactor
-status: claimed
+status: integration-ready
 branch: refactor/draw-services
 base_branch: main
 priority:
@@ -28,8 +28,10 @@ automation:
 
 # I-16 — Refactor de Draw Services del Plugin
 
-> Estado: **reclamada** (F0 hecha; F1 pendiente de autorización). `completed` no significa integrada; la
-> integración es manual del dueño (WORKFLOW §4.5). Los conteos de pruebas y hashes canónicos viven en
+> Estado: **F0-F5 completadas; lista para preparar integración, aún NO integrada.** CI de rama verde;
+> build y tests locales verdes; **validación manual en AutoCAD 2025 aprobada** (registro:
+> [I-16-autocad-validation.md](I-16-autocad-validation.md)). `integration-ready` no significa integrada;
+> la integración es manual del dueño (WORKFLOW §4.5). Los conteos de pruebas y hashes canónicos viven en
 > `docs/HANDOFF.md` §12, no aquí.
 
 ## 1. Objetivo
@@ -165,16 +167,18 @@ No se esperan cambios bajo `src/RackCad.Domain`, `src/RackCad.Application` (más
 - [x] **F0. Reclamo atómico**: rama + worktree desde `origin/main`, commit vacío de reclamo (con
   `Claim-Id` nuevo) y primer push aceptado sin force; base verificada al reclamar (`origin/main` verde);
   sin estorbo activo (I-10 ausente en `origin`); I-08 verificada sin solape de archivos.
-- [ ] **F1. Contrato + línea base golden — pendiente de autorización**: publicar este contrato (primer
-  commit no vacío) y, tras autorización, establecer la línea base: snapshot golden del `DynamicSystemPlan`
-  por vista/payload representativos e inventario mecánico de nombres, sufijos, mensajes y firmas.
-- [ ] **F2. Extraer colocación y carga de catálogo** (interno al Plugin) sin cambiar comportamiento; los
-  siete servicios y `LateralHeaderDrawService` consumen las superficies extraídas. Verde en cada paso.
-- [ ] **F3. Colapsar la boilerplate** de los siete servicios en el servicio compartido, aislando las
-  especializaciones por vista y preservando las invariantes de §11.
-- [ ] **F4. Uniformar `regen`** en un punto guardado por el flag, preservando el contrato de §11.
-- [ ] **F5. Verificar equivalencia**: golden verdes; inventario antes/después de nombres, mensajes y
-  `Regen`; suite completa; builds Debug UI y Plugin; CI de rama verde. Muestreo AutoCAD al integrar.
+- [x] **F1. Contrato + línea base golden**: contrato publicado y línea base establecida (golden
+  `DrawServicePlanBaselineTests` del `DynamicSystemPlan` por vista/payload + inventario mecánico de nombres,
+  sufijos, mensajes y firmas).
+- [x] **F2. Extraer colocación y carga de catálogo** (interno al Plugin) sin cambiar comportamiento:
+  `RackCatalogLoader` y `BlockPlacement` extraídos con fachadas; los siete servicios y
+  `LateralHeaderDrawService` los consumen.
+- [x] **F3. Colapsar la boilerplate** de los siete servicios en `ViewBlockDraw` (colaborador no genérico con
+  delegados), aislando las especializaciones por vista y preservando las invariantes de §11.
+- [x] **F4. Uniformar `regen`** en `SystemBlockWriter.ApplyRegen`, preservando el contrato de §11.
+- [x] **F5. Verificar equivalencia**: golden verdes; inventario antes/después de nombres, mensajes y
+  `Regen`; suite completa; builds Debug UI y Plugin; CI de rama verde. Muestreo AutoCAD **ejecutado y
+  aprobado** por el dueño (§10; registro en `I-16-autocad-validation.md`).
 
 Cada fase cierra con commit + push de la rama (respaldo, WORKFLOW §4.3) y evidencia revisable.
 
@@ -263,13 +267,21 @@ resultados verificables prevalecen sobre cualquier campo `status` del front matt
 
 ## 14. Evidencia final
 
-**F0 completada; F1 pendiente de autorización.** El trabajo vive solo en la rama `refactor/draw-services`;
-`main` no fue modificada.
+**F0-F5 completadas; iniciativa lista para preparar integración, aún NO integrada.** El trabajo vive solo en
+la rama `refactor/draw-services`; `main` no fue modificada.
 
-- **F0**: reclamo atómico — worktree desde `origin/main`, commit vacío de reclamo
-  (`Claim-Id: 5838ddaa-af47-4879-8d34-1d2f0c768005`) y primer push aceptado sin force; base verificada al
-  reclamar; sin estorbo activo de I-10; convivencia con I-08 verificada sin solape.
-- **F1**: este contrato como primer commit no vacío. La línea base golden y las fases F2-F5 no se ejecutan
-  hasta la autorización del dueño.
+- **F0**: reclamo atómico (`Claim-Id: 5838ddaa-af47-4879-8d34-1d2f0c768005`); sin estorbo de I-10; sin solape
+  con I-08.
+- **F1**: contrato + línea base golden (`DrawServicePlanBaselineTests`) + inventario mecánico (baseline).
+- **F2**: `RackCatalogLoader` y `BlockPlacement` extraídos (interno al Plugin) con fachadas; los siete
+  servicios los consumen.
+- **F3**: orquestación de los siete colapsada en `ViewBlockDraw`; firmas y especializaciones (`postIndex`,
+  `DynamicRackEnd`, all-loose) preservadas.
+- **F4**: regen uniformado en `SystemBlockWriter.ApplyRegen`; 7 ubicaciones efectivas de `Regen` preservadas.
+- **F5**: equivalencia verificada; **CI de rama verde**; **build y tests locales verdes** (suite completa, UI
+  y Plugin Debug, solo `MSB3277`); **validación manual en AutoCAD 2025 aprobada** por el dueño (registro:
+  [I-16-autocad-validation.md](I-16-autocad-validation.md)).
 
-Los conteos de pruebas y hashes canónicos viven en `docs/HANDOFF.md` §12, no aquí.
+Pendiente (operación manual del dueño, fuera de estas fases): rebase final si el trunk avanza, actualización
+de `docs/HANDOFF.md`/`docs/ROADMAP.md` como último commit de la rama, y merge `--no-ff`. Los conteos de
+pruebas y hashes canónicos viven en `docs/HANDOFF.md` §12, no aquí.
