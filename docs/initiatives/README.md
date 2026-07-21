@@ -47,6 +47,12 @@ Planes disponibles:
   `RackFrameCommands` por área, promover helpers de bloques/clonación/capas/transacciones y unificar
   el escaneo de envelopes triplicado, preservando comandos, geometría, BOM, persistencia y UX. Fuera
   de alcance I-10 e I-16 y cualquier cambio funcional.
+- [`I-08-system-registry.md`](I-08-system-registry.md): contrato de I-08. Introduce el descriptor de
+  sistema y `SystemRegistry` en Application; `RackProjectStore`, la validación y `RackDesignLibrary`
+  consumen el registro (mueren los switches por `RackSystemKind` y el enum paralelo `RackDesignKind`),
+  preservando formatos JSON, IDs, nombres, etiquetas, fallback legacy y APIs públicas. Limitada a
+  Application/Persistence + adaptación mínima del consumidor de biblioteca en UI. Fuera de alcance
+  I-10 (handlers del Plugin), I-16 (DrawServices), y `RackEmbedDocument` con sus discriminadores string.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

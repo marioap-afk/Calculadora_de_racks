@@ -3,15 +3,17 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using RackCad.Application.RackFrames;
+using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Persistence
 {
     /// <summary>
-    /// Saves and loads a project that can be either a selective header or a dynamic system,
-    /// using a top-level <c>kind</c> discriminator. Backward compatible: a legacy file with no
-    /// <c>kind</c> (a bare header, schema 1.0) loads as a selective project. Derived header
-    /// members are rebuilt on load.
+    /// Saves and loads a project that can be any registered rack system, using a top-level <c>Kind</c> discriminator. The
+    /// per-kind write / build / validate logic lives in the <see cref="SystemRegistry"/> descriptors, not in a switch here
+    /// (initiative I-08). Backward compatible: a legacy file with no <c>kind</c> (a bare header, schema 1.0) loads as a
+    /// selective project, and a wrapper whose <c>Kind</c> is not a registered system (e.g. an undefined enum number)
+    /// falls back to the historical header/Selective path. Derived header members are rebuilt on load.
     /// </summary>
     public sealed class RackProjectStore
     {
@@ -20,6 +22,21 @@ namespace RackCad.Application.Persistence
         private static readonly JsonSerializerOptions SerializerOptions = CreateOptions();
 
         private readonly BracingPanelMemberBuilder builder = new BracingPanelMemberBuilder();
+        private readonly SystemRegistry registry;
+
+        public RackProjectStore()
+            : this(SystemRegistry.Default)
+        {
+        }
+
+        /// <summary>
+        /// Uses <paramref name="registry"/> for per-kind dispatch. Production uses <see cref="SystemRegistry.Default"/>;
+        /// the overload is a seam that lets a test prove dispatch is registry-driven (there is no hard-coded kind switch).
+        /// </summary>
+        public RackProjectStore(SystemRegistry registry)
+        {
+            this.registry = registry ?? throw new ArgumentNullException(nameof(registry));
+        }
 
         public string Serialize(RackProject project)
         {
@@ -30,25 +47,9 @@ namespace RackCad.Application.Persistence
 
             var document = new RackProjectDocument { Kind = project.Kind };
 
-            if (project.Kind == RackSystemKind.PalletFlow && (project.DynamicDesign != null || project.DynamicSystem != null))
-            {
-                document.DynamicSystem = project.DynamicDesign != null
-                    ? DynamicRackSystemDocument.From(project.DynamicDesign)
-                    : DynamicRackSystemDocument.From(project.DynamicSystem);
-            }
-            else if (project.Kind == RackSystemKind.SelectiveRack && project.SelectiveRack != null)
-            {
-                document.SelectiveRack = project.SelectiveRack;
-            }
-            else if (project.Kind == RackSystemKind.Cama && project.FlowBed != null)
-            {
-                document.FlowBed = project.FlowBed;
-            }
-            else if (project.Kind == RackSystemKind.Larguero && project.Larguero != null)
-            {
-                document.Larguero = project.Larguero;
-            }
-            else
+            // The kind's descriptor writes its own payload; a kind with no payload present — and any unregistered kind —
+            // falls back to the historical bare-header path, re-stamping Kind = Selective.
+            if (!(registry.TryGet(project.Kind, out var descriptor) && descriptor.TryWritePayload(project, document)))
             {
                 document.Kind = RackSystemKind.Selective;
                 document.Header = project.Header == null ? null : RackFrameProjectDocument.FromConfiguration(project.Header);
@@ -121,43 +122,14 @@ namespace RackCad.Application.Persistence
 
         private RackProject BuildProject(RackProjectDocument document)
         {
-            switch (document.Kind)
+            if (registry.TryGet(document.Kind, out var descriptor))
             {
-                case RackSystemKind.PalletFlow:
-                    RequirePayload(document.DynamicSystem, "sistema dinámico");
-                    var design = document.DynamicSystem.ToDesign();
-                    var system = document.DynamicSystem.ToDomain();
-                    foreach (var module in system.Modules)
-                    {
-                        if (module.AssociatedFrameConfiguration != null)
-                        {
-                            builder.RefreshPhysicalModel(module.AssociatedFrameConfiguration);
-                        }
-                    }
-
-                    return RackProject.ForDynamic(design, system);
-
-                case RackSystemKind.SelectiveRack:
-                    RequirePayload(document.SelectiveRack, "rack selectivo");
-                    return RackProject.ForSelectiveRack(document.SelectiveRack);
-
-                case RackSystemKind.Cama:
-                    RequirePayload(document.FlowBed, "cama");
-                    return RackProject.ForCama(document.FlowBed);
-
-                case RackSystemKind.Larguero:
-                    RequirePayload(document.Larguero, "larguero");
-                    return RackProject.ForLarguero(document.Larguero);
-
-                default:
-                    var header = document.Header?.ToConfiguration();
-                    if (header != null)
-                    {
-                        builder.RefreshPhysicalModel(header);
-                    }
-
-                    return RackProject.ForSelective(header);
+                return descriptor.Build(document, builder);
             }
+
+            // Unregistered / undefined numeric Kind (e.g. (RackSystemKind)999): exactly the historical header/Selective
+            // fallback. Get(Selective) is always registered, and its Build is the header path.
+            return registry.Get(RackSystemKind.Selective).Build(document, builder);
         }
 
         private RackProject DeserializeLegacyHeader(string json)
@@ -185,33 +157,17 @@ namespace RackCad.Application.Persistence
             return RackProject.ForSelective(header);
         }
 
-        /// <summary>A wrapper that names a type but omits its payload is corrupt/truncated — fail clearly, don't silently degrade.</summary>
-        private static void RequirePayload(object payload, string typeName)
+        /// <summary>
+        /// Reject a semantically-empty project (e.g. <c>{}</c> → a header with height 0) instead of returning it. The
+        /// per-kind predicate and grammatical noun are selected via the descriptor, not a switch; <see cref="Get"/> is
+        /// safe here because a built project's <see cref="RackProject.Kind"/> is always a registered kind.
+        /// </summary>
+        private void ValidateProject(RackProject project)
         {
-            if (payload == null)
+            var descriptor = registry.Get(project.Kind);
+            if (!descriptor.IsUsable(project))
             {
-                throw new InvalidOperationException("El proyecto declara tipo '" + typeName + "' pero no contiene sus datos.");
-            }
-        }
-
-        /// <summary>Reject a semantically-empty project (e.g. <c>{}</c> → a header with height 0) instead of returning it.</summary>
-        private static void ValidateProject(RackProject project)
-        {
-            bool usable;
-            string what;
-
-            switch (project.Kind)
-            {
-                case RackSystemKind.PalletFlow: usable = RackDesignValidation.IsUsableDynamic(project.DynamicDesign, project.DynamicSystem); what = "el sistema dinámico"; break;
-                case RackSystemKind.SelectiveRack: usable = RackDesignValidation.IsUsableSelective(project.SelectiveRack); what = "el rack selectivo"; break;
-                case RackSystemKind.Cama: usable = RackDesignValidation.IsUsableFlowBed(project.FlowBed); what = "la cama"; break;
-                case RackSystemKind.Larguero: usable = RackDesignValidation.IsUsableLarguero(project.Larguero); what = "el larguero"; break;
-                default: usable = RackDesignValidation.IsUsableHeader(project.Header); what = "la cabecera"; break;
-            }
-
-            if (!usable)
-            {
-                throw Degenerate(what);
+                throw Degenerate(descriptor.ValidationNoun);
             }
         }
 
