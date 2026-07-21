@@ -11,9 +11,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>RACKLISTA: cross-type inventory of every rack in the drawing, with zoom-to on pick.</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>RACKLISTA / RACKBOMTOTAL: cross-type inventory of every rack in the drawing, with zoom-to on pick; plus their aliases.</summary>
+    public sealed partial class RackInventarioCommands
     {
+        [CommandMethod("RL")]  public void AliasRackLista() => RackLista();                // RACKLISTA
+
         /// <summary>
         /// Tabulates every rack in the drawing (name, type, views present, placed copies) by scanning all block
         /// definitions for embed envelopes, and zooms to the chosen rack's first model-space reference.

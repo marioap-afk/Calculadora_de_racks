@@ -16,8 +16,10 @@ namespace RackCad.Plugin
     /// RACKBOMTOTAL — the whole-drawing bill of materials. Scans every rack block (grouped by GUID like RACKLISTA),
     /// rebuilds each rack's BOM from its embedded design (per kind), and shows a per-rack breakdown + grand total.
     /// </summary>
-    public sealed partial class RackFrameCommands
+    public sealed partial class RackInventarioCommands
     {
+        [CommandMethod("RB")]  public void AliasRackBomTotal() => RackBomTotal();          // RACKBOMTOTAL
+
         [CommandMethod("RACKBOMTOTAL")]
         public void RackBomTotal()
         {
