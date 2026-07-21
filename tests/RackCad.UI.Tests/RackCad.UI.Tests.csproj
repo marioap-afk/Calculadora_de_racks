@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- WPF controls live in net8.0-windows; the UI test project must target the same TFM
+         and enable WPF so it can instantiate the controls it verifies. -->
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- Match RackCad.Tests: the test host rolls forward when the exact 8.0 runtime is absent. -->
+    <RollForward>LatestMajor</RollForward>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RackCad.Domain\RackCad.Domain.csproj" />
+    <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
+    <ProjectReference Include="..\..\src\RackCad.UI\RackCad.UI.csproj" />
+  </ItemGroup>
+</Project>
