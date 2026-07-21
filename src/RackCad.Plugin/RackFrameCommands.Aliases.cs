@@ -12,7 +12,6 @@ namespace RackCad.Plugin
     public sealed partial class RackFrameCommands
     {
         [CommandMethod("RK")]  public void AliasRackCad() => RackCad();                    // menú principal
-        [CommandMethod("QCM")] public void AliasQuickCama() => QuickCama();                // QUICKCAMA
         [CommandMethod("RED")] public void AliasRackEditar() => RackEditar();              // RACKEDITAR
         [CommandMethod("RD")]  public void AliasRackDuplicar() => RackDuplicar();          // RACKDUPLICAR
         [CommandMethod("RL")]  public void AliasRackLista() => RackLista();                // RACKLISTA

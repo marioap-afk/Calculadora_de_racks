@@ -55,7 +55,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.FlowBedToInsert != null)
                     {
-                        DrawAndPlaceBed(menu.FlowBedToInsert, BuildCamaPayload(menu.FlowBedToInsert, menu.FlowBedRackId, menu.FlowBedRackName), menu.FlowBedRackName);
+                        RackCamaCommands.DrawAndPlaceBed(menu.FlowBedToInsert, RackCamaCommands.BuildCamaPayload(menu.FlowBedToInsert, menu.FlowBedRackId, menu.FlowBedRackName), menu.FlowBedRackName);
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {
@@ -106,7 +106,7 @@ namespace RackCad.Plugin
                         RackCabeceraCommands.EditCabecera(document, blockId, embed);
                         break;
                     case RackEmbedDocument.KindCama:
-                        EditCama(document, blockId, embed);
+                        RackCamaCommands.EditCama(document, blockId, embed);
                         break;
                     default:
                         editor.WriteMessage("\nRackCad: tipo de rack no reconocido (" + embed.Kind + ").");

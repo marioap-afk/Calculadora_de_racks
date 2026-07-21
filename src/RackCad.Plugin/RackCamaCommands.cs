@@ -14,9 +14,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>Cama de rodamiento (roller flow bed) commands + their draw/edit/payload helpers.</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>Cama de rodamiento (roller flow bed) commands + their draw/edit/payload helpers, plus alias.</summary>
+    public sealed class RackCamaCommands
     {
+        [CommandMethod("QCM")] public void AliasQuickCama() => QuickCama();                // QUICKCAMA
+
         /// <summary>
         /// Draws one roller bed ("cama de rodamiento") in the lateral view as a block placed with the mouse.
         /// Prompts for the bed type, roller, lane depth and (for dynamic beds) pallet depth. Pushback beds
@@ -153,7 +155,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Builds the roller-bed block and runs the placement jig, then reports the outcome.</summary>
-        private static void DrawAndPlaceBed(FlowBedConfiguration config, string payloadJson, string rackName)
+        internal static void DrawAndPlaceBed(FlowBedConfiguration config, string payloadJson, string rackName)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -167,7 +169,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Wraps a cama (FlowBedConfiguration) in the uniform embed envelope.</summary>
-        private static string BuildCamaPayload(FlowBedConfiguration config, string id, string name)
+        internal static string BuildCamaPayload(FlowBedConfiguration config, string id, string name)
         {
             if (config == null)
             {
@@ -184,7 +186,7 @@ namespace RackCad.Plugin
             });
         }
 
-        private static void EditCama(Document document, ObjectId blockId, RackEmbedDocument embed)
+        internal static void EditCama(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 
