@@ -79,10 +79,11 @@ namespace RackCad.Plugin
             var blocks = RackCommandSupport.FindRackBlocks(document, id);
             var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !RackCommandSupport.IsPlantaView(b.Embed)).ToList();
             var lateralBlocks = blocks.Where(b => IsLateralView(b.Embed)).OrderBy(b => b.Embed.Section).ToList();
-            var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            // Keep each planta block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
+            var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).ToList();
 
             // The clicked block might not carry the GUID scan (defensive): make sure the selected one is handled.
-            if (frontalBlocks.Count == 0 && lateralBlocks.All(b => b.BlockId != blockId) && !plantaBlocks.Contains(blockId)
+            if (frontalBlocks.Count == 0 && lateralBlocks.All(b => b.BlockId != blockId) && plantaBlocks.All(b => b.BlockId != blockId)
                 && !IsLateralView(embed) && !RackCommandSupport.IsPlantaView(embed))
             {
                 frontalBlocks.Add((blockId, embed));
@@ -114,7 +115,7 @@ namespace RackCad.Plugin
 
                 var fondoView = SelectiveDepthLayout.FondoSystemView(system, fondo);
                 fondoView.Name = name;
-                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewFrontal, fondo);
+                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewFrontal, fondo, fb.Embed);
                 var r = new SelectiveFrontalDrawService().RedrawInPlace(document, fb.BlockId, fondoView, payload, regen: false);
                 if (r != null && r.Success)
                 {
@@ -138,7 +139,7 @@ namespace RackCad.Plugin
                         continue;
                     }
 
-                    var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
+                    var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, lat.Embed);
                     var r = lateralService.RedrawInPlace(document, lat.BlockId, corte.Cabecera, payload, corte.Largueros, regen: false);
                     if (r != null && r.Success)
                     {
@@ -151,13 +152,13 @@ namespace RackCad.Plugin
 
             // Redraw the planta block(s) in place (one block for the whole top view).
             var updatedPlanta = 0;
-            foreach (var plantaId in plantaBlocks)
+            foreach (var pb in plantaBlocks)
             {
-                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewPlanta);
-                var r = new SelectivePlantaDrawService().RedrawInPlace(document, plantaId, system, payload, regen: false);
+                var payload = WrapSelectivePayload(designJson, id, name, RackEmbedDocument.ViewPlanta, source: pb.Embed);
+                var r = new SelectivePlantaDrawService().RedrawInPlace(document, pb.BlockId, system, payload, regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, plantaId, baseName == null ? null : baseName + " - planta");
+                    RackBlockRenamer.SyncName(document, pb.BlockId, baseName == null ? null : baseName + " - planta");
                     updatedPlanta++;
                 }
             }
@@ -188,7 +189,8 @@ namespace RackCad.Plugin
             // (UpdateOnly) inserts nothing — the refresh above is the whole action.
             if (!window.UpdateOnly)
             {
-                DrawSelectiveView(window.InsertView, system, design, id, name);
+                // A NEW view inserted during an edit inherits the initiating (picked) envelope's metadata (I-11).
+                DrawSelectiveView(window.InsertView, system, design, id, name, embed);
                 return;
             }
 
@@ -210,35 +212,35 @@ namespace RackCad.Plugin
         /// Every view-block of a rack (the one frontal + each lateral section) carries the SAME full design and Id, so
         /// RACKEDITAR on any of them reopens the whole system; <paramref name="section"/> tags which lateral section.
         /// </summary>
-        private static string BuildSelectivePayload(SelectivePalletDesign design, string id, string name, string view, int section = -1)
-            => design == null ? null : WrapSelectivePayload(SerializeSelectiveDesign(design, id, name), id, name, view, section);
+        private static string BuildSelectivePayload(
+            SelectivePalletDesign design, string id, string name, string view, int section = -1, RackEmbedDocument source = null)
+            => design == null ? null : WrapSelectivePayload(SerializeSelectiveDesign(design, id, name), id, name, view, section, source);
 
         /// <summary>The full design serialized once; every view-block carries this SAME JSON (see <see cref="WrapSelectivePayload"/>).</summary>
         private static string SerializeSelectiveDesign(SelectivePalletDesign design, string id, string name)
             => design == null ? null : new SelectivePalletDesignStore().Serialize(SelectivePalletDesignDocument.From(design, id, name));
 
         /// <summary>Wraps an ALREADY-serialized design in the per-view embed envelope — multi-view redraws reuse one
-        /// design JSON instead of re-serializing the whole design per view-block.</summary>
-        private static string WrapSelectivePayload(string designJson, string id, string name, string view, int section = -1)
+        /// design JSON instead of re-serializing the whole design per view-block. When <paramref name="source"/> is the
+        /// existing block's envelope (an edit redraw) or the initiating envelope (a new view), its unknown fields and a
+        /// non-downgraded schema version are inherited via <see cref="RackEmbedComposer"/> (I-11); a fresh insert passes null.</summary>
+        private static string WrapSelectivePayload(
+            string designJson, string id, string name, string view, int section = -1, RackEmbedDocument source = null)
         {
             if (string.IsNullOrEmpty(designJson))
             {
                 return null;
             }
 
-            return new RackEmbedStore().Serialize(new RackEmbedDocument
-            {
-                Kind = RackEmbedDocument.KindSelective,
-                Id = id,
-                Name = name,
-                View = string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewFrontal : view,
-                Section = section,
-                Design = designJson
-            });
+            var embed = RackEmbedComposer.Compose(
+                source, RackEmbedDocument.KindSelective, id, name,
+                string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewFrontal : view, section, designJson);
+            return new RackEmbedStore().Serialize(embed);
         }
 
         /// <summary>Draws the selective in the requested VIEW: frontal = one selective block; lateral = one cabecera "corte" per post.</summary>
-        internal static void DrawSelectiveView(string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
+        internal static void DrawSelectiveView(
+            string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name, RackEmbedDocument source = null)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -251,19 +253,19 @@ namespace RackCad.Plugin
 
             if (view == RackEmbedDocument.ViewLateral)
             {
-                InsertSelectiveLateralSection(document, system, design, id, name);
+                InsertSelectiveLateralSection(document, system, design, id, name, source);
                 return;
             }
 
             if (view == RackEmbedDocument.ViewPlanta)
             {
-                var plantaPayload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta);
+                var plantaPayload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewPlanta, source: source);
                 var plantaResult = new SelectivePlantaDrawService().DrawAndPlace(document, system, plantaPayload, name);
                 document.Editor.WriteMessage("\n" + DescribeSelective(plantaResult));
                 return;
             }
 
-            InsertSelectiveFrontal(document, system, design, id, name);
+            InsertSelectiveFrontal(document, system, design, id, name, source);
         }
 
         /// <summary>
@@ -272,7 +274,8 @@ namespace RackCad.Plugin
         /// SAME rack id + full design (View=frontal, Section=fondo), so RACKEDITAR on it reopens the whole system and
         /// redraws every view.
         /// </summary>
-        private static void InsertSelectiveFrontal(Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
+        private static void InsertSelectiveFrontal(
+            Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name, RackEmbedDocument source = null)
         {
             if (document == null || system == null)
             {
@@ -306,7 +309,7 @@ namespace RackCad.Plugin
 
             var fondoView = SelectiveDepthLayout.FondoSystemView(system, fondo);
             fondoView.Name = name;
-            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal, fondo);
+            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewFrontal, fondo, source);
             var blockName = FrontalName(string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim(), fondo, fondoCount);
             var result = new SelectiveFrontalDrawService().DrawAndPlace(document, fondoView, payload, blockName);
             document.Editor.WriteMessage("\n" + DescribeSelective(result));
@@ -329,7 +332,8 @@ namespace RackCad.Plugin
         /// reopens the whole selective and redraws BOTH views. It is its own block (movable independently), but a view
         /// OF the system, not a loose cabecera. Called after inserting the frontal (via RACKEDITAR) so it links to it.
         /// </summary>
-        private static void InsertSelectiveLateralSection(Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
+        private static void InsertSelectiveLateralSection(
+            Document document, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name, RackEmbedDocument source = null)
         {
             if (document == null || system == null)
             {
@@ -379,7 +383,7 @@ namespace RackCad.Plugin
 
             var baseName = string.IsNullOrWhiteSpace(name) ? "Selectivo" : name.Trim();
             var sectionName = baseName + " - lateral " + pick.Value.ToString(CultureInfo.InvariantCulture);
-            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex);
+            var payload = BuildSelectivePayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, source);
 
             var result = new LateralHeaderDrawService().DrawAndPlace(document, corte.Cabecera, payload, sectionName, corte.Largueros);
             editor.WriteMessage(result != null && result.Success

@@ -186,23 +186,13 @@ namespace RackCad.Plugin
             }
 
             var designDocument = FlowBedDocument.FromDomain(config);
-            if (sourceDesign?.ExtensionData != null)
-            {
-                designDocument.ExtensionData = sourceDesign.ExtensionData;
-            }
+            designDocument.SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(
+                sourceDesign?.SchemaVersion, FlowBedDocument.CurrentSchemaVersion);
+            designDocument.ExtensionData = sourceDesign?.ExtensionData;
 
-            var embed = new RackEmbedDocument
-            {
-                Kind = RackEmbedDocument.KindCama,
-                Id = id,
-                Name = name,
-                Design = new FlowBedConfigurationStore().SerializeDocument(designDocument)
-            };
-            if (sourceEmbed?.ExtensionData != null)
-            {
-                embed.ExtensionData = sourceEmbed.ExtensionData;
-            }
-
+            var designJson = new FlowBedConfigurationStore().SerializeDocument(designDocument);
+            var embed = RackEmbedComposer.Compose(
+                sourceEmbed, RackEmbedDocument.KindCama, id, name, view: null, section: -1, design: designJson);
             return new RackEmbedStore().Serialize(embed);
         }
 

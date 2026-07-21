@@ -82,7 +82,8 @@ namespace RackCad.Plugin
             DynamicRackSystem system,
             DynamicRackDesign design,
             string id,
-            string rackName)
+            string rackName,
+            RackEmbedDocument source = null)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -96,12 +97,12 @@ namespace RackCad.Plugin
             if (string.Equals(view, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase)
                 && section < 0)
             {
-                InsertDynamicLateralSection(document, system, design, id, rackName);
+                InsertDynamicLateralSection(document, system, design, id, rackName, source);
                 return;
             }
 
             HeaderPlacementResult result;
-            var payload = BuildDynamicPayload(design, id, rackName, view, section);
+            var payload = BuildDynamicPayload(design, id, rackName, view, section, source);
             if (string.Equals(view, RackEmbedDocument.ViewPlanta, System.StringComparison.OrdinalIgnoreCase))
             {
                 result = new DynamicPlantaDrawService().DrawAndPlace(document, system, payload, rackName);
@@ -186,7 +187,7 @@ namespace RackCad.Plugin
                 HeaderPlacementResult result;
                 if (RackCommandSupport.IsPlantaView(viewBlock.Embed))
                 {
-                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1);
+                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1, viewBlock.Embed);
                     result = new DynamicPlantaDrawService().RedrawInPlace(
                         document, viewBlock.BlockId, system, payload, regen: false);
                     if (result != null && result.Success)
@@ -199,7 +200,7 @@ namespace RackCad.Plugin
                 {
                     var end = DynamicEnd(viewBlock.Embed.Section);
                     var section = (int)end;
-                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewFrontal, section);
+                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewFrontal, section, viewBlock.Embed);
                     result = new DynamicFrontalDrawService().RedrawInPlace(
                         document, viewBlock.BlockId, system, end, payload, regen: false);
                     if (result != null && result.Success)
@@ -222,7 +223,7 @@ namespace RackCad.Plugin
                         continue;
                     }
 
-                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewLateral, postIndex);
+                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewLateral, postIndex, viewBlock.Embed);
                     result = new DynamicSystemDrawService().RedrawInPlace(
                         document,
                         viewBlock.BlockId,
@@ -255,7 +256,8 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                DrawDynamicView(window.InsertView, window.InsertSection, system, design, id, name);
+                // A NEW view inserted during an edit inherits the initiating (picked) envelope's metadata (I-11).
+                DrawDynamicView(window.InsertView, window.InsertSection, system, design, id, name, embed);
                 return;
             }
 
@@ -273,7 +275,8 @@ namespace RackCad.Plugin
             DynamicRackSystem system,
             DynamicRackDesign design,
             string id,
-            string name)
+            string name,
+            RackEmbedDocument source = null)
         {
             if (document == null || system == null)
             {
@@ -318,7 +321,8 @@ namespace RackCad.Plugin
                 id,
                 name,
                 RackEmbedDocument.ViewLateral,
-                corte.PostIndex);
+                corte.PostIndex,
+                source);
             var result = new DynamicSystemDrawService().DrawAndPlace(
                 document,
                 system,
@@ -336,7 +340,8 @@ namespace RackCad.Plugin
             string id,
             string name,
             string view = RackEmbedDocument.ViewLateral,
-            int section = -1)
+            int section = -1,
+            RackEmbedDocument source = null)
         {
             if (design == null)
             {
@@ -344,15 +349,10 @@ namespace RackCad.Plugin
             }
 
             var designJson = new RackProjectStore().Serialize(RackProject.ForDynamic(design));
-            return new RackEmbedStore().Serialize(new RackEmbedDocument
-            {
-                Kind = RackEmbedDocument.KindDynamic,
-                Id = id,
-                Name = name,
-                View = string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view,
-                Section = section,
-                Design = designJson
-            });
+            var embed = RackEmbedComposer.Compose(
+                source, RackEmbedDocument.KindDynamic, id, name,
+                string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view, section, designJson);
+            return new RackEmbedStore().Serialize(embed);
         }
 
         private static bool IsDynamicFrontal(RackEmbedDocument embed)
