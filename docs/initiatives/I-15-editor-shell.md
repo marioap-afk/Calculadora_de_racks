@@ -48,12 +48,17 @@ por sistema que crecen O(N). Concretamente:
 - `RackInsertionRequest`: el contrato tipado de inserción (jerarquía por Kind) que el menú produce vía
   los módulos y que el host del Plugin consume, reemplazando el racimo de propiedades por-sistema.
 
+El shell no es andamiaje aparte: **las cuatro ventanas ricas de editor (selectivo, dinámico, cama,
+cabecera) lo adoptan** para esas cuatro capacidades compartidas, eliminando la duplicación real que hoy
+tienen inline. Lo que queda para I-20/I-21 es sólo la extracción del estado PROPIO de cada editor (la
+matriz por fondo y `BuildSystem`, el `Recompose`/módulos), no las capacidades del shell.
+
 El resultado es verificable cuando: la solución compila; `RackCad.Tests` sigue verde; el proyecto
 `RackCad.UI.Tests` cubre sesión, registro, orden/unicidad de módulos, despacho de menú y biblioteca,
-recomputación coalescida, identidad y contrato de inserción, y pasa; los builds Debug de UI y Plugin
-quedan en 0 errores propios; y CI queda verde sobre la punta publicada. El comportamiento observable
-(dibujo, BOM, GUID, edición multivista, persistencia, formatos en disco, etiquetas y orden del menú)
-es idéntico al vigente.
+recomputación coalescida, identidad y contrato de inserción **y la adopción del shell por las ventanas
+reales (pruebas STA)**, y pasa; los builds Debug de UI y Plugin quedan en 0 errores propios; y CI queda
+verde sobre la punta publicada. El comportamiento observable (dibujo, BOM, GUID, edición multivista,
+persistencia, formatos en disco, etiquetas y orden del menú) es idéntico al vigente.
 
 ## 2. Problema
 
@@ -98,25 +103,42 @@ Autorizado por el ROADMAP (Fase 3, I-15) y por el objetivo §7.2/§7.3 de `ARCHI
      `UiSupport.LoadCatalogSafe`), identidad, `RecomputeGate` y el bloque del contrato de
      inserción/actualización (`RequestInsert`/`RequestUpdate` con la normalización
      `updateOnly ? null : view` / `updateOnly ? -1 : section`).
-2. Migrar `RackMainMenuWindow` a consumir `EditorModuleRegistry`: los cinco handlers `Design*_Click`
+2. **Conectar el shell a consumidores reales de producción** (adaptación mínima o composición, sin
+   extraer todavía las matrices, los modelos internos ni la lógica propia de selectivo/dinámico — eso es
+   I-20/I-21):
+   - `RackSelectiveWindow` adopta `RackEditorSession` para catálogo, identidad (`RackEditorIdentity`),
+     recomputación coalescida (`RecomputeGate` reemplaza su `RecomputeDeferral`/depth/pending inline) y el
+     contrato de inserción/actualización (`RequestInsert`/`RequestUpdate`);
+   - `RackDynamicSystemWindow` y `RackFlowBedWindow` adoptan `RackEditorSession` para catálogo, identidad
+     y contrato de inserción (su recomputación es directa hoy, no coalesce);
+   - `RackFrameConfiguratorWindow` adopta `RecomputeDebouncer` + `DispatcherRecomputeScheduler` para la
+     coalescencia asíncrona de su preview.
+   Las propiedades públicas que el Plugin lee (`InsertRequested`, `SystemToInsert`, `RackId`, …) pasan a
+   ser getters sobre la sesión; el estado propio de cada editor (matriz por fondo, `BuildSystem`,
+   `Recompose`, módulos) queda intacto para I-20/I-21.
+3. Migrar `RackMainMenuWindow` a consumir `EditorModuleRegistry`: los cinco handlers `Design*_Click`
    pasan a delegar en un único lanzador registry-driven; `OpenDesignLibrary_Click` resuelve el módulo
    por `registry.ResolveForLibrary(entry, project)`; el menú expone **una** propiedad
    `InsertionRequest` (más `InsertRequested` derivado) en lugar de las ~19 propiedades por sistema. Las
    etiquetas, subtítulos, orden de botones y textos de error se conservan **verbatim** (el XAML del
    menú no cambia).
-3. Adaptar el único consumidor del payload del menú en el Plugin
+4. Adaptar el único consumidor del payload del menú en el Plugin
    (`RackMenuCommands.RackCad()`) para leer `menu.InsertionRequest` y despachar por Kind a los
    **mismos** `Draw*` con los **mismos** argumentos (transcripción 1:1, sin cambio de dibujo).
-4. Crear pruebas de caracterización en `tests/RackCad.UI.Tests` proporcionales al riesgo: sesión,
-   registro (orden/unicidad/lookup), despacho de biblioteca (incluida la regla de fallback de cabecera),
-   identidad, recomputación coalescida (defer y debounce) y contrato de inserción/actualización.
+5. Crear pruebas en `tests/RackCad.UI.Tests` proporcionales al riesgo: unitarias de sesión, registro
+   (orden/unicidad/lookup), despacho de biblioteca (con la regla de fallback de cabecera), identidad,
+   recomputación coalescida (defer y debounce) y contrato de inserción; **más pruebas de integración que
+   construyen las ventanas reales (STA) y verifican que adoptan el shell** (identidad vía `LoadExisting`,
+   contrato de inserción y debouncer respaldados por la sesión).
 
 ## 4. Fuera de alcance
 
-- **Migrar el estado interno de Selectivo o Dinámico (I-20/I-21).** El shell nace **junto** a las
-  ventanas actuales (patrón strangler, igual que I-14): ninguna de las cinco ventanas de editor se
-  reescribe para adoptar `RackEditorSession`; conservan su catálogo, identidad, recomputación y
-  contrato inline. La adopción la harán I-20/I-21/I-18.
+- **Migrar el estado interno de Selectivo o Dinámico (I-20/I-21).** Las ventanas SÍ adoptan el shell para
+  las cuatro capacidades compartidas (catálogo, identidad, recomputación coalescida, contrato de
+  inserción/actualización) — eso es el objetivo de esta iniciativa. Lo que NO se extrae aquí es el estado
+  PROPIO de cada editor: la matriz por fondo y `BuildSystem` del selectivo, el `Recompose`/módulos del
+  dinámico, los modelos internos. Esa extracción a clases puras (testeables sin WPF) es I-20/I-21; el
+  larguero, sin identidad ni inserción, no adopta la sesión (sólo comparte el catálogo vía `UiSupport`).
 - Rediseñar ventanas o cambiar la apariencia/identidad visual vigente.
 - Implementar Push Back (I-18) u otro sistema nuevo.
 - Ampliar I-14 (los controles comunes) o migrar ventanas a esos controles.
@@ -171,17 +193,25 @@ Crear (producto, `src/RackCad.UI/Editor/`):
 Crear (pruebas, `tests/RackCad.UI.Tests/`):
 
 - `RackEditorIdentityTests.cs`, `RecomputeGateTests.cs`, `RecomputeDebouncerTests.cs`,
-  `RackEditorSessionTests.cs`, `EditorModuleRegistryTests.cs`, `RackInsertionRequestTests.cs`.
+  `RackEditorSessionTests.cs`, `EditorModuleRegistryTests.cs`, `RackInsertionRequestTests.cs`;
+- `EditorShellAdoptionTests.cs` (integración STA: las ventanas reales adoptan el shell).
 
 Modificar (acotado, sin cambio de comportamiento observable):
 
+- Adopción del shell (getters sobre la sesión; estado interno intacto): `RackSelectiveWindow.xaml.cs`,
+  `RackDynamicSystemWindow.xaml.cs`, `RackFlowBedWindow.xaml.cs` (sesión: catálogo + identidad +
+  recompute/insert) y `RackFrameConfiguratorWindow.xaml.cs` (debouncer);
 - `src/RackCad.UI/RackMainMenuWindow.xaml.cs` (consume el registro; una sola propiedad `InsertionRequest`);
 - `src/RackCad.Plugin/RackMenuCommands.cs` (lee `InsertionRequest` y despacha por Kind);
-- `docs/initiatives/README.md` (índice), `docs/automation/state/I-15.yml` (estado).
+- `src/RackCad.UI/RackCad.UI.csproj` (`InternalsVisibleTo` para el proyecto de pruebas) y
+  `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` (copia de catálogos junto al binario de pruebas);
+- `docs/initiatives/README.md` (índice), `docs/automation/state/I-15.yml` (estado),
+  `docs/ideas-futuras.md` (hallazgo fuera de alcance).
 
-No se espera modificar el XAML del menú, las cinco ventanas de editor, Domain/Application/Plugin fuera
-de `RackMenuCommands`, catálogos, `deploy/` ni `.github/workflows`. Una desviación material obliga a
-detenerse (§12).
+No se espera modificar el XAML del menú ni de los editores, `RackLargueroWindow` (sin identidad ni
+inserción), el estado propio de los editores (matriz/`BuildSystem`/`Recompose`), Domain/Application,
+Plugin fuera de `RackMenuCommands`, catálogos, `deploy/` ni `.github/workflows`. Una desviación material
+obliga a detenerse (§12).
 
 ## 8. Fases
 
@@ -221,6 +251,11 @@ detenerse (§12).
   selectivo; larguero no inserta) y que **abrir desde la biblioteca** cada tipo reabre el editor y su
   inserción funciona (incluida la preservación de metadatos I-11). No se declara aprobado en esta
   corrida (`requires_autocad: true`, gate abierto).
+- **AutoCAD — round-trip de los editores adoptados (gate abierto).** Las cuatro ventanas ricas ahora
+  toman identidad e inserción de la sesión. El dueño valida además los comandos directos
+  (`RACKSELECTIVO`/`RACKDINAMICO`/`RACKCAMA` → Insertar) y `RACKEDITAR` sobre un rack ya dibujado
+  (Actualizar en sitio y Insertar vista enlazada): el GUID se conserva, las vistas se ligan y el dibujo
+  es idéntico. La coalescencia del preview del configurador y del selectivo debe verse fluida como antes.
 - **owner-validation (gate abierto).** El dueño confirma que las etiquetas, el orden y los flujos del
   menú y de la biblioteca son idénticos.
 
@@ -233,9 +268,15 @@ detenerse (§12).
 - `RackMainMenuWindow` consume el registro y expone **una** propiedad de payload
   (`InsertionRequest`) en lugar de las ~19 por sistema; el XAML (etiquetas, subtítulos, orden) no cambió.
 - `RackMenuCommands.RackCad` dibuja exactamente igual que antes para los cinco casos.
-- `RackCad.Tests` permanece verde; `RackCad.UI.Tests` cubre los siete ejes de riesgo y pasa; los builds
-  de UI, Plugin y solución quedan en 0 errores propios; CI verde en la rama.
-- Ninguna de las cinco ventanas de editor cambió de comportamiento (no se migró ningún estado interno).
+- Las cuatro ventanas ricas (selectivo, dinámico, cama, cabecera) adoptan el shell para las capacidades
+  compartidas: sus getters públicos leen la sesión, la generación de GUID y la recomputación coalescida
+  ya no están inline, y `RackEditorSession`/`RackEditorIdentity`/`RecomputeGate`/`RecomputeDebouncer`
+  tienen consumidores de producción (no sólo pruebas). El estado propio de cada editor no se migró.
+- `RackCad.Tests` permanece verde; `RackCad.UI.Tests` cubre los ejes de riesgo del shell **y** la
+  adopción por ventana real (STA), y pasa; los builds de UI, Plugin y solución quedan en 0 errores
+  propios; CI verde en la rama.
+- Ninguna ventana cambió de comportamiento observable (dibujo, BOM, GUID, persistencia, etiquetas); sólo
+  cambió de dónde toma catálogo/identidad/recompute/insert (la sesión).
 - La dirección de dependencias se conserva (UI no referencia AutoCAD; el shell no depende del Plugin) y
   no hay dependencias NuGet nuevas.
 
