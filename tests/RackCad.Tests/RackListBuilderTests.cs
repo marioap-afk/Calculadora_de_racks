@@ -132,5 +132,18 @@ namespace RackCad.Tests
             Assert.Empty(RackListBuilder.Build(null));
             Assert.Empty(RackListBuilder.Build(System.Array.Empty<RackEmbedDocument>()));
         }
+
+        // Characterization for fix/kind-handler-missing-errors F5: RACKLISTA's KindLabel is display-only — an
+        // unrecognized kind is shown verbatim in the listing, never turned into an error, and there is no partial
+        // result or inconsistent identity to guard (unlike RACKBOMTOTAL / the copy restamp). It lives in Application
+        // and cannot consult the Plugin's KindHandlerRegistry (Application must not depend on the Plugin), and its
+        // labels deliberately differ from the Plugin's BOM labels, so it is left intact (evaluated, out of scope).
+        [Fact]
+        public void KindLabel_UnknownKind_ReturnsRawKind_DisplayOnly()
+        {
+            Assert.Equal("noSuchKind", RackListBuilder.KindLabel("noSuchKind"));
+            Assert.Equal(string.Empty, RackListBuilder.KindLabel(null));
+            Assert.Equal("Sistema dinámico", RackListBuilder.KindLabel(RackEmbedDocument.KindDynamic));
+        }
     }
 }
