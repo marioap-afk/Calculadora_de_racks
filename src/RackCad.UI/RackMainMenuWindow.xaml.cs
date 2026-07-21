@@ -43,6 +43,12 @@ namespace RackCad.UI
         public string FlowBedRackId { get; private set; }
         public string FlowBedRackName { get; private set; }
 
+        /// <summary>Source metadata carried from a library design into a library→drawing insert, so the new embed keeps its
+        /// unknown JSON fields + non-downgraded schema version (I-11). Null for a brand-new design or a bare legacy header.</summary>
+        public RackProject DynamicSourceProjectToInsert { get; private set; }
+        public FlowBedDocument FlowBedSourceDocumentToInsert { get; private set; }
+        public RackProject ConfigurationSourceProjectToInsert { get; private set; }
+
         public SelectiveRackSystem SelectiveSystemToInsert { get; private set; }
 
         /// <summary>The selective design + identity that produced <see cref="SelectiveSystemToInsert"/> (for the drawing embed).</summary>
@@ -206,6 +212,7 @@ namespace RackCad.UI
                     if (editor.InsertRequested)
                     {
                         InsertRequested = true;
+                        DynamicSourceProjectToInsert = editor.SourceProjectToInsert; // carry the library wrapper metadata into the DWG embed (I-11)
                         DynamicSystemToInsert = editor.SystemToInsert;
                         DynamicDesignToInsert = editor.DesignToInsert;
                         DynamicRackId = editor.RackId;
@@ -242,6 +249,7 @@ namespace RackCad.UI
                     if (editor.InsertRequested)
                     {
                         InsertRequested = true;
+                        FlowBedSourceDocumentToInsert = editor.SourceFlowBedToInsert; // carry the library FlowBed metadata into the DWG embed (I-11)
                         FlowBedToInsert = editor.FlowBedToInsert;
                         FlowBedRackId = editor.RackId;
                         FlowBedRackName = editor.RackName;
@@ -263,6 +271,9 @@ namespace RackCad.UI
                     if (editor.InsertRequested)
                     {
                         InsertRequested = true;
+                        // Carry the wrapper metadata when the header came from a RackProject wrapper; a bare legacy header's
+                        // project has no source document, so WithSourceMetadataFrom downstream is a no-op (I-11).
+                        ConfigurationSourceProjectToInsert = project;
                         ConfigurationToInsert = editor.Configuration;
                         Close();
                     }

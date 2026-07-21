@@ -49,6 +49,12 @@ namespace RackCad.UI
         public string RackId { get; private set; }
         public string RackName { get; private set; }
 
+        /// <summary>The source FlowBed document (its unknown fields + schema version), exposed so the host command can carry
+        /// it into a library→drawing insert (I-11): from a drawing-edit source, else from the library project. Null for a
+        /// brand-new bed.</summary>
+        public RackCad.Application.Persistence.FlowBedDocument SourceFlowBedToInsert
+            => sourceFlowBed ?? sourceProject?.SourceFlowBedDocument;
+
         private string currentId;
         private string currentName;
 

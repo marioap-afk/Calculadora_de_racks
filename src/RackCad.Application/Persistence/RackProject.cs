@@ -37,6 +37,11 @@ namespace RackCad.Application.Persistence
         /// </summary>
         internal RackProjectDocument SourceDocument { get; set; }
 
+        /// <summary>The source FlowBed document this project was loaded with, if any (its unknown fields + schema version),
+        /// so a library→drawing insert can carry it to the new embed via <see cref="WithSourceFlowBed"/> (I-11). Null unless
+        /// this is a cama project loaded from disk.</summary>
+        public FlowBedDocument SourceFlowBedDocument => SourceDocument?.FlowBed;
+
         /// <summary>
         /// Carry the persistence metadata (unknown JSON fields + non-downgraded schema version) of a previously LOADED
         /// <paramref name="source"/> onto THIS in-memory project, so a library re-save of an edited design preserves it

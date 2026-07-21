@@ -109,6 +109,10 @@ namespace RackCad.UI
 
         public bool UpdateOnly { get; private set; }
 
+        /// <summary>The project this system was opened from (library), exposed so the host command can carry its wrapper
+        /// metadata into a library→drawing insert (I-11). Null for a brand-new system.</summary>
+        public RackProject SourceProjectToInsert => sourceProject;
+
         private string currentId;
         private string currentName;
         private bool isEditingExisting;
