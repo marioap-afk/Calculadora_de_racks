@@ -4,11 +4,11 @@ automation_state:
   branch: refactor/versionado
   claim_id: 12b19325-fced-4ef9-819f-af911e17c7a2
   current_phase: 6
-  state: review-ready
-  gate: owner-decision
+  state: implementing
+  gate: rebase-required
   attempts: 0
-  next_action: owner-accept-adr-0004-and-autocad-autoload-check-then-serialized-merge-no-ff
-  last_evidence_commit: 70bb735aa0c7a8519954308db4a84bb2e798d504
+  next_action: completar-rebase-sobre-origin-main-y-verificaciones-luego-volver-a-owner-decision
+  last_evidence_commit: 691b60ce419f18b4cbfc00b0d95f0add70387709
 owner_decision:
   status: pending
   validator: owner
@@ -25,10 +25,12 @@ owner_validation:
 integration_conflicts:
   - initiative: I-14
     branch: architecture/ui-controls
+    status: integrated-in-main
     file: tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj
     kind: semantic
-    note: duplica-LangVersion-y-Nullable-ya-centralizados-en-Directory.Build.props-el-segundo-en-integrar-los-elimina
+    resolution: en-progreso-eliminando-LangVersion-Nullable-duplicados-durante-el-rebase
 execution_context:
   mode: manual-git-only
   worktree: Calculadora de racks-I-12-versionado
+  rebased_onto: origin/main (merge de I-14 integrada)
   pull_request: none

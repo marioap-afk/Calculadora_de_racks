@@ -6,8 +6,7 @@
     <UseWPF>true</UseWPF>
     <!-- Match RackCad.Tests: the test host rolls forward when the exact 8.0 runtime is absent. -->
     <RollForward>LatestMajor</RollForward>
-    <LangVersion>latest</LangVersion>
-    <Nullable>disable</Nullable>
+    <!-- LangVersion (latest) and Nullable (disable) are centralized in Directory.Build.props (I-12). -->
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
