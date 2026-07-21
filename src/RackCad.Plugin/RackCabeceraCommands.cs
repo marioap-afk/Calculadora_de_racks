@@ -153,8 +153,10 @@ namespace RackCad.Plugin
             return posts[result.Value - 1].Id;
         }
 
-        /// <summary>Builds the header block and runs the placement jig, then reports the outcome.</summary>
-        internal static void DrawAndPlace(RackFrameConfiguration configuration)
+        /// <summary>Builds the header block and runs the placement jig, then reports the outcome. <paramref name="sourceProject"/>
+        /// is the library project when a cabecera is inserted from a RackProject wrapper, so the embed's inner design keeps its
+        /// metadata (I-11); a bare legacy header passes null and fabricates none.</summary>
+        internal static void DrawAndPlace(RackFrameConfiguration configuration, RackProject sourceProject = null)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -163,7 +165,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var payload = BuildCabeceraPayload(configuration, System.Guid.NewGuid().ToString(), configuration.Name);
+            var payload = BuildCabeceraPayload(configuration, System.Guid.NewGuid().ToString(), configuration.Name, innerSource: sourceProject);
             var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name);
             document.Editor.WriteMessage("\n" + Describe(result));
         }
@@ -173,7 +175,7 @@ namespace RackCad.Plugin
         /// several view-blocks sharing its id — the same multi-view round-trip as the selective.</summary>
         private static string BuildCabeceraPayload(
             RackFrameConfiguration configuration, string id, string name, string view = null,
-            RackEmbedDocument source = null, RackProject initiatingSource = null)
+            RackEmbedDocument source = null, RackProject innerSource = null)
         {
             if (configuration == null)
             {
@@ -181,9 +183,9 @@ namespace RackCad.Plugin
             }
 
             // The inner Design of a cabecera block is itself a RackProjectDocument — a boundary INDEPENDENT of the envelope
-            // (I-11). Preserve THIS block's own inner wrapper metadata (from source.Design), falling back to the initiating
-            // block on a benign read failure; a newer inner MAJOR is not hidden.
-            var innerSource = RackCommandSupport.ReadInnerSourceProject(source?.Design, initiatingSource);
+            // (I-11). <paramref name="innerSource"/> is the ALREADY-RESOLVED source project (this block's own on a redraw,
+            // the initiating/library project on a new/library insert, or null for a fresh one); the resolution + preflight
+            // that rejects an incompatible inner design happens in the caller before any block is touched.
             var designJson = new RackProjectStore().Serialize(RackProject.ForSelective(configuration).WithSourceMetadataFrom(innerSource));
             var embed = RackEmbedComposer.Compose(
                 source, RackEmbedDocument.KindCabecera, id, name,
@@ -238,12 +240,22 @@ namespace RackCad.Plugin
                 lateralBlocks.Add((blockId, embed));
             }
 
+            // PREFLIGHT every linked view's inner design BEFORE touching any geometry: an incompatible-MAJOR or wrong-kind
+            // inner RackProjectDocument aborts the WHOLE edit (no partial update, never overwrites it) (I-11).
+            var preflight = RackCommandSupport.PreflightInnerSources(
+                lateralBlocks.Concat(plantaBlocks).ToList(), RackSystemKind.Selective, project);
+            if (preflight.Aborted)
+            {
+                editor.WriteMessage("\nRackCad: " + preflight.ErrorMessage);
+                return;
+            }
+
             // Redraw with regen:false and regenerate ONCE below — a full drawing regen per view-block is pure waste.
             var updated = 0;
             foreach (var lat in lateralBlocks)
             {
                 var r = new LateralHeaderDrawService().RedrawInPlace(
-                    document, lat.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, lat.Embed, project), regen: false);
+                    document, lat.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, lat.Embed, preflight.ResolvedByBlock[lat.BlockId]), regen: false);
                 if (r != null && r.Success)
                 {
                     RackBlockRenamer.SyncName(document, lat.BlockId, baseName);
@@ -254,7 +266,7 @@ namespace RackCad.Plugin
             foreach (var pb in plantaBlocks)
             {
                 var r = new PlantaHeaderDrawService().RedrawInPlace(
-                    document, pb.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, pb.Embed, project), regen: false);
+                    document, pb.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, pb.Embed, preflight.ResolvedByBlock[pb.BlockId]), regen: false);
                 if (r != null && r.Success)
                 {
                     RackBlockRenamer.SyncName(document, pb.BlockId, baseName == null ? null : baseName + " - planta");

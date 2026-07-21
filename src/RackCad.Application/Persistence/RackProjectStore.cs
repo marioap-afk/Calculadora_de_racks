@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -189,6 +190,56 @@ namespace RackCad.Application.Persistence
             {
                 return true; // malformed → benign, not a MAJOR incompatibility
             }
+        }
+
+        /// <summary>
+        /// Resolve the source project a view-block carries in its inner <c>Design</c> for a redraw that must preserve that
+        /// block's metadata (I-11), as a DISCRIMINATED result so the caller can PREFLIGHT every linked view and abort the
+        /// whole edit without overwriting anything:
+        /// <list type="bullet">
+        /// <item>readable and matching <paramref name="expectedKind"/> =&gt; <see cref="InnerSourceOutcome.Success"/>;</item>
+        /// <item>readable but a DIFFERENT kind =&gt; <see cref="InnerSourceOutcome.WrongKind"/> (blocking);</item>
+        /// <item>a higher schema MAJOR =&gt; <see cref="InnerSourceOutcome.IncompatibleMajor"/> (blocking — never downgraded);</item>
+        /// <item>a benign failure (missing/malformed/legacy) =&gt; <see cref="InnerSourceOutcome.BenignFallback"/> to
+        /// <paramref name="initiating"/>.</item>
+        /// </list>
+        /// </summary>
+        public InnerSourceResolution ResolveInnerSource(string designJson, RackSystemKind expectedKind, RackProject initiating)
+        {
+            if (TryDeserialize(designJson, out var source, out var incompatibleMajor))
+            {
+                return source.Kind == expectedKind
+                    ? InnerSourceResolution.Success(source)
+                    : InnerSourceResolution.WrongKind();
+            }
+
+            return incompatibleMajor
+                ? InnerSourceResolution.IncompatibleMajor()
+                : InnerSourceResolution.BenignFallback(initiating);
+        }
+
+        /// <summary>
+        /// Preflight the inner designs of ALL linked view-blocks at once (I-11): resolve each via <see cref="ResolveInnerSource"/>
+        /// and, on the FIRST blocking outcome (incompatible major or wrong kind), abort with NO resolved sources so the caller
+        /// modifies no block (no partial update). Otherwise return the per-view resolved sources aligned with
+        /// <paramref name="designJsons"/>.
+        /// </summary>
+        public InnerSourcePreflightResult PreflightInnerSources(
+            IReadOnlyList<string> designJsons, RackSystemKind expectedKind, RackProject initiating)
+        {
+            var resolved = new List<RackProject>(designJsons.Count);
+            foreach (var designJson in designJsons)
+            {
+                var resolution = ResolveInnerSource(designJson, expectedKind, initiating);
+                if (resolution.IsBlocking)
+                {
+                    return InnerSourcePreflightResult.Abort(resolution.Outcome);
+                }
+
+                resolved.Add(resolution.Project);
+            }
+
+            return InnerSourcePreflightResult.Ok(resolved);
         }
 
         public void Save(RackProject project, string path)

@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using RackCad.Application.Persistence;
+using RackCad.Domain.Systems;
 using RackCad.Plugin.Headers;
 using RackCad.Plugin.Systems;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -23,19 +25,39 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
-        /// Read the source project a dynamic/cabecera view-block carries in its inner <c>Design</c> (a RackProjectDocument),
-        /// so a redraw can preserve THAT block's own wrapper metadata (unknown fields + non-downgraded schema version, I-11).
-        /// Falls back to the <paramref name="initiating"/> block's project ONLY on a benign failure (malformed/legacy/empty);
-        /// an incompatible-MAJOR inner design returns null so it is NOT hidden behind the (lower-major) initiating metadata.
+        /// PREFLIGHT the inner designs of ALL linked view-blocks BEFORE any redraw (I-11): the inner <c>Design</c> of a
+        /// dynamic/cabecera block is itself a RackProjectDocument whose metadata must be preserved. If ANY block carries an
+        /// incompatible-MAJOR or wrong-kind inner design, the whole edit ABORTS with a visible message and NO block is
+        /// modified (no partial update). Otherwise it returns the resolved source project per block: the block's own inner
+        /// project, or the <paramref name="initiating"/> block's project on a benign failure (missing/malformed/legacy).
         /// </summary>
-        public static RackProject ReadInnerSourceProject(string designJson, RackProject initiating)
+        public static InnerSourcePreflight PreflightInnerSources(
+            IReadOnlyList<(ObjectId BlockId, RackEmbedDocument Embed)> blocks, RackSystemKind expectedKind, RackProject initiating)
         {
-            if (new RackProjectStore().TryDeserialize(designJson, out var source, out var incompatibleMajor))
+            var designs = new List<string>(blocks.Count);
+            foreach (var block in blocks)
             {
-                return source;
+                designs.Add(block.Embed?.Design);
             }
 
-            return incompatibleMajor ? null : initiating;
+            var result = new RackProjectStore().PreflightInnerSources(designs, expectedKind, initiating);
+            if (result.Aborted)
+            {
+                var message = result.BlockingOutcome == InnerSourceOutcome.IncompatibleMajor
+                    ? "una vista de este rack tiene un diseno interior creado con una version mas nueva de RackCad; "
+                        + "actualiza la aplicacion. No se modifico ningun bloque."
+                    : "una vista de este rack tiene un diseno interior de otro tipo (posible corrupcion). "
+                        + "No se modifico ningun bloque.";
+                return InnerSourcePreflight.Abort(message);
+            }
+
+            var resolved = new Dictionary<ObjectId, RackProject>();
+            for (var i = 0; i < blocks.Count; i++)
+            {
+                resolved[blocks[i].BlockId] = result.ResolvedSources[i];
+            }
+
+            return InnerSourcePreflight.Ok(resolved);
         }
 
         /// <summary>
@@ -244,5 +266,24 @@ namespace RackCad.Plugin
 
             return erased;
         }
+    }
+
+    /// <summary>Result of <see cref="RackCommandSupport.PreflightInnerSources"/>: either an abort (with a visible message
+    /// and no block touched) or the resolved inner source project per view-block, keyed by its <see cref="ObjectId"/>.</summary>
+    internal sealed class InnerSourcePreflight
+    {
+        private InnerSourcePreflight(bool aborted, string errorMessage, IReadOnlyDictionary<ObjectId, RackProject> resolvedByBlock)
+        {
+            Aborted = aborted;
+            ErrorMessage = errorMessage;
+            ResolvedByBlock = resolvedByBlock;
+        }
+
+        public bool Aborted { get; }
+        public string ErrorMessage { get; }
+        public IReadOnlyDictionary<ObjectId, RackProject> ResolvedByBlock { get; }
+
+        internal static InnerSourcePreflight Abort(string message) => new InnerSourcePreflight(true, message, null);
+        internal static InnerSourcePreflight Ok(IReadOnlyDictionary<ObjectId, RackProject> resolved) => new InnerSourcePreflight(false, null, resolved);
     }
 }
