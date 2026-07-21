@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
@@ -151,6 +152,63 @@ namespace RackCad.Tests
                 () => new RackProjectStore().Deserialize("{\"kind\":\"NoSuchKind\"}"));
 
             Assert.Contains("no es un JSON valido", ex.Message);
+        }
+
+        // --- Undefined NUMERIC kind (e.g. 999): characterizes the CURRENT behavior, distinct from an unknown STRING ---
+
+        // The store's JsonStringEnumConverter defaults to allowIntegerValues=true, so an integer that is not a defined
+        // RackSystemKind member is ACCEPTED as (RackSystemKind)999 with no exception. BuildProject then matches no case
+        // and falls to the DEFAULT branch, which treats the file as a header (Selective): with a valid Header it loads as
+        // a cabecera and the numeric kind is normalized away (a re-save writes "Selective"). Frozen as-is, NOT fixed.
+        [Fact]
+        public void Deserialize_NumericUndefinedKind_WithValidHeader_IsTreatedAsSelectiveHeaderViaDefault()
+        {
+            var store = new RackProjectStore();
+
+            var node = JsonNode.Parse(store.Serialize(RackProject.ForSelective(SelectiveHeader()))).AsObject();
+            Assert.Equal("Selective", node["Kind"].GetValue<string>()); // sanity: we start from a header wrapper
+            node["Kind"] = 999; // an undefined enum NUMBER
+            var json999 = node.ToJsonString();
+
+            var loaded = store.Deserialize(json999);
+
+            // The unknown number is routed through the default/header path and normalized to Selective, not preserved.
+            Assert.Equal(RackSystemKind.Selective, loaded.Kind);
+            Assert.NotNull(loaded.Header);
+            Assert.NotEmpty(loaded.Header.Members); // header members rebuilt on load
+
+            // 999 does not survive a load/save cycle: re-serialization writes the Selective discriminator.
+            using var reDoc = JsonDocument.Parse(store.Serialize(loaded));
+            Assert.Equal("Selective", reDoc.RootElement.GetProperty("Kind").GetString());
+        }
+
+        // With NO usable payload, the same default/header route reaches IsUsableHeader(null) and fails with the DEGENERATE
+        // "cabecera" message — NOT the "no es un JSON valido" message an unknown STRING kind produces.
+        [Fact]
+        public void Deserialize_NumericUndefinedKind_WithoutPayload_ThrowsDegenerateCabecera()
+        {
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => new RackProjectStore().Deserialize("{\"schemaVersion\":\"2.0\",\"kind\":999}"));
+
+            Assert.Contains("cabecera", ex.Message);
+            Assert.DoesNotContain("no es un JSON valido", ex.Message);
+        }
+
+        // Explicit contrast: an undefined NUMBER is accepted and routed to the header default, whereas an unknown STRING
+        // name is rejected up front as invalid JSON. Same input shape (kind + header), opposite outcome.
+        [Fact]
+        public void UndefinedNumericKind_DiffersFromUnknownStringKind()
+        {
+            var store = new RackProjectStore();
+
+            var node = JsonNode.Parse(store.Serialize(RackProject.ForSelective(SelectiveHeader()))).AsObject();
+            node["Kind"] = 999;
+            var numericLoaded = store.Deserialize(node.ToJsonString()); // no throw
+            Assert.Equal(RackSystemKind.Selective, numericLoaded.Kind);
+
+            var stringEx = Assert.Throws<InvalidOperationException>(
+                () => store.Deserialize("{\"kind\":\"NoSuchKind\",\"header\":{}}"));
+            Assert.Contains("no es un JSON valido", stringEx.Message);
         }
 
         // --- Current per-type validation rules (RackDesignValidation), including the two deliberately-loose ones ---
