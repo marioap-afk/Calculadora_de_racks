@@ -19,8 +19,8 @@ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj `
 ## Resultado de la suite (2026-07-21)
 
 - `dotnet build` de `RackCad.Application`: **0 errores, 0 advertencias**.
-- `dotnet test` (suite completa): **839 pruebas, 839 superadas, 0 fallidas, 0 omitidas** (48 nuevas de I-19
-  sobre la línea base de 791 en `de72287`; la primera ronda dejó 822, la ronda de correcciones sube a 839).
+- `dotnet test` (suite completa): **841 pruebas, 841 superadas, 0 fallidas, 0 omitidas** (50 nuevas de I-19
+  sobre la línea base de 791 en `de72287`; r1 dejó 822, r2 839, r3 841).
 
 ## Diagnóstico del validador sobre el catálogo REAL distribuido
 
@@ -35,26 +35,38 @@ Validación de catálogo: 1 error(es), 2 advertencia(s), 0 informativa(s).
 ```
 
 Manifiesto esperado de `blocks-library.dwg` construido desde el catálogo:
-**90 bloques**, huella `0352c75e8c258769a5abbcc1ec92dc881f55bab29acefbe5055f7cb2926e174a`.
+**90 bloques**, huella `50f8a4609cfe91d600cfc6c70a1fd6e5fb48160832187cbf07905e47459ce185`.
 
-> La huella cambió respecto de la primera ronda (`540d623b…`) porque el manifiesto ahora exige los
-> parámetros dinámicos reales por bloque (LONGITUD, PERALTE, ALTURA, SAQUE, FRENTE/FONDO), no sólo los
-> `paramX`/`paramY` del layout. El número de bloques (90) no cambia.
+> La huella evolucionó por ronda al afinar los parámetros reales por bloque: `540d623b…` (r1, sólo
+> `paramX`/`paramY`) → `0352c75e…` (r2, parámetros de builder) → `50f8a460…` (r3, separador y protector
+> lateral por vista corregidos, larguero lateral con `PERALTE`). El número de bloques (90) no cambia.
 
-### Parámetros esperados por bloque (muestra sobre el catálogo real)
+### Inventario de parámetros esperados por pieza/vista (catálogo real)
+
+Verificado por la guardia builder→manifiesto y por `CatalogBlockParametersTests` (∅ = sin parámetro):
 
 | Pieza | FRONTAL | LATERAL | PLANTA |
 |---|---|---|---|
-| Riel (`RIEL_DE_CINTA_CALIBRE_12`) | — | `LONGITUD` | — |
 | Poste (`POSTE_OMEGA_…`) | `LONGITUD`,`PERALTE` | `LONGITUD` | `PERALTE` |
-| Separador (`SEPARADOR_…`) | — | `LONGITUD` | `LONGITUD` |
-| Larguero (`LARGUERO_ESCALON_CAL14_3_REMACHES`) | `LONGITUD`,`PERALTE` | — | `LONGITUD`,`PERALTE` |
 | Placa base (`PLACA_BASE_…`) | `PERALTE` | `PERALTE` | `PERALTE` |
-| Tarima (`TARIMA_GENERICA`) | `LONGITUD`,`ALTURA` | `LONGITUD`,`ALTURA` | — |
+| Celosía (`TRAVESANO_…`) | ∅ | `LONGITUD` | `LONGITUD`,`PERALTE` |
+| Larguero (`LARGUERO_ESCALON_CAL14_3_REMACHES`) | `LONGITUD`,`PERALTE` | `LONGITUD`,`PERALTE` | `LONGITUD`,`PERALTE` |
+| Larguero in/out (`LARGUERO_IN_OUT_C6`) | `LONGITUD`,`PERALTE` | `LONGITUD`,`PERALTE` | `LONGITUD`,`PERALTE` |
+| Separador (`SEPARADOR_…`) | `LONGITUD` | ∅ | `LONGITUD` |
+| Riel (`RIEL_DE_CINTA_CALIBRE_12`) | ∅ | `LONGITUD` | ∅ |
+| Tarima (`TARIMA_GENERICA`) | `LONGITUD`,`ALTURA` | `LONGITUD`,`ALTURA` | ∅ |
+| Tope larguero (`LARGUERO_ESCALON_TOPE_DE_3`) | `LONGITUD`,`SAQUE` | `SAQUE` | `LONGITUD`,`SAQUE` |
+| Parrilla (`PARRILLA_GENERICA`) | `FRENTE` | `FONDO` | ∅ |
+| Protector lateral (`PROTECTOR_LATERAL_BOTA_H_3_16_18`) | `LONGITUD` | `LONGITUD` | `LONGITUD` |
+| Protector bota (`PROTECTOR_BOTA_H_3_16_18`) | ∅ | ∅ | ∅ |
+| Desviador (`DESVIADOR_A_3`) | `LONGITUD` | `LONGITUD` | `LONGITUD` |
+| Guía (`GUIA_ENTRADA`) | `LONGITUD` | `LONGITUD` | `LONGITUD` |
+| Defensa (`DEFENSA_MONTACARGAS`) | `LONGITUD` | `LONGITUD` | `LONGITUD` |
 | Ménsula (`MENSULA_3_REMACHES_CAL_10`) | ∅ | ∅ | ∅ |
 
-El poste exige `PERALTE` en FRONTAL/PLANTA pero **no** en LATERAL (exactitud por vista); la ménsula y la
-placa **no** exigen `LONGITUD` (bloques ajenos). Verificado en `CatalogBlockParametersTests`.
+El poste exige `PERALTE` en FRONTAL/PLANTA pero **no** en LATERAL; el separador `LONGITUD` en FRONTAL/PLANTA
+pero **no** en LATERAL; el larguero lateral **sí** exige `PERALTE`; el protector lateral exige `LONGITUD` en
+las tres vistas; la ménsula y la bota **no** exigen nada (requisitos falsos evitados).
 
 ## Correcciones de la revisión (ronda 2)
 
@@ -69,6 +81,19 @@ Consolidación de nombres (defecto 2): los literales `"LONGITUD"`/`"PERALTE"` di
 `LateralHeaderParameters`, `DynamicSystemLateralBuilder` y `FlowBedLateralBuilder`, y los nombres `SAQUE`/
 `FRENTE`/`FONDO` de `SelectiveSafetyPlacement`, ahora referencian las constantes de dominio. Comportamiento
 idéntico (la suite completa lo respalda).
+
+## Correcciones de la revisión (ronda 3)
+
+| Defecto | Corrección | Prueba |
+|---|---|---|
+| 1. Separador por vista | El separador se dibuja en FRONTAL (`DynamicRackDefaults.SeparatorView`, usado por `DynamicSystemLateralBuilder` y `SelectiveLateralBuilder`) y en PLANTA; ya **no** se exige `LONGITUD` en LATERAL | `CatalogBlockParametersTests.ExpectedParameters_Separator_RequiresLongitud_InFrontalAndPlantaOnly`; guardia (separador FRONTAL/PLANTA con builders reales) |
+| 2. Protectores tipo `LATERAL` | Clasificados como parametrizados (`LONGITUD`) en FRONTAL/LATERAL/PLANTA (`SelectiveSafetyPlacement.Piece`), sin afectar a las botas `BOTA` | guardia (protector lateral, tres vistas, builder real); `Manifest_DoesNotImposeFalseRequirements` (botas ∅) |
+| 3. Guardia integral builder→manifiesto | Ya no depende sólo del riel: corre los builders reales de poste, placa, larguero, celosía, separador, riel, tarima, tope, parrilla, protector lateral, desviador, guía y defensa, y verifica que cada clave escrita esté en el manifiesto del mismo PieceId+View+BlockName; regresiones contra requisitos falsos (separador LATERAL, ménsulas, botas) | `CatalogManifestGuardTests.Manifest_ExpectsEveryDynamicParameterProductionBuildersWrite`, `…DoesNotImposeFalseRequirements` |
+| 4. Larguero lateral | El larguero lateral refleja `PERALTE` (el intermedio) y `LONGITUD` (el in/out); ambos grips en todas las vistas dibujadas | guardia (larguero in/out e intermedio en LATERAL) |
+
+La guardia integral es la fuente de verdad: al correr los builders de producción demuestra empíricamente que
+el manifiesto no queda corto (cobertura) ni de más (requisitos falsos). Los nombres de parámetro siguen en una
+sola fuente de dominio; no se reintrodujeron literales.
 
 Lectura:
 

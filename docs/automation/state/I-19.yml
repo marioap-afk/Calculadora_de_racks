@@ -6,9 +6,9 @@ automation_state:
   current_phase: 5
   state: review-ready
   gate: owner-validation
-  attempts: 1
+  attempts: 2
   next_action: owner-revisa-el-diagnostico-y-la-integracion-serializada-manual
-  last_evidence_commit: 9cac7714d8dc1d555c051ad759155f2b373ffba7
+  last_evidence_commit: 69ae0fd7a64fe4ec07cecc5475311563c37e1742
 autocad_validation:
   status: not-applicable
   note: sin-cambios-de-dibujo-geometria-bloques-ni-persistencia

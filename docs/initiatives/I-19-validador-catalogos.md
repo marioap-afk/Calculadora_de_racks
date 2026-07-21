@@ -179,8 +179,8 @@ Evidencia reproducible y verbatim en
 [`docs/automation/evidence/I-19-validador-catalogos.md`](../automation/evidence/I-19-validador-catalogos.md).
 
 - **Build**: `RackCad.Application` con 0 errores / 0 advertencias.
-- **Pruebas**: suite completa **839/839** verde (48 nuevas sobre la línea base 791 en `de72287`; 822 en la
-  primera ronda, 839 tras la ronda de correcciones).
+- **Pruebas**: suite completa **841/841** verde (50 nuevas sobre la línea base 791 en `de72287`; r1 822,
+  r2 839, r3 841).
 
 ### Ronda 2 — correcciones de la revisión (2026-07-21)
 
@@ -202,6 +202,26 @@ Archivos nuevos de la ronda 2: `src/RackCad.Application/Catalogs/CatalogBlockPar
 de parámetro por literal (`SelectiveRackDefaults` del dominio, `SelectiveSafetyPlacement`,
 `LateralHeaderParameters`, `DynamicSystemLateralBuilder`, `FlowBedLateralBuilder`). La huella esperada del
 catálogo distribuido cambió a `0352c75e…` (bloques: 90).
+
+### Ronda 3 — correcciones de la revisión (2026-07-21)
+
+1. **Separador por vista**: recibe `LONGITUD` en FRONTAL (`SeparatorView`) y PLANTA; ya **no** se exige en
+   LATERAL (ningún builder de producción lo escribe ahí).
+2. **Protectores tipo `LATERAL`**: parametrizados con `LONGITUD` en las tres vistas
+   (`SelectiveSafetyPlacement.Piece`), sin afectar a las botas `BOTA`.
+3. **Guardia integral builder→manifiesto** (`CatalogManifestGuardTests`): corre los builders reales de las
+   trece familias (poste, placa, larguero, celosía, separador, riel, tarima, tope, parrilla, protector
+   lateral, desviador, guía, defensa) por vista y verifica que cada clave escrita esté en el manifiesto del
+   mismo PieceId+View+BlockName; regresiones explícitas contra requisitos falsos (separador LATERAL,
+   ménsulas, botas). Ya no depende sólo del riel.
+4. **Larguero lateral**: refleja `PERALTE` (intermedio) y `LONGITUD` (in/out) — ambos grips en las vistas
+   dibujadas.
+
+Archivo nuevo de la ronda 3: `tests/RackCad.Tests/CatalogManifestGuardTests.cs`. Editados: el mapa de
+`CatalogBlockParameters` (separador, protector lateral, larguero) y los XML-doc de `CatalogBlockManifest`
+(`Parameters` y `BuildExpected`: los parámetros proceden de `paramX`/`paramY` **y** de los requisitos reales
+de los builders). Sin nuevos literales (nombres siguen en el dominio). La huella esperada cambió a
+`50f8a460…` (bloques: 90). El intento de corrección en el estado versionado sube a `attempts: 2`.
 - **Categorías cubiertas** con prueba positiva y negativa (matriz en la evidencia): ids duplicados,
   referencias/relaciones inválidas, bloques/vistas faltantes, filas descartadas por rol y manifiesto,
   más modo estricto y el paso extremo a extremo por la costura del proveedor.
