@@ -139,6 +139,23 @@ dueño**. Como I-14 ya estaba integrada, el rebase eliminó de `tests/RackCad.UI
 AutoCAD 2025** (bundle autoloaded sin `NETLOAD`, `RACKCAD` PASS; ver §5 y `docs/initiatives/I-12-autocad-validation.md`).
 La rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-19** (`feature/validador-catalogos`) entrega un **validador de catálogos puro** en
+`RackCad.Application.Catalogs.Validation`, **sin cambio de comportamiento de producto**. Reúne en **un
+diagnóstico único** con severidades cinco categorías —ids duplicados, referencias/relaciones inválidas,
+bloques/vistas faltantes, filas descartadas por rol (antes silenciosas) y el **manifiesto esperado** de
+`blocks-library.dwg` (lista de bloques + parámetros dinámicos reales + huella SHA-256, con comparación de
+versión/huella)— más un **modo estricto** para despliegues. Los nombres de parámetro viven en una **fuente única
+de dominio** (`SeccionRoles`, `CatalogBlockParameters` sobre `SelectiveRackDefaults`/`SelectiveSafetyDefaults`) que
+consumen el proveedor, los productores y el validador; una **guardia por igualdad exacta** cruza, por
+`PieceId+View+BlockName`, lo que escriben los builders reales de las **13 familias** contra `ExpectedParameters` y
+el manifiesto (ni de menos ni de más), con matriz de cobertura bidireccional. Sobre el catálogo distribuido
+reporta el **baseline aprobado por el dueño**: 1 error `DUPLICATE_ID` (`TROQUEL_TOPE`, hallazgo pre-existente que
+**no** corrige) y 2 advertencias `UNRESOLVED_BLOCK_PIECE` (`TARIMA_GENERICA`); huella esperada `1a31c1a9…`.
+**No** toca catálogos, DWG, geometría, BOM, persistencia ni reglas de producto (el código nunca abre el DWG).
+AutoCAD **no requerido** (`requires_autocad: false`); **owner-validation aprobada**. Rebasada sobre `main` vigente
+(`e2057d7`, tras I-14 e I-12), reconciliando sólo la entrada de `docs/initiatives/README.md`. La rama se integra
+por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -227,15 +244,16 @@ el nuevo job `ui-tests`. AutoCAD: no ejecutado; no requerido por contrato.
 
 ## 4. Siguiente acción
 
-Con I-08, I-09, I-16, I-10, I-11, **I-14** e **I-12** integradas y limpias, la **pista B del Plugin** está cerrada (la
+Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12** e **I-19** integradas (I-19 en esta sesión), la **pista B del Plugin** está cerrada (la
 serialización I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme,
 la **pista C de UI** entrega su primer eslabón —los **controles comunes** (I-14) y el proyecto `tests/RackCad.UI.Tests`
 con su gate de CI— e **I-12** cierra el **versionado real** (versión única, SHA estampado, bundle por `dotnet publish`
 verificado fail-closed, ADR-0004 aceptado). El siguiente eslabón natural de la pista C es **I-15 `architecture/editor-shell`**
 (depende de I-08 e I-14, se estorba con I-14 —ya integrada—). **I-18 (Push Back)** sigue bloqueada por I-15, I-16 y los
-bloques DWG del dueño. Sigue **en curso** (rama activa en `origin`, aún no integrada) **I-19 `feature/validador-catalogos`**;
-cuando integre, deberá reconciliarse con lo que I-14 e I-12 dejaron (la entrada de I-14 en `docs/initiatives/README.md`
-y la centralización de `LangVersion`/`Nullable` que I-12 llevó a `Directory.Build.props`). El siguiente paso es abrir I-15
+bloques DWG del dueño. **I-19 `feature/validador-catalogos`** quedó **integrada** el 2026-07-21: se rebasó sobre la
+punta vigente de `main` (`e2057d7`, tras I-14 e I-12), reconciliando **sólo** la entrada compartida de
+`docs/initiatives/README.md` (se preservaron íntegras las de I-14 e I-19); **no** tocó catálogos, DWG, `Directory.Build.props`,
+el versionado de I-12 ni el proyecto/gate `RackCad.UI.Tests` de I-14. El siguiente paso es abrir I-15
 respetando dependencias y estorbos, o continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
@@ -243,6 +261,35 @@ desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apr
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-19 — 2026-07-21:**
+
+- punta validada por CI: `fcdc287` (run `29876393665`, **cuatro jobs verdes**); el commit documental de cierre
+  posterior **no cambia código**; este documento **no inventa** el SHA del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` en `e2057d7` (Merge I-12) al momento del gate: I-19 quedó **linealmente rebasada** sobre él
+  (merge-base = `origin/main`); **rebase único** ya aplicado (base previa `de72287`), **sin** otro rebase;
+- suite `RackCad.Tests`: **842/842 verdes** (51 nuevas de I-19; sin regresión sobre las 791 de la base); suite
+  `RackCad.UI.Tests`: **85/85 verdes** (I-19 no toca UI);
+- build `RackCad.Application` Debug: **0 errores y 0 advertencias**; build UI: **0 advertencias**; build Plugin sin
+  AutoCAD: **0 errores**, únicamente las `MSB3277` conocidas;
+- CI de rama verde sobre la punta rebasada `fcdc287` (run `29876393665`): los **cuatro** jobs —Tests (Domain+Application),
+  Build UI, UI Tests (WPF controls, net8.0-windows) y Build Plugin without AutoCAD— en `success`;
+- objetivo entregado: validador puro con severidades (5 categorías) + manifiesto esperado de `blocks-library.dwg`
+  (bloques + parámetros dinámicos reales + huella + comparación versión/huella) + modo estricto; guardia por
+  **igualdad exacta** builder→manifiesto por `PieceId+View+BlockName` (13 familias) con matriz de cobertura bidireccional;
+- diagnóstico del catálogo distribuido (**baseline aprobado por el dueño**): 1 error `DUPLICATE_ID` (`TROQUEL_TOPE`,
+  pre-existente, **no** corregido) + 2 advertencias `UNRESOLVED_BLOCK_PIECE` (`TARIMA_GENERICA`); huella esperada
+  `1a31c1a91f00a27130b5d8778eacc174adec1e818e78722e814174685e30df40` (90 bloques), fijada por `ShippedCatalogIntegrityTests`;
+- validación manual: AutoCAD **no ejecutado ni requerido** (`requires_autocad: false`); **owner-validation aprobada**
+  (baseline aceptado + catálogos/DWG intactos confirmados);
+- invariantes preservados: **sin** cambios de catálogos (`git diff` vacío en `assets/catalogs/*`), **ningún** `.dwg`
+  (el código nunca abre el DWG), **sin** cambios de geometría, BOM, persistencia ni reglas de producto; I-12, I-14 y su
+  proyecto/gate `RackCad.UI.Tests` preservados; reconciliación: **único** conflicto en `docs/initiatives/README.md`
+  (I-14 vs I-19), resuelto preservando ambas entradas;
+- alcance: `src/RackCad.Application/Catalogs/` (`SeccionRoles`, `CatalogBlockParameters`, `Validation/*`, costura de
+  `JsonRackCatalogProvider`), consolidación de nombres de parámetro en el dominio (`SelectiveRackDefaults`/
+  `SelectiveSafetyDefaults`, `SelectiveSafetyPlacement`, `LateralHeaderParameters`, `DynamicSystemLateralBuilder`,
+  `FlowBedLateralBuilder`), cinco clases de pruebas nuevas y contrato/estado/evidencia de I-19.
 
 **Baseline integrada de I-12 — 2026-07-21:**
 

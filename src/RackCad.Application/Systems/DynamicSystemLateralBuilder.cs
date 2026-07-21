@@ -304,7 +304,7 @@ namespace RackCad.Application.Systems
                 ConnectionAnchor = anchor,
                 Insertion = new Point2D(anchor.X - context.SeparatorMate.X, anchor.Y - context.SeparatorMate.Y)
             };
-            instance.DynamicParameters["LONGITUD"] = length;
+            instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = length;
             return instance;
         }
 
@@ -365,7 +365,7 @@ namespace RackCad.Application.Systems
                 ConnectionAnchor = origin,
                 Insertion = origin
             };
-            post.DynamicParameters["LONGITUD"] = context.Height;
+            post.DynamicParameters[SelectiveRackDefaults.LengthParam] = context.Height;
             instances.Add(post);
 
             // Optional reinforcement: a second post mated at FIN_POSTE (reinforced by default, full height).
@@ -381,7 +381,7 @@ namespace RackCad.Application.Systems
                     ConnectionAnchor = reinforcementOrigin,
                     Insertion = reinforcementOrigin
                 };
-                reinforcement.DynamicParameters["LONGITUD"] = context.DerivedReinforcementHeight;
+                reinforcement.DynamicParameters[SelectiveRackDefaults.LengthParam] = context.DerivedReinforcementHeight;
                 instances.Add(reinforcement);
             }
         }

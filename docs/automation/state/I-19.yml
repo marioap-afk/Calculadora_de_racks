@@ -1,0 +1,32 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-19
+  branch: feature/validador-catalogos
+  claim_id: ec179c03-6007-4614-82c1-be58cd8e4314
+  current_phase: 6
+  state: integration-ready
+  gate: none
+  attempts: 4
+  next_action: owner-serialized-merge-no-ff-into-main
+  last_evidence_commit: 251cf1ae71aeaf906d534a2bec27afb7cfc55089
+autocad_validation:
+  status: not-applicable
+  note: sin-cambios-de-dibujo-geometria-bloques-ni-persistencia
+owner_validation:
+  status: approved
+  validator: owner
+  date: 2026-07-21
+  note: owner-acepta-el-baseline-1-error-troquel_tope-mas-2-advertencias-tarima_generica-y-confirma-que-assets-catalogs-y-blocks-library-dwg-permanecen-intactos
+execution_context:
+  mode: manual-git-only
+  worktree: Calculadora de racks-I-19-validador-catalogos
+  pull_request:
+reconciliation:
+  rebased_onto: e2057d7b7655de4c9d112114469aecb45d71a53c
+  previous_tip: fe9350d84b0d571c95099e8a9bf7c314e7ba72cb
+  reconciled_with:
+    - I-14 (architecture/ui-controls)
+    - I-12 (refactor/versionado)
+  conflict: docs/initiatives/README.md (resuelto preservando integras las entradas de I-14 e I-19)
+  ui_tests_gate_preserved: true
+evidence_path: docs/automation/evidence/I-19-validador-catalogos.md

@@ -78,6 +78,17 @@ namespace RackCad.Domain.Systems
         public const string ParrillaType = "PARRILLA";
         public const string DeckLegacyType = "DECK";
 
+        // ---- Dynamic-block parameter names for safety families (single source, shared with the validator) ----
+
+        /// <summary>The "larguero tope" (rear pallet stop) block parameter for its stick-out ("saque").</summary>
+        public const string SaqueParam = "SAQUE";
+
+        /// <summary>PARRILLA block param that stretches its width (the frente span, used in FRONTAL).</summary>
+        public const string ParrillaFrenteParam = "FRENTE";
+
+        /// <summary>PARRILLA block param that stretches its depth (the fondo span, used in LATERAL).</summary>
+        public const string ParrillaFondoParam = "FONDO";
+
         /// <summary>Default TOPE stick-out (SAQUE), inches.</summary>
         public const double TopeSaque = 3.0;
 

@@ -129,7 +129,8 @@ namespace RackCad.Application.Catalogs
 
         /// <summary>Split the unified rows into the legacy typed lists by "rol", so every consumer of
         /// <see cref="RackCatalog"/> keeps its API. Unknown/empty roles are skipped (tolerant, like the rest
-        /// of the catalog): a typo in Excel drops that row instead of breaking the load.</summary>
+        /// of the catalog): a typo in Excel drops that row instead of breaking the load. The classification
+        /// lives in <see cref="SeccionRoles"/> so the validator reports the SAME dropped rows this hides.</summary>
         private static void SplitSecciones(
             List<SeccionCatalogEntry> secciones,
             List<ProfileCatalogEntry> posts,
@@ -139,26 +140,33 @@ namespace RackCad.Application.Catalogs
         {
             foreach (var row in secciones)
             {
-                var rol = (row.Rol ?? string.Empty).Trim().ToUpperInvariant();
-
-                switch (rol)
+                switch (SeccionRoles.Classify(row.Rol))
                 {
-                    case "POSTE":
+                    case SeccionRole.Post:
                         posts.Add(ToProfile(row));
                         break;
-                    case "CELOSIA":
-                    case "CELOSÍA":
+                    case SeccionRole.Truss:
                         truss.Add(ToProfile(row));
                         break;
-                    case "LARGUERO":
+                    case SeccionRole.Beam:
                         beams.Add(ToBeam(row));
                         break;
-                    case "SEPARADOR":
+                    case SeccionRole.Spacer:
                         spacers.Add(ToProfile(row));
                         break;
+                    // SeccionRole.Unknown: dropped on purpose (unchanged behavior).
                 }
             }
         }
+
+        /// <summary>
+        /// The raw unified structural rows (<c>secciones.csv</c>) BEFORE the role split drops unrecognized
+        /// ones. The catalog validator needs these to report rows silently discarded by an unknown/blank
+        /// "rol"; <see cref="Load"/>'s tolerant split intentionally hides them. Additive: <see cref="Load"/>
+        /// and its cache are untouched. Empty when the folder uses the legacy split files instead of
+        /// <c>secciones.csv</c> (there is nothing to discard by rol in that shape).
+        /// </summary>
+        public IReadOnlyList<SeccionCatalogEntry> LoadSeccionRows() => ReadArray<SeccionCatalogEntry>(SeccionesFile);
 
         private static ProfileCatalogEntry ToProfile(SeccionCatalogEntry row)
         {

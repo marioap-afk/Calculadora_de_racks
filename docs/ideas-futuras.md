@@ -172,8 +172,23 @@
     habilitar overrides por celda o edicion colaborativa de catalogos.
 14. **Validador de catalogos con severidades** — validar ids duplicados, FKs, vistas/bloques faltantes, parametros
     requeridos y unidades al cargar. Mostrar un diagnostico unico en UI y permitir modo estricto para despliegues.
+    **PARCIAL (I-19, 2026-07-21):** el MOTOR puro esta hecho (`CatalogValidator` en Application: severidades
+    error/advertencia/informativa por las cinco categorias, filas descartadas por rol con aviso, `IsValid(strict)`
+    y `Format()` como diagnostico unico de texto). PENDIENTE: cablearlo en la UI/WPF y en un comando de AutoCAD
+    (superficie visual del "diagnostico unico") y la validacion de UNIDADES (no incluida en el alcance de I-19).
 15. **Manifest de biblioteca DWG** — guardar junto al DWG una version/hash y la lista de bloques/parametros esperados.
     Asi un catálogo y una biblioteca incompatibles fallan antes de producir un dibujo parcial.
+    **PARCIAL (I-19, 2026-07-21):** el modelo `CatalogBlockManifest` (esperado desde el catalogo + huella SHA-256 +
+    round-trip JSON + comparacion contra un manifiesto real) esta hecho y probado. PENDIENTE: el paso de Plugin que
+    EMITE el manifiesto real escaneando `blocks-library.dwg` y lo guarda junto al DWG (fuera de alcance de I-19: no
+    se toca el DWG).
+
+> **Hallazgo de I-19 (2026-07-21) — id de punto de conexion duplicado:** `connection-points.csv` trae `TROQUEL_TOPE`
+> dos veces (roles `Poste` y `FlowBed`); `FindConnectionPoint` usa `FirstOrDefault`, asi que la fila `FlowBed` queda
+> ensombrecida y su rol nunca se ve. El validador lo reporta como `DUPLICATE_ID` (error). No se corrige en I-19
+> (editar un catalogo caliente append-only y cambiar el comportamiento de lookup por rol esta fuera de alcance);
+> resolver luego: renombrar uno de los dos ids o unificar la definicion. La prueba de integridad
+> (`ShippedCatalogIntegrityTests`) fija este estado conocido para que un id duplicado NUEVO falle el build.
 16. **CI por capas** — ejecutar Domain/Application/tests en cualquier runner y reservar un smoke test Windows con
     AutoCAD para releases. El Plugin no debe impedir que las reglas puras tengan gate continuo.
 17. **Benchmarks y presupuestos de complejidad** — medir resolver/builders/BOM con 10/30/100 frentes y el layout con
