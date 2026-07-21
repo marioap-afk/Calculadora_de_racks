@@ -16,11 +16,11 @@
   Build configuration to take the bundle from: Debug or Release (default: Release).
 
 .PARAMETER Build
-  Also run `dotnet build -c <Configuration>` before installing.
+  Also run `dotnet publish -c <Configuration>` (the canonical bundle flow) before installing.
 
 .PARAMETER SourceBundlePath
   Optional assembled bundle path. Intended for controlled deployment and tests; by
-  default it is resolved from the Plugin output for the selected configuration.
+  default it is resolved from the Plugin publish output for the selected configuration.
 
 .PARAMETER TargetBundlePath
   Optional installation path. By default it is the per-user ApplicationPlugins path.
@@ -291,10 +291,18 @@ function Assert-AutoCadClosed {
 function Resolve-DotNetExecutable {
     param([Parameter(Mandatory = $true)][string]$RepositoryRoot)
 
-    $commands = @(Get-Command dotnet -All -CommandType Application -ErrorAction SilentlyContinue |
+    $candidates = @(Get-Command dotnet -All -CommandType Application -ErrorAction SilentlyContinue |
         Select-Object -ExpandProperty Source -Unique)
+    # Fall back to the per-user SDK and the machine-wide install when dotnet is not on PATH
+    # (the documented RackCad setup builds via %LOCALAPPDATA%\Microsoft\dotnet).
+    if ($env:LOCALAPPDATA) { $candidates += (Join-Path $env:LOCALAPPDATA "Microsoft\dotnet\dotnet.exe") }
+    if (${env:ProgramFiles}) { $candidates += (Join-Path ${env:ProgramFiles} "dotnet\dotnet.exe") }
 
-    foreach ($command in $commands) {
+    foreach ($command in ($candidates | Where-Object { $_ } | Select-Object -Unique)) {
+        if (-not (Test-Path -LiteralPath $command -PathType Leaf) -and
+            -not (Get-Command $command -ErrorAction SilentlyContinue)) {
+            continue
+        }
         Push-Location $RepositoryRoot
         try {
             & $command --version *> $null
@@ -302,6 +310,7 @@ function Resolve-DotNetExecutable {
                 return $command
             }
         }
+        catch { }
         finally {
             Pop-Location
         }
@@ -318,15 +327,15 @@ function Invoke-InstallBundleScript {
 
     if ($Build) {
         $dotnet = Resolve-DotNetExecutable -RepositoryRoot $repo
-        Write-Host "Compilando RackCad ($Configuration) con: $dotnet"
-        & $dotnet build (Join-Path $repo "src\RackCad.Plugin\RackCad.Plugin.csproj") -c $Configuration
+        Write-Host "Publicando RackCad ($Configuration) con: $dotnet"
+        & $dotnet publish (Join-Path $repo "src\RackCad.Plugin\RackCad.Plugin.csproj") -c $Configuration
         if ($LASTEXITCODE -ne 0) {
-            throw "El build fallo con codigo $LASTEXITCODE."
+            throw "El publish fallo con codigo $LASTEXITCODE."
         }
     }
 
     $source = if ([string]::IsNullOrWhiteSpace($SourceBundlePath)) {
-        Join-Path $repo "src\RackCad.Plugin\bin\$Configuration\net8.0-windows\RackCad.bundle"
+        Join-Path $repo "src\RackCad.Plugin\bin\$Configuration\net8.0-windows\publish\RackCad.bundle"
     }
     else {
         $SourceBundlePath

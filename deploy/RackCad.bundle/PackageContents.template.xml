@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  GENERATED-FILE SOURCE — do not hand-edit any PackageContents.xml inside a bundle; it is produced
+  from this template. This is the single maintainable source of the AutoCAD Autoloader manifest.
+  The Plugin build (target AssembleAutoloaderBundle, run after `dotnet publish`) replaces the version
+  and AutoCAD-series placeholders below with the central MSBuild properties from Directory.Build.props
+  ($(RackCadVersion), $(RackCadAutoCADSeriesMin), $(RackCadAutoCADSeriesMax)), so neither the version
+  nor the supported series is ever hand-duplicated. AutoCAD series policy is ADR-0004.
+
+  Put the generated "RackCad.bundle" folder in an ApplicationPlugins folder, e.g.
+  %AppData%\Autodesk\ApplicationPlugins\, and AutoCAD loads RackCad automatically at startup (no
+  NETLOAD). Requires AutoCAD 2025 (.NET 8 = R25.0); SeriesMin=SeriesMax pins the current single-
+  release support until the plugin is recompiled for a newer release (ADR-0004).
+-->
+<ApplicationPackage
+    SchemaVersion="1.0"
+    ProductType="Application"
+    AutodeskProduct="AutoCAD"
+    Name="RackCad"
+    AppVersion="@RACKCAD_VERSION@"
+    Description="Diseño de racks industriales (selectivo, dinámico, cabecera, cama de rodamiento) en AutoCAD."
+    Author="RackCad">
+  <CompanyDetails Name="RackCad" />
+  <Components Description="RackCad .NET 8 plugin (AutoCAD 2025+)">
+    <RuntimeRequirements OS="Win64" Platform="AutoCAD*" SeriesMin="@RACKCAD_SERIES_MIN@" SeriesMax="@RACKCAD_SERIES_MAX@" />
+    <ComponentEntry
+        AppName="RackCad"
+        Version="@RACKCAD_VERSION@"
+        ModuleName="./Contents/RackCad.Plugin.dll"
+        LoadOnAutoCADStartup="True"
+        AppDescription="Comandos: RACKCAD, RACKSELECTIVO, RACKSISTEMADINAMICO, RACKCABECERA, QUICKCABECERA, QUICKCAMA, RACKEDITAR, RACKDUPLICAR, RACKLISTA, RACKBOMTOTAL, RACKLAYOUT, RACKRELLENAR, RACKAYUDA." />
+  </Components>
+</ApplicationPackage>
