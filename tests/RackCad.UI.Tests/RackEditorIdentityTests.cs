@@ -42,27 +42,28 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void SetName_TrimsValueButKeepsBlankAsIs()
+        public void SetName_StoresValueVerbatim()
         {
+            // Trimming stays at the call site (the editors do NameBox.Text?.Trim()); the helper only holds the value.
             var identity = new RackEditorIdentity();
 
             identity.SetName("  Rack 5  ");
-            Assert.Equal("Rack 5", identity.Name);
+            Assert.Equal("  Rack 5  ", identity.Name);
 
             identity.SetName(null);
             Assert.Null(identity.Name);
         }
 
         [Fact]
-        public void Adopt_TakesExistingIdentity()
+        public void Adopt_TakesExistingIdentity_StoringTheNameVerbatim()
         {
             var mints = 0;
             var identity = new RackEditorIdentity(() => "fresh-" + (++mints));
 
-            identity.Adopt("EXISTING-GUID", " Bodega A ");
+            identity.Adopt("EXISTING-GUID", " Bodega A "); // load stores the name raw, like currentName = name
 
             Assert.Equal("EXISTING-GUID", identity.Id);
-            Assert.Equal("Bodega A", identity.Name);
+            Assert.Equal(" Bodega A ", identity.Name);
             Assert.Equal("EXISTING-GUID", identity.EnsureId()); // adopted id is kept; nothing minted
             Assert.Equal(0, mints);
         }

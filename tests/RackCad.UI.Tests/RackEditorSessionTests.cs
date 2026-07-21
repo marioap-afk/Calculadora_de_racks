@@ -25,7 +25,7 @@ namespace RackCad.UI.Tests
         {
             var session = NewSession();
             session.SetModel("design-x", "system-y");
-            session.Identity.SetName("  Rack 9  ");
+            session.Identity.SetName("Rack 9"); // the window passes NameBox.Text?.Trim(); the helper stores it verbatim
 
             var raised = 0;
             session.InsertRequestedRaised += (s, e) => raised++;

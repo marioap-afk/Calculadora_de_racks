@@ -30,10 +30,12 @@ namespace RackCad.UI.Editor
         /// <summary>True once an id exists (minted or adopted).</summary>
         public bool HasId => !string.IsNullOrWhiteSpace(Id);
 
-        /// <summary>Sets the display name (trimmed to null-or-value the way the editors read the name box).</summary>
+        /// <summary>Stores the display name verbatim. Trimming stays at the call site, exactly as the editors do it
+        /// (raw <c>currentName = name</c> on load; <c>NameBox.Text?.Trim()</c> on insert) — so adopting this helper does
+        /// not change what name reaches the drawing.</summary>
         public void SetName(string name)
         {
-            Name = string.IsNullOrWhiteSpace(name) ? name : name.Trim();
+            Name = name;
         }
 
         /// <summary>
@@ -53,12 +55,13 @@ namespace RackCad.UI.Editor
         /// <summary>
         /// Adopts the identity of a design opened from the drawing or the library (RACKEDITAR / open-from-library), so a
         /// re-save/redraw keeps the same GUID. A blank <paramref name="id"/> leaves the id unminted (a library template
-        /// opened "as new" gets a fresh GUID on insert, matching <c>LoadForNew</c>).
+        /// opened "as new" gets a fresh GUID on insert, matching <c>LoadForNew</c>). The name is stored verbatim, exactly
+        /// like the editors' <c>currentName = name</c> on load.
         /// </summary>
         public void Adopt(string id, string name)
         {
             Id = string.IsNullOrWhiteSpace(id) ? null : id;
-            SetName(name);
+            Name = name;
         }
     }
 }
