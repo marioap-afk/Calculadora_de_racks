@@ -154,3 +154,19 @@ sigue siendo la red de regresión de la geometría de los builders.
 - Pruebas y builds locales: **no ejecutables en esta estación** — no hay .NET SDK instalado (solo runtimes; `global.json` fija SDK `8.0.423`). No se instala SDK ni se altera la estrategia vigente.
 - Validación efectiva: **CI de la rama `refactor/draw-services`** (Tests + Build UI + Build Plugin without AutoCAD), que sí dispone del SDK. Las pruebas nuevas y la suite completa se ejecutan allí tras el push.
 - Sin validación manual en AutoCAD en esta fase.
+
+## 11. Comparación final F4 — uniformidad de `regen`
+
+F4 cambia **cómo** se aplica el flag, no **cuándo** se regenera. Los dos guardados de redibujo
+byte-idénticos (antes en `SystemBlockWriter.RedrawInPlace` y en `LateralHeaderDrawService.RedrawInPlace`)
+se unificaron en un único helper `SystemBlockWriter.ApplyRegen(document, regen)`, invocado desde ambos
+**en la misma posición**: tras `Commit` y `PurgeUnreferenced`, dentro del lock del documento.
+
+- **Ubicaciones efectivas de regeneración: 7 (sin cambio)** — las dos de redibujo (ahora vía `ApplyRegen`),
+  los tres finales-únicos multivista (Selectivo/Cabecera/Dinámico), layout y fill.
+- **Llamadas literales `Editor.Regen()`: 7 → 6** — las dos de redibujo comparten ahora el cuerpo de
+  `ApplyRegen`; las otras cinco quedan intactas.
+- `ViewBlockDraw` no aplica regen: reenvía el flag a `SystemBlockWriter.RedrawInPlace`.
+- `FlowBedDrawService.RedrawInPlace` conserva su firma sin `regen` y su `regen: true` interno.
+- Sin cambios: comandos (`regen: false` intermedios + el único `Regen` final gateado), layout/fill,
+  cancelación del jig, y el orden `Commit` → `Purge` → `Regen`.

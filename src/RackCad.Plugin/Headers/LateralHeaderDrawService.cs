@@ -93,10 +93,8 @@ namespace RackCad.Plugin.Headers
                     // Post-commit purge of the orphaned nested defs (Database.Purge on committed state; see the drawer note).
                     LateralHeaderDrawer.PurgeUnreferenced(database, staleDefs);
 
-                    if (regen)
-                    {
-                        document.Editor.Regen();
-                    }
+                    // Same guarded regen as the system redraw path — applied through the one shared helper (I-16 F4).
+                    SystemBlockWriter.ApplyRegen(document, regen);
                 }
 
                 // Report pieces skipped during the redraw too — an edit can lose blocks just like an insert.
