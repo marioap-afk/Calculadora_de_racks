@@ -200,7 +200,7 @@ namespace RackCad.UI
                 {
                     var editor = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
                     editor.SetDimensionStyles(dimensionStyles);
-                    editor.LoadDesignForNew(project.DynamicDesign, library.SelectedDesign.Name);
+                    editor.LoadDesignForNew(project.DynamicDesign, library.SelectedDesign.Name, project); // pass the source project so a re-save preserves its wrapper metadata (I-11)
                     editor.ShowDialog();
 
                     if (editor.InsertRequested)
@@ -219,7 +219,7 @@ namespace RackCad.UI
                 {
                     var editor = new RackSelectiveWindow(canInsertInAutoCad) { Owner = this };
                     editor.SetDimensionStyles(dimensionStyles);
-                    editor.LoadForNew(project.SelectiveRack);
+                    editor.LoadForNew(project.SelectiveRack, project); // pass the source project so a re-save preserves the wrapper metadata (I-11)
                     editor.ShowDialog();
 
                     if (editor.InsertRequested)

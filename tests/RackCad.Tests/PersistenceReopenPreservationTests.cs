@@ -232,6 +232,28 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Library_SelectiveRackWrapper_WithSource_PreservesWrapperUnknownAndVersion()
+        {
+            // Opening a SelectiveRack from the library reconstructs its WRAPPER RackProjectDocument on save — a boundary,
+            // even though the inner SelectivePalletDesignDocument is not one of the four. The wrapper metadata must survive.
+            var store = new RackProjectStore();
+            var design = new SelectivePalletDesign { PostId = "POST_P", PalletDepth = 48.0 };
+            design.Bays.Add(new SelectiveBayDesign());
+            var document = SelectivePalletDesignDocument.From(design, "id-1", "Rack A");
+
+            var node = JsonNode.Parse(store.Serialize(RackProject.ForSelectiveRack(document))).AsObject();
+            node["SchemaVersion"] = "2.7";
+            node["futureWrapper"] = "keep";
+            var loaded = store.Deserialize(node.ToJsonString());
+
+            var back = store.Serialize(RackProject.ForSelectiveRack(loaded.SelectiveRack).WithSourceMetadataFrom(loaded));
+
+            using var doc = JsonDocument.Parse(back);
+            Assert.Equal("2.7", doc.RootElement.GetProperty("SchemaVersion").GetString());
+            Assert.Equal("keep", doc.RootElement.GetProperty("futureWrapper").GetString());
+        }
+
+        [Fact]
         public void Library_Save_WithSource_DoesNotResurrectInactiveKnownPayload()
         {
             // Source carries a stray Header alongside the cama; a with-source re-save must NOT resurrect it.

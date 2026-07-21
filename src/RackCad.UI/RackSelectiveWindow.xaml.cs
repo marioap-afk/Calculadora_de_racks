@@ -123,6 +123,11 @@ namespace RackCad.UI
         private string currentId;
         private string currentName;
 
+        /// <summary>The library project this design was opened from, if any, so a re-save preserves the WRAPPER
+        /// RackProjectDocument's unknown JSON metadata + non-downgraded schema version (I-11). Null for a brand-new design
+        /// or the in-place drawing edit (whose inner design is a SelectivePalletDesignDocument, not a wrapper boundary).</summary>
+        private RackProject sourceProject;
+
         /// <summary>True when the window was opened on an EXISTING rack (RACKEDITAR). The lateral view can only be
         /// inserted then — it links to that rack's frontal; inserting it on a brand-new rack would orphan it.</summary>
         private bool isEditingExisting;
@@ -2074,9 +2079,10 @@ namespace RackCad.UI
 
         /// <summary>Open pre-loaded from a LIBRARY template as a NEW rack — a fresh GUID on insert (not an in-place update),
         /// mirroring the dynamic editor's library open. Keeps the "Insertar" flow.</summary>
-        public void LoadForNew(SelectivePalletDesignDocument document)
+        public void LoadForNew(SelectivePalletDesignDocument document, RackProject sourceProject = null)
         {
             if (document == null) return;
+            this.sourceProject = sourceProject;
             currentId = null;
             currentName = document.Name;
             isEditingExisting = false; // a library template inserts as its own rack, not an update of one in the drawing
@@ -2104,7 +2110,7 @@ namespace RackCad.UI
 
             try
             {
-                new RackProjectStore().Save(RackProject.ForSelectiveRack(document), path);
+                new RackProjectStore().Save(RackProject.ForSelectiveRack(document).WithSourceMetadataFrom(sourceProject), path);
                 SetStatus("Selectivo guardado en la biblioteca: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)

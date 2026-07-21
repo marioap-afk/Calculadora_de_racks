@@ -113,6 +113,11 @@ namespace RackCad.UI
         private string currentName;
         private bool isEditingExisting;
 
+        /// <summary>The project this system was opened from (library or drawing), if any, so a re-save preserves its
+        /// wrapper's unknown JSON metadata + non-downgraded schema version. SaveSystem_Click re-snapshots the design, so
+        /// this retained field is the ONLY source of that metadata (it cannot be recovered from the recomputed design). (I-11)</summary>
+        private RackProject sourceProject;
+
         public RackDynamicSystemWindow()
             : this(false)
         {
@@ -2988,7 +2993,7 @@ namespace RackCad.UI
 
             try
             {
-                new RackProjectStore().Save(RackProject.ForDynamic(design, system), path);
+                new RackProjectStore().Save(RackProject.ForDynamic(design, system).WithSourceMetadataFrom(sourceProject), path);
                 SetStatus("Sistema guardado: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
@@ -3014,6 +3019,7 @@ namespace RackCad.UI
                     return;
                 }
 
+                sourceProject = project; // keep the loaded project so a re-save preserves its wrapper metadata (I-11)
                 RestoreFrom(project.DynamicDesign);
                 SetStatus("Sistema abierto: " + System.IO.Path.GetFileName(dialog.FileName), false);
             }
@@ -3100,14 +3106,17 @@ namespace RackCad.UI
             DrawSideView();
         }
 
-        /// <summary>Open the editor pre-loaded with an existing drawn system (from its embedded payload), keeping Id/Name.</summary>
-        public void LoadExisting(DynamicRackDesign loaded, string id, string name)
+        /// <summary>Open the editor pre-loaded with an existing drawn system (from its embedded payload), keeping Id/Name.
+        /// <paramref name="sourceProject"/> is the project the system was read from; passing it lets a re-save preserve its
+        /// wrapper metadata (I-11).</summary>
+        public void LoadExisting(DynamicRackDesign loaded, string id, string name, RackProject sourceProject = null)
         {
             if (loaded == null)
             {
                 return;
             }
 
+            this.sourceProject = sourceProject;
             currentId = id;
             currentName = name;
             if (NameBox != null)
@@ -3123,13 +3132,14 @@ namespace RackCad.UI
 
         /// <summary>Load a design opened from the library as a NEW insert: keeps the "Insertar" button and mints a fresh
         /// GUID on insert (unlike <see cref="LoadExisting"/>, which is the in-place round-trip edit).</summary>
-        public void LoadDesignForNew(DynamicRackDesign loaded, string name)
+        public void LoadDesignForNew(DynamicRackDesign loaded, string name, RackProject sourceProject = null)
         {
             if (loaded == null)
             {
                 return;
             }
 
+            this.sourceProject = sourceProject;
             if (NameBox != null && !string.IsNullOrWhiteSpace(name))
             {
                 NameBox.Text = name.Trim();

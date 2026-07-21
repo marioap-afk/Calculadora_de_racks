@@ -56,6 +56,10 @@ namespace RackCad.UI
         /// metadata and schema version instead of stamping a fresh document (I-11). Null for a brand-new design.</summary>
         private RackCad.Application.Persistence.RackProject sourceProject;
 
+        /// <summary>The FlowBed document this bed was opened from in the DRAWING (RACKEDITAR), if any, so a SAVE-TO-LIBRARY
+        /// preserves its version + unknown fields even though there is no source project (I-11, item 4). Null otherwise.</summary>
+        private RackCad.Application.Persistence.FlowBedDocument sourceFlowBed;
+
         public RackFlowBedWindow()
             : this(false)
         {
@@ -231,14 +235,18 @@ namespace RackCad.UI
             Close();
         }
 
-        /// <summary>Open pre-loaded with an existing drawn bed (from its embedded payload), keeping Id/Name.</summary>
-        public void LoadExisting(FlowBedConfiguration config, string id, string name)
+        /// <summary>Open pre-loaded with an existing drawn bed (from its embedded payload), keeping Id/Name.
+        /// <paramref name="sourceFlowBed"/> is the FlowBed document read from the embed; passing it lets a SAVE-TO-LIBRARY
+        /// preserve its unknown fields + schema version (I-11).</summary>
+        public void LoadExisting(FlowBedConfiguration config, string id, string name,
+            RackCad.Application.Persistence.FlowBedDocument sourceFlowBed = null)
         {
             if (config == null)
             {
                 return;
             }
 
+            this.sourceFlowBed = sourceFlowBed;
             currentId = id;
             currentName = name;
             if (NameBox != null)
@@ -322,8 +330,11 @@ namespace RackCad.UI
 
             try
             {
-                new RackCad.Application.Persistence.RackProjectStore()
-                    .Save(RackCad.Application.Persistence.RackProject.ForCama(config).WithSourceMetadataFrom(sourceProject), path);
+                // Preserve source metadata from whichever origin this bed came from: a library project (open-from-library)
+                // or a standalone FlowBed document (open-from-drawing). Both no-op when null (a brand-new bed) (I-11).
+                var project = RackCad.Application.Persistence.RackProject.ForCama(config);
+                project = sourceProject != null ? project.WithSourceMetadataFrom(sourceProject) : project.WithSourceFlowBed(sourceFlowBed);
+                new RackCad.Application.Persistence.RackProjectStore().Save(project, path);
                 SetStatus("Cama guardada en la biblioteca: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)

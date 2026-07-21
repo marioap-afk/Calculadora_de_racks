@@ -210,7 +210,9 @@ namespace RackCad.Plugin
             }
 
             var window = new RackFlowBedWindow(canInsertInAutoCad: true);
-            window.LoadExisting(config, embed.Id, embed.Name);
+            // Pass the source FlowBedDocument so a SAVE-TO-LIBRARY of this drawing bed preserves its version + unknown
+            // fields even though there is no source RackProject (I-11, item 4).
+            window.LoadExisting(config, embed.Id, embed.Name, sourceDesign);
             AcApplication.ShowModalWindow(window);
 
             if (!window.InsertRequested)
