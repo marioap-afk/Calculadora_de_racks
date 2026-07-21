@@ -4,11 +4,11 @@ automation_state:
   branch: refactor/versionado
   claim_id: 12b19325-fced-4ef9-819f-af911e17c7a2
   current_phase: 6
-  state: implementing
-  gate: rebase-required
+  state: review-ready
+  gate: owner-decision
   attempts: 0
-  next_action: completar-rebase-sobre-origin-main-y-verificaciones-luego-volver-a-owner-decision
-  last_evidence_commit: 691b60ce419f18b4cbfc00b0d95f0add70387709
+  next_action: owner-accept-adr-0004-and-autocad-autoload-check-then-serialized-merge-no-ff
+  last_evidence_commit: 3d44fdf3eca2546141cba56e9ee9beb1a9308389
 owner_decision:
   status: pending
   validator: owner
@@ -28,7 +28,7 @@ integration_conflicts:
     status: integrated-in-main
     file: tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj
     kind: semantic
-    resolution: en-progreso-eliminando-LangVersion-Nullable-duplicados-durante-el-rebase
+    resolution: resuelto-en-el-rebase-de-I-12 (LangVersion/Nullable eliminados; heredan de Directory.Build.props)
 execution_context:
   mode: manual-git-only
   worktree: Calculadora de racks-I-12-versionado
