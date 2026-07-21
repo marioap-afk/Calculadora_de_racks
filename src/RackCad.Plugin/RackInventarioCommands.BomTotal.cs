@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Bom;
@@ -72,26 +73,32 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                // Only PLACED racks matter (a defined-but-unplaced rack was drawn then erased, not yet purged).
+                var placed = order.Select(id => byRack[id]).Where(aggregate => aggregate.Copies > 0).ToList();
+
+                // Preflight: EVERY placed rack must resolve a handler BEFORE we load the catalog or build anything.
+                // If ANY placed kind has no registered handler, abort the WHOLE command — a partial BOM must never be
+                // shown. (A KNOWN handler whose payload turns out unreadable is still best-effort skipped below.)
+                if (!KindHandlerDispatch.TryResolveAll(editor, placed.Select(aggregate => aggregate.Embed.Kind).ToList(), out var handlers))
+                {
+                    return;
+                }
+
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var racks = new List<ConsolidatedRackBom>();
-                foreach (var id in order)
+                for (var i = 0; i < placed.Count; i++)
                 {
-                    var aggregate = byRack[id];
-                    if (aggregate.Copies <= 0)
-                    {
-                        continue; // a defined-but-unplaced rack (drawn then erased, not yet purged) isn't in the drawing
-                    }
-
-                    var bom = BuildRackBom(aggregate.Embed, catalog);
+                    var aggregate = placed[i];
+                    var bom = BuildRackBom(handlers[i], aggregate.Embed, catalog);
                     if (bom == null)
                     {
-                        continue; // a foreign/unreadable rack is skipped, not fatal
+                        continue; // handler present but the payload is unreadable/unusable — best-effort skip, not fatal
                     }
 
                     racks.Add(new ConsolidatedRackBom
                     {
                         Name = string.IsNullOrWhiteSpace(aggregate.Embed.Name) ? "(sin nombre)" : aggregate.Embed.Name.Trim(),
-                        Kind = KindLabel(aggregate.Embed.Kind),
+                        Kind = handlers[i].BomLabel,
                         Copies = aggregate.Copies,
                         Bom = bom
                     });
@@ -112,25 +119,20 @@ namespace RackCad.Plugin
             }
         }
 
-        /// <summary>Rebuild ONE rack's bill of materials from its embedded design, dispatching on kind via the
-        /// kind-handler registry (mirrors RACKEDITAR). A kind with no registered handler — like an unreadable or
-        /// foreign payload — yields null and the caller skips it (best-effort, unchanged).</summary>
-        private static BillOfMaterials BuildRackBom(RackEmbedDocument embed, RackCatalog catalog)
+        /// <summary>Rebuild ONE rack's bill of materials via its already-resolved handler (the caller reported an
+        /// unrecognized kind before reaching here). Returns null for an unreadable/unusable payload, so the caller
+        /// best-effort skips that rack.</summary>
+        private static BillOfMaterials BuildRackBom(IRackKindHandler handler, RackEmbedDocument embed, RackCatalog catalog)
         {
             try
             {
-                return KindHandlerRegistry.Default.TryGet(embed.Kind, out var handler)
-                    ? handler.BuildBom(embed, catalog)
-                    : null;
+                return handler.BuildBom(embed, catalog);
             }
             catch
             {
                 return null;
             }
         }
-
-        private static string KindLabel(string kind)
-            => KindHandlerRegistry.Default.TryGet(kind, out var handler) ? handler.BomLabel : (kind ?? string.Empty);
 
         private sealed class RackAggregate
         {
