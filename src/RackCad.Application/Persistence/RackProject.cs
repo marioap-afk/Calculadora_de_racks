@@ -51,6 +51,23 @@ namespace RackCad.Application.Persistence
             return this;
         }
 
+        /// <summary>
+        /// Attach the persistence metadata of a standalone source <paramref name="sourceFlowBed"/> document so a LIBRARY
+        /// re-save of a cama opened from the DRAWING preserves its unknown fields and non-downgraded schema version, even
+        /// though no source <see cref="RackProject"/> exists (I-11 D3). A Persistence-layer seam — the UI passes the
+        /// <see cref="FlowBedDocument"/> it read from the embed, never hand-built JSON. Effective only for a cama project
+        /// (the wrapper writes its FlowBed slot); no-op if <paramref name="sourceFlowBed"/> is null.
+        /// </summary>
+        public RackProject WithSourceFlowBed(FlowBedDocument sourceFlowBed)
+        {
+            if (sourceFlowBed != null)
+            {
+                SourceDocument = new RackProjectDocument { Kind = RackSystemKind.Cama, FlowBed = sourceFlowBed };
+            }
+
+            return this;
+        }
+
         public static RackProject ForSelective(RackFrameConfiguration header)
         {
             return new RackProject { Kind = RackSystemKind.Selective, Header = header };

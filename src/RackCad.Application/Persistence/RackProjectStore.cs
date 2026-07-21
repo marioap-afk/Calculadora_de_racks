@@ -114,6 +114,83 @@ namespace RackCad.Application.Persistence
             return isWrapper ? DeserializeWrapper(json) : DeserializeLegacyHeader(json);
         }
 
+        /// <summary>
+        /// Try to deserialize a persisted design into a project (e.g. the inner <c>Design</c> a drawing block carries for
+        /// its dynamic/cabecera view). Returns false, <paramref name="project"/> null, on any failure.
+        /// <paramref name="incompatibleMajor"/> is true ONLY when the failure is a higher wrapper/header MAJOR this build
+        /// cannot read — so a caller re-stamping a sibling block can avoid HIDING that incompatibility behind a fallback
+        /// (I-11); a benign failure (malformed/legacy/empty) leaves it false.
+        /// </summary>
+        public bool TryDeserialize(string json, out RackProject project, out bool incompatibleMajor)
+        {
+            project = null;
+            incompatibleMajor = false;
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return false;
+            }
+
+            try
+            {
+                project = Deserialize(json);
+                return true;
+            }
+            catch (Exception)
+            {
+                // Any read failure yields false (matching the "on any failure" contract) so a corrupt sibling inner
+                // design never escapes the caller's redraw. incompatibleMajor is derived from the readability gate.
+                incompatibleMajor = !IsReadable(json);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// True unless the JSON declares a wrapper/header schema MAJOR higher than this build writes — the non-throwing
+        /// readability gate that mirrors the store's own wrapper-vs-header decision (a <c>kind</c> property = wrapper,
+        /// schema 2.x; otherwise a bare header, schema 1.x). Missing/malformed/legacy versions read as readable.
+        /// </summary>
+        public bool IsReadable(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return true;
+            }
+
+            try
+            {
+                using var probe = JsonDocument.Parse(json);
+                var root = probe.RootElement;
+                if (root.ValueKind != JsonValueKind.Object)
+                {
+                    return true;
+                }
+
+                string version = null;
+                var isWrapper = false;
+                foreach (var property in root.EnumerateObject())
+                {
+                    if (string.Equals(property.Name, "kind", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isWrapper = true;
+                    }
+                    else if (string.Equals(property.Name, "schemaVersion", StringComparison.OrdinalIgnoreCase)
+                        && property.Value.ValueKind == JsonValueKind.String)
+                    {
+                        version = property.Value.GetString();
+                    }
+                }
+
+                var current = isWrapper
+                    ? RackProjectDocument.CurrentSchemaVersion
+                    : RackFrameProjectDocument.CurrentSchemaVersion;
+                return SchemaVersionPolicy.IsReadable(version, current);
+            }
+            catch (JsonException)
+            {
+                return true; // malformed → benign, not a MAJOR incompatibility
+            }
+        }
+
         public void Save(RackProject project, string path)
         {
             File.WriteAllText(path, Serialize(project));

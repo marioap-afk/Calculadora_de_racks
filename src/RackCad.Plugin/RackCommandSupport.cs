@@ -23,6 +23,22 @@ namespace RackCad.Plugin
         }
 
         /// <summary>
+        /// Read the source project a dynamic/cabecera view-block carries in its inner <c>Design</c> (a RackProjectDocument),
+        /// so a redraw can preserve THAT block's own wrapper metadata (unknown fields + non-downgraded schema version, I-11).
+        /// Falls back to the <paramref name="initiating"/> block's project ONLY on a benign failure (malformed/legacy/empty);
+        /// an incompatible-MAJOR inner design returns null so it is NOT hidden behind the (lower-major) initiating metadata.
+        /// </summary>
+        public static RackProject ReadInnerSourceProject(string designJson, RackProject initiating)
+        {
+            if (new RackProjectStore().TryDeserialize(designJson, out var source, out var incompatibleMajor))
+            {
+                return source;
+            }
+
+            return incompatibleMajor ? null : initiating;
+        }
+
+        /// <summary>
         /// Prompt the user to pick a rack block and read its embedded payload from the DEFINITION. Returns false only
         /// when the user cancelled the selection; a picked-but-non-rack block returns true with a null <paramref
         /// name="embed"/> so the caller can report it. Shared by RACKEDITAR, RACKLAYOUT and RACKRELLENAR.
