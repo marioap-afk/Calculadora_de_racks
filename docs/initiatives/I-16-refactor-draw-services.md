@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-16
 title: Refactor de Draw Services del Plugin
 type: refactor
-status: integration-ready
+status: integrated
 branch: refactor/draw-services
 base_branch: main
 priority:
@@ -28,9 +28,9 @@ automation:
 
 # I-16 — Refactor de Draw Services del Plugin
 
-> Estado: **F0-F5 completadas; lista para preparar integración, aún NO integrada.** CI de rama verde;
+> Estado: **F0-F5 completadas; INTEGRADA en `main` el 2026-07-21** (merge `--no-ff`). CI de rama verde;
 > build y tests locales verdes; **validación manual en AutoCAD 2025 aprobada** (registro:
-> [I-16-autocad-validation.md](I-16-autocad-validation.md)). `integration-ready` no significa integrada;
+> [I-16-autocad-validation.md](I-16-autocad-validation.md)). El detalle de la integración vive en `docs/HANDOFF.md` §5;
 > la integración es manual del dueño (WORKFLOW §4.5). Los conteos de pruebas y hashes canónicos viven en
 > `docs/HANDOFF.md` §12, no aquí.
 
@@ -267,8 +267,8 @@ resultados verificables prevalecen sobre cualquier campo `status` del front matt
 
 ## 14. Evidencia final
 
-**F0-F5 completadas; iniciativa lista para preparar integración, aún NO integrada.** El trabajo vive solo en
-la rama `refactor/draw-services`; `main` no fue modificada.
+**F0-F5 completadas; iniciativa INTEGRADA en `main` el 2026-07-21** (merge `--no-ff`; rebaseada sobre el `main`
+con I-08 antes de integrar). El detalle de la integración (SHAs, tests, validación) vive en `docs/HANDOFF.md` §5.
 
 - **F0**: reclamo atómico (`Claim-Id: 5838ddaa-af47-4879-8d34-1d2f0c768005`); sin estorbo de I-10; sin solape
   con I-08.
@@ -282,6 +282,7 @@ la rama `refactor/draw-services`; `main` no fue modificada.
   y Plugin Debug, solo `MSB3277`); **validación manual en AutoCAD 2025 aprobada** por el dueño (registro:
   [I-16-autocad-validation.md](I-16-autocad-validation.md)).
 
-Pendiente (operación manual del dueño, fuera de estas fases): rebase final si el trunk avanza, actualización
-de `docs/HANDOFF.md`/`docs/ROADMAP.md` como último commit de la rama, y merge `--no-ff`. Los conteos de
+Integración ejecutada: rebase final sobre `main` (con I-08 integrada), actualización de
+`docs/HANDOFF.md`/`docs/ROADMAP.md`/índice y merge `--no-ff`; solo resta la limpieza segura de rama y worktree
+(WORKFLOW §3/§6). Los conteos de
 pruebas y hashes canónicos viven en `docs/HANDOFF.md` §12, no aquí.

@@ -53,14 +53,14 @@ schema `2.0`, nombres de enum, fallback legacy sin `kind`, `Kind: 999` a cabecer
 reglas laxas de cama/larguero y etiquetas de biblioteca se conservan idénticos. La adaptación de UI se
 limitó a las comparaciones de `RackMainMenuWindow`. I-10 e I-16 quedaron fuera de alcance.
 
-I-16 (`refactor/draw-services`) está **lista para integrar, aún NO integrada** (rama rebaseada sobre el
-`main` actual con I-08 integrada; validada en AutoCAD, ver §2 y §5). Colapsa la duplicación de los
-`*DrawService` del Plugin **sin cambio de comportamiento**: extrae la infraestructura compartida
-(`RackCatalogLoader`, `BlockPlacement`), uniforma la regeneración condicional (`SystemBlockWriter.ApplyRegen`)
-y colapsa la orquestación de los siete servicios de vista en `ViewBlockDraw`, conservando las siete fachadas
-públicas, `LateralHeaderDrawService` como servicio especializado, y los invariantes observables (nombres de
-bloque y sufijos, mensajes, `postIndex`, `DynamicRackEnd`, caso all-loose, payload/GUID, BOM, geometría,
-persistencia y el único `Regen` final multivista). `main` aún no ha sido modificada por I-16.
+I-16 (`refactor/draw-services`) quedó integrada el **2026-07-21** (merge `--no-ff`; rebaseada sobre el `main`
+con I-08 antes de integrar; validada en AutoCAD, ver §2 y §5). Colapsa la duplicación de los `*DrawService`
+del Plugin **sin cambio de comportamiento**: extrae la infraestructura compartida (`RackCatalogLoader`,
+`BlockPlacement`), uniforma la regeneración condicional (`SystemBlockWriter.ApplyRegen`) y colapsa la
+orquestación de los siete servicios de vista en `ViewBlockDraw`, conservando las siete fachadas públicas,
+`LateralHeaderDrawService` como servicio especializado, y los invariantes observables (nombres de bloque y
+sufijos, mensajes, `postIndex`, `DynamicRackEnd`, caso all-loose, payload/GUID, BOM, geometría, persistencia
+y el único `Regen` final multivista).
 
 ## 2. Última validación real
 
@@ -122,13 +122,10 @@ se conserva tras el rebase (WORKFLOW §6).
 
 ## 4. Siguiente acción
 
-Con I-08 e I-09 integradas y limpias, **I-16** (`refactor/draw-services`) está **lista para integrar**
-(implementación completa F0-F5, CI verde, validación AutoCAD aprobada; **rebaseada sobre el `main` actual con
-I-08 integrada**), a la espera de la sesión de integración del dueño (`merge --no-ff` + el commit documental
-que la marque `integrada`). La pista B del Plugin se serializa I-09 → I-16 → I-10; tras integrar I-16,
-**I-10** (`architecture/kind-handlers`) ya tiene satisfechas sus dependencias (I-08 e I-09). El siguiente
-paso es esa integración, o continuar una iniciativa ya reclamada (I-07 en su worktree) respetando
-dependencias y estorbos.
+Con I-08, I-09 e I-16 integradas y limpias, la pista B del Plugin queda en **I-10**
+(`architecture/kind-handlers`), que ya tiene satisfechas sus dependencias (I-08 e I-09): la serialización
+I-09 → I-16 → I-10 está completa salvo I-10. El siguiente paso es abrir I-10, o continuar una iniciativa ya
+reclamada (I-07 en su worktree) respetando dependencias y estorbos.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
@@ -166,16 +163,16 @@ un nuevo piloto controlado.
   `RackListBuilder`, DrawServices, DTOs, geometría, BOM ni catálogos; sin dependencias nuevas. **I-10 e
   I-16 fuera de alcance.**
 
-**Verificación de rama de I-16 — lista para integrar, aún NO integrada — 2026-07-21:**
+**Baseline integrada de I-16 — 2026-07-21:**
 
-- rama `refactor/draw-services` **rebaseada sobre `origin/main` (`549870b`, tras integrarse I-08)**; se
-  integraría por `git merge --no-ff` en la sesión del dueño (aún no ejecutada); la punta rebaseada exacta y
-  su CI verde se registran en el gate de integración;
-- suite `RackCad.Tests`: **644/644 verdes** en la rama de I-16 (más las de I-08 al rebasar: total según
-  `main` tras el merge), sin fallos ni omitidas (build local con el SDK de usuario);
+- punta de rama integrada `f3a84bc44faf498c94dcd26b0d469f33e49a697a` (rebaseada sobre `origin/main` `549870b`
+  tras integrarse I-08); integrada en `main` por **merge `--no-ff` `2c3bee734511740ab8636894c29a74687ab1cafd`**
+  (primer padre `549870b`, segundo padre `f3a84bc`);
+- suite `RackCad.Tests`: **694/694 verdes** sobre el árbol combinado (686 de `main`/I-08 + 8 golden de I-16),
+  sin fallos ni omitidas (build local con el SDK de usuario);
 - build UI Debug: **0 errores y 0 advertencias**; build Plugin Debug: **0 errores**, únicamente las dos
   familias `MSB3277` conocidas;
-- CI de rama verde en los tres jobs (Tests, Build UI, Build Plugin without AutoCAD) sobre la punta de I-16;
+- CI de rama verde en los tres jobs (Tests, Build UI, Build Plugin without AutoCAD) sobre la punta `f3a84bc`;
 - validación manual en **AutoCAD 2025 aprobada** por el dueño sobre el DLL Debug del worktree I-16 (build de
   la punta F4, SHA-256 `6AEF0F4D5A49B89F6F5AAA35D4E287715473641E81D379B4BC671B55CC52906B`), matriz por
   familia (selectivo, dinámico con `postIndex`/entrada-salida, cama, cabecera, cancelación del jig,
@@ -187,8 +184,8 @@ un nuevo piloto controlado.
   payload/GUID, BOM, geometría, persistencia y **7 ubicaciones efectivas de `Regen`**);
 - alcance: producto solo en `src/RackCad.Plugin`; golden solo en `tests/RackCad.Tests`; documentación el
   contrato, la línea base y el registro de validación de I-16; sin cambios en Domain/UI/catálogos/deploy;
-- **no integrada**: `main` está en `549870b` (I-08 integrada); I-16 aún no se ha mergeado; la integración es
-  operación manual del dueño (WORKFLOW §4.5).
+- diff del merge contra su primer padre (`549870b`): únicamente el alcance acumulado de I-16 (19 archivos);
+  **I-08 permanece intacta** (`RackDesignKind` eliminado, `SystemRegistry` presente).
 
 **Baseline integrada de I-09 — 2026-07-20:**
 
