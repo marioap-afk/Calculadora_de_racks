@@ -168,30 +168,52 @@ namespace RackCad.Plugin
             document.Editor.WriteMessage("\n" + DescribeBed(result));
         }
 
-        /// <summary>Wraps a cama (FlowBedConfiguration) in the uniform embed envelope.</summary>
+        /// <summary>Wraps a cama (FlowBedConfiguration) in the uniform embed envelope (fresh insert: no source metadata).</summary>
         internal static string BuildCamaPayload(FlowBedConfiguration config, string id, string name)
+            => BuildCamaPayload(config, id, name, null, null);
+
+        /// <summary>
+        /// Wraps a cama in the uniform embed envelope, carrying forward the unknown JSON fields of a source envelope and
+        /// source FlowBed document so an edit does not drop metadata a newer build wrote (I-11 D3). Unknown keys are disjoint
+        /// from the known fields the editor rewrites, so the edited values always win and the extra keys ride along.
+        /// </summary>
+        internal static string BuildCamaPayload(
+            FlowBedConfiguration config, string id, string name, RackEmbedDocument sourceEmbed, FlowBedDocument sourceDesign)
         {
             if (config == null)
             {
                 return null;
             }
 
-            var designJson = new FlowBedConfigurationStore().Serialize(config);
-            return new RackEmbedStore().Serialize(new RackEmbedDocument
+            var designDocument = FlowBedDocument.FromDomain(config);
+            if (sourceDesign?.ExtensionData != null)
+            {
+                designDocument.ExtensionData = sourceDesign.ExtensionData;
+            }
+
+            var embed = new RackEmbedDocument
             {
                 Kind = RackEmbedDocument.KindCama,
                 Id = id,
                 Name = name,
-                Design = designJson
-            });
+                Design = new FlowBedConfigurationStore().SerializeDocument(designDocument)
+            };
+            if (sourceEmbed?.ExtensionData != null)
+            {
+                embed.ExtensionData = sourceEmbed.ExtensionData;
+            }
+
+            return new RackEmbedStore().Serialize(embed);
         }
 
         internal static void EditCama(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 
-            var config = new FlowBedConfigurationStore().Deserialize(embed.Design);
-            if (config == null)
+            // Read the whole source document (with its ExtensionData) so the re-save can preserve unknown FlowBed fields.
+            var sourceDesign = new FlowBedConfigurationStore().DeserializeDocument(embed.Design);
+            var config = sourceDesign?.ToDomain();
+            if (config == null || !RackDesignValidation.IsUsableFlowBed(config))
             {
                 editor.WriteMessage("\nRackCad: datos de cama invalidos.");
                 return;
@@ -208,7 +230,7 @@ namespace RackCad.Plugin
 
             var result = new FlowBedDrawService().RedrawInPlace(
                 document, blockId, window.FlowBedToInsert,
-                BuildCamaPayload(window.FlowBedToInsert, window.RackId, window.RackName));
+                BuildCamaPayload(window.FlowBedToInsert, window.RackId, window.RackName, embed, sourceDesign));
 
             if (result != null && result.Success)
             {
