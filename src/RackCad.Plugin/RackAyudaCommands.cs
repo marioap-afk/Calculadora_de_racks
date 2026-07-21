@@ -5,9 +5,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>RACKAYUDA: an in-app reference of every RackCad command and its short alias.</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>RACKAYUDA: an in-app reference of every RackCad command and its short alias, plus its own alias.</summary>
+    public sealed class RackAyudaCommands
     {
+        [CommandMethod("RA")]  public void AliasRackAyuda() => RackAyuda();                // RACKAYUDA
+
         [CommandMethod("RACKAYUDA")]
         public void RackAyuda()
         {
@@ -17,7 +19,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
     }

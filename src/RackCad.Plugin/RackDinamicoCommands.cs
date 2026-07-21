@@ -16,9 +16,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>Dynamic (pallet flow) system commands + their draw/edit/payload helpers.</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>Dynamic (pallet flow) system commands + their draw/edit/payload helpers, plus alias.</summary>
+    public sealed class RackDinamicoCommands
     {
+        [CommandMethod("RSD")] public void AliasRackSistemaDinamico() => RackSistemaDinamico(); // RACKSISTEMADINAMICO
+
         /// <summary>
         /// Draws the current lateral representation of a dynamic (pallet flow) system as one block placed with the
         /// mouse. Editable inputs are embedded separately from resolved geometry for deterministic reopen/edit.
@@ -69,12 +71,12 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
         /// <summary>Builds the requested linked view and runs its placement jig.</summary>
-        private static void DrawDynamicView(
+        internal static void DrawDynamicView(
             string view,
             int section,
             DynamicRackSystem system,
@@ -128,9 +130,9 @@ namespace RackCad.Plugin
 
         /// <summary>Summary for a dynamic-system insert (shared shape in <see cref="DescribePlacement"/>).</summary>
         private static string DescribeSystem(HeaderPlacementResult result)
-            => DescribePlacement(result, "el sistema", "sistema insertado");
+            => RackCommandSupport.DescribePlacement(result, "el sistema", "sistema insertado");
 
-        private static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
+        internal static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 
@@ -152,7 +154,7 @@ namespace RackCad.Plugin
             }
 
             var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
-            window.SetDimensionStyles(ReadDimensionStyleNames(document));
+            window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(document));
             window.LoadExisting(project.DynamicDesign, embed.Id, embed.Name);
             AcApplication.ShowModalWindow(window);
 
@@ -167,7 +169,7 @@ namespace RackCad.Plugin
             var name = string.IsNullOrWhiteSpace(window.RackName) ? embed.Name : window.RackName;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
             system.Name = name;
-            var blocks = FindRackBlocks(document, id);
+            var blocks = RackCommandSupport.FindRackBlocks(document, id);
             if (blocks.Count == 0)
             {
                 blocks.Add((blockId, embed));
@@ -182,7 +184,7 @@ namespace RackCad.Plugin
             foreach (var viewBlock in blocks)
             {
                 HeaderPlacementResult result;
-                if (IsPlantaView(viewBlock.Embed))
+                if (RackCommandSupport.IsPlantaView(viewBlock.Embed))
                 {
                     var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1);
                     result = new DynamicPlantaDrawService().RedrawInPlace(
@@ -243,7 +245,7 @@ namespace RackCad.Plugin
 
             var survivors = blocks.Count - staleViewBlocks.Count;
             var erasedPhantoms = staleViewBlocks.Count > 0 && survivors > 0
-                ? EraseViewBlocks(document, staleViewBlocks)
+                ? RackCommandSupport.EraseViewBlocks(document, staleViewBlocks)
                 : 0;
 
             if (updatedLateral + updatedFrontal + updatedPlanta + erasedPhantoms > 0)

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using RackCad.Application;
 using RackCad.Application.Layout;
 using RackCad.Application.Persistence;
 using RackCad.Plugin.Systems;
@@ -17,9 +15,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>RACKLAYOUT: array a rack's PLANTA view into a warehouse grid (rows × columns + aisles + labels).</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>RACKLAYOUT / RACKRELLENAR: array or auto-fill a rack's PLANTA view into a warehouse grid; plus their aliases.</summary>
+    public sealed partial class RackLayoutCommands
     {
+        [CommandMethod("RLY")] public void AliasRackLayout() => RackLayout();              // RACKLAYOUT
+
         private const string LayoutLabelLayer = "RACKCAD_LAYOUT";
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace RackCad.Plugin
 
                 var editor = document.Editor;
 
-                if (!PickRackBlock(document, "\nSelecciona el rack a replicar en la rejilla: ", out var embed, out _))
+                if (!RackCommandSupport.PickRackBlock(document, "\nSelecciona el rack a replicar en la rejilla: ", out var embed, out _))
                 {
                     return;
                 }
@@ -53,7 +53,7 @@ namespace RackCad.Plugin
 
                 // The warehouse layout is a top-down arrangement, so it works on the rack's PLANTA view (found by GUID —
                 // the user may have clicked any view of the rack).
-                var plantaBlocks = FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
+                var plantaBlocks = RackCommandSupport.FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
                 if (plantaBlocks.Count == 0)
                 {
                     editor.WriteMessage("\nRackCad: el rack no tiene vista en planta. Dibújala primero (RACKEDITAR) y reintenta.");
@@ -104,11 +104,11 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
-        private static bool IsPlantaViewBlock((ObjectId BlockId, RackEmbedDocument Embed) block) => IsPlantaView(block.Embed);
+        private static bool IsPlantaViewBlock((ObjectId BlockId, RackEmbedDocument Embed) block) => RackCommandSupport.IsPlantaView(block.Embed);
 
         /// <summary>Bounds fit check against a building envelope whose near corner is anchored at the seed rack's own
         /// corner (so the grid fills from there). If the grid doesn't fit, list the violations and ask whether to place
@@ -164,7 +164,7 @@ namespace RackCad.Plugin
                 using (document.LockDocument())
                 using (var transaction = document.Database.TransactionManager.StartTransaction())
                 {
-                    var reference = FindFirstModelSpaceReference(transaction, document.Database, plantaBlocks);
+                    var reference = RackBlockFinder.FindFirstModelSpaceReference(transaction, document.Database, plantaBlocks);
                     if (reference == null)
                     {
                         transaction.Commit();
@@ -205,7 +205,7 @@ namespace RackCad.Plugin
             {
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
-                var labelLayer = EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan
+                var labelLayer = LayerHelper.EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan
 
                 foreach (var cell in plan.Cells)
                 {
@@ -215,8 +215,8 @@ namespace RackCad.Plugin
                         if (independent)
                         {
                             var copyName = ComposeCopyName(embed.Name, cell.Label);
-                            var payload = RestampEnvelope(seed.Payload, copyName);
-                            definitionId = CloneDefinition(database, transaction, seed.DefinitionId, copyName, payload, embed.Name, copyName);
+                            var payload = RackEnvelopeRestamp.RestampEnvelope(seed.Payload, copyName);
+                            definitionId = RackCloner.CloneDefinition(database, transaction, seed.DefinitionId, copyName, payload, embed.Name, copyName);
                         }
 
                         // Every copy keeps the seed's orientation/mirror. NOTE (back-to-back v1): the paired row is placed
@@ -267,146 +267,8 @@ namespace RackCad.Plugin
             label.AdjustAlignment(modelSpace.Database);
         }
 
-        /// <summary>
-        /// Duplicate a rack's block DEFINITION for an INDEPENDENT copy: a fresh named BlockTableRecord holding clones of
-        /// the source's entities (nested ARRAY defs are shared, not duplicated) and the restamped payload (new GUID +
-        /// name). When <paramref name="labelFrom"/>/<paramref name="labelTo"/> are given, the drawn rack-name annotation
-        /// (a DBText equal to the source's name) is renamed so the copy isn't visually labeled as the original.
-        /// Returns the new definition id.
-        /// </summary>
-        private static ObjectId CloneDefinition(Database database, Transaction transaction, ObjectId sourceDefId, string copyName, string payload, string labelFrom = null, string labelTo = null)
-        {
-            var blockTable = (BlockTable)transaction.GetObject(database.BlockTableId, OpenMode.ForWrite);
-            var source = (BlockTableRecord)transaction.GetObject(sourceDefId, OpenMode.ForRead);
-
-            var clone = new BlockTableRecord { Name = UniqueBlockName(blockTable, copyName), Origin = source.Origin };
-            var cloneId = blockTable.Add(clone);
-            transaction.AddNewlyCreatedDBObject(clone, true);
-
-            var entityIds = new ObjectIdCollection();
-            foreach (ObjectId id in source)
-            {
-                entityIds.Add(id);
-            }
-
-            if (entityIds.Count > 0)
-            {
-                // Clone the source's entities into the fresh definition. The nested (ARRAY) defs they reference are NOT
-                // in the clone set, so the copies point at the SAME nested defs — identical geometry, no duplication.
-                var mapping = new IdMapping();
-                database.DeepCloneObjects(entityIds, cloneId, mapping, false);
-            }
-
-            // Rename the drawn rack-name annotation (if any): the clone carries the ORIGINAL's DBText label.
-            if (!string.IsNullOrWhiteSpace(labelFrom) && !string.IsNullOrWhiteSpace(labelTo))
-            {
-                foreach (ObjectId id in clone)
-                {
-                    if (transaction.GetObject(id, OpenMode.ForRead) is DBText text &&
-                        string.Equals(text.TextString?.Trim(), labelFrom.Trim(), StringComparison.Ordinal))
-                    {
-                        text.UpgradeOpen();
-                        text.TextString = labelTo;
-                    }
-                }
-            }
-
-            RackBlockData.Write(transaction, cloneId, payload); // replace the cloned (old) payload → independent rack
-            return cloneId;
-        }
-
         /// <summary>The per-cell client name: the rack's base name plus the cell label, e.g. "Rack A" → "Rack A B3".</summary>
         private static string ComposeCopyName(string baseName, string label)
             => (string.IsNullOrWhiteSpace(baseName) ? "Rack" : baseName.Trim()) + " " + label;
-
-        /// <summary>Copy a rack payload with a FRESH GUID and the copy's name so it is an independent rack. The
-        /// KIND-SPECIFIC design inside is re-stamped too (selective: Id+Name; cabecera: Header.Name) — otherwise the
-        /// first RACKEDITAR on the copy would show and silently write back the ORIGINAL's name (its editor loads the
-        /// name from the inner design). The caller guarantees <paramref name="payload"/> deserializes.</summary>
-        private static string RestampEnvelope(string payload, string copyName)
-        {
-            var store = new RackEmbedStore();
-            var embed = store.Deserialize(payload);
-            embed.Id = System.Guid.NewGuid().ToString();
-            embed.Name = copyName;
-            embed.Design = RestampDesign(embed.Kind, embed.Design, embed.Id, copyName);
-            return store.Serialize(embed);
-        }
-
-        /// <summary>Re-stamp the identity the kind-specific design carries. Dynamic and cama designs hold no display
-        /// identity of their own (their editors take the envelope's name). Best effort: an unreadable inner design is
-        /// returned untouched — the envelope-only restamp still applies.</summary>
-        private static string RestampDesign(string kind, string designJson, string newId, string copyName)
-        {
-            if (string.IsNullOrEmpty(designJson))
-            {
-                return designJson;
-            }
-
-            try
-            {
-                if (string.Equals(kind, RackEmbedDocument.KindSelective, StringComparison.OrdinalIgnoreCase))
-                {
-                    var store = new SelectivePalletDesignStore();
-                    var design = store.Deserialize(designJson);
-                    design.Id = newId;
-                    design.Name = copyName;
-                    return store.Serialize(design);
-                }
-
-                if (string.Equals(kind, RackEmbedDocument.KindCabecera, StringComparison.OrdinalIgnoreCase))
-                {
-                    var store = new RackProjectStore();
-                    var project = store.Deserialize(designJson);
-                    if (project?.Header == null)
-                    {
-                        return designJson;
-                    }
-
-                    project.Header.Name = copyName;
-                    return store.Serialize(project);
-                }
-            }
-            catch
-            {
-                // Best effort: keep the original design JSON; the copy still gets its own GUID/envelope name.
-            }
-
-            return designJson;
-        }
-
-        /// <summary>A block name not yet in the table; if taken, append " (1)", " (2)", … so no other block is renamed.</summary>
-        private static string UniqueBlockName(BlockTable blockTable, string baseName)
-        {
-            var name = BlockNaming.SanitizeBlockName(baseName);
-            if (!blockTable.Has(name))
-            {
-                return name;
-            }
-
-            for (var suffix = 1; ; suffix++)
-            {
-                var candidate = name + " (" + suffix.ToString(CultureInfo.InvariantCulture) + ")";
-                if (!blockTable.Has(candidate))
-                {
-                    return candidate;
-                }
-            }
-        }
-
-        private static ObjectId EnsureLayer(Database database, Transaction transaction, string name, short aci)
-        {
-            var layerTable = (LayerTable)transaction.GetObject(database.LayerTableId, OpenMode.ForRead);
-            if (layerTable.Has(name))
-            {
-                return layerTable[name];
-            }
-
-            layerTable.UpgradeOpen();
-            var record = new LayerTableRecord { Name = name, Color = Color.FromColorIndex(ColorMethod.ByAci, aci) };
-            var id = layerTable.Add(record);
-            transaction.AddNewlyCreatedDBObject(record, true);
-            return id;
-        }
     }
 }

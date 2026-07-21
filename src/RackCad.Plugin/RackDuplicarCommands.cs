@@ -12,9 +12,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>RACKDUPLICAR: COPY-style duplication of a rack — base point + repeated destination points, each copy
-    /// an INDEPENDENT rack (fresh GUID + numbered "- copia" name).</summary>
-    public sealed partial class RackFrameCommands
+    /// an INDEPENDENT rack (fresh GUID + numbered "- copia" name). Plus its short alias.</summary>
+    public sealed class RackDuplicarCommands
     {
+        [CommandMethod("RD")]  public void AliasRackDuplicar() => RackDuplicar();          // RACKDUPLICAR
+
         /// <summary>
         /// Duplicate a rack like AutoCAD's COPY: pick the rack, pick a BASE point, then click destination points —
         /// each click places an independent copy (its own GUID and name, so RACKEDITAR touches only that copy).
@@ -113,7 +115,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -145,18 +147,20 @@ namespace RackCad.Plugin
                 return false;
             }
 
-            using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
+            source = InDocumentTransaction.Run(document, transaction =>
             {
                 var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
-                source.DefinitionId = reference.BlockTableRecord;
-                source.Position = reference.Position;
-                source.Rotation = reference.Rotation;
-                source.Scale = reference.ScaleFactors;
-                source.LayerId = reference.LayerId;
-                source.Payload = RackBlockData.Read(transaction, source.DefinitionId);
-                transaction.Commit();
-            }
+                var snapshot = new DuplicateSource
+                {
+                    DefinitionId = reference.BlockTableRecord,
+                    Position = reference.Position,
+                    Rotation = reference.Rotation,
+                    Scale = reference.ScaleFactors,
+                    LayerId = reference.LayerId
+                };
+                snapshot.Payload = RackBlockData.Read(transaction, snapshot.DefinitionId);
+                return snapshot;
+            });
 
             embed = new RackEmbedStore().Deserialize(source.Payload);
             return true;
@@ -169,11 +173,10 @@ namespace RackCad.Plugin
         {
             var database = document.Database;
 
-            using (document.LockDocument())
-            using (var transaction = database.TransactionManager.StartTransaction())
+            InDocumentTransaction.Run(document, transaction =>
             {
-                var payload = RestampEnvelope(source.Payload, copyName);
-                var definitionId = CloneDefinition(database, transaction, source.DefinitionId, copyName, payload, sourceName, copyName);
+                var payload = RackEnvelopeRestamp.RestampEnvelope(source.Payload, copyName);
+                var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, payload, sourceName, copyName);
 
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
@@ -185,9 +188,7 @@ namespace RackCad.Plugin
                 };
                 modelSpace.AppendEntity(reference);
                 transaction.AddNewlyCreatedDBObject(reference, true);
-
-                transaction.Commit();
-            }
+            });
         }
     }
 }

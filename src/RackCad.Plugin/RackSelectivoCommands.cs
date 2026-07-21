@@ -14,9 +14,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>Selective-rack commands + their draw/edit/payload helpers (frontal / lateral corte / planta).</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>Selective-rack commands + their draw/edit/payload helpers (frontal / lateral corte / planta), plus alias.</summary>
+    public sealed class RackSelectivoCommands
     {
+        [CommandMethod("RS")] public void AliasRackSelectivo() => RackSelectivo();        // RACKSELECTIVO
+
         /// <summary>Opens the selective-rack window; draws it after the modal windows close.</summary>
         [CommandMethod("RACKSELECTIVO")]
         public void RackSelectivo()
@@ -24,7 +26,7 @@ namespace RackCad.Plugin
             try
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
-                window.SetDimensionStyles(ReadDimensionStyleNames(AcApplication.DocumentManager.MdiActiveDocument));
+                window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(AcApplication.DocumentManager.MdiActiveDocument));
                 AcApplication.ShowModalWindow(window);
 
                 if (window.InsertRequested)
@@ -34,11 +36,11 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
-        private static void EditSelective(Document document, ObjectId blockId, RackEmbedDocument embed)
+        internal static void EditSelective(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 
@@ -54,7 +56,7 @@ namespace RackCad.Plugin
             }
 
             var window = new RackSelectiveWindow(canInsertInAutoCad: true);
-            window.SetDimensionStyles(ReadDimensionStyleNames(document)); // before LoadExisting so a saved style selects
+            window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(document)); // before LoadExisting so a saved style selects
             window.LoadExisting(saved);
             AcApplication.ShowModalWindow(window);
 
@@ -74,14 +76,14 @@ namespace RackCad.Plugin
             // Base name for syncing the block-definition names across views (null = keep each view's descriptive default).
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
-            var blocks = FindRackBlocks(document, id);
-            var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !IsPlantaView(b.Embed)).ToList();
+            var blocks = RackCommandSupport.FindRackBlocks(document, id);
+            var frontalBlocks = blocks.Where(b => !IsLateralView(b.Embed) && !RackCommandSupport.IsPlantaView(b.Embed)).ToList();
             var lateralBlocks = blocks.Where(b => IsLateralView(b.Embed)).OrderBy(b => b.Embed.Section).ToList();
-            var plantaBlocks = blocks.Where(b => IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
 
             // The clicked block might not carry the GUID scan (defensive): make sure the selected one is handled.
             if (frontalBlocks.Count == 0 && lateralBlocks.All(b => b.BlockId != blockId) && !plantaBlocks.Contains(blockId)
-                && !IsLateralView(embed) && !IsPlantaView(embed))
+                && !IsLateralView(embed) && !RackCommandSupport.IsPlantaView(embed))
             {
                 frontalBlocks.Add((blockId, embed));
             }
@@ -168,7 +170,7 @@ namespace RackCad.Plugin
             var erasedPhantoms = 0;
             if (staleViewBlocks.Count > 0 && survivors > 0)
             {
-                erasedPhantoms = EraseViewBlocks(document, staleViewBlocks);
+                erasedPhantoms = RackCommandSupport.EraseViewBlocks(document, staleViewBlocks);
             }
             else if (staleViewBlocks.Count > 0)
             {
@@ -197,81 +199,6 @@ namespace RackCad.Plugin
                     + updatedPlanta.ToString(CultureInfo.InvariantCulture) + ")."
                     + (erasedPhantoms > 0 ? " Vistas obsoletas retiradas: x" + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + "." : string.Empty)
                 : "\nRackCad: no se pudo actualizar el rack.");
-        }
-
-        /// <summary>
-        /// Erase the view-block DEFINITIONS listed (a shrink's phantom fondos/cortes) together with their model-space
-        /// references (the copies) AND the nested ARRAY defs each one owned (SEL_FRONTAL_*), which erasing the owner only
-        /// dereferences. Its own locked transaction — like <see cref="LateralHeaderDrawService"/>'s cancelled-insert
-        /// cleanup — so it composes with the per-view redraw transactions above; the nested defs are purged post-commit
-        /// via <see cref="LateralHeaderDrawer.PurgeUnreferenced"/> (Database.Purge keeps any still shared, e.g. catalog
-        /// pieces). Best effort: a lingering phantom is preferable to failing the edit. Returns how many defs were erased.
-        /// </summary>
-        private static int EraseViewBlocks(Document document, System.Collections.Generic.IReadOnlyList<ObjectId> definitionIds)
-        {
-            if (document == null || definitionIds == null || definitionIds.Count == 0)
-            {
-                return 0;
-            }
-
-            var erased = 0;
-            var orphanedNestedDefs = new System.Collections.Generic.HashSet<ObjectId>();
-            try
-            {
-                using (document.LockDocument())
-                {
-                    using (var transaction = document.Database.TransactionManager.StartTransaction())
-                    {
-                        foreach (var definitionId in definitionIds)
-                        {
-                            if (definitionId.IsNull || definitionId.IsErased)
-                            {
-                                continue;
-                            }
-
-                            if (!(transaction.GetObject(definitionId, OpenMode.ForRead) is BlockTableRecord definition) || definition.IsLayout)
-                            {
-                                continue; // never touch model/paper space
-                            }
-
-                            // Capture the defs this view-block nests (its ARRAY groups + catalog pieces) BEFORE erasing it,
-                            // so the now-orphan group defs can be purged afterwards (Database.Purge spares the still-shared).
-                            foreach (ObjectId childId in definition)
-                            {
-                                if (transaction.GetObject(childId, OpenMode.ForRead) is BlockReference nested && !nested.BlockTableRecord.IsNull)
-                                {
-                                    orphanedNestedDefs.Add(nested.BlockTableRecord);
-                                }
-                            }
-
-                            // Erase every model-space reference (the rack's copies of this view) first, then the owner def.
-                            foreach (ObjectId referenceId in definition.GetBlockReferenceIds(directOnly: true, forceValidity: true))
-                            {
-                                if (transaction.GetObject(referenceId, OpenMode.ForWrite) is BlockReference reference)
-                                {
-                                    reference.Erase();
-                                }
-                            }
-
-                            definition.UpgradeOpen();
-                            definition.Erase();
-                            erased++;
-                        }
-
-                        transaction.Commit();
-                    }
-
-                    // Post-commit: the owner defs are gone, so their nested ARRAY defs are unreferenced — purge them.
-                    // Database.Purge filters out anything still referenced (catalog pieces other views use survive).
-                    LateralHeaderDrawer.PurgeUnreferenced(document.Database, orphanedNestedDefs);
-                }
-            }
-            catch (System.Exception ex)
-            {
-                document.Editor.WriteMessage("\nRackCad: no se pudieron retirar algunas vistas obsoletas. " + ex.Message);
-            }
-
-            return erased;
         }
 
         /// <summary>True when a view-block draws the LATERAL view (so it is a section of the system, not the frontal).</summary>
@@ -311,7 +238,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Draws the selective in the requested VIEW: frontal = one selective block; lateral = one cabecera "corte" per post.</summary>
-        private static void DrawSelectiveView(string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
+        internal static void DrawSelectiveView(string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -461,6 +388,6 @@ namespace RackCad.Plugin
         }
 
         private static string DescribeSelective(HeaderPlacementResult result)
-            => DescribePlacement(result, "el selectivo", "selectivo insertado");
+            => RackCommandSupport.DescribePlacement(result, "el selectivo", "selectivo insertado");
     }
 }

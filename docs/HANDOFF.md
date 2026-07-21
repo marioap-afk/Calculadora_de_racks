@@ -31,6 +31,17 @@ publicar material Autodesk. ADR-0003 registra la única excepción autorizada a 
 NuGet. I-29 concluyó con decisión B, aprobada con catorce restricciones para uso interno como
 aceptación interna de riesgo; no constituye conclusión jurídica ni autorización expresa de Autodesk.
 
+I-09 (`refactor/plugin-commands`) quedó integrada el **2026-07-20**. Partió la clase única
+`RackFrameCommands` (12 archivos parciales) en clases de comando públicas por área (`RackMenuCommands`,
+`RackCabeceraCommands`, `RackSelectivoCommands`, `RackDinamicoCommands`, `RackCamaCommands`,
+`RackDuplicarCommands`, `RackInventarioCommands`, `RackLayoutCommands`, `RackAyudaCommands`) y promovió
+los helpers cruzados a tipos `internal static` (`RackBlockFinder` con el escaneo de envelopes
+unificado, `RackCloner`, `LayerHelper`, `InDocumentTransaction`, `RackCommandSupport`,
+`RackEnvelopeRestamp`). Es un refactor mecánico **sin cambio de comportamiento**: los 26 comandos y
+alias, prompts, mensajes, switches por `Kind`, DrawServices, GUID/restamp, layers y flujos se
+conservan; solo cambia la clase contenedora. AutoCAD descubre las clases públicas sin
+`[assembly: CommandClass]`.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -48,6 +59,11 @@ y descargó el artifact de cobertura con el XML esperado antes de autorizar su i
 I-13 tampoco cambia dibujo ni comportamiento de runtime. El dueño autorizó la integración después
 de verificar el build limpio del Plugin y la aplicación documental de I-29; no se requiere una
 validación adicional mediante NETLOAD.
+
+I-09 no cambia dibujo ni comportamiento de runtime (refactor de la superficie de comandos del
+Plugin). No requirió validación en AutoCAD: la equivalencia se sostiene con el inventario de los 26
+`[CommandMethod]`, la revisión mecánica del refactor y el CI verde de la rama. AutoCAD: no ejecutado;
+no requerido por contrato al conservar comportamiento mediante equivalencia mecánica, builds y CI.
 
 ## 3. Problemas y riesgos activos
 
@@ -70,9 +86,10 @@ validación adicional mediante NETLOAD.
 
 ## 4. Siguiente acción
 
-Con I-13 integrada y limpia, el siguiente paso es continuar las iniciativas ya reclamadas en sus
-worktrees o elegir otra iniciativa permitida por el ROADMAP. I-09/I-10/I-16 dejan de estar
-bloqueadas por la falta de compilación del Plugin en CI, aunque conservan sus dependencias y
+Con I-09 integrada y limpia, la pista B del Plugin avanza: **I-16** (`refactor/draw-services`) queda
+desbloqueada respecto de I-09, y después **I-10** (`architecture/kind-handlers`, que depende de I-08
+e I-09) — la pista B se serializa I-09 → I-16 → I-10. El siguiente paso es continuar una iniciativa ya
+reclamada (I-07 en su worktree) o abrir otra permitida por el ROADMAP respetando dependencias y
 estorbos.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
@@ -80,6 +97,30 @@ desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apr
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-09 — 2026-07-20:**
+
+- punta de implementación revisada de `refactor/plugin-commands`:
+  `09de768cc7dfabdd29e313b4d8798abd783ec4a9`; este documento no inventa el SHA futuro del merge de
+  `main`;
+- `origin/main` no avanzó desde la base de I-09 (`6136fcb`): sin rebase final; la rama se integra por
+  `git merge --no-ff` en esta sesión;
+- suite `RackCad.Tests`: **636/636 verdes**, sin fallos ni omitidas;
+- build UI Debug: **0 errores y 0 advertencias**;
+- build Plugin Debug: **0 errores**; únicamente las dos familias `MSB3277` conocidas;
+- CI de rama verde sobre `09de768`: los tres jobs (Tests, Build UI, Build Plugin without AutoCAD) en
+  success;
+- equivalencia mecánica verificada: **26 `[CommandMethod]`** con nombres idénticos a `origin/main`,
+  cero duplicados, **13 principales + 13 aliases** con los mismos destinos; conjuntos idénticos de
+  literales de código (prompts, keywords, mensajes, `SetRejectMessage`, nombres de bloque), `case`
+  por `Kind`, DrawServices, stores, colores ACI, `directOnly`/`forceValidity`; conteos iguales de
+  `Regen` (7), `Guid.NewGuid` (5), purgas (6) y `catch`/`Report` (18); el tipo y los archivos
+  `RackFrameCommands` quedaron eliminados;
+- alcance: producto solo en `src/RackCad.Plugin`; documentación solo el contrato de I-09 y su índice;
+  sin cambios en Domain/Application/UI/tests/catálogos/deploy; sin dependencias nuevas; sin
+  `[assembly: CommandClass]`;
+- AutoCAD: no ejecutado; no requerido por contrato al conservar comportamiento mediante equivalencia
+  mecánica, builds y CI (ROADMAP no marca I-09 con ✋).
 
 **Baseline integrada de I-13 — 2026-07-20:**
 

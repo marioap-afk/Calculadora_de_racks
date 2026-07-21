@@ -17,9 +17,12 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>Cabecera (lateral header) commands + their draw/edit/payload helpers.</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>Cabecera (lateral header) commands + their draw/edit/payload helpers, plus their short aliases.</summary>
+    public sealed class RackCabeceraCommands
     {
+        [CommandMethod("RCB")] public void AliasRackCabecera() => RackCabecera();          // RACKCABECERA
+        [CommandMethod("QCB")] public void AliasQuickCabecera() => QuickCabecera();        // QUICKCABECERA
+
         /// <summary>Shortcut straight to the header configurator module.</summary>
         [CommandMethod("RACKCABECERA")]
         public void RackCabecera()
@@ -37,7 +40,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -101,7 +104,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -151,7 +154,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Builds the header block and runs the placement jig, then reports the outcome.</summary>
-        private static void DrawAndPlace(RackFrameConfiguration configuration)
+        internal static void DrawAndPlace(RackFrameConfiguration configuration)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -186,7 +189,7 @@ namespace RackCad.Plugin
             });
         }
 
-        private static void EditCabecera(Document document, ObjectId blockId, RackEmbedDocument embed)
+        internal static void EditCabecera(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 
@@ -222,12 +225,12 @@ namespace RackCad.Plugin
             var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
-            var blocks = FindRackBlocks(document, id);
-            var lateralBlocks = blocks.Where(b => !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
-            var plantaBlocks = blocks.Where(b => IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var blocks = RackCommandSupport.FindRackBlocks(document, id);
+            var lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
 
             // Make sure the clicked block is handled even if the GUID scan missed it.
-            if (lateralBlocks.Count == 0 && !plantaBlocks.Contains(blockId) && !IsPlantaView(embed))
+            if (lateralBlocks.Count == 0 && !plantaBlocks.Contains(blockId) && !RackCommandSupport.IsPlantaView(embed))
             {
                 lateralBlocks.Add(blockId);
             }

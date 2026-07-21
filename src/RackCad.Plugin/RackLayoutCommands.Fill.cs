@@ -17,8 +17,10 @@ namespace RackCad.Plugin
 {
     /// <summary>RACKRELLENAR: read the warehouse site (envelope polyline + columns) from a layer and auto-fill it
     /// with as many copies of a rack as fit — the first working, deterministic version of the layout optimizer.</summary>
-    public sealed partial class RackFrameCommands
+    public sealed partial class RackLayoutCommands
     {
+        [CommandMethod("RR")]  public void AliasRackRellenar() => RackRellenar();          // RACKRELLENAR
+
         /// <summary>
         /// Auto-fill: pick a rack (its PLANTA view is used), read the site geometry from a layer (the largest CLOSED
         /// polyline = the envelope, anything else there = columns/obstacles by bounding box), compute the maximum grid
@@ -38,7 +40,7 @@ namespace RackCad.Plugin
 
                 var editor = document.Editor;
 
-                if (!PickRackBlock(document, "\nSelecciona el rack con el que rellenar: ", out var embed, out _))
+                if (!RackCommandSupport.PickRackBlock(document, "\nSelecciona el rack con el que rellenar: ", out var embed, out _))
                 {
                     return;
                 }
@@ -49,7 +51,7 @@ namespace RackCad.Plugin
                     return;
                 }
 
-                var plantaBlocks = FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
+                var plantaBlocks = RackCommandSupport.FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
                 if (plantaBlocks.Count == 0)
                 {
                     editor.WriteMessage("\nRackCad: el rack no tiene vista en planta. Dibújala primero (RACKEDITAR) y reintenta.");
@@ -124,7 +126,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -437,7 +439,7 @@ namespace RackCad.Plugin
             {
                 var modelSpace = (BlockTableRecord)transaction.GetObject(
                     SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
-                var labelLayer = EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan, shared with RACKLAYOUT
+                var labelLayer = LayerHelper.EnsureLayer(database, transaction, LayoutLabelLayer, 4); // cyan, shared with RACKLAYOUT
 
                 foreach (var cell in fill.Cells)
                 {

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
@@ -328,27 +327,7 @@ namespace RackCad.Plugin.Headers
 
         /// <summary>Ensure the annotations layer exists (yellow); returns its id so the text draws on it (ByLayer).</summary>
         private static ObjectId EnsureAnnotationLayer(Database db, Transaction tr)
-            => EnsureLayer(db, tr, AnnotationLayer, 2); // yellow
-
-        /// <summary>Ensure a named layer exists with the given ACI color; returns its id (existing or freshly created).</summary>
-        private static ObjectId EnsureLayer(Database db, Transaction tr, string name, short aci)
-        {
-            var layerTable = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
-            if (layerTable.Has(name))
-            {
-                return layerTable[name];
-            }
-
-            layerTable.UpgradeOpen();
-            var record = new LayerTableRecord
-            {
-                Name = name,
-                Color = Color.FromColorIndex(ColorMethod.ByAci, aci)
-            };
-            var id = layerTable.Add(record);
-            tr.AddNewlyCreatedDBObject(record, true);
-            return id;
-        }
+            => LayerHelper.EnsureLayer(db, tr, AnnotationLayer, 2); // yellow
 
         /// <summary>
         /// Materialize a <see cref="HeaderBlockRole.Dimension"/> as a RotatedDimension on the dimensions layer. Text,
@@ -373,7 +352,7 @@ namespace RackCad.Plugin.Headers
             var chosenStyle = ResolveDimStyle(db, tr, instance.DimensionStyleName);
             var dimension = new RotatedDimension(rotation, p1, p2, dimLine, string.Empty, chosenStyle.StyleId)
             {
-                LayerId = EnsureLayer(db, tr, DimensionLayer, 1) // red
+                LayerId = LayerHelper.EnsureLayer(db, tr, DimensionLayer, 1) // red
             };
 
             space.AppendEntity(dimension);
