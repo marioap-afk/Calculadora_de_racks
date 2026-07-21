@@ -3,11 +3,11 @@ automation_state:
   initiative: I-19
   branch: feature/validador-catalogos
   claim_id: ec179c03-6007-4614-82c1-be58cd8e4314
-  current_phase: 5
+  current_phase: 6
   state: integration-ready
-  gate: integration
+  gate: none
   attempts: 4
-  next_action: esperar-ci-verde-sobre-el-sha-rebasado-y-luego-integracion-serializada-manual-merge-no-ff
+  next_action: owner-serialized-merge-no-ff-into-main
   last_evidence_commit: 251cf1ae71aeaf906d534a2bec27afb7cfc55089
 autocad_validation:
   status: not-applicable

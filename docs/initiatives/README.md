@@ -75,7 +75,8 @@ Planes disponibles:
   bloques/vistas faltantes y filas descartadas por rol (con aviso), más el manifiesto esperado de
   `blocks-library.dwg` (lista de bloques + parámetros + huella) y su comparación. Fuera de alcance: corrección
   automática de catálogos, tocar el DWG, Push Back, reglas de producto, logging de I-03, esquema de persistencia y
-  el cableado UI/Plugin. En curso (`feature/validador-catalogos`), no integrada.
+  el cableado UI/Plugin. Owner-validation aprobada (baseline `TROQUEL_TOPE` + `TARIMA_GENERICA` aceptado);
+  rebasada sobre `main` vigente e integrada en `main` el 2026-07-21.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

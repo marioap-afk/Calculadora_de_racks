@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-19
 title: Validador de catálogos
 type: feature
-status: in-progress
+status: integrated
 branch: feature/validador-catalogos
 base_branch: main
 priority:
@@ -153,9 +153,15 @@ catálogos ni `blocks-library.dwg` fueron modificados por la iniciativa.
 
 **Owner-validation APROBADA (2026-07-21):** el dueño aceptó como baseline conocido el diagnóstico del
 catálogo real (1 error `DUPLICATE_ID` en `TROQUEL_TOPE` + 2 advertencias `UNRESOLVED_BLOCK_PIECE` de
-`TARIMA_GENERICA`) y confirmó que `assets/catalogs/*` y `blocks-library.dwg` permanecen intactos. Estado:
-**integration-ready**. Falta sólo la integración serializada manual (rebase sobre `main` vigente + CI verde +
-merge), fuera del alcance de esta corrida.
+`TARIMA_GENERICA`) y confirmó que `assets/catalogs/*` y `blocks-library.dwg` permanecen intactos.
+
+**Cierre / integración (2026-07-21):** rebasada sobre la punta vigente de `main` (`e2057d7`, tras I-14 e I-12) —
+único conflicto en `docs/initiatives/README.md`, resuelto preservando ambas entradas—, con CI verde de los cuatro
+jobs sobre la punta rebasada `fcdc287` (run `29876393665`) y gates locales verdes (Application 0/0, `RackCad.Tests`
+842/842, `RackCad.UI.Tests` 85/85, UI 0 adv., Plugin sin AutoCAD 0 err.). **Integrada en `main` por `git merge
+--no-ff` el 2026-07-21** en la sesión de integración; el SHA del merge y sus dos padres viven en
+`git log --first-parent main` (este documento **no lo inventa**). Huella esperada del catálogo distribuido:
+`1a31c1a9…` (90 bloques). Sin cambios en catálogos ni DWG.
 
 ## 11. Criterios de aceptación
 
