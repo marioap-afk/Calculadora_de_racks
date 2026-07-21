@@ -21,7 +21,7 @@
     Description="Diseño de racks industriales (selectivo, dinámico, cabecera, cama de rodamiento) en AutoCAD."
     Author="RackCad">
   <CompanyDetails Name="RackCad" />
-  <Components Description="RackCad .NET 8 plugin (AutoCAD 2025+)">
+  <Components Description="RackCad .NET 8 plugin (AutoCAD 2025)">
     <RuntimeRequirements OS="Win64" Platform="AutoCAD*" SeriesMin="@RACKCAD_SERIES_MIN@" SeriesMax="@RACKCAD_SERIES_MAX@" />
     <ComponentEntry
         AppName="RackCad"

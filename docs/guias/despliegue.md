@@ -10,9 +10,9 @@ solo hace falta "apuntar" una ruta si quieres una ubicación compartida.
 
 | Requisito | Detalle |
 |-----------|---------|
-| **AutoCAD 2025 o superior** | El plugin es `net8.0-windows`. AutoCAD 2025 es la primera versión sobre **.NET 8**. En **AutoCAD 2024 o anterior NO carga** (usan .NET Framework 4.x). Este es el punto que más suele fallar. |
+| **AutoCAD 2025** | El plugin es `net8.0-windows`. AutoCAD 2025 es la primera versión sobre **.NET 8**. En **AutoCAD 2024 o anterior NO carga** (usan .NET Framework 4.x); el bundle se limita a la serie R25.0 ([ADR-0004](../adr/0004-estrategia-de-versiones-de-autocad.md)). Este es el punto que más suele fallar. |
 | **Windows** | La interfaz es WPF. |
-| **.NET 8 Desktop Runtime** | Lo trae AutoCAD 2025+. Normalmente no hay que instalar nada aparte. |
+| **.NET 8 Desktop Runtime** | Lo trae AutoCAD 2025. Normalmente no hay que instalar nada aparte. |
 
 No hace falta instalar las DLL de AutoCAD: las pone AutoCAD en tiempo de ejecución (por eso
 `AcCoreMgd/AcDbMgd/AcMgd` **no** se copian a la carpeta de salida).
@@ -121,7 +121,7 @@ pwsh deploy\build-bundle.ps1            # dotnet publish + deploy\verify-bundle.
   admin). Cierra AutoCAD antes: bloquea `RackCad.Plugin.dll`. Una copia manual no ofrece el
   respaldo/rollback del script y debe resguardar primero la biblioteca DWG.
 
-Abre AutoCAD 2025+; los comandos (`RACKCAD`, `RACKSELECTIVO`, …) quedan disponibles al arranque.
+Abre AutoCAD 2025; los comandos (`RACKCAD`, `RACKSELECTIVO`, …) quedan disponibles al arranque.
 
 > El `PackageContents.xml` se **genera** desde la plantilla con `SeriesMin="R25.0"` y
 > `SeriesMax="R25.0"` (solo AutoCAD 2025; política en
@@ -285,7 +285,7 @@ comando completo o cambia el atajo en `RackFrameCommands.Aliases.cs`.
 
 | Síntoma | Causa probable / solución |
 |---------|---------------------------|
-| `NETLOAD` da error de carga / "no se pudo cargar el ensamblado" | AutoCAD **2024 o anterior** (no soporta .NET 8). Se requiere **2025+**. |
+| `NETLOAD` da error de carga / "no se pudo cargar el ensamblado" | AutoCAD **2024 o anterior** (no soporta .NET 8). Se requiere **2025**. |
 | Los desplegables salen vacíos o los nombres se ven como `escal�n` | La carpeta `catalogs\` no está junto al DLL, o el CSV se guardó con un encoding raro. Copiar la carpeta completa; el lector acepta UTF-8 y ANSI de Excel. |
 | El rack se dibuja pero **faltan piezas** | Falta `blocks-library.dwg` junto a los catálogos, o un `blockName` de `blocks.csv` no coincide con el bloque en la librería. Se listan las piezas omitidas en la línea de comandos. |
 | Cambié un CSV y no se refleja | Re-ejecuta el comando (no hace falta reiniciar); asegúrate de editar el CSV **dentro de la carpeta `catalogs\` junto al DLL**, no el del repositorio. |
@@ -295,7 +295,7 @@ comando completo o cambia el atajo en `RackFrameCommands.Aliases.cs`.
 
 ## 8. Resumen para el usuario final
 
-1. Tener **AutoCAD 2025+** en **Windows**.
+1. Tener **AutoCAD 2025** en **Windows**.
 2. Copiar la carpeta de salida completa (DLLs + `catalogs\` con el `.dwg`).
 3. `NETLOAD` → `RackCad.Plugin.dll` (o dejarlo en la Startup Suite).
 4. Ejecutar `RACKCAD`.
