@@ -91,14 +91,21 @@ Para que RackCad **cargue solo al abrir AutoCAD** (sin `NETLOAD`), se usa un *bu
 Autoloader: una carpeta **`RackCad.bundle`** con un `PackageContents.xml` + `Contents\` (los
 DLL y `catalogs\`), colocada en un `ApplicationPlugins`.
 
-**El build ya lo arma solo.** Al compilar el plugin queda en:
+**El `dotnet publish` lo arma solo** (flujo canónico y reproducible; `deploy\build-bundle.ps1` lo
+envuelve y lo verifica fail-closed). Tras publicar el plugin queda en:
 
 ```
-src\RackCad.Plugin\bin\Release\net8.0-windows\RackCad.bundle\
-  PackageContents.xml
+src\RackCad.Plugin\bin\Release\net8.0-windows\publish\RackCad.bundle\
+  PackageContents.xml   (generado desde deploy\RackCad.bundle\PackageContents.template.xml)
   Contents\
     RackCad.Plugin.dll  (+ Application/Domain/UI)
     catalogs\  (CSV/JSON de producto; blocks-library.dwg es opcional y pertenece al usuario)
+```
+
+Generarlo y verificarlo desde el repositorio (AutoCAD **cerrado**):
+
+```powershell
+pwsh deploy\build-bundle.ps1            # dotnet publish + deploy\verify-bundle.ps1 (fail-closed)
 ```
 
 ### Instalar
@@ -116,9 +123,11 @@ src\RackCad.Plugin\bin\Release\net8.0-windows\RackCad.bundle\
 
 Abre AutoCAD 2025+; los comandos (`RACKCAD`, `RACKSELECTIVO`, …) quedan disponibles al arranque.
 
-> El `PackageContents.xml` exige `SeriesMin="R25.0"` (AutoCAD 2025). Para actualizar, cierra
-> AutoCAD y ejecuta de nuevo el script. Los DLL y catálogos CSV/JSON se sustituyen por los del
-> bundle nuevo; `blocks-library.dwg` se preserva.
+> El `PackageContents.xml` se **genera** desde la plantilla con `SeriesMin="R25.0"` y
+> `SeriesMax="R25.0"` (solo AutoCAD 2025; política en
+> [ADR-0004](../adr/0004-estrategia-de-versiones-de-autocad.md)). Para actualizar, cierra AutoCAD y
+> ejecuta de nuevo el script. Los DLL y catálogos CSV/JSON se sustituyen por los del bundle nuevo;
+> `blocks-library.dwg` se preserva.
 
 ### Comportamiento seguro al actualizar
 
@@ -154,16 +163,19 @@ runtime, pero **se reemplaza en la siguiente actualización**.
 
 ### Compartir la app y publicar versiones nuevas
 
-El bundle **no es un artefacto que se mantenga a mano**: el build (target `AssembleAutoloaderBundle`
-del `.csproj`) elimina y **regenera completo** `RackCad.bundle` (DLLs frescos + `catalogs\`) en cada
-`dotnet build`. Esto evita que sobrevivan archivos de configuraciones anteriores. `PackageContents.xml`
-es estático (solo se toca en un *release* si quieres subir `AppVersion`). Así que "actualizar el bundle"
-= simplemente **recompilar**.
+El bundle **no es un artefacto que se mantenga a mano**: el target `AssembleAutoloaderBundle` del
+`.csproj` elimina y **regenera completo** `RackCad.bundle` (DLLs frescos + `catalogs\`) en cada
+`dotnet publish`. Esto evita que sobrevivan archivos de configuraciones anteriores. El
+`PackageContents.xml` **se genera** desde `deploy\RackCad.bundle\PackageContents.template.xml`
+sustituyendo la versión y las series de AutoCAD; la versión es **única** (`RackCadVersion` en
+`Directory.Build.props`) y alimenta también los atributos de los ensamblados, que llevan
+`InformationalVersion = <versión>+<sha>` para trazar el commit exacto. Subir de versión = cambiar
+`RackCadVersion` en un solo lugar y volver a publicar. Así que "actualizar el bundle" = **publicar**.
 
 Para pasar una versión nueva a otra persona:
 
 1. Cierra AutoCAD (bloquea `RackCad.Plugin.dll`).
-2. `pwsh deploy\install-bundle.ps1 -Build` (o `dotnet build -c Release`).
+2. `pwsh deploy\install-bundle.ps1 -Build` (o `pwsh deploy\build-bundle.ps1`, o `dotnet publish -c Release`).
 3. Comparte la carpeta `RackCad.bundle` (o un `.zip`); la otra persona la pega en su
    `%AppData%\Autodesk\ApplicationPlugins\`. Para una actualización segura en una máquina con el
    repositorio, debe usar `install-bundle.ps1`; si solo recibe el ZIP, debe respaldar manualmente
@@ -227,6 +239,21 @@ pwsh deploy\test-install-bundle.ps1
 
 Cubre primera instalación, catálogo sustituido, biblioteca preservada, destino parcial, archivo
 bloqueado, rollback tras respaldo, segunda ejecución, rutas con espacios y origen incompleto.
+
+### Verificar el bundle (fail-closed y reproducible)
+
+`deploy\verify-bundle.ps1` valida un `RackCad.bundle` ya armado: estructura, nombres, rutas, versión y
+series del manifiesto (contra `Directory.Build.props`) y una **allowlist recursiva fail-closed** que
+prueba que solo se distribuyen los cuatro DLL de RackCad y catálogos permitidos —cero DLL Autodesk
+(ADR-0003)—; además imprime el inventario con hashes SHA-256.
+
+```powershell
+pwsh deploy\verify-bundle.ps1 -BundlePath src\RackCad.Plugin\bin\Release\net8.0-windows\publish\RackCad.bundle
+```
+
+Para comprobar reproducibilidad, publica dos veces el mismo commit y compara inventarios:
+`-InventoryOutPath` escribe el inventario y `-BaselineInventoryPath` lo contrasta (deben coincidir ruta
+y hash). `deploy\build-bundle.ps1` encadena `dotnet publish` + verificación.
 
 ---
 

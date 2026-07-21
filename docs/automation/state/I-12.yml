@@ -1,0 +1,23 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-12
+  branch: refactor/versionado
+  claim_id: 12b19325-fced-4ef9-819f-af911e17c7a2
+  current_phase: 6
+  state: review-ready
+  gate: owner-validation
+  attempts: 0
+  next_action: owner-autocad-autoload-check-then-serialized-merge-no-ff
+  last_evidence_commit: b86191c62f7e185ef1765df14866caa292e46b0b
+autocad_validation:
+  status: pending
+  validator: owner
+  application: AutoCAD 2025
+  note: confirmar-que-el-bundle-regenerado-autocarga-y-RACKCAD-responde
+owner_validation:
+  status: pending
+  validator: owner
+execution_context:
+  mode: manual-git-only
+  worktree: Calculadora de racks-I-12-versionado
+  pull_request: none
