@@ -61,13 +61,13 @@ namespace RackCad.Application.Headers
         // ---- Dynamic-block parameter names ----
 
         /// <summary>Dynamic parameter that stretches the post to the header height.</summary>
-        public string PostLengthParameter { get; set; } = "LONGITUD";
+        public string PostLengthParameter { get; set; } = Domain.Systems.SelectiveRackDefaults.LengthParam;
 
         /// <summary>Dynamic parameter that stretches a horizontal/diagonal to its length (same name as the post).</summary>
-        public string MemberLengthParameter { get; set; } = "LONGITUD";
+        public string MemberLengthParameter { get; set; } = Domain.Systems.SelectiveRackDefaults.LengthParam;
 
         /// <summary>Dynamic parameter for a section's peralte (used when a base plate carries a manual peralte).</summary>
-        public string PeralteParameter { get; set; } = "PERALTE";
+        public string PeralteParameter { get; set; } = Domain.Systems.SelectiveRackDefaults.PeralteParam;
 
         /// <summary>Orthographic view these blocks live in (lateral by default).</summary>
         public string View { get; set; } = "LATERAL";

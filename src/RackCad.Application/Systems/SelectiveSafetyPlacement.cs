@@ -34,16 +34,16 @@ namespace RackCad.Application.Systems
         public const string ParrillaType = SelectiveSafetyDefaults.ParrillaType;
 
         /// <summary>PARRILLA block param that stretches its width (the frente span, used in FRONTAL).</summary>
-        public const string ParrillaFrenteParam = "FRENTE";
+        public const string ParrillaFrenteParam = SelectiveSafetyDefaults.ParrillaFrenteParam;
 
         /// <summary>PARRILLA block param that stretches its depth (the fondo span, used in LATERAL).</summary>
-        public const string ParrillaFondoParam = "FONDO";
+        public const string ParrillaFondoParam = SelectiveSafetyDefaults.ParrillaFondoParam;
 
         /// <summary>The post connection point the larguero tope mates on (its own troquel, distinct from the separador's).</summary>
         public const string TopePostPoint = "TROQUEL_TOPE";
 
         /// <summary>The "larguero tope" (rear pallet stop) block parameter for its stick-out ("saque").</summary>
-        public const string SaqueParam = "SAQUE";
+        public const string SaqueParam = SelectiveSafetyDefaults.SaqueParam;
 
         /// <summary>Default SAQUE (stick-out) of a larguero tope, inches.</summary>
         public const double DefaultSaque = SelectiveSafetyDefaults.TopeSaque;

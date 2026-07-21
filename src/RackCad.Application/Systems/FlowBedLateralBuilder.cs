@@ -47,7 +47,7 @@ namespace RackCad.Application.Systems
                 Insertion = new Point2D(0.0, 0.0),
                 ConnectionAnchor = new Point2D(0.0, 0.0)
             };
-            rail.DynamicParameters["LONGITUD"] = config.LaneDepth;
+            rail.DynamicParameters[SelectiveRackDefaults.LengthParam] = config.LaneDepth;
             instances.Add(rail);
 
             // End stop: its own origin lands on the rail's TROQUEL_TOPE.
