@@ -15,9 +15,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>RACKLAYOUT: array a rack's PLANTA view into a warehouse grid (rows × columns + aisles + labels).</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>RACKLAYOUT / RACKRELLENAR: array or auto-fill a rack's PLANTA view into a warehouse grid; plus their aliases.</summary>
+    public sealed partial class RackLayoutCommands
     {
+        [CommandMethod("RLY")] public void AliasRackLayout() => RackLayout();              // RACKLAYOUT
+
         private const string LayoutLabelLayer = "RACKCAD_LAYOUT";
 
         /// <summary>

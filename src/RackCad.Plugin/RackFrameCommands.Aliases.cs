@@ -13,8 +13,6 @@ namespace RackCad.Plugin
     {
         [CommandMethod("RK")]  public void AliasRackCad() => RackCad();                    // menú principal
         [CommandMethod("RED")] public void AliasRackEditar() => RackEditar();              // RACKEDITAR
-        [CommandMethod("RLY")] public void AliasRackLayout() => RackLayout();              // RACKLAYOUT
-        [CommandMethod("RR")]  public void AliasRackRellenar() => RackRellenar();          // RACKRELLENAR
         [CommandMethod("RA")]  public void AliasRackAyuda() => RackAyuda();                // RACKAYUDA
     }
 }

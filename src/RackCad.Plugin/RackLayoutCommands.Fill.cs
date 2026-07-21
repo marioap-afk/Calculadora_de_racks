@@ -17,8 +17,10 @@ namespace RackCad.Plugin
 {
     /// <summary>RACKRELLENAR: read the warehouse site (envelope polyline + columns) from a layer and auto-fill it
     /// with as many copies of a rack as fit — the first working, deterministic version of the layout optimizer.</summary>
-    public sealed partial class RackFrameCommands
+    public sealed partial class RackLayoutCommands
     {
+        [CommandMethod("RR")]  public void AliasRackRellenar() => RackRellenar();          // RACKRELLENAR
+
         /// <summary>
         /// Auto-fill: pick a rack (its PLANTA view is used), read the site geometry from a layer (the largest CLOSED
         /// polyline = the envelope, anything else there = columns/obstacles by bounding box), compute the maximum grid
