@@ -1,0 +1,22 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-19
+  branch: feature/validador-catalogos
+  claim_id: ec179c03-6007-4614-82c1-be58cd8e4314
+  current_phase: 5
+  state: review-ready
+  gate: owner-validation
+  attempts: 0
+  next_action: owner-revisa-el-diagnostico-y-la-integracion-serializada-manual
+  last_evidence_commit: 14acfc209d974b8216c4c99025f799a6c52e9f6e
+autocad_validation:
+  status: not-applicable
+  note: sin-cambios-de-dibujo-geometria-bloques-ni-persistencia
+owner_validation:
+  status: pending
+  note: revisar-el-diagnostico-del-validador-sobre-el-catalogo-real-y-confirmar-que-catalogos-y-dwg-no-cambiaron
+execution_context:
+  mode: manual-git-only
+  worktree: Calculadora de racks-I-19-validador-catalogos
+  pull_request:
+evidence_path: docs/automation/evidence/I-19-validador-catalogos.md

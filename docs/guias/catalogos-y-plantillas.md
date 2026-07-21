@@ -37,6 +37,8 @@ Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del
 
 > Si un archivo falta, la aplicacion sigue funcionando (usa valores internos por defecto). Un error de formato no tumba la app: una celda mal escrita en CSV deja ese campo en su valor por defecto; un JSON invalido se avisa.
 
+> **Validar despues de editar (I-19):** la tolerancia anterior tiene un costo — un `rol` mal escrito descarta la fila en silencio, un id duplicado hace que el lookup tome la primera fila, y un FK colgante sale como dibujo incompleto. El **validador de catalogos** (`CatalogValidator` en `src/RackCad.Application/Catalogs/Validation/`) revisa todo eso en una sola pasada y devuelve un diagnostico con severidades: **error** (ids duplicados, referencias/relaciones invalidas, bloques sin nombre, vistas inexistentes), **advertencia** (filas descartadas por rol, claves de relacion repetidas, bloques genericos sin pieza de catalogo) e **informativa**. Tiene un modo estricto (`IsValid(strict: true)`) que trata las advertencias como fatales, pensado para despliegues. No corrige nada: solo reporta. Ademas construye el **manifiesto esperado** de `blocks-library.dwg` (lista de bloques + parametros + huella) para comparar catalogo y biblioteca antes de dibujar. El validador nunca abre el DWG ni edita un CSV.
+
 ## Catalogos en Excel (CSV)
 
 Cada CSV tiene una **fila de encabezados** que nombra las columnas. Reglas:
@@ -545,7 +547,8 @@ PARRILLA_GENERICA,LATERAL,PARRILLA_GENERICA_LATERAL,,1,0
 
 Catalogos y plantillas:
 
-- Modelo y carga de catalogos de piezas: `src/RackCad.Application/Catalogs/` (`CatalogEntries.cs` = modelo, `JsonRackCatalogProvider.cs` = carga CSV/JSON, `CsvCatalogReader.cs` = lector CSV).
+- Modelo y carga de catalogos de piezas: `src/RackCad.Application/Catalogs/` (`CatalogEntries.cs` = modelo, `JsonRackCatalogProvider.cs` = carga CSV/JSON, `CsvCatalogReader.cs` = lector CSV, `SeccionRoles.cs` = clasificacion por rol compartida).
+- Validacion de catalogos (I-19): `src/RackCad.Application/Catalogs/Validation/` (`CatalogValidator.cs` = motor con severidades, `CatalogValidationReport.cs` = diagnostico unico, `CatalogBlockManifest.cs` = manifiesto esperado de `blocks-library.dwg` y su comparacion).
 - Modelo y carga de plantillas: `src/RackCad.Application/RackFrames/RackFrameTemplate.cs` y `RackFrameTemplateProvider.cs`.
 - Plantillas internas de respaldo: `RackFrameTemplateCatalog.cs`.
 - Construccion de la cabecera a partir de una plantilla: `RackFrameConfigurationFactory.cs`.
