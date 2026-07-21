@@ -104,7 +104,10 @@ namespace RackCad.Application.Catalogs
                     result.Add(peralte);
                     break;
                 case ParamRole.Beam:
-                    if (IsFrontal(view) || IsPlanta(view)) result.Add(length);
+                    // A larguero block carries both a LENGTH and a PERALTE grip. Builders write LONGITUD (the
+                    // selective/dynamic-planta beams and the dynamic in/out beam in LATERAL) and PERALTE (frontal,
+                    // the intermediate beam in LATERAL, planta), so both are expected in every view drawn.
+                    result.Add(length);
                     result.Add(peralte);
                     break;
                 case ParamRole.Truss:
@@ -112,7 +115,10 @@ namespace RackCad.Application.Catalogs
                     if (IsPlanta(view)) result.Add(peralte);
                     break;
                 case ParamRole.Separator:
-                    if (IsLateral(view) || IsPlanta(view)) result.Add(length);
+                    // The separator block is drawn in the FRONTAL elevation (DynamicRackDefaults.SeparatorView,
+                    // used by both DynamicSystemLateralBuilder and SelectiveLateralBuilder) and in PLANTA. No
+                    // production builder writes its LONGITUD in a LATERAL block.
+                    if (IsFrontal(view) || IsPlanta(view)) result.Add(length);
                     break;
                 case ParamRole.Rail:
                     if (IsLateral(view)) result.Add(length);
@@ -171,14 +177,18 @@ namespace RackCad.Application.Catalogs
 
             if (SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.TopeType)) return ParamRole.Tope;
             if (SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.ParrillaType)) return ParamRole.Parrilla;
-            if (SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DesviadorType)
+
+            // The LATERAL protector stretches to the fondo (SelectiveSafetyPlacement.Piece writes LONGITUD in
+            // every view it is drawn), as do the desviador / guía / defensa families.
+            if (SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.LateralType)
+                || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DesviadorType)
                 || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.GuiaType)
                 || SelectiveSafetyDefaults.IsType(type, SelectiveSafetyDefaults.DefensaType))
             {
                 return ParamRole.StretchLongitud;
             }
 
-            // BOTA / LATERAL protectors are fixed blocks: Application applies no dynamic parameter.
+            // BOTA protectors are fixed blocks: Application applies no dynamic parameter.
             return ParamRole.None;
         }
 

@@ -47,9 +47,14 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void ExpectedParameters_Separator_RequiresLongitud()
+        public void ExpectedParameters_Separator_RequiresLongitud_InFrontalAndPlantaOnly()
         {
-            Assert.Contains(Longitud, CatalogBlockParameters.ExpectedParameters(Catalog, TestCatalogIds.Profiles.Spacers.Header, "LATERAL"));
+            var separator = TestCatalogIds.Profiles.Spacers.Header;
+
+            Assert.Contains(Longitud, CatalogBlockParameters.ExpectedParameters(Catalog, separator, "FRONTAL"));
+            Assert.Contains(Longitud, CatalogBlockParameters.ExpectedParameters(Catalog, separator, "PLANTA"));
+            // No production builder writes the separator LONGITUD in a LATERAL block.
+            Assert.DoesNotContain(Longitud, CatalogBlockParameters.ExpectedParameters(Catalog, separator, "LATERAL"));
         }
 
         [Fact]

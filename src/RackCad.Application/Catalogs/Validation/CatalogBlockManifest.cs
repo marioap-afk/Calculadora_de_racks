@@ -20,8 +20,12 @@ namespace RackCad.Application.Catalogs.Validation
         public List<string> Views { get; set; } = new List<string>();
 
         /// <summary>
-        /// Dynamic parameter names the block is expected to expose, DERIVED from the connection layout
-        /// (the <c>paramX</c>/<c>paramY</c> that drive a piece's grips) — data, never invented.
+        /// Dynamic parameter names the block is expected to expose. They come from TWO sources, combined per
+        /// exact piece+view by <see cref="CatalogBlockParameters"/>: the connection-layout slide params
+        /// (<c>paramX</c>/<c>paramY</c>) AND the grips the production builders actually write to
+        /// <see cref="Headers.HeaderBlockInstance.DynamicParameters"/> (LONGITUD of the rail/posts/separators,
+        /// PERALTE, ALTURA of the pallet, SAQUE, FRENTE/FONDO). Data-derived, never invented; the names share the
+        /// domain constants the builders use, and a builder→manifest guard proves the two cannot diverge.
         /// </summary>
         public List<string> Parameters { get; set; } = new List<string>();
     }
@@ -55,9 +59,12 @@ namespace RackCad.Application.Catalogs.Validation
 
         /// <summary>
         /// The manifest the catalog implies: one entry per distinct <c>blockName</c> in <c>blocks.csv</c>, its
-        /// pieces/views, and the parameters its pieces' layout rows name. Deterministic (everything sorted) so
-        /// the fingerprint is stable across loads. Blank block names are skipped (the validator reports those
-        /// as <c>MISSING_BLOCK_NAME</c> — they are not a library expectation).
+        /// pieces/views, and the dynamic parameters that block is expected to expose. The parameters come from
+        /// <see cref="CatalogBlockParameters.ExpectedParameters"/> per EXACT piece+view — both the connection
+        /// layout's <c>paramX</c>/<c>paramY</c> AND the grips the production builders actually write — so a
+        /// LATERAL block never inherits a FRONTAL-only parameter. Deterministic (everything sorted) so the
+        /// fingerprint is stable across loads. Blank block names are skipped (the validator reports those as
+        /// <c>MISSING_BLOCK_NAME</c> — they are not a library expectation).
         /// </summary>
         public static CatalogBlockManifest BuildExpected(RackCatalog catalog)
         {
