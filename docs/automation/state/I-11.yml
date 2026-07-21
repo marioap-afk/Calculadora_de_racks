@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/persistencia-uniforme
   claim_id: a1b01b5c-f8ce-432f-9c08-c0136a49a3ca
   current_phase: 5
-  state: waiting
-  gate: owner-validation
+  state: integration-ready
+  gate: none
   attempts: 0
-  next_action: owner-final-review-and-integration
+  next_action: final-docs-rebase-ci-and-serialized-merge
   last_evidence_commit: eea1c1113dd8a33e33fa31dd61720c24c844ad4f
 autocad_validation:
   status: passed
@@ -16,6 +16,11 @@ autocad_validation:
   code_sha: eea1c1113dd8a33e33fa31dd61720c24c844ad4f
   evidence_path: docs/automation/evidence/I-11-autocad-validation.md
   date: 2026-07-21
+owner_validation:
+  status: passed
+  validator: owner
+  date: 2026-07-21
+  note: owner-aprobo-la-implementacion-final-la-matriz-autocad-b5-b6-s7-y-la-integracion-serializada
 execution_context:
   mode: manual-git-only
   worktree: architecture-persistencia-uniforme

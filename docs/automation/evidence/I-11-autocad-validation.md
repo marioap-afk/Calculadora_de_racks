@@ -1,9 +1,13 @@
 # I-11 — Validación AutoCAD
 
 **Estado vigente: PASS (validada manualmente por el Owner).** El **2026-07-21**, el Owner ejecutó la matriz
-manual en AutoCAD 2025 y confirmó explícitamente que **todos los escenarios obligatorios pasan**. El gate avanza a
-`waiting / owner-validation`. El registro del intento automatizado **BLOCKED** anterior se conserva íntegro más
-abajo como historial (no se elimina).
+manual en AutoCAD 2025 y confirmó explícitamente que **todos los escenarios obligatorios pasan**. El registro del
+intento automatizado **BLOCKED** anterior se conserva íntegro más abajo como historial (no se elimina).
+
+**Aprobación final del Owner (2026-07-21):** el Owner aprobó explícitamente la implementación final de I-11 —
+la exclusión de `RackFrameProjectDocument`, la matriz AutoCAD completa (incl. B5/B6/S7), la **owner-validation
+final (PASS)**, la **integración serializada** en `main`, la actualización de `HANDOFF.md`/`ROADMAP.md` y la
+limpieza segura posterior al merge. Estado previo a la integración: **`integration-ready`**.
 
 > Nota de trazabilidad: el ejecutor documental de esta sesión no volvió a abrir AutoCAD. El resultado PASS proviene
 > **exclusivamente** de la confirmación manual explícita del Owner; no se fabricaron capturas, rutas de DWG ni

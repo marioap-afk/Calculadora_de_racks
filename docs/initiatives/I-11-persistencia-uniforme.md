@@ -287,10 +287,14 @@ Una **desviación material** —tocar un `*DrawService`, `RackBlockData`, el for
   Evidencia: [`docs/automation/evidence/I-11-autocad-validation.md`](../automation/evidence/I-11-autocad-validation.md).
   El gate vigente pasa a **`owner-validation`**. `requires_autocad` se **conserva** en `true` (la matriz sigue
   siendo el criterio para cualquier re-validación tras un rebase).
-- **Owner-validation: SÍ** (`requires_owner_validation: true`) — **pendiente** (revisión final del dueño e
-  integración). No se declara aprobada aún. Las pruebas automatizadas cubren los **mecanismos** puros de
-  Persistence (política de versión, `RackEmbedComposer`, `WithSourceMetadataFrom`/`WithSourceFlowBed`,
-  `TryDeserialize`/`IsReadable`, y la preservación del interior dinámico/cabecera a nivel de store).
+- **Owner-validation: APROBADA por el Owner (2026-07-21).** El Owner aprobó explícitamente la implementación
+  final de I-11 (owner-validation PASS): la exclusión de `RackFrameProjectDocument`, la matriz AutoCAD completa
+  (incl. B5/B6/S7), la integración serializada en `main`, la actualización de HANDOFF/ROADMAP y la limpieza
+  segura posterior. Estado previo a la integración: **`integration-ready`**. `requires_owner_validation` se
+  conserva en `true` (criterio de re-validación ante un rebase). Las pruebas automatizadas cubren los
+  **mecanismos** puros de Persistence (política de versión, `RackEmbedComposer`, `WithSourceMetadataFrom`/
+  `WithSourceFlowBed`, `TryDeserialize`/`IsReadable`, y la preservación del interior dinámico/cabecera a nivel
+  de store).
 
 ### 10.1 Matriz AutoCAD obligatoria (NETLOAD del DLL Debug del worktree)
 
