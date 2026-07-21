@@ -13,13 +13,15 @@ using Xunit;
 namespace RackCad.Tests
 {
     /// <summary>
-    /// Defects 2–4: the builder→manifest guard is an EXACT comparison. It runs the REAL production builders for
-    /// every family that writes dynamic parameters, groups the parameters they actually write by
-    /// PieceId + View + BlockName, and for each observed case asserts equality against BOTH
-    /// <see cref="CatalogBlockParameters.ExpectedParameters"/> and the corresponding manifest entry — catching a
-    /// missing parameter AND an over-declared one. A parametrized instance with a blank block name, or one whose
-    /// block has no manifest entry, fails. Family coverage is a declared matrix (keyed by PieceId + View +
-    /// Parameter), so the guard fails if any family/view stops being observed.
+    /// Defects 2–4: the builder→manifest guard is an EXACT comparison keyed by the full
+    /// <c>PieceId + View + BlockName</c> triple. It runs the REAL production builders for every family that
+    /// writes dynamic parameters (including the manual per-cabecera plate PERALTE override), groups the
+    /// parameters they actually write per triple, and asserts each triple's set equals BOTH
+    /// <see cref="CatalogBlockParameters.ExpectedParameters"/> and the exact manifest entry for that block —
+    /// catching a missing parameter AND an over-declared one. A parametrized instance with a blank block name,
+    /// or one whose block has no manifest entry, fails. Family coverage is a declared matrix (keyed by
+    /// PieceId + View + Parameter) checked in BOTH directions: every declared case is observed, and every
+    /// observed parameter-bearing case is declared.
     /// </summary>
     public class CatalogManifestGuardTests
     {
@@ -36,19 +38,23 @@ namespace RackCad.Tests
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         /// <summary>The canonical family/view cases the production builders must keep writing, with the EXACT
-        /// parameter set observed. Keyed by PieceId so distinct safety families do not collapse into one row.</summary>
+        /// parameter set observed. Keyed by PieceId so distinct safety families do not collapse into one row.
+        /// Empty rows are relevant contracts declared on purpose (the in/out beam draws in LATERAL with none).</summary>
         private static readonly (string Piece, string View, string[] Params)[] Coverage =
         {
             (PostId, "FRONTAL", new[] { LO, PE }),
             (PostId, "LATERAL", new[] { LO }),
             (PostId, "PLANTA", new[] { PE }),
             (TestCatalogIds.BasePlates.Standard, "FRONTAL", new[] { PE }),
+            (TestCatalogIds.BasePlates.Standard, "LATERAL", new[] { PE }),   // via the manual peralte override
             (TestCatalogIds.BasePlates.Standard, "PLANTA", new[] { PE }),
             (TestCatalogIds.Profiles.Truss.Standard, "LATERAL", new[] { LO }),
             (TestCatalogIds.Profiles.Truss.Standard, "PLANTA", new[] { LO, PE }),
             (BeamId, "FRONTAL", new[] { LO, PE }),
-            (BeamId, "LATERAL", new[] { PE }),                 // regular larguero: PERALTE only in LATERAL
+            (BeamId, "LATERAL", new[] { PE }),                               // regular larguero: PERALTE only
             (BeamId, "PLANTA", new[] { LO, PE }),
+            (TestCatalogIds.Profiles.Beams.DynamicIntermediate, "LATERAL", new[] { PE }),
+            (TestCatalogIds.Profiles.Beams.DynamicIntermediate, "PLANTA", new[] { LO, PE }),
             (TestCatalogIds.Profiles.Beams.DynamicInOut, "FRONTAL", new[] { LO, PE }),
             (TestCatalogIds.Profiles.Beams.DynamicInOut, "LATERAL", new string[0]), // in/out: NOTHING in LATERAL
             (TestCatalogIds.Profiles.Beams.DynamicInOut, "PLANTA", new[] { LO, PE }),
@@ -69,6 +75,7 @@ namespace RackCad.Tests
             (TestCatalogIds.Safety.Deviators.A3, "LATERAL", new[] { LO }),
             (TestCatalogIds.Safety.Deviators.A3, "PLANTA", new[] { LO }),
             (TestCatalogIds.Safety.Dynamic.EntranceGuide, "FRONTAL", new[] { LO }),
+            (TestCatalogIds.Safety.Dynamic.EntranceGuide, "LATERAL", new[] { LO }),
             (TestCatalogIds.Safety.Dynamic.EntranceGuide, "PLANTA", new[] { LO }),
             (TestCatalogIds.Safety.Dynamic.ForkliftDefense, "FRONTAL", new[] { LO }),
             (TestCatalogIds.Safety.Dynamic.ForkliftDefense, "LATERAL", new[] { LO }),
@@ -76,7 +83,7 @@ namespace RackCad.Tests
         };
 
         [Fact]
-        public void Guard_ObservedParameters_ExactlyEqualExpectedAndManifest()
+        public void Guard_ObservedParameters_ExactlyEqualExpectedAndManifest_PerTriple()
         {
             var catalog = Catalog;
             var manifest = CatalogBlockManifest.BuildExpected(catalog);
@@ -87,7 +94,8 @@ namespace RackCad.Tests
                     group => new HashSet<string>(group.First().Parameters, StringComparer.OrdinalIgnoreCase),
                     StringComparer.OrdinalIgnoreCase);
 
-            var observed = new Dictionary<string, (HashSet<string> Params, HashSet<string> Blocks)>(StringComparer.Ordinal);
+            // Key by the EXACT PieceId + View + BlockName triple — never merge several block names into one entry.
+            var observed = new Dictionary<(string Piece, string View, string Block), HashSet<string>>();
             var failures = new List<string>();
 
             foreach (var instance in AllInstances(catalog))
@@ -97,62 +105,56 @@ namespace RackCad.Tests
                     continue;
                 }
 
-                // Defect 4: a parametrized instance with a blank block name cannot be validated against the library.
-                if (instance.DynamicParameters.Count > 0 && string.IsNullOrWhiteSpace(instance.BlockName))
+                if (string.IsNullOrWhiteSpace(instance.BlockName))
                 {
-                    failures.Add(instance.PieceId + " @ " + instance.View + ": parametrized instance with EMPTY BlockName");
+                    // Defect 4: a parametrized instance with a blank block name cannot be validated.
+                    if (instance.DynamicParameters.Count > 0)
+                    {
+                        failures.Add(instance.PieceId + " @ " + instance.View + ": parametrized instance with EMPTY BlockName");
+                    }
+
+                    continue;
                 }
 
-                var key = instance.PieceId.Trim() + " | " + instance.View.Trim();
-                if (!observed.TryGetValue(key, out var entry))
+                var key = (instance.PieceId.Trim(), instance.View.Trim(), instance.BlockName.Trim());
+                if (!observed.TryGetValue(key, out var set))
                 {
-                    entry = (new HashSet<string>(StringComparer.OrdinalIgnoreCase), new HashSet<string>(StringComparer.OrdinalIgnoreCase));
-                    observed[key] = entry;
+                    set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    observed[key] = set;
                 }
 
                 foreach (var parameter in instance.DynamicParameters.Keys)
                 {
-                    entry.Params.Add(parameter);
-                }
-
-                if (!string.IsNullOrWhiteSpace(instance.BlockName))
-                {
-                    entry.Blocks.Add(instance.BlockName.Trim());
+                    set.Add(parameter);
                 }
             }
 
             foreach (var pair in observed)
             {
-                var split = pair.Key.Split(new[] { " | " }, StringSplitOptions.None);
-                var piece = split[0];
-                var view = split[1];
-                var observedParams = pair.Value.Params;
+                var (piece, view, block) = pair.Key;
+                var label = piece + " | " + view + " | " + block;
+                var observedParams = pair.Value;
 
                 var expected = new HashSet<string>(CatalogBlockParameters.ExpectedParameters(catalog, piece, view), StringComparer.OrdinalIgnoreCase);
                 if (!expected.SetEquals(observedParams))
                 {
-                    failures.Add(pair.Key + ": observed=[" + Join(observedParams) + "] != ExpectedParameters=[" + Join(expected) + "]");
+                    failures.Add(label + ": observed=[" + Join(observedParams) + "] != ExpectedParameters=[" + Join(expected) + "]");
                 }
 
-                foreach (var block in pair.Value.Blocks)
+                if (!byBlock.TryGetValue(block, out var manifestParams))
                 {
-                    if (!byBlock.TryGetValue(block, out var manifestParams))
+                    // Defect 4: do NOT skip when the block is absent from the manifest.
+                    if (observedParams.Count > 0)
                     {
-                        // Defect 4: do NOT skip when the block is absent from the manifest — a parametrized
-                        // instance whose block the library manifest never lists would draw incompletely.
-                        if (observedParams.Count > 0)
-                        {
-                            failures.Add(pair.Key + ": block '" + block + "' has NO manifest entry");
-                        }
-
-                        continue;
+                        failures.Add(label + ": block has NO manifest entry");
                     }
 
-                    if (!manifestParams.SetEquals(observedParams))
-                    {
-                        failures.Add(pair.Key + " block '" + block + "': observed=[" + Join(observedParams)
-                            + "] != manifest=[" + Join(manifestParams) + "]");
-                    }
+                    continue;
+                }
+
+                if (!manifestParams.SetEquals(observedParams))
+                {
+                    failures.Add(label + ": observed=[" + Join(observedParams) + "] != manifest=[" + Join(manifestParams) + "]");
                 }
             }
 
@@ -160,11 +162,64 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Guard_CoverageMatrix_ObservesEveryFamilyViewWithExactParameters()
+        public void Guard_CoverageMatrix_MatchesObservedInBothDirections()
         {
             var catalog = Catalog;
-            var observed = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
+            var observed = ObservedByPieceView(catalog);
 
+            var declared = new HashSet<string>(Coverage.Select(row => row.Piece + " | " + row.View), StringComparer.Ordinal);
+            var problems = new List<string>();
+
+            // 1. Every declared family/view is observed with exactly the declared parameters.
+            foreach (var (piece, view, expectedParams) in Coverage)
+            {
+                var key = piece + " | " + view;
+                if (!observed.TryGetValue(key, out var got))
+                {
+                    problems.Add(key + ": NOT observed by any production builder");
+                    continue;
+                }
+
+                var expected = new HashSet<string>(expectedParams, StringComparer.OrdinalIgnoreCase);
+                if (!expected.SetEquals(got))
+                {
+                    problems.Add(key + ": observed=[" + Join(got) + "] != declared=[" + Join(expected) + "]");
+                }
+            }
+
+            // 2. Every observed parameter-bearing case is declared (the matrix cannot silently miss a family).
+            foreach (var pair in observed)
+            {
+                if (pair.Value.Count > 0 && !declared.Contains(pair.Key))
+                {
+                    problems.Add(pair.Key + ": observed=[" + Join(pair.Value) + "] is NOT declared in the coverage matrix");
+                }
+            }
+
+            Assert.True(problems.Count == 0, string.Join("\n", problems.OrderBy(x => x, StringComparer.Ordinal)));
+        }
+
+        [Fact]
+        public void Manifest_DoesNotImposeFalseRequirements()
+        {
+            var catalog = Catalog;
+
+            // Relevant empty contracts declared explicitly (not left to accidental absence):
+            // separator has no LATERAL block written; the in/out beam draws in LATERAL with no parameter.
+            Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Profiles.Spacers.Header, "LATERAL"));
+            Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Profiles.Beams.DynamicInOut, "LATERAL"));
+
+            // Ménsulas are fixed end connectors; botas are fixed protectors — no dynamic parameter in any view.
+            foreach (var view in new[] { "FRONTAL", "LATERAL", "PLANTA" })
+            {
+                Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Mensulas.ThreeRivet, view));
+                Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Safety.Boots.H3_16_18, view));
+            }
+        }
+
+        private static Dictionary<string, HashSet<string>> ObservedByPieceView(RackCatalog catalog)
+        {
+            var observed = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
             foreach (var instance in AllInstances(catalog))
             {
                 if (instance == null || string.IsNullOrWhiteSpace(instance.PieceId) || string.IsNullOrWhiteSpace(instance.View))
@@ -185,43 +240,7 @@ namespace RackCad.Tests
                 }
             }
 
-            var problems = new List<string>();
-            foreach (var (piece, view, expectedParams) in Coverage)
-            {
-                var key = piece + " | " + view;
-                if (!observed.TryGetValue(key, out var got))
-                {
-                    problems.Add(key + ": NOT observed by any production builder");
-                    continue;
-                }
-
-                var expected = new HashSet<string>(expectedParams, StringComparer.OrdinalIgnoreCase);
-                if (!expected.SetEquals(got))
-                {
-                    problems.Add(key + ": observed=[" + Join(got) + "] != declared=[" + Join(expected) + "]");
-                }
-            }
-
-            Assert.True(problems.Count == 0, string.Join("\n", problems));
-        }
-
-        [Fact]
-        public void Manifest_DoesNotImposeFalseRequirements()
-        {
-            var catalog = Catalog;
-
-            // Separator: no production builder writes its LONGITUD in a LATERAL block.
-            Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Profiles.Spacers.Header, "LATERAL"));
-
-            // In/out beam: MakeLoadBeam writes nothing in the LATERAL view.
-            Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Profiles.Beams.DynamicInOut, "LATERAL"));
-
-            // Ménsulas are fixed end connectors; botas are fixed protectors — no dynamic parameter in any view.
-            foreach (var view in new[] { "FRONTAL", "LATERAL", "PLANTA" })
-            {
-                Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Mensulas.ThreeRivet, view));
-                Assert.Empty(CatalogBlockParameters.ExpectedParameters(catalog, TestCatalogIds.Safety.Boots.H3_16_18, view));
-            }
+            return observed;
         }
 
         private static string Join(IEnumerable<string> values) =>
@@ -239,6 +258,7 @@ namespace RackCad.Tests
             list.AddRange(SelectiveInstances(catalog, ParrillaDesign()));        // parrilla
             list.AddRange(DynamicInstances(catalog));                            // in/out beam, intermediate beam, rail, guía, defensa
             list.AddRange(HeaderInstances(catalog));                             // poste, placa, celosía
+            list.AddRange(HeaderInstancesWithPlateOverride(catalog));            // placa LATERAL con PERALTE (override manual)
             list.AddRange(FlowBedInstances(catalog));                            // riel
             return list;
         }
@@ -335,14 +355,33 @@ namespace RackCad.Tests
 
         private static IEnumerable<HeaderBlockInstance> HeaderInstances(RackCatalog catalog)
         {
-            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Standard) ?? RackFrameTemplateCatalog.Default;
-            var configuration = new RackFrameConfigurationFactory(catalog).Build(template, PostId, 132.0, 48.0);
             var list = new List<HeaderBlockInstance>();
-            list.AddRange(new PlantaHeaderLayoutBuilder().Build(configuration, catalog));
+            list.AddRange(new PlantaHeaderLayoutBuilder().Build(HeaderConfig(catalog), catalog));
+            var configuration = HeaderConfig(catalog);
             list.AddRange(new LateralHeaderLayoutBuilder()
                 .Build(configuration, LateralHeaderParametersFactory.FromConfiguration(configuration), catalog)
                 .Instances);
             return list;
+        }
+
+        /// <summary>The manual per-cabecera plate PERALTE override — a supported production path — makes the
+        /// LATERAL plate carry PERALTE. Runs the REAL <see cref="LateralHeaderLayoutBuilder"/>.</summary>
+        private static IEnumerable<HeaderBlockInstance> HeaderInstancesWithPlateOverride(RackCatalog catalog)
+        {
+            var configuration = HeaderConfig(catalog);
+            configuration.LeftBasePlate ??= new BasePlatePlacement();
+            configuration.LeftBasePlate.PeralteOverride = 4.0;
+            configuration.RightBasePlate ??= new BasePlatePlacement();
+            configuration.RightBasePlate.PeralteOverride = 4.0;
+            return new LateralHeaderLayoutBuilder()
+                .Build(configuration, LateralHeaderParametersFactory.FromConfiguration(configuration), catalog)
+                .Instances;
+        }
+
+        private static RackFrameConfiguration HeaderConfig(RackCatalog catalog)
+        {
+            var template = RackFrameTemplateCatalog.FindById(TestCatalogIds.Templates.Standard) ?? RackFrameTemplateCatalog.Default;
+            return new RackFrameConfigurationFactory(catalog).Build(template, PostId, 132.0, 48.0);
         }
 
         private static IEnumerable<HeaderBlockInstance> FlowBedInstances(RackCatalog catalog)

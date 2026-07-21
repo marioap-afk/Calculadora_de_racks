@@ -104,10 +104,11 @@ namespace RackCad.Application.Catalogs
                     if (IsFrontal(view) || IsPlanta(view)) result.Add(peralte);
                     break;
                 case ParamRole.Plate:
-                    // PERALTE in FRONTAL/PLANTA. In LATERAL the standard flow writes nothing; only the optional
-                    // manual per-cabecera peralte override (LateralHeaderLayoutBuilder) sets it, which the
-                    // standard manifest does not require.
-                    if (IsFrontal(view) || IsPlanta(view)) result.Add(peralte);
+                    // PERALTE in every view: FRONTAL/PLANTA in the standard flow, and LATERAL via the supported
+                    // manual per-cabecera peralte override — LateralHeaderLayoutBuilder writes PERALTE on the
+                    // lateral plate when LeftBasePlate/RightBasePlate.PeralteOverride is positive — so the
+                    // library's lateral plate block must expose the PERALTE grip.
+                    result.Add(peralte);
                     break;
                 case ParamRole.Beam:
                     // Selective + intermediate largueros: LONGITUD+PERALTE in FRONTAL/PLANTA; only PERALTE in
