@@ -90,8 +90,11 @@ Autorizado por el ROADMAP (fila I-12) y ADR-0003:
 - Cambiar comportamiento del producto, UI, catálogos, persistencia o handlers.
 - Redistribuir material Autodesk; agregar caché, feeds privados o artifacts con DLL Autodesk
   (ADR-0003 intacto: versiones, fuente, finalidad y restricciones de las referencias sin cambios).
-- Absorber cambios de I-14 (`architecture/ui-controls`) o I-19 (`feature/validador-catalogos`).
-- Tocar `RackCad.sln` o `.github/workflows/ci.yml` (I-14 añadirá ahí su job de UI.Tests).
+- Absorber cambios de I-19 (`feature/validador-catalogos`), aún activa.
+- Cambiar comportamiento de los controles o pruebas de UI de I-14 (ya integrada); I-12 solo elimina de
+  `RackCad.UI.Tests.csproj` las dos propiedades ya centralizadas.
+- Reintroducir cambios propios en `RackCad.sln` o `.github/workflows/ci.yml`: I-14 ya añadió ahí su
+  proyecto y su job `ui-tests`; I-12 los hereda del rebase sin tocarlos.
 
 ## 5. Contexto requerido
 
@@ -102,16 +105,21 @@ Autorizado por el ROADMAP (fila I-12) y ADR-0003:
 ## 6. Dependencias
 
 Ninguna dependencia previa (iniciativa de relleno; ROADMAP: "Depende de —", "Se estorba con —").
-Coexiste con I-14 (`architecture/ui-controls`) e I-19 (`feature/validador-catalogos`), ambas activas.
-**Cero solapamiento de archivos** con I-12 (verificado): ninguna toca `Directory.Build.*`,
-`RackCad.sln`, `ci.yml`, `deploy/` ni `eng/`; I-12 evita `RackCad.sln` y `ci.yml` a propósito.
 
-**Conflicto semántico de integración con I-14** (no de archivos): el proyecto nuevo de I-14
-`tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` declara `<LangVersion>latest</LangVersion>` y
-`<Nullable>disable</Nullable>`, que I-12 centraliza en `Directory.Build.props` con esos mismos
-valores. Tras integrar ambas, esas dos líneas quedan como duplicados redundantes. **La iniciativa que
-se integre en SEGUNDO lugar debe eliminarlas** de ese `.csproj` (limpieza, sin cambio de
-comportamiento). I-12 **no** modifica la rama de I-14.
+**I-14 (`architecture/ui-controls`) ya está integrada en `main`** (merge en `origin/main`); no está
+activa. Aportó los controles comunes de UI y sus pruebas, el proyecto `tests/RackCad.UI.Tests`, su job
+de CI `ui-tests` en `.github/workflows/ci.yml` y su entrada en `RackCad.sln`, y actualizó ROADMAP y
+HANDOFF. I-12 se **rebasó sobre ese `main`** y hereda todo eso sin modificarlo (rebase sin conflictos de
+archivos: cero solapamiento con los archivos de I-12).
+
+**Conflicto semántico con I-14, resuelto durante el rebase**: `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj`
+declaraba `<LangVersion>latest</LangVersion>` y `<Nullable>disable</Nullable>`, ya centralizados por I-12
+en `Directory.Build.props` con esos mismos valores. Como I-12 integra en segundo lugar, esas dos líneas
+se **eliminaron de ese `.csproj`** (ahora hereda ambos valores; sin cambio de comportamiento; se
+conservan `TargetFramework`, `UseWPF`, `RollForward` y las demás propiedades específicas). No se tocó
+ningún otro entregable de I-14.
+
+I-19 (`feature/validador-catalogos`) sigue **activa**: I-12 **no** absorbe sus cambios.
 
 ADR-0004 nace `propuesto`: **requiere decisión del dueño** (aceptarlo) antes de integrar
 (`requires_owner_decision: true`).
@@ -123,8 +131,10 @@ Nuevos: `Directory.Build.targets`, `deploy/RackCad.bundle/PackageContents.templa
 `docs/adr/0004-estrategia-de-versiones-de-autocad.md`, este contrato,
 `docs/automation/state/I-12.yml`.
 Modificados: `Directory.Build.props`, los cinco `.csproj`, `src/RackCad.Plugin/RackCad.Plugin.csproj`
-(target), `deploy/install-bundle.ps1`, `eng/ci/verify-autocad-references.ps1`,
-`docs/guias/despliegue.md`, `docs/adr/README.md`.
+(target), `deploy/install-bundle.ps1`, `deploy/test-install-bundle.ps1` (regresiones -Build),
+`eng/ci/verify-autocad-references.ps1`, `docs/guias/despliegue.md`, `docs/adr/README.md`, y —en el
+rebase sobre I-14— `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` (elimina las dos propiedades ya
+centralizadas).
 Eliminado: `deploy/RackCad.bundle/PackageContents.xml`.
 README fue auditado y **no** necesitó cambios (queda fuera de "modificados").
 Una desviación material fuera de esta lista exige detenerse.
@@ -136,7 +146,7 @@ Una desviación material fuera de esta lista exige detenerse.
 2. Estampado de SHA reproducible (`Directory.Build.targets`) con fallback definido.
 3. Plantilla de `PackageContents.xml` + generación en el target; bundle por `dotnet publish`.
 4. Scripts `build-bundle.ps1`/`verify-bundle.ps1`; actualizar `install-bundle.ps1` y la guarda de CI.
-5. ADR-0004 y documentación (despliegue, README, índice de ADRs).
+5. ADR-0004 y documentación (despliegue e índice de ADRs; README auditado, sin cambios).
 6. Verificación completa (restore, suite, build de solución, UI+Plugin Debug, publish/bundle desde
    árbol limpio, reproducibilidad de dos generaciones, inventario + hashes, ausencia de DLL Autodesk).
 
