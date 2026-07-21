@@ -135,5 +135,68 @@ namespace RackCad.Tests
         {
             Assert.Equal(expected, KindDispatchMessages.NotRecognized(kind));
         }
+
+        // TryResolveAll is the preflight seam RACKBOMTOTAL uses to ABORT the whole command (never a partial BOM)
+        // the moment any placed rack's kind has no handler.
+        [Fact]
+        public void TryResolveAll_AllResolve_ReturnsItemsAlignedToInput()
+        {
+            var dispatch = FourKinds();
+
+            var ok = dispatch.TryResolveAll(
+                new[] { RackEmbedDocument.KindCabecera, RackEmbedDocument.KindSelective }, out var items, out var missing);
+
+            Assert.True(ok);
+            Assert.Null(missing);
+            Assert.Equal(new[] { "cabecera", "selective" }, items.Select(i => i.Kind).ToArray());
+        }
+
+        [Fact]
+        public void TryResolveAll_AnyMissing_ReturnsFalseWithFirstUnresolved()
+        {
+            var dispatch = FourKinds();
+
+            var ok = dispatch.TryResolveAll(
+                new[] { RackEmbedDocument.KindSelective, "larguero", RackEmbedDocument.KindCama }, out var items, out var missing);
+
+            Assert.False(ok);
+            Assert.Null(items);
+            Assert.Equal("larguero", missing); // the FIRST unresolved key, so the command aborts up front
+        }
+
+        [Fact]
+        public void TryResolveAll_IsOrdinal_LikeTheBomSwitch()
+        {
+            var dispatch = FourKinds();
+
+            Assert.False(dispatch.TryResolveAll(new[] { "Selective" }, out _, out var missing));
+            Assert.Equal("Selective", missing);
+        }
+
+        [Fact]
+        public void TryResolveAll_RepeatedKinds_ResolveEach()
+        {
+            var dispatch = FourKinds();
+
+            var ok = dispatch.TryResolveAll(
+                new[] { RackEmbedDocument.KindSelective, RackEmbedDocument.KindSelective }, out var items, out _);
+
+            Assert.True(ok);
+            Assert.Equal(2, items.Count);
+        }
+
+        [Fact]
+        public void TryResolveAll_Empty_ReturnsTrueWithNoItems()
+        {
+            Assert.True(FourKinds().TryResolveAll(Array.Empty<string>(), out var items, out var missing));
+            Assert.Empty(items);
+            Assert.Null(missing);
+        }
+
+        [Fact]
+        public void TryResolveAll_NullKinds_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => FourKinds().TryResolveAll(null, out _, out _));
+        }
     }
 }

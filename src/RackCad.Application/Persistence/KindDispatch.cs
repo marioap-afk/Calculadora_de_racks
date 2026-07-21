@@ -94,6 +94,37 @@ namespace RackCad.Application.Persistence
 
             return _ignoreCase.TryGetValue(kind, out item);
         }
+
+        /// <summary>
+        /// Resolve EVERY key in <paramref name="kinds"/> up front (case-sensitive, ordinal). Returns true with the
+        /// items aligned to <paramref name="kinds"/> when all resolve; otherwise returns false with the FIRST
+        /// unresolved key (and null <paramref name="items"/>). This lets a consumer PREFLIGHT a whole batch and abort
+        /// before doing any work, rather than emitting a partial result. Never throws for a missing key.
+        /// </summary>
+        public bool TryResolveAll(IReadOnlyList<string> kinds, out IReadOnlyList<T> items, out string firstUnresolved)
+        {
+            if (kinds == null)
+            {
+                throw new ArgumentNullException(nameof(kinds));
+            }
+
+            var resolved = new List<T>(kinds.Count);
+            foreach (var kind in kinds)
+            {
+                if (!TryGet(kind, out var item))
+                {
+                    items = null;
+                    firstUnresolved = kind;
+                    return false;
+                }
+
+                resolved.Add(item);
+            }
+
+            items = new ReadOnlyCollection<T>(resolved);
+            firstUnresolved = null;
+            return true;
+        }
     }
 
     /// <summary>

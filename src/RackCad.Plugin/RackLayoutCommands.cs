@@ -52,6 +52,15 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                // Refuse an unrecognized kind UP FRONT — before finding/measuring the planta or opening the layout
+                // window — for BOTH linked and independent copies. RACKLAYOUT only lays out rack types we know how to
+                // handle; independent copies also re-stamp identity per cell, which an unknown kind cannot do safely.
+                // Case-insensitive, matching the restamp; the four embedded kinds always resolve.
+                if (!KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _))
+                {
+                    return;
+                }
+
                 // The warehouse layout is a top-down arrangement, so it works on the rack's PLANTA view (found by GUID —
                 // the user may have clicked any view of the rack).
                 var plantaBlocks = RackCommandSupport.FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
@@ -78,15 +87,6 @@ namespace RackCad.Plugin
                 if (choice.Independent && new RackEmbedStore().Deserialize(seed.Payload) == null)
                 {
                     editor.WriteMessage("\nRackCad: la planta no tiene datos de rack embebidos; usa copias enlazadas.");
-                    return;
-                }
-
-                // Independent copies re-stamp the rack identity per cell; an unrecognized kind cannot be re-stamped
-                // safely, so report the historic visible error and abort BEFORE placing the grid rather than
-                // producing copies with a possibly-inconsistent identity. Linked copies share the definition and
-                // need no restamp. Case-insensitive, matching the restamp; the four embedded kinds resolve.
-                if (choice.Independent && !KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _))
-                {
                     return;
                 }
 

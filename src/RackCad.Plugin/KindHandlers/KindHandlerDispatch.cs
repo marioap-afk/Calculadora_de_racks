@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Autodesk.AutoCAD.EditorInput;
 using RackCad.Application.Persistence;
 
@@ -38,6 +39,21 @@ namespace RackCad.Plugin.KindHandlers
             }
 
             editor.WriteMessage("\n" + KindDispatchMessages.NotRecognized(kind));
+            return false;
+        }
+
+        /// <summary>Resolve handlers for EVERY kind up front (case-sensitive), returning them aligned to
+        /// <paramref name="kinds"/>. On the FIRST unresolved kind it writes the historic visible error and returns
+        /// false, so a command can PREFLIGHT its whole batch and abort BEFORE doing any work — never showing a
+        /// partial result. Used by RACKBOMTOTAL over every placed rack.</summary>
+        public static bool TryResolveAll(Editor editor, IReadOnlyList<string> kinds, out IReadOnlyList<IRackKindHandler> handlers)
+        {
+            if (KindHandlerRegistry.Default.TryResolveAll(kinds, out handlers, out var firstUnresolved))
+            {
+                return true;
+            }
+
+            editor.WriteMessage("\n" + KindDispatchMessages.NotRecognized(firstUnresolved));
             return false;
         }
     }

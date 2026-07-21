@@ -38,6 +38,11 @@ namespace RackCad.Plugin.KindHandlers
         /// (<see cref="RackEnvelopeRestamp"/>). Never throws.</summary>
         public bool TryGetIgnoreCase(string kind, out IRackKindHandler handler) => _dispatch.TryGetIgnoreCase(kind, out handler);
 
+        /// <summary>Resolve handlers for EVERY kind up front (ordinal), or return false with the first unresolved
+        /// kind — the preflight RACKBOMTOTAL uses to abort before showing a partial BOM. Never throws for a miss.</summary>
+        public bool TryResolveAll(IReadOnlyList<string> kinds, out IReadOnlyList<IRackKindHandler> handlers, out string firstUnresolved)
+            => _dispatch.TryResolveAll(kinds, out handlers, out firstUnresolved);
+
         /// <summary>
         /// The single, explicit composition root: the four embedded kinds in canonical order (the same order the
         /// former RACKEDITAR / RACKBOMTOTAL switches used). <c>Larguero</c> has no embed discriminator and no draw

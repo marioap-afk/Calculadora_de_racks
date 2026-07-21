@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Bom;
@@ -72,33 +73,32 @@ namespace RackCad.Plugin
                     return;
                 }
 
+                // Only PLACED racks matter (a defined-but-unplaced rack was drawn then erased, not yet purged).
+                var placed = order.Select(id => byRack[id]).Where(aggregate => aggregate.Copies > 0).ToList();
+
+                // Preflight: EVERY placed rack must resolve a handler BEFORE we load the catalog or build anything.
+                // If ANY placed kind has no registered handler, abort the WHOLE command — a partial BOM must never be
+                // shown. (A KNOWN handler whose payload turns out unreadable is still best-effort skipped below.)
+                if (!KindHandlerDispatch.TryResolveAll(editor, placed.Select(aggregate => aggregate.Embed.Kind).ToList(), out var handlers))
+                {
+                    return;
+                }
+
                 var catalog = LateralHeaderDrawService.LoadCatalog();
                 var racks = new List<ConsolidatedRackBom>();
-                foreach (var id in order)
+                for (var i = 0; i < placed.Count; i++)
                 {
-                    var aggregate = byRack[id];
-                    if (aggregate.Copies <= 0)
-                    {
-                        continue; // a defined-but-unplaced rack (drawn then erased, not yet purged) isn't in the drawing
-                    }
-
-                    // A kind with NO handler is surfaced (visible error), never skipped silently; a rack WHOSE
-                    // handler exists but whose payload is unreadable is still best-effort skipped below.
-                    if (!KindHandlerDispatch.TryResolve(editor, aggregate.Embed.Kind, out var handler))
-                    {
-                        continue;
-                    }
-
-                    var bom = BuildRackBom(handler, aggregate.Embed, catalog);
+                    var aggregate = placed[i];
+                    var bom = BuildRackBom(handlers[i], aggregate.Embed, catalog);
                     if (bom == null)
                     {
-                        continue; // handler present but the payload is unreadable/unusable — skipped, not fatal
+                        continue; // handler present but the payload is unreadable/unusable — best-effort skip, not fatal
                     }
 
                     racks.Add(new ConsolidatedRackBom
                     {
                         Name = string.IsNullOrWhiteSpace(aggregate.Embed.Name) ? "(sin nombre)" : aggregate.Embed.Name.Trim(),
-                        Kind = handler.BomLabel,
+                        Kind = handlers[i].BomLabel,
                         Copies = aggregate.Copies,
                         Bom = bom
                     });
