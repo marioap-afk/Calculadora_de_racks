@@ -5,7 +5,7 @@ namespace RackCad.Plugin
 {
     /// <summary>
     /// Shared Plugin helper: ensure a named layer exists with a given ACI color. Extracted (I-09) from the two
-    /// byte-identical <c>EnsureLayer</c> copies that lived in <see cref="RackFrameCommands"/> (RACKLAYOUT /
+    /// byte-identical <c>EnsureLayer</c> copies that lived in the former <c>RackFrameCommands</c> partial (RACKLAYOUT /
     /// RACKRELLENAR) and in the lateral header drawer, so the layer-creation policy lives in ONE place. Behavior is
     /// unchanged: an existing layer is returned as-is; otherwise a fresh <see cref="LayerTableRecord"/> is created
     /// with <see cref="Color.FromColorIndex"/> (ByAci) and its id returned.

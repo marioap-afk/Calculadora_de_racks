@@ -9,7 +9,7 @@ namespace RackCad.Plugin
 {
     /// <summary>
     /// Shared Plugin helper (I-09): locate block references/definitions in the drawing and scan rack envelopes.
-    /// Extracted from the cross-command lookups that lived in <see cref="RackFrameCommands"/> (used by RACKLISTA's
+    /// Extracted from the cross-command lookups that lived in the former <c>RackFrameCommands</c> partial (used by RACKLISTA's
     /// zoom, RACKLAYOUT's planta seed, RACKEDITAR/RACKLAYOUT's rack lookup and RACKLISTA/RACKBOMTOTAL's inventory),
     /// so definition/reference lookup lives in ONE place. The caller supplies (and owns) the transaction; returned
     /// live objects are used within that same transaction and no <c>DBObject</c> leaves it.

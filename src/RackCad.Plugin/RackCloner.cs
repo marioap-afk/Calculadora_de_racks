@@ -8,7 +8,7 @@ namespace RackCad.Plugin
 {
     /// <summary>
     /// Shared Plugin helper (I-09): clone a rack's block DEFINITION for an INDEPENDENT copy. Extracted from the
-    /// CloneDefinition that lived in <see cref="RackFrameCommands"/> (used by RACKDUPLICAR and by RACKLAYOUT's
+    /// CloneDefinition that lived in the former <c>RackFrameCommands</c> partial (used by RACKDUPLICAR and by RACKLAYOUT's
     /// independent copies). LINKED copies do NOT go through here — they reference the existing definition directly,
     /// so edit-one-edits-all still holds.
     ///
