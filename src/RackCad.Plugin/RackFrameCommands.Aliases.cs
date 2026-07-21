@@ -13,8 +13,6 @@ namespace RackCad.Plugin
     {
         [CommandMethod("RK")]  public void AliasRackCad() => RackCad();                    // menú principal
         [CommandMethod("RS")]  public void AliasRackSelectivo() => RackSelectivo();        // RACKSELECTIVO
-        [CommandMethod("RCB")] public void AliasRackCabecera() => RackCabecera();          // RACKCABECERA
-        [CommandMethod("QCB")] public void AliasQuickCabecera() => QuickCabecera();        // QUICKCABECERA
         [CommandMethod("RSD")] public void AliasRackSistemaDinamico() => RackSistemaDinamico(); // RACKSISTEMADINAMICO
         [CommandMethod("QCM")] public void AliasQuickCama() => QuickCama();                // QUICKCAMA
         [CommandMethod("RED")] public void AliasRackEditar() => RackEditar();              // RACKEDITAR

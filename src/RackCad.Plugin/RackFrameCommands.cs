@@ -41,7 +41,7 @@ namespace RackCad.Plugin
                 {
                     if (menu.ConfigurationToInsert != null)
                     {
-                        DrawAndPlace(menu.ConfigurationToInsert);
+                        RackCabeceraCommands.DrawAndPlace(menu.ConfigurationToInsert);
                     }
                     else if (menu.DynamicSystemToInsert != null)
                     {
@@ -103,7 +103,7 @@ namespace RackCad.Plugin
                         EditDynamic(document, blockId, embed);
                         break;
                     case RackEmbedDocument.KindCabecera:
-                        EditCabecera(document, blockId, embed);
+                        RackCabeceraCommands.EditCabecera(document, blockId, embed);
                         break;
                     case RackEmbedDocument.KindCama:
                         EditCama(document, blockId, embed);

@@ -17,9 +17,12 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>Cabecera (lateral header) commands + their draw/edit/payload helpers.</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>Cabecera (lateral header) commands + their draw/edit/payload helpers, plus their short aliases.</summary>
+    public sealed class RackCabeceraCommands
     {
+        [CommandMethod("RCB")] public void AliasRackCabecera() => RackCabecera();          // RACKCABECERA
+        [CommandMethod("QCB")] public void AliasQuickCabecera() => QuickCabecera();        // QUICKCABECERA
+
         /// <summary>Shortcut straight to the header configurator module.</summary>
         [CommandMethod("RACKCABECERA")]
         public void RackCabecera()
@@ -151,7 +154,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Builds the header block and runs the placement jig, then reports the outcome.</summary>
-        private static void DrawAndPlace(RackFrameConfiguration configuration)
+        internal static void DrawAndPlace(RackFrameConfiguration configuration)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -186,7 +189,7 @@ namespace RackCad.Plugin
             });
         }
 
-        private static void EditCabecera(Document document, ObjectId blockId, RackEmbedDocument embed)
+        internal static void EditCabecera(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 
