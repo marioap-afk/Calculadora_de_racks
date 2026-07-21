@@ -196,7 +196,7 @@ namespace RackCad.UI
 
                 var project = new RackProjectStore().Load(library.SelectedDesign.Path);
 
-                if (library.SelectedDesign.Kind == RackDesignKind.Dinamico && project.DynamicDesign != null)
+                if (library.SelectedDesign.Kind == RackSystemKind.PalletFlow && project.DynamicDesign != null)
                 {
                     var editor = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
                     editor.SetDimensionStyles(dimensionStyles);
@@ -215,7 +215,7 @@ namespace RackCad.UI
                         Close();
                     }
                 }
-                else if (library.SelectedDesign.Kind == RackDesignKind.Selectivo && project.SelectiveRack != null)
+                else if (library.SelectedDesign.Kind == RackSystemKind.SelectiveRack && project.SelectiveRack != null)
                 {
                     var editor = new RackSelectiveWindow(canInsertInAutoCad) { Owner = this };
                     editor.SetDimensionStyles(dimensionStyles);
@@ -233,7 +233,7 @@ namespace RackCad.UI
                         Close();
                     }
                 }
-                else if (library.SelectedDesign.Kind == RackDesignKind.Cama && project.FlowBed != null)
+                else if (library.SelectedDesign.Kind == RackSystemKind.Cama && project.FlowBed != null)
                 {
                     var editor = new RackFlowBedWindow(canInsertInAutoCad) { Owner = this };
                     editor.LoadForNew(project.FlowBed, library.SelectedDesign.Name);
@@ -248,7 +248,7 @@ namespace RackCad.UI
                         Close();
                     }
                 }
-                else if (library.SelectedDesign.Kind == RackDesignKind.Larguero && project.Larguero != null)
+                else if (library.SelectedDesign.Kind == RackSystemKind.Larguero && project.Larguero != null)
                 {
                     // Larguero is visual-only (no AutoCAD block) — just open its editor pre-loaded.
                     var editor = new RackLargueroWindow { Owner = this };

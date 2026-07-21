@@ -46,8 +46,8 @@ namespace RackCad.Tests
                 var entries = RackDesignLibrary.List(dir);
 
                 Assert.Equal(2, entries.Count);
-                Assert.Contains(entries, e => e.Kind == RackDesignKind.Cabecera && e.Name == "Cabecera A");
-                Assert.Contains(entries, e => e.Kind == RackDesignKind.Dinamico);
+                Assert.Contains(entries, e => e.Kind == RackSystemKind.Selective && e.Name == "Cabecera A" && e.KindLabel == "Cabecera");
+                Assert.Contains(entries, e => e.Kind == RackSystemKind.PalletFlow && e.KindLabel == "Sistema dinámico");
             }
             finally
             {
@@ -62,19 +62,51 @@ namespace RackCad.Tests
             Assert.Empty(RackDesignLibrary.List(missing));
         }
 
-        // --- F1 characterization for I-08: freeze the visible labels and List behavior before the registry refactor ---
+        // --- I-08 characterization: canonical Kind + visible labels + List behavior (now registry-driven) ---
 
-        // The library "Tipo" column strings are user-visible and must survive the removal of RackDesignKind unchanged.
-        [Theory]
-        [InlineData(RackDesignKind.Cabecera, "Cabecera")]
-        [InlineData(RackDesignKind.Dinamico, "Sistema dinámico")]
-        [InlineData(RackDesignKind.Selectivo, "Selectivo")]
-        [InlineData(RackDesignKind.Cama, "Cama de rodamiento")]
-        [InlineData(RackDesignKind.Larguero, "Larguero")]
-        public void Entry_KindLabel_IsExactVisibleLabel(RackDesignKind kind, string expected)
+        // F4: the entry's Kind is the canonical RackSystemKind, and its visible label comes from the registry descriptor
+        // (not a parallel switch). A custom registry that relabels a kind is reflected by the entry, proving the wiring.
+        [Fact]
+        public void List_ResolvesLabelFromRegistryDescriptor_IncludingACustomRegistry()
         {
-            var entry = new RackDesignLibraryEntry("p", "n", kind, DateTime.UtcNow);
-            Assert.Equal(expected, entry.KindLabel);
+            InTempDir(dir =>
+            {
+                new RackProjectStore().Save(RackProject.ForCama(new FlowBedConfiguration { LaneDepth = 120.0 }),
+                    Path.Combine(dir, "cama" + RackProjectStore.FileExtension));
+
+                // Default registry -> the descriptor's exact label.
+                var byDefault = Assert.Single(RackDesignLibrary.List(dir));
+                Assert.Equal(RackSystemKind.Cama, byDefault.Kind);
+                Assert.Equal("Cama de rodamiento", byDefault.KindLabel);
+
+                // A custom registry that relabels Cama -> the entry reflects that label (labels are registry-sourced).
+                var custom = new SystemRegistry(new[] { new SystemDescriptor(RackSystemKind.Cama, "Etiqueta Custom") });
+                var byCustom = Assert.Single(RackDesignLibrary.List(dir, custom));
+                Assert.Equal(RackSystemKind.Cama, byCustom.Kind);
+                Assert.Equal("Etiqueta Custom", byCustom.KindLabel);
+            });
+        }
+
+        // F4: a kind with no registered descriptor is omitted (tolerant, like an unreadable file) and does not break the
+        // rest of the listing — the agreed decision for an unregistered kind.
+        [Fact]
+        public void List_UnregisteredKind_IsOmitted_WithoutBreakingTheList()
+        {
+            InTempDir(dir =>
+            {
+                var store = new RackProjectStore();
+                store.Save(RackProject.ForLarguero(new LargueroDesign { BeamProfileId = "BEAM_X" }),
+                    Path.Combine(dir, "larguero" + RackProjectStore.FileExtension));
+                store.Save(RackProject.ForCama(new FlowBedConfiguration { LaneDepth = 120.0 }),
+                    Path.Combine(dir, "cama" + RackProjectStore.FileExtension));
+
+                var withoutLarguero = new SystemRegistry(
+                    SystemRegistry.Default.Descriptors.Where(d => d.Kind != RackSystemKind.Larguero));
+
+                var entry = Assert.Single(RackDesignLibrary.List(dir, withoutLarguero)); // larguero omitted, cama survives
+                Assert.Equal(RackSystemKind.Cama, entry.Kind);
+                Assert.Equal("Cama de rodamiento", entry.KindLabel);
+            });
         }
 
         // Name precedence: Header/SelectiveRack/Larguero payload names are used; Cama and Dinamico intentionally fall back
@@ -93,7 +125,7 @@ namespace RackCad.Tests
                 var entries = RackDesignLibrary.List(dir);
 
                 var named = Assert.Single(entries, e => e.Path.EndsWith("archivoL" + RackProjectStore.FileExtension));
-                Assert.Equal(RackDesignKind.Larguero, named.Kind);
+                Assert.Equal(RackSystemKind.Larguero, named.Kind);
                 Assert.Equal("Larguero", named.KindLabel);
                 Assert.Equal("L1", named.Name);
 
@@ -111,7 +143,7 @@ namespace RackCad.Tests
                     Path.Combine(dir, "miCama" + RackProjectStore.FileExtension));
 
                 var entry = Assert.Single(RackDesignLibrary.List(dir));
-                Assert.Equal(RackDesignKind.Cama, entry.Kind);
+                Assert.Equal(RackSystemKind.Cama, entry.Kind);
                 Assert.Equal("Cama de rodamiento", entry.KindLabel);
                 Assert.Equal("miCama", entry.Name); // the FlowBed payload name is not consulted
             });
@@ -129,7 +161,7 @@ namespace RackCad.Tests
                     Path.Combine(dir, "archivoS" + RackProjectStore.FileExtension));
 
                 var entry = Assert.Single(RackDesignLibrary.List(dir));
-                Assert.Equal(RackDesignKind.Selectivo, entry.Kind);
+                Assert.Equal(RackSystemKind.SelectiveRack, entry.Kind);
                 Assert.Equal("Selectivo", entry.KindLabel);
                 Assert.Equal("Rack Nueve", entry.Name);
             });

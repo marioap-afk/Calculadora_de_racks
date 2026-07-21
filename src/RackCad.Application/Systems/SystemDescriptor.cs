@@ -8,7 +8,7 @@ namespace RackCad.Application.Systems
     /// <summary>
     /// The Application-layer facts and operations about one <see cref="RackSystemKind"/> that the persistence store, the
     /// design library and validation consult through a single registry instead of scattered per-kind switches and the
-    /// parallel RackDesignKind enum (initiative I-08). Carries the canonical identity, the exact visible library label,
+    /// parallel design-kind enum (initiative I-08). Carries the canonical identity, the exact visible library label,
     /// the grammatical validation noun, and the strongly-typed operations <see cref="RackProjectStore"/> delegates to
     /// (write payload, build, is-usable). All operations work with <see cref="RackProject"/> and
     /// <see cref="RackProjectDocument"/>, which are Application types. No AutoCAD/WPF; not a Plugin handler; no drawing /
