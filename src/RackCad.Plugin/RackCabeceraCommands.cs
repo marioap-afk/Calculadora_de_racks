@@ -153,8 +153,10 @@ namespace RackCad.Plugin
             return posts[result.Value - 1].Id;
         }
 
-        /// <summary>Builds the header block and runs the placement jig, then reports the outcome.</summary>
-        internal static void DrawAndPlace(RackFrameConfiguration configuration)
+        /// <summary>Builds the header block and runs the placement jig, then reports the outcome. <paramref name="sourceProject"/>
+        /// is the library project when a cabecera is inserted from a RackProject wrapper, so the embed's inner design keeps its
+        /// metadata (I-11); a bare legacy header passes null and fabricates none.</summary>
+        internal static void DrawAndPlace(RackFrameConfiguration configuration, RackProject sourceProject = null)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -163,7 +165,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            var payload = BuildCabeceraPayload(configuration, System.Guid.NewGuid().ToString(), configuration.Name);
+            var payload = BuildCabeceraPayload(configuration, System.Guid.NewGuid().ToString(), configuration.Name, innerSource: sourceProject);
             var result = new LateralHeaderDrawService().DrawAndPlace(document, configuration, payload, configuration.Name);
             document.Editor.WriteMessage("\n" + Describe(result));
         }
@@ -171,22 +173,24 @@ namespace RackCad.Plugin
         /// <summary>Wraps a cabecera (RackFrameConfiguration) in the uniform embed envelope; reuses the project store.
         /// <paramref name="view"/> tags which view this block draws (lateral default, or planta) so a cabecera can have
         /// several view-blocks sharing its id — the same multi-view round-trip as the selective.</summary>
-        private static string BuildCabeceraPayload(RackFrameConfiguration configuration, string id, string name, string view = null)
+        private static string BuildCabeceraPayload(
+            RackFrameConfiguration configuration, string id, string name, string view = null,
+            RackEmbedDocument source = null, RackProject innerSource = null)
         {
             if (configuration == null)
             {
                 return null;
             }
 
-            var designJson = new RackProjectStore().Serialize(RackProject.ForSelective(configuration));
-            return new RackEmbedStore().Serialize(new RackEmbedDocument
-            {
-                Kind = RackEmbedDocument.KindCabecera,
-                Id = id,
-                Name = name,
-                View = string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view,
-                Design = designJson
-            });
+            // The inner Design of a cabecera block is itself a RackProjectDocument — a boundary INDEPENDENT of the envelope
+            // (I-11). <paramref name="innerSource"/> is the ALREADY-RESOLVED source project (this block's own on a redraw,
+            // the initiating/library project on a new/library insert, or null for a fresh one); the resolution + preflight
+            // that rejects an incompatible inner design happens in the caller before any block is touched.
+            var designJson = new RackProjectStore().Serialize(RackProject.ForSelective(configuration).WithSourceMetadataFrom(innerSource));
+            var embed = RackEmbedComposer.Compose(
+                source, RackEmbedDocument.KindCabecera, id, name,
+                string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view, section: -1, design: designJson);
+            return new RackEmbedStore().Serialize(embed);
         }
 
         internal static void EditCabecera(Document document, ObjectId blockId, RackEmbedDocument embed)
@@ -225,36 +229,47 @@ namespace RackCad.Plugin
             var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
+            // Keep each block's own Embed (not just its id) so its per-view unknown metadata is preserved on redraw (I-11).
             var blocks = RackCommandSupport.FindRackBlocks(document, id);
-            var lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
-            var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).ToList();
+            var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).ToList();
 
             // Make sure the clicked block is handled even if the GUID scan missed it.
-            if (lateralBlocks.Count == 0 && !plantaBlocks.Contains(blockId) && !RackCommandSupport.IsPlantaView(embed))
+            if (lateralBlocks.Count == 0 && plantaBlocks.All(b => b.BlockId != blockId) && !RackCommandSupport.IsPlantaView(embed))
             {
-                lateralBlocks.Add(blockId);
+                lateralBlocks.Add((blockId, embed));
+            }
+
+            // PREFLIGHT every linked view's inner design BEFORE touching any geometry: an incompatible-MAJOR or wrong-kind
+            // inner RackProjectDocument aborts the WHOLE edit (no partial update, never overwrites it) (I-11).
+            var preflight = RackCommandSupport.PreflightInnerSources(
+                lateralBlocks.Concat(plantaBlocks).ToList(), RackSystemKind.Selective, project);
+            if (preflight.Aborted)
+            {
+                editor.WriteMessage("\nRackCad: " + preflight.ErrorMessage);
+                return;
             }
 
             // Redraw with regen:false and regenerate ONCE below — a full drawing regen per view-block is pure waste.
             var updated = 0;
-            foreach (var lateralId in lateralBlocks)
+            foreach (var lat in lateralBlocks)
             {
                 var r = new LateralHeaderDrawService().RedrawInPlace(
-                    document, lateralId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral), regen: false);
+                    document, lat.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, lat.Embed, preflight.ResolvedByBlock[lat.BlockId]), regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, lateralId, baseName);
+                    RackBlockRenamer.SyncName(document, lat.BlockId, baseName);
                     updated++;
                 }
             }
 
-            foreach (var plantaId in plantaBlocks)
+            foreach (var pb in plantaBlocks)
             {
                 var r = new PlantaHeaderDrawService().RedrawInPlace(
-                    document, plantaId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta), regen: false);
+                    document, pb.BlockId, config, BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, pb.Embed, preflight.ResolvedByBlock[pb.BlockId]), regen: false);
                 if (r != null && r.Success)
                 {
-                    RackBlockRenamer.SyncName(document, plantaId, baseName == null ? null : baseName + " - planta");
+                    RackBlockRenamer.SyncName(document, pb.BlockId, baseName == null ? null : baseName + " - planta");
                     updated++;
                 }
             }
@@ -270,7 +285,8 @@ namespace RackCad.Plugin
             {
                 if (window.InsertView == RackEmbedDocument.ViewPlanta)
                 {
-                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta);
+                    // A NEW view inserted during an edit inherits the initiating (picked) envelope AND inner wrapper (I-11).
+                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewPlanta, embed, project);
                     var inserted = new PlantaHeaderDrawService().DrawAndPlace(document, config, payload, name);
                     editor.WriteMessage(inserted != null && inserted.Success
                         ? "\nRackCad: vista planta insertada y ligada a la cabecera; RACKEDITAR sobre cualquier vista edita ambas."
@@ -278,7 +294,7 @@ namespace RackCad.Plugin
                 }
                 else
                 {
-                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral);
+                    var payload = BuildCabeceraPayload(config, id, name, RackEmbedDocument.ViewLateral, embed, project);
                     var inserted = new LateralHeaderDrawService().DrawAndPlace(document, config, payload, name);
                     editor.WriteMessage(inserted != null && inserted.Success
                         ? "\nRackCad: cabecera lateral insertada y ligada al mismo rack (mismo GUID)."

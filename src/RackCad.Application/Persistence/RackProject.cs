@@ -29,6 +29,50 @@ namespace RackCad.Application.Persistence
         /// <summary>The larguero component; set when <see cref="Kind"/> is Larguero.</summary>
         public LargueroDesign Larguero { get; private set; }
 
+        /// <summary>
+        /// The persistence document this project was loaded from, kept so a re-save can carry forward JSON fields this
+        /// build does not know about (wrapper- and payload-level <c>ExtensionData</c>, I-11 D3). Null for a project built
+        /// in memory (a fresh save then writes only the known fields, exactly as before). It is a Persistence type, so it
+        /// never leaks JSON metadata into the Domain. Set only by the store on load.
+        /// </summary>
+        internal RackProjectDocument SourceDocument { get; set; }
+
+        /// <summary>The source FlowBed document this project was loaded with, if any (its unknown fields + schema version),
+        /// so a library→drawing insert can carry it to the new embed via <see cref="WithSourceFlowBed"/> (I-11). Null unless
+        /// this is a cama project loaded from disk.</summary>
+        public FlowBedDocument SourceFlowBedDocument => SourceDocument?.FlowBed;
+
+        /// <summary>
+        /// Carry the persistence metadata (unknown JSON fields + non-downgraded schema version) of a previously LOADED
+        /// <paramref name="source"/> onto THIS in-memory project, so a library re-save of an edited design preserves it
+        /// (I-11 D3). The known model on this project is what gets written; only the source's underlying document (its
+        /// <c>ExtensionData</c> and schema version) rides along. This is the seam the UI editors use: they build a fresh
+        /// project from the edited model and attach the metadata of the project they opened. No-op if <paramref name="source"/>
+        /// is null or was itself built in memory. Only the persistence document travels — no JSON metadata reaches the Domain.
+        /// </summary>
+        public RackProject WithSourceMetadataFrom(RackProject source)
+        {
+            SourceDocument = source?.SourceDocument;
+            return this;
+        }
+
+        /// <summary>
+        /// Attach the persistence metadata of a standalone source <paramref name="sourceFlowBed"/> document so a LIBRARY
+        /// re-save of a cama opened from the DRAWING preserves its unknown fields and non-downgraded schema version, even
+        /// though no source <see cref="RackProject"/> exists (I-11 D3). A Persistence-layer seam — the UI passes the
+        /// <see cref="FlowBedDocument"/> it read from the embed, never hand-built JSON. Effective only for a cama project
+        /// (the wrapper writes its FlowBed slot); no-op if <paramref name="sourceFlowBed"/> is null.
+        /// </summary>
+        public RackProject WithSourceFlowBed(FlowBedDocument sourceFlowBed)
+        {
+            if (sourceFlowBed != null)
+            {
+                SourceDocument = new RackProjectDocument { Kind = RackSystemKind.Cama, FlowBed = sourceFlowBed };
+            }
+
+            return this;
+        }
+
         public static RackProject ForSelective(RackFrameConfiguration header)
         {
             return new RackProject { Kind = RackSystemKind.Selective, Header = header };

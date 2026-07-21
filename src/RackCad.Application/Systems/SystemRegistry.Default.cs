@@ -114,14 +114,15 @@ namespace RackCad.Application.Systems
                 return false;
             }
 
-            document.FlowBed = project.FlowBed;
+            document.FlowBed = FlowBedDocument.FromDomain(project.FlowBed);
             return true;
         }
 
         private static RackProject BuildCama(RackProjectDocument document, BracingPanelMemberBuilder builder)
         {
             RequirePayload(document.FlowBed, "cama");
-            return RackProject.ForCama(document.FlowBed);
+            SchemaGuard.CheckReadable(document.FlowBed.SchemaVersion, FlowBedDocument.CurrentSchemaVersion, "La cama");
+            return RackProject.ForCama(document.FlowBed.ToDomain());
         }
 
         private static bool IsUsableCama(RackProject project)
@@ -135,14 +136,15 @@ namespace RackCad.Application.Systems
                 return false;
             }
 
-            document.Larguero = project.Larguero;
+            document.Larguero = LargueroDocument.FromDomain(project.Larguero);
             return true;
         }
 
         private static RackProject BuildLarguero(RackProjectDocument document, BracingPanelMemberBuilder builder)
         {
             RequirePayload(document.Larguero, "larguero");
-            return RackProject.ForLarguero(document.Larguero);
+            SchemaGuard.CheckReadable(document.Larguero.SchemaVersion, LargueroDocument.CurrentSchemaVersion, "El larguero");
+            return RackProject.ForLarguero(document.Larguero.ToDomain());
         }
 
         private static bool IsUsableLarguero(RackProject project)

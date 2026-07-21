@@ -82,7 +82,9 @@ namespace RackCad.Plugin
             DynamicRackSystem system,
             DynamicRackDesign design,
             string id,
-            string rackName)
+            string rackName,
+            RackEmbedDocument source = null,
+            RackProject innerSource = null)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 
@@ -96,12 +98,12 @@ namespace RackCad.Plugin
             if (string.Equals(view, RackEmbedDocument.ViewLateral, System.StringComparison.OrdinalIgnoreCase)
                 && section < 0)
             {
-                InsertDynamicLateralSection(document, system, design, id, rackName);
+                InsertDynamicLateralSection(document, system, design, id, rackName, source, innerSource);
                 return;
             }
 
             HeaderPlacementResult result;
-            var payload = BuildDynamicPayload(design, id, rackName, view, section);
+            var payload = BuildDynamicPayload(design, id, rackName, view, section, source, innerSource);
             if (string.Equals(view, RackEmbedDocument.ViewPlanta, System.StringComparison.OrdinalIgnoreCase))
             {
                 result = new DynamicPlantaDrawService().DrawAndPlace(document, system, payload, rackName);
@@ -155,7 +157,7 @@ namespace RackCad.Plugin
 
             var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
             window.SetDimensionStyles(RackCommandSupport.ReadDimensionStyleNames(document));
-            window.LoadExisting(project.DynamicDesign, embed.Id, embed.Name);
+            window.LoadExisting(project.DynamicDesign, embed.Id, embed.Name, project);
             AcApplication.ShowModalWindow(window);
 
             if (!window.InsertRequested)
@@ -175,6 +177,15 @@ namespace RackCad.Plugin
                 blocks.Add((blockId, embed));
             }
 
+            // PREFLIGHT every linked view's inner design BEFORE touching any geometry: an incompatible-MAJOR or wrong-kind
+            // inner RackProjectDocument aborts the WHOLE edit (no partial update, never overwrites it) (I-11).
+            var preflight = RackCommandSupport.PreflightInnerSources(blocks, RackSystemKind.PalletFlow, project);
+            if (preflight.Aborted)
+            {
+                editor.WriteMessage("\nRackCad: " + preflight.ErrorMessage);
+                return;
+            }
+
             var updatedLateral = 0;
             var updatedFrontal = 0;
             var updatedPlanta = 0;
@@ -186,7 +197,7 @@ namespace RackCad.Plugin
                 HeaderPlacementResult result;
                 if (RackCommandSupport.IsPlantaView(viewBlock.Embed))
                 {
-                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1);
+                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewPlanta, -1, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
                     result = new DynamicPlantaDrawService().RedrawInPlace(
                         document, viewBlock.BlockId, system, payload, regen: false);
                     if (result != null && result.Success)
@@ -199,7 +210,7 @@ namespace RackCad.Plugin
                 {
                     var end = DynamicEnd(viewBlock.Embed.Section);
                     var section = (int)end;
-                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewFrontal, section);
+                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewFrontal, section, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
                     result = new DynamicFrontalDrawService().RedrawInPlace(
                         document, viewBlock.BlockId, system, end, payload, regen: false);
                     if (result != null && result.Success)
@@ -222,7 +233,7 @@ namespace RackCad.Plugin
                         continue;
                     }
 
-                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewLateral, postIndex);
+                    var payload = BuildDynamicPayload(design, id, name, RackEmbedDocument.ViewLateral, postIndex, viewBlock.Embed, preflight.ResolvedByBlock[viewBlock.BlockId]);
                     result = new DynamicSystemDrawService().RedrawInPlace(
                         document,
                         viewBlock.BlockId,
@@ -255,7 +266,8 @@ namespace RackCad.Plugin
 
             if (!window.UpdateOnly)
             {
-                DrawDynamicView(window.InsertView, window.InsertSection, system, design, id, name);
+                // A NEW view inserted during an edit inherits the initiating (picked) envelope AND inner wrapper (I-11).
+                DrawDynamicView(window.InsertView, window.InsertSection, system, design, id, name, embed, project);
                 return;
             }
 
@@ -273,7 +285,9 @@ namespace RackCad.Plugin
             DynamicRackSystem system,
             DynamicRackDesign design,
             string id,
-            string name)
+            string name,
+            RackEmbedDocument source = null,
+            RackProject innerSource = null)
         {
             if (document == null || system == null)
             {
@@ -318,7 +332,9 @@ namespace RackCad.Plugin
                 id,
                 name,
                 RackEmbedDocument.ViewLateral,
-                corte.PostIndex);
+                corte.PostIndex,
+                source,
+                innerSource);
             var result = new DynamicSystemDrawService().DrawAndPlace(
                 document,
                 system,
@@ -336,23 +352,24 @@ namespace RackCad.Plugin
             string id,
             string name,
             string view = RackEmbedDocument.ViewLateral,
-            int section = -1)
+            int section = -1,
+            RackEmbedDocument source = null,
+            RackProject innerSource = null)
         {
             if (design == null)
             {
                 return null;
             }
 
-            var designJson = new RackProjectStore().Serialize(RackProject.ForDynamic(design));
-            return new RackEmbedStore().Serialize(new RackEmbedDocument
-            {
-                Kind = RackEmbedDocument.KindDynamic,
-                Id = id,
-                Name = name,
-                View = string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view,
-                Section = section,
-                Design = designJson
-            });
+            // The inner Design of a dynamic block is itself a RackProjectDocument — a boundary INDEPENDENT of the envelope
+            // (I-11). <paramref name="innerSource"/> is the ALREADY-RESOLVED source project (the block's own on a redraw,
+            // the initiating/library project on a new/library insert, or null for a fresh one); the resolution + preflight
+            // that rejects an incompatible inner design happens in the caller before any block is touched.
+            var designJson = new RackProjectStore().Serialize(RackProject.ForDynamic(design).WithSourceMetadataFrom(innerSource));
+            var embed = RackEmbedComposer.Compose(
+                source, RackEmbedDocument.KindDynamic, id, name,
+                string.IsNullOrWhiteSpace(view) ? RackEmbedDocument.ViewLateral : view, section, designJson);
+            return new RackEmbedStore().Serialize(embed);
         }
 
         private static bool IsDynamicFrontal(RackEmbedDocument embed)

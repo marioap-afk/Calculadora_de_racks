@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Persistence
@@ -20,10 +23,18 @@ namespace RackCad.Application.Persistence
         /// <summary>Selective pallet-rack design (schema-versioned DTO); set when Kind is SelectiveRack.</summary>
         public SelectivePalletDesignDocument SelectiveRack { get; set; }
 
-        /// <summary>Flow bed (cama) config; set when Kind is Cama. A flat POCO, serialized directly.</summary>
-        public FlowBedConfiguration FlowBed { get; set; }
+        /// <summary>Flow bed (cama) design (schema-versioned, flat DTO); set when Kind is Cama.</summary>
+        public FlowBedDocument FlowBed { get; set; }
 
-        /// <summary>Larguero component; set when Kind is Larguero. A flat POCO, serialized directly.</summary>
-        public LargueroDesign Larguero { get; set; }
+        /// <summary>Larguero component (schema-versioned, flat DTO); set when Kind is Larguero.</summary>
+        public LargueroDocument Larguero { get; set; }
+
+        /// <summary>
+        /// Wrapper-level JSON fields this build does not know about, preserved verbatim across a load/save (I-11, D3).
+        /// Only UNKNOWN keys land here; every known payload slot above is a typed property, so preserving this dictionary
+        /// never resurrects an inactive known payload. Null/empty for freshly written projects (no extra keys emitted).
+        /// </summary>
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> ExtensionData { get; set; }
     }
 }

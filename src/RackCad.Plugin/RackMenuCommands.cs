@@ -32,7 +32,8 @@ namespace RackCad.Plugin
                 {
                     if (menu.ConfigurationToInsert != null)
                     {
-                        RackCabeceraCommands.DrawAndPlace(menu.ConfigurationToInsert);
+                        // Transport-only (I-11): carry the library source metadata into the new DWG embed. No handler change.
+                        RackCabeceraCommands.DrawAndPlace(menu.ConfigurationToInsert, menu.ConfigurationSourceProjectToInsert);
                     }
                     else if (menu.DynamicSystemToInsert != null)
                     {
@@ -42,11 +43,16 @@ namespace RackCad.Plugin
                             menu.DynamicSystemToInsert,
                             menu.DynamicDesignToInsert,
                             menu.DynamicRackId,
-                            menu.DynamicRackName);
+                            menu.DynamicRackName,
+                            source: null,
+                            innerSource: menu.DynamicSourceProjectToInsert);
                     }
                     else if (menu.FlowBedToInsert != null)
                     {
-                        RackCamaCommands.DrawAndPlaceBed(menu.FlowBedToInsert, RackCamaCommands.BuildCamaPayload(menu.FlowBedToInsert, menu.FlowBedRackId, menu.FlowBedRackName), menu.FlowBedRackName);
+                        RackCamaCommands.DrawAndPlaceBed(
+                            menu.FlowBedToInsert,
+                            RackCamaCommands.BuildCamaPayload(menu.FlowBedToInsert, menu.FlowBedRackId, menu.FlowBedRackName, null, menu.FlowBedSourceDocumentToInsert),
+                            menu.FlowBedRackName);
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {

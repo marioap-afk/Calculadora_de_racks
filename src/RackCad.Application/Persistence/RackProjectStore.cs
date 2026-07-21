@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -55,7 +56,41 @@ namespace RackCad.Application.Persistence
                 document.Header = project.Header == null ? null : RackFrameProjectDocument.FromConfiguration(project.Header);
             }
 
+            PreserveUnknownMetadata(document, project.SourceDocument);
             return JsonSerializer.Serialize(document, SerializerOptions);
+        }
+
+        /// <summary>
+        /// Carry the JSON fields this build does not know about from the loaded <paramref name="source"/> onto the freshly
+        /// written <paramref name="document"/> (I-11 D3). Only UNKNOWN keys move: wrapper-level extension data, plus the
+        /// extension data of the two I-11 payloads (FlowBed / Larguero) when the active payload matches. Known payload slots
+        /// are typed properties, never extension data, so an inactive known payload is never resurrected; the fresh
+        /// document's own known fields (just written from the possibly-edited model) always win.
+        /// </summary>
+        private static void PreserveUnknownMetadata(RackProjectDocument document, RackProjectDocument source)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            // Preserve the wrapper's unknown fields AND its schema version — never DOWNGRADE a newer same-major minor a
+            // future build wrote (I-11). The known payload slots are typed properties (never extension data), so this
+            // never resurrects an inactive known payload.
+            document.SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source.SchemaVersion, RackProjectDocument.CurrentSchemaVersion);
+            document.ExtensionData = source.ExtensionData;
+
+            if (document.FlowBed != null && source.FlowBed != null)
+            {
+                document.FlowBed.SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source.FlowBed.SchemaVersion, FlowBedDocument.CurrentSchemaVersion);
+                document.FlowBed.ExtensionData = source.FlowBed.ExtensionData;
+            }
+
+            if (document.Larguero != null && source.Larguero != null)
+            {
+                document.Larguero.SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source.Larguero.SchemaVersion, LargueroDocument.CurrentSchemaVersion);
+                document.Larguero.ExtensionData = source.Larguero.ExtensionData;
+            }
         }
 
         public RackProject Deserialize(string json)
@@ -78,6 +113,133 @@ namespace RackCad.Application.Persistence
             }
 
             return isWrapper ? DeserializeWrapper(json) : DeserializeLegacyHeader(json);
+        }
+
+        /// <summary>
+        /// Try to deserialize a persisted design into a project (e.g. the inner <c>Design</c> a drawing block carries for
+        /// its dynamic/cabecera view). Returns false, <paramref name="project"/> null, on any failure.
+        /// <paramref name="incompatibleMajor"/> is true ONLY when the failure is a higher wrapper/header MAJOR this build
+        /// cannot read — so a caller re-stamping a sibling block can avoid HIDING that incompatibility behind a fallback
+        /// (I-11); a benign failure (malformed/legacy/empty) leaves it false.
+        /// </summary>
+        public bool TryDeserialize(string json, out RackProject project, out bool incompatibleMajor)
+        {
+            project = null;
+            incompatibleMajor = false;
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return false;
+            }
+
+            try
+            {
+                project = Deserialize(json);
+                return true;
+            }
+            catch (Exception)
+            {
+                // Any read failure yields false (matching the "on any failure" contract) so a corrupt sibling inner
+                // design never escapes the caller's redraw. incompatibleMajor is derived from the readability gate.
+                incompatibleMajor = !IsReadable(json);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// True unless the JSON declares a wrapper/header schema MAJOR higher than this build writes — the non-throwing
+        /// readability gate that mirrors the store's own wrapper-vs-header decision (a <c>kind</c> property = wrapper,
+        /// schema 2.x; otherwise a bare header, schema 1.x). Missing/malformed/legacy versions read as readable.
+        /// </summary>
+        public bool IsReadable(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return true;
+            }
+
+            try
+            {
+                using var probe = JsonDocument.Parse(json);
+                var root = probe.RootElement;
+                if (root.ValueKind != JsonValueKind.Object)
+                {
+                    return true;
+                }
+
+                string version = null;
+                var isWrapper = false;
+                foreach (var property in root.EnumerateObject())
+                {
+                    if (string.Equals(property.Name, "kind", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isWrapper = true;
+                    }
+                    else if (string.Equals(property.Name, "schemaVersion", StringComparison.OrdinalIgnoreCase)
+                        && property.Value.ValueKind == JsonValueKind.String)
+                    {
+                        version = property.Value.GetString();
+                    }
+                }
+
+                var current = isWrapper
+                    ? RackProjectDocument.CurrentSchemaVersion
+                    : RackFrameProjectDocument.CurrentSchemaVersion;
+                return SchemaVersionPolicy.IsReadable(version, current);
+            }
+            catch (JsonException)
+            {
+                return true; // malformed → benign, not a MAJOR incompatibility
+            }
+        }
+
+        /// <summary>
+        /// Resolve the source project a view-block carries in its inner <c>Design</c> for a redraw that must preserve that
+        /// block's metadata (I-11), as a DISCRIMINATED result so the caller can PREFLIGHT every linked view and abort the
+        /// whole edit without overwriting anything:
+        /// <list type="bullet">
+        /// <item>readable and matching <paramref name="expectedKind"/> =&gt; <see cref="InnerSourceOutcome.Success"/>;</item>
+        /// <item>readable but a DIFFERENT kind =&gt; <see cref="InnerSourceOutcome.WrongKind"/> (blocking);</item>
+        /// <item>a higher schema MAJOR =&gt; <see cref="InnerSourceOutcome.IncompatibleMajor"/> (blocking — never downgraded);</item>
+        /// <item>a benign failure (missing/malformed/legacy) =&gt; <see cref="InnerSourceOutcome.BenignFallback"/> to
+        /// <paramref name="initiating"/>.</item>
+        /// </list>
+        /// </summary>
+        public InnerSourceResolution ResolveInnerSource(string designJson, RackSystemKind expectedKind, RackProject initiating)
+        {
+            if (TryDeserialize(designJson, out var source, out var incompatibleMajor))
+            {
+                return source.Kind == expectedKind
+                    ? InnerSourceResolution.Success(source)
+                    : InnerSourceResolution.WrongKind();
+            }
+
+            return incompatibleMajor
+                ? InnerSourceResolution.IncompatibleMajor()
+                : InnerSourceResolution.BenignFallback(initiating);
+        }
+
+        /// <summary>
+        /// Preflight the inner designs of ALL linked view-blocks at once (I-11): resolve each via <see cref="ResolveInnerSource"/>
+        /// and, on the FIRST blocking outcome (incompatible major or wrong kind), abort with NO resolved sources so the caller
+        /// modifies no block (no partial update). Otherwise return the per-view resolved sources aligned with
+        /// <paramref name="designJsons"/>.
+        /// </summary>
+        public InnerSourcePreflightResult PreflightInnerSources(
+            IReadOnlyList<string> designJsons, RackSystemKind expectedKind, RackProject initiating)
+        {
+            var resolved = new List<RackProject>(designJsons.Count);
+            foreach (var designJson in designJsons)
+            {
+                var resolution = ResolveInnerSource(designJson, expectedKind, initiating);
+                if (resolution.IsBlocking)
+                {
+                    return InnerSourcePreflightResult.Abort(resolution.Outcome);
+                }
+
+                resolved.Add(resolution.Project);
+            }
+
+            return InnerSourcePreflightResult.Ok(resolved);
         }
 
         public void Save(RackProject project, string path)
@@ -122,14 +284,15 @@ namespace RackCad.Application.Persistence
 
         private RackProject BuildProject(RackProjectDocument document)
         {
-            if (registry.TryGet(document.Kind, out var descriptor))
-            {
-                return descriptor.Build(document, builder);
-            }
-
             // Unregistered / undefined numeric Kind (e.g. (RackSystemKind)999): exactly the historical header/Selective
             // fallback. Get(Selective) is always registered, and its Build is the header path.
-            return registry.Get(RackSystemKind.Selective).Build(document, builder);
+            var project = registry.TryGet(document.Kind, out var descriptor)
+                ? descriptor.Build(document, builder)
+                : registry.Get(RackSystemKind.Selective).Build(document, builder);
+
+            // Keep the source document so a later re-save can carry forward unknown JSON fields (I-11 D3).
+            project.SourceDocument = document;
+            return project;
         }
 
         private RackProject DeserializeLegacyHeader(string json)

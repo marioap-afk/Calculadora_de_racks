@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RackCad.Application.Persistence
 {
@@ -20,7 +22,10 @@ namespace RackCad.Application.Persistence
         public const string ViewLateral = "lateral";
         public const string ViewPlanta = "planta";
 
-        public string SchemaVersion { get; set; } = "1.0";
+        /// <summary>Envelope schema version this build writes. Additive fields keep older builds reading it (I-11).</summary>
+        public const string CurrentSchemaVersion = "1.0";
+
+        public string SchemaVersion { get; set; } = CurrentSchemaVersion;
 
         /// <summary>Which rack type this is — picks the editor/store on reopen.</summary>
         public string Kind { get; set; }
@@ -42,6 +47,14 @@ namespace RackCad.Application.Persistence
 
         /// <summary>The type-specific serialized design (JSON produced by that type's store).</summary>
         public string Design { get; set; }
+
+        /// <summary>
+        /// Envelope JSON fields this build does not know about, preserved verbatim across a deserialize/serialize — so an
+        /// edit or an independent-copy re-stamp keeps metadata a newer build wrote (I-11 D3). Null/empty for envelopes this
+        /// build authored (no extra keys emitted).
+        /// </summary>
+        [JsonExtensionData]
+        public Dictionary<string, JsonElement> ExtensionData { get; set; }
     }
 
     /// <summary>Serializes/deserializes the <see cref="RackEmbedDocument"/> envelope (compact JSON).</summary>
@@ -70,14 +83,31 @@ namespace RackCad.Application.Persistence
                 return null;
             }
 
+            RackEmbedDocument document;
             try
             {
-                return JsonSerializer.Deserialize<RackEmbedDocument>(json, Options);
+                document = JsonSerializer.Deserialize<RackEmbedDocument>(json, Options);
             }
             catch (JsonException)
             {
                 return null;
             }
+
+            if (document == null)
+            {
+                return null;
+            }
+
+            // Tolerant schema gate: a block written by a newer MAJOR is skipped (null), NEVER thrown — a single
+            // future/foreign block must not abort the drawing-wide envelope scan (RackBlockFinder). Legacy (no version)
+            // and any same-major version stay readable; the forward-compatible additive fields are preserved as extension
+            // data. The library stores use the throwing SchemaGuard instead, where a clear message is wanted.
+            if (!SchemaVersionPolicy.IsReadable(document.SchemaVersion, RackEmbedDocument.CurrentSchemaVersion))
+            {
+                return null;
+            }
+
+            return document;
         }
     }
 }

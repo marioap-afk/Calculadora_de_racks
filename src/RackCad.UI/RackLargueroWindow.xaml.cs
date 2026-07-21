@@ -29,6 +29,10 @@ namespace RackCad.UI
         private readonly RackCatalog catalog;
         private bool ready;
 
+        /// <summary>The library project this larguero was opened from, if any, so a re-save preserves its unknown JSON
+        /// metadata and schema version instead of stamping a fresh document (I-11). Null for a brand-new design.</summary>
+        private RackProject sourceProject;
+
         private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
 
         public RackLargueroWindow()
@@ -91,11 +95,13 @@ namespace RackCad.UI
             };
         }
 
-        /// <summary>Preload the editor from a saved larguero (from the library).</summary>
-        public void LoadExisting(LargueroDesign design)
+        /// <summary>Preload the editor from a saved larguero (from the library). <paramref name="sourceProject"/> is the
+        /// loaded library project; passing it lets a re-save preserve its unknown JSON metadata (I-11).</summary>
+        public void LoadExisting(LargueroDesign design, RackProject sourceProject = null)
         {
             if (design == null) return;
 
+            this.sourceProject = sourceProject;
             NameBox.Text = design.Name ?? string.Empty;
             ProfileBox.SelectedValue = design.BeamProfileId;
             RefreshPeraltes();
@@ -132,7 +138,7 @@ namespace RackCad.UI
 
             try
             {
-                new RackProjectStore().Save(RackProject.ForLarguero(design), path);
+                new RackProjectStore().Save(RackProject.ForLarguero(design).WithSourceMetadataFrom(sourceProject), path);
                 SetStatus("Larguero guardado: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
