@@ -25,7 +25,7 @@ namespace RackCad.Plugin.Systems
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 var block = SystemBlockWriter.CreateBlock(
                     document,
                     drawer,
@@ -52,7 +52,7 @@ namespace RackCad.Plugin.Systems
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 return SystemBlockWriter.RedrawInPlace(
                     document,
                     drawer,

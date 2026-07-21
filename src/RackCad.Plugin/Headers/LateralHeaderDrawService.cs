@@ -407,17 +407,9 @@ namespace RackCad.Plugin.Headers
             return lines;
         }
 
-        public static RackCatalog LoadCatalog()
-        {
-            try
-            {
-                return JsonRackCatalogProvider.FromBaseDirectory().Load();
-            }
-            catch
-            {
-                return new RackCatalog();
-            }
-        }
+        /// <summary>Forwards to <see cref="RackCatalogLoader.Load"/> (I-16 F2 extraction). Kept as a public
+        /// facade so the existing command call-sites (cabecera, dinamico, cama, selectivo, BOM) do not change.</summary>
+        public static RackCatalog LoadCatalog() => RackCatalogLoader.Load();
 
         /// <summary>Entity jig that keeps the header block under the cursor until the user picks a point.</summary>
         private sealed class HeaderInsertionJig : EntityJig

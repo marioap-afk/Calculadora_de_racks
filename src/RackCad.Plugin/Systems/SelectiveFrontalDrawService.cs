@@ -37,7 +37,7 @@ namespace RackCad.Plugin.Systems
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 var plan = builder.BuildPlan(system, catalog); // ARRAY pattern: identical pieces share one nested def
 
                 var block = CreateBlock(document, plan, BlockName(system, rackName), payloadJson);
@@ -67,7 +67,7 @@ namespace RackCad.Plugin.Systems
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 var plan = builder.BuildPlan(system, catalog); // ARRAY pattern: identical pieces share one nested def
                 return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
             }

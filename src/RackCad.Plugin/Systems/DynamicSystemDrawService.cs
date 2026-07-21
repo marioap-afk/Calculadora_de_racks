@@ -43,7 +43,7 @@ namespace RackCad.Plugin.Systems
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 var plan = postIndex >= 0
                     ? builder.Build(system, catalog, postIndex)
                     : builder.Build(system, catalog);
@@ -77,7 +77,7 @@ namespace RackCad.Plugin.Systems
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 var plan = postIndex >= 0
                     ? builder.Build(system, catalog, postIndex)
                     : builder.Build(system, catalog);

@@ -33,7 +33,7 @@ namespace RackCad.Plugin.Headers
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog));
                 var block = CreateBlock(document, plan, BlockName(rackName), payloadJson);
                 return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
@@ -59,7 +59,7 @@ namespace RackCad.Plugin.Headers
 
             try
             {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
+                var catalog = RackCatalogLoader.Load();
                 var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog));
                 return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
             }
