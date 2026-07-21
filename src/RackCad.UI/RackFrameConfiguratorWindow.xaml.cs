@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using RackCad.Domain.RackFrames;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI
 {
@@ -58,6 +59,10 @@ namespace RackCad.UI
             Dispatcher.UnhandledException += Dispatcher_UnhandledException;
             ViewModel = new RackFrameConfiguratorViewModel(configuration);
             DataContext = ViewModel;
+
+            // Adopt the shared async recompute coalescer (I-15): a burst of PropertyChanged notifications draws the
+            // preview ONCE when idle, exactly as the inline previewRedrawQueued/BeginInvoke did before.
+            previewDebouncer = new RecomputeDebouncer(DrawPreview, new DispatcherRecomputeScheduler(Dispatcher));
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
             ViewModel.BracingSegments.CollectionChanged += BracingSegments_CollectionChanged;
@@ -673,24 +678,16 @@ namespace RackCad.UI
 
         /// <summary>
         /// Coalesces preview redraws: a burst of PropertyChanged notifications (~35 on open/generate/restore)
-        /// used to rebuild the whole canvas once PER notification; now the burst draws ONCE when idle.
+        /// used to rebuild the whole canvas once PER notification; now the burst draws ONCE when idle. The
+        /// coalescing lives in the shared <see cref="RecomputeDebouncer"/> (I-15); this only routes to it.
         /// </summary>
-        private void SchedulePreviewRedraw()
-        {
-            if (previewRedrawQueued)
-            {
-                return;
-            }
+        private void SchedulePreviewRedraw() => previewDebouncer.Schedule();
 
-            previewRedrawQueued = true;
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                previewRedrawQueued = false;
-                DrawPreview();
-            }), System.Windows.Threading.DispatcherPriority.Background);
-        }
+        /// <summary>The shared async recompute coalescer this window uses for its preview (adopted in I-15).</summary>
+        private readonly RecomputeDebouncer previewDebouncer;
 
-        private bool previewRedrawQueued;
+        /// <summary>Test seam (I-15): confirms the window drives its preview through the shared debouncer.</summary>
+        internal RecomputeDebouncer PreviewDebouncer => previewDebouncer;
 
         private void Dispatcher_UnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {

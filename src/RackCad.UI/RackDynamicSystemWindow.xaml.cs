@@ -16,6 +16,7 @@ using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI
 {
@@ -89,32 +90,38 @@ namespace RackCad.UI
         private readonly bool canInsertInAutoCad;
 
         /// <summary>Set when the user asks to draw the system in AutoCAD; the host command draws it after this
-        /// window (and the menu) close, so the placement jig has the editor free.</summary>
-        public bool InsertRequested { get; private set; }
+        /// window (and the menu) close, so the placement jig has the editor free. Backed by the shared session (I-15).</summary>
+        public bool InsertRequested => session.InsertRequested;
 
-        public DynamicRackSystem SystemToInsert { get; private set; }
+        public DynamicRackSystem SystemToInsert => (session.InsertionRequest as DynamicInsertionRequest)?.System;
 
         /// <summary>The editable inputs that produced <see cref="SystemToInsert"/>; this is what the DWG persists.</summary>
-        public DynamicRackDesign DesignToInsert { get; private set; }
+        public DynamicRackDesign DesignToInsert => (session.InsertionRequest as DynamicInsertionRequest)?.Design;
 
         /// <summary>Stable id + client name of the system for the drawing round-trip (embed / reopen / edit).</summary>
-        public string RackId { get; private set; }
-        public string RackName { get; private set; }
+        public string RackId => session.Identity.Id;
+        public string RackName => session.Identity.Name;
 
         /// <summary>Requested linked view; null when the user only updates existing blocks.</summary>
-        public string InsertView { get; private set; }
+        public string InsertView => session.InsertView;
 
         /// <summary>Frontal section: 0 = exit, 1 = entrance; -1 for lateral/planta/update.</summary>
-        public int InsertSection { get; private set; } = -1;
+        public int InsertSection => session.InsertSection;
 
-        public bool UpdateOnly { get; private set; }
+        public bool UpdateOnly => session.UpdateOnly;
 
         /// <summary>The project this system was opened from (library), exposed so the host command can carry its wrapper
         /// metadata into a library→drawing insert (I-11). Null for a brand-new system.</summary>
         public RackProject SourceProjectToInsert => sourceProject;
 
-        private string currentId;
-        private string currentName;
+        /// <summary>Test seam (I-15): confirms the window carries identity + insert through the shared session.</summary>
+        internal RackEditorSession<DynamicRackDesign, DynamicRackSystem> Session => session;
+
+        /// <summary>The shared editor session (I-15): the catalog, the rack identity (GUID + name) and the insert/update
+        /// contract. Its coalescing gate is unused here (the dynamic editor recomputes synchronously via Recompose); the
+        /// internal editor state (system/design/modules) stays in the window (its extraction is I-21).</summary>
+        private readonly RackEditorSession<DynamicRackDesign, DynamicRackSystem> session
+            = new RackEditorSession<DynamicRackDesign, DynamicRackSystem>();
         private bool isEditingExisting;
 
         /// <summary>The project this system was opened from (library or drawing), if any, so a re-save preserves its
@@ -132,7 +139,7 @@ namespace RackCad.UI
             this.canInsertInAutoCad = canInsertInAutoCad;
             InitializeComponent();
 
-            catalog = UiSupport.LoadCatalogSafe();
+            catalog = session.Catalog; // the session loads it once via UiSupport.LoadCatalogSafe (I-15)
             builder = new DynamicRackSystemBuilder(catalog);
             resolver = new DynamicRackSystemResolver(catalog);
             safetySelections.AddRange(DynamicSafetyDefaults.Build(catalog).Select(selection => selection.DeepCopy()));
@@ -3121,8 +3128,7 @@ namespace RackCad.UI
             }
 
             this.sourceProject = sourceProject;
-            currentId = id;
-            currentName = name;
+            session.Identity.Adopt(id, name); // keep the drawn system's GUID + name (I-15)
             if (NameBox != null)
             {
                 NameBox.Text = name ?? string.Empty;
@@ -3196,18 +3202,19 @@ namespace RackCad.UI
             if (!Recompose()) { return; }
 
             // The placement jig needs the editor free, so only flag the request and close; the host command
-            // draws the system once every modal window is gone.
-            currentName = NameBox?.Text?.Trim();
-            if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
+            // draws the system once every modal window is gone. Route it through the shared session (I-15): it captures
+            // the (trimmed) name, ensures the GUID, normalizes view/section and builds the typed payload — same values.
+            session.Identity.SetName(NameBox?.Text?.Trim());
+            session.SetModel(design, system);
+            if (updateOnly)
+            {
+                session.RequestUpdate(ctx => new DynamicInsertionRequest(system, design, ctx.Id, ctx.Name, ctx.View, ctx.Section, SourceProjectToInsert));
+            }
+            else
+            {
+                session.RequestInsert(view, section, ctx => new DynamicInsertionRequest(system, design, ctx.Id, ctx.Name, ctx.View, ctx.Section, SourceProjectToInsert));
+            }
 
-            InsertRequested = true;
-            UpdateOnly = updateOnly;
-            InsertView = updateOnly ? null : view;
-            InsertSection = updateOnly ? -1 : section;
-            SystemToInsert = system;
-            DesignToInsert = design;
-            RackId = currentId;
-            RackName = currentName;
             Close();
         }
 

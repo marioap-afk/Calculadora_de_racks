@@ -14,6 +14,7 @@ using RackCad.Application.RackFrames;
 using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI
 {
@@ -114,14 +115,11 @@ namespace RackCad.UI
         private readonly List<Rectangle> postRects = new List<Rectangle>();
         private readonly List<TextBlock> postLabels = new List<TextBlock>();
 
-        /// <summary>Coalescing state for <see cref="DeferRecompute"/>: while depth &gt; 0, <see cref="Recompute"/>
-        /// only latches <see cref="recomputePending"/>; the outermost scope runs the single pending pass on close.</summary>
-        private int recomputeDeferDepth;
-        private bool recomputePending;
-
-        /// <summary>Identity of the rack currently edited: stable id (GUID) + client name. Empty for a brand-new rack.</summary>
-        private string currentId;
-        private string currentName;
+        /// <summary>The shared editor session (I-15): the catalog, the rack identity (GUID + name), the coalesced
+        /// recompute (its <see cref="RecomputeGate"/> replaces the old defer-depth/pending fields, running
+        /// <see cref="RunRecompute"/>) and the insert/update contract. The editor-specific state — the fondo matrix,
+        /// <c>BuildSystem</c> — stays in the window (its extraction is I-20).</summary>
+        private readonly RackEditorSession<SelectivePalletDesign, SelectiveRackSystem> session;
 
         /// <summary>The library project this design was opened from, if any, so a re-save preserves the WRAPPER
         /// RackProjectDocument's unknown JSON metadata + non-downgraded schema version (I-11). Null for a brand-new design
@@ -146,24 +144,28 @@ namespace RackCad.UI
         private double mapBottomY;
         private double mapMinX;
 
-        public bool InsertRequested { get; private set; }
+        /// <summary>Insert/update contract, backed by the shared session (I-15).</summary>
+        public bool InsertRequested => session.InsertRequested;
 
-        public SelectiveRackSystem SystemToInsert { get; private set; }
+        public SelectiveRackSystem SystemToInsert => (session.InsertionRequest as SelectiveInsertionRequest)?.System;
 
         /// <summary>The design that produced <see cref="SystemToInsert"/> — embedded in the drawing for round-trip editing.</summary>
-        public SelectivePalletDesign DesignToInsert { get; private set; }
+        public SelectivePalletDesign DesignToInsert => (session.InsertionRequest as SelectiveInsertionRequest)?.Design;
 
         /// <summary>Stable id of the inserted rack (fresh GUID for a new rack, preserved when re-editing).</summary>
-        public string RackId { get; private set; }
+        public string RackId => session.Identity.Id;
 
         /// <summary>Client-facing name of the inserted rack (may be empty).</summary>
-        public string RackName { get; private set; }
+        public string RackName => session.Identity.Name;
 
         /// <summary>Which view the user asked to insert ("frontal"/"lateral"/"planta"); null when only updating.</summary>
-        public string InsertView { get; private set; }
+        public string InsertView => session.InsertView;
 
         /// <summary>True when the user chose "Actualizar" (redraw existing views in place, insert nothing).</summary>
-        public bool UpdateOnly { get; private set; }
+        public bool UpdateOnly => session.UpdateOnly;
+
+        /// <summary>Test seam (I-15): confirms the window carries identity, coalesced recompute and insert through the session.</summary>
+        internal RackEditorSession<SelectivePalletDesign, SelectiveRackSystem> Session => session;
 
         public RackSelectiveWindow()
             : this(false)
@@ -173,11 +175,14 @@ namespace RackCad.UI
         public RackSelectiveWindow(bool canInsertInAutoCad)
         {
             this.canInsertInAutoCad = canInsertInAutoCad;
+            // The shared session owns the catalog, the identity, the coalesced recompute (its gate runs RunRecompute) and
+            // the insert contract (I-15). Created before InitializeComponent so the catalog is ready for the combos below.
+            session = new RackEditorSession<SelectivePalletDesign, SelectiveRackSystem>(recompute: RunRecompute);
             InitializeComponent();
             updateButtonTip = UpdateButton.ToolTip;
             insertLateralTip = InsertLateralButton.ToolTip;
             insertPlantaTip = InsertPlantaButton.ToolTip;
-            catalog = UiSupport.LoadCatalogSafe();
+            catalog = session.Catalog;
 
             PostBox.ItemsSource = UiSupport.ToOptions(catalog?.PostProfiles);
             PostBox.SelectedValue = catalog?.Defaults?.Post;
@@ -1690,16 +1695,19 @@ namespace RackCad.UI
                 return;
             }
 
-            currentName = NameBox.Text?.Trim();
-            if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
+            // Route the insert/update through the shared session (I-15): it captures the (trimmed) name, ensures the GUID,
+            // normalizes the view (updateOnly ? null : view) and builds the typed payload — the same values as before.
+            session.Identity.SetName(NameBox.Text?.Trim());
+            session.SetModel(design, system);
+            if (updateOnly)
+            {
+                session.RequestUpdate(ctx => new SelectiveInsertionRequest(system, design, ctx.Id, ctx.Name, ctx.View));
+            }
+            else
+            {
+                session.RequestInsert(view, section: -1, ctx => new SelectiveInsertionRequest(system, design, ctx.Id, ctx.Name, ctx.View));
+            }
 
-            InsertRequested = true;
-            UpdateOnly = updateOnly;
-            InsertView = updateOnly ? null : view;
-            SystemToInsert = system;
-            DesignToInsert = design;
-            RackId = currentId;
-            RackName = currentName;
             Close();
         }
 
@@ -1761,38 +1769,14 @@ namespace RackCad.UI
         /// pending bay height via LostFocus). ALWAYS dispose via <c>using</c>: TryCommitEditedCell has early returns
         /// and can pump a nested message loop (MessageBox), and a leaked depth would freeze the preview forever.
         /// </summary>
-        private IDisposable DeferRecompute() => new RecomputeDeferral(this);
+        private IDisposable DeferRecompute() => session.Recompute.Defer();
 
-        private sealed class RecomputeDeferral : IDisposable
+        private void Recompute() => session.Recompute.Request();
+
+        /// <summary>The actual rebuild the session's coalescing gate runs; <see cref="DeferRecompute"/> collapses a burst
+        /// of <see cref="Recompute"/> calls within a gesture into one pass here (same behavior as the old inline deferral).</summary>
+        private void RunRecompute()
         {
-            private RackSelectiveWindow owner;
-
-            public RecomputeDeferral(RackSelectiveWindow owner)
-            {
-                this.owner = owner;
-                owner.recomputeDeferDepth++;
-            }
-
-            public void Dispose()
-            {
-                var window = owner;
-                if (window == null) return; // tolerate double-dispose
-                owner = null;
-                window.recomputeDeferDepth--;
-                if (window.recomputeDeferDepth > 0 || !window.recomputePending) return;
-                window.recomputePending = false;
-                window.Recompute();
-            }
-        }
-
-        private void Recompute()
-        {
-            if (recomputeDeferDepth > 0)
-            {
-                recomputePending = true; // latched: the enclosing DeferRecompute scope runs one pass on close
-                return;
-            }
-
             var system = BuildSystem(out var error);
             if (system == null)
             {
@@ -2069,8 +2053,7 @@ namespace RackCad.UI
         public void LoadExisting(SelectivePalletDesignDocument document)
         {
             if (document == null) return;
-            currentId = document.Id;
-            currentName = document.Name;
+            session.Identity.Adopt(document.Id, document.Name); // keep the drawn rack's GUID + name (I-15)
             isEditingExisting = true; // opened on an existing rack → "Actualizar" + linked lateral/planta become available
             UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
@@ -2083,8 +2066,7 @@ namespace RackCad.UI
         {
             if (document == null) return;
             this.sourceProject = sourceProject;
-            currentId = null;
-            currentName = document.Name;
+            session.Identity.Adopt(null, document.Name); // a library template inserts as a NEW rack: no id yet, fresh GUID on insert (I-15)
             isEditingExisting = false; // a library template inserts as its own rack, not an update of one in the drawing
             UpdateInsertButtons();
             NameBox.Text = document.Name ?? string.Empty;
@@ -2101,8 +2083,10 @@ namespace RackCad.UI
                 return;
             }
 
-            var id = string.IsNullOrWhiteSpace(currentId) ? Guid.NewGuid().ToString() : currentId;
-            var name = string.IsNullOrWhiteSpace(NameBox.Text) ? currentName : NameBox.Text.Trim();
+            // A throwaway file id when the rack has no GUID yet (a library template re-opens with LoadForNew, which nulls
+            // it anyway): does NOT mint into the session identity, so a later Insert still gets its own fresh GUID (I-15).
+            var id = session.Identity.HasId ? session.Identity.Id : Guid.NewGuid().ToString();
+            var name = string.IsNullOrWhiteSpace(NameBox.Text) ? session.Identity.Name : NameBox.Text.Trim();
             var document = SelectivePalletDesignDocument.From(design, id, name);
 
             var path = UiSupport.PromptSaveToLibrary(this, name, "selectivo");

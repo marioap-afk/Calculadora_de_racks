@@ -7,4 +7,11 @@
     <ProjectReference Include="..\RackCad.Domain\RackCad.Domain.csproj" />
     <ProjectReference Include="..\RackCad.Application\RackCad.Application.csproj" />
   </ItemGroup>
+  <!-- The UI test project verifies that the editor windows adopt the shell (I-15): it reads the windows'
+       internal Session / PreviewDebouncer test seams. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>RackCad.UI.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>
