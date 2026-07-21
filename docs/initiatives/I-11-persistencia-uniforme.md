@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-11
 title: Persistencia uniforme
 type: architecture
-status: in-progress
+status: integrated
 branch: architecture/persistencia-uniforme
 base_branch: main
 priority:

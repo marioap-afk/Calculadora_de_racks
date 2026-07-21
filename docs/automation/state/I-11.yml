@@ -4,10 +4,10 @@ automation_state:
   branch: architecture/persistencia-uniforme
   claim_id: a1b01b5c-f8ce-432f-9c08-c0136a49a3ca
   current_phase: 5
-  state: integration-ready
+  state: integrated
   gate: none
   attempts: 0
-  next_action: final-docs-rebase-ci-and-serialized-merge
+  next_action: serialized-merge-no-ff-then-safe-cleanup
   last_evidence_commit: eea1c1113dd8a33e33fa31dd61720c24c844ad4f
 autocad_validation:
   status: passed

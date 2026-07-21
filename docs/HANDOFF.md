@@ -89,6 +89,24 @@ completa de `KindHandlerRegistry.Handlers` (extraída a la `KindDispatch<T>` pur
 + tests puros y source-guards, ADR-0003). El dueño **aprobó la validación manual en AutoCAD** sobre el DLL
 Debug de la punta técnica. Sin cambios de geometría, BOM funcional, GUID, persistencia, comandos ni aliases.
 
+**I-11** (`architecture/persistencia-uniforme`) uniforma la **persistencia** de Application: versiona
+`FlowBedDocument` y `LargueroDocument` (planos, `SchemaVersion`, `FromDomain`/`ToDomain`, fallback legacy) y
+**preserva los campos JSON desconocidos y una versión de esquema no degradada** al cargar, editar, duplicar,
+guardar y re-serializar, en los **cuatro límites**: `RackEmbedDocument` (el sobre), `RackProjectDocument` (el
+wrapper —incluido el diseño **interior** de los embeds dinámico y de cabecera, y los wrappers de biblioteca—),
+`FlowBedDocument` y `LargueroDocument`. Una `SchemaVersionPolicy` central decide legibilidad por MAJOR y una
+versión de escritura que **nunca degrada** un minor superior del mismo major; `RackEmbedComposer` (fábrica pura)
+hereda `ExtensionData` y versión del `source`; un preflight discriminado
+(`ResolveInnerSource`/`PreflightInnerSources`) hace que un MAJOR interior incompatible o un `Kind` incorrecto
+**aborten la edición completa** sin actualización parcial. La preservación cruza biblioteca↔DWG por sidecars de
+salida que `RackMenuCommands` transporta (transporte mínimo, **sin** cambiar los handlers de I-10). **No** cambia
+geometría, BOM, GUID ni el **formato físico del Xrecord** (clave/chunk/`DxfCode` intactos): el sobre se preserva
+desde el tipo `RackEmbedDocument`, así I-11 **no** toca `RackEnvelopeRestamp` ni el despacho por `Kind` de I-10.
+El **quinto** DTO potencial —`RackFrameProjectDocument` (biblioteca de cabecera desnuda por
+`RackFrameProjectStore`)— queda **excluido por decisión aprobada del dueño** (deuda registrada, no cancelada). El
+dueño **aprobó la matriz manual en AutoCAD 2025** (incluidos los escenarios B5/B6/S7) y la **owner-validation**;
+la rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -137,6 +155,14 @@ inventario mecánico (26 `[CommandMethod]` idénticos a `origin/main`, 0 `switch
 sobre restante, 5 `Guid.NewGuid`, 7 `Regen`, mensajes y etiquetas verbatim), la suite completa y el CI verde
 de la rama. AutoCAD: no ejecutado; no requerido por contrato.
 
+I-11 (`architecture/persistencia-uniforme`) **sí** requiere validación en AutoCAD (`requires_autocad: true`)
+porque toca el round-trip de persistencia. El dueño ejecutó la matriz manual (§10 del contrato) por `NETLOAD`
+del DLL Debug (código `eea1c11`) en AutoCAD 2025 y **aprobó todos los escenarios sin observaciones**, incluidos
+**B5**, **B6** y **S7**; registro en
+[automation/evidence/I-11-autocad-validation.md](automation/evidence/I-11-autocad-validation.md). La
+**owner-validation** (biblioteca legacy más preservación de un campo desconocido, con DWG/envelope opcional)
+quedó **aprobada** por el dueño (`requires_owner_validation: true`).
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -155,14 +181,18 @@ de la rama. AutoCAD: no ejecutado; no requerido por contrato.
   runner, caching, artifacts, audiencia, finalidad o documentación incompatible de Autodesk.
 - GitHub Actions advierte que las acciones actuales basadas en Node.js 20 se ejecutan forzadamente
   sobre Node.js 24; es una deuda de infraestructura separada de I-13.
+- `RackFrameProjectDocument` (biblioteca de cabecera desnuda por `RackFrameProjectStore`, un quinto DTO de
+  persistencia) quedó **fuera del alcance de I-11 por decisión aprobada del dueño**; no preserva campos JSON
+  desconocidos ni versión no degradada. Es deuda para una iniciativa posterior, no cancelación
+  (`automation/decisions/I-11.md`).
 
 ## 4. Siguiente acción
 
-Con I-08, I-09, I-16 e **I-10** integradas y limpias, la **pista B del Plugin queda cerrada** (la
-serialización I-09 → I-16 → I-10 está completa). Las pistas abiertas son la **A de Application** (I-11
-`architecture/persistencia-uniforme`, con dependencias satisfechas; estorba con I-03 e I-08) y la **C de UI**
-(I-14 `architecture/ui-controls` → I-15 `architecture/editor-shell`). I-18 (Push Back) sigue bloqueada por
-I-11, I-15, I-16 y los bloques DWG del dueño. El siguiente paso es abrir una de esas iniciativas respetando
+Con I-08, I-09, I-16, I-10 e **I-11** integradas y limpias, la **pista B del Plugin queda cerrada** (la
+serialización I-09 → I-16 → I-10 está completa) y la **pista A de Application** entrega la persistencia
+uniforme. La pista abierta restante es la **C de UI** (I-14 `architecture/ui-controls` → I-15
+`architecture/editor-shell`). **I-18 (Push Back)** deja de estar bloqueada por I-11, pero **sigue** bloqueada
+por I-15, I-16 y los bloques DWG del dueño. El siguiente paso es abrir una de esas iniciativas respetando
 dependencias y estorbos, o continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
@@ -170,6 +200,39 @@ desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apr
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-11 — 2026-07-21:**
+
+- punta de **código** validada por CI y por el dueño: `eea1c1113dd8a33e33fa31dd61720c24c844ad4f`; los commits
+  posteriores de la rama son **solo documentales** (no alteran código); este documento **no inventa** el SHA
+  del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` no avanzó desde la base rebaseada de I-11 (`6e18874`, que ya incluye el fix posterior a I-10):
+  sin rebase final adicional; la rama se integra por `git merge --no-ff` en esta sesión;
+- suite `RackCad.Tests`: **791/791 verdes**, sin fallos ni omitidas (sobre `eea1c11`; incluye los 7 archivos
+  de pruebas nuevos de persistencia y la caracterización existente);
+- build UI Debug: **0 errores y 0 advertencias**; build solución completa Debug: **0 errores**, únicamente las
+  dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre la punta de código `eea1c11` (los tres jobs: Tests, Build UI, **Build Plugin without
+  AutoCAD**, en `success`); el commit de cierre documental no altera código;
+- objetivo entregado: `FlowBedDocument`/`LargueroDocument` versionados + preservación de campos JSON
+  desconocidos y de una versión de esquema **no degradada** en los cuatro límites (`RackEmbedDocument`,
+  `RackProjectDocument` —incluido el diseño interior de los embeds dinámico/cabecera y los wrappers de
+  biblioteca—, `FlowBedDocument`, `LargueroDocument`); `SchemaVersionPolicy` central; `RackEmbedComposer`
+  puro; preflight discriminado (`ResolveInnerSource`/`PreflightInnerSources`:
+  Success/BenignFallback/IncompatibleMajor/WrongKind) que **aborta la edición completa** ante un MAJOR interior
+  incompatible o un `Kind` incorrecto (sin actualización parcial); transporte biblioteca↔DWG por sidecars de
+  salida vía `RackMenuCommands` (transporte mínimo);
+- invariantes preservados: geometría, recetas BOM, GUID y el **formato físico del Xrecord** (clave
+  `RACKCAD_SELECTIVE`, chunk 255, `DxfCode.Text`) **intactos**; sin tocar `RackEnvelopeRestamp` ni el despacho
+  por `Kind` de I-10; sin cambios en Draw Services, `RackBlockData` ni Domain; sin dependencias nuevas;
+- validación en **AutoCAD 2025 aprobada** por el dueño (matriz §10 del contrato por `NETLOAD`, código
+  `eea1c11`, incluidos B5, B6 y S7; `automation/evidence/I-11-autocad-validation.md`); **owner-validation
+  aprobada**; gate `owner-decision` resuelto (`automation/decisions/I-11.md`);
+- exclusión aprobada: `RackFrameProjectDocument` (biblioteca de cabecera desnuda por `RackFrameProjectStore`,
+  quinto DTO) queda fuera de alcance por decisión del dueño; su preservación de desconocidos es deuda posterior;
+- alcance: producto en `src/RackCad.Application/Persistence` (12 archivos), `src/RackCad.Plugin` (6, con
+  `RackMenuCommands` solo como transporte) y `src/RackCad.UI` (5); 7 archivos de pruebas nuevos y el contrato
+  de I-11; sin cambios en Domain, catálogos, deploy ni `.csproj`; sin dependencias nuevas.
 
 **Corrección posterior a I-10 (`fix/kind-handler-missing-errors`) — 2026-07-21:**
 
