@@ -16,8 +16,9 @@ context_packs:
   - autocad-plugin
   - system-dynamic-flowbed
   - delivery-validation
-automation_state_path:
-decision_paths: []
+automation_state_path: docs/automation/state/I-11.yml
+decision_paths:
+  - docs/automation/decisions/I-11.md
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
@@ -280,15 +281,16 @@ Una **desviación material** —tocar un `*DrawService`, `RackBlockData`, el for
 
 ## 10. Validación manual
 
-- **AutoCAD: SÍ requerido** (`requires_autocad: true`). Aunque I-11 **no** cambia `RackBlockData` ni el
-  formato físico del Xrecord, esta ronda modifica **cuatro rutas reales de RACKEDITAR/redibujo** (cama,
-  selectivo, dinámico, cabecera) y el cableado de las ventanas de biblioteca; el cableado Plugin/WPF **no**
-  está cubierto por la suite (no existe proyecto de tests de Plugin/WPF), así que la matriz de abajo es
-  **obligatoria**. **No se declara AutoCAD validado** hasta la aprobación explícita del dueño.
-- **Owner-validation: SÍ** (`requires_owner_validation: true`). Las pruebas automatizadas cubren los
-  **mecanismos** puros de Persistence (política de versión, `RackEmbedComposer`, `WithSourceMetadataFrom`/
-  `WithSourceFlowBed`, `TryDeserialize`/`IsReadable`, y la preservación del interior dinámico/cabecera a
-  nivel de store).
+- **AutoCAD: SÍ requerido (`requires_autocad: true`) — APROBADO por el Owner (2026-07-21).** La matriz
+  obligatoria de abajo fue **ejecutada por el Owner** en AutoCAD 2025 (NETLOAD del DLL Debug del worktree,
+  código `eea1c11`), quien confirmó explícitamente que **todos los escenarios pasan** (incluidos B5, B6 y S7).
+  Evidencia: [`docs/automation/evidence/I-11-autocad-validation.md`](../automation/evidence/I-11-autocad-validation.md).
+  El gate vigente pasa a **`owner-validation`**. `requires_autocad` se **conserva** en `true` (la matriz sigue
+  siendo el criterio para cualquier re-validación tras un rebase).
+- **Owner-validation: SÍ** (`requires_owner_validation: true`) — **pendiente** (revisión final del dueño e
+  integración). No se declara aprobada aún. Las pruebas automatizadas cubren los **mecanismos** puros de
+  Persistence (política de versión, `RackEmbedComposer`, `WithSourceMetadataFrom`/`WithSourceFlowBed`,
+  `TryDeserialize`/`IsReadable`, y la preservación del interior dinámico/cabecera a nivel de store).
 
 ### 10.1 Matriz AutoCAD obligatoria (NETLOAD del DLL Debug del worktree)
 

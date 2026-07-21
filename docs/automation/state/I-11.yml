@@ -5,17 +5,17 @@ automation_state:
   claim_id: a1b01b5c-f8ce-432f-9c08-c0136a49a3ca
   current_phase: 5
   state: waiting
-  gate: autocad
+  gate: owner-validation
   attempts: 0
-  next_action: owner-autocad-matrix-and-owner-validation
+  next_action: owner-final-review-and-integration
   last_evidence_commit: eea1c1113dd8a33e33fa31dd61720c24c844ad4f
 autocad_validation:
-  status: blocked
-  reason: requires-interactive-licensed-autocad-gui-and-human-owner-validator
-  attempted: 2026-07-21
-  evidence: docs/automation/evidence/I-11-autocad-validation.md
-  matrix_result: not-run
-  note: preflight-and-builds-passed-791-tests-green-dll-matches-head
+  status: passed
+  validator: owner
+  application: AutoCAD 2025
+  code_sha: eea1c1113dd8a33e33fa31dd61720c24c844ad4f
+  evidence_path: docs/automation/evidence/I-11-autocad-validation.md
+  date: 2026-07-21
 execution_context:
   mode: manual-git-only
   worktree: architecture-persistencia-uniforme

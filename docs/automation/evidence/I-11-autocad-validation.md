@@ -1,10 +1,60 @@
-# I-11 — Validación AutoCAD (registro de intento)
+# I-11 — Validación AutoCAD
 
-**Resultado de la sesión: BLOCKED.** La matriz manual de validación en AutoCAD **no se ejecutó**. No hay
-ningún escenario aprobado. **AutoCAD NO validado.** El gate permanece `waiting / autocad`.
+**Estado vigente: PASS (validada manualmente por el Owner).** El **2026-07-21**, el Owner ejecutó la matriz
+manual en AutoCAD 2025 y confirmó explícitamente que **todos los escenarios obligatorios pasan**. El gate avanza a
+`waiting / owner-validation`. El registro del intento automatizado **BLOCKED** anterior se conserva íntegro más
+abajo como historial (no se elimina).
 
-> Esta sesión NO es una declaración de aprobación. Ningún resultado de la matriz fue producido, simulado ni
-> inferido. Toda fila de la tabla figura como `NOT RUN`.
+> Nota de trazabilidad: el ejecutor documental de esta sesión no volvió a abrir AutoCAD. El resultado PASS proviene
+> **exclusivamente** de la confirmación manual explícita del Owner; no se fabricaron capturas, rutas de DWG ni
+> payloads que el Owner no haya proporcionado.
+
+## Validación manual posterior del Owner — PASS
+
+| Campo | Valor |
+|---|---|
+| Validador | **Owner** |
+| Fecha | 2026-07-21 |
+| Aplicación | AutoCAD 2025 |
+| Carga | `NETLOAD` del DLL Debug del worktree de I-11 |
+| DLL utilizado | `C:\Users\alejandra-mendoza\.claude\worktrees\architecture-persistencia-uniforme\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` |
+| Punta de código validada | `eea1c1113dd8a33e33fa31dd61720c24c844ad4f` |
+| HEAD documental (registro) | `e5e839a4bdb827db84f974eb3b8b09bc3c6c4844` (los commits posteriores a `eea1c11` son solo docs; el DLL es idéntico en código) |
+| Confirmación | El Owner confirmó explícitamente que **todos los escenarios obligatorios pasaron**. |
+
+### Matriz — resultado del Owner
+
+| ID | Familia | Escenario | Resultado | Evidencia | Observaciones |
+|---|---|---|---|---|---|
+| A1 | cama/selectivo/dinámico/cabecera | Inserción fresca | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| A2 | cama/selectivo/dinámico/cabecera | Edición simple | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| A3 | cama/selectivo/dinámico/cabecera | Metadata desconocida del envelope | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| A4 | cama/selectivo/dinámico/cabecera | Duplicación (RACKDUPLICAR) + GUID | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Original conserva GUID; copia recibe GUID nuevo. |
+| A5 | cama/selectivo/dinámico/cabecera | Reapertura | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| M1 | selectivo/dinámico/cabecera | Metadata distinta por vista | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Cada vista conserva la suya. |
+| M2 | selectivo/dinámico/cabecera | Vista nueva ligada | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Hereda del iniciador. |
+| C1 | cama | FlowBedDocument desconocido | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| B4 | cama | Cama DWG → biblioteca | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| B6 | cama | Cama biblioteca → DWG | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| D1 | dinámico | Wrapper interior compatible | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| B5 | dinámico | Dinámico biblioteca → DWG | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| S7 | dinámico | MAJOR interior incompatible (bloqueante) | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Aborta sin actualización parcial; mensaje visible. |
+| S7' | dinámico | Kind interior incorrecto (bloqueante) | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Aborta sin modificar ninguna vista. |
+| H1 | cabecera | Wrapper interior compatible | PASS | Confirmación manual explícita del Owner en la sesión de validación. | — |
+| H2 | cabecera | MAJOR interior incompatible | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Aborta antes de modificar la primera vista. |
+| H3 | cabecera | Cabecera de biblioteca desnuda (fuera de alcance aprobado) | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Abre/guarda; no fabrica metadata de RackProjectDocument (owner-decision aprobada). |
+| — | selectivo | Envelope desconocido por vista / versión no degradada / multivista / vista nueva / dup / reapertura / wrapper biblioteca | PASS | Confirmación manual explícita del Owner en la sesión de validación. | Interior `SelectivePalletDesignDocument` no es límite; sin preservación recursiva. |
+| — | todas | GUID, duplicación, reapertura, `RACKLISTA`, `RACKBOMTOTAL` | PASS | Confirmación manual explícita del Owner en la sesión de validación. | BOM/RACKLISTA sin cambios inesperados; Xrecord bajo la misma clave. |
+
+**Totales (Owner):** PASS (todos los escenarios obligatorios) · FAIL 0.
+
+---
+
+## Historial — intento automatizado previo (BLOCKED)
+
+> Registro conservado del intento automatizado anterior a la validación del Owner. En ese intento la matriz **no se
+> ejecutó**; todas las filas figuraban como `NOT RUN`. Se conserva por trazabilidad; **queda superado** por la
+> validación manual del Owner registrada arriba.
 
 ## Contexto verificado (real)
 
@@ -80,7 +130,14 @@ cuatro límites, resolución/preflight discriminado (`IncompatibleMajor`/`WrongK
 composiciones biblioteca→DWG. Esto **no** sustituye la matriz AutoCAD: el **cableado Plugin/WPF end-to-end** y el
 **juicio visual** solo se validan en la aplicación real, por el dueño.
 
-## Estado
+### Estado en aquel intento (histórico)
 
-`state: waiting` · `gate: autocad` (sin cambio). AutoCAD **no** validado; owner-validation pendiente; I-11 **no**
-integrada.
+`state: waiting` · `gate: autocad`. AutoCAD **no** validado en ese intento automatizado. **Superado** por la
+validación manual del Owner (PASS) registrada al inicio de este documento.
+
+---
+
+## Estado vigente
+
+`state: waiting` · `gate: **owner-validation**`. **AutoCAD validado (PASS) por el Owner** el 2026-07-21;
+owner-validation final pendiente; I-11 **no** integrada.
