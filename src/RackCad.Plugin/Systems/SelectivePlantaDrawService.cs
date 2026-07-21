@@ -13,7 +13,8 @@ namespace RackCad.Plugin.Systems
     /// frame + the front/back largueros, jig-placed with the payload embedded on the definition so RACKEDITAR
     /// reopens the whole system. Uses <see cref="SelectivePlantaBuilder.BuildPlan"/> so identical frames share ONE
     /// nested definition referenced per frente (the dynamic system's ARRAY pattern) — a 30-frente run appends the
-    /// frame pieces once instead of 31 times, which is what made the planta slow to generate.
+    /// frame pieces once instead of 31 times, which is what made the planta slow to generate. The common
+    /// draw/redraw flow lives in <see cref="ViewBlockDraw"/>.
     /// </summary>
     public sealed class SelectivePlantaDrawService
     {
@@ -21,56 +22,25 @@ namespace RackCad.Plugin.Systems
         private readonly LateralHeaderDrawer drawer = new LateralHeaderDrawer();
 
         public HeaderPlacementResult DrawAndPlace(Document document, SelectiveRackSystem system, string payloadJson = null, string rackName = null)
-        {
-            if (document == null)
-            {
-                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            }
-
-            if (system == null)
-            {
-                return HeaderPlacementResult.Failure("No hay sistema selectivo para dibujar.");
-            }
-
-            try
-            {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = builder.BuildPlan(system, catalog);
-                var block = CreateBlock(document, plan, BlockName(system, rackName), payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
+            => ViewBlockDraw.DrawAndPlace(
+                document,
+                system != null,
+                "No hay sistema selectivo para dibujar.",
+                drawer,
+                catalog => builder.BuildPlan(system, catalog),
+                () => BlockName(system, rackName),
+                payloadJson);
 
         public HeaderPlacementResult RedrawInPlace(Document document, ObjectId blockId, SelectiveRackSystem system, string payloadJson, bool regen = true)
-        {
-            if (document == null)
-            {
-                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            }
-
-            if (system == null || blockId.IsNull)
-            {
-                return HeaderPlacementResult.Failure("No hay rack para actualizar.");
-            }
-
-            try
-            {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = builder.BuildPlan(system, catalog);
-                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
-
-        private LateralHeaderBlockResult CreateBlock(Document document, DynamicSystemPlan plan, string blockName, string payloadJson)
-            => SystemBlockWriter.CreateBlock(document, drawer, plan, blockName, payloadJson);
+            => ViewBlockDraw.RedrawInPlace(
+                document,
+                blockId,
+                system != null && !blockId.IsNull,
+                "No hay rack para actualizar.",
+                drawer,
+                catalog => builder.BuildPlan(system, catalog),
+                payloadJson,
+                regen);
 
         private static string BlockName(SelectiveRackSystem system, string rackName)
         {

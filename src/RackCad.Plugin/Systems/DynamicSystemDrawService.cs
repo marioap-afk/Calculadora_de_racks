@@ -30,31 +30,14 @@ namespace RackCad.Plugin.Systems
             string payloadJson = null,
             string rackName = null,
             int postIndex = -1)
-        {
-            if (document == null)
-            {
-                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            }
-
-            if (system == null)
-            {
-                return HeaderPlacementResult.Failure("No hay sistema para dibujar.");
-            }
-
-            try
-            {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = postIndex >= 0
-                    ? builder.Build(system, catalog, postIndex)
-                    : builder.Build(system, catalog);
-                var block = CreateSystemBlock(document, plan, BlockName(system, rackName), payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
+            => ViewBlockDraw.DrawAndPlace(
+                document,
+                system != null,
+                "No hay sistema para dibujar.",
+                drawer,
+                catalog => postIndex >= 0 ? builder.Build(system, catalog, postIndex) : builder.Build(system, catalog),
+                () => BlockName(system, rackName),
+                payloadJson);
 
         /// <summary>Redraw an existing dynamic system's block DEFINITION in place; every copy updates on regen.</summary>
         public HeaderPlacementResult RedrawInPlace(
@@ -64,33 +47,15 @@ namespace RackCad.Plugin.Systems
             string payloadJson,
             bool regen = true,
             int postIndex = -1)
-        {
-            if (document == null)
-            {
-                return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            }
-
-            if (system == null || blockId.IsNull)
-            {
-                return HeaderPlacementResult.Failure("No hay sistema para actualizar.");
-            }
-
-            try
-            {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = postIndex >= 0
-                    ? builder.Build(system, catalog, postIndex)
-                    : builder.Build(system, catalog);
-                return SystemBlockWriter.RedrawInPlace(document, drawer, blockId, plan, payloadJson, catalog, regen);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
-
-        private LateralHeaderBlockResult CreateSystemBlock(Document document, DynamicSystemPlan plan, string blockName, string payloadJson)
-            => SystemBlockWriter.CreateBlock(document, drawer, plan, blockName, payloadJson);
+            => ViewBlockDraw.RedrawInPlace(
+                document,
+                blockId,
+                system != null && !blockId.IsNull,
+                "No hay sistema para actualizar.",
+                drawer,
+                catalog => postIndex >= 0 ? builder.Build(system, catalog, postIndex) : builder.Build(system, catalog),
+                payloadJson,
+                regen);
 
         private static string BlockName(DynamicRackSystem system, string rackName)
         {

@@ -67,10 +67,7 @@ namespace RackCad.Plugin.Systems
                     // filters to the genuinely unreferenced ones in one optimized pass (no per-def whole-drawing scan).
                     LateralHeaderDrawer.PurgeUnreferenced(database, staleDefs);
 
-                    if (regen)
-                    {
-                        document.Editor.Regen();
-                    }
+                    ApplyRegen(document, regen);
                 }
 
                 // Report pieces skipped during the redraw too — an edit can lose blocks just like an insert.
@@ -79,6 +76,19 @@ namespace RackCad.Plugin.Systems
             catch (Exception ex)
             {
                 return HeaderPlacementResult.Failure(ex.Message);
+            }
+        }
+
+        /// <summary>Regenerate the drawing once when <paramref name="regen"/> is set. The SINGLE place the
+        /// write/redraw path applies the flag, so this and <see cref="LateralHeaderDrawService"/>'s in-place redraw
+        /// stay identical (I-16 F4). Callers invoke it AFTER commit + purge, inside the document lock — the position
+        /// is unchanged. Multi-view editors keep passing <c>regen: false</c> on each intermediate redraw and fire
+        /// their own single <c>Editor.Regen()</c> at the end; layout and fill keep their own regens.</summary>
+        internal static void ApplyRegen(Document document, bool regen)
+        {
+            if (regen)
+            {
+                document.Editor.Regen();
             }
         }
     }

@@ -20,22 +20,14 @@ namespace RackCad.Plugin.Systems
             DynamicRackEnd end,
             string payloadJson = null,
             string rackName = null)
-        {
-            if (document == null) return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            if (system == null) return HeaderPlacementResult.Failure("No hay sistema dinámico para dibujar.");
-
-            try
-            {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
-                var plan = builder.BuildPlan(system, catalog, end);
-                var block = SystemBlockWriter.CreateBlock(document, drawer, plan, BlockName(system, rackName, end), payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
+            => ViewBlockDraw.DrawAndPlace(
+                document,
+                system != null,
+                "No hay sistema dinámico para dibujar.",
+                drawer,
+                catalog => builder.BuildPlan(system, catalog, end),
+                () => BlockName(system, rackName, end),
+                payloadJson);
 
         public HeaderPlacementResult RedrawInPlace(
             Document document,
@@ -44,27 +36,15 @@ namespace RackCad.Plugin.Systems
             DynamicRackEnd end,
             string payloadJson,
             bool regen = true)
-        {
-            if (document == null) return HeaderPlacementResult.Failure("No hay un dibujo activo en AutoCAD.");
-            if (system == null || blockId.IsNull) return HeaderPlacementResult.Failure("No hay sistema dinámico para actualizar.");
-
-            try
-            {
-                var catalog = LateralHeaderDrawService.LoadCatalog();
-                return SystemBlockWriter.RedrawInPlace(
-                    document,
-                    drawer,
-                    blockId,
-                    builder.BuildPlan(system, catalog, end),
-                    payloadJson,
-                    catalog,
-                    regen);
-            }
-            catch (Exception ex)
-            {
-                return HeaderPlacementResult.Failure(ex.Message);
-            }
-        }
+            => ViewBlockDraw.RedrawInPlace(
+                document,
+                blockId,
+                system != null && !blockId.IsNull,
+                "No hay sistema dinámico para actualizar.",
+                drawer,
+                catalog => builder.BuildPlan(system, catalog, end),
+                payloadJson,
+                regen);
 
         private static string BlockName(DynamicRackSystem system, string rackName, DynamicRackEnd end)
         {
