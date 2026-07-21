@@ -236,7 +236,7 @@ namespace RackCad.UI
                 else if (library.SelectedDesign.Kind == RackSystemKind.Cama && project.FlowBed != null)
                 {
                     var editor = new RackFlowBedWindow(canInsertInAutoCad) { Owner = this };
-                    editor.LoadForNew(project.FlowBed, library.SelectedDesign.Name);
+                    editor.LoadForNew(project.FlowBed, library.SelectedDesign.Name, project); // pass the source project so a re-save preserves its unknown metadata (I-11)
                     editor.ShowDialog();
 
                     if (editor.InsertRequested)
@@ -252,7 +252,7 @@ namespace RackCad.UI
                 {
                     // Larguero is visual-only (no AutoCAD block) — just open its editor pre-loaded.
                     var editor = new RackLargueroWindow { Owner = this };
-                    editor.LoadExisting(project.Larguero);
+                    editor.LoadExisting(project.Larguero, project); // pass the source project so a re-save preserves its unknown metadata (I-11)
                     editor.ShowDialog();
                 }
                 else if (project.Header != null)

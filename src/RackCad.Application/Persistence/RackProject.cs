@@ -37,6 +37,20 @@ namespace RackCad.Application.Persistence
         /// </summary>
         internal RackProjectDocument SourceDocument { get; set; }
 
+        /// <summary>
+        /// Carry the persistence metadata (unknown JSON fields + non-downgraded schema version) of a previously LOADED
+        /// <paramref name="source"/> onto THIS in-memory project, so a library re-save of an edited design preserves it
+        /// (I-11 D3). The known model on this project is what gets written; only the source's underlying document (its
+        /// <c>ExtensionData</c> and schema version) rides along. This is the seam the UI editors use: they build a fresh
+        /// project from the edited model and attach the metadata of the project they opened. No-op if <paramref name="source"/>
+        /// is null or was itself built in memory. Only the persistence document travels — no JSON metadata reaches the Domain.
+        /// </summary>
+        public RackProject WithSourceMetadataFrom(RackProject source)
+        {
+            SourceDocument = source?.SourceDocument;
+            return this;
+        }
+
         public static RackProject ForSelective(RackFrameConfiguration header)
         {
             return new RackProject { Kind = RackSystemKind.Selective, Header = header };

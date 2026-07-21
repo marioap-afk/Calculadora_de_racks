@@ -52,6 +52,10 @@ namespace RackCad.UI
         private string currentId;
         private string currentName;
 
+        /// <summary>The library project this bed was opened from, if any, so a re-save preserves its unknown JSON
+        /// metadata and schema version instead of stamping a fresh document (I-11). Null for a brand-new design.</summary>
+        private RackCad.Application.Persistence.RackProject sourceProject;
+
         public RackFlowBedWindow()
             : this(false)
         {
@@ -268,14 +272,16 @@ namespace RackCad.UI
         }
 
         /// <summary>Open pre-loaded from a LIBRARY template as a NEW bed — a fresh GUID on insert (keeps "Insertar"),
-        /// unlike <see cref="LoadExisting"/> which edits a drawn bed in place.</summary>
-        public void LoadForNew(FlowBedConfiguration config, string name)
+        /// unlike <see cref="LoadExisting"/> which edits a drawn bed in place. <paramref name="sourceProject"/> is the
+        /// loaded library project; passing it lets a re-save preserve its unknown JSON metadata (I-11).</summary>
+        public void LoadForNew(FlowBedConfiguration config, string name, RackCad.Application.Persistence.RackProject sourceProject = null)
         {
             if (config == null)
             {
                 return;
             }
 
+            this.sourceProject = sourceProject;
             currentId = null;
             currentName = name;
             if (NameBox != null)
@@ -317,7 +323,7 @@ namespace RackCad.UI
             try
             {
                 new RackCad.Application.Persistence.RackProjectStore()
-                    .Save(RackCad.Application.Persistence.RackProject.ForCama(config), path);
+                    .Save(RackCad.Application.Persistence.RackProject.ForCama(config).WithSourceMetadataFrom(sourceProject), path);
                 SetStatus("Cama guardada en la biblioteca: " + System.IO.Path.GetFileName(path), false);
             }
             catch (Exception ex)
