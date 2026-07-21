@@ -17,11 +17,13 @@
 
 .PARAMETER Build
   Also run deploy\build-bundle.ps1 (canonical publish + fail-closed verify-bundle.ps1) before installing.
-  A -Build bundle never reaches staging or the destination without passing that verification.
+  A -Build bundle never reaches staging or the destination without passing that verification. -Build
+  installs EXCLUSIVELY the canonical bundle for -Configuration and cannot be combined with -SourceBundlePath.
 
 .PARAMETER SourceBundlePath
-  Optional assembled bundle path. Intended for controlled deployment and tests; by
-  default it is resolved from the Plugin publish output for the selected configuration.
+  Optional path to an already-assembled bundle to install, for controlled deployment and tests. Mutually
+  exclusive with -Build (the entry point rejects the combination). Without -Build it defaults to the
+  Plugin publish output for the selected configuration.
 
 .PARAMETER TargetBundlePath
   Optional installation path. By default it is the per-user ApplicationPlugins path.
@@ -307,6 +309,14 @@ function Resolve-PwshExecutable {
 function Invoke-InstallBundleScript {
     $ErrorActionPreference = "Stop"
     $repo = Split-Path -Parent $PSScriptRoot
+
+    # -Build owns the whole bundle: it generates, verifies and installs EXCLUSIVELY the canonical
+    # bundle for -Configuration. Combining it with -SourceBundlePath is ambiguous (which bundle wins?)
+    # and would let an unverified external bundle be installed right after a canonical build. Reject it
+    # up front, before publishing or touching the destination. Use -SourceBundlePath only without -Build.
+    if ($Build -and -not [string]::IsNullOrWhiteSpace($SourceBundlePath)) {
+        throw "Combinacion invalida: -Build genera, verifica e instala el bundle canonico de -Configuration; no lo combines con -SourceBundlePath. Usa -Build (canonico) o -SourceBundlePath (bundle ya armado), no ambos."
+    }
 
     Assert-AutoCadClosed
 

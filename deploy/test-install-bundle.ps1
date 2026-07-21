@@ -240,6 +240,45 @@ try {
         -Message "El punto de entrada debe instalar el origen indicado"
     Assert-NoOperationDirectories -Target $case.Target
 
+    # 10. -Build combined with -SourceBundlePath is rejected up front, before publishing or touching
+    #     the destination (the ambiguity closed in I-12).
+    $case = New-CasePaths -Root $temporaryRoot -Name "10 build mas source rechazado"
+    New-FakeBundle -Path $case.Source -CatalogValue "no-debe-instalarse"
+    $rejection = & $powerShell -NoProfile -File $installerFullPath `
+        -Build -SourceBundlePath $case.Source -TargetBundlePath $case.Target 2>&1
+    Assert-True -Condition ($LASTEXITCODE -ne 0) `
+        -Message "-Build combinado con -SourceBundlePath debe fallar"
+    Assert-True -Condition (($rejection -join "`n") -match "Combinacion invalida") `
+        -Message "El rechazo debe explicar la combinacion invalida"
+    Assert-True -Condition (-not (Test-Path -LiteralPath $case.Target)) `
+        -Message "Una combinacion rechazada no debe crear el destino"
+
+    # 11. The normal -Build flow routes through deploy\build-bundle.ps1: a stub in a throwaway repo
+    #     records the call (and its Configuration) and fails; the installer must surface that failure
+    #     without installing anything. Proves -Build delegates to build-bundle.ps1 (no real dotnet).
+    $case = New-CasePaths -Root $temporaryRoot -Name "11 build usa build-bundle"
+    $fakeDeploy = Join-Path $temporaryRoot "11-repo\deploy"
+    New-Item -ItemType Directory -Force -Path $fakeDeploy | Out-Null
+    $installerCopy = Join-Path $fakeDeploy "install-bundle.ps1"
+    Copy-Item -LiteralPath $installerFullPath -Destination $installerCopy -Force
+    $stub = @'
+param([string]$Configuration = "Release", [string]$DotNet, [switch]$SkipVerify, [string]$Output, [string]$InventoryOutPath, [string]$BaselineInventoryPath)
+$marker = Join-Path (Split-Path -Parent $PSScriptRoot) "build-bundle-was-called.marker"
+Set-Content -LiteralPath $marker -Value $Configuration
+exit 7
+'@
+    Set-Content -LiteralPath (Join-Path $fakeDeploy "build-bundle.ps1") -Value $stub -Encoding utf8
+    $marker = Join-Path (Split-Path -Parent $fakeDeploy) "build-bundle-was-called.marker"
+    & $powerShell -NoProfile -File $installerCopy -Build -Configuration Release -TargetBundlePath $case.Target 2>&1 | Out-Null
+    Assert-True -Condition ($LASTEXITCODE -ne 0) `
+        -Message "El flujo -Build debe propagar el fallo de build-bundle.ps1"
+    Assert-True -Condition (Test-Path -LiteralPath $marker) `
+        -Message "-Build debe delegar en deploy\build-bundle.ps1 (marker escrito)"
+    Assert-True -Condition (([System.IO.File]::ReadAllText($marker)).Trim() -eq "Release") `
+        -Message "build-bundle.ps1 debe recibir la Configuration seleccionada"
+    Assert-True -Condition (-not (Test-Path -LiteralPath $case.Target)) `
+        -Message "Un build fallido no debe instalar nada en el destino"
+
     Write-Host "OK: $script:assertionCount verificaciones superadas."
 }
 finally {
