@@ -41,7 +41,7 @@ namespace RackCad.Plugin.Systems
                 var plan = builder.BuildPlan(system, catalog); // ARRAY pattern: identical pieces share one nested def
 
                 var block = CreateBlock(document, plan, BlockName(system, rackName), payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
+                return BlockPlacement.PlaceAndReport(document, catalog, block);
             }
             catch (Exception ex)
             {

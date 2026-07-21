@@ -48,7 +48,7 @@ namespace RackCad.Plugin.Systems
                     ? builder.Build(system, catalog, postIndex)
                     : builder.Build(system, catalog);
                 var block = CreateSystemBlock(document, plan, BlockName(system, rackName), payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
+                return BlockPlacement.PlaceAndReport(document, catalog, block);
             }
             catch (Exception ex)
             {

@@ -29,7 +29,7 @@ namespace RackCad.Plugin.Systems
                 var catalog = RackCatalogLoader.Load();
                 var plan = builder.BuildPlan(system, catalog, end);
                 var block = SystemBlockWriter.CreateBlock(document, drawer, plan, BlockName(system, rackName, end), payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
+                return BlockPlacement.PlaceAndReport(document, catalog, block);
             }
             catch (Exception ex)
             {

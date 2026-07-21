@@ -32,7 +32,7 @@ namespace RackCad.Plugin.Systems
                     builder.BuildPlan(system, catalog),
                     BlockName(system, rackName),
                     payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
+                return BlockPlacement.PlaceAndReport(document, catalog, block);
             }
             catch (Exception ex)
             {

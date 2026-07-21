@@ -36,7 +36,7 @@ namespace RackCad.Plugin.Headers
                 var catalog = RackCatalogLoader.Load();
                 var plan = new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog));
                 var block = CreateBlock(document, plan, BlockName(rackName), payloadJson);
-                return new LateralHeaderDrawService().PlaceAndReport(document, catalog, block);
+                return BlockPlacement.PlaceAndReport(document, catalog, block);
             }
             catch (Exception ex)
             {
