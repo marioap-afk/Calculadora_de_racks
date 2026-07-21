@@ -179,8 +179,8 @@ Evidencia reproducible y verbatim en
 [`docs/automation/evidence/I-19-validador-catalogos.md`](../automation/evidence/I-19-validador-catalogos.md).
 
 - **Build**: `RackCad.Application` con 0 errores / 0 advertencias.
-- **Pruebas**: suite completa **841/841** verde (50 nuevas sobre la línea base 791 en `de72287`; r1 822,
-  r2 839, r3 841).
+- **Pruebas**: suite completa **842/842** verde (51 nuevas sobre la línea base 791 en `de72287`; r1 822,
+  r2 839, r3 841, r4 842).
 
 ### Ronda 2 — correcciones de la revisión (2026-07-21)
 
@@ -221,7 +221,26 @@ Archivo nuevo de la ronda 3: `tests/RackCad.Tests/CatalogManifestGuardTests.cs`.
 `CatalogBlockParameters` (separador, protector lateral, larguero) y los XML-doc de `CatalogBlockManifest`
 (`Parameters` y `BuildExpected`: los parámetros proceden de `paramX`/`paramY` **y** de los requisitos reales
 de los builders). Sin nuevos literales (nombres siguen en el dominio). La huella esperada cambió a
-`50f8a460…` (bloques: 90). El intento de corrección en el estado versionado sube a `attempts: 2`.
+`50f8a460…` (bloques: 90).
+
+### Ronda 4 — correcciones de la revisión (2026-07-21)
+
+1. **Largueros en LATERAL**: la regla `Beam` deja de añadir `LONGITUD`+`PERALTE` en cualquier vista. En
+   LATERAL el larguero selectivo/intermedio exige sólo `PERALTE`; el in/out (`LARGUERO_IN_OUT_C6`) es un
+   subtipo `InOutBeam` que **no exige nada** en LATERAL (`MakeLoadBeam` no escribe parámetros). La placa en
+   LATERAL tampoco exige (el `PERALTE` sólo lo escribe el override manual, fuera del flujo estándar).
+2. **Guardia por igualdad exacta**: agrupa lo escrito por los builders por `PieceId`+`View`+`BlockName` y
+   compara por igualdad contra `ExpectedParameters(...)` **y** contra la entrada del manifiesto (detecta
+   faltantes y de más); fixtures enfocados activan los caminos condicionales (tope).
+3. **Cobertura verificable**: matriz explícita por `PieceId`+`View`+`Parámetro` de las 13 familias; la prueba
+   falla si una familia deja de observarse (sin colapsar seguridad bajo `Safety/<vista>/LONGITUD`).
+4. **Validación de entrada del manifiesto**: instancia parametrizada con `BlockName` vacío o sin entrada en el
+   manifiesto → falla (no se omite cuando `TryGetValue` devuelve `false`).
+
+Ronda 4: sólo se editaron `CatalogBlockParameters` (subtipo in/out; larguero/placa LATERAL exactos) y se
+reescribió `CatalogManifestGuardTests` como comparación exacta + matriz de cobertura. Sin nuevos literales.
+La huella esperada cambió a `ad1f6063…` (bloques: 90). El intento de corrección en el estado versionado sube
+a `attempts: 3`.
 - **Categorías cubiertas** con prueba positiva y negativa (matriz en la evidencia): ids duplicados,
   referencias/relaciones inválidas, bloques/vistas faltantes, filas descartadas por rol y manifiesto,
   más modo estricto y el paso extremo a extremo por la costura del proveedor.
