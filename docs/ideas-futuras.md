@@ -265,6 +265,12 @@ sin decoración, con test de equivalencia); `RACKLISTA` sumaba referencias de TO
 - Constantes de negocio hardcodeadas (alza del tope 8", holgura del lateral 4", paso del separador 100",
   tarima default 42×60×2): moverlas a `defaults.json`/columnas de `seguridad.csv` con los valores actuales
   como fallback.
+- (hallazgo I-15, 2026-07-21) Asimetría de estilos de cota en el selectivo NUEVO desde el menú: el menú
+  principal ("Diseñar sistema selectivo") abre `RackSelectiveWindow` **sin** `SetDimensionStyles`, mientras
+  que el comando directo `RACKSELECTIVO` y el abrir-desde-biblioteca **sí** los fijan. Efecto: un selectivo
+  nuevo creado por RACKCAD no ofrece los estilos de cota guardados del dibujo. I-15 lo preservó verbatim
+  (`SelectiveEditorModule.OpenForNew`); corregir = pasar los estilos también en ese path, con validación en
+  AutoCAD (cambia lo que ve el usuario al insertar cotas de un selectivo nuevo desde el menú).
 
 **Señalados pero NO verificados** (la verificación adversarial no alcanzó a correr; validar antes de actuar):
 posible coma decimal mal parseada en campos del configurador; el editor del dinámico podría resetear
