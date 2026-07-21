@@ -16,9 +16,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>Dynamic (pallet flow) system commands + their draw/edit/payload helpers.</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>Dynamic (pallet flow) system commands + their draw/edit/payload helpers, plus alias.</summary>
+    public sealed class RackDinamicoCommands
     {
+        [CommandMethod("RSD")] public void AliasRackSistemaDinamico() => RackSistemaDinamico(); // RACKSISTEMADINAMICO
+
         /// <summary>
         /// Draws the current lateral representation of a dynamic (pallet flow) system as one block placed with the
         /// mouse. Editable inputs are embedded separately from resolved geometry for deterministic reopen/edit.
@@ -74,7 +76,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Builds the requested linked view and runs its placement jig.</summary>
-        private static void DrawDynamicView(
+        internal static void DrawDynamicView(
             string view,
             int section,
             DynamicRackSystem system,
@@ -130,7 +132,7 @@ namespace RackCad.Plugin
         private static string DescribeSystem(HeaderPlacementResult result)
             => RackCommandSupport.DescribePlacement(result, "el sistema", "sistema insertado");
 
-        private static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
+        internal static void EditDynamic(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 

@@ -45,7 +45,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.DynamicSystemToInsert != null)
                     {
-                        DrawDynamicView(
+                        RackDinamicoCommands.DrawDynamicView(
                             menu.DynamicView,
                             menu.DynamicSection,
                             menu.DynamicSystemToInsert,
@@ -100,7 +100,7 @@ namespace RackCad.Plugin
                         RackSelectivoCommands.EditSelective(document, blockId, embed);
                         break;
                     case RackEmbedDocument.KindDynamic:
-                        EditDynamic(document, blockId, embed);
+                        RackDinamicoCommands.EditDynamic(document, blockId, embed);
                         break;
                     case RackEmbedDocument.KindCabecera:
                         RackCabeceraCommands.EditCabecera(document, blockId, embed);
