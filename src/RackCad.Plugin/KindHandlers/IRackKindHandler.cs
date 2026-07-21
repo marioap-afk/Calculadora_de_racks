@@ -28,8 +28,11 @@ namespace RackCad.Plugin.KindHandlers
         /// <summary>Reopen the right editor for this rack and redraw every view-block in place (RACKEDITAR).</summary>
         void Edit(Document document, ObjectId blockId, RackEmbedDocument embed);
 
-        /// <summary>Rebuild ONE rack's bill of materials from its embedded design. Returns <c>null</c> for an
-        /// unreadable/foreign payload — the caller skips it (best-effort, unchanged).</summary>
+        /// <summary>Rebuild ONE rack's bill of materials from its embedded design. Returns <c>null</c> when the
+        /// design cannot be turned into a BOM — an unreadable payload OR a readable-but-unusable design (e.g. a
+        /// null-resolving system, header or config). The caller treats <c>null</c> as a best-effort skip of that
+        /// rack. This is distinct from a kind with NO handler, which the caller resolves and reports up front
+        /// (a visible error), so it never reaches this method.</summary>
         BillOfMaterials BuildBom(RackEmbedDocument embed, RackCatalog catalog);
 
         /// <summary>Re-stamp the kind-specific inner identity of an INDEPENDENT copy's design (selective: Id+Name;
