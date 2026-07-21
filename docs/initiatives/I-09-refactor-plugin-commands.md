@@ -164,8 +164,10 @@ material obliga a detenerse.
   alias, prompts, keywords y mensajes), revisión mecánica de scans, clonación/restamp, layers,
   transacciones, purgas y `Regen`, suite existente completa y builds Debug de UI y Plugin. Tests
   nuevos solo si se extrajo lógica pura sin AutoCAD.
-- [ ] Paso posterior. Preparación de integración manual (rebase final, CI, muestreo de validación,
-  HANDOFF/ROADMAP como último commit) y merge por el dueño.
+- [x] Paso posterior. Preparación de integración completada en la sesión de integración
+  (2026-07-20): sin rebase final (`origin/main` no avanzó desde la base de I-09), validación final en
+  verde, muestreo AutoCAD no requerido, y HANDOFF/ROADMAP actualizados como último commit de la rama.
+  El merge `--no-ff` a `main` se ejecuta a continuación; su SHA vive en el historial de git, no aquí.
 
 ## 9. Pruebas y builds
 
