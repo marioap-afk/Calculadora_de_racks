@@ -61,5 +61,132 @@ namespace RackCad.Tests
             var missing = Path.Combine(Path.GetTempPath(), "RackCadLibMissing_" + Guid.NewGuid().ToString("N"));
             Assert.Empty(RackDesignLibrary.List(missing));
         }
+
+        // --- F1 characterization for I-08: freeze the visible labels and List behavior before the registry refactor ---
+
+        // The library "Tipo" column strings are user-visible and must survive the removal of RackDesignKind unchanged.
+        [Theory]
+        [InlineData(RackDesignKind.Cabecera, "Cabecera")]
+        [InlineData(RackDesignKind.Dinamico, "Sistema dinámico")]
+        [InlineData(RackDesignKind.Selectivo, "Selectivo")]
+        [InlineData(RackDesignKind.Cama, "Cama de rodamiento")]
+        [InlineData(RackDesignKind.Larguero, "Larguero")]
+        public void Entry_KindLabel_IsExactVisibleLabel(RackDesignKind kind, string expected)
+        {
+            var entry = new RackDesignLibraryEntry("p", "n", kind, DateTime.UtcNow);
+            Assert.Equal(expected, entry.KindLabel);
+        }
+
+        // Name precedence: Header/SelectiveRack/Larguero payload names are used; Cama and Dinamico intentionally fall back
+        // to the file name even though their payloads may carry a name.
+        [Fact]
+        public void List_Larguero_UsesPayloadName_ThenFileNameWhenBlank()
+        {
+            InTempDir(dir =>
+            {
+                var store = new RackProjectStore();
+                store.Save(RackProject.ForLarguero(new LargueroDesign { Name = "L1", BeamProfileId = "BEAM_X" }),
+                    Path.Combine(dir, "archivoL" + RackProjectStore.FileExtension));
+                store.Save(RackProject.ForLarguero(new LargueroDesign { Name = null, BeamProfileId = "BEAM_X" }),
+                    Path.Combine(dir, "sinNombre" + RackProjectStore.FileExtension));
+
+                var entries = RackDesignLibrary.List(dir);
+
+                var named = Assert.Single(entries, e => e.Path.EndsWith("archivoL" + RackProjectStore.FileExtension));
+                Assert.Equal(RackDesignKind.Larguero, named.Kind);
+                Assert.Equal("Larguero", named.KindLabel);
+                Assert.Equal("L1", named.Name);
+
+                var unnamed = Assert.Single(entries, e => e.Path.EndsWith("sinNombre" + RackProjectStore.FileExtension));
+                Assert.Equal("sinNombre", unnamed.Name);
+            });
+        }
+
+        [Fact]
+        public void List_Cama_UsesFileNameNotPayload()
+        {
+            InTempDir(dir =>
+            {
+                new RackProjectStore().Save(RackProject.ForCama(new FlowBedConfiguration { LaneDepth = 120.0 }),
+                    Path.Combine(dir, "miCama" + RackProjectStore.FileExtension));
+
+                var entry = Assert.Single(RackDesignLibrary.List(dir));
+                Assert.Equal(RackDesignKind.Cama, entry.Kind);
+                Assert.Equal("Cama de rodamiento", entry.KindLabel);
+                Assert.Equal("miCama", entry.Name); // the FlowBed payload name is not consulted
+            });
+        }
+
+        [Fact]
+        public void List_SelectiveRack_UsesPayloadName()
+        {
+            InTempDir(dir =>
+            {
+                var design = new SelectivePalletDesign { PostId = "P", PalletDepth = 48.0 };
+                design.Bays.Add(new SelectiveBayDesign());
+                new RackProjectStore().Save(
+                    RackProject.ForSelectiveRack(SelectivePalletDesignDocument.From(design, "id-9", "Rack Nueve")),
+                    Path.Combine(dir, "archivoS" + RackProjectStore.FileExtension));
+
+                var entry = Assert.Single(RackDesignLibrary.List(dir));
+                Assert.Equal(RackDesignKind.Selectivo, entry.Kind);
+                Assert.Equal("Selectivo", entry.KindLabel);
+                Assert.Equal("Rack Nueve", entry.Name);
+            });
+        }
+
+        [Fact]
+        public void List_OrdersByModifiedDescending()
+        {
+            InTempDir(dir =>
+            {
+                var store = new RackProjectStore();
+                var older = Path.Combine(dir, "viejo" + RackProjectStore.FileExtension);
+                var newer = Path.Combine(dir, "nuevo" + RackProjectStore.FileExtension);
+                store.Save(RackProject.ForLarguero(new LargueroDesign { BeamProfileId = "BEAM_X" }), older);
+                store.Save(RackProject.ForLarguero(new LargueroDesign { BeamProfileId = "BEAM_X" }), newer);
+
+                var now = DateTime.UtcNow;
+                File.SetLastWriteTimeUtc(older, now.AddHours(-2));
+                File.SetLastWriteTimeUtc(newer, now);
+
+                var entries = RackDesignLibrary.List(dir);
+
+                Assert.Equal(2, entries.Count);
+                Assert.EndsWith("nuevo" + RackProjectStore.FileExtension, entries[0].Path);
+                Assert.EndsWith("viejo" + RackProjectStore.FileExtension, entries[1].Path);
+            });
+        }
+
+        [Fact]
+        public void List_SkipsUnreadableDesignFileIndividually_WithoutFailingTheList()
+        {
+            InTempDir(dir =>
+            {
+                new RackProjectStore().Save(RackProject.ForLarguero(new LargueroDesign { BeamProfileId = "BEAM_X" }),
+                    Path.Combine(dir, "bueno" + RackProjectStore.FileExtension));
+                // A .rackcad.json that fails to load must be skipped individually, not fail the whole listing.
+                File.WriteAllText(Path.Combine(dir, "malo" + RackProjectStore.FileExtension), "{ esto no es json valido");
+
+                var entries = RackDesignLibrary.List(dir);
+
+                var entry = Assert.Single(entries);
+                Assert.EndsWith("bueno" + RackProjectStore.FileExtension, entry.Path);
+            });
+        }
+
+        private static void InTempDir(Action<string> body)
+        {
+            var dir = Path.Combine(Path.GetTempPath(), "RackCadLibChar_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            try
+            {
+                body(dir);
+            }
+            finally
+            {
+                Directory.Delete(dir, true);
+            }
+        }
     }
 }
