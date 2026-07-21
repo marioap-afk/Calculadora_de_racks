@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-14
 title: Controles comunes de UI
 type: architecture
-status: in-progress
+status: integrated
 branch: architecture/ui-controls
 base_branch: main
 priority:

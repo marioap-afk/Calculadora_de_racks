@@ -4,11 +4,12 @@ automation_state:
   branch: architecture/ui-controls
   claim_id: d2a43eb7-c47b-4f58-941f-8248eeca6635
   current_phase: 6
-  state: review-ready
+  state: integrated
   gate: none
   attempts: 0
-  next_action: owner-review-then-serialized-integration
+  next_action: serialized-merge-no-ff-then-safe-cleanup
   last_evidence_commit: cf8ee1faf7cc71849699a39024e4f709ee5b1cd3
+  integration_note: sin-rebase-origin-main-en-de72287-merge-no-ff-en-esta-sesion-ci-verde-run-29867946030-sobre-d8ed898
   review_round: 2
   review_note: ronda-2-corrige-catalogcombo-setoptions-numericfield-borderbrush-provenance-y-rackdialogwindow-appstyles-catch-mas-prueba-de-interaccion-de-botonera-suite-ui-85-85
 autocad_validation:

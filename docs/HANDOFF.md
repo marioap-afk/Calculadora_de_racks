@@ -107,6 +107,21 @@ El **quinto** DTO potencial —`RackFrameProjectDocument` (biblioteca de cabecer
 dueño **aprobó la matriz manual en AutoCAD 2025** (incluidos los escenarios B5/B6/S7) y la **owner-validation**;
 la rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-14** (`architecture/ui-controls`) abre la **pista C de UI** con cinco controles WPF reutilizables en
+`src/RackCad.UI/Controls/`, cada uno con su lógica pura separada de la vista: `SelectionMatrix`
+(+`SelectionMatrixModel`, rejilla de casillas con celdas apagadas y actualización por celda **sin rebuild** por
+clic), `NumericField` (+`NumericFieldValidation`, entrada localizada sobre `LocalizedNumberParser` con rango y
+opcional→auto, que **preserva la procedencia del `BorderBrush` del consumidor** —valor local o binding— en la
+transición válido→error→válido), `CatalogCombo` (+`CatalogComboSelection`, sobre `CatalogOption`/
+`UiSupport.ToOptions`, con sentinela "(auto)"), `PreviewCanvas` (+`PreviewProjection` + `PreviewPalette`:
+proyección mundo→lienzo y paleta congelada **compartidas**, cerrando el hueco que dejaba `PreviewCanvasPainter`) y
+la base `RackDialogWindow` (chrome compartido, barra Aceptar/Cancelar, estado). Crea además `tests/RackCad.UI.Tests`
+(`net8.0-windows`, runner STA propio **sin dependencias nuevas**) con **85 pruebas** y un **job de CI dedicado**
+(`ui-tests`). Es un cambio **confinado a la capa UI**: **no** migra ninguna ventana existente (patrón strangler),
+**no** referencia AutoCAD ni el Plugin, y **no** cambia geometría, BOM, persistencia ni el dibujo. Por eso **no**
+requiere validación en AutoCAD (`requires_autocad: false`) ni owner-validation; la adopción de los controles la
+harán I-15/I-20/I-21/I-22. La rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -163,6 +178,13 @@ del DLL Debug (código `eea1c11`) en AutoCAD 2025 y **aprobó todos los escenari
 **owner-validation** (biblioteca legacy más preservación de un campo desconocido, con DWG/envelope opcional)
 quedó **aprobada** por el dueño (`requires_owner_validation: true`).
 
+I-14 (`architecture/ui-controls`) **no** cambia dibujo, geometría, BOM ni persistencia: crea controles WPF
+reutilizables **sin wirearlos** a ninguna ventana existente (patrón strangler), así que no hay comportamiento ni
+apariencia nuevos que validar. No requiere validación en AutoCAD (`requires_autocad: false`; ROADMAP no la marca
+con ✋) ni owner-validation (`requires_owner_validation: false`). La cobertura se sostiene con las **85 pruebas**
+de `tests/RackCad.UI.Tests` (lógica pura + instanciación STA de los controles) y el CI verde de la rama, incluido
+el nuevo job `ui-tests`. AutoCAD: no ejecutado; no requerido por contrato.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -188,18 +210,53 @@ quedó **aprobada** por el dueño (`requires_owner_validation: true`).
 
 ## 4. Siguiente acción
 
-Con I-08, I-09, I-16, I-10 e **I-11** integradas y limpias, la **pista B del Plugin queda cerrada** (la
-serialización I-09 → I-16 → I-10 está completa) y la **pista A de Application** entrega la persistencia
-uniforme. La pista abierta restante es la **C de UI** (I-14 `architecture/ui-controls` → I-15
-`architecture/editor-shell`). **I-18 (Push Back)** deja de estar bloqueada por I-11, pero **sigue** bloqueada
-por I-15, I-16 y los bloques DWG del dueño. El siguiente paso es abrir una de esas iniciativas respetando
-dependencias y estorbos, o continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
+Con I-08, I-09, I-16, I-10, I-11 e **I-14** integradas y limpias, la **pista B del Plugin** está cerrada (la
+serialización I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme y
+la **pista C de UI** entrega su primer eslabón: los **controles comunes** (I-14) y el proyecto `tests/RackCad.UI.Tests`
+con su gate de CI. El siguiente eslabón natural de la pista C es **I-15 `architecture/editor-shell`** (depende de
+I-08 e I-14, se estorba con I-14 —ya integrada—). **I-18 (Push Back)** sigue bloqueada por I-15, I-16 y los bloques
+DWG del dueño. Están **en curso** (ramas activas en `origin`, aún no integradas) **I-12 `refactor/versionado`** e
+**I-19 `feature/validador-catalogos`**; cuando integren, deberán reconciliarse con lo que I-14 dejó (I-12: la
+centralización de `LangVersion`/`Nullable`, que el nuevo `.csproj` de UI-tests declara localmente; I-19: la entrada
+de I-14 en `docs/initiatives/README.md`). El siguiente paso es abrir I-15 respetando dependencias y estorbos, o
+continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-14 — 2026-07-21:**
+
+- punta de **código** validada por CI: `cf8ee1faf7cc71849699a39024e4f709ee5b1cd3` (commit único de corrección de la
+  ronda 2 de revisión); el commit posterior de la rama es **solo documental** (estado versionado + este cierre); este
+  documento **no inventa** el SHA del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` **no avanzó** desde la base de I-14 (`de72287`, Merge I-11): **sin rebase final**; la rama se integra
+  por `git merge --no-ff` en esta sesión;
+- suite `RackCad.UI.Tests`: **85/85 verdes** (lógica pura de los controles + instanciación STA de las vistas), sin
+  fallos ni omitidas; suite `RackCad.Tests`: **791/791 verdes** (sin regresión: I-14 no toca Domain/Application);
+- build UI Debug: **0 errores y 0 advertencias**; builds Plugin y solución completa Debug: **0 errores**, únicamente
+  las dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre la punta de código `d8ed898` (run `29867946030`): los **cuatro** jobs —Tests
+  (Domain+Application), Build UI, **UI Tests (WPF controls, net8.0-windows)** (nuevo) y Build Plugin without AutoCAD—
+  en `success`; el commit de cierre documental no altera código y recibe su propio CI antes del merge;
+- objetivo entregado: cinco controles WPF reutilizables en `src/RackCad.UI/Controls/` con lógica pura separada de la
+  vista (`SelectionMatrix`+`SelectionMatrixModel`; `NumericField`+`NumericFieldValidation`; `CatalogCombo`+
+  `CatalogComboSelection`; `PreviewCanvas`+`PreviewProjection`+`PreviewPalette`; base `RackDialogWindow`); el proyecto
+  `tests/RackCad.UI.Tests` (`net8.0-windows`, runner STA propio **sin dependencias nuevas**) y su gate de CI `ui-tests`
+  en `windows-latest`;
+- **sin migración de ventanas** (patrón strangler): ninguna ventana existente cambia de comportamiento ni de
+  apariencia; la adopción de los controles la harán I-15/I-20/I-21/I-22;
+- invariantes preservados: **sin** cambios de geometría, recetas BOM, GUID, persistencia ni dibujo; **sin** tocar
+  Domain, Application ni el Plugin (que sigue compilando: UI lo referencia transitivamente); **sin** dependencias
+  NuGet nuevas; dirección de dependencias intacta (UI no referencia AutoCAD; los controles no dependen del Plugin);
+- validación manual: AutoCAD **no ejecutado ni requerido** (`requires_autocad: false`; ROADMAP no marca I-14 con ✋);
+  owner-validation **no requerida** (`requires_owner_validation: false`);
+- alcance: producto en `src/RackCad.UI/Controls/` (10 archivos nuevos), pruebas en `tests/RackCad.UI.Tests/` (proyecto
+  nuevo); modificados `RackCad.sln` (alta del proyecto), `.github/workflows/ci.yml` (job `ui-tests`, **sin tocar** el
+  del Plugin) y `docs/initiatives/README.md`; contrato `docs/initiatives/I-14-ui-controls.md` y estado
+  `docs/automation/state/I-14.yml`; sin cambios en Domain, Application, Plugin, catálogos ni deploy.
 
 **Baseline integrada de I-11 — 2026-07-21:**
 
