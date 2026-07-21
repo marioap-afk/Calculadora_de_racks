@@ -1,30 +1,20 @@
-using System.Globalization;
-using System.Linq;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
-using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
-using RackCad.Plugin.Headers;
-using RackCad.Plugin.Systems;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
     /// <summary>
-    /// AutoCAD command entry points for every rack type. Split into partial files by rack type
-    /// (Cabecera / Dynamic / FlowBed / Selective); this file holds the shared surface: the RACKCAD menu
-    /// dispatcher, the RACKEDITAR round-trip dispatcher, and the cross-type helpers they share.
+    /// The RackCad menu (RACKCAD) and round-trip editor (RACKEDITAR) commands, plus their aliases. Each rack type's
+    /// commands live in its own RackXCommands class; the menu and RACKEDITAR dispatch into those classes' internal
+    /// static draw/edit entry points, and the cross-type helpers live in <see cref="RackCommandSupport"/>.
     /// </summary>
-    public sealed partial class RackFrameCommands
+    public sealed class RackMenuCommands
     {
+        [CommandMethod("RK")]  public void AliasRackCad() => RackCad();                    // menú principal
+        [CommandMethod("RED")] public void AliasRackEditar() => RackEditar();              // RACKEDITAR
+
         /// <summary>Main entry point: opens the menu where the user picks what to design.</summary>
         [CommandMethod("RACKCAD")]
         public void RackCad()
