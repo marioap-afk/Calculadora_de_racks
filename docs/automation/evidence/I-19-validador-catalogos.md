@@ -20,7 +20,7 @@ dotnet test tests/RackCad.Tests/RackCad.Tests.csproj `
 
 - `dotnet build` de `RackCad.Application`: **0 errores, 0 advertencias**.
 - `dotnet test` (suite completa): **842 pruebas, 842 superadas, 0 fallidas, 0 omitidas** (51 nuevas de I-19
-  sobre la línea base de 791 en `de72287`; r1 822, r2 839, r3 841, r4 842).
+  sobre la línea base de 791 en `de72287`; r1 822, r2 839, r3 841, r4 842, r5 842).
 
 ## Diagnóstico del validador sobre el catálogo REAL distribuido
 
@@ -35,11 +35,12 @@ Validación de catálogo: 1 error(es), 2 advertencia(s), 0 informativa(s).
 ```
 
 Manifiesto esperado de `blocks-library.dwg` construido desde el catálogo:
-**90 bloques**, huella `ad1f60636181ec11b9a4ad71173a228a54c7c6fb9b84bc0977a10b9f6e161a3f`.
+**90 bloques**, huella `1a31c1a91f00a27130b5d8778eacc174adec1e818e78722e814174685e30df40`.
 
 > La huella evolucionó por ronda al afinar los parámetros reales por bloque: `540d623b…` (r1, sólo
 > `paramX`/`paramY`) → `0352c75e…` (r2) → `50f8a460…` (r3) → `ad1f6063…` (r4, larguero LATERAL exacto por
-> productor: `PERALTE` en el selectivo/intermedio, **nada** en el in/out; placa LATERAL sin parámetro). El
+> productor: `PERALTE` en el selectivo/intermedio, **nada** en el in/out) → `1a31c1a9…` (r5, la placa LATERAL
+> exige `PERALTE` por el override manual soportado). El
 > número de bloques (90) no cambia.
 
 ### Inventario de parámetros esperados por pieza/vista (catálogo real)
@@ -50,7 +51,7 @@ Verificado por igualdad exacta contra los builders de producción (`CatalogManif
 | Pieza | FRONTAL | LATERAL | PLANTA |
 |---|---|---|---|
 | Poste (`POSTE_OMEGA_…`) | `LONGITUD`,`PERALTE` | `LONGITUD` | `PERALTE` |
-| Placa base (`PLACA_BASE_…`) | `PERALTE` | ∅ | `PERALTE` |
+| Placa base (`PLACA_BASE_…`) | `PERALTE` | `PERALTE` | `PERALTE` |
 | Celosía (`TRAVESANO_…`) | ∅ | `LONGITUD` | `LONGITUD`,`PERALTE` |
 | Larguero selectivo/intermedio (`LARGUERO_ESCALON_CAL14_3_REMACHES`) | `LONGITUD`,`PERALTE` | `PERALTE` | `LONGITUD`,`PERALTE` |
 | Larguero in/out (`LARGUERO_IN_OUT_C6`) | `LONGITUD`,`PERALTE` | ∅ | `LONGITUD`,`PERALTE` |
@@ -66,12 +67,13 @@ Verificado por igualdad exacta contra los builders de producción (`CatalogManif
 | Defensa (`DEFENSA_MONTACARGAS`) | `LONGITUD` | `LONGITUD` | `LONGITUD` |
 | Ménsula (`MENSULA_3_REMACHES_CAL_10`) | ∅ | ∅ | ∅ |
 
-Exactitud por vista (verificada por igualdad): el poste exige `PERALTE` en FRONTAL/PLANTA pero **no** en
-LATERAL; el separador `LONGITUD` en FRONTAL/PLANTA pero **no** en LATERAL; el **larguero selectivo/intermedio
-en LATERAL exige `PERALTE` (nunca `LONGITUD`)**; el **larguero in/out en LATERAL no exige nada**
-(`MakeLoadBeam` no escribe parámetros); la placa en LATERAL no exige nada (el `PERALTE` sólo lo escribe el
-override manual, fuera del flujo estándar); la ménsula y la bota **no** exigen nada (requisitos falsos
-evitados).
+Exactitud por vista (verificada por igualdad, keyed por `PieceId`+`View`+`BlockName`): el poste exige
+`PERALTE` en FRONTAL/PLANTA pero **no** en LATERAL; el separador `LONGITUD` en FRONTAL/PLANTA pero **no** en
+LATERAL; el **larguero selectivo/intermedio en LATERAL exige `PERALTE` (nunca `LONGITUD`)**; el **larguero
+in/out en LATERAL no exige nada** (`MakeLoadBeam` no escribe parámetros); la **placa en LATERAL exige
+`PERALTE`** por el override manual soportado (`LeftBasePlate`/`RightBasePlate.PeralteOverride`, que
+`LateralHeaderLayoutBuilder` escribe), observado con un fixture enfocado; la ménsula y la bota **no** exigen
+nada (requisitos falsos evitados).
 
 ## Correcciones de la revisión (ronda 2)
 
@@ -108,6 +110,17 @@ sola fuente de dominio; no se reintrodujeron literales.
 | 2. Guardia por igualdad | La guardia agrupa lo escrito por los builders por `PieceId`+`View`+`BlockName` y compara **por igualdad** contra `ExpectedParameters(...)` **y** contra la entrada del manifiesto, detectando parámetros faltantes **y** de más. Fixtures enfocados activan los caminos condicionales (p. ej. el tope). | `Guard_ObservedParameters_ExactlyEqualExpectedAndManifest` |
 | 3. Cobertura verificable | Se sustituye `covered.Count >= 12` por una **matriz explícita** de cobertura por `PieceId`+`View`+`Parámetro` (13 familias en sus vistas aplicables); la prueba falla si una familia deja de observarse — las familias de seguridad ya no se colapsan bajo `Safety/<vista>/LONGITUD`. | `Guard_CoverageMatrix_ObservesEveryFamilyViewWithExactParameters` |
 | 4. Validación de entrada del manifiesto | Una instancia parametrizada con `BlockName` vacío o **sin entrada** en el manifiesto hace fallar la guardia (no se omite cuando `TryGetValue` devuelve `false`). | `Guard_ObservedParameters_ExactlyEqualExpectedAndManifest` |
+
+## Correcciones de la revisión (ronda 5)
+
+| Defecto | Corrección | Prueba |
+|---|---|---|
+| 1. Override real de la placa LATERAL | El manifiesto **exige `PERALTE`** en la placa LATERAL: es un camino de producción soportado — `LateralHeaderLayoutBuilder` lo escribe cuando `LeftBasePlate`/`RightBasePlate.PeralteOverride` es positivo. Fixture enfocado con override que corre el builder real y observa `PERALTE`; sin tocar el builder ni la regla. | `Guard_*` (fixture `HeaderInstancesWithPlateOverride`), fila `(placa, LATERAL, PERALTE)` de la matriz |
+| 2. Agrupación por triple exacto | La observación de la guardia se **key-ea por `(PieceId, View, BlockName)`** (la r4 lo afirmaba pero el código agrupaba por `PieceId`+`View`); cada triple compara por igualdad contra `ExpectedParameters(...)` **y** la entrada exacta del manifiesto; no se acumulan varios `BlockName` bajo una entrada. Instancia parametrizada con `BlockName` vacío o sin entrada sigue fallando. | `Guard_ObservedParameters_ExactlyEqualExpectedAndManifest_PerTriple` |
+| 3. Matriz de cobertura completa | Añadidos `GUIA_ENTRADA`+`LATERAL`+`LONGITUD` y la placa LATERAL con `PERALTE`; la matriz se revisa en **ambas direcciones** (toda fila declarada se observa **y** todo caso observado con parámetro está declarado). Casos vacíos relevantes declarados explícitamente (in/out LATERAL en la matriz; separador LATERAL, in/out LATERAL, ménsulas y botas en las regresiones). | `Guard_CoverageMatrix_MatchesObservedInBothDirections`, `Manifest_DoesNotImposeFalseRequirements` |
+
+La huella esperada cambió a `1a31c1a9…` (bloques: 90). El intento de corrección en el estado versionado sube a
+`attempts: 4`.
 
 Lectura:
 

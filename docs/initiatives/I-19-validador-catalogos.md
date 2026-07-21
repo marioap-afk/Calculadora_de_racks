@@ -180,7 +180,7 @@ Evidencia reproducible y verbatim en
 
 - **Build**: `RackCad.Application` con 0 errores / 0 advertencias.
 - **Pruebas**: suite completa **842/842** verde (51 nuevas sobre la línea base 791 en `de72287`; r1 822,
-  r2 839, r3 841, r4 842).
+  r2 839, r3 841, r4 842, r5 842).
 
 ### Ronda 2 — correcciones de la revisión (2026-07-21)
 
@@ -239,8 +239,25 @@ de los builders). Sin nuevos literales (nombres siguen en el dominio). La huella
 
 Ronda 4: sólo se editaron `CatalogBlockParameters` (subtipo in/out; larguero/placa LATERAL exactos) y se
 reescribió `CatalogManifestGuardTests` como comparación exacta + matriz de cobertura. Sin nuevos literales.
-La huella esperada cambió a `ad1f6063…` (bloques: 90). El intento de corrección en el estado versionado sube
-a `attempts: 3`.
+La huella esperada cambió a `ad1f6063…` (bloques: 90).
+
+### Ronda 5 — correcciones de la revisión (2026-07-21)
+
+1. **Override real de la placa LATERAL**: el manifiesto exige `PERALTE` en la placa LATERAL (camino de
+   producción soportado — `LateralHeaderLayoutBuilder` lo escribe cuando `LeftBasePlate`/`RightBasePlate.
+   PeralteOverride` es positivo). Fixture enfocado con override que corre el builder real y observa `PERALTE`;
+   sin tocar el builder ni la regla de producto.
+2. **Agrupación por triple exacto**: la guardia se key-ea por `(PieceId, View, BlockName)` (la r4 lo afirmaba
+   pero el código agrupaba por `PieceId`+`View`); cada triple compara por igualdad contra
+   `ExpectedParameters(...)` **y** la entrada exacta del manifiesto; sin acumular varios `BlockName` bajo una
+   entrada; `BlockName` vacío o sin entrada sigue fallando.
+3. **Matriz de cobertura completa**: añadidos `GUIA_ENTRADA`+`LATERAL` y la placa LATERAL con `PERALTE`;
+   revisión en **ambas direcciones** (declarado⇒observado y observado-con-parámetro⇒declarado); casos vacíos
+   relevantes declarados explícitamente.
+
+Ronda 5: se editó `CatalogBlockParameters` (placa `PERALTE` en las tres vistas) y `CatalogManifestGuardTests`
+(triple keying + fixture de override + matriz bidireccional). Sin nuevos literales. La huella esperada cambió a
+`1a31c1a9…` (bloques: 90). El intento de corrección en el estado versionado sube a `attempts: 4`.
 - **Categorías cubiertas** con prueba positiva y negativa (matriz en la evidencia): ids duplicados,
   referencias/relaciones inválidas, bloques/vistas faltantes, filas descartadas por rol y manifiesto,
   más modo estricto y el paso extremo a extremo por la costura del proveedor.
