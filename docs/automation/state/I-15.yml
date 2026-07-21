@@ -7,11 +7,13 @@ automation_state:
   state: review-ready
   gate: autocad
   attempts: 0
-  next_action: owner-validacion-autocad-del-path-de-insercion-del-menu-y-biblioteca
-  last_evidence_commit: 08564497a91eea3de56dff26e7d106e1de123e3c
+  review_round: 2
+  review_note: ronda-2-corrige-el-alcance-las-4-ventanas-ricas-adoptan-el-shell-catalogo-identidad-recompute-insercion-getters-sobre-la-sesion-sin-migrar-estado-interno-i20-i21-pruebas-sta-de-adopcion-suite-ui-135
+  next_action: owner-validacion-autocad-del-menu-biblioteca-y-round-trip-de-los-editores-adoptados
+  last_evidence_commit: 3126d3ea4a5dab439df05cce9cb431590a3fb38f
 autocad_validation:
   status: pending
-  note: menu-y-biblioteca-tocan-rackmenucommands-rackcad-mismos-draw-mismos-argumentos-el-dueno-valida-los-cinco-sistemas-e-i11
+  note: menu-biblioteca-y-comandos-directos-rackselectivo-rackdinamico-rackcama-rackeditar-toman-identidad-e-insercion-de-la-sesion-mismos-draw-mismos-argumentos-el-dueno-valida-los-cinco-sistemas-round-trip-e-i11
 owner_validation:
   status: pending
   note: confirmar-etiquetas-orden-y-flujos-del-menu-y-biblioteca-identicos
