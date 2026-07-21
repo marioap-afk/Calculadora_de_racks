@@ -12,9 +12,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>RACKDUPLICAR: COPY-style duplication of a rack — base point + repeated destination points, each copy
-    /// an INDEPENDENT rack (fresh GUID + numbered "- copia" name).</summary>
-    public sealed partial class RackFrameCommands
+    /// an INDEPENDENT rack (fresh GUID + numbered "- copia" name). Plus its short alias.</summary>
+    public sealed class RackDuplicarCommands
     {
+        [CommandMethod("RD")]  public void AliasRackDuplicar() => RackDuplicar();          // RACKDUPLICAR
+
         /// <summary>
         /// Duplicate a rack like AutoCAD's COPY: pick the rack, pick a BASE point, then click destination points —
         /// each click places an independent copy (its own GUID and name, so RACKEDITAR touches only that copy).
