@@ -1,5 +1,6 @@
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
+using RackCad.Plugin.KindHandlers;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -83,24 +84,16 @@ namespace RackCad.Plugin
                     return;
                 }
 
-                // Dispatch by rack type — the same round-trip serves selective, dynamic (and later cabecera/cama).
-                switch (embed.Kind)
+                // Dispatch by rack type via the Plugin's kind-handler registry (I-10). The same round-trip serves
+                // selective, dynamic, cabecera and cama; a kind with no registered handler keeps the historical
+                // visible error (the four embedded kinds are always registered, so real data never hits it).
+                if (KindHandlerRegistry.Default.TryGet(embed.Kind, out var handler))
                 {
-                    case RackEmbedDocument.KindSelective:
-                        RackSelectivoCommands.EditSelective(document, blockId, embed);
-                        break;
-                    case RackEmbedDocument.KindDynamic:
-                        RackDinamicoCommands.EditDynamic(document, blockId, embed);
-                        break;
-                    case RackEmbedDocument.KindCabecera:
-                        RackCabeceraCommands.EditCabecera(document, blockId, embed);
-                        break;
-                    case RackEmbedDocument.KindCama:
-                        RackCamaCommands.EditCama(document, blockId, embed);
-                        break;
-                    default:
-                        editor.WriteMessage("\nRackCad: tipo de rack no reconocido (" + embed.Kind + ").");
-                        break;
+                    handler.Edit(document, blockId, embed);
+                }
+                else
+                {
+                    editor.WriteMessage("\nRackCad: tipo de rack no reconocido (" + embed.Kind + ").");
                 }
             }
             catch (System.Exception ex)

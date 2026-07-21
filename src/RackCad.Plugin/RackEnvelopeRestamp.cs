@@ -1,5 +1,6 @@
 using System;
 using RackCad.Application.Persistence;
+using RackCad.Plugin.KindHandlers;
 
 namespace RackCad.Plugin
 {
@@ -24,9 +25,11 @@ namespace RackCad.Plugin
             return store.Serialize(embed);
         }
 
-        /// <summary>Re-stamp the identity the kind-specific design carries. Dynamic and cama designs hold no display
-        /// identity of their own (their editors take the envelope's name). Best effort: an unreadable inner design is
-        /// returned untouched — the envelope-only restamp still applies.</summary>
+        /// <summary>Re-stamp the identity the kind-specific design carries, dispatching by kind via the kind-handler
+        /// registry. Dynamic and cama designs hold no display identity of their own (their editors take the
+        /// envelope's name), so their handlers are no-ops. The lookup is case-INSENSITIVE, as this consumer always
+        /// was. Best effort: a kind with no handler, or an unreadable inner design, is returned untouched — the
+        /// envelope-only restamp still applies.</summary>
         private static string RestampDesign(string kind, string designJson, string newId, string copyName)
         {
             if (string.IsNullOrEmpty(designJson))
@@ -34,29 +37,14 @@ namespace RackCad.Plugin
                 return designJson;
             }
 
+            if (!KindHandlerRegistry.Default.TryGetIgnoreCase(kind, out var handler))
+            {
+                return designJson;
+            }
+
             try
             {
-                if (string.Equals(kind, RackEmbedDocument.KindSelective, StringComparison.OrdinalIgnoreCase))
-                {
-                    var store = new SelectivePalletDesignStore();
-                    var design = store.Deserialize(designJson);
-                    design.Id = newId;
-                    design.Name = copyName;
-                    return store.Serialize(design);
-                }
-
-                if (string.Equals(kind, RackEmbedDocument.KindCabecera, StringComparison.OrdinalIgnoreCase))
-                {
-                    var store = new RackProjectStore();
-                    var project = store.Deserialize(designJson);
-                    if (project?.Header == null)
-                    {
-                        return designJson;
-                    }
-
-                    project.Header.Name = copyName;
-                    return store.Serialize(project);
-                }
+                return handler.RestampDesign(designJson, newId, copyName);
             }
             catch
             {
