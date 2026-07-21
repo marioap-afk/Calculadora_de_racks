@@ -4,17 +4,19 @@ automation_state:
   branch: feature/validador-catalogos
   claim_id: ec179c03-6007-4614-82c1-be58cd8e4314
   current_phase: 5
-  state: review-ready
-  gate: owner-validation
+  state: integration-ready
+  gate: integration
   attempts: 4
-  next_action: owner-revisa-el-diagnostico-y-la-integracion-serializada-manual
+  next_action: rebase-sobre-main-vigente-esperar-ci-verde-y-luego-integracion-serializada-manual
   last_evidence_commit: 91b518a8af0c34dc2901aaa9d7d289564d18dcf9
 autocad_validation:
   status: not-applicable
   note: sin-cambios-de-dibujo-geometria-bloques-ni-persistencia
 owner_validation:
-  status: pending
-  note: revisar-el-diagnostico-del-validador-sobre-el-catalogo-real-y-confirmar-que-catalogos-y-dwg-no-cambiaron
+  status: approved
+  validator: owner
+  date: 2026-07-21
+  note: owner-acepta-el-baseline-1-error-troquel_tope-mas-2-advertencias-tarima_generica-y-confirma-que-assets-catalogs-y-blocks-library-dwg-permanecen-intactos
 execution_context:
   mode: manual-git-only
   worktree: Calculadora de racks-I-19-validador-catalogos

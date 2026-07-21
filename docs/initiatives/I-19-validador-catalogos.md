@@ -151,6 +151,12 @@ AutoCAD: **no aplica** (sin cambios de dibujo, geometría, bloques ni persistenc
 dueño consiste en revisar el diagnóstico del validador sobre el catálogo real y confirmar que ni los
 catálogos ni `blocks-library.dwg` fueron modificados por la iniciativa.
 
+**Owner-validation APROBADA (2026-07-21):** el dueño aceptó como baseline conocido el diagnóstico del
+catálogo real (1 error `DUPLICATE_ID` en `TROQUEL_TOPE` + 2 advertencias `UNRESOLVED_BLOCK_PIECE` de
+`TARIMA_GENERICA`) y confirmó que `assets/catalogs/*` y `blocks-library.dwg` permanecen intactos. Estado:
+**integration-ready**. Falta sólo la integración serializada manual (rebase sobre `main` vigente + CI verde +
+merge), fuera del alcance de esta corrida.
+
 ## 11. Criterios de aceptación
 
 - El validador reporta, con severidad, cada una de las cinco categorías, con pruebas positivas y negativas.

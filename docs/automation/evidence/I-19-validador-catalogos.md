@@ -11,9 +11,9 @@ Desde el worktree de la iniciativa, con el SDK de usuario (`%LOCALAPPDATA%\Micro
 dotnet build src/RackCad.Application/RackCad.Application.csproj -v:minimal   # 0 errores, 0 advertencias
 dotnet test  tests/RackCad.Tests/RackCad.Tests.csproj -v:minimal            # suite completa verde
 
-# Sólo las pruebas de I-19:
+# Sólo las pruebas de I-19 (las cinco clases):
 dotnet test tests/RackCad.Tests/RackCad.Tests.csproj `
-  --filter "FullyQualifiedName~CatalogValidatorTests|FullyQualifiedName~CatalogBlockManifestTests|FullyQualifiedName~ShippedCatalogIntegrityTests"
+  --filter "FullyQualifiedName~CatalogValidatorTests|FullyQualifiedName~CatalogBlockManifestTests|FullyQualifiedName~CatalogBlockParametersTests|FullyQualifiedName~CatalogManifestGuardTests|FullyQualifiedName~ShippedCatalogIntegrityTests"
 ```
 
 ## Resultado de la suite (2026-07-21)
