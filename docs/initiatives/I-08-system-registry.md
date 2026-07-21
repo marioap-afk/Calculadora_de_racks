@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-08
 title: Registro de sistemas en Application (SystemRegistry)
 type: architecture
-status: claimed
+status: completed
 branch: architecture/system-registry
 base_branch: main
 priority:
@@ -189,7 +189,8 @@ un handler del Plugin, catálogos o geometría— obliga a **detenerse** (§12).
 
 ## 8. Fases
 
-> Fases **de la iniciativa** (implementación futura). Esta sesión ejecuta únicamente la F0.
+> Fases **de la iniciativa**. Todas ejecutadas en la rama (evidencia en §14); la integración es
+> sesión aparte del dueño.
 
 - **F0 (esta sesión)**: auditoría de estado + reclamo atómico + contrato publicado. **Sin código.**
 - **F1 — Caracterización ANTES del refactor** (red de seguridad): tests golden/round-trip que fijan el
@@ -205,6 +206,11 @@ un handler del Plugin, catálogos o geometría— obliga a **detenerse** (§12).
   7. reglas actuales de validación por tipo (`IsUsable*`, incluidos los criterios laxos);
   8. etiquetas y **precedencia de nombres** de `RackDesignLibrary`;
   9. omisión **individual** de archivos ilegibles (no aborta el listado).
+- **F1.1 — Caracterización previa complementaria**: comportamiento actual de un `Kind` **numérico no
+  definido** (p. ej. `999`): con cabecera válida → ruta histórica de cabecera (`Selective`); sin
+  payload usable → error degenerado de cabecera; re-save → `"Kind":"Selective"`. Distinto del string
+  desconocido (`"NoSuchKind"` → "no es un JSON valido"). El registro debe preservar esta ruta (usar
+  `TryGet`, nunca `Get((RackSystemKind)999)`).
 - **F2**: descriptor + `SystemRegistry` con los cinco Kinds y sus metadatos (nombre persistido,
   etiqueta, predicado "usable", selector de payload) + tests unitarios del registro. Sin tocar
   consumidores todavía.
@@ -213,8 +219,9 @@ un handler del Plugin, catálogos o geometría— obliga a **detenerse** (§12).
 - **F4**: `RackDesignLibrary` deriva tipo/etiqueta del registro; **se elimina `RackDesignKind`**;
   migración mínima de `RackDesignLibraryEntry` y `RackMainMenuWindow` a `RackSystemKind`/descriptor
   (etiquetas visibles intactas); `RackDesignLibraryTests` verde; build UI Debug con 0 errores.
-- **F5**: cierre de la sesión de implementación (push de rama). La integración es sesión aparte,
-  serializada y autorizada por el dueño (WORKFLOW §4.5).
+- **F5**: auditoría final de la implementación completa, higiene, revisión de la superficie de API y
+  cierre del contrato. La integración es sesión aparte, serializada y autorizada por el dueño
+  (WORKFLOW §4.5).
 
 Cada fase termina con evidencia revisable (diff mecánico + tests verdes citados en el cuerpo del
 commit).
@@ -234,13 +241,22 @@ commit).
 
 ## 10. Validación manual
 
-- **No requiere AutoCAD** (I-08 no cambia el dibujo; sin ✋ en el ROADMAP). La equivalencia de
-  persistencia queda cubierta por los round-trip/golden automatizados.
-- `requires_owner_validation: true`: por tratarse de **persistencia (área caliente)**, antes de
-  integrar el dueño confirma la revisión del diff del registro y de la equivalencia JSON por Kind.
-- Checklist sugerido del dueño (opcional, no bloquea la implementación): (1) abrir desde la biblioteca
-  un diseño guardado de cada Kind y verificar que carga con su etiqueta correcta; (2) confirmar que un
-  archivo legacy **sin `kind`** sigue cargando como cabecera.
+Dos conceptos distintos:
+
+- **AutoCAD: NO requerido** (`requires_autocad: false`; sin ✋ en el ROADMAP). I-08 no cambia dibujo,
+  BOM ni edición; la equivalencia de persistencia y de etiquetas queda cubierta por los round-trip/
+  golden y los tests del registro. **No se declara AutoCAD validado.**
+- **Owner-validation: SÍ requerida** (`requires_owner_validation: true`). Por tratarse de
+  **persistencia (área caliente)** y de un cambio de UI, antes de integrar el dueño revisa el diff y,
+  como comprobación de confianza (no un gate de AutoCAD), recorre este checklist breve, limitado al
+  comportamiento afectado por I-08:
+  1. abrir la biblioteca de diseños;
+  2. confirmar las cinco etiquetas exactas (`Cabecera`, `Sistema dinámico`, `Selectivo`,
+     `Cama de rodamiento`, `Larguero`);
+  3. abrir un diseño guardado de cada tipo disponible;
+  4. confirmar que se abre el mismo editor correcto que antes;
+  5. abrir una cabecera legacy **sin `Kind`** y confirmar que carga como cabecera;
+  6. confirmar que no cambió dibujo, BOM ni la edición posterior.
 
 ## 11. Criterios de aceptación
 
@@ -274,24 +290,46 @@ commit).
 
 ## 13. Estado versionado y entrega del Pull Request
 
-Estado canónico del ejecutor: `docs/automation/state/I-08.yml` (se crea al **iniciar la
-implementación**; no en esta fase de contrato). Campos inmutables copiados del reclamo:
-`initiative: I-08`, `branch: architecture/system-registry`,
-`claim_id: 6c4ec565-5ce7-4ff9-88a0-38b007cedcf2`. `state` esperado al abrir implementación:
-`claimed` → `implementing`. No hay Pull Request abierto conocido; si se abre, será **draft** contra
-`main`, uno solo, sin auto-merge. La incapacidad de actualizar el PR no bloquea commit, push ni el
-estado versionado. **Merge automático prohibido.**
+Ejecución **dirigida** (no por el ejecutor nocturno): no se creó `docs/automation/state/I-08.yml` ni se
+abrió Pull Request. Identidad del reclamo: `initiative: I-08`, `branch: architecture/system-registry`,
+`claim_id: 6c4ec565-5ce7-4ff9-88a0-38b007cedcf2`. Si en el cierre se adopta el flujo de automatización,
+el estado versionado se crea entonces con `state: completed`; si se abre PR, será **draft** contra
+`main`, uno solo, sin auto-merge. **Merge automático prohibido.**
 
 ## 14. Evidencia final
 
-De **esta** sesión (F0):
+**Implementación completa (F0–F5), aún sin integrar.** El trabajo vive solo en la rama
+`architecture/system-registry`; `main` **no fue modificada**. Claim-Id
+`6c4ec565-5ce7-4ff9-88a0-38b007cedcf2`. Worktree
+`D:\Documentos\Codex\Calculadora de racks-I-08-system-registry`.
 
-- Commits en la rama: reclamo vacío `24cfc22` + el contrato + su corrección documental (que endurece
-  la **eliminación total** de `RackDesignKind` y fija la caracterización previa de F1).
-- Push: rama `architecture/system-registry` publicada (primer push aceptado = reclamo) + push del
-  contrato y de su corrección. Sin `--force`.
-- Sin cambios en `src/`, `tests/`, `assets/`, `deploy/` ni `.github/`.
-- `main` intacta: `origin/main` = `08491523233ae5f483f904a025bbed0c2845e3a9`; CI verde sobre ese SHA.
-- Claim-Id: `6c4ec565-5ce7-4ff9-88a0-38b007cedcf2`.
-- Worktree: `D:\Documentos\Codex\Calculadora de racks-I-08-system-registry`.
-- Implementación **NO iniciada**; sin merge ni auto-merge.
+- **F0–F1 / F1.1**: reclamo atómico, contrato (y su corrección) y la caracterización previa que congela
+  el comportamiento actual — wire format PascalCase (`SchemaVersion`, `Kind`, `Header`, `DynamicSystem`,
+  `SelectiveRack`, `FlowBed`, `Larguero`), schema `2.0`, cinco nombres de enum, nulos escritos, legacy
+  sin `Kind`, reconstrucción física, `kind` sin payload, degenerado, versión futura, string desconocido,
+  `Kind: 999`, reglas laxas de cama/larguero, etiquetas/precedencia/orden/tolerancia.
+- **F2**: `SystemDescriptor` + `SystemRegistry` (puro, sin reflexión ni escaneo) con los cinco Kinds en
+  orden de declaración y sus etiquetas verbatim; `SystemRegistry.Default` como única fuente.
+- **F3**: `RackProjectStore` delega escritura/construcción/validación en el descriptor del registro;
+  mueren el `if/else` de `Serialize` y los `switch` de `BuildProject`/`ValidateProject`; un `Kind`
+  desconocido conserva el fallback histórico a cabecera (`TryGet`, nunca `Get((RackSystemKind)999)`);
+  `RequirePayload` y el sustantivo de validación preservados.
+- **F4**: `RackDesignLibrary` deriva Kind (`RackSystemKind`) y etiqueta del descriptor; **`RackDesignKind`
+  y `MapKind` eliminados por completo** (búsqueda global = cero); `RackMainMenuWindow` compara
+  `RackSystemKind`; un `Kind` no registrado se omite (tolerante). Sin `EditorModuleRegistry` ni shell.
+- **F5**: auditoría funcional y estática (el registro tiene los cinco Kinds; sin `switch`/cadena por
+  `RackSystemKind` en el store ni en la biblioteca; sin segundo registro manual; Plugin,
+  `RackEmbedDocument`, `RackListBuilder`, DrawServices, geometría, BOM y catálogos fuera del cambio),
+  revisión de la superficie de API (sin cambios de visibilidad: reducir los seams inyectables exigiría
+  un `InternalsVisibleTo` inexistente) y este cierre del contrato.
+
+**Equivalencia verificada (método):** suite `RackCad.Tests`, build Debug de UI (sin advertencias
+propias) y build Debug del Plugin (sin errores; solo los `MSB3277` conocidos de AutoCAD) y CI de la
+rama (Tests + Build UI + Build Plugin without AutoCAD) en **verde** sobre el commit final; toda la
+caracterización F1–F1.1 permanece verde tras el refactor; el diff acota los cambios de producto a
+`RackProjectStore`, `RackDesignLibrary`, `RackMainMenuWindow` y los tipos nuevos del registro.
+
+**Pendiente (fuera de esta fase):** la integración es operación manual del dueño — rebase final sobre
+`main`, CI de `main`, owner-validation (§10; AutoCAD no requerido), actualización de `HANDOFF.md`
+§8–12 y `ROADMAP.md`, y merge `--no-ff`. `status: completed` **no** significa integrada. Los conteos de
+pruebas y los hashes canónicos viven en `docs/HANDOFF.md` (§12), no aquí.
