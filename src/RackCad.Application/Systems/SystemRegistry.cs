@@ -8,12 +8,11 @@ namespace RackCad.Application.Systems
     /// Single source of truth for the set of rack systems the Application knows about (initiative I-08). It is built once
     /// from an explicit, ordered set of <see cref="SystemDescriptor"/>: it rejects duplicate kinds, keeps a stable
     /// enumeration order, resolves a descriptor by <see cref="RackSystemKind"/>, and fails explicitly for an unregistered
-    /// kind. The <see cref="Default"/> instance lists the five kinds that exist today, in <see cref="RackSystemKind"/>
-    /// declaration order. Pure Application: no reflection, no assembly scanning, no AutoCAD/WPF, and no per-consumer
-    /// migration logic yet — RackProjectStore, validation and the design library keep their current code until later
-    /// phases wire them to this registry.
+    /// kind. The <see cref="Default"/> instance (defined in the companion partial file) lists the five kinds that exist
+    /// today, in <see cref="RackSystemKind"/> declaration order, each carrying the persistence operations the store
+    /// delegates to. These generic mechanics use no reflection, no assembly scanning and no AutoCAD/WPF.
     /// </summary>
-    public sealed class SystemRegistry
+    public sealed partial class SystemRegistry
     {
         private readonly IReadOnlyList<SystemDescriptor> descriptors;
         private readonly Dictionary<RackSystemKind, SystemDescriptor> byKind;
@@ -67,19 +66,5 @@ namespace RackCad.Application.Systems
         /// <summary>Non-throwing lookup: true and the descriptor when <paramref name="kind"/> is registered.</summary>
         public bool TryGet(RackSystemKind kind, out SystemDescriptor descriptor)
             => byKind.TryGetValue(kind, out descriptor);
-
-        /// <summary>
-        /// The registry for the five system kinds that exist today, in <see cref="RackSystemKind"/> declaration order.
-        /// The labels reproduce the current design-library strings verbatim (see the F1 characterization); later phases
-        /// point the design library at these instead of the RackDesignKind switch.
-        /// </summary>
-        public static SystemRegistry Default { get; } = new SystemRegistry(new[]
-        {
-            new SystemDescriptor(RackSystemKind.Selective, "Cabecera"),
-            new SystemDescriptor(RackSystemKind.PalletFlow, "Sistema dinámico"),
-            new SystemDescriptor(RackSystemKind.SelectiveRack, "Selectivo"),
-            new SystemDescriptor(RackSystemKind.Cama, "Cama de rodamiento"),
-            new SystemDescriptor(RackSystemKind.Larguero, "Larguero"),
-        });
     }
 }

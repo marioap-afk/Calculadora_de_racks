@@ -290,5 +290,90 @@ namespace RackCad.Tests
             Assert.False(RackDesignValidation.IsUsableDynamic(
                 new DynamicRackDesign { Pallet = null, PalletsDeep = 4 }, system));
         }
+
+        // --- F3: descriptor operations + proof the store dispatches via the registry (no hard-coded Kind switch) ---
+
+        [Theory]
+        [InlineData(RackSystemKind.Selective, "la cabecera")]
+        [InlineData(RackSystemKind.PalletFlow, "el sistema dinámico")]
+        [InlineData(RackSystemKind.SelectiveRack, "el rack selectivo")]
+        [InlineData(RackSystemKind.Cama, "la cama")]
+        [InlineData(RackSystemKind.Larguero, "el larguero")]
+        public void DefaultDescriptor_SupportsPersistence_WithExactValidationNoun(RackSystemKind kind, string expectedNoun)
+        {
+            var descriptor = SystemRegistry.Default.Get(kind);
+            Assert.True(descriptor.SupportsPersistence);
+            Assert.Equal(expectedNoun, descriptor.ValidationNoun); // distinct from LibraryLabel
+        }
+
+        // Each payload-carrying default descriptor can write its payload, build the project back, and validate it.
+        [Theory]
+        [InlineData(RackSystemKind.PalletFlow)]
+        [InlineData(RackSystemKind.SelectiveRack)]
+        [InlineData(RackSystemKind.Cama)]
+        [InlineData(RackSystemKind.Larguero)]
+        public void DefaultDescriptor_PayloadKinds_WriteBuildValidate(RackSystemKind kind)
+        {
+            var descriptor = SystemRegistry.Default.Get(kind);
+            var project = ProjectFor(kind);
+
+            var document = new RackProjectDocument { Kind = kind };
+            Assert.True(descriptor.TryWritePayload(project, document)); // writes its own payload slot
+
+            var rebuilt = descriptor.Build(document, new BracingPanelMemberBuilder());
+            Assert.Equal(kind, rebuilt.Kind);
+            Assert.True(descriptor.IsUsable(rebuilt));
+        }
+
+        // The Selective (cabecera) descriptor defers its write to the store's shared header fallback, but still builds and
+        // validates the header (rebuilding derived members).
+        [Fact]
+        public void DefaultDescriptor_Selective_DefersWrite_ButBuildsAndValidatesTheHeader()
+        {
+            var descriptor = SystemRegistry.Default.Get(RackSystemKind.Selective);
+            var project = ProjectFor(RackSystemKind.Selective);
+
+            Assert.False(descriptor.TryWritePayload(project, new RackProjectDocument { Kind = RackSystemKind.Selective }));
+
+            var document = new RackProjectDocument
+            {
+                Kind = RackSystemKind.Selective,
+                Header = RackFrameProjectDocument.FromConfiguration(project.Header),
+            };
+            var rebuilt = descriptor.Build(document, new BracingPanelMemberBuilder());
+            Assert.Equal(RackSystemKind.Selective, rebuilt.Kind);
+            Assert.NotEmpty(rebuilt.Header.Members); // members rebuilt during Build
+            Assert.True(descriptor.IsUsable(rebuilt));
+        }
+
+        // No multi-case RackSystemKind dispatch remains in RackProjectStore: removing a kind from the registry changes the
+        // outcome, which a hard-coded switch could not do.
+        [Fact]
+        public void RackProjectStore_DispatchesViaRegistry_NotAHardCodedKindSwitch()
+        {
+            var larguero = new LargueroDesign { BeamProfileId = "BEAM_X", Name = "L" };
+
+            // Default registry: the larguero payload is written and the discriminator is "Larguero".
+            using (var defaultDoc = JsonDocument.Parse(new RackProjectStore().Serialize(RackProject.ForLarguero(larguero))))
+            {
+                Assert.Equal("Larguero", defaultDoc.RootElement.GetProperty("Kind").GetString());
+            }
+
+            // Same store code, a registry WITHOUT Larguero: it falls back to the header/Selective path instead of writing
+            // a larguero payload — proving the dispatch is registry-driven.
+            var withoutLarguero = new SystemRegistry(
+                SystemRegistry.Default.Descriptors.Where(d => d.Kind != RackSystemKind.Larguero));
+            using (var fallbackDoc = JsonDocument.Parse(new RackProjectStore(withoutLarguero).Serialize(RackProject.ForLarguero(larguero))))
+            {
+                Assert.Equal("Selective", fallbackDoc.RootElement.GetProperty("Kind").GetString());
+                Assert.Equal(JsonValueKind.Null, fallbackDoc.RootElement.GetProperty("Larguero").ValueKind);
+            }
+
+            // Build side: a Larguero wrapper on that registry builds via the header fallback and fails with the degenerate
+            // "cabecera" message, not the "larguero" payload message.
+            var ex = Assert.Throws<InvalidOperationException>(() =>
+                new RackProjectStore(withoutLarguero).Deserialize("{\"schemaVersion\":\"2.0\",\"kind\":\"Larguero\"}"));
+            Assert.Contains("cabecera", ex.Message);
+        }
     }
 }
