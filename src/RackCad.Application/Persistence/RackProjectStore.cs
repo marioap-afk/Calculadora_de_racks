@@ -73,15 +73,21 @@ namespace RackCad.Application.Persistence
                 return;
             }
 
+            // Preserve the wrapper's unknown fields AND its schema version — never DOWNGRADE a newer same-major minor a
+            // future build wrote (I-11). The known payload slots are typed properties (never extension data), so this
+            // never resurrects an inactive known payload.
+            document.SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source.SchemaVersion, RackProjectDocument.CurrentSchemaVersion);
             document.ExtensionData = source.ExtensionData;
 
-            if (document.FlowBed != null && source.FlowBed != null && document.FlowBed.ExtensionData == null)
+            if (document.FlowBed != null && source.FlowBed != null)
             {
+                document.FlowBed.SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source.FlowBed.SchemaVersion, FlowBedDocument.CurrentSchemaVersion);
                 document.FlowBed.ExtensionData = source.FlowBed.ExtensionData;
             }
 
-            if (document.Larguero != null && source.Larguero != null && document.Larguero.ExtensionData == null)
+            if (document.Larguero != null && source.Larguero != null)
             {
+                document.Larguero.SchemaVersion = SchemaVersionPolicy.ResolveWriteVersion(source.Larguero.SchemaVersion, LargueroDocument.CurrentSchemaVersion);
                 document.Larguero.ExtensionData = source.Larguero.ExtensionData;
             }
         }

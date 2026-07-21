@@ -83,14 +83,31 @@ namespace RackCad.Application.Persistence
                 return null;
             }
 
+            RackEmbedDocument document;
             try
             {
-                return JsonSerializer.Deserialize<RackEmbedDocument>(json, Options);
+                document = JsonSerializer.Deserialize<RackEmbedDocument>(json, Options);
             }
             catch (JsonException)
             {
                 return null;
             }
+
+            if (document == null)
+            {
+                return null;
+            }
+
+            // Tolerant schema gate: a block written by a newer MAJOR is skipped (null), NEVER thrown — a single
+            // future/foreign block must not abort the drawing-wide envelope scan (RackBlockFinder). Legacy (no version)
+            // and any same-major version stay readable; the forward-compatible additive fields are preserved as extension
+            // data. The library stores use the throwing SchemaGuard instead, where a clear message is wanted.
+            if (!SchemaVersionPolicy.IsReadable(document.SchemaVersion, RackEmbedDocument.CurrentSchemaVersion))
+            {
+                return null;
+            }
+
+            return document;
         }
     }
 }
