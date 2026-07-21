@@ -38,11 +38,14 @@ consumidores de Application pasan a consultar el registro:
 - `RackDesignValidation` (predicados "usable" por tipo, que el registro invoca),
 - `RackDesignLibrary` (mapeo de tipo y etiqueta de biblioteca),
 
-de modo que **mueren los switches por `RackSystemKind` y el enum paralelo `RackDesignKind`**
-(hallazgo E1 de la auditoría). **Sin cambio de comportamiento observable**: mismos formatos JSON en
-disco, mismos IDs, nombres y etiquetas, mismo fallback legacy y mismas APIs públicas. La equivalencia
-se sostiene con los tests de round-trip y por-tipo existentes (`RackProjectStoreTests`,
-`RackProjectStorePerKindTests`, `RackDesignLibraryTests`) más los tests de equivalencia del registro.
+de modo que **mueren los switches por `RackSystemKind`** y **el enum paralelo `RackDesignKind` se
+elimina por completo** (hallazgo E1 de la auditoría); `RackDesignKind` **no** se conserva como capa de
+compatibilidad interna. **Sin cambio de comportamiento observable**: la compatibilidad obligatoria se
+aplica a JSON persistido, `RackSystemKind` y sus nombres de enum, las propiedades del wrapper, IDs,
+**etiquetas visibles**, fallback legacy y comportamiento observable. `RackDesignLibraryEntry` y
+`RackMainMenuWindow` se migran mínimamente a `RackSystemKind` o al descriptor canónico. La equivalencia
+se sostiene con una **caracterización previa** (F1) más los tests de round-trip y por-tipo existentes
+(`RackProjectStoreTests`, `RackProjectStorePerKindTests`, `RackDesignLibraryTests`) y los del registro.
 
 ## 2. Problema
 
@@ -73,21 +76,25 @@ descriptor exige metadatos junto al enum canónico (sin renombrar ni reordenar m
 - `RackProjectStore` consume el registro en serialización, construcción y validación por tipo.
 - `RackDesignValidation` conserva sus criterios "usable" por tipo; el registro los invoca (sin
   cambiar qué considera usable cada Kind).
-- `RackDesignLibrary` deriva tipo y etiqueta desde el registro reemplazando **solo el cuerpo** de los
-  switches `MapKind` y `KindLabel`. **Enfoque preferido (sin tocar UI)**: se conserva el tipo público
-  `RackDesignKind` y las propiedades `RackDesignLibraryEntry.Kind`/`KindLabel` como superficie de
-  compatibilidad respaldada por el registro — el enum deja de ser *fuente de verdad* pero sigue siendo
-  API pública que la UI consume. Retirar el tipo `RackDesignKind` es un cambio de API pública y
-  dispara la condición de §12.
-- Adaptación mínima del único consumidor de biblioteca en UI —
-  `RackMainMenuWindow.xaml.cs` (rama de carga por tipo) y el binding de etiqueta de
-  `RackDesignLibraryWindow`— **solo** si la firma pública del mapeo/etiqueta cambia, preservando el
-  texto exacto de las etiquetas.
+- `RackDesignLibrary` deriva tipo y etiqueta desde el registro/descriptor. **`RackDesignLibrary.MapKind`
+  y el switch sobre `RackDesignKind` desaparecen**, y **el enum `RackDesignKind` se elimina por completo
+  del código** (no queda como enum ni como capa de compatibilidad interna). `RackDesignLibraryEntry.Kind`
+  se migra a `RackSystemKind` (o al identificador canónico del descriptor) y su etiqueta pasa a ser una
+  consulta al descriptor que **devuelve exactamente** las mismas cadenas visibles.
+- Migración **mínima** de los consumidores del enum eliminado — `RackDesignLibraryEntry` y
+  `RackMainMenuWindow.xaml.cs` (rama de carga por tipo) — a `RackSystemKind`/descriptor, **sin
+  rediseñar la UI y sin implementar un `EditorModuleRegistry`** ni ningún shell de editor.
+  `RackDesignLibraryWindow` mantiene el binding a su propiedad de etiqueta (mismo nombre de propiedad,
+  mismas cadenas).
 
-**Preservar de forma verificable**: los formatos JSON en disco, `RackSystemKind` y sus miembros, IDs,
-nombres, etiquetas, el fallback legacy y las APIs públicas de `RackProject`, `RackProjectStore`,
-`RackDesignValidation` y `RackDesignLibrary`/`RackDesignLibraryEntry`. Trampas concretas detectadas en
-la auditoría, cada una cubierta por round-trip/golden:
+**Compatibilidad obligatoria (preservar de forma verificable)**: el JSON persistido, `RackSystemKind`
+y sus nombres de enum, las propiedades del wrapper (`RackProjectDocument`), los IDs, las **etiquetas
+visibles**, el fallback legacy y el comportamiento observable de `RackProject`, `RackProjectStore`,
+`RackDesignValidation` y `RackDesignLibrary`. Las etiquetas visibles se conservan **exactamente**:
+`Cabecera`, `Sistema dinámico`, `Selectivo`, `Cama de rodamiento`, `Larguero`. **`RackDesignKind` no
+forma parte de esta lista: se elimina** (su tipo desaparece de la API; `RackDesignLibraryEntry.Kind`
+se migra a `RackSystemKind`/descriptor). Trampas concretas detectadas en la auditoría, cada una
+cubierta por caracterización/round-trip/golden:
 
 - El token `kind` se serializa como el **nombre** del miembro de `RackSystemKind` vía
   `JsonStringEnumConverter` (sin `JsonNamingPolicy`): `Selective`, `PalletFlow`, `SelectiveRack`,
@@ -118,13 +125,16 @@ Explícitamente NO se toca (pertenece a otras iniciativas o excede E1):
   `Regen` — pertenecen a **I-16** (`refactor/draw-services`).
 - **`RackEmbedDocument` y sus discriminadores string** (`"selective"`, `"dynamic"`, `"cabecera"`,
   `"cama"`, y las vistas `"frontal"`/`"lateral"`/`"planta"`): son el vocabulario de round-trip del
-  Plugin —un **tercer** vocabulario, distinto de `RackSystemKind` y de `RackDesignKind`— y quedan
-  para I-10. No se unifican con el registro en esta iniciativa. (Nota: `Larguero` **no** tiene
-  discriminador de embed — no se dibuja bloque; no asumir que todo Kind tiene handler de embed.)
+  Plugin —un **tercer** vocabulario, distinto de `RackSystemKind` (y del `RackDesignKind` que I-08
+  elimina)— y quedan para I-10. No se unifican con el registro en esta iniciativa. (Nota: `Larguero`
+  **no** tiene discriminador de embed — no se dibuja bloque; no asumir que todo Kind tiene handler de
+  embed.)
 - **`src/RackCad.Application/Persistence/RackListBuilder.cs`**: aunque vive en Application/Persistence,
   su `KindLabel` conmuta sobre los **strings del embed** (`RackEmbedDocument.Kind`), no sobre
   `RackSystemKind`; pertenece al mundo embed/lista-de-racks (I-10) y **no** se absorbe en el registro.
-- **Rediseño de UI** más allá de la adaptación mínima del consumidor de biblioteca.
+- **Rediseño de UI** más allá de la migración mínima del consumidor de biblioteca.
+- **Implementar `EditorModuleRegistry`, `IRackEditorModule` o cualquier shell/registro de módulos de
+  editor** — es territorio de I-15, fuera de I-08.
 - **Cambios de geometría, BOM o catálogos.**
 - **`docs/HANDOFF.md` y `docs/ROADMAP.md`**: no se editan antes de la integración (se actualizan como
   último commit de la rama en la sesión de integración, WORKFLOW §4.5.4).
@@ -182,15 +192,27 @@ un handler del Plugin, catálogos o geometría— obliga a **detenerse** (§12).
 > Fases **de la iniciativa** (implementación futura). Esta sesión ejecuta únicamente la F0.
 
 - **F0 (esta sesión)**: auditoría de estado + reclamo atómico + contrato publicado. **Sin código.**
-- **F1**: descriptor + `SystemRegistry` con los cinco Kinds y sus metadatos (nombre persistido,
+- **F1 — Caracterización ANTES del refactor** (red de seguridad): tests golden/round-trip que fijan el
+  comportamiento **actual** y deben pasar **antes** de tocar código de producción. Cubren **como
+  mínimo**:
+  1. serialización exacta de los cinco nombres de `RackSystemKind` (`Selective`, `PalletFlow`,
+     `SelectiveRack`, `Cama`, `Larguero`);
+  2. schema y nombres de payload existentes (wrapper `2.0`, cabecera legacy `1.0`);
+  3. lectura legacy **sin `kind`** (carga como cabecera);
+  4. `kind` **sin payload** (error claro);
+  5. `kind` **desconocido o inválido**;
+  6. reconstrucción física de cabeceras (`RefreshPhysicalModel`);
+  7. reglas actuales de validación por tipo (`IsUsable*`, incluidos los criterios laxos);
+  8. etiquetas y **precedencia de nombres** de `RackDesignLibrary`;
+  9. omisión **individual** de archivos ilegibles (no aborta el listado).
+- **F2**: descriptor + `SystemRegistry` con los cinco Kinds y sus metadatos (nombre persistido,
   etiqueta, predicado "usable", selector de payload) + tests unitarios del registro. Sin tocar
   consumidores todavía.
-- **F2**: `RackProjectStore` (Serialize/BuildProject/ValidateProject) consume el registro; round-trip
-  y por-tipo verdes **sin cambios en la salida JSON**.
-- **F3**: `RackDesignLibrary` deriva tipo/etiqueta del registro; se retira `RackDesignKind` como
-  fuente duplicada; `RackDesignLibraryTests` verde.
-- **F4**: adaptación mínima del consumidor de biblioteca en UI; suite completa verde; build UI Debug
-  con 0 errores.
+- **F3**: `RackProjectStore` (Serialize/BuildProject/ValidateProject) consume el registro;
+  caracterización + round-trip + por-tipo verdes **sin cambios en la salida JSON**.
+- **F4**: `RackDesignLibrary` deriva tipo/etiqueta del registro; **se elimina `RackDesignKind`**;
+  migración mínima de `RackDesignLibraryEntry` y `RackMainMenuWindow` a `RackSystemKind`/descriptor
+  (etiquetas visibles intactas); `RackDesignLibraryTests` verde; build UI Debug con 0 errores.
 - **F5**: cierre de la sesión de implementación (push de rama). La integración es sesión aparte,
   serializada y autorizada por el dueño (WORKFLOW §4.5).
 
@@ -200,9 +222,11 @@ commit).
 ## 9. Pruebas y builds
 
 - `dotnet test tests/RackCad.Tests/RackCad.Tests.csproj` **verde** (toda la suite, no solo la nueva).
-- Mantener verdes y ampliar `RackProjectStoreTests`, `RackProjectStorePerKindTests` y
-  `RackDesignLibraryTests`; **añadir tests de equivalencia del registro** (mismo JSON antes/después
-  por cada Kind — patrón golden ya usado en el repo, "ARRAY == plano").
+- **La caracterización de F1 debe pasar ANTES del refactor** y permanecer verde después (es la red que
+  demuestra la equivalencia). Mantener verdes y ampliar `RackProjectStoreTests`,
+  `RackProjectStorePerKindTests` y `RackDesignLibraryTests`; **añadir tests de equivalencia del
+  registro** (mismo JSON antes/después por cada Kind — patrón golden ya usado en el repo,
+  "ARRAY == plano").
 - Build Debug de `src/RackCad.UI/RackCad.UI.csproj` con **0 errores** (la adaptación del consumidor de
   biblioteca lo exige). **No** requiere build de Plugin ni AutoCAD (`requires_plugin_build: false`,
   `requires_autocad: false`).
@@ -222,8 +246,11 @@ commit).
 
 - Alta conceptual de un `Kind` nuevo **no** exige editar `RackProjectStore` ni `RackDesignLibrary`
   (basta registrar el descriptor) — demostrado con un test.
-- `RackDesignKind` eliminado como fuente de verdad duplicada (o reducido a proyección derivada del
-  registro), **sin** cambiar etiquetas ni la API pública que observa la UI.
+- **`RackDesignKind` eliminado por completo del código** (no queda como enum ni como capa de
+  compatibilidad); `RackDesignLibraryEntry` y `RackMainMenuWindow` migrados a `RackSystemKind`/descriptor,
+  **conservando exactamente** las etiquetas visibles (`Cabecera`, `Sistema dinámico`, `Selectivo`,
+  `Cama de rodamiento`, `Larguero`), sin rediseño de UI ni `EditorModuleRegistry`.
+- La **caracterización (F1) pasa antes del refactor** y sigue verde después.
 - JSON en disco **idéntico** por cada Kind (round-trip golden), incluido el caso legacy sin `kind`.
 - Suite completa verde + build UI Debug con 0 errores.
 - Implementada ≠ integrada: la integración sigue siendo manual y autorizada por el dueño.
@@ -235,8 +262,11 @@ commit).
   o geometría → **excede alcance**.
 - Sería inevitable un cambio de **formato JSON**, de nombre de miembro de `RackSystemKind`, de ID o de
   **etiqueta** → detenerse (rompe la preservación exigida).
-- Retirar el tipo público `RackDesignKind` (lo consume la UI) o cambiar cualquier otra API pública de
-  §3 → cambio de API pública fuera del enfoque preferido; detenerse para decisión del dueño.
+- Un cambio que rompa la **compatibilidad obligatoria** (JSON persistido, nombres de `RackSystemKind`,
+  propiedades del wrapper, IDs, **etiquetas visibles**, fallback legacy, comportamiento observable), o
+  que exija **rediseñar la UI** o **implementar `EditorModuleRegistry`**/un shell de editor → detenerse.
+  (Eliminar `RackDesignKind` es **requisito** de I-08, no motivo de parada; migrar sus consumidores a
+  `RackSystemKind`/descriptor es parte del alcance.)
 - Endurecer los predicados "usable" (p. ej. exigir `PalletDepth` en la cama o longitud en el
   larguero) → cambia comportamiento; los criterios laxos son intencionales, no se tocan.
 - Árbol sucio, operación Git en curso, o CI no diagnosticable con seguridad.
@@ -256,9 +286,10 @@ estado versionado. **Merge automático prohibido.**
 
 De **esta** sesión (F0):
 
-- Commits en la rama: reclamo vacío `24cfc22` + el commit de este contrato.
+- Commits en la rama: reclamo vacío `24cfc22` + el contrato + su corrección documental (que endurece
+  la **eliminación total** de `RackDesignKind` y fija la caracterización previa de F1).
 - Push: rama `architecture/system-registry` publicada (primer push aceptado = reclamo) + push del
-  contrato. Sin `--force`.
+  contrato y de su corrección. Sin `--force`.
 - Sin cambios en `src/`, `tests/`, `assets/`, `deploy/` ni `.github/`.
 - `main` intacta: `origin/main` = `08491523233ae5f483f904a025bbed0c2845e3a9`; CI verde sobre ese SHA.
 - Claim-Id: `6c4ec565-5ce7-4ff9-88a0-38b007cedcf2`.
