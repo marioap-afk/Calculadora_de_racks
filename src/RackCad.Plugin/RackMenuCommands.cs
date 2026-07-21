@@ -84,17 +84,15 @@ namespace RackCad.Plugin
                     return;
                 }
 
-                // Dispatch by rack type via the Plugin's kind-handler registry (I-10). The same round-trip serves
-                // selective, dynamic, cabecera and cama; a kind with no registered handler keeps the historical
-                // visible error (the four embedded kinds are always registered, so real data never hits it).
-                if (KindHandlerRegistry.Default.TryGet(embed.Kind, out var handler))
+                // Dispatch by rack type via the Plugin's kind-handler seam. The same round-trip serves selective,
+                // dynamic, cabecera and cama; a kind with no registered handler surfaces the historic visible error
+                // (the four embedded kinds are always registered, so real data never hits it).
+                if (!KindHandlerDispatch.TryResolve(editor, embed.Kind, out var handler))
                 {
-                    handler.Edit(document, blockId, embed);
+                    return;
                 }
-                else
-                {
-                    editor.WriteMessage("\nRackCad: tipo de rack no reconocido (" + embed.Kind + ").");
-                }
+
+                handler.Edit(document, blockId, embed);
             }
             catch (System.Exception ex)
             {

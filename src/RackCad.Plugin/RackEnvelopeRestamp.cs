@@ -6,8 +6,9 @@ namespace RackCad.Plugin
 {
     /// <summary>
     /// Shared Plugin helper (I-09 F4): re-stamp a rack payload for an INDEPENDENT copy — a fresh GUID + the copy's
-    /// name, including the kind-specific inner design identity. Extracted verbatim from the former RackFrameCommands
-    /// partial so RACKDUPLICAR and RACKLAYOUT share the one implementation. Behavior is unchanged.
+    /// name, including the kind-specific inner design identity. RACKDUPLICAR and RACKLAYOUT share the one
+    /// implementation. A kind with NO registered handler throws rather than silently producing a copy with a
+    /// possibly-inconsistent inner identity (both commands gate on the handler first, for a clean visible message).
     /// </summary>
     internal static class RackEnvelopeRestamp
     {
@@ -26,10 +27,11 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Re-stamp the identity the kind-specific design carries, dispatching by kind via the kind-handler
-        /// registry. Dynamic and cama designs hold no display identity of their own (their editors take the
-        /// envelope's name), so their handlers are no-ops. The lookup is case-INSENSITIVE, as this consumer always
-        /// was. Best effort: a kind with no handler, or an unreadable inner design, is returned untouched — the
-        /// envelope-only restamp still applies.</summary>
+        /// registry (case-INSENSITIVE, as this consumer always was). Dynamic and cama designs hold no display
+        /// identity of their own, so their handlers are no-ops. A kind with NO handler THROWS: an independent copy
+        /// must never be produced with a possibly-inconsistent inner identity (RACKDUPLICAR/RACKLAYOUT gate on the
+        /// handler first, so this is a defense-in-depth invariant). A readable design whose store round-trip fails
+        /// is best-effort left untouched — the envelope-only restamp still applies.</summary>
         private static string RestampDesign(string kind, string designJson, string newId, string copyName)
         {
             if (string.IsNullOrEmpty(designJson))
@@ -39,7 +41,7 @@ namespace RackCad.Plugin
 
             if (!KindHandlerRegistry.Default.TryGetIgnoreCase(kind, out var handler))
             {
-                return designJson;
+                throw new InvalidOperationException(KindDispatchMessages.NotRecognized(kind));
             }
 
             try
@@ -48,7 +50,8 @@ namespace RackCad.Plugin
             }
             catch
             {
-                // Best effort: keep the original design JSON; the copy still gets its own GUID/envelope name.
+                // Best effort for a readable design whose store round-trip fails: keep the original JSON; the copy
+                // still gets its own GUID/envelope name. (Distinct from the missing-handler case above, which throws.)
             }
 
             return designJson;

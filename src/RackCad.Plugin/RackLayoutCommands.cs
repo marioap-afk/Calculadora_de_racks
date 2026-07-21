@@ -9,6 +9,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Layout;
 using RackCad.Application.Persistence;
+using RackCad.Plugin.KindHandlers;
 using RackCad.Plugin.Systems;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
@@ -77,6 +78,15 @@ namespace RackCad.Plugin
                 if (choice.Independent && new RackEmbedStore().Deserialize(seed.Payload) == null)
                 {
                     editor.WriteMessage("\nRackCad: la planta no tiene datos de rack embebidos; usa copias enlazadas.");
+                    return;
+                }
+
+                // Independent copies re-stamp the rack identity per cell; an unrecognized kind cannot be re-stamped
+                // safely, so report the historic visible error and abort BEFORE placing the grid rather than
+                // producing copies with a possibly-inconsistent identity. Linked copies share the definition and
+                // need no restamp. Case-insensitive, matching the restamp; the four embedded kinds resolve.
+                if (choice.Independent && !KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _))
+                {
                     return;
                 }
 

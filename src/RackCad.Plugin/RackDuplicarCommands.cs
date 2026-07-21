@@ -6,6 +6,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
+using RackCad.Plugin.KindHandlers;
 using RackCad.Plugin.Systems;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -45,6 +46,14 @@ namespace RackCad.Plugin
                 if (embed == null || string.IsNullOrEmpty(embed.Design))
                 {
                     editor.WriteMessage("\nRackCad: ese bloque no tiene datos de rack para duplicar.");
+                    return;
+                }
+
+                // An unrecognized kind cannot be re-stamped safely (its inner identity is unknown): report the
+                // historic visible error and abort BEFORE placing any copy, so no copy carries a possibly-
+                // inconsistent identity. Case-insensitive, matching the restamp; the four embedded kinds resolve.
+                if (!KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _))
+                {
                     return;
                 }
 
