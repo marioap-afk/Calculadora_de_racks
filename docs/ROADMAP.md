@@ -1,9 +1,12 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-21 (I-08 integrada en `main`: `SystemRegistry` + descriptor en Application,
-> `RackProjectStore`/validación/biblioteca despachan por el registro y `RackDesignKind` eliminado, sin
-> cambio de comportamiento). Antes: I-09 integrada el 2026-07-20 (partición de `RackFrameCommands`);
-> I-13 e I-29 integradas antes ese día.
+> Actualizado: 2026-07-21 (I-10 integrada en `main`: `IRackKindHandler` + `KindHandlerRegistry` en el
+> **Plugin**; RACKEDITAR/RACKBOMTOTAL y el restamp despachan por el registro y un `Kind` sin handler
+> produce un error visible, sin otro cambio de comportamiento; cierra la pista B I-09→I-16→I-10). Antes
+> ese día: I-08 integrada (`SystemRegistry` + descriptor en Application, `RackProjectStore`/validación/
+> biblioteca despachan por el registro y `RackDesignKind` eliminado) e I-16 integrada (refactor de Draw
+> Services), ambas sin cambio de comportamiento. Antes: I-09 integrada el 2026-07-20 (partición de
+> `RackFrameCommands`); I-13 e I-29 integradas antes ese día.
 > Convierte la
 > [auditoría 2026-07](auditoria-arquitectura-2026-07.md) en un plan ejecutable por iniciativas
 > independientes (1 iniciativa = 1 rama = 1 worktree, ver [WORKFLOW.md](WORKFLOW.md)).
@@ -81,7 +84,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 |---|---|---|---|---|---|---|
 | I-08 | `architecture/system-registry` | Descriptor de sistema + `SystemRegistry` en Application; `RackProjectStore`/validación/`RackDesignLibrary` consumen el registro (mueren los 3 switches y el enum paralelo) (E1) | M | I-02 (integrada 2026-07-17) | I-10, I-11 | integrada (2026-07-21) |
 | I-09 | `refactor/plugin-commands` | Partir `RackFrameCommands` en clases por área; promover helpers a `RackBlockFinder`/`RackCloner`/`LayerHelper`; unificar el escaneo de envelopes triplicado; helpers `InDocumentTransaction`. Sin cambio de comportamiento: diff mecánico revisable (P2, P5) | M | I-02 (integrada 2026-07-17) | I-10, I-16 | integrada (2026-07-20) |
-| I-10 | `architecture/kind-handlers` | `IRackKindHandler` + registro en el **Plugin** (pista Plugin, no Application); RACKEDITAR/RACKBOMTOTAL/RACKLAYOUT/restamp despachan por registro; Kind no registrado = error visible (E2) | M | I-08, I-09 | I-09, I-16 | pendiente |
+| I-10 | `architecture/kind-handlers` | `IRackKindHandler` + registro en el **Plugin** (pista Plugin, no Application); RACKEDITAR/RACKBOMTOTAL/RACKLAYOUT/restamp despachan por registro; Kind no registrado = error visible (E2) | M | I-08, I-09 | I-09, I-16 | integrada (2026-07-21) |
 | I-11 | `architecture/persistencia-uniforme` | `FlowBedDocument`/`LargueroDocument` versionados con lectura legacy; versión de app en el envelope del Xrecord; preservar campos desconocidos al re-guardar (D1, D3) | M | I-02 (integrada 2026-07-17) | I-03, I-08 | pendiente |
 | I-12 | `refactor/versionado` | `<Version>` única en Directory.Build.props + SHA estampado; `PackageContents.xml` generado; bundle por `dotnet publish`; centralizar LangVersion/Nullable en Build.props; **ADR corto "estrategia de versiones de AutoCAD"** (SeriesMax, política de recompilación anual — AutoCAD 2026/2027 llegan dentro del horizonte del plan) (G5, G8, G9) | S-M | — | — | pendiente |
 | I-27 | `feature/dinamico-camas` ✋ | **Absorbida por la implementación dinámica de I-02**: la cama de rodamiento quedó integrada dentro del dibujo del sistema dinámico (`DynamicFlowBedLateralBuilder` compone `FlowBedLateralBuilder` sin duplicarlo; BOM con componente `Cama` sin despiece), validada en pruebas y en AutoCAD, y la línea "Fuera de alcance" del README quedó actualizada. También cumplió la prueba temprana de composición entre sistemas que I-18 necesitará. Sin alcance restante — no se mantiene como iniciativa separada | M | I-02 (la absorbió) | — | integrada por I-02 (2026-07-17) |

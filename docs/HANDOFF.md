@@ -62,6 +62,19 @@ orquestación de los siete servicios de vista en `ViewBlockDraw`, conservando la
 sufijos, mensajes, `postIndex`, `DynamicRackEnd`, caso all-loose, payload/GUID, BOM, geometría, persistencia
 y el único `Regen` final multivista).
 
+I-10 (`architecture/kind-handlers`) quedó integrada el **2026-07-21** (merge `--no-ff`; `origin/main` no
+avanzó desde la base `c5a4082`, sin rebase final). Introduce `IRackKindHandler` y un registro explícito
+`KindHandlerRegistry` en `RackCad.Plugin` (los cuatro Kinds embebidos —`selective`, `dynamic`, `cabecera`,
+`cama`— en orden canónico, sin reflexión; `Larguero` no tiene sobre ni handler) y migra a él los tres
+despachos por el string del sobre: RACKEDITAR, RACKBOMTOTAL (`BuildRackBom` + `KindLabel`) y el restamp de
+copias independientes (consumido por RACKDUPLICAR y RACKLAYOUT). Es un refactor **sin cambio de
+comportamiento observable** salvo una excepción autorizada: un `Kind` sin handler produce un error visible
+(el mismo mensaje de "tipo de rack no reconocido", inalcanzable con los cuatro Kinds reales). El
+`SystemRegistry` de I-08 permanece en Application (persistencia/validación/biblioteca, por `RackSystemKind`);
+`KindHandlerRegistry` es el registro del Plugin para las operaciones AutoCAD y **no** se unifica con él ni
+con `RackListBuilder` (Application, RACKLISTA), que queda intacto por la dirección de dependencias. Cierra la
+pista B del Plugin (I-09→I-16→I-10).
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -101,6 +114,15 @@ cama, cabecera, cancelación del jig, persistencia y edición posterior) **sin o
 I-08 cambia solo Application/UI y **no toca la superficie de dibujo del Plugin**, por lo que esa validación
 se conserva tras el rebase (WORKFLOW §6).
 
+I-10 (`architecture/kind-handlers`) **no** cambia dibujo, geometría, BOM funcional, GUID ni persistencia: es
+un refactor del despacho por el `Kind` del sobre en el Plugin cuyos handlers son fachadas delgadas hacia el
+código de edición/BOM/restamp **sin cambiar** (no toca la superficie de dibujo, a diferencia de I-16). No
+requiere validación en AutoCAD (`requires_autocad: false`; ROADMAP no la marca con ✋) ni owner-validation
+(`requires_owner_validation: false`), por analogía directa con I-09: la equivalencia se sostiene con el
+inventario mecánico (26 `[CommandMethod]` idénticos a `origin/main`, 0 `switch`/cadena por el `Kind` del
+sobre restante, 5 `Guid.NewGuid`, 7 `Regen`, mensajes y etiquetas verbatim), la suite completa y el CI verde
+de la rama. AutoCAD: no ejecutado; no requerido por contrato.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -122,16 +144,50 @@ se conserva tras el rebase (WORKFLOW §6).
 
 ## 4. Siguiente acción
 
-Con I-08, I-09 e I-16 integradas y limpias, la pista B del Plugin queda en **I-10**
-(`architecture/kind-handlers`), que ya tiene satisfechas sus dependencias (I-08 e I-09): la serialización
-I-09 → I-16 → I-10 está completa salvo I-10. El siguiente paso es abrir I-10, o continuar una iniciativa ya
-reclamada (I-07 en su worktree) respetando dependencias y estorbos.
+Con I-08, I-09, I-16 e **I-10** integradas y limpias, la **pista B del Plugin queda cerrada** (la
+serialización I-09 → I-16 → I-10 está completa). Las pistas abiertas son la **A de Application** (I-11
+`architecture/persistencia-uniforme`, con dependencias satisfechas; estorba con I-03 e I-08) y la **C de UI**
+(I-14 `architecture/ui-controls` → I-15 `architecture/editor-shell`). I-18 (Push Back) sigue bloqueada por
+I-11, I-15, I-16 y los bloques DWG del dueño. El siguiente paso es abrir una de esas iniciativas respetando
+dependencias y estorbos, o continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-10 — 2026-07-21:**
+
+- punta de implementación revisada de `architecture/kind-handlers`:
+  `532eb038306a3de68277496ce47457f270200944`; este documento **no inventa** el SHA del merge de `main` (vive
+  en `git log --first-parent main`);
+- `origin/main` no avanzó desde la base de I-10 (`c5a4082`): sin rebase final; la rama se integra por
+  `git merge --no-ff` en esta sesión;
+- suite `RackCad.Tests`: **694/694 verdes**, sin fallos ni omitidas (línea base y post-refactor idénticas;
+  Domain+Application no se tocan);
+- build UI Debug: **0 errores y 0 advertencias**; build solución completa Debug: **0 errores**, únicamente
+  las dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre `532eb03` (run `29836270208`, `headSha 532eb038…0944`): los tres jobs (Tests,
+  Build UI, **Build Plugin without AutoCAD**) en `success`;
+- objetivo entregado: `IRackKindHandler` + `KindHandlerRegistry` en `src/RackCad.Plugin/KindHandlers/`
+  (registro explícito, inmutable, sin reflexión, que rechaza handlers nulos, claves vacías y duplicadas;
+  `TryGet` Ordinal + `TryGetIgnoreCase`) con los cuatro handlers embebidos (`selective`, `dynamic`,
+  `cabecera`, `cama`) y `Default`; RACKEDITAR, RACKBOMTOTAL (`BuildRackBom` + `KindLabel`) y el restamp
+  despachan por el registro; **0** `switch`/cadena por el `Kind` del sobre restante en alcance; `Larguero` no
+  registrado;
+- equivalencia mecánica: **26 `[CommandMethod]`** idénticos a `origin/main`, cero duplicados; **5**
+  `Guid.NewGuid` (una en el restamp); **7** ubicaciones de `Regen`; mensaje "tipo de rack no reconocido" y
+  etiquetas de BOM (Selectivo/Dinámico/Cabecera/Cama) **verbatim**; constantes de Kind/View intactas;
+- frontera de registros: `SystemRegistry` (Application, I-08, `RackSystemKind`) y `KindHandlerRegistry`
+  (Plugin, string del sobre) **no** se unifican; `RackListBuilder` (Application, RACKLISTA) queda intacto por
+  la dirección de dependencias (Application no depende del Plugin);
+- alcance: producto solo en `src/RackCad.Plugin` (6 archivos nuevos en `KindHandlers/` + 3 consumidores:
+  `RackMenuCommands`, `RackInventarioCommands.BomTotal`, `RackEnvelopeRestamp`); documentación el contrato de
+  I-10 y su índice; sin cambios en Domain/Application/UI/catálogos/deploy/csproj; sin dependencias nuevas;
+- validación manual: AutoCAD **no ejecutado ni requerido** (`requires_autocad: false`; ROADMAP no marca I-10
+  con ✋); owner-validation no requerida (`requires_owner_validation: false`), por analogía directa con I-09;
+  no se declara AutoCAD validado.
 
 **Baseline integrada de I-08 — 2026-07-21:**
 

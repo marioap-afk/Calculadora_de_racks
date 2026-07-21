@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-10
 title: Registro de handlers por Kind en el Plugin (KindHandlerRegistry)
 type: architecture
-status: completed
+status: integrated
 branch: architecture/kind-handlers
 base_branch: main
 priority:
@@ -28,6 +28,11 @@ automation:
 ---
 
 # I-10 — Registro de handlers por Kind en el Plugin (KindHandlerRegistry)
+
+> Estado: **F0–F4 completadas; INTEGRADA en `main` el 2026-07-21** (merge `--no-ff`; `origin/main` no
+> avanzó desde la base `c5a4082`, sin rebase final). CI de rama verde por SHA exacto; suite y builds
+> locales verdes. Sin validación en AutoCAD (no requerida; ver §10). El detalle de la integración vive en
+> `docs/HANDOFF.md` §5; los conteos y hashes canónicos, en `docs/HANDOFF.md`, no aquí.
 
 ## 1. Objetivo
 
@@ -308,9 +313,10 @@ reclamo: `initiative: I-10`, `branch: architecture/kind-handlers`,
 
 ## 14. Evidencia final
 
-**Implementación completa (F0–F4), aún sin integrar.** El trabajo vive solo en la rama
-`architecture/kind-handlers`; `main` **no fue modificada** fuera de la Fase 7. Claim-Id
-`34935fa5-1a2b-4446-9c9d-1c21bbc0f634`. Worktree `D:\Documentos\Codex\architecture-kind-handlers`.
+**F0–F4 completadas; INTEGRADA en `main` el 2026-07-21** (merge `--no-ff`; `origin/main` no avanzó desde
+la base `c5a4082`, sin rebase final). Este documento **no inventa** el SHA del merge (vive en el historial
+de git, `git log --first-parent main`). Claim-Id `34935fa5-1a2b-4446-9c9d-1c21bbc0f634`. Worktree
+`D:\Documentos\Codex\architecture-kind-handlers`.
 
 - **F0** (`b2b2318`): reclamo atómico desde `origin/main` (`c5a4082`); primer push aceptado sin force;
   base verificada (I-08 `549870b`, I-09 `0849152`, I-16 `2c3bee7` en `main`); sin estorbo activo.
@@ -362,8 +368,10 @@ contrato (10 archivos).
 **Advertencias conocidas frente a errores propios**: solo las dos familias `MSB3277` (AcCoreMgd/AcDbMgd/
 AcMgd/AcTcMgd/AcMNUParser) del Plugin, gobernadas por ADR-0003; cero errores y cero advertencias propias.
 
-**CI por SHA exacto**: verificado en la Fase 6 sobre la punta publicada (Tests, Build UI, Build Plugin
-without AutoCAD); run y jobs se registran al confirmar.
+**CI por SHA exacto**: verde sobre la punta de implementación `532eb03` (run `29836270208`,
+`headSha 532eb038306a3de68277496ce47457f270200944`, conclusion `success`), con los tres jobs — Tests
+(Domain + Application), Build UI y **Build Plugin without AutoCAD** — en `success`. El commit documental de
+cierre y el merge de `main` revalidan CI por su propio SHA (WORKFLOW §4.5.2).
 
 **Validación manual**: `requires_autocad: false` y `requires_owner_validation: false` (§10), derivados por
 analogía directa con I-09 (refactor del Plugin que preserva comportamiento; ROADMAP no marca I-10 con ✋);
