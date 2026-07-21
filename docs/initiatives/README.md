@@ -53,6 +53,11 @@ Planes disponibles:
   preservando formatos JSON, IDs, nombres, etiquetas, fallback legacy y APIs públicas. Limitada a
   Application/Persistence + adaptación mínima del consumidor de biblioteca en UI. Fuera de alcance
   I-10 (handlers del Plugin), I-16 (DrawServices), y `RackEmbedDocument` con sus discriminadores string.
+- [`I-16-refactor-draw-services.md`](I-16-refactor-draw-services.md): contrato del refactor de DrawServices
+  del Plugin — extraer la infraestructura compartida (`RackCatalogLoader`, `BlockPlacement`), colapsar la
+  orquestación de las siete fachadas en `ViewBlockDraw` y uniformar `regen`, sin cambio de comportamiento.
+  Con [línea base de equivalencia](I-16-draw-services-baseline.md) y
+  [validación manual en AutoCAD aprobada](I-16-autocad-validation.md). Lista para integrar, aún no integrada.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
