@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-10
 title: Registro de handlers por Kind en el Plugin (KindHandlerRegistry)
 type: architecture
-status: in-progress
+status: completed
 branch: architecture/kind-handlers
 base_branch: main
 priority:
@@ -308,9 +308,68 @@ reclamo: `initiative: I-10`, `branch: architecture/kind-handlers`,
 
 ## 14. Evidencia final
 
-Se completará al cerrar la implementación: Claim-Id, worktree, SHAs por fase, diseño final de la frontera
-`SystemRegistry`/`KindHandlerRegistry`, handlers registrados, consumidores migrados, switches conservados
-y motivo, pruebas/builds ejecutados, advertencias conocidas frente a errores propios, CI por SHA exacto
-(run + jobs), validación manual requerida o no con fundamento, y confirmación de que no se cambió
-geometría, BOM funcional, GUID, persistencia, comandos, aliases, catálogos ni compatibilidad legacy salvo
-el error visible autorizado para handler ausente. `main` no se modifica fuera de la Fase 7.
+**Implementación completa (F0–F4), aún sin integrar.** El trabajo vive solo en la rama
+`architecture/kind-handlers`; `main` **no fue modificada** fuera de la Fase 7. Claim-Id
+`34935fa5-1a2b-4446-9c9d-1c21bbc0f634`. Worktree `D:\Documentos\Codex\architecture-kind-handlers`.
+
+- **F0** (`b2b2318`): reclamo atómico desde `origin/main` (`c5a4082`); primer push aceptado sin force;
+  base verificada (I-08 `549870b`, I-09 `0849152`, I-16 `2c3bee7` en `main`); sin estorbo activo.
+- **F1** (`87d2dad`): este contrato como primer commit no vacío; caracterización de invariantes (§8.1) por
+  inventario mecánico. Sin costura pura en alcance para tests nuevos (el registro vive en el Plugin, que
+  referencia AutoCAD; `RackListBuilder` queda fuera de alcance) — mismo criterio que I-09.
+- **F2** (`218da99`): `IRackKindHandler` + `KindHandlerRegistry` + los cuatro handlers (`selective`,
+  `dynamic`, `cabecera`, `cama`) + `Default` en `src/RackCad.Plugin/KindHandlers/`. Registro explícito,
+  inmutable, sin reflexión, rechaza nulos/claves vacías/duplicadas; `TryGet` (Ordinal) y `TryGetIgnoreCase`.
+- **F3** (`53ef25a`): RACKEDITAR, RACKBOMTOTAL (BuildRackBom + KindLabel) y el restamp despachan por el
+  registro; se eliminan los tres switch por Kind y la cadena `if` del restamp. RACKDUPLICAR y RACKLAYOUT
+  consumen el restamp sin cambios.
+
+**Diseño final de la frontera `SystemRegistry`/`KindHandlerRegistry`.** Dos registros en capas distintas y
+con vocabularios distintos, deliberadamente **no unificados**: `SystemRegistry` (Application, I-08,
+`RackSystemKind`) sigue gobernando persistencia, validación y biblioteca; `KindHandlerRegistry` (Plugin,
+string del embed) gobierna las operaciones AutoCAD (edición, BOM total, restamp). Application no depende
+del Plugin.
+
+**Handlers registrados**: `selective`, `dynamic`, `cabecera`, `cama` (orden canónico). `Larguero` **no**
+se registra (sin sobre ni bloque de dibujo).
+
+**Consumidores migrados**: `RackMenuCommands.RackEditar`, `RackInventarioCommands.BuildRackBom` y
+`KindLabel`, `RackEnvelopeRestamp.RestampDesign`.
+
+**Switches deliberadamente conservados** (fuera de alcance):
+- `RackListBuilder.KindLabel` (Application, RACKLISTA): Application no puede depender del registro del
+  Plugin; el ROADMAP I-10 no lo lista; sus etiquetas difieren de las del BOM. Se deja intacto.
+- `RackListBuilder.ViewOrder`/`NormalizeView` (switch por **vista**, no por Kind): fuera de alcance.
+- `RackProjectStore` despacha por `RackSystemKind` vía `SystemRegistry` (I-08), no por el string del
+  embed: intacto.
+
+**Pruebas y builds (SDK de usuario 8.0.423), sobre la punta `53ef25a`**:
+- suite `RackCad.Tests`: **694/694 verdes**, sin fallos ni omitidas (línea base y post-refactor idénticas;
+  Domain+Application no se tocan);
+- build UI Debug: **0 errores y 0 advertencias**;
+- build solución completa Debug: **0 errores**; únicamente las dos familias `MSB3277` conocidas de las
+  referencias de AutoCAD del Plugin (no cuentan como advertencias propias);
+- `git diff origin/main --check`: limpio.
+
+**Invariantes verificadas por inventario mecánico (antes/después)**: 26 `[CommandMethod]` con el conjunto
+**idéntico** a `origin/main` y cero duplicados; **0** `switch`/cadena por `Kind` del embed restante en
+alcance (las tres coincidencias de texto son comentarios del registro); **0** referencias AutoCAD fuera del
+Plugin; **5** `Guid.NewGuid` (una en el restamp); **7** ubicaciones de `Regen`; mensaje "tipo de rack no
+reconocido" **verbatim**; etiquetas de BOM verbatim (Selectivo/Dinámico/Cabecera/Cama); constantes de
+Kind/View intactas; sin cambios de csproj ni dependencias nuevas; diff acotado a `src/RackCad.Plugin` + este
+contrato (10 archivos).
+
+**Advertencias conocidas frente a errores propios**: solo las dos familias `MSB3277` (AcCoreMgd/AcDbMgd/
+AcMgd/AcTcMgd/AcMNUParser) del Plugin, gobernadas por ADR-0003; cero errores y cero advertencias propias.
+
+**CI por SHA exacto**: verificado en la Fase 6 sobre la punta publicada (Tests, Build UI, Build Plugin
+without AutoCAD); run y jobs se registran al confirmar.
+
+**Validación manual**: `requires_autocad: false` y `requires_owner_validation: false` (§10), derivados por
+analogía directa con I-09 (refactor del Plugin que preserva comportamiento; ROADMAP no marca I-10 con ✋);
+no se declara AutoCAD validado.
+
+**Confirmación**: no se cambió geometría, BOM funcional, GUID, persistencia, comandos, aliases, catálogos ni
+compatibilidad legacy; el único cambio de comportamiento autorizado es el error visible ante handler
+ausente (byte-idéntico al mensaje previo, e inalcanzable con los cuatro Kinds reales). `completed` **no**
+significa integrada.
