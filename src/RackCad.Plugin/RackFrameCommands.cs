@@ -34,7 +34,7 @@ namespace RackCad.Plugin
                 var document = AcApplication.DocumentManager.MdiActiveDocument;
                 var menu = new RackMainMenuWindow(
                     canInsertInAutoCad: true,
-                    dimensionStyles: ReadDimensionStyleNames(document));
+                    dimensionStyles: RackCommandSupport.ReadDimensionStyleNames(document));
                 AcApplication.ShowModalWindow(menu);
 
                 if (menu.InsertRequested)
@@ -65,7 +65,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -82,7 +82,7 @@ namespace RackCad.Plugin
                 }
 
                 var editor = document.Editor;
-                if (!PickRackBlock(document, "\nSelecciona un rack para editar: ", out var embed, out var blockId))
+                if (!RackCommandSupport.PickRackBlock(document, "\nSelecciona un rack para editar: ", out var embed, out var blockId))
                 {
                     return;
                 }
@@ -115,146 +115,8 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
-        }
-
-        /// <summary>
-        /// Prompt the user to pick a rack block and read its embedded payload from the DEFINITION. Returns false only
-        /// when the user cancelled the selection; a picked-but-non-rack block returns true with a null <paramref
-        /// name="embed"/> so the caller can report it. Shared by RACKEDITAR, RACKLAYOUT and RACKRELLENAR.
-        /// </summary>
-        private static bool PickRackBlock(Document document, string prompt, out RackEmbedDocument embed, out ObjectId blockId)
-        {
-            embed = null;
-            blockId = ObjectId.Null;
-
-            var options = new PromptEntityOptions(prompt);
-            options.SetRejectMessage("\nEse objeto no es un rack.");
-            options.AddAllowedClass(typeof(BlockReference), exactMatch: false);
-
-            var selection = document.Editor.GetEntity(options);
-            if (selection.Status != PromptStatus.OK)
-            {
-                return false;
-            }
-
-            var picked = InDocumentTransaction.Run(document, transaction =>
-            {
-                var reference = (BlockReference)transaction.GetObject(selection.ObjectId, OpenMode.ForRead);
-                var definitionId = reference.BlockTableRecord;
-                return (BlockId: definitionId, Json: RackBlockData.Read(transaction, definitionId));
-            });
-
-            blockId = picked.BlockId;
-            embed = new RackEmbedStore().Deserialize(picked.Json);
-            return true;
-        }
-
-        /// <summary>True when a cabecera view-block draws the PLANTA view (so it is the top view, not the lateral).</summary>
-        private static bool IsPlantaView(RackEmbedDocument embed) =>
-            embed != null && string.Equals(embed.View, RackEmbedDocument.ViewPlanta, System.StringComparison.OrdinalIgnoreCase);
-
-        /// <summary>
-        /// Every rack block DEFINITION in the drawing whose embedded payload has the given rack id — i.e. all the
-        /// view-blocks (frontal + lateral sections) of the same rack, so an edit can redraw them together.
-        /// </summary>
-        private static System.Collections.Generic.List<(ObjectId BlockId, RackEmbedDocument Embed)> FindRackBlocks(Document document, string rackId)
-        {
-            var results = new System.Collections.Generic.List<(ObjectId, RackEmbedDocument)>();
-            if (document == null || string.IsNullOrEmpty(rackId))
-            {
-                return results;
-            }
-
-            using (document.LockDocument())
-            using (var transaction = document.Database.TransactionManager.StartTransaction())
-            {
-                // FindRackBlocks keeps its own filter: match by GUID and tolerate a missing Kind (unlike RACKLISTA /
-                // RACKBOMTOTAL). It needs no reference count, so the scan skips it.
-                foreach (var envelope in RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: false))
-                {
-                    if (envelope.Embed != null && string.Equals(envelope.Embed.Id, rackId, System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        results.Add((envelope.DefinitionId, envelope.Embed));
-                    }
-                }
-
-                transaction.Commit();
-            }
-
-            return results;
-        }
-
-        private static void Report(System.Exception ex)
-        {
-            var document = AcApplication.DocumentManager.MdiActiveDocument;
-            document?.Editor.WriteMessage("\nRackCad error: " + ex.Message);
-        }
-
-        /// <summary>The names of the dimension styles defined in the drawing (for the cotas style combo). Sorted,
-        /// best-effort — a read failure just yields an empty list so the editor falls back to "(Automático)".</summary>
-        private static System.Collections.Generic.List<string> ReadDimensionStyleNames(Document document)
-        {
-            var names = new System.Collections.Generic.List<string>();
-            if (document == null)
-            {
-                return names;
-            }
-
-            try
-            {
-                using (document.LockDocument())
-                using (var transaction = document.Database.TransactionManager.StartTransaction())
-                {
-                    var table = (DimStyleTable)transaction.GetObject(document.Database.DimStyleTableId, OpenMode.ForRead);
-                    foreach (ObjectId id in table)
-                    {
-                        if (transaction.GetObject(id, OpenMode.ForRead) is DimStyleTableRecord record && !record.IsErased)
-                        {
-                            names.Add(record.Name);
-                        }
-                    }
-
-                    transaction.Commit();
-                }
-            }
-            catch
-            {
-                // Best effort: no styles listed → the editor uses "(Automático)".
-            }
-
-            names.Sort(System.StringComparer.OrdinalIgnoreCase);
-            return names;
-        }
-
-        /// <summary>The ONE insert-outcome summary (failure / canceled jig / inserted + missing blocks) — the per-kind
-        /// Describe* methods only supply the noun phrases. Sin acentos: mensajes de linea de comandos de AutoCAD.</summary>
-        private static string DescribePlacement(HeaderPlacementResult result, string failNoun, string insertedPhrase)
-        {
-            if (!result.Success)
-            {
-                return "RackCad: no se pudo dibujar " + failNoun + ". " + result.ErrorMessage;
-            }
-
-            if (!result.Placed)
-            {
-                return "RackCad: bloque '" + result.BlockName + "' creado, pero la insercion se cancelo.";
-            }
-
-            var summary = string.Format(
-                System.Globalization.CultureInfo.InvariantCulture,
-                "RackCad: {0} como bloque '{1}'. {2} piezas.",
-                insertedPhrase,
-                result.BlockName,
-                result.Outcome.InsertedCount);
-
-            if (result.HasMissingBlocks)
-            {
-                summary += "\nBloques no definidos en el dibujo (omitidos): " + string.Join(", ", result.MissingBlocks);
-            }
-
-            return summary;
         }
     }
 }

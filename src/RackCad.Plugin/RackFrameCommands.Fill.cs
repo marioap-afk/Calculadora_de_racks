@@ -38,7 +38,7 @@ namespace RackCad.Plugin
 
                 var editor = document.Editor;
 
-                if (!PickRackBlock(document, "\nSelecciona el rack con el que rellenar: ", out var embed, out _))
+                if (!RackCommandSupport.PickRackBlock(document, "\nSelecciona el rack con el que rellenar: ", out var embed, out _))
                 {
                     return;
                 }
@@ -49,7 +49,7 @@ namespace RackCad.Plugin
                     return;
                 }
 
-                var plantaBlocks = FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
+                var plantaBlocks = RackCommandSupport.FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
                 if (plantaBlocks.Count == 0)
                 {
                     editor.WriteMessage("\nRackCad: el rack no tiene vista en planta. Dibújala primero (RACKEDITAR) y reintenta.");
@@ -124,7 +124,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 

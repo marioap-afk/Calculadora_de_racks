@@ -113,7 +113,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -173,7 +173,7 @@ namespace RackCad.Plugin
 
             InDocumentTransaction.Run(document, transaction =>
             {
-                var payload = RestampEnvelope(source.Payload, copyName);
+                var payload = RackEnvelopeRestamp.RestampEnvelope(source.Payload, copyName);
                 var definitionId = RackCloner.CloneDefinition(database, transaction, source.DefinitionId, copyName, payload, sourceName, copyName);
 
                 var modelSpace = (BlockTableRecord)transaction.GetObject(

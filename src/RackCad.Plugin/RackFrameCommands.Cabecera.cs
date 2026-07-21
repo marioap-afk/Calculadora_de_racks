@@ -37,7 +37,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -101,7 +101,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -222,12 +222,12 @@ namespace RackCad.Plugin
             var name = string.IsNullOrWhiteSpace(config?.Name) ? embed.Name : config.Name;
             var baseName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
 
-            var blocks = FindRackBlocks(document, id);
-            var lateralBlocks = blocks.Where(b => !IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
-            var plantaBlocks = blocks.Where(b => IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var blocks = RackCommandSupport.FindRackBlocks(document, id);
+            var lateralBlocks = blocks.Where(b => !RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
+            var plantaBlocks = blocks.Where(b => RackCommandSupport.IsPlantaView(b.Embed)).Select(b => b.BlockId).ToList();
 
             // Make sure the clicked block is handled even if the GUID scan missed it.
-            if (lateralBlocks.Count == 0 && !plantaBlocks.Contains(blockId) && !IsPlantaView(embed))
+            if (lateralBlocks.Count == 0 && !plantaBlocks.Contains(blockId) && !RackCommandSupport.IsPlantaView(embed))
             {
                 lateralBlocks.Add(blockId);
             }

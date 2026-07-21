@@ -38,7 +38,7 @@ namespace RackCad.Plugin
 
                 var editor = document.Editor;
 
-                if (!PickRackBlock(document, "\nSelecciona el rack a replicar en la rejilla: ", out var embed, out _))
+                if (!RackCommandSupport.PickRackBlock(document, "\nSelecciona el rack a replicar en la rejilla: ", out var embed, out _))
                 {
                     return;
                 }
@@ -51,7 +51,7 @@ namespace RackCad.Plugin
 
                 // The warehouse layout is a top-down arrangement, so it works on the rack's PLANTA view (found by GUID —
                 // the user may have clicked any view of the rack).
-                var plantaBlocks = FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
+                var plantaBlocks = RackCommandSupport.FindRackBlocks(document, embed.Id).Where(IsPlantaViewBlock).ToList();
                 if (plantaBlocks.Count == 0)
                 {
                     editor.WriteMessage("\nRackCad: el rack no tiene vista en planta. Dibújala primero (RACKEDITAR) y reintenta.");
@@ -102,11 +102,11 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
-        private static bool IsPlantaViewBlock((ObjectId BlockId, RackEmbedDocument Embed) block) => IsPlantaView(block.Embed);
+        private static bool IsPlantaViewBlock((ObjectId BlockId, RackEmbedDocument Embed) block) => RackCommandSupport.IsPlantaView(block.Embed);
 
         /// <summary>Bounds fit check against a building envelope whose near corner is anchored at the seed rack's own
         /// corner (so the grid fills from there). If the grid doesn't fit, list the violations and ask whether to place
@@ -213,7 +213,7 @@ namespace RackCad.Plugin
                         if (independent)
                         {
                             var copyName = ComposeCopyName(embed.Name, cell.Label);
-                            var payload = RestampEnvelope(seed.Payload, copyName);
+                            var payload = RackEnvelopeRestamp.RestampEnvelope(seed.Payload, copyName);
                             definitionId = RackCloner.CloneDefinition(database, transaction, seed.DefinitionId, copyName, payload, embed.Name, copyName);
                         }
 
@@ -268,61 +268,5 @@ namespace RackCad.Plugin
         /// <summary>The per-cell client name: the rack's base name plus the cell label, e.g. "Rack A" → "Rack A B3".</summary>
         private static string ComposeCopyName(string baseName, string label)
             => (string.IsNullOrWhiteSpace(baseName) ? "Rack" : baseName.Trim()) + " " + label;
-
-        /// <summary>Copy a rack payload with a FRESH GUID and the copy's name so it is an independent rack. The
-        /// KIND-SPECIFIC design inside is re-stamped too (selective: Id+Name; cabecera: Header.Name) — otherwise the
-        /// first RACKEDITAR on the copy would show and silently write back the ORIGINAL's name (its editor loads the
-        /// name from the inner design). The caller guarantees <paramref name="payload"/> deserializes.</summary>
-        private static string RestampEnvelope(string payload, string copyName)
-        {
-            var store = new RackEmbedStore();
-            var embed = store.Deserialize(payload);
-            embed.Id = System.Guid.NewGuid().ToString();
-            embed.Name = copyName;
-            embed.Design = RestampDesign(embed.Kind, embed.Design, embed.Id, copyName);
-            return store.Serialize(embed);
-        }
-
-        /// <summary>Re-stamp the identity the kind-specific design carries. Dynamic and cama designs hold no display
-        /// identity of their own (their editors take the envelope's name). Best effort: an unreadable inner design is
-        /// returned untouched — the envelope-only restamp still applies.</summary>
-        private static string RestampDesign(string kind, string designJson, string newId, string copyName)
-        {
-            if (string.IsNullOrEmpty(designJson))
-            {
-                return designJson;
-            }
-
-            try
-            {
-                if (string.Equals(kind, RackEmbedDocument.KindSelective, StringComparison.OrdinalIgnoreCase))
-                {
-                    var store = new SelectivePalletDesignStore();
-                    var design = store.Deserialize(designJson);
-                    design.Id = newId;
-                    design.Name = copyName;
-                    return store.Serialize(design);
-                }
-
-                if (string.Equals(kind, RackEmbedDocument.KindCabecera, StringComparison.OrdinalIgnoreCase))
-                {
-                    var store = new RackProjectStore();
-                    var project = store.Deserialize(designJson);
-                    if (project?.Header == null)
-                    {
-                        return designJson;
-                    }
-
-                    project.Header.Name = copyName;
-                    return store.Serialize(project);
-                }
-            }
-            catch
-            {
-                // Best effort: keep the original design JSON; the copy still gets its own GUID/envelope name.
-            }
-
-            return designJson;
-        }
     }
 }

@@ -102,7 +102,7 @@ namespace RackCad.Plugin
             }
             catch (System.Exception ex)
             {
-                Report(ex);
+                RackCommandSupport.Report(ex);
             }
         }
 
@@ -219,6 +219,6 @@ namespace RackCad.Plugin
         }
 
         private static string DescribeBed(HeaderPlacementResult result)
-            => DescribePlacement(result, "la cama de rodamiento", "cama insertada");
+            => RackCommandSupport.DescribePlacement(result, "la cama de rodamiento", "cama insertada");
     }
 }
