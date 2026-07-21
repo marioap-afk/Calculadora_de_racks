@@ -20,7 +20,7 @@ automation_state_path:
 decision_paths: []
 requires_ci: true
 requires_plugin_build: true
-requires_autocad: false
+requires_autocad: true
 requires_owner_decision: false
 requires_owner_validation: true
 automation:
@@ -192,33 +192,46 @@ Explícitamente NO se toca (pertenece a otras iniciativas o excede D1/D3):
 **Modificar**:
 
 - `src/RackCad.Application/Persistence/`: `RackProjectDocument.cs` (tipos de slot + `JsonExtensionData`),
-  `RackProjectStore.cs` (acarreo del documento fuente; preservar `ExtensionData` y versión sin degradar),
-  `RackProject.cs` (campo de documento fuente + `WithSourceMetadataFrom` para el sidecar de UI),
+  `RackProjectStore.cs` (acarreo del documento fuente; preservar `ExtensionData` y versión sin degradar;
+  `TryDeserialize`/`IsReadable` para leer el diseño interior sin ocultar un MAJOR incompatible),
+  `RackProject.cs` (documento fuente + `WithSourceMetadataFrom` y `WithSourceFlowBed`),
   `FlowBedConfigurationStore.cs` (escritura versionada + ruta documento), `RackEmbedDocument.cs`
   (`CurrentSchemaVersion` + `JsonExtensionData` + guarda tolerante en `RackEmbedStore`), `SchemaGuard.cs`
   (delega la legibilidad en `SchemaVersionPolicy`).
 - `src/RackCad.Application/Systems/SystemRegistry.Default.cs` (mapeo cama/larguero vía documentos + guarda).
-- `src/RackCad.Plugin/`: `RackCamaCommands.cs`, `RackSelectivoCommands.cs`, `RackDinamicoCommands.cs`,
-  `RackCabeceraCommands.cs` — cada `Build*Payload` compone el envelope vía `RackEmbedComposer`; el redibujo
-  multivista conserva la metadata **del Embed de cada bloque**; una vista nueva insertada durante la edición
-  hereda el envelope iniciador. **No** tocan los tres archivos de I-10.
-- `src/RackCad.UI/`: `RackFlowBedWindow.xaml.cs`, `RackLargueroWindow.xaml.cs` (campo privado + overload que
-  recibe el `RackProject` fuente; el guardado usa `WithSourceMetadataFrom`), `RackMainMenuWindow.xaml.cs`
-  (transporta el proyecto fuente al editor). Sin rediseño de UI.
+- `src/RackCad.Plugin/`: `RackCommandSupport.cs` (`ReadInnerSourceProject`), `RackCamaCommands.cs`,
+  `RackSelectivoCommands.cs`, `RackDinamicoCommands.cs`, `RackCabeceraCommands.cs`. Cada `Build*Payload`
+  compone el envelope vía `RackEmbedComposer`; el redibujo multivista conserva la metadata **del Embed de cada
+  bloque**; una vista nueva hereda el envelope iniciador. **Dos límites independientes por bloque**: además del
+  envelope, el diseño interior de dinámico y cabecera es a su vez un `RackProjectDocument`, así que
+  `BuildDynamicPayload`/`BuildCabeceraPayload` re-serializan el diseño con `WithSourceMetadataFrom` del proyecto
+  leído de `source.Design` (fallback al iniciador solo si es seguro; un MAJOR incompatible no se oculta). El
+  interior del selectivo es un `SelectivePalletDesignDocument` (no es uno de los cuatro límites; solo su
+  envelope se preserva). La cama del dibujo transporta su `FlowBedDocument` fuente a la ventana. **No** tocan
+  los tres archivos de I-10.
+- `src/RackCad.UI/`: `RackFlowBedWindow.xaml.cs` (campo privado + `LoadForNew`/`LoadExisting` reciben el
+  `RackProject` fuente **o** el `FlowBedDocument` fuente; el guardado usa `WithSourceMetadataFrom`/
+  `WithSourceFlowBed`), `RackLargueroWindow.xaml.cs`, `RackSelectiveWindow.xaml.cs` (`LoadForNew` recibe el
+  proyecto fuente; `SaveToLibrary` usa `WithSourceMetadataFrom`), `RackDynamicSystemWindow.xaml.cs` (campo
+  `sourceProject` fijado por `LoadDesignForNew`/`LoadExisting`/`OpenSystem_Click`; `SaveSystem_Click` usa
+  `WithSourceMetadataFrom` — el guardado re-snapshotea el diseño, así que la metadata solo sobrevive en el
+  campo retenido), `RackMainMenuWindow.xaml.cs` (transporta el proyecto fuente a los cuatro editores). Sin
+  rediseño de UI.
 
-**Frontera de la biblioteca dinámico/cabecera**: la edición del dinámico reconstruye un `RackProjectDocument`
-(vía `RackProjectStore`) y adopta el mismo `WithSourceMetadataFrom` (probado a nivel de store). La cabecera
-guarda por `RackFrameProjectStore`/`RackFrameProjectDocument` (otro store, sin `RackProjectDocument`), así que
-la condición "reconstruye `RackProjectDocument`" **no** se cumple en su ruta de biblioteca UI; el mecanismo se
-prueba a nivel de store para su wrapper. Cablear esas dos ventanas de UI queda para cuando su guardado se
-toque (una línea `WithSourceMetadataFrom` en dinámico; `RackFrameProjectDocument` necesitaría además
-`JsonExtensionData` para la cabecera).
+**Frontera de la cabecera de biblioteca**: la biblioteca de cabecera guarda por
+`RackFrameProjectStore`/`RackFrameProjectDocument` (un DTO **distinto**, esquema 1.0, cabecera desnuda), que
+**no** es uno de los cuatro límites de I-11 y por diseño **nunca** produce un `RackProjectDocument`. No es un
+diferimiento sino un límite de alcance factual: preservar `RackFrameProjectDocument` sería un **quinto** límite
+(exigiría añadirle `JsonExtensionData`) y requiere autorización expresa del dueño. La cabecera **embebida** en el
+dibujo sí reconstruye un `RackProjectDocument` interior y **sí** se preserva (arriba).
 
 **Limitación explícita**: `JsonExtensionData` **no** es preservación recursiva de todos los DTO anidados. Se
 preservan los campos desconocidos SOLO en los cuatro límites de I-11 (`RackEmbedDocument`,
 `RackProjectDocument`, `FlowBedDocument`, `LargueroDocument`) y la versión de esos documentos. El diseño
-interno type-specific del envelope (selectivo/dinámico/cabecera) se re-serializa desde el modelo reabierto y
-**no** conserva campos desconocidos anidados propios.
+interno type-specific de un `RackProjectDocument` (p. ej. el `DynamicRackSystemDocument`, la cabecera, o el
+`SelectivePalletDesignDocument` del selectivo) se re-serializa desde el modelo reabierto y **no** conserva
+campos desconocidos anidados **debajo** de esos DTO; los cuatro límites (incluido el wrapper `RackProjectDocument`
+de nivel superior) sí.
 
 Una **desviación material** —tocar un `*DrawService`, `RackBlockData`, el formato físico del Xrecord,
 `RackEnvelopeRestamp`/`RackMenuCommands`/`RackInventarioCommands`, catálogos o geometría— obliga a
@@ -255,23 +268,37 @@ Una **desviación material** —tocar un `*DrawService`, `RackBlockData`, el for
 
 ## 10. Validación manual
 
-- **AutoCAD: NO requerido** (`requires_autocad: false`; sin ✋ en ROADMAP). I-11 **no** cambia
-  `RackBlockData` ni el formato físico del Xrecord; solo añade campos aditivos (ignorables) al JSON del
-  envelope/payload y preserva desconocidos. No se declara AutoCAD validado.
-- **Owner-validation: SÍ** (`requires_owner_validation: true`), por ser persistencia (área caliente) y
-  tocar el contenido embebido. Checklist para el dueño (solo preparar; no ejecutar):
+- **AutoCAD: SÍ requerido** (`requires_autocad: true`). Aunque I-11 **no** cambia `RackBlockData` ni el
+  formato físico del Xrecord, esta ronda modifica **cuatro rutas reales de RACKEDITAR/redibujo** (cama,
+  selectivo, dinámico, cabecera) y el cableado de las ventanas de biblioteca; el cableado Plugin/WPF **no**
+  está cubierto por la suite (no existe proyecto de tests de Plugin/WPF), así que la matriz de abajo es
+  **obligatoria**. **No se declara AutoCAD validado** hasta la aprobación explícita del dueño.
+- **Owner-validation: SÍ** (`requires_owner_validation: true`). Las pruebas automatizadas cubren los
+  **mecanismos** puros de Persistence (política de versión, `RackEmbedComposer`, `WithSourceMetadataFrom`/
+  `WithSourceFlowBed`, `TryDeserialize`/`IsReadable`, y la preservación del interior dinámico/cabecera a
+  nivel de store).
 
-  **Biblioteca**:
-  1. abrir un archivo legacy de cama sin `SchemaVersion` y uno de larguero legacy; guardarlos de nuevo;
-     confirmar que los valores conocidos se conservan;
-  2. inyectar un campo desconocido en el wrapper y en el payload (cama/larguero); abrir, editar un campo
-     conocido, guardar; confirmar que el campo desconocido permanece.
+### 10.1 Matriz AutoCAD obligatoria (NETLOAD del DLL Debug del worktree)
 
-  **DWG/envelope** (si aplica):
-  3. insertar/abrir una cama; usar/inyectar un envelope con propiedad desconocida; editar nombre/config;
-     confirmar GUID estable en edición y GUID nuevo al duplicar; confirmar que los campos desconocidos
-     sobreviven; confirmar RACKLISTA/RACKEDITAR/BOM sin cambios visibles y que el Xrecord usa la misma
-     clave y el rack reabre correctamente.
+Para cada familia (**cama, selectivo, dinámico, cabecera**):
+
+| # | Escenario | Verificación |
+|---|---|---|
+| 1 | Inserción fresca (QUICK*/menú) | Dibuja; RACKEDITAR reabre; el embed nuevo lleva `SchemaVersion` actual (sin metadata fabricada). |
+| 2 | Edición multivista (Actualizar) | Con ≥2 vistas del mismo GUID, editar un campo conocido redibuja **todas**; GUID **estable**; nombre conservado. |
+| 3 | Metadata desconocida por bloque | Inyectar un campo desconocido y una `SchemaVersion` menor-superior del mismo major en el **envelope** y en el **diseño interior** de UNA vista; editar y guardar; comprobar que esa vista conserva **sus** desconocidos+versión y otra vista los **suyos** (distintos) — sin mezclar ni degradar. |
+| 4 | Vista nueva durante edición (Insertar) | La vista nueva hereda el **envelope y el diseño interior** del bloque iniciador (metadata+versión), no una versión fresca. |
+| 5 | Duplicación (RACKDUPLICAR) | Copia con **GUID nuevo** y nombre nuevo; desconocidos del envelope sobreviven; original intacto. |
+| 6 | Reapertura / round-trip | Reabrir el dibujo; RACKEDITAR reabre el sistema; BOM (RACKBOMTOTAL)/RACKLISTA sin cambios visibles; Xrecord con la **misma clave**; reabre bien. |
+
+**Biblioteca (WPF):**
+
+| # | Escenario | Verificación |
+|---|---|---|
+| B1 | Cama/larguero legacy | Abrir legacy sin `SchemaVersion`, editar, guardar; valores conocidos conservados y archivo versionado. |
+| B2 | Metadata desconocida | Inyectar desconocido en wrapper y payload; abrir, editar, guardar; desconocido + versión no degradada permanecen. |
+| B3 | Dinámico/selectivo de biblioteca | Abrir un diseño con metadata desconocida en el wrapper, editar y guardar; el wrapper conserva metadata+versión (Open/Save conservan el proyecto fuente). |
+| B4 | Cama DWG → biblioteca | Editar una cama del dibujo (con `FlowBedDocument` de versión menor-superior + desconocido) y guardarla en biblioteca; el archivo conserva `SchemaVersion` y el desconocido del `FlowBedDocument`. |
 
 ## 11. Criterios de aceptación
 
