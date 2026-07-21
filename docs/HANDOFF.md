@@ -75,6 +75,20 @@ comportamiento observable** salvo una excepción autorizada: un `Kind` sin handl
 con `RackListBuilder` (Application, RACKLISTA), que queda intacto por la dirección de dependencias. Cierra la
 pista B del Plugin (I-09→I-16→I-10).
 
+Una **corrección posterior a I-10** (`fix/kind-handler-missing-errors`) quedó integrada el **2026-07-21**
+(merge `--no-ff`; base `c9f2d61`, sin rebase). **No reimplementa I-10** —que permanece históricamente
+integrada en `c9f2d61`— sino que completa el tratamiento de handlers ausentes: un `RackEmbedDocument.Kind`
+sin handler registrado ahora produce **siempre** el error visible histórico y ninguna operación continúa en
+silencio. Hallazgos corregidos: (1) **RACKBOMTOTAL** ya no muestra un BOM parcial — un preflight de todos los
+racks colocados **aborta** el comando ante cualquier Kind sin handler (el skip best-effort queda solo para el
+payload ilegible de un handler conocido); (2) **RACKLAYOUT** valida el handler **antes** de abrir la ventana,
+para copias **enlazadas e independientes** (antes solo independientes); (3) el **restamp** lanza ante handler
+ausente en vez de devolver el diseño intacto (evita identidades inconsistentes); (4) **inmutabilidad**
+completa de `KindHandlerRegistry.Handlers` (extraída a la `KindDispatch<T>` pura de Application, expuesta como
+`ReadOnlyCollection`); (5) **cobertura de rutas negativas** verificable sin AutoCAD (`KindDispatch.TryResolveAll`
++ tests puros y source-guards, ADR-0003). El dueño **aprobó la validación manual en AutoCAD** sobre el DLL
+Debug de la punta técnica. Sin cambios de geometría, BOM funcional, GUID, persistencia, comandos ni aliases.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -156,6 +170,31 @@ desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apr
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Corrección posterior a I-10 (`fix/kind-handler-missing-errors`) — 2026-07-21:**
+
+- punta técnica revisada de la rama: `5fc631a9830024ce1535fe93a5322820d7e96dab`; este documento **no inventa**
+  el SHA del merge de `main` (vive en `git log --first-parent main`);
+- **corrección posterior**, no una reimplementación: I-10 permanece históricamente integrada en
+  `c9f2d61ee14a1afe85d3d941080405371187670e`;
+- `origin/main` no avanzó desde la base de la rama (`c9f2d61`): sin rebase final; se integra por `git merge --no-ff`;
+- hallazgos corregidos: BOM parcial ante handler ausente (ahora preflight + abort de todo el comando), layout
+  enlazado sin gate (ahora gate incondicional antes de abrir la ventana), restamp silencioso (ahora lanza),
+  inmutabilidad del registro (ahora `ReadOnlyCollection` vía la `KindDispatch<T>` pura de Application), y
+  cobertura de rutas negativas (`KindDispatch.TryResolveAll` puro + source-guards, sin cargar Autodesk — ADR-0003);
+- suite `RackCad.Tests`: **718/718 verdes**, sin fallos ni omitidas; build UI Debug **0 errores y 0 advertencias**;
+  builds Plugin y solución Debug **0 errores** (solo las dos familias `MSB3277` conocidas);
+- CI de rama verde sobre `5fc631a` (run `29849342527`): los tres jobs (Tests, Build UI, **Build Plugin without
+  AutoCAD**) en `success`;
+- **validación manual en AutoCAD aprobada por el dueño** sobre el DLL Debug del worktree correspondiente a
+  `5fc631a` (SHA-256 `0B39BDE316B9D861C19286C0911A2226433F4ED94CD0EFAD65607CBC9975FFE3`): confirmó que funcionó
+  bien; la validación se conserva porque `origin/main` no avanzó (WORKFLOW §6);
+- equivalencia mecánica: **26 `[CommandMethod]`** idénticos a `origin/main`, cero duplicados; **5** `Guid.NewGuid`;
+  **7** ubicaciones de `Regen`; sin cambios en geometría, recetas BOM, formatos persistidos, catálogos, Draw
+  Services ni referencias AutoCAD fuera del Plugin; sin dependencias nuevas;
+- alcance: producto en `src/RackCad.Plugin` (`KindHandlers/` + los consumidores migrados) y
+  `src/RackCad.Application/Persistence/KindDispatch.cs`; tests en `tests/RackCad.Tests`; sin cambios en
+  Domain/UI/catálogos/deploy/csproj.
 
 **Baseline integrada de I-10 — 2026-07-21:**
 
