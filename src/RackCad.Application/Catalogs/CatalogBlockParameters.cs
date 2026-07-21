@@ -76,6 +76,9 @@ namespace RackCad.Application.Catalogs
             Post,
             Plate,
             Beam,
+
+            /// <summary>The dynamic in/out beam: like a regular larguero except its LATERAL block gets no param.</summary>
+            InOutBeam,
             Truss,
             Separator,
             Rail,
@@ -101,14 +104,27 @@ namespace RackCad.Application.Catalogs
                     if (IsFrontal(view) || IsPlanta(view)) result.Add(peralte);
                     break;
                 case ParamRole.Plate:
-                    result.Add(peralte);
+                    // PERALTE in FRONTAL/PLANTA. In LATERAL the standard flow writes nothing; only the optional
+                    // manual per-cabecera peralte override (LateralHeaderLayoutBuilder) sets it, which the
+                    // standard manifest does not require.
+                    if (IsFrontal(view) || IsPlanta(view)) result.Add(peralte);
                     break;
                 case ParamRole.Beam:
-                    // A larguero block carries both a LENGTH and a PERALTE grip. Builders write LONGITUD (the
-                    // selective/dynamic-planta beams and the dynamic in/out beam in LATERAL) and PERALTE (frontal,
-                    // the intermediate beam in LATERAL, planta), so both are expected in every view drawn.
-                    result.Add(length);
+                    // Selective + intermediate largueros: LONGITUD+PERALTE in FRONTAL/PLANTA; only PERALTE in
+                    // LATERAL. SelectiveLateralBuilder.MakeLarguero and DynamicIntermediateBeamLateralBuilder.Make
+                    // write PERALTE, never LONGITUD, in the lateral view.
+                    if (IsFrontal(view) || IsPlanta(view)) result.Add(length);
                     result.Add(peralte);
+                    break;
+                case ParamRole.InOutBeam:
+                    // The dynamic in/out beam is drawn in LATERAL by DynamicSystemLateralBuilder.MakeLoadBeam,
+                    // which writes NO parameter; its FRONTAL/PLANTA blocks carry LONGITUD+PERALTE like a larguero.
+                    if (IsFrontal(view) || IsPlanta(view))
+                    {
+                        result.Add(length);
+                        result.Add(peralte);
+                    }
+
                     break;
                 case ParamRole.Truss:
                     if (IsLateral(view) || IsPlanta(view)) result.Add(length);
@@ -156,6 +172,14 @@ namespace RackCad.Application.Catalogs
             if (ContainsId(catalog.PostProfiles, pieceId)) return ParamRole.Post;
             if (ContainsId(catalog.TrussProfiles, pieceId)) return ParamRole.Truss;
             if (ContainsId(catalog.SpacerProfiles, pieceId)) return ParamRole.Separator;
+
+            // The dynamic in/out beam is a larguero (BeamProfiles) with a distinct LATERAL contract, so it is
+            // classified by its own catalog id BEFORE the generic beam rule.
+            if (string.Equals(pieceId, DynamicRackDefaults.InOutBeamCatalogId, StringComparison.OrdinalIgnoreCase))
+            {
+                return ParamRole.InOutBeam;
+            }
+
             if (ContainsId(catalog.BeamProfiles, pieceId)) return ParamRole.Beam;
             if (ContainsId(catalog.BasePlates, pieceId)) return ParamRole.Plate;
 
