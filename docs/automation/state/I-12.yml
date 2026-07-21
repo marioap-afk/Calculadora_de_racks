@@ -5,13 +5,14 @@ automation_state:
   claim_id: 12b19325-fced-4ef9-819f-af911e17c7a2
   current_phase: 6
   state: review-ready
-  gate: owner-decision
+  gate: owner-validation
   attempts: 0
-  next_action: owner-accept-adr-0004-and-autocad-autoload-check-then-serialized-merge-no-ff
+  next_action: owner-manual-autoload-validation-in-autocad-2025-then-serialized-merge-no-ff
   last_evidence_commit: 3d44fdf3eca2546141cba56e9ee9beb1a9308389
 owner_decision:
-  status: pending
+  status: accepted
   validator: owner
+  date: 2026-07-21
   subject: ADR-0004 estrategia de versiones de AutoCAD (SeriesMin/SeriesMax, recompilacion anual)
   decision_path: docs/adr/0004-estrategia-de-versiones-de-autocad.md
 autocad_validation:

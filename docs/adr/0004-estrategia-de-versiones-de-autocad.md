@@ -1,8 +1,8 @@
 # ADR-0004: Estrategia de versiones de AutoCAD
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-21
-- **Decisores:** Mario Pérez, dueño del repositorio (acepta); redactado por Claude (I-12)
+- **Estado:** aceptado
+- **Fecha:** 2026-07-21 (propuesta y aceptación)
+- **Decisores:** Mario Pérez, dueño del repositorio (aceptó); redactado por Claude (I-12)
 - **Iniciativa relacionada:** I-12 (`refactor/versionado`)
 
 ## Contexto
@@ -57,3 +57,10 @@ compilación exigen. No se amplía `SeriesMax` a una versión que no se haya rec
 - `Directory.Build.props` (`RackCadAutoCADSeriesMin`/`Max`),
   `deploy/RackCad.bundle/PackageContents.template.xml`, `docs/guias/despliegue.md`.
 - ROADMAP, fila I-12 (hallazgos G5, G8, G9).
+
+## Notas posteriores
+
+- **2026-07-21 — Aceptado por Mario Pérez** (dueño del repositorio). Decisión confirmada: RackCad
+  soporta una sola serie de AutoCAD a la vez; hoy `SeriesMin = SeriesMax = R25.0`, exclusivamente
+  AutoCAD 2025; soportar una versión futura exige recompilar, validar en ella, actualizar el rango y
+  revisar nuevamente ADR-0003. El contenido de la sección Decisión no cambia (ADR aceptado inmutable).

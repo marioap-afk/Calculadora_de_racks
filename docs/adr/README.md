@@ -43,7 +43,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0001](0001-ramas-por-iniciativa.md) | Ramas por iniciativa técnica, no por herramienta | aceptado |
 | [0002](0002-secuencia-dinamico-modular.md) | Secuencia de integración de la rama del dinámico modular | aceptado |
 | [0003](0003-referencias-autocad-para-ci.md) | Referencias AutoCAD para compilación en CI | aceptado |
-| [0004](0004-estrategia-de-versiones-de-autocad.md) | Estrategia de versiones de AutoCAD | propuesto |
+| [0004](0004-estrategia-de-versiones-de-autocad.md) | Estrategia de versiones de AutoCAD | aceptado |
 
 Pendiente (iniciativa `docs/adr-retroactivos`): retro-documentar las ~13 decisiones vigentes de la
 tabla de HANDOFF §7 (solo-Plugin-toca-AutoCAD, catálogos CSV Excel-first, GUID embebido, patrón

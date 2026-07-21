@@ -121,8 +121,9 @@ ningún otro entregable de I-14.
 
 I-19 (`feature/validador-catalogos`) sigue **activa**: I-12 **no** absorbe sus cambios.
 
-ADR-0004 nace `propuesto`: **requiere decisión del dueño** (aceptarlo) antes de integrar
-(`requires_owner_decision: true`).
+ADR-0004 fue **aceptado por el dueño** (Mario Pérez, 2026-07-21): RackCad soporta una sola serie de
+AutoCAD a la vez; hoy `SeriesMin = SeriesMax = R25.0` (solo AutoCAD 2025). Antes de integrar queda
+pendiente únicamente la validación manual de autocarga en AutoCAD 2025.
 
 ## 7. Archivos esperados
 
