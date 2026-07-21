@@ -7,7 +7,6 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
 using RackCad.Plugin.Headers;
-using RackCad.Plugin.Systems;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -31,50 +30,37 @@ namespace RackCad.Plugin
                 }
 
                 var editor = document.Editor;
-                var store = new RackEmbedStore();
-
                 // One representative embed per rack GUID (every view-block carries the same full design) + its placement
                 // count = the MAX BlockReference count across the rack's view-blocks (a rack copied N times shows N).
                 var byRack = new Dictionary<string, RackAggregate>(StringComparer.OrdinalIgnoreCase);
                 var order = new List<string>();
 
+                List<RackEnvelopeScan> envelopes;
                 using (document.LockDocument())
                 using (var transaction = document.Database.TransactionManager.StartTransaction())
                 {
-                    var blockTable = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
-                    foreach (ObjectId id in blockTable)
+                    envelopes = RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: true);
+                    transaction.Commit();
+                }
+
+                foreach (var envelope in envelopes)
+                {
+                    var embed = envelope.Embed;
+                    if (embed == null || string.IsNullOrWhiteSpace(embed.Id) || string.IsNullOrWhiteSpace(embed.Kind))
                     {
-                        var record = (BlockTableRecord)transaction.GetObject(id, OpenMode.ForRead);
-                        if (record.IsLayout || record.IsAnonymous || record.IsFromExternalReference)
-                        {
-                            continue;
-                        }
-
-                        var json = RackBlockData.Read(transaction, id);
-                        if (string.IsNullOrEmpty(json))
-                        {
-                            continue;
-                        }
-
-                        var embed = store.Deserialize(json);
-                        if (embed == null || string.IsNullOrWhiteSpace(embed.Id) || string.IsNullOrWhiteSpace(embed.Kind))
-                        {
-                            continue;
-                        }
-
-                        var copies = record.GetBlockReferenceIds(directOnly: true, forceValidity: false).Count;
-                        if (!byRack.TryGetValue(embed.Id, out var aggregate))
-                        {
-                            byRack[embed.Id] = new RackAggregate { Embed = embed, Copies = copies };
-                            order.Add(embed.Id);
-                        }
-                        else if (copies > aggregate.Copies)
-                        {
-                            aggregate.Copies = copies;
-                        }
+                        continue;
                     }
 
-                    transaction.Commit();
+                    var copies = envelope.DirectReferenceCount;
+                    if (!byRack.TryGetValue(embed.Id, out var aggregate))
+                    {
+                        byRack[embed.Id] = new RackAggregate { Embed = embed, Copies = copies };
+                        order.Add(embed.Id);
+                    }
+                    else if (copies > aggregate.Copies)
+                    {
+                        aggregate.Copies = copies;
+                    }
                 }
 
                 if (byRack.Count == 0)

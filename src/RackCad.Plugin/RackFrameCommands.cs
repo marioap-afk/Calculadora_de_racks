@@ -167,29 +167,16 @@ namespace RackCad.Plugin
                 return results;
             }
 
-            var store = new RackEmbedStore();
             using (document.LockDocument())
             using (var transaction = document.Database.TransactionManager.StartTransaction())
             {
-                var blockTable = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
-                foreach (ObjectId id in blockTable)
+                // FindRackBlocks keeps its own filter: match by GUID and tolerate a missing Kind (unlike RACKLISTA /
+                // RACKBOMTOTAL). It needs no reference count, so the scan skips it.
+                foreach (var envelope in RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: false))
                 {
-                    var record = (BlockTableRecord)transaction.GetObject(id, OpenMode.ForRead);
-                    if (record.IsLayout || record.IsAnonymous || record.IsFromExternalReference)
+                    if (envelope.Embed != null && string.Equals(envelope.Embed.Id, rackId, System.StringComparison.OrdinalIgnoreCase))
                     {
-                        continue;
-                    }
-
-                    var json = RackBlockData.Read(transaction, id);
-                    if (string.IsNullOrEmpty(json))
-                    {
-                        continue;
-                    }
-
-                    var embed = store.Deserialize(json);
-                    if (embed != null && string.Equals(embed.Id, rackId, System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        results.Add((id, embed));
+                        results.Add((envelope.DefinitionId, envelope.Embed));
                     }
                 }
 

@@ -6,7 +6,6 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
-using RackCad.Plugin.Systems;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -34,53 +33,41 @@ namespace RackCad.Plugin
 
                 // One pass over the block table gathers everything the window needs: the envelopes (grouped into
                 // rows by RackListBuilder), each rack's view-block ids (for the zoom) and its placed-copy count.
-                var store = new RackEmbedStore();
                 var embeds = new List<RackEmbedDocument>();
                 var blocksByRack = new Dictionary<string, List<(ObjectId BlockId, RackEmbedDocument Embed)>>(StringComparer.OrdinalIgnoreCase);
                 var copiesByRack = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
+                List<RackEnvelopeScan> envelopes;
                 using (document.LockDocument())
                 using (var transaction = document.Database.TransactionManager.StartTransaction())
                 {
-                    var blockTable = (BlockTable)transaction.GetObject(document.Database.BlockTableId, OpenMode.ForRead);
-                    foreach (ObjectId id in blockTable)
+                    envelopes = RackBlockFinder.ScanEnvelopes(transaction, document.Database, includeReferenceCount: true);
+                    transaction.Commit();
+                }
+
+                foreach (var envelope in envelopes)
+                {
+                    var embed = envelope.Embed;
+                    if (embed == null || string.IsNullOrWhiteSpace(embed.Id) || string.IsNullOrWhiteSpace(embed.Kind))
                     {
-                        var record = (BlockTableRecord)transaction.GetObject(id, OpenMode.ForRead);
-                        if (record.IsLayout || record.IsAnonymous || record.IsFromExternalReference)
-                        {
-                            continue;
-                        }
-
-                        var json = RackBlockData.Read(transaction, id);
-                        if (string.IsNullOrEmpty(json))
-                        {
-                            continue;
-                        }
-
-                        var embed = store.Deserialize(json);
-                        if (embed == null || string.IsNullOrWhiteSpace(embed.Id) || string.IsNullOrWhiteSpace(embed.Kind))
-                        {
-                            continue;
-                        }
-
-                        embeds.Add(embed);
-                        if (!blocksByRack.TryGetValue(embed.Id, out var blocks))
-                        {
-                            blocks = new List<(ObjectId, RackEmbedDocument)>();
-                            blocksByRack[embed.Id] = blocks;
-                            copiesByRack[embed.Id] = 0;
-                        }
-
-                        blocks.Add((id, embed));
-
-                        // Copies = PHYSICAL placements of the rack: the MAX reference count across its view-blocks,
-                        // the same aggregation RACKBOMTOTAL uses. Summing instead counted every view as a copy (a rack
-                        // with frontal + 2 cortes + planta showed "4" here while the BOM said 1). forceValidity stays
-                        // FALSE: the true variant revalidates every reference and is expensive on large drawings.
-                        copiesByRack[embed.Id] = Math.Max(copiesByRack[embed.Id], record.GetBlockReferenceIds(directOnly: true, forceValidity: false).Count);
+                        continue;
                     }
 
-                    transaction.Commit();
+                    embeds.Add(embed);
+                    if (!blocksByRack.TryGetValue(embed.Id, out var blocks))
+                    {
+                        blocks = new List<(ObjectId, RackEmbedDocument)>();
+                        blocksByRack[embed.Id] = blocks;
+                        copiesByRack[embed.Id] = 0;
+                    }
+
+                    blocks.Add((envelope.DefinitionId, embed));
+
+                    // Copies = PHYSICAL placements of the rack: the MAX reference count across its view-blocks,
+                    // the same aggregation RACKBOMTOTAL uses. Summing instead counted every view as a copy (a rack
+                    // with frontal + 2 cortes + planta showed "4" here while the BOM said 1). forceValidity stays
+                    // FALSE: the true variant revalidates every reference and is expensive on large drawings.
+                    copiesByRack[embed.Id] = Math.Max(copiesByRack[embed.Id], envelope.DirectReferenceCount);
                 }
 
                 var entries = RackListBuilder.Build(embeds);
