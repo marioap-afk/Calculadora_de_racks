@@ -7,7 +7,8 @@ namespace RackCad.Application.Persistence
     /// <summary>
     /// Immutable, explicit lookup of items keyed by a <see cref="RackEmbedDocument.Kind"/> string, with no
     /// reflection. Rejects null items, blank keys and duplicate keys (including case-variant duplicates) at
-    /// construction, so a wiring mistake fails fast — in a test or the build — instead of silently at runtime.
+    /// construction, so a wiring mistake throws immediately (fail-fast) instead of surfacing silently later; these
+    /// construction guards are unit-tested.
     /// Exposes a case-sensitive lookup (mirroring the C# <c>switch (kind)</c> the Plugin consumers used) and a
     /// case-insensitive one (for the copy restamp path).
     ///

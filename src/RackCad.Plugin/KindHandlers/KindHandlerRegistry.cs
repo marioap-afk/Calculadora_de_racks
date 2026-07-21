@@ -10,10 +10,12 @@ namespace RackCad.Plugin.KindHandlers
     ///
     /// Handlers are listed BY HAND in <see cref="Default"/>, in a stable, documented order — no reflection, no
     /// assembly scanning. The registration invariants (no null handler, no blank key, no duplicate key) and the
-    /// lookups live in the pure, unit-tested <see cref="KindDispatch{T}"/>, so a wiring mistake fails fast (in a
-    /// test / the build) and <see cref="Handlers"/> is genuinely read-only (no cast-to-mutable path). Lookups never
-    /// throw: a missing handler is surfaced by the CALLER via <see cref="KindHandlerDispatch"/>, which prints the
-    /// historic "tipo de rack no reconocido" message, so no operation continues silently with an unknown kind.
+    /// lookups live in the pure, unit-tested <see cref="KindDispatch{T}"/>: the generic guards are covered by tests,
+    /// and a mistake in the <see cref="Default"/> list itself is rejected the moment the registry is first built
+    /// (fail-fast at Plugin load, not a silent partial registry). <see cref="Handlers"/> is genuinely read-only (no
+    /// cast-to-mutable path). Lookups never throw: a missing handler is surfaced by the CALLER via
+    /// <see cref="KindHandlerDispatch"/>, which prints the historic "tipo de rack no reconocido" message, so no
+    /// operation continues silently with an unknown kind.
     ///
     /// This is a PLUGIN registry for AutoCAD operations; it is NOT the Application-layer <c>SystemRegistry</c>
     /// (persistence, validation, library, keyed by <c>RackSystemKind</c>). The two live in different layers with
