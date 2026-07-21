@@ -122,8 +122,9 @@ ningún otro entregable de I-14.
 I-19 (`feature/validador-catalogos`) sigue **activa**: I-12 **no** absorbe sus cambios.
 
 ADR-0004 fue **aceptado por el dueño** (Mario Pérez, 2026-07-21): RackCad soporta una sola serie de
-AutoCAD a la vez; hoy `SeriesMin = SeriesMax = R25.0` (solo AutoCAD 2025). Antes de integrar queda
-pendiente únicamente la validación manual de autocarga en AutoCAD 2025.
+AutoCAD a la vez; hoy `SeriesMin = SeriesMax = R25.0` (solo AutoCAD 2025). La validación manual de
+autocarga en AutoCAD 2025 fue **ejecutada y aprobada** por el dueño el 2026-07-21
+([evidencia](I-12-autocad-validation.md)); I-12 queda **lista para integración serializada**.
 
 ## 7. Archivos esperados
 
@@ -168,6 +169,11 @@ Ligera y responsabilidad del dueño antes de integrar: instalar el bundle regene
 (`deploy/install-bundle.ps1 -Build`) y confirmar que AutoCAD 2025 lo **carga solo** al arranque y que
 `RACKCAD` responde (el manifiesto cambió: se agregó `SeriesMax="R25.0"` y la versión se genera). No
 cambia comportamiento de dibujo, así que no requiere los escenarios de geometría/BOM.
+
+**Resultado: APROBADA** por el dueño el 2026-07-21 sobre `5d5f0dc` (publish Release; `verify-bundle.ps1`
+105 comprobaciones; DLL idénticos al publish; catálogos idénticos a `assets/catalogs`; cero DLL
+Autodesk; instalación en `%APPDATA%\Autodesk\ApplicationPlugins\RackCad.bundle`; **autocarga PASS** y
+`RACKCAD` **PASS**). Evidencia: [I-12-autocad-validation.md](I-12-autocad-validation.md).
 
 ## 11. Criterios de aceptacion
 
