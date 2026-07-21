@@ -21,7 +21,7 @@ decision_paths: []
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: false
+requires_owner_decision: true
 requires_owner_validation: true
 automation:
   enabled: false
@@ -199,30 +199,40 @@ Explícitamente NO se toca (pertenece a otras iniciativas o excede D1/D3):
   (`CurrentSchemaVersion` + `JsonExtensionData` + guarda tolerante en `RackEmbedStore`), `SchemaGuard.cs`
   (delega la legibilidad en `SchemaVersionPolicy`).
 - `src/RackCad.Application/Systems/SystemRegistry.Default.cs` (mapeo cama/larguero vía documentos + guarda).
-- `src/RackCad.Plugin/`: `RackCommandSupport.cs` (`ReadInnerSourceProject`), `RackCamaCommands.cs`,
-  `RackSelectivoCommands.cs`, `RackDinamicoCommands.cs`, `RackCabeceraCommands.cs`. Cada `Build*Payload`
-  compone el envelope vía `RackEmbedComposer`; el redibujo multivista conserva la metadata **del Embed de cada
-  bloque**; una vista nueva hereda el envelope iniciador. **Dos límites independientes por bloque**: además del
-  envelope, el diseño interior de dinámico y cabecera es a su vez un `RackProjectDocument`, así que
-  `BuildDynamicPayload`/`BuildCabeceraPayload` re-serializan el diseño con `WithSourceMetadataFrom` del proyecto
-  leído de `source.Design` (fallback al iniciador solo si es seguro; un MAJOR incompatible no se oculta). El
-  interior del selectivo es un `SelectivePalletDesignDocument` (no es uno de los cuatro límites; solo su
-  envelope se preserva). La cama del dibujo transporta su `FlowBedDocument` fuente a la ventana. **No** tocan
-  los tres archivos de I-10.
-- `src/RackCad.UI/`: `RackFlowBedWindow.xaml.cs` (campo privado + `LoadForNew`/`LoadExisting` reciben el
-  `RackProject` fuente **o** el `FlowBedDocument` fuente; el guardado usa `WithSourceMetadataFrom`/
-  `WithSourceFlowBed`), `RackLargueroWindow.xaml.cs`, `RackSelectiveWindow.xaml.cs` (`LoadForNew` recibe el
+- `src/RackCad.Application/Persistence/InnerSourceResolution.cs` (**crear**): resultado discriminado
+  `Success`/`BenignFallback`/`IncompatibleMajor`/`WrongKind` + `InnerSourcePreflightResult`.
+  `RackProjectStore.ResolveInnerSource(designJson, expectedKind, initiating)` y `PreflightInnerSources(...)` puros;
+  `RackProject.SourceFlowBedDocument` (accesor para el sidecar de cama).
+- `src/RackCad.Plugin/`: `RackCommandSupport.cs` (`PreflightInnerSources` — envoltorio delgado del preflight puro),
+  `RackCamaCommands.cs`, `RackSelectivoCommands.cs`, `RackDinamicoCommands.cs`, `RackCabeceraCommands.cs`. Cada
+  `Build*Payload` compone el envelope vía `RackEmbedComposer`; el redibujo multivista conserva la metadata **del
+  Embed de cada bloque**; una vista nueva hereda el envelope iniciador. **Dos límites independientes por bloque**:
+  además del envelope, el diseño interior de dinámico y cabecera es a su vez un `RackProjectDocument`. `EditDynamic`/
+  `EditCabecera` hacen un **preflight de TODAS las vistas ligadas antes de redibujar**: un MAJOR interior
+  incompatible o un Kind interior incorrecto **abortan la edición completa** con mensaje visible (sin
+  actualización parcial); en caso seguro, `Build*Payload` re-serializa el diseño con `WithSourceMetadataFrom` del
+  proyecto resuelto por bloque (propio, o el iniciador en fallo benigno). El interior del selectivo es un
+  `SelectivePalletDesignDocument` (no es uno de los cuatro límites; solo su envelope se preserva).
+- `src/RackCad.Plugin/RackMenuCommands.cs` (**transporte mínimo, I-10 integrada**; sin cambiar handlers): la
+  inserción desde biblioteca pasa el proyecto/documento fuente a `DrawDynamicView`/`BuildCamaPayload`/
+  `RackCabeceraCommands.DrawAndPlace`.
+- `src/RackCad.UI/`: `RackFlowBedWindow.xaml.cs` (`LoadForNew`/`LoadExisting` reciben el `RackProject` fuente **o**
+  el `FlowBedDocument` fuente; guarda con `WithSourceMetadataFrom`/`WithSourceFlowBed`; expone
+  `SourceFlowBedToInsert`), `RackLargueroWindow.xaml.cs`, `RackSelectiveWindow.xaml.cs` (`LoadForNew` recibe el
   proyecto fuente; `SaveToLibrary` usa `WithSourceMetadataFrom`), `RackDynamicSystemWindow.xaml.cs` (campo
   `sourceProject` fijado por `LoadDesignForNew`/`LoadExisting`/`OpenSystem_Click`; `SaveSystem_Click` usa
-  `WithSourceMetadataFrom` — el guardado re-snapshotea el diseño, así que la metadata solo sobrevive en el
-  campo retenido), `RackMainMenuWindow.xaml.cs` (transporta el proyecto fuente a los cuatro editores). Sin
-  rediseño de UI.
+  `WithSourceMetadataFrom`; expone `SourceProjectToInsert`), `RackMainMenuWindow.xaml.cs` (transporta el proyecto
+  fuente a los editores y **expone** `DynamicSourceProjectToInsert`/`FlowBedSourceDocumentToInsert`/
+  `ConfigurationSourceProjectToInsert` para la inserción biblioteca→DWG). Sin rediseño de UI.
 
-**Frontera de la cabecera de biblioteca**: la biblioteca de cabecera guarda por
+**Frontera de la cabecera de biblioteca (gate `owner-decision`)**: la biblioteca de cabecera guarda por
 `RackFrameProjectStore`/`RackFrameProjectDocument` (un DTO **distinto**, esquema 1.0, cabecera desnuda), que
 **no** es uno de los cuatro límites de I-11 y por diseño **nunca** produce un `RackProjectDocument`. No es un
 diferimiento sino un límite de alcance factual: preservar `RackFrameProjectDocument` sería un **quinto** límite
-(exigiría añadirle `JsonExtensionData`) y requiere autorización expresa del dueño. La cabecera **embebida** en el
+(exigiría añadirle `JsonExtensionData`). Por eso `requires_owner_decision: true` y el gate **owner-decision**:
+el dueño aprueba o rechaza excluir `RackFrameProjectDocument` como quinto límite. Si aprueba la exclusión,
+`requires_owner_decision` vuelve a `false` y la aprobación se registra en la evidencia. Si ordena incluirlo,
+la implementación se **detiene** antes de ampliar el alcance (§12) y se reporta. La cabecera **embebida** en el
 dibujo sí reconstruye un `RackProjectDocument` interior y **sí** se preserva (arriba).
 
 **Limitación explícita**: `JsonExtensionData` **no** es preservación recursiva de todos los DTO anidados. Se
@@ -299,6 +309,14 @@ Para cada familia (**cama, selectivo, dinámico, cabecera**):
 | B2 | Metadata desconocida | Inyectar desconocido en wrapper y payload; abrir, editar, guardar; desconocido + versión no degradada permanecen. |
 | B3 | Dinámico/selectivo de biblioteca | Abrir un diseño con metadata desconocida en el wrapper, editar y guardar; el wrapper conserva metadata+versión (Open/Save conservan el proyecto fuente). |
 | B4 | Cama DWG → biblioteca | Editar una cama del dibujo (con `FlowBedDocument` de versión menor-superior + desconocido) y guardarla en biblioteca; el archivo conserva `SchemaVersion` y el desconocido del `FlowBedDocument`. |
+| B5 | **Dinámico biblioteca → DWG** | Archivo con wrapper interior 2.x futuro-minor + desconocido; abrir desde biblioteca e **insertar** en el dibujo; inspeccionar el `Design` embebido; la versión y el desconocido permanecen. |
+| B6 | **Cama biblioteca → DWG** | Archivo con `FlowBedDocument` 1.x futuro-minor + desconocido; abrir desde biblioteca e **insertar**; el `Design` embebido conserva ambos. |
+
+**Protección de esquema interior:**
+
+| # | Escenario | Verificación |
+|---|---|---|
+| S7 | **MAJOR interior incompatible** | Dos vistas del mismo GUID, una con el `RackProjectDocument` interior de un MAJOR incompatible; **RACKEDITAR NO** debe reescribir **ninguna** vista ni hacer actualización parcial; debe mostrar un **diagnóstico visible** ("...version mas nueva...; No se modifico ningun bloque."). |
 
 ## 11. Criterios de aceptación
 
