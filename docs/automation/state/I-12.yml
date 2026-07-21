@@ -1,0 +1,42 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-12
+  branch: refactor/versionado
+  claim_id: 12b19325-fced-4ef9-819f-af911e17c7a2
+  current_phase: 6
+  state: integration-ready
+  gate: none
+  attempts: 0
+  next_action: owner-serialized-merge-no-ff-into-main
+  last_evidence_commit: 3d44fdf3eca2546141cba56e9ee9beb1a9308389
+owner_decision:
+  status: accepted
+  validator: owner
+  date: 2026-07-21
+  subject: ADR-0004 estrategia de versiones de AutoCAD (SeriesMin/SeriesMax, recompilacion anual)
+  decision_path: docs/adr/0004-estrategia-de-versiones-de-autocad.md
+autocad_validation:
+  status: passed
+  validator: owner
+  date: 2026-07-21
+  application: AutoCAD 2025
+  code_sha: 5d5f0dc650bad5aa9ef24b5a49d1d47a58acebd7
+  command: pwsh deploy\install-bundle.ps1 -Build
+  result: autocarga PASS; RACKCAD PASS; verify-bundle 105 comprobaciones; cero DLL Autodesk
+  evidence_path: docs/initiatives/I-12-autocad-validation.md
+owner_validation:
+  status: accepted
+  validator: owner
+  date: 2026-07-21
+integration_conflicts:
+  - initiative: I-14
+    branch: architecture/ui-controls
+    status: integrated-in-main
+    file: tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj
+    kind: semantic
+    resolution: resuelto-en-el-rebase-de-I-12 (LangVersion/Nullable eliminados; heredan de Directory.Build.props)
+execution_context:
+  mode: manual-git-only
+  worktree: Calculadora de racks-I-12-versionado
+  rebased_onto: origin/main (merge de I-14 integrada)
+  pull_request: none

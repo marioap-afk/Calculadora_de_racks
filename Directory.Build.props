@@ -1,6 +1,44 @@
 <Project>
+  <!-- Common properties for EVERY RackCad project. Directory.Build.props is imported at the top of
+       each .csproj, so a project can still override any value locally when it must stay specific
+       (e.g. the test host RollForward). Nothing that depends on the target framework, WPF or the
+       output type belongs here: that stays in each .csproj. -->
   <PropertyGroup>
+    <!-- Restore behavior (kept from the previous configuration). -->
     <NuGetAudit>false</NuGetAudit>
     <RestoreIgnoreFailedSources>true</RestoreIgnoreFailedSources>
+  </PropertyGroup>
+
+  <!-- Single product version. Bump it HERE (one place): it feeds every assembly's version attributes
+       and the Autoloader manifest (deploy/RackCad.bundle/PackageContents.template.xml). A release cut
+       raises this line together with the tag (WORKFLOW section 1). -->
+  <PropertyGroup>
+    <RackCadVersion>1.0.0</RackCadVersion>
+    <Version>$(RackCadVersion)</Version>
+    <!-- AssemblyVersion/FileVersion derive from Version (x.y.z.0). InformationalVersion receives the
+         git SHA in Directory.Build.targets, ending up as "x.y.z+<sha>". -->
+  </PropertyGroup>
+
+  <!-- Language settings, centralized (they were duplicated, identical, in every .csproj). -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <!-- Nullable=disable preserves the current behavior of ALL existing code (enabling it would emit
+         hundreds of warnings). Go-forward policy (ROADMAP I-12): a NEW project that wants nullable
+         reference types opts in explicitly in its own .csproj with <Nullable>enable</Nullable>. -->
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <!-- Deterministic compilation: two builds of the same commit produce byte-identical assemblies,
+       which the reproducible SHA traceability and the reproducible bundle (I-12) rely on. -->
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <!-- AutoCAD version policy for the Autoloader manifest (ADR-0004). Single source of the supported
+       series range; today only AutoCAD 2025 (R25.0), recompiled yearly. See
+       docs/adr/0004-estrategia-de-versiones-de-autocad.md. -->
+  <PropertyGroup>
+    <RackCadAutoCADSeriesMin>R25.0</RackCadAutoCADSeriesMin>
+    <RackCadAutoCADSeriesMax>R25.0</RackCadAutoCADSeriesMax>
   </PropertyGroup>
 </Project>

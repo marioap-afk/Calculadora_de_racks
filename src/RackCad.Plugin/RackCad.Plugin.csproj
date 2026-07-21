@@ -2,8 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <LangVersion>latest</LangVersion>
-    <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
     <AutoCADInstallDir Condition="'$(AutoCADInstallDir)' == ''">C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
     <UseAutoCADNuGetReferences Condition="'$(UseAutoCADNuGetReferences)' == ''">false</UseAutoCADNuGetReferences>
@@ -42,23 +40,35 @@
     </Reference>
   </ItemGroup>
 
-  <!-- Assemble an AutoCAD Autoloader bundle in the output (RackCad.bundle\PackageContents.xml + Contents\{DLLs,catalogs}).
-       Copy that folder to %AppData%\Autodesk\ApplicationPlugins\ (or run deploy\install-bundle.ps1) for auto-load. -->
-  <Target Name="AssembleAutoloaderBundle" AfterTargets="Build">
+  <!-- Assemble the AutoCAD Autoloader bundle from the PUBLISH output. The canonical, reproducible
+       flow is `dotnet publish` (deploy\build-bundle.ps1 wraps it; deploy\verify-bundle.ps1 checks it);
+       a plain `dotnet build` no longer emits a bundle. Layout: RackCad.bundle\PackageContents.xml
+       (generated from deploy\RackCad.bundle\PackageContents.template.xml with the central
+       $(RackCadVersion) and AutoCAD series — never hand-duplicated) + Contents\{the four RackCad DLLs,
+       catalogs\}. Copy that folder to %AppData%\Autodesk\ApplicationPlugins\ (or run
+       deploy\install-bundle.ps1) for auto-load. Autodesk compile references stay out of the output
+       (ADR-0003): the bundle carries only RackCad assemblies and its own catalogs. -->
+  <Target Name="AssembleAutoloaderBundle" AfterTargets="Publish">
     <PropertyGroup>
-      <BundleRoot>$(OutDir)RackCad.bundle</BundleRoot>
+      <BundleRoot>$(PublishDir)RackCad.bundle</BundleRoot>
       <BundleContents>$(BundleRoot)\Contents</BundleContents>
+      <PackageContentsTemplate>$(MSBuildProjectDirectory)\..\..\deploy\RackCad.bundle\PackageContents.template.xml</PackageContentsTemplate>
+      <_BundleManifestText>$([System.IO.File]::ReadAllText('$(PackageContentsTemplate)'))</_BundleManifestText>
+      <_BundleManifestText>$(_BundleManifestText.Replace('@RACKCAD_VERSION@', '$(RackCadVersion)'))</_BundleManifestText>
+      <_BundleManifestText>$(_BundleManifestText.Replace('@RACKCAD_SERIES_MIN@', '$(RackCadAutoCADSeriesMin)'))</_BundleManifestText>
+      <_BundleManifestText>$(_BundleManifestText.Replace('@RACKCAD_SERIES_MAX@', '$(RackCadAutoCADSeriesMax)'))</_BundleManifestText>
     </PropertyGroup>
     <ItemGroup>
-      <BundleAssemblies Include="$(OutDir)RackCad.Plugin.dll;$(OutDir)RackCad.Application.dll;$(OutDir)RackCad.Domain.dll;$(OutDir)RackCad.UI.dll" />
+      <BundleAssemblies Include="$(PublishDir)RackCad.Plugin.dll;$(PublishDir)RackCad.Application.dll;$(PublishDir)RackCad.Domain.dll;$(PublishDir)RackCad.UI.dll" />
       <BundleCatalogFiles Include="$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.json;$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.csv;$(MSBuildProjectDirectory)\..\..\assets\catalogs\*.dwg" />
     </ItemGroup>
-    <!-- The bundle is generated output, not a writable source. Recreate it on every build so
+    <!-- The bundle is generated output, not a writable source. Recreate it on every publish so
          removed catalogs and assemblies cannot survive from an older configuration. -->
     <RemoveDir Directories="$(BundleRoot)" />
-    <Copy SourceFiles="$(MSBuildProjectDirectory)\..\..\deploy\RackCad.bundle\PackageContents.xml" DestinationFolder="$(BundleRoot)" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(BundleAssemblies)" DestinationFolder="$(BundleContents)" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(BundleCatalogFiles)" DestinationFiles="@(BundleCatalogFiles->'$(BundleContents)\catalogs\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
-    <Message Importance="high" Text="RackCad Autoloader bundle: $(BundleRoot)" />
+    <MakeDir Directories="$(BundleRoot)" />
+    <WriteLinesToFile File="$(BundleRoot)\PackageContents.xml" Lines="$(_BundleManifestText)" Overwrite="true" WriteOnlyWhenDifferent="false" Encoding="UTF-8" />
+    <Copy SourceFiles="@(BundleAssemblies)" DestinationFolder="$(BundleContents)" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="@(BundleCatalogFiles)" DestinationFiles="@(BundleCatalogFiles->'$(BundleContents)\catalogs\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+    <Message Importance="high" Text="RackCad Autoloader bundle v$(RackCadVersion): $(BundleRoot)" />
   </Target>
 </Project>

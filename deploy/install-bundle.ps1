@@ -9,18 +9,21 @@
   including CSV/JSON catalogs, come from the new bundle. An existing
   Contents\catalogs\blocks-library.dwg is preserved byte-for-byte.
 
-  Requires AutoCAD 2025+ (.NET 8). Close AutoCAD before running: it locks the plugin
+  Requires AutoCAD 2025 (.NET 8). Close AutoCAD before running: it locks the plugin
   DLL and an update cannot be made safely while it is open.
 
 .PARAMETER Configuration
   Build configuration to take the bundle from: Debug or Release (default: Release).
 
 .PARAMETER Build
-  Also run `dotnet build -c <Configuration>` before installing.
+  Also run deploy\build-bundle.ps1 (canonical publish + fail-closed verify-bundle.ps1) before installing.
+  A -Build bundle never reaches staging or the destination without passing that verification. -Build
+  installs EXCLUSIVELY the canonical bundle for -Configuration and cannot be combined with -SourceBundlePath.
 
 .PARAMETER SourceBundlePath
-  Optional assembled bundle path. Intended for controlled deployment and tests; by
-  default it is resolved from the Plugin output for the selected configuration.
+  Optional path to an already-assembled bundle to install, for controlled deployment and tests. Mutually
+  exclusive with -Build (the entry point rejects the combination). Without -Build it defaults to the
+  Plugin publish output for the selected configuration.
 
 .PARAMETER TargetBundlePath
   Optional installation path. By default it is the per-user ApplicationPlugins path.
@@ -237,7 +240,7 @@ function Invoke-RackCadBundleInstall {
 
         Write-Host "RackCad instalado en: $targetFull"
         Write-Host "Los catalogos CSV/JSON corresponden al bundle nuevo; no se fusionan con la instalacion anterior."
-        Write-Host "Abre AutoCAD 2025+; los comandos quedan disponibles sin NETLOAD."
+        Write-Host "Abre AutoCAD 2025; los comandos quedan disponibles sin NETLOAD."
     }
     catch {
         $installError = $_
@@ -288,45 +291,49 @@ function Assert-AutoCadClosed {
     }
 }
 
-function Resolve-DotNetExecutable {
-    param([Parameter(Mandatory = $true)][string]$RepositoryRoot)
-
-    $commands = @(Get-Command dotnet -All -CommandType Application -ErrorAction SilentlyContinue |
-        Select-Object -ExpandProperty Source -Unique)
-
-    foreach ($command in $commands) {
-        Push-Location $RepositoryRoot
-        try {
-            & $command --version *> $null
-            if ($LASTEXITCODE -eq 0) {
-                return $command
-            }
-        }
-        finally {
-            Pop-Location
-        }
+function Resolve-PwshExecutable {
+    # build-bundle.ps1 and verify-bundle.ps1 require PowerShell 7+. Prefer the current pwsh process;
+    # otherwise locate pwsh on PATH. (The -Build path resolves dotnet inside build-bundle.ps1.)
+    $current = [System.Environment]::ProcessPath
+    if ($current -and ([System.IO.Path]::GetFileName($current)) -ieq "pwsh.exe") {
+        return $current
     }
-
-    throw "No se encontro un dotnet compatible con el SDK fijado por global.json."
+    $found = Get-Command pwsh -CommandType Application -ErrorAction SilentlyContinue |
+        Select-Object -First 1 -ExpandProperty Source
+    if ($found) {
+        return $found
+    }
+    throw "Se requiere PowerShell 7+ (pwsh) para compilar y verificar el bundle."
 }
 
 function Invoke-InstallBundleScript {
     $ErrorActionPreference = "Stop"
     $repo = Split-Path -Parent $PSScriptRoot
 
+    # -Build owns the whole bundle: it generates, verifies and installs EXCLUSIVELY the canonical
+    # bundle for -Configuration. Combining it with -SourceBundlePath is ambiguous (which bundle wins?)
+    # and would let an unverified external bundle be installed right after a canonical build. Reject it
+    # up front, before publishing or touching the destination. Use -SourceBundlePath only without -Build.
+    if ($Build -and -not [string]::IsNullOrWhiteSpace($SourceBundlePath)) {
+        throw "Combinacion invalida: -Build genera, verifica e instala el bundle canonico de -Configuration; no lo combines con -SourceBundlePath. Usa -Build (canonico) o -SourceBundlePath (bundle ya armado), no ambos."
+    }
+
     Assert-AutoCadClosed
 
     if ($Build) {
-        $dotnet = Resolve-DotNetExecutable -RepositoryRoot $repo
-        Write-Host "Compilando RackCad ($Configuration) con: $dotnet"
-        & $dotnet build (Join-Path $repo "src\RackCad.Plugin\RackCad.Plugin.csproj") -c $Configuration
+        # Canonical flow: deploy\build-bundle.ps1 publishes AND runs verify-bundle.ps1 fail-closed, so
+        # a -Build bundle can never reach staging or the destination without passing verification.
+        $buildBundle = Join-Path $PSScriptRoot "build-bundle.ps1"
+        $pwshExe = Resolve-PwshExecutable
+        Write-Host "Compilando y verificando el bundle ($Configuration) con: $buildBundle"
+        & $pwshExe -NoProfile -File $buildBundle -Configuration $Configuration
         if ($LASTEXITCODE -ne 0) {
-            throw "El build fallo con codigo $LASTEXITCODE."
+            throw "El build/verificacion del bundle fallo con codigo $LASTEXITCODE."
         }
     }
 
     $source = if ([string]::IsNullOrWhiteSpace($SourceBundlePath)) {
-        Join-Path $repo "src\RackCad.Plugin\bin\$Configuration\net8.0-windows\RackCad.bundle"
+        Join-Path $repo "src\RackCad.Plugin\bin\$Configuration\net8.0-windows\publish\RackCad.bundle"
     }
     else {
         $SourceBundlePath

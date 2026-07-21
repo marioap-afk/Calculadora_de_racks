@@ -589,14 +589,17 @@ function Invoke-ReleaseBuilds {
     $plugin = Join-Path $RepositoryRoot "src/RackCad.Plugin/RackCad.Plugin.csproj"
     $solution = Join-Path $RepositoryRoot "RackCad.sln"
 
-    $pluginBuild = Invoke-DotNet -Arguments (@('build', $plugin, '-c', 'Release', '--no-restore') + $properties + @('-v:minimal'))
-    Assert-DotNetSuccess $pluginBuild "Plugin Release build" -NoWarnings
+    # Publish (not just build) so the AssembleAutoloaderBundle target emits RackCad.bundle in the
+    # publish output; the canonical bundle flow is `dotnet publish` (I-12). No Autodesk runtime
+    # assets are produced (ADR-0003); Assert-NoAutodeskOutputs and Assert-BundleContract prove it.
+    $pluginPublish = Invoke-DotNet -Arguments (@('publish', $plugin, '-c', 'Release', '--no-restore') + $properties + @('-v:minimal'))
+    Assert-DotNetSuccess $pluginPublish "Plugin Release publish" -NoWarnings
 
     $solutionRestore = Invoke-DotNet -Arguments (@('restore', $solution, '--configfile', $NuGetConfig, '--no-cache', '--force') + $properties + @('-p:Configuration=Release', '-v:minimal'))
     Assert-DotNetSuccess $solutionRestore "Solution Release restore" -NoWarnings
     $solutionBuild = Invoke-DotNet -Arguments (@('build', $solution, '-c', 'Release', '--no-restore') + $properties + @('-v:minimal'))
     Assert-DotNetSuccess $solutionBuild "Solution Release build" -NoWarnings
-    Write-Host "Builds: Plugin Release and solution Release succeeded without warnings."
+    Write-Host "Builds: Plugin Release publish and solution Release build succeeded without warnings."
 }
 
 function Assert-NoAutodeskOutputs {
@@ -622,7 +625,7 @@ function Assert-BundleContract {
         [Parameter(Mandatory)][Collections.IDictionary]$AssemblyOwners
     )
 
-    $bundle = Join-Path $Root "src/RackCad.Plugin/bin/Release/net8.0-windows/RackCad.bundle"
+    $bundle = Join-Path $Root "src/RackCad.Plugin/bin/Release/net8.0-windows/publish/RackCad.bundle"
     $contents = Join-Path $bundle 'Contents'
     if (-not (Test-Path -LiteralPath (Join-Path $bundle 'PackageContents.xml') -PathType Leaf) -or
         -not (Test-Path -LiteralPath (Join-Path $contents 'catalogs') -PathType Container)) {
@@ -636,7 +639,29 @@ function Assert-BundleContract {
     if (@($actual | Where-Object { $AssemblyOwners.Contains($_) }).Count -ne 0) {
         throw "The bundle contains an Autodesk DLL."
     }
-    Write-Host "Outputs: no Autodesk DLLs or ZIPs; bundle contains exactly four RackCad DLLs."
+
+    # Fail-closed allowlist + manifest/version verification (deploy/verify-bundle.ps1): proves the
+    # bundle ships ONLY authorized RackCad assemblies and permitted catalog data, and that the
+    # manifest version and AutoCAD series match the central source. Reuses the single verifier (I-12).
+    $pwshExe = [System.Environment]::ProcessPath
+    & $pwshExe -NoProfile -File (Join-Path $Root "deploy/verify-bundle.ps1") `
+        -BundlePath $bundle -PropsPath (Join-Path $Root "Directory.Build.props")
+    if ($LASTEXITCODE -ne 0) {
+        throw "Fail-closed bundle verification (deploy/verify-bundle.ps1) failed."
+    }
+
+    # Persistent verifier harness: exercises verify-bundle.ps1 against the valid bundle and every
+    # negative case (Autodesk DLL, tampered DLL/catalog, extra/missing/sub-foldered catalog, stray
+    # file, wrong version/series). Runs here so CI covers it without editing .github/workflows/ci.yml.
+    $publishDir = Split-Path -Parent $bundle
+    & $pwshExe -NoProfile -File (Join-Path $Root "deploy/test-verify-bundle.ps1") `
+        -SourceBundle $bundle -PublishDir $publishDir `
+        -CatalogsSourceDir (Join-Path $Root "assets/catalogs") `
+        -PropsPath (Join-Path $Root "Directory.Build.props")
+    if ($LASTEXITCODE -ne 0) {
+        throw "Verifier harness (deploy/test-verify-bundle.ps1) failed."
+    }
+    Write-Host "Outputs: no Autodesk DLLs or ZIPs; bundle has exactly four RackCad DLLs; fail-closed verification and verifier harness passed."
 }
 
 function Invoke-AutoCADReferenceVerificationCore {

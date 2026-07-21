@@ -122,6 +122,23 @@ la base `RackDialogWindow` (chrome compartido, barra Aceptar/Cancelar, estado). 
 requiere validación en AutoCAD (`requires_autocad: false`) ni owner-validation; la adopción de los controles la
 harán I-15/I-20/I-21/I-22. La rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-12** (`refactor/versionado`) entrega **versionado real** y empaquetado reproducible, **sin cambio de
+comportamiento de producto**. Centraliza en `Directory.Build.props` una **versión única** (`RackCadVersion`),
+`LangVersion`, `Nullable` y determinismo, más las series de AutoCAD (`RackCadAutoCADSeriesMin`/`Max`); estampa el
+**SHA de git** reproducible en `InformationalVersion` (con fallback definido cuando no hay git). El manifiesto del
+Autoloader `PackageContents.xml` se **genera** desde una plantilla con la versión y las series (nada duplicado a
+mano) y el bundle se arma por **`dotnet publish`** (target `AfterTargets="Publish"`), con `deploy/build-bundle.ps1`
+(publish + verificación) y `deploy/verify-bundle.ps1` **fail-closed**: allowlist recursiva, comparación por SHA-256
+de los cuatro DLL contra el publish y de los catálogos contra `assets/catalogs`, versión/series del manifiesto y
+**cero DLL Autodesk** (ADR-0003 intacto), con su harness `deploy/test-verify-bundle.ps1`. `install-bundle.ps1 -Build`
+usa el flujo canónico verificado y **rechaza** `-Build`+`-SourceBundlePath`; la guarda de CI publica y ejecuta
+`verify-bundle.ps1` + el harness (**sin tocar** `ci.yml` ni `RackCad.sln`). Documenta **ADR-0004** (una sola serie de
+AutoCAD a la vez, hoy `SeriesMin = SeriesMax = R25.0` —solo AutoCAD 2025—, recompilación anual), **aceptado por el
+dueño**. Como I-14 ya estaba integrada, el rebase eliminó de `tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` el
+`LangVersion`/`Nullable` duplicados (ahora heredados). El dueño **aprobó la validación manual de autocarga en
+AutoCAD 2025** (bundle autoloaded sin `NETLOAD`, `RACKCAD` PASS; ver §5 y `docs/initiatives/I-12-autocad-validation.md`).
+La rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -210,22 +227,54 @@ el nuevo job `ui-tests`. AutoCAD: no ejecutado; no requerido por contrato.
 
 ## 4. Siguiente acción
 
-Con I-08, I-09, I-16, I-10, I-11 e **I-14** integradas y limpias, la **pista B del Plugin** está cerrada (la
-serialización I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme y
-la **pista C de UI** entrega su primer eslabón: los **controles comunes** (I-14) y el proyecto `tests/RackCad.UI.Tests`
-con su gate de CI. El siguiente eslabón natural de la pista C es **I-15 `architecture/editor-shell`** (depende de
-I-08 e I-14, se estorba con I-14 —ya integrada—). **I-18 (Push Back)** sigue bloqueada por I-15, I-16 y los bloques
-DWG del dueño. Están **en curso** (ramas activas en `origin`, aún no integradas) **I-12 `refactor/versionado`** e
-**I-19 `feature/validador-catalogos`**; cuando integren, deberán reconciliarse con lo que I-14 dejó (I-12: la
-centralización de `LangVersion`/`Nullable`, que el nuevo `.csproj` de UI-tests declara localmente; I-19: la entrada
-de I-14 en `docs/initiatives/README.md`). El siguiente paso es abrir I-15 respetando dependencias y estorbos, o
-continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
+Con I-08, I-09, I-16, I-10, I-11, **I-14** e **I-12** integradas y limpias, la **pista B del Plugin** está cerrada (la
+serialización I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme,
+la **pista C de UI** entrega su primer eslabón —los **controles comunes** (I-14) y el proyecto `tests/RackCad.UI.Tests`
+con su gate de CI— e **I-12** cierra el **versionado real** (versión única, SHA estampado, bundle por `dotnet publish`
+verificado fail-closed, ADR-0004 aceptado). El siguiente eslabón natural de la pista C es **I-15 `architecture/editor-shell`**
+(depende de I-08 e I-14, se estorba con I-14 —ya integrada—). **I-18 (Push Back)** sigue bloqueada por I-15, I-16 y los
+bloques DWG del dueño. Sigue **en curso** (rama activa en `origin`, aún no integrada) **I-19 `feature/validador-catalogos`**;
+cuando integre, deberá reconciliarse con lo que I-14 e I-12 dejaron (la entrada de I-14 en `docs/initiatives/README.md`
+y la centralización de `LangVersion`/`Nullable` que I-12 llevó a `Directory.Build.props`). El siguiente paso es abrir I-15
+respetando dependencias y estorbos, o continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-12 — 2026-07-21:**
+
+- punta de **código** validada por CI y por el dueño: `5d5f0dc650bad5aa9ef24b5a49d1d47a58acebd7`; el commit posterior de
+  la rama (`5e62a42`) es **solo documental** (registro de la validación AutoCAD); este documento **no inventa** el SHA
+  del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` **no avanzó** desde la base rebaseada de I-12 (`abc1a53`, Merge I-14): **sin rebase final** en esta
+  sesión; la rama se integra por `git merge --no-ff`;
+- suite `RackCad.Tests`: **791/791 verdes** (sin regresión: I-12 no toca Domain/Application); suite `RackCad.UI.Tests`:
+  **85/85 verdes** (I-12 solo elimina el `LangVersion`/`Nullable` duplicado del `.csproj`, ahora heredado);
+- build UI Debug: **0 errores y 0 advertencias**; builds Plugin y solución completa Debug: **0 errores**, únicamente las
+  dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre la punta `5e62a42` (run `29874100238`): los **cuatro** jobs —Tests (Domain+Application), Build
+  UI, UI Tests (WPF controls, net8.0-windows) y Build Plugin without AutoCAD— en `success`; la guarda de ADR-0003 publica
+  el Plugin y ejecuta `verify-bundle.ps1` (fail-closed) + el harness del verificador;
+- objetivo entregado: **versión única** (`RackCadVersion`) en `Directory.Build.props` que alimenta ensamblados y
+  manifiesto; **SHA estampado** reproducible en `InformationalVersion` (fallback definido sin git); `PackageContents.xml`
+  **generado** desde plantilla; bundle por **`dotnet publish`** con `deploy/build-bundle.ps1` + `deploy/verify-bundle.ps1`
+  fail-closed (DLL≡publish, catálogos≡`assets/catalogs`, versión/series, **cero DLL Autodesk**) y su harness
+  `deploy/test-verify-bundle.ps1`; `install-bundle.ps1` usa el flujo verificado y **rechaza** `-Build`+`-SourceBundlePath`;
+  **ADR-0004** (una serie a la vez, `SeriesMin = SeriesMax = R25.0`, solo AutoCAD 2025) **aceptado por el dueño**;
+- reproducibilidad: dos `dotnet publish` del mismo commit → **inventario y hashes idénticos** (bundle determinista);
+- validación manual: el dueño **aprobó la autocarga del bundle en AutoCAD 2025** (instalación en
+  `%APPDATA%\Autodesk\ApplicationPlugins\RackCad.bundle`, autocarga sin `NETLOAD` **PASS**, `RACKCAD` **PASS**);
+  evidencia en `docs/initiatives/I-12-autocad-validation.md`;
+- invariantes preservados: **sin** cambios de producto, UI, catálogos, persistencia, handlers, geometría, BOM ni dibujo;
+  ADR-0003 intacto (referencias Autodesk compile-only, cero DLL Autodesk en output/bundle/artifacts); **sin** dependencias
+  NuGet nuevas; **sin tocar** `RackCad.sln` ni `.github/workflows/ci.yml`;
+- alcance: `Directory.Build.props`/`Directory.Build.targets`, los cinco `.csproj` + `RackCad.UI.Tests.csproj` (rebase),
+  `src/RackCad.Plugin/RackCad.Plugin.csproj` (target), `deploy/` (`build-bundle`, `verify-bundle`, `test-verify-bundle`,
+  `install-bundle`, `test-install-bundle`, plantilla `PackageContents`, borrado el `.xml` estático),
+  `eng/ci/verify-autocad-references.ps1`, `docs/guias/despliegue.md`, ADR-0004 + índice, y contrato/estado/evidencia de I-12.
 
 **Baseline integrada de I-14 — 2026-07-21:**
 

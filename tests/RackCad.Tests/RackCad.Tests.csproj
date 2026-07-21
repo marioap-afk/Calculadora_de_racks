@@ -3,8 +3,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <!-- No .NET 8 runtime in this codespace (only 9/10); run the test host on a later major. -->
     <RollForward>LatestMajor</RollForward>
-    <LangVersion>latest</LangVersion>
-    <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
