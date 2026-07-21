@@ -14,9 +14,11 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
 {
-    /// <summary>Selective-rack commands + their draw/edit/payload helpers (frontal / lateral corte / planta).</summary>
-    public sealed partial class RackFrameCommands
+    /// <summary>Selective-rack commands + their draw/edit/payload helpers (frontal / lateral corte / planta), plus alias.</summary>
+    public sealed class RackSelectivoCommands
     {
+        [CommandMethod("RS")] public void AliasRackSelectivo() => RackSelectivo();        // RACKSELECTIVO
+
         /// <summary>Opens the selective-rack window; draws it after the modal windows close.</summary>
         [CommandMethod("RACKSELECTIVO")]
         public void RackSelectivo()
@@ -38,7 +40,7 @@ namespace RackCad.Plugin
             }
         }
 
-        private static void EditSelective(Document document, ObjectId blockId, RackEmbedDocument embed)
+        internal static void EditSelective(Document document, ObjectId blockId, RackEmbedDocument embed)
         {
             var editor = document.Editor;
 
@@ -236,7 +238,7 @@ namespace RackCad.Plugin
         }
 
         /// <summary>Draws the selective in the requested VIEW: frontal = one selective block; lateral = one cabecera "corte" per post.</summary>
-        private static void DrawSelectiveView(string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
+        internal static void DrawSelectiveView(string view, SelectiveRackSystem system, SelectivePalletDesign design, string id, string name)
         {
             var document = AcApplication.DocumentManager.MdiActiveDocument;
 

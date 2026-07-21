@@ -59,7 +59,7 @@ namespace RackCad.Plugin
                     }
                     else if (menu.SelectiveSystemToInsert != null)
                     {
-                        DrawSelectiveView(menu.SelectiveView, menu.SelectiveSystemToInsert, menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName);
+                        RackSelectivoCommands.DrawSelectiveView(menu.SelectiveView, menu.SelectiveSystemToInsert, menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName);
                     }
                 }
             }
@@ -97,7 +97,7 @@ namespace RackCad.Plugin
                 switch (embed.Kind)
                 {
                     case RackEmbedDocument.KindSelective:
-                        EditSelective(document, blockId, embed);
+                        RackSelectivoCommands.EditSelective(document, blockId, embed);
                         break;
                     case RackEmbedDocument.KindDynamic:
                         EditDynamic(document, blockId, embed);
