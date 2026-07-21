@@ -170,15 +170,14 @@ Explícitamente NO se toca (pertenece a otras iniciativas o excede D1/D3):
   I-11 conserva.
 - **Conflictos declarados en ROADMAP ("se estorba con")**: I-03 (`refactor/fallos-silenciosos`,
   **sin rama remota** al reclamar → inactiva) e I-08 (**integrada**, sin rama activa).
-- **I-10 en curso** (`architecture/kind-handlers`, `origin` presente): al reclamar I-11, I-10 solo había
-  publicado su **contrato** (un `.md`), **sin código de producción**. Los tres archivos que I-10 modifica
-  (`RackMenuCommands.cs`, `RackInventarioCommands.BomTotal.cs`, `RackEnvelopeRestamp.cs`, todos en Plugin)
-  quedan **fuera del alcance de I-11**. I-11 **no** se rebasa sobre I-10; permanece basada en `main`. La
-  preservación de metadata del envelope se logra **desde el tipo `RackEmbedDocument`** (Application), cuyo
-  `JsonExtensionData` fluye por el `RestampEnvelope` existente sin editarlo — de modo que el único solape
-  potencial (RACKEDITAR de cama lee `RackEmbedDocument`) es de **consumo del tipo**, resoluble en la
-  integración sin incorporar la arquitectura de I-10. Si continuar exigiera handlers de I-10 o modificar
-  sus tres archivos → **detenerse** (§12).
+- **I-10 integrada** (`architecture/kind-handlers`, merge `c9f2d61` en `main` durante la corrida): I-11 se
+  **rebaseó** sobre ese `main` sin conflictos (conjuntos de archivos disjuntos). Los tres archivos que I-10
+  modifica (`RackMenuCommands.cs`, `RackInventarioCommands.BomTotal.cs`, `RackEnvelopeRestamp.cs`, todos en
+  Plugin) quedan **fuera del alcance de I-11**. La preservación de metadata del envelope se logra **desde el
+  tipo `RackEmbedDocument`** (Application), cuyo `JsonExtensionData` fluye por el `RestampEnvelope` de I-10
+  (que sigue reserializando el MISMO objeto) sin editarlo; el `CamaKindHandler` de I-10 despacha a
+  `RackCamaCommands.EditCama` (firma intacta). Si continuar exigiera handlers de I-10 o modificar sus tres
+  archivos → **detenerse** (§12).
 - Sin decisiones ni entradas del dueño previas.
 
 ## 7. Archivos esperados
@@ -186,19 +185,40 @@ Explícitamente NO se toca (pertenece a otras iniciativas o excede D1/D3):
 **Crear** (en `src/RackCad.Application/Persistence`):
 
 - `FlowBedDocument.cs`, `LargueroDocument.cs` (documentos versionados con `JsonExtensionData`).
+- `SchemaVersionPolicy.cs` (política central: legibilidad por MAJOR + versión de escritura sin degradar).
+- `RackEmbedComposer.cs` (fábrica pura de envelope que hereda `ExtensionData` y versión desde un `source`).
 - Pruebas nuevas en `tests/RackCad.Tests/`.
 
 **Modificar**:
 
 - `src/RackCad.Application/Persistence/`: `RackProjectDocument.cs` (tipos de slot + `JsonExtensionData`),
-  `RackProjectStore.cs` (acarreo del documento fuente; preservar `ExtensionData`), `RackProject.cs`
-  (campo de documento fuente), `FlowBedConfigurationStore.cs` (escritura versionada + ruta documento),
-  `RackEmbedDocument.cs` (`CurrentSchemaVersion` + guarda + `JsonExtensionData`).
-- `src/RackCad.Application/Systems/SystemRegistry.Default.cs` (mapeo cama/larguero vía documentos + merge
-  de `ExtensionData`).
-- `src/RackCad.Plugin/RackCamaCommands.cs` (**commit pequeño separado**): la edición de cama conserva la
-  `ExtensionData` del envelope y del `FlowBedDocument` mediante el documento fuente, sin rediseñar UI.
-  **No** toca los tres archivos de I-10.
+  `RackProjectStore.cs` (acarreo del documento fuente; preservar `ExtensionData` y versión sin degradar),
+  `RackProject.cs` (campo de documento fuente + `WithSourceMetadataFrom` para el sidecar de UI),
+  `FlowBedConfigurationStore.cs` (escritura versionada + ruta documento), `RackEmbedDocument.cs`
+  (`CurrentSchemaVersion` + `JsonExtensionData` + guarda tolerante en `RackEmbedStore`), `SchemaGuard.cs`
+  (delega la legibilidad en `SchemaVersionPolicy`).
+- `src/RackCad.Application/Systems/SystemRegistry.Default.cs` (mapeo cama/larguero vía documentos + guarda).
+- `src/RackCad.Plugin/`: `RackCamaCommands.cs`, `RackSelectivoCommands.cs`, `RackDinamicoCommands.cs`,
+  `RackCabeceraCommands.cs` — cada `Build*Payload` compone el envelope vía `RackEmbedComposer`; el redibujo
+  multivista conserva la metadata **del Embed de cada bloque**; una vista nueva insertada durante la edición
+  hereda el envelope iniciador. **No** tocan los tres archivos de I-10.
+- `src/RackCad.UI/`: `RackFlowBedWindow.xaml.cs`, `RackLargueroWindow.xaml.cs` (campo privado + overload que
+  recibe el `RackProject` fuente; el guardado usa `WithSourceMetadataFrom`), `RackMainMenuWindow.xaml.cs`
+  (transporta el proyecto fuente al editor). Sin rediseño de UI.
+
+**Frontera de la biblioteca dinámico/cabecera**: la edición del dinámico reconstruye un `RackProjectDocument`
+(vía `RackProjectStore`) y adopta el mismo `WithSourceMetadataFrom` (probado a nivel de store). La cabecera
+guarda por `RackFrameProjectStore`/`RackFrameProjectDocument` (otro store, sin `RackProjectDocument`), así que
+la condición "reconstruye `RackProjectDocument`" **no** se cumple en su ruta de biblioteca UI; el mecanismo se
+prueba a nivel de store para su wrapper. Cablear esas dos ventanas de UI queda para cuando su guardado se
+toque (una línea `WithSourceMetadataFrom` en dinámico; `RackFrameProjectDocument` necesitaría además
+`JsonExtensionData` para la cabecera).
+
+**Limitación explícita**: `JsonExtensionData` **no** es preservación recursiva de todos los DTO anidados. Se
+preservan los campos desconocidos SOLO en los cuatro límites de I-11 (`RackEmbedDocument`,
+`RackProjectDocument`, `FlowBedDocument`, `LargueroDocument`) y la versión de esos documentos. El diseño
+interno type-specific del envelope (selectivo/dinámico/cabecera) se re-serializa desde el modelo reabierto y
+**no** conserva campos desconocidos anidados propios.
 
 Una **desviación material** —tocar un `*DrawService`, `RackBlockData`, el formato físico del Xrecord,
 `RackEnvelopeRestamp`/`RackMenuCommands`/`RackInventarioCommands`, catálogos o geometría— obliga a
