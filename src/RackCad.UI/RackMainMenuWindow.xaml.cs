@@ -4,58 +4,35 @@ using System.Linq;
 using System.Windows;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
-using RackCad.Application.RackFrames;
 using RackCad.Application.Settings;
-using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI
 {
     /// <summary>
-    /// Application entry point: the user picks which system to design. Each option opens an
-    /// independent module. The header configurator and the dynamic system are separate windows;
-    /// the dynamic module reuses the header factory, not this menu's header window.
+    /// Application entry point: the user picks which system to design. Each option opens an independent module through
+    /// the <see cref="EditorModuleRegistry"/> (initiative I-15): the per-system <c>Design*_Click</c> handlers and the
+    /// library switch delegate to that registry, and the window carries ONE <see cref="InsertionRequest"/> payload
+    /// instead of the ~19 per-system properties it used to expose. The header configurator and the dynamic system are
+    /// separate windows; the dynamic module reuses the header factory, not this menu's header window.
     /// </summary>
     public partial class RackMainMenuWindow : Window
     {
         private readonly bool canInsertInAutoCad;
         private readonly IReadOnlyList<string> dimensionStyles;
         private readonly UserSettings settings = UserSettingsStore.Load();
+        private readonly EditorModuleRegistry registry = EditorModuleRegistry.Default;
 
-        /// <summary>Set when the user asked to insert the configured header; the host command draws it after
-        /// every modal window (this menu included) has closed, so the placement jig has the editor free.</summary>
-        public bool InsertRequested { get; private set; }
+        /// <summary>
+        /// The design the user asked to insert, as a single typed payload the host command draws after every modal window
+        /// (this menu included) has closed, so the placement jig has the editor free. Null unless an editor closed with an
+        /// insert request. Replaces the old per-system <c>*ToInsert</c> property bag (I-15).
+        /// </summary>
+        public RackInsertionRequest InsertionRequest { get; private set; }
 
-        public RackFrameConfiguration ConfigurationToInsert { get; private set; }
-
-        public DynamicRackSystem DynamicSystemToInsert { get; private set; }
-        public DynamicRackDesign DynamicDesignToInsert { get; private set; }
-
-        /// <summary>Identity of the dynamic system to insert (for the drawing round-trip embed).</summary>
-        public string DynamicRackId { get; private set; }
-        public string DynamicRackName { get; private set; }
-        public string DynamicView { get; private set; } = RackEmbedDocument.ViewLateral;
-        public int DynamicSection { get; private set; } = -1;
-
-        public FlowBedConfiguration FlowBedToInsert { get; private set; }
-
-        /// <summary>Identity of the cama to insert (for the drawing round-trip embed).</summary>
-        public string FlowBedRackId { get; private set; }
-        public string FlowBedRackName { get; private set; }
-
-        /// <summary>Source metadata carried from a library design into a library→drawing insert, so the new embed keeps its
-        /// unknown JSON fields + non-downgraded schema version (I-11). Null for a brand-new design or a bare legacy header.</summary>
-        public RackProject DynamicSourceProjectToInsert { get; private set; }
-        public FlowBedDocument FlowBedSourceDocumentToInsert { get; private set; }
-        public RackProject ConfigurationSourceProjectToInsert { get; private set; }
-
-        public SelectiveRackSystem SelectiveSystemToInsert { get; private set; }
-
-        /// <summary>The selective design + identity that produced <see cref="SelectiveSystemToInsert"/> (for the drawing embed).</summary>
-        public SelectivePalletDesign SelectiveDesignToInsert { get; private set; }
-        public string SelectiveRackId { get; private set; }
-        public string SelectiveRackName { get; private set; }
-        public string SelectiveView { get; private set; }
+        /// <summary>True when <see cref="InsertionRequest"/> is set (an editor asked to draw its design).</summary>
+        public bool InsertRequested => InsertionRequest != null;
 
         public RackMainMenuWindow()
             : this(false, null)
@@ -74,6 +51,9 @@ namespace RackCad.UI
             InitializeComponent();
             UpdateLibraryPathDisplay();
         }
+
+        private RackEditorLaunchContext LaunchContext()
+            => new RackEditorLaunchContext(this, canInsertInAutoCad, dimensionStyles);
 
         private void UpdateLibraryPathDisplay()
         {
@@ -139,52 +119,35 @@ namespace RackCad.UI
             UpdateLibraryPathDisplay();
         }
 
-        private void DesignHeader_Click(object sender, RoutedEventArgs e)
+        // The five "Diseñar …" buttons: each names its kind and delegates to the shared, registry-driven launcher. No
+        // per-system payload copying lives here anymore (I-15) — the module builds the InsertionRequest.
+        private void DesignSelective_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.SelectiveRack);
+
+        private void DesignDynamic_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.PalletFlow);
+
+        private void DesignHeader_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.Selective);
+
+        private void DesignFlowBed_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.Cama);
+
+        private void DesignLarguero_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.Larguero);
+
+        /// <summary>Opens the module for <paramref name="kind"/> for a NEW design; if it returns an insert request, bubbles
+        /// it up and closes so the host command can run the placement jig. Otherwise the menu stays open.</summary>
+        private void LaunchDesignModule(RackSystemKind kind)
         {
+            var module = registry.Get(kind);
             try
             {
-                var configuration = new HardcodedStandardRackFrameService().CreateDefault();
-                var window = new RackFrameConfiguratorWindow(configuration, canInsertInAutoCad) { Owner = this };
-                window.ShowDialog();
-
-                if (window.InsertRequested)
+                var request = module.OpenForNew(LaunchContext());
+                if (request != null)
                 {
-                    // Bubble the request up and close so the host command can run the placement jig.
-                    InsertRequested = true;
-                    ConfigurationToInsert = window.Configuration;
+                    InsertionRequest = request;
                     Close();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "No se pudo abrir el configurador de cabeceras: " + ex.Message,
-                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void DesignDynamic_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var window = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
-                window.SetDimensionStyles(dimensionStyles);
-                window.ShowDialog();
-
-                if (window.InsertRequested)
-                {
-                    InsertRequested = true;
-                    DynamicSystemToInsert = window.SystemToInsert;
-                    DynamicDesignToInsert = window.DesignToInsert;
-                    DynamicRackId = window.RackId;
-                    DynamicRackName = window.RackName;
-                    DynamicView = window.InsertView;
-                    DynamicSection = window.InsertSection;
-                    Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, "No se pudo abrir el sistema dinámico: " + ex.Message,
+                MessageBox.Show(this, module.OpenFailureMessage + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -202,153 +165,25 @@ namespace RackCad.UI
 
                 var project = new RackProjectStore().Load(library.SelectedDesign.Path);
 
-                if (library.SelectedDesign.Kind == RackSystemKind.PalletFlow && project.DynamicDesign != null)
-                {
-                    var editor = new RackDynamicSystemWindow(canInsertInAutoCad) { Owner = this };
-                    editor.SetDimensionStyles(dimensionStyles);
-                    editor.LoadDesignForNew(project.DynamicDesign, library.SelectedDesign.Name, project); // pass the source project so a re-save preserves its wrapper metadata (I-11)
-                    editor.ShowDialog();
-
-                    if (editor.InsertRequested)
-                    {
-                        InsertRequested = true;
-                        DynamicSourceProjectToInsert = editor.SourceProjectToInsert; // carry the library wrapper metadata into the DWG embed (I-11)
-                        DynamicSystemToInsert = editor.SystemToInsert;
-                        DynamicDesignToInsert = editor.DesignToInsert;
-                        DynamicRackId = editor.RackId;
-                        DynamicRackName = editor.RackName;
-                        DynamicView = editor.InsertView;
-                        DynamicSection = editor.InsertSection;
-                        Close();
-                    }
-                }
-                else if (library.SelectedDesign.Kind == RackSystemKind.SelectiveRack && project.SelectiveRack != null)
-                {
-                    var editor = new RackSelectiveWindow(canInsertInAutoCad) { Owner = this };
-                    editor.SetDimensionStyles(dimensionStyles);
-                    editor.LoadForNew(project.SelectiveRack, project); // pass the source project so a re-save preserves the wrapper metadata (I-11)
-                    editor.ShowDialog();
-
-                    if (editor.InsertRequested)
-                    {
-                        InsertRequested = true;
-                        SelectiveSystemToInsert = editor.SystemToInsert;
-                        SelectiveDesignToInsert = editor.DesignToInsert;
-                        SelectiveRackId = editor.RackId;
-                        SelectiveRackName = editor.RackName;
-                        SelectiveView = editor.InsertView;
-                        Close();
-                    }
-                }
-                else if (library.SelectedDesign.Kind == RackSystemKind.Cama && project.FlowBed != null)
-                {
-                    var editor = new RackFlowBedWindow(canInsertInAutoCad) { Owner = this };
-                    editor.LoadForNew(project.FlowBed, library.SelectedDesign.Name, project); // pass the source project so a re-save preserves its unknown metadata (I-11)
-                    editor.ShowDialog();
-
-                    if (editor.InsertRequested)
-                    {
-                        InsertRequested = true;
-                        FlowBedSourceDocumentToInsert = editor.SourceFlowBedToInsert; // carry the library FlowBed metadata into the DWG embed (I-11)
-                        FlowBedToInsert = editor.FlowBedToInsert;
-                        FlowBedRackId = editor.RackId;
-                        FlowBedRackName = editor.RackName;
-                        Close();
-                    }
-                }
-                else if (library.SelectedDesign.Kind == RackSystemKind.Larguero && project.Larguero != null)
-                {
-                    // Larguero is visual-only (no AutoCAD block) — just open its editor pre-loaded.
-                    var editor = new RackLargueroWindow { Owner = this };
-                    editor.LoadExisting(project.Larguero, project); // pass the source project so a re-save preserves its unknown metadata (I-11)
-                    editor.ShowDialog();
-                }
-                else if (project.Header != null)
-                {
-                    var editor = new RackFrameConfiguratorWindow(project.Header, canInsertInAutoCad) { Owner = this };
-                    editor.ShowDialog();
-
-                    if (editor.InsertRequested)
-                    {
-                        InsertRequested = true;
-                        // Carry the wrapper metadata when the header came from a RackProject wrapper; a bare legacy header's
-                        // project has no source document, so WithSourceMetadataFrom downstream is a no-op (I-11).
-                        ConfigurationSourceProjectToInsert = project;
-                        ConfigurationToInsert = editor.Configuration;
-                        Close();
-                    }
-                }
-                else
+                // Dispatch by the registry (fallback = cabecera, tried last), preserving the old if/else exactly.
+                var module = registry.ResolveForLibrary(library.SelectedDesign, project);
+                if (module == null)
                 {
                     MessageBox.Show(this, "El diseño seleccionado no se pudo interpretar.",
                         "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var request = module.OpenFromLibrary(project, library.SelectedDesign, LaunchContext());
+                if (request != null)
+                {
+                    InsertionRequest = request;
+                    Close();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, "No se pudo abrir la biblioteca de diseños: " + ex.Message,
-                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void DesignFlowBed_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var window = new RackFlowBedWindow(canInsertInAutoCad) { Owner = this };
-                window.ShowDialog();
-
-                if (window.InsertRequested)
-                {
-                    InsertRequested = true;
-                    FlowBedToInsert = window.FlowBedToInsert;
-                    FlowBedRackId = window.RackId;
-                    FlowBedRackName = window.RackName;
-                    Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, "No se pudo abrir la cama de rodamiento: " + ex.Message,
-                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void DesignSelective_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var window = new RackSelectiveWindow(canInsertInAutoCad) { Owner = this };
-                window.ShowDialog();
-
-                if (window.InsertRequested)
-                {
-                    InsertRequested = true;
-                    SelectiveSystemToInsert = window.SystemToInsert;
-                    SelectiveDesignToInsert = window.DesignToInsert;
-                    SelectiveRackId = window.RackId;
-                    SelectiveRackName = window.RackName;
-                    SelectiveView = window.InsertView;
-                    Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, "No se pudo abrir el sistema selectivo: " + ex.Message,
-                    "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void DesignLarguero_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Visual + BOM only (no AutoCAD block yet): opens, previews, and saves to the library. Never inserts.
-                new RackLargueroWindow { Owner = this }.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, "No se pudo abrir el editor de largueros: " + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

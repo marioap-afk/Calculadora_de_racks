@@ -2,6 +2,7 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Plugin.KindHandlers;
 using RackCad.UI;
+using RackCad.UI.Editor;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin
@@ -28,36 +29,35 @@ namespace RackCad.Plugin
                     dimensionStyles: RackCommandSupport.ReadDimensionStyleNames(document));
                 AcApplication.ShowModalWindow(menu);
 
-                if (menu.InsertRequested)
+                // The menu now carries ONE typed payload (I-15); dispatch it by kind to the SAME per-system draw calls
+                // with the SAME arguments as before (behavior-identical). A cancelled menu leaves InsertionRequest null.
+                switch (menu.InsertionRequest)
                 {
-                    if (menu.ConfigurationToInsert != null)
-                    {
+                    case HeaderInsertionRequest header:
                         // Transport-only (I-11): carry the library source metadata into the new DWG embed. No handler change.
-                        RackCabeceraCommands.DrawAndPlace(menu.ConfigurationToInsert, menu.ConfigurationSourceProjectToInsert);
-                    }
-                    else if (menu.DynamicSystemToInsert != null)
-                    {
+                        RackCabeceraCommands.DrawAndPlace(header.Configuration, header.SourceProject);
+                        break;
+                    case DynamicInsertionRequest dynamic:
                         RackDinamicoCommands.DrawDynamicView(
-                            menu.DynamicView,
-                            menu.DynamicSection,
-                            menu.DynamicSystemToInsert,
-                            menu.DynamicDesignToInsert,
-                            menu.DynamicRackId,
-                            menu.DynamicRackName,
+                            dynamic.View,
+                            dynamic.Section,
+                            dynamic.System,
+                            dynamic.Design,
+                            dynamic.RackId,
+                            dynamic.RackName,
                             source: null,
-                            innerSource: menu.DynamicSourceProjectToInsert);
-                    }
-                    else if (menu.FlowBedToInsert != null)
-                    {
+                            innerSource: dynamic.SourceProject);
+                        break;
+                    case FlowBedInsertionRequest cama:
                         RackCamaCommands.DrawAndPlaceBed(
-                            menu.FlowBedToInsert,
-                            RackCamaCommands.BuildCamaPayload(menu.FlowBedToInsert, menu.FlowBedRackId, menu.FlowBedRackName, null, menu.FlowBedSourceDocumentToInsert),
-                            menu.FlowBedRackName);
-                    }
-                    else if (menu.SelectiveSystemToInsert != null)
-                    {
-                        RackSelectivoCommands.DrawSelectiveView(menu.SelectiveView, menu.SelectiveSystemToInsert, menu.SelectiveDesignToInsert, menu.SelectiveRackId, menu.SelectiveRackName);
-                    }
+                            cama.FlowBed,
+                            RackCamaCommands.BuildCamaPayload(cama.FlowBed, cama.RackId, cama.RackName, null, cama.SourceDocument),
+                            cama.RackName);
+                        break;
+                    case SelectiveInsertionRequest selective:
+                        RackSelectivoCommands.DrawSelectiveView(
+                            selective.View, selective.System, selective.Design, selective.RackId, selective.RackName);
+                        break;
                 }
             }
             catch (System.Exception ex)
