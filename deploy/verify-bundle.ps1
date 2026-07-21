@@ -10,8 +10,11 @@
 
   Enforced (fail-closed allowlist — anything not on it is a violation):
     - PackageContents.xml at the bundle root;
-    - Contents\ with exactly the four RackCad DLLs (Plugin, Application, Domain, UI);
-    - Contents\catalogs\ with at least one CSV/JSON catalog (only .csv/.json/.dwg allowed there);
+    - Contents\ with exactly the four RackCad DLLs (Plugin, Application, Domain, UI), each
+      byte-identical (SHA-256) to its copy in the publish output;
+    - Contents\catalogs\ matching the authorized source assets\catalogs EXACTLY: same relative
+      paths, each byte-identical (SHA-256); extra, missing, modified, renamed or sub-foldered
+      catalogs are rejected. The authoritative inventory is derived from the source, never hardcoded;
     - no other file anywhere in the bundle; in particular no Autodesk-named DLL.
   Manifest checks: AppVersion, ComponentEntry Version, ModuleName, SeriesMin and SeriesMax match the
   central source (Directory.Build.props) or the values passed in.
@@ -38,6 +41,14 @@
 .PARAMETER BaselineInventoryPath
   Optional previous inventory file to compare against for a reproducibility check.
 
+.PARAMETER PublishDir
+  Publish output whose loose RackCad DLLs are the SHA-256 source of truth for the bundle's DLLs.
+  Defaults to the bundle's parent directory (where dotnet publish drops RackCad.bundle).
+
+.PARAMETER CatalogsSourceDir
+  Authorized catalog source the bundle's Contents\catalogs must match exactly. Defaults to
+  assets\catalogs in the repository.
+
 .EXAMPLE
   pwsh deploy\verify-bundle.ps1 -BundlePath src\RackCad.Plugin\bin\Release\net8.0-windows\publish\RackCad.bundle
 #>
@@ -50,7 +61,9 @@ param(
     [string]$ExpectedSeriesMax,
     [string]$PropsPath,
     [string]$InventoryOutPath,
-    [string]$BaselineInventoryPath
+    [string]$BaselineInventoryPath,
+    [string]$PublishDir,
+    [string]$CatalogsSourceDir
 )
 
 Set-StrictMode -Version Latest
@@ -197,6 +210,64 @@ function Assert-Manifest {
         "ModuleName apunta a un archivo ausente: $moduleName"
 }
 
+function Assert-DllsMatchPublish {
+    param(
+        [Parameter(Mandatory = $true)][string]$Root,
+        [Parameter(Mandatory = $true)][string]$PublishDir)
+
+    # Each bundled DLL must be byte-identical (SHA-256) to its source copy in the publish output: the
+    # bundle copies exactly what dotnet publish produced, with nothing substituted or tampered with.
+    Assert-True (Test-Path -LiteralPath $PublishDir -PathType Container) `
+        "No existe el publish para comparar los DLL del bundle: $PublishDir"
+    foreach ($dll in $script:RackCadDlls) {
+        $publishDll = Join-Path $PublishDir $dll
+        Assert-True (Test-Path -LiteralPath $publishDll -PathType Leaf) `
+            "El publish no contiene el DLL fuente $dll para comparar: $PublishDir"
+        $bundleHash = (Get-FileHash -LiteralPath (Join-Path $Root "Contents\$dll") -Algorithm SHA256).Hash
+        $publishHash = (Get-FileHash -LiteralPath $publishDll -Algorithm SHA256).Hash
+        Assert-True ($bundleHash -eq $publishHash) `
+            "El DLL del bundle no coincide (SHA-256) con su copia del publish: $dll"
+    }
+}
+
+function Assert-CatalogsMatchSource {
+    param(
+        [Parameter(Mandatory = $true)][string]$Root,
+        [Parameter(Mandatory = $true)][string]$CatalogsSourceDir)
+
+    # The bundle's catalogs must match the authorized source (assets\catalogs) EXACTLY: same set of
+    # relative paths, each byte-identical (SHA-256). The authoritative inventory is DERIVED from the
+    # source (never a hardcoded count), so adding or removing a catalog is reflected automatically.
+    # Rejects extra, missing, modified, renamed and unexpectedly sub-foldered catalogs.
+    Assert-True (Test-Path -LiteralPath $CatalogsSourceDir -PathType Container) `
+        "No existe la fuente autorizada de catalogos: $CatalogsSourceDir"
+    $authorized = @{}
+    foreach ($file in @(Get-ChildItem -LiteralPath $CatalogsSourceDir -File |
+            Where-Object { $script:CatalogExtensions -contains $_.Extension.ToLowerInvariant() })) {
+        $authorized[$file.Name] = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
+    }
+    Assert-True ($authorized.Count -gt 0) `
+        "La fuente autorizada no contiene catalogos: $CatalogsSourceDir"
+
+    $catalogsRoot = Join-Path $Root "Contents\catalogs"
+    $seen = @{}
+    foreach ($file in @(Get-ChildItem -LiteralPath $catalogsRoot -Recurse -File -Force)) {
+        $rel = Get-RelativePath -Root $catalogsRoot -FullPath $file.FullName
+        Assert-True (-not $rel.Contains('/')) `
+            "Catalogo en subcarpeta inesperada del bundle: Contents/catalogs/$rel"
+        Assert-True ($authorized.ContainsKey($rel)) `
+            "Catalogo no autorizado en el bundle (ausente en assets/catalogs, o renombrado): Contents/catalogs/$rel"
+        $hash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
+        Assert-True ($hash -eq $authorized[$rel]) `
+            "Catalogo modificado respecto a assets/catalogs (SHA-256): Contents/catalogs/$rel"
+        $seen[$rel] = $true
+    }
+    foreach ($name in $authorized.Keys) {
+        Assert-True ($seen.ContainsKey($name)) `
+            "Falta en el bundle un catalogo autorizado de assets/catalogs: $name"
+    }
+}
+
 function Get-Inventory {
     param([Parameter(Mandatory = $true)][string]$Root)
 
@@ -236,6 +307,14 @@ function Invoke-VerifyBundle {
     Assert-Allowlist -Root $root
     Assert-Manifest -Root $root
 
+    $publish = if ($PublishDir) { [System.IO.Path]::GetFullPath($PublishDir) } else { Split-Path -Parent $root }
+    $catalogsSource = if ($CatalogsSourceDir) { [System.IO.Path]::GetFullPath($CatalogsSourceDir) } `
+        else { Join-Path (Split-Path -Parent $PSScriptRoot) "assets\catalogs" }
+    Write-Host "Fuentes: publish=$publish"
+    Write-Host "         catalogos=$catalogsSource"
+    Assert-DllsMatchPublish -Root $root -PublishDir $publish
+    Assert-CatalogsMatchSource -Root $root -CatalogsSourceDir $catalogsSource
+
     $inventory = Get-Inventory -Root $root
     Write-Host ""
     Write-Host "Inventario del bundle (sha256  ruta):"
@@ -254,7 +333,7 @@ function Invoke-VerifyBundle {
     }
 
     Write-Host ""
-    Write-Host "OK: bundle verificado ($script:assertionCount comprobaciones). Solo se distribuyen archivos RackCad y datos permitidos; cero DLL Autodesk."
+    Write-Host "OK: bundle verificado ($script:assertionCount comprobaciones). DLL identicos al publish y catalogos identicos a assets/catalogs (SHA-256); solo archivos RackCad y datos permitidos; cero DLL Autodesk."
 }
 
 # Dot-sourcing exposes the functions to a harness without verifying a real bundle.

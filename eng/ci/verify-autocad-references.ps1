@@ -649,7 +649,19 @@ function Assert-BundleContract {
     if ($LASTEXITCODE -ne 0) {
         throw "Fail-closed bundle verification (deploy/verify-bundle.ps1) failed."
     }
-    Write-Host "Outputs: no Autodesk DLLs or ZIPs; bundle has exactly four RackCad DLLs; fail-closed verification passed."
+
+    # Persistent verifier harness: exercises verify-bundle.ps1 against the valid bundle and every
+    # negative case (Autodesk DLL, tampered DLL/catalog, extra/missing/sub-foldered catalog, stray
+    # file, wrong version/series). Runs here so CI covers it without editing .github/workflows/ci.yml.
+    $publishDir = Split-Path -Parent $bundle
+    & $pwshExe -NoProfile -File (Join-Path $Root "deploy/test-verify-bundle.ps1") `
+        -SourceBundle $bundle -PublishDir $publishDir `
+        -CatalogsSourceDir (Join-Path $Root "assets/catalogs") `
+        -PropsPath (Join-Path $Root "Directory.Build.props")
+    if ($LASTEXITCODE -ne 0) {
+        throw "Verifier harness (deploy/test-verify-bundle.ps1) failed."
+    }
+    Write-Host "Outputs: no Autodesk DLLs or ZIPs; bundle has exactly four RackCad DLLs; fail-closed verification and verifier harness passed."
 }
 
 function Invoke-AutoCADReferenceVerificationCore {
