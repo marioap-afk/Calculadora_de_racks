@@ -114,15 +114,11 @@ namespace RackCad.UI.Controls
 
         private void MergeSharedStyles()
         {
-            try
-            {
-                var uri = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative);
-                Resources.MergedDictionaries.Add(new ResourceDictionary { Source = uri });
-            }
-            catch
-            {
-                // The shared dictionary is best-effort chrome; a window still works without it.
-            }
+            // AppStyles.xaml is a compiled resource of RackCad.UI, so this URI always resolves at runtime. A failure
+            // here is a real packaging/deployment error, not a recoverable condition, and must surface (a swallowed
+            // catch would silently drop the shared chrome and hide the cause) rather than be hidden.
+            var uri = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative);
+            Resources.MergedDictionaries.Add(new ResourceDictionary { Source = uri });
         }
 
         private void ApplyStyle(FrameworkElement element, string key)

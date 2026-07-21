@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace RackCad.UI.Controls
@@ -12,12 +13,21 @@ namespace RackCad.UI.Controls
     /// on top of <see cref="UiSupport.TryNum"/>. <see cref="Value"/> is an OUTPUT (read the parse; set the field via
     /// <see cref="SetNumber"/> or <see cref="System.Windows.Controls.TextBox.Text"/>), which keeps it free of the
     /// two-way re-entrancy the configurator view-model has to guard against.
-    /// Styling stays compatible with <c>FieldBox</c>: on error only the border turns red (#B00020) and reverts to the
-    /// applied style when the entry becomes valid again.
+    /// Styling stays compatible with <c>FieldBox</c>: on error only the border turns red (#B00020) and, when the entry
+    /// becomes valid again, the border's ORIGINAL provenance is restored — the consumer's own local brush or binding,
+    /// or the applied style/default when they set none. The error state is captured lazily on the first real
+    /// validation (not at construction), so a brush the consumer assigns after construction is preserved.
     /// </summary>
     public class NumericField : TextBox
     {
         private static readonly Brush ErrorBorderBrush = UiSupport.FrozenBrush(Color.FromRgb(0xB0, 0x00, 0x20));
+
+        // Border provenance saved while the error brush is showing, so valid→error→valid never clobbers the
+        // consumer's own BorderBrush. Exactly one of these is meaningful when borderErrored is true.
+        private BindingBase savedBorderBinding;
+        private object savedBorderValue = DependencyProperty.UnsetValue;
+        private bool borderErrored;
+        private bool initialized;
 
         private static readonly DependencyPropertyKey ValuePropertyKey = DependencyProperty.RegisterReadOnly(
             nameof(Value), typeof(double?), typeof(NumericField), new PropertyMetadata(null));
@@ -60,8 +70,11 @@ namespace RackCad.UI.Controls
 
         public NumericField()
         {
-            // Validate the initial (blank) content so Value/Status reflect reality before any keystroke.
+            // Validate the initial (blank) content so Value/Status reflect reality before any keystroke. The border
+            // is intentionally NOT touched here (initialized stays false): the consumer may assign a BorderBrush or
+            // binding right after construction, and it must be the value captured when the first error appears.
             Revalidate();
+            initialized = true;
         }
 
         /// <summary>Raised after every (re)validation with the fresh result.</summary>
@@ -141,17 +154,60 @@ namespace RackCad.UI.Controls
             SetValue(HasErrorPropertyKey, result.HasError);
             SetValue(ErrorMessagePropertyKey, result.Message);
 
-            if (result.HasError)
+            if (initialized)
             {
-                BorderBrush = ErrorBorderBrush;
-            }
-            else
-            {
-                // Revert to whatever the applied style/default supplies, rather than a guessed color.
-                ClearValue(BorderBrushProperty);
+                ApplyErrorBorder(result.HasError);
             }
 
             Validated?.Invoke(this, result);
+        }
+
+        /// <summary>Shows/hides the red error border WITHOUT destroying the consumer's own BorderBrush provenance:
+        /// the local value or binding is captured on entry and restored on exit.</summary>
+        private void ApplyErrorBorder(bool hasError)
+        {
+            if (hasError)
+            {
+                if (!borderErrored)
+                {
+                    borderErrored = true;
+                    var local = ReadLocalValue(BorderBrushProperty);
+                    if (local is BindingExpressionBase bindingExpression)
+                    {
+                        // Detach the consumer's binding so the temporary red is never pushed to its source; the
+                        // binding itself is remembered and re-applied when the entry becomes valid again.
+                        savedBorderBinding = bindingExpression.ParentBindingBase;
+                        savedBorderValue = DependencyProperty.UnsetValue;
+                        BindingOperations.ClearBinding(this, BorderBrushProperty);
+                    }
+                    else
+                    {
+                        savedBorderBinding = null;
+                        savedBorderValue = local; // a local brush, or UnsetValue when a style/default supplies it
+                    }
+                }
+
+                SetValue(BorderBrushProperty, ErrorBorderBrush);
+            }
+            else if (borderErrored)
+            {
+                borderErrored = false;
+                if (savedBorderBinding != null)
+                {
+                    SetBinding(BorderBrushProperty, savedBorderBinding);
+                }
+                else if (savedBorderValue == DependencyProperty.UnsetValue)
+                {
+                    ClearValue(BorderBrushProperty);
+                }
+                else
+                {
+                    SetValue(BorderBrushProperty, savedBorderValue);
+                }
+
+                savedBorderBinding = null;
+                savedBorderValue = DependencyProperty.UnsetValue;
+            }
         }
     }
 }

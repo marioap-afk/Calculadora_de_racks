@@ -28,12 +28,19 @@ namespace RackCad.UI.Controls
         }
 
         /// <summary>Populates the combo with <paramref name="options"/> (optionally led by <paramref name="placeholder"/>)
-        /// and selects <paramref name="selectedId"/>. When the id is absent the sentinel — or the first row — is left
-        /// selected, matching the tolerant behavior of the current windows.</summary>
+        /// and resolves the selection, matching the tolerant behavior of the current windows:
+        /// a matching <paramref name="selectedId"/> selects that option; otherwise the placeholder is selected when one
+        /// was supplied, else the first option; an empty list selects nothing.</summary>
         public void SetOptions(IEnumerable<CatalogOption> options, string selectedId = null, CatalogOption placeholder = null)
         {
             var list = CatalogComboSelection.WithPlaceholder(placeholder, options);
             ItemsSource = list;
+
+            if (list.Count == 0)
+            {
+                SelectedItem = null;
+                return;
+            }
 
             var match = CatalogComboSelection.Resolve(list, selectedId);
             if (match != null)
@@ -43,6 +50,12 @@ namespace RackCad.UI.Controls
             else if (placeholder != null)
             {
                 SelectedItem = placeholder;
+            }
+            else
+            {
+                // Unknown/blank id with real options and no sentinel: fall back to the first option
+                // instead of leaving the combo blank.
+                SelectedItem = list[0];
             }
         }
 

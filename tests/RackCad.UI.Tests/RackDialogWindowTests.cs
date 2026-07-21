@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using RackCad.UI.Controls;
 using Xunit;
@@ -6,13 +7,21 @@ using Xunit;
 namespace RackCad.UI.Tests
 {
     /// <summary>The <see cref="RackDialogWindow"/> base (STA): shared chrome and the standard action bar. A tiny
-    /// subclass exposes the protected <see cref="RackDialogWindow.CreateActionBar"/> for assertion.</summary>
+    /// subclass exposes the protected <see cref="RackDialogWindow.CreateActionBar"/> and records Accept/Cancel.</summary>
     public sealed class RackDialogWindowTests
     {
         private sealed class TestDialogWindow : RackDialogWindow
         {
+            public bool Accepted { get; private set; }
+
+            public bool Cancelled { get; private set; }
+
             public DialogActionBar BuildActionBar(string accept = "Aceptar", string cancel = "Cancelar")
                 => CreateActionBar(accept, cancel);
+
+            protected override void Accept() => Accepted = true;
+
+            protected override void Cancel() => Cancelled = true;
         }
 
         [Fact]
@@ -76,6 +85,26 @@ namespace RackCad.UI.Tests
 
             Assert.Equal("Guardar", acceptText);
             Assert.Equal("Descartar", cancelText);
+        }
+
+        [Fact]
+        public void ActionBarButtons_AreWiredToAcceptAndCancel()
+        {
+            // Clicking the buttons must route to Accept()/Cancel(), not merely carry the right labels/flags.
+            var (accepted, cancelled) = StaTestRunner.Run(() =>
+            {
+                var window = new TestDialogWindow();
+                var bar = window.BuildActionBar();
+
+                bar.AcceptButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                var acceptedAfterAcceptClick = window.Accepted;
+
+                bar.CancelButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                return (acceptedAfterAcceptClick, window.Cancelled);
+            });
+
+            Assert.True(accepted);
+            Assert.True(cancelled);
         }
     }
 }

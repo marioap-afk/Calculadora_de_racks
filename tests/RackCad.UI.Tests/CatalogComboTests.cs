@@ -59,6 +59,36 @@ namespace RackCad.UI.Tests
             Assert.True(isPlaceholder);
         }
 
+        [Theory]
+        [InlineData("MISSING")] // unknown id
+        [InlineData("")]         // blank id
+        [InlineData(null)]       // no id
+        public void SetOptions_NoMatchNoPlaceholderWithOptions_SelectsFirstOption(string id)
+        {
+            var selectedId = StaTestRunner.Run(() =>
+            {
+                var combo = new CatalogCombo();
+                combo.SetOptions(Options(), id);
+                return combo.SelectedId;
+            });
+
+            Assert.Equal("POST_A", selectedId); // first option, not left blank
+        }
+
+        [Fact]
+        public void SetOptions_EmptyListNoPlaceholder_SelectsNothing()
+        {
+            var (itemCount, selectedItem) = StaTestRunner.Run(() =>
+            {
+                var combo = new CatalogCombo();
+                combo.SetOptions(new CatalogOption[0], "ANY");
+                return (combo.Items.Count, combo.SelectedItem);
+            });
+
+            Assert.Equal(0, itemCount);
+            Assert.Null(selectedItem);
+        }
+
         [Fact]
         public void SetCatalogEntries_BuildsOptionsFromEntries()
         {
