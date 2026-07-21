@@ -55,7 +55,35 @@ namespace RackCad.Application.Persistence
                 document.Header = project.Header == null ? null : RackFrameProjectDocument.FromConfiguration(project.Header);
             }
 
+            PreserveUnknownMetadata(document, project.SourceDocument);
             return JsonSerializer.Serialize(document, SerializerOptions);
+        }
+
+        /// <summary>
+        /// Carry the JSON fields this build does not know about from the loaded <paramref name="source"/> onto the freshly
+        /// written <paramref name="document"/> (I-11 D3). Only UNKNOWN keys move: wrapper-level extension data, plus the
+        /// extension data of the two I-11 payloads (FlowBed / Larguero) when the active payload matches. Known payload slots
+        /// are typed properties, never extension data, so an inactive known payload is never resurrected; the fresh
+        /// document's own known fields (just written from the possibly-edited model) always win.
+        /// </summary>
+        private static void PreserveUnknownMetadata(RackProjectDocument document, RackProjectDocument source)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            document.ExtensionData = source.ExtensionData;
+
+            if (document.FlowBed != null && source.FlowBed != null && document.FlowBed.ExtensionData == null)
+            {
+                document.FlowBed.ExtensionData = source.FlowBed.ExtensionData;
+            }
+
+            if (document.Larguero != null && source.Larguero != null && document.Larguero.ExtensionData == null)
+            {
+                document.Larguero.ExtensionData = source.Larguero.ExtensionData;
+            }
         }
 
         public RackProject Deserialize(string json)
@@ -122,14 +150,15 @@ namespace RackCad.Application.Persistence
 
         private RackProject BuildProject(RackProjectDocument document)
         {
-            if (registry.TryGet(document.Kind, out var descriptor))
-            {
-                return descriptor.Build(document, builder);
-            }
-
             // Unregistered / undefined numeric Kind (e.g. (RackSystemKind)999): exactly the historical header/Selective
             // fallback. Get(Selective) is always registered, and its Build is the header path.
-            return registry.Get(RackSystemKind.Selective).Build(document, builder);
+            var project = registry.TryGet(document.Kind, out var descriptor)
+                ? descriptor.Build(document, builder)
+                : registry.Get(RackSystemKind.Selective).Build(document, builder);
+
+            // Keep the source document so a later re-save can carry forward unknown JSON fields (I-11 D3).
+            project.SourceDocument = document;
+            return project;
         }
 
         private RackProject DeserializeLegacyHeader(string json)

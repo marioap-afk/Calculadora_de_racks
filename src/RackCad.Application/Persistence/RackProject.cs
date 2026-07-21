@@ -29,6 +29,14 @@ namespace RackCad.Application.Persistence
         /// <summary>The larguero component; set when <see cref="Kind"/> is Larguero.</summary>
         public LargueroDesign Larguero { get; private set; }
 
+        /// <summary>
+        /// The persistence document this project was loaded from, kept so a re-save can carry forward JSON fields this
+        /// build does not know about (wrapper- and payload-level <c>ExtensionData</c>, I-11 D3). Null for a project built
+        /// in memory (a fresh save then writes only the known fields, exactly as before). It is a Persistence type, so it
+        /// never leaks JSON metadata into the Domain. Set only by the store on load.
+        /// </summary>
+        internal RackProjectDocument SourceDocument { get; set; }
+
         public static RackProject ForSelective(RackFrameConfiguration header)
         {
             return new RackProject { Kind = RackSystemKind.Selective, Header = header };
