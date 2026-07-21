@@ -53,6 +53,7 @@ namespace RackCad.Tests
                 "MISSING_BLOCK_NAME",
                 "MISSING_BLOCK_VIEW",
                 "MISSING_LAYOUT_VIEW",
+                "EMPTY_LAYOUT_FIELD",
                 "DUPLICATE_BLOCK_KEY",
                 "DUPLICATE_LAYOUT_KEY",
                 "DUPLICATE_SECCION_ID",

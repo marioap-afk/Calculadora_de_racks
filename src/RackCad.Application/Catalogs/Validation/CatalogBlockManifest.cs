@@ -69,8 +69,6 @@ namespace RackCad.Application.Catalogs.Validation
                 return manifest;
             }
 
-            var parametersByPiece = BuildParametersByPiece(catalog.ConnectionLayout);
-
             var blocks = (catalog.Blocks ?? Enumerable.Empty<BlockCatalogEntry>())
                 .Where(block => block != null && !string.IsNullOrWhiteSpace(block.BlockName));
 
@@ -92,15 +90,15 @@ namespace RackCad.Application.Catalogs.Validation
                     .OrderBy(view => view, StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
+                // EXACT by block usage: the params are those Application applies to each specific piece+view
+                // that maps to this block name, never the union of every view of a piece (a LATERAL block must
+                // not inherit a FRONTAL-only PERALTE). The shared source guarantees names match the producers.
                 var parameters = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var piece in pieces)
+                foreach (var block in group)
                 {
-                    if (parametersByPiece.TryGetValue(piece, out var pieceParameters))
+                    foreach (var parameter in CatalogBlockParameters.ExpectedParameters(catalog, block.PieceId, block.View))
                     {
-                        foreach (var parameter in pieceParameters)
-                        {
-                            parameters.Add(parameter);
-                        }
+                        parameters.Add(parameter);
                     }
                 }
 
@@ -154,13 +152,46 @@ namespace RackCad.Application.Catalogs.Validation
             string.IsNullOrWhiteSpace(json) ? null : JsonSerializer.Deserialize<CatalogBlockManifest>(json, JsonOptions);
 
         /// <summary>
-        /// Diff THIS (expected, from the catalog) against the library's <paramref name="actual"/> manifest:
-        /// an expected block absent from the library is an ERROR (partial drawing), an expected parameter
-        /// absent is a WARNING, and a library block the catalog never references is INFO (harmless).
+        /// Diff THIS (expected, from the catalog) against the library's <paramref name="actual"/> manifest.
+        /// First the integrity of <paramref name="actual"/> is checked: an incompatible schema version aborts
+        /// (a manifest we cannot read block-by-block), and a missing/tampered fingerprint is an ERROR (the file
+        /// was hand-edited or truncated). Then the block diff: an expected block absent from the library is an
+        /// ERROR (partial drawing), an expected parameter absent is a WARNING, and a library block the catalog
+        /// never references is INFO (harmless).
         /// </summary>
         public IReadOnlyList<CatalogValidationIssue> Compare(CatalogBlockManifest actual)
         {
             var issues = new List<CatalogValidationIssue>();
+
+            if (actual != null)
+            {
+                if (!IsSchemaCompatible(actual.SchemaVersion))
+                {
+                    // Cannot trust a block-by-block diff of a manifest whose schema we do not understand.
+                    issues.Add(new CatalogValidationIssue(
+                        CatalogValidationSeverity.Error,
+                        CatalogValidationCategory.Manifest,
+                        "MANIFEST_SCHEMA_INCOMPATIBLE",
+                        "La versión de esquema del manifiesto (" + actual.SchemaVersion + ") es incompatible con la esperada ("
+                            + CurrentSchemaVersion + "); regenérelo.",
+                        "SchemaVersion=" + actual.SchemaVersion));
+                    return issues;
+                }
+
+                var recomputed = actual.ComputeFingerprint();
+                if (string.IsNullOrWhiteSpace(actual.Fingerprint)
+                    || !string.Equals(actual.Fingerprint.Trim(), recomputed, StringComparison.OrdinalIgnoreCase))
+                {
+                    // The stored huella does not match the content: the JSON was truncated or hand-edited.
+                    issues.Add(new CatalogValidationIssue(
+                        CatalogValidationSeverity.Error,
+                        CatalogValidationCategory.Manifest,
+                        "MANIFEST_FINGERPRINT_MISMATCH",
+                        "La huella del manifiesto no coincide con su contenido (esperada " + recomputed
+                            + "); el archivo fue alterado o está incompleto.",
+                        string.IsNullOrWhiteSpace(actual.Fingerprint) ? "(sin huella)" : actual.Fingerprint.Trim()));
+                }
+            }
 
             var actualBlocks = (actual?.Blocks ?? new List<CatalogBlockManifestEntry>())
                 .Where(block => block != null && !string.IsNullOrWhiteSpace(block.BlockName))
@@ -220,38 +251,9 @@ namespace RackCad.Application.Catalogs.Validation
             return issues;
         }
 
-        private static Dictionary<string, SortedSet<string>> BuildParametersByPiece(
-            IReadOnlyList<ConnectionLayoutEntry> layout)
-        {
-            var parametersByPiece = new Dictionary<string, SortedSet<string>>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var row in layout ?? (IReadOnlyList<ConnectionLayoutEntry>)Array.Empty<ConnectionLayoutEntry>())
-            {
-                if (row == null || string.IsNullOrWhiteSpace(row.PieceId))
-                {
-                    continue;
-                }
-
-                var piece = row.PieceId.Trim();
-                if (!parametersByPiece.TryGetValue(piece, out var parameters))
-                {
-                    parameters = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
-                    parametersByPiece[piece] = parameters;
-                }
-
-                if (!string.IsNullOrWhiteSpace(row.ParamX))
-                {
-                    parameters.Add(row.ParamX.Trim());
-                }
-
-                if (!string.IsNullOrWhiteSpace(row.ParamY))
-                {
-                    parameters.Add(row.ParamY.Trim());
-                }
-            }
-
-            return parametersByPiece;
-        }
+        /// <summary>A manifest version this validator can read block-by-block. Only v1 exists today; a future
+        /// major bump adds its compatibility rule here (the ONE place that decides "can I diff this?").</summary>
+        private static bool IsSchemaCompatible(int schemaVersion) => schemaVersion == CurrentSchemaVersion;
 
         private static string Join(IEnumerable<string> values) =>
             string.Join(",", (values ?? Enumerable.Empty<string>()).OrderBy(value => value, StringComparer.OrdinalIgnoreCase));

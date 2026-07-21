@@ -146,6 +146,58 @@ namespace RackCad.Tests
             Assert.Equal(CatalogValidationSeverity.Warning, issue.Severity);
         }
 
+        // ---- Category 2 (defect 4): empty mandatory ConnectionLayout fields -----------------------------
+
+        [Fact]
+        public void Validate_LayoutWithEmptyPieceId_IsError()
+        {
+            var catalog = CleanCatalog();
+            catalog.ConnectionLayout = new List<ConnectionLayoutEntry> { Layout("", "CP1", "FRONTAL") };
+
+            var report = CatalogValidator.Validate(catalog);
+
+            var issue = Assert.Single(report.WithCode("EMPTY_LAYOUT_FIELD"));
+            Assert.Equal(CatalogValidationSeverity.Error, issue.Severity);
+            Assert.Contains("PieceId", issue.Message);
+            // An empty field is not a dangling reference.
+            Assert.Empty(report.WithCode("INVALID_LAYOUT_PIECE_REF"));
+        }
+
+        [Fact]
+        public void Validate_LayoutWithEmptyConnectionPointId_IsError()
+        {
+            var catalog = CleanCatalog();
+            catalog.ConnectionLayout = new List<ConnectionLayoutEntry> { Layout("P1", "", "FRONTAL") };
+
+            var report = CatalogValidator.Validate(catalog);
+
+            var issue = Assert.Single(report.WithCode("EMPTY_LAYOUT_FIELD"));
+            Assert.Equal(CatalogValidationSeverity.Error, issue.Severity);
+            Assert.Contains("ConnectionPointId", issue.Message);
+        }
+
+        [Fact]
+        public void Validate_LayoutWithEmptyView_IsError()
+        {
+            var catalog = CleanCatalog();
+            catalog.ConnectionLayout = new List<ConnectionLayoutEntry> { Layout("P1", "CP1", "") };
+
+            var report = CatalogValidator.Validate(catalog);
+
+            var issue = Assert.Single(report.WithCode("EMPTY_LAYOUT_FIELD"));
+            Assert.Equal(CatalogValidationSeverity.Error, issue.Severity);
+            Assert.Contains("View", issue.Message);
+            Assert.Empty(report.WithCode("MISSING_LAYOUT_VIEW"));
+        }
+
+        [Fact]
+        public void Validate_LayoutWithAllMandatoryFields_HasNoEmptyFieldError()
+        {
+            var report = CatalogValidator.Validate(CleanCatalog());
+
+            Assert.Empty(report.WithCode("EMPTY_LAYOUT_FIELD"));
+        }
+
         // ---- Category 3: missing blocks or views --------------------------------------------------------
 
         [Fact]
@@ -273,8 +325,9 @@ namespace RackCad.Tests
             var catalog = CleanCatalog();
             catalog.Blocks = new List<BlockCatalogEntry> { Block("P1", "FRONTAL", "P1_FRONTAL") };
 
-            // A library that does NOT contain the expected block.
+            // A valid (fingerprinted) library that simply does NOT contain the expected block.
             var library = new CatalogBlockManifest();
+            library.Fingerprint = library.ComputeFingerprint();
 
             var report = CatalogValidator.Validate(catalog, rawSecciones: null, libraryManifest: library);
 

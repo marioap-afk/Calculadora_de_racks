@@ -194,6 +194,12 @@ namespace RackCad.Application.Catalogs.Validation
                     continue;
                 }
 
+                // A connection-layout row keys the mate solver on PieceId + ConnectionPointId + View; any of the
+                // three blank makes the row unusable (it can never match a lookup). Report each empty field.
+                CheckLayoutFieldPresent(report, row, "PieceId", row.PieceId);
+                CheckLayoutFieldPresent(report, row, "ConnectionPointId", row.ConnectionPointId);
+                CheckLayoutFieldPresent(report, row, "View", row.View);
+
                 if (!string.IsNullOrWhiteSpace(row.ConnectionPointId) && !connectionPointIds.Contains(row.ConnectionPointId.Trim()))
                 {
                     report.Add(new CatalogValidationIssue(
@@ -217,6 +223,23 @@ namespace RackCad.Application.Catalogs.Validation
 
             CheckLayoutKeyDuplicates(catalog, report);
             CheckBlockKeyDuplicates(catalog, report);
+        }
+
+        private static void CheckLayoutFieldPresent(
+            CatalogValidationReport report,
+            ConnectionLayoutEntry row,
+            string fieldName,
+            string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                report.Add(new CatalogValidationIssue(
+                    CatalogValidationSeverity.Error,
+                    CatalogValidationCategory.InvalidReference,
+                    "EMPTY_LAYOUT_FIELD",
+                    "La colocación tiene el campo obligatorio '" + fieldName + "' vacío; la fila nunca casa con un lookup.",
+                    LayoutKey(row)));
+            }
         }
 
         private static void CheckLayoutKeyDuplicates(RackCatalog catalog, CatalogValidationReport report)

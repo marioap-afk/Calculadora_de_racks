@@ -138,18 +138,103 @@ namespace RackCad.Tests
                     }
                 }
             };
-            var actual = new CatalogBlockManifest
+            var actual = Sealed(new CatalogBlockManifest
             {
                 Blocks = new List<CatalogBlockManifestEntry>
                 {
                     new CatalogBlockManifestEntry { BlockName = "POSTE_BN", Parameters = new List<string>() }
                 }
-            };
+            });
 
             var issue = Assert.Single(expected.Compare(actual));
             Assert.Equal("MANIFEST_MISSING_PARAMETER", issue.Code);
             Assert.Equal(CatalogValidationSeverity.Warning, issue.Severity);
             Assert.Contains("PERALTE", issue.Message);
+        }
+
+        // ---- Defect 1: params are exact per pieceId+view+blockName, never a piece's other-view params -------
+
+        [Fact]
+        public void BuildExpected_LayoutParams_ApplyOnlyToTheSamePieceAndView()
+        {
+            // The piece uses PERALTE in FRONTAL and PLANTA but NOT in LATERAL, and each view is a DISTINCT block.
+            var catalog = new RackCatalog
+            {
+                Blocks = new List<BlockCatalogEntry>
+                {
+                    Block("CUSTOM", "FRONTAL", "CUSTOM_FRONTAL"),
+                    Block("CUSTOM", "LATERAL", "CUSTOM_LATERAL"),
+                    Block("CUSTOM", "PLANTA", "CUSTOM_PLANTA")
+                },
+                ConnectionLayout = new List<ConnectionLayoutEntry>
+                {
+                    new ConnectionLayoutEntry { PieceId = "CUSTOM", View = "FRONTAL", ParamX = "PERALTE" },
+                    new ConnectionLayoutEntry { PieceId = "CUSTOM", View = "PLANTA", ParamY = "PERALTE" },
+                    new ConnectionLayoutEntry { PieceId = "CUSTOM", View = "LATERAL" } // no param in LATERAL
+                }
+            };
+
+            var manifest = CatalogBlockManifest.BuildExpected(catalog);
+
+            Assert.Equal(new[] { "PERALTE" }, manifest.Blocks.Single(b => b.BlockName == "CUSTOM_FRONTAL").Parameters);
+            Assert.Equal(new[] { "PERALTE" }, manifest.Blocks.Single(b => b.BlockName == "CUSTOM_PLANTA").Parameters);
+            Assert.Empty(manifest.Blocks.Single(b => b.BlockName == "CUSTOM_LATERAL").Parameters);
+        }
+
+        // ---- Defect 3: version + fingerprint integrity in Compare -------------------------------------------
+
+        [Fact]
+        public void Compare_ValidLibraryManifest_HasNoIssues()
+        {
+            var expected = CatalogBlockManifest.BuildExpected(CatalogWith("A_BN", "B_BN"));
+            var actual = CatalogBlockManifest.FromJson(expected.ToJson()); // a faithfully persisted library
+
+            Assert.Empty(expected.Compare(actual));
+        }
+
+        [Fact]
+        public void Compare_IncompatibleSchemaVersion_IsErrorAndAborts()
+        {
+            var expected = CatalogBlockManifest.BuildExpected(CatalogWith("A_BN", "B_BN"));
+            var actual = CatalogBlockManifest.BuildExpected(CatalogWith("A_BN")); // also MISSING B_BN
+            actual.SchemaVersion = CatalogBlockManifest.CurrentSchemaVersion + 1;
+            actual.Fingerprint = actual.ComputeFingerprint();
+
+            var issues = expected.Compare(actual);
+
+            var issue = Assert.Single(issues); // aborts: the missing-block diff is NOT reported for a schema we cannot read
+            Assert.Equal("MANIFEST_SCHEMA_INCOMPATIBLE", issue.Code);
+            Assert.Equal(CatalogValidationSeverity.Error, issue.Severity);
+        }
+
+        [Fact]
+        public void Compare_MissingFingerprint_IsError()
+        {
+            var expected = CatalogBlockManifest.BuildExpected(CatalogWith("A_BN"));
+            var actual = CatalogBlockManifest.BuildExpected(CatalogWith("A_BN"));
+            actual.Fingerprint = null;
+
+            Assert.Contains(expected.Compare(actual), i => i.Code == "MANIFEST_FINGERPRINT_MISMATCH"
+                && i.Severity == CatalogValidationSeverity.Error);
+        }
+
+        [Fact]
+        public void Compare_TamperedJson_FingerprintMismatchIsError()
+        {
+            var expected = CatalogBlockManifest.BuildExpected(CatalogWith("A_BN", "B_BN"));
+
+            // Hand-edit the persisted JSON: drop a block but keep the old fingerprint (a truncated/tampered file).
+            var json = expected.ToJson().Replace("\"B_BN\"", "\"B_BN_TAMPERED\"");
+            var actual = CatalogBlockManifest.FromJson(json);
+
+            Assert.Contains(expected.Compare(actual), i => i.Code == "MANIFEST_FINGERPRINT_MISMATCH"
+                && i.Severity == CatalogValidationSeverity.Error);
+        }
+
+        private static CatalogBlockManifest Sealed(CatalogBlockManifest manifest)
+        {
+            manifest.Fingerprint = manifest.ComputeFingerprint();
+            return manifest;
         }
 
         private static RackCatalog CatalogWith(params string[] blockNames)
