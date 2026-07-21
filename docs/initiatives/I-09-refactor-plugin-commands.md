@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-09
 title: Partición de RackFrameCommands y helpers del Plugin
 type: refactor
-status: claimed
+status: completed
 branch: refactor/plugin-commands
 base_branch: main
 priority:
@@ -153,14 +153,14 @@ material obliga a detenerse.
 - [x] F0. Reclamo atómico: rama + worktree desde `origin/main`, commit vacío de reclamo y primer push
   aceptado sin force; baseline verde de `origin/main` verificada.
 - [x] F1. Publicar este contrato detallado en la rama.
-- [ ] F2. Extraer los helpers reutilizables (`RackBlockFinder`, `RackCloner`, `LayerHelper`,
+- [x] F2. Extraer los helpers reutilizables (`RackBlockFinder`, `RackCloner`, `LayerHelper`,
   `InDocumentTransaction`) sin cambiar las llamadas de comando; verde en cada paso. `RackCloner`
   conserva las dos políticas de clonación; `InDocumentTransaction` solo envuelve operaciones simples y
   equivalentes.
-- [ ] F3. Unificar el escaneo de envelopes en un único escáner y migrar los comandos que hoy lo
+- [x] F3. Unificar el escaneo de envelopes en un único escáner y migrar los comandos que hoy lo
   duplican.
-- [ ] F4. Partir `RackFrameCommands` en clases por área conservando comandos, alias y firmas.
-- [ ] F5. Verificar equivalencia: inventario antes/después de todos los `[CommandMethod]` (comandos,
+- [x] F4. Partir `RackFrameCommands` en clases por área conservando comandos, alias y firmas.
+- [x] F5. Verificar equivalencia: inventario antes/después de todos los `[CommandMethod]` (comandos,
   alias, prompts, keywords y mensajes), revisión mecánica de scans, clonación/restamp, layers,
   transacciones, purgas y `Regen`, suite existente completa y builds Debug de UI y Plugin. Tests
   nuevos solo si se extrajo lógica pura sin AutoCAD.
@@ -245,10 +245,36 @@ segundo Pull Request para la iniciativa.
 
 ## 14. Evidencia final
 
-F0 y F1 completas: rama y worktree creados desde `origin/main` con commit vacío de reclamo
-(`Claim-Id: 5234fb6e-928b-4bc1-84b6-df9881159e96`) y push aceptado sin force; este contrato publicado
-como primer commit no vacío. `main` no fue modificada: el trabajo vive solo en la rama
-`refactor/plugin-commands`. Baseline de apertura: CI de `origin/main` verde en sus tres jobs (Tests,
-Build UI, Build Plugin without AutoCAD). Las fases F2-F5 y la preparación de integración quedan
-pendientes; esta fase no toca código. Los conteos de pruebas y hashes canónicos viven en
+**Implementación completa (F0-F5), aún sin integrar.** El trabajo vive solo en la rama
+`refactor/plugin-commands`; `main` no fue modificada.
+
+- **F0-F1**: reclamo atómico (`Claim-Id: 5234fb6e-928b-4bc1-84b6-df9881159e96`) y este contrato.
+- **F2**: helpers `RackBlockFinder`, `RackCloner` (las dos políticas de nombres únicos quedan
+  separadas, sin unificar), `LayerHelper` (unifica dos `EnsureLayer` byte-idénticos) e
+  `InDocumentTransaction` (solo operaciones simples y equivalentes) extraídos como `internal static`.
+- **F3**: escaneo de envelopes unificado en `RackBlockFinder.ScanEnvelopes` (un único recorrido del
+  `BlockTable`); `FindRackBlocks`, RACKLISTA y RACKBOMTOTAL migrados conservando sus filtros,
+  agregación de copias = máximo, y `directOnly:true`/`forceValidity:false`.
+- **F4**: `RackFrameCommands` (clase única en 12 parciales) eliminado y partido en clases públicas por
+  área (`RackMenuCommands`, `RackCabeceraCommands`, `RackSelectivoCommands`, `RackDinamicoCommands`,
+  `RackCamaCommands`, `RackDuplicarCommands`, `RackInventarioCommands`, `RackLayoutCommands`,
+  `RackAyudaCommands`) más los helpers compartidos `RackCommandSupport` y `RackEnvelopeRestamp`. Cada
+  alias vive junto a su comando; el menú y RACKEDITAR despachan por `internal static`. Sin
+  `[assembly: CommandClass]`: AutoCAD descubre las clases públicas.
+- **F5**: higiene de comentarios (crefs colgantes a `RackFrameCommands` reescritos como tipo
+  anterior), auditoría de alcance e inventario/equivalencia finales.
+
+**Equivalencia verificada (método):** 26 `[CommandMethod]` con nombres idénticos, cero duplicados, 13
+principales + 13 aliases con los mismos destinos; conjuntos idénticos de literales de código (prompts,
+`SetRejectMessage`, keywords, defaults, mensajes, nombres de bloque), `case` por `Kind`, llamadas a
+DrawServices y stores, colores ACI, `directOnly`/`forceValidity`, y conteos de `Regen`, `Guid.NewGuid`,
+purgas y `catch`/`Report`; el diff normalizado de cuerpos entre `origin/main` y la rama se reduce al
+andamiaje del archivo neto adicional. Suite `RackCad.Tests`, builds Debug de UI y Plugin y CI de rama
+(Tests + Build UI + Build Plugin without AutoCAD) en verde; `git diff origin/main --check` limpio.
+Cambios de producto limitados a `src/RackCad.Plugin`; documentación limitada a este contrato y su
+índice; sin dependencias nuevas.
+
+**Pendiente:** la preparación de integración (rebase final sobre `main`, CI de `main`, muestreo de
+validación en AutoCAD, actualización de HANDOFF/ROADMAP y merge `--no-ff`) sigue siendo operación
+manual del dueño, fuera de esta fase. Los conteos de pruebas y hashes canónicos viven en
 `docs/HANDOFF.md` (§12), no aquí.
