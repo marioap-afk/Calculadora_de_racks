@@ -64,6 +64,12 @@ Planes disponibles:
   de copias independientes, con error visible ante Kind sin handler y sin otro cambio de comportamiento.
   `SystemRegistry` (Application, I-08) y `RackListBuilder`/RACKLISTA quedan fuera de alcance por la dirección
   de dependencias. Cierra la pista B del Plugin. Integrada en `main` el 2026-07-21.
+- [`I-14-ui-controls.md`](I-14-ui-controls.md): contrato de I-14 (pista C de UI). Crea cinco controles WPF
+  reutilizables en `RackCad.UI` (`SelectionMatrix`, `NumericField`, `CatalogCombo`, `RackDialogWindow` y
+  `PreviewCanvas` con proyección/paleta compartidas), separando lógica pura de la vista, más el proyecto
+  `tests/RackCad.UI.Tests` (net8.0-windows, runner STA propio) y su gate de CI dedicado. Los controles
+  nacen con pruebas y **no** migran ninguna ventana existente (patrón strangler): sin cambio de dibujo,
+  BOM ni persistencia. La adopción la harán I-15/I-20/I-21/I-22. Fuera de alcance I-15 y el rediseño visual.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
