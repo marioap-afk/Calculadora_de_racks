@@ -7,6 +7,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
 using RackCad.Plugin.Headers;
+using RackCad.Plugin.KindHandlers;
 using RackCad.UI;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -111,43 +112,16 @@ namespace RackCad.Plugin
             }
         }
 
-        /// <summary>Rebuild ONE rack's bill of materials from its embedded design, dispatching on kind (mirrors RACKEDITAR).</summary>
+        /// <summary>Rebuild ONE rack's bill of materials from its embedded design, dispatching on kind via the
+        /// kind-handler registry (mirrors RACKEDITAR). A kind with no registered handler — like an unreadable or
+        /// foreign payload — yields null and the caller skips it (best-effort, unchanged).</summary>
         private static BillOfMaterials BuildRackBom(RackEmbedDocument embed, RackCatalog catalog)
         {
             try
             {
-                switch (embed.Kind)
-                {
-                    case RackEmbedDocument.KindSelective:
-                    {
-                        var design = new SelectivePalletDesignStore().Deserialize(embed.Design)?.ToDomain();
-                        if (design == null) return null;
-                        var system = new SelectiveGeometryResolver().Resolve(design, catalog);
-                        return SelectiveBomBuilder.Build(system, catalog);
-                    }
-                    case RackEmbedDocument.KindDynamic:
-                    {
-                        var project = new RackProjectStore().Deserialize(embed.Design);
-                        var system = project?.DynamicDesign == null
-                            ? project?.DynamicSystem
-                            : new DynamicRackSystemResolver(catalog).Resolve(project.DynamicDesign).System;
-                        return system == null ? null : SystemBomBuilder.Build(system, catalog);
-                    }
-                    case RackEmbedDocument.KindCabecera:
-                    {
-                        var header = new RackProjectStore().Deserialize(embed.Design)?.Header;
-                        return header == null ? null : BomBuilder.Build(header, catalog);
-                    }
-                    case RackEmbedDocument.KindCama:
-                    {
-                        var config = new FlowBedConfigurationStore().Deserialize(embed.Design);
-                        if (config == null) return null;
-                        var instances = new FlowBedLateralBuilder().Build(config, catalog);
-                        return FlowBedBomBuilder.Build(instances, catalog);
-                    }
-                    default:
-                        return null;
-                }
+                return KindHandlerRegistry.Default.TryGet(embed.Kind, out var handler)
+                    ? handler.BuildBom(embed, catalog)
+                    : null;
             }
             catch
             {
@@ -156,16 +130,7 @@ namespace RackCad.Plugin
         }
 
         private static string KindLabel(string kind)
-        {
-            switch (kind)
-            {
-                case RackEmbedDocument.KindSelective: return "Selectivo";
-                case RackEmbedDocument.KindDynamic: return "Dinámico";
-                case RackEmbedDocument.KindCabecera: return "Cabecera";
-                case RackEmbedDocument.KindCama: return "Cama";
-                default: return kind ?? string.Empty;
-            }
-        }
+            => KindHandlerRegistry.Default.TryGet(kind, out var handler) ? handler.BomLabel : (kind ?? string.Empty);
 
         private sealed class RackAggregate
         {

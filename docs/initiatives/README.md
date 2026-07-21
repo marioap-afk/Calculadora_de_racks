@@ -58,6 +58,12 @@ Planes disponibles:
   orquestación de las siete fachadas en `ViewBlockDraw` y uniformar `regen`, sin cambio de comportamiento.
   Con [línea base de equivalencia](I-16-draw-services-baseline.md) y
   [validación manual en AutoCAD aprobada](I-16-autocad-validation.md). Integrada en `main` el 2026-07-21.
+- [`I-10-kind-handlers.md`](I-10-kind-handlers.md): contrato de I-10. Introduce `IRackKindHandler` y el
+  registro explícito `KindHandlerRegistry` en `RackCad.Plugin` (cuatro Kinds embebidos —selective, dynamic,
+  cabecera, cama—, sin reflexión; `Larguero` sin handler) y migra a él RACKEDITAR, RACKBOMTOTAL y el restamp
+  de copias independientes, con error visible ante Kind sin handler y sin otro cambio de comportamiento.
+  `SystemRegistry` (Application, I-08) y `RackListBuilder`/RACKLISTA quedan fuera de alcance por la dirección
+  de dependencias. Cierra la pista B del Plugin. Integrada en `main` el 2026-07-21.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
