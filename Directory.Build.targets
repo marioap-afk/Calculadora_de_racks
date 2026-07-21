@@ -1,0 +1,37 @@
+<Project>
+  <!-- Reproducible source-revision stamping (I-12). Resolves the commit SHA in priority order:
+         1. an explicit $(SourceRevisionId), or the CI-provided $(GITHUB_SHA);
+         2. `git rev-parse HEAD` at the repository root.
+       The .NET SDK then appends "+$(SourceRevisionId)" to InformationalVersion, so a built assembly
+       reports "x.y.z+<sha>" and every bundled DLL is traceable back to its exact source revision.
+
+       Defined fallback when neither the repository nor the SHA is available (a source drop built
+       outside a git checkout, or git not installed): the build STILL succeeds and the informational
+       version carries no build metadata (just "$(Version)"). In CI the GITHUB_SHA short-circuit means
+       git is never invoked, so this never emits an MSBuild warning under the -NoWarnings gate. -->
+
+  <PropertyGroup Condition="'$(SourceRevisionId)' == '' and '$(GITHUB_SHA)' != ''">
+    <SourceRevisionId>$(GITHUB_SHA)</SourceRevisionId>
+  </PropertyGroup>
+
+  <Target Name="RackCadResolveSourceRevisionId"
+          Condition="'$(SourceRevisionId)' == ''"
+          BeforeTargets="AddSourceRevisionToInformationalVersion;GetAssemblyVersion;CoreCompile">
+    <!-- IgnoreExitCode keeps a non-zero exit ("not a git repository") from failing OR warning the
+         build; ContinueOnError keeps a missing git executable from failing it. In both cases
+         SourceRevisionId simply stays empty and the informational version has no "+sha" suffix.
+         WorkingDirectory (not `git -C`) avoids the Windows trailing-backslash-before-quote pitfall. -->
+    <Exec Command="git rev-parse HEAD"
+          WorkingDirectory="$(MSBuildThisFileDirectory)"
+          ConsoleToMSBuild="true"
+          IgnoreExitCode="true"
+          StandardOutputImportance="low"
+          ContinueOnError="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_RackCadHeadSha" />
+      <Output TaskParameter="ExitCode" PropertyName="_RackCadGitExitCode" />
+    </Exec>
+    <PropertyGroup Condition="'$(_RackCadGitExitCode)' == '0' and '$(_RackCadHeadSha)' != ''">
+      <SourceRevisionId>$(_RackCadHeadSha.Trim())</SourceRevisionId>
+    </PropertyGroup>
+  </Target>
+</Project>
