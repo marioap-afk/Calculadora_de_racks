@@ -1,0 +1,24 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-14
+  branch: architecture/ui-controls
+  claim_id: d2a43eb7-c47b-4f58-941f-8248eeca6635
+  current_phase: 6
+  state: review-ready
+  gate: none
+  attempts: 0
+  next_action: owner-review-then-serialized-integration
+  last_evidence_commit: 22b8673ef5724c8331b84152e2bedc4c3df49947
+autocad_validation:
+  status: not-required
+  note: i-14-no-cambia-dibujo-los-controles-no-se-wirean-a-ninguna-ventana-existente
+owner_validation:
+  status: not-required
+  note: sin-cambio-de-comportamiento-ni-apariencia-visible-la-adopcion-la-hacen-i-15-i-20-i-21-i-22
+execution_context:
+  mode: manual-git-only
+  worktree: I-14-ui-controls
+  pull_request: none
+decision_evidence:
+  path: none
+  resolved_gate: none
