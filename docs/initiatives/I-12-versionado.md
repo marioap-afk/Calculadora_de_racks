@@ -13,11 +13,12 @@ conflicts_with: []
 context_packs:
   - delivery-validation
 automation_state_path: docs/automation/state/I-12.yml
-decision_paths: []
+decision_paths:
+  - docs/adr/0004-estrategia-de-versiones-de-autocad.md
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: false
+requires_owner_decision: true
 requires_owner_validation: true
 automation:
   enabled: false
@@ -68,12 +69,20 @@ Autorizado por el ROADMAP (fila I-12) y ADR-0003:
   `AfterTargets="Publish"`, genera el manifiesto desde la plantilla y arma el bundle desde el publish.
 - `deploy/build-bundle.ps1` (publish canónico + verificación) y `deploy/verify-bundle.ps1`
   (fail-closed: allowlist, manifiesto/versión, escaneo recursivo Autodesk, inventario + hashes,
-  modo comparación para reproducibilidad).
-- `deploy/install-bundle.ps1`: `-Build` usa `dotnet publish` y toma el bundle del publish.
+  modo comparación para reproducibilidad, y comparación por SHA-256 de los cuatro DLL contra el
+  publish y de los catálogos contra `assets/catalogs` —inventario derivado de la fuente, sin número
+  fijo—).
+- `deploy/test-verify-bundle.ps1` nuevo: harness versionado del verificador (bundle válido + casos
+  negativos), ejecutado dentro de la guarda de CI.
+- `deploy/install-bundle.ps1`: `-Build` usa el flujo canónico de `deploy/build-bundle.ps1` (publish +
+  verificación fail-closed); ningún bundle de `-Build` llega a staging o destino sin pasar
+  `verify-bundle.ps1`.
 - `eng/ci/verify-autocad-references.ps1`: publica el Plugin (no solo compila), verifica el bundle en
-  el publish e invoca `verify-bundle.ps1` fail-closed. Sin tocar `.github/workflows/ci.yml`.
-- ADR-0004 (estrategia de versiones de AutoCAD) + índice de ADRs.
-- `docs/guias/despliegue.md` y `README.md` donde el flujo cambió.
+  el publish e invoca `verify-bundle.ps1` y el harness del verificador, fail-closed. Sin tocar
+  `.github/workflows/ci.yml`.
+- ADR-0004 (estrategia de versiones de AutoCAD) + índice de ADRs; coherencia "AutoCAD 2025" en
+  bundle/instalador/manifiesto.
+- `docs/guias/despliegue.md` donde el flujo cambió (README auditado en esta revisión: no necesitó cambios).
 
 ## 4. Fuera de alcance
 
@@ -93,22 +102,31 @@ Autorizado por el ROADMAP (fila I-12) y ADR-0003:
 ## 6. Dependencias
 
 Ninguna dependencia previa (iniciativa de relleno; ROADMAP: "Depende de —", "Se estorba con —").
-Coexiste con I-14 e I-19: ambas eran, al abrir I-12, reclamos vacíos sin cambios en archivos de
-build/despliegue. I-12 no toca `RackCad.sln` ni `ci.yml` para no chocar con el job de UI.Tests que
-I-14 añadirá; el único solapamiento posible es la eliminación de dos líneas en `RackCad.UI.csproj`
-(y `RackCad.Tests.csproj`), resoluble mecánicamente en el rebase de integración. No requiere decisión
-del dueño; ADR-0004 nace `propuesto` y solo el dueño lo acepta.
+Coexiste con I-14 (`architecture/ui-controls`) e I-19 (`feature/validador-catalogos`), ambas activas.
+**Cero solapamiento de archivos** con I-12 (verificado): ninguna toca `Directory.Build.*`,
+`RackCad.sln`, `ci.yml`, `deploy/` ni `eng/`; I-12 evita `RackCad.sln` y `ci.yml` a propósito.
+
+**Conflicto semántico de integración con I-14** (no de archivos): el proyecto nuevo de I-14
+`tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj` declara `<LangVersion>latest</LangVersion>` y
+`<Nullable>disable</Nullable>`, que I-12 centraliza en `Directory.Build.props` con esos mismos
+valores. Tras integrar ambas, esas dos líneas quedan como duplicados redundantes. **La iniciativa que
+se integre en SEGUNDO lugar debe eliminarlas** de ese `.csproj` (limpieza, sin cambio de
+comportamiento). I-12 **no** modifica la rama de I-14.
+
+ADR-0004 nace `propuesto`: **requiere decisión del dueño** (aceptarlo) antes de integrar
+(`requires_owner_decision: true`).
 
 ## 7. Archivos esperados
 
 Nuevos: `Directory.Build.targets`, `deploy/RackCad.bundle/PackageContents.template.xml`,
-`deploy/build-bundle.ps1`, `deploy/verify-bundle.ps1`,
+`deploy/build-bundle.ps1`, `deploy/verify-bundle.ps1`, `deploy/test-verify-bundle.ps1`,
 `docs/adr/0004-estrategia-de-versiones-de-autocad.md`, este contrato,
 `docs/automation/state/I-12.yml`.
 Modificados: `Directory.Build.props`, los cinco `.csproj`, `src/RackCad.Plugin/RackCad.Plugin.csproj`
 (target), `deploy/install-bundle.ps1`, `eng/ci/verify-autocad-references.ps1`,
-`docs/guias/despliegue.md`, `README.md`, `docs/adr/README.md`.
+`docs/guias/despliegue.md`, `docs/adr/README.md`.
 Eliminado: `deploy/RackCad.bundle/PackageContents.xml`.
+README fue auditado y **no** necesitó cambios (queda fuera de "modificados").
 Una desviación material fuera de esta lista exige detenerse.
 
 ## 8. Fases

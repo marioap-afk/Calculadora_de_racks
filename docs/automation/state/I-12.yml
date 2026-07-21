@@ -5,10 +5,15 @@ automation_state:
   claim_id: 12b19325-fced-4ef9-819f-af911e17c7a2
   current_phase: 6
   state: review-ready
-  gate: owner-validation
+  gate: owner-decision
   attempts: 0
-  next_action: owner-autocad-autoload-check-then-serialized-merge-no-ff
-  last_evidence_commit: b86191c62f7e185ef1765df14866caa292e46b0b
+  next_action: owner-accept-adr-0004-and-autocad-autoload-check-then-serialized-merge-no-ff
+  last_evidence_commit: 70bb735aa0c7a8519954308db4a84bb2e798d504
+owner_decision:
+  status: pending
+  validator: owner
+  subject: ADR-0004 estrategia de versiones de AutoCAD (SeriesMin/SeriesMax, recompilacion anual)
+  decision_path: docs/adr/0004-estrategia-de-versiones-de-autocad.md
 autocad_validation:
   status: pending
   validator: owner
@@ -17,6 +22,12 @@ autocad_validation:
 owner_validation:
   status: pending
   validator: owner
+integration_conflicts:
+  - initiative: I-14
+    branch: architecture/ui-controls
+    file: tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj
+    kind: semantic
+    note: duplica-LangVersion-y-Nullable-ya-centralizados-en-Directory.Build.props-el-segundo-en-integrar-los-elimina
 execution_context:
   mode: manual-git-only
   worktree: Calculadora de racks-I-12-versionado
