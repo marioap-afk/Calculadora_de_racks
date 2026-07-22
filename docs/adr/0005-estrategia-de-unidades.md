@@ -1,8 +1,8 @@
 # ADR-0005: Estrategia de unidades
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-22 (propuesta)
-- **Decisores:** Mario Pérez, dueño del repositorio (pendiente de aceptar/rechazar); redactado por Claude (I-05)
+- **Estado:** aceptado
+- **Fecha:** 2026-07-22 (propuesta y aceptación)
+- **Decisores:** Mario Pérez, dueño del repositorio (aceptó); redactado por Claude (I-05)
 - **Iniciativa relacionada:** I-05 (`feature/guardrail-unidades`)
 
 ## Contexto
@@ -110,3 +110,14 @@ Una iniciativa que implemente conversión real debería, como mínimo:
   qué la lectura de `INSUNITS` vive ahí y la decisión pura en Application).
 - Código: `src/RackCad.Plugin/RackUnitsGuard.cs` (lectura de `INSUNITS` + aviso),
   `src/RackCad.Application/Drawing/DrawingUnitsAdvisory.cs` (decisión pura, sin AutoCAD).
+
+## Notas posteriores
+
+- **2026-07-22 — Aceptado por Mario Pérez**, dueño del repositorio («Sí, estoy de acuerdo»). El dueño
+  aceptó los cuatro puntos de la sección Decisión **sin solicitar modificaciones**: la pulgada
+  permanece como unidad interna canónica; la guardia es un aviso visible y **NO bloqueante**; I-05
+  **no** realiza conversión, reescalado ni reinterpretación; y una conversión real futura exigirá una
+  frontera explícita DWG↔interno en una iniciativa propia con su ADR. La aceptación **no** autoriza
+  conversión, reescalado ni ampliación de alcance. El contenido de la sección Decisión no cambia (ADR
+  aceptado inmutable). Decisión versionada del dueño en
+  [`docs/automation/decisions/I-05.md`](../automation/decisions/I-05.md).

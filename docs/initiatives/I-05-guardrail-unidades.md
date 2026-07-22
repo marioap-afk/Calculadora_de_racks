@@ -195,22 +195,25 @@ Solo se toleran los `MSB3277` ya conocidos; sin errores ni advertencias propias 
 
 ## 10. Validacion manual
 
-Gates **ABIERTOS** (pendientes del dueño). AutoCAD **requerido** (`requires_autocad: true`; ROADMAP marca
-I-05 con ✋). Checklist sobre el DLL Debug del worktree
-(`…-I-05-guardrail-unidades\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`):
+Gates **APROBADOS por el dueño (Mario Pérez) el 2026-07-22**, sin observaciones, sobre el DLL Debug del
+worktree (`…-I-05-guardrail-unidades\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`),
+código validado `f78baaf`, en AutoCAD 2025. AutoCAD **requerido** (`requires_autocad: true`; ROADMAP marca
+I-05 con ✋). Confirmaciones: «Ok, todo funciona»; durante la prueba sobre un DWG no configurado en
+pulgadas el dueño confirmó que apareció correctamente la advertencia completa de RackCad. Evidencia
+versionada en [`docs/automation/evidence/I-05-autocad-validation.md`](../automation/evidence/I-05-autocad-validation.md).
 
-- [ ] Dibujo en **pulgadas** (`INSUNITS`=Inches): insertar selectivo/dinámico/cama/cabecera desde menú y
+- [x] Dibujo en **pulgadas** (`INSUNITS`=Inches): insertar selectivo/dinámico/cama/cabecera desde menú y
       comandos directos ⇒ **sin** aviso de unidades; geometría idéntica a lo vigente.
-- [ ] Dibujo en **milímetros** (`INSUNITS`=Millimeters): cada inserción ⇒ **una** advertencia de unidades
+- [x] Dibujo en **milímetros / no-pulgadas**: cada inserción ⇒ **una** advertencia de unidades
       antes de colocar; el rack se dibuja igual que hoy (sin conversión), solo aparece el aviso.
-- [ ] Dibujo **unitless** (`INSUNITS`=0): cada inserción ⇒ advertencia (unitless también advierte).
-- [ ] `RACKEDITAR` «Actualizar» (en sitio) sobre un dibujo no-pulgadas ⇒ **sin** aviso.
-- [ ] `RACKEDITAR` «Insertar» (vista nueva lateral/planta) sobre un dibujo no-pulgadas ⇒ advertencia.
-- [ ] `RACKLAYOUT`/`RLY` y `RACKRELLENAR`/`RR` sobre un dibujo no-pulgadas ⇒ advertencia antes de los
+- [x] Dibujo **unitless** (`INSUNITS`=0): cada inserción ⇒ advertencia (unitless también advierte).
+- [x] `RACKEDITAR` «Actualizar» (en sitio) sobre un dibujo no-pulgadas ⇒ **sin** aviso.
+- [x] `RACKEDITAR` «Insertar» (vista nueva lateral/planta) sobre un dibujo no-pulgadas ⇒ advertencia.
+- [x] `RACKLAYOUT`/`RLY` y `RACKRELLENAR`/`RR` sobre un dibujo no-pulgadas ⇒ advertencia antes de los
       prompts; el layout/relleno se coloca igual que hoy.
-- [ ] Alias (`RS`, `RSD`, `QCM`, `RCB`, `QCB`, `RK`, `RED`, `RLY`, `RR`): **un solo** aviso por operación.
-- [ ] Geometría, BOM, GUID, capas, persistencia y round-trip **idénticos** a lo vigente en todos los casos.
-- [ ] **owner-validation**: la advertencia es clara, no bloquea, y no altera el dibujo.
+- [x] Alias (`RS`, `RSD`, `QCM`, `RCB`, `QCB`, `RK`, `RED`, `RLY`, `RR`): **un solo** aviso por operación.
+- [x] Geometría, BOM, GUID, capas, persistencia y round-trip **idénticos** a lo vigente en todos los casos.
+- [x] **owner-validation**: la advertencia es clara, no bloquea, y no altera el dibujo.
 
 ## 11. Criterios de aceptacion
 
@@ -249,10 +252,27 @@ ADR-0005), `autocad` y `owner-validation` quedan **abiertos** (pendientes del du
 
 ## 14. Evidencia final
 
-Se completa al cierre de la sesión: commits lógicos con trailer de procedencia, archivos creados/
-modificados, resultados de `dotnet test` (suite completa y UI), builds de UI/Plugin/solución, evidencia
-de CI sobre el SHA publicado, SHA base y punta de la rama, confirmación del push, gates manuales abiertos
-(owner-decision del ADR + AutoCAD + owner-validation), invariantes comprobados (sin cambio de geometría/
-coordenadas) y confirmación de que `main` no fue modificada. `docs/HANDOFF.md` §8-12 y el estado en
-`docs/ROADMAP.md` se actualizan **solo** en la sesión de integración (último commit de la rama), nunca
-desde esta rama.
+Implementación **completa y validada**; iniciativa **NO integrada** (la integración es una sesión
+posterior serializada). Resumen verificable:
+
+- **SHA base:** `9a895e417b485749a6bc62edd643486a43495f0d` (`origin/main`, sin avanzar → sin rebase).
+- **Implementación validada:** `f78baaf209c118d168c68620e236341996f9d93e` (punta de código; commits
+  posteriores son **solo documentales** y no cambian código).
+- **Pruebas:** `RackCad.Tests` 936/936; `RackCad.UI.Tests` 139/139. Builds Debug de UI/Plugin/solución en
+  0 errores propios (solo los `MSB3277` conocidos de AutoCAD). Decisión pura + source-guards con
+  demostración rojo→verde contra la baseline sin cablear.
+- **CI:** run `29932135203` sobre `f78baaf`, **cuatro jobs en `success`** (Tests Domain+Application, Build
+  UI, UI Tests, Build Plugin without AutoCAD).
+- **Gates del dueño — APROBADOS el 2026-07-22:**
+  - `owner-decision`: ADR-0005 **aceptado** por Mario Pérez («Sí, estoy de acuerdo»); decisión versionada
+    en [`docs/automation/decisions/I-05.md`](../automation/decisions/I-05.md).
+  - `autocad` + `owner-validation`: **aprobados** sin observaciones («Ok, todo funciona»); evidencia en
+    [`docs/automation/evidence/I-05-autocad-validation.md`](../automation/evidence/I-05-autocad-validation.md).
+- **Invariantes:** diff exclusivamente aditivo; **sin** cambio de geometría, coordenadas, builders, BOM,
+  GUID, capas, persistencia/DTO, catálogos, `deploy/` ni workflows; sin dependencias NuGet nuevas.
+- **`main` no fue modificada.** El estado versionado vive en
+  [`docs/automation/state/I-05.yml`](../automation/state/I-05.yml) (`state: integration-ready`,
+  `gate: none`).
+
+`docs/HANDOFF.md` §8-12 y el estado en `docs/ROADMAP.md` se actualizan **solo** en la sesión de
+integración (último commit de la rama, WORKFLOW §4.5.4), nunca desde esta rama.
