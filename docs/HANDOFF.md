@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-21**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-22**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -244,6 +244,30 @@ queda fuera (clona geometría ya dibujada a la misma escala). El cableado se fij
 **aprobó la validación en AutoCAD 2025** y la owner-validation. La rama se integra por `git merge --no-ff` en
 esta sesión.
 
+**I-24** (`refactor/ui-tests-editores`) cierra la **pista de UI** con **pruebas de editores** en
+`tests/RackCad.UI.Tests` (hallazgo U3), **sin cambio de comportamiento**: es una iniciativa de pruebas más un
+**único seam interno** de prueba. Añade **29 pruebas** (139→168 UI): el `RackFrameConfiguratorViewModel` —antes
+**sin ninguna prueba**— (mutaciones estructurales altas/bajas/división/combinación de horizontales, recomputación
+síncrona del modelo físico, arreglos de bracing, selección múltiple, BOM, persistencia round-trip, rutas negativas
+deterministas); la **adopción del estado dinámico** (I-21) por `RackDynamicSystemWindow`, caracterizada por
+**punto fijo del doble build** con una **firma COMPLETA del dibujo** —todos los cortes laterales (con su índice) +
+frontal de salida + frontal de entrada + planta, por instancia, **incluidas anotaciones y cotas** (`Text`/
+`DimensionOffset`/`DimensionStyleName`), normalizando el `Name` del sistema resuelto antes de comparar— sobre un
+diseño **no default** con valores por celda/larguero y opciones de anotación verificados en round-trip; y la
+**identidad/inserción/actualización round-trip** de las ventanas **selectiva** y de **cama**. Las pruebas de
+inserción/actualización recorren los **handlers WPF reales** (Click real vía `RaiseEvent(ButtonBase.ClickEvent)`
+sobre los botones de la ventana, **no** `session.RequestInsert/RequestUpdate` directo), verificando
+identidad/nombre/vista/sección/`UpdateOnly`, el **tipo concreto** de `InsertionRequest`, la **correspondencia
+estricta** del payload (la firma del dibujo construida desde `request.Design` —resolviéndolo y normalizando el
+nombre— iguala la construida desde `request.System`) y la metadata de origen **I-11**. El **único cambio de
+producción** es el seam interno `RackDynamicSystemWindow.BuildDesignForTest` (reenvía al `Recompose` privado
+existente, **sin reglas nuevas**, no usado en producción; +10 líneas). **No** cambia XAML, geometría, BOM,
+persistencia, handlers, Draw Services, catálogos, bloques ni reglas de producto; por eso **no** requiere
+validación en AutoCAD (`requires_autocad: false`) ni owner-validation (`requires_owner_validation: false`).
+**Rebasada sobre `main` vigente (`a50c4ec`, Merge I-05)** reconciliando **sólo** el índice de iniciativas
+(`docs/initiatives/README.md`: se conservan íntegras las entradas de I-05 e I-24). La rama se integra por
+`git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -411,9 +435,13 @@ y **selectivo** (I-20: `SelectiveEditorState`) a Application, dejando ambas vent
 pintando. El siguiente paso natural es **I-22** (`refactor/safety-placement`, orden fijo tras I-20 —ahora
 **desbloqueada**—) e **I-18 (Push Back)**, que ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y
 solo espera los **bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su
-worktree ya reclamado. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada** en
-esta sesión: la **guardia de unidades** avisa cuando el dibujo no está en pulgadas, **sin conversión ni
-reescalado** (ADR-0005 aceptado); no desbloquea ni estorba ninguna otra iniciativa.
+worktree ya reclamado. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada**: la
+**guardia de unidades** avisa cuando el dibujo no está en pulgadas, **sin conversión ni reescalado** (ADR-0005
+aceptado); no desbloquea ni estorba ninguna otra iniciativa. **I-24** (`refactor/ui-tests-editores`, Fase 5) queda
+**integrada** en esta sesión: **pruebas de editores** en `tests/RackCad.UI.Tests` (ViewModels + límites reales de
+las ventanas por handlers WPF reales; **29** nuevas, 139→168 UI) más un **único seam interno** de prueba, **sin
+cambio de comportamiento**; cierra el hallazgo U3 de la pista de UI. **I-22** (`refactor/safety-placement`) sigue
+siendo el siguiente paso natural (orden fijo tras I-20), junto con **I-18 (Push Back)**.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
@@ -459,6 +487,46 @@ un nuevo piloto controlado.
   `src/RackCad.Plugin/RackUnitsGuard.cs` (nuevo) + 7 comandos del Plugin (cableado),
   `tests/RackCad.Tests/DrawingUnitsAdvisoryTests.cs` (+6) y `RackUnitsGuardSourceTests.cs` (+17), más ADR-0005,
   contrato/estado/decisión/evidencia e índices de I-05.
+
+**Baseline integrada de I-24 — 2026-07-22:**
+
+- punta de **código** validada por CI: `59dbf0bf5844aa5c228ac3de2d3e16fdcb95763f` (run `29941597964`, **cuatro
+  jobs verdes**) antes del rebase final; tras rebasar sobre `origin/main` (`a50c4ec`) el código es **idéntico**
+  (el rebase sólo reconcilió el índice de iniciativas), y tanto el **SHA rebasado** como el **commit documental
+  de cierre** reciben su propio CI verde antes del merge; este documento **no inventa** el SHA del merge de `main`
+  (vive en `git log --first-parent main`);
+- `origin/main` **avanzó** de `9a895e4` (Merge I-20) a **`a50c4ec`** (Merge I-05) durante la sesión de I-24: la
+  rama se **rebasó** sobre esa punta; la reconciliación fue **exclusivamente documental** (`docs/initiatives/README.md`,
+  conservando **íntegras** las entradas de I-05 e I-24); I-05 e I-24 tocan código **disjunto** (I-05 = guardia de
+  unidades en el Plugin; I-24 = pruebas de UI + un seam en la ventana dinámica), **cero solapamiento** de código;
+- suite `RackCad.Tests`: **936/936 verdes** (sin regresión: I-24 no toca esa suite; las 936 vienen de la base
+  rebasada con I-05); suite `RackCad.UI.Tests`: **168/168 verdes** (139 de la base + **29 nuevas**: 13 del
+  `RackFrameConfiguratorViewModel`, 8 del dinámico, 4 del selectivo, 4 de la cama);
+- build UI Debug: **0 errores y 0 advertencias propias**; builds Plugin y solución completa Debug: **0 errores**,
+  únicamente las dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre `59dbf0b` (run `29941597964`, pre-rebase) y re-verde sobre el **SHA rebasado** y el
+  **commit documental final** antes del merge (los **cuatro** jobs —Tests (Domain+Application), Build UI, UI Tests
+  (WPF controls, net8.0-windows) y Build Plugin without AutoCAD— en `success`);
+- objetivo entregado: **29 pruebas** en `tests/RackCad.UI.Tests` que cubren el cableado WPF inalcanzable por la
+  suite pura: el `RackFrameConfiguratorViewModel` (antes sin pruebas), la adopción del estado dinámico por su
+  ventana caracterizada por **firma COMPLETA del dibujo** (cortes laterales + frontal salida/entrada + planta, por
+  instancia, **incluidas anotaciones y cotas**, con el `Name` normalizado antes de comparar) por **punto fijo del
+  doble build**, y la identidad/inserción/actualización round-trip de las ventanas selectiva y de cama; las pruebas
+  de inserción/actualización recorren los **handlers WPF reales** (`RaiseEvent(ButtonBase.ClickEvent)`) verificando
+  identidad/nombre/vista/sección/`UpdateOnly`, el tipo concreto de `InsertionRequest`, la **correspondencia estricta**
+  del payload (`request.Design` resuelto == `request.System`) y la metadata de origen **I-11**;
+- validación manual: AutoCAD **no ejecutado ni requerido** (`requires_autocad: false`) y **owner-validation no
+  requerida** (`requires_owner_validation: false`): el único cambio de producción es un **seam interno sin
+  comportamiento** (`RackDynamicSystemWindow.BuildDesignForTest`, reenvía a `Recompose`, +10 líneas, no usado en
+  producción); la cobertura se sostiene con las suites automatizadas y el CI verde de la rama;
+- invariantes preservados: **sin** cambios de XAML, geometría, BOM, GUID, inserción/actualización, persistencia,
+  handlers, Draw Services, catálogos, bloques ni reglas de producto; el diff de producción vs `a50c4ec` es
+  **exclusivamente** el seam de 10 líneas en `src/RackCad.UI/RackDynamicSystemWindow.xaml.cs`; **sin** dependencias
+  NuGet nuevas; dirección de dependencias intacta (las pruebas de UI no referencian AutoCAD);
+- alcance: `src/RackCad.UI/RackDynamicSystemWindow.xaml.cs` (seam +10), `tests/RackCad.UI.Tests/` (5 archivos:
+  `EditorWindowTestSupport`, `RackFrameConfiguratorViewModelTests`, `DynamicEditorWindowTests`,
+  `SelectiveEditorWindowTests`, `FlowBedEditorWindowTests`), más contrato/estado/índice de I-24 y un hallazgo en
+  `docs/ideas-futuras.md` (laguna de cobertura pura `ApplyScope` Level/Front en `DynamicFrontMatrixTests`).
 
 **Baseline integrada de I-20 — 2026-07-21:**
 

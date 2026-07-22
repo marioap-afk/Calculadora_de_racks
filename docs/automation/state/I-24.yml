@@ -3,18 +3,22 @@ automation_state:
   initiative: I-24
   branch: refactor/ui-tests-editores
   claim_id: 5ce1f970-1400-4978-b8a3-bf5f4229cee9
-  current_phase: 5
-  state: review-ready
+  current_phase: 6
+  state: integration-ready
   gate: none
   attempts: 0
-  next_action: sesion-de-integracion-serializada-rebase-final-sobre-origin-main-a50c4ec-ci-verde-y-merge-no-ff-tras-decision-del-dueno
-  last_evidence_commit: d8174102cdd6d95a6fe7f4e189e698e44d8ab1bb
+  next_action: merge-no-ff-de-refactor-ui-tests-editores-en-main-tras-ci-verde-de-la-rama-rebasada-y-del-commit-documental-luego-limpieza-segura
+  last_evidence_commit: 59dbf0bf5844aa5c228ac3de2d3e16fdcb95763f
 execution_context:
   mode: manual-git-only
   worktree: I-24-ui-tests-editores
   pull_request: none
 evidence:
   base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
+  rebased_base_commit: a50c4ec627cbb99f46341859e0180e2b0545619b
+  ci_validated_impl_commit_pre_rebase: 59dbf0bf5844aa5c228ac3de2d3e16fdcb95763f
+  rebase_reconciliation: solo-docs-initiatives-readme-conservando-integras-las-entradas-de-i05-e-i24-codigo-disjunto-cero-solapamiento-diff-produccion-solo-el-seam-mas-10
+  integrated_baseline: 936-rackcad-tests-mas-168-ui-tests-sobre-la-punta-rebasada-builds-ui-plugin-solucion-sin-errores-propios
   claim_commit: 834c94dbfa1c743377ee144275837d06a6bc4fb1
   tests_and_seam_commit: 6916ecd7082036f6d0111044855a38e6aa81c5a7
   review_correction_commit_r2: 885fb2edfc0f5d06a0c54a7bf03291f4a96d7f56

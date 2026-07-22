@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-24
 title: Tests de editores (ViewModels y estados)
 type: refactor
-status: implemented
+status: integrated
 branch: refactor/ui-tests-editores
 base_branch: main
 priority:
