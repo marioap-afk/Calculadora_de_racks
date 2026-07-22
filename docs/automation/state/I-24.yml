@@ -8,7 +8,7 @@ automation_state:
   gate: none
   attempts: 0
   next_action: sesion-de-integracion-serializada-rebase-final-ci-verde-y-merge-no-ff-en-main-tras-decision-del-dueno
-  last_evidence_commit: 6916ecd7082036f6d0111044855a38e6aa81c5a7
+  last_evidence_commit: 885fb2edfc0f5d06a0c54a7bf03291f4a96d7f56
 execution_context:
   mode: manual-git-only
   worktree: I-24-ui-tests-editores
@@ -18,16 +18,18 @@ evidence:
   claim_commit: 834c94dbfa1c743377ee144275837d06a6bc4fb1
   docs_commit: 5966e37fca4206a73058d418887636b2185c1539
   tests_and_seam_commit: 6916ecd7082036f6d0111044855a38e6aa81c5a7
+  review_correction_commit: 885fb2edfc0f5d06a0c54a7bf03291f4a96d7f56
   domain_application_tests: 913-verde-0-fallos-sin-regresion-i24-no-toca-rackcad-tests
-  ui_tests: 162-verde-0-fallos-139-base-mas-23-nuevas-configuratorvm-10-dynamicwindow-6-selectivewindow-4-flowbedwindow-3
+  ui_tests: 168-verde-0-fallos-139-base-mas-29-nuevas-configuratorvm-13-dynamicwindow-8-selectivewindow-4-flowbedwindow-4
   build_ui_debug: 0-errores-0-advertencias
   build_plugin_debug: 0-errores-solo-2-MSB3277-conocidos-de-autocad-2025-instalado
   build_solution_debug: 0-errores-solo-2-MSB3277-conocidos
-  production_seam: RackDynamicSystemWindow-BuildDesignForTest-interno-reenvia-a-Recompose-privado-sin-reglas-nuevas-no-usado-en-produccion
-  invariants: sin-cambios-de-xaml-geometria-bom-persistencia-handlers-drawservices-catalogos-bloques-ni-reglas-de-producto-solo-pruebas-mas-un-seam-sin-comportamiento
-  scope: solo-tests-rackcad-ui-tests-4-archivos-mas-seam-dinamico-mas-docs-i24-mas-hallazgos-ideas-futuras
-  findings: hallazgo-entrada-obsoleta-de-i21-en-initiatives-readme-y-lagunas-de-cobertura-pura-en-rackcad-tests-registrados-en-ideas-futuras-sin-corregir
-  parallel_observed: I-22-refactor-safety-placement-reclamada-0f39d9d-sobre-9a895e4-no-conflicto-declarado-de-i24
+  production_seam: RackDynamicSystemWindow-BuildDesignForTest-interno-reenvia-a-Recompose-privado-sin-reglas-nuevas-no-usado-en-produccion-mas-10-lineas-unico-cambio-de-produccion
+  review_corrections: 1-handlers-reales-por-raiseevent-click-no-session-directa-en-las-tres-ventanas-mas-tipo-concreto-de-insertionrequest-y-payload-correspondiente-y-metadata-i11; 2-firma-completa-del-dibujo-cortes-laterales-con-indice-mas-frontal-salida-entrada-mas-planta-por-instancia-sobre-diseno-no-default-doble-build-mas-prueba-de-sensibilidad-debil-vs-completa; 3-viewmodel-addhorizontalsegment-mas-dimensiones-invalidas-mas-seleccion-multiple; 4-doc-elimina-afirmacion-falsa-dynamiceditorsafety-cell-tests-existen-conserva-solo-laguna-comprobada-applyscope-level-front
+  invariants: sin-cambios-de-xaml-geometria-bom-persistencia-handlers-drawservices-catalogos-bloques-ni-reglas-de-producto-solo-pruebas-mas-un-seam-sin-comportamiento-produccion-diff-src-solo-el-seam-mas-10-lineas
+  scope: solo-tests-rackcad-ui-tests-5-archivos-mas-seam-dinamico-mas-docs-i24-mas-hallazgo-ideas-futuras
+  findings: hallazgo-entrada-obsoleta-de-i21-en-initiatives-readme-y-laguna-comprobada-applyscope-level-front-en-dynamicfrontmatrixtests-registrados-en-ideas-futuras-sin-corregir
+  parallel_observed: I-22-refactor-safety-placement-en-curso-avanzo-a-dc1ac9a-no-conflicto-declarado-de-i24-preservada
 gates:
   autocad:
     required: false
@@ -35,3 +37,6 @@ gates:
   owner_validation:
     required: false
     note: sin-cambio-de-comportamiento-observable-cobertura-por-suites-automatizadas-y-ci
+  plugin_build:
+    required: true
+    note: build-plugin-debug-local-verde-0-errores-propios-solo-2-msb3277-autocad-2025-instalado
