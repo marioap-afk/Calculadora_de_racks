@@ -266,19 +266,25 @@ namespace RackCad.Application.Systems
 
             // One tope per larguero (bay × level, per loaded tramo of a medio-frente bay) at the CENTRAL fondo — counted
             // from the model, matching the per-tramo drawing (the lateral shows each end-on, the planta splits by tramo).
-            var selection = topes[0].Selection;
-            var fondoCount = SelectiveDepthLayout.Count(system);
-            var troquelXs = SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs;
-            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
+            // Count the physical topes resolved once by SelectiveTopePlan: one piece per grid-on level per loaded
+            // tramo, grouped by length (I-22, E6). The lateral draws each end-on and the planta splits by tramo.
             var byLength = new Dictionary<double, int>();
             var order = new List<double>();
-            foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, fondoCount))
+            foreach (var spot in SelectiveTopePlan.Build(system, catalog))
             {
-                var bays = SelectiveDepthLayout.BaysOfFondo(system, spot.Fondo);
-                for (var b = 0; b < bays.Count; b++)
+                foreach (var cell in spot.Cells)
                 {
-                    var frente = b;
-                    TallyByTramo(bays[b], troquelXs, b, catalog, lvl => !offCells.Contains((frente, lvl)), SelectiveSafetyPlacement.TopeLengthAllowance, byLength, order);
+                    foreach (var segment in cell.Segments)
+                    {
+                        var key = Round(segment.Longitud);
+                        if (!byLength.ContainsKey(key))
+                        {
+                            byLength[key] = 0;
+                            order.Add(key);
+                        }
+
+                        byLength[key] += cell.LargueroYs.Count; // one piece per grid-on level of this tramo (the vertical stack)
+                    }
                 }
             }
 
@@ -422,55 +428,6 @@ namespace RackCad.Application.Systems
                         new BomLine { Category = Parrilla, ProfileId = id, Description = label, Length = length, Quantity = 1 }
                     }
                 });
-            }
-        }
-
-        /// <summary>Tally, for one bay, ONE unit per (level that <paramref name="levelOn"/> accepts × loaded tramo) into
-        /// <paramref name="byLength"/>, keyed by the piece length (the tramo length in a medio-frente bay, else the whole
-        /// bay) + <paramref name="allowance"/>. Shared by the tope and parrilla BOM so both agree with the per-tramo
-        /// drawing of a split bay. <paramref name="troquelXs"/> are the shared master-grid post troqueles.</summary>
-        private static void TallyByTramo(SelectiveBay bay, IReadOnlyList<double> troquelXs, int bayIndex, RackCatalog catalog, Func<int, bool> levelOn, double allowance, Dictionary<double, int> byLength, List<double> order)
-        {
-            if (bay.BeamLength <= 0.0 || bay.Levels.Count == 0)
-            {
-                return;
-            }
-
-            var onLevels = 0;
-            for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
-            {
-                if (levelOn(lvl)) onLevels++;
-            }
-
-            if (onLevels == 0)
-            {
-                return;
-            }
-
-            void Add(double pieceLength)
-            {
-                var key = Round(pieceLength);
-                if (!byLength.ContainsKey(key))
-                {
-                    byLength[key] = 0;
-                    order.Add(key);
-                }
-
-                byLength[key] += onLevels; // one piece per accepted level of this tramo (the vertical stack)
-            }
-
-            var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, SelectiveRackDefaults.View);
-            var troquelX = bayIndex >= 0 && bayIndex < troquelXs.Count ? troquelXs[bayIndex] : 0.0;
-            var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
-            if (tramos == null)
-            {
-                Add(bay.BeamLength + allowance);
-                return;
-            }
-
-            foreach (var tramo in tramos)
-            {
-                if (tramo.Loaded) Add(tramo.Length + allowance);
             }
         }
 

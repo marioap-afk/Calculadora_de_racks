@@ -173,7 +173,7 @@ namespace RackCad.Application.Systems
 
             AddLargueros(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
             AddSeparadores(loose, system, catalog, frenteYs, offsets);
-            AddTopes(loose, system, catalog, frenteYs, offsets, layout.TroquelXs);
+            AddTopes(loose, system, catalog, frenteYs, offsets);
             SelectiveDesviadorDrawing.AppendPlanta(loose, system, catalog, PlantaView);
             AddAnnotations(loose, system, frenteYs);
 
@@ -453,7 +453,7 @@ namespace RackCad.Application.Systems
         /// the (mirrored) back post's PLANTA <c>TROQUEL_TOPE</c> (Y slides with peralte). A "medio frente" bay draws a
         /// tope per LOADED tramo (its own length, at that tramo's post along Y), like the largueros do.
         /// </summary>
-        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets, IReadOnlyList<double> troquelXs)
+        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> frenteYs, IReadOnlyList<double> offsets)
         {
             var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, PlantaView, SelectiveSafetyPlacement.TopeType);
             if (topes.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
@@ -465,9 +465,7 @@ namespace RackCad.Application.Systems
             var tope = topes[0];
             var selection = tope.Selection;
             var saque = SelectiveTopePlacement.Saque(selection);
-            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
-
-            foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
+            foreach (var spot in SelectiveTopePlan.Build(system, catalog))
             {
                 var f = spot.Fondo;
                 if (f < 0 || f >= offsets.Count)
@@ -475,26 +473,13 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var bays = SelectiveDepthLayout.BaysOfFondo(system, f);
                 // Both spots of a per-fondo pair flank the CENTRAL GAP: fondo c's back post, and fondo c+1's FRONT post.
                 var postX = spot.AtFront ? offsets[f] : offsets[f] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
 
-                for (var i = 0; i < bays.Count && i < frenteYs.Count; i++)
+                foreach (var cell in spot.Cells)
                 {
-                    var beamLength = bays[i].BeamLength;
-                    if (beamLength <= 0.0)
-                    {
-                        continue;
-                    }
-
-                    // The vertical stack collapses to one planta line: draw it if ANY of this frente's levels has a tope.
-                    var anyOn = false;
-                    for (var level = 0; level < bays[i].Levels.Count; level++)
-                    {
-                        if (!offCells.Contains((i, level))) { anyOn = true; break; }
-                    }
-
-                    if (!anyOn)
+                    var i = cell.Frente;
+                    if (i >= frenteYs.Count)
                     {
                         continue;
                     }
@@ -503,19 +488,10 @@ namespace RackCad.Application.Systems
                     var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
                     var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
 
-                    var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bays[i], SelectiveRackDefaults.View);
-                    var tramos = SelectiveMedioFrente.Resolve(bays[i], troquelXs[i], inicioX);
-
-                    if (tramos == null)
+                    // The vertical stack collapses to one planta line per LOADED tramo (the plan already dropped off-cells).
+                    foreach (var segment in cell.Segments)
                     {
-                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, PlantaView, mateX, frenteYs[i] + troquel.Y, saque, longitud: beamLength + SelectiveSafetyPlacement.TopeLengthAllowance, mirroredX: spot.Mirror));
-                        continue;
-                    }
-
-                    foreach (var tramo in tramos)
-                    {
-                        if (!tramo.Loaded) continue;
-                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, PlantaView, mateX, frenteYs[i] + tramo.StartOffset + troquel.Y, saque, longitud: tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance, mirroredX: spot.Mirror));
+                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, PlantaView, mateX, frenteYs[i] + segment.StartOffset + troquel.Y, saque, longitud: segment.Longitud, mirroredX: spot.Mirror));
                     }
                 }
             }

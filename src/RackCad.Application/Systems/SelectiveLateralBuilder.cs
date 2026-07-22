@@ -68,6 +68,8 @@ namespace RackCad.Application.Systems
                 ? SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs
                 : null;
 
+            var topePlan = SelectiveTopePlan.Build(system, catalog); // the physical topes, resolved once; each corte projects its distinct larguero Ys
+
             for (var i = 0; i < postXs.Count; i++)
             {
                 // A fondo with C bays has posts 0..C, so it "reaches" post i when i <= its bay count. In a corner layout
@@ -145,7 +147,7 @@ namespace RackCad.Application.Systems
                 AddSeparadores(extras, system, catalog, fondoBays, fondoFallback, anchorOffset, i);
 
                 // Larguero topes (rear pallet stops): at the central fondo's back post, one per larguero level.
-                AddTopes(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
+                AddTopes(extras, system, catalog, topePlan, fondoBays, offsets, anchorOffset, i);
 
                 // Desviadores: one physical piece on each exterior aisle face for every selected load level.
                 SelectiveDesviadorDrawing.AppendLateral(extras, system, catalog, i, postXs[i], anchorOffset);
@@ -308,54 +310,51 @@ namespace RackCad.Application.Systems
         /// </summary>
         private void AddTopes(
             ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
-            IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+            IReadOnlyList<SelectiveTopePlan.SpotTopes> topePlan, IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
         {
+            if (topePlan.Count == 0)
+            {
+                return;
+            }
+
+            // EnabledOfType provides the drawable check + the LATERAL block + saque; the geometry comes from the plan.
             var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.TopeType);
             if (topes.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
             {
                 return;
             }
 
+            var tope = topes[0];
+            var saque = SelectiveTopePlacement.Saque(tope.Selection);
             var troquel = CatalogLookup.Local(catalog, system.PostId, SelectiveSafetyPlacement.TopePostPoint, LateralView);
             const double paso = SelectiveRackDefaults.TroquelPaso; // the tope must land on a tope troquel: mate.Y + a whole number of pasos (single source, I-22)
 
-            foreach (var tope in topes)
+            foreach (var spot in topePlan)
             {
-                var selection = tope.Selection;
-                var saque = SelectiveTopePlacement.Saque(selection);
-                var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
-
-                foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
+                var f = spot.Fondo;
+                if (f < 0 || f >= fondoBays.Length || postIndex > fondoBays[f].Count)
                 {
-                    var f = spot.Fondo;
-                    if (f < 0 || f >= fondoBays.Length || postIndex > fondoBays[f].Count)
-                    {
-                        continue; // fondo f doesn't reach this corte
-                    }
+                    continue; // fondo f doesn't reach this corte
+                }
 
-                    // Both spots of a per-fondo pair flank the CENTRAL GAP: fondo c's back post, and fondo c+1's FRONT post.
-                    var frontX = offsets[f] - anchorOffset;
-                    var postX = spot.AtFront ? frontX : frontX + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
-                    var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
+                // Both spots of a per-fondo pair flank the CENTRAL GAP: fondo c's back post, and fondo c+1's FRONT post.
+                var frontX = offsets[f] - anchorOffset;
+                var postX = spot.AtFront ? frontX : frontX + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
+                var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
 
-                    // Grid-filtered distinct larguero heights of the (up to two) bays this corte bounds.
-                    var ys = new HashSet<double>();
-                    var bays = fondoBays[f];
-                    for (var b = postIndex - 1; b <= postIndex; b++)
-                    {
-                        if (b < 0 || b >= bays.Count) continue;
-                        for (var lvl = 0; lvl < bays[b].Levels.Count; lvl++)
-                        {
-                            if (!offCells.Contains((b, lvl))) ys.Add(Math.Round(bays[b].Levels[lvl].Y, 4));
-                        }
-                    }
+                // Grid-filtered distinct larguero heights of the (up to two) bays this corte bounds (from the plan).
+                var ys = new HashSet<double>();
+                foreach (var cell in spot.Cells)
+                {
+                    if (cell.Frente != postIndex - 1 && cell.Frente != postIndex) continue;
+                    foreach (var y in cell.LargueroYs) ys.Add(Math.Round(y, 4));
+                }
 
-                    foreach (var y0 in ys)
-                    {
-                        // Rise ~8" above the larguero, then snap to the TROQUEL_TOPE grid (a whole number of pasos from the mate).
-                        var y = SelectiveTopePlacement.SnapY(troquel.Y, y0, paso);
-                        result.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, LateralView, mateX, y, saque, mirroredX: spot.Mirror));
-                    }
+                foreach (var y0 in ys)
+                {
+                    // Rise ~8" above the larguero, then snap to the TROQUEL_TOPE grid (a whole number of pasos from the mate).
+                    var y = SelectiveTopePlacement.SnapY(troquel.Y, y0, paso);
+                    result.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, LateralView, mateX, y, saque, mirroredX: spot.Mirror));
                 }
             }
         }
