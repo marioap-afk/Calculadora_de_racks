@@ -309,17 +309,7 @@ namespace RackCad.Application.Systems
                 {
                     // Anchor on the (mirrored) back post's TROQUEL_SEPARADOR, one troquel inside the post; span the gap.
                     var anchor = new Point2D(backX - troquelSeparador.X, level);
-                    var separador = new HeaderBlockInstance
-                    {
-                        Role = HeaderBlockRole.Separator,
-                        PieceId = DynamicRackDefaults.SeparatorCatalogId,
-                        BlockName = separatorBlock,
-                        View = DynamicRackDefaults.SeparatorView,
-                        ConnectionAnchor = anchor,
-                        Insertion = new Point2D(anchor.X - separatorMate.X, anchor.Y - separatorMate.Y)
-                    };
-                    separador.DynamicParameters[SelectiveRackDefaults.LengthParam] = gap;
-                    result.Add(separador);
+                    result.Add(SelectiveSeparadorPlacement.Separador(separatorBlock, DynamicRackDefaults.SeparatorView, anchor, separatorMate, gap));
                 }
             }
         }

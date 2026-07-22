@@ -454,17 +454,7 @@ namespace RackCad.Application.Systems
                     }
 
                     var anchor = new Point2D(backX - troquel.X, frenteYs[i] + troquel.Y);
-                    var separador = new HeaderBlockInstance
-                    {
-                        Role = HeaderBlockRole.Separator,
-                        PieceId = DynamicRackDefaults.SeparatorCatalogId,
-                        BlockName = block,
-                        View = PlantaView,
-                        ConnectionAnchor = anchor,
-                        Insertion = new Point2D(anchor.X - separatorMate.X, anchor.Y - separatorMate.Y)
-                    };
-                    separador.DynamicParameters[SelectiveRackDefaults.LengthParam] = gap;
-                    instances.Add(separador);
+                    instances.Add(SelectiveSeparadorPlacement.Separador(block, PlantaView, anchor, separatorMate, gap));
                 }
             }
         }
