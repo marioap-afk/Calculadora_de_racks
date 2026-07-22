@@ -159,112 +159,91 @@ namespace RackCad.Domain.Systems
             return Side;
         }
 
-        // ---- TOPE-only config (larguero tope): shared vs per-fondo, and the (frente,level) cells to SKIP ----
+        // ---- Per-family safety configuration (I-22, E7): each family owns a sealed config with its OWN DeepCopy
+        // and persistence mapping; the flat accessors below delegate to it, so existing consumers stay unchanged. ----
 
-        /// <summary>TOPE: one shared central tope (true) vs one per fondo of the central pair (false, guided by <see cref="Side"/>).</summary>
-        public bool TopeShared { get; set; } = true;
+        private SelectiveTopeConfig tope = new SelectiveTopeConfig();
+        private SelectiveDesviadorConfig desviador = new SelectiveDesviadorConfig();
+        private SelectiveDefensaConfig defensa = new SelectiveDefensaConfig();
+        private SelectiveGuiaConfig guia = new SelectiveGuiaConfig();
+        private SelectiveParrillaConfig parrilla = new SelectiveParrillaConfig();
 
-        /// <summary>TOPE: which fondo (0-based) carries the tope; &lt; 0 = the automatic central fondo. Lets the user pick,
-        /// e.g. the first fondo instead of the middle when there are 3.</summary>
-        public int TopeFondo { get; set; } = -1;
+        /// <summary>TOPE (larguero tope) configuration. Never null.</summary>
+        public SelectiveTopeConfig Tope { get => tope; set => tope = value ?? new SelectiveTopeConfig(); }
 
-        /// <summary>TOPE: the block's SAQUE (stick-out) parameter, inches (&lt;= 0 → the domain default).</summary>
-        public double TopeSaque { get; set; } = SelectiveSafetyDefaults.TopeSaque;
+        /// <summary>DESVIADOR configuration. Never null.</summary>
+        public SelectiveDesviadorConfig Desviador { get => desviador; set => desviador = value ?? new SelectiveDesviadorConfig(); }
 
-        /// <summary>TOPE: also draw it in the FRONTAL view (lateral + planta always draw it; the frontal is a toggle).</summary>
-        public bool TopeFrontal { get; set; }
+        /// <summary>DEFENSA configuration. Never null.</summary>
+        public SelectiveDefensaConfig Defensa { get => defensa; set => defensa = value ?? new SelectiveDefensaConfig(); }
 
-        /// <summary>TOPE: the (frente, level) cells with NO tope (default empty = a tope at every larguero).</summary>
-        public IList<SelectiveGridCell> TopeOffCells { get; } = new List<SelectiveGridCell>();
+        /// <summary>GUIA (entrance guide) configuration. Never null.</summary>
+        public SelectiveGuiaConfig Guia { get => guia; set => guia = value ?? new SelectiveGuiaConfig(); }
 
-        /// <summary>TOPE: true if a tope is drawn at (frente, level) — i.e. that cell is not in <see cref="TopeOffCells"/>.</summary>
-        public bool TopeAt(int frente, int level)
-        {
-            foreach (var off in TopeOffCells)
-            {
-                if (off != null && off.Frente == frente && off.Level == level) return false;
-            }
+        /// <summary>PARRILLA (deck) configuration. Never null.</summary>
+        public SelectiveParrillaConfig Parrilla { get => parrilla; set => parrilla = value ?? new SelectiveParrillaConfig(); }
 
-            return true;
-        }
+        // ---- Flat accessors delegating to the per-family configs (compatibility surface for existing consumers) ----
 
-        // ---- DESVIADOR-only config: post x load-level grid plus its two global dimensions ----
+        /// <summary>TOPE: shared central tope vs one per fondo. Delegates to <see cref="Tope"/>.</summary>
+        public bool TopeShared { get => Tope.Shared; set => Tope.Shared = value; }
 
-        /// <summary>DESVIADOR: dynamic LONGITUD (in). Invalid/legacy values fall back to 18 in Application.</summary>
-        public double DesviadorLongitud { get; set; } = SelectiveSafetyDefaults.DesviadorLongitud;
+        /// <summary>TOPE: which fondo carries the tope; &lt; 0 = automatic central. Delegates to <see cref="Tope"/>.</summary>
+        public int TopeFondo { get => Tope.Fondo; set => Tope.Fondo = value; }
 
-        /// <summary>DESVIADOR: first load-level height above the first TROQUEL_LARGUERO (in). The first piece exists
-        /// even when the floor pallet has no beam; invalid/legacy values fall back to 18 in Application.</summary>
-        public double DesviadorPrimerNivelAltura { get; set; } = SelectiveSafetyDefaults.DesviadorPrimerNivelAltura;
+        /// <summary>TOPE: the block SAQUE (stick-out), inches. Delegates to <see cref="Tope"/>.</summary>
+        public double TopeSaque { get => Tope.Saque; set => Tope.Saque = value; }
 
-        /// <summary>DESVIADOR: disabled (post, load-level) cells. <see cref="SelectiveGridCell.Frente"/> stores the
-        /// resolved post-column index here; reusing the generic persisted grid cell avoids another DTO shape.</summary>
-        public IList<SelectiveGridCell> DesviadorOffCells { get; } = new List<SelectiveGridCell>();
+        /// <summary>TOPE: also draw it in the FRONTAL view. Delegates to <see cref="Tope"/>.</summary>
+        public bool TopeFrontal { get => Tope.Frontal; set => Tope.Frontal = value; }
 
-        public bool DesviadorAt(int post, int level)
-        {
-            foreach (var off in DesviadorOffCells)
-            {
-                if (off != null && off.Frente == post && off.Level == level) return false;
-            }
+        /// <summary>TOPE: the (frente, level) cells with NO tope. Delegates to <see cref="Tope"/>.</summary>
+        public IList<SelectiveGridCell> TopeOffCells => Tope.OffCells;
 
-            return true;
-        }
+        /// <summary>TOPE: true if a tope is drawn at (frente, level). Delegates to <see cref="Tope"/>.</summary>
+        public bool TopeAt(int frente, int level) => Tope.At(frente, level);
 
-        // ---- DEFENSA-only config: one physical pair per transverse post line, with a length per post ----
+        /// <summary>DESVIADOR: dynamic LONGITUD (in). Delegates to <see cref="Desviador"/>.</summary>
+        public double DesviadorLongitud { get => Desviador.Longitud; set => Desviador.Longitud = value; }
 
-        /// <summary>DEFENSA: explicit per-post lengths. A zero length disables that post; missing posts use the
-        /// dynamic-system defaults resolved by Application (12 in at the edges, 36 in at intermediate posts).</summary>
-        public IList<SafetyPostDefense> DefensaPosts { get; } = new List<SafetyPostDefense>();
+        /// <summary>DESVIADOR: first load-level height above the first TROQUEL_LARGUERO (in). Delegates to <see cref="Desviador"/>.</summary>
+        public double DesviadorPrimerNivelAltura { get => Desviador.PrimerNivelAltura; set => Desviador.PrimerNivelAltura = value; }
 
-        // ---- GUIA-only config: disabled (frente, level) cells; empty means every available level ----
+        /// <summary>DESVIADOR: disabled (post, load-level) cells. Delegates to <see cref="Desviador"/>.</summary>
+        public IList<SelectiveGridCell> DesviadorOffCells => Desviador.OffCells;
 
-        /// <summary>GUIA: zero-based frente/level cells without entrance guides. Missing/empty enables every cell.</summary>
-        public IList<SelectiveGridCell> GuiaEntradaOffCells { get; } = new List<SelectiveGridCell>();
+        public bool DesviadorAt(int post, int level) => Desviador.At(post, level);
 
-        public bool GuiaEntradaAt(int frontIndex, int levelIndex)
-            => frontIndex >= 0
-               && levelIndex >= 0
-               && !GuiaEntradaOffCells.Any(cell => cell != null
-                                                   && cell.Frente == frontIndex
-                                                   && cell.Level == levelIndex);
+        /// <summary>DEFENSA: explicit per-post lengths. Delegates to <see cref="Defensa"/>.</summary>
+        public IList<SafetyPostDefense> DefensaPosts => Defensa.Posts;
 
-        // ---- PARRILLA-only config (deck): which views draw it, and the (frente,level) cells that carry one ----
+        /// <summary>GUIA: zero-based frente/level cells without entrance guides. Delegates to <see cref="Guia"/>.</summary>
+        public IList<SelectiveGridCell> GuiaEntradaOffCells => Guia.OffCells;
 
-        /// <summary>PARRILLA: draw the deck in the FRONTAL view (seen edge-on, FRENTE = the frente width). Default true.</summary>
-        public bool ParrillaFrontal { get; set; } = true;
+        public bool GuiaEntradaAt(int frontIndex, int levelIndex) => Guia.At(frontIndex, levelIndex);
 
-        /// <summary>PARRILLA: draw the deck in the LATERAL view (seen edge-on, FONDO = the depth). Default true.</summary>
-        public bool ParrillaLateral { get; set; } = true;
+        /// <summary>PARRILLA: draw the deck in the FRONTAL view. Delegates to <see cref="Parrilla"/>.</summary>
+        public bool ParrillaFrontal { get => Parrilla.Frontal; set => Parrilla.Frontal = value; }
 
-        /// <summary>PARRILLA: manual deck width (FRENTE, inches); &lt;= 0 = one deck per tarima at the tarima's own frente.
-        /// A positive value overrides it (e.g. 2 wider decks under 3 pallets), fitting as many as the span holds.</summary>
-        public double ParrillaFrente { get; set; }
+        /// <summary>PARRILLA: draw the deck in the LATERAL view. Delegates to <see cref="Parrilla"/>.</summary>
+        public bool ParrillaLateral { get => Parrilla.Lateral; set => Parrilla.Lateral = value; }
 
-        /// <summary>PARRILLA: manual deck count PER LOAD ROW (a full bay, or each loaded tramo of a medio frente);
-        /// &lt;= 0 = derived from the width (how many fit). A positive value forces it — with a blank
-        /// <see cref="ParrillaFrente"/> the decks keep the tarima's own width, so "2" under 3 tarimas means 2 standard
-        /// decks. CLAMPED to what physically fits: the editor refuses a count that does not fit, but narrowing a bay
-        /// AFTER configuring must degrade to the fit rather than draw decks past the frame.</summary>
-        public int ParrillaCantidad { get; set; }
+        /// <summary>PARRILLA: manual deck width (FRENTE, inches). Delegates to <see cref="Parrilla"/>.</summary>
+        public double ParrillaFrente { get => Parrilla.Frente; set => Parrilla.Frente = value; }
 
-        /// <summary>PARRILLA: the (frente, level) cells with NO deck (default empty = a deck at every load position).</summary>
-        public IList<SelectiveGridCell> ParrillaOffCells { get; } = new List<SelectiveGridCell>();
+        /// <summary>PARRILLA: manual deck count per load row. Delegates to <see cref="Parrilla"/>.</summary>
+        public int ParrillaCantidad { get => Parrilla.Cantidad; set => Parrilla.Cantidad = value; }
 
-        /// <summary>PARRILLA: true if a deck sits at (frente, level) — i.e. that cell is not in <see cref="ParrillaOffCells"/>.</summary>
-        public bool ParrillaAt(int frente, int level)
-        {
-            foreach (var off in ParrillaOffCells)
-            {
-                if (off != null && off.Frente == frente && off.Level == level) return false;
-            }
+        /// <summary>PARRILLA: the (frente, level) cells with NO deck. Delegates to <see cref="Parrilla"/>.</summary>
+        public IList<SelectiveGridCell> ParrillaOffCells => Parrilla.OffCells;
 
-            return true;
-        }
+        /// <summary>PARRILLA: true if a deck sits at (frente, level). Delegates to <see cref="Parrilla"/>.</summary>
+        public bool ParrillaAt(int frente, int level) => Parrilla.At(frente, level);
 
         /// <summary>
-        /// Deep working copy used when a selection crosses the design/resolver/view/UI boundaries. New safety fields
-        /// belong here once; persistence remains an explicit DTO mapping so legacy fallbacks stay visible and tested.
+        /// Deep working copy used when a selection crosses the design/resolver/view/UI boundaries. Delegates to each
+        /// per-family config's own DeepCopy, so a new family adds its config's clone rather than another field here
+        /// (I-22, E7). Persistence remains an explicit per-family DTO mapping so legacy fallbacks stay visible and tested.
         /// </summary>
         public SelectiveSafetySelection DeepCopy()
         {
@@ -273,16 +252,11 @@ namespace RackCad.Domain.Systems
                 ElementId = ElementId,
                 Quantity = Quantity,
                 Side = Side,
-                TopeShared = TopeShared,
-                TopeFondo = TopeFondo,
-                TopeSaque = TopeSaque,
-                TopeFrontal = TopeFrontal,
-                DesviadorLongitud = DesviadorLongitud,
-                DesviadorPrimerNivelAltura = DesviadorPrimerNivelAltura,
-                ParrillaFrontal = ParrillaFrontal,
-                ParrillaLateral = ParrillaLateral,
-                ParrillaFrente = ParrillaFrente,
-                ParrillaCantidad = ParrillaCantidad
+                Tope = Tope.DeepCopy(),
+                Desviador = Desviador.DeepCopy(),
+                Defensa = Defensa.DeepCopy(),
+                Guia = Guia.DeepCopy(),
+                Parrilla = Parrilla.DeepCopy()
             };
 
             foreach (var post in PostSides)
@@ -293,34 +267,7 @@ namespace RackCad.Domain.Systems
                 }
             }
 
-            CopyCells(TopeOffCells, copy.TopeOffCells);
-            CopyCells(DesviadorOffCells, copy.DesviadorOffCells);
-            CopyCells(ParrillaOffCells, copy.ParrillaOffCells);
-            CopyCells(GuiaEntradaOffCells, copy.GuiaEntradaOffCells);
-            foreach (var post in DefensaPosts)
-            {
-                if (post != null)
-                {
-                    copy.DefensaPosts.Add(new SafetyPostDefense
-                    {
-                        PostIndex = post.PostIndex,
-                        ExitLength = post.ExitLength,
-                        EntranceLength = post.EntranceLength
-                    });
-                }
-            }
             return copy;
-        }
-
-        private static void CopyCells(IEnumerable<SelectiveGridCell> source, ICollection<SelectiveGridCell> target)
-        {
-            foreach (var cell in source)
-            {
-                if (cell != null)
-                {
-                    target.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });
-                }
-            }
         }
     }
 

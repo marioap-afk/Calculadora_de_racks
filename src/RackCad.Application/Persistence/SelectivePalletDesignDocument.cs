@@ -322,41 +322,30 @@ namespace RackCad.Application.Persistence
         public int? ParrillaCantidad { get; set; }
         public List<GridCellDocument> ParrillaOffCells { get; set; }
 
-        /// <summary>Shared explicit DTO mapping used by every rack system that composes the safety subsystem.</summary>
+        /// <summary>Shared explicit DTO mapping used by every rack system that composes the safety subsystem. The wire
+        /// format is a FLAT record (unchanged, and shared with the dynamic path); each family's fields and their legacy
+        /// fallback live in a per-family Write/Read below (I-22, E7) that maps the family's config subtype.</summary>
         public static SafetySelectionDocument From(SelectiveSafetySelection selection)
         {
-            return new SafetySelectionDocument
+            var document = new SafetySelectionDocument
             {
                 ElementId = selection.ElementId,
                 Quantity = selection.Quantity,
                 Side = (int)selection.Side,
                 PostSides = selection.PostSides.Where(p => p != null)
-                    .Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList(),
-                TopeShared = selection.TopeShared,
-                TopeSaque = selection.TopeSaque,
-                TopeFrontal = selection.TopeFrontal,
-                TopeFondo = selection.TopeFondo,
-                TopeOffCells = CellsFrom(selection.TopeOffCells),
-                DesviadorLongitud = selection.DesviadorLongitud,
-                DesviadorPrimerNivelAltura = selection.DesviadorPrimerNivelAltura,
-                DesviadorOffCells = CellsFrom(selection.DesviadorOffCells),
-                DefensaPosts = selection.DefensaPosts.Where(post => post != null)
-                    .Select(post => new PostDefenseDocument
-                    {
-                        PostIndex = post.PostIndex,
-                        ExitLength = post.ExitLength,
-                        EntranceLength = post.EntranceLength
-                    }).ToList(),
-                GuiaEntradaOffCells = CellsFrom(selection.GuiaEntradaOffCells),
-                ParrillaFrontal = selection.ParrillaFrontal,
-                ParrillaLateral = selection.ParrillaLateral,
-                ParrillaFrente = selection.ParrillaFrente,
-                ParrillaCantidad = selection.ParrillaCantidad,
-                ParrillaOffCells = CellsFrom(selection.ParrillaOffCells)
+                    .Select(p => new PostSideDocument { PostIndex = p.PostIndex, Side = (int)p.Side }).ToList()
             };
+
+            WriteTope(document, selection.Tope);
+            WriteDesviador(document, selection.Desviador);
+            WriteDefensa(document, selection.Defensa);
+            WriteGuia(document, selection.Guia);
+            WriteParrilla(document, selection.Parrilla);
+            return document;
         }
 
-        /// <summary>Version-tolerant domain mapping. Nullable legacy fields retain the selective safety defaults.</summary>
+        /// <summary>Version-tolerant domain mapping. Nullable legacy fields retain the selective safety defaults; each
+        /// family reconstructs its own config subtype with its exact fallback (I-22, E7).</summary>
         public SelectiveSafetySelection ToDomain()
         {
             var selection = new SelectiveSafetySelection
@@ -364,20 +353,11 @@ namespace RackCad.Application.Persistence
                 ElementId = ElementId,
                 Quantity = Quantity,
                 Side = ToSafetySide(Side),
-                TopeShared = TopeShared ?? true,
-                TopeSaque = TopeSaque.HasValue && TopeSaque.Value > 0.0 ? TopeSaque.Value : SelectiveSafetyDefaults.TopeSaque,
-                TopeFrontal = TopeFrontal ?? false,
-                TopeFondo = TopeFondo ?? -1,
-                DesviadorLongitud = DesviadorLongitud.HasValue && DesviadorLongitud.Value > 0.0
-                    ? DesviadorLongitud.Value
-                    : SelectiveSafetyDefaults.DesviadorLongitud,
-                DesviadorPrimerNivelAltura = DesviadorPrimerNivelAltura.HasValue && DesviadorPrimerNivelAltura.Value > 0.0
-                    ? DesviadorPrimerNivelAltura.Value
-                    : SelectiveSafetyDefaults.DesviadorPrimerNivelAltura,
-                ParrillaFrontal = ParrillaFrontal ?? true,
-                ParrillaLateral = ParrillaLateral ?? true,
-                ParrillaFrente = ParrillaFrente ?? 0.0,
-                ParrillaCantidad = ParrillaCantidad ?? 0
+                Tope = ReadTope(),
+                Desviador = ReadDesviador(),
+                Defensa = ReadDefensa(),
+                Guia = ReadGuia(),
+                Parrilla = ReadParrilla()
             };
 
             foreach (var post in PostSides ?? Enumerable.Empty<PostSideDocument>())
@@ -388,11 +368,76 @@ namespace RackCad.Application.Persistence
                 }
             }
 
+            return selection;
+        }
+
+        // ---- Per-family DTO mapping: each family owns its fields and its exact legacy fallback (I-22, E7). The
+        // serialized shape stays flat, so a legacy document (any family field missing) loads to the same default it
+        // did before the decomposition, verified by the per-subtype round-trip tests. ----
+
+        private static void WriteTope(SafetySelectionDocument document, SelectiveTopeConfig config)
+        {
+            document.TopeShared = config.Shared;
+            document.TopeSaque = config.Saque;
+            document.TopeFrontal = config.Frontal;
+            document.TopeFondo = config.Fondo;
+            document.TopeOffCells = CellsFrom(config.OffCells);
+        }
+
+        private SelectiveTopeConfig ReadTope()
+        {
+            var config = new SelectiveTopeConfig
+            {
+                Shared = TopeShared ?? true,
+                Saque = TopeSaque.HasValue && TopeSaque.Value > 0.0 ? TopeSaque.Value : SelectiveSafetyDefaults.TopeSaque,
+                Frontal = TopeFrontal ?? false,
+                Fondo = TopeFondo ?? -1
+            };
+            AddCells(TopeOffCells, config.OffCells);
+            return config;
+        }
+
+        private static void WriteDesviador(SafetySelectionDocument document, SelectiveDesviadorConfig config)
+        {
+            document.DesviadorLongitud = config.Longitud;
+            document.DesviadorPrimerNivelAltura = config.PrimerNivelAltura;
+            document.DesviadorOffCells = CellsFrom(config.OffCells);
+        }
+
+        private SelectiveDesviadorConfig ReadDesviador()
+        {
+            var config = new SelectiveDesviadorConfig
+            {
+                Longitud = DesviadorLongitud.HasValue && DesviadorLongitud.Value > 0.0
+                    ? DesviadorLongitud.Value
+                    : SelectiveSafetyDefaults.DesviadorLongitud,
+                PrimerNivelAltura = DesviadorPrimerNivelAltura.HasValue && DesviadorPrimerNivelAltura.Value > 0.0
+                    ? DesviadorPrimerNivelAltura.Value
+                    : SelectiveSafetyDefaults.DesviadorPrimerNivelAltura
+            };
+            AddCells(DesviadorOffCells, config.OffCells);
+            return config;
+        }
+
+        private static void WriteDefensa(SafetySelectionDocument document, SelectiveDefensaConfig config)
+        {
+            document.DefensaPosts = config.Posts.Where(post => post != null)
+                .Select(post => new PostDefenseDocument
+                {
+                    PostIndex = post.PostIndex,
+                    ExitLength = post.ExitLength,
+                    EntranceLength = post.EntranceLength
+                }).ToList();
+        }
+
+        private SelectiveDefensaConfig ReadDefensa()
+        {
+            var config = new SelectiveDefensaConfig();
             foreach (var post in DefensaPosts ?? Enumerable.Empty<PostDefenseDocument>())
             {
                 if (post != null && post.PostIndex >= 0)
                 {
-                    selection.DefensaPosts.Add(new SafetyPostDefense
+                    config.Posts.Add(new SafetyPostDefense
                     {
                         PostIndex = post.PostIndex,
                         ExitLength = post.ExitLength.HasValue ? Math.Max(0.0, post.ExitLength.Value) : 0.0,
@@ -401,11 +446,41 @@ namespace RackCad.Application.Persistence
                 }
             }
 
-            AddCells(TopeOffCells, selection.TopeOffCells);
-            AddCells(DesviadorOffCells, selection.DesviadorOffCells);
-            AddCells(ParrillaOffCells, selection.ParrillaOffCells);
-            AddCells(GuiaEntradaOffCells, selection.GuiaEntradaOffCells);
-            return selection;
+            return config;
+        }
+
+        private static void WriteGuia(SafetySelectionDocument document, SelectiveGuiaConfig config)
+        {
+            document.GuiaEntradaOffCells = CellsFrom(config.OffCells);
+        }
+
+        private SelectiveGuiaConfig ReadGuia()
+        {
+            var config = new SelectiveGuiaConfig();
+            AddCells(GuiaEntradaOffCells, config.OffCells);
+            return config;
+        }
+
+        private static void WriteParrilla(SafetySelectionDocument document, SelectiveParrillaConfig config)
+        {
+            document.ParrillaFrontal = config.Frontal;
+            document.ParrillaLateral = config.Lateral;
+            document.ParrillaFrente = config.Frente;
+            document.ParrillaCantidad = config.Cantidad;
+            document.ParrillaOffCells = CellsFrom(config.OffCells);
+        }
+
+        private SelectiveParrillaConfig ReadParrilla()
+        {
+            var config = new SelectiveParrillaConfig
+            {
+                Frontal = ParrillaFrontal ?? true,
+                Lateral = ParrillaLateral ?? true,
+                Frente = ParrillaFrente ?? 0.0,
+                Cantidad = ParrillaCantidad ?? 0
+            };
+            AddCells(ParrillaOffCells, config.OffCells);
+            return config;
         }
 
         private static List<GridCellDocument> CellsFrom(IEnumerable<SelectiveGridCell> source)
