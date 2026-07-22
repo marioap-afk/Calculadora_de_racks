@@ -7,10 +7,11 @@ automation_state:
   state: review-ready
   gate: autocad
   attempts: 0
-  review_round: 2
-  review_note: ronda-2-corrige-el-alcance-las-4-ventanas-ricas-adoptan-el-shell-catalogo-identidad-recompute-insercion-getters-sobre-la-sesion-sin-migrar-estado-interno-i20-i21-pruebas-sta-de-adopcion-suite-ui-135
-  next_action: owner-validacion-autocad-del-menu-biblioteca-y-round-trip-de-los-editores-adoptados
-  last_evidence_commit: 3126d3ea4a5dab439df05cce9cb431590a3fb38f
+  review_round: 3
+  review_note: ronda-3-rebase-sobre-origin-main-646614d-merge-i19-sobre-i12-reconciliacion-mecanica-solo-infra-langversion-nullable-centralizadas-por-i12-mas-internalsvisibleto-y-copia-catalogos-de-i15-docs-readme-ideas-futuras-sin-codigo-funcional-de-i19-en-ui-tests-842-app-135-ui-builds-verdes
+  rebased_onto: 646614d8d8e84e55257cbd7583a7bc2303060863
+  next_action: owner-validacion-manual-autocad-y-owner-validation-siguiente-gate-manual-del-dueno
+  last_evidence_commit: da60e6dd822c121787ca9c6389545ecdf92bc398
 autocad_validation:
   status: pending
   note: menu-biblioteca-y-comandos-directos-rackselectivo-rackdinamico-rackcama-rackeditar-toman-identidad-e-insercion-de-la-sesion-mismos-draw-mismos-argumentos-el-dueno-valida-los-cinco-sistemas-round-trip-e-i11

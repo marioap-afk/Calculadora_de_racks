@@ -171,10 +171,14 @@ Autorizado por el ROADMAP (Fase 3, I-15) y por el objetivo §7.2/§7.3 de `ARCHI
 ## 6. Dependencias
 
 - **Integradas requeridas:** I-08 (`SystemRegistry`, integrada 2026-07-21) e I-14 (controles + proyecto
-  `RackCad.UI.Tests`, integrada 2026-07-21). Ambas están en `origin/main` (abc1a53).
+  `RackCad.UI.Tests`, integrada 2026-07-21). Ambas están en `origin/main`.
 - **Estorbos que deben permanecer inactivos:** I-14 (misma capa de UI) — ya integrada, no en curso.
-  I-12 e I-19 tienen rama en `origin` pero **no** están integradas y **no** tocan estos archivos; I-15
-  no depende ni incorpora sus cambios.
+  I-12 (versionado real) e I-19 (validador de catálogos) **también se integraron** a `origin/main`
+  (2026-07-21) mientras I-15 estaba en curso; esta rama fue **rebasada sobre esa punta** (`origin/main` =
+  `646614d`, Merge I-19 sobre I-12). La reconciliación fue mecánica y de solo-infra: la centralización de
+  `LangVersion`/`Nullable` de I-12 en `Directory.Build.props` (los csproj de I-15 dejan de declararlas
+  localmente) y las entradas de índice + hallazgos de I-19 en docs. **I-15 no incorpora ningún cambio
+  funcional de I-19 en el código de UI** — solo la reconciliación natural del rebase.
 - **Entradas del dueño:** ninguna decisión requerida para arrancar. La validación en AutoCAD del path
   de inserción del menú es responsabilidad del dueño al cierre (gate abierto, §10).
 
