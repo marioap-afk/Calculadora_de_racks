@@ -95,32 +95,37 @@ exhaustivas ya existentes de `SelectiveEditorState`/`DynamicFrontMatrix`/`Dynami
    guardadas, parse de dimensiones inválidas ignorado).
 
 2. **Ventana dinámica** (`RackDynamicSystemWindow`, STA):
-   - **Caracterización `load→build` con firma COMPLETA del dibujo** producido por Application: todos los
-     cortes de `DynamicSystemLateralBuilder` (cada uno con su índice de corte), el frontal de salida
+   - **Caracterización `load→build` con firma REALMENTE COMPLETA del dibujo** producido por Application: todos
+     los cortes de `DynamicSystemLateralBuilder` (cada uno con su índice de corte), el frontal de salida
      (`DynamicSystemFrontalBuilder`+`DynamicRackEnd.Exit`), el frontal de entrada (`Entrance`) y la planta
-     (`DynamicSystemPlantaBuilder`), por instancia de bloque **estructural** (rol, `PieceId`, bloque, vista,
-     inserción, anclaje, rotación, ambos mirrors, parámetros dinámicos), ordenada determinísticamente. La
-     firma excluye las decoraciones `Annotation`/`Dimension` porque dependen del **nombre visible** que la
-     ventana fija en el sistema tras resolver y no son reproducibles desde el diseño. El **diseño
-     representativo es NO default**: 3 frentes, niveles distintos por frente, tarima/postes/altura no default,
-     **y valores NO default por celda/larguero** —frente/alto/peso de tarima, claro y `BeamLengthOverride`—
-     inyectados en la celda de matriz de un frente+nivel no trivial. Como la ventana normaliza entradas crudas
-     al construir (resuelve el peralte del larguero IN/OUT y el intermedio en `Recompose`), la fidelidad se
-     fija sobre el **diseño propio de la ventana** (punto fijo del doble build: cargar → `designA`, recargar
-     `designA` → `designB`, firma completa idéntica), por `LoadExisting` y por `LoadDesignForNew`, y se verifica
-     **expresamente** que los valores no default por celda estén presentes en `designA` y sigan presentes en
-     `designB`. Incluye una **prueba de sensibilidad**: dos diseños con igual número de frentes/módulos/
-     longitud/altura pero una pieza dibujada distinta (una bota de seguridad añadida) producen **la misma firma
-     débil de 4 agregados** pero **firma completa distinta** (impide regresar a una firma débil).
+     (`DynamicSystemPlantaBuilder`), **TODA instancia —bloques estructurales E decoraciones `Annotation`/
+     `Dimension`—** (rol, `PieceId`, bloque, vista, inserción, anclaje, rotación, ambos mirrors, parámetros
+     dinámicos, y para anotaciones/cotas también `Text`, `DimensionOffset` y `DimensionStyleName`), ordenada
+     determinísticamente. Las anotaciones que dependen del **nombre visible** (p. ej. `DrawRackName`) se
+     reconcilian **normalizando el `Name`**: para comparar `request.Design` con `request.System` se resuelve el
+     diseño y se asigna al sistema resuelto el mismo `Name` de `request.System` **antes** de construir la firma
+     (la ventana fija ese nombre en el sistema tras resolver). El **diseño representativo es NO default**: 3
+     frentes, niveles distintos por frente, tarima/postes/altura no default, **valores NO default por celda/
+     larguero** —frente/alto/peso de tarima, claro y `BeamLengthOverride`— inyectados en la celda de matriz de un
+     frente+nivel no trivial, **y opciones de anotación NO default** (`NumberFronts`/`NumberLevels`/
+     `DrawRackName`/`AnnotationScale`/`Dimensions`). Como la ventana normaliza entradas crudas al construir
+     (resuelve el peralte del larguero IN/OUT y el intermedio en `Recompose`), la fidelidad se fija sobre el
+     **diseño propio de la ventana** (punto fijo del doble build: cargar → `designA`, recargar `designA` →
+     `designB`, firma completa —incluidas anotaciones— idéntica), por `LoadExisting` y por `LoadDesignForNew`;
+     se verifica **expresamente** que los valores no default por celda **y las opciones de anotación** estén
+     presentes en `designA` y sigan presentes en `designB`. Incluye una **prueba de sensibilidad**: dos diseños
+     con igual número de frentes/módulos/longitud/altura pero una pieza dibujada distinta (una bota de seguridad
+     añadida) producen **la misma firma débil de 4 agregados** pero **firma completa distinta**.
    - **Inserción/actualización por los handlers REALES de la ventana** (Click WPF real vía `RaiseEvent`
      sobre `InsertLateralButton`/`UpdateButton`/`InsertEntranceButton`, que recorren
      `*_Click`→`RequestDraw`→validación→`Recompose`→`SetModel`→sesión→payload→`Close`), **no** llamando a
      `session.RequestInsert/RequestUpdate`: dinámico nuevo inserta lateral; dinámico existente actualiza e
      inserta frontal de entrada. Tras cada acción se verifica `InsertRequested`, GUID, **nombre**, vista,
      sección, `UpdateOnly`, el **tipo concreto** de `InsertionRequest`, la **correspondencia estricta** del
-     payload (la firma completa construida desde `request.Design` —resolviéndolo— iguala la construida
-     directamente desde `request.System`, con una sobrecarga `FullDrawingSignature(DynamicRackSystem)` que no
-     re-resuelve el sistema recibido), y la metadata de origen (I-11) preservada.
+     payload (la firma completa —incluidas anotaciones/cotas— construida desde `request.Design` —resolviéndolo y
+     normalizando el `Name` a `request.System.Name`— iguala la construida directamente desde `request.System`,
+     con una sobrecarga `FullDrawingSignature(DynamicRackSystem)` que no re-resuelve el sistema recibido), y la
+     metadata de origen (I-11) preservada.
    - Se conserva aparte una prueba pura de `LoadExisting` (adopta GUID+nombre) que aporta cobertura distinta.
 
 3. **Ventana selectiva** (`RackSelectiveWindow`, STA): inserción/actualización por los handlers REALES
@@ -129,9 +134,10 @@ exhaustivas ya existentes de `SelectiveEditorState`/`DynamicFrontMatrix`/`Dynami
    frontal (GUID fresco); selectivo existente actualiza (GUID+nombre preservados, vista nula) e inserta una
    vista ligada (lateral). Verifica `InsertRequested`, GUID, **nombre**, vista, `UpdateOnly`, tipo concreto de
    `InsertionRequest` y la **correspondencia estricta** del payload por firma del dibujo resuelto (frontal de
-   todos los fondos + planta + cortes laterales, bloques estructurales) construida desde `request.Design`
-   (`SelectiveGeometryResolver`) vs. desde `request.System`. Se conserva aparte la prueba pura de
-   `LoadExisting`. **No** se duplica la caracterización `load→build` ya existente (`SelectiveEditorStateAdoptionTests`).
+   todos los fondos + planta + cortes laterales, **TODA instancia incluidas anotaciones y dimensiones** con
+   `Text`/`DimensionOffset`/`DimensionStyleName`) construida desde `request.Design` (`SelectiveGeometryResolver`,
+   normalizando `resolved.Name = request.System.Name`) vs. desde `request.System`. Se conserva aparte la prueba
+   pura de `LoadExisting`. **No** se duplica la caracterización `load→build` ya existente (`SelectiveEditorStateAdoptionTests`).
 
 4. **Ventana de cama** (`RackFlowBedWindow`, STA): inserción por el handler REAL
    (`InsertInAutoCad_Click`→`ReadConfig`→sesión→payload→`Close`): cama nueva y cama existente, verificando

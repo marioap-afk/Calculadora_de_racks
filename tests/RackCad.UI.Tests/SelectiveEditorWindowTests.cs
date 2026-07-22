@@ -128,13 +128,18 @@ namespace RackCad.UI.Tests
         }
 
         /// <summary>Strict correspondence: the full resolved drawing built from the payload's Design equals the one built
-        /// directly from the payload's System.</summary>
+        /// directly from the payload's System. The window sets the display name on the system after resolving, so the
+        /// resolved design's system is given that same Name before signing (so any name-dependent annotation lines up).</summary>
         private static bool Corresponds(SelectivePalletDesign design, SelectiveRackSystem system)
-            => DrawingSignature(new SelectiveGeometryResolver().Resolve(design, Catalog)) == DrawingSignature(system);
+        {
+            var resolved = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            resolved.Name = system.Name;
+            return DrawingSignature(resolved) == DrawingSignature(system);
+        }
 
         /// <summary>Full resolved-drawing signature of a selective system: frontal of every fondo + planta + lateral
-        /// cortes, per instance (role, PieceId, block, view, insertion, anchor, rotation, both mirrors, dynamic params),
-        /// plus the resolved height. Mirrors the pattern in SelectiveEditorStateAdoptionTests.</summary>
+        /// cortes, EVERY instance (including Annotation/Dimension: their Text, DimensionOffset and DimensionStyleName are in
+        /// InstanceKey), plus the resolved height. Mirrors the pattern in SelectiveEditorStateAdoptionTests.</summary>
         private static string DrawingSignature(SelectiveRackSystem system)
         {
             var catalog = Catalog;
@@ -150,12 +155,7 @@ namespace RackCad.UI.Tests
             instances.AddRange(new SelectivePlantaBuilder().Build(system, catalog));
             instances.AddRange(new SelectiveLateralBuilder().Cortes(system, catalog).SelectMany(c => c.Largueros));
 
-            // Compare the STRUCTURAL block instances only — the Annotation/Dimension decorations depend on the display
-            // name the window sets on the system after resolving, so they are not reproducible from the design alone.
-            var keys = instances
-                .Where(i => i.Role != HeaderBlockRole.Annotation && i.Role != HeaderBlockRole.Dimension)
-                .Select(InstanceKey)
-                .OrderBy(s => s, StringComparer.Ordinal);
+            var keys = instances.Select(InstanceKey).OrderBy(s => s, StringComparer.Ordinal);
             return "H=" + system.Height.ToString("R", CultureInfo.InvariantCulture) + "\n" + string.Join("\n", keys);
         }
 
@@ -166,10 +166,11 @@ namespace RackCad.UI.Tests
                 .Select(k => k.Key + "=" + k.Value.ToString("R", CultureInfo.InvariantCulture)));
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "{0}|{1}|{2}|{3}|{4:R},{5:R}|{6:R},{7:R}|{8:R}|{9}{10}|{11}",
+                "{0}|{1}|{2}|{3}|{4:R},{5:R}|{6:R},{7:R}|{8:R}|{9}{10}|{11}|{12:R}|{13}|{14}",
                 (int)i.Role, i.BlockName, i.PieceId, i.View,
                 i.Insertion.X, i.Insertion.Y, i.ConnectionAnchor.X, i.ConnectionAnchor.Y,
-                i.RotationRadians, i.MirroredX ? 1 : 0, i.MirroredY ? 1 : 0, parameters);
+                i.RotationRadians, i.MirroredX ? 1 : 0, i.MirroredY ? 1 : 0, parameters,
+                i.DimensionOffset, i.Text ?? string.Empty, i.DimensionStyleName ?? string.Empty);
         }
 
         /// <summary>A minimal but valid single-fondo selective design (one bay, two levels, floor beam).</summary>

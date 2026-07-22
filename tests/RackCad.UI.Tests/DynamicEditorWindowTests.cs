@@ -42,6 +42,13 @@ namespace RackCad.UI.Tests
         private const double RichClearHeight = 9.0;
         private const double RichBeamLengthOverride = 133.0;
 
+        // Non-default annotation options carried by the representative design (must round-trip through load→build).
+        private const bool RichNumberFronts = true;
+        private const bool RichNumberLevels = true;
+        private const bool RichDrawRackName = true;
+        private const double RichAnnotationScale = 1.25;
+        private const DimensionDetail RichDimensions = DimensionDetail.Standard;
+
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
         // ---- 1a. Full-drawing round-trip through the window (representative non-default design) ----
@@ -71,7 +78,10 @@ namespace RackCad.UI.Tests
             Assert.Equal(3, designA.Fronts.Count);       // the window adopted the 3-front rich structure
             AssertRichCellPreserved(designA);            // non-default per-cell overrides survived load→build
             AssertRichCellPreserved(designB);            // and survive a second reload
-            Assert.Equal(FullDrawingSignature(designA), FullDrawingSignature(designB)); // full drawing round-trips exactly
+            AssertAnnotationOptionsPreserved(designA);   // the annotation options round-trip too (they drive the decorations)
+            AssertAnnotationOptionsPreserved(designB);
+            Assert.Equal(designA.DimensionStyle, designB.DimensionStyle);
+            Assert.Equal(FullDrawingSignature(designA), FullDrawingSignature(designB)); // full drawing (incl. annotations) round-trips exactly
         }
 
         [Fact]
@@ -96,6 +106,9 @@ namespace RackCad.UI.Tests
             Assert.Equal(3, designA.Fronts.Count);
             AssertRichCellPreserved(designA);
             AssertRichCellPreserved(designB);
+            AssertAnnotationOptionsPreserved(designA);
+            AssertAnnotationOptionsPreserved(designB);
+            Assert.Equal(designA.DimensionStyle, designB.DimensionStyle);
             Assert.Equal(FullDrawingSignature(designA), FullDrawingSignature(designB));
         }
 
@@ -260,9 +273,16 @@ namespace RackCad.UI.Tests
         }
 
         /// <summary>Strict correspondence: the FULL drawing signature built from the payload's Design (resolved) equals the
-        /// one built directly from the payload's System — every lateral corte + frontal exit/entrance + planta, per instance.</summary>
+        /// one built directly from the payload's System — every lateral corte + frontal exit/entrance + planta, per instance,
+        /// INCLUDING Annotation/Dimension. The window sets the display name on the system AFTER resolving, so the resolved
+        /// design's system is given that same Name before signing — the only difference the display name would otherwise
+        /// introduce (the DrawRackName annotation).</summary>
         private static bool Corresponds(DynamicRackDesign design, DynamicRackSystem system)
-            => FullDrawingSignature(design) == FullDrawingSignature(system);
+        {
+            var resolved = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
+            resolved.Name = system.Name;
+            return FullDrawingSignature(resolved) == FullDrawingSignature(system);
+        }
 
         private static void AssertRichCellPreserved(DynamicRackDesign design)
         {
@@ -279,6 +299,17 @@ namespace RackCad.UI.Tests
         {
             Assert.True(actual.HasValue, "expected the non-default cell/beam override to be preserved");
             Assert.Equal(expected, actual.Value, 6);
+        }
+
+        /// <summary>The non-default annotation options must survive load→build (they drive the Annotation/Dimension
+        /// instances now included in the full drawing signature).</summary>
+        private static void AssertAnnotationOptionsPreserved(DynamicRackDesign design)
+        {
+            Assert.Equal(RichNumberFronts, design.NumberFronts);
+            Assert.Equal(RichNumberLevels, design.NumberLevels);
+            Assert.Equal(RichDrawRackName, design.DrawRackName);
+            Assert.Equal(RichAnnotationScale, design.AnnotationScale, 6);
+            Assert.Equal(RichDimensions, design.Dimensions);
         }
 
         private static (DynamicRackSystemBuilder Builder, DynamicRackSystemResolver Resolver, DynamicEditorDesignAssembler Assembler) Services()
@@ -323,11 +354,11 @@ namespace RackCad.UI.Tests
 
             var annotations = new DynamicAnnotationOptions
             {
-                NumberFronts = true,
-                NumberLevels = true,
-                DrawRackName = true,
-                AnnotationScale = 1.25,
-                Dimensions = DimensionDetail.Standard
+                NumberFronts = RichNumberFronts,
+                NumberLevels = RichNumberLevels,
+                DrawRackName = RichDrawRackName,
+                AnnotationScale = RichAnnotationScale,
+                Dimensions = RichDimensions
             };
 
             var safety = new List<SelectiveSafetySelection>();
@@ -368,10 +399,10 @@ namespace RackCad.UI.Tests
 
             void Add(string tag, IEnumerable<HeaderBlockInstance> instances)
             {
-                // Compare the STRUCTURAL block instances (posts, beams, plates, separators, safety…) — not the Annotation/
-                // Dimension decorations, which depend on the display name the window sets on the system after resolving and
-                // are therefore not reproducible from the design alone.
-                foreach (var i in instances.Where(IsStructuralBlock))
+                // EVERY instance of the view, including the Annotation/Dimension decorations — their Text, DimensionOffset
+                // and DimensionStyleName are captured by InstanceKey. (Name-dependent annotations are reconciled by
+                // normalizing the resolved system's Name in Corresponds before comparing.)
+                foreach (var i in instances)
                 {
                     keys.Add(InstanceKey(tag, i));
                 }
@@ -390,9 +421,6 @@ namespace RackCad.UI.Tests
             keys.Sort(StringComparer.Ordinal);
             return string.Join("\n", keys);
         }
-
-        private static bool IsStructuralBlock(HeaderBlockInstance i)
-            => i.Role != HeaderBlockRole.Annotation && i.Role != HeaderBlockRole.Dimension;
 
         private static string InstanceKey(string viewTag, HeaderBlockInstance i)
         {
