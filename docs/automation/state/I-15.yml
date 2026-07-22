@@ -4,20 +4,20 @@ automation_state:
   branch: architecture/editor-shell
   claim_id: 11cde230-da65-4977-a781-784887de5f09
   current_phase: 6
-  state: review-ready
-  gate: autocad
+  state: integration-ready
+  gate: none
   attempts: 0
   review_round: 3
-  review_note: ronda-3-rebase-sobre-origin-main-646614d-merge-i19-sobre-i12-reconciliacion-mecanica-solo-infra-langversion-nullable-centralizadas-por-i12-mas-internalsvisibleto-y-copia-catalogos-de-i15-docs-readme-ideas-futuras-sin-codigo-funcional-de-i19-en-ui-tests-842-app-135-ui-builds-verdes
+  review_note: gates-manuales-aprobados-por-el-dueno-autocad-menu-biblioteca-comandos-directos-y-rackeditar-round-trip-mismo-guid-owner-validation-comportamiento-apariencia-lista-para-merge-no-ff
   rebased_onto: 646614d8d8e84e55257cbd7583a7bc2303060863
-  next_action: owner-validacion-manual-autocad-y-owner-validation-siguiente-gate-manual-del-dueno
-  last_evidence_commit: da60e6dd822c121787ca9c6389545ecdf92bc398
+  next_action: merge-no-ff-de-architecture-editor-shell-en-main-y-limpieza-segura
+  last_evidence_commit: 2bd5703ee2635019dc15caf3358c6fbdf4d83fa7
 autocad_validation:
-  status: pending
-  note: menu-biblioteca-y-comandos-directos-rackselectivo-rackdinamico-rackcama-rackeditar-toman-identidad-e-insercion-de-la-sesion-mismos-draw-mismos-argumentos-el-dueno-valida-los-cinco-sistemas-round-trip-e-i11
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-21-sobre-2bd5703-menu-biblioteca-comandos-directos-rackselectivo-rackdinamico-rackcama-y-rackeditar-round-trip-mismo-guid-geometria-bom-sin-diferencias-i11-preservado-previews-fluidos-larguero-sin-insercion
 owner_validation:
-  status: pending
-  note: confirmar-etiquetas-orden-y-flujos-del-menu-y-biblioteca-identicos
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-21-etiquetas-orden-y-flujos-del-menu-y-biblioteca-identicos-apariencia-y-comportamiento-sin-cambio
 execution_context:
   mode: manual-git-only
   worktree: I-15-editor-shell

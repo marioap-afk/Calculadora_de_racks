@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-15
 title: Editor Shell
 type: architecture
-status: review-ready
+status: integrated
 branch: architecture/editor-shell
 base_branch: main
 priority:
@@ -247,21 +247,21 @@ obliga a detenerse (§12).
 
 ## 10. Validacion manual
 
-- **AutoCAD (gate abierto).** I-15 cambia el consumidor del payload del menú en el Plugin
-  (`RackMenuCommands.RackCad`) de un racimo de propiedades a un único `RackInsertionRequest` despachado
-  por Kind. El dibujo resultante es idéntico (mismos `Draw*`, mismos argumentos), pero el path de
-  inserción del menú toca el Plugin, así que el dueño debe validar en AutoCAD que **RACKCAD → cada
-  opción → Insertar** dibuja igual que antes para los cinco sistemas (cabecera, dinámico, cama,
-  selectivo; larguero no inserta) y que **abrir desde la biblioteca** cada tipo reabre el editor y su
-  inserción funciona (incluida la preservación de metadatos I-11). No se declara aprobado en esta
-  corrida (`requires_autocad: true`, gate abierto).
-- **AutoCAD — round-trip de los editores adoptados (gate abierto).** Las cuatro ventanas ricas ahora
-  toman identidad e inserción de la sesión. El dueño valida además los comandos directos
-  (`RACKSELECTIVO`/`RACKDINAMICO`/`RACKCAMA` → Insertar) y `RACKEDITAR` sobre un rack ya dibujado
-  (Actualizar en sitio y Insertar vista enlazada): el GUID se conserva, las vistas se ligan y el dibujo
-  es idéntico. La coalescencia del preview del configurador y del selectivo debe verse fluida como antes.
-- **owner-validation (gate abierto).** El dueño confirma que las etiquetas, el orden y los flujos del
-  menú y de la biblioteca son idénticos.
+Ambos gates **APROBADOS por el dueño** el **2026-07-21**, sobre el DLL Debug del worktree I-15 (código
+`2bd5703`; `…-I-15-editor-shell\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en
+AutoCAD 2025. La confirmación normativa del dueño consta en la sesión de integración; **no se re-solicita**.
+
+- **AutoCAD — menú y biblioteca — PASS.** `RACKCAD → cada opción → Insertar` dibuja igual que antes para
+  cabecera, dinámico, cama y selectivo (larguero no inserta); **abrir desde la biblioteca** cada tipo
+  reabre el editor correcto y su inserción funciona, con los metadatos I-11 preservados. Etiquetas, orden
+  y flujos del menú idénticos (`requires_autocad: true`).
+- **AutoCAD — round-trip de los editores adoptados — PASS.** Las cuatro ventanas ricas toman identidad e
+  inserción de la sesión: los comandos directos (`RACKSELECTIVO`/`RACKDINAMICO`/`RACKCAMA` → Insertar) y
+  `RACKEDITAR` sobre un rack ya dibujado (Actualizar en sitio e Insertar vista enlazada) conservan el
+  **mismo GUID**, ligan las vistas y dibujan idéntico; geometría y BOM sin diferencias; la coalescencia
+  del preview del configurador y del selectivo se ve fluida.
+- **owner-validation — PASS.** El dueño confirmó que el comportamiento y la apariencia (etiquetas, orden y
+  flujos del menú y de la biblioteca) son idénticos a lo vigente (`requires_owner_validation: true`).
 
 ## 11. Criterios de aceptacion
 
@@ -300,9 +300,10 @@ obliga a detenerse (§12).
 
 Estado canónico en `docs/automation/state/I-15.yml`. La automatización está pausada
 (`automation.enabled: false`): el ejecutor es manual y mantiene ese archivo al cierre de la sesión. No
-se abre un segundo Pull Request ni se activa auto-merge. La integración a `main` es una sesión manual
-posterior (WORKFLOW §4.5) y no forma parte de esta corrida; los gates `autocad` y `owner-validation`
-quedan abiertos.
+se abre un segundo Pull Request ni se activa auto-merge. Los gates `autocad` y `owner-validation`
+quedaron **APROBADOS** por el dueño (§10); el estado versionado pasa a `gate: none` /
+`state: integration-ready` y la integración a `main` (`git merge --no-ff`, WORKFLOW §4.5) se realiza en
+la sesión de cierre de la iniciativa.
 
 ## 14. Evidencia final
 

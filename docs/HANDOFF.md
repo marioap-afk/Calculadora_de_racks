@@ -156,6 +156,31 @@ AutoCAD **no requerido** (`requires_autocad: false`); **owner-validation aprobad
 (`e2057d7`, tras I-14 e I-12), reconciliando sólo la entrada de `docs/initiatives/README.md`. La rama se integra
 por `git merge --no-ff` en esta sesión.
 
+**I-15** (`architecture/editor-shell`) cierra el **Editor Shell** de la pista C de UI y **adopta** su
+infraestructura en las ventanas reales, **sin cambio de comportamiento observable**. Crea en
+`src/RackCad.UI/Editor/` una `RackEditorSession<TDesign,TSystem>` (catálogo, identidad GUID+nombre
+`RackEditorIdentity`, recomputación coalescida `RecomputeGate`/`RecomputeDebouncer` y el contrato de
+inserción/actualización), la jerarquía `RackInsertionRequest` por `Kind`, y un registro **explícito sin
+reflexión** `IRackEditorModule`+`EditorModuleRegistry` (mismo patrón que el `SystemRegistry` de I-08). El
+**menú principal** y la **biblioteca** consumen ese registro en lugar de las ~19 propiedades de payload y
+los cinco handlers por sistema (mata el crecimiento O(N) de `RackMainMenuWindow`, hallazgos E3/E5/U1); el
+único consumidor del payload en el Plugin (`RackMenuCommands.RackCad`) lee un `RackInsertionRequest` y
+despacha por `Kind` a los **mismos** `Draw*`. Las **cuatro ventanas ricas** (selectivo, dinámico, cama,
+cabecera) **adoptan** el shell para esas cuatro capacidades —sus props públicas pasan a getters sobre la
+sesión— eliminando la duplicación real vigente (idiom de GUID ×3, la clase `RecomputeDeferral`, el
+debounce de la cabecera y el bloque de flags de `RequestDraw` ×3); el larguero, sin identidad ni
+inserción, no adopta. El **estado propio** de cada editor (matriz por fondo y `BuildSystem` del selectivo,
+`Recompose`/módulos del dinámico) **queda reservado para I-20/I-21**. **No** cambia geometría, BOM, GUID,
+edición multivista, persistencia (I-11 intacto: los `*SourceProjectToInsert`/`*SourceDocumentToInsert` se
+transportan tal cual), formatos ni la UI/etiquetas/orden del menú (`RackMainMenuWindow.xaml`
+byte-idéntico a `main`). El dueño **aprobó la validación manual en AutoCAD** (menú, biblioteca, comandos
+directos `RACKSELECTIVO`/`RACKDINAMICO`/`RACKCAMA` y `RACKEDITAR` round-trip con el mismo GUID) y la
+**owner-validation** de comportamiento y apariencia. Rebasada sobre `main` vigente (`646614d`, Merge I-19
+sobre I-12), reconciliando `docs/initiatives/README.md` (conflicto manual único, preservando I-14/I-19),
+los dos `.csproj` (el `LangVersion`/`Nullable` centralizados por I-12 heredados **+** `InternalsVisibleTo`
+y la copia de catálogos de I-15) y `docs/ideas-futuras.md`, **sin** incorporar código funcional de I-19.
+La rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -219,6 +244,19 @@ con ✋) ni owner-validation (`requires_owner_validation: false`). La cobertura 
 de `tests/RackCad.UI.Tests` (lógica pura + instanciación STA de los controles) y el CI verde de la rama, incluido
 el nuevo job `ui-tests`. AutoCAD: no ejecutado; no requerido por contrato.
 
+I-15 (`architecture/editor-shell`) **sí** requiere validación en AutoCAD (`requires_autocad: true`) porque el
+menú, la biblioteca, los comandos directos y `RACKEDITAR` toman ahora la identidad y la inserción de la sesión
+compartida. El dueño ejecutó el checklist completo por `NETLOAD` del DLL Debug del worktree I-15 (código
+`2bd5703`;
+`…-I-15-editor-shell\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en AutoCAD 2025 y
+**aprobó todos los escenarios sin observaciones**: menú `RACKCAD` (etiquetas, orden y flujos), apertura e
+inserción desde biblioteca para todos los tipos, comandos directos `RACKSELECTIVO`/`RACKDINAMICO`/`RACKCAMA`,
+`RACKEDITAR` (actualización en sitio y vistas enlazadas con el **mismo GUID**), geometría y BOM **sin
+diferencias**, metadatos y persistencia **I-11 preservados**, recomputación/previews de selectivo y cabecera
+**fluidos**, y larguero que **abre y guarda pero no inserta**. La **owner-validation** de comportamiento y
+apariencia quedó **aprobada** (`requires_owner_validation: true`). La confirmación normativa del dueño consta en
+esta sesión; el gate manual queda cerrado.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -227,7 +265,12 @@ el nuevo job `ui-tests`. AutoCAD: no ejecutado; no requerido por contrato.
   debe comprobarse contra el uso real.
 - El build del Plugin puede emitir los `MSB3277` conocidos de las referencias de AutoCAD y falla al
   copiar DLL si AutoCAD los mantiene cargados.
-- `RackDynamicSystemWindow.xaml.cs` conserva deuda de code-behind; I-21 define su migración futura.
+- Tras I-15 (que adoptó el shell para catálogo/identidad/recompute/inserción), el **estado interno propio**
+  de los editores selectivo (matriz por fondo, `BuildSystem`) y dinámico (`Recompose`, módulos, code-behind)
+  sigue sin extraer a Application; su migración es I-20/I-21.
+- El menú `RACKCAD` abre el selectivo **nuevo** sin `SetDimensionStyles` (asimetría vigente que I-15 preservó
+  verbatim; `RACKSELECTIVO` y el abrir-desde-biblioteca sí los fijan) — registrado en `docs/ideas-futuras.md`
+  como hallazgo diferido, no corregido en I-15.
 - El fallback legacy del dinámico conserva cabeceras sin procedencia como personalizadas para evitar
   pérdida de datos.
 - Los catálogos de producto y los overrides del usuario aún comparten ubicación; I-04 preserva el
@@ -244,23 +287,63 @@ el nuevo job `ui-tests`. AutoCAD: no ejecutado; no requerido por contrato.
 
 ## 4. Siguiente acción
 
-Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12** e **I-19** integradas (I-19 en esta sesión), la **pista B del Plugin** está cerrada (la
-serialización I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme,
-la **pista C de UI** entrega su primer eslabón —los **controles comunes** (I-14) y el proyecto `tests/RackCad.UI.Tests`
-con su gate de CI— e **I-12** cierra el **versionado real** (versión única, SHA estampado, bundle por `dotnet publish`
-verificado fail-closed, ADR-0004 aceptado). El siguiente eslabón natural de la pista C es **I-15 `architecture/editor-shell`**
-(depende de I-08 e I-14, se estorba con I-14 —ya integrada—). **I-18 (Push Back)** sigue bloqueada por I-15, I-16 y los
-bloques DWG del dueño. **I-19 `feature/validador-catalogos`** quedó **integrada** el 2026-07-21: se rebasó sobre la
-punta vigente de `main` (`e2057d7`, tras I-14 e I-12), reconciliando **sólo** la entrada compartida de
-`docs/initiatives/README.md` (se preservaron íntegras las de I-14 e I-19); **no** tocó catálogos, DWG, `Directory.Build.props`,
-el versionado de I-12 ni el proyecto/gate `RackCad.UI.Tests` de I-14. El siguiente paso es abrir I-15
-respetando dependencias y estorbos, o continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado.
+Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12**, **I-19** e **I-15** integradas (I-15 en esta sesión), la
+**pista B del Plugin** está cerrada (la serialización I-09 → I-16 → I-10 está completa), la **pista A de
+Application** entrega la persistencia uniforme, **I-12** cierra el **versionado real** (versión única, SHA
+estampado, bundle por `dotnet publish` verificado fail-closed, ADR-0004 aceptado), e **I-19** entrega el
+validador de catálogos. La **pista C de UI** entrega ahora sus **dos** primeros eslabones: los **controles
+comunes** (I-14) y el **Editor Shell** (I-15), este último ya **adoptado por las cuatro ventanas ricas**
+(catálogo, identidad, recomputación coalescida y contrato de inserción vía `RackEditorSession`; menú y
+biblioteca por `EditorModuleRegistry`), con el estado interno de selectivo/dinámico reservado a I-20/I-21.
+El siguiente paso natural es **I-20 `refactor/selective-editor-state`** / **I-21 `refactor/dynamic-editor-state`**
+(extraer a Application el estado propio de esos editores, ahora que el shell existe) e **I-22**
+(`refactor/safety-placement`); **I-18 (Push Back)** ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16
+y solo espera los **bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su
+worktree ya reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-15 — 2026-07-21:**
+
+- punta de **código** validada por CI y por el dueño: `2bd5703ee2635019dc15caf3358c6fbdf4d83fa7` (run
+  `29879550816`, **cuatro jobs verdes**); el commit posterior de la rama es **solo documental** (este cierre +
+  estado versionado) y **no cambia código**, recibiendo su propio CI antes del merge; este documento **no
+  inventa** el SHA del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` en `646614d` (Merge I-19 sobre I-12) al momento del gate: I-15 quedó **linealmente rebasada**
+  sobre él (merge-base = `origin/main`); **rebase único** ya aplicado (base previa `abc1a53`, Merge I-14), **sin**
+  otro rebase; la rama se integra por `git merge --no-ff`;
+- suite `RackCad.Tests`: **842/842 verdes** (sin regresión: I-15 no toca Domain/Application; las 842 vienen de la
+  base rebasada con I-19); suite `RackCad.UI.Tests`: **135/135 verdes** (85 de I-14 + 45 unitarias del shell + 5
+  de **adopción STA** que construyen las ventanas reales);
+- build UI Debug: **0 errores y 0 advertencias**; builds Plugin y solución completa Debug: **0 errores**,
+  únicamente las dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre la punta de código `2bd5703` (run `29879550816`): los **cuatro** jobs —Tests
+  (Domain+Application), Build UI, UI Tests (WPF controls, net8.0-windows) y Build Plugin without AutoCAD— en
+  `success`;
+- objetivo entregado: `RackEditorSession<TDesign,TSystem>` (catálogo + `RackEditorIdentity` + `RecomputeGate`/
+  `RecomputeDebouncer` + contrato de inserción/actualización), `RackInsertionRequest` por `Kind`, e
+  `IRackEditorModule`+`EditorModuleRegistry` **explícito sin reflexión**; el **menú** y la **biblioteca** consumen
+  el registro (mata ~19 props O(N) + 5 handlers de `RackMainMenuWindow`); el Plugin (`RackMenuCommands.RackCad`)
+  despacha el `RackInsertionRequest` por `Kind` a los mismos `Draw*`; las **cuatro ventanas ricas** (selectivo,
+  dinámico, cama, cabecera) **adoptan** el shell (props públicas = getters sobre la sesión), verificado por
+  `EditorShellAdoptionTests`; larguero no adopta;
+- validación manual: AutoCAD **requerido** (`requires_autocad: true`) y **aprobado** por el dueño (menú,
+  biblioteca, `RACKSELECTIVO`/`RACKDINAMICO`/`RACKCAMA`, `RACKEDITAR` round-trip con mismo GUID, geometría/BOM sin
+  diferencias, I-11 preservado, previews fluidos, larguero sin inserción); **owner-validation aprobada**;
+- invariantes preservados: **sin** cambios de geometría, BOM, GUID, edición multivista, persistencia (Xrecord/
+  I-11 intactos), formatos ni UI; `RackMainMenuWindow.xaml` **byte-idéntico** a `main`; **cero** archivos de
+  Domain/Application/catálogos/DrawServices; estado interno de selectivo/dinámico **reservado a I-20/I-21**; **sin**
+  dependencias NuGet nuevas; reconciliación del rebase: conflicto **manual único** en `docs/initiatives/README.md`
+  (preservando I-14/I-19), auto-merge verificado en los dos `.csproj` (LangVersion/Nullable de I-12 heredados +
+  `InternalsVisibleTo`/copia de catálogos de I-15) y `docs/ideas-futuras.md`; **sin** código funcional de I-19 en UI;
+- alcance: `src/RackCad.UI/Editor/` (11 archivos nuevos), las cuatro ventanas adoptadas +
+  `RackMainMenuWindow.xaml.cs`, `src/RackCad.Plugin/RackMenuCommands.cs`, `RackCad.UI.csproj` (`InternalsVisibleTo`)
+  y `RackCad.UI.Tests.csproj` (copia de catálogos), seis clases de pruebas del shell + `EditorShellAdoptionTests`, y
+  contrato/estado/índice/ideas-futuras de I-15.
 
 **Baseline integrada de I-19 — 2026-07-21:**
 

@@ -1,6 +1,12 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-21 (I-14 integrada en `main`: controles comunes de UI —`SelectionMatrix`,
+> Actualizado: 2026-07-21 (I-15 integrada en `main`: **Editor Shell** —`RackEditorSession`,
+> `RackEditorIdentity`, `RecomputeGate`/`RecomputeDebouncer`, `RackInsertionRequest` e
+> `IRackEditorModule`+`EditorModuleRegistry`— **adoptado por las cuatro ventanas ricas** (catálogo, identidad,
+> recompute coalescido e inserción); el menú y la biblioteca consumen el registro (mata el O(N) de
+> `RackMainMenuWindow`); el estado interno de selectivo/dinámico queda para I-20/I-21; sin cambio de
+> dibujo/BOM/GUID/persistencia/UI. Ese mismo día también se integraron I-12 —versionado real en
+> `Directory.Build.props`— e I-19 —validador de catálogos—. Antes: I-14 integrada en `main`: controles comunes de UI —`SelectionMatrix`,
 > `NumericField`, `CatalogCombo`, `PreviewCanvas` con proyección/paleta compartidas y base `RackDialogWindow`,
 > con lógica pura separada de la vista— más el proyecto `tests/RackCad.UI.Tests` (net8.0-windows) y su gate de
 > CI `ui-tests`; **abre la pista C de UI** y desbloquea I-15 de la dependencia I-14, sin migrar ventanas ni tocar
@@ -100,7 +106,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | ID | Iniciativa (rama) | Qué incluye (hallazgos) | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
 | I-14 | `architecture/ui-controls` | `SelectionMatrix` (mata las rejillas duplicadas: 3 hoy, 5-6 tras I-02), `NumericField`, `CatalogCombo`, clase base `RackDialogWindow`, `PreviewCanvas` con proyección/paleta compartida. **Incluye crear `tests/RackCad.UI.Tests` (net8.0-windows) + su job de CI: los controles nacen con tests** (U5-U7, parte de U3) | M | I-02 (integrada 2026-07-17) | I-15, I-17 | integrada (2026-07-21) |
-| I-15 | `architecture/editor-shell` | `RackEditorSession` (catálogo, identidad, Recompute coalescido, contrato de inserción) + `IRackEditorModule` + registro de módulos que el menú y la biblioteca consumen (mata las 13 propiedades O(N)) (E3, E5, U1 parcial) | M | I-08, I-14 | I-14 | pendiente |
+| I-15 | `architecture/editor-shell` | `RackEditorSession` (catálogo, identidad, Recompute coalescido, contrato de inserción) + `IRackEditorModule` + registro de módulos que el menú y la biblioteca consumen (mata las 13 propiedades O(N)) (E3, E5, U1 parcial) | M | I-08, I-14 | I-14 | integrada (2026-07-21) |
 | I-16 | `refactor/draw-services` | `ViewBlockDrawService` genérico (colapsa los DrawServices idénticos: 5 hoy, 7 tras I-02); extraer `BlockPlacementService` + catálogo de `LateralHeaderDrawService`; uniformar `regen`. **Con tests golden de equivalencia de planes** (E4, P3) | M | I-09 | I-09, I-10 | integrada (2026-07-21) |
 | I-17 | `refactor/clon-unico-cabecera` | Un solo deep-clone de `RackFrameConfiguration` vía store de serialización; borrar las 3 copias de la UI (VM del configurador, selectivo, dinámico) + test de equivalencia (U4). **No es relleno: toca 2 archivos calientes y un archivo que I-02 reescribe** | S | I-02 (integrada 2026-07-17) | I-14; no en paralelo con trabajo en selectivo/configurador | pendiente |
 

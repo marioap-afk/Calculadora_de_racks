@@ -80,8 +80,9 @@ Planes disponibles:
   `Draw*`. Las cuatro ventanas ricas (selectivo, dinámico, cama, cabecera) **adoptan** el shell para esas
   capacidades compartidas; lo único que queda para I-20/I-21 es extraer su estado interno propio (matriz
   por fondo, `BuildSystem`, `Recompose`). Sin cambio de dibujo, BOM, GUID, persistencia ni formatos.
-  Fuera de alcance Push Back (I-18), Draw Services (I-16) y ampliar I-14. Review-ready, no integrada:
-  gates `autocad` y `owner-validation` abiertos (validación manual del dueño pendiente).
+  Fuera de alcance Push Back (I-18), Draw Services (I-16) y ampliar I-14. Rebasada sobre `main` vigente
+  (`646614d`, tras I-12 e I-19); AutoCAD y owner-validation **aprobadas por el dueño**; integrada en
+  `main` el 2026-07-21.
 - [`I-19-validador-catalogos.md`](I-19-validador-catalogos.md): contrato de I-19. Añade un validador PURO en
   `RackCad.Application.Catalogs.Validation` con severidades para ids duplicados, referencias/relaciones inválidas,
   bloques/vistas faltantes y filas descartadas por rol (con aviso), más el manifiesto esperado de
