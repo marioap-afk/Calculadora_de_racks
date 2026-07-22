@@ -153,6 +153,64 @@ namespace RackCad.Tests
             return bay;
         }
 
+        private static SelectiveBayDesign MedioBay(int levels, params (double Length, bool Loaded)[] tramos)
+        {
+            var bay = new SelectiveBayDesign { FloorBeam = true };
+            foreach (var (length, loaded) in tramos) bay.Segments.Add(new SelectiveSegment { Length = length, Loaded = loaded });
+            for (var l = 0; l < levels; l++)
+            {
+                bay.Levels.Add(new SelectiveCell
+                {
+                    Pallet = new Tarima { Frente = 40.0, Alto = 45.0 + l * 5.0 },
+                    PalletCount = 2, BeamId = BeamId, BeamPeralte = 4.0
+                });
+            }
+
+            return bay;
+        }
+
+        // ---- Scenario 6: medio frente (tramos) across two fondos — topes + parrilla follow the loaded tramos ----
+        private static SelectivePalletDesign MedioFrenteScenario()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0,
+                PalletDepth = 48.0, DepthCount = 2
+            };
+            design.SeparatorLengths.Add(12.0);
+            design.Bays.Add(Bay(2, floorBeam: true));
+            design.Bays.Add(MedioBay(2, (40.0, true), (0.0, true)));                          // fondo 0: 2 tramos
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign>
+            {
+                Bay(2, floorBeam: true),
+                MedioBay(2, (36.0, true), (30.0, false), (0.0, true))                          // fondo 1: 3 tramos, middle empty
+            });
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = true, TopeFrontal = true });
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = ParrillaId, Side = SafetySide.Both, Quantity = 1, ParrillaFrontal = true, ParrillaLateral = true });
+            return design;
+        }
+
+        // ---- Scenario 7: quadruple depth — bota (system front/back), per-fondo tope (central pair), 3 separator gaps ----
+        private static SelectivePalletDesign CuadrupleProfundidadScenario()
+        {
+            var design = new SelectivePalletDesign
+            {
+                PostId = PostId, PostPeralte = 3.0, PalletTolerance = 4.0, VerticalClearance = 6.0,
+                PalletDepth = 48.0, DepthCount = 4
+            };
+            design.SeparatorLengths.Add(12.0);
+            design.SeparatorLengths.Add(10.0);
+            design.SeparatorLengths.Add(14.0);
+            design.Bays.Add(Bay(2, floorBeam: true));
+            design.Bays.Add(Bay(2, floorBeam: true));
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2, floorBeam: true), Bay(2, floorBeam: true) });
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2, floorBeam: true), Bay(2, floorBeam: true) });
+            design.ExtraFondoBays.Add(new List<SelectiveBayDesign> { Bay(2, floorBeam: true), Bay(2, floorBeam: true) });
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = BotaId, Side = SafetySide.Both });
+            design.SafetySelections.Add(new SelectiveSafetySelection { ElementId = TopeId, Side = SafetySide.Both, TopeShared = false, TopeFrontal = true });
+            return design;
+        }
+
         [Fact]
         public void Tope_MultiFondo_ResolvedOutputIsFrozen() => Assert.Equal(Baseline("tope"), Snapshot(TopeScenario()));
 
@@ -197,6 +255,48 @@ namespace RackCad.Tests
 
             return lines.Concat(bomLines).ToArray();
         }
+
+        /// <summary>Like <see cref="Snapshot"/> but for MULTIFONDO scenarios: captures the frontal of EVERY applicable
+        /// fondo (each labeled FRONTAL&lt;k&gt;), not only fondo 0, plus the lateral cortes, planta and safety BOM.</summary>
+        private static string[] SnapshotPerFondo(SelectivePalletDesign design)
+        {
+            var catalog = Catalog;
+            var system = new SelectiveGeometryResolver().Resolve(design, catalog);
+            var lines = new List<string>();
+
+            var fondoCount = SelectiveDepthLayout.Count(system);
+            for (var k = 0; k < fondoCount; k++)
+            {
+                var frontal = new SelectiveFrontalBuilder().Build(SelectiveDepthLayout.FondoSystemView(system, k), catalog);
+                foreach (var i in SafetyLike(frontal)) lines.Add(Key("FRONTAL" + k.ToString(CultureInfo.InvariantCulture), -1, i));
+            }
+
+            var cortes = new SelectiveLateralBuilder().Cortes(system, catalog);
+            for (var c = 0; c < cortes.Count; c++)
+            {
+                foreach (var i in SafetyLike(cortes[c].Largueros)) lines.Add(Key("LATERAL", c, i));
+            }
+
+            var planta = new SelectivePlantaBuilder().Build(system, catalog);
+            foreach (var i in SafetyLike(planta)) lines.Add(Key("PLANTA", -1, i));
+
+            lines.Sort(StringComparer.Ordinal);
+
+            var bomLines = SelectiveBomBuilder.Build(system, catalog).Components
+                .Where(c => IsSafetyCategory(c.Category))
+                .Select(c => string.Format(CultureInfo.InvariantCulture, "BOM|{0}|{1}|{2}|{3:0.###}", c.Category, c.ProfileId, c.Quantity, c.Length))
+                .OrderBy(s => s, StringComparer.Ordinal);
+
+            return lines.Concat(bomLines).ToArray();
+        }
+
+        [Fact]
+        public void MedioFrente_TramosMultiFondo_ResolvedOutputIsFrozen()
+            => Assert.Equal(Baseline("medio_frente"), SnapshotPerFondo(MedioFrenteScenario()));
+
+        [Fact]
+        public void CuadrupleProfundidad_PerFondoFrontals_ResolvedOutputIsFrozen()
+            => Assert.Equal(Baseline("cuadruple"), SnapshotPerFondo(CuadrupleProfundidadScenario()));
 
         private static IEnumerable<HeaderBlockInstance> SafetyLike(IEnumerable<HeaderBlockInstance> instances)
             => instances.Where(i => i.Role == HeaderBlockRole.Safety
