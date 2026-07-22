@@ -116,9 +116,9 @@ Planes disponibles:
   `INSUNITS` y avisa una sola vez si el dibujo no está en pulgadas, antes de la primera modificación del
   DWG; una actualización pura con `RACKEDITAR` no avisa. La decisión pura vive en
   `RackCad.Application.Drawing.DrawingUnitsAdvisory` (sin AutoCAD); el cableado se fija con source-guards.
-  Documenta `ADR-0005` (estrategia de unidades, estado `propuesto`). Fuera de alcance: conversión,
-  reescalado, la columna `units`, almacenar unidades en DTO y cualquier framework general de unidades.
-  Gates abiertos: owner-decision (aceptar ADR-0005), AutoCAD y owner-validation. No integrada.
+  Documenta `ADR-0005` (estrategia de unidades, **aceptado**). Fuera de alcance: conversión, reescalado, la
+  columna `units`, almacenar unidades en DTO y cualquier framework general de unidades. ADR-0005 aceptado;
+  AutoCAD y owner-validation **aprobados por el dueño**; **integrada en `main` el 2026-07-22**.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

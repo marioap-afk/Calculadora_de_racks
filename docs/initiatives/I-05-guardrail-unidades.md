@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-05
 title: Guardia de unidades
 type: feature
-status: in-progress
+status: integrated
 branch: feature/guardrail-unidades
 base_branch: main
 priority:
@@ -252,8 +252,9 @@ ADR-0005), `autocad` y `owner-validation` quedan **abiertos** (pendientes del du
 
 ## 14. Evidencia final
 
-Implementación **completa y validada**; iniciativa **NO integrada** (la integración es una sesión
-posterior serializada). Resumen verificable:
+Implementación **completa y validada**; **integrada en `main`** en la sesión de integración serializada del
+**2026-07-22** (`git merge --no-ff`; este documento **no inventa** el SHA del merge, que vive en
+`git log --first-parent main`). Resumen verificable:
 
 - **SHA base:** `9a895e417b485749a6bc62edd643486a43495f0d` (`origin/main`, sin avanzar → sin rebase).
 - **Implementación validada:** `f78baaf209c118d168c68620e236341996f9d93e` (punta de código; commits
@@ -274,5 +275,5 @@ posterior serializada). Resumen verificable:
   [`docs/automation/state/I-05.yml`](../automation/state/I-05.yml) (`state: integration-ready`,
   `gate: none`).
 
-`docs/HANDOFF.md` §8-12 y el estado en `docs/ROADMAP.md` se actualizan **solo** en la sesión de
-integración (último commit de la rama, WORKFLOW §4.5.4), nunca desde esta rama.
+`docs/HANDOFF.md` §1-5 y el estado en `docs/ROADMAP.md` (I-05 → `integrada (2026-07-22)`) **se actualizan en
+este cierre de integración** como último commit de la rama (WORKFLOW §4.5.4), antes del `git merge --no-ff`.
