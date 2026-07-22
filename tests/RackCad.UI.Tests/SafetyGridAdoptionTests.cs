@@ -86,5 +86,29 @@ namespace RackCad.UI.Tests
             Assert.Contains(result.OffCells, c => c.Frente == 0 && c.Level == 1);        // toggled off
             Assert.DoesNotContain(result.OffCells, c => c.Frente == 2 && c.Level == 1);  // absent slot never appears
         }
+
+        [Fact]
+        public void Desviador_BuildResult_CarriesDimensions_AndOffCellsWithThePostInFrente()
+        {
+            var result = StaTestRunner.Run(() =>
+            {
+                // No resolved system -> the grid falls back to the post/level counts; the note stays empty (system null).
+                var window = new SafetyDesviadorGridWindow(
+                    "DESVIADOR_A_4", "Desviador", system: null, catalog: null,
+                    longitud: 18.0, firstHeight: 18.0, side: SafetySide.Right,
+                    offCells: new List<SelectiveGridCell> { new SelectiveGridCell { Frente = 0, Level = 0 } },
+                    fallbackPostCount: 3, fallbackLevelsPerFrente: new[] { 2, 2 }, fallbackLevelsArePerPost: false);
+
+                window.Model.SetSelected(1, 0, false); // post 1, level 0
+                return window.BuildResult();
+            });
+
+            Assert.NotNull(result);
+            Assert.Equal(SafetySide.Right, result.Side);
+            Assert.Equal(18.0, result.Longitud, 6);
+            Assert.Equal(18.0, result.FirstLevelHeight, 6);
+            Assert.Contains(result.OffCells, c => c.Frente == 0 && c.Level == 0); // loaded (Frente stores the post)
+            Assert.Contains(result.OffCells, c => c.Frente == 1 && c.Level == 0); // toggled
+        }
     }
 }
