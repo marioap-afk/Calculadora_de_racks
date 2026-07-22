@@ -250,5 +250,71 @@ namespace RackCad.UI.Tests
                 Assert.Equal("#B00020", vm.StatusBrush);
             });
         }
+
+        [Fact]
+        public void AddHorizontalSegment_AddsAHorizontalAndPanel_AndRebuildsTheModel()
+        {
+            // The alternate add entry point (opens a panel at the configured PanelClear above the top) must grow the model
+            // by one horizontal and one panel and rebuild the physical members. Regression: AddHorizontalSegment not
+            // rebuilding the panels/members.
+            StaTestRunner.Run(() =>
+            {
+                var vm = NewViewModel();
+                var horizontals = vm.Horizontals.Count;
+                var panels = vm.BracingSegments.Count;
+
+                vm.AddHorizontalSegment();
+
+                Assert.Equal(horizontals + 1, vm.Horizontals.Count);
+                Assert.Equal(panels + 1, vm.BracingSegments.Count);
+                Assert.Equal(vm.Horizontals.Count - 1, vm.BracingSegments.Count); // invariant survives
+                Assert.NotEmpty(vm.Configuration.Members);
+                Assert.True(vm.IsModelConsistent);
+            });
+        }
+
+        [Fact]
+        public void SimpleDimensions_InvalidHeightOrDepth_AreRejectedAndIgnored()
+        {
+            // The quick-config height/depth parse guard: a non-positive or unparseable value is rejected with a red status
+            // and the previously stored value is KEPT (the invalid parse is ignored). Regression: a bad dimension silently
+            // overwriting the configured height/depth.
+            StaTestRunner.Run(() =>
+            {
+                var vm = NewViewModel();
+
+                vm.SimpleHeightText = "120";
+                var height = vm.SimpleHeightText;
+                vm.SimpleHeightText = "-5"; // invalid (non-positive)
+                Assert.Equal("#B00020", vm.StatusBrush);
+                Assert.Equal(height, vm.SimpleHeightText); // unchanged
+
+                vm.SimpleDepthText = "48";
+                var depth = vm.SimpleDepthText;
+                vm.SimpleDepthText = "no-es-numero"; // invalid (unparseable)
+                Assert.Equal("#B00020", vm.StatusBrush);
+                Assert.Equal(depth, vm.SimpleDepthText); // unchanged
+            });
+        }
+
+        [Fact]
+        public void MultipleSelection_ApplyNoBracing_UpdatesEverySelectedPanel()
+        {
+            // Selecting several panels and applying an arrangement must touch EVERY selected panel (GetTargetSegments uses
+            // the multi-selection set, not just SelectedBracingSegment). Regression: a bulk action that only affects one.
+            StaTestRunner.Run(() =>
+            {
+                var vm = NewViewModel();
+                Assert.True(vm.BracingSegments.Count >= 2);
+                var first = vm.BracingSegments[0];
+                var second = vm.BracingSegments[1];
+
+                vm.SetSelectedSegments(new[] { first, second });
+                vm.ApplyNoBracingToSelection();
+
+                Assert.Equal(BracingPattern.NoBracing, first.Pattern);
+                Assert.Equal(BracingPattern.NoBracing, second.Pattern);
+            });
+        }
     }
 }

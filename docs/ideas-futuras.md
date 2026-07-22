@@ -275,13 +275,11 @@ sin decoración, con test de equivalencia); `RACKLISTA` sumaba referencias de TO
   `I-21-dynamic-editor-state.md` aún dice «AutoCAD y owner-validation **abiertos** (gate del dueño). No
   integrada.», pero I-21 quedó **integrada** en `main` el 2026-07-21 (Merge `2a30fef`; ROADMAP y HANDOFF lo
   confirman). Corregir el estado de ese bullet; I-24 **no** lo tocó para no arreglar trabajo ajeno de paso.
-- (hallazgo I-24, 2026-07-22) Lagunas de cobertura PURA en `RackCad.Tests` detectadas al mapear el estado del
-  editor dinámico (fuera del alcance de I-24, que sólo amplía `RackCad.UI.Tests`): en `DynamicFrontMatrixTests`
-  faltan los alcances `Level` y `Front` de `DynamicFrontMatrix.ApplyScope` (sólo Cell/All/Selected probados),
-  más `ClampLevel`/`MaxLoadLevels`/`LevelCounts`/`ApplyFrontValuesTo` directos; en
-  `DynamicEditorDesignAssemblerTests` faltan las guardas de `RestoreHeaderFondos` (snapshot nulo/vacío → 0) y
-  las ramas de `BuildDesign` con `AnnotationScale <= 0` y `annotations == null`; no existe archivo de pruebas
-  dedicado para `DynamicEditorSafety`/`DynamicEditorCell`. Añadirlas cuando se retome el dinámico.
+- (hallazgo I-24, 2026-07-22) Laguna de cobertura PURA **comprobada** en `RackCad.Tests` (fuera del alcance de
+  I-24, que sólo amplía `RackCad.UI.Tests`): `DynamicFrontMatrixTests` prueba los alcances `Cell`, `All` y
+  `Selected` de `DynamicFrontMatrix.ApplyScope`, pero **no** los alcances `Level` ni `Front`, que sí existen en
+  el enum `DynamicRackCellScope`. Añadir esas dos pruebas cuando se retome el dinámico. (`DynamicEditorCellTests`
+  y `DynamicEditorSafetyTests` **sí** existen y cubren esas clases; no son una laguna.)
 
 **Señalados pero NO verificados** (la verificación adversarial no alcanzó a correr; validar antes de actuar):
 posible coma decimal mal parseada en campos del configurador; el editor del dinámico podría resetear

@@ -1,5 +1,7 @@
 using System;
+using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using RackCad.UI.Editor;
 using Xunit;
@@ -7,14 +9,12 @@ using Xunit;
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// STA boundary tests for the REAL <see cref="RackCad.UI.RackSelectiveWindow"/>: the identity round-trip through the
-    /// window's actual load entry points (initiative I-24). <c>SelectiveEditorStateAdoptionTests</c> already locks the
-    /// load→build GEOMETRY; this file locks the ORTHOGONAL dimension — GUID/name/view/UpdateOnly conservation across
-    /// <c>LoadForNew</c> vs <c>LoadExisting</c> and insert vs update — which neither the pure session tests nor the shell
-    /// adoption tests cover (those call <c>Identity.Adopt</c> directly, not the window's load paths).
-    ///
-    /// The window exposes its identity/insert contract as getters over the shared session; driving the session and the
-    /// load methods and reading the public props verifies the wiring end to end. Deterministic: no timing, no pixels.
+    /// STA tests for the REAL <see cref="RackCad.UI.RackSelectiveWindow"/> (initiative I-24). Insert/update run through the
+    /// window's OWN button handlers (a genuine WPF Click → <c>*_Click</c> → <c>RequestDraw</c> → ConfirmPendingCellEdits →
+    /// BuildSystem → SetModel → session → typed payload → Close), NOT by calling <c>session.RequestInsert/RequestUpdate</c>
+    /// directly. That exercises the window's real validation, model build and payload. <c>SelectiveEditorStateAdoptionTests</c>
+    /// already locks the load→build GEOMETRY; here the orthogonal dimension is GUID/name/view/UpdateOnly conservation,
+    /// the concrete request type and a real, non-null payload — driven by actual clicks. Deterministic: no timing, no pixels.
     /// </summary>
     public sealed class SelectiveEditorWindowTests
     {
@@ -22,11 +22,14 @@ namespace RackCad.UI.Tests
         private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
         private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
 
+        private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
+
+        // ---- Pure load identity (kept: distinct from the real-handler tests) ----
+
         [Fact]
         public void LoadExisting_AdoptsDrawnGuidAndName()
         {
-            // RACKEDITAR path: reopening a drawn selective rack must adopt its GUID + name so a re-save keeps identity.
-            // Regression: LoadExisting not routing the embedded id/name through the session identity.
+            // RACKEDITAR path: reopening a drawn selective rack adopts its GUID + name so a re-save keeps identity.
             var (id, name) = StaTestRunner.Run(() =>
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
@@ -38,71 +41,93 @@ namespace RackCad.UI.Tests
             Assert.Equal("Selectivo A", name);
         }
 
+        // ---- Real insert/update through the window's own button handlers ----
+
         [Fact]
-        public void LoadForNew_LeavesNoId_ThenInsertMintsFreshGuid()
+        public void NewRack_InsertFrontal_ViaButton_MintsGuid_AndBuildsTheRealPayload()
         {
-            // Opening a library template as NEW ignores any embedded id, so the first insert mints a FRESH GUID (the
-            // template is not the drawn rack). Regression: a library-opened design that reuses the template's id.
-            var (idAfterLoad, idAfterInsert, view, updateOnly, requested) = StaTestRunner.Run(() =>
+            // The REAL "Insertar frontal" handler runs (RequestDraw → BuildSystem → SetModel → session): a fresh GUID is
+            // minted, the typed name is captured, the request is a SelectiveInsertionRequest for the frontal view, and the
+            // payload's design+system are non-null and correspond (the system is the resolution of the design).
+            var (requested, view, updateOnly, id, name, requestType, corresponds) = StaTestRunner.Run(() =>
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
-                // Even though the document carries "GUID-TEMPLATE", LoadForNew adopts a null id (fresh GUID on insert).
                 window.LoadForNew(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-TEMPLATE", "Plantilla"));
-                var afterLoad = window.RackId;
-                window.Session.RequestInsert("frontal", -1,
-                    ctx => new SelectiveInsertionRequest(null, null, ctx.Id, ctx.Name, ctx.View));
-                return (afterLoad, window.RackId, window.InsertView, window.UpdateOnly, window.InsertRequested);
+                EditorWindowTestSupport.SetText(window, "NameBox", "Selectivo nuevo");
+                EditorWindowTestSupport.ClickByContent(window, "Insertar frontal");
+                return Capture(window);
             });
 
-            Assert.Null(idAfterLoad);
-            Assert.True(Guid.TryParse(idAfterInsert, out _));  // a fresh, real GUID was minted on insert
-            Assert.NotEqual("GUID-TEMPLATE", idAfterInsert);   // NOT the template's id
+            Assert.True(requested);
             Assert.Equal("frontal", view);
             Assert.False(updateOnly);
-            Assert.True(requested);
+            Assert.True(Guid.TryParse(id, out _)); // fresh GUID minted by the real handler (template opened as new)
+            Assert.Equal("Selectivo nuevo", name);  // the handler read NameBox.Text
+            Assert.Equal(nameof(SelectiveInsertionRequest), requestType);
+            Assert.True(corresponds);                // design+system non-null and system == resolution(design)
         }
 
         [Fact]
-        public void LoadExisting_ThenUpdate_KeepsGuid_NullsView_SetsUpdateOnly()
+        public void ExistingRack_Update_ViaButton_KeepsGuid_RedrawsInPlace()
         {
-            // "Actualizar" redraws every linked view in place: the GUID is preserved and no view is requested.
-            // Regression: an update that re-mints the id or carries a view.
-            var (id, view, updateOnly, requested) = StaTestRunner.Run(() =>
+            // The REAL "Actualizar" handler on an existing rack: GUID preserved, in-place redraw (view null, UpdateOnly
+            // true), typed SelectiveInsertionRequest, real payload built.
+            var (requested, view, updateOnly, id, _, requestType, corresponds) = StaTestRunner.Run(() =>
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
-                window.Session.RequestUpdate(
-                    ctx => new SelectiveInsertionRequest(null, null, ctx.Id, ctx.Name, ctx.View));
-                return (window.RackId, window.InsertView, window.UpdateOnly, window.InsertRequested);
+                EditorWindowTestSupport.ClickNamed(window, "UpdateButton");
+                return Capture(window);
             });
 
-            Assert.Equal("GUID-SEL", id);
-            Assert.Null(view);
+            Assert.True(requested);
             Assert.True(updateOnly);
-            Assert.True(requested);
+            Assert.Null(view);
+            Assert.Equal("GUID-SEL", id);
+            Assert.Equal(nameof(SelectiveInsertionRequest), requestType);
+            Assert.True(corresponds);
         }
 
         [Fact]
-        public void LoadExisting_ThenInsertLateral_KeepsGuidAndView()
+        public void ExistingRack_InsertLateral_ViaButton_KeepsGuid_LinkedView()
         {
-            // Inserting a linked lateral of an existing rack keeps its GUID and carries the requested view.
-            // Regression: a re-insert that loses the GUID or the normalized view.
-            var (id, view, updateOnly) = StaTestRunner.Run(() =>
+            // The REAL "Insertar lateral" handler on an existing rack: a linked lateral view keeps the GUID and carries the
+            // normalized view; typed SelectiveInsertionRequest with a real payload.
+            var (requested, view, updateOnly, id, _, requestType, corresponds) = StaTestRunner.Run(() =>
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
-                window.Session.RequestInsert("lateral", -1,
-                    ctx => new SelectiveInsertionRequest(null, null, ctx.Id, ctx.Name, ctx.View));
-                return (window.RackId, window.InsertView, window.UpdateOnly);
+                EditorWindowTestSupport.ClickNamed(window, "InsertLateralButton");
+                return Capture(window);
             });
 
-            Assert.Equal("GUID-SEL", id);
+            Assert.True(requested);
             Assert.Equal("lateral", view);
             Assert.False(updateOnly);
+            Assert.Equal("GUID-SEL", id);
+            Assert.Equal(nameof(SelectiveInsertionRequest), requestType);
+            Assert.True(corresponds);
         }
 
-        /// <summary>A minimal but valid single-fondo selective design (one bay, two levels, floor beam) — enough to load
-        /// into the window and exercise the identity/insert wiring.</summary>
+        // ---- Helpers ----
+
+        private static (bool Requested, string View, bool UpdateOnly, string Id, string Name, string RequestType, bool Corresponds) Capture(RackSelectiveWindow window)
+        {
+            var system = window.SystemToInsert;
+            var design = window.DesignToInsert;
+            var corresponds = system != null && design != null && Corresponds(design, system);
+            return (window.InsertRequested, window.InsertView, window.UpdateOnly, window.RackId, window.RackName,
+                window.Session.InsertionRequest?.GetType().Name, corresponds);
+        }
+
+        /// <summary>The payload's system is the resolution of the payload's design (the model the window actually built).</summary>
+        private static bool Corresponds(SelectivePalletDesign design, SelectiveRackSystem system)
+        {
+            var resolved = new SelectiveGeometryResolver().Resolve(design, Catalog);
+            return resolved.Bays.Count == system.Bays.Count && Math.Abs(resolved.Height - system.Height) < 1e-6;
+        }
+
+        /// <summary>A minimal but valid single-fondo selective design (one bay, two levels, floor beam).</summary>
         private static SelectivePalletDesign MinimalDesign()
         {
             var design = new SelectivePalletDesign

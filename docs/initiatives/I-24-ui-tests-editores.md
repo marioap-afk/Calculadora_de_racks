@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-24
 title: Tests de editores (ViewModels y estados)
 type: refactor
-status: implementing
+status: implemented
 branch: refactor/ui-tests-editores
 base_branch: main
 priority:
@@ -21,7 +21,7 @@ context_packs:
 automation_state_path: docs/automation/state/I-24.yml
 decision_paths: []
 requires_ci: true
-requires_plugin_build: false
+requires_plugin_build: true
 requires_autocad: false
 requires_owner_decision: false
 requires_owner_validation: false
@@ -94,21 +94,44 @@ exhaustivas ya existentes de `SelectiveEditorState`/`DynamicFrontMatrix`/`Dynami
    negativas (elevación duplicada rechazada, guarda de mínimo dos horizontales, división/combinación
    guardadas, parse de dimensiones inválidas ignorado).
 
-2. **Ventana dinámica** (`RackDynamicSystemWindow`, STA): caracterización `load→build` de la adopción
-   del estado (I-21) por **punto fijo** —el diseño que la ventana construye por defecto, al recargarse
-   con `LoadExisting`/`LoadDesignForNew` y reconstruirse, produce la **misma geometría resuelta**—;
-   identidad round-trip (`LoadExisting` adopta el GUID dibujado; `LoadDesignForNew` deja el GUID nulo y
-   se acuña uno fresco al insertar); y conservación de vista/sección/`UpdateOnly` por la sesión del
-   shell.
+2. **Ventana dinámica** (`RackDynamicSystemWindow`, STA):
+   - **Caracterización `load→build` con firma COMPLETA del dibujo** producido por Application: todos los
+     cortes de `DynamicSystemLateralBuilder` (cada uno con su índice de corte), el frontal de salida
+     (`DynamicSystemFrontalBuilder`+`DynamicRackEnd.Exit`), el frontal de entrada (`Entrance`) y la planta
+     (`DynamicSystemPlantaBuilder`), por instancia (rol, `PieceId`, bloque, vista, inserción, anclaje,
+     rotación, ambos mirrors, parámetros dinámicos), ordenada determinísticamente. Usa un **diseño
+     representativo NO default** (3 frentes, niveles distintos por frente, tarima/postes/altura no default).
+     Como la ventana normaliza entradas crudas al construir (p. ej. resuelve el peralte del larguero
+     IN/OUT en `Recompose`), la propiedad de fidelidad se fija sobre el **diseño propio de la ventana**
+     (punto fijo del doble build: cargar → `designA`, recargar `designA` → `designB`, firma completa
+     idéntica), por `LoadExisting` y por `LoadDesignForNew`. Incluye una **prueba de sensibilidad**: dos
+     diseños con igual número de frentes/módulos/longitud/altura pero una pieza dibujada distinta (una bota
+     de seguridad añadida) producen **la misma firma débil de 4 agregados** pero **firma completa distinta**
+     (impide regresar a una firma débil).
+   - **Inserción/actualización por los handlers REALES de la ventana** (Click WPF real vía `RaiseEvent`
+     sobre `InsertLateralButton`/`UpdateButton`/`InsertEntranceButton`, que recorren
+     `*_Click`→`RequestDraw`→validación→`Recompose`→`SetModel`→sesión→payload→`Close`), **no** llamando a
+     `session.RequestInsert/RequestUpdate`: dinámico nuevo inserta lateral; dinámico existente actualiza e
+     inserta frontal de entrada. Tras cada acción se verifica identidad/nombre/vista/sección/`UpdateOnly`,
+     `InsertRequested`, el **tipo concreto** de `InsertionRequest`, que el **diseño y el sistema** del
+     payload no sean nulos y correspondan al modelo construido por la ventana, y la metadata de origen (I-11)
+     preservada.
+   - Se conserva aparte una prueba pura de `LoadExisting` (adopta GUID+nombre) que aporta cobertura distinta.
 
-3. **Ventana selectiva** (`RackSelectiveWindow`, STA): identidad round-trip por las rutas reales
-   `LoadForNew` (GUID nulo ⇒ fresco al insertar) vs. `LoadExisting` (GUID preservado; `UpdateOnly`
-   limpia la vista); reutilizando el **seam existente** `BuildDesignForTest` (I-20) donde aplique. **No**
-   se duplica la caracterización `load→build` ya existente (`SelectiveEditorStateAdoptionTests`).
+3. **Ventana selectiva** (`RackSelectiveWindow`, STA): inserción/actualización por los handlers REALES
+   (Click WPF real sobre «Insertar frontal»/`UpdateButton`/`InsertLateralButton`, que recorren
+   `RequestDraw`→`ConfirmPendingCellEdits`→`BuildSystem`→sesión→payload→`Close`): selectivo nuevo inserta
+   frontal (GUID fresco); selectivo existente actualiza (GUID preservado, vista nula) e inserta una vista
+   ligada (lateral). Verifica identidad/vista/`UpdateOnly`, tipo concreto de `InsertionRequest` y
+   payload diseño+sistema no nulos y correspondientes. Se conserva aparte la prueba pura de `LoadExisting`.
+   **No** se duplica la caracterización `load→build` ya existente (`SelectiveEditorStateAdoptionTests`).
 
-4. **Ventana de cama** (`RackFlowBedWindow`, STA): identidad round-trip (`LoadForNew` vs.
-   `LoadExisting`) y preservación de la metadata de origen (`SourceFlowBedToInsert`, I-11) por la
-   superficie pública, complementando la adopción del shell ya probada (`EditorShellAdoptionTests`).
+4. **Ventana de cama** (`RackFlowBedWindow`, STA): inserción por el handler REAL
+   (`InsertInAutoCad_Click`→`ReadConfig`→sesión→payload→`Close`): cama nueva (GUID fresco, payload
+   `FlowBedInsertionRequest` con config no nula, sin vista/sección/update) y cama existente (GUID
+   preservado, **metadata de origen `SourceDocument` I-11 transportada** por el handler real). Se conserva
+   aparte la identidad round-trip pura (`LoadForNew`/`LoadExisting`) y la exposición de
+   `SourceFlowBedToInsert`.
 
 ### Cambio de producción autorizado (único seam interno)
 
@@ -182,14 +205,21 @@ cambio de producción, **sin reglas nuevas**:
 
 Crear (pruebas, `tests/RackCad.UI.Tests/`):
 
-- `RackFrameConfiguratorViewModelTests.cs` — VM headless: mutaciones estructurales, recomputación
-  síncrona, bracing, BOM, persistencia round-trip, rutas negativas.
-- `DynamicEditorWindowTests.cs` — STA: caracterización `load→build` por punto fijo, identidad
-  round-trip (`LoadExisting`/`LoadDesignForNew`), inserción/actualización por la sesión.
-- `SelectiveEditorWindowTests.cs` — STA: identidad round-trip por `LoadForNew`/`LoadExisting`,
-  inserción/actualización y `UpdateOnly` por la superficie pública.
-- `FlowBedEditorWindowTests.cs` — STA: identidad round-trip de la cama y preservación de la metadata
-  de origen (I-11).
+- `EditorWindowTestSupport.cs` — helper interno de prueba: dispara el Click WPF **real** de un botón
+  (por `x:Name` o por contenido) vía `RaiseEvent(ButtonBase.ClickEvent)` y setea texto en un `TextBox`
+  nombrado. No es producción; sólo localiza el botón existente y levanta su evento.
+- `RackFrameConfiguratorViewModelTests.cs` — VM headless: mutaciones estructurales (incl.
+  `AddHorizontalSegment`), recomputación síncrona, bracing, selección múltiple, BOM, persistencia
+  round-trip, rutas negativas (elevación duplicada, guarda de dos horizontales, división sin selección,
+  dimensiones inválidas ignoradas).
+- `DynamicEditorWindowTests.cs` — STA: caracterización `load→build` con **firma completa del dibujo**
+  (cortes laterales + frontal salida/entrada + planta, por instancia) sobre un diseño no default, por
+  punto fijo del doble build (`LoadExisting` y `LoadDesignForNew`); prueba de sensibilidad firma
+  débil vs. completa; e inserción/actualización por los **handlers reales** de la ventana.
+- `SelectiveEditorWindowTests.cs` — STA: inserción/actualización por los **handlers reales** (frontal
+  nuevo, actualizar/lateral existentes) + identidad pura de `LoadExisting`.
+- `FlowBedEditorWindowTests.cs` — STA: inserción por el **handler real** (cama nueva/existente, metadata
+  de origen I-11) + identidad round-trip pura y exposición de `SourceFlowBedToInsert`.
 
 Modificar (producción, único seam autorizado en §3):
 
@@ -284,8 +314,17 @@ Se completa al cierre de la sesión: commits lógicos con trailer de procedencia
 modificados, matriz de cobertura nueva y rutas negativas, seam de producción con justificación,
 resultados de `dotnet test` (suite completa y UI) y de los builds, evidencia de CI sobre el SHA
 publicado, SHA base y punta de la rama, confirmación del push, y confirmación de que `main` no fue
-modificada. Hallazgos registrados en `docs/ideas-futuras.md`: (1) la **entrada obsoleta de I-21** en
-`docs/initiatives/README.md` (la declara "No integrada" cuando ya está integrada en `main`); (2) las
-**lagunas de cobertura pura** detectadas en `RackCad.Tests` durante la inspección (alcances `Level`/
-`Front` de `DynamicFrontMatrix.ApplyScope`, guardas de `RestoreHeaderFondos`, ramas de `AnnotationScale`
-en `BuildDesign`), fuera del alcance de I-24 (que sólo amplía `RackCad.UI.Tests`).
+modificada. **Conteos tras la corrección de revisión:** `RackCad.Tests` **913/913** (sin cambios;
+I-24 no toca esa suite) y `RackCad.UI.Tests` **168/168** (139 base + **29 nuevas**: 13 del
+configurator VM, 8 del dinámico, 4 del selectivo, 4 de la cama). Builds Debug de UI/Plugin/solución
+sin errores propios.
+
+Hallazgos registrados en `docs/ideas-futuras.md` (fuera del alcance de I-24, sin corregir):
+(1) la **entrada obsoleta de I-21** en `docs/initiatives/README.md` (la declara "No integrada" cuando
+ya está integrada en `main`); (2) una **laguna de cobertura pura comprobada** en `RackCad.Tests`:
+`DynamicFrontMatrixTests` prueba los alcances `Cell`/`All`/`Selected` de `DynamicFrontMatrix.ApplyScope`
+pero **no** los alcances `Level` ni `Front` (ambos existen en `DynamicRackCellScope`). Las demás
+lagunas que una revisión previa había supuesto (archivo dedicado de `DynamicEditorSafety`/
+`DynamicEditorCell`, guardas de `RestoreHeaderFondos`, ramas de `AnnotationScale`) se **descartaron al
+verificarlas contra los archivos reales**: `DynamicEditorCellTests.cs` y `DynamicEditorSafetyTests.cs`
+sí existen y cubren esas clases.
