@@ -1,0 +1,29 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-03
+  branch: refactor/fallos-silenciosos
+  claim_id: 55a87e52-b49e-442e-ad66-fbd86774f834
+  current_phase: 1
+  state: implementing
+  gate: none
+  attempts: 0
+  next_action: escribir-pruebas-f2-que-fallan-luego-implementar-f3-logger-atomicfile-cuarentena-stores-report-catches-catalogo
+  last_evidence_commit: a92c11c
+execution_context:
+  mode: manual-git-only
+  worktree: I-03-fallos-silenciosos
+  pull_request: none
+evidence:
+  base_commit: f674bd4fcd689e865d3985b1071dc9ec3b53b16b
+  claim_commit: a92c11c
+  baseline_domain_application_tests: 981-verde-0-fallos-antes-de-tocar-codigo
+  baseline_build_solution_debug: 0-errores-solo-2-MSB3277-conocidos-de-autocad-2025
+  scope: application-diagnostics-logger-mas-atomicfile-mas-4-stores-atomicos-mas-persistence-best-effort-distingue-ausente-vs-ilegible-mas-plugin-report-14-catches-y-catalogo-mas-pruebas-sin-tocar-geometria-bom-guid-formatos-catalogos-ni-mensajes-visibles
+  invariants: additivo-preserva-i11-versiones-metadata-geometria-bom-guid-comandos-alias-formatos-fallback-legacy-y-clave-xrecord
+gates:
+  autocad:
+    status: not-required
+    note: roadmap-no-marca-i03-con-mano-cambio-aditivo-logging-y-escritura-atomica-sin-alterar-dibujo-comandos-ni-mensajes
+  owner_validation:
+    status: not-required
+    note: cobertura-por-pruebas-puras-formatter-escritor-real-atomicfile-y-distincion-de-carga-mas-builds-smoke-test-opcional-no-bloqueante
