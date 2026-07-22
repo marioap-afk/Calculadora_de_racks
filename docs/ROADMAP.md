@@ -1,6 +1,11 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-21 (I-15 integrada en `main`: **Editor Shell** —`RackEditorSession`,
+> Actualizado: 2026-07-21 (I-21 integrada en `main`: **Estado del editor Dinámico** —extrae de
+> `RackDynamicSystemWindow` a `RackCad.Application` la matriz frente×nivel con su selección
+> (`DynamicFrontMatrix`), las celdas/frentes/buffer, la seguridad (`DynamicEditorSafety`) y la
+> recomputación/construcción del diseño (`DynamicEditorDesignAssembler`); la ventana queda coordinando sobre
+> el Editor Shell, sin cambio de dibujo/BOM/GUID/persistencia/UI. Antes ese día: I-15 integrada en `main`:
+> **Editor Shell** —`RackEditorSession`,
 > `RackEditorIdentity`, `RecomputeGate`/`RecomputeDebouncer`, `RackInsertionRequest` e
 > `IRackEditorModule`+`EditorModuleRegistry`— **adoptado por las cuatro ventanas ricas** (catálogo, identidad,
 > recompute coalescido e inserción); el menú y la biblioteca consumen el registro (mata el O(N) de
@@ -123,7 +128,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | ID | Iniciativa (rama) | Qué incluye | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
 | I-20 | `refactor/selective-editor-state` | Extraer `FondoMatrix`/`Cell`/`ApplyScope`/`BuildDesign` a Application (testeables); la ventana queda observando/pintando (U1, U3) | M | I-15 | I-22 (orden fijo: I-20 primero) | pendiente |
-| I-21 | `refactor/dynamic-editor-state` | Ídem para el editor dinámico (~3,318 líneas si A; 1,332 si B). Partir por vistas si excede | M-L | I-15 + I-02 (A ejecutada e integrada; I-28 solo si un ADR futuro reemplaza ADR-0002) | I-28 | pendiente |
+| I-21 | `refactor/dynamic-editor-state` | Ídem para el editor dinámico (~3,318 líneas si A; 1,332 si B). Partir por vistas si excede | M-L | I-15 + I-02 (A ejecutada e integrada; I-28 solo si un ADR futuro reemplaza ADR-0002) | I-28 | integrada (2026-07-21) |
 | I-22 | `refactor/safety-placement` | Servicios de colocación por familia (Tope/Parrilla/Tarima…) parametrizados por vista; subtipos de `SelectiveSafetySelection` con DTO por subtipo; paso de troquel en UNA constante; las rejillas adoptan `SelectionMatrix` (E6, E7) | M | I-14, I-20 (orden fijo) | I-20 | pendiente |
 | I-23 | `refactor/namespaces-sistemas` | `Systems.Selective/Dynamic/FlowBed/Shared`; renombres fósiles (`Headers`→`Drawing`, `DynamicSystemPlan`→`SystemPlan`); .editorconfig — mecánico, con tests golden, **cierra la Fase 5: depende de TODAS las demás** (E8) | M | I-08, I-15, I-16, I-20, I-21, I-22 | toda la Fase 5 | pendiente |
 | I-24 | `refactor/ui-tests-editores` | Tests de ViewModels y estados de editor sobre `tests/RackCad.UI.Tests` (el proyecto nace en I-14) (U3) | S | I-15, I-20 | — | pendiente |
