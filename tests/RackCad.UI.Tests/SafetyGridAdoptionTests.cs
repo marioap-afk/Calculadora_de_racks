@@ -60,5 +60,31 @@ namespace RackCad.UI.Tests
 
             Assert.Equal(6, count); // 2 + 3 + 1 present cells, not the 9 of the bounding rectangle
         }
+
+        [Fact]
+        public void Tope_BuildResult_CarriesTheOptions_AndTheGridOffCells_ExcludingAbsent()
+        {
+            var result = StaTestRunner.Run(() =>
+            {
+                var levels = new[] { 2, 3, 1 };
+                var off = new List<SelectiveGridCell> { new SelectiveGridCell { Frente = 1, Level = 0 } };
+                var window = new SafetyTopeGridWindow(
+                    "Tope", levels, shared: false, side: SafetySide.Right, saque: 5.0, frontal: true,
+                    offCells: off, fondoCount: 3, fondo: 1);
+
+                window.Model.SetSelected(0, 1, false); // (0,1) is present -> becomes an off cell
+                return window.BuildResult();
+            });
+
+            Assert.NotNull(result);
+            Assert.False(result.Shared);
+            Assert.Equal(SafetySide.Right, result.Side);
+            Assert.Equal(5.0, result.Saque, 6);
+            Assert.True(result.Frontal);
+            Assert.Equal(1, result.Fondo);                                              // "Fondo 2" -> index 1
+            Assert.Contains(result.OffCells, c => c.Frente == 1 && c.Level == 0);        // loaded off cell
+            Assert.Contains(result.OffCells, c => c.Frente == 0 && c.Level == 1);        // toggled off
+            Assert.DoesNotContain(result.OffCells, c => c.Frente == 2 && c.Level == 1);  // absent slot never appears
+        }
     }
 }
