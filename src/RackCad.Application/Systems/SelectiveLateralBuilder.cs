@@ -346,7 +346,7 @@ namespace RackCad.Application.Systems
             foreach (var tope in topes)
             {
                 var selection = tope.Selection;
-                var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+                var saque = SelectiveTopePlacement.Saque(selection);
                 var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
 
                 foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
@@ -377,20 +377,8 @@ namespace RackCad.Application.Systems
                     foreach (var y0 in ys)
                     {
                         // Rise ~8" above the larguero, then snap to the TROQUEL_TOPE grid (a whole number of pasos from the mate).
-                        var y = troquel.Y + Math.Round((y0 + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
-                        var at = new Point2D(mateX, y);
-                        var instance = new HeaderBlockInstance
-                        {
-                            Role = HeaderBlockRole.Tope,
-                            PieceId = tope.PieceId,
-                            BlockName = tope.Block,
-                            View = LateralView,
-                            MirroredX = spot.Mirror,
-                            ConnectionAnchor = at,
-                            Insertion = at
-                        };
-                        instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-                        result.Add(instance);
+                        var y = SelectiveTopePlacement.SnapY(troquel.Y, y0, paso);
+                        result.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, LateralView, mateX, y, saque, mirroredX: spot.Mirror));
                     }
                 }
             }

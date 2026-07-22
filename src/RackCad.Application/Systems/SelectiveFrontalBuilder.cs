@@ -192,7 +192,7 @@ namespace RackCad.Application.Systems
             }
 
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, view);
-            var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+            var saque = SelectiveTopePlacement.Saque(selection);
             var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
             const double paso = SelectiveRackDefaults.TroquelPaso; // single source for the troquel pitch (I-22)
 
@@ -217,18 +217,18 @@ namespace RackCad.Application.Systems
                         continue; // this (frente, level) cell is off
                     }
 
-                    var y = troquel.Y + Math.Round((bay.Levels[lvl].Y + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
+                    var y = SelectiveTopePlacement.SnapY(troquel.Y, bay.Levels[lvl].Y, paso);
 
                     if (tramos == null)
                     {
-                        PlaceTope(instances, tope.PieceId, tope.Block, view, postX[i] + troquel.X, y, bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance, saque);
+                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, view, postX[i] + troquel.X, y, saque, longitud: bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance));
                         continue;
                     }
 
                     foreach (var tramo in tramos)
                     {
                         if (!tramo.Loaded) continue;
-                        PlaceTope(instances, tope.PieceId, tope.Block, view, postX[i] + tramo.StartOffset + troquel.X, y, tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance, saque);
+                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, view, postX[i] + tramo.StartOffset + troquel.X, y, saque, longitud: tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance));
                     }
                 }
             }
@@ -382,25 +382,6 @@ namespace RackCad.Application.Systems
             }
 
             return false;
-        }
-
-        /// <summary>One larguero-tope block at (<paramref name="x"/>, <paramref name="y"/>) with LONGITUD =
-        /// <paramref name="longitud"/> and the SAQUE stick-out.</summary>
-        private static void PlaceTope(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double x, double y, double longitud, double saque)
-        {
-            var at = new Point2D(x, y);
-            var instance = new HeaderBlockInstance
-            {
-                Role = HeaderBlockRole.Tope,
-                PieceId = pieceId,
-                BlockName = block,
-                View = view,
-                Insertion = at,
-                ConnectionAnchor = at
-            };
-            instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = longitud;
-            instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-            instances.Add(instance);
         }
 
         /// <summary>Text labels when the toggles are on: a number centered under each frente (bay), a number to the

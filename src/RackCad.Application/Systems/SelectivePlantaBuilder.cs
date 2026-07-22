@@ -487,7 +487,7 @@ namespace RackCad.Application.Systems
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, PlantaView);
             var tope = topes[0];
             var selection = tope.Selection;
-            var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
+            var saque = SelectiveTopePlacement.Saque(selection);
             var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
 
             foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
@@ -531,37 +531,17 @@ namespace RackCad.Application.Systems
 
                     if (tramos == null)
                     {
-                        PlaceTope(instances, tope.PieceId, tope.Block, mateX, frenteYs[i] + troquel.Y, beamLength + SelectiveSafetyPlacement.TopeLengthAllowance, saque, spot.Mirror);
+                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, PlantaView, mateX, frenteYs[i] + troquel.Y, saque, longitud: beamLength + SelectiveSafetyPlacement.TopeLengthAllowance, mirroredX: spot.Mirror));
                         continue;
                     }
 
                     foreach (var tramo in tramos)
                     {
                         if (!tramo.Loaded) continue;
-                        PlaceTope(instances, tope.PieceId, tope.Block, mateX, frenteYs[i] + tramo.StartOffset + troquel.Y, tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance, saque, spot.Mirror);
+                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, PlantaView, mateX, frenteYs[i] + tramo.StartOffset + troquel.Y, saque, longitud: tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance, mirroredX: spot.Mirror));
                     }
                 }
             }
-        }
-
-        /// <summary>One larguero-tope block (PLANTA) at (<paramref name="x"/>, <paramref name="y"/>), LONGITUD along Y,
-        /// with the SAQUE stick-out; mirrored for the back/right spot facing the gap.</summary>
-        private static void PlaceTope(ICollection<HeaderBlockInstance> instances, string pieceId, string block, double x, double y, double longitud, double saque, bool mirror)
-        {
-            var at = new Point2D(x, y);
-            var instance = new HeaderBlockInstance
-            {
-                Role = HeaderBlockRole.Tope,
-                PieceId = pieceId,
-                BlockName = block,
-                View = PlantaView,
-                MirroredX = mirror,
-                Insertion = at,
-                ConnectionAnchor = at
-            };
-            instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = longitud;
-            instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-            instances.Add(instance);
         }
 
         private static void AddLarguero(ICollection<HeaderBlockInstance> instances, string beamId, string block, Point2D insertion, double longitud, double peralte, bool mirrored)
