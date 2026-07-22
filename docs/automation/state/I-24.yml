@@ -8,7 +8,7 @@ automation_state:
   gate: none
   attempts: 0
   next_action: sesion-de-integracion-serializada-rebase-final-sobre-origin-main-a50c4ec-ci-verde-y-merge-no-ff-tras-decision-del-dueno
-  last_evidence_commit: e1b4773d60f92aaea782b6882a541d0e7a7794cb
+  last_evidence_commit: d8174102cdd6d95a6fe7f4e189e698e44d8ab1bb
 execution_context:
   mode: manual-git-only
   worktree: I-24-ui-tests-editores
@@ -19,6 +19,8 @@ evidence:
   tests_and_seam_commit: 6916ecd7082036f6d0111044855a38e6aa81c5a7
   review_correction_commit_r2: 885fb2edfc0f5d06a0c54a7bf03291f4a96d7f56
   review_correction_commit_r3: e1b4773d60f92aaea782b6882a541d0e7a7794cb
+  review_correction_commit_r4: d8174102cdd6d95a6fe7f4e189e698e44d8ab1bb
+  review_corrections_r4: firmas-del-dibujo-INCLUYEN-anotaciones-y-cotas-antes-excluidas-instancekey-con-text-dimensionoffset-dimensionstylename-y-corresponds-normaliza-resolved-name-igual-a-request-system-name-antes-de-firmar-dinamico-y-selectivo-mas-round-trip-explicito-de-opciones-de-anotacion-numberfronts-numberlevels-drawrackname-annotationscale-dimensions-en-designa-y-designb
   origin_main_advanced: de-9a895e4-a-a50c4ec-merge-i05-guardia-de-unidades-durante-la-sesion-i24-disjunto-sin-conflicto-rebase-final-en-la-sesion-de-integracion
   domain_application_tests: 913-verde-0-fallos-sin-regresion-i24-no-toca-rackcad-tests
   ui_tests: 168-verde-0-fallos-139-base-mas-29-nuevas-configuratorvm-13-dynamicwindow-8-selectivewindow-4-flowbedwindow-4-sin-cambio-de-conteo-en-r3
