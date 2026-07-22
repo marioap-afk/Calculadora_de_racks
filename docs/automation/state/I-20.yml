@@ -1,0 +1,24 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-20
+  branch: refactor/selective-editor-state
+  claim_id: 23f0371e-1920-4cea-b679-c0830f9cad50
+  current_phase: 1
+  state: claimed
+  gate: none
+  attempts: 0
+  next_action: crear-el-estado-puro-en-application-y-caracterizacion-previa-antes-de-refactorizar-la-ventana
+  last_evidence_commit: a15f81b
+execution_context:
+  mode: manual-git-only
+  worktree: I-20-selective-editor-state
+  pull_request: none
+autocad_validation:
+  status: pending
+  note: pendiente-del-dueno-sobre-el-dll-debug-del-worktree-i20-matriz-alcances-cambios-de-fondo-preview-insercion-actualizacion-y-round-trip
+owner_validation:
+  status: pending
+  note: pendiente-del-dueno-apariencia-e-interaccion-identicas-a-lo-vigente
+decision_evidence:
+  path: none
+  resolved_gate: none
