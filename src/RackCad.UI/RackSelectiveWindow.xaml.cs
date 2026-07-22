@@ -919,12 +919,12 @@ namespace RackCad.UI
             Recompute();
         }
 
-        /// <summary>Deep-clone a cabecera via the project store round-trip (the same serialization RACKEDITAR uses).</summary>
+        /// <summary>Deep-clone a cabecera via the single canonical store round-trip (initiative I-17). A bare-header
+        /// round-trip through <see cref="RackFrameProjectStore"/> is equivalent to the previous wrapper round-trip
+        /// (<see cref="RackProjectStore"/> + <see cref="RackProject.ForSelective"/>): both copy the same
+        /// <c>RackFrameProjectDocument</c> source of truth, rebuild the derived members and reject an unusable header.</summary>
         private static RackFrameConfiguration CloneCabecera(RackFrameConfiguration configuration)
-        {
-            var store = new RackProjectStore();
-            return store.Deserialize(store.Serialize(RackProject.ForSelective(configuration)))?.Header;
-        }
+            => new RackFrameProjectStore().DeepCopy(configuration);
 
         /// <summary>The resolved height of post <paramref name="i"/> (tallest adjacent frente); falls back to the run height.</summary>
         private double ResolvedPostHeight(int i)

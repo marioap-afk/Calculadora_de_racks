@@ -68,6 +68,21 @@ namespace RackCad.Application.Persistence
             return configuration;
         }
 
+        /// <summary>
+        /// Deep-clone a configuration by round-tripping it through this store's JSON document — the SINGLE
+        /// canonical clone every editor shares (initiative I-17). Because the copy flows through
+        /// <see cref="Serialize"/> + <see cref="Deserialize"/>, the source of truth (metadata, posts, plates,
+        /// horizontals, panels) is copied by the persistence schema itself and the derived model (Members,
+        /// panel elevations) is REBUILT on load exactly as for a project opened from disk. A new configuration
+        /// field is therefore preserved the moment it is added to <see cref="RackFrameProjectDocument"/>, with
+        /// no hand-maintained per-field clone to drift out of sync (the audit's U4). Returns null for a null
+        /// input, so it is a drop-in for the historical UI clone helpers.
+        /// </summary>
+        public RackFrameConfiguration DeepCopy(RackFrameConfiguration configuration)
+        {
+            return configuration == null ? null : Deserialize(Serialize(configuration));
+        }
+
         public void Save(RackFrameConfiguration configuration, string path)
         {
             File.WriteAllText(path, Serialize(configuration));
