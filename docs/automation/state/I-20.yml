@@ -3,16 +3,25 @@ automation_state:
   initiative: I-20
   branch: refactor/selective-editor-state
   claim_id: 23f0371e-1920-4cea-b679-c0830f9cad50
-  current_phase: 1
-  state: claimed
-  gate: none
+  current_phase: 6
+  state: review-ready
+  gate: autocad
   attempts: 0
-  next_action: crear-el-estado-puro-en-application-y-caracterizacion-previa-antes-de-refactorizar-la-ventana
-  last_evidence_commit: a15f81b
+  next_action: validacion-manual-del-dueno-en-autocad-y-owner-validation-sobre-el-dll-debug-del-worktree-i20-luego-sesion-de-integracion-merge-no-ff
+  last_evidence_commit: 294968b
 execution_context:
   mode: manual-git-only
   worktree: I-20-selective-editor-state
   pull_request: none
+evidence:
+  base_commit: bfda406dfc9680473bad6f38c608d309466c754c
+  domain_application_tests: 866-verde-0-fallos-incluye-24-nuevas-de-SelectiveEditorState
+  ui_tests: 139-verde-0-fallos-incluye-4-de-caracterizacion-STA-SelectiveEditorStateAdoption
+  build_ui_debug: 0-errores-0-advertencias-propias
+  build_plugin_debug: 0-errores-solo-MSB3277-conocidos-de-autocad
+  build_solution_debug: 0-errores-solo-MSB3277-conocidos
+  invariants: equivalencia-de-diseno-resuelto-load-build-y-round-trip-verificada-por-caracterizacion-STA-antes-y-despues-del-refactor
+  scope: solo-application-systems-selectiveeditor-mas-rackselectivewindow-mas-pruebas-mas-docs-i20-sin-tocar-dinamico-catalogos-persistencia-drawservices-ni-generados
 autocad_validation:
   status: pending
   note: pendiente-del-dueno-sobre-el-dll-debug-del-worktree-i20-matriz-alcances-cambios-de-fondo-preview-insercion-actualizacion-y-round-trip
