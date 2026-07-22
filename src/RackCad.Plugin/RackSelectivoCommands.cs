@@ -31,6 +31,8 @@ namespace RackCad.Plugin
 
                 if (window.InsertRequested)
                 {
+                    // I-05: warn once if the drawing is not in inches, before drawing the new view.
+                    RackUnitsGuard.WarnIfNotInches(AcApplication.DocumentManager.MdiActiveDocument);
                     DrawSelectiveView(window.InsertView, window.SystemToInsert, window.DesignToInsert, window.RackId, window.RackName);
                 }
             }
@@ -63,6 +65,14 @@ namespace RackCad.Plugin
             if (!window.InsertRequested)
             {
                 return;
+            }
+
+            // I-05: a NEW linked view will be inserted below (see the "!UpdateOnly" branch); warn once if the drawing is
+            // not in inches, BEFORE any block is (re)drawn. A pure update (UpdateOnly) redraws existing geometry in
+            // place at its current scale and must NOT warn.
+            if (!window.UpdateOnly)
+            {
+                RackUnitsGuard.WarnIfNotInches(document);
             }
 
             // Editing the SYSTEM redraws BOTH views. A rack is one frontal block + N lateral section blocks, all sharing

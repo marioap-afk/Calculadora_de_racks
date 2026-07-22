@@ -40,6 +40,10 @@ namespace RackCad.Plugin
 
                 var editor = document.Editor;
 
+                // I-05: RACKRELLENAR passes through the units guard BEFORE its functional prompts (before the first
+                // pick), warning once if the drawing is not in inches.
+                RackUnitsGuard.WarnIfNotInches(document);
+
                 if (!RackCommandSupport.PickRackBlock(document, "\nSelecciona el rack con el que rellenar: ", out var embed, out _))
                 {
                     return;

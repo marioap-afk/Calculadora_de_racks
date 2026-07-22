@@ -29,6 +29,13 @@ namespace RackCad.Plugin
                     dimensionStyles: RackCommandSupport.ReadDimensionStyleNames(document));
                 AcApplication.ShowModalWindow(menu);
 
+                // I-05: an insertion is about to happen (any non-null request). Warn once if the drawing is not in
+                // inches, before dispatching to the per-system draw calls (before the first DWG modification).
+                if (menu.InsertionRequest != null)
+                {
+                    RackUnitsGuard.WarnIfNotInches(document);
+                }
+
                 // The menu now carries ONE typed payload (I-15); dispatch it by kind to the SAME per-system draw calls
                 // with the SAME arguments as before (behavior-identical). A cancelled menu leaves InsertionRequest null.
                 switch (menu.InsertionRequest)

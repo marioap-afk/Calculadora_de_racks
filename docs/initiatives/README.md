@@ -110,6 +110,15 @@ Planes disponibles:
   multivista, persistencia I-11, fallbacks legacy, cabeceras legacy ni cama integrada. Fuera de alcance
   Push Back (I-18), Dinamico V2 (I-28), el selectivo (I-20), reglas de producto, catalogos y bloques DWG.
   AutoCAD y owner-validation **abiertos** (gate del dueño). No integrada.
+- [`I-05-guardrail-unidades.md`](I-05-guardrail-unidades.md): contrato de I-05 (Fase 1, sin dependencias
+  ni estorbos). Añade una guardia visible y NO bloqueante en el límite de AutoCAD (`RackUnitsGuard` en el
+  Plugin): al insertar un sistema o vista nueva, y en `RACKLAYOUT`/`RACKRELLENAR` (con alias), lee
+  `INSUNITS` y avisa una sola vez si el dibujo no está en pulgadas, antes de la primera modificación del
+  DWG; una actualización pura con `RACKEDITAR` no avisa. La decisión pura vive en
+  `RackCad.Application.Drawing.DrawingUnitsAdvisory` (sin AutoCAD); el cableado se fija con source-guards.
+  Documenta `ADR-0005` (estrategia de unidades, **aceptado**). Fuera de alcance: conversión, reescalado, la
+  columna `units`, almacenar unidades en DTO y cualquier framework general de unidades. ADR-0005 aceptado;
+  AutoCAD y owner-validation **aprobados por el dueño**; **integrada en `main` el 2026-07-22**.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

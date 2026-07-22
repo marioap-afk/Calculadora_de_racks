@@ -61,6 +61,8 @@ namespace RackCad.Plugin
                     DynamicRackDefaults.DefaultFirstLevelHeight,
                     DynamicRackDefaults.DefaultBeamDepth,
                     postId);
+                // I-05: warn once if the drawing is not in inches, before drawing the new system.
+                RackUnitsGuard.WarnIfNotInches(document);
                 DrawDynamicView(
                     RackEmbedDocument.ViewLateral,
                     -1,
@@ -184,6 +186,13 @@ namespace RackCad.Plugin
             {
                 editor.WriteMessage("\nRackCad: " + preflight.ErrorMessage);
                 return;
+            }
+
+            // I-05: a NEW linked view will be inserted below (see the "!UpdateOnly" branch); warn once if the drawing is
+            // not in inches, BEFORE any block is (re)drawn. A pure update (UpdateOnly) must NOT warn.
+            if (!window.UpdateOnly)
+            {
+                RackUnitsGuard.WarnIfNotInches(document);
             }
 
             var updatedLateral = 0;

@@ -227,6 +227,23 @@ sobre `main` vigente (`2a30fef`, Merge I-21)** reconciliando sólo la documentac
 ROADMAP e índice de iniciativas); I-21 sólo toca el editor **dinámico**, no el selectivo, por lo que la
 validación se conserva. La rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-05** (`feature/guardrail-unidades`) añade una **guardia de unidades** visible y **NO bloqueante** en el
+límite de AutoCAD (hallazgo D4 de la auditoría; **ADR-0005 aceptado**), **sin cambio de comportamiento de
+producto** salvo el aviso nuevo. `RackUnitsGuard` (en `RackCad.Plugin`, **único que lee `INSUNITS`**) mapea el
+`UnitsValue` del `Database` activo a la categoría neutral `DrawingUnits` y delega la decisión en la política
+**pura** `DrawingUnitsAdvisory` de `RackCad.Application` (sin dependencia de AutoCAD): si el dibujo **no** está
+en pulgadas —incluido `unitless`— escribe **una** advertencia en la línea de comandos **antes de la primera
+modificación del DWG**. **No** convierte, reescala ni reinterpreta geometría: RackCad sigue dibujando en
+pulgadas (la conversión real queda **diferida** a una iniciativa futura, ADR-0005). Cableada **una vez por
+operación** (sin repetir por alias ni por vista/bloque) en las rutas de inserción: menú `RACKCAD`,
+`RACKSELECTIVO`, `RACKSISTEMADINAMICO`, `QUICKCAMA`, `RACKCABECERA`, `QUICKCABECERA`; en `RACKEDITAR` avisa
+**solo al insertar una vista nueva** (`!UpdateOnly`, antes del primer `RedrawInPlace`), **no** en una
+actualización pura; y `RACKLAYOUT`/`RACKRELLENAR` (con sus alias) avisan antes de sus prompts. `RACKDUPLICAR`
+queda fuera (clona geometría ya dibujada a la misma escala). El cableado se fija con **source-guards** (leen el
+`.cs` del Plugin como texto, sin cargar AutoCAD) y la decisión pura con pruebas. El dueño **aceptó ADR-0005** y
+**aprobó la validación en AutoCAD 2025** y la owner-validation. La rama se integra por `git merge --no-ff` en
+esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -330,6 +347,20 @@ comentario obsoleto** (doc-comment, sin efecto en el comportamiento), el **rebas
 documentación compartida; I-21 no toca el selectivo) y este cierre documental; por eso la validación **se
 conserva** (WORKFLOW §6). El gate manual queda cerrado.
 
+I-05 (`feature/guardrail-unidades`) **sí** requiere validación en AutoCAD (`requires_autocad: true`) porque el
+aviso aparece en la línea de comandos al insertar. El dueño cargó por `NETLOAD` el DLL Debug del worktree I-05
+(implementación validada `f78baaf`;
+`…-I-05-guardrail-unidades\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en AutoCAD 2025 y
+**aprobó sin observaciones** («Ok, todo funciona»): dibujo en **pulgadas** ⇒ **sin** aviso; **no-pulgadas** y
+**unitless** ⇒ **una** advertencia por operación (confirmó que apareció la advertencia completa de RackCad); el
+aviso **no bloquea** ni convierte/reescala; `RACKEDITAR` diferencia **actualización** (sin aviso) e **inserción
+de vista nueva** (con aviso); `RACKLAYOUT`, `RACKRELLENAR` y los alias se comportan correctamente sin doble
+aviso; geometría, BOM, GUID, capas, persistencia y round-trip **idénticos**. La **owner-validation** quedó
+**aprobada** (`requires_owner_validation: true`) y **ADR-0005** fue **aceptado** por el dueño; evidencia en
+[`automation/evidence/I-05-autocad-validation.md`](automation/evidence/I-05-autocad-validation.md) y decisión en
+[`automation/decisions/I-05.md`](automation/decisions/I-05.md). `origin/main` no avanzó desde `9a895e4`, así que
+la validación se conserva (WORKFLOW §6): sin rebase.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -360,6 +391,10 @@ conserva** (WORKFLOW §6). El gate manual queda cerrado.
   persistencia) quedó **fuera del alcance de I-11 por decisión aprobada del dueño**; no preserva campos JSON
   desconocidos ni versión no degradada. Es deuda para una iniciativa posterior, no cancelación
   (`automation/decisions/I-11.md`).
+- RackCad sigue siendo **mono-unidad en pulgadas**: I-05 añadió la guardia que **avisa** cuando `INSUNITS` no
+  es pulgadas, pero **no** convierte ni reescala. La conversión real (frontera explícita DWG↔interno) queda
+  **diferida** a una iniciativa futura gobernada por **ADR-0005** (aceptado); la columna `units` de los
+  catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
 
@@ -376,13 +411,54 @@ y **selectivo** (I-20: `SelectiveEditorState`) a Application, dejando ambas vent
 pintando. El siguiente paso natural es **I-22** (`refactor/safety-placement`, orden fijo tras I-20 —ahora
 **desbloqueada**—) e **I-18 (Push Back)**, que ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y
 solo espera los **bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su
-worktree ya reclamado.
+worktree ya reclamado. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada** en
+esta sesión: la **guardia de unidades** avisa cuando el dibujo no está en pulgadas, **sin conversión ni
+reescalado** (ADR-0005 aceptado); no desbloquea ni estorba ninguna otra iniciativa.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-05 — 2026-07-22:**
+
+- punta de **código** validada por CI y por el dueño (AutoCAD): `f78baaf209c118d168c68620e236341996f9d93e`
+  (run `29932135203`, **cuatro jobs verdes**); los commits posteriores de la rama son **solo documentales**
+  (registro de aprobaciones + este cierre de integración) y **no cambian código**; el commit documental final
+  recibe su propio CI verde antes del merge; este documento **no inventa** el SHA del merge de `main` (vive en
+  `git log --first-parent main`);
+- `origin/main` **no avanzó** desde `9a895e4` (Merge I-20) durante esta integración: **sin rebase**; `f78baaf`
+  (implementación validada) es **ancestro** de la punta final de la rama; la rama se integra por
+  `git merge --no-ff`;
+- suite `RackCad.Tests`: **936/936 verdes** (base 913 de I-20 + **23 nuevas**: `DrawingUnitsAdvisoryTests` (6,
+  decisión pura) y `RackUnitsGuardSourceTests` (17, source-guards del cableado, con demostración **rojo→verde**
+  contra la baseline sin cablear); sin regresión); suite `RackCad.UI.Tests`: **139/139 verdes** (sin cambio;
+  I-05 no toca UI);
+- build UI Debug: **0 errores y 0 advertencias propias**; builds Plugin y solución completa Debug: **0 errores**,
+  únicamente las dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre `f78baaf` (run `29932135203`) y re-verde sobre el commit documental de cierre antes del
+  merge (los **cuatro** jobs —Tests (Domain+Application), Build UI, UI Tests (WPF controls, net8.0-windows) y
+  Build Plugin without AutoCAD— en `success`);
+- objetivo entregado: `RackUnitsGuard` en `RackCad.Plugin` (**único lector de `INSUNITS`**, mapeo
+  `UnitsValue`→`DrawingUnits`, **una** advertencia no bloqueante antes de la primera modificación) + política
+  **pura** `DrawingUnitsAdvisory` en `RackCad.Application.Drawing` (sin AutoCAD); cableada una vez por operación
+  en las rutas de inserción (menú, `RACKSELECTIVO`/`RACKSISTEMADINAMICO`/`QUICKCAMA`/`RACKCABECERA`/
+  `QUICKCABECERA`), en `RACKEDITAR` solo al insertar vista nueva (`!UpdateOnly`, antes del primer
+  `RedrawInPlace`) y en `RACKLAYOUT`/`RACKRELLENAR` antes de sus prompts; `RACKDUPLICAR` fuera por diseño;
+  **ADR-0005 aceptado** (`docs/adr/0005-estrategia-de-unidades.md`);
+- validación manual: AutoCAD **requerido** (`requires_autocad: true`) y **aprobado** por el dueño sin
+  observaciones (pulgadas sin aviso; no-pulgadas y unitless con una advertencia; aviso no bloqueante y sin
+  conversión; `RACKEDITAR` actualiza vs inserta; layout/relleno/alias correctos; «Ok, todo funciona»);
+  **owner-validation aprobada**; **owner-decision** (ADR-0005) **aprobada**;
+- invariantes preservados: **sin** cambios de geometría, coordenadas, BOM, GUID, capas, persistencia/DTO,
+  payload/Xrecord, comandos, alias ni mensajes ajenos; catálogos, `deploy/`, workflows, `.csproj` y `.sln`
+  **intactos**; **sin** dependencias NuGet nuevas; dirección de dependencias intacta (Application no referencia
+  AutoCAD); diff exclusivamente **aditivo**;
+- alcance: `src/RackCad.Application/Drawing/DrawingUnitsAdvisory.cs` (nuevo),
+  `src/RackCad.Plugin/RackUnitsGuard.cs` (nuevo) + 7 comandos del Plugin (cableado),
+  `tests/RackCad.Tests/DrawingUnitsAdvisoryTests.cs` (+6) y `RackUnitsGuardSourceTests.cs` (+17), más ADR-0005,
+  contrato/estado/decisión/evidencia e índices de I-05.
 
 **Baseline integrada de I-20 — 2026-07-21:**
 

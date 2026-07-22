@@ -99,6 +99,8 @@ namespace RackCad.Plugin
                 };
 
                 var payload = BuildCamaPayload(config, System.Guid.NewGuid().ToString(), null);
+                // I-05: warn once if the drawing is not in inches, before placing the new bed.
+                RackUnitsGuard.WarnIfNotInches(document);
                 var result = new FlowBedDrawService().DrawAndPlace(document, config, payload);
                 editor.WriteMessage("\n" + DescribeBed(result));
             }

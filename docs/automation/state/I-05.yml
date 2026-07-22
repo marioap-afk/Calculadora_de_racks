@@ -1,0 +1,51 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-05
+  branch: feature/guardrail-unidades
+  claim_id: 3bc63632-70b1-4638-80ce-a2c334543873
+  current_phase: 6
+  state: integration-ready
+  gate: none
+  attempts: 0
+  next_action: sesion-de-integracion-serializada-del-dueno-rebase-final-si-main-avanzo-CI-verde-merge-no-ff-y-HANDOFF-ROADMAP-como-ultimo-commit
+  last_evidence_commit: 90c0c35090b579b68ade4c855b51c74a744dfdc1
+execution_context:
+  mode: manual-git-only
+  worktree: I-05-guardrail-unidades
+  pull_request: none
+evidence:
+  base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
+  claim_commit: f35ca4c403d3eb0fe59fd52503c019676a7187a4
+  validated_impl_tip: f78baaf209c118d168c68620e236341996f9d93e
+  approvals_commit: 90c0c35090b579b68ade4c855b51c74a744dfdc1
+  ci_run: 29932135203-cuatro-jobs-verdes-sobre-f78baaf-tests-domain-application-build-ui-ui-tests-build-plugin-without-autocad
+  domain_application_tests: 936-verde-0-fallos-base-913-mas-23-DrawingUnitsAdvisory-6-y-RackUnitsGuardSource-17
+  ui_tests: 139-verde-0-fallos-sin-cambio-i05-no-toca-ui
+  build_ui_debug: 0-errores-0-advertencias-propias
+  build_plugin_debug: 0-errores-solo-2-MSB3277-conocidos-de-autocad-2025
+  build_solution_debug: 0-errores-solo-2-MSB3277-conocidos
+  red_before_green: source-guards-14-asserts-de-cableado-fallan-contra-la-baseline-sin-cablear-y-pasan-tras-cablear
+  scope: solo-application-drawing-mas-plugin-rackunitsguard-y-7-comandos-mas-pruebas-mas-docs-i05-sin-tocar-geometria-builders-bom-catalogos-persistencia-deploy-csproj-sln
+  invariants: additivo-sin-cambio-de-geometria-coordenadas-guid-capas-payload-comandos-alias-ni-mensajes-ajenos
+gates:
+  owner_decision:
+    status: approved
+    note: ADR-0005-aceptado-por-mario-perez-2026-07-22-si-estoy-de-acuerdo-cuatro-puntos-sin-modificaciones-no-autoriza-conversion
+    decision_path: docs/automation/decisions/I-05.md
+  autocad:
+    status: approved
+    note: aprobado-por-el-dueno-2026-07-22-sin-observaciones-pulgadas-sin-aviso-no-pulgadas-y-unitless-un-aviso-no-bloqueante-sin-conversion-rackeditar-actualiza-vs-inserta-layout-relleno-aliases-ok-ok-todo-funciona
+    evidence_path: docs/automation/evidence/I-05-autocad-validation.md
+  owner_validation:
+    status: approved
+    note: aprobado-por-el-dueno-2026-07-22-aviso-claro-no-bloqueante-y-sin-alterar-el-dibujo
+    evidence_path: docs/automation/evidence/I-05-autocad-validation.md
+decision_evidence:
+  path: docs/automation/decisions/I-05.md
+  resolved_gate: owner-decision
+autocad_validation:
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-22-sobre-el-dll-debug-del-worktree-i05-codigo-f78baaf-en-autocad-2025
+owner_validation:
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-22-comportamiento-y-apariencia-del-aviso-sin-observaciones
