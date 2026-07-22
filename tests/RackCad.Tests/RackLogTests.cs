@@ -9,8 +9,10 @@ namespace RackCad.Tests
     /// <summary>
     /// I-03: the minimal diagnostics logger. Covers the PURE formatter (stack trace + context are present),
     /// the real file writer (a temp directory, never touching %AppData%), the best-effort contract (never
-    /// throws, even on an unwritable directory), and the public façade shape.
+    /// throws, even on an unwritable directory), and the public façade (shape + a REDIRECTED write, so no test
+    /// touches the real %AppData%). In the "RackLog" collection because the façade tests swap the static sink.
     /// </summary>
+    [Collection("RackLog")]
     public class RackLogTests
     {
         /// <summary>An exception that actually carries a stack trace (thrown + caught), like a real failure.</summary>
@@ -130,18 +132,29 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Facade_LogDirectory_IsUnderRackCadLogs_AndCallsNeverThrow()
+        public void Facade_LogDirectory_IsUnderRackCadLogs()
         {
+            // Reads the property only — no write, so this never touches the real %AppData%.
             Assert.Contains("RackCad", RackLog.LogDirectory);
             Assert.Contains("logs", RackLog.LogDirectory);
+        }
 
-            // The façade must be safe to call from anywhere (it is used by Report() and 14 catches).
+        [Fact]
+        public void Facade_UnderRedirect_WritesToTempAndNeverThrows()
+        {
+            // The façade is used by Report() and the 14 catches, so it must never throw. Redirect the sink to a
+            // temp folder so this real write never lands in the production %AppData%\RackCad\logs.
+            using var capture = LogCapture.Begin();
+
             var boom = Record.Exception(() =>
             {
-                RackLog.Exception("test", Thrown("facade"));
-                RackLog.Warning("test", "facade-warn");
+                RackLog.Exception("facade-test", Thrown("facade-boom"));
+                RackLog.Warning("facade-test", "facade-warn");
             });
+
             Assert.Null(boom);
+            Assert.Contains("facade-boom", capture.Text);
+            Assert.Contains("facade-warn", capture.Text);
         }
     }
 }

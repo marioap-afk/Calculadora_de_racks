@@ -10,8 +10,10 @@ namespace RackCad.Tests
     /// I-03 (D2): settings load must distinguish a MISSING file (silent defaults — normal) from a
     /// PRESENT-but-UNREADABLE one (the corrupt file silently reset defaults, losing the user's library
     /// path without a trace). Now an unreadable file is quarantined to <c>.bad</c> and logged, and the
-    /// save is atomic. Tests use internal path overloads so they never touch the real %APPDATA%.
+    /// save is atomic. Tests use internal path overloads so they never touch the real %APPDATA%; the
+    /// corrupt-file test also redirects the log sink (RackLog collection) so logging stays off %APPDATA% too.
     /// </summary>
+    [Collection("RackLog")]
     public class UserSettingsStoreTests
     {
         private static string TempPath()
@@ -34,6 +36,7 @@ namespace RackCad.Tests
         {
             var path = TempPath();
             File.WriteAllText(path, "{ this is not valid json ][");
+            using var cap = LogCapture.Begin(); // the corrupt load logs; keep it off the real %AppData%
             try
             {
                 var settings = UserSettingsStore.Load(path);
@@ -43,6 +46,7 @@ namespace RackCad.Tests
                 Assert.False(File.Exists(path));        // ...the corrupt file was moved aside...
                 Assert.True(File.Exists(path + ".bad")); // ...to a .bad quarantine so the data survives.
                 Assert.Contains("not valid json", File.ReadAllText(path + ".bad"));
+                Assert.Contains("UserSettings load", cap.Text); // and the reset was recorded, not silent
             }
             finally
             {

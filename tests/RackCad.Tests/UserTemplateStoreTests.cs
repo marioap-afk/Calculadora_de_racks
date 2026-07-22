@@ -10,7 +10,9 @@ namespace RackCad.Tests
     /// I-03 (D2): the per-user template library. A missing file is empty (normal); a corrupt file is
     /// quarantined to <c>.bad</c> and logged instead of silently discarded, and the save is atomic.
     /// <see cref="UserTemplateStore"/> already takes its path in the constructor, so no seam is needed.
+    /// The corrupt-file test redirects the log sink (RackLog collection) so logging never hits %APPDATA%.
     /// </summary>
+    [Collection("RackLog")]
     public class UserTemplateStoreTests
     {
         private static string TempPath()
@@ -31,6 +33,7 @@ namespace RackCad.Tests
         {
             var path = TempPath();
             File.WriteAllText(path, "}} definitely not a template array {{");
+            using var cap = LogCapture.Begin(); // the corrupt load logs; keep it off the real %AppData%
             try
             {
                 var store = new UserTemplateStore(path);
@@ -39,6 +42,7 @@ namespace RackCad.Tests
                 Assert.False(File.Exists(path));         // moved aside, not silently overwritten
                 Assert.True(File.Exists(path + ".bad")); // preserved for diagnosis
                 Assert.Contains("not a template array", File.ReadAllText(path + ".bad"));
+                Assert.Contains("UserTemplateStore load", cap.Text); // and the discard was recorded, not silent
             }
             finally
             {
