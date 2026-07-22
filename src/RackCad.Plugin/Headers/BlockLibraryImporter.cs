@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
 
@@ -110,9 +111,10 @@ namespace RackCad.Plugin.Headers
                 source.WblockCloneObjects(ids, db.BlockTableId, mapping, DuplicateRecordCloning.Ignore, deferTranslation: false);
                 return ids.Count;
             }
-            catch
+            catch (Exception ex)
             {
                 // Best-effort: a locked/invalid library must not abort the drawing; missing blocks are reported as before.
+                RackLog.Exception("Importar bloques de la biblioteca DWG", ex);
                 return 0;
             }
         }
@@ -151,8 +153,10 @@ namespace RackCad.Plugin.Headers
                     // OpenForReadAndAllShare so it works even if the library DWG is open in AutoCAD.
                     fresh.ReadDwgFile(path, FileOpenMode.OpenForReadAndAllShare, allowCPConversion: true, password: null);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    // Best-effort: a locked/invalid library DWG must not abort the drawing (missing blocks reported).
+                    RackLog.Exception("Leer blocks-library.dwg (" + path + ")", ex);
                     fresh.Dispose();
                     return null;
                 }

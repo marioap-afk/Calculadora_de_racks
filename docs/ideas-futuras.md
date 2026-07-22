@@ -361,3 +361,23 @@ Toda esta lista quedó cerrada en el batch de quick wins + higiene:
   troquel de rejilla (`SelectiveRackDefaults.TroquelPaso`, que I-22 unificó en los 5 snaps). Se dejaron sin
   enrutar a la constante a propósito (no son snaps de rejilla); si el paso de troquel dejara de ser 2",
   habría que revisar si estos deben seguirlo.
+
+### I-03 — hallazgos adyacentes (2026-07-22, registrados sin corregir)
+
+- **`UiSupport.LoadCatalogSafe` (capa UI) sigue tragando la carga de catálogo en silencio**: I-03 hizo
+  diagnosticable el único punto de carga del **Plugin** (`RackCatalogLoader`, que ahora registra el fallo y
+  el catálogo vacío), pero el editor WPF carga el catálogo por su propia ruta (`UiSupport.LoadCatalogSafe`),
+  que captura y devuelve un `RackCatalog` vacío sin registrar. El ROADMAP acota I-03 a Plugin + Persistence,
+  así que quedó fuera. Como `RackCad.UI` ya depende de `RackCad.Application`, adoptar `RackLog.Exception` ahí
+  es una sola línea; hacerlo cuando se retome la UI (o al unificar ambas rutas de carga, hoy separadas por la
+  dirección de dependencias Plugin↛UI).
+- **Sin rotación ni retención del log**: `RackDiagnosticsLog` escribe un archivo por día
+  (`rackcad-AAAAMMDD.log`) en `%AppData%\RackCad\logs` y nunca lo poda. Es "logging mínimo" a propósito (I-03
+  excluye telemetría/retención), pero a lo largo de años la carpeta crece sin límite; una iniciativa posterior
+  puede añadir poda por antigüedad/tamaño (p. ej. conservar N días) sin cambiar la superficie pública de
+  `RackLog`.
+- **Lecturas tolerantes de embeds NO instrumentadas a propósito**: `FlowBedConfigurationStore` y
+  `SelectivePalletDesignStore` devuelven `null`/omiten ante un embed de MAJOR más nuevo o ilegible; eso es
+  **diseño intencional de I-11** (un bloque ajeno se salta, no aborta el escaneo), no un "fallo silencioso"
+  del tipo D2, por lo que I-03 no las tocó. Si en el futuro se quisiera un rastro de esos saltos, habría que
+  medir el ruido (el escaneo recorre todos los bloques del dibujo) antes de registrar.

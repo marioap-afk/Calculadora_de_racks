@@ -1,6 +1,9 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-22 (**I-22 integrada en `main`**: **colocación de seguridad del selectivo** (E6/E7)
+> Actualizado: 2026-07-22 (**I-03 integrada en `main`**: **fallos silenciosos** (P1/D2) —logger mínimo a
+> `%AppData%\RackCad\logs`, `Report()` con stack, los 14 `catch` del Plugin y los stores best-effort registran,
+> escritura atómica en los 4 stores y carga que distingue archivo ausente de ilegible; **aditivo, sin cambio de
+> comportamiento**, preserva I-11—. Antes ese día: **I-22 integrada en `main`**: **colocación de seguridad del selectivo** (E6/E7)
 > —servicios/planes puros de colocación por familia (tope con su resultado frontal propio `BuildFrontal`, tarima,
 > separador, parrilla unificada) con los builders y el BOM como orquestadores; configuraciones y **DTO por subtipo**
 > (`SafetySelectionDocuments`, wire format plano byte-idéntico); **paso de troquel en UNA constante**; las rejillas
@@ -102,7 +105,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | ID | Iniciativa (rama) | Qué incluye (hallazgos) | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
 | I-02 | `feature/dinamico-modular` ✋ | **ADR-0002=A ejecutada**: tag de resguardo sobre la punta validada, rama renombrada (ADR-0001), rebase sobre el trunk conservando los arreglos de main (los conflictos fueron solo los 7 docs previstos), catálogos append-only intactos, suite + builds + CI + **re-validación AutoCAD sobre el árbol rebasado** completas (HANDOFF §8-12). Estabilizada en 1 de las 3 sesiones permitidas; la contingencia (opción B) no se activó. Absorbe I-27 | M-L | I-01=A (cumplida) | I-08, I-09, I-11, I-14, I-16, I-17 (quedaron desbloqueadas al integrarse) | integrada (2026-07-17) |
-| I-03 | `refactor/fallos-silenciosos` | Logger mínimo a `%AppData%\RackCad\logs`; los 14 catch del Plugin + los de Persistence registran; `Report()` con stack; aviso de catálogo vacío; escritura atómica temp+`File.Replace` en los 4 stores; carga distingue "no existe" de "ilegible" (P1, D2) | M | — | I-11 | pendiente |
+| I-03 | `refactor/fallos-silenciosos` | Logger mínimo a `%AppData%\RackCad\logs`; los 14 catch del Plugin + los de Persistence registran; `Report()` con stack; aviso de catálogo vacío; escritura atómica temp+`File.Replace` en los 4 stores; carga distingue "no existe" de "ilegible" (P1, D2) | M | — | I-11 | integrada (2026-07-22) |
 | I-04 | `fix/install-bundle-preserva-datos` | Instalación transaccional con validación previa, staging, respaldo y rollback; reemplaza catálogos CSV/JSON de producto sin fusionarlos, preserva `blocks-library.dwg` byte por byte y regenera un bundle limpio/reproducible (G7) | S | — | — | integrada (2026-07-17) |
 | I-05 | `feature/guardrail-unidades` ✋ | Leer `INSUNITS` al insertar/RACKLAYOUT/RACKRELLENAR y avisar si ≠ pulgadas; ADR de estrategia de unidades a largo plazo (D4) | S | — | — | integrada (2026-07-22) |
 | I-06 | `docs/reestructura` | Entregó `ARCHITECTURE.md`, nueve Context Packs, glosario y guías vigentes, archivo histórico, HANDOFF reducido y automatización documentada pero pausada; preservó el contenido único y corrigió rutas y navegación. I-07 se desbloquea solo tras el merge efectivo | M | — | I-07 | integrada (2026-07-17) |

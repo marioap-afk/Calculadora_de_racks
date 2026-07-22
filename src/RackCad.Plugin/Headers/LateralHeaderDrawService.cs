@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
@@ -233,8 +234,9 @@ namespace RackCad.Plugin.Headers
                     return string.IsNullOrWhiteSpace(name) ? "Corte" : name;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                RackLog.Exception("Leer nombre de bloque", ex);
                 return "Corte";
             }
         }

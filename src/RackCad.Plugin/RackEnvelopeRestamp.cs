@@ -1,4 +1,5 @@
 using System;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Plugin.KindHandlers;
 
@@ -48,10 +49,11 @@ namespace RackCad.Plugin
             {
                 return handler.RestampDesign(designJson, newId, copyName);
             }
-            catch
+            catch (Exception ex)
             {
                 // Best effort for a readable design whose store round-trip fails: keep the original JSON; the copy
                 // still gets its own GUID/envelope name. (Distinct from the missing-handler case above, which throws.)
+                RackLog.Exception("Re-estampar diseño interior de copia", ex);
             }
 
             return designJson;

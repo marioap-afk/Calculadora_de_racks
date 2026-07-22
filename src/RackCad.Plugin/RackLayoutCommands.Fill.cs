@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Geometry;
 using RackCad.Application.Layout;
 using RackCad.Application.Persistence;
@@ -240,9 +241,10 @@ namespace RackCad.Plugin
                             extents.MinPoint.X, extents.MinPoint.Y, width, depth,
                             entity is Circle ? "columna" : entity is BlockReference ? "bloque" : "obstáculo"));
                     }
-                    catch
+                    catch (System.Exception ex)
                     {
                         // Degenerate extents: skip the entity rather than fail the whole read.
+                        RackLog.Exception("Extents de un obstaculo (RACKRELLENAR)", ex);
                     }
                 }
 
@@ -294,8 +296,9 @@ namespace RackCad.Plugin
                                 var point = light.GetPointAtParameter(i + (double)k / Samples);
                                 raw.Add(new Point2D(point.X, point.Y));
                             }
-                            catch
+                            catch (System.Exception ex)
                             {
+                                RackLog.Exception("Muestreo de bulge de polilinea (RACKRELLENAR)", ex);
                                 break; // best effort: fall back to the plain vertices for this segment
                             }
                         }
@@ -418,8 +421,9 @@ namespace RackCad.Plugin
                 var extents = entity.GeometricExtents;
                 return (extents.MaxPoint.X - extents.MinPoint.X) * (extents.MaxPoint.Y - extents.MinPoint.Y);
             }
-            catch
+            catch (System.Exception ex)
             {
+                RackLog.Exception("Area de un obstaculo (RACKRELLENAR)", ex);
                 return 0.0;
             }
         }

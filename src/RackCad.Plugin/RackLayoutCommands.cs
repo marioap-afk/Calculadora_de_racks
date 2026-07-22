@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Layout;
 using RackCad.Application.Persistence;
 using RackCad.Plugin.KindHandlers;
@@ -200,8 +201,9 @@ namespace RackCad.Plugin
                     transaction.Commit();
                 }
             }
-            catch
+            catch (System.Exception ex)
             {
+                RackLog.Exception("Leer rack semilla para RACKLAYOUT", ex);
                 return false;
             }
 

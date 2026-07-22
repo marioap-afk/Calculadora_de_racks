@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Domain.Systems;
 using RackCad.Plugin.Headers;
@@ -20,6 +21,11 @@ namespace RackCad.Plugin
     {
         public static void Report(System.Exception ex)
         {
+            // I-03: keep the EXACT command-line message, but stop throwing away the stack trace — record the
+            // full exception (type + message + stack) to %AppData%\RackCad\logs so the failure is diagnosable
+            // after the fact. This also covers every "catch (ex) => Report(ex)" site across the command classes.
+            RackLog.Exception("RackCad command", ex);
+
             var document = AcApplication.DocumentManager.MdiActiveDocument;
             document?.Editor.WriteMessage("\nRackCad error: " + ex.Message);
         }
@@ -154,9 +160,10 @@ namespace RackCad.Plugin
                     transaction.Commit();
                 }
             }
-            catch
+            catch (System.Exception ex)
             {
                 // Best effort: no styles listed → the editor uses "(Automático)".
+                RackLog.Exception("Leer estilos de cota", ex);
             }
 
             names.Sort(System.StringComparer.OrdinalIgnoreCase);

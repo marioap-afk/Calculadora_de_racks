@@ -5,6 +5,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
 using RackCad.Plugin.Headers;
@@ -128,8 +129,9 @@ namespace RackCad.Plugin
             {
                 return handler.BuildBom(embed, catalog);
             }
-            catch
+            catch (System.Exception ex)
             {
+                RackLog.Exception("Construir BOM de un rack (payload ilegible)", ex);
                 return null;
             }
         }

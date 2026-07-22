@@ -6,6 +6,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Headers;
 
 namespace RackCad.Plugin.Headers
@@ -138,9 +139,10 @@ namespace RackCad.Plugin.Headers
                     LateralHeaderDrawer.PurgeUnreferenced(database, nestedDefs);
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Best effort: a leftover definition is preferable to failing the whole command here.
+                RackLog.Exception("Limpiar definiciones tras insercion cancelada", ex);
             }
         }
 

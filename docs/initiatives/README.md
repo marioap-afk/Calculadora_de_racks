@@ -43,6 +43,21 @@ Planes disponibles:
   `../automation/state/I-06.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
+- [`I-03-fallos-silenciosos.md`](I-03-fallos-silenciosos.md): contrato de I-03 (Fase 1, sin
+  dependencias; estorba con I-11, integrada). Hace diagnosticables los fallos silenciosos (P1/D2):
+  logger mínimo a `%AppData%\RackCad\logs` en `RackCad.Application.Diagnostics` (best-effort, nunca
+  lanza), `Report()` que registra el stack conservando el mensaje, los 14 `catch` silenciosos del
+  Plugin y los stores best-effort de Persistence que registran, escritura atómica (temp +
+  `File.Replace`) en los 4 stores (`RackProjectStore`/`RackFrameProjectStore`/`UserTemplateStore`/
+  `UserSettingsStore`) y carga que distingue archivo ausente de ilegible (`.bad` + registro). Cambio
+  **aditivo**: preserva I-11 (versiones, metadata, geometría, BOM, GUID), comandos, alias y mensajes
+  visibles. Fuera de alcance: rediseño UI, cambios de schema, reglas de producto, catálogos, telemetría
+  remota, I-17 y las lecturas tolerantes de embeds de I-11. La carga distingue **por excepción**
+  (`FileNotFoundException`/`DirectoryNotFoundException` → ausente silencioso; `JsonException` → cuarentena `.bad` +
+  log; cualquier otro fallo de lectura → log sin cuarentena), y `CorruptFile` registra el fallo secundario de
+  cuarentena. `requires_autocad: false`, `requires_owner_validation: false`. **Integrada en `main` el 2026-07-22**
+  (rebasada sobre `b60f142`, Merge I-17, reconciliando **sólo** documentación compartida; el código de I-03 e I-17
+  es disjunto salvo `RackFrameProjectStore.cs`, aditivo por ambos lados y auto-fusionado).
 - [`I-09-refactor-plugin-commands.md`](I-09-refactor-plugin-commands.md): contrato para partir
   `RackFrameCommands` por área, promover helpers de bloques/clonación/capas/transacciones y unificar
   el escaneo de envelopes triplicado, preservando comandos, geometría, BOM, persistencia y UX. Fuera
