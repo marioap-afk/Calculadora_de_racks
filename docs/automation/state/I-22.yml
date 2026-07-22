@@ -4,11 +4,11 @@ automation_state:
   branch: refactor/safety-placement
   claim_id: c6f3e810-b64e-43af-a72c-eaeb7a091430
   current_phase: 8
-  state: implementing
-  gate: none
+  state: review-ready
+  gate: autocad
   attempts: 1
-  next_action: cierre-de-4-defectos-de-revision-planes-fisicos-unicos-e6-tope-parrilla-separador-dto-reales-por-subtipo-golden-medio-frente-y-cuadruple-frontal-por-fondo-y-semantica-de-celdas-ausentes-cellcount-toggle
-  last_evidence_commit: 5e5b8508a500b9afbd36d4d68b271de2469b5751
+  next_action: validacion-del-dueno-en-autocad-el-refactor-de-4-defectos-cerrado-mantiene-diseno-resuelto-identico-por-equivalencia-golden-ampliada
+  last_evidence_commit: 98005e1f965f76571c6ce4c615571fbbf3f2443b
 execution_context:
   mode: manual-git-only
   worktree: I-22-safety-placement
@@ -16,15 +16,16 @@ execution_context:
 evidence:
   original_base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
   claim_commit: 0f39d9d02
-  code_tip: 5e5b8508a500b9afbd36d4d68b271de2469b5751
+  code_tip: 98005e1f965f76571c6ce4c615571fbbf3f2443b
   rebase: origin-main-no-avanzo-desde-9a895e4-merge-i20-sin-rebase
-  domain_application_tests: 941-verde-0-fallos-base-913-mas-28-de-i22-golden-configs-por-subtipo-y-4-servicios-de-colocacion
-  ui_tests: 151-verde-0-fallos-base-139-mas-7-selectionmatrix-celdas-ausentes-mas-5-caracterizacion-STA-de-adopcion-de-rejillas
+  domain_application_tests: 953-verde-0-fallos-base-941-mas-12-de-cierre-de-defectos-golden-medio-frente-y-cuadruple-mas-dto-por-subtipo-round-trip
+  ui_tests: 154-verde-0-fallos-base-151-mas-3-selectionmatrix-celdas-ausentes-cellcount-y-toggle
   build_ui_debug: 0-errores-0-advertencias-propias
   build_plugin_debug: 0-errores-solo-MSB3277-conocidos-de-autocad
   build_solution_debug: 0-errores-2-advertencias-solo-MSB3277-conocidos-del-plugin
   invariants: geometria-planes-bom-guid-identidad-persistencia-i11-catalogos-nombres-de-bloque-mensajes-seleccion-defaults-y-multivista-preservados-fijado-por-caracterizacion-golden-multiset-por-vista-mas-bom-y-round-trip-por-subtipo
-  scope: docs-i22-mas-application-persistence-mapping-por-familia-4-builders-orquestadores-resolver-troquel-4-servicios-nuevos-tarima-tope-parrilla-separador-mas-domain-selectivesafetyconfig-mas-ui-selectionmatrix-celdas-ausentes-y-3-rejillas-adoptadas-guia-tope-desviador-mas-pruebas
+  scope: docs-i22-mas-application-persistence-dto-reales-por-subtipo-tope-desviador-defensa-guia-parrilla-flatten-unflatten-contra-safetyselectiondocument-plano-mas-4-builders-orquestadores-consumen-planes-fisicos-unicos-separadorplan-topeplan-parrillaplan-cells-deckcells-resolver-troquel-mas-domain-selectivesafetyconfig-mas-ui-selectionmatrix-celdas-ausentes-cellcount-toggle-y-3-rejillas-adoptadas-guia-tope-desviador-mas-pruebas
+  defect_closure: cuatro-defectos-de-revision-cerrados-1-planes-fisicos-unicos-separador-tope-parrilla-lateral-planta-bom-los-consumen-frontal-de-tope-conserva-su-recorrido-por-contradiccion-objetiva-documentada-doblaria-geometria-en-pares-por-fondo-2-dto-reales-por-subtipo-con-from-todomain-writeinto-readfrom-sin-json-anidado-ni-conversores-3-golden-medio-frente-y-cuadruple-profundidad-frontal-por-cada-fondo-aplicable-5-baselines-previos-intactos-4-celdas-ausentes-cellcount-solo-presentes-toggle-en-ausente-no-reporta-cambio
   scope_guards: sin-cambios-en-assets-catalogos-deploy-github-rackcad-plugin-csproj-sln-directory-build-ni-dwg
   out_of_scope: i25-guardas-traseras-i18-push-back-editor-dinamico-rediseno-visual-reglas-de-producto-migraciones-adicionales-del-selectivo-parrilla-grid-contador-por-celda-defensa-formulario-por-poste-no-son-matriz-plana
 autocad_validation:
