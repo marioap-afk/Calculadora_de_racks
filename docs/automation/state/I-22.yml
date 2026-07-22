@@ -4,10 +4,10 @@ automation_state:
   branch: refactor/safety-placement
   claim_id: c6f3e810-b64e-43af-a72c-eaeb7a091430
   current_phase: 8
-  state: review-ready
-  gate: autocad
+  state: integration-ready
+  gate: none
   attempts: 2
-  next_action: validacion-del-dueno-en-autocad-tope-frontal-ahora-consume-el-plan-de-familia-selectivetopeplan-buildfrontal-diseno-resuelto-identico-por-golden-de-7-baselines
+  next_action: integracion-serializada-merge-no-ff-de-refactor-safety-placement-en-main-sobre-27ffdf3-tras-commit-documental-de-cierre-handoff-roadmap-e-indice-luego-limpieza-segura-de-rama-y-worktree
   last_evidence_commit: 3ce71394f8858cf600b1e28d042ecebc5ba6a7c2
 execution_context:
   mode: manual-git-only
@@ -31,11 +31,20 @@ evidence:
   scope_guards: sin-cambios-en-assets-catalogos-deploy-github-rackcad-plugin-csproj-sln-directory-build-ni-dwg
   out_of_scope: i25-guardas-traseras-i18-push-back-editor-dinamico-rediseno-visual-reglas-de-producto-migraciones-adicionales-del-selectivo-parrilla-grid-contador-por-celda-defensa-formulario-por-poste-no-son-matriz-plana
 autocad_validation:
-  status: pending
-  note: gate-abierto-requerido-el-refactor-toca-el-codigo-que-produce-las-piezas-de-seguridad-dibujadas-diseno-resuelto-identico-por-equivalencia-golden-dll-debug-en-worktree-i22-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll
+  status: approved
+  date: 2026-07-22
+  validator: owner
+  validated_code_commit: 3ce71394f8858cf600b1e28d042ecebc5ba6a7c2
+  dll_path: D--Documentos-Codex-Calculadora-de-racks-I-22-safety-placement/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
+  dll_sha256: 969580AE67EAC69C8018304F3A9DD963C7DDD77307D5A26E913C32CC1A31038C
+  autocad_version: 2025
+  evidence_path: docs/automation/evidence/I-22-autocad-validation.md
+  note: aprobado-sin-observaciones-listo-probe-todo-parece-estar-correcto-topes-parrillas-tarimas-separadores-bom-frontal-lateral-planta-medio-frente-y-multiples-fondos-actualizacion-y-vistas-ligadas-mismo-guid-persistencia-biblioteca-round-trip-y-rejillas-selectionmatrix
 owner_validation:
-  status: pending
-  note: gate-abierto-apariencia-e-interaccion-rejillas-guia-tope-desviador-adoptan-selectionmatrix-el-contenido-cabeceras-orden-off-cells-y-controles-auxiliares-se-conservan-el-estilo-de-la-rejilla-pasa-al-control-comun-i14
+  status: approved
+  date: 2026-07-22
+  validator: owner
+  note: aprobada-apariencia-e-interaccion-de-las-rejillas-selectionmatrix-tope-desviador-guia-identicas-contenido-cabeceras-orden-off-cells-y-controles-auxiliares-conservados-sin-observaciones
 decision_evidence:
   path: none
   resolved_gate: none
