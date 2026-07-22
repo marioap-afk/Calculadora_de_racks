@@ -343,3 +343,21 @@ Toda esta lista quedó cerrada en el batch de quick wins + higiene:
 - ✅ `FindTreeViewItem` solo expande la ruta al ítem objetivo (restaura ramas colapsadas).
 - ✅ Los puntos de conexión del grid de paneles ya eran ComboBox (`ConnectionPointOptions`) — el ítem estaba obsoleto.
 - ✅ Se avisa cuando la cabecera de un poste queda MÁS BAJA que el nivel de carga superior.
+
+### I-22 — hallazgos adyacentes (2026-07-22, registrados sin corregir)
+
+- **Rejilla de parrilla y de defensa sin `SelectionMatrix`**: I-22 adoptó `SelectionMatrix` en las tres
+  rejillas frente/poste × nivel plano-on/off del editor selectivo (guía, tope, desviador). La de
+  **parrilla** conserva su diálogo propio porque muestra un **contador vivo por celda** (cuántos decks
+  caben), y la de **defensa** porque es un **formulario por poste** (dos toggles + dos longitudes), no una
+  matriz plana on/off. Adoptarlas exigiría extender `SelectionMatrix` con contenido/adorno por celda
+  (parrilla) o no aplica (defensa). Fuera de alcance de I-22; candidato a una iniciativa de UI posterior.
+- **Accesos planos delegados en `SelectiveSafetySelection`**: la descomposición por subtipo (E7) conserva
+  las propiedades planas (`TopeSaque`, `ParrillaFrente`, …) como accesos delegados a las configs para no
+  tocar los consumidores restantes (UI y pruebas) ni el formato de alambre. Migrar esos consumidores a
+  `selection.Tope.*`/`selection.Parrilla.*` y retirar los accesos planos es un barrido mecánico posterior.
+- **"Pulgada par" vs paso de troquel**: `SelectiveDesviadorPlan.IsValidEvenAbove8` (`% 2`) y el consejo de
+  la nota del desviador (`floor(claro/2)*2`) usan 2" como "pulgada par", concepto distinto del paso de
+  troquel de rejilla (`SelectiveRackDefaults.TroquelPaso`, que I-22 unificó en los 5 snaps). Se dejaron sin
+  enrutar a la constante a propósito (no son snaps de rejilla); si el paso de troquel dejara de ser 2",
+  habría que revisar si estos deben seguirlo.

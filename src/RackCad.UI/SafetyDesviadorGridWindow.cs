@@ -8,13 +8,16 @@ using System.Windows.Media;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI
 {
-    /// <summary>Configures the DESVIADOR post × load-level grid and its two even dimensions.</summary>
+    /// <summary>Configures the DESVIADOR post × load-level grid and its two even dimensions. The grid is the shared
+    /// <see cref="SelectionMatrix"/> control (I-22) with absent cells for the jagged posts; toggling a cell still
+    /// recomputes the live clearance note through the model's granular events.</summary>
     public sealed class SafetyDesviadorGridWindow : Window
     {
-        private readonly CheckBox[][] cells;
+        private readonly SelectionMatrixModel model;
         private readonly IReadOnlyList<int> levelsPerPost;
         private readonly ComboBox side;
         private readonly TextBox longitud;
@@ -70,9 +73,13 @@ namespace RackCad.UI
                 ? plan.LevelCounts
                 : FallbackCounts(fallbackPostCount, fallbackLevelsPerFrente, fallbackLevelsArePerPost);
 
-            var off = SelectiveSafetyGrid.OffCellKeys(offCells);
             var posts = levelsPerPost.Count;
             var maxLevels = posts > 0 ? levelsPerPost.Max() : 0;
+            model = SelectionMatrixModel.WithJaggedColumns(
+                levelsPerPost,
+                (offCells ?? Enumerable.Empty<SelectiveGridCell>())
+                    .Where(cell => cell != null)
+                    .Select(cell => new SelectionMatrixCell(cell.Frente, cell.Level)));
 
             Title = string.IsNullOrWhiteSpace(label) ? "Desviador" : label;
             Width = Math.Max(560, Math.Min(1000, 270 + posts * 46));
@@ -133,9 +140,9 @@ namespace RackCad.UI
 
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 12, 0, 0) };
             var all = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Todos", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
-            all.Click += (s, e) => SetAll(true);
+            all.Click += (s, e) => model.SetAll(true);
             var none = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Ninguno", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
-            none.Click += (s, e) => SetAll(false);
+            none.Click += (s, e) => model.SetAll(false);
             var ok = new Button { Style = TryFindResource("PrimaryButtonStyle") as Style, Content = "Aceptar", Padding = new Thickness(16, 3, 16, 3), IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
             ok.Click += (s, e) => OnOk();
             var cancel = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Cancelar", Padding = new Thickness(10, 3, 10, 3), IsCancel = true };
@@ -153,74 +160,24 @@ namespace RackCad.UI
             DockPanel.SetDock(error, Dock.Bottom);
             root.Children.Add(error);
 
-            cells = new CheckBox[posts][];
-            for (var p = 0; p < posts; p++) cells[p] = new CheckBox[levelsPerPost[p]];
-
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(82) });
-            for (var p = 0; p < posts; p++) grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(44) });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            for (var level = 0; level < maxLevels; level++) grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            for (var p = 0; p < posts; p++)
+            // ---- The grid: columns = posts, rows = load levels (highest at top), via the shared control. Toggling a
+            // cell or changing a dimension recomputes the clearance note through the model's granular events. ----
+            var matrix = new SelectionMatrix
             {
-                var head = new TextBlock
-                {
-                    Text = "P" + (p + 1).ToString(CultureInfo.InvariantCulture),
-                    FontWeight = FontWeights.SemiBold,
-                    FontSize = 11,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(0, 0, 0, 4)
-                };
-                Grid.SetRow(head, 0);
-                Grid.SetColumn(head, p + 1);
-                grid.Children.Add(head);
-            }
-
-            for (var level = maxLevels - 1; level >= 0; level--)
-            {
-                var row = maxLevels - level;
-                var labelText = level == 0 ? "Nivel 1 (piso)" : "Nivel " + (level + 1).ToString(CultureInfo.InvariantCulture);
-                var levelLabel = new TextBlock { Text = labelText, FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
-                Grid.SetRow(levelLabel, row);
-                Grid.SetColumn(levelLabel, 0);
-                grid.Children.Add(levelLabel);
-
-                for (var p = 0; p < posts; p++)
-                {
-                    if (level >= levelsPerPost[p]) continue;
-                    var check = new CheckBox
-                    {
-                        IsChecked = !off.Contains((p, level)),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(0, 2, 0, 2)
-                    };
-                    check.Click += (s, e) => RefreshNote();
-                    Grid.SetRow(check, row);
-                    Grid.SetColumn(check, p + 1);
-                    grid.Children.Add(check);
-                    cells[p][level] = check;
-                }
-            }
+                Model = model,
+                InvertRows = true,
+                ColumnHeaders = Enumerable.Range(0, posts)
+                    .Select(p => "P" + (p + 1).ToString(CultureInfo.InvariantCulture)).ToArray(),
+                RowHeaders = Enumerable.Range(0, maxLevels)
+                    .Select(level => level == 0 ? "Nivel 1 (piso)" : "Nivel " + (level + 1).ToString(CultureInfo.InvariantCulture)).ToArray()
+            };
+            model.CellChanged += (s, e) => RefreshNote();
+            model.BulkChanged += (s, e) => RefreshNote();
 
             this.longitud.TextChanged += (s, e) => RefreshNote();
             this.firstHeight.TextChanged += (s, e) => RefreshNote();
-            root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Content = grid });
+            root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Content = matrix });
             Content = root;
-            RefreshNote();
-        }
-
-        private void SetAll(bool on)
-        {
-            foreach (var column in cells)
-            {
-                foreach (var check in column)
-                {
-                    if (check != null) check.IsChecked = on;
-                }
-            }
-
             RefreshNote();
         }
 
@@ -251,14 +208,16 @@ namespace RackCad.UI
                       + "\". " + advice;
         }
 
-        private void OnOk()
+        /// <summary>Builds the config from the current controls and grid, or null when a dimension is invalid (the
+        /// error is shown). Shared by OK and the tests, which cannot set <see cref="Window.DialogResult"/>.</summary>
+        internal DesviadorResult BuildResult()
         {
             if (!TryDimensions(out var length, out var first, showError: true))
             {
-                return;
+                return null;
             }
 
-            Result = new DesviadorResult
+            return new DesviadorResult
             {
                 Side = SelectedSide(),
                 Longitud = length,
@@ -266,6 +225,17 @@ namespace RackCad.UI
                 LevelCounts = levelsPerPost.ToList(),
                 OffCells = CurrentOffCells()
             };
+        }
+
+        private void OnOk()
+        {
+            var result = BuildResult();
+            if (result == null)
+            {
+                return;
+            }
+
+            Result = result;
             DialogResult = true;
         }
 
@@ -291,22 +261,15 @@ namespace RackCad.UI
             return true;
         }
 
-        private List<SelectiveGridCell> CurrentOffCells()
-        {
-            var result = new List<SelectiveGridCell>();
-            for (var post = 0; post < cells.Length; post++)
-            {
-                for (var level = 0; level < cells[post].Length; level++)
-                {
-                    if (cells[post][level] != null && cells[post][level].IsChecked != true)
-                    {
-                        result.Add(new SelectiveGridCell { Frente = post, Level = level });
-                    }
-                }
-            }
+        /// <summary>The disabled (post, level) cells for the current grid state. In a desviador off-cell the
+        /// <see cref="SelectiveGridCell.Frente"/> holds the post index. A test seam too (I-22, InternalsVisibleTo).</summary>
+        internal List<SelectiveGridCell> CurrentOffCells()
+            => model.UnselectedCells()
+                .Select(cell => new SelectiveGridCell { Frente = cell.Column, Level = cell.Row })
+                .ToList();
 
-            return result;
-        }
+        /// <summary>The working matrix state — a test seam (I-22, InternalsVisibleTo).</summary>
+        internal SelectionMatrixModel Model => model;
 
         private SelectiveSafetySelection WorkingSelection(
             double length,

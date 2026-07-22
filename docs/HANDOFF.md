@@ -268,6 +268,38 @@ validación en AutoCAD (`requires_autocad: false`) ni owner-validation (`require
 (`docs/initiatives/README.md`: se conservan íntegras las entradas de I-05 e I-24). La rama se integra por
 `git merge --no-ff` en esta sesión.
 
+**I-22** (`refactor/safety-placement`) salda los hallazgos **E6** y **E7** de la auditoría 2026-07 sobre la
+**seguridad del selectivo**, **sin cambio de comportamiento observable** (fijado por caracterización **golden**:
+multiset de instancias Safety/Tope/Separator/Pallet en frontal/lateral/planta + el BOM de seguridad, en 7
+escenarios que incluyen medio frente y cuádruple profundidad). Cuatro entregas: (1) **servicios/planes puros de
+colocación por familia parametrizados por vista** —`SelectiveTopePlan` (topes físicos por spot + su resultado
+**frontal** propio `BuildFrontal`), `SelectiveTarimaPlacement`, `SelectiveSeparadorPlan`, y la unificación del
+consumo de `SelectiveParrillaPlan` (`Cells`/`DeckCells`)— con los builders frontal/lateral/planta y el BOM como
+**orquestadores** (mueren las travesías duplicadas por vista `TallyByTramo`/`ParrillaExistsAt` y las fórmulas
+copiadas de subida-y-snap); la regla de cada familia vive en **un solo sitio**. (2) **Descomposición por subtipo**:
+`SelectiveSafetySelection` compone `SelectiveTopeConfig`/`SelectiveDesviadorConfig`/`SelectiveParrillaConfig`/
+`SelectiveDefensaConfig`/`SelectiveGuiaConfig` (cada una con `DeepCopy` propio; las propiedades planas se conservan
+como accesos delegados), y la persistencia mapea con **DTO reales por familia** (`SafetySelectionDocuments.cs`,
+`From`/`ToDomain`/`WriteInto`/`ReadFrom`) que **aplanan/desaplanan** contra el `SafetySelectionDocument` **plano**
+—el formato de alambre queda **byte-idéntico** (compartido con la ruta dinámica), sin JSON anidado ni convertidores,
+con fallback legacy y round-trip por subtipo. (3) **Paso de troquel único**: los 5 sitios que hardcodeaban `2.0`
+como snap referencian `SelectiveRackDefaults.TroquelPaso` (mismo valor, mismo resultado). (4) **Adopción de
+`SelectionMatrix`** (I-14) con soporte de **celda ausente** (rejillas dentadas; `CellCount` cuenta solo presentes,
+`Toggle` sobre ausente no reporta cambio) por las rejillas **tope/desviador/guía-entrada**, conservando idénticos
+contenido, cabeceras, orden, off-cells y controles auxiliares. El **frontal de tope** conserva su naturaleza
+esquemática por frente: `BuildFrontal` resuelve su intención pura (celdas activas, niveles, tramos cargados,
+offsets, longitud+allowance, Y fuente del snap) como un resultado **distinto** de los spots físicos —no los
+proyecta, para no duplicar en pares por fondo—, y `AddTopes` solo proyecta la vista. **No** cambia geometría,
+planes, BOM, GUID, identidad, inserción/actualización, persistencia ni metadatos **I-11**, catálogos, nombres de
+bloque, mensajes, selección, defaults, interacción visible ni comportamiento multivista; **fuera de alcance** I-25
+(guardas traseras), Push Back/I-18, el editor **dinámico**, el rediseño visual y las reglas de producto (parrilla
+con contador por celda y defensa por poste **no** se fuerzan a matriz plana). Alineada con `ARCHITECTURE.md`
+§7.3-7.4 (servicios de colocación por familia/vista; configuraciones de seguridad por subtipo con DTO propio).
+**Rebasada dos veces sobre el trunk vigente** (`9a895e4`→`a50c4ec` Merge I-05→`27ffdf3` Merge I-24) reconciliando
+**sólo** documentación compartida (índice de iniciativas; `ideas-futuras` auto-fusionado); I-05 e I-24 tocan código
+**disjunto** de I-22. El dueño **aprobó la validación en AutoCAD 2025 y la owner-validation sin observaciones**
+(§2 y §5). La rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -385,6 +417,20 @@ aviso; geometría, BOM, GUID, capas, persistencia y round-trip **idénticos**. L
 [`automation/decisions/I-05.md`](automation/decisions/I-05.md). `origin/main` no avanzó desde `9a895e4`, así que
 la validación se conserva (WORKFLOW §6): sin rebase.
 
+I-22 (`refactor/safety-placement`) **sí** requiere validación en AutoCAD (`requires_autocad: true`) porque el
+refactor toca el código que produce las piezas de seguridad dibujadas (aunque el diseño resuelto es idéntico por
+construcción y queda fijado por la equivalencia golden). El dueño cargó por `NETLOAD` el DLL Debug del worktree
+I-22 (código validado `3ce7139`, SHA-256 `969580AE…038C`;
+`…-I-22-safety-placement\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en AutoCAD 2025 y
+**aprobó sin observaciones** («Listo, probé todo, parece estar correcto»): geometría y colocación de topes,
+parrillas, tarimas, separadores y elementos relacionados; BOM; vistas frontal/lateral/planta; medio frente y
+múltiples fondos; actualización y vistas ligadas con conservación del **mismo GUID**; persistencia, biblioteca y
+round-trip; y la **apariencia e interacción** de las rejillas `SelectionMatrix` (tope/desviador/guía). La
+**owner-validation** quedó **aprobada** (`requires_owner_validation: true`); registro en
+[`automation/evidence/I-22-autocad-validation.md`](automation/evidence/I-22-autocad-validation.md). `origin/main`
+está en `27ffdf3` (Merge I-24) y no avanzó desde que la rama quedó rebasada sobre esa punta, así que la validación
+se conserva (WORKFLOW §6): sin rebase adicional.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -432,22 +478,80 @@ validador de catálogos. La **pista C de UI** entrega ya **cuatro** eslabones: l
 coalescida e inserción vía `RackEditorSession`; menú y biblioteca por `EditorModuleRegistry`) y la
 **extracción del estado** de los editores **dinámico** (I-21: `DynamicFrontMatrix`/`DynamicEditorDesignAssembler`)
 y **selectivo** (I-20: `SelectiveEditorState`) a Application, dejando ambas ventanas observando su estado y
-pintando. El siguiente paso natural es **I-22** (`refactor/safety-placement`, orden fijo tras I-20 —ahora
-**desbloqueada**—) e **I-18 (Push Back)**, que ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y
-solo espera los **bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su
-worktree ya reclamado. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada**: la
+pintando. Con **I-22** (`refactor/safety-placement`) **integrada en esta sesión** (colocación de seguridad del
+selectivo; detalle abajo), el siguiente paso natural es **I-25** (`feature/guardas-traseras`, sobre I-22) e
+**I-18 (Push Back)**, que ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y solo espera los **bloques
+DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada**: la
 **guardia de unidades** avisa cuando el dibujo no está en pulgadas, **sin conversión ni reescalado** (ADR-0005
 aceptado); no desbloquea ni estorba ninguna otra iniciativa. **I-24** (`refactor/ui-tests-editores`, Fase 5) queda
 **integrada** en esta sesión: **pruebas de editores** en `tests/RackCad.UI.Tests` (ViewModels + límites reales de
 las ventanas por handlers WPF reales; **29** nuevas, 139→168 UI) más un **único seam interno** de prueba, **sin
-cambio de comportamiento**; cierra el hallazgo U3 de la pista de UI. **I-22** (`refactor/safety-placement`) sigue
-siendo el siguiente paso natural (orden fijo tras I-20), junto con **I-18 (Push Back)**.
+cambio de comportamiento**; cierra el hallazgo U3 de la pista de UI. **I-22** (`refactor/safety-placement`, Fase 5)
+queda **integrada** en esta sesión: salda **E6/E7** de la seguridad del selectivo (planes/servicios de colocación
+por familia, configuraciones y DTO por subtipo, paso de troquel único y adopción de `SelectionMatrix`), **sin
+cambio de comportamiento** (7 golden idénticos; AutoCAD + owner-validation aprobadas). Con I-22 integrada, el
+siguiente paso natural pasa a ser **I-25** (`feature/guardas-traseras`, última familia de seguridad construida
+sobre I-22, **ahora desbloqueada**) e **I-18 (Push Back)** (solo espera los **bloques DWG del dueño**); **I-23**
+cierra la Fase 5 al final (depende de todas).
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-22 — 2026-07-22:**
+
+- punta de **código** validada por CI y por el dueño (AutoCAD): `3ce71394f8858cf600b1e28d042ecebc5ba6a7c2`
+  (ancestro de la punta publicada `1e78b2c`; CI run `29944500977` sobre `1e78b2c`, **cuatro jobs verdes**); los
+  commits posteriores a `3ce7139` son **solo documentales** (registro de la validación + este cierre de
+  integración) y **no cambian código**; el commit documental final recibe su propio CI verde antes del merge; este
+  documento **no inventa** el SHA del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` **avanzó dos veces** durante el ciclo de I-22 (`9a895e4` Merge I-20 → **`a50c4ec`** Merge I-05 →
+  **`27ffdf3`** Merge I-24): la rama quedó **rebasada** sobre la punta vigente `27ffdf3` (merge-base = `origin/main`,
+  **0 commits detrás**); la reconciliación fue **exclusivamente documental** (índice de iniciativas;
+  `ideas-futuras` auto-fusionado); I-05 (guardia de unidades en el Plugin) e I-24 (pruebas de UI + seam dinámico)
+  tocan código **disjunto** de I-22, **cero solapamiento**, por lo que la validación en AutoCAD **se conserva**
+  (WORKFLOW §6); la rama se integra por `git merge --no-ff`;
+- suite `RackCad.Tests`: **981/981 verdes** (incluye la caracterización **golden** de 7 baselines —multiset
+  frontal/lateral/planta + BOM, con medio frente y cuádruple profundidad—, los planes/DTO por familia, el
+  round-trip por subtipo y **5 nuevas** de `SelectiveTopePlan.BuildFrontal`; sin regresión); suite
+  `RackCad.UI.Tests`: **183/183 verdes** (154 de I-22 —adopción de rejillas + celdas ausentes— coexistiendo con las
+  **29** de I-24 tras el rebase; sin regresión);
+- build UI Debug: **0 errores y 0 advertencias propias**; builds Plugin y solución completa Debug: **0 errores**,
+  únicamente las dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre `1e78b2c` (run `29944500977`) y re-verde sobre el **commit documental final** antes del
+  merge (los **cuatro** jobs —Tests (Domain+Application), Build UI, UI Tests (WPF controls, net8.0-windows) y Build
+  Plugin without AutoCAD— en `success`);
+- objetivo entregado (E6/E7 de la seguridad del selectivo): **planes/servicios puros de colocación por familia**
+  parametrizados por vista (`SelectiveTopePlan` con su resultado **frontal** propio `BuildFrontal`,
+  `SelectiveTarimaPlacement`, `SelectiveSeparadorPlan`, unificación de `SelectiveParrillaPlan` `Cells`/`DeckCells`)
+  con los builders y el BOM como orquestadores (mueren `TallyByTramo`/`ParrillaExistsAt` y las fórmulas copiadas de
+  subida-y-snap); **configuraciones por subtipo** (`SelectiveSafetyConfig`) con `DeepCopy` propio y **DTO reales por
+  familia** (`SafetySelectionDocuments.cs`) que aplanan/desaplanan contra el `SafetySelectionDocument` **plano**
+  (wire format byte-idéntico, fallback legacy, round-trip por subtipo); **paso de troquel único**
+  (`SelectiveRackDefaults.TroquelPaso` en los 5 sitios); y **adopción de `SelectionMatrix`** con **celda ausente**
+  (`CellCount`/`Toggle`) por las rejillas tope/desviador/guía;
+- validación manual: AutoCAD **requerido** (`requires_autocad: true`) y **aprobado** por el dueño sin observaciones
+  («Listo, probé todo, parece estar correcto»): topes/parrillas/tarimas/separadores y elementos relacionados; BOM;
+  frontal/lateral/planta; medio frente y múltiples fondos; actualización y vistas ligadas con el **mismo GUID**;
+  persistencia/biblioteca/round-trip; y **apariencia e interacción** de las rejillas `SelectionMatrix`;
+  **owner-validation aprobada**; DLL Debug del worktree I-22 (código `3ce7139`, **SHA-256**
+  `969580AE67EAC69C8018304F3A9DD963C7DDD77307D5A26E913C32CC1A31038C`); evidencia en
+  [`automation/evidence/I-22-autocad-validation.md`](automation/evidence/I-22-autocad-validation.md);
+- invariantes preservados: **sin** cambios de geometría, coordenadas, planes, BOM, GUID, identidad, inserción/
+  actualización, persistencia ni metadatos **I-11**, catálogos, nombres de bloque, mensajes, selección, defaults,
+  interacción visible ni comportamiento multivista (fijado por los **7 golden idénticos**); el **formato serializado**
+  permanece byte-idéntico; catálogos, `deploy/`, workflows, `.csproj`, `.sln` y DWG **intactos**; **sin** dependencias
+  NuGet nuevas; dirección de dependencias intacta (Application no referencia UI/AutoCAD);
+- alcance: `src/RackCad.Application/Systems/Selective{TopePlan,TarimaPlacement,SeparadorPlan,SeparadorPlacement,
+  ParrillaPlan,ParrillaPlacement,FrontalBuilder,LateralBuilder,PlantaBuilder,BomBuilder,GeometryResolver,TopePlacement}.cs`,
+  `src/RackCad.Application/Persistence/{SafetySelectionDocuments,SelectivePalletDesignDocument}.cs`,
+  `src/RackCad.Domain/Systems/{SelectivePalletDesign,SelectiveSafetyConfig}.cs`,
+  `src/RackCad.UI/Controls/SelectionMatrix{,Model}.cs` + `Safety{Tope,Desviador,GuiaEntrada}GridWindow.cs`, más las
+  pruebas (`SelectiveSafetyEquivalenceTests` +2 golden, `SafetySelectionDocumentsTests`, `SelectiveSafetyConfigTests`,
+  `Selective{Tope,Tarima,Separador,Parrilla}PlacementTests`, `SelectiveTopePlanFrontalTests`,
+  `SelectionMatrixAbsentCellTests`, `SafetyGridAdoptionTests`) y contrato/estado/evidencia/índice de I-22.
 
 **Baseline integrada de I-05 — 2026-07-22:**
 

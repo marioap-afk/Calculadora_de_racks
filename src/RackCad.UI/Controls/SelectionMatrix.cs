@@ -145,6 +145,11 @@ namespace RackCad.UI.Controls
                 {
                     var column = c;
                     var row = r;
+                    if (model.IsAbsent(column, row))
+                    {
+                        continue; // a jagged column's empty top slot: draw no check box (cells[.,.] stays null)
+                    }
+
                     var checkbox = new CheckBox
                     {
                         IsChecked = model[column, row],

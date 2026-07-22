@@ -151,7 +151,7 @@ namespace RackCad.Application.Systems
             }
 
             SelectiveDesviadorDrawing.AppendFrontal(instances, system, catalog, view);
-            AddTopes(instances, system, catalog, postX, layout, view);
+            AddTopes(instances, system, catalog, postX, view);
             AddTarimas(instances, system, catalog, postX, layout, view, CachedBlock);
             AddParrillas(instances, system, catalog, postX, layout, view);
             AddAnnotations(instances, system, view, postX);
@@ -176,7 +176,7 @@ namespace RackCad.Application.Systems
         /// A "medio frente" bay draws a tope per LOADED tramo — its own length, at that tramo's left post — like the
         /// largueros and tarimas do (the tope must sit over the larguero it stops, not span the whole split bay).
         /// </summary>
-        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, SelectivePostLayout layout, string view)
+        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, string view)
         {
             var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, view, SelectiveSafetyPlacement.TopeType);
             if (topes.Count == 0)
@@ -185,51 +185,40 @@ namespace RackCad.Application.Systems
             }
 
             var tope = topes[0];
-            var selection = tope.Selection;
-            if (!selection.TopeFrontal)
+            if (!tope.Selection.TopeFrontal)
             {
                 return; // the frontal is an opt-in toggle (lateral + planta always draw the tope)
             }
 
-            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, view);
-            var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
-            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
-            const double paso = 2.0;
-
-            for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
+            // The per-frente intent (active cells, levels, loaded tramos, offsets, longitudes and each tope's source
+            // larguero Y) is resolved ONCE in the family service (I-22, E6). This builder keeps only the view projection:
+            // the catalogued troquel point + peralte, the rise-and-snap Y, absolute coords and the instance.
+            var frontal = SelectiveTopePlan.BuildFrontal(system, catalog);
+            if (frontal.Count == 0)
             {
-                var bay = system.Bays[i];
-                if (bay.BeamLength <= 0.0)
+                return;
+            }
+
+            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, view);
+            var saque = SelectiveTopePlacement.Saque(tope.Selection);
+            const double paso = SelectiveRackDefaults.TroquelPaso; // single source for the troquel pitch (I-22)
+
+            foreach (var cell in frontal)
+            {
+                if (cell.Frente >= postX.Count)
                 {
-                    continue;
+                    continue; // beyond the drawn posts
                 }
 
-                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
+                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, cell.Frente) };
                 var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
 
-                var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
-                var tramos = SelectiveMedioFrente.Resolve(bay, layout.TroquelXs[i], inicioX);
-
-                for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+                foreach (var t in cell.Topes)
                 {
-                    if (offCells.Contains((i, lvl)))
-                    {
-                        continue; // this (frente, level) cell is off
-                    }
-
-                    var y = troquel.Y + Math.Round((bay.Levels[lvl].Y + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
-
-                    if (tramos == null)
-                    {
-                        PlaceTope(instances, tope.PieceId, tope.Block, view, postX[i] + troquel.X, y, bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance, saque);
-                        continue;
-                    }
-
-                    foreach (var tramo in tramos)
-                    {
-                        if (!tramo.Loaded) continue;
-                        PlaceTope(instances, tope.PieceId, tope.Block, view, postX[i] + tramo.StartOffset + troquel.X, y, tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance, saque);
-                    }
+                    var y = SelectiveTopePlacement.SnapY(troquel.Y, t.SourceY, paso);
+                    instances.Add(SelectiveTopePlacement.Tope(
+                        tope.PieceId, tope.Block, view,
+                        postX[cell.Frente] + t.StartOffset + troquel.X, y, saque, longitud: t.Longitud));
                 }
             }
         }
@@ -258,39 +247,24 @@ namespace RackCad.Application.Systems
             var overrideCount = parrilla.Selection.ParrillaCantidad;
             var offCells = SelectiveSafetyGrid.OffCellKeys(parrilla.Selection.ParrillaOffCells);
 
-            for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
+            // Consume the shared per-(frente, level) load-row plan (it did the medio-frente traversal once, I-22 E6);
+            // project each row as a deck row at the layout X + the row's tramo offset.
+            foreach (var cell in SelectiveParrillaPlan.Cells(system, catalog))
             {
-                var bay = system.Bays[i];
-                if (bay.BeamLength <= 0.0)
+                if (cell.Frente >= postX.Count || offCells.Contains((cell.Frente, cell.Level)))
                 {
-                    continue;
+                    continue; // beyond the drawn posts, or this (frente, level) cell has no deck
                 }
 
-                var troquelX = layout.TroquelXs[i];
+                var bay = system.Bays[cell.Frente];
+                var level = bay.Levels[cell.Level];
                 var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
-                var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
+                var baseX = postX[cell.Frente] + layout.TroquelXs[cell.Frente] + inicioX;
+                var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
 
-                for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+                foreach (var row in cell.Rows)
                 {
-                    if (offCells.Contains((i, lvl)))
-                    {
-                        continue; // this (frente, level) cell has no deck
-                    }
-
-                    var level = bay.Levels[lvl];
-                    var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
-
-                    if (tramos == null)
-                    {
-                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + troquelX + inicioX, bay.BeamLength, surfaceY, level, overrideFrente, overrideCount, fitToSpan: false);
-                        continue;
-                    }
-
-                    foreach (var tramo in tramos)
-                    {
-                        if (!tramo.Loaded) continue;
-                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + tramo.StartOffset + troquelX + inicioX, tramo.Length, surfaceY, level, overrideFrente, overrideCount, fitToSpan: true);
-                    }
+                    PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, baseX + row.StartOffset, row.Span, surfaceY, level, overrideFrente, overrideCount, row.FitToSpan);
                 }
             }
         }
@@ -301,27 +275,7 @@ namespace RackCad.Application.Systems
         private static void PlaceParrillaRow(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double anchorX, double span, double bottomY, SelectiveLevel level, double overrideFrente, int overrideCount, bool fitToSpan)
         {
             var (frente, count) = ParrillaRow(span, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan);
-            if (frente <= 0.0 || count <= 0)
-            {
-                return;
-            }
-
-            var gap = Math.Max(0.0, (span - count * frente) / (count + 1));
-            for (var k = 0; k < count; k++)
-            {
-                var at = new Point2D(anchorX + gap * (k + 1) + frente * k, bottomY); // the deck's bottom-left corner
-                var instance = new HeaderBlockInstance
-                {
-                    Role = HeaderBlockRole.Safety,
-                    PieceId = pieceId,
-                    BlockName = block,
-                    View = view,
-                    Insertion = at,
-                    ConnectionAnchor = at
-                };
-                instance.DynamicParameters[SelectiveSafetyPlacement.ParrillaFrenteParam] = frente;
-                instances.Add(instance);
-            }
+            SelectiveParrillaPlacement.AppendRow(instances, pieceId, block, view, anchorX, span, bottomY, frente, count, SelectiveSafetyPlacement.ParrillaFrenteParam);
         }
 
         /// <summary>
@@ -353,54 +307,6 @@ namespace RackCad.Application.Systems
             }
 
             return palletCount > 0 ? (frente, fitToSpan ? fit : palletCount) : (0.0, 0);
-        }
-
-        /// <summary>Whether ANY deck lands on <paramref name="bay"/>'s <paramref name="level"/> — the same rule the frontal
-        /// draw and the BOM count use (<see cref="ParrillaRow"/>, per loaded tramo in a medio frente). The LATERAL gates on
-        /// this too: it collapses the row end-on to ONE deck, so it must still ask whether the row exists at all, or a level
-        /// the frontal and the BOM leave empty (a manual frente wider than the claro, or a tarima that fits no tramo) grows
-        /// a phantom deck in the corte.</summary>
-        internal static bool ParrillaExistsAt(SelectiveBay bay, SelectiveLevel level, double troquelX, double inicioX, double overrideFrente, int overrideCount)
-        {
-            if (bay == null || level == null)
-            {
-                return false;
-            }
-
-            var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
-            if (tramos == null)
-            {
-                return ParrillaRow(bay.BeamLength, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan: false).count > 0;
-            }
-
-            foreach (var tramo in tramos)
-            {
-                if (tramo.Loaded && ParrillaRow(tramo.Length, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan: true).count > 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>One larguero-tope block at (<paramref name="x"/>, <paramref name="y"/>) with LONGITUD =
-        /// <paramref name="longitud"/> and the SAQUE stick-out.</summary>
-        private static void PlaceTope(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double x, double y, double longitud, double saque)
-        {
-            var at = new Point2D(x, y);
-            var instance = new HeaderBlockInstance
-            {
-                Role = HeaderBlockRole.Tope,
-                PieceId = pieceId,
-                BlockName = block,
-                View = view,
-                Insertion = at,
-                ConnectionAnchor = at
-            };
-            instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = longitud;
-            instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-            instances.Add(instance);
         }
 
         /// <summary>Text labels when the toggles are on: a number centered under each frente (bay), a number to the
@@ -481,7 +387,7 @@ namespace RackCad.Application.Systems
                     // Normal full bay: the design's counts drive the rows across the whole profile.
                     if (bay.FloorPalletCount > 0 && bay.FloorPalletFrente > 0.0)
                     {
-                        PlacePalletRow(instances, palletBlock, view, profileX, bay.BeamLength, 0.0,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, profileX, bay.BeamLength, 0.0,
                             bay.FloorPalletFrente, bay.FloorPalletAlto, bay.FloorPalletCount);
                     }
 
@@ -493,7 +399,7 @@ namespace RackCad.Application.Systems
                         }
 
                         var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
-                        PlacePalletRow(instances, palletBlock, view, profileX, bay.BeamLength, surfaceY,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, profileX, bay.BeamLength, surfaceY,
                             level.PalletFrente, level.PalletAlto, level.PalletCount);
                     }
 
@@ -513,7 +419,7 @@ namespace RackCad.Application.Systems
                     var floorFit = PalletFit(tramo.Length, bay.FloorPalletFrente);
                     if (bay.FloorPalletCount > 0 && floorFit > 0)
                     {
-                        PlacePalletRow(instances, palletBlock, view, tramoX, tramo.Length, 0.0,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, tramoX, tramo.Length, 0.0,
                             bay.FloorPalletFrente, bay.FloorPalletAlto, floorFit);
                     }
 
@@ -526,7 +432,7 @@ namespace RackCad.Application.Systems
                         }
 
                         var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
-                        PlacePalletRow(instances, palletBlock, view, tramoX, tramo.Length, surfaceY,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, tramoX, tramo.Length, surfaceY,
                             level.PalletFrente, level.PalletAlto, fit);
                     }
                 }
@@ -537,34 +443,6 @@ namespace RackCad.Application.Systems
         /// non-positive or wider than the span). Used for medio-frente tramos and the parrilla row fit.</summary>
         internal static int PalletFit(double span, double frente)
             => frente > 0.0 && frente <= span ? (int)Math.Floor(span / frente) : 0;
-
-        /// <summary>Distribute <paramref name="count"/> pallets of width <paramref name="frente"/> evenly across
-        /// [<paramref name="anchorX"/>, +<paramref name="span"/>] resting at <paramref name="bottomY"/> (the pallet's
-        /// bottom). The TARIMA block's origin is BOTTOM-CENTRE, so each pallet is inserted centred in X (footprint-left +
-        /// frente/2) and at its bottom in Y; the LONGITUD/ALTURA params size it.</summary>
-        private static void PlacePalletRow(
-            ICollection<HeaderBlockInstance> instances, string block, string view,
-            double anchorX, double span, double bottomY, double frente, double alto, int count)
-        {
-            var gap = Math.Max(0.0, (span - count * frente) / (count + 1));
-            for (var k = 0; k < count; k++)
-            {
-                // Origin at the pallet BOTTOM-CENTRE: footprint left = anchorX + gap*(k+1) + frente*k, bottom = bottomY.
-                var at = new Point2D(anchorX + gap * (k + 1) + frente * k + frente / 2.0, bottomY);
-                var pallet = new HeaderBlockInstance
-                {
-                    Role = HeaderBlockRole.Pallet,
-                    PieceId = SelectiveRackDefaults.PalletPieceId,
-                    BlockName = block,
-                    View = view,
-                    Insertion = at,
-                    ConnectionAnchor = at
-                };
-                pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam] = frente;
-                pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] = alto;
-                instances.Add(pallet);
-            }
-        }
 
         /// <summary>Adds one larguero per level at <paramref name="beamX"/> (the tramo's left-post troquel X), each
         /// stretched to <paramref name="beamLongitud"/> and to its level's peralte, sitting at the level's resolved Y.</summary>

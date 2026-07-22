@@ -50,10 +50,16 @@ namespace RackCad.UI.Controls
     public sealed class SelectionMatrixModel
     {
         private readonly bool[,] selected;
+        private readonly HashSet<SelectionMatrixCell> absent;
 
-        /// <summary>Creates a <paramref name="columns"/> × <paramref name="rows"/> grid.</summary>
+        /// <summary>Creates a <paramref name="columns"/> × <paramref name="rows"/> rectangular grid.</summary>
         /// <param name="initialSelected">The starting state of every cell (safety grids start all-on).</param>
         public SelectionMatrixModel(int columns, int rows, bool initialSelected = true)
+            : this(columns, rows, null, initialSelected)
+        {
+        }
+
+        private SelectionMatrixModel(int columns, int rows, IEnumerable<SelectionMatrixCell> absentCells, bool initialSelected)
         {
             if (columns < 0) throw new ArgumentOutOfRangeException(nameof(columns));
             if (rows < 0) throw new ArgumentOutOfRangeException(nameof(rows));
@@ -61,6 +67,18 @@ namespace RackCad.UI.Controls
             Columns = columns;
             Rows = rows;
             selected = new bool[columns, rows];
+            absent = new HashSet<SelectionMatrixCell>();
+            if (absentCells != null)
+            {
+                foreach (var cell in absentCells)
+                {
+                    if (cell.Column >= 0 && cell.Column < columns && cell.Row >= 0 && cell.Row < rows)
+                    {
+                        absent.Add(cell);
+                    }
+                }
+            }
+
             if (initialSelected)
             {
                 SetAllInternal(true);
@@ -77,7 +95,20 @@ namespace RackCad.UI.Controls
 
         public int Rows { get; }
 
-        public int CellCount => Columns * Rows;
+        /// <summary>The number of PRESENT (selectable) cells: the full rectangle minus the absent cells of a jagged
+        /// grid. Equal to <see cref="Columns"/> × <see cref="Rows"/> for a rectangular grid (no absent cells).</summary>
+        public int CellCount => Columns * Rows - absent.Count;
+
+        /// <summary>The number of absent (non-existent) cells; 0 for a rectangular grid.</summary>
+        public int AbsentCount => absent.Count;
+
+        /// <summary>True when (column, row) does not exist in a jagged grid (a column shorter than the tallest): it is
+        /// never drawn, never selectable, and excluded from the on/off queries. Always false for a rectangular grid.</summary>
+        public bool IsAbsent(int column, int row)
+            => absent.Count != 0 && absent.Contains(new SelectionMatrixCell(column, row));
+
+        /// <summary>True when the grid is jagged (has at least one absent cell).</summary>
+        public bool HasAbsentCells => absent.Count != 0;
 
         public bool this[int column, int row]
         {
@@ -88,13 +119,13 @@ namespace RackCad.UI.Controls
         public bool IsSelected(int column, int row)
         {
             EnsureInRange(column, row);
-            return selected[column, row];
+            return !IsAbsent(column, row) && selected[column, row]; // an absent cell is not selectable -> not selected
         }
 
         public void SetSelected(int column, int row, bool value)
         {
             EnsureInRange(column, row);
-            if (selected[column, row] == value)
+            if (IsAbsent(column, row) || selected[column, row] == value)
             {
                 return;
             }
@@ -105,7 +136,13 @@ namespace RackCad.UI.Controls
 
         public bool Toggle(int column, int row)
         {
-            var next = !IsSelected(column, row);
+            EnsureInRange(column, row);
+            if (IsAbsent(column, row))
+            {
+                return false; // not selectable: no toggle, no CellChanged, no phantom change reported
+            }
+
+            var next = !selected[column, row];
             SetSelected(column, row, next);
             return next;
         }
@@ -147,6 +184,46 @@ namespace RackCad.UI.Controls
             return model;
         }
 
+        /// <summary>Builds a JAGGED grid from a per-column row count: cells at (column, row) with
+        /// row &gt;= <paramref name="rowsPerColumn"/>[column] are ABSENT — the safety grids where each frente/post has
+        /// its own level count, so the taller columns leave empty slots at the top. The listed
+        /// <paramref name="unselected"/> cells start OFF; coordinates outside the grid (or absent) are ignored, matching
+        /// the tolerant legacy handling of the safety grids.</summary>
+        public static SelectionMatrixModel WithJaggedColumns(
+            IReadOnlyList<int> rowsPerColumn, IEnumerable<SelectionMatrixCell> unselected, bool initialSelected = true)
+        {
+            var columns = rowsPerColumn?.Count ?? 0;
+            var rows = 0;
+            for (var c = 0; c < columns; c++)
+            {
+                rows = Math.Max(rows, Math.Max(0, rowsPerColumn[c]));
+            }
+
+            var absentCells = new List<SelectionMatrixCell>();
+            for (var c = 0; c < columns; c++)
+            {
+                for (var r = Math.Max(0, rowsPerColumn[c]); r < rows; r++)
+                {
+                    absentCells.Add(new SelectionMatrixCell(c, r));
+                }
+            }
+
+            var model = new SelectionMatrixModel(columns, rows, absentCells, initialSelected);
+            if (unselected != null)
+            {
+                foreach (var cell in unselected)
+                {
+                    if (cell.Column >= 0 && cell.Column < columns && cell.Row >= 0 && cell.Row < rows
+                        && !model.IsAbsent(cell.Column, cell.Row))
+                    {
+                        model.selected[cell.Column, cell.Row] = false;
+                    }
+                }
+            }
+
+            return model;
+        }
+
         private void SetAllInternal(bool value)
         {
             for (var c = 0; c < Columns; c++)
@@ -165,7 +242,7 @@ namespace RackCad.UI.Controls
             {
                 for (var r = 0; r < Rows; r++)
                 {
-                    if (selected[c, r] == state)
+                    if (!IsAbsent(c, r) && selected[c, r] == state)
                     {
                         count++;
                     }
@@ -182,7 +259,7 @@ namespace RackCad.UI.Controls
             {
                 for (var r = 0; r < Rows; r++)
                 {
-                    if (selected[c, r] == state)
+                    if (!IsAbsent(c, r) && selected[c, r] == state)
                     {
                         cells.Add(new SelectionMatrixCell(c, r));
                     }

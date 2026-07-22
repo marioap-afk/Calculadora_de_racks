@@ -6,20 +6,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Domain.Systems;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI
 {
     /// <summary>
     /// Configures a larguero tope: a grid of (frente × nivel) checkboxes (which largueros carry a tope, all on by
     /// default), whether it is one shared central tope or one per fondo (+ the side), and the SAQUE. Built in code
-    /// (no XAML), like the other safety dialogs. On OK, <see cref="Result"/> holds the config.
+    /// (no XAML), like the other safety dialogs; the grid is the shared <see cref="SelectionMatrix"/> control (I-22)
+    /// with absent cells for the jagged frentes. On OK, <see cref="Result"/> holds the config.
     /// </summary>
     public sealed class SafetyTopeGridWindow : Window
     {
         private static readonly string[] SideLabels = { "Izquierda", "Derecha", "Ambos" };
 
-        private readonly CheckBox[][] cells; // [frente][level]
-        private readonly IReadOnlyList<int> levelsPerFrente;
+        private readonly SelectionMatrixModel model;
         private readonly CheckBox shared;
         private readonly ComboBox side;
         private readonly ComboBox fondoBox; // null when there is a single fondo (no choice)
@@ -42,15 +43,15 @@ namespace RackCad.UI
 
         public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, bool frontal, IEnumerable<SelectiveGridCell> offCells, int fondoCount = 1, int fondo = -1)
         {
-            this.levelsPerFrente = levelsPerFrente ?? new List<int>();
-            var off = new HashSet<(int, int)>();
-            foreach (var c in offCells ?? Enumerable.Empty<SelectiveGridCell>())
-            {
-                if (c != null) off.Add((c.Frente, c.Level));
-            }
+            var levels = levelsPerFrente ?? new List<int>();
+            model = SelectionMatrixModel.WithJaggedColumns(
+                levels,
+                (offCells ?? Enumerable.Empty<SelectiveGridCell>())
+                    .Where(cell => cell != null)
+                    .Select(cell => new SelectionMatrixCell(cell.Frente, cell.Level)));
 
-            var frentes = this.levelsPerFrente.Count;
-            var maxLevels = frentes > 0 ? this.levelsPerFrente.Max() : 0;
+            var frentes = levels.Count;
+            var maxLevels = frentes > 0 ? levels.Max() : 0;
 
             Title = string.IsNullOrWhiteSpace(label) ? "Larguero tope" : label;
             Width = Math.Max(560, Math.Min(900, 260 + frentes * 46));
@@ -106,9 +107,9 @@ namespace RackCad.UI
 
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 12, 0, 0) };
             var all = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Todos", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
-            all.Click += (s, e) => SetAll(true);
+            all.Click += (s, e) => model.SetAll(true);
             var none = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Ninguno", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
-            none.Click += (s, e) => SetAll(false);
+            none.Click += (s, e) => model.SetAll(false);
             var ok = new Button { Style = TryFindResource("PrimaryButtonStyle") as Style, Content = "Aceptar", Padding = new Thickness(16, 3, 16, 3), IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
             ok.Click += (s, e) => OnOk();
             var cancel = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Cancelar", Padding = new Thickness(10, 3, 10, 3), IsCancel = true };
@@ -123,44 +124,18 @@ namespace RackCad.UI
             DockPanel.SetDock(error, Dock.Bottom);
             root.Children.Add(error);
 
-            // ---- The grid: columns = frentes, rows = levels (highest at top). ----
-            cells = new CheckBox[frentes][];
-            for (var f = 0; f < frentes; f++) cells[f] = new CheckBox[this.levelsPerFrente[f]];
-
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60) }); // level labels
-            for (var f = 0; f < frentes; f++) grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(44) });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // header
-            for (var l = 0; l < maxLevels; l++) grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            for (var f = 0; f < frentes; f++)
+            // ---- The grid: columns = frentes, rows = levels (highest at top), via the shared control. ----
+            var matrix = new SelectionMatrix
             {
-                var head = new TextBlock { Text = "F" + (f + 1).ToString(CultureInfo.InvariantCulture), FontWeight = FontWeights.SemiBold, FontSize = 11, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 0, 0, 4) };
-                Grid.SetRow(head, 0);
-                Grid.SetColumn(head, f + 1);
-                grid.Children.Add(head);
-            }
+                Model = model,
+                InvertRows = true, // level 0 at the bottom
+                ColumnHeaders = Enumerable.Range(0, frentes)
+                    .Select(f => "F" + (f + 1).ToString(CultureInfo.InvariantCulture)).ToArray(),
+                RowHeaders = Enumerable.Range(0, maxLevels)
+                    .Select(l => "Larg. " + (l + 1).ToString(CultureInfo.InvariantCulture)).ToArray()
+            };
 
-            for (var l = maxLevels - 1; l >= 0; l--)
-            {
-                var rowIndex = maxLevels - l; // level 0 at the bottom
-                var lbl = new TextBlock { Text = "Larg. " + (l + 1).ToString(CultureInfo.InvariantCulture), FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
-                Grid.SetRow(lbl, rowIndex);
-                Grid.SetColumn(lbl, 0);
-                grid.Children.Add(lbl);
-
-                for (var f = 0; f < frentes; f++)
-                {
-                    if (l >= this.levelsPerFrente[f]) continue; // this frente has fewer levels
-                    var cb = new CheckBox { IsChecked = !off.Contains((f, l)), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 2, 0, 2) };
-                    Grid.SetRow(cb, rowIndex);
-                    Grid.SetColumn(cb, f + 1);
-                    grid.Children.Add(cb);
-                    cells[f][l] = cb;
-                }
-            }
-
-            root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Content = grid });
+            root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Content = matrix });
             Content = root;
         }
 
@@ -184,24 +159,18 @@ namespace RackCad.UI
             }
         }
 
-        private void SetAll(bool on)
-        {
-            foreach (var col in cells)
-            {
-                foreach (var cb in col)
-                {
-                    if (cb != null) cb.IsChecked = on;
-                }
-            }
-        }
+        /// <summary>The working matrix state — a test seam (I-22, InternalsVisibleTo).</summary>
+        internal SelectionMatrixModel Model => model;
 
-        private void OnOk()
+        /// <summary>Builds the config from the current controls and grid, or null when the SAQUE is invalid (the error
+        /// is shown). Shared by OK and the tests, which cannot set <see cref="Window.DialogResult"/> without ShowDialog.</summary>
+        internal TopeResult BuildResult()
         {
             var text = (saque.Text ?? string.Empty).Trim();
             if (!UiSupport.TryNum(text, out var saqueValue) || saqueValue <= 0.0)
             {
                 error.Text = "Saque inválido: usa un número > 0.";
-                return;
+                return null;
             }
 
             var result = new TopeResult
@@ -213,15 +182,20 @@ namespace RackCad.UI
                 Fondo = fondoBox == null || fondoBox.SelectedIndex <= 0 ? -1 : fondoBox.SelectedIndex - 1
             };
 
-            for (var f = 0; f < cells.Length; f++)
+            foreach (var cell in model.UnselectedCells())
             {
-                for (var l = 0; l < cells[f].Length; l++)
-                {
-                    if (cells[f][l] != null && cells[f][l].IsChecked != true)
-                    {
-                        result.OffCells.Add(new SelectiveGridCell { Frente = f, Level = l }); // an off cell
-                    }
-                }
+                result.OffCells.Add(new SelectiveGridCell { Frente = cell.Column, Level = cell.Row }); // an off cell
+            }
+
+            return result;
+        }
+
+        private void OnOk()
+        {
+            var result = BuildResult();
+            if (result == null)
+            {
+                return; // invalid saque; the error is already shown
             }
 
             Result = result;

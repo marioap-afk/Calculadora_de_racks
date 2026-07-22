@@ -5,16 +5,18 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI
 {
-    /// <summary>Chooses the dynamic-rack frente/level cells that receive the mirrored entrance-guide pair.</summary>
+    /// <summary>Chooses the dynamic-rack frente/level cells that receive the mirrored entrance-guide pair. The grid is
+    /// the shared <see cref="SelectionMatrix"/> control (I-22): column = frente, row = level, with absent cells for the
+    /// jagged fronts. The captions (F1.., Nivel n), the high-to-low order, the tolerant loading of persisted off-cells
+    /// and the exact off-cell set the dialog returns are unchanged.</summary>
     public sealed class SafetyGuiaEntradaGridWindow : Window
     {
-        private readonly CheckBox[][] cells;
-        private readonly IReadOnlyList<int> levelsPerFront;
+        private readonly SelectionMatrixModel model;
 
         public IReadOnlyList<SelectiveGridCell> Result { get; private set; } = new List<SelectiveGridCell>();
 
@@ -23,20 +25,21 @@ namespace RackCad.UI
             IReadOnlyList<int> levelsPerFront,
             IEnumerable<SelectiveGridCell> offCells)
         {
-            this.levelsPerFront = (levelsPerFront ?? Array.Empty<int>())
-                .Select(count => Math.Max(1, count))
-                .ToList();
-            if (this.levelsPerFront.Count == 0)
+            var levels = (levelsPerFront ?? Array.Empty<int>()).Select(count => Math.Max(1, count)).ToList();
+            if (levels.Count == 0)
             {
-                this.levelsPerFront = new List<int> { 1 };
+                levels = new List<int> { 1 };
             }
 
-            var off = SelectiveSafetyGrid.OffCellKeys(offCells);
-            var maxLevels = this.levelsPerFront.Max();
-            cells = new CheckBox[this.levelsPerFront.Count][];
+            var maxLevels = levels.Max();
+            model = SelectionMatrixModel.WithJaggedColumns(
+                levels,
+                (offCells ?? Enumerable.Empty<SelectiveGridCell>())
+                    .Where(cell => cell != null)
+                    .Select(cell => new SelectionMatrixCell(cell.Frente, cell.Level)));
 
             Title = string.IsNullOrWhiteSpace(elementLabel) ? "Guía de entrada" : elementLabel;
-            Width = Math.Max(470, Math.Min(1000, 220 + this.levelsPerFront.Count * 54));
+            Width = Math.Max(470, Math.Min(1000, 220 + levels.Count * 54));
             Height = Math.Min(680, 245 + maxLevels * 30);
             MinWidth = 450;
             MinHeight = 300;
@@ -67,9 +70,9 @@ namespace RackCad.UI
                 Margin = new Thickness(0, 12, 0, 0)
             };
             var all = Button("Todos", false);
-            all.Click += (_, __) => SetAll(true);
+            all.Click += (_, __) => model.SetAll(true);
             var none = Button("Ninguno", false);
-            none.Click += (_, __) => SetAll(false);
+            none.Click += (_, __) => model.SetAll(false);
             var ok = Button("Aceptar", true);
             ok.Click += (_, __) => Accept();
             var cancel = Button("Cancelar", false);
@@ -81,64 +84,21 @@ namespace RackCad.UI
             DockPanel.SetDock(buttons, Dock.Bottom);
             root.Children.Add(buttons);
 
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(75) });
-            for (var front = 0; front < this.levelsPerFront.Count; front++)
+            var matrix = new SelectionMatrix
             {
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(52) });
-            }
-
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            for (var level = 0; level < maxLevels; level++)
-            {
-                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            }
-
-            for (var front = 0; front < this.levelsPerFront.Count; front++)
-            {
-                cells[front] = new CheckBox[this.levelsPerFront[front]];
-                var heading = new TextBlock
-                {
-                    Text = "F" + (front + 1).ToString(CultureInfo.InvariantCulture),
-                    FontWeight = FontWeights.SemiBold,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(0, 0, 0, 4)
-                };
-                Grid.SetColumn(heading, front + 1);
-                grid.Children.Add(heading);
-            }
-
-            for (var level = maxLevels - 1; level >= 0; level--)
-            {
-                var row = maxLevels - level;
-                var label = new TextBlock
-                {
-                    Text = "Nivel " + (level + 1).ToString(CultureInfo.InvariantCulture),
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-                Grid.SetRow(label, row);
-                grid.Children.Add(label);
-                for (var front = 0; front < this.levelsPerFront.Count; front++)
-                {
-                    if (level >= this.levelsPerFront[front]) continue;
-                    var check = new CheckBox
-                    {
-                        IsChecked = !off.Contains((front, level)),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Margin = new Thickness(0, 3, 0, 3)
-                    };
-                    cells[front][level] = check;
-                    Grid.SetRow(check, row);
-                    Grid.SetColumn(check, front + 1);
-                    grid.Children.Add(check);
-                }
-            }
+                Model = model,
+                InvertRows = true, // level 0 at the bottom, highest on top (as the hand-built grid drew it)
+                ColumnHeaders = Enumerable.Range(0, levels.Count)
+                    .Select(front => "F" + (front + 1).ToString(CultureInfo.InvariantCulture)).ToArray(),
+                RowHeaders = Enumerable.Range(0, maxLevels)
+                    .Select(level => "Nivel " + (level + 1).ToString(CultureInfo.InvariantCulture)).ToArray()
+            };
 
             root.Children.Add(new ScrollViewer
             {
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                Content = grid
+                Content = matrix
             });
             Content = root;
         }
@@ -153,32 +113,18 @@ namespace RackCad.UI
                 IsDefault = primary
             };
 
-        private void SetAll(bool value)
-        {
-            foreach (var front in cells)
-            {
-                foreach (var cell in front)
-                {
-                    cell.IsChecked = value;
-                }
-            }
-        }
+        /// <summary>The working matrix state — a test seam (I-22, InternalsVisibleTo).</summary>
+        internal SelectionMatrixModel Model => model;
+
+        /// <summary>The off-cells the dialog would return for the current state, without needing ShowDialog.</summary>
+        internal IReadOnlyList<SelectiveGridCell> CurrentOffCells()
+            => model.UnselectedCells()
+                .Select(cell => new SelectiveGridCell { Frente = cell.Column, Level = cell.Row })
+                .ToList();
 
         private void Accept()
         {
-            var off = new List<SelectiveGridCell>();
-            for (var front = 0; front < cells.Length; front++)
-            {
-                for (var level = 0; level < cells[front].Length; level++)
-                {
-                    if (cells[front][level].IsChecked != true)
-                    {
-                        off.Add(new SelectiveGridCell { Frente = front, Level = level });
-                    }
-                }
-            }
-
-            Result = off;
+            Result = CurrentOffCells();
             DialogResult = true;
         }
     }

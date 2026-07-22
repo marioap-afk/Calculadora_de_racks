@@ -64,9 +64,12 @@ namespace RackCad.Application.Systems
             // The parrilla's EXISTENCE rule needs the troquel grid to resolve medio-frente tramos, and it is the same for
             // every corte — resolve it ONCE here (the MASTER grid, as the BOM does: every fondo's posts are a prefix of it)
             // instead of per corte, and only when a parrilla is actually selected for the lateral.
-            var parrillaTroquelXs = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.ParrillaType).Count > 0
-                ? SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs
-                : null;
+            var parrillaElements = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.ParrillaType);
+            var parrillaDeckCells = parrillaElements.Count > 0
+                ? SelectiveParrillaPlan.DeckCells(system, catalog, parrillaElements[0].Selection.ParrillaFrente, parrillaElements[0].Selection.ParrillaCantidad)
+                : null; // the (fondo, frente, level) cells that draw a deck, resolved once (I-22, E6)
+
+            var topePlan = SelectiveTopePlan.Build(system, catalog); // the physical topes, resolved once; each corte projects its distinct larguero Ys
 
             for (var i = 0; i < postXs.Count; i++)
             {
@@ -142,10 +145,10 @@ namespace RackCad.Application.Systems
 
                 // Separadores (doble profundidad): spacer beams stacked vertically every ~100" of height that span the
                 // GAP between adjacent reaching fondos — same logic as the dynamic's separadores, but 100" instead of 60".
-                AddSeparadores(extras, system, catalog, fondoBays, fondoFallback, offsets, anchorOffset, i);
+                AddSeparadores(extras, system, catalog, fondoBays, fondoFallback, anchorOffset, i);
 
                 // Larguero topes (rear pallet stops): at the central fondo's back post, one per larguero level.
-                AddTopes(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
+                AddTopes(extras, system, catalog, topePlan, fondoBays, offsets, anchorOffset, i);
 
                 // Desviadores: one physical piece on each exterior aisle face for every selected load level.
                 SelectiveDesviadorDrawing.AppendLateral(extras, system, catalog, i, postXs[i], anchorOffset);
@@ -154,7 +157,7 @@ namespace RackCad.Application.Systems
                 AddTarimas(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
 
                 // Parrillas (decks): one per reaching fondo per grid-ON level, spanning the fondo (FONDO param), seen edge-on.
-                AddParrillas(extras, system, catalog, fondoBays, offsets, anchorOffset, i, parrillaTroquelXs);
+                AddParrillas(extras, system, catalog, fondoBays, offsets, anchorOffset, i, parrillaDeckCells);
 
                 // Botas belong to the SYSTEM, not each cabecera: ONE at the corte's frontmost post (anchor-relative
                 // X=0) for Left, reflected to the backmost post for Right, about the center of THIS corte's total fondo
@@ -258,16 +261,12 @@ namespace RackCad.Application.Systems
         /// </summary>
         private void AddSeparadores(
             ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
-            IList<SelectiveBay>[] fondoBays, double[] fondoFallback, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+            IList<SelectiveBay>[] fondoBays, double[] fondoFallback, double anchorOffset, int postIndex)
         {
-            // Reaching fondos, in depth order; need at least two to have a gap.
-            var reaching = new List<int>();
-            for (var k = 0; k < offsets.Count; k++)
-            {
-                if (postIndex <= fondoBays[k].Count) reaching.Add(k);
-            }
-
-            if (reaching.Count < 2 || string.IsNullOrWhiteSpace(system.PostId))
+            // Reaching fondos, adjacent pairs and gaps: the shared physical topology, resolved once (I-22, E6). The
+            // lateral projects each gap as a vertical stack of separadors at this corte.
+            var gaps = SelectiveSeparadorPlan.GapsAt(system, postIndex);
+            if (gaps.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
             {
                 return;
             }
@@ -280,46 +279,26 @@ namespace RackCad.Application.Systems
 
             var separatorMate = CatalogLookup.Local(catalog, DynamicRackDefaults.SeparatorCatalogId, DynamicRackDefaults.SeparatorMatePoint, DynamicRackDefaults.SeparatorView);
             var troquelSeparador = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
-            const double paso = 2.0; // the standard troquel pitch (as in the dynamic default)
+            const double paso = SelectiveRackDefaults.TroquelPaso; // the standard troquel pitch (single source, I-22)
 
-            for (var r = 0; r + 1 < reaching.Count; r++)
+            foreach (var gap in gaps)
             {
-                var k = reaching[r];
-                var kNext = reaching[r + 1];
-
-                var backX = (offsets[k] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k); // fondo k's back post
-                var frontXNext = offsets[kNext] - anchorOffset;                                                 // fondo k+1's front post
-                var gap = frontXNext - backX;
-                if (gap <= 0.0)
-                {
-                    continue;
-                }
-
                 // Tie up to where BOTH fondos exist (the shorter one).
                 var height = Math.Min(
-                    SelectivePostGeometry.PostHeight(fondoBays[k], postIndex, fondoFallback[k]),
-                    SelectivePostGeometry.PostHeight(fondoBays[kNext], postIndex, fondoFallback[kNext]));
+                    SelectivePostGeometry.PostHeight(fondoBays[gap.FrontFondo], postIndex, fondoFallback[gap.FrontFondo]),
+                    SelectivePostGeometry.PostHeight(fondoBays[gap.BackFondo], postIndex, fondoFallback[gap.BackFondo]));
                 if (height <= 0.0)
                 {
                     continue;
                 }
 
+                var backX = gap.BackOffset - anchorOffset; // fondo k's back post, anchor-relative
                 var levels = SeparatorLevelCalculator.Levels(height, troquelSeparador.Y, paso, maxSpacing: SeparatorMaxSpacing);
                 foreach (var level in levels)
                 {
                     // Anchor on the (mirrored) back post's TROQUEL_SEPARADOR, one troquel inside the post; span the gap.
                     var anchor = new Point2D(backX - troquelSeparador.X, level);
-                    var separador = new HeaderBlockInstance
-                    {
-                        Role = HeaderBlockRole.Separator,
-                        PieceId = DynamicRackDefaults.SeparatorCatalogId,
-                        BlockName = separatorBlock,
-                        View = DynamicRackDefaults.SeparatorView,
-                        ConnectionAnchor = anchor,
-                        Insertion = new Point2D(anchor.X - separatorMate.X, anchor.Y - separatorMate.Y)
-                    };
-                    separador.DynamicParameters[SelectiveRackDefaults.LengthParam] = gap;
-                    result.Add(separador);
+                    result.Add(SelectiveSeparadorPlacement.Separador(separatorBlock, DynamicRackDefaults.SeparatorView, anchor, separatorMate, gap.Length));
                 }
             }
         }
@@ -332,66 +311,51 @@ namespace RackCad.Application.Systems
         /// </summary>
         private void AddTopes(
             ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
-            IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+            IReadOnlyList<SelectiveTopePlan.SpotTopes> topePlan, IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
         {
+            if (topePlan.Count == 0)
+            {
+                return;
+            }
+
+            // EnabledOfType provides the drawable check + the LATERAL block + saque; the geometry comes from the plan.
             var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.TopeType);
             if (topes.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
             {
                 return;
             }
 
+            var tope = topes[0];
+            var saque = SelectiveTopePlacement.Saque(tope.Selection);
             var troquel = CatalogLookup.Local(catalog, system.PostId, SelectiveSafetyPlacement.TopePostPoint, LateralView);
-            const double paso = 2.0; // the tope must land on a tope troquel: mate.Y + a whole number of pasos
+            const double paso = SelectiveRackDefaults.TroquelPaso; // the tope must land on a tope troquel: mate.Y + a whole number of pasos (single source, I-22)
 
-            foreach (var tope in topes)
+            foreach (var spot in topePlan)
             {
-                var selection = tope.Selection;
-                var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
-                var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
-
-                foreach (var spot in SelectiveSafetyPlacement.TopeSpots(selection, offsets.Count))
+                var f = spot.Fondo;
+                if (f < 0 || f >= fondoBays.Length || postIndex > fondoBays[f].Count)
                 {
-                    var f = spot.Fondo;
-                    if (f < 0 || f >= fondoBays.Length || postIndex > fondoBays[f].Count)
-                    {
-                        continue; // fondo f doesn't reach this corte
-                    }
+                    continue; // fondo f doesn't reach this corte
+                }
 
-                    // Both spots of a per-fondo pair flank the CENTRAL GAP: fondo c's back post, and fondo c+1's FRONT post.
-                    var frontX = offsets[f] - anchorOffset;
-                    var postX = spot.AtFront ? frontX : frontX + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
-                    var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
+                // Both spots of a per-fondo pair flank the CENTRAL GAP: fondo c's back post, and fondo c+1's FRONT post.
+                var frontX = offsets[f] - anchorOffset;
+                var postX = spot.AtFront ? frontX : frontX + SelectiveDepthLayout.CabeceraDepthOfFondo(system, f);
+                var mateX = spot.AtFront ? postX + troquel.X : postX - troquel.X; // the TROQUEL_TOPE, facing the gap
 
-                    // Grid-filtered distinct larguero heights of the (up to two) bays this corte bounds.
-                    var ys = new HashSet<double>();
-                    var bays = fondoBays[f];
-                    for (var b = postIndex - 1; b <= postIndex; b++)
-                    {
-                        if (b < 0 || b >= bays.Count) continue;
-                        for (var lvl = 0; lvl < bays[b].Levels.Count; lvl++)
-                        {
-                            if (!offCells.Contains((b, lvl))) ys.Add(Math.Round(bays[b].Levels[lvl].Y, 4));
-                        }
-                    }
+                // Grid-filtered distinct larguero heights of the (up to two) bays this corte bounds (from the plan).
+                var ys = new HashSet<double>();
+                foreach (var cell in spot.Cells)
+                {
+                    if (cell.Frente != postIndex - 1 && cell.Frente != postIndex) continue;
+                    foreach (var y in cell.LargueroYs) ys.Add(Math.Round(y, 4));
+                }
 
-                    foreach (var y0 in ys)
-                    {
-                        // Rise ~8" above the larguero, then snap to the TROQUEL_TOPE grid (a whole number of pasos from the mate).
-                        var y = troquel.Y + Math.Round((y0 + SelectiveSafetyPlacement.TopeYOffset - troquel.Y) / paso, MidpointRounding.AwayFromZero) * paso;
-                        var at = new Point2D(mateX, y);
-                        var instance = new HeaderBlockInstance
-                        {
-                            Role = HeaderBlockRole.Tope,
-                            PieceId = tope.PieceId,
-                            BlockName = tope.Block,
-                            View = LateralView,
-                            MirroredX = spot.Mirror,
-                            ConnectionAnchor = at,
-                            Insertion = at
-                        };
-                        instance.DynamicParameters[SelectiveSafetyPlacement.SaqueParam] = saque;
-                        result.Add(instance);
-                    }
+                foreach (var y0 in ys)
+                {
+                    // Rise ~8" above the larguero, then snap to the TROQUEL_TOPE grid (a whole number of pasos from the mate).
+                    var y = SelectiveTopePlacement.SnapY(troquel.Y, y0, paso);
+                    result.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, LateralView, mateX, y, saque, mirroredX: spot.Mirror));
                 }
             }
         }
@@ -449,13 +413,13 @@ namespace RackCad.Application.Systems
 
                     // Height (INICIO_PERFIL Y above the troquel) is view-independent, so reuse the frontal load surface.
                     var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, SelectiveRackDefaults.View);
-                    result.Add(MakePallet(block, startX, surfaceY, palletFondo, level.PalletAlto));
+                    result.Add(SelectiveTarimaPlacement.Pallet(block, LateralView,startX, surfaceY, palletFondo, level.PalletAlto));
                 }
 
                 var floorAlto = FloorPalletAltoOf(fondoBays[k], postIndex);
                 if (floorAlto > 0.0)
                 {
-                    result.Add(MakePallet(block, startX, 0.0, palletFondo, floorAlto)); // the ground pallet rests on the floor
+                    result.Add(SelectiveTarimaPlacement.Pallet(block, LateralView,startX, 0.0, palletFondo, floorAlto)); // the ground pallet rests on the floor
                 }
             }
         }
@@ -480,24 +444,6 @@ namespace RackCad.Application.Systems
             return 0.0;
         }
 
-        private static HeaderBlockInstance MakePallet(string block, double x, double y, double fondo, double alto)
-        {
-            // The TARIMA block's origin is BOTTOM-CENTRE: centre it in X (depth), keep its bottom at y (the load surface).
-            var at = new Point2D(x + fondo / 2.0, y);
-            var pallet = new HeaderBlockInstance
-            {
-                Role = HeaderBlockRole.Pallet,
-                PieceId = SelectiveRackDefaults.PalletPieceId,
-                BlockName = block,
-                View = LateralView,
-                Insertion = at,
-                ConnectionAnchor = at
-            };
-            pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam] = fondo; // LONGITUD = fondo in the lateral view
-            pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] = alto;
-            return pallet;
-        }
-
         /// <summary>
         /// Parrillas (decks) in the LATERAL when the element is selected and its ParrillaLateral toggle is on: one deck
         /// per REACHING fondo per distinct level whose (frente,level) grid cell is ON (checked across the two bays the
@@ -507,7 +453,7 @@ namespace RackCad.Application.Systems
         private static void AddParrillas(
             ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
             IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex,
-            IReadOnlyList<double> troquelXs)
+            HashSet<(int, int, int)> parrillaDeckCells)
         {
             var parrillas = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.ParrillaType);
             if (parrillas.Count == 0)
@@ -521,8 +467,6 @@ namespace RackCad.Application.Systems
                 return; // the lateral draw is a per-view toggle
             }
 
-            var overrideFrente = parrilla.Selection.ParrillaFrente;
-            var overrideCount = parrilla.Selection.ParrillaCantidad;
             var offCells = SelectiveSafetyGrid.OffCellKeys(parrilla.Selection.ParrillaOffCells);
 
             for (var k = 0; k < offsets.Count; k++)
@@ -557,12 +501,9 @@ namespace RackCad.Application.Systems
 
                         var level = bays[b].Levels[lvl];
 
-                        // The grid says "decks are WANTED here"; ParrillaRow says how many actually FIT. Ask both, or a
-                        // level the frontal and the BOM leave empty still gets a deck end-on (the corte collapses the row
-                        // to one deck, but zero decks must stay zero).
-                        var troquelX = troquelXs != null && b < troquelXs.Count ? troquelXs[b] : 0.0;
-                        var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bays[b], SelectiveRackDefaults.View);
-                        if (!SelectiveFrontalBuilder.ParrillaExistsAt(bays[b], level, troquelX, inicioX, overrideFrente, overrideCount))
+                        // The plan already resolved which cells draw a deck (grid ON + at least one fits); a level the
+                        // frontal and BOM leave empty stays empty end-on too, so zero decks stays zero (I-22, E6).
+                        if (parrillaDeckCells == null || !parrillaDeckCells.Contains((k, b, lvl)))
                         {
                             continue;
                         }
@@ -573,26 +514,10 @@ namespace RackCad.Application.Systems
                         }
 
                         var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, SelectiveRackDefaults.View);
-                        result.Add(MakeParrilla(parrilla.Block, parrilla.PieceId, offsetRel, surfaceY, fondo));
+                        result.Add(SelectiveParrillaPlacement.Deck(parrilla.PieceId, parrilla.Block, LateralView, offsetRel, surfaceY, SelectiveSafetyPlacement.ParrillaFondoParam, fondo));
                     }
                 }
             }
-        }
-
-        private static HeaderBlockInstance MakeParrilla(string block, string pieceId, double x, double bottomY, double fondo)
-        {
-            var at = new Point2D(x, bottomY); // origin bottom-left (front edge, on the load surface)
-            var instance = new HeaderBlockInstance
-            {
-                Role = HeaderBlockRole.Safety,
-                PieceId = pieceId,
-                BlockName = block,
-                View = LateralView,
-                Insertion = at,
-                ConnectionAnchor = at
-            };
-            instance.DynamicParameters[SelectiveSafetyPlacement.ParrillaFondoParam] = fondo;
-            return instance;
         }
 
         /// <summary>The distinct levels attaching at post <paramref name="postIndex"/> from the (up to two) bays it
