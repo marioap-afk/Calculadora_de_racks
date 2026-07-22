@@ -1,0 +1,28 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-05
+  branch: feature/guardrail-unidades
+  claim_id: 3bc63632-70b1-4638-80ce-a2c334543873
+  current_phase: 2
+  state: implementing
+  gate: none
+  attempts: 0
+  next_action: implementar-DrawingUnitsAdvisory-y-RackUnitsGuard-cablear-rutas-de-insercion-y-source-guards
+  last_evidence_commit: f35ca4c403d3eb0fe59fd52503c019676a7187a4
+execution_context:
+  mode: manual-git-only
+  worktree: I-05-guardrail-unidades
+  pull_request: none
+evidence:
+  base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
+  claim_commit: f35ca4c403d3eb0fe59fd52503c019676a7187a4
+gates:
+  owner_decision:
+    status: open
+    note: aceptacion-de-ADR-0005-estrategia-de-unidades-queda-propuesto-pendiente-del-dueno
+  autocad:
+    status: open
+    note: requires_autocad-true-checklist-de-INSUNITS-pendiente-del-dueno-sobre-el-DLL-Debug-del-worktree
+  owner_validation:
+    status: open
+    note: aviso-no-bloqueante-claro-y-sin-alterar-el-dibujo-pendiente-del-dueno
