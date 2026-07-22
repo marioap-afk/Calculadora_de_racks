@@ -4,30 +4,35 @@ automation_state:
   branch: refactor/selective-editor-state
   claim_id: 23f0371e-1920-4cea-b679-c0830f9cad50
   current_phase: 6
-  state: review-ready
-  gate: autocad
+  state: integration-ready
+  gate: none
   attempts: 0
-  next_action: validacion-manual-del-dueno-en-autocad-y-owner-validation-sobre-el-dll-debug-del-worktree-i20-luego-sesion-de-integracion-merge-no-ff
-  last_evidence_commit: 294968b
+  next_action: merge-no-ff-de-refactor-selective-editor-state-en-main-y-limpieza-segura-del-worktree-y-ramas
+  last_evidence_commit: 0f430879cdc8f2a369406836db9d8661b8103e3b
 execution_context:
   mode: manual-git-only
   worktree: I-20-selective-editor-state
   pull_request: none
 evidence:
-  base_commit: bfda406dfc9680473bad6f38c608d309466c754c
-  domain_application_tests: 866-verde-0-fallos-incluye-24-nuevas-de-SelectiveEditorState
-  ui_tests: 139-verde-0-fallos-incluye-4-de-caracterizacion-STA-SelectiveEditorStateAdoption
+  original_base_commit: bfda406dfc9680473bad6f38c608d309466c754c
+  rebased_base_commit: 2a30fef740474d800a219175dea35826a7c09fb0
+  approved_impl_tip: 0f430879cdc8f2a369406836db9d8661b8103e3b
+  post_approval_commits: correccion-comentario-obsoleto-doc-comment-sin-comportamiento-mas-rebase-sobre-2a30fef-mas-cierre-documental
+  ci_run: 29888005513-cuatro-jobs-verdes-sobre-0f430879-pre-rebase-mas-CI-verde-sobre-el-SHA-final-rebasado-antes-del-merge
+  rebase: origin-main-avanzo-a-2a30fef-merge-i21-i20-rebasada-reconciliacion-solo-docs-compartidas-handoff-roadmap-indice-i21-toca-solo-el-dinamico-codigo-disjunto
+  domain_application_tests: 913-verde-0-fallos-base-889-con-i21-mas-24-de-SelectiveEditorState
+  ui_tests: 139-verde-0-fallos-135-base-mas-4-de-caracterizacion-STA-SelectiveEditorStateAdoption
   build_ui_debug: 0-errores-0-advertencias-propias
   build_plugin_debug: 0-errores-solo-MSB3277-conocidos-de-autocad
   build_solution_debug: 0-errores-solo-MSB3277-conocidos
   invariants: equivalencia-de-diseno-resuelto-load-build-y-round-trip-verificada-por-caracterizacion-STA-antes-y-despues-del-refactor
   scope: solo-application-systems-selectiveeditor-mas-rackselectivewindow-mas-pruebas-mas-docs-i20-sin-tocar-dinamico-catalogos-persistencia-drawservices-ni-generados
 autocad_validation:
-  status: pending
-  note: pendiente-del-dueno-sobre-el-dll-debug-del-worktree-i20-matriz-alcances-cambios-de-fondo-preview-insercion-actualizacion-y-round-trip
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-21-sin-observaciones-sobre-el-dll-debug-del-worktree-i20-0f430879-matriz-alcances-cambios-de-fondo-doble-triple-previews-insercion-actualizacion-rackeditar-round-trip-mismo-guid-i11-preservado
 owner_validation:
-  status: pending
-  note: pendiente-del-dueno-apariencia-e-interaccion-identicas-a-lo-vigente
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-21-apariencia-e-interaccion-identicas-a-lo-vigente
 decision_evidence:
   path: none
   resolved_gate: none

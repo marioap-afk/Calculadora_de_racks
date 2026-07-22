@@ -201,6 +201,32 @@ vistas vinculadas; geometría/BOM; biblioteca/legacy/round-trip; actualización 
 la **owner-validation**. `origin/main` **no avanzó** desde `bfda406` (Merge I-15): **sin rebase**; la rama se
 integra por `git merge --no-ff` en esta sesión.
 
+**I-20** (`refactor/selective-editor-state`) entrega el **primer eslabón de la extracción de estado por
+editor** de la pista C de UI (hallazgos U1/U3), **sin cambio de comportamiento observable**. Extrae el
+**estado propio** del editor selectivo —hoy en campos privados de `RackSelectiveWindow` (~2,452 líneas,
+archivo caliente)— a clases **puras y testeables** de `RackCad.Application.Systems`: `SelectiveEditorState`
+(dueño de la matriz de trabajo, las matrices por fondo, la selección y las cabeceras/peraltes por poste, con
+las operaciones `InitMatrix`, snapshot/restore, save/load fondo, `CloneAligned`, `ResizeBays`, add/remove
+nivel, `ClampSelection`, `ApplyScope`, `MaxFrenteCount`, `SyncPostCabeceras`, `BuildBayDesigns`,
+`FondoMatrixFromDesignBays` y `BuildDesign`), más `SelectiveEditorCell`/`SelectiveEditorFondoMatrix`
+(equivalentes verbatim de los anidados `Cell`/`FondoMatrix`), `SelectiveApplyScope` y `SelectiveDesignInputs`
+(el contrato de entradas escalares que la ventana lee de sus controles). La ventana **observa** ese estado
+(propiedades de acceso) y **delega** las operaciones; conserva el pintado (matriz + previews), el editor de
+celda, los eventos, la recomputación coalescida (shell I-15), la orquestación de carga y el resolve/preview
+ligado al catálogo (`BuildSystem`). La **superficie pública que consume el Plugin** (`InsertRequested`,
+`SystemToInsert`, `DesignToInsert`, `RackId`, `RackName`, `InsertView`, `UpdateOnly`, `SetDimensionStyles`,
+`LoadExisting`, `LoadForNew`, `Session`) **no cambia**. **No** cambia geometría, BOM, GUID, inserción/
+actualización, persistencia ni metadatos **I-11**, catálogos, compatibilidad legacy ni round-trip; la
+equivalencia queda fijada por una **caracterización STA** que verifica que `load→build` produce el **mismo
+dibujo resuelto** (frontal por fondo + planta + cortes laterales + altura) antes y después del refactor.
+**No** implementa I-22 (colocación de seguridad; orden fijo, I-20 primero), **no** toca el editor **dinámico**
+(I-21) ni la asimetría vigente de estilos de cota. Alineado con `ARCHITECTURE.md` §7.1/§7.3 ("estado de editor
+puro + vista WPF"; "el estado del editor se extrae a Application"). El dueño **aprobó la validación manual en
+AutoCAD** y la **owner-validation** sin observaciones sobre la punta de implementación `0f43087`. **Rebasada
+sobre `main` vigente (`2a30fef`, Merge I-21)** reconciliando sólo la documentación compartida (HANDOFF,
+ROADMAP e índice de iniciativas); I-21 sólo toca el editor **dinámico**, no el selectivo, por lo que la
+validación se conserva. La rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -288,6 +314,22 @@ conservación del GUID; registro en
 [automation/evidence/I-21-autocad-validation.md](automation/evidence/I-21-autocad-validation.md). La
 **owner-validation** de comportamiento y apariencia quedó **aprobada** (`requires_owner_validation: true`).
 
+I-20 (`refactor/selective-editor-state`) **sí** requiere validación en AutoCAD (`requires_autocad: true`)
+porque la ventana selectiva —cuyo estado se reescribió para observar `SelectiveEditorState` y construir el
+diseño vía él— dibuja el rack real. El dueño ejecutó el checklist completo por `NETLOAD` del DLL Debug del
+worktree I-20 (punta aprobada de implementación `0f43087`;
+`…-I-20-selective-editor-state\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en AutoCAD 2025
+y **aprobó todos los escenarios sin observaciones**: la matriz (clic en celda, ±niveles, altura por frente,
+`Piso`, medio frente), «Aplicar a:» celda/nivel/frente/todas, «Editando fondo» (doble/triple profundidad con
+separadores), previews frontal y lateral, «Insertar frontal», y con `RACKEDITAR` «Actualizar» en sitio e
+«Insertar lateral/planta» ligadas con el **mismo GUID**; geometría y BOM **sin diferencias**, metadatos y
+persistencia **I-11 preservados** (incluida la reapertura desde biblioteca, `LoadForNew`), round-trip íntegro.
+La **owner-validation** de comportamiento y apariencia (idénticos a lo vigente) quedó **aprobada**
+(`requires_owner_validation: true`). Los únicos cambios posteriores a esa aprobación son la **corrección de un
+comentario obsoleto** (doc-comment, sin efecto en el comportamiento), el **rebase sobre `main` con I-21** (sólo
+documentación compartida; I-21 no toca el selectivo) y este cierre documental; por eso la validación **se
+conserva** (WORKFLOW §6). El gate manual queda cerrado.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -296,9 +338,12 @@ conservación del GUID; registro en
   debe comprobarse contra el uso real.
 - El build del Plugin puede emitir los `MSB3277` conocidos de las referencias de AutoCAD y falla al
   copiar DLL si AutoCAD los mantiene cargados.
-- Tras I-21, el **estado interno propio del editor dinámico** (matriz frente×nivel, selección, recomputación
-  y construcción del diseño) ya vive en `RackCad.Application`; queda pendiente extraer el del **selectivo**
-  (matriz por fondo, `BuildSystem`), que es I-20.
+- Tras **I-20 e I-21**, el **estado interno propio** de los editores **selectivo** (matriz por fondo, celdas,
+  `ApplyScope`, `BuildDesign` → `SelectiveEditorState`) y **dinámico** (matriz frente×nivel, selección,
+  recomputación/construcción → `DynamicFrontMatrix`/`DynamicEditorDesignAssembler`) ya vive en
+  `RackCad.Application`; la ventana observa el estado y pinta. El resolve/preview ligado al catálogo
+  (`BuildSystem` del selectivo, la orquestación `Recompose` del dinámico) permanece en cada ventana por
+  diseño, consumiendo el diseño puro que producen esos estados — ya no es deuda pendiente.
 - El menú `RACKCAD` abre el selectivo **nuevo** sin `SetDimensionStyles` (asimetría vigente que I-15 preservó
   verbatim; `RACKSELECTIVO` y el abrir-desde-biblioteca sí los fijan) — registrado en `docs/ideas-futuras.md`
   como hallazgo diferido, no corregido en I-15.
@@ -318,26 +363,69 @@ conservación del GUID; registro en
 
 ## 4. Siguiente acción
 
-Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12**, **I-19**, **I-15** e **I-21** integradas (I-21 en esta
-sesión), la **pista B del Plugin** está cerrada (la serialización I-09 → I-16 → I-10 está completa), la **pista A de
-Application** entrega la persistencia uniforme, **I-12** cierra el **versionado real** (versión única, SHA
+Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12**, **I-19**, **I-15**, **I-21** e **I-20** integradas (**I-21**
+y **I-20** en esta tanda de integración serializada), la **pista B del Plugin** está cerrada (la serialización
+I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme, **I-12**
+cierra el **versionado real** (versión única, SHA
 estampado, bundle por `dotnet publish` verificado fail-closed, ADR-0004 aceptado), e **I-19** entrega el
-validador de catálogos. La **pista C de UI** entrega ahora sus **dos** primeros eslabones: los **controles
-comunes** (I-14) y el **Editor Shell** (I-15), este último ya **adoptado por las cuatro ventanas ricas**
-(catálogo, identidad, recomputación coalescida y contrato de inserción vía `RackEditorSession`; menú y
-biblioteca por `EditorModuleRegistry`). **I-21** completa la Fase 5 del **dinámico**: extrae a Application el
-estado propio de su editor (matriz frente×nivel, selección, recomputación y construcción del diseño), dejando
-la ventana como coordinadora sobre el shell. El siguiente paso natural es **I-20
-`refactor/selective-editor-state`** (el gemelo del selectivo) e **I-22** (`refactor/safety-placement`, tras
-I-20); **I-18 (Push Back)** ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y solo espera los
-**bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su worktree ya
-reclamado.
+validador de catálogos. La **pista C de UI** entrega ya **cuatro** eslabones: los **controles comunes**
+(I-14), el **Editor Shell** (I-15, adoptado por las cuatro ventanas ricas: catálogo, identidad, recomputación
+coalescida e inserción vía `RackEditorSession`; menú y biblioteca por `EditorModuleRegistry`) y la
+**extracción del estado** de los editores **dinámico** (I-21: `DynamicFrontMatrix`/`DynamicEditorDesignAssembler`)
+y **selectivo** (I-20: `SelectiveEditorState`) a Application, dejando ambas ventanas observando su estado y
+pintando. El siguiente paso natural es **I-22** (`refactor/safety-placement`, orden fijo tras I-20 —ahora
+**desbloqueada**—) e **I-18 (Push Back)**, que ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y
+solo espera los **bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su
+worktree ya reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-20 — 2026-07-21:**
+
+- punta de **código** validada por CI y por el dueño (AutoCAD): `0f430879cdc8f2a369406836db9d8661b8103e3b`
+  (run `29888005513`, **cuatro jobs verdes**); tras la aprobación se añadieron una **corrección de comentario
+  obsoleto** (doc-comment **sin cambio de comportamiento**) y el **cierre documental**, y la rama se
+  **rebasó sobre `main` con I-21** (siguiente viñeta); el **SHA final rebasado** recibe su propio CI verde antes
+  del merge; como el comportamiento del selectivo no cambia, la validación en AutoCAD y la owner-validation **se
+  conservan** (WORKFLOW §6); este documento **no inventa** el SHA del merge de `main` (vive en
+  `git log --first-parent main`);
+- `origin/main` **avanzó** de `bfda406` (Merge I-15) a **`2a30fef`** (Merge I-21) durante esta tanda de
+  integración serializada: I-20 quedó **rebasada** sobre esa punta (merge-base = `origin/main`); la
+  reconciliación fue **sólo de documentación compartida** (HANDOFF, ROADMAP e índice de iniciativas), pues I-21
+  sólo toca el editor **dinámico** y su código es **disjunto** del selectivo (cero solapamiento de archivos de
+  código/pruebas); la rama se integra por `git merge --no-ff`;
+- suite `RackCad.Tests`: **913/913 verdes** (base con I-21 = 889; + **24 nuevas** de `SelectiveEditorStateTests`;
+  sin regresión); suite `RackCad.UI.Tests`: **139/139 verdes** (135 de la base + **4** de
+  `SelectiveEditorStateAdoptionTests`, caracterización **STA** que fija el dibujo resuelto `load→build`);
+- build UI Debug: **0 errores y 0 advertencias propias**; builds Plugin y solución completa Debug: **0 errores**,
+  únicamente las dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre la punta pre-rebase `0f43087` (run `29888005513`, cuatro jobs) y re-verde sobre el
+  **SHA final rebasado** antes del merge (los **cuatro** jobs —Tests (Domain+Application), Build UI, UI Tests
+  (WPF controls, net8.0-windows) y Build Plugin without AutoCAD— en `success`);
+- objetivo entregado: `SelectiveEditorState` + `SelectiveEditorCell`/`SelectiveEditorFondoMatrix`/
+  `SelectiveApplyScope`/`SelectiveDesignInputs` en `RackCad.Application.Systems` (estado + operaciones puras del
+  editor selectivo, hallazgos U1/U3); `RackSelectiveWindow` **observa** ese estado (propiedades de acceso) y
+  **delega** las operaciones, conservando el pintado, el editor de celda, los eventos, la recomputación
+  coalescida (shell I-15) y el resolve/preview ligado al catálogo; la **superficie pública que consume el
+  Plugin no cambia**;
+- validación manual: AutoCAD **requerido** (`requires_autocad: true`) y **aprobado** por el dueño sin
+  observaciones (matriz, «Aplicar a:» por alcance, cambios de fondo doble/triple, previews frontal/lateral,
+  «Insertar frontal», `RACKEDITAR` «Actualizar»/«Insertar lateral-planta» con **mismo GUID**, geometría/BOM sin
+  diferencias, **I-11 preservado**, round-trip y reapertura desde biblioteca); **owner-validation aprobada**;
+- invariantes preservados: **sin** cambios de geometría, BOM, GUID, inserción/actualización, persistencia
+  (Xrecord/**I-11** intactos), catálogos, formatos ni **XAML visible** (`RackSelectiveWindow.xaml` **byte-idéntico**
+  a `main`); el diff de I-20 **no toca** el editor **dinámico** (I-21), I-22, DrawServices, DTO/persistencia ni
+  generados; **sin** dependencias NuGet nuevas; equivalencia `load→build` fijada por la caracterización STA
+  (antes y después del refactor); asimetría de estilos de cota **no** tocada (fuera de alcance);
+- alcance: `src/RackCad.Application/Systems/` (5 archivos nuevos: `SelectiveEditorState`, `SelectiveEditorCell`,
+  `SelectiveEditorFondoMatrix`, `SelectiveApplyScope`, `SelectiveDesignInputs`),
+  `src/RackCad.UI/RackSelectiveWindow.xaml.cs` (observa/delega; −256 líneas netas),
+  `tests/RackCad.Tests/SelectiveEditorStateTests.cs` (+24) y
+  `tests/RackCad.UI.Tests/SelectiveEditorStateAdoptionTests.cs` (+4 STA), más contrato/estado/índice de I-20.
 
 **Baseline integrada de I-21 — 2026-07-21:**
 

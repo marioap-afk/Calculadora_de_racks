@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-20
 title: Estado del editor Selectivo
 type: refactor
-status: in-progress
+status: integrated
 branch: refactor/selective-editor-state
 base_branch: main
 priority:
@@ -212,18 +212,18 @@ los resolvers/builders/BOM/DrawServices, los catálogos, la persistencia/DTO/env
 
 ## 10. Validacion manual
 
-Gates **abiertos** hasta la confirmación del dueño; no se declaran aprobados desde esta rama. Sobre el
-DLL Debug del worktree I-20
-(`…-I-20-selective-editor-state\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en
-AutoCAD 2025:
+Ambos gates **APROBADOS por el dueño** el **2026-07-21**, sin observaciones, sobre el DLL Debug del
+worktree I-20 (punta aprobada de implementación `0f43087`;
+`…-I-20-selective-editor-state\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en
+AutoCAD 2025. La confirmación normativa del dueño consta en la sesión de integración; **no se re-solicita**.
 
-- **AutoCAD — editor selectivo — pendiente.** `RACKSELECTIVO`: la matriz (clic en celda, −/+ niveles,
+- **AutoCAD — editor selectivo — PASS.** `RACKSELECTIVO`: la matriz (clic en celda, −/+ niveles,
   altura, `Piso`, medio frente), «Aplicar a:» celda/nivel/frente/todas, «Editando fondo» (cambio de
   fondo con doble/triple profundidad), previews frontal y lateral, «Insertar frontal» y (con
   `RACKEDITAR`) «Actualizar» e «Insertar lateral/planta» dibujan **idéntico** a lo vigente; geometría,
   BOM y GUID sin diferencias; round-trip (reabrir con `RACKEDITAR`, mismo GUID) preservado; metadatos
   I-11 intactos al reabrir desde biblioteca (`LoadForNew`).
-- **owner-validation — pendiente.** El dueño confirma que la apariencia (etiquetas, tooltips, orden,
+- **owner-validation — PASS.** El dueño confirmó que la apariencia (etiquetas, tooltips, orden,
   layout) y la interacción son idénticas a lo vigente.
 
 Checklist manual detallado (para el dueño), sobre el DLL Debug del worktree:
