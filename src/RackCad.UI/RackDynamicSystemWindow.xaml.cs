@@ -52,6 +52,7 @@ namespace RackCad.UI
         private readonly RackCatalog catalog;
         private readonly DynamicRackSystemBuilder builder;
         private readonly DynamicRackSystemResolver resolver;
+        private readonly DynamicEditorDesignAssembler assembler;
         private readonly string defaultPostCatalogId;
         private readonly double defaultHeaderHeight;
         private double computedHeaderHeight;
@@ -59,21 +60,10 @@ namespace RackCad.UI
         private DynamicRackDesign design;
         private DynamicRackModule selectedModule;
         private readonly List<SelectiveSafetySelection> safetySelections = new List<SelectiveSafetySelection>();
-        private readonly List<DynamicFrontRow> frontRows = new List<DynamicFrontRow>
-        {
-            new DynamicFrontRow
-            {
-                Index = 1,
-                PalletCount = DynamicRackDefaults.DefaultPalletsWide,
-                LoadLevels = DynamicRackDefaults.DefaultLoadLevels,
-                PalletsDeep = DynamicRackDefaults.DefaultPalletsDeep,
-                DepthStartPosition = 1
-            }
-        };
-        private int selectedFrontIndex;
-        private int selectedLevelIndex;
-        private readonly HashSet<(int FrontIndex, int LevelIndex)> selectedCells =
-            new HashSet<(int FrontIndex, int LevelIndex)> { (0, 0) };
+
+        /// <summary>The editable front x level grid and its selection, extracted to a pure, testable model (I-21). The
+        /// window renders and edits it through the matrix; every structural mutation and the selection now live there.</summary>
+        private readonly DynamicFrontMatrix matrix = new DynamicFrontMatrix();
         private int selectedLateralPostIndex;
         private bool suppressLateralPostSelection;
         private DynamicPreviewMode previewMode = DynamicPreviewMode.Lateral;
@@ -142,6 +132,7 @@ namespace RackCad.UI
             catalog = session.Catalog; // the session loads it once via UiSupport.LoadCatalogSafe (I-15)
             builder = new DynamicRackSystemBuilder(catalog);
             resolver = new DynamicRackSystemResolver(catalog);
+            assembler = new DynamicEditorDesignAssembler(catalog, builder, resolver);
             safetySelections.AddRange(DynamicSafetyDefaults.Build(catalog).Select(selection => selection.DeepCopy()));
             defaultPostCatalogId = catalog.Defaults.Post;
             defaultHeaderHeight = catalog.Defaults.DefaultHeaderHeight;
@@ -151,7 +142,6 @@ namespace RackCad.UI
             PostPeralteBox.Text = Num(SelectedPostCatalogPeralte());
             SelectedInOutBeamBox.ItemsSource = InOutBeamOptions();
             SelectedIntermediateBeamBox.ItemsSource = IntermediateBeamOptions();
-            EnsureCellCount(frontRows[0], frontRows[0].LoadLevels);
             KindBox.ItemsSource = new[] { KindHeader, KindSeparator };
             if (DimensionsBox != null) DimensionsBox.SelectedIndex = 0;
             if (DimStyleBox != null)
@@ -253,6 +243,22 @@ namespace RackCad.UI
             DimStyleBox.SelectedIndex = 0;
         }
 
+        /// <summary>Read the drawing-annotation controls into the pure options the design assembler consumes (I-21).</summary>
+        private DynamicAnnotationOptions ReadAnnotationOptions()
+            => new DynamicAnnotationOptions
+            {
+                NumberFronts = NumberFrontsCheck?.IsChecked == true,
+                NumberLevels = NumberLevelsCheck?.IsChecked == true,
+                DrawRackName = DrawRackNameCheck?.IsChecked == true,
+                AnnotationScale = TryNum(AnnotationScaleBox?.Text, out var annotationScale) && annotationScale > 0.0
+                    ? annotationScale
+                    : 1.0,
+                Dimensions = (DimensionDetail)Math.Min(
+                    (int)DimensionDetail.Detailed,
+                    Math.Max(0, DimensionsBox?.SelectedIndex ?? 0)),
+                DimensionStyle = SelectedDimensionStyle()
+            };
+
         private void Annotation_Changed(object sender, RoutedEventArgs e)
         {
             if (suppressRecompose || system == null)
@@ -328,7 +334,7 @@ namespace RackCad.UI
             try
             {
                 depthLayout = DynamicDepthGeometry.Resolve(
-                    frontRows.Select(row => new DynamicRackFrontDesign
+                    matrix.Fronts.Select(row => new DynamicRackFrontDesign
                     {
                         PalletsDeep = row.PalletsDeep,
                         DepthStartPosition = row.DepthStartPosition
@@ -368,14 +374,12 @@ namespace RackCad.UI
                 // changes — that changes the module SEQUENCE. When only the height inputs change (niveles / peralte /
                 // 1er nivel / altura manual, or the post), update the header height IN PLACE so the per-module edits
                 // (custom fondo/length, cabeceras) survive instead of reverting to the calculated defaults.
-                var mustRebuild = forceRebuild || system == null || system.Modules.Count == 0
-                    || !SamePallet(system.Pallet, pallet)
-                    || !DynamicDepthGeometry.Matches(system, depthLayout);
+                var mustRebuild = forceRebuild || DynamicEditorDesignAssembler.MustRebuild(system, pallet, depthLayout);
 
                 // A pallet/fondos change forces a full rebuild that would discard the custom fondos the user set on
                 // headers. Snapshot them (in header order) so they survive — UNLESS this is an explicit "restaurar
                 // estandar" (forceRebuild), which is meant to reset everything.
-                var savedFondos = mustRebuild && !forceRebuild ? SnapshotHeaderFondos() : null;
+                var savedFondos = mustRebuild && !forceRebuild ? assembler.SnapshotHeaderFondos(system) : null;
                 var restoredFondos = 0;
 
                 if (mustRebuild)
@@ -387,11 +391,11 @@ namespace RackCad.UI
                         SelectedPostId(),
                         computedHeaderHeight,
                         postPeralte);
-                    restoredFondos = RestoreHeaderFondos(savedFondos, computedHeaderHeight);
+                    restoredFondos = assembler.RestoreHeaderFondos(system, savedFondos, computedHeaderHeight, SelectedPostId());
                 }
                 else
                 {
-                    UpdateHeaderHeightInPlace(computedHeaderHeight);
+                    assembler.UpdateHeaderHeightInPlace(system, computedHeaderHeight, SelectedPostId());
                 }
 
                 builder.ApplyPostPeralte(system, postPeralte);
@@ -399,41 +403,18 @@ namespace RackCad.UI
                 ApplySeparatorOverrides();
                 ApplyDerivedPostOptions();
                 ApplyHeightOverride();
-                design = resolver.Snapshot(system, levels, firstLevel, beamDepth, SelectedPostId());
-                design.PalletsDeep = depthLayout.TotalPositions;
-                design.PostPeralte = postPeralte;
-                design.PalletTolerance = palletTolerance;
-                design.IntermediateBeamDepths.Clear();
-                design.Fronts.Clear();
-                foreach (var row in frontRows)
-                {
-                    EnsureCellCount(row, row.LoadLevels);
-                    var frontDesign = new DynamicRackFrontDesign
-                    {
-                        PalletCount = row.PalletCount,
-                        LoadLevels = row.LoadLevels,
-                        PalletsDeep = row.PalletsDeep,
-                        DepthStartPosition = row.DepthStartPosition,
-                        FirstLevelHeight = row.FirstLevelHeight
-                    };
-                    foreach (var cell in row.Cells.Take(row.LoadLevels))
-                    {
-                        frontDesign.Levels.Add(cell.ToDesign());
-                        frontDesign.IntermediateBeamDepths.Add(cell.IntermediateBeamDepth);
-                    }
-                    design.Fronts.Add(frontDesign);
-                }
-                design.NumberFronts = NumberFrontsCheck?.IsChecked == true;
-                design.NumberLevels = NumberLevelsCheck?.IsChecked == true;
-                design.DrawRackName = DrawRackNameCheck?.IsChecked == true;
-                design.AnnotationScale = TryNum(AnnotationScaleBox?.Text, out var annotationScale) && annotationScale > 0.0
-                    ? annotationScale
-                    : 1.0;
-                design.Dimensions = (DimensionDetail)Math.Min(
-                    (int)DimensionDetail.Detailed,
-                    Math.Max(0, DimensionsBox?.SelectedIndex ?? 0));
-                design.DimensionStyle = SelectedDimensionStyle();
-                ReplaceSafetySelections(design.SafetySelections, safetySelections);
+                design = assembler.BuildDesign(
+                    system,
+                    matrix,
+                    levels,
+                    firstLevel,
+                    beamDepth,
+                    SelectedPostId(),
+                    depthLayout.TotalPositions,
+                    postPeralte,
+                    palletTolerance,
+                    ReadAnnotationOptions(),
+                    safetySelections);
                 var resolution = resolver.Resolve(design);
                 system = resolution.System;
                 system.Name = NameBox?.Text?.Trim();
@@ -471,10 +452,10 @@ namespace RackCad.UI
                                       || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType)))
                 .ToList();
             var levelCount = Math.Max(1, system?.LoadBeamLevels.Count ?? 1);
-            var postCount = Math.Max(2, (system?.Fronts.Count ?? frontRows.Count) + 1);
+            var postCount = Math.Max(2, (system?.Fronts.Count ?? matrix.Count) + 1);
             var levels = system?.Fronts.Count > 0
                 ? system.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList()
-                : frontRows.Select(front => Math.Max(1, front.LoadLevels)).ToList();
+                : matrix.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList();
             if (levels.Count == 0) levels.Add(levelCount);
             var intro = "Izquierda es la salida y derecha la entrada. La selección se proyecta en lateral, frontal y "
                         + "planta: el protector lateral reemplaza las botas del mismo poste y los desviadores respetan "
@@ -514,126 +495,12 @@ namespace RackCad.UI
             Recompose();
         }
 
-        private static bool SafetyDraws(SelectiveSafetySelection selection)
-            => selection != null
-               && (selection.Quantity > 0
-                   || selection.Side != SafetySide.None
-                   || selection.PostSides.Any(post => post != null && post.Side != SafetySide.None));
-
         private void UpdateSafetyButton()
         {
-            var count = safetySelections.Count(SafetyDraws);
+            var count = safetySelections.Count(DynamicEditorSafety.Draws);
             SafetyButton.Content = count > 0
                 ? "Elementos de seguridad (" + count.ToString(CultureInfo.InvariantCulture) + ")…"
                 : "Elementos de seguridad…";
-        }
-
-        private static void ReplaceSafetySelections(
-            ICollection<SelectiveSafetySelection> target,
-            IEnumerable<SelectiveSafetySelection> source)
-        {
-            target.Clear();
-            foreach (var safety in source ?? Enumerable.Empty<SelectiveSafetySelection>())
-            {
-                if (SafetyDraws(safety) && !string.IsNullOrWhiteSpace(safety.ElementId))
-                {
-                    target.Add(safety.DeepCopy());
-                }
-            }
-        }
-
-        /// <summary>
-        /// Update calculated cabeceras on the EXISTING modules. Custom cabeceras remain untouched, matching the
-        /// selective editor's contract: calculated inputs may regenerate defaults but never overwrite explicit edits.
-        /// </summary>
-        private void UpdateHeaderHeightInPlace(double newHeight)
-        {
-            var factory = new RackFrameConfigurationFactory(catalog);
-            var postId = SelectedPostId();
-
-            foreach (var module in system.Modules)
-            {
-                if (!module.IsHeader || !module.UseCalculatedHeaderConfiguration)
-                {
-                    continue;
-                }
-
-                var fondo = module.Length > 0.0 ? module.Length : system.DefaultHeaderLength;
-                module.AssociatedFrameConfiguration = factory.Build(RackFrameTemplateCatalog.Default, postId, newHeight, fondo);
-            }
-
-            builder.Refresh(system);
-        }
-
-        /// <summary>Snapshot the custom fondo of each header module, in header order (null = that header used the default),
-        /// so a full rebuild (pallet/fondos change) can restore the user's per-header fondos afterwards.</summary>
-        private List<double?> SnapshotHeaderFondos()
-        {
-            var fondos = new List<double?>();
-            if (system == null)
-            {
-                return fondos;
-            }
-
-            foreach (var module in system.Modules.Where(m => m.IsHeader))
-            {
-                fondos.Add(module.IsManualOverride && module.Length > 0.0 ? module.Length : (double?)null);
-            }
-
-            return fondos;
-        }
-
-        /// <summary>Re-apply the snapshot fondos to the freshly-rebuilt header modules by header order (only where the
-        /// header still exists), rebuilding each restored cabecera at the NEW height. Returns how many were restored.
-        /// Deep structural cabecera edits are not preserved (they are rebuilt to the standard for the new mesh).</summary>
-        private int RestoreHeaderFondos(List<double?> savedFondos, double newHeight)
-        {
-            if (savedFondos == null || savedFondos.Count == 0 || system == null)
-            {
-                return 0;
-            }
-
-            var factory = new RackFrameConfigurationFactory(catalog);
-            var postId = SelectedPostId();
-            var ordinal = 0;
-            var restored = 0;
-
-            foreach (var module in system.Modules.Where(m => m.IsHeader))
-            {
-                if (ordinal < savedFondos.Count && savedFondos[ordinal].HasValue)
-                {
-                    var fondo = savedFondos[ordinal].Value;
-                    module.Length = fondo;
-                    module.IsManualOverride = true;
-                    module.IsCalculated = false;
-                    module.UseCalculatedHeaderConfiguration = true;
-                    module.AssociatedFrameConfiguration = factory.Build(RackFrameTemplateCatalog.Default, postId, newHeight, fondo);
-                    restored++;
-                }
-
-                ordinal++;
-            }
-
-            if (restored > 0)
-            {
-                system.RecalculatePositions();
-                builder.Refresh(system);
-            }
-
-            return restored;
-        }
-
-        private static bool SamePallet(PalletSpecification a, PalletSpecification b)
-        {
-            if (a == null || b == null)
-            {
-                return false;
-            }
-
-            return Math.Abs(a.Front - b.Front) < 1e-6
-                && Math.Abs(a.Depth - b.Depth) < 1e-6
-                && Math.Abs(a.Height - b.Height) < 1e-6
-                && Math.Abs(a.Weight - b.Weight) < 1e-6;
         }
 
         private void ModulesGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -806,21 +673,19 @@ namespace RackCad.UI
             beamDepth = 0.0;
             error = null;
 
-            levels = frontRows.Count > 0
-                ? frontRows.Max(front => Math.Max(1, front.LoadLevels))
-                : DynamicRackDefaults.DefaultLoadLevels;
+            levels = matrix.MaxLoadLevels();
             if (LoadLevelsBox != null)
             {
                 LoadLevelsBox.Text = levels.ToString(CultureInfo.InvariantCulture);
             }
 
-            var firstRow = frontRows.FirstOrDefault();
+            var firstRow = matrix.Fronts.FirstOrDefault();
             if (firstRow == null)
             {
                 error = "Se requiere al menos un frente.";
                 return false;
             }
-            EnsureCellCount(firstRow, firstRow.LoadLevels);
+            firstRow.EnsureCellCount(firstRow.LoadLevels);
             firstLevel = firstRow.FirstLevelHeight;
             beamDepth = firstRow.Cells[0].InOutBeamDepth;
             BeamDepthBox.Text = Num(beamDepth);
@@ -901,13 +766,13 @@ namespace RackCad.UI
                 return false;
             }
 
-            var firstRow = frontRows.FirstOrDefault();
+            var firstRow = matrix.Fronts.FirstOrDefault();
             if (firstRow == null)
             {
                 error = "Se requiere al menos un frente.";
                 return false;
             }
-            EnsureCellCount(firstRow, firstRow.LoadLevels);
+            firstRow.EnsureCellCount(firstRow.LoadLevels);
             var firstCell = firstRow.Cells[0];
             pallet = new PalletSpecification(
                 firstCell.PalletFront,
@@ -930,13 +795,13 @@ namespace RackCad.UI
                 return false;
             }
 
-            if (frontRows.Count == 0)
+            if (matrix.Count == 0)
             {
                 error = "Se requiere al menos un frente.";
                 return false;
             }
 
-            foreach (var row in frontRows)
+            foreach (var row in matrix.Fronts)
             {
                 if (row.PalletCount < 1)
                 {
@@ -962,7 +827,7 @@ namespace RackCad.UI
                     return false;
                 }
 
-                EnsureCellCount(row, row.LoadLevels);
+                row.EnsureCellCount(row.LoadLevels);
                 if (row.Cells.Take(row.LoadLevels).Any(cell => !cell.IsValid))
                 {
                     error = "Revisa los valores de tarima, claro y largueros de cada celda.";
@@ -998,57 +863,26 @@ namespace RackCad.UI
 
             if (!UiSupport.TryInt(FrontCountBox.Text, out var requestedCount) || requestedCount < 1)
             {
-                FrontCountBox.Text = frontRows.Count.ToString(CultureInfo.InvariantCulture);
+                FrontCountBox.Text = matrix.Count.ToString(CultureInfo.InvariantCulture);
                 SetStatus("La cantidad de frentes debe ser un entero >= 1.", true);
                 return;
             }
 
             if (!CommitSelectedFrontEditor(out var error))
             {
-                FrontCountBox.Text = frontRows.Count.ToString(CultureInfo.InvariantCulture);
+                FrontCountBox.Text = matrix.Count.ToString(CultureInfo.InvariantCulture);
                 SetStatus(error, true);
                 return;
             }
 
-            if (requestedCount == frontRows.Count)
+            if (requestedCount == matrix.Count)
             {
                 FrontCountBox.Text = requestedCount.ToString(CultureInfo.InvariantCulture);
                 return;
             }
 
-            selectedFrontIndex = Math.Max(0, Math.Min(selectedFrontIndex, frontRows.Count - 1));
-            var template = frontRows.Count > 0 ? frontRows[selectedFrontIndex] : null;
-            while (frontRows.Count < requestedCount)
-            {
-                var newFront = new DynamicFrontRow
-                {
-                    Index = frontRows.Count + 1,
-                    PalletCount = template?.PalletCount ?? DynamicRackDefaults.DefaultPalletsWide,
-                    LoadLevels = template?.LoadLevels ?? DynamicRackDefaults.DefaultLoadLevels,
-                    PalletsDeep = template?.PalletsDeep ?? DynamicRackDefaults.DefaultPalletsDeep,
-                    DepthStartPosition = template?.DepthStartPosition ?? 1,
-                    FirstLevelHeight = template?.FirstLevelHeight ?? DynamicRackDefaults.DefaultFirstLevelHeight
-                };
-                foreach (var cell in template?.Cells ?? Enumerable.Empty<DynamicCellRow>())
-                {
-                    newFront.Cells.Add(cell.Clone());
-                }
-                EnsureCellCount(newFront, newFront.LoadLevels);
-                frontRows.Add(newFront);
-            }
-
-            if (frontRows.Count > requestedCount)
-            {
-                frontRows.RemoveRange(requestedCount, frontRows.Count - requestedCount);
-            }
-
-            for (var index = 0; index < frontRows.Count; index++)
-            {
-                frontRows[index].Index = index + 1;
-            }
-
-            selectedFrontIndex = Math.Min(selectedFrontIndex, frontRows.Count - 1);
-            FrontCountBox.Text = frontRows.Count.ToString(CultureInfo.InvariantCulture);
+            matrix.SetFrontCount(requestedCount);
+            FrontCountBox.Text = matrix.Count.ToString(CultureInfo.InvariantCulture);
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
             Recompose();
@@ -1056,72 +890,19 @@ namespace RackCad.UI
 
         private void RefreshFrontRows(IList<DynamicRackFront> resolved)
         {
-            if (resolved == null || resolved.Count != frontRows.Count)
+            if (matrix.RefreshFromResolved(resolved))
             {
-                return;
+                LoadSelectedFrontEditor();
+                RenderFrontMatrix();
             }
-
-            for (var index = 0; index < resolved.Count; index++)
-            {
-                frontRows[index].Index = index + 1;
-                frontRows[index].Bfr = resolved[index].Bfr;
-                frontRows[index].BeamLength = resolved[index].BeamLength;
-                frontRows[index].LoadLevels = Math.Max(1, resolved[index].LoadLevels);
-                frontRows[index].PalletsDeep = Math.Max(2, resolved[index].PalletsDeep);
-                frontRows[index].DepthStartPosition = Math.Max(1, resolved[index].DepthStartPosition);
-                frontRows[index].FirstLevelHeight = resolved[index].FirstLevelHeight;
-                frontRows[index].Cells.Clear();
-                foreach (var level in resolved[index].Levels)
-                {
-                    frontRows[index].Cells.Add(DynamicCellRow.From(level));
-                }
-                EnsureCellCount(frontRows[index], frontRows[index].LoadLevels);
-            }
-
-            LoadSelectedFrontEditor();
-            RenderFrontMatrix();
         }
 
         private void RestoreFrontRows(IEnumerable<DynamicRackFront> resolved)
         {
-            frontRows.Clear();
-            foreach (var front in resolved ?? Enumerable.Empty<DynamicRackFront>())
-            {
-                var row = new DynamicFrontRow
-                {
-                    Index = frontRows.Count + 1,
-                    PalletCount = Math.Max(1, front.PalletCount),
-                    LoadLevels = Math.Max(1, front.LoadLevels),
-                    PalletsDeep = Math.Max(2, front.PalletsDeep),
-                    DepthStartPosition = Math.Max(1, front.DepthStartPosition),
-                    FirstLevelHeight = front.FirstLevelHeight,
-                    Bfr = front.Bfr,
-                    BeamLength = front.BeamLength
-                };
-                foreach (var level in front.Levels)
-                {
-                    row.Cells.Add(DynamicCellRow.From(level));
-                }
-                EnsureCellCount(row, row.LoadLevels);
-                frontRows.Add(row);
-            }
-
-            if (frontRows.Count == 0)
-            {
-                frontRows.Add(new DynamicFrontRow
-                {
-                    Index = 1,
-                    PalletCount = DynamicRackDefaults.DefaultPalletsWide,
-                    LoadLevels = DynamicRackDefaults.DefaultLoadLevels,
-                    PalletsDeep = DynamicRackDefaults.DefaultPalletsDeep,
-                    DepthStartPosition = 1
-                });
-            }
-
-            selectedFrontIndex = Math.Max(0, Math.Min(selectedFrontIndex, frontRows.Count - 1));
+            matrix.RestoreFromResolved(resolved);
             if (FrontCountBox != null)
             {
-                FrontCountBox.Text = frontRows.Count.ToString(CultureInfo.InvariantCulture);
+                FrontCountBox.Text = matrix.Count.ToString(CultureInfo.InvariantCulture);
             }
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
@@ -1134,12 +915,7 @@ namespace RackCad.UI
                 return false;
             }
 
-            selectedFrontIndex = Math.Max(0, Math.Min(selectedFrontIndex, frontRows.Count - 1));
-            selectedLevelIndex = Math.Max(0, Math.Min(selectedLevelIndex, values.LoadLevels - 1));
-            var row = frontRows[selectedFrontIndex];
-            ApplyFrontValues(row, values);
-            EnsureCellCount(row, row.LoadLevels);
-            ApplyCellValues(row.Cells[selectedLevelIndex], values);
+            matrix.CommitEditorValues(values);
             UpdateMaximumLevelText();
             return true;
         }
@@ -1148,7 +924,7 @@ namespace RackCad.UI
         {
             values = null;
             error = null;
-            if (frontRows.Count == 0 || SelectedPositionsBox == null || SelectedLevelsBox == null
+            if (matrix.Count == 0 || SelectedPositionsBox == null || SelectedLevelsBox == null
                 || SelectedPalletsDeepBox == null || SelectedDepthStartBox == null || SelectedBeamLengthBox == null)
             {
                 return true;
@@ -1245,57 +1021,32 @@ namespace RackCad.UI
             return true;
         }
 
-        private static void ApplyFrontValues(DynamicFrontRow row, DynamicEditorValues values)
-        {
-            row.PalletCount = values.PalletCount;
-            row.LoadLevels = values.LoadLevels;
-            row.PalletsDeep = values.PalletsDeep;
-            row.DepthStartPosition = values.DepthStartPosition;
-            row.FirstLevelHeight = values.FirstLevelHeight;
-        }
-
-        private static void ApplyCellValues(DynamicCellRow cell, DynamicEditorValues values)
-        {
-            cell.PalletFront = values.PalletFront;
-            cell.PalletHeight = values.PalletHeight;
-            cell.PalletWeight = values.PalletWeight;
-            cell.ClearHeight = values.ClearHeight;
-            cell.InOutBeamCatalogId = values.InOutBeamCatalogId;
-            cell.InOutBeamDepth = values.InOutBeamDepth;
-            cell.BeamLengthOverride = values.BeamLengthOverride;
-            cell.IntermediateBeamCatalogId = values.IntermediateBeamCatalogId;
-            cell.IntermediateBeamDepth = values.IntermediateBeamDepth;
-        }
-
         private void UpdateMaximumLevelText()
         {
-            if (LoadLevelsBox != null && frontRows.Count > 0)
+            if (LoadLevelsBox != null && matrix.Count > 0)
             {
-                LoadLevelsBox.Text = frontRows.Max(front => Math.Max(1, front.LoadLevels))
-                    .ToString(CultureInfo.InvariantCulture);
+                LoadLevelsBox.Text = matrix.MaxLoadLevels().ToString(CultureInfo.InvariantCulture);
             }
         }
 
         private void LoadSelectedFrontEditor()
         {
-            if (frontRows.Count == 0 || SelectedPositionsBox == null)
+            if (matrix.Count == 0 || SelectedPositionsBox == null)
             {
                 return;
             }
 
-            NormalizeSelectedCells();
-            selectedFrontIndex = Math.Max(0, Math.Min(selectedFrontIndex, frontRows.Count - 1));
-            var row = frontRows[selectedFrontIndex];
-            selectedLevelIndex = Math.Max(0, Math.Min(selectedLevelIndex, Math.Max(1, row.LoadLevels) - 1));
-            EnsureCellCount(row, row.LoadLevels);
-            var cell = row.Cells[selectedLevelIndex];
+            matrix.NormalizeSelection();
+            var row = matrix.Fronts[matrix.SelectedFrontIndex];
+            row.EnsureCellCount(row.LoadLevels);
+            var cell = row.Cells[matrix.SelectedLevelIndex];
             SelectedFrontText.Text = string.Format(
                 CultureInfo.InvariantCulture,
                 "Celda: Frente {0} · Nivel {1}{2}",
-                selectedFrontIndex + 1,
-                selectedLevelIndex + 1,
-                selectedCells.Count > 1
-                    ? " · " + selectedCells.Count.ToString(CultureInfo.InvariantCulture) + " seleccionadas"
+                matrix.SelectedFrontIndex + 1,
+                matrix.SelectedLevelIndex + 1,
+                matrix.SelectedCellCount > 1
+                    ? " · " + matrix.SelectedCellCount.ToString(CultureInfo.InvariantCulture) + " seleccionadas"
                     : string.Empty);
             SelectedPositionsBox.Text = row.PalletCount.ToString(CultureInfo.InvariantCulture);
             SelectedLevelsBox.Text = Math.Max(1, row.LoadLevels).ToString(CultureInfo.InvariantCulture);
@@ -1327,38 +1078,6 @@ namespace RackCad.UI
                 beam);
         }
 
-        private void NormalizeSelectedCells()
-        {
-            if (frontRows.Count == 0)
-            {
-                selectedCells.Clear();
-                return;
-            }
-
-            selectedFrontIndex = Math.Max(0, Math.Min(selectedFrontIndex, frontRows.Count - 1));
-            selectedLevelIndex = Math.Max(0, Math.Min(
-                selectedLevelIndex,
-                Math.Max(1, frontRows[selectedFrontIndex].LoadLevels) - 1));
-            selectedCells.RemoveWhere(cell => cell.FrontIndex < 0
-                                              || cell.FrontIndex >= frontRows.Count
-                                              || cell.LevelIndex < 0
-                                              || cell.LevelIndex >= Math.Max(1, frontRows[cell.FrontIndex].LoadLevels));
-            var primary = (FrontIndex: selectedFrontIndex, LevelIndex: selectedLevelIndex);
-            if (!selectedCells.Contains(primary))
-            {
-                if (selectedCells.Count > 0)
-                {
-                    var next = selectedCells.First();
-                    selectedFrontIndex = next.FrontIndex;
-                    selectedLevelIndex = next.LevelIndex;
-                }
-                else
-                {
-                    selectedCells.Add(primary);
-                }
-            }
-        }
-
         private void SelectedFront_Changed(object sender, RoutedEventArgs e)
         {
             if (suppressRecompose || system == null)
@@ -1386,15 +1105,15 @@ namespace RackCad.UI
         private void ApplyAll_Click(object sender, RoutedEventArgs e) => ApplyEditorScope(DynamicRackCellScope.All);
 
         private void ApplyFrontData_Click(object sender, RoutedEventArgs e)
-            => ApplyFrontDataTo(new[] { selectedFrontIndex }, "este frente");
+            => ApplyFrontDataTo(new[] { matrix.SelectedFrontIndex }, "este frente");
 
         private void ApplySelectedFrontData_Click(object sender, RoutedEventArgs e)
             => ApplyFrontDataTo(
-                selectedCells.Select(cell => cell.FrontIndex),
+                matrix.SelectedFrontIndices,
                 "los frentes seleccionados");
 
         private void ApplyAllFrontData_Click(object sender, RoutedEventArgs e)
-            => ApplyFrontDataTo(Enumerable.Range(0, frontRows.Count), "todos los frentes");
+            => ApplyFrontDataTo(Enumerable.Range(0, matrix.Count), "todos los frentes");
 
         private void ApplyFrontDataTo(IEnumerable<int> requestedTargets, string description)
         {
@@ -1404,28 +1123,19 @@ namespace RackCad.UI
                 return;
             }
 
-            var targets = (requestedTargets ?? Enumerable.Empty<int>())
-                .Where(index => index >= 0 && index < frontRows.Count)
-                .Distinct()
-                .ToList();
+            var targets = matrix.NormalizeFrontTargets(requestedTargets);
             if (targets.Count == 0)
             {
                 SetStatus("Selecciona al menos una celda para identificar sus frentes.", true);
                 return;
             }
 
-            var saved = frontRows.Select(CloneFrontRow).ToList();
-            foreach (var target in targets)
-            {
-                ApplyFrontValues(frontRows[target], values);
-                EnsureCellCount(frontRows[target], frontRows[target].LoadLevels);
-            }
-            NormalizeSelectedCells();
+            var saved = matrix.Snapshot();
+            matrix.ApplyFrontValuesTo(values, targets);
             if (!Recompose())
             {
-                frontRows.Clear();
-                frontRows.AddRange(saved);
-                NormalizeSelectedCells();
+                matrix.Restore(saved);
+                matrix.NormalizeSelection();
                 LoadSelectedFrontEditor();
                 RenderFrontMatrix();
                 return;
@@ -1451,32 +1161,12 @@ namespace RackCad.UI
                 return;
             }
 
-            var saved = frontRows.Select(CloneFrontRow).ToList();
-            var sourceIndex = Math.Max(0, Math.Min(selectedFrontIndex, frontRows.Count - 1));
-            var levelIndex = Math.Max(0, Math.Min(selectedLevelIndex, values.LoadLevels - 1));
-            ApplyFrontValues(frontRows[sourceIndex], values);
-            EnsureCellCount(frontRows[sourceIndex], frontRows[sourceIndex].LoadLevels);
-
-            var targets = DynamicRackCellScopeResolver.Targets(
-                frontRows.Select(row => row.LoadLevels).ToList(),
-                sourceIndex,
-                levelIndex,
-                scope,
-                selectedCells.Select(cell => new DynamicRackCellAddress(cell.FrontIndex, cell.LevelIndex)));
-            foreach (var target in targets)
-            {
-                var row = frontRows[target.FrontIndex];
-                EnsureCellCount(row, row.LoadLevels);
-                ApplyCellValues(row.Cells[target.LevelIndex], values);
-            }
-
-            selectedFrontIndex = sourceIndex;
-            selectedLevelIndex = levelIndex;
+            var saved = matrix.Snapshot();
+            var count = matrix.ApplyScope(values, scope);
             UpdateMaximumLevelText();
             if (!Recompose())
             {
-                frontRows.Clear();
-                frontRows.AddRange(saved);
+                matrix.Restore(saved);
                 LoadSelectedFrontEditor();
                 RenderFrontMatrix();
                 return;
@@ -1485,27 +1175,7 @@ namespace RackCad.UI
             SetStatus(string.Format(
                 CultureInfo.InvariantCulture,
                 "Datos aplicados a {0} celda(s).",
-                targets.Count), false);
-        }
-
-        private static DynamicFrontRow CloneFrontRow(DynamicFrontRow source)
-        {
-            var clone = new DynamicFrontRow
-            {
-                Index = source.Index,
-                PalletCount = source.PalletCount,
-                LoadLevels = source.LoadLevels,
-                PalletsDeep = source.PalletsDeep,
-                DepthStartPosition = source.DepthStartPosition,
-                FirstLevelHeight = source.FirstLevelHeight,
-                Bfr = source.Bfr,
-                BeamLength = source.BeamLength
-            };
-            foreach (var cell in source.Cells)
-            {
-                clone.Cells.Add(cell.Clone());
-            }
-            return clone;
+                count), false);
         }
 
         private void RenderFrontMatrix()
@@ -1519,14 +1189,12 @@ namespace RackCad.UI
             DynamicMatrixGrid.RowDefinitions.Clear();
             DynamicMatrixGrid.ColumnDefinitions.Clear();
             DynamicMatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(64.0) });
-            foreach (var _ in frontRows)
+            foreach (var _ in matrix.Fronts)
             {
                 DynamicMatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(118.0) });
             }
 
-            var levels = frontRows.Count > 0
-                ? frontRows.Max(front => Math.Max(1, front.LoadLevels))
-                : DynamicRackDefaults.DefaultLoadLevels;
+            var levels = matrix.MaxLoadLevels();
             DynamicMatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             for (var level = 0; level < levels; level++)
             {
@@ -1539,16 +1207,16 @@ namespace RackCad.UI
                 Margin = new Thickness(2.0)
             }, 0, 0);
 
-            for (var frontIndex = 0; frontIndex < frontRows.Count; frontIndex++)
+            for (var frontIndex = 0; frontIndex < matrix.Count; frontIndex++)
             {
                 var captured = frontIndex;
-                var row = frontRows[frontIndex];
+                var row = matrix.Fronts[frontIndex];
                 var header = new StackPanel { Margin = new Thickness(3.0, 0.0, 3.0, 5.0) };
                 header.Children.Add(new TextBlock
                 {
                     Text = "Frente " + (frontIndex + 1).ToString(CultureInfo.InvariantCulture),
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Foreground = frontIndex == selectedFrontIndex ? SelectionStroke : LabelStroke,
+                    Foreground = frontIndex == matrix.SelectedFrontIndex ? SelectionStroke : LabelStroke,
                     FontWeight = FontWeights.SemiBold
                 });
                 header.Children.Add(new TextBlock
@@ -1612,12 +1280,12 @@ namespace RackCad.UI
                     Margin = new Thickness(2.0, 7.0, 6.0, 7.0)
                 }, displayRow + 1, 0);
 
-                for (var frontIndex = 0; frontIndex < frontRows.Count; frontIndex++)
+                for (var frontIndex = 0; frontIndex < matrix.Count; frontIndex++)
                 {
                     var captured = frontIndex;
                     var capturedLevel = level - 1;
-                    var row = frontRows[frontIndex];
-                    EnsureCellCount(row, row.LoadLevels);
+                    var row = matrix.Fronts[frontIndex];
+                    row.EnsureCellCount(row.LoadLevels);
                     var cellValues = row.Cells[Math.Max(0, Math.Min(capturedLevel, row.Cells.Count - 1))];
                     var bfr = DynamicFrontGeometry.Bfr(cellValues.PalletFront);
                     var beam = row.BeamLength > 0.0
@@ -1626,9 +1294,9 @@ namespace RackCad.UI
                             cellValues.PalletFront, row.PalletCount, DynamicRackDefaults.DefaultPalletTolerance);
                     var active = level <= Math.Max(1, row.LoadLevels);
                     var selected = active
-                                   && frontIndex == selectedFrontIndex
-                                   && capturedLevel == selectedLevelIndex;
-                    var included = active && selectedCells.Contains((frontIndex, capturedLevel));
+                                   && frontIndex == matrix.SelectedFrontIndex
+                                   && capturedLevel == matrix.SelectedLevelIndex;
+                    var included = active && matrix.IsSelected(frontIndex, capturedLevel);
                     var cell = new Border
                     {
                         BorderBrush = selected
@@ -1735,74 +1403,28 @@ namespace RackCad.UI
             }
         }
 
-        private void EnsureCellCount(DynamicFrontRow row, int levelCount)
-        {
-            if (row == null)
-            {
-                return;
-            }
-
-            while (row.Cells.Count < Math.Max(1, levelCount))
-            {
-                row.Cells.Add(row.Cells.LastOrDefault()?.Clone() ?? DynamicCellRow.Default());
-            }
-        }
-
-        private void EnsureIntermediateBeamDepthCount(DynamicFrontRow row, int levelCount)
-        {
-            EnsureCellCount(row, levelCount);
-        }
-
         private bool SelectedEditorDiffers()
         {
-            if (!TryReadSelectedEditor(out var values, out _) || frontRows.Count == 0)
+            if (!TryReadSelectedEditor(out var values, out _))
             {
                 return false;
             }
 
-            var index = Math.Max(0, Math.Min(selectedFrontIndex, frontRows.Count - 1));
-            var row = frontRows[index];
-            EnsureCellCount(row, row.LoadLevels);
-            var levelIndex = Math.Max(0, Math.Min(selectedLevelIndex, row.LoadLevels - 1));
-            var cell = row.Cells[levelIndex];
-            return row.PalletCount != values.PalletCount
-                   || row.LoadLevels != values.LoadLevels
-                   || row.PalletsDeep != values.PalletsDeep
-                   || row.DepthStartPosition != values.DepthStartPosition
-                   || Math.Abs(row.FirstLevelHeight - values.FirstLevelHeight) > 1e-6
-                   || Math.Abs(cell.PalletFront - values.PalletFront) > 1e-6
-                   || Math.Abs(cell.PalletHeight - values.PalletHeight) > 1e-6
-                   || Math.Abs(cell.PalletWeight - values.PalletWeight) > 1e-6
-                   || Math.Abs(cell.ClearHeight - values.ClearHeight) > 1e-6
-                   || !string.Equals(cell.InOutBeamCatalogId, values.InOutBeamCatalogId, StringComparison.OrdinalIgnoreCase)
-                   || Math.Abs(cell.InOutBeamDepth - values.InOutBeamDepth) > 1e-6
-                   || !NullableDoubleEquals(cell.BeamLengthOverride, values.BeamLengthOverride)
-                   || !string.Equals(cell.IntermediateBeamCatalogId, values.IntermediateBeamCatalogId, StringComparison.OrdinalIgnoreCase)
-                   || Math.Abs(cell.IntermediateBeamDepth - values.IntermediateBeamDepth) > 1e-6;
-        }
-
-        private static bool NullableDoubleEquals(double? left, double? right)
-        {
-            if (!left.HasValue || !right.HasValue)
-            {
-                return left.HasValue == right.HasValue;
-            }
-
-            return Math.Abs(left.Value - right.Value) < 1e-6;
+            return matrix.SelectedEditorDiffers(values);
         }
 
         private void SelectFront(int index)
-            => SelectCell(index, Math.Min(selectedLevelIndex, Math.Max(1, frontRows.ElementAtOrDefault(index)?.LoadLevels ?? 1) - 1));
+            => SelectCell(index, Math.Min(matrix.SelectedLevelIndex, Math.Max(1, matrix.Fronts.ElementAtOrDefault(index)?.LoadLevels ?? 1) - 1));
 
         private void SelectCell(int frontIndex, int levelIndex, bool extendSelection = false)
         {
-            if (frontIndex < 0 || frontIndex >= frontRows.Count)
+            if (frontIndex < 0 || frontIndex >= matrix.Count)
             {
                 return;
             }
 
-            levelIndex = Math.Max(0, Math.Min(levelIndex, Math.Max(1, frontRows[frontIndex].LoadLevels) - 1));
-            if (!extendSelection && frontIndex == selectedFrontIndex && levelIndex == selectedLevelIndex)
+            levelIndex = matrix.ClampLevel(frontIndex, levelIndex);
+            if (!extendSelection && frontIndex == matrix.SelectedFrontIndex && levelIndex == matrix.SelectedLevelIndex)
             {
                 return;
             }
@@ -1819,33 +1441,7 @@ namespace RackCad.UI
                 return;
             }
 
-            var key = (FrontIndex: frontIndex, LevelIndex: levelIndex);
-            if (extendSelection)
-            {
-                if (selectedCells.Contains(key) && selectedCells.Count > 1)
-                {
-                    selectedCells.Remove(key);
-                    if (selectedFrontIndex == frontIndex && selectedLevelIndex == levelIndex)
-                    {
-                        var next = selectedCells.First();
-                        selectedFrontIndex = next.FrontIndex;
-                        selectedLevelIndex = next.LevelIndex;
-                    }
-                }
-                else
-                {
-                    selectedCells.Add(key);
-                    selectedFrontIndex = frontIndex;
-                    selectedLevelIndex = levelIndex;
-                }
-            }
-            else
-            {
-                selectedCells.Clear();
-                selectedCells.Add(key);
-                selectedFrontIndex = frontIndex;
-                selectedLevelIndex = levelIndex;
-            }
+            matrix.ToggleCell(frontIndex, levelIndex, extendSelection);
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
             DrawSideView();
@@ -1853,7 +1449,7 @@ namespace RackCad.UI
 
         private void AdjustFrontPositions(int index, int delta)
         {
-            if (index < 0 || index >= frontRows.Count)
+            if (index < 0 || index >= matrix.Count)
             {
                 return;
             }
@@ -1864,8 +1460,7 @@ namespace RackCad.UI
                 return;
             }
 
-            selectedFrontIndex = index;
-            frontRows[index].PalletCount = Math.Max(1, frontRows[index].PalletCount + delta);
+            matrix.AdjustPositions(index, delta);
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
             Recompose();
@@ -1873,7 +1468,7 @@ namespace RackCad.UI
 
         private void AdjustFrontLevels(int index, int delta)
         {
-            if (index < 0 || index >= frontRows.Count)
+            if (index < 0 || index >= matrix.Count)
             {
                 return;
             }
@@ -1884,8 +1479,7 @@ namespace RackCad.UI
                 return;
             }
 
-            selectedFrontIndex = index;
-            frontRows[index].LoadLevels = Math.Max(1, frontRows[index].LoadLevels + delta);
+            matrix.AdjustLevels(index, delta);
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
             Recompose();
@@ -2124,7 +1718,7 @@ namespace RackCad.UI
                 : Visibility.Collapsed;
             PreviewLateralPostBox.Visibility = visible;
             PreviewLateralPostLabel.Visibility = visible;
-            var count = Math.Max(1, (system?.Fronts.Count ?? frontRows.Count) + 1);
+            var count = Math.Max(1, (system?.Fronts.Count ?? matrix.Count) + 1);
             selectedLateralPostIndex = Math.Min(selectedLateralPostIndex, count - 1);
             if (PreviewLateralPostBox.Items.Count == count
                 && PreviewLateralPostBox.SelectedIndex == selectedLateralPostIndex)
@@ -2355,12 +1949,12 @@ namespace RackCad.UI
                 var left = layout.PostPositions[frontIndex];
                 var right = layout.PostPositions[frontIndex + 1];
                 var beamStart = left + layout.TroquelPositions[frontIndex];
-                if (frontIndex == selectedFrontIndex)
+                if (frontIndex == matrix.SelectedFrontIndex)
                 {
                     var selectedLevels = DynamicFrontGeometry.LoadBeamLevels(system, front);
                     if (selectedLevels.Count > 0)
                     {
-                        var levelIndex = Math.Max(0, Math.Min(selectedLevelIndex, selectedLevels.Count - 1));
+                        var levelIndex = Math.Max(0, Math.Min(matrix.SelectedLevelIndex, selectedLevels.Count - 1));
                         double Elevation(DynamicLoadBeamLevel level) => end == DynamicRackEnd.Entrance
                             ? level.EntranceElevation
                             : level.ExitElevation;
@@ -2403,9 +1997,9 @@ namespace RackCad.UI
                     string.Format(CultureInfo.InvariantCulture, "Frente {0} · ×{1}\nBFR {2:0.##} · L {3:0.##}",
                         frontIndex + 1, front.PalletCount, front.Bfr, front.BeamLength),
                     Math.Max(88.0, (right - left) * mapScale),
-                    frontIndex == selectedFrontIndex ? SelectionStroke : LabelStroke,
+                    frontIndex == matrix.SelectedFrontIndex ? SelectionStroke : LabelStroke,
                     10.5,
-                    frontIndex == selectedFrontIndex ? FontWeights.SemiBold : FontWeights.Normal);
+                    frontIndex == matrix.SelectedFrontIndex ? FontWeights.SemiBold : FontWeights.Normal);
             }
 
             var safety = new DynamicSystemFrontalBuilder()
@@ -3050,7 +2644,7 @@ namespace RackCad.UI
 
             safetySelections.Clear();
             safetySelections.AddRange(loaded.SafetySelections
-                .Where(SafetyDraws)
+                .Where(DynamicEditorSafety.Draws)
                 .Select(selection => selection.DeepCopy()));
             var resolution = resolver.Resolve(loaded);
             design = loaded;
@@ -3221,101 +2815,6 @@ namespace RackCad.UI
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private sealed class DynamicFrontRow
-        {
-            public int Index { get; set; }
-            public int PalletCount { get; set; }
-            public int LoadLevels { get; set; }
-            public int PalletsDeep { get; set; }
-            public int DepthStartPosition { get; set; } = 1;
-            public double FirstLevelHeight { get; set; } = DynamicRackDefaults.DefaultFirstLevelHeight;
-            public double Bfr { get; set; }
-            public double BeamLength { get; set; }
-            public List<DynamicCellRow> Cells { get; } = new List<DynamicCellRow>();
-        }
-
-        private sealed class DynamicCellRow
-        {
-            public double PalletFront { get; set; } = 42.0;
-            public double PalletHeight { get; set; } = 60.0;
-            public double PalletWeight { get; set; } = 1000.0;
-            public double ClearHeight { get; set; } = DynamicRackDefaults.DefaultClearHeight;
-            public string InOutBeamCatalogId { get; set; } = DynamicRackDefaults.InOutBeamCatalogId;
-            public double InOutBeamDepth { get; set; } = DynamicRackDefaults.DefaultBeamDepth;
-            public double? BeamLengthOverride { get; set; }
-            public string IntermediateBeamCatalogId { get; set; } = DynamicRackDefaults.IntermediateBeamCatalogId;
-            public double IntermediateBeamDepth { get; set; } = DynamicRackDefaults.DefaultIntermediateBeamDepth;
-
-            public bool IsValid => PalletFront > 0.0 && PalletHeight > 0.0 && PalletWeight >= 0.0
-                                   && ClearHeight >= 0.0 && InOutBeamDepth > 0.0
-                                   && IntermediateBeamDepth > 0.0
-                                   && (!BeamLengthOverride.HasValue || BeamLengthOverride.Value > 0.0);
-
-            public DynamicRackLevelDesign ToDesign()
-                => new DynamicRackLevelDesign
-                {
-                    PalletFront = PalletFront,
-                    PalletHeight = PalletHeight,
-                    PalletWeight = PalletWeight,
-                    ClearHeight = ClearHeight,
-                    InOutBeamCatalogId = InOutBeamCatalogId,
-                    InOutBeamDepth = InOutBeamDepth,
-                    BeamLengthOverride = BeamLengthOverride,
-                    IntermediateBeamCatalogId = IntermediateBeamCatalogId,
-                    IntermediateBeamDepth = IntermediateBeamDepth
-                };
-
-            public DynamicCellRow Clone()
-                => new DynamicCellRow
-                {
-                    PalletFront = PalletFront,
-                    PalletHeight = PalletHeight,
-                    PalletWeight = PalletWeight,
-                    ClearHeight = ClearHeight,
-                    InOutBeamCatalogId = InOutBeamCatalogId,
-                    InOutBeamDepth = InOutBeamDepth,
-                    BeamLengthOverride = BeamLengthOverride,
-                    IntermediateBeamCatalogId = IntermediateBeamCatalogId,
-                    IntermediateBeamDepth = IntermediateBeamDepth
-                };
-
-            public static DynamicCellRow Default() => new DynamicCellRow();
-
-            public static DynamicCellRow From(DynamicRackLevel level)
-                => level == null
-                    ? Default()
-                    : new DynamicCellRow
-                    {
-                        PalletFront = level.Pallet?.Front ?? 42.0,
-                        PalletHeight = level.Pallet?.Height ?? 60.0,
-                        PalletWeight = level.Pallet?.Weight ?? 0.0,
-                        ClearHeight = level.ClearHeight,
-                        InOutBeamCatalogId = level.InOutBeamCatalogId,
-                        InOutBeamDepth = level.InOutBeamDepth,
-                        BeamLengthOverride = level.BeamLengthOverride,
-                        IntermediateBeamCatalogId = level.IntermediateBeamCatalogId,
-                        IntermediateBeamDepth = level.IntermediateBeamDepth
-                    };
-        }
-
-        private sealed class DynamicEditorValues
-        {
-            public int PalletCount { get; set; }
-            public int LoadLevels { get; set; }
-            public int PalletsDeep { get; set; }
-            public int DepthStartPosition { get; set; }
-            public double? BeamLengthOverride { get; set; }
-            public double FirstLevelHeight { get; set; }
-            public double PalletFront { get; set; }
-            public double PalletHeight { get; set; }
-            public double PalletWeight { get; set; }
-            public double ClearHeight { get; set; }
-            public string InOutBeamCatalogId { get; set; }
-            public double InOutBeamDepth { get; set; }
-            public string IntermediateBeamCatalogId { get; set; }
-            public double IntermediateBeamDepth { get; set; }
         }
 
         private enum DynamicPreviewMode
