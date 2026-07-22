@@ -340,6 +340,14 @@ BOM, GUID, formatos, fallback legacy y la clave del Xrecord) y deja idénticos c
 en el de Application). **No requiere validación en AutoCAD** (`requires_autocad: false`; ROADMAP no la marca con
 ✋) ni owner-validation. La rama se integra por `git merge --no-ff` en esta sesión.
 
+I-07 (`docs/adr-retroactivos`) queda **integrada** el **2026-07-22**. Retro-documenta las trece
+decisiones que la antigua §7 conservaba temporalmente como **ADR-0006 a ADR-0018** (una por decisión):
+renumeró a 0006-0012 los siete ADRs ya redactados —tras el rebase, porque `main` ocupó 0003-0005— y
+añadió 0013-0018. El dueño los **aceptó** el 2026-07-22 («Sí, apruebo»; registro en
+`docs/automation/decisions/I-07.md`), sin modificarlos y conservando las limitaciones sobre fecha,
+decisores y evidencia originales. Es **solo documentación**: no cambia producto, catálogos, pruebas ni
+build; su cierre retira esas decisiones de HANDOFF §7 (ahora viven en `docs/adr/`).
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -527,6 +535,13 @@ AutoCAD: no ejecutado; no requerido por contrato.
 
 ## 4. Siguiente acción
 
+Con **I-07** (`docs/adr-retroactivos`, Fase 1) **integrada en esta sesión** —retro-documentación de las
+trece decisiones de HANDOFF §7 como **ADR-0006 a 0018**, **aceptados por el dueño** (2026-07-22, «Sí,
+apruebo»); **solo documentación, sin cambio de producto**—, el registro de esas decisiones deja de vivir
+en HANDOFF §7 y pasa a `docs/adr/`; el worktree y las ramas de I-07 se retiran en la limpieza de esta
+sesión. El siguiente paso natural sigue siendo **I-25** (`feature/guardas-traseras`, sobre I-22) e
+**I-18 (Push Back)** (a la espera de sus bloques DWG del dueño); **I-23** cierra la Fase 5 al final.
+
 Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12**, **I-19**, **I-15**, **I-21** e **I-20** integradas (**I-21**
 y **I-20** en esta tanda de integración serializada), la **pista B del Plugin** está cerrada (la serialización
 I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme, **I-12**
@@ -540,7 +555,7 @@ y **selectivo** (I-20: `SelectiveEditorState`) a Application, dejando ambas vent
 pintando. Con **I-22** (`refactor/safety-placement`) **integrada en esta sesión** (colocación de seguridad del
 selectivo; detalle abajo), el siguiente paso natural es **I-25** (`feature/guardas-traseras`, sobre I-22) e
 **I-18 (Push Back)**, que ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y solo espera los **bloques
-DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su worktree ya reclamado. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada**: la
+DWG del dueño**. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada**: la
 **guardia de unidades** avisa cuando el dibujo no está en pulgadas, **sin conversión ni reescalado** (ADR-0005
 aceptado); no desbloquea ni estorba ninguna otra iniciativa. **I-24** (`refactor/ui-tests-editores`, Fase 5) queda
 **integrada** en esta sesión: **pruebas de editores** en `tests/RackCad.UI.Tests` (ViewModels + límites reales de
@@ -555,21 +570,38 @@ cierra la Fase 5 al final (depende de todas).
 
 **I-17** (`refactor/clon-unico-cabecera`, Fase 3) queda **integrada** en esta sesión: **clon único de cabecera**
 (`RackFrameProjectStore.DeepCopy`, hallazgo **U4**), **sin cambio de comportamiento** (detalle en §1 y §5); cierra
-U4 y **no** desbloquea ni estorba otra iniciativa. El siguiente paso natural sigue siendo **I-25**/**I-18** (o
-continuar **I-07** `docs/adr-retroactivos` en su worktree ya reclamado).
+U4 y **no** desbloquea ni estorba otra iniciativa. El siguiente paso natural sigue siendo **I-25**/**I-18**.
 
 Con **I-03** (`refactor/fallos-silenciosos`, Fase 1) **integrada en esta sesión** —logger mínimo a
 `%AppData%\RackCad\logs`, `Report()` con stack, los 14 `catch` del Plugin y los stores best-effort registrando,
 escritura atómica en los 4 stores y carga que distingue archivo ausente de ilegible; **aditivo, sin cambio de
 comportamiento**, no desbloquea ni estorba otra iniciativa— el relleno de robustez de Fase 1 (P1/D2) queda
-cerrado. Continúa disponible **I-07** (`docs/adr-retroactivos`, en su worktree ya reclamado) y las Fases 4-5
-(**I-25** sobre I-22, **I-18** Push Back a la espera de sus bloques DWG, **I-23** al final).
+cerrado. Con **I-07** también integrada en esta sesión (arriba), quedan las Fases 4-5 (**I-25** sobre I-22,
+**I-18** Push Back a la espera de sus bloques DWG, **I-23** al final).
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-07 — 2026-07-22 (solo documentación):**
+
+- iniciativa **solo documental**: **no cambia código, pruebas ni build**; el baseline de pruebas se
+  mantiene en el de I-03 (**1004** `RackCad.Tests` + **184** `RackCad.UI.Tests`), sin cambio; diff **vacío**
+  bajo `src/`, `assets/` y `deploy/` (solo `docs/adr/`, `docs/initiatives/` y `docs/automation/`);
+- `origin/main` **no avanzó** desde `6d080eb` durante el ciclo de I-07: **sin rebase** (merge-base =
+  `origin/main`; I-07 **6 commits delante, 0 detrás**); el candidato aprobado por el dueño es `600b22e`;
+- el dueño **aceptó** los **ADR-0006 a 0018** el 2026-07-22 («Sí, apruebo»; registro en
+  `docs/automation/decisions/I-07.md`): estados `propuesto` → `aceptado`, secciones normativas inmutables
+  con nota posterior; la aceptación **conserva** las limitaciones sobre fecha, decisores y evidencia
+  originales y **no** amplía I-07 ni absorbe I-18/I-23/I-25;
+- cierre documental: se retiran las **trece decisiones** de HANDOFF §7 con su aviso temporal (cubiertas por
+  los ADRs; §7 queda como puntero a `docs/adr/`) y se marca I-07 `integrada (2026-07-22)` en ROADMAP;
+- CI de rama **verde** sobre el candidato `600b22e` (run `29965115445`, **cuatro jobs verdes** —Tests
+  (Domain+Application), Build UI, UI Tests (WPF controls, net8.0-windows) y Build Plugin without AutoCAD—) y
+  re-verde sobre el **commit documental final** antes del merge; este documento **no inventa** el SHA del
+  merge de `main` (vive en `git log --first-parent main`).
 
 **Baseline integrada de I-17 — 2026-07-22:**
 
@@ -1222,24 +1254,11 @@ documento no inventa el SHA futuro del merge de `main`.
 1. ¿La cantidad de parrilla debe poder variar por frente/nivel, o basta el valor global según el
    uso real?
 
-## 7. Decisiones vigentes pendientes de I-07
+## 7. Decisiones vigentes (registradas como ADR)
 
-> **Conservación temporal obligatoria:** estas decisiones proceden de la antigua sección 7 y aún
-> gobiernan el proyecto. Solo podrán retirarse de HANDOFF cuando I-07 integre los ADRs retroactivos
-> correspondientes. I-06 no las convierte en ADR ni reabre su contenido.
-
-| Decisión | Motivo / alcance vigente |
-|---|---|
-| Solo `RackCad.Plugin` toca AutoCAD | Geometría y BOM permanecen puros y testeables en Application. |
-| Catálogos CSV Excel-first, sin base de datos | El usuario los edita en Excel; se conserva fallback Windows-1252 y caché por firma. |
-| Un solo `secciones.csv` con columna `rol` | Postes, celosía, largueros y separadores comparten una hoja y FKs explícitas. |
-| Identidad por GUID embebido en DWG | El nombre visible no es una identidad estable. |
-| `Actualizar` redibuja; `Insertar` agrega una vista ligada | Convención permanente de los cuatro editores. |
-| Parámetros dinámicos mediante patrón ARRAY | Evita fijar parámetros repetidamente por referencia. |
-| Cero dependencias NuGet en producto, salvo ADR-0003 | La única excepción es `AutoCAD.NET [25.0.1]` condicional y compile-only en `RackCad.Plugin`, con versiones transitivas fijadas, sin runtime ni distribución y sujeta a nueva revisión. |
-| Parrilla: una por tarima y regla en `SelectiveFrontalBuilder.ParrillaRow` | Dibujo, BOM y UI concuerdan por construcción. |
-| Copia de `SelectiveSafetySelection` centralizada en `DeepCopy` | El DTO sigue explícito para compatibilidad y round-trip. |
-| Entrada numérica localizada sin agrupadores | Acepta punto o coma decimal sin transformar valores ambiguos. |
-| Cantidad de parrilla: UI rechaza si no cabe y builder acota | Evita dibujo fuera del marco y degrada de forma segura tras cambios. |
-| Validación de cargas diferida a RAM Elements | No debe re-proponerse dentro del alcance actual. |
-| Optimizador IA de layout diferido | `RACKLAYOUT` es el motor determinista vigente, no el optimizador futuro. |
+Las trece decisiones que esta sección conservaba temporalmente quedaron retro-documentadas y
+**aceptadas** por el dueño el **2026-07-22** («Sí, apruebo») como **ADR-0006 a ADR-0018** (iniciativa
+I-07). Ya no se conservan aquí: viven en [`docs/adr/`](adr/README.md), una decisión por ADR. La
+correspondencia decisión → ADR está en el
+[contrato de I-07](initiatives/I-07-adr-retroactivos.md) y el registro de aceptación en
+[`docs/automation/decisions/I-07.md`](automation/decisions/I-07.md).

@@ -4,31 +4,43 @@ automation_state:
   branch: docs/adr-retroactivos
   claim_id: 46696b19-775e-43c6-a2a2-aabe55e3318b
   current_phase: 6
-  state: review-ready
+  state: integration-ready
   gate: none
+  next_action: merge-no-ff-de-docs-adr-retroactivos-en-main-sobre-6d080eb-tras-el-commit-documental-de-cierre-y-ci-verde-sobre-el-sha-final-de-la-rama-luego-push-main-y-limpieza-segura-de-worktree-rama-local-y-remota
   attempts: 0
-  next_action: integracion-serializada-rebase-final-si-origin-main-avanzo-ci-verde-en-la-rama-revision-y-aceptacion-por-el-dueno-de-los-adr-propuesto-0006-0018-retirada-de-las-filas-cubiertas-de-handoff-7-segun-la-matriz-del-contrato-y-marca-en-roadmap-como-ultimo-commit-de-la-rama-merge-no-ff-y-limpieza-segura
-  last_evidence_commit: 1f42328
+  last_evidence_commit: 600b22efaa15e16188c556d36d5d9526740dbc8e
 execution_context:
   mode: manual-git-only
   worktree: I-07-adr-retroactivos
   pull_request: none
+owner_decision:
+  status: approved
+  date: 2026-07-22
+  path: docs/automation/decisions/I-07.md
+  text: si-apruebo
+  scope: aceptacion-de-los-registros-adr-0006-a-0018-tal-como-estan-en-el-candidato-600b22e-sin-modificaciones-conserva-limitaciones-sobre-fecha-decisores-y-evidencia-no-amplia-i07-ni-absorbe-i18-i23-i25
 evidence:
   base_commit: 6d080eb7fdd67342bab99939611fb34d7bbaf2f2
-  rebase: rama-rebasada-sobre-origin-main-6d080eb-sin-conflictos-tres-commits-propios-reaplicados-eedb689-reclamo-33e7590-c2f73dc
+  approved_candidate: 600b22efaa15e16188c556d36d5d9526740dbc8e
+  rebase: no-requerido-origin-main-no-avanzo-i07-6-delante-0-detras-merge-base-6d080eb
   renumber_commit: fe61a64
   new_adrs_commit: 1f42328
-  scope: solo-documentacion-docs-adr-y-docs-initiatives-y-docs-automation-state-diff-vacio-bajo-src-assets-deploy-sin-tocar-handoff-ni-roadmap
-  adrs_renumbered: siete-0003-0009-a-0006-0012-git-mv-mas-titulos-referencias-cruzadas-rutas-de-rackframecommands-particionadas-por-i09-decisores-y-excepcion-nuget-de-adr-0003
+  index_contract_state_commit: 600b22e
+  scope: solo-documentacion-docs-adr-docs-initiatives-docs-automation-diff-vacio-bajo-src-assets-deploy
+  adrs_renumbered: siete-0006-0012-titulos-referencias-cruzadas-rutas-rackframecommands-particionadas-por-i09-decisores-y-excepcion-nuget-adr-0003
   adrs_created: seis-0013-0018-para-las-decisiones-8-13-de-handoff-7-una-por-adr
   coverage: trece-decisiones-de-handoff-7-cubiertas-matriz-en-el-contrato-seccion-11
-  adr_states: todos-los-0006-0018-en-propuesto-los-agentes-no-aceptan-adrs-solo-el-dueno
-  evidence_limitations: 0017-y-0018-diferimientos-por-decision-del-dueno-con-respaldo-documental-sin-fecha-original-ni-estudio-comparativo-el-registro-lo-declara-sin-inventarlo
-  validations: numeracion-unica-y-secuencial-0006-0018-solo-0002-duplicado-preexistente-de-main-fuera-de-alcance-enlaces-markdown-locales-resuelven-indice-corresponde-con-archivos-git-diff-check-limpio
+  adr_states: todos-los-0006-0018-aceptados-2026-07-22-por-el-dueno-secciones-normativas-inmutables-nota-posterior-atribuible
+  documentary_closure: se-retiran-las-13-decisiones-de-handoff-7-y-su-aviso-temporal-cubiertas-por-los-adrs-i07-marcada-integrada-en-roadmap-2026-07-22
+  evidence_limitations: 0017-y-0018-diferimientos-por-decision-del-dueno-respaldo-documental-sin-fecha-original-ni-estudio-comparativo-el-registro-lo-declara-sin-inventarlo
+  validations: 18-adrs-aceptados-numeracion-unica-secuencial-0001-0018-solo-0002-duplicado-preexistente-de-main-fuera-de-alcance-enlaces-markdown-locales-resuelven-indice-corresponde-con-archivos-git-diff-check-limpio
 gates:
+  owner_decision:
+    status: approved
+    note: aceptacion-de-adr-0006-a-0018-registrada-en-docs-automation-decisions-i07-md-si-apruebo-2026-07-22
   autocad:
     status: not-required
     note: iniciativa-solo-documentacion-no-cambia-dibujo-comandos-ni-comportamiento
   owner_validation:
     status: not-required
-    note: revision-documental-numeracion-enlaces-y-cobertura-la-aceptacion-de-los-adr-propuesto-es-acto-separado-del-dueno-en-la-integracion
+    note: revision-documental-numeracion-enlaces-y-cobertura-sin-autocad

@@ -46,11 +46,13 @@ Planes disponibles:
   HANDOFF §7: renumera los siete ADRs ya redactados a 0006–0012 tras el rebase (main ocupó 0003–0005),
   los revisa contra código/arquitectura vigentes (rutas de `RackFrameCommands` partidas por I-09,
   excepción NuGet condicional de ADR-0003) y añade 0013–0018 para las decisiones sin ADR, una por
-  decisión. Todos en estado `propuesto` (solo el dueño acepta). Incluye la matriz de cobertura
-  HANDOFF §7 → ADR/limitación para que el integrador retire después solo las filas cubiertas. Fuera de
-  alcance: tocar `HANDOFF.md`/`ROADMAP.md` (integración), el contenido normativo de ADR-0001…0005, la
-  colisión histórica de numeración `0002` y cualquier código de producto. Estado versionado en
-  `../automation/state/I-07.yml`.
+  decisión. **Aceptados por el dueño el 2026-07-22** («Sí, apruebo»;
+  [`../automation/decisions/I-07.md`](../automation/decisions/I-07.md)) → estado `aceptado`, conservando
+  las limitaciones sobre fecha/decisores/evidencia. La matriz de cobertura HANDOFF §7 → ADR vive en el
+  contrato (§11); el cierre de integración retiró las trece decisiones de HANDOFF §7 (ahora en
+  `docs/adr/`). Fuera de alcance: el contenido normativo de ADR-0001…0005, la colisión histórica de
+  numeración `0002` y cualquier código de producto; no absorbe I-18/I-23/I-25. **Integrada en `main` el
+  2026-07-22.** Estado versionado en `../automation/state/I-07.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
 - [`I-03-fallos-silenciosos.md`](I-03-fallos-silenciosos.md): contrato de I-03 (Fase 1, sin

@@ -1,8 +1,8 @@
 # ADR-0016: Cantidad de parrilla acotada por la UI y por el builder
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
-- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
+- **Estado:** aceptado
+- **Fecha:** 2026-07-22 (documentación retroactiva y aceptación; no es la fecha de la decisión original)
+- **Decisores:** Mario Pérez, dueño del repositorio (aceptó el registro el 2026-07-22). Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -63,3 +63,7 @@ tomó la decisión.
 - [Pruebas de colocación de parrilla](../../tests/RackCad.Tests/SelectiveParrillaPlacementTests.cs)
 - [ADR-0013: Parrilla una por tarima, contada en `SelectiveFrontalBuilder.ParrillaRow`](0013-parrilla-una-por-tarima.md)
 - [ADR-0015: Entrada numérica localizada sin separador de miles](0015-entrada-numerica-localizada.md)
+
+## Notas posteriores
+
+- **2026-07-22 — Aceptado por Mario Pérez**, dueño del repositorio («Sí, apruebo»). La aceptación recae sobre este registro tal como está en el candidato `600b22e`; no atribuye fecha ni decisores históricos ausentes y conserva las limitaciones documentadas. Decisión versionada en [`docs/automation/decisions/I-07.md`](../automation/decisions/I-07.md).

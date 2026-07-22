@@ -1,8 +1,8 @@
 # ADR-0007: Catálogos CSV Excel-first sin base de datos
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
-- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
+- **Estado:** aceptado
+- **Fecha:** 2026-07-22 (documentación retroactiva y aceptación; no es la fecha de la decisión original)
+- **Decisores:** Mario Pérez, dueño del repositorio (aceptó el registro el 2026-07-22). Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -76,3 +76,7 @@ a quienes tomaron la decisión.
 - [Pruebas del lector CSV](../../tests/RackCad.Tests/CsvCatalogReaderTests.cs)
 - [Arquitectura inicial — opciones de almacenamiento preservadas](../archivo/mvp-inicial/arquitectura-autocad-racks.md)
 - [ADR-0008: Perfiles estructurales unificados en secciones.csv por rol](0008-secciones-unificadas-por-rol.md)
+
+## Notas posteriores
+
+- **2026-07-22 — Aceptado por Mario Pérez**, dueño del repositorio («Sí, apruebo»). La aceptación recae sobre este registro tal como está en el candidato `600b22e`; no atribuye fecha ni decisores históricos ausentes y conserva las limitaciones documentadas. Decisión versionada en [`docs/automation/decisions/I-07.md`](../automation/decisions/I-07.md).

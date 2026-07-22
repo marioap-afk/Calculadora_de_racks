@@ -1,8 +1,8 @@
 # ADR-0018: Optimizador de layout con IA diferido; `RACKLAYOUT` es el motor determinista vigente
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
-- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. El diferimiento consta como decisión del dueño (ver Referencias); la evidencia conservada no fija su fecha original.
+- **Estado:** aceptado
+- **Fecha:** 2026-07-22 (documentación retroactiva y aceptación; no es la fecha de la decisión original)
+- **Decisores:** Mario Pérez, dueño del repositorio (aceptó el registro el 2026-07-22). Redacción retroactiva bajo la iniciativa I-07. El diferimiento consta como decisión del dueño (ver Referencias); la evidencia conservada no fija su fecha original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -56,3 +56,7 @@ tal; el motor determinista es su prerrequisito, no su sustituto.
 - [HANDOFF §7 — decisiones vigentes pendientes de I-07](../HANDOFF.md)
 - [`WarehouseGridPlanner` — planificación determinista de la rejilla](../../src/RackCad.Application/Layout/WarehouseGridPlanner.cs)
 - [ADR-0017: Validación estructural de cargas diferida a RAM Elements](0017-validacion-cargas-diferida-ram-elements.md)
+
+## Notas posteriores
+
+- **2026-07-22 — Aceptado por Mario Pérez**, dueño del repositorio («Sí, apruebo»). La aceptación recae sobre este registro tal como está en el candidato `600b22e`; no atribuye fecha ni decisores históricos ausentes y conserva las limitaciones documentadas. Decisión versionada en [`docs/automation/decisions/I-07.md`](../automation/decisions/I-07.md).

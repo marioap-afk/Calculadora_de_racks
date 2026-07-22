@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-07
 title: ADRs retroactivos
 type: docs
-status: in-progress
+status: integrated
 branch: docs/adr-retroactivos
 base_branch: main
 priority:
@@ -19,11 +19,12 @@ context_packs:
   - system-selective
   - ui-editors
 automation_state_path: docs/automation/state/I-07.yml
-decision_paths: []
+decision_paths:
+  - docs/automation/decisions/I-07.md
 requires_ci: true
 requires_plugin_build: false
 requires_autocad: false
-requires_owner_decision: false
+requires_owner_decision: true
 requires_owner_validation: false
 automation:
   enabled: false
@@ -171,8 +172,10 @@ registro. Los ADRs 0017 y 0018 documentan **diferimientos por decisión explíci
 es documental (auditoría 2026-07, historial de HANDOFF, ideas-futuras); esa evidencia establece el
 diferimiento y su motivo, pero **no** la fecha original ni un estudio comparativo detallado, y los ADRs lo
 declaran así sin inventarlos. Para los trece ADRs (renumerados y nuevos), la evidencia conservada no
-identifica a los decisores originales; ese límite queda escrito en cada registro. Todos permanecen en
-estado `propuesto`.
+identifica a los decisores originales; ese límite queda escrito en cada registro. **El dueño aceptó los
+trece registros el 2026-07-22** («Sí, apruebo»; decisión versionada en
+[`docs/automation/decisions/I-07.md`](../automation/decisions/I-07.md)), sin modificarlos y conservando
+estas limitaciones; su estado pasó de `propuesto` a `aceptado`.
 
 ## 12. Condiciones para detenerse
 
@@ -195,4 +198,10 @@ Rama `docs/adr-retroactivos` rebasada sobre `origin/main` (`6d080eb`) sin confli
 renumerados 0006–0012 y seis nuevos 0013–0018; índice de ADR e índice de iniciativas actualizados; matriz
 de cobertura completa; sin cambios bajo `src/`, `assets/`, `deploy/`, `docs/HANDOFF.md` ni
 `docs/ROADMAP.md`. Commits en español con trailer de procedencia; rama publicada con `--force-with-lease`
-y CI verde sobre el SHA final. `main` no fue modificada; rama y worktree se conservan para la integración.
+y CI verde sobre el SHA final (candidato `600b22e`). `main` no fue modificada durante la implementación.
+
+**Integración (2026-07-22):** el dueño aceptó los trece registros («Sí, apruebo»,
+[`docs/automation/decisions/I-07.md`](../automation/decisions/I-07.md)); los ADR-0006…0018 pasaron a
+`aceptado`; en el último commit de la rama se retiraron las trece decisiones de HANDOFF §7 con su aviso
+temporal (cubiertas por los ADRs) y se marcó I-07 `integrada (2026-07-22)` en ROADMAP. Diff vacío bajo
+`src/`, `assets/` y `deploy/`. El SHA del merge `--no-ff` queda registrado en `git log --first-parent main`.
