@@ -90,6 +90,17 @@ Planes disponibles:
   automática de catálogos, tocar el DWG, Push Back, reglas de producto, logging de I-03, esquema de persistencia y
   el cableado UI/Plugin. Owner-validation aprobada (baseline `TROQUEL_TOPE` + `TARIMA_GENERICA` aceptado);
   rebasada sobre `main` vigente e integrada en `main` el 2026-07-21.
+- [`I-21-dynamic-editor-state.md`](I-21-dynamic-editor-state.md): contrato de I-21 (Fase 5, sobre I-15 e
+  I-02). Extrae de `RackDynamicSystemWindow` a `RackCad.Application` el estado puro del editor dinamico
+  —`DynamicEditorCell`/`DynamicEditorFront`/`DynamicEditorValues`, la matriz frente x nivel con su
+  seleccion (`DynamicFrontMatrix`), la seguridad (`DynamicEditorSafety`) y la recomputacion/construccion
+  del diseno (`DynamicAnnotationOptions` + `DynamicEditorDesignAssembler`)— dejando la ventana como
+  coordinadora de controles, eventos, render y dialogo sobre el Editor Shell. Con pruebas de
+  caracterizacion/equivalencia (matriz, celdas, seguridad, recomputacion, construccion del diseno,
+  casos invalidos, carga legacy). **Sin cambio** de geometria, planes, BOM, GUID, `Section`, edicion
+  multivista, persistencia I-11, fallbacks legacy, cabeceras legacy ni cama integrada. Fuera de alcance
+  Push Back (I-18), Dinamico V2 (I-28), el selectivo (I-20), reglas de producto, catalogos y bloques DWG.
+  AutoCAD y owner-validation **abiertos** (gate del dueño). No integrada.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
