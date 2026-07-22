@@ -41,6 +41,16 @@ Planes disponibles:
 - `I-06-reestructura-context-packs.md`: contrato del piloto documental I-06. Bootstrap, reclamo,
   auditoria y decision de taxonomia ya terminaron; el estado actual vive en
   `../automation/state/I-06.yml`.
+- [`I-07-adr-retroactivos.md`](I-07-adr-retroactivos.md): contrato de I-07 (Fase 1, solo documentación,
+  sobre I-06 integrada). Retro-documenta como ADRs de una página las trece decisiones vigentes de
+  HANDOFF §7: renumera los siete ADRs ya redactados a 0006–0012 tras el rebase (main ocupó 0003–0005),
+  los revisa contra código/arquitectura vigentes (rutas de `RackFrameCommands` partidas por I-09,
+  excepción NuGet condicional de ADR-0003) y añade 0013–0018 para las decisiones sin ADR, una por
+  decisión. Todos en estado `propuesto` (solo el dueño acepta). Incluye la matriz de cobertura
+  HANDOFF §7 → ADR/limitación para que el integrador retire después solo las filas cubiertas. Fuera de
+  alcance: tocar `HANDOFF.md`/`ROADMAP.md` (integración), el contenido normativo de ADR-0001…0005, la
+  colisión histórica de numeración `0002` y cualquier código de producto. Estado versionado en
+  `../automation/state/I-07.yml`.
 - [`I-26-test-catalog-ids.md`](I-26-test-catalog-ids.md): contrato manual para centralizar IDs
   canónicos de pruebas, verificar los catálogos distribuidos y publicar cobertura Cobertura en CI.
 - [`I-03-fallos-silenciosos.md`](I-03-fallos-silenciosos.md): contrato de I-03 (Fase 1, sin

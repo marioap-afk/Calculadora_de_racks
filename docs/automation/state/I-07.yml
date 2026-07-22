@@ -1,0 +1,34 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-07
+  branch: docs/adr-retroactivos
+  claim_id: 46696b19-775e-43c6-a2a2-aabe55e3318b
+  current_phase: 6
+  state: review-ready
+  gate: none
+  attempts: 0
+  next_action: integracion-serializada-rebase-final-si-origin-main-avanzo-ci-verde-en-la-rama-revision-y-aceptacion-por-el-dueno-de-los-adr-propuesto-0006-0018-retirada-de-las-filas-cubiertas-de-handoff-7-segun-la-matriz-del-contrato-y-marca-en-roadmap-como-ultimo-commit-de-la-rama-merge-no-ff-y-limpieza-segura
+  last_evidence_commit: 1f42328
+execution_context:
+  mode: manual-git-only
+  worktree: I-07-adr-retroactivos
+  pull_request: none
+evidence:
+  base_commit: 6d080eb7fdd67342bab99939611fb34d7bbaf2f2
+  rebase: rama-rebasada-sobre-origin-main-6d080eb-sin-conflictos-tres-commits-propios-reaplicados-eedb689-reclamo-33e7590-c2f73dc
+  renumber_commit: fe61a64
+  new_adrs_commit: 1f42328
+  scope: solo-documentacion-docs-adr-y-docs-initiatives-y-docs-automation-state-diff-vacio-bajo-src-assets-deploy-sin-tocar-handoff-ni-roadmap
+  adrs_renumbered: siete-0003-0009-a-0006-0012-git-mv-mas-titulos-referencias-cruzadas-rutas-de-rackframecommands-particionadas-por-i09-decisores-y-excepcion-nuget-de-adr-0003
+  adrs_created: seis-0013-0018-para-las-decisiones-8-13-de-handoff-7-una-por-adr
+  coverage: trece-decisiones-de-handoff-7-cubiertas-matriz-en-el-contrato-seccion-11
+  adr_states: todos-los-0006-0018-en-propuesto-los-agentes-no-aceptan-adrs-solo-el-dueno
+  evidence_limitations: 0017-y-0018-diferimientos-por-decision-del-dueno-con-respaldo-documental-sin-fecha-original-ni-estudio-comparativo-el-registro-lo-declara-sin-inventarlo
+  validations: numeracion-unica-y-secuencial-0006-0018-solo-0002-duplicado-preexistente-de-main-fuera-de-alcance-enlaces-markdown-locales-resuelven-indice-corresponde-con-archivos-git-diff-check-limpio
+gates:
+  autocad:
+    status: not-required
+    note: iniciativa-solo-documentacion-no-cambia-dibujo-comandos-ni-comportamiento
+  owner_validation:
+    status: not-required
+    note: revision-documental-numeracion-enlaces-y-cobertura-la-aceptacion-de-los-adr-propuesto-es-acto-separado-del-dueno-en-la-integracion
