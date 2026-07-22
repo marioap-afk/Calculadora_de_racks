@@ -3,25 +3,36 @@ automation_state:
   initiative: I-22
   branch: refactor/safety-placement
   claim_id: c6f3e810-b64e-43af-a72c-eaeb7a091430
-  current_phase: 1
-  state: claimed
-  gate: none
+  current_phase: 7
+  state: review-ready
+  gate: autocad
   attempts: 0
-  next_action: caracterizacion-golden-de-seguridad-antes-del-refactor-luego-paso-de-troquel-unico-subtipos-servicios-por-familia-y-adopcion-selectionmatrix
-  last_evidence_commit: 0f39d9d
+  next_action: validacion-manual-del-dueno-en-autocad-sobre-el-dll-debug-del-worktree-i22-y-owner-validation-luego-integracion-serializada-merge-no-ff
+  last_evidence_commit: 5e5b8508a500b9afbd36d4d68b271de2469b5751
 execution_context:
   mode: manual-git-only
   worktree: I-22-safety-placement
   pull_request: none
 evidence:
   original_base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
-  claim_commit: 0f39d9d
+  claim_commit: 0f39d9d02
+  code_tip: 5e5b8508a500b9afbd36d4d68b271de2469b5751
+  rebase: origin-main-no-avanzo-desde-9a895e4-merge-i20-sin-rebase
+  domain_application_tests: 941-verde-0-fallos-base-913-mas-28-de-i22-golden-configs-por-subtipo-y-4-servicios-de-colocacion
+  ui_tests: 151-verde-0-fallos-base-139-mas-7-selectionmatrix-celdas-ausentes-mas-5-caracterizacion-STA-de-adopcion-de-rejillas
+  build_ui_debug: 0-errores-0-advertencias-propias
+  build_plugin_debug: 0-errores-solo-MSB3277-conocidos-de-autocad
+  build_solution_debug: 0-errores-2-advertencias-solo-MSB3277-conocidos-del-plugin
+  invariants: geometria-planes-bom-guid-identidad-persistencia-i11-catalogos-nombres-de-bloque-mensajes-seleccion-defaults-y-multivista-preservados-fijado-por-caracterizacion-golden-multiset-por-vista-mas-bom-y-round-trip-por-subtipo
+  scope: docs-i22-mas-application-persistence-mapping-por-familia-4-builders-orquestadores-resolver-troquel-4-servicios-nuevos-tarima-tope-parrilla-separador-mas-domain-selectivesafetyconfig-mas-ui-selectionmatrix-celdas-ausentes-y-3-rejillas-adoptadas-guia-tope-desviador-mas-pruebas
+  scope_guards: sin-cambios-en-assets-catalogos-deploy-github-rackcad-plugin-csproj-sln-directory-build-ni-dwg
+  out_of_scope: i25-guardas-traseras-i18-push-back-editor-dinamico-rediseno-visual-reglas-de-producto-migraciones-adicionales-del-selectivo-parrilla-grid-contador-por-celda-defensa-formulario-por-poste-no-son-matriz-plana
 autocad_validation:
   status: pending
-  note: gate-abierto-requerido-el-refactor-toca-el-codigo-que-produce-las-piezas-de-seguridad-dibujadas-diseno-resuelto-identico-por-equivalencia-golden
+  note: gate-abierto-requerido-el-refactor-toca-el-codigo-que-produce-las-piezas-de-seguridad-dibujadas-diseno-resuelto-identico-por-equivalencia-golden-dll-debug-en-worktree-i22-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll
 owner_validation:
   status: pending
-  note: gate-abierto-apariencia-e-interaccion-identicas-rejillas-adoptadas-controles-auxiliares
+  note: gate-abierto-apariencia-e-interaccion-rejillas-guia-tope-desviador-adoptan-selectionmatrix-el-contenido-cabeceras-orden-off-cells-y-controles-auxiliares-se-conservan-el-estilo-de-la-rejilla-pasa-al-control-comun-i14
 decision_evidence:
   path: none
   resolved_gate: none

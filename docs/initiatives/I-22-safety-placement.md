@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-22
 title: Colocación de seguridad
 type: refactor
-status: in-progress
+status: review-ready
 branch: refactor/safety-placement
 base_branch: main
 priority:
