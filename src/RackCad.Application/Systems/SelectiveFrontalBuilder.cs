@@ -151,7 +151,7 @@ namespace RackCad.Application.Systems
             }
 
             SelectiveDesviadorDrawing.AppendFrontal(instances, system, catalog, view);
-            AddTopes(instances, system, catalog, postX, layout, view);
+            AddTopes(instances, system, catalog, postX, view);
             AddTarimas(instances, system, catalog, postX, layout, view, CachedBlock);
             AddParrillas(instances, system, catalog, postX, layout, view);
             AddAnnotations(instances, system, view, postX);
@@ -176,7 +176,7 @@ namespace RackCad.Application.Systems
         /// A "medio frente" bay draws a tope per LOADED tramo — its own length, at that tramo's left post — like the
         /// largueros and tarimas do (the tope must sit over the larguero it stops, not span the whole split bay).
         /// </summary>
-        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, SelectivePostLayout layout, string view)
+        private static void AddTopes(ICollection<HeaderBlockInstance> instances, SelectiveRackSystem system, RackCatalog catalog, IReadOnlyList<double> postX, string view)
         {
             var topes = SelectiveSafetyPlacement.EnabledOfType(system, catalog, view, SelectiveSafetyPlacement.TopeType);
             if (topes.Count == 0)
@@ -185,51 +185,40 @@ namespace RackCad.Application.Systems
             }
 
             var tope = topes[0];
-            var selection = tope.Selection;
-            if (!selection.TopeFrontal)
+            if (!tope.Selection.TopeFrontal)
             {
                 return; // the frontal is an opt-in toggle (lateral + planta always draw the tope)
             }
 
+            // The per-frente intent (active cells, levels, loaded tramos, offsets, longitudes and each tope's source
+            // larguero Y) is resolved ONCE in the family service (I-22, E6). This builder keeps only the view projection:
+            // the catalogued troquel point + peralte, the rise-and-snap Y, absolute coords and the instance.
+            var frontal = SelectiveTopePlan.BuildFrontal(system, catalog);
+            if (frontal.Count == 0)
+            {
+                return;
+            }
+
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, view);
-            var saque = SelectiveTopePlacement.Saque(selection);
-            var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
+            var saque = SelectiveTopePlacement.Saque(tope.Selection);
             const double paso = SelectiveRackDefaults.TroquelPaso; // single source for the troquel pitch (I-22)
 
-            for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
+            foreach (var cell in frontal)
             {
-                var bay = system.Bays[i];
-                if (bay.BeamLength <= 0.0)
+                if (cell.Frente >= postX.Count)
                 {
-                    continue;
+                    continue; // beyond the drawn posts
                 }
 
-                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
+                var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, cell.Frente) };
                 var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
 
-                var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
-                var tramos = SelectiveMedioFrente.Resolve(bay, layout.TroquelXs[i], inicioX);
-
-                for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+                foreach (var t in cell.Topes)
                 {
-                    if (offCells.Contains((i, lvl)))
-                    {
-                        continue; // this (frente, level) cell is off
-                    }
-
-                    var y = SelectiveTopePlacement.SnapY(troquel.Y, bay.Levels[lvl].Y, paso);
-
-                    if (tramos == null)
-                    {
-                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, view, postX[i] + troquel.X, y, saque, longitud: bay.BeamLength + SelectiveSafetyPlacement.TopeLengthAllowance));
-                        continue;
-                    }
-
-                    foreach (var tramo in tramos)
-                    {
-                        if (!tramo.Loaded) continue;
-                        instances.Add(SelectiveTopePlacement.Tope(tope.PieceId, tope.Block, view, postX[i] + tramo.StartOffset + troquel.X, y, saque, longitud: tramo.Length + SelectiveSafetyPlacement.TopeLengthAllowance));
-                    }
+                    var y = SelectiveTopePlacement.SnapY(troquel.Y, t.SourceY, paso);
+                    instances.Add(SelectiveTopePlacement.Tope(
+                        tope.PieceId, tope.Block, view,
+                        postX[cell.Frente] + t.StartOffset + troquel.X, y, saque, longitud: t.Longitud));
                 }
             }
         }
