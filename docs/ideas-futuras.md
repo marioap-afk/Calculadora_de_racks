@@ -271,6 +271,15 @@ sin decoración, con test de equivalencia); `RACKLISTA` sumaba referencias de TO
   nuevo creado por RACKCAD no ofrece los estilos de cota guardados del dibujo. I-15 lo preservó verbatim
   (`SelectiveEditorModule.OpenForNew`); corregir = pasar los estilos también en ese path, con validación en
   AutoCAD (cambia lo que ve el usuario al insertar cotas de un selectivo nuevo desde el menú).
+- ~~(hallazgo I-24, 2026-07-22) Entrada obsoleta de I-21 en `docs/initiatives/README.md` (decía «abiertos… No
+  integrada» pese a estar integrada el 2026-07-21)~~ — ✅ **CORREGIDO (2026-07-22)** en la reconciliación
+  documental de la integración de I-24: el bullet de `I-21-dynamic-editor-state.md` ahora dice «aprobadas por el
+  dueño; integrada en `main` el 2026-07-21».
+- (hallazgo I-24, 2026-07-22) Laguna de cobertura PURA **comprobada** en `RackCad.Tests` (fuera del alcance de
+  I-24, que sólo amplía `RackCad.UI.Tests`): `DynamicFrontMatrixTests` prueba los alcances `Cell`, `All` y
+  `Selected` de `DynamicFrontMatrix.ApplyScope`, pero **no** los alcances `Level` ni `Front`, que sí existen en
+  el enum `DynamicRackCellScope`. Añadir esas dos pruebas cuando se retome el dinámico. (`DynamicEditorCellTests`
+  y `DynamicEditorSafetyTests` **sí** existen y cubren esas clases; no son una laguna.)
 
 **Señalados pero NO verificados** (la verificación adversarial no alcanzó a correr; validar antes de actuar):
 posible coma decimal mal parseada en campos del configurador; el editor del dinámico podría resetear

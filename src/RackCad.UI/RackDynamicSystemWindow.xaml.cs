@@ -107,6 +107,16 @@ namespace RackCad.UI
         /// <summary>Test seam (I-15): confirms the window carries identity + insert through the shared session.</summary>
         internal RackEditorSession<DynamicRackDesign, DynamicRackSystem> Session => session;
 
+        /// <summary>Test seam (I-24): runs the real recompute/assembly exactly as the insert/update path does (the same
+        /// private <see cref="Recompose(bool)"/>), then exposes the design it built so a characterization test can lock the
+        /// load→build geometry across the window's I-21 state adoption. Mirrors <see cref="RackSelectiveWindow.BuildDesignForTest"/>;
+        /// not used in production — the window builds through <see cref="Recompose(bool)"/> on the insert path.</summary>
+        internal DynamicRackDesign BuildDesignForTest(out bool ok)
+        {
+            ok = Recompose();
+            return design;
+        }
+
         /// <summary>The shared editor session (I-15): the catalog, the rack identity (GUID + name) and the insert/update
         /// contract. Its coalescing gate is unused here (the dynamic editor recomputes synchronously via Recompose); the
         /// internal editor state (system/design/modules) stays in the window (its extraction is I-21).</summary>

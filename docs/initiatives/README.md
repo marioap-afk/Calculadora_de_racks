@@ -109,7 +109,7 @@ Planes disponibles:
   casos invalidos, carga legacy). **Sin cambio** de geometria, planes, BOM, GUID, `Section`, edicion
   multivista, persistencia I-11, fallbacks legacy, cabeceras legacy ni cama integrada. Fuera de alcance
   Push Back (I-18), Dinamico V2 (I-28), el selectivo (I-20), reglas de producto, catalogos y bloques DWG.
-  AutoCAD y owner-validation **abiertos** (gate del dueño). No integrada.
+  AutoCAD y owner-validation **aprobadas por el dueño**; integrada en `main` el 2026-07-21.
 - [`I-05-guardrail-unidades.md`](I-05-guardrail-unidades.md): contrato de I-05 (Fase 1, sin dependencias
   ni estorbos). Añade una guardia visible y NO bloqueante en el límite de AutoCAD (`RackUnitsGuard` en el
   Plugin): al insertar un sistema o vista nueva, y en `RACKLAYOUT`/`RACKRELLENAR` (con alias), lee
@@ -119,6 +119,18 @@ Planes disponibles:
   Documenta `ADR-0005` (estrategia de unidades, **aceptado**). Fuera de alcance: conversión, reescalado, la
   columna `units`, almacenar unidades en DTO y cualquier framework general de unidades. ADR-0005 aceptado;
   AutoCAD y owner-validation **aprobados por el dueño**; **integrada en `main` el 2026-07-22**.
+- [`I-24-ui-tests-editores.md`](I-24-ui-tests-editores.md): contrato de I-24 (Fase 5, sobre I-15/I-20/
+  I-21). Amplia `tests/RackCad.UI.Tests` con pruebas del `RackFrameConfiguratorViewModel` (headless), de
+  la adopcion del estado dinamico por `RackDynamicSystemWindow` (caracterizacion `load->build` por punto
+  fijo) y de la identidad round-trip de las ventanas selectiva y de cama (carga nueva vs. existente,
+  insercion, actualizacion, `UpdateOnly`), mas rutas negativas deterministas. Todo el codigo de prueba
+  vive en `RackCad.UI.Tests`; no duplica las pruebas puras de `RackCad.Tests`. Unico cambio de
+  produccion: el seam interno `RackDynamicSystemWindow.BuildDesignForTest` (reenvia a `Recompose`, sin
+  reglas nuevas). Las pruebas de insercion/actualizacion recorren los handlers WPF reales
+  (`RaiseEvent(ButtonBase.ClickEvent)`), con correspondencia estricta del payload por firma completa del
+  dibujo (incluidas anotaciones y cotas, con el `Name` normalizado). `requires_autocad: false`,
+  `requires_owner_validation: false`. Rebasada sobre `main` vigente (`a50c4ec`, Merge I-05) reconciliando
+  solo este indice; integrada en `main` el 2026-07-22.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
