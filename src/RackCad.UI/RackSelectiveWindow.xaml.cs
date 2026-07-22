@@ -119,8 +119,9 @@ namespace RackCad.UI
 
         /// <summary>The shared editor session (I-15): the catalog, the rack identity (GUID + name), the coalesced
         /// recompute (its <see cref="RecomputeGate"/> replaces the old defer-depth/pending fields, running
-        /// <see cref="RunRecompute"/>) and the insert/update contract. The editor-specific state — the fondo matrix,
-        /// <c>BuildSystem</c> — stays in the window (its extraction is I-20).</summary>
+        /// <see cref="RunRecompute"/>) and the insert/update contract. The editor-specific state — the fondo matrices and
+        /// the design assembly (<c>BuildDesign</c>) — now lives in <see cref="state"/> (<see cref="SelectiveEditorState"/>,
+        /// extracted in I-20); the window observes it and keeps the catalog-bound resolve/preview (<c>BuildSystem</c>).</summary>
         private readonly RackEditorSession<SelectivePalletDesign, SelectiveRackSystem> session;
 
         /// <summary>The library project this design was opened from, if any, so a re-save preserves the WRAPPER
