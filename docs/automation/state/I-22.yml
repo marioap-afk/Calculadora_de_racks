@@ -1,0 +1,27 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-22
+  branch: refactor/safety-placement
+  claim_id: c6f3e810-b64e-43af-a72c-eaeb7a091430
+  current_phase: 1
+  state: claimed
+  gate: none
+  attempts: 0
+  next_action: caracterizacion-golden-de-seguridad-antes-del-refactor-luego-paso-de-troquel-unico-subtipos-servicios-por-familia-y-adopcion-selectionmatrix
+  last_evidence_commit: 0f39d9d
+execution_context:
+  mode: manual-git-only
+  worktree: I-22-safety-placement
+  pull_request: none
+evidence:
+  original_base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
+  claim_commit: 0f39d9d
+autocad_validation:
+  status: pending
+  note: gate-abierto-requerido-el-refactor-toca-el-codigo-que-produce-las-piezas-de-seguridad-dibujadas-diseno-resuelto-identico-por-equivalencia-golden
+owner_validation:
+  status: pending
+  note: gate-abierto-apariencia-e-interaccion-identicas-rejillas-adoptadas-controles-auxiliares
+decision_evidence:
+  path: none
+  resolved_gate: none

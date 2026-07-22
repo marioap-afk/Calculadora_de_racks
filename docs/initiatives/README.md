@@ -131,6 +131,17 @@ Planes disponibles:
   dibujo (incluidas anotaciones y cotas, con el `Name` normalizado). `requires_autocad: false`,
   `requires_owner_validation: false`. Rebasada sobre `main` vigente (`a50c4ec`, Merge I-05) reconciliando
   solo este indice; integrada en `main` el 2026-07-22.
+- [`I-22-safety-placement.md`](I-22-safety-placement.md): contrato de I-22 (Fase 5, sobre I-14 e I-20).
+  Cierra E6/E7 de la seguridad del selectivo: servicios PUROS de colocacion por familia (tope, parrilla,
+  tarima, separador) parametrizados por vista con los builders como orquestadores; descompone la
+  God-data-class `SelectiveSafetySelection` en configuraciones por subtipo con `DeepCopy` propio y mapeo
+  de persistencia por familia (formato de alambre byte-identico, fallback legacy y round-trip); enruta
+  los 5 paso-de-troquel hardcodeados a `SelectiveRackDefaults.TroquelPaso`; y adopta `SelectionMatrix`
+  (con celdas ausentes para rejillas dentadas) en las rejillas tope/desviador/guia. **Sin cambio** de
+  geometria, planes, BOM, GUID, persistencia I-11, catalogos, nombres de bloque, mensajes, seleccion,
+  defaults ni interaccion. Fuera de alcance I-25 (guardas traseras), Push Back (I-18), el editor
+  Dinamico, rediseño visual y reglas de producto. AutoCAD y owner-validation **abiertos** (gate del
+  dueño). No integrada.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
