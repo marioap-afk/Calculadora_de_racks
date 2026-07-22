@@ -98,40 +98,48 @@ exhaustivas ya existentes de `SelectiveEditorState`/`DynamicFrontMatrix`/`Dynami
    - **Caracterización `load→build` con firma COMPLETA del dibujo** producido por Application: todos los
      cortes de `DynamicSystemLateralBuilder` (cada uno con su índice de corte), el frontal de salida
      (`DynamicSystemFrontalBuilder`+`DynamicRackEnd.Exit`), el frontal de entrada (`Entrance`) y la planta
-     (`DynamicSystemPlantaBuilder`), por instancia (rol, `PieceId`, bloque, vista, inserción, anclaje,
-     rotación, ambos mirrors, parámetros dinámicos), ordenada determinísticamente. Usa un **diseño
-     representativo NO default** (3 frentes, niveles distintos por frente, tarima/postes/altura no default).
-     Como la ventana normaliza entradas crudas al construir (p. ej. resuelve el peralte del larguero
-     IN/OUT en `Recompose`), la propiedad de fidelidad se fija sobre el **diseño propio de la ventana**
-     (punto fijo del doble build: cargar → `designA`, recargar `designA` → `designB`, firma completa
-     idéntica), por `LoadExisting` y por `LoadDesignForNew`. Incluye una **prueba de sensibilidad**: dos
-     diseños con igual número de frentes/módulos/longitud/altura pero una pieza dibujada distinta (una bota
-     de seguridad añadida) producen **la misma firma débil de 4 agregados** pero **firma completa distinta**
-     (impide regresar a una firma débil).
+     (`DynamicSystemPlantaBuilder`), por instancia de bloque **estructural** (rol, `PieceId`, bloque, vista,
+     inserción, anclaje, rotación, ambos mirrors, parámetros dinámicos), ordenada determinísticamente. La
+     firma excluye las decoraciones `Annotation`/`Dimension` porque dependen del **nombre visible** que la
+     ventana fija en el sistema tras resolver y no son reproducibles desde el diseño. El **diseño
+     representativo es NO default**: 3 frentes, niveles distintos por frente, tarima/postes/altura no default,
+     **y valores NO default por celda/larguero** —frente/alto/peso de tarima, claro y `BeamLengthOverride`—
+     inyectados en la celda de matriz de un frente+nivel no trivial. Como la ventana normaliza entradas crudas
+     al construir (resuelve el peralte del larguero IN/OUT y el intermedio en `Recompose`), la fidelidad se
+     fija sobre el **diseño propio de la ventana** (punto fijo del doble build: cargar → `designA`, recargar
+     `designA` → `designB`, firma completa idéntica), por `LoadExisting` y por `LoadDesignForNew`, y se verifica
+     **expresamente** que los valores no default por celda estén presentes en `designA` y sigan presentes en
+     `designB`. Incluye una **prueba de sensibilidad**: dos diseños con igual número de frentes/módulos/
+     longitud/altura pero una pieza dibujada distinta (una bota de seguridad añadida) producen **la misma firma
+     débil de 4 agregados** pero **firma completa distinta** (impide regresar a una firma débil).
    - **Inserción/actualización por los handlers REALES de la ventana** (Click WPF real vía `RaiseEvent`
      sobre `InsertLateralButton`/`UpdateButton`/`InsertEntranceButton`, que recorren
      `*_Click`→`RequestDraw`→validación→`Recompose`→`SetModel`→sesión→payload→`Close`), **no** llamando a
      `session.RequestInsert/RequestUpdate`: dinámico nuevo inserta lateral; dinámico existente actualiza e
-     inserta frontal de entrada. Tras cada acción se verifica identidad/nombre/vista/sección/`UpdateOnly`,
-     `InsertRequested`, el **tipo concreto** de `InsertionRequest`, que el **diseño y el sistema** del
-     payload no sean nulos y correspondan al modelo construido por la ventana, y la metadata de origen (I-11)
-     preservada.
+     inserta frontal de entrada. Tras cada acción se verifica `InsertRequested`, GUID, **nombre**, vista,
+     sección, `UpdateOnly`, el **tipo concreto** de `InsertionRequest`, la **correspondencia estricta** del
+     payload (la firma completa construida desde `request.Design` —resolviéndolo— iguala la construida
+     directamente desde `request.System`, con una sobrecarga `FullDrawingSignature(DynamicRackSystem)` que no
+     re-resuelve el sistema recibido), y la metadata de origen (I-11) preservada.
    - Se conserva aparte una prueba pura de `LoadExisting` (adopta GUID+nombre) que aporta cobertura distinta.
 
 3. **Ventana selectiva** (`RackSelectiveWindow`, STA): inserción/actualización por los handlers REALES
    (Click WPF real sobre «Insertar frontal»/`UpdateButton`/`InsertLateralButton`, que recorren
    `RequestDraw`→`ConfirmPendingCellEdits`→`BuildSystem`→sesión→payload→`Close`): selectivo nuevo inserta
-   frontal (GUID fresco); selectivo existente actualiza (GUID preservado, vista nula) e inserta una vista
-   ligada (lateral). Verifica identidad/vista/`UpdateOnly`, tipo concreto de `InsertionRequest` y
-   payload diseño+sistema no nulos y correspondientes. Se conserva aparte la prueba pura de `LoadExisting`.
-   **No** se duplica la caracterización `load→build` ya existente (`SelectiveEditorStateAdoptionTests`).
+   frontal (GUID fresco); selectivo existente actualiza (GUID+nombre preservados, vista nula) e inserta una
+   vista ligada (lateral). Verifica `InsertRequested`, GUID, **nombre**, vista, `UpdateOnly`, tipo concreto de
+   `InsertionRequest` y la **correspondencia estricta** del payload por firma del dibujo resuelto (frontal de
+   todos los fondos + planta + cortes laterales, bloques estructurales) construida desde `request.Design`
+   (`SelectiveGeometryResolver`) vs. desde `request.System`. Se conserva aparte la prueba pura de
+   `LoadExisting`. **No** se duplica la caracterización `load→build` ya existente (`SelectiveEditorStateAdoptionTests`).
 
 4. **Ventana de cama** (`RackFlowBedWindow`, STA): inserción por el handler REAL
-   (`InsertInAutoCad_Click`→`ReadConfig`→sesión→payload→`Close`): cama nueva (GUID fresco, payload
-   `FlowBedInsertionRequest` con config no nula, sin vista/sección/update) y cama existente (GUID
-   preservado, **metadata de origen `SourceDocument` I-11 transportada** por el handler real). Se conserva
-   aparte la identidad round-trip pura (`LoadForNew`/`LoadExisting`) y la exposición de
-   `SourceFlowBedToInsert`.
+   (`InsertInAutoCad_Click`→`ReadConfig`→sesión→payload→`Close`): cama nueva y cama existente, verificando
+   `InsertRequested`, GUID, **nombre**, `view == null`, `section == -1`, `UpdateOnly == false`, el tipo
+   concreto `FlowBedInsertionRequest` y los **valores concretos** del `FlowBedConfiguration` producido por el
+   handler (tipo, `LaneDepth`, `PalletDepth`, `RollerId`, `RollerPitchOverride`) contra el fixture, más la
+   **metadata de origen `SourceDocument` I-11 transportada** por el handler real. Se conserva aparte la
+   identidad round-trip pura (`LoadForNew`/`LoadExisting`) y la exposición de `SourceFlowBedToInsert`.
 
 ### Cambio de producción autorizado (único seam interno)
 

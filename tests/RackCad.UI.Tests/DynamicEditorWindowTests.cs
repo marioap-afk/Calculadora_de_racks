@@ -18,18 +18,29 @@ namespace RackCad.UI.Tests
     /// pure Application suites cannot reach. Two things are locked:
     ///
     /// 1. The window's adoption of the I-21 editor state round-trips the FULL resolved drawing (all lateral cortes +
-    ///    frontal exit + frontal entrance + planta, per-instance) for a representative NON-default design — not just four
-    ///    aggregates. A sensitivity test proves the signature is strict: a change that leaves front count / modules /
-    ///    total length / height untouched but adds a drawn piece yields a DIFFERENT signature (so a future refactor cannot
-    ///    silently regress to a weak signature).
-    /// 2. Insert/update run through the window's REAL button handlers (a genuine WPF <see cref="System.Windows.Controls.Primitives.ButtonBase.ClickEvent"/>
-    ///    → <c>*_Click</c> → <c>RequestDraw</c> → validation → Recompose → SetModel → session → typed payload → Close), NOT
-    ///    by calling <c>session.RequestInsert/RequestUpdate</c> directly. So identity/view/section/UpdateOnly, the concrete
-    ///    request type and the real built payload (design+system) and its source metadata are all verified end to end.
+    ///    frontal exit + frontal entrance + planta, per instance) for a representative NON-default design that carries
+    ///    non-default per-cell pallet/clear/beam overrides — not just aggregates. Those overrides are asserted present in
+    ///    both the window's built design and its reload. A sensitivity test proves the signature is strict: a change that
+    ///    leaves front count / modules / total length / height untouched but adds a drawn piece yields a DIFFERENT
+    ///    signature (so a future refactor cannot silently regress to a weak signature).
+    /// 2. Insert/update run through the window's REAL button handlers (a genuine WPF Click → <c>*_Click</c> → <c>RequestDraw</c>
+    ///    → validation → Recompose → SetModel → session → typed payload → Close), NOT by calling <c>session.RequestInsert/
+    ///    RequestUpdate</c>. The payload's design and system are compared STRICTLY: the full drawing signature built from
+    ///    the design (resolved) equals the one built directly from the system.
     /// </summary>
     public sealed class DynamicEditorWindowTests
     {
         private const string PostId = "POSTE_OMEGA_3X3";
+
+        // A non-trivial front+level and the explicit NON-default cell/beam values injected there (all distinct from the
+        // dynamic defaults: clear 6, in/out beam depth 6, intermediate 3.5, no beam-length override, pallet 42x60x1000).
+        private const int RichFront = 2;
+        private const int RichLevel = 1;
+        private const double RichPalletFront = 46.0;
+        private const double RichPalletHeight = 58.0;
+        private const double RichPalletWeight = 1100.0;
+        private const double RichClearHeight = 9.0;
+        private const double RichBeamLengthOverride = 133.0;
 
         private static RackCatalog Catalog => JsonRackCatalogProvider.FromBaseDirectory().Load();
 
@@ -40,47 +51,52 @@ namespace RackCad.UI.Tests
         {
             // The window normalizes raw inputs when it builds (e.g. it resolves the catalog IN/OUT beam depth in Recompose),
             // so the faithful-adoption property is that the window's OWN rich design is a load→build FIXPOINT. Feed a
-            // NON-default design (3 fronts, different level counts, non-default pallet/palletsDeep/header height); capture
-            // what the window built (designA); reload THAT via LoadExisting and rebuild (designB). If the I-21 adoption
-            // stopped restoring a front/level/header/annotation/safety faithfully, the FULL drawing (every lateral corte +
-            // frontal exit/entrance + planta, per instance) would diverge and this fails.
-            var (frontsA, sigA, sigB, ok) = StaTestRunner.Run(() =>
+            // NON-default design (3 fronts, different level counts, non-default pallet/palletsDeep/header height AND explicit
+            // non-default per-cell pallet/clear/beam overrides); capture what the window built (designA); reload THAT via
+            // LoadExisting and rebuild (designB). The full drawing (every lateral corte + frontal exit/entrance + planta,
+            // per instance) must be unchanged AND the non-default cell overrides must survive in both.
+            var (designA, designB, ok) = StaTestRunner.Run(() =>
             {
                 var w1 = new RackDynamicSystemWindow(canInsertInAutoCad: true);
                 w1.LoadExisting(RichDesign(), "GUID-RICH", "Din rico");
-                var designA = w1.BuildDesignForTest(out _);
+                var a = w1.BuildDesignForTest(out _);
 
                 var w2 = new RackDynamicSystemWindow(canInsertInAutoCad: true);
-                w2.LoadExisting(designA, "GUID-RICH", "Din rico");
-                var designB = w2.BuildDesignForTest(out var built);
-                return (designA.Fronts.Count, FullDrawingSignature(designA), FullDrawingSignature(designB), built);
+                w2.LoadExisting(a, "GUID-RICH", "Din rico");
+                var b = w2.BuildDesignForTest(out var built);
+                return (a, b, built);
             });
 
             Assert.True(ok);
-            Assert.Equal(3, frontsA);  // the window adopted the 3-front rich structure
-            Assert.Equal(sigA, sigB);  // and its full drawing round-trips exactly through LoadExisting
+            Assert.Equal(3, designA.Fronts.Count);       // the window adopted the 3-front rich structure
+            AssertRichCellPreserved(designA);            // non-default per-cell overrides survived load→build
+            AssertRichCellPreserved(designB);            // and survive a second reload
+            Assert.Equal(FullDrawingSignature(designA), FullDrawingSignature(designB)); // full drawing round-trips exactly
         }
 
         [Fact]
         public void RichDesign_LoadDesignForNew_ThenRebuild_RoundTripsTheFullDrawing()
         {
             // Same full-drawing fixpoint but through the library-open entry point (LoadDesignForNew): a distinct public load
-            // path (no id adopted) that must adopt the same rich state and rebuild the same drawing.
-            var (frontsA, sigA, sigB, ok) = StaTestRunner.Run(() =>
+            // path (no id adopted) that must adopt the same rich state, keep the non-default cell overrides and rebuild the
+            // same drawing.
+            var (designA, designB, ok) = StaTestRunner.Run(() =>
             {
                 var w1 = new RackDynamicSystemWindow(canInsertInAutoCad: true);
                 w1.LoadDesignForNew(RichDesign(), "Din plantilla");
-                var designA = w1.BuildDesignForTest(out _);
+                var a = w1.BuildDesignForTest(out _);
 
                 var w2 = new RackDynamicSystemWindow(canInsertInAutoCad: true);
-                w2.LoadDesignForNew(designA, "Din plantilla");
-                var designB = w2.BuildDesignForTest(out var built);
-                return (designA.Fronts.Count, FullDrawingSignature(designA), FullDrawingSignature(designB), built);
+                w2.LoadDesignForNew(a, "Din plantilla");
+                var b = w2.BuildDesignForTest(out var built);
+                return (a, b, built);
             });
 
             Assert.True(ok);
-            Assert.Equal(3, frontsA);
-            Assert.Equal(sigA, sigB);  // round-trips exactly through LoadDesignForNew
+            Assert.Equal(3, designA.Fronts.Count);
+            AssertRichCellPreserved(designA);
+            AssertRichCellPreserved(designB);
+            Assert.Equal(FullDrawingSignature(designA), FullDrawingSignature(designB));
         }
 
         [Fact]
@@ -143,7 +159,7 @@ namespace RackCad.UI.Tests
         {
             // The REAL "Insertar lateral" handler runs (RequestDraw → Recompose → SetModel → session): a fresh GUID is
             // minted, the typed name is captured, the request is a DynamicInsertionRequest for the lateral view, and the
-            // payload's design+system are non-null and correspond (the system is the resolution of the design).
+            // payload's design+system are non-null and STRICTLY correspond (full drawing signature of design == of system).
             var r = StaTestRunner.Run(() =>
             {
                 var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
@@ -160,14 +176,14 @@ namespace RackCad.UI.Tests
             Assert.True(Guid.TryParse(r.Id, out _)); // fresh GUID minted by the real handler
             Assert.Equal("Din nueva", r.Name);       // the handler read NameBox.Text
             Assert.Equal(nameof(DynamicInsertionRequest), r.RequestType);
-            Assert.True(r.PayloadCorresponds);       // design+system non-null and system == resolution(design)
+            Assert.True(r.PayloadCorresponds);       // design+system non-null and full signatures match
         }
 
         [Fact]
-        public void ExistingSystem_Update_ViaButton_KeepsGuid_RedrawsInPlace()
+        public void ExistingSystem_Update_ViaButton_KeepsGuidAndName_RedrawsInPlace()
         {
-            // The REAL "Actualizar" handler on an existing rack: GUID preserved, in-place redraw (view null, section -1,
-            // UpdateOnly true), typed DynamicInsertionRequest, real payload built.
+            // The REAL "Actualizar" handler on an existing rack: GUID + name preserved, in-place redraw (view null, section
+            // -1, UpdateOnly true), typed DynamicInsertionRequest, real payload built and corresponding.
             var r = StaTestRunner.Run(() =>
             {
                 var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
@@ -181,15 +197,16 @@ namespace RackCad.UI.Tests
             Assert.Null(r.View);
             Assert.Equal(-1, r.Section);
             Assert.Equal("GUID-EXIST", r.Id);
+            Assert.Equal("Din existente", r.Name);
             Assert.Equal(nameof(DynamicInsertionRequest), r.RequestType);
             Assert.True(r.PayloadCorresponds);
         }
 
         [Fact]
-        public void ExistingSystem_InsertEntranceFrontal_ViaButton_KeepsGuid_CarriesSection_AndSourceMetadata()
+        public void ExistingSystem_InsertEntranceFrontal_ViaButton_KeepsGuidName_CarriesSection_AndSourceMetadata()
         {
-            // The REAL "Frontal entrada" handler on an existing rack: GUID preserved, frontal section 1 (entrance), and the
-            // library source project (I-11 metadata) is carried into the payload.
+            // The REAL "Frontal entrada" handler on an existing rack: GUID + name preserved, frontal section 1 (entrance),
+            // real corresponding payload, and the library source project (I-11 metadata) carried into the payload.
             var (r, sourcePreserved) = StaTestRunner.Run(() =>
             {
                 var design = RichDesign();
@@ -206,6 +223,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(1, r.Section); // entrance
             Assert.False(r.UpdateOnly);
             Assert.Equal("GUID-EXIST", r.Id);
+            Assert.Equal("Din existente", r.Name);
             Assert.Equal(nameof(DynamicInsertionRequest), r.RequestType);
             Assert.True(r.PayloadCorresponds);
             Assert.True(sourcePreserved); // the source project flowed through the real handler into the payload (I-11)
@@ -241,12 +259,26 @@ namespace RackCad.UI.Tests
                 window.RackId, window.RackName, window.Session.InsertionRequest?.GetType().Name, corresponds);
         }
 
-        /// <summary>The payload's system is the resolution of the payload's design (the model the window actually built).</summary>
+        /// <summary>Strict correspondence: the FULL drawing signature built from the payload's Design (resolved) equals the
+        /// one built directly from the payload's System — every lateral corte + frontal exit/entrance + planta, per instance.</summary>
         private static bool Corresponds(DynamicRackDesign design, DynamicRackSystem system)
+            => FullDrawingSignature(design) == FullDrawingSignature(system);
+
+        private static void AssertRichCellPreserved(DynamicRackDesign design)
         {
-            var resolved = new DynamicRackSystemResolver(Catalog).Resolve(design).System;
-            return resolved.Fronts.Count == system.Fronts.Count
-                && Math.Abs(resolved.TotalLength - system.TotalLength) < 1e-6;
+            Assert.True(design.Fronts.Count > RichFront);
+            var level = design.Fronts[RichFront].Levels[RichLevel];
+            AssertLevel(RichPalletFront, level.PalletFront);
+            AssertLevel(RichPalletHeight, level.PalletHeight);
+            AssertLevel(RichPalletWeight, level.PalletWeight);
+            AssertLevel(RichClearHeight, level.ClearHeight);
+            AssertLevel(RichBeamLengthOverride, level.BeamLengthOverride);
+        }
+
+        private static void AssertLevel(double expected, double? actual)
+        {
+            Assert.True(actual.HasValue, "expected the non-default cell/beam override to be preserved");
+            Assert.Equal(expected, actual.Value, 6);
         }
 
         private static (DynamicRackSystemBuilder Builder, DynamicRackSystemResolver Resolver, DynamicEditorDesignAssembler Assembler) Services()
@@ -257,8 +289,9 @@ namespace RackCad.UI.Tests
             return (builder, resolver, new DynamicEditorDesignAssembler(catalog, builder, resolver));
         }
 
-        /// <summary>A representative NON-default design: 3 fronts with different lane counts and different level counts,
-        /// a non-default pallet (40×48×55), palletsDeep 6, non-default header height/peralte, non-default annotations.</summary>
+        /// <summary>A representative NON-default design: 3 fronts with different lane counts and different level counts, a
+        /// non-default pallet (40×48×55), palletsDeep 6, non-default header height/peralte, non-default annotations, AND
+        /// explicit non-default per-cell pallet/clear/beam overrides on a non-trivial front+level.</summary>
         private static DynamicRackDesign RichDesign(bool withSafety = false)
         {
             var (builder, _, assembler) = Services();
@@ -275,6 +308,18 @@ namespace RackCad.UI.Tests
                 matrix.Fronts[i].PalletCount = lanes[i];
                 matrix.Fronts[i].LoadLevels = levels[i];
             }
+
+            // Inject explicit NON-default per-cell pallet/clear/beam values on a non-trivial front+level (front 2 has
+            // LoadLevels 3, so level index 1 is an interior level). Set them on the MATRIX cell so BuildFrontDesigns emits
+            // an internally-consistent design (the cell feeds both the level AND the front's beam-depth list). InOutBeamDepth
+            // is left default on purpose: the window resolves it from the catalog, so it is not a preserved override.
+            matrix.Fronts[RichFront].EnsureCellCount(levels[RichFront]);
+            var cell = matrix.Fronts[RichFront].Cells[RichLevel];
+            cell.PalletFront = RichPalletFront;
+            cell.PalletHeight = RichPalletHeight;
+            cell.PalletWeight = RichPalletWeight;
+            cell.ClearHeight = RichClearHeight;
+            cell.BeamLengthOverride = RichBeamLengthOverride;
 
             var annotations = new DynamicAnnotationOptions
             {
@@ -309,43 +354,45 @@ namespace RackCad.UI.Tests
                 system.Fronts.Count, system.Modules.Count, system.TotalLength, resolution.Height.HeaderHeight);
         }
 
-        /// <summary>The FULL resolved-drawing signature produced by Application: every instance of every lateral corte
-        /// (tagged with its cut index), the frontal exit, the frontal entrance and the planta — deterministically ordered,
-        /// including role, PieceId, block, view, insertion, anchor, rotation, both mirror flags and dynamic parameters.</summary>
         private static string FullDrawingSignature(DynamicRackDesign design)
+            => FullDrawingSignature(new DynamicRackSystemResolver(Catalog).Resolve(design).System);
+
+        /// <summary>The FULL resolved-drawing signature produced by Application from an ALREADY-resolved system (no
+        /// re-resolve): every instance of every lateral corte (tagged with its cut index), the frontal exit, the frontal
+        /// entrance and the planta — deterministically ordered, including role, PieceId, block, view, insertion, anchor,
+        /// rotation, both mirror flags and dynamic parameters.</summary>
+        private static string FullDrawingSignature(DynamicRackSystem system)
         {
             var catalog = Catalog;
-            var system = new DynamicRackSystemResolver(catalog).Resolve(design).System;
             var keys = new List<string>();
 
-            foreach (var corte in new DynamicSystemLateralBuilder().Cortes(system, catalog))
+            void Add(string tag, IEnumerable<HeaderBlockInstance> instances)
             {
-                var tag = "lateral#" + corte.PostIndex.ToString(CultureInfo.InvariantCulture);
-                foreach (var instance in corte.Plan.Flatten().Instances)
+                // Compare the STRUCTURAL block instances (posts, beams, plates, separators, safety…) — not the Annotation/
+                // Dimension decorations, which depend on the display name the window sets on the system after resolving and
+                // are therefore not reproducible from the design alone.
+                foreach (var i in instances.Where(IsStructuralBlock))
                 {
-                    keys.Add(InstanceKey(tag, instance));
+                    keys.Add(InstanceKey(tag, i));
                 }
             }
 
+            foreach (var corte in new DynamicSystemLateralBuilder().Cortes(system, catalog))
+            {
+                Add("lateral#" + corte.PostIndex.ToString(CultureInfo.InvariantCulture), corte.Plan.Flatten().Instances);
+            }
+
             var frontal = new DynamicSystemFrontalBuilder();
-            foreach (var instance in frontal.Build(system, catalog, DynamicRackEnd.Exit))
-            {
-                keys.Add(InstanceKey("exit", instance));
-            }
-
-            foreach (var instance in frontal.Build(system, catalog, DynamicRackEnd.Entrance))
-            {
-                keys.Add(InstanceKey("entrance", instance));
-            }
-
-            foreach (var instance in new DynamicSystemPlantaBuilder().Build(system, catalog))
-            {
-                keys.Add(InstanceKey("planta", instance));
-            }
+            Add("exit", frontal.Build(system, catalog, DynamicRackEnd.Exit));
+            Add("entrance", frontal.Build(system, catalog, DynamicRackEnd.Entrance));
+            Add("planta", new DynamicSystemPlantaBuilder().Build(system, catalog));
 
             keys.Sort(StringComparer.Ordinal);
             return string.Join("\n", keys);
         }
+
+        private static bool IsStructuralBlock(HeaderBlockInstance i)
+            => i.Role != HeaderBlockRole.Annotation && i.Role != HeaderBlockRole.Dimension;
 
         private static string InstanceKey(string viewTag, HeaderBlockInstance i)
         {

@@ -10,9 +10,9 @@ namespace RackCad.UI.Tests
     /// STA tests for the REAL <see cref="RackCad.UI.RackFlowBedWindow"/> (cama de rodamiento, initiative I-24). The insert
     /// runs through the window's OWN button handler (a genuine WPF Click → <c>InsertInAutoCad_Click</c> → ReadConfig →
     /// session → typed payload → Close), NOT by calling <c>session.RequestInsert</c> directly. A cama has no
-    /// view/section/update — its insert is always <c>view:null, section:-1, UpdateOnly:false</c>. The pure
-    /// <c>LoadExisting</c>/<c>LoadForNew</c> identity tests are kept because they cover the load wiring the shell-adoption
-    /// test does not. Deterministic: no timing, no pixels.
+    /// view/section/update — its insert is always <c>view:null, section:-1, UpdateOnly:false</c>. The payload's
+    /// <see cref="FlowBedConfiguration"/> is checked field by field against the fixture (not just non-null). The pure
+    /// <c>LoadExisting</c>/<c>LoadForNew</c> identity tests are kept. Deterministic: no timing, no pixels.
     /// </summary>
     public sealed class FlowBedEditorWindowTests
     {
@@ -53,9 +53,9 @@ namespace RackCad.UI.Tests
         public void NewBed_Insert_ViaButton_MintsGuid_AndBuildsTheRealPayload()
         {
             // The REAL "Insertar en AutoCAD" handler runs (ReadConfig → session): a fresh GUID is minted, the typed name is
-            // captured, the request is a FlowBedInsertionRequest with a non-null config, and the cama insert carries no
-            // view/section/update.
-            var (requested, id, name, requestType, flowBedNonNull, view, section, updateOnly) = StaTestRunner.Run(() =>
+            // captured, the request is a FlowBedInsertionRequest, the produced config matches the fixture field by field,
+            // and the cama insert carries no view/section/update.
+            var (requested, id, name, requestType, config, view, section, updateOnly) = StaTestRunner.Run(() =>
             {
                 var window = new RackFlowBedWindow(canInsertInAutoCad: true);
                 window.LoadForNew(ValidConfig(), "Cama plantilla");
@@ -63,43 +63,68 @@ namespace RackCad.UI.Tests
                 EditorWindowTestSupport.ClickNamed(window, "InsertButton");
                 var request = window.Session.InsertionRequest as FlowBedInsertionRequest;
                 return (window.InsertRequested, window.RackId, window.RackName, window.Session.InsertionRequest?.GetType().Name,
-                    request?.FlowBed != null, window.Session.InsertView, window.Session.InsertSection, window.Session.UpdateOnly);
+                    request?.FlowBed, window.Session.InsertView, window.Session.InsertSection, window.Session.UpdateOnly);
             });
 
             Assert.True(requested);
             Assert.True(Guid.TryParse(id, out _)); // fresh GUID minted by the real handler
             Assert.Equal("Cama nueva", name);       // the handler read NameBox.Text
             Assert.Equal(nameof(FlowBedInsertionRequest), requestType);
-            Assert.True(flowBedNonNull);            // ReadConfig produced a real config in the payload
             Assert.Null(view);
             Assert.Equal(-1, section);
             Assert.False(updateOnly);
+            AssertFixtureConfig(config);
         }
 
         [Fact]
-        public void ExistingBed_Insert_ViaButton_KeepsGuid_AndCarriesSourceDocument()
+        public void ExistingBed_Insert_ViaButton_KeepsGuidName_CarriesSourceDoc_AndBuildsTheRealConfig()
         {
-            // The REAL insert handler on an existing bed: the GUID is preserved and the source FlowBed document (I-11) is
-            // carried into the payload — verified through the actual click, not a direct session call.
-            var (id, requestType, sourcePreserved, flowBedNonNull) = StaTestRunner.Run(() =>
+            // The REAL insert handler on an existing bed: GUID + name preserved, no view/section/update, the source FlowBed
+            // document (I-11) carried into the payload, and the produced config matches the fixture field by field.
+            var (requested, id, name, requestType, sourcePreserved, config, view, section, updateOnly) = StaTestRunner.Run(() =>
             {
                 var sourceDoc = FlowBedDocument.FromDomain(ValidConfig());
                 var window = new RackFlowBedWindow(canInsertInAutoCad: true);
                 window.LoadExisting(ValidConfig(), "GUID-CAMA", "Cama A", sourceDoc);
                 EditorWindowTestSupport.ClickNamed(window, "InsertButton");
                 var request = window.Session.InsertionRequest as FlowBedInsertionRequest;
-                return (window.RackId, window.Session.InsertionRequest?.GetType().Name,
-                    request != null && ReferenceEquals(request.SourceDocument, sourceDoc), request?.FlowBed != null);
+                return (window.InsertRequested, window.RackId, window.RackName, window.Session.InsertionRequest?.GetType().Name,
+                    request != null && ReferenceEquals(request.SourceDocument, sourceDoc), request?.FlowBed,
+                    window.Session.InsertView, window.Session.InsertSection, window.Session.UpdateOnly);
             });
 
+            Assert.True(requested);
             Assert.Equal("GUID-CAMA", id);
+            Assert.Equal("Cama A", name);
             Assert.Equal(nameof(FlowBedInsertionRequest), requestType);
             Assert.True(sourcePreserved); // the source document flowed through the real handler into the payload (I-11)
-            Assert.True(flowBedNonNull);
+            Assert.Null(view);
+            Assert.Equal(-1, section);
+            Assert.False(updateOnly);
+            AssertFixtureConfig(config);
         }
 
-        /// <summary>A ReadConfig-valid dynamic bed (lane depth + pallet depth set; roller falls back to the default).</summary>
+        // ---- Helpers ----
+
+        /// <summary>The config the real handler produced must match the fixture field by field, not just be non-null.</summary>
+        private static void AssertFixtureConfig(FlowBedConfiguration config)
+        {
+            Assert.NotNull(config);
+            Assert.Equal(FlowBedType.Dynamic, config.BedType);
+            Assert.Equal(96.0, config.LaneDepth, 6);
+            Assert.Equal(48.0, config.PalletDepth, 6);
+            Assert.Equal(FlowBedDefaults.RollerId, config.RollerId);
+            Assert.Null(config.RollerPitchOverride);
+        }
+
+        /// <summary>A ReadConfig-valid dynamic bed with explicit fixture values (lane depth, pallet depth, roller).</summary>
         private static FlowBedConfiguration ValidConfig()
-            => new FlowBedConfiguration { BedType = FlowBedType.Dynamic, LaneDepth = 96.0, PalletDepth = 48.0 };
+            => new FlowBedConfiguration
+            {
+                BedType = FlowBedType.Dynamic,
+                LaneDepth = 96.0,
+                PalletDepth = 48.0,
+                RollerId = FlowBedDefaults.RollerId
+            };
     }
 }

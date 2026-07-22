@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Headers;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
@@ -12,9 +16,10 @@ namespace RackCad.UI.Tests
     /// STA tests for the REAL <see cref="RackCad.UI.RackSelectiveWindow"/> (initiative I-24). Insert/update run through the
     /// window's OWN button handlers (a genuine WPF Click → <c>*_Click</c> → <c>RequestDraw</c> → ConfirmPendingCellEdits →
     /// BuildSystem → SetModel → session → typed payload → Close), NOT by calling <c>session.RequestInsert/RequestUpdate</c>
-    /// directly. That exercises the window's real validation, model build and payload. <c>SelectiveEditorStateAdoptionTests</c>
-    /// already locks the load→build GEOMETRY; here the orthogonal dimension is GUID/name/view/UpdateOnly conservation,
-    /// the concrete request type and a real, non-null payload — driven by actual clicks. Deterministic: no timing, no pixels.
+    /// directly. <c>SelectiveEditorStateAdoptionTests</c> already locks the load→build GEOMETRY; here the orthogonal
+    /// dimension is GUID/name/view/UpdateOnly conservation, the concrete request type and a STRICTLY corresponding payload:
+    /// the full resolved drawing (frontal of every fondo + planta + lateral cortes) built from the payload's Design equals
+    /// the one built directly from the payload's System. Deterministic: no timing, no pixels.
     /// </summary>
     public sealed class SelectiveEditorWindowTests
     {
@@ -48,7 +53,7 @@ namespace RackCad.UI.Tests
         {
             // The REAL "Insertar frontal" handler runs (RequestDraw → BuildSystem → SetModel → session): a fresh GUID is
             // minted, the typed name is captured, the request is a SelectiveInsertionRequest for the frontal view, and the
-            // payload's design+system are non-null and correspond (the system is the resolution of the design).
+            // payload's design+system STRICTLY correspond (full drawing signature of design == of system).
             var (requested, view, updateOnly, id, name, requestType, corresponds) = StaTestRunner.Run(() =>
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
@@ -64,15 +69,15 @@ namespace RackCad.UI.Tests
             Assert.True(Guid.TryParse(id, out _)); // fresh GUID minted by the real handler (template opened as new)
             Assert.Equal("Selectivo nuevo", name);  // the handler read NameBox.Text
             Assert.Equal(nameof(SelectiveInsertionRequest), requestType);
-            Assert.True(corresponds);                // design+system non-null and system == resolution(design)
+            Assert.True(corresponds);                // full drawing signatures of design and system match
         }
 
         [Fact]
-        public void ExistingRack_Update_ViaButton_KeepsGuid_RedrawsInPlace()
+        public void ExistingRack_Update_ViaButton_KeepsGuidAndName_RedrawsInPlace()
         {
-            // The REAL "Actualizar" handler on an existing rack: GUID preserved, in-place redraw (view null, UpdateOnly
-            // true), typed SelectiveInsertionRequest, real payload built.
-            var (requested, view, updateOnly, id, _, requestType, corresponds) = StaTestRunner.Run(() =>
+            // The REAL "Actualizar" handler on an existing rack: GUID + name preserved, in-place redraw (view null,
+            // UpdateOnly true), typed SelectiveInsertionRequest, strictly corresponding payload.
+            var (requested, view, updateOnly, id, name, requestType, corresponds) = StaTestRunner.Run(() =>
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
@@ -84,16 +89,17 @@ namespace RackCad.UI.Tests
             Assert.True(updateOnly);
             Assert.Null(view);
             Assert.Equal("GUID-SEL", id);
+            Assert.Equal("Selectivo A", name);
             Assert.Equal(nameof(SelectiveInsertionRequest), requestType);
             Assert.True(corresponds);
         }
 
         [Fact]
-        public void ExistingRack_InsertLateral_ViaButton_KeepsGuid_LinkedView()
+        public void ExistingRack_InsertLateral_ViaButton_KeepsGuidAndName_LinkedView()
         {
-            // The REAL "Insertar lateral" handler on an existing rack: a linked lateral view keeps the GUID and carries the
-            // normalized view; typed SelectiveInsertionRequest with a real payload.
-            var (requested, view, updateOnly, id, _, requestType, corresponds) = StaTestRunner.Run(() =>
+            // The REAL "Insertar lateral" handler on an existing rack: a linked lateral view keeps the GUID + name and
+            // carries the normalized view; typed SelectiveInsertionRequest with a strictly corresponding payload.
+            var (requested, view, updateOnly, id, name, requestType, corresponds) = StaTestRunner.Run(() =>
             {
                 var window = new RackSelectiveWindow(canInsertInAutoCad: true);
                 window.LoadExisting(SelectivePalletDesignDocument.From(MinimalDesign(), "GUID-SEL", "Selectivo A"));
@@ -105,6 +111,7 @@ namespace RackCad.UI.Tests
             Assert.Equal("lateral", view);
             Assert.False(updateOnly);
             Assert.Equal("GUID-SEL", id);
+            Assert.Equal("Selectivo A", name);
             Assert.Equal(nameof(SelectiveInsertionRequest), requestType);
             Assert.True(corresponds);
         }
@@ -120,11 +127,49 @@ namespace RackCad.UI.Tests
                 window.Session.InsertionRequest?.GetType().Name, corresponds);
         }
 
-        /// <summary>The payload's system is the resolution of the payload's design (the model the window actually built).</summary>
+        /// <summary>Strict correspondence: the full resolved drawing built from the payload's Design equals the one built
+        /// directly from the payload's System.</summary>
         private static bool Corresponds(SelectivePalletDesign design, SelectiveRackSystem system)
+            => DrawingSignature(new SelectiveGeometryResolver().Resolve(design, Catalog)) == DrawingSignature(system);
+
+        /// <summary>Full resolved-drawing signature of a selective system: frontal of every fondo + planta + lateral
+        /// cortes, per instance (role, PieceId, block, view, insertion, anchor, rotation, both mirrors, dynamic params),
+        /// plus the resolved height. Mirrors the pattern in SelectiveEditorStateAdoptionTests.</summary>
+        private static string DrawingSignature(SelectiveRackSystem system)
         {
-            var resolved = new SelectiveGeometryResolver().Resolve(design, Catalog);
-            return resolved.Bays.Count == system.Bays.Count && Math.Abs(resolved.Height - system.Height) < 1e-6;
+            var catalog = Catalog;
+            var instances = new List<HeaderBlockInstance>();
+
+            var fondoCount = SelectiveDepthLayout.Count(system);
+            var frontal = new SelectiveFrontalBuilder();
+            for (var fondo = 0; fondo < fondoCount; fondo++)
+            {
+                instances.AddRange(frontal.Build(SelectiveDepthLayout.FondoSystemView(system, fondo), catalog));
+            }
+
+            instances.AddRange(new SelectivePlantaBuilder().Build(system, catalog));
+            instances.AddRange(new SelectiveLateralBuilder().Cortes(system, catalog).SelectMany(c => c.Largueros));
+
+            // Compare the STRUCTURAL block instances only — the Annotation/Dimension decorations depend on the display
+            // name the window sets on the system after resolving, so they are not reproducible from the design alone.
+            var keys = instances
+                .Where(i => i.Role != HeaderBlockRole.Annotation && i.Role != HeaderBlockRole.Dimension)
+                .Select(InstanceKey)
+                .OrderBy(s => s, StringComparer.Ordinal);
+            return "H=" + system.Height.ToString("R", CultureInfo.InvariantCulture) + "\n" + string.Join("\n", keys);
+        }
+
+        private static string InstanceKey(HeaderBlockInstance i)
+        {
+            var parameters = string.Join(";", i.DynamicParameters
+                .OrderBy(k => k.Key, StringComparer.Ordinal)
+                .Select(k => k.Key + "=" + k.Value.ToString("R", CultureInfo.InvariantCulture)));
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}|{1}|{2}|{3}|{4:R},{5:R}|{6:R},{7:R}|{8:R}|{9}{10}|{11}",
+                (int)i.Role, i.BlockName, i.PieceId, i.View,
+                i.Insertion.X, i.Insertion.Y, i.ConnectionAnchor.X, i.ConnectionAnchor.Y,
+                i.RotationRadians, i.MirroredX ? 1 : 0, i.MirroredY ? 1 : 0, parameters);
         }
 
         /// <summary>A minimal but valid single-fondo selective design (one bay, two levels, floor beam).</summary>
