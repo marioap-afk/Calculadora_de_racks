@@ -4,6 +4,7 @@ using System.Globalization;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
+using RackCad.Application.Diagnostics;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
 
@@ -230,9 +231,10 @@ namespace RackCad.Plugin.Headers
                     tr.Commit();
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // Best effort: a lingering nested def is preferable to failing the redraw.
+                RackLog.Exception("Purga de definiciones anidadas", ex);
             }
         }
 

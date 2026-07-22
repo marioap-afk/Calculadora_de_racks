@@ -2,6 +2,7 @@ using System;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application;
+using RackCad.Application.Diagnostics;
 
 namespace RackCad.Plugin.Headers
 {
@@ -49,9 +50,10 @@ namespace RackCad.Plugin.Headers
                     tr.Commit();
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // The name is cosmetic; never let a rename failure break the edit flow.
+                RackLog.Exception("Sincronizar nombre de bloque", ex);
             }
         }
     }
