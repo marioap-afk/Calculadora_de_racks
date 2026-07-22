@@ -143,6 +143,16 @@ Planes disponibles:
   (`SelectiveTopePlan.BuildFrontal`, resultado distinto de los spots fisicos). Fuera de alcance I-25
   (guardas traseras), Push Back (I-18), el editor Dinamico, rediseño visual y reglas de producto.
   AutoCAD y owner-validation **aprobadas por el dueño**; integrada en `main` el 2026-07-22.
+- [`I-17-clon-unico-cabecera.md`](I-17-clon-unico-cabecera.md): contrato de I-17 (Fase 3, sobre I-02).
+  Unifica las tres implementaciones de deep-clone de `RackFrameConfiguration` (hallazgo U4: una manual +
+  dos por serializacion) en **un solo** `RackFrameProjectStore.DeepCopy` (round-trip del store de
+  serializacion); el dinamico, el selectivo y el configurador lo consumen, y se elimina el clon manual
+  campo-por-campo del configurador (`CopyConfiguration` + 7 ayudantes). El documento de persistencia pasa
+  a ser la fuente unica de que campos componen el diseno. Con pruebas de equivalencia (preservacion total
+  de la fuente de verdad, independencia, idempotencia, y equivalencia con las dos rutas previas).
+  **Sin cambio** de dibujo, geometria, BOM, GUID, persistencia fisica, DTO ni UI. Fuera de alcance: los
+  stores de I-03, rediseno de configuradores y migraciones adicionales de selectivo/dinamico.
+  `requires_autocad: false`, `requires_owner_validation: false`. **Estado: review-ready** (no integrada).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
