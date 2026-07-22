@@ -26,4 +26,12 @@
     <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
     <ProjectReference Include="..\..\src\RackCad.UI\RackCad.UI.csproj" />
   </ItemGroup>
+
+  <!-- Ship the versioned catalogs next to the test binaries (mirrors RackCad.Tests) so the editor windows
+       the shell-adoption tests construct load real catalog data, exactly as the plugin would at runtime (I-15). -->
+  <ItemGroup>
+    <Content Include="..\..\assets\catalogs\*.json;..\..\assets\catalogs\*.csv" Link="catalogs\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

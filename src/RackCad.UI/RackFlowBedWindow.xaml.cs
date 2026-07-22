@@ -10,6 +10,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI
 {
@@ -29,6 +30,11 @@ namespace RackCad.UI
         private static readonly Brush FloorStroke = new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
         private static readonly Brush LabelStroke = new SolidColorBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
 
+        /// <summary>The shared editor session (I-15): source of the catalog and the rack identity (GUID + name), and the
+        /// insert contract this window's "Insertar/Actualizar" routes through. Its coalescing gate is unused here (the bed
+        /// recomputes synchronously). The internal editor state (lastConfig/lastInstances) stays in the window (I-20/I-21).</summary>
+        private readonly RackEditorSession<FlowBedConfiguration, IReadOnlyList<HeaderBlockInstance>> session
+            = new RackEditorSession<FlowBedConfiguration, IReadOnlyList<HeaderBlockInstance>>();
         private readonly RackCatalog catalog;
         private readonly FlowBedLateralBuilder builder = new FlowBedLateralBuilder();
         private readonly bool canInsertInAutoCad;
@@ -40,23 +46,25 @@ namespace RackCad.UI
         private double mapOffsetX;
         private double mapBottomY;
 
-        /// <summary>Set when the user asks to draw the bed; the host command draws it after the windows close.</summary>
-        public bool InsertRequested { get; private set; }
+        /// <summary>Set when the user asks to draw the bed; the host command draws it after the windows close. Backed by
+        /// the shared session's insert contract (I-15).</summary>
+        public bool InsertRequested => session.InsertRequested;
 
-        public FlowBedConfiguration FlowBedToInsert { get; private set; }
+        public FlowBedConfiguration FlowBedToInsert => (session.InsertionRequest as FlowBedInsertionRequest)?.FlowBed;
 
-        /// <summary>Stable id + client name for the drawing round-trip (embed / reopen / edit).</summary>
-        public string RackId { get; private set; }
-        public string RackName { get; private set; }
+        /// <summary>Stable id + client name for the drawing round-trip (embed / reopen / edit); carried by the shared
+        /// <see cref="RackEditorIdentity"/> in the session (I-15).</summary>
+        public string RackId => session.Identity.Id;
+        public string RackName => session.Identity.Name;
+
+        /// <summary>Test seam (I-15): confirms the window carries identity + insert through the shared session.</summary>
+        internal RackEditorSession<FlowBedConfiguration, IReadOnlyList<HeaderBlockInstance>> Session => session;
 
         /// <summary>The source FlowBed document (its unknown fields + schema version), exposed so the host command can carry
         /// it into a library→drawing insert (I-11): from a drawing-edit source, else from the library project. Null for a
         /// brand-new bed.</summary>
         public RackCad.Application.Persistence.FlowBedDocument SourceFlowBedToInsert
             => sourceFlowBed ?? sourceProject?.SourceFlowBedDocument;
-
-        private string currentId;
-        private string currentName;
 
         /// <summary>The library project this bed was opened from, if any, so a re-save preserves its unknown JSON
         /// metadata and schema version instead of stamping a fresh document (I-11). Null for a brand-new design.</summary>
@@ -82,7 +90,7 @@ namespace RackCad.UI
                 InsertButton.ToolTip = "Disponible solo cuando la cama se abre desde AutoCAD.";
             }
 
-            catalog = UiSupport.LoadCatalogSafe();
+            catalog = session.Catalog; // the session loads it once via UiSupport.LoadCatalogSafe (I-15)
             RollerBox.ItemsSource = BuildRollerOptions();
             RollerBox.SelectedValue = FlowBedDefaults.RollerId;
             if (RollerBox.SelectedItem == null && RollerBox.Items.Count > 0)
@@ -231,13 +239,12 @@ namespace RackCad.UI
                 return;
             }
 
-            currentName = NameBox?.Text?.Trim();
-            if (string.IsNullOrWhiteSpace(currentId)) currentId = Guid.NewGuid().ToString();
-
-            InsertRequested = true;
-            FlowBedToInsert = config;
-            RackId = currentId;
-            RackName = currentName;
+            // Route the insert through the shared session (I-15): it captures the (trimmed) name, ensures the GUID and
+            // builds the typed payload the host draws — the same values the inline block produced. A cama has no
+            // view/section/update, so those are null/-1/false.
+            session.Identity.SetName(NameBox?.Text?.Trim());
+            session.RequestInsert(view: null, section: -1,
+                ctx => new FlowBedInsertionRequest(config, ctx.Id, ctx.Name, SourceFlowBedToInsert));
             Close();
         }
 
@@ -253,8 +260,7 @@ namespace RackCad.UI
             }
 
             this.sourceFlowBed = sourceFlowBed;
-            currentId = id;
-            currentName = name;
+            session.Identity.Adopt(id, name); // keep the drawn bed's GUID + name (I-15)
             if (NameBox != null)
             {
                 NameBox.Text = name ?? string.Empty;
@@ -296,8 +302,7 @@ namespace RackCad.UI
             }
 
             this.sourceProject = sourceProject;
-            currentId = null;
-            currentName = name;
+            session.Identity.Adopt(null, name); // a library template inserts as a NEW bed: no id yet, fresh GUID on insert (I-15)
             if (NameBox != null)
             {
                 NameBox.Text = name ?? string.Empty;
@@ -330,7 +335,7 @@ namespace RackCad.UI
                 return;
             }
 
-            var name = string.IsNullOrWhiteSpace(NameBox?.Text) ? currentName : NameBox.Text.Trim();
+            var name = string.IsNullOrWhiteSpace(NameBox?.Text) ? session.Identity.Name : NameBox.Text.Trim();
             var path = UiSupport.PromptSaveToLibrary(this, name, "cama");
             if (path == null) return;
 

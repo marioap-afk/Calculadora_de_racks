@@ -70,6 +70,19 @@ Planes disponibles:
   `tests/RackCad.UI.Tests` (net8.0-windows, runner STA propio) y su gate de CI dedicado. Los controles
   nacen con pruebas y **no** migran ninguna ventana existente (patrón strangler): sin cambio de dibujo,
   BOM ni persistencia. La adopción la harán I-15/I-20/I-21/I-22. Fuera de alcance I-15 y el rediseño visual.
+- [`I-15-editor-shell.md`](I-15-editor-shell.md): contrato de I-15 (pista C de UI, sobre I-08 e I-14).
+  Introduce la infraestructura del Editor Shell en `RackCad.UI/Editor/` — `RackEditorSession` (catálogo,
+  identidad/GUID, recomputación coalescida y contrato de inserción/actualización), `IRackEditorModule` y
+  un `EditorModuleRegistry` explícito sin reflexión — y migra el menú principal y la biblioteca a
+  consumir el registro en lugar de las ~19 propiedades de payload y los handlers por sistema (mata el
+  crecimiento O(N) de `RackMainMenuWindow`, hallazgos E3/E5/U1). El único consumidor del payload en el
+  Plugin (`RackMenuCommands.RackCad`) lee un `RackInsertionRequest` y despacha por Kind a los mismos
+  `Draw*`. Las cuatro ventanas ricas (selectivo, dinámico, cama, cabecera) **adoptan** el shell para esas
+  capacidades compartidas; lo único que queda para I-20/I-21 es extraer su estado interno propio (matriz
+  por fondo, `BuildSystem`, `Recompose`). Sin cambio de dibujo, BOM, GUID, persistencia ni formatos.
+  Fuera de alcance Push Back (I-18), Draw Services (I-16) y ampliar I-14. Rebasada sobre `main` vigente
+  (`646614d`, tras I-12 e I-19); AutoCAD y owner-validation **aprobadas por el dueño**; integrada en
+  `main` el 2026-07-21.
 - [`I-19-validador-catalogos.md`](I-19-validador-catalogos.md): contrato de I-19. Añade un validador PURO en
   `RackCad.Application.Catalogs.Validation` con severidades para ids duplicados, referencias/relaciones inválidas,
   bloques/vistas faltantes y filas descartadas por rol (con aviso), más el manifiesto esperado de
