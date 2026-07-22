@@ -1,6 +1,12 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-22 (**I-24 integrada en `main`**: **pruebas de editores** en `tests/RackCad.UI.Tests`
+> Actualizado: 2026-07-22 (**I-22 integrada en `main`**: **colocación de seguridad del selectivo** (E6/E7)
+> —servicios/planes puros de colocación por familia (tope con su resultado frontal propio `BuildFrontal`, tarima,
+> separador, parrilla unificada) con los builders y el BOM como orquestadores; configuraciones y **DTO por subtipo**
+> (`SafetySelectionDocuments`, wire format plano byte-idéntico); **paso de troquel en UNA constante**; las rejillas
+> tope/desviador/guía adoptan `SelectionMatrix` (con celda ausente)—, **sin cambio de comportamiento** (7 golden
+> idénticos; **AutoCAD + owner-validation aprobadas**); **desbloquea I-25**. Antes ese día: **I-24 integrada en
+> `main`**: **pruebas de editores** en `tests/RackCad.UI.Tests`
 > —ViewModels y límites reales de las ventanas por handlers WPF reales, firma completa del dibujo dinámico/
 > selectivo incluidas anotaciones y cotas—; **29 nuevas** (139→168 UI) más un **único seam interno** de prueba,
 > **sin cambio de comportamiento** (U3, cierra la pista de UI). Antes ese día: **I-05 integrada en `main`**:
@@ -139,7 +145,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 |---|---|---|---|---|---|---|
 | I-20 | `refactor/selective-editor-state` | Extraer `FondoMatrix`/`Cell`/`ApplyScope`/`BuildDesign` a Application (testeables); la ventana queda observando/pintando (U1, U3) | M | I-15 | I-22 (orden fijo: I-20 primero) | integrada (2026-07-21) |
 | I-21 | `refactor/dynamic-editor-state` | Ídem para el editor dinámico (~3,318 líneas si A; 1,332 si B). Partir por vistas si excede | M-L | I-15 + I-02 (A ejecutada e integrada; I-28 solo si un ADR futuro reemplaza ADR-0002) | I-28 | integrada (2026-07-21) |
-| I-22 | `refactor/safety-placement` | Servicios de colocación por familia (Tope/Parrilla/Tarima…) parametrizados por vista; subtipos de `SelectiveSafetySelection` con DTO por subtipo; paso de troquel en UNA constante; las rejillas adoptan `SelectionMatrix` (E6, E7) | M | I-14, I-20 (orden fijo) | I-20 | pendiente |
+| I-22 | `refactor/safety-placement` | Servicios de colocación por familia (Tope/Parrilla/Tarima…) parametrizados por vista; subtipos de `SelectiveSafetySelection` con DTO por subtipo; paso de troquel en UNA constante; las rejillas adoptan `SelectionMatrix` (E6, E7) | M | I-14, I-20 (orden fijo) | I-20 | integrada (2026-07-22) |
 | I-23 | `refactor/namespaces-sistemas` | `Systems.Selective/Dynamic/FlowBed/Shared`; renombres fósiles (`Headers`→`Drawing`, `DynamicSystemPlan`→`SystemPlan`); .editorconfig — mecánico, con tests golden, **cierra la Fase 5: depende de TODAS las demás** (E8) | M | I-08, I-15, I-16, I-20, I-21, I-22 | toda la Fase 5 | pendiente |
 | I-24 | `refactor/ui-tests-editores` | Tests de ViewModels y estados de editor sobre `tests/RackCad.UI.Tests` (el proyecto nace en I-14) (U3) | S | I-15, I-20 | — | integrada (2026-07-22) |
 | I-25 | `feature/guardas-traseras` ✋ | Última familia de seguridad (prioridad final del producto), construida sobre I-22 | M | I-22 | — | pendiente |

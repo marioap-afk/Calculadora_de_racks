@@ -139,9 +139,10 @@ Planes disponibles:
   los 5 paso-de-troquel hardcodeados a `SelectiveRackDefaults.TroquelPaso`; y adopta `SelectionMatrix`
   (con celdas ausentes para rejillas dentadas) en las rejillas tope/desviador/guia. **Sin cambio** de
   geometria, planes, BOM, GUID, persistencia I-11, catalogos, nombres de bloque, mensajes, seleccion,
-  defaults ni interaccion. Fuera de alcance I-25 (guardas traseras), Push Back (I-18), el editor
-  Dinamico, rediseño visual y reglas de producto. AutoCAD y owner-validation **abiertos** (gate del
-  dueño). No integrada.
+  defaults ni interaccion. El frontal de tope conserva su naturaleza esquematica por frente
+  (`SelectiveTopePlan.BuildFrontal`, resultado distinto de los spots fisicos). Fuera de alcance I-25
+  (guardas traseras), Push Back (I-18), el editor Dinamico, rediseño visual y reglas de producto.
+  AutoCAD y owner-validation **aprobadas por el dueño**; integrada en `main` el 2026-07-22.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
