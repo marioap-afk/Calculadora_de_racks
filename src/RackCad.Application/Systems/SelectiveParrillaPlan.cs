@@ -17,13 +17,18 @@ namespace RackCad.Application.Systems
         /// <summary>One load row that can carry decks: its clear span and the tarima it holds.</summary>
         public readonly struct LoadRow
         {
-            public LoadRow(double span, double palletFrente, int palletCount, bool fitToSpan)
+            public LoadRow(double startOffset, double span, double palletFrente, int palletCount, bool fitToSpan)
             {
+                StartOffset = startOffset;
                 Span = span;
                 PalletFrente = palletFrente;
                 PalletCount = palletCount;
                 FitToSpan = fitToSpan;
             }
+
+            /// <summary>Offset of this row's left post within the bay (0 for a full bay; a tramo's start for a medio
+            /// frente), so a view can place the decks without re-resolving the tramos (I-22, E6).</summary>
+            public double StartOffset { get; }
 
             /// <summary>Clear span (in) the decks are distributed over: the bay's larguero length, or a tramo's.</summary>
             public double Span { get; }
@@ -99,7 +104,7 @@ namespace RackCad.Application.Systems
 
                         if (tramos == null)
                         {
-                            cell.Rows.Add(new LoadRow(bay.BeamLength, level.PalletFrente, level.PalletCount, false));
+                            cell.Rows.Add(new LoadRow(0.0, bay.BeamLength, level.PalletFrente, level.PalletCount, false));
                             continue;
                         }
 
@@ -107,7 +112,7 @@ namespace RackCad.Application.Systems
                         {
                             if (tramo.Loaded)
                             {
-                                cell.Rows.Add(new LoadRow(tramo.Length, level.PalletFrente, level.PalletCount, true));
+                                cell.Rows.Add(new LoadRow(tramo.StartOffset, tramo.Length, level.PalletFrente, level.PalletCount, true));
                             }
                         }
                     }
@@ -163,6 +168,34 @@ namespace RackCad.Application.Systems
             }
 
             return max;
+        }
+
+        /// <summary>The (fondo, frente, level) cells that draw AT LEAST ONE deck for the given manual width/count — i.e.
+        /// <see cref="CountIn"/> &gt; 0 on that fondo's cell. Resolved per fondo (so the aggregation across fondos does
+        /// not hide a per-fondo cell) so the lateral, which draws one deck per REACHING fondo per grid-on level, can
+        /// look up existence without re-traversing the tramos (I-22, E6).</summary>
+        public static HashSet<(int Fondo, int Frente, int Level)> DeckCells(
+            SelectiveRackSystem system, RackCatalog catalog, double overrideFrente, int overrideCount)
+        {
+            var set = new HashSet<(int, int, int)>();
+            if (system == null)
+            {
+                return set;
+            }
+
+            var count = SelectiveDepthLayout.Count(system);
+            for (var k = 0; k < count; k++)
+            {
+                foreach (var cell in Cells(SelectiveDepthLayout.FondoSystemView(system, k), catalog))
+                {
+                    if (CountIn(cell, overrideFrente, overrideCount) > 0)
+                    {
+                        set.Add((k, cell.Frente, cell.Level));
+                    }
+                }
+            }
+
+            return set;
         }
     }
 }

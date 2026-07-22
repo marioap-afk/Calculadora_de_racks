@@ -258,39 +258,24 @@ namespace RackCad.Application.Systems
             var overrideCount = parrilla.Selection.ParrillaCantidad;
             var offCells = SelectiveSafetyGrid.OffCellKeys(parrilla.Selection.ParrillaOffCells);
 
-            for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
+            // Consume the shared per-(frente, level) load-row plan (it did the medio-frente traversal once, I-22 E6);
+            // project each row as a deck row at the layout X + the row's tramo offset.
+            foreach (var cell in SelectiveParrillaPlan.Cells(system, catalog))
             {
-                var bay = system.Bays[i];
-                if (bay.BeamLength <= 0.0)
+                if (cell.Frente >= postX.Count || offCells.Contains((cell.Frente, cell.Level)))
                 {
-                    continue;
+                    continue; // beyond the drawn posts, or this (frente, level) cell has no deck
                 }
 
-                var troquelX = layout.TroquelXs[i];
+                var bay = system.Bays[cell.Frente];
+                var level = bay.Levels[cell.Level];
                 var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bay, view);
-                var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
+                var baseX = postX[cell.Frente] + layout.TroquelXs[cell.Frente] + inicioX;
+                var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
 
-                for (var lvl = 0; lvl < bay.Levels.Count; lvl++)
+                foreach (var row in cell.Rows)
                 {
-                    if (offCells.Contains((i, lvl)))
-                    {
-                        continue; // this (frente, level) cell has no deck
-                    }
-
-                    var level = bay.Levels[lvl];
-                    var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
-
-                    if (tramos == null)
-                    {
-                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + troquelX + inicioX, bay.BeamLength, surfaceY, level, overrideFrente, overrideCount, fitToSpan: false);
-                        continue;
-                    }
-
-                    foreach (var tramo in tramos)
-                    {
-                        if (!tramo.Loaded) continue;
-                        PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, postX[i] + tramo.StartOffset + troquelX + inicioX, tramo.Length, surfaceY, level, overrideFrente, overrideCount, fitToSpan: true);
-                    }
+                    PlaceParrillaRow(instances, parrilla.PieceId, parrilla.Block, view, baseX + row.StartOffset, row.Span, surfaceY, level, overrideFrente, overrideCount, row.FitToSpan);
                 }
             }
         }
@@ -333,35 +318,6 @@ namespace RackCad.Application.Systems
             }
 
             return palletCount > 0 ? (frente, fitToSpan ? fit : palletCount) : (0.0, 0);
-        }
-
-        /// <summary>Whether ANY deck lands on <paramref name="bay"/>'s <paramref name="level"/> — the same rule the frontal
-        /// draw and the BOM count use (<see cref="ParrillaRow"/>, per loaded tramo in a medio frente). The LATERAL gates on
-        /// this too: it collapses the row end-on to ONE deck, so it must still ask whether the row exists at all, or a level
-        /// the frontal and the BOM leave empty (a manual frente wider than the claro, or a tarima that fits no tramo) grows
-        /// a phantom deck in the corte.</summary>
-        internal static bool ParrillaExistsAt(SelectiveBay bay, SelectiveLevel level, double troquelX, double inicioX, double overrideFrente, int overrideCount)
-        {
-            if (bay == null || level == null)
-            {
-                return false;
-            }
-
-            var tramos = SelectiveMedioFrente.Resolve(bay, troquelX, inicioX);
-            if (tramos == null)
-            {
-                return ParrillaRow(bay.BeamLength, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan: false).count > 0;
-            }
-
-            foreach (var tramo in tramos)
-            {
-                if (tramo.Loaded && ParrillaRow(tramo.Length, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan: true).count > 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>Text labels when the toggles are on: a number centered under each frente (bay), a number to the

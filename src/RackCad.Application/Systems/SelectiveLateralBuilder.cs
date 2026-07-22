@@ -64,9 +64,10 @@ namespace RackCad.Application.Systems
             // The parrilla's EXISTENCE rule needs the troquel grid to resolve medio-frente tramos, and it is the same for
             // every corte — resolve it ONCE here (the MASTER grid, as the BOM does: every fondo's posts are a prefix of it)
             // instead of per corte, and only when a parrilla is actually selected for the lateral.
-            var parrillaTroquelXs = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.ParrillaType).Count > 0
-                ? SelectiveDepthLayout.MasterGrid(system, catalog).TroquelXs
-                : null;
+            var parrillaElements = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.ParrillaType);
+            var parrillaDeckCells = parrillaElements.Count > 0
+                ? SelectiveParrillaPlan.DeckCells(system, catalog, parrillaElements[0].Selection.ParrillaFrente, parrillaElements[0].Selection.ParrillaCantidad)
+                : null; // the (fondo, frente, level) cells that draw a deck, resolved once (I-22, E6)
 
             var topePlan = SelectiveTopePlan.Build(system, catalog); // the physical topes, resolved once; each corte projects its distinct larguero Ys
 
@@ -156,7 +157,7 @@ namespace RackCad.Application.Systems
                 AddTarimas(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
 
                 // Parrillas (decks): one per reaching fondo per grid-ON level, spanning the fondo (FONDO param), seen edge-on.
-                AddParrillas(extras, system, catalog, fondoBays, offsets, anchorOffset, i, parrillaTroquelXs);
+                AddParrillas(extras, system, catalog, fondoBays, offsets, anchorOffset, i, parrillaDeckCells);
 
                 // Botas belong to the SYSTEM, not each cabecera: ONE at the corte's frontmost post (anchor-relative
                 // X=0) for Left, reflected to the backmost post for Right, about the center of THIS corte's total fondo
@@ -452,7 +453,7 @@ namespace RackCad.Application.Systems
         private static void AddParrillas(
             ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
             IList<SelectiveBay>[] fondoBays, IReadOnlyList<double> offsets, double anchorOffset, int postIndex,
-            IReadOnlyList<double> troquelXs)
+            HashSet<(int, int, int)> parrillaDeckCells)
         {
             var parrillas = SelectiveSafetyPlacement.EnabledOfType(system, catalog, LateralView, SelectiveSafetyPlacement.ParrillaType);
             if (parrillas.Count == 0)
@@ -466,8 +467,6 @@ namespace RackCad.Application.Systems
                 return; // the lateral draw is a per-view toggle
             }
 
-            var overrideFrente = parrilla.Selection.ParrillaFrente;
-            var overrideCount = parrilla.Selection.ParrillaCantidad;
             var offCells = SelectiveSafetyGrid.OffCellKeys(parrilla.Selection.ParrillaOffCells);
 
             for (var k = 0; k < offsets.Count; k++)
@@ -502,12 +501,9 @@ namespace RackCad.Application.Systems
 
                         var level = bays[b].Levels[lvl];
 
-                        // The grid says "decks are WANTED here"; ParrillaRow says how many actually FIT. Ask both, or a
-                        // level the frontal and the BOM leave empty still gets a deck end-on (the corte collapses the row
-                        // to one deck, but zero decks must stay zero).
-                        var troquelX = troquelXs != null && b < troquelXs.Count ? troquelXs[b] : 0.0;
-                        var inicioX = SelectivePostGeometry.BeamProfileStartX(catalog, bays[b], SelectiveRackDefaults.View);
-                        if (!SelectiveFrontalBuilder.ParrillaExistsAt(bays[b], level, troquelX, inicioX, overrideFrente, overrideCount))
+                        // The plan already resolved which cells draw a deck (grid ON + at least one fits); a level the
+                        // frontal and BOM leave empty stays empty end-on too, so zero decks stays zero (I-22, E6).
+                        if (parrillaDeckCells == null || !parrillaDeckCells.Contains((k, b, lvl)))
                         {
                             continue;
                         }
