@@ -1624,11 +1624,11 @@ namespace RackCad.UI
             SetStatus("Configuración '" + name + "' aplicada al módulo.", false);
         }
 
+        // The single canonical deep-clone shared by every editor (initiative I-17): RackFrameProjectStore.DeepCopy.
+        // Same store round-trip this window already used for the persisted+derived model, plus the runtime-only
+        // overrides DeepCopy re-attaches; no hand-maintained per-field clone.
         private static RackFrameConfiguration Clone(RackFrameConfiguration configuration)
-        {
-            var store = new RackFrameProjectStore();
-            return store.Deserialize(store.Serialize(configuration));
-        }
+            => new RackFrameProjectStore().DeepCopy(configuration);
 
         private sealed class HeaderPreset
         {

@@ -1,0 +1,51 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-17
+  branch: refactor/clon-unico-cabecera
+  claim_id: d1c77268-23f2-47ad-9e4b-f733be32f63d
+  current_phase: 6
+  state: integration-ready
+  gate: none
+  attempts: 1
+  integration_date: 2026-07-22
+  next_action: integracion-manual-git-merge-no-ff-refactor-clon-unico-cabecera-en-main-tras-ci-verde-del-commit-documental-de-cierre-luego-limpieza-segura-worktree-rama-local-d-y-remota
+  last_evidence_commit: 28e5cfeeccfbfe60ab844f1555d3580405ebfbb8
+execution_context:
+  mode: manual-git-only
+  worktree: I-17-clon-unico-cabecera
+  pull_request: none
+evidence:
+  base_commit: f674bd4fcd689e865d3985b1071dc9ec3b53b16b
+  claim_commit: 5541187386dd5447d08c1e2b6dd6a70b433dd654
+  implementation_commit_round1: 58b76369578a7e1e81f69f5af7cd893225aa28ec
+  docs_commit_round1: 6b5054c
+  correction_commit_round2: 28e5cfeeccfbfe60ab844f1555d3580405ebfbb8
+  mechanism: rackframeprojectstore-deepcopy-null-a-null-si-no-a-round-trip-deserialize-serialize-modelo-persistido-por-el-documento-modelo-derivado-members-y-elevaciones-reconstruido-por-refreshphysicalmodel-en-la-carga-b-reanexa-copia-profunda-de-cada-frameexceptionoverride-runtime-que-el-documento-no-persiste-ni-refreshphysicalmodel-reconstruye-sin-tocar-el-formato-de-alambre-ni-save-load
+  correction_round2: defecto-reportado-deepcopy-perdia-rackframeconfiguration-exceptions-porque-el-documento-no-las-serializa-y-refreshphysicalmodel-no-las-reconstruye-arreglado-dentro-del-unico-mecanismo-canonico-reanexando-cada-frameexceptionoverride-mas-cloneexception-privado-sin-cambiar-dto-ni-formato-fisico-comentarios-y-doc-corregidos-ya-no-afirman-que-las-excepciones-se-regeneran-en-deserialize-solo-miembros-y-elevaciones
+  consumers: dinamico-clone-delega-identico-selectivo-clonecabecera-del-wrapper-al-deepcopy-de-cabecera-desnuda-persistido-equivalente-mas-preserva-excepciones-que-el-wrapper-descartaba-configurador-cloneconfiguration-delega-y-se-eliminan-copyconfiguration-mas-7-ayudantes-dos-rutas-reasignan-configuration
+  domain_application_tests: 993-verde-0-fallos-989-mas-4-en-la-correccion-3-netas-en-deepcopytests-excepciones-modelo-derivado-miembro-a-miembro-guarda-por-reflexion-mas-1-regresion-i11-en-persistencereopenpreservationtests
+  ui_tests: 184-verde-0-fallos-sin-cambio-en-la-correccion
+  persistence_i11_filter: 134-verde-0-fallos-persistence-mas-rackframeprojectstore-mas-deepcopy
+  verified_failing: deepcopy-preserveseveryexception-asindependentdeepcopies-verificada-fallando-con-el-reanexado-desactivado-1-fallo-11-pasan-luego-restaurado-el-fix
+  build_ui_debug: 0-errores-0-advertencias-propias
+  build_solution_debug: 0-errores-solo-2-MSB3277-conocidos-del-plugin-autocad-2025-instalado
+  invariants: sin-cambio-de-dibujo-geometria-bom-guid-persistencia-fisica-dto-catalogos-stores-i03-ni-ui-clon-identico-modelo-persistido-derivado-miembro-a-miembro-y-excepciones-runtime-fijado-por-comparacion-profunda-del-grafo-no-solo-forma-de-alambre
+  scope: rackframeprojectstore-deepcopy-mas-cloneexception-mas-3-consumidores-ui-mas-2-archivos-de-prueba-nuevos-modificados-mas-regresion-i11-mas-docs-contrato-estado-readme-sin-tocar-dto-persistencia-fisica-catalogos-plugin-stores-i03-ni-workflows
+  parallel_observed: I-03-refactor-fallos-silenciosos-en-curso-puede-tocar-rackframeprojectstore-para-escritura-atomica-i17-solo-anade-deepcopy-mas-cloneexception-region-distinta-conciliable-en-rebase-no-conflicto-declarado
+  candidate_ci_run: 29952433309-success-4-jobs-verdes-sobre-28e5cfe-tests-domain-application-build-ui-ui-tests-build-plugin-without-autocad
+  integration_verification: sobre-28e5cfe-rackcad-tests-993-rackcad-ui-tests-184-persistencia-i11-deepcopy-143-build-ui-debug-0-0-build-solucion-debug-0-errores-2-msb3277-diff-vs-origin-main-10-archivos-sin-xaml-catalogos-dto-formato-fisico-stores-i03-geometria-bom-guid
+  origin_main_advanced: no-origin-main-sigue-en-f674bd4-base-sin-rebase-i03-e-i07-activas-en-remoto-pero-no-integradas
+  ci_status: candidato-28e5cfe-verde-run-29952433309-commit-documental-de-cierre-recibe-su-propio-ci-antes-del-merge-el-sha-del-merge-vive-en-git-log-first-parent-main
+gates:
+  autocad:
+    required: false
+    note: refactor-de-la-mecanica-de-clonado-sin-cambio-de-comportamiento-observable-clon-identico-incluidas-excepciones-y-modelo-derivado-no-cambia-dibujo-ni-superficie-visible
+  owner_validation:
+    required: false
+    note: sin-cambio-de-comportamiento-observable-cobertura-por-comparacion-profunda-del-grafo-guarda-de-clasificacion-regresion-i11-y-ci
+  owner_decision:
+    required: false
+    note: no-hay-decision-del-dueno-pendiente-no-existe-docs-automation-decisions-i17-md
+  plugin_build:
+    required: false
+    note: automation-plan-marca-build-plugin-local-no-para-i17-verificado-igualmente-build-solucion-debug-verde-0-errores-propios

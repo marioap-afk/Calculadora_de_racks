@@ -181,6 +181,31 @@ namespace RackCad.UI.Tests
 
         private static int vmPanels(RackFrameConfiguratorViewModel vm) => vm.BracingSegments.Count;
 
+        [Fact]
+        public void RestoreStandardConfiguration_AfterAStructuralEdit_ReturnsToTheStandardModel()
+        {
+            // The reset path replaces the working configuration with a fresh clone of the standard snapshot and rebuilds
+            // every row from it. Regression (initiative I-17): the reference swap that replaced the in-place field copy
+            // must restore the standard structure and clear the edit, not leave the modified model in place.
+            StaTestRunner.Run(() =>
+            {
+                var vm = NewViewModel();
+                var standardHorizontals = vm.Configuration.Horizontals.Count;
+                var standardPanels = vm.BracingSegments.Count;
+
+                vm.AddCommonSegment(44.0); // diverge from the standard cabecera
+                Assert.NotEqual(standardHorizontals, vm.Configuration.Horizontals.Count); // guards a vacuous test
+
+                vm.RestoreStandardConfiguration();
+
+                Assert.Equal(standardHorizontals, vm.Configuration.Horizontals.Count); // structure restored
+                Assert.Equal(standardPanels, vm.BracingSegments.Count);                // rows rebuilt from the clone
+                Assert.Equal(vm.Horizontals.Count - 1, vm.BracingSegments.Count);      // N horizontals -> N-1 panels
+                Assert.NotEmpty(vm.Configuration.Members);                             // physical model rebuilt
+                Assert.True(vm.IsModelConsistent);
+            });
+        }
+
         // ---- Negative / edge paths ----
 
         [Fact]

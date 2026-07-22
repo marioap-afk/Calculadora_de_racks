@@ -1178,7 +1178,11 @@ namespace RackCad.UI
 
         public void RestoreStandardConfiguration()
         {
-            CopyConfiguration(standardConfigurationSnapshot, Configuration);
+            // Replace with a fresh clone of the standard snapshot (initiative I-17): LoadRowsFromConfiguration +
+            // RefreshPhysicalMembers below rebuild every row and derived member from it, so the reference swap is
+            // equivalent to the previous in-place field copy. The standard snapshot carries no overrides, so this
+            // clears the user's modifications and exceptions exactly as before.
+            Configuration = CloneConfiguration(standardConfigurationSnapshot);
             SelectedBracingSegments.Clear();
             SelectedBracingSegment = null;
             SelectedHorizontal = null;
@@ -1380,7 +1384,9 @@ namespace RackCad.UI
 
         private void ReplaceConfigurationAndReload(RackFrameConfiguration source, string successMessage)
         {
-            CopyConfiguration(source, Configuration);
+            // Reference swap to a fresh clone (initiative I-17); the reload sequence below rebuilds rows and
+            // derived members from it, matching the previous in-place field copy.
+            Configuration = CloneConfiguration(source);
             SelectedBracingSegments.Clear();
             SelectedBracingSegment = null;
             SelectedHorizontal = null;
@@ -2201,148 +2207,13 @@ namespace RackCad.UI
             return NormalizeText(lowerHorizontalId) + ">" + NormalizeText(upperHorizontalId);
         }
 
+        // Single canonical deep-clone (initiative I-17): delegate to RackFrameProjectStore.DeepCopy. The persisted
+        // model is owned by RackFrameProjectDocument (no hand-maintained per-field clone that drifts out of sync as
+        // fields are added — the audit's U4); the derived model (Members, panel elevations) is rebuilt on load; and
+        // the runtime-only Exceptions the document does not persist are re-attached by DeepCopy, so the clone is
+        // complete (Exceptions are NOT regenerated on load — only members and elevations are).
         private static RackFrameConfiguration CloneConfiguration(RackFrameConfiguration source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            var clone = new RackFrameConfiguration
-            {
-                Name = source.Name,
-                Units = source.Units,
-                Height = source.Height,
-                Depth = source.Depth,
-                PostPeralte = source.PostPeralte,
-                StandardBaselineId = source.StandardBaselineId,
-                StandardBaselineVersion = source.StandardBaselineVersion,
-                LeftPost = ClonePost(source.LeftPost),
-                RightPost = ClonePost(source.RightPost),
-                LeftBasePlate = CloneBasePlate(source.LeftBasePlate),
-                RightBasePlate = CloneBasePlate(source.RightBasePlate),
-                // Celosía parameters drive the lateral geometry — dropping them on clone silently reset
-                // reopened projects to defaults.
-                CelosiaStartTroquel = source.CelosiaStartTroquel,
-                DiagonalStartOffsetTroqueles = source.DiagonalStartOffsetTroqueles,
-                DiagonalEndOffsetTroqueles = source.DiagonalEndOffsetTroqueles,
-                DiagonalDoubleSpacingTroqueles = source.DiagonalDoubleSpacingTroqueles,
-                HorizontalDoubleOffsetTroqueles = source.HorizontalDoubleOffsetTroqueles,
-                PasoTroquel = source.PasoTroquel,
-                PanelClear = source.PanelClear
-            };
-
-            foreach (var horizontal in source.Horizontals)
-            {
-                clone.Horizontals.Add(CloneHorizontal(horizontal));
-            }
-
-            foreach (var panel in source.BracingPanels)
-            {
-                clone.BracingPanels.Add(CloneBracingPanel(panel));
-            }
-
-            foreach (var member in source.Members)
-            {
-                clone.Members.Add(CloneFrameMember(member));
-            }
-
-            foreach (var exception in source.Exceptions)
-            {
-                clone.Exceptions.Add(CloneException(exception));
-            }
-
-            return clone;
-        }
-
-        private static void CopyConfiguration(RackFrameConfiguration source, RackFrameConfiguration target)
-        {
-            if (source == null || target == null)
-            {
-                return;
-            }
-
-            target.Name = source.Name;
-            target.Units = source.Units;
-            target.Height = source.Height;
-            target.Depth = source.Depth;
-            target.PostPeralte = source.PostPeralte;
-            target.StandardBaselineId = source.StandardBaselineId;
-            target.StandardBaselineVersion = source.StandardBaselineVersion;
-            target.LeftPost = ClonePost(source.LeftPost);
-            target.RightPost = ClonePost(source.RightPost);
-            target.LeftBasePlate = CloneBasePlate(source.LeftBasePlate);
-            target.RightBasePlate = CloneBasePlate(source.RightBasePlate);
-            // Celosía parameters drive the lateral geometry — dropping them here silently reset
-            // reopened projects to defaults.
-            target.CelosiaStartTroquel = source.CelosiaStartTroquel;
-            target.DiagonalStartOffsetTroqueles = source.DiagonalStartOffsetTroqueles;
-            target.DiagonalEndOffsetTroqueles = source.DiagonalEndOffsetTroqueles;
-            target.DiagonalDoubleSpacingTroqueles = source.DiagonalDoubleSpacingTroqueles;
-            target.HorizontalDoubleOffsetTroqueles = source.HorizontalDoubleOffsetTroqueles;
-            target.PasoTroquel = source.PasoTroquel;
-            target.PanelClear = source.PanelClear;
-
-            target.Horizontals.Clear();
-            target.BracingPanels.Clear();
-            target.Members.Clear();
-            target.Exceptions.Clear();
-
-            foreach (var horizontal in source.Horizontals)
-            {
-                target.Horizontals.Add(CloneHorizontal(horizontal));
-            }
-
-            foreach (var panel in source.BracingPanels)
-            {
-                target.BracingPanels.Add(CloneBracingPanel(panel));
-            }
-
-            foreach (var member in source.Members)
-            {
-                target.Members.Add(CloneFrameMember(member));
-            }
-
-            foreach (var exception in source.Exceptions)
-            {
-                target.Exceptions.Add(CloneException(exception));
-            }
-        }
-
-        private static PostAssembly ClonePost(PostAssembly source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new PostAssembly
-            {
-                Side = source.Side,
-                PostCatalogId = source.PostCatalogId,
-                Description = source.Description,
-                HasReinforcement = source.HasReinforcement,
-                ReinforcementCatalogId = source.ReinforcementCatalogId,
-                ReinforcementHeight = source.ReinforcementHeight
-            };
-        }
-
-        private static BasePlatePlacement CloneBasePlate(BasePlatePlacement source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new BasePlatePlacement
-            {
-                PostSide = source.PostSide,
-                PlateCatalogId = source.PlateCatalogId,
-                Description = source.Description,
-                ConnectionPointId = source.ConnectionPointId,
-                PeralteOverride = source.PeralteOverride
-            };
-        }
+            => new RackFrameProjectStore().DeepCopy(source);
 
         private static string FormatOptional(double? value)
             => value.HasValue ? value.Value.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
@@ -2357,119 +2228,6 @@ namespace RackCad.UI
             return LocalizedNumberParser.TryDouble(text, out var value) && value > 0.0
                 ? value
                 : (double?)null;
-        }
-
-        private static FrameHorizontal CloneHorizontal(FrameHorizontal source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new FrameHorizontal
-            {
-                Id = source.Id,
-                Number = source.Number,
-                Elevation = source.Elevation,
-                ProfileId = source.ProfileId,
-                Quantity = source.Quantity,
-                MountingFace = source.MountingFace,
-                State = source.State,
-                Notes = source.Notes,
-                IsStandard = source.IsStandard
-            };
-        }
-
-        private static BracingPanel CloneBracingPanel(BracingPanel source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            var clone = new BracingPanel
-            {
-                PanelId = source.PanelId,
-                Number = source.Number,
-                LowerHorizontalId = source.LowerHorizontalId,
-                UpperHorizontalId = source.UpperHorizontalId,
-                StartElevation = source.StartElevation,
-                EndElevation = source.EndElevation,
-                Arrangement = source.Arrangement,
-                MountingFace = source.MountingFace,
-                DiagonalProfileId = source.DiagonalProfileId,
-                DiagonalDirection = source.DiagonalDirection,
-                StartConnectionPointId = source.StartConnectionPointId,
-                EndConnectionPointId = source.EndConnectionPointId,
-                IsStandard = source.IsStandard,
-                IsException = source.IsException
-            };
-
-            foreach (var member in source.Members)
-            {
-                clone.Members.Add(CloneFrameMember(member));
-            }
-
-            return clone;
-        }
-
-        private static FrameMember CloneFrameMember(FrameMember source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new FrameMember
-            {
-                SourcePanelId = source.SourcePanelId,
-                SourcePanelIndex = source.SourcePanelIndex,
-                MemberType = source.MemberType,
-                CatalogId = source.CatalogId,
-                ProfileId = source.ProfileId,
-                Quantity = source.Quantity,
-                MountingFace = source.MountingFace,
-                Origin = source.Origin,
-                Start = CloneFrameMemberEnd(source.Start),
-                End = CloneFrameMemberEnd(source.End),
-                Length = source.Length,
-                Angle = source.Angle,
-                IsStandard = source.IsStandard
-            };
-        }
-
-        private static FrameMemberEnd CloneFrameMemberEnd(FrameMemberEnd source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new FrameMemberEnd
-            {
-                Role = source.Role,
-                PostSide = source.PostSide,
-                HorizontalPositionRatio = source.HorizontalPositionRatio,
-                Elevation = source.Elevation,
-                ConnectionPointId = source.ConnectionPointId
-            };
-        }
-
-        private static FrameExceptionOverride CloneException(FrameExceptionOverride source)
-        {
-            if (source == null)
-            {
-                return null;
-            }
-
-            return new FrameExceptionOverride
-            {
-                ExceptionType = source.ExceptionType,
-                TargetId = source.TargetId,
-                StandardValue = source.StandardValue,
-                OverrideValue = source.OverrideValue,
-                Reason = source.Reason
-            };
         }
 
         private static string FormatInches(double value)
