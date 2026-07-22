@@ -285,7 +285,7 @@ namespace RackCad.Application.Systems
                     SetFloorPallet(bay, levels[0]); // the bottom pallet rests on the floor, not a beam
                     var firstClear = levels[1].ClearOverride.HasValue && levels[1].ClearOverride.Value > 0.0
                         ? levels[1].ClearOverride.Value
-                        : RoundUpToMultiple(PalletAlto(levels[0]) + clearance, 2.0);
+                        : RoundUpToMultiple(PalletAlto(levels[0]) + clearance, SelectiveRackDefaults.TroquelPaso);
                     y = SnapUp(firstClear, gridBase, paso);
                     AddBeam(bay, y, levels[1]);
                     start = 2;
@@ -387,7 +387,7 @@ namespace RackCad.Application.Systems
         /// </summary>
         private static double Separation(double palletAlto, double clearance, double beamPeralteAbove, double paso)
         {
-            var claroLibre = RoundUpToMultiple(palletAlto + clearance, 2.0);
+            var claroLibre = RoundUpToMultiple(palletAlto + clearance, SelectiveRackDefaults.TroquelPaso);
             return Math.Max(paso, RoundUpToMultiple(claroLibre + beamPeralteAbove, paso));
         }
 

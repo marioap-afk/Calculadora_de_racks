@@ -280,7 +280,7 @@ namespace RackCad.Application.Systems
 
             var separatorMate = CatalogLookup.Local(catalog, DynamicRackDefaults.SeparatorCatalogId, DynamicRackDefaults.SeparatorMatePoint, DynamicRackDefaults.SeparatorView);
             var troquelSeparador = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
-            const double paso = 2.0; // the standard troquel pitch (as in the dynamic default)
+            const double paso = SelectiveRackDefaults.TroquelPaso; // the standard troquel pitch (single source, I-22)
 
             for (var r = 0; r + 1 < reaching.Count; r++)
             {
@@ -341,7 +341,7 @@ namespace RackCad.Application.Systems
             }
 
             var troquel = CatalogLookup.Local(catalog, system.PostId, SelectiveSafetyPlacement.TopePostPoint, LateralView);
-            const double paso = 2.0; // the tope must land on a tope troquel: mate.Y + a whole number of pasos
+            const double paso = SelectiveRackDefaults.TroquelPaso; // the tope must land on a tope troquel: mate.Y + a whole number of pasos (single source, I-22)
 
             foreach (var tope in topes)
             {

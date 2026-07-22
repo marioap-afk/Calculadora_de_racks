@@ -194,7 +194,7 @@ namespace RackCad.Application.Systems
             var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(system.PostId, SelectiveSafetyPlacement.TopePostPoint, view);
             var saque = selection.TopeSaque > 0.0 ? selection.TopeSaque : SelectiveSafetyPlacement.DefaultSaque;
             var offCells = SelectiveSafetyGrid.OffCellKeys(selection.TopeOffCells);
-            const double paso = 2.0;
+            const double paso = SelectiveRackDefaults.TroquelPaso; // single source for the troquel pitch (I-22)
 
             for (var i = 0; i < system.Bays.Count && i < postX.Count; i++)
             {
