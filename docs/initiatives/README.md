@@ -90,6 +90,15 @@ Planes disponibles:
   automática de catálogos, tocar el DWG, Push Back, reglas de producto, logging de I-03, esquema de persistencia y
   el cableado UI/Plugin. Owner-validation aprobada (baseline `TROQUEL_TOPE` + `TARIMA_GENERICA` aceptado);
   rebasada sobre `main` vigente e integrada en `main` el 2026-07-21.
+- [`I-20-selective-editor-state.md`](I-20-selective-editor-state.md): contrato de I-20 (Fase 5, sobre
+  I-15). Extrae el estado propio del editor selectivo (`FondoMatrix`/`Cell`/`ApplyScope`/`BuildDesign`
+  y las transiciones por fondo) a clases puras y testeables de `RackCad.Application`
+  (`SelectiveEditorState` + `SelectiveEditorCell`/`SelectiveEditorFondoMatrix`/`SelectiveApplyScope`/
+  `SelectiveDesignInputs`), dejando `RackSelectiveWindow` observando el estado y pintando matriz/
+  previews (hallazgos U1/U3). Preserva UI, geometría, BOM, GUID, inserción/actualización, persistencia
+  y metadatos I-11, catálogos, compatibilidad legacy y round-trip. Fuera de alcance I-22 (colocación de
+  seguridad; orden fijo I-20 primero), I-21/el editor dinámico y la asimetría vigente de estilos de
+  cota. AutoCAD y owner-validation **aprobadas por el dueño**; integrada en `main` el 2026-07-21.
 - [`I-21-dynamic-editor-state.md`](I-21-dynamic-editor-state.md): contrato de I-21 (Fase 5, sobre I-15 e
   I-02). Extrae de `RackDynamicSystemWindow` a `RackCad.Application` el estado puro del editor dinamico
   —`DynamicEditorCell`/`DynamicEditorFront`/`DynamicEditorValues`, la matriz frente x nivel con su
