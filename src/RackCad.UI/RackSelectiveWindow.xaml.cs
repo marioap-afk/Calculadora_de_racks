@@ -167,6 +167,11 @@ namespace RackCad.UI
         /// <summary>Test seam (I-15): confirms the window carries identity, coalesced recompute and insert through the session.</summary>
         internal RackEditorSession<SelectivePalletDesign, SelectiveRackSystem> Session => session;
 
+        /// <summary>Test seam (I-20): builds the pallet design from the current editor state exactly as the insert/update
+        /// path does (same <see cref="BuildDesign"/>), so a characterization test can lock the resolved geometry across the
+        /// state extraction. Not used in production — the window builds through <see cref="BuildSystem(out string)"/>.</summary>
+        internal SelectivePalletDesign BuildDesignForTest(out string error) => BuildDesign(out error);
+
         public RackSelectiveWindow()
             : this(false)
         {
