@@ -30,10 +30,13 @@ namespace RackCad.Application.Diagnostics
 
                 File.Move(path, bad);
             }
-            catch
+            catch (Exception moveEx)
             {
-                // Best-effort: if the file cannot be moved aside, the log entry already made the failure
-                // diagnosable — that is the point of I-03. Never throw into the caller's flow.
+                // Best-effort/never-throw is preserved — but the quarantine failure must NOT be silent. If the
+                // corrupt file cannot be moved aside it stays in place and a later save could overwrite it, so
+                // record the SECONDARY failure (with its own stack) and enough context to see the .bad move failed.
+                RackLog.Exception(
+                    (context ?? "-") + " (fallo al poner en cuarentena: " + path + " -> " + path + ".bad)", moveEx);
             }
         }
     }

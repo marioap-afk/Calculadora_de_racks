@@ -32,17 +32,16 @@ namespace RackCad.Application.RackFrames
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RackCad", TemplatesFile);
 
         /// <summary>
-        /// Loads the user templates; a MISSING or empty file yields an empty list silently (normal). A
-        /// present-but-CORRUPT file is quarantined to <c>.bad</c> and logged (I-03 D2) instead of being
-        /// silently discarded, so the user's library is preserved and the failure is diagnosable. Never throws.
+        /// Loads the user templates, DISTINGUISHING a missing file from a present-but-unreadable one by the
+        /// EXCEPTION the read throws (not a prior <c>File.Exists</c>, which reports false for a permission-denied
+        /// file and would hide it as "missing"): <see cref="FileNotFoundException"/>/
+        /// <see cref="DirectoryNotFoundException"/> → empty list, silently (normal); <see cref="JsonException"/> →
+        /// quarantine to <c>.bad</c> + log (I-03 D2), then empty; any other read failure (permissions/IO/lock) →
+        /// log with stack, NO quarantine, then empty. An empty/whitespace file stays a silent empty list
+        /// (unchanged). Never throws.
         /// </summary>
         public IReadOnlyList<RackFrameTemplate> Load()
         {
-            if (!File.Exists(path))
-            {
-                return new List<RackFrameTemplate>(); // missing → empty, silently (normal, not a failure)
-            }
-
             try
             {
                 var json = File.ReadAllText(path);
@@ -55,15 +54,24 @@ namespace RackCad.Application.RackFrames
                 return JsonSerializer.Deserialize<List<RackFrameTemplate>>(json, SerializerOptions)
                        ?? new List<RackFrameTemplate>();
             }
+            catch (FileNotFoundException)
+            {
+                return new List<RackFrameTemplate>(); // absent → empty, silently (normal, not a failure)
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return new List<RackFrameTemplate>(); // absent (its folder does not exist) → empty, silently
+            }
             catch (JsonException ex)
             {
-                // Corrupt content: preserve it (.bad) and log instead of silently dropping the library.
+                // Present but corrupt content: preserve it (.bad) and log instead of silently dropping the library.
                 CorruptFile.Quarantine(path, "UserTemplateStore load", ex);
                 return new List<RackFrameTemplate>();
             }
             catch (Exception ex)
             {
-                // Other IO failure (e.g. a transient lock): log, but leave the file (it may be fine next time).
+                // Present but unreadable (permissions / IO / lock): log — but do NOT quarantine (not corrupt, may
+                // be fine next time). Never break the configurator. Distinct from the "missing" cases above.
                 RackLog.Exception("UserTemplateStore load (" + path + ")", ex);
                 return new List<RackFrameTemplate>();
             }

@@ -44,19 +44,19 @@ namespace RackCad.Application.Settings
         public static UserSettings Load() => Load(SettingsPath);
 
         /// <summary>
-        /// I-03 (D2): load from an explicit path, DISTINGUISHING a missing file (silent defaults — normal)
-        /// from a present-but-unreadable one. A corrupt file is quarantined to <c>.bad</c> and logged with a
-        /// stack trace instead of silently resetting to defaults (which used to lose the user's library path
-        /// without a trace); any other IO failure is logged but the file is left untouched. Never throws.
-        /// Internal so tests can point it at a temp file instead of the real %APPDATA%.
+        /// I-03 (D2): load from an explicit path, DISTINGUISHING a missing file from a present-but-unreadable
+        /// one by the EXCEPTION the read throws (not a prior <c>File.Exists</c>, which reports false for a
+        /// permission-denied file and would hide it as "missing"):
+        /// <list type="bullet">
+        /// <item><see cref="FileNotFoundException"/>/<see cref="DirectoryNotFoundException"/> — absent: silent defaults (normal).</item>
+        /// <item><see cref="JsonException"/> — corrupt content: quarantine to <c>.bad</c> + log with stack, then defaults.</item>
+        /// <item>any other read failure (permissions/IO/lock) — log with stack, NO quarantine, then defaults.</item>
+        /// </list>
+        /// An empty/whitespace file stays a silent default (unchanged). Never throws. Internal so tests can point
+        /// it at a temp file instead of the real %APPDATA%.
         /// </summary>
         internal static UserSettings Load(string path)
         {
-            if (!File.Exists(path))
-            {
-                return new UserSettings(); // missing → defaults, silently (this is normal, not a failure)
-            }
-
             try
             {
                 var json = File.ReadAllText(path);
@@ -64,15 +64,24 @@ namespace RackCad.Application.Settings
                     ? new UserSettings()
                     : JsonSerializer.Deserialize<UserSettings>(json, Options) ?? new UserSettings();
             }
+            catch (FileNotFoundException)
+            {
+                return new UserSettings(); // absent → defaults, silently (this is normal, not a failure)
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return new UserSettings(); // absent (its folder does not exist) → defaults, silently
+            }
             catch (JsonException ex)
             {
-                // Corrupt content: preserve it (.bad) and log, so the reset is diagnosable — not silent.
+                // Present but corrupt content: preserve it (.bad) and log, so the reset is diagnosable — not silent.
                 CorruptFile.Quarantine(path, "UserSettings load", ex);
                 return new UserSettings();
             }
             catch (Exception ex)
             {
-                // Other IO failure (e.g. a transient lock): log, but leave the file (it may be fine next time).
+                // Present but unreadable (permissions / IO / lock): log — but do NOT quarantine (the file is not
+                // corrupt and may be fine next time). Never break the flow. Distinct from the "missing" cases above.
                 RackLog.Exception("UserSettings load (" + path + ")", ex);
                 return new UserSettings();
             }
