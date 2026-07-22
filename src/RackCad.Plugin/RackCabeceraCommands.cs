@@ -35,6 +35,8 @@ namespace RackCad.Plugin
 
                 if (window.InsertRequested)
                 {
+                    // I-05: warn once if the drawing is not in inches, before drawing the new header.
+                    RackUnitsGuard.WarnIfNotInches(AcApplication.DocumentManager.MdiActiveDocument);
                     DrawAndPlace(window.Configuration);
                 }
             }
@@ -100,6 +102,8 @@ namespace RackCad.Plugin
                 var configuration = new DynamicRackSystemBuilder(catalog)
                     .BuildHeaderConfiguration(RackFrameTemplateCatalog.Default, postId, heightResult.Value, depthResult.Value);
 
+                // I-05: warn once if the drawing is not in inches, before placing the new header.
+                RackUnitsGuard.WarnIfNotInches(document);
                 DrawAndPlace(configuration);
             }
             catch (System.Exception ex)
@@ -248,6 +252,13 @@ namespace RackCad.Plugin
             {
                 editor.WriteMessage("\nRackCad: " + preflight.ErrorMessage);
                 return;
+            }
+
+            // I-05: a NEW linked view will be inserted below (see the "!UpdateOnly" branch); warn once if the drawing is
+            // not in inches, BEFORE any block is (re)drawn. A pure update (UpdateOnly) must NOT warn.
+            if (!window.UpdateOnly)
+            {
+                RackUnitsGuard.WarnIfNotInches(document);
             }
 
             // Redraw with regen:false and regenerate ONCE below — a full drawing regen per view-block is pure waste.
