@@ -1,0 +1,19 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-24
+  branch: refactor/ui-tests-editores
+  claim_id: 5ce1f970-1400-4978-b8a3-bf5f4229cee9
+  current_phase: 2
+  state: implementing
+  gate: none
+  attempts: 0
+  next_action: implementar-seam-dinamico-y-pruebas-de-ventanas-y-viewmodel-en-rackcad-ui-tests
+  last_evidence_commit: 834c94dbfa1c743377ee144275837d06a6bc4fb1
+execution_context:
+  mode: manual-git-only
+  worktree: I-24-ui-tests-editores
+  pull_request: none
+evidence:
+  base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
+  claim_commit: 834c94dbfa1c743377ee144275837d06a6bc4fb1
+  parallel_observed: I-22-refactor-safety-placement-reclamada-0f39d9d-sobre-9a895e4-no-conflicto-declarado-de-i24

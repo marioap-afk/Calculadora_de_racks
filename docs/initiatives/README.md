@@ -119,6 +119,14 @@ Planes disponibles:
   Documenta `ADR-0005` (estrategia de unidades, **aceptado**). Fuera de alcance: conversión, reescalado, la
   columna `units`, almacenar unidades en DTO y cualquier framework general de unidades. ADR-0005 aceptado;
   AutoCAD y owner-validation **aprobados por el dueño**; **integrada en `main` el 2026-07-22**.
+- [`I-24-ui-tests-editores.md`](I-24-ui-tests-editores.md): contrato de I-24 (Fase 5, sobre I-15/I-20/
+  I-21). Amplia `tests/RackCad.UI.Tests` con pruebas del `RackFrameConfiguratorViewModel` (headless), de
+  la adopcion del estado dinamico por `RackDynamicSystemWindow` (caracterizacion `load->build` por punto
+  fijo) y de la identidad round-trip de las ventanas selectiva y de cama (carga nueva vs. existente,
+  insercion, actualizacion, `UpdateOnly`), mas rutas negativas deterministas. Todo el codigo de prueba
+  vive en `RackCad.UI.Tests`; no duplica las pruebas puras de `RackCad.Tests`. Unico cambio de
+  produccion: el seam interno `RackDynamicSystemWindow.BuildDesignForTest` (reenvia a `Recompose`, sin
+  reglas nuevas). `requires_autocad: false`, `requires_owner_validation: false`. No integrada.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
