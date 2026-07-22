@@ -117,7 +117,9 @@ namespace RackCad.Application.Persistence
 
         public void Save(RackFrameConfiguration configuration, string path)
         {
-            File.WriteAllText(path, Serialize(configuration));
+            // I-03 (D2): atomic write (temp + File.Replace) so an interrupted save cannot leave a half-written
+            // project that destroys the previous good copy. Load already distinguishes missing from unreadable.
+            AtomicFile.WriteAllText(path, Serialize(configuration));
         }
 
         public RackFrameConfiguration Load(string path)

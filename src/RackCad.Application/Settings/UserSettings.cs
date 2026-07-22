@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using RackCad.Application.Diagnostics;
+using RackCad.Application.Persistence;
 
 namespace RackCad.Application.Settings
 {
@@ -39,43 +41,66 @@ namespace RackCad.Application.Settings
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RackCad", "Designs");
         }
 
-        public static UserSettings Load()
+        public static UserSettings Load() => Load(SettingsPath);
+
+        /// <summary>
+        /// I-03 (D2): load from an explicit path, DISTINGUISHING a missing file (silent defaults — normal)
+        /// from a present-but-unreadable one. A corrupt file is quarantined to <c>.bad</c> and logged with a
+        /// stack trace instead of silently resetting to defaults (which used to lose the user's library path
+        /// without a trace); any other IO failure is logged but the file is left untouched. Never throws.
+        /// Internal so tests can point it at a temp file instead of the real %APPDATA%.
+        /// </summary>
+        internal static UserSettings Load(string path)
         {
+            if (!File.Exists(path))
+            {
+                return new UserSettings(); // missing → defaults, silently (this is normal, not a failure)
+            }
+
             try
             {
-                var path = SettingsPath;
-                if (!File.Exists(path))
-                {
-                    return new UserSettings();
-                }
-
                 var json = File.ReadAllText(path);
                 return string.IsNullOrWhiteSpace(json)
                     ? new UserSettings()
                     : JsonSerializer.Deserialize<UserSettings>(json, Options) ?? new UserSettings();
             }
-            catch
+            catch (JsonException ex)
             {
+                // Corrupt content: preserve it (.bad) and log, so the reset is diagnosable — not silent.
+                CorruptFile.Quarantine(path, "UserSettings load", ex);
+                return new UserSettings();
+            }
+            catch (Exception ex)
+            {
+                // Other IO failure (e.g. a transient lock): log, but leave the file (it may be fine next time).
+                RackLog.Exception("UserSettings load (" + path + ")", ex);
                 return new UserSettings();
             }
         }
 
-        public static void Save(UserSettings settings)
+        public static void Save(UserSettings settings) => Save(settings, SettingsPath);
+
+        /// <summary>
+        /// I-03 (D2): save best-effort but ATOMICALLY (temp + File.Replace, via <see cref="AtomicFile"/>) so an
+        /// interrupted write cannot destroy the previous settings, and log the failure instead of swallowing it
+        /// in complete silence. Internal path overload so tests avoid the real %APPDATA%.
+        /// </summary>
+        internal static void Save(UserSettings settings, string path)
         {
             try
             {
-                var path = SettingsPath;
                 var directory = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
-                File.WriteAllText(path, JsonSerializer.Serialize(settings ?? new UserSettings(), Options));
+                AtomicFile.WriteAllText(path, JsonSerializer.Serialize(settings ?? new UserSettings(), Options));
             }
-            catch
+            catch (Exception ex)
             {
-                // Settings are best-effort; never let a save failure break the flow.
+                // Settings are best-effort; never let a save failure break the flow — but no longer silently.
+                RackLog.Exception("UserSettings save (" + path + ")", ex);
             }
         }
     }

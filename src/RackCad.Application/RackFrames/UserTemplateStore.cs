@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using RackCad.Application.Diagnostics;
+using RackCad.Application.Persistence;
 
 namespace RackCad.Application.RackFrames
 {
@@ -29,16 +31,20 @@ namespace RackCad.Application.RackFrames
         public static string DefaultPath => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RackCad", TemplatesFile);
 
-        /// <summary>Loads the user templates; a missing, empty or corrupt file yields an empty list (never throws).</summary>
+        /// <summary>
+        /// Loads the user templates; a MISSING or empty file yields an empty list silently (normal). A
+        /// present-but-CORRUPT file is quarantined to <c>.bad</c> and logged (I-03 D2) instead of being
+        /// silently discarded, so the user's library is preserved and the failure is diagnosable. Never throws.
+        /// </summary>
         public IReadOnlyList<RackFrameTemplate> Load()
         {
+            if (!File.Exists(path))
+            {
+                return new List<RackFrameTemplate>(); // missing → empty, silently (normal, not a failure)
+            }
+
             try
             {
-                if (!File.Exists(path))
-                {
-                    return new List<RackFrameTemplate>();
-                }
-
                 var json = File.ReadAllText(path);
 
                 if (string.IsNullOrWhiteSpace(json))
@@ -49,9 +55,16 @@ namespace RackCad.Application.RackFrames
                 return JsonSerializer.Deserialize<List<RackFrameTemplate>>(json, SerializerOptions)
                        ?? new List<RackFrameTemplate>();
             }
-            catch
+            catch (JsonException ex)
             {
-                // Best-effort: a corrupt user library must never break the configurator.
+                // Corrupt content: preserve it (.bad) and log instead of silently dropping the library.
+                CorruptFile.Quarantine(path, "UserTemplateStore load", ex);
+                return new List<RackFrameTemplate>();
+            }
+            catch (Exception ex)
+            {
+                // Other IO failure (e.g. a transient lock): log, but leave the file (it may be fine next time).
+                RackLog.Exception("UserTemplateStore load (" + path + ")", ex);
                 return new List<RackFrameTemplate>();
             }
         }
@@ -87,7 +100,8 @@ namespace RackCad.Application.RackFrames
                 Directory.CreateDirectory(directory);
             }
 
-            File.WriteAllText(path, JsonSerializer.Serialize(templates, SerializerOptions));
+            // I-03 (D2): atomic write so an interrupted save cannot corrupt the existing template library.
+            AtomicFile.WriteAllText(path, JsonSerializer.Serialize(templates, SerializerOptions));
         }
 
         private static JsonSerializerOptions CreateOptions()
