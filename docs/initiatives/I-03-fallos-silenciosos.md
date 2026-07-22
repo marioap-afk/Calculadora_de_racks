@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-03
 title: Fallos silenciosos
 type: refactor
-status: in-progress
+status: integrated
 branch: refactor/fallos-silenciosos
 base_branch: main
 priority:

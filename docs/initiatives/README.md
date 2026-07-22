@@ -52,8 +52,12 @@ Planes disponibles:
   `UserSettingsStore`) y carga que distingue archivo ausente de ilegible (`.bad` + registro). Cambio
   **aditivo**: preserva I-11 (versiones, metadata, geometría, BOM, GUID), comandos, alias y mensajes
   visibles. Fuera de alcance: rediseño UI, cambios de schema, reglas de producto, catálogos, telemetría
-  remota, I-17 y las lecturas tolerantes de embeds de I-11. `requires_autocad: false`,
-  `requires_owner_validation: false`.
+  remota, I-17 y las lecturas tolerantes de embeds de I-11. La carga distingue **por excepción**
+  (`FileNotFoundException`/`DirectoryNotFoundException` → ausente silencioso; `JsonException` → cuarentena `.bad` +
+  log; cualquier otro fallo de lectura → log sin cuarentena), y `CorruptFile` registra el fallo secundario de
+  cuarentena. `requires_autocad: false`, `requires_owner_validation: false`. **Integrada en `main` el 2026-07-22**
+  (rebasada sobre `b60f142`, Merge I-17, reconciliando **sólo** documentación compartida; el código de I-03 e I-17
+  es disjunto salvo `RackFrameProjectStore.cs`, aditivo por ambos lados y auto-fusionado).
 - [`I-09-refactor-plugin-commands.md`](I-09-refactor-plugin-commands.md): contrato para partir
   `RackFrameCommands` por área, promover helpers de bloques/clonación/capas/transacciones y unificar
   el escaneo de envelopes triplicado, preservando comandos, geometría, BOM, persistencia y UX. Fuera

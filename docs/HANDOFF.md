@@ -321,6 +321,25 @@ avanzó** desde la base `f674bd4`: **sin rebase**; I-03 (`refactor/fallos-silenc
 pero **no** integrada (sin conflicto en `RackFrameProjectStore.cs`, cuyo cambio de I-17 es aditivo). La rama se
 integra por `git merge --no-ff` en esta sesión.
 
+**I-03** (`refactor/fallos-silenciosos`) salda los hallazgos **P1** y **D2** de la auditoría 2026-07 (fallos
+silenciosos), **sin cambio de comportamiento funcional** (cambio **aditivo**: añade un rastro, no altera el
+flujo). Un **logger mínimo** best-effort en `RackCad.Application.Diagnostics` (`RackLog` fachada +
+`RackDiagnosticsLog` escritor + `RackLogFormatter` puro) escribe a `%AppData%\RackCad\logs` (nunca lanza,
+thread-safe); `Report()` del Plugin registra la excepción completa **con stack** conservando idéntico su mensaje
+de línea de comandos (cubriendo de paso todos los `catch (ex) => Report(ex)`); los **14 `catch`** antes
+silenciosos del Plugin y `RackCatalogLoader` (fallo de carga + aviso de catálogo vacío) registran y siguen
+tragando igual. Las escrituras de los **4 stores** (`RackProjectStore`, `RackFrameProjectStore`,
+`UserTemplateStore`, `UserSettingsStore`) pasan por un helper de **escritura atómica** (`AtomicFile`: temp +
+`File.Replace`/`Move`, sin crear el directorio destino, conservando la precondición de cada store). La carga de
+los stores best-effort (`UserSettingsStore`/`UserTemplateStore`) **distingue por la excepción** un archivo
+ausente (`FileNotFoundException`/`DirectoryNotFoundException` → default silencioso) de uno ilegible
+(`JsonException` → cuarentena `.bad` + log; cualquier otro fallo de lectura → log sin cuarentena), y `CorruptFile`
+registra también el **fallo secundario** al mover el `.bad`. **Preserva I-11** (versiones, metadata, geometría,
+BOM, GUID, formatos, fallback legacy y la clave del Xrecord) y deja idénticos comandos, alias y mensajes visibles;
+**no** toca catálogos, `deploy/`, `.sln` ni el `.csproj` del Plugin (solo añade `InternalsVisibleTo(RackCad.Tests)`
+en el de Application). **No requiere validación en AutoCAD** (`requires_autocad: false`; ROADMAP no la marca con
+✋) ni owner-validation. La rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -461,6 +480,16 @@ por analogía directa con I-09/I-10/I-24: la equivalencia se sostiene con la sui
 + **184** `RackCad.UI.Tests`) y el CI verde de la rama (run `29952433309` sobre `28e5cfe`, cuatro jobs). AutoCAD:
 no ejecutado; no requerido por contrato.
 
+I-03 (`refactor/fallos-silenciosos`) **no** requiere validación en AutoCAD (`requires_autocad: false`; el ROADMAP
+no la marca con ✋) ni owner-validation: es un cambio **aditivo** de diagnóstico (logging + escritura atómica) que
+**no** altera geometría, BOM, GUID, comandos ni mensajes visibles. La cobertura se sostiene con las pruebas puras
+(formatter, escritor real a directorio temporal, `AtomicFile`, distinción de carga por excepción y **negativos
+deterministas rojo→verde**) y los builds; el logger se prueba a través de un seam mínimo (`RackLog.RedirectForTests`)
+que evita escribir en el `%AppData%` real. `origin/main` **avanzó** de `f674bd4` a `b60f142` (Merge I-17) durante
+la integración, así que la rama se **rebasó** sobre `b60f142` (reconciliación **exclusivamente documental**;
+el código de I-03 e I-17 es disjunto salvo `RackFrameProjectStore.cs`, aditivo por ambos lados y auto-fusionado).
+AutoCAD: no ejecutado; no requerido por contrato.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -529,6 +558,13 @@ cierra la Fase 5 al final (depende de todas).
 U4 y **no** desbloquea ni estorba otra iniciativa. El siguiente paso natural sigue siendo **I-25**/**I-18** (o
 continuar **I-07** `docs/adr-retroactivos` en su worktree ya reclamado).
 
+Con **I-03** (`refactor/fallos-silenciosos`, Fase 1) **integrada en esta sesión** —logger mínimo a
+`%AppData%\RackCad\logs`, `Report()` con stack, los 14 `catch` del Plugin y los stores best-effort registrando,
+escritura atómica en los 4 stores y carga que distingue archivo ausente de ilegible; **aditivo, sin cambio de
+comportamiento**, no desbloquea ni estorba otra iniciativa— el relleno de robustez de Fase 1 (P1/D2) queda
+cerrado. Continúa disponible **I-07** (`docs/adr-retroactivos`, en su worktree ya reclamado) y las Fases 4-5
+(**I-25** sobre I-22, **I-18** Push Back a la espera de sus bloques DWG, **I-23** al final).
+
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
@@ -560,6 +596,50 @@ un nuevo piloto controlado.
   XAML, DTO (`RackFrameProjectDocument`), formato físico, catálogos, geometría, BOM, GUID ni los stores de **I-03**;
 - objetivo entregado (hallazgo **U4**): **un solo** deep-clone de `RackFrameConfiguration` vía el store de
   serialización, con preservación **completa** del estado (persistido + derivado + excepciones runtime).
+
+**Baseline integrada de I-03 — 2026-07-22:**
+
+- punta de **código** de la rama: `ff6f460` (últimos cambios de código de la revisión de defectos 1-4:
+  producción `52da117` + tests `ff6f460`); el commit de estado `c3a9c47` (candidato revisado) y este cierre
+  documental **no cambian código**; el commit documental final recibe su propio CI verde antes del merge; este
+  documento **no inventa** el SHA del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` **avanzó** de `f674bd4` a `b60f142` (Merge I-17) durante la integración: la rama se **rebasó** sobre
+  `b60f142` reconciliando **sólo** documentación compartida (HANDOFF/ROADMAP/README/`ideas-futuras`) y **preservando
+  el contenido integrado de I-17**; el código de I-03 e I-17 es disjunto salvo `RackFrameProjectStore.cs` (aditivo
+  por ambos lados: I-17 añade `DeepCopy`, I-03 cambia `Save`, auto-fusionado); `ff6f460` es la punta de código y
+  `c3a9c47` la previa al commit documental (ambos anteriores al rebase); la rama se integra por `git merge --no-ff`;
+- suite `RackCad.Tests`: **1004/1004 verdes** (981 baseline + **19** iniciales de I-03 —`RackLogFormatter`,
+  `RackDiagnosticsLog`, `AtomicFile`, distinción de carga en settings/templates— + **4** de la revisión —fachada
+  redirigida y **3 negativos deterministas**—; **rojo→verde** demostrado en los 2 negativos de lógica: un error de
+  lectura ≠ ausente no se registraba bajo la guarda `File.Exists`, y el fallo de cuarentena era silencioso, ambos
+  verdes tras los fixes); suite `RackCad.UI.Tests`: **183/183 verdes** (sin cambio; I-03 no toca UI);
+- build UI Debug y solución completa Debug: **0 errores**, únicamente las dos familias `MSB3277` conocidas del
+  Plugin; el build del Plugin se ejecutó con **AutoCAD 2025 cerrado** (DLL no bloqueado);
+- CI de rama verde sobre `c3a9c47` (run `29952811337`, **cuatro jobs verdes** —Tests (Domain+Application), Build UI,
+  UI Tests (WPF controls, net8.0-windows) y Build Plugin without AutoCAD—) y re-verde sobre el **commit documental
+  final** antes del merge;
+- objetivo entregado (P1/D2): logger mínimo best-effort a `%AppData%\RackCad\logs`
+  (`RackLog`/`RackDiagnosticsLog`/`RackLogFormatter`, nunca lanza, thread-safe); `Report()` **con stack**
+  conservando su mensaje; los **14 `catch`** antes silenciosos del Plugin y `RackCatalogLoader` (fallo de carga +
+  aviso de catálogo vacío) registran; **escritura atómica** (`AtomicFile`, temp + `File.Replace`/`Move`, sin crear
+  el directorio destino) en los 4 stores; carga que **distingue por excepción** archivo ausente de ilegible
+  (`.bad` + log) en `UserSettingsStore`/`UserTemplateStore`, con `CorruptFile` registrando el fallo secundario de
+  cuarentena; seam de prueba mínimo `RackLog.RedirectForTests` (**ninguna prueba escribe en el `%AppData%` real**);
+- validación manual: **no requerida** (`requires_autocad: false`, `requires_owner_validation: false`; ROADMAP no la
+  marca con ✋); **sin validaciones pendientes**;
+- invariantes preservados (**compatibilidad I-11**): **sin** cambios de versiones, metadata, geometría, BOM, GUID,
+  formatos/DTO persistidos, fallback legacy ni la clave del Xrecord; comandos, alias y mensajes de línea de comandos
+  **idénticos**; catálogos, `deploy/`, workflows, `.csproj` del Plugin, `.sln` y DWG **intactos**; **sin**
+  dependencias NuGet nuevas (solo `InternalsVisibleTo(RackCad.Tests)` en el `.csproj` de Application); dirección de
+  dependencias intacta;
+- alcance: `src/RackCad.Application/Diagnostics/{RackLog,RackDiagnosticsLog,RackLogFormatter,CorruptFile}.cs`,
+  `Persistence/AtomicFile.cs` + los `Save` de `{RackProjectStore,RackFrameProjectStore}.cs`,
+  `RackFrames/UserTemplateStore.cs`, `Settings/UserSettings.cs` y el `.csproj` de Application;
+  `src/RackCad.Plugin/{RackCommandSupport,RackCatalogLoader,RackEnvelopeRestamp,RackInventarioCommands.BomTotal,
+  RackLayoutCommands,RackLayoutCommands.Fill}.cs` + `Headers/{BlockLibraryImporter,BlockPlacement,
+  LateralHeaderDrawer,LateralHeaderDrawService,RackBlockRenamer}.cs`; pruebas (`RackLogTests`, `RackLogTestSupport`,
+  `AtomicFileTests`, `UserSettingsStoreTests`, `UserTemplateStoreTests`, `DiagnosticsNegativeTests`); y
+  contrato/estado/índice/`ideas-futuras` de I-03.
 
 **Baseline integrada de I-22 — 2026-07-22:**
 

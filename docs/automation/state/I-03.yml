@@ -3,11 +3,11 @@ automation_state:
   initiative: I-03
   branch: refactor/fallos-silenciosos
   claim_id: 55a87e52-b49e-442e-ad66-fbd86774f834
-  current_phase: 5
-  state: review-ready
+  current_phase: 6
+  state: integration-ready
   gate: none
   attempts: 0
-  next_action: sesion-de-integracion-serializada-del-dueno-rebase-final-si-main-avanzo-CI-verde-por-SHA-merge-no-ff-y-HANDOFF-ROADMAP-como-ultimo-commit
+  next_action: integracion-serializada-merge-no-ff-de-refactor-fallos-silenciosos-en-main-sobre-b60f142-tras-rebase-por-avance-de-origin-main-f674bd4-a-b60f142-merge-i17-y-este-commit-documental-de-cierre-handoff-roadmap-contrato-e-indice-luego-limpieza-segura-de-rama-y-worktree
   last_evidence_commit: ff6f460
 execution_context:
   mode: manual-git-only
@@ -22,7 +22,9 @@ evidence:
   revision_2026_07_22_commits: produccion-52da117-clasificacion-de-carga-por-excepcion-mas-registro-del-fallo-de-cuarentena-mas-seam-RedirectForTests-tests-ff6f460-aislamiento-del-logger-y-negativos-deterministas
   domain_application_tests: 1004-verde-0-fallos-1000-previos-mas-4-de-la-revision-facade-redirigido-y-3-negativos-deterministas
   ui_tests: 183-verde-0-fallos-sin-cambio-i03-no-toca-ui
-  build_solution_debug: 0-errores-solo-2-MSB3277-conocidos-de-autocad-2025
+  build_solution_debug: 0-errores-solo-2-MSB3277-conocidos-de-autocad-2025-autocad-cerrado-plugin-dll-no-bloqueado
+  branch_ci: run-29952811337-cuatro-jobs-verdes-sobre-c3a9c47-tests-domain-application-build-ui-ui-tests-build-plugin-without-autocad-mas-re-verde-sobre-el-commit-documental-de-cierre-antes-del-merge
+  integration: origin-main-avanzo-de-f674bd4-a-b60f142-merge-i17-durante-la-integracion-rama-rebasada-sobre-b60f142-reconciliacion-exclusivamente-documental-preservando-el-contenido-integrado-de-i17-codigo-disjunto-salvo-rackframeprojectstore-cs-aditivo-por-ambos-lados-auto-fusionado-merge-no-ff-el-sha-del-merge-vive-en-git-log-first-parent-main
   red_before_green: f2-los-tipos-diagnostics-y-atomicfile-no-existian-antes-de-f3-verdes-tras-implementar-mas-revision-los-2-negativos-de-logica-fallan-con-el-codigo-previo-error-de-lectura-no-registrado-por-la-guarda-File-Exists-y-fallo-de-cuarentena-silencioso-verdes-tras-los-fixes
   scope: application-diagnostics-logger-mas-atomicfile-mas-4-stores-atomicos-mas-persistence-best-effort-distingue-ausente-vs-ilegible-con-cuarentena-bad-mas-plugin-report-con-stack-14-catches-y-catalogo-mas-pruebas-mas-docs
   invariants: additivo-preserva-i11-versiones-metadata-geometria-bom-guid-formatos-fallback-legacy-y-clave-xrecord-mas-comandos-alias-y-mensajes-visibles-identicos-sin-tocar-catalogos-deploy-sln-ni-csproj-del-plugin
