@@ -38,8 +38,11 @@ automation:
 Que exista **un solo** deep-clone de `RackFrameConfiguration`, hecho **a traves del store de
 serializacion** (`RackFrameProjectStore`), y que las **tres** copias hoy dispersas en la UI
 (configurador de cabecera, ventana selectiva, ventana dinamica) lo consuman. El clon preserva el
-diseno completo (metadatos, postes, placas, horizontales, paneles) y su modelo derivado se
-reconstruye igual que al abrir un proyecto de disco, **sin cambio de comportamiento observable**.
+estado **completo**: el modelo **persistido** (metadatos, postes, placas, horizontales, paneles) por el
+round-trip del documento; el modelo **derivado** (`Members`, elevaciones de panel) reconstruido igual
+que al abrir un proyecto de disco; y las **excepciones runtime** (`FrameExceptionOverride`) —que el
+documento no persiste ni `RefreshPhysicalModel` reconstruye— reanexadas dentro del propio `DeepCopy`.
+**Sin cambio de comportamiento observable** ni del formato en disco.
 
 Resultado verificable cuando: `RackFrameProjectStore` expone un `DeepCopy` unico; el configurador ya
 no mantiene un clon manual campo-por-campo; el selectivo y el dinamico clonan por ese mismo `DeepCopy`;
@@ -61,9 +64,13 @@ otras dos ya usan el round-trip de un store, pero **por stores distintos** (el d
 regla de "un solo clon" no existe.
 
 La direccion correcta es la que ya siguen las dos copias por serializacion: **el documento de
-persistencia es la fuente unica de que campos componen el diseno**, y el clon debe ser su round-trip.
-Asi, un campo nuevo se preserva en el clon **en el mismo momento** en que se anade a
-`RackFrameProjectDocument` (que hay que tocar de todos modos para persistir), sin copia manual paralela.
+persistencia es la fuente unica de los campos PERSISTIDOS del diseno**, y el clon debe ser su
+round-trip; asi, un campo persistido nuevo se preserva en el clon **en el mismo momento** en que se
+anade a `RackFrameProjectDocument` (que hay que tocar de todos modos para persistir), sin copia manual
+paralela. El estado **runtime** que el documento no persiste ni el modelo derivado reconstruye —hoy
+solo las excepciones (`RackFrameConfiguration.Exceptions`)— se reanexa **dentro del propio `DeepCopy`**,
+de modo que el unico mecanismo canonico produce un clon **completo** (el clon manual las preservaba; el
+round-trip por si solo las perderia).
 
 ## 3. Alcance
 
@@ -72,10 +79,13 @@ serializacion; borrar las 3 copias de la UI (VM del configurador, selectivo, din
 equivalencia (U4)"). Sin ampliaciones laterales.
 
 1. **Mecanismo canonico**: anadir `RackFrameProjectStore.DeepCopy(RackFrameConfiguration)` que devuelve
-   `null` para entrada nula y en otro caso hace `Deserialize(Serialize(configuration))` — exactamente el
-   round-trip que el dinamico ya usaba. La copia de cada campo la posee el esquema de persistencia; el
-   modelo derivado (`Members`, elevaciones de panel) se reconstruye en la carga
-   (`BracingPanelMemberBuilder.RefreshPhysicalModel`), igual que un proyecto abierto de disco.
+   `null` para entrada nula y en otro caso: (a) hace `Deserialize(Serialize(configuration))` —el
+   round-trip que el dinamico ya usaba: el modelo persistido lo posee el esquema de persistencia y el
+   derivado (`Members`, miembros por panel, elevaciones de panel) se reconstruye en la carga por
+   `BracingPanelMemberBuilder.RefreshPhysicalModel`, igual que un proyecto abierto de disco— y (b)
+   **reanexa** una copia profunda de cada `FrameExceptionOverride` de la fuente, porque el documento
+   **no** las serializa (I-17 no toca el formato de alambre) y `RefreshPhysicalModel` **no** las
+   reconstruye. `Save`/`Load` a disco no cambian.
 2. **Dinamico** (`RackDynamicSystemWindow.Clone`): reexpresar como `DeepCopy` (comportamiento
    identico; ya era ese round-trip inline).
 3. **Selectivo** (`RackSelectiveWindow.CloneCabecera`): pasar del round-trip por el **wrapper**
@@ -91,11 +101,19 @@ equivalencia (U4)"). Sin ampliaciones laterales.
    Normalize + RefreshPhysicalMembers) reconstruye filas y modelo, de modo que el swap de referencia es
    equivalente a la copia en sitio previa.
 5. **Pruebas de equivalencia (U4)**: en `RackCad.Tests`, sobre una configuracion rica (cada campo
-   persistido con valor no-default), fijar que `DeepCopy` preserva toda la fuente de verdad (igualdad de
-   forma de alambre), devuelve una instancia **independiente**, reconstruye el modelo derivado, es
-   idempotente, tolera `null`, iguala el round-trip inline del dinamico e iguala la ruta wrapper previa
-   del selectivo. En `RackCad.UI.Tests`, una prueba de `RestoreStandardConfiguration` que fija el swap de
-   referencia del configurador.
+   persistido no-default, modelo derivado construido y **excepciones no vacias no-default**), fijar que
+   `DeepCopy`: preserva el modelo persistido (igualdad de forma de alambre —**una** comprobacion entre
+   varias, **no** la unica, porque el alambre omite las excepciones y el modelo derivado); preserva
+   **cada excepcion sin compartir referencias**; reproduce el modelo derivado **miembro a miembro**
+   (superiores y por panel: cantidad, tipo, origen, perfil, caras, extremos, elevaciones, puntos de
+   conexion, longitud, angulo y **pertenencia**); devuelve una instancia independiente; es idempotente;
+   tolera `null`; e iguala el round-trip inline del dinamico y la ruta wrapper previa del selectivo (en
+   el modelo persistido). Ademas una **guarda por reflexion** obliga a clasificar toda propiedad futura
+   de `RackFrameConfiguration` como persistida/derivada/runtime-preservada. Una **regresion de I-11**
+   (`PersistenceReopenPreservationTests`) prueba que un `RackProject` con `ExtensionData` desconocida
+   conserva esa metadata al **clonar la cabecera con `DeepCopy`** y reserializar por la ruta real
+   `WithSourceMetadataFrom`. En `RackCad.UI.Tests`, una prueba de `RestoreStandardConfiguration` que fija
+   el swap de referencia del configurador.
 
 ## 4. Fuera de alcance
 
@@ -144,7 +162,8 @@ equivalencia (U4)"). Sin ampliaciones laterales.
 
 Modificar (produccion):
 
-- `src/RackCad.Application/Persistence/RackFrameProjectStore.cs` — anadir `DeepCopy` (+15 lineas).
+- `src/RackCad.Application/Persistence/RackFrameProjectStore.cs` — anadir `DeepCopy` (round-trip +
+  reanexado de `Exceptions`) y el ayudante privado `CloneException`.
 - `src/RackCad.UI/RackDynamicSystemWindow.xaml.cs` — `Clone` delega en `DeepCopy`.
 - `src/RackCad.UI/RackSelectiveWindow.xaml.cs` — `CloneCabecera` delega en `DeepCopy`.
 - `src/RackCad.UI/RackFrameConfiguratorViewModel.cs` — `CloneConfiguration` delega; se eliminan
@@ -152,13 +171,17 @@ Modificar (produccion):
 
 Crear (pruebas):
 
-- `tests/RackCad.Tests/RackFrameConfigurationDeepCopyTests.cs` — equivalencia/independencia/idempotencia
-  del `DeepCopy` y equivalencia con las dos rutas previas (dinamica y selectiva).
+- `tests/RackCad.Tests/RackFrameConfigurationDeepCopyTests.cs` — equivalencia del modelo persistido,
+  preservacion de excepciones sin compartir referencias, comparacion profunda del modelo derivado
+  (miembros superiores y por panel), independencia, idempotencia, `null`, equivalencia con las dos rutas
+  previas y la **guarda por reflexion** de clasificacion de propiedades.
 
 Modificar (pruebas):
 
 - `tests/RackCad.UI.Tests/RackFrameConfiguratorViewModelTests.cs` — prueba de
   `RestoreStandardConfiguration` (swap de referencia).
+- `tests/RackCad.Tests/PersistenceReopenPreservationTests.cs` — regresion de I-11: la cabecera clonada
+  por `DeepCopy` conserva el `ExtensionData` desconocido del wrapper via `WithSourceMetadataFrom`.
 
 Modificar (documentacion):
 
@@ -196,9 +219,9 @@ deploy ni `.github/workflows`. Una desviacion material obliga a detenerse (secci
 ## 10. Validacion manual
 
 **No aplica.** I-17 es un refactor de la mecanica de clonado **sin cambio de comportamiento
-observable**: el diseno clonado es identico (fijado por las pruebas de equivalencia de forma de
-alambre y por la equivalencia con las dos rutas de serializacion previas), y no cambia dibujo,
-geometria, BOM, GUID, persistencia fisica ni la UI. Por eso `requires_autocad: false` y
+observable**: el estado clonado es identico —modelo persistido, modelo derivado **miembro a miembro** y
+excepciones runtime— (fijado por la comparacion profunda del grafo, no solo por la forma de alambre), y
+no cambia dibujo, geometria, BOM, GUID, persistencia fisica ni la UI. Por eso `requires_autocad: false` y
 `requires_owner_validation: false` (analogo a I-09/I-10/I-24: equivalencia mecanica + suites + CI). Si
 el diff real invalidara esa premisa, **no** se declaran los gates cerrados: se detiene y se explica la
 contradiccion (seccion 12).
@@ -208,10 +231,13 @@ contradiccion (seccion 12).
 - Existe **un** `RackFrameProjectStore.DeepCopy` y las tres copias de la UI lo consumen; **no** queda
   clon manual campo-por-campo en el configurador (0 referencias a los 7 ayudantes ni a
   `CopyConfiguration`).
-- Las pruebas de equivalencia (U4) pasan y son **significativas**: fijan preservacion total de la fuente
-  de verdad, independencia de la instancia, reconstruccion del modelo derivado, idempotencia,
-  tolerancia a `null`, equivalencia con el round-trip del dinamico y con la ruta wrapper del selectivo;
-  la prueba de UI fija el swap de referencia del configurador.
+- Las pruebas de equivalencia (U4) pasan y son **significativas**: fijan preservacion del modelo
+  persistido, **de cada excepcion sin compartir referencias**, del **modelo derivado miembro a miembro**
+  (superiores y por panel), independencia de la instancia, idempotencia, tolerancia a `null`, y
+  equivalencia con el round-trip del dinamico y con la ruta wrapper del selectivo; la **guarda por
+  reflexion** obliga a clasificar propiedades futuras; la **regresion de I-11** prueba la preservacion de
+  `ExtensionData` al clonar la cabecera; la prueba de UI fija el swap de referencia del configurador. La
+  prueba de excepciones se verifico **fallando** con el reanexado desactivado.
 - `RackCad.Tests` y `RackCad.UI.Tests` verdes sin regresion; builds Debug de UI (y Plugin/solucion donde
   el entorno lo permite) en 0 errores propios; CI verde en los cuatro jobs.
 - Se conserva la direccion de dependencias (el `DeepCopy` vive en Application; la UI solo lo consume) y

@@ -232,6 +232,30 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void Library_CabeceraWrapper_WithClonedHeader_PreservesWrapperUnknownAndVersion()
+        {
+            // I-17 x I-11 regression: the header configurator edits a DEEP CLONE of the loaded header
+            // (RackFrameProjectStore.DeepCopy, the single canonical clone) and re-saves it via WithSourceMetadataFrom.
+            // Cloning the header must NOT interfere with wrapper-level metadata preservation: the unknown wrapper field
+            // and the non-downgraded schema version must still survive the round-trip (they ride on the RackProject's
+            // SourceDocument, independent of the header). I-11 policy and the DTOs are untouched.
+            var store = new RackProjectStore();
+            var node = JsonNode.Parse(store.Serialize(RackProject.ForSelective(SelectiveHeader()))).AsObject();
+            node["SchemaVersion"] = "2.6";
+            node["futureWrapper"] = "keep";
+            var loaded = store.Deserialize(node.ToJsonString());
+
+            // The editor never edits the loaded object in place — it clones it first (I-17's canonical DeepCopy).
+            var editedHeader = new RackFrameProjectStore().DeepCopy(loaded.Header);
+            Assert.NotSame(loaded.Header, editedHeader);
+            var back = store.Serialize(RackProject.ForSelective(editedHeader).WithSourceMetadataFrom(loaded));
+
+            using var doc = JsonDocument.Parse(back);
+            Assert.Equal("2.6", doc.RootElement.GetProperty("SchemaVersion").GetString());
+            Assert.Equal("keep", doc.RootElement.GetProperty("futureWrapper").GetString());
+        }
+
+        [Fact]
         public void Library_SelectiveRackWrapper_WithSource_PreservesWrapperUnknownAndVersion()
         {
             // Opening a SelectiveRack from the library reconstructs its WRAPPER RackProjectDocument on save — a boundary,

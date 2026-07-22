@@ -919,10 +919,13 @@ namespace RackCad.UI
             Recompute();
         }
 
-        /// <summary>Deep-clone a cabecera via the single canonical store round-trip (initiative I-17). A bare-header
-        /// round-trip through <see cref="RackFrameProjectStore"/> is equivalent to the previous wrapper round-trip
-        /// (<see cref="RackProjectStore"/> + <see cref="RackProject.ForSelective"/>): both copy the same
-        /// <c>RackFrameProjectDocument</c> source of truth, rebuild the derived members and reject an unusable header.</summary>
+        /// <summary>Deep-clone a cabecera via the single canonical clone (initiative I-17),
+        /// <see cref="RackFrameProjectStore.DeepCopy"/>. For the persisted+derived model this bare-header round-trip
+        /// matches the previous wrapper round-trip (<see cref="RackProjectStore"/> + <see cref="RackProject.ForSelective"/>):
+        /// both copy the same <c>RackFrameProjectDocument</c> source of truth, rebuild the derived members and reject an
+        /// unusable header. DeepCopy additionally re-attaches the runtime-only overrides
+        /// (<see cref="RackFrameConfiguration.Exceptions"/>) that the wrapper round-trip dropped; they are metadata only
+        /// (they do not drive geometry or BOM), so state is preserved without any visible change.</summary>
         private static RackFrameConfiguration CloneCabecera(RackFrameConfiguration configuration)
             => new RackFrameProjectStore().DeepCopy(configuration);
 

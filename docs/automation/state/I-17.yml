@@ -6,8 +6,8 @@ automation_state:
   current_phase: 5
   state: review-ready
   gate: none
-  attempts: 0
-  next_action: esperar-ci-verde-de-la-rama-publicada-luego-integracion-manual-merge-no-ff-por-el-dueno-tras-rebase-final-sobre-main
+  attempts: 1
+  next_action: esperar-ci-verde-del-commit-correctivo-luego-integracion-manual-merge-no-ff-por-el-dueno-tras-rebase-final-sobre-main
   last_evidence_commit: 58b76369578a7e1e81f69f5af7cd893225aa28ec
 execution_context:
   mode: manual-git-only
@@ -16,25 +16,29 @@ execution_context:
 evidence:
   base_commit: f674bd4fcd689e865d3985b1071dc9ec3b53b16b
   claim_commit: 5541187386dd5447d08c1e2b6dd6a70b433dd654
-  implementation_commit: 58b76369578a7e1e81f69f5af7cd893225aa28ec
-  mechanism: rackframeprojectstore-deepcopy-null-a-null-si-no-deserialize-serialize-round-trip-del-store-de-serializacion-la-copia-de-cada-campo-la-posee-rackframeprojectdocument-el-modelo-derivado-members-y-elevaciones-de-panel-se-reconstruye-en-la-carga-igual-que-un-proyecto-de-disco
-  consumers: dinamico-clone-delega-identico-selectivo-clonecabecera-pasa-del-wrapper-rackprojectstore-forselective-al-deepcopy-de-cabecera-desnuda-equivalente-configurador-cloneconfiguration-delega-y-se-eliminan-copyconfiguration-mas-7-ayudantes-manuales-dos-rutas-reasignan-configuration-con-clon-fresco
-  domain_application_tests: 989-verde-0-fallos-981-base-mas-8-nuevas-de-rackframeconfigurationdeepcopytests-sin-regresion
-  ui_tests: 184-verde-0-fallos-183-base-mas-1-nueva-restorestandardconfiguration-del-configurador
+  implementation_commit_round1: 58b76369578a7e1e81f69f5af7cd893225aa28ec
+  docs_commit_round1: 6b5054c
+  correction_commit_round2: tip-de-la-rama-tras-este-commit-correctivo-un-commit-no-puede-contener-su-propio-hash-ver-reporte-de-sesion
+  mechanism: rackframeprojectstore-deepcopy-null-a-null-si-no-a-round-trip-deserialize-serialize-modelo-persistido-por-el-documento-modelo-derivado-members-y-elevaciones-reconstruido-por-refreshphysicalmodel-en-la-carga-b-reanexa-copia-profunda-de-cada-frameexceptionoverride-runtime-que-el-documento-no-persiste-ni-refreshphysicalmodel-reconstruye-sin-tocar-el-formato-de-alambre-ni-save-load
+  correction_round2: defecto-reportado-deepcopy-perdia-rackframeconfiguration-exceptions-porque-el-documento-no-las-serializa-y-refreshphysicalmodel-no-las-reconstruye-arreglado-dentro-del-unico-mecanismo-canonico-reanexando-cada-frameexceptionoverride-mas-cloneexception-privado-sin-cambiar-dto-ni-formato-fisico-comentarios-y-doc-corregidos-ya-no-afirman-que-las-excepciones-se-regeneran-en-deserialize-solo-miembros-y-elevaciones
+  consumers: dinamico-clone-delega-identico-selectivo-clonecabecera-del-wrapper-al-deepcopy-de-cabecera-desnuda-persistido-equivalente-mas-preserva-excepciones-que-el-wrapper-descartaba-configurador-cloneconfiguration-delega-y-se-eliminan-copyconfiguration-mas-7-ayudantes-dos-rutas-reasignan-configuration
+  domain_application_tests: 993-verde-0-fallos-989-mas-4-en-la-correccion-3-netas-en-deepcopytests-excepciones-modelo-derivado-miembro-a-miembro-guarda-por-reflexion-mas-1-regresion-i11-en-persistencereopenpreservationtests
+  ui_tests: 184-verde-0-fallos-sin-cambio-en-la-correccion
+  persistence_i11_filter: 134-verde-0-fallos-persistence-mas-rackframeprojectstore-mas-deepcopy
+  verified_failing: deepcopy-preserveseveryexception-asindependentdeepcopies-verificada-fallando-con-el-reanexado-desactivado-1-fallo-11-pasan-luego-restaurado-el-fix
   build_ui_debug: 0-errores-0-advertencias-propias
   build_solution_debug: 0-errores-solo-2-MSB3277-conocidos-del-plugin-autocad-2025-instalado
-  net_diff: 61-inserciones-265-supresiones-en-produccion-eliminado-el-clon-manual-campo-por-campo-del-configurador
-  invariants: sin-cambio-de-dibujo-geometria-bom-guid-persistencia-fisica-dto-ni-ui-diseno-clonado-identico-fijado-por-equivalencia-de-forma-de-alambre-y-equivalencia-con-las-dos-rutas-de-serializacion-previas
-  scope: rackframeprojectstore-deepcopy-mas-3-consumidores-ui-mas-2-archivos-de-prueba-mas-docs-contrato-estado-readme-sin-tocar-dto-persistencia-fisica-catalogos-plugin-ni-workflows
-  parallel_observed: I-03-refactor-fallos-silenciosos-en-curso-puede-tocar-rackframeprojectstore-para-escritura-atomica-i17-solo-anade-deepcopy-region-distinta-conciliable-en-rebase-no-conflicto-declarado
-  ci_status: pendiente-de-verificar-sobre-la-punta-publicada-gates-locales-verdes
+  invariants: sin-cambio-de-dibujo-geometria-bom-guid-persistencia-fisica-dto-catalogos-stores-i03-ni-ui-clon-identico-modelo-persistido-derivado-miembro-a-miembro-y-excepciones-runtime-fijado-por-comparacion-profunda-del-grafo-no-solo-forma-de-alambre
+  scope: rackframeprojectstore-deepcopy-mas-cloneexception-mas-3-consumidores-ui-mas-2-archivos-de-prueba-nuevos-modificados-mas-regresion-i11-mas-docs-contrato-estado-readme-sin-tocar-dto-persistencia-fisica-catalogos-plugin-stores-i03-ni-workflows
+  parallel_observed: I-03-refactor-fallos-silenciosos-en-curso-puede-tocar-rackframeprojectstore-para-escritura-atomica-i17-solo-anade-deepcopy-mas-cloneexception-region-distinta-conciliable-en-rebase-no-conflicto-declarado
+  ci_status: pendiente-de-verificar-sobre-el-commit-correctivo-publicado-gates-locales-verdes
 gates:
   autocad:
     required: false
-    note: refactor-de-la-mecanica-de-clonado-sin-cambio-de-comportamiento-observable-diseno-clonado-identico-no-cambia-dibujo-ni-superficie-visible
+    note: refactor-de-la-mecanica-de-clonado-sin-cambio-de-comportamiento-observable-clon-identico-incluidas-excepciones-y-modelo-derivado-no-cambia-dibujo-ni-superficie-visible
   owner_validation:
     required: false
-    note: sin-cambio-de-comportamiento-observable-cobertura-por-suites-automatizadas-equivalencia-de-forma-de-alambre-y-ci-analogo-a-i09-i10-i24
+    note: sin-cambio-de-comportamiento-observable-cobertura-por-comparacion-profunda-del-grafo-guarda-de-clasificacion-regresion-i11-y-ci
   owner_decision:
     required: false
     note: no-hay-decision-del-dueno-pendiente-no-existe-docs-automation-decisions-i17-md

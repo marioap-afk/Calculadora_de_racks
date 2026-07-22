@@ -1180,7 +1180,8 @@ namespace RackCad.UI
         {
             // Replace with a fresh clone of the standard snapshot (initiative I-17): LoadRowsFromConfiguration +
             // RefreshPhysicalMembers below rebuild every row and derived member from it, so the reference swap is
-            // equivalent to the previous in-place field copy and clears modifications/exceptions the same way.
+            // equivalent to the previous in-place field copy. The standard snapshot carries no overrides, so this
+            // clears the user's modifications and exceptions exactly as before.
             Configuration = CloneConfiguration(standardConfigurationSnapshot);
             SelectedBracingSegments.Clear();
             SelectedBracingSegment = null;
@@ -2206,10 +2207,11 @@ namespace RackCad.UI
             return NormalizeText(lowerHorizontalId) + ">" + NormalizeText(upperHorizontalId);
         }
 
-        // Single canonical deep-clone (initiative I-17): delegate to the serialization store so the copy of every
-        // configuration field is owned by RackFrameProjectDocument, not a hand-maintained per-field clone that
-        // drifts out of sync as fields are added (the audit's U4). The store rebuilds the derived model (Members,
-        // panel elevations) on load, exactly as when a project is reopened from disk.
+        // Single canonical deep-clone (initiative I-17): delegate to RackFrameProjectStore.DeepCopy. The persisted
+        // model is owned by RackFrameProjectDocument (no hand-maintained per-field clone that drifts out of sync as
+        // fields are added — the audit's U4); the derived model (Members, panel elevations) is rebuilt on load; and
+        // the runtime-only Exceptions the document does not persist are re-attached by DeepCopy, so the clone is
+        // complete (Exceptions are NOT regenerated on load — only members and elevations are).
         private static RackFrameConfiguration CloneConfiguration(RackFrameConfiguration source)
             => new RackFrameProjectStore().DeepCopy(source);
 
