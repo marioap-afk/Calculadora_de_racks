@@ -426,14 +426,10 @@ namespace RackCad.Application.Systems
 
             for (var i = 0; i < frenteYs.Count; i++)
             {
-                // Reaching fondos at this frente post, in depth order; need at least two for a gap.
-                var reaching = new List<int>();
-                for (var k = 0; k < offsets.Count; k++)
-                {
-                    if (i <= SelectiveDepthLayout.BaysOfFondo(system, k).Count) reaching.Add(k);
-                }
-
-                if (reaching.Count < 2)
+                // Reaching fondos, adjacent pairs and gaps: the shared physical topology (I-22, E6). The planta
+                // collapses each gap to a single line at this frente.
+                var gaps = SelectiveSeparadorPlan.GapsAt(system, i);
+                if (gaps.Count == 0)
                 {
                     continue;
                 }
@@ -442,19 +438,10 @@ namespace RackCad.Application.Systems
                 var postParams = new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = SelectivePostGeometry.PostPeralteAt(system, i) };
                 var troquel = SelectivePostGeometry.Resolve(troquelEntry, postParams);
 
-                for (var r = 0; r + 1 < reaching.Count; r++)
+                foreach (var gap in gaps)
                 {
-                    var k = reaching[r];
-                    var kNext = reaching[r + 1];
-                    var backX = offsets[k] + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k); // fondo k's back post
-                    var gap = offsets[kNext] - backX;                                              // to fondo k+1's front post
-                    if (gap <= 0.0)
-                    {
-                        continue;
-                    }
-
-                    var anchor = new Point2D(backX - troquel.X, frenteYs[i] + troquel.Y);
-                    instances.Add(SelectiveSeparadorPlacement.Separador(block, PlantaView, anchor, separatorMate, gap));
+                    var anchor = new Point2D(gap.BackOffset - troquel.X, frenteYs[i] + troquel.Y);
+                    instances.Add(SelectiveSeparadorPlacement.Separador(block, PlantaView, anchor, separatorMate, gap.Length));
                 }
             }
         }

@@ -142,7 +142,7 @@ namespace RackCad.Application.Systems
 
                 // Separadores (doble profundidad): spacer beams stacked vertically every ~100" of height that span the
                 // GAP between adjacent reaching fondos — same logic as the dynamic's separadores, but 100" instead of 60".
-                AddSeparadores(extras, system, catalog, fondoBays, fondoFallback, offsets, anchorOffset, i);
+                AddSeparadores(extras, system, catalog, fondoBays, fondoFallback, anchorOffset, i);
 
                 // Larguero topes (rear pallet stops): at the central fondo's back post, one per larguero level.
                 AddTopes(extras, system, catalog, fondoBays, offsets, anchorOffset, i);
@@ -258,16 +258,12 @@ namespace RackCad.Application.Systems
         /// </summary>
         private void AddSeparadores(
             ICollection<HeaderBlockInstance> result, SelectiveRackSystem system, RackCatalog catalog,
-            IList<SelectiveBay>[] fondoBays, double[] fondoFallback, IReadOnlyList<double> offsets, double anchorOffset, int postIndex)
+            IList<SelectiveBay>[] fondoBays, double[] fondoFallback, double anchorOffset, int postIndex)
         {
-            // Reaching fondos, in depth order; need at least two to have a gap.
-            var reaching = new List<int>();
-            for (var k = 0; k < offsets.Count; k++)
-            {
-                if (postIndex <= fondoBays[k].Count) reaching.Add(k);
-            }
-
-            if (reaching.Count < 2 || string.IsNullOrWhiteSpace(system.PostId))
+            // Reaching fondos, adjacent pairs and gaps: the shared physical topology, resolved once (I-22, E6). The
+            // lateral projects each gap as a vertical stack of separadors at this corte.
+            var gaps = SelectiveSeparadorPlan.GapsAt(system, postIndex);
+            if (gaps.Count == 0 || string.IsNullOrWhiteSpace(system.PostId))
             {
                 return;
             }
@@ -282,34 +278,24 @@ namespace RackCad.Application.Systems
             var troquelSeparador = CatalogLookup.Local(catalog, system.PostId, DynamicRackDefaults.SeparatorPostPoint, LateralView);
             const double paso = SelectiveRackDefaults.TroquelPaso; // the standard troquel pitch (single source, I-22)
 
-            for (var r = 0; r + 1 < reaching.Count; r++)
+            foreach (var gap in gaps)
             {
-                var k = reaching[r];
-                var kNext = reaching[r + 1];
-
-                var backX = (offsets[k] - anchorOffset) + SelectiveDepthLayout.CabeceraDepthOfFondo(system, k); // fondo k's back post
-                var frontXNext = offsets[kNext] - anchorOffset;                                                 // fondo k+1's front post
-                var gap = frontXNext - backX;
-                if (gap <= 0.0)
-                {
-                    continue;
-                }
-
                 // Tie up to where BOTH fondos exist (the shorter one).
                 var height = Math.Min(
-                    SelectivePostGeometry.PostHeight(fondoBays[k], postIndex, fondoFallback[k]),
-                    SelectivePostGeometry.PostHeight(fondoBays[kNext], postIndex, fondoFallback[kNext]));
+                    SelectivePostGeometry.PostHeight(fondoBays[gap.FrontFondo], postIndex, fondoFallback[gap.FrontFondo]),
+                    SelectivePostGeometry.PostHeight(fondoBays[gap.BackFondo], postIndex, fondoFallback[gap.BackFondo]));
                 if (height <= 0.0)
                 {
                     continue;
                 }
 
+                var backX = gap.BackOffset - anchorOffset; // fondo k's back post, anchor-relative
                 var levels = SeparatorLevelCalculator.Levels(height, troquelSeparador.Y, paso, maxSpacing: SeparatorMaxSpacing);
                 foreach (var level in levels)
                 {
                     // Anchor on the (mirrored) back post's TROQUEL_SEPARADOR, one troquel inside the post; span the gap.
                     var anchor = new Point2D(backX - troquelSeparador.X, level);
-                    result.Add(SelectiveSeparadorPlacement.Separador(separatorBlock, DynamicRackDefaults.SeparatorView, anchor, separatorMate, gap));
+                    result.Add(SelectiveSeparadorPlacement.Separador(separatorBlock, DynamicRackDefaults.SeparatorView, anchor, separatorMate, gap.Length));
                 }
             }
         }
