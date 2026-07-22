@@ -4,11 +4,11 @@ automation_state:
   branch: refactor/safety-placement
   claim_id: c6f3e810-b64e-43af-a72c-eaeb7a091430
   current_phase: 8
-  state: implementing
-  gate: none
+  state: review-ready
+  gate: autocad
   attempts: 2
-  next_action: centralizar-el-recorrido-frontal-de-tope-en-selectivetopeplan-buildfrontal-y-migrar-selectivefrontalbuilder-addtopes-a-consumirlo-tras-rebase-sobre-origin-main-a50c4ec-i05
-  last_evidence_commit: 98005e1f965f76571c6ce4c615571fbbf3f2443b
+  next_action: validacion-del-dueno-en-autocad-tope-frontal-ahora-consume-el-plan-de-familia-selectivetopeplan-buildfrontal-diseno-resuelto-identico-por-golden-de-7-baselines
+  last_evidence_commit: 3ce71394f8858cf600b1e28d042ecebc5ba6a7c2
 execution_context:
   mode: manual-git-only
   worktree: I-22-safety-placement
@@ -16,16 +16,18 @@ execution_context:
 evidence:
   original_base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
   claim_commit: 0f39d9d02
-  code_tip: 98005e1f965f76571c6ce4c615571fbbf3f2443b
-  rebase: rebasada-sobre-origin-main-a50c4ec-i05-integrada-2026-07-22-conflicto-unico-en-docs-initiatives-readme-resuelto-preservando-i05-e-i22-cero-commits-detras-de-origin-main
-  domain_application_tests: 953-verde-0-fallos-base-941-mas-12-de-cierre-de-defectos-golden-medio-frente-y-cuadruple-mas-dto-por-subtipo-round-trip
-  ui_tests: 154-verde-0-fallos-base-151-mas-3-selectionmatrix-celdas-ausentes-cellcount-y-toggle
+  code_tip: 3ce71394f8858cf600b1e28d042ecebc5ba6a7c2
+  base_commit_rebased: 27ffdf34df70a517ef0819392aa0382172d53f6f
+  rebase: origin-main-avanzo-durante-la-sesion-a50c4ec-i05-luego-27ffdf3-merge-i24-rebasada-sobre-la-punta-vigente-27ffdf3-conflicto-unico-en-docs-initiatives-readme-resuelto-preservando-i05-i24-e-i22-ideas-futuras-auto-fusionado-i24-codigo-disjunto-ui-tests-mas-seam-dinamico-cero-commits-detras-de-origin-main
+  domain_application_tests: 981-verde-0-fallos-incluye-tests-de-i05-rebasados-mas-5-nuevos-de-selectivetopeplan-buildfrontal
+  ui_tests: 183-verde-0-fallos-154-de-i22-mas-29-de-i24-rebasados-coexisten-sin-regresion-esta-ronda-no-toca-ui
   build_ui_debug: 0-errores-0-advertencias-propias
   build_plugin_debug: 0-errores-solo-MSB3277-conocidos-de-autocad
   build_solution_debug: 0-errores-2-advertencias-solo-MSB3277-conocidos-del-plugin
   invariants: geometria-planes-bom-guid-identidad-persistencia-i11-catalogos-nombres-de-bloque-mensajes-seleccion-defaults-y-multivista-preservados-fijado-por-caracterizacion-golden-multiset-por-vista-mas-bom-y-round-trip-por-subtipo
-  scope: docs-i22-mas-application-persistence-dto-reales-por-subtipo-tope-desviador-defensa-guia-parrilla-flatten-unflatten-contra-safetyselectiondocument-plano-mas-4-builders-orquestadores-consumen-planes-fisicos-unicos-separadorplan-topeplan-parrillaplan-cells-deckcells-resolver-troquel-mas-domain-selectivesafetyconfig-mas-ui-selectionmatrix-celdas-ausentes-cellcount-toggle-y-3-rejillas-adoptadas-guia-tope-desviador-mas-pruebas
-  defect_closure: cuatro-defectos-de-revision-cerrados-1-planes-fisicos-unicos-separador-tope-parrilla-lateral-planta-bom-los-consumen-frontal-de-tope-conserva-su-recorrido-por-contradiccion-objetiva-documentada-doblaria-geometria-en-pares-por-fondo-2-dto-reales-por-subtipo-con-from-todomain-writeinto-readfrom-sin-json-anidado-ni-conversores-3-golden-medio-frente-y-cuadruple-profundidad-frontal-por-cada-fondo-aplicable-5-baselines-previos-intactos-4-celdas-ausentes-cellcount-solo-presentes-toggle-en-ausente-no-reporta-cambio
+  scope: docs-i22-mas-application-persistence-dto-reales-por-subtipo-tope-desviador-defensa-guia-parrilla-flatten-unflatten-contra-safetyselectiondocument-plano-mas-4-builders-orquestadores-consumen-planes-fisicos-unicos-separadorplan-topeplan-parrillaplan-cells-deckcells-mas-topeplan-buildfrontal-frontal-por-frente-consumido-por-addtopes-resolver-troquel-mas-domain-selectivesafetyconfig-mas-ui-selectionmatrix-celdas-ausentes-cellcount-toggle-y-3-rejillas-adoptadas-guia-tope-desviador-mas-pruebas
+  defect_closure: defecto-pendiente-cerrado-frontal-de-tope-centralizado-selectivetopeplan-buildfrontal-resuelve-la-intencion-pura-por-frente-celdas-activas-tras-offcells-niveles-tramos-cargados-o-frente-completo-startoffset-longitud-con-allowance-y-y-fuente-para-el-snap-resultado-nuevo-frontalcell-frontaltope-distinto-de-spottopes-no-consulta-topeshared-ni-topespots-asi-que-no-duplica-por-spot-addtopes-solo-proyecta-punto-catalogado-snap-coordenadas-instancia-y-toggle-los-7-golden-identicos-tope-combined-medio-frente-cuadruple-incluidos
+  defect_closure_prior: ronda-2-1-planes-fisicos-unicos-separador-tope-parrilla-2-dto-reales-por-subtipo-3-golden-medio-frente-y-cuadruple-4-celdas-ausentes-cellcount-toggle
   scope_guards: sin-cambios-en-assets-catalogos-deploy-github-rackcad-plugin-csproj-sln-directory-build-ni-dwg
   out_of_scope: i25-guardas-traseras-i18-push-back-editor-dinamico-rediseno-visual-reglas-de-producto-migraciones-adicionales-del-selectivo-parrilla-grid-contador-por-celda-defensa-formulario-por-poste-no-son-matriz-plana
 autocad_validation:
