@@ -449,13 +449,13 @@ namespace RackCad.Application.Systems
 
                     // Height (INICIO_PERFIL Y above the troquel) is view-independent, so reuse the frontal load surface.
                     var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, SelectiveRackDefaults.View);
-                    result.Add(MakePallet(block, startX, surfaceY, palletFondo, level.PalletAlto));
+                    result.Add(SelectiveTarimaPlacement.Pallet(block, LateralView,startX, surfaceY, palletFondo, level.PalletAlto));
                 }
 
                 var floorAlto = FloorPalletAltoOf(fondoBays[k], postIndex);
                 if (floorAlto > 0.0)
                 {
-                    result.Add(MakePallet(block, startX, 0.0, palletFondo, floorAlto)); // the ground pallet rests on the floor
+                    result.Add(SelectiveTarimaPlacement.Pallet(block, LateralView,startX, 0.0, palletFondo, floorAlto)); // the ground pallet rests on the floor
                 }
             }
         }
@@ -478,24 +478,6 @@ namespace RackCad.Application.Systems
             }
 
             return 0.0;
-        }
-
-        private static HeaderBlockInstance MakePallet(string block, double x, double y, double fondo, double alto)
-        {
-            // The TARIMA block's origin is BOTTOM-CENTRE: centre it in X (depth), keep its bottom at y (the load surface).
-            var at = new Point2D(x + fondo / 2.0, y);
-            var pallet = new HeaderBlockInstance
-            {
-                Role = HeaderBlockRole.Pallet,
-                PieceId = SelectiveRackDefaults.PalletPieceId,
-                BlockName = block,
-                View = LateralView,
-                Insertion = at,
-                ConnectionAnchor = at
-            };
-            pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam] = fondo; // LONGITUD = fondo in the lateral view
-            pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] = alto;
-            return pallet;
         }
 
         /// <summary>

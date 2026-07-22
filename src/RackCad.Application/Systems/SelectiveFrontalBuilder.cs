@@ -481,7 +481,7 @@ namespace RackCad.Application.Systems
                     // Normal full bay: the design's counts drive the rows across the whole profile.
                     if (bay.FloorPalletCount > 0 && bay.FloorPalletFrente > 0.0)
                     {
-                        PlacePalletRow(instances, palletBlock, view, profileX, bay.BeamLength, 0.0,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, profileX, bay.BeamLength, 0.0,
                             bay.FloorPalletFrente, bay.FloorPalletAlto, bay.FloorPalletCount);
                     }
 
@@ -493,7 +493,7 @@ namespace RackCad.Application.Systems
                         }
 
                         var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
-                        PlacePalletRow(instances, palletBlock, view, profileX, bay.BeamLength, surfaceY,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, profileX, bay.BeamLength, surfaceY,
                             level.PalletFrente, level.PalletAlto, level.PalletCount);
                     }
 
@@ -513,7 +513,7 @@ namespace RackCad.Application.Systems
                     var floorFit = PalletFit(tramo.Length, bay.FloorPalletFrente);
                     if (bay.FloorPalletCount > 0 && floorFit > 0)
                     {
-                        PlacePalletRow(instances, palletBlock, view, tramoX, tramo.Length, 0.0,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, tramoX, tramo.Length, 0.0,
                             bay.FloorPalletFrente, bay.FloorPalletAlto, floorFit);
                     }
 
@@ -526,7 +526,7 @@ namespace RackCad.Application.Systems
                         }
 
                         var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, view);
-                        PlacePalletRow(instances, palletBlock, view, tramoX, tramo.Length, surfaceY,
+                        SelectiveTarimaPlacement.AppendRow(instances, palletBlock, view, tramoX, tramo.Length, surfaceY,
                             level.PalletFrente, level.PalletAlto, fit);
                     }
                 }
@@ -537,34 +537,6 @@ namespace RackCad.Application.Systems
         /// non-positive or wider than the span). Used for medio-frente tramos and the parrilla row fit.</summary>
         internal static int PalletFit(double span, double frente)
             => frente > 0.0 && frente <= span ? (int)Math.Floor(span / frente) : 0;
-
-        /// <summary>Distribute <paramref name="count"/> pallets of width <paramref name="frente"/> evenly across
-        /// [<paramref name="anchorX"/>, +<paramref name="span"/>] resting at <paramref name="bottomY"/> (the pallet's
-        /// bottom). The TARIMA block's origin is BOTTOM-CENTRE, so each pallet is inserted centred in X (footprint-left +
-        /// frente/2) and at its bottom in Y; the LONGITUD/ALTURA params size it.</summary>
-        private static void PlacePalletRow(
-            ICollection<HeaderBlockInstance> instances, string block, string view,
-            double anchorX, double span, double bottomY, double frente, double alto, int count)
-        {
-            var gap = Math.Max(0.0, (span - count * frente) / (count + 1));
-            for (var k = 0; k < count; k++)
-            {
-                // Origin at the pallet BOTTOM-CENTRE: footprint left = anchorX + gap*(k+1) + frente*k, bottom = bottomY.
-                var at = new Point2D(anchorX + gap * (k + 1) + frente * k + frente / 2.0, bottomY);
-                var pallet = new HeaderBlockInstance
-                {
-                    Role = HeaderBlockRole.Pallet,
-                    PieceId = SelectiveRackDefaults.PalletPieceId,
-                    BlockName = block,
-                    View = view,
-                    Insertion = at,
-                    ConnectionAnchor = at
-                };
-                pallet.DynamicParameters[SelectiveRackDefaults.PalletFrenteParam] = frente;
-                pallet.DynamicParameters[SelectiveRackDefaults.PalletAltoParam] = alto;
-                instances.Add(pallet);
-            }
-        }
 
         /// <summary>Adds one larguero per level at <paramref name="beamX"/> (the tramo's left-post troquel X), each
         /// stretched to <paramref name="beamLongitud"/> and to its level's peralte, sitting at the level's resolved Y.</summary>
