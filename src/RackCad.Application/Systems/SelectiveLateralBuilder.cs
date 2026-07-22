@@ -543,26 +543,10 @@ namespace RackCad.Application.Systems
                         }
 
                         var surfaceY = level.Y + SelectivePostGeometry.BeamProfileStartY(catalog, level.BeamId, level.BeamPeralte, SelectiveRackDefaults.View);
-                        result.Add(MakeParrilla(parrilla.Block, parrilla.PieceId, offsetRel, surfaceY, fondo));
+                        result.Add(SelectiveParrillaPlacement.Deck(parrilla.PieceId, parrilla.Block, LateralView, offsetRel, surfaceY, SelectiveSafetyPlacement.ParrillaFondoParam, fondo));
                     }
                 }
             }
-        }
-
-        private static HeaderBlockInstance MakeParrilla(string block, string pieceId, double x, double bottomY, double fondo)
-        {
-            var at = new Point2D(x, bottomY); // origin bottom-left (front edge, on the load surface)
-            var instance = new HeaderBlockInstance
-            {
-                Role = HeaderBlockRole.Safety,
-                PieceId = pieceId,
-                BlockName = block,
-                View = LateralView,
-                Insertion = at,
-                ConnectionAnchor = at
-            };
-            instance.DynamicParameters[SelectiveSafetyPlacement.ParrillaFondoParam] = fondo;
-            return instance;
         }
 
         /// <summary>The distinct levels attaching at post <paramref name="postIndex"/> from the (up to two) bays it

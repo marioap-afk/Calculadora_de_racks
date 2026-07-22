@@ -301,27 +301,7 @@ namespace RackCad.Application.Systems
         private static void PlaceParrillaRow(ICollection<HeaderBlockInstance> instances, string pieceId, string block, string view, double anchorX, double span, double bottomY, SelectiveLevel level, double overrideFrente, int overrideCount, bool fitToSpan)
         {
             var (frente, count) = ParrillaRow(span, level.PalletFrente, level.PalletCount, overrideFrente, overrideCount, fitToSpan);
-            if (frente <= 0.0 || count <= 0)
-            {
-                return;
-            }
-
-            var gap = Math.Max(0.0, (span - count * frente) / (count + 1));
-            for (var k = 0; k < count; k++)
-            {
-                var at = new Point2D(anchorX + gap * (k + 1) + frente * k, bottomY); // the deck's bottom-left corner
-                var instance = new HeaderBlockInstance
-                {
-                    Role = HeaderBlockRole.Safety,
-                    PieceId = pieceId,
-                    BlockName = block,
-                    View = view,
-                    Insertion = at,
-                    ConnectionAnchor = at
-                };
-                instance.DynamicParameters[SelectiveSafetyPlacement.ParrillaFrenteParam] = frente;
-                instances.Add(instance);
-            }
+            SelectiveParrillaPlacement.AppendRow(instances, pieceId, block, view, anchorX, span, bottomY, frente, count, SelectiveSafetyPlacement.ParrillaFrenteParam);
         }
 
         /// <summary>
