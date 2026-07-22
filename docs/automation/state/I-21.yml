@@ -1,0 +1,24 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-21
+  branch: refactor/dynamic-editor-state
+  claim_id: db5f979a-07f1-486e-bc22-4dab87ab8a1f
+  current_phase: 5
+  state: integration-ready
+  gate: none
+  attempts: 0
+  next_action: merge-no-ff-de-refactor-dynamic-editor-state-en-main-y-limpieza-segura
+  last_evidence_commit: 779ee0c4ea06f2a84bc2c5738979449ed25c269f
+autocad_validation:
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-21-sobre-779ee0c-modulo-dinamico-a-profundidad-en-autocad-2025-ventana-matriz-selecciones-alcance-cabeceras-calculadas-y-personalizadas-seguridad-inout-intermedios-previews-y-vistas-vinculadas-geometria-bom-biblioteca-persistencia-legacy-round-trip-actualizacion-en-sitio-y-guid-sin-observaciones
+owner_validation:
+  status: approved
+  note: aprobado-por-el-dueno-2026-07-21-comportamiento-y-apariencia-de-la-ventana-dinamica-identicos-sin-cambio
+execution_context:
+  mode: manual-git-only
+  worktree: I-21-dynamic-editor-state
+  pull_request: none
+decision_evidence:
+  path: docs/automation/evidence/I-21-autocad-validation.md
+  resolved_gate: autocad+owner-validation

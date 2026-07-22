@@ -181,6 +181,26 @@ los dos `.csproj` (el `LangVersion`/`Nullable` centralizados por I-12 heredados 
 y la copia de catálogos de I-15) y `docs/ideas-futuras.md`, **sin** incorporar código funcional de I-19.
 La rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-21** (`refactor/dynamic-editor-state`) cierra la **extracción del estado del editor dinámico** a
+`RackCad.Application`, **sin cambio de comportamiento observable**. Mueve a
+`src/RackCad.Application/Systems/` lo que era code-behind privado de `RackDynamicSystemWindow`:
+`DynamicEditorCell`/`DynamicEditorFront`/`DynamicEditorValues` (filas/celdas y buffer de edición),
+`DynamicFrontMatrix` (la matriz frente×nivel **y la selección** con todas sus mutaciones —alta/baja de
+frentes, ajuste, toggle, commit, aplicar por alcance vía `DynamicRackCellScopeResolver`, snapshot/rollback,
+refresco/restauración desde el sistema resuelto y la proyección a `DynamicRackFrontDesign`—),
+`DynamicEditorSafety` (la regla «dibuja» y la copia de selecciones) y
+`DynamicAnnotationOptions`+`DynamicEditorDesignAssembler` (la **recomputación y construcción del diseño**:
+`MustRebuild`, `Snapshot`/`RestoreHeaderFondos`, `UpdateHeaderHeightInPlace`, `BuildDesign`, componiendo el
+builder y el resolver existentes sin duplicar geometría). La ventana queda **coordinando controles, eventos,
+render y diálogo** sobre el Editor Shell (I-15); `Recompose` conserva su orquestación y el code-behind baja
+de ~3,339 a ~2,838 líneas. **No** cambia geometría, planes, BOM, GUID, nombre, `Section`, edición
+multivista, persistencia I-11, metadatos desconocidos, fallbacks legacy, cabeceras legacy ni la cama
+integrada; el XAML es idéntico. El dueño **aprobó la validación manual en AutoCAD** (matriz, selecciones y
+aplicación por alcance; cabeceras calculadas y personalizadas; seguridad/IN-OUT/intermedios; previews y
+vistas vinculadas; geometría/BOM; biblioteca/legacy/round-trip; actualización en sitio con el mismo GUID) y
+la **owner-validation**. `origin/main` **no avanzó** desde `bfda406` (Merge I-15): **sin rebase**; la rama se
+integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -257,6 +277,17 @@ diferencias**, metadatos y persistencia **I-11 preservados**, recomputación/pre
 apariencia quedó **aprobada** (`requires_owner_validation: true`). La confirmación normativa del dueño consta en
 esta sesión; el gate manual queda cerrado.
 
+I-21 (`refactor/dynamic-editor-state`) **sí** requiere validación en AutoCAD (`requires_autocad: true`) porque
+el editor dinámico produce el diseño que se dibuja. El dueño probó a profundidad el módulo dinámico por
+`NETLOAD` del DLL Debug del worktree I-21 (código `779ee0c`;
+`…-I-21-dynamic-editor-state\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en AutoCAD 2025
+y **aprobó sin observaciones**: comportamiento y apariencia de la ventana; matriz, selecciones y aplicación
+por alcance; cabeceras calculadas y personalizadas; seguridad, IN/OUT e intermedios; previews y vistas
+vinculadas; geometría y BOM; biblioteca, persistencia legacy y round-trip; actualización en sitio y
+conservación del GUID; registro en
+[automation/evidence/I-21-autocad-validation.md](automation/evidence/I-21-autocad-validation.md). La
+**owner-validation** de comportamiento y apariencia quedó **aprobada** (`requires_owner_validation: true`).
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -265,9 +296,9 @@ esta sesión; el gate manual queda cerrado.
   debe comprobarse contra el uso real.
 - El build del Plugin puede emitir los `MSB3277` conocidos de las referencias de AutoCAD y falla al
   copiar DLL si AutoCAD los mantiene cargados.
-- Tras I-15 (que adoptó el shell para catálogo/identidad/recompute/inserción), el **estado interno propio**
-  de los editores selectivo (matriz por fondo, `BuildSystem`) y dinámico (`Recompose`, módulos, code-behind)
-  sigue sin extraer a Application; su migración es I-20/I-21.
+- Tras I-21, el **estado interno propio del editor dinámico** (matriz frente×nivel, selección, recomputación
+  y construcción del diseño) ya vive en `RackCad.Application`; queda pendiente extraer el del **selectivo**
+  (matriz por fondo, `BuildSystem`), que es I-20.
 - El menú `RACKCAD` abre el selectivo **nuevo** sin `SetDimensionStyles` (asimetría vigente que I-15 preservó
   verbatim; `RACKSELECTIVO` y el abrir-desde-biblioteca sí los fijan) — registrado en `docs/ideas-futuras.md`
   como hallazgo diferido, no corregido en I-15.
@@ -287,25 +318,66 @@ esta sesión; el gate manual queda cerrado.
 
 ## 4. Siguiente acción
 
-Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12**, **I-19** e **I-15** integradas (I-15 en esta sesión), la
-**pista B del Plugin** está cerrada (la serialización I-09 → I-16 → I-10 está completa), la **pista A de
+Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12**, **I-19**, **I-15** e **I-21** integradas (I-21 en esta
+sesión), la **pista B del Plugin** está cerrada (la serialización I-09 → I-16 → I-10 está completa), la **pista A de
 Application** entrega la persistencia uniforme, **I-12** cierra el **versionado real** (versión única, SHA
 estampado, bundle por `dotnet publish` verificado fail-closed, ADR-0004 aceptado), e **I-19** entrega el
 validador de catálogos. La **pista C de UI** entrega ahora sus **dos** primeros eslabones: los **controles
 comunes** (I-14) y el **Editor Shell** (I-15), este último ya **adoptado por las cuatro ventanas ricas**
 (catálogo, identidad, recomputación coalescida y contrato de inserción vía `RackEditorSession`; menú y
-biblioteca por `EditorModuleRegistry`), con el estado interno de selectivo/dinámico reservado a I-20/I-21.
-El siguiente paso natural es **I-20 `refactor/selective-editor-state`** / **I-21 `refactor/dynamic-editor-state`**
-(extraer a Application el estado propio de esos editores, ahora que el shell existe) e **I-22**
-(`refactor/safety-placement`); **I-18 (Push Back)** ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16
-y solo espera los **bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su
-worktree ya reclamado.
+biblioteca por `EditorModuleRegistry`). **I-21** completa la Fase 5 del **dinámico**: extrae a Application el
+estado propio de su editor (matriz frente×nivel, selección, recomputación y construcción del diseño), dejando
+la ventana como coordinadora sobre el shell. El siguiente paso natural es **I-20
+`refactor/selective-editor-state`** (el gemelo del selectivo) e **I-22** (`refactor/safety-placement`, tras
+I-20); **I-18 (Push Back)** ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y solo espera los
+**bloques DWG del dueño**. Alternativamente, continuar I-07 (`docs/adr-retroactivos`) en su worktree ya
+reclamado.
 
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-21 — 2026-07-21:**
+
+- punta de **código** validada por CI y por el dueño: `779ee0c4ea06f2a84bc2c5738979449ed25c269f` (run
+  `29887985687`, **cuatro jobs verdes** sobre la punta publicada `2470de2`); los commits posteriores de la
+  rama son **solo documentales** (registro de validación + este cierre) y **no cambian código**; este
+  documento **no inventa** el SHA del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` **no avanzó** desde la base de I-21 (`bfda406`, Merge I-15): **sin rebase**; la rama se integra
+  por `git merge --no-ff` en esta sesión;
+- suite `RackCad.Tests`: **889/889 verdes** (842 de la base + **47 nuevos** de caracterización/equivalencia:
+  `DynamicEditorCell`, `DynamicEditorSafety`, `DynamicFrontMatrix`, `DynamicEditorDesignAssembler`, incluida la
+  resolución del diseño armado por el pipeline real); suite `RackCad.UI.Tests`: **135/135 verdes** (la adopción
+  STA construye la ventana real y confirma que sigue tomando identidad/inserción de la sesión del shell);
+- build UI Debug: **0 errores y 0 advertencias**; builds Plugin y solución Debug: **0 errores**, únicamente las
+  dos familias `MSB3277` conocidas del Plugin;
+- CI de rama verde sobre la punta de código `2470de2` (run `29887985687`): los **cuatro** jobs —Tests
+  (Domain+Application), Build UI, UI Tests (WPF controls, net8.0-windows) y Build Plugin without AutoCAD— en
+  `success`;
+- objetivo entregado: estado puro del editor dinámico en `src/RackCad.Application/Systems/`
+  (`DynamicEditorCell`/`DynamicEditorFront`/`DynamicEditorValues`; `DynamicFrontMatrix` con la matriz
+  frente×nivel, la selección y todas las mutaciones —alta/baja, ajuste, toggle, commit, `ApplyScope` vía
+  `DynamicRackCellScopeResolver`, snapshot/rollback, refresco/restauración desde el sistema resuelto,
+  `BuildFrontDesigns`—; `DynamicEditorSafety`; `DynamicAnnotationOptions`+`DynamicEditorDesignAssembler` con
+  `MustRebuild`/`Snapshot`-`RestoreHeaderFondos`/`UpdateHeaderHeightInPlace`/`BuildDesign`); la ventana
+  `RackDynamicSystemWindow` lo **consume** (mueren los tipos privados `DynamicFrontRow`/`DynamicCellRow`/
+  `DynamicEditorValues` y los helpers movidos) y solo coordina controles/eventos/render/diálogo sobre el
+  Editor Shell; code-behind de ~3,339 a ~2,838 líneas;
+- validación manual: AutoCAD **requerido** (`requires_autocad: true`) y **aprobado** por el dueño (módulo
+  dinámico a profundidad: matriz/selecciones/alcance, cabeceras calculadas y personalizadas,
+  seguridad/IN-OUT/intermedios, previews y vistas vinculadas, geometría/BOM, biblioteca/legacy/round-trip,
+  actualización en sitio con el mismo GUID); **owner-validation aprobada**;
+- invariantes preservados: **sin** cambios de geometría, planes, recetas BOM, GUID, nombre, `Section`, edición
+  multivista, persistencia (Xrecord/I-11 intactos), metadatos desconocidos, fallbacks legacy, cabeceras legacy
+  ni cama integrada; XAML byte-idéntico; **cero** cambios en Domain, catálogos, `deploy/`, Plugin o `.csproj`;
+  **sin** dependencias NuGet nuevas; dirección de dependencias intacta (el estado nuevo vive en Application);
+  única remoción incidental: el método privado muerto `EnsureIntermediateBeamDepthCount`;
+- alcance: producto en `src/RackCad.Application/Systems/` (7 archivos nuevos) y
+  `src/RackCad.UI/RackDynamicSystemWindow.xaml.cs` (adopción, −~500 líneas netas); 4 archivos de pruebas nuevos
+  en `tests/RackCad.Tests/`; contrato `docs/initiatives/I-21-dynamic-editor-state.md`, estado
+  `docs/automation/state/I-21.yml`, evidencia `docs/automation/evidence/I-21-autocad-validation.md` e índice.
 
 **Baseline integrada de I-15 — 2026-07-21:**
 
