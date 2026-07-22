@@ -3,12 +3,12 @@ automation_state:
   initiative: I-24
   branch: refactor/ui-tests-editores
   claim_id: 5ce1f970-1400-4978-b8a3-bf5f4229cee9
-  current_phase: 2
-  state: implementing
+  current_phase: 5
+  state: review-ready
   gate: none
   attempts: 0
-  next_action: implementar-seam-dinamico-y-pruebas-de-ventanas-y-viewmodel-en-rackcad-ui-tests
-  last_evidence_commit: 834c94dbfa1c743377ee144275837d06a6bc4fb1
+  next_action: sesion-de-integracion-serializada-rebase-final-ci-verde-y-merge-no-ff-en-main-tras-decision-del-dueno
+  last_evidence_commit: 6916ecd7082036f6d0111044855a38e6aa81c5a7
 execution_context:
   mode: manual-git-only
   worktree: I-24-ui-tests-editores
@@ -16,4 +16,22 @@ execution_context:
 evidence:
   base_commit: 9a895e417b485749a6bc62edd643486a43495f0d
   claim_commit: 834c94dbfa1c743377ee144275837d06a6bc4fb1
+  docs_commit: 5966e37fca4206a73058d418887636b2185c1539
+  tests_and_seam_commit: 6916ecd7082036f6d0111044855a38e6aa81c5a7
+  domain_application_tests: 913-verde-0-fallos-sin-regresion-i24-no-toca-rackcad-tests
+  ui_tests: 162-verde-0-fallos-139-base-mas-23-nuevas-configuratorvm-10-dynamicwindow-6-selectivewindow-4-flowbedwindow-3
+  build_ui_debug: 0-errores-0-advertencias
+  build_plugin_debug: 0-errores-solo-2-MSB3277-conocidos-de-autocad-2025-instalado
+  build_solution_debug: 0-errores-solo-2-MSB3277-conocidos
+  production_seam: RackDynamicSystemWindow-BuildDesignForTest-interno-reenvia-a-Recompose-privado-sin-reglas-nuevas-no-usado-en-produccion
+  invariants: sin-cambios-de-xaml-geometria-bom-persistencia-handlers-drawservices-catalogos-bloques-ni-reglas-de-producto-solo-pruebas-mas-un-seam-sin-comportamiento
+  scope: solo-tests-rackcad-ui-tests-4-archivos-mas-seam-dinamico-mas-docs-i24-mas-hallazgos-ideas-futuras
+  findings: hallazgo-entrada-obsoleta-de-i21-en-initiatives-readme-y-lagunas-de-cobertura-pura-en-rackcad-tests-registrados-en-ideas-futuras-sin-corregir
   parallel_observed: I-22-refactor-safety-placement-reclamada-0f39d9d-sobre-9a895e4-no-conflicto-declarado-de-i24
+gates:
+  autocad:
+    required: false
+    note: iniciativa-de-pruebas-y-seam-sin-comportamiento-no-cambia-dibujo-ni-superficie-visible
+  owner_validation:
+    required: false
+    note: sin-cambio-de-comportamiento-observable-cobertura-por-suites-automatizadas-y-ci

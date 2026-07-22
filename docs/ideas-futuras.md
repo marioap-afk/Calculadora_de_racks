@@ -271,6 +271,17 @@ sin decoración, con test de equivalencia); `RACKLISTA` sumaba referencias de TO
   nuevo creado por RACKCAD no ofrece los estilos de cota guardados del dibujo. I-15 lo preservó verbatim
   (`SelectiveEditorModule.OpenForNew`); corregir = pasar los estilos también en ese path, con validación en
   AutoCAD (cambia lo que ve el usuario al insertar cotas de un selectivo nuevo desde el menú).
+- (hallazgo I-24, 2026-07-22) Entrada obsoleta de I-21 en `docs/initiatives/README.md`: el bullet de
+  `I-21-dynamic-editor-state.md` aún dice «AutoCAD y owner-validation **abiertos** (gate del dueño). No
+  integrada.», pero I-21 quedó **integrada** en `main` el 2026-07-21 (Merge `2a30fef`; ROADMAP y HANDOFF lo
+  confirman). Corregir el estado de ese bullet; I-24 **no** lo tocó para no arreglar trabajo ajeno de paso.
+- (hallazgo I-24, 2026-07-22) Lagunas de cobertura PURA en `RackCad.Tests` detectadas al mapear el estado del
+  editor dinámico (fuera del alcance de I-24, que sólo amplía `RackCad.UI.Tests`): en `DynamicFrontMatrixTests`
+  faltan los alcances `Level` y `Front` de `DynamicFrontMatrix.ApplyScope` (sólo Cell/All/Selected probados),
+  más `ClampLevel`/`MaxLoadLevels`/`LevelCounts`/`ApplyFrontValuesTo` directos; en
+  `DynamicEditorDesignAssemblerTests` faltan las guardas de `RestoreHeaderFondos` (snapshot nulo/vacío → 0) y
+  las ramas de `BuildDesign` con `AnnotationScale <= 0` y `annotations == null`; no existe archivo de pruebas
+  dedicado para `DynamicEditorSafety`/`DynamicEditorCell`. Añadirlas cuando se retome el dinámico.
 
 **Señalados pero NO verificados** (la verificación adversarial no alcanzó a correr; validar antes de actuar):
 posible coma decimal mal parseada en campos del configurador; el editor del dinámico podría resetear
