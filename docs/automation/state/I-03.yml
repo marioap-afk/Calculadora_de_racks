@@ -8,7 +8,7 @@ automation_state:
   gate: none
   attempts: 0
   next_action: sesion-de-integracion-serializada-del-dueno-rebase-final-si-main-avanzo-CI-verde-por-SHA-merge-no-ff-y-HANDOFF-ROADMAP-como-ultimo-commit
-  last_evidence_commit: 5e64e16
+  last_evidence_commit: ff6f460
 execution_context:
   mode: manual-git-only
   worktree: I-03-fallos-silenciosos
@@ -19,10 +19,11 @@ evidence:
   contract_commit: be2bc31
   application_commit: dccbb05
   plugin_commit: 5e64e16
-  domain_application_tests: 1000-verde-0-fallos-baseline-981-mas-19-nuevas-de-i03-formatter-diagnosticslog-atomicfile-settings-templates
+  revision_2026_07_22_commits: produccion-52da117-clasificacion-de-carga-por-excepcion-mas-registro-del-fallo-de-cuarentena-mas-seam-RedirectForTests-tests-ff6f460-aislamiento-del-logger-y-negativos-deterministas
+  domain_application_tests: 1004-verde-0-fallos-1000-previos-mas-4-de-la-revision-facade-redirigido-y-3-negativos-deterministas
   ui_tests: 183-verde-0-fallos-sin-cambio-i03-no-toca-ui
   build_solution_debug: 0-errores-solo-2-MSB3277-conocidos-de-autocad-2025
-  red_before_green: los-tests-f2-no-compilaban-antes-de-f3-los-tipos-diagnostics-y-atomicfile-no-existian-verdes-tras-implementar
+  red_before_green: f2-los-tipos-diagnostics-y-atomicfile-no-existian-antes-de-f3-verdes-tras-implementar-mas-revision-los-2-negativos-de-logica-fallan-con-el-codigo-previo-error-de-lectura-no-registrado-por-la-guarda-File-Exists-y-fallo-de-cuarentena-silencioso-verdes-tras-los-fixes
   scope: application-diagnostics-logger-mas-atomicfile-mas-4-stores-atomicos-mas-persistence-best-effort-distingue-ausente-vs-ilegible-con-cuarentena-bad-mas-plugin-report-con-stack-14-catches-y-catalogo-mas-pruebas-mas-docs
   invariants: additivo-preserva-i11-versiones-metadata-geometria-bom-guid-formatos-fallback-legacy-y-clave-xrecord-mas-comandos-alias-y-mensajes-visibles-identicos-sin-tocar-catalogos-deploy-sln-ni-csproj-del-plugin
 gates:
