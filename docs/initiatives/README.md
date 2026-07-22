@@ -157,7 +157,8 @@ Planes disponibles:
   I-11** (`ExtensionData` via `WithSourceMetadataFrom`). **Sin cambio** de dibujo, geometria, BOM, GUID,
   persistencia fisica, DTO ni UI. Fuera de alcance: los stores de I-03, rediseno de configuradores y
   migraciones adicionales de selectivo/dinamico. `requires_autocad: false`,
-  `requires_owner_validation: false`. **Estado: review-ready** (no integrada).
+  `requires_owner_validation: false`. Candidato validado `28e5cfe` (CI run 29952433309, 4 jobs verdes).
+  **Integrada en `main` el 2026-07-22.**
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

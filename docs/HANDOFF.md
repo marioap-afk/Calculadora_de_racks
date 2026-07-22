@@ -300,6 +300,27 @@ con contador por celda y defensa por poste **no** se fuerzan a matriz plana). Al
 **disjunto** de I-22. El dueño **aprobó la validación en AutoCAD 2025 y la owner-validation sin observaciones**
 (§2 y §5). La rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-17** (`refactor/clon-unico-cabecera`) unifica las **tres** implementaciones de deep-clone de
+`RackFrameConfiguration` (hallazgo **U4** de la auditoría: una manual + dos por serialización, la manual
+desincronizada con cada campo nuevo) en **un solo** `RackFrameProjectStore.DeepCopy` —el round-trip del store de
+serialización— que el **dinámico** (`RackDynamicSystemWindow.Clone`), el **selectivo**
+(`RackSelectiveWindow.CloneCabecera`) y el **configurador** (`RackFrameConfiguratorViewModel`) consumen; se
+elimina el clon manual campo-por-campo del configurador (`CopyConfiguration` + 7 ayudantes) y sus dos rutas
+reasignan `Configuration`. El clon es **completo**: el modelo **persistido** por el documento, el **derivado**
+(`Members`, elevaciones, miembros por panel) reconstruido en la carga por `RefreshPhysicalModel`, y las
+**excepciones runtime** (`FrameExceptionOverride`) —que el documento **no** persiste ni `RefreshPhysicalModel`
+reconstruye— **reanexadas dentro del propio `DeepCopy`** (con `CloneException`), **sin** tocar el DTO, el formato
+de alambre ni `Save`/`Load`. **No** cambia dibujo, geometría, BOM, GUID, persistencia física, DTO, catálogos, los
+stores de **I-03** ni la UI: el diseño clonado es **idéntico**, fijado por comparación **profunda** del grafo
+(modelo persistido, derivado **miembro-a-miembro** y excepciones), una **guarda por reflexión** que obliga a
+clasificar toda propiedad futura de `RackFrameConfiguration` como persistida/derivada/runtime-preservada, y una
+**regresión de I-11** que prueba la preservación de `ExtensionData` al clonar la cabecera vía
+`WithSourceMetadataFrom`. Por eso **no** requiere validación en AutoCAD (`requires_autocad: false`) ni
+owner-validation (`requires_owner_validation: false`; AUTOMATION_PLAN I-17 = no|no|no). `origin/main` **no
+avanzó** desde la base `f674bd4`: **sin rebase**; I-03 (`refactor/fallos-silenciosos`) sigue activa en su worktree
+pero **no** integrada (sin conflicto en `RackFrameProjectStore.cs`, cuyo cambio de I-17 es aditivo). La rama se
+integra por `git merge --no-ff` en esta sesión.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -431,6 +452,15 @@ round-trip; y la **apariencia e interacción** de las rejillas `SelectionMatrix`
 está en `27ffdf3` (Merge I-24) y no avanzó desde que la rama quedó rebasada sobre esa punta, así que la validación
 se conserva (WORKFLOW §6): sin rebase adicional.
 
+I-17 (`refactor/clon-unico-cabecera`) **no** cambia dibujo, geometría, BOM, GUID ni la persistencia física: es un
+refactor que unifica el mecanismo de clonado de `RackFrameConfiguration`, cuyo resultado es **idéntico** por
+construcción (fijado por la comparación **profunda** del grafo —persistido + derivado miembro-a-miembro +
+excepciones—, la guarda de clasificación por reflexión y la regresión de I-11). No requiere validación en AutoCAD
+(`requires_autocad: false`; ROADMAP no la marca con ✋) ni owner-validation (`requires_owner_validation: false`),
+por analogía directa con I-09/I-10/I-24: la equivalencia se sostiene con la suite completa (**993** `RackCad.Tests`
++ **184** `RackCad.UI.Tests`) y el CI verde de la rama (run `29952433309` sobre `28e5cfe`, cuatro jobs). AutoCAD:
+no ejecutado; no requerido por contrato.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -494,11 +524,42 @@ siguiente paso natural pasa a ser **I-25** (`feature/guardas-traseras`, última 
 sobre I-22, **ahora desbloqueada**) e **I-18 (Push Back)** (solo espera los **bloques DWG del dueño**); **I-23**
 cierra la Fase 5 al final (depende de todas).
 
+**I-17** (`refactor/clon-unico-cabecera`, Fase 3) queda **integrada** en esta sesión: **clon único de cabecera**
+(`RackFrameProjectStore.DeepCopy`, hallazgo **U4**), **sin cambio de comportamiento** (detalle en §1 y §5); cierra
+U4 y **no** desbloquea ni estorba otra iniciativa. El siguiente paso natural sigue siendo **I-25**/**I-18** (o
+continuar **I-07** `docs/adr-retroactivos` en su worktree ya reclamado).
+
 La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
 desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-17 — 2026-07-22:**
+
+- candidato de **código** validado por CI: `28e5cfeeccfbfe60ab844f1555d3580405ebfbb8` (CI run `29952433309`,
+  **cuatro jobs verdes** —Tests (Domain+Application), Build UI, UI Tests (WPF controls, net8.0-windows) y Build
+  Plugin without AutoCAD); el commit documental de cierre recibe su propio CI verde antes del merge; este documento
+  **no inventa** el SHA del merge de `main` (vive en `git log --first-parent main`);
+- `origin/main` **no avanzó** desde la base `f674bd4` durante el ciclo de I-17: **sin rebase** (merge-base =
+  `origin/main`, 0 commits detrás); I-03 (`refactor/fallos-silenciosos`) e I-07 (`docs/adr-retroactivos`) siguen
+  activas en remoto pero **no** integradas, así que no hubo conflicto con `RackFrameProjectStore.cs` (el cambio de
+  I-17 es aditivo); la rama se integra por `git merge --no-ff`;
+- suite `RackCad.Tests`: **993/993 verdes** (981 base + **12** de I-17: 11 en `RackFrameConfigurationDeepCopyTests`
+  —modelo persistido por forma de alambre, **excepciones sin compartir referencias**, **modelo derivado
+  miembro-a-miembro** superiores y por panel, independencia, idempotencia, `null`, equivalencia con las dos rutas
+  previas y la **guarda por reflexión** de clasificación de propiedades— + **1** regresión de **I-11** en
+  `PersistenceReopenPreservationTests`); suite `RackCad.UI.Tests`: **184/184 verdes** (183 base + 1 de restore del
+  configurador); filtro persistencia/I-11/DeepCopy **143/143**; la prueba de excepciones se verificó **fallando**
+  con el reanexado desactivado (1 fallo/11 ok) y se restauró el fix;
+- build UI Debug: **0 errores y 0 advertencias propias**; build solución completa Debug (Plugin incl., AutoCAD
+  cerrado): **0 errores**, únicamente las dos familias `MSB3277` conocidas del Plugin;
+- diff vs `origin/main`: **10 archivos** (`RackFrameProjectStore.cs` **aditivo**: `DeepCopy` + `CloneException`,
+  sin tocar `Serialize`/`Deserialize`/`Save`/`Load`; 3 `.cs` de UI —dinámico/selectivo/configurador: comentarios +
+  delegación + reasignación—; 2 archivos de prueba nuevos/modificados con la regresión I-11; 3 docs), **sin** tocar
+  XAML, DTO (`RackFrameProjectDocument`), formato físico, catálogos, geometría, BOM, GUID ni los stores de **I-03**;
+- objetivo entregado (hallazgo **U4**): **un solo** deep-clone de `RackFrameConfiguration` vía el store de
+  serialización, con preservación **completa** del estado (persistido + derivado + excepciones runtime).
 
 **Baseline integrada de I-22 — 2026-07-22:**
 

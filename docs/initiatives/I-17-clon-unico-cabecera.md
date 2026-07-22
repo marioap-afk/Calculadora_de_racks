@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-17
 title: Clon unico de cabecera (deep-clone via store de serializacion)
 type: refactor
-status: review-ready
+status: integrated
 branch: refactor/clon-unico-cabecera
 base_branch: main
 priority:
