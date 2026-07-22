@@ -1,8 +1,8 @@
-# ADR-0004: Catálogos CSV Excel-first sin base de datos
+# ADR-0007: Catálogos CSV Excel-first sin base de datos
 
 - **Estado:** propuesto
-- **Fecha:** 2026-07-19 (fecha de documentación retroactiva; no fecha de la decisión)
-- **Decisores:** por confirmar durante la revisión formal; registro retroactivo redactado por Codex
+- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
+- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -75,4 +75,4 @@ a quienes tomaron la decisión.
 - [`JsonRackCatalogProvider`](../../src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs)
 - [Pruebas del lector CSV](../../tests/RackCad.Tests/CsvCatalogReaderTests.cs)
 - [Arquitectura inicial — opciones de almacenamiento preservadas](../archivo/mvp-inicial/arquitectura-autocad-racks.md)
-- [ADR-0005: Perfiles estructurales unificados en secciones.csv por rol](0005-secciones-unificadas-por-rol.md)
+- [ADR-0008: Perfiles estructurales unificados en secciones.csv por rol](0008-secciones-unificadas-por-rol.md)

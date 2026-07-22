@@ -1,8 +1,8 @@
-# ADR-0003: AutoCAD solo en RackCad.Plugin
+# ADR-0006: AutoCAD solo en RackCad.Plugin
 
 - **Estado:** propuesto
-- **Fecha:** 2026-07-19 (fecha de documentación retroactiva; no fecha de la decisión)
-- **Decisores:** por confirmar durante la revisión formal; registro retroactivo redactado por Codex
+- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
+- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto

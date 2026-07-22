@@ -1,8 +1,8 @@
-# ADR-0009: Código de producto sin dependencias NuGet
+# ADR-0012: Código de producto sin dependencias NuGet
 
 - **Estado:** propuesto
-- **Fecha:** 2026-07-19 (fecha de documentación retroactiva; no fecha de la decisión)
-- **Decisores:** por confirmar durante la revisión formal; registro retroactivo redactado por Codex
+- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
+- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -11,7 +11,10 @@ RackCad está compuesto por los cuatro proyectos bajo `src/`: `RackCad.Domain`, 
 `RackCad.UI` y `RackCad.Plugin`. Las dependencias externas de esos proyectos afectan la restauración,
 el despliegue y la carga del producto en el entorno de AutoCAD.
 
-Los cuatro proyectos de producto no declaran actualmente `PackageReference`. El proyecto
+Los cuatro proyectos de producto no declaran paquetes NuGet, salvo una única excepción documentada:
+`RackCad.Plugin` declara una `PackageReference` **condicional y compile-only** a `AutoCAD.NET`, activa
+solo al compilar con referencias NuGet para CI (`UseAutoCADNuGetReferences=true`) y gobernada por
+[ADR-0003](0003-referencias-autocad-para-ci.md); no cubre runtime ni distribución. El proyecto
 `RackCad.Tests` sí usa paquetes para el SDK de pruebas y xUnit, pero no forma parte de la aplicación
 distribuida. Como consecuencia visible de la política, la exportación XLSX construye directamente un
 paquete OOXML mediante APIs de la plataforma, sin agregar una biblioteca externa al producto.
@@ -30,10 +33,15 @@ Mantener sin paquetes NuGet a los proyectos que forman el producto distribuido:
 - `src/RackCad.UI/RackCad.UI.csproj`;
 - `src/RackCad.Plugin/RackCad.Plugin.csproj`.
 
+La única excepción vigente es la referencia condicional compile-only de `RackCad.Plugin` a
+`AutoCAD.NET`, con sus versiones transitivas fijadas y gobernada por
+[ADR-0003](0003-referencias-autocad-para-ci.md): no cubre runtime, distribución ni otros paquetes, y
+cualquier cambio material exige nueva revisión.
+
 Los proyectos de pruebas quedan fuera de esta restricción y pueden declarar los paquetes necesarios
 para ejecutar la infraestructura de validación.
 
-No agregar una dependencia NuGet al código de producto sin acuerdo explícito del propietario y un ADR
+No agregar otra dependencia NuGet al código de producto sin acuerdo explícito del propietario y un ADR
 que documente la excepción, su alcance, impacto de despliegue y criterio de mantenimiento. Esta regla
 no prohíbe NuGet para siempre: define el valor por defecto y el proceso para cambiarlo mediante una
 decisión arquitectónica expresa.
@@ -60,6 +68,7 @@ hubiera sido evaluada o aprobada.
 
 - [AGENTS.md — política de dependencias](../../AGENTS.md)
 - [Arquitectura vigente — producto sin paquetes NuGet](../ARCHITECTURE.md)
+- [ADR-0003: Referencias AutoCAD para compilación en CI (la excepción vigente)](0003-referencias-autocad-para-ci.md)
 - [Solución RackCad](../../RackCad.sln)
 - [Proyecto Domain](../../src/RackCad.Domain/RackCad.Domain.csproj)
 - [Proyecto Application](../../src/RackCad.Application/RackCad.Application.csproj)

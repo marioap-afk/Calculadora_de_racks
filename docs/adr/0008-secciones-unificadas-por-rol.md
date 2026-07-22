@@ -1,8 +1,8 @@
-# ADR-0005: Perfiles estructurales unificados en secciones.csv por rol
+# ADR-0008: Perfiles estructurales unificados en secciones.csv por rol
 
 - **Estado:** propuesto
-- **Fecha:** 2026-07-19 (fecha de documentación retroactiva; no fecha de la decisión)
-- **Decisores:** por confirmar durante la revisión formal; registro retroactivo redactado por Codex
+- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
+- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -37,7 +37,7 @@ fallback de compatibilidad cuando la fuente unificada no aporta filas; cuando `s
 filas, los archivos separados no son la fuente activa.
 
 Esta decisión define el modelo unificado de perfiles. El medio general CSV Excel-first pertenece a
-ADR-0004 y puede evolucionar separadamente del significado de `id` y `rol`.
+ADR-0007 y puede evolucionar separadamente del significado de `id` y `rol`.
 
 ## Alternativas consideradas
 
@@ -65,4 +65,4 @@ relacionales; este ADR no las atribuye a la decisión histórica.
 - [`SeccionCatalogEntry` y entradas tipadas](../../src/RackCad.Application/Catalogs/CatalogEntries.cs)
 - [`JsonRackCatalogProvider` — división por rol y fallback](../../src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs)
 - [Pruebas del catálogo unificado](../../tests/RackCad.Tests/SeccionesCatalogTests.cs)
-- [ADR-0004: Catálogos CSV Excel-first sin base de datos](0004-catalogos-csv-excel-first.md)
+- [ADR-0007: Catálogos CSV Excel-first sin base de datos](0007-catalogos-csv-excel-first.md)

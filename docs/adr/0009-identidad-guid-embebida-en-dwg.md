@@ -1,8 +1,8 @@
-# ADR-0006: Identidad de rack mediante GUID embebido en el DWG
+# ADR-0009: Identidad de rack mediante GUID embebido en el DWG
 
 - **Estado:** propuesto
-- **Fecha:** 2026-07-19 (fecha de documentación retroactiva; no fecha de la decisión)
-- **Decisores:** por confirmar durante la revisión formal; registro retroactivo redactado por Codex
+- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
+- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -68,7 +68,7 @@ se tomó la decisión.
 - [Historial preservado — identidad y round-trip](../archivo/transicion-2026-07/01-estado-actual-mvp.md)
 - [`RackEmbedDocument` y `RackEmbedStore`](../../src/RackCad.Application/Persistence/RackEmbedDocument.cs)
 - [`RackBlockData`](../../src/RackCad.Plugin/Systems/RackBlockData.cs)
-- [Consolidación del BOM total por identidad](../../src/RackCad.Plugin/RackFrameCommands.BomTotal.cs)
+- [Consolidación del BOM total por identidad](../../src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs)
 - [`RackListBuilder` — agrupación del listado por identidad](../../src/RackCad.Application/Persistence/RackListBuilder.cs)
 - [Pruebas del listado por rack lógico](../../tests/RackCad.Tests/RackListBuilderTests.cs)
-- [ADR-0007: Actualizar redibuja e Insertar agrega una vista ligada](0007-actualizar-redibuja-insertar-liga-vistas.md)
+- [ADR-0010: Actualizar redibuja e Insertar agrega una vista ligada](0010-actualizar-redibuja-insertar-liga-vistas.md)

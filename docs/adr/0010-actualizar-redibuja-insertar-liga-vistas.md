@@ -1,8 +1,8 @@
-# ADR-0007: Actualizar redibuja e Insertar agrega una vista ligada
+# ADR-0010: Actualizar redibuja e Insertar agrega una vista ligada
 
 - **Estado:** propuesto
-- **Fecha:** 2026-07-19 (fecha de documentación retroactiva; no fecha de la decisión)
-- **Decisores:** por confirmar durante la revisión formal; registro retroactivo redactado por Codex
+- **Fecha:** 2026-07-22 (fecha de documentación retroactiva; no es la fecha de la decisión original)
+- **Decisores:** el dueño del repositorio acepta o rechaza este registro; solo él puede hacerlo. Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
 
 ## Contexto
@@ -67,9 +67,9 @@ históricas ni quedan autorizadas por este ADR.
 - [Arquitectura vigente — identidad, vistas y round-trip](../ARCHITECTURE.md)
 - [Context Pack: ui-editors](../context-packs/ui-editors.md)
 - [Historial preservado — identidad y convención de botones](../archivo/transicion-2026-07/01-estado-actual-mvp.md)
-- [`RackFrameCommands` — búsqueda de vistas por GUID](../../src/RackCad.Plugin/RackFrameCommands.cs)
-- [Edición del selectivo](../../src/RackCad.Plugin/RackFrameCommands.Selective.cs)
-- [Edición del dinámico](../../src/RackCad.Plugin/RackFrameCommands.Dynamic.cs)
-- [Edición de cabecera](../../src/RackCad.Plugin/RackFrameCommands.Cabecera.cs)
-- [Edición de FlowBed](../../src/RackCad.Plugin/RackFrameCommands.FlowBed.cs)
-- [ADR-0006: Identidad de rack mediante GUID embebido en el DWG](0006-identidad-guid-embebida-en-dwg.md)
+- [`RackBlockFinder` — búsqueda de vistas por GUID (`ScanEnvelopes`)](../../src/RackCad.Plugin/RackBlockFinder.cs)
+- [Edición del selectivo](../../src/RackCad.Plugin/RackSelectivoCommands.cs)
+- [Edición del dinámico](../../src/RackCad.Plugin/RackDinamicoCommands.cs)
+- [Edición de cabecera](../../src/RackCad.Plugin/RackCabeceraCommands.cs)
+- [Edición de la cama de rodamiento (FlowBed)](../../src/RackCad.Plugin/RackCamaCommands.cs)
+- [ADR-0009: Identidad de rack mediante GUID embebido en el DWG](0009-identidad-guid-embebida-en-dwg.md)
