@@ -103,5 +103,41 @@ namespace RackCad.UI.Tests
             Assert.Null(absentCell);       // no check box at an absent slot
             Assert.NotNull(presentCell);
         }
+
+        [Fact]
+        public void CellCount_CountsPresentCellsForJagged_AndStaysRectangularCountForRectangular()
+        {
+            var jagged = SelectionMatrixModel.WithJaggedColumns(Jagged, unselected: null);
+            Assert.Equal(6, jagged.CellCount);     // 2 + 3 + 1 present, NOT the 9 of the bounding rectangle
+            Assert.Equal(3, jagged.AbsentCount);
+
+            var rect = new SelectionMatrixModel(3, 2);
+            Assert.Equal(6, rect.CellCount);       // rectangular: unchanged from I-14
+            Assert.Equal(0, rect.AbsentCount);
+        }
+
+        [Fact]
+        public void Toggle_OnAbsentCell_IsNoOp_ReturnsFalse_AndRaisesNoEvent()
+        {
+            var model = SelectionMatrixModel.WithJaggedColumns(Jagged, unselected: null);
+            var events = 0;
+            model.CellChanged += (_, __) => events++;
+
+            Assert.False(model.Toggle(0, 2)); // (0,2) absent -> not selectable, no phantom change
+            Assert.False(model.Toggle(2, 1)); // absent
+            Assert.Equal(0, events);
+            Assert.False(model.IsSelected(0, 2)); // an absent cell is not selected
+            Assert.Empty(model.UnselectedCells());
+        }
+
+        [Fact]
+        public void Toggle_OnPresentCell_TogglesAndReportsTheNewState()
+        {
+            var model = SelectionMatrixModel.WithJaggedColumns(Jagged, unselected: null);
+            Assert.False(model.Toggle(0, 0)); // present, was on -> off (returns the new state)
+            Assert.Equal(new SelectionMatrixCell(0, 0), Assert.Single(model.UnselectedCells()));
+            Assert.True(model.Toggle(0, 0));  // off -> on
+            Assert.Empty(model.UnselectedCells());
+        }
     }
 }

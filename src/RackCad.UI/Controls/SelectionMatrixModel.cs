@@ -95,7 +95,12 @@ namespace RackCad.UI.Controls
 
         public int Rows { get; }
 
-        public int CellCount => Columns * Rows;
+        /// <summary>The number of PRESENT (selectable) cells: the full rectangle minus the absent cells of a jagged
+        /// grid. Equal to <see cref="Columns"/> × <see cref="Rows"/> for a rectangular grid (no absent cells).</summary>
+        public int CellCount => Columns * Rows - absent.Count;
+
+        /// <summary>The number of absent (non-existent) cells; 0 for a rectangular grid.</summary>
+        public int AbsentCount => absent.Count;
 
         /// <summary>True when (column, row) does not exist in a jagged grid (a column shorter than the tallest): it is
         /// never drawn, never selectable, and excluded from the on/off queries. Always false for a rectangular grid.</summary>
@@ -114,7 +119,7 @@ namespace RackCad.UI.Controls
         public bool IsSelected(int column, int row)
         {
             EnsureInRange(column, row);
-            return selected[column, row];
+            return !IsAbsent(column, row) && selected[column, row]; // an absent cell is not selectable -> not selected
         }
 
         public void SetSelected(int column, int row, bool value)
@@ -131,7 +136,13 @@ namespace RackCad.UI.Controls
 
         public bool Toggle(int column, int row)
         {
-            var next = !IsSelected(column, row);
+            EnsureInRange(column, row);
+            if (IsAbsent(column, row))
+            {
+                return false; // not selectable: no toggle, no CellChanged, no phantom change reported
+            }
+
+            var next = !selected[column, row];
             SetSelected(column, row, next);
             return next;
         }
