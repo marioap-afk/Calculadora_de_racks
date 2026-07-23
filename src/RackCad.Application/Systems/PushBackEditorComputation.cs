@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using RackCad.Application.Bom;
 using RackCad.Domain.Systems;
 
@@ -22,7 +23,8 @@ namespace RackCad.Application.Systems
             DynamicSystemPlan lateral,
             DynamicSystemPlan entradaSalida,
             DynamicSystemPlan posterior,
-            DynamicSystemPlan planta)
+            DynamicSystemPlan planta,
+            IReadOnlyList<DynamicLateralCorte> lateralCortes)
         {
             IsValid = isValid;
             Error = error;
@@ -33,6 +35,7 @@ namespace RackCad.Application.Systems
             FrontalEntradaSalida = entradaSalida;
             FrontalPosterior = posterior;
             PlantaPlan = planta;
+            LateralCortes = lateralCortes ?? new List<DynamicLateralCorte>();
         }
 
         public bool IsValid { get; }
@@ -57,6 +60,10 @@ namespace RackCad.Application.Systems
 
         public DynamicSystemPlan PlantaPlan { get; }
 
+        /// <summary>The lateral section at each transverse post (post index + its per-post plan), computed ONCE by the
+        /// assembler. The window's lateral preview draws the selected corte's plan without re-invoking any builder.</summary>
+        public IReadOnlyList<DynamicLateralCorte> LateralCortes { get; }
+
         public static PushBackEditorComputation Success(
             PushBackDesign design,
             PushBackSystem system,
@@ -64,10 +71,11 @@ namespace RackCad.Application.Systems
             DynamicSystemPlan lateral,
             DynamicSystemPlan entradaSalida,
             DynamicSystemPlan posterior,
-            DynamicSystemPlan planta)
-            => new PushBackEditorComputation(true, null, design, system, bom, lateral, entradaSalida, posterior, planta);
+            DynamicSystemPlan planta,
+            IReadOnlyList<DynamicLateralCorte> lateralCortes)
+            => new PushBackEditorComputation(true, null, design, system, bom, lateral, entradaSalida, posterior, planta, lateralCortes);
 
         public static PushBackEditorComputation Failure(string error)
-            => new PushBackEditorComputation(false, error, null, null, null, null, null, null, null);
+            => new PushBackEditorComputation(false, error, null, null, null, null, null, null, null, new List<DynamicLateralCorte>());
     }
 }
