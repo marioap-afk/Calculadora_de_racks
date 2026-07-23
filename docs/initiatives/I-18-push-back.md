@@ -107,8 +107,14 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
     Role/PieceId lo dinámico, agrega Push Back, reagrupa con `HeaderInstanceGrouper`, sin mutar el Dinámico);
     `PushBackBomBuilder` (1 IN/OUT + 1 TROQUEL_REDONDO por celda, cama opaca full-span, topes; sin 2º IN/OUT, sin −4,
     sin frenos/guías, sin doble conteo); topes posteriores `LARGUERO_ESCALON_TOPE_DE_3` por celda activa; golden de
-    las 5 vistas. 44 pruebas Push Back; suite **1057 verde**; UI/Plugin 0 err; validador I-19 sin errores nuevos.
-    Golden del Dinámico **intactos**. La validación **visual** final en AutoCAD corresponde a **I-18b**.
+    las 5 vistas. Golden del Dinámico **intactos**. La validación **visual** final en AutoCAD corresponde a **I-18b**.
+  - **Corrida correctiva (6 hallazgos de revisión):** (1) frontal posterior localiza el nivel con los niveles **del
+    frente** (no la proyección global), con tolerancia explícita y sin fallback silencioso; (2) planta con **peralte
+    envolvente** (`PushBackHighEndBeamGeometry.PlantaPeralte`); (3) BOM IN/OUT bajo **por celda**
+    (`DynamicRackLevelGeometry.At`); (4) **autoridad única** de seguridad baja (resolver `Side=Left`; frontal posterior
+    sin seguridad normal; BOM low-only sin doble conteo; GUIA nunca); (5) tope canónico `SelectiveTopePlacement.SnapY`
+    (sube 8" y ajusta, SAQUE+LONGITUD); (6) **golden fijos** (SHA-256 de firma detallada) para las 5 vistas y el BOM.
+    59 pruebas Push Back; suite **1065 verde**; UI/Plugin 0 err; validador I-19 sin errores nuevos.
 - **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD.
 - **I-18c**: guía y cierre.
 
