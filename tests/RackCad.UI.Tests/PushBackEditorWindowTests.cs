@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
@@ -198,6 +199,81 @@ namespace RackCad.UI.Tests
             Assert.Equal(4, r.rowsAfterAdd);      // the matrix grew a row
         }
 
+        // ---- Multi-selection via the visible cell-selection matrix --------------------------------------------
+
+        [Fact]
+        public void CellSelection_BuildThree_ApplyToSelection_ChangesExactlyThoseCells()
+        {
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                w.LoadExisting(SampleDesign(front0Levels: 3, front1Levels: 3), "G", "N"); // 2 fronts x 3 levels
+                w.CellSelectionModel.SetSelected(0, 2, true); // check (0,2) -> add to the edit selection
+                w.CellSelectionModel.SetSelected(1, 1, true); // check (1,1) -> add; (1,1) becomes primary
+                var count = w.State.Structure.SelectedCellCount;
+                var set = w.State.Structure.IsSelected(0, 0) && w.State.Structure.IsSelected(0, 2) && w.State.Structure.IsSelected(1, 1);
+                var primary = w.State.Structure.SelectedFrontIndex == 1 && w.State.Structure.SelectedLevelIndex == 1;
+
+                ((ComboBox)w.FindName("RearPeralteBox")).SelectedItem = 6.0;
+                ((System.Windows.Controls.CheckBox)w.FindName("RearTopeActiveCheck")).IsChecked = false;
+                EditorWindowTestSupport.SetText(w, "CellPalletFrontBox", "49");
+                EditorWindowTestSupport.ClickNamed(w, "ApplySelectedButton");
+
+                bool Changed(int f, int l) => Math.Abs(w.State.Cell(f, l).HighEndBeamPeralte - 6.0) < 1e-6 && !w.State.Cell(f, l).RearTopeEnabled;
+                var changed = Changed(0, 0) && Changed(0, 2) && Changed(1, 1);
+                var intact = w.State.Cell(0, 1).RearTopeEnabled && Math.Abs(w.State.Cell(0, 1).HighEndBeamPeralte - 6.0) > 1e-6
+                             && w.State.Cell(1, 0).RearTopeEnabled && w.State.Cell(1, 2).RearTopeEnabled;
+                return (count, set, primary, changed, intact);
+            });
+
+            Assert.Equal(3, r.count);
+            Assert.True(r.set);
+            Assert.True(r.primary);   // the last checked cell is primary
+            Assert.True(r.changed);   // exactly the three selected cells changed
+            Assert.True(r.intact);    // the others are untouched
+        }
+
+        [Fact]
+        public void CellSelection_CannotLeaveSelectionEmpty_AndSkipsAbsentCells()
+        {
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                w.LoadExisting(SampleDesign(front0Levels: 3, front1Levels: 2), "G", "N"); // (1,2) is absent
+                var absent = w.CellSelectionModel.IsAbsent(1, 2);
+
+                // Only (0,0) is selected after load; unchecking it must be refused (never empty).
+                w.CellSelectionModel.SetSelected(0, 0, false);
+                var stillSelected = w.State.Structure.IsSelected(0, 0) && w.State.Structure.SelectedCellCount == 1;
+                var modelReverted = w.CellSelectionModel.IsSelected(0, 0);
+                return (absent, stillSelected, modelReverted);
+            });
+
+            Assert.True(r.absent);          // a level that does not exist is an absent cell
+            Assert.True(r.stillSelected);   // the last cell cannot be unselected
+            Assert.True(r.modelReverted);   // and the visual uncheck was reverted
+        }
+
+        [Fact]
+        public void SelectingViaFrontLevelCombos_ReplacesSelectionWithASingleCell_AndSyncsTheMatrix()
+        {
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                w.LoadExisting(SampleDesign(front0Levels: 3, front1Levels: 3), "G", "N");
+                w.CellSelectionModel.SetSelected(1, 1, true); // multi-selection {(0,0),(1,1)}, primary now front 1
+                Assert.Equal(2, w.State.Structure.SelectedCellCount);
+
+                ((ComboBox)w.FindName("SelectedFrontBox")).SelectedIndex = 0; // combo -> single cell back on front 0
+                var single = w.State.Structure.SelectedCellCount == 1;
+                var matrixSingle = w.CellSelectionModel.SelectedCount == 1;
+                return (single, matrixSingle);
+            });
+
+            Assert.True(r.Item1);   // the combo replaced the selection with one cell
+            Assert.True(r.Item2);   // and the visible matrix synced to a single checked cell
+        }
+
         // ---- 10. Apply by scope --------------------------------------------------------------------------------
 
         [Fact]
@@ -258,28 +334,128 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void InvalidRecompute_DoesNotReplaceTheLastValidModel_AndInsertGatesOnValidity()
+        public void InvalidField_KeepsLastModel_DisablesActions_BlocksInsert_ThenCorrectionReEnables()
         {
             var r = StaTestRunner.Run(() =>
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
-                var valid = w.LastComputation;
+                w.LoadExisting(SampleDesign(), "GUID-VAL", "PB"); // existing rack -> Update is also meaningfully gated
+                var validModel = w.LastComputation;
                 var validSystem = w.Session.System;
+                var startedValid = w.CurrentInputsAreValid;
 
-                EditorWindowTestSupport.SetText(w, "DepthBox", "0"); // a zero pallet depth makes the build throw
-                EditorWindowTestSupport.ClickNamed(w, "ApplyCellButton"); // forces a recompute
-                var keptSameModel = ReferenceEquals(valid, w.LastComputation);
-                var keptSameSystem = ReferenceEquals(validSystem, w.Session.System);
+                // A zero pallet depth is invalid (> 0). Type it and tab out -> the recompute is blocked.
+                TypeAndCommit(w, "DepthBox", "0");
 
-                // A window that can never draw (opened outside AutoCAD) keeps Insert disabled.
-                var disabledWindow = new RackPushBackSystemWindow(canInsertInAutoCad: false);
-                var insertDisabled = !Btn(disabledWindow, "InsertButton").IsEnabled;
-                return (keptSameModel, keptSameSystem, insertDisabled);
+                var nowInvalid = !w.CurrentInputsAreValid;
+                var keptModel = ReferenceEquals(validModel, w.LastComputation);   // last valid model NOT replaced
+                var keptSystem = ReferenceEquals(validSystem, w.Session.System);
+                var actionsDisabled = !Btn(w, "InsertButton").IsEnabled && !Btn(w, "UpdateButton").IsEnabled
+                                      && !Btn(w, "BomButton").IsEnabled && !Btn(w, "SaveLibraryButton").IsEnabled;
+                var libraryNull = w.BuildLibraryProjectForTest() == null; // null while the current inputs are invalid
+
+                EditorWindowTestSupport.ClickNamed(w, "InsertButton"); // attempt to insert -> no request produced
+                var noRequest = !w.InsertRequested && w.InsertionRequest == null;
+
+                // Correct the value -> re-validates and a NEW model is used.
+                TypeAndCommit(w, "DepthBox", "48");
+                var reValid = w.CurrentInputsAreValid;
+                var newModelUsed = w.LastComputation != null && w.LastComputation.IsValid && !ReferenceEquals(validModel, w.LastComputation);
+                var actionsReEnabled = Btn(w, "InsertButton").IsEnabled && Btn(w, "UpdateButton").IsEnabled
+                                       && Btn(w, "BomButton").IsEnabled && Btn(w, "SaveLibraryButton").IsEnabled;
+
+                return (startedValid, nowInvalid, keptModel, keptSystem, actionsDisabled, libraryNull, noRequest, reValid, newModelUsed, actionsReEnabled);
             });
 
-            Assert.True(r.keptSameModel);    // the invalid build did not replace the last valid computation
-            Assert.True(r.keptSameSystem);
-            Assert.True(r.insertDisabled);
+            Assert.True(r.startedValid);
+            Assert.True(r.nowInvalid);
+            Assert.True(r.keptModel);
+            Assert.True(r.keptSystem);
+            Assert.True(r.actionsDisabled);
+            Assert.True(r.libraryNull);
+            Assert.True(r.noRequest);
+            Assert.True(r.reValid);
+            Assert.True(r.newModelUsed);
+            Assert.True(r.actionsReEnabled);
+        }
+
+        [Fact]
+        public void NumericFields_LocalizedParsing_Range_AndOptional()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                var depth = (NumericField)w.FindName("DepthBox");                    // must be > 0
+                var overrideBox = (NumericField)w.FindName("CellBeamLengthOverrideBox"); // optional, > 0
+
+                depth.Text = "48.5";
+                Assert.False(depth.HasError);
+                Assert.Equal(48.5, depth.Value.Value, 4);   // decimal with a point
+
+                depth.Text = "48,5";
+                Assert.False(depth.HasError);
+                Assert.Equal(48.5, depth.Value.Value, 4);   // decimal with a comma (localized, no grouping)
+
+                depth.Text = "abc";
+                Assert.True(depth.HasError);
+                Assert.Null(depth.Value);                   // not a number
+
+                depth.Text = "0";
+                Assert.True(depth.HasError);                // out of range (must be > 0)
+
+                depth.Text = "48";
+                Assert.False(depth.HasError);               // corrected
+
+                overrideBox.Text = string.Empty;
+                Assert.False(overrideBox.HasError);
+                Assert.Null(overrideBox.Value);             // optional blank = auto (no override)
+
+                overrideBox.Text = "-1";
+                Assert.True(overrideBox.HasError);          // optional, but still must be > 0
+            });
+        }
+
+        private static void TypeAndCommit(RackPushBackSystemWindow window, string name, string text)
+        {
+            var field = (NumericField)window.FindName(name);
+            field.Text = text;
+            field.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, field)); // "typed + tabbed out" -> recompute
+        }
+
+        // ---- Lateral preview follows the chosen corte ---------------------------------------------------------
+
+        [Fact]
+        public void LateralPreview_UsesTheSelectedCorte_AndInsertSectionMatches()
+        {
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
+                w.LoadDesignForNew(SampleDesign(), "PB", null); // a multi-front system: distinct lateral cortes
+                ((ComboBox)w.FindName("ViewBox")).SelectedIndex = 0; // lateral
+                var cortes = w.LastComputation.LateralCortes.Count;
+
+                ((ComboBox)w.FindName("LateralSectionBox")).SelectedIndex = 0;
+                var sig1 = PlanSignature(w.CurrentPreviewPlan);
+                ((ComboBox)w.FindName("LateralSectionBox")).SelectedIndex = 1;
+                var sig2 = PlanSignature(w.CurrentPreviewPlan);
+
+                EditorWindowTestSupport.ClickNamed(w, "InsertButton"); // insert the SHOWN corte (index 1)
+                return (cortes, sig1, sig2, w.InsertView, w.InsertSection);
+            });
+
+            Assert.True(r.cortes >= 2);
+            Assert.NotEqual(r.sig1, r.sig2);                          // the preview plan changed with the corte
+            Assert.Equal(RackEmbedDocument.ViewLateral, r.InsertView);
+            Assert.Equal(1, r.InsertSection);                        // InsertSection matches the shown corte
+        }
+
+        private static string PlanSignature(DynamicSystemPlan plan)
+        {
+            if (plan == null) return "null";
+            var instances = plan.Headers.SelectMany(g => g.Instances).Concat(plan.LooseInstances);
+            return string.Join("|", instances
+                .Select(i => string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}@{1:F2},{2:F2}", i.PieceId, i.Insertion.X, i.Insertion.Y))
+                .OrderBy(s => s, StringComparer.Ordinal));
         }
 
         // ---- 14. View + section selector ----------------------------------------------------------------------
