@@ -4,7 +4,7 @@ using RackCad.Domain.Systems;
 
 namespace RackCad.UI.Editor
 {
-    // The five editor modules the menu and library consume (initiative I-15). Each ADAPTS an existing editor window
+    // The six editor modules the menu and library consume (initiative I-15; Push Back added by I-18). Each ADAPTS an existing editor window
     // verbatim — no window is rewritten this iteration (that is I-20/I-21). Every Open* method reproduces the exact
     // gestures of the corresponding old RackMainMenuWindow handler, including the pre-existing asymmetries (e.g. the
     // menu's brand-new selective did NOT set dimension styles, while its library path did). The pure metadata
@@ -85,6 +85,44 @@ namespace RackCad.UI.Editor
                     window.SystemToInsert, window.DesignToInsert, window.RackId, window.RackName,
                     window.InsertView, window.InsertSection, window.SourceProjectToInsert) // null for a new design; the library wrapper metadata for a library open (I-11)
                 : null;
+    }
+
+    /// <summary>Push Back (<see cref="RackSystemKind.PushBack"/>) → <see cref="RackPushBackSystemWindow"/>, initiative I-18.
+    /// Unlike the older modules, the window and its <c>RackEditorSession</c> already own the insert/update contract, so the
+    /// module returns the window's <c>InsertionRequest</c> verbatim — it never rebuilds the <see cref="PushBackInsertionRequest"/>.</summary>
+    public sealed class PushBackEditorModule : IRackEditorModule
+    {
+        public RackSystemKind Kind => RackSystemKind.PushBack;
+
+        public bool CanInsert => true;
+
+        public bool IsLibraryFallback => false;
+
+        public string OpenFailureMessage => "No se pudo abrir el sistema Push Back: ";
+
+        public bool MatchesLibrary(RackDesignLibraryEntry entry, RackProject project)
+            => entry != null && entry.Kind == RackSystemKind.PushBack && project?.PushBackDesign != null;
+
+        public RackInsertionRequest OpenForNew(RackEditorLaunchContext context)
+        {
+            var window = new RackPushBackSystemWindow(context.CanInsertInAutoCad) { Owner = context.Owner };
+            window.ShowDialog();
+            return Build(window);
+        }
+
+        public RackInsertionRequest OpenFromLibrary(RackProject project, RackDesignLibraryEntry entry, RackEditorLaunchContext context)
+        {
+            var window = new RackPushBackSystemWindow(context.CanInsertInAutoCad) { Owner = context.Owner };
+            // Pass the source project so a re-save preserves its wrapper metadata (I-11); a fresh GUID is minted on insert
+            // (the library entry's GUID is never reused as the new rack's identity).
+            window.LoadDesignForNew(project.PushBackDesign, entry.Name, project);
+            window.ShowDialog();
+            return Build(window);
+        }
+
+        // The window + its RackEditorSession are the authority for the payload: return what the session built, never rebuild it.
+        private static RackInsertionRequest Build(RackPushBackSystemWindow window)
+            => window.InsertRequested ? window.InsertionRequest : null;
     }
 
     /// <summary>Standalone cabecera (<see cref="RackSystemKind.Selective"/>) → <see cref="RackFrameConfiguratorWindow"/>.
