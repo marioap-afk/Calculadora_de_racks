@@ -116,10 +116,11 @@ namespace RackCad.Tests
 
             foreach (var tope in topes)
             {
-                // Several levels share the same X; the tope's source beam is the one whose canonical SnapY matches.
+                // Several levels share the same X; the tope's source beam is the one whose canonical rear-tope Y matches
+                // (PB-VAL-03: the Selective rise-and-snap PLUS the Owner-validated 4" extra rise).
                 var sameX = beams.Where(b => Math.Abs(b.Insertion.X - tope.Insertion.X) < 1e-6).ToList();
                 var source = sameX.FirstOrDefault(b =>
-                    Math.Abs(SelectiveTopePlacement.SnapY(troquelMateY, b.Insertion.Y, SelectiveRackDefaults.TroquelPaso) - tope.Insertion.Y) < 1e-4);
+                    Math.Abs(PushBackRearTopeBuilder.ElevationY(troquelMateY, b.Insertion.Y) - tope.Insertion.Y) < 1e-4);
                 Assert.NotNull(source);                                          // Y is exactly the canonical SnapY of a real rear beam
                 Assert.True(tope.Insertion.Y > source.Insertion.Y, "the tope must RISE above its larguero, not sit on it");
                 Assert.True(tope.DynamicParameters.ContainsKey("SAQUE"));

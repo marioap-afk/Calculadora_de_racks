@@ -84,10 +84,14 @@ namespace RackCad.Tests
         // FIXED pins (SHA-256 of the detailed signature). Regenerate ONLY on an intended geometry/BOM change.
         private static readonly IReadOnlyDictionary<string, string> Expected = new Dictionary<string, string>
         {
-            ["lateral"] = "FB9C83F61ED08953C646337421621E36D31757CF0414B0571C6739F47679246E",
-            ["lateral-corte0"] = "FB9C83F61ED08953C646337421621E36D31757CF0414B0571C6739F47679246E",
+            // I-18b round 1 of the Owner's manual-gate rejection: the three pins carrying the REAR TOPE moved on purpose
+            // (PB-VAL-02 orientation + PB-VAL-03 the exact 4" rise). frontal-entrada (no rear tope) and planta (top view,
+            // no elevation, keeps the beam's plan mirror) are UNCHANGED, which is what bounds the correction.
+            // Previous: lateral/lateral-corte0 FB9C83F6…, frontal-posterior A2FC3231…
+            ["lateral"] = "E3E3EA9FD073D26D35C93FC7C5E3E3391730340CF35940B529F57AC472B78455",
+            ["lateral-corte0"] = "E3E3EA9FD073D26D35C93FC7C5E3E3391730340CF35940B529F57AC472B78455",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
-            ["frontal-posterior"] = "A2FC3231E53ACB1EE4678EF1D7D5440F1C4539A13D82345AB8526B8AC9645F24",
+            ["frontal-posterior"] = "67511108F6F2CD8A2799A962F0C20A49044D90BAFCDB2E3B0B0C3E5EE5C37E80",
             ["planta"] = "33A87C650DF93AAF45E1F600B348E515E4D1379510E9095A4C6564E3F766E82C",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front

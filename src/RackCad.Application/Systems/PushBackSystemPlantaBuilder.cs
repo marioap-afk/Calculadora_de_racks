@@ -68,7 +68,8 @@ namespace RackCad.Application.Systems
                         : (double?)null;
                     result.Add(SelectiveTopePlacement.Tope(
                         PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
-                        instance.Insertion.X, instance.Insertion.Y, saque, longitud, mirroredX: instance.MirroredX));
+                        instance.Insertion.X, instance.Insertion.Y, saque, longitud,
+                        mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
                 }
             }
 

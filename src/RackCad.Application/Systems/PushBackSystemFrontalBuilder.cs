@@ -87,13 +87,14 @@ namespace RackCad.Application.Systems
                     // Rear tope only for a MATCHED, active cell, placed by the canonical Selective rule (rise + snap).
                     if (!string.IsNullOrWhiteSpace(topeBlock) && level >= 0 && rearTope.At(frontIndex, level))
                     {
-                        var topeY = SelectiveTopePlacement.SnapY(troquelMateY, instance.Insertion.Y, SelectiveRackDefaults.TroquelPaso);
+                        var topeY = PushBackRearTopeBuilder.ElevationY(troquelMateY, instance.Insertion.Y);
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
                         result.Add(SelectiveTopePlacement.Tope(
                             PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
-                            instance.Insertion.X, topeY, saque, longitud, mirroredX: instance.MirroredX));
+                            instance.Insertion.X, topeY, saque, longitud,
+                            mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
                     }
 
                     continue;
