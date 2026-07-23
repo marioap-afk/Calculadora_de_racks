@@ -96,8 +96,16 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
 
 ## 8. Fases
 
-- **PB-0** (Owner): bloques + catálogo + decisiones funcionales — [decisions/I-18.md](../automation/decisions/I-18.md).
-- **I-18a** (esta entrega): núcleo puro + plan + BOM + persistencia + pruebas golden/round-trip.
+- **PB-0** (Owner): bloques + catálogo + decisiones funcionales — [decisions/I-18.md](../automation/decisions/I-18.md). **Resuelto.**
+- **I-18a** (esta entrega, por incrementos): núcleo puro + plan + BOM + persistencia + pruebas golden/round-trip.
+  - **Hecho:** núcleo puro (diseño/resolver/cama/persistencia) y correcciones — **haz alto por frente×nivel**
+    (`PushBackFrontConfig`, default 3.5 explícito), **persistencia** con round-trip por dominio + no-degradación
+    (`FromDomain(design, source)`), y **rechazo de GUIA** en el resolver. 23 pruebas; suite 1036 verde.
+  - **Pendiente (items 4-7):** geometría propia (end beams bajo IN/OUT + alto TROQUEL_REDONDO, snap 2", eje de
+    cama TROQUEL_CAMA→INICIO_IZQ/DER, intermedios tangentes, cama full-span sin frenos) + **composición de caja
+    negra** de los `SystemPlan` lateral/frontal/planta (quitar por Role/PieceId lo dinámico específico, agregar lo
+    Push Back, reagrupar con `HeaderInstanceGrouper`) + `PushBackBomBuilder` + golden. Diseño accionable en el
+    informe de la sesión y en `state/I-18.yml`. **I-18a NO se marca completa hasta cubrirlos.**
 - **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD.
 - **I-18c**: guía y cierre.
 
