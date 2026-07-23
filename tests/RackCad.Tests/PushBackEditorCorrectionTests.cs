@@ -252,6 +252,31 @@ namespace RackCad.Tests
             Assert.Same(baselineBefore, state.WorkingBaseline);   // a failed compute never replaces the baseline
         }
 
+        [Fact]
+        public void CustomConfigHeader_LoadThenBuild_PreservesSemanticConfig_AsIndependentInstance()
+        {
+            // A REALLY custom cabecera: UseCalculatedHeaderConfiguration = false + a semantically modified HeaderConfiguration
+            // (a non-default PanelClear). Load -> build with no change must preserve it verbatim, as an independent instance;
+            // mutating the result must not touch the source. The snapshot/resolve baseline carries it (CloneHeader).
+            var design = CustomConfigDesign(out var marker);
+            var assembler = Assembler();
+            var state = new PushBackEditorState();
+            var inputs = state.LoadFromDesign(design, assembler.Resolver);
+
+            var comp = assembler.Build(state, inputs);
+            Assert.True(comp.IsValid, comp.Error);
+
+            var rebuilt = comp.Design.Structure.Modules.FirstOrDefault(
+                m => m.IsHeader && !m.UseCalculatedHeaderConfiguration && m.HeaderConfiguration != null);
+            Assert.NotNull(rebuilt);
+            Assert.Equal(marker, rebuilt.HeaderConfiguration.PanelClear, 4);   // semantic config preserved
+
+            var source = design.Structure.Modules.First(m => m.IsHeader && !m.UseCalculatedHeaderConfiguration);
+            Assert.NotSame(source.HeaderConfiguration, rebuilt.HeaderConfiguration);   // independent instance
+            rebuilt.HeaderConfiguration.PanelClear = 12.0;                             // mutate the result
+            Assert.Equal(marker, source.HeaderConfiguration.PanelClear, 4);           // source untouched
+        }
+
         // ===== 4. Full selection snapshot ======================================================================
 
         [Fact]
@@ -336,6 +361,22 @@ namespace RackCad.Tests
             header.IsManualOverride = true;
             header.IsCalculated = false;
             header.UseCalculatedHeaderConfiguration = true;   // custom FONDO, config still regenerated from it
+
+            return resolver.Snapshot(system);
+        }
+
+        /// <summary>A Push Back design whose first header is a REALLY custom cabecera: UseCalculatedHeaderConfiguration = false
+        /// with a semantically modified HeaderConfiguration (a non-default <c>PanelClear</c>), so a height change must not touch
+        /// it and only a faithful clone preserves it.</summary>
+        private static PushBackDesign CustomConfigDesign(out double marker)
+        {
+            marker = 40.0;   // non-default PanelClear (the frame default is 44)
+            var resolver = new PushBackResolver(Catalog);
+            var system = resolver.Resolve(new PushBackDesign { Structure = SingleFrontStructure(palletsDeep: 6, loadLevels: 2) });
+
+            var header = system.Structure.Modules.First(module => module.IsHeader && module.AssociatedFrameConfiguration != null);
+            header.UseCalculatedHeaderConfiguration = false;              // fully custom: recompute must not regenerate it
+            header.AssociatedFrameConfiguration.PanelClear = marker;      // a semantic change vs the standard config
 
             return resolver.Snapshot(system);
         }

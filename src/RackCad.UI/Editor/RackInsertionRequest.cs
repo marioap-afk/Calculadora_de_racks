@@ -109,6 +109,46 @@ namespace RackCad.UI.Editor
     }
 
     /// <summary>
+    /// Insert a Push Back view (<see cref="RackSystemKind.PushBack"/>), initiative I-18. Carries exactly the values the
+    /// Push Back editor produces (the resolved system + its editable design + the identity + the normalized view/section +
+    /// the I-11 source-metadata project); a null <see cref="View"/> with <see cref="Section"/> = -1 is the in-place update.
+    /// Pure UI data — no drawing logic; the Plugin host (a later increment) dispatches by <see cref="Kind"/>.
+    /// </summary>
+    public sealed class PushBackInsertionRequest : RackInsertionRequest
+    {
+        public PushBackInsertionRequest(
+            PushBackSystem system, PushBackDesign design, string rackId, string rackName, string view, int section,
+            RackProject sourceProject)
+        {
+            System = system; // see HeaderInsertionRequest: the Plugin's Draw* guards null, preserving "null → no draw"
+            Design = design;
+            RackId = rackId;
+            RackName = rackName;
+            View = view;
+            Section = section;
+            SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+        }
+
+        public override RackSystemKind Kind => RackSystemKind.PushBack;
+
+        public PushBackSystem System { get; }
+
+        public PushBackDesign Design { get; }
+
+        public string RackId { get; }
+
+        public string RackName { get; }
+
+        /// <summary>The requested view, or null on an update (in-place redraw of every existing view).</summary>
+        public string View { get; }
+
+        /// <summary>The requested section (post index for lateral, (int)PushBackFrontalEnd for frontal, -1 for planta/update).</summary>
+        public int Section { get; }
+
+        public RackProject SourceProject { get; }
+    }
+
+    /// <summary>
     /// Insert a selective-rack view (<see cref="RackSystemKind.SelectiveRack"/>). Mirrors the old
     /// <c>RackSelectivoCommands.DrawSelectiveView(View, System, Design, RackId, RackName)</c>.
     /// </summary>
