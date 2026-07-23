@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace RackCad.Tests
@@ -51,6 +54,30 @@ namespace RackCad.Tests
         private static string Menu => ReadPluginSource("RackMenuCommands.cs");
         private static string BomTotal => ReadPluginSource("RackInventarioCommands.BomTotal.cs");
         private static string Restamp => ReadPluginSource("RackEnvelopeRestamp.cs");
+        private static string Duplicar => ReadPluginSource("RackDuplicarCommands.cs");
+        private static string Layout => ReadPluginSource("RackLayoutCommands.cs");
+
+        /// <summary>Every <c>[CommandMethod("NAME")]</c> declared anywhere in the Plugin (excluding bin/obj).</summary>
+        private static IReadOnlyList<string> AllCommandMethods()
+        {
+            var pluginDir = Path.Combine(RepoRoot().FullName, "src", "RackCad.Plugin");
+            var names = new List<string>();
+            foreach (var file in Directory.EnumerateFiles(pluginDir, "*.cs", SearchOption.AllDirectories))
+            {
+                if (file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
+                    || file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                foreach (Match match in Regex.Matches(File.ReadAllText(file), "\\[CommandMethod\\(\"([^\"]+)\""))
+                {
+                    names.Add(match.Groups[1].Value);
+                }
+            }
+
+            return names;
+        }
 
         // ---- Handler ----
 
@@ -242,6 +269,61 @@ namespace RackCad.Tests
         {
             Assert.Contains("KindHandlerRegistry.Default.TryGetIgnoreCase(", Restamp);
             Assert.DoesNotContain("PushBack", Restamp);
+        }
+
+        [Fact]
+        public void CopyAndLayout_AcceptPushBackViaIgnoreCaseLookup_WithNoPerKindBranch()
+        {
+            foreach (var src in new[] { Duplicar, Layout })
+            {
+                Assert.Contains("KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _)", src);
+                Assert.DoesNotContain("KindPushBack", src);        // no hard-coded per-kind arm
+                Assert.DoesNotContain("PushBackKindHandler", src);
+            }
+        }
+
+        // ---- Increment 5a: end-to-end chain closure ----
+
+        [Fact]
+        public void EditPushBack_RegenAndFinalMessage_ShareOneChangedInPlaceAuthority_IncludingErasedCuts()
+        {
+            // An edit that ONLY erased stale cuts still changed the drawing: the regen and the success message must be
+            // driven by the SAME expression, and erasedPhantoms must be part of it.
+            Assert.Contains("var changedInPlace = updatedLateral + updatedFrontal + updatedPlanta + erasedPhantoms > 0;", Commands);
+            Assert.Contains("if (changedInPlace)", Commands);              // the single explicit regen
+            Assert.Contains("editor.WriteMessage(changedInPlace", Commands); // the final report
+            Assert.Equal(3, Count(Commands, "changedInPlace"));             // declaration + regen gate + message gate
+            Assert.Equal(1, Count(Commands, "document.Editor.Regen()"));
+        }
+
+        [Fact]
+        public void CommandMethodNames_AreUnique_SoRackpushbackAndRpbCannotCollide()
+        {
+            var all = AllCommandMethods();
+            Assert.NotEmpty(all);
+
+            var duplicates = all
+                .GroupBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key)
+                .ToList();
+            Assert.True(duplicates.Count == 0, "duplicate [CommandMethod] names: " + string.Join(", ", duplicates));
+
+            Assert.Equal(1, all.Count(n => string.Equals(n, "RACKPUSHBACK", StringComparison.OrdinalIgnoreCase)));
+            Assert.Equal(1, all.Count(n => string.Equals(n, "RPB", StringComparison.OrdinalIgnoreCase)));
+        }
+
+        [Fact]
+        public void MenuAndDirectCommand_ConvergeOnTheSameDrawPath()
+        {
+            // The direct RACKPUSHBACK command body ends in DrawPushBackView...
+            var start = Commands.IndexOf("public void RackPushBack()", StringComparison.Ordinal);
+            var end = Commands.IndexOf("internal static void DrawPushBackView(", StringComparison.Ordinal);
+            Assert.True(start >= 0 && end > start, "could not isolate the RACKPUSHBACK command body");
+            Assert.Contains("DrawPushBackView(", Commands.Substring(start, end - start));
+
+            // ...and so does the RACKCAD menu's typed case: one draw path, not two.
+            Assert.Contains("RackPushBackCommands.DrawPushBackView", Menu);
         }
     }
 }

@@ -109,8 +109,8 @@ namespace RackCad.Plugin
                 }
 
                 // Dispatch by rack type via the Plugin's kind-handler seam. The same round-trip serves selective,
-                // dynamic, cabecera and cama; a kind with no registered handler surfaces the historic visible error
-                // (the four embedded kinds are always registered, so real data never hits it).
+                // dynamic, push back, cabecera and cama; a kind with no registered handler surfaces the historic
+                // visible error (the five embedded kinds are always registered, so real data never hits it).
                 if (!KindHandlerDispatch.TryResolve(editor, embed.Kind, out var handler))
                 {
                     return;
