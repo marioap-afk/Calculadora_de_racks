@@ -202,6 +202,47 @@ namespace RackCad.Tests
             Assert.Contains(system.SafetySelections, s => s.ElementId == "PROTECTOR_BOTA_H_3_16_18"); // bota kept
         }
 
+        // ---- Snapshot: Design -> Resolve -> Snapshot -> Resolve --------------------------------------------
+
+        [Fact]
+        public void Snapshot_RoundTrip_PreservesPerCellPeraltesAndRearTope_AndKeepsGuiaOut()
+        {
+            var design = new PushBackDesign { Structure = Structure(loadLevels: 2) };
+            design.Structure.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 2, PalletsDeep = 4, DepthStartPosition = 1 });
+            design.Structure.Fronts.Add(new DynamicRackFrontDesign { PalletCount = 1, LoadLevels = 2, PalletsDeep = 4, DepthStartPosition = 1 });
+            var f0 = new PushBackFrontConfig();
+            f0.HighEndBeamPeraltes.Add(5.0);
+            f0.HighEndBeamPeraltes.Add(4.0);
+            var f1 = new PushBackFrontConfig();
+            f1.HighEndBeamPeraltes.Add(6.0);
+            f1.HighEndBeamPeraltes.Add(6.0);
+            design.Fronts.Add(f0);
+            design.Fronts.Add(f1);
+            design.RearTope.Disable(0, 1);
+            design.Structure.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "GUIA_ENTRADA", Quantity = 1 });
+            design.Structure.SafetySelections.Add(new SelectiveSafetySelection { ElementId = "PROTECTOR_BOTA_H_3_16_18", Quantity = 1 });
+
+            var resolver = new PushBackResolver(Catalog);
+            var system1 = resolver.Resolve(design);
+            var snapshot = resolver.Snapshot(system1);
+            var system2 = resolver.Resolve(snapshot);
+
+            // Per-cell peraltes survive the round trip.
+            Assert.Equal(5.0, system2.HighEndBeamPeralteAt(0, 0), 4);
+            Assert.Equal(4.0, system2.HighEndBeamPeralteAt(0, 1), 4);
+            Assert.Equal(6.0, system2.HighEndBeamPeralteAt(1, 0), 4);
+            // Rear tope deactivation survives.
+            Assert.False(system2.RearTope.At(0, 1));
+            Assert.True(system2.RearTope.At(0, 0));
+            // GUIA is gone from the snapshot AND from the re-resolved system; the bota stays.
+            Assert.DoesNotContain(snapshot.Structure.SafetySelections, s => s.ElementId == "GUIA_ENTRADA");
+            Assert.DoesNotContain(system2.SafetySelections, s => s.ElementId == "GUIA_ENTRADA");
+            Assert.Contains(system2.SafetySelections, s => s.ElementId == "PROTECTOR_BOTA_H_3_16_18");
+            // A document generated from the snapshot has no guide either.
+            var docJson = JsonSerializer.Serialize(PushBackDesignDocument.FromDomain(snapshot), Json);
+            Assert.DoesNotContain("GUIA_ENTRADA", docJson);
+        }
+
         // ---- Bed: full structural span (no −4") and pushback (no brakes) -------------------------------------
 
         [Fact]

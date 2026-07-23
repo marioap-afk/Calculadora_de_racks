@@ -75,6 +75,68 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
+        /// Captures the editable intent of a resolved Push Back system back into a <see cref="PushBackDesign"/>, with
+        /// INDEPENDENT copies, so the round trip Design → Resolve → Snapshot → Resolve preserves geometry and intent.
+        /// It reuses the dynamic resolver's snapshot for the shared structure, then re-attaches Push Back's own bits:
+        /// the high-end beam peralte PER FRONT AND LEVEL, the rear-tope selection, and the allowed safety with entrance
+        /// GUIDES already excluded (a GUIA can never reappear in the snapshot, so it cannot reach a re-resolve, a plan,
+        /// a BOM or a document generated from the snapshot).
+        /// </summary>
+        public PushBackDesign Snapshot(PushBackSystem system)
+        {
+            if (system == null)
+            {
+                throw new ArgumentNullException(nameof(system));
+            }
+
+            var structure = system.Structure ?? new DynamicRackSystem();
+            var loadLevels = Math.Max(1, structure.LoadBeamLevels.Count);
+            var firstLevelHeight = structure.Fronts.FirstOrDefault()?.FirstLevelHeight
+                ?? DynamicRackDefaults.DefaultFirstLevelHeight;
+            var beamDepth = structure.InOutBeamDepth > 0.0 ? structure.InOutBeamDepth : DynamicRackDefaults.DefaultBeamDepth;
+            var postId = structure.Modules
+                .FirstOrDefault(module => module != null && module.IsHeader
+                    && module.AssociatedFrameConfiguration?.LeftPost != null)?
+                .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
+
+            var structureDesign = structureResolver.Snapshot(structure, loadLevels, firstLevelHeight, beamDepth, postId);
+
+            // The shared structure's safety may still carry a guide; the design's allowed safety is the GUIA-free set.
+            structureDesign.SafetySelections.Clear();
+            foreach (var selection in system.SafetySelections)
+            {
+                if (selection != null)
+                {
+                    structureDesign.SafetySelections.Add(selection.DeepCopy());
+                }
+            }
+
+            var legacy = system.HighEndBeams.Count > 0 && system.HighEndBeams[0].HighEndBeamPeraltes.Count > 0
+                ? system.HighEndBeams[0].HighEndBeamPeraltes[0]
+                : PushBackDefaults.HighEndBeamDefaultPeralte;
+
+            var design = new PushBackDesign
+            {
+                Structure = structureDesign,
+                LegacyHighEndBeamPeralte = legacy,
+                RearTope = system.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
+            };
+
+            foreach (var resolvedFront in system.HighEndBeams)
+            {
+                var config = new PushBackFrontConfig();
+                foreach (var peralte in resolvedFront.HighEndBeamPeraltes)
+                {
+                    config.HighEndBeamPeraltes.Add(peralte);
+                }
+
+                design.Fronts.Add(config);
+            }
+
+            return design;
+        }
+
+        /// <summary>
         /// The high-end beam PERALTE at one cell: the requested per-cell value if the catalog allows it, else the
         /// design's legacy rack-wide fallback (if allowed), else the EXPLICIT default 3.5 (if allowed), else the first
         /// catalog value. 3.5 is a rule, never silently "allowed[0]".
