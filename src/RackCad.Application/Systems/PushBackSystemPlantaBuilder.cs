@@ -51,33 +51,24 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                // The HIGH (rear) IN/OUT beam becomes a TROQUEL_REDONDO; add a rear tope if that front has one active.
+                // The HIGH (rear) IN/OUT beam becomes a TROQUEL_REDONDO with the ENVELOPING rear peralte (planta collapses
+                // the levels); add a rear tope if that front has any active cell.
                 var frontIndex = NearestHighFront(structure, instance.Insertion.X);
                 var redondo = CloneAt(instance, redondoId, redondoBlock);
-                redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = system.HighEndBeamPeralteAt(frontIndex, 0);
+                redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = PushBackHighEndBeamGeometry.PlantaPeralte(system, frontIndex);
                 result.Add(redondo);
 
                 var front = frontIndex >= 0 && frontIndex < structure.Fronts.Count ? structure.Fronts[frontIndex] : null;
                 var anyActive = front != null && Enumerable.Range(0, Math.Max(1, front.LoadLevels)).Any(level => rearTope.At(frontIndex, level));
                 if (!string.IsNullOrWhiteSpace(topeBlock) && anyActive)
                 {
-                    var tope = new HeaderBlockInstance
-                    {
-                        Role = HeaderBlockRole.Tope,
-                        PieceId = PushBackRearTopeBuilder.TopePieceId,
-                        BlockName = topeBlock,
-                        View = View,
-                        MirroredX = instance.MirroredX,
-                        Insertion = instance.Insertion,
-                        ConnectionAnchor = instance.ConnectionAnchor
-                    };
-                    tope.DynamicParameters[SelectiveSafetyDefaults.SaqueParam] = saque;
-                    if (instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var length))
-                    {
-                        tope.DynamicParameters[SelectiveRackDefaults.LengthParam] = length;
-                    }
-
-                    result.Add(tope);
+                    // Planta draws top-down and keeps the frente Y (no rise-and-snap); LONGITUD + SAQUE via the canonical helper.
+                    double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
+                        ? beamLength + SelectiveTopePlacement.LengthAllowance
+                        : (double?)null;
+                    result.Add(SelectiveTopePlacement.Tope(
+                        PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
+                        instance.Insertion.X, instance.Insertion.Y, saque, longitud, mirroredX: instance.MirroredX));
                 }
             }
 
