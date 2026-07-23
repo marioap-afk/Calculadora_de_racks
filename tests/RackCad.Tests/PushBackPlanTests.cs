@@ -72,8 +72,13 @@ namespace RackCad.Tests
             var system = System(catalog);
             var instances = new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances;
 
-            // The low/high beam elevations are exactly the resolver's snapped exit/entrance elevations (2" troquel grid).
-            var exitYs = system.Structure.LoadBeamLevels.Select(l => Math.Round(l.ExitElevation, 3)).OrderBy(y => y).ToList();
+            // The HIGH beam sits exactly on the resolver's snapped entrance elevation (2" troquel grid). The LOW beam is
+            // that snapped exit elevation PLUS the bed-origin offset (PB-VAL-05): the bed is the geometric authority, so
+            // the low beam drops onto the line starting at the bed's physical origin instead of the troquel line.
+            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, system.Structure.Fronts[0]);
+            var exitYs = system.Structure.LoadBeamLevels
+                .Select(l => Math.Round(l.ExitElevation + PushBackLoadBeamGeometry.BedOriginOffset(axes, l.LevelNumber), 3))
+                .OrderBy(y => y).ToList();
             var entranceYs = system.Structure.LoadBeamLevels.Select(l => Math.Round(l.EntranceElevation, 3)).OrderBy(y => y).ToList();
 
             var lowYs = instances.Where(i => i.PieceId == InOut).Select(i => Math.Round(i.Insertion.Y, 3)).OrderBy(y => y).ToList();

@@ -88,8 +88,11 @@ namespace RackCad.Tests
             // (PB-VAL-02 orientation + PB-VAL-03 the exact 4" rise). frontal-entrada (no rear tope) and planta (top view,
             // no elevation, keeps the beam's plan mirror) are UNCHANGED, which is what bounds the correction.
             // Previous: lateral/lateral-corte0 FB9C83F6…, frontal-posterior A2FC3231…
-            ["lateral"] = "E3E3EA9FD073D26D35C93FC7C5E3E3391730340CF35940B529F57AC472B78455",
-            ["lateral-corte0"] = "E3E3EA9FD073D26D35C93FC7C5E3E3391730340CF35940B529F57AC472B78455",
+            // Round 2 (PB-VAL-05, low-beam tangency onto the bed-origin line) moves ONLY the two lateral pins again —
+            // LowBeams is lateral-only, so frontal-entrada, frontal-posterior, planta and the BOM stay put.
+            // Previous (round 1): lateral/lateral-corte0 E3E3EA9F…
+            ["lateral"] = "4C22005A6C4444CD7A32FCF2C2A9E8BD19115A76DF779613C7D57142454EEBD5",
+            ["lateral-corte0"] = "4C22005A6C4444CD7A32FCF2C2A9E8BD19115A76DF779613C7D57142454EEBD5",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             ["frontal-posterior"] = "67511108F6F2CD8A2799A962F0C20A49044D90BAFCDB2E3B0B0C3E5EE5C37E80",
             ["planta"] = "33A87C650DF93AAF45E1F600B348E515E4D1379510E9095A4C6564E3F766E82C",
