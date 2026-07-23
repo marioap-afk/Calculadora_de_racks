@@ -119,11 +119,13 @@ namespace RackCad.UI
             UpdateLibraryPathDisplay();
         }
 
-        // The five "Diseñar …" buttons: each names its kind and delegates to the shared, registry-driven launcher. No
+        // The six "Diseñar …" buttons: each names its kind and delegates to the shared, registry-driven launcher. No
         // per-system payload copying lives here anymore (I-15) — the module builds the InsertionRequest.
         private void DesignSelective_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.SelectiveRack);
 
         private void DesignDynamic_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.PalletFlow);
+
+        private void DesignPushBack_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.PushBack);
 
         private void DesignHeader_Click(object sender, RoutedEventArgs e) => LaunchDesignModule(RackSystemKind.Selective);
 
