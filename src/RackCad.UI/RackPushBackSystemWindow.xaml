@@ -124,6 +124,14 @@
                     </WrapPanel>
                 </GroupBox>
 
+                <!-- Cell selection (for "Aplicar a selección") -->
+                <GroupBox Header="Selección de celdas (frente x nivel)">
+                    <StackPanel>
+                        <TextBlock x:Name="CellSelectionPrimaryText" Margin="0,0,0,4" Foreground="#264A63" />
+                        <controls:SelectionMatrix x:Name="CellSelectionMatrix" InvertRows="True" />
+                    </StackPanel>
+                </GroupBox>
+
                 <!-- Scope apply -->
                 <GroupBox Header="Aplicar valores de la celda a">
                     <WrapPanel>
