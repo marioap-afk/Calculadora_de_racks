@@ -87,6 +87,17 @@ namespace RackCad.UI
         internal PushBackEditorDesignAssembler Assembler => assembler;
         internal SelectionMatrixModel TopeModel => topeModel;
         internal SelectionMatrixModel CellSelectionModel => cellSelectionModel;
+
+        /// <summary>The plan currently drawn in the preview (the selected view/corte). For the lateral view this is the
+        /// SELECTED corte's plan, so changing "Corte 1"→"Corte 2" changes what the preview shows.</summary>
+        internal DynamicSystemPlan CurrentPreviewPlan
+        {
+            get
+            {
+                var (view, section) = SelectedView();
+                return PlanFor(view, section);
+            }
+        }
         internal PushBackEditorComputation LastComputation => lastComputation;
         internal bool HasValidModel => hasValidModel;
         internal bool CurrentInputsAreValid => currentInputsAreValid;
@@ -782,9 +793,8 @@ namespace RackCad.UI
 
         private void UpdateViewSelector()
         {
-            var count = lastComputation?.System != null
-                ? new PushBackSystemLateralBuilder().Cortes(lastComputation.System, catalog).Count
-                : 0;
+            // Populate from the cortes the assembler already computed; never re-invoke a builder to recompute geometry.
+            var count = lastComputation?.LateralCortes?.Count ?? 0;
             var wasSuppressed = suppressSync;
             suppressSync = true;
             try
@@ -890,6 +900,13 @@ namespace RackCad.UI
             if (string.Equals(view, RackEmbedDocument.ViewFrontal, StringComparison.OrdinalIgnoreCase))
             {
                 return section == (int)PushBackFrontalEnd.Posterior ? lastComputation.FrontalPosterior : lastComputation.FrontalEntradaSalida;
+            }
+
+            // Lateral: the SELECTED corte's plan (the assembler already computed every corte), not the full lateral.
+            var cortes = lastComputation.LateralCortes;
+            if (cortes != null && cortes.Count > 0)
+            {
+                return cortes[Math.Max(0, Math.Min(section, cortes.Count - 1))].Plan;
             }
 
             return lastComputation.LateralPlan;

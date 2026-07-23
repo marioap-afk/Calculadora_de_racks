@@ -197,10 +197,11 @@ namespace RackCad.Application.Systems
                 var system = pushResolver.Resolve(design);
                 var bom = PushBackBomBuilder.Build(system, catalog);
                 var lateral = lateralBuilder.Build(system, catalog);
+                var cortes = lateralBuilder.Cortes(system, catalog); // the per-post lateral sections, computed once here
                 var entradaSalida = frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida);
                 var posterior = frontalBuilder.BuildPlan(system, catalog, PushBackFrontalEnd.Posterior);
                 var planta = plantaBuilder.BuildPlan(system, catalog);
-                return PushBackEditorComputation.Success(design, system, bom, lateral, entradaSalida, posterior, planta);
+                return PushBackEditorComputation.Success(design, system, bom, lateral, entradaSalida, posterior, planta, cortes);
             }
             catch (Exception ex)
             {
