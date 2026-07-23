@@ -193,13 +193,15 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var w = Shown();
+                // NOT shown: Show() clamps the window to the host's work area, and a small/headless CI screen would
+                // report MinWidth instead of the declared size. The DECLARED startup size is what this pins.
+                var w = new RackPushBackSystemWindow();
                 try
                 {
-                    Assert.True(w.Width >= 1280.0, $"initial width {w.Width}");
-                    Assert.True(w.Height >= 720.0, $"initial height {w.Height}");
-                    Assert.True(w.MinWidth >= 1024.0);
-                    Assert.True(w.MinHeight >= 600.0);
+                    Assert.True(w.Width >= 1280.0, $"declared width {w.Width}");
+                    Assert.True(w.Height >= 720.0, $"declared height {w.Height}");
+                    Assert.True(w.MinWidth >= 1024.0, $"min width {w.MinWidth}");
+                    Assert.True(w.MinHeight >= 600.0, $"min height {w.MinHeight}");
                 }
                 finally { w.Close(); }
             });
