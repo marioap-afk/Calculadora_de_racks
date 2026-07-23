@@ -40,12 +40,18 @@ namespace RackCad.Application.Systems
         public void NormalizePeralte(IReadOnlyList<double> allowed)
             => HighEndBeamPeralte = Canonical(HighEndBeamPeralte, allowed);
 
-        /// <summary>Push Back's canonical high-end peralte rule (see <see cref="NormalizePeralte"/>).</summary>
+        /// <summary>
+        /// Push Back's canonical high-end peralte rule, EXACTLY coherent with
+        /// <see cref="PushBackResolver.ResolveHighEndBeamPeralte(double?, double)"/> called with the 3.5 default as the
+        /// legacy fallback: a valid request in the catalog list is kept; a request that is invalid, zero or negative falls
+        /// back to the explicit 3.5 default; a null/empty allowed list resolves to 3.5; and, only if 3.5 is somehow absent
+        /// from a non-empty list, the first allowed value is used (the resolver's final fallback).
+        /// </summary>
         public static double Canonical(double requested, IReadOnlyList<double> allowed)
         {
             if (allowed == null || allowed.Count == 0)
             {
-                return requested;
+                return PushBackDefaults.HighEndBeamDefaultPeralte;
             }
 
             bool InList(double value) => allowed.Any(candidate => Math.Abs(candidate - value) < 1e-6);

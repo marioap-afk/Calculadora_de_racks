@@ -20,6 +20,7 @@ namespace RackCad.Application.Systems
         private readonly DynamicRackSystemResolver dynamicResolver;
         private readonly DynamicEditorDesignAssembler dynamicAssembler;
         private readonly PushBackResolver pushResolver;
+        private readonly PushBackSafetyAuthority safetyAuthority;
         private readonly PushBackSystemLateralBuilder lateralBuilder = new PushBackSystemLateralBuilder();
         private readonly PushBackSystemFrontalBuilder frontalBuilder = new PushBackSystemFrontalBuilder();
         private readonly PushBackSystemPlantaBuilder plantaBuilder = new PushBackSystemPlantaBuilder();
@@ -31,6 +32,7 @@ namespace RackCad.Application.Systems
             dynamicResolver = new DynamicRackSystemResolver(this.catalog);
             dynamicAssembler = new DynamicEditorDesignAssembler(this.catalog, builder, dynamicResolver);
             pushResolver = new PushBackResolver(this.catalog);
+            safetyAuthority = new PushBackSafetyAuthority(this.catalog);
         }
 
         /// <summary>The resolver the editor shares for load/snapshot and peralte normalization (single implementation).</summary>
@@ -44,10 +46,7 @@ namespace RackCad.Application.Systems
         /// never mutated. This is the authorized, editable safety set the increment-3 window may offer and persist.
         /// </summary>
         public IReadOnlyList<SelectiveSafetySelection> AuthorizedSafety(IEnumerable<SelectiveSafetySelection> requested)
-            => (requested ?? Enumerable.Empty<SelectiveSafetySelection>())
-                .Where(selection => selection != null && !pushResolver.IsEntranceGuide(selection))
-                .Select(selection => selection.DeepCopy())
-                .ToList();
+            => safetyAuthority.Authorize(requested);
 
         /// <summary>
         /// Assemble the persisted Push Back design from the editor state and the rack-wide inputs, WITHOUT resolving: seed a
@@ -61,6 +60,15 @@ namespace RackCad.Application.Systems
             if (state == null) throw new ArgumentNullException(nameof(state));
             var editorInputs = inputs ?? PushBackEditorInputs.NewDesign();
             var matrix = state.Structure;
+
+            // Canonicalize the editor state so the state, the assembled design and the resolved system agree: every rear
+            // peralte snaps to a catalog-allowed value (or the explicit 3.5 default), and a non-positive SAQUE becomes the
+            // default. The design produced below is therefore already canonical by itself.
+            state.NormalizePeraltes(pushResolver.AllowedHighEndPeraltes());
+            if (state.RearTopeSaque <= 0.0)
+            {
+                state.RearTopeSaque = PushBackDefaults.RearTopeSaque;
+            }
 
             var levels = matrix.MaxLoadLevels();
             var firstLevel = matrix.Fronts.Count > 0

@@ -21,11 +21,13 @@ namespace RackCad.Application.Systems
     {
         private readonly RackCatalog catalog;
         private readonly DynamicRackSystemResolver structureResolver;
+        private readonly PushBackSafetyAuthority safety;
 
         public PushBackResolver(RackCatalog catalog)
         {
             this.catalog = catalog ?? new RackCatalog();
             structureResolver = new DynamicRackSystemResolver(this.catalog);
+            safety = new PushBackSafetyAuthority(this.catalog);
         }
 
         public PushBackSystem Resolve(PushBackDesign design)
@@ -67,15 +69,7 @@ namespace RackCad.Application.Systems
             // side, in every view and in the BOM. The GUIA-free, low-only set is exposed on the Push Back system AND
             // written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never emit a
             // guide, and never emit rear-end safety.
-            var authorized = (structure.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
-                .Where(selection => selection != null && !IsEntranceGuide(selection))
-                .Select(selection =>
-                {
-                    var copy = selection.DeepCopy();
-                    RestrictToLowEnd(copy);
-                    return copy;
-                })
-                .ToList();
+            var authorized = safety.Authorize(structure.SafetySelections);
             foreach (var selection in authorized)
             {
                 system.SafetySelections.Add(selection);
@@ -88,28 +82,6 @@ namespace RackCad.Application.Systems
             }
 
             return system;
-        }
-
-        /// <summary>
-        /// Restrict a safety selection to the LOW (entrance/exit) end only. A two-ended or rear (Right) side collapses to
-        /// Left (the exit end); per-post overrides are cleared so every post uses the low side; a forklift defense keeps
-        /// only its exit length. Botas/laterales/desviadores then draw exactly once, on the low side.
-        /// </summary>
-        private static void RestrictToLowEnd(SelectiveSafetySelection selection)
-        {
-            if (selection.Side == SafetySide.Both || selection.Side == SafetySide.Right)
-            {
-                selection.Side = SafetySide.Left;
-            }
-
-            selection.PostSides.Clear();
-            foreach (var post in selection.DefensaPosts)
-            {
-                if (post != null)
-                {
-                    post.EntranceLength = 0.0;
-                }
-            }
         }
 
         /// <summary>
@@ -208,18 +180,9 @@ namespace RackCad.Application.Systems
             return allowed.Count > 0 ? allowed[0] : PushBackDefaults.HighEndBeamDefaultPeralte;
         }
 
-        /// <summary>True when <paramref name="selection"/>'s catalog element is an entrance guide (type GUIA).</summary>
-        public bool IsEntranceGuide(SelectiveSafetySelection selection)
-        {
-            if (selection == null || string.IsNullOrWhiteSpace(selection.ElementId))
-            {
-                return false;
-            }
-
-            var element = catalog?.SafetyElements?.FirstOrDefault(entry => entry != null
-                && string.Equals(entry.Id, selection.ElementId, StringComparison.OrdinalIgnoreCase));
-            return element != null && SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType);
-        }
+        /// <summary>True when <paramref name="selection"/>'s catalog element is an entrance guide (type GUIA). Delegates to
+        /// the shared <see cref="PushBackSafetyAuthority"/> so the guide rule lives in exactly one place.</summary>
+        public bool IsEntranceGuide(SelectiveSafetySelection selection) => safety.IsEntranceGuide(selection);
 
         /// <summary>Catalog-allowed peraltes of the high-end beam (LARGUERO_ESCALON_TROQUEL_REDONDO), read like the intermediate beam.</summary>
         public IReadOnlyList<double> AllowedHighEndPeraltes()
