@@ -34,7 +34,38 @@ namespace RackCad.Application.Systems
             return cell.BeamLength > 0.0 ? cell.BeamLength : front.BeamLength;
         }
 
-        /// <summary>Low-end IN/OUT beams (the dynamic exit placements, unchanged): one per front x level.</summary>
+        /// <summary>
+        /// PB-VAL-05 — the vertical shift that puts the low beam's bed mate on the line starting at the bed's PHYSICAL
+        /// origin (<see cref="PushBackFlowBedAxis.RailOrigin"/>) instead of on the TROQUEL line through
+        /// <see cref="PushBackFlowBedAxis.ExitMate"/>. The two lines are PARALLEL (same axis angle) and separated by the
+        /// rail's own local mate, so this is a pure constant offset per level: it cannot change the slope, the bed length
+        /// or the rear end. Zero when the level has no resolved bed axis.
+        /// </summary>
+        public static double BedOriginOffset(IReadOnlyList<PushBackFlowBedAxis> axes, int levelNumber)
+        {
+            if (axes == null)
+            {
+                return 0.0;
+            }
+
+            foreach (var axis in axes)
+            {
+                if (axis.LevelNumber == levelNumber)
+                {
+                    return axis.RailOriginYAt(axis.ExitMate.X) - axis.ExitMate.Y;
+                }
+            }
+
+            return 0.0;
+        }
+
+        /// <summary>
+        /// Low-end IN/OUT beams: one per front x level, taken from the dynamic exit placements and then lowered onto the
+        /// BED-ORIGIN line (PB-VAL-05). The bed is the geometric authority: its axis, origin, slope and full length are
+        /// resolved from the RAW placements — <see cref="PushBackFlowBedGeometry.Resolve"/> never sees this shift — so the
+        /// bed is never displaced to accommodate the beam; the beam is what moves. The rear beam and the intermediates,
+        /// which resolve against the troquel snap and the bed axis respectively, are untouched.
+        /// </summary>
         public static IReadOnlyList<HeaderBlockInstance> LowBeams(PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null)
         {
             var result = new List<HeaderBlockInstance>();
@@ -44,6 +75,7 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
+            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => !placement.IsEntrance))
             {
                 var beamId = string.IsNullOrWhiteSpace(placement.BeamCatalogId)
@@ -55,7 +87,7 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var origin = new Point2D(placement.X, placement.Y);
+                var origin = new Point2D(placement.X, placement.Y + BedOriginOffset(axes, placement.LevelNumber));
                 result.Add(new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,
