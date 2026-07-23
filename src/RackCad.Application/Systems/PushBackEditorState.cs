@@ -42,6 +42,18 @@ namespace RackCad.Application.Systems
         /// <summary>The rear pallet-stop stick-out (SAQUE) applied to every rear tope (a single rack-wide Push Back scalar).</summary>
         public double RearTopeSaque { get; set; } = PushBackDefaults.RearTopeSaque;
 
+        private PushBackSystem workingBaseline;
+
+        /// <summary>The last accepted resolved system whose MODULAR structure — custom cabeceras and manual fondos — the next
+        /// recompute preserves. Null for a brand-new design, which rebuilds from a standard structure. Set on load and by the
+        /// assembler's AcceptComputation; it is always a fresh resolve, so the editor never mutates the source design/system
+        /// through it.</summary>
+        public PushBackSystem WorkingBaseline => workingBaseline;
+
+        /// <summary>Replace the working baseline (used by load and by the assembler's AcceptComputation). A null clears it so
+        /// the next recompute rebuilds from a standard structure.</summary>
+        public void SetWorkingBaseline(PushBackSystem baseline) => workingBaseline = baseline;
+
         /// <summary>The Push Back cell at (<paramref name="frontIndex"/>, <paramref name="levelIndex"/>), or a default when
         /// out of range — never throws and never returns a shared/orphan cell the caller could mutate into the state.</summary>
         public PushBackEditorCell Cell(int frontIndex, int levelIndex)

@@ -2,21 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.RackFrames;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// Recompute core of the Push Back editor. It COMPOSES the shared dynamic assembly — <see cref="DynamicEditorDesignAssembler.BuildDesign"/>
-    /// builds the persisted <see cref="DynamicRackDesign"/> from the editable matrix, so no dynamic logic is copied — and
-    /// then adds Push Back's own bits: the rear beam peralte per front x level, the rear-tope OffCells (only DEACTIVATIONS
-    /// are materialized; an active cell is never a positive entry) and the authorized (GUIA-free) safety. It resolves ONCE
-    /// with <see cref="PushBackResolver"/> and hands the resolved system to the I-18a BOM and view builders. Pure: no WPF,
-    /// AutoCAD, window or drawing lives here.
+    /// Recompute core of the Push Back editor. It replicates the dynamic editor's recompute cycle WITHOUT touching it or the
+    /// dynamic window: it decides when a full rebuild is needed (<see cref="DynamicEditorDesignAssembler.MustRebuild"/>),
+    /// preserves the user's per-header manual fondos across a rebuild (<see cref="DynamicEditorDesignAssembler.SnapshotHeaderFondos"/>
+    /// / <see cref="DynamicEditorDesignAssembler.RestoreHeaderFondos"/>), updates calculated cabecera heights in place when
+    /// only the height changes (<see cref="DynamicEditorDesignAssembler.UpdateHeaderHeightInPlace"/>) so custom cabeceras
+    /// survive, and assembles the shared design with <see cref="DynamicEditorDesignAssembler.BuildDesign"/>. It then adds
+    /// Push Back's own bits — the canonical rear beam peralte per front x level, the rear-tope OffCells (only DEACTIVATIONS
+    /// are materialized) and the authorized (GUIA-free, low-end) safety — and resolves ONCE with <see cref="PushBackResolver"/>.
+    /// The modular structure to preserve lives on the editor state's <see cref="PushBackEditorState.WorkingBaseline"/>, which a
+    /// successful <see cref="AcceptComputation"/> advances (a failure never replaces it). Pure: no WPF, AutoCAD, window or drawing.
     /// </summary>
     public sealed class PushBackEditorDesignAssembler
     {
         private readonly RackCatalog catalog;
+        private readonly DynamicRackSystemBuilder builder;
         private readonly DynamicRackSystemResolver dynamicResolver;
         private readonly DynamicEditorDesignAssembler dynamicAssembler;
         private readonly PushBackResolver pushResolver;
@@ -28,7 +34,7 @@ namespace RackCad.Application.Systems
         public PushBackEditorDesignAssembler(RackCatalog catalog)
         {
             this.catalog = catalog ?? new RackCatalog();
-            var builder = new DynamicRackSystemBuilder(this.catalog);
+            builder = new DynamicRackSystemBuilder(this.catalog);
             dynamicResolver = new DynamicRackSystemResolver(this.catalog);
             dynamicAssembler = new DynamicEditorDesignAssembler(this.catalog, builder, dynamicResolver);
             pushResolver = new PushBackResolver(this.catalog);
@@ -42,20 +48,38 @@ namespace RackCad.Application.Systems
         public IReadOnlyList<double> AllowedHighEndPeraltes() => pushResolver.AllowedHighEndPeraltes();
 
         /// <summary>
-        /// Deep copies of <paramref name="requested"/> with entrance GUIDES removed (Push Back admits none); the input is
-        /// never mutated. This is the authorized, editable safety set the increment-3 window may offer and persist.
+        /// The authorized, low-end-only safety set: deep copies of <paramref name="requested"/> with entrance GUIDES removed
+        /// and every surviving family normalized to the low end. The input is never mutated. This is the editable safety the
+        /// increment-3 window may offer and persist. Shares the single <see cref="PushBackSafetyAuthority"/>.
         /// </summary>
         public IReadOnlyList<SelectiveSafetySelection> AuthorizedSafety(IEnumerable<SelectiveSafetySelection> requested)
             => safetyAuthority.Authorize(requested);
 
         /// <summary>
-        /// Assemble the persisted Push Back design from the editor state and the rack-wide inputs, WITHOUT resolving: seed a
-        /// thin dynamic design from the matrix, resolve it once to obtain a structural system, let the dynamic assembler
-        /// build the shared design (modules + fronts + annotations + drawable safety), wrap it, copy the rear peraltes per
-        /// front x level, and materialize the rear-tope OffCells (only deactivated cells). The authorized (GUIA-free) safety
-        /// rides on the shared design. The result is a pure DTO that can be persisted or resolved.
+        /// Adopt a successful computation's resolved system as the baseline the NEXT recompute will preserve. An invalid
+        /// computation is ignored, so a failed recompute never replaces the surviving baseline.
         /// </summary>
+        public void AcceptComputation(PushBackEditorState state, PushBackEditorComputation computation)
+        {
+            if (state != null && computation != null && computation.IsValid && computation.System != null)
+            {
+                state.SetWorkingBaseline(computation.System);
+            }
+        }
+
+        /// <summary>Assemble the canonical persisted design (no resolve). See the <see cref="BuildDesign(PushBackEditorState, PushBackEditorInputs, bool)"/> overload.</summary>
         public PushBackDesign BuildDesign(PushBackEditorState state, PushBackEditorInputs inputs)
+            => BuildDesign(state, inputs, forceRebuild: false);
+
+        /// <summary>
+        /// Assemble the persisted Push Back design from the editor state and the rack-wide inputs, WITHOUT resolving. The
+        /// shared structure comes from the dynamic recompute cycle: with no structural change a COPY of the loaded baseline is
+        /// reused (custom modules + manual fondos preserved, calculated cabeceras height-updated); a pallet/fondos change (or
+        /// <paramref name="forceRebuild"/>) rebuilds from a standard structure but restores the manual fondos by ordinal; a
+        /// brand-new state (no baseline) starts from the standard structure. Push Back's canonical rear peraltes, the rear-tope
+        /// OffCells (only deactivations) and the authorized safety are then added. The result is canonical by itself.
+        /// </summary>
+        public PushBackDesign BuildDesign(PushBackEditorState state, PushBackEditorInputs inputs, bool forceRebuild)
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
             var editorInputs = inputs ?? PushBackEditorInputs.NewDesign();
@@ -74,47 +98,59 @@ namespace RackCad.Application.Systems
             var firstLevel = matrix.Fronts.Count > 0
                 ? matrix.Fronts[0].FirstLevelHeight
                 : DynamicRackDefaults.DefaultFirstLevelHeight;
-            var beamDepth = editorInputs.BeamDepth > 0.0 ? editorInputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth;
+            var beamDepth = DynamicLoadBeamGeometry.ResolveBeamDepth(
+                catalog,
+                DynamicRackDefaults.InOutBeamCatalogId,
+                editorInputs.BeamDepth > 0.0 ? editorInputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
             var postId = string.IsNullOrWhiteSpace(editorInputs.PostCatalogId)
                 ? catalog.Defaults?.Post
                 : editorInputs.PostCatalogId;
             var palletTolerance = editorInputs.PalletTolerance > 0.0
                 ? editorInputs.PalletTolerance
                 : DynamicRackDefaults.DefaultPalletTolerance;
-            var basePalletsDeep = Math.Max(2, editorInputs.PalletsDeep);
-            var authorizedSafety = AuthorizedSafety(editorInputs.SafetySelections);
+            var postPeralte = editorInputs.PostPeralte;
+            var pallet = ClonePallet(editorInputs.Pallet);
 
-            var frontDesigns = matrix.BuildFrontDesigns();
-            var depthLayout = DynamicDepthGeometry.Resolve(frontDesigns, basePalletsDeep);
+            var depthLayout = DynamicDepthGeometry.Resolve(matrix.BuildFrontDesigns(), Math.Max(2, editorInputs.PalletsDeep));
+            var palletsDeep = depthLayout.TotalPositions;
+            var headerHeight = ComputeHeaderHeight(pallet, palletsDeep, levels, firstLevel, beamDepth);
 
-            // Seed a thin dynamic design and resolve it once to obtain a structural system to snapshot; the dynamic
-            // assembler then produces the persisted shared design (with resolved modules + the matrix's fronts).
-            var seed = new DynamicRackDesign
+            // Dynamic recompute cycle (composed, never modified): rebuild only on a pallet/fondos change (or a forced reset);
+            // otherwise reuse a COPY of the loaded baseline so custom modules and manual fondos survive. The baseline itself is
+            // never mutated here — only AcceptComputation advances it, so a failed recompute cannot corrupt it.
+            var baseline = state.WorkingBaseline?.Structure;
+            var mustRebuild = forceRebuild || DynamicEditorDesignAssembler.MustRebuild(baseline, pallet, depthLayout);
+            var savedFondos = !forceRebuild && mustRebuild && baseline != null
+                ? dynamicAssembler.SnapshotHeaderFondos(baseline)
+                : null;
+
+            DynamicRackSystem system;
+            if (mustRebuild)
             {
-                Pallet = ClonePallet(editorInputs.Pallet),
-                PalletsDeep = basePalletsDeep,
-                LoadLevels = levels,
-                FirstLevelHeight = firstLevel,
-                BeamDepth = beamDepth,
-                HeaderPostCatalogId = postId,
-                PostPeralte = editorInputs.PostPeralte,
-                PalletTolerance = palletTolerance
-            };
-            foreach (var frontDesign in frontDesigns)
+                system = builder.BuildDefault(pallet, depthLayout, RackFrameTemplateCatalog.Default, postId, headerHeight, postPeralte);
+                if (savedFondos != null)
+                {
+                    dynamicAssembler.RestoreHeaderFondos(system, savedFondos, headerHeight, postId);
+                }
+            }
+            else
             {
-                seed.Fronts.Add(frontDesign);
+                system = CopyStructureSystem(baseline);
+                dynamicAssembler.UpdateHeaderHeightInPlace(system, headerHeight, postId);
             }
 
-            var structureSystem = dynamicResolver.Resolve(seed).System;
+            builder.ApplyPostPeralte(system, postPeralte);
+
+            var authorizedSafety = safetyAuthority.Authorize(editorInputs.SafetySelections);
             var sharedDesign = dynamicAssembler.BuildDesign(
-                structureSystem,
+                system,
                 matrix,
                 levels,
                 firstLevel,
                 beamDepth,
                 postId,
-                depthLayout.TotalPositions,
-                editorInputs.PostPeralte,
+                palletsDeep,
+                postPeralte,
                 palletTolerance,
                 editorInputs.Annotations ?? new DynamicAnnotationOptions(),
                 authorizedSafety);
@@ -126,7 +162,7 @@ namespace RackCad.Application.Systems
                 RearTope = new PushBackRearTopeConfig { Saque = state.RearTopeSaque }
             };
 
-            // Rear peralte per front x level, and ONLY deactivations materialized into the rear-tope OffCells.
+            // Rear peralte per front x level (already canonical), and ONLY deactivations materialized into the OffCells.
             for (var frontIndex = 0; frontIndex < matrix.Count; frontIndex++)
             {
                 var levelsF = Math.Max(1, matrix.Fronts[frontIndex].LoadLevels);
@@ -147,13 +183,17 @@ namespace RackCad.Application.Systems
             return design;
         }
 
-        /// <summary>Assemble, resolve once with <see cref="PushBackResolver"/> and build the BOM and the four plans. A
-        /// failure yields an invalid computation carrying the message, with the geometry left null.</summary>
+        /// <summary>Assemble the canonical design, resolve once and build the BOM and four plans. See the overload.</summary>
         public PushBackEditorComputation Build(PushBackEditorState state, PushBackEditorInputs inputs)
+            => Build(state, inputs, forceRebuild: false);
+
+        /// <summary>Assemble, resolve once with <see cref="PushBackResolver"/> and build the BOM and the four plans. A failure
+        /// yields an invalid computation carrying the message, with the geometry left null (and the baseline untouched).</summary>
+        public PushBackEditorComputation Build(PushBackEditorState state, PushBackEditorInputs inputs, bool forceRebuild)
         {
             try
             {
-                var design = BuildDesign(state, inputs);
+                var design = BuildDesign(state, inputs, forceRebuild);
                 var system = pushResolver.Resolve(design);
                 var bom = PushBackBomBuilder.Build(system, catalog);
                 var lateral = lateralBuilder.Build(system, catalog);
@@ -166,6 +206,28 @@ namespace RackCad.Application.Systems
             {
                 return PushBackEditorComputation.Failure(ex.Message);
             }
+        }
+
+        /// <summary>The header height from the load inputs, mirroring the dynamic window's ComputeHeaderHeight (no manual
+        /// override in increment 2): load height = pallet height; the slope run = tarimas x fondo + 12".</summary>
+        private static double ComputeHeaderHeight(PalletSpecification pallet, int palletsDeep, int levels, double firstLevel, double beamDepth)
+        {
+            var totalDepth = palletsDeep * pallet.Depth + 2.0 * DynamicRackDefaults.HeaderEndAllowance;
+            return DynamicHeaderHeightCalculator.Calculate(pallet.Height, levels, firstLevel, beamDepth, totalDepth).HeaderHeight;
+        }
+
+        /// <summary>An INDEPENDENT copy of a resolved structure system, preserving its modules and header configurations, via
+        /// the resolver's own snapshot/resolve round trip. The next recompute mutates this copy, never the baseline.</summary>
+        private DynamicRackSystem CopyStructureSystem(DynamicRackSystem system)
+        {
+            var loadLevels = Math.Max(1, system.LoadBeamLevels.Count);
+            var firstLevel = system.Fronts.FirstOrDefault()?.FirstLevelHeight ?? DynamicRackDefaults.DefaultFirstLevelHeight;
+            var beamDepth = system.InOutBeamDepth > 0.0 ? system.InOutBeamDepth : DynamicRackDefaults.DefaultBeamDepth;
+            var postId = system.Modules
+                .FirstOrDefault(module => module != null && module.IsHeader
+                    && module.AssociatedFrameConfiguration?.LeftPost != null)?
+                .AssociatedFrameConfiguration.LeftPost.PostCatalogId;
+            return dynamicResolver.Resolve(dynamicResolver.Snapshot(system, loadLevels, firstLevel, beamDepth, postId)).System;
         }
 
         private static PalletSpecification ClonePallet(PalletSpecification pallet)
