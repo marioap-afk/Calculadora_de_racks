@@ -169,7 +169,7 @@ namespace RackCad.Plugin
             }
 
             var payload = BuildPushBackPayload(design, id, name, RackEmbedDocument.ViewLateral, corte.PostIndex, source, innerSource);
-            // Pass the BASE name only; PushBackSystemDrawService.BlockName is the single authority for the "- lateral N" suffix.
+            // Pass the BASE name only; PushBackSystemDrawService.BlockName is the single authority for the lateral-section suffix.
             var result = new PushBackSystemDrawService().DrawAndPlace(document, system, payload, name, corte.PostIndex);
             editor.WriteMessage(result != null && result.Success
                 ? "\nRackCad: corte lateral Push Back del poste " + pick.Value.ToString(CultureInfo.InvariantCulture) + " insertado y ligado al sistema."
@@ -193,7 +193,7 @@ namespace RackCad.Plugin
 
             // The inner Design of a Push Back block is itself a RackProjectDocument — a boundary INDEPENDENT of the envelope
             // (I-11). innerSource is the ALREADY-RESOLVED source project (null for a fresh one, or the library/initiating
-            // project); WithSourceMetadataFrom preserves its unknown fields + non-downgraded version. Never KindDynamic.
+            // project); WithSourceMetadataFrom preserves its unknown fields + non-downgraded version. Never the dynamic kind.
             var designJson = new RackProjectStore().Serialize(RackProject.ForPushBack(design).WithSourceMetadataFrom(innerSource));
             var embed = RackEmbedComposer.Compose(
                 source, RackEmbedDocument.KindPushBack, id, name,
