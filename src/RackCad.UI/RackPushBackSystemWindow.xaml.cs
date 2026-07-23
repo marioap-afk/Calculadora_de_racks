@@ -47,6 +47,8 @@ namespace RackCad.UI
         private PushBackEditorComputation lastComputation; // the LAST VALID computation (only replaced on a valid build)
         private SelectionMatrixModel topeModel;
         private List<int> topeShape = new List<int>();
+        private SelectionMatrixModel cellSelectionModel; // the visible multi-selection; the DynamicFrontMatrix is the authority
+        private List<int> cellSelectionShape = new List<int>();
 
         public RackPushBackSystemWindow()
             : this(false)
@@ -84,6 +86,7 @@ namespace RackCad.UI
         internal PushBackEditorState State => state;
         internal PushBackEditorDesignAssembler Assembler => assembler;
         internal SelectionMatrixModel TopeModel => topeModel;
+        internal SelectionMatrixModel CellSelectionModel => cellSelectionModel;
         internal PushBackEditorComputation LastComputation => lastComputation;
         internal bool HasValidModel => hasValidModel;
         internal bool CurrentInputsAreValid => currentInputsAreValid;
@@ -188,6 +191,7 @@ namespace RackCad.UI
 
                 RefreshFrontSelector();
                 SyncTopeMatrix();
+                SyncCellSelectionMatrix();
                 LoadSelectedFront();
             }
             finally
@@ -292,6 +296,7 @@ namespace RackCad.UI
                 hasValidModel = true;
                 currentInputsAreValid = true;
                 SyncTopeMatrixIfShapeChanged();
+                SyncCellSelectionMatrixIfShapeChanged();
                 UpdateViewSelector();
                 RenderPreview();
                 SetStatus("Vista recalculada.", false);
@@ -445,6 +450,97 @@ namespace RackCad.UI
             if (!CurrentShape().SequenceEqual(topeShape)) SyncTopeMatrix();
         }
 
+        // ---- Cell selection matrix (the visible multi-selection; DynamicFrontMatrix stays the authority) ---------
+
+        /// <summary>Rebuild the visible cell-selection matrix from the DynamicFrontMatrix selection: a checked cell is one in
+        /// the edit selection. Only a structural change rebuilds it; a click updates a single cell in place.</summary>
+        private void SyncCellSelectionMatrix()
+        {
+            if (cellSelectionModel != null) cellSelectionModel.CellChanged -= CellSelection_Changed;
+            var shape = CurrentShape();
+            var unselected = new List<SelectionMatrixCell>();
+            for (var f = 0; f < shape.Count; f++)
+            {
+                for (var l = 0; l < shape[f]; l++)
+                {
+                    if (!state.Structure.IsSelected(f, l)) unselected.Add(new SelectionMatrixCell(f, l));
+                }
+            }
+
+            cellSelectionModel = SelectionMatrixModel.WithJaggedColumns(shape, unselected);
+            cellSelectionModel.CellChanged += CellSelection_Changed;
+            CellSelectionMatrix.ColumnHeaders = Enumerable.Range(1, Math.Max(1, shape.Count)).Select(i => "F" + i).ToList();
+            CellSelectionMatrix.RowHeaders = Enumerable.Range(1, Math.Max(1, shape.DefaultIfEmpty(1).Max())).Select(i => "N" + i).ToList();
+            CellSelectionMatrix.Model = cellSelectionModel;
+            cellSelectionShape = shape;
+            UpdatePrimaryIndicator();
+        }
+
+        private void SyncCellSelectionMatrixIfShapeChanged()
+        {
+            if (!CurrentShape().SequenceEqual(cellSelectionShape)) SyncCellSelectionMatrix();
+        }
+
+        /// <summary>Update the model's checks (not its structure) to match the DynamicFrontMatrix selection — used when a combo
+        /// replaces the selection with a single cell without changing the shape.</summary>
+        private void RefreshCellSelectionChecks()
+        {
+            if (cellSelectionModel == null) return;
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                for (var f = 0; f < cellSelectionModel.Columns; f++)
+                {
+                    for (var l = 0; l < cellSelectionModel.Rows; l++)
+                    {
+                        if (!cellSelectionModel.IsAbsent(f, l))
+                        {
+                            cellSelectionModel.SetSelected(f, l, state.Structure.IsSelected(f, l));
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+
+            UpdatePrimaryIndicator();
+        }
+
+        private void UpdatePrimaryIndicator()
+            => CellSelectionPrimaryText.Text = state.Structure.Count > 0
+                ? string.Format(CultureInfo.InvariantCulture, "Primaria: F{0} N{1} · {2} celda(s) seleccionada(s)",
+                    state.Structure.SelectedFrontIndex + 1, state.Structure.SelectedLevelIndex + 1, state.Structure.SelectedCellCount)
+                : string.Empty;
+
+        /// <summary>A click on the cell-selection matrix: check → add the cell (it becomes primary); uncheck → remove it while
+        /// others remain (never empty). The DynamicFrontMatrix is the single authority; the panel reloads the new primary.</summary>
+        private void CellSelection_Changed(object sender, SelectionMatrixCellChangedEventArgs e)
+        {
+            if (suppressSync) return;
+            var f = e.Cell.Column;
+            var l = e.Cell.Row;
+
+            if (!e.IsSelected && state.Structure.SelectedCellCount <= 1)
+            {
+                // Cannot leave the selection empty: revert the visual uncheck.
+                var wasSuppressed = suppressSync;
+                suppressSync = true;
+                try { cellSelectionModel?.SetSelected(f, l, true); }
+                finally { suppressSync = wasSuppressed; }
+                SetStatus("Debe quedar al menos una celda seleccionada.", true);
+                return;
+            }
+
+            CommitCurrentCell();
+            state.ToggleCell(f, l, true); // add (checked) or remove (unchecked, others remain); the last touched is primary
+            LoadSelectedFront();          // sync the front/level combos + load the (new) primary's values
+            UpdatePrimaryIndicator();
+            RequestRecompute();
+        }
+
         private void ApplyTope(int frontIndex, int levelIndex, bool active)
         {
             if (frontIndex < 0 || frontIndex >= state.Structure.Count) return;
@@ -550,6 +646,7 @@ namespace RackCad.UI
             CommitCurrentCell();
             state.ToggleCell(frontIndex, levelIndex, false);
             LoadSelectedFront();
+            RefreshCellSelectionChecks();
             RequestRecompute();
         }
 
@@ -568,6 +665,7 @@ namespace RackCad.UI
                 {
                     RefreshFrontSelector();
                     SyncTopeMatrix();
+                    SyncCellSelectionMatrix();
                     LoadSelectedFront();
                 }
                 finally
@@ -633,6 +731,7 @@ namespace RackCad.UI
                 try
                 {
                     SyncTopeMatrix();
+                    SyncCellSelectionMatrix();
                     LoadSelectedFront();
                 }
                 finally
