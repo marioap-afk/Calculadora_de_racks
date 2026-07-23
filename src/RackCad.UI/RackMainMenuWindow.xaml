@@ -87,6 +87,13 @@
                     </StackPanel>
                 </Button>
 
+                <Button Style="{StaticResource MenuButton}" Click="DesignPushBack_Click">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar sistema Push Back" />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="LIFO: carga y descarga por el mismo extremo (bajo); vistas lateral, frontal y planta." />
+                    </StackPanel>
+                </Button>
+
                 <Button Style="{StaticResource MenuButton}" Click="DesignHeader_Click">
                     <StackPanel>
                         <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar cabecera" />
@@ -111,7 +118,7 @@
                 <Button Style="{StaticResource MenuButton}" Click="OpenDesignLibrary_Click">
                     <StackPanel>
                         <TextBlock Style="{StaticResource OptionTitle}" Text="Abrir de la biblioteca de diseños" />
-                        <TextBlock Style="{StaticResource OptionCaption}" Text="Reabre cualquier diseño guardado: cabecera, dinámico, selectivo, cama o larguero." />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="Reabre cualquier diseño guardado: cabecera, dinámico, Push Back, selectivo, cama o larguero." />
                     </StackPanel>
                 </Button>
 

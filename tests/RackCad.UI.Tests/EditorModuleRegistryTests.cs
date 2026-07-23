@@ -161,13 +161,14 @@ namespace RackCad.UI.Tests
         // ---- The real Default registry: frozen metadata (menu order) ----
 
         [Fact]
-        public void Default_HasTheFiveModulesInMenuOrder()
+        public void Default_HasTheSixModulesInMenuOrder()
         {
             Assert.Equal(
                 new[]
                 {
                     RackSystemKind.SelectiveRack, // "Diseñar sistema selectivo"
                     RackSystemKind.PalletFlow,    // "Diseñar sistema dinámico (Pallet Flow)"
+                    RackSystemKind.PushBack,      // "Diseñar sistema Push Back"
                     RackSystemKind.Selective,     // "Diseñar cabecera"
                     RackSystemKind.Cama,          // "Diseñar cama de rodamiento"
                     RackSystemKind.Larguero,      // "Diseñar larguero"
