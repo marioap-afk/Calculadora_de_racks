@@ -23,6 +23,7 @@ namespace RackCad.Application.Systems
             RearTopeSaque = PushBackDefaults.RearTopeSaque;
             SetWorkingBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
             SyncPushConfig();
+            structure.ToggleCell(0, 0, false);   // deterministic single (0,0) selection; never keep the previous one
             structure.NormalizeSelection();
             return PushBackEditorInputs.NewDesign();
         }
@@ -84,6 +85,7 @@ namespace RackCad.Application.Systems
             }
 
             SyncPushConfig();
+            structure.ToggleCell(0, 0, false);   // deterministic (0,0) selection on load; never drag the previous one
             structure.NormalizeSelection();
         }
 

@@ -162,16 +162,19 @@ namespace RackCad.Application.Systems
 
         // ---- Snapshot / rollback --------------------------------------------------------------------------------
 
-        /// <summary>Deep-snapshot both authorities for rollback after a failed recompute: the matrix fronts and the parallel
-        /// Push Back configuration, both independent copies (no shared cell). The selection follows the matrix.</summary>
+        /// <summary>Deep-snapshot both authorities plus the FULL selection for rollback: the matrix fronts, the parallel Push
+        /// Back configuration (both independent copies, no shared cell) and the primary cell + every multi-selection address.</summary>
         public PushBackEditorSnapshot Snapshot()
             => new PushBackEditorSnapshot(
                 structure.Snapshot(),
                 pushFronts.Select(front => front.Clone()).ToList(),
-                RearTopeSaque);
+                RearTopeSaque,
+                structure.SelectedFrontIndex,
+                structure.SelectedLevelIndex,
+                structure.SelectedCells());
 
-        /// <summary>Restore both authorities from a snapshot (taking fresh clones so the snapshot stays reusable), then
-        /// re-sync defensively and re-clamp the selection.</summary>
+        /// <summary>Restore both authorities from a snapshot (taking fresh clones so the snapshot stays reusable), re-sync
+        /// defensively, and rebuild the exact selection (primary + multi-selection) through the matrix's own toggles.</summary>
         public void Restore(PushBackEditorSnapshot snapshot)
         {
             if (snapshot == null)
@@ -184,6 +187,43 @@ namespace RackCad.Application.Systems
             pushFronts.AddRange(snapshot.PushFronts.Select(front => front.Clone()));
             RearTopeSaque = snapshot.RearTopeSaque;
             SyncPushConfig();
+            RestoreSelection(snapshot.SelectedFrontIndex, snapshot.SelectedLevelIndex, snapshot.SelectedCells);
+        }
+
+        /// <summary>
+        /// Rebuild an exact selection through <see cref="DynamicFrontMatrix.ToggleCell"/> alone (the matrix is never modified):
+        /// out-of-range addresses are discarded, the non-primary cells are toggled first and the primary LAST so it becomes the
+        /// matrix's primary (a toggle re-seats the primary on the last cell touched), then the selection is normalized.
+        /// </summary>
+        private void RestoreSelection(int primaryFront, int primaryLevel, IReadOnlyList<DynamicRackCellAddress> cells)
+        {
+            bool InRange(int front, int level)
+                => front >= 0 && front < structure.Count && level >= 0 && level < Math.Max(1, structure.Fronts[front].LoadLevels);
+
+            var primaryInRange = InRange(primaryFront, primaryLevel);
+            var others = (cells ?? new List<DynamicRackCellAddress>())
+                .Where(address => InRange(address.FrontIndex, address.LevelIndex)
+                                  && !(address.FrontIndex == primaryFront && address.LevelIndex == primaryLevel))
+                .ToList();
+
+            if (others.Count > 0)
+            {
+                structure.ToggleCell(others[0].FrontIndex, others[0].LevelIndex, false);
+                for (var index = 1; index < others.Count; index++)
+                {
+                    structure.ToggleCell(others[index].FrontIndex, others[index].LevelIndex, true);
+                }
+
+                if (primaryInRange)
+                {
+                    structure.ToggleCell(primaryFront, primaryLevel, true); // primary last -> it becomes the primary
+                }
+            }
+            else if (primaryInRange)
+            {
+                structure.ToggleCell(primaryFront, primaryLevel, false);
+            }
+
             structure.NormalizeSelection();
         }
 
@@ -230,22 +270,31 @@ namespace RackCad.Application.Systems
         }
     }
 
-    /// <summary>An immutable deep snapshot of a <see cref="PushBackEditorState"/> for rollback: the matrix fronts and the
-    /// parallel Push Back configuration, both independent copies.</summary>
+    /// <summary>An immutable deep snapshot of a <see cref="PushBackEditorState"/> for rollback: the matrix fronts, the
+    /// parallel Push Back configuration (both independent copies) and the full selection (primary cell + every address).</summary>
     public sealed class PushBackEditorSnapshot
     {
         public PushBackEditorSnapshot(
             IReadOnlyList<DynamicEditorFront> structure,
             IReadOnlyList<PushBackEditorFront> pushFronts,
-            double rearTopeSaque)
+            double rearTopeSaque,
+            int selectedFrontIndex,
+            int selectedLevelIndex,
+            IReadOnlyList<DynamicRackCellAddress> selectedCells)
         {
             Structure = structure ?? new List<DynamicEditorFront>();
             PushFronts = pushFronts ?? new List<PushBackEditorFront>();
             RearTopeSaque = rearTopeSaque;
+            SelectedFrontIndex = selectedFrontIndex;
+            SelectedLevelIndex = selectedLevelIndex;
+            SelectedCells = selectedCells ?? new List<DynamicRackCellAddress>();
         }
 
         public IReadOnlyList<DynamicEditorFront> Structure { get; }
         public IReadOnlyList<PushBackEditorFront> PushFronts { get; }
         public double RearTopeSaque { get; }
+        public int SelectedFrontIndex { get; }
+        public int SelectedLevelIndex { get; }
+        public IReadOnlyList<DynamicRackCellAddress> SelectedCells { get; }
     }
 }
