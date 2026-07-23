@@ -9,7 +9,7 @@ namespace RackCad.Application.Persistence
     /// Uniform envelope embedded in a drawing's block definition for EVERY rack type, so one round-trip
     /// mechanism (embed on insert → select → reopen the right editor → redefine in place) serves them all.
     /// <see cref="Kind"/> says which editor/store to use; <see cref="Design"/> is that type's own serialized
-    /// design (JSON). Reusable across selective, dynamic, cabecera and cama.
+    /// design (JSON). Reusable across selective, dynamic, cabecera, cama and push back.
     /// </summary>
     public sealed class RackEmbedDocument
     {
@@ -17,6 +17,7 @@ namespace RackCad.Application.Persistence
         public const string KindDynamic = "dynamic";
         public const string KindCabecera = "cabecera";
         public const string KindCama = "cama";
+        public const string KindPushBack = "pushback";
 
         public const string ViewFrontal = "frontal";
         public const string ViewLateral = "lateral";
