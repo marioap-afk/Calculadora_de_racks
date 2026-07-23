@@ -21,6 +21,7 @@ namespace RackCad.Application.Systems
             structure.RestoreFromResolved(Enumerable.Empty<DynamicRackFront>()); // falls back to one default front
             pushFronts.Clear();
             RearTopeSaque = PushBackDefaults.RearTopeSaque;
+            SetWorkingBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
             SyncPushConfig();
             structure.NormalizeSelection();
             return PushBackEditorInputs.NewDesign();
@@ -38,6 +39,7 @@ namespace RackCad.Application.Systems
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             var system = resolver.Resolve(design);
+            SetWorkingBaseline(system);   // a fresh resolve: an independent deep baseline the recompute preserves
             RebuildFromResolved(system);
             return RecoverInputs(design, system);
         }
