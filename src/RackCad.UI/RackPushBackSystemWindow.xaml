@@ -1,0 +1,191 @@
+<Window x:Class="RackCad.UI.RackPushBackSystemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:RackCad.UI.Controls"
+        Title="Sistema Push Back - editor"
+        Height="720"
+        Width="1240"
+        MinHeight="560"
+        MinWidth="1040"
+        WindowStartupLocation="CenterOwner"
+        Background="#EEF2F6"
+        FontFamily="Segoe UI"
+        FocusManager.FocusedElement="{Binding ElementName=NameBox}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="560" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT: editable inputs -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,8,0">
+            <StackPanel>
+
+                <!-- Identity -->
+                <GroupBox Header="Identidad">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre" VerticalAlignment="Center" Margin="0,0,8,4" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="NameBox" Margin="0,0,0,4" TextChanged="Name_Changed" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="GUID" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="GuidText" Text="(se asigna al insertar)" Foreground="#607080" />
+                    </Grid>
+                </GroupBox>
+
+                <!-- General data -->
+                <GroupBox Header="Datos generales">
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima frente" /><TextBox x:Name="FrontBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima fondo" /><TextBox x:Name="DepthBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima alto" /><TextBox x:Name="PalletHeightBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peso" /><TextBox x:Name="WeightBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Unidad" /><ComboBox x:Name="WeightUnitBox" Width="60" SelectionChanged="Combo_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondos base" /><TextBox x:Name="PalletsDeepBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tolerancia" /><TextBox x:Name="ToleranceBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Poste" /><controls:CatalogCombo x:Name="PostBox" Width="150" DisplayMemberPath="DisplayName" SelectionChanged="Combo_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte poste" /><TextBox x:Name="PostPeralteBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte IN/OUT base" /><TextBox x:Name="BeamDepthBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="SAQUE topes" /><TextBox x:Name="SaqueBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                    </WrapPanel>
+                </GroupBox>
+
+                <!-- Annotations -->
+                <GroupBox Header="Anotaciones">
+                    <WrapPanel>
+                        <CheckBox x:Name="NumberFrontsCheck" Content="Numerar frentes" Margin="0,0,12,0" Click="Input_Changed" />
+                        <CheckBox x:Name="NumberLevelsCheck" Content="Numerar niveles" Margin="0,0,12,0" Click="Input_Changed" />
+                        <CheckBox x:Name="DrawRackNameCheck" Content="Dibujar nombre" Margin="0,0,12,0" Click="Input_Changed" />
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="Escala anot." /><TextBox x:Name="AnnotationScaleBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel><TextBlock Text="Cotas" /><ComboBox x:Name="DimensionsBox" Width="110" SelectionChanged="Combo_Changed" /></StackPanel>
+                    </WrapPanel>
+                </GroupBox>
+
+                <!-- Structure -->
+                <GroupBox Header="Estructura">
+                    <StackPanel>
+                        <WrapPanel Margin="0,0,0,4">
+                            <TextBlock Text="Frentes" VerticalAlignment="Center" Margin="0,0,4,0" />
+                            <TextBox x:Name="FrontCountBox" Width="45" LostFocus="FrontCount_Changed" />
+                            <Button x:Name="AddFrontButton" Content="+" Width="26" Margin="4,0,0,0" Click="AddFront_Click" />
+                            <Button x:Name="RemoveFrontButton" Content="-" Width="26" Margin="2,0,12,0" Click="RemoveFront_Click" />
+                            <TextBlock Text="Frente actual" VerticalAlignment="Center" Margin="0,0,4,0" />
+                            <ComboBox x:Name="SelectedFrontBox" Width="55" SelectionChanged="SelectedFront_Changed" />
+                            <TextBlock Text="Nivel actual" VerticalAlignment="Center" Margin="12,0,4,0" />
+                            <ComboBox x:Name="SelectedLevelBox" Width="55" SelectionChanged="SelectedLevel_Changed" />
+                        </WrapPanel>
+                        <WrapPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Posiciones" /><TextBox x:Name="PositionsBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Niveles" /><TextBox x:Name="LevelsBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                            <Button x:Name="AddLevelButton" Content="+ nivel" Margin="0,14,4,4" Click="AddLevel_Click" />
+                            <Button x:Name="RemoveLevelButton" Content="- nivel" Margin="0,14,12,4" Click="RemoveLevel_Click" />
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondos frente" /><TextBox x:Name="FondosBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondo inicial" /><TextBox x:Name="DepthStartBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Alto 1er nivel" /><TextBox x:Name="FirstLevelHeightBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <!-- Shared cell -->
+                <GroupBox Header="Celda (tarima y largueros)">
+                    <WrapPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima frente" /><TextBox x:Name="CellPalletFrontBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima alto" /><TextBox x:Name="CellPalletHeightBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima peso" /><TextBox x:Name="CellPalletWeightBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Claro" /><TextBox x:Name="CellClearBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Larguero IN/OUT" /><ComboBox x:Name="CellInOutBeamBox" Width="150" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="InOutBeam_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte IN/OUT" /><ComboBox x:Name="CellInOutPeralteBox" Width="65" SelectionChanged="Combo_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Largo manual" /><TextBox x:Name="CellBeamLengthOverrideBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Larguero interm." /><ComboBox x:Name="CellIntermediateBeamBox" Width="150" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="IntermediateBeam_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte interm." /><ComboBox x:Name="CellIntermediatePeralteBox" Width="65" SelectionChanged="Combo_Changed" /></StackPanel>
+                    </WrapPanel>
+                </GroupBox>
+
+                <!-- Push Back cell -->
+                <GroupBox Header="Celda Push Back (larguero posterior)">
+                    <WrapPanel VerticalAlignment="Center">
+                        <TextBlock Text="Peralte posterior" VerticalAlignment="Center" Margin="0,0,4,0" />
+                        <ComboBox x:Name="RearPeralteBox" Width="70" SelectionChanged="Combo_Changed" />
+                        <CheckBox x:Name="RearTopeActiveCheck" Content="Tope posterior activo" Margin="16,0,0,0" VerticalAlignment="Center" Click="RearTopeActive_Changed" />
+                    </WrapPanel>
+                </GroupBox>
+
+                <!-- Scope apply -->
+                <GroupBox Header="Aplicar valores de la celda a">
+                    <WrapPanel>
+                        <Button x:Name="ApplyCellButton" Content="Celda" Margin="0,0,6,0" Click="ApplyCell_Click" />
+                        <Button x:Name="ApplySelectedButton" Content="Selección" Margin="0,0,6,0" Click="ApplySelected_Click" />
+                        <Button x:Name="ApplyLevelButton" Content="Nivel" Margin="0,0,6,0" Click="ApplyLevel_Click" />
+                        <Button x:Name="ApplyFrontButton" Content="Frente" Margin="0,0,6,0" Click="ApplyFront_Click" />
+                        <Button x:Name="ApplyAllButton" Content="Todo" Click="ApplyAll_Click" />
+                    </WrapPanel>
+                </GroupBox>
+
+                <!-- Safety -->
+                <GroupBox Header="Seguridad (extremo bajo, sin guías)">
+                    <Button x:Name="SafetyButton" Content="Configurar seguridad..." HorizontalAlignment="Left" Click="Safety_Click" />
+                </GroupBox>
+
+                <!-- Rear topes matrix -->
+                <GroupBox Header="Topes posteriores (frente x nivel)">
+                    <StackPanel>
+                        <WrapPanel Margin="0,0,0,4">
+                            <Button x:Name="TopesAllButton" Content="Todos" Margin="0,0,6,0" Click="TopesAll_Click" />
+                            <Button x:Name="TopesNoneButton" Content="Ninguno" Click="TopesNone_Click" />
+                            <TextBlock x:Name="TopesHint" Text="Marcado = tope activo." VerticalAlignment="Center" Margin="12,0,0,0" Foreground="#607080" />
+                        </WrapPanel>
+                        <controls:SelectionMatrix x:Name="TopeMatrix" InvertRows="True" />
+                    </StackPanel>
+                </GroupBox>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- RIGHT: view, preview, actions -->
+        <DockPanel Grid.Column="1">
+            <GroupBox DockPanel.Dock="Top" Header="Vista">
+                <WrapPanel>
+                    <TextBlock Text="Vista" VerticalAlignment="Center" Margin="0,0,4,0" />
+                    <ComboBox x:Name="ViewBox" Width="200" SelectionChanged="View_Changed" />
+                    <TextBlock x:Name="LateralSectionLabel" Text="Corte" VerticalAlignment="Center" Margin="12,0,4,0" />
+                    <ComboBox x:Name="LateralSectionBox" Width="70" SelectionChanged="View_Changed" />
+                </WrapPanel>
+            </GroupBox>
+
+            <GroupBox DockPanel.Dock="Bottom" Header="Acciones">
+                <StackPanel>
+                    <WrapPanel Margin="0,0,0,4">
+                        <Button x:Name="InsertButton" Content="Insertar vista" Margin="0,0,6,0" Click="Insert_Click" />
+                        <Button x:Name="UpdateButton" Content="Actualizar" Margin="0,0,6,0" Click="Update_Click" />
+                        <Button x:Name="CloseButton" Content="Cerrar" Click="Close_Click" />
+                    </WrapPanel>
+                    <TextBlock x:Name="StatusText" TextWrapping="Wrap" Foreground="#264A63" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Vista previa">
+                <DockPanel>
+                    <TextBlock x:Name="PreviewSummary" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,4" Foreground="#264A63" />
+                    <TextBlock x:Name="PreviewHint" DockPanel.Dock="Bottom" TextWrapping="Wrap" Foreground="#607080" />
+                    <Border BorderBrush="#C4CFD9" BorderThickness="1" Background="#F7FAFC">
+                        <Canvas x:Name="PreviewCanvas" ClipToBounds="True" />
+                    </Border>
+                </DockPanel>
+            </GroupBox>
+        </DockPanel>
+    </Grid>
+</Window>
