@@ -55,8 +55,12 @@ namespace RackCad.Application.Systems
                 var y = keepFrenteY
                     ? placement.Y
                     : SelectiveTopePlacement.SnapY(troquelMateY, placement.Y, SelectiveRackDefaults.TroquelPaso);
-                double? longitud = placement.BeamLength > 0.0
-                    ? placement.BeamLength + SelectiveTopePlacement.LengthAllowance
+                // Commercial LONGITUD = the corresponding transverse beam length (per front x level) + the allowance.
+                var baseLength = front != null
+                    ? PushBackLoadBeamGeometry.CellBeamLength(structure, front, placement.LevelNumber)
+                    : placement.BeamLength;
+                double? longitud = baseLength > 0.0
+                    ? baseLength + SelectiveTopePlacement.LengthAllowance
                     : (double?)null;
                 result.Add(SelectiveTopePlacement.Tope(TopePieceId, block, view, placement.X, y, saque, longitud, mirroredX: placement.MirroredX));
             }

@@ -64,11 +64,13 @@ namespace RackCad.Application.Systems
                     string beamId;
                     double peralte;
                     double length;
+                    // Both the low IN/OUT and the high TROQUEL_REDONDO of a cell share the SAME transverse length,
+                    // resolved per front and level (never front.BeamLength directly for every level).
+                    length = PushBackLoadBeamGeometry.CellBeamLength(structure, front, level + 1);
                     if (isHighEnd)
                     {
                         beamId = highId;
                         peralte = system.HighEndBeamPeralteAt(frontIndex, level);
-                        length = front.BeamLength; // the high beam matches the IN/OUT's transverse length
                     }
                     else
                     {
@@ -77,7 +79,6 @@ namespace RackCad.Application.Systems
                             ? (string.IsNullOrWhiteSpace(structure.InOutBeamCatalogId) ? DynamicRackDefaults.InOutBeamCatalogId : structure.InOutBeamCatalogId)
                             : configuration.InOutBeamCatalogId;
                         peralte = configuration.InOutBeamDepth > 0.0 ? configuration.InOutBeamDepth : structure.InOutBeamDepth;
-                        length = configuration.BeamLength > 0.0 ? configuration.BeamLength : front.BeamLength;
                     }
 
                     var key = (beamId, Round(length), Round(peralte));
@@ -144,7 +145,6 @@ namespace RackCad.Application.Systems
             for (var frontIndex = 0; frontIndex < structure.Fronts.Count; frontIndex++)
             {
                 var front = structure.Fronts[frontIndex];
-                var length = Round(front.BeamLength);
                 for (var level = 0; level < Math.Max(1, front.LoadLevels); level++)
                 {
                     if (!rearTope.At(frontIndex, level))
@@ -152,6 +152,9 @@ namespace RackCad.Application.Systems
                         continue;
                     }
 
+                    // Commercial LONGITUD = the cell's transverse beam length (per front x level) + the allowance —
+                    // exactly what the lateral/frontal/planta tope blocks carry.
+                    var length = Round(PushBackLoadBeamGeometry.CellBeamLength(structure, front, level + 1) + SelectiveTopePlacement.LengthAllowance);
                     grouped[length] = grouped.TryGetValue(length, out var current) ? current + 1 : 1;
                 }
             }

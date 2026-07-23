@@ -89,7 +89,10 @@ namespace RackCad.Tests
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             ["frontal-posterior"] = "A2FC3231E53ACB1EE4678EF1D7D5440F1C4539A13D82345AB8526B8AC9645F24",
             ["planta"] = "33A87C650DF93AAF45E1F600B348E515E4D1379510E9095A4C6564E3F766E82C",
-            ["bom"] = "139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC"
+            // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
+            // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
+            // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.
+            ["bom"] = "057C6D2D30548D4F8FE65F1DA38678D0588792C2A65B43CD23CE4F8B7ECC59A3"
         };
 
         [Fact]
