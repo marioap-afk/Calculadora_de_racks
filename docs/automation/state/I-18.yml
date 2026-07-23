@@ -7,8 +7,8 @@ automation_state:
   state: implementing
   gate: none
   attempts: 0
-  next_action: revision-del-orquestador-del-nucleo-puro-i18a-antes-de-continuar-con-los-builders-de-vista-bom-y-golden-restantes-o-i18b
-  last_evidence_commit: efeef83517f3c98f58e0b62df6f7c8595c24e343
+  next_action: implementar-items-4-7-geometria-propia-mas-composicion-caja-negra-de-los-systemplan-lateral-frontal-planta-mas-pushbackbombuilder-mas-golden-sobre-el-diseno-accionable-documentado-i18a-no-completa-hasta-cubrir-builders-bom-y-golden
+  last_evidence_commit: 1d665afc6afb574316b302fab1c7cfd6d3eeb5d2
 execution_context:
   mode: manual-git-only
   worktree: feature-push-back
@@ -17,19 +17,19 @@ evidence:
   base_commit: d873d82d36fbfba18e9ff00627e2c033bdbb4e8e
   claim_commit: c0bc249a1edccc6867dce430a1b5ef4ecbff71b0
   pb0_owner_decision: docs/automation/decisions/I-18.md
-  catalog_rows: assets/catalogs-secciones-blocks-connection-layout-append-only-larguero-escalon-troquel-redondo-rol-larguero-3-vistas-inicio-perfil-izquierdo-derecho-connection-points-sin-cambios
-  i18a_scope_done: domain-pushbackdesign-pushbackreartope-pushbackdefaults-pushbacksystem-mas-application-pushbackresolver-reutiliza-dynamicracksystemresolver-pushbackflowbedlateralbuilder-compone-flowbedlateralbuilder-pushback-full-span-sin-menos-4-mas-persistence-pushbackdesigndocument-auto-versionado-schemaversion-jsonextensiondata-reutiliza-dynamicracksystemdocument
-  tests_added: 18-pushback-nucleo-defaults-reartope-resolver-peralte-35-explicito-estructura-depthstartposition-fronts-distintos-cama-full-span-sin-menos-4-pushback-sin-frenos-roundtrip-legacy-campo-desconocido-i11
-  domain_application_tests: 1034-verde-0-fallos-1016-baseline-2-rojas-de-catalogo-corregidas-mas-18-pushback-golden-dinamico-intactos
-  validator_i19: sin-errores-nuevos-baseline-1-error-troquel_tope-2-avisos-tarima_generica-intacto
-  scope_guards: sin-registrar-pushback-en-systemregistry-kindhandlerregistry-editormoduleregistry-sin-enum-rackskind-sin-ui-plugin-dibujo-sin-alterar-dinamico-ni-selectivo
-  i18a_remaining: builders-de-vista-lateral-frontal-planta-que-produzcan-el-systemplan-con-instancias-mas-bom-por-componentes-mas-golden-signature-requieren-o-extraer-builders-estructurales-compartidos-del-dinamico-o-reimplementarlos-reportado-como-hallazgo-de-contrato-compartido
+  i18a_done_nucleo: domain-pushbackdesign-compone-dynamicrackdesign-pushbackreartope-offcells-pushbackdefaults-pushbacksystem-mas-application-pushbackresolver-reutiliza-dynamicracksystemresolver-pushbackflowbedlateralbuilder-compone-flowbedlateralbuilder-pushback-full-span-sin-menos-4-mas-persistence-pushbackdesigndocument-auto-versionado
+  i18a_done_correcciones: haz-alto-troquel-redondo-por-frente-x-nivel-pushbackfrontconfig-highendbeamperaltes-resolver-prioridad-celda-legacy-3punto5-explicito-no-allowed0-persistencia-fromdomain-design-source-hereda-extensiondata-y-no-degrada-minor-superior-resolvewriteversion-prueba-que-recorre-el-dominio-guia-rechazada-en-el-resolver-issafetyguia-system-safetyselections-sin-guia
+  tests_pushback: 23-verde
+  domain_application_tests: 1036-verde-0-fallos-golden-dinamico-intactos
+  validator_i19: sin-errores-nuevos-baseline-intacto
+  scope_guards: sin-registrar-pushback-en-registros-sin-enum-sin-ui-plugin-dibujo-sin-alterar-ni-extraer-dynamic-selective
+  i18a_remaining: items-4-a-7-geometria-push-back-propia-end-beams-bajo-inout-alto-troquel-redondo-ambos-snap-2-pulgadas-eje-de-cama-troquel-cama-del-inout-a-inicio-izq-der-del-larguero-posterior-intermedios-tangentes-al-mismo-eje-cama-full-span-pushback-sin-frenos-mas-composicion-caja-negra-de-systemplan-lateral-frontal-planta-quitar-por-role-pieceid-extremos-dinamicos-cama-dinamica-seguridad-dinamica-e-intermedios-dinamicos-agregar-piezas-push-back-reagrupar-headerinstancegrouper-mas-pushbackbombuilder-cabeceras-separadores-postes-inout-por-celda-troquel-redondo-por-celda-intermedios-cama-opaca-por-carril-nivel-topes-sin-doble-conteo-mas-golden-signature-lateral-frontal-planta
 autocad_validation:
-  status: not-applicable
-  note: i18a-es-nucleo-puro-sin-cableado-de-plugin-la-validacion-autocad-corresponde-a-i18b
+  status: not-applicable-i18a
+  note: i18a-es-nucleo-puro-la-validacion-autocad-de-la-geometria-y-el-dibujo-corresponde-a-i18b
 owner_validation:
   status: pending
-  note: i18a-a-la-espera-de-revision-del-orquestador
+  note: i18a-parcial-nucleo-y-correcciones-a-la-espera-de-revision-del-orquestador-items-4-7-pendientes
 decision_evidence:
   path: docs/automation/decisions/I-18.md
   resolved_gate: owner-decision-pb0
