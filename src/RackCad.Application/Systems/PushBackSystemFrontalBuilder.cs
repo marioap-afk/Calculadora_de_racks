@@ -57,6 +57,14 @@ namespace RackCad.Application.Systems
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
 
+            // Post troquel grid base for the canonical Selective tope rise-and-snap.
+            var postId = DynamicFrontGeometry.PostId(structure, catalog);
+            var postPeralte = DynamicFrontGeometry.PostPeralte(structure, catalog, postId);
+            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(postId, SelectiveRackDefaults.PostBeamPoint, View);
+            var troquelMateY = SelectivePostGeometry.Resolve(
+                troquelEntry,
+                new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
+
             var result = new List<HeaderBlockInstance>();
             foreach (var instance in entrance)
             {
@@ -67,31 +75,25 @@ namespace RackCad.Application.Systems
 
                 if (PushBackPlanComposer.IsDynamicEndBeam(instance))
                 {
-                    var (frontIndex, level) = LocateCell(structure, layout, instance);
+                    var (frontIndex, level) = LocateCell(structure, catalog, layout, instance);
 
                     // Swap the IN/OUT for the rear TROQUEL_REDONDO, keeping the transverse LONGITUD, at the same spot.
                     var redondo = CloneAt(instance, redondoId, redondoBlock);
-                    redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = system.HighEndBeamPeralteAt(frontIndex, level);
+                    redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = level >= 0
+                        ? system.HighEndBeamPeralteAt(frontIndex, level)
+                        : PushBackDefaults.HighEndBeamDefaultPeralte;
                     result.Add(redondo);
 
-                    if (!string.IsNullOrWhiteSpace(topeBlock) && rearTope.At(frontIndex, level))
+                    // Rear tope only for a MATCHED, active cell, placed by the canonical Selective rule (rise + snap).
+                    if (!string.IsNullOrWhiteSpace(topeBlock) && level >= 0 && rearTope.At(frontIndex, level))
                     {
-                        var tope = new HeaderBlockInstance
-                        {
-                            Role = HeaderBlockRole.Tope,
-                            PieceId = PushBackRearTopeBuilder.TopePieceId,
-                            BlockName = topeBlock,
-                            View = View,
-                            Insertion = instance.Insertion,
-                            ConnectionAnchor = instance.ConnectionAnchor
-                        };
-                        tope.DynamicParameters[SelectiveSafetyDefaults.SaqueParam] = saque;
-                        if (instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var length))
-                        {
-                            tope.DynamicParameters[SelectiveRackDefaults.LengthParam] = length;
-                        }
-
-                        result.Add(tope);
+                        var topeY = SelectiveTopePlacement.SnapY(troquelMateY, instance.Insertion.Y, SelectiveRackDefaults.TroquelPaso);
+                        double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
+                            ? beamLength + SelectiveTopePlacement.LengthAllowance
+                            : (double?)null;
+                        result.Add(SelectiveTopePlacement.Tope(
+                            PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
+                            instance.Insertion.X, topeY, saque, longitud, mirroredX: instance.MirroredX));
                     }
 
                     continue;
@@ -125,12 +127,20 @@ namespace RackCad.Application.Systems
             return clone;
         }
 
-        /// <summary>Recover (frontIndex, 0-based level) of a frontal IN/OUT beam from its X (post+troquel column) and Y (entrance elevation).</summary>
-        private static (int FrontIndex, int Level) LocateCell(DynamicRackSystem system, DynamicFrontLayout layout, HeaderBlockInstance beam)
+        /// <summary>Explicit tolerance (in) for matching a frontal beam's Y to a level's entrance elevation.</summary>
+        private const double LevelMatchTolerance = 0.05;
+
+        /// <summary>
+        /// Recover (frontIndex, 0-based level) of a frontal IN/OUT beam. The front comes from its X column
+        /// (post+troquel); the level comes from THAT FRONT'S OWN load-beam levels (never the global projection), matched
+        /// by entrance elevation within <see cref="LevelMatchTolerance"/>. Returns level = -1 (no silent front-0/level-0
+        /// fallback) when nothing matches, so the caller neither mislabels the peralte nor draws a wrong-cell tope.
+        /// </summary>
+        private static (int FrontIndex, int Level) LocateCell(DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam)
         {
-            var frontIndex = 0;
+            var frontIndex = -1;
             var bestX = double.MaxValue;
-            for (var index = 0; index < Math.Min(layout.PostPositions.Count, layout.TroquelPositions.Count); index++)
+            for (var index = 0; index < Math.Min(layout.PostPositions.Count, layout.TroquelPositions.Count) && index < system.Fronts.Count; index++)
             {
                 var columnX = layout.PostPositions[index] + layout.TroquelPositions[index];
                 var distance = Math.Abs(columnX - beam.Insertion.X);
@@ -141,11 +151,19 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            var level = 0;
-            var bestY = double.MaxValue;
-            for (var index = 0; index < system.LoadBeamLevels.Count; index++)
+            if (frontIndex < 0)
             {
-                var distance = Math.Abs(system.LoadBeamLevels[index].EntranceElevation - beam.Insertion.Y);
+                return (-1, -1);
+            }
+
+            // Use the identified FRONT'S OWN levels — a front may have a different FirstLevelHeight, level count or
+            // vertical configuration than the global projection.
+            var frontLevels = DynamicFrontGeometry.LoadBeamLevels(system, system.Fronts[frontIndex]);
+            var level = -1;
+            var bestY = double.MaxValue;
+            for (var index = 0; index < frontLevels.Count; index++)
+            {
+                var distance = Math.Abs(frontLevels[index].EntranceElevation - beam.Insertion.Y);
                 if (distance < bestY)
                 {
                     bestY = distance;
@@ -153,7 +171,7 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            return (frontIndex, level);
+            return level >= 0 && bestY <= LevelMatchTolerance ? (frontIndex, level) : (frontIndex, -1);
         }
     }
 }
