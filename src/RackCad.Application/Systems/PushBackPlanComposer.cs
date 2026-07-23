@@ -30,12 +30,21 @@ namespace RackCad.Application.Systems
                 || instance.Role == HeaderBlockRole.Brake
                 || instance.Role == HeaderBlockRole.Stop);
 
-        /// <summary>Any dynamic safety/tope — removed; Push Back re-adds only authorized safety + rear topes.</summary>
+        /// <summary>Any dynamic safety OR tope. Used to strip BOTH from the REAR frontal cut (which carries neither).</summary>
         public static bool IsSafetyPiece(HeaderBlockInstance instance)
             => instance != null && (instance.Role == HeaderBlockRole.Safety || instance.Role == HeaderBlockRole.Tope);
 
+        /// <summary>A dynamic tope (rear pallet stop) — removed everywhere; Push Back adds its own rear topes.</summary>
+        public static bool IsDynamicTope(HeaderBlockInstance instance)
+            => instance != null && instance.Role == HeaderBlockRole.Tope;
+
+        /// <summary>
+        /// Dynamic-specific pieces removed when composing a Push Back plan: both dynamic end beams, the roller bed, the
+        /// dynamic intermediate beams and any dynamic TOPE. The normal SAFETY (Role.Safety) is KEPT — the resolver already
+        /// restricted it to the low end (GUIA-free), so it is the authoritative low-end safety projection.
+        /// </summary>
         public static bool IsDynamicSpecific(HeaderBlockInstance instance)
-            => IsBedPiece(instance) || IsSafetyPiece(instance) || IsDynamicEndBeam(instance) || IsDynamicIntermediate(instance);
+            => IsBedPiece(instance) || IsDynamicTope(instance) || IsDynamicEndBeam(instance) || IsDynamicIntermediate(instance);
 
         /// <summary>A loose instance to KEEP: common structure (separators, derived posts, plates) + annotations/dimensions.</summary>
         public static bool KeepLoose(HeaderBlockInstance instance)

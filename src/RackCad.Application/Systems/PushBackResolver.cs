@@ -61,13 +61,20 @@ namespace RackCad.Application.Systems
                 system.HighEndBeams.Add(resolved);
             }
 
-            // Safety: Push Back admits every applicable family EXCEPT entrance guides, which are removed here so a
-            // guide never reaches the plan, the BOM or a snapshot. The GUIA-free set is exposed on the Push Back system
-            // AND written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never
-            // emit a guide instance either.
+            // Safety authority: Push Back admits every applicable family EXCEPT entrance guides (removed), and normal
+            // safety only at the LOW (entrance/exit) end — never the rear. Each authorized selection is restricted to the
+            // low end (Left = the exit end in the dynamic builders) so a "Both" selection materializes once, on the low
+            // side, in every view and in the BOM. The GUIA-free, low-only set is exposed on the Push Back system AND
+            // written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never emit a
+            // guide, and never emit rear-end safety.
             var authorized = (structure.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
                 .Where(selection => selection != null && !IsEntranceGuide(selection))
-                .Select(selection => selection.DeepCopy())
+                .Select(selection =>
+                {
+                    var copy = selection.DeepCopy();
+                    RestrictToLowEnd(copy);
+                    return copy;
+                })
                 .ToList();
             foreach (var selection in authorized)
             {
@@ -81,6 +88,28 @@ namespace RackCad.Application.Systems
             }
 
             return system;
+        }
+
+        /// <summary>
+        /// Restrict a safety selection to the LOW (entrance/exit) end only. A two-ended or rear (Right) side collapses to
+        /// Left (the exit end); per-post overrides are cleared so every post uses the low side; a forklift defense keeps
+        /// only its exit length. Botas/laterales/desviadores then draw exactly once, on the low side.
+        /// </summary>
+        private static void RestrictToLowEnd(SelectiveSafetySelection selection)
+        {
+            if (selection.Side == SafetySide.Both || selection.Side == SafetySide.Right)
+            {
+                selection.Side = SafetySide.Left;
+            }
+
+            selection.PostSides.Clear();
+            foreach (var post in selection.DefensaPosts)
+            {
+                if (post != null)
+                {
+                    post.EntranceLength = 0.0;
+                }
+            }
         }
 
         /// <summary>

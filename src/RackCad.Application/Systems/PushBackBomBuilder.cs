@@ -45,39 +45,58 @@ namespace RackCad.Application.Systems
             return new BillOfMaterials(components);
         }
 
-        /// <summary>Low IN/OUT (one per front x level) or high TROQUEL_REDONDO (one per front x level, peralte per cell).</summary>
+        /// <summary>
+        /// Low IN/OUT (one per front x level, resolved PER CELL via <see cref="DynamicRackLevelGeometry.At"/> — id, peralte
+        /// and length can differ by cell) or high TROQUEL_REDONDO (one per front x level, peralte per cell, transverse
+        /// LONGITUD = the corresponding IN/OUT's). Grouped by ProfileId, length and peralte.
+        /// </summary>
         private static void AddEndBeams(ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog, string category, bool isHighEnd)
         {
             var structure = system.Structure;
-            var beamId = isHighEnd
-                ? (string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId) ? PushBackDefaults.HighEndBeamCatalogId : system.HighEndBeamCatalogId)
-                : (string.IsNullOrWhiteSpace(structure.InOutBeamCatalogId) ? DynamicRackDefaults.InOutBeamCatalogId : structure.InOutBeamCatalogId);
-            var label = catalog?.BeamProfiles?.FirstOrDefault(entry => string.Equals(entry?.Id, beamId, StringComparison.OrdinalIgnoreCase))?.Label ?? beamId;
+            var highId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId) ? PushBackDefaults.HighEndBeamCatalogId : system.HighEndBeamCatalogId;
 
-            var grouped = new Dictionary<(double Length, double Peralte), int>();
+            var grouped = new Dictionary<(string BeamId, double Length, double Peralte), int>();
             for (var frontIndex = 0; frontIndex < structure.Fronts.Count; frontIndex++)
             {
                 var front = structure.Fronts[frontIndex];
-                var length = Round(front.BeamLength);
                 for (var level = 0; level < Math.Max(1, front.LoadLevels); level++)
                 {
-                    var peralte = Round(isHighEnd ? system.HighEndBeamPeralteAt(frontIndex, level) : structure.InOutBeamDepth);
-                    var key = (length, peralte);
+                    string beamId;
+                    double peralte;
+                    double length;
+                    if (isHighEnd)
+                    {
+                        beamId = highId;
+                        peralte = system.HighEndBeamPeralteAt(frontIndex, level);
+                        length = front.BeamLength; // the high beam matches the IN/OUT's transverse length
+                    }
+                    else
+                    {
+                        var configuration = DynamicRackLevelGeometry.At(structure, front, level + 1);
+                        beamId = string.IsNullOrWhiteSpace(configuration.InOutBeamCatalogId)
+                            ? (string.IsNullOrWhiteSpace(structure.InOutBeamCatalogId) ? DynamicRackDefaults.InOutBeamCatalogId : structure.InOutBeamCatalogId)
+                            : configuration.InOutBeamCatalogId;
+                        peralte = configuration.InOutBeamDepth > 0.0 ? configuration.InOutBeamDepth : structure.InOutBeamDepth;
+                        length = configuration.BeamLength > 0.0 ? configuration.BeamLength : front.BeamLength;
+                    }
+
+                    var key = (beamId, Round(length), Round(peralte));
                     grouped[key] = grouped.TryGetValue(key, out var current) ? current + 1 : 1;
                 }
             }
 
-            foreach (var group in grouped.OrderBy(g => g.Key.Length).ThenBy(g => g.Key.Peralte))
+            foreach (var group in grouped.OrderBy(g => g.Key.BeamId, StringComparer.OrdinalIgnoreCase).ThenBy(g => g.Key.Length).ThenBy(g => g.Key.Peralte))
             {
+                var label = catalog?.BeamProfiles?.FirstOrDefault(entry => string.Equals(entry?.Id, group.Key.BeamId, StringComparison.OrdinalIgnoreCase))?.Label ?? group.Key.BeamId;
                 var description = string.Format(CultureInfo.InvariantCulture, "{0} · Peralte {1:0.##}\"", label, group.Key.Peralte);
                 components.Add(new BomComponent
                 {
                     Category = category,
-                    ProfileId = beamId,
+                    ProfileId = group.Key.BeamId,
                     Description = description,
                     Length = group.Key.Length,
                     Quantity = group.Value,
-                    Pieces = new List<BomLine> { new BomLine { Category = category, ProfileId = beamId, Description = description, Length = group.Key.Length, Quantity = 1 } }
+                    Pieces = new List<BomLine> { new BomLine { Category = category, ProfileId = group.Key.BeamId, Description = description, Length = group.Key.Length, Quantity = 1 } }
                 });
             }
         }
