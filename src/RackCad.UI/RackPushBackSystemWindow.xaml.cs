@@ -85,6 +85,20 @@ namespace RackCad.UI
         internal bool HasValidModel => hasValidModel;
         internal IReadOnlyList<SelectiveSafetySelection> SafetySelections => safetySelections;
 
+        /// <summary>The safety families offered by the dialog: every applicable family EXCEPT entrance guides (GUIA), which
+        /// Push Back never admits — so GUIA is not even a visible option.</summary>
+        internal IReadOnlyList<SafetyElementCatalogEntry> SafetyElementsForDialog()
+            => (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
+                .Where(element => element != null && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType))
+                .ToList();
+
+        /// <summary>The library project a "Guardar en biblioteca" would write (the active Push Back payload + the opened
+        /// project's I-11 metadata). Exposed because the real save routes through a modal file dialog.</summary>
+        internal RackProject BuildLibraryProjectForTest()
+            => lastComputation?.Design == null
+                ? null
+                : RackProject.ForPushBack(lastComputation.Design).WithSourceMetadataFrom(sourceProject);
+
         // ---- Public contract (derived from the session) -----------------------------------------------------------
 
         public bool InsertRequested => session.InsertRequested;
@@ -581,10 +595,7 @@ namespace RackCad.UI
             // Push Back admits every applicable family EXCEPT entrance guides: the dialog is opened with includeGuia:false, so
             // GUIA is never offered; the selections are already low-end (the resolver normalized them on load). The assembler's
             // AuthorizedSafety filters again at build, so a GUIA can never reach the design/system/BOM/plan.
-            var elements = (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
-                .Where(element => element != null
-                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType))
-                .ToList();
+            var elements = SafetyElementsForDialog();
             var levels = state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList();
             if (levels.Count == 0) levels.Add(Math.Max(1, DynamicRackDefaults.DefaultLoadLevels));
             var postCount = Math.Max(2, state.Structure.Count + 1);
