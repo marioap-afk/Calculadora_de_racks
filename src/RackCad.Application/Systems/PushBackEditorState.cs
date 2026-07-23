@@ -85,6 +85,20 @@ namespace RackCad.Application.Systems
         /// <summary>Prune out-of-range matrix selections and re-seat the primary cell.</summary>
         public void NormalizeSelection() => structure.NormalizeSelection();
 
+        /// <summary>Normalize every existing cell's rear peralte against the catalog-allowed high-end values (Push Back's
+        /// canonical rule). After this, each cell holds a value the resolver will accept unchanged, so the state, the
+        /// assembled design and the resolved system agree. A null/empty list resolves every cell to the explicit 3.5 default.</summary>
+        public void NormalizePeraltes(IReadOnlyList<double> allowed)
+        {
+            foreach (var front in pushFronts)
+            {
+                foreach (var cell in front.Cells)
+                {
+                    cell.NormalizePeralte(allowed);
+                }
+            }
+        }
+
         /// <summary>Apply the buffer to the primary cell: the shared values via the matrix, the Push Back values to the
         /// parallel primary cell. The matrix may grow the front's levels, so re-sync first.</summary>
         public void CommitEditorValues(PushBackEditorValues values)
