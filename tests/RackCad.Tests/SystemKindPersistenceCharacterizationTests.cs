@@ -86,9 +86,10 @@ namespace RackCad.Tests
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
-            // Exact wrapper keys, in declaration order, PascalCase.
+            // Exact wrapper keys, in declaration order, PascalCase. PushBack is the additive I-18 slot (written null here,
+            // like every inactive slot); it is compatible and does NOT bump the wrapper major.
             Assert.Equal(
-                new[] { "SchemaVersion", "Kind", "Header", "DynamicSystem", "SelectiveRack", "FlowBed", "Larguero" },
+                new[] { "SchemaVersion", "Kind", "Header", "DynamicSystem", "SelectiveRack", "FlowBed", "Larguero", "PushBack" },
                 root.EnumerateObject().Select(p => p.Name).ToArray());
 
             Assert.Equal("2.0", root.GetProperty("SchemaVersion").GetString());
@@ -96,7 +97,7 @@ namespace RackCad.Tests
 
             // The active payload is an object; every other payload slot is written as null.
             Assert.Equal(JsonValueKind.Object, root.GetProperty(activePayloadKey).ValueKind);
-            foreach (var key in new[] { "Header", "DynamicSystem", "SelectiveRack", "FlowBed", "Larguero" })
+            foreach (var key in new[] { "Header", "DynamicSystem", "SelectiveRack", "FlowBed", "Larguero", "PushBack" })
             {
                 if (key != activePayloadKey)
                 {

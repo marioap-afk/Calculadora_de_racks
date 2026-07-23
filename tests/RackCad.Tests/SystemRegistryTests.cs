@@ -21,14 +21,15 @@ namespace RackCad.Tests
             RackSystemKind.SelectiveRack,
             RackSystemKind.Cama,
             RackSystemKind.Larguero,
+            RackSystemKind.PushBack,
         };
 
         [Fact]
-        public void Default_ContainsExactlyTheFiveKinds_NoneMissingNoDuplicates()
+        public void Default_ContainsExactlyTheSixKinds_NoneMissingNoDuplicates()
         {
             var kinds = SystemRegistry.Default.Descriptors.Select(d => d.Kind).ToArray();
 
-            Assert.Equal(5, kinds.Length);
+            Assert.Equal(6, kinds.Length);
             Assert.Equal(kinds.Length, kinds.Distinct().Count()); // no duplicates
             Assert.Equal(
                 Enum.GetValues(typeof(RackSystemKind)).Cast<RackSystemKind>().ToHashSet(),
@@ -51,6 +52,7 @@ namespace RackCad.Tests
         [InlineData(RackSystemKind.SelectiveRack, "Selectivo")]
         [InlineData(RackSystemKind.Cama, "Cama de rodamiento")]
         [InlineData(RackSystemKind.Larguero, "Larguero")]
+        [InlineData(RackSystemKind.PushBack, "Push Back")]
         public void Default_EachKind_ReturnsExactVisibleLabel(RackSystemKind kind, string expectedLabel)
         {
             Assert.Equal(expectedLabel, SystemRegistry.Default.Get(kind).LibraryLabel);

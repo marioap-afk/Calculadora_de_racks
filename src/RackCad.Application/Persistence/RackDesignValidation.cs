@@ -38,5 +38,15 @@ namespace RackCad.Application.Persistence
                && design.Pallet.Depth > 0.0
                && design.PalletsDeep >= 2
                && IsUsableDynamic(system);
+
+        // Push Back reuses the dynamic structure; a library load carries only the editable design (no resolved system).
+        // Aligned with PushBackResolver.Validate: real pallet dimensions, >= 2 fondos and >= 1 load level.
+        public static bool IsUsablePushBack(PushBackDesign design)
+            => design?.Structure?.Pallet != null
+               && design.Structure.Pallet.Front > 0.0
+               && design.Structure.Pallet.Depth > 0.0
+               && design.Structure.Pallet.Height > 0.0
+               && design.Structure.PalletsDeep >= 2
+               && design.Structure.LoadLevels >= 1;
     }
 }

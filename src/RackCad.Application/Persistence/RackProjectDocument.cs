@@ -29,6 +29,10 @@ namespace RackCad.Application.Persistence
         /// <summary>Larguero component (schema-versioned, flat DTO); set when Kind is Larguero.</summary>
         public LargueroDocument Larguero { get; set; }
 
+        /// <summary>Push Back design (schema-versioned, flat DTO with its own ExtensionData); set when Kind is PushBack.
+        /// Additive/optional — it does NOT bump the wrapper major (I-11).</summary>
+        public PushBackDesignDocument PushBack { get; set; }
+
         /// <summary>
         /// Wrapper-level JSON fields this build does not know about, preserved verbatim across a load/save (I-11, D3).
         /// Only UNKNOWN keys land here; every known payload slot above is a typed property, so preserving this dictionary
