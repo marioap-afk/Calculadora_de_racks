@@ -62,13 +62,22 @@ namespace RackCad.Application.Systems
             }
 
             // Safety: Push Back admits every applicable family EXCEPT entrance guides, which are removed here so a
-            // guide never reaches the plan, the BOM or a snapshot.
-            foreach (var selection in structure.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
+            // guide never reaches the plan, the BOM or a snapshot. The GUIA-free set is exposed on the Push Back system
+            // AND written back onto the shared structure, so the dynamic builders — used later as a BLACK BOX — never
+            // emit a guide instance either.
+            var authorized = (structure.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
+                .Where(selection => selection != null && !IsEntranceGuide(selection))
+                .Select(selection => selection.DeepCopy())
+                .ToList();
+            foreach (var selection in authorized)
             {
-                if (selection != null && !IsEntranceGuide(selection))
-                {
-                    system.SafetySelections.Add(selection.DeepCopy());
-                }
+                system.SafetySelections.Add(selection);
+            }
+
+            structure.SafetySelections.Clear();
+            foreach (var selection in authorized)
+            {
+                structure.SafetySelections.Add(selection.DeepCopy());
             }
 
             return system;
