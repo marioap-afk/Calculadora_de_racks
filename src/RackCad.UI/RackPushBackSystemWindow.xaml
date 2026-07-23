@@ -171,6 +171,8 @@
                     <WrapPanel Margin="0,0,0,4">
                         <Button x:Name="InsertButton" Content="Insertar vista" Margin="0,0,6,0" Click="Insert_Click" />
                         <Button x:Name="UpdateButton" Content="Actualizar" Margin="0,0,6,0" Click="Update_Click" />
+                        <Button x:Name="BomButton" Content="BOM" Margin="0,0,6,0" Click="Bom_Click" />
+                        <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" Margin="0,0,6,0" Click="SaveLibrary_Click" />
                         <Button x:Name="CloseButton" Content="Cerrar" Click="Close_Click" />
                     </WrapPanel>
                     <TextBlock x:Name="StatusText" TextWrapping="Wrap" Foreground="#264A63" />
@@ -182,7 +184,7 @@
                     <TextBlock x:Name="PreviewSummary" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,4" Foreground="#264A63" />
                     <TextBlock x:Name="PreviewHint" DockPanel.Dock="Bottom" TextWrapping="Wrap" Foreground="#607080" />
                     <Border BorderBrush="#C4CFD9" BorderThickness="1" Background="#F7FAFC">
-                        <Canvas x:Name="PreviewCanvas" ClipToBounds="True" />
+                        <Canvas x:Name="PreviewCanvas" ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />
                     </Border>
                 </DockPanel>
             </GroupBox>

@@ -4,7 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Headers;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
@@ -661,6 +664,55 @@ namespace RackCad.UI
             var pieces = plan == null ? 0 : plan.Headers.SelectMany(g => g.Instances).Count() + plan.LooseInstances.Count;
             PreviewSummary.Text = string.Format(CultureInfo.InvariantCulture, "{0} · {1} pieza(s)", ViewLabel(view, section), pieces);
             PreviewHint.Text = "Vista previa esquemática de la vista seleccionada.";
+            DrawPlan(plan);
+        }
+
+        private void PreviewCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => RenderPreview();
+
+        /// <summary>A stable, generic schematic of a resolved plan: one marker per instance at its scaled insertion point,
+        /// colour-coded by role. It renders the geometry Application already produced — no recomputation, no re-projection.</summary>
+        private void DrawPlan(DynamicSystemPlan plan)
+        {
+            PreviewCanvas.Children.Clear();
+            if (plan == null) return;
+            var instances = plan.Headers.SelectMany(group => group.Instances).Concat(plan.LooseInstances).ToList();
+            if (instances.Count == 0) return;
+
+            var width = PreviewCanvas.ActualWidth;
+            var height = PreviewCanvas.ActualHeight;
+            if (width < 20.0 || height < 20.0) return;
+
+            var minX = instances.Min(i => i.Insertion.X);
+            var maxX = instances.Max(i => i.Insertion.X);
+            var minY = instances.Min(i => i.Insertion.Y);
+            var maxY = instances.Max(i => i.Insertion.Y);
+            const double margin = 12.0;
+            var scale = Math.Min((width - 2 * margin) / Math.Max(1e-6, maxX - minX), (height - 2 * margin) / Math.Max(1e-6, maxY - minY));
+            if (double.IsInfinity(scale) || double.IsNaN(scale) || scale <= 0.0) scale = 1.0;
+
+            foreach (var instance in instances)
+            {
+                var px = margin + (instance.Insertion.X - minX) * scale;
+                var py = height - margin - (instance.Insertion.Y - minY) * scale; // flip Y (world up -> screen down)
+                var marker = new Rectangle { Width = 6.0, Height = 6.0, Fill = RoleBrush(instance.Role) };
+                Canvas.SetLeft(marker, px - 3.0);
+                Canvas.SetTop(marker, py - 3.0);
+                PreviewCanvas.Children.Add(marker);
+            }
+        }
+
+        private static Brush RoleBrush(HeaderBlockRole role)
+        {
+            switch (role)
+            {
+                case HeaderBlockRole.Beam: return Brushes.SteelBlue;
+                case HeaderBlockRole.Tope: return Brushes.OrangeRed;
+                case HeaderBlockRole.Safety: return Brushes.Goldenrod;
+                case HeaderBlockRole.Rail:
+                case HeaderBlockRole.Roller:
+                case HeaderBlockRole.Stop: return Brushes.MediumSeaGreen;
+                default: return Brushes.SlateGray;
+            }
         }
 
         private DynamicSystemPlan PlanFor(string view, int section)
@@ -734,6 +786,48 @@ namespace RackCad.UI
         }
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+        // ---- BOM + library ---------------------------------------------------------------------------------------
+
+        private void Bom_Click(object sender, RoutedEventArgs e)
+        {
+            RequestRecompute();
+            if (!hasValidModel || lastComputation?.Bom == null)
+            {
+                SetStatus("Genera un sistema válido antes de ver el BOM.", true);
+                return;
+            }
+
+            new RackBomWindow(lastComputation.Bom) { Owner = this }.ShowDialog();
+        }
+
+        private void SaveLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            RequestRecompute();
+            if (!hasValidModel || lastComputation?.Design == null)
+            {
+                SetStatus("Genera un sistema válido antes de guardar.", true);
+                return;
+            }
+
+            var path = UiSupport.PromptSaveToLibrary(this, NameBox.Text, "sistema");
+            if (path == null) return;
+
+            try
+            {
+                session.Identity.EnsureId();
+                session.Identity.SetName(NameBox.Text?.Trim());
+                // Save ONLY the active Push Back payload; WithSourceMetadataFrom preserves the opened project's unknown JSON
+                // fields + non-downgraded schema version (I-11). Saving never flags an insert.
+                var project = RackProject.ForPushBack(lastComputation.Design).WithSourceMetadataFrom(sourceProject);
+                new RackProjectStore().Save(project, path);
+                SetStatus("Sistema guardado: " + System.IO.Path.GetFileName(path), false);
+            }
+            catch (Exception ex)
+            {
+                SetStatus("No se pudo guardar: " + ex.Message, true);
+            }
+        }
 
         // ---- Small helpers -------------------------------------------------------------------------------------
 
