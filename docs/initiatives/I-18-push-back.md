@@ -114,7 +114,12 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
     (`DynamicRackLevelGeometry.At`); (4) **autoridad única** de seguridad baja (resolver `Side=Left`; frontal posterior
     sin seguridad normal; BOM low-only sin doble conteo; GUIA nunca); (5) tope canónico `SelectiveTopePlacement.SnapY`
     (sube 8" y ajusta, SAQUE+LONGITUD); (6) **golden fijos** (SHA-256 de firma detallada) para las 5 vistas y el BOM.
-    59 pruebas Push Back; suite **1065 verde**; UI/Plugin 0 err; validador I-19 sin errores nuevos.
+  - **Coherencia de longitudes:** fuente única `PushBackLoadBeamGeometry.CellBeamLength(front, nivel)` — el haz bajo
+    IN/OUT y el alto TROQUEL_REDONDO de una celda comparten la longitud transversal **por frente y nivel**
+    (`DynamicRackLevelGeometry.At`), no `front.BeamLength` global; el **tope** del BOM usa `CellBeamLength + LengthAllowance`
+    igual que los bloques de tope de las tres vistas. Sin override `CellBeamLength == front.BeamLength` ⇒ los **5 pins de
+    vista no cambian**; solo se actualizó el pin del **BOM**. 61 pruebas Push Back; suite **1067 verde**; UI/Plugin 0 err;
+    validador I-19 sin errores nuevos.
 - **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD.
 - **I-18c**: guía y cierre.
 

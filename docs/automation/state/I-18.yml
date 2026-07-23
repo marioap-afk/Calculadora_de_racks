@@ -8,7 +8,7 @@ automation_state:
   gate: none
   attempts: 0
   next_action: revision-del-orquestador-de-i18a-pura-completa-luego-i18b-registro-editor-handler-dibujo-y-comando-con-validacion-autocad
-  last_evidence_commit: 399ab0c2643efdcf181d87daabb497c3d7f30a73
+  last_evidence_commit: 6345080329123bbde21ebe561cc40fe262432c0e
 execution_context:
   mode: manual-git-only
   worktree: feature-push-back
@@ -32,8 +32,10 @@ evidence:
   i18a_notes: proyeccion-por-celda-en-frontal-planta-recuperada-por-posicion-role-pieceid-espejo-no-por-nombre-de-grupo-la-validacion-visual-final-de-la-geometria-corresponde-a-i18b-en-autocad
   i18a_corrections: >-
     corrida-correctiva-cierra-los-6-hallazgos-de-revision-1-frontal-posterior-localiza-el-nivel-con-los-niveles-del-frente-no-la-proyeccion-global-tolerancia-explicita-sin-fallback-silencioso-2-planta-peralte-envolvente-max-pushbackhighendbeamgeometry-plantaperalte-3-bom-inout-bajo-por-celda-dynamicracklevelgeometry-at-4-autoridad-unica-de-seguridad-baja-resolver-side-left-composer-conserva-safety-quita-tope-frontal-posterior-sin-seguridad-normal-bom-low-only-sin-doble-conteo-guia-nunca-5-tope-canonico-selectivetopeplacement-snapy-sube-8-y-ajusta-saque-longitud-6-golden-fijos-sha256-de-firma-detallada-view-role-pieceid-blockname-insertion-anchor-rotacion-espejo-params-para-lateral-lateral-corte-frontal-entrada-frontal-posterior-planta-y-bom
-  tests_pushback_final: 59-verde-core-plan-bom-vistas-correcciones-safety-golden
-  domain_application_tests_final: 1065-verde-0-fallos-golden-dinamico-intactos
+  i18a_length_coherence: >-
+    fuente-unica-pushbackloadbeamgeometry-cellbeamlength-front-nivel-el-haz-bajo-inout-y-alto-troquel-redondo-de-una-celda-comparten-la-misma-longitud-transversal-por-frente-y-nivel-dynamicracklevelgeometry-at-no-front-beamlength-global-bom-inout-y-redondo-por-celda-tope-bom-cellbeamlength-mas-lengthallowance-igual-que-los-bloques-de-tope-lateral-frontal-planta-sin-override-cellbeamlength-igual-a-front-beamlength-asi-que-los-5-pins-de-vista-no-cambian-solo-el-pin-del-bom-se-actualiza-anterior-139c18ef-nuevo-057c6d2d
+  tests_pushback_final: 61-verde-core-plan-bom-vistas-correcciones-safety-golden-coherencia-longitudes
+  domain_application_tests_final: 1067-verde-0-fallos-golden-dinamico-intactos
 autocad_validation:
   status: not-applicable-i18a
   note: i18a-es-nucleo-puro-sin-cableado-de-plugin-validado-por-geometria-systemplan-bom-y-golden-la-validacion-autocad-corresponde-a-i18b
