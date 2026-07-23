@@ -16,6 +16,24 @@ namespace RackCad.Application.Systems
     /// </summary>
     public static class PushBackLoadBeamGeometry
     {
+        /// <summary>
+        /// The transverse LONGITUD of one cell's beams, PER FRONT AND LEVEL — the same rule the resolved cell carries:
+        /// the resolved cell's <see cref="DynamicRackLevel.BeamLength"/> when valid, else the front's. Both the low IN/OUT
+        /// and the high TROQUEL_REDONDO of a cell share this length, and the drawing (lateral) and the BOM consume it, so
+        /// they cannot drift by level. With no per-level override the cell length equals the front length (so the golden
+        /// views are unchanged); a per-level <c>BeamLengthOverride</c> makes them differ by level.
+        /// </summary>
+        public static double CellBeamLength(DynamicRackSystem structure, DynamicRackFront front, int levelNumber)
+        {
+            if (structure == null || front == null)
+            {
+                return 0.0;
+            }
+
+            var cell = DynamicRackLevelGeometry.At(structure, front, levelNumber);
+            return cell.BeamLength > 0.0 ? cell.BeamLength : front.BeamLength;
+        }
+
         /// <summary>Low-end IN/OUT beams (the dynamic exit placements, unchanged): one per front x level.</summary>
         public static IReadOnlyList<HeaderBlockInstance> LowBeams(PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null)
         {
@@ -87,9 +105,11 @@ namespace RackCad.Application.Systems
                 };
                 instance.DynamicParameters[SelectiveRackDefaults.PeralteParam] =
                     system.HighEndBeamPeralteAt(frontIndex, placement.LevelNumber - 1);
-                if (placement.BeamLength > 0.0)
+                // The high beam's LONGITUD is the cell's transverse length (same as its low IN/OUT), per front and level.
+                var length = front != null ? CellBeamLength(structure, front, placement.LevelNumber) : placement.BeamLength;
+                if (length > 0.0)
                 {
-                    instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = placement.BeamLength;
+                    instance.DynamicParameters[SelectiveRackDefaults.LengthParam] = length;
                 }
 
                 result.Add(instance);
