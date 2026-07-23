@@ -50,17 +50,17 @@
                 <!-- General data -->
                 <GroupBox Header="Datos generales">
                     <WrapPanel Orientation="Horizontal">
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima frente" /><TextBox x:Name="FrontBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima fondo" /><TextBox x:Name="DepthBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima alto" /><TextBox x:Name="PalletHeightBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peso" /><TextBox x:Name="WeightBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima frente" /><controls:NumericField x:Name="FrontBox" Width="70" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima fondo" /><controls:NumericField x:Name="DepthBox" Width="70" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima alto" /><controls:NumericField x:Name="PalletHeightBox" Width="70" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peso" /><controls:NumericField x:Name="WeightBox" Width="70" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
                         <StackPanel Margin="0,0,10,4"><TextBlock Text="Unidad" /><ComboBox x:Name="WeightUnitBox" Width="60" SelectionChanged="Combo_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondos base" /><TextBox x:Name="PalletsDeepBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tolerancia" /><TextBox x:Name="ToleranceBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondos base" /><controls:NumericField x:Name="PalletsDeepBox" Width="60" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tolerancia" /><controls:NumericField x:Name="ToleranceBox" Width="60" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
                         <StackPanel Margin="0,0,10,4"><TextBlock Text="Poste" /><controls:CatalogCombo x:Name="PostBox" Width="150" DisplayMemberPath="DisplayName" SelectionChanged="Combo_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte poste" /><TextBox x:Name="PostPeralteBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte IN/OUT base" /><TextBox x:Name="BeamDepthBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="SAQUE topes" /><TextBox x:Name="SaqueBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte poste" /><controls:NumericField x:Name="PostPeralteBox" Width="60" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte IN/OUT base" /><controls:NumericField x:Name="BeamDepthBox" Width="70" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="SAQUE topes" /><controls:NumericField x:Name="SaqueBox" Width="70" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
                     </WrapPanel>
                 </GroupBox>
 
@@ -70,7 +70,7 @@
                         <CheckBox x:Name="NumberFrontsCheck" Content="Numerar frentes" Margin="0,0,12,0" Click="Input_Changed" />
                         <CheckBox x:Name="NumberLevelsCheck" Content="Numerar niveles" Margin="0,0,12,0" Click="Input_Changed" />
                         <CheckBox x:Name="DrawRackNameCheck" Content="Dibujar nombre" Margin="0,0,12,0" Click="Input_Changed" />
-                        <StackPanel Margin="0,0,10,0"><TextBlock Text="Escala anot." /><TextBox x:Name="AnnotationScaleBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,0"><TextBlock Text="Escala anot." /><controls:NumericField x:Name="AnnotationScaleBox" Width="55" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
                         <StackPanel><TextBlock Text="Cotas" /><ComboBox x:Name="DimensionsBox" Width="110" SelectionChanged="Combo_Changed" /></StackPanel>
                     </WrapPanel>
                 </GroupBox>
@@ -80,7 +80,7 @@
                     <StackPanel>
                         <WrapPanel Margin="0,0,0,4">
                             <TextBlock Text="Frentes" VerticalAlignment="Center" Margin="0,0,4,0" />
-                            <TextBox x:Name="FrontCountBox" Width="45" LostFocus="FrontCount_Changed" />
+                            <controls:NumericField x:Name="FrontCountBox" Width="45" LostFocus="FrontCount_Changed" IntegerOnly="True" Minimum="1" />
                             <Button x:Name="AddFrontButton" Content="+" Width="26" Margin="4,0,0,0" Click="AddFront_Click" />
                             <Button x:Name="RemoveFrontButton" Content="-" Width="26" Margin="2,0,12,0" Click="RemoveFront_Click" />
                             <TextBlock Text="Frente actual" VerticalAlignment="Center" Margin="0,0,4,0" />
@@ -89,13 +89,13 @@
                             <ComboBox x:Name="SelectedLevelBox" Width="55" SelectionChanged="SelectedLevel_Changed" />
                         </WrapPanel>
                         <WrapPanel>
-                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Posiciones" /><TextBox x:Name="PositionsBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
-                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Niveles" /><TextBox x:Name="LevelsBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Posiciones" /><controls:NumericField x:Name="PositionsBox" Width="55" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Niveles" /><controls:NumericField x:Name="LevelsBox" Width="55" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
                             <Button x:Name="AddLevelButton" Content="+ nivel" Margin="0,14,4,4" Click="AddLevel_Click" />
                             <Button x:Name="RemoveLevelButton" Content="- nivel" Margin="0,14,12,4" Click="RemoveLevel_Click" />
-                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondos frente" /><TextBox x:Name="FondosBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
-                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondo inicial" /><TextBox x:Name="DepthStartBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
-                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Alto 1er nivel" /><TextBox x:Name="FirstLevelHeightBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondos frente" /><controls:NumericField x:Name="FondosBox" Width="55" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Fondo inicial" /><controls:NumericField x:Name="DepthStartBox" Width="55" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
+                            <StackPanel Margin="0,0,10,4"><TextBlock Text="Alto 1er nivel" /><controls:NumericField x:Name="FirstLevelHeightBox" Width="60" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
                         </WrapPanel>
                     </StackPanel>
                 </GroupBox>
@@ -103,13 +103,13 @@
                 <!-- Shared cell -->
                 <GroupBox Header="Celda (tarima y largueros)">
                     <WrapPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima frente" /><TextBox x:Name="CellPalletFrontBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima alto" /><TextBox x:Name="CellPalletHeightBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima peso" /><TextBox x:Name="CellPalletWeightBox" Width="60" LostFocus="Input_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Claro" /><TextBox x:Name="CellClearBox" Width="55" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima frente" /><controls:NumericField x:Name="CellPalletFrontBox" Width="60" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima alto" /><controls:NumericField x:Name="CellPalletHeightBox" Width="60" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Tarima peso" /><controls:NumericField x:Name="CellPalletWeightBox" Width="60" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Claro" /><controls:NumericField x:Name="CellClearBox" Width="55" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
                         <StackPanel Margin="0,0,10,4"><TextBlock Text="Larguero IN/OUT" /><ComboBox x:Name="CellInOutBeamBox" Width="150" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="InOutBeam_Changed" /></StackPanel>
                         <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte IN/OUT" /><ComboBox x:Name="CellInOutPeralteBox" Width="65" SelectionChanged="Combo_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Largo manual" /><TextBox x:Name="CellBeamLengthOverrideBox" Width="70" LostFocus="Input_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,10,4"><TextBlock Text="Largo manual" /><controls:NumericField x:Name="CellBeamLengthOverrideBox" Width="70" LostFocus="Input_Changed" IsOptional="True" Minimum="0" MinimumInclusive="False" /></StackPanel>
                         <StackPanel Margin="0,0,10,4"><TextBlock Text="Larguero interm." /><ComboBox x:Name="CellIntermediateBeamBox" Width="150" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="IntermediateBeam_Changed" /></StackPanel>
                         <StackPanel Margin="0,0,10,4"><TextBlock Text="Peralte interm." /><ComboBox x:Name="CellIntermediatePeralteBox" Width="65" SelectionChanged="Combo_Changed" /></StackPanel>
                     </WrapPanel>

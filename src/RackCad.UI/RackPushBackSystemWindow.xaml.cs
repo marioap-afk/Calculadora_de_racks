@@ -24,6 +24,8 @@ namespace RackCad.UI
     /// state, ask the assembler to recompute, render the result and produce a <see cref="PushBackInsertionRequest"/>. It never
     /// computes geometry, BOM, slope, topes or persistence itself, and it references no AutoCAD type — the Plugin host (a later
     /// increment) draws the payload. It never reuses <see cref="RackDynamicSystemWindow"/> as its editor.
+    /// Numeric entry uses <see cref="NumericField"/> (localized parse + range + visible error); a control in error blocks the
+    /// recompute, so a stale model is never inserted/saved silently — <see cref="CurrentInputsAreValid"/> gates every action.
     /// </summary>
     public partial class RackPushBackSystemWindow : Window
     {
@@ -39,9 +41,10 @@ namespace RackCad.UI
 
         private bool isEditingExisting;
         private bool suppressSync;
-        private bool hasValidModel;
+        private bool hasValidModel;          // ever produced a valid model (a preview reference exists)
+        private bool currentInputsAreValid;  // the CURRENT controls recomputed to a valid model
         private RackProject sourceProject;
-        private PushBackEditorComputation lastComputation;
+        private PushBackEditorComputation lastComputation; // the LAST VALID computation (only replaced on a valid build)
         private SelectionMatrixModel topeModel;
         private List<int> topeShape = new List<int>();
 
@@ -83,6 +86,7 @@ namespace RackCad.UI
         internal SelectionMatrixModel TopeModel => topeModel;
         internal PushBackEditorComputation LastComputation => lastComputation;
         internal bool HasValidModel => hasValidModel;
+        internal bool CurrentInputsAreValid => currentInputsAreValid;
         internal IReadOnlyList<SelectiveSafetySelection> SafetySelections => safetySelections;
 
         /// <summary>The safety families offered by the dialog: every applicable family EXCEPT entrance guides (GUIA), which
@@ -93,9 +97,9 @@ namespace RackCad.UI
                 .ToList();
 
         /// <summary>The library project a "Guardar en biblioteca" would write (the active Push Back payload + the opened
-        /// project's I-11 metadata). Exposed because the real save routes through a modal file dialog.</summary>
+        /// project's I-11 metadata), or NULL when the CURRENT controls are invalid — a stale model is never saved.</summary>
         internal RackProject BuildLibraryProjectForTest()
-            => lastComputation?.Design == null
+            => !currentInputsAreValid || lastComputation?.Design == null
                 ? null
                 : RackProject.ForPushBack(lastComputation.Design).WithSourceMetadataFrom(sourceProject);
 
@@ -157,23 +161,23 @@ namespace RackCad.UI
             {
                 NameBox.Text = rackName ?? string.Empty;
                 var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
-                FrontBox.Text = Num(pallet.Front);
-                DepthBox.Text = Num(pallet.Depth);
-                PalletHeightBox.Text = Num(pallet.Height);
-                WeightBox.Text = Num(pallet.Weight);
+                FrontBox.SetNumber(pallet.Front);
+                DepthBox.SetNumber(pallet.Depth);
+                PalletHeightBox.SetNumber(pallet.Height);
+                WeightBox.SetNumber(pallet.Weight);
                 WeightUnitBox.SelectedItem = string.IsNullOrWhiteSpace(pallet.WeightUnit) ? "kg" : pallet.WeightUnit;
-                PalletsDeepBox.Text = Math.Max(2, inputs.PalletsDeep).ToString(CultureInfo.InvariantCulture);
-                ToleranceBox.Text = Num(inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletTolerance);
+                PalletsDeepBox.SetNumber(Math.Max(2, inputs.PalletsDeep));
+                ToleranceBox.SetNumber(inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletTolerance);
                 PostBox.SelectedId = string.IsNullOrWhiteSpace(inputs.PostCatalogId) ? catalog?.Defaults?.Post : inputs.PostCatalogId;
-                PostPeralteBox.Text = Num(inputs.PostPeralte);
-                BeamDepthBox.Text = Num(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
-                SaqueBox.Text = Num(state.RearTopeSaque);
+                PostPeralteBox.SetNumber(inputs.PostPeralte);
+                BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
+                SaqueBox.SetNumber(state.RearTopeSaque);
 
                 var options = inputs.Annotations ?? new DynamicAnnotationOptions();
                 NumberFrontsCheck.IsChecked = options.NumberFronts;
                 NumberLevelsCheck.IsChecked = options.NumberLevels;
                 DrawRackNameCheck.IsChecked = options.DrawRackName;
-                AnnotationScaleBox.Text = Num(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
+                AnnotationScaleBox.SetNumber(options.AnnotationScale > 0.0 ? options.AnnotationScale : 1.0);
                 DimensionsBox.SelectedIndex = Math.Min((int)DimensionDetail.Detailed, Math.Max(0, (int)options.Dimensions));
 
                 safetySelections.Clear();
@@ -210,24 +214,24 @@ namespace RackCad.UI
             suppressSync = true;
             try
             {
-                FrontCountBox.Text = state.Structure.Count.ToString(CultureInfo.InvariantCulture);
+                FrontCountBox.SetNumber(state.Structure.Count);
                 if (SelectedFrontBox.Items.Count == state.Structure.Count) SelectedFrontBox.SelectedIndex = frontIndex;
                 RefreshLevelSelector();
                 if (SelectedLevelBox.Items.Count == Math.Max(1, front.LoadLevels)) SelectedLevelBox.SelectedIndex = levelIndex;
 
-                PositionsBox.Text = front.PalletCount.ToString(CultureInfo.InvariantCulture);
-                LevelsBox.Text = front.LoadLevels.ToString(CultureInfo.InvariantCulture);
-                FondosBox.Text = front.PalletsDeep.ToString(CultureInfo.InvariantCulture);
-                DepthStartBox.Text = front.DepthStartPosition.ToString(CultureInfo.InvariantCulture);
-                FirstLevelHeightBox.Text = Num(front.FirstLevelHeight);
+                PositionsBox.SetNumber(front.PalletCount);
+                LevelsBox.SetNumber(front.LoadLevels);
+                FondosBox.SetNumber(front.PalletsDeep);
+                DepthStartBox.SetNumber(front.DepthStartPosition);
+                FirstLevelHeightBox.SetNumber(front.FirstLevelHeight);
 
-                CellPalletFrontBox.Text = Num(cell.PalletFront);
-                CellPalletHeightBox.Text = Num(cell.PalletHeight);
-                CellPalletWeightBox.Text = Num(cell.PalletWeight);
-                CellClearBox.Text = Num(cell.ClearHeight);
+                CellPalletFrontBox.SetNumber(cell.PalletFront);
+                CellPalletHeightBox.SetNumber(cell.PalletHeight);
+                CellPalletWeightBox.SetNumber(cell.PalletWeight);
+                CellClearBox.SetNumber(cell.ClearHeight);
                 CellInOutBeamBox.SelectedValue = cell.InOutBeamCatalogId;
                 SetPeralteOptions(CellInOutPeralteBox, cell.InOutBeamCatalogId, cell.InOutBeamDepth);
-                CellBeamLengthOverrideBox.Text = cell.BeamLengthOverride.HasValue ? Num(cell.BeamLengthOverride.Value) : string.Empty;
+                CellBeamLengthOverrideBox.SetNumber(cell.BeamLengthOverride); // null -> blank (optional field)
                 CellIntermediateBeamBox.SelectedValue = cell.IntermediateBeamCatalogId;
                 SetPeralteOptions(CellIntermediatePeralteBox, cell.IntermediateBeamCatalogId, cell.IntermediateBeamDepth);
 
@@ -264,8 +268,20 @@ namespace RackCad.UI
         {
             if (suppressSync) return;
 
+            // A control in error blocks the model rebuild: do NOT touch state/session/computation/baseline, keep the last
+            // valid model as a preview reference only, and disable every action.
+            if (!AllFieldsValid(out var fieldError))
+            {
+                currentInputsAreValid = false;
+                SetStatus(fieldError, true);
+                RenderPreview();
+                UpdateGuid();
+                UpdateButtons();
+                return;
+            }
+
             CommitCurrentCell();
-            state.RearTopeSaque = ReadDouble(SaqueBox, state.RearTopeSaque);
+            state.RearTopeSaque = SaqueBox.Value ?? PushBackDefaults.RearTopeSaque;
 
             var computation = assembler.Build(state, ReadInputs());
             if (computation.IsValid)
@@ -274,6 +290,7 @@ namespace RackCad.UI
                 assembler.AcceptComputation(state, computation); // advance the opaque baseline (never mutated by the window)
                 lastComputation = computation;
                 hasValidModel = true;
+                currentInputsAreValid = true;
                 SyncTopeMatrixIfShapeChanged();
                 UpdateViewSelector();
                 RenderPreview();
@@ -281,12 +298,44 @@ namespace RackCad.UI
             }
             else
             {
-                SetStatus("No se pudo generar el sistema: " + computation.Error, true); // keep the last valid model
+                currentInputsAreValid = false; // keep the last valid model; it is only a reference now
+                SetStatus("No se pudo generar el sistema: " + computation.Error, true);
+                RenderPreview();
             }
 
-            GuidText.Text = session.Identity.HasId ? session.Identity.Id : "(se asigna al insertar)";
+            UpdateGuid();
             UpdateButtons();
         }
+
+        /// <summary>True when EVERY numeric control currently parses within its range; otherwise the first offending field's
+        /// localized message is returned so the recompute can be blocked and the field marked.</summary>
+        private bool AllFieldsValid(out string error)
+        {
+            error = null;
+            NumericField firstError = null;
+            var errorCount = 0;
+            foreach (var field in AllNumericFields())
+            {
+                if (field.HasError)
+                {
+                    errorCount++;
+                    if (firstError == null) firstError = field;
+                }
+            }
+
+            if (firstError == null) return true;
+            error = "Corrige los campos numéricos marcados: " + (firstError.ErrorMessage ?? "valor inválido")
+                + (errorCount > 1 ? string.Format(CultureInfo.InvariantCulture, " (+{0} más)", errorCount - 1) : string.Empty);
+            return false;
+        }
+
+        private NumericField[] AllNumericFields() => new[]
+        {
+            FrontBox, DepthBox, PalletHeightBox, WeightBox, PalletsDeepBox, ToleranceBox, PostPeralteBox,
+            BeamDepthBox, SaqueBox, AnnotationScaleBox, FrontCountBox, PositionsBox, LevelsBox, FondosBox,
+            DepthStartBox, FirstLevelHeightBox, CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox,
+            CellClearBox, CellBeamLengthOverrideBox
+        };
 
         /// <summary>Read the cell panel (shared + Push Back values) and apply it to the primary selected cell + its front.</summary>
         private void CommitCurrentCell()
@@ -307,18 +356,18 @@ namespace RackCad.UI
             {
                 Dynamic = new DynamicEditorValues
                 {
-                    PalletCount = Math.Max(1, ReadInt(PositionsBox, front.PalletCount)),
-                    LoadLevels = Math.Max(1, ReadInt(LevelsBox, front.LoadLevels)),
-                    PalletsDeep = Math.Max(2, ReadInt(FondosBox, front.PalletsDeep)),
-                    DepthStartPosition = Math.Max(1, ReadInt(DepthStartBox, front.DepthStartPosition)),
-                    FirstLevelHeight = ReadDouble(FirstLevelHeightBox, front.FirstLevelHeight),
-                    PalletFront = ReadDouble(CellPalletFrontBox, cell.PalletFront),
-                    PalletHeight = ReadDouble(CellPalletHeightBox, cell.PalletHeight),
-                    PalletWeight = ReadDouble(CellPalletWeightBox, cell.PalletWeight),
-                    ClearHeight = ReadDouble(CellClearBox, cell.ClearHeight),
+                    PalletCount = IntVal(PositionsBox, front.PalletCount),
+                    LoadLevels = IntVal(LevelsBox, front.LoadLevels),
+                    PalletsDeep = IntVal(FondosBox, front.PalletsDeep),
+                    DepthStartPosition = IntVal(DepthStartBox, front.DepthStartPosition),
+                    FirstLevelHeight = Val(FirstLevelHeightBox, front.FirstLevelHeight),
+                    PalletFront = Val(CellPalletFrontBox, cell.PalletFront),
+                    PalletHeight = Val(CellPalletHeightBox, cell.PalletHeight),
+                    PalletWeight = Val(CellPalletWeightBox, cell.PalletWeight),
+                    ClearHeight = Val(CellClearBox, cell.ClearHeight),
                     InOutBeamCatalogId = CellInOutBeamBox.SelectedValue as string ?? cell.InOutBeamCatalogId,
                     InOutBeamDepth = SelectedPeralte(CellInOutPeralteBox, cell.InOutBeamDepth),
-                    BeamLengthOverride = ReadOptionalDouble(CellBeamLengthOverrideBox),
+                    BeamLengthOverride = CellBeamLengthOverrideBox.Value, // null when blank (optional override)
                     IntermediateBeamCatalogId = CellIntermediateBeamBox.SelectedValue as string ?? cell.IntermediateBeamCatalogId,
                     IntermediateBeamDepth = SelectedPeralte(CellIntermediatePeralteBox, cell.IntermediateBeamDepth)
                 },
@@ -332,19 +381,19 @@ namespace RackCad.UI
             var inputs = new PushBackEditorInputs
             {
                 Pallet = new PalletSpecification(
-                    ReadDouble(FrontBox, 42.0), ReadDouble(DepthBox, 48.0), ReadDouble(PalletHeightBox, 60.0),
-                    ReadDouble(WeightBox, 1000.0), WeightUnitBox.SelectedItem as string ?? "kg"),
-                PalletsDeep = Math.Max(2, ReadInt(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep)),
+                    Val(FrontBox, 42.0), Val(DepthBox, 48.0), Val(PalletHeightBox, 60.0),
+                    Val(WeightBox, 1000.0), WeightUnitBox.SelectedItem as string ?? "kg"),
+                PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
                 PostCatalogId = PostBox.SelectedId,
-                PostPeralte = ReadDouble(PostPeralteBox, 0.0),
-                PalletTolerance = ReadDouble(ToleranceBox, DynamicRackDefaults.DefaultPalletTolerance),
-                BeamDepth = ReadDouble(BeamDepthBox, DynamicRackDefaults.DefaultBeamDepth),
+                PostPeralte = Val(PostPeralteBox, 0.0),
+                PalletTolerance = Val(ToleranceBox, DynamicRackDefaults.DefaultPalletTolerance),
+                BeamDepth = Val(BeamDepthBox, DynamicRackDefaults.DefaultBeamDepth),
                 Annotations = new DynamicAnnotationOptions
                 {
                     NumberFronts = NumberFrontsCheck.IsChecked == true,
                     NumberLevels = NumberLevelsCheck.IsChecked == true,
                     DrawRackName = DrawRackNameCheck.IsChecked == true,
-                    AnnotationScale = ReadDouble(AnnotationScaleBox, 1.0),
+                    AnnotationScale = Val(AnnotationScaleBox, 1.0),
                     Dimensions = (DimensionDetail)Math.Min((int)DimensionDetail.Detailed, Math.Max(0, DimensionsBox.SelectedIndex))
                 }
             };
@@ -466,8 +515,8 @@ namespace RackCad.UI
 
         private void FrontCount_Changed(object sender, RoutedEventArgs e)
         {
-            if (suppressSync) return;
-            var requested = ReadInt(FrontCountBox, state.Structure.Count);
+            if (suppressSync || FrontCountBox.HasError) return;
+            var requested = IntVal(FrontCountBox, state.Structure.Count);
             if (requested >= 1 && requested != state.Structure.Count)
             {
                 MutateStructure(() => state.SetFrontCount(requested));
@@ -485,25 +534,31 @@ namespace RackCad.UI
         private void SelectedFront_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (suppressSync || SelectedFrontBox.SelectedIndex < 0) return;
-            CommitCurrentCell();
-            state.ToggleCell(SelectedFrontBox.SelectedIndex, state.Structure.SelectedLevelIndex, false);
-            LoadSelectedFront();
-            RequestRecompute();
+            SelectSingleCell(SelectedFrontBox.SelectedIndex, state.Structure.SelectedLevelIndex);
         }
 
         private void SelectedLevel_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (suppressSync || SelectedLevelBox.SelectedIndex < 0) return;
+            SelectSingleCell(state.Structure.SelectedFrontIndex, SelectedLevelBox.SelectedIndex);
+        }
+
+        /// <summary>Replace the selection with a single cell (the front/level combos), reload the panel, recompute.</summary>
+        private void SelectSingleCell(int frontIndex, int levelIndex)
+        {
+            if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
             CommitCurrentCell();
-            state.ToggleCell(state.Structure.SelectedFrontIndex, SelectedLevelBox.SelectedIndex, false);
+            state.ToggleCell(frontIndex, levelIndex, false);
             LoadSelectedFront();
             RequestRecompute();
         }
 
-        /// <summary>Commit the panel, run a structural mutation on the state, re-sync the matrix + panel, recompute once.</summary>
+        /// <summary>Commit the panel, run a structural mutation on the state, re-sync the matrix + panel, recompute once.
+        /// Blocked while any numeric field is in error (a structural change must not consume invalid inputs).</summary>
         private void MutateStructure(Action mutate)
         {
             if (suppressSync) return;
+            if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
             using (session.Recompute.Defer())
             {
                 CommitCurrentCell();
@@ -570,6 +625,7 @@ namespace RackCad.UI
 
         private void ApplyScope(DynamicRackCellScope scope)
         {
+            if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
             using (session.Recompute.Defer())
             {
                 state.ApplyScope(ReadCellValues(), scope);
@@ -658,7 +714,7 @@ namespace RackCad.UI
             }
         }
 
-        // ---- Preview (a stable, view-scoped textual representation; the canvas is enriched in a later step) -------
+        // ---- Preview -------------------------------------------------------------------------------------------
 
         private void RenderPreview()
         {
@@ -674,7 +730,9 @@ namespace RackCad.UI
             var plan = PlanFor(view, section);
             var pieces = plan == null ? 0 : plan.Headers.SelectMany(g => g.Instances).Count() + plan.LooseInstances.Count;
             PreviewSummary.Text = string.Format(CultureInfo.InvariantCulture, "{0} · {1} pieza(s)", ViewLabel(view, section), pieces);
-            PreviewHint.Text = "Vista previa esquemática de la vista seleccionada.";
+            PreviewHint.Text = currentInputsAreValid
+                ? "Vista previa esquemática de la vista seleccionada."
+                : "⚠ La vista previa corresponde al ÚLTIMO cálculo válido; corrige los campos marcados.";
             DrawPlan(plan);
         }
 
@@ -773,11 +831,11 @@ namespace RackCad.UI
                 return;
             }
 
-            RequestRecompute();
-            if (!hasValidModel || session.System == null)
+            RequestRecompute(); // synchronous validate + build
+            if (!currentInputsAreValid || session.System == null)
             {
-                SetStatus("Genera un sistema válido antes de insertar en AutoCAD.", true);
-                return;
+                SetStatus("Corrige los datos: no se puede insertar un modelo inválido.", true);
+                return; // never fall back to the previous valid model
             }
 
             session.Identity.SetName(NameBox.Text?.Trim());
@@ -803,9 +861,9 @@ namespace RackCad.UI
         private void Bom_Click(object sender, RoutedEventArgs e)
         {
             RequestRecompute();
-            if (!hasValidModel || lastComputation?.Bom == null)
+            if (!currentInputsAreValid || lastComputation?.Bom == null)
             {
-                SetStatus("Genera un sistema válido antes de ver el BOM.", true);
+                SetStatus("Corrige los datos: no se puede mostrar el BOM de un modelo inválido.", true);
                 return;
             }
 
@@ -815,9 +873,9 @@ namespace RackCad.UI
         private void SaveLibrary_Click(object sender, RoutedEventArgs e)
         {
             RequestRecompute();
-            if (!hasValidModel || lastComputation?.Design == null)
+            if (!currentInputsAreValid || lastComputation?.Design == null)
             {
-                SetStatus("Genera un sistema válido antes de guardar.", true);
+                SetStatus("Corrige los datos: no se puede guardar un modelo inválido.", true);
                 return;
             }
 
@@ -844,8 +902,10 @@ namespace RackCad.UI
 
         private void UpdateButtons()
         {
-            InsertButton.IsEnabled = canInsertInAutoCad && hasValidModel;
-            UpdateButton.IsEnabled = canInsertInAutoCad && hasValidModel && isEditingExisting;
+            InsertButton.IsEnabled = canInsertInAutoCad && currentInputsAreValid;
+            UpdateButton.IsEnabled = canInsertInAutoCad && currentInputsAreValid && isEditingExisting;
+            BomButton.IsEnabled = currentInputsAreValid;
+            SaveLibraryButton.IsEnabled = currentInputsAreValid;
             if (!canInsertInAutoCad)
             {
                 InsertButton.ToolTip = "Disponible solo cuando la ventana se abre desde AutoCAD.";
@@ -853,12 +913,14 @@ namespace RackCad.UI
             }
             else
             {
-                InsertButton.ToolTip = "Inserta la vista seleccionada enlazada al sistema.";
+                InsertButton.ToolTip = currentInputsAreValid ? "Inserta la vista seleccionada enlazada al sistema." : "Corrige los campos numéricos marcados.";
                 UpdateButton.ToolTip = isEditingExisting
                     ? "Redibuja en sitio todas las vistas del sistema."
                     : "Disponible solo para un sistema abierto con RACKEDITAR.";
             }
         }
+
+        private void UpdateGuid() => GuidText.Text = session.Identity.HasId ? session.Identity.Id : "(se asigna al insertar)";
 
         private void SetStatus(string message, bool isError) => UiSupport.SetStatus(StatusText, message, isError);
 
@@ -880,13 +942,8 @@ namespace RackCad.UI
 
         private static double SelectedPeralte(ComboBox combo, double fallback) => combo?.SelectedItem is double value ? value : fallback;
 
-        private static string Num(double value) => value.ToString("0.####", CultureInfo.InvariantCulture);
+        private static double Val(NumericField field, double fallback) => field.Value ?? fallback;
 
-        private static double ReadDouble(TextBox box, double fallback) => UiSupport.TryNum(box?.Text, out var value) ? value : fallback;
-
-        private static int ReadInt(TextBox box, int fallback) => UiSupport.TryInt(box?.Text, out var value) ? value : fallback;
-
-        private static double? ReadOptionalDouble(TextBox box)
-            => UiSupport.TryOptionalNum(box?.Text, out var value) ? value : null;
+        private static int IntVal(NumericField field, int fallback) => field.Value.HasValue ? (int)Math.Round(field.Value.Value) : fallback;
     }
 }
