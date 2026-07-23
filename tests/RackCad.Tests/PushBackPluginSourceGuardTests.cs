@@ -67,11 +67,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void LateralNameSuffix_IsOwnedByTheService_NotTheCommand()
+        public void LateralNameSuffix_ServiceOwnsInsertNaming_EditRenameReproducesIt()
         {
-            // Single authority for "- lateral N": the service adds it; the command passes only the BASE name.
+            // INSERT authority: PushBackSystemDrawService.BlockName builds the "- lateral N" block name; BOTH insert-lateral
+            // call sites pass only the BASE name (rackName / name) to DrawAndPlace, so the service never double-appends.
             Assert.Contains("- lateral ", LateralService);
-            Assert.DoesNotContain("- lateral ", Commands);
+            Assert.Contains("DrawAndPlace(document, system, payload, rackName, section)", Commands);
+            Assert.Contains("DrawAndPlace(document, system, payload, name, corte.PostIndex)", Commands);
+
+            // EDIT path (4b): a RedrawInPlace keeps the existing block, so EditPushBack RENAMES it via SyncName, reproducing
+            // the SAME suffix the service would use — insert and edit stay consistent (as the dynamic edit does). The suffix
+            // therefore also appears in the command, but only inside that rename, never as a DrawAndPlace name argument.
+            Assert.Contains("RackBlockRenamer.SyncName", Commands);
         }
 
         // ---- Typed host dispatch ----
