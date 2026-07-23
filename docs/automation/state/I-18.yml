@@ -4,11 +4,11 @@ automation_state:
   branch: feature/push-back
   claim_id: 0fafaad2-d524-49a9-83f8-8965ac926b0c
   current_phase: I-18a
-  state: implementing
+  state: review-ready
   gate: none
   attempts: 0
-  next_action: implementar-items-4-7-geometria-propia-mas-composicion-caja-negra-de-los-systemplan-lateral-frontal-planta-mas-pushbackbombuilder-mas-golden-sobre-el-diseno-accionable-documentado-i18a-no-completa-hasta-cubrir-builders-bom-y-golden
-  last_evidence_commit: 1d665afc6afb574316b302fab1c7cfd6d3eeb5d2
+  next_action: revision-del-orquestador-de-i18a-pura-completa-luego-i18b-registro-editor-handler-dibujo-y-comando-con-validacion-autocad
+  last_evidence_commit: aa4d7f31838e1fbf067ebc63f812da80361c184b
 execution_context:
   mode: manual-git-only
   worktree: feature-push-back
@@ -17,19 +17,25 @@ evidence:
   base_commit: d873d82d36fbfba18e9ff00627e2c033bdbb4e8e
   claim_commit: c0bc249a1edccc6867dce430a1b5ef4ecbff71b0
   pb0_owner_decision: docs/automation/decisions/I-18.md
-  i18a_done_nucleo: domain-pushbackdesign-compone-dynamicrackdesign-pushbackreartope-offcells-pushbackdefaults-pushbacksystem-mas-application-pushbackresolver-reutiliza-dynamicracksystemresolver-pushbackflowbedlateralbuilder-compone-flowbedlateralbuilder-pushback-full-span-sin-menos-4-mas-persistence-pushbackdesigndocument-auto-versionado
-  i18a_done_correcciones: haz-alto-troquel-redondo-por-frente-x-nivel-pushbackfrontconfig-highendbeamperaltes-resolver-prioridad-celda-legacy-3punto5-explicito-no-allowed0-persistencia-fromdomain-design-source-hereda-extensiondata-y-no-degrada-minor-superior-resolvewriteversion-prueba-que-recorre-el-dominio-guia-rechazada-en-el-resolver-issafetyguia-system-safetyselections-sin-guia
-  tests_pushback: 23-verde
-  domain_application_tests: 1036-verde-0-fallos-golden-dinamico-intactos
-  validator_i19: sin-errores-nuevos-baseline-intacto
-  scope_guards: sin-registrar-pushback-en-registros-sin-enum-sin-ui-plugin-dibujo-sin-alterar-ni-extraer-dynamic-selective
-  i18a_remaining: items-4-a-7-geometria-push-back-propia-end-beams-bajo-inout-alto-troquel-redondo-ambos-snap-2-pulgadas-eje-de-cama-troquel-cama-del-inout-a-inicio-izq-der-del-larguero-posterior-intermedios-tangentes-al-mismo-eje-cama-full-span-pushback-sin-frenos-mas-composicion-caja-negra-de-systemplan-lateral-frontal-planta-quitar-por-role-pieceid-extremos-dinamicos-cama-dinamica-seguridad-dinamica-e-intermedios-dinamicos-agregar-piezas-push-back-reagrupar-headerinstancegrouper-mas-pushbackbombuilder-cabeceras-separadores-postes-inout-por-celda-troquel-redondo-por-celda-intermedios-cama-opaca-por-carril-nivel-topes-sin-doble-conteo-mas-golden-signature-lateral-frontal-planta
+  i18a_complete: true
+  i18a_item1_snapshot: pushbackresolver-snapshot-design-resolve-snapshot-resolve-preserva-peraltes-por-celda-reartope-y-seguridad-guia-excluida-en-snapshot-sistema-plan-bom-y-documento
+  i18a_item2_geometria: pushbackflowbedaxis-geometry-eje-troquel-cama-inout-a-inicio-del-troquel-redondo-pushbackloadbeamgeometry-bajo-inout-alto-troquel-redondo-por-celda-snap-2-pulgadas-pushbackintermediatebeamlateralbuilder-tangente-pushbackflowbedlateralbuilder-buildlateral-pushback-full-span-sin-frenos
+  i18a_item3_plan: pushbacksystemlateralbuilder-frontalbuilder-plantabuilder-composicion-caja-negra-quita-por-role-pieceid-extremos-inout-cama-seguridad-e-intermedios-dinamicos-agrega-piezas-push-back-reagrupa-headerinstancegrouper-no-muta-el-dinamico-cortes-por-poste
+  i18a_item4_tope: pushbackreartopebuilder-larguero-escalon-tope-de-3-no-poste-3-1-5-8-tope-por-celda-activa-saque-role-tope-desactivable-offcells
+  i18a_item5_bom: pushbackbombuilder-un-inout-y-un-troquel-redondo-por-celda-cama-opaca-full-span-por-carril-nivel-topes-activos-sin-segundo-inout-sin-menos-4-sin-frenos-sin-guias-sin-doble-conteo
+  tests_pushback: 44-verde-core-plan-bom-vistas
+  domain_application_tests: 1057-verde-0-fallos-golden-dinamico-intactos
+  build_ui_debug: 0-errores-0-advertencias
+  build_plugin_debug: 0-errores-2-msb3277-conocidos
+  validator_i19: sin-errores-nuevos-baseline-intacto-8-verde
+  scope_guards: sin-registrar-pushback-en-registros-sin-enum-sin-ui-plugin-dibujo-sin-alterar-extraer-ni-copiar-dynamic-selective-solo-apis-publicas-y-systemplan-como-caja-negra
+  i18a_notes: proyeccion-por-celda-en-frontal-planta-recuperada-por-posicion-role-pieceid-espejo-no-por-nombre-de-grupo-la-validacion-visual-final-de-la-geometria-corresponde-a-i18b-en-autocad
 autocad_validation:
   status: not-applicable-i18a
-  note: i18a-es-nucleo-puro-la-validacion-autocad-de-la-geometria-y-el-dibujo-corresponde-a-i18b
+  note: i18a-es-nucleo-puro-sin-cableado-de-plugin-validado-por-geometria-systemplan-bom-y-golden-la-validacion-autocad-corresponde-a-i18b
 owner_validation:
   status: pending
-  note: i18a-parcial-nucleo-y-correcciones-a-la-espera-de-revision-del-orquestador-items-4-7-pendientes
+  note: i18a-pura-completa-a-la-espera-de-revision-del-orquestador-antes-de-i18b
 decision_evidence:
   path: docs/automation/decisions/I-18.md
   resolved_gate: owner-decision-pb0
