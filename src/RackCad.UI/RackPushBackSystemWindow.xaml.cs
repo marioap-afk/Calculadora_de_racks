@@ -137,15 +137,18 @@ namespace RackCad.UI
         public void LoadNew()
         {
             var inputs = state.LoadNew();
-            // PB-VAL-04: a new rack opens with the catalog-driven safety defaults, exactly like the dynamic editor does.
-            // The Push Back authority is the single filter (drops GUIA, deep-copies, restricts every family to the LOW end),
-            // so no hard-coded list lives here and the shared defaults are never mutated.
-            safetySelections.Clear();
-            safetySelections.AddRange(new PushBackSafetyAuthority(catalog).Defaults());
             sourceProject = null;
             isEditingExisting = false;
             session.Identity.Adopt(null, null);
             LoadFromModel(inputs, string.Empty);
+
+            // PB-VAL-04: a new rack opens with the catalog-driven safety defaults, exactly like the dynamic editor does.
+            // The Push Back authority is the single filter (drops GUIA, deep-copies, restricts every family to the LOW end),
+            // so no hard-coded list lives here and the shared defaults are never mutated. Seeded AFTER LoadFromModel,
+            // which resets the selections for the loaded design.
+            safetySelections.Clear();
+            safetySelections.AddRange(new PushBackSafetyAuthority(catalog).Defaults());
+            Recompute();
         }
 
         /// <summary>A design opened from the library, edited as a NEW insert: keeps the suggested name, carries the source
@@ -934,6 +937,41 @@ namespace RackCad.UI
         {
             var (view, section) = SelectedView();
             RequestDraw(view, section, updateOnly: false);
+        }
+
+        // PB-VAL-01: the four linked views are FIRST-CLASS buttons in the action bar (the dynamic editor offers the same
+        // flow), not one hidden combo. Each selects its view — so the preview follows along and the embed View/Section
+        // contract stays the single source — and then inserts through the very same path as "Insertar vista actual".
+        private void InsertLateral_Click(object sender, RoutedEventArgs e) => InsertViewAt(0);
+
+        private void InsertFrontalEntrada_Click(object sender, RoutedEventArgs e) => InsertViewAt(1);
+
+        private void InsertFrontalPosterior_Click(object sender, RoutedEventArgs e) => InsertViewAt(2);
+
+        private void InsertPlanta_Click(object sender, RoutedEventArgs e) => InsertViewAt(3);
+
+        private void InsertViewAt(int viewIndex)
+        {
+            if (ViewBox.SelectedIndex != viewIndex)
+            {
+                ViewBox.SelectedIndex = viewIndex;   // View_Changed re-renders the preview and shows/hides the corte box
+            }
+
+            var (view, section) = SelectedView();
+            RequestDraw(view, section, updateOnly: false);
+        }
+
+        /// <summary>Restore the editable inputs to the values the last VALID computation produced (nothing is drawn).</summary>
+        private void Restore_Click(object sender, RoutedEventArgs e)
+        {
+            if (lastComputation == null)
+            {
+                SetStatus("Todavía no hay un sistema válido que restaurar.", true);
+                return;
+            }
+
+            Recompute();
+            SetStatus("Valores restaurados desde el último sistema válido.", false);
         }
 
         private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
