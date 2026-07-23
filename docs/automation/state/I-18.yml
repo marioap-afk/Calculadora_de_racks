@@ -3,12 +3,12 @@ automation_state:
   initiative: I-18
   branch: feature/push-back
   claim_id: 0fafaad2-d524-49a9-83f8-8965ac926b0c
-  current_phase: I-18a
-  state: review-ready
+  current_phase: I-18b
+  state: implementing
   gate: none
   attempts: 0
-  next_action: revision-del-orquestador-de-i18a-pura-completa-luego-i18b-registro-editor-handler-dibujo-y-comando-con-validacion-autocad
-  last_evidence_commit: 6345080329123bbde21ebe561cc40fe262432c0e
+  next_action: continuar-i18b-increment-2-estado-puro-del-editor-pushbackeditorstate-luego-3-ventana-wpf-modulo-insertion-request-menu-biblioteca-4-embed-kind-handler-draw-services-comando-rackpushback-dispatch-5-pruebas-e2e-y-gate-autocad-increment-1-registro-persistencia-hecho-y-ci-verde
+  last_evidence_commit: 98e8505ec010b4d39e84ce40603201c645d0e8c4
 execution_context:
   mode: manual-git-only
   worktree: feature-push-back
@@ -36,6 +36,10 @@ evidence:
     fuente-unica-pushbackloadbeamgeometry-cellbeamlength-front-nivel-el-haz-bajo-inout-y-alto-troquel-redondo-de-una-celda-comparten-la-misma-longitud-transversal-por-frente-y-nivel-dynamicracklevelgeometry-at-no-front-beamlength-global-bom-inout-y-redondo-por-celda-tope-bom-cellbeamlength-mas-lengthallowance-igual-que-los-bloques-de-tope-lateral-frontal-planta-sin-override-cellbeamlength-igual-a-front-beamlength-asi-que-los-5-pins-de-vista-no-cambian-solo-el-pin-del-bom-se-actualiza-anterior-139c18ef-nuevo-057c6d2d
   tests_pushback_final: 61-verde-core-plan-bom-vistas-correcciones-safety-golden-coherencia-longitudes
   domain_application_tests_final: 1067-verde-0-fallos-golden-dinamico-intactos
+  i18b_increment1_done: >-
+    registro-y-persistencia-verde-ci-98e8505-racksystemkind-pushback-al-final-del-enum-valores-previos-congelados-rackprojectdocument-slot-pushback-aditivo-sin-subir-major-rackproject-pushbackdesign-pushbacksystem-forpushback-systemregistry-descriptor-pushback-label-push-back-noun-el-sistema-push-back-writepushback-fromdomain-design-source-preserva-i11-buildpushback-requiere-payload-schemaguard-refreshphysicalmodel-sin-resolver-isusablepushback-alineada-con-el-resolver-caracterizacion-de-wire-format-actualizada-clave-pushback-1075-pruebas-verde
+  i18b_pending: >-
+    increment-2-estado-puro-del-editor-pushbackeditorstate-front-cell-values-designassembler-componiendo-dynamicfrontmatrix-dynamiceditor-y-pushbackresolver-peralte-posterior-por-celda-matriz-de-topes-offcells-seguridad-sin-guia-load-snapshot-mas-pruebas-puras-increment-3-rackpushbacksystemwindow-xaml-code-behind-sobre-rackeditorsession-selectionmatrix-pushbackeditormodule-tras-dynamiceditormodule-pushbackinsertionrequest-menu-boton-push-back-tras-dinamico-biblioteca-mas-pruebas-sta-increment-4-rackembeddocument-kindpushback-pushbackkindhandler-tras-dynamickindhandler-pushbacksystem-frontal-planta-drawservice-sobre-viewblockdraw-rackpushbackcommands-rackpushback-rpb-rackeditar-multivista-dispatch-tipado-en-rackmenucommands-rackcad-mas-pruebas-plugin-increment-5-pruebas-e2e-evidencia-y-gate-manual-autocad-i18b-no-declarado-completo
 autocad_validation:
   status: not-applicable-i18a
   note: i18a-es-nucleo-puro-sin-cableado-de-plugin-validado-por-geometria-systemplan-bom-y-golden-la-validacion-autocad-corresponde-a-i18b
