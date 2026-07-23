@@ -7,8 +7,8 @@ automation_state:
   state: implementing
   gate: none
   attempts: 0
-  next_action: continuar-i18b-increment-2-estado-puro-del-editor-pushbackeditorstate-luego-3-ventana-wpf-modulo-insertion-request-menu-biblioteca-4-embed-kind-handler-draw-services-comando-rackpushback-dispatch-5-pruebas-e2e-y-gate-autocad-increment-1-registro-persistencia-hecho-y-ci-verde
-  last_evidence_commit: 98e8505ec010b4d39e84ce40603201c645d0e8c4
+  next_action: continuar-i18b-increment-3-ventana-wpf-rackpushbacksystemwindow-sobre-rackeditorsession-y-selectionmatrix-pushbackeditormodule-tras-dynamiceditormodule-pushbackinsertionrequest-boton-de-menu-y-biblioteca-mas-pruebas-sta-luego-4-embed-kind-handler-draw-services-comando-rackpushback-dispatch-5-pruebas-e2e-y-gate-autocad-incrementos-1-registro-persistencia-y-2-estado-puro-del-editor-hechos-y-verdes
+  last_evidence_commit: 6d2de45bd11737ffac0cca596e8c51836feb4e3e
 execution_context:
   mode: manual-git-only
   worktree: feature-push-back
@@ -38,14 +38,16 @@ evidence:
   domain_application_tests_final: 1067-verde-0-fallos-golden-dinamico-intactos
   i18b_increment1_done: >-
     registro-y-persistencia-verde-ci-98e8505-racksystemkind-pushback-al-final-del-enum-valores-previos-congelados-rackprojectdocument-slot-pushback-aditivo-sin-subir-major-rackproject-pushbackdesign-pushbacksystem-forpushback-systemregistry-descriptor-pushback-label-push-back-noun-el-sistema-push-back-writepushback-fromdomain-design-source-preserva-i11-buildpushback-requiere-payload-schemaguard-refreshphysicalmodel-sin-resolver-isusablepushback-alineada-con-el-resolver-caracterizacion-de-wire-format-actualizada-clave-pushback-1075-pruebas-verde
+  i18b_increment2_done: >-
+    estado-puro-del-editor-verde-commit-6d2de45-pushbackeditorvalues-compone-dynamiceditorvalues-mas-peralte-trasero-y-tope-pushbackeditorcell-peralte-35-explicito-mas-tope-activo-normalizeperalte-canonica-idempotente-pushbackeditorfront-una-celda-por-nivel-ensurecellcount-clona-la-ultima-trim-encoge-pushbackeditorstate-posee-dynamicfrontmatrix-autoridad-de-estructura-y-seleccion-mas-coleccion-paralela-por-frente-autoridad-solo-peralte-trasero-y-tope-syncpushconfig-tras-cada-mutacion-crecer-frentes-clona-plantilla-del-frente-seleccionado-crecer-niveles-clona-ultima-celda-encoger-quita-solo-ausente-conserva-interseccion-applyscope-aplica-peralte-tope-a-las-mismas-direcciones-que-dynamicrackcellscoperesolver-sin-segunda-lista-snapshot-restore-profundo-y-reutilizable-load-una-sola-implementacion-loadfromdesign-resuelve-y-reconstruye-la-matriz-desde-los-frentes-resueltos-mas-peraltes-por-celda-y-offcells-loadfromsystem-por-snapshot-recupera-entradas-rackwide-pushbackeditordesignassembler-construye-el-design-compartido-con-dynamiceditordesignassembler-builddesign-lo-envuelve-copia-peraltes-por-frente-nivel-materializa-solo-offcells-seguridad-autorizada-sin-guia-sin-mutar-la-entrada-resuelve-una-vez-con-pushbackresolver-y-arma-bom-mas-4-planes-pushbackeditorcomputation-dto-puro-sin-wpf-autocad-dispatcher-objectid-corrige-dos-comentarios-xml-de-increment-1-seis-kinds-en-systemregistry-default-y-rackproject-incluye-push-back-3-commits-atomicos-747f6ff-modelo-y-sync-5e873ab-assembler-carga-snapshot-seguridad-6d2de45-pruebas-27-pruebas-nuevas-rackcad-tests-1102-verde-ui-tests-184-verde-ui-y-plugin-debug-0-errores-2-msb3277-conocidos-validador-i19-40-verde-golden-i18a-y-estado-dinamico-intactos-superficie-publica-de-dynamic-selective-pushbackresolver-intacta-sin-tocar-wpf-plugin-registros-ni-main
   i18b_pending: >-
-    increment-2-estado-puro-del-editor-pushbackeditorstate-front-cell-values-designassembler-componiendo-dynamicfrontmatrix-dynamiceditor-y-pushbackresolver-peralte-posterior-por-celda-matriz-de-topes-offcells-seguridad-sin-guia-load-snapshot-mas-pruebas-puras-increment-3-rackpushbacksystemwindow-xaml-code-behind-sobre-rackeditorsession-selectionmatrix-pushbackeditormodule-tras-dynamiceditormodule-pushbackinsertionrequest-menu-boton-push-back-tras-dinamico-biblioteca-mas-pruebas-sta-increment-4-rackembeddocument-kindpushback-pushbackkindhandler-tras-dynamickindhandler-pushbacksystem-frontal-planta-drawservice-sobre-viewblockdraw-rackpushbackcommands-rackpushback-rpb-rackeditar-multivista-dispatch-tipado-en-rackmenucommands-rackcad-mas-pruebas-plugin-increment-5-pruebas-e2e-evidencia-y-gate-manual-autocad-i18b-no-declarado-completo
+    increment-3-rackpushbacksystemwindow-xaml-code-behind-sobre-rackeditorsession-selectionmatrix-pushbackeditormodule-tras-dynamiceditormodule-pushbackinsertionrequest-menu-boton-push-back-tras-dinamico-biblioteca-mas-pruebas-sta-increment-4-rackembeddocument-kindpushback-pushbackkindhandler-tras-dynamickindhandler-pushbacksystem-frontal-planta-drawservice-sobre-viewblockdraw-rackpushbackcommands-rackpushback-rpb-rackeditar-multivista-dispatch-tipado-en-rackmenucommands-rackcad-mas-pruebas-plugin-increment-5-pruebas-e2e-evidencia-y-gate-manual-autocad-i18b-no-declarado-completo
 autocad_validation:
   status: not-applicable-i18a
   note: i18a-es-nucleo-puro-sin-cableado-de-plugin-validado-por-geometria-systemplan-bom-y-golden-la-validacion-autocad-corresponde-a-i18b
 owner_validation:
   status: pending
-  note: i18a-pura-completa-a-la-espera-de-revision-del-orquestador-antes-de-i18b
+  note: incrementos-1-registro-persistencia-y-2-estado-puro-del-editor-completos-y-verdes-la-validacion-del-dueno-gate-visual-autocad-corresponde-al-increment-5-aun-no-alcanzada-i18b-no-declarado-completo-ni-code-complete
 decision_evidence:
   path: docs/automation/decisions/I-18.md
   resolved_gate: owner-decision-pb0
