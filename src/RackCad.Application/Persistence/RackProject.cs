@@ -4,8 +4,9 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Persistence
 {
     /// <summary>
-    /// A loaded project: a cabecera header, a dynamic system, a selective pallet-rack design, a flow bed (cama), or a
-    /// larguero component. The <see cref="Kind"/> selects which payload is set. Members are already rebuilt by the store.
+    /// A loaded project: a cabecera header, a dynamic system, a selective pallet-rack design, a flow bed (cama), a
+    /// larguero component, or a Push Back system. The <see cref="Kind"/> selects which payload is set. Members are already
+    /// rebuilt by the store.
     /// </summary>
     public sealed class RackProject
     {

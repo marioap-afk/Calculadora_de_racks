@@ -16,7 +16,7 @@ namespace RackCad.Application.Systems
     public sealed partial class SystemRegistry
     {
         /// <summary>
-        /// The registry for the five system kinds that exist today, in <see cref="RackSystemKind"/> declaration order,
+        /// The registry for the six system kinds that exist today, in <see cref="RackSystemKind"/> declaration order,
         /// with the labels verbatim and the persistence operations the store delegates to.
         /// </summary>
         public static SystemRegistry Default { get; } = new SystemRegistry(new[]
