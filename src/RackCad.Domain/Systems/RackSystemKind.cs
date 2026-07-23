@@ -14,6 +14,9 @@ namespace RackCad.Domain.Systems
         Cama,
 
         /// <summary>A larguero (beam) component (visual + BOM only).</summary>
-        Larguero
+        Larguero,
+
+        /// <summary>A Push Back pallet-rack system (LIFO; load and unload from the same low end). New in I-18.</summary>
+        PushBack
     }
 }

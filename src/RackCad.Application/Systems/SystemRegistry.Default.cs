@@ -31,6 +31,8 @@ namespace RackCad.Application.Systems
                 WriteCama, BuildCama, IsUsableCama),
             new SystemDescriptor(RackSystemKind.Larguero, "Larguero", "el larguero",
                 WriteLarguero, BuildLarguero, IsUsableLarguero),
+            new SystemDescriptor(RackSystemKind.PushBack, "Push Back", "el sistema Push Back",
+                WritePushBack, BuildPushBack, IsUsablePushBack),
         });
 
         // --- Selective (standalone cabecera) ---
@@ -149,6 +151,42 @@ namespace RackCad.Application.Systems
 
         private static bool IsUsableLarguero(RackProject project)
             => RackDesignValidation.IsUsableLarguero(project.Larguero);
+
+        // --- Push Back ---
+        // The payload preserves its own I-11 metadata (SchemaVersion non-downgrade + ExtensionData) by inheriting from the
+        // loaded source document, so no PushBack block is needed in RackProjectStore.PreserveUnknownMetadata.
+        private static bool WritePushBack(RackProject project, RackProjectDocument document)
+        {
+            if (project.PushBackDesign == null)
+            {
+                return false;
+            }
+
+            document.PushBack = PushBackDesignDocument.FromDomain(project.PushBackDesign, project.SourceDocument?.PushBack);
+            return true;
+        }
+
+        private static RackProject BuildPushBack(RackProjectDocument document, BracingPanelMemberBuilder builder)
+        {
+            RequirePayload(document.PushBack, "sistema Push Back");
+            SchemaGuard.CheckReadable(document.PushBack.SchemaVersion, PushBackDesignDocument.CurrentSchemaVersion, "El sistema Push Back");
+            var design = document.PushBack.ToDomain();
+
+            // Reconstruct the derived physical model of each header configuration (never persisted), as BuildDynamic does.
+            // No geometry is resolved here: a library load carries only the editable design.
+            foreach (var module in design.Structure.Modules)
+            {
+                if (module?.HeaderConfiguration != null)
+                {
+                    builder.RefreshPhysicalModel(module.HeaderConfiguration);
+                }
+            }
+
+            return RackProject.ForPushBack(design);
+        }
+
+        private static bool IsUsablePushBack(RackProject project)
+            => RackDesignValidation.IsUsablePushBack(project.PushBackDesign);
 
         // A wrapper that names a type but omits its payload is corrupt/truncated — fail clearly, with the same message the
         // store used before the migration. Strongly typed (no object) to honor the no-object/no-unchecked-cast rule.

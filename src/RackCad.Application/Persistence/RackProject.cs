@@ -29,6 +29,12 @@ namespace RackCad.Application.Persistence
         /// <summary>The larguero component; set when <see cref="Kind"/> is Larguero.</summary>
         public LargueroDesign Larguero { get; private set; }
 
+        /// <summary>The editable Push Back design; set when <see cref="Kind"/> is PushBack.</summary>
+        public PushBackDesign PushBackDesign { get; private set; }
+
+        /// <summary>The resolved Push Back system (optional; a library load may leave it null and resolve later).</summary>
+        public PushBackSystem PushBackSystem { get; private set; }
+
         /// <summary>
         /// The persistence document this project was loaded from, kept so a re-save can carry forward JSON fields this
         /// build does not know about (wrapper- and payload-level <c>ExtensionData</c>, I-11 D3). Null for a project built
@@ -103,6 +109,11 @@ namespace RackCad.Application.Persistence
         public static RackProject ForLarguero(LargueroDesign larguero)
         {
             return new RackProject { Kind = RackSystemKind.Larguero, Larguero = larguero };
+        }
+
+        public static RackProject ForPushBack(PushBackDesign design, PushBackSystem system = null)
+        {
+            return new RackProject { Kind = RackSystemKind.PushBack, PushBackDesign = design, PushBackSystem = system };
         }
     }
 }
