@@ -59,6 +59,16 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
+        /// The safety a BRAND-NEW Push Back system opens with (PB-VAL-04: it used to open with none, so a new rack drew no
+        /// safety at all). It is the SAME catalog-driven authority the dynamic editor seeds a new rack from
+        /// (<see cref="DynamicSafetyDefaults.Build"/>) run through <see cref="Authorize"/> — so the GUIA the dynamic default
+        /// set includes is dropped and every surviving family is restricted to the LOW end. No hard-coded family list, and
+        /// the shared defaults are never mutated (<see cref="DynamicSafetyDefaults.Build"/> mints fresh selections and
+        /// <see cref="Authorize"/> deep-copies them again).
+        /// </summary>
+        public IReadOnlyList<SelectiveSafetySelection> Defaults() => Authorize(DynamicSafetyDefaults.Build(catalog));
+
+        /// <summary>
         /// Restrict a safety selection to the LOW (entrance/exit) end only: a two-ended or rear (Right) side collapses to
         /// Left (the exit end); per-post side overrides are cleared so every post uses the low side; a forklift defense
         /// keeps only its exit length (the rear entrance length is zeroed). Mutates the passed COPY, never the source.

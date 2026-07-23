@@ -137,6 +137,11 @@ namespace RackCad.UI
         public void LoadNew()
         {
             var inputs = state.LoadNew();
+            // PB-VAL-04: a new rack opens with the catalog-driven safety defaults, exactly like the dynamic editor does.
+            // The Push Back authority is the single filter (drops GUIA, deep-copies, restricts every family to the LOW end),
+            // so no hard-coded list lives here and the shared defaults are never mutated.
+            safetySelections.Clear();
+            safetySelections.AddRange(new PushBackSafetyAuthority(catalog).Defaults());
             sourceProject = null;
             isEditingExisting = false;
             session.Identity.Adopt(null, null);
