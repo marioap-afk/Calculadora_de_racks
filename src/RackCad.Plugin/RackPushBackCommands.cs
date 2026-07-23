@@ -17,10 +17,10 @@ using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace RackCad.Plugin
 {
     /// <summary>
-    /// Push Back (I-18) system command + its draw/payload helpers, plus the RPB alias. It opens the pure Push Back editor,
-    /// then draws whatever <see cref="PushBackInsertionRequest"/> the window's session produced, using ONLY the I-18a
-    /// SystemPlan builders (via the three Push Back draw services). No geometry lives here. Multi-view edit (RACKEDITAR) and
-    /// the kind handler are a later increment (4b).
+    /// Push Back (I-18) system command + its draw/edit/payload helpers, plus the RPB alias. It opens the pure Push Back
+    /// editor, then draws whatever <see cref="PushBackInsertionRequest"/> the window's session produced, using ONLY the
+    /// I-18a SystemPlan builders (via the three Push Back draw services). No geometry lives here. The RACKEDITAR
+    /// multi-view round-trip is <see cref="EditPushBack"/> below; <c>PushBackKindHandler</c> only forwards to it.
     /// </summary>
     public sealed class RackPushBackCommands
     {
@@ -300,10 +300,13 @@ namespace RackCad.Plugin
                 editor.WriteMessage("\nRackCad: todas las vistas Push Back quedaron obsoletas; no se elimino el ultimo vinculo del rack.");
             }
 
-            // Exactly one explicit batch regen for the in-place work (each RedrawInPlace used regen:false). A NEW view
-            // inserted below regens through ViewBlockDraw.DrawAndPlace, so no extra manual regen wraps it.
+            // SINGLE authority for "the drawing changed in place": erasing a stale cut IS a change, so an edit that only
+            // dropped obsolete cuts still regens AND still reports success with the full counts. The regen and the final
+            // message must never disagree. Exactly one explicit batch regen (each RedrawInPlace used regen:false); a NEW
+            // view inserted below regens through ViewBlockDraw.DrawAndPlace, so no extra manual regen wraps it.
             var updatedFrontal = updatedFrontalEntrada + updatedFrontalPosterior;
-            if (updatedLateral + updatedFrontal + updatedPlanta + erasedPhantoms > 0)
+            var changedInPlace = updatedLateral + updatedFrontal + updatedPlanta + erasedPhantoms > 0;
+            if (changedInPlace)
             {
                 document.Editor.Regen();
             }
@@ -316,7 +319,7 @@ namespace RackCad.Plugin
                 return;
             }
 
-            editor.WriteMessage(updatedLateral + updatedFrontal + updatedPlanta > 0
+            editor.WriteMessage(changedInPlace
                 ? "\nRackCad: sistema Push Back actualizado; vistas redibujadas (lateral x"
                     + updatedLateral.ToString(CultureInfo.InvariantCulture) + ", frontal entrada/salida x"
                     + updatedFrontalEntrada.ToString(CultureInfo.InvariantCulture) + ", frontal posterior x"

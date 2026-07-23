@@ -9,8 +9,8 @@ namespace RackCad.Plugin.KindHandlers
     /// historic visible error. Every consumer (RACKEDITAR, RACKBOMTOTAL, and the RACKDUPLICAR/RACKLAYOUT copy gate)
     /// goes through here so a kind with NO registered handler always surfaces
     /// "RackCad: tipo de rack no reconocido (&lt;kind&gt;)." and no operation continues silently with a partial
-    /// result or an inconsistent identity. The four embedded kinds are always registered, so real data never hits
-    /// the error path.
+    /// result or an inconsistent identity. The five embedded kinds (selective, dynamic, push back, cabecera, cama)
+    /// are always registered, so real data never hits the error path.
     /// </summary>
     internal static class KindHandlerDispatch
     {
