@@ -3,45 +3,56 @@ automation_state:
   initiative: I-31
   branch: refactor/selective-visual-shell
   claim_id: ab7853c9-0150-4db9-a331-92571fa6b6ab
-  current_phase: 3
-  state: implementing
-  gate: none
+  current_phase: 5
+  state: validating
+  gate: owner-validation
   attempts: 0
-  next_action: migrar-rackselectivewindow-xaml-al-shell-por-slots-y-editorshellwindowstyle-luego-suite-sta-selectiveshellmigrationtests-builds-y-filtros-dirigidos
-  last_evidence_commit: 6cdaea7
+  next_action: owner-valida-en-autocad-2025-el-dll-debug-del-sha-exacto-del-head-publicado-comportamiento-dibujo-bom-identidad-round-trip-y-apariencia-alineada-con-el-dinamico-luego-integracion-manual-merge-no-ff-y-reanudacion-de-i18
+  last_evidence_commit: 67a8621c52e2b1caa7e3f2786cc8abedc4230201
 execution_context:
   mode: manual-git-only
   worktree: refactor-selective-visual-shell
   pull_request: none
 evidence:
   base_commit: 40a2c8ebd8f347dbaf277d50ce03a2db62d0a189
-  claim_commit: 6cdaea7
+  claim_commit: 6cdaea7a92ac703d1bb21ddac230a2cb1a254c42
+  commits: >-
+    6cdaea7-reclamo-vacio · fd4969e-docs-contrato-estado-indice · 5b7c0b4-migracion-xaml-selectivo-al-shell ·
+    67a8621-pruebas-selectiveshellmigrationtests-mas-editorwindowtestsupport · commit-de-cierre-documental-conteo-45-x-name-estado-a-validating-y-nota-de-corrida
   preflight: >-
     todos-los-gates-verdes-main-igual-origin-main-40a2c8e-arbol-limpio-sin-merge-rebase-cherry-pick-bisect-ci-verde-run-30101393426-success-sobre-40a2c8e-i30-rama-y-worktree-eliminados-i31-y-refactor-selective-visual-shell-libres-antes-del-reclamo-ninguna-iniciativa-activa-sobre-rackselectivewindow-i23-e-i25-inactivas-sin-rama-remota-feature-push-back-en-b2d9e9d-worktree-limpio-local-igual-remoto
   claim: >-
-    worktree-unico-creado-desde-origin-main-en-codex-worktrees-refactor-selective-visual-shell-rama-refactor-selective-visual-shell-commit-vacio-de-reclamo-6cdaea7-initiative-i31-branch-claim-id-ab7853c9-trailer-co-authored-by-codex-primer-push-u-aceptado-como-new-branch-sin-force-el-remoto-no-tenia-la-rama-reclamo-valido
-  audit_scope: >-
-    solo-lectura-rackselectivewindow-xaml-y-cs-rackdynamicsystemwindow-migrado-como-referencia-rackeditorvisualshell-editoractionbar-editoraction-editorstatus-editorstatuspresenter-shellslotvisibilityconverter-generic-xaml-appstyles-tokens-selectiveeditorstate-rackeditorsession-dynamicshellmigrationtests-editorwindowtestsupport-selectiveeditorwindowtests-mas-rackpushbacksystemwindow-xaml-leido-con-git-show-desde-origin-feature-push-back-b2d9e9d-sin-checkout-merge-rebase-ni-commit
-  audit_finding_selection: >-
-    confirmado-main-no-implementa-multiseleccion-en-la-matriz-principal-del-selectivo-seleccion-de-una-sola-celda-selbay-sellevel-mas-alcance-celda-nivel-frente-todas-grep-de-ctrl-keyboard-modifiers-selectedcells-seleccionad-en-el-cs-da-cero-el-dinamico-si-tiene-multiseleccion-i31-conserva-la-seleccion-simple-y-no-agrega-multiseleccion-discrepancia-registrada
-  audit_finding_xnames: 44-x-name-en-el-xaml-todos-con-handler-existente-31-handlers-verificados-insertar-frontal-sin-x-name-se-localiza-por-content-recalcular-tramo-no-es-isdefault-a-proposito
-  audit_finding_tokens: >-
-    los-valores-hardcodeados-del-selectivo-mapean-exacto-a-tokens-del-shell-eef2f6-shellwindowbackgroundbrush-white-shellsurfacebrush-d8dee6-shellborderbrush-0e1b2a-shellpreviewbackgroundbrush-segoe-ui-shellfontfamily-padding-14-shellpanelpadding-sidebar-342-pasa-a-430-por-shellsidebarwidth-tamanos-740-1300-600-1060-pasan-a-editorshellwindowstyle-1280-720-1120-672
-  audit_finding_cs_safe: >-
-    el-cs-no-navega-el-arbol-parent-visualtreehelper-logicaltreehelper-no-aparecen-reparentar-en-slots-es-seguro-setstatus-hace-statustext-bringintoview-en-error-que-fuera-del-scroll-es-no-op-inofensivo-comentario-obsoleto-en-linea-2197-se-deja-sin-tocar-para-mantener-migracion-solo-xaml
-  audit_i18_handoff: >-
-    push-back-b2d9e9d-imita-a-mano-la-estructura-del-shell-dockpanel-scrollviewer-dock-left-width-430-grid-workarea-barra-inferior-con-sizes-hardcodeados-720-1280-640-1120-min-640-pre-672-y-ya-adopta-numericfield-catalogcombo-su-migracion-futura-es-reparent-de-layout-sin-adoptar-controles-de-captura-subiria-min-a-672-conflicto-textual-minimo-trabajo-real-semantico-i31-solo-registra-el-handoff
-  action_mapping: >-
-    orden-visual-y-funcional-conservado-actualizar-lista-de-materiales-guardar-en-biblioteca-insertar-frontal-insertar-lateral-insertar-planta-cerrar-clasificado-en-categorias-neutrales-sin-reordenar-leading-actualizar-secondary-lista-de-materiales-mas-guardar-en-biblioteca-primary-insertar-frontal-lateral-planta-trailing-cerrar-el-wrappanel-de-editoractionbar-renderiza-leading-secondary-primary-trailing-en-ese-orden
-  status_slot_decision: summarytext-y-statustext-a-statuscontent-como-el-dinamico-se-elimina-la-disposicion-independiente-del-status
-  preview_decision: canvas-y-painter-actuales-alojados-tal-cual-fondo-por-shellpreviewbackgroundbrush-leyenda-y-painter-conservan-sus-colores-previewcanvas-control-i14-no-adoptado-sin-prueba-de-equivalencia
+    worktree-unico-desde-origin-main-rama-refactor-selective-visual-shell-commit-vacio-6cdaea7-initiative-i31-branch-claim-id-ab7853c9-trailer-co-authored-by-codex-primer-push-u-aceptado-como-new-branch-sin-force-reclamo-valido
+  implementation: >-
+    rackselectivewindow-xaml-compuesto-sobre-rackeditorvisualshell-por-slots-sidepanelcontent-matrixcontent-previewcontent-statuscontent-y-categorias-leading-secondary-primary-trailing-editorshellwindowstyle-1280x720-min-1120x672-fondo-y-tipografia-por-tokens-shell-superficies-shellsurfacebrush-shellborderbrush-shellpanelpadding-preview-shellpreviewbackgroundbrush-canvas-y-painter-tal-cual-previewcanvas-control-no-adoptado-eliminada-la-composicion-exterior-grid-2x3-panel-342-scroll-exterior-status-independiente-barra-inferior-cs-byte-identico-a-origin-main
+  preservation_verified: >-
+    45-x-name-identicos-mas-shell-46-total-31-handlers-identicos-todos-content-tooltip-text-diff-vacio-seleccion-de-una-celda-mas-alcance-celda-nivel-frente-todas-sin-multiseleccion-selector-y-matrices-por-fondo-editor-de-celda-cabeceras-peraltes-por-poste-seguridad-previews-frontal-lateral-insercion-frontal-lateral-planta-actualizacion-en-sitio-bom-biblioteca-guid-nombre-round-trip-metadata-i11-estados-habilitado-deshabilitado-con-motivo-y-showondisabled-orden-de-acciones-conservado
+  selection_discrepancy: >-
+    confirmado-main-no-implementa-multiseleccion-en-la-matriz-principal-del-selectivo-seleccion-simple-selbay-sellevel-mas-alcance-grep-de-ctrl-keyboard-modifiers-selectedcells-seleccionad-igual-cero-el-dinamico-si-tiene-multiseleccion-i31-conserva-la-seleccion-simple-y-no-agrega-multiseleccion-registrado-como-decision-consciente
+  status_slot_note: >-
+    summarytext-y-statustext-movidos-a-statuscontent-como-el-dinamico-eliminada-la-disposicion-independiente-del-status-setstatus-conserva-statustext-bringintoview-que-fuera-del-scroll-es-no-op-inofensivo-comentario-en-linea-2197-describe-la-ubicacion-previa-se-deja-sin-tocar-para-mantener-migracion-solo-xaml-artefacto-cosmetico-conocido
+  tests_support_change: >-
+    editorwindowtestsupport-findbycontent-ampliado-para-descender-tambien-en-los-slots-dp-del-shell-aditivo-solo-cuando-la-raiz-es-el-shell-restaura-selectiveeditorwindowtests-newrack-insertfrontal-que-localiza-insertar-frontal-por-content-sin-x-name
+  tests: >-
+    rackcad-tests-1016-de-1016-debug-rackcad-ui-tests-237-de-237-debug-218-mas-19-nuevas-selectiveshellmigrationtests-cero-fallos-planta-por-handler-real-cubre-el-hueco-que-faltaba
+  builds: >-
+    ui-0-errores-0-advertencias-plugin-0-errores-2-msb3277-conocidas-solucion-0-errores-2-msb3277-debug
+  targeted_filters: >-
+    todos-descubren-al-menos-una-prueba-y-pasan-selective-350-core-319-mas-ui-31-dynamic-197-174-mas-23-shell-58-ui-editorstate-28-24-mas-4-persistence-112-core-handler-2-core-goldens-equivalence-11-core-incluye-7-selectivesafetyequivalence-resolvedoutputisfrozen-validator-33-core-i19-ningun-filtro-vacio
+  diff_scope: >-
+    confinado-a-ui-rackselectivewindow-xaml-pruebas-selectiveshellmigrationtests-cs-y-editorwindowtestsupport-cs-y-docs-de-i31-sin-cambios-en-shell-themes-plugin-application-domain-persistencia-catalogos-comandos-sin-ramas-por-sistema-ni-racksystemkind-en-el-shell-rackselectivewindow-xaml-cs-intacto-sin-nuget-nuevo
+  push_back_untouched: origin-feature-push-back-b2d9e9d-intacta-leida-solo-con-git-show-sin-checkout-merge-rebase-ni-commit
+  i18_handoff: >-
+    push-back-imita-a-mano-la-estructura-del-shell-dockpanel-scroll-left-430-grid-workarea-barra-inferior-con-sizes-720-1280-min-640-1120-pre-672-y-ya-adopta-numericfield-catalogcombo-su-migracion-futura-es-reparent-de-layout-sin-adoptar-controles-de-captura-subiria-min-a-672-conflicto-textual-minimo-trabajo-real-semantico-i31-solo-registra-el-handoff
+  dll_for_owner: refactor-selective-visual-shell-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-construido-desde-el-head-publicado-de-la-rama-el-commit-de-cierre-es-documental-y-no-cambia-el-binario
+  run_note: docs/automation/runs/I-31-2026-07-24-migration.md
 gates:
   autocad:
     required: true
-    note: la-ventana-selectiva-migrada-dibuja-el-rack-real-exige-validacion-visual-en-autocad-2025-pendiente
+    note: PENDIENTE-la-ventana-selectiva-migrada-dibuja-el-rack-real-exige-validacion-visual-en-autocad-2025-sobre-el-dll-debug-del-sha-exacto
   owner_validation:
     required: true
-    note: el-owner-valida-el-dll-debug-del-sha-exacto-comportamiento-y-apariencia-alineados-con-el-dinamico-pendiente
+    note: PENDIENTE-el-owner-valida-comportamiento-y-apariencia-del-selectivo-migrado-alineado-con-el-dinamico-sobre-el-mismo-sha
   plugin_build:
     required: true
-    note: build-debug-del-plugin-verde-como-gate-de-cierre
+    note: RESUELTO-build-debug-del-plugin-verde-0-errores-2-msb3277-conocidas

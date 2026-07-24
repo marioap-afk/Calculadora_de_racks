@@ -215,7 +215,7 @@ Planes disponibles:
   `Leading`/`Secondary`/`Primary`/`Trailing`), aplicando `EditorShellWindowStyle` y los tokens
   `Shell*`, y **eliminando la segunda composición exterior** del Selectivo (grid 342 px, scroll
   exterior, disposición independiente de matriz/preview/status, barra inferior propia). Conserva los
-  **44 `x:Name`**, los 31 handlers, el parsing/`LostFocus`/recomputación, el selector y matrices por
+  **45 `x:Name`**, los 31 handlers, el parsing/`LostFocus`/recomputación, el selector y matrices por
   fondo, el editor de celda, cabeceras/peraltes por poste, seguridad, previews frontal/lateral,
   inserción frontal/lateral/planta, actualización en sitio, BOM, biblioteca, metadata I-11, GUID/
   nombre/round-trip y los estados habilitado/deshabilitado con sus motivos. **Adaptación exclusivamente

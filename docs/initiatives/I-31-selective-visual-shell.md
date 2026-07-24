@@ -48,7 +48,7 @@ Verificable al cerrar:
 
 1. La raíz real de la ventana es `RackEditorVisualShell` (`window.Content is RackEditorVisualShell`,
    idéntico al campo `Shell`).
-2. Los **44 `x:Name`** del Selectivo siguen resolviendo, cada control queda en su slot correcto y no
+2. Los **45 `x:Name`** del Selectivo siguen resolviendo, cada control queda en su slot correcto y no
    queda ninguna composición exterior duplicada.
 3. Tamaño inicial/mínimo, fondo y tipografía provienen de los tokens del shell
    (`EditorShellWindowStyle`); la paleta reutiliza los tokens `Shell*Brush` (sin duplicar hex).
@@ -97,7 +97,7 @@ checkout, sin merge, sin rebase, sin commit).
 
 ### 3.1 `x:Name`, handlers y controles específicos que se conservan
 
-- **44 `x:Name`** en el XAML del Selectivo (todos deben seguir resolviendo tras el reparent):
+- **45 `x:Name`** en el XAML del Selectivo (todos deben seguir resolviendo tras el reparent):
   `NameBox`; anotaciones `DrawBasePlateCheck`/`NumberFrontsCheck`/`NumberLevelsCheck`/
   `DrawRackNameCheck`/`DrawPalletsCheck`/`AnnotationScaleBox`/`DimensionsBox`/`DimStyleBox`;
   seguridad `SafetyButton`; cabecera `PostBox`/`PostPeralteBox`/`PostSelectBox`/`CustomizePostButton`/
@@ -248,7 +248,7 @@ geometría/BOM/persistencia, catálogos.
 - `dotnet build RackCad.sln -c Debug`
 - Filtros dirigidos (cada uno descubre ≥1 prueba): Selectivo, Dinámico, shell I-30, estado de editor,
   persistencia, handlers, goldens, validador I-19.
-- La suite nueva es **estructural/semántica**, nunca comparación de píxeles: raíz = shell; los 44
+- La suite nueva es **estructural/semántica**, nunca comparación de píxeles: raíz = shell; los 45
   `x:Name` resuelven; cada zona aparece una sola vez y en su slot; sin composición exterior duplicada;
   tamaño/mínimo por tokens; sidebar con scroll común; selector de fondo; matrices dentadas por fondo;
   selección y aplicación por alcance; recomputación; preview frontal y lateral; insertar frontal/
@@ -268,7 +268,7 @@ alineada con el Dinámico. Sin esa validación la iniciativa no se integra.
 ## 11. Criterios de aceptación
 
 1. `RackSelectiveWindow` compuesto sobre `RackEditorVisualShell`; raíz = shell.
-2. Los 44 `x:Name` resuelven; cada control en su slot correcto; sin composición exterior duplicada.
+2. Los 45 `x:Name` resuelven; cada control en su slot correcto; sin composición exterior duplicada.
 3. Tamaño inicial/mínimo, fondo y tipografía por `EditorShellWindowStyle`/tokens; paleta por
    `Shell*Brush` sin hex duplicado.
 4. Sin cambio de geometría/BOM/GUID/persistencia/handlers/seguridad; selección simple conservada.
