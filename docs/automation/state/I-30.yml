@@ -3,12 +3,12 @@ automation_state:
   initiative: I-30
   branch: architecture/editor-visual-shell
   claim_id: 2048f82c-2208-4961-9e2f-2f85f7b22743
-  current_phase: 1
-  state: waiting
-  gate: owner-decision
+  current_phase: 2
+  state: implementing
+  gate: none
   attempts: 0
-  next_action: el-owner-revisa-el-adr-0019-CORREGIDO-slot-de-encabezado-neutral-sin-obligar-guid-categorias-de-accion-neutrales-leading-secondary-primary-trailing-y-aclaracion-de-que-adoptar-el-shell-no-sustituye-los-controles-de-captura-del-dinamico-y-lo-acepta-o-rechaza-hasta-esa-decision-no-se-implementa-produccion
-  last_evidence_commit: 24122fe86952d1a44bd5b67a96e4adc69eb0026a
+  next_action: implementar-y-validar-la-fundacion-comun-rackeditorvisualshell-editorstatuspresenter-editoractionbar-tokens-en-appstyles-y-pruebas-propias-sin-migrar-ninguna-ventana-la-migracion-de-dinamico-es-la-fase-siguiente
+  last_evidence_commit: ae092d510ebd8644624597ac26f26a9a5d29897e
 execution_context:
   mode: manual-git-only
   worktree: architecture-editor-visual-shell
@@ -37,6 +37,9 @@ evidence:
   no_capture_control_migration_authorized: correcto-esta-corrida-NO-autoriza-migrar-masivamente-los-controles-de-captura-del-dinamico-la-adopcion-de-i14-numericfield-y-catalogcombo-queda-explicitamente-fuera-de-alcance
   front_matter_fixed: automation-enabled-false-y-decision-paths-apunta-a-docs-adr-0019-shell-visual-de-editores-por-composicion-md
   adr_still_proposed: el-adr-0019-permanece-en-estado-propuesto-solo-el-owner-lo-acepta-o-rechaza
+  owner_acceptance_2026_07_24: >-
+    el-dueno-acepto-adr-0019-en-el-hilo-coordinador-decision-literal-acepto-adr-interpretada-en-contexto-como-aceptacion-de-adr-0019-registrada-en-docs-automation-decisions-i30-md-adr-0019-pasa-de-propuesto-a-aceptado-indice-adr-actualizado-gate-owner-decision-resuelto-desbloquea-solo-la-fundacion-comun-tokens-y-pruebas-propias-la-migracion-de-dinamico-NO-esta-autorizada-en-esta-corrida
+  decision_path: docs/automation/decisions/I-30.md
 gates:
   owner_decision:
     required: true

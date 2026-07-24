@@ -58,7 +58,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0016](0016-cantidad-parrilla-acotada.md) | Cantidad de parrilla acotada por la UI y por el builder | aceptado |
 | [0017](0017-validacion-cargas-diferida-ram-elements.md) | Validación estructural de cargas diferida a RAM Elements | aceptado |
 | [0018](0018-optimizador-layout-ia-diferido.md) | Optimizador de layout con IA diferido; `RACKLAYOUT` determinista vigente | aceptado |
-| [0019](0019-shell-visual-de-editores-por-composicion.md) | Shell visual de editores por composición y slots, agnóstico al sistema | propuesto |
+| [0019](0019-shell-visual-de-editores-por-composicion.md) | Shell visual de editores por composición y slots, agnóstico al sistema | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,

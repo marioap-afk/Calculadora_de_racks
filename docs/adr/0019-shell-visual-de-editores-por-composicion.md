@@ -1,8 +1,8 @@
 # ADR-0019: Shell visual de editores por composición y slots, agnóstico al sistema
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-24
-- **Decisores:** dueño del repo (pendiente); Claude Opus 4.8 (redacción)
+- **Estado:** aceptado
+- **Fecha:** 2026-07-24 (propuesto); 2026-07-24 (aceptado por el dueño del repo, «Acepto ADR»)
+- **Decisores:** dueño del repo (aceptó el 2026-07-24); Claude Opus 4.8 (redacción)
 - **Iniciativa relacionada:** I-30 `architecture/editor-visual-shell` (y su continuación I-31)
 
 ## Contexto
