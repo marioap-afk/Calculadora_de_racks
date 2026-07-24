@@ -208,6 +208,25 @@ Planes disponibles:
   (`1.0.0+d443ee2…`); `autocad` y `owner_validation` **resueltos**. **Integrada en `main` el
   2026-07-24.** Handoff obligatorio: **I-31 → reanudación de I-18**. Estado versionado en
   [`../automation/state/I-30.yml`](../automation/state/I-30.yml).
+- [`I-31-selective-visual-shell.md`](I-31-selective-visual-shell.md): contrato de I-31 (Fase 5, sobre
+  I-30 integrada; segundo eslabón de la secuencia **I-30 → I-31 → reanudación de I-18**). Migra
+  `RackSelectiveWindow` al **shell visual común** (`RackEditorVisualShell`) por composición y slots
+  (`SidePanelContent`/`MatrixContent`/`PreviewContent`/`StatusContent` + categorías neutrales
+  `Leading`/`Secondary`/`Primary`/`Trailing`), aplicando `EditorShellWindowStyle` y los tokens
+  `Shell*`, y **eliminando la segunda composición exterior** del Selectivo (grid 342 px, scroll
+  exterior, disposición independiente de matriz/preview/status, barra inferior propia). Conserva los
+  **44 `x:Name`**, los 31 handlers, el parsing/`LostFocus`/recomputación, el selector y matrices por
+  fondo, el editor de celda, cabeceras/peraltes por poste, seguridad, previews frontal/lateral,
+  inserción frontal/lateral/planta, actualización en sitio, BOM, biblioteca, metadata I-11, GUID/
+  nombre/round-trip y los estados habilitado/deshabilitado con sus motivos. **Adaptación exclusivamente
+  XAML** (el `.cs` no se toca). **Confirmado en lectura: `main` NO tiene multiselección en la matriz
+  principal del Selectivo** (selección simple + alcance Celda/Nivel/Frente/Todas); I-31 la conserva y
+  **no** agrega multiselección. Fuera de alcance: Push Back/`feature/push-back` (**solo lectura** +
+  handoff), I-18/I-23/I-25/PB-VAL-06, geometría/BOM/persistencia/GUID/comandos/handlers/seguridad/
+  catálogos/Domain/Application/Plugin, sustitución por `NumericField`/`CatalogCombo`, adopción del
+  control `PreviewCanvas` y dependencias NuGet. Cubierta por ADR-0019 **ya aceptado**
+  (`requires_owner_decision: false`); `requires_autocad: true`, `requires_owner_validation: true`.
+  Estado versionado en [`../automation/state/I-31.yml`](../automation/state/I-31.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
