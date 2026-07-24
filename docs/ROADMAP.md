@@ -1,6 +1,11 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-22 (**I-07 integrada en `main`**: retro-documentación de las 13 decisiones de
+> Actualizado: 2026-07-24 (**fix documental autorizado por el dueño**: se registran en Fase 5 las
+> iniciativas **I-30 — fundación del shell visual común de editores** (`architecture/editor-visual-shell`)
+> e **I-31 — migración del editor Selectivo al shell visual** (`refactor/selective-visual-shell`), ambas
+> `pendiente`, con la **secuencia obligatoria I-30 → I-31 → reanudación de I-18**; solo documentación,
+> sin cambio de producto ni de estados existentes. Resuelve el gate documental reportado el 2026-07-23.
+> Antes, el 2026-07-22: **I-07 integrada en `main`**: retro-documentación de las 13 decisiones de
 > HANDOFF §7 como **ADR-0006–0018** (aceptados por el dueño el 2026-07-22, «Sí, apruebo»); **solo
 > documentación, sin cambio de producto**; HANDOFF §7 pasa a puntero a `docs/adr/`. Antes ese día:
 > **I-03 integrada en `main`**: **fallos silenciosos** (P1/D2) —logger mínimo a
@@ -155,6 +160,8 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-23 | `refactor/namespaces-sistemas` | `Systems.Selective/Dynamic/FlowBed/Shared`; renombres fósiles (`Headers`→`Drawing`, `DynamicSystemPlan`→`SystemPlan`); .editorconfig — mecánico, con tests golden, **cierra la Fase 5: depende de TODAS las demás** (E8) | M | I-08, I-15, I-16, I-20, I-21, I-22 | toda la Fase 5 | pendiente |
 | I-24 | `refactor/ui-tests-editores` | Tests de ViewModels y estados de editor sobre `tests/RackCad.UI.Tests` (el proyecto nace en I-14) (U3) | S | I-15, I-20 | — | integrada (2026-07-22) |
 | I-25 | `feature/guardas-traseras` ✋ | Última familia de seguridad (prioridad final del producto), construida sobre I-22 | M | I-22 | — | pendiente |
+| I-30 | `architecture/editor-visual-shell` ✋ | **Fundación del shell visual común de editores** (tipo: arquitectura): contrato visual y tokens, componentes del shell, status presenter, action bar común, pruebas y **migración real de `RackDynamicSystemWindow`**. NO incluye Selectivo ni modificación de Push Back (`feature/push-back` solo en lectura). Requiere CI, builds Debug, AutoCAD y owner-validation. **Secuencia obligatoria: integrar I-30 antes de I-31 y antes de reanudar I-18** | — | I-14, I-15, I-20, I-21, I-24 (integradas) | I-31 (orden fijo: I-30 primero); reanudación de I-18 (espera la secuencia) | pendiente |
+| I-31 | `refactor/selective-visual-shell` (provisional) ✋ | **Migración del editor Selectivo al shell visual**: migrar `RackSelectiveWindow` al shell integrado por I-30, preservando estado, geometría, BOM, persistencia y handlers. **No puede reclamarse antes de cerrar I-30**; debe integrarse antes de rebasar y reanudar I-18 | — | I-30 integrada | I-30 (orden fijo); reanudación de I-18 | pendiente |
 
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el
 dibujo, snapping, colisiones, clear height, undo/redo, shop drawings, 3D/IFC, optimizador IA, SQL/API
@@ -208,6 +215,13 @@ graph LR
   I22 --> I23
   I15 --> I24[I-24 ui-tests-editores]
   I20 --> I24
+  I14 --> I30[I-30 editor-visual-shell]
+  I15 --> I30
+  I20 --> I30
+  I21 --> I30
+  I24 --> I30
+  I30 --> I31[I-31 selective-visual-shell]
+  I31 -->|reanudación| I18
 ```
 
 Sin dependencias previas (pero sus estorbos aplican — principio 7): I-03 (estorba I-11),
@@ -228,6 +242,7 @@ Fase 2/3:      Pista A (Application): I-08 → I-11
 Fase 4:        I-18 (Push Back; su prerequisito de bloques DWG arranca ANTES, en Fase 2-3)
                (si ADR-0002=B: I-28 sustituye/precede a I-18 como primer gran módulo)
 Fase 5:        I-20 → I-22 → I-25; I-21; I-24; I-23 AL FINAL (depende de todas)
+               Shell visual: I-30 → I-31 → reanudación de I-18 (secuencia obligatoria, serializada)
 ```
 
 Reglas de asignación: cada pista toca UNA capa (I-10 es Plugin y corre en la pista B, al final);
