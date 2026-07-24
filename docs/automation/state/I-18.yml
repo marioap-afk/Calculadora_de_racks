@@ -7,16 +7,25 @@ automation_state:
   state: implementing
   gate: none
   attempts: 3
-  next_action: owner-hace-un-SMOKE-VISUAL-CORTO-no-el-checklist-e2e-completo-abrir-rackpushback-y-revisar-1-interfaz-panel-izquierdo-legible-y-barra-inferior-con-las-cuatro-vistas-como-botones-2-matriz-de-tarjetas-frente-x-nivel-como-superficie-central-cada-tarjeta-muestra-posiciones-fondos-peraltes-y-tope-clic-primaria-ctrl-clic-multiseleccion-3-preview-tecnico-lineas-reales-por-rol-con-leyenda-y-vista-seccion-activa-en-las-cuatro-vistas-4-tangencia-el-larguero-bajo-apoya-en-la-linea-del-origen-de-la-cama-5-tope-posterior-orientado-y-4-pulgadas-mas-alto-6-un-rack-nuevo-abre-con-seguridad-por-defecto-sin-guia-solo-extremo-bajo
-  last_evidence_commit: 43b36c67a548cd1be6cab06fc1e0eba53d2aa527
+  next_action: rama-rebasada-sobre-origin-main-967fcb9-que-ya-trae-i30-i31-ventana-push-back-migrada-al-shell-visual-comun-y-pb-val-06-no-admite-parrillas-implementados-y-verdes-el-owner-hace-un-SMOKE-VISUAL-CORTO-sobre-el-dll-debug-del-head-rebasado-abrir-rackpushback-y-revisar-1-interfaz-panel-izquierdo-legible-en-el-shell-y-barra-inferior-con-las-cuatro-vistas-como-botones-2-matriz-de-tarjetas-frente-x-nivel-como-superficie-central-clic-primaria-ctrl-clic-multiseleccion-3-preview-tecnico-lineas-por-rol-con-leyenda-crece-con-la-ventana-4-tangencia-larguero-bajo-en-la-linea-del-origen-de-la-cama-5-tope-posterior-orientado-y-4-pulgadas-mas-alto-6-un-rack-nuevo-abre-con-seguridad-por-defecto-sin-guia-NI-PARRILLA-solo-extremo-bajo-tras-la-validacion-i18b-queda-lista-para-integracion-serializada-del-owner
+  last_evidence_commit: df959656a6c552cfffa0afa7547b6f9a8c05024d
 execution_context:
   mode: manual-git-only
   worktree: feature-push-back
   pull_request: none
 evidence:
-  base_commit: d873d82d36fbfba18e9ff00627e2c033bdbb4e8e
+  base_commit: 967fcb9478bfcd63f606f1fb5a589198bee08f5f
+  base_commit_pre_rebase: d873d82d36fbfba18e9ff00627e2c033bdbb4e8e
   claim_commit: c0bc249a1edccc6867dce430a1b5ef4ecbff71b0
   pb0_owner_decision: docs/automation/decisions/I-18.md
+  rebase_2026_07_24: >-
+    rebase-limpio-de-los-66-commits-de-la-rama-sobre-origin-main-967fcb9-que-ya-integra-i30-shell-visual-e-i31-selectivo-al-shell-tip-viejo-b2d9e9d-tip-nuevo-tras-rebase-y-migracion-la-interseccion-de-archivos-tocados-por-main-y-por-la-rama-era-VACIA-cero-conflictos-textuales-range-diff-los-66-commits-identicos-signo-igual-sin-perdida-de-trabajo-suites-verdes-post-rebase-antes-de-cualquier-cambio-rackcad-tests-1181-ui-tests-302
+  window_shell_migration_2026_07_24: >-
+    rackpushbacksystemwindow-migrada-a-rackeditorvisualshell-por-composicion-y-slots-solo-xaml-el-code-behind-no-cambia-contenido-reubicado-en-sidepanelcontent-scroll-matrixcontent-previewcontent-statuscontent-y-categorias-leading-restaurar-secondary-bom-biblioteca-primary-actualizar-mas-4-inserciones-mas-insertar-vista-actual-trailing-cerrar-tamano-fondo-tipografia-por-editorshellwindowstyle-tokens-del-shell-preview-tecnico-conserva-fondo-claro-f7fafc-pb-val-03-x-name-handlers-matriz-de-tarjetas-seleccion-preview-y-acciones-conservados-pruebas-de-layout-adaptadas-a-los-slots-del-shell
+  pb_val_06_no_parrilla_2026_07_24: >-
+    push-back-no-admite-parrillas-la-autoridad-canonica-pushbacksafetyauthority-excluye-parrilla-ademas-de-guia-nuevo-isreargrid-y-predicado-unico-isunsupported-usado-en-authorize-como-resolver-sistema-planes-dibujo-y-bom-consumen-solo-la-salida-de-authorize-la-parrilla-queda-impedida-en-toda-la-cadena-en-la-ui-safetyelementsfordialog-oculta-tambien-parrilla-el-dialogo-compartido-selectivesafetywindow-no-se-modifica-lectura-compatible-de-documentos-antiguos-una-parrilla-persistida-se-lee-sin-error-pero-se-descarta-en-build-como-guia-sin-migracion-destructiva-patron-documentado-en-8-y-pb-0-2-auditoria-de-payloads-los-defaults-no-incluyen-parrilla-solo-un-usuario-pudo-anadirla-via-dialogo
+  verification_2026_07_24: >-
+    rackcad-tests-1183-verde-0-fallos-incluye-goldens-push-back-5-vistas-y-bom-y-goldens-dinamicos-intactos-persistencia-round-trip-legacy-validador-i19-sin-errores-nuevos-mas-2-pruebas-pb-val-06-ui-tests-303-verde-0-fallos-incluye-la-ventana-migrada-al-shell-mas-1-prueba-pb-val-06-de-dialogo-builds-debug-ui-plugin-0-errores-2-msb3277-conocidos-autocad-estaba-abierto-en-el-preflight-builds-a-salida-temporal
   i18a_complete: true
   i18a_item1_snapshot: pushbackresolver-snapshot-design-resolve-snapshot-resolve-preserva-peraltes-por-celda-reartope-y-seguridad-guia-excluida-en-snapshot-sistema-plan-bom-y-documento
   i18a_item2_geometria: pushbackflowbedaxis-geometry-eje-troquel-cama-inout-a-inicio-del-troquel-redondo-pushbackloadbeamgeometry-bajo-inout-alto-troquel-redondo-por-celda-snap-2-pulgadas-pushbackintermediatebeamlateralbuilder-tangente-pushbackflowbedlateralbuilder-buildlateral-pushback-full-span-sin-frenos

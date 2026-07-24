@@ -120,7 +120,20 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
     igual que los bloques de tope de las tres vistas. Sin override `CellBeamLength == front.BeamLength` ⇒ los **5 pins de
     vista no cambian**; solo se actualizó el pin del **BOM**. 61 pruebas Push Back; suite **1067 verde**; UI/Plugin 0 err;
     validador I-19 sin errores nuevos.
-- **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD.
+- **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD. **En curso.**
+  Registro aditivo, editor, draw adapter y comando **completos y verdes** (increments 1–5a). Rondas 1–3 de
+  ajuste tras el rechazo del gate cerraron PB-VAL-01…05 (interfaz de tres zonas → matriz de tarjetas central +
+  preview técnico por roles + acciones por vista; tangencia; tope posterior orientado y +4"; seguridad por
+  defecto). **Reanudación 2026-07-24:** la rama se **rebasó** sobre `origin/main` = `967fcb9` (que ya integra
+  **I-30** —shell visual común— e **I-31** —selectivo al shell—; rebase limpio, 66 commits idénticos por
+  `range-diff`, cero conflictos). Sobre esa base: (a) **`RackPushBackSystemWindow` migrada a
+  `RackEditorVisualShell`** por composición y slots (solo-XAML, code-behind intacto; conserva controles,
+  `x:Name`, handlers, matriz, preview, selección y acciones; tamaño/fondo/tipografía por `EditorShellWindowStyle`;
+  el preview técnico conserva su fondo claro, PB-VAL-03); (b) **PB-VAL-06 — Push Back no admite parrillas**: la
+  autoridad canónica `PushBackSafetyAuthority` excluye PARRILLA además de GUIA (predicado único `IsUnsupported`),
+  impidiéndola en UI, resolver, sistema, planes, dibujo y BOM, con lectura compatible de documentos antiguos
+  (una parrilla legacy se lee sin error y se descarta en build, como GUIA; sin migración destructiva). Falta el
+  **smoke visual corto del Owner** en AutoCAD sobre el DLL Debug del HEAD rebasado antes de reabrir el gate.
 - **I-18c**: guía y cierre.
 
 ## 9. Pruebas y builds
