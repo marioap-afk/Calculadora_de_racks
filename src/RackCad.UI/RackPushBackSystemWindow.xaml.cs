@@ -1335,6 +1335,30 @@ namespace RackCad.UI
                     ? "Redibuja en sitio todas las vistas del sistema."
                     : "Disponible solo para un sistema abierto con RACKEDITAR.";
             }
+
+            // The four per-view insert actions follow the SAME gate and explain themselves when disabled (round-3 §6);
+            // BOM/save get the shared invalid-fields reason, and Restaurar states why it has nothing to restore yet.
+            foreach (var viewButton in new[] { InsertLateralButton, InsertFrontalEntradaButton, InsertFrontalPosteriorButton, InsertPlantaButton })
+            {
+                viewButton.IsEnabled = InsertButton.IsEnabled;
+                viewButton.ToolTip = InsertButton.ToolTip;
+            }
+
+            if (!currentInputsAreValid)
+            {
+                BomButton.ToolTip = "Corrige los campos numéricos marcados.";
+                SaveLibraryButton.ToolTip = BomButton.ToolTip;
+            }
+            else
+            {
+                BomButton.ToolTip = "Lista de materiales del sistema actual.";
+                SaveLibraryButton.ToolTip = "Guarda este diseño Push Back en la biblioteca.";
+            }
+
+            RestoreButton.IsEnabled = lastComputation != null;
+            RestoreButton.ToolTip = lastComputation != null
+                ? "Vuelve todos los valores al último sistema válido."
+                : "Aún no hay un sistema válido que restaurar.";
         }
 
         private void UpdateGuid() => GuidText.Text = session.Identity.HasId ? session.Identity.Id : "(se asigna al insertar)";
