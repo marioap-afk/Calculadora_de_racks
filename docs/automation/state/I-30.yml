@@ -3,12 +3,12 @@ automation_state:
   initiative: I-30
   branch: architecture/editor-visual-shell
   claim_id: 2048f82c-2208-4961-9e2f-2f85f7b22743
-  current_phase: 2
+  current_phase: 4
   state: implementing
   gate: none
   attempts: 0
-  next_action: implementar-y-validar-la-fundacion-comun-rackeditorvisualshell-editorstatuspresenter-editoractionbar-tokens-en-appstyles-y-pruebas-propias-sin-migrar-ninguna-ventana-la-migracion-de-dinamico-es-la-fase-siguiente
-  last_evidence_commit: ae092d510ebd8644624597ac26f26a9a5d29897e
+  next_action: el-coordinador-revisa-la-fundacion-comun-shell-status-action-bar-tokens-y-pruebas-y-prepara-la-migracion-de-rackdynamicsystemwindow-al-shell-fase-4-de-i30-no-autorizada-todavia
+  last_evidence_commit: dfa359d9b09e77d1faa2c44464ccd436173c1983
 execution_context:
   mode: manual-git-only
   worktree: architecture-editor-visual-shell
@@ -40,6 +40,10 @@ evidence:
   owner_acceptance_2026_07_24: >-
     el-dueno-acepto-adr-0019-en-el-hilo-coordinador-decision-literal-acepto-adr-interpretada-en-contexto-como-aceptacion-de-adr-0019-registrada-en-docs-automation-decisions-i30-md-adr-0019-pasa-de-propuesto-a-aceptado-indice-adr-actualizado-gate-owner-decision-resuelto-desbloquea-solo-la-fundacion-comun-tokens-y-pruebas-propias-la-migracion-de-dinamico-NO-esta-autorizada-en-esta-corrida
   decision_path: docs/automation/decisions/I-30.md
+  foundation_2026_07_24: >-
+    fundacion-comun-implementada-y-verde-commits-744a4b6-aceptacion-adr-mas-estado-a73acf3-shell-status-action-bar-6ae986b-tokens-dfa359d-pruebas-1-rackeditorvisualshell-usercontrol-por-composicion-no-clase-base-de-window-nueve-slots-dependency-properties-sidebarheader-neutral-y-opcional-sidepanelcontent-scroll-vertical-matrixcontent-opcional-colapsa-y-el-preview-toma-el-area-previewcontent-statuscontent-siempre-fuera-del-scroll-mas-leading-secondary-primary-trailing-slots-opcionales-colapsan-sin-hueco-shellslotvisibilityconverter-2-editorstatus-severidades-info-success-warning-error-editorstatusmessage-modelo-puro-editorstatuspalette-editorstatuspresenter-colapsa-vacio-3-editoractionbar-cuatro-categorias-neutrales-por-posicion-wrappanel-nunca-recorta-editoraction-modelo-puro-editoractions-button-showondisabled-mas-motivo-4-tokens-en-appstyles-derivados-de-valores-vigentes-conservando-las-claves-previas-sin-migrar-brushes-privados-5-20-pruebas-nuevas-18-requeridas-mas-estilos-y-reenvio-gates-ui-tests-204-rackcad-tests-1016-build-ui-0-errores-0-advertencias-plugin-0-errores-solucion-0-errores-ningun-filtro-con-cero-pruebas
+  no_window_migrated: correcto-ninguna-ventana-migrada-en-esta-fase-solo-fundacion-tokens-y-pruebas-rackdynamicsystemwindow-rackselectivewindow-rackflowbedwindow-y-los-configuradores-intactos-cero-archivos-de-push-back-el-diff-de-produccion-es-solo-src-rackcad-ui-shell-y-el-bloque-de-tokens-de-appstyles
+  scope_this_run_foundation: solo-fundacion-del-shell-tokens-pruebas-y-docs-de-aceptacion-y-estado-sin-migrar-ventanas-sin-tocar-controles-de-captura-sin-application-domain-plugin-geometria-resolvers-bom-persistencia-catalogos-handoff-ni-roadmap
 gates:
   owner_decision:
     required: true
