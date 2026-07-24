@@ -63,8 +63,7 @@ namespace RackCad.UI.Tests
                     && w.State.Structure.SelectedFrontIndex == 0 && w.State.Structure.SelectedLevelIndex == 0
                     && Math.Abs(w.State.Cell(0, 0).HighEndBeamPeralte - 3.5) < 1e-6
                     && w.State.Cell(0, 0).RearTopeEnabled
-                    && w.HasValidModel && w.LastComputation != null && w.LastComputation.IsValid
-                    && w.TopeModel != null && w.TopeModel.Columns == 1 && w.TopeModel.AbsentCount == 0;
+                    && w.HasValidModel && w.LastComputation != null && w.LastComputation.IsValid;
             });
 
             Assert.True(ok);
@@ -139,43 +138,6 @@ namespace RackCad.UI.Tests
 
         // ---- 8. Jagged topes matrix: absent cells, single-cell click, all/none --------------------------------
 
-        [Fact]
-        public void TopesMatrix_IsJagged_ClickChangesOneCell_AllNoneWork()
-        {
-            var r = StaTestRunner.Run(() =>
-            {
-                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
-                w.LoadExisting(SampleDesign(front0Levels: 3, front1Levels: 2), "G", "N");
-                var model = w.TopeModel;
-                var absent12 = model.IsAbsent(1, 2);   // front 1 has only 2 levels -> (1,2) absent
-                var absent02 = model.IsAbsent(0, 2);
-
-                // A single click toggles ONLY that cell and does NOT rebuild the model (shape unchanged).
-                var before = w.TopeModel;
-                w.TopeModel.Toggle(0, 0);
-                var sameModel = ReferenceEquals(before, w.TopeModel);
-                var cell00Off = !w.State.Cell(0, 0).RearTopeEnabled;
-                var cell01On = w.State.Cell(0, 1).RearTopeEnabled;
-
-                EditorWindowTestSupport.ClickNamed(w, "TopesNoneButton");
-                var allOff = !w.State.Cell(0, 0).RearTopeEnabled && !w.State.Cell(0, 1).RearTopeEnabled && !w.State.Cell(1, 0).RearTopeEnabled;
-                EditorWindowTestSupport.ClickNamed(w, "TopesAllButton");
-                var allOn = w.State.Cell(0, 0).RearTopeEnabled && w.State.Cell(1, 1).RearTopeEnabled;
-
-                return (model.Columns, model.Rows, absent12, absent02, sameModel, cell00Off, cell01On, allOff, allOn);
-            });
-
-            Assert.Equal(2, r.Columns);
-            Assert.Equal(3, r.Rows);
-            Assert.True(r.absent12);
-            Assert.False(r.absent02);
-            Assert.True(r.sameModel);   // a click never rebuilds the whole matrix
-            Assert.True(r.cell00Off);
-            Assert.True(r.cell01On);    // only (0,0) changed
-            Assert.True(r.allOff);
-            Assert.True(r.allOn);
-        }
-
         // ---- 9. Structure changes sync matrix + state ---------------------------------------------------------
 
         [Fact]
@@ -186,73 +148,21 @@ namespace RackCad.UI.Tests
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true); // 1 front, 3 levels
                 EditorWindowTestSupport.ClickNamed(w, "AddFrontButton");
                 var frontsAfterAdd = w.State.Structure.Count;
-                var columnsAfterAdd = w.TopeModel.Columns;
                 EditorWindowTestSupport.ClickNamed(w, "AddLevelButton");
                 var levelsAfterAdd = w.State.Structure.Fronts[w.State.Structure.SelectedFrontIndex].LoadLevels;
-                var rowsAfterAdd = w.TopeModel.Rows;
-                return (frontsAfterAdd, columnsAfterAdd, levelsAfterAdd, rowsAfterAdd);
+                // The CARD matrix is the only visible matrix now (Owner decision 2026-07-24: the bulk check-matrices
+                // are gone), so the structure is read back from the authority and from the rendered cards.
+                var cards = ((Grid)w.FindName("PushBackMatrixGrid")).Children.Count;
+                return (frontsAfterAdd, levelsAfterAdd, w.State.Structure.MaxLoadLevels(), cards);
             });
 
             Assert.Equal(2, r.frontsAfterAdd);
-            Assert.Equal(2, r.columnsAfterAdd);   // the matrix grew a column with the new front
             Assert.Equal(4, r.levelsAfterAdd);    // 3 -> 4 levels on the selected front
-            Assert.Equal(4, r.rowsAfterAdd);      // the matrix grew a row
+            Assert.Equal(4, r.Item3);             // the tallest front drives the padded grid
+            Assert.True(r.Item4 > 0);             // and the card matrix was rebuilt
         }
 
         // ---- Multi-selection via the visible cell-selection matrix --------------------------------------------
-
-        [Fact]
-        public void CellSelection_BuildThree_ApplyToSelection_ChangesExactlyThoseCells()
-        {
-            var r = StaTestRunner.Run(() =>
-            {
-                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
-                w.LoadExisting(SampleDesign(front0Levels: 3, front1Levels: 3), "G", "N"); // 2 fronts x 3 levels
-                w.CellSelectionModel.SetSelected(0, 2, true); // check (0,2) -> add to the edit selection
-                w.CellSelectionModel.SetSelected(1, 1, true); // check (1,1) -> add; (1,1) becomes primary
-                var count = w.State.Structure.SelectedCellCount;
-                var set = w.State.Structure.IsSelected(0, 0) && w.State.Structure.IsSelected(0, 2) && w.State.Structure.IsSelected(1, 1);
-                var primary = w.State.Structure.SelectedFrontIndex == 1 && w.State.Structure.SelectedLevelIndex == 1;
-
-                ((ComboBox)w.FindName("RearPeralteBox")).SelectedItem = 6.0;
-                ((System.Windows.Controls.CheckBox)w.FindName("RearTopeActiveCheck")).IsChecked = false;
-                EditorWindowTestSupport.SetText(w, "CellPalletFrontBox", "49");
-                EditorWindowTestSupport.ClickNamed(w, "ApplySelectedButton");
-
-                bool Changed(int f, int l) => Math.Abs(w.State.Cell(f, l).HighEndBeamPeralte - 6.0) < 1e-6 && !w.State.Cell(f, l).RearTopeEnabled;
-                var changed = Changed(0, 0) && Changed(0, 2) && Changed(1, 1);
-                var intact = w.State.Cell(0, 1).RearTopeEnabled && Math.Abs(w.State.Cell(0, 1).HighEndBeamPeralte - 6.0) > 1e-6
-                             && w.State.Cell(1, 0).RearTopeEnabled && w.State.Cell(1, 2).RearTopeEnabled;
-                return (count, set, primary, changed, intact);
-            });
-
-            Assert.Equal(3, r.count);
-            Assert.True(r.set);
-            Assert.True(r.primary);   // the last checked cell is primary
-            Assert.True(r.changed);   // exactly the three selected cells changed
-            Assert.True(r.intact);    // the others are untouched
-        }
-
-        [Fact]
-        public void CellSelection_CannotLeaveSelectionEmpty_AndSkipsAbsentCells()
-        {
-            var r = StaTestRunner.Run(() =>
-            {
-                var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
-                w.LoadExisting(SampleDesign(front0Levels: 3, front1Levels: 2), "G", "N"); // (1,2) is absent
-                var absent = w.CellSelectionModel.IsAbsent(1, 2);
-
-                // Only (0,0) is selected after load; unchecking it must be refused (never empty).
-                w.CellSelectionModel.SetSelected(0, 0, false);
-                var stillSelected = w.State.Structure.IsSelected(0, 0) && w.State.Structure.SelectedCellCount == 1;
-                var modelReverted = w.CellSelectionModel.IsSelected(0, 0);
-                return (absent, stillSelected, modelReverted);
-            });
-
-            Assert.True(r.absent);          // a level that does not exist is an absent cell
-            Assert.True(r.stillSelected);   // the last cell cannot be unselected
-            Assert.True(r.modelReverted);   // and the visual uncheck was reverted
-        }
 
         [Fact]
         public void SelectingViaFrontLevelCombos_ReplacesSelectionWithASingleCell_AndSyncsTheMatrix()
@@ -261,17 +171,18 @@ namespace RackCad.UI.Tests
             {
                 var w = new RackPushBackSystemWindow(canInsertInAutoCad: true);
                 w.LoadExisting(SampleDesign(front0Levels: 3, front1Levels: 3), "G", "N");
-                w.CellSelectionModel.SetSelected(1, 1, true); // multi-selection {(0,0),(1,1)}, primary now front 1
-                Assert.Equal(2, w.State.Structure.SelectedCellCount);
+                w.SelectMatrixCell(1, 0, extend: true);   // Ctrl+click -> a real multi-selection
+                Assert.True(w.State.Structure.SelectedCellCount >= 2);
 
                 ((ComboBox)w.FindName("SelectedFrontBox")).SelectedIndex = 0; // combo -> single cell back on front 0
                 var single = w.State.Structure.SelectedCellCount == 1;
-                var matrixSingle = w.CellSelectionModel.SelectedCount == 1;
-                return (single, matrixSingle);
+                var primaryFront = w.State.Structure.SelectedFrontIndex;
+                return (single, primaryFront);
             });
 
-            Assert.True(r.Item1);   // the combo replaced the selection with one cell
-            Assert.True(r.Item2);   // and the visible matrix synced to a single checked cell
+            Assert.True(r.Item1);        // the combo replaced the selection with one cell
+            Assert.Equal(0, r.Item2);    // on the front the combo selected
+
         }
 
         // ---- 10. Apply by scope --------------------------------------------------------------------------------

@@ -46,10 +46,6 @@ namespace RackCad.UI
         private bool currentInputsAreValid;  // the CURRENT controls recomputed to a valid model
         private RackProject sourceProject;
         private PushBackEditorComputation lastComputation; // the LAST VALID computation (only replaced on a valid build)
-        private SelectionMatrixModel topeModel;
-        private List<int> topeShape = new List<int>();
-        private SelectionMatrixModel cellSelectionModel; // the visible multi-selection; the DynamicFrontMatrix is the authority
-        private List<int> cellSelectionShape = new List<int>();
 
         // The informative card matrix (PB-VAL-01 round 3). Cards are looked up by (front, level) for in-place updates;
         // the grid stores NO state of its own — every card derives from PushBackMatrixCardModel over the state.
@@ -101,8 +97,6 @@ namespace RackCad.UI
         internal RackEditorSession<PushBackDesign, PushBackSystem> Session => session;
         internal PushBackEditorState State => state;
         internal PushBackEditorDesignAssembler Assembler => assembler;
-        internal SelectionMatrixModel TopeModel => topeModel;
-        internal SelectionMatrixModel CellSelectionModel => cellSelectionModel;
 
         /// <summary>The plan currently drawn in the preview (the selected view/corte). For the lateral view this is the
         /// SELECTED corte's plan, so changing "Corte 1"→"Corte 2" changes what the preview shows.</summary>
@@ -138,7 +132,10 @@ namespace RackCad.UI
             => (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
                 .Where(element => element != null
                     && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType)
-                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType))
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType)
+                    // Owner decision (2026-07-24): the TOPE belongs to the HIGH end and is owned by the rear-tope
+                    // config, so it is never offered as ordinary low-end safety (PushBackSafetyAuthority refuses it too).
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.TopeType))
                 .ToList();
 
         /// <summary>The library project a "Guardar en biblioteca" would write (the active Push Back payload + the opened
@@ -224,7 +221,6 @@ namespace RackCad.UI
                 PostBox.SelectedId = string.IsNullOrWhiteSpace(inputs.PostCatalogId) ? catalog?.Defaults?.Post : inputs.PostCatalogId;
                 PostPeralteBox.SetNumber(inputs.PostPeralte);
                 BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
-                SaqueBox.SetNumber(state.RearTopeSaque);
 
                 var options = inputs.Annotations ?? new DynamicAnnotationOptions();
                 NumberFrontsCheck.IsChecked = options.NumberFronts;
@@ -240,8 +236,6 @@ namespace RackCad.UI
                 }
 
                 RefreshFrontSelector();
-                SyncTopeMatrix();
-                SyncCellSelectionMatrix();
                 RenderPushBackMatrix();
                 LoadSelectedFront();
             }
@@ -292,7 +286,6 @@ namespace RackCad.UI
 
                 RearPeralteBox.SelectedItem = RearPeraltes.FirstOrDefault(p => Math.Abs(p - push.HighEndBeamPeralte) < 1e-6);
                 if (RearPeralteBox.SelectedItem == null) RearPeralteBox.SelectedItem = PushBackDefaults.HighEndBeamDefaultPeralte;
-                RearTopeActiveCheck.IsChecked = push.RearTopeEnabled;
             }
             finally
             {
@@ -336,7 +329,6 @@ namespace RackCad.UI
             }
 
             CommitCurrentCell();
-            state.RearTopeSaque = SaqueBox.Value ?? PushBackDefaults.RearTopeSaque;
 
             var computation = assembler.Build(state, ReadInputs());
             if (computation.IsValid)
@@ -346,8 +338,6 @@ namespace RackCad.UI
                 lastComputation = computation;
                 hasValidModel = true;
                 currentInputsAreValid = true;
-                SyncTopeMatrixIfShapeChanged();
-                SyncCellSelectionMatrixIfShapeChanged();
                 RenderPushBackMatrix();
                 UpdateViewSelector();
                 RenderPreview();
@@ -389,7 +379,7 @@ namespace RackCad.UI
         private NumericField[] AllNumericFields() => new[]
         {
             FrontBox, DepthBox, PalletHeightBox, WeightBox, PalletsDeepBox, ToleranceBox, PostPeralteBox,
-            BeamDepthBox, SaqueBox, AnnotationScaleBox, FrontCountBox, PositionsBox, LevelsBox, FondosBox,
+            BeamDepthBox, AnnotationScaleBox, FrontCountBox, PositionsBox, LevelsBox, FondosBox,
             DepthStartBox, FirstLevelHeightBox, CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox,
             CellClearBox, CellBeamLengthOverrideBox
         };
@@ -429,7 +419,6 @@ namespace RackCad.UI
                     IntermediateBeamDepth = SelectedPeralte(CellIntermediatePeralteBox, cell.IntermediateBeamDepth)
                 },
                 HighEndBeamPeralte = RearPeralteBox.SelectedItem is double p ? p : push.HighEndBeamPeralte,
-                RearTopeEnabled = RearTopeActiveCheck.IsChecked == true
             };
         }
 
@@ -476,123 +465,13 @@ namespace RackCad.UI
             return shape;
         }
 
-        private void SyncTopeMatrix()
-        {
-            if (topeModel != null) topeModel.CellChanged -= TopeCell_Changed;
-            var shape = CurrentShape();
-            var unselected = new List<SelectionMatrixCell>();
-            for (var f = 0; f < shape.Count; f++)
-            {
-                for (var l = 0; l < shape[f]; l++)
-                {
-                    if (!state.Cell(f, l).RearTopeEnabled) unselected.Add(new SelectionMatrixCell(f, l));
-                }
-            }
-
-            topeModel = SelectionMatrixModel.WithJaggedColumns(shape, unselected);
-            topeModel.CellChanged += TopeCell_Changed;
-            TopeMatrix.ColumnHeaders = Enumerable.Range(1, Math.Max(1, shape.Count)).Select(i => "F" + i).ToList();
-            TopeMatrix.RowHeaders = Enumerable.Range(1, Math.Max(1, shape.DefaultIfEmpty(1).Max())).Select(i => "N" + i).ToList();
-            TopeMatrix.Model = topeModel;
-            topeShape = shape;
-        }
-
-        private void SyncTopeMatrixIfShapeChanged()
-        {
-            if (!CurrentShape().SequenceEqual(topeShape)) SyncTopeMatrix();
-        }
-
         // ---- Cell selection matrix (the visible multi-selection; DynamicFrontMatrix stays the authority) ---------
-
-        /// <summary>Rebuild the visible cell-selection matrix from the DynamicFrontMatrix selection: a checked cell is one in
-        /// the edit selection. Only a structural change rebuilds it; a click updates a single cell in place.</summary>
-        private void SyncCellSelectionMatrix()
-        {
-            if (cellSelectionModel != null) cellSelectionModel.CellChanged -= CellSelection_Changed;
-            var shape = CurrentShape();
-            var unselected = new List<SelectionMatrixCell>();
-            for (var f = 0; f < shape.Count; f++)
-            {
-                for (var l = 0; l < shape[f]; l++)
-                {
-                    if (!state.Structure.IsSelected(f, l)) unselected.Add(new SelectionMatrixCell(f, l));
-                }
-            }
-
-            cellSelectionModel = SelectionMatrixModel.WithJaggedColumns(shape, unselected);
-            cellSelectionModel.CellChanged += CellSelection_Changed;
-            CellSelectionMatrix.ColumnHeaders = Enumerable.Range(1, Math.Max(1, shape.Count)).Select(i => "F" + i).ToList();
-            CellSelectionMatrix.RowHeaders = Enumerable.Range(1, Math.Max(1, shape.DefaultIfEmpty(1).Max())).Select(i => "N" + i).ToList();
-            CellSelectionMatrix.Model = cellSelectionModel;
-            cellSelectionShape = shape;
-            UpdatePrimaryIndicator();
-        }
-
-        private void SyncCellSelectionMatrixIfShapeChanged()
-        {
-            if (!CurrentShape().SequenceEqual(cellSelectionShape)) SyncCellSelectionMatrix();
-        }
-
-        /// <summary>Update the model's checks (not its structure) to match the DynamicFrontMatrix selection — used when a combo
-        /// replaces the selection with a single cell without changing the shape.</summary>
-        private void RefreshCellSelectionChecks()
-        {
-            if (cellSelectionModel == null) return;
-            var wasSuppressed = suppressSync;
-            suppressSync = true;
-            try
-            {
-                for (var f = 0; f < cellSelectionModel.Columns; f++)
-                {
-                    for (var l = 0; l < cellSelectionModel.Rows; l++)
-                    {
-                        if (!cellSelectionModel.IsAbsent(f, l))
-                        {
-                            cellSelectionModel.SetSelected(f, l, state.Structure.IsSelected(f, l));
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                suppressSync = wasSuppressed;
-            }
-
-            UpdatePrimaryIndicator();
-        }
 
         private void UpdatePrimaryIndicator()
             => CellSelectionPrimaryText.Text = state.Structure.Count > 0
                 ? string.Format(CultureInfo.InvariantCulture, "Primaria: F{0} N{1} · {2} celda(s) seleccionada(s)",
                     state.Structure.SelectedFrontIndex + 1, state.Structure.SelectedLevelIndex + 1, state.Structure.SelectedCellCount)
                 : string.Empty;
-
-        /// <summary>A click on the cell-selection matrix: check → add the cell (it becomes primary); uncheck → remove it while
-        /// others remain (never empty). The DynamicFrontMatrix is the single authority; the panel reloads the new primary.</summary>
-        private void CellSelection_Changed(object sender, SelectionMatrixCellChangedEventArgs e)
-        {
-            if (suppressSync) return;
-            var f = e.Cell.Column;
-            var l = e.Cell.Row;
-
-            if (!e.IsSelected && state.Structure.SelectedCellCount <= 1)
-            {
-                // Cannot leave the selection empty: revert the visual uncheck.
-                var wasSuppressed = suppressSync;
-                suppressSync = true;
-                try { cellSelectionModel?.SetSelected(f, l, true); }
-                finally { suppressSync = wasSuppressed; }
-                SetStatus("Debe quedar al menos una celda seleccionada.", true);
-                return;
-            }
-
-            CommitCurrentCell();
-            state.ToggleCell(f, l, true); // add (checked) or remove (unchecked, others remain); the last touched is primary
-            LoadSelectedFront();          // sync the front/level combos + load the (new) primary's values
-            RefreshMatrixSelectionVisuals();
-            UpdatePrimaryIndicator();
-            RequestRecompute();
-        }
 
         // ---- Informative card matrix (PB-VAL-01 round 3): THE central editing surface --------------------------
 
@@ -706,7 +585,7 @@ namespace RackCad.UI
             border.BorderBrush = card.IsPrimary ? CardPrimaryStroke : card.IsIncluded ? CardIncludedStroke : CardNormalStroke;
             border.BorderThickness = new Thickness(card.IsPrimary || card.IsIncluded ? 2.0 : 1.0);
             border.Background = !card.IsActive ? CardGhostFill : card.IsPrimary || card.IsIncluded ? CardSelectedFill : Brushes.White;
-            text.Foreground = !card.IsActive ? CardGhostBrush : card.TopeActive ? CardTextBrush : CardTopeOffBrush;
+            text.Foreground = card.IsActive ? CardTextBrush : CardGhostBrush;
         }
 
         /// <summary>Update ONE card's content + style in place (a value/tope change; the structure did not change).</summary>
@@ -725,7 +604,6 @@ namespace RackCad.UI
                 IsActive = levelIndex < levels,
                 IsPrimary = frontIndex == state.Structure.SelectedFrontIndex && levelIndex == state.Structure.SelectedLevelIndex,
                 IsIncluded = state.Structure.IsSelected(frontIndex, levelIndex),
-                TopeActive = state.Cell(frontIndex, levelIndex).RearTopeEnabled,
                 Text = levelIndex < levels ? PushBackMatrixCardModel.CardText(state, frontIndex, levelIndex) : "—"
             };
             slot.Text.Text = card.Text;
@@ -761,77 +639,8 @@ namespace RackCad.UI
             CommitCurrentCell();
             state.ToggleCell(frontIndex, levelIndex, extend);
             LoadSelectedFront();
-            RefreshCellSelectionChecks();      // keep the bulk check-matrix mirrored
             RefreshMatrixSelectionVisuals();
             UpdatePrimaryIndicator();
-            RequestRecompute();
-        }
-
-        private void ApplyTope(int frontIndex, int levelIndex, bool active)
-        {
-            if (frontIndex < 0 || frontIndex >= state.Structure.Count) return;
-            var levels = Math.Max(1, state.Structure.Fronts[frontIndex].LoadLevels);
-            if (levelIndex < 0 || levelIndex >= levels) return;
-
-            state.Cell(frontIndex, levelIndex).RearTopeEnabled = active;
-            var wasSuppressed = suppressSync;
-            suppressSync = true;
-            try
-            {
-                topeModel?.SetSelected(frontIndex, levelIndex, active);
-                if (frontIndex == state.Structure.SelectedFrontIndex && levelIndex == state.Structure.SelectedLevelIndex)
-                {
-                    RearTopeActiveCheck.IsChecked = active;
-                }
-            }
-            finally
-            {
-                suppressSync = wasSuppressed;
-            }
-
-            UpdateMatrixCard(frontIndex, levelIndex);
-            RequestRecompute();
-        }
-
-        private void TopeCell_Changed(object sender, SelectionMatrixCellChangedEventArgs e)
-        {
-            if (suppressSync) return;
-            ApplyTope(e.Cell.Column, e.Cell.Row, e.IsSelected);
-        }
-
-        private void RearTopeActive_Changed(object sender, RoutedEventArgs e)
-        {
-            if (suppressSync) return;
-            ApplyTope(state.Structure.SelectedFrontIndex, state.Structure.SelectedLevelIndex, RearTopeActiveCheck.IsChecked == true);
-        }
-
-        private void TopesAll_Click(object sender, RoutedEventArgs e) => SetAllTopes(true);
-
-        private void TopesNone_Click(object sender, RoutedEventArgs e) => SetAllTopes(false);
-
-        private void SetAllTopes(bool active)
-        {
-            for (var f = 0; f < state.Structure.Count; f++)
-            {
-                for (var l = 0; l < Math.Max(1, state.Structure.Fronts[f].LoadLevels); l++)
-                {
-                    state.Cell(f, l).RearTopeEnabled = active;
-                }
-            }
-
-            var wasSuppressed = suppressSync;
-            suppressSync = true;
-            try
-            {
-                topeModel?.SetAll(active);
-                RearTopeActiveCheck.IsChecked = active;
-            }
-            finally
-            {
-                suppressSync = wasSuppressed;
-            }
-
-            RefreshMatrixSelectionVisuals();
             RequestRecompute();
         }
 
@@ -874,7 +683,6 @@ namespace RackCad.UI
             CommitCurrentCell();
             state.ToggleCell(frontIndex, levelIndex, false);
             LoadSelectedFront();
-            RefreshCellSelectionChecks();
             RefreshMatrixSelectionVisuals();
             RequestRecompute();
         }
@@ -893,9 +701,7 @@ namespace RackCad.UI
                 try
                 {
                     RefreshFrontSelector();
-                    SyncTopeMatrix();
-                    SyncCellSelectionMatrix();
-                    RenderPushBackMatrix();
+                            RenderPushBackMatrix();
                     LoadSelectedFront();
                 }
                 finally
@@ -960,8 +766,47 @@ namespace RackCad.UI
                 suppressSync = true;
                 try
                 {
-                    SyncTopeMatrix();
-                    SyncCellSelectionMatrix();
+                    RenderPushBackMatrix();
+                    LoadSelectedFront();
+                }
+                finally
+                {
+                    suppressSync = false;
+                }
+
+                RequestRecompute();
+            }
+        }
+
+        // ---- Front data apply (structural values of the WHOLE frente, never the cell scopes) ----------------------
+
+        private void ApplyFrontData_Click(object sender, RoutedEventArgs e)
+            => ApplyFrontData(new[] { state.Structure.SelectedFrontIndex });
+
+        private void ApplySelectedFrontData_Click(object sender, RoutedEventArgs e)
+            => ApplyFrontData(state.Structure.SelectedCells()
+                .Select(cell => cell.FrontIndex)
+                .DefaultIfEmpty(state.Structure.SelectedFrontIndex)
+                .Distinct());
+
+        private void ApplyAllFrontData_Click(object sender, RoutedEventArgs e)
+            => ApplyFrontData(Enumerable.Range(0, state.Structure.Count));
+
+        /// <summary>
+        /// Owner decision (2026-07-24): the FRENTE's structural data (positions, levels, fondos, start, first-level
+        /// height) are applied by their own scopes — this frente / selected frentes / all — through the EXISTING
+        /// authority <see cref="DynamicFrontMatrix.ApplyFrontValuesTo"/>. No second authority and no cell scope: the
+        /// per-cell buffer keeps carrying only the cell's own values.
+        /// </summary>
+        private void ApplyFrontData(IEnumerable<int> targets)
+        {
+            if (!AllFieldsValid(out var error)) { SetStatus(error, true); return; }
+            using (session.Recompute.Defer())
+            {
+                state.Structure.ApplyFrontValuesTo(ReadCellValues().Dynamic, targets);
+                suppressSync = true;
+                try
+                {
                     RenderPushBackMatrix();
                     LoadSelectedFront();
                 }
@@ -995,9 +840,58 @@ namespace RackCad.UI
             {
                 Owner = this
             };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            // Separate the dialog's result from the rear stop EXPLICITLY: the Push Back authority owns what may travel
+            // as safety, and it refuses a TOPE (it belongs to the rear-tope config). Filtering here means the two
+            // authorities can never both claim the same physical piece, whatever the shared dialog produced.
+            var authority = new PushBackSafetyAuthority(catalog);
+            var admissible = safetySelections.Where(selection => !authority.IsUnsupported(selection)).ToList();
+            if (admissible.Count != safetySelections.Count)
+            {
+                safetySelections.Clear();
+                foreach (var selection in admissible)
+                {
+                    safetySelections.Add(selection);
+                }
+            }
+
+            EditRearTope();
+            RequestRecompute();
+        }
+
+        /// <summary>
+        /// Owner decision (2026-07-24): the rear tope is configured ONLY here, as part of Seguridad, by REUSING the shared
+        /// <see cref="SafetyTopeGridWindow"/>. The adapter projects the current <see cref="PushBackRearTopeConfig"/> onto
+        /// the dialog and recovers SAQUE + OffCells from its result; cancelling leaves the config untouched.
+        /// </summary>
+        private void EditRearTope()
+        {
+            var config = state.RearTopeConfig();
+            var levels = PushBackRearTopeDialogAdapter.LevelsPerFrente(
+                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)));
+
+            var dialog = new SafetyTopeGridWindow(
+                PushBackRearTopeDialogAdapter.Label,
+                levels,
+                shared: false,
+                side: SafetySide.Left,
+                saque: PushBackRearTopeDialogAdapter.Saque(config),
+                frontal: false,
+                offCells: PushBackRearTopeDialogAdapter.OffCells(config),
+                fondoCount: 1,
+                fondo: -1)
+            {
+                Owner = this
+            };
+
             if (dialog.ShowDialog() == true)
             {
-                RequestRecompute();
+                PushBackRearTopeDialogAdapter.Apply(dialog.Result, config);
+                state.LoadRearTopeConfig(config);
             }
         }
 

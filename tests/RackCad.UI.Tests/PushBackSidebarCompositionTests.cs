@@ -14,7 +14,7 @@ namespace RackCad.UI.Tests
     /// <summary>
     /// PB-VAL-01 (owner retest) — the INTERNAL composition of the Push Back editor follows the structural pattern of the
     /// dynamic editor: the whole "Celda seleccionada" editor and its "Aplicar a" scopes live in the SIDEBAR, so the matrix
-    /// zone is left with only the toolbar, the cards and the secondary bulk tools; and the sidebar captures its fields in
+    /// zone is left with ONLY the toolbar and the cards; and the sidebar captures its fields in
     /// vertical sections of one/two-column grids (the dense WrapPanels are gone) with full-width controls. Structural STA
     /// assertions over the REAL window — no pixels, no screenshots.
     /// </summary>
@@ -27,31 +27,17 @@ namespace RackCad.UI.Tests
             "PositionsBox", "LevelsBox", "FondosBox", "DepthStartBox", "FirstLevelHeightBox", "CellClearBox",
             "CellPalletFrontBox", "CellPalletHeightBox", "CellPalletWeightBox", "CellBeamLengthOverrideBox",
             "CellInOutBeamBox", "CellInOutPeralteBox", "CellIntermediateBeamBox", "CellIntermediatePeralteBox",
-            "RearPeralteBox", "RearTopeActiveCheck",
+            "RearPeralteBox",
             "ApplyCellButton", "ApplySelectedButton", "ApplyLevelButton", "ApplyFrontButton", "ApplyAllButton",
         };
 
-        /// <summary>What the matrix zone is allowed to keep: toolbar, cards and the secondary bulk tools.</summary>
+        /// <summary>What the matrix zone is allowed to keep: the structural toolbar and the cards. Owner decision
+        /// (2026-07-24): no bulk tope tools, no tope hints, no tope marking.</summary>
         private static readonly string[] MatrixControls =
         {
             "AddFrontButton", "RemoveFrontButton", "AddLevelButton", "RemoveLevelButton",
-            "SelectedFrontBox", "SelectedLevelBox", "TopesHint", "TopesAllButton", "TopesNoneButton",
-            "PushBackMatrixGrid", "BulkToolsExpander",
+            "SelectedFrontBox", "SelectedLevelBox", "PushBackMatrixGrid",
         };
-
-        private static int Count(SelectionMatrixModel model)
-        {
-            var total = 0;
-            for (var column = 0; column < model.Columns; column++)
-            {
-                for (var row = 0; row < model.Rows; row++)
-                {
-                    if (model.IsSelected(column, row)) total++;
-                }
-            }
-
-            return total;
-        }
 
         private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
         {
@@ -114,7 +100,7 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void MatrixZone_KeepsOnlyToolbarCardsAndBulkTools()
+        public void MatrixZone_KeepsOnlyToolbarAndCards()
         {
             StaTestRunner.Run(() =>
             {
@@ -137,6 +123,9 @@ namespace RackCad.UI.Tests
                     Assert.Empty(Descendants(matrixZone).OfType<CatalogCombo>());
                     Assert.Empty(Descendants(matrixZone).OfType<TextBox>());
 
+                    Assert.Empty(Descendants(matrixZone).OfType<SelectionMatrix>());
+                    Assert.Empty(Descendants(matrixZone).OfType<Expander>());
+
                     var navigation = new[] { "SelectedFrontBox", "SelectedLevelBox" };
                     Assert.All(
                         Descendants(matrixZone).OfType<ComboBox>(),
@@ -156,10 +145,10 @@ namespace RackCad.UI.Tests
                 {
                     var shell = (RackEditorVisualShell)w.Content;
 
-                    // The dense WrapPanels that crammed the fields are gone: the only WrapPanel left in the sidebar is
-                    // the "Aplicar a" button row (the dynamic editor keeps its scope buttons in one too).
+                    // The dense WrapPanels that crammed the fields are gone: the only WrapPanels left in the sidebar are
+                    // the two BUTTON rows (front scopes and cell scopes), exactly like the dynamic editor.
                     var wrapPanels = Descendants(shell.SidebarScroll).OfType<WrapPanel>().ToList();
-                    Assert.True(wrapPanels.Count <= 1, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
+                    Assert.True(wrapPanels.Count <= 2, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
                     Assert.All(wrapPanels, panel => Assert.All(
                         panel.Children.OfType<FrameworkElement>(),
                         child => Assert.IsType<Button>(child)));
@@ -196,8 +185,6 @@ namespace RackCad.UI.Tests
                     Assert.IsType<NumericField>(w.FindName("PositionsBox"));
                     Assert.IsType<NumericField>(w.FindName("CellBeamLengthOverrideBox"));
                     Assert.IsType<CatalogCombo>(w.FindName("PostBox"));
-                    Assert.IsType<SelectionMatrix>(w.FindName("CellSelectionMatrix"));
-                    Assert.IsType<SelectionMatrix>(w.FindName("TopeMatrix"));
 
                     // The optional/integer/minimum contracts of the moved fields are intact.
                     Assert.True(((NumericField)w.FindName("CellBeamLengthOverrideBox")).IsOptional);
@@ -211,20 +198,20 @@ namespace RackCad.UI.Tests
                     Assert.NotNull(cards);
                     Assert.True(cards.Children.Count > 0, "the card matrix must still be built");
 
-                    var selection = w.CellSelectionModel;
+                    // The authority is PushBackEditorState.Structure; the cards are just its rendering.
                     w.SelectMatrixCell(0, 0, extend: false);
-                    Assert.True(selection.IsSelected(0, 0));
-                    Assert.Equal(1, Count(selection));
+                    Assert.True(w.State.Structure.IsSelected(0, 0));
+                    Assert.Equal(1, w.State.Structure.SelectedCellCount);
 
-                    if (selection.Rows > 1)
+                    if (w.State.Structure.MaxLoadLevels() > 1)
                     {
                         w.SelectMatrixCell(0, 1, extend: true);   // Ctrl+click extends
-                        Assert.True(selection.IsSelected(0, 0));
-                        Assert.True(selection.IsSelected(0, 1));
-                        Assert.Equal(2, Count(selection));
+                        Assert.True(w.State.Structure.IsSelected(0, 0));
+                        Assert.True(w.State.Structure.IsSelected(0, 1));
+                        Assert.Equal(2, w.State.Structure.SelectedCellCount);
 
                         w.SelectMatrixCell(0, 1, extend: false);  // plain click replaces
-                        Assert.Equal(1, Count(selection));
+                        Assert.Equal(1, w.State.Structure.SelectedCellCount);
                     }
                 }
                 finally { w.Close(); }

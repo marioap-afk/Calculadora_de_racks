@@ -87,7 +87,7 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void Cards_ShowFondosPeraltesAndTope_FromTheAuthority()
+        public void Cards_ShowFondosAndPeraltes_FromTheAuthority_AndNoTope()
         {
             StaTestRunner.Run(() =>
             {
@@ -104,7 +104,8 @@ namespace RackCad.UI.Tests
                     var inOut = w.State.Structure.Fronts[0].Cells[0].InOutBeamDepth;
                     Assert.Contains(string.Format(System.Globalization.CultureInfo.InvariantCulture, "IN/OUT {0:0.##}\"", inOut), text);
                     Assert.Contains("Post 3.5\"", text);  // rear peralte default
-                    Assert.Contains("Tope ✔", text);      // tope active by default
+                    // Owner decision (2026-07-24): the card carries NO tope state at all.
+                    Assert.DoesNotContain("Tope", text);
 
                     var other = CardTextAt(w, 1, 0);
                     Assert.Contains("×1", other);
@@ -189,26 +190,6 @@ namespace RackCad.UI.Tests
                     Assert.Contains("Post 5\"", CardTextAt(w, 0, 0));
                     Assert.Contains("Post 5\"", CardTextAt(w, 0, 1));
                     Assert.Contains("Post 3.5\"", CardTextAt(w, 0, 2));
-                }
-                finally { w.Close(); }
-            });
-        }
-
-        [Fact]
-        public void TogglingATope_UpdatesItsCardInPlace()
-        {
-            StaTestRunner.Run(() =>
-            {
-                var w = NewWindow();
-                try
-                {
-                    Assert.Contains("Tope ✔", CardTextAt(w, 0, 0));
-                    var check = (CheckBox)w.FindName("RearTopeActiveCheck");
-                    check.IsChecked = false;
-                    EditorWindowTestSupport.ClickNamed(w, "RearTopeActiveCheck");
-                    Assert.False(w.State.Cell(0, 0).RearTopeEnabled);
-                    Assert.Contains("Sin tope", CardTextAt(w, 0, 0));
-                    Assert.Contains("Tope ✔", CardTextAt(w, 0, 1));   // only the touched card changed
                 }
                 finally { w.Close(); }
             });
@@ -364,8 +345,12 @@ namespace RackCad.UI.Tests
                     var before = w.CurrentPreviewModel.OfRole(HeaderBlockRole.Tope).Count();
                     Assert.True(before > 0);
 
-                    ((CheckBox)w.FindName("RearTopeActiveCheck")).IsChecked = false;
-                    EditorWindowTestSupport.ClickNamed(w, "RearTopeActiveCheck");
+                    // Owner decision (2026-07-24): the only path that deactivates a stop is the rear-tope config,
+                    // which Seguridad edits through the shared SafetyTopeGridWindow.
+                    var config = w.State.RearTopeConfig();
+                    config.OffCells.Add(new RackCad.Domain.Systems.SelectiveGridCell { Frente = 0, Level = 0 });
+                    w.State.LoadRearTopeConfig(config);
+                    w.Session.Recompute.Request();
 
                     var after = w.CurrentPreviewModel.OfRole(HeaderBlockRole.Tope).Count();
                     Assert.Equal(before - 1, after);

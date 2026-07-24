@@ -197,7 +197,7 @@ namespace RackCad.UI.Tests
                 {
                     // Controls, matrix, preview and actions survive the visual adoption (window name scope intact).
                     foreach (var n in new[] { "NameBox", "GuidText", "FrontCountBox", "PostBox", "PositionsBox", "RearPeralteBox",
-                        "RearTopeActiveCheck", "SafetyButton", "PushBackMatrixGrid", "CellSelectionMatrix", "TopeMatrix",
+                        "SafetyButton", "PushBackMatrixGrid",
                         "PreviewCanvas", "ViewBox", "LateralSectionBox", "PreviewSummary", "PreviewHint", "StatusText",
                         "RestoreButton", "BomButton", "SaveLibraryButton", "UpdateButton", "InsertLateralButton",
                         "InsertFrontalEntradaButton", "InsertFrontalPosteriorButton", "InsertPlantaButton", "InsertButton",

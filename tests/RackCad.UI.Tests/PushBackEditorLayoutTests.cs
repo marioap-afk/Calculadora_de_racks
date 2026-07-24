@@ -113,22 +113,11 @@ namespace RackCad.UI.Tests
                     var zone = Named<Border>(w, "MatrixZone");
                     Assert.Contains(Descendants(zone), d => ReferenceEquals(d, cardGrid));
 
-                    // The bulk tools live in the SAME zone, behind a secondary expander (collapsed by default so they
-                    // do not compete with the card matrix). Expanding materializes them in the visual tree.
-                    var expander = Named<Expander>(w, "BulkToolsExpander");
-                    Assert.NotNull(expander);
-                    Assert.False(expander.IsExpanded, "the bulk tools must start collapsed");
-                    expander.IsExpanded = true;
-                    w.UpdateLayout();
-
-                    var selection = Named<SelectionMatrix>(w, "CellSelectionMatrix");
-                    var topes = Named<SelectionMatrix>(w, "TopeMatrix");
-                    Assert.NotNull(selection);
-                    Assert.NotNull(topes);
-                    Assert.False(IsInsideLeftSettingsPanel(selection), "the selection matrix must not sit in the left panel");
-                    Assert.False(IsInsideLeftSettingsPanel(topes), "the tope matrix must not sit in the left panel");
-                    Assert.Contains(Descendants(zone), d => ReferenceEquals(d, selection));
-                    Assert.Contains(Descendants(zone), d => ReferenceEquals(d, topes));
+                    // Owner decision (2026-07-24): the bulk check-matrices and the tope tools are GONE; the card
+                    // matrix is the only matrix in the zone.
+                    Assert.Null(w.FindName("BulkToolsExpander"));
+                    Assert.Null(w.FindName("CellSelectionMatrix"));
+                    Assert.Null(w.FindName("TopeMatrix"));
                 }
                 finally { w.Close(); }
             });

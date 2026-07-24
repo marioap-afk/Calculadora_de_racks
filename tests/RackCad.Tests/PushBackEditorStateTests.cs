@@ -50,8 +50,7 @@ namespace RackCad.Tests
                     IntermediateBeamCatalogId = DynamicRackDefaults.IntermediateBeamCatalogId,
                     IntermediateBeamDepth = 3.5
                 },
-                HighEndBeamPeralte = peralte,
-                RearTopeEnabled = tope
+                HighEndBeamPeralte = peralte
             };
 
         private static void SetCell(PushBackEditorState state, int front, int level, double peralte, bool tope = true)
@@ -219,11 +218,13 @@ namespace RackCad.Tests
         public void ApplyScope_Cell_WritesOnlyTheSourceCell()
         {
             var state = Grid2x2();
-            var written = state.ApplyScope(Values(peralte: 5.0, tope: false), DynamicRackCellScope.Cell);
+            var written = state.ApplyScope(Values(peralte: 5.0), DynamicRackCellScope.Cell);
 
             Assert.Equal(1, written);
             Assert.Equal(5.0, state.Cell(0, 0).HighEndBeamPeralte, 4);
-            Assert.False(state.Cell(0, 0).RearTopeEnabled);
+            // Owner decision (2026-07-24): a scope carries the peralte but NEVER the rear tope — that is configured
+            // only from Seguridad, so the cell keeps whatever the tope config says (here: the default, active).
+            Assert.True(state.Cell(0, 0).RearTopeEnabled);
             Assert.Equal(3.5, state.Cell(0, 1).HighEndBeamPeralte, 4);   // untouched
             Assert.Equal(3.5, state.Cell(1, 0).HighEndBeamPeralte, 4);
         }
@@ -285,17 +286,23 @@ namespace RackCad.Tests
         public void ApplyScope_DynamicAndPushBack_HitTheExactSameCells()
         {
             var state = Grid2x2();
-            state.ApplyScope(Values(peralte: 7.5, tope: false, palletFront: 99.0), DynamicRackCellScope.Level);
+            state.ApplyScope(Values(peralte: 7.5, palletFront: 99.0), DynamicRackCellScope.Level);
 
-            // Level 0 of both fronts got BOTH the dynamic value (palletFront 99) AND the Push Back value (peralte 7.5, tope off).
+            // Level 0 of both fronts got BOTH the dynamic value (palletFront 99) AND the Push Back value (peralte 7.5).
             for (var front = 0; front < 2; front++)
             {
                 Assert.Equal(99.0, state.Structure.Fronts[front].Cells[0].PalletFront, 4);
                 Assert.Equal(7.5, state.Cell(front, 0).HighEndBeamPeralte, 4);
-                Assert.False(state.Cell(front, 0).RearTopeEnabled);
                 // Level 1 got neither.
                 Assert.NotEqual(99.0, state.Structure.Fronts[front].Cells[1].PalletFront);
                 Assert.Equal(3.5, state.Cell(front, 1).HighEndBeamPeralte, 4);
+            }
+
+            // Owner decision (2026-07-24): NO scope carries the rear tope — every cell keeps it as the tope config
+            // left it (here: the default, active), whatever the scope wrote.
+            for (var front = 0; front < 2; front++)
+            {
+                Assert.True(state.Cell(front, 0).RearTopeEnabled);
                 Assert.True(state.Cell(front, 1).RearTopeEnabled);
             }
         }
