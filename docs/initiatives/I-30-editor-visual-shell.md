@@ -16,14 +16,15 @@ context_packs:
   - delivery-validation
   - documentation-governance
 automation_state_path: docs/automation/state/I-30.yml
-decision_paths: []
+decision_paths:
+  - docs/adr/0019-shell-visual-de-editores-por-composicion.md
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
 requires_owner_decision: true
 requires_owner_validation: true
 automation:
-  enabled: true
+  enabled: false
   auto_merge: false
   max_attempts: 3
 ---
@@ -78,11 +79,11 @@ sesión; I-20/I-21 sacaron el estado a Application. Falta la capa que las compon
 
 | Concepto | Selectivo | Dinámico | Push Back | Compartible |
 |---|---|---|---|---|
-| Identidad | Sección "Rack" en panel izquierdo; nombre en `TextBox` crudo; GUID no destacado | Nombre + GUID en el panel izquierdo, controles crudos | Sección "Rack" con `NameBox` + `GuidText` («se asigna al insertar»), arriba del panel | **Sí** — slot `IdentityContent` con contrato nombre + GUID + estado; hoy lo alimenta `RackEditorSession.Identity` |
+| Identidad | Sección "Rack" en panel izquierdo; nombre en `TextBox` crudo; GUID no destacado | Nombre + GUID en el panel izquierdo, controles crudos | Sección "Rack" con `NameBox` + `GuidText` («se asigna al insertar»), arriba del panel | **Parcial** — slot `SidebarHeader` **neutral y opcional**: el shell reserva un encabezado pero no obliga a mostrar GUID; la identidad sigue en `RackEditorSession.Identity` |
 | Panel lateral | `ScrollViewer` de ancho fijo 342 px, secciones por `TextBlock` con estilos `SectionTitle`/`FieldLabel` | Columna izquierda propia, secciones ad-hoc | `ScrollViewer` 430 px con `GroupBox`: Rack, Anotaciones, Estructura, Tarima, Seguridad, Resumen, Mensajes | **Sí** — slot `SidePanelContent` con scroll y ritmo vertical por tokens; el CONTENIDO sigue siendo de cada sistema |
 | Matriz | `RenderMatrix()` imperativa sobre `MatrixGrid`; `cellBorders` por (bay, level); pinceles propios | `RenderFrontMatrix()` sobre `DynamicMatrixGrid`; tarjetas `Border`+`TextBlock`; clic simple/Ctrl+clic; ámbar `#FFD166` primaria, azul `#5B8DEF` incluida | Matriz de tarjetas equivalente + `SelectionMatrix` (I-14) relegada a herramientas masivas | **Parcial** — el *contenedor*, la convención de selección y el estilo de tarjeta son compartibles; el **contenido de la celda es por sistema** (DataTemplate) |
 | Preview | `Canvas` plano `#0E1B2A` + `Map()` propio + 16 brushes | `Canvas` plano `#0E1B2A` + `mapScale/mapOffsetX/mapBottomY` + 17 brushes + métodos por rol | `Canvas` plano + `PushBackPreviewModel` semántico (primitivas rol/pieza) + `PreviewProjection` + `PreviewCanvasPainter` + `PreviewPalette` | **Sí (el marco)** — slot `PreviewContent` con superficie, encabezado de vista y leyenda; la interpretación geométrica es por sistema |
-| Acciones | Fila inferior propia (`Grid.Row=1`) | Botonera propia | Barra inferior con categorías: restaurar/BOM/biblioteca · actualizar · 4 vistas · cerrar, con tooltips y motivo | **Sí** — `ActionBar` común con **categorías** y modelo puro de acciones |
+| Acciones | Fila inferior propia (`Grid.Row=1`) | Botonera propia | Barra inferior con acciones (restaurar/BOM/biblioteca · actualizar · 4 vistas · cerrar) con tooltips y motivo | **Sí** — `ActionBar` común con **categorías neutrales** (leading/secondary/primary/trailing); el editor decide qué ofrece |
 | Estado/errores | `TextBlock` de estado vía `UiSupport.SetStatus` | Ídem | Ídem + hint del preview con ⚠ para modelo obsoleto + motivos por acción deshabilitada | **Sí** — `StatusPresenter` con **severidades** (info/éxito/advertencia/error) |
 | Scroll/resize | 1300×740, mín. 1060×600; scroll solo en panel | Similar, con `MaxHeight` en la matriz | 1280×720, mín. 1120×640; scroll en panel y matriz | **Sí** — tokens de tamaño mínimo y política de scroll por zona |
 | Sesión | `RackEditorSession` + `SelectiveEditorState` (I-20) | `RackEditorSession` + `DynamicFrontMatrix` + `DynamicEditorDesignAssembler` (I-21) | `RackEditorSession` + `PushBackEditorState` + assembler | **Ya compartido** — el shell **no** la sustituye ni la envuelve |
@@ -92,9 +93,9 @@ sesión; I-20/I-21 sacaron el estado a Application. Falta la capa que las compon
 | Componente | Estado en `main` | Acción en I-30 |
 |---|---|---|
 | `SelectionMatrix` / `SelectionMatrixModel` | adoptado **solo** por los 3 diálogos de seguridad | disponible; el shell no lo impone como matriz principal |
-| `NumericField` / `NumericFieldValidation` | **cero** consumidores | el dinámico migra sus entradas numéricas al migrar |
-| `CatalogCombo` | **cero** consumidores | ídem |
-| `PreviewCanvas` (control) + `PreviewProjection` + `PreviewPalette` | controles listos; ninguna ventana usa el CONTROL | el slot de preview del shell los adopta |
+| `NumericField` / `NumericFieldValidation` | **cero** consumidores | **fuera de alcance**: I-30 NO migra las entradas numéricas del dinámico; los `TextBox`/handlers actuales se alojan tal cual en los slots. Adopción posterior por migración separada |
+| `CatalogCombo` | **cero** consumidores | **fuera de alcance**: ídem para los combos de catálogo; se conservan los controles existentes |
+| `PreviewCanvas` (control) + `PreviewProjection` + `PreviewPalette` | controles listos; ninguna ventana usa el CONTROL | **candidato de adopción SOLO si** una prueba fija equivalencia completa de proyección y contenido (§9); si no la fija, el `Canvas` actual se aloja tal cual |
 | `RackDialogWindow` | **cero** consumidores | **no** se adopta por herencia (ver ADR): el shell compone |
 | `PreviewCanvasPainter` | `internal`, usado por el dinámico vía campos privados | se conserva como primitiva de dibujo |
 
@@ -130,8 +131,19 @@ Push Back: se limita a dejar registrado el handoff.
 
 1. **Fundación**: `RackEditorVisualShell` (composición por slots), `StatusPresenter`, `ActionBar` y
    sus modelos puros; tokens en `Themes/AppStyles.xaml`.
-2. **Migración real de `RackDynamicSystemWindow`** al shell, sin cambio de comportamiento.
+2. **Migración VISUAL de `RackDynamicSystemWindow`** al shell, sin cambio de comportamiento. La
+   migración **aloja los controles existentes tal cual dentro de los slots** (los `TextBox`,
+   `ComboBox`, `CheckBox` y `Canvas` actuales del dinámico), preservando **exactamente** su parsing,
+   sus eventos, su `LostFocus`, su recomputación y su comportamiento observable. **No** sustituye
+   esos controles por los de I-14: adoptar el shell es reubicar y coordinar, no reemplazar la
+   captura de datos.
 3. Pruebas del shell y de la migración; gate visual y de Owner.
+
+**Sustitución de controles de captura fuera de alcance.** Migrar las entradas numéricas del dinámico
+a `NumericField` o sus combos a `CatalogCombo` **no** es parte de I-30: se hace, si se hace, en
+migraciones posteriores separadas. La única excepción es una **adaptación mínima inevitable**,
+**demostrada** (por qué no cabe alojar el control tal cual) y **escalada al Owner antes de
+ejecutarse**, registrada en el estado.
 
 ### 4.1 Contrato visual y tokens
 
@@ -152,12 +164,16 @@ contenido:
 
 | Slot | Contenido | Opcional |
 |---|---|---|
-| `IdentityContent` | nombre + GUID + estado de identidad | no |
+| `SidebarHeader` | encabezado NEUTRAL del panel (lo que el editor decida: nombre, identidad, etc.) | **sí** — el shell no obliga a mostrar GUID ni impone un contrato de identidad |
 | `SidePanelContent` | secciones del sistema (scroll) | no |
 | `MatrixContent` | superficie central de edición | **sí** — un editor sin matriz deja el slot vacío y el shell recoloca sin huecos |
 | `PreviewContent` | superficie de vista previa + su selector | sí |
-| `ActionBarContent` | acciones adicionales del sistema, junto a las categorías comunes | sí |
+| `ActionBarContent` | acciones del sistema, clasificadas en las categorías neutrales (§4.5) | sí |
 | `StatusContent` | mensajes; por defecto el `StatusPresenter` común | sí |
+
+`SidebarHeader` es **neutral y opcional**: el shell reserva un encabezado de panel pero no decide su
+contenido; un editor puede poner nombre + GUID, solo nombre, o nada. La identidad y el GUID siguen
+viviendo en `RackEditorSession`, no en el shell.
 
 **Soporte de contenido opcional y editores sin matriz** es requisito, no cortesía: `RackFlowBedWindow`
 (516 líneas, sin matriz) es el caso de prueba del slot vacío, aunque **no se migra** en I-30.
@@ -185,8 +201,16 @@ actual» de «referencia obsoleta» (el caso ⚠ que Push Back ya resuelve a man
 
 ### 4.5 Action bar: categorías, estilos y motivos
 
-Categorías: **Restaurar/estado**, **Datos** (BOM, biblioteca), **Aplicar** (actualizar), **Insertar**
-(una acción por vista) y **Cerrar**. Requisitos:
+Categorías **neutrales** (posiciones/roles visuales, no nombres de sistema); **el editor concreto
+decide qué acciones ofrece y en qué categoría las clasifica**:
+
+- **`LeadingActions`** — extremo inicial de la barra;
+- **`SecondaryActions`** — acciones de apoyo;
+- **`PrimaryActions`** — acción(es) principal(es);
+- **`TrailingActions`** — extremo final.
+
+El shell **no** define qué acción va en cada categoría ni asume BOM/biblioteca/insertar/cerrar: eso
+es del editor. Requisitos:
 
 - estilos coherentes habilitado/deshabilitado (partiendo de `PrimaryButtonStyle`/`SecondaryButtonStyle`);
 - **toda acción deshabilitada expone su motivo por tooltip**, sin excepción;
@@ -239,6 +263,10 @@ Hotspots que **no** deben aparecer en el diff de I-30: `RackSelectiveWindow.*`,
 - Suites nuevas: composición de slots, slot vacío (editor sin matriz), severidades del status,
   categorías/tooltips/estados de la action bar, tokens resueltos, y **regresión estructural** del
   dinámico. Pruebas **estructurales y semánticas**, nunca comparación de píxeles.
+- **Adopción del control `PreviewCanvas` en el shell SOLO si** una prueba fija la **equivalencia
+  completa de proyección y contenido** frente al `Canvas`+`Map()` actual del dinámico (misma
+  proyección mundo→lienzo y mismas primitivas dibujadas). Sin esa prueba, el `Canvas` actual se aloja
+  tal cual en el slot y no se adopta el control.
 - Regresión obligatoria: golden dinámico, golden Push Back y validador I-19 **sin cambios**.
 
 ## 10. Validación manual

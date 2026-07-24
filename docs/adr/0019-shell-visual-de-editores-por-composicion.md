@@ -37,21 +37,31 @@ líneas: cumple los criterios 1 y 2 de `docs/adr/README.md`.
 Los editores ricos se componen sobre un **shell visual común** (`RackEditorVisualShell`) con estas
 reglas:
 
-1. **Composición por slots, no herencia.** El shell expone slots (`IdentityContent`,
+1. **Composición por slots, no herencia.** El shell expone slots (`SidebarHeader`,
    `SidePanelContent`, `MatrixContent`, `PreviewContent`, `ActionBarContent`, `StatusContent`) como
    `ContentControl`/`ContentPresenter`; cada editor **inyecta** su contenido. Los slots opcionales
    pueden quedar vacíos y el shell recoloca sin huecos (un editor sin matriz es un caso soportado).
+   El **encabezado del panel es un slot neutral y opcional**: el shell reserva el espacio pero **no
+   obliga a mostrar el GUID** ni impone un contrato de identidad; qué se muestra lo decide el editor.
 2. **Sin herencia profunda de ventanas.** No se construye una jerarquía de `Window` base por editor;
    `RackDialogWindow` no se adopta como ancestro de los editores ricos.
 3. **Agnosticismo respecto de `RackSystemKind`.** Los archivos del shell no referencian
    `RackSystemKind` ni ningún sistema concreto, y **no contienen ramas** por Selectivo, Dinámico o
    Push Back. La variación se expresa con contenido inyectado, `DataTemplate` y **modelos puros**.
-4. **Separación estricta en tres capas.** El shell posee composición, tokens, severidades y
-   categorías de acción; `RackEditorSession` (I-15) posee identidad, catálogo, recompute coalescido
-   e inserción; los estados puros de Application (I-20/I-21) poseen estructura, selección y
-   ensamblado del diseño. El shell **no** envuelve ni sustituye a la sesión, y no toca geometría,
-   BOM ni persistencia.
-5. **Migración progresiva (strangler), no big-bang**: **Dinámico en I-30**, **Selectivo en I-31**, y
+4. **Separación estricta en tres capas.** El shell posee composición, tokens, severidades y las
+   **categorías visuales neutrales** de acciones; `RackEditorSession` (I-15) posee identidad,
+   catálogo, recompute coalescido e inserción; los estados puros de Application (I-20/I-21) poseen
+   estructura, selección y ensamblado del diseño. El shell **no** envuelve ni sustituye a la sesión, y
+   no toca geometría, BOM ni persistencia. La action bar se estructura en categorías **neutrales por
+   posición** —`LeadingActions`, `SecondaryActions`, `PrimaryActions`, `TrailingActions`—; **el editor
+   concreto decide qué acciones ofrece y en qué categoría las clasifica**.
+5. **Adoptar el shell NO exige sustituir los controles específicos existentes.** La migración de un
+   editor **aloja sus controles actuales tal cual dentro de los slots**, preservando su parsing,
+   eventos, `LostFocus`, recomputación y comportamiento. Sustituir esas entradas por los controles
+   comunes de I-14 (`NumericField`, `CatalogCombo`) **no es consecuencia automática de este ADR**:
+   puede hacerse **después**, mediante migraciones separadas o adaptaciones mínimas y justificadas,
+   nunca como efecto colateral de adoptar el shell.
+6. **Migración progresiva (strangler), no big-bang**: **Dinámico en I-30**, **Selectivo en I-31**, y
    **Push Back después**, cuando I-18 se rebase tras I-31. Ningún editor migra antes de que el shell
    exista con pruebas propias.
 
@@ -75,15 +85,17 @@ reglas:
 ## Consecuencias
 
 - **Positivas**: una sola definición de estructura, tokens, severidades y categorías de acción; el
-  editor N+1 hereda coherencia sin copiar; los controles de I-14 por fin se adoptan; el gate visual
-  del Owner pasa a ser verificable contra un contrato escrito; las pruebas estructurales del shell
-  cubren a todos sus adoptantes.
+  editor N+1 hereda coherencia sin copiar; el gate visual del Owner pasa a ser verificable contra un
+  contrato escrito; las pruebas estructurales del shell cubren a todos sus adoptantes; **habilita**
+  (sin forzar) una adopción posterior de los controles comunes de I-14.
 - **Negativas / costos aceptados**: se migran editores grandes con riesgo de regresión visual
   (mitigado con pruebas estructurales, goldens intactos y validación del Owner sobre el DLL Debug
   del SHA exacto); la composición por slots es más verbosa que la herencia; queda **deuda temporal
-  de coherencia**: entre I-30 e I-31, Selectivo y Push Back siguen fuera del shell.
+  de coherencia**: entre I-30 e I-31, Selectivo y Push Back siguen fuera del shell; y los controles
+  de captura del dinámico siguen siendo los actuales (I-14 no se adopta en I-30).
 - **A vigilar**: que ningún `RackSystemKind` ni rama por sistema se filtre al shell (verificable por
-  prueba/guard); que la migración de Push Back no se adelante a I-31; que los tokens no se
+  prueba/guard); que adoptar el shell **no** derive en una sustitución no escalada de los controles
+  de captura del dinámico; que la migración de Push Back no se adelante a I-31; que los tokens no se
   conviertan en un segundo lugar donde vivan colores junto a `PreviewPalette`.
 
 ## Referencias

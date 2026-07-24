@@ -7,8 +7,8 @@ automation_state:
   state: waiting
   gate: owner-decision
   attempts: 0
-  next_action: el-owner-revisa-adr-0019-shell-visual-por-composicion-y-slots-y-lo-acepta-o-rechaza-hasta-esa-decision-no-se-implementa-produccion-fase-1-detenida-tras-publicar-el-adr-propuesto
-  last_evidence_commit: d7fc111b3fa6f42ec4052af30123dd4a9280d259
+  next_action: el-owner-revisa-el-adr-0019-CORREGIDO-slot-de-encabezado-neutral-sin-obligar-guid-categorias-de-accion-neutrales-leading-secondary-primary-trailing-y-aclaracion-de-que-adoptar-el-shell-no-sustituye-los-controles-de-captura-del-dinamico-y-lo-acepta-o-rechaza-hasta-esa-decision-no-se-implementa-produccion
+  last_evidence_commit: 24122fe86952d1a44bd5b67a96e4adc69eb0026a
 execution_context:
   mode: manual-git-only
   worktree: architecture-editor-visual-shell
@@ -32,6 +32,11 @@ evidence:
   scope_this_run: solo-documentacion-contrato-estado-adr-y-entrada-en-initiatives-readme-sin-xaml-cs-appstyles-pruebas-solucion-handoff-roadmap-geometria-resolvers-bom-persistencia-catalogos-ni-plugin
   push_back_untouched: origin-feature-push-back-b2d9e9d74cb36f2193c12a039b97b9287d1b0f1a-local-igual-remoto-arbol-limpio-leida-solo-con-git-show
   i31_not_claimed: sin-rama-worktree-contrato-ni-estado-de-i31-en-esta-corrida-refactor-selective-visual-shell-sigue-libre
+  revision_2026_07_24: >-
+    revision-documental-del-contrato-y-del-adr-tras-comentario-del-orquestador-1-eliminada-la-autorizacion-general-para-migrar-los-controles-numericos-y-combos-del-dinamico-a-numericfield-catalogcombo-2-la-migracion-visual-aloja-los-controles-existentes-tal-cual-en-los-slots-preservando-parsing-eventos-lostfocus-recomputacion-y-comportamiento-3-adoptar-numericfield-o-catalogcombo-queda-fuera-de-alcance-salvo-adaptacion-minima-inevitable-demostrada-y-escalada-antes-de-ejecutarse-4-previewcanvas-solo-se-adopta-si-una-prueba-fija-equivalencia-completa-de-proyeccion-y-contenido-5-slot-identitycontent-renombrado-a-sidebarheader-neutral-y-opcional-el-shell-no-obliga-a-mostrar-guid-6-action-bar-con-categorias-neutrales-leadingactions-secondaryactions-primaryactions-trailingactions-el-editor-decide-que-ofrece-7-particion-i30-fundacion-mas-dinamico-i31-selectivo-i18-despues-conservada
+  no_capture_control_migration_authorized: correcto-esta-corrida-NO-autoriza-migrar-masivamente-los-controles-de-captura-del-dinamico-la-adopcion-de-i14-numericfield-y-catalogcombo-queda-explicitamente-fuera-de-alcance
+  front_matter_fixed: automation-enabled-false-y-decision-paths-apunta-a-docs-adr-0019-shell-visual-de-editores-por-composicion-md
+  adr_still_proposed: el-adr-0019-permanece-en-estado-propuesto-solo-el-owner-lo-acepta-o-rechaza
 gates:
   owner_decision:
     required: true
