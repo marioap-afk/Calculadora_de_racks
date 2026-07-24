@@ -243,8 +243,12 @@ Previstos (crear salvo indicación):
 - `src/RackCad.UI/Themes/Generic.xaml` — **plantilla por defecto** del shell (los `ContentPresenter`
   de los slots + la action bar por `TemplateBinding`), resuelta por `ThemeInfo(None, SourceAssembly)`;
 - `src/RackCad.UI/Shell/EditorStatusPresenter.*`, `EditorActionBar.*` y sus modelos puros;
-- `src/RackCad.UI/Themes/AppStyles.xaml` (**modificar**: añadir tokens sin romper claves vigentes);
-- `src/RackCad.UI/RackDynamicSystemWindow.xaml` (**modificar**: composición sobre el shell; el
+- `src/RackCad.UI/Themes/AppStyles.xaml` (**modificar**: añadir tokens sin romper claves vigentes,
+  incluido el token `ShellFontFamily` y el **estilo compartido `EditorShellWindowStyle`** —
+  `TargetType="Window"`— que fija tamaño inicial, mínimo, fondo y tipografía desde los tokens del shell,
+  para que una ventana migrada consuma el contrato de tamaño en un solo lugar, sin sizes hardcoded);
+- `src/RackCad.UI/RackDynamicSystemWindow.xaml` (**modificar**: composición sobre el shell y
+  `Style="{DynamicResource EditorShellWindowStyle}"` en vez de tamaños/fondo/tipografía hardcoded; el
   `.cs` **no** cambia — los handlers, el parsing y el `LostFocus` se conservan intactos);
 - `tests/RackCad.UI.Tests/` (añadir suites del shell y de la migración).
 
@@ -336,12 +340,21 @@ ventanas.
   inserción, actualización, BOM, GUID y persistencia. El `Canvas` del preview se aloja tal cual (**no**
   se adopta el control `PreviewCanvas`: sin prueba de equivalencia). Sin migrar los controles de
   captura a `NumericField`/`CatalogCombo`.
-- Pruebas: **UI 212/212** (204 fundación + 8 migración), **RackCad.Tests 1016/1016** (I-24, goldens
-  dinámicos, persistencia, handlers e I-19 intactos). Builds Debug UI/Plugin/solución **0 errores**
-  (2 advertencias `MSB3277` preexistentes de las referencias de AutoCAD). Ningún filtro con cero
-  pruebas.
-- Gates: `owner-decision` resuelto (ADR-0019 aceptado); `plugin_build` verde. **Pendientes:**
-  `autocad` (smoke visual del Owner) y `owner_validation` (DLL Debug del SHA exacto de esta corrida).
+- **Contrato de tamaño común** (corrección de defectos): el `.xaml` de la ventana ya **no** fija
+  tamaños ni fondo/tipografía a mano ni usa el bypass `MinWidth="0" MinHeight="0"` del shell. Aplica el
+  **estilo compartido `EditorShellWindowStyle`** (`AppStyles.xaml`), cuyo tamaño inicial (1280×720),
+  mínimo (1120×640), fondo y tipografía provienen de los tokens `Shell*` (incluido el nuevo
+  `ShellFontFamily`). `Generic.xaml` deja de imponer un mínimo de contenido en el shell (quita sus
+  setters `MinWidth`/`MinHeight`), de modo que en el tamaño mínimo el sidebar hace scroll y la barra de
+  acciones hace *wrap* sin recortar. Dos pruebas STA nuevas lo fijan (consumo del contrato + no-recorte
+  al mínimo).
+- Pruebas: **UI 214/214** (fundación + migración + tamaño mínimo contractual), **RackCad.Tests
+  1016/1016** (I-24, goldens dinámicos, persistencia, handlers e I-19 intactos). Builds Debug
+  UI/Plugin/solución **0 errores** (2 advertencias `MSB3277` preexistentes de las referencias de
+  AutoCAD). Ningún filtro con cero pruebas.
+- Gates: `owner-decision` **resuelto** (ADR-0019 aceptado); `plugin_build` verde. Estado
+  `state: validating`, `gate: autocad`. **Pendientes:** `autocad` (smoke visual del Owner) y
+  `owner_validation` (DLL Debug del SHA exacto de esta corrida).
 - Sin tocar geometría, resolvers, BOM, persistencia, catálogos, Plugin, `RackSelectiveWindow`,
   `RackFlowBedWindow`, configuradores, `docs/HANDOFF.md`, `docs/ROADMAP.md` ni `feature/push-back`
   (`b2d9e9d`, intacta).
