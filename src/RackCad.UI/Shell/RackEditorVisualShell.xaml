@@ -1,0 +1,66 @@
+<UserControl x:Class="RackCad.UI.Shell.RackEditorVisualShell"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:shell="clr-namespace:RackCad.UI.Shell"
+             x:Name="ShellRoot"
+             MinWidth="{DynamicResource ShellMinWidth}"
+             MinHeight="{DynamicResource ShellMinHeight}"
+             Background="{DynamicResource ShellWindowBackgroundBrush}"
+             FontSize="{DynamicResource ShellFontSizeBase}"
+             FontFamily="Segoe UI">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <shell:ShellSlotVisibilityConverter x:Key="SlotVisibility" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!-- Composition only: five content zones + the four neutral action categories. The shell knows nothing about
+         any system; every zone is content the editor injects. Optional zones collapse without leaving a gap. -->
+    <DockPanel Margin="{DynamicResource ShellZoneSpacing}">
+
+        <!-- Action bar (bottom): wraps at the minimum width, never clips its actions. -->
+        <shell:EditorActionBar x:Name="ActionBar" DockPanel.Dock="Bottom"
+                               Margin="0,8,0,0"
+                               LeadingActions="{Binding LeadingActions, ElementName=ShellRoot}"
+                               SecondaryActions="{Binding SecondaryActions, ElementName=ShellRoot}"
+                               PrimaryActions="{Binding PrimaryActions, ElementName=ShellRoot}"
+                               TrailingActions="{Binding TrailingActions, ElementName=ShellRoot}" />
+
+        <!-- Status band (bottom, above the action bar): ALWAYS outside the sidebar scroll so it is never lost. -->
+        <ContentPresenter x:Name="StatusHost" DockPanel.Dock="Bottom" Margin="0,6,0,0"
+                          Content="{Binding StatusContent, ElementName=ShellRoot}"
+                          Visibility="{Binding StatusContent, ElementName=ShellRoot, Converter={StaticResource SlotVisibility}}" />
+
+        <!-- Sidebar (left): tokenized width; a neutral header (optional) over a vertically scrolling panel. -->
+        <Grid DockPanel.Dock="Left" Width="{DynamicResource ShellSidebarWidth}" Margin="0,0,10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ContentPresenter x:Name="SidebarHeaderHost" Grid.Row="0"
+                              Content="{Binding SidebarHeader, ElementName=ShellRoot}"
+                              Visibility="{Binding SidebarHeader, ElementName=ShellRoot, Converter={StaticResource SlotVisibility}}" />
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ContentPresenter x:Name="SidePanelHost" Content="{Binding SidePanelContent, ElementName=ShellRoot}" />
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Work area (fill): matrix on top (optional, collapses) + preview below (fills, tokenized min height).
+             An editor WITHOUT a matrix leaves MatrixContent empty and the preview takes the whole area. -->
+        <Grid x:Name="WorkArea">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" MinHeight="{DynamicResource ShellPreviewMinHeight}" />
+            </Grid.RowDefinitions>
+            <ContentPresenter x:Name="MatrixHost" Grid.Row="0" Margin="0,0,0,8"
+                              Content="{Binding MatrixContent, ElementName=ShellRoot}"
+                              Visibility="{Binding MatrixContent, ElementName=ShellRoot, Converter={StaticResource SlotVisibility}}" />
+            <ContentPresenter x:Name="PreviewHost" Grid.Row="1"
+                              Content="{Binding PreviewContent, ElementName=ShellRoot}"
+                              Visibility="{Binding PreviewContent, ElementName=ShellRoot, Converter={StaticResource SlotVisibility}}" />
+        </Grid>
+    </DockPanel>
+</UserControl>
