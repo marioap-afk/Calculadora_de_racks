@@ -186,6 +186,22 @@ Planes disponibles:
   migraciones adicionales de selectivo/dinamico. `requires_autocad: false`,
   `requires_owner_validation: false`. Candidato validado `28e5cfe` (CI run 29952433309, 4 jobs verdes).
   **Integrada en `main` el 2026-07-22.**
+- [`I-30-editor-visual-shell.md`](I-30-editor-visual-shell.md): contrato de I-30 (Fase 5, sobre
+  I-14/I-15/I-20/I-21/I-24 integradas). Funda el **shell visual común de editores**
+  (`RackEditorVisualShell`): composición por slots con `ContentControl`/`ContentPresenter`, tokens de
+  tamaño/color/tipografía/espaciado en `Themes/AppStyles.xaml`, status presenter con severidades y
+  action bar con categorías, tooltips y motivos de indisponibilidad; **más la migración real de
+  `RackDynamicSystemWindow`**, sin cambio de dibujo, BOM, GUID ni persistencia. El shell es
+  **agnóstico a `RackSystemKind`** y no admite ramas por sistema; los editores sin matriz quedan
+  soportados por slot opcional. La auditoría midió sobre `main` = `8a1bce5` que las tres ventanas
+  ricas **no adoptan ningún control de I-14** (`NumericField`/`CatalogCombo`/`RackDialogWindow` con
+  cero consumidores; los `PreviewCanvas` de las ventanas son un `x:Name` homónimo, no el control),
+  con **43 brushes privados** duplicados y sin tokens. Fuera de alcance: **Selectivo (es I-31)**,
+  `feature/push-back` (**solo lectura** y handoff posterior), cama/configurador/larguero, geometría,
+  BOM, persistencia, catálogos, handlers y Plugin. Decisión requerida:
+  [ADR-0019](../adr/0019-shell-visual-de-editores-por-composicion.md) en estado `propuesto` → la
+  iniciativa queda `waiting` / `owner-decision` y **no implementa producción** hasta la decisión del
+  Owner. Estado versionado en [`../automation/state/I-30.yml`](../automation/state/I-30.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
