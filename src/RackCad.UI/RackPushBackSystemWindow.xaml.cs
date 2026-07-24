@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
@@ -49,6 +50,21 @@ namespace RackCad.UI
         private List<int> topeShape = new List<int>();
         private SelectionMatrixModel cellSelectionModel; // the visible multi-selection; the DynamicFrontMatrix is the authority
         private List<int> cellSelectionShape = new List<int>();
+
+        // The informative card matrix (PB-VAL-01 round 3). Cards are looked up by (front, level) for in-place updates;
+        // the grid stores NO state of its own — every card derives from PushBackMatrixCardModel over the state.
+        private readonly Dictionary<(int Front, int Level), (Border Border, TextBlock Text)> matrixCards
+            = new Dictionary<(int, int), (Border, TextBlock)>();
+
+        private static readonly Brush CardPrimaryStroke = UiSupport.FrozenBrush(Color.FromRgb(0xFF, 0xD1, 0x66));   // primary cell
+        private static readonly Brush CardIncludedStroke = UiSupport.FrozenBrush(Color.FromRgb(0x5B, 0x8D, 0xEF)); // in multi-selection
+        private static readonly Brush CardNormalStroke = UiSupport.FrozenBrush(Color.FromRgb(0xD8, 0xDE, 0xE6));
+        private static readonly Brush CardLabelBrush = UiSupport.FrozenBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
+        private static readonly Brush CardTextBrush = UiSupport.FrozenBrush(Color.FromRgb(0x41, 0x51, 0x61));
+        private static readonly Brush CardGhostBrush = UiSupport.FrozenBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
+        private static readonly Brush CardSelectedFill = UiSupport.FrozenBrush(Color.FromRgb(0xF3, 0xF8, 0xFD));
+        private static readonly Brush CardGhostFill = UiSupport.FrozenBrush(Color.FromRgb(0xF1, 0xF4, 0xF8));
+        private static readonly Brush CardTopeOffBrush = UiSupport.FrozenBrush(Color.FromRgb(0xC0, 0x5B, 0x5B));
 
         public RackPushBackSystemWindow()
             : this(false)
@@ -211,6 +227,7 @@ namespace RackCad.UI
                 RefreshFrontSelector();
                 SyncTopeMatrix();
                 SyncCellSelectionMatrix();
+                RenderPushBackMatrix();
                 LoadSelectedFront();
             }
             finally
@@ -316,6 +333,7 @@ namespace RackCad.UI
                 currentInputsAreValid = true;
                 SyncTopeMatrixIfShapeChanged();
                 SyncCellSelectionMatrixIfShapeChanged();
+                RenderPushBackMatrix();
                 UpdateViewSelector();
                 RenderPreview();
                 SetStatus("Vista recalculada.", false);
@@ -556,6 +574,180 @@ namespace RackCad.UI
             CommitCurrentCell();
             state.ToggleCell(f, l, true); // add (checked) or remove (unchecked, others remain); the last touched is primary
             LoadSelectedFront();          // sync the front/level combos + load the (new) primary's values
+            RefreshMatrixSelectionVisuals();
+            UpdatePrimaryIndicator();
+            RequestRecompute();
+        }
+
+        // ---- Informative card matrix (PB-VAL-01 round 3): THE central editing surface --------------------------
+
+        /// <summary>Full imperative rebuild of the card matrix (structure or selection shape changed). One card per slot
+        /// of the jagged grid padded to the tallest front; "Nivel 1" renders at the BOTTOM like the dynamic editor.</summary>
+        private void RenderPushBackMatrix()
+        {
+            if (PushBackMatrixGrid == null)
+            {
+                return;
+            }
+
+            PushBackMatrixGrid.Children.Clear();
+            PushBackMatrixGrid.RowDefinitions.Clear();
+            PushBackMatrixGrid.ColumnDefinitions.Clear();
+            matrixCards.Clear();
+
+            var cards = PushBackMatrixCardModel.Build(state);
+            if (cards.Count == 0)
+            {
+                return;
+            }
+
+            var fronts = state.Structure.Count;
+            var levels = state.Structure.MaxLoadLevels();
+            PushBackMatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(56.0) });
+            for (var f = 0; f < fronts; f++)
+            {
+                PushBackMatrixGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(128.0) });
+            }
+
+            PushBackMatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            for (var l = 0; l < levels; l++)
+            {
+                PushBackMatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            }
+
+            // Column headers: "Frente N" (click selects that front's primary cell).
+            for (var f = 0; f < fronts; f++)
+            {
+                var captured = f;
+                var header = new TextBlock
+                {
+                    Text = "Frente " + (f + 1).ToString(CultureInfo.InvariantCulture),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    FontWeight = FontWeights.SemiBold,
+                    Margin = new Thickness(2.0, 0.0, 2.0, 3.0),
+                    Cursor = Cursors.Hand,
+                    Foreground = f == state.Structure.SelectedFrontIndex ? CardPrimaryStroke : CardLabelBrush
+                };
+                header.MouseLeftButtonDown += (_, __) => SelectMatrixCell(captured, state.Structure.SelectedLevelIndex, false);
+                AddMatrixElement(header, 0, f + 1);
+            }
+
+            // Row labels + cards, level 1 at the bottom.
+            foreach (var card in cards)
+            {
+                var displayRow = levels - card.LevelIndex; // grid row 1..levels (row 0 = headers)
+                if (card.FrontIndex == 0)
+                {
+                    AddMatrixElement(new TextBlock
+                    {
+                        Text = "Nivel " + (card.LevelIndex + 1).ToString(CultureInfo.InvariantCulture),
+                        Foreground = CardLabelBrush,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(2.0, 4.0, 6.0, 4.0)
+                    }, displayRow, 0);
+                }
+
+                var text = new TextBlock
+                {
+                    Text = card.Text,
+                    TextAlignment = TextAlignment.Center,
+                    FontSize = 10.5,
+                    Foreground = card.IsActive ? CardTextBrush : CardGhostBrush
+                };
+                var border = new Border
+                {
+                    Margin = new Thickness(2.0),
+                    Padding = new Thickness(5.0, 4.0, 5.0, 4.0),
+                    Cursor = card.IsActive ? Cursors.Hand : Cursors.Arrow,
+                    Child = text
+                };
+                StyleMatrixCard(border, text, card);
+
+                var capturedFront = card.FrontIndex;
+                var capturedLevel = card.LevelIndex;
+                var isActive = card.IsActive;
+                border.MouseLeftButtonDown += (_, __) =>
+                {
+                    // Plain click replaces the selection (the card becomes primary and loads the editor);
+                    // Ctrl+click extends/shrinks the multi-selection. A ghost slot selects its front instead.
+                    var extend = (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+                    SelectMatrixCell(capturedFront, isActive ? capturedLevel : state.Structure.SelectedLevelIndex, isActive && extend);
+                };
+
+                matrixCards[(card.FrontIndex, card.LevelIndex)] = (border, text);
+                AddMatrixElement(border, displayRow, card.FrontIndex + 1);
+            }
+        }
+
+        private void AddMatrixElement(UIElement element, int row, int column)
+        {
+            Grid.SetRow(element, row);
+            Grid.SetColumn(element, column);
+            PushBackMatrixGrid.Children.Add(element);
+        }
+
+        private static void StyleMatrixCard(Border border, TextBlock text, PushBackMatrixCard card)
+        {
+            border.BorderBrush = card.IsPrimary ? CardPrimaryStroke : card.IsIncluded ? CardIncludedStroke : CardNormalStroke;
+            border.BorderThickness = new Thickness(card.IsPrimary || card.IsIncluded ? 2.0 : 1.0);
+            border.Background = !card.IsActive ? CardGhostFill : card.IsPrimary || card.IsIncluded ? CardSelectedFill : Brushes.White;
+            text.Foreground = !card.IsActive ? CardGhostBrush : card.TopeActive ? CardTextBrush : CardTopeOffBrush;
+        }
+
+        /// <summary>Update ONE card's content + style in place (a value/tope change; the structure did not change).</summary>
+        private void UpdateMatrixCard(int frontIndex, int levelIndex)
+        {
+            if (!matrixCards.TryGetValue((frontIndex, levelIndex), out var slot))
+            {
+                return;
+            }
+
+            var levels = Math.Max(1, state.Structure.Fronts[frontIndex].LoadLevels);
+            var card = new PushBackMatrixCard
+            {
+                FrontIndex = frontIndex,
+                LevelIndex = levelIndex,
+                IsActive = levelIndex < levels,
+                IsPrimary = frontIndex == state.Structure.SelectedFrontIndex && levelIndex == state.Structure.SelectedLevelIndex,
+                IsIncluded = state.Structure.IsSelected(frontIndex, levelIndex),
+                TopeActive = state.Cell(frontIndex, levelIndex).RearTopeEnabled,
+                Text = levelIndex < levels ? PushBackMatrixCardModel.CardText(state, frontIndex, levelIndex) : "—"
+            };
+            slot.Text.Text = card.Text;
+            StyleMatrixCard(slot.Border, slot.Text, card);
+        }
+
+        /// <summary>Restyle every card's selection border/background (the selection changed; content did not).</summary>
+        private void RefreshMatrixSelectionVisuals()
+        {
+            foreach (var entry in matrixCards)
+            {
+                UpdateMatrixCard(entry.Key.Front, entry.Key.Level);
+            }
+        }
+
+        /// <summary>The single card-click entry point (also the test seam): plain click replaces the selection with this
+        /// cell and loads its editor; <paramref name="extend"/> toggles it in the multi-selection (the authority —
+        /// <see cref="DynamicFrontMatrix.ToggleCell"/> — guarantees the selection can never become empty).</summary>
+        internal void SelectMatrixCell(int frontIndex, int levelIndex, bool extend)
+        {
+            if (suppressSync || frontIndex < 0 || frontIndex >= state.Structure.Count)
+            {
+                return;
+            }
+
+            if (!AllFieldsValid(out var error))
+            {
+                SetStatus(error, true);
+                return;
+            }
+
+            levelIndex = state.Structure.ClampLevel(frontIndex, levelIndex);
+            CommitCurrentCell();
+            state.ToggleCell(frontIndex, levelIndex, extend);
+            LoadSelectedFront();
+            RefreshCellSelectionChecks();      // keep the bulk check-matrix mirrored
+            RefreshMatrixSelectionVisuals();
             UpdatePrimaryIndicator();
             RequestRecompute();
         }
@@ -582,6 +774,7 @@ namespace RackCad.UI
                 suppressSync = wasSuppressed;
             }
 
+            UpdateMatrixCard(frontIndex, levelIndex);
             RequestRecompute();
         }
 
@@ -623,6 +816,7 @@ namespace RackCad.UI
                 suppressSync = wasSuppressed;
             }
 
+            RefreshMatrixSelectionVisuals();
             RequestRecompute();
         }
 
@@ -666,6 +860,7 @@ namespace RackCad.UI
             state.ToggleCell(frontIndex, levelIndex, false);
             LoadSelectedFront();
             RefreshCellSelectionChecks();
+            RefreshMatrixSelectionVisuals();
             RequestRecompute();
         }
 
@@ -685,6 +880,7 @@ namespace RackCad.UI
                     RefreshFrontSelector();
                     SyncTopeMatrix();
                     SyncCellSelectionMatrix();
+                    RenderPushBackMatrix();
                     LoadSelectedFront();
                 }
                 finally
@@ -751,6 +947,7 @@ namespace RackCad.UI
                 {
                     SyncTopeMatrix();
                     SyncCellSelectionMatrix();
+                    RenderPushBackMatrix();
                     LoadSelectedFront();
                 }
                 finally
