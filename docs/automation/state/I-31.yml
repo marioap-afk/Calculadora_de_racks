@@ -3,12 +3,12 @@ automation_state:
   initiative: I-31
   branch: refactor/selective-visual-shell
   claim_id: ab7853c9-0150-4db9-a331-92571fa6b6ab
-  current_phase: 5
-  state: validating
-  gate: owner-validation
+  current_phase: 6
+  state: integration-ready
+  gate: none
   attempts: 0
-  next_action: owner-valida-en-autocad-2025-el-dll-debug-del-sha-exacto-del-head-publicado-comportamiento-dibujo-bom-identidad-round-trip-y-apariencia-alineada-con-el-dinamico-luego-integracion-manual-merge-no-ff-y-reanudacion-de-i18
-  last_evidence_commit: 67a8621c52e2b1caa7e3f2786cc8abedc4230201
+  next_action: integracion-manual-en-main-por-git-merge-no-ff-desde-refactor-selective-visual-shell-sin-squash-ni-force-luego-cierre-documental-en-main-handoff-ci-y-reanudacion-de-i18-rebasando-feature-push-back-sobre-el-nuevo-origin-main
+  last_evidence_commit: b638653b10bdba5cd5c1d9f814f196c177f18c3e
 execution_context:
   mode: manual-git-only
   worktree: refactor-selective-visual-shell
@@ -46,13 +46,17 @@ evidence:
     push-back-imita-a-mano-la-estructura-del-shell-dockpanel-scroll-left-430-grid-workarea-barra-inferior-con-sizes-720-1280-min-640-1120-pre-672-y-ya-adopta-numericfield-catalogcombo-su-migracion-futura-es-reparent-de-layout-sin-adoptar-controles-de-captura-subiria-min-a-672-conflicto-textual-minimo-trabajo-real-semantico-i31-solo-registra-el-handoff
   dll_for_owner: refactor-selective-visual-shell-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-construido-desde-el-head-publicado-de-la-rama-el-commit-de-cierre-es-documental-y-no-cambia-el-binario
   run_note: docs/automation/runs/I-31-2026-07-24-migration.md
+  owner_validation_2026_07_24: >-
+    RESUELTO-el-owner-valido-en-autocad-2025-los-12-puntos-del-checklist-del-editor-selectivo-migrado-al-shell-aprobados-sin-observaciones-sobre-el-dll-debug-del-sha-exacto-b638653b10bdba5cd5c1d9f814f196c177f18c3e-assemblyinformationalversion-1-0-0-plus-b638653b10bdba5cd5c1d9f814f196c177f18c3e-ci-30108459424-success-sobre-b638653-gates-autocad-y-owner-validation-resueltos-evidencia-en-docs-automation-evidence-i31-autocad-validation-md
+  validated_dll: sha-validado-b638653b10bdba5cd5c1d9f814f196c177f18c3e-assemblyinformationalversion-1-0-0-plus-b638653b10bdba5cd5c1d9f814f196c177f18c3e-origin-main-no-avanzo-40a2c8e-sin-rebase-final-la-aprobacion-de-b638653-es-vigente-el-commit-documental-de-registro-de-aprobacion-no-cambia-src-tests-ni-el-binario
+  evidence_file: docs/automation/evidence/I-31-autocad-validation.md
 gates:
   autocad:
     required: true
-    note: PENDIENTE-la-ventana-selectiva-migrada-dibuja-el-rack-real-exige-validacion-visual-en-autocad-2025-sobre-el-dll-debug-del-sha-exacto
+    note: RESUELTO-owner-valido-en-autocad-2025-los-12-puntos-del-selectivo-migrado-sobre-el-dll-debug-del-sha-b638653-sin-observaciones
   owner_validation:
     required: true
-    note: PENDIENTE-el-owner-valida-comportamiento-y-apariencia-del-selectivo-migrado-alineado-con-el-dinamico-sobre-el-mismo-sha
+    note: RESUELTO-owner-validation-aprobada-comportamiento-y-apariencia-del-selectivo-migrado-alineado-con-el-dinamico-sin-observaciones-sobre-b638653
   plugin_build:
     required: true
     note: RESUELTO-build-debug-del-plugin-verde-0-errores-2-msb3277-conocidas

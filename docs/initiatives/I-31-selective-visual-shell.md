@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-31
 title: Migración del editor Selectivo al shell visual común
 type: refactor
-status: validating
+status: integration-ready
 branch: refactor/selective-visual-shell
 base_branch: main
 priority:
@@ -290,12 +290,34 @@ alineada con el Dinámico. Sin esa validación la iniciativa no se integra.
 ## 13. Estado versionado y entrega del Pull Request
 
 Estado canónico: [`docs/automation/state/I-31.yml`](../automation/state/I-31.yml). Sin Pull Request
-(modo `manual-git-only`). El merge automático está prohibido. Al cerrar la corrida el estado queda
-`state: validating`, con los gates `autocad` y `owner-validation` pendientes. `completed`/integrada es
-manual y posterior a la aprobación del Owner.
+(modo `manual-git-only`). El merge automático está prohibido. Tras la validación del Owner el estado
+queda `state: integration-ready`, con los gates `autocad`, `owner-validation` y `plugin_build`
+**resueltos**. `integrated` es manual y posterior al `git merge --no-ff` en `main`.
 
 ## 14. Evidencia final
 
-Se completa al cerrar la corrida (commits, archivos, pruebas, builds, DLL Debug del SHA exacto,
-`AssemblyInformationalVersion`, CI del HEAD publicado, y confirmación de que `main` y `feature/push-back`
-no fueron modificadas). Registro de corrida en `docs/automation/runs/`.
+**Corrida de migración** (`2026-07-24`) — [`docs/automation/runs/I-31-2026-07-24-migration.md`](../automation/runs/I-31-2026-07-24-migration.md):
+
+- **Base** `origin/main = 40a2c8e` (sin rebase). Commits: `6cdaea7` (reclamo), `fd4969e` (docs),
+  `5b7c0b4` (migración XAML), `67a8621` (pruebas + locator por slots), `b638653` (cierre de corrida),
+  más el commit documental de **registro de aprobación** de esta sesión de integración.
+- `RackSelectiveWindow` compuesto sobre `RackEditorVisualShell` **solo por XAML** (el `.cs` es
+  byte-idéntico a `origin/main`): 45 `x:Name` (+ `Shell`) y 31 handlers idénticos, todos los
+  Content/ToolTip/Text con **diff vacío**, selección simple + alcance (sin multiselección),
+  selector y matrices por fondo, editor de celda, seguridad, previews frontal/lateral, inserción
+  frontal/lateral/planta, actualización en sitio, BOM, biblioteca, GUID/nombre/round-trip, metadata
+  I-11, y estados habilitado/deshabilitado con motivo + `ToolTipService.ShowOnDisabled`.
+- **Pruebas**: `RackCad.Tests` 1016/1016, `RackCad.UI.Tests` 237/237 (218 + 19
+  `SelectiveShellMigrationTests`). Builds Debug UI/Plugin/solución **0 errores** (2 `MSB3277`
+  conocidas). Filtros dirigidos sin vacíos. Diff confinado a UI + pruebas + docs de I-31.
+- **Validación del Owner** (`2026-07-24`) —
+  [`docs/automation/evidence/I-31-autocad-validation.md`](../automation/evidence/I-31-autocad-validation.md):
+  el Owner **validó en AutoCAD 2025 los 12 puntos** del editor Selectivo migrado, **aprobados sin
+  observaciones**, sobre el **DLL Debug del SHA `b638653b10bdba5cd5c1d9f814f196c177f18c3e`**
+  (`AssemblyInformationalVersion = 1.0.0+b638653b10bdba5cd5c1d9f814f196c177f18c3e`). CI del candidato:
+  run `30108459424` **success** sobre `b638653`. Gates `autocad`, `owner-validation` y `plugin_build`
+  **resueltos**; `origin/main` **no avanzó** desde `40a2c8e`, por lo que **no hubo rebase final** y el
+  árbol validado coincide con lo integrado (el commit documental de registro no cambia el binario).
+- `feature/push-back` **no modificada** (`b2d9e9d`; leída solo con `git show`). `main` no fue tocada
+  hasta el `git merge --no-ff` de esta sesión. `docs/HANDOFF.md` y `docs/ROADMAP.md` se actualizan en
+  el cierre de integración (WORKFLOW §4.5.4).
