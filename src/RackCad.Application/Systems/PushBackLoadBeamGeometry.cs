@@ -35,11 +35,41 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// PB-VAL-05 — the vertical shift that puts the low beam's bed mate on the line starting at the bed's PHYSICAL
-        /// origin (<see cref="PushBackFlowBedAxis.RailOrigin"/>) instead of on the TROQUEL line through
-        /// <see cref="PushBackFlowBedAxis.ExitMate"/>. The two lines are PARALLEL (same axis angle) and separated by the
-        /// rail's own local mate, so this is a pure constant offset per level: it cannot change the slope, the bed length
-        /// or the rear end. Zero when the level has no resolved bed axis.
+        /// PB-VAL-05 — the CANONICAL tangency point of the low IN/OUT beam: the catalog's <c>TROQUEL_CAMA</c>
+        /// (<see cref="DynamicRackDefaults.InOutBeamBedMatePoint"/>) in the beam's own view, in BLOCK-LOCAL coordinates.
+        ///
+        /// This is a named, measured point of the real block, not the insertion point and not an offset: the Owner
+        /// confirmed on the DWG that TROQUEL_CAMA IS the beam's physical contact face with the bed, so consuming it as
+        /// the tangency point is DEMONSTRATED, not assumed. Returns null when the catalog carries no such row — a
+        /// missing mate is a missing physical contract and must never fall back to the block origin.
+        /// </summary>
+        public static Point2D? BedTangencyPointLocal(RackCatalog catalog, string beamId)
+        {
+            var entry = catalog?.ConnectionLayout.FindConnectionLayout(
+                string.IsNullOrWhiteSpace(beamId) ? DynamicRackDefaults.InOutBeamCatalogId : beamId,
+                DynamicRackDefaults.InOutBeamBedMatePoint,
+                DynamicRackDefaults.InOutBeamView);
+            return entry == null ? (Point2D?)null : new Point2D(entry.LocalX, entry.LocalY);
+        }
+
+        /// <summary>
+        /// PB-VAL-05 — the world position of a placed beam's tangency point: its local <c>TROQUEL_CAMA</c> transformed by
+        /// the placement (mirror included), exactly like <see cref="PushBackFlowBedGeometry"/> transforms the bed mates.
+        /// </summary>
+        public static Point2D BedTangencyPointWorld(Point2D localTangency, double placementX, double placementY, bool mirroredX)
+            => new Point2D(placementX + (mirroredX ? -localTangency.X : localTangency.X), placementY + localTangency.Y);
+
+        /// <summary>
+        /// PB-VAL-05 — the vertical shift that lands the beam's TANGENCY POINT (above) on the line through the bed's
+        /// PHYSICAL origin (<see cref="PushBackFlowBedAxis.RailOrigin"/>), evaluated AT THAT POINT'S OWN X, instead of on
+        /// the TROQUEL line through <see cref="PushBackFlowBedAxis.ExitMate"/>. Both lines are PARALLEL (same axis angle),
+        /// so this is a pure vertical constant per level: it cannot change the bed's slope, axis, origin or length — the
+        /// bed is resolved from the RAW placements and never sees this shift (see <see cref="LowBeams"/>).
+        ///
+        /// The axis's <see cref="PushBackFlowBedAxis.ExitMate"/> IS that transformed tangency point (the bed resolver
+        /// mates the very same catalog point), which is why the shift can be read off the axis alone.
+        /// Returns 0 for a level with no resolved bed axis: with no bed there is no bed-origin line to be tangent to,
+        /// so the beam keeps its troquel-snapped elevation rather than being moved by an unrelated level's line.
         /// </summary>
         public static double BedOriginOffset(IReadOnlyList<PushBackFlowBedAxis> axes, int levelNumber)
         {
