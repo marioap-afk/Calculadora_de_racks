@@ -91,10 +91,17 @@ namespace RackCad.Tests
             // Round 2 (PB-VAL-05, low-beam tangency onto the bed-origin line) moves ONLY the two lateral pins again —
             // LowBeams is lateral-only, so frontal-entrada, frontal-posterior, planta and the BOM stay put.
             // Previous (round 1): lateral/lateral-corte0 E3E3EA9F…
-            ["lateral"] = "4C22005A6C4444CD7A32FCF2C2A9E8BD19115A76DF779613C7D57142454EEBD5",
-            ["lateral-corte0"] = "4C22005A6C4444CD7A32FCF2C2A9E8BD19115A76DF779613C7D57142454EEBD5",
+            //
+            // OWNER RETEST of PB-VAL-02 (the stop was still inverted): the rear tope now takes its world anchor from the
+            // rear beam's measured load-side contact point (lateral only, the view seen along the depth) and faces the
+            // LOAD side in both elevations. So exactly THREE pins move: the two laterals (anchor + orientation) and
+            // frontal-posterior (orientation). frontal-entrada carries no rear tope, planta keeps the beam's plan mirror
+            // and the BOM counts the same pieces with the same SAQUE/LONGITUD — those three are UNCHANGED, which is what
+            // bounds this correction. Previous: lateral/lateral-corte0 4C22005A…, frontal-posterior 67511108…
+            ["lateral"] = "110DB452132A58A933839AE6159403C35B192D9ADC4EF78D4D532A9F3278915F",
+            ["lateral-corte0"] = "110DB452132A58A933839AE6159403C35B192D9ADC4EF78D4D532A9F3278915F",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
-            ["frontal-posterior"] = "67511108F6F2CD8A2799A962F0C20A49044D90BAFCDB2E3B0B0C3E5EE5C37E80",
+            ["frontal-posterior"] = "1DA69F5EA299624C75B1F69BBEAF758ED63CEF2FA64B49AB8EE4A8E0D456C3D6",
             ["planta"] = "33A87C650DF93AAF45E1F600B348E515E4D1379510E9095A4C6564E3F766E82C",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front

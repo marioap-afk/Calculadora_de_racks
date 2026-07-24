@@ -31,12 +31,59 @@ namespace RackCad.Application.Systems
         public static bool IsPlanta(string view) => string.Equals(view, "PLANTA", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// The rear tope's mirror. PB-VAL-02: it must NOT inherit the rear BEAM's mirror — doing so drew the tope inverted
-        /// with respect to the post and the rear end, because the beam's mirror orients a BEAM profile, not the tope's step.
-        /// In the elevation views (lateral / rear frontal) the rear tope faces the load side and is drawn UNMIRRORED; PLANTA
-        /// is a top view where the tope lies along the beam, so there it keeps the beam's plan orientation.
+        /// PB-VAL-02 — which way the rear tope FACES, derived from the system's LOAD SIDE, never from the rear beam's own
+        /// mirror (the beam's mirror orients a BEAM profile, not the tope's step; inheriting it — or hardcoding the
+        /// opposite — is what drew the tope inverted with respect to the post and the rear end).
+        ///
+        /// Push Back is LIFO: pallets enter and leave through the LOW end, which lies at DECREASING X from the rear beam,
+        /// so the tope must stick out toward -X to retain them. The CANONICAL Selective convention fixes what that means:
+        /// in <see cref="SelectiveSafetyPlacement.TopeSpots"/> the two topes of one central gap are
+        /// <c>{AtFront=false, Mirror=false}</c> (its gap lies at +X) and <c>{AtFront=true, Mirror=true}</c> (its gap lies
+        /// at -X) — i.e. a MIRRORED tope sticks out toward -X. Hence the elevations draw the rear tope mirrored.
+        /// PLANTA is a top view where the tope lies ALONG the beam, so there it keeps the beam's plan orientation.
         /// </summary>
-        public static bool Mirrored(string view, bool beamMirroredX) => IsPlanta(view) && beamMirroredX;
+        public static bool Mirrored(string view, bool beamMirroredX)
+            => IsPlanta(view) ? beamMirroredX : FacesLowEnd;
+
+        /// <summary>
+        /// Push Back's load side seen from the rear beam: the LOW end, at -X. Elevation topes face it (see
+        /// <see cref="Mirrored"/>). A constant of the SYSTEM, not of the block or of the beam's mirror.
+        /// </summary>
+        public const bool FacesLowEnd = true;
+
+        /// <summary>
+        /// PB-VAL-02 — the rear tope's world anchor X in an ELEVATION seen along the depth (LATERAL). It is NOT the raw
+        /// <c>placement.X</c> (the beam's insertion point): it is the beam's own REAL bed-contact connection point on the
+        /// LOAD side, transformed by the beam's mirror. The rear beam exposes both edges of that contact face
+        /// (<see cref="PushBackDefaults.HighEndBeamLeftBedMatePoint"/> / <see cref="PushBackDefaults.HighEndBeamRightBedMatePoint"/>,
+        /// measured from the block); whichever of the two lands at the LOWER world X is the one facing the load, and that
+        /// is where the stop must sit. Falls back to <paramref name="placementX"/> only when the catalog carries neither
+        /// point (a piece with no measured contact face), never silently preferring one edge.
+        /// </summary>
+        public static double LateralAnchorX(RackCatalog catalog, string beamId, double placementX, bool beamMirroredX)
+        {
+            var left = catalog?.ConnectionLayout.FindConnectionLayout(
+                beamId, PushBackDefaults.HighEndBeamLeftBedMatePoint, PushBackDefaults.HighEndBeamView);
+            var right = catalog?.ConnectionLayout.FindConnectionLayout(
+                beamId, PushBackDefaults.HighEndBeamRightBedMatePoint, PushBackDefaults.HighEndBeamView);
+            if (left == null && right == null)
+            {
+                return placementX;
+            }
+
+            var anchor = double.MaxValue;
+            if (left != null)
+            {
+                anchor = Math.Min(anchor, placementX + (beamMirroredX ? -left.LocalX : left.LocalX));
+            }
+
+            if (right != null)
+            {
+                anchor = Math.Min(anchor, placementX + (beamMirroredX ? -right.LocalX : right.LocalX));
+            }
+
+            return anchor;
+        }
 
         /// <summary>The rear tope Y in an ELEVATION view: the canonical Selective rise-and-snap plus <see cref="ExtraRise"/>.</summary>
         public static double ElevationY(double troquelMateY, double largueroY)
@@ -66,6 +113,13 @@ namespace RackCad.Application.Systems
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
             var keepFrenteY = IsPlanta(view);
             var troquelMateY = keepFrenteY ? 0.0 : PostTroquelGridBase(structure, catalog);
+            var highBeamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
+                ? PushBackDefaults.HighEndBeamCatalogId
+                : system.HighEndBeamCatalogId;
+            // PB-VAL-02: only the LATERAL is seen along the depth, so only there does the load-side contact point of the
+            // rear beam define the stop's X. The frontal and planta look ACROSS the beam, where the tope runs ALONG it and
+            // shares the beam's transverse datum — the very datum its LONGITUD is measured from.
+            var anchorAlongDepth = string.Equals(view, "LATERAL", StringComparison.OrdinalIgnoreCase);
 
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
             {
@@ -85,8 +139,11 @@ namespace RackCad.Application.Systems
                 double? longitud = baseLength > 0.0
                     ? baseLength + SelectiveTopePlacement.LengthAllowance
                     : (double?)null;
+                var x = anchorAlongDepth
+                    ? LateralAnchorX(catalog, highBeamId, placement.X, placement.MirroredX)
+                    : placement.X;
                 result.Add(SelectiveTopePlacement.Tope(
-                    TopePieceId, block, view, placement.X, y, saque, longitud,
+                    TopePieceId, block, view, x, y, saque, longitud,
                     mirroredX: Mirrored(view, placement.MirroredX)));
             }
 

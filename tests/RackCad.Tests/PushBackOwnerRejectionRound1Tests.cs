@@ -96,11 +96,18 @@ namespace RackCad.Tests
         // ---- PB-VAL-02: orientation is an explicit rear-tope rule, never the beam's mirror ----
 
         [Fact]
-        public void PbVal02_ElevationViews_DrawTheRearTopeUnmirrored_EvenThoughTheRearBeamIsMirrored()
+        public void PbVal02_ElevationViews_FaceTheLoadSide_IndependentlyOfTheRearBeamMirror()
         {
-            // The rear placement is mirrored (it is the dynamic ENTRANCE beam); the tope must NOT inherit that.
-            Assert.False(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: true));
-            Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: true));
+            // Owner RETEST (normative): round 1 drew the elevation topes unmirrored and the Owner still measured the stop
+            // inverted with respect to the post and the rear end. The facing is a property of the SYSTEM's load side, not
+            // of the beam's mirror: Push Back loads from the LOW end (at -X from the rear beam) and, by the canonical
+            // Selective convention (SelectiveSafetyPlacement.TopeSpots), the tope whose gap lies at -X is the MIRRORED
+            // one. So the elevations mirror it — whatever the rear beam's own mirror is (it is the dynamic ENTRANCE beam,
+            // which IS mirrored): the rule must not read that flag at all.
+            Assert.True(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: true));
+            Assert.True(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: false));
+            Assert.True(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: true));
+            Assert.True(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: false));
 
             // PLANTA is a top view: the tope lies along the beam and keeps its plan orientation.
             Assert.True(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: true));
@@ -108,7 +115,7 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void PbVal02_LateralAndRearFrontalTopes_AreUnmirrored()
+        public void PbVal02_LateralAndRearFrontalTopes_FaceTheLoadSide()
         {
             var catalog = Catalog;
             var system = System(catalog);
@@ -116,13 +123,13 @@ namespace RackCad.Tests
 
             var lateral = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.NotEmpty(lateral);
-            Assert.All(lateral, tope => Assert.False(tope.MirroredX));
+            Assert.All(lateral, tope => Assert.True(tope.MirroredX));
 
             var frontal = new PushBackSystemFrontalBuilder()
                 .BuildPlan(system, catalog, PushBackFrontalEnd.Posterior).Flatten().Instances
                 .Where(i => i.Role == HeaderBlockRole.Tope).ToList();
             Assert.NotEmpty(frontal);
-            Assert.All(frontal, tope => Assert.False(tope.MirroredX));
+            Assert.All(frontal, tope => Assert.True(tope.MirroredX));
         }
 
         [Fact]
