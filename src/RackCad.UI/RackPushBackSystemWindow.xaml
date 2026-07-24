@@ -2,15 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
+        xmlns:shell="clr-namespace:RackCad.UI.Shell"
         Title="Sistema Push Back - editor"
-        Height="720"
-        Width="1280"
-        MinHeight="640"
-        MinWidth="1120"
+        Style="{DynamicResource EditorShellWindowStyle}"
         WindowStartupLocation="CenterOwner"
-        Background="#EEF2F6"
-        FontFamily="Segoe UI"
-        FontSize="12"
         FocusManager.FocusedElement="{Binding ElementName=NameBox}">
     <Window.Resources>
         <ResourceDictionary>
@@ -20,44 +15,18 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- Three zones, like the dynamic editor: settings panel (left), matrix + preview (right), action bar (bottom). -->
-    <DockPanel Margin="10">
+    <!-- I-18b (ADR-0019): the Push Back editor is now COMPOSED over RackEditorVisualShell, like the dynamic (I-30) and
+         selective (I-31) editors. Every control keeps its x:Name, handler, parsing, LostFocus, selection, recompute,
+         card matrix, technical preview, actions and behavior unchanged; only the OUTER layout moved into the shell's
+         slots (sidebar / matrix / preview / status / neutral action categories). Initial/minimum size, background and
+         typography come from the shared EditorShellWindowStyle (shell tokens). Push Back keeps its own control idiom
+         (GroupBoxes, NumericField/CatalogCombo, unstyled action buttons) verbatim, and the TECHNICAL preview keeps its
+         LIGHT background (#F7FAFC) — it is a role-lines schematic, NOT the dark preview of the other editors (PB-VAL-03).
+         The code-behind is NOT touched. -->
+    <shell:RackEditorVisualShell x:Name="Shell">
 
-        <!-- ============================ BOTTOM: action bar ============================ -->
-        <Border DockPanel.Dock="Bottom" Background="#E3EAF1" BorderBrush="#C4CFD9" BorderThickness="1"
-                Padding="8" Margin="0,8,0,0">
-            <StackPanel>
-                <WrapPanel x:Name="ActionBar">
-                    <Button x:Name="RestoreButton" Content="Restaurar" MinWidth="86" Margin="0,0,6,4"
-                            Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
-                    <Button x:Name="BomButton" Content="BOM" MinWidth="70" Margin="0,0,6,4"
-                            Click="Bom_Click" ToolTip="Lista de materiales del sistema actual." />
-                    <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" MinWidth="150" Margin="0,0,14,4"
-                            Click="SaveLibrary_Click" ToolTip="Guarda este diseño Push Back en la biblioteca." />
-
-                    <Button x:Name="UpdateButton" Content="Actualizar" MinWidth="92" Margin="0,0,14,4"
-                            Click="Update_Click" ToolTip="Redibuja en sitio todas las vistas ligadas de este rack." />
-
-                    <Button x:Name="InsertLateralButton" Content="Insertar lateral" MinWidth="112" Margin="0,0,6,4"
-                            Click="InsertLateral_Click" ToolTip="Inserta el corte lateral seleccionado." />
-                    <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" MinWidth="152" Margin="0,0,6,4"
-                            Click="InsertFrontalEntrada_Click" ToolTip="Inserta el corte frontal del extremo bajo." />
-                    <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" MinWidth="124" Margin="0,0,6,4"
-                            Click="InsertFrontalPosterior_Click" ToolTip="Inserta el corte frontal del extremo alto." />
-                    <Button x:Name="InsertPlantaButton" Content="Planta" MinWidth="80" Margin="0,0,14,4"
-                            Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
-
-                    <Button x:Name="InsertButton" Content="Insertar vista actual" MinWidth="140" Margin="0,0,14,4"
-                            Click="Insert_Click" ToolTip="Inserta la vista seleccionada en el previsualizador." />
-                    <Button x:Name="CloseButton" Content="Cerrar" MinWidth="80" Margin="0,0,0,4" Click="Close_Click" />
-                </WrapPanel>
-                <TextBlock x:Name="StatusText" TextWrapping="Wrap" Foreground="#264A63" Margin="0,4,0,0" />
-            </StackPanel>
-        </Border>
-
-        <!-- ============================ LEFT: settings panel ============================ -->
-        <ScrollViewer DockPanel.Dock="Left" Width="430" VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled" Margin="0,0,10,0">
+        <!-- ============================ SIDEBAR: settings + safety (the shell provides the scroll) ============================ -->
+        <shell:RackEditorVisualShell.SidePanelContent>
             <StackPanel>
 
                 <GroupBox Header="Rack">
@@ -127,17 +96,16 @@
                 </GroupBox>
 
             </StackPanel>
-        </ScrollViewer>
+        </shell:RackEditorVisualShell.SidePanelContent>
 
-        <!-- ============================ RIGHT: matrix (top) + preview (bottom) ============================ -->
-        <Grid x:Name="WorkArea">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" MinHeight="200" />
-            </Grid.RowDefinitions>
+        <!-- ============================ STATUS: status line, always visible outside the scroll ============================ -->
+        <shell:RackEditorVisualShell.StatusContent>
+            <TextBlock x:Name="StatusText" TextWrapping="Wrap" Foreground="#264A63" />
+        </shell:RackEditorVisualShell.StatusContent>
 
-            <!-- MAIN EDITING SURFACE: one matrix, frente x nivel -->
-            <GroupBox x:Name="MatrixZone" Grid.Row="0" Header="Matriz frente x nivel (superficie principal de edición)">
+        <!-- ============================ MATRIX: card matrix frente × nivel (central editing surface) ============================ -->
+        <shell:RackEditorVisualShell.MatrixContent>
+            <GroupBox x:Name="MatrixZone" Header="Matriz frente x nivel (superficie principal de edición)">
                 <StackPanel>
                     <WrapPanel Margin="0,0,0,6">
                         <Button x:Name="AddFrontButton" Content="+ frente" MinWidth="74" Margin="0,0,4,4" Click="AddFront_Click" />
@@ -222,9 +190,11 @@
                     </Border>
                 </StackPanel>
             </GroupBox>
+        </shell:RackEditorVisualShell.MatrixContent>
 
-            <!-- TECHNICAL PREVIEW -->
-            <GroupBox x:Name="PreviewZone" Grid.Row="1" Header="Vista previa técnica" Margin="0,8,0,0">
+        <!-- ============================ PREVIEW: technical role-lines preview (LIGHT) + view selector ============================ -->
+        <shell:RackEditorVisualShell.PreviewContent>
+            <GroupBox x:Name="PreviewZone" Header="Vista previa técnica">
                 <DockPanel>
                     <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
                         <TextBlock Text="Vista" VerticalAlignment="Center" Margin="0,0,6,0" />
@@ -238,6 +208,42 @@
                     </Border>
                 </DockPanel>
             </GroupBox>
-        </Grid>
-    </DockPanel>
+        </shell:RackEditorVisualShell.PreviewContent>
+
+        <!-- ============================ ACTIONS: neutral categories preserving order + behavior ============================
+             Leading = Restaurar (reset a calculado); Secondary = BOM / biblioteca; Primary = Actualizar + las cuatro
+             inserciones por vista + Insertar vista actual; Trailing = Cerrar. Los estados IsEnabled y los tooltips
+             (incluidos los motivos de indisponibilidad) los fija el code-behind por x:Name, sin cambios. -->
+        <shell:RackEditorVisualShell.LeadingActions>
+            <Button x:Name="RestoreButton" Content="Restaurar" MinWidth="86" Margin="0,0,8,4"
+                    Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
+        </shell:RackEditorVisualShell.LeadingActions>
+        <shell:RackEditorVisualShell.SecondaryActions>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="BomButton" Content="BOM" MinWidth="70" Margin="0,0,6,4"
+                        Click="Bom_Click" ToolTip="Lista de materiales del sistema actual." />
+                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" MinWidth="150" Margin="0,0,0,4"
+                        Click="SaveLibrary_Click" ToolTip="Guarda este diseño Push Back en la biblioteca." />
+            </StackPanel>
+        </shell:RackEditorVisualShell.SecondaryActions>
+        <shell:RackEditorVisualShell.PrimaryActions>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="UpdateButton" Content="Actualizar" MinWidth="92" Margin="0,0,14,4"
+                        Click="Update_Click" ToolTip="Redibuja en sitio todas las vistas ligadas de este rack." />
+                <Button x:Name="InsertLateralButton" Content="Insertar lateral" MinWidth="112" Margin="0,0,6,4"
+                        Click="InsertLateral_Click" ToolTip="Inserta el corte lateral seleccionado." />
+                <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" MinWidth="152" Margin="0,0,6,4"
+                        Click="InsertFrontalEntrada_Click" ToolTip="Inserta el corte frontal del extremo bajo." />
+                <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" MinWidth="124" Margin="0,0,6,4"
+                        Click="InsertFrontalPosterior_Click" ToolTip="Inserta el corte frontal del extremo alto." />
+                <Button x:Name="InsertPlantaButton" Content="Planta" MinWidth="80" Margin="0,0,14,4"
+                        Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
+                <Button x:Name="InsertButton" Content="Insertar vista actual" MinWidth="140" Margin="0,0,0,4"
+                        Click="Insert_Click" ToolTip="Inserta la vista seleccionada en el previsualizador." />
+            </StackPanel>
+        </shell:RackEditorVisualShell.PrimaryActions>
+        <shell:RackEditorVisualShell.TrailingActions>
+            <Button x:Name="CloseButton" Content="Cerrar" MinWidth="80" Margin="0,0,0,4" Click="Close_Click" />
+        </shell:RackEditorVisualShell.TrailingActions>
+    </shell:RackEditorVisualShell>
 </Window>

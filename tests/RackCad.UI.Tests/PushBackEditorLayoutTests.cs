@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.UI;
 using RackCad.UI.Controls;
+using RackCad.UI.Shell;
 using Xunit;
 
 namespace RackCad.UI.Tests
@@ -78,10 +79,16 @@ namespace RackCad.UI.Tests
                 var w = Shown();
                 try
                 {
-                    Assert.NotNull(Named<Grid>(w, "WorkArea"));
-                    Assert.NotNull(Named<GroupBox>(w, "MatrixZone"));
-                    Assert.NotNull(Named<GroupBox>(w, "PreviewZone"));
-                    Assert.NotNull(Named<WrapPanel>(w, "ActionBar"));
+                    // I-18b: the window now COMPOSES over RackEditorVisualShell (like the dynamic/selective editors). The
+                    // four zones are the shell's slots: sidebar (scroll), matrix, preview and the action bar. The matrix
+                    // and preview keep their GroupBox x:Names; the settings sit in the shell's SidebarScroll; the action
+                    // buttons live in the shell's EditorActionBar (no more bespoke WrapPanel "ActionBar" / Grid "WorkArea").
+                    var shell = w.Content as RackEditorVisualShell;
+                    Assert.NotNull(shell);
+                    Assert.NotNull(shell.SidebarScroll);                  // settings panel zone (scrolls)
+                    Assert.NotNull(Named<GroupBox>(w, "MatrixZone"));     // matrix zone (central surface)
+                    Assert.NotNull(Named<GroupBox>(w, "PreviewZone"));    // preview zone
+                    Assert.NotNull(shell.ActionBar);                     // action bar zone (EditorActionBar)
                     Assert.NotNull(Named<Canvas>(w, "PreviewCanvas"));
                 }
                 finally { w.Close(); }
@@ -169,7 +176,12 @@ namespace RackCad.UI.Tests
                     w.Height = w.MinHeight;
                     w.UpdateLayout();
 
-                    var bar = Named<WrapPanel>(w, "ActionBar");
+                    // The shell's EditorActionBar carries the whole flow (a WrapPanel that wraps, never clips) and stays
+                    // visible at the minimum size.
+                    var shell = w.Content as RackEditorVisualShell;
+                    Assert.NotNull(shell);
+                    var bar = shell.ActionBar;
+                    Assert.NotNull(bar);
                     Assert.True(bar.IsVisible, "the action bar must survive a resize to the minimum size");
                     Assert.True(bar.ActualHeight > 0.0);
                     Assert.True(Named<Button>(w, "CloseButton").IsVisible);
@@ -224,13 +236,31 @@ namespace RackCad.UI.Tests
         {
             StaTestRunner.Run(() =>
             {
-                var w = Shown();
+                // NOT Shown(): Show() clamps to the host's work area (a small/headless screen would distort this). Lay the
+                // real shell out directly. The preview is the shell's *-row BELOW the tall Push Back matrix (~499px: the
+                // card matrix + the cell editor under it, by PB-VAL-01 design). At the default open height the *-row sits
+                // at the shell's shared ShellPreviewMinHeight — the shell HONORS that floor — and the canvas takes a
+                // genuinely useful, growing share as the window gets taller (a wide-enough width throughout).
+                var w = new RackPushBackSystemWindow();
                 try
                 {
-                    var canvas = Named<Canvas>(w, "PreviewCanvas");
+                    var shell = w.Content as RackEditorVisualShell;
+                    Assert.NotNull(shell);
+                    shell.Style = (Style)new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/Generic.xaml", UriKind.Relative) }[typeof(RackEditorVisualShell)];
+
+                    shell.Measure(new Size(1280, 720));
+                    shell.Arrange(new Rect(0, 0, 1280, 720));
+                    shell.UpdateLayout();
+                    var canvas = Named<Canvas>(shell, "PreviewCanvas");
                     Assert.NotNull(canvas);
-                    Assert.True(canvas.ActualHeight >= 120.0, $"preview too short: {canvas.ActualHeight}");
+                    Assert.True(shell.PreviewHost.ActualHeight >= 160.0, $"preview row below the shell minimum: {shell.PreviewHost.ActualHeight}");
                     Assert.True(canvas.ActualWidth >= 300.0, $"preview too narrow: {canvas.ActualWidth}");
+
+                    // Give the window room (a modest resize) and the preview canvas takes a real, growing share.
+                    shell.Measure(new Size(1280, 980));
+                    shell.Arrange(new Rect(0, 0, 1280, 980));
+                    shell.UpdateLayout();
+                    Assert.True(canvas.ActualHeight >= 200.0, $"preview does not grow with the window: {canvas.ActualHeight}");
                 }
                 finally { w.Close(); }
             });
