@@ -13,7 +13,16 @@ namespace RackCad.UI
 {
     internal enum PushBackPreviewKind
     {
-        /// <summary>A world-space segment (real position, orientation and length taken from the plan).</summary>
+        /// <summary>
+    /// REDUCED to a semantic ADAPTER (I-18b decision 6). This type is no longer a renderer: the Push Back preview is
+    /// painted by the shared infrastructure (<c>PushBackPreviewRenderer</c> over <c>EditorPreviewSurface</c> and
+    /// <c>EditorPreviewParts</c>), the same one the dynamic editor draws with. What survives here is only the read-only
+    /// interpretation of a plan into role-tagged primitives, which the editor exposes as a test seam so assertions can
+    /// talk about content ("a tope disappeared", "this view carries safety") without inspecting pixels.
+    ///
+    /// It is NOT a second productive drawing path: nothing in the drawing pipeline consumes it.
+    /// </summary>
+    /// <summary>A world-space segment (real position, orientation and length taken from the plan).</summary>
         Line,
 
         /// <summary>A world-space box (e.g. a reference pallet), bottom-left at (X1,Y1), top-right at (X2,Y2).</summary>

@@ -14,6 +14,7 @@ using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using RackCad.UI.Controls;
 using RackCad.UI.Editor;
+using RackCad.UI.Preview;
 
 namespace RackCad.UI
 {
@@ -991,8 +992,37 @@ namespace RackCad.UI
                 : "⚠ La vista previa corresponde al ÚLTIMO cálculo válido; corrige los campos marcados.";
             PreviewLegend.Text = ViewLabel(view, section)
                 + "  ·  estructura verde · largueros azul · cama gris · topes rojo · seguridad ámbar";
-            DrawModel(BuildPreviewModel(plan, view));
+            DrawSharedPreview(plan, view);
         }
+
+        /// <summary>
+        /// I-18b decision 6: the Push Back preview is painted by the SHARED infrastructure
+        /// (<see cref="PushBackPreviewRenderer"/> over <see cref="EditorPreviewSurface"/> and
+        /// <see cref="EditorPreviewParts"/>) — the same parts the dynamic editor draws with. There is no second painter
+        /// and no simplified renderer left in the drawing path.
+        /// </summary>
+        private void DrawSharedPreview(DynamicSystemPlan plan, string view)
+        {
+            previewSurface ??= new EditorPreviewSurface(PreviewCanvas);
+            PushBackPreviewRenderer.Draw(
+                previewSurface,
+                plan,
+                catalog,
+                view,
+                LowBeamDepth(),
+                DynamicRackDefaults.InOutBeamCatalogId,
+                string.IsNullOrWhiteSpace(lastComputation?.System?.HighEndBeamCatalogId)
+                    ? PushBackDefaults.HighEndBeamCatalogId
+                    : lastComputation.System.HighEndBeamCatalogId);
+        }
+
+        private EditorPreviewSurface previewSurface;
+
+        /// <summary>The resolved IN/OUT beam depth (the low beam has no PERALTE of its own), as the dynamic preview uses.</summary>
+        private double LowBeamDepth()
+            => lastComputation?.System?.Structure?.InOutBeamDepth > 0.0
+                ? lastComputation.System.Structure.InOutBeamDepth
+                : DynamicRackDefaults.DefaultBeamDepth;
 
         /// <summary>The semantic preview of <paramref name="plan"/>: interpreted primitives only — the plan is the
         /// geometry authority. The low lateral IN/OUT beam (no PERALTE of its own) falls back to the resolved system's
@@ -1007,85 +1037,6 @@ namespace RackCad.UI
                     : DynamicRackDefaults.DefaultBeamDepth);
 
         private void PreviewCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => RenderPreview();
-
-        /// <summary>Paint the semantic preview: real segments (position/orientation/length from the plan) per role,
-        /// boxes for reference pallets, and small markers only for pieces whose drawable size the plan does not carry.
-        /// Projection via the shared PreviewProjection; shapes via the shared PreviewCanvasPainter.</summary>
-        private void DrawModel(PushBackPreviewModel model)
-        {
-            PreviewCanvas.Children.Clear();
-            if (model == null || model.IsEmpty) return;
-
-            var width = PreviewCanvas.ActualWidth;
-            var height = PreviewCanvas.ActualHeight;
-            if (width < 20.0 || height < 20.0) return;
-
-            var projection = PreviewProjection.Fit(
-                new Rect(model.MinX, model.MinY, Math.Max(1e-6, model.MaxX - model.MinX), Math.Max(1e-6, model.MaxY - model.MinY)),
-                new Size(width, height),
-                new Thickness(14.0));
-            if (!projection.IsDrawable) return;
-
-            var painter = new PreviewCanvasPainter(PreviewCanvas);
-            var dash = new DoubleCollection { 4.0, 3.0 };
-            foreach (var primitive in model.Primitives)
-            {
-                var brush = RoleBrush(primitive.Role);
-                switch (primitive.Kind)
-                {
-                    case PushBackPreviewKind.Line:
-                        painter.AddLine(
-                            projection.Project(primitive.X1, primitive.Y1),
-                            projection.Project(primitive.X2, primitive.Y2),
-                            brush,
-                            primitive.Thick ? 3.0 : 1.8);
-                        break;
-
-                    case PushBackPreviewKind.Box:
-                    {
-                        var topLeft = projection.Project(Math.Min(primitive.X1, primitive.X2), Math.Max(primitive.Y1, primitive.Y2));
-                        painter.AddRectangle(
-                            topLeft.X,
-                            topLeft.Y,
-                            Math.Abs(primitive.X2 - primitive.X1) * projection.Scale,
-                            Math.Abs(primitive.Y2 - primitive.Y1) * projection.Scale,
-                            brush,
-                            1.2,
-                            dash);
-                        break;
-                    }
-
-                    default:
-                    {
-                        var at = projection.Project(primitive.X1, primitive.Y1);
-                        painter.AddRectangle(at.X - 2.5, at.Y - 2.5, 5.0, 5.0, brush, 1.4, null, brush);
-                        break;
-                    }
-                }
-            }
-        }
-
-        private static Brush RoleBrush(HeaderBlockRole role)
-        {
-            switch (role)
-            {
-                case HeaderBlockRole.Beam: return PreviewPalette.Beam;                 // largueros (bajo, posterior, interm.)
-                case HeaderBlockRole.Tope: return PreviewPalette.Warning;              // topes posteriores
-                case HeaderBlockRole.Safety: return PreviewPalette.Accent;             // seguridad
-                case HeaderBlockRole.Rail:
-                case HeaderBlockRole.Roller:
-                case HeaderBlockRole.Brake:
-                case HeaderBlockRole.Stop: return PreviewPalette.Floor;                // cama / rieles
-                case HeaderBlockRole.Pallet: return PreviewPalette.Guide;              // tarimas de referencia
-                case HeaderBlockRole.Post:
-                case HeaderBlockRole.BasePlate:
-                case HeaderBlockRole.Horizontal:
-                case HeaderBlockRole.Diagonal:
-                case HeaderBlockRole.ClosingHorizontal:
-                case HeaderBlockRole.Separator: return PreviewPalette.Structure;       // postes / cabeceras
-                default: return PreviewPalette.Muted;
-            }
-        }
 
         private DynamicSystemPlan PlanFor(string view, int section)
         {
