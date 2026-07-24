@@ -1,6 +1,15 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-24 (**I-30 integrada en `main`**: **fundación del shell visual común de editores**
+> Actualizado: 2026-07-24 (**I-31 integrada en `main`** (merge `--no-ff` `ad0ea1f`): **migración del
+> editor Selectivo** (`RackSelectiveWindow`) **al shell visual común** (`RackEditorVisualShell`, I-30) por
+> composición y slots + `EditorShellWindowStyle`, **solo XAML** (el `.cs` es byte-idéntico a `origin/main`),
+> **sin cambio** de dibujo/BOM/GUID/persistencia/handlers/comportamiento; conserva los 45 `x:Name`, la
+> selección de una sola celda + alcance (sin multiselección, como en `main`), el selector y matrices por
+> fondo, previews frontal/lateral, inserción/actualización, BOM, biblioteca y round-trip; +19
+> `SelectiveShellMigrationTests`. Owner **validó en AutoCAD 2025 los 12 puntos** sin observaciones
+> (`autocad` y `owner_validation` aprobadas; SHA `b638653`, `1.0.0+b638653…`). `feature/push-back`
+> **intacta** (`b2d9e9d`). **Siguiente obligatorio: reanudación de I-18** (rebasar `feature/push-back`
+> sobre el nuevo `origin/main`). Antes ese día — **I-30 integrada en `main`**: **fundación del shell visual común de editores**
 > —`RackEditorVisualShell` como control lookless con plantilla, composición por slots, status presenter por
 > severidades, action bar de categorías neutrales y tokens de tamaño/color/tipografía/espaciado en
 > `AppStyles.xaml`— **más la migración real de `RackDynamicSystemWindow`** al shell, que consume el contrato
@@ -170,7 +179,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-24 | `refactor/ui-tests-editores` | Tests de ViewModels y estados de editor sobre `tests/RackCad.UI.Tests` (el proyecto nace en I-14) (U3) | S | I-15, I-20 | — | integrada (2026-07-22) |
 | I-25 | `feature/guardas-traseras` ✋ | Última familia de seguridad (prioridad final del producto), construida sobre I-22 | M | I-22 | — | pendiente |
 | I-30 | `architecture/editor-visual-shell` ✋ | **Fundación del shell visual común de editores** (tipo: arquitectura): contrato visual y tokens, componentes del shell, status presenter, action bar común, pruebas y **migración real de `RackDynamicSystemWindow`**. NO incluye Selectivo ni modificación de Push Back (`feature/push-back` solo en lectura). Requiere CI, builds Debug, AutoCAD y owner-validation. **Secuencia obligatoria: integrar I-30 antes de I-31 y antes de reanudar I-18** | — | I-14, I-15, I-20, I-21, I-24 (integradas) | I-31 (orden fijo: I-30 primero); reanudación de I-18 (espera la secuencia) | integrada (2026-07-24) |
-| I-31 | `refactor/selective-visual-shell` (provisional) ✋ | **Migración del editor Selectivo al shell visual**: migrar `RackSelectiveWindow` al shell integrado por I-30, preservando estado, geometría, BOM, persistencia y handlers. **No puede reclamarse antes de cerrar I-30**; debe integrarse antes de rebasar y reanudar I-18 | — | I-30 integrada | I-30 (orden fijo); reanudación de I-18 | pendiente |
+| I-31 | `refactor/selective-visual-shell` (provisional) ✋ | **Migración del editor Selectivo al shell visual**: migrar `RackSelectiveWindow` al shell integrado por I-30, preservando estado, geometría, BOM, persistencia y handlers. **No puede reclamarse antes de cerrar I-30**; debe integrarse antes de rebasar y reanudar I-18 | — | I-30 integrada | I-30 (orden fijo); reanudación de I-18 | integrada (2026-07-24) |
 
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el
 dibujo, snapping, colisiones, clear height, undo/redo, shop drawings, 3D/IFC, optimizador IA, SQL/API

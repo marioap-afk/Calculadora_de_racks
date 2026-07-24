@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-31
 title: Migración del editor Selectivo al shell visual común
 type: refactor
-status: integration-ready
+status: integrated
 branch: refactor/selective-visual-shell
 base_branch: main
 priority:
@@ -321,3 +321,12 @@ queda `state: integration-ready`, con los gates `autocad`, `owner-validation` y 
 - `feature/push-back` **no modificada** (`b2d9e9d`; leída solo con `git show`). `main` no fue tocada
   hasta el `git merge --no-ff` de esta sesión. `docs/HANDOFF.md` y `docs/ROADMAP.md` se actualizan en
   el cierre de integración (WORKFLOW §4.5.4).
+- **Integración (2026-07-24)**: `main` fast-forward desde `origin/main` (`40a2c8e`) →
+  `git merge --no-ff refactor/selective-visual-shell` (`dc9b974`) = merge **`ad0ea1f`** (padres `40a2c8e`
+  + `dc9b974`; contiene exactamente los 6 commits de I-31; **sin squash, sin cherry-pick, sin force**). CI
+  del merge: run `30111201050` **success**; CI del HEAD documental de registro (`dc9b974`): run
+  `30110856533` **success**; CI del candidato (`b638653`): run `30108459424` **success**. Tras el merge y
+  su CI verde: cierre documental en `main` (este archivo, estado, HANDOFF §1/§2/§4/§5 y ROADMAP fila
+  I-31) y limpieza segura de la rama y el worktree de I-31. **Estado: `integrated`**. Siguiente
+  autorizado: **reanudación de I-18** (rebasar `feature/push-back` sobre el nuevo `origin/main` en su
+  propio chat/worktree; no se ejecuta aquí).

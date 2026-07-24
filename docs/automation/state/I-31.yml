@@ -3,12 +3,14 @@ automation_state:
   initiative: I-31
   branch: refactor/selective-visual-shell
   claim_id: ab7853c9-0150-4db9-a331-92571fa6b6ab
-  current_phase: 6
-  state: integration-ready
+  current_phase: 7
+  state: integrated
   gate: none
   attempts: 0
-  next_action: integracion-manual-en-main-por-git-merge-no-ff-desde-refactor-selective-visual-shell-sin-squash-ni-force-luego-cierre-documental-en-main-handoff-ci-y-reanudacion-de-i18-rebasando-feature-push-back-sobre-el-nuevo-origin-main
-  last_evidence_commit: b638653b10bdba5cd5c1d9f814f196c177f18c3e
+  next_action: i31-integrada-en-main-merge-no-ff-ad0ea1f-ci-verde-siguiente-paso-autorizado-reanudacion-de-i18-en-su-propio-chat-worktree-empezando-por-rebasar-feature-push-back-sobre-el-nuevo-origin-main-ad0ea1f-ese-rebase-no-se-ejecuta-en-i31-rama-y-worktree-de-i31-eliminados-en-limpieza
+  last_evidence_commit: ad0ea1f36cee01c19759a3c7769fc720e54fb649
+  integration: >-
+    i31-integrada-en-main-por-git-merge-no-ff-ad0ea1f36cee01c19759a3c7769fc720e54fb649-desde-refactor-selective-visual-shell-dc9b974-sin-squash-sin-force-parents-40a2c8e-mas-dc9b974-exactamente-los-6-commits-de-i31-ci-del-merge-run-30111201050-success-ci-del-head-documental-de-registro-de-aprobacion-dc9b974-run-30110856533-success-ci-del-candidato-b638653-run-30108459424-success-el-sha-del-merge-vive-en-git-log-first-parent-main-y-en-handoff-seccion-5
 execution_context:
   mode: manual-git-only
   worktree: refactor-selective-visual-shell

@@ -378,6 +378,30 @@ el Owner**. Rebase final **no** necesario (`origin/main` no avanzó desde `8a1bc
 AutoCAD 2025 los 12 puntos** (§2). La rama se integra por `git merge --no-ff` en esta sesión. **Handoff
 obligatorio: I-31 (Selectivo al shell) → reanudación de I-18 (Push Back).**
 
+**I-31** (`refactor/selective-visual-shell`, Fase 5) queda **integrada** el **2026-07-24** (merge
+`--no-ff` `ad0ea1f`; base `origin/main` = `40a2c8e`, **sin rebase**). Migra **`RackSelectiveWindow`** al
+**shell visual común** (`RackEditorVisualShell`, I-30) por composición y slots —`SidePanelContent`/
+`MatrixContent` (con el selector de fondo)/`PreviewContent`/`StatusContent` + categorías neutrales
+`Leading` (Actualizar) / `Secondary` (Lista de materiales + Guardar en biblioteca) / `Primary`
+(Insertar frontal/lateral/planta) / `Trailing` (Cerrar)— y consume el contrato de tamaño común
+`EditorShellWindowStyle`, **sin cambio de dibujo, BOM, GUID, persistencia, handlers ni comportamiento**.
+Es una **adaptación exclusivamente XAML**: `RackSelectiveWindow.xaml.cs` es **byte-idéntico a
+`origin/main`**; se conservan los **45 `x:Name`**, los 31 handlers, todos los Content/ToolTip/Text (diff
+vacío), la **selección de una sola celda + alcance** Celda/Nivel/Frente/Todas (`main` **no** implementa
+multiselección en la matriz principal del selectivo y I-31 **no** la agrega —discrepancia con el
+Dinámico registrada como decisión consciente—), el selector y matrices por fondo, el editor de celda,
+cabeceras/peraltes por poste, seguridad, previews frontal/lateral, inserción frontal/lateral/planta,
+actualización en sitio, BOM, biblioteca, metadata I-11, round-trip y los estados habilitado/
+deshabilitado con motivo + `ToolTipService.ShowOnDisabled`. Elimina la segunda composición exterior
+propia (grid 2×3, panel de 342 px con scroll propio, disposición independiente de matriz/preview/status,
+barra inferior). Añade `SelectiveShellMigrationTests` (19 pruebas) y amplía `EditorWindowTestSupport`
+para localizar por contenido los botones **sin `x:Name`** en los slots del shell (aditivo). Cubierta por
+**ADR-0019** (ya aceptado); no requirió decisión nueva. El Owner **validó en AutoCAD 2025 los 12
+puntos** sobre el DLL Debug del SHA `b638653` (`1.0.0+b638653…`) **sin observaciones** (§2). Segundo
+eslabón de la secuencia **I-30 → I-31 → reanudación de I-18**; `feature/push-back` (`b2d9e9d`) permanece
+**intacta**. **Handoff obligatorio: reanudación de I-18** (rebasar `feature/push-back` sobre el nuevo
+`origin/main` y migrar `RackPushBackSystemWindow` al shell, en su propio chat/worktree).
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -543,6 +567,24 @@ vale sobre el árbol integrado (WORKFLOW §6); el commit documental de cierre es
 cambia el binario. Los gates `autocad` y `owner_validation` quedan **resueltos**; registro del SHA validado
 y de la versión informativa en §5. La rama se integra por `git merge --no-ff` en esta sesión.
 
+I-31 (`refactor/selective-visual-shell`) **sí** requiere validación en AutoCAD (`requires_autocad: true`)
+porque la ventana selectiva migrada dibuja el rack real. El Owner cargó por `NETLOAD` el DLL Debug del
+worktree I-31 (SHA validado **`b638653b10bdba5cd5c1d9f814f196c177f18c3e`**,
+`AssemblyInformationalVersion = 1.0.0+b638653b10bdba5cd5c1d9f814f196c177f18c3e`;
+`…-refactor-selective-visual-shell\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`) en
+AutoCAD 2025 y **aprobó los 12 puntos sin observaciones**: apariencia alineada con el Dinámico; matriz
+(celda, ±niveles, altura por frente, `Piso`, medio frente); selección de una sola celda + «Aplicar a:»
+Celda/Nivel/Frente/Todas; «Editando fondo» (doble/triple/cuádruple profundidad con separadores);
+cabecera y peralte por poste; seguridad/BOM; previews frontal y lateral; «Insertar frontal» (GUID
+nuevo); `RACKEDITAR` «Actualizar» en sitio, «Insertar lateral» e «Insertar planta» ligadas con el mismo
+GUID; geometría y BOM sin diferencias, metadatos y persistencia **I-11** preservados, biblioteca/legacy/
+round-trip; y los estados habilitado/deshabilitado con motivo por tooltip. La **owner-validation** quedó
+**aprobada** (`requires_owner_validation: true`); registro en
+[`automation/evidence/I-31-autocad-validation.md`](automation/evidence/I-31-autocad-validation.md). CI
+del candidato: run `30108459424` **success** sobre `b638653`. `origin/main` **no avanzó** desde
+`40a2c8e`, así que la validación vale sobre el árbol integrado (WORKFLOW §6): sin rebase final. La rama
+se integra por `git merge --no-ff` en esta sesión.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -580,19 +622,20 @@ y de la versión informativa en §5. La rama se integra por `git merge --no-ff` 
 
 ## 4. Siguiente acción
 
-Con **I-30** (`architecture/editor-visual-shell`, Fase 5) **integrada en esta sesión** —fundación del
-**shell visual común de editores** (`RackEditorVisualShell` lookless con plantilla, slots, status por
-severidades, action bar de categorías, tokens en `AppStyles.xaml`) **más la migración real de
-`RackDynamicSystemWindow`** al shell y su contrato de tamaño común (`EditorShellWindowStyle`,
-`ShellMinHeight` 672) y paleta de estado por tokens, **sin cambio** de dibujo/BOM/GUID/persistencia; Owner
-validó los **12 puntos** en AutoCAD—, el **siguiente paso autorizado** es la **secuencia obligatoria
-I-31 → reanudación de I-18**: primero **I-31** (`refactor/selective-visual-shell`: migrar
-`RackSelectiveWindow` al shell fundado por I-30, preservando estado/geometría/BOM/persistencia/handlers) y
-**después** la **reanudación de I-18** (Push Back), que espera esa secuencia. **I-31 no se reclama en esta
-corrida.** Push Back (`feature/push-back`, `b2d9e9d`) permanece **intacta** (solo lectura durante I-30).
-Además siguen pendientes **I-25** (`feature/guardas-traseras`, sobre I-22) e **I-23** (namespaces, cierra la
-Fase 5, depende de todas). El shell es **agnóstico a `RackSystemKind`**; su adopción por el resto de
-editores es trabajo de I-31 en adelante.
+Con **I-31** (`refactor/selective-visual-shell`, Fase 5) **integrada en esta sesión** —migración del
+editor **Selectivo** (`RackSelectiveWindow`) al **shell visual común** (`RackEditorVisualShell`, I-30)
+por composición y slots, **solo XAML** (el `.cs` es byte-idéntico a `origin/main`), **sin cambio** de
+dibujo/BOM/GUID/persistencia/handlers/comportamiento; Owner validó los **12 puntos** en AutoCAD 2025 sin
+observaciones—, se completa la migración **I-30 → I-31** y el **siguiente paso autorizado** es la
+**reanudación de I-18** (Push Back). La reanudación se ejecuta **en su propio chat/worktree** y
+**empieza por rebasar `feature/push-back` sobre el nuevo `origin/main`** (`ad0ea1f`, Merge I-31) para
+migrar `RackPushBackSystemWindow` al shell (hoy imita a mano la estructura del shell —DockPanel, scroll
+lateral de 430, `WorkArea` y barra inferior— con tamaños `720×1280`/mín `640×1120` **pre-672** y **ya**
+adopta `NumericField`/`CatalogCombo`, así que su migración es un **reparent de layout** que no adopta
+controles de captura); ese rebase **no** se ejecuta como parte de I-31. Push Back (`feature/push-back`,
+`b2d9e9d`) permanece **intacta**. Además siguen pendientes **I-25** (`feature/guardas-traseras`, sobre
+I-22) e **I-23** (namespaces, cierra la Fase 5, depende de todas). El shell es **agnóstico a
+`RackSystemKind`**; su última adopción viva es Push Back, en I-18.
 
 Con **I-07** (`docs/adr-retroactivos`, Fase 1) **integrada en esta sesión** —retro-documentación de las
 trece decisiones de HANDOFF §7 como **ADR-0006 a 0018**, **aceptados por el dueño** (2026-07-22, «Sí,
@@ -643,6 +686,33 @@ desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apr
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-31 — 2026-07-24:**
+
+- candidato de **código** validado por el Owner en AutoCAD y por CI:
+  `b638653b10bdba5cd5c1d9f814f196c177f18c3e` (CI run `30108459424`, **success**); el commit documental
+  de **registro de aprobación** recibe su propio CI verde (`dc9b974`, run `30110856533`) y el **merge de
+  `main`** su CI verde (run `30111201050`); este documento **no inventa** el SHA del merge (vive en
+  `git log --first-parent main`: merge **`ad0ea1f`**);
+- **DLL Debug validado**: `AssemblyInformationalVersion = 1.0.0+b638653b10bdba5cd5c1d9f814f196c177f18c3e`
+  (el sufijo `+<sha>` **termina en el SHA completo**), ruta
+  `…-refactor-selective-visual-shell\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`; el
+  Owner **aprobó los 12 puntos** funcionales y visuales del Selectivo migrado (§2);
+- suite completa **verde**: **1016** `RackCad.Tests` + **237** `RackCad.UI.Tests` (218 de la baseline de
+  I-30 + **19** `SelectiveShellMigrationTests`: raíz = shell, 45 `x:Name` en slot, acciones por
+  categoría con motivos, selección/alcance, matrices jagged, selector de fondo, previews frontal/lateral,
+  insertar frontal/lateral/planta y actualizar por handlers reales, mínimo mostrado sin recorte);
+  **ningún filtro devuelve cero pruebas**; builds Debug de UI, Plugin y solución con **0 errores** (los
+  `MSB3277` de las referencias de AutoCAD no cuentan);
+- `origin/main` **no avanzó** desde `40a2c8e` durante todo el ciclo de I-31 (merge-base = `origin/main`;
+  I-31 **6 commits delante, 0 detrás** antes del merge): **sin rebase final**, la validación en AutoCAD
+  vale sobre el árbol integrado (WORKFLOW §6);
+- el diff final se limita a `src/RackCad.UI/RackSelectiveWindow.xaml` (su `.cs` **no** cambia),
+  `tests/RackCad.UI.Tests/` (`SelectiveShellMigrationTests.cs` + `EditorWindowTestSupport.cs`) y
+  documentación de I-31; **no** toca `Shell/`, `Themes/`, Plugin, Application, Domain, persistencia,
+  catálogos ni `feature/push-back` (`b2d9e9d`, intacta);
+- **ADR-0019** ya aceptado cubre la migración; **handoff obligatorio**: **reanudación de I-18** (rebasar
+  `feature/push-back` sobre el nuevo `origin/main`).
 
 **Baseline integrada de I-30 — 2026-07-24:**
 

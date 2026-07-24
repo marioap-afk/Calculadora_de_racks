@@ -226,7 +226,10 @@ Planes disponibles:
   catálogos/Domain/Application/Plugin, sustitución por `NumericField`/`CatalogCombo`, adopción del
   control `PreviewCanvas` y dependencias NuGet. Cubierta por ADR-0019 **ya aceptado**
   (`requires_owner_decision: false`); `requires_autocad: true`, `requires_owner_validation: true`.
-  Estado versionado en [`../automation/state/I-31.yml`](../automation/state/I-31.yml).
+  El Owner **validó en AutoCAD 2025 los 12 puntos** sin observaciones sobre el DLL del SHA `b638653`
+  (`1.0.0+b638653…`; CI del candidato run `30108459424`); gates `autocad`/`owner-validation` resueltos.
+  **Integrada en `main` el 2026-07-24** (merge `--no-ff` `ad0ea1f`). Estado versionado en
+  [`../automation/state/I-31.yml`](../automation/state/I-31.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
