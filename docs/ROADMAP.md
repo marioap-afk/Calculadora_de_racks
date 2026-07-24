@@ -1,10 +1,19 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-24 (**fix documental autorizado por el dueño**: se registran en Fase 5 las
+> Actualizado: 2026-07-24 (**I-30 integrada en `main`**: **fundación del shell visual común de editores**
+> —`RackEditorVisualShell` como control lookless con plantilla, composición por slots, status presenter por
+> severidades, action bar de categorías neutrales y tokens de tamaño/color/tipografía/espaciado en
+> `AppStyles.xaml`— **más la migración real de `RackDynamicSystemWindow`** al shell, que consume el contrato
+> de tamaño común (`EditorShellWindowStyle`, `ShellMinHeight` 672) y la paleta de estado por tokens, **sin
+> cambio** de dibujo/BOM/GUID/persistencia/handlers (los 63 `x:Name`, parsing, `LostFocus`, selección,
+> recomputación, preview e inserción se conservan). Shell **agnóstico a `RackSystemKind`**. El Owner
+> **validó en AutoCAD 2025 los 12 puntos** (`autocad` y `owner_validation` aprobadas). NO tocó Selectivo ni
+> Push Back (`feature/push-back` solo lectura, intacta). **Handoff obligatorio: I-31 → reanudación de I-18.**
+> Antes ese día — **fix documental autorizado por el dueño**: se registraron en Fase 5 las
 > iniciativas **I-30 — fundación del shell visual común de editores** (`architecture/editor-visual-shell`)
-> e **I-31 — migración del editor Selectivo al shell visual** (`refactor/selective-visual-shell`), ambas
-> `pendiente`, con la **secuencia obligatoria I-30 → I-31 → reanudación de I-18**; solo documentación,
-> sin cambio de producto ni de estados existentes. Resuelve el gate documental reportado el 2026-07-23.
+> e **I-31 — migración del editor Selectivo al shell visual** (`refactor/selective-visual-shell`), con la
+> **secuencia obligatoria I-30 → I-31 → reanudación de I-18**; solo documentación,
+> sin cambio de producto ni de estados existentes. Resolvió el gate documental reportado el 2026-07-23.
 > Antes, el 2026-07-22: **I-07 integrada en `main`**: retro-documentación de las 13 decisiones de
 > HANDOFF §7 como **ADR-0006–0018** (aceptados por el dueño el 2026-07-22, «Sí, apruebo»); **solo
 > documentación, sin cambio de producto**; HANDOFF §7 pasa a puntero a `docs/adr/`. Antes ese día:
@@ -160,7 +169,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-23 | `refactor/namespaces-sistemas` | `Systems.Selective/Dynamic/FlowBed/Shared`; renombres fósiles (`Headers`→`Drawing`, `DynamicSystemPlan`→`SystemPlan`); .editorconfig — mecánico, con tests golden, **cierra la Fase 5: depende de TODAS las demás** (E8) | M | I-08, I-15, I-16, I-20, I-21, I-22 | toda la Fase 5 | pendiente |
 | I-24 | `refactor/ui-tests-editores` | Tests de ViewModels y estados de editor sobre `tests/RackCad.UI.Tests` (el proyecto nace en I-14) (U3) | S | I-15, I-20 | — | integrada (2026-07-22) |
 | I-25 | `feature/guardas-traseras` ✋ | Última familia de seguridad (prioridad final del producto), construida sobre I-22 | M | I-22 | — | pendiente |
-| I-30 | `architecture/editor-visual-shell` ✋ | **Fundación del shell visual común de editores** (tipo: arquitectura): contrato visual y tokens, componentes del shell, status presenter, action bar común, pruebas y **migración real de `RackDynamicSystemWindow`**. NO incluye Selectivo ni modificación de Push Back (`feature/push-back` solo en lectura). Requiere CI, builds Debug, AutoCAD y owner-validation. **Secuencia obligatoria: integrar I-30 antes de I-31 y antes de reanudar I-18** | — | I-14, I-15, I-20, I-21, I-24 (integradas) | I-31 (orden fijo: I-30 primero); reanudación de I-18 (espera la secuencia) | pendiente |
+| I-30 | `architecture/editor-visual-shell` ✋ | **Fundación del shell visual común de editores** (tipo: arquitectura): contrato visual y tokens, componentes del shell, status presenter, action bar común, pruebas y **migración real de `RackDynamicSystemWindow`**. NO incluye Selectivo ni modificación de Push Back (`feature/push-back` solo en lectura). Requiere CI, builds Debug, AutoCAD y owner-validation. **Secuencia obligatoria: integrar I-30 antes de I-31 y antes de reanudar I-18** | — | I-14, I-15, I-20, I-21, I-24 (integradas) | I-31 (orden fijo: I-30 primero); reanudación de I-18 (espera la secuencia) | integrada (2026-07-24) |
 | I-31 | `refactor/selective-visual-shell` (provisional) ✋ | **Migración del editor Selectivo al shell visual**: migrar `RackSelectiveWindow` al shell integrado por I-30, preservando estado, geometría, BOM, persistencia y handlers. **No puede reclamarse antes de cerrar I-30**; debe integrarse antes de rebasar y reanudar I-18 | — | I-30 integrada | I-30 (orden fijo); reanudación de I-18 | pendiente |
 
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el

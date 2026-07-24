@@ -198,10 +198,16 @@ Planes disponibles:
   cero consumidores; los `PreviewCanvas` de las ventanas son un `x:Name` homónimo, no el control),
   con **43 brushes privados** duplicados y sin tokens. Fuera de alcance: **Selectivo (es I-31)**,
   `feature/push-back` (**solo lectura** y handoff posterior), cama/configurador/larguero, geometría,
-  BOM, persistencia, catálogos, handlers y Plugin. Decisión requerida:
-  [ADR-0019](../adr/0019-shell-visual-de-editores-por-composicion.md) en estado `propuesto` → la
-  iniciativa queda `waiting` / `owner-decision` y **no implementa producción** hasta la decisión del
-  Owner. Estado versionado en [`../automation/state/I-30.yml`](../automation/state/I-30.yml).
+  BOM, persistencia, catálogos, handlers y Plugin.
+  [ADR-0019](../adr/0019-shell-visual-de-editores-por-composicion.md) **aceptado por el Owner**. El shell
+  es un **control lookless con plantilla** (`Themes/Generic.xaml`), no un `UserControl`, para admitir
+  contenido con nombre en los slots sin `MC3093`; `RackDynamicSystemWindow` quedó **compuesto sobre el
+  shell** consumiendo el contrato de tamaño común (`EditorShellWindowStyle` + tokens, `ShellMinHeight`
+  672) y la paleta de estado por tokens, **sin cambio** de dibujo/BOM/GUID/persistencia. El Owner
+  **validó en AutoCAD 2025 los 12 puntos** sobre el DLL del SHA `d443ee2`
+  (`1.0.0+d443ee2…`); `autocad` y `owner_validation` **resueltos**. **Integrada en `main` el
+  2026-07-24.** Handoff obligatorio: **I-31 → reanudación de I-18**. Estado versionado en
+  [`../automation/state/I-30.yml`](../automation/state/I-30.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

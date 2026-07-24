@@ -3,11 +3,11 @@ automation_state:
   initiative: I-30
   branch: architecture/editor-visual-shell
   claim_id: 2048f82c-2208-4961-9e2f-2f85f7b22743
-  current_phase: 5
-  state: validating
-  gate: autocad
+  current_phase: 6
+  state: integrated
+  gate: none
   attempts: 0
-  next_action: el-owner-valida-en-autocad-2025-el-dll-debug-construido-desde-el-sha-exacto-de-esta-corrida-editor-dinamico-migrado-al-shell-conserva-dibujo-bom-identidad-round-trip-y-cumple-el-contrato-visual-y-el-coordinador-prepara-i31-selectivo-solo-tras-cerrar-i30
+  next_action: i30-cerrada-e-integrada-en-main-el-siguiente-paso-autorizado-es-i31-refactor-selective-visual-shell-migrar-rackselectivewindow-al-shell-y-despues-la-reanudacion-de-i18-push-back-no-reclamar-i31-en-esta-corrida
   last_evidence_commit: 01c71268479adc453e4a8f875eb2109bb7cc6ffd
 execution_context:
   mode: manual-git-only
@@ -17,6 +17,13 @@ evidence:
   base_commit: 8a1bce57969db5c1001473fd30a99bf45d48335e
   claim_commit: c6185d8d75b711abdd9e3a8d60f921d1c955f56a
   resolved_gate: owner-decision
+  resolved_gate_autocad: >-
+    RESUELTO-el-owner-valido-en-autocad-2025-los-12-puntos-funcionales-y-visuales-del-editor-dinamico-migrado-al-shell-sobre-el-dll-debug-del-sha-d443ee226651c7a80840c8a97e0383163c48d60c-informational-version-1-0-0-mas-d443ee226651c7a80840c8a97e0383163c48d60c-los-12-puntos-aprobados
+  resolved_gate_owner_validation: RESUELTO-owner-validation-aprobada-comportamiento-y-apariencia-del-shell-y-del-dinamico-migrado-sin-observaciones-sobre-el-mismo-sha-d443ee2
+  validated_dll: >-
+    sha-validado-d443ee226651c7a80840c8a97e0383163c48d60c-assemblyinformationalversion-1-0-0-plus-d443ee226651c7a80840c8a97e0383163c48d60c-ruta-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-origin-main-no-avanzo-8a1bce5-sin-rebase-final-el-arbol-validado-coincide-con-lo-integrado-mas-el-commit-documental-de-cierre-solo-docs-no-cambia-el-binario
+  integration: >-
+    i30-integrada-en-main-por-git-merge-no-ff-desde-architecture-editor-visual-shell-sin-squash-sin-force-el-sha-del-merge-vive-en-git-log-first-parent-main-y-en-handoff-seccion-5-limpieza-rama-y-worktree-retirados-tras-confirmar-merge-y-ci-post-merge-verde
   ci_main_at_claim: verde-sobre-8a1bce5-run-de-main-success
   roadmap_authorization: docs-roadmap-md-fase-5-filas-i30-e-i31-mas-secuencia-obligatoria-i30-i31-reanudacion-de-i18-integradas-en-main-por-el-fix-documental-8a1bce5
   audit_scope: solo-lectura-selectivo-dinamico-cama-controles-i14-appstyles-rackeditorsession-estados-puros-y-pruebas-ui-en-main-mas-rackpushbacksystemwindow-leido-con-git-show-desde-origin-feature-push-back-b2d9e9d-sin-checkout-merge-rebase-ni-commit

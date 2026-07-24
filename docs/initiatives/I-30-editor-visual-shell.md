@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-30
 title: Fundación del shell visual común de editores
 type: architecture
-status: in-progress
+status: integrated
 branch: architecture/editor-visual-shell
 base_branch: main
 priority:
@@ -357,9 +357,18 @@ ventanas.
   recorte, **RackCad.Tests 1016/1016** (I-24, goldens dinámicos, persistencia, handlers e I-19 intactos).
   Builds Debug UI/Plugin/solución **0 errores** (2 advertencias `MSB3277` preexistentes de las
   referencias de AutoCAD). Ningún filtro con cero pruebas.
-- Gates: `owner-decision` **resuelto** (ADR-0019 aceptado); `plugin_build` verde. Estado
-  `state: validating`, `gate: autocad`. **Pendientes:** `autocad` (smoke visual del Owner) y
-  `owner_validation` (DLL Debug del SHA exacto de esta corrida).
+- **Validación del Owner y cierre** (sesión de integración, `2026-07-24`): el Owner **validó
+  satisfactoriamente en AutoCAD 2025 los 12 puntos** funcionales y visuales del editor dinámico migrado
+  al shell sobre el **DLL Debug del SHA `d443ee226651c7a80840c8a97e0383163c48d60c`**
+  (`AssemblyInformationalVersion = 1.0.0+d443ee226651c7a80840c8a97e0383163c48d60c`). Con ello los gates
+  `owner-decision` (ADR-0019), `plugin_build`, **`autocad` y `owner_validation`** quedan **resueltos**;
+  `origin/main` **no avanzó** desde `8a1bce5`, por lo que **no hubo rebase final** y el árbol validado
+  coincide con lo integrado (el commit documental de cierre es solo documentación y no cambia el
+  binario). La iniciativa se integra en `main` por **`git merge --no-ff`** (sin squash, sin force); el
+  SHA del merge vive en `git log --first-parent main` y en `docs/HANDOFF.md §5`. **Estado: `integrated`**.
+- Handoff obligatorio tras el cierre: **I-31 → reanudación de I-18**. El siguiente paso autorizado es
+  **I-31** (`refactor/selective-visual-shell`: migrar `RackSelectiveWindow` al shell), y **después** la
+  **reanudación de I-18** (Push Back). I-31 **no** se reclama en esta corrida.
 - Sin tocar geometría, resolvers, BOM, persistencia, catálogos, Plugin, `RackSelectiveWindow`,
-  `RackFlowBedWindow`, configuradores, `docs/HANDOFF.md`, `docs/ROADMAP.md` ni `feature/push-back`
-  (`b2d9e9d`, intacta).
+  `RackFlowBedWindow`, configuradores ni `feature/push-back` (`b2d9e9d`, intacta). `docs/HANDOFF.md` y
+  `docs/ROADMAP.md` se actualizan **en este cierre de integración** (WORKFLOW §4.5.4), como corresponde.

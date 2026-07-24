@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-22**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-24**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -348,6 +348,36 @@ añadió 0013-0018. El dueño los **aceptó** el 2026-07-22 («Sí, apruebo»; r
 decisores y evidencia originales. Es **solo documentación**: no cambia producto, catálogos, pruebas ni
 build; su cierre retira esas decisiones de HANDOFF §7 (ahora viven en `docs/adr/`).
 
+**I-30** (`architecture/editor-visual-shell`, Fase 5) queda **integrada** el **2026-07-24**. Funda el
+**shell visual común de editores** en `src/RackCad.UI/Shell/` y **migra realmente `RackDynamicSystemWindow`**
+al shell, **sin cambio de dibujo, BOM, GUID ni persistencia**. El shell `RackEditorVisualShell` es un
+**control lookless con plantilla** (`Themes/Generic.xaml` + `[ThemeInfo]`), **no** un `UserControl` ni una
+clase base de `Window`: esto permite que un editor inyecte contenido con `x:Name` en los slots sin el error
+`MC3093` de ámbito de nombres (un `UserControl` lo prohíbe). Expone nueve slots de contenido como
+Dependency Properties (`SidebarHeader` neutral/opcional, `SidePanelContent` con scroll, `MatrixContent`
+opcional que colapsa dejando al preview llenar, `PreviewContent`, `StatusContent` fuera del scroll, y las
+cuatro categorías neutrales de acción `Leading/Secondary/Primary/Trailing`), con `EditorStatusPresenter`
+(severidades info/success/warning/error, **coloreadas por los tokens `ShellStatus*Brush`** vía
+`ShellResources.Require` que **falla ruidosamente** ante un token ausente/mal tipado), `EditorActionBar`
+(WrapPanel que nunca recorta) y `EditorActions.Button` (estilos habilitado/deshabilitado + motivo por
+tooltip). Los **tokens con nombre** de `Themes/AppStyles.xaml` (tamaño/color/tipografía/espaciado) son la
+**única fuente** del contrato visual; la ventana consume el tamaño común vía el **estilo compartido
+`EditorShellWindowStyle`** (`Width/Height/MinWidth/MinHeight/Background/FontFamily/FontSize` por
+`DynamicResource`), eliminando los tamaños hardcoded y el bypass `MinWidth/MinHeight=0`. `ShellMinHeight`
+es **672** (no 640): la ventana MOSTRADA al mínimo pierde el marco no-cliente (~39 DIP) y a 640 el cliente
+(~601) dejaba solo ~4 px sobre el status; 672 da ~633 de cliente y ~36 px de margen, así el mínimo acomoda
+sidebar/matriz/preview/status/action bar **sin solape ni recorte** y el `ClipToBounds` del work-area queda
+como pura defensa. La ventana **conserva exactamente** sus 63 `x:Name`, handlers, parsing, `LostFocus`,
+selección/multiselección, recomputación, preview (el `Canvas` se aloja tal cual; **no** se adopta el control
+`PreviewCanvas`, sin prueba de equivalencia), vistas, inserción, actualización, BOM, GUID y persistencia; el
+`.cs` de la ventana **no cambia** en la migración de tamaño. El shell es **agnóstico a `RackSystemKind`** y
+no admite ramas por sistema. **Fuera de alcance y sin tocar**: `RackSelectiveWindow` (**es I-31**),
+`feature/push-back` (**solo lectura**, intacta `b2d9e9d`), cama/configurador/larguero, geometría, resolvers,
+BOM, persistencia, catálogos, handlers y Plugin. **ADR-0019** (shell por composición y slots) **aceptado por
+el Owner**. Rebase final **no** necesario (`origin/main` no avanzó desde `8a1bce5`). El Owner **validó en
+AutoCAD 2025 los 12 puntos** (§2). La rama se integra por `git merge --no-ff` en esta sesión. **Handoff
+obligatorio: I-31 (Selectivo al shell) → reanudación de I-18 (Push Back).**
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -498,6 +528,21 @@ la integración, así que la rama se **rebasó** sobre `b60f142` (reconciliació
 el código de I-03 e I-17 es disjunto salvo `RackFrameProjectStore.cs`, aditivo por ambos lados y auto-fusionado).
 AutoCAD: no ejecutado; no requerido por contrato.
 
+I-30 (`architecture/editor-visual-shell`) **sí** requiere validación en AutoCAD (`requires_autocad: true`)
+porque migra el editor **dinámico** —que produce el diseño dibujado— al shell y cambia el contrato visual de
+la ventana. El Owner **validó satisfactoriamente en AutoCAD 2025 los 12 puntos** funcionales y visuales
+sobre el DLL Debug del worktree I-30
+(`…-architecture-editor-visual-shell\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`),
+construido con `--no-incremental` desde el SHA **`d443ee226651c7a80840c8a97e0383163c48d60c`**
+(`AssemblyInformationalVersion = 1.0.0+d443ee226651c7a80840c8a97e0383163c48d60c`, verificada). Aprobó los
+**12 puntos** sin observaciones: dibujo, BOM, identidad/GUID y round-trip del dinámico migrado idénticos, y
+la interfaz del shell (sidebar con scroll, matriz, preview, status y barra de acciones en sus zonas, sin
+solape ni recorte al tamaño mínimo). La **owner-validation** de comportamiento y apariencia quedó
+**aprobada**. `origin/main` **no avanzó** desde `8a1bce5`, así que **no hubo rebase final** y la validación
+vale sobre el árbol integrado (WORKFLOW §6); el commit documental de cierre es solo documentación y no
+cambia el binario. Los gates `autocad` y `owner_validation` quedan **resueltos**; registro del SHA validado
+y de la versión informativa en §5. La rama se integra por `git merge --no-ff` en esta sesión.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -534,6 +579,20 @@ AutoCAD: no ejecutado; no requerido por contrato.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+Con **I-30** (`architecture/editor-visual-shell`, Fase 5) **integrada en esta sesión** —fundación del
+**shell visual común de editores** (`RackEditorVisualShell` lookless con plantilla, slots, status por
+severidades, action bar de categorías, tokens en `AppStyles.xaml`) **más la migración real de
+`RackDynamicSystemWindow`** al shell y su contrato de tamaño común (`EditorShellWindowStyle`,
+`ShellMinHeight` 672) y paleta de estado por tokens, **sin cambio** de dibujo/BOM/GUID/persistencia; Owner
+validó los **12 puntos** en AutoCAD—, el **siguiente paso autorizado** es la **secuencia obligatoria
+I-31 → reanudación de I-18**: primero **I-31** (`refactor/selective-visual-shell`: migrar
+`RackSelectiveWindow` al shell fundado por I-30, preservando estado/geometría/BOM/persistencia/handlers) y
+**después** la **reanudación de I-18** (Push Back), que espera esa secuencia. **I-31 no se reclama en esta
+corrida.** Push Back (`feature/push-back`, `b2d9e9d`) permanece **intacta** (solo lectura durante I-30).
+Además siguen pendientes **I-25** (`feature/guardas-traseras`, sobre I-22) e **I-23** (namespaces, cierra la
+Fase 5, depende de todas). El shell es **agnóstico a `RackSystemKind`**; su adopción por el resto de
+editores es trabajo de I-31 en adelante.
 
 Con **I-07** (`docs/adr-retroactivos`, Fase 1) **integrada en esta sesión** —retro-documentación de las
 trece decisiones de HANDOFF §7 como **ADR-0006 a 0018**, **aceptados por el dueño** (2026-07-22, «Sí,
@@ -584,6 +643,30 @@ desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apr
 un nuevo piloto controlado.
 
 ## 5. Última verificación vigente
+
+**Baseline integrada de I-30 — 2026-07-24:**
+
+- candidato de **código** validado por el Owner en AutoCAD y por CI:
+  `d443ee226651c7a80840c8a97e0383163c48d60c` (CI run `30099517253`, **cuatro jobs verdes** —Tests
+  (Domain+Application), Build UI, UI Tests (WPF, net8.0-windows) y Build Plugin without AutoCAD); el commit
+  documental de cierre recibe su propio CI verde antes del merge; este documento **no inventa** el SHA del
+  merge de `main` (vive en `git log --first-parent main`);
+- **DLL Debug validado**: `AssemblyInformationalVersion = 1.0.0+d443ee226651c7a80840c8a97e0383163c48d60c`
+  (reconstruido con `--no-incremental` desde ese HEAD; el sufijo `+<sha>` **termina en el SHA completo**),
+  ruta `…-architecture-editor-visual-shell\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`;
+  el Owner **aprobó los 12 puntos** funcionales y visuales (§2);
+- suite completa **verde**: **1016** `RackCad.Tests` + **218** `RackCad.UI.Tests` (204 fundación + 8
+  migración + 6 de tamaño/estado: contrato de tamaño, mínimo mostrado, holgura, paleta por tokens y `Require`
+  ruidoso); **ningún filtro devuelve cero pruebas**; builds Debug de UI, Plugin y solución con **0 errores**
+  (los `MSB3277` de las referencias de AutoCAD no cuentan);
+- `origin/main` **no avanzó** desde `8a1bce5` durante todo el ciclo de I-30 (merge-base = `origin/main`;
+  I-30 **19 commits delante, 0 detrás**): **sin rebase final**, la validación en AutoCAD vale sobre el árbol
+  integrado (WORKFLOW §6);
+- el diff final **no** toca `RackSelectiveWindow` (I-31) ni `feature/push-back` (`b2d9e9d`, intacta): la
+  producción se limita a `src/RackCad.UI/Shell/`, `src/RackCad.UI/Themes/`, la composición de
+  `RackDynamicSystemWindow.xaml` (su `.cs` no cambia) y `tests/RackCad.UI.Tests/`;
+- **ADR-0019** (shell por composición y slots) **aceptado por el Owner**; **handoff obligatorio**:
+  **I-31 → reanudación de I-18**.
 
 **Baseline integrada de I-07 — 2026-07-22 (solo documentación):**
 
