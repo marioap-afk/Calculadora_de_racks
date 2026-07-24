@@ -222,6 +222,45 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- 8b. the status palette reads the AppStyles tokens as its single source (no duplicated hex) ----
+
+        [Fact]
+        public void StatusPalette_ReadsTheAppStylesTokens_AsTheSingleSource()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var tokens = AppStyles();
+                Color Token(string key) => ((SolidColorBrush)tokens[key]).Color;
+
+                var presenter = new EditorStatusPresenter();
+                Color Presented(EditorStatusSeverity sev)
+                {
+                    presenter.Message = new EditorStatusMessage("x", sev);
+                    return ((SolidColorBrush)((TextBlock)presenter.Content).Foreground).Color;
+                }
+
+                // Each rendered severity color EQUALS its ShellStatus*Brush token: AppStyles is the one normative source,
+                // so re-hardcoding the palette (or drifting a token) breaks this.
+                Assert.Equal(Token("ShellStatusInfoBrush"), Presented(EditorStatusSeverity.Info));
+                Assert.Equal(Token("ShellStatusSuccessBrush"), Presented(EditorStatusSeverity.Success));
+                Assert.Equal(Token("ShellStatusWarningBrush"), Presented(EditorStatusSeverity.Warning));
+                Assert.Equal(Token("ShellStatusErrorBrush"), Presented(EditorStatusSeverity.Error));
+            });
+        }
+
+        // ---- 8c. a broken normative token surfaces (Require fails loud, never a silent default) ----
+
+        [Fact]
+        public void ShellResources_Require_FailsLoud_OnMissingOrMistypedToken()
+        {
+            StaTestRunner.Run(() =>
+            {
+                Assert.NotNull(ShellResources.Require<Brush>("ShellStatusErrorBrush")); // present + right type → returns it
+                Assert.Throws<InvalidOperationException>(() => ShellResources.Require<Brush>("NoSuchShellToken_zzz")); // absent → throws
+                Assert.Throws<InvalidOperationException>(() => ShellResources.Require<Style>("ShellStatusErrorBrush")); // wrong type → throws
+            });
+        }
+
         // ---- 9. the four action categories keep order and content ----
 
         [Fact]

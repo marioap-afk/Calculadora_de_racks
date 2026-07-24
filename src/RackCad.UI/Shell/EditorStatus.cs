@@ -45,18 +45,18 @@ namespace RackCad.UI.Shell
     }
 
     /// <summary>
-    /// The severity → foreground colors the status presenter applies. These MIRROR the <c>ShellStatus*Brush</c> tokens
-    /// in <c>Themes/AppStyles.xaml</c> (so the presenter renders consistently even when instantiated outside a window
-    /// that merged the dictionary — e.g. in a test). Colors are derived from vigente values: error #B00020 and success
-    /// #2F855A come from <see cref="UiSupport"/>; info #2B6CB0 is the primary-button chrome blue; warning #B7791F is the
-    /// single new chrome amber, kept distinct from <see cref="Controls.PreviewPalette"/>'s stroke amber (#E08A2B).
+    /// The severity → foreground brushes the status presenter applies, read from the SINGLE normative source: the
+    /// <c>ShellStatus*Brush</c> tokens in <c>Themes/AppStyles.xaml</c> (a compiled resource of RackCad.UI, so they
+    /// resolve even when the presenter is instantiated outside a window that merged the dictionary — e.g. in a test).
+    /// There is NO duplicated palette here: a missing or mistyped token is a real resource failure and
+    /// <see cref="ShellResources.Require{T}"/> throws rather than hiding it behind a hardcoded default.
     /// </summary>
     public static class EditorStatusPalette
     {
-        public static readonly Brush Info = UiSupport.FrozenBrush(Color.FromRgb(0x2B, 0x6C, 0xB0));
-        public static readonly Brush Success = UiSupport.FrozenBrush(Color.FromRgb(0x2F, 0x85, 0x5A));
-        public static readonly Brush Warning = UiSupport.FrozenBrush(Color.FromRgb(0xB7, 0x79, 0x1F));
-        public static readonly Brush Error = UiSupport.FrozenBrush(Color.FromRgb(0xB0, 0x00, 0x20));
+        public static Brush Info => ShellResources.Require<Brush>("ShellStatusInfoBrush");
+        public static Brush Success => ShellResources.Require<Brush>("ShellStatusSuccessBrush");
+        public static Brush Warning => ShellResources.Require<Brush>("ShellStatusWarningBrush");
+        public static Brush Error => ShellResources.Require<Brush>("ShellStatusErrorBrush");
 
         public static Brush For(EditorStatusSeverity severity)
         {
