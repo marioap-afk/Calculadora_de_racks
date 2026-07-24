@@ -22,13 +22,31 @@ namespace RackCad.UI.Tests
         {
             var shell = new RackEditorVisualShell();
             setup?.Invoke(shell);
+            // A standalone control does not get its theme style auto-resolved without a shown HWND, so assign the REAL
+            // default style from Themes/Generic.xaml explicitly — the exact same Style/ControlTemplate the shown window
+            // resolves at runtime — then measure so the template expands and the PART_ hosts become reachable.
+            var generic = new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/Generic.xaml", UriKind.Relative) };
+            shell.Style = (Style)generic[typeof(RackEditorVisualShell)];
             shell.Measure(new Size(w, h));
             shell.Arrange(new Rect(0, 0, w, h));
             shell.UpdateLayout();
             return shell;
         }
 
-        private static ContentPresenter Host(RackEditorVisualShell shell, string name) => (ContentPresenter)shell.FindName(name);
+        // Hosts are template parts (the shell is a lookless templated control); resolved via internal seams that call
+        // GetTemplateChild, valid after the template is applied (i.e. after Measure — see Measured()).
+        private static ContentPresenter Host(RackEditorVisualShell shell, string name)
+        {
+            switch (name)
+            {
+                case "SidebarHeaderHost": return shell.SidebarHeaderHost;
+                case "SidePanelHost": return shell.SidePanelHost;
+                case "MatrixHost": return shell.MatrixHost;
+                case "PreviewHost": return shell.PreviewHost;
+                case "StatusHost": return shell.StatusHost;
+                default: throw new System.ArgumentException($"unknown host {name}");
+            }
+        }
 
         private static System.Collections.Generic.IEnumerable<DependencyObject> Descendants(DependencyObject root)
         {
@@ -42,13 +60,25 @@ namespace RackCad.UI.Tests
             }
         }
 
-        private static string ShellSource(string relative)
+        private static DirectoryInfo RepoRoot()
         {
             var dir = new DirectoryInfo(AppContext.BaseDirectory);
             while (dir != null && !File.Exists(Path.Combine(dir.FullName, "RackCad.sln"))) dir = dir.Parent;
             Assert.True(dir != null, "repo root (RackCad.sln) not found");
-            var path = Path.Combine(dir.FullName, "src", "RackCad.UI", "Shell", relative);
+            return dir;
+        }
+
+        private static string ShellSource(string relative)
+        {
+            var path = Path.Combine(RepoRoot().FullName, "src", "RackCad.UI", "Shell", relative);
             Assert.True(File.Exists(path), $"missing shell source {path}");
+            return File.ReadAllText(path);
+        }
+
+        private static string ThemesSource(string relative)
+        {
+            var path = Path.Combine(RepoRoot().FullName, "src", "RackCad.UI", "Themes", relative);
+            Assert.True(File.Exists(path), $"missing themes source {path}");
             return File.ReadAllText(path);
         }
 
@@ -285,7 +315,8 @@ namespace RackCad.UI.Tests
             StaTestRunner.Run(() =>
             {
                 var shell = Measured(1120, 640, s => s.SidePanelContent = new StackPanel());
-                var scroll = Descendants(shell).OfType<ScrollViewer>().Single();
+                var scroll = shell.SidebarScroll;
+                Assert.NotNull(scroll);
                 Assert.Equal(ScrollBarVisibility.Auto, scroll.VerticalScrollBarVisibility);
                 Assert.Equal(ScrollBarVisibility.Disabled, scroll.HorizontalScrollBarVisibility);
             });
@@ -365,14 +396,16 @@ namespace RackCad.UI.Tests
         [Fact]
         public void ShellFiles_ReferenceNoRackSystemKind()
         {
-            foreach (var file in new[]
+            var sources = new[]
             {
-                "RackEditorVisualShell.xaml", "RackEditorVisualShell.xaml.cs", "EditorActionBar.cs",
-                "EditorAction.cs", "EditorStatus.cs", "EditorStatusPresenter.cs", "ShellResources.cs",
-                "ShellSlotVisibilityConverter.cs"
-            })
+                ShellSource("RackEditorVisualShell.cs"), ShellSource("EditorActionBar.cs"),
+                ShellSource("EditorAction.cs"), ShellSource("EditorStatus.cs"), ShellSource("EditorStatusPresenter.cs"),
+                ShellSource("ShellResources.cs"), ShellSource("ShellSlotVisibilityConverter.cs"),
+                ThemesSource("Generic.xaml")
+            };
+            foreach (var src in sources)
             {
-                Assert.DoesNotContain("RackSystemKind", ShellSource(file));
+                Assert.DoesNotContain("RackSystemKind", src);
             }
         }
 
@@ -387,14 +420,17 @@ namespace RackCad.UI.Tests
                 "Selective", "PushBack", "FlowBed",
                 "RackDynamic", "DynamicSystem", "DynamicFront", "DynamicEditor", "DynamicRack"
             };
-            foreach (var file in new[]
+            var sources = new[]
             {
-                "RackEditorVisualShell.xaml", "RackEditorVisualShell.xaml.cs", "EditorActionBar.cs",
-                "EditorAction.cs", "EditorStatus.cs", "EditorStatusPresenter.cs", "ShellResources.cs",
-                "ShellSlotVisibilityConverter.cs"
-            })
+                // Shell/ code files (the shell is now a lookless templated control — no .xaml/.xaml.cs pair).
+                ShellSource("RackEditorVisualShell.cs"), ShellSource("EditorActionBar.cs"),
+                ShellSource("EditorAction.cs"), ShellSource("EditorStatus.cs"), ShellSource("EditorStatusPresenter.cs"),
+                ShellSource("ShellResources.cs"), ShellSource("ShellSlotVisibilityConverter.cs"),
+                // The shell's default template lives in Themes/Generic.xaml — it too must stay system-agnostic.
+                ThemesSource("Generic.xaml")
+            };
+            foreach (var src in sources)
             {
-                var src = ShellSource(file);
                 foreach (var token in forbidden)
                 {
                     Assert.DoesNotContain(token, src);
@@ -423,7 +459,8 @@ namespace RackCad.UI.Tests
             {
                 var primary = new Button { Content = "Insertar" };
                 var shell = Measured(1280, 720, s => s.PrimaryActions = primary);
-                var bar = (EditorActionBar)shell.FindName("ActionBar");
+                var bar = shell.ActionBar;
+                Assert.NotNull(bar);
                 Assert.Same(primary, bar.PrimaryActions);
                 Assert.Same(primary, bar.CategoryPresenters[2].Content);
             });

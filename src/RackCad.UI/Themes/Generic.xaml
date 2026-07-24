@@ -1,0 +1,72 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:shell="clr-namespace:RackCad.UI.Shell">
+
+    <!-- Shared tokens and styles (window background, buttons, field styles, shell tokens). -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <shell:ShellSlotVisibilityConverter x:Key="ShellSlotVisibility" />
+
+    <!-- The default (lookless) template for RackEditorVisualShell. Composition only: five content zones + the four
+         neutral action categories. Content is TemplateBound to the control's slots, so NAMED content injected by a
+         consuming editor registers in the EDITOR's name scope, not the shell's. Optional zones collapse without a gap. -->
+    <Style TargetType="{x:Type shell:RackEditorVisualShell}">
+        <Setter Property="Background" Value="{DynamicResource ShellWindowBackgroundBrush}" />
+        <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="MinWidth" Value="{DynamicResource ShellMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource ShellMinHeight}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type shell:RackEditorVisualShell}">
+                    <Border Background="{TemplateBinding Background}">
+                        <DockPanel Margin="{DynamicResource ShellZoneSpacing}">
+
+                            <!-- Action bar (bottom): wraps at the minimum width, never clips. -->
+                            <shell:EditorActionBar x:Name="PART_ActionBar" DockPanel.Dock="Bottom" Margin="0,8,0,0"
+                                                   LeadingActions="{TemplateBinding LeadingActions}"
+                                                   SecondaryActions="{TemplateBinding SecondaryActions}"
+                                                   PrimaryActions="{TemplateBinding PrimaryActions}"
+                                                   TrailingActions="{TemplateBinding TrailingActions}" />
+
+                            <!-- Status band (bottom, above the action bar): ALWAYS outside the sidebar scroll. -->
+                            <ContentPresenter x:Name="PART_StatusHost" DockPanel.Dock="Bottom" Margin="0,6,0,0"
+                                              Content="{TemplateBinding StatusContent}"
+                                              Visibility="{Binding StatusContent, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+
+                            <!-- Sidebar (left): tokenized width; a neutral header (optional) over a vertical scroll. -->
+                            <Grid DockPanel.Dock="Left" Width="{DynamicResource ShellSidebarWidth}" Margin="0,0,10,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <ContentPresenter x:Name="PART_SidebarHeaderHost" Grid.Row="0"
+                                                  Content="{TemplateBinding SidebarHeader}"
+                                                  Visibility="{Binding SidebarHeader, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+                                <ScrollViewer x:Name="PART_SidebarScroll" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <ContentPresenter x:Name="PART_SidePanelHost" Content="{TemplateBinding SidePanelContent}" />
+                                </ScrollViewer>
+                            </Grid>
+
+                            <!-- Work area (fill): matrix on top (optional, collapses) + preview below (fills, tokenized min). -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" MinHeight="{DynamicResource ShellPreviewMinHeight}" />
+                                </Grid.RowDefinitions>
+                                <ContentPresenter x:Name="PART_MatrixHost" Grid.Row="0" Margin="0,0,0,8"
+                                                  Content="{TemplateBinding MatrixContent}"
+                                                  Visibility="{Binding MatrixContent, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+                                <ContentPresenter x:Name="PART_PreviewHost" Grid.Row="1"
+                                                  Content="{TemplateBinding PreviewContent}"
+                                                  Visibility="{Binding PreviewContent, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
