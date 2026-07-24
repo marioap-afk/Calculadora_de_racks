@@ -127,13 +127,24 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
   defecto). **Reanudación 2026-07-24:** la rama se **rebasó** sobre `origin/main` = `967fcb9` (que ya integra
   **I-30** —shell visual común— e **I-31** —selectivo al shell—; rebase limpio, 66 commits idénticos por
   `range-diff`, cero conflictos). Sobre esa base: (a) **`RackPushBackSystemWindow` migrada a
-  `RackEditorVisualShell`** por composición y slots (solo-XAML, code-behind intacto; conserva controles,
-  `x:Name`, handlers, matriz, preview, selección y acciones; tamaño/fondo/tipografía por `EditorShellWindowStyle`;
-  el preview técnico conserva su fondo claro, PB-VAL-03); (b) **PB-VAL-06 — Push Back no admite parrillas**: la
-  autoridad canónica `PushBackSafetyAuthority` excluye PARRILLA además de GUIA (predicado único `IsUnsupported`),
-  impidiéndola en UI, resolver, sistema, planes, dibujo y BOM, con lectura compatible de documentos antiguos
-  (una parrilla legacy se lee sin error y se descarta en build, como GUIA; sin migración destructiva). Falta el
-  **smoke visual corto del Owner** en AutoCAD sobre el DLL Debug del HEAD rebasado antes de reabrir el gate.
+  `RackEditorVisualShell`** por composición y slots, con **adopción visual completa** del contrato común
+  (solo-XAML, code-behind intacto): sidebar, matriz y preview consumen superficie/borde/relleno/tipografía y
+  colores por los tokens `Shell*` (sin cromo hardcoded); las acciones adoptan `PrimaryButtonStyle` (Actualizar +
+  Insertar) y `SecondaryButtonStyle` (Restaurar, BOM, biblioteca, las 4 vistas y Cerrar), con
+  `ToolTipService.ShowOnDisabled` donde el code-behind da motivo; el **resumen + mensajes** viven en
+  `StatusContent` (sin un segundo status en el sidebar); y el **preview técnico** pasa al fondo **oscuro
+  compartido** `ShellPreviewBackgroundBrush` (se retira el `#F7FAFC` hardcoded) sin recomputar geometría ni tocar
+  `PushBackPreviewModel` (el painter por roles ya usa la `PreviewPalette` compartida, contraste correcto). Conserva
+  controles, `x:Name`, handlers, matriz, preview, selección y acciones; tamaño por `EditorShellWindowStyle`; (b)
+  **PB-VAL-06 — Push Back no admite parrillas**: la autoridad canónica `PushBackSafetyAuthority` excluye PARRILLA
+  además de GUIA (predicado único `IsUnsupported`), impidiéndola en UI, resolver, sistema, planes, dibujo y BOM,
+  con lectura compatible de documentos antiguos (una parrilla legacy se lee sin error y se descarta en build, como
+  GUIA; sin migración destructiva). **Prueba real de persistencia** (`PushBackNoParrillaPersistenceTests`): un
+  proyecto Push Back antiguo —envelope con GUID envolviendo un proyecto interno con PARRILLA, metadata desconocida
+  y versión legible `2.5` (I-11)— se lee por los stores vigentes sin error; al cargar/resolver la parrilla no
+  llega al sistema, a las 5 vistas ni al BOM; y la reescritura canónica (snapshot del sistema resuelto) **no** la
+  re-emite mientras el GUID, la metadata desconocida y la versión se preservan. Falta el **smoke visual corto del
+  Owner** en AutoCAD sobre el DLL Debug del HEAD rebasado antes de reabrir el gate.
 - **I-18c**: guía y cierre.
 
 ## 9. Pruebas y builds
