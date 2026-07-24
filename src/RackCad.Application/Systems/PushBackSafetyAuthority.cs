@@ -34,11 +34,17 @@ namespace RackCad.Application.Systems
         public bool IsRearGrid(SelectiveSafetySelection selection)
             => IsFamily(selection, SelectiveSafetyDefaults.ParrillaType);
 
-        /// <summary>The canonical Push Back exclusion: a GUIA (entrance guide) or a PARRILLA (walk grid) is never admitted,
-        /// on either end. Every downstream consumer reads only <see cref="Authorize"/>'s output, so this one predicate is the
-        /// single authority for what Push Back refuses.</summary>
+        /// <summary>True when the selection's catalog element is a larguero TOPE. Owner decision (2026-07-24): in Push Back
+        /// the rear stop belongs to the HIGH end and is owned by the rear-tope config (SAQUE + per-cell deactivations),
+        /// so it must never travel as ordinary low-end SAFETY — that would give one physical piece two authorities.</summary>
+        public bool IsRearStop(SelectiveSafetySelection selection)
+            => IsFamily(selection, SelectiveSafetyDefaults.TopeType);
+
+        /// <summary>The canonical Push Back exclusion: a GUIA (entrance guide), a PARRILLA (walk grid) or a TOPE (owned by
+        /// the rear-tope config) is never admitted as safety, on either end. Every downstream consumer reads only
+        /// <see cref="Authorize"/>'s output, so this one predicate is the single authority for what Push Back refuses.</summary>
         public bool IsUnsupported(SelectiveSafetySelection selection)
-            => IsEntranceGuide(selection) || IsRearGrid(selection);
+            => IsEntranceGuide(selection) || IsRearGrid(selection) || IsRearStop(selection);
 
         private bool IsFamily(SelectiveSafetySelection selection, string type)
         {

@@ -160,6 +160,55 @@ namespace RackCad.Application.Systems
             return written;
         }
 
+        // ---- Rear tope (configured EXCLUSIVELY from Seguridad) ---------------------------------------------------
+
+        /// <summary>
+        /// Owner decision (2026-07-24) — PROJECT the editor's rear-tope state into the shared config the Seguridad dialog
+        /// edits: the SAQUE plus ONLY the deactivated cells, exactly the rule
+        /// <see cref="PushBackEditorDesignAssembler"/> materializes into the design (defaults stay implicit, so a
+        /// round trip through the dialog cannot turn "default active" into a stored value).
+        /// </summary>
+        public PushBackRearTopeConfig RearTopeConfig()
+        {
+            var config = new PushBackRearTopeConfig { Saque = RearTopeSaque };
+            for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)
+            {
+                var levels = Math.Max(1, structure.Fronts[frontIndex].LoadLevels);
+                for (var level = 0; level < levels; level++)
+                {
+                    if (!Cell(frontIndex, level).RearTopeEnabled)
+                    {
+                        config.OffCells.Add(new SelectiveGridCell { Frente = frontIndex, Level = level });
+                    }
+                }
+            }
+
+            return config;
+        }
+
+        /// <summary>
+        /// RECOVER the config the Seguridad dialog produced: the SAQUE and the per-cell deactivations. This is the ONLY
+        /// path that writes <see cref="PushBackEditorCell.RearTopeEnabled"/> — the cell scopes deliberately cannot
+        /// (see <see cref="PushBackEditorCell.Apply"/>). A cell not listed in OffCells is active.
+        /// </summary>
+        public void LoadRearTopeConfig(PushBackRearTopeConfig config)
+        {
+            if (config == null)
+            {
+                return;
+            }
+
+            RearTopeSaque = config.Saque > 0.0 ? config.Saque : PushBackDefaults.RearTopeSaque;
+            for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)
+            {
+                var levels = Math.Max(1, structure.Fronts[frontIndex].LoadLevels);
+                for (var level = 0; level < levels; level++)
+                {
+                    Cell(frontIndex, level).RearTopeEnabled = config.At(frontIndex, level);
+                }
+            }
+        }
+
         // ---- Snapshot / rollback --------------------------------------------------------------------------------
 
         /// <summary>Deep-snapshot both authorities plus the FULL selection for rollback: the matrix fronts, the parallel Push

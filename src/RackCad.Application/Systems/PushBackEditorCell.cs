@@ -19,11 +19,18 @@ namespace RackCad.Application.Systems
         /// <summary>Whether the rear pallet-stop tope is drawn for this cell (default active; only deactivations persist).</summary>
         public bool RearTopeEnabled { get; set; } = true;
 
-        /// <summary>Copy the Push-Back-specific values from an edit buffer (mirrors <see cref="DynamicEditorCell.Apply"/>).</summary>
+        /// <summary>
+        /// Copy the Push-Back-specific values from an edit buffer (mirrors <see cref="DynamicEditorCell.Apply"/>).
+        ///
+        /// Owner decision (2026-07-24): the cell SCOPES (Celda/Selección/Nivel/Frente/Todo) must NOT copy
+        /// <see cref="RearTopeEnabled"/>. The rear stop is configured EXCLUSIVELY from Seguridad, which writes the
+        /// deactivations through the rear-tope config; applying a scope must never silently switch a neighbouring
+        /// cell's stop on or off. That is why the tope is absent from <see cref="PushBackEditorValues"/> entirely —
+        /// there is no buffer field for it to travel in.
+        /// </summary>
         public void Apply(PushBackEditorValues values)
         {
             HighEndBeamPeralte = values.HighEndBeamPeralte;
-            RearTopeEnabled = values.RearTopeEnabled;
         }
 
         public PushBackEditorCell Clone()

@@ -25,9 +25,8 @@ namespace RackCad.UI
         /// <summary>In the multi-selection (checked), primary or not.</summary>
         public bool IsIncluded { get; set; }
 
-        public bool TopeActive { get; set; }
-
-        /// <summary>The card body: positions, fondos (+ start), IN/OUT and rear peraltes, and the tope state.</summary>
+        /// <summary>The card body: positions, fondos (+ start) and the IN/OUT and rear peraltes. Owner decision
+        /// (2026-07-24): the card carries NO tope state — the rear stop is configured only from Seguridad.</summary>
         public string Text { get; set; } = string.Empty;
     }
 
@@ -37,7 +36,11 @@ namespace RackCad.UI
     /// </summary>
     internal static class PushBackMatrixCardModel
     {
-        /// <summary>The card text for one ACTIVE cell (InvariantCulture; three compact lines).</summary>
+        /// <summary>
+        /// The card text for one ACTIVE cell (InvariantCulture; two compact lines). Owner decision (2026-07-24): the
+        /// card shows NO tope state — the rear stop is configured exclusively from Seguridad, so surfacing it here
+        /// would be a second, competing place to read it from.
+        /// </summary>
         public static string CardText(PushBackEditorState state, int frontIndex, int levelIndex)
         {
             var front = state.Structure.Fronts[frontIndex];
@@ -48,13 +51,12 @@ namespace RackCad.UI
 
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "×{0} · {1}F ini {2}\nIN/OUT {3:0.##}\" · Post {4:0.##}\"\n{5}",
+                "×{0} · {1}F ini {2}\nIN/OUT {3:0.##}\" · Post {4:0.##}\"",
                 front.PalletCount,
                 front.PalletsDeep,
                 front.DepthStartPosition,
                 cell.InOutBeamDepth,
-                push.HighEndBeamPeralte,
-                push.RearTopeEnabled ? "Tope ✔" : "Sin tope");
+                push.HighEndBeamPeralte);
         }
 
         /// <summary>Every card of the padded jagged grid, in (front, level) order. Levels run 0..MaxLoadLevels-1; a level
@@ -84,7 +86,6 @@ namespace RackCad.UI
                                     && frontIndex == state.Structure.SelectedFrontIndex
                                     && levelIndex == state.Structure.SelectedLevelIndex,
                         IsIncluded = active && state.Structure.IsSelected(frontIndex, levelIndex),
-                        TopeActive = active && state.Cell(frontIndex, levelIndex).RearTopeEnabled,
                         Text = active ? CardText(state, frontIndex, levelIndex) : "—"
                     });
                 }

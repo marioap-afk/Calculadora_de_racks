@@ -4,9 +4,10 @@ namespace RackCad.Application.Systems
 {
     /// <summary>
     /// Parsed edit buffer of the Push Back editor's per-cell panel. It COMPOSES the shared dynamic buffer
-    /// (<see cref="Dynamic"/>) — every structural/pallet/beam field Push Back reuses unchanged — and ADDS only the two
-    /// Push-Back-specific inputs: the high-end (rear) beam PERALTE and whether the rear pallet-stop tope is active for the
-    /// cell. It never restates a dynamic field, so <see cref="DynamicEditorValues"/> stays the single source of those
+    /// (<see cref="Dynamic"/>) — every structural/pallet/beam field Push Back reuses unchanged — and ADDS only the one
+    /// Push-Back-specific input: the high-end (rear) beam PERALTE. The rear pallet-stop tope is deliberately NOT here
+    /// (Owner decision 2026-07-24): it is configured exclusively from Seguridad, so it must have no way to travel
+    /// through a cell scope. It never restates a dynamic field, so <see cref="DynamicEditorValues"/> stays the single source of those
     /// values and the matrix's apply/scope logic is reused verbatim.
     /// </summary>
     public sealed class PushBackEditorValues
@@ -17,7 +18,5 @@ namespace RackCad.Application.Systems
         /// <summary>High-end (rear) beam PERALTE requested for the cell (in); normalized against the catalog at build.</summary>
         public double HighEndBeamPeralte { get; set; } = PushBackDefaults.HighEndBeamDefaultPeralte;
 
-        /// <summary>Whether the rear pallet-stop tope is active for the cell (Push Back defaults to active).</summary>
-        public bool RearTopeEnabled { get; set; } = true;
     }
 }
