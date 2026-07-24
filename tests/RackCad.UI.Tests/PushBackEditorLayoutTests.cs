@@ -104,8 +104,8 @@ namespace RackCad.UI.Tests
                 var w = Shown();
                 try
                 {
-                    // Round 3 (PB-VAL-01): the INFORMATIVE card matrix is the central surface. The two check matrices
-                    // remain as secondary bulk tools inside a collapsed Expander in the same zone.
+                    // The INFORMATIVE card matrix is the central surface and, since the Owner's 2026-07-24 decision,
+                    // the ONLY matrix in the zone: the bulk check-matrices and the tope tools are gone.
                     var cardGrid = Named<Grid>(w, "PushBackMatrixGrid");
                     Assert.NotNull(cardGrid);
                     Assert.False(IsInsideLeftSettingsPanel(cardGrid), "the card matrix must not sit in the left panel");

@@ -21,7 +21,7 @@
 
          PB-VAL-01 (owner retest): the INTERNAL composition now follows the structural pattern of the dynamic editor.
          The whole "Celda seleccionada" editor and its "Aplicar a" scopes live in the SIDEBAR (where the dynamic editor
-         keeps them), so MatrixContent holds ONLY the toolbar, the cards and the secondary bulk tools; and the sidebar's
+         keeps them), so MatrixContent holds ONLY the toolbar and the cards; and the sidebar's
          dense WrapPanels are replaced by vertical sections of one/two-column grids with the same rhythm (SectionTitle +
          FieldLabel above each full-width control, 10px gutter) and width as the dynamic sidebar. Controls, x:Names,
          handlers, NumericField/CatalogCombo, selection and multi-selection are unchanged; the code-behind is NOT
@@ -258,9 +258,9 @@
             </StackPanel>
         </shell:RackEditorVisualShell.StatusContent>
 
-        <!-- ============================ MATRIX: toolbar + card matrix + secondary bulk tools ONLY ============================
+        <!-- ============================ MATRIX: toolbar + card matrix ONLY ============================
              PB-VAL-01: the cell editor moved to the sidebar, so this surface holds only the structural toolbar, the
-             informative frente × nivel cards and the collapsed bulk tools. -->
+             informative frente × nivel cards. The rear tope is configured only from Seguridad. -->
         <shell:RackEditorVisualShell.MatrixContent>
             <Border x:Name="MatrixZone" Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
                 <StackPanel Margin="10,8,10,10">

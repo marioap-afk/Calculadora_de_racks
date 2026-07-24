@@ -821,6 +821,19 @@ namespace RackCad.UI
 
         // ---- Safety --------------------------------------------------------------------------------------------
 
+        /// <summary>
+        /// Test seam for the SAFETY dialog: given the current selections, returns what the user chose, or NULL when the
+        /// dialog was cancelled. Default = show the real <see cref="SelectiveSafetyWindow"/>. Overriding it lets a test
+        /// drive the REAL <c>Safety_Click</c> path (button click, authority, recompute, BOM) without a modal window.
+        /// </summary>
+        internal Func<IReadOnlyList<SelectiveSafetySelection>, IReadOnlyList<SelectiveSafetySelection>> SafetyDialog;
+
+        /// <summary>
+        /// Test seam for the REAR-TOPE dialog: given the projected config, returns the dialog's result, or NULL when it
+        /// was cancelled. Default = show the real shared <see cref="SafetyTopeGridWindow"/>.
+        /// </summary>
+        internal Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
+
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
             // Push Back admits every applicable family EXCEPT entrance guides: the dialog is opened with includeGuia:false, so
@@ -831,6 +844,37 @@ namespace RackCad.UI
             if (levels.Count == 0) levels.Add(Math.Max(1, DynamicRackDefaults.DefaultLoadLevels));
             var postCount = Math.Max(2, state.Structure.Count + 1);
 
+            // CANCELLING the safety dialog abandons the WHOLE Seguridad step: neither the safety list nor the rear-tope
+            // config is touched and nothing is recomputed. (Cancelling only the tope dialog keeps the accepted safety
+            // and leaves the tope config untouched — see EditRearTope.)
+            var chosen = SafetyDialog != null
+                ? SafetyDialog(safetySelections)
+                : ShowSafetyDialog(elements, levels, postCount);
+            if (chosen == null)
+            {
+                return;
+            }
+
+            // Take what the user actually chose — dialog.Result — and pass it through the Push Back AUTHORITY, which
+            // deep-copies every selection, restricts it to the low end and refuses GUIA, PARRILLA and TOPE. Reading the
+            // dialog's OWN result (instead of re-filtering the list handed to it) is what makes botas, protectores,
+            // desviadores and defensa actually reach the design and the BOM; Authorize is what keeps the excluded
+            // families out and the stored selections INDEPENDENT of the dialog's objects.
+            var authorized = new PushBackSafetyAuthority(catalog).Authorize(chosen);
+            safetySelections.Clear();
+            foreach (var selection in authorized)
+            {
+                safetySelections.Add(selection);
+            }
+
+            EditRearTope();
+            RequestRecompute();
+        }
+
+        /// <summary>Shows the real shared safety dialog; NULL when the user cancelled.</summary>
+        private IReadOnlyList<SelectiveSafetySelection> ShowSafetyDialog(
+            IReadOnlyList<SafetyElementCatalogEntry> elements, IReadOnlyList<int> levels, int postCount)
+        {
             var dialog = new SelectiveSafetyWindow(
                 elements, safetySelections, postCount,
                 levelsPerFrente: levels, fondoCount: 1, parrillaPlan: null, catalog: catalog, resolvedSystem: null,
@@ -840,27 +884,7 @@ namespace RackCad.UI
             {
                 Owner = this
             };
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            // Separate the dialog's result from the rear stop EXPLICITLY: the Push Back authority owns what may travel
-            // as safety, and it refuses a TOPE (it belongs to the rear-tope config). Filtering here means the two
-            // authorities can never both claim the same physical piece, whatever the shared dialog produced.
-            var authority = new PushBackSafetyAuthority(catalog);
-            var admissible = safetySelections.Where(selection => !authority.IsUnsupported(selection)).ToList();
-            if (admissible.Count != safetySelections.Count)
-            {
-                safetySelections.Clear();
-                foreach (var selection in admissible)
-                {
-                    safetySelections.Add(selection);
-                }
-            }
-
-            EditRearTope();
-            RequestRecompute();
+            return dialog.ShowDialog() == true ? dialog.Result : null;
         }
 
         /// <summary>
@@ -874,6 +898,20 @@ namespace RackCad.UI
             var levels = PushBackRearTopeDialogAdapter.LevelsPerFrente(
                 state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)));
 
+            // Cancelling ONLY this dialog keeps the safety just accepted and leaves the tope config exactly as it was.
+            var result = RearTopeDialog != null ? RearTopeDialog(config) : ShowRearTopeDialog(config, levels);
+            if (result == null)
+            {
+                return;
+            }
+
+            PushBackRearTopeDialogAdapter.Apply(result, config);
+            state.LoadRearTopeConfig(config);
+        }
+
+        /// <summary>Shows the real shared tope-grid dialog; NULL when the user cancelled.</summary>
+        private SafetyTopeGridWindow.TopeResult ShowRearTopeDialog(PushBackRearTopeConfig config, IReadOnlyList<int> levels)
+        {
             var dialog = new SafetyTopeGridWindow(
                 PushBackRearTopeDialogAdapter.Label,
                 levels,
@@ -887,12 +925,7 @@ namespace RackCad.UI
             {
                 Owner = this
             };
-
-            if (dialog.ShowDialog() == true)
-            {
-                PushBackRearTopeDialogAdapter.Apply(dialog.Result, config);
-                state.LoadRearTopeConfig(config);
-            }
+            return dialog.ShowDialog() == true ? dialog.Result : null;
         }
 
         // ---- View selector -------------------------------------------------------------------------------------
