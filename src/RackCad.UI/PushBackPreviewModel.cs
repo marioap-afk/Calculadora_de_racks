@@ -100,8 +100,9 @@ namespace RackCad.UI
                 return new PushBackPreviewModel(primitives);
             }
 
-            var instances = plan.Headers.SelectMany(group => group.Instances).Concat(plan.LooseInstances);
-            foreach (var instance in instances)
+            // Flatten expands every header group at EVERY placement, in world coordinates — group.Instances alone are
+            // LOCAL to the group definition and would stack all headers at the origin. Same call the dynamic preview uses.
+            foreach (var instance in plan.Flatten().Instances)
             {
                 if (instance == null
                     || instance.Role == HeaderBlockRole.Annotation
