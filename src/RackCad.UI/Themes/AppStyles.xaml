@@ -44,7 +44,11 @@
     <sys:Double x:Key="ShellInitialWidth">1280</sys:Double>
     <sys:Double x:Key="ShellInitialHeight">720</sys:Double>
     <sys:Double x:Key="ShellMinWidth">1120</sys:Double>
-    <sys:Double x:Key="ShellMinHeight">640</sys:Double>
+    <!-- 672 (no 640): a MinHeight de 640 la ventana MOSTRADA da un cliente de ~601 (menos el marco
+         no-cliente ~39), donde la matriz de altura fija + el mínimo del preview dejan solo ~4 px de
+         holgura sobre el status band; 672 da ~633 de cliente y holgura amplia, así el mínimo contractual
+         acomoda todo SIN necesitar el ClipToBounds (que queda como defensa). -->
+    <sys:Double x:Key="ShellMinHeight">672</sys:Double>
     <sys:Double x:Key="ShellActionBarSpacing">6</sys:Double>
 
     <!-- Typography -->

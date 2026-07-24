@@ -239,6 +239,97 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- the REAL window SHOWN at its minimum fits every zone in the client without overlap or preview clip ----
+
+        [Fact]
+        public void DynamicWindow_ShownAtMinimum_FitsEveryZoneInClient_NoOverlapNoClip()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
+                window.WindowStartupLocation = WindowStartupLocation.Manual;
+                window.Left = -10000; window.Top = -10000; window.ShowInTaskbar = false;
+                window.Width = window.MinWidth;   // show at the contractual minimum (outer), from the shared tokens
+                window.Height = window.MinHeight;
+                try
+                {
+                    window.Show();
+                    window.UpdateLayout();
+                    var shell = window.Shell;
+                    var clientW = shell.ActualWidth;   // the shell fills the window client area
+                    var clientH = shell.ActualHeight;
+                    Assert.True(clientW > 0 && clientH > 0, "the shown window must have a real client area");
+                    Assert.True(window.PreviewCanvas.ActualWidth > 0 && window.PreviewCanvas.ActualHeight > 0
+                        && window.PreviewCanvas.Children.Count > 0, "the preview must draw at the shown minimum");
+
+                    Rect BoundsIn(FrameworkElement fe)
+                    {
+                        var tl = fe.TransformToAncestor(shell).Transform(new Point(0, 0));
+                        return new Rect(tl, new Size(fe.ActualWidth, fe.ActualHeight));
+                    }
+                    var preview = BoundsIn(window.PreviewCanvas);
+                    var status = BoundsIn(shell.StatusHost);
+                    var bar = BoundsIn(shell.ActionBar);
+                    var sidebar = BoundsIn(shell.SidebarScroll);
+                    var matrix = BoundsIn(shell.MatrixHost);
+
+                    // (a) every zone is INSIDE the client (nothing cut off by the window edge).
+                    foreach (var (name, r) in new[] { ("preview", preview), ("status", status), ("action bar", bar),
+                        ("sidebar", sidebar), ("matrix", matrix) })
+                    {
+                        Assert.True(r.Left >= -0.5 && r.Top >= -0.5 && r.Right <= clientW + 0.5 && r.Bottom <= clientH + 0.5,
+                            $"{name} {r} falls outside the client {clientW:0}x{clientH:0}");
+                    }
+
+                    // (b) the preview does NOT overlap the status band and is NOT clipped by it — in LAYOUT coordinates,
+                    //     which ignore ClipToBounds, so the minimum genuinely fits WITHOUT relying on the clip defense.
+                    Assert.True(preview.Bottom <= status.Top + 0.5,
+                        $"preview (bottom {preview.Bottom:0}) overlaps the status band (top {status.Top:0}) at the shown minimum");
+                    // status sits above the action bar, both stacked in the client.
+                    Assert.True(status.Bottom <= bar.Top + 0.5, $"status (bottom {status.Bottom:0}) overlaps the action bar (top {bar.Top:0})");
+                }
+                finally
+                {
+                    window.Close();
+                }
+            });
+        }
+
+        // ---- the contractual minimum keeps headroom over the content minimum for the non-client frame (frame-independent) ----
+
+        [Fact]
+        public void ContractualMinimum_KeepsHeadroomOverContentMinimum_ForTheNonClientFrame()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var tokens = AppStyles();
+                var minW = (double)tokens["ShellMinWidth"];
+                var minH = (double)tokens["ShellMinHeight"];
+
+                var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
+                var shell = window.Shell;
+                var generic = new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/Generic.xaml", UriKind.Relative) };
+                shell.Style = (Style)generic[typeof(RackEditorVisualShell)];
+
+                // A SHOWN window loses the non-client frame (title bar + borders; ~39 DIPs on this OS). Simulate the
+                // TIGHTEST realistic client (minH minus a generous, fixed frame allowance so the test is machine- and
+                // DPI-independent) and lay the shell out there: the preview must still NOT overflow the status band. This
+                // holds in layout coordinates (ignores ClipToBounds), so at the contractual minimum the layout fits on its
+                // own and the clip stays a pure defense. Regresses hard if MinHeight is lowered back toward the content min
+                // (at the old 640, this client would be ~594 and the preview would bleed over the status).
+                const double frameAllowance = 46.0;
+                var clientH = minH - frameAllowance;
+                shell.Measure(new Size(minW, clientH));
+                shell.Arrange(new Rect(0, 0, minW, clientH));
+                shell.UpdateLayout();
+
+                var previewBottom = window.PreviewCanvas.TransformToAncestor(shell).Transform(new Point(0, window.PreviewCanvas.ActualHeight)).Y;
+                var statusTop = shell.StatusHost.TransformToAncestor(shell).Transform(new Point(0, 0)).Y;
+                Assert.True(previewBottom <= statusTop + 0.5,
+                    $"at the tightest client ({clientH:0}, minH {minH:0} - frame {frameAllowance:0}) the preview (bottom {previewBottom:0}) overflows the status band (top {statusTop:0})");
+            });
+        }
+
         // ---- 7. the REAL window consumes the shared size contract and nothing clips at the minimum ----
 
         [Fact]
