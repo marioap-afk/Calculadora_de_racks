@@ -293,6 +293,29 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void SafetyDialogElements_ExcludeGuiaAndParrilla_PbVal06()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var w = new RackPushBackSystemWindow();
+                try
+                {
+                    // PB-VAL-06 through the UI: the safety config dialog is fed SafetyElementsForDialog(), which hides GUIA
+                    // AND PARRILLA — so neither is ever offered (the authority would strip them anyway). Vacuously true if the
+                    // host ships no catalog; meaningful with the real catalog (it carries a PARRILLA_GENERICA and a GUIA).
+                    var offered = w.SafetyElementsForDialog();
+                    Assert.All(offered, e => Assert.False(
+                        RackCad.Domain.Systems.SelectiveSafetyDefaults.IsType(e.Type, RackCad.Domain.Systems.SelectiveSafetyDefaults.GuiaType),
+                        $"GUIA must not be offered: {e.Id}"));
+                    Assert.All(offered, e => Assert.False(
+                        RackCad.Domain.Systems.SelectiveSafetyDefaults.IsType(e.Type, RackCad.Domain.Systems.SelectiveSafetyDefaults.ParrillaType),
+                        $"PARRILLA must not be offered (PB-VAL-06): {e.Id}"));
+                }
+                finally { w.Close(); }
+            });
+        }
+
+        [Fact]
         public void ExistingEditorWindows_StillConstructAlongsideTheRedesign()
         {
             StaTestRunner.Run(() =>

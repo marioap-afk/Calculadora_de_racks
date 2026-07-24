@@ -130,11 +130,15 @@ namespace RackCad.UI
         internal bool CurrentInputsAreValid => currentInputsAreValid;
         internal IReadOnlyList<SelectiveSafetySelection> SafetySelections => safetySelections;
 
-        /// <summary>The safety families offered by the dialog: every applicable family EXCEPT entrance guides (GUIA), which
-        /// Push Back never admits — so GUIA is not even a visible option.</summary>
+        /// <summary>The safety families offered by the dialog: every applicable family EXCEPT entrance guides (GUIA) and walk
+        /// grids (PARRILLA), which Push Back never admits (PB-VAL-06) — so neither is even a visible option. The exclusion is
+        /// authoritative in <see cref="PushBackSafetyAuthority"/>; hiding them here keeps the UI from offering what the build
+        /// would strip anyway.</summary>
         internal IReadOnlyList<SafetyElementCatalogEntry> SafetyElementsForDialog()
             => (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
-                .Where(element => element != null && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType))
+                .Where(element => element != null
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType)
+                    && !SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.ParrillaType))
                 .ToList();
 
         /// <summary>The library project a "Guardar en biblioteca" would write (the active Push Back payload + the opened

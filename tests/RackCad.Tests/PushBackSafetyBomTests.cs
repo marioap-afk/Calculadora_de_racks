@@ -101,5 +101,62 @@ namespace RackCad.Tests
             Assert.True(NoGuia(new PushBackSystemPlantaBuilder().Build(system, catalog)));
             Assert.DoesNotContain(PushBackBomBuilder.Build(system, catalog).Lines, l => (l.ProfileId ?? string.Empty).Contains("GUIA"));
         }
+
+        // ---- PB-VAL-06: Push Back admits no walk grid (PARRILLA) --------------------------------------------
+
+        [Fact]
+        public void Safety_Parrilla_NeverAppears_InAnyViewOrBom_PbVal06()
+        {
+            // A PARRILLA persisted by an OLDER document is read back WITHOUT error (it is a valid selection) but the single
+            // safety authority strips it at build — exactly as GUIA — so it reaches NO view and NO BOM line, and no
+            // destructive migration is needed.
+            var catalog = Catalog;
+            var design = new PushBackDesign { Structure = BaseStructure() };
+            design.Structure.SafetySelections.Add(new SelectiveSafetySelection
+            {
+                ElementId = "PARRILLA_GENERICA", Quantity = 1, Side = SafetySide.Both,
+                ParrillaFrontal = true, ParrillaLateral = true
+            });
+
+            var system = new PushBackResolver(catalog).Resolve(design);   // reads the legacy parrilla without throwing
+
+            // The resolved system carries no parrilla at all.
+            Assert.DoesNotContain(system.SafetySelections, s => (s.ElementId ?? string.Empty).Contains("PARRILLA"));
+
+            var frontal = new PushBackSystemFrontalBuilder();
+            bool NoParrilla(IEnumerable<HeaderBlockInstance> instances) => !instances.Any(i => (i.PieceId ?? string.Empty).Contains("PARRILLA"));
+            Assert.True(NoParrilla(new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances));
+            Assert.True(NoParrilla(frontal.BuildPlan(system, catalog, PushBackFrontalEnd.EntradaSalida).Flatten().Instances));
+            Assert.True(NoParrilla(frontal.BuildPlan(system, catalog, PushBackFrontalEnd.Posterior).Flatten().Instances));
+            Assert.True(NoParrilla(new PushBackSystemPlantaBuilder().Build(system, catalog)));
+            Assert.DoesNotContain(PushBackBomBuilder.Build(system, catalog).Lines, l => (l.ProfileId ?? string.Empty).Contains("PARRILLA"));
+        }
+
+        [Fact]
+        public void SafetyAuthority_RefusesGuiaAndParrilla_KeepsOtherFamilies_WithoutMutatingSource_PbVal06()
+        {
+            var catalog = Catalog;
+            var authority = new PushBackSafetyAuthority(catalog);
+            var source = new List<SelectiveSafetySelection>
+            {
+                new SelectiveSafetySelection { ElementId = Bota, Quantity = 1, Side = SafetySide.Both },
+                new SelectiveSafetySelection { ElementId = "GUIA_ENTRADA", Quantity = 1, Side = SafetySide.Both },
+                new SelectiveSafetySelection { ElementId = "PARRILLA_GENERICA", Quantity = 1, Side = SafetySide.Both },
+            };
+
+            var authorized = authority.Authorize(source);
+
+            Assert.Contains(authorized, s => s.ElementId == Bota);                                   // an applicable family survives
+            Assert.DoesNotContain(authorized, s => (s.ElementId ?? string.Empty).Contains("GUIA"));      // GUIA refused
+            Assert.DoesNotContain(authorized, s => (s.ElementId ?? string.Empty).Contains("PARRILLA"));  // PARRILLA refused (PB-VAL-06)
+
+            // The canonical predicate classifies both refused families and admits the rest.
+            Assert.True(authority.IsRearGrid(source[2]));
+            Assert.True(authority.IsUnsupported(source[1]));
+            Assert.True(authority.IsUnsupported(source[2]));
+            Assert.False(authority.IsUnsupported(source[0]));
+
+            Assert.Equal(3, source.Count);   // input never mutated
+        }
     }
 }
