@@ -239,7 +239,104 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- 7. the REAL window consumes the shared size contract and nothing clips at the minimum ----
+
+        [Fact]
+        public void DynamicWindow_ConsumesTheSharedSizeContract_FromTokens()
+        {
+            var (minW, minH, initW, initH, wMinW, wMinH, wW, wH, hasStyle) = StaTestRunner.Run(() =>
+            {
+                var tokens = AppStyles();
+                var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
+                return ((double)tokens["ShellMinWidth"], (double)tokens["ShellMinHeight"],
+                        (double)tokens["ShellInitialWidth"], (double)tokens["ShellInitialHeight"],
+                        window.MinWidth, window.MinHeight, window.Width, window.Height,
+                        window.Style != null);
+            });
+
+            Assert.True(hasStyle);        // the window is styled by the shared EditorShellWindowStyle, not hardcoded
+            Assert.Equal(minW, wMinW);    // minimum comes from ShellMinWidth token (no more MinWidth="1080"/"0" bypass)
+            Assert.Equal(minH, wMinH);    // ShellMinHeight token
+            Assert.Equal(initW, wW);      // initial size from ShellInitialWidth token (no more Width="1300")
+            Assert.Equal(initH, wH);      // ShellInitialHeight token
+        }
+
+        [Fact]
+        public void DynamicWindow_AtContractualMinimumSize_NothingIsClipped()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // The contractual minimum + sidebar width are the shared tokens, read from AppStyles (not hardcoded).
+                var tokens = AppStyles();
+                var minW = (double)tokens["ShellMinWidth"];
+                var minH = (double)tokens["ShellMinHeight"];
+                var sidebarWidth = (double)tokens["ShellSidebarWidth"];
+
+                var window = new RackDynamicSystemWindow(canInsertInAutoCad: true);
+                var shell = window.Shell;
+                var generic = new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/Generic.xaml", UriKind.Relative) };
+                shell.Style = (Style)generic[typeof(RackEditorVisualShell)];
+                shell.Measure(new Size(minW, minH));
+                shell.Arrange(new Rect(0, 0, minW, minH));
+                shell.UpdateLayout();
+
+                // Sidebar: vertical scroll ENGAGES at the minimum height (content taller than the viewport → reachable by
+                // scroll, not clipped). Its viewport is bounded to the shell's sidebar token width (minus the scrollbar),
+                // so the panel neither collapses nor eats the work area, and horizontal scrolling stays disabled (content
+                // wraps within that width). NOTE: ExtentWidth<=ViewportWidth is NOT asserted — under Disabled the extent is
+                // clamped to the viewport, so that comparison is a tautology that could hide a fixed-width overflow.
+                var scroll = shell.SidebarScroll;
+                Assert.NotNull(scroll);
+                Assert.Equal(ScrollBarVisibility.Auto, scroll.VerticalScrollBarVisibility);
+                Assert.Equal(ScrollBarVisibility.Disabled, scroll.HorizontalScrollBarVisibility);
+                Assert.True(scroll.ScrollableHeight > 0.0, "the sidebar must scroll at the minimum height, not clip its content");
+                Assert.InRange(scroll.ViewportWidth, sidebarWidth - 30.0, sidebarWidth + 0.5); // sized to the sidebar token, not collapsed/overflowing
+
+                // Matrix, preview and status are each laid out with real area inside the shell.
+                Assert.True(shell.MatrixHost.ActualWidth > 0.0 && shell.MatrixHost.ActualHeight > 0.0, "matrix clipped");
+                Assert.True(shell.PreviewHost.ActualWidth > 0.0 && shell.PreviewHost.ActualHeight > 0.0, "preview clipped");
+                Assert.True(shell.StatusHost.ActualWidth > 0.0 && shell.StatusHost.ActualHeight > 0.0, "status clipped");
+                Assert.True(window.PreviewCanvas.ActualWidth > 0.0 && window.PreviewCanvas.Children.Count > 0, "preview must draw at the minimum size");
+
+                // The preview must not overlap the status band at the contractual minimum, AND the work area is clip-bounded
+                // so that a SHOWN window's client area (outer minus the non-client frame, i.e. tighter than the token) can
+                // never paint the preview over the status either — it is contained to its own zone.
+                var previewBottom = window.PreviewCanvas.TransformToAncestor(shell).Transform(new Point(0, window.PreviewCanvas.ActualHeight)).Y;
+                var statusTop = shell.StatusHost.TransformToAncestor(shell).Transform(new Point(0, 0)).Y;
+                Assert.True(previewBottom <= statusTop + 0.5, $"preview (bottom {previewBottom:0}) overlaps the status band (top {statusTop:0})");
+                Assert.True(shell.WorkArea.ClipToBounds, "the work area must clip so the preview stays inside its zone at tight client heights");
+
+                // The FULL action bar: every action is laid out (the WrapPanel wraps at the minimum, never clips) and every
+                // button stays within the bar's width (a category StackPanel whose leaves overflow the bar would fail here).
+                var bar = shell.ActionBar;
+                Assert.NotNull(bar);
+                var buttons = VisualDescendants(bar).OfType<Button>().ToList();
+                Assert.True(buttons.Count >= 11, $"the whole action bar must be present; got {buttons.Count} buttons");
+                Assert.All(buttons, b => Assert.True(b.ActualWidth > 0.0 && b.ActualHeight > 0.0, $"action '{b.Content}' is clipped"));
+                Assert.True(bar.ActualWidth <= shell.ActualWidth + 0.5, "the action bar overflows the shell width");
+                foreach (var b in buttons)
+                {
+                    var topLeft = b.TransformToAncestor(bar).Transform(new Point(0, 0));
+                    Assert.True(topLeft.X + b.ActualWidth <= bar.ActualWidth + 0.5, $"action '{b.Content}' extends past the bar");
+                }
+            });
+        }
+
         // ---- helpers ----
+
+        private static ResourceDictionary AppStyles()
+            => new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) };
+
+        private static IEnumerable<DependencyObject> VisualDescendants(DependencyObject root)
+        {
+            var count = VisualTreeHelper.GetChildrenCount(root);
+            for (var i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(root, i);
+                yield return child;
+                foreach (var nested in VisualDescendants(child)) yield return nested;
+            }
+        }
 
         private static void SetFrontCount(RackDynamicSystemWindow window, int count)
         {

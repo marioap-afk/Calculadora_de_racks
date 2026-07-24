@@ -47,6 +47,9 @@
     <sys:Double x:Key="ShellMinHeight">640</sys:Double>
     <sys:Double x:Key="ShellActionBarSpacing">6</sys:Double>
 
+    <!-- Typography -->
+    <FontFamily x:Key="ShellFontFamily">Segoe UI</FontFamily>
+
     <!-- Spacing (thicknesses) -->
     <Thickness x:Key="ShellZoneSpacing">10</Thickness>
     <Thickness x:Key="ShellPanelPadding">14</Thickness>
@@ -135,5 +138,20 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- I-30 (ADR-0019): shared size/background/typography contract for editor windows composed over
+         the shell. A migrated window applies this style so its initial size, minimum size, background
+         and typography come from the SAME shell tokens — no per-window hardcoded sizes and no
+         MinWidth/MinHeight bypass. The shell control no longer imposes a content minimum, so at the
+         minimum window size the sidebar scrolls and the action bar wraps instead of clipping. -->
+    <Style x:Key="EditorShellWindowStyle" TargetType="Window">
+        <Setter Property="Width" Value="{DynamicResource ShellInitialWidth}" />
+        <Setter Property="Height" Value="{DynamicResource ShellInitialHeight}" />
+        <Setter Property="MinWidth" Value="{DynamicResource ShellMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource ShellMinHeight}" />
+        <Setter Property="Background" Value="{DynamicResource ShellWindowBackgroundBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource ShellFontFamily}" />
+        <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />
     </Style>
 </ResourceDictionary>

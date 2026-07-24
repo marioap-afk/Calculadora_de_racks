@@ -81,5 +81,6 @@ namespace RackCad.UI.Shell
         internal ContentPresenter StatusHost => GetTemplateChild("PART_StatusHost") as ContentPresenter;
         internal ScrollViewer SidebarScroll => GetTemplateChild("PART_SidebarScroll") as ScrollViewer;
         internal EditorActionBar ActionBar => GetTemplateChild("PART_ActionBar") as EditorActionBar;
+        internal Grid WorkArea => GetTemplateChild("PART_WorkArea") as Grid;
     }
 }

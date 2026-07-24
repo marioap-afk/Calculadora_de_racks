@@ -3,13 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="clr-namespace:RackCad.UI.Shell"
         Title="Sistema dinámico (Pallet Flow) - editor modular"
-        Height="700"
-        Width="1300"
-        MinHeight="540"
-        MinWidth="1080"
+        Style="{DynamicResource EditorShellWindowStyle}"
         WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource ShellWindowBackgroundBrush}"
-        FontFamily="Segoe UI"
         FocusManager.FocusedElement="{Binding ElementName=NameBox}">
     <Window.Resources>
         <ResourceDictionary>
@@ -22,8 +17,9 @@
     <!-- I-30: the dynamic editor is now COMPOSED over RackEditorVisualShell. Every control keeps its x:Name, handler,
          parsing, LostFocus, selection, recompute, preview, views, insert/update, BOM, GUID and persistence unchanged;
          only the OUTER layout moved into the shell's slots (sidebar / matrix / preview / status / neutral action
-         categories). MinWidth/MinHeight=0 so the shell does not impose its own token minimum over this window's. -->
-    <shell:RackEditorVisualShell x:Name="Shell" MinWidth="0" MinHeight="0">
+         categories). Initial/minimum size, background and typography come from the shared EditorShellWindowStyle
+         (shell tokens); the shell imposes no content minimum, so no MinWidth/MinHeight override is needed here. -->
+    <shell:RackEditorVisualShell x:Name="Shell">
 
         <!-- SIDEBAR: inputs + module table + properties (the shell provides the scroll). -->
         <shell:RackEditorVisualShell.SidePanelContent>

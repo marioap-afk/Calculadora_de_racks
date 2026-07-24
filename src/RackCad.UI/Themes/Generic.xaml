@@ -15,9 +15,11 @@
     <Style TargetType="{x:Type shell:RackEditorVisualShell}">
         <Setter Property="Background" Value="{DynamicResource ShellWindowBackgroundBrush}" />
         <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
-        <Setter Property="MinWidth" Value="{DynamicResource ShellMinWidth}" />
-        <Setter Property="MinHeight" Value="{DynamicResource ShellMinHeight}" />
+        <Setter Property="FontFamily" Value="{DynamicResource ShellFontFamily}" />
+        <!-- The shell does NOT impose a control minimum: the CONSUMING WINDOW carries the contractual
+             minimum size (EditorShellWindowStyle → ShellMinWidth/ShellMinHeight tokens). A content
+             minimum here would exceed the window's client area at that minimum and clip; instead the
+             sidebar scroll and the action bar's wrap absorb tight sizes. -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type shell:RackEditorVisualShell}">
@@ -50,8 +52,13 @@
                                 </ScrollViewer>
                             </Grid>
 
-                            <!-- Work area (fill): matrix on top (optional, collapses) + preview below (fills, tokenized min). -->
-                            <Grid>
+                            <!-- Work area (fill): matrix on top (optional, collapses) + preview below (fills, tokenized min).
+                                 ClipToBounds keeps the preview inside its zone: at a window client height near the contractual
+                                 minimum (outer minus the non-client frame) the matrix's fixed height plus the preview's min
+                                 height can exceed the fill slot, and without clipping the dark preview would paint a few pixels
+                                 over the status band below it. Clipping contains it to its own zone (the preview simply loses a
+                                 few pixels at the very bottom) instead of occluding the status. -->
+                            <Grid x:Name="PART_WorkArea" ClipToBounds="True">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" MinHeight="{DynamicResource ShellPreviewMinHeight}" />
