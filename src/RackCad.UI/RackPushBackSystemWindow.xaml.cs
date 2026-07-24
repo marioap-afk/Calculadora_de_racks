@@ -114,6 +114,17 @@ namespace RackCad.UI
                 return PlanFor(view, section);
             }
         }
+        /// <summary>The SEMANTIC primitives the preview is currently drawing (role/piece/kind/coordinates) — the
+        /// round-3 seam: tests assert content, never pixels.</summary>
+        internal PushBackPreviewModel CurrentPreviewModel
+        {
+            get
+            {
+                var (view, section) = SelectedView();
+                return BuildPreviewModel(PlanFor(view, section), view);
+            }
+        }
+
         internal PushBackEditorComputation LastComputation => lastComputation;
         internal bool HasValidModel => hasValidModel;
         internal bool CurrentInputsAreValid => currentInputsAreValid;
@@ -1045,42 +1056,81 @@ namespace RackCad.UI
             var pieces = plan == null ? 0 : plan.Headers.SelectMany(g => g.Instances).Count() + plan.LooseInstances.Count;
             PreviewSummary.Text = string.Format(CultureInfo.InvariantCulture, "{0} · {1} pieza(s)", ViewLabel(view, section), pieces);
             PreviewHint.Text = currentInputsAreValid
-                ? "Vista previa esquemática de la vista seleccionada."
+                ? "Vista previa técnica de la vista seleccionada."
                 : "⚠ La vista previa corresponde al ÚLTIMO cálculo válido; corrige los campos marcados.";
-            DrawPlan(plan);
+            PreviewLegend.Text = ViewLabel(view, section)
+                + "  ·  estructura verde · largueros azul · cama gris · topes rojo · seguridad ámbar";
+            DrawModel(BuildPreviewModel(plan, view));
         }
+
+        /// <summary>The semantic preview of <paramref name="plan"/>: interpreted primitives only — the plan is the
+        /// geometry authority. The low lateral IN/OUT beam (no PERALTE of its own) falls back to the resolved system's
+        /// beam depth, like the dynamic editor's preview.</summary>
+        private PushBackPreviewModel BuildPreviewModel(DynamicSystemPlan plan, string view)
+            => PushBackPreviewModel.Build(
+                plan,
+                catalog,
+                view,
+                lastComputation?.System?.Structure?.InOutBeamDepth > 0.0
+                    ? lastComputation.System.Structure.InOutBeamDepth
+                    : DynamicRackDefaults.DefaultBeamDepth);
 
         private void PreviewCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => RenderPreview();
 
-        /// <summary>A stable, generic schematic of a resolved plan: one marker per instance at its scaled insertion point,
-        /// colour-coded by role. It renders the geometry Application already produced — no recomputation, no re-projection.</summary>
-        private void DrawPlan(DynamicSystemPlan plan)
+        /// <summary>Paint the semantic preview: real segments (position/orientation/length from the plan) per role,
+        /// boxes for reference pallets, and small markers only for pieces whose drawable size the plan does not carry.
+        /// Projection via the shared PreviewProjection; shapes via the shared PreviewCanvasPainter.</summary>
+        private void DrawModel(PushBackPreviewModel model)
         {
             PreviewCanvas.Children.Clear();
-            if (plan == null) return;
-            var instances = plan.Headers.SelectMany(group => group.Instances).Concat(plan.LooseInstances).ToList();
-            if (instances.Count == 0) return;
+            if (model == null || model.IsEmpty) return;
 
             var width = PreviewCanvas.ActualWidth;
             var height = PreviewCanvas.ActualHeight;
             if (width < 20.0 || height < 20.0) return;
 
-            var minX = instances.Min(i => i.Insertion.X);
-            var maxX = instances.Max(i => i.Insertion.X);
-            var minY = instances.Min(i => i.Insertion.Y);
-            var maxY = instances.Max(i => i.Insertion.Y);
-            const double margin = 12.0;
-            var scale = Math.Min((width - 2 * margin) / Math.Max(1e-6, maxX - minX), (height - 2 * margin) / Math.Max(1e-6, maxY - minY));
-            if (double.IsInfinity(scale) || double.IsNaN(scale) || scale <= 0.0) scale = 1.0;
+            var projection = PreviewProjection.Fit(
+                new Rect(model.MinX, model.MinY, Math.Max(1e-6, model.MaxX - model.MinX), Math.Max(1e-6, model.MaxY - model.MinY)),
+                new Size(width, height),
+                new Thickness(14.0));
+            if (!projection.IsDrawable) return;
 
-            foreach (var instance in instances)
+            var painter = new PreviewCanvasPainter(PreviewCanvas);
+            var dash = new DoubleCollection { 4.0, 3.0 };
+            foreach (var primitive in model.Primitives)
             {
-                var px = margin + (instance.Insertion.X - minX) * scale;
-                var py = height - margin - (instance.Insertion.Y - minY) * scale; // flip Y (world up -> screen down)
-                var marker = new Rectangle { Width = 6.0, Height = 6.0, Fill = RoleBrush(instance.Role) };
-                Canvas.SetLeft(marker, px - 3.0);
-                Canvas.SetTop(marker, py - 3.0);
-                PreviewCanvas.Children.Add(marker);
+                var brush = RoleBrush(primitive.Role);
+                switch (primitive.Kind)
+                {
+                    case PushBackPreviewKind.Line:
+                        painter.AddLine(
+                            projection.Project(primitive.X1, primitive.Y1),
+                            projection.Project(primitive.X2, primitive.Y2),
+                            brush,
+                            primitive.Thick ? 3.0 : 1.8);
+                        break;
+
+                    case PushBackPreviewKind.Box:
+                    {
+                        var topLeft = projection.Project(Math.Min(primitive.X1, primitive.X2), Math.Max(primitive.Y1, primitive.Y2));
+                        painter.AddRectangle(
+                            topLeft.X,
+                            topLeft.Y,
+                            Math.Abs(primitive.X2 - primitive.X1) * projection.Scale,
+                            Math.Abs(primitive.Y2 - primitive.Y1) * projection.Scale,
+                            brush,
+                            1.2,
+                            dash);
+                        break;
+                    }
+
+                    default:
+                    {
+                        var at = projection.Project(primitive.X1, primitive.Y1);
+                        painter.AddRectangle(at.X - 2.5, at.Y - 2.5, 5.0, 5.0, brush, 1.4, null, brush);
+                        break;
+                    }
+                }
             }
         }
 
@@ -1088,13 +1138,21 @@ namespace RackCad.UI
         {
             switch (role)
             {
-                case HeaderBlockRole.Beam: return Brushes.SteelBlue;
-                case HeaderBlockRole.Tope: return Brushes.OrangeRed;
-                case HeaderBlockRole.Safety: return Brushes.Goldenrod;
+                case HeaderBlockRole.Beam: return PreviewPalette.Beam;                 // largueros (bajo, posterior, interm.)
+                case HeaderBlockRole.Tope: return PreviewPalette.Warning;              // topes posteriores
+                case HeaderBlockRole.Safety: return PreviewPalette.Accent;             // seguridad
                 case HeaderBlockRole.Rail:
                 case HeaderBlockRole.Roller:
-                case HeaderBlockRole.Stop: return Brushes.MediumSeaGreen;
-                default: return Brushes.SlateGray;
+                case HeaderBlockRole.Brake:
+                case HeaderBlockRole.Stop: return PreviewPalette.Floor;                // cama / rieles
+                case HeaderBlockRole.Pallet: return PreviewPalette.Guide;              // tarimas de referencia
+                case HeaderBlockRole.Post:
+                case HeaderBlockRole.BasePlate:
+                case HeaderBlockRole.Horizontal:
+                case HeaderBlockRole.Diagonal:
+                case HeaderBlockRole.ClosingHorizontal:
+                case HeaderBlockRole.Separator: return PreviewPalette.Structure;       // postes / cabeceras
+                default: return PreviewPalette.Muted;
             }
         }
 
@@ -1158,17 +1216,20 @@ namespace RackCad.UI
             RequestDraw(view, section, updateOnly: false);
         }
 
-        /// <summary>Restore the editable inputs to the values the last VALID computation produced (nothing is drawn).</summary>
+        /// <summary>REAL restore (round-3 review): reload the state and EVERY control from the last VALID design —
+        /// not merely a recompute of the current, possibly edited, controls. Identity, source project and edit mode
+        /// stay untouched; nothing is drawn.</summary>
         private void Restore_Click(object sender, RoutedEventArgs e)
         {
-            if (lastComputation == null)
+            if (lastComputation?.Design == null)
             {
                 SetStatus("Todavía no hay un sistema válido que restaurar.", true);
                 return;
             }
 
-            Recompute();
-            SetStatus("Valores restaurados desde el último sistema válido.", false);
+            var inputs = state.LoadFromDesign(lastComputation.Design, assembler.Resolver);
+            LoadFromModel(inputs, NameBox.Text);
+            SetStatus("Valores restaurados al último sistema válido.", false);
         }
 
         private void Update_Click(object sender, RoutedEventArgs e) => RequestDraw(null, -1, updateOnly: true);
