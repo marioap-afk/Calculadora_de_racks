@@ -7,7 +7,7 @@ automation_state:
   state: integrated
   gate: none
   attempts: 0
-  next_action: i31-integrada-en-main-merge-no-ff-ad0ea1f-ci-verde-siguiente-paso-autorizado-reanudacion-de-i18-en-su-propio-chat-worktree-empezando-por-rebasar-feature-push-back-sobre-el-nuevo-origin-main-ad0ea1f-ese-rebase-no-se-ejecuta-en-i31-rama-y-worktree-de-i31-eliminados-en-limpieza
+  next_action: i31-integrada-en-main-merge-no-ff-ad0ea1f-ci-verde-siguiente-paso-autorizado-reanudacion-de-i18-en-su-propio-chat-worktree-empezando-por-rebasar-feature-push-back-sobre-el-origin-main-vigente-que-contiene-el-merge-i31-ad0ea1f-ese-rebase-no-se-ejecuta-en-i31-rama-y-worktree-de-i31-eliminados-en-limpieza
   last_evidence_commit: ad0ea1f36cee01c19759a3c7769fc720e54fb649
   integration: >-
     i31-integrada-en-main-por-git-merge-no-ff-ad0ea1f36cee01c19759a3c7769fc720e54fb649-desde-refactor-selective-visual-shell-dc9b974-sin-squash-sin-force-parents-40a2c8e-mas-dc9b974-exactamente-los-6-commits-de-i31-ci-del-merge-run-30111201050-success-ci-del-head-documental-de-registro-de-aprobacion-dc9b974-run-30110856533-success-ci-del-candidato-b638653-run-30108459424-success-el-sha-del-merge-vive-en-git-log-first-parent-main-y-en-handoff-seccion-5

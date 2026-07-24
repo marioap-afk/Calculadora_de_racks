@@ -628,7 +628,8 @@ por composición y slots, **solo XAML** (el `.cs` es byte-idéntico a `origin/ma
 dibujo/BOM/GUID/persistencia/handlers/comportamiento; Owner validó los **12 puntos** en AutoCAD 2025 sin
 observaciones—, se completa la migración **I-30 → I-31** y el **siguiente paso autorizado** es la
 **reanudación de I-18** (Push Back). La reanudación se ejecuta **en su propio chat/worktree** y
-**empieza por rebasar `feature/push-back` sobre el nuevo `origin/main`** (`ad0ea1f`, Merge I-31) para
+**empieza por rebasar `feature/push-back` sobre el `origin/main` vigente** (que contiene el merge I-31
+`ad0ea1f` y su cierre documental posterior) para
 migrar `RackPushBackSystemWindow` al shell (hoy imita a mano la estructura del shell —DockPanel, scroll
 lateral de 430, `WorkArea` y barra inferior— con tamaños `720×1280`/mín `640×1120` **pre-672** y **ya**
 adopta `NumericField`/`CatalogCombo`, así que su migración es un **reparent de layout** que no adopta
