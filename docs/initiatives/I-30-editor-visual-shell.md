@@ -343,15 +343,20 @@ ventanas.
 - **Contrato de tamaño común** (corrección de defectos): el `.xaml` de la ventana ya **no** fija
   tamaños ni fondo/tipografía a mano ni usa el bypass `MinWidth="0" MinHeight="0"` del shell. Aplica el
   **estilo compartido `EditorShellWindowStyle`** (`AppStyles.xaml`), cuyo tamaño inicial (1280×720),
-  mínimo (1120×640), fondo y tipografía provienen de los tokens `Shell*` (incluido el nuevo
+  mínimo (1120×**672**), fondo y tipografía provienen de los tokens `Shell*` (incluido el nuevo
   `ShellFontFamily`). `Generic.xaml` deja de imponer un mínimo de contenido en el shell (quita sus
-  setters `MinWidth`/`MinHeight`), de modo que en el tamaño mínimo el sidebar hace scroll y la barra de
-  acciones hace *wrap* sin recortar. Dos pruebas STA nuevas lo fijan (consumo del contrato + no-recorte
-  al mínimo).
-- Pruebas: **UI 214/214** (fundación + migración + tamaño mínimo contractual), **RackCad.Tests
-  1016/1016** (I-24, goldens dinámicos, persistencia, handlers e I-19 intactos). Builds Debug
-  UI/Plugin/solución **0 errores** (2 advertencias `MSB3277` preexistentes de las referencias de
-  AutoCAD). Ningún filtro con cero pruebas.
+  setters `MinWidth`/`MinHeight`). **`ShellMinHeight` se subió 640 → 672**: la ventana MOSTRADA al
+  mínimo pierde el marco no-cliente (~39 DIP), y a 640 el cliente (~601) dejaba solo ~4 px de holgura
+  sobre el status; 672 da ~633 de cliente y ~36 px de margen antes de desbordar, así el mínimo acomoda
+  sidebar, matriz, preview, status y action bar **sin solape ni recorte** y el `ClipToBounds` del
+  work-area queda como pura defensa (no necesario al mínimo). También la **paleta de estado** consume
+  los tokens `ShellStatus*Brush` (fuente única; sin hex duplicado) y `ShellResources.Require` falla
+  ruidosamente si un token falta o cambia de tipo.
+- Pruebas: **UI 218/218** (fundación + migración + tamaño/estado), incluida una prueba STA que
+  **muestra** la ventana real al mínimo y verifica que preview/status/action bar caben en el cliente sin
+  recorte, **RackCad.Tests 1016/1016** (I-24, goldens dinámicos, persistencia, handlers e I-19 intactos).
+  Builds Debug UI/Plugin/solución **0 errores** (2 advertencias `MSB3277` preexistentes de las
+  referencias de AutoCAD). Ningún filtro con cero pruebas.
 - Gates: `owner-decision` **resuelto** (ADR-0019 aceptado); `plugin_build` verde. Estado
   `state: validating`, `gate: autocad`. **Pendientes:** `autocad` (smoke visual del Owner) y
   `owner_validation` (DLL Debug del SHA exacto de esta corrida).
