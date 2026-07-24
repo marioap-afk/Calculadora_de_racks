@@ -45,10 +45,19 @@ namespace RackCad.UI.Tests
 
         private static Canvas Canvas(RackPushBackSystemWindow w) => (Canvas)w.FindName("PreviewCanvas");
 
+        /// <summary>
+        /// Selects a view and renders it on a canvas of a FIXED size. Pinning the canvas makes the projection — and
+        /// therefore every metric below — independent of how the host agent happens to lay the window out, so these
+        /// assertions mean the same thing on a developer machine and on a headless CI runner.
+        /// </summary>
         private static void SelectView(RackPushBackSystemWindow w, int index)
         {
+            var canvas = Canvas(w);
+            canvas.Width = 900.0;
+            canvas.Height = 520.0;
             ((ComboBox)w.FindName("ViewBox")).SelectedIndex = index;
             w.UpdateLayout();
+            canvas.UpdateLayout();
         }
 
         private sealed class Primitive
