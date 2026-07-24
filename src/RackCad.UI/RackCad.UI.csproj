@@ -14,4 +14,14 @@
       <_Parameter1>RackCad.UI.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+  <!-- I-30: RackEditorVisualShell is a lookless templated control; its default template lives in
+       Themes/Generic.xaml (resolved via this theme info). -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Windows.ThemeInfoAttribute">
+      <_Parameter1>System.Windows.ResourceDictionaryLocation.None</_Parameter1>
+      <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+      <_Parameter2>System.Windows.ResourceDictionaryLocation.SourceAssembly</_Parameter2>
+      <_Parameter2_IsLiteral>true</_Parameter2_IsLiteral>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

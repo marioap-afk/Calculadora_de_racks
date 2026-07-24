@@ -1,0 +1,94 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-30
+  branch: architecture/editor-visual-shell
+  claim_id: 2048f82c-2208-4961-9e2f-2f85f7b22743
+  current_phase: 6
+  state: integrated
+  gate: none
+  attempts: 0
+  next_action: i30-cerrada-e-integrada-en-main-el-siguiente-paso-autorizado-es-i31-refactor-selective-visual-shell-migrar-rackselectivewindow-al-shell-y-despues-la-reanudacion-de-i18-push-back-no-reclamar-i31-en-esta-corrida
+  last_evidence_commit: 01c71268479adc453e4a8f875eb2109bb7cc6ffd
+execution_context:
+  mode: manual-git-only
+  worktree: architecture-editor-visual-shell
+  pull_request: none
+evidence:
+  base_commit: 8a1bce57969db5c1001473fd30a99bf45d48335e
+  claim_commit: c6185d8d75b711abdd9e3a8d60f921d1c955f56a
+  resolved_gate: owner-decision
+  resolved_gate_autocad: >-
+    RESUELTO-el-owner-valido-en-autocad-2025-los-12-puntos-funcionales-y-visuales-del-editor-dinamico-migrado-al-shell-sobre-el-dll-debug-del-sha-d443ee226651c7a80840c8a97e0383163c48d60c-informational-version-1-0-0-mas-d443ee226651c7a80840c8a97e0383163c48d60c-los-12-puntos-aprobados
+  resolved_gate_owner_validation: RESUELTO-owner-validation-aprobada-comportamiento-y-apariencia-del-shell-y-del-dinamico-migrado-sin-observaciones-sobre-el-mismo-sha-d443ee2
+  validated_dll: >-
+    sha-validado-d443ee226651c7a80840c8a97e0383163c48d60c-assemblyinformationalversion-1-0-0-plus-d443ee226651c7a80840c8a97e0383163c48d60c-ruta-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-origin-main-no-avanzo-8a1bce5-sin-rebase-final-el-arbol-validado-coincide-con-lo-integrado-mas-el-commit-documental-de-cierre-solo-docs-no-cambia-el-binario
+  integration: >-
+    i30-integrada-en-main-por-git-merge-no-ff-desde-architecture-editor-visual-shell-sin-squash-sin-force-el-sha-del-merge-vive-en-git-log-first-parent-main-y-en-handoff-seccion-5-limpieza-rama-y-worktree-retirados-tras-confirmar-merge-y-ci-post-merge-verde
+  ci_main_at_claim: verde-sobre-8a1bce5-run-de-main-success
+  roadmap_authorization: docs-roadmap-md-fase-5-filas-i30-e-i31-mas-secuencia-obligatoria-i30-i31-reanudacion-de-i18-integradas-en-main-por-el-fix-documental-8a1bce5
+  audit_scope: solo-lectura-selectivo-dinamico-cama-controles-i14-appstyles-rackeditorsession-estados-puros-y-pruebas-ui-en-main-mas-rackpushbacksystemwindow-leido-con-git-show-desde-origin-feature-push-back-b2d9e9d-sin-checkout-merge-rebase-ni-commit
+  audit_finding_i14_adoption: >-
+    ninguna-de-las-tres-ventanas-ricas-adopta-controles-i14-numericfield-catalogcombo-y-rackdialogwindow-tienen-cero-consumidores-en-todo-src-rackcad-ui-los-previewcanvas-de-las-ventanas-son-un-canvas-x-name-previewcanvas-homonimo-no-el-control-selectionmatrix-solo-lo-adoptaron-los-tres-dialogos-de-seguridad-de-i22-push-back-en-su-rama-si-adopta-numericfield-21-catalogcombo-1-y-selectionmatrix-2
+  audit_finding_duplication: 43-brushes-privados-16-selectivo-17-dinamico-10-cama-frente-a-previewpalette-con-8-compartidos-y-appstyles-con-solo-6-claves-de-estilo-con-hex-incrustados-sin-tokens-de-tamano-tipografia-ni-espaciado-mas-tres-matrices-imperativas-tres-proyecciones-de-preview-tres-barras-de-acciones-y-tres-convenciones-de-estado
+  audit_finding_racksystemkind: 37-ocurrencias-en-src-rackcad-ui-pero-solo-1-dentro-de-un-editor-rico-rackdynamicsystemwindow-2631-guarda-de-carga-de-biblioteca-el-resto-en-editor-registro-de-modulos-y-rackmainmenuwindow-el-shell-debe-quedar-en-cero
+  audit_sizes: rackselectivewindow-307-xaml-mas-2205-cs-rackdynamicsystemwindow-403-mas-2848-rackflowbedwindow-138-mas-516-appstyles-91-pruebas-ui-165-fact-theory
+  audit_i18_rebase_forecast: >-
+    diff-stat-origin-main-tres-puntos-origin-feature-push-back-sobre-src-rackcad-ui-y-tests-rackcad-ui-tests-da-3786-inserciones-en-16-archivos-casi-todas-en-archivos-nuevos-los-unicos-compartidos-son-rackmainmenuwindow-xaml-9-lineas-cs-4-y-editormoduleregistrytests-3-conflicto-textual-minimo-conflicto-real-semantico-push-back-quedaria-como-unico-editor-fuera-del-shell-con-sus-tres-piezas-propias-solapadas
+  recommended_size: M-L-propuesta-de-esta-auditoria-no-vigente-en-roadmap-fundacion-mas-migracion-de-un-editor-de-2848-lineas-con-gate-autocad-y-owner-validation-si-la-migracion-del-dinamico-no-cabe-partir-dejando-la-fundacion-en-i30
+  adr: docs/adr/0019-shell-visual-de-editores-por-composicion.md
+  adr_state: aceptado-por-el-owner-2026-07-24-ver-owner-acceptance-y-decision-path
+  historico_scope_corrida_reclamo: HISTORICO-la-corrida-inicial-de-reclamo-fue-solo-documentacion-contrato-estado-adr-y-entrada-en-initiatives-readme-superada-por-la-fundacion-la-migracion-del-dinamico-y-el-contrato-de-tamano-posteriores
+  push_back_untouched: origin-feature-push-back-b2d9e9d74cb36f2193c12a039b97b9287d1b0f1a-local-igual-remoto-arbol-limpio-leida-solo-con-git-show
+  i31_not_claimed: sin-rama-worktree-contrato-ni-estado-de-i31-en-esta-corrida-refactor-selective-visual-shell-sigue-libre
+  revision_2026_07_24: >-
+    revision-documental-del-contrato-y-del-adr-tras-comentario-del-orquestador-1-eliminada-la-autorizacion-general-para-migrar-los-controles-numericos-y-combos-del-dinamico-a-numericfield-catalogcombo-2-la-migracion-visual-aloja-los-controles-existentes-tal-cual-en-los-slots-preservando-parsing-eventos-lostfocus-recomputacion-y-comportamiento-3-adoptar-numericfield-o-catalogcombo-queda-fuera-de-alcance-salvo-adaptacion-minima-inevitable-demostrada-y-escalada-antes-de-ejecutarse-4-previewcanvas-solo-se-adopta-si-una-prueba-fija-equivalencia-completa-de-proyeccion-y-contenido-5-slot-identitycontent-renombrado-a-sidebarheader-neutral-y-opcional-el-shell-no-obliga-a-mostrar-guid-6-action-bar-con-categorias-neutrales-leadingactions-secondaryactions-primaryactions-trailingactions-el-editor-decide-que-ofrece-7-particion-i30-fundacion-mas-dinamico-i31-selectivo-i18-despues-conservada
+  front_matter_fixed: automation-enabled-false-y-decision-paths-apunta-a-docs-adr-0019-shell-visual-de-editores-por-composicion-md
+  owner_acceptance_2026_07_24: >-
+    el-dueno-acepto-adr-0019-en-el-hilo-coordinador-decision-literal-acepto-adr-interpretada-en-contexto-como-aceptacion-de-adr-0019-registrada-en-docs-automation-decisions-i30-md-adr-0019-paso-de-propuesto-a-aceptado-indice-adr-actualizado-gate-owner-decision-RESUELTO-nota-historica-en-ese-momento-solo-estaba-desbloqueada-la-fundacion-la-migracion-del-dinamico-y-el-contrato-de-tamano-se-autorizaron-y-completaron-despues
+  decision_path: docs/automation/decisions/I-30.md
+  foundation_2026_07_24: >-
+    fundacion-comun-implementada-y-verde-commits-744a4b6-aceptacion-adr-mas-estado-a73acf3-shell-status-action-bar-6ae986b-tokens-dfa359d-pruebas-1-rackeditorvisualshell-usercontrol-por-composicion-no-clase-base-de-window-nueve-slots-dependency-properties-sidebarheader-neutral-y-opcional-sidepanelcontent-scroll-vertical-matrixcontent-opcional-colapsa-y-el-preview-toma-el-area-previewcontent-statuscontent-siempre-fuera-del-scroll-mas-leading-secondary-primary-trailing-slots-opcionales-colapsan-sin-hueco-shellslotvisibilityconverter-2-editorstatus-severidades-info-success-warning-error-editorstatusmessage-modelo-puro-editorstatuspalette-editorstatuspresenter-colapsa-vacio-3-editoractionbar-cuatro-categorias-neutrales-por-posicion-wrappanel-nunca-recorta-editoraction-modelo-puro-editoractions-button-showondisabled-mas-motivo-4-tokens-en-appstyles-derivados-de-valores-vigentes-conservando-las-claves-previas-sin-migrar-brushes-privados-5-20-pruebas-nuevas-18-requeridas-mas-estilos-y-reenvio-gates-ui-tests-204-rackcad-tests-1016-build-ui-0-errores-0-advertencias-plugin-0-errores-solucion-0-errores-ningun-filtro-con-cero-pruebas
+  foundation_run_scope: >-
+    la-corrida-de-fundacion-fases-1-3-fue-solo-src-rackcad-ui-shell-mas-tokens-en-appstyles-y-pruebas-sin-migrar-ventanas-superada-por-dynamic-migrated-2026-07-24-y-size-contract-2026-07-24-que-ya-migraron-y-afinaron-el-dinamico-selectivo-cama-configuradores-y-push-back-siguen-intactos
+  size_contract_2026_07_24: >-
+    correccion-de-defectos-i30-el-dinamico-consume-el-contrato-comun-de-tamano-inicial-minimo-fondo-y-tipografia-via-tokens-estilo-compartido-nuevo-estilo-editorshellwindowstyle-en-appstyles-targettype-window-con-width-height-minwidth-minheight-background-fontfamily-fontsize-por-dynamicresource-a-los-tokens-shell-mas-token-shellfontfamily-la-ventana-aplica-style-dynamicresource-editorshellwindowstyle-y-se-eliminaron-los-tamanos-hardcoded-height-700-width-1300-minheight-540-minwidth-1080-y-el-bypass-minwidth-0-minheight-0-de-la-instancia-del-shell-generic-xaml-el-shell-ya-no-impone-minimo-de-contenido-quita-sus-setters-minwidth-minheight-y-usa-el-token-shellfontfamily-el-window-carga-el-minimo-contractual-1120-640-asi-no-hay-recorte-scroll-de-sidebar-mas-wrap-de-la-barra-de-acciones-absorben-el-minimo
+  size_contract_test_2026_07_24: >-
+    dos-pruebas-sta-nuevas-en-dynamicshellmigrationtests-1-la-ventana-real-consume-el-contrato-window-minwidth-minheight-width-height-igualan-los-tokens-shellminwidth-shellminheight-shellinitialwidth-shellinitialheight-2-en-el-tamano-minimo-contractual-leido-de-los-tokens-el-sidebar-scrollea-scrollableheight-mayor-que-cero-sin-scroll-horizontal-matriz-preview-y-status-con-area-real-el-canvas-de-preview-dibuja-y-la-barra-de-acciones-completa-11-botones-hace-wrap-sin-recorte-todos-dentro-de-los-limites-de-la-barra
+  size_contract_review_2026_07_24: >-
+    auto-revision-adversarial-3-lentes-alcance-de-regresion-limpio-corrigio-asserts-vacuos-del-test-1-extentwidth-menor-igual-viewportwidth-es-tautologico-con-scroll-horizontal-disabled-sustituido-por-viewportwidth-acotado-al-token-shellsidebarwidth-2-el-chequeo-vertical-por-boton-contra-bar-actualheight-es-vacuo-en-wrappanel-eliminado-se-conserva-el-de-limite-x-portante-hallazgo-de-fidelidad-un-cliente-mostrado-por-debajo-de-597-px-de-alto-solapaba-el-preview-sobre-el-status-por-marco-no-cliente-resuelto-con-cliptobounds-true-en-part-workarea-de-generic-xaml-que-contiene-el-preview-a-su-zona-mas-asserts-de-no-solape-y-de-cliptobounds-cambio-solo-en-el-shell-no-toca-controles-geometria-ni-comportamiento-de-la-ventana
+  min_layout_robust_2026_07_24: >-
+    defecto-1-la-ventana-mostrada-al-minimo-acomoda-sidebar-matriz-preview-status-y-action-bar-sin-solape-ni-recorte-medido-mostrando-la-ventana-real-al-minimo-el-cliente-es-el-externo-menos-el-marco-no-cliente-39-dip-a-shellminheight-640-el-cliente-quedaba-en-601-con-solo-4-px-de-holgura-sobre-el-status-razor-thin-se-subio-shellminheight-de-640-a-672-cliente-633-margen-36-px-antes-de-desbordar-robusto-ante-marcos-mayores-cliptobounds-permanece-como-defensa-pero-ya-no-es-necesario-en-el-minimo-contractual-sin-cambiar-controles-handlers-ni-reglas-del-sistema
+  status_palette_single_source_2026_07_24: >-
+    defecto-2-editorstatuspalette-ya-no-hardcodea-los-4-colores-lee-los-tokens-shellstatusinfobrush-success-warning-errorbrush-de-appstyles-fuente-visual-unica-normativa-shellresources-gana-require-t-que-falla-ruidosamente-ante-clave-ausente-o-mal-tipada-y-get-t-deja-de-envolver-en-try-catch-un-fallo-real-de-carga-del-diccionario-se-propaga-en-vez-de-devolver-un-default-silencioso
+  shown_min_test_2026_07_24: >-
+    defecto-3-prueba-sta-que-MUESTRA-una-rackdynamicsystemwindow-real-al-minimo-window-show-fuerza-layout-y-verifica-que-preview-status-y-action-bar-estan-dentro-del-cliente-y-que-el-preview-no-se-recorta-ni-solapa-el-status-en-coordenadas-de-layout-que-ignoran-cliptobounds-mas-una-prueba-de-holgura-determinista-cliente-igual-min-menos-marco-fijo-46-sin-solape-independiente-de-la-maquina-sin-screenshots-ni-asserts-tautologicos
+  state_cleanup_2026_07_24: >-
+    defecto-4-retirada-la-evidencia-normativa-obsoleta-adr-state-propuesto-paso-a-aceptado-eliminado-adr-still-proposed-y-solo-fundacion-solo-documentacion-scope-this-run-relabelado-a-historico-scope-corrida-reclamo-eliminado-no-capture-control-migration-authorized-redundante-con-capture-controls-not-migrated-y-reformulado-owner-acceptance-para-marcar-como-nota-historica-el-desbloqueo-inicial-solo-fundacion-la-historia-util-se-conserva-etiquetada-como-historica
+  verification_defectfix_2026_07_24: >-
+    ui-tests-218-superado-0-error-incluye-2-pruebas-de-status-tokens-y-2-de-tamano-minimo-mostrado-y-holgura-rackcad-tests-1016-superado-0-error-i24-goldens-persistencia-handlers-e-i19-intactos-builds-debug-ui-plugin-solucion-0-errores-ningun-filtro-con-cero-pruebas
+  dynamic_migrated_2026_07_24: >-
+    fase-4-completada-rackdynamicsystemwindow-ahora-se-compone-sobre-rackeditorvisualshell-commit-4fd0b89-supera-a-no-window-migrated-que-describia-solo-la-fundacion-la-ventana-aloja-su-contenido-existente-en-los-slots-sidepanelcontent-matrixcontent-previewcontent-statuscontent-y-en-las-categorias-neutrales-leading-restaurar-secondary-bom-y-proyecto-primary-actualizar-mas-4-inserciones-trailing-cerrar-los-63-x-name-handlers-parsing-lostfocus-seleccion-multiseleccion-recomputacion-preview-vistas-insercion-actualizacion-bom-guid-y-persistencia-se-conservan-exactamente
+  shell_templated_control_2026_07_24: >-
+    desviacion-de-implementacion-registrada-el-shell-dejo-de-ser-usercontrol-y-paso-a-control-lookless-con-plantilla-en-themes-generic-xaml-commit-d034440-motivo-inyectar-contenido-con-x-name-namebox-etc-en-los-dp-de-contenido-de-un-usercontrol-desde-el-xaml-consumidor-provoca-mc3093-ambito-de-nombres-en-conflicto-un-control-templated-registra-esos-nombres-en-el-ambito-del-editor-consumidor-alineado-con-la-preferencia-por-composicion-del-adr-0019-4-3-contrato-de-slots-y-comportamiento-sin-cambios-seams-de-template-part-part-para-pruebas
+  preview_canvas_not_adopted_2026_07_24: correcto-no-se-adopto-el-control-previewcanvas-de-i14-no-existe-prueba-de-equivalencia-completa-de-proyeccion-y-contenido-el-canvas-x-name-previewcanvas-del-dinamico-se-aloja-tal-cual-en-el-slot-previewcontent-9-9-3-1-respetados
+  capture_controls_not_migrated_2026_07_24: correcto-los-textbox-combobox-checkbox-del-dinamico-no-se-migraron-a-numericfield-ni-catalogcombo-fuera-de-alcance-por-contrato-4-y-4-1-sin-adaptacion-minima-inevitable-ninguna-fue-necesaria
+  gates_status_2026_07_24: >-
+    owner-decision-resuelto-adr-0019-aceptado-plugin-build-verde-src-rackcad-plugin-c-debug-0-errores-autocad-pendiente-validacion-visual-del-owner-owner-validation-pendiente-el-owner-valida-el-dll-debug-del-sha-exacto
+  verification_2026_07_24: >-
+    ui-tests-212-superado-0-error-204-fundacion-mas-8-migracion-rackcad-tests-1016-superado-0-error-incluye-i24-goldens-dinamicos-persistencia-handlers-e-i19-build-debug-ui-0-errores-plugin-0-errores-solucion-rackcad-sln-0-errores-2-advertencias-msb3277-preexistentes-de-referencias-autocad-ningun-filtro-devuelve-cero-pruebas
+  git_2026_07_24: >-
+    base-8a1bce5-sin-rebase-origin-main-no-avanzo-rev-list-left-right-origin-main-head-da-0-11-commits-d034440-shell-templated-4fd0b89-migracion-dinamico-mas-commit-docs-feature-push-back-intacta-b2d9e9d-local-igual-remoto
+  debug_dll_for_owner_2026_07_24: src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-construido-desde-el-head-de-esta-corrida-el-owner-abre-autocad-2025-carga-el-bundle-debug-y-valida-el-editor-dinamico-migrado
+gates:
+  owner_decision:
+    required: true
+    note: adr-0019-shell-visual-por-composicion-y-slots-debe-aceptarse-antes-de-implementar-produccion
+  autocad:
+    required: true
+    note: migracion-del-editor-dinamico-exige-validacion-visual-en-autocad-2025
+  owner_validation:
+    required: true
+    note: el-owner-valida-el-dll-debug-construido-desde-el-sha-exacto-posterior-al-rebase-final
+  plugin_build:
+    required: true
+    note: build-debug-del-plugin-verde-como-gate-de-cierre
