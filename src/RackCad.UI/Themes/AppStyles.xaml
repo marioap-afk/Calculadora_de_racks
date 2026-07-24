@@ -1,10 +1,58 @@
 <!-- Shared visual language for every RackCad window. Merge this dictionary instead of
      re-declaring styles per window, so the palette/typography changes in ONE place. -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!-- Shared window background so every RackCad window uses the same gray. -->
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F4F6F9" />
+
+    <!-- ============================================================================================
+         I-30 EDITOR VISUAL SHELL TOKENS (ADR-0019). Named tokens the shell consumes, derived from
+         values already on screen so this is NOT an arbitrary redesign:
+           * chrome grays/borders/text: the editor windows' own #EEF2F6 / #D8DEE6 / #1F2933 / #607080;
+           * preview dark background #0E1B2A: the selective/dynamic preview canvas;
+           * selection amber #FFD166 (primary) and blue #5B8DEF (included): the dynamic/push-back matrix;
+           * status colors: error #B00020 and success #2F855A from UiSupport, info #2B6CB0 from the
+             primary button; warning #B7791F is the only new value (chrome amber, kept distinct from
+             PreviewPalette's stroke amber #E08A2B).
+         The preview STROKE palette (structure/beam/floor/…) stays exclusively in PreviewPalette; these
+         tokens are chrome, not preview strokes. -->
+
+    <!-- Surfaces & chrome -->
+    <SolidColorBrush x:Key="ShellWindowBackgroundBrush" Color="#EEF2F6" />
+    <SolidColorBrush x:Key="ShellSurfaceBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="ShellBorderBrush" Color="#D8DEE6" />
+    <SolidColorBrush x:Key="ShellTextPrimaryBrush" Color="#1F2933" />
+    <SolidColorBrush x:Key="ShellTextSecondaryBrush" Color="#607080" />
+    <SolidColorBrush x:Key="ShellPreviewBackgroundBrush" Color="#0E1B2A" />
+
+    <!-- Matrix selection -->
+    <SolidColorBrush x:Key="ShellSelectionPrimaryBrush" Color="#FFD166" />
+    <SolidColorBrush x:Key="ShellSelectionIncludedBrush" Color="#5B8DEF" />
+
+    <!-- Status severities (mirror EditorStatusPalette) -->
+    <SolidColorBrush x:Key="ShellStatusInfoBrush" Color="#2B6CB0" />
+    <SolidColorBrush x:Key="ShellStatusSuccessBrush" Color="#2F855A" />
+    <SolidColorBrush x:Key="ShellStatusWarningBrush" Color="#B7791F" />
+    <SolidColorBrush x:Key="ShellStatusErrorBrush" Color="#B00020" />
+
+    <!-- Sizes (doubles) -->
+    <sys:Double x:Key="ShellSidebarWidth">430</sys:Double>
+    <sys:Double x:Key="ShellPreviewMinHeight">160</sys:Double>
+    <sys:Double x:Key="ShellFontSizeBase">12</sys:Double>
+    <sys:Double x:Key="ShellInitialWidth">1280</sys:Double>
+    <sys:Double x:Key="ShellInitialHeight">720</sys:Double>
+    <sys:Double x:Key="ShellMinWidth">1120</sys:Double>
+    <sys:Double x:Key="ShellMinHeight">640</sys:Double>
+    <sys:Double x:Key="ShellActionBarSpacing">6</sys:Double>
+
+    <!-- Spacing (thicknesses) -->
+    <Thickness x:Key="ShellZoneSpacing">10</Thickness>
+    <Thickness x:Key="ShellPanelPadding">14</Thickness>
+    <Thickness x:Key="ShellVerticalRhythm">0,12,0,4</Thickness>
+    <Thickness x:Key="ShellActionBarPadding">0,8,0,0</Thickness>
+    <!-- ============================================================================================ -->
 
     <!-- Field caption above an input. -->
     <Style x:Key="FieldLabel" TargetType="TextBlock">
