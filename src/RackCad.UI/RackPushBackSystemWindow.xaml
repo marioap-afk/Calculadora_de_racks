@@ -15,21 +15,22 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- I-18b (ADR-0019): the Push Back editor is now COMPOSED over RackEditorVisualShell, like the dynamic (I-30) and
-         selective (I-31) editors. Every control keeps its x:Name, handler, parsing, LostFocus, selection, recompute,
-         card matrix, technical preview, actions and behavior unchanged; only the OUTER layout moved into the shell's
-         slots (sidebar / matrix / preview / status / neutral action categories). Initial/minimum size, background and
-         typography come from the shared EditorShellWindowStyle (shell tokens). Push Back keeps its own control idiom
-         (GroupBoxes, NumericField/CatalogCombo, unstyled action buttons) verbatim, and the TECHNICAL preview keeps its
-         LIGHT background (#F7FAFC) — it is a role-lines schematic, NOT the dark preview of the other editors (PB-VAL-03).
-         The code-behind is NOT touched. -->
+    <!-- I-18b (ADR-0019): the Push Back editor is COMPOSED over RackEditorVisualShell and adopts the COMMON visual
+         contract, exactly like the dynamic (I-30) and selective (I-31) editors — surfaces, borders, padding, typography,
+         colors, action-button styles and the dark preview background all come from the shared Shell* tokens / AppStyles
+         styles (no GroupBox chrome, no hardcoded hex, no light preview that kept Push Back looking different). Only the
+         OUTER chrome changed: every control keeps its x:Name and handler; the card matrix, the technical preview
+         (PushBackPreviewModel + the shared PreviewPalette/PreviewCanvasPainter), the selection and the actions are
+         unchanged; the code-behind is NOT touched. Size/background/typography come from EditorShellWindowStyle. -->
     <shell:RackEditorVisualShell x:Name="Shell">
 
         <!-- ============================ SIDEBAR: settings + safety (the shell provides the scroll) ============================ -->
         <shell:RackEditorVisualShell.SidePanelContent>
-            <StackPanel>
+            <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
+                    BorderThickness="1" Padding="{DynamicResource ShellPanelPadding}">
+                <StackPanel>
 
-                <GroupBox Header="Rack">
+                    <TextBlock Text="Rack" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -39,90 +40,87 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre" VerticalAlignment="Center" Margin="0,0,8,4" />
-                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="NameBox" MinWidth="220" Margin="0,0,0,4" TextChanged="Name_Changed" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="GUID" VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre" VerticalAlignment="Center" Margin="0,0,8,4"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="NameBox" Style="{StaticResource FieldBox}" MinWidth="220"
+                                 Margin="0,0,0,4" TextChanged="Name_Changed" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="GUID" VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                         <TextBlock Grid.Row="1" Grid.Column="1" x:Name="GuidText" Text="(se asigna al insertar)"
-                                   TextWrapping="Wrap" Foreground="#607080" />
+                                   TextWrapping="Wrap" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                     </Grid>
-                </GroupBox>
 
-                <GroupBox Header="Anotaciones y dibujo">
+                    <TextBlock Text="Anotaciones y dibujo" Style="{StaticResource SectionTitle}" />
                     <WrapPanel>
-                        <CheckBox x:Name="NumberFrontsCheck" Content="Numerar frentes" Margin="0,0,12,6" Click="Input_Changed" />
-                        <CheckBox x:Name="NumberLevelsCheck" Content="Numerar niveles" Margin="0,0,12,6" Click="Input_Changed" />
-                        <CheckBox x:Name="DrawRackNameCheck" Content="Dibujar nombre" Margin="0,0,12,6" Click="Input_Changed" />
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Escala anot." /><controls:NumericField x:Name="AnnotationScaleBox" Width="66" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                        <StackPanel Margin="0,0,0,4"><TextBlock Text="Cotas" /><ComboBox x:Name="DimensionsBox" Width="130" SelectionChanged="Combo_Changed" /></StackPanel>
+                        <CheckBox x:Name="NumberFrontsCheck" Content="Numerar frentes" Margin="0,0,12,6" Foreground="{DynamicResource ShellTextPrimaryBrush}" Click="Input_Changed" />
+                        <CheckBox x:Name="NumberLevelsCheck" Content="Numerar niveles" Margin="0,0,12,6" Foreground="{DynamicResource ShellTextPrimaryBrush}" Click="Input_Changed" />
+                        <CheckBox x:Name="DrawRackNameCheck" Content="Dibujar nombre" Margin="0,0,12,6" Foreground="{DynamicResource ShellTextPrimaryBrush}" Click="Input_Changed" />
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Escala anot." Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="AnnotationScaleBox" Width="66" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,0,4"><TextBlock Text="Cotas" Style="{StaticResource FieldLabel}" /><ComboBox x:Name="DimensionsBox" Width="130" SelectionChanged="Combo_Changed" /></StackPanel>
                     </WrapPanel>
-                </GroupBox>
 
-                <GroupBox Header="Estructura global">
+                    <TextBlock Text="Estructura global" Style="{StaticResource SectionTitle}" />
                     <WrapPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Frentes" /><controls:NumericField x:Name="FrontCountBox" Width="60" LostFocus="FrontCount_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondos base" /><controls:NumericField x:Name="PalletsDeepBox" Width="66" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Tolerancia" /><controls:NumericField x:Name="ToleranceBox" Width="66" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Poste" /><controls:CatalogCombo x:Name="PostBox" Width="190" DisplayMemberPath="DisplayName" SelectionChanged="Combo_Changed" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte poste" /><controls:NumericField x:Name="PostPeralteBox" Width="66" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte IN/OUT base" /><controls:NumericField x:Name="BeamDepthBox" Width="80" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                        <StackPanel Margin="0,0,0,4"><TextBlock Text="SAQUE topes" /><controls:NumericField x:Name="SaqueBox" Width="80" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Frentes" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="FrontCountBox" Width="60" LostFocus="FrontCount_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondos base" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="PalletsDeepBox" Width="66" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Tolerancia" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="ToleranceBox" Width="66" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Poste" Style="{StaticResource FieldLabel}" /><controls:CatalogCombo x:Name="PostBox" Width="190" DisplayMemberPath="DisplayName" SelectionChanged="Combo_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte poste" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="PostPeralteBox" Width="66" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte IN/OUT base" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="BeamDepthBox" Width="80" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,0,4"><TextBlock Text="SAQUE topes" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="SaqueBox" Width="80" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
                     </WrapPanel>
-                </GroupBox>
 
-                <GroupBox Header="Tarima (datos generales)">
+                    <TextBlock Text="Tarima (datos generales)" Style="{StaticResource SectionTitle}" />
                     <WrapPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Frente" /><controls:NumericField x:Name="FrontBox" Width="76" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondo" /><controls:NumericField x:Name="DepthBox" Width="76" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Alto" /><controls:NumericField x:Name="PalletHeightBox" Width="76" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Peso" /><controls:NumericField x:Name="WeightBox" Width="76" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
-                        <StackPanel Margin="0,0,0,4"><TextBlock Text="Unidad" /><ComboBox x:Name="WeightUnitBox" Width="76" SelectionChanged="Combo_Changed" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Frente" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="FrontBox" Width="76" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondo" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="DepthBox" Width="76" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Alto" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="PalletHeightBox" Width="76" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                        <StackPanel Margin="0,0,12,4"><TextBlock Text="Peso" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="WeightBox" Width="76" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
+                        <StackPanel Margin="0,0,0,4"><TextBlock Text="Unidad" Style="{StaticResource FieldLabel}" /><ComboBox x:Name="WeightUnitBox" Width="76" SelectionChanged="Combo_Changed" /></StackPanel>
                     </WrapPanel>
-                </GroupBox>
 
-                <GroupBox Header="Seguridad (extremo bajo, sin guías)">
-                    <StackPanel>
-                        <Button x:Name="SafetyButton" Content="Configurar seguridad..." MinWidth="180"
-                                HorizontalAlignment="Left" Click="Safety_Click" />
-                        <TextBlock x:Name="SafetySummary" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="#607080" />
-                    </StackPanel>
-                </GroupBox>
+                    <TextBlock Text="Seguridad (extremo bajo, sin guías)" Style="{StaticResource SectionTitle}" />
+                    <Button x:Name="SafetyButton" Content="Configurar seguridad..." Style="{StaticResource SecondaryButtonStyle}"
+                            MinWidth="180" HorizontalAlignment="Left" Click="Safety_Click" />
+                    <TextBlock x:Name="SafetySummary" TextWrapping="Wrap" Margin="0,6,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
 
-                <GroupBox Header="Resumen calculado">
-                    <TextBlock x:Name="PreviewSummary" TextWrapping="Wrap" Foreground="#264A63" MinHeight="34" />
-                </GroupBox>
-
-                <GroupBox Header="Mensajes">
-                    <TextBlock x:Name="PreviewHint" TextWrapping="Wrap" Foreground="#607080" MinHeight="30" />
-                </GroupBox>
-
-            </StackPanel>
+                </StackPanel>
+            </Border>
         </shell:RackEditorVisualShell.SidePanelContent>
 
-        <!-- ============================ STATUS: status line, always visible outside the scroll ============================ -->
+        <!-- ============================ STATUS: summary + messages + status line, always visible outside the scroll ============================
+             The last valid computation's summary and its error/warning messages live HERE (SetStatus/RenderPreview target
+             these x:Names); there is no second status inside the sidebar. -->
         <shell:RackEditorVisualShell.StatusContent>
-            <TextBlock x:Name="StatusText" TextWrapping="Wrap" Foreground="#264A63" />
+            <StackPanel>
+                <TextBlock x:Name="PreviewSummary" Foreground="{DynamicResource ShellTextPrimaryBrush}" FontSize="12" TextWrapping="Wrap" />
+                <TextBlock x:Name="PreviewHint" Foreground="{DynamicResource ShellTextSecondaryBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" />
+                <TextBlock x:Name="StatusText" Foreground="{DynamicResource ShellTextSecondaryBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" />
+            </StackPanel>
         </shell:RackEditorVisualShell.StatusContent>
 
         <!-- ============================ MATRIX: card matrix frente × nivel (central editing surface) ============================ -->
         <shell:RackEditorVisualShell.MatrixContent>
-            <GroupBox x:Name="MatrixZone" Header="Matriz frente x nivel (superficie principal de edición)">
-                <StackPanel>
+            <Border x:Name="MatrixZone" Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                <StackPanel Margin="10,8,10,10">
+                    <TextBlock Text="Matriz frente × nivel — superficie principal de edición. Clic = celda primaria, Ctrl+clic = multiselección. Marcado = tope posterior activo."
+                               Style="{StaticResource FieldLabel}" Margin="0,0,0,6" Foreground="{DynamicResource ShellTextSecondaryBrush}" TextWrapping="Wrap" />
                     <WrapPanel Margin="0,0,0,6">
                         <Button x:Name="AddFrontButton" Content="+ frente" MinWidth="74" Margin="0,0,4,4" Click="AddFront_Click" />
                         <Button x:Name="RemoveFrontButton" Content="- frente" MinWidth="74" Margin="0,0,12,4" Click="RemoveFront_Click" />
                         <Button x:Name="AddLevelButton" Content="+ nivel" MinWidth="74" Margin="0,0,4,4" Click="AddLevel_Click" />
                         <Button x:Name="RemoveLevelButton" Content="- nivel" MinWidth="74" Margin="0,0,12,4" Click="RemoveLevel_Click" />
-                        <TextBlock Text="Frente" VerticalAlignment="Center" Margin="0,0,4,4" />
+                        <TextBlock Text="Frente" VerticalAlignment="Center" Margin="0,0,4,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                         <ComboBox x:Name="SelectedFrontBox" Width="64" Margin="0,0,10,4" SelectionChanged="SelectedFront_Changed" />
-                        <TextBlock Text="Nivel" VerticalAlignment="Center" Margin="0,0,4,4" />
+                        <TextBlock Text="Nivel" VerticalAlignment="Center" Margin="0,0,4,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                         <ComboBox x:Name="SelectedLevelBox" Width="64" Margin="0,0,10,4" SelectionChanged="SelectedLevel_Changed" />
                         <TextBlock x:Name="TopesHint" Text="Marcado = tope posterior activo."
-                                   VerticalAlignment="Center" Margin="0,0,10,4" Foreground="#607080" />
+                                   VerticalAlignment="Center" Margin="0,0,10,4" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                         <Button x:Name="TopesAllButton" Content="Topes: todos" MinWidth="94" Margin="0,0,4,4" Click="TopesAll_Click" />
                         <Button x:Name="TopesNoneButton" Content="Topes: ninguno" MinWidth="104" Margin="0,0,0,4" Click="TopesNone_Click" />
                     </WrapPanel>
 
-                    <TextBlock x:Name="CellSelectionPrimaryText" Margin="0,0,0,4" Foreground="#264A63" TextWrapping="Wrap" />
+                    <TextBlock x:Name="CellSelectionPrimaryText" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" TextWrapping="Wrap" />
 
                     <!-- THE central editing surface: one informative card per frente x nivel (clic = primaria,
                          Ctrl+clic = multiselección). Built imperatively from PushBackMatrixCardModel; the authority
@@ -134,116 +132,121 @@
                     <!-- Secondary BULK tools (kept for mass toggling; they mirror the same authority and must not
                          compete visually with the card matrix above). -->
                     <Expander x:Name="BulkToolsExpander" Header="Herramientas masivas (marcar selección / topes)"
-                              IsExpanded="False" Margin="0,4,0,0" Foreground="#607080">
+                              IsExpanded="False" Margin="0,4,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}">
                         <Grid Margin="0,4,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                <TextBlock Text="Selección de celdas" FontWeight="SemiBold" Margin="0,0,0,2" />
+                                <TextBlock Text="Selección de celdas" FontWeight="SemiBold" Margin="0,0,0,2" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                 <controls:SelectionMatrix x:Name="CellSelectionMatrix" InvertRows="True" MinHeight="60" />
                             </StackPanel>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="Topes posteriores" FontWeight="SemiBold" Margin="0,0,0,2" />
+                                <TextBlock Text="Topes posteriores" FontWeight="SemiBold" Margin="0,0,0,2" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                                 <controls:SelectionMatrix x:Name="TopeMatrix" InvertRows="True" MinHeight="60" />
                             </StackPanel>
                         </Grid>
                     </Expander>
 
                     <!-- Cell editor for the primary selection -->
-                    <Border BorderBrush="#C4CFD9" BorderThickness="0,1,0,0" Margin="0,8,0,0" Padding="0,6,0,0">
+                    <Border BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="0,1,0,0" Margin="0,8,0,0" Padding="0,6,0,0">
                         <StackPanel>
-                            <TextBlock Text="Celda seleccionada" FontWeight="SemiBold" Margin="0,0,0,4" />
+                            <TextBlock Text="Celda seleccionada" FontWeight="SemiBold" Margin="0,0,0,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                             <WrapPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Posiciones" /><controls:NumericField x:Name="PositionsBox" Width="66" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Niveles" /><controls:NumericField x:Name="LevelsBox" Width="66" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondos frente" /><controls:NumericField x:Name="FondosBox" Width="72" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondo inicial" /><controls:NumericField x:Name="DepthStartBox" Width="72" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Alto 1er nivel" /><controls:NumericField x:Name="FirstLevelHeightBox" Width="76" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Claro" /><controls:NumericField x:Name="CellClearBox" Width="66" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Posiciones" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="PositionsBox" Width="66" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Niveles" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="LevelsBox" Width="66" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondos frente" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="FondosBox" Width="72" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Fondo inicial" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="DepthStartBox" Width="72" LostFocus="Input_Changed" IntegerOnly="True" Minimum="1" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Alto 1er nivel" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="FirstLevelHeightBox" Width="76" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Claro" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="CellClearBox" Width="66" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
                             </WrapPanel>
                             <WrapPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Tarima frente" /><controls:NumericField x:Name="CellPalletFrontBox" Width="72" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Tarima alto" /><controls:NumericField x:Name="CellPalletHeightBox" Width="72" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Tarima peso" /><controls:NumericField x:Name="CellPalletWeightBox" Width="72" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Largo manual" /><controls:NumericField x:Name="CellBeamLengthOverrideBox" Width="80" LostFocus="Input_Changed" IsOptional="True" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Tarima frente" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="CellPalletFrontBox" Width="72" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Tarima alto" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="CellPalletHeightBox" Width="72" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Tarima peso" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="CellPalletWeightBox" Width="72" LostFocus="Input_Changed" Minimum="0" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Largo manual" Style="{StaticResource FieldLabel}" /><controls:NumericField x:Name="CellBeamLengthOverrideBox" Width="80" LostFocus="Input_Changed" IsOptional="True" Minimum="0" MinimumInclusive="False" /></StackPanel>
                             </WrapPanel>
                             <WrapPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Larguero IN/OUT" /><ComboBox x:Name="CellInOutBeamBox" Width="180" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="InOutBeam_Changed" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte IN/OUT" /><ComboBox x:Name="CellInOutPeralteBox" Width="76" SelectionChanged="Combo_Changed" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Larguero interm." /><ComboBox x:Name="CellIntermediateBeamBox" Width="180" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="IntermediateBeam_Changed" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte interm." /><ComboBox x:Name="CellIntermediatePeralteBox" Width="76" SelectionChanged="Combo_Changed" /></StackPanel>
-                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte posterior" /><ComboBox x:Name="RearPeralteBox" Width="86" SelectionChanged="Combo_Changed" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Larguero IN/OUT" Style="{StaticResource FieldLabel}" /><ComboBox x:Name="CellInOutBeamBox" Width="180" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="InOutBeam_Changed" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte IN/OUT" Style="{StaticResource FieldLabel}" /><ComboBox x:Name="CellInOutPeralteBox" Width="76" SelectionChanged="Combo_Changed" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Larguero interm." Style="{StaticResource FieldLabel}" /><ComboBox x:Name="CellIntermediateBeamBox" Width="180" DisplayMemberPath="Label" SelectedValuePath="Id" SelectionChanged="IntermediateBeam_Changed" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte interm." Style="{StaticResource FieldLabel}" /><ComboBox x:Name="CellIntermediatePeralteBox" Width="76" SelectionChanged="Combo_Changed" /></StackPanel>
+                                <StackPanel Margin="0,0,12,4"><TextBlock Text="Peralte posterior" Style="{StaticResource FieldLabel}" /><ComboBox x:Name="RearPeralteBox" Width="86" SelectionChanged="Combo_Changed" /></StackPanel>
                                 <CheckBox x:Name="RearTopeActiveCheck" Content="Tope posterior activo" Margin="0,16,0,4"
-                                          VerticalAlignment="Center" Click="RearTopeActive_Changed" />
+                                          VerticalAlignment="Center" Foreground="{DynamicResource ShellTextPrimaryBrush}" Click="RearTopeActive_Changed" />
                             </WrapPanel>
                             <WrapPanel Margin="0,4,0,0">
-                                <TextBlock Text="Aplicar a:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,4" />
-                                <Button x:Name="ApplyCellButton" Content="Celda" MinWidth="70" Margin="0,0,6,4" Click="ApplyCell_Click" />
-                                <Button x:Name="ApplySelectedButton" Content="Selección" MinWidth="84" Margin="0,0,6,4" Click="ApplySelected_Click" />
-                                <Button x:Name="ApplyLevelButton" Content="Nivel" MinWidth="70" Margin="0,0,6,4" Click="ApplyLevel_Click" />
-                                <Button x:Name="ApplyFrontButton" Content="Frente" MinWidth="70" Margin="0,0,6,4" Click="ApplyFront_Click" />
-                                <Button x:Name="ApplyAllButton" Content="Todo" MinWidth="70" Margin="0,0,0,4" Click="ApplyAll_Click" />
+                                <TextBlock Text="Aplicar a:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,4" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <Button x:Name="ApplyCellButton" Content="Celda" Style="{StaticResource SecondaryButtonStyle}" MinWidth="70" Margin="0,0,6,4" Click="ApplyCell_Click" />
+                                <Button x:Name="ApplySelectedButton" Content="Selección" Style="{StaticResource SecondaryButtonStyle}" MinWidth="84" Margin="0,0,6,4" Click="ApplySelected_Click" />
+                                <Button x:Name="ApplyLevelButton" Content="Nivel" Style="{StaticResource SecondaryButtonStyle}" MinWidth="70" Margin="0,0,6,4" Click="ApplyLevel_Click" />
+                                <Button x:Name="ApplyFrontButton" Content="Frente" Style="{StaticResource SecondaryButtonStyle}" MinWidth="70" Margin="0,0,6,4" Click="ApplyFront_Click" />
+                                <Button x:Name="ApplyAllButton" Content="Todo" Style="{StaticResource SecondaryButtonStyle}" MinWidth="70" Margin="0,0,0,4" Click="ApplyAll_Click" />
                             </WrapPanel>
                         </StackPanel>
                     </Border>
                 </StackPanel>
-            </GroupBox>
+            </Border>
         </shell:RackEditorVisualShell.MatrixContent>
 
-        <!-- ============================ PREVIEW: technical role-lines preview (LIGHT) + view selector ============================ -->
+        <!-- ============================ PREVIEW: technical role-lines preview on the shared DARK surface + view selector ============================ -->
         <shell:RackEditorVisualShell.PreviewContent>
-            <GroupBox x:Name="PreviewZone" Header="Vista previa técnica">
-                <DockPanel>
-                    <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-                        <TextBlock Text="Vista" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <Border x:Name="PreviewZone" Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <WrapPanel Grid.Row="0" Margin="10,8,10,6">
+                        <TextBlock Text="Vista" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                         <ComboBox x:Name="ViewBox" Width="196" Margin="0,0,12,0" SelectionChanged="View_Changed" />
-                        <TextBlock x:Name="LateralSectionLabel" Text="Corte" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBlock x:Name="LateralSectionLabel" Text="Corte" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{DynamicResource ShellTextPrimaryBrush}" />
                         <ComboBox x:Name="LateralSectionBox" Width="84" SelectionChanged="View_Changed" />
-                        <TextBlock x:Name="PreviewLegend" VerticalAlignment="Center" Margin="16,0,0,0" Foreground="#607080" />
+                        <TextBlock x:Name="PreviewLegend" VerticalAlignment="Center" Margin="16,0,0,0" Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                     </WrapPanel>
-                    <Border BorderBrush="#C4CFD9" BorderThickness="1" Background="#F7FAFC">
-                        <Canvas x:Name="PreviewCanvas" ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />
-                    </Border>
-                </DockPanel>
-            </GroupBox>
+                    <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="{DynamicResource ShellPreviewBackgroundBrush}" ClipToBounds="True"
+                            SizeChanged="PreviewCanvas_SizeChanged" />
+                </Grid>
+            </Border>
         </shell:RackEditorVisualShell.PreviewContent>
 
-        <!-- ============================ ACTIONS: neutral categories preserving order + behavior ============================
-             Leading = Restaurar (reset a calculado); Secondary = BOM / biblioteca; Primary = Actualizar + las cuatro
-             inserciones por vista + Insertar vista actual; Trailing = Cerrar. Los estados IsEnabled y los tooltips
-             (incluidos los motivos de indisponibilidad) los fija el code-behind por x:Name, sin cambios. -->
+        <!-- ============================ ACTIONS: neutral categories + common button styles ============================
+             Leading = Restaurar (Secondary); Secondary = BOM/biblioteca (Secondary); Primary = Actualizar (Primary CTA) +
+             las cuatro inserciones por vista (Secondary, vistas secundarias) + Insertar vista actual (Primary, acción
+             primaria de inserción); Trailing = Cerrar (Secondary). Los estados IsEnabled y los tooltips (incluidos los
+             motivos de indisponibilidad) los fija el code-behind por x:Name; ToolTipService.ShowOnDisabled los muestra
+             cuando la acción está deshabilitada. -->
         <shell:RackEditorVisualShell.LeadingActions>
-            <Button x:Name="RestoreButton" Content="Restaurar" MinWidth="86" Margin="0,0,8,4"
-                    Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
+            <Button x:Name="RestoreButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,8,4"
+                    ToolTipService.ShowOnDisabled="True" Click="Restore_Click" ToolTip="Vuelve a los valores calculados del sistema." />
         </shell:RackEditorVisualShell.LeadingActions>
         <shell:RackEditorVisualShell.SecondaryActions>
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="BomButton" Content="BOM" MinWidth="70" Margin="0,0,6,4"
-                        Click="Bom_Click" ToolTip="Lista de materiales del sistema actual." />
-                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" MinWidth="150" Margin="0,0,0,4"
-                        Click="SaveLibrary_Click" ToolTip="Guarda este diseño Push Back en la biblioteca." />
+                <Button x:Name="BomButton" Content="BOM" Style="{StaticResource SecondaryButtonStyle}" MinWidth="74" Margin="0,0,6,4"
+                        ToolTipService.ShowOnDisabled="True" Click="Bom_Click" ToolTip="Lista de materiales del sistema actual." />
+                <Button x:Name="SaveLibraryButton" Content="Guardar en biblioteca" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,0,4"
+                        ToolTipService.ShowOnDisabled="True" Click="SaveLibrary_Click" ToolTip="Guarda este diseño Push Back en la biblioteca." />
             </StackPanel>
         </shell:RackEditorVisualShell.SecondaryActions>
         <shell:RackEditorVisualShell.PrimaryActions>
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="UpdateButton" Content="Actualizar" MinWidth="92" Margin="0,0,14,4"
-                        Click="Update_Click" ToolTip="Redibuja en sitio todas las vistas ligadas de este rack." />
-                <Button x:Name="InsertLateralButton" Content="Insertar lateral" MinWidth="112" Margin="0,0,6,4"
-                        Click="InsertLateral_Click" ToolTip="Inserta el corte lateral seleccionado." />
-                <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" MinWidth="152" Margin="0,0,6,4"
-                        Click="InsertFrontalEntrada_Click" ToolTip="Inserta el corte frontal del extremo bajo." />
-                <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" MinWidth="124" Margin="0,0,6,4"
-                        Click="InsertFrontalPosterior_Click" ToolTip="Inserta el corte frontal del extremo alto." />
-                <Button x:Name="InsertPlantaButton" Content="Planta" MinWidth="80" Margin="0,0,14,4"
-                        Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
-                <Button x:Name="InsertButton" Content="Insertar vista actual" MinWidth="140" Margin="0,0,0,4"
-                        Click="Insert_Click" ToolTip="Inserta la vista seleccionada en el previsualizador." />
+                <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="100" Margin="0,0,14,4"
+                        ToolTipService.ShowOnDisabled="True" Click="Update_Click" ToolTip="Redibuja en sitio todas las vistas ligadas de este rack." />
+                <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,6,4"
+                        ToolTipService.ShowOnDisabled="True" Click="InsertLateral_Click" ToolTip="Inserta el corte lateral seleccionado." />
+                <Button x:Name="InsertFrontalEntradaButton" Content="Frontal entrada/salida" Style="{StaticResource SecondaryButtonStyle}" MinWidth="158" Margin="0,0,6,4"
+                        ToolTipService.ShowOnDisabled="True" Click="InsertFrontalEntrada_Click" ToolTip="Inserta el corte frontal del extremo bajo." />
+                <Button x:Name="InsertFrontalPosteriorButton" Content="Frontal posterior" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,6,4"
+                        ToolTipService.ShowOnDisabled="True" Click="InsertFrontalPosterior_Click" ToolTip="Inserta el corte frontal del extremo alto." />
+                <Button x:Name="InsertPlantaButton" Content="Planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="86" Margin="0,0,14,4"
+                        ToolTipService.ShowOnDisabled="True" Click="InsertPlanta_Click" ToolTip="Inserta la vista en planta." />
+                <Button x:Name="InsertButton" Content="Insertar vista actual" Style="{StaticResource PrimaryButtonStyle}" MinWidth="150" Margin="0,0,0,4"
+                        ToolTipService.ShowOnDisabled="True" Click="Insert_Click" ToolTip="Inserta la vista seleccionada en el previsualizador." />
             </StackPanel>
         </shell:RackEditorVisualShell.PrimaryActions>
         <shell:RackEditorVisualShell.TrailingActions>
-            <Button x:Name="CloseButton" Content="Cerrar" MinWidth="80" Margin="0,0,0,4" Click="Close_Click" />
+            <Button x:Name="CloseButton" Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,0,4" Click="Close_Click" />
         </shell:RackEditorVisualShell.TrailingActions>
     </shell:RackEditorVisualShell>
 </Window>

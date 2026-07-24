@@ -81,13 +81,14 @@ namespace RackCad.UI.Tests
                 {
                     // I-18b: the window now COMPOSES over RackEditorVisualShell (like the dynamic/selective editors). The
                     // four zones are the shell's slots: sidebar (scroll), matrix, preview and the action bar. The matrix
-                    // and preview keep their GroupBox x:Names; the settings sit in the shell's SidebarScroll; the action
-                    // buttons live in the shell's EditorActionBar (no more bespoke WrapPanel "ActionBar" / Grid "WorkArea").
+                    // and preview keep their zone x:Names (now shell-surface Borders, not GroupBoxes); the settings sit in
+                    // the shell's SidebarScroll; the action buttons live in the shell's EditorActionBar (no bespoke
+                    // WrapPanel "ActionBar" / Grid "WorkArea").
                     var shell = w.Content as RackEditorVisualShell;
                     Assert.NotNull(shell);
-                    Assert.NotNull(shell.SidebarScroll);                  // settings panel zone (scrolls)
-                    Assert.NotNull(Named<GroupBox>(w, "MatrixZone"));     // matrix zone (central surface)
-                    Assert.NotNull(Named<GroupBox>(w, "PreviewZone"));    // preview zone
+                    Assert.NotNull(shell.SidebarScroll);              // settings panel zone (scrolls)
+                    Assert.NotNull(Named<Border>(w, "MatrixZone"));   // matrix zone (central surface)
+                    Assert.NotNull(Named<Border>(w, "PreviewZone"));  // preview zone
                     Assert.NotNull(shell.ActionBar);                     // action bar zone (EditorActionBar)
                     Assert.NotNull(Named<Canvas>(w, "PreviewCanvas"));
                 }
@@ -109,7 +110,7 @@ namespace RackCad.UI.Tests
                     Assert.NotNull(cardGrid);
                     Assert.False(IsInsideLeftSettingsPanel(cardGrid), "the card matrix must not sit in the left panel");
 
-                    var zone = Named<GroupBox>(w, "MatrixZone");
+                    var zone = Named<Border>(w, "MatrixZone");
                     Assert.Contains(Descendants(zone), d => ReferenceEquals(d, cardGrid));
 
                     // The bulk tools live in the SAME zone, behind a secondary expander (collapsed by default so they
