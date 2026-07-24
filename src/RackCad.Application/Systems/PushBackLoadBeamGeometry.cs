@@ -60,18 +60,53 @@ namespace RackCad.Application.Systems
             => new Point2D(placementX + (mirroredX ? -localTangency.X : localTangency.X), placementY + localTangency.Y);
 
         /// <summary>
-        /// PB-VAL-05 — the vertical shift that lands the beam's TANGENCY POINT (above) on the line through the bed's
-        /// PHYSICAL origin (<see cref="PushBackFlowBedAxis.RailOrigin"/>), evaluated AT THAT POINT'S OWN X, instead of on
-        /// the TROQUEL line through <see cref="PushBackFlowBedAxis.ExitMate"/>. Both lines are PARALLEL (same axis angle),
-        /// so this is a pure vertical constant per level: it cannot change the bed's slope, axis, origin or length — the
-        /// bed is resolved from the RAW placements and never sees this shift (see <see cref="LowBeams"/>).
+        /// Owner decision (2026-07-24) — the REAR beam's tangency: of its two measured bed-contact edges
+        /// (<see cref="PushBackDefaults.HighEndBeamLeftBedMatePoint"/> / <see cref="PushBackDefaults.HighEndBeamRightBedMatePoint"/>),
+        /// the one the bed actually lands on, transformed by the placement's mirror.
         ///
-        /// The axis's <see cref="PushBackFlowBedAxis.ExitMate"/> IS that transformed tangency point (the bed resolver
-        /// mates the very same catalog point), which is why the shift can be read off the axis alone.
-        /// Returns 0 for a level with no resolved bed axis: with no bed there is no bed-origin line to be tangent to,
-        /// so the beam keeps its troquel-snapped elevation rather than being moved by an unrelated level's line.
+        /// Both edges share the block's contact-face Y, and the bed line RISES toward +X, so lowering the beam onto that
+        /// line makes contact at the edge where the line is HIGHEST — the one at the greater WORLD X. Picking it by
+        /// geometry (not by a fixed left/right constant) is what keeps the rule correct when the beam is mirrored.
+        /// Null when the catalog carries neither edge: a missing contact face is a missing physical contract and must
+        /// never fall back to the insertion point.
         /// </summary>
-        public static double BedOriginOffset(IReadOnlyList<PushBackFlowBedAxis> axes, int levelNumber)
+        public static Point2D? RearBeamTangencyPointWorld(RackCatalog catalog, string beamId, double placementX, double placementY, bool mirroredX)
+        {
+            Point2D? best = null;
+            foreach (var pointId in new[] { PushBackDefaults.HighEndBeamLeftBedMatePoint, PushBackDefaults.HighEndBeamRightBedMatePoint })
+            {
+                var entry = catalog?.ConnectionLayout.FindConnectionLayout(beamId, pointId, PushBackDefaults.HighEndBeamView);
+                if (entry == null)
+                {
+                    continue;
+                }
+
+                var world = new Point2D(placementX + (mirroredX ? -entry.LocalX : entry.LocalX), placementY + entry.LocalY);
+                if (!best.HasValue || world.X > best.Value.X)
+                {
+                    best = world;
+                }
+            }
+
+            return best;
+        }
+
+        /// <summary>
+        /// Owner decision (2026-07-24) — the vertical shift that lands the REAR beam's contact edge on the line through
+        /// the bed's PHYSICAL origin (<see cref="PushBackFlowBedAxis.RailOrigin"/>), evaluated at that edge's own X.
+        ///
+        /// The bed is resolved from the RAW placements (<see cref="PushBackFlowBedGeometry.Resolve"/> never sees this
+        /// shift), so its origin, slope, axis and full length are untouched: the bed does not move to meet the beam, the
+        /// REAR beam moves to meet the bed. The LOW IN/OUT beam is NOT shifted at all — it stays bolted where its
+        /// TROQUEL_CAMA meets the rail's TROQUEL_IN, which is the mate the bed itself is resolved from.
+        ///
+        /// Returns 0 for a level with no resolved bed axis or a beam with no measured contact edge: with no bed line
+        /// there is nothing to be tangent to, so the beam keeps its troquel-snapped elevation rather than being moved
+        /// by an unrelated level's line.
+        /// </summary>
+        public static double RearBeamTangencyOffset(
+            IReadOnlyList<PushBackFlowBedAxis> axes, int levelNumber,
+            RackCatalog catalog, string beamId, double placementX, double placementY, bool mirroredX)
         {
             if (axes == null)
             {
@@ -80,21 +115,25 @@ namespace RackCad.Application.Systems
 
             foreach (var axis in axes)
             {
-                if (axis.LevelNumber == levelNumber)
+                if (axis.LevelNumber != levelNumber)
                 {
-                    return axis.RailOriginYAt(axis.ExitMate.X) - axis.ExitMate.Y;
+                    continue;
                 }
+
+                var contact = RearBeamTangencyPointWorld(catalog, beamId, placementX, placementY, mirroredX);
+                return contact.HasValue ? axis.RailOriginYAt(contact.Value.X) - contact.Value.Y : 0.0;
             }
 
             return 0.0;
         }
 
         /// <summary>
-        /// Low-end IN/OUT beams: one per front x level, taken from the dynamic exit placements and then lowered onto the
-        /// BED-ORIGIN line (PB-VAL-05). The bed is the geometric authority: its axis, origin, slope and full length are
-        /// resolved from the RAW placements — <see cref="PushBackFlowBedGeometry.Resolve"/> never sees this shift — so the
-        /// bed is never displaced to accommodate the beam; the beam is what moves. The rear beam and the intermediates,
-        /// which resolve against the troquel snap and the bed axis respectively, are untouched.
+        /// Low-end IN/OUT beams: one per front x level, taken from the dynamic exit placements VERBATIM.
+        ///
+        /// Owner decision (2026-07-24): the low beam is placed so that its <c>TROQUEL_CAMA</c> coincides EXACTLY with the
+        /// rail's <c>TROQUEL_IN</c> — the very mate the bed is resolved from — so it carries NO shift of its own. The
+        /// earlier bed-origin displacement of this beam is gone: it is the REAR beam that moves onto the bed-origin line
+        /// (<see cref="RearBeamTangencyOffset"/>).
         /// </summary>
         public static IReadOnlyList<HeaderBlockInstance> LowBeams(PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null)
         {
@@ -105,7 +144,6 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
-            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => !placement.IsEntrance))
             {
                 var beamId = string.IsNullOrWhiteSpace(placement.BeamCatalogId)
@@ -117,7 +155,7 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var origin = new Point2D(placement.X, placement.Y + BedOriginOffset(axes, placement.LevelNumber));
+                var origin = new Point2D(placement.X, placement.Y);
                 result.Add(new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,
@@ -133,7 +171,12 @@ namespace RackCad.Application.Systems
             return result;
         }
 
-        /// <summary>High-end (rear) TROQUEL_REDONDO beams: one per front x level, PERALTE from the cell, LONGITUD = the IN/OUT's.</summary>
+        /// <summary>
+        /// High-end (rear) TROQUEL_REDONDO beams: one per front x level, PERALTE from the cell, LONGITUD = the IN/OUT's,
+        /// and lowered so that its measured contact edge is TANGENT to the bed-origin line
+        /// (<see cref="RearBeamTangencyOffset"/>, Owner decision 2026-07-24). The shift is vertical only, so the bed's
+        /// slope, full length, per-cell peralte and the intermediates are untouched.
+        /// </summary>
         public static IReadOnlyList<HeaderBlockInstance> HighBeams(PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null)
         {
             var result = new List<HeaderBlockInstance>();
@@ -152,9 +195,12 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
+            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
             {
-                var origin = new Point2D(placement.X, placement.Y);
+                var offset = RearBeamTangencyOffset(
+                    axes, placement.LevelNumber, catalog, beamId, placement.X, placement.Y, placement.MirroredX);
+                var origin = new Point2D(placement.X, placement.Y + offset);
                 var instance = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,

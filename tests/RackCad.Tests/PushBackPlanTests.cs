@@ -72,14 +72,25 @@ namespace RackCad.Tests
             var system = System(catalog);
             var instances = new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances;
 
-            // The HIGH beam sits exactly on the resolver's snapped entrance elevation (2" troquel grid). The LOW beam is
-            // that snapped exit elevation PLUS the bed-origin offset (PB-VAL-05): the bed is the geometric authority, so
-            // the low beam drops onto the line starting at the bed's physical origin instead of the troquel line.
-            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, system.Structure.Fronts[0]);
+            // Owner decision (2026-07-24): the LOW beam sits exactly on the resolver's snapped EXIT elevation — it is
+            // bolted where its TROQUEL_CAMA meets the rail's TROQUEL_IN and carries no shift of its own. The HIGH beam is
+            // the one that drops onto the bed-origin line, so its Y is the snapped entrance elevation PLUS its tangency.
+            var front0 = system.Structure.Fronts[0];
+            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front0);
+            var highBeamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
+                ? PushBackDefaults.HighEndBeamCatalogId
+                : system.HighEndBeamCatalogId;
             var exitYs = system.Structure.LoadBeamLevels
-                .Select(l => Math.Round(l.ExitElevation + PushBackLoadBeamGeometry.BedOriginOffset(axes, l.LevelNumber), 3))
+                .Select(l => Math.Round(l.ExitElevation, 3)).OrderBy(y => y).ToList();
+            var entranceYs = system.Structure.LoadBeamLevels
+                .Select(l =>
+                {
+                    var placement = DynamicLoadBeamGeometry.Placements(system.Structure, front0)
+                        .First(p => p.IsEntrance && p.LevelNumber == l.LevelNumber);
+                    return Math.Round(l.EntranceElevation + PushBackLoadBeamGeometry.RearBeamTangencyOffset(
+                        axes, l.LevelNumber, catalog, highBeamId, placement.X, placement.Y, placement.MirroredX), 3);
+                })
                 .OrderBy(y => y).ToList();
-            var entranceYs = system.Structure.LoadBeamLevels.Select(l => Math.Round(l.EntranceElevation, 3)).OrderBy(y => y).ToList();
 
             var lowYs = instances.Where(i => i.PieceId == InOut).Select(i => Math.Round(i.Insertion.Y, 3)).OrderBy(y => y).ToList();
             var highYs = instances.Where(i => i.PieceId == Redondo).Select(i => Math.Round(i.Insertion.Y, 3)).OrderBy(y => y).ToList();
