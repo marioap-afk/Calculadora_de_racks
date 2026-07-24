@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using RackCad.UI.Shell;
 
 namespace RackCad.UI.Tests
 {
@@ -62,7 +64,44 @@ namespace RackCad.UI.Tests
                 }
             }
 
+            // Editors composed over RackEditorVisualShell (I-30/I-31) inject their content into dependency-property SLOTS,
+            // which are NOT part of the window's logical tree until the shell's template is applied (i.e. until the window is
+            // shown). So when the click helpers run on an unshown, shell-composed editor, also descend into the slot values
+            // directly, or a nameless action button (e.g. the selective "Insertar frontal") would be unreachable by content.
+            if (root is RackEditorVisualShell shell)
+            {
+                foreach (var slot in ShellSlots(shell))
+                {
+                    if (slot is ButtonBase slotButton && (slotButton.Content as string) == content)
+                    {
+                        return slotButton;
+                    }
+
+                    if (slot is DependencyObject slotNode)
+                    {
+                        var found = FindByContent(slotNode, content);
+                        if (found != null)
+                        {
+                            return found;
+                        }
+                    }
+                }
+            }
+
             return null;
+        }
+
+        private static IEnumerable<object> ShellSlots(RackEditorVisualShell shell)
+        {
+            yield return shell.SidebarHeader;
+            yield return shell.SidePanelContent;
+            yield return shell.MatrixContent;
+            yield return shell.PreviewContent;
+            yield return shell.StatusContent;
+            yield return shell.LeadingActions;
+            yield return shell.SecondaryActions;
+            yield return shell.PrimaryActions;
+            yield return shell.TrailingActions;
         }
     }
 }
