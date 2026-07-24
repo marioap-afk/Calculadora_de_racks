@@ -8,7 +8,7 @@ automation_state:
   gate: owner-decision
   attempts: 0
   next_action: el-owner-revisa-adr-0019-shell-visual-por-composicion-y-slots-y-lo-acepta-o-rechaza-hasta-esa-decision-no-se-implementa-produccion-fase-1-detenida-tras-publicar-el-adr-propuesto
-  last_evidence_commit:
+  last_evidence_commit: d7fc111b3fa6f42ec4052af30123dd4a9280d259
 execution_context:
   mode: manual-git-only
   worktree: architecture-editor-visual-shell
