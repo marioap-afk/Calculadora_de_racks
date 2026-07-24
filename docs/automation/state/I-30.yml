@@ -3,12 +3,12 @@ automation_state:
   initiative: I-30
   branch: architecture/editor-visual-shell
   claim_id: 2048f82c-2208-4961-9e2f-2f85f7b22743
-  current_phase: 4
+  current_phase: 5
   state: implementing
   gate: none
   attempts: 0
-  next_action: el-coordinador-revisa-la-fundacion-comun-shell-status-action-bar-tokens-y-pruebas-y-prepara-la-migracion-de-rackdynamicsystemwindow-al-shell-fase-4-de-i30-no-autorizada-todavia
-  last_evidence_commit: dfa359d9b09e77d1faa2c44464ccd436173c1983
+  next_action: el-owner-valida-en-autocad-2025-el-dll-debug-construido-desde-el-sha-exacto-de-esta-corrida-editor-dinamico-migrado-al-shell-conserva-dibujo-bom-identidad-round-trip-y-cumple-el-contrato-visual-y-el-coordinador-prepara-i31-selectivo-solo-tras-cerrar-i30
+  last_evidence_commit: 4fd0b8910d7f492718b2cb763fe952542c4d232a
 execution_context:
   mode: manual-git-only
   worktree: architecture-editor-visual-shell
@@ -44,6 +44,19 @@ evidence:
     fundacion-comun-implementada-y-verde-commits-744a4b6-aceptacion-adr-mas-estado-a73acf3-shell-status-action-bar-6ae986b-tokens-dfa359d-pruebas-1-rackeditorvisualshell-usercontrol-por-composicion-no-clase-base-de-window-nueve-slots-dependency-properties-sidebarheader-neutral-y-opcional-sidepanelcontent-scroll-vertical-matrixcontent-opcional-colapsa-y-el-preview-toma-el-area-previewcontent-statuscontent-siempre-fuera-del-scroll-mas-leading-secondary-primary-trailing-slots-opcionales-colapsan-sin-hueco-shellslotvisibilityconverter-2-editorstatus-severidades-info-success-warning-error-editorstatusmessage-modelo-puro-editorstatuspalette-editorstatuspresenter-colapsa-vacio-3-editoractionbar-cuatro-categorias-neutrales-por-posicion-wrappanel-nunca-recorta-editoraction-modelo-puro-editoractions-button-showondisabled-mas-motivo-4-tokens-en-appstyles-derivados-de-valores-vigentes-conservando-las-claves-previas-sin-migrar-brushes-privados-5-20-pruebas-nuevas-18-requeridas-mas-estilos-y-reenvio-gates-ui-tests-204-rackcad-tests-1016-build-ui-0-errores-0-advertencias-plugin-0-errores-solucion-0-errores-ningun-filtro-con-cero-pruebas
   no_window_migrated: correcto-ninguna-ventana-migrada-en-esta-fase-solo-fundacion-tokens-y-pruebas-rackdynamicsystemwindow-rackselectivewindow-rackflowbedwindow-y-los-configuradores-intactos-cero-archivos-de-push-back-el-diff-de-produccion-es-solo-src-rackcad-ui-shell-y-el-bloque-de-tokens-de-appstyles
   scope_this_run_foundation: solo-fundacion-del-shell-tokens-pruebas-y-docs-de-aceptacion-y-estado-sin-migrar-ventanas-sin-tocar-controles-de-captura-sin-application-domain-plugin-geometria-resolvers-bom-persistencia-catalogos-handoff-ni-roadmap
+  dynamic_migrated_2026_07_24: >-
+    fase-4-completada-rackdynamicsystemwindow-ahora-se-compone-sobre-rackeditorvisualshell-commit-4fd0b89-supera-a-no-window-migrated-que-describia-solo-la-fundacion-la-ventana-aloja-su-contenido-existente-en-los-slots-sidepanelcontent-matrixcontent-previewcontent-statuscontent-y-en-las-categorias-neutrales-leading-restaurar-secondary-bom-y-proyecto-primary-actualizar-mas-4-inserciones-trailing-cerrar-los-63-x-name-handlers-parsing-lostfocus-seleccion-multiseleccion-recomputacion-preview-vistas-insercion-actualizacion-bom-guid-y-persistencia-se-conservan-exactamente
+  shell_templated_control_2026_07_24: >-
+    desviacion-de-implementacion-registrada-el-shell-dejo-de-ser-usercontrol-y-paso-a-control-lookless-con-plantilla-en-themes-generic-xaml-commit-d034440-motivo-inyectar-contenido-con-x-name-namebox-etc-en-los-dp-de-contenido-de-un-usercontrol-desde-el-xaml-consumidor-provoca-mc3093-ambito-de-nombres-en-conflicto-un-control-templated-registra-esos-nombres-en-el-ambito-del-editor-consumidor-alineado-con-la-preferencia-por-composicion-del-adr-0019-4-3-contrato-de-slots-y-comportamiento-sin-cambios-seams-de-template-part-part-para-pruebas
+  preview_canvas_not_adopted_2026_07_24: correcto-no-se-adopto-el-control-previewcanvas-de-i14-no-existe-prueba-de-equivalencia-completa-de-proyeccion-y-contenido-el-canvas-x-name-previewcanvas-del-dinamico-se-aloja-tal-cual-en-el-slot-previewcontent-9-9-3-1-respetados
+  capture_controls_not_migrated_2026_07_24: correcto-los-textbox-combobox-checkbox-del-dinamico-no-se-migraron-a-numericfield-ni-catalogcombo-fuera-de-alcance-por-contrato-4-y-4-1-sin-adaptacion-minima-inevitable-ninguna-fue-necesaria
+  gates_status_2026_07_24: >-
+    owner-decision-resuelto-adr-0019-aceptado-plugin-build-verde-src-rackcad-plugin-c-debug-0-errores-autocad-pendiente-validacion-visual-del-owner-owner-validation-pendiente-el-owner-valida-el-dll-debug-del-sha-exacto
+  verification_2026_07_24: >-
+    ui-tests-212-superado-0-error-204-fundacion-mas-8-migracion-rackcad-tests-1016-superado-0-error-incluye-i24-goldens-dinamicos-persistencia-handlers-e-i19-build-debug-ui-0-errores-plugin-0-errores-solucion-rackcad-sln-0-errores-2-advertencias-msb3277-preexistentes-de-referencias-autocad-ningun-filtro-devuelve-cero-pruebas
+  git_2026_07_24: >-
+    base-8a1bce5-sin-rebase-origin-main-no-avanzo-rev-list-left-right-origin-main-head-da-0-11-commits-d034440-shell-templated-4fd0b89-migracion-dinamico-mas-commit-docs-feature-push-back-intacta-b2d9e9d-local-igual-remoto
+  debug_dll_for_owner_2026_07_24: src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-construido-desde-el-head-de-esta-corrida-el-owner-abre-autocad-2025-carga-el-bundle-debug-y-valida-el-editor-dinamico-migrado
 gates:
   owner_decision:
     required: true

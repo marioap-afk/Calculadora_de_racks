@@ -236,10 +236,16 @@ es del editor. Requisitos:
 
 Previstos (crear salvo indicación):
 
-- `src/RackCad.UI/Shell/RackEditorVisualShell.xaml(.cs)`;
+- `src/RackCad.UI/Shell/RackEditorVisualShell.cs` — **control lookless con plantilla** (no
+  `UserControl` ni `.xaml(.cs)`): inyectar contenido con `x:Name` en los slots de un `UserControl`
+  desde el XAML consumidor provoca `MC3093` (ámbito de nombres en conflicto); un control con plantilla
+  registra esos nombres en el ámbito del editor. Es la forma más pura de la composición del §4.3;
+- `src/RackCad.UI/Themes/Generic.xaml` — **plantilla por defecto** del shell (los `ContentPresenter`
+  de los slots + la action bar por `TemplateBinding`), resuelta por `ThemeInfo(None, SourceAssembly)`;
 - `src/RackCad.UI/Shell/EditorStatusPresenter.*`, `EditorActionBar.*` y sus modelos puros;
 - `src/RackCad.UI/Themes/AppStyles.xaml` (**modificar**: añadir tokens sin romper claves vigentes);
-- `src/RackCad.UI/RackDynamicSystemWindow.xaml(.cs)` (**modificar**: composición sobre el shell);
+- `src/RackCad.UI/RackDynamicSystemWindow.xaml` (**modificar**: composición sobre el shell; el
+  `.cs` **no** cambia — los handlers, el parsing y el `LostFocus` se conservan intactos);
 - `tests/RackCad.UI.Tests/` (añadir suites del shell y de la migración).
 
 Hotspots que **no** deben aparecer en el diff de I-30: `RackSelectiveWindow.*`,
@@ -312,5 +318,30 @@ estado queda `state: waiting`, `gate: owner-decision`.
 
 ## 14. Evidencia final
 
-Se completa al cerrar. Esta corrida deja: reclamo, auditoría, contrato, estado y ADR propuesto, sin
-tocar producción, `docs/HANDOFF.md`, `docs/ROADMAP.md` ni `feature/push-back`.
+**Corrida de fundación** (fases 1–3, `2026-07-24`): reclamo, auditoría, contrato, estado y ADR-0019
+aceptado por el Owner; shell, status presenter, action bar, tokens y sus pruebas propias, sin migrar
+ventanas.
+
+**Corrida de migración** (fases 4–5, `2026-07-24`) —
+[`docs/automation/runs/I-30-2026-07-24-phase-4.md`](../automation/runs/I-30-2026-07-24-phase-4.md):
+
+- **Base** `8a1bce5` (sin rebase: `origin/main` no avanzó). Commits `d034440` (shell → control
+  lookless con plantilla en `Themes/Generic.xaml`, para permitir contenido con nombre en los slots
+  sin `MC3093`) y `4fd0b89` (`RackDynamicSystemWindow` compuesto sobre el shell + 8 pruebas de
+  migración), más este commit de docs.
+- `RackDynamicSystemWindow` se compone sobre `RackEditorVisualShell`: su contenido se aloja en los
+  slots (`SidePanelContent`/`MatrixContent`/`PreviewContent`/`StatusContent`) y en las categorías
+  neutrales (`Leading`/`Secondary`/`Primary`/`Trailing`). Se conservan **exactamente** los 63
+  `x:Name`, handlers, parsing, `LostFocus`, selección/multiselección, recomputación, preview, vistas,
+  inserción, actualización, BOM, GUID y persistencia. El `Canvas` del preview se aloja tal cual (**no**
+  se adopta el control `PreviewCanvas`: sin prueba de equivalencia). Sin migrar los controles de
+  captura a `NumericField`/`CatalogCombo`.
+- Pruebas: **UI 212/212** (204 fundación + 8 migración), **RackCad.Tests 1016/1016** (I-24, goldens
+  dinámicos, persistencia, handlers e I-19 intactos). Builds Debug UI/Plugin/solución **0 errores**
+  (2 advertencias `MSB3277` preexistentes de las referencias de AutoCAD). Ningún filtro con cero
+  pruebas.
+- Gates: `owner-decision` resuelto (ADR-0019 aceptado); `plugin_build` verde. **Pendientes:**
+  `autocad` (smoke visual del Owner) y `owner_validation` (DLL Debug del SHA exacto de esta corrida).
+- Sin tocar geometría, resolvers, BOM, persistencia, catálogos, Plugin, `RackSelectiveWindow`,
+  `RackFlowBedWindow`, configuradores, `docs/HANDOFF.md`, `docs/ROADMAP.md` ni `feature/push-back`
+  (`b2d9e9d`, intacta).
