@@ -1,0 +1,47 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-30
+  branch: architecture/editor-visual-shell
+  claim_id: 2048f82c-2208-4961-9e2f-2f85f7b22743
+  current_phase: 1
+  state: waiting
+  gate: owner-decision
+  attempts: 0
+  next_action: el-owner-revisa-adr-0019-shell-visual-por-composicion-y-slots-y-lo-acepta-o-rechaza-hasta-esa-decision-no-se-implementa-produccion-fase-1-detenida-tras-publicar-el-adr-propuesto
+  last_evidence_commit:
+execution_context:
+  mode: manual-git-only
+  worktree: architecture-editor-visual-shell
+  pull_request: none
+evidence:
+  base_commit: 8a1bce57969db5c1001473fd30a99bf45d48335e
+  claim_commit: c6185d8d75b711abdd9e3a8d60f921d1c955f56a
+  ci_main_at_claim: verde-sobre-8a1bce5-run-de-main-success
+  roadmap_authorization: docs-roadmap-md-fase-5-filas-i30-e-i31-mas-secuencia-obligatoria-i30-i31-reanudacion-de-i18-integradas-en-main-por-el-fix-documental-8a1bce5
+  audit_scope: solo-lectura-selectivo-dinamico-cama-controles-i14-appstyles-rackeditorsession-estados-puros-y-pruebas-ui-en-main-mas-rackpushbacksystemwindow-leido-con-git-show-desde-origin-feature-push-back-b2d9e9d-sin-checkout-merge-rebase-ni-commit
+  audit_finding_i14_adoption: >-
+    ninguna-de-las-tres-ventanas-ricas-adopta-controles-i14-numericfield-catalogcombo-y-rackdialogwindow-tienen-cero-consumidores-en-todo-src-rackcad-ui-los-previewcanvas-de-las-ventanas-son-un-canvas-x-name-previewcanvas-homonimo-no-el-control-selectionmatrix-solo-lo-adoptaron-los-tres-dialogos-de-seguridad-de-i22-push-back-en-su-rama-si-adopta-numericfield-21-catalogcombo-1-y-selectionmatrix-2
+  audit_finding_duplication: 43-brushes-privados-16-selectivo-17-dinamico-10-cama-frente-a-previewpalette-con-8-compartidos-y-appstyles-con-solo-6-claves-de-estilo-con-hex-incrustados-sin-tokens-de-tamano-tipografia-ni-espaciado-mas-tres-matrices-imperativas-tres-proyecciones-de-preview-tres-barras-de-acciones-y-tres-convenciones-de-estado
+  audit_finding_racksystemkind: 37-ocurrencias-en-src-rackcad-ui-pero-solo-1-dentro-de-un-editor-rico-rackdynamicsystemwindow-2631-guarda-de-carga-de-biblioteca-el-resto-en-editor-registro-de-modulos-y-rackmainmenuwindow-el-shell-debe-quedar-en-cero
+  audit_sizes: rackselectivewindow-307-xaml-mas-2205-cs-rackdynamicsystemwindow-403-mas-2848-rackflowbedwindow-138-mas-516-appstyles-91-pruebas-ui-165-fact-theory
+  audit_i18_rebase_forecast: >-
+    diff-stat-origin-main-tres-puntos-origin-feature-push-back-sobre-src-rackcad-ui-y-tests-rackcad-ui-tests-da-3786-inserciones-en-16-archivos-casi-todas-en-archivos-nuevos-los-unicos-compartidos-son-rackmainmenuwindow-xaml-9-lineas-cs-4-y-editormoduleregistrytests-3-conflicto-textual-minimo-conflicto-real-semantico-push-back-quedaria-como-unico-editor-fuera-del-shell-con-sus-tres-piezas-propias-solapadas
+  recommended_size: M-L-propuesta-de-esta-auditoria-no-vigente-en-roadmap-fundacion-mas-migracion-de-un-editor-de-2848-lineas-con-gate-autocad-y-owner-validation-si-la-migracion-del-dinamico-no-cabe-partir-dejando-la-fundacion-en-i30
+  adr: docs/adr/0019-shell-visual-de-editores-por-composicion.md
+  adr_state: propuesto-pendiente-de-decision-del-owner
+  scope_this_run: solo-documentacion-contrato-estado-adr-y-entrada-en-initiatives-readme-sin-xaml-cs-appstyles-pruebas-solucion-handoff-roadmap-geometria-resolvers-bom-persistencia-catalogos-ni-plugin
+  push_back_untouched: origin-feature-push-back-b2d9e9d74cb36f2193c12a039b97b9287d1b0f1a-local-igual-remoto-arbol-limpio-leida-solo-con-git-show
+  i31_not_claimed: sin-rama-worktree-contrato-ni-estado-de-i31-en-esta-corrida-refactor-selective-visual-shell-sigue-libre
+gates:
+  owner_decision:
+    required: true
+    note: adr-0019-shell-visual-por-composicion-y-slots-debe-aceptarse-antes-de-implementar-produccion
+  autocad:
+    required: true
+    note: migracion-del-editor-dinamico-exige-validacion-visual-en-autocad-2025
+  owner_validation:
+    required: true
+    note: el-owner-valida-el-dll-debug-construido-desde-el-sha-exacto-posterior-al-rebase-final
+  plugin_build:
+    required: true
+    note: build-debug-del-plugin-verde-como-gate-de-cierre
