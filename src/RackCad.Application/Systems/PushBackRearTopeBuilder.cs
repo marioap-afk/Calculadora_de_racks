@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Geometry;
 using RackCad.Application.Headers;
 using RackCad.Domain.Systems;
 
@@ -31,58 +32,36 @@ namespace RackCad.Application.Systems
         public static bool IsPlanta(string view) => string.Equals(view, "PLANTA", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
-        /// PB-VAL-02 — which way the rear tope FACES, derived from the system's LOAD SIDE, never from the rear beam's own
-        /// mirror (the beam's mirror orients a BEAM profile, not the tope's step; inheriting it — or hardcoding the
-        /// opposite — is what drew the tope inverted with respect to the post and the rear end).
-        ///
-        /// Push Back is LIFO: pallets enter and leave through the LOW end, which lies at DECREASING X from the rear beam,
-        /// so the tope must stick out toward -X to retain them. The CANONICAL Selective convention fixes what that means:
-        /// in <see cref="SelectiveSafetyPlacement.TopeSpots"/> the two topes of one central gap are
-        /// <c>{AtFront=false, Mirror=false}</c> (its gap lies at +X) and <c>{AtFront=true, Mirror=true}</c> (its gap lies
-        /// at -X) — i.e. a MIRRORED tope sticks out toward -X. Hence the elevations draw the rear tope mirrored.
-        /// PLANTA is a top view where the tope lies ALONG the beam, so there it keeps the beam's plan orientation.
+        /// Owner decision (2026-07-24) — the rear tope's facing, INVERTED with respect to 10d8eeb, where the Owner
+        /// measured it upside down on the drawing. In the elevation views it is drawn UNMIRRORED; PLANTA is a top view
+        /// where the tope lies ALONG the beam, so there it keeps the beam's plan orientation (unchanged and approved).
+        /// The rule never reads the rear BEAM's mirror for the elevations: a beam's mirror orients a BEAM profile, not
+        /// the tope's step.
         /// </summary>
         public static bool Mirrored(string view, bool beamMirroredX)
-            => IsPlanta(view) ? beamMirroredX : FacesLowEnd;
+            => IsPlanta(view) ? beamMirroredX : ElevationMirrored;
+
+        /// <summary>The rear tope's mirror in the elevation views. Owner decision (2026-07-24): the inverse of 10d8eeb.</summary>
+        public const bool ElevationMirrored = false;
 
         /// <summary>
-        /// Push Back's load side seen from the rear beam: the LOW end, at -X. Elevation topes face it (see
-        /// <see cref="Mirrored"/>). A constant of the SYSTEM, not of the block or of the beam's mirror.
+        /// Owner decision (2026-07-24) — the rear tope's world ANCHOR: the vertical axis of the POST's
+        /// <c>TROQUEL_SEPARADOR</c> (<see cref="DynamicRackDefaults.SeparatorPostPoint"/>), resolved for the post's own
+        /// PERALTE and transformed by the mirror, exactly as the Selective lateral anchors its own topes and separators.
+        ///
+        /// It is explicitly NOT the rear beam's contact points and NOT the raw placement X: the stop belongs to the post,
+        /// not to the beam. PLANTA takes the point measured in the PLANTA view (whose Y runs with the depth and depends
+        /// on the peralte); the elevations take the LATERAL/FRONTAL one. Returns null when the catalog carries no such
+        /// row for the post — a missing mate is a missing physical contract and must never degrade to the insertion point.
         /// </summary>
-        public const bool FacesLowEnd = true;
-
-        /// <summary>
-        /// PB-VAL-02 — the rear tope's world anchor X in an ELEVATION seen along the depth (LATERAL). It is NOT the raw
-        /// <c>placement.X</c> (the beam's insertion point): it is the beam's own REAL bed-contact connection point on the
-        /// LOAD side, transformed by the beam's mirror. The rear beam exposes both edges of that contact face
-        /// (<see cref="PushBackDefaults.HighEndBeamLeftBedMatePoint"/> / <see cref="PushBackDefaults.HighEndBeamRightBedMatePoint"/>,
-        /// measured from the block); whichever of the two lands at the LOWER world X is the one facing the load, and that
-        /// is where the stop must sit. Falls back to <paramref name="placementX"/> only when the catalog carries neither
-        /// point (a piece with no measured contact face), never silently preferring one edge.
-        /// </summary>
-        public static double LateralAnchorX(RackCatalog catalog, string beamId, double placementX, bool beamMirroredX)
+        public static Point2D? SeparatorAnchorLocal(RackCatalog catalog, string postId, double postPeralte, string view)
         {
-            var left = catalog?.ConnectionLayout.FindConnectionLayout(
-                beamId, PushBackDefaults.HighEndBeamLeftBedMatePoint, PushBackDefaults.HighEndBeamView);
-            var right = catalog?.ConnectionLayout.FindConnectionLayout(
-                beamId, PushBackDefaults.HighEndBeamRightBedMatePoint, PushBackDefaults.HighEndBeamView);
-            if (left == null && right == null)
-            {
-                return placementX;
-            }
-
-            var anchor = double.MaxValue;
-            if (left != null)
-            {
-                anchor = Math.Min(anchor, placementX + (beamMirroredX ? -left.LocalX : left.LocalX));
-            }
-
-            if (right != null)
-            {
-                anchor = Math.Min(anchor, placementX + (beamMirroredX ? -right.LocalX : right.LocalX));
-            }
-
-            return anchor;
+            var entry = catalog?.ConnectionLayout.FindConnectionLayout(postId, DynamicRackDefaults.SeparatorPostPoint, view);
+            return entry == null
+                ? (Point2D?)null
+                : SelectivePostGeometry.Resolve(
+                    entry,
+                    new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte });
         }
 
         /// <summary>The rear tope Y in an ELEVATION view: the canonical Selective rise-and-snap plus <see cref="ExtraRise"/>.</summary>
@@ -113,13 +92,12 @@ namespace RackCad.Application.Systems
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
             var keepFrenteY = IsPlanta(view);
             var troquelMateY = keepFrenteY ? 0.0 : PostTroquelGridBase(structure, catalog);
-            var highBeamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
-                ? PushBackDefaults.HighEndBeamCatalogId
-                : system.HighEndBeamCatalogId;
-            // PB-VAL-02: only the LATERAL is seen along the depth, so only there does the load-side contact point of the
-            // rear beam define the stop's X. The frontal and planta look ACROSS the beam, where the tope runs ALONG it and
-            // shares the beam's transverse datum — the very datum its LONGITUD is measured from.
-            var anchorAlongDepth = string.Equals(view, "LATERAL", StringComparison.OrdinalIgnoreCase);
+            // Owner decision (2026-07-24): the anchor is the POST's TROQUEL_SEPARADOR axis, in the view's own measured
+            // point (PLANTA has its own row, whose Y runs with the depth and depends on the peralte). Never the rear
+            // beam's points, never the bare placement.
+            var postId = DynamicFrontGeometry.PostId(structure, catalog);
+            var separator = SeparatorAnchorLocal(
+                catalog, postId, DynamicFrontGeometry.PostPeralte(structure, catalog, postId), view);
 
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
             {
@@ -129,8 +107,16 @@ namespace RackCad.Application.Systems
                     continue; // this cell's rear tope is deactivated
                 }
 
+                if (!separator.HasValue)
+                {
+                    continue;   // no measured TROQUEL_SEPARADOR: no anchor, and never a raw-placement fallback
+                }
+
+                // The stop sits on the POST's separator axis. The post shares the rear beam's column, so the mirror that
+                // transforms the local point is the placement's; PLANTA also takes the separator's own depth offset.
+                var x = placement.X + (placement.MirroredX ? -separator.Value.X : separator.Value.X);
                 var y = keepFrenteY
-                    ? placement.Y
+                    ? placement.Y + separator.Value.Y
                     : ElevationY(troquelMateY, placement.Y);
                 // Commercial LONGITUD = the corresponding transverse beam length (per front x level) + the allowance.
                 var baseLength = front != null
@@ -139,9 +125,6 @@ namespace RackCad.Application.Systems
                 double? longitud = baseLength > 0.0
                     ? baseLength + SelectiveTopePlacement.LengthAllowance
                     : (double?)null;
-                var x = anchorAlongDepth
-                    ? LateralAnchorX(catalog, highBeamId, placement.X, placement.MirroredX)
-                    : placement.X;
                 result.Add(SelectiveTopePlacement.Tope(
                     TopePieceId, block, view, x, y, saque, longitud,
                     mirroredX: Mirrored(view, placement.MirroredX)));

@@ -93,44 +93,11 @@ namespace RackCad.Tests
             }
         }
 
-        // ---- PB-VAL-02: orientation is an explicit rear-tope rule, never the beam's mirror ----
-
-        [Fact]
-        public void PbVal02_ElevationViews_FaceTheLoadSide_IndependentlyOfTheRearBeamMirror()
-        {
-            // Owner RETEST (normative): round 1 drew the elevation topes unmirrored and the Owner still measured the stop
-            // inverted with respect to the post and the rear end. The facing is a property of the SYSTEM's load side, not
-            // of the beam's mirror: Push Back loads from the LOW end (at -X from the rear beam) and, by the canonical
-            // Selective convention (SelectiveSafetyPlacement.TopeSpots), the tope whose gap lies at -X is the MIRRORED
-            // one. So the elevations mirror it — whatever the rear beam's own mirror is (it is the dynamic ENTRANCE beam,
-            // which IS mirrored): the rule must not read that flag at all.
-            Assert.True(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: true));
-            Assert.True(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: false));
-            Assert.True(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: true));
-            Assert.True(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: false));
-
-            // PLANTA is a top view: the tope lies along the beam and keeps its plan orientation.
-            Assert.True(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: true));
-            Assert.False(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: false));
-        }
-
-        [Fact]
-        public void PbVal02_LateralAndRearFrontalTopes_FaceTheLoadSide()
-        {
-            var catalog = Catalog;
-            var system = System(catalog);
-            var front = system.Structure.Fronts[0];
-
-            var lateral = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
-            Assert.NotEmpty(lateral);
-            Assert.All(lateral, tope => Assert.True(tope.MirroredX));
-
-            var frontal = new PushBackSystemFrontalBuilder()
-                .BuildPlan(system, catalog, PushBackFrontalEnd.Posterior).Flatten().Instances
-                .Where(i => i.Role == HeaderBlockRole.Tope).ToList();
-            Assert.NotEmpty(frontal);
-            Assert.All(frontal, tope => Assert.True(tope.MirroredX));
-        }
+        // ---- PB-VAL-02: the rear tope's anchor and orientation ----
+        // The Owner's 2026-07-24 decisions SUPERSEDE the round-1 and retest rules that lived here (unmirrored, then
+        // mirrored-by-load-side, anchored on the rear beam's contact points). The vigent contract — anchor on the POST's
+        // TROQUEL_SEPARADOR axis and the orientation INVERTED with respect to 10d8eeb — is pinned in
+        // PushBackRearTopeAnchorTests, so it is asserted in exactly one place instead of drifting across two files.
 
         [Fact]
         public void PbVal02And03_DoNotChangeSaqueLengthOrPerCellActivation()

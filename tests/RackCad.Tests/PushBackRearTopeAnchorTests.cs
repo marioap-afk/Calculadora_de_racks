@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Geometry;
 using RackCad.Application.Headers;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
@@ -9,10 +11,13 @@ using Xunit;
 namespace RackCad.Tests
 {
     /// <summary>
-    /// PB-VAL-02 (Owner retest) — the rear tope is PLACED and ORIENTED from the rear beam's REAL transformed connection
-    /// points and from the system's load side, never from the raw <c>placement.X</c> nor from the beam's own mirror.
-    /// Numeric assertions on the WORLD anchor, the orientation and the height across lateral, rear frontal and planta;
-    /// the elevation (+4"), SAQUE, LONGITUD, snap and OffCells contracts are pinned unchanged.
+    /// Owner decisions (2026-07-24) for the rear tope, which SUPERSEDE the earlier rules:
+    /// <list type="number">
+    /// <item>Its ORIGIN sits on the vertical axis of the POST's <c>TROQUEL_SEPARADOR</c> — never the rear beam's contact
+    /// points, never a raw <c>placement.X</c> fallback. PLANTA uses the separator point measured in the PLANTA view.</item>
+    /// <item>Its ORIENTATION is INVERTED with respect to 10d8eeb, where the Owner measured it upside down.</item>
+    /// </list>
+    /// The approved elevation (+4"), snap, SAQUE, LONGITUD, OffCells and BOM are pinned unchanged.
     /// </summary>
     public class PushBackRearTopeAnchorTests
     {
@@ -30,134 +35,158 @@ namespace RackCad.Tests
         private static PushBackSystem System(RackCatalog catalog)
             => new PushBackResolver(catalog).Resolve(new PushBackDesign { Structure = BaseStructure() });
 
-        private static string HighBeamId(PushBackSystem system)
-            => string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
-                ? PushBackDefaults.HighEndBeamCatalogId
-                : system.HighEndBeamCatalogId;
+        private static (string PostId, double Peralte) Post(PushBackSystem system, RackCatalog catalog)
+        {
+            var postId = DynamicFrontGeometry.PostId(system.Structure, catalog);
+            return (postId, DynamicFrontGeometry.PostPeralte(system.Structure, catalog, postId));
+        }
 
-        // ---- the anchor comes from the beam's measured contact face, on the load side ----
+        // ---- (1) the anchor is the POST's TROQUEL_SEPARADOR axis ----
 
         [Fact]
-        public void LateralAnchor_IsTheLoadSideContactPoint_NotTheRawPlacementX()
+        public void SeparatorAnchor_IsTheCatalogsMeasuredPostPoint_PerView()
         {
             var catalog = Catalog;
             var system = System(catalog);
-            var beamId = HighBeamId(system);
+            var (postId, peralte) = Post(system, catalog);
 
-            var left = catalog.ConnectionLayout.FindConnectionLayout(
-                beamId, PushBackDefaults.HighEndBeamLeftBedMatePoint, PushBackDefaults.HighEndBeamView);
-            var right = catalog.ConnectionLayout.FindConnectionLayout(
-                beamId, PushBackDefaults.HighEndBeamRightBedMatePoint, PushBackDefaults.HighEndBeamView);
-            Assert.NotNull(left);   // the shipped catalog measures both edges of the contact face
-            Assert.NotNull(right);
+            foreach (var view in new[] { "LATERAL", "PLANTA" })
+            {
+                var entry = catalog.ConnectionLayout.FindConnectionLayout(
+                    postId, DynamicRackDefaults.SeparatorPostPoint, view);
+                Assert.NotNull(entry);   // the shipped catalog measures the separator in both views
 
-            const double placementX = 100.0;
+                var resolved = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, view);
+                Assert.True(resolved.HasValue);
+                var expected = SelectivePostGeometry.Resolve(
+                    entry, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = peralte });
+                Assert.Equal(expected.X, resolved.Value.X, 9);
+                Assert.Equal(expected.Y, resolved.Value.Y, 9);
+            }
 
-            // Unmirrored: both points transform to +local, so the LOAD side (lower world X) is the left edge.
-            var unmirrored = PushBackRearTopeBuilder.LateralAnchorX(catalog, beamId, placementX, beamMirroredX: false);
-            Assert.Equal(placementX + Math.Min(left.LocalX, right.LocalX), unmirrored, 9);
-
-            // Mirrored: the local X flips, so the load side becomes the OTHER edge — the rule follows the mirror.
-            var mirrored = PushBackRearTopeBuilder.LateralAnchorX(catalog, beamId, placementX, beamMirroredX: true);
-            Assert.Equal(placementX - Math.Max(left.LocalX, right.LocalX), mirrored, 9);
-
-            // In both cases it is a REAL measured point of the block, never the bare insertion point.
-            Assert.NotEqual(placementX, unmirrored);
-            Assert.NotEqual(placementX, mirrored);
+            // PLANTA's separator carries its own depth offset, driven by the post peralte — it is NOT the lateral point.
+            var lateral = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, "LATERAL").Value;
+            var planta = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, "PLANTA").Value;
+            Assert.NotEqual(lateral.Y, planta.Y);
         }
 
         [Fact]
-        public void LateralAnchor_FallsBackToThePlacement_OnlyWhenTheBlockHasNoMeasuredContactFace()
+        public void NoAnchor_AndNoRawPlacementFallback_WhenThePostHasNoSeparatorPoint()
         {
             var catalog = Catalog;
-            // A piece with no INICIO_IZQUIERDO/INICIO_DERECHO rows: no silent preference for one edge, no magic offset.
-            Assert.Equal(50.0, PushBackRearTopeBuilder.LateralAnchorX(catalog, "PIEZA_SIN_PUNTOS", 50.0, beamMirroredX: false), 9);
-            Assert.Equal(50.0, PushBackRearTopeBuilder.LateralAnchorX(null, "CUALQUIERA", 50.0, beamMirroredX: true), 9);
+            Assert.Null(PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, "POSTE_SIN_SEPARADOR", 3.0, "LATERAL"));
+            Assert.Null(PushBackRearTopeBuilder.SeparatorAnchorLocal(null, "CUALQUIERA", 3.0, "LATERAL"));
         }
 
         [Fact]
-        public void LateralTopes_SitOnTheContactPoint_AndFaceTheLoadSide()
+        public void TopeOrigin_SitsOnTheSeparatorAxis_InLateralAndInPlanta()
         {
             var catalog = Catalog;
             var system = System(catalog);
             var front = system.Structure.Fronts[0];
-            var beamId = HighBeamId(system);
+            var (postId, peralte) = Post(system, catalog);
+            var builder = new PushBackRearTopeBuilder();
+            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
+                .Where(p => p.IsEntrance).ToList();
+            Assert.NotEmpty(rearBeams);
+
+            foreach (var view in new[] { "LATERAL", "PLANTA" })
+            {
+                var separator = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, view).Value;
+                var topes = builder.Build(system, catalog, 0, front, view);
+                Assert.NotEmpty(topes);
+
+                foreach (var tope in topes)
+                {
+                    var expectedXs = rearBeams
+                        .Select(b => b.X + (b.MirroredX ? -separator.X : separator.X))
+                        .ToList();
+                    Assert.Contains(expectedXs, x => Math.Abs(x - tope.Insertion.X) < 1e-9);
+
+                    // It is NOT the bare placement X: the separator axis is offset from the post's insertion.
+                    Assert.DoesNotContain(rearBeams, b => Math.Abs(b.X - tope.Insertion.X) < 1e-9);
+                }
+
+                // PLANTA also takes the separator's own depth offset.
+                if (string.Equals(view, "PLANTA", StringComparison.Ordinal))
+                {
+                    Assert.All(topes, tope => Assert.Contains(
+                        rearBeams, b => Math.Abs(b.Y + separator.Y - tope.Insertion.Y) < 1e-9));
+                }
+            }
+        }
+
+        [Fact]
+        public void TopeAnchor_DoesNotUseTheRearBeamsContactPoints()
+        {
+            var catalog = Catalog;
+            var system = System(catalog);
+            var front = system.Structure.Fronts[0];
+            var beamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
+                ? PushBackDefaults.HighEndBeamCatalogId
+                : system.HighEndBeamCatalogId;
 
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.NotEmpty(topes);
 
-            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
-            Assert.NotEmpty(rearBeams);
+            var beamEdges = DynamicLoadBeamGeometry.Placements(system.Structure, front)
+                .Where(p => p.IsEntrance)
+                .SelectMany(p => new[]
+                {
+                    PushBackDefaults.HighEndBeamLeftBedMatePoint,
+                    PushBackDefaults.HighEndBeamRightBedMatePoint
+                }.Select(pointId =>
+                {
+                    var e = catalog.ConnectionLayout.FindConnectionLayout(
+                        beamId, pointId, PushBackDefaults.HighEndBeamView);
+                    return e == null ? double.NaN : p.X + (p.MirroredX ? -e.LocalX : e.LocalX);
+                }))
+                .Where(x => !double.IsNaN(x))
+                .ToList();
 
-            foreach (var tope in topes)
-            {
-                // Every tope's world X is the load-side contact point of ITS rear beam, and is DISPLACED from the raw
-                // placement X the previous build anchored on.
-                var expected = rearBeams
-                    .Select(b => PushBackRearTopeBuilder.LateralAnchorX(catalog, beamId, b.X, b.MirroredX))
-                    .ToList();
-                Assert.Contains(expected, x => Math.Abs(x - tope.Insertion.X) < 1e-9);
-                Assert.DoesNotContain(rearBeams, b => Math.Abs(b.X - tope.Insertion.X) < 1e-9);
-
-                Assert.True(tope.MirroredX, "the lateral tope must face the load side");
-                Assert.Equal(tope.Insertion, tope.ConnectionAnchor);
-            }
+            Assert.All(topes, tope => Assert.DoesNotContain(beamEdges, x => Math.Abs(x - tope.Insertion.X) < 1e-9));
         }
 
-        // ---- the three views: anchor, orientation and height ----
+        // ---- (2) the orientation is the inverse of 10d8eeb ----
 
         [Fact]
-        public void RearFrontalAndPlanta_KeepTheBeamTransverseDatum_AndTheirOwnOrientation()
+        public void ElevationOrientation_IsInvertedWithRespectTo10d8eeb()
+        {
+            // 10d8eeb drew the elevations MIRRORED and the Owner measured the stop upside down; it is now unmirrored,
+            // and still never reads the rear beam's own mirror.
+            Assert.False(PushBackRearTopeBuilder.ElevationMirrored);
+            Assert.False(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: true));
+            Assert.False(PushBackRearTopeBuilder.Mirrored("LATERAL", beamMirroredX: false));
+            Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: true));
+            Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: false));
+
+            // PLANTA is a top view and keeps the beam's plan orientation (approved, unchanged).
+            Assert.True(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: true));
+            Assert.False(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: false));
+        }
+
+        [Fact]
+        public void LateralAndRearFrontalTopes_AreDrawnUnmirrored()
         {
             var catalog = Catalog;
             var system = System(catalog);
             var front = system.Structure.Fronts[0];
-            var builder = new PushBackRearTopeBuilder();
-            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
 
-            // FRONTAL and PLANTA look ACROSS the beam: the tope runs ALONG it, so it shares the beam's transverse datum
-            // (the same datum its LONGITUD is measured from) — only the LATERAL is seen along the depth.
-            foreach (var view in new[] { "FRONTAL", "PLANTA" })
-            {
-                var topes = builder.Build(system, catalog, 0, front, view);
-                Assert.NotEmpty(topes);
-                Assert.All(topes, tope => Assert.Contains(rearBeams, b => Math.Abs(b.X - tope.Insertion.X) < 1e-9));
-            }
+            var lateral = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
+            Assert.NotEmpty(lateral);
+            Assert.All(lateral, tope => Assert.False(tope.MirroredX));
 
-            // Rear frontal is an elevation: it faces the load side like the lateral.
-            Assert.All(builder.Build(system, catalog, 0, front, "FRONTAL"), tope => Assert.True(tope.MirroredX));
-
-            // Planta is a top view: the tope lies along the beam and keeps the beam's plan orientation.
-            var planta = builder.Build(system, catalog, 0, front, "PLANTA");
-            Assert.All(planta, tope => Assert.Contains(
-                rearBeams, b => Math.Abs(b.X - tope.Insertion.X) < 1e-9 && b.MirroredX == tope.MirroredX));
+            var frontal = new PushBackSystemFrontalBuilder()
+                .BuildPlan(system, catalog, PushBackFrontalEnd.Posterior).Flatten().Instances
+                .Where(i => i.Role == HeaderBlockRole.Tope).ToList();
+            Assert.NotEmpty(frontal);
+            Assert.All(frontal, tope => Assert.False(tope.MirroredX));
         }
 
-        [Fact]
-        public void Heights_AreUnchanged_ElevationsRiseAndSnapPlusFour_PlantaKeepsTheFrenteY()
-        {
-            var catalog = Catalog;
-            var system = System(catalog);
-            var front = system.Structure.Fronts[0];
-            var builder = new PushBackRearTopeBuilder();
-            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
-
-            // PB-VAL-03 stays APPROVED: the elevation Y is still the canonical rise-and-snap plus exactly 4".
-            Assert.Equal(4.0, PushBackRearTopeBuilder.ExtraRise, 9);
-            foreach (var tope in builder.Build(system, catalog, 0, front, "LATERAL"))
-            {
-                Assert.Contains(rearBeams, b =>
-                    Math.Abs(PushBackRearTopeBuilder.ElevationY(
-                        PostGridBase(system, catalog), b.Y) - tope.Insertion.Y) < 1e-9);
-            }
-
-            // Planta keeps the frente Y (no rise-and-snap).
-            Assert.All(builder.Build(system, catalog, 0, front, "PLANTA"),
-                tope => Assert.Contains(rearBeams, b => Math.Abs(b.Y - tope.Insertion.Y) < 1e-9));
-        }
+        // ---- the approved contracts stay frozen ----
 
         [Fact]
-        public void SaqueLongitudAndOffCells_AreUntouchedByTheAnchorFix()
+        public void ElevationSaqueLongitudSnapAndOffCells_AreUntouched()
         {
             var catalog = Catalog;
             var design = new PushBackDesign { Structure = BaseStructure() };
@@ -166,37 +195,34 @@ namespace RackCad.Tests
             var front = system.Structure.Fronts[0];
 
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
+            Assert.Equal(Math.Max(1, front.LoadLevels) - 1, topes.Count);   // OffCells still removes its cell
 
-            Assert.Equal(Math.Max(1, front.LoadLevels) - 1, topes.Count);   // the deactivated cell still has no tope
+            // PB-VAL-03 stays approved: the elevation is the canonical rise-and-snap plus exactly 4".
+            Assert.Equal(4.0, PushBackRearTopeBuilder.ExtraRise, 9);
+            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
+            var gridBase = PostGridBase(system, catalog);
+            Assert.All(topes, tope => Assert.Contains(
+                rearBeams, b => Math.Abs(PushBackRearTopeBuilder.ElevationY(gridBase, b.Y) - tope.Insertion.Y) < 1e-9));
+
+            var expectedLongitud = PushBackLoadBeamGeometry.CellBeamLength(system.Structure, front, 1)
+                + SelectiveTopePlacement.LengthAllowance;
             Assert.All(topes, tope =>
             {
-                Assert.Equal(PushBackDefaults.RearTopeSaque,
-                    tope.DynamicParameters[SelectiveSafetyPlacement.SaqueParam], 9);
+                Assert.Equal(PushBackDefaults.RearTopeSaque, tope.DynamicParameters[SelectiveSafetyPlacement.SaqueParam], 9);
+                Assert.Equal(expectedLongitud, tope.DynamicParameters[SelectiveRackDefaults.LengthParam], 6);
                 Assert.Equal(HeaderBlockRole.Tope, tope.Role);
                 Assert.Equal(PushBackRearTopeBuilder.TopePieceId, tope.PieceId);
             });
-
-            // LONGITUD is the commercial rule and is view-independent here: the cell's transverse beam length plus the
-            // canonical allowance, in the lateral and in the rear frontal alike. The anchor fix must not touch it.
-            var expectedLongitud = PushBackLoadBeamGeometry.CellBeamLength(system.Structure, front, 1)
-                + SelectiveTopePlacement.LengthAllowance;
-            Assert.All(topes, tope => Assert.Equal(
-                expectedLongitud, tope.DynamicParameters[SelectiveRackDefaults.LengthParam], 6));
-            var frontal = new PushBackRearTopeBuilder().Build(system, catalog, 0, front, "FRONTAL");
-            Assert.All(frontal, tope => Assert.Equal(
-                expectedLongitud, tope.DynamicParameters[SelectiveRackDefaults.LengthParam], 6));
         }
 
         private static double PostGridBase(PushBackSystem system, RackCatalog catalog)
         {
-            // Mirrors the builder's own grid base so the height assertion is independent of its private helper.
             var postId = DynamicFrontGeometry.PostId(system.Structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(system.Structure, catalog, postId);
             var entry = catalog.ConnectionLayout.FindConnectionLayout(
                 postId, SelectiveRackDefaults.PostBeamPoint, SelectiveRackDefaults.View);
             return SelectivePostGeometry.Resolve(
-                entry,
-                new System.Collections.Generic.Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
+                entry, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
         }
     }
 }

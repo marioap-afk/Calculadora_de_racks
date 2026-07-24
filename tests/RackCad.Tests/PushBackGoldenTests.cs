@@ -92,16 +92,20 @@ namespace RackCad.Tests
             // LowBeams is lateral-only, so frontal-entrada, frontal-posterior, planta and the BOM stay put.
             // Previous (round 1): lateral/lateral-corte0 E3E3EA9F…
             //
-            // OWNER RETEST of PB-VAL-02 (the stop was still inverted): the rear tope now takes its world anchor from the
-            // rear beam's measured load-side contact point (lateral only, the view seen along the depth) and faces the
-            // LOAD side in both elevations. So exactly THREE pins move: the two laterals (anchor + orientation) and
-            // frontal-posterior (orientation). frontal-entrada carries no rear tope, planta keeps the beam's plan mirror
-            // and the BOM counts the same pieces with the same SAQUE/LONGITUD — those three are UNCHANGED, which is what
-            // bounds this correction. Previous: lateral/lateral-corte0 4C22005A…, frontal-posterior 67511108…
-            ["lateral"] = "110DB452132A58A933839AE6159403C35B192D9ADC4EF78D4D532A9F3278915F",
-            ["lateral-corte0"] = "110DB452132A58A933839AE6159403C35B192D9ADC4EF78D4D532A9F3278915F",
+            // OWNER DECISIONS 2026-07-24 (they SUPERSEDE the previous rules). Three changes land on the LATERAL and one
+            // on the rear frontal:
+            //  * the LOW IN/OUT beam no longer carries any displacement — it is bolted where its TROQUEL_CAMA meets the
+            //    rail's TROQUEL_IN, so it returns to the resolver's snapped exit elevation;
+            //  * the REAR beam is the one that now drops onto the bed-origin line, tangent at its measured contact edge;
+            //  * the rear TOPE anchors on the POST's TROQUEL_SEPARADOR axis and its orientation is INVERTED.
+            // The orientation flip alone is what moves frontal-posterior, and it returns EXACTLY to the pin it had before
+            // the previous run (67511108…) — the anchor there is the beam's transverse datum, which did not change.
+            // frontal-entrada (no rear tope, and the low beam was never shifted in that view), planta and the BOM are
+            // UNCHANGED. Previous: lateral/lateral-corte0 110DB452…, frontal-posterior 1DA69F5E…
+            ["lateral"] = "67F638603DC68A5008AC4555E8D8D902DDCDD0CD4F5F70FC01BA0CB373B3746B",
+            ["lateral-corte0"] = "67F638603DC68A5008AC4555E8D8D902DDCDD0CD4F5F70FC01BA0CB373B3746B",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
-            ["frontal-posterior"] = "1DA69F5EA299624C75B1F69BBEAF758ED63CEF2FA64B49AB8EE4A8E0D456C3D6",
+            ["frontal-posterior"] = "67511108F6F2CD8A2799A962F0C20A49044D90BAFCDB2E3B0B0C3E5EE5C37E80",
             ["planta"] = "33A87C650DF93AAF45E1F600B348E515E4D1379510E9095A4C6564E3F766E82C",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
