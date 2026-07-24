@@ -156,22 +156,32 @@
 
                     <TextBlock x:Name="CellSelectionPrimaryText" Margin="0,0,0,4" Foreground="#264A63" TextWrapping="Wrap" />
 
-                    <!-- The two matrices sit side by side in ONE surface: selection (left) and rear-tope state (right),
-                         both driven by PushBackEditorState.Structure. -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                            <TextBlock Text="Selección de celdas" FontWeight="SemiBold" Margin="0,0,0,2" />
-                            <controls:SelectionMatrix x:Name="CellSelectionMatrix" InvertRows="True" MinHeight="86" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1">
-                            <TextBlock Text="Topes posteriores" FontWeight="SemiBold" Margin="0,0,0,2" />
-                            <controls:SelectionMatrix x:Name="TopeMatrix" InvertRows="True" MinHeight="86" />
-                        </StackPanel>
-                    </Grid>
+                    <!-- THE central editing surface: one informative card per frente x nivel (clic = primaria,
+                         Ctrl+clic = multiselección). Built imperatively from PushBackMatrixCardModel; the authority
+                         is PushBackEditorState.Structure — the grid stores nothing. -->
+                    <ScrollViewer MaxHeight="260" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <Grid x:Name="PushBackMatrixGrid" Margin="0,2,4,2" />
+                    </ScrollViewer>
+
+                    <!-- Secondary BULK tools (kept for mass toggling; they mirror the same authority and must not
+                         compete visually with the card matrix above). -->
+                    <Expander x:Name="BulkToolsExpander" Header="Herramientas masivas (marcar selección / topes)"
+                              IsExpanded="False" Margin="0,4,0,0" Foreground="#607080">
+                        <Grid Margin="0,4,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                <TextBlock Text="Selección de celdas" FontWeight="SemiBold" Margin="0,0,0,2" />
+                                <controls:SelectionMatrix x:Name="CellSelectionMatrix" InvertRows="True" MinHeight="60" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Topes posteriores" FontWeight="SemiBold" Margin="0,0,0,2" />
+                                <controls:SelectionMatrix x:Name="TopeMatrix" InvertRows="True" MinHeight="60" />
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
 
                     <!-- Cell editor for the primary selection -->
                     <Border BorderBrush="#C4CFD9" BorderThickness="0,1,0,0" Margin="0,8,0,0" Padding="0,6,0,0">

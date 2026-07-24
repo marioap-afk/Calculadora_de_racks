@@ -96,17 +96,29 @@ namespace RackCad.UI.Tests
                 var w = Shown();
                 try
                 {
+                    // Round 3 (PB-VAL-01): the INFORMATIVE card matrix is the central surface. The two check matrices
+                    // remain as secondary bulk tools inside a collapsed Expander in the same zone.
+                    var cardGrid = Named<Grid>(w, "PushBackMatrixGrid");
+                    Assert.NotNull(cardGrid);
+                    Assert.False(IsInsideLeftSettingsPanel(cardGrid), "the card matrix must not sit in the left panel");
+
+                    var zone = Named<GroupBox>(w, "MatrixZone");
+                    Assert.Contains(Descendants(zone), d => ReferenceEquals(d, cardGrid));
+
+                    // The bulk tools live in the SAME zone, behind a secondary expander (collapsed by default so they
+                    // do not compete with the card matrix). Expanding materializes them in the visual tree.
+                    var expander = Named<Expander>(w, "BulkToolsExpander");
+                    Assert.NotNull(expander);
+                    Assert.False(expander.IsExpanded, "the bulk tools must start collapsed");
+                    expander.IsExpanded = true;
+                    w.UpdateLayout();
+
                     var selection = Named<SelectionMatrix>(w, "CellSelectionMatrix");
                     var topes = Named<SelectionMatrix>(w, "TopeMatrix");
                     Assert.NotNull(selection);
                     Assert.NotNull(topes);
-
-                    // Both live in the central work area, NOT inside the fixed-width left settings column.
                     Assert.False(IsInsideLeftSettingsPanel(selection), "the selection matrix must not sit in the left panel");
                     Assert.False(IsInsideLeftSettingsPanel(topes), "the tope matrix must not sit in the left panel");
-
-                    // ...and specifically inside the matrix zone.
-                    var zone = Named<GroupBox>(w, "MatrixZone");
                     Assert.Contains(Descendants(zone), d => ReferenceEquals(d, selection));
                     Assert.Contains(Descendants(zone), d => ReferenceEquals(d, topes));
                 }
