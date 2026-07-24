@@ -139,7 +139,25 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
   **PB-VAL-06 — Push Back no admite parrillas**: la autoridad canónica `PushBackSafetyAuthority` excluye PARRILLA
   además de GUIA (predicado único `IsUnsupported`), impidiéndola en UI, resolver, sistema, planes, dibujo y BOM,
   con lectura compatible de documentos antiguos (una parrilla legacy se lee sin error y se descarta en build, como
-  GUIA; sin migración destructiva). **Prueba real de persistencia** (`PushBackNoParrillaPersistenceTests`): un
+  GUIA; sin migración destructiva). **Smoke del Owner (2026-07-24, normativo)** sobre el DLL de `18e1715`:
+  PB-VAL-03, PB-VAL-04 y PB-VAL-06 **aprobados**; PB-VAL-01, PB-VAL-02 y PB-VAL-05 **rechazados**; quedan
+  aprobados y **congelados** (no se modifican) matriz/selección, preview técnico, status, seguridad, cama y la
+  altura adicional +4" del tope. **Corrida de retest:** (a) **PB-VAL-01** — el editor completo de «Celda
+  seleccionada» y sus alcances «Aplicar a» pasan de la matriz al **sidebar** con el patrón estructural del
+  Dinámico (`SectionTitle` + `FieldLabel` sobre control a ancho completo, grids de dos columnas con gutter 10);
+  la matriz queda solo con toolbar, tarjetas y herramientas masivas; los `WrapPanel` densos del sidebar
+  desaparecen (el único que queda es la fila de botones «Aplicar a», como en el Dinámico). (b) **PB-VAL-02** — el
+  tope deja de anclarse a `placement.X` bruto y toma el **punto de conexión real** del larguero posterior
+  (`INICIO_IZQUIERDO`/`INICIO_DERECHO`) transformado por el mirror, eligiendo el del **lado de carga**; y su
+  orientación deja de deducirse del mirror del larguero: Push Back es LIFO y carga por el extremo bajo (−X), y
+  por la convención canónica del Selectivo el tope cuyo hueco cae en −X es el **espejado**, así que las
+  elevaciones lo dibujan espejado. Se conservan +4", SAQUE, LONGITUD, snap y OffCells; el golden se re-fija solo
+  en tres pins. (c) **PB-VAL-05** — el Owner confirmó en el DWG que `TROQUEL_CAMA` **es** la cara de contacto
+  física y que el desplazamiento vigente es correcto, así que consumirlo queda **demostrado**: el punto canónico
+  se hace explícito y auditable (se lee del catálogo por nombre, sin fallback al origen del bloque) y se prueba
+  numéricamente que el punto transformado del larguero colocado cae sobre la línea de `RailOrigin` en su propio X
+  y que la cama queda **bit-idéntica**. Queda un **hallazgo abierto** para decisión del Owner: el desplazamiento
+  es *lateral-only*, y el frontal de entrada/salida dibuja el mismo larguero 1.2519" más arriba. **Prueba real de persistencia** (`PushBackNoParrillaPersistenceTests`): un
   proyecto Push Back antiguo —envelope con GUID envolviendo un proyecto interno con PARRILLA, metadata desconocida
   y versión legible `2.5` (I-11)— se lee por los stores vigentes sin error; al cargar/resolver la parrilla no
   llega al sistema, a las 5 vistas ni al BOM; y la reescritura canónica (snapshot del sistema resuelto) **no** la
