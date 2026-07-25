@@ -64,9 +64,12 @@ namespace RackCad.Application.Systems
                 return selection.SideForPost(postIndex);
             }
 
+            // PB-009 (I-32): with no explicit side the rule is ADAPTIVE — it puts a guard on the far face of the last
+            // post. A low-end-only system (Push Back) has no far face to guard, so that branch resolves to nothing
+            // there; otherwise the historical behaviour is untouched.
             if (postCount <= 1)
             {
-                return SafetySide.Both;
+                return selection.LowEndOnly ? SafetySide.Left : SafetySide.Both;
             }
 
             if (postIndex == 0)
@@ -74,7 +77,12 @@ namespace RackCad.Application.Systems
                 return SafetySide.Left;
             }
 
-            return postIndex == postCount - 1 ? SafetySide.Right : SafetySide.None;
+            if (postIndex == postCount - 1)
+            {
+                return selection.LowEndOnly ? SafetySide.None : SafetySide.Right;
+            }
+
+            return SafetySide.None;
         }
 
         public static bool DrawsAtEnd(

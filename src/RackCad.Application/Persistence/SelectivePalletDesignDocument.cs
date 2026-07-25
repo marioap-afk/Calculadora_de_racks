@@ -394,6 +394,16 @@ namespace RackCad.Application.Persistence
         public int PostIndex { get; set; }
         public double? ExitLength { get; set; }
         public double? EntranceLength { get; set; }
+
+        /// <summary>
+        /// PB-010 (I-32) — this end follows the automatic 12"/36" rule instead of the stored length. NULL is the legacy
+        /// value every earlier document carries and reads as FALSE (an explicit override), so a saved rack keeps the
+        /// exact lengths it was saved with.
+        /// </summary>
+        public bool? ExitAuto { get; set; }
+
+        /// <summary>PB-010 — same, for the other end. NULL reads as an explicit override (legacy).</summary>
+        public bool? EntranceAuto { get; set; }
     }
 
     /// <summary>One matrix cell (a level of a frente): pallet, count, beam, and the optional manual overrides.</summary>

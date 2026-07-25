@@ -949,10 +949,13 @@ namespace RackCad.UI
                 elements, safetySelections, postCount,
                 levelsPerFrente: levels, fondoCount: 1, parrillaPlan: null, catalog: catalog, resolvedSystem: null,
                 fallbackLevelsArePerPost: true,
-                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo bajo (entrada/salida). No usa guías.",
+                introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo de entrada/salida (el extremo bajo). El lado posterior viene apagado y no usa guías.",
                 includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true,
                 extraSection: extraSection,
-                desviadorLevelsPerPost: DesviadorLevelsPerPost())
+                desviadorLevelsPerPost: DesviadorLevelsPerPost(),
+                // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
+                // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
+                defensaLowEndOnly: true)
             {
                 Owner = this
             };

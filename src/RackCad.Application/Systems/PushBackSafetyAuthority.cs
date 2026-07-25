@@ -108,11 +108,21 @@ namespace RackCad.Application.Systems
             }
 
             selection.PostSides.Clear();
+
+            // PB-009 (I-32): mark the selection itself, so the ADAPTIVE defaults of every family stop reaching the far
+            // end. Zeroing the stored records was not enough — a brand-new rack carries NO records at all, so the
+            // forklift defence fell straight through to the 12/36 default and drew a rear piece in lateral, planta and
+            // the BOM, and the lateral guard's adaptive rule put a guard on the last post's far face.
+            //
+            // It is a DEFAULT, not a prohibition: an end the user explicitly set is honoured, which is why the stored
+            // entrance lengths are no longer wiped. What IS cleared is the AUTO flag of that end — an automatic far end
+            // has no meaning here and would resolve back to 12/36.
+            selection.LowEndOnly = true;
             foreach (var post in selection.DefensaPosts)
             {
                 if (post != null)
                 {
-                    post.EntranceLength = 0.0;
+                    post.EntranceAuto = false;
                 }
             }
         }

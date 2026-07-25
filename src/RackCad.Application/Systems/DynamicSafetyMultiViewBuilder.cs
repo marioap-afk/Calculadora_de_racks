@@ -142,7 +142,7 @@ namespace RackCad.Application.Systems
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
-                var setting = DynamicForkliftDefensePlan.At(selection.DefensaPosts, postIndex, postCount);
+                var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var draws = end == DynamicRackEnd.Exit ? setting.DrawsExit : setting.DrawsEntrance;
                 if (!draws)
                 {
@@ -294,7 +294,7 @@ namespace RackCad.Application.Systems
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
-                var setting = DynamicForkliftDefensePlan.At(selection.DefensaPosts, postIndex, postCount);
+                var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;

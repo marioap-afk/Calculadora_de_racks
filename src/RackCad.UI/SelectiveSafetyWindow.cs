@@ -37,6 +37,14 @@ namespace RackCad.UI
         /// index — which left posts showing fewer levels than the drawing actually places.
         /// </summary>
         private readonly IReadOnlyList<int> desviadorLevelsPerPost;
+
+        /// <summary>
+        /// PB-008 / PB-009 / PB-010 (I-32) — OPT-IN: this system's forklift defence lives only at the LOW
+        /// (entrance/exit) end. It renames the two columns to the ends the system really has, turns the far one off by
+        /// default, and offers the per-end Auto that recomputes 12"/36" when the rack gains or loses fronts. False
+        /// (Selectivo, Dinámico) keeps the historical dialog exactly.
+        /// </summary>
+        private readonly bool defensaLowEndOnly;
         private readonly bool useDynamicSafetyDefaults;
 
         private sealed class Row
@@ -97,7 +105,7 @@ namespace RackCad.UI
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false)
         {
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
@@ -107,6 +115,7 @@ namespace RackCad.UI
             this.resolvedSystem = resolvedSystem;
             this.fallbackLevelsArePerPost = fallbackLevelsArePerPost;
             this.desviadorLevelsPerPost = desviadorLevelsPerPost;
+            this.defensaLowEndOnly = defensaLowEndOnly;
             this.useDynamicSafetyDefaults = useDynamicSafetyDefaults;
             elements ??= new List<SafetyElementCatalogEntry>();
             var currentSelections = (current ?? Enumerable.Empty<SelectiveSafetySelection>())
@@ -354,7 +363,9 @@ namespace RackCad.UI
                                 {
                                     PostIndex = post.PostIndex,
                                     ExitLength = post.ExitLength,
-                                    EntranceLength = post.EntranceLength
+                                    EntranceLength = post.EntranceLength,
+                                    ExitAuto = post.ExitAuto,
+                                    EntranceAuto = post.EntranceAuto
                                 }).ToList() ?? new List<SafetyPostDefense>();
                         }
 
@@ -364,7 +375,9 @@ namespace RackCad.UI
                             Content = DefensaLabel(row),
                             Padding = new Thickness(10, 3, 10, 3),
                             VerticalAlignment = VerticalAlignment.Center,
-                            ToolTip = "Defensa de montacargas: elige Salida y Entrada por poste, con una LONGITUD independiente en cada extremo."
+                            ToolTip = defensaLowEndOnly
+                                ? "Defensa de montacargas: se coloca en el extremo de entrada/salida, con LONGITUD por poste y recálculo automático 12\"/36\"."
+                                : "Defensa de montacargas: elige Salida y Entrada por poste, con una LONGITUD independiente en cada extremo."
                         };
                         button.Click += (s, e) => EditDefensa(row);
                         Grid.SetColumn(button, 1);
@@ -542,7 +555,8 @@ namespace RackCad.UI
         private void EditDefensa(Row row)
         {
             var dialog = new SafetyDefensaGridWindow(
-                SelectedElementLabel(row), postCount, row.DefensaPosts) { Owner = this };
+                SelectedElementLabel(row), postCount, row.DefensaPosts,
+                lowEndOnly: defensaLowEndOnly, autoPerEnd: defensaLowEndOnly) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -750,13 +764,15 @@ namespace RackCad.UI
                             {
                                 PostIndex = post.PostIndex,
                                 ExitLength = post.ExitLength,
-                                EntranceLength = post.EntranceLength
+                                EntranceLength = post.EntranceLength,
+                                ExitAuto = post.ExitAuto,
+                                EntranceAuto = post.EntranceAuto
                             });
                         }
                     }
 
                     var drawsSomewhere = Enumerable.Range(0, postCount)
-                        .Select(post => DynamicForkliftDefensePlan.At(selection.DefensaPosts, post, postCount))
+                        .Select(post => DynamicForkliftDefensePlan.ForSelection(selection, post, postCount))
                         .Any(setting => setting.DrawsExit || setting.DrawsEntrance);
                     if (drawsSomewhere)
                     {

@@ -95,8 +95,8 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            var setting = DynamicForkliftDefensePlan.At(
-                selection.DefensaPosts, postIndex, Math.Max(1, system.Fronts.Count + 1));
+            var setting = DynamicForkliftDefensePlan.ForSelection(
+                selection, postIndex, Math.Max(1, system.Fronts.Count + 1));
             var offset = CatalogLookup.Local(
                 catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, View);
             if (setting.DrawsExit)
