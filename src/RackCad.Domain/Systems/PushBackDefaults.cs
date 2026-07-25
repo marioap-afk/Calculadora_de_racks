@@ -31,5 +31,15 @@ namespace RackCad.Domain.Systems
 
         /// <summary>Default rear-tope stick-out (SAQUE, in). Reuses the selective TOPE default so the rule lives in one place.</summary>
         public const double RearTopeSaque = SelectiveSafetyDefaults.TopeSaque;
+
+        /// <summary>
+        /// PB-012 (I-32) — first-level elevation (in) a BRAND-NEW Push Back rack opens with. Push Back loads at floor
+        /// level, so its first beam sits lower than the dynamic system's
+        /// <see cref="DynamicRackDefaults.DefaultFirstLevelHeight"/> (6"), which stays untouched for that system.
+        ///
+        /// It is a NEW-DESIGN default only: a persisted rack always carries its own value and reloading it must never
+        /// re-default, which would silently rewrite a saved drawing.
+        /// </summary>
+        public const double DefaultFirstLevelHeight = 4.0;
     }
 }
