@@ -121,36 +121,42 @@ Plugin con 0 errores propios; CI verde en la rama.
 
 ## 10. Validacion manual
 
-`requires_autocad: true`. Sobre el DLL Debug del worktree, con AutoCAD cerrado antes de compilar.
+`requires_autocad: true`. Sobre el DLL Debug del worktree, con AutoCAD **cerrado antes de compilar**.
 
-> **El gate NO esta abierto.** El coordinador lo mantiene cerrado hasta su propia revision, junto con el
-> DLL canonico. Esta seccion define QUE se validara cuando lo abra; no autoriza pedirsela al Owner.
+### Checklist minimo obligatorio — 21 puntos
 
-### Checklist minimo obligatorio — 16 puntos
+El minimo exigido son 16; la revision tecnica I-32-CODE-REVIEW-3 pidio restaurar como puntos
+**independientes** la altura de cabecera y cada paso del flujo insertar / actualizar / guardar / reabrir /
+BOM, que una version anterior habia colapsado en tres lineas. Colapsarlos ocultaba lo que mas importa
+comprobar: un flujo que falla en un solo paso se ve verde si ese paso viaja dentro de otro.
 
-Los **catorce primeros** son los puntos de validacion originales de la iniciativa: uno por cada hallazgo
-corregido, mas los cuatro invariantes transversales que ninguna correccion puede romper. Los **dos
-ultimos** son las consecuencias geometricas que PB-004 arrastra: nadie las pidio, pero mueven piezas que
-el Owner ya habia aprobado en I-18 y por eso son obligatorias, no opcionales.
+Los puntos 1-12 cubren los hallazgos corregidos; 13-17 son el flujo completo, paso a paso; 18-19 las
+consecuencias geometricas de PB-004 sobre piezas que el Owner ya habia aprobado en I-18; 20-21 los
+invariantes que ninguna correccion puede romper.
 
 | # | Cubre | Que comprobar |
 |---|---|---|
-| 1 | PB-004 | La cama sube **7 7/16"** en un rack de 204" (no 11.2"), medido con una cota vertical |
-| 2 | PB-012 | Un rack nuevo abre con "Alto 1er nivel" = **4** |
-| 3 | PB-013 | Tarima (datos generales): Frente/Alto/Peso solo se muestran y siguen a la celda seleccionada; Fondo y Unidad se editan y llegan al diseno |
-| 4 | PB-002 | Seguridad -> Desviador: el ultimo poste ofrece los mismos niveles que su vecino |
-| 5 | PB-002 | Apagar la celda de un poste la quita del corte lateral, del frontal de entrada/salida, de la planta **y del BOM**, y solo en ese poste |
-| 6 | PB-003 | El dialogo del desviador **no** tiene selector "Lado", ni en su etiqueta ni en el texto |
-| 7 | PB-005 | Seguridad -> Topes posteriores: hay selector de **tipo de tope** con las variantes del catalogo; al elegir otra, cambia la pieza en las tres vistas y en el BOM |
-| 8 | PB-006 | El dialogo del tope **no** ofrece "Compartido (uno central)" ni "Lado"; el SAQUE sigue ahi |
-| 9 | PB-008 | La defensa nombra sus extremos **Entrada/Salida** y **Posterior**; ninguna columna dice "Salida" o "Entrada" a secas |
-| 10 | PB-009 | Un rack nuevo **no** dibuja defensa ni proteccion en el extremo posterior, en ninguna vista ni en el BOM |
-| 11 | PB-010 | Con el extremo en **Auto**: agregar frentes lleva un poste de orilla a 36" y **quitarlos lo devuelve a 12"**. Con una longitud **tecleada**, el numero se conserva en ambos sentidos — incluso si coincide con el automatico del momento |
-| 12 | Transversal | `RACKEDITAR` actualiza en sitio con el **mismo GUID** y las cuatro vistas quedan ligadas |
-| 13 | Transversal | El **BOM** no duplica conteo y refleja lo que muestran las vistas |
-| 14 | Transversal | Un Push Back guardado **ANTES de I-32** conserva su altura de primer nivel, su tipo de tope y sus longitudes de defensa; y **Selectivo y Dinamico no cambian** ni en dibujo ni en sus dialogos |
-| 15 | PB-004 (consecuencia) | **El larguero posterior aparece a la MISMA altura** en el corte lateral y en el frontal posterior (antes diferian 1.18") |
-| 16 | PB-004 (consecuencia) | **El tope posterior acompana al larguero**: conserva su regla aprobada (sube sobre el, ajusta al troquel del poste, +4") y por eso baja con el |
+| 1 | PB-004 pendiente | La cama sube **7 7/16"** en un rack de 204" (no 11.2"), medido con una cota vertical |
+| 2 | PB-004 **cabecera** | La altura de cabecera y la LONGITUD del poste **NO crecen** por corregir la pendiente: la altura sale de la envolvente del nivel superior y la pendiente se cuenta UNA sola vez. Comparar contra el mismo rack antes de I-32 |
+| 3 | PB-012 | Un rack nuevo abre con "Alto 1er nivel" = **4** |
+| 4 | PB-013 | Tarima (datos generales): Frente/Alto/Peso solo se muestran y siguen a la celda seleccionada; Fondo y Unidad se editan y llegan al diseno |
+| 5 | PB-002 rejilla | Seguridad -> Desviador: el ultimo poste ofrece los mismos niveles que su vecino |
+| 6 | PB-002 interruptor | Apagar la celda de un poste la quita del corte lateral, del frontal de entrada/salida, de la planta **y del BOM**, y solo en ese poste |
+| 7 | PB-003 | El dialogo del desviador **no** tiene selector "Lado", ni en su etiqueta ni en el texto |
+| 8 | PB-005 | Seguridad -> Topes posteriores: hay selector de **tipo de tope** con las variantes del catalogo; al elegir otra, cambia la pieza en las tres vistas y en el BOM |
+| 9 | PB-006 | El dialogo del tope **no** ofrece "Compartido (uno central)" ni "Lado"; el SAQUE sigue ahi |
+| 10 | PB-008 | La defensa nombra sus extremos **Entrada/Salida** y **Posterior**; ninguna columna dice "Salida" o "Entrada" a secas |
+| 11 | PB-009 | Un rack nuevo **no** dibuja defensa ni proteccion en el extremo posterior, en ninguna vista ni en el BOM |
+| 12 | PB-010 | Con el extremo en **Auto**: agregar frentes lleva un poste de orilla a 36" y **quitarlos lo devuelve a 12"**. Con una longitud **tecleada**, el numero se conserva en ambos sentidos — incluso si coincide con el automatico del momento |
+| 13 | Flujo — **insertar** | `RACKPUSHBACK` inserta el rack y sus **cuatro vistas** (lateral, frontal entrada/salida, frontal posterior, planta) con la geometria esperada |
+| 14 | Flujo — **actualizar** | `RACKEDITAR` sobre el rack insertado redibuja **en sitio**, conserva el **mismo GUID** y arrastra las vistas ligadas |
+| 15 | Flujo — **guardar** | El rack se guarda en la **biblioteca** de disenos sin perder tipo de tope, longitudes de defensa ni configuracion de celdas |
+| 16 | Flujo — **reabrir** | Reabrirlo desde la biblioteca y desde el DWG devuelve **exactamente** lo guardado (round-trip), con la metadata I-11 intacta |
+| 17 | Flujo — **BOM** | `RACKBOM` no duplica conteo, coincide con lo que muestran las vistas y refleja los cambios de los puntos 6, 8 y 12 |
+| 18 | PB-004 (consecuencia) | **El larguero posterior aparece a la MISMA altura** en el corte lateral y en el frontal posterior (antes diferian 1.18") |
+| 19 | PB-004 (consecuencia) | **El tope posterior acompana al larguero**: conserva su regla aprobada (sube sobre el, ajusta al troquel del poste, +4") y por eso baja con el |
+| 20 | Compatibilidad | Un Push Back guardado **ANTES de I-32** conserva su altura de primer nivel, su tipo de tope y sus longitudes de defensa al abrirlo |
+| 21 | Aislamiento | **Selectivo y Dinamico no cambian**, ni en dibujo ni en sus dialogos de seguridad |
 
 ### Smoke complementario — NO sustituye ningun punto obligatorio
 
@@ -171,8 +177,10 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
   geometria lo exige, con el motivo escrito en el propio archivo.
 - Selectivo y Dinamico sin cambio de comportamiento, con pruebas que lo fijan.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
-- Validacion manual del Owner en AutoCAD (§10, 16 puntos obligatorios) antes de integrar. **El gate lo abre
-  el coordinador**, no esta abierto mientras esta iniciativa siga en revision tecnica.
+- Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar. La revision
+  tecnica I-32-CODE-REVIEW-3 aprobo el codigo en `428c18a` y autorizo abrir el gate una vez cumplidas sus
+  tres condiciones: diff limitado a contrato+state, CI verde de la nueva punta y **build canonico con
+  AutoCAD cerrado**.
 
 ## 12. Condiciones para detenerse
 

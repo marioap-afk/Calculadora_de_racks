@@ -8,7 +8,7 @@ automation_state:
   gate: coordinator-review
   attempts: 0
   next_action: >-
-    espera-revision-del-coordinador-no-del-owner-el-gate-de-owner-validation-sigue-cerrado-y-el-dll-canonico-sin-generar-cuando-el-coordinador-lo-autorice-el-owner-cerrara-autocad-recompilara-el-dll-debug-del-worktree-y-ejecutara-los-16-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-pb-001-007-011-014
+    cerrar-autocad-para-compilar-el-dll-canonico-es-la-unica-condicion-que-falta-de-las-tres-que-fijo-i32-code-review-3-las-otras-dos-estan-cumplidas-diff-limitado-a-contrato-mas-state-y-ci-verde-de-la-nueva-punta-con-el-dll-construido-se-abre-owner-validation-y-el-owner-ejecuta-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-pb-001-007-011-014
   last_evidence_commit: 428c18a
 execution_context:
   mode: manual-git-only
@@ -48,25 +48,38 @@ evidence:
     assets-catalogs-deploy-sln-y-csproj-sin-cambios-validador-i19-33-pruebas-verdes-baseline-aprobado-intacto-1-error-troquel-tope-2-avisos-tarima-generica
   isolation: >-
     selectivo-y-dinamico-sin-cambio-de-comportamiento-los-cuatro-dialogos-compartidos-solo-ganan-parametros-opcionales-al-final-de-sus-firmas-con-default-igual-al-comportamiento-vigente-selectivo-llama-por-posicion-y-no-los-alcanza-dinamico-llama-por-nombre-y-no-los-pasa-hay-pruebas-de-no-regresion-para-ambos
+  coordinator_review_3: >-
+    resultado-tecnico-APPROVED-sobre-el-code-sha-428c18a714e8e5e486376f7a09b4f2f191c45c6e-con-ci-verde-run-30175762235-y-head-documental-revisado-4e3152ab261a2d3cecbce44aca0bced4ec3b4146-con-ci-verde-run-30175969327 ·
+    pendiente-unicamente-documental-restaurar-cabecera-y-el-flujo-insertar-actualizar-guardar-reabrir-bom-como-puntos-obligatorios-INDEPENDIENTES-hecho-en-esta-corrida-el-checklist-pasa-de-16-a-21-puntos ·
+    autorizacion-condicionada-a-tres-cosas-diff-limitado-a-contrato-mas-state-ci-verde-de-la-nueva-punta-y-build-canonico-con-autocad-cerrado-cumplidas-esas-tres-queda-abierto-owner-validation ·
+    integracion-NO-autorizada-hasta-aprobacion-explicita-del-owner
   defense_provenance: >-
     pb010-cerrado-el-dialogo-safetydefensagridwindow-onok-ya-no-infiere-la-procedencia-comparando-numeros-con-autoperend-guarda-el-registro-siempre-que-al-menos-un-extremo-sea-manual-ambos-en-auto-siguen-sin-guardar-y-sin-autoperend-selectivo-y-dinamico-conservan-la-heuristica-historica-de-descartar-una-fila-igual-a-su-default-con-prueba-que-lo-fija
   desviador_cell_key: >-
     pb002-completo-la-off-cell-del-desviador-es-poste-por-nivel-en-push-back-y-la-resuelve-una-sola-autoridad-selectivedesviadorplan-cellkey-que-consumen-el-lateral-los-dos-frontales-la-planta-y-el-bom-la-capacidad-selectivesafetyselection-desviadorcellsarebypost-es-derivada-no-persistida-y-la-reimpone-pushbacksafetyauthority-copiada-en-deepcopy-el-dinamico-conserva-su-lectura-por-frente-con-el-default-false
   dll_for_owner: >-
-    NO-GENERADO-TODAVIA-por-instruccion-del-coordinador-la-ruta-sera-fix-correcciones-push-back-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-y-requiere-cerrar-autocad-antes-de-compilar
+    NO-GENERADO-autorizado-por-i32-code-review-3-pero-autocad-seguia-abierto-pid-35928-y-el-dll-cargado-queda-bloqueado-trampa-de-agents-md
+    ruta-destino-fix-correcciones-push-back-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll
+    se-construye-en-cuanto-el-owner-cierre-autocad-y-su-sha-se-registra-al-abrir-owner-validation
 gates:
   autocad:
     required: true
-    note: PENDIENTE-16-puntos-obligatorios-de-la-seccion-10-del-contrato-mas-smoke-complementario-de-los-4-hallazgos-no-implementados-sobre-el-dll-debug-del-worktree
+    note: >-
+      PENDIENTE-21-puntos-obligatorios-de-la-seccion-10-del-contrato-minimo-exigido-16-ampliado-por-i32-code-review-3
+      con-cabecera-y-los-cinco-pasos-del-flujo-insertar-actualizar-guardar-reabrir-bom-como-puntos-independientes
+      mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados-sobre-el-dll-debug-del-worktree
   owner_validation:
     required: true
-    note: NO-ABIERTO-TODAVIA-por-instruccion-del-coordinador-se-abrira-en-una-revision-posterior-junto-con-el-dll-canonico
+    note: >-
+      AUTORIZADO-POR-I32-CODE-REVIEW-3-PERO-AUN-NO-ABIERTO-faltan-el-build-canonico-con-autocad-cerrado-y-la-ci-verde-de-esta-punta
+      autocad-seguia-corriendo-pid-35928-al-cerrar-esta-corrida-asi-que-el-dll-no-se-genero-el-gate-se-abre-en-la-corrida-que-produzca-ese-dll
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-msb3277-conocidas-compilado-a-carpeta-temporal-con-autocad-abierto
   ci:
     required: true
     note: >-
-      VERDE-run-30175762235-success-sobre-el-sha-tecnico-428c18a714e8e5e486376f7a09b4f2f191c45c6e ·
-      historico-run-30174764185-success-sobre-26642c912d316e8670da7c2c9ea202c64a8d9e6a-corrida-anterior ·
-      pendiente-solo-la-corrida-de-la-punta-documental
+      VERDE-run-30175762235-success-sobre-el-code-sha-aprobado-428c18a714e8e5e486376f7a09b4f2f191c45c6e ·
+      VERDE-run-30175969327-success-sobre-4e3152ab261a2d3cecbce44aca0bced4ec3b4146-punta-documental-revisada ·
+      historico-run-30174764185-success-sobre-26642c912d316e8670da7c2c9ea202c64a8d9e6a ·
+      pendiente-solo-la-corrida-de-esta-punta-documental-del-checklist-de-21-puntos
