@@ -263,21 +263,40 @@ Mientras esta línea siga aquí, el gate está **pendiente**: nadie más que el 
 | Run de CI | [30137555378](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30137555378) — **success** |
 | Bundle | `src/RackCad.Plugin/bin/Debug/net8.0-windows/publish/RackCad.bundle` |
 | Inventario | [`I-18-bundle-inventory.txt`](I-18-bundle-inventory.txt) — 16 archivos, **reproducible** |
-| `RackCad.Plugin.dll` del gate (SHA-256) | `3696FA2E66DA6E98576925381102C599AD612685AF4F43D4A0B3ADD3AF1BACC8` |
-| `InformationalVersion` del gate | `1.0.0+ec00dabab52e9715468998028f7e073572474595` |
 
-**HEAD de cierre: `9da6df858bf20fccde55cb204a93454f542a55cc`.** Los commits posteriores al `CODE_SHA` del gate
-son **exclusivamente documentación** (esta aprobación, la evidencia, la guía de I-18c, HANDOFF y ROADMAP), así
-que el binario es funcionalmente el mismo que el Owner validó; lo único que cambia es el sello de versión, que
-incorpora el SHA del HEAD. El artefacto entregable de cierre es:
+#### Cómo leer los SHA de esta sección
+
+El sello de versión del plugin (`AssemblyInformationalVersion`) **incorpora el SHA del HEAD**, de modo que
+**cualquier** commit —incluso uno de solo documentación— cambia el SHA-256 del DLL sin cambiar una línea de
+código. Por eso esta evidencia **no** declara «el HEAD de la rama es X»: declara el **commit en el que se
+construyó** el artefacto medido. Ese enunciado es reproducible y no caduca.
+
+| Referencia | Valor | Qué significa |
+|---|---|---|
+| **`CODE_SHA` validado por el Owner** | `ec00dabab52e9715468998028f7e073572474595` | El commit cuyo DLL cargó el Owner en AutoCAD 2025 para el retest final. **Fijo e inmutable.** |
+| **Último commit de CÓDIGO** | `1b37918` — *«el tope mate por su ORIGEN contra el `TROQUEL_TOPE` del poste»* | Último commit que tocó `src/` o `tests/`. **Todo lo posterior es documentación**, así que el código entregable es el mismo que el Owner validó. |
+| **`BUILD_SHA`** (artefacto medido abajo) | `512ad90c4e1c9389f04acc59988a9e8fa0e5dfcf` | Commit en el que se construyó y verificó el artefacto de §11.1. |
+
+#### Artefacto entregable, medido sobre `BUILD_SHA` con árbol limpio
 
 | Campo | Valor |
 |---|---|
-| Ruta | `src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll` |
-| SHA-256 | `B46C5EA6BAE83BA15F4ACDF56B7D4895ABA8B2B5EE080F231FBBEB58C22315E1` |
-| `InformationalVersion` | `1.0.0+9da6df858bf20fccde55cb204a93454f542a55cc` |
-| DLL en el bundle | idéntico al del build (mismo SHA-256) |
-| CI del HEAD de cierre | [30138486888](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30138486888) — **success** |
+| Ruta del DLL | `src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll` |
+| SHA-256 del DLL | `4E1C178D481C9543F8AC00F29749D912F3E947778D9C424285AE0FFD89AABC65` |
+| `InformationalVersion` | `1.0.0+512ad90c4e1c9389f04acc59988a9e8fa0e5dfcf` |
+| DLL dentro del bundle | **idéntico** al de `bin/Debug` (mismo SHA-256) |
+| Comprobaciones canónicas | **105**, fail-closed — DLL idénticos al publish, catálogos idénticos a `assets/catalogs`, solo archivos RackCad y datos permitidos, **cero DLL de Autodesk** |
+| Reproducibilidad | dos publicaciones **independientes** produjeron un inventario **idéntico** (16 archivos, mismos SHA-256), comparado archivo por archivo |
+
+Para reproducirlo exactamente:
+
+```powershell
+git checkout 512ad90c4e1c9389f04acc59988a9e8fa0e5dfcf
+pwsh deploy/build-bundle.ps1 -Configuration Debug
+```
+
+Reconstruir en un commit documental posterior produce **el mismo código** con un sello de versión distinto
+(y, por tanto, otro SHA-256): eso es esperado y no indica cambio de producto.
 
 ### 11.2 Hallazgos
 

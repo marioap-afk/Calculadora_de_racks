@@ -1,25 +1,41 @@
 # I-18 - Inventario del bundle Debug (Push Back)
 #
-# HEAD de cierre              : 9da6df858bf20fccde55cb204a93454f542a55cc
-# CODE_SHA del gate del Owner : ec00dabab52e9715468998028f7e073572474595
-#   Los commits entre ambos son EXCLUSIVAMENTE documentacion (aprobacion, evidencia, guia,
-#   HANDOFF y ROADMAP), asi que el binario es funcionalmente el mismo que el Owner valido;
-#   lo unico que cambia es el sello de version, que incorpora el SHA del HEAD.
+# COMO LEER ESTE ARCHIVO
+#   El sello de version del plugin (AssemblyInformationalVersion) incorpora el SHA del HEAD, de modo que
+#   CUALQUIER commit -- incluso uno de solo documentacion -- cambia el SHA-256 del DLL sin cambiar una linea
+#   de codigo. Por eso este inventario NO declara "el HEAD de la rama es X": declara el COMMIT EN EL QUE SE
+#   CONSTRUYO el artefacto medido. Ese enunciado es reproducible y no caduca.
 #
-# Configuracion : Debug
-# Generado por  : deploy/build-bundle.ps1 -Configuration Debug
-# Verificado por: el propio build-bundle, 105 comprobaciones fail-closed (DLL identicos al
-#   publish, catalogos identicos a assets/catalogs, solo archivos RackCad y datos permitidos,
-#   cero DLL de Autodesk).
-# Reproducibilidad: dos publicaciones independientes produjeron un inventario IDENTICO
-#   (16 archivos, mismos SHA-256), comparado archivo por archivo.
+# BUILD_SHA (commit en el que se construyo este artefacto)
+#   512ad90c4e1c9389f04acc59988a9e8fa0e5dfcf
+#   Reproducir:  git checkout 512ad90c4e1c9389f04acc59988a9e8fa0e5dfcf
+#                pwsh deploy/build-bundle.ps1 -Configuration Debug
+#
+# CODE_SHA validado por el Owner
+#   ec00dabab52e9715468998028f7e073572474595
+#
+# Ultimo commit que toco CODIGO (src/ o tests/)
+#   1b37918  "Push Back: el tope mate por su ORIGEN contra el TROQUEL_TOPE del poste"
+#   Todo lo posterior a 1b37918 es EXCLUSIVAMENTE documentacion, asi que el binario de BUILD_SHA contiene
+#   el mismo codigo que el Owner valido; lo unico que difiere es el sello de version.
+#
+# VERIFICACION (sobre BUILD_SHA, arbol limpio)
+#   Configuracion            : Debug
+#   Generado por             : deploy/build-bundle.ps1 -Configuration Debug
+#   Comprobaciones canonicas : 105, fail-closed - DLL identicos al publish, catalogos identicos a
+#                              assets/catalogs, solo archivos RackCad y datos permitidos, cero DLL de Autodesk
+#   DLL bin/Debug            : 4E1C178D481C9543F8AC00F29749D912F3E947778D9C424285AE0FFD89AABC65
+#   DLL dentro del bundle    : IDENTICO al de bin/Debug (mismo SHA-256)
+#   InformationalVersion     : 1.0.0+512ad90c4e1c9389f04acc59988a9e8fa0e5dfcf
+#   Reproducibilidad         : dos publicaciones independientes produjeron un inventario IDENTICO
+#                              (16 archivos, mismos SHA-256), comparado archivo por archivo
 #
 # sha256  ruta (relativa a RackCad.bundle/)
 
-67cb2604a3cc37fc1a5697ace0d431160ccb0cea15d46231a698eebd5fd767d8  Contents/RackCad.Application.dll
-bcc24332178241260acf8b81d0bd0197d5f27853f41892abbb13f90850ad8305  Contents/RackCad.Domain.dll
-b46c5ea6bae83ba15f4acdf56b7d4895aba8b2b5ee080f231fbbeb58c22315e1  Contents/RackCad.Plugin.dll
-0bfcba8a668d57fb2496c359d49d05976d55dc58c26fd9696d8460c81ecf2f37  Contents/RackCad.UI.dll
+649ba72bff798cd488012457c80665959e9de78e53f057c01fb9108a38a640c4  Contents/RackCad.Application.dll
+e7c8d4fb5481560aa9655afb11a1f67d741e690ffe1ebfedb4f94e7346c4ab76  Contents/RackCad.Domain.dll
+4e1c178d481c9543f8ac00f29749d912f3e947778d9c424285ae0ffd89aabc65  Contents/RackCad.Plugin.dll
+5b0229449aa98679600699ba0c2dfcb554a99e49ab15e07a5e2151e065e93aef  Contents/RackCad.UI.dll
 23536e17ecfe2304b0ce5f07cb328afd0c1a8373d4ca59c40fcda9d80b37ab62  Contents/catalogs/base-plates.csv
 7b4b7677a8f307499892c97d74619590877c865617ebcca313204b2fda762874  Contents/catalogs/blocks.csv
 c9a27a10f87ca6bb5a615a39fed070bb75949150f43b9dcfbc44c19e6d847929  Contents/catalogs/connection-layout.csv
