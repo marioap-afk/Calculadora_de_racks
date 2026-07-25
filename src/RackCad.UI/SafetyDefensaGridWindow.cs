@@ -333,12 +333,24 @@ namespace RackCad.UI
                     return;
                 }
 
-                // An AUTO end stores no length (the plan computes it); the other end is an explicit override, and 0 is
-                // the explicit "no defence at this end".
-                if (exitAuto || entranceAuto
+                // PB-010 (I-32) — WHEN a record is stored.
+                //
+                // With the Auto boxes the answer is explicit and never inferred: both ends automatic was already
+                // handled above (no record, so the plan computes them), and anything else means at least one end is
+                // the user's, so it is ALWAYS stored — even when today's number happens to equal today's automatic
+                // one. Comparing numbers to guess provenance is exactly what dropped a manual 12" on an edge post:
+                // the edge default is also 12", so the dialog concluded "this is the default" and threw the record
+                // away; the moment the rack grew, that post became intermediate and the length silently became 36".
+                //
+                // Without the Auto boxes (Selectivo/Dinámico) there is nothing to read the provenance from, so the
+                // historical heuristic stays untouched: a row equal to its default stores nothing.
+                var stores = autoPerEnd
                     || Math.Abs(exitLength - defaultSetting.ExitLength) > 1e-6
-                    || Math.Abs(entranceLength - defaultSetting.EntranceLength) > 1e-6)
+                    || Math.Abs(entranceLength - defaultSetting.EntranceLength) > 1e-6;
+                if (stores)
                 {
+                    // An AUTO end stores no length (the plan computes it); the other end is an explicit override, and
+                    // 0 is the explicit "no defence at this end".
                     result.Add(new SafetyPostDefense
                     {
                         PostIndex = row.PostIndex,
