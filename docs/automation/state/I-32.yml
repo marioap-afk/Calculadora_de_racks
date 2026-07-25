@@ -9,7 +9,7 @@ automation_state:
   attempts: 0
   next_action: >-
     owner-cierra-autocad-recompila-el-dll-debug-del-worktree-y-ejecuta-los-16-puntos-de-la-seccion-10-del-contrato-atencion-especial-a-la-subida-de-7-7-16-en-204-a-que-el-larguero-posterior-coincida-en-lateral-y-frontal-posterior-y-a-que-el-tope-acompano-al-larguero
-  last_evidence_commit: a69e146
+  last_evidence_commit: 4ffea41
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -26,7 +26,7 @@ evidence:
     8cd72e5-pb013-tarima-general-vs-celda · 02170b0-pb002-pb003-matriz-y-lado-del-desviador ·
     a3f2555-pb005-pb006-tipo-de-tope-y-opciones-del-dialogo ·
     df6cae9-pb008-pb009-pb010-defensa-de-montacargas · 00491b0-docs-contrato-decisiones-estado-indice ·
-    a69e146-pb002-clave-por-poste-en-todas-las-vistas-mas-regresiones-de-reduccion-pb010-y-cabecera-pb004
+    4ffea41-pb002-clave-por-poste-en-todas-las-vistas-mas-regresiones-de-reduccion-pb010-y-cabecera-pb004
   bugs_fixed: pb-002 pb-003 pb-004 pb-005 pb-006 pb-008 pb-009 pb-010 pb-012 pb-013
   bugs_deferred: >-
     pb-001-preview pb-007-reconfigurador-masivo-de-seguridad pb-011-editor-avanzado-de-modulos
@@ -60,4 +60,4 @@ gates:
     note: RESUELTO-0-errores-2-msb3277-conocidas-compilado-a-carpeta-temporal-con-autocad-abierto
   ci:
     required: true
-    note: PENDIENTE-de-la-corrida-sobre-el-head-publicado-a69e146
+    note: PENDIENTE-de-la-corrida-sobre-el-head-publicado-4ffea41
