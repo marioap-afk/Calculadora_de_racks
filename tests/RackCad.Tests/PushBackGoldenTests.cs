@@ -102,11 +102,21 @@ namespace RackCad.Tests
             // the previous run (67511108…) — the anchor there is the beam's transverse datum, which did not change.
             // frontal-entrada (no rear tope, and the low beam was never shifted in that view), planta and the BOM are
             // UNCHANGED. Previous: lateral/lateral-corte0 110DB452…, frontal-posterior 1DA69F5E…
-            ["lateral"] = "67F638603DC68A5008AC4555E8D8D902DDCDD0CD4F5F70FC01BA0CB373B3746B",
-            ["lateral-corte0"] = "67F638603DC68A5008AC4555E8D8D902DDCDD0CD4F5F70FC01BA0CB373B3746B",
+            // OWNER DECISION 2026-07-24 (final) on the rear tope's ANCHOR POINT PER VIEW, audited against the real rows
+            // of connection-layout.csv. Four pins move, all of them for the stop and only for it:
+            //  * the two LATERALS: the elevation grid is now measured from the post's TROQUEL_SEPARADOR in the LATERAL
+            //    view. It used to be read from TROQUEL_LARGUERO in the FRONTAL view — the wrong point AND the wrong
+            //    view (the post does not even publish TROQUEL_LARGUERO in LATERAL, so the grid was silently based at 0);
+            //  * frontal-posterior: anchored by the post's own TROQUEL_TOPE in FRONTAL, whose X follows the post PERALTE;
+            //  * planta: anchored by TROQUEL_TOPE in PLANTA, and the block's orientation inverted.
+            // frontal-entrada carries no rear tope and the BOM counts the same pieces with the same SAQUE/LONGITUD, so
+            // both stay UNCHANGED — which is what bounds this correction to the stop.
+            // Previous: lateral/lateral-corte0 67F63860…, frontal-posterior 67511108…, planta 33A87C65…
+            ["lateral"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
+            ["lateral-corte0"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
-            ["frontal-posterior"] = "67511108F6F2CD8A2799A962F0C20A49044D90BAFCDB2E3B0B0C3E5EE5C37E80",
-            ["planta"] = "33A87C650DF93AAF45E1F600B348E515E4D1379510E9095A4C6564E3F766E82C",
+            ["frontal-posterior"] = "5553A6C1B660EEA3DC8CDA368A71A6CADC83AE8D424CAD1994FF317815E8BD90",
+            ["planta"] = "666BBD2B40B32E8B9707A7D801F9F90C7C91AB889EFC5BD37FAA1EE019D90558",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.

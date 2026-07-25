@@ -57,13 +57,14 @@ namespace RackCad.Application.Systems
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
 
-            // Post troquel grid base for the canonical Selective tope rise-and-snap.
+            // Owner decision (2026-07-24, final): in the REAR FRONTAL the stop is anchored by the post's own TROQUEL_TOPE
+            // in this view — never TROQUEL_LARGUERO, which places a beam. Both its X (which follows the post PERALTE) and
+            // its Y (the elevation grid base) come from that single measured row; a missing row means no stop is emitted,
+            // never a silent fallback to the insertion point.
             var postId = DynamicFrontGeometry.PostId(structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(structure, catalog, postId);
-            var troquelEntry = catalog?.ConnectionLayout.FindConnectionLayout(postId, SelectiveRackDefaults.PostBeamPoint, View);
-            var troquelMateY = SelectivePostGeometry.Resolve(
-                troquelEntry,
-                new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
+            var topeAnchor = PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, postPeralte, View);
+            var troquelMateY = topeAnchor?.Y ?? 0.0;
 
             var result = new List<HeaderBlockInstance>();
             foreach (var instance in entrance)
@@ -85,15 +86,18 @@ namespace RackCad.Application.Systems
                     result.Add(redondo);
 
                     // Rear tope only for a MATCHED, active cell, placed by the canonical Selective rule (rise + snap).
-                    if (!string.IsNullOrWhiteSpace(topeBlock) && level >= 0 && rearTope.At(frontIndex, level))
+                    if (!string.IsNullOrWhiteSpace(topeBlock) && level >= 0 && rearTope.At(frontIndex, level)
+                        && topeAnchor.HasValue)
                     {
                         var topeY = PushBackRearTopeBuilder.ElevationY(troquelMateY, instance.Insertion.Y);
+                        var topeX = instance.Insertion.X
+                            + (instance.MirroredX ? -topeAnchor.Value.X : topeAnchor.Value.X);
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
                         result.Add(SelectiveTopePlacement.Tope(
                             PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
-                            instance.Insertion.X, topeY, saque, longitud,
+                            topeX, topeY, saque, longitud,
                             mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
                     }
 

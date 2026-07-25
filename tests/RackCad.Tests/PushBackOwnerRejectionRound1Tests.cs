@@ -40,9 +40,9 @@ namespace RackCad.Tests
         {
             var postId = DynamicFrontGeometry.PostId(system.Structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(system.Structure, catalog, postId);
-            var entry = catalog.ConnectionLayout.FindConnectionLayout(postId, SelectiveRackDefaults.PostBeamPoint, view);
-            return SelectivePostGeometry.Resolve(
-                entry, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
+            // Owner decision (2026-07-24, final): each view measures from its OWN anchor point — the lateral from
+            // TROQUEL_SEPARADOR, the frontal from TROQUEL_TOPE — never from TROQUEL_LARGUERO.
+            return PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, postPeralte, view)?.Y ?? 0.0;
         }
 
         // ---- PB-VAL-03: the rear tope rises exactly 4" more than the canonical Selective snap ----
@@ -76,7 +76,7 @@ namespace RackCad.Tests
         {
             var catalog = Catalog;
             var system = System(catalog);
-            var mateY = TroquelMateY(system, catalog, SelectiveRackDefaults.View);
+            var mateY = TroquelMateY(system, catalog, "LATERAL");
             var front = system.Structure.Fronts[0];
 
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);

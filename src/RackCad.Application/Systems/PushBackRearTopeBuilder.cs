@@ -39,7 +39,7 @@ namespace RackCad.Application.Systems
         /// the tope's step.
         /// </summary>
         public static bool Mirrored(string view, bool beamMirroredX)
-            => IsPlanta(view) ? beamMirroredX : ElevationMirrored;
+            => IsPlanta(view) ? !beamMirroredX : ElevationMirrored;
 
         /// <summary>The rear tope's mirror in the elevation views. Owner decision (2026-07-24): the inverse of 10d8eeb.</summary>
         public const bool ElevationMirrored = false;
@@ -55,14 +55,40 @@ namespace RackCad.Application.Systems
         /// row for the post — a missing mate is a missing physical contract and must never degrade to the insertion point.
         /// </summary>
         public static Point2D? SeparatorAnchorLocal(RackCatalog catalog, string postId, double postPeralte, string view)
+            => PostAnchorLocal(catalog, postId, postPeralte, view);
+
+        /// <summary>
+        /// Owner decision (2026-07-24, final) — WHICH post point anchors the rear tope in each view, audited against the
+        /// real rows of <c>connection-layout.csv</c>:
+        /// <list type="bullet">
+        /// <item>LATERAL → <c>TROQUEL_SEPARADOR</c>: the stop sits on the separator's vertical axis, and its elevation
+        /// grid is measured from that same point (never from <c>TROQUEL_LARGUERO</c>, which the post does not even
+        /// publish in this view).</item>
+        /// <item>FRONTAL → <c>TROQUEL_TOPE</c>: the post's own stop hole, whose X follows the post PERALTE.</item>
+        /// <item>PLANTA → <c>TROQUEL_TOPE</c> measured in PLANTA, whose depth offset follows the post PERALTE — not the
+        /// separator's, which points the other way.</item>
+        /// </list>
+        /// Null when the catalog has no such row: a missing mate is a missing physical contract and never degrades to
+        /// the insertion point.
+        /// </summary>
+        public static Point2D? PostAnchorLocal(RackCatalog catalog, string postId, double postPeralte, string view)
         {
-            var entry = catalog?.ConnectionLayout.FindConnectionLayout(postId, DynamicRackDefaults.SeparatorPostPoint, view);
+            var entry = catalog?.ConnectionLayout.FindConnectionLayout(postId, AnchorPoint(view), view);
             return entry == null
                 ? (Point2D?)null
                 : SelectivePostGeometry.Resolve(
                     entry,
                     new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte });
         }
+
+        /// <summary>The post connection point that anchors the tope in <paramref name="view"/>.</summary>
+        public static string AnchorPoint(string view)
+            => string.Equals(view, "LATERAL", StringComparison.OrdinalIgnoreCase)
+                ? DynamicRackDefaults.SeparatorPostPoint
+                : TopePostPoint;
+
+        /// <summary>The post's own stop hole. Never <c>TROQUEL_LARGUERO</c>: that one places a BEAM, not a stop.</summary>
+        public const string TopePostPoint = "TROQUEL_TOPE";
 
         /// <summary>The rear tope Y in an ELEVATION view: the canonical Selective rise-and-snap plus <see cref="ExtraRise"/>.</summary>
         public static double ElevationY(double troquelMateY, double largueroY)
@@ -91,12 +117,12 @@ namespace RackCad.Application.Systems
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
             var keepFrenteY = IsPlanta(view);
-            var troquelMateY = keepFrenteY ? 0.0 : PostTroquelGridBase(structure, catalog);
+            var troquelMateY = keepFrenteY ? 0.0 : PostTroquelGridBase(structure, catalog, view);
             // Owner decision (2026-07-24): the anchor is the POST's TROQUEL_SEPARADOR axis, in the view's own measured
             // point (PLANTA has its own row, whose Y runs with the depth and depends on the peralte). Never the rear
             // beam's points, never the bare placement.
             var postId = DynamicFrontGeometry.PostId(structure, catalog);
-            var separator = SeparatorAnchorLocal(
+            var separator = PostAnchorLocal(
                 catalog, postId, DynamicFrontGeometry.PostPeralte(structure, catalog, postId), view);
 
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
@@ -133,15 +159,16 @@ namespace RackCad.Application.Systems
             return result;
         }
 
-        /// <summary>The post's first TROQUEL_LARGUERO Y (resolved with the post peralte) — the tope snap grid base.</summary>
-        private static double PostTroquelGridBase(DynamicRackSystem structure, RackCatalog catalog)
+        /// <summary>
+        /// The elevation snap grid's BASE: the Y of the view's own anchor point (see <see cref="AnchorPoint"/>), resolved
+        /// with the post's real peralte. Owner decision (2026-07-24): the lateral measures from TROQUEL_SEPARADOR, the
+        /// frontal from TROQUEL_TOPE — never from TROQUEL_LARGUERO, and never from another view's row.
+        /// </summary>
+        private static double PostTroquelGridBase(DynamicRackSystem structure, RackCatalog catalog, string view)
         {
             var postId = DynamicFrontGeometry.PostId(structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(structure, catalog, postId);
-            var entry = catalog?.ConnectionLayout.FindConnectionLayout(postId, SelectiveRackDefaults.PostBeamPoint, SelectiveRackDefaults.View);
-            return SelectivePostGeometry.Resolve(
-                entry,
-                new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
+            return PostAnchorLocal(catalog, postId, postPeralte, view)?.Y ?? 0.0;
         }
     }
 }

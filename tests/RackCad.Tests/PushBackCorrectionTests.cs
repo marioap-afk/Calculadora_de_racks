@@ -107,8 +107,9 @@ namespace RackCad.Tests
 
             var postId = DynamicFrontGeometry.PostId(system.Structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(system.Structure, catalog, postId);
-            var troquelEntry = catalog.ConnectionLayout.FindConnectionLayout(postId, SelectiveRackDefaults.PostBeamPoint, "FRONTAL");
-            var troquelMateY = SelectivePostGeometry.Resolve(troquelEntry, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
+            var troquelEntry = catalog.ConnectionLayout.FindConnectionLayout(postId, PushBackRearTopeBuilder.TopePostPoint, "FRONTAL");
+            var troquelAnchor = SelectivePostGeometry.Resolve(troquelEntry, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte });
+            var troquelMateY = troquelAnchor.Y;
 
             var topes = plan.Where(i => i.Role == HeaderBlockRole.Tope && i.PieceId == Tope).ToList();
             var beams = plan.Where(i => i.PieceId == Redondo).ToList();
@@ -118,7 +119,10 @@ namespace RackCad.Tests
             {
                 // Several levels share the same X; the tope's source beam is the one whose canonical rear-tope Y matches
                 // (PB-VAL-03: the Selective rise-and-snap PLUS the Owner-validated 4" extra rise).
-                var sameX = beams.Where(b => Math.Abs(b.Insertion.X - tope.Insertion.X) < 1e-6).ToList();
+                // Owner decision (2026-07-24, final): the frontal tope is anchored on the post's TROQUEL_TOPE, so its X
+                // is the beam's X shifted by that measured point (mirror included) — no longer the bare beam X.
+                var sameX = beams.Where(b => Math.Abs(
+                    b.Insertion.X + (b.MirroredX ? -troquelAnchor.X : troquelAnchor.X) - tope.Insertion.X) < 1e-6).ToList();
                 var source = sameX.FirstOrDefault(b =>
                     Math.Abs(PushBackRearTopeBuilder.ElevationY(troquelMateY, b.Insertion.Y) - tope.Insertion.Y) < 1e-4);
                 Assert.NotNull(source);                                          // Y is exactly the canonical SnapY of a real rear beam

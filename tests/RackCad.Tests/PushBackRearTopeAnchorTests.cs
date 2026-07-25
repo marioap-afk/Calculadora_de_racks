@@ -50,13 +50,13 @@ namespace RackCad.Tests
             var system = System(catalog);
             var (postId, peralte) = Post(system, catalog);
 
-            foreach (var view in new[] { "LATERAL", "PLANTA" })
+            foreach (var view in new[] { "LATERAL", "FRONTAL", "PLANTA" })
             {
                 var entry = catalog.ConnectionLayout.FindConnectionLayout(
-                    postId, DynamicRackDefaults.SeparatorPostPoint, view);
-                Assert.NotNull(entry);   // the shipped catalog measures the separator in both views
+                    postId, PushBackRearTopeBuilder.AnchorPoint(view), view);
+                Assert.NotNull(entry);   // the shipped catalog measures the required point in each view
 
-                var resolved = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, view);
+                var resolved = PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, peralte, view);
                 Assert.True(resolved.HasValue);
                 var expected = SelectivePostGeometry.Resolve(
                     entry, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = peralte });
@@ -64,9 +64,19 @@ namespace RackCad.Tests
                 Assert.Equal(expected.Y, resolved.Value.Y, 9);
             }
 
-            // PLANTA's separator carries its own depth offset, driven by the post peralte — it is NOT the lateral point.
-            var lateral = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, "LATERAL").Value;
-            var planta = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, "PLANTA").Value;
+            // Owner decision (2026-07-24, final): each view has its OWN point — LATERAL the separator, FRONTAL and
+            // PLANTA the post's own TROQUEL_TOPE — and none of them is TROQUEL_LARGUERO.
+            Assert.Equal(DynamicRackDefaults.SeparatorPostPoint, PushBackRearTopeBuilder.AnchorPoint("LATERAL"));
+            Assert.Equal(PushBackRearTopeBuilder.TopePostPoint, PushBackRearTopeBuilder.AnchorPoint("FRONTAL"));
+            Assert.Equal(PushBackRearTopeBuilder.TopePostPoint, PushBackRearTopeBuilder.AnchorPoint("PLANTA"));
+            foreach (var view in new[] { "LATERAL", "FRONTAL", "PLANTA" })
+            {
+                Assert.NotEqual(SelectiveRackDefaults.PostBeamPoint, PushBackRearTopeBuilder.AnchorPoint(view));
+            }
+
+            // PLANTA carries its own depth offset, driven by the post peralte — it is NOT the lateral point.
+            var lateral = PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, peralte, "LATERAL").Value;
+            var planta = PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, peralte, "PLANTA").Value;
             Assert.NotEqual(lateral.Y, planta.Y);
         }
 
@@ -74,8 +84,8 @@ namespace RackCad.Tests
         public void NoAnchor_AndNoRawPlacementFallback_WhenThePostHasNoSeparatorPoint()
         {
             var catalog = Catalog;
-            Assert.Null(PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, "POSTE_SIN_SEPARADOR", 3.0, "LATERAL"));
-            Assert.Null(PushBackRearTopeBuilder.SeparatorAnchorLocal(null, "CUALQUIERA", 3.0, "LATERAL"));
+            Assert.Null(PushBackRearTopeBuilder.PostAnchorLocal(catalog, "POSTE_SIN_SEPARADOR", 3.0, "LATERAL"));
+            Assert.Null(PushBackRearTopeBuilder.PostAnchorLocal(null, "CUALQUIERA", 3.0, "LATERAL"));
         }
 
         [Fact]
@@ -92,7 +102,7 @@ namespace RackCad.Tests
 
             foreach (var view in new[] { "LATERAL", "PLANTA" })
             {
-                var separator = PushBackRearTopeBuilder.SeparatorAnchorLocal(catalog, postId, peralte, view).Value;
+                var separator = PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, peralte, view).Value;
                 var topes = builder.Build(system, catalog, 0, front, view);
                 Assert.NotEmpty(topes);
 
@@ -160,9 +170,10 @@ namespace RackCad.Tests
             Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: true));
             Assert.False(PushBackRearTopeBuilder.Mirrored("FRONTAL", beamMirroredX: false));
 
-            // PLANTA is a top view and keeps the beam's plan orientation (approved, unchanged).
-            Assert.True(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: true));
-            Assert.False(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: false));
+            // PLANTA: the Owner measured the block inverted there too, so its orientation is now the INVERSE of the
+            // beam's plan mirror.
+            Assert.False(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: true));
+            Assert.True(PushBackRearTopeBuilder.Mirrored("PLANTA", beamMirroredX: false));
         }
 
         [Fact]
@@ -219,10 +230,7 @@ namespace RackCad.Tests
         {
             var postId = DynamicFrontGeometry.PostId(system.Structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(system.Structure, catalog, postId);
-            var entry = catalog.ConnectionLayout.FindConnectionLayout(
-                postId, SelectiveRackDefaults.PostBeamPoint, SelectiveRackDefaults.View);
-            return SelectivePostGeometry.Resolve(
-                entry, new Dictionary<string, double> { [SelectiveRackDefaults.PeralteParam] = postPeralte }).Y;
+            return PushBackRearTopeBuilder.PostAnchorLocal(catalog, postId, postPeralte, "LATERAL")?.Y ?? 0.0;
         }
     }
 }
