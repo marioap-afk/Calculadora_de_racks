@@ -17,6 +17,7 @@ using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 using RackCad.UI.Editor;
+using RackCad.UI.Preview;
 
 namespace RackCad.UI
 {
@@ -31,23 +32,23 @@ namespace RackCad.UI
         private const string KindHeader = "Cabecera";
         private const string KindSeparator = "Separador";
 
-        private static readonly Brush UprightStroke = new SolidColorBrush(Color.FromRgb(0xCF, 0xDB, 0xE8));
-        private static readonly Brush HorizontalStroke = new SolidColorBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
-        private static readonly Brush DiagonalStroke = new SolidColorBrush(Color.FromRgb(0x5B, 0x8D, 0xEF));
-        private static readonly Brush SeparatorStroke = new SolidColorBrush(Color.FromRgb(0x3A, 0x50, 0x68));
-        private static readonly Brush PostStroke = new SolidColorBrush(Color.FromRgb(0xFF, 0x6B, 0x6B));
-        private static readonly Brush FloorStroke = new SolidColorBrush(Color.FromRgb(0x6A, 0x7B, 0x8A));
-        private static readonly Brush LabelStroke = new SolidColorBrush(Color.FromRgb(0x9A, 0xA7, 0xB4));
-        private static readonly Brush SelectionStroke = new SolidColorBrush(Color.FromRgb(0xFF, 0xD1, 0x66));
-        private static readonly Brush HeaderFill = new SolidColorBrush(Color.FromArgb(0x36, 0x2A, 0x5B, 0x78));
-        private static readonly Brush SeparatorFill = new SolidColorBrush(Color.FromArgb(0x18, 0x8A, 0xA0, 0xB4));
-        private static readonly Brush ModuleBoundaryStroke = new SolidColorBrush(Color.FromArgb(0x95, 0x74, 0x86, 0x99));
-        private static readonly Brush PostFill = new SolidColorBrush(Color.FromRgb(0x20, 0x34, 0x48));
-        private static readonly Brush PlateFill = new SolidColorBrush(Color.FromRgb(0xB7, 0xC3, 0xCF));
-        private static readonly Brush ReinforcementStroke = new SolidColorBrush(Color.FromRgb(0xF2, 0xA6, 0x3B));
-        private static readonly Brush FlowBedStroke = new SolidColorBrush(Color.FromRgb(0x59, 0xC3, 0xE6));
-        private static readonly Brush SafetyStroke = new SolidColorBrush(Color.FromRgb(0xFF, 0xC8, 0x57));
-        private static readonly Brush LoadBeamStroke = new SolidColorBrush(Color.FromRgb(0xE0, 0x8A, 0x2B));
+        private static readonly Brush UprightStroke = EditorPreviewPalette.Upright;
+        private static readonly Brush HorizontalStroke = EditorPreviewPalette.Horizontal;
+        private static readonly Brush DiagonalStroke = EditorPreviewPalette.Diagonal;
+        private static readonly Brush SeparatorStroke = EditorPreviewPalette.Separator;
+        private static readonly Brush PostStroke = EditorPreviewPalette.Post;
+        private static readonly Brush FloorStroke = EditorPreviewPalette.Floor;
+        private static readonly Brush LabelStroke = EditorPreviewPalette.Label;
+        private static readonly Brush SelectionStroke = EditorPreviewPalette.Selection;
+        private static readonly Brush HeaderFill = EditorPreviewPalette.HeaderFill;
+        private static readonly Brush SeparatorFill = EditorPreviewPalette.SeparatorFill;
+        private static readonly Brush ModuleBoundaryStroke = EditorPreviewPalette.ModuleBoundary;
+        private static readonly Brush PostFill = EditorPreviewPalette.PostFill;
+        private static readonly Brush PlateFill = EditorPreviewPalette.PlateFill;
+        private static readonly Brush ReinforcementStroke = EditorPreviewPalette.Reinforcement;
+        private static readonly Brush FlowBedStroke = EditorPreviewPalette.FlowBed;
+        private static readonly Brush SafetyStroke = EditorPreviewPalette.Safety;
+        private static readonly Brush LoadBeamStroke = EditorPreviewPalette.LoadBeam;
 
         private readonly RackCatalog catalog;
         private readonly DynamicRackSystemBuilder builder;
@@ -2040,138 +2041,31 @@ namespace RackCad.UI
             var beamId = string.IsNullOrWhiteSpace(system?.InOutBeamCatalogId)
                 ? DynamicRackDefaults.InOutBeamCatalogId
                 : system.InOutBeamCatalogId;
-
-            foreach (var placement in lateralPlan.Where(instance =>
-                         instance.Role == HeaderBlockRole.Beam
-                         && string.Equals(
-                             instance.PieceId,
-                             beamId,
-                             StringComparison.OrdinalIgnoreCase)))
-            {
-                AddLine(
-                    Map(placement.Insertion.X, placement.Insertion.Y),
-                    Map(placement.Insertion.X, placement.Insertion.Y + depth),
-                    HorizontalStroke,
-                    5.0);
-            }
+            EditorPreviewParts.LoadBeams(Surface, lateralPlan, beamId, depth);
         }
 
         private void DrawIntermediateBeams(IReadOnlyList<HeaderBlockInstance> lateralPlan)
         {
-            var leftMate = catalog.ConnectionLayout.FindConnectionLayout(
+            EditorPreviewParts.IntermediateSupports(
+                Surface, lateralPlan, catalog,
                 DynamicRackDefaults.IntermediateBeamCatalogId,
                 DynamicRackDefaults.IntermediateBeamLeftBedMatePoint,
-                DynamicRackDefaults.IntermediateBeamView);
-            var rightMate = catalog.ConnectionLayout.FindConnectionLayout(
-                DynamicRackDefaults.IntermediateBeamCatalogId,
                 DynamicRackDefaults.IntermediateBeamRightBedMatePoint,
                 DynamicRackDefaults.IntermediateBeamView);
-            if (leftMate == null || rightMate == null)
-            {
-                return;
-            }
-
-            var supports = lateralPlan
-                .Where(instance => instance.Role == HeaderBlockRole.Beam
-                                   && instance.PieceId == DynamicRackDefaults.IntermediateBeamCatalogId);
-
-            foreach (var support in supports)
-            {
-                var mate = support.MirroredX
-                    ? new Point2D(rightMate.LocalX, rightMate.LocalY)
-                    : new Point2D(leftMate.LocalX, leftMate.LocalY);
-                var contact = LocalToWorld(support, mate);
-                var topOnPostAxis = new Point2D(support.Insertion.X, contact.Y);
-
-                // Simplified preview glyph: vertical slotted bracket on the post axis plus its short bed contact.
-                // The actual block geometry remains exclusively in AutoCAD.
-                AddLine(Map(support.Insertion.X, support.Insertion.Y), Map(topOnPostAxis.X, topOnPostAxis.Y), HorizontalStroke, 3.0);
-                AddLine(Map(topOnPostAxis.X, topOnPostAxis.Y), Map(contact.X, contact.Y), HorizontalStroke, 2.0);
-            }
         }
 
         private void DrawSafety(IReadOnlyList<HeaderBlockInstance> lateralPlan)
         {
-            foreach (var piece in lateralPlan.Where(instance => instance.Role == HeaderBlockRole.Safety))
-            {
-                var element = catalog?.SafetyElements?.FirstOrDefault(entry => string.Equals(
-                    entry?.Id,
-                    piece.PieceId,
-                    StringComparison.OrdinalIgnoreCase));
-                var at = Map(piece.Insertion.X, piece.Insertion.Y);
-
-                if (SelectiveSafetyDefaults.IsType(element?.Type, SelectiveSafetyDefaults.LateralType)
-                    && piece.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var guardLength))
-                {
-                    var endX = piece.MirroredX ? piece.Insertion.X - guardLength : piece.Insertion.X + guardLength;
-                    AddLine(at, Map(endX, piece.Insertion.Y), SafetyStroke, 4.2);
-                }
-                else if (SelectiveSafetyDefaults.IsType(element?.Type, SelectiveSafetyDefaults.DesviadorType)
-                         && piece.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var deviatorLength))
-                {
-                    AddLine(at, Map(piece.Insertion.X, piece.Insertion.Y + deviatorLength), SafetyStroke, 3.2);
-                }
-                else
-                {
-                    const double size = 9.0;
-                    AddRectangle(at.X - size / 2.0, at.Y - size, size, size, SafetyStroke, 2.0, null);
-                }
-            }
+            EditorPreviewParts.Safety(Surface, lateralPlan, catalog);
         }
 
         private void DrawFlowBeds(IReadOnlyList<HeaderBlockInstance> instances)
         {
-            var railMate = catalog.ConnectionLayout.FindConnectionLayout(
-                FlowBedDefaults.RailId,
-                FlowBedDefaults.RailInOutMatePoint,
-                FlowBedDefaults.View);
-            if (railMate == null)
-            {
-                return;
-            }
-
-            foreach (var rail in instances.Where(instance => instance.Role == HeaderBlockRole.Rail))
-            {
-                if (!rail.DynamicParameters.TryGetValue("LONGITUD", out var length))
-                {
-                    continue;
-                }
-
-                var start = LocalToWorld(rail, new Point2D(railMate.LocalX, railMate.LocalY));
-                var end = LocalToWorld(rail, new Point2D(length, railMate.LocalY));
-                AddLine(Map(start.X, start.Y), Map(end.X, end.Y), FlowBedStroke, 3.2);
-            }
-
-            foreach (var piece in instances.Where(instance =>
-                         instance.Role == HeaderBlockRole.Roller
-                         || instance.Role == HeaderBlockRole.Brake
-                         || instance.Role == HeaderBlockRole.Stop))
-            {
-                var center = Map(piece.Insertion.X, piece.Insertion.Y);
-                var half = piece.Role == HeaderBlockRole.Brake ? 4.5 : 3.0;
-                var dx = -Math.Sin(piece.RotationRadians) * half;
-                var dy = -Math.Cos(piece.RotationRadians) * half;
-                var stroke = piece.Role == HeaderBlockRole.Brake
-                    ? ReinforcementStroke
-                    : piece.Role == HeaderBlockRole.Stop ? SelectionStroke : FlowBedStroke;
-                AddLine(
-                    new Point(center.X - dx, center.Y - dy),
-                    new Point(center.X + dx, center.Y + dy),
-                    stroke,
-                    piece.Role == HeaderBlockRole.Brake ? 2.2 : 1.2);
-            }
+            EditorPreviewParts.FlowBeds(Surface, instances, catalog);
         }
 
         private static Point2D LocalToWorld(HeaderBlockInstance instance, Point2D local)
-        {
-            var localX = instance.MirroredX ? -local.X : local.X;
-            var localY = instance.MirroredY ? -local.Y : local.Y;
-            var cos = Math.Cos(instance.RotationRadians);
-            var sin = Math.Sin(instance.RotationRadians);
-            return new Point2D(
-                instance.Insertion.X + localX * cos - localY * sin,
-                instance.Insertion.Y + localX * sin + localY * cos);
-        }
+            => EditorPreviewSurface.LocalToWorld(instance, local);
 
         private void DrawHeader(
             DynamicRackModule module,
@@ -2511,65 +2405,39 @@ namespace RackCad.UI
             return paso > 0.0 ? paso : 2.0;
         }
 
-        private Point Map(double x, double y)
+        /// <summary>
+        /// The SHARED preview surface (I-18b decision 6): the world→canvas transform and the primitive vocabulary now
+        /// live in <see cref="EditorPreviewSurface"/>, which the Push Back editor consumes too. This window keeps its own
+        /// fit (mapScale/mapOffsetX/mapBottomY are still computed here and by the click hit-test) and simply hands the
+        /// resulting transform to the surface, so the painted scene is bit-identical to the pre-extraction renderer.
+        /// </summary>
+        private EditorPreviewSurface previewSurface;
+
+        private EditorPreviewSurface Surface
         {
-            return new Point(mapOffsetX + x * mapScale, mapBottomY - y * mapScale);
+            get
+            {
+                previewSurface ??= new EditorPreviewSurface(PreviewCanvas);
+                previewSurface.UseTransform(mapScale, mapOffsetX, mapBottomY);
+                return previewSurface;
+            }
         }
 
-        private PreviewCanvasPainter previewPainter;
-        private PreviewCanvasPainter Painter => previewPainter ??= new PreviewCanvasPainter(PreviewCanvas);
+        private Point Map(double x, double y) => Surface.Map(x, y);
 
         private void AddLine(Point a, Point b, Brush stroke, double thickness, DoubleCollection dash = null)
-            => Painter.AddLine(a, b, stroke, thickness, dash);
+            => Surface.Line(a, b, stroke, thickness, dash);
 
         private void AddRectangle(double left, double top, double width, double height, Brush stroke, double thickness, DoubleCollection dash, Brush fill = null)
-            => Painter.AddRectangle(left, top, width, height, stroke, thickness, dash, fill);
+            => Surface.Rectangle(left, top, width, height, stroke, thickness, dash, fill);
 
         private void AddCanvasLabel(double left, double top, string text, Brush brush, double size, double maxWidth = 0.0, FontWeight? fontWeight = null)
-        {
-            var label = new TextBlock
-            {
-                Text = text,
-                Foreground = brush,
-                FontSize = size,
-                FontWeight = fontWeight ?? FontWeights.Normal,
-                TextTrimming = TextTrimming.CharacterEllipsis
-            };
-
-            if (maxWidth > 0.0)
-            {
-                label.Width = maxWidth;
-                label.TextAlignment = TextAlignment.Left;
-            }
-
-            Canvas.SetLeft(label, left);
-            Canvas.SetTop(label, top);
-            PreviewCanvas.Children.Add(label);
-        }
+            => Surface.Label(left, top, text, brush, size, maxWidth, fontWeight);
 
         private void AddCenteredLabel(double centerX, double top, string text, double maxWidth, Brush brush, double size, FontWeight? fontWeight)
-        {
-            var width = Math.Max(24.0, maxWidth);
-            var label = new TextBlock
-            {
-                Text = text,
-                Foreground = brush,
-                FontSize = size,
-                FontWeight = fontWeight ?? FontWeights.Normal,
-                TextAlignment = TextAlignment.Center,
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                Width = width
-            };
+            => Surface.CenteredLabel(centerX, top, text, maxWidth, brush, size, fontWeight);
 
-            Canvas.SetLeft(label, centerX - width / 2.0);
-            Canvas.SetTop(label, top);
-            PreviewCanvas.Children.Add(label);
-        }
-
-        private static DoubleCollection Dash()
-        {
-            return new DoubleCollection { 5, 3 };
-        }
+        private static DoubleCollection Dash() => EditorPreviewSurface.Dash();
 
         // ---- BOM / persistence ----
 

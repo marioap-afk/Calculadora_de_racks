@@ -60,7 +60,7 @@ namespace RackCad.Plugin
                 // Refuse an unrecognized kind UP FRONT — before finding/measuring the planta or opening the layout
                 // window — for BOTH linked and independent copies. RACKLAYOUT only lays out rack types we know how to
                 // handle; independent copies also re-stamp identity per cell, which an unknown kind cannot do safely.
-                // Case-insensitive, matching the restamp; the four embedded kinds always resolve.
+                // Case-insensitive, matching the restamp; the five embedded kinds always resolve.
                 if (!KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _))
                 {
                     return;

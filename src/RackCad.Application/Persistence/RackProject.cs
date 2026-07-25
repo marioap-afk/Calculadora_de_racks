@@ -4,8 +4,9 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Persistence
 {
     /// <summary>
-    /// A loaded project: a cabecera header, a dynamic system, a selective pallet-rack design, a flow bed (cama), or a
-    /// larguero component. The <see cref="Kind"/> selects which payload is set. Members are already rebuilt by the store.
+    /// A loaded project: a cabecera header, a dynamic system, a selective pallet-rack design, a flow bed (cama), a
+    /// larguero component, or a Push Back system. The <see cref="Kind"/> selects which payload is set. Members are already
+    /// rebuilt by the store.
     /// </summary>
     public sealed class RackProject
     {
@@ -28,6 +29,12 @@ namespace RackCad.Application.Persistence
 
         /// <summary>The larguero component; set when <see cref="Kind"/> is Larguero.</summary>
         public LargueroDesign Larguero { get; private set; }
+
+        /// <summary>The editable Push Back design; set when <see cref="Kind"/> is PushBack.</summary>
+        public PushBackDesign PushBackDesign { get; private set; }
+
+        /// <summary>The resolved Push Back system (optional; a library load may leave it null and resolve later).</summary>
+        public PushBackSystem PushBackSystem { get; private set; }
 
         /// <summary>
         /// The persistence document this project was loaded from, kept so a re-save can carry forward JSON fields this
@@ -103,6 +110,11 @@ namespace RackCad.Application.Persistence
         public static RackProject ForLarguero(LargueroDesign larguero)
         {
             return new RackProject { Kind = RackSystemKind.Larguero, Larguero = larguero };
+        }
+
+        public static RackProject ForPushBack(PushBackDesign design, PushBackSystem system = null)
+        {
+            return new RackProject { Kind = RackSystemKind.PushBack, PushBackDesign = design, PushBackSystem = system };
         }
     }
 }

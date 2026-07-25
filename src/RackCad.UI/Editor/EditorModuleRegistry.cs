@@ -9,7 +9,7 @@ namespace RackCad.UI.Editor
     /// The single, explicit list of editor modules the menu and the design library consume (initiative I-15), built the
     /// same way as the Application <c>SystemRegistry</c> (I-08): from an ordered set of <see cref="IRackEditorModule"/>,
     /// rejecting duplicate kinds, keeping a stable order, resolving by <see cref="RackSystemKind"/> and failing explicitly
-    /// for an unregistered kind. No reflection, no assembly scanning. The <see cref="Default"/> instance lists the five
+    /// for an unregistered kind. No reflection, no assembly scanning. The <see cref="Default"/> instance lists the six
     /// modules that exist today, in the menu's button order. This registry is a UI concern and is distinct from the
     /// Application <c>SystemRegistry</c> (persistence) and the Plugin <c>KindHandlerRegistry</c> (drawing/BOM/restamp).
     /// </summary>
@@ -104,13 +104,14 @@ namespace RackCad.UI.Editor
         }
 
         /// <summary>
-        /// The five modules that exist today, in the menu's button order: selectivo, dinámico, cabecera, cama, larguero.
-        /// Explicit construction — a new system registers here, not by editing the menu window.
+        /// The six modules that exist today, in the menu's button order: selectivo, dinámico, push back, cabecera, cama,
+        /// larguero. Explicit construction — a new system registers here, not by editing the menu window.
         /// </summary>
         public static EditorModuleRegistry Default { get; } = new EditorModuleRegistry(new IRackEditorModule[]
         {
             new SelectiveEditorModule(),
             new DynamicEditorModule(),
+            new PushBackEditorModule(),
             new HeaderEditorModule(),
             new FlowBedEditorModule(),
             new LargueroEditorModule(),

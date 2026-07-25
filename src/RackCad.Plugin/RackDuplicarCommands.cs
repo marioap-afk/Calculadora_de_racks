@@ -23,7 +23,7 @@ namespace RackCad.Plugin
         /// each click places an independent copy (its own GUID and name, so RACKEDITAR touches only that copy).
         /// Multiple mode by default (keep clicking; Enter/Esc ends); the [Unica] keyword switches to a single copy.
         /// The copy CLONES the clicked view-block's drawn geometry (nested ARRAY defs shared, payload re-stamped),
-        /// so it is exact and works the same for the four rack types.
+        /// so it is exact and works the same for the five rack types (selective, dynamic, Push Back, cabecera, cama).
         /// </summary>
         [CommandMethod("RACKDUPLICAR")]
         public void RackDuplicar()
@@ -51,7 +51,7 @@ namespace RackCad.Plugin
 
                 // An unrecognized kind cannot be re-stamped safely (its inner identity is unknown): report the
                 // historic visible error and abort BEFORE placing any copy, so no copy carries a possibly-
-                // inconsistent identity. Case-insensitive, matching the restamp; the four embedded kinds resolve.
+                // inconsistent identity. Case-insensitive, matching the restamp; the five embedded kinds resolve.
                 if (!KindHandlerDispatch.TryResolveIgnoreCase(editor, embed.Kind, out _))
                 {
                     return;

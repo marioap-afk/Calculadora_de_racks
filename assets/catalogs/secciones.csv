@@ -7,3 +7,4 @@ LARGUERO,LARGUERO_ESCALON_CAL14_3_REMACHES,Larguero escalón calibre 14 con mén
 SEPARADOR,SEPARADOR_DE_CABECERA_FORMADA_DE_CINTA_CALIBRE_12,Separador de cabecera formado calibre 12,,,,,3.75,1.5,0.1046,in,12,,,,,,,,,,,,
 LARGUERO,LARGUERO_IN_OUT_C6,"Larguero in n out de canal de 6""",,Larguero,6,MENSULA_TROQUEL_REDONDO_CAL_10,,,,,,,,,,,,,,,,,
 LARGUERO,LARGUERO_ESCALON_INFINITO,Larguero escalón de ajuste infinito,,Larguero,3;3.5;4;4.5;5;5.5;6,MENSULA_AJUSTE_INFINITO_CAL_10,,,,,,,,,,,,,,,,,
+LARGUERO,LARGUERO_ESCALON_TROQUEL_REDONDO,Larguero escalon troquel redondo,,Larguero,3;3.5;4;4.5;5;5.5;6,MENSULA_TROQUEL_REDONDO_CAL_10,,,,,,,,,,,,,,,,,

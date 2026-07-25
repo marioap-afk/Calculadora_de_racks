@@ -65,6 +65,17 @@ namespace RackCad.Plugin
                         RackSelectivoCommands.DrawSelectiveView(
                             selective.View, selective.System, selective.Design, selective.RackId, selective.RackName);
                         break;
+                    case PushBackInsertionRequest pushBack:
+                        RackPushBackCommands.DrawPushBackView(
+                            pushBack.View,
+                            pushBack.Section,
+                            pushBack.System,
+                            pushBack.Design,
+                            pushBack.RackId,
+                            pushBack.RackName,
+                            source: null,
+                            innerSource: pushBack.SourceProject);
+                        break;
                 }
             }
             catch (System.Exception ex)
@@ -98,8 +109,8 @@ namespace RackCad.Plugin
                 }
 
                 // Dispatch by rack type via the Plugin's kind-handler seam. The same round-trip serves selective,
-                // dynamic, cabecera and cama; a kind with no registered handler surfaces the historic visible error
-                // (the four embedded kinds are always registered, so real data never hits it).
+                // dynamic, push back, cabecera and cama; a kind with no registered handler surfaces the historic
+                // visible error (the five embedded kinds are always registered, so real data never hits it).
                 if (!KindHandlerDispatch.TryResolve(editor, embed.Kind, out var handler))
                 {
                     return;

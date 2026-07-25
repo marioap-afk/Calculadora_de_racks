@@ -23,7 +23,9 @@ namespace RackCad.Tests
         private static KindDispatch<Item> Dispatch(params string[] kinds) =>
             new KindDispatch<Item>(kinds.Select(k => new Item(k)).ToArray(), item => item.Kind);
 
-        // Mirrors the four embedded kinds the Plugin registers, in canonical order.
+        // A four-kind SAMPLE for exercising the generic dispatch (declaration order, lookup, duplicates) — fixture data,
+        // not a mirror of the registry. The Plugin registers FIVE embedded kinds (selective, dynamic, pushback, cabecera,
+        // cama); that exact list and order are frozen by the Plugin source guards, not here.
         private static KindDispatch<Item> FourKinds() => Dispatch(
             RackEmbedDocument.KindSelective,
             RackEmbedDocument.KindDynamic,

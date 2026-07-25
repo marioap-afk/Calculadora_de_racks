@@ -1,0 +1,228 @@
+---
+schema: rackcad-initiative/v1
+id: I-18
+title: Push Back
+type: feature
+status: completed
+branch: feature/push-back
+base_branch: main
+priority:
+size: L
+depends_on: [I-10, I-11, I-15, I-16]
+conflicts_with: []
+context_packs: [architecture-kernel, system-dynamic-flowbed, ui-editors, autocad-plugin, catalogs-data, persistence, delivery-validation]
+automation_state_path: docs/automation/state/I-18.yml
+decision_paths: [docs/automation/decisions/I-18.md]
+requires_ci: true
+requires_plugin_build: true
+requires_autocad: true
+requires_owner_decision: true
+requires_owner_validation: true
+automation:
+  enabled: true
+  auto_merge: false
+  max_attempts: 3
+---
+
+# Push Back
+
+> Alcance del ROADMAP (fila I-18, Fase 4) y `ARCHITECTURE.md` §7.1; sin ampliación lateral. El campo
+> `priority` se deja vacío por falta de fuente numérica en el ROADMAP. La iniciativa se parte en
+> **PB-0 → I-18a → I-18b → I-18c** (§8). Esta rama implementa por entregas; **I-18a** (núcleo puro) es
+> la primera entrega de código.
+
+## 1. Objetivo
+
+Agregar **Push Back** como el **primer sistema construido sobre el patrón de módulos** listo tras las
+Fases 2-3 (`ARCHITECTURE.md` §7.1: descriptor · documento versionado · resolver diseño→sistema ·
+builders por vista→`SystemPlan` · BOM · estado de editor puro + vista WPF · draw adapter), **sin editar
+el código de otros sistemas** (criterio de salida de la Fase 4; "prueba de fuego" de §7.1). Compone lo
+compartido existente —la cama `FlowBedType.Pushback` (`FlowBedLateralBuilder`) y la geometría del
+Dinámico— sin duplicar su aritmética. Al cerrar (I-18c) entrega `docs/guias/agregar-un-sistema.md`
+validada por la experiencia real, retirando el patrón temporal de `ARCHITECTURE.md` §8 (DOC-02).
+
+## 2. Problema
+
+RackCad mantiene cuatro familias (cabecera, selectivo, dinámico, cama). Push Back es un producto real
+faltante. Las Fases 2-3 construyeron los contratos compartidos precisamente para que el sistema N+1 se
+agregue dentro de su módulo; falta la prueba de que el costo esté confinado al módulo.
+
+## 3. Alcance
+
+- **I-18a (esta entrega):** diseño y resolución puros (Domain/Application), builders por vista →
+  `SystemPlan`, BOM, y persistencia versionada (documento + round-trip + legacy + campos desconocidos
+  I-11). Reutiliza la cama `FlowBedType.Pushback` y la geometría del Dinámico. **No** registra el
+  sistema en ningún `Registry`, ni UI/Plugin/dibujo.
+- **I-18b:** registro aditivo (enum, slot, tres `Registry`, handler, `RackInsertionRequest`, módulo),
+  editor sobre el shell, draw adapter y comando → sistema usable end-to-end (✋ AutoCAD).
+- **I-18c:** guía `agregar-un-sistema.md` y cierre.
+
+## 4. Fuera de alcance
+
+- Editar la lógica o los `switch` de otros sistemas para acomodar Push Back (consumir contratos
+  compartidos SÍ; alterar su lógica NO → detenerse, §12).
+- Inventar bloques DWG o filas de catálogo (los provee el Owner; PB-0).
+- En I-18a: registros globales, descriptor visible, handler de Plugin, editor WPF, comandos, dibujo
+  AutoCAD, integración con menú/biblioteca y la guía (todo eso es I-18b/I-18c).
+- Validación de cargas estructurales (diferida), optimizador de layout IA, I-25, I-23, rediseño visual.
+
+## 5. Contexto requerido
+
+- Global: `AGENTS.md`, `docs/WORKFLOW.md`, `docs/AUTOMATION_PLAN.md`, `docs/ROADMAP.md` (fila I-18 +
+  principios 4/5), `docs/ARCHITECTURE.md` §§3.3-3.4, §4, §7.
+- Context Packs: `system-dynamic-flowbed`, `architecture-kernel`, `persistence`, `catalogs-data`,
+  `ui-editors`, `autocad-plugin`, `delivery-validation`.
+- Código de referencia (componer, NO copiar): `Dynamic*` (resolver, geometría, builders, cama compuesta,
+  BOM, documento) y `FlowBed*`; la seguridad `SelectiveTopeConfig` (patrón `OffCells`).
+
+## 6. Dependencias
+
+- Integradas en `main`: I-10, I-11, I-15, I-16. ✓
+- **PB-0 (prerrequisito del Owner):** bloques DWG + filas de catálogo + decisiones funcionales. **Provisto
+  por el Owner** (ver [`docs/automation/decisions/I-18.md`](../automation/decisions/I-18.md) y los CSV de
+  esta rama). Con PB-0 resuelto, I-18a es elegible.
+
+## 7. Archivos esperados
+
+- **Nuevos (I-18a):** `src/RackCad.Domain/Systems/PushBack*.cs`;
+  `src/RackCad.Application/Systems/PushBack*.cs` (resolver, geometría de extremos, builders lateral/
+  frontal/planta → `SystemPlan`, BOM); `src/RackCad.Application/Persistence/PushBackDesignDocument.cs`;
+  `tests/RackCad.Tests/PushBack*Tests.cs`.
+- **Datos (Owner, append-only, ya en la rama):** `assets/catalogs/secciones.csv`, `blocks.csv`,
+  `connection-layout.csv` (pieza `LARGUERO_ESCALON_TROQUEL_REDONDO`).
+- **Baselines de catálogo a actualizar por las filas autorizadas:**
+  `tests/RackCad.Tests/ShippedCatalogIntegrityTests.cs` (secciones 6→7, BeamProfiles 3→4).
+- **NO en I-18a:** `RackSystemKind`, `RackProject(.Document)`, los tres `*Registry`, UI, Plugin.
+
+## 8. Fases
+
+- **PB-0** (Owner): bloques + catálogo + decisiones funcionales — [decisions/I-18.md](../automation/decisions/I-18.md). **Resuelto.**
+- **I-18a** (esta entrega): núcleo puro + plan + BOM + persistencia + pruebas golden/round-trip. **COMPLETA.**
+  - **Núcleo + correcciones:** diseño/resolver/cama/persistencia; **haz alto por frente×nivel** (`PushBackFrontConfig`,
+    default 3.5 explícito); **persistencia** con round-trip por dominio + no-degradación (`FromDomain(design, source)`);
+    **rechazo de GUIA**; **Snapshot** canónico (Design→Resolve→Snapshot→Resolve).
+  - **Geometría + plan (items 4-7):** `PushBackFlowBedAxis/Geometry` (eje `TROQUEL_CAMA`→`INICIO` del TROQUEL_REDONDO),
+    `PushBackLoadBeamGeometry` (bajo IN/OUT + alto TROQUEL_REDONDO por celda, snap 2"), intermedios tangentes, cama
+    full-span sin frenos; **composición de caja negra** de los `SystemPlan` lateral/frontal/planta (quita por
+    Role/PieceId lo dinámico, agrega Push Back, reagrupa con `HeaderInstanceGrouper`, sin mutar el Dinámico);
+    `PushBackBomBuilder` (1 IN/OUT + 1 TROQUEL_REDONDO por celda, cama opaca full-span, topes; sin 2º IN/OUT, sin −4,
+    sin frenos/guías, sin doble conteo); topes posteriores `LARGUERO_ESCALON_TOPE_DE_3` por celda activa; golden de
+    las 5 vistas. Golden del Dinámico **intactos**. La validación **visual** final en AutoCAD corresponde a **I-18b**.
+  - **Corrida correctiva (6 hallazgos de revisión):** (1) frontal posterior localiza el nivel con los niveles **del
+    frente** (no la proyección global), con tolerancia explícita y sin fallback silencioso; (2) planta con **peralte
+    envolvente** (`PushBackHighEndBeamGeometry.PlantaPeralte`); (3) BOM IN/OUT bajo **por celda**
+    (`DynamicRackLevelGeometry.At`); (4) **autoridad única** de seguridad baja (resolver `Side=Left`; frontal posterior
+    sin seguridad normal; BOM low-only sin doble conteo; GUIA nunca); (5) tope canónico `SelectiveTopePlacement.SnapY`
+    (sube 8" y ajusta, SAQUE+LONGITUD); (6) **golden fijos** (SHA-256 de firma detallada) para las 5 vistas y el BOM.
+  - **Coherencia de longitudes:** fuente única `PushBackLoadBeamGeometry.CellBeamLength(front, nivel)` — el haz bajo
+    IN/OUT y el alto TROQUEL_REDONDO de una celda comparten la longitud transversal **por frente y nivel**
+    (`DynamicRackLevelGeometry.At`), no `front.BeamLength` global; el **tope** del BOM usa `CellBeamLength + LengthAllowance`
+    igual que los bloques de tope de las tres vistas. Sin override `CellBeamLength == front.BeamLength` ⇒ los **5 pins de
+    vista no cambian**; solo se actualizó el pin del **BOM**. 61 pruebas Push Back; suite **1067 verde**; UI/Plugin 0 err;
+    validador I-19 sin errores nuevos.
+- **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD. **COMPLETA:
+  `code-complete` + `owner-approved` (2026-07-25).**
+  Registro aditivo, editor, draw adapter y comando **completos y verdes** (increments 1–5a). Rondas 1–3 de
+  ajuste tras el rechazo del gate cerraron PB-VAL-01…05 (interfaz de tres zonas → matriz de tarjetas central +
+  preview técnico por roles + acciones por vista; tangencia; tope posterior orientado y +4"; seguridad por
+  defecto). **Reanudación 2026-07-24:** la rama se **rebasó** sobre `origin/main` = `967fcb9` (que ya integra
+  **I-30** —shell visual común— e **I-31** —selectivo al shell—; rebase limpio, 66 commits idénticos por
+  `range-diff`, cero conflictos). Sobre esa base: (a) **`RackPushBackSystemWindow` migrada a
+  `RackEditorVisualShell`** por composición y slots, con **adopción visual completa** del contrato común
+  (solo-XAML, code-behind intacto): sidebar, matriz y preview consumen superficie/borde/relleno/tipografía y
+  colores por los tokens `Shell*` (sin cromo hardcoded); las acciones adoptan `PrimaryButtonStyle` (Actualizar +
+  Insertar) y `SecondaryButtonStyle` (Restaurar, BOM, biblioteca, las 4 vistas y Cerrar), con
+  `ToolTipService.ShowOnDisabled` donde el code-behind da motivo; el **resumen + mensajes** viven en
+  `StatusContent` (sin un segundo status en el sidebar); y el **preview técnico** pasa al fondo **oscuro
+  compartido** `ShellPreviewBackgroundBrush` (se retira el `#F7FAFC` hardcoded) sin recomputar geometría ni tocar
+  `PushBackPreviewModel` (el painter por roles ya usa la `PreviewPalette` compartida, contraste correcto). Conserva
+  controles, `x:Name`, handlers, matriz, preview, selección y acciones; tamaño por `EditorShellWindowStyle`; (b)
+  **PB-VAL-06 — Push Back no admite parrillas**: la autoridad canónica `PushBackSafetyAuthority` excluye PARRILLA
+  además de GUIA (predicado único `IsUnsupported`), impidiéndola en UI, resolver, sistema, planes, dibujo y BOM,
+  con lectura compatible de documentos antiguos (una parrilla legacy se lee sin error y se descarta en build, como
+  GUIA; sin migración destructiva). **Smoke del Owner (2026-07-24, normativo)** sobre el DLL de `18e1715`:
+  PB-VAL-03, PB-VAL-04 y PB-VAL-06 **aprobados**; PB-VAL-01, PB-VAL-02 y PB-VAL-05 **rechazados**; quedan
+  aprobados y **congelados** (no se modifican) matriz/selección, preview técnico, status, seguridad, cama y la
+  altura adicional +4" del tope. **Corrida de retest:** (a) **PB-VAL-01** — el editor completo de «Celda
+  seleccionada» y sus alcances «Aplicar a» pasan de la matriz al **sidebar** con el patrón estructural del
+  Dinámico (`SectionTitle` + `FieldLabel` sobre control a ancho completo, grids de dos columnas con gutter 10);
+  la matriz queda solo con toolbar, tarjetas y herramientas masivas; los `WrapPanel` densos del sidebar
+  desaparecen (el único que queda es la fila de botones «Aplicar a», como en el Dinámico). (b) **PB-VAL-02** — el
+  tope deja de anclarse a `placement.X` bruto y toma el **punto de conexión real** del larguero posterior
+  (`INICIO_IZQUIERDO`/`INICIO_DERECHO`) transformado por el mirror, eligiendo el del **lado de carga**; y su
+  orientación deja de deducirse del mirror del larguero: Push Back es LIFO y carga por el extremo bajo (−X), y
+  por la convención canónica del Selectivo el tope cuyo hueco cae en −X es el **espejado**, así que las
+  elevaciones lo dibujan espejado. Se conservan +4", SAQUE, LONGITUD, snap y OffCells; el golden se re-fija solo
+  en tres pins. (c) **PB-VAL-05** — el Owner confirmó en el DWG que `TROQUEL_CAMA` **es** la cara de contacto
+  física y que el desplazamiento vigente es correcto, así que consumirlo queda **demostrado**: el punto canónico
+  se hace explícito y auditable (se lee del catálogo por nombre, sin fallback al origen del bloque) y se prueba
+  numéricamente que el punto transformado del larguero colocado cae sobre la línea de `RailOrigin` en su propio X
+  y que la cama queda **bit-idéntica**. Queda un **hallazgo abierto** para decisión del Owner: el desplazamiento
+  es *lateral-only*, y el frontal de entrada/salida dibuja el mismo larguero 1.2519" más arriba (resuelto después
+  por decisión del Owner: el IN/OUT bajo deja de desplazarse y es el larguero **posterior** el que se hace
+  tangente). **Prueba real de persistencia** (`PushBackNoParrillaPersistenceTests`): un
+  proyecto Push Back antiguo —envelope con GUID envolviendo un proyecto interno con PARRILLA, metadata desconocida
+  y versión legible `2.5` (I-11)— se lee por los stores vigentes sin error; al cargar/resolver la parrilla no
+  llega al sistema, a las 5 vistas ni al BOM; y la reescritura canónica (snapshot del sistema resuelto) **no** la
+  re-emite mientras el GUID, la metadata desconocida y la versión se preservan. Falta el **smoke visual corto del
+  Owner** en AutoCAD sobre el DLL Debug del HEAD rebasado antes de reabrir el gate.
+  **Cierre de I-18b (2026-07-25): `code-complete` + `owner-approved`.** Tras las rondas correctivas finales
+  —tope anclado por vista (`TROQUEL_SEPARADOR` en lateral; **mate de origen** contra el `TROQUEL_TOPE` del poste
+  en frontal posterior y planta), tope configurado en una sección **visible** dentro de «Elementos de seguridad»,
+  y flujo de Seguridad que aplica `dialog.Result` autorizado y el tope en una sola operación— el Owner ejecutó
+  el **retest final en AutoCAD 2025** sobre el DLL de `ec00dab` y **aprobó PB-VAL-01…06** y la **geometría Push
+  Back**. El **preview visual** queda **diferido** a una iniciativa transversal futura y **no bloquea** I-18:
+  explícitamente **no** se declara aprobado visualmente. Evidencia en
+  [`evidence/I-18-autocad-validation.md`](../automation/evidence/I-18-autocad-validation.md) §11.
+- **I-18c** (esta entrega): guía y cierre. **COMPLETA.** Nace
+  [`docs/guias/agregar-un-sistema.md`](../guias/agregar-un-sistema.md) con la experiencia **real** de Push Back
+  (sustituye el apéndice temporal de `ARCHITECTURE.md`, DOC-02 de I-06), y HANDOFF/ROADMAP se actualizan como
+  último commit de la rama conforme a WORKFLOW §4.5.4. La iniciativa queda **`integration-ready`**; la
+  integración a `main` es una operación serializada del Owner.
+
+## 9. Pruebas y builds
+
+`dotnet test` (resolver, builders con golden de plan, BOM, round-trip incl. legacy, validador I-19 sin
+errores nuevos); build Debug de UI y Plugin (0 errores propios); CI verde. I-18a **no** requiere
+validación en AutoCAD (sin cableado de Plugin); lo que se validará en I-18b queda explícito en §10.
+
+## 10. Validación manual
+
+- **I-18a:** `requires_autocad: no` (puro). **Para I-18b se deberá validar en AutoCAD:** inserción de
+  Push Back; vistas ligadas (lateral/frontal/planta); pendiente 7/16"/pie con extremo bajo a la
+  izquierda; IN/OUT solo en el extremo bajo y `LARGUERO_ESCALON_TROQUEL_REDONDO` solo en el alto; cama
+  `Pushback` sin frenos con longitud = span estructural completo (sin −4"); tope posterior por celda;
+  `RACKEDITAR` round-trip mismo GUID; BOM sin doble conteo; persistencia/legacy.
+
+## 11. Criterios de aceptación
+
+- I-18a: suite verde (golden de plan lateral/frontal/planta + BOM + round-trip); golden del Dinámico
+  **idénticos**; validador I-19 sin errores nuevos; **ningún registro global tocado**; Domain/Application
+  puros. Las 20 pruebas obligatorias del encargo cubiertas. **CUMPLIDO.**
+- I-18b: sistema usable de extremo a extremo (registro, editor, handler, comandos, dibujo, edición multivista,
+  biblioteca, BOM, persistencia con metadata I-11 y carga legacy) + **validación manual del Owner en AutoCAD**.
+  **CUMPLIDO** (2026-07-25): `RackCad.Tests` 1201 y `RackCad.UI.Tests` 343 verdes, builds Debug UI/Plugin sin
+  errores propios, bundle Debug reproducible con 105 comprobaciones fail-closed, y PB-VAL-01…06 **aprobados**
+  por el Owner con el preview visual **diferido**.
+- I-18c: guía `agregar-un-sistema.md` creada desde la experiencia real; HANDOFF/ROADMAP al día como último
+  commit de la rama. **CUMPLIDO.**
+
+## 12. Condiciones para detenerse
+
+- Falta PB-0 (bloques/filas/decisiones).
+- Agregar Push Back exige **alterar la lógica de Selectivo o Dinámico** (no solo componer helpers puros):
+  detenerse y reportar el contrato compartido faltante antes de forzar el cambio.
+- Cualquier condición general de AUTOMATION_PLAN §12.
+
+## 13. Estado versionado y entrega del Pull Request
+
+Estado canónico: [`docs/automation/state/I-18.yml`](../automation/state/I-18.yml) — **`integration-ready`**.
+Decisiones del Owner: [`docs/automation/decisions/I-18.md`](../automation/decisions/I-18.md). Merge automático
+prohibido; **integración serializada del Owner**. `HANDOFF.md`/`ROADMAP.md` se actualizan como **último commit
+de la rama** (WORKFLOW §4.5.4), para que el merge los lleve consigo; la marca `integrada (fecha)` del ROADMAP la
+pone la propia sesión de integración.
+
+## 14. Evidencia final
+
+Commits atómicos, archivos, pruebas, builds y CI de la rama; confirmación de que `main` no fue
+modificada y de que los planes del Dinámico no cambiaron. La validación en AutoCAD corresponde a I-18b.
