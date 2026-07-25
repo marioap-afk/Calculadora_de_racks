@@ -12,9 +12,14 @@ RackCad es un plugin de AutoCAD 2025 (.NET 8, C#/WPF) para diseñar y dibujar ra
 con BOM. El trunk único es `main`; Domain y Application son puros, UI usa WPF sin AutoCAD y Plugin
 es el único adaptador de la API de AutoCAD.
 
-El producto mantiene cuatro familias operativas: cabecera, selectivo, dinámico modular y cama de
-rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
+El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
+de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**Push Back** es la quinta familia y está **lista para integrar**, no integrada: I-18
+(`feature/push-back`) quedó `integration-ready` el **2026-07-25**, con el gate manual del Owner
+**aprobado** en AutoCAD 2025 (PB-VAL-01…06) y la geometría Push Back aprobada. El **preview visual** se
+**difiere** a una iniciativa transversal futura y **no** bloquea I-18: no está aprobado visualmente.
 
 I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
 `ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
@@ -622,69 +627,27 @@ se integra por `git merge --no-ff` en esta sesión.
 
 ## 4. Siguiente acción
 
-Con **I-31** (`refactor/selective-visual-shell`, Fase 5) **integrada en esta sesión** —migración del
-editor **Selectivo** (`RackSelectiveWindow`) al **shell visual común** (`RackEditorVisualShell`, I-30)
-por composición y slots, **solo XAML** (el `.cs` es byte-idéntico a `origin/main`), **sin cambio** de
-dibujo/BOM/GUID/persistencia/handlers/comportamiento; Owner validó los **12 puntos** en AutoCAD 2025 sin
-observaciones—, se completa la migración **I-30 → I-31** y el **siguiente paso autorizado** es la
-**reanudación de I-18** (Push Back). La reanudación se ejecuta **en su propio chat/worktree** y
-**empieza por rebasar `feature/push-back` sobre el `origin/main` vigente** (que contiene el merge I-31
-`ad0ea1f` y su cierre documental posterior) para
-migrar `RackPushBackSystemWindow` al shell (hoy imita a mano la estructura del shell —DockPanel, scroll
-lateral de 430, `WorkArea` y barra inferior— con tamaños `720×1280`/mín `640×1120` **pre-672** y **ya**
-adopta `NumericField`/`CatalogCombo`, así que su migración es un **reparent de layout** que no adopta
-controles de captura); ese rebase **no** se ejecuta como parte de I-31. Push Back (`feature/push-back`,
-`b2d9e9d`) permanece **intacta**. Además siguen pendientes **I-25** (`feature/guardas-traseras`, sobre
-I-22) e **I-23** (namespaces, cierra la Fase 5, depende de todas). El shell es **agnóstico a
-`RackSystemKind`**; su última adopción viva es Push Back, en I-18.
+**Integrar I-18 (Push Back).** La iniciativa quedó **`integration-ready`** el 2026-07-25 en
+`feature/push-back`: I-18a, I-18b (`code-complete` + `owner-approved`) e I-18c completas. Falta
+exclusivamente la **integración serializada del Owner** (WORKFLOW §4.5): rebase final si `main` avanzó,
+CI verde sobre el HEAD exacto, `merge --no-ff`, marcar la fila del ROADMAP como `integrada (fecha)` y
+limpiar rama y worktree. Nada de eso se ejecutó en la sesión de cierre, por instrucción explícita.
 
-Con **I-07** (`docs/adr-retroactivos`, Fase 1) **integrada en esta sesión** —retro-documentación de las
-trece decisiones de HANDOFF §7 como **ADR-0006 a 0018**, **aceptados por el dueño** (2026-07-22, «Sí,
-apruebo»); **solo documentación, sin cambio de producto**—, el registro de esas decisiones deja de vivir
-en HANDOFF §7 y pasa a `docs/adr/`; el worktree y las ramas de I-07 se retiran en la limpieza de esta
-sesión. El siguiente paso natural sigue siendo **I-25** (`feature/guardas-traseras`, sobre I-22) e
-**I-18 (Push Back)** (a la espera de sus bloques DWG del dueño); **I-23** cierra la Fase 5 al final.
+Qué entrega I-18: Push Back como **primer sistema construido sobre el patrón de módulos** —descriptor,
+documento versionado, resolver y builders por vista, BOM, editor sobre el shell común y draw adapter—
+**componiendo** la cama `FlowBedType.Pushback` y la geometría del Dinámico **sin editar** el código de
+los otros sistemas. Cierra además dos deudas transversales: nace
+[`docs/guias/agregar-un-sistema.md`](guias/agregar-un-sistema.md) desde la experiencia real (retira el
+apéndice temporal de `ARCHITECTURE.md`, DOC-02 de I-06) y se **extrae la infraestructura de preview
+compartida** del renderer Dinámico, ya consumida por los dos editores, con la equivalencia del Dinámico
+**medida** (misma firma de escena sobre 736 primitivas antes y después de extraer).
 
-Con I-08, I-09, I-16, I-10, I-11, **I-14**, **I-12**, **I-19**, **I-15**, **I-21** e **I-20** integradas (**I-21**
-y **I-20** en esta tanda de integración serializada), la **pista B del Plugin** está cerrada (la serialización
-I-09 → I-16 → I-10 está completa), la **pista A de Application** entrega la persistencia uniforme, **I-12**
-cierra el **versionado real** (versión única, SHA
-estampado, bundle por `dotnet publish` verificado fail-closed, ADR-0004 aceptado), e **I-19** entrega el
-validador de catálogos. La **pista C de UI** entrega ya **cuatro** eslabones: los **controles comunes**
-(I-14), el **Editor Shell** (I-15, adoptado por las cuatro ventanas ricas: catálogo, identidad, recomputación
-coalescida e inserción vía `RackEditorSession`; menú y biblioteca por `EditorModuleRegistry`) y la
-**extracción del estado** de los editores **dinámico** (I-21: `DynamicFrontMatrix`/`DynamicEditorDesignAssembler`)
-y **selectivo** (I-20: `SelectiveEditorState`) a Application, dejando ambas ventanas observando su estado y
-pintando. Con **I-22** (`refactor/safety-placement`) **integrada en esta sesión** (colocación de seguridad del
-selectivo; detalle abajo), el siguiente paso natural es **I-25** (`feature/guardas-traseras`, sobre I-22) e
-**I-18 (Push Back)**, que ya tiene resueltas sus dependencias I-10, I-11, I-15 e I-16 y solo espera los **bloques
-DWG del dueño**. Además, **I-05** (`feature/guardrail-unidades`, relleno de Fase 1) queda **integrada**: la
-**guardia de unidades** avisa cuando el dibujo no está en pulgadas, **sin conversión ni reescalado** (ADR-0005
-aceptado); no desbloquea ni estorba ninguna otra iniciativa. **I-24** (`refactor/ui-tests-editores`, Fase 5) queda
-**integrada** en esta sesión: **pruebas de editores** en `tests/RackCad.UI.Tests` (ViewModels + límites reales de
-las ventanas por handlers WPF reales; **29** nuevas, 139→168 UI) más un **único seam interno** de prueba, **sin
-cambio de comportamiento**; cierra el hallazgo U3 de la pista de UI. **I-22** (`refactor/safety-placement`, Fase 5)
-queda **integrada** en esta sesión: salda **E6/E7** de la seguridad del selectivo (planes/servicios de colocación
-por familia, configuraciones y DTO por subtipo, paso de troquel único y adopción de `SelectionMatrix`), **sin
-cambio de comportamiento** (7 golden idénticos; AutoCAD + owner-validation aprobadas). Con I-22 integrada, el
-siguiente paso natural pasa a ser **I-25** (`feature/guardas-traseras`, última familia de seguridad construida
-sobre I-22, **ahora desbloqueada**) e **I-18 (Push Back)** (solo espera los **bloques DWG del dueño**); **I-23**
-cierra la Fase 5 al final (depende de todas).
+Deuda consciente que I-18 deja anotada: el **preview visual** sigue siendo insatisfactorio para el Owner
+y su estandarización completa se difiere a una **iniciativa transversal futura** que abarque a los tres
+editores; parte de una sola tubería, no de dos painters divergentes.
 
-**I-17** (`refactor/clon-unico-cabecera`, Fase 3) queda **integrada** en esta sesión: **clon único de cabecera**
-(`RackFrameProjectStore.DeepCopy`, hallazgo **U4**), **sin cambio de comportamiento** (detalle en §1 y §5); cierra
-U4 y **no** desbloquea ni estorba otra iniciativa. El siguiente paso natural sigue siendo **I-25**/**I-18**.
-
-Con **I-03** (`refactor/fallos-silenciosos`, Fase 1) **integrada en esta sesión** —logger mínimo a
-`%AppData%\RackCad\logs`, `Report()` con stack, los 14 `catch` del Plugin y los stores best-effort registrando,
-escritura atómica en los 4 stores y carga que distingue archivo ausente de ilegible; **aditivo, sin cambio de
-comportamiento**, no desbloquea ni estorba otra iniciativa— el relleno de robustez de Fase 1 (P1/D2) queda
-cerrado. Con **I-07** también integrada en esta sesión (arriba), quedan las Fases 4-5 (**I-25** sobre I-22,
-**I-18** Push Back a la espera de sus bloques DWG, **I-23** al final).
-
-La automatización permanece pausada: no hay ejecutor nocturno activo ni horarios programados. El
-desarrollo posterior continúa manualmente bajo WORKFLOW hasta que el dueño apruebe otro mecanismo y
-un nuevo piloto controlado.
+Después de I-18 siguen pendientes **I-25** (`feature/guardas-traseras`, sobre I-22) e **I-23**
+(namespaces, cierra la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
