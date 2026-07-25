@@ -878,6 +878,16 @@ namespace RackCad.UI
         /// </summary>
         internal Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> RearTopeDialog;
 
+        /// <summary>
+        /// PB-002 (I-32) — the desviador grid's level count PER POST: the canonical "tallest adjacent front owns the
+        /// cut" rule of <see cref="DynamicFrontGeometry"/>, the very rule the drawing uses. The dialog used to receive a
+        /// per-FRONT list and index it by post, so the last post (and every interior one next to a taller front) offered
+        /// fewer levels than the drawing places — cells the user could see drawn but not switch off.
+        /// </summary>
+        internal IReadOnlyList<int> DesviadorLevelsPerPost()
+            => DynamicFrontGeometry.LoadLevelsPerPost(
+                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList());
+
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
             var elements = SafetyElementsForDialog();
@@ -941,7 +951,8 @@ namespace RackCad.UI
                 fallbackLevelsArePerPost: true,
                 introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo bajo (entrada/salida). No usa guías.",
                 includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true,
-                extraSection: extraSection)
+                extraSection: extraSection,
+                desviadorLevelsPerPost: DesviadorLevelsPerPost())
             {
                 Owner = this
             };

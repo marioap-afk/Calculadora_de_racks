@@ -28,6 +28,18 @@ namespace RackCad.UI
         private readonly RackCatalog catalog;
         private readonly string elementId;
 
+        /// <summary>
+        /// PB-003 (I-32) — whether the aisle-face selector is offered. True (Selectivo, Dinámico) is the historical
+        /// dialog, unchanged. Push Back passes false: its safety only ever lives at the LOW (entrance/exit) end — its
+        /// own authority collapses every side to Left before anything is drawn — so the selector could only mislead.
+        /// The control is still CONSTRUCTED (only its placement in the options row is skipped) so the result keeps
+        /// reading a real value with no null checks.
+        /// </summary>
+        private readonly bool showSide;
+
+        /// <summary>The side the dialog reports when the selector is hidden: the low (entrance/exit) aisle face.</summary>
+        public const SafetySide LowEndSide = SafetySide.Left;
+
         public sealed class DesviadorResult
         {
             public SafetySide Side;
@@ -50,11 +62,13 @@ namespace RackCad.UI
             IEnumerable<SelectiveGridCell> offCells,
             int fallbackPostCount,
             IReadOnlyList<int> fallbackLevelsPerFrente,
-            bool fallbackLevelsArePerPost = false)
+            bool fallbackLevelsArePerPost = false,
+            bool showSide = true)
         {
             this.elementId = elementId;
             this.system = system;
             this.catalog = catalog;
+            this.showSide = showSide;
 
             var initial = WorkingSelection(
                 Effective(longitud, SelectiveSafetyDefaults.DesviadorLongitud),
@@ -95,8 +109,10 @@ namespace RackCad.UI
             var intro = new TextBlock
             {
                 Text = "Marca los postes y niveles que llevan desviador (todos por defecto). El nivel 1 siempre se mide "
-                     + "desde el primer TROQUEL_LARGUERO, aunque no haya larguero a piso; los niveles superiores van 6\" debajo del larguero. "
-                     + "Elige si se coloca en la cara exterior izquierda, derecha espejeada o en ambas.",
+                     + "desde el primer TROQUEL_LARGUERO, aunque no haya larguero a piso; los niveles superiores van 6\" debajo del larguero."
+                     + (showSide
+                        ? " Elige si se coloca en la cara exterior izquierda, derecha espejeada o en ambas."
+                        : " Se coloca en la cara de entrada/salida."),
                 TextWrapping = TextWrapping.Wrap,
                 FontSize = 11.5,
                 Margin = new Thickness(0, 0, 0, 10)
@@ -105,7 +121,7 @@ namespace RackCad.UI
             root.Children.Add(intro);
 
             var options = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 10, 0, 0) };
-            options.Children.Add(new TextBlock { Text = "Lado:", VerticalAlignment = VerticalAlignment.Center });
+            var sideLabel = new TextBlock { Text = "Lado:", VerticalAlignment = VerticalAlignment.Center };
             this.side = new ComboBox
             {
                 Width = 92,
@@ -115,8 +131,12 @@ namespace RackCad.UI
             this.side.Items.Add("Izquierdo");
             this.side.Items.Add("Derecho");
             this.side.Items.Add("Ambas");
-            this.side.SelectedIndex = SideIndex(initial.Side);
-            options.Children.Add(this.side);
+            this.side.SelectedIndex = showSide ? SideIndex(initial.Side) : SideIndex(LowEndSide);
+            if (showSide)
+            {
+                options.Children.Add(sideLabel);
+                options.Children.Add(this.side);
+            }
             options.Children.Add(new TextBlock { Text = "Longitud (in):", VerticalAlignment = VerticalAlignment.Center });
             this.longitud = new TextBox
             {
@@ -298,6 +318,7 @@ namespace RackCad.UI
 
         private SafetySide SelectedSide()
         {
+
             switch (side.SelectedIndex)
             {
                 case 0: return SafetySide.Left;

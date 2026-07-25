@@ -217,18 +217,47 @@ namespace RackCad.Application.Systems
                 return 0;
             }
 
+            var levels = LoadLevelsAtPost(system.Fronts.Select(front => front?.LoadLevels ?? 0).ToList(), postIndex);
+            return levels > 0 ? levels : system.LoadBeamLevels.Count;
+        }
+
+        /// <summary>
+        /// The same "tallest adjacent front owns the cut" rule, stated over a plain per-FRONT level count so a caller
+        /// with no resolved system — an editor dialog, for instance — cannot invent a second, divergent rule. A rack of
+        /// N fronts has N+1 posts: each end post sees only its single neighbour, every interior post sees two.
+        /// </summary>
+        public static int LoadLevelsAtPost(IReadOnlyList<int> levelsPerFront, int postIndex)
+        {
+            if (levelsPerFront == null || postIndex < 0 || postIndex > levelsPerFront.Count)
+            {
+                return 0;
+            }
+
             var levels = 0;
             if (postIndex > 0)
             {
-                levels = Math.Max(levels, system.Fronts[postIndex - 1]?.LoadLevels ?? 0);
+                levels = Math.Max(levels, levelsPerFront[postIndex - 1]);
             }
 
-            if (postIndex < system.Fronts.Count)
+            if (postIndex < levelsPerFront.Count)
             {
-                levels = Math.Max(levels, system.Fronts[postIndex]?.LoadLevels ?? 0);
+                levels = Math.Max(levels, levelsPerFront[postIndex]);
             }
 
-            return levels > 0 ? levels : system.LoadBeamLevels.Count;
+            return levels;
+        }
+
+        /// <summary>The level count of EVERY post (N fronts produce N+1 posts), by the adjacent-front rule above.</summary>
+        public static IReadOnlyList<int> LoadLevelsPerPost(IReadOnlyList<int> levelsPerFront)
+        {
+            var fronts = levelsPerFront ?? new List<int>();
+            var result = new List<int>(fronts.Count + 1);
+            for (var post = 0; post <= fronts.Count; post++)
+            {
+                result.Add(Math.Max(1, LoadLevelsAtPost(fronts, post)));
+            }
+
+            return result;
         }
 
         /// <summary>Fronts physically adjacent to one post, used by section-only level and peralte rules.</summary>
