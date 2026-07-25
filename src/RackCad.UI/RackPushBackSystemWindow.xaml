@@ -95,7 +95,12 @@
                     <TextBlock Text="Poste" Style="{StaticResource FieldLabel}" />
                     <controls:CatalogCombo x:Name="PostBox" DisplayMemberPath="DisplayName" SelectionChanged="Combo_Changed" />
 
+                    <!-- PB-013 (I-32): Fondo and Unidad are RACK-WIDE and stay editable here. Frente, Alto and Peso
+                         belong to the CELL, so this panel only MIRRORS the selected one: they used to be editable and
+                         changed nothing, because the cell always wins. -->
                     <TextBlock Text="Tarima (datos generales)" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="Frente, Alto y Peso son de la celda: aquí solo se muestran los de la celda seleccionada. Fondo y Unidad son de todo el rack."
+                               Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,0,0,3" />
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -104,11 +109,13 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Frente" Style="{StaticResource FieldLabel}" />
-                            <controls:NumericField x:Name="FrontBox" LostFocus="Input_Changed"
-                                                   Minimum="0" MinimumInclusive="False" />
+                            <controls:NumericField x:Name="FrontBox" IsEnabled="False"
+                                                   Minimum="0" MinimumInclusive="False"
+                                                   ToolTip="Se edita en «Celda seleccionada» → Tarima frente." />
                             <TextBlock Text="Alto" Style="{StaticResource FieldLabel}" />
-                            <controls:NumericField x:Name="PalletHeightBox" LostFocus="Input_Changed"
-                                                   Minimum="0" MinimumInclusive="False" />
+                            <controls:NumericField x:Name="PalletHeightBox" IsEnabled="False"
+                                                   Minimum="0" MinimumInclusive="False"
+                                                   ToolTip="Se edita en «Celda seleccionada» → Tarima alto." />
                             <TextBlock Text="Unidad" Style="{StaticResource FieldLabel}" />
                             <ComboBox x:Name="WeightUnitBox" SelectionChanged="Combo_Changed" />
                         </StackPanel>
@@ -117,7 +124,8 @@
                             <controls:NumericField x:Name="DepthBox" LostFocus="Input_Changed"
                                                    Minimum="0" MinimumInclusive="False" />
                             <TextBlock Text="Peso" Style="{StaticResource FieldLabel}" />
-                            <controls:NumericField x:Name="WeightBox" LostFocus="Input_Changed" Minimum="0" />
+                            <controls:NumericField x:Name="WeightBox" IsEnabled="False" Minimum="0"
+                                                   ToolTip="Se edita en «Celda seleccionada» → Tarima peso." />
                         </StackPanel>
                     </Grid>
 

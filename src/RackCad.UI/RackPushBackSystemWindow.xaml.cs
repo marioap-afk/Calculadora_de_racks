@@ -48,6 +48,15 @@ namespace RackCad.UI
         private RackProject sourceProject;
         private PushBackEditorComputation lastComputation; // the LAST VALID computation (only replaced on a valid build)
 
+        /// <summary>
+        /// PB-013 (I-32): the RACK-WIDE pallet. Only its Fondo and Unidad are edited in this window (the two boxes that
+        /// stay enabled); Frente, Alto and Peso belong to the cell, so they are kept exactly as the design was loaded
+        /// with and the general panel only MIRRORS the selected cell. Keeping them here — instead of re-reading the
+        /// mirrored boxes — is what guarantees that selecting or editing a cell never rewrites the rack-wide pallet, and
+        /// therefore never changes the drawing through a panel the Owner reported as inert.
+        /// </summary>
+        private PalletSpecification generalPallet = PushBackEditorInputs.NewDesign().Pallet;
+
         // The informative card matrix (PB-VAL-01 round 3). Cards are looked up by (front, level) for in-place updates;
         // the grid stores NO state of its own — every card derives from PushBackMatrixCardModel over the state.
         private readonly Dictionary<(int Front, int Level), (Border Border, TextBlock Text)> matrixCards
@@ -212,10 +221,8 @@ namespace RackCad.UI
             {
                 NameBox.Text = rackName ?? string.Empty;
                 var pallet = inputs.Pallet ?? new PalletSpecification(42.0, 48.0, 60.0, 1000.0, "kg");
-                FrontBox.SetNumber(pallet.Front);
+                generalPallet = pallet;
                 DepthBox.SetNumber(pallet.Depth);
-                PalletHeightBox.SetNumber(pallet.Height);
-                WeightBox.SetNumber(pallet.Weight);
                 WeightUnitBox.SelectedItem = string.IsNullOrWhiteSpace(pallet.WeightUnit) ? "kg" : pallet.WeightUnit;
                 PalletsDeepBox.SetNumber(Math.Max(2, inputs.PalletsDeep));
                 ToleranceBox.SetNumber(inputs.PalletTolerance > 0.0 ? inputs.PalletTolerance : DynamicRackDefaults.DefaultPalletTolerance);
@@ -278,6 +285,7 @@ namespace RackCad.UI
                 CellPalletFrontBox.SetNumber(cell.PalletFront);
                 CellPalletHeightBox.SetNumber(cell.PalletHeight);
                 CellPalletWeightBox.SetNumber(cell.PalletWeight);
+                MirrorSelectedCellPallet(cell);
                 CellClearBox.SetNumber(cell.ClearHeight);
                 CellInOutBeamBox.SelectedValue = cell.InOutBeamCatalogId;
                 SetPeralteOptions(CellInOutPeralteBox, cell.InOutBeamCatalogId, cell.InOutBeamDepth);
@@ -292,6 +300,31 @@ namespace RackCad.UI
             {
                 suppressSync = wasSuppressed;
             }
+        }
+
+        /// <summary>
+        /// PB-013 (I-32): show the SELECTED CELL's pallet in the general panel's frozen Frente/Alto/Peso. Called both
+        /// when the selection changes and after a valid recompute, because the ordinary edit path (type + leave the
+        /// control) commits the cell and recomputes WITHOUT reloading the front panel — which is what used to leave
+        /// these three showing a stale number.
+        /// </summary>
+        private void MirrorSelectedCellPallet(DynamicEditorCell cell)
+        {
+            if (cell == null) return;
+            FrontBox.SetNumber(cell.PalletFront);
+            PalletHeightBox.SetNumber(cell.PalletHeight);
+            WeightBox.SetNumber(cell.PalletWeight);
+        }
+
+        /// <summary>The primary selected cell, or null when the matrix has no front/cell yet.</summary>
+        private DynamicEditorCell SelectedCell()
+        {
+            var frontIndex = state.Structure.SelectedFrontIndex;
+            if (frontIndex < 0 || frontIndex >= state.Structure.Count) return null;
+            var front = state.Structure.Fronts[frontIndex];
+            if (front.Cells.Count == 0) return null;
+            var levelIndex = Math.Max(0, Math.Min(state.Structure.SelectedLevelIndex, front.Cells.Count - 1));
+            return front.Cells[levelIndex];
         }
 
         private void RefreshFrontSelector()
@@ -342,6 +375,12 @@ namespace RackCad.UI
                 RenderPushBackMatrix();
                 UpdateViewSelector();
                 RenderPreview();
+                // PB-013: the general panel mirrors the cell that was just committed. SetNumber only re-validates the
+                // field, it never raises LostFocus, so this cannot re-enter the edit path.
+                var wasSuppressed = suppressSync;
+                suppressSync = true;
+                try { MirrorSelectedCellPallet(SelectedCell()); }
+                finally { suppressSync = wasSuppressed; }
                 SetStatus("Vista recalculada.", false);
             }
             else
@@ -377,6 +416,8 @@ namespace RackCad.UI
             return false;
         }
 
+        // PB-013: FrontBox/PalletHeightBox/WeightBox are mirrors, not inputs — they are still validated so a mirrored
+        // value out of range is reported rather than silently drawn.
         private NumericField[] AllNumericFields() => new[]
         {
             FrontBox, DepthBox, PalletHeightBox, WeightBox, PalletsDeepBox, ToleranceBox, PostPeralteBox,
@@ -427,9 +468,11 @@ namespace RackCad.UI
         {
             var inputs = new PushBackEditorInputs
             {
+                // PB-013: only Fondo and Unidad come from this panel. Frente/Alto/Peso keep the rack-wide values the
+                // design was loaded with — the boxes showing them are a mirror of the cell, not an input.
                 Pallet = new PalletSpecification(
-                    Val(FrontBox, 42.0), Val(DepthBox, 48.0), Val(PalletHeightBox, 60.0),
-                    Val(WeightBox, 1000.0), WeightUnitBox.SelectedItem as string ?? "kg"),
+                    generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
+                    generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
                 PostCatalogId = PostBox.SelectedId,
                 PostPeralte = Val(PostPeralteBox, 0.0),
