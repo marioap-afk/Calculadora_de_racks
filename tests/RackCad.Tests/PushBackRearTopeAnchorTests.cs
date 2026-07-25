@@ -209,11 +209,19 @@ namespace RackCad.Tests
             Assert.Equal(Math.Max(1, front.LoadLevels) - 1, topes.Count);   // OffCells still removes its cell
 
             // PB-VAL-03 stays approved: the elevation is the canonical rise-and-snap plus exactly 4".
+            // PB-004 (I-32) changes only the REFERENCE the rule measures from: the rear larguero's DRAWN elevation (it
+            // is tangent to the corrected bed line) instead of its raw troquel-snapped placement. The rule itself —
+            // rise above the rear larguero, snap to the post's grid, +4" — is unchanged, and the snap keeps landing the
+            // stop on the post's own hole column.
             Assert.Equal(4.0, PushBackRearTopeBuilder.ExtraRise, 9);
-            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
+            var offsets = PushBackLoadBeamGeometry.RearBeamElevationOffsets(system, catalog, front);
+            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
+                .Where(p => p.IsEntrance)
+                .Select(p => p.Y + (offsets.TryGetValue(p.LevelNumber, out var offset) ? offset : 0.0))
+                .ToList();
             var gridBase = PostGridBase(system, catalog);
             Assert.All(topes, tope => Assert.Contains(
-                rearBeams, b => Math.Abs(PushBackRearTopeBuilder.ElevationY(gridBase, b.Y) - tope.Insertion.Y) < 1e-9));
+                rearBeams, y => Math.Abs(PushBackRearTopeBuilder.ElevationY(gridBase, y) - tope.Insertion.Y) < 1e-9));
 
             var expectedLongitud = PushBackLoadBeamGeometry.CellBeamLength(system.Structure, front, 1)
                 + SelectiveTopePlacement.LengthAllowance;

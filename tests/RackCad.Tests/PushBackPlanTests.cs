@@ -139,9 +139,12 @@ namespace RackCad.Tests
             // Low mate = IN/OUT TROQUEL_CAMA at the exit (StartX=0, exit elevation).
             Assert.Equal(0.0 + lowCama.X, axis0.ExitMate.X, 3);
             Assert.Equal(level0.ExitElevation + lowCama.Y, axis0.ExitMate.Y, 3);
-            // High mate = TROQUEL_REDONDO INICIO_DERECHO at the entrance (EndX, mirrored, entrance elevation).
+            // High end: the X is still the TROQUEL_REDONDO INICIO_DERECHO column (EndX, mirrored), but PB-004 (I-32)
+            // DERIVES its Y from the low mate through the canonical slope instead of reading the rear beam's own
+            // snapped elevation plus its own datum — that second, unrelated source is what made the bed rise 11.2".
             Assert.Equal(system.TotalLength - highInicio.X, axis0.HighMate.X, 3);
-            Assert.Equal(level0.EntranceElevation + highInicio.Y, axis0.HighMate.Y, 3);
+            Assert.Equal(axis0.ExitMate.Y + PushBackBedSlope.Rise(axis0.Run), axis0.HighMate.Y, 9);
+            Assert.NotEqual(level0.EntranceElevation + highInicio.Y, axis0.HighMate.Y, 3);
             Assert.True(axis0.HighMate.X > axis0.ExitMate.X); // bed runs low(left) -> high(right)
         }
 

@@ -82,13 +82,19 @@ namespace RackCad.Tests
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.NotEmpty(topes);
 
-            var beams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
+            // PB-004 (I-32): the rule's reference is the rear larguero's DRAWN elevation (tangent to the corrected bed
+            // line). PB-VAL-03's +4" over the canonical snap is what this pins, and it is unchanged.
+            var offsets = PushBackLoadBeamGeometry.RearBeamElevationOffsets(system, catalog, front);
+            var beams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
+                .Where(p => p.IsEntrance)
+                .Select(p => p.Y + (offsets.TryGetValue(p.LevelNumber, out var offset) ? offset : 0.0))
+                .ToList();
             foreach (var tope in topes)
             {
-                var source = beams.FirstOrDefault(b =>
-                    Math.Abs(PushBackRearTopeBuilder.ElevationY(mateY, b.Y) - tope.Insertion.Y) < 1e-6);
+                var source = beams.Select(y => (double?)y).FirstOrDefault(y =>
+                    Math.Abs(PushBackRearTopeBuilder.ElevationY(mateY, y.Value) - tope.Insertion.Y) < 1e-6);
                 Assert.NotNull(source);
-                var old = SelectiveTopePlacement.SnapY(mateY, source.Y, SelectiveRackDefaults.TroquelPaso);
+                var old = SelectiveTopePlacement.SnapY(mateY, source.Value, SelectiveRackDefaults.TroquelPaso);
                 Assert.Equal(old + 4.0, tope.Insertion.Y, 6);   // the Owner-measured correction, exactly
             }
         }

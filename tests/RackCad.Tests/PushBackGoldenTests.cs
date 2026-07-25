@@ -112,8 +112,24 @@ namespace RackCad.Tests
             // frontal-entrada carries no rear tope and the BOM counts the same pieces with the same SAQUE/LONGITUD, so
             // both stay UNCHANGED — which is what bounds this correction to the stop.
             // Previous: lateral/lateral-corte0 67F63860…, frontal-posterior 67511108…, planta 33A87C65…
-            ["lateral"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
-            ["lateral-corte0"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
+            // PB-004 (I-32, Owner decision 2026-07-25): the bed rises 7/16" per commercial foot, so a 204" rack rises
+            // 7.4375" instead of the 11.2" the Owner measured. The high end of the axis is now DERIVED from the
+            // troquel-snapped low mate through that one rule, instead of being read from the rear beam's own second,
+            // independent snap plus a 4.9342" jump between two different catalog datums. THREE pins move, and only
+            // these three, because only the LATERAL frame and the REAR FRONTAL carry elevations that depend on the bed:
+            //  * lateral / lateral-corte0: the bed assembly (rotation + anchor), the intermediate supports that are
+            //    tangent to the rail-origin line, the rear TROQUEL_REDONDO beam that drops onto that line, and the rear
+            //    tope, which keeps its approved rule (rise above the rear larguero, snap to the post's grid, +4") and
+            //    therefore follows the larguero down;
+            //  * frontal-posterior: the SAME physical rear beam and its stop, now drawn at the SAME elevation as in the
+            //    lateral. They differed by 1.18" before this change and would have differed by ~4.9" after it (D14 of
+            //    the Owner's AutoCAD matrix demands the frontal be coherent with the lateral cuts).
+            // frontal-entrada carries no rear beam and no bed; planta has no elevation at all; and the BOM counts the
+            // same pieces with the same lengths (the bed's commercial length is the structural span and the beams'
+            // lengths are transverse) — so those three stay UNCHANGED, which is what bounds this correction.
+            // Previous: lateral/lateral-corte0 17815678…, frontal-posterior 55AF6395…
+            ["lateral"] = "894A482272965240712C30E7CF29C5ACB886DE73DC4665C0AF777E624BF2BF44",
+            ["lateral-corte0"] = "894A482272965240712C30E7CF29C5ACB886DE73DC4665C0AF777E624BF2BF44",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
@@ -122,7 +138,7 @@ namespace RackCad.Tests
             // the approved rise-and-snap +4" on that same column) and planta (both coordinates coincide, no elevation).
             // LATERAL is byte-identical and the BOM is unchanged — the correction touches only those two views.
             // Previous: frontal-posterior 5553A6C1…, planta 666BBD2B…
-            ["frontal-posterior"] = "55AF63952A2C5DB36BEA5FA6818E55EAE09658314A9D4A95FFE070080CDF5211",
+            ["frontal-posterior"] = "602522B7069A9B67B9438B7F088A595D954775AF809DBBD0D2EE6CC2CADA9B89",
             ["planta"] = "4797ED85A9F9344C900BD5C6A882A6BE33DA8AA2DCD1AF837C28604A18DA4C64",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front

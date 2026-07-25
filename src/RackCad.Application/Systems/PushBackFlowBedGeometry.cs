@@ -8,10 +8,14 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// The physical Push Back bed geometry for one level. Unlike the dynamic bed (whose two mates are the IN/OUT beam's
-    /// <c>TROQUEL_CAMA</c> at both ends), the Push Back axis runs from the LOW IN/OUT beam's <c>TROQUEL_CAMA</c> to the
-    /// HIGH beam's (<c>LARGUERO_ESCALON_TROQUEL_REDONDO</c>) <c>INICIO_IZQUIERDO/DERECHO</c>. It is the SINGLE source for
-    /// the bed's rotation/elevation and for the tangency of the intermediate beams — exactly one physical line.
+    /// The physical Push Back bed geometry for one level. The axis STARTS at the LOW IN/OUT beam's <c>TROQUEL_CAMA</c>
+    /// — the exit larguero's troquel-snapped bed face — and RISES from there by the canonical slope
+    /// (<see cref="PushBackBedSlope"/>, 7/16" per commercial foot) up to the rear beam's <c>INICIO_DERECHO</c> column.
+    /// It is the SINGLE source for the bed's rotation/elevation and for the tangency of the rear and intermediate
+    /// beams — exactly one physical line.
+    ///
+    /// PB-004 (I-32): the high end used to be READ from the rear beam's own independently snapped elevation plus that
+    /// beam's own datum, which made the bed's slope an emergent of two mechanisms instead of a rule.
     /// </summary>
     public readonly struct PushBackFlowBedAxis
     {
@@ -28,7 +32,12 @@ namespace RackCad.Application.Systems
         /// <summary>Low-end mate: the IN/OUT beam's TROQUEL_CAMA (same physical point the dynamic bed uses).</summary>
         public Point2D ExitMate { get; }
 
-        /// <summary>High-end mate: the rear TROQUEL_REDONDO beam's INICIO_IZQUIERDO/DERECHO.</summary>
+        /// <summary>
+        /// High-end point of the bed line. Its X is the rear TROQUEL_REDONDO beam's <c>INICIO_DERECHO</c> column; its Y
+        /// is DERIVED from <see cref="ExitMate"/> by the canonical slope (<see cref="PushBackBedSlope"/>), not read
+        /// from that beam's own snapped elevation (PB-004, I-32). The rear beam follows this line — the line no longer
+        /// follows the beam.
+        /// </summary>
         public Point2D HighMate { get; }
 
         /// <summary>The rail's TROQUEL_IN local point (where the rail bolts onto the low IN/OUT beam).</summary>
@@ -60,10 +69,10 @@ namespace RackCad.Application.Systems
     }
 
     /// <summary>
-    /// Single source of truth for the Push Back bed line. Reuses <see cref="DynamicLoadBeamGeometry.Placements"/> for the
-    /// already-snapped end elevations, then mates the LOW IN/OUT beam's <c>TROQUEL_CAMA</c> and the HIGH rear beam's
-    /// <c>INICIO_DERECHO</c> (chosen by the same mirror convention the intermediate beams use). Does not touch the dynamic
-    /// bed geometry; the divergent high mate lives here.
+    /// Single source of truth for the Push Back bed line. It reuses <see cref="DynamicLoadBeamGeometry.Placements"/> for
+    /// the LOW end's already-snapped elevation, mates the LOW IN/OUT beam's <c>TROQUEL_CAMA</c>, and DERIVES the high
+    /// end from it with <see cref="PushBackBedSlope"/>. The rear beam supplies only the high end's X (its
+    /// <c>INICIO_DERECHO</c> column); its own elevation never feeds the slope. Does not touch the dynamic bed geometry.
     /// </summary>
     public static class PushBackFlowBedGeometry
     {
@@ -84,7 +93,17 @@ namespace RackCad.Application.Systems
             var highBeamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId
                 : system.HighEndBeamCatalogId;
-            var highMateLocal = CatalogLookup.Local(catalog, highBeamId, PushBackDefaults.HighEndBeamRightBedMatePoint, PushBackDefaults.HighEndBeamView);
+
+            // The rear beam supplies the high end's COLUMN (X) only. Read it fail-closed: a missing row is a missing
+            // physical contract, and falling back to the block origin would produce a plausible but false axis.
+            var highColumn = catalog?.ConnectionLayout.FindConnectionLayout(
+                highBeamId, PushBackDefaults.HighEndBeamRightBedMatePoint, PushBackDefaults.HighEndBeamView);
+            if (highColumn == null)
+            {
+                return result;
+            }
+
+            var highMateLocal = new Point2D(highColumn.LocalX, highColumn.LocalY);
 
             var placements = DynamicLoadBeamGeometry.Placements(structure, front);
             foreach (var level in placements.Select(p => p.LevelNumber).Distinct())
@@ -100,11 +119,16 @@ namespace RackCad.Application.Systems
                 var lowMateLocal = CatalogLookup.Local(catalog, lowBeamId, DynamicRackDefaults.InOutBeamBedMatePoint, DynamicRackDefaults.InOutBeamView);
 
                 var exitMate = BeamMate(low, lowMateLocal);
-                var highMate = BeamMate(high, highMateLocal);
-                if (highMate.X - exitMate.X <= 0.0)
+                var highX = BeamMate(high, highMateLocal).X;
+                var run = highX - exitMate.X;
+                if (run <= 0.0)
                 {
                     continue;
                 }
+
+                // PB-004: the high end is DERIVED — the exit larguero's snapped bed face plus the canonical rise over
+                // the run. The rear beam's own snapped elevation and its INICIO datum no longer enter the slope.
+                var highMate = new Point2D(highX, exitMate.Y + PushBackBedSlope.Rise(run));
 
                 result.Add(new PushBackFlowBedAxis(level, exitMate, highMate, railLocalMate));
             }

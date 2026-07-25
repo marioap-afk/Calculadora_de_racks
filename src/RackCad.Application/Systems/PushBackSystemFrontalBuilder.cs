@@ -33,6 +33,7 @@ namespace RackCad.Application.Systems
 
         public DynamicSystemPlan BuildPlan(PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end)
         {
+            offsetsByFront.Clear();
             var structure = system?.Structure;
             if (structure == null)
             {
@@ -78,11 +79,25 @@ namespace RackCad.Application.Systems
                 {
                     var (frontIndex, level) = LocateCell(structure, catalog, layout, instance);
 
-                    // Swap the IN/OUT for the rear TROQUEL_REDONDO, keeping the transverse LONGITUD, at the same spot.
+                    // Swap the IN/OUT for the rear TROQUEL_REDONDO, keeping the transverse LONGITUD, at the same column.
+                    // PB-004 (I-32): its ELEVATION is the lateral one — the beam is tangent to the bed line there, and the
+                    // same physical piece cannot sit at two heights in two views (D14 of the Owner's matrix). The offset
+                    // is resolved once in the lateral frame by the single authority and applied verbatim here, because an
+                    // elevation does not depend on the view. The stop below measures from this SAME shifted elevation, so
+                    // the canonical rule ("rise above the rear larguero, snap to the post's grid, +4\"") is preserved.
+                    var shift = level >= 0
+                        ? RearBeamOffset(system, catalog, structure, frontIndex, level + 1) ?? 0.0
+                        : 0.0;
                     var redondo = CloneAt(instance, redondoId, redondoBlock);
                     redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = level >= 0
                         ? system.HighEndBeamPeralteAt(frontIndex, level)
                         : PushBackDefaults.HighEndBeamDefaultPeralte;
+                    if (shift != 0.0)
+                    {
+                        redondo.Insertion = new Point2D(redondo.Insertion.X, redondo.Insertion.Y + shift);
+                        redondo.ConnectionAnchor = redondo.Insertion;
+                    }
+
                     result.Add(redondo);
 
                     // Rear tope only for a MATCHED, active cell, placed by the canonical Selective rule (rise + snap).
@@ -101,7 +116,7 @@ namespace RackCad.Application.Systems
                             continue;   // no measured post point: no stop, never a raw fallback
                         }
 
-                        var topeY = PushBackRearTopeBuilder.ElevationY(troquelMateY, instance.Insertion.Y);
+                        var topeY = PushBackRearTopeBuilder.ElevationY(troquelMateY, instance.Insertion.Y + shift);
                         var topeX = mate.Value.X;
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
@@ -120,6 +135,29 @@ namespace RackCad.Application.Systems
 
             return HeaderInstanceGrouper.Group(result, "PB_FRONTAL_POSTERIOR");
         }
+
+        /// <summary>
+        /// The lateral tangency offset of one cell's rear beam, or null when the cell has no resolved bed axis. Cached
+        /// per front so a frontal cut resolves each front's axes once, not once per level.
+        /// </summary>
+        private double? RearBeamOffset(PushBackSystem system, RackCatalog catalog, DynamicRackSystem structure, int frontIndex, int levelNumber)
+        {
+            if (frontIndex < 0 || frontIndex >= structure.Fronts.Count)
+            {
+                return null;
+            }
+
+            if (!offsetsByFront.TryGetValue(frontIndex, out var offsets))
+            {
+                offsets = PushBackLoadBeamGeometry.RearBeamElevationOffsets(system, catalog, structure.Fronts[frontIndex]);
+                offsetsByFront[frontIndex] = offsets;
+            }
+
+            return offsets.TryGetValue(levelNumber, out var offset) ? offset : (double?)null;
+        }
+
+        private readonly Dictionary<int, IReadOnlyDictionary<int, double>> offsetsByFront =
+            new Dictionary<int, IReadOnlyDictionary<int, double>>();
 
         private static HeaderBlockInstance CloneAt(HeaderBlockInstance source, string pieceId, string block)
         {

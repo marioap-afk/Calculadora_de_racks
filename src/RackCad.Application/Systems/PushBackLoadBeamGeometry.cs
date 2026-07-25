@@ -128,6 +128,37 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
+        /// PB-004 (I-32) — the rear beam's vertical offset PER LEVEL for one front, resolved once in the LATERAL frame
+        /// where the bed axis lives. An elevation is view-independent, so the REAR FRONTAL cut applies these very same
+        /// numbers instead of re-deriving them from its own (transverse) X: that is what keeps one physical beam at one
+        /// elevation across the two views (D14 of the Owner's AutoCAD matrix).
+        ///
+        /// Levels without a resolved bed axis simply do not appear, so a caller keeps the raw snapped elevation there.
+        /// </summary>
+        public static IReadOnlyDictionary<int, double> RearBeamElevationOffsets(
+            PushBackSystem system, RackCatalog catalog, DynamicRackFront front)
+        {
+            var result = new Dictionary<int, double>();
+            var structure = system?.Structure;
+            if (structure == null)
+            {
+                return result;
+            }
+
+            var beamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
+                ? PushBackDefaults.HighEndBeamCatalogId
+                : system.HighEndBeamCatalogId;
+            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
+            foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
+            {
+                result[placement.LevelNumber] = RearBeamTangencyOffset(
+                    axes, placement.LevelNumber, catalog, beamId, placement.X, placement.Y, placement.MirroredX);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Low-end IN/OUT beams: one per front x level, taken from the dynamic exit placements VERBATIM.
         ///
         /// Owner decision (2026-07-24): the low beam is placed so that its <c>TROQUEL_CAMA</c> coincides EXACTLY with the
@@ -195,11 +226,10 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
-            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
+            var offsets = RearBeamElevationOffsets(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
             {
-                var offset = RearBeamTangencyOffset(
-                    axes, placement.LevelNumber, catalog, beamId, placement.X, placement.Y, placement.MirroredX);
+                var offset = offsets.TryGetValue(placement.LevelNumber, out var value) ? value : 0.0;
                 var origin = new Point2D(placement.X, placement.Y + offset);
                 var instance = new HeaderBlockInstance
                 {
