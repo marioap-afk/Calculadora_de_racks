@@ -111,7 +111,7 @@ Una corrida, un commit atomico por hallazgo o por par de hallazgos que comparten
 | PB-006 | "Compartido"/"Lado" en el tope | `showSharedAndSide: false` para Push Back |
 | PB-008 | "Salida"/"Entrada" en un sistema LIFO | "Entrada/Salida" y "Posterior"; el mapeo fisico no cambia |
 | PB-009 | Se dibujaba defensa en el posterior | `SelectiveSafetySelection.LowEndOnly`, impuesta por la autoridad; sin longitud automatica atras |
-| PB-010 | 12"/36" no se recalculaba al agregar frentes | Estado Auto por extremo en `SafetyPostDefense`, recalculado del conteo de postes vigente |
+| PB-010 | 12"/36" no se recalculaba al agregar frentes, y el dialogo descartaba un registro manual cuyo numero coincidia con el automatico | Estado Auto por extremo en `SafetyPostDefense`, recalculado del conteo de postes vigente **+** `OnOk` guarda siempre que un extremo sea manual: la procedencia se lee del estado Auto, nunca comparando numeros |
 
 ## 9. Pruebas y builds
 
@@ -123,33 +123,46 @@ Plugin con 0 errores propios; CI verde en la rama.
 
 `requires_autocad: true`. Sobre el DLL Debug del worktree, con AutoCAD cerrado antes de compilar.
 
-**Checklist minimo de 16 puntos.** Los catorce primeros recorren los catorce hallazgos que el Owner
-reporto —tambien los cuatro que esta iniciativa NO implementa, para que el gate confirme que siguen tal
-cual y no empeoraron—; los dos ultimos son las consecuencias geometricas que PB-004 arrastra y que nadie
-pidio explicitamente, pero que el Owner debe mirar porque mueven piezas que ya habia aprobado.
+> **El gate NO esta abierto.** El coordinador lo mantiene cerrado hasta su propia revision, junto con el
+> DLL canonico. Esta seccion define QUE se validara cuando lo abra; no autoriza pedirsela al Owner.
 
-| # | Hallazgo | Que comprobar |
+### Checklist minimo obligatorio — 16 puntos
+
+Los **catorce primeros** son los puntos de validacion originales de la iniciativa: uno por cada hallazgo
+corregido, mas los cuatro invariantes transversales que ninguna correccion puede romper. Los **dos
+ultimos** son las consecuencias geometricas que PB-004 arrastra: nadie las pidio, pero mueven piezas que
+el Owner ya habia aprobado en I-18 y por eso son obligatorias, no opcionales.
+
+| # | Cubre | Que comprobar |
 |---|---|---|
-| 1 | PB-001 (**no implementado**) | Los previews de las cuatro vistas siguen igual de limitados que en I-18. Confirmar que **no empeoraron**; su estandarizacion es una iniciativa aparte |
-| 2 | PB-002 | Seguridad → Desviador: el ultimo poste ofrece los mismos niveles que su vecino; apagar una celda de un poste la quita del corte lateral, del frontal de entrada/salida, de la planta **y del BOM**, y solo en ese poste |
-| 3 | PB-003 | El dialogo del desviador **no** tiene selector "Lado", ni en su etiqueta ni en el texto |
-| 4 | PB-004 | La cama sube **7 7/16"** en un rack de 204" (no 11.2"), medido con una cota vertical |
-| 5 | PB-005 | Seguridad → Topes posteriores: hay selector de **tipo de tope** con las variantes del catalogo; al elegir otra, cambia la pieza en las tres vistas y en el BOM |
-| 6 | PB-006 | El dialogo del tope **no** ofrece "Compartido (uno central)" ni "Lado"; el SAQUE sigue ahi |
-| 7 | PB-007 (**no implementado**) | La modificacion masiva de seguridad sigue siendo celda a celda. Confirmar que **no empeoro** |
-| 8 | PB-008 | La defensa nombra sus extremos **Entrada/Salida** y **Posterior**; ninguna columna dice "Salida" o "Entrada" a secas |
-| 9 | PB-009 | Un rack nuevo **no** dibuja defensa ni proteccion en el extremo posterior, en ninguna vista ni en el BOM |
-| 10 | PB-010 | Con el extremo en **Auto**: agregar frentes lleva un poste de orilla a 36" y **quitarlos lo devuelve a 12"**; una longitud tecleada conserva su numero en ambos sentidos |
-| 11 | PB-011 (**no implementado**) | Push Back sigue sin editor avanzado de modulos. Confirmar que **no empeoro** |
-| 12 | PB-012 | Un rack nuevo abre con "Alto 1er nivel" = **4** |
-| 13 | PB-013 | Tarima (datos generales): Frente/Alto/Peso solo se muestran y siguen a la celda seleccionada; Fondo y Unidad se editan y llegan al diseno |
-| 14 | PB-014 (**no implementado**) | Sigue sin existir el frente "en blanco". Confirmar que **no empeoro** |
+| 1 | PB-004 | La cama sube **7 7/16"** en un rack de 204" (no 11.2"), medido con una cota vertical |
+| 2 | PB-012 | Un rack nuevo abre con "Alto 1er nivel" = **4** |
+| 3 | PB-013 | Tarima (datos generales): Frente/Alto/Peso solo se muestran y siguen a la celda seleccionada; Fondo y Unidad se editan y llegan al diseno |
+| 4 | PB-002 | Seguridad -> Desviador: el ultimo poste ofrece los mismos niveles que su vecino |
+| 5 | PB-002 | Apagar la celda de un poste la quita del corte lateral, del frontal de entrada/salida, de la planta **y del BOM**, y solo en ese poste |
+| 6 | PB-003 | El dialogo del desviador **no** tiene selector "Lado", ni en su etiqueta ni en el texto |
+| 7 | PB-005 | Seguridad -> Topes posteriores: hay selector de **tipo de tope** con las variantes del catalogo; al elegir otra, cambia la pieza en las tres vistas y en el BOM |
+| 8 | PB-006 | El dialogo del tope **no** ofrece "Compartido (uno central)" ni "Lado"; el SAQUE sigue ahi |
+| 9 | PB-008 | La defensa nombra sus extremos **Entrada/Salida** y **Posterior**; ninguna columna dice "Salida" o "Entrada" a secas |
+| 10 | PB-009 | Un rack nuevo **no** dibuja defensa ni proteccion en el extremo posterior, en ninguna vista ni en el BOM |
+| 11 | PB-010 | Con el extremo en **Auto**: agregar frentes lleva un poste de orilla a 36" y **quitarlos lo devuelve a 12"**. Con una longitud **tecleada**, el numero se conserva en ambos sentidos — incluso si coincide con el automatico del momento |
+| 12 | Transversal | `RACKEDITAR` actualiza en sitio con el **mismo GUID** y las cuatro vistas quedan ligadas |
+| 13 | Transversal | El **BOM** no duplica conteo y refleja lo que muestran las vistas |
+| 14 | Transversal | Un Push Back guardado **ANTES de I-32** conserva su altura de primer nivel, su tipo de tope y sus longitudes de defensa; y **Selectivo y Dinamico no cambian** ni en dibujo ni en sus dialogos |
 | 15 | PB-004 (consecuencia) | **El larguero posterior aparece a la MISMA altura** en el corte lateral y en el frontal posterior (antes diferian 1.18") |
 | 16 | PB-004 (consecuencia) | **El tope posterior acompana al larguero**: conserva su regla aprobada (sube sobre el, ajusta al troquel del poste, +4") y por eso baja con el |
 
-Ademas, en cualquiera de los puntos: `RACKEDITAR` actualiza en sitio con el mismo GUID, las cuatro vistas
-quedan ligadas, el BOM no duplica conteo, un Push Back guardado ANTES de I-32 conserva su altura de primer
-nivel, su tipo de tope y sus longitudes de defensa, y **Selectivo y Dinamico no cambian**.
+### Smoke complementario — NO sustituye ningun punto obligatorio
+
+Los cuatro hallazgos que esta iniciativa **no** implementa. Se miran para confirmar que **no empeoraron**;
+que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
+
+| Hallazgo | Que observar |
+|---|---|
+| PB-001 | Los previews de las cuatro vistas siguen igual de limitados que en I-18; su estandarizacion es una iniciativa transversal aparte |
+| PB-007 | La modificacion masiva de seguridad sigue siendo celda a celda |
+| PB-011 | Push Back sigue sin editor avanzado de modulos |
+| PB-014 | Sigue sin existir el frente "en blanco" |
 
 ## 11. Criterios de aceptacion
 
@@ -158,7 +171,8 @@ nivel, su tipo de tope y sus longitudes de defensa, y **Selectivo y Dinamico no 
   geometria lo exige, con el motivo escrito en el propio archivo.
 - Selectivo y Dinamico sin cambio de comportamiento, con pruebas que lo fijan.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
-- Validacion manual del Owner en AutoCAD (§10) antes de integrar.
+- Validacion manual del Owner en AutoCAD (§10, 16 puntos obligatorios) antes de integrar. **El gate lo abre
+  el coordinador**, no esta abierto mientras esta iniciativa siga en revision tecnica.
 
 ## 12. Condiciones para detenerse
 
