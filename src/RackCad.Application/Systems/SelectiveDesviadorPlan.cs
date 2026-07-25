@@ -17,6 +17,19 @@ namespace RackCad.Application.Systems
     {
         public const double BeamYOffset = 6.0;
 
+        /// <summary>
+        /// PB-002 (I-32) — THE rule that turns a post index into the off-cell key of a desviador grid, so the lateral,
+        /// the two frontal cuts, the planta and the BOM cannot disagree about which cell the user switched off.
+        ///
+        /// With <see cref="SelectiveSafetySelection.DesviadorCellsAreByPost"/> the key IS the post index: the grid has
+        /// one column per post and that is what Push Back stores. Otherwise it collapses onto the last front, which is
+        /// the historical dynamic reading and stays byte-identical.
+        /// </summary>
+        public static int CellKey(SelectiveSafetySelection selection, int postIndex, int frontCount)
+            => selection?.DesviadorCellsAreByPost == true
+                ? postIndex
+                : Math.Min(postIndex, Math.Max(0, frontCount - 1));
+
         public enum AisleFace
         {
             Front,

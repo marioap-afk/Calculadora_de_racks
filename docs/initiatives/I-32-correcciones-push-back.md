@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: implementing
+status: validating
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -105,7 +105,7 @@ Una corrida, un commit atomico por hallazgo o por par de hallazgos que comparten
 | PB-004 | La pendiente subia 11.2" en 204" | `PushBackBedSlope`: 7/16" por pie en UNA funcion pura; el extremo alto se DERIVA del bajo ya ajustado al troquel; el frontal posterior toma la misma elevacion que el lateral (D14) |
 | PB-012 | "Alto 1er nivel" abria en 6" | `PushBackDefaults.DefaultFirstLevelHeight` = 4", aplicado SOLO en `LoadNew()` |
 | PB-013 | Tarima general modificable pero inerte | Fondo y Unidad globales; Frente/Alto/Peso espejo de la celda, no editables |
-| PB-002 | El desviador mostraba menos niveles en un poste | `DynamicFrontGeometry.LoadLevelsPerPost`: maximo de frentes adyacentes, la misma regla del dibujo |
+| PB-002 | El desviador mostraba menos niveles en un poste, y la celda apagada no llegaba a todas las vistas | `DynamicFrontGeometry.LoadLevelsPerPost` (maximo de frentes adyacentes) **+** `SelectiveDesviadorPlan.CellKey`: la off-cell es POSTE x NIVEL y la leen igual el lateral, los dos frontales, la planta y el BOM |
 | PB-003 | Selector "Lado" inerte en el desviador | `showSide: false` para Push Back; el lado canonico es el bajo, que la autoridad ya imponia |
 | PB-005 | Sin selector de tipo de tope | `PushBackRearTopeConfig.PieceId` + `ResolvePieceId` consumida por las 3 vistas y el BOM, con fallback |
 | PB-006 | "Compartido"/"Lado" en el tope | `showSharedAndSide: false` para Push Back |
@@ -121,24 +121,35 @@ Plugin con 0 errores propios; CI verde en la rama.
 
 ## 10. Validacion manual
 
-`requires_autocad: true`. Sobre el DLL Debug del worktree, con AutoCAD cerrado antes de compilar:
+`requires_autocad: true`. Sobre el DLL Debug del worktree, con AutoCAD cerrado antes de compilar.
 
-1. Rack nuevo: "Alto 1er nivel" abre en **4**.
-2. Cama: la subida sobre un rack de 204" mide **7 7/16"** (no 11.2"), medida en el dibujo.
-3. El larguero posterior aparece a la MISMA altura en el corte lateral y en el frontal posterior.
-4. El tope posterior sigue sobre la columna de troqueles del poste, ahora acompanando al larguero.
-5. Seguridad → Desviador: el ultimo poste ofrece los mismos niveles que su vecino y **no** hay "Lado".
-6. Seguridad → Topes posteriores: hay selector de **tipo de tope**; **no** hay "Compartido" ni "Lado".
-7. Seguridad → Defensa: las columnas se llaman **Entrada/Salida** y **Posterior**; la posterior viene
-   apagada; hay casilla **Auto** por extremo.
-8. Agregar frentes: un poste que era orilla pasa a 36" si su extremo esta en Auto; si se tecleo una
-   longitud, la conserva.
-9. Tarima (datos generales): Frente/Alto/Peso solo se muestran y siguen a la celda; Fondo y Unidad se
-   editan y llegan al diseno.
-10. Round-trip: abrir un Push Back guardado ANTES de I-32 conserva su altura de primer nivel, su tipo de
-    tope y las longitudes de defensa que tenia.
-11. `RACKEDITAR` en sitio con el mismo GUID; BOM sin doble conteo; las cuatro vistas ligadas.
-12. Selectivo y Dinamico: sin cambios visibles ni de dibujo.
+**Checklist minimo de 16 puntos.** Los catorce primeros recorren los catorce hallazgos que el Owner
+reporto —tambien los cuatro que esta iniciativa NO implementa, para que el gate confirme que siguen tal
+cual y no empeoraron—; los dos ultimos son las consecuencias geometricas que PB-004 arrastra y que nadie
+pidio explicitamente, pero que el Owner debe mirar porque mueven piezas que ya habia aprobado.
+
+| # | Hallazgo | Que comprobar |
+|---|---|---|
+| 1 | PB-001 (**no implementado**) | Los previews de las cuatro vistas siguen igual de limitados que en I-18. Confirmar que **no empeoraron**; su estandarizacion es una iniciativa aparte |
+| 2 | PB-002 | Seguridad → Desviador: el ultimo poste ofrece los mismos niveles que su vecino; apagar una celda de un poste la quita del corte lateral, del frontal de entrada/salida, de la planta **y del BOM**, y solo en ese poste |
+| 3 | PB-003 | El dialogo del desviador **no** tiene selector "Lado", ni en su etiqueta ni en el texto |
+| 4 | PB-004 | La cama sube **7 7/16"** en un rack de 204" (no 11.2"), medido con una cota vertical |
+| 5 | PB-005 | Seguridad → Topes posteriores: hay selector de **tipo de tope** con las variantes del catalogo; al elegir otra, cambia la pieza en las tres vistas y en el BOM |
+| 6 | PB-006 | El dialogo del tope **no** ofrece "Compartido (uno central)" ni "Lado"; el SAQUE sigue ahi |
+| 7 | PB-007 (**no implementado**) | La modificacion masiva de seguridad sigue siendo celda a celda. Confirmar que **no empeoro** |
+| 8 | PB-008 | La defensa nombra sus extremos **Entrada/Salida** y **Posterior**; ninguna columna dice "Salida" o "Entrada" a secas |
+| 9 | PB-009 | Un rack nuevo **no** dibuja defensa ni proteccion en el extremo posterior, en ninguna vista ni en el BOM |
+| 10 | PB-010 | Con el extremo en **Auto**: agregar frentes lleva un poste de orilla a 36" y **quitarlos lo devuelve a 12"**; una longitud tecleada conserva su numero en ambos sentidos |
+| 11 | PB-011 (**no implementado**) | Push Back sigue sin editor avanzado de modulos. Confirmar que **no empeoro** |
+| 12 | PB-012 | Un rack nuevo abre con "Alto 1er nivel" = **4** |
+| 13 | PB-013 | Tarima (datos generales): Frente/Alto/Peso solo se muestran y siguen a la celda seleccionada; Fondo y Unidad se editan y llegan al diseno |
+| 14 | PB-014 (**no implementado**) | Sigue sin existir el frente "en blanco". Confirmar que **no empeoro** |
+| 15 | PB-004 (consecuencia) | **El larguero posterior aparece a la MISMA altura** en el corte lateral y en el frontal posterior (antes diferian 1.18") |
+| 16 | PB-004 (consecuencia) | **El tope posterior acompana al larguero**: conserva su regla aprobada (sube sobre el, ajusta al troquel del poste, +4") y por eso baja con el |
+
+Ademas, en cualquiera de los puntos: `RACKEDITAR` actualiza en sitio con el mismo GUID, las cuatro vistas
+quedan ligadas, el BOM no duplica conteo, un Push Back guardado ANTES de I-32 conserva su altura de primer
+nivel, su tipo de tope y sus longitudes de defensa, y **Selectivo y Dinamico no cambian**.
 
 ## 11. Criterios de aceptacion
 

@@ -229,7 +229,7 @@ namespace RackCad.Application.Systems
             var count = Math.Min(levelCount, Math.Max(leftLevels.Count, rightLevels.Count));
             for (var level = 0; level < count; level++)
             {
-                if (off.Contains((postIndex, level)))
+                if (off.Contains((SelectiveDesviadorPlan.CellKey(selection, postIndex, system.Fronts.Count), level)))
                 {
                     continue;
                 }

@@ -357,11 +357,13 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var front = Math.Min(postIndex, Math.Max(0, system.Fronts.Count - 1));
+                // PB-002 (I-32): ONE authority decides which off-cell a post reads, so the lateral, the two frontal
+                // cuts, the planta and the BOM cannot disagree about the cell the user switched off.
+                var cellKey = SelectiveDesviadorPlan.CellKey(selection, postIndex, system.Fronts.Count);
                 var levelsAtPost = LoadLevelsAtPost(system, postIndex);
                 for (var levelIndex = 0; levelIndex < levelsAtPost && levelIndex < system.LoadBeamLevels.Count; levelIndex++)
                 {
-                    if (off.Contains((front, levelIndex)))
+                    if (off.Contains((cellKey, levelIndex)))
                     {
                         continue;
                     }
@@ -411,9 +413,9 @@ namespace RackCad.Application.Systems
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
-                var front = Math.Min(postIndex, Math.Max(0, system.Fronts.Count - 1));
+                var cellKey = SelectiveDesviadorPlan.CellKey(selection, postIndex, system.Fronts.Count);
                 var anyLevel = Enumerable.Range(0, LoadLevelsAtPost(system, postIndex))
-                    .Any(level => !off.Contains((front, level)));
+                    .Any(level => !off.Contains((cellKey, level)));
                 if (!anyLevel)
                 {
                     continue;

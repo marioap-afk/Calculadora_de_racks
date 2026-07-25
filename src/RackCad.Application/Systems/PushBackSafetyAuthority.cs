@@ -118,6 +118,11 @@ namespace RackCad.Application.Systems
             // entrance lengths are no longer wiped. What IS cleared is the AUTO flag of that end — an automatic far end
             // has no meaning here and would resolve back to 12/36.
             selection.LowEndOnly = true;
+
+            // PB-002 (I-32): the desviador grid Push Back shows has one column per POST, so its off-cells are keyed by
+            // post. Marking the selection is what makes the frontal, the planta and the BOM read the same cell the
+            // lateral does — before this they collapsed the last two columns with a Math.Min onto the last front.
+            selection.DesviadorCellsAreByPost = true;
             foreach (var post in selection.DefensaPosts)
             {
                 if (post != null)

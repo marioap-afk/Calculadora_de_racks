@@ -154,6 +154,18 @@ namespace RackCad.Domain.Systems
         /// </summary>
         public bool LowEndOnly { get; set; }
 
+        /// <summary>
+        /// PB-002 (I-32) — the DESVIADOR off-cells of this selection are keyed by <b>POST</b>, not by front.
+        ///
+        /// A rack of N fronts has N+1 posts and the desviador grid has one column per POST, so a post index cannot be
+        /// used as a front index. The dynamic system historically collapsed the two with a <c>Math.Min</c> onto the
+        /// last front, which silently merged the last two columns; false keeps exactly that reading.
+        ///
+        /// Like <see cref="LowEndOnly"/> it is DERIVED, not persisted: the Push Back authority re-imposes it at every
+        /// boundary it owns, so no stored value can go stale and no DTO changes.
+        /// </summary>
+        public bool DesviadorCellsAreByPost { get; set; }
+
         /// <summary>Per-post overrides (post index → side); a post not listed uses <see cref="Side"/>.</summary>
         public IList<SafetyPostSide> PostSides { get; } = new List<SafetyPostSide>();
 
@@ -262,6 +274,7 @@ namespace RackCad.Domain.Systems
                 Quantity = Quantity,
                 Side = Side,
                 LowEndOnly = LowEndOnly,
+                DesviadorCellsAreByPost = DesviadorCellsAreByPost,
                 Tope = Tope.DeepCopy(),
                 Desviador = Desviador.DeepCopy(),
                 Defensa = Defensa.DeepCopy(),

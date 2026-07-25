@@ -415,13 +415,13 @@ no implementados, con lo que ya se sabe de cada uno:
 Limitaciones y observaciones registradas al corregir, **sin tocar** por la restricción de no cambiar el
 Selectivo ni el Dinámico:
 
-- **La celda del desviador significa POSTE en el lateral y FRENTE en frontal/planta/BOM.** El lateral
-  indexa la off-cell por `postIndex` (`DynamicSafetyLateralBuilder`), mientras el frontal y la planta la
-  indexan por `front = Math.Min(postIndex, Fronts.Count - 1)` (`DynamicSafetyMultiViewBuilder`) y el BOM se
-  cuenta de las proyecciones frontales (`SystemBomBuilder`). Consecuencia: apagar la última columna de la
-  rejilla afecta al corte lateral pero no al BOM, y una off-cell del penúltimo poste suprime dos desviadores
-  frontales. Es **preexistente de I-18** y PB-002 solo lo hizo visible al volver alcanzables las celdas que
-  el dibujo ya colocaba. Unificar los tres índices cambiaría el comportamiento del Dinámico.
+- **El Dinámico sigue leyendo la celda del desviador por FRENTE, no por poste.** En Push Back esto quedó
+  **corregido** (la off-cell es POSTE × NIVEL y la leen igual el lateral, los dos frontales, la planta y el
+  BOM, a través de `SelectiveDesviadorPlan.CellKey`). El Dinámico conserva a propósito la lectura histórica
+  `Math.Min(postIndex, Fronts.Count - 1)`, que colapsa el último poste sobre el último frente: apagar la
+  celda del penúltimo poste suprime también la del último. La capacidad
+  `SelectiveSafetySelection.DesviadorCellsAreByPost` es el interruptor; activarla para el Dinámico
+  cambiaría su comportamiento y necesita decisión del Owner.
 - **El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**:
   `RackDynamicSystemWindow` también entrega al diálogo compartido una lista POR FRENTE marcada como por
   POSTE. Se dejó intacto a propósito; el arreglo entró como parámetro opt-in.
