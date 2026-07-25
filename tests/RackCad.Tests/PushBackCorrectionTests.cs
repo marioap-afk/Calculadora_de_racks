@@ -119,10 +119,14 @@ namespace RackCad.Tests
             {
                 // Several levels share the same X; the tope's source beam is the one whose canonical rear-tope Y matches
                 // (PB-VAL-03: the Selective rise-and-snap PLUS the Owner-validated 4" extra rise).
-                // Owner decision (2026-07-24, final): the frontal tope is anchored on the post's TROQUEL_TOPE, so its X
-                // is the beam's X shifted by that measured point (mirror included) — no longer the bare beam X.
-                var sameX = beams.Where(b => Math.Abs(
-                    b.Insertion.X + (b.MirroredX ? -troquelAnchor.X : troquelAnchor.X) - tope.Insertion.X) < 1e-6).ToList();
+                // Owner clarification (2026-07-25): the tope block mates by its ORIGIN on the POST's TROQUEL_TOPE, so
+                // the beams that can own this stop are the ones whose column resolves to the tope's X.
+                var sameX = beams.Where(b =>
+                {
+                    var mate = PushBackRearTopeBuilder.PostMateWorld(
+                        catalog, postId, postPeralte, "FRONTAL", plan, b.Insertion);
+                    return mate.HasValue && Math.Abs(mate.Value.X - tope.Insertion.X) < 1e-6;
+                }).ToList();
                 var source = sameX.FirstOrDefault(b =>
                     Math.Abs(PushBackRearTopeBuilder.ElevationY(troquelMateY, b.Insertion.Y) - tope.Insertion.Y) < 1e-4);
                 Assert.NotNull(source);                                          // Y is exactly the canonical SnapY of a real rear beam

@@ -35,6 +35,8 @@ namespace RackCad.Application.Systems
             var topeBlock = CatalogLookup.Block(catalog, PushBackRearTopeBuilder.TopePieceId, View);
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
+            var postId = DynamicFrontGeometry.PostId(structure, catalog);
+            var postPeralte = DynamicFrontGeometry.PostPeralte(structure, catalog, postId);
 
             var result = new List<HeaderBlockInstance>();
             foreach (var instance in instances)
@@ -62,14 +64,22 @@ namespace RackCad.Application.Systems
                 var anyActive = front != null && Enumerable.Range(0, Math.Max(1, front.LoadLevels)).Any(level => rearTope.At(frontIndex, level));
                 if (!string.IsNullOrWhiteSpace(topeBlock) && anyActive)
                 {
-                    // Planta draws top-down and keeps the frente Y (no rise-and-snap); LONGITUD + SAQUE via the canonical helper.
-                    double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
-                        ? beamLength + SelectiveTopePlacement.LengthAllowance
-                        : (double?)null;
-                    result.Add(SelectiveTopePlacement.Tope(
-                        PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
-                        instance.Insertion.X, instance.Insertion.Y, saque, longitud,
-                        mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
+                    // Owner clarification (2026-07-25): the tope block mates by its ORIGIN, so its insertion must land
+                    // EXACTLY on the post's TROQUEL_TOPE in this view. Planta has no elevation, so both coordinates
+                    // coincide. This used to take the BEAM's insertion, which is why the stop stayed on the larguero
+                    // troquel. No fallback: without the measured point (or without a post in the plan) no stop is drawn.
+                    var mate = PushBackRearTopeBuilder.PostMateWorld(
+                        catalog, postId, postPeralte, View, instances, instance.Insertion);
+                    if (mate.HasValue)
+                    {
+                        double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
+                            ? beamLength + SelectiveTopePlacement.LengthAllowance
+                            : (double?)null;
+                        result.Add(SelectiveTopePlacement.Tope(
+                            PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
+                            mate.Value.X, mate.Value.Y, saque, longitud,
+                            mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
+                    }
                 }
             }
 

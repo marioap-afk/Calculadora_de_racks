@@ -115,8 +115,15 @@ namespace RackCad.Tests
             ["lateral"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
             ["lateral-corte0"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
             ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
-            ["frontal-posterior"] = "5553A6C1B660EEA3DC8CDA368A71A6CADC83AE8D424CAD1994FF317815E8BD90",
-            ["planta"] = "666BBD2B40B32E8B9707A7D801F9F90C7C91AB889EFC5BD37FAA1EE019D90558",
+            // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
+            // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
+            // the plan, not from the rear beam's insertion (which is what kept it on the larguero troquel). Exactly the
+            // two views the Owner rejected move: frontal-posterior (X now exactly on the post's stop column; the Y keeps
+            // the approved rise-and-snap +4" on that same column) and planta (both coordinates coincide, no elevation).
+            // LATERAL is byte-identical and the BOM is unchanged — the correction touches only those two views.
+            // Previous: frontal-posterior 5553A6C1…, planta 666BBD2B…
+            ["frontal-posterior"] = "55AF63952A2C5DB36BEA5FA6818E55EAE09658314A9D4A95FFE070080CDF5211",
+            ["planta"] = "4797ED85A9F9344C900BD5C6A882A6BE33DA8AA2DCD1AF837C28604A18DA4C64",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.

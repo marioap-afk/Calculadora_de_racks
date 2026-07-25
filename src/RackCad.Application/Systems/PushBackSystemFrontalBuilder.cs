@@ -89,9 +89,20 @@ namespace RackCad.Application.Systems
                     if (!string.IsNullOrWhiteSpace(topeBlock) && level >= 0 && rearTope.At(frontIndex, level)
                         && topeAnchor.HasValue)
                     {
+                        // Owner clarification (2026-07-25): the tope block mates by its ORIGIN, so its insertion sits on
+                        // the POST's TROQUEL_TOPE — resolved from the post instance of this very plan, not from the
+                        // beam's insertion (which is what left it on the wrong troquel). The post carries a COLUMN of
+                        // stop holes every 2", so the X coincides exactly while the Y keeps the approved rise-and-snap
+                        // (+4") measured from that same TROQUEL_TOPE.
+                        var mate = PushBackRearTopeBuilder.PostMateWorld(
+                            catalog, postId, postPeralte, View, entrance, instance.Insertion);
+                        if (!mate.HasValue)
+                        {
+                            continue;   // no measured post point: no stop, never a raw fallback
+                        }
+
                         var topeY = PushBackRearTopeBuilder.ElevationY(troquelMateY, instance.Insertion.Y);
-                        var topeX = instance.Insertion.X
-                            + (instance.MirroredX ? -topeAnchor.Value.X : topeAnchor.Value.X);
+                        var topeX = mate.Value.X;
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;

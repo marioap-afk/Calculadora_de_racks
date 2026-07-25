@@ -152,14 +152,16 @@ namespace RackCad.Tests
             var plan = new PushBackSystemFrontalBuilder()
                 .BuildPlan(system, catalog, PushBackFrontalEnd.Posterior).Flatten().Instances;
             var topes = plan.Where(i => i.Role == HeaderBlockRole.Tope).ToList();
-            var beams = plan.Where(i => i.Role == HeaderBlockRole.Beam).ToList();
             Assert.NotEmpty(topes);
 
+            // Owner clarification (2026-07-25): the block mates by its ORIGIN, so the tope's X is the POST's
+            // TROQUEL_TOPE in world coordinates — resolved from the post instance of this same plan.
             foreach (var tope in topes)
             {
-                Assert.Contains(
-                    beams.Select(b => b.Insertion.X + (b.MirroredX ? -anchor.Value.X : anchor.Value.X)),
-                    x => Math.Abs(x - tope.Insertion.X) < 1e-6);
+                var mate = PushBackRearTopeBuilder.PostMateWorld(
+                    catalog, postId, peralte, "FRONTAL", plan, tope.Insertion);
+                Assert.True(mate.HasValue);
+                Assert.Equal(mate.Value.X, tope.Insertion.X, 9);
             }
 
             // The Owner's physical orientation for the elevations is preserved.

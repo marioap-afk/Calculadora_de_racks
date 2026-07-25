@@ -90,6 +90,57 @@ namespace RackCad.Application.Systems
         /// <summary>The post's own stop hole. Never <c>TROQUEL_LARGUERO</c>: that one places a BEAM, not a stop.</summary>
         public const string TopePostPoint = "TROQUEL_TOPE";
 
+        /// <summary>
+        /// Owner clarification (2026-07-25) — the <c>LARGUERO_ESCALON_TOPE_DE_3</c> block mates by its ORIGIN: its
+        /// insertion point IS its mate point, so the block publishes no connection point of its own. Placing the stop is
+        /// therefore "put its origin exactly on the POST's TROQUEL_TOPE, in world coordinates".
+        ///
+        /// This resolves that world point from the plan itself: it picks the POST instance nearest to
+        /// <paramref name="near"/> (the rear beam being served) and transforms the post's measured local point by that
+        /// post's own placement, mirror included. Using the post from the plan — instead of the beam's insertion, which
+        /// is what placed the stop on the larguero troquel — is the whole correction.
+        ///
+        /// Null when the catalog has no such row or the plan carries no post: never a fallback to an insertion point.
+        /// </summary>
+        public static Point2D? PostMateWorld(
+            RackCatalog catalog, string postId, double postPeralte, string view,
+            IEnumerable<HeaderBlockInstance> planInstances, Point2D near)
+        {
+            var local = PostAnchorLocal(catalog, postId, postPeralte, view);
+            if (!local.HasValue || planInstances == null)
+            {
+                return null;
+            }
+
+            HeaderBlockInstance post = null;
+            var best = double.MaxValue;
+            foreach (var instance in planInstances)
+            {
+                if (instance == null || instance.Role != HeaderBlockRole.Post)
+                {
+                    continue;
+                }
+
+                var dx = instance.Insertion.X - near.X;
+                var dy = instance.Insertion.Y - near.Y;
+                var distance = dx * dx + dy * dy;
+                if (distance < best)
+                {
+                    best = distance;
+                    post = instance;
+                }
+            }
+
+            if (post == null)
+            {
+                return null;
+            }
+
+            return new Point2D(
+                post.Insertion.X + (post.MirroredX ? -local.Value.X : local.Value.X),
+                post.Insertion.Y + local.Value.Y);
+        }
+
         /// <summary>The rear tope Y in an ELEVATION view: the canonical Selective rise-and-snap plus <see cref="ExtraRise"/>.</summary>
         public static double ElevationY(double troquelMateY, double largueroY)
             => SelectiveTopePlacement.SnapY(troquelMateY, largueroY, SelectiveRackDefaults.TroquelPaso) + ExtraRise;
