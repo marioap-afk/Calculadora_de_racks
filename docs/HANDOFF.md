@@ -16,10 +16,11 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
-**Push Back** es la quinta familia y está **lista para integrar**, no integrada: I-18
-(`feature/push-back`) quedó `integration-ready` el **2026-07-25**, con el gate manual del Owner
-**aprobado** en AutoCAD 2025 (PB-VAL-01…06) y la geometría Push Back aprobada. El **preview visual** se
-**difiere** a una iniciativa transversal futura y **no** bloquea I-18: no está aprobado visualmente.
+**Push Back** es la quinta familia operativa y está **integrada en `main`** desde el **2026-07-25**
+(merge `--no-ff` `77031be`, CI verde en los cuatro jobs, run 30139506411). I-18 entregó el primer sistema
+construido sobre el patrón de módulos, con el gate manual del Owner **aprobado** en AutoCAD 2025
+(PB-VAL-01…06). El **preview visual** se **difiere** a una iniciativa transversal futura y **no** fue
+aprobado visualmente.
 
 I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
 `ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
@@ -627,27 +628,30 @@ se integra por `git merge --no-ff` en esta sesión.
 
 ## 4. Siguiente acción
 
-**Integrar I-18 (Push Back).** La iniciativa quedó **`integration-ready`** el 2026-07-25 en
-`feature/push-back`: I-18a, I-18b (`code-complete` + `owner-approved`) e I-18c completas. Falta
-exclusivamente la **integración serializada del Owner** (WORKFLOW §4.5): rebase final si `main` avanzó,
-CI verde sobre el HEAD exacto, `merge --no-ff`, marcar la fila del ROADMAP como `integrada (fecha)` y
-limpiar rama y worktree. Nada de eso se ejecutó en la sesión de cierre, por instrucción explícita.
+**I-18 (Push Back) quedó integrada en `main` el 2026-07-25** — merge `--no-ff` `77031be` desde
+`feature/push-back` (`4f93abe`), CI verde en los cuatro jobs (run 30139506411), rama y worktree
+eliminados. No queda acción pendiente de I-18.
 
-Qué entrega I-18: Push Back como **primer sistema construido sobre el patrón de módulos** —descriptor,
+Qué dejó integrado: Push Back como **primer sistema construido sobre el patrón de módulos** —descriptor,
 documento versionado, resolver y builders por vista, BOM, editor sobre el shell común y draw adapter—
-**componiendo** la cama `FlowBedType.Pushback` y la geometría del Dinámico **sin editar** el código de
-los otros sistemas. Cierra además dos deudas transversales: nace
-[`docs/guias/agregar-un-sistema.md`](guias/agregar-un-sistema.md) desde la experiencia real (retira el
-apéndice temporal de `ARCHITECTURE.md`, DOC-02 de I-06) y se **extrae la infraestructura de preview
-compartida** del renderer Dinámico, ya consumida por los dos editores, con la equivalencia del Dinámico
-**medida** (misma firma de escena sobre 736 primitivas antes y después de extraer).
+**componiendo** la cama `FlowBedType.Pushback` y la geometría del Dinámico **sin editar** el código de los
+otros sistemas, que era el criterio de salida de la Fase 4. El registro es aditivo: `RackSystemKind`,
+`SystemRegistry`, `EditorModuleRegistry`, `KindHandlerRegistry`, menú, comandos `RACKPUSHBACK`/`RPB`,
+inserción y persistencia con metadata I-11 y carga legacy; los consumidores (`RACKEDITAR`,
+`RACKBOMTOTAL`, `RACKDUPLICAR`, `RACKLAYOUT`) lo adoptan por el registro, sin una sola rama nueva.
 
-Deuda consciente que I-18 deja anotada: el **preview visual** sigue siendo insatisfactorio para el Owner
-y su estandarización completa se difiere a una **iniciativa transversal futura** que abarque a los tres
-editores; parte de una sola tubería, no de dos painters divergentes.
+Cerró además dos deudas transversales: nace [`docs/guias/agregar-un-sistema.md`](guias/agregar-un-sistema.md)
+desde la experiencia real (retira el apéndice temporal de `ARCHITECTURE.md`, DOC-02 de I-06), y se extrae la
+**infraestructura de preview compartida** del renderer Dinámico, ya consumida por los dos editores, con la
+equivalencia del Dinámico **medida** (misma firma de escena sobre 736 primitivas antes y después).
 
-Después de I-18 siguen pendientes **I-25** (`feature/guardas-traseras`, sobre I-22) e **I-23**
-(namespaces, cierra la Fase 5, depende de todas).
+**Deuda abierta que hereda quien siga:** el **preview visual** sigue siendo insatisfactorio para el Owner y
+su estandarización completa se **difiere a una iniciativa transversal futura** que abarque a los tres
+editores. Parte de una sola tubería compartida, no de dos painters divergentes. **No está aprobado
+visualmente** y no debe presentarse como tal.
+
+**Siguiente:** quedan **I-25** (`feature/guardas-traseras`, sobre I-22) e **I-23** (namespaces, cierra la
+Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 

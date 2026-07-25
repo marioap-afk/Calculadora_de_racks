@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-18
 title: Push Back
 type: feature
-status: completed
+status: integrated
 branch: feature/push-back
 base_branch: main
 priority:
@@ -216,7 +216,8 @@ validación en AutoCAD (sin cableado de Plugin); lo que se validará en I-18b qu
 
 ## 13. Estado versionado y entrega del Pull Request
 
-Estado canónico: [`docs/automation/state/I-18.yml`](../automation/state/I-18.yml) — **`integration-ready`**.
+Estado canónico: [`docs/automation/state/I-18.yml`](../automation/state/I-18.yml) — **`integrated`**
+(2026-07-25, merge `77031be`).
 Decisiones del Owner: [`docs/automation/decisions/I-18.md`](../automation/decisions/I-18.md). Merge automático
 prohibido; **integración serializada del Owner**. `HANDOFF.md`/`ROADMAP.md` se actualizan como **último commit
 de la rama** (WORKFLOW §4.5.4), para que el merge los lleve consigo; la marca `integrada (fecha)` del ROADMAP la
