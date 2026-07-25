@@ -230,6 +230,23 @@ Planes disponibles:
   (`1.0.0+b638653…`; CI del candidato run `30108459424`); gates `autocad`/`owner-validation` resueltos.
   **Integrada en `main` el 2026-07-24** (merge `--no-ff` `ad0ea1f`). Estado versionado en
   [`../automation/state/I-31.yml`](../automation/state/I-31.yml).
+- [`I-32-correcciones-push-back.md`](I-32-correcciones-push-back.md): contrato de I-32 (sobre
+  `fix/correcciones-push-back`), **correcciones funcionales y geométricas de Push Back** reportadas por el
+  Owner tras usar en AutoCAD el sistema que integró I-18. Corrige **diez** hallazgos: la **pendiente de la
+  cama** (subía 11.2" en un rack de 204" cuando la regla es 7/16" por pie, 7.4375"), el **primer nivel** de
+  un rack nuevo (4"), la **tarima general** (Fondo y Unidad globales; Frente/Alto/Peso por celda), la
+  **matriz del desviador** por poste (máximo de frentes adyacentes) y su selector de **lado**, el **tipo de
+  tope** desde catálogo y las opciones que no aplican en su diálogo, y la **defensa de montacargas**
+  (extremos renombrados a «Entrada/Salida» y «Posterior», posterior apagado por defecto y 12"/36"
+  recalculados con Auto por extremo). Las decisiones llegaron fijadas con el encargo
+  ([`../automation/decisions/I-32.md`](../automation/decisions/I-32.md)), que además **precisa y deroga
+  parcialmente** I-18 PB-0.2 §4 sobre el ajuste al troquel del extremo alto. **No** cambia Selectivo ni
+  Dinámico: los cuatro diálogos compartidos solo ganan parámetros opcionales cuyo default es el
+  comportamiento vigente. Fuera de alcance y registrados como candidatos futuros en `ideas-futuras.md`:
+  **PB-001** (preview), **PB-007** (reconfigurador masivo de seguridad), **PB-011** (editor avanzado de
+  módulos) y **PB-014** (frente en blanco). `requires_autocad: true`, `requires_owner_validation: true`;
+  `requires_owner_decision: false`. Estado versionado en
+  [`../automation/state/I-32.yml`](../automation/state/I-32.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

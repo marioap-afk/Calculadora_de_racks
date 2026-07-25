@@ -1,0 +1,62 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-32
+  branch: fix/correcciones-push-back
+  claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
+  current_phase: 10
+  state: validating
+  gate: owner-validation
+  attempts: 0
+  next_action: >-
+    owner-cierra-autocad-recompila-el-dll-debug-del-worktree-y-ejecuta-los-12-puntos-de-la-seccion-10-del-contrato-atencion-especial-a-la-subida-de-7-7-16-en-204-a-que-el-larguero-posterior-coincida-en-lateral-y-frontal-posterior-y-a-que-el-tope-acompano-al-larguero
+  last_evidence_commit: df6cae9
+execution_context:
+  mode: manual-git-only
+  worktree: fix-correcciones-push-back
+  pull_request: none
+evidence:
+  base_commit: 91eb53cf58d225f1e34e8f4cb45da27e1cdd1884
+  claim_commit: 58146cfa33d5c6c9a619025f00e6415058e90b73
+  preflight: >-
+    main-igual-origin-main-91eb53c-arbol-limpio-sin-merge-rebase-cherry-pick-bisect-sin-stashes-ci-verde-run-30139711339-success-sobre-91eb53c-i18-integrada-merge-77031be-cierre-91eb53c-feature-push-back-eliminada-local-y-remota-i32-y-fix-correcciones-push-back-libres-sin-fichas-ni-estado-previo-unica-rama-remota-main-sin-worktrees-fuera-del-principal-i23-e-i25-pendientes-sin-rama-activa
+  claim: >-
+    worktree-unico-desde-origin-main-rama-fix-correcciones-push-back-commit-vacio-58146cf-initiative-i32-claim-id-5bb26f55-365c-449b-8341-59dc955e5807-trailer-co-authored-by-claude-primer-push-u-aceptado-como-new-branch-sin-force-reclamo-valido
+  commits: >-
+    58146cf-reclamo-vacio · cf34c85-pb004-pendiente-de-cama · a8523d4-pb012-primer-nivel-4 ·
+    8cd72e5-pb013-tarima-general-vs-celda · 02170b0-pb002-pb003-matriz-y-lado-del-desviador ·
+    a3f2555-pb005-pb006-tipo-de-tope-y-opciones-del-dialogo ·
+    df6cae9-pb008-pb009-pb010-defensa-de-montacargas
+  bugs_fixed: pb-002 pb-003 pb-004 pb-005 pb-006 pb-008 pb-009 pb-010 pb-012 pb-013
+  bugs_deferred: >-
+    pb-001-preview pb-007-reconfigurador-masivo-de-seguridad pb-011-editor-avanzado-de-modulos
+    pb-014-frente-en-blanco-registrados-en-ideas-futuras-no-implementados
+  regression_evidence: >-
+    cada-arreglo-con-regresion-verificada-fallando-al-desactivar-el-fix-pb004-4-de-7-pb012-3-de-5-pb013-3-de-3-pb002-3-de-4-pb003-1-de-4-pb005-2-de-9-pb006-3-de-3-pb008-pb009-pb010-6-de-12-mas-3-de-dialogo-el-resto-son-centinelas-que-deben-estar-verdes-antes-y-despues
+  tests: rackcad-tests-1237-de-1237-rackcad-ui-tests-356-de-356-debug-cero-fallos-cero-omitidas
+  targeted_filters: >-
+    ningun-filtro-descubre-cero-core-pushback-220-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-17-desviador-37-tope-80-ui-pushback-113-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
+  builds: >-
+    ui-debug-0-errores-0-advertencias-plugin-debug-0-errores-2-msb3277-conocidas-compilado-a-carpeta-temporal-porque-autocad-estaba-abierto-trampa-de-agents-md
+  goldens: >-
+    se-movieron-tres-pines-lateral-lateral-corte0-y-frontal-posterior-por-pb004-con-el-motivo-escrito-en-pushbackgoldentests-frontal-entrada-planta-y-bom-intactos
+  catalogs_untouched: >-
+    assets-catalogs-deploy-sln-y-csproj-sin-cambios-validador-i19-33-pruebas-verdes-baseline-aprobado-intacto-1-error-troquel-tope-2-avisos-tarima-generica
+  isolation: >-
+    selectivo-y-dinamico-sin-cambio-de-comportamiento-los-cuatro-dialogos-compartidos-solo-ganan-parametros-opcionales-al-final-de-sus-firmas-con-default-igual-al-comportamiento-vigente-selectivo-llama-por-posicion-y-no-los-alcanza-dinamico-llama-por-nombre-y-no-los-pasa-hay-pruebas-de-no-regresion-para-ambos
+  known_limitation: >-
+    en-el-lateral-las-celdas-del-desviador-se-indexan-por-poste-pero-en-frontal-planta-y-bom-por-frente-con-un-math-min-al-ultimo-apagar-la-ultima-columna-afecta-al-corte-lateral-y-no-al-bom-preexistente-de-i18-ahora-visible-anotado-en-ideas-futuras-no-se-toca-por-la-restriccion-de-no-cambiar-el-dinamico
+  dll_for_owner: >-
+    fix-correcciones-push-back-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll-requiere-cerrar-autocad-antes-de-compilar
+gates:
+  autocad:
+    required: true
+    note: PENDIENTE-12-puntos-de-la-seccion-10-del-contrato-sobre-el-dll-debug-del-worktree
+  owner_validation:
+    required: true
+    note: PENDIENTE-comportamiento-y-geometria-tras-las-correcciones-atencion-a-la-pendiente-y-a-las-piezas-que-la-siguen
+  plugin_build:
+    required: true
+    note: RESUELTO-0-errores-2-msb3277-conocidas-compilado-a-carpeta-temporal-con-autocad-abierto
+  ci:
+    required: true
+    note: PENDIENTE-de-la-corrida-sobre-el-head-publicado-df6cae9
