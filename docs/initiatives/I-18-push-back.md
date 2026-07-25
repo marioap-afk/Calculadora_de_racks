@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-18
 title: Push Back
 type: feature
-status: en-implementacion
+status: completed
 branch: feature/push-back
 base_branch: main
 priority:
@@ -120,7 +120,8 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
     igual que los bloques de tope de las tres vistas. Sin override `CellBeamLength == front.BeamLength` ⇒ los **5 pins de
     vista no cambian**; solo se actualizó el pin del **BOM**. 61 pruebas Push Back; suite **1067 verde**; UI/Plugin 0 err;
     validador I-19 sin errores nuevos.
-- **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD. **En curso.**
+- **I-18b**: sistema usable end-to-end (registros, editor, handler, dibujo) — ✋ AutoCAD. **COMPLETA:
+  `code-complete` + `owner-approved` (2026-07-25).**
   Registro aditivo, editor, draw adapter y comando **completos y verdes** (increments 1–5a). Rondas 1–3 de
   ajuste tras el rechazo del gate cerraron PB-VAL-01…05 (interfaz de tres zonas → matriz de tarjetas central +
   preview técnico por roles + acciones por vista; tangencia; tope posterior orientado y +4"; seguridad por
@@ -157,13 +158,27 @@ agregue dentro de su módulo; falta la prueba de que el costo esté confinado al
   se hace explícito y auditable (se lee del catálogo por nombre, sin fallback al origen del bloque) y se prueba
   numéricamente que el punto transformado del larguero colocado cae sobre la línea de `RailOrigin` en su propio X
   y que la cama queda **bit-idéntica**. Queda un **hallazgo abierto** para decisión del Owner: el desplazamiento
-  es *lateral-only*, y el frontal de entrada/salida dibuja el mismo larguero 1.2519" más arriba. **Prueba real de persistencia** (`PushBackNoParrillaPersistenceTests`): un
+  es *lateral-only*, y el frontal de entrada/salida dibuja el mismo larguero 1.2519" más arriba (resuelto después
+  por decisión del Owner: el IN/OUT bajo deja de desplazarse y es el larguero **posterior** el que se hace
+  tangente). **Prueba real de persistencia** (`PushBackNoParrillaPersistenceTests`): un
   proyecto Push Back antiguo —envelope con GUID envolviendo un proyecto interno con PARRILLA, metadata desconocida
   y versión legible `2.5` (I-11)— se lee por los stores vigentes sin error; al cargar/resolver la parrilla no
   llega al sistema, a las 5 vistas ni al BOM; y la reescritura canónica (snapshot del sistema resuelto) **no** la
   re-emite mientras el GUID, la metadata desconocida y la versión se preservan. Falta el **smoke visual corto del
   Owner** en AutoCAD sobre el DLL Debug del HEAD rebasado antes de reabrir el gate.
-- **I-18c**: guía y cierre.
+  **Cierre de I-18b (2026-07-25): `code-complete` + `owner-approved`.** Tras las rondas correctivas finales
+  —tope anclado por vista (`TROQUEL_SEPARADOR` en lateral; **mate de origen** contra el `TROQUEL_TOPE` del poste
+  en frontal posterior y planta), tope configurado en una sección **visible** dentro de «Elementos de seguridad»,
+  y flujo de Seguridad que aplica `dialog.Result` autorizado y el tope en una sola operación— el Owner ejecutó
+  el **retest final en AutoCAD 2025** sobre el DLL de `ec00dab` y **aprobó PB-VAL-01…06** y la **geometría Push
+  Back**. El **preview visual** queda **diferido** a una iniciativa transversal futura y **no bloquea** I-18:
+  explícitamente **no** se declara aprobado visualmente. Evidencia en
+  [`evidence/I-18-autocad-validation.md`](../automation/evidence/I-18-autocad-validation.md) §11.
+- **I-18c** (esta entrega): guía y cierre. **COMPLETA.** Nace
+  [`docs/guias/agregar-un-sistema.md`](../guias/agregar-un-sistema.md) con la experiencia **real** de Push Back
+  (sustituye el apéndice temporal de `ARCHITECTURE.md`, DOC-02 de I-06), y HANDOFF/ROADMAP se actualizan como
+  último commit de la rama conforme a WORKFLOW §4.5.4. La iniciativa queda **`integration-ready`**; la
+  integración a `main` es una operación serializada del Owner.
 
 ## 9. Pruebas y builds
 
@@ -183,7 +198,14 @@ validación en AutoCAD (sin cableado de Plugin); lo que se validará en I-18b qu
 
 - I-18a: suite verde (golden de plan lateral/frontal/planta + BOM + round-trip); golden del Dinámico
   **idénticos**; validador I-19 sin errores nuevos; **ningún registro global tocado**; Domain/Application
-  puros. Las 20 pruebas obligatorias del encargo cubiertas.
+  puros. Las 20 pruebas obligatorias del encargo cubiertas. **CUMPLIDO.**
+- I-18b: sistema usable de extremo a extremo (registro, editor, handler, comandos, dibujo, edición multivista,
+  biblioteca, BOM, persistencia con metadata I-11 y carga legacy) + **validación manual del Owner en AutoCAD**.
+  **CUMPLIDO** (2026-07-25): `RackCad.Tests` 1201 y `RackCad.UI.Tests` 343 verdes, builds Debug UI/Plugin sin
+  errores propios, bundle Debug reproducible con 105 comprobaciones fail-closed, y PB-VAL-01…06 **aprobados**
+  por el Owner con el preview visual **diferido**.
+- I-18c: guía `agregar-un-sistema.md` creada desde la experiencia real; HANDOFF/ROADMAP al día como último
+  commit de la rama. **CUMPLIDO.**
 
 ## 12. Condiciones para detenerse
 
@@ -194,9 +216,11 @@ validación en AutoCAD (sin cableado de Plugin); lo que se validará en I-18b qu
 
 ## 13. Estado versionado y entrega del Pull Request
 
-Estado canónico: [`docs/automation/state/I-18.yml`](../automation/state/I-18.yml). Decisiones del Owner:
-[`docs/automation/decisions/I-18.md`](../automation/decisions/I-18.md). Merge automático prohibido;
-integración serializada del Owner. `HANDOFF.md`/`ROADMAP.md` **no** se tocan hasta la integración.
+Estado canónico: [`docs/automation/state/I-18.yml`](../automation/state/I-18.yml) — **`integration-ready`**.
+Decisiones del Owner: [`docs/automation/decisions/I-18.md`](../automation/decisions/I-18.md). Merge automático
+prohibido; **integración serializada del Owner**. `HANDOFF.md`/`ROADMAP.md` se actualizan como **último commit
+de la rama** (WORKFLOW §4.5.4), para que el merge los lleve consigo; la marca `integrada (fecha)` del ROADMAP la
+pone la propia sesión de integración.
 
 ## 14. Evidencia final
 

@@ -1,8 +1,12 @@
 # I-18 — Validación manual en AutoCAD (Push Back)
 
-> **Estado: `pending-owner`.** Ninguna fila del checklist manual está aprobada. La verificación
-> automática está completa y verde; falta exclusivamente la validación humana del Owner en
-> AutoCAD 2025 sobre la DLL exacta descrita abajo.
+> **Estado: `approved-owner` (2026-07-25).** El Owner ejecutó el retest final en AutoCAD 2025 y
+> **aprobó** los seis hallazgos (PB-VAL-01…06) y la geometría Push Back. El **preview visual** queda
+> **diferido** a una iniciativa transversal futura y **no bloquea** I-18: no ha sido aprobado
+> visualmente y no se registra como tal. Ver §11 para el resultado y el `CODE_SHA` vigente.
+>
+> El cuerpo que sigue (§1-§10) conserva el registro **histórico** del intento de gate de
+> `bca2abb`, que el Owner rechazó en su momento; no se reescribe para no perder la trazabilidad.
 
 ## 1. Identificación
 
@@ -245,3 +249,65 @@ la estructura para dejar obsoleto al menos un corte lateral.
   vuelve a implementación; esta evidencia se actualiza con la corrección y un `CODE_SHA` nuevo.
 
 Mientras esta línea siga aquí, el gate está **pendiente**: nadie más que el Owner puede aprobarlo.
+
+---
+
+## 11. Resultado del gate manual — APROBADO (2026-07-25)
+
+### 11.1 Identificación vigente
+
+| Campo | Valor |
+|---|---|
+| Status | **`approved-owner`** |
+| `CODE_SHA` | `ec00dabab52e9715468998028f7e073572474595` |
+| Run de CI | [30137555378](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30137555378) — **success** |
+| Bundle | `src/RackCad.Plugin/bin/Debug/net8.0-windows/publish/RackCad.bundle` |
+| Inventario | [`I-18-bundle-inventory.txt`](I-18-bundle-inventory.txt) — 16 archivos, **reproducible** |
+| `RackCad.Plugin.dll` (SHA-256) | `3696FA2E66DA6E98576925381102C599AD612685AF4F43D4A0B3ADD3AF1BACC8` |
+| `InformationalVersion` | `1.0.0+ec00dabab52e9715468998028f7e073572474595` |
+
+### 11.2 Hallazgos
+
+| Hallazgo | Resultado | Nota |
+|---|---|---|
+| **PB-VAL-01** — interfaz alineada con el Dinámico | **Aprobado** | Con el **preview visual diferido** (§11.4). Composición, panel frente/celda, matriz de tarjetas y barra de acciones aprobadas. |
+| **PB-VAL-02** — orientación y anclaje del larguero tope | **Aprobado** | Lateral sobre `TROQUEL_SEPARADOR`; frontal posterior y planta por **mate de origen** contra el `TROQUEL_TOPE` del poste. |
+| **PB-VAL-03** — elevación adicional de 4" | **Aprobado** | Dos pasos exactos de troquel: la retícula se preserva por construcción. |
+| **PB-VAL-04** — seguridad por defecto en un rack nuevo | **Aprobado** | Sembrada desde la autoridad canónica, solo extremo bajo, sin GUIA ni PARRILLA. |
+| **PB-VAL-05** — tangencia de la cama | **Aprobado** | El IN/OUT bajo queda atornillado (`TROQUEL_CAMA` == `TROQUEL_IN`); el larguero **posterior** es el que se hace tangente a la línea del origen de la cama. |
+| **PB-VAL-06** — Push Back no admite parrillas | **Aprobado** | Excluidas en UI, resolver, sistema, planes, dibujo y BOM; lectura legacy no destructiva. |
+
+Además: **Seguridad con sección visible de topes: OK** — el tope se configura dentro de «Elementos de
+seguridad» (encabezado, estado y botón «Configurar…»), nunca como `SelectiveSafetySelection`.
+
+**La geometría Push Back queda aprobada.**
+
+### 11.3 Verificación automática que acompaña al gate
+
+| Gate | Resultado |
+|---|---|
+| `RackCad.Tests` | **1201** verde |
+| `RackCad.UI.Tests` | **343** verde |
+| Build Debug UI | 0 errores, 0 advertencias |
+| Build Debug Plugin | 0 errores (2 `MSB3277` conocidos de las referencias AutoCAD) |
+| Golden Push Back (5 vistas + BOM) | verde |
+| Suites Dinámico / Selectivo / cama | 188 / 323 / 33 verde |
+| Persistencia (round-trip, legacy, metadata I-11) | 124 verde |
+| Shell (UI) | 63 verde |
+| Handlers / registros | 11 / 21 verde |
+| Estados de editor | 51 verde |
+| Validador I-19 | 22 verde |
+| Bundle | 105 comprobaciones fail-closed; inventario **reproducible** |
+
+Ningún filtro descubrió cero pruebas.
+
+### 11.4 Preview visual — diferido, NO aprobado
+
+El Owner considera los previews **todavía insatisfactorios**, pero **no bloqueantes** para I-18. Su
+estandarización completa se **difiere a una iniciativa transversal futura**. En este cierre **no** se declara
+aprobado visualmente el preview: lo aprobado es la geometría y el resto de la experiencia.
+
+Lo entregado y verificado en la rama es la infraestructura de preview **compartida**, extraída del renderer
+Dinámico (paleta, superficie con la transformación y las primitivas, y partes por familia) y consumida por
+los dos editores, con la equivalencia del Dinámico **medida**: misma firma de escena sobre 736 primitivas
+antes y después de extraer.
