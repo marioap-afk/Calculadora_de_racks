@@ -32,6 +32,7 @@ namespace RackCad.Application.Systems
 
             pushFronts.Clear();
             RearTopeSaque = PushBackDefaults.RearTopeSaque;
+            RearTopePieceId = null;   // PB-005: a new rack starts on the default variant, never on the previous rack's
             SetWorkingBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
             SyncPushConfig();
             structure.ToggleCell(0, 0, false);   // deterministic single (0,0) selection; never keep the previous one
@@ -77,6 +78,7 @@ namespace RackCad.Application.Systems
 
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             RearTopeSaque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
+            RearTopePieceId = rearTope.PieceId;
 
             pushFronts.Clear();
             for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)

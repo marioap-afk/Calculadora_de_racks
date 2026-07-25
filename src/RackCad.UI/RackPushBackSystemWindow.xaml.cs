@@ -898,7 +898,7 @@ namespace RackCad.UI
             // The rear stop is edited INSIDE this same dialog, as its own visible section (Owner decision 2026-07-24).
             // The section works on a COPY, so nothing is committed until the main dialog is accepted, and its grid opens
             // ONLY from its own "Configurar…" button — never automatically afterwards.
-            var topeSection = new PushBackRearTopeSection(state.RearTopeConfig(), OpenRearTopeDialog);
+            var topeSection = new PushBackRearTopeSection(state.RearTopeConfig(), OpenRearTopeDialog, catalog);
             RearTopeSectionForTest = topeSection;
 
             // CANCELLING the safety dialog abandons the WHOLE Seguridad step: neither the safety list nor the rear-tope
@@ -971,7 +971,10 @@ namespace RackCad.UI
                 frontal: false,
                 offCells: PushBackRearTopeDialogAdapter.OffCells(config),
                 fondoCount: 1,
-                fondo: -1)
+                fondo: -1,
+                // PB-006: Push Back has a single depth line — there is no central-vs-per-fondo stop and no side to
+                // pick, so neither control is offered. The adapter never read them either.
+                showSharedAndSide: false)
             {
                 Owner = this
             };

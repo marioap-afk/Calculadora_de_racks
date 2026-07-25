@@ -54,8 +54,9 @@ namespace RackCad.Application.Systems
                 ? PushBackDefaults.HighEndBeamCatalogId
                 : system.HighEndBeamCatalogId;
             var redondoBlock = CatalogLookup.Block(catalog, redondoId, View);
-            var topeBlock = CatalogLookup.Block(catalog, PushBackRearTopeBuilder.TopePieceId, View);
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
+            var topePieceId = PushBackRearTopeBuilder.ResolvePieceId(catalog, rearTope);   // PB-005
+            var topeBlock = CatalogLookup.Block(catalog, topePieceId, View);
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
 
             // Owner decision (2026-07-24, final): in the REAR FRONTAL the stop is anchored by the post's own TROQUEL_TOPE
@@ -122,7 +123,7 @@ namespace RackCad.Application.Systems
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
                         result.Add(SelectiveTopePlacement.Tope(
-                            PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
+                            topePieceId, topeBlock, View,
                             topeX, topeY, saque, longitud,
                             mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
                     }

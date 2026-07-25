@@ -41,7 +41,15 @@ namespace RackCad.UI
 
         public TopeResult Result { get; private set; }
 
-        public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, bool frontal, IEnumerable<SelectiveGridCell> offCells, int fondoCount = 1, int fondo = -1)
+        /// <param name="showSharedAndSide">
+        /// PB-006 (I-32) — whether the "Compartido (uno central)" checkbox and the "Lado" selector are offered. True
+        /// (Selectivo) is the historical dialog, unchanged. Push Back passes false: it has a single depth line, so
+        /// there is no central-vs-per-fondo choice and no side to pick — both controls were inert there (its adapter
+        /// only ever reads SAQUE and the off-cells). The controls are still CONSTRUCTED so the result keeps reading a
+        /// real value with no null checks; only their placement in the options row and the sentence describing them
+        /// are skipped.
+        /// </param>
+        public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, bool frontal, IEnumerable<SelectiveGridCell> offCells, int fondoCount = 1, int fondo = -1, bool showSharedAndSide = true)
         {
             var levels = levelsPerFrente ?? new List<int>();
             model = SelectionMatrixModel.WithJaggedColumns(
@@ -67,8 +75,10 @@ namespace RackCad.UI
 
             var intro = new TextBlock
             {
-                Text = "Marca en qué frente y nivel de larguero va el tope (todos por defecto; la tarima de piso sin larguero no aparece). Va en el fondo central; puedes compartir "
-                     + "uno central o uno por fondo (con el lado), y fijar el SAQUE.",
+                Text = "Marca en qué frente y nivel de larguero va el tope (todos por defecto; la tarima de piso sin larguero no aparece). "
+                     + (showSharedAndSide
+                        ? "Va en el fondo central; puedes compartir uno central o uno por fondo (con el lado), y fijar el SAQUE."
+                        : "Fija el SAQUE."),
                 TextWrapping = TextWrapping.Wrap, FontSize = 11.5, Margin = new Thickness(0, 0, 0, 10)
             };
             DockPanel.SetDock(intro, Dock.Top);
@@ -76,14 +86,20 @@ namespace RackCad.UI
 
             // ---- Bottom: options (shared, side, saque, frontal) — a WrapPanel so nothing clips on a narrow window ----
             var options = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 10, 0, 0) };
+            // PB-006: build both controls ALWAYS (BuildResult reads them without null checks) and only add them to the
+            // row when the system has a real choice to make. Collapsing instead of skipping would keep them in the
+            // visual tree and make "the control is not offered" unverifiable.
             this.shared = new CheckBox { Content = "Compartido (uno central)", IsChecked = shared, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4, 0, 4), ToolTip = "Un solo tope central para ambos fondos; desmarcado = uno por fondo (según el lado)." };
-            options.Children.Add(this.shared);
-
-            options.Children.Add(new TextBlock { Text = "Lado:", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
+            var sideLabel = new TextBlock { Text = "Lado:", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center };
             this.side = new ComboBox { Width = 100, VerticalAlignment = VerticalAlignment.Center, ToolTip = "Cuando NO es compartido: qué fondo(s) del par central llevan tope." };
             foreach (var s in SideLabels) this.side.Items.Add(s);
             this.side.SelectedIndex = SideIndex(side);
-            options.Children.Add(this.side);
+            if (showSharedAndSide)
+            {
+                options.Children.Add(this.shared);
+                options.Children.Add(sideLabel);
+                options.Children.Add(this.side);
+            }
 
             options.Children.Add(new TextBlock { Text = "Saque (in):", Margin = new Thickness(16, 0, 4, 0), VerticalAlignment = VerticalAlignment.Center });
             this.saque = new TextBox { Width = 56, VerticalAlignment = VerticalAlignment.Center, Text = (saque > 0 ? saque : SelectiveSafetyDefaults.TopeSaque).ToString(CultureInfo.InvariantCulture) };

@@ -159,7 +159,7 @@ namespace RackCad.Application.Systems
             {
                 Structure = sharedDesign,
                 LegacyHighEndBeamPeralte = PushBackDefaults.HighEndBeamDefaultPeralte,
-                RearTope = new PushBackRearTopeConfig { Saque = state.RearTopeSaque }
+                RearTope = new PushBackRearTopeConfig { Saque = state.RearTopeSaque, PieceId = state.RearTopePieceId }
             };
 
             // Rear peralte per front x level (already canonical), and ONLY deactivations materialized into the OffCells.

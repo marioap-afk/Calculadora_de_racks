@@ -13,6 +13,14 @@ namespace RackCad.Domain.Systems
         /// <summary>The block SAQUE (stick-out) parameter, inches (&lt;= 0 -&gt; the domain default at resolve time).</summary>
         public double Saque { get; set; } = PushBackDefaults.RearTopeSaque;
 
+        /// <summary>
+        /// PB-005 (I-32) — the catalog TOPE variant to place. BLANK means "the system's own default", which is what
+        /// every document written before this field existed carries, so a legacy rack keeps drawing the same piece.
+        /// An id that is not a TOPE in the CURRENT catalog also falls back, so a stale or renamed row can never leave
+        /// the rack with no stop at all. The single resolution rule lives in the Application builder.
+        /// </summary>
+        public string PieceId { get; set; }
+
         /// <summary>The (front, level) cells with NO rear tope (default empty = a tope at every front x level).</summary>
         public IList<SelectiveGridCell> OffCells { get; } = new List<SelectiveGridCell>();
 
@@ -31,7 +39,7 @@ namespace RackCad.Domain.Systems
 
         public PushBackRearTopeConfig DeepCopy()
         {
-            var copy = new PushBackRearTopeConfig { Saque = Saque };
+            var copy = new PushBackRearTopeConfig { Saque = Saque, PieceId = PieceId };
             SelectiveSafetyCells.Copy(OffCells, copy.OffCells);
             return copy;
         }

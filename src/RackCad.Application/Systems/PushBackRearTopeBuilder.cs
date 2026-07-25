@@ -9,16 +9,40 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// The rear pallet-stop ("larguero tope") of a Push Back system: one <c>LARGUERO_ESCALON_TOPE_DE_3</c> (the Selective
-    /// tope piece — NOT <c>POSTE_3_1_5_8_TOPE</c>) per front and load level at the HIGH (rear) end, active by default and
-    /// deactivable through <see cref="PushBackRearTopeConfig.OffCells"/>. It uses the CANONICAL Selective tope rule
+    /// The rear pallet-stop ("larguero tope") of a Push Back system: one stop per front and load level at the HIGH
+    /// (rear) end, active by default and deactivable through <see cref="PushBackRearTopeConfig.OffCells"/>. Which
+    /// catalog TOPE variant is placed is chosen by the user and resolved by <see cref="ResolvePieceId"/> (PB-005);
+    /// <see cref="TopePieceId"/> is only the default. It uses the CANONICAL Selective tope rule
     /// (<see cref="SelectiveTopePlacement"/>): it rises above the rear larguero and snaps to the post's TROQUEL grid, with
     /// SAQUE and LONGITUD. Planta draws top-down and keeps the frente Y (no rise-and-snap). Counted on its own
     /// (<see cref="HeaderBlockRole.Tope"/>), one physical piece per active cell across the lateral/rear-frontal/planta.
     /// </summary>
     public sealed class PushBackRearTopeBuilder
     {
+        /// <summary>The DEFAULT rear-stop piece. Selectable variants are resolved by <see cref="ResolvePieceId"/>.</summary>
         public const string TopePieceId = "LARGUERO_ESCALON_TOPE_DE_3";
+
+        /// <summary>
+        /// PB-005 (I-32) — THE rule that picks the rear-stop piece, so the three views and the BOM cannot disagree.
+        /// The configured id wins when the CURRENT catalog lists it as a TOPE; anything else — blank (every legacy
+        /// document), an unknown id, a renamed row, a piece of another family — falls back to <see cref="TopePieceId"/>.
+        ///
+        /// Falling back rather than honouring a blank is deliberate: a blank id would resolve to no block at all and
+        /// the rack would silently lose every stop in the drawing AND an empty ProfileId in the BOM.
+        /// </summary>
+        public static string ResolvePieceId(RackCatalog catalog, PushBackRearTopeConfig config)
+        {
+            var requested = config?.PieceId;
+            if (string.IsNullOrWhiteSpace(requested))
+            {
+                return TopePieceId;
+            }
+
+            var known = catalog?.SafetyElements?.Any(entry => entry != null
+                && string.Equals(entry.Id, requested, StringComparison.OrdinalIgnoreCase)
+                && SelectiveSafetyDefaults.IsType(entry.Type, SelectiveSafetyDefaults.TopeType)) ?? false;
+            return known ? requested.Trim() : TopePieceId;
+        }
 
         /// <summary>
         /// Extra rise of the rear tope ABOVE the canonical Selective rise-and-snap (PB-VAL-03: the Owner measured the tope
@@ -163,13 +187,14 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
-            var block = CatalogLookup.Block(catalog, TopePieceId, view);
+            var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
+            var pieceId = ResolvePieceId(catalog, rearTope);   // PB-005: one rule for the piece, shared by every view
+            var block = CatalogLookup.Block(catalog, pieceId, view);
             if (string.IsNullOrWhiteSpace(block))
             {
                 return result;
             }
 
-            var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
             var keepFrenteY = IsPlanta(view);
             var troquelMateY = keepFrenteY ? 0.0 : PostTroquelGridBase(structure, catalog, view);
@@ -215,7 +240,7 @@ namespace RackCad.Application.Systems
                     ? baseLength + SelectiveTopePlacement.LengthAllowance
                     : (double?)null;
                 result.Add(SelectiveTopePlacement.Tope(
-                    TopePieceId, block, view, x, y, saque, longitud,
+                    pieceId, block, view, x, y, saque, longitud,
                     mirroredX: Mirrored(view, placement.MirroredX)));
             }
 

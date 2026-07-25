@@ -34,7 +34,7 @@ namespace RackCad.Application.Systems
         public bool IsRearGrid(SelectiveSafetySelection selection)
             => IsFamily(selection, SelectiveSafetyDefaults.ParrillaType);
 
-        /// <summary>True when the selection's catalog element is a larguero TOPE. Owner decision (2026-07-24): in Push Back
+        /// <summary>True when the selection's catalog element is of the TOPE family. Owner decision (2026-07-24): in Push Back
         /// the rear stop belongs to the HIGH end and is owned by the rear-tope config (SAQUE + per-cell deactivations),
         /// so it must never travel as ordinary low-end SAFETY — that would give one physical piece two authorities.</summary>
         public bool IsRearStop(SelectiveSafetySelection selection)

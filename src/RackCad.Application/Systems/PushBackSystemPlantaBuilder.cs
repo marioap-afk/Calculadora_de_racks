@@ -32,8 +32,9 @@ namespace RackCad.Application.Systems
                 ? PushBackDefaults.HighEndBeamCatalogId
                 : system.HighEndBeamCatalogId;
             var redondoBlock = CatalogLookup.Block(catalog, redondoId, View);
-            var topeBlock = CatalogLookup.Block(catalog, PushBackRearTopeBuilder.TopePieceId, View);
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
+            var topePieceId = PushBackRearTopeBuilder.ResolvePieceId(catalog, rearTope);   // PB-005
+            var topeBlock = CatalogLookup.Block(catalog, topePieceId, View);
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
             var postId = DynamicFrontGeometry.PostId(structure, catalog);
             var postPeralte = DynamicFrontGeometry.PostPeralte(structure, catalog, postId);
@@ -76,7 +77,7 @@ namespace RackCad.Application.Systems
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
                         result.Add(SelectiveTopePlacement.Tope(
-                            PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
+                            topePieceId, topeBlock, View,
                             mate.Value.X, mate.Value.Y, saque, longitud,
                             mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
                     }
