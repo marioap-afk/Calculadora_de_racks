@@ -208,7 +208,7 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void AcceptingBothDialogs_AppliesSafetyAndTheRearTope_InOnePass()
+        public void AcceptingTheDialog_AppliesSafetyAndTheRearTope_InOnePass()
         {
             StaTestRunner.Run(() =>
             {
@@ -221,11 +221,17 @@ namespace RackCad.UI.Tests
                         return;
                     }
 
-                    w.SafetyDialog = _ => new[] { new SelectiveSafetySelection { ElementId = bota.Id, Quantity = 1 } };
+                    // Owner decision (2026-07-24, final): the tope grid opens ONLY from its own visible button inside
+                    // the safety dialog. The safety seam stands in for the user pressing that button and then Aceptar.
                     w.RearTopeDialog = _ => new SafetyTopeGridWindow.TopeResult
                     {
                         Saque = 4.75,
                         OffCells = { new SelectiveGridCell { Frente = 0, Level = 0 } }
+                    };
+                    w.SafetyDialog = _ =>
+                    {
+                        w.RearTopeSectionForTest.Configure();   // the user presses "Configurar…"
+                        return new[] { new SelectiveSafetySelection { ElementId = bota.Id, Quantity = 1 } };
                     };
                     EditorWindowTestSupport.ClickNamed(w, "SafetyButton");
 

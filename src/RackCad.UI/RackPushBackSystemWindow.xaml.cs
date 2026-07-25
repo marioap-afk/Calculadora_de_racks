@@ -837,77 +837,72 @@ namespace RackCad.UI
 
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
-            // Push Back admits every applicable family EXCEPT entrance guides: the dialog is opened with includeGuia:false, so
-            // GUIA is never offered; the selections are already low-end (the resolver normalized them on load). The assembler's
-            // AuthorizedSafety filters again at build, so a GUIA can never reach the design/system/BOM/plan.
             var elements = SafetyElementsForDialog();
-            var levels = state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList();
-            if (levels.Count == 0) levels.Add(Math.Max(1, DynamicRackDefaults.DefaultLoadLevels));
+            var levels = PushBackRearTopeDialogAdapter.LevelsPerFrente(
+                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)));
             var postCount = Math.Max(2, state.Structure.Count + 1);
 
+            // The rear stop is edited INSIDE this same dialog, as its own visible section (Owner decision 2026-07-24).
+            // The section works on a COPY, so nothing is committed until the main dialog is accepted, and its grid opens
+            // ONLY from its own "Configurar…" button — never automatically afterwards.
+            var topeSection = new PushBackRearTopeSection(state.RearTopeConfig(), OpenRearTopeDialog);
+            RearTopeSectionForTest = topeSection;
+
             // CANCELLING the safety dialog abandons the WHOLE Seguridad step: neither the safety list nor the rear-tope
-            // config is touched and nothing is recomputed. (Cancelling only the tope dialog keeps the accepted safety
-            // and leaves the tope config untouched — see EditRearTope.)
+            // config is touched, and nothing is recomputed.
             var chosen = SafetyDialog != null
                 ? SafetyDialog(safetySelections)
-                : ShowSafetyDialog(elements, levels, postCount);
+                : ShowSafetyDialog(elements, levels, postCount, topeSection.View);
             if (chosen == null)
             {
                 return;
             }
 
-            // Take what the user actually chose — dialog.Result — and pass it through the Push Back AUTHORITY, which
-            // deep-copies every selection, restricts it to the low end and refuses GUIA, PARRILLA and TOPE. Reading the
-            // dialog's OWN result (instead of re-filtering the list handed to it) is what makes botas, protectores,
-            // desviadores and defensa actually reach the design and the BOM; Authorize is what keeps the excluded
-            // families out and the stored selections INDEPENDENT of the dialog's objects.
+            // ACCEPTED: apply the authorized safety AND the rear stop in ONE operation. Authorize deep-copies every
+            // selection, restricts it to the low end and refuses GUIA, PARRILLA and TOPE, so the stop can never travel
+            // as ordinary safety and the stored selections stay independent of the dialog's objects.
             var authorized = new PushBackSafetyAuthority(catalog).Authorize(chosen);
-            safetySelections.Clear();
-            foreach (var selection in authorized)
+            using (session.Recompute.Defer())
             {
-                safetySelections.Add(selection);
-            }
+                safetySelections.Clear();
+                foreach (var selection in authorized)
+                {
+                    safetySelections.Add(selection);
+                }
 
-            EditRearTope();
-            RequestRecompute();
+                state.LoadRearTopeConfig(topeSection.Config);
+                RequestRecompute();
+            }
         }
+
+        /// <summary>The tope section of the last opened Seguridad dialog (test seam).</summary>
+        internal PushBackRearTopeSection RearTopeSectionForTest { get; private set; }
+
+        /// <summary>Opens the shared tope grid for <paramref name="config"/>; NULL when cancelled.</summary>
+        private SafetyTopeGridWindow.TopeResult OpenRearTopeDialog(PushBackRearTopeConfig config)
+            => RearTopeDialog != null
+                ? RearTopeDialog(config)
+                : ShowRearTopeDialog(
+                    config,
+                    PushBackRearTopeDialogAdapter.LevelsPerFrente(
+                        state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels))));
 
         /// <summary>Shows the real shared safety dialog; NULL when the user cancelled.</summary>
         private IReadOnlyList<SelectiveSafetySelection> ShowSafetyDialog(
-            IReadOnlyList<SafetyElementCatalogEntry> elements, IReadOnlyList<int> levels, int postCount)
+            IReadOnlyList<SafetyElementCatalogEntry> elements, IReadOnlyList<int> levels, int postCount,
+            System.Windows.UIElement extraSection)
         {
             var dialog = new SelectiveSafetyWindow(
                 elements, safetySelections, postCount,
                 levelsPerFrente: levels, fondoCount: 1, parrillaPlan: null, catalog: catalog, resolvedSystem: null,
                 fallbackLevelsArePerPost: true,
                 introduction: "Push Back admite botas, protectores laterales, desviadores y defensa de montacargas en el extremo bajo (entrada/salida). No usa guías.",
-                includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true)
+                includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true,
+                extraSection: extraSection)
             {
                 Owner = this
             };
             return dialog.ShowDialog() == true ? dialog.Result : null;
-        }
-
-        /// <summary>
-        /// Owner decision (2026-07-24): the rear tope is configured ONLY here, as part of Seguridad, by REUSING the shared
-        /// <see cref="SafetyTopeGridWindow"/>. The adapter projects the current <see cref="PushBackRearTopeConfig"/> onto
-        /// the dialog and recovers SAQUE + OffCells from its result; cancelling leaves the config untouched.
-        /// </summary>
-        private void EditRearTope()
-        {
-            var config = state.RearTopeConfig();
-            var levels = PushBackRearTopeDialogAdapter.LevelsPerFrente(
-                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)));
-
-            // Cancelling ONLY this dialog keeps the safety just accepted and leaves the tope config exactly as it was.
-            var result = RearTopeDialog != null ? RearTopeDialog(config) : ShowRearTopeDialog(config, levels);
-            if (result == null)
-            {
-                return;
-            }
-
-            PushBackRearTopeDialogAdapter.Apply(result, config);
-            state.LoadRearTopeConfig(config);
         }
 
         /// <summary>Shows the real shared tope-grid dialog; NULL when the user cancelled.</summary>

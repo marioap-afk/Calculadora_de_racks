@@ -89,7 +89,7 @@ namespace RackCad.UI
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null)
         {
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
@@ -147,6 +147,15 @@ namespace RackCad.UI
             root.Children.Add(error);
 
             var list = new StackPanel();
+
+            // A neutral extension point: a host may prepend its OWN section to this dialog (Push Back uses it for the
+            // rear stop, which is not a SelectiveSafetySelection and must not be offered as one). The window stays
+            // agnostic — it renders whatever element it is handed and never inspects it.
+            if (extraSection != null)
+            {
+                list.Children.Add(extraSection);
+            }
+
             if (elements.Count == 0)
             {
                 list.Children.Add(new TextBlock { Text = "No hay elementos de seguridad en el catálogo (seguridad.csv).", Foreground = Brushes.Gray, TextWrapping = TextWrapping.Wrap });
