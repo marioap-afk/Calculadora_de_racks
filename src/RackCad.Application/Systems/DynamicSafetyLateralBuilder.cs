@@ -259,13 +259,19 @@ namespace RackCad.Application.Systems
                 var rightLoad = rightLevels[Math.Min(level, rightLevels.Count - 1)];
 
                 // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
-                // deriva— y se pregunta POR FRENTE, porque la columna baja de este corte pertenece a un frente
-                // concreto y no a la proyección del poste. El ALTO no: su larguero es el ancla y conserva la
-                // elevación del resolver (PB-004, I-32). El primer nivel tampoco: mide desde el troquel del poste.
+                // deriva— y el ALTO no: su larguero es el ancla y conserva la elevación del resolver (PB-004, I-32).
+                // El primer nivel tampoco: mide desde el troquel del poste.
+                //
+                // Qué ámbito se consulta lo decide si este corte pertenece a un frente. SECCIONADO por poste: la
+                // columna baja pertenece al frente adyacente de menor StartX, así que se pregunta POR FRENTE. SIN
+                // seccionar: el corte dibuja el rack entero y ocupa su profundidad completa, que no es la de ningún
+                // frente, así que se pregunta por la ENVOLVENTE — la misma con la que se resuelven sus largueros.
                 var leftY = level == 0
                     ? firstLeftY
-                    : elevations.OrFront(leftFront?.Index ?? -1, leftLoad.LevelNumber, leftLoad.ExitElevation)
-                        - SelectiveDesviadorPlan.BeamYOffset;
+                    : (leftFront != null
+                        ? elevations.OrFront(leftFront.Index, leftLoad.LevelNumber, leftLoad.ExitElevation)
+                        : elevations.OrSystemEnvelope(leftLoad.LevelNumber, leftLoad.ExitElevation))
+                      - SelectiveDesviadorPlan.BeamYOffset;
                 var rightY = level == 0 ? firstRightY : rightLoad.EntranceElevation - SelectiveDesviadorPlan.BeamYOffset;
 
                 if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)

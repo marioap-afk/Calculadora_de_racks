@@ -152,8 +152,8 @@ namespace RackCad.Application.Systems
 
         /// <param name="postIndex">
         /// El poste del corte, o negativo cuando el lateral no está seccionado. Solo se usa para elegir el ámbito
-        /// del override: un corte pertenece a la línea de SU poste, mientras que el lateral entero recorre la
-        /// proyección del sistema. Sin override no cambia nada.
+        /// del override: un corte pertenece a la línea de SU poste, mientras que el lateral entero dibuja el rack
+        /// completo y ocupa su ENVOLVENTE. Sin override no cambia nada.
         /// </param>
         /// <param name="elevations">
         /// Override OPCIONAL de elevaciones (PB-004, I-32). Con <c>null</c> se lee la elevación del resolver, que es
@@ -182,9 +182,12 @@ namespace RackCad.Application.Systems
             var height = sectionHeight ?? DynamicFrontGeometry.Height(system);
             var levelYs = system.LoadBeamLevels
                 .Take(Math.Min(levelCount, system.LoadBeamLevels.Count))
+                // Sin poste no hay línea a la que pertenecer: este lateral es el del rack entero, así que sus
+                // cotas y etiquetas acompañan a los largueros de la ENVOLVENTE, no a los del frente proyectado.
+                // Son frentes distintos en cuanto uno gana por niveles y otro es más profundo.
                 .Select(level => postIndex >= 0
                     ? elevations.OrPost(postIndex, level.LevelNumber, level.ExitElevation)
-                    : elevations.OrProjectedSystem(level.LevelNumber, level.ExitElevation))
+                    : elevations.OrSystemEnvelope(level.LevelNumber, level.ExitElevation))
                 .ToList();
             var style = system.DimensionStyle;
             var endX = sectionEndX ?? system.TotalLength;

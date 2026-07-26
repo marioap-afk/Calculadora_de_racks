@@ -155,6 +155,11 @@ namespace RackCad.Application.Systems
         /// <see cref="RackLevelElevations.AtProjectedSystem"/> elijan frente EXACTAMENTE como lo hace el resolver.
         /// Aquí no se decide nada: solo se entregan los datos con los que esa regla se aplica.
         ///
+        /// Y aparte de los frentes se entrega el mapa de la ENVOLVENTE, resuelto con <c>front: null</c>: el rack
+        /// entero, con la longitud de cama del sistema completo. No es el de ningún frente y no se puede deducir de
+        /// ellos — con un frente que gana por niveles y otro más profundo, proyección y envolvente caen en troqueles
+        /// distintos. Es lo que dibuja el lateral no seccionado.
+        ///
         /// Devuelve <c>null</c> cuando no hay ninguna elevación que aportar; los builders lo tratan como «sin
         /// override» y se quedan con la elevación del resolver.
         /// </summary>
@@ -166,13 +171,15 @@ namespace RackCad.Application.Systems
                 return null;
             }
 
-            return RackLevelElevations.From(fronts
-                .Where(front => front != null)
-                .Select(front => new RackFrontLevelElevations(
-                    front.Index,
-                    front.LoadBeamLevels.Count,
-                    front.EndX - front.StartX,
-                    LowInsertions(system, catalog, front))));
+            return RackLevelElevations.From(
+                fronts
+                    .Where(front => front != null)
+                    .Select(front => new RackFrontLevelElevations(
+                        front.Index,
+                        front.LoadBeamLevels.Count,
+                        front.EndX - front.StartX,
+                        LowInsertions(system, catalog, front))),
+                systemEnvelope: LowInsertions(system, catalog, null));
         }
     }
 }
