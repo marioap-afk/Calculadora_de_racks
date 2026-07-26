@@ -169,7 +169,8 @@ namespace RackCad.Application.Systems
         {
             foreach (var element in elements ?? Array.Empty<SelectiveSafetyPlacement.SafetyElement>())
             {
-                var side = sideOverride ?? element.Selection.SideForPost(postIndex);
+                // El CORTE LATERAL elige el extremo FÍSICO de la línea del poste: mismo eje que el frontal.
+                var side = sideOverride ?? SelectiveSafetyEnds.EndsForPost(element.Selection, postIndex);
                 if (side == SafetySide.Left || side == SafetySide.Both)
                 {
                     target.Add(Piece(element.PieceId, element.Block, left, mirrored: false, longitud));

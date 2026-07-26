@@ -438,7 +438,9 @@ namespace RackCad.Application.Systems
 
         private static bool DrawsAtEnd(SelectiveSafetySelection selection, int postIndex, DynamicRackEnd end)
         {
-            var side = selection?.SideForPost(postIndex) ?? SafetySide.None;
+            // El FRONTAL elige el CORTE, es decir el extremo longitudinal: se lee por SelectiveSafetyEnds, que respeta
+            // la pertenencia por poste y lleva al extremo bajo los sistemas que solo tienen ese (Push Back).
+            var side = SelectiveSafetyEnds.EndsForPost(selection, postIndex);
             return end == DynamicRackEnd.Exit
                 ? side == SafetySide.Left || side == SafetySide.Both
                 : side == SafetySide.Right || side == SafetySide.Both;

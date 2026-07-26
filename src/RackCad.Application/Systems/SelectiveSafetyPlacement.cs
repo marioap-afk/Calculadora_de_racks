@@ -183,7 +183,15 @@ namespace RackCad.Application.Systems
 
             foreach (var element in elements)
             {
-                var side = sideOverride ?? element.Selection.SideForPost(postIndex);
+                // Owner-validation round 1 (I-32): qué significa Left/Right aquí lo dice el PROPIO llamador.
+                // Con mirrorYInPlace la copia espejada se queda en su sitio y solo cambia de cara: eso es ORIENTACIÓN,
+                // y se lee literal. Sin él, la copia se refleja sobre el eje y aterriza en la OTRA PUNTA de la línea
+                // del poste: eso es el EXTREMO longitudinal, y lo resuelve SelectiveSafetyEnds, que respeta la
+                // pertenencia por poste y lleva al extremo bajo los sistemas que solo tienen ese.
+                var side = sideOverride
+                    ?? (mirrorYInPlace
+                        ? element.Selection.SideForPost(postIndex)
+                        : SelectiveSafetyEnds.EndsForPost(element.Selection, postIndex));
                 if (side == SafetySide.Left || side == SafetySide.Both)
                 {
                     target.Add(Piece(element.PieceId, element.Block, view, at, mirroredX: false, mirroredY: false, longitud));

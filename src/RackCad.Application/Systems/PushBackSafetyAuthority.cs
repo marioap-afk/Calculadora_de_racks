@@ -91,9 +91,14 @@ namespace RackCad.Application.Systems
         public IReadOnlyList<SelectiveSafetySelection> Defaults() => Authorize(DynamicSafetyDefaults.Build(catalog));
 
         /// <summary>
-        /// Restrict a safety selection to the LOW (entrance/exit) end only: a two-ended or rear (Right) side collapses to
-        /// Left (the exit end); per-post side overrides are cleared so every post uses the low side; a forklift defense
-        /// keeps only its exit length (the rear entrance length is zeroed). Mutates the passed COPY, never the source.
+        /// Restrict a safety selection to the LOW (entrance/exit) end only. Mutates the passed COPY, never the source.
+        ///
+        /// Owner-validation round 1 (I-32): esto ya NO borra <see cref="SelectiveSafetySelection.PostSides"/>. Esa lista
+        /// es la matriz POR POSTE —qué postes llevan la pieza y con qué orientación— y borrarla para imponer el extremo
+        /// bajo destruía la elección del usuario: el rack dibujaba en todos los postes o en ninguno. La pertenencia y el
+        /// extremo son ejes ORTOGONALES; el extremo se impone donde se decide, con
+        /// <see cref="SelectiveSafetyEnds.EndsForPost"/>, que lee la marca <see cref="SelectiveSafetySelection.LowEndOnly"/>
+        /// de abajo. Aquí solo se colapsa el lado GENERAL (el valor por defecto de los postes sin entrada propia).
         /// </summary>
         public static void RestrictToLowEnd(SelectiveSafetySelection selection)
         {
@@ -107,7 +112,7 @@ namespace RackCad.Application.Systems
                 selection.Side = SafetySide.Left;
             }
 
-            selection.PostSides.Clear();
+            // La matriz por poste se conserva VERBATIM: es pertenencia y orientación, no extremo.
 
             // PB-009 (I-32): mark the selection itself, so the ADAPTIVE defaults of every family stop reaching the far
             // end. Zeroing the stored records was not enough — a brand-new rack carries NO records at all, so the
