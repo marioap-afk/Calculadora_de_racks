@@ -21,7 +21,8 @@ namespace RackCad.Application.Systems
             RackCatalog catalog,
             DynamicFrontLayout layout,
             string plateId,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            RackLevelElevations elevations = null)
         {
             if (target == null || system == null || catalog == null || layout?.PostPositions == null)
             {
@@ -73,7 +74,7 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            AppendFrontalDesviadores(target, system, catalog, layout, end);
+            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations);
             AppendFrontalDefensas(target, system, catalog, layout, plateId, end);
             AppendFrontalGuias(target, system, catalog, layout, end);
         }
@@ -330,7 +331,8 @@ namespace RackCad.Application.Systems
             DynamicRackSystem system,
             RackCatalog catalog,
             DynamicFrontLayout layout,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            RackLevelElevations elevations)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections, catalog.SafetyElements, SelectiveSafetyDefaults.DesviadorType);
@@ -381,7 +383,14 @@ namespace RackCad.Application.Systems
                     }
 
                     var level = system.LoadBeamLevels[levelIndex];
-                    var beamY = end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation;
+
+                    // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
+                    // deriva— y se pregunta POR POSTE, porque este bucle recorre postes y en un rack jagged cada uno
+                    // puede tener frentes distintos a los lados. El ALTO no: su larguero es el ancla y conserva la
+                    // elevación del resolver (PB-004, I-32).
+                    var beamY = end == DynamicRackEnd.Entrance
+                        ? level.EntranceElevation
+                        : elevations.OrPost(postIndex, level.LevelNumber, level.ExitElevation);
                     var y = levelIndex == 0 ? troquel.Y + firstHeight : beamY - SelectiveDesviadorPlan.BeamYOffset;
                     target.Add(Piece(
                         selection.ElementId,

@@ -18,12 +18,18 @@ namespace RackCad.Application.Systems
         private const double OverallGap = 22.0;
         private const double ElevationStep = 14.0;
 
+        /// <param name="elevations">
+        /// Override OPCIONAL de elevaciones (PB-004, I-32). La vista frontal recorre la lista de niveles PROYECTADA
+        /// del sistema, así que consulta por proyección. Con <c>null</c> se lee la elevación del resolver, que es
+        /// exactamente lo de siempre.
+        /// </param>
         public static void AppendFrontal(
             ICollection<HeaderBlockInstance> target,
             DynamicRackSystem system,
             DynamicFrontLayout layout,
             DynamicRackEnd end,
-            RackCatalog catalog)
+            RackCatalog catalog,
+            RackLevelElevations elevations = null)
         {
             if (target == null || system == null || layout?.PostPositions == null || layout.PostPositions.Count < 2)
             {
@@ -35,7 +41,9 @@ namespace RackCad.Application.Systems
             var textHeight = SelectiveAnnotations.TextHeightFor(scale);
             var height = DynamicFrontGeometry.Height(system);
             var levelYs = system.LoadBeamLevels
-                .Select(level => end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation)
+                .Select(level => end == DynamicRackEnd.Entrance
+                    ? level.EntranceElevation
+                    : elevations.OrProjectedSystem(level.LevelNumber, level.ExitElevation))
                 .ToList();
 
             AppendFrontalDimensions(target, system, layout, view, height, levelYs, textHeight, scale, catalog);
@@ -142,13 +150,24 @@ namespace RackCad.Application.Systems
             }
         }
 
+        /// <param name="postIndex">
+        /// El poste del corte, o negativo cuando el lateral no está seccionado. Solo se usa para elegir el ámbito
+        /// del override: un corte pertenece a la línea de SU poste, mientras que el lateral entero recorre la
+        /// proyección del sistema. Sin override no cambia nada.
+        /// </param>
+        /// <param name="elevations">
+        /// Override OPCIONAL de elevaciones (PB-004, I-32). Con <c>null</c> se lee la elevación del resolver, que es
+        /// exactamente lo de siempre.
+        /// </param>
         public static void AppendLateral(
             ICollection<HeaderBlockInstance> target,
             DynamicRackSystem system,
             double? sectionHeight = null,
             int levelCount = int.MaxValue,
             double sectionStartX = 0.0,
-            double? sectionEndX = null)
+            double? sectionEndX = null,
+            int postIndex = -1,
+            RackLevelElevations elevations = null)
         {
             if (target == null || system == null || system.TotalLength <= 0.0)
             {
@@ -163,7 +182,9 @@ namespace RackCad.Application.Systems
             var height = sectionHeight ?? DynamicFrontGeometry.Height(system);
             var levelYs = system.LoadBeamLevels
                 .Take(Math.Min(levelCount, system.LoadBeamLevels.Count))
-                .Select(level => level.ExitElevation)
+                .Select(level => postIndex >= 0
+                    ? elevations.OrPost(postIndex, level.LevelNumber, level.ExitElevation)
+                    : elevations.OrProjectedSystem(level.LevelNumber, level.ExitElevation))
                 .ToList();
             var style = system.DimensionStyle;
             var endX = sectionEndX ?? system.TotalLength;

@@ -28,21 +28,27 @@ namespace RackCad.Application.Systems
         private readonly DynamicIntermediateBeamLateralBuilder intermediateBeamBuilder = new DynamicIntermediateBeamLateralBuilder();
         private readonly DynamicSafetyLateralBuilder safetyBuilder = new DynamicSafetyLateralBuilder();
 
-        public DynamicSystemPlan Build(DynamicRackSystem system, RackCatalog catalog)
-            => BuildCore(system, catalog, -1);
+        public DynamicSystemPlan Build(
+            DynamicRackSystem system, RackCatalog catalog, RackLevelElevations elevations = null)
+            => BuildCore(system, catalog, -1, elevations);
 
         /// <summary>Builds the lateral section at one transverse post of the front grid.</summary>
-        public DynamicSystemPlan Build(DynamicRackSystem system, RackCatalog catalog, int postIndex)
+        /// <param name="elevations">
+        /// Override OPCIONAL de elevaciones (PB-004, I-32). Con <c>null</c> el plan es byte-idéntico al de siempre.
+        /// </param>
+        public DynamicSystemPlan Build(
+            DynamicRackSystem system, RackCatalog catalog, int postIndex, RackLevelElevations elevations = null)
         {
             if (system == null || postIndex < 0 || postIndex > system.Fronts.Count)
             {
                 return new DynamicSystemPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
             }
 
-            return BuildCore(system, catalog, postIndex);
+            return BuildCore(system, catalog, postIndex, elevations);
         }
 
-        private DynamicSystemPlan BuildCore(DynamicRackSystem system, RackCatalog catalog, int postIndex)
+        private DynamicSystemPlan BuildCore(
+            DynamicRackSystem system, RackCatalog catalog, int postIndex, RackLevelElevations elevations)
         {
             if (system == null)
             {
@@ -187,14 +193,17 @@ namespace RackCad.Application.Systems
                 levelCount,
                 rangeStartX,
                 rangeEndX,
-                sectioned ? DynamicFrontGeometry.AdjacentFronts(system, postIndex) : null));
+                sectioned ? DynamicFrontGeometry.AdjacentFronts(system, postIndex) : null,
+                elevations));
             DynamicViewDecorations.AppendLateral(
                 loose,
                 system,
                 sectionHeight,
                 levelCount,
                 rangeStartX,
-                rangeEndX);
+                rangeEndX,
+                sectioned ? postIndex : -1,
+                elevations);
 
             return new DynamicSystemPlan(headers, loose);
         }

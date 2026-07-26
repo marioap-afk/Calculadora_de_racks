@@ -42,13 +42,16 @@ namespace RackCad.Application.Systems
             if (end == PushBackFrontalEnd.EntradaSalida)
             {
                 // Low cut: the dynamic exit frontal (structure is GUIA-free) already IS "IN/OUT + applicable safety".
-                // PB-004 (I-32): sus largueros IN/OUT llevan la elevacion DERIVADA del posterior y ajustada al troquel,
-                // la misma que dibuja el lateral. Una pieza fisica, una elevacion en todas las vistas.
+                // PB-004 (I-32): el builder compartido recibe el contexto de elevaciones y coloca los largueros
+                // IN/OUT YA en su elevación derivada, junto con el desviador bajo y las anotaciones. No hay
+                // reasiento posterior: antes esta vista movía las piezas después, localizándolas por coordenada.
                 return HeaderInstanceGrouper.Group(
-                    WithDerivedLowElevations(system, catalog, structure, dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Exit)),
+                    dynamicBuilder.Build(
+                        structure, catalog, DynamicRackEnd.Exit, PushBackElevations.Context(system, catalog)),
                     "PB_FRONTAL_ENTRADA_SALIDA");
             }
 
+            // El corte POSTERIOR no lleva override: su larguero es el ancla y conserva la elevación del resolver.
             var entrance = dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Entrance);
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             var redondoId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
@@ -128,54 +131,6 @@ namespace RackCad.Application.Systems
         }
 
 
-        /// <summary>
-        /// PB-004 (I-32) — reasienta los largueros IN/OUT del corte bajo en su elevacion derivada. La elevacion no
-        /// depende de la vista, asi que se resuelve una sola vez por frente con la misma autoridad que usa el lateral;
-        /// el resto del corte (postes, placas, seguridad, decoraciones) pasa intacto.
-        /// </summary>
-        private static IReadOnlyList<HeaderBlockInstance> WithDerivedLowElevations(
-            PushBackSystem system, RackCatalog catalog, DynamicRackSystem structure, IReadOnlyList<HeaderBlockInstance> instances)
-        {
-            var layout = DynamicFrontGeometry.Compute(structure, catalog);
-            var byFront = new Dictionary<int, IReadOnlyDictionary<int, double>>();
-            var result = new List<HeaderBlockInstance>(instances.Count);
-
-            foreach (var instance in instances)
-            {
-                if (!PushBackPlanComposer.IsDynamicEndBeam(instance))
-                {
-                    result.Add(instance);
-                    continue;
-                }
-
-                var (frontIndex, level) = LocateCell(structure, catalog, layout, instance, DynamicRackEnd.Exit);
-                if (frontIndex < 0 || level < 0 || frontIndex >= structure.Fronts.Count)
-                {
-                    result.Add(instance);
-                    continue;
-                }
-
-                if (!byFront.TryGetValue(frontIndex, out var elevations))
-                {
-                    elevations = PushBackLoadBeamGeometry.LowBeamElevations(system, catalog, structure.Fronts[frontIndex]);
-                    byFront[frontIndex] = elevations;
-                }
-
-                if (!elevations.TryGetValue(level + 1, out var derived))
-                {
-                    result.Add(instance);
-                    continue;
-                }
-
-                var moved = CloneAt(instance, instance.PieceId, instance.BlockName);
-                moved.Insertion = new Point2D(instance.Insertion.X, derived);
-                moved.ConnectionAnchor = moved.Insertion;
-                result.Add(moved);
-            }
-
-            return result;
-        }
-
         private static HeaderBlockInstance CloneAt(HeaderBlockInstance source, string pieceId, string block)
         {
             var clone = new HeaderBlockInstance
@@ -208,10 +163,13 @@ namespace RackCad.Application.Systems
         /// (post+troquel); the level comes from THAT FRONT'S OWN load-beam levels (never the global projection), matched
         /// by entrance elevation within <see cref="LevelMatchTolerance"/>. Returns level = -1 (no silent front-0/level-0
         /// fallback) when nothing matches, so the caller neither mislabels the peralte nor draws a wrong-cell tope.
+        ///
+        /// Solo la usa el corte POSTERIOR, cuyos largueros conservan la elevación del resolver: por eso puede
+        /// reconocerlos por coordenada. El corte BAJO ya no pasa por aquí — su elevación se decide al colocarlo, no
+        /// después (PB-004, I-32), y buscar por coordenada una pieza ya movida era precisamente el riesgo.
         /// </summary>
         private static (int FrontIndex, int Level) LocateCell(
-            DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam,
-            DynamicRackEnd end = DynamicRackEnd.Entrance)
+            DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam)
         {
             var frontIndex = -1;
             var bestX = double.MaxValue;
@@ -238,10 +196,7 @@ namespace RackCad.Application.Systems
             var bestY = double.MaxValue;
             for (var index = 0; index < frontLevels.Count; index++)
             {
-                var elevation = end == DynamicRackEnd.Exit
-                    ? frontLevels[index].ExitElevation
-                    : frontLevels[index].EntranceElevation;
-                var distance = Math.Abs(elevation - beam.Insertion.Y);
+                var distance = Math.Abs(frontLevels[index].EntranceElevation - beam.Insertion.Y);
                 if (distance < bestY)
                 {
                     bestY = distance;

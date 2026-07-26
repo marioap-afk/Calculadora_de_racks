@@ -26,7 +26,8 @@ namespace RackCad.Application.Systems
             int levelCount = int.MaxValue,
             double? startX = null,
             double? endX = null,
-            IReadOnlyList<DynamicRackFront> adjacentFronts = null)
+            IReadOnlyList<DynamicRackFront> adjacentFronts = null,
+            RackLevelElevations elevations = null)
         {
             var result = new List<HeaderBlockInstance>();
             if (system == null || catalog == null || system.TotalLength <= 0.0)
@@ -68,7 +69,8 @@ namespace RackCad.Application.Systems
                 levelCount,
                 sectionStart,
                 sectionEnd,
-                adjacentFronts);
+                adjacentFronts,
+                elevations);
             AppendDefensas(result, system, catalog, left, right, postIndex);
             AppendGuias(result, system, catalog, postIndex);
             return result;
@@ -209,7 +211,8 @@ namespace RackCad.Application.Systems
             int levelCount,
             double startX,
             double endX,
-            IReadOnlyList<DynamicRackFront> adjacentFronts)
+            IReadOnlyList<DynamicRackFront> adjacentFronts,
+            RackLevelElevations elevations)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections,
@@ -237,9 +240,10 @@ namespace RackCad.Application.Systems
             var off = SelectiveSafetyGrid.OffCellKeys(selection.DesviadorOffCells);
 
             var fronts = adjacentFronts ?? Array.Empty<DynamicRackFront>();
-            var leftLevels = fronts.OrderBy(front => front.StartX)
-                .Select(front => DynamicFrontGeometry.LoadBeamLevels(system, front))
-                .FirstOrDefault() ?? system.LoadBeamLevels.ToList();
+            var leftFront = fronts.OrderBy(front => front.StartX).FirstOrDefault();
+            var leftLevels = leftFront != null
+                ? DynamicFrontGeometry.LoadBeamLevels(system, leftFront)
+                : system.LoadBeamLevels.ToList();
             var rightLevels = fronts.OrderByDescending(front => front.EndX)
                 .Select(front => DynamicFrontGeometry.LoadBeamLevels(system, front))
                 .FirstOrDefault() ?? system.LoadBeamLevels.ToList();
@@ -253,7 +257,15 @@ namespace RackCad.Application.Systems
 
                 var leftLoad = leftLevels[Math.Min(level, leftLevels.Count - 1)];
                 var rightLoad = rightLevels[Math.Min(level, rightLevels.Count - 1)];
-                var leftY = level == 0 ? firstLeftY : leftLoad.ExitElevation - SelectiveDesviadorPlan.BeamYOffset;
+
+                // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
+                // deriva— y se pregunta POR FRENTE, porque la columna baja de este corte pertenece a un frente
+                // concreto y no a la proyección del poste. El ALTO no: su larguero es el ancla y conserva la
+                // elevación del resolver (PB-004, I-32). El primer nivel tampoco: mide desde el troquel del poste.
+                var leftY = level == 0
+                    ? firstLeftY
+                    : elevations.OrFront(leftFront?.Index ?? -1, leftLoad.LevelNumber, leftLoad.ExitElevation)
+                        - SelectiveDesviadorPlan.BeamYOffset;
                 var rightY = level == 0 ? firstRightY : rightLoad.EntranceElevation - SelectiveDesviadorPlan.BeamYOffset;
 
                 if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)
