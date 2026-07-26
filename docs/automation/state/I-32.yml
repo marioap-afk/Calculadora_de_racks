@@ -7,10 +7,11 @@ automation_state:
   state: implementing
   gate: changes-requested
   attempts: 1
-  attempts_note: revision-del-coordinador-2026-07-25-changes-requested-atendida-en-esta-corrida
+  attempts_note: >-
+    revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-en-esta-corrida
   next_action: >-
-    nueva-revision-del-coordinador-sobre-esta-punta-021178e-owner-validation-sigue-CERRADO-y-no-se-genero-dll-canonico-queda-declarado-como-PENDIENTE-el-cableado-opcional-del-desviador-bajo-y-de-las-cotas-etiquetas-a-pushbackelevations-los-largueros-fisicos-si-lo-consumen-ya
-  last_evidence_commit: 021178e
+    nueva-revision-del-coordinador-sobre-esta-punta-0fc5c85-owner-validation-sigue-CERRADO-y-no-se-genero-dll-canonico-YA-NO-QUEDA-NINGUN-PENDIENTE-DECLARADO-el-override-opt-in-esta-completo-y-todos-los-consumidores-de-elevacion-estan-cableados
+  last_evidence_commit: 0fc5c85
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -34,7 +35,11 @@ evidence:
     a8717e5-round1-defecto-1-el-posterior-es-el-ancla-y-el-de-entrada-salida-se-deriva-y-se-ajusta ·
     82876ec-docs-estado-de-la-corrida-del-rechazo ·
     6a4f514-pb004-una-sola-autoridad-de-elevaciones-push-back ·
-    021178e-round1-defecto-2-separa-los-tres-ejes-tambien-en-el-camino-real-del-protector-lateral
+    021178e-round1-defecto-2-separa-los-tres-ejes-tambien-en-el-camino-real-del-protector-lateral ·
+    c3fa138-docs-revision-4-atendida · db437c7-estado-ci-de-la-revision-4 ·
+    cb5e745-regresiones-de-consumidores-observadas-fallando-sobre-db437c7 ·
+    69ae738-contexto-neutral-e-inmutable-con-tres-consultas-explicitas ·
+    0fc5c85-enhebra-el-contexto-por-los-cinco-builders-siempre-opt-in
   bugs_fixed: pb-002 pb-003 pb-004 pb-005 pb-006 pb-008 pb-009 pb-010 pb-012 pb-013
   bugs_deferred: >-
     pb-001-preview pb-007-reconfigurador-masivo-de-seguridad pb-011-editor-avanzado-de-modulos
@@ -44,9 +49,10 @@ evidence:
     corrida-2-sobre-00491b0-pb002-clave-por-poste-3-de-7-pb010-reduccion-3-de-5-pb004-cabecera-3-de-3-contra-una-doble-elevacion-simulada ·
     corrida-3-sobre-26642c9-pb010-dialogo-2-de-7-de-pushbackdefensadialogtests-la-prueba-afirma-en-el-mismo-metodo-que-el-helper-puro-dynamicforkliftdefenseplan-ya-resolvia-bien-el-registro-manual-lo-que-fallaba-era-lo-que-devolvia-el-dialogo-es-decir-el-defecto-era-de-la-ui ·
     el-resto-son-centinelas-verdes-antes-y-despues
-  tests: rackcad-tests-1324-de-1324-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
+  tests: rackcad-tests-1352-de-1352-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
   targeted_filters: >-
-    ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
+    corrida-5-ningun-filtro-en-cero-pb004-89-desviador-51-decorations-39-dynamic-197-golden-2-bom-96-validador-i19-41 ·
+    historico-ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
   builds: >-
     ui-debug-0-errores-0-advertencias-plugin-debug-0-errores-2-advertencias-conocidas-esta-vez-con-autocad-CERRADO-verificado-con-get-process-acad-build-normal-no-a-carpeta-temporal
   goldens: >-
@@ -84,10 +90,6 @@ evidence:
     pb004-consumidores-pushbackelevations-es-la-unica-autoridad-por-frente-y-nivel-desaparecen-lowbeamelevation-y-rearbeamtangencyoffset-hay-prueba-de-que-el-lateral-y-el-frontal-entrada-salida-ven-la-MISMA-elevacion ·
     frontal-cloneat-copia-TODOS-los-dynamicparameters-no-solo-longitud ·
     botas-laterales-la-causa-real-estaba-en-dynamiclateralguardplan-que-traducia-el-lado-a-un-extremo-sin-pasar-por-la-autoridad-un-right-explicito-se-dibujaba-ATRAS-medido-0-piezas-en-entrada-salida-y-1-en-posterior-ahora-la-eleccion-explicita-se-enruta-por-selectivesafetyends-y-la-regla-adaptativa-queda-intacta
-  pending_declared: >-
-    el-desviador-bajo-y-las-cotas-etiquetas-de-las-vistas-compartidas-siguen-leyendo-dynamicracklevel-exitelevation-el-cableado-opcional-de-esos-dos-consumidores-a-pushbackelevations-queda-PENDIENTE-y-se-declara-aqui-en-vez-de-darse-por-hecho ·
-    no-se-cambio-exitelevation-ni-el-dinamico-tal-como-pidio-el-coordinador ·
-    los-largueros-fisicos-del-lateral-y-de-los-dos-frontales-SI-consumen-ya-la-autoridad-con-prueba
   safety_three_axes: >-
     selectivesafetyends-copiesforpost-devuelve-las-copias-fisicas-de-un-poste-con-los-dos-ejes-resueltos-por-separado-athighend-donde-va-y-mirrored-como-va ·
     en-una-vista-de-PROFUNDIDAD-left-right-es-orientacion-pura-y-se-lee-literal-restringir-el-extremo-ahi-habria-borrado-una-de-las-dos-caras-de-un-both ·
@@ -98,6 +100,36 @@ evidence:
     botas-laterales-3-de-7-de-pushbacklateralprotectorendstests-fallaron-sobre-el-codigo-previo-y-el-nucleo-arightchoice-landsatthelowend-neverbehind-paso-solo-tras-enrutar-dynamiclateralguardplan ·
     dos-de-esas-tres-aserciones-eran-MIAS-y-estaban-mal-no-el-codigo-la-sonda-midio-los-numeros-reales-y-se-corrigieron-a-lo-verificado-both-son-dos-piezas-y-la-vista-lateral-no-lleva-el-protector ·
     pb004-19-pruebas-nuevas-en-pushbackelevationauthoritytests-incluido-el-barrido-que-demuestra-que-las-dos-formulas-no-son-intercambiables
+  coordinator_review_5: >-
+    aprobo-formula-de-pushbackelevations-longitud-comercial-contacto-posterior-elegido-por-geometria-parametros-del-clon-y-matrices-orientacion-de-botas-y-protectores-laterales ·
+    unico-bloqueo-completar-el-override-opt-in-declararlo-pendiente-no-satisface-el-contrato-CERRADO-en-esta-corrida
+  elevation_context: >-
+    racklevelelevations-es-neutral-e-inmutable-sin-nombres-ni-tipos-de-ningun-sistema-con-guardia-de-fuentes-que-lo-comprueba ·
+    tres-consultas-explicitas-atfront-frontindex-atpost-postindex-entre-los-frentes-ADYACENTES-y-atprojectedsystem ·
+    atpost-y-atprojectedsystem-eligen-frente-con-la-MISMA-regla-del-resolver-mayor-cantidad-de-niveles-y-en-empate-mayor-profundidad-endx-menos-startx-NO-palletsdeep-ordenacion-estable-asi-que-empate-doble-lo-gana-el-indice-menor ·
+    ELIMINADO-lowinsertions-system-catalog-su-regla-era-gana-el-primer-frente-que-resuelve-cada-nivel-ni-la-del-resolver-ni-la-que-usaba-el-resto-del-dibujo-lo-sustituye-la-proyeccion-explicita ·
+    pushbackelevations-context-lo-construye-UNA-vez-por-dibujo-en-los-dos-builders-de-vista
+  elevation_consumers: >-
+    larguero-bajo-del-frontal-atfront · desviador-lateral-bajo-atfront · desviador-frontal-bajo-atpost ·
+    decoraciones-laterales-atpost-del-corte-o-proyeccion-cuando-no-hay-seccion · decoraciones-frontales-atprojectedsystem ·
+    consecuencia-ASUMIDA-en-un-rack-jagged-el-desviador-frontal-y-el-lateral-pueden-caer-en-y-distintas-porque-el-frontal-es-un-corte-unico-que-cruza-todos-los-frentes-y-el-lateral-pertenece-a-uno ·
+    FUERA-del-override-por-decision-el-primer-desviador-conserva-primer-troquel-mas-altura-y-todo-el-extremo-posterior-sigue-leyendo-entranceelevation-porque-su-larguero-es-el-ancla ·
+    no-se-toco-dynamicracklevel-exitelevation-ni-el-dinamico
+  withderivedlowelevations_removed: >-
+    ELIMINADO-movia-los-largueros-DESPUES-de-colocarlos-localizandolos-por-coordenada-con-tolerancia-0-05-pulgadas-buscar-por-coordenada-una-pieza-ya-movida-es-exactamente-como-se-aplica-un-reasiento-dos-veces-o-ninguno ·
+    ahora-dynamicsystemfrontalbuilder-coloca-el-larguero-bajo-YA-en-su-elevacion-derivada-con-atfront ·
+    locatecell-sobrevive-solo-para-el-corte-POSTERIOR-cuyos-largueros-si-conservan-la-elevacion-del-resolver-y-por-eso-si-se-reconocen-por-coordenada-su-parametro-end-desaparece-por-muerto
+  opt_in_protection: >-
+    tres-redes-porque-una-sola-no-basta ·
+    1-dynamicnulloverridegoldentests-fija-SIETE-firmas-sha256-del-dinamico-capturadas-sobre-db437c7-antes-de-que-el-contexto-existiera-sobre-un-escenario-jagged-NO-se-re-fijan-un-cambio-ahi-es-un-fallo ·
+    2-elevationoverridesourceguardtests-comprueba-por-TEXTO-que-solo-push-back-construye-un-contexto-y-que-el-tipo-no-menciona-ningun-sistema-concreto-el-centinela-de-firmas-solo-mide-las-rutas-que-ejercita ·
+    3-el-contexto-solo-toca-valores-de-y-nunca-condiciones-de-bucle-asi-que-ni-el-numero-de-piezas-ni-el-bom-pueden-moverse
+  regression_evidence_round_5: >-
+    NUEVE-pruebas-de-pushbackelevationconsumertests-observadas-FALLANDO-sobre-db437c7-desviador-lateral-4-postes-desviador-frontal-bajo-cotas-y-etiquetas-laterales-3-de-4-postes-y-cotas-y-etiquetas-frontales ·
+    el-cuarto-poste-de-las-cotas-laterales-coincide-por-aritmetica-del-escenario-y-se-conserva-como-no-regresion-se-dice-en-vez-de-callarlo ·
+    CUATRO-centinelas-verdes-antes-y-despues-escenario-discriminante-extremo-posterior-primer-desviador-y-coherencia-del-lateral-no-seccionado ·
+    hallazgo-MEDIDO-la-profundidad-por-si-sola-NO-mueve-la-insercion-baja-al-alargar-la-cama-sube-tambien-el-larguero-posterior-y-la-diferencia-se-cancela-quien-separa-los-frentes-es-la-altura-del-primer-nivel-sin-eso-las-tres-consultas-darian-lo-mismo ·
+    riesgo-auditado-y-DESCARTADO-con-evidencia-el-lateral-no-seccionado-resuelve-sus-largueros-con-front-null-por-una-via-distinta-a-la-del-frente-ganador-se-comprobo-que-coinciden-y-quedo-fijado-en-regresion
 gates:
   autocad:
     required: true
@@ -115,7 +147,8 @@ gates:
   ci:
     required: true
     note: >-
-      VERDE-run-30182977449-success-sobre-la-punta-de-CODIGO-021178eec3d640e86b1cc1a1641f767a1ccc3495 ·
+      run-30184472300-sobre-la-punta-de-CODIGO-de-esta-corrida-0fc5c85d94148bae5084d05d449e97bcc8450fd1 ·
+      historico-run-30183166266-success-sobre-db437c7 · run-30182977449-success-sobre-021178e ·
       VERDE-run-30183053354-success-sobre-la-punta-DOCUMENTAL-c3fa138462ae88731b9ef56937d9a48488be1c67 ·
       historico-run-30181543907-success-sobre-82876ec · run-30181396599-success-sobre-a8717e5 ·
       historico-run-30177133342-success-sobre-2210e67 · run-30175969327-success-sobre-4e3152a · run-30175762235-success-sobre-428c18a ·

@@ -188,18 +188,33 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
   tres condiciones: diff limitado a contrato+state, CI verde de la nueva punta y **build canonico con
   AutoCAD cerrado**.
 
-### Pendiente declarado (no cerrado)
+### Una sola autoridad, y todos sus consumidores cableados
 
-Una sola autoridad, `PushBackElevations`, resuelve las elevaciones Push Back por frente y nivel, y la
-consumen la cama, el corte lateral y los dos frontales — con prueba de que ven la MISMA elevacion. Pero
-**el desviador bajo y las cotas/etiquetas de las vistas compartidas siguen leyendo
-`DynamicRackLevel.ExitElevation`**, la elevacion del resolver.
+`PushBackElevations` resuelve las elevaciones Push Back por frente y nivel, y **ya no queda ningun
+consumidor fuera**. Los largueros y la cama la leen directamente; el corte lateral, los dos frontales, el
+desviador bajo y las cotas y etiquetas la reciben a traves de un **contexto neutral**
+(`RackLevelElevations`) que los builders compartidos aceptan como ultimo parametro **opcional**. Con el
+valor por defecto (`null`) su ejecucion es byte-identica, asi que el Selectivo y el Dinamico —que no lo
+pasan nunca— no pueden notarlo.
 
-Cablearlos exige un parametro opcional al final de las firmas de `DynamicSafetyLateralBuilder`,
-`DynamicSafetyMultiViewBuilder`, `DynamicViewDecorations` y `DynamicSystemFrontalBuilder`, cuyo default
-(null) deje intactos al Selectivo y al Dinamico. **Ese cableado NO esta hecho**, y se declara aqui en vez
-de darse por cumplido: no se modifico `ExitElevation` ni el Dinamico, tal como pedia el encargo, pero esos
-dos consumidores no leen todavia la autoridad.
+El contexto expone tres consultas explicitas, una por ambito:
+
+| Consulta | Ambito | Quien la usa |
+|---|---|---|
+| `AtFront(frontIndex, ...)` | un frente concreto | larguero bajo del frontal, desviador lateral bajo |
+| `AtPost(postIndex, ...)` | los frentes **adyacentes** al poste | desviador frontal bajo, decoraciones laterales |
+| `AtProjectedSystem(...)` | todos los frentes | decoraciones frontales, lateral no seccionado |
+
+`AtPost` y `AtProjectedSystem` eligen frente con la **misma regla del resolver** —mayor cantidad de
+niveles y, en empate, mayor profundidad—, aplicada a su ambito.
+
+**Consecuencia asumida:** en un rack jagged el desviador **frontal** y el **lateral** pueden caer en `Y`
+distintas. Es deliberado: el frontal es un corte unico que cruza todos los frentes, mientras que el
+lateral pertenece a uno.
+
+**Fuera del override, por decision:** el **primer** desviador conserva su contrato selectivo (primer
+troquel + altura) y **todo el extremo posterior** sigue leyendo `EntranceElevation`, porque su larguero es
+el ancla. Tampoco se modifico `DynamicRackLevel.ExitElevation` ni el sistema Dinamico.
 
 ## 12. Condiciones para detenerse
 
