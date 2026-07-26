@@ -4,16 +4,18 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: implementing
-  gate: changes-requested
+  state: validating
+  gate: owner-validation
   attempts: 3
   attempts_note: >-
-    attempts-PERMANECE-en-3-se-alcanzo-el-max-attempts-del-contrato-y-esta-continuacion-NO-es-un-intento-nuevo-de-la-automatizacion-sino-una-CORRECCION-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-tras-el-rechazo-del-round-3 ·
+    attempts-PERMANECE-en-3-y-NO-se-incrementa-se-alcanzo-el-max-attempts-del-contrato-con-los-rounds-1-2-y-3 ·
+    la-validacion-que-ahora-se-abre-NO-es-un-intento-nuevo-de-la-automatizacion-es-una-CONFIRMACION-FINAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-sobre-una-correccion-que-el-mismo-dirigio-por-eso-no-se-numera-como-un-round-mas ·
     historico-attempts-paso-a-3-al-abrirse-el-round-3-tras-la-aprobacion-tecnica-del-code-sha-924de1a-que-resulto-partir-de-una-lectura-equivocada-del-defecto ·
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
   next_action: >-
-    revision-del-coordinador-sobre-esta-correccion-dirigida-por-el-owner-NO-se-genera-DLL-canonico-hasta-esa-revision-y-NO-hay-round-4-abierto
-  last_evidence_commit: bbdb8b9
+    compilar-el-DLL-desde-la-punta-publicada-de-esta-corrida-con-autocad-cerrado-y-ejecutar-la-CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
+    NO-queda-pendiente-funcional-el-alcance-esta-implementado-y-cubierto-por-pruebas-lo-que-sigue-abierto-es-la-validacion-manual-que-ningun-test-sustituye
+  last_evidence_commit: bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -100,6 +102,16 @@ evidence:
   bed_length: >-
     UNA-sola-longitud-de-cama-el-FONDO-ESTRUCTURAL-COMPLETO-resolvebedlength-la-misma-dibuja-el-riel-alimenta-el-bom-y-mide-la-subida-nominal-de-7-16-por-pie-no-hay-dos-magnitudes-que-conciliar ·
     queda-RECHAZADA-la-regla-de-colocar-la-cama-por-su-ORIGEN-con-longitud-igual-a-axis-length-y-hay-centinela-de-prueba-que-impide-que-vuelva
+  technical_approval_final: >-
+    APROBADA-2026-07-26-code-sha-bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6-head-revisado-877c60fc35a9931818afc74f5bed7b9ec023454d-ci-30222859775-VERDE-cuatro-jobs-sobre-el-head-exacto ·
+    con-ella-se-autoriza-una-CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-que-NO-se-numera-como-un-round-mas ·
+    leccion-del-round-3-llego-a-la-validacion-manual-CON-aprobacion-tecnica-y-aun-asi-fue-rechazado-la-revision-comprobo-que-el-codigo-hacia-lo-que-decia-pero-no-podia-comprobar-que-lo-que-decia-fuera-lo-que-el-owner-queria-porque-la-premisa-equivocada-ese-riel-sobrante-es-penetracion-venia-de-la-implementacion-y-nunca-se-cuestiono-aguas-abajo
+  bed_rule_final: >-
+    1-MATE-larguero-in-out-troquel-cama-con-riel-de-cinta-calibre-12-troquel-in-la-cama-se-transforma-hasta-que-ese-troquel-in-local-cae-sobre-exitmate-es-un-mate-fisico-dos-troqueles-atornillados ·
+    2-LONGITUD-igual-al-FONDO-ESTRUCTURAL-COMPLETO-resolvebedlength-UNA-sola-longitud-de-cama-la-misma-dibuja-el-riel-alimenta-el-bom-y-mide-la-subida-nominal-de-7-16-por-pie ·
+    3-riel-ANTES-del-mate-y-SOBREPASO-posterior-son-ESPERADOS-el-riel-empieza-antes-de-su-primer-troquel-de-sujecion-y-sobresale-por-detras-porque-su-longitud-es-el-fondo-completo-ninguna-de-las-dos-se-recorta ·
+    4-TANGENCIAS-posterior-e-intermedias-CONSERVADAS-ya-eran-correctas-los-intermedios-siguen-matando-a-la-linea-del-origen-del-riel ·
+    PROHIBIDO-con-centinela-de-prueba-colocar-la-cama-por-su-origen-y-usar-axis-length-como-longitud
   owner_clarification_final: >-
     ROUND-3-RECHAZADO-la-correccion-de-la-cama-de-924de1a-era-EQUIVOCADA-lo-que-se-trato-como-penetracion-es-el-comportamiento-correcto-de-la-pieza ·
     contrato-fisico-vigente-1-el-mate-obligatorio-de-entrada-salida-es-larguero-in-out-troquel-cama-con-riel-de-cinta-calibre-12-troquel-in-2-la-cama-se-coloca-transformando-su-troquel-in-local-hasta-exitmate-3-la-longitud-es-SIEMPRE-el-fondo-estructural-completo ·
@@ -142,7 +154,8 @@ evidence:
     DOS-pasan-ya-y-deben-seguir-el-sistema-ordinario-manda-su-ultimo-protector-al-extremo-alto-y-una-matriz-explicita-sustituye-al-default ·
     del-defecto-1-no-hay-regresiones-porque-no-se-implementa-lo-que-hay-es-la-MEDICION-de-la-penetracion-registrada-arriba
   dll_for_owner: >-
-    NO-GENERADO-en-esta-corrida-por-instruccion-del-coordinador-no-se-compila-uno-nuevo-hasta-su-revision ·
+    PENDIENTE-DE-COMPILAR-desde-la-nueva-punta-con-autocad-CERRADO-en-la-ruta-canonica-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll ·
+    sus-datos-build-sha-ruta-tamano-fecha-sha256-y-versiones-se-reportan-FUERA-de-git-no-se-hace-commit-para-registrar-el-hash ·
     OBSOLETO-el-de-2641830-sha256-3034b908ce7593ea7ff9ed1c5b0db57b40f77c486b2a24b32556e8381af4b111-validado-y-RECHAZADO-en-el-round-3 ·
     OBSOLETO-el-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-validado-y-RECHAZADO-en-el-round-2 ·
     OBSOLETO-el-de-2210e67-sha256-b3a2d87e4b18e9d9b0c19e4c881c76d576d8a52ab2607df1e98042acc878c653-validado-y-RECHAZADO-en-el-round-1
@@ -217,14 +230,16 @@ gates:
   autocad:
     required: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · un-round-4-sobre-los-21-puntos-obligatorios
-      de-la-seccion-10-del-contrato-mas-el-smoke-complementario-queda-pendiente-de-que-el-coordinador-lo-autorice
+      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA ·
+      CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-AUTORIZADA-sobre-los-21-puntos-obligatorios-de-la-seccion-10
+      del-contrato-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados
   owner_validation:
     required: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA-2026-07-26-la-correccion-de-la-cama-partia-de-una-lectura-equivocada-del-defecto ·
-      el-gate-vuelve-a-estar-CERRADO-NO-hay-round-4-abierto-y-los-TRES-dll-validados-quedan-OBSOLETOS ·
-      un-round-4-solo-se-abre-tras-revision-del-coordinador
+      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA-la-correccion-de-la-cama-partia-de-una-lectura-equivocada-del-defecto ·
+      CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-AUTORIZADA-tras-la-aprobacion-tecnica-del-code-sha-bbdb8b9-sobre-el-head-877c60f-con-ci-30222859775-verde ·
+      NO-se-numera-como-un-round-mas-porque-max-attempts-ya-se-alcanzo-y-esto-no-es-un-intento-de-la-automatizacion ·
+      exige-un-DLL-NUEVO-compilado-con-autocad-cerrado-desde-la-punta-publicada-los-TRES-dll-anteriores-siguen-OBSOLETOS
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-advertencias-conocidas-con-autocad-CERRADO-verificado-antes-de-compilar
