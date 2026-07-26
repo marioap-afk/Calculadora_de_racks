@@ -228,8 +228,16 @@ namespace RackCad.Tests
             Assert.Equal(activeCount - 1, afterCount);
         }
 
+        /// <summary>
+        /// La cama Push Back lleva rodillos y su propio tope, y NO lleva frenos.
+        ///
+        /// Su LONGITUD dejó de ser el tramo comercial: es la distancia entre los dos contactos físicos de los
+        /// largueros (owner-validation round 2, I-32). Esta prueba fijaba el tramo comercial en su propio nombre
+        /// —<c>FullSpan</c>— y era justo la regla que dejaba el bloque metido dentro del larguero. La longitud
+        /// comercial sigue existiendo, pero solo para calcular la subida nominal de 7/16" por pie.
+        /// </summary>
         [Fact]
-        public void Bed_IsPushback_FullSpan_NoBrakes()
+        public void Bed_IsPushback_ContactToContact_NoBrakes()
         {
             var catalog = Catalog;
             var system = System(catalog);
@@ -239,8 +247,12 @@ namespace RackCad.Tests
             Assert.Contains(instances, i => i.Role == HeaderBlockRole.Roller);
             Assert.Contains(instances, i => i.Role == HeaderBlockRole.Stop);
             Assert.DoesNotContain(instances, i => i.Role == HeaderBlockRole.Brake);
+
             var rail = instances.First(i => i.Role == HeaderBlockRole.Rail);
-            Assert.Equal(system.TotalLength, rail.DynamicParameters[SelectiveRackDefaults.LengthParam], 3);
+            var axis = PushBackFlowBedGeometry.Resolve(system, catalog).First();
+            Assert.Equal(axis.Length, rail.DynamicParameters[SelectiveRackDefaults.LengthParam], 9);
+            Assert.True(axis.Length < system.TotalLength,
+                "la longitud geométrica tiene que ser MENOR que el tramo comercial: los contactos están dentro");
         }
     }
 }

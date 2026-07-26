@@ -42,6 +42,12 @@ namespace RackCad.Application.Systems
         public Point2D HighMate { get; }
 
         /// <summary>The rail's TROQUEL_IN local point (where the rail bolts onto the low IN/OUT beam).</summary>
+        /// <summary>
+        /// El <c>TROQUEL_IN</c> local del riel. Es un punto INTERNO del bloque, útil para el resto del montaje,
+        /// pero <b>no</b> es la autoridad de colocación: la cama se coloca por su ORIGEN
+        /// (owner-validation round 2, I-32). Usarlo como pivote dejaba geometría ANTES del contacto — todo lo que
+        /// hay entre el origen del bloque y este punto quedaba dentro del larguero.
+        /// </summary>
         public Point2D RailLocalMate { get; }
 
         public double Rise => HighMate.Y - ExitMate.Y;
@@ -50,17 +56,12 @@ namespace RackCad.Application.Systems
         public double AngleRadians => Math.Atan2(Rise, Run);
 
         /// <summary>World origin of the rail block after TROQUEL_IN is bolted to the low IN/OUT beam.</summary>
-        public Point2D RailOrigin
-        {
-            get
-            {
-                var cos = Math.Cos(AngleRadians);
-                var sin = Math.Sin(AngleRadians);
-                return new Point2D(
-                    ExitMate.X - RailLocalMate.X * cos + RailLocalMate.Y * sin,
-                    ExitMate.Y - RailLocalMate.X * sin - RailLocalMate.Y * cos);
-            }
-        }
+        /// <summary>
+        /// Dónde acaba el ORIGEN local del bloque de la cama: exactamente sobre el contacto físico del larguero
+        /// bajo. Antes se calculaba retrocediendo desde <see cref="RailLocalMate"/>, y ese retroceso era la
+        /// penetración (owner-validation round 2, I-32).
+        /// </summary>
+        public Point2D RailOrigin => ExitMate;
 
         /// <summary>Height of the rail ORIGIN line at a world X — the line every intermediate support is tangent to.</summary>
         public double RailOriginYAt(double worldX)

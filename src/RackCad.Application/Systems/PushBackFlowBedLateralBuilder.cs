@@ -42,15 +42,21 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// The local roller-bed assembly for one Push Back lane, at the tope's origin (before the lateral builder rotates
-        /// it onto the bed axis). Rail LONGITUD = the full structural span; <see cref="FlowBedType.Pushback"/> omits brakes.
+        /// El montaje local de rodillos de una calle Push Back, antes de que el builder lateral lo rote sobre el eje
+        /// de la cama. <see cref="FlowBedType.Pushback"/> omite frenos.
+        ///
+        /// <paramref name="geometricLength"/> es la LONGITUD del riel: la distancia entre los dos contactos físicos
+        /// (<see cref="PushBackFlowBedAxis.Length"/>). No es la longitud COMERCIAL — esa solo calcula la subida
+        /// nominal de 7/16" por pie y no interviene en el dibujo (owner-validation round 2, I-32). Sin ella se cae
+        /// al tramo comercial, que es el comportamiento histórico para quien aún no resuelve un eje.
         /// </summary>
         public IReadOnlyList<HeaderBlockInstance> BuildLocalAssembly(
             PushBackSystem system,
             RackCatalog catalog,
-            DynamicRackFront front = null)
+            DynamicRackFront front = null,
+            double? geometricLength = null)
         {
-            var laneDepth = ResolveBedLength(system, front);
+            var laneDepth = geometricLength ?? ResolveBedLength(system, front);
             if (laneDepth <= 0.0)
             {
                 return new List<HeaderBlockInstance>();
@@ -82,15 +88,20 @@ namespace RackCad.Application.Systems
                 return null;
             }
 
-            var localAssembly = BuildLocalAssembly(system, catalog, front);
+            // La cama se coloca por su ORIGEN sobre el contacto bajo, rotada hacia el contacto posterior, y su
+            // LONGITUD es la distancia entre los dos (owner-validation round 2, I-32). Antes el pivote era el
+            // TROQUEL_IN del riel: como ese punto está desplazado respecto del origen local, todo lo que había
+            // entre ambos quedaba ANTES del contacto, metido en el larguero. La longitud y el ángulo del eje son
+            // iguales en todos los niveles de una cama, así que una sola definición compartida sigue sirviendo.
+            var firstAxis = axes[0];
+            var localAssembly = BuildLocalAssembly(system, catalog, front, firstAxis.Length);
             if (localAssembly.Count == 0)
             {
                 return null;
             }
 
-            var firstAxis = axes[0];
             var definitionInstances = localAssembly
-                .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.AngleRadians, -firstAxis.ExitMate.Y))
+                .Select(instance => RigidClone(instance, BlockOrigin, firstAxis.ExitMate, firstAxis.AngleRadians, -firstAxis.ExitMate.Y))
                 .ToList();
             var levelPlacements = axes
                 .Select(axis => new HeaderPlacement(0.0, mirrored: false, insertionY: axis.ExitMate.Y))
@@ -99,6 +110,9 @@ namespace RackCad.Application.Systems
             var suffix = front == null ? string.Empty : " F" + (front.Index + 1);
             return new HeaderGroup("Cama push back" + suffix, definitionInstances, levelPlacements);
         }
+
+        /// <summary>El origen local del bloque de la cama: el punto que aterriza sobre el contacto del larguero.</summary>
+        private static readonly Point2D BlockOrigin = new Point2D(0.0, 0.0);
 
         private static HeaderBlockInstance RigidClone(
             HeaderBlockInstance source,
