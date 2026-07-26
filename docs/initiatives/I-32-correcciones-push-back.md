@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: validating
+status: implementing
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -185,53 +185,33 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
 - Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar.
 
-### Estado tras el round 2 — los dos defectos corregidos, sin pendiente funcional
+### Estado tras el round 3 — la regla de la cama vuelve al mate por `TROQUEL_IN`
 
-> **Correcciones acumuladas.** Esta seccion declaro primero que «no queda pendiente funcional» y autorizo
-> el round 2; el round 2 **se ejecuto y fue RECHAZADO**. Despues declaro el defecto 1 **bloqueado** por un
-> contrato de catalogo que se creia faltante; el Owner **corrigio esa interpretacion**: no faltaba ningun
-> contrato, el defecto estaba en el lado del ORIGEN y se resolvio con geometria existente. Las dos
-> afirmaciones quedan corregidas aqui en vez de retiradas.
+> **Correcciones acumuladas.** Esta seccion declaro sucesivamente que «no queda pendiente funcional»
+> (round 2 RECHAZADO), que el defecto de la cama estaba **bloqueado** por un contrato de catalogo faltante
+> (el Owner corrigio: no faltaba ninguno), y que la cama debia colocarse por su **origen** con
+> `LONGITUD = axis.Length` (round 3 RECHAZADO: esa regla era equivocada). Todas quedan corregidas aqui en
+> vez de retiradas.
 
-| # | Defecto del round 2 | Estado |
-|---|---|---|
-| 1 | La cama penetra fisicamente el larguero | **CORREGIDO** — se coloca por su ORIGEN |
-| 2 | Falta el protector lateral por default del ultimo poste | **CORREGIDO** |
+**Contrato fisico vigente de la cama:**
 
-**Defecto 1.** La cama se coloca por su **origen local `(0,0)`** sobre el contacto fisico del larguero, se
-rota hacia el contacto del otro, y su **`LONGITUD` geometrica** es la distancia euclidiana entre los dos.
-`TROQUEL_IN` sigue siendo un punto interno del bloque pero ya no es la autoridad de colocacion: usarlo
-como pivote dejaba geometria antes del contacto. **No se agrego ninguna fila al catalogo.** La longitud
-**comercial** se queda calculando solo la subida nominal de 7/16" por pie —y alimentando el BOM, donde es
-opaca—, asi que los dos largueros siguen en sus troqueles y la pendiente sigue siendo la resultante.
+1. mate obligatorio de Entrada/Salida: `LARGUERO_IN_OUT.TROQUEL_CAMA` con
+   `RIEL_DE_CINTA_CALIBRE_12.TROQUEL_IN`;
+2. la cama se coloca transformando su `TROQUEL_IN` local hasta `ExitMate`;
+3. **`LONGITUD` = el fondo estructural completo** (`ResolveBedLength`). **Hay una sola longitud de cama**:
+   dibuja el riel, alimenta el BOM y mide la subida nominal.
 
-**Defecto 2.** En la regla adaptativa, `Right` es **orientacion** y no extremo: el ultimo poste conserva
-su protector, espejado, en vez de desaparecer en un sistema de extremo bajo.
+Es **esperado** que haya riel antes de `TROQUEL_IN` y que sobresalga del larguero posterior. No es
+penetracion y no se recorta.
 
-El detalle, las mediciones y los efectos sobre los goldens estan en
-[`decisions/I-32.md`](../automation/decisions/I-32.md).
+**Conservado sin cambios:** `PushBackElevations`, los contactos, las elevaciones, la pendiente, los
+troqueles, los intermedios, el tope posterior — y la correccion del **protector lateral** (primer poste
+delante sin espejo, ultimo delante espejado).
 
-### No queda pendiente funcional
+El detalle esta en [`decisions/I-32.md`](../automation/decisions/I-32.md).
 
-**Todo el alcance funcional de esta iniciativa esta implementado y cubierto por pruebas.** Los diez
-hallazgos autorizados estan corregidos, cada uno con su regresion observada fallando sin el fix; el
-override opt-in de elevaciones esta completo en sus cuatro ambitos —frente, poste, proyeccion y
-envolvente—; y los dos defectos del round 2 estan cerrados.
-
-No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
-trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
-
-### Owner-validation round 3 — AUTORIZADO
-
-La revision tecnica aprobo el codigo en **`924de1a5b1253fc56b7914167d8b1025600d7b7c`**, sobre el HEAD
-revisado **`ba80a11721c5b5180ccc3e6f2ad094a5027f6ec8`** con CI **30220809064** verde en sus cuatro jobs.
-
-Con esa aprobacion el gate **`owner-validation` queda abierto para un round 3** sobre los 21 puntos
-obligatorios de §10, mas el smoke complementario de los cuatro hallazgos no implementados.
-
-Los **rounds 1 y 2 quedaron RECHAZADOS** y sus defectos estan corregidos. Los DLL que se validaron
-entonces —`2210e67` y `557858d`— siguen **OBSOLETOS** y **no deben reutilizarse**. El round 3 exige un
-**DLL canonico nuevo**, compilado con **AutoCAD cerrado** desde la punta publicada de esta corrida.
+**Owner-validation:** rounds 1, 2 y 3 **RECHAZADOS**. **No hay round 4 abierto.** Los tres DLL validados
+—`2210e67`, `557858d` y `2641830`— quedan **obsoletos** y no deben reutilizarse.
 
 ## 12. Condiciones para detenerse
 
