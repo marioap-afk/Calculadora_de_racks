@@ -64,12 +64,16 @@ namespace RackCad.Application.Systems
                 return selection.SideForPost(postIndex);
             }
 
-            // PB-009 (I-32): with no explicit side the rule is ADAPTIVE — it puts a guard on the far face of the last
-            // post. A low-end-only system (Push Back) has no far face to guard, so that branch resolves to nothing
-            // there; otherwise the historical behaviour is untouched.
+            // Regla ADAPTATIVA: protector en los DOS postes de los extremos y en ninguno interior.
+            //
+            // Owner-validation round 2 (I-32): aquí Left/Right es ORIENTACIÓN, no extremo longitudinal. La versión
+            // anterior leía el Right del último poste como «extremo posterior» y, en un sistema de extremo bajo,
+            // lo borraba — con lo que un Push Back nuevo perdía el protector del último poste. Un rack SIEMPRE
+            // lleva los dos: el primero sin espejo y el último espejado, porque protegen caras opuestas del
+            // pasillo. Dónde acaba cada copia lo decide <see cref="CopiesAt"/>, que es quien conoce los extremos.
             if (postCount <= 1)
             {
-                return selection.LowEndOnly ? SafetySide.Left : SafetySide.Both;
+                return SafetySide.Both;   // un solo poste es el primero y el último a la vez
             }
 
             if (postIndex == 0)
@@ -79,7 +83,7 @@ namespace RackCad.Application.Systems
 
             if (postIndex == postCount - 1)
             {
-                return selection.LowEndOnly ? SafetySide.None : SafetySide.Right;
+                return SafetySide.Right;
             }
 
             return SafetySide.None;
@@ -94,8 +98,10 @@ namespace RackCad.Application.Systems
         /// bajo, lleva la pieza delante. Antes el lado se traducía directamente a un extremo, y un <c>Right</c> en
         /// Push Back acababa dibujado ATRÁS, donde no hay pasillo que proteger.</para>
         ///
-        /// <para>La regla ADAPTATIVA (sin elección) queda intacta: ahí Left/Right nombran una posición y no una
-        /// orientación, y <see cref="SideAt"/> ya contempla el extremo bajo.</para>
+        /// <para>La regla ADAPTATIVA (sin elección) emite las copias DIRECTAMENTE, sin pasar por un
+        /// <see cref="SafetySide"/> intermedio que volvería a mezclar los dos ejes: el primer poste lleva una copia
+        /// sin espejo y el último una espejada, y en un sistema de extremo bajo las dos van DELANTE. El último
+        /// protector no desaparece por ser de extremo bajo — cambia de orientación, no de extremo.</para>
         /// </summary>
         public static IReadOnlyList<SafetyEndCopy> CopiesAt(
             SelectiveSafetySelection selection, int postIndex, int postCount)
@@ -110,21 +116,30 @@ namespace RackCad.Application.Systems
                 return SelectiveSafetyEnds.CopiesForPost(selection, postIndex);
             }
 
-            switch (SideAt(selection, postIndex, postCount))
+            // El extremo ALTO solo existe donde el sistema lo tiene. Con la marca de extremo bajo, la copia
+            // espejada se queda delante en vez de desaparecer.
+            var atFarEnd = !selection.LowEndOnly;
+
+            if (postCount <= 1)
             {
-                case SafetySide.Left:
-                    return new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
-                case SafetySide.Right:
-                    return new[] { new SafetyEndCopy(atHighEnd: true, mirrored: true) };
-                case SafetySide.Both:
-                    return new[]
-                    {
-                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
-                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
-                    };
-                default:
-                    return new SafetyEndCopy[0];
+                return new[]
+                {
+                    new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                    new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true),
+                };
             }
+
+            if (postIndex == 0)
+            {
+                return new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
+            }
+
+            if (postIndex == postCount - 1)
+            {
+                return new[] { new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true) };
+            }
+
+            return new SafetyEndCopy[0];
         }
 
         /// <summary>La copia que le toca a un extremo, o null si ese extremo no lleva protector en ese poste.</summary>

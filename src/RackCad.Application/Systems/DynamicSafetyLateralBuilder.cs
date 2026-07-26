@@ -41,16 +41,19 @@ namespace RackCad.Application.Systems
             var right = Endpoint(frameInstances, catalog, sectionEnd);
             var laterales = SelectiveSafetyPlacement.EnabledOfType(
                 system.SafetySelections, catalog, View, SelectiveSafetyPlacement.LateralType, allowEmptySide: true);
-            var lateralSide = laterales.Count > 0
-                ? DynamicLateralGuardPlan.SideAt(
+            // El protector lateral trae sus copias FÍSICAS: cada una con su extremo y su orientación resueltos por
+            // separado. Traducirlo a un SafetySide y leerlo literal aquí volvía a mezclar los dos ejes y mandaba
+            // atrás la copia del último poste (I-32, round 2).
+            var guardCopies = laterales.Count > 0
+                ? DynamicLateralGuardPlan.CopiesAt(
                     laterales[0].Selection, postIndex, Math.Max(1, system.Fronts.Count + 1))
-                : SafetySide.None;
+                : (IReadOnlyList<SafetyEndCopy>)new SafetyEndCopy[0];
 
-            if (lateralSide != SafetySide.None)
+            if (guardCopies.Count > 0)
             {
                 AppendEndpointFamily(
                     result, laterales, left.PlateOrigin, right.PlateOrigin,
-                    sectionEnd - sectionStart, postIndex, lateralSide);
+                    sectionEnd - sectionStart, postIndex, guardCopies);
             }
             else
             {
@@ -167,30 +170,16 @@ namespace RackCad.Application.Systems
             Point2D right,
             double? longitud,
             int postIndex,
-            SafetySide? sideOverride = null)
+            IReadOnlyList<SafetyEndCopy> copiesOverride = null)
         {
             foreach (var element in elements ?? Array.Empty<SelectiveSafetyPlacement.SafetyElement>())
             {
                 // El CORTE LATERAL elige el extremo FÍSICO de la línea del poste. Cada copia trae SU extremo y SU
-                // orientación por separado: en un sistema de extremo bajo, una eleccion Right se dibuja abajo pero
-                // espejada en su propio sitio, nunca atras.
-                if (sideOverride.HasValue)
-                {
-                    var forced = sideOverride.Value;
-                    if (forced == SafetySide.Left || forced == SafetySide.Both)
-                    {
-                        target.Add(Piece(element.PieceId, element.Block, left, mirrored: false, longitud));
-                    }
-
-                    if (forced == SafetySide.Right || forced == SafetySide.Both)
-                    {
-                        target.Add(Piece(element.PieceId, element.Block, right, mirrored: true, longitud));
-                    }
-
-                    continue;
-                }
-
-                foreach (var copy in SelectiveSafetyEnds.CopiesForPost(element.Selection, postIndex))
+                // orientación por separado: en un sistema de extremo bajo, una elección Right se dibuja delante,
+                // espejada en su propio sitio, nunca atrás. El llamador puede traer sus propias copias —el
+                // protector lateral las resuelve con su regla adaptativa— y si no, se leen de la matriz por poste.
+                var copies = copiesOverride ?? SelectiveSafetyEnds.CopiesForPost(element.Selection, postIndex);
+                foreach (var copy in copies)
                 {
                     target.Add(Piece(
                         element.PieceId, element.Block,

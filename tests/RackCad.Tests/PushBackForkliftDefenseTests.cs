@@ -178,19 +178,40 @@ namespace RackCad.Tests
                 "a mirrored (far-end) defence was drawn in the planta"));
         }
 
-        /// <summary>The other half of PB-009: the ADAPTIVE lateral guard stops claiming the last post's far face.</summary>
+        /// <summary>
+        /// La otra mitad de PB-009, CORREGIDA en el round 2 de owner-validation.
+        ///
+        /// Esta prueba fijaba que el protector adaptativo del ÚLTIMO poste desapareciera en un sistema de extremo
+        /// bajo — y eso era justamente el defecto. Interpretaba el <c>Right</c> de la regla adaptativa como
+        /// «extremo posterior» cuando ahí significa <b>orientación</b>. Un rack lleva SIEMPRE los protectores de
+        /// sus dos postes extremos; en Push Back los dos van delante y lo que distingue al último es el espejo.
+        ///
+        /// Lo que sí sigue restringido al extremo bajo es la DEFENSA de montacargas, el otro elemento de PB-009,
+        /// que comprueban las pruebas de arriba y que no cambia.
+        /// </summary>
         [Fact]
-        public void LowEndOnly_KeepsTheAdaptiveLateralGuardOffTheFarFace()
+        public void LowEndOnly_KeepsTheAdaptiveLateralGuard_MirroredInsteadOfGone()
         {
             var lowEnd = new SelectiveSafetySelection { ElementId = "X", Side = SafetySide.None, LowEndOnly = true };
             var ordinary = new SelectiveSafetySelection { ElementId = "X", Side = SafetySide.None };
 
-            Assert.Equal(SafetySide.None, DynamicLateralGuardPlan.SideAt(lowEnd, 2, 3));
+            // El último poste conserva su protector: ese Right es su ORIENTACIÓN, no un extremo.
+            Assert.Equal(SafetySide.Right, DynamicLateralGuardPlan.SideAt(lowEnd, 2, 3));
             Assert.Equal(SafetySide.Left, DynamicLateralGuardPlan.SideAt(lowEnd, 0, 3));
+            Assert.Equal(SafetySide.None, DynamicLateralGuardPlan.SideAt(lowEnd, 1, 3));
 
-            // The dynamic system keeps its own adaptive rule.
+            // El EXTREMO lo deciden las copias físicas: en un sistema de extremo bajo, la del último se queda
+            // delante y solo cambia de cara.
+            var lastLowEnd = Assert.Single(DynamicLateralGuardPlan.CopiesAt(lowEnd, 2, 3));
+            Assert.False(lastLowEnd.AtHighEnd);
+            Assert.True(lastLowEnd.Mirrored);
+
+            // The dynamic system keeps its own adaptive rule, far face included.
             Assert.Equal(SafetySide.Right, DynamicLateralGuardPlan.SideAt(ordinary, 2, 3));
             Assert.Equal(SafetySide.Left, DynamicLateralGuardPlan.SideAt(ordinary, 0, 3));
+            var lastOrdinary = Assert.Single(DynamicLateralGuardPlan.CopiesAt(ordinary, 2, 3));
+            Assert.True(lastOrdinary.AtHighEnd);
+            Assert.True(lastOrdinary.Mirrored);
         }
 
         // ---- Isolation: the dynamic system is untouched ----
