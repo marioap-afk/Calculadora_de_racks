@@ -169,16 +169,32 @@ namespace RackCad.Application.Systems
         {
             foreach (var element in elements ?? Array.Empty<SelectiveSafetyPlacement.SafetyElement>())
             {
-                // El CORTE LATERAL elige el extremo FÍSICO de la línea del poste: mismo eje que el frontal.
-                var side = sideOverride ?? SelectiveSafetyEnds.EndsForPost(element.Selection, postIndex);
-                if (side == SafetySide.Left || side == SafetySide.Both)
+                // El CORTE LATERAL elige el extremo FÍSICO de la línea del poste. Cada copia trae SU extremo y SU
+                // orientación por separado: en un sistema de extremo bajo, una eleccion Right se dibuja abajo pero
+                // espejada en su propio sitio, nunca atras.
+                if (sideOverride.HasValue)
                 {
-                    target.Add(Piece(element.PieceId, element.Block, left, mirrored: false, longitud));
+                    var forced = sideOverride.Value;
+                    if (forced == SafetySide.Left || forced == SafetySide.Both)
+                    {
+                        target.Add(Piece(element.PieceId, element.Block, left, mirrored: false, longitud));
+                    }
+
+                    if (forced == SafetySide.Right || forced == SafetySide.Both)
+                    {
+                        target.Add(Piece(element.PieceId, element.Block, right, mirrored: true, longitud));
+                    }
+
+                    continue;
                 }
 
-                if (side == SafetySide.Right || side == SafetySide.Both)
+                foreach (var copy in SelectiveSafetyEnds.CopiesForPost(element.Selection, postIndex))
                 {
-                    target.Add(Piece(element.PieceId, element.Block, right, mirrored: true, longitud));
+                    target.Add(Piece(
+                        element.PieceId, element.Block,
+                        copy.AtHighEnd ? right : left,
+                        mirrored: copy.Mirrored,
+                        longitud));
                 }
             }
         }

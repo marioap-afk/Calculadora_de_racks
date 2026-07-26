@@ -44,20 +44,32 @@ namespace RackCad.Application.Systems
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
-                var guard = guards.FirstOrDefault(element => DynamicLateralGuardPlan.DrawsAtEnd(
-                    element.Selection, postIndex, postCount: layout.PostPositions.Count, end: end));
-                if (guard != null)
+                // La ORIENTACIÓN la trae la COPIA, no el corte. En un sistema de extremo bajo las dos orientaciones
+                // caben en el mismo corte, así que deducirla del extremo las confundiría (I-32, round 1).
+                SafetyEndCopy? guardCopy = null;
+                var guard = guards.FirstOrDefault(element =>
+                {
+                    guardCopy = DynamicLateralGuardPlan.CopyAtEnd(
+                        element.Selection, postIndex, postCount: layout.PostPositions.Count, end: end);
+                    return guardCopy.HasValue;
+                });
+                if (guard != null && guardCopy.HasValue)
                 {
                     target.Add(Piece(guard.PieceId, guard.Block, view, at,
-                        mirroredX: end == DynamicRackEnd.Entrance, mirroredY: false, rangeEnd - rangeStart));
+                        mirroredX: guardCopy.Value.Mirrored, mirroredY: false, rangeEnd - rangeStart));
                     continue;
                 }
 
-                var boot = boots.FirstOrDefault(element => DrawsAtEnd(element.Selection, postIndex, end));
-                if (boot != null)
+                SafetyEndCopy? bootCopy = null;
+                var boot = boots.FirstOrDefault(element =>
+                {
+                    bootCopy = CopyAtEnd(element.Selection, postIndex, end);
+                    return bootCopy.HasValue;
+                });
+                if (boot != null && bootCopy.HasValue)
                 {
                     target.Add(Piece(boot.PieceId, boot.Block, view, at,
-                        mirroredX: end == DynamicRackEnd.Entrance, mirroredY: false, null));
+                        mirroredX: bootCopy.Value.Mirrored, mirroredY: false, null));
                 }
             }
 
@@ -436,14 +448,26 @@ namespace RackCad.Application.Systems
             }
         }
 
+        /// <summary>La copia de ese poste que va en ese corte, con su orientación — o null si no lleva ninguna.</summary>
+        private static SafetyEndCopy? CopyAtEnd(SelectiveSafetySelection selection, int postIndex, DynamicRackEnd end)
+        {
+            var highEnd = end == DynamicRackEnd.Entrance;
+            foreach (var copy in SelectiveSafetyEnds.CopiesForPost(selection, postIndex))
+            {
+                if (copy.AtHighEnd == highEnd)
+                {
+                    return copy;
+                }
+            }
+
+            return null;
+        }
+
         private static bool DrawsAtEnd(SelectiveSafetySelection selection, int postIndex, DynamicRackEnd end)
         {
-            // El FRONTAL elige el CORTE, es decir el extremo longitudinal: se lee por SelectiveSafetyEnds, que respeta
-            // la pertenencia por poste y lleva al extremo bajo los sistemas que solo tienen ese (Push Back).
-            var side = SelectiveSafetyEnds.EndsForPost(selection, postIndex);
-            return end == DynamicRackEnd.Exit
-                ? side == SafetySide.Left || side == SafetySide.Both
-                : side == SafetySide.Right || side == SafetySide.Both;
+            // El FRONTAL elige el CORTE, es decir el extremo longitudinal. Lo resuelve SelectiveSafetyEnds, que
+            // respeta la pertenencia por poste y lleva al extremo bajo los sistemas que solo tienen ese (Push Back).
+            return SelectiveSafetyEnds.DrawsAt(selection, postIndex, highEnd: end == DynamicRackEnd.Entrance);
         }
 
         private static int LoadLevelsAtPost(DynamicRackSystem system, int postIndex)
