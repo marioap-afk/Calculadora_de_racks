@@ -115,7 +115,8 @@ gates:
   ci:
     required: true
     note: >-
-      run-30182977449-lanzada-sobre-la-punta-de-codigo-de-esta-corrida-021178eec3d640e86b1cc1a1641f767a1ccc3495 ·
+      VERDE-run-30182977449-success-sobre-la-punta-de-CODIGO-021178eec3d640e86b1cc1a1641f767a1ccc3495 ·
+      VERDE-run-30183053354-success-sobre-la-punta-DOCUMENTAL-c3fa138462ae88731b9ef56937d9a48488be1c67 ·
       historico-run-30181543907-success-sobre-82876ec · run-30181396599-success-sobre-a8717e5 ·
       historico-run-30177133342-success-sobre-2210e67 · run-30175969327-success-sobre-4e3152a · run-30175762235-success-sobre-428c18a ·
       pendiente-solo-la-corrida-de-esta-punta-documental
