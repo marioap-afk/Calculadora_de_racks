@@ -170,12 +170,12 @@ namespace RackCad.Tests
             var fullSpan = PushBackFlowBedLateralBuilder.ResolveBedLength(system, front);
 
             Assert.All(axes, axis => Assert.True(
-                axis.Length < fullSpan - 1e-6,
-                $"la distancia entre contactos ({axis.Length:F4}) deberia ser MENOR que el fondo ({fullSpan:F4})"));
+                axis.RearContactAlongOrigin < fullSpan - 1e-6,
+                $"el contacto posterior ({axis.RearContactAlongOrigin:F4}) deberia caer ANTES del fondo ({fullSpan:F4})"));
 
             foreach (var rail in Rails(system, catalog, front))
             {
-                Assert.NotEqual(axes[0].Length, rail.DynamicParameters[SelectiveRackDefaults.LengthParam], 3);
+                Assert.NotEqual(axes[0].RearContactAlongOrigin, rail.DynamicParameters[SelectiveRackDefaults.LengthParam], 3);
             }
         }
 
@@ -203,13 +203,13 @@ namespace RackCad.Tests
             for (var i = 0; i < rails.Count; i++)
             {
                 var axis = axes[i];
-                var cos = Math.Cos(axis.AngleRadians);
-                var sin = Math.Sin(axis.AngleRadians);
+                var cos = Math.Cos(axis.RotationRadians);
+                var sin = Math.Sin(axis.RotationRadians);
                 var along = (rails[i].Insertion.X - axis.ExitMate.X) * cos + (rails[i].Insertion.Y - axis.ExitMate.Y) * sin;
                 Assert.True(along < 0.0, "el origen del riel debe quedar ANTES del contacto, no sobre el");
 
                 // Y ese retroceso es exactamente el mate local proyectado sobre el eje: ni mas ni menos.
-                Assert.Equal(-(localMate.X * 1.0), along, 6);
+                Assert.Equal(-localMate.X, along, 6);
             }
         }
 
@@ -233,9 +233,9 @@ namespace RackCad.Tests
                 var end = new Point2D(rails[i].Insertion.X + longitud * cos, rails[i].Insertion.Y + longitud * sin);
 
                 var axis = axes[i];
-                var endAlong = (end.X - axis.ExitMate.X) * cos + (end.Y - axis.ExitMate.Y) * sin;
-                Assert.True(endAlong > axis.Length,
-                    $"el riel deberia sobrepasar el contacto posterior: acaba en {endAlong:F4} y el contacto esta en {axis.Length:F4}");
+                var endAlong = (end.X - axis.RailOrigin.X) * cos + (end.Y - axis.RailOrigin.Y) * sin;
+                Assert.True(endAlong > axis.RearContactAlongOrigin,
+                    $"el riel deberia sobrepasar el contacto posterior: acaba en {endAlong:F4} y el contacto esta en {axis.RearContactAlongOrigin:F4}");
             }
         }
 
@@ -258,18 +258,18 @@ namespace RackCad.Tests
 
                 for (var i = 0; i < rails.Count; i++)
                 {
-                    var mate = InMateWorld(rails[i], localMate);
                     var cos = Math.Cos(rails[i].RotationRadians);
                     var sin = Math.Sin(rails[i].RotationRadians);
-                    var dx = axes[i].HighMate.X - mate.X;
-                    var dy = axes[i].HighMate.Y - mate.Y;
 
-                    // Distancia perpendicular a la recta del riel: cero.
+                    // La tangencia posterior se mide desde el ORIGEN del riel, NO desde su TROQUEL_IN. Las dos
+                    // rectas son paralelas pero distintas; esta prueba usaba la equivocada y por eso fijaba el
+                    // defecto (aclaracion final del Owner, I-32).
+                    var dx = axes[i].HighMate.X - rails[i].Insertion.X;
+                    var dy = axes[i].HighMate.Y - rails[i].Insertion.Y;
                     Assert.Equal(0.0, dx * -sin + dy * cos, 9);
 
-                    // Y el contacto queda DENTRO del riel, medido desde su origen.
-                    var fromOrigin = (axes[i].HighMate.X - rails[i].Insertion.X) * cos
-                        + (axes[i].HighMate.Y - rails[i].Insertion.Y) * sin;
+                    // Y el contacto queda DENTRO del riel, medido desde ese mismo origen.
+                    var fromOrigin = dx * cos + dy * sin;
                     Assert.InRange(fromOrigin, 0.0, rails[i].DynamicParameters[SelectiveRackDefaults.LengthParam]);
                 }
             }
@@ -323,7 +323,8 @@ namespace RackCad.Tests
 
             foreach (var axis in PushBackFlowBedGeometry.Resolve(system, catalog, front))
             {
-                Assert.Equal(cells[axis.LevelNumber].ResultingRise, axis.Rise, 9);
+                Assert.Equal(cells[axis.LevelNumber].RotationRadians, axis.RotationRadians, 12);
+                Assert.Equal(cells[axis.LevelNumber].ResultingSlope, axis.Slope, 12);
             }
         }
 

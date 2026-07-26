@@ -155,18 +155,31 @@ namespace RackCad.Tests
             // frontal-posterior, planta y bom quedan INTACTOS.
             // Anteriores: lateral/lateral-corte0 16D20B37..., frontal-entrada DAC83E0C...
             //
-            // Aclaracion FINAL del Owner (2026-07-26): la interpretacion del round 3 —colocar la cama por su ORIGEN
-            // con LONGITUD = axis.Length— fue RECHAZADA. La cama se atornilla por su TROQUEL_IN sobre el
-            // TROQUEL_CAMA del larguero de entrada/salida, y su LONGITUD es SIEMPRE el fondo estructural completo.
-            // Que sobre riel por delante del mate y que sobresalga por detras del larguero posterior es lo
-            // ESPERADO, no una penetracion.
-            // Estos dos pines vuelven EXACTAMENTE al valor que tenian antes de aquella interpretacion
-            // (A7040D72..., que aquel commit habia movido a 1914400C...), y esa coincidencia exacta es la
-            // comprobacion mas limpia de que la reversion es completa: la geometria lateral es byte-identica a la
-            // de antes. Los otros cuatro pines nunca se movieron.
-            ["lateral"] = "A7040D72BDCE3F541A4BB50D797900450EC8B1C029D3A8539B457B72725BFA91",
-            ["lateral-corte0"] = "A7040D72BDCE3F541A4BB50D797900450EC8B1C029D3A8539B457B72725BFA91",
-            ["frontal-entrada"] = "C124825D8C68C0E0FC894B260FD4CE9B26D870EBBF8C1DB36986F2684589FDB3",
+            // ACLARACION FINAL DEL OWNER (2026-07-26) — geometria ASIMETRICA de la cama. Se mueven TRES pines.
+            //
+            // Que cambio, y por que lo exige la regla:
+            //  1. La ROTACION del bloque de la cama. Antes se derivaba como atan2(HighMate - ExitMate), es decir
+            //     tratando los dos contactos como si estuvieran en la MISMA recta. No lo estan: ExitMate vive en la
+            //     linea de TROQUEL_IN y HighMate en la del ORIGEN, que son PARALELAS y estan separadas por 1.25".
+            //     Con la rotacion antigua el contacto posterior quedaba exactamente 1.25" fuera de su linea. Ahora
+            //     la rotacion se resuelve con Ex*sin(t) - Ey*cos(t) = m.Y, y el posterior cae sobre la linea del
+            //     origen. Eso mueve el riel, su tope, sus rodillos y los intermedios -> lateral y lateral-corte0.
+            //  2. La ELEVACION del larguero de entrada/salida. El criterio de seleccion del troquel dejo de ser
+            //     "ajustar la subida nominal" y pasa a ser "minimizar |tan(t) - 7/192| sobre la reticula de 2"".
+            //     En este escenario el frente 0 sube UN troquel: 10.6053 -> 12.6053 en el nivel 1 y 82.6053 ->
+            //     84.6053 en el nivel 2 (delta +2.0000", pendiente resultante 0.034398). El frente 1 no se mueve
+            //     (ya estaba en el optimo, pendiente 0.040668). Ese larguero se dibuja tambien en el corte bajo
+            //     -> frontal-entrada.
+            //
+            // Que NO se movio, y por que:
+            //  * frontal-posterior: el larguero posterior es el ANCLA y conserva su troquel resuelto.
+            //  * planta: no lleva elevaciones.
+            //  * bom: la LONGITUD de la cama sigue siendo el fondo estructural completo, y los conteos no cambian.
+            //
+            // Anteriores: lateral/lateral-corte0 A7040D72..., frontal-entrada C124825D...
+            ["lateral"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
+            ["lateral-corte0"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
+            ["frontal-entrada"] = "2B993BAA64C6157CB2C724CF2C3D0B172FEEFBA5BC9961F70F8317CD4986DADF",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
             // the plan, not from the rear beam's insertion (which is what kept it on the larguero troquel). Exactly the
@@ -181,6 +194,8 @@ namespace RackCad.Tests
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.
             ["bom"] = "057C6D2D30548D4F8FE65F1DA38678D0588792C2A65B43CD23CE4F8B7ECC59A3"
         };
+
+
 
         [Fact]
         public void Golden_AllSixSignatures_MatchTheFixedPins()

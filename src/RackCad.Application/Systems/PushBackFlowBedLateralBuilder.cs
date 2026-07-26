@@ -99,7 +99,7 @@ namespace RackCad.Application.Systems
 
             var firstAxis = axes[0];
             var definitionInstances = localAssembly
-                .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.AngleRadians, -firstAxis.ExitMate.Y))
+                .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.RotationRadians, -firstAxis.ExitMate.Y))
                 .ToList();
             var levelPlacements = axes
                 .Select(axis => new HeaderPlacement(0.0, mirrored: false, insertionY: axis.ExitMate.Y))

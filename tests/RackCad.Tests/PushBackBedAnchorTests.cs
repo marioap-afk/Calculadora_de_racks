@@ -110,34 +110,51 @@ namespace RackCad.Tests
 
         // ---- 2, 3 y 4: el bajo se DERIVA del posterior y luego se ajusta ----
 
+        /// <summary>
+        /// El larguero bajo se elige sobre la RETICULA, y el criterio es la PENDIENTE.
+        ///
+        /// Aclaracion final del Owner (I-32): antes esta prueba fijaba «derivar la subida nominal desde el contacto
+        /// posterior y ajustar al troquel». Ese criterio quedo sustituido por «elegir el troquel cuya rotacion
+        /// acerque mas la pendiente a 7/192». Lo que NO cambia, y se sigue comprobando aqui, es que el resultado es
+        /// siempre un troquel valido y que el posterior conserva el suyo.
+        /// </summary>
         [Theory]
         [MemberData(nameof(Spans))]
-        public void TheLowBeam_IsDerivedFromTheRearThroughTheNominalSlope_ThenSnapped(int palletsDeep)
+        public void TheLowBeam_IsChosenOnTheGrid_ByTheSlopeCriterion(int palletsDeep)
         {
             var catalog = Catalog;
             var system = System(catalog, palletsDeep);
             var front = system.Structure.Fronts[0];
-            var gridBase = GridBase(system, catalog);
-            var camaY = CamaLocalY(catalog);
+            var gridBase = PushBackTroquelGrid.Base(system.Structure, catalog);
+            var railMate = CatalogLookup.Local(
+                catalog, FlowBedDefaults.RailId, FlowBedDefaults.RailInOutMatePoint, FlowBedDefaults.View);
+            var lowMate = PushBackLoadBeamGeometry.BedTangencyPointLocal(catalog, DynamicRackDefaults.InOutBeamCatalogId);
+            Assert.True(lowMate.HasValue);
 
-            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
-            Assert.NotEmpty(axes);
+            var cells = PushBackElevations.Resolve(system, catalog, front);
+            Assert.NotEmpty(cells);
 
-            var low = PushBackLoadBeamGeometry.LowBeams(system, catalog, front).OrderBy(b => b.Insertion.Y).ToList();
-            var levels = DynamicFrontGeometry.LoadBeamLevels(system.Structure, front).OrderBy(l => l.LevelNumber).ToList();
-            Assert.Equal(levels.Count, low.Count);
-
-            for (var i = 0; i < levels.Count; i++)
+            foreach (var cell in cells.Values)
             {
-                var axis = axes.Single(a => a.LevelNumber == levels[i].LevelNumber);
-                // La subida NOMINAL se mide sobre la LONGITUD COMERCIAL de la cama —la pieza que se compra y se
-                // dibuja—, no sobre la distancia entre contactos.
-                var bedLength = PushBackFlowBedGeometry.ResolveBedLength(system, front);
-                var theoreticalLowContact = axis.HighMate.Y - PushBackBedSlope.Rise(bedLength);
-                var theoreticalInsertion = theoreticalLowContact - camaY;
-                var expected = PushBackTroquelGrid.Snap(theoreticalInsertion, gridBase);
+                // Troquel valido.
+                Assert.Equal(PushBackTroquelGrid.Snap(cell.LowInsertion, gridBase), cell.LowInsertion, 9);
 
-                Assert.Equal(expected, low[i].Insertion.Y, 9);
+                // Y ningun vecino de la reticula acerca mas la pendiente al objetivo.
+                var chosen = PushBackBedRotation.SlopeError(cell.RotationRadians);
+                foreach (var delta in new[] { -SelectiveRackDefaults.TroquelPaso, SelectiveRackDefaults.TroquelPaso })
+                {
+                    var exitMate = new Point2D(cell.LowContact.X, cell.LowInsertion + delta + lowMate.Value.Y);
+                    if (exitMate.Y >= cell.RearContact.Y)
+                    {
+                        continue;
+                    }
+
+                    var rotation = PushBackBedRotation.Solve(exitMate, cell.RearContact, railMate);
+                    if (rotation.HasValue)
+                    {
+                        Assert.True(PushBackBedRotation.SlopeError(rotation.Value) >= chosen - 1e-12);
+                    }
+                }
             }
         }
 
@@ -178,23 +195,22 @@ namespace RackCad.Tests
 
         [Theory]
         [MemberData(nameof(Spans))]
-        public void TheResultingSlope_IsWithinOneTroquelStepOfTheNominalTarget(int palletsDeep)
+        public void TheResultingSlope_IsCloseToTheTarget(int palletsDeep)
         {
             var catalog = Catalog;
             var system = System(catalog, palletsDeep);
             var front = system.Structure.Fronts[0];
 
-            var commercial = PushBackFlowBedGeometry.ResolveBedLength(system, front);
+            // Aclaración final del Owner (I-32): el criterio ya no es «la subida cae a menos de medio troquel del
+            // objetivo nominal» sino «la PENDIENTE es la mejor que permite la retícula frente a 7/192». Que ese
+            // mínimo sea global lo prueba PushBackBedAsymmetryTests recorriendo todos los candidatos.
             foreach (var axis in PushBackFlowBedGeometry.Resolve(system, catalog, front))
             {
-                var nominal = PushBackBedSlope.Rise(commercial);
-                var actual = axis.Rise;
-                // El ajuste al troquel puede desviar como mucho medio paso en cada sentido.
                 Assert.True(
-                    Math.Abs(actual - nominal) <= SelectiveRackDefaults.TroquelPaso / 2.0 + 1e-9,
+                    PushBackBedRotation.SlopeError(axis.RotationRadians) < 0.01,
                     FormattableString.Invariant(
-                        $"fondos={palletsDeep}: subida {actual:0.####}\" contra el objetivo nominal {nominal:0.####}\" (run {axis.Run:0.####}\")"));
-                Assert.True(actual > 0.0, "la cama tiene que seguir bajando hacia la salida");
+                        $"fondos={palletsDeep}: pendiente {axis.Slope:0.######} contra el objetivo {PushBackBedRotation.TargetSlope:0.######}"));
+                Assert.True(axis.Slope > 0.0, "la cama tiene que seguir bajando hacia la salida");
             }
         }
 
@@ -208,7 +224,7 @@ namespace RackCad.Tests
             var front = system.Structure.Fronts[0];
 
             var ratios = PushBackFlowBedGeometry.Resolve(system, catalog, front)
-                .Select(axis => Math.Round(axis.Rise / axis.Run, 9))
+                .Select(axis => Math.Round(axis.Slope, 9))
                 .Distinct()
                 .ToList();
 
@@ -265,9 +281,9 @@ namespace RackCad.Tests
                 if (Math.Abs(residual - 0.5) < 0.03)
                 {
                     found++;
-                    // En el punto medio el resultado sigue siendo un troquel válido, determinista y a menos de medio
-                    // paso del objetivo nominal — que es la garantía que el ajuste puede dar.
-                    Assert.True(Math.Abs(axis.Rise - PushBackBedSlope.Rise(bedLength)) <= SelectiveRackDefaults.TroquelPaso / 2.0 + 1e-9);
+                    // En el punto medio el resultado sigue siendo un troquel válido, determinista y con la mejor
+                    // pendiente que la retícula permite — que es la garantía que la selección puede dar.
+                    Assert.True(PushBackBedRotation.SlopeError(axis.RotationRadians) < 0.01);
                     Assert.True(OnGrid(low[0].Insertion.Y, gridBase));
                 }
             }

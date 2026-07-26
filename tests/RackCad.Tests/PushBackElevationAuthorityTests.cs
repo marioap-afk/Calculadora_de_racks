@@ -41,72 +41,80 @@ namespace RackCad.Tests
                 }
             });
 
-        // ---- (1) La subida nominal se mide sobre la LONGITUD COMERCIAL ----
+        // ---- (1) La seleccion del troquel bajo minimiza el error de PENDIENTE ----
 
+        /// <summary>
+        /// Aclaracion final del Owner (I-32): el criterio de seleccion ya NO es «ajustar la subida nominal medida
+        /// sobre la longitud comercial», sino <b>minimizar el error de pendiente contra 7/192</b> sobre la reticula
+        /// de 2". La longitud comercial sigue siendo la del riel dibujado y la del BOM, pero no elige el troquel.
+        /// </summary>
         [Theory]
         [MemberData(nameof(Fondos))]
-        public void TheNominalRise_IsMeasuredOverTheCommercialBedLength(int palletsDeep)
+        public void TheChosenTroquel_MinimisesTheSlopeErrorAgainstTheTarget(int palletsDeep)
         {
             var catalog = Catalog;
             var system = System(catalog, palletsDeep);
             var front = system.Structure.Fronts[0];
-            var gridBase = PushBackTroquelGrid.Base(system.Structure, catalog);
+            var railMate = CatalogLookup.Local(
+                catalog, FlowBedDefaults.RailId, FlowBedDefaults.RailInOutMatePoint, FlowBedDefaults.View);
             var lowMate = PushBackLoadBeamGeometry.BedTangencyPointLocal(catalog, DynamicRackDefaults.InOutBeamCatalogId);
             Assert.True(lowMate.HasValue);
 
-            var commercial = PushBackFlowBedGeometry.ResolveBedLength(system, front);
-            var nominalRise = PushBackBedSlope.Rise(commercial);
-
             foreach (var cell in PushBackElevations.Resolve(system, catalog, front).Values)
             {
-                var expected = PushBackTroquelGrid.Snap(cell.RearContact.Y - nominalRise - lowMate.Value.Y, gridBase);
-                Assert.Equal(expected, cell.LowInsertion, 9);
+                var chosen = PushBackBedRotation.SlopeError(cell.RotationRadians);
+                foreach (var delta in new[] { -4.0, -2.0, 2.0, 4.0 })
+                {
+                    var exitMate = new Point2D(cell.LowContact.X, cell.LowInsertion + delta + lowMate.Value.Y);
+                    if (exitMate.Y >= cell.RearContact.Y)
+                    {
+                        continue;
+                    }
+
+                    var rotation = PushBackBedRotation.Solve(exitMate, cell.RearContact, railMate);
+                    if (rotation.HasValue)
+                    {
+                        Assert.True(PushBackBedRotation.SlopeError(rotation.Value) >= chosen - 1e-12);
+                    }
+                }
             }
         }
 
         /// <summary>
-        /// Las dos formulas —longitud comercial contra distancia entre contactos— no son intercambiables: existe al
-        /// menos un rack donde eligen TROQUELES distintos. El barrido lo busca en vez de fijar un numero magico.
+        /// El criterio NUEVO y el ANTIGUO no son el mismo: hay racks en los que eligen troqueles distintos. Si
+        /// coincidieran siempre, el cambio de regla no habria hecho falta.
         /// </summary>
         [Fact]
-        public void TheTwoFormulas_ChooseDifferentTroqueles_ForAtLeastOneRack()
+        public void TheNewCriterion_ChoosesADifferentTroquelThanTheOldNominalSnap_ForAtLeastOneRack()
         {
             var catalog = Catalog;
-            var gridBase0 = 0.0;
-            var found = 0;
+            var differences = 0;
 
             for (var deep = 2; deep <= 8; deep++)
             {
-                for (var depth = 40.0; depth <= 56.0; depth += 0.5)
+                var system = System(catalog, deep);
+                var front = system.Structure.Fronts[0];
+                var gridBase = PushBackTroquelGrid.Base(system.Structure, catalog);
+                var lowMate = PushBackLoadBeamGeometry.BedTangencyPointLocal(catalog, DynamicRackDefaults.InOutBeamCatalogId);
+                if (!lowMate.HasValue)
                 {
-                    var system = System(catalog, deep, depth);
-                    var front = system.Structure.Fronts[0];
-                    var gridBase = PushBackTroquelGrid.Base(system.Structure, catalog);
-                    gridBase0 = gridBase;
-                    var lowMate = PushBackLoadBeamGeometry.BedTangencyPointLocal(catalog, DynamicRackDefaults.InOutBeamCatalogId);
-                    if (!lowMate.HasValue) continue;
+                    continue;
+                }
 
-                    var commercial = PushBackFlowBedGeometry.ResolveBedLength(system, front);
-                    foreach (var cell in PushBackElevations.Resolve(system, catalog, front).Values)
+                var nominalRise = PushBackBedSlope.Rise(PushBackFlowBedGeometry.ResolveBedLength(system, front));
+                foreach (var cell in PushBackElevations.Resolve(system, catalog, front).Values)
+                {
+                    var legacy = PushBackTroquelGrid.Snap(
+                        cell.RearContact.Y - nominalRise - lowMate.Value.Y, gridBase);
+                    if (Math.Abs(legacy - cell.LowInsertion) > 1e-9)
                     {
-                        var run = cell.RearContact.X - cell.LowContact.X;
-                        var byCommercial = PushBackTroquelGrid.Snap(
-                            cell.RearContact.Y - PushBackBedSlope.Rise(commercial) - lowMate.Value.Y, gridBase);
-                        var byRun = PushBackTroquelGrid.Snap(
-                            cell.RearContact.Y - PushBackBedSlope.Rise(run) - lowMate.Value.Y, gridBase);
-
-                        if (Math.Abs(byCommercial - byRun) > 1e-9)
-                        {
-                            found++;
-                            // Y la vigente es la comercial.
-                            Assert.Equal(byCommercial, cell.LowInsertion, 9);
-                        }
+                        differences++;
                     }
                 }
             }
 
-            Assert.True(gridBase0 != 0.0 || found >= 0);
-            Assert.True(found > 0, "el barrido no encontro ningun rack donde las dos formulas eligieran troqueles distintos");
+            Assert.True(differences > 0,
+                "los dos criterios eligieron siempre el mismo troquel: el barrido no demuestra que la regla cambio");
         }
 
         // ---- (2) El contacto posterior lo elige la geometria: bloque normal y espejado ----

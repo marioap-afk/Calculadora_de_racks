@@ -21,12 +21,14 @@ namespace RackCad.Application.Systems
     /// </summary>
     public readonly struct PushBackFlowBedAxis
     {
-        public PushBackFlowBedAxis(int levelNumber, Point2D exitMate, Point2D highMate, Point2D railLocalMate)
+        public PushBackFlowBedAxis(
+            int levelNumber, Point2D exitMate, Point2D highMate, Point2D railLocalMate, double rotationRadians)
         {
             LevelNumber = levelNumber;
             ExitMate = exitMate;
             HighMate = highMate;
             RailLocalMate = railLocalMate;
+            RotationRadians = rotationRadians;
         }
 
         public int LevelNumber { get; }
@@ -56,10 +58,29 @@ namespace RackCad.Application.Systems
         /// </summary>
         public Point2D RailLocalMate { get; }
 
-        public double Rise => HighMate.Y - ExitMate.Y;
-        public double Run => HighMate.X - ExitMate.X;
-        public double Length => Math.Sqrt(Run * Run + Rise * Rise);
-        public double AngleRadians => Math.Atan2(Rise, Run);
+        /// <summary>
+        /// La ROTACIÓN del bloque completo de la cama, entregada explícitamente por
+        /// <see cref="PushBackElevations"/>. Todo el bloque —riel, tope, rodillos— y los intermedios comparten esta
+        /// única rotación.
+        ///
+        /// <b>No se deriva de los dos contactos.</b> <see cref="ExitMate"/> vive en la línea de
+        /// <see cref="RailLocalMate"/> y <see cref="HighMate"/> en la del ORIGEN: son rectas PARALELAS distintas, y
+        /// tratarlas como una sola dejaba el contacto posterior fuera de su línea por la separación entre ambas
+        /// (aclaración final del Owner, I-32).
+        /// </summary>
+        public double RotationRadians { get; }
+
+        /// <summary>La pendiente resultante: <c>tan(θ)</c>. Es la que se compara con el objetivo de 7/192.</summary>
+        public double Slope => Math.Tan(RotationRadians);
+
+        /// <summary>
+        /// Distancia, a lo largo de la línea del ORIGEN, desde <see cref="RailOrigin"/> hasta el contacto posterior.
+        /// Es cuánto riel hay hasta ese contacto — <b>no</b> la longitud del riel, que es el fondo estructural
+        /// completo y por eso sobresale por detrás.
+        /// </summary>
+        public double RearContactAlongOrigin
+            => (HighMate.X - RailOrigin.X) * Math.Cos(RotationRadians)
+                + (HighMate.Y - RailOrigin.Y) * Math.Sin(RotationRadians);
 
         /// <summary>
         /// Dónde acaba el ORIGEN del bloque del riel una vez su <see cref="RailLocalMate"/> queda atornillado sobre
@@ -68,23 +89,14 @@ namespace RackCad.Application.Systems
         ///
         /// Es la línea a la que son tangentes los soportes intermedios, que por eso siguen correctos sin tocarlos.
         /// </summary>
-        public Point2D RailOrigin
-        {
-            get
-            {
-                var cos = Math.Cos(AngleRadians);
-                var sin = Math.Sin(AngleRadians);
-                return new Point2D(
-                    ExitMate.X - RailLocalMate.X * cos + RailLocalMate.Y * sin,
-                    ExitMate.Y - RailLocalMate.X * sin - RailLocalMate.Y * cos);
-            }
-        }
+        public Point2D RailOrigin => PushBackBedRotation.OriginFor(ExitMate, RailLocalMate, RotationRadians);
 
-        /// <summary>Height of the rail ORIGIN line at a world X — the line every intermediate support is tangent to.</summary>
+        /// <summary>
+        /// Altura de la línea del ORIGEN en una X de mundo — la recta a la que son tangentes los intermedios Y el
+        /// larguero posterior. Usa la pendiente de la ROTACIÓN, no el desnivel entre contactos.
+        /// </summary>
         public double RailOriginYAt(double worldX)
-            => Math.Abs(Run) < 1e-9
-                ? RailOrigin.Y
-                : RailOrigin.Y + (worldX - RailOrigin.X) * Rise / Run;
+            => RailOrigin.Y + (worldX - RailOrigin.X) * Slope;
     }
 
     /// <summary>
@@ -118,7 +130,8 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                result.Add(new PushBackFlowBedAxis(cell.LevelNumber, cell.LowContact, cell.RearContact, railLocalMate));
+                result.Add(new PushBackFlowBedAxis(
+                    cell.LevelNumber, cell.LowContact, cell.RearContact, railLocalMate, cell.RotationRadians));
             }
 
             return result;

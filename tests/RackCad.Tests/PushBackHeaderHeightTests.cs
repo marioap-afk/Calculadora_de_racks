@@ -77,12 +77,16 @@ namespace RackCad.Tests
             var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
             Assert.NotEmpty(axes);
 
+            // La subida de la cama entre sus dos CONTACTOS: no es la pendiente del bloque —los contactos viven en
+            // rectas paralelas distintas— pero sigue siendo el desnivel que la cabecera no debe sumar dos veces.
+            var mateDelta = axes[0].HighMate.Y - axes[0].ExitMate.Y;
+
             Assert.Equal(first.EntranceElevation - first.ExitElevation, result.Slope, 9);
-            Assert.NotEqual(axes[0].Rise, result.Slope, 3);
+            Assert.NotEqual(mateDelta, result.Slope, 3);
 
             // The theoretical height carries the slope exactly ONCE, through the top entrance elevation: adding the
             // bed rise on top is a strictly different number, and that number must never be what the calculator returns.
-            Assert.NotEqual(result.TheoreticalHeight + axes[0].Rise, result.TheoreticalHeight, 6);
+            Assert.NotEqual(result.TheoreticalHeight + mateDelta, result.TheoreticalHeight, 6);
             Assert.Equal(result.HeaderHeight, DynamicHeaderHeightCalculator.CalculateResolved(front).HeaderHeight, 9);
         }
 

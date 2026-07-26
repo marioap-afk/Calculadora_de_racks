@@ -10,13 +10,16 @@ namespace RackCad.Application.Systems
     /// <summary>Las dos elevaciones resueltas de una celda Push Back, con sus contactos físicos.</summary>
     public readonly struct PushBackCellElevation
     {
-        public PushBackCellElevation(int levelNumber, double lowInsertion, double rearInsertion, Point2D lowContact, Point2D rearContact)
+        public PushBackCellElevation(
+            int levelNumber, double lowInsertion, double rearInsertion,
+            Point2D lowContact, Point2D rearContact, double rotationRadians)
         {
             LevelNumber = levelNumber;
             LowInsertion = lowInsertion;
             RearInsertion = rearInsertion;
             LowContact = lowContact;
             RearContact = rearContact;
+            RotationRadians = rotationRadians;
         }
 
         public int LevelNumber { get; }
@@ -33,8 +36,23 @@ namespace RackCad.Application.Systems
         /// <summary>Contacto físico del larguero posterior: la arista que la geometría elige, no un lado fijo.</summary>
         public Point2D RearContact { get; }
 
-        /// <summary>Subida REAL de la cama de esta celda, la que sale del ajuste al troquel.</summary>
-        public double ResultingRise => RearContact.Y - LowContact.Y;
+        /// <summary>
+        /// La ROTACIÓN del bloque completo de la cama, resuelta por <see cref="PushBackBedRotation"/> para que el
+        /// contacto posterior caiga sobre la línea del ORIGEN mientras el <c>TROQUEL_IN</c> se mantiene sobre el
+        /// contacto bajo. Es el dato explícito que la autoridad entrega; nadie debe volver a derivarla de los dos
+        /// contactos, porque no pertenecen a la misma recta.
+        /// </summary>
+        public double RotationRadians { get; }
+
+        /// <summary>La PENDIENTE resultante de esa rotación: la que se compara con el objetivo de 7/192.</summary>
+        public double ResultingSlope => Math.Tan(RotationRadians);
+
+        /// <summary>
+        /// Diferencia de elevación entre los dos CONTACTOS. Es una magnitud real, pero <b>no</b> es la subida de la
+        /// cama: los dos contactos viven en rectas paralelas distintas, separadas por el mate local. Para la
+        /// pendiente, <see cref="ResultingSlope"/>.
+        /// </summary>
+        public double MateElevationDelta => RearContact.Y - LowContact.Y;
     }
 
     /// <summary>
@@ -89,14 +107,9 @@ namespace RackCad.Application.Systems
                 ? PushBackDefaults.HighEndBeamCatalogId
                 : system.HighEndBeamCatalogId;
 
-            // La longitud COMERCIAL de la cama es la que fija la subida nominal.
-            var bedLength = PushBackFlowBedGeometry.ResolveBedLength(system, front);
-            if (bedLength <= 0.0)
-            {
-                return result;
-            }
-
-            var nominalRise = PushBackBedSlope.Rise(bedLength);
+            // El mate local del riel: su componente perpendicular es lo que separa las dos rectas paralelas.
+            var railLocalMate = CatalogLookup.Local(
+                catalog, FlowBedDefaults.RailId, FlowBedDefaults.RailInOutMatePoint, FlowBedDefaults.View);
             var gridBase = PushBackTroquelGrid.Base(structure, catalog);
             var placements = DynamicLoadBeamGeometry.Placements(structure, front);
 
@@ -126,14 +139,101 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var lowInsertion = PushBackTroquelGrid.Snap(rearContact.Value.Y - nominalRise - lowMate.Value.Y, gridBase);
+                var lowContactX = PushBackLoadBeamGeometry
+                    .BedTangencyPointWorld(lowMate.Value, low.X, 0.0, low.MirroredX).X;
+                var chosen = ChooseLowTroquel(
+                    rearContact.Value, lowContactX, lowMate.Value.Y, railLocalMate, gridBase);
+                if (!chosen.HasValue)
+                {
+                    continue;
+                }
+
+                var lowInsertion = chosen.Value.Insertion;
                 var lowContact = PushBackLoadBeamGeometry.BedTangencyPointWorld(
                     lowMate.Value, low.X, lowInsertion, low.MirroredX);
 
-                result[level] = new PushBackCellElevation(level, lowInsertion, rear.Y, lowContact, rearContact.Value);
+                result[level] = new PushBackCellElevation(
+                    level, lowInsertion, rear.Y, lowContact, rearContact.Value, chosen.Value.Rotation);
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Elige el troquel del larguero de ENTRADA/SALIDA (aclaración final del Owner, I-32).
+        ///
+        /// El larguero POSTERIOR es el ancla y no se mueve: conserva su troquel resuelto. Lo que se elige es la
+        /// posición del BAJO, y el criterio ya no es «ajustar una subida nominal» sino <b>minimizar el error de
+        /// PENDIENTE contra el objetivo de 7/192</b>, sobre las posiciones válidas de la retícula de 2".
+        ///
+        /// Se recorre TODO el rango físicamente válido —desde el primer troquel de la retícula hasta que la subida
+        /// se anula—, no una ventana alrededor de una estimación: así el mínimo es GLOBAL y no depende de dónde se
+        /// empiece a buscar. El error es monótono a cada lado del cruce con el objetivo, así que el barrido completo
+        /// encuentra el óptimo y no un mínimo local.
+        ///
+        /// <b>Desempate</b>, en este orden exacto:
+        /// <list type="number">
+        /// <item>menor error de pendiente;</item>
+        /// <item>a igualdad, el candidato más cercano a la posición teórica CONTINUA —la que daría exactamente
+        /// 7/192 si la retícula no existiera—;</item>
+        /// <item>a igualdad, el más cercano al resultado de la regla anterior (ajustar la subida nominal), para que
+        /// la decisión sea estable y no salte entre dos troqueles equivalentes;</item>
+        /// <item>a igualdad, el más bajo, que hace la elección determinista.</item>
+        /// </list>
+        /// </summary>
+        private static (double Insertion, double Rotation)? ChooseLowTroquel(
+            Point2D rearContact, double lowContactX, double lowMateLocalY, Point2D railLocalMate, double gridBase)
+        {
+            var pitch = SelectiveRackDefaults.TroquelPaso;
+            if (pitch <= 0.0)
+            {
+                return null;
+            }
+
+            // Referencias de desempate: la posición teórica continua y la que daba la regla anterior.
+            var theoretical = PushBackBedRotation.TheoreticalExitY(
+                rearContact.X, rearContact.Y, lowContactX, railLocalMate.Y) - lowMateLocalY;
+            var legacy = PushBackTroquelGrid.Snap(theoretical, gridBase);
+
+            (double Insertion, double Rotation)? best = null;
+            var bestError = double.MaxValue;
+            var bestToTheoretical = double.MaxValue;
+            var bestToLegacy = double.MaxValue;
+
+            for (var insertion = PushBackTroquelGrid.Snap(gridBase, gridBase); ; insertion += pitch)
+            {
+                var exitMate = new Point2D(lowContactX, insertion + lowMateLocalY);
+                if (exitMate.Y >= rearContact.Y)
+                {
+                    break;   // sin subida no hay cama
+                }
+
+                var rotation = PushBackBedRotation.Solve(exitMate, rearContact, railLocalMate);
+                if (!rotation.HasValue)
+                {
+                    continue;
+                }
+
+                var error = PushBackBedRotation.SlopeError(rotation.Value);
+                var toTheoretical = Math.Abs(insertion - theoretical);
+                var toLegacy = Math.Abs(insertion - legacy);
+
+                var better = error < bestError - 1e-12
+                    || (Math.Abs(error - bestError) <= 1e-12
+                        && (toTheoretical < bestToTheoretical - 1e-12
+                            || (Math.Abs(toTheoretical - bestToTheoretical) <= 1e-12
+                                && toLegacy < bestToLegacy - 1e-12)));
+
+                if (best == null || better)
+                {
+                    best = (insertion, rotation.Value);
+                    bestError = error;
+                    bestToTheoretical = toTheoretical;
+                    bestToLegacy = toLegacy;
+                }
+            }
+
+            return best;
         }
 
         /// <summary>

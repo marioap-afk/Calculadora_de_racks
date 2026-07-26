@@ -107,8 +107,8 @@ namespace RackCad.Tests
                 Assert.Equal(before[i].HighMate.Y, after[i].HighMate.Y, 12);
                 Assert.Equal(before[i].RailOrigin.X, after[i].RailOrigin.X, 12);
                 Assert.Equal(before[i].RailOrigin.Y, after[i].RailOrigin.Y, 12);
-                Assert.Equal(before[i].AngleRadians, after[i].AngleRadians, 12);
-                Assert.Equal(before[i].Length, after[i].Length, 12);
+                Assert.Equal(before[i].RotationRadians, after[i].RotationRadians, 12);
+                Assert.Equal(before[i].RearContactAlongOrigin, after[i].RearContactAlongOrigin, 12);
             }
 
             // The commercial bed length is the FULL span, with no 4" deduction.
@@ -124,7 +124,7 @@ namespace RackCad.Tests
             var front = system.Structure.Fronts[0];
 
             var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
-            var slopes = axes.Select(a => Math.Round(a.Rise / a.Run, 9)).Distinct().ToList();
+            var slopes = axes.Select(a => Math.Round(a.Slope, 9)).Distinct().ToList();
             Assert.Single(slopes);   // one lane slope for every level
 
             // Every drawn beam keeps its placement X: the correction never moves anything horizontally.
