@@ -4,12 +4,12 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: validating
-  gate: coordinator-review
-  attempts: 0
+  state: implementing
+  gate: changes-requested
+  attempts: 1
   next_action: >-
-    cerrar-autocad-para-compilar-el-dll-canonico-es-la-unica-condicion-que-falta-de-las-tres-que-fijo-i32-code-review-3-las-otras-dos-estan-cumplidas-diff-limitado-a-contrato-mas-state-y-ci-verde-de-la-nueva-punta-con-el-dll-construido-se-abre-owner-validation-y-el-owner-ejecuta-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-pb-001-007-011-014
-  last_evidence_commit: 428c18a
+    revision-del-coordinador-sobre-la-corrida-de-correccion-del-rechazo-round-1-owner-validation-vuelve-a-estar-CERRADO-y-no-se-genero-dll-canonico-si-la-revision-aprueba-se-preparara-un-round-2-de-validacion-manual-sobre-los-21-puntos-obligatorios-de-la-seccion-10
+  last_evidence_commit: a8717e5
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -27,7 +27,10 @@ evidence:
     a3f2555-pb005-pb006-tipo-de-tope-y-opciones-del-dialogo ·
     df6cae9-pb008-pb009-pb010-defensa-de-montacargas · 00491b0-docs-contrato-decisiones-estado-indice ·
     4ffea41-pb002-clave-por-poste-en-todas-las-vistas-mas-regresiones-de-reduccion-pb010-y-cabecera-pb004 ·
-    26642c9-estado-fija-el-sha-de-esa-corrida · 428c18a-pb010-el-dialogo-de-defensa-no-deduce-procedencia-comparando-numeros
+    26642c9-estado-fija-el-sha-de-esa-corrida · 428c18a-pb010-el-dialogo-de-defensa-no-deduce-procedencia-comparando-numeros ·
+    4e3152a-docs-checklist-21-puntos · 2210e67-docs-cabecera-y-flujo-como-puntos-independientes ·
+    e561d8f-round1-defecto-2-la-matriz-por-poste-de-botas-y-laterales-deja-de-borrarse ·
+    a8717e5-round1-defecto-1-el-posterior-es-el-ancla-y-el-de-entrada-salida-se-deriva-y-se-ajusta
   bugs_fixed: pb-002 pb-003 pb-004 pb-005 pb-006 pb-008 pb-009 pb-010 pb-012 pb-013
   bugs_deferred: >-
     pb-001-preview pb-007-reconfigurador-masivo-de-seguridad pb-011-editor-avanzado-de-modulos
@@ -37,17 +40,25 @@ evidence:
     corrida-2-sobre-00491b0-pb002-clave-por-poste-3-de-7-pb010-reduccion-3-de-5-pb004-cabecera-3-de-3-contra-una-doble-elevacion-simulada ·
     corrida-3-sobre-26642c9-pb010-dialogo-2-de-7-de-pushbackdefensadialogtests-la-prueba-afirma-en-el-mismo-metodo-que-el-helper-puro-dynamicforkliftdefenseplan-ya-resolvia-bien-el-registro-manual-lo-que-fallaba-era-lo-que-devolvia-el-dialogo-es-decir-el-defecto-era-de-la-ui ·
     el-resto-son-centinelas-verdes-antes-y-despues
-  tests: rackcad-tests-1252-de-1252-rackcad-ui-tests-360-de-360-debug-cero-fallos-cero-omitidas
+  tests: rackcad-tests-1298-de-1298-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
   targeted_filters: >-
     ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
   builds: >-
     ui-debug-0-errores-0-advertencias-plugin-debug-0-errores-2-msb3277-conocidas-compilado-a-carpeta-temporal-porque-autocad-estaba-abierto-trampa-de-agents-md
   goldens: >-
-    se-movieron-tres-pines-lateral-lateral-corte0-y-frontal-posterior-por-pb004-con-el-motivo-escrito-en-pushbackgoldentests-frontal-entrada-planta-y-bom-intactos
+    round-2-de-pb004-se-mueven-CUATRO-pines-de-vista-lateral-lateral-corte0-frontal-entrada-y-frontal-posterior-planta-y-bom-INTACTOS ·
+    frontal-posterior-vuelve-EXACTAMENTE-al-valor-previo-al-round-1-55af6395-que-es-la-comprobacion-mas-limpia-de-que-el-larguero-posterior-regreso-a-su-troquel ·
+    el-motivo-de-cada-pin-queda-escrito-en-pushbackgoldentests
   catalogs_untouched: >-
     assets-catalogs-deploy-sln-y-csproj-sin-cambios-validador-i19-33-pruebas-verdes-baseline-aprobado-intacto-1-error-troquel-tope-2-avisos-tarima-generica
   isolation: >-
     selectivo-y-dinamico-sin-cambio-de-comportamiento-los-cuatro-dialogos-compartidos-solo-ganan-parametros-opcionales-al-final-de-sus-firmas-con-default-igual-al-comportamiento-vigente-selectivo-llama-por-posicion-y-no-los-alcanza-dinamico-llama-por-nombre-y-no-los-pasa-hay-pruebas-de-no-regresion-para-ambos
+  owner_validation_round_1: >-
+    RECHAZADA-2026-07-25-dos-defectos ·
+    defecto-1-geometria-la-interpretacion-literal-de-la-pendiente-sacaba-al-larguero-posterior-de-su-troquel-la-regla-vigente-la-sustituye-el-objetivo-de-7-16-por-pie-es-NOMINAL-el-posterior-es-el-ancla-en-troquel-el-de-entrada-salida-se-deriva-y-se-ajusta-y-la-cama-une-los-dos-contactos-reales ·
+    defecto-2-seguridad-pushbacksafetyauthority-restricttolowend-borraba-postsides-entera-para-imponer-el-extremo-bajo-y-con-ella-la-eleccion-por-poste-del-usuario-ahora-la-matriz-se-conserva-y-el-extremo-se-impone-donde-se-decide-con-selectivesafetyends-endsforpost ·
+    evidencia-fallo-paso-sobre-2210e67-pb004-19-de-43-de-pushbackbedanchortests-botas-7-de-10-puras-y-3-de-5-sta ·
+    gate-de-owner-validation-CERRADO-de-nuevo-y-sin-dll-canonico-hasta-nueva-revision-del-coordinador
   coordinator_review_3: >-
     resultado-tecnico-APPROVED-sobre-el-code-sha-428c18a714e8e5e486376f7a09b4f2f191c45c6e-con-ci-verde-run-30175762235-y-head-documental-revisado-4e3152ab261a2d3cecbce44aca0bced4ec3b4146-con-ci-verde-run-30175969327 ·
     pendiente-unicamente-documental-restaurar-cabecera-y-el-flujo-insertar-actualizar-guardar-reabrir-bom-como-puntos-obligatorios-INDEPENDIENTES-hecho-en-esta-corrida-el-checklist-pasa-de-16-a-21-puntos ·
@@ -58,28 +69,26 @@ evidence:
   desviador_cell_key: >-
     pb002-completo-la-off-cell-del-desviador-es-poste-por-nivel-en-push-back-y-la-resuelve-una-sola-autoridad-selectivedesviadorplan-cellkey-que-consumen-el-lateral-los-dos-frontales-la-planta-y-el-bom-la-capacidad-selectivesafetyselection-desviadorcellsarebypost-es-derivada-no-persistida-y-la-reimpone-pushbacksafetyauthority-copiada-en-deepcopy-el-dinamico-conserva-su-lectura-por-frente-con-el-default-false
   dll_for_owner: >-
-    NO-GENERADO-autorizado-por-i32-code-review-3-pero-autocad-seguia-abierto-pid-35928-y-el-dll-cargado-queda-bloqueado-trampa-de-agents-md
-    ruta-destino-fix-correcciones-push-back-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll
-    se-construye-en-cuanto-el-owner-cierre-autocad-y-su-sha-se-registra-al-abrir-owner-validation
+    NO-GENERADO-en-esta-corrida-por-instruccion-del-coordinador ·
+    el-dll-que-se-compilo-sobre-2210e67-sha256-b3a2d87e4b18e9d9b0c19e4c881c76d576d8a52ab2607df1e98042acc878c653-queda-OBSOLETO-porque-la-geometria-cambio-no-debe-reutilizarse-para-validar ·
+    cuando-el-coordinador-autorice-un-round-2-se-compilara-uno-nuevo-con-autocad-cerrado-y-su-sha-se-registrara-aqui
 gates:
   autocad:
     required: true
     note: >-
-      PENDIENTE-21-puntos-obligatorios-de-la-seccion-10-del-contrato-minimo-exigido-16-ampliado-por-i32-code-review-3
-      con-cabecera-y-los-cinco-pasos-del-flujo-insertar-actualizar-guardar-reabrir-bom-como-puntos-independientes
-      mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados-sobre-el-dll-debug-del-worktree
+      ROUND-1-RECHAZADA-pendiente-un-round-2-sobre-los-21-puntos-obligatorios-de-la-seccion-10-del-contrato
+      mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados-cuando-el-coordinador-lo-autorice
   owner_validation:
     required: true
     note: >-
-      AUTORIZADO-POR-I32-CODE-REVIEW-3-PERO-AUN-NO-ABIERTO-faltan-el-build-canonico-con-autocad-cerrado-y-la-ci-verde-de-esta-punta
-      autocad-seguia-corriendo-pid-35928-al-cerrar-esta-corrida-asi-que-el-dll-no-se-genero-el-gate-se-abre-en-la-corrida-que-produzca-ese-dll
+      ROUND-1-RECHAZADA-POR-EL-OWNER-el-gate-vuelve-a-estar-CERRADO-los-dos-defectos-estan-corregidos-en-esta-corrida-con-evidencia-fallo-paso
+      un-round-2-solo-se-abre-tras-nueva-revision-del-coordinador-y-el-dll-canonico-de-2210e67-queda-OBSOLETO-no-debe-reutilizarse
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-msb3277-conocidas-compilado-a-carpeta-temporal-con-autocad-abierto
   ci:
     required: true
     note: >-
-      VERDE-run-30175762235-success-sobre-el-code-sha-aprobado-428c18a714e8e5e486376f7a09b4f2f191c45c6e ·
-      VERDE-run-30175969327-success-sobre-4e3152ab261a2d3cecbce44aca0bced4ec3b4146-punta-documental-revisada ·
-      historico-run-30174764185-success-sobre-26642c912d316e8670da7c2c9ea202c64a8d9e6a ·
-      pendiente-solo-la-corrida-de-esta-punta-documental-del-checklist-de-21-puntos
+      VERDE-run-30181396599-success-sobre-el-code-sha-de-esta-corrida-a8717e5e541e148e48e5405db2078a53da2b1fb9 ·
+      historico-run-30177133342-success-sobre-2210e67 · run-30175969327-success-sobre-4e3152a · run-30175762235-success-sobre-428c18a ·
+      pendiente-solo-la-corrida-de-esta-punta-documental

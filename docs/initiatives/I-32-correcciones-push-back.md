@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: validating
+status: implementing
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -102,7 +102,7 @@ Una corrida, un commit atomico por hallazgo o por par de hallazgos que comparten
 
 | ID | Hallazgo | Correccion |
 |---|---|---|
-| PB-004 | La pendiente subia 11.2" en 204" | `PushBackBedSlope`: 7/16" por pie en UNA funcion pura; el extremo alto se DERIVA del bajo ya ajustado al troquel; el frontal posterior toma la misma elevacion que el lateral (D14) |
+| PB-004 | La pendiente subia 11.2" en 204"; y la primera correccion saco al larguero posterior de su troquel (rechazada en la validacion round 1) | Regla vigente: el 7/16" por pie es un OBJETIVO NOMINAL. El POSTERIOR es el ancla y conserva su troquel; el de ENTRADA/SALIDA se deriva de el y se ajusta al suyo (`PushBackTroquelGrid`); la cama une los dos contactos reales y la pendiente final es la resultante |
 | PB-012 | "Alto 1er nivel" abria en 6" | `PushBackDefaults.DefaultFirstLevelHeight` = 4", aplicado SOLO en `LoadNew()` |
 | PB-013 | Tarima general modificable pero inerte | Fondo y Unidad globales; Frente/Alto/Peso espejo de la celda, no editables |
 | PB-002 | El desviador mostraba menos niveles en un poste, y la celda apagada no llegaba a todas las vistas | `DynamicFrontGeometry.LoadLevelsPerPost` (maximo de frentes adyacentes) **+** `SelectiveDesviadorPlan.CellKey`: la off-cell es POSTE x NIVEL y la leen igual el lateral, los dos frontales, la planta y el BOM |
@@ -110,7 +110,7 @@ Una corrida, un commit atomico por hallazgo o por par de hallazgos que comparten
 | PB-005 | Sin selector de tipo de tope | `PushBackRearTopeConfig.PieceId` + `ResolvePieceId` consumida por las 3 vistas y el BOM, con fallback |
 | PB-006 | "Compartido"/"Lado" en el tope | `showSharedAndSide: false` para Push Back |
 | PB-008 | "Salida"/"Entrada" en un sistema LIFO | "Entrada/Salida" y "Posterior"; el mapeo fisico no cambia |
-| PB-009 | Se dibujaba defensa en el posterior | `SelectiveSafetySelection.LowEndOnly`, impuesta por la autoridad; sin longitud automatica atras |
+| PB-009 | Se dibujaba defensa en el posterior; y la autoridad borraba de paso la matriz POR POSTE de botas y laterales (rechazado en la validacion round 1) | `LowEndOnly` impuesta por la autoridad, sin longitud automatica atras **+** la matriz por poste se conserva y el extremo se impone donde se decide, con `SelectiveSafetyEnds.EndsForPost` |
 | PB-010 | 12"/36" no se recalculaba al agregar frentes, y el dialogo descartaba un registro manual cuyo numero coincidia con el automatico | Estado Auto por extremo en `SafetyPostDefense`, recalculado del conteo de postes vigente **+** `OnOk` guarda siempre que un extremo sea manual: la procedencia se lee del estado Auto, nunca comparando numeros |
 
 ## 9. Pruebas y builds
@@ -122,6 +122,12 @@ Plugin con 0 errores propios; CI verde en la rama.
 ## 10. Validacion manual
 
 `requires_autocad: true`. Sobre el DLL Debug del worktree, con AutoCAD **cerrado antes de compilar**.
+
+> **Round 1: RECHAZADA (2026-07-25).** El Owner encontro dos defectos —la geometria de anclaje de los
+> largueros de extremo y la perdida de la matriz por poste de botas y protectores laterales—, ambos
+> corregidos con evidencia fallo->paso. El gate vuelve a estar **cerrado**: un round 2 solo se abre tras
+> nueva revision del coordinador. El DLL compilado sobre `2210e67` queda **obsoleto** y no debe
+> reutilizarse, porque la geometria cambio.
 
 ### Checklist minimo obligatorio — 21 puntos
 
