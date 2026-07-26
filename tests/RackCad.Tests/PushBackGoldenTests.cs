@@ -155,18 +155,17 @@ namespace RackCad.Tests
             // frontal-posterior, planta y bom quedan INTACTOS.
             // Anteriores: lateral/lateral-corte0 16D20B37..., frontal-entrada DAC83E0C...
             //
-            // Owner-validation round 2 (2026-07-26), defecto 1 — la CAMA se coloca por su ORIGEN.
-            // El bloque se colocaba haciendo coincidir su TROQUEL_IN con el contacto del larguero, y como ese punto
-            // esta desplazado respecto del origen local, todo lo que hay entre ambos quedaba ANTES del contacto:
-            // dentro del larguero. Ahora el origen (0,0) cae sobre el contacto bajo, la cama se rota hacia el
-            // contacto posterior y su LONGITUD es la distancia entre los dos (axis.Length), no el tramo comercial.
-            // Se mueven SOLO los dos pines LATERALES, que es donde se dibuja la cama: cambian el riel, su tope, sus
-            // rodillos y los intermedios, que matan a la linea del origen del riel.
-            // frontal-entrada, frontal-posterior, planta y bom quedan INTACTOS: los largueros no se mueven —siguen
-            // en sus troqueles— y el BOM de la cama sigue reportando la longitud COMERCIAL, que es la que se compra.
-            // Anteriores: lateral/lateral-corte0 A7040D72...
-            ["lateral"] = "1914400CC6F90CB434C58562A45F9E980A1F3BA5B7E66688BD2D6CE28E376E50",
-            ["lateral-corte0"] = "1914400CC6F90CB434C58562A45F9E980A1F3BA5B7E66688BD2D6CE28E376E50",
+            // Aclaracion FINAL del Owner (2026-07-26): la interpretacion del round 3 —colocar la cama por su ORIGEN
+            // con LONGITUD = axis.Length— fue RECHAZADA. La cama se atornilla por su TROQUEL_IN sobre el
+            // TROQUEL_CAMA del larguero de entrada/salida, y su LONGITUD es SIEMPRE el fondo estructural completo.
+            // Que sobre riel por delante del mate y que sobresalga por detras del larguero posterior es lo
+            // ESPERADO, no una penetracion.
+            // Estos dos pines vuelven EXACTAMENTE al valor que tenian antes de aquella interpretacion
+            // (A7040D72..., que aquel commit habia movido a 1914400C...), y esa coincidencia exacta es la
+            // comprobacion mas limpia de que la reversion es completa: la geometria lateral es byte-identica a la
+            // de antes. Los otros cuatro pines nunca se movieron.
+            ["lateral"] = "A7040D72BDCE3F541A4BB50D797900450EC8B1C029D3A8539B457B72725BFA91",
+            ["lateral-corte0"] = "A7040D72BDCE3F541A4BB50D797900450EC8B1C029D3A8539B457B72725BFA91",
             ["frontal-entrada"] = "C124825D8C68C0E0FC894B260FD4CE9B26D870EBBF8C1DB36986F2684589FDB3",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of

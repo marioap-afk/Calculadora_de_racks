@@ -42,10 +42,17 @@ namespace RackCad.Application.Systems
         public Point2D HighMate { get; }
 
         /// <summary>
-        /// El <c>TROQUEL_IN</c> local del riel. Es un punto INTERNO del bloque, útil para el resto del montaje,
-        /// pero <b>no</b> es la autoridad de colocación: la cama se coloca por su ORIGEN
-        /// (owner-validation round 2, I-32). Usarlo como pivote dejaba geometría ANTES del contacto — todo lo que
-        /// hay entre el origen del bloque y este punto quedaba dentro del larguero.
+        /// El <c>TROQUEL_IN</c> local del riel: <b>LA autoridad de colocación</b> de la cama en el extremo de
+        /// entrada/salida.
+        ///
+        /// El mate obligatorio de ese extremo es <c>LARGUERO_IN_OUT.TROQUEL_CAMA</c> con
+        /// <c>RIEL_DE_CINTA_CALIBRE_12.TROQUEL_IN</c>: la cama se transforma hasta que ESTE punto cae sobre
+        /// <see cref="ExitMate"/>. Es un mate físico —dos troqueles atornillados—, no una convención de dibujo.
+        ///
+        /// Que quede geometría del riel ANTES de este punto es lo ESPERADO, no un defecto: el riel empieza antes
+        /// de su primer troquel de sujeción. Igual que es esperado que sobresalga del larguero posterior, porque su
+        /// LONGITUD es el fondo estructural completo. Ninguna de las dos cosas se recorta
+        /// (aclaración final del Owner, I-32).
         /// </summary>
         public Point2D RailLocalMate { get; }
 
@@ -55,11 +62,23 @@ namespace RackCad.Application.Systems
         public double AngleRadians => Math.Atan2(Rise, Run);
 
         /// <summary>
-        /// Dónde acaba el ORIGEN local del bloque de la cama: exactamente sobre el contacto físico del larguero
-        /// bajo. Antes se calculaba retrocediendo desde <see cref="RailLocalMate"/>, y ese retroceso era la
-        /// penetración (owner-validation round 2, I-32).
+        /// Dónde acaba el ORIGEN del bloque del riel una vez su <see cref="RailLocalMate"/> queda atornillado sobre
+        /// <see cref="ExitMate"/>: se retrocede ese mate a lo largo del eje. Queda ANTES del contacto, y así debe
+        /// ser — el riel empieza antes de su primer troquel.
+        ///
+        /// Es la línea a la que son tangentes los soportes intermedios, que por eso siguen correctos sin tocarlos.
         /// </summary>
-        public Point2D RailOrigin => ExitMate;
+        public Point2D RailOrigin
+        {
+            get
+            {
+                var cos = Math.Cos(AngleRadians);
+                var sin = Math.Sin(AngleRadians);
+                return new Point2D(
+                    ExitMate.X - RailLocalMate.X * cos + RailLocalMate.Y * sin,
+                    ExitMate.Y - RailLocalMate.X * sin - RailLocalMate.Y * cos);
+            }
+        }
 
         /// <summary>Height of the rail ORIGIN line at a world X — the line every intermediate support is tangent to.</summary>
         public double RailOriginYAt(double worldX)

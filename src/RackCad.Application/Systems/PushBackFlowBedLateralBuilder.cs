@@ -45,18 +45,16 @@ namespace RackCad.Application.Systems
         /// El montaje local de rodillos de una calle Push Back, antes de que el builder lateral lo rote sobre el eje
         /// de la cama. <see cref="FlowBedType.Pushback"/> omite frenos.
         ///
-        /// <paramref name="geometricLength"/> es la LONGITUD del riel: la distancia entre los dos contactos físicos
-        /// (<see cref="PushBackFlowBedAxis.Length"/>). No es la longitud COMERCIAL — esa solo calcula la subida
-        /// nominal de 7/16" por pie y no interviene en el dibujo (owner-validation round 2, I-32). Sin ella se cae
-        /// al tramo comercial, que es el comportamiento histórico para quien aún no resuelve un eje.
+        /// La LONGITUD del riel es SIEMPRE el <b>fondo estructural completo</b> (<see cref="ResolveBedLength"/>).
+        /// Hay UNA sola longitud de cama y esta es: la misma que dibuja el riel, la que alimenta el BOM y la que
+        /// mide la subida nominal de 7/16" por pie (aclaración final del Owner, I-32).
         /// </summary>
         public IReadOnlyList<HeaderBlockInstance> BuildLocalAssembly(
             PushBackSystem system,
             RackCatalog catalog,
-            DynamicRackFront front = null,
-            double? geometricLength = null)
+            DynamicRackFront front = null)
         {
-            var laneDepth = geometricLength ?? ResolveBedLength(system, front);
+            var laneDepth = ResolveBedLength(system, front);
             if (laneDepth <= 0.0)
             {
                 return new List<HeaderBlockInstance>();
@@ -88,20 +86,20 @@ namespace RackCad.Application.Systems
                 return null;
             }
 
-            // La cama se coloca por su ORIGEN sobre el contacto bajo, rotada hacia el contacto posterior, y su
-            // LONGITUD es la distancia entre los dos (owner-validation round 2, I-32). Antes el pivote era el
-            // TROQUEL_IN del riel: como ese punto está desplazado respecto del origen local, todo lo que había
-            // entre ambos quedaba ANTES del contacto, metido en el larguero. La longitud y el ángulo del eje son
-            // iguales en todos los niveles de una cama, así que una sola definición compartida sigue sirviendo.
-            var firstAxis = axes[0];
-            var localAssembly = BuildLocalAssembly(system, catalog, front, firstAxis.Length);
+            // La cama se atornilla por su TROQUEL_IN sobre el TROQUEL_CAMA del larguero de entrada/salida: ese es
+            // el mate FÍSICO del extremo bajo, y por eso el pivote es RailLocalMate y no el origen del bloque.
+            // Que sobre riel antes de ese punto y que sobresalga por detrás del larguero posterior es lo esperado
+            // —su LONGITUD es el fondo estructural completo—, no una penetración que haya que recortar
+            // (aclaración final del Owner, I-32).
+            var localAssembly = BuildLocalAssembly(system, catalog, front);
             if (localAssembly.Count == 0)
             {
                 return null;
             }
 
+            var firstAxis = axes[0];
             var definitionInstances = localAssembly
-                .Select(instance => RigidClone(instance, BlockOrigin, firstAxis.ExitMate, firstAxis.AngleRadians, -firstAxis.ExitMate.Y))
+                .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.AngleRadians, -firstAxis.ExitMate.Y))
                 .ToList();
             var levelPlacements = axes
                 .Select(axis => new HeaderPlacement(0.0, mirrored: false, insertionY: axis.ExitMate.Y))
@@ -110,9 +108,6 @@ namespace RackCad.Application.Systems
             var suffix = front == null ? string.Empty : " F" + (front.Index + 1);
             return new HeaderGroup("Cama push back" + suffix, definitionInstances, levelPlacements);
         }
-
-        /// <summary>El origen local del bloque de la cama: el punto que aterriza sobre el contacto del larguero.</summary>
-        private static readonly Point2D BlockOrigin = new Point2D(0.0, 0.0);
 
         private static HeaderBlockInstance RigidClone(
             HeaderBlockInstance source,
