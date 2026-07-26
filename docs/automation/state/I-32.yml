@@ -4,14 +4,14 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: implementing
-  gate: changes-requested
-  attempts: 1
+  state: validating
+  gate: owner-validation
+  attempts: 2
   attempts_note: >-
     revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-en-esta-corrida
   next_action: >-
-    nueva-revision-del-coordinador-sobre-esta-punta-ddb302f-owner-validation-sigue-CERRADO-y-no-se-genero-dll-canonico ·
-    CORRECCION-la-corrida-anterior-afirmo-que-no-quedaba-ningun-pendiente-y-era-FALSO-faltaba-el-lateral-COMPLETO-no-seccionado-cerrado-en-esta-corrida-con-el-ambito-systemenvelope
+    generar-el-DLL-CANONICO-desde-la-punta-publicada-de-esta-corrida-con-autocad-cerrado-y-ejecutar-el-ROUND-2-de-validacion-manual-del-owner-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
+    NO-queda-pendiente-funcional-el-alcance-esta-implementado-y-cubierto-por-pruebas-lo-que-sigue-abierto-es-la-validacion-manual-que-ningun-test-sustituye
   last_evidence_commit: ddb302f
 execution_context:
   mode: manual-git-only
@@ -85,10 +85,13 @@ evidence:
     pb010-cerrado-el-dialogo-safetydefensagridwindow-onok-ya-no-infiere-la-procedencia-comparando-numeros-con-autoperend-guarda-el-registro-siempre-que-al-menos-un-extremo-sea-manual-ambos-en-auto-siguen-sin-guardar-y-sin-autoperend-selectivo-y-dinamico-conservan-la-heuristica-historica-de-descartar-una-fila-igual-a-su-default-con-prueba-que-lo-fija
   desviador_cell_key: >-
     pb002-completo-la-off-cell-del-desviador-es-poste-por-nivel-en-push-back-y-la-resuelve-una-sola-autoridad-selectivedesviadorplan-cellkey-que-consumen-el-lateral-los-dos-frontales-la-planta-y-el-bom-la-capacidad-selectivesafetyselection-desviadorcellsarebypost-es-derivada-no-persistida-y-la-reimpone-pushbacksafetyauthority-copiada-en-deepcopy-el-dinamico-conserva-su-lectura-por-frente-con-el-default-false
+  technical_approval: >-
+    APROBADA-code-sha-ddb302f52faae720aada8683b7a3db07fa5b53f3-head-revisado-e6eb7ba91d53dbd155186df6f137ac0aa4a9c9be-ci-30185630945-VERDE ·
+    con-esa-aprobacion-el-gate-owner-validation-queda-ABIERTO-para-un-ROUND-2-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados
   dll_for_owner: >-
-    NO-GENERADO-en-esta-corrida-por-instruccion-del-coordinador ·
-    el-dll-que-se-compilo-sobre-2210e67-sha256-b3a2d87e4b18e9d9b0c19e4c881c76d576d8a52ab2607df1e98042acc878c653-queda-OBSOLETO-porque-la-geometria-cambio-no-debe-reutilizarse-para-validar ·
-    cuando-el-coordinador-autorice-un-round-2-se-compilara-uno-nuevo-con-autocad-cerrado-y-su-sha-se-registrara-aqui
+    PENDIENTE-DE-CONSTRUIR-desde-la-nueva-punta-con-autocad-CERRADO-en-la-ruta-canonica-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll ·
+    el-dll-que-se-compilo-sobre-2210e67-sha256-b3a2d87e4b18e9d9b0c19e4c881c76d576d8a52ab2607df1e98042acc878c653-sigue-OBSOLETO-porque-la-geometria-cambio-no-debe-reutilizarse-para-validar ·
+    su-build-sha-tamano-fecha-y-sha256-se-registran-FUERA-de-git-en-el-reporte-de-entrega-no-se-hace-commit-despues-del-build
   coordinator_review_4: >-
     resultado-CHANGES-REQUESTED-sobre-82876ec-atendido-en-esta-corrida-en-tres-frentes ·
     pb004-longitud-la-subida-nominal-se-mide-sobre-la-LONGITUD-COMERCIAL-resolvebedlength-y-no-sobre-la-distancia-entre-contactos-hay-barrido-que-encuentra-racks-donde-las-dos-formulas-eligen-troqueles-distintos-fondos-2-a-8 ·
@@ -134,8 +137,10 @@ evidence:
     ELIMINADO-lowinsertions-system-catalog-su-regla-era-gana-el-primer-frente-que-resuelve-cada-nivel-ni-la-del-resolver-ni-la-que-usaba-el-resto-del-dibujo-lo-sustituye-la-proyeccion-explicita ·
     pushbackelevations-context-lo-construye-UNA-vez-por-dibujo-en-los-dos-builders-de-vista
   elevation_consumers: >-
-    larguero-bajo-del-frontal-atfront · desviador-lateral-bajo-atfront · desviador-frontal-bajo-atpost ·
-    decoraciones-laterales-atpost-del-corte-o-proyeccion-cuando-no-hay-seccion · decoraciones-frontales-atprojectedsystem ·
+    LATERAL-COMPLETO-no-seccionado-desviador-superior-del-extremo-bajo-y-cotas-etiquetas-atsystemenvelope-dibuja-el-rack-entero-y-ocupa-su-envolvente-asi-que-no-pertenece-a-ningun-frente ·
+    LATERAL-SECCIONADO-por-poste-desviador-superior-del-extremo-bajo-atFRONT-su-columna-baja-pertenece-al-frente-adyacente-de-menor-startx-y-cotas-etiquetas-atPOST-un-corte-pertenece-a-la-linea-de-su-poste ·
+    FRONTAL-GLOBAL-cotas-y-etiquetas-atprojectedsystem-recorre-la-lista-de-niveles-proyectada-que-es-la-del-frente-que-la-origino ·
+    larguero-bajo-del-frontal-atfront-la-pieza-pertenece-a-un-frente · desviador-frontal-bajo-atpost-ese-bucle-recorre-postes ·
     consecuencia-ASUMIDA-en-un-rack-jagged-el-desviador-frontal-y-el-lateral-pueden-caer-en-y-distintas-porque-el-frontal-es-un-corte-unico-que-cruza-todos-los-frentes-y-el-lateral-pertenece-a-uno ·
     FUERA-del-override-por-decision-el-primer-desviador-conserva-primer-troquel-mas-altura-y-todo-el-extremo-posterior-sigue-leyendo-entranceelevation-porque-su-larguero-es-el-ancla ·
     no-se-toco-dynamicracklevel-exitelevation-ni-el-dinamico
@@ -158,13 +163,14 @@ gates:
   autocad:
     required: true
     note: >-
-      ROUND-1-RECHAZADA-pendiente-un-round-2-sobre-los-21-puntos-obligatorios-de-la-seccion-10-del-contrato
-      mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados-cuando-el-coordinador-lo-autorice
+      ROUND-1-RECHAZADA · ROUND-2-AUTORIZADO-sobre-los-21-puntos-obligatorios-de-la-seccion-10-del-contrato
+      mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados
   owner_validation:
     required: true
     note: >-
-      ROUND-1-RECHAZADA-POR-EL-OWNER-el-gate-vuelve-a-estar-CERRADO-los-dos-defectos-estan-corregidos-en-esta-corrida-con-evidencia-fallo-paso
-      un-round-2-solo-se-abre-tras-nueva-revision-del-coordinador-y-el-dll-canonico-de-2210e67-queda-OBSOLETO-no-debe-reutilizarse
+      ROUND-1-RECHAZADA-POR-EL-OWNER-sus-dos-defectos-estan-corregidos-con-evidencia-fallo-paso ·
+      ROUND-2-AUTORIZADO-tras-la-aprobacion-tecnica-del-code-sha-ddb302f-sobre-el-head-e6eb7ba-con-ci-30185630945-verde ·
+      exige-un-DLL-CANONICO-NUEVO-compilado-con-autocad-cerrado-desde-la-punta-publicada-el-de-2210e67-queda-OBSOLETO-y-no-debe-reutilizarse
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-advertencias-conocidas-con-autocad-CERRADO-verificado-antes-de-compilar

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: implementing
+status: validating
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -183,10 +183,29 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
   geometria lo exige, con el motivo escrito en el propio archivo.
 - Selectivo y Dinamico sin cambio de comportamiento, con pruebas que lo fijan.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
-- Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar. La revision
-  tecnica I-32-CODE-REVIEW-3 aprobo el codigo en `428c18a` y autorizo abrir el gate una vez cumplidas sus
-  tres condiciones: diff limitado a contrato+state, CI verde de la nueva punta y **build canonico con
-  AutoCAD cerrado**.
+- Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar.
+
+### No queda pendiente funcional
+
+**Todo el alcance funcional de esta iniciativa esta implementado y cubierto por pruebas.** Los diez
+hallazgos autorizados estan corregidos, cada uno con su regresion observada fallando sin el fix, y el
+override opt-in de elevaciones esta completo en sus **cuatro** ambitos —frente, poste, proyeccion y
+envolvente—, incluido el lateral completo no seccionado, que era el ultimo que faltaba.
+
+No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
+trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
+
+### Owner-validation round 2 — AUTORIZADO
+
+La revision tecnica aprobo el codigo en **`ddb302f52faae720aada8683b7a3db07fa5b53f3`**, sobre el HEAD
+revisado **`e6eb7ba91d53dbd155186df6f137ac0aa4a9c9be`** con CI verde (run **30185630945**).
+
+Con esa aprobacion, el gate **`owner-validation` queda abierto para un round 2** sobre los 21 puntos
+obligatorios de §10, mas el smoke complementario de los cuatro hallazgos no implementados.
+
+El **round 1 quedo RECHAZADO** y sus dos defectos estan corregidos; el DLL que se compilo entonces sobre
+`2210e67` sigue **OBSOLETO** y **no debe reutilizarse**: la geometria cambio despues. El round 2 exige un
+**DLL canonico nuevo**, compilado con **AutoCAD cerrado** desde la punta publicada de esta corrida.
 
 ### Una sola autoridad, y todos sus consumidores cableados
 

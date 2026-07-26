@@ -44,7 +44,7 @@ namespace RackCad.Application.Systems
     /// el comportamiento histórico de los sistemas que no lo pasan.
     ///
     /// Es INMUTABLE: se construye una vez, con todos los frentes, y a partir de ahí solo responde preguntas. Las
-    /// tres consultas son explícitas porque cada vista mira a un ámbito distinto y confundirlos es justo lo que hay
+    /// cuatro consultas son explícitas porque cada vista mira a un ámbito distinto y confundirlos es justo lo que hay
     /// que evitar:
     ///
     /// <list type="bullet">
