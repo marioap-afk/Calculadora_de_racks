@@ -188,6 +188,19 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
   tres condiciones: diff limitado a contrato+state, CI verde de la nueva punta y **build canonico con
   AutoCAD cerrado**.
 
+### Pendiente declarado (no cerrado)
+
+Una sola autoridad, `PushBackElevations`, resuelve las elevaciones Push Back por frente y nivel, y la
+consumen la cama, el corte lateral y los dos frontales — con prueba de que ven la MISMA elevacion. Pero
+**el desviador bajo y las cotas/etiquetas de las vistas compartidas siguen leyendo
+`DynamicRackLevel.ExitElevation`**, la elevacion del resolver.
+
+Cablearlos exige un parametro opcional al final de las firmas de `DynamicSafetyLateralBuilder`,
+`DynamicSafetyMultiViewBuilder`, `DynamicViewDecorations` y `DynamicSystemFrontalBuilder`, cuyo default
+(null) deje intactos al Selectivo y al Dinamico. **Ese cableado NO esta hecho**, y se declara aqui en vez
+de darse por cumplido: no se modifico `ExitElevation` ni el Dinamico, tal como pedia el encargo, pero esos
+dos consumidores no leen todavia la autoridad.
+
 ## 12. Condiciones para detenerse
 
 - Que un arreglo exija **alterar la logica** del Selectivo o del Dinamico y no baste con parametrizar.
