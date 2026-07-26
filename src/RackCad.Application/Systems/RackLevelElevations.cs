@@ -51,27 +51,40 @@ namespace RackCad.Application.Systems
     /// <item><see cref="AtFront"/> — un frente concreto. Lo usa quien dibuja una pieza que pertenece a ese frente.</item>
     /// <item><see cref="AtPost"/> — un poste, resuelto entre sus frentes ADYACENTES. Lo usa quien dibuja en la línea
     /// de un poste, que en un rack jagged puede tener a cada lado frentes distintos.</item>
-    /// <item><see cref="AtProjectedSystem"/> — el sistema entero. Lo usa quien recorre la lista de niveles
-    /// proyectada del sistema.</item>
+    /// <item><see cref="AtProjectedSystem"/> — el frente que ORIGINÓ la lista de niveles proyectada del sistema. Lo
+    /// usa quien recorre esa lista.</item>
+    /// <item><see cref="AtSystemEnvelope"/> — la ENVOLVENTE: el rack entero, sin frente. Lo usa quien dibuja el
+    /// conjunto y por tanto ocupa la profundidad completa.</item>
     /// </list>
     ///
-    /// Tanto <see cref="AtPost"/> como <see cref="AtProjectedSystem"/> eligen frente con la MISMA regla con la que
-    /// el resolver proyecta sus niveles —mayor cantidad de niveles y, en empate, mayor profundidad— aplicada al
-    /// ámbito de cada una. Si aquí se usara otra regla, el dibujo y el modelo hablarían de niveles distintos.
+    /// <see cref="AtPost"/> y <see cref="AtProjectedSystem"/> eligen frente con la MISMA regla con la que el
+    /// resolver proyecta sus niveles —mayor cantidad de niveles y, en empate, mayor profundidad— aplicada al ámbito
+    /// de cada una. Si aquí se usara otra regla, el dibujo y el modelo hablarían de niveles distintos.
+    ///
+    /// <see cref="AtSystemEnvelope"/> NO elige frente, y por eso es un ámbito aparte y no una variante del anterior:
+    /// proyección y envolvente pueden ser cosas distintas. Con un frente que gana por NIVELES y otro que es más
+    /// PROFUNDO, la lista proyectada viene del primero mientras que el dibujo del conjunto ocupa el fondo del
+    /// segundo, y las dos elevaciones caen en troqueles distintos. Por eso el mapa de envolvente llega EXPLÍCITO,
+    /// calculado por quien sabe resolver el sistema completo, en vez de deducirse aquí escogiendo un frente.
     /// </summary>
     public sealed class RackLevelElevations
     {
+        private static readonly IReadOnlyDictionary<int, double> NoEnvelope = new Dictionary<int, double>();
+
         private readonly IReadOnlyDictionary<int, IReadOnlyDictionary<int, double>> byFront;
         private readonly IReadOnlyDictionary<int, int> winnerByPost;
+        private readonly IReadOnlyDictionary<int, double> envelope;
         private readonly int projectedFront;
 
         private RackLevelElevations(
             IReadOnlyDictionary<int, IReadOnlyDictionary<int, double>> byFront,
             IReadOnlyDictionary<int, int> winnerByPost,
+            IReadOnlyDictionary<int, double> envelope,
             int projectedFront)
         {
             this.byFront = byFront;
             this.winnerByPost = winnerByPost;
+            this.envelope = envelope;
             this.projectedFront = projectedFront;
         }
 
@@ -81,17 +94,38 @@ namespace RackCad.Application.Systems
         /// poste y el de la proyección se resuelven AQUÍ, una sola vez, para que ninguna consulta pueda derivar en
         /// una regla distinta más tarde.
         /// </summary>
-        public static RackLevelElevations From(IEnumerable<RackFrontLevelElevations> fronts)
+        /// <param name="systemEnvelope">
+        /// Las elevaciones de la ENVOLVENTE, por número de nivel. Llega explícita porque no se puede deducir de los
+        /// frentes: el rack entero ocupa la profundidad completa, que no es la de ninguno de ellos. Puede ser null.
+        /// </param>
+        public static RackLevelElevations From(
+            IEnumerable<RackFrontLevelElevations> fronts,
+            IReadOnlyDictionary<int, double> systemEnvelope = null)
         {
+            var envelopeMap = systemEnvelope != null && systemEnvelope.Count > 0
+                ? (IReadOnlyDictionary<int, double>)new Dictionary<int, double>(
+                    systemEnvelope.ToDictionary(entry => entry.Key, entry => entry.Value))
+                : NoEnvelope;
+
             var ordered = (fronts ?? Enumerable.Empty<RackFrontLevelElevations>())
                 .Where(front => front.Elevations != null && front.Elevations.Count > 0)
                 .GroupBy(front => front.FrontIndex)
                 .Select(group => group.First())
                 .OrderBy(front => front.FrontIndex)
                 .ToList();
-            if (ordered.Count == 0)
+            if (ordered.Count == 0 && envelopeMap.Count == 0)
             {
                 return null;   // sin datos no hay override: el llamador se queda con su fallback
+            }
+
+            if (ordered.Count == 0)
+            {
+                // Solo envolvente: es un contexto legítimo, con las consultas por frente en fallback.
+                return new RackLevelElevations(
+                    new Dictionary<int, IReadOnlyDictionary<int, double>>(),
+                    new Dictionary<int, int>(),
+                    envelopeMap,
+                    -1);
             }
 
             var map = ordered.ToDictionary(
@@ -114,7 +148,7 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            return new RackLevelElevations(map, posts, Winner(ordered));
+            return new RackLevelElevations(map, posts, envelopeMap, Winner(ordered));
         }
 
         /// <summary>
@@ -145,11 +179,24 @@ namespace RackCad.Application.Systems
                 : fallback;
 
         /// <summary>
-        /// La elevación de un nivel en la proyección del sistema entero: la del frente que gana entre TODOS. Es la
-        /// consulta de quien recorre la lista de niveles proyectada.
+        /// La elevación de un nivel en la PROYECCIÓN del sistema: la del frente que gana entre TODOS, es decir el
+        /// que originó la lista de niveles proyectada. Es la consulta de quien recorre esa lista.
+        ///
+        /// No confundir con <see cref="AtSystemEnvelope"/>: esta consulta significa exactamente «el frente
+        /// proyectado» y no debe sobrecargarse para significar «el rack entero».
         /// </summary>
         public double AtProjectedSystem(int levelNumber, double fallback)
             => AtFront(projectedFront, levelNumber, fallback);
+
+        /// <summary>
+        /// La elevación de un nivel en la ENVOLVENTE del sistema: el rack entero, sin frente. Es la consulta de
+        /// quien dibuja el conjunto y por tanto ocupa la profundidad completa — no la de ningún frente.
+        ///
+        /// Su mapa llega EXPLÍCITO al construir el contexto; aquí no se deduce escogiendo un frente, porque ningún
+        /// frente representa la envolvente.
+        /// </summary>
+        public double AtSystemEnvelope(int levelNumber, double fallback)
+            => envelope.TryGetValue(levelNumber, out var elevation) ? elevation : fallback;
     }
 
     /// <summary>
@@ -166,5 +213,8 @@ namespace RackCad.Application.Systems
 
         public static double OrProjectedSystem(this RackLevelElevations elevations, int levelNumber, double fallback)
             => elevations?.AtProjectedSystem(levelNumber, fallback) ?? fallback;
+
+        public static double OrSystemEnvelope(this RackLevelElevations elevations, int levelNumber, double fallback)
+            => elevations?.AtSystemEnvelope(levelNumber, fallback) ?? fallback;
     }
 }

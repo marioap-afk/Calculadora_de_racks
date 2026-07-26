@@ -100,6 +100,88 @@ namespace RackCad.Tests
             Assert.Equal(10.0, context.AtPost(1, 1, fallback: -7.0));   // un frente ⇒ dos postes
         }
 
+        // ---- La ENVOLVENTE es un ámbito aparte, no una variante de la proyección ----
+
+        /// <summary>
+        /// La envolvente llega EXPLÍCITA y no se deduce escogiendo un frente. Aquí se le pasa un mapa que no coincide
+        /// con el de ningún frente: si alguna vez se «optimizara» derivándola del ganador, esto lo delataría.
+        /// </summary>
+        [Fact]
+        public void TheEnvelope_IsAnExplicitMap_NotAFrontChosenByTheRule()
+        {
+            var context = RackLevelElevations.From(
+                new[]
+                {
+                    Front(0, levels: 4, depth: 204.0, 10.0, 20.0, 30.0, 40.0),   // gana la proyección por NIVELES
+                    Front(1, levels: 3, depth: 300.0, 11.0, 21.0, 31.0),         // es el más PROFUNDO
+                },
+                systemEnvelope: new Dictionary<int, double> { [1] = 99.0, [2] = 199.0 });
+
+            Assert.Equal(99.0, context.AtSystemEnvelope(1, fallback: -1.0));
+            Assert.Equal(199.0, context.AtSystemEnvelope(2, fallback: -1.0));
+
+            // Y no coincide con NINGÚN frente: no sale de elegir uno.
+            Assert.Equal(10.0, context.AtFront(0, 1, fallback: -1.0));
+            Assert.Equal(11.0, context.AtFront(1, 1, fallback: -1.0));
+        }
+
+        /// <summary>
+        /// <c>AtProjectedSystem</c> sigue significando exactamente «el frente que originó la lista proyectada». No se
+        /// sobrecarga para significar «el rack entero», que es lo que responde <c>AtSystemEnvelope</c>.
+        /// </summary>
+        [Fact]
+        public void AtProjectedSystem_KeepsMeaningTheProjectedFront_NotTheEnvelope()
+        {
+            var context = RackLevelElevations.From(
+                new[]
+                {
+                    Front(0, levels: 4, depth: 204.0, 10.0),
+                    Front(1, levels: 3, depth: 300.0, 11.0),
+                },
+                systemEnvelope: new Dictionary<int, double> { [1] = 99.0 });
+
+            Assert.Equal(10.0, context.AtProjectedSystem(1, fallback: -1.0));   // F0: gana por niveles
+            Assert.Equal(99.0, context.AtSystemEnvelope(1, fallback: -1.0));    // la envolvente, explícita
+            Assert.NotEqual(context.AtProjectedSystem(1, -1.0), context.AtSystemEnvelope(1, -1.0));
+        }
+
+        [Fact]
+        public void WithNoEnvelopeMap_TheEnvelopeQueryFallsBack_WithoutBorrowingAFront()
+        {
+            var context = RackLevelElevations.From(new[] { Front(0, 2, 204.0, 10.0, 20.0) });
+
+            Assert.Equal(10.0, context.AtProjectedSystem(1, fallback: -1.0));
+            Assert.Equal(-1.0, context.AtSystemEnvelope(1, fallback: -1.0));
+        }
+
+        [Fact]
+        public void AnEnvelopeAlone_IsStillAValidContext()
+        {
+            var context = RackLevelElevations.From(
+                Array.Empty<RackFrontLevelElevations>(),
+                systemEnvelope: new Dictionary<int, double> { [1] = 55.0 });
+
+            Assert.NotNull(context);
+            Assert.Equal(55.0, context.AtSystemEnvelope(1, fallback: -1.0));
+            Assert.Equal(-1.0, context.AtProjectedSystem(1, fallback: -1.0));
+            Assert.Equal(-1.0, context.AtFront(0, 1, fallback: -1.0));
+            Assert.Equal(-1.0, context.AtPost(0, 1, fallback: -1.0));
+        }
+
+        [Fact]
+        public void TheEnvelopeMap_IsCopied_LikeTheFrontMaps()
+        {
+            var source = new Dictionary<int, double> { [1] = 10.0 };
+            var context = RackLevelElevations.From(
+                new[] { Front(0, 1, 204.0, 1.0) }, systemEnvelope: source);
+
+            source[1] = 999.0;
+            source[2] = 999.0;
+
+            Assert.Equal(10.0, context.AtSystemEnvelope(1, fallback: -1.0));
+            Assert.Equal(-1.0, context.AtSystemEnvelope(2, fallback: -1.0));
+        }
+
         // ---- El fallback es literal, siempre ----
 
         [Fact]
@@ -111,6 +193,7 @@ namespace RackCad.Tests
             Assert.Equal(99.0, context.AtFront(1, 7, fallback: 99.0));    // nivel desconocido
             Assert.Equal(99.0, context.AtProjectedSystem(7, fallback: 99.0));
             Assert.Equal(99.0, context.AtPost(1, 7, fallback: 99.0));
+            Assert.Equal(99.0, context.AtSystemEnvelope(7, fallback: 99.0));
         }
 
         [Fact]
@@ -171,6 +254,7 @@ namespace RackCad.Tests
             Assert.Equal(5.0, none.OrFront(0, 1, 5.0));
             Assert.Equal(5.0, none.OrPost(0, 1, 5.0));
             Assert.Equal(5.0, none.OrProjectedSystem(1, 5.0));
+            Assert.Equal(5.0, none.OrSystemEnvelope(1, 5.0));
         }
     }
 }
