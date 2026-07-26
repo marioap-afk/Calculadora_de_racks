@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: implementing
+status: validating
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -185,13 +185,13 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
 - Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar.
 
-### Estado tras el round 2 — los dos defectos corregidos
+### Estado tras el round 2 — los dos defectos corregidos, sin pendiente funcional
 
-> **Correcciones.** Esta seccion declaro primero que «no queda pendiente funcional» y autorizo el round 2;
-> el round 2 **se ejecuto y fue RECHAZADO**. Despues declaro el defecto 1 **bloqueado** por un contrato de
-> catalogo que se creia faltante; el Owner **corrigio esa interpretacion**: no falta ningun contrato, el
-> defecto estaba en el lado del ORIGEN y se resuelve con geometria existente. Las dos afirmaciones quedan
-> corregidas aqui en vez de retiradas.
+> **Correcciones acumuladas.** Esta seccion declaro primero que «no queda pendiente funcional» y autorizo
+> el round 2; el round 2 **se ejecuto y fue RECHAZADO**. Despues declaro el defecto 1 **bloqueado** por un
+> contrato de catalogo que se creia faltante; el Owner **corrigio esa interpretacion**: no faltaba ningun
+> contrato, el defecto estaba en el lado del ORIGEN y se resolvio con geometria existente. Las dos
+> afirmaciones quedan corregidas aqui en vez de retiradas.
 
 | # | Defecto del round 2 | Estado |
 |---|---|---|
@@ -202,8 +202,8 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 rota hacia el contacto del otro, y su **`LONGITUD` geometrica** es la distancia euclidiana entre los dos.
 `TROQUEL_IN` sigue siendo un punto interno del bloque pero ya no es la autoridad de colocacion: usarlo
 como pivote dejaba geometria antes del contacto. **No se agrego ninguna fila al catalogo.** La longitud
-**comercial** se queda calculando solo la subida nominal de 7/16" por pie, asi que los dos largueros
-siguen en sus troqueles y la pendiente sigue siendo la resultante.
+**comercial** se queda calculando solo la subida nominal de 7/16" por pie —y alimentando el BOM, donde es
+opaca—, asi que los dos largueros siguen en sus troqueles y la pendiente sigue siendo la resultante.
 
 **Defecto 2.** En la regla adaptativa, `Right` es **orientacion** y no extremo: el ultimo poste conserva
 su protector, espejado, en vez de desaparecer en un sistema de extremo bajo.
@@ -211,8 +211,27 @@ su protector, espejado, en vez de desaparecer en un sistema de extremo bajo.
 El detalle, las mediciones y los efectos sobre los goldens estan en
 [`decisions/I-32.md`](../automation/decisions/I-32.md).
 
-**Owner-validation:** round 1 RECHAZADO, round 2 RECHAZADO. **No hay round 3 abierto.** Los dos DLL
-anteriores —`2210e67` y `557858d`— quedan obsoletos y no deben reutilizarse.
+### No queda pendiente funcional
+
+**Todo el alcance funcional de esta iniciativa esta implementado y cubierto por pruebas.** Los diez
+hallazgos autorizados estan corregidos, cada uno con su regresion observada fallando sin el fix; el
+override opt-in de elevaciones esta completo en sus cuatro ambitos —frente, poste, proyeccion y
+envolvente—; y los dos defectos del round 2 estan cerrados.
+
+No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
+trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
+
+### Owner-validation round 3 — AUTORIZADO
+
+La revision tecnica aprobo el codigo en **`924de1a5b1253fc56b7914167d8b1025600d7b7c`**, sobre el HEAD
+revisado **`ba80a11721c5b5180ccc3e6f2ad094a5027f6ec8`** con CI **30220809064** verde en sus cuatro jobs.
+
+Con esa aprobacion el gate **`owner-validation` queda abierto para un round 3** sobre los 21 puntos
+obligatorios de §10, mas el smoke complementario de los cuatro hallazgos no implementados.
+
+Los **rounds 1 y 2 quedaron RECHAZADOS** y sus defectos estan corregidos. Los DLL que se validaron
+entonces —`2210e67` y `557858d`— siguen **OBSOLETOS** y **no deben reutilizarse**. El round 3 exige un
+**DLL canonico nuevo**, compilado con **AutoCAD cerrado** desde la punta publicada de esta corrida.
 
 ## 12. Condiciones para detenerse
 

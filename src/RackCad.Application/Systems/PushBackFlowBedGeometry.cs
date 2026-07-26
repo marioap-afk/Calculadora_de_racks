@@ -41,7 +41,6 @@ namespace RackCad.Application.Systems
         /// </summary>
         public Point2D HighMate { get; }
 
-        /// <summary>The rail's TROQUEL_IN local point (where the rail bolts onto the low IN/OUT beam).</summary>
         /// <summary>
         /// El <c>TROQUEL_IN</c> local del riel. Es un punto INTERNO del bloque, útil para el resto del montaje,
         /// pero <b>no</b> es la autoridad de colocación: la cama se coloca por su ORIGEN
@@ -55,7 +54,6 @@ namespace RackCad.Application.Systems
         public double Length => Math.Sqrt(Run * Run + Rise * Rise);
         public double AngleRadians => Math.Atan2(Rise, Run);
 
-        /// <summary>World origin of the rail block after TROQUEL_IN is bolted to the low IN/OUT beam.</summary>
         /// <summary>
         /// Dónde acaba el ORIGEN local del bloque de la cama: exactamente sobre el contacto físico del larguero
         /// bajo. Antes se calculaba retrocediendo desde <see cref="RailLocalMate"/>, y ese retroceso era la

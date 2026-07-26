@@ -4,15 +4,15 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: implementing
-  gate: changes-requested
-  attempts: 2
+  state: validating
+  gate: owner-validation
+  attempts: 3
   attempts_note: >-
-    attempts-se-mantiene-en-2-hasta-que-se-abra-FORMALMENTE-un-round-3 ·
+    attempts-pasa-a-3-al-abrirse-FORMALMENTE-el-round-3-tras-la-aprobacion-tecnica-del-code-sha-924de1a ·
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
   next_action: >-
-    revision-del-coordinador-sobre-los-DOS-defectos-del-round-2-ya-corregidos-NO-se-genera-dll-canonico-nuevo-hasta-esa-revision-y-no-hay-round-3-abierto ·
-    punto-a-decidir-el-BOM-de-la-cama-sigue-reportando-la-longitud-COMERCIAL-por-via-propia-pushbackbomBuilder-no-la-geometrica-se-deja-como-esta-porque-cambiar-lo-que-se-COMPRA-es-decision-comercial-y-no-geometrica
+    generar-el-DLL-CANONICO-desde-la-punta-publicada-de-esta-corrida-con-autocad-cerrado-y-ejecutar-el-ROUND-3-de-validacion-manual-del-owner-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
+    NO-queda-pendiente-funcional-el-alcance-esta-implementado-y-cubierto-por-pruebas-lo-que-sigue-abierto-es-la-validacion-manual-que-ningun-test-sustituye
   last_evidence_commit: 924de1a
 execution_context:
   mode: manual-git-only
@@ -93,8 +93,14 @@ evidence:
   desviador_cell_key: >-
     pb002-completo-la-off-cell-del-desviador-es-poste-por-nivel-en-push-back-y-la-resuelve-una-sola-autoridad-selectivedesviadorplan-cellkey-que-consumen-el-lateral-los-dos-frontales-la-planta-y-el-bom-la-capacidad-selectivesafetyselection-desviadorcellsarebypost-es-derivada-no-persistida-y-la-reimpone-pushbacksafetyauthority-copiada-en-deepcopy-el-dinamico-conserva-su-lectura-por-frente-con-el-default-false
   technical_approval: >-
-    historico-aprobada-code-sha-ddb302f-head-e6eb7ba-ci-30185630945-verde-y-con-ella-se-abrio-el-round-2 ·
-    ese-round-2-se-ejecuto-y-fue-RECHAZADO-asi-que-la-aprobacion-tecnica-NO-implica-aprobacion-del-owner
+    APROBADA-2026-07-26-code-sha-924de1a5b1253fc56b7914167d8b1025600d7b7c-head-revisado-ba80a11721c5b5180ccc3e6f2ad094a5027f6ec8-ci-30220809064-VERDE-cuatro-jobs ·
+    con-esa-aprobacion-el-gate-owner-validation-queda-ABIERTO-para-un-ROUND-3-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
+    historico-aprobada-code-sha-ddb302f-head-e6eb7ba-ci-30185630945-verde-y-con-ella-se-abrio-el-round-2-que-se-ejecuto-y-fue-RECHAZADO-la-aprobacion-tecnica-NO-implica-aprobacion-del-owner
+  bed_length_duality: >-
+    las-DOS-longitudes-de-la-cama-conviven-y-confundirlas-fue-exactamente-el-defecto-1-del-round-2 ·
+    COMERCIAL-resolvebedlength-tramo-estructural-del-frente-204-en-un-rack-de-4-fondos-la-usan-la-subida-NOMINAL-de-7-16-por-pie-y-el-BOM-de-la-cama-pushbackbomBuilder-donde-permanece-OPACA-no-gobierna-ninguna-geometria-y-no-se-dibuja ·
+    GEOMETRICA-pushbackflowbedaxis-length-entre-contactos-200-211-en-ese-mismo-rack-controla-la-LONGITUD-del-riel-DIBUJADO-y-su-colocacion-es-la-que-se-ve ·
+    se-deja-COMO-ESTA-cambiar-la-cantidad-que-llega-a-compras-es-decision-comercial-no-geometrica-y-el-owner-reporto-un-problema-de-dibujo
   owner_validation_round_2: >-
     RECHAZADA-2026-07-26-sobre-el-dll-de-557858d-dos-defectos ·
     defecto-1-TANGENCIA-FISICA-de-la-cama-el-bloque-continuaba-dentro-del-larguero-CORREGIDO-se-coloca-por-su-ORIGEN ·
@@ -127,7 +133,8 @@ evidence:
     DOS-pasan-ya-y-deben-seguir-el-sistema-ordinario-manda-su-ultimo-protector-al-extremo-alto-y-una-matriz-explicita-sustituye-al-default ·
     del-defecto-1-no-hay-regresiones-porque-no-se-implementa-lo-que-hay-es-la-MEDICION-de-la-penetracion-registrada-arriba
   dll_for_owner: >-
-    NO-GENERADO-en-esta-corrida-por-instruccion-del-coordinador-no-se-compila-uno-nuevo-hasta-su-revision ·
+    PENDIENTE-DE-COMPILAR-desde-la-nueva-punta-con-autocad-CERRADO-en-la-ruta-canonica-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll ·
+    sus-datos-build-sha-ruta-tamano-fecha-sha256-y-versiones-se-reportan-FUERA-de-git-no-se-hace-commit-para-registrar-el-hash ·
     OBSOLETO-el-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-validado-y-RECHAZADO-en-el-round-2 ·
     OBSOLETO-el-de-2210e67-sha256-b3a2d87e4b18e9d9b0c19e4c881c76d576d8a52ab2607df1e98042acc878c653-validado-y-RECHAZADO-en-el-round-1
   coordinator_review_4: >-
@@ -201,14 +208,14 @@ gates:
   autocad:
     required: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · un-round-3-sobre-los-21-puntos-obligatorios-de-la-seccion-10
-      mas-el-smoke-complementario-queda-pendiente-de-que-el-coordinador-lo-autorice
+      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-AUTORIZADO-sobre-los-21-puntos-obligatorios-de-la-seccion-10
+      del-contrato-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados
   owner_validation:
     required: true
     note: >-
-      ROUND-1-RECHAZADA-sus-dos-defectos-corregidos · ROUND-2-RECHAZADA-2026-07-26-defecto-2-corregido-y-defecto-1-BLOQUEADO ·
-      el-gate-vuelve-a-estar-CERRADO-NO-hay-round-3-abierto-y-los-DOS-dll-anteriores-quedan-obsoletos ·
-      un-round-3-solo-se-abre-tras-revision-del-coordinador-y-exige-resolver-antes-el-contrato-fisico-del-extremo-del-riel
+      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · los-defectos-de-los-DOS-rounds-estan-corregidos-con-evidencia-fallo-paso ·
+      ROUND-3-AUTORIZADO-tras-la-aprobacion-tecnica-del-code-sha-924de1a-sobre-el-head-ba80a11-con-ci-30220809064-verde ·
+      exige-un-DLL-CANONICO-NUEVO-compilado-con-autocad-cerrado-desde-la-punta-publicada-los-DOS-dll-anteriores-siguen-OBSOLETOS
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-advertencias-conocidas-con-autocad-CERRADO-verificado-antes-de-compilar
