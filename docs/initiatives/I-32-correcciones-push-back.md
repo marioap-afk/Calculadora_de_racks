@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: validating
+status: implementing
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -185,75 +185,29 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
 - Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar.
 
-### No queda pendiente funcional
+### Estado tras el round 2 — un pendiente ABIERTO y bloqueado
 
-**Todo el alcance funcional de esta iniciativa esta implementado y cubierto por pruebas.** Los diez
-hallazgos autorizados estan corregidos, cada uno con su regresion observada fallando sin el fix, y el
-override opt-in de elevaciones esta completo en sus **cuatro** ambitos —frente, poste, proyeccion y
-envolvente—, incluido el lateral completo no seccionado, que era el ultimo que faltaba.
+> **Correccion.** La version anterior de esta seccion declaraba que «no queda pendiente funcional» y
+> autorizaba el round 2. El round 2 **se ejecuto y fue RECHAZADO**, asi que esa afirmacion ya no vale y
+> queda corregida aqui en vez de retirada.
 
-No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
-trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
+De los dos defectos del round 2, uno esta corregido y otro **bloqueado**:
 
-### Owner-validation round 2 — AUTORIZADO
-
-La revision tecnica aprobo el codigo en **`ddb302f52faae720aada8683b7a3db07fa5b53f3`**, sobre el HEAD
-revisado **`e6eb7ba91d53dbd155186df6f137ac0aa4a9c9be`** con CI verde (run **30185630945**).
-
-Con esa aprobacion, el gate **`owner-validation` queda abierto para un round 2** sobre los 21 puntos
-obligatorios de §10, mas el smoke complementario de los cuatro hallazgos no implementados.
-
-El **round 1 quedo RECHAZADO** y sus dos defectos estan corregidos; el DLL que se compilo entonces sobre
-`2210e67` sigue **OBSOLETO** y **no debe reutilizarse**: la geometria cambio despues. El round 2 exige un
-**DLL canonico nuevo**, compilado con **AutoCAD cerrado** desde la punta publicada de esta corrida.
-
-### Una sola autoridad, y todos sus consumidores cableados
-
-> **Correccion.** La version anterior de esta seccion afirmaba que «ya no queda ningun consumidor fuera».
-> **Era falso**: faltaba el **lateral completo, el que no esta seccionado por poste**. Sus largueros ya se
-> resolvian con la envolvente del sistema, pero su desviador y sus anotaciones seguian leyendo la
-> elevacion del resolver y la del frente proyectado — otro frente distinto. Queda cerrado abajo, con el
-> ambito `SystemEnvelope`.
-
-`PushBackElevations` resuelve las elevaciones Push Back por frente y nivel. Los largueros y la cama la
-leen directamente; el corte lateral, los dos frontales, el desviador bajo y las cotas y etiquetas la
-reciben a traves de un **contexto neutral** (`RackLevelElevations`) que los builders compartidos aceptan
-como ultimo parametro **opcional**. Con el valor por defecto (`null`) su ejecucion es byte-identica, asi
-que el Selectivo y el Dinamico —que no lo pasan nunca— no pueden notarlo.
-
-El contexto expone **cuatro** consultas explicitas, una por ambito:
-
-| Consulta | Ambito | Quien la usa |
+| # | Defecto | Estado |
 |---|---|---|
-| `AtFront(frontIndex, ...)` | un frente concreto | larguero bajo del frontal, desviador lateral **seccionado** |
-| `AtPost(postIndex, ...)` | los frentes **adyacentes** al poste | desviador frontal bajo, cotas laterales **por poste** |
-| `AtProjectedSystem(...)` | el frente que origino `system.LoadBeamLevels` | frontal global |
-| `AtSystemEnvelope(...)` | el rack **entero**, sin frente | lateral **completo**: su desviador y sus cotas |
+| 1 | La cama penetra fisicamente el larguero posterior | **BLOQUEADO** — falta un punto medido en el catalogo |
+| 2 | Falta el protector lateral por default del ultimo poste | **CORREGIDO**, con evidencia fallo-paso |
 
-`AtPost` y `AtProjectedSystem` eligen frente con la **misma regla del resolver** —mayor cantidad de
-niveles y, en empate, mayor profundidad—, aplicada a su ambito.
+**El defecto 1 no se implementa por falta de contrato fisico.** El riel `RIEL_DE_CINTA_CALIBRE_12` tiene
+en `connection-layout.csv` exactamente dos puntos medidos —`TROQUEL_TOPE` y `TROQUEL_IN`— y **ninguno
+varia con `LONGITUD`**, asi que no hay forma de saber donde acaba el bloque cuando se alarga. Elegir una
+interpretacion sin medirla seria adivinar la misma cantidad que hay que corregir, y el codigo ya arrastra
+dos suposiciones contradictorias que se diferencian en 1.5". El detalle, las mediciones de la penetracion
+y la formula que se aplicara en cuanto exista la medicion estan en
+[`decisions/I-32.md`](../automation/decisions/I-32.md).
 
-`AtSystemEnvelope` **no elige frente**, y por eso es un ambito propio y no una variante del anterior. Su
-mapa llega **explicito** al construir el contexto, resuelto con `front: null`.
-
-#### Por que envolvente y proyeccion no son lo mismo
-
-La **proyeccion** es el frente que origino `system.LoadBeamLevels`: gana por numero de niveles. La
-**envolvente** es el rack entero: su longitud de cama es la del sistema, no la de ningun frente. En
-cuanto un frente gana por niveles y otro es mas profundo, las dos caen en **troqueles distintos**.
-
-El caso que lo demuestra esta en las pruebas: F0 con 4 niveles y 4 fondos, F1 con 3 niveles y 6 fondos.
-El resolver proyecta F0; el lateral completo ocupa el fondo de F1. Colapsar los dos ambitos habria puesto
-las cotas del lateral completo sobre unos largueros que no son los que dibuja.
-
-**Consecuencias asumidas:** en un rack jagged el desviador **frontal** y el **lateral** pueden caer en `Y`
-distintas —el frontal es un corte unico que cruza todos los frentes, el lateral pertenece a uno—, y el
-lateral **completo** puede diferir del **seccionado** por la misma razon: uno dibuja el conjunto y el otro
-una linea de poste.
-
-**Fuera del override, por decision:** el **primer** desviador conserva su contrato selectivo (primer
-troquel + altura) y **todo el extremo posterior** sigue leyendo `EntranceElevation`, porque su larguero es
-el ancla. Tampoco se modifico `DynamicRackLevel.ExitElevation` ni el sistema Dinamico.
+**Owner-validation:** round 1 RECHAZADO, round 2 RECHAZADO. **No hay round 3 abierto.** El DLL compilado
+sobre `557858d` queda obsoleto y no debe reutilizarse.
 
 ## 12. Condiciones para detenerse
 
