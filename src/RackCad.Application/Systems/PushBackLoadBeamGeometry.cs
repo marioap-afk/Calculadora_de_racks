@@ -128,14 +128,26 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// PB-004 (I-32) — the rear beam's vertical offset PER LEVEL for one front, resolved once in the LATERAL frame
-        /// where the bed axis lives. An elevation is view-independent, so the REAR FRONTAL cut applies these very same
-        /// numbers instead of re-deriving them from its own (transverse) X: that is what keeps one physical beam at one
-        /// elevation across the two views (D14 of the Owner's AutoCAD matrix).
+        /// PB-004 (I-32, Owner rule after round 1) — THE elevation of the ENTRANCE/EXIT beam for one cell.
         ///
-        /// Levels without a resolved bed axis simply do not appear, so a caller keeps the raw snapped elevation there.
+        /// The rear beam is the anchor: <paramref name="highContact"/> is its REAL contact point, already on a valid
+        /// troquel. From there the theoretical low contact is the nominal slope applied over the run between the two
+        /// contacts; converting it to an INSERTION elevation subtracts the beam's own <c>TROQUEL_CAMA</c> datum
+        /// (<paramref name="lowMateLocalY"/>); and that insertion is finally snapped to its own nearest troquel, so
+        /// this beam is bolted too. The rise that comes out of it is the RESULTING one, not the nominal target.
         /// </summary>
-        public static IReadOnlyDictionary<int, double> RearBeamElevationOffsets(
+        public static double LowBeamElevation(Point2D highContact, double lowContactX, double lowMateLocalY, double gridBase)
+        {
+            var run = highContact.X - lowContactX;
+            var theoreticalContact = highContact.Y - PushBackBedSlope.Rise(run);
+            return PushBackTroquelGrid.Snap(theoreticalContact - lowMateLocalY, gridBase);
+        }
+
+        /// <summary>
+        /// The derived-and-snapped elevation of the ENTRANCE/EXIT beam, PER LEVEL, for one front. It is the single
+        /// authority every view consumes, so the lateral, the low frontal cut, the bed and the BOM cannot disagree.
+        /// </summary>
+        public static IReadOnlyDictionary<int, double> LowBeamElevations(
             PushBackSystem system, RackCatalog catalog, DynamicRackFront front)
         {
             var result = new Dictionary<int, double>();
@@ -145,14 +157,39 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
-            var beamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
+            var highBeamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId
                 : system.HighEndBeamCatalogId;
-            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
-            foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
+            var highColumn = catalog?.ConnectionLayout.FindConnectionLayout(
+                highBeamId, PushBackDefaults.HighEndBeamRightBedMatePoint, PushBackDefaults.HighEndBeamView);
+            if (highColumn == null)
             {
-                result[placement.LevelNumber] = RearBeamTangencyOffset(
-                    axes, placement.LevelNumber, catalog, beamId, placement.X, placement.Y, placement.MirroredX);
+                return result;   // sin fila medida no hay ancla: no se inventa una
+            }
+
+            var gridBase = PushBackTroquelGrid.Base(structure, catalog);
+            var placements = DynamicLoadBeamGeometry.Placements(structure, front);
+            foreach (var level in placements.Select(p => p.LevelNumber).Distinct())
+            {
+                var low = placements.FirstOrDefault(p => p.LevelNumber == level && !p.IsEntrance);
+                var high = placements.FirstOrDefault(p => p.LevelNumber == level && p.IsEntrance);
+                if (low == null || high == null)
+                {
+                    continue;
+                }
+
+                var lowBeamId = string.IsNullOrWhiteSpace(low.BeamCatalogId) ? DynamicRackDefaults.InOutBeamCatalogId : low.BeamCatalogId;
+                var lowMateLocal = CatalogLookup.Local(catalog, lowBeamId, DynamicRackDefaults.InOutBeamBedMatePoint, DynamicRackDefaults.InOutBeamView);
+                var highContact = new Point2D(
+                    high.X + (high.MirroredX ? -highColumn.LocalX : highColumn.LocalX),
+                    high.Y + highColumn.LocalY);
+                var lowContactX = low.X + (low.MirroredX ? -lowMateLocal.X : lowMateLocal.X);
+                if (highContact.X - lowContactX <= 0.0)
+                {
+                    continue;
+                }
+
+                result[level] = LowBeamElevation(highContact, lowContactX, lowMateLocal.Y, gridBase);
             }
 
             return result;
@@ -175,6 +212,7 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
+            var elevations = LowBeamElevations(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => !placement.IsEntrance))
             {
                 var beamId = string.IsNullOrWhiteSpace(placement.BeamCatalogId)
@@ -186,7 +224,9 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var origin = new Point2D(placement.X, placement.Y);
+                var origin = new Point2D(
+                    placement.X,
+                    elevations.TryGetValue(placement.LevelNumber, out var derived) ? derived : placement.Y);
                 result.Add(new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,
@@ -226,11 +266,10 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
-            var offsets = RearBeamElevationOffsets(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
             {
-                var offset = offsets.TryGetValue(placement.LevelNumber, out var value) ? value : 0.0;
-                var origin = new Point2D(placement.X, placement.Y + offset);
+                // PB-004: el posterior ES el ancla — se queda en el troquel que le dio el resolver, sin desplazamiento.
+                var origin = new Point2D(placement.X, placement.Y);
                 var instance = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,

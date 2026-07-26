@@ -165,10 +165,6 @@ namespace RackCad.Application.Systems
                 post.Insertion.Y + local.Value.Y);
         }
 
-        /// <summary>The rear beam's tangency offset for a level, or 0 when the view/level carries none.</summary>
-        private static double BeamOffset(IReadOnlyDictionary<int, double> offsets, int levelNumber)
-            => offsets != null && offsets.TryGetValue(levelNumber, out var offset) ? offset : 0.0;
-
         /// <summary>The rear tope Y in an ELEVATION view: the canonical Selective rise-and-snap plus <see cref="ExtraRise"/>.</summary>
         public static double ElevationY(double troquelMateY, double largueroY)
             => SelectiveTopePlacement.SnapY(troquelMateY, largueroY, SelectiveRackDefaults.TroquelPaso) + ExtraRise;
@@ -205,14 +201,8 @@ namespace RackCad.Application.Systems
             var separator = PostAnchorLocal(
                 catalog, postId, DynamicFrontGeometry.PostPeralte(structure, catalog, postId), view);
 
-            // PB-004 (I-32): the canonical rule is "rise above the REAR LARGUERO and snap to the post's troquel grid",
-            // so the reference is the beam's DRAWN elevation — which now follows the bed line — not its raw snapped
-            // placement. The snap keeps the stop on the post's hole column either way, so the approved +4" rise on the
-            // grid is preserved by construction. PLANTA has no elevation and takes no offset.
-            var offsets = keepFrenteY
-                ? null
-                : PushBackLoadBeamGeometry.RearBeamElevationOffsets(system, catalog, front);
-
+            // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar en su troquel, así
+            // que la referencia del tope es directamente esa colocación — sin desplazamiento intermedio.
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
             {
                 var levelIndex = placement.LevelNumber - 1;
@@ -231,7 +221,7 @@ namespace RackCad.Application.Systems
                 var x = placement.X + (placement.MirroredX ? -separator.Value.X : separator.Value.X);
                 var y = keepFrenteY
                     ? placement.Y + separator.Value.Y
-                    : ElevationY(troquelMateY, placement.Y + BeamOffset(offsets, placement.LevelNumber));
+                    : ElevationY(troquelMateY, placement.Y);
                 // Commercial LONGITUD = the corresponding transverse beam length (per front x level) + the allowance.
                 var baseLength = front != null
                     ? PushBackLoadBeamGeometry.CellBeamLength(structure, front, placement.LevelNumber)

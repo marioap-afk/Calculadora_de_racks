@@ -128,9 +128,25 @@ namespace RackCad.Tests
             // same pieces with the same lengths (the bed's commercial length is the structural span and the beams'
             // lengths are transverse) — so those three stay UNCHANGED, which is what bounds this correction.
             // Previous: lateral/lateral-corte0 17815678…, frontal-posterior 55AF6395…
-            ["lateral"] = "894A482272965240712C30E7CF29C5ACB886DE73DC4665C0AF777E624BF2BF44",
-            ["lateral-corte0"] = "894A482272965240712C30E7CF29C5ACB886DE73DC4665C0AF777E624BF2BF44",
-            ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
+            // PB-004, round 2 (I-32) — el Owner RECHAZO la validacion manual round 1 y SUSTITUYO la regla: la subida de
+            // 7/16" por pie es un OBJETIVO NOMINAL, no la subida final literal. Ahora el larguero POSTERIOR es el ANCLA
+            // y conserva el troquel que le dio el resolver; el de ENTRADA/SALIDA se DERIVA de el por la pendiente
+            // nominal y se ajusta a SU propio troquel; y la cama se traza entre los dos contactos fisicos reales, con
+            // la pendiente que salga de ese ajuste. Antes se hacia al reves —anclar el bajo y arrastrar el posterior
+            // FUERA de la reticula— y por eso se rechazo: un larguero siempre va atornillado a un troquel.
+            //
+            // Se mueven CUATRO pines, y cada uno por un motivo distinto:
+            //  * lateral / lateral-corte0: el larguero de entrada/salida sube a su troquel derivado, la cama se recalcula
+            //    entre los dos contactos reales, los intermedios la siguen y el posterior VUELVE a su troquel;
+            //  * frontal-entrada: ese mismo larguero bajo se dibuja aqui a la elevacion derivada — una pieza fisica, una
+            //    elevacion en todas las vistas;
+            //  * frontal-posterior: vuelve EXACTAMENTE al valor que tenia antes del round 1 (55AF6395...), que es la
+            //    comprobacion mas limpia de que el posterior regreso a su elevacion de resolver sin desplazamiento.
+            // planta (sin elevacion) y bom (mismas piezas, mismas longitudes) quedan INTACTOS, y eso acota el cambio.
+            // Anteriores: lateral/lateral-corte0 894A4822..., frontal-entrada C652265C..., frontal-posterior 602522B7...
+            ["lateral"] = "16D20B37CAFD7A0B10CAD951987886D8583219272095F33005529129814D6841",
+            ["lateral-corte0"] = "16D20B37CAFD7A0B10CAD951987886D8583219272095F33005529129814D6841",
+            ["frontal-entrada"] = "DAC83E0CBBD4D908F50BCD2587F36C54CC2608B42C79C5F36634306A72500EE0",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
             // the plan, not from the rear beam's insertion (which is what kept it on the larguero troquel). Exactly the
@@ -138,7 +154,7 @@ namespace RackCad.Tests
             // the approved rise-and-snap +4" on that same column) and planta (both coordinates coincide, no elevation).
             // LATERAL is byte-identical and the BOM is unchanged — the correction touches only those two views.
             // Previous: frontal-posterior 5553A6C1…, planta 666BBD2B…
-            ["frontal-posterior"] = "602522B7069A9B67B9438B7F088A595D954775AF809DBBD0D2EE6CC2CADA9B89",
+            ["frontal-posterior"] = "55AF63952A2C5DB36BEA5FA6818E55EAE09658314A9D4A95FFE070080CDF5211",
             ["planta"] = "4797ED85A9F9344C900BD5C6A882A6BE33DA8AA2DCD1AF837C28604A18DA4C64",
             // BOM pin updated by the length-coherence fix (rear tope LONGITUD = beamLength + LengthAllowance; end beams
             // per cell). The FIVE view pins are UNCHANGED (with no per-level override the cell length equals the front

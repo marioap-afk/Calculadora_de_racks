@@ -33,7 +33,6 @@ namespace RackCad.Application.Systems
 
         public DynamicSystemPlan BuildPlan(PushBackSystem system, RackCatalog catalog, PushBackFrontalEnd end)
         {
-            offsetsByFront.Clear();
             var structure = system?.Structure;
             if (structure == null)
             {
@@ -43,8 +42,10 @@ namespace RackCad.Application.Systems
             if (end == PushBackFrontalEnd.EntradaSalida)
             {
                 // Low cut: the dynamic exit frontal (structure is GUIA-free) already IS "IN/OUT + applicable safety".
+                // PB-004 (I-32): sus largueros IN/OUT llevan la elevacion DERIVADA del posterior y ajustada al troquel,
+                // la misma que dibuja el lateral. Una pieza fisica, una elevacion en todas las vistas.
                 return HeaderInstanceGrouper.Group(
-                    dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Exit),
+                    WithDerivedLowElevations(system, catalog, structure, dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Exit)),
                     "PB_FRONTAL_ENTRADA_SALIDA");
             }
 
@@ -81,24 +82,13 @@ namespace RackCad.Application.Systems
                     var (frontIndex, level) = LocateCell(structure, catalog, layout, instance);
 
                     // Swap the IN/OUT for the rear TROQUEL_REDONDO, keeping the transverse LONGITUD, at the same column.
-                    // PB-004 (I-32): its ELEVATION is the lateral one — the beam is tangent to the bed line there, and the
-                    // same physical piece cannot sit at two heights in two views (D14 of the Owner's matrix). The offset
-                    // is resolved once in the lateral frame by the single authority and applied verbatim here, because an
-                    // elevation does not depend on the view. The stop below measures from this SAME shifted elevation, so
-                    // the canonical rule ("rise above the rear larguero, snap to the post's grid, +4\"") is preserved.
-                    var shift = level >= 0
-                        ? RearBeamOffset(system, catalog, structure, frontIndex, level + 1) ?? 0.0
-                        : 0.0;
+                    // PB-004 (I-32, regla del Owner tras el round 1): el posterior es el ANCLA y se queda en su troquel,
+                    // así que esta vista y el corte lateral coinciden por construcción — sin desplazamiento que
+                    // sincronizar (D14 de la matriz de AutoCAD del dueño).
                     var redondo = CloneAt(instance, redondoId, redondoBlock);
                     redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = level >= 0
                         ? system.HighEndBeamPeralteAt(frontIndex, level)
                         : PushBackDefaults.HighEndBeamDefaultPeralte;
-                    if (shift != 0.0)
-                    {
-                        redondo.Insertion = new Point2D(redondo.Insertion.X, redondo.Insertion.Y + shift);
-                        redondo.ConnectionAnchor = redondo.Insertion;
-                    }
-
                     result.Add(redondo);
 
                     // Rear tope only for a MATCHED, active cell, placed by the canonical Selective rule (rise + snap).
@@ -117,7 +107,7 @@ namespace RackCad.Application.Systems
                             continue;   // no measured post point: no stop, never a raw fallback
                         }
 
-                        var topeY = PushBackRearTopeBuilder.ElevationY(troquelMateY, instance.Insertion.Y + shift);
+                        var topeY = PushBackRearTopeBuilder.ElevationY(troquelMateY, instance.Insertion.Y);
                         var topeX = mate.Value.X;
                         double? longitud = instance.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var beamLength)
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
@@ -137,28 +127,54 @@ namespace RackCad.Application.Systems
             return HeaderInstanceGrouper.Group(result, "PB_FRONTAL_POSTERIOR");
         }
 
+
         /// <summary>
-        /// The lateral tangency offset of one cell's rear beam, or null when the cell has no resolved bed axis. Cached
-        /// per front so a frontal cut resolves each front's axes once, not once per level.
+        /// PB-004 (I-32) — reasienta los largueros IN/OUT del corte bajo en su elevacion derivada. La elevacion no
+        /// depende de la vista, asi que se resuelve una sola vez por frente con la misma autoridad que usa el lateral;
+        /// el resto del corte (postes, placas, seguridad, decoraciones) pasa intacto.
         /// </summary>
-        private double? RearBeamOffset(PushBackSystem system, RackCatalog catalog, DynamicRackSystem structure, int frontIndex, int levelNumber)
+        private static IReadOnlyList<HeaderBlockInstance> WithDerivedLowElevations(
+            PushBackSystem system, RackCatalog catalog, DynamicRackSystem structure, IReadOnlyList<HeaderBlockInstance> instances)
         {
-            if (frontIndex < 0 || frontIndex >= structure.Fronts.Count)
+            var layout = DynamicFrontGeometry.Compute(structure, catalog);
+            var byFront = new Dictionary<int, IReadOnlyDictionary<int, double>>();
+            var result = new List<HeaderBlockInstance>(instances.Count);
+
+            foreach (var instance in instances)
             {
-                return null;
+                if (!PushBackPlanComposer.IsDynamicEndBeam(instance))
+                {
+                    result.Add(instance);
+                    continue;
+                }
+
+                var (frontIndex, level) = LocateCell(structure, catalog, layout, instance, DynamicRackEnd.Exit);
+                if (frontIndex < 0 || level < 0 || frontIndex >= structure.Fronts.Count)
+                {
+                    result.Add(instance);
+                    continue;
+                }
+
+                if (!byFront.TryGetValue(frontIndex, out var elevations))
+                {
+                    elevations = PushBackLoadBeamGeometry.LowBeamElevations(system, catalog, structure.Fronts[frontIndex]);
+                    byFront[frontIndex] = elevations;
+                }
+
+                if (!elevations.TryGetValue(level + 1, out var derived))
+                {
+                    result.Add(instance);
+                    continue;
+                }
+
+                var moved = CloneAt(instance, instance.PieceId, instance.BlockName);
+                moved.Insertion = new Point2D(instance.Insertion.X, derived);
+                moved.ConnectionAnchor = moved.Insertion;
+                result.Add(moved);
             }
 
-            if (!offsetsByFront.TryGetValue(frontIndex, out var offsets))
-            {
-                offsets = PushBackLoadBeamGeometry.RearBeamElevationOffsets(system, catalog, structure.Fronts[frontIndex]);
-                offsetsByFront[frontIndex] = offsets;
-            }
-
-            return offsets.TryGetValue(levelNumber, out var offset) ? offset : (double?)null;
+            return result;
         }
-
-        private readonly Dictionary<int, IReadOnlyDictionary<int, double>> offsetsByFront =
-            new Dictionary<int, IReadOnlyDictionary<int, double>>();
 
         private static HeaderBlockInstance CloneAt(HeaderBlockInstance source, string pieceId, string block)
         {
@@ -191,7 +207,9 @@ namespace RackCad.Application.Systems
         /// by entrance elevation within <see cref="LevelMatchTolerance"/>. Returns level = -1 (no silent front-0/level-0
         /// fallback) when nothing matches, so the caller neither mislabels the peralte nor draws a wrong-cell tope.
         /// </summary>
-        private static (int FrontIndex, int Level) LocateCell(DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam)
+        private static (int FrontIndex, int Level) LocateCell(
+            DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam,
+            DynamicRackEnd end = DynamicRackEnd.Entrance)
         {
             var frontIndex = -1;
             var bestX = double.MaxValue;
@@ -218,7 +236,10 @@ namespace RackCad.Application.Systems
             var bestY = double.MaxValue;
             for (var index = 0; index < frontLevels.Count; index++)
             {
-                var distance = Math.Abs(frontLevels[index].EntranceElevation - beam.Insertion.Y);
+                var elevation = end == DynamicRackEnd.Exit
+                    ? frontLevels[index].ExitElevation
+                    : frontLevels[index].EntranceElevation;
+                var distance = Math.Abs(elevation - beam.Insertion.Y);
                 if (distance < bestY)
                 {
                     bestY = distance;

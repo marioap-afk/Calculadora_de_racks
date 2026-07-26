@@ -72,23 +72,17 @@ namespace RackCad.Tests
             var system = System(catalog);
             var instances = new PushBackSystemLateralBuilder().Build(system, catalog).Flatten().Instances;
 
-            // Owner decision (2026-07-24): the LOW beam sits exactly on the resolver's snapped EXIT elevation — it is
-            // bolted where its TROQUEL_CAMA meets the rail's TROQUEL_IN and carries no shift of its own. The HIGH beam is
-            // the one that drops onto the bed-origin line, so its Y is the snapped entrance elevation PLUS its tangency.
+            // PB-004 (I-32, regla del Owner tras el round 1): el POSTERIOR es el ancla y conserva la elevación de
+            // entrada que ajustó el resolver; el de ENTRADA/SALIDA se DERIVA de él y se ajusta a su propio troquel, así
+            // que ya no coincide con la elevación de salida del resolver.
             var front0 = system.Structure.Fronts[0];
-            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front0);
-            var highBeamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
-                ? PushBackDefaults.HighEndBeamCatalogId
-                : system.HighEndBeamCatalogId;
+            var lowElevations = PushBackLoadBeamGeometry.LowBeamElevations(system, catalog, front0);
             var exitYs = system.Structure.LoadBeamLevels
-                .Select(l => Math.Round(l.ExitElevation, 3)).OrderBy(y => y).ToList();
+                .Select(l => Math.Round(lowElevations[l.LevelNumber], 3)).OrderBy(y => y).ToList();
             var entranceYs = system.Structure.LoadBeamLevels
                 .Select(l =>
                 {
-                    var placement = DynamicLoadBeamGeometry.Placements(system.Structure, front0)
-                        .First(p => p.IsEntrance && p.LevelNumber == l.LevelNumber);
-                    return Math.Round(l.EntranceElevation + PushBackLoadBeamGeometry.RearBeamTangencyOffset(
-                        axes, l.LevelNumber, catalog, highBeamId, placement.X, placement.Y, placement.MirroredX), 3);
+                    return Math.Round(l.EntranceElevation, 3);
                 })
                 .OrderBy(y => y).ToList();
 
@@ -136,15 +130,15 @@ namespace RackCad.Tests
             var level0 = system.Structure.LoadBeamLevels[0];
             var axis0 = axes.First(a => a.LevelNumber == 1);
 
-            // Low mate = IN/OUT TROQUEL_CAMA at the exit (StartX=0, exit elevation).
+            // El extremo BAJO también es un contacto real, pero de un larguero DERIVADO del alto y ajustado a su
+            // troquel: por eso ya no coincide con la elevación de salida del resolver.
             Assert.Equal(0.0 + lowCama.X, axis0.ExitMate.X, 3);
-            Assert.Equal(level0.ExitElevation + lowCama.Y, axis0.ExitMate.Y, 3);
-            // High end: the X is still the TROQUEL_REDONDO INICIO_DERECHO column (EndX, mirrored), but PB-004 (I-32)
-            // DERIVES its Y from the low mate through the canonical slope instead of reading the rear beam's own
-            // snapped elevation plus its own datum — that second, unrelated source is what made the bed rise 11.2".
+            var lowElevations = PushBackLoadBeamGeometry.LowBeamElevations(system, catalog, system.Structure.Fronts[0]);
+            Assert.Equal(lowElevations[axis0.LevelNumber] + lowCama.Y, axis0.ExitMate.Y, 9);
+            // PB-004 (I-32, regla del Owner tras el round 1): el extremo ALTO es el ANCLA y su contacto es real — la
+            // elevación de entrada que ajustó el resolver más el punto INICIO_DERECHO del larguero posterior.
             Assert.Equal(system.TotalLength - highInicio.X, axis0.HighMate.X, 3);
-            Assert.Equal(axis0.ExitMate.Y + PushBackBedSlope.Rise(axis0.Run), axis0.HighMate.Y, 9);
-            Assert.NotEqual(level0.EntranceElevation + highInicio.Y, axis0.HighMate.Y, 3);
+            Assert.Equal(level0.EntranceElevation + highInicio.Y, axis0.HighMate.Y, 3);
             Assert.True(axis0.HighMate.X > axis0.ExitMate.X); // bed runs low(left) -> high(right)
         }
 

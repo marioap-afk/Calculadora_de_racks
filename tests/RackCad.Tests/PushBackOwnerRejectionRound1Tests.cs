@@ -82,12 +82,11 @@ namespace RackCad.Tests
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.NotEmpty(topes);
 
-            // PB-004 (I-32): the rule's reference is the rear larguero's DRAWN elevation (tangent to the corrected bed
-            // line). PB-VAL-03's +4" over the canonical snap is what this pins, and it is unchanged.
-            var offsets = PushBackLoadBeamGeometry.RearBeamElevationOffsets(system, catalog, front);
+            // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar EN SU TROQUEL, asi
+            // que la referencia del tope es su colocacion cruda. PB-VAL-03 (+4" sobre el snap canonico) sigue intacto.
             var beams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
                 .Where(p => p.IsEntrance)
-                .Select(p => p.Y + (offsets.TryGetValue(p.LevelNumber, out var offset) ? offset : 0.0))
+                .Select(p => p.Y)
                 .ToList();
             foreach (var tope in topes)
             {
