@@ -11,10 +11,9 @@ automation_state:
     attempts-se-mantiene-en-2-hasta-que-se-abra-FORMALMENTE-un-round-3 ·
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
   next_action: >-
-    revision-del-coordinador-sobre-el-rechazo-del-round-2-NO-se-genera-dll-canonico-nuevo-hasta-esa-revision-y-no-hay-round-3-abierto ·
-    DEFECTO-1-BLOQUEADO-hace-falta-una-DECISION-DE-CATALOGO-medir-el-extremo-fisico-del-riel-parametrizado-por-longitud-sin-ese-dato-la-tangencia-no-se-puede-calcular-sin-adivinar ·
-    DEFECTO-2-CORREGIDO-con-evidencia-fallo-paso
-  last_evidence_commit: 159e488
+    revision-del-coordinador-sobre-los-DOS-defectos-del-round-2-ya-corregidos-NO-se-genera-dll-canonico-nuevo-hasta-esa-revision-y-no-hay-round-3-abierto ·
+    punto-a-decidir-el-BOM-de-la-cama-sigue-reportando-la-longitud-COMERCIAL-por-via-propia-pushbackbomBuilder-no-la-geometrica-se-deja-como-esta-porque-cambiar-lo-que-se-COMPRA-es-decision-comercial-y-no-geometrica
+  last_evidence_commit: 924de1a
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -49,7 +48,9 @@ evidence:
     ddb302f-cablea-solo-el-lateral-no-seccionado-a-la-envolvente ·
     4bb1756-docs-revision-6 · e6eb7ba-estado-ci-de-la-revision-6 · 557858d-a-validating-round-2-autorizado ·
     3b91c87-regresiones-del-default-del-protector-lateral-fallando-sobre-557858d ·
-    159e488-round2-defecto-2-el-ultimo-protector-no-desaparece-se-espeja
+    159e488-round2-defecto-2-el-ultimo-protector-no-desaparece-se-espeja ·
+    f961f03-docs-round-2-rechazada · 27fd403-estado-ci · 2983fa1-regresiones-de-tangencia-por-origen ·
+    924de1a-round2-defecto-1-la-cama-se-coloca-por-su-origen
   bugs_fixed: pb-002 pb-003 pb-004 pb-005 pb-006 pb-008 pb-009 pb-010 pb-012 pb-013
   bugs_deferred: >-
     pb-001-preview pb-007-reconfigurador-masivo-de-seguridad pb-011-editor-avanzado-de-modulos
@@ -59,9 +60,10 @@ evidence:
     corrida-2-sobre-00491b0-pb002-clave-por-poste-3-de-7-pb010-reduccion-3-de-5-pb004-cabecera-3-de-3-contra-una-doble-elevacion-simulada ·
     corrida-3-sobre-26642c9-pb010-dialogo-2-de-7-de-pushbackdefensadialogtests-la-prueba-afirma-en-el-mismo-metodo-que-el-helper-puro-dynamicforkliftdefenseplan-ya-resolvia-bien-el-registro-manual-lo-que-fallaba-era-lo-que-devolvia-el-dialogo-es-decir-el-defecto-era-de-la-ui ·
     el-resto-son-centinelas-verdes-antes-y-despues
-  tests: rackcad-tests-1376-de-1376-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
+  tests: rackcad-tests-1411-de-1411-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
   targeted_filters: >-
-    corrida-6-ningun-filtro-en-cero-pb004-108-desviador-52-decorations-40-dynamic-197-golden-2-validador-i19-41 ·
+    corrida-8-ningun-filtro-en-cero-bed-151-tangency-39-flowbed-33-safety-119-lateral-157-golden-2-bom-97-validador-i19-41 ·
+    historico-corrida-6-ningun-filtro-en-cero-pb004-108-desviador-52-decorations-40-dynamic-197-golden-2-validador-i19-41 ·
     historico-corrida-5-pb004-89-desviador-51-decorations-39-dynamic-197-golden-2-bom-96-validador-i19-41 ·
     historico-ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
   builds: >-
@@ -95,25 +97,31 @@ evidence:
     ese-round-2-se-ejecuto-y-fue-RECHAZADO-asi-que-la-aprobacion-tecnica-NO-implica-aprobacion-del-owner
   owner_validation_round_2: >-
     RECHAZADA-2026-07-26-sobre-el-dll-de-557858d-dos-defectos ·
-    defecto-1-TANGENCIA-FISICA-de-la-cama-el-eje-matematico-llega-al-contacto-posterior-pero-el-BLOQUE-del-riel-continua-dentro-del-larguero-BLOQUEADO-no-implementado-falta-contrato-fisico ·
+    defecto-1-TANGENCIA-FISICA-de-la-cama-el-bloque-continuaba-dentro-del-larguero-CORREGIDO-se-coloca-por-su-ORIGEN ·
     defecto-2-el-DEFAULT-del-protector-lateral-perdia-el-del-ULTIMO-poste-CORREGIDO-con-evidencia-fallo-paso ·
     el-dll-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-queda-OBSOLETO-no-debe-reutilizarse ·
     NO-hay-round-3-abierto-y-NO-se-genera-dll-canonico-nuevo-hasta-revision-del-coordinador
   defect_1_bed_tangency: >-
-    CAUSA-RAIZ-MEDIDA-la-longitud-del-riel-sale-de-la-longitud-COMERCIAL-resolvebedlength-front-endx-menos-startx-mientras-que-el-riel-se-POSICIONA-por-su-troquel-in-sobre-el-contacto-bajo-son-dos-marcos-distintos-y-los-contactos-no-estan-en-los-extremos-del-tramo-comercial-el-bajo-entra-3-754-y-el-posterior-se-queda-0-155-corto ·
-    penetracion-medida-sobre-el-plan-lateral-real-fondos-3-comercial-156-000-entre-contactos-152-171-sobra-2-643-desde-el-origen-o-3-829-desde-troquel-in-fondos-4-204-000-vs-200-211-sobra-2-608-o-3-789-fondos-6-300-000-vs-296-293-sobra-2-537-o-3-707-bajo-CUALQUIERA-de-las-dos-lecturas-el-riel-excede-el-espacio-entre-contactos ·
-    VERIFICADO-no-supuesto-la-longitud-y-el-angulo-del-eje-son-identicos-en-todos-los-niveles-y-entre-un-frente-concreto-y-front-null-deep-4-len-200-2108-ang-0-034641-asi-que-la-definicion-compartida-del-riel-no-es-el-problema ·
-    CONTRATO-QUE-FALTA-connection-layout-csv-mide-del-riel-solo-troquel-tope-0-5-2-75-y-troquel-in-1-5-1-25-y-NINGUNO-varia-con-longitud-localxporparam-0-ninguna-fila-del-catalogo-entero-esta-parametrizada-por-longitud-el-mecanismo-existe-pero-solo-se-usa-con-peralte-flow-bed-profiles-csv-deja-length-vacia-el-riel-se-corta-a-medida-y-assets-blocks-esta-vacio-el-dwg-no-vive-en-el-repo ·
-    AGRAVANTE-el-codigo-ya-contiene-DOS-suposiciones-contradictorias-el-builder-coloca-el-riel-con-origen-0-0-y-longitud-comercial-mientras-editorpreviewparts-cs-114-documenta-each-rail-along-its-longitud-from-its-IN-mate-se-diferencian-en-1-5-que-es-del-mismo-orden-que-el-error-a-eliminar ·
-    LO-QUE-HACE-FALTA-una-fila-medida-riel-fin-riel-lateral-a-1-longitud-b-0-es-decir-extremo-local-a-mas-longitud-b ·
-    FORMULA-YA-DETERMINADA-b-debe-ser-igual-a-troquel-in-localy-1-25-o-el-extremo-queda-fuera-del-eje-y-la-longitud-sola-no-puede-hacerlo-tangente-y-longitud-geometrica-igual-a-axis-length-mas-troquel-in-localx-menos-a ·
-    SEPARACION-la-longitud-COMERCIAL-se-queda-para-la-subida-nominal-y-el-bom-la-GEOMETRICA-es-solo-para-colocar-el-bloque-nada-de-esto-toca-pushbackelevations
+    CORRECCION-DE-INTERPRETACION-DEL-OWNER-2026-07-26-la-primera-lectura-fue-EQUIVOCADA-se-concluyo-que-faltaba-un-punto-medido-fin-riel-y-NO-falta-ninguno-ni-se-agrega-fila-al-catalogo-el-defecto-esta-en-el-lado-del-ORIGEN ·
+    CAUSA-RAIZ-la-cama-se-colocaba-haciendo-coincidir-su-troquel-in-con-el-contacto-y-ese-punto-esta-desplazado-respecto-del-origen-local-0-0-asi-que-todo-lo-que-hay-entre-ambos-quedaba-ANTES-del-contacto-dentro-del-larguero-y-ademas-la-longitud-del-riel-era-el-tramo-comercial-mas-largo-que-la-distancia-entre-contactos ·
+    penetracion-medida-antes-del-arreglo-fondos-3-comercial-156-000-entre-contactos-152-171-sobra-3-829-fondos-4-204-000-vs-200-211-sobra-3-789-fondos-6-300-000-vs-296-293-sobra-3-707 ·
+    REGLA-VIGENTE-1-el-origen-local-0-0-coincide-con-el-contacto-fisico-del-larguero-de-origen-2-la-cama-se-rota-hacia-el-contacto-del-otro-3-la-longitud-geometrica-es-la-distancia-euclidiana-entre-los-dos-pushbackflowbedaxis-length ·
+    troquel-in-sigue-siendo-punto-INTERNO-del-bloque-y-asi-queda-documentado-pero-deja-de-ser-la-autoridad-de-colocacion-railorigin-pasa-a-ser-el-propio-exitmate-antes-retrocedia-desde-troquel-in-y-ESE-RETROCESO-ERA-la-penetracion-los-intermedios-que-matan-a-esa-linea-la-siguen-sin-cambio-de-codigo ·
+    NO-se-agrega-fin-riel-NO-se-tocan-catalogos-NO-se-introduce-ningun-offset-medido-ni-magico ·
+    LO-QUE-NO-CAMBIA-la-longitud-COMERCIAL-se-queda-calculando-solo-la-subida-nominal-de-7-16-por-pie-los-dos-largueros-siguen-en-sus-troqueles-y-la-pendiente-sigue-siendo-la-resultante-con-pruebas-explicitas ·
+    VERIFICADO-no-supuesto-la-longitud-y-el-angulo-del-eje-son-identicos-en-todos-los-niveles-y-entre-un-frente-concreto-y-front-null-deep-4-len-200-2108-ang-0-034641-asi-que-una-sola-definicion-compartida-sigue-sirviendo ·
+    GOLDENS-se-mueven-SOLO-lateral-y-lateral-corte0-de-a7040d72-a-1914400c-donde-se-dibuja-la-cama-frontal-entrada-frontal-posterior-planta-y-bom-INTACTOS ·
+    A-DECIDIR-el-bom-de-la-cama-sigue-reportando-la-longitud-COMERCIAL-por-via-propia-pushbackbomBuilder-linea-112-y-su-golden-no-se-movio-se-deja-como-esta-y-se-senala-cambiar-lo-que-se-compra-es-decision-comercial-no-geometrica-y-el-owner-reporto-un-problema-de-dibujo
   defect_2_lateral_guard_default: >-
     CAUSA-RAIZ-la-misma-confusion-de-ejes-del-round-1-colada-en-la-regla-ADAPTATIVA-ahi-right-es-ORIENTACION-y-no-extremo-longitudinal-sideat-lo-leia-como-extremo-posterior-y-en-un-sistema-de-extremo-bajo-devolvia-none-borrando-la-pieza-en-vez-de-girarla ·
     habia-TRES-vias-por-las-que-la-copia-del-ultimo-poste-se-perdia-o-se-iba-atras-y-las-tres-estan-corregidas-1-sideat-devuelve-right-tambien-con-extremo-bajo-2-copiesat-emite-copias-fisicas-directamente-en-la-ruta-adaptativa-con-athighend-solo-donde-el-sistema-tiene-extremo-alto-3-dynamicsafetylateralbuilder-consume-esas-copias-en-vez-de-un-safetyside-literal-desaparece-sideoverride-y-queda-copiesoverride ·
     la-matriz-EXPLICITA-por-poste-no-se-toca-la-sigue-resolviendo-selectivesafetyends ·
     pushbackforkliftdefensetests-fijaba-el-defecto-en-su-propio-nombre-keepstheadaptivelateralguardoffthefarface-y-se-corrigio-con-el-motivo-escrito-la-defensa-de-montacargas-el-otro-elemento-de-pb-009-sigue-restringida-al-extremo-bajo-y-no-cambia ·
     dinamico-byte-identico-sus-siete-firmas-sha256-no-se-mueven-y-sus-copias-adaptativas-siguen-mandando-el-ultimo-protector-al-extremo-alto
+  regression_evidence_round_8: >-
+    defecto-1-VEINTICINCO-de-treinta-y-cinco-pruebas-de-pushbackbedorigintangencytests-observadas-FALLANDO-sobre-27fd403-sobre-el-bloque-APLANADO-con-2-3-4-6-y-8-fondos-y-tambien-con-front-null-el-origen-no-cae-en-el-contacto-bajo-longitud-es-el-tramo-comercial-y-no-axis-length-el-extremo-opuesto-no-cae-en-el-contacto-posterior-y-hay-piezas-ANTES-del-origen ·
+    DIEZ-pasan-ya-y-deben-seguir-los-dos-largueros-en-troquel-la-pendiente-resultante-y-la-longitud-comercial-calculando-solo-la-subida-nominal ·
+    la-comprobacion-de-penetracion-proyecta-cada-pieza-sobre-el-eje-desde-el-contacto-bajo-y-exige-que-caiga-en-0-length-una-coordenada-negativa-es-exactamente-lo-que-el-owner-vio
   regression_evidence_round_7: >-
     NUEVE-de-once-pruebas-de-pushbacklateralguarddefaulttests-observadas-FALLANDO-sobre-557858d-rack-nuevo-con-2-3-y-5-frentes-solo-lleva-un-protector-falta-el-del-ultimo-poste-en-entrada-salida-no-se-cumple-primero-sin-espejo-ultimo-espejado-planta-y-bom-cuentan-uno-crecer-o-reducir-no-mueve-el-default-guardar-y-reabrir-conserva-el-rack-incompleto-y-copiesat-devuelve-vacio-en-el-ultimo-poste-de-un-sistema-de-extremo-bajo ·
     DOS-pasan-ya-y-deben-seguir-el-sistema-ordinario-manda-su-ultimo-protector-al-extremo-alto-y-una-matriz-explicita-sustituye-al-default ·

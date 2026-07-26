@@ -185,29 +185,34 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
 - Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar.
 
-### Estado tras el round 2 — un pendiente ABIERTO y bloqueado
+### Estado tras el round 2 — los dos defectos corregidos
 
-> **Correccion.** La version anterior de esta seccion declaraba que «no queda pendiente funcional» y
-> autorizaba el round 2. El round 2 **se ejecuto y fue RECHAZADO**, asi que esa afirmacion ya no vale y
-> queda corregida aqui en vez de retirada.
+> **Correcciones.** Esta seccion declaro primero que «no queda pendiente funcional» y autorizo el round 2;
+> el round 2 **se ejecuto y fue RECHAZADO**. Despues declaro el defecto 1 **bloqueado** por un contrato de
+> catalogo que se creia faltante; el Owner **corrigio esa interpretacion**: no falta ningun contrato, el
+> defecto estaba en el lado del ORIGEN y se resuelve con geometria existente. Las dos afirmaciones quedan
+> corregidas aqui en vez de retiradas.
 
-De los dos defectos del round 2, uno esta corregido y otro **bloqueado**:
-
-| # | Defecto | Estado |
+| # | Defecto del round 2 | Estado |
 |---|---|---|
-| 1 | La cama penetra fisicamente el larguero posterior | **BLOQUEADO** — falta un punto medido en el catalogo |
-| 2 | Falta el protector lateral por default del ultimo poste | **CORREGIDO**, con evidencia fallo-paso |
+| 1 | La cama penetra fisicamente el larguero | **CORREGIDO** — se coloca por su ORIGEN |
+| 2 | Falta el protector lateral por default del ultimo poste | **CORREGIDO** |
 
-**El defecto 1 no se implementa por falta de contrato fisico.** El riel `RIEL_DE_CINTA_CALIBRE_12` tiene
-en `connection-layout.csv` exactamente dos puntos medidos —`TROQUEL_TOPE` y `TROQUEL_IN`— y **ninguno
-varia con `LONGITUD`**, asi que no hay forma de saber donde acaba el bloque cuando se alarga. Elegir una
-interpretacion sin medirla seria adivinar la misma cantidad que hay que corregir, y el codigo ya arrastra
-dos suposiciones contradictorias que se diferencian en 1.5". El detalle, las mediciones de la penetracion
-y la formula que se aplicara en cuanto exista la medicion estan en
+**Defecto 1.** La cama se coloca por su **origen local `(0,0)`** sobre el contacto fisico del larguero, se
+rota hacia el contacto del otro, y su **`LONGITUD` geometrica** es la distancia euclidiana entre los dos.
+`TROQUEL_IN` sigue siendo un punto interno del bloque pero ya no es la autoridad de colocacion: usarlo
+como pivote dejaba geometria antes del contacto. **No se agrego ninguna fila al catalogo.** La longitud
+**comercial** se queda calculando solo la subida nominal de 7/16" por pie, asi que los dos largueros
+siguen en sus troqueles y la pendiente sigue siendo la resultante.
+
+**Defecto 2.** En la regla adaptativa, `Right` es **orientacion** y no extremo: el ultimo poste conserva
+su protector, espejado, en vez de desaparecer en un sistema de extremo bajo.
+
+El detalle, las mediciones y los efectos sobre los goldens estan en
 [`decisions/I-32.md`](../automation/decisions/I-32.md).
 
-**Owner-validation:** round 1 RECHAZADO, round 2 RECHAZADO. **No hay round 3 abierto.** El DLL compilado
-sobre `557858d` queda obsoleto y no debe reutilizarse.
+**Owner-validation:** round 1 RECHAZADO, round 2 RECHAZADO. **No hay round 3 abierto.** Los dos DLL
+anteriores —`2210e67` y `557858d`— quedan obsoletos y no deben reutilizarse.
 
 ## 12. Condiciones para detenerse
 
