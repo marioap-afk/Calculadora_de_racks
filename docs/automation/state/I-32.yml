@@ -215,7 +215,8 @@ gates:
   ci:
     required: true
     note: >-
-      VERDE-run-30187329126-success-4-de-4-jobs-sobre-la-punta-de-esta-corrida-f961f038012c54d8eeff882e348bddeaf8b085b0-codigo-y-documentacion-en-la-misma-corrida ·
+      VERDE-run-30220649438-success-4-de-4-jobs-sobre-la-punta-de-esta-corrida-14585a9f06a0b93e81a749bee7e10564f74e4259 ·
+      historico-run-30187329126-success-4-de-4-sobre-f961f03 ·
       historico-run-30186125811-success-sobre-557858d-el-sha-del-dll-rechazado-en-el-round-2 ·
       VERDE-run-30185464630-success-sobre-ddb302f ·
       VERDE-run-30185518891-success-sobre-la-punta-DOCUMENTAL-4bb17560cc555c3f073db07d61c711c96602e54b ·
