@@ -190,27 +190,47 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 
 ### Una sola autoridad, y todos sus consumidores cableados
 
-`PushBackElevations` resuelve las elevaciones Push Back por frente y nivel, y **ya no queda ningun
-consumidor fuera**. Los largueros y la cama la leen directamente; el corte lateral, los dos frontales, el
-desviador bajo y las cotas y etiquetas la reciben a traves de un **contexto neutral**
-(`RackLevelElevations`) que los builders compartidos aceptan como ultimo parametro **opcional**. Con el
-valor por defecto (`null`) su ejecucion es byte-identica, asi que el Selectivo y el Dinamico —que no lo
-pasan nunca— no pueden notarlo.
+> **Correccion.** La version anterior de esta seccion afirmaba que «ya no queda ningun consumidor fuera».
+> **Era falso**: faltaba el **lateral completo, el que no esta seccionado por poste**. Sus largueros ya se
+> resolvian con la envolvente del sistema, pero su desviador y sus anotaciones seguian leyendo la
+> elevacion del resolver y la del frente proyectado — otro frente distinto. Queda cerrado abajo, con el
+> ambito `SystemEnvelope`.
 
-El contexto expone tres consultas explicitas, una por ambito:
+`PushBackElevations` resuelve las elevaciones Push Back por frente y nivel. Los largueros y la cama la
+leen directamente; el corte lateral, los dos frontales, el desviador bajo y las cotas y etiquetas la
+reciben a traves de un **contexto neutral** (`RackLevelElevations`) que los builders compartidos aceptan
+como ultimo parametro **opcional**. Con el valor por defecto (`null`) su ejecucion es byte-identica, asi
+que el Selectivo y el Dinamico —que no lo pasan nunca— no pueden notarlo.
+
+El contexto expone **cuatro** consultas explicitas, una por ambito:
 
 | Consulta | Ambito | Quien la usa |
 |---|---|---|
-| `AtFront(frontIndex, ...)` | un frente concreto | larguero bajo del frontal, desviador lateral bajo |
-| `AtPost(postIndex, ...)` | los frentes **adyacentes** al poste | desviador frontal bajo, decoraciones laterales |
-| `AtProjectedSystem(...)` | todos los frentes | decoraciones frontales, lateral no seccionado |
+| `AtFront(frontIndex, ...)` | un frente concreto | larguero bajo del frontal, desviador lateral **seccionado** |
+| `AtPost(postIndex, ...)` | los frentes **adyacentes** al poste | desviador frontal bajo, cotas laterales **por poste** |
+| `AtProjectedSystem(...)` | el frente que origino `system.LoadBeamLevels` | frontal global |
+| `AtSystemEnvelope(...)` | el rack **entero**, sin frente | lateral **completo**: su desviador y sus cotas |
 
 `AtPost` y `AtProjectedSystem` eligen frente con la **misma regla del resolver** —mayor cantidad de
 niveles y, en empate, mayor profundidad—, aplicada a su ambito.
 
-**Consecuencia asumida:** en un rack jagged el desviador **frontal** y el **lateral** pueden caer en `Y`
-distintas. Es deliberado: el frontal es un corte unico que cruza todos los frentes, mientras que el
-lateral pertenece a uno.
+`AtSystemEnvelope` **no elige frente**, y por eso es un ambito propio y no una variante del anterior. Su
+mapa llega **explicito** al construir el contexto, resuelto con `front: null`.
+
+#### Por que envolvente y proyeccion no son lo mismo
+
+La **proyeccion** es el frente que origino `system.LoadBeamLevels`: gana por numero de niveles. La
+**envolvente** es el rack entero: su longitud de cama es la del sistema, no la de ningun frente. En
+cuanto un frente gana por niveles y otro es mas profundo, las dos caen en **troqueles distintos**.
+
+El caso que lo demuestra esta en las pruebas: F0 con 4 niveles y 4 fondos, F1 con 3 niveles y 6 fondos.
+El resolver proyecta F0; el lateral completo ocupa el fondo de F1. Colapsar los dos ambitos habria puesto
+las cotas del lateral completo sobre unos largueros que no son los que dibuja.
+
+**Consecuencias asumidas:** en un rack jagged el desviador **frontal** y el **lateral** pueden caer en `Y`
+distintas —el frontal es un corte unico que cruza todos los frentes, el lateral pertenece a uno—, y el
+lateral **completo** puede diferir del **seccionado** por la misma razon: uno dibuja el conjunto y el otro
+una linea de poste.
 
 **Fuera del override, por decision:** el **primer** desviador conserva su contrato selectivo (primer
 troquel + altura) y **todo el extremo posterior** sigue leyendo `EntranceElevation`, porque su larguero es

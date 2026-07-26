@@ -10,8 +10,9 @@ automation_state:
   attempts_note: >-
     revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-en-esta-corrida
   next_action: >-
-    nueva-revision-del-coordinador-sobre-esta-punta-0fc5c85-owner-validation-sigue-CERRADO-y-no-se-genero-dll-canonico-YA-NO-QUEDA-NINGUN-PENDIENTE-DECLARADO-el-override-opt-in-esta-completo-y-todos-los-consumidores-de-elevacion-estan-cableados
-  last_evidence_commit: 0fc5c85
+    nueva-revision-del-coordinador-sobre-esta-punta-ddb302f-owner-validation-sigue-CERRADO-y-no-se-genero-dll-canonico ·
+    CORRECCION-la-corrida-anterior-afirmo-que-no-quedaba-ningun-pendiente-y-era-FALSO-faltaba-el-lateral-COMPLETO-no-seccionado-cerrado-en-esta-corrida-con-el-ambito-systemenvelope
+  last_evidence_commit: ddb302f
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -39,7 +40,11 @@ evidence:
     c3fa138-docs-revision-4-atendida · db437c7-estado-ci-de-la-revision-4 ·
     cb5e745-regresiones-de-consumidores-observadas-fallando-sobre-db437c7 ·
     69ae738-contexto-neutral-e-inmutable-con-tres-consultas-explicitas ·
-    0fc5c85-enhebra-el-contexto-por-los-cinco-builders-siempre-opt-in
+    0fc5c85-enhebra-el-contexto-por-los-cinco-builders-siempre-opt-in ·
+    0eac610-docs-revision-5 · 5f7ec60-estado-ci-de-la-revision-5 ·
+    be809fd-regresiones-del-lateral-completo-observadas-fallando-sobre-5f7ec60 ·
+    bac6a62-atsystemenvelope-la-envolvente-es-un-ambito-propio-con-mapa-explicito ·
+    ddb302f-cablea-solo-el-lateral-no-seccionado-a-la-envolvente
   bugs_fixed: pb-002 pb-003 pb-004 pb-005 pb-006 pb-008 pb-009 pb-010 pb-012 pb-013
   bugs_deferred: >-
     pb-001-preview pb-007-reconfigurador-masivo-de-seguridad pb-011-editor-avanzado-de-modulos
@@ -49,9 +54,10 @@ evidence:
     corrida-2-sobre-00491b0-pb002-clave-por-poste-3-de-7-pb010-reduccion-3-de-5-pb004-cabecera-3-de-3-contra-una-doble-elevacion-simulada ·
     corrida-3-sobre-26642c9-pb010-dialogo-2-de-7-de-pushbackdefensadialogtests-la-prueba-afirma-en-el-mismo-metodo-que-el-helper-puro-dynamicforkliftdefenseplan-ya-resolvia-bien-el-registro-manual-lo-que-fallaba-era-lo-que-devolvia-el-dialogo-es-decir-el-defecto-era-de-la-ui ·
     el-resto-son-centinelas-verdes-antes-y-despues
-  tests: rackcad-tests-1352-de-1352-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
+  tests: rackcad-tests-1365-de-1365-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
   targeted_filters: >-
-    corrida-5-ningun-filtro-en-cero-pb004-89-desviador-51-decorations-39-dynamic-197-golden-2-bom-96-validador-i19-41 ·
+    corrida-6-ningun-filtro-en-cero-pb004-108-desviador-52-decorations-40-dynamic-197-golden-2-validador-i19-41 ·
+    historico-corrida-5-pb004-89-desviador-51-decorations-39-dynamic-197-golden-2-bom-96-validador-i19-41 ·
     historico-ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
   builds: >-
     ui-debug-0-errores-0-advertencias-plugin-debug-0-errores-2-advertencias-conocidas-esta-vez-con-autocad-CERRADO-verificado-con-get-process-acad-build-normal-no-a-carpeta-temporal
@@ -100,6 +106,24 @@ evidence:
     botas-laterales-3-de-7-de-pushbacklateralprotectorendstests-fallaron-sobre-el-codigo-previo-y-el-nucleo-arightchoice-landsatthelowend-neverbehind-paso-solo-tras-enrutar-dynamiclateralguardplan ·
     dos-de-esas-tres-aserciones-eran-MIAS-y-estaban-mal-no-el-codigo-la-sonda-midio-los-numeros-reales-y-se-corrigieron-a-lo-verificado-both-son-dos-piezas-y-la-vista-lateral-no-lleva-el-protector ·
     pb004-19-pruebas-nuevas-en-pushbackelevationauthoritytests-incluido-el-barrido-que-demuestra-que-las-dos-formulas-no-son-intercambiables
+  coordinator_review_6: >-
+    aprobo-TODO-el-override-opt-in-salvo-un-unico-ambito-el-lateral-COMPLETO-no-seccionado ·
+    CORRECCION-la-corrida-anterior-escribio-que-ya-no-quedaba-ningun-pendiente-y-era-FALSO-esa-vista-dibuja-el-rack-entero-y-ocupa-la-profundidad-de-la-ENVOLVENTE-sus-largueros-ya-lo-sabian-front-null-pero-su-desviador-seguia-en-exitelevation-y-sus-cotas-en-atprojectedsystem-que-es-OTRO-frente ·
+    por-que-no-se-vio-antes-la-corrida-anterior-si-comprobo-esta-coherencia-pero-su-escenario-NO-discriminaba-el-frente-que-ganaba-la-proyeccion-resultaba-ser-tambien-el-mas-profundo-una-prueba-verde-sobre-un-caso-que-no-separa-dos-conceptos-no-demuestra-que-sean-el-mismo
+  system_envelope_scope: >-
+    PROYECCION-es-el-frente-que-origino-system-loadbeamlevels-gana-por-numero-de-niveles-ENVOLVENTE-es-el-rack-entero-su-longitud-de-cama-es-la-del-sistema-y-no-la-de-ningun-frente-son-distintos-en-cuanto-un-frente-gana-por-niveles-y-otro-es-mas-profundo ·
+    atsystemenvelope-levelnumber-fallback-es-la-CUARTA-consulta-su-mapa-llega-EXPLICITO-lowinsertions-system-catalog-front-null-y-NO-se-deduce-escogiendo-un-frente-porque-ninguno-la-representa-hay-prueba-que-le-pasa-un-mapa-que-no-coincide-con-el-de-ningun-frente ·
+    atprojectedsystem-NO-se-sobrecarga-sigue-significando-exactamente-el-frente-proyectado-con-prueba ·
+    cableado-en-DOS-puntos-y-ninguno-mas-dynamicsafetylateralbuilder-cuando-adjacentfronts-es-null-y-dynamicviewdecorations-appendlateral-cuando-postindex-menor-que-cero ·
+    intacto-atfront-en-lateral-seccionado-atpost-en-cotas-por-poste-y-desviador-frontal-atprojectedsystem-en-el-frontal-global-entranceelevation-en-el-extremo-posterior-y-primer-desviador-desde-troquel-mas-altura ·
+    consecuencia-asumida-el-lateral-COMPLETO-puede-diferir-del-SECCIONADO-uno-dibuja-el-conjunto-y-el-otro-una-linea-de-poste
+  regression_evidence_round_6: >-
+    fixture-f0-4-niveles-4-fondos-inicio-1-y-f1-3-niveles-6-fondos-inicio-1-el-resolver-proyecta-f0-por-niveles-pero-el-lateral-completo-ocupa-el-fondo-de-f1 ·
+    DOS-pruebas-observadas-FALLANDO-sobre-5f7ec60-el-desviador-superior-esperado-74-6053-146-6053-218-6053-obtenido-72-6053-144-6053-216-6053-y-las-cotas-etiquetas-esperado-8-6053-80-6053-152-6053-224-6053-obtenido-12-6053-84-6053-156-6053-228-6053 ·
+    DOS-pasan-ya-y-documentan-la-asimetria-proyeccion-y-envolvente-son-troqueles-distintos-y-el-larguero-bajo-del-lateral-completo-usa-el-de-la-envolvente ·
+    hallazgo-MEDIDO-el-fondo-de-tarima-es-50-y-no-48-porque-con-48-la-envolvente-coincide-EXACTAMENTE-con-exitelevation-la-cama-mas-larga-baja-el-troquel-justo-lo-que-la-pendiente-lo-sube-y-el-ajuste-cancela-asi-que-el-desviador-acertaba-por-ACCIDENTE-y-su-regresion-no-podia-fallar-el-guardia-del-fixture-comprueba-ahora-que-los-TRES-valores-estan-separados ·
+    valores-del-fixture-envolvente-80-605-proyeccion-84-605-exitelevation-78-605-ninguna-y-va-a-mano-se-piden-a-la-autoridad-y-se-comprueba-que-difieren ·
+    TRES-centinelas-mas-el-lateral-seccionado-sigue-por-frente-y-el-frontal-global-sigue-por-proyeccion-distinguibles-en-este-fixture-porque-los-tres-ambitos-dan-valores-distintos
   coordinator_review_5: >-
     aprobo-formula-de-pushbackelevations-longitud-comercial-contacto-posterior-elegido-por-geometria-parametros-del-clon-y-matrices-orientacion-de-botas-y-protectores-laterales ·
     unico-bloqueo-completar-el-override-opt-in-declararlo-pendiente-no-satisface-el-contrato-CERRADO-en-esta-corrida
@@ -147,7 +171,8 @@ gates:
   ci:
     required: true
     note: >-
-      VERDE-run-30184472300-success-sobre-la-punta-de-CODIGO-0fc5c85d94148bae5084d05d449e97bcc8450fd1 ·
+      run-30185464630-sobre-la-punta-de-CODIGO-de-esta-corrida-ddb302f52faae720aada8683b7a3db07fa5b53f3 ·
+      historico-run-30184629269-success-sobre-5f7ec60 · run-30184472300-success-sobre-0fc5c85 ·
       VERDE-run-30184531051-success-sobre-la-punta-DOCUMENTAL-0eac610f1d21a7c5c57a4bf241b8e8491c0ef83a ·
       historico-run-30183166266-success-sobre-db437c7 · run-30182977449-success-sobre-021178e ·
       VERDE-run-30183053354-success-sobre-la-punta-DOCUMENTAL-c3fa138462ae88731b9ef56937d9a48488be1c67 ·
