@@ -38,9 +38,19 @@ namespace RackCad.Application.Systems
     }
 
     /// <summary>
-    /// PB-004 (I-32) — LA autoridad de elevaciones de Push Back, resuelta por FRENTE y NIVEL. Todo lo que dependa de
-    /// dónde está un larguero de extremo la consulta a ella: la cama, el corte lateral, los dos frontales, el
-    /// desviador bajo, las cotas y las etiquetas. Ninguna fórmula se copia en un builder.
+    /// PB-004 (I-32) — LA autoridad de elevaciones de Push Back, resuelta por FRENTE y NIVEL. Ninguna fórmula se
+    /// copia en un builder: todo lo que dependa de dónde está un larguero de extremo pregunta aquí.
+    ///
+    /// Quiénes la consumen y por qué vía:
+    /// <list type="bullet">
+    /// <item>la CAMA y los LARGUEROS bajos, directamente, por <see cref="Resolve"/> / <see cref="LowInsertions"/>;</item>
+    /// <item>el corte LATERAL, los dos cortes FRONTALES, el DESVIADOR bajo y las COTAS y ETIQUETAS, a través del
+    /// contexto neutral que devuelve <see cref="Context"/> y que los builders compartidos reciben como último
+    /// parámetro opcional.</item>
+    /// </list>
+    ///
+    /// El extremo POSTERIOR no pasa por aquí en ninguna vista: su larguero es el ancla y conserva la elevación del
+    /// resolver, así que lo que cuelgue de él la sigue leyendo de ahí.
     ///
     /// La regla (Owner, tras el rechazo del round 1):
     /// <list type="number">
@@ -59,7 +69,8 @@ namespace RackCad.Application.Systems
     /// La subida final es la RESULTANTE del ajuste, no el objetivo nominal.
     ///
     /// No toca <see cref="DynamicLoadBeamLevel"/> ni el sistema Dinámico: los builders compartidos reciben estas
-    /// elevaciones por un parámetro OPCIONAL cuyo valor por defecto (null) deja su comportamiento intacto.
+    /// elevaciones por un parámetro OPCIONAL cuyo valor por defecto (null) deja su comportamiento intacto, y el
+    /// Dinámico no lo pasa nunca.
     /// </summary>
     public static class PushBackElevations
     {
@@ -135,35 +146,33 @@ namespace RackCad.Application.Systems
                 .ToDictionary(entry => entry.Key, entry => entry.Value.LowInsertion);
 
         /// <summary>
-        /// Las elevaciones bajas de TODO el sistema, unificadas por nivel. Los builders compartidos trabajan sobre la
-        /// proyección global del sistema, no por frente; con frentes de distinta configuración gana el primero que
-        /// resuelve cada nivel, que es la misma proyección que ya usa el resto del dibujo.
+        /// El CONTEXTO que consumen las vistas compartidas: las elevaciones bajas de cada frente, envueltas en un
+        /// tipo neutral que no sabe nada de Push Back. Se construye una sola vez por dibujo y se pasa como último
+        /// parámetro opcional; los builders no vuelven a preguntar nada.
+        ///
+        /// Cada frente aporta además los dos datos que necesita la regla de proyección —su número de niveles y su
+        /// profundidad—, para que <see cref="RackLevelElevations.AtPost"/> y
+        /// <see cref="RackLevelElevations.AtProjectedSystem"/> elijan frente EXACTAMENTE como lo hace el resolver.
+        /// Aquí no se decide nada: solo se entregan los datos con los que esa regla se aplica.
+        ///
+        /// Devuelve <c>null</c> cuando no hay ninguna elevación que aportar; los builders lo tratan como «sin
+        /// override» y se quedan con la elevación del resolver.
         /// </summary>
-        public static IReadOnlyDictionary<int, double> LowInsertions(PushBackSystem system, RackCatalog catalog)
+        public static RackLevelElevations Context(PushBackSystem system, RackCatalog catalog)
         {
-            var result = new Dictionary<int, double>();
             var fronts = system?.Structure?.Fronts;
             if (fronts == null)
             {
-                return result;
+                return null;
             }
 
-            foreach (var front in fronts)
-            {
-                foreach (var entry in Resolve(system, catalog, front))
-                {
-                    if (!result.ContainsKey(entry.Key))
-                    {
-                        result[entry.Key] = entry.Value.LowInsertion;
-                    }
-                }
-            }
-
-            return result;
+            return RackLevelElevations.From(fronts
+                .Where(front => front != null)
+                .Select(front => new RackFrontLevelElevations(
+                    front.Index,
+                    front.LoadBeamLevels.Count,
+                    front.EndX - front.StartX,
+                    LowInsertions(system, catalog, front))));
         }
-
-        /// <summary>La elevación baja de un nivel, o <paramref name="fallback"/> cuando el mapa no la trae.</summary>
-        public static double LowOr(IReadOnlyDictionary<int, double> lowElevations, int levelNumber, double fallback)
-            => lowElevations != null && lowElevations.TryGetValue(levelNumber, out var value) ? value : fallback;
     }
 }
