@@ -8,16 +8,23 @@ using RackCad.Domain.Systems;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// The physical Push Back bed geometry for one level: the line between the TWO REAL contact points of the two end
-    /// beams, both of them bolted to a valid troquel.
+    /// La geometría física de la cama Push Back en un nivel. <b>No es «la línea entre los dos contactos»</b>: la cama
+    /// es ASIMÉTRICA y sus dos extremos se refieren a rectas distintas.
     ///
-    /// PB-004 (I-32, Owner rule after round 1): the 7/16"-per-foot rise is a NOMINAL TARGET, not the literal final
-    /// rise. The REAR beam is the anchor — it keeps the troquel elevation the resolver already gave it — and the
-    /// ENTRANCE/EXIT beam is derived from it through the nominal slope and then snapped to its own nearest troquel.
-    /// The resulting slope is whatever those two real contacts produce, within half a troquel step of the target.
+    /// <list type="bullet">
+    /// <item><see cref="PushBackFlowBedAxis.ExitMate"/> pertenece a la línea de <c>TROQUEL_IN</c>: es el punto donde
+    /// el riel se atornilla al <c>TROQUEL_CAMA</c> del larguero In/Out.</item>
+    /// <item><see cref="PushBackFlowBedAxis.HighMate"/> pertenece a la línea del <b>ORIGEN</b> del bloque, la misma
+    /// a la que son tangentes los soportes intermedios.</item>
+    /// </list>
     ///
-    /// The previous version did the opposite (anchored the LOW end and pulled the rear beam OFF the grid so its edge
-    /// touched a theoretical line); the Owner rejected it because a larguero must always be bolted to a troquel.
+    /// Las dos rectas son PARALELAS —mismo bloque rígido— pero están separadas por la componente perpendicular del
+    /// mate local, así que <b>unir los dos contactos con una recta no da la rotación de la cama</b>. La autoridad de
+    /// la rotación es <see cref="PushBackFlowBedAxis.RotationRadians"/>, resuelta por
+    /// <see cref="PushBackBedRotation"/>; nadie debe volver a derivarla de la diferencia entre contactos.
+    ///
+    /// El larguero POSTERIOR es el ancla y conserva su troquel; el BAJO se elige minimizando el error de pendiente
+    /// contra 7/192 sobre la retícula de 2". Los dos quedan atornillados a troqueles válidos.
     /// </summary>
     public readonly struct PushBackFlowBedAxis
     {

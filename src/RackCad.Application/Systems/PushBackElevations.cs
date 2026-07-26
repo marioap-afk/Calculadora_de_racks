@@ -70,21 +70,25 @@ namespace RackCad.Application.Systems
     /// El extremo POSTERIOR no pasa por aquí en ninguna vista: su larguero es el ancla y conserva la elevación del
     /// resolver, así que lo que cuelgue de él la sigue leyendo de ahí.
     ///
-    /// La regla (Owner, tras el rechazo del round 1):
+    /// La regla vigente (aclaración final del Owner):
     /// <list type="number">
-    /// <item>el larguero POSTERIOR es el ANCLA: conserva la elevación que ya le ajustó el resolver compartido;</item>
+    /// <item>el larguero POSTERIOR es el ANCLA y <b>no se mueve</b>: conserva el troquel que ya le ajustó el
+    /// resolver compartido;</item>
     /// <item>su CONTACTO es la arista que <see cref="PushBackLoadBeamGeometry.RearBeamTangencyPointWorld"/> elige por
     /// geometría —la de mayor X en mundo—, nunca un lado fijo del catálogo: con el bloque espejado la arista buena es
     /// la otra;</item>
-    /// <item>la subida NOMINAL se mide sobre la LONGITUD COMERCIAL de la cama
-    /// (<see cref="PushBackFlowBedGeometry.ResolveBedLength"/>), que es la pieza que se compra y se dibuja, no sobre
-    /// la distancia entre contactos;</item>
-    /// <item>el punto teórico bajo es el contacto posterior menos esa subida; su elevación de inserción resta el
-    /// <c>TROQUEL_CAMA</c> local del larguero bajo;</item>
-    /// <item>esa inserción se ajusta al troquel válido más cercano, con la MISMA retícula del resolver
+    /// <item>la cama es ASIMÉTRICA: abajo hace <b>mate por <c>TROQUEL_IN</c></b> sobre el <c>TROQUEL_CAMA</c> del
+    /// larguero In/Out, mientras que los intermedios y el posterior son tangentes a la <b>línea del ORIGEN</b> del
+    /// bloque. Las dos rectas son paralelas y están separadas por la componente perpendicular del mate;</item>
+    /// <item>la ROTACIÓN que concilia las dos la resuelve <see cref="PushBackBedRotation"/>, y es una sola para todo
+    /// el bloque;</item>
+    /// <item>el troquel del larguero BAJO se elige <b>minimizando el error de pendiente contra 7/192</b> sobre TODO
+    /// el rango válido de la retícula de 2", de modo que el mínimo es global;</item>
+    /// <item>los DOS largueros de extremo quedan sobre troqueles válidos de esa misma retícula
     /// (<see cref="PushBackTroquelGrid"/>).</item>
     /// </list>
-    /// La subida final es la RESULTANTE del ajuste, no el objetivo nominal.
+    /// La pendiente final es la RESULTANTE de esa selección, no el objetivo nominal: 7/192 es el objetivo al que se
+    /// acerca lo más posible, no un valor que se imponga sacando un larguero de su troquel.
     ///
     /// No toca <see cref="DynamicLoadBeamLevel"/> ni el sistema Dinámico: los builders compartidos reciben estas
     /// elevaciones por un parámetro OPCIONAL cuyo valor por defecto (null) deja su comportamiento intacto, y el
@@ -111,6 +115,12 @@ namespace RackCad.Application.Systems
             var railLocalMate = CatalogLookup.Local(
                 catalog, FlowBedDefaults.RailId, FlowBedDefaults.RailInOutMatePoint, FlowBedDefaults.View);
             var gridBase = PushBackTroquelGrid.Base(structure, catalog);
+
+            // La subida NOMINAL sobre la longitud comercial: ya no elige el troquel, pero sigue siendo la
+            // referencia del tercer desempate. Se calcula con la fórmula ANTERIOR, no reconstruyéndola desde la
+            // posición teórica asimétrica — son cantidades distintas y confundirlas volvería a hacer inútil el
+            // desempate.
+            var nominalRise = PushBackBedSlope.Rise(PushBackFlowBedGeometry.ResolveBedLength(system, front));
             var placements = DynamicLoadBeamGeometry.Placements(structure, front);
 
             foreach (var level in placements.Select(p => p.LevelNumber).Distinct())
@@ -141,8 +151,11 @@ namespace RackCad.Application.Systems
 
                 var lowContactX = PushBackLoadBeamGeometry
                     .BedTangencyPointWorld(lowMate.Value, low.X, 0.0, low.MirroredX).X;
+                // El resultado EXACTO de la regla anterior para esta celda: tercer desempate.
+                var legacyInsertion = PushBackTroquelGrid.Snap(
+                    rearContact.Value.Y - nominalRise - lowMate.Value.Y, gridBase);
                 var chosen = ChooseLowTroquel(
-                    rearContact.Value, lowContactX, lowMate.Value.Y, railLocalMate, gridBase);
+                    rearContact.Value, lowContactX, lowMate.Value.Y, railLocalMate, gridBase, legacyInsertion);
                 if (!chosen.HasValue)
                 {
                     continue;
@@ -176,13 +189,21 @@ namespace RackCad.Application.Systems
         /// <item>menor error de pendiente;</item>
         /// <item>a igualdad, el candidato más cercano a la posición teórica CONTINUA —la que daría exactamente
         /// 7/192 si la retícula no existiera—;</item>
-        /// <item>a igualdad, el más cercano al resultado de la regla anterior (ajustar la subida nominal), para que
-        /// la decisión sea estable y no salte entre dos troqueles equivalentes;</item>
+        /// <item>a igualdad, el más cercano al resultado <b>real</b> de la regla anterior —ajustar la subida
+        /// nominal medida sobre la longitud comercial—, que llega calculado en <paramref name="legacyInsertion"/>,
+        /// para que la decisión sea estable y no salte entre dos troqueles equivalentes;</item>
         /// <item>a igualdad, el más bajo, que hace la elección determinista.</item>
         /// </list>
         /// </summary>
+        /// <param name="legacyInsertion">
+        /// El resultado real de la regla anterior para esta celda, calculado por el llamador — que es quien tiene el
+        /// sistema y el frente— como <c>Snap(rearContact.Y − Rise(ResolveBedLength) − lowMateLocalY)</c>. No se
+        /// reconstruye aquí desde la posición teórica asimétrica: esa es OTRA cantidad, y usarla dejaría el tercer
+        /// desempate sin contenido propio.
+        /// </param>
         private static (double Insertion, double Rotation)? ChooseLowTroquel(
-            Point2D rearContact, double lowContactX, double lowMateLocalY, Point2D railLocalMate, double gridBase)
+            Point2D rearContact, double lowContactX, double lowMateLocalY, Point2D railLocalMate, double gridBase,
+            double legacyInsertion)
         {
             var pitch = SelectiveRackDefaults.TroquelPaso;
             if (pitch <= 0.0)
@@ -190,10 +211,9 @@ namespace RackCad.Application.Systems
                 return null;
             }
 
-            // Referencias de desempate: la posición teórica continua y la que daba la regla anterior.
+            // Segundo desempate: la posición teórica CONTINUA de la geometría asimétrica.
             var theoretical = PushBackBedRotation.TheoreticalExitY(
                 rearContact.X, rearContact.Y, lowContactX, railLocalMate.Y) - lowMateLocalY;
-            var legacy = PushBackTroquelGrid.Snap(theoretical, gridBase);
 
             (double Insertion, double Rotation)? best = null;
             var bestError = double.MaxValue;
@@ -216,7 +236,7 @@ namespace RackCad.Application.Systems
 
                 var error = PushBackBedRotation.SlopeError(rotation.Value);
                 var toTheoretical = Math.Abs(insertion - theoretical);
-                var toLegacy = Math.Abs(insertion - legacy);
+                var toLegacy = Math.Abs(insertion - legacyInsertion);
 
                 var better = error < bestError - 1e-12
                     || (Math.Abs(error - bestError) <= 1e-12
