@@ -35,10 +35,9 @@ namespace RackCad.Application.Systems
         public Point2D ExitMate { get; }
 
         /// <summary>
-        /// High-end point of the bed line. Its X is the rear TROQUEL_REDONDO beam's <c>INICIO_DERECHO</c> column; its Y
-        /// is DERIVED from <see cref="ExitMate"/> by the canonical slope (<see cref="PushBackBedSlope"/>), not read
-        /// from that beam's own snapped elevation (PB-004, I-32). The rear beam follows this line — the line no longer
-        /// follows the beam.
+        /// Contacto físico del extremo ALTO: la arista del larguero posterior que la geometría elige
+        /// (<see cref="PushBackLoadBeamGeometry.RearBeamTangencyPointWorld"/>), sobre su elevación de troquel. Es el
+        /// ANCLA — no se deriva de nada (PB-004, I-32).
         /// </summary>
         public Point2D HighMate { get; }
 
@@ -92,58 +91,19 @@ namespace RackCad.Application.Systems
             }
 
             var railLocalMate = CatalogLookup.Local(catalog, FlowBedDefaults.RailId, FlowBedDefaults.RailInOutMatePoint, FlowBedDefaults.View);
-            var highBeamId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
-                ? PushBackDefaults.HighEndBeamCatalogId
-                : system.HighEndBeamCatalogId;
 
-            // The rear beam supplies the high end's COLUMN (X) only. Read it fail-closed: a missing row is a missing
-            // physical contract, and falling back to the block origin would produce a plausible but false axis.
-            var highColumn = catalog?.ConnectionLayout.FindConnectionLayout(
-                highBeamId, PushBackDefaults.HighEndBeamRightBedMatePoint, PushBackDefaults.HighEndBeamView);
-            if (highColumn == null)
+            // UNA autoridad resuelve las dos elevaciones y los dos contactos; aquí no se recalcula nada.
+            foreach (var cell in PushBackElevations.Resolve(system, catalog, front).Values.OrderBy(c => c.LevelNumber))
             {
-                return result;
-            }
-
-            var highMateLocal = new Point2D(highColumn.LocalX, highColumn.LocalY);
-
-            var gridBase = PushBackTroquelGrid.Base(structure, catalog);
-            var placements = DynamicLoadBeamGeometry.Placements(structure, front);
-            foreach (var level in placements.Select(p => p.LevelNumber).Distinct())
-            {
-                var low = placements.FirstOrDefault(p => p.LevelNumber == level && !p.IsEntrance);
-                var high = placements.FirstOrDefault(p => p.LevelNumber == level && p.IsEntrance);
-                if (low == null || high == null)
+                if (cell.RearContact.X - cell.LowContact.X <= 0.0)
                 {
                     continue;
                 }
 
-                var lowBeamId = string.IsNullOrWhiteSpace(low.BeamCatalogId) ? DynamicRackDefaults.InOutBeamCatalogId : low.BeamCatalogId;
-                var lowMateLocal = CatalogLookup.Local(catalog, lowBeamId, DynamicRackDefaults.InOutBeamBedMatePoint, DynamicRackDefaults.InOutBeamView);
-
-                // PB-004: the REAR contact is the anchor, taken from its own troquel elevation.
-                var highMate = BeamMate(high, highMateLocal);
-                var lowX = BeamMate(low, lowMateLocal).X;
-                if (highMate.X - lowX <= 0.0)
-                {
-                    continue;
-                }
-
-                // ...and the LOW contact belongs to the beam derived from it and snapped to its own troquel.
-                var lowElevation = PushBackLoadBeamGeometry.LowBeamElevation(
-                    highMate, lowX, lowMateLocal.Y, gridBase);
-                var exitMate = new Point2D(lowX, lowElevation + lowMateLocal.Y);
-
-                result.Add(new PushBackFlowBedAxis(level, exitMate, highMate, railLocalMate));
+                result.Add(new PushBackFlowBedAxis(cell.LevelNumber, cell.LowContact, cell.RearContact, railLocalMate));
             }
 
             return result;
-        }
-
-        private static Point2D BeamMate(DynamicLoadBeamPlacement placement, Point2D localMate)
-        {
-            var localX = placement.MirroredX ? -localMate.X : localMate.X;
-            return new Point2D(placement.X + localX, placement.Y + localMate.Y);
         }
     }
 }

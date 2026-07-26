@@ -144,9 +144,19 @@ namespace RackCad.Tests
             //    comprobacion mas limpia de que el posterior regreso a su elevacion de resolver sin desplazamiento.
             // planta (sin elevacion) y bom (mismas piezas, mismas longitudes) quedan INTACTOS, y eso acota el cambio.
             // Anteriores: lateral/lateral-corte0 894A4822..., frontal-entrada C652265C..., frontal-posterior 602522B7...
-            ["lateral"] = "16D20B37CAFD7A0B10CAD951987886D8583219272095F33005529129814D6841",
-            ["lateral-corte0"] = "16D20B37CAFD7A0B10CAD951987886D8583219272095F33005529129814D6841",
-            ["frontal-entrada"] = "DAC83E0CBBD4D908F50BCD2587F36C54CC2608B42C79C5F36634306A72500EE0",
+            // PB-004, round 3 (I-32) — dos precisiones del coordinador sobre la MISMA regla, que mueven TRES pines:
+            //  * la subida NOMINAL se mide sobre la LONGITUD COMERCIAL de la cama (ResolveBedLength), la pieza que se
+            //    compra y se dibuja, y no sobre la distancia entre contactos, que es algo mas corta;
+            //  * el CONTACTO del larguero posterior es la arista que elige la GEOMETRIA (RearBeamTangencyPointWorld,
+            //    la de mayor X en mundo) y no un lado fijo del catalogo: con el bloque espejado la arista buena es
+            //    INICIO_IZQUIERDO, no INICIO_DERECHO.
+            // Ambas mueven la elevacion derivada del larguero de entrada/salida, y con ella la cama, los intermedios y
+            // ese mismo larguero en el corte frontal bajo. El POSTERIOR no se mueve —sigue en su troquel— y por eso
+            // frontal-posterior, planta y bom quedan INTACTOS.
+            // Anteriores: lateral/lateral-corte0 16D20B37..., frontal-entrada DAC83E0C...
+            ["lateral"] = "A7040D72BDCE3F541A4BB50D797900450EC8B1C029D3A8539B457B72725BFA91",
+            ["lateral-corte0"] = "A7040D72BDCE3F541A4BB50D797900450EC8B1C029D3A8539B457B72725BFA91",
+            ["frontal-entrada"] = "C124825D8C68C0E0FC894B260FD4CE9B26D870EBBF8C1DB36986F2684589FDB3",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
             // the plan, not from the rear beam's insertion (which is what kept it on the larguero troquel). Exactly the

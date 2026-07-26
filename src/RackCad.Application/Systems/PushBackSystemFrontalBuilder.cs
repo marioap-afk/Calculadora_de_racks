@@ -190,9 +190,11 @@ namespace RackCad.Application.Systems
                 MirroredX = source.MirroredX,
                 MirroredY = source.MirroredY
             };
-            if (source.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var length))
+            // Copia TODOS los parámetros dinámicos, no solo LONGITUD: un parámetro que el bloque lleve y este clon
+            // no copie desaparece del dibujo sin que nada lo delate. Solo la Y cambia después, en el llamador.
+            foreach (var parameter in source.DynamicParameters)
             {
-                clone.DynamicParameters[SelectiveRackDefaults.LengthParam] = length;
+                clone.DynamicParameters[parameter.Key] = parameter.Value;
             }
 
             return clone;

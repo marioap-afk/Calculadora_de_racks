@@ -76,9 +76,10 @@ namespace RackCad.Tests
             Assert.Null(PushBackLoadBeamGeometry.BedTangencyPointLocal(catalog, "PIEZA_SIN_PUNTO_DE_CAMA"));
             Assert.Null(PushBackLoadBeamGeometry.BedTangencyPointLocal(null, DynamicRackDefaults.InOutBeamCatalogId));
 
-            // And with no resolved axis there is no line to be tangent to: no shift, rather than an unrelated one.
-            Assert.Equal(0.0, PushBackLoadBeamGeometry.RearBeamTangencyOffset(
-                null, 1, catalog, PushBackDefaults.HighEndBeamCatalogId, 0.0, 0.0, false), 12);
+            // Y sin contacto medido la autoridad no resuelve esa celda en vez de inventarle una elevación.
+            Assert.DoesNotContain(
+                PushBackElevations.Resolve(null, catalog, null),
+                entry => true);
         }
 
         // ---- the bed itself is authority and must come out bit-identical ----

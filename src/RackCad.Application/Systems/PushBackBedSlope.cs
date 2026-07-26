@@ -3,9 +3,13 @@ using System;
 namespace RackCad.Application.Systems
 {
     /// <summary>
-    /// PB-004 (I-32) — THE Push Back bed slope, in one pure function that the axis, the drawing, the BOM and the UI
-    /// all consume. Owner decision (2026-07-25): the bed rises <b>7/16" per commercial foot of rack</b>, so a 204"
-    /// rack rises exactly <b>7.4375" (7 7/16")</b>.
+    /// PB-004 (I-32) — LA pendiente de la cama Push Back, en una función pura que consumen el eje, el dibujo, el BOM
+    /// y la UI. Decisión del Owner (2026-07-25, precisada tras el rechazo del round 1): la cama sube <b>7/16" por pie
+    /// comercial de rack</b>, y eso es un <b>OBJETIVO NOMINAL</b>, no la subida final.
+    ///
+    /// La subida que se dibuja es la RESULTANTE de ajustar el larguero bajo a su troquel, porque los DOS largueros de
+    /// extremo van atornillados. En un rack de 204" no tiene por qué salir 7.4375" exactos; ese número es el objetivo
+    /// del que parte <see cref="PushBackElevations"/>, nunca un invariante que comprobar sobre el dibujo.
     ///
     /// Before this rule existed, the bed slope was an EMERGENT of two unrelated mechanisms and nobody owned it: the
     /// two end elevations were snapped to the 2" troquel INDEPENDENTLY (losing the fractional part of the rise), and

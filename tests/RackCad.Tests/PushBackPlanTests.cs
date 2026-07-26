@@ -135,9 +135,14 @@ namespace RackCad.Tests
             Assert.Equal(0.0 + lowCama.X, axis0.ExitMate.X, 3);
             var lowElevations = PushBackLoadBeamGeometry.LowBeamElevations(system, catalog, system.Structure.Fronts[0]);
             Assert.Equal(lowElevations[axis0.LevelNumber] + lowCama.Y, axis0.ExitMate.Y, 9);
-            // PB-004 (I-32, regla del Owner tras el round 1): el extremo ALTO es el ANCLA y su contacto es real — la
-            // elevación de entrada que ajustó el resolver más el punto INICIO_DERECHO del larguero posterior.
-            Assert.Equal(system.TotalLength - highInicio.X, axis0.HighMate.X, 3);
+            // PB-004 (I-32, regla vigente): el extremo ALTO es el ANCLA y su contacto es la arista que elige la
+            // GEOMETRÍA entre las dos medidas del bloque —la de mayor X en mundo—, no un lado fijo del catálogo. Con
+            // el larguero espejado esa arista es INICIO_IZQUIERDO, no INICIO_DERECHO.
+            var rearEdge = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(
+                catalog, Redondo, system.TotalLength, level0.EntranceElevation, mirroredX: true);
+            Assert.True(rearEdge.HasValue);
+            Assert.Equal(rearEdge.Value.X, axis0.HighMate.X, 6);
+            Assert.Equal(rearEdge.Value.Y, axis0.HighMate.Y, 6);
             Assert.Equal(level0.EntranceElevation + highInicio.Y, axis0.HighMate.Y, 3);
             Assert.True(axis0.HighMate.X > axis0.ExitMate.X); // bed runs low(left) -> high(right)
         }

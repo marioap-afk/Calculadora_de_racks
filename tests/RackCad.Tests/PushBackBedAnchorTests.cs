@@ -130,8 +130,10 @@ namespace RackCad.Tests
             for (var i = 0; i < levels.Count; i++)
             {
                 var axis = axes.Single(a => a.LevelNumber == levels[i].LevelNumber);
-                // El contacto alto es real: elevación del posterior + su punto local.
-                var theoreticalLowContact = axis.HighMate.Y - PushBackBedSlope.Rise(axis.Run);
+                // La subida NOMINAL se mide sobre la LONGITUD COMERCIAL de la cama —la pieza que se compra y se
+                // dibuja—, no sobre la distancia entre contactos.
+                var bedLength = PushBackFlowBedGeometry.ResolveBedLength(system, front);
+                var theoreticalLowContact = axis.HighMate.Y - PushBackBedSlope.Rise(bedLength);
                 var theoreticalInsertion = theoreticalLowContact - camaY;
                 var expected = PushBackTroquelGrid.Snap(theoreticalInsertion, gridBase);
 
@@ -154,18 +156,21 @@ namespace RackCad.Tests
             var low = PushBackLoadBeamGeometry.LowBeams(system, catalog, front);
             var high = PushBackLoadBeamGeometry.HighBeams(system, catalog, 0, front);
 
-            var inicio = catalog.ConnectionLayout.FindConnectionLayout(
-                PushBackDefaults.HighEndBeamCatalogId,
-                PushBackDefaults.HighEndBeamRightBedMatePoint,
-                PushBackDefaults.HighEndBeamView);
-            Assert.NotNull(inicio);
-
             foreach (var axis in axes)
             {
                 // El contacto bajo pertenece a un larguero REAL dibujado.
                 Assert.Contains(low, beam => Math.Abs(beam.Insertion.Y + camaY - axis.ExitMate.Y) < 1e-9);
-                // Y el alto también.
-                Assert.Contains(high, beam => Math.Abs(beam.Insertion.Y + inicio.LocalY - axis.HighMate.Y) < 1e-9);
+
+                // Y el alto es el borde que elige la GEOMETRÍA sobre un larguero REAL, no un lado fijo del catálogo.
+                Assert.Contains(high, beam =>
+                {
+                    var edge = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(
+                        catalog, PushBackDefaults.HighEndBeamCatalogId,
+                        beam.Insertion.X, beam.Insertion.Y, beam.MirroredX);
+                    return edge.HasValue
+                        && Math.Abs(edge.Value.X - axis.HighMate.X) < 1e-9
+                        && Math.Abs(edge.Value.Y - axis.HighMate.Y) < 1e-9;
+                });
             }
         }
 
@@ -179,9 +184,10 @@ namespace RackCad.Tests
             var system = System(catalog, palletsDeep);
             var front = system.Structure.Fronts[0];
 
+            var commercial = PushBackFlowBedGeometry.ResolveBedLength(system, front);
             foreach (var axis in PushBackFlowBedGeometry.Resolve(system, catalog, front))
             {
-                var nominal = PushBackBedSlope.Rise(axis.Run);
+                var nominal = PushBackBedSlope.Rise(commercial);
                 var actual = axis.Rise;
                 // El ajuste al troquel puede desviar como mucho medio paso en cada sentido.
                 Assert.True(
@@ -251,7 +257,8 @@ namespace RackCad.Tests
                     FormattableString.Invariant($"fondo {depth:0.##}: el bajo quedó fuera de troquel en {beam.Insertion.Y:0.####}")));
 
                 var axis = axes[0];
-                var theoretical = axis.HighMate.Y - PushBackBedSlope.Rise(axis.Run) - camaY;
+                var bedLength = PushBackFlowBedGeometry.ResolveBedLength(system, front);
+                var theoretical = axis.HighMate.Y - PushBackBedSlope.Rise(bedLength) - camaY;
                 var steps = (theoretical - gridBase) / SelectiveRackDefaults.TroquelPaso;
                 var residual = Math.Abs(steps - Math.Floor(steps));
 
@@ -260,7 +267,7 @@ namespace RackCad.Tests
                     found++;
                     // En el punto medio el resultado sigue siendo un troquel válido, determinista y a menos de medio
                     // paso del objetivo nominal — que es la garantía que el ajuste puede dar.
-                    Assert.True(Math.Abs(axis.Rise - PushBackBedSlope.Rise(axis.Run)) <= SelectiveRackDefaults.TroquelPaso / 2.0 + 1e-9);
+                    Assert.True(Math.Abs(axis.Rise - PushBackBedSlope.Rise(bedLength)) <= SelectiveRackDefaults.TroquelPaso / 2.0 + 1e-9);
                     Assert.True(OnGrid(low[0].Insertion.Y, gridBase));
                 }
             }
