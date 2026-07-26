@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: validating
+status: implementing
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -185,54 +185,41 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
 - Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar.
 
-### Regla final de la cama, y estado de la iniciativa
+### La cama: geometria ASIMETRICA
 
 > **Correcciones acumuladas.** Esta seccion declaro sucesivamente que «no queda pendiente funcional»
-> (round 2 RECHAZADO), que el defecto de la cama estaba **bloqueado** por un contrato de catalogo faltante
-> (el Owner corrigio: no faltaba ninguno), y que la cama debia colocarse por su **origen** con
-> `LONGITUD = axis.Length` (round 3 RECHAZADO: esa regla era equivocada). Todas quedan corregidas aqui en
-> vez de retiradas.
+> (round 2 RECHAZADO), que el defecto de la cama estaba **bloqueado** por un contrato de catalogo
+> faltante (no faltaba ninguno), que la cama debia colocarse por su **origen** con `LONGITUD =
+> axis.Length` (round 3 RECHAZADO), y que la regla del mate por `TROQUEL_IN` la cerraba (confirmacion
+> final RECHAZADA: faltaba la asimetria). Todas quedan corregidas aqui en vez de retiradas.
 
-**Contrato fisico FINAL de la cama:**
+El bloque de la cama define **dos rectas paralelas** —la de su `TROQUEL_IN` y la de su **ORIGEN**—
+separadas por la componente perpendicular del mate local (1.25"). Comparten rotacion y pendiente, pero no
+son la misma recta.
 
-1. **Mate:** `LARGUERO_IN_OUT.TROQUEL_CAMA` ↔ `RIEL_DE_CINTA_CALIBRE_12.TROQUEL_IN`; la cama se transforma
-   hasta que ese punto local cae sobre `ExitMate`.
-2. **`LONGITUD` = fondo estructural completo** (`ResolveBedLength`). **Una sola longitud de cama**: dibuja
-   el riel, alimenta el BOM y mide la subida nominal.
-3. **Riel antes del mate y sobrepaso posterior: esperados**, no se recortan.
-4. **Tangencias posterior e intermedias conservadas**, ya eran correctas.
+| Extremo | Referencia |
+|---|---|
+| **Entrada/Salida** | mate por `TROQUEL_IN` sobre `LARGUERO_IN_OUT.TROQUEL_CAMA` |
+| **Intermedios** | tangencia con la linea del **ORIGEN** |
+| **Posterior** | tangencia con la linea del **ORIGEN** |
 
-**Conservado sin cambios:** `PushBackElevations`, los contactos, las elevaciones, la pendiente, los
-troqueles, los intermedios, el tope posterior — y la correccion del **protector lateral** (primer poste
-delante sin espejo, ultimo delante espejado).
+- una sola **rotacion** y una sola **pendiente** para todo el bloque, resueltas por
+  `PushBackBedRotation` con `E.X·sin t − E.Y·cos t = m.Y`;
+- el troquel del larguero bajo se elige **minimizando `|tan t − 7/192|`** sobre la reticula de 2",
+  recorriendo todo el rango valido;
+- el larguero **posterior** es el ANCLA y conserva su troquel;
+- **`LONGITUD` = fondo estructural completo**; el riel puede sobresalir por detras.
 
-El detalle esta en [`decisions/I-32.md`](../automation/decisions/I-32.md).
+**Conservado sin cambios:** el mate bajo, el ancla posterior, la longitud full-span, el BOM, el tope
+posterior, las botas, los protectores laterales (primer poste delante sin espejo, ultimo delante
+espejado), el Selectivo y el Dinamico.
 
-### No queda pendiente funcional
+El detalle, la derivacion y los goldens afectados estan en
+[`decisions/I-32.md`](../automation/decisions/I-32.md).
 
-**Todo el alcance funcional de esta iniciativa esta implementado y cubierto por pruebas.** Los diez
-hallazgos autorizados estan corregidos, cada uno con su regresion observada fallando sin el fix; el
-override opt-in de elevaciones esta completo en sus cuatro ambitos; el default del protector lateral esta
-corregido; y la geometria de la cama sigue la regla final de arriba.
-
-No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
-trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
-
-### Confirmacion final dirigida por el Owner — AUTORIZADA
-
-La revision tecnica aprobo el codigo en **`bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6`**, sobre el HEAD
-revisado **`877c60fc35a9931818afc74f5bed7b9ec023454d`** con CI **30222859775** verde en sus cuatro jobs.
-
-Con esa aprobacion queda autorizada una **confirmacion final dirigida por el Owner** sobre los 21 puntos
-obligatorios de §10, mas el smoke complementario de los cuatro hallazgos no implementados.
-
-**No se numera como un round mas.** Los rounds 1, 2 y 3 se agotaron y `max_attempts` se alcanzo: esta
-validacion no es un intento nuevo de la automatizacion, sino una comprobacion que el Owner pide
-expresamente sobre una correccion que el mismo dirigio.
-
-Los **rounds 1, 2 y 3 quedaron RECHAZADOS** y sus defectos estan corregidos. Los tres DLL validados
-entonces —`2210e67`, `557858d` y `2641830`— siguen **OBSOLETOS** y **no deben reutilizarse**. La
-confirmacion exige un **DLL nuevo**, compilado con **AutoCAD cerrado** desde la punta publicada.
+**Owner-validation:** rounds 1, 2 y 3 y la confirmacion final quedan **RECHAZADOS**. **No hay ninguna
+validacion abierta.** Los cuatro DLL validados —`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan
+**obsoletos** y no deben reutilizarse.
 
 ## 12. Condiciones para detenerse
 

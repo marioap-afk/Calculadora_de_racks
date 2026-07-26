@@ -4,18 +4,17 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: validating
-  gate: owner-validation
+  state: implementing
+  gate: changes-requested
   attempts: 3
   attempts_note: >-
-    attempts-PERMANECE-en-3-y-NO-se-incrementa-se-alcanzo-el-max-attempts-del-contrato-con-los-rounds-1-2-y-3 ·
+    attempts-PERMANECE-en-3-y-NO-se-incrementa-se-alcanzo-el-max-attempts-y-esta-es-una-CORRECCION-ADICIONAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER ·
     la-validacion-que-ahora-se-abre-NO-es-un-intento-nuevo-de-la-automatizacion-es-una-CONFIRMACION-FINAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-sobre-una-correccion-que-el-mismo-dirigio-por-eso-no-se-numera-como-un-round-mas ·
     historico-attempts-paso-a-3-al-abrirse-el-round-3-tras-la-aprobacion-tecnica-del-code-sha-924de1a-que-resulto-partir-de-una-lectura-equivocada-del-defecto ·
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
   next_action: >-
-    compilar-el-DLL-desde-la-punta-publicada-de-esta-corrida-con-autocad-cerrado-y-ejecutar-la-CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
-    NO-queda-pendiente-funcional-el-alcance-esta-implementado-y-cubierto-por-pruebas-lo-que-sigue-abierto-es-la-validacion-manual-que-ningun-test-sustituye
-  last_evidence_commit: bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6
+    revision-del-coordinador-sobre-esta-correccion-adicional-dirigida-por-el-owner-NO-se-genera-DLL-y-NO-hay-ninguna-validacion-abierta
+  last_evidence_commit: 1951e33
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -62,15 +61,17 @@ evidence:
     corrida-2-sobre-00491b0-pb002-clave-por-poste-3-de-7-pb010-reduccion-3-de-5-pb004-cabecera-3-de-3-contra-una-doble-elevacion-simulada ·
     corrida-3-sobre-26642c9-pb010-dialogo-2-de-7-de-pushbackdefensadialogtests-la-prueba-afirma-en-el-mismo-metodo-que-el-helper-puro-dynamicforkliftdefenseplan-ya-resolvia-bien-el-registro-manual-lo-que-fallaba-era-lo-que-devolvia-el-dialogo-es-decir-el-defecto-era-de-la-ui ·
     el-resto-son-centinelas-verdes-antes-y-despues
-  tests: rackcad-tests-1417-de-1417-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
+  tests: rackcad-tests-1455-de-1455-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
   targeted_filters: >-
-    corrida-9-ningun-filtro-en-cero-bed-157-tangency-8-flowbed-33-safety-119-lateral-157-golden-2-bom-101-validador-i19-41 ·
+    corrida-10-ningun-filtro-en-cero-bed-188-tangency-8-flowbed-33-elevation-77-lateral-158-safety-119-golden-2-bom-101-validador-i19-41 ·
+    historico-corrida-9-ningun-filtro-en-cero-bed-157-tangency-8-flowbed-33-safety-119-lateral-157-golden-2-bom-101-validador-i19-41 ·
     historico-corrida-8-ningun-filtro-en-cero-bed-151-tangency-39-flowbed-33-safety-119-lateral-157-golden-2-bom-97-validador-i19-41 ·
     historico-corrida-6-ningun-filtro-en-cero-pb004-108-desviador-52-decorations-40-dynamic-197-golden-2-validador-i19-41 ·
     historico-corrida-5-pb004-89-desviador-51-decorations-39-dynamic-197-golden-2-bom-96-validador-i19-41 ·
     historico-ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
   builds: >-
-    ui-debug-0-errores-0-advertencias-plugin-debug-0-errores-2-advertencias-conocidas-esta-vez-con-autocad-CERRADO-verificado-con-get-process-acad-build-normal-no-a-carpeta-temporal
+    ui-debug-0-errores-0-advertencias ·
+    plugin-debug-0-errores-2-advertencias-msb3277-conocidas-compilado-a-CARPETA-TEMPORAL-porque-AutoCAD-estaba-ABIERTO-y-bloquea-el-dll-de-la-ruta-canonica-trampa-de-agents-md-NO-se-cerro-ni-se-mato-el-proceso-y-no-se-genera-dll-canonico-en-esta-corrida-por-instruccion-del-owner
   goldens: >-
     corrida-4-de-pb004-se-mueven-TRES-pines-lateral-lateral-corte0-y-frontal-entrada-frontal-posterior-planta-y-bom-INTACTOS-el-motivo-de-cada-pin-queda-escrito-en-pushbackgoldentests ·
     historico-round-2-de-pb004-se-mueven-CUATRO-pines-de-vista-lateral-lateral-corte0-frontal-entrada-y-frontal-posterior-planta-y-bom-INTACTOS ·
@@ -106,6 +107,21 @@ evidence:
     APROBADA-2026-07-26-code-sha-bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6-head-revisado-877c60fc35a9931818afc74f5bed7b9ec023454d-ci-30222859775-VERDE-cuatro-jobs-sobre-el-head-exacto ·
     con-ella-se-autoriza-una-CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-que-NO-se-numera-como-un-round-mas ·
     leccion-del-round-3-llego-a-la-validacion-manual-CON-aprobacion-tecnica-y-aun-asi-fue-rechazado-la-revision-comprobo-que-el-codigo-hacia-lo-que-decia-pero-no-podia-comprobar-que-lo-que-decia-fuera-lo-que-el-owner-queria-porque-la-premisa-equivocada-ese-riel-sobrante-es-penetracion-venia-de-la-implementacion-y-nunca-se-cuestiono-aguas-abajo
+  owner_rejection_asymmetric: >-
+    la-CONFIRMACION-FINAL-sobre-9a87c7c-fue-RECHAZADA-por-un-defecto-geometrico-residual-el-larguero-posterior-volvia-a-usar-la-linea-de-troquel-in ·
+    REGLA-ASIMETRICA-el-bloque-de-la-cama-define-DOS-rectas-PARALELAS-la-de-su-troquel-in-y-la-de-su-ORIGEN-separadas-por-la-componente-perpendicular-del-mate-local-1-25-comparten-rotacion-y-pendiente-pero-no-son-la-misma-recta ·
+    entrada-salida-mate-por-troquel-in-INTERMEDIOS-y-POSTERIOR-tangencia-con-la-linea-del-ORIGEN-una-sola-rotacion-y-una-sola-pendiente-para-todo-el-bloque ·
+    DEFECTO-CUANTIFICADO-el-codigo-derivaba-la-rotacion-como-atan2-highmate-menos-exitmate-tratando-los-dos-contactos-como-si-compartieran-recta-y-con-esa-rotacion-el-contacto-posterior-quedaba-EXACTAMENTE-a-1-25-de-la-linea-del-origen-en-todos-los-fondos-justo-la-separacion-entre-las-dos-paralelas ·
+    ECUACION-ex-sin-t-menos-ey-cos-t-igual-a-my-con-e-igual-highmate-menos-exitmate-de-donde-t-igual-asin-my-entre-modulo-e-menos-atan2-menos-ey-ex-los-terminos-en-mx-se-cancelan-solo-interviene-la-componente-perpendicular-del-mate-con-my-igual-a-cero-degenera-en-la-formula-antigua ·
+    SELECCION-del-troquel-bajo-ya-no-ajusta-una-subida-nominal-minimiza-el-error-de-pendiente-contra-7-192-sobre-la-reticula-de-2-recorriendo-TODO-el-rango-valido-asi-que-el-minimo-es-GLOBAL-desempate-1-menor-error-2-mas-cercano-a-la-posicion-teorica-continua-3-mas-cercano-al-resultado-de-la-regla-anterior-para-que-sea-estable-4-el-mas-bajo ·
+    API-pushbackflowbedaxis-pierde-angleradians-rise-run-y-length-que-describian-el-segmento-entre-contactos-y-no-la-linea-de-la-cama-y-expone-rotationradians-slope-y-rearcontactalongorigin-la-celda-pierde-resultingrise-y-expone-rotationradians-resultingslope-y-mateelevationdelta-con-el-aviso-de-que-NO-es-la-subida-de-la-cama ·
+    GOLDENS-se-mueven-TRES-lateral-y-lateral-corte0-por-la-rotacion-y-frontal-entrada-porque-el-frente-0-sube-un-troquel-10-6053-a-12-6053-y-82-6053-a-84-6053-frontal-posterior-planta-y-bom-INTACTOS ·
+    SIN-TOCAR-el-mate-bajo-el-ancla-posterior-la-longitud-full-span-el-bom-el-tope-posterior-las-botas-los-protectores-laterales-el-selectivo-y-el-dinamico
+  regression_evidence_asymmetric: >-
+    TRECE-de-treinta-y-ocho-pruebas-de-pushbackbedasymmetrytests-observadas-FALLANDO-sobre-9a87c7c-el-contacto-posterior-no-pertenece-a-la-linea-del-origen-en-4-fondos-tampoco-esta-a-la-distancia-correcta-de-la-linea-de-troquel-in-la-rotacion-si-sale-de-atan2-highmate-menos-exitmate-y-el-troquel-elegido-no-minimiza-el-error-de-pendiente-en-fondos-8 ·
+    VEINTICINCO-pasan-ya-y-deben-seguir-el-mate-bajo-los-dos-largueros-en-troquel-el-ancla-posterior-la-longitud-full-span-y-el-protector-lateral ·
+    la-prueba-del-minimo-recorre-TODO-el-rango-valido-de-la-reticula-no-una-ventana-y-comprueba-ademas-los-vecinos-mas-menos-2-explicitamente ·
+    se-reescriben-las-pruebas-que-fijaban-la-regla-vieja-incluida-thebedpassesthroughthereartangency-que-media-la-tangencia-desde-el-troquel-in-transformado-cuando-debe-medirla-desde-el-ORIGEN-la-senalo-el-propio-owner
   bed_rule_final: >-
     1-MATE-larguero-in-out-troquel-cama-con-riel-de-cinta-calibre-12-troquel-in-la-cama-se-transforma-hasta-que-ese-troquel-in-local-cae-sobre-exitmate-es-un-mate-fisico-dos-troqueles-atornillados ·
     2-LONGITUD-igual-al-FONDO-ESTRUCTURAL-COMPLETO-resolvebedlength-UNA-sola-longitud-de-cama-la-misma-dibuja-el-riel-alimenta-el-bom-y-mide-la-subida-nominal-de-7-16-por-pie ·
@@ -154,8 +170,8 @@ evidence:
     DOS-pasan-ya-y-deben-seguir-el-sistema-ordinario-manda-su-ultimo-protector-al-extremo-alto-y-una-matriz-explicita-sustituye-al-default ·
     del-defecto-1-no-hay-regresiones-porque-no-se-implementa-lo-que-hay-es-la-MEDICION-de-la-penetracion-registrada-arriba
   dll_for_owner: >-
-    PENDIENTE-DE-COMPILAR-desde-la-nueva-punta-con-autocad-CERRADO-en-la-ruta-canonica-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll ·
-    sus-datos-build-sha-ruta-tamano-fecha-sha256-y-versiones-se-reportan-FUERA-de-git-no-se-hace-commit-para-registrar-el-hash ·
+    NO-GENERADO-por-instruccion-del-owner-no-se-compila-uno-nuevo-hasta-revision-del-coordinador ·
+    OBSOLETO-el-de-9a87c7c-sha256-8fcf4c92a353f8953ad110f472846506ec4f93846babb61475bd4faf7ae751f4-validado-y-RECHAZADO-en-la-confirmacion-final ·
     OBSOLETO-el-de-2641830-sha256-3034b908ce7593ea7ff9ed1c5b0db57b40f77c486b2a24b32556e8381af4b111-validado-y-RECHAZADO-en-el-round-3 ·
     OBSOLETO-el-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-validado-y-RECHAZADO-en-el-round-2 ·
     OBSOLETO-el-de-2210e67-sha256-b3a2d87e4b18e9d9b0c19e4c881c76d576d8a52ab2607df1e98042acc878c653-validado-y-RECHAZADO-en-el-round-1
@@ -230,16 +246,14 @@ gates:
   autocad:
     required: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA ·
-      CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-AUTORIZADA-sobre-los-21-puntos-obligatorios-de-la-seccion-10
-      del-contrato-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados
+      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA ·
+      ninguna-validacion-abierta-hasta-revision-del-coordinador
   owner_validation:
     required: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA-la-correccion-de-la-cama-partia-de-una-lectura-equivocada-del-defecto ·
-      CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-AUTORIZADA-tras-la-aprobacion-tecnica-del-code-sha-bbdb8b9-sobre-el-head-877c60f-con-ci-30222859775-verde ·
-      NO-se-numera-como-un-round-mas-porque-max-attempts-ya-se-alcanzo-y-esto-no-es-un-intento-de-la-automatizacion ·
-      exige-un-DLL-NUEVO-compilado-con-autocad-cerrado-desde-la-punta-publicada-los-TRES-dll-anteriores-siguen-OBSOLETOS
+      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA-por-un-defecto-geometrico-residual-el-posterior-usaba-la-linea-de-troquel-in ·
+      el-gate-vuelve-a-estar-CERRADO-NO-hay-ninguna-validacion-abierta-y-los-CUATRO-dll-validados-quedan-OBSOLETOS ·
+      la-correccion-asimetrica-esta-hecha-con-evidencia-fallo-paso-y-espera-revision-del-coordinador
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-advertencias-conocidas-con-autocad-CERRADO-verificado-antes-de-compilar
