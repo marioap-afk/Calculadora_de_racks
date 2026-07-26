@@ -14,7 +14,7 @@ automation_state:
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
   next_action: >-
     revision-del-coordinador-sobre-esta-correccion-adicional-dirigida-por-el-owner-NO-se-genera-DLL-y-NO-hay-ninguna-validacion-abierta
-  last_evidence_commit: 1951e33
+  last_evidence_commit: f911d75
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -61,17 +61,18 @@ evidence:
     corrida-2-sobre-00491b0-pb002-clave-por-poste-3-de-7-pb010-reduccion-3-de-5-pb004-cabecera-3-de-3-contra-una-doble-elevacion-simulada ·
     corrida-3-sobre-26642c9-pb010-dialogo-2-de-7-de-pushbackdefensadialogtests-la-prueba-afirma-en-el-mismo-metodo-que-el-helper-puro-dynamicforkliftdefenseplan-ya-resolvia-bien-el-registro-manual-lo-que-fallaba-era-lo-que-devolvia-el-dialogo-es-decir-el-defecto-era-de-la-ui ·
     el-resto-son-centinelas-verdes-antes-y-despues
-  tests: rackcad-tests-1455-de-1455-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
+  tests: rackcad-tests-1470-de-1470-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
   targeted_filters: >-
-    corrida-10-ningun-filtro-en-cero-bed-188-tangency-8-flowbed-33-elevation-77-lateral-158-safety-119-golden-2-bom-101-validador-i19-41 ·
+    corrida-11-ningun-filtro-en-cero-bed-188-tangency-8-flowbed-33-elevation-77-lateral-158-safety-119-golden-2-bom-101-tiebreak-15-validador-i19-41 ·
+    historico-corrida-10-ningun-filtro-en-cero-bed-188-tangency-8-flowbed-33-elevation-77-lateral-158-safety-119-golden-2-bom-101-validador-i19-41 ·
     historico-corrida-9-ningun-filtro-en-cero-bed-157-tangency-8-flowbed-33-safety-119-lateral-157-golden-2-bom-101-validador-i19-41 ·
     historico-corrida-8-ningun-filtro-en-cero-bed-151-tangency-39-flowbed-33-safety-119-lateral-157-golden-2-bom-97-validador-i19-41 ·
     historico-corrida-6-ningun-filtro-en-cero-pb004-108-desviador-52-decorations-40-dynamic-197-golden-2-validador-i19-41 ·
     historico-corrida-5-pb004-89-desviador-51-decorations-39-dynamic-197-golden-2-bom-96-validador-i19-41 ·
     historico-ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
   builds: >-
-    ui-debug-0-errores-0-advertencias ·
-    plugin-debug-0-errores-2-advertencias-msb3277-conocidas-compilado-a-CARPETA-TEMPORAL-porque-AutoCAD-estaba-ABIERTO-y-bloquea-el-dll-de-la-ruta-canonica-trampa-de-agents-md-NO-se-cerro-ni-se-mato-el-proceso-y-no-se-genera-dll-canonico-en-esta-corrida-por-instruccion-del-owner
+    ui-debug-0-errores-0-advertencias · plugin-debug-0-errores-solo-msb3277-conocidas-con-AutoCAD-CERRADO-verificado-antes-build-normal ·
+    NO-se-genera-ni-se-entrega-DLL-canonico-en-esta-corrida-por-instruccion-del-coordinador
   goldens: >-
     corrida-4-de-pb004-se-mueven-TRES-pines-lateral-lateral-corte0-y-frontal-entrada-frontal-posterior-planta-y-bom-INTACTOS-el-motivo-de-cada-pin-queda-escrito-en-pushbackgoldentests ·
     historico-round-2-de-pb004-se-mueven-CUATRO-pines-de-vista-lateral-lateral-corte0-frontal-entrada-y-frontal-posterior-planta-y-bom-INTACTOS ·
@@ -117,6 +118,15 @@ evidence:
     API-pushbackflowbedaxis-pierde-angleradians-rise-run-y-length-que-describian-el-segmento-entre-contactos-y-no-la-linea-de-la-cama-y-expone-rotationradians-slope-y-rearcontactalongorigin-la-celda-pierde-resultingrise-y-expone-rotationradians-resultingslope-y-mateelevationdelta-con-el-aviso-de-que-NO-es-la-subida-de-la-cama ·
     GOLDENS-se-mueven-TRES-lateral-y-lateral-corte0-por-la-rotacion-y-frontal-entrada-porque-el-frente-0-sube-un-troquel-10-6053-a-12-6053-y-82-6053-a-84-6053-frontal-posterior-planta-y-bom-INTACTOS ·
     SIN-TOCAR-el-mate-bajo-el-ancla-posterior-la-longitud-full-span-el-bom-el-tope-posterior-las-botas-los-protectores-laterales-el-selectivo-y-el-dinamico
+  legacy_tie_break_fix: >-
+    el-TERCER-desempate-usaba-una-referencia-reconstruida-desde-la-posicion-teorica-ASIMETRICA-que-NO-es-el-resultado-de-la-regla-anterior-eso-colapsaba-el-tercer-criterio-sobre-el-segundo-y-lo-dejaba-sin-efecto-propio ·
+    ahora-pushbackelevations-resolve-calcula-el-legacy-REAL-donde-tiene-el-sistema-y-el-frente-a-mano-nominalrise-igual-pushbackbedslope-rise-resolvebedlength-system-front-y-legacyinsertion-igual-snap-rearcontact-y-menos-nominalrise-menos-lowmatelocaly-gridbase-y-lo-PASA-a-chooselowtroquel-que-ya-no-lo-deriva ·
+    sin-cambios-el-criterio-principal-minimizar-error-de-pendiente-sobre-todo-el-rango-valido-el-segundo-criterio-la-posicion-teorica-asimetrica-y-el-ultimo-desempate-determinista ·
+    el-candidato-elegido-NO-se-mueve-en-ningun-fixture-los-TRES-goldens-siguen-en-su-sitio ·
+    QUINCE-pruebas-nuevas-en-pushbacklegacytiebreaktests-sobre-fondos-2-a-8-las-dos-referencias-son-cantidades-distintas-medido-por-barrido-la-legacy-se-reconstruye-exactamente-con-la-formula-anterior-y-el-desempate-nunca-manda-por-encima-del-criterio-principal
+  obsolete_comments_fixed: >-
+    resumen-de-pushbackelevations-describia-derivar-la-subida-nominal-y-ajustar-al-troquel-ahora-dice-la-regla-vigente-posterior-fijo-en-su-troquel-mate-por-troquel-in-abajo-tangencia-por-la-linea-del-ORIGEN-atras-y-en-los-intermedios-una-sola-rotacion-asimetrica-seleccion-GLOBAL-por-menor-error-contra-7-192-y-los-dos-largueros-sobre-la-reticula-de-2 ·
+    resumen-de-pushbackflowbedaxis-empezaba-por-the-line-between-the-TWO-REAL-contact-points-que-es-justo-lo-que-NO-es-ahora-dice-que-exitmate-pertenece-a-la-linea-de-troquel-in-que-highmate-pertenece-a-la-del-ORIGEN-que-son-paralelas-y-distintas-y-que-la-autoridad-de-la-rotacion-es-rotationradians
   regression_evidence_asymmetric: >-
     TRECE-de-treinta-y-ocho-pruebas-de-pushbackbedasymmetrytests-observadas-FALLANDO-sobre-9a87c7c-el-contacto-posterior-no-pertenece-a-la-linea-del-origen-en-4-fondos-tampoco-esta-a-la-distancia-correcta-de-la-linea-de-troquel-in-la-rotacion-si-sale-de-atan2-highmate-menos-exitmate-y-el-troquel-elegido-no-minimiza-el-error-de-pendiente-en-fondos-8 ·
     VEINTICINCO-pasan-ya-y-deben-seguir-el-mate-bajo-los-dos-largueros-en-troquel-el-ancla-posterior-la-longitud-full-span-y-el-protector-lateral ·
