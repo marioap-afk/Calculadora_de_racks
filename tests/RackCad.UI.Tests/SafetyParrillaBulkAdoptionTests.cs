@@ -21,9 +21,11 @@ namespace RackCad.UI.Tests
     /// </summary>
     public sealed class SafetyParrillaBulkAdoptionTests
     {
-        private const string PostId = "POSTE-3x3-16";
-        private const string BeamId = "LARG-3R-4";
-        private const string ParrillaId = "PARRILLA-GEN";
+        // The canonical catalog ids (mirrors tests/RackCad.Tests/TestCatalogIds.cs), so the resolved system really
+        // draws decks and the drawing/BOM comparison below is not vacuous.
+        private const string PostId = "POSTE_OMEGA_ATORNILLABLE_CON_TROQUEL_GOTA_DE_AGUA";
+        private const string BeamId = "LARGUERO_ESCALON_CAL14_3_REMACHES";
+        private const string ParrillaId = "PARRILLA_GENERICA";
 
         private static SelectiveGridCell Cell(int frente, int level)
             => new SelectiveGridCell { Frente = frente, Level = level };

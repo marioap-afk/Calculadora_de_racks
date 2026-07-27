@@ -20,6 +20,8 @@ namespace RackCad.UI.Controls
             new PropertyMetadata(null, OnModelChanged));
 
         private CheckBox[,] cells;
+        private TextBlock[,] adornments; // parallel to cells; entries stay null when there is no adornment provider
+        private Func<SelectionMatrixCell, string> cellAdornment;
         private bool suppress;
         private IReadOnlyList<string> columnHeaders;
         private IReadOnlyList<string> rowHeaders;
@@ -68,16 +70,61 @@ namespace RackCad.UI.Controls
         /// </summary>
         public event EventHandler<SelectionMatrixCellChangedEventArgs> CellInteracted;
 
-        /// <summary>DECLARED SURFACE ONLY (I-34 addendum, red step): the optional per-cell adornment. Inert.</summary>
-        public Func<SelectionMatrixCell, string> CellAdornment { get; set; }
-
-        /// <summary>DECLARED SURFACE ONLY (I-34 addendum, red step): re-reads the adornments in place. Inert.</summary>
-        public void RefreshAdornments()
+        /// <summary>
+        /// OPTIONAL per-cell adornment (I-34 addendum): a short caption the ADOPTER supplies, drawn next to each
+        /// present cell's check box. It exists so a grid that carries more than a boolean — the parrilla's live deck
+        /// count — can adopt this control without losing that information; the Owner's condition for including it was
+        /// precisely that it may not be reduced to a bare check box.
+        /// <para>
+        /// Deliberately NEUTRAL: the control renders a string and knows nothing about what it means, about safety
+        /// families or about any rack system. It is also pure opt-in — leave it null and a cell is built exactly as
+        /// before (the check box goes straight into the grid, with no wrapper), so the grids that do not use it are
+        /// untouched.
+        /// </para>
+        /// </summary>
+        public Func<SelectionMatrixCell, string> CellAdornment
         {
+            get => cellAdornment;
+            set { cellAdornment = value; Rebuild(); }
         }
 
-        /// <summary>DECLARED SURFACE ONLY (I-34 addendum, red step): the adornment block of a cell. Inert.</summary>
-        internal TextBlock AdornmentFor(int column, int row) => null;
+        /// <summary>
+        /// Re-reads <see cref="CellAdornment"/> for every present cell and rewrites the captions IN PLACE. No rebuild,
+        /// no new visuals, no scroll or size disturbance — the same invariant a single click and a scoped bulk edit
+        /// already honour (AGENTS §6). The adopter calls it ONCE per operation, never per cell.
+        /// </summary>
+        public void RefreshAdornments()
+        {
+            var model = Model;
+            if (adornments == null || model == null || cellAdornment == null)
+            {
+                return;
+            }
+
+            for (var c = 0; c < model.Columns; c++)
+            {
+                for (var r = 0; r < model.Rows; r++)
+                {
+                    var block = adornments[c, r];
+                    if (block != null)
+                    {
+                        block.Text = cellAdornment(new SelectionMatrixCell(c, r)) ?? string.Empty;
+                    }
+                }
+            }
+        }
+
+        /// <summary>The adornment block of a cell, or null when there is none (test seam).</summary>
+        internal TextBlock AdornmentFor(int column, int row)
+        {
+            if (adornments == null || column < 0 || row < 0
+                || column >= adornments.GetLength(0) || row >= adornments.GetLength(1))
+            {
+                return null;
+            }
+
+            return adornments[column, row];
+        }
 
         /// <summary>The check box for a model cell, or null when out of range (for tests/adopters that poke a cell).</summary>
         public CheckBox CellFor(int column, int row)
@@ -116,6 +163,7 @@ namespace RackCad.UI.Controls
             RowDefinitions.Clear();
             ColumnDefinitions.Clear();
             cells = null;
+            adornments = null;
 
             var model = Model;
             if (model == null || model.Columns == 0 || model.Rows == 0)
@@ -148,6 +196,7 @@ namespace RackCad.UI.Controls
             }
 
             cells = new CheckBox[model.Columns, model.Rows];
+            adornments = new TextBlock[model.Columns, model.Rows];
             for (var r = 0; r < model.Rows; r++)
             {
                 var visualRow = invertRows ? (model.Rows - 1 - r) : r;
@@ -194,10 +243,36 @@ namespace RackCad.UI.Controls
                             new SelectionMatrixCellChangedEventArgs(new SelectionMatrixCell(column, row), isSelected));
                     };
 
-                    SetRow(checkbox, gridRow);
-                    SetColumn(checkbox, column + headerCols);
-                    Children.Add(checkbox);
                     cells[column, row] = checkbox;
+                    UIElement placed = checkbox;
+
+                    if (cellAdornment != null)
+                    {
+                        // Opt-in only: with no provider the check box goes straight into the grid, exactly as before.
+                        var caption = new TextBlock
+                        {
+                            Text = cellAdornment(new SelectionMatrixCell(column, row)) ?? string.Empty,
+                            FontSize = 10.5,
+                            MinWidth = 14,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Margin = new Thickness(3, 0, 0, 0)
+                        };
+                        adornments[column, row] = caption;
+
+                        var pair = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Center
+                        };
+                        checkbox.Margin = new Thickness(6, 3, 0, 3); // the caption supplies the right-hand gap
+                        pair.Children.Add(checkbox);
+                        pair.Children.Add(caption);
+                        placed = pair;
+                    }
+
+                    SetRow(placed, gridRow);
+                    SetColumn(placed, column + headerCols);
+                    Children.Add(placed);
                 }
             }
         }

@@ -18,13 +18,28 @@ namespace RackCad.UI
     /// through <see cref="SelectiveParrillaPlan"/>, the same rule the draw and the BOM use, so what is read here is what
     /// gets drawn and quoted. Built in code (no XAML), like the other safety dialogs. On OK, <see cref="Result"/> holds
     /// the config.
+    /// <para>
+    /// I-34 addendum (Owner, 2026-07-27): this grid adopts the shared <see cref="SelectionMatrix"/> and the shared
+    /// <see cref="SelectionMatrixBulkBar"/> (column axis = FRENTE) — the adoption I-22 had deferred. The Owner's
+    /// condition is that the LIVE DECK COUNT survives, so it is not reduced to a bare check box: it rides on the
+    /// control's neutral <see cref="SelectionMatrix.CellAdornment"/>, and the recount runs ONCE per operation because
+    /// the model publishes one aggregated <see cref="SelectionMatrixModel.ScopeApplied"/>.
+    /// </para>
     /// </summary>
     public sealed class SafetyParrillaGridWindow : Window
     {
-        private readonly CheckBox[][] cells; // [frente][level]
-        private readonly TextBlock[][] counts; // [frente][level] — that cell's live deck count
+        private readonly SelectionMatrixModel model;
+        private readonly SelectionMatrix matrix;
+        private readonly SelectionMatrixBulkEditor bulkEditor;
+        private readonly SelectionMatrixBulkBar bulkBar;
         private readonly IReadOnlyList<int> levelsPerFrente;
         private readonly IReadOnlyList<SelectiveParrillaPlan.Cell> plan; // null = geometry unavailable (no live count)
+
+        /// <summary>Each cell's live deck count, as text. The control reads it through the adornment provider; the
+        /// dictionary is rewritten on every recount and never rebuilds a visual.</summary>
+        private readonly Dictionary<SelectionMatrixCell, string> countText =
+            new Dictionary<SelectionMatrixCell, string>();
+
         private readonly CheckBox frontal;
         private readonly CheckBox lateral;
         private readonly TextBox frenteBox;
@@ -43,41 +58,30 @@ namespace RackCad.UI
 
         public ParrillaResult Result { get; private set; }
 
-        // ---- DECLARED SURFACE ONLY (I-34 addendum, red step): the parrilla does not adopt the shared bulk edit yet.
-        // Inert so the regressions can be verified failing; the real members land in the adoption commit. ----
-
-        internal SelectionMatrixModel Model => null;
-
-        internal SelectionMatrixBulkBar BulkBar => null;
-
-        internal SelectionMatrixBulkEditor BulkEditor => null;
-
-        internal ParrillaResult BuildResultForTest() => null;
-
-        internal string CountTextFor(int frente, int level) => null;
-
-        internal int RecountCount => 0;
-
         public SafetyParrillaGridWindow(
             string label, IReadOnlyList<int> levelsPerFrente, bool frontal, bool lateral, double frente, int cantidad,
             IEnumerable<SelectiveGridCell> offCells, IReadOnlyList<SelectiveParrillaPlan.Cell> plan = null)
         {
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
             this.plan = plan;
-            var off = new HashSet<(int, int)>();
-            foreach (var c in offCells ?? Enumerable.Empty<SelectiveGridCell>())
-            {
-                if (c != null) off.Add((c.Frente, c.Level));
-            }
 
             var frentes = this.levelsPerFrente.Count;
             var maxLevels = frentes > 0 ? this.levelsPerFrente.Max() : 0;
 
+            // The jagged shape the hand-built grid produced (cells[f] sized by that frente's level count) is exactly
+            // what WithJaggedColumns yields; off-cells outside the grid are ignored, as the HashSet lookup ignored them.
+            model = SelectionMatrixModel.WithJaggedColumns(
+                this.levelsPerFrente,
+                (offCells ?? Enumerable.Empty<SelectiveGridCell>())
+                    .Where(cell => cell != null)
+                    .Select(cell => new SelectionMatrixCell(cell.Frente, cell.Level)));
+
             Title = string.IsNullOrWhiteSpace(label) ? "Parrilla" : label;
             Width = Math.Max(560, Math.Min(920, 300 + frentes * 52));
-            Height = Math.Min(680, 320 + maxLevels * 30);
+            // +36: the shared "Aplicar a:" row of I-34 sits under the grid and must not push the options out of view.
+            Height = Math.Min(716, 356 + maxLevels * 30);
             MinWidth = 520;
-            MinHeight = 340;
+            MinHeight = 376;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             FontFamily = new FontFamily("Segoe UI");
             Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
@@ -130,9 +134,9 @@ namespace RackCad.UI
 
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 12, 0, 0) };
             var all = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Todas", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
-            all.Click += (s, e) => SetAll(true);
+            all.Click += (s, e) => model.SetAll(true);
             var none = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Ninguna", Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(0, 0, 8, 0) };
-            none.Click += (s, e) => SetAll(false);
+            none.Click += (s, e) => model.SetAll(false);
             var ok = new Button { Style = TryFindResource("PrimaryButtonStyle") as Style, Content = "Aceptar", Padding = new Thickness(16, 3, 16, 3), IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
             ok.Click += (s, e) => OnOk();
             var cancel = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Cancelar", Padding = new Thickness(10, 3, 10, 3), IsCancel = true };
@@ -143,72 +147,32 @@ namespace RackCad.UI
             DockPanel.SetDock(buttons, Dock.Bottom);
             root.Children.Add(buttons);
 
-            // ---- The grid: columns = frentes, rows = levels (highest at top). Each cell = a checkbox + its deck count. ----
-            cells = new CheckBox[frentes][];
-            counts = new TextBlock[frentes][];
-            for (var f = 0; f < frentes; f++)
+            // ---- The grid: columns = frentes, rows = levels (highest at top), via the shared control. The per-cell
+            // deck count rides on the control's NEUTRAL adornment, so the count survives the adoption (Owner §0.4). ----
+            matrix = new SelectionMatrix
             {
-                cells[f] = new CheckBox[this.levelsPerFrente[f]];
-                counts[f] = new TextBlock[this.levelsPerFrente[f]];
-            }
+                InvertRows = true, // level 0 at the bottom
+                ColumnHeaders = Enumerable.Range(0, frentes)
+                    .Select(f => "F" + (f + 1).ToString(CultureInfo.InvariantCulture)).ToArray(),
+                RowHeaders = Enumerable.Range(0, maxLevels)
+                    .Select(l => "Larg. " + (l + 1).ToString(CultureInfo.InvariantCulture)).ToArray(),
+                CellAdornment = cell => countText.TryGetValue(cell, out var text) ? text : string.Empty
+            };
+            matrix.Model = model;
 
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(60) }); // level labels
-            for (var f = 0; f < frentes; f++) grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(50) });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // header
-            for (var l = 0; l < maxLevels; l++) grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            // One recount per OPERATION: a click, a Todas/Ninguna, or a whole scoped bulk edit.
+            model.CellChanged += (s, e) => Recount();
+            model.BulkChanged += (s, e) => Recount();
+            model.ScopeApplied += (s, e) => Recount();
 
-            for (var f = 0; f < frentes; f++)
-            {
-                var head = new TextBlock { Text = "F" + (f + 1).ToString(CultureInfo.InvariantCulture), FontWeight = FontWeights.SemiBold, FontSize = 11, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 0, 0, 4) };
-                Grid.SetRow(head, 0);
-                Grid.SetColumn(head, f + 1);
-                grid.Children.Add(head);
-            }
+            bulkEditor = new SelectionMatrixBulkEditor(model, SelectionMatrixScopeLabels.ByFrente);
+            bulkBar = new SelectionMatrixBulkBar(bulkEditor);
+            bulkBar.Attach(matrix);
+            DockPanel.SetDock(bulkBar, Dock.Bottom);
+            root.Children.Add(bulkBar);
 
-            for (var l = maxLevels - 1; l >= 0; l--)
-            {
-                var rowIndex = maxLevels - l; // level 0 at the bottom
-                var lbl = new TextBlock { Text = "Larg. " + (l + 1).ToString(CultureInfo.InvariantCulture), FontSize = 11, VerticalAlignment = VerticalAlignment.Center };
-                Grid.SetRow(lbl, rowIndex);
-                Grid.SetColumn(lbl, 0);
-                grid.Children.Add(lbl);
-
-                for (var f = 0; f < frentes; f++)
-                {
-                    if (l >= this.levelsPerFrente[f]) continue; // this frente has fewer levels
-                    var box = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 2, 0, 2) };
-                    var cb = new CheckBox { IsChecked = !off.Contains((f, l)), VerticalAlignment = VerticalAlignment.Center };
-                    cb.Checked += (s, e) => Recount();
-                    cb.Unchecked += (s, e) => Recount();
-                    var n = new TextBlock { FontSize = 10.5, MinWidth = 14, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(3, 0, 0, 0) };
-                    box.Children.Add(cb);
-                    box.Children.Add(n);
-                    Grid.SetRow(box, rowIndex);
-                    Grid.SetColumn(box, f + 1);
-                    grid.Children.Add(box);
-                    cells[f][l] = cb;
-                    counts[f][l] = n;
-                }
-            }
-
-            root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Content = grid });
+            root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Content = matrix });
             Content = root;
-
-            ready = true;
-            Recount();
-        }
-
-        private void SetAll(bool on)
-        {
-            ready = false; // one recount at the end, not one per checkbox
-            foreach (var col in cells)
-            {
-                foreach (var cb in col)
-                {
-                    if (cb != null) cb.IsChecked = on;
-                }
-            }
 
             ready = true;
             Recount();
@@ -238,10 +202,11 @@ namespace RackCad.UI
         }
 
         /// <summary>Whether that cell carries decks. A cell the grid does not show (a fondo with more levels than the main
-        /// matrix) counts as ON, exactly as <c>ParrillaAt</c> reads it — so the total matches the BOM.</summary>
+        /// matrix) counts as ON, exactly as <c>ParrillaAt</c> reads it — so the total matches the BOM. An ABSENT cell of
+        /// the jagged grid is that same case, so it keeps answering ON and the count is unchanged by the adoption.</summary>
         private bool IsOn(int frente, int level)
-            => frente < 0 || frente >= cells.Length || level < 0 || level >= cells[frente].Length
-               || cells[frente][level] == null || cells[frente][level].IsChecked == true;
+            => frente < 0 || frente >= model.Columns || level < 0 || level >= model.Rows
+               || model.IsAbsent(frente, level) || model.IsSelected(frente, level);
 
         /// <summary>Repaints every cell's deck count and the footer total for what is typed right now. Sets the existing
         /// TextBlocks in place — the grid is never rebuilt.</summary>
@@ -252,21 +217,18 @@ namespace RackCad.UI
                 return;
             }
 
+            RecountCount++;
             var complaint = ReadInputs(out var frente, out var cantidad);
             if (plan == null)
             {
+                countText.Clear();
+                matrix.RefreshAdornments();
                 summary.Text = complaint ?? "La geometría aún no es válida; puedes guardar la selección, pero el conteo se mostrará al resolver el rack.";
                 summary.Foreground = WarnBrush(true);
                 return;
             }
 
-            foreach (var col in counts)
-            {
-                foreach (var t in col)
-                {
-                    if (t != null) t.Text = string.Empty;
-                }
-            }
+            countText.Clear();
 
             var total = 0;
             var tooMany = new List<string>();
@@ -280,10 +242,8 @@ namespace RackCad.UI
 
                 var n = SelectiveParrillaPlan.CountIn(cell, frente, cantidad);
                 total += n;
-                if (cell.Frente < counts.Length && cell.Level < counts[cell.Frente].Length && counts[cell.Frente][cell.Level] != null)
-                {
-                    counts[cell.Frente][cell.Level].Text = n.ToString(CultureInfo.InvariantCulture);
-                }
+                countText[new SelectionMatrixCell(cell.Frente, cell.Level)] =
+                    n.ToString(CultureInfo.InvariantCulture);
 
                 // "Draws nothing" is answered by the number just painted, NOT by MaxCountIn: that one is a MIN across the
                 // cell's load rows, so a medio frente with one inherently-empty tramo would claim the whole cell is empty
@@ -299,6 +259,8 @@ namespace RackCad.UI
                     if (max > 0 && cantidad > max) tooMany.Add(name + " (caben " + max.ToString(CultureInfo.InvariantCulture) + ")");
                 }
             }
+
+            matrix.RefreshAdornments();
 
             if (complaint != null)
             {
@@ -324,6 +286,52 @@ namespace RackCad.UI
             => warn
                 ? UiSupport.FrozenBrush(Color.FromRgb(0xB0, 0x00, 0x20))
                 : (TryFindResource("MutedTextBrush") as Brush ?? UiSupport.FrozenBrush(Color.FromRgb(0x70, 0x70, 0x70)));
+
+        /// <summary>The working matrix state — a test seam (I-34).</summary>
+        internal SelectionMatrixModel Model => model;
+
+        /// <summary>The shared bulk-edit row and its editor — test seams (I-34).</summary>
+        internal SelectionMatrixBulkBar BulkBar => bulkBar;
+
+        internal SelectionMatrixBulkEditor BulkEditor => bulkEditor;
+
+        /// <summary>How many times the live count has been recomputed (I-34 test seam): a bulk operation must add
+        /// exactly ONE, not one per cell.</summary>
+        internal int RecountCount { get; private set; }
+
+        /// <summary>The live deck count shown at a cell, as the user reads it (test seam, I-34).</summary>
+        internal string CountTextFor(int frente, int level)
+            => matrix.AdornmentFor(frente, level)?.Text ?? string.Empty;
+
+        /// <summary>The footer total, as the user reads it (test seam, I-34).</summary>
+        internal string SummaryText => summary.Text;
+
+        /// <summary>Builds the config from the current controls and grid, without the modal OK path (test seam, I-34).
+        /// Shared with <see cref="OnOk"/> so what the tests read is what the dialog returns.</summary>
+        internal ParrillaResult BuildResultForTest()
+        {
+            ReadInputs(out var frente, out var cantidad);
+            return BuildResult(frente, cantidad);
+        }
+
+        private ParrillaResult BuildResult(double frente, int cantidad)
+        {
+            var result = new ParrillaResult
+            {
+                Frontal = frontal.IsChecked == true,
+                Lateral = lateral.IsChecked == true,
+                Frente = frente,
+                Cantidad = cantidad
+            };
+
+            // Only the deactivations, as before: an absent cell is never "unselected", so the set is unchanged.
+            foreach (var cell in model.UnselectedCells())
+            {
+                result.OffCells.Add(new SelectiveGridCell { Frente = cell.Column, Level = cell.Row });
+            }
+
+            return result;
+        }
 
         private void OnOk()
         {
@@ -355,26 +363,7 @@ namespace RackCad.UI
                 }
             }
 
-            var result = new ParrillaResult
-            {
-                Frontal = frontal.IsChecked == true,
-                Lateral = lateral.IsChecked == true,
-                Frente = frente,
-                Cantidad = cantidad
-            };
-
-            for (var f = 0; f < cells.Length; f++)
-            {
-                for (var l = 0; l < cells[f].Length; l++)
-                {
-                    if (cells[f][l] != null && cells[f][l].IsChecked != true)
-                    {
-                        result.OffCells.Add(new SelectiveGridCell { Frente = f, Level = l }); // an off cell
-                    }
-                }
-            }
-
-            Result = result;
+            Result = BuildResult(frente, cantidad);
             DialogResult = true;
         }
     }
