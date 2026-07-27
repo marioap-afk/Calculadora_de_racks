@@ -4,14 +4,15 @@ automation_state:
   branch: refactor/namespaces-sistemas
   claim_id: fade0f8a-1438-4bfb-a894-2a9671685e60
   current_phase: 6
-  state: review-ready
-  gate: none
+  state: validating
+  gate: autocad
   attempts: 0
   next_action: >-
-    esperar-CI-verde-sobre-la-punta-publicada ·
-    la-integracion-es-manual-y-serializada-el-agente-NO-hace-merge ·
-    I-25-sigue-diferida-y-no-debe-reclamarse-mientras-I-23-viva
-  last_evidence_commit: 9662e3c
+    UNICO-gate-pendiente-smoke-minimo-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-SHA-exacto ·
+    guion-de-4-puntos-en-docs/initiatives/I-23-autocad-smoke.md ·
+    NO-procede-todavia-HANDOFF-ni-ROADMAP-final-ni-merge-no-ff-ni-limpieza ·
+    I-25-sigue-diferida-y-la-congelacion-funcional-permanece-vigente
+  last_evidence_commit: 5d49a6c
 
 # --------------------------------------------------------------------------------------------------
 # BASELINE capturada sobre b43b5d1 ANTES de mover un solo archivo, y el resultado DESPUES.
@@ -119,6 +120,25 @@ decisions:
     EnforceCodeStyleInBuild NO se activa: el proyecto WPF compila via RackCad.UI_<hash>_wpftmp e
     IDE0130 deriva de ESE nombre el namespace esperado, produciendo 68 advertencias falsas. La
     autoridad real es NamespaceFolderGuardTests, que corre en CI.
+
+owner_gate:
+  candidate_sha: 5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128
+  base_sha: b43b5d15a242287ffe7514bc41e1086dd25e9387
+  divergence: 11-ahead-0-behind-sin-rebase
+  ci_run: 30304742946               # verde 4/4 sobre el candidato
+  status: PENDIENTE
+  script: docs/initiatives/I-23-autocad-smoke.md
+  dll: src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
+  informational_version: 1.0.0+5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128
+  dll_sha256: D2944E25C20098CD57AA15DA143EB2C7412710ED61A78BE548B8CD87146D43EE
+  points:
+    - NETLOAD-del-DLL-Debug-del-SHA-exacto
+    - RACKCAD-abre-el-menu-descubrimiento-de-comandos
+    - abrir-un-editor-de-sistema-RACKPUSHBACK-o-RACKSELECTIVO-y-cerrarlo
+    - abrir-el-configurador-RACKCABECERA-y-cerrarlo
+  commands_unchanged: >-
+    inventario de los 28 comandos y alias BYTE-IDENTICO al de la base: mismo comando, misma clase y
+    mismo namespace RackCad.Plugin. Ninguna clase de comando cambio de namespace.
 
 runtime_risk:
   autocad: >-
