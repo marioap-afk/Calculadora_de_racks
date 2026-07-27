@@ -3,34 +3,91 @@ automation_state:
   initiative: I-23
   branch: refactor/namespaces-sistemas
   claim_id: fade0f8a-1438-4bfb-a894-2a9671685e60
-  current_phase: 3
-  state: implementing
+  current_phase: 6
+  state: review-ready
   gate: none
   attempts: 0
   next_action: >-
-    mover-los-142-archivos-con-git-mv-por-frontera ·
-    Domain-luego-Application-luego-Headers-luego-Plugin ·
-    despues-editorconfig-y-guardas-y-verificacion-completa
-  last_evidence_commit: ed81d0a
+    esperar-CI-verde-sobre-la-punta-publicada ·
+    la-integracion-es-manual-y-serializada-el-agente-NO-hace-merge ·
+    I-25-sigue-diferida-y-no-debe-reclamarse-mientras-I-23-viva
+  last_evidence_commit: 363608f
 
 # --------------------------------------------------------------------------------------------------
-# BASELINE capturada sobre la base b43b5d1 ANTES de mover un solo archivo. Cualquier desviacion
-# posterior en estos numeros es un fallo del refactor, no un dato nuevo.
+# BASELINE capturada sobre b43b5d1 ANTES de mover un solo archivo, y el resultado DESPUES.
 # --------------------------------------------------------------------------------------------------
 baseline:
   base_sha: b43b5d15a242287ffe7514bc41e1086dd25e9387
   ci_run: 30295828340
   tests_core: 1612
   tests_ui: 491
-  tests_failed: 0
-  filter_catalog_golden_shipped: 120
   goldens: 7
   api_surface_entries: 2806        # 538 tipos + 2268 miembros, namespace-normalizado
   build_ui: 0-errores-0-advertencias
   build_plugin: 0-errores-2-MSB3277-conocidas
 
-scope:
-  files_to_move: 142
+result:
+  files_moved: 142                 # los 142 registrados por git como R (renombre), no borrado + alta
+  files_rewritten: 214
   top_level_types: 196
-  authorised_rename: DynamicSystemPlan -> RackCad.Application.Drawing.HeaderRunPlan
-  functional_freeze: total
+  tests_core: 1617                 # 1612 identicas + 5 guardas de namespace/ruta nuevas
+  tests_ui: 491
+  tests_failed: 0
+  goldens_identical: true          # SHA-256 byte-identicos y sin tocar por git
+  api_surface_diff: vacio          # ninguna firma, accesibilidad ni miembro cambio
+  build_ui: 0-errores-0-advertencias
+  build_plugin: 0-errores-2-MSB3277-conocidas
+  build_solution_warnings: 4       # las MISMAS 4 de la baseline (2 xUnit preexistentes)
+  bundle: verificado-105-comprobaciones-mas-harness-10-casos
+  dead_doc_links_introduced: 0
+
+# Filtros dirigidos, todos con conteo POSITIVO (un filtro que corre cero pruebas no prueba nada):
+targeted_filters:
+  Plan: 117
+  Bom: 109
+  Golden: 2
+  Document: 64
+  Store: 88
+  Legacy: 55
+  Metadata: 8
+  RoundTrip: 97
+  KindHandler: 5
+  Command: 4
+  SourceGuard: 37
+  Catalog: 118
+  Resolver: 51
+  Builder: 192
+  NamespaceFolderGuard: 5
+
+frozen_untouched:                  # cero archivos cambiados en cada uno
+  - assets/
+  - deploy/
+  - .github/
+  - RackCad.sln
+  - Directory.Build.props
+  - Directory.Build.targets
+
+decisions:
+  rename: >-
+    DynamicSystemPlan -> Application.Drawing.HeaderRunPlan. NO se aplica el "SystemPlan" del ROADMAP:
+    es ambiguo en este arbol y colisiona con SystemBomBuilder/SystemDescriptor/SystemRegistry/
+    SystemBlockWriter, que si son por sistema.
+  larguero_bucket: >-
+    Larguero recibe namespace propio (2 archivos) aunque no estaba en la lista de cinco del encargo:
+    es un RackSystemKind real y dejarlo suelto mantendria viva la raiz plana que E8 denuncia.
+  plugin_headers_kept: >-
+    src/RackCad.Plugin/Headers/ se conserva: es el adaptador AutoCAD de la cabecera, no vocabulario de
+    materializacion compartido. Mismo motivo por el que RackFrames se conserva.
+  editorconfig_not_enforced_in_build: >-
+    EnforceCodeStyleInBuild NO se activa: el proyecto WPF compila via RackCad.UI_<hash>_wpftmp e
+    IDE0130 deriva de ESE nombre el namespace esperado, produciendo 68 advertencias falsas. La
+    autoridad real es NamespaceFolderGuardTests, que corre en CI.
+
+runtime_risk:
+  autocad: >-
+    NO ejecutado. El ROADMAP no marca I-23 con validacion del dueño y la iniciativa no cambia dibujo,
+    BOM, catalogos, comandos ni alias. El unico residuo teorico es el descubrimiento de comandos por
+    AutoCAD, y no aplica: [CommandMethod] se descubre por atributo, no por namespace, y ninguna clase
+    de comando cambio de namespace (solo los DrawServices de Systems/, que nadie descubre por nombre).
+    Verificado ademas que no existe reflexion por nombre de tipo, FullName, Type.GetType, JSON
+    polimorfico ni discriminador por namespace en el codigo de produccion.
