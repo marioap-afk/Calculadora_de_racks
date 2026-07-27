@@ -61,6 +61,13 @@ namespace RackCad.UI.Controls
             set { showHeaders = value; Rebuild(); }
         }
 
+        /// <summary>
+        /// Raised when the USER clicks a cell (never for a programmatic change). It is what makes a cell the PRIMARY
+        /// one for a scoped bulk edit — "the last valid cell interacted with" (I-34). Only present cells have a check
+        /// box at all, so the reported cell is always a valid anchor.
+        /// </summary>
+        public event EventHandler<SelectionMatrixCellChangedEventArgs> CellInteracted;
+
         /// <summary>The check box for a model cell, or null when out of range (for tests/adopters that poke a cell).</summary>
         public CheckBox CellFor(int column, int row)
         {
@@ -166,7 +173,14 @@ namespace RackCad.UI.Controls
                             return;
                         }
 
-                        model.SetSelected(column, row, checkbox.IsChecked == true);
+                        var isSelected = checkbox.IsChecked == true;
+                        model.SetSelected(column, row, isSelected);
+
+                        // Raised even when the click did not change the model (it always does today), because what an
+                        // adopter needs from this is WHERE the user is working, not whether the value moved.
+                        CellInteracted?.Invoke(
+                            this,
+                            new SelectionMatrixCellChangedEventArgs(new SelectionMatrixCell(column, row), isSelected));
                     };
 
                     SetRow(checkbox, gridRow);
