@@ -11,7 +11,7 @@ automation_state:
     esperar-CI-verde-sobre-la-punta-publicada ·
     la-integracion-es-manual-y-serializada-el-agente-NO-hace-merge ·
     I-25-sigue-diferida-y-no-debe-reclamarse-mientras-I-23-viva
-  last_evidence_commit: 492bd12
+  last_evidence_commit: 9662e3c
 
 # --------------------------------------------------------------------------------------------------
 # BASELINE capturada sobre b43b5d1 ANTES de mover un solo archivo, y el resultado DESPUES.
@@ -26,12 +26,21 @@ baseline:
   build_ui: 0-errores-0-advertencias
   build_plugin: 0-errores-2-MSB3277-conocidas
 
+# --------------------------------------------------------------------------------------------------
+# SEGUNDA RONDA: correccion de los cuatro defectos reportados sobre la primera.
+# --------------------------------------------------------------------------------------------------
+round2_defects_fixed:
+  - Plugin.Headers-preservado-por-analogia-falsa -> disuelto-en-Plugin.Drawing-8-archivos
+  - RackCad.UI-excluida-sin-autorizacion -> repartida-por-sistema-26-archivos
+  - inventario-omitia-UI-y-pruebas -> cubre-los-SEIS-proyectos-565-archivos-718-tipos
+  - contrato-registraba-exclusiones-no-autorizadas -> eliminadas-y-mapa-final-real
+
 result:
-  files_moved: 142                 # los 142 registrados por git como R (renombre), no borrado + alta
+  files_moved: 176                 # 142 primera ronda + 8 Plugin + 26 UI                 # los 142 registrados por git como R (renombre), no borrado + alta
   files_rewritten: 214
   top_level_types: 196
-  tests_core: 1617                 # 1612 identicas + 5 guardas de namespace/ruta nuevas
-  tests_ui: 491
+  tests_core: 1619                 # 1612 identicas + 7 guardas de namespace/ruta
+  tests_ui: 494                    # 491 identicas + 3 guardas de frontera WPF
   tests_failed: 0
   goldens_identical: true          # SHA-256 byte-identicos y sin tocar por git
   api_surface_diff: vacio          # ninguna firma, accesibilidad ni miembro cambio
@@ -61,7 +70,8 @@ targeted_filters:
   Catalog: 118
   Resolver: 51
   Builder: 192
-  NamespaceFolderGuard: 5
+  NamespaceFolderGuard: 7
+  UiSystemBoundaryGuard: 3         # RackCad.UI.Tests
 
 frozen_untouched:                  # cero archivos cambiados en cada uno
   - assets/
@@ -71,6 +81,23 @@ frozen_untouched:                  # cero archivos cambiados en cada uno
   - Directory.Build.props
   - Directory.Build.targets
 
+tests_namespace_exception:
+  decision: los-dos-proyectos-de-prueba-conservan-UN-namespace-de-ensamblado
+  enforced_by: NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace
+  evidence:
+    cross_system_test_files: 92    # de 220 (42%); 48 tocan tres sistemas o mas
+    reason: >-
+      asignar-propietario-seria-arbitrario-justo-donde-la-regla-exige-que-sea-inequivoco ·
+      FullyQualifiedName-es-la-interfaz-de-verificacion-y-un-filtro-a-cero-no-avisa ·
+      xUnit-descubre-por-ensamblado-no-por-namespace
+
+guards_verified_red:
+  - namespace-ajeno-en-proyecto-de-prueba
+  - Plugin/Headers-resucitado
+  - Controls-transversal-bajo-Systems
+  - par-XAML-mas-cs-en-carpeta-equivocada-con-namespaces-consistentes-que-COMPILA
+  - Source-relativa-que-ademas-rompe-la-construccion-real-de-la-ventana
+
 decisions:
   rename: >-
     DynamicSystemPlan -> Application.Drawing.HeaderRunPlan. NO se aplica el "SystemPlan" del ROADMAP:
@@ -79,9 +106,15 @@ decisions:
   larguero_bucket: >-
     Larguero recibe namespace propio (2 archivos) aunque no estaba en la lista de cinco del encargo:
     es un RackSystemKind real y dejarlo suelto mantendria viva la raiz plana que E8 denuncia.
-  plugin_headers_kept: >-
-    src/RackCad.Plugin/Headers/ se conserva: es el adaptador AutoCAD de la cabecera, no vocabulario de
-    materializacion compartido. Mismo motivo por el que RackFrames se conserva.
+  plugin_headers_dissolved: >-
+    CORREGIDO en la segunda ronda. La primera ronda lo preservo por analogia con RackFrames y la
+    analogia era falsa: ese subarbol DIBUJA, no modela, y BlockPlacement/BlockLibraryImporter/
+    RackBlockRenamer no son de cabecera. Disuelto en Plugin.Drawing, simetrico con Application.Drawing.
+  ui_repartida: >-
+    CORREGIDO en la segunda ronda. RackCad.UI tenia el mismo namespace plano multi-sistema. Las cinco
+    ventanas de sistema van a UI.Systems.<Sistema>, el configurador y sus modelos a UI.RackFrames.
+    Controls/Editor/Preview/Shell/Themes y los dialogos compartidos de seguridad NO se reparten: un
+    dialogo compartido no se asigna a un sistema por numero de consumidores.
   editorconfig_not_enforced_in_build: >-
     EnforceCodeStyleInBuild NO se activa: el proyecto WPF compila via RackCad.UI_<hash>_wpftmp e
     IDE0130 deriva de ESE nombre el namespace esperado, produciendo 68 advertencias falsas. La
