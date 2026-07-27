@@ -58,6 +58,11 @@ namespace RackCad.UI
         /// </summary>
         private PalletSpecification generalPallet = PushBackEditorInputs.NewDesign().Pallet;
 
+        /// <summary>Carrier of the four advanced RACK-WIDE scopes between recomputes (I-35, Owner round 2). It is the
+        /// SAME transport type the assembler consumes, so there is no parallel field and no second authority: only
+        /// its four advanced properties are used, and ReadInputs copies them across verbatim.</summary>
+        private readonly PushBackEditorInputs advanced = PushBackEditorInputs.NewDesign();
+
         // The informative card matrix (PB-VAL-01 round 3). Cards are looked up by (front, level) for in-place updates;
         // the grid stores NO state of its own — every card derives from PushBackMatrixCardModel over the state.
         private readonly Dictionary<(int Front, int Level), (Border Border, TextBlock Text)> matrixCards
@@ -231,6 +236,13 @@ namespace RackCad.UI
                 PostPeralteBox.SetNumber(inputs.PostPeralte);
                 BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
 
+                // I-35 (Owner round 2): adopt the four advanced scopes the load recovered, then paint them.
+                advanced.ManualHeaderHeightOverride = inputs.ManualHeaderHeightOverride;
+                advanced.DerivedPostReinforced = inputs.DerivedPostReinforced;
+                advanced.DerivedPostReinforcementHeight = inputs.DerivedPostReinforcementHeight;
+                advanced.SeparatorCountOverride = inputs.SeparatorCountOverride;
+                advanced.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;
+
                 var options = inputs.Annotations ?? new DynamicAnnotationOptions();
                 NumberFrontsCheck.IsChecked = options.NumberFronts;
                 NumberLevelsCheck.IsChecked = options.NumberLevels;
@@ -247,6 +259,7 @@ namespace RackCad.UI
                 RefreshFrontSelector();
                 RenderPushBackMatrix();
                 LoadSelectedFront();
+                LoadAdvancedRackParameters();
             }
             finally
             {
@@ -542,6 +555,13 @@ namespace RackCad.UI
                     generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
                     generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+
+                // I-35 (Owner round 2): the four advanced RACK-WIDE scopes travel verbatim from their carrier.
+                ManualHeaderHeightOverride = advanced.ManualHeaderHeightOverride,
+                DerivedPostReinforced = advanced.DerivedPostReinforced,
+                DerivedPostReinforcementHeight = advanced.DerivedPostReinforcementHeight,
+                SeparatorCountOverride = advanced.SeparatorCountOverride,
+                SeparatorSpacingOverride = advanced.SeparatorSpacingOverride,
                 PostCatalogId = PostBox.SelectedId,
                 PostPeralte = Val(PostPeralteBox, 0.0),
                 PalletTolerance = Val(ToleranceBox, DynamicRackDefaults.DefaultPalletTolerance),
@@ -1040,8 +1060,94 @@ namespace RackCad.UI
 
             if (AdvancedModulesToggle.IsChecked == true)
             {
+                LoadAdvancedRackParameters();
                 RefreshModuleSelector();
             }
+        }
+
+        // ---- Advanced RACK-WIDE parameters (I-35, Owner round 2) --------------------------------------------------
+        // Height, derived-post reinforcement and the two separator overrides belong to the WHOLE rack, never to the
+        // selected Separator module: they have their own section and their own handler, and they are carried to the
+        // authorities that already own them by PushBackAdvancedRackParameters. Nothing here restates a rule.
+
+        /// <summary>Show the four scopes as the loaded inputs have them; empty means the standing calculation.</summary>
+        private void LoadAdvancedRackParameters()
+        {
+            if (RackHeaderHeightBox == null)
+            {
+                return;
+            }
+
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                SetOptional(RackHeaderHeightBox, advanced.ManualHeaderHeightOverride);
+                DerivedPostReinforcedCheck.IsChecked = advanced.DerivedPostReinforced;
+                SetOptional(DerivedPostReinforcementHeightBox, advanced.DerivedPostReinforcementHeight);
+                SetOptional(RackSeparatorCountBox, advanced.SeparatorCountOverride);
+                SetOptional(RackSeparatorSpacingBox, advanced.SeparatorSpacingOverride);
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+
+            UpdateReinforcementHeightSensitivity();
+        }
+
+        /// <summary>An optional numeric field: null clears it, which is how the user expresses "use the calculation".</summary>
+        private static void SetOptional(NumericField field, double? value)
+        {
+            if (field == null) return;
+            field.SetNumber(value);   // null clears the field: that is how "use the calculation" is expressed
+        }
+
+        private static void SetOptional(NumericField field, int? value)
+            => SetOptional(field, value.HasValue ? (double?)value.Value : null);
+
+        /// <summary>Read the four scopes back from the panel. An EMPTY field is null — the calculation — and never zero.</summary>
+        private void ReadAdvancedRackParameters()
+        {
+            if (RackHeaderHeightBox == null)
+            {
+                return;
+            }
+
+            advanced.ManualHeaderHeightOverride = RackHeaderHeightBox.Value;
+            advanced.DerivedPostReinforced = DerivedPostReinforcedCheck.IsChecked == true;
+            advanced.DerivedPostReinforcementHeight = DerivedPostReinforcementHeightBox.Value;
+            advanced.SeparatorCountOverride = RackSeparatorCountBox.Value.HasValue
+                ? (int?)(int)Math.Round(RackSeparatorCountBox.Value.Value)
+                : null;
+            advanced.SeparatorSpacingOverride = RackSeparatorSpacingBox.Value;
+        }
+
+        /// <summary>The reinforcement length is meaningless with no reinforcement: disabled, with the reason visible.</summary>
+        private void UpdateReinforcementHeightSensitivity()
+            => SetBlankSensitive(
+                DerivedPostReinforcementHeightBox,
+                DerivedPostReinforcedCheck.IsChecked == true,
+                "El poste derivado no lleva refuerzo: activa «Reforzar poste derivado» para fijar su altura.");
+
+        private void AdvancedRackParameter_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            ReadAdvancedRackParameters();
+            UpdateReinforcementHeightSensitivity();
+            RequestRecompute();
+        }
+
+        private void RestoreRackParameters_Click(object sender, RoutedEventArgs e)
+        {
+            state.RestoreAdvancedRackParameters(advanced);
+            LoadAdvancedRackParameters();
+            RequestRecompute();
+            SetModuleStatus("Parametros globales del rack restaurados.");
         }
 
         /// <summary>

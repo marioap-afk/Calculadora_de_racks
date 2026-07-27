@@ -383,11 +383,22 @@ namespace RackCad.Tests
                 Assert.DoesNotContain(name, pushBack);
             }
 
-            // ...and the rack-wide separator overrides stay out of scope.
-            foreach (var name in new[] { "SeparatorCountBox", "SeparatorSpacingBox" })
+            // ...and the four RACK-WIDE scopes the Owner asked for in round 2 use Push Back's OWN names, in their own
+            // section: reusing the dynamic editor's x:Name would blur exactly the line this test defends.
+            foreach (var name in new[] { "x:Name=\"SeparatorCountBox\"", "x:Name=\"SeparatorSpacingBox\"" })
             {
                 Assert.Contains(name, dynamicXaml);
                 Assert.DoesNotContain(name, pushBack);
+            }
+
+            foreach (var name in new[]
+                     {
+                         "RackHeaderHeightBox", "DerivedPostReinforcedCheck", "DerivedPostReinforcementHeightBox",
+                         "RackSeparatorCountBox", "RackSeparatorSpacingBox", "RestoreRackParametersButton"
+                     })
+            {
+                Assert.Contains(name, pushBack);
+                Assert.DoesNotContain(name, dynamicXaml);
             }
 
             // The transaction is Push Back's alone: the dynamic editor has no confirm/cancel for a module edit.

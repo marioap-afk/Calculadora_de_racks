@@ -133,7 +133,15 @@ namespace RackCad.Application.Systems
 
             var depthLayout = DynamicDepthGeometry.Resolve(matrix.BuildFrontDesigns(), Math.Max(2, editorInputs.PalletsDeep));
             var palletsDeep = depthLayout.TotalPositions;
-            var headerHeight = ComputeHeaderHeight(pallet, palletsDeep, levels, firstLevel, beamDepth);
+
+            // I-35 (Owner round 2) — the four advanced RACK-WIDE scopes. They are validated BEFORE anything is built,
+            // so an invalid one blocks with a visible message instead of producing a rack nobody asked for. The manual
+            // cabecera height replaces the derived one for the WHOLE recompute (that is what "manual" means), so it is
+            // resolved here and every consumer below sees a single effective height.
+            PushBackAdvancedRackParameters.Validate(editorInputs);
+            var derivedHeight = ComputeHeaderHeight(pallet, palletsDeep, levels, firstLevel, beamDepth);
+            var headerHeight = editorInputs.ManualHeaderHeightOverride ?? derivedHeight;
+            PushBackAdvancedRackParameters.ValidateReinforcementAgainstPost(editorInputs, headerHeight);
 
             // Dynamic recompute cycle (composed, never modified): rebuild only on a pallet/fondos change (or a forced reset);
             // otherwise reuse a COPY of the loaded baseline so custom modules and manual fondos survive. The baseline itself is
@@ -162,6 +170,17 @@ namespace RackCad.Application.Systems
             }
 
             builder.ApplyPostPeralte(system, postPeralte);
+
+            // I-35 (Owner round 2): hand the four advanced scopes to the authorities that already own them. Assignment
+            // only — no rule is restated here; the resolver, DynamicSeparatorGeometry, the lateral builder and the BOM
+            // read them exactly as they do for the dynamic system. A rack-wide "restaurar estándar" clears them, which
+            // is what makes it a reset of EVERYTHING and not only of the modules.
+            if (standardRestore)
+            {
+                PushBackAdvancedRackParameters.Reset(editorInputs);
+            }
+
+            PushBackAdvancedRackParameters.ApplyTo(system, editorInputs);
 
             // I-35: carry the user's module customizations onto whatever structure we ended up with, matching by exact
             // ModuleId + Kind (Owner). This REPLACES the ordinal SnapshotHeaderFondos/RestoreHeaderFondos pair for Push

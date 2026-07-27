@@ -115,6 +115,14 @@ namespace RackCad.Application.Systems
         /// <summary>Throw away the staged module edits; the design is left exactly as it was.</summary>
         public void CancelModuleEdits() => ModuleSession.Cancel();
 
+        /// <summary>
+        /// Return the four advanced RACK-WIDE scopes to their standing calculation or default: manual cabecera height,
+        /// derived-post reinforcement (and its optional length), separator count and separator spacing. Explicit — the
+        /// only way to lose them, exactly like the per-module customizations (Owner, I-35).
+        /// </summary>
+        public void RestoreAdvancedRackParameters(PushBackEditorInputs inputs)
+            => PushBackAdvancedRackParameters.Reset(inputs);
+
         /// <summary>Consume the accepted edit, so a recompute triggered by something else does not re-apply a restore
         /// that already landed. The intents themselves survive inside the new baseline.</summary>
         public void ClearModuleCommit() => moduleCommit = null;

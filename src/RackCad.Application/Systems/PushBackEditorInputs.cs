@@ -20,6 +20,29 @@ namespace RackCad.Application.Systems
         public double BeamDepth { get; set; } = DynamicRackDefaults.DefaultBeamDepth;
         public DynamicAnnotationOptions Annotations { get; set; } = new DynamicAnnotationOptions();
 
+        // ---- Advanced RACK-WIDE parameters (I-35, Owner round 2) --------------------------------------------------
+        // These are TRANSPORT, not a second authority: same names, same types and same nullability as the properties
+        // of DynamicRackDesign/DynamicRackSystem that already own them, assigned across with no transformation. The
+        // rule of each one lives where it always did — the resolver, the separator geometry, the lateral builder and
+        // the BOM — and Push Back only carries the user's intent from its panel to the shared structure it composes.
+        // They are parameters of the RACK, never properties of a Separator module.
+
+        /// <summary>Manual cabecera height. Null = the height derived from the load inputs (the standing calculation).</summary>
+        public double? ManualHeaderHeightOverride { get; set; }
+
+        /// <summary>Whether the derived post carries its reinforcement. False removes ONLY the reinforcement: the
+        /// derived post itself is a structural consequence of two consecutive separators and always exists.</summary>
+        public bool DerivedPostReinforced { get; set; } = true;
+
+        /// <summary>Reinforcement length. Null = full height of the derived post; a value = partial, from the base up.</summary>
+        public double? DerivedPostReinforcementHeight { get; set; }
+
+        /// <summary>Separator count per cabecera. Null = the standard calculation.</summary>
+        public int? SeparatorCountOverride { get; set; }
+
+        /// <summary>Separator spacing. Null = the standard calculation. Independent of the count.</summary>
+        public double? SeparatorSpacingOverride { get; set; }
+
         /// <summary>Entrance-side safety selections. GUIA (entrance guides) are stripped at build; Push Back admits none.</summary>
         public IList<SelectiveSafetySelection> SafetySelections { get; } = new List<SelectiveSafetySelection>();
 

@@ -8,8 +8,9 @@ automation_state:
   gate: owner-validation
   attempts: 1
   next_action: >-
-    VALIDACION-MANUAL-DEL-OWNER-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree-de-I-35 ·
-    checklist-de-12-puntos-en-la-seccion-10-del-contrato ·
+    SEGUNDA-RONDA-de-validacion-manual-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree-de-I-35 ·
+    checklist-FOCALIZADO-puntos-13-a-23-de-la-seccion-10-del-contrato-los-cuatro-residuos ·
+    lo-ya-APROBADO-de-la-edicion-por-modulo-no-se-rediseno-y-no-necesita-revalidarse-punto-por-punto ·
     NO-integrar-NO-declarar-integration-ready-hasta-que-el-Owner-apruebe
   last_evidence_commit: 7ceede96238894dd46377e24d6bab38126f961d7
 
@@ -55,6 +56,50 @@ superseded_artifacts:
       se-anoto-como-candidato-en-una-version-anterior-de-este-archivo-cuando-su-CI-todavia-estaba-pendiente ·
       la-punta-y-el-candidato-unico-son-7ceede96238894dd46377e24d6bab38126f961d7
     status: NO-es-candidato-no-tiene-DLL-entregado-ni-CI-citable-propia
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA 1 DEL OWNER: PARCIALMENTE RECHAZADA. Lo aprobado NO se rediseña; los cuatro residuos se corrigieron.
+# --------------------------------------------------------------------------------------------------------
+owner_round_1:
+  verdict: PARCIALMENTE-RECHAZADA
+  approved: >-
+    la-EDICION-POR-MODULO-quedo-aprobada-seleccion-unica-longitud-Calculada-Personalizada-configurador-transaccional-confirmar-cancelar-y-restaurar ·
+    NO-se-rediseno-nada-de-eso-en-la-correccion
+  candidate_reviewed: 7ceede96238894dd46377e24d6bab38126f961d7
+  dll_reviewed_sha256: F929FCFE5EDEBF48B8A673A791F396FA18491313C4BDDB7F001069ABC94D0F6C
+  residues:
+    - id: 1
+      what: altura-personalizada-de-cabecera
+      authority: ManualHeaderHeightOverride
+      fix: vacio-igual-calculo-vigente-y-un-valor-debe-ser-mayor-que-cero-una-cabecera-personalizada-conserva-configuracion-y-procedencia-al-cambiar-la-altura-global
+    - id: 2
+      what: activar-desactivar-refuerzo-en-poste-derivado-y-su-longitud-opcional
+      authority: DerivedPostReinforced-mas-DerivedPostReinforcementHeight
+      fix: >-
+        desactivado-existe-el-poste-derivado-pero-no-su-refuerzo ·
+        activado-con-altura-vacia-refuerzo-a-TODA-la-altura-fisica-del-poste ·
+        activado-con-altura-capturada-refuerzo-PARCIAL-desde-la-base ·
+        la-altura-debe-ser-mayor-que-cero-y-NO-exceder-la-altura-fisica-resuelta-del-poste ·
+        cambiar-niveles-altura-de-cabecera-o-geometria-REVALIDA-y-si-una-recomputacion-la-vuelve-invalida-BLOQUEA-con-error-visible-sin-recortar-ni-restaurar-en-silencio ·
+        apagar-el-refuerzo-NO-persiste-una-medida-muerta ·
+        llega-a-vista-lateral-cortes-afectados-y-BOM-y-persiste-por-biblioteca-DWG-y-actualizacion-en-sitio ·
+        etiqueta-Altura-del-refuerzo-in-con-la-explicacion-Vacio-igual-refuerzo-a-toda-la-altura-del-poste-derivado
+    - id: 3
+      what: cantidad-personalizada-de-separadores
+      authority: SeparatorCountOverride
+      fix: vacio-igual-calculo-automatico-y-un-valor-debe-ser-entero-mayor-que-cero
+    - id: 4
+      what: separacion-personalizada-de-separadores
+      authority: SeparatorSpacingOverride
+      fix: vacio-igual-calculo-automatico-y-un-valor-debe-ser-mayor-que-cero-independiente-de-la-cantidad
+  no_new_authority: >-
+    las-CINCO-propiedades-ya-existian-en-DynamicRackDesign-y-DynamicRackSystem-y-ya-las-consumian-el-resolver-DynamicSeparatorGeometry-el-builder-lateral-y-el-BOM ·
+    Push-Back-solo-TRANSPORTA-la-intencion-PushBackAdvancedRackParameters-valida-y-asigna-y-nada-mas ·
+    cero-campos-equivalentes-y-cero-segunda-autoridad
+  placement: >-
+    son-parametros-GLOBALES-DEL-RACK-no-propiedades-del-modulo-Separator ·
+    viven-en-la-seccion-Parametros-globales-del-rack-SEPARADA-de-Modulo-seleccionado-con-nombres-propios-de-Push-Back-Rack-HeaderHeightBox-RackSeparatorCountBox-RackSeparatorSpacingBox-DerivedPostReinforcedCheck-y-DerivedPostReinforcementHeightBox ·
+    NO-se-reusan-los-x-Name-del-Dinamico-una-guarda-por-fuente-lo-hace-respetar
 
 # --------------------------------------------------------------------------------------------------------
 # DECISIONES DEL OWNER. Cierran el gate owner-decision de la sesion de apertura y son normativas.
@@ -178,7 +223,9 @@ gates:
     ABIERTO · la-edicion-por-modulo-CAMBIA-la-estructura-que-se-dibuja-en-las-cuatro-vistas-y-el-BOM ·
     checklist-de-12-puntos-en-la-seccion-10-del-contrato
   owner_validation: >-
-    ABIERTO · pendiente-del-dueno-sobre-el-DLL-Debug-del-worktree-de-I-35
+    ABIERTO · PRIMERA-RONDA-PARCIALMENTE-RECHAZADA-por-cuatro-residuos-ya-corregidos ·
+    la-edicion-por-modulo-quedo-APROBADA-y-NO-se-rediseno ·
+    pendiente-la-SEGUNDA-RONDA-sobre-el-DLL-Debug-del-nuevo-candidato
   owner_decision: >-
     CERRADO-las-cinco-decisiones-viven-en-owner_decisions-y-en-la-seccion-0-del-contrato
 

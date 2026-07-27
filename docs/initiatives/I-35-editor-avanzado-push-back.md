@@ -62,6 +62,47 @@ decisiones son normativas para el resto de la iniciativa:
    y a la **superficie de Push Back**; el configurador compartido se abre sobre una **copia** y su
    resultado se acepta o se descarta desde fuera.
 
+## 0.b Primera ronda del Owner: PARCIALMENTE RECHAZADA
+
+El Owner validó en AutoCAD 2025 el candidato `7ceede9` y **aprobó la edición por módulo**, que por tanto
+**no se rediseña**. La ronda queda **parcialmente rechazada** por **cuatro residuos**: Push Back seguía sin
+las capacidades avanzadas que el Dinámico sí ofrece.
+
+Los cuatro son **parámetros GLOBALES DEL RACK**, no propiedades del módulo `Separator`, y viven en una
+**sección independiente** del panel «Módulo seleccionado»:
+
+| # | Residuo | Autoridad reutilizada |
+|---|---|---|
+| 1 | Altura personalizada de cabecera | `ManualHeaderHeightOverride` |
+| 2 | Refuerzo del poste derivado y su longitud opcional | `DerivedPostReinforced` + `DerivedPostReinforcementHeight` |
+| 3 | Cantidad personalizada de separadores | `SeparatorCountOverride` |
+| 4 | Separación personalizada de separadores | `SeparatorSpacingOverride` |
+
+**No se creó ninguna autoridad nueva ni campo equivalente.** Las cinco propiedades ya existían en
+`DynamicRackDesign`/`DynamicRackSystem` y ya las consumían el resolver, `DynamicSeparatorGeometry`, el
+builder lateral y el BOM. Push Back solo **transporta** la intención del usuario hasta ellas
+(`PushBackAdvancedRackParameters`: validar y asignar, nada más).
+
+### Contrato de los cuatro ámbitos
+
+- altura manual **desactivada o vacía** = cálculo vigente; **activa** debe ser `> 0`;
+- una **cabecera personalizada conserva configuración y procedencia** al cambiar la altura global, pasando
+  por la adaptación y la validación de I-35 (misma reconciliación por `ModuleId + Kind`);
+- **refuerzo desactivado elimina solo el refuerzo**, nunca el poste derivado, que es consecuencia
+  estructural de dos separadores consecutivos;
+- **longitud de refuerzo vacía = altura completa**; capturada = `> 0` **y no mayor que la altura física
+  resuelta del poste**;
+- cambiar niveles, altura de cabecera o geometría **revalida** la altura manual del refuerzo; si una
+  recomputación la vuelve inválida, **bloquea con error visible** — no se recorta ni se restaura en
+  silencio;
+- apagar el refuerzo **no persiste una medida muerta**: la estructura guarda «sin refuerzo» y ninguna
+  longitud;
+- cantidad y separación **vacías = cálculo automático**; la cantidad manual es un **entero** válido y la
+  separación manual `> 0`; **son independientes**;
+- la **restauración explícita** devuelve los cuatro ámbitos al cálculo/default vigente;
+- persistencia **legacy, biblioteca, Xrecord, GUID y campos desconocidos** se conservan;
+- **preview, cuatro vistas y BOM** consumen el mismo sistema resuelto.
+
 ## 1. Objetivo
 
 Que Push Back ofrezca el mismo poder de edicion por modulo que el Dinamico —seleccionar una cabecera
@@ -225,8 +266,12 @@ Crear (pruebas):
 
 Modificar:
 
-- `src/RackCad.Application/Systems/PushBackEditorState.cs` y `PushBackEditorDesignAssembler.cs`
+- `src/RackCad.Application/Systems/PushBackEditorState.cs`, `PushBackEditorState.Load.cs`,
+  `PushBackEditorDesignAssembler.cs` y `PushBackEditorInputs.cs`
+- `src/RackCad.Application/Systems/PushBackAdvancedRackParameters.cs` (ronda 2: validar y asignar)
 - `src/RackCad.UI/RackPushBackSystemWindow.xaml` y `.xaml.cs`
+- `tests/RackCad.Tests/PushBackAdvancedRackParametersTests.cs`
+- `tests/RackCad.UI.Tests/PushBackAdvancedRackParametersWindowTests.cs`
 
 Documentacion: este contrato, `docs/initiatives/README.md`,
 `docs/automation/state/I-35.yml` y `docs/ideas-futuras.md`.
@@ -292,6 +337,29 @@ la estructura que se dibuja. Checklist a ejecutar sobre el DLL Debug del worktre
 11. El **Dinamico** y el **Selectivo** se comportan exactamente como antes.
 12. El **configurador de cabecera** se abre desde Push Back, y **Cancelar** en la ventana de Push
     Back deja el diseno como estaba aunque el configurador se haya cerrado con cambios.
+
+### Segunda ronda — los cuatro residuos (focalizada)
+
+13. **Altura de cabecera**: vacía dibuja la altura calculada; con un valor, el rack se dibuja a esa
+    altura en las cuatro vistas. Un valor `0` o negativo se **rechaza con mensaje**.
+14. **Cabecera personalizada + altura global**: personaliza una cabecera, cambia la altura global y
+    comprueba que la cabecera **conserva su configuración y su procedencia**.
+15. **Refuerzo desactivado**: el poste derivado **sigue dibujándose**; desaparece **solo** su refuerzo,
+    en lateral, cortes y BOM. El campo «Altura del refuerzo» queda **deshabilitado con su motivo**.
+16. **Refuerzo a toda la altura**: activado y con el campo **vacío**, el refuerzo llega arriba del poste.
+17. **Refuerzo parcial**: con un valor menor que el poste, el refuerzo llega **desde la base hasta ahí**,
+    y el BOM cambia respecto al refuerzo completo.
+18. **Refuerzo inválido**: `0`, negativo o **mayor que el poste** se **rechaza con mensaje**.
+19. **Refuerzo revalidado**: con un refuerzo válido, **reduce** la altura de cabecera o los niveles hasta
+    que el poste quede más bajo. Debe **bloquear con error visible**, sin recortar el valor capturado.
+20. **Separadores**: cantidad y separación vacías = automático; cada una por separado cambia el dibujo;
+    fijar una **no altera** la otra. Cantidad no entera o `<= 0`, y separación `<= 0`, se **rechazan**.
+21. **Restaurar parámetros globales**: devuelve los cuatro campos a vacío/refuerzo activado, y el rack al
+    cálculo vigente.
+22. **Round-trip**: guarda en biblioteca y reabre; inserta, cierra y `RACKEDITAR` con el **mismo GUID**.
+    Los cuatro ámbitos vuelven tal cual. Un documento **legacy** abre con el cálculo vigente.
+23. **Aislamiento**: el **Dinámico** y el **Selectivo** siguen exactamente igual; la edición masiva de
+    seguridad de **I-34** se comporta como quedó integrada.
 
 ## 11. Criterios de aceptacion
 

@@ -126,6 +126,10 @@ namespace RackCad.Application.Systems
                 }
             };
 
+            // I-35 (Owner round 2): the four advanced RACK-WIDE scopes come back from the very properties that own
+            // them, so reopening a design repopulates the advanced panel with what was persisted.
+            PushBackAdvancedRackParameters.ReadFrom(s, inputs);
+
             foreach (var safety in system.SafetySelections ?? Enumerable.Empty<SelectiveSafetySelection>())
             {
                 if (safety != null)
