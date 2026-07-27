@@ -11,23 +11,27 @@ automation_state:
     VALIDACION-MANUAL-DEL-OWNER-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree-de-I-35 ·
     checklist-de-12-puntos-en-la-seccion-10-del-contrato ·
     NO-integrar-NO-declarar-integration-ready-hasta-que-el-Owner-apruebe
-  last_evidence_commit: 324c4aae4a6983544a092ef3e9de2bcc5b61e98e
+  last_evidence_commit: 65a7800-ver-el-bloque-candidate-tras-el-rebase-sobre-I-34
 
 # --------------------------------------------------------------------------------------------------------
 # EL CANDIDATO. Hay UNO SOLO y es este; cualquier SHA anterior de la rama queda superado y NO es candidato.
 # --------------------------------------------------------------------------------------------------------
 candidate:
-  sha: 324c4aae4a6983544a092ef3e9de2bcc5b61e98e
+  sha: 65a7800-el-commit-de-codigo-tras-el-rebase-el-SHA-completo-vive-en-git-log
   subject: I-35 - editor avanzado de modulos en la ventana de Push Back
-  ci_run: 30288779586
-  ci_result: VERDE-4-de-4-sobre-el-SHA-del-candidato
+  ci_run: pendiente-de-la-corrida-post-rebase-el-numero-se-registra-al-verificarla
+  ci_result: VERDE-4-de-4-requerido-sobre-el-SHA-del-candidato-post-rebase
+  pre_rebase: >-
+    antes-del-rebase-el-candidato-fue-324c4aae4a6983544a092ef3e9de2bcc5b61e98e-con-CI-30288779586-VERDE-4-de-4 ·
+    ese-arbol-queda-SUPERADO-por-el-rebase-y-su-DLL-1-0-0-mas-324c4aa-SHA256-5832F724-YA-NO-es-el-artefacto-valido
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   dll_path: >-
     <worktree>/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
   dll_informational_version: 1.0.0+324c4aae4a6983544a092ef3e9de2bcc5b61e98e
   dll_sha256: 5832F7242F9013D51A9E3AFF7F234BA40CD474DB52DA5C37174BE20C57EB534C
   binding: >-
-    el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-candidato-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol
+    el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-arbol-que-lo-produjo-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol ·
+    el-DLL-entregado-se-compila-sobre-la-PUNTA-final-de-la-rama-cuyo-unico-delta-contra-el-candidato-es-ESTE-archivo-documental
   note_on_this_file: >-
     el-commit-que-escribe-este-archivo-es-POSTERIOR-al-candidato-y-es-SOLO-DOCUMENTACION ·
     no-toca-codigo-ni-pruebas-ni-catalogos-por-lo-que-NO-cambia-el-binario-y-el-DLL-del-worktree-sigue-siendo-el-estampado-arriba ·
@@ -199,7 +203,7 @@ evidence:
     6d54a28-Push-Back-adopta-la-sesion-y-la-reconciliacion-de-modulos ·
     324c4aa-CANDIDATO-editor-avanzado-de-modulos-en-la-ventana-de-Push-Back
   tests: >-
-    rackcad-tests-1582-de-1582 · rackcad-ui-tests-411-de-411 · cero-fallos-cero-omitidas-en-ambas ·
+    rackcad-tests-1582-de-1582 · rackcad-ui-tests-482-de-482-tras-el-rebase-incluye-las-71-de-I-34 · cero-fallos-cero-omitidas-en-ambas ·
     60-nuevas-sobre-las-1522-mas-398-de-la-base-15-caracterizaciones-25-de-fundacion-20-de-adopcion-y-13-STA-de-ventana
   targeted_filters: >-
     core-PushBackModuleEditorCharacterization-15-de-15 · core-RackModuleEditSessionTests-25-de-25 ·
@@ -236,6 +240,12 @@ evidence:
   builds: >-
     build-UI-Debug-0-errores-0-advertencias ·
     build-Plugin-Debug-0-errores-2-advertencias-ambas-MSB3277-conocidas-e-ignoradas-con-AutoCAD-cerrado
+  rebase: >-
+    NECESARIO-y-EJECUTADO-origin-main-avanzo-DURANTE-la-corrida-de-7e48b5c-a-52ce27f-al-integrarse-I-34 ·
+    rebase-sobre-origin-main-52ce27f-con-range-diff-11-de-11-commits-conservados-y-UN-solo-cambio-el-numero-2 ·
+    UNICO-conflicto-docs-initiatives-README-md-resuelto-CONSERVANDO-las-DOS-entradas-la-de-I-34-y-la-de-I-35 ·
+    interseccion-de-CODIGO-con-I-34-VACIA-como-el-contrato-predijo-I-34-toca-SelectionMatrix-y-los-Safety-GridWindow-e-I-35-toca-Push-Back-y-la-fundacion-de-modulos ·
+    se-rebasa-ANTES-de-la-validacion-del-Owner-porque-WORKFLOW-6-exige-que-la-validacion-que-cuenta-sea-sobre-el-arbol-YA-rebasado
   scope_isolation: >-
     sin-tocar-ROADMAP-HANDOFF-SelectionMatrix-Safety-GridWindow-Selectivo-catalogos-bloques-DWG-ni-el-Dinamico ·
     RackDynamicSystemWindow-xaml-y-cs-sin-una-sola-linea-de-diff-se-leen-como-REFERENCIA ·
