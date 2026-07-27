@@ -1,0 +1,127 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-35
+  branch: feature/editor-avanzado-push-back
+  claim_id: 52940bec-3af4-42a3-a6e8-301bcb902624
+  current_phase: 4
+  state: waiting
+  gate: owner-decision
+  attempts: 1
+  next_action: >-
+    DECISION-DEL-OWNER-antes-de-implementar-la-UI-avanzada-tres-preguntas-en-la-seccion-12-del-contrato ·
+    a-el-eje-de-personalizacion-los-modulos-son-UNA-secuencia-de-RACK-no-por-frente-ni-por-poste ·
+    b-la-politica-de-reconciliacion-conservar-o-descartar-avisando-la-cabecera-personalizada ·
+    c-si-el-configurador-compartido-debe-ganar-Aceptar-Cancelar-o-si-basta-la-sesion-transaccional-de-Push-Back ·
+    NO-implementar-la-UI-avanzada-antes-de-esa-decision
+  last_evidence_commit: PENDIENTE-lo-fija-el-ultimo-commit-de-la-sesion
+
+# --------------------------------------------------------------------------------------------------------
+# ALCANCE ENTREGADO EN LA SESION DE APERTURA. NO se implemento la UI avanzada de Push Back (prohibido por
+# la instruccion de apertura). No hay cambio de comportamiento observable: la fundacion no tiene consumidor.
+# --------------------------------------------------------------------------------------------------------
+increment:
+  delivered:
+    - preflight-completo-y-reclamo-atomico-publicado-sin-force
+    - auditoria-de-los-siete-hechos-de-la-base-con-su-tabla-comparativa-Dinamico-frente-a-Push-Back
+    - contrato-indice-y-estado-versionado
+    - inconsistencia-de-PB-011-registrada-en-ideas-futuras
+    - caracterizaciones-puras-de-los-siete-hechos-cada-una-verificada-en-rojo-al-invertir-lo-que-afirma
+    - fundacion-neutral-pura-y-SIN-consumidor-descriptor-sesion-transaccional-y-reconciliacion
+  not_delivered:
+    - superficie-de-edicion-por-modulo-en-RackPushBackSystemWindow-espera-la-decision-del-Owner
+    - boton-Restaurar-estandar-que-consuma-el-forceRebuild-ya-existente
+    - adopcion-de-la-fundacion-por-PushBackEditorState-y-PushBackEditorDesignAssembler
+    - revision-de-la-dependencia-del-alto-de-tarima-general-PB-013
+
+# --------------------------------------------------------------------------------------------------------
+# LA AUDITORIA. Siete hechos verificados sobre la base 7e48b5c; son la justificacion de la fundacion.
+# --------------------------------------------------------------------------------------------------------
+audit:
+  base_commit: 7e48b5c06afb790621d4997aa93e44e0b53e8af7
+  fact_1_no_surface: >-
+    RackPushBackSystemWindow-xaml-72-x-Name-NO-contiene-panel-avanzado-tabla-de-modulos-ni-edicion-de-cabecera-o-separador ·
+    el-Dinamico-si-AdvancedToggle-AdvancedPanel-ManualHeight-SeparatorCount-SeparatorSpacing-DerivedReinforce-ModulesGrid-KindBox-ModuleLengthBox-ConfigBox-ApplyModuleButton-EditHeaderButton
+  fact_2_foundation_exists: >-
+    PushBackEditorDesignAssembler-YA-compone-MustRebuild-SnapshotHeaderFondos-RestoreHeaderFondos-y-UpdateHeaderHeightInPlace ·
+    sobre-PushBackEditorState-WorkingBaseline-que-solo-avanza-en-un-AcceptComputation-EXITOSO-asi-que-un-recalculo-fallido-no-corrompe-la-base ·
+    la-estructura-modular-YA-se-preserva-lo-que-falta-es-exclusivamente-la-superficie
+  fact_3_restore_without_button: >-
+    BuildDesign-y-Build-aceptan-forceRebuild-pero-el-UNICO-forceRebuild-true-del-repositorio-es-RackDynamicSystemWindow-RestoreDefault_Click ·
+    Push-Back-no-tiene-Restaurar-estandar
+  fact_4_all_headers_calculated: >-
+    DynamicRackSystemBuilder-CreateHeader-fija-UseCalculatedHeaderConfiguration-true ·
+    el-UNICO-codigo-de-produccion-que-lo-pone-en-false-es-la-ventana-del-Dinamico-EditHeader_Click-y-ConfigBox_SelectionChanged ·
+    es-la-premisa-exacta-de-la-nota-tecnica-de-PB-011
+  fact_5_reconciliation_loses_custom: >-
+    SnapshotHeaderFondos-guarda-SOLO-el-fondo-por-ordinal ·
+    RestoreHeaderFondos-reasigna-el-fondo-FUERZA-UseCalculatedHeaderConfiguration-true-y-RECONSTRUYE-la-configuracion-desde-la-fabrica ·
+    un-cambio-de-tarima-o-de-fondos-revertiria-cualquier-cabecera-personalizada-a-calculada ·
+    INERTE-HOY-por-el-hecho-4-y-REAL-en-la-misma-sesion-en-que-PB-011-se-implemente ·
+    ESTA-es-la-inconsistencia-de-PB-011-registrada-en-ideas-futuras
+  fact_6_clone_is_not_canonical: >-
+    DynamicRackSystemResolver-CloneHeader-es-RackFrameProjectDocument-FromConfiguration-ToConfiguration-NO-RackFrameProjectStore-DeepCopy ·
+    el-documento-no-persiste-RackFrameConfiguration-Exceptions-que-I-17-declara-estado-runtime-asi-que-el-round-trip-las-DESCARTA ·
+    PushBackEditorDesignAssembler-CopyStructureSystem-recorre-ese-camino-Snapshot-mas-Resolve-en-CADA-recalculo-sin-cambio-estructural ·
+    tambien-inerte-hoy-por-el-hecho-4 ·
+    el-modelo-DERIVADO-si-se-reconstruye-builder-Refresh-llama-RefreshPhysicalModel-en-cada-cabecera-asi-que-la-perdida-es-SOLO-de-Exceptions
+  fact_7_no_confirm_cancel: >-
+    RackFrameConfiguratorWindow-recibe-la-RackFrameConfiguration-POR-REFERENCIA-la-muta-por-su-ViewModel-y-NO-tiene-boton-Aceptar-ni-Cancelar-solo-cierra ·
+    RackDynamicSystemWindow-EditHeader_Click-serializa-un-snapshot-ANTES-pero-solo-para-DETECTAR-cambio-y-no-duplicar-el-preset-Personalizada-N-NUNCA-para-revertir ·
+    cerrar-el-configurador-sin-querer-el-cambio-deja-el-cambio-aplicado
+  module_axis: >-
+    DynamicRackSystem-Modules-es-UNA-SOLA-secuencia-longitudinal-de-RACK-compartida-por-todos-los-frentes-y-todos-los-postes ·
+    los-modulos-recorren-la-PROFUNDIDAD-X-y-BuildDefault-los-deriva-del-depthLayout-no-del-numero-de-frentes ·
+    las-secciones-laterales-solo-miran-un-RANGO-de-esa-misma-lista-DynamicDepthGeometry-ModulesInRange ·
+    por-tanto-personalizar-un-modulo-personaliza-el-RACK-ENTERO-no-un-frente-ni-un-poste ·
+    si-el-Owner-espera-personalizacion-POR-FRENTE-o-POR-POSTE-el-modelo-no-la-soporta-y-el-alcance-deja-de-ser-PB-011-hay-que-DETENERSE
+
+gates:
+  ci: verde-requerido-sobre-la-punta-publicada-4-de-4
+  plugin_build: >-
+    NO-EJECUTADO-en-esta-sesion-no-hay-cambio-de-produccion-que-lo-exija-la-fundacion-no-tiene-consumidor ·
+    requerido-a-partir-de-la-fase-6
+  autocad: >-
+    ABIERTO-para-la-fase-6-en-adelante ·
+    NO-aplica-a-esta-sesion-no-cambia-dibujo-BOM-GUID-ni-persistencia
+  owner_validation: >-
+    ABIERTO-checklist-de-10-puntos-en-la-seccion-10-del-contrato
+  owner_decision: >-
+    ABIERTO-y-BLOQUEANTE-tres-preguntas-en-la-seccion-12-del-contrato ·
+    eje-de-personalizacion-politica-de-reconciliacion-y-Aceptar-Cancelar-del-configurador-compartido
+
+documentary_gate: >-
+  el-indice-de-docs-initiatives-exige-que-un-contrato-no-invente-alcance-ausente-del-ROADMAP-e-I-35-NO-tiene-fila-en-ROADMAP ·
+  la-apertura-la-autorizo-el-Owner-por-INSTRUCCION-DIRECTA-que-ademas-PROHIBIO-editar-ROADMAP-y-HANDOFF-en-esta-sesion ·
+  WORKFLOW-4-5-4-los-reserva-de-todos-modos-a-la-sesion-de-integracion ·
+  la-procedencia-documental-del-alcance-es-PB-011-en-ideas-futuras-md ·
+  la-fila-del-ROADMAP-la-escribe-el-Owner-o-la-sesion-de-integracion-esta-rama-NO-la-toca
+
+execution_context:
+  mode: manual-git-only
+  worktree: feature-editor-avanzado-push-back
+  pull_request: none
+
+evidence:
+  base_commit: 7e48b5c06afb790621d4997aa93e44e0b53e8af7
+  claim_commit: b0361bbc3c7765e130ea3e01d39b640632f4f224
+  preflight: >-
+    main-igual-a-origin-main-igual-a-7e48b5c06afb790621d4997aa93e44e0b53e8af7-verificado-tambien-contra-el-remoto-con-git-ls-remote ·
+    arbol-limpio-sin-rebase-merge-cherry-pick-bisect-ni-revert-en-curso-y-sin-stashes ·
+    CI-verde-del-SHA-EXACTO-run-30271730434-success-sobre-7e48b5c ·
+    I-33-limpiada-sin-rama-local-ni-remota-y-sin-worktree ·
+    I-34-ACTIVA-en-validating-gate-owner-validation-toca-SelectionMatrix-y-tres-Safety-GridWindow-interseccion-de-CODIGO-VACIA-con-I-35 ·
+    I-35-sin-ninguna-referencia-previa-en-el-repo-y-feature-editor-avanzado-push-back-inexistente-local-y-remota ·
+    I-23-e-I-25-siguen-pendiente-en-el-ROADMAP-y-sin-rama
+  claim: >-
+    commit-vacio-b0361bb-con-Initiative-Id-I-35-Branch-feature-editor-avanzado-push-back-y-Claim-Id-52940bec-3af4-42a3-a6e8-301bcb902624 ·
+    primer-push-ACEPTADO-por-el-remoto-new-branch-sin-force
+  baseline_tests: >-
+    sobre-la-base-antes-de-tocar-nada-rackcad-tests-1522-de-1522-y-rackcad-ui-tests-398-de-398-cero-fallos-cero-omitidas
+  scope_isolation: >-
+    sin-tocar-ROADMAP-HANDOFF-SelectionMatrix-Safety-GridWindow-Selectivo-catalogos-bloques-DWG-ni-el-Dinamico ·
+    RackDynamicSystemWindow-xaml-y-cs-sin-una-sola-linea-de-diff-se-leen-como-REFERENCIA ·
+    RackPushBackSystemWindow-xaml-y-cs-sin-una-sola-linea-de-diff-en-esta-sesion ·
+    la-fundacion-nueva-NO-tiene-consumidor-asi-que-no-hay-cambio-de-comportamiento-observable ·
+    ningun-clon-de-RackFrameConfiguration-fuera-de-RackFrameProjectStore-DeepCopy ·
+    cero-ramas-por-RackSystemKind-en-los-tipos-nuevos ·
+    conflicts_with-declara-I-34-I-23-e-I-25

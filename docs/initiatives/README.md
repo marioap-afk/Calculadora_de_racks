@@ -316,6 +316,33 @@ Planes disponibles:
   validación manual en AutoCAD 2025 sobre el candidato `dbdda74` (DLL SHA-256 `5353C298…`, CI 30283957763
   4/4); `origin/main` no avanzó desde la base `7e48b5c`, así que **sin rebase**. Estado versionado en
   [`../automation/state/I-34.yml`](../automation/state/I-34.yml).
+- [`I-35-editor-avanzado-push-back.md`](I-35-editor-avanzado-push-back.md): **Editor avanzado de módulos
+  de Push Back** (tipo: feature; rama `feature/editor-avanzado-push-back`). Implementa **PB-011**, la
+  «prioridad alta del Owner» que I-32 dejó diferida en [`../ideas-futuras.md`](../ideas-futuras.md): el
+  Dinámico permite seleccionar un módulo —cabecera o separador— y personalizarlo (medida, cantidad de
+  separadores, cabecera personalizada); **Push Back no**. La auditoría de la base `7e48b5c` fija siete
+  hechos: el XAML de Push Back **no tiene** superficie de módulos; su `PushBackEditorDesignAssembler`
+  **ya compone** el ciclo de recálculo del Dinámico sobre un `WorkingBaseline` que solo avanza en un
+  `AcceptComputation` exitoso; `forceRebuild` existe **sin consumidor** (no hay «Restaurar estándar»);
+  **toda** cabecera de Push Back es «calculada» porque solo la ventana del Dinámico pone
+  `UseCalculatedHeaderConfiguration = false`; `RestoreHeaderFondos` guarda **solo el fondo** y **fuerza
+  la vuelta a calculada**, así que un cambio estructural revertiría cualquier cabecera personalizada;
+  `DynamicRackSystemResolver.CloneHeader` **no** es el clon canónico de I-17 y descarta las
+  `Exceptions` runtime; y **no existe confirmar/cancelar** en ninguna parte —
+  `RackFrameConfiguratorWindow` muta por referencia y no tiene Aceptar ni Cancelar—. Los dos últimos
+  hechos son **inertes hoy** y se vuelven reales en la misma sesión en que Push Back gane cabeceras
+  personalizadas: es la **inconsistencia de PB-011** registrada en `ideas-futuras.md`. Fuera de
+  alcance: `SelectionMatrix*`, operaciones masivas y `Safety*GridWindow` (**los reclama I-34**, hoy en
+  `validating`/`owner-validation`), topes, desviadores, guías, defensas,
+  `DesviadorCellsAreByPost`, el Selectivo, catálogos, bloques DWG, cambios funcionales en el Dinámico,
+  copiar el editor Dinámico, ramas por `RackSystemKind`, I-23 e I-25. **Gate abierto**
+  (`requires_owner_decision: true`): `DynamicRackSystem.Modules` es **una sola secuencia longitudinal de
+  rack** compartida por todos los frentes y postes, así que personalizar un módulo personaliza el rack
+  entero; si el Owner espera personalización **por frente o por poste**, el alcance deja de ser PB-011.
+  **Gate documental**: I-35 **no tiene fila en `ROADMAP.md`** y el Owner prohibió editarlo en la sesión
+  de apertura; la procedencia del alcance es PB-011. `requires_autocad: true`,
+  `requires_owner_validation: true`. Estado versionado en
+  [`../automation/state/I-35.yml`](../automation/state/I-35.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
