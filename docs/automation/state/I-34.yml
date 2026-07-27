@@ -3,43 +3,56 @@ automation_state:
   initiative: I-34
   branch: feature/edicion-masiva-seguridad
   claim_id: 1a2f5fcf-2430-49a1-9f56-1aa526bcdbf6
-  current_phase: 4
-  state: implementing
-  gate: none
+  current_phase: 5
+  state: validating
+  gate: owner-validation
   attempts: 1
   next_action: >-
-    ADOPCION-por-los-dialogos-en-una-sesion-propia-empezando-por-el-desviador-eje-POSTE ·
-    despues-tope-que-cubre-Selectivo-y-el-tope-posterior-de-Push-Back-y-luego-guia ·
-    parrilla-y-defensa-necesitan-decision-previa-y-NO-son-compromiso
-  last_evidence_commit: 15e50025c721f4efb8f9a98b0f58b6893c304466
+    VALIDACION-MANUAL-DEL-OWNER-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree-de-I-34 ·
+    checklist-en-el-contrato-seccion-10 ·
+    NO-integrar-NO-declarar-integration-ready-hasta-que-el-Owner-apruebe
+  last_evidence_commit: se-escribe-al-cerrar-la-sesion-el-SHA-completo-de-la-punta-publicada
 
 # --------------------------------------------------------------------------------------------------------
-# ALCANCE DE ESTE PRIMER INCREMENTO. La fundacion NO tiene consumidores de produccion: ningun dialogo
-# cambia todavia de comportamiento, y por eso no hay gate de AutoCAD abierto en esta sesion.
+# ALCANCE ENTREGADO. La adopcion productiva esta COMPLETA en los tres dialogos que el contrato incluye,
+# asi que la interaccion visible SI cambia y los gates del dueno quedan ABIERTOS.
 # --------------------------------------------------------------------------------------------------------
 increment:
   delivered:
     - inventario-auditado-de-las-5-matrices-booleanas-de-seguridad-y-de-los-consumidores-reales-del-control
     - decisiones-cerradas-de-UX-y-arquitectura-en-el-contrato-seccion-7
-    - regresiones-rojas-verificadas-fallando-antes-de-la-fundacion
+    - regresiones-rojas-verificadas-fallando-antes-de-cada-cambio-de-comportamiento
     - fundacion-comun-minima-y-pura-sobre-SelectionMatrixModel
+    - guarda-fail-closed-de-un-alcance-NO-DEFINIDO-que-antes-se-interpretaba-como-Todo
+    - superficie-WPF-compartida-SelectionMatrixBulkBar-mas-SelectionMatrix-CellInteracted
+    - adopcion-en-SafetyDesviadorGridWindow-eje-POSTE
+    - adopcion-en-SafetyTopeGridWindow-eje-FRENTE-que-cubre-Selectivo-y-el-tope-posterior-de-Push-Back
+    - adopcion-en-SafetyGuiaEntradaGridWindow-eje-FRENTE
   not_delivered:
-    - adopcion-por-SafetyDesviadorGridWindow-SafetyTopeGridWindow-SafetyGuiaEntradaGridWindow
-    - parrilla-y-defensa-excluidas-con-justificacion-en-el-contrato-seccion-6-3
+    - parrilla-necesita-decidir-antes-como-comparte-el-control-su-contador-vivo-por-celda
+    - defensa-necesita-decidir-antes-que-significa-un-alcance-en-un-formulario-por-poste-sin-eje-de-nivel
 
 gates:
   ci: verde-requerido-sobre-la-punta-publicada-4-de-4
-  plugin_build: no-ejecutado-en-esta-sesion-la-fundacion-no-toca-el-Plugin
+  plugin_build: >-
+    EJECUTADO-y-correcto-con-AutoCAD-cerrado ·
+    0-errores-propios-las-2-advertencias-son-los-MSB3277-conocidos-de-las-referencias-de-AutoCAD
   autocad: >-
-    DIFERIDO-a-la-adopcion · este-incremento-no-cambia-dibujo-BOM-ni-interaccion-visible
+    ABIERTO · la-adopcion-cambia-la-interaccion-visible-de-tres-dialogos-compartidos-por-los-tres-sistemas ·
+    checklist-en-el-contrato-seccion-10
   owner_validation: >-
-    DIFERIDO-a-la-adopcion · requires_owner_validation-true-describe-la-iniciativa-completa
+    ABIERTO · pendiente-del-dueno-sobre-el-DLL-Debug-del-worktree-de-I-34
   owner_decision: >-
-    NO-REQUERIDO · la-decision-de-alcance-que-PB-007-exigia-la-dio-el-Owner-en-la-instruccion-de-apertura
+    NO-REQUERIDO-para-lo-entregado ·
+    parrilla-y-defensa-SI-requieren-decision-antes-de-adoptarse
 
 invariants:
   - ningun-DTO-wire-format-store-geometria-BOM-catalogo-bloque-DWG-ni-namespace-cambia
   - DesviadorCellsAreByPost-sigue-en-false-para-el-Dinamico-y-no-se-toca
-  - parrilla-defensa-shell-visual-y-guardas-traseras-intactos
-  - las-celdas-ausentes-y-la-configuracion-dormida-de-SafetyDormantCells-no-se-alteran
+  - parrilla-defensa-matriz-estructural-shell-visual-preview-y-guardas-traseras-intactos
+  - las-celdas-ausentes-y-la-configuracion-dormida-de-SafetyDormantCells-no-se-alteran-ni-con-el-alcance-Todo
+  - la-columna-de-un-frente-en-blanco-no-puede-ser-primaria-y-ningun-alcance-la-toca
+  - cada-dialogo-conserva-Todos-Ninguno-sus-controles-auxiliares-y-sus-validaciones
+  - una-rejilla-en-la-que-no-se-usan-las-acciones-nuevas-se-comporta-exactamente-como-antes
+  - ningun-dialogo-contiene-ramas-por-Selectivo-Dinamico-o-Push-Back
   - main-no-fue-modificada
