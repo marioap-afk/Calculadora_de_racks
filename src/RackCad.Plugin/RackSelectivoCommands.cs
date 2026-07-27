@@ -10,6 +10,7 @@ using RackCad.Domain.Systems.Selective;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Selective;
 using RackCad.UI;
+using RackCad.UI.Systems.Selective;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using RackCad.UI;
 using RackCad.UI.Shell;
+using RackCad.UI.Systems.Dynamic;
 using Xunit;
 
 namespace RackCad.UI.Tests

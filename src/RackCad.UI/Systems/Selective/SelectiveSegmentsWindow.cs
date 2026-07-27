@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Domain.Systems.Selective;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.Selective
 {
     /// <summary>
     /// Editor for a frente's "medio frente" tramos: partition the bay into N tramos with N-1 intermediate posts, the

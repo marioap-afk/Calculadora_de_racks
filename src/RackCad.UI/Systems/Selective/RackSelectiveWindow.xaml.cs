@@ -16,13 +16,14 @@ using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
+using RackCad.UI.RackFrames;
 // I-20: the selective editor's state and its Cell/FondoMatrix/Scope models moved to RackCad.Application.Systems;
 // these aliases keep the window's render/edit code reading the same short names while the state lives in Application.
 using Cell = RackCad.Application.Systems.Selective.SelectiveEditorCell;
 using FondoMatrix = RackCad.Application.Systems.Selective.SelectiveEditorFondoMatrix;
 using Scope = RackCad.Application.Systems.Selective.SelectiveApplyScope;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.Selective
 {
     /// <summary>
     /// Advanced editor for a selective rack (FRONTAL view). The user edits a bays × levels MATRIX where each

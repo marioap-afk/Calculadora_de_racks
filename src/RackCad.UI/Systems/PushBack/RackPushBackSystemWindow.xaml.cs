@@ -21,8 +21,10 @@ using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Controls;
 using RackCad.UI.Editor;
 using RackCad.UI.Preview;
+using RackCad.UI.RackFrames;
+using RackCad.UI.Systems.Dynamic;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.PushBack
 {
     /// <summary>
     /// The Push Back system editor (initiative I-18b, increment 3a). It is a THIN shell over the pure Application model: the

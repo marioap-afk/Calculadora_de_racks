@@ -1,4 +1,5 @@
 using System;
+using RackCad.UI.RackFrames;
 
 namespace RackCad.UI.Editor
 {

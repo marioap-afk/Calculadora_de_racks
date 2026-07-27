@@ -13,6 +13,7 @@ using RackCad.Domain.Systems.Shared;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Dynamic;
 using RackCad.UI;
+using RackCad.UI.Systems.Dynamic;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin

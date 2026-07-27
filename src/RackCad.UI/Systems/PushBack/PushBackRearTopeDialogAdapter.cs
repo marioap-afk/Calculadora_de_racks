@@ -5,7 +5,7 @@ using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.PushBack
 {
     /// <summary>
     /// Owner decision (2026-07-24) — the Push Back rear tope is configured EXCLUSIVELY from Seguridad, alongside the rest

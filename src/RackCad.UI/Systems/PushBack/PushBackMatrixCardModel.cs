@@ -4,7 +4,7 @@ using System.Globalization;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.PushBack
 {
     /// <summary>
     /// One informative card of the Push Back frente × nivel matrix (PB-VAL-01). Pure presentation data — no WPF types —

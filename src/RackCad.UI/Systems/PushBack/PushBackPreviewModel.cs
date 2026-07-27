@@ -9,7 +9,7 @@ using RackCad.Application.Geometry;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Domain.Systems.Selective;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.PushBack
 {
     internal enum PushBackPreviewKind
     {

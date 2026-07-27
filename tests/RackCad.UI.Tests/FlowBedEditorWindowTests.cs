@@ -2,12 +2,13 @@ using System;
 using RackCad.Application.Persistence;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.UI.Editor;
+using RackCad.UI.Systems.FlowBed;
 using Xunit;
 
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// STA tests for the REAL <see cref="RackCad.UI.RackFlowBedWindow"/> (cama de rodamiento, initiative I-24). The insert
+    /// STA tests for the REAL <see cref="RackCad.UI.Systems.FlowBed.RackFlowBedWindow"/> (cama de rodamiento, initiative I-24). The insert
     /// runs through the window's OWN button handler (a genuine WPF Click → <c>InsertInAutoCad_Click</c> → ReadConfig →
     /// session → typed payload → Close), NOT by calling <c>session.RequestInsert</c> directly. A cama has no
     /// view/section/update — its insert is always <c>view:null, section:-1, UpdateOnly:false</c>. The payload's

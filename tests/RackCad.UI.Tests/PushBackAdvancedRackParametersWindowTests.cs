@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using RackCad.UI.Controls;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests

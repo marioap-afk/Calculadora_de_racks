@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Threading;
+using RackCad.UI.RackFrames;
 
 namespace RackCad.UI.Editor
 {

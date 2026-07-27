@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using RackCad.Domain.RackFrames;
 
-namespace RackCad.UI
+namespace RackCad.UI.RackFrames
 {
     public sealed class BracingSegmentEditorRow : ObservableObject
     {

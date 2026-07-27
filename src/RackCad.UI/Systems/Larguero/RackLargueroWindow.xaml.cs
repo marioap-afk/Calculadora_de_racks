@@ -12,7 +12,7 @@ using RackCad.Application.Settings;
 using RackCad.Application.Systems.Larguero;
 using RackCad.Domain.Systems.Larguero;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.Larguero
 {
     /// <summary>
     /// Editor for a LARGUERO component (a beam = 1 profile + 2 ménsulas). VISUAL + BOM only for now (no AutoCAD block):

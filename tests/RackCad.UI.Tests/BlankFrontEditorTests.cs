@@ -6,6 +6,8 @@ using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI;
+using RackCad.UI.Systems.Dynamic;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests

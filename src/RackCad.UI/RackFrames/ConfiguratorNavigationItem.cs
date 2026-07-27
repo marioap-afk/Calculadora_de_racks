@@ -1,4 +1,4 @@
-namespace RackCad.UI
+namespace RackCad.UI.RackFrames
 {
     public sealed class ConfiguratorNavigationItem
     {

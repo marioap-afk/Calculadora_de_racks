@@ -10,6 +10,7 @@ using RackCad.Domain.Systems.FlowBed;
 using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.FlowBed;
 using RackCad.UI;
+using RackCad.UI.Systems.FlowBed;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin

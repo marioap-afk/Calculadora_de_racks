@@ -11,7 +11,7 @@ using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
 using RackCad.UI.Controls;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.PushBack
 {
     /// <summary>
     /// Owner decision (2026-07-24, final) — the rear stop is configured INSIDE the visible "Elementos de seguridad"

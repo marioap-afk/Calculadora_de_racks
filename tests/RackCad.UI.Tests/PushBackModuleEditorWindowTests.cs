@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
 using RackCad.UI.Controls;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests

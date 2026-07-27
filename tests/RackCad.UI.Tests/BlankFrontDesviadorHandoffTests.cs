@@ -6,6 +6,9 @@ using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI;
+using RackCad.UI.Systems.Dynamic;
+using RackCad.UI.Systems.PushBack;
+using RackCad.UI.Systems.Selective;
 using Xunit;
 
 namespace RackCad.UI.Tests
@@ -277,8 +280,20 @@ namespace RackCad.UI.Tests
             }
 
             Assert.True(dir != null, "No se localizó la raíz del repo (RackCad.sln).");
-            var path = Path.Combine(dir.FullName, "src", "RackCad.UI", fileName);
-            Assert.True(File.Exists(path), "No existe " + path);
+            // I-23 repartió las ventanas por sistema: se busca por NOMBRE dentro del proyecto, porque lo que
+            // esta guarda vigila es el contenido, no la carpeta.
+            var root = Path.Combine(dir.FullName, "src", "RackCad.UI");
+            var path = Path.Combine(root, fileName);
+            if (!File.Exists(path))
+            {
+                var matches = Directory.GetFiles(root, fileName, SearchOption.AllDirectories)
+                    .Where(candidate => !candidate.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
+                        && !candidate.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
+                    .ToList();
+                Assert.True(matches.Count == 1, $"Se esperaba exactamente un {fileName} bajo {root}, hay {matches.Count}.");
+                path = matches[0];
+            }
+
             return File.ReadAllText(path);
         }
 

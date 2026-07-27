@@ -14,6 +14,8 @@ using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
 using RackCad.UI.Editor;
 using RackCad.UI.Shell;
+using RackCad.UI.Systems.Dynamic;
+using RackCad.UI.Systems.Selective;
 using Xunit;
 
 namespace RackCad.UI.Tests

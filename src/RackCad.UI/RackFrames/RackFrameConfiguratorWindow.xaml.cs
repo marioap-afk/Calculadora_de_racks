@@ -12,7 +12,7 @@ using System.Windows.Threading;
 using RackCad.Domain.RackFrames;
 using RackCad.UI.Editor;
 
-namespace RackCad.UI
+namespace RackCad.UI.RackFrames
 {
     public partial class RackFrameConfiguratorWindow : Window
     {

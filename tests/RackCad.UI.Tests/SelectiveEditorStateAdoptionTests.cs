@@ -7,12 +7,13 @@ using RackCad.Application.Persistence;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
+using RackCad.UI.Systems.Selective;
 using Xunit;
 
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// Characterization (STA): construct the REAL <see cref="RackCad.UI.RackSelectiveWindow"/>, load a representative
+    /// Characterization (STA): construct the REAL <see cref="RackCad.UI.Systems.Selective.RackSelectiveWindow"/>, load a representative
     /// selective design, rebuild it through the window's build path and assert the FULL resolved drawing (frontal of
     /// every fondo + planta + lateral cortes, plus the resolved height) is identical to the design that was loaded.
     ///
@@ -56,7 +57,7 @@ namespace RackCad.UI.Tests
         {
             var (built, error) = StaTestRunner.Run(() =>
             {
-                var window = new RackCad.UI.RackSelectiveWindow(canInsertInAutoCad: true);
+                var window = new RackCad.UI.Systems.Selective.RackSelectiveWindow(canInsertInAutoCad: true);
                 window.LoadForNew(SelectivePalletDesignDocument.From(design, "GUID-20", "Rack 20"));
                 var rebuilt = window.BuildDesignForTest(out var err);
                 return (rebuilt, err);

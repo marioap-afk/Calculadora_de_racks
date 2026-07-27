@@ -20,8 +20,10 @@ using RackCad.Domain.Systems.Selective;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 using RackCad.UI.Preview;
+using RackCad.UI.RackFrames;
+using RackCad.UI.Systems.Selective;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.Dynamic
 {
     /// <summary>
     /// Independent module: the dynamic (pallet flow) system as an editable sequence of modules. It

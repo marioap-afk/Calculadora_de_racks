@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Domain.RackFrames;
 
-namespace RackCad.UI
+namespace RackCad.UI.RackFrames
 {
     internal sealed class RackFrameEngineeringPreviewLayout
     {

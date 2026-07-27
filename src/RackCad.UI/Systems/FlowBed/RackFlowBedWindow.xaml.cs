@@ -12,7 +12,7 @@ using RackCad.Application.Systems.FlowBed;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.UI.Editor;
 
-namespace RackCad.UI
+namespace RackCad.UI.Systems.FlowBed
 {
     /// <summary>
     /// Independent module: one roller bed ("cama de rodamiento") in the lateral view. Mirrors the rest of the

@@ -6,6 +6,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests

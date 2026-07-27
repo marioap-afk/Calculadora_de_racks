@@ -5,8 +5,9 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Drawing;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
+using RackCad.UI.Preview;
 
-namespace RackCad.UI.Preview
+namespace RackCad.UI.Systems.PushBack
 {
     /// <summary>
     /// The Push Back preview, drawn with the SHARED infrastructure (I-18b, decision 6). It owns no primitives, no palette

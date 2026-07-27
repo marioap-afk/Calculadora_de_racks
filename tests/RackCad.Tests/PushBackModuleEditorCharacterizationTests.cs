@@ -508,6 +508,9 @@ namespace RackCad.Tests
         private static string ApplicationSourcePath(string fileName)
             => SourcePath("RackCad.Application", Path.Combine("Systems", "PushBack", fileName));
 
+        // I-23 repartió las ventanas por sistema, así que la ruta ya no es plana. Se resuelve por NOMBRE de
+        // archivo dentro del proyecto: la guarda vigila el contenido, no dónde vive el archivo, y así no
+        // vuelve a romperse con el siguiente movimiento de carpeta.
         private static string SourcePath(string project, string relative)
         {
             var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
@@ -517,9 +520,20 @@ namespace RackCad.Tests
             }
 
             Assert.NotNull(directory);
-            var path = Path.Combine(directory.FullName, "src", project, relative);
-            Assert.True(File.Exists(path), path);
-            return path;
+            var root = Path.Combine(directory.FullName, "src", project);
+            var direct = Path.Combine(root, relative);
+            if (File.Exists(direct))
+            {
+                return direct;
+            }
+
+            var matches = Directory.GetFiles(root, Path.GetFileName(relative), SearchOption.AllDirectories)
+                .Where(candidate => !candidate.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
+                    && !candidate.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
+                .ToList();
+
+            Assert.True(matches.Count == 1, $"Se esperaba exactamente un {relative} bajo {root}, hay {matches.Count}.");
+            return matches[0];
         }
 
         private static string Signature(PushBackDesign design)
