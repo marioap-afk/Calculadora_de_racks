@@ -32,6 +32,18 @@ namespace RackCad.Tests
         private static readonly string[] SystemBuckets =
             { "Selective", "Dynamic", "PushBack", "FlowBed", "Larguero", "Shared" };
 
+        /// <summary>
+        /// Los dos proyectos de prueba conservan UN namespace de ensamblado, como excepción explícita.
+        /// El motivo es medible sobre este mismo árbol: 92 de 220 archivos de prueba (42%) ejercitan MÁS DE UN
+        /// sistema —los golden comparan Selectivo contra Dinámico contra Push Back en el mismo archivo—, así que
+        /// asignarles un propietario sería arbitrario justo donde la regla de I-23 exige que sea inequívoco.
+        /// Además <c>FullyQualifiedName~</c> es la interfaz operativa de verificación del repo: mover los
+        /// namespaces cambiaría el significado de cada filtro registrado, y un filtro que pasa a coincidir con
+        /// cero pruebas no avisa (AGENTS.md).
+        /// La excepción no es una exención: esta prueba la vigila.
+        /// </summary>
+        private static readonly string[] TestProjects = { "RackCad.Tests", "RackCad.UI.Tests" };
+
         private static DirectoryInfo RepoRoot()
         {
             var dir = new DirectoryInfo(AppContext.BaseDirectory);
@@ -156,6 +168,7 @@ namespace RackCad.Tests
             {
                 "RackCad.Application.Systems", "RackCad.Domain.Systems",
                 "RackCad.Plugin.Systems", "RackCad.Application.Headers",
+                "RackCad.Plugin.Headers",
             };
 
             var offenders = new List<string>();
@@ -179,6 +192,98 @@ namespace RackCad.Tests
             }
 
             Assert.True(offenders.Count == 0, string.Join("\n", offenders));
+        }
+
+        /// <summary>
+        /// La excepción de las pruebas, comprobada: cada proyecto de prueba declara EXACTAMENTE UN namespace,
+        /// igual a la raíz de su ensamblado. Sin esto, la excepción sería una exención y el árbol podría
+        /// derivar en silencio hacia namespaces por carpeta a medias.
+        /// </summary>
+        [Fact]
+        public void TestProjects_KeepExactlyOneAssemblyRootNamespace()
+        {
+            var offenders = new List<string>();
+            foreach (var project in TestProjects)
+            {
+                var root = Path.Combine(RepoRoot().FullName, "tests", project);
+                Assert.True(Directory.Exists(root), root);
+
+                foreach (var path in Directory.EnumerateFiles(root, "*.cs", SearchOption.AllDirectories))
+                {
+                    if (path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
+                        || path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
+                    {
+                        continue;
+                    }
+
+                    var declarations = File.ReadLines(path)
+                        .Where(line => line.StartsWith("namespace ", StringComparison.Ordinal))
+                        .Select(line => line.Substring("namespace ".Length).Trim().TrimEnd(';'))
+                        .ToList();
+
+                    var rel = Path.GetRelativePath(root, path).Replace(Path.DirectorySeparatorChar, '/');
+                    if (declarations.Count != 1)
+                    {
+                        offenders.Add($"{project}/{rel}: {declarations.Count} namespaces (se espera 1)");
+                    }
+                    else if (!string.Equals(declarations[0], project, StringComparison.Ordinal))
+                    {
+                        offenders.Add($"{project}/{rel}: declara '{declarations[0]}', la excepción exige '{project}'");
+                    }
+                }
+            }
+
+            Assert.True(
+                offenders.Count == 0,
+                "Las pruebas conservan UN namespace de ensamblado por excepción explícita de I-23:\n"
+                    + string.Join("\n", offenders));
+        }
+
+        /// <summary>
+        /// Las fronteras que I-23 corrigió después de la primera ronda: `Plugin.Headers` no vuelve (sus tipos
+        /// son adapters e infraestructura de dibujo, no el modelo físico de la cabecera), y la UI tiene de
+        /// verdad su reparto por sistema en vez del namespace plano que tenía.
+        /// </summary>
+        [Fact]
+        public void TheCorrectedBoundaries_Hold()
+        {
+            var sources = ProductionSources().ToList();
+
+            Assert.False(
+                sources.Any(rel => rel.StartsWith("RackCad.Plugin/Headers/", StringComparison.Ordinal)),
+                "RackCad.Plugin/Headers volvió: sus tipos son adapters y dibujo, y viven en Plugin/Drawing.");
+
+            Assert.True(
+                sources.Any(rel => rel.StartsWith("RackCad.Plugin/Drawing/", StringComparison.Ordinal)),
+                "Falta RackCad.Plugin/Drawing.");
+
+            // La UI reparte por sistema, igual que Domain, Application y Plugin.
+            foreach (var bucket in new[] { "Selective", "Dynamic", "PushBack", "FlowBed" })
+            {
+                Assert.True(
+                    sources.Any(rel => rel.StartsWith($"RackCad.UI/Systems/{bucket}/", StringComparison.Ordinal)),
+                    $"RackCad.UI/Systems/{bucket} no existe: la UI perdió su frontera por sistema.");
+            }
+
+            // La infraestructura transversal NO se reparte por sistema.
+            foreach (var shared in new[] { "Controls", "Editor", "Preview", "Shell" })
+            {
+                Assert.True(
+                    sources.Any(rel => rel.StartsWith($"RackCad.UI/{shared}/", StringComparison.Ordinal)),
+                    $"RackCad.UI/{shared} desapareció: es infraestructura transversal y no pertenece a un sistema.");
+                Assert.False(
+                    sources.Any(rel => rel.StartsWith($"RackCad.UI/Systems/{shared}/", StringComparison.Ordinal)),
+                    $"{shared} es transversal y no debe vivir bajo Systems/.");
+            }
+
+            // Los diálogos compartidos siguen fuera de un sistema: los abren varios y su neutralidad se ve
+            // en dónde viven, porque renombrarlos no está autorizado.
+            foreach (var shared in new[] { "SelectiveSafetyWindow.cs", "SafetyTopeGridWindow.cs" })
+            {
+                Assert.Contains(
+                    sources,
+                    rel => string.Equals(rel, "RackCad.UI/" + shared, StringComparison.Ordinal));
+            }
         }
     }
 }

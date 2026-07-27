@@ -11,7 +11,7 @@ code_globs:
   - src/RackCad.Application/Systems/Selective/*.cs
   - src/RackCad.Application/Systems/Shared/*.cs
   - src/RackCad.Application/Drawing/*.cs
-  - src/RackCad.UI/RackSelectiveWindow*
+  - src/RackCad.UI/Systems/Selective/*
   - src/RackCad.UI/Safety*.cs
   - src/RackCad.Plugin/Systems/Selective/*.cs
   - tests/RackCad.Tests/Selective*.cs

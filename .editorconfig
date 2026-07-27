@@ -39,10 +39,28 @@ trim_trailing_whitespace = unset
 # --- LA regla de I-23 -----------------------------------------------------------------------------
 # El namespace de un archivo debe corresponder a su carpeta. Es lo que impide que los namespaces por
 # sistema vuelvan a aplanarse: un archivo nuevo de Push Back no puede nacer declarando
-# RackCad.Application.Systems.Selective, ni quedarse suelto en una raiz plana.
+# RackCad.Application.Systems.Selective, ni quedarse suelto en una raiz plana. Rige en los CUATRO
+# proyectos de producto, incluida RackCad.UI.
 dotnet_style_namespace_match_folder = true:warning
 dotnet_diagnostic.IDE0130.severity = warning
 
-# Un namespace por archivo, con llaves: es lo que declaran los 345 archivos del arbol.
+# Un namespace por archivo, con llaves: es lo que declara todo el arbol de produccion.
 csharp_style_namespace_declarations = block_scoped:warning
 dotnet_diagnostic.IDE0161.severity = warning
+
+# --- Excepcion explicita: los proyectos de prueba ---------------------------------------------------
+# Los dos proyectos de prueba conservan UN namespace de ensamblado (RackCad.Tests y RackCad.UI.Tests) y
+# NO siguen la regla de carpeta. El motivo es medible: 92 de 220 archivos de prueba (42%) ejercitan mas
+# de un sistema —los golden comparan Selectivo contra Dinamico contra Push Back en el mismo archivo—,
+# asi que asignarles un propietario seria arbitrario justo donde la regla exige que sea inequivoco.
+# Ademas `FullyQualifiedName~` es la interfaz operativa de verificacion del repo: mover los namespaces
+# cambiaria el significado de cada filtro registrado, y un filtro que pasa a coincidir con cero pruebas
+# no avisa (AGENTS.md).
+#
+# La excepcion NO es una exencion: la vigila
+# NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace, que exige exactamente un
+# namespace por archivo e igual a la raiz del ensamblado. Aqui solo se apaga IDE0130 para que el IDE no
+# pida lo contrario que la guarda.
+[tests/**/*.cs]
+dotnet_style_namespace_match_folder = false
+dotnet_diagnostic.IDE0130.severity = none

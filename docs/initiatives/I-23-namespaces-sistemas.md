@@ -60,24 +60,47 @@ Medido sobre la base `b43b5d1`:
   consumen los cuatro sistemas (Selectivo, Dinamico, Push Back y cama). El nombre miente;
 - `RackCad.Application.Headers` mezcla el vocabulario de materializacion compartido
   (`HeaderBlockInstance`, `LateralHeaderLayout`) con los builders de la cabecera fisica;
+- `RackCad.UI` repite el MISMO namespace plano multi-sistema: las cinco ventanas de sistema, el
+  configurador de cabecera y sus modelos conviven en la raiz `RackCad.UI`;
+- `RackCad.Plugin.Headers` no contiene el modelo fisico de la cabecera sino adapters e infraestructura
+  de dibujo (`BlockPlacement`, `BlockLibraryImporter`, `RackBlockRenamer`, los drawers y sus
+  resultados);
 - no existe `.editorconfig`, asi que nada impide que el proximo archivo nazca en el lugar equivocado.
 
 El costo es concreto: un lector no puede saber a que sistema pertenece un tipo sin abrirlo, y el
 sistema N+1 hereda un namespace plano que ya tiene 101 archivos.
 
+### 2.1 Defectos de la primera ronda de I-23 (corregidos en la segunda)
+
+La primera ronda excluyo dos areas **sin autorizacion**, y este contrato las registraba como si
+fueran decisiones legitimas. No lo eran:
+
+1. **`Plugin.Headers` se preservo por una analogia falsa** con `RackFrames`. La analogia no se
+   sostiene: ese subarbol no modela la cabecera fisica, la DIBUJA, y la mitad de sus tipos
+   (`BlockPlacement`, `BlockLibraryImporter`, `RackBlockRenamer`) no son de cabecera en absoluto.
+2. **`RackCad.UI` quedo entera fuera de alcance**, pese al alcance normativo del Owner, y el
+   inventario omitio la clasificacion de UI y de los dos proyectos de prueba.
+
+Ambas exclusiones quedan **eliminadas**; la seccion 4 ya no las contiene.
+
 ## 3. Alcance
 
 Autorizado por el ROADMAP (fila I-23, Fase 5) y por el encargo:
 
-1. **Separacion por sistema** de los tres namespaces `Systems` (Domain, Application y Plugin) en
-   `Selective`, `Dynamic`, `PushBack`, `FlowBed`, `Larguero` y `Shared`. La ruta en disco acompaña al
-   namespace.
-2. **`RackFrames` se conserva** para la cabecera fisica, en Domain y en Application.
+1. **Separacion por sistema** de los namespaces `Systems` de los **cuatro** proyectos de producto
+   (Domain, Application, **UI** y Plugin) en `Selective`, `Dynamic`, `PushBack`, `FlowBed`,
+   `Larguero` y `Shared`. La ruta en disco acompaña al namespace.
+2. **`RackFrames` se conserva** para la cabecera fisica, en Domain, Application **y UI**: el
+   configurador y sus modelos son la cabecera fisica, no un sistema de rack.
 3. **`Application.Headers` se disuelve**: los artefactos de **materializacion** pasan a
    `Application.Drawing`; los builders de la **cabecera fisica** pasan a `Application.RackFrames`.
-4. **Renombre fosil autorizado**: `DynamicSystemPlan` pasa a `Drawing.HeaderRunPlan`.
-5. **`.editorconfig`** con reglas comprobables de namespace/ruta, mas **source guards focalizados**.
-6. **Barrido de referentes** de las rutas movidas en la documentacion viva (WORKFLOW seccion 8).
+4. **`Plugin.Headers` se disuelve** en `Plugin.Drawing`: son adapters e infraestructura de dibujo y
+   materializacion, no el modelo fisico de la cabecera. Deja los dos proyectos simetricos
+   (`Application.Drawing` y `Plugin.Drawing`).
+5. **Renombre fosil autorizado**: `DynamicSystemPlan` pasa a `Drawing.HeaderRunPlan`.
+6. **`.editorconfig`** con reglas comprobables de namespace/ruta, mas **source guards focalizados**,
+   incluida la frontera WPF (x:Class, pack URIs y construccion real de las ventanas).
+7. **Barrido de referentes** de las rutas movidas en la documentacion viva (WORKFLOW seccion 8).
 
 ### 3.1 Regla de clasificacion (objetiva y comprobable)
 
@@ -123,12 +146,43 @@ independiente, el **preview visual** que I-18 difirio, `DesviadorCellsAreByPost`
 mejoras que siguen en [`../ideas-futuras.md`](../ideas-futuras.md). **Push Back v1 queda estable**: I-23
 no lo toca funcionalmente.
 
-`src/RackCad.Plugin/Headers/` **se conserva**: contiene el adaptador AutoCAD de la cabecera (drawers,
-importador, renombrador), no vocabulario de materializacion compartido. Es el mismo motivo por el que
-`RackFrames` se conserva.
+### 4.1 Excepciones justificadas (lo unico que NO se reparte por sistema)
 
-`RackCad.UI` no se toca: sus namespaces (`UI`, `UI.Controls`, `UI.Editor`, `UI.Shell`, `UI.Preview`) ya
-estan separados por responsabilidad y no son por sistema.
+Estas son excepciones **con evidencia**, no exclusiones de conveniencia. Las dos exclusiones que la
+primera ronda si tomo sin autorizacion —`Plugin.Headers` y `RackCad.UI`— quedaron **eliminadas**.
+
+1. **Infraestructura transversal de UI**: `UI.Controls`, `UI.Editor`, `UI.Preview`, `UI.Shell` y
+   `UI/Themes` no pertenecen a ningun sistema y no se reparten. De `Preview` sale un unico tipo,
+   `PushBackPreviewRenderer`, cuyo unico consumidor es Push Back; `EditorPreviewSurface`/`Parts`/
+   `Palette` los comparten el Dinamico y Push Back y se quedan.
+2. **Dialogos compartidos de seguridad**: `SelectiveSafetyWindow` y los cinco `Safety*GridWindow`
+   permanecen en la raiz de `RackCad.UI`. `SelectiveSafetyWindow` la abren las ventanas del
+   **Selectivo, del Dinamico y de Push Back**; los `Safety*GridWindow` son agnosticos a
+   `RackSystemKind` desde I-34. **Un dialogo compartido no se asigna a un sistema por numero de
+   consumidores**: su nombre es un fosil, su contenido es neutral, y renombrarlos no esta autorizado,
+   asi que la raiz es donde esa neutralidad queda visible.
+3. **Superficie transversal de producto**: menu, biblioteca, los dos BOM, lista, ayuda, las dos
+   ventanas de almacen, `UiSupport`, `ObservableObject`, `CatalogOption`, `EnumDisplayConverter` y
+   `PreviewCanvasPainter` se quedan en la raiz.
+4. **Los dos proyectos de prueba conservan un unico namespace de ensamblado**
+   (`RackCad.Tests`, `RackCad.UI.Tests`). Es la unica excepcion a la regla de carpeta, y es
+   **explicita y comprobable**:
+
+   - medido sobre este arbol, **92 de 220 archivos de prueba (42 %) ejercitan mas de un sistema** y 48
+     tocan tres o mas: los golden comparan Selectivo contra Dinamico contra Push Back en el mismo
+     archivo. Asignarles un propietario seria arbitrario justo donde la regla de I-23 exige que sea
+     **inequivoco**;
+   - `FullyQualifiedName~` es la interfaz operativa de verificacion del repo. Mover los namespaces
+     cambiaria el significado de cada filtro dirigido registrado en la evidencia, y un filtro que pasa
+     a coincidir con **cero** pruebas no avisa (AGENTS.md);
+   - las fixturas compartidas (`EditorWindowTestSupport`, `StaTestRunner`, `TestCatalogIds`) las
+     consumen todos los sistemas;
+   - xUnit descubre por **ensamblado**, no por namespace: no hay beneficio en tiempo de ejecucion.
+
+   La excepcion **no es una exencion**: la vigila
+   `NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace`, que exige exactamente
+   un namespace por archivo e igual a la raiz del ensamblado. El inventario declara igualmente el
+   **propietario** de cada tipo de prueba (el sistema o sistemas que ejercita).
 
 ## 5. Contexto requerido
 
@@ -158,23 +212,41 @@ Entradas del dueño requeridas: **ninguna**. El ROADMAP no marca I-23 con valida
 
 ## 7. Archivos esperados
 
-142 archivos movidos con `git mv`, mas la reescritura de `namespace`/`using` en los archivos que los
-consumen. Distribucion destino:
+**176 archivos movidos** con `git mv` (142 en la primera ronda + 8 del Plugin + 26 de la UI), mas la
+reescritura de `namespace`/`using` en los archivos que los consumen. Mapa final REAL, tal como quedo
+en el arbol (el desglose tipo por tipo, con consumidores y propietario, esta en el
+[inventario](I-23-inventario-namespaces.md)):
 
-| Namespace destino | Archivos |
-|---|---|
-| `RackCad.Domain.Systems.{Selective,Dynamic,PushBack,FlowBed,Larguero,Shared}` | 4 / 7 / 4 / 3 / 1 / 3 |
-| `RackCad.Application.Systems.{Selective,Dynamic,PushBack,FlowBed,Larguero,Shared}` | 28 / 34 / 26 / 2 / 1 / 9 |
-| `RackCad.Application.Drawing` | 4 |
-| `RackCad.Application.RackFrames` (recibe de `Headers`) | 4 |
-| `RackCad.Plugin.Systems.{Selective,Dynamic,PushBack,FlowBed,Shared}` | 2 / 3 / 3 / 1 / 3 |
+| Proyecto | Frontera | Archivos |
+|---|---|---|
+| Domain | `Systems.{Selective,Dynamic,PushBack,FlowBed,Larguero,Shared}` | 4 / 7 / 4 / 3 / 1 / 3 |
+| Domain | `RackFrames` (cabecera fisica, sin cambios) | 18 |
+| Application | `Systems.{Selective,Dynamic,PushBack,FlowBed,Larguero,Shared}` | 28 / 34 / 26 / 2 / 1 / 9 |
+| Application | `Drawing` (materializacion; recibe `HeaderRunPlan`) | 5 |
+| Application | `RackFrames` (recibe los builders de cabecera de `Headers`) | 14 |
+| Application | `Persistence`, `Catalogs`, `Bom`, `Layout`, `Geometry`, `Diagnostics`, … | sin cambios |
+| **UI** | `Systems.{Selective,Dynamic,PushBack,FlowBed,Larguero}` | 2 / 1 / 6 / 1 / 1 |
+| **UI** | `RackFrames` (configurador y sus modelos) | 9 |
+| **UI** | `Controls`, `Editor`, `Preview`, `Shell`, `Themes` (transversal) | 13 / 11 / 3 / 7 / — |
+| **UI** | raiz (menu, biblioteca, BOM, lista, dialogos compartidos de seguridad) | 21 |
+| Plugin | `Systems.{Selective,Dynamic,PushBack,FlowBed,Shared}` | 2 / 3 / 3 / 1 / 3 |
+| **Plugin** | `Drawing` (recibe entero el disuelto `Plugin.Headers`) | 8 |
+| Plugin | `KindHandlers` y raiz de comandos | 8 / 21 |
+| Tests | `RackCad.Tests` (excepcion, seccion 4.1) | 159 |
+| Tests | `RackCad.UI.Tests` (excepcion, seccion 4.1) | 61 |
 
-Se crean: `.editorconfig` y la guarda de namespace/ruta en `tests/RackCad.Tests`.
+Cinco namespaces se disuelven por completo: `Domain.Systems`, `Application.Systems`, `Plugin.Systems`
+(planos), `Application.Headers` y `Plugin.Headers`.
+
+Se crean: `.editorconfig`, la guarda de namespace/ruta `NamespaceFolderGuardTests` (7 aserciones) y la
+guarda de frontera WPF `UiSystemBoundaryGuardTests` (3 aserciones: construccion real de las seis
+ventanas migradas, `x:Class` contra carpeta y code-behind, y pack URIs).
 
 Se actualizan por barrido de rutas: los dos Context Packs por sistema, los ADR 0009/0011/0013/0014/0016
-(enlaces), `guias/catalogos-y-plantillas.md`, `guias/generacion-cabecera-lateral.md` y las tres rutas
-de codigo citadas en `AGENTS.md` y `WORKFLOW.md` seccion 7. `docs/archivo/` **no** se toca (es
-historia) y `HANDOFF.md`/`ROADMAP.md` se tocan solo en la sesion de integracion (WORKFLOW 4.5.4).
+(enlaces), `guias/catalogos-y-plantillas.md`, `guias/generacion-cabecera-lateral.md`,
+`guias/agregar-un-sistema.md` (seccion 0.bis), `ARCHITECTURE.md` 7.4 y las rutas de codigo citadas en
+`AGENTS.md` y `WORKFLOW.md` seccion 7. `docs/archivo/` **no** se toca (es historia) y
+`HANDOFF.md`/`ROADMAP.md` se tocan solo en la sesion de integracion (WORKFLOW 4.5.4).
 
 Una desviacion material de este inventario obliga a detenerse.
 
@@ -220,14 +292,19 @@ El riesgo de runtime residual se declara en la evidencia final, no se oculta.
 
 ## 11. Criterios de aceptacion
 
-1. Los tres namespaces `Systems` quedan separados por sistema; **ningun archivo** permanece en la raiz
-   plana de `Systems`.
-2. `Application.Headers` no existe; sus artefactos de materializacion estan en `Drawing` y sus builders
-   de cabecera fisica en `RackFrames`.
+1. Los **cuatro** namespaces `Systems` (Domain, Application, UI y Plugin) quedan separados por sistema;
+   **ningun archivo** permanece en la raiz plana de `Systems`.
+2. `Application.Headers` y `Plugin.Headers` no existen; sus artefactos de materializacion y dibujo estan
+   en `Drawing` y los builders de cabecera fisica en `RackFrames`.
 3. `DynamicSystemPlan` ya no existe; `Drawing.HeaderRunPlan` ocupa su lugar con **la misma superficie
    publica** (mismos miembros, misma accesibilidad, mismo comportamiento).
-4. `.editorconfig` y la guarda de namespace/ruta fallan si un archivo declara un namespace que no
-   corresponde a su carpeta.
+4. `.editorconfig` y las guardas fallan si un archivo declara un namespace que no corresponde a su
+   carpeta, si vuelve la raiz plana, si reaparece un namespace disuelto, si un `x:Class` deja de
+   corresponder a su carpeta, si una URI de recurso deja de ser absoluta, o si un proyecto de prueba
+   declara un namespace distinto de la raiz de su ensamblado. **Verificado en rojo bajo infraccion
+   inyectada**, no solo en verde.
+4.b Las **seis ventanas WPF migradas se construyen de verdad** en pruebas (lo que ejecuta
+   `InitializeComponent` y resuelve la URI generada mas `AppStyles`).
 5. Suites completas verdes con los conteos de la baseline mas las guardas nuevas; goldens **identicos**;
    builds Debug de UI y Plugin sin errores propios; CI verde sobre la punta de la rama.
 6. La comparacion antes/despues de planes, BOM, serializacion, legacy, metadata, handlers y comandos no
