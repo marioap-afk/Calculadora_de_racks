@@ -9,22 +9,22 @@ automation_state:
   attempts: 1
   next_action: >-
     validacion-manual-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree ·
-    los-11-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
+    los-13-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
   integration: NO-INTEGRADA-la-rama-y-el-worktree-siguen-vivos-a-la-espera-del-gate-manual
 
 # --------------------------------------------------------------------------------------------------------
 # EL CANDIDATO. Hay UNO SOLO y es este; cualquier SHA anterior de la rama queda superado y NO es candidato.
 # --------------------------------------------------------------------------------------------------------
 candidate:
-  sha: 6c4a77f2bd0710835fc4db29a5e6e51937335c75
-  subject: Frente en blanco - rechazo canonico del todo-en-blanco y edicion por seleccion
-  ci_run: 30232917345
+  sha: 932c822b4f96051d1345224038c8f2c415ad16fa
+  subject: Frente en blanco - celdas de nivel inexistentes en los dialogos de seguridad
+  ci_run: 30234344890
   ci_result: VERDE-4-de-4-sobre-el-SHA-del-candidato
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   dll_path: >-
     <worktree>/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
-  dll_informational_version: 1.0.0+6c4a77f2bd0710835fc4db29a5e6e51937335c75
-  dll_sha256: ECE8DC1DF14BC72791DA697890FB1DB690FB0336D11FD0C2F5718D9DB2445AB7
+  dll_informational_version: 1.0.0+932c822b4f96051d1345224038c8f2c415ad16fa
+  dll_sha256: CC9EF3E733CEDEA1B97A3A6D7CF18282784C9BC6D05AD0AD1C034471D0EBE1DC
   binding: >-
     el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-candidato-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol
   note_on_this_file: >-
@@ -56,19 +56,21 @@ evidence:
     edeca78-casilla-Activo-En-blanco-en-los-dos-editores-mas-las-pruebas-de-UI ·
     0448ef0-documentacion-contrato-estado-indice-glosario-e-ideas-futuras ·
     6d24903-estado-de-la-primera-ronda-SUPERADO ·
-    6c4a77f-CANDIDATO-rechazo-canonico-del-todo-en-blanco-y-edicion-por-seleccion
+    6c4a77f-rechazo-canonico-del-todo-en-blanco-y-edicion-por-seleccion-SUPERADO ·
+    56ca7c6-estado-de-la-segunda-ronda-SUPERADO ·
+    932c822-CANDIDATO-celdas-de-nivel-inexistentes-en-los-dialogos-de-seguridad
   regression_evidence: >-
     rojo-verificado-en-la-primera-ronda-con-la-bandera-declarada-pero-SIN-consumidores-11-de-19-fallando ·
     fallaban-las-de-comportamiento-frontal-lateral-planta-BOM-dinamico-y-push-back-round-trip-snapshot-y-dormancia ·
     pasaban-las-2-de-autoridad-y-las-6-guardas-de-estructura-que-deben-pasar-antes-y-despues-porque-afirman-que-la-estructura-NO-cambia
   tests: >-
-    rackcad-tests-1498-de-1498 · rackcad-ui-tests-373-de-373 · cero-fallos-cero-omitidas-en-ambas
+    rackcad-tests-1507-de-1507 · rackcad-ui-tests-384-de-384 · cero-fallos-cero-omitidas-en-ambas
   targeted_filters: >-
-    core-BlankFrontTests-28-de-28 ·
+    core-BlankFrontTests-28-de-28 · core-BlankFrontSafetyTests-9-de-9 ·
     core-CatalogValidatorTests-mas-CatalogManifestGuardTests-25-de-25-baseline-del-catalogo-distribuido-intacto ·
-    core-PushBack-441-de-441 · core-Dynamic-197-de-197 · core-Persistence-118-de-118 ·
-    core-RackDesignValidation-mas-PersistenceValidation-5-de-5 ·
-    ui-BlankFrontEditorTests-8-de-8 · ui-PushBack-126-de-126 · ui-Dynamic-37-de-37 ·
+    core-PushBack-441-de-441 · core-Dynamic-197-de-197 · core-Selective-324-de-324 ·
+    ui-BlankFrontSafetyGridTests-11-de-11 · ui-BlankFrontEditorTests-8-de-8 ·
+    ui-Safety-46-de-46 · ui-Selective-31-de-31 ·
     todos-con-conteo-NO-CERO
   builds: >-
     build-UI-Debug-0-errores-0-advertencias ·
@@ -96,12 +98,23 @@ evidence:
     al-CRECER-el-frente-nuevo-nace-ACTIVO-aunque-el-template-seleccionado-este-EN-BLANCO-agregar-un-frente-es-agregar-rack ·
     todo-lo-demas-si-se-clona-del-template-posiciones-niveles-fondos-inicio-en-fondo-y-celdas ·
     al-REDUCIR-se-eliminan-los-frentes-finales-los-indices-se-renumeran-la-seleccion-se-re-acota-y-los-que-sobreviven-conservan-estado-y-configuracion-dormida-junto-con-las-celdas-paralelas-de-Push-Back
+  safety_dialogs: >-
+    un-frente-EN-BLANCO-entrega-CERO-niveles-y-su-columna-se-construye-AUSENTE-en-las-tres-rejillas-indexadas-por-nivel-desviador-guia-de-entrada-y-tope ·
+    ausente-significa-no-se-dibuja-no-se-selecciona-y-Toggle-no-reporta-cambio-asi-que-tampoco-admite-alcances ·
+    dos-frentes-en-blanco-consecutivos-dejan-sin-celdas-el-poste-que-comparten ·
+    el-frente-NO-se-oculta-ni-cambia-de-indice-sigue-siendo-la-misma-columna-en-la-misma-posicion ·
+    la-configuracion-guardada-de-la-columna-ausente-se-conserva-por-SafetyDormantCells-regla-pura-y-UNICA-que-consumen-las-tres-rejillas-se-persiste-lo-visible-MAS-lo-dormido ·
+    al-reactivar-el-frente-las-celdas-reaparecen-intactas-y-editables ·
+    la-editabilidad-la-decide-la-AUTORIDAD-compartida-EffectiveLevelCounts-y-EffectiveLevelsPerPost-no-un-predicado-por-dialogo
   scope_isolation: >-
     sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
+    el-comportamiento-nuevo-de-los-dialogos-compartidos-es-OPT-IN-allowBlankFrontColumns-default-false-igual-comportamiento-vigente-patron-de-I-32 ·
+    el-Selectivo-no-tiene-frentes-en-blanco-nunca-entrega-un-cero-y-conserva-el-suelo-historico-y-el-descarte-de-celdas-fuera-de-rango-verificado-por-dos-guardas-STA ·
+    RackSelectiveWindow-xaml-y-cs-sin-una-sola-linea-de-diff ·
     conflicts_with-declara-I-23-e-I-25 ·
     la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
 
 gates:
-  ci: VERDE-4-de-4-run-30232917345-sobre-el-SHA-del-candidato-6c4a77f2bd0710835fc4db29a5e6e51937335c75
-  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-6c4a77f2bd0710835fc4db29a5e6e51937335c75-SHA256-ECE8DC1DF14BC72791DA697890FB1DB690FB0336D11FD0C2F5718D9DB2445AB7
-  owner_validation: PENDIENTE-11-puntos-en-la-seccion-8-del-contrato
+  ci: VERDE-4-de-4-run-30234344890-sobre-el-SHA-del-candidato-932c822b4f96051d1345224038c8f2c415ad16fa
+  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-932c822b4f96051d1345224038c8f2c415ad16fa-SHA256-CC9EF3E733CEDEA1B97A3A6D7CF18282784C9BC6D05AD0AD1C034471D0EBE1DC
+  owner_validation: PENDIENTE-13-puntos-en-la-seccion-8-del-contrato
