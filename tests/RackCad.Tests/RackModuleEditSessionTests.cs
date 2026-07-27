@@ -61,7 +61,7 @@ namespace RackCad.Tests
 
             // The descriptor exposes no setter at all: the only way to observe it is to read it.
             Assert.Equal(before, descriptor.Length, 6);
-            Assert.Empty(typeof(RackModuleDescriptor).GetProperties().Where(property => property.CanWrite));
+            Assert.DoesNotContain(typeof(RackModuleDescriptor).GetProperties(), property => property.CanWrite);
         }
 
         // ===== Session: staging, commit and the cancel the base does not have ===================================
