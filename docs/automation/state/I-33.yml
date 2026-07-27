@@ -1,0 +1,55 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-33
+  branch: feature/frente-en-blanco
+  claim_id: 3a040262-d2b7-47cb-a870-b628bc972141
+  current_phase: 1
+  state: implementing
+  gate: owner-validation
+  attempts: 1
+  next_action: >-
+    validacion-manual-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree ·
+    los-9-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
+  integration: NO-INTEGRADA-la-rama-y-el-worktree-siguen-vivos-a-la-espera-del-gate-manual
+execution_context:
+  mode: manual-git-only
+  worktree: feature-frente-en-blanco
+  pull_request: none
+evidence:
+  base_commit: 0e505d8fed6944b32360439cf33742147d2ba561
+  claim_commit: 0771773
+  preflight: >-
+    main-igual-a-origin-main-igual-a-0e505d8fed6944b32360439cf33742147d2ba561-verificado-tambien-contra-el-remoto-con-git-ls-remote ·
+    arbol-limpio-sin-rebase-merge-cherry-pick-bisect-ni-revert-en-curso-y-sin-stashes ·
+    CI-verde-del-SHA-exacto-run-30228639660-cuatro-jobs-tests-domain-application-ui-tests-build-ui-build-plugin ·
+    I-33-sin-ninguna-referencia-previa-en-el-repo-y-feature-frente-en-blanco-inexistente-local-y-remota ·
+    I-32-limpiada-sin-rama-local-ni-remota-sin-worktree-y-git-worktree-prune-sin-efecto ·
+    sin-trabajo-incompatible-main-era-la-UNICA-rama-existente-e-I-23-e-I-25-siguen-pendiente-en-el-ROADMAP
+  claim: >-
+    commit-vacio-0771773-con-Initiative-Id-I-33-Branch-feature-frente-en-blanco-y-Claim-Id-3a040262-d2b7-47cb-a870-b628bc972141 ·
+    primer-push-ACEPTADO-por-el-remoto-new-branch-sin-force
+  regression_evidence: >-
+    rojo-verificado-con-la-bandera-declarada-pero-SIN-consumidores-11-de-19-fallando ·
+    fallaban-las-de-comportamiento-frontal-lateral-planta-BOM-dinamico-y-push-back-round-trip-snapshot-y-dormancia ·
+    pasaban-las-2-de-autoridad-y-las-6-guardas-de-estructura-que-deben-pasar-antes-y-despues-porque-afirman-que-la-estructura-NO-cambia
+  tests: >-
+    rackcad-tests-1490-de-1490-antes-1470-mas-20-nuevas ·
+    rackcad-ui-tests-371-de-371-antes-365-mas-6-nuevas ·
+    cero-fallos-cero-omitidas-en-ambas
+  bugs_fixed: pb-014
+  bugs_deferred: pb-001 pb-007 pb-011
+  authority: >-
+    DynamicFrontActivation-en-RackCad-Application-Systems-unica-fuente-de-la-regla ·
+    la-bandera-vive-en-la-estructura-dinamica-que-Push-Back-COMPONE-asi-que-los-dos-sistemas-no-pueden-divergir ·
+    EffectiveLoadLevels-devuelve-el-historico-Math-Max-1-LoadLevels-para-un-frente-activo-por-eso-un-rack-sin-frentes-en-blanco-no-cambia
+  wire_format: >-
+    IsActive-es-bool-nullable-con-JsonIgnore-WhenWritingNull ·
+    un-rack-sin-frentes-en-blanco-serializa-EXACTAMENTE-igual-que-antes-de-I-33-la-clave-se-omite-no-se-escribe-null ·
+    los-stores-no-ignoran-nulos-globalmente-por-eso-el-atributo-es-por-propiedad
+  scope_isolation: >-
+    sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
+    la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
+gates:
+  ci: pendiente-sobre-el-SHA-publicado
+  plugin_build: pendiente-requiere-AutoCAD-cerrado
+  owner_validation: PENDIENTE-9-puntos-en-la-seccion-8-del-contrato

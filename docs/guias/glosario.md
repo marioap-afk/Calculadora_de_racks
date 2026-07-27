@@ -29,6 +29,7 @@ C#, el texto conserva primero la palabra usada por ingeniería de racks.
 | Término | Significado en RackCad |
 |---|---|
 | Frente | Módulo horizontal entre postes. Es el término de UI; no usar “bahía” en texto nuevo |
+| Frente en blanco | Frente **Activo/En blanco** del dinámico y de Push Back (I-33): en blanco conserva su claro y su estructura y desplaza a los frentes posteriores, pero no lleva ningún nivel ni componente de carga. Su configuración queda dormida para reactivarlo |
 | Fondo | Línea de profundidad de un rack; puede tener sus propios frentes, niveles y fondo de tarima |
 | Tramo | Subdivisión de un frente, especialmente en “medio frente” |
 | Nivel | Elevación de carga dentro de un frente |

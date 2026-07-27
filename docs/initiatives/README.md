@@ -247,6 +247,23 @@ Planes disponibles:
   módulos) y **PB-014** (frente en blanco). `requires_autocad: true`, `requires_owner_validation: true`;
   `requires_owner_decision: false`. Estado versionado en
   [`../automation/state/I-32.yml`](../automation/state/I-32.yml).
+- [`I-33-frente-en-blanco.md`](I-33-frente-en-blanco.md): **Frente en blanco para Dinámico y Push Back**
+  (tipo: feature; rama `feature/frente-en-blanco`). Implementa **PB-014**, que I-32 dejó diferido
+  señalando que «necesita decisión de alcance» por ser compartido con el Dinámico; esa decisión la da el
+  Owner al abrir la iniciativa. Un frente pasa a tener estado **Activo / En blanco**: en blanco **conserva
+  su claro y su estructura** (postes, alturas, cabeceras, separadores y postes derivados), **sigue
+  desplazando** a los frentes posteriores y **no lleva ningún nivel ni componente de carga** —ni larguero
+  IN/OUT, ni intermedio, ni cama, ni larguero posterior o tope de Push Back, ni seguridad indexada por
+  nivel— en ninguna de las cuatro vistas ni en los dos BOM. Su configuración queda **dormida** para
+  reactivarlo tal cual estaba, **sin celda falsa**. La regla vive en **una** autoridad de Application
+  (`DynamicFrontActivation`) sobre la **estructura dinámica que Push Back compone**, así que los dos
+  sistemas no pueden divergir; para un frente activo devuelve el histórico `Math.Max(1, LoadLevels)`, de
+  modo que un rack sin frentes en blanco **no cambia en nada** y **serializa igual que antes** (la bandera
+  se omite del wire). Los documentos legacy cargan **todos los frentes activos** y siempre debe quedar
+  **al menos un frente activo**. Fuera de alcance: Selectivo, **PB-001**, **PB-007**, **PB-011**, I-23,
+  I-25, catálogos, DWG y el shell visual. `requires_autocad: true`, `requires_owner_validation: true`;
+  `requires_owner_decision: false`. Estado versionado en
+  [`../automation/state/I-33.yml`](../automation/state/I-33.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
