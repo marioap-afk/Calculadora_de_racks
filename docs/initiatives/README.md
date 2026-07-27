@@ -339,9 +339,23 @@ Planes disponibles:
   (`requires_owner_decision: true`): `DynamicRackSystem.Modules` es **una sola secuencia longitudinal de
   rack** compartida por todos los frentes y postes, así que personalizar un módulo personaliza el rack
   entero; si el Owner espera personalización **por frente o por poste**, el alcance deja de ser PB-011.
-  **Gate documental**: I-35 **no tiene fila en `ROADMAP.md`** y el Owner prohibió editarlo en la sesión
-  de apertura; la procedencia del alcance es PB-011. `requires_autocad: true`,
-  `requires_owner_validation: true`. Estado versionado en
+  **Decisiones del Owner (gate CERRADO)**: la personalización es por **módulo longitudinal de rack**,
+  nunca por frente ni por poste; en una recomputación estructural se conserva **únicamente** con
+  correspondencia exacta **`ModuleId + Kind`**; un módulo eliminado o con el tipo cambiado pierde su
+  personalización **de forma explícita y reportable** y uno nuevo nace calculado; **no existe política
+  ordinaria `Discard`** (solo restauración explícita o incompatibilidad estructural); y
+  `RackFrameConfiguratorWindow` **no se modifica** — confirmar y cancelar viven en la sesión y en la
+  superficie de Push Back, que abre el configurador compartido sobre una **copia**.
+  **Entregado**: reconciliación por `ModuleId + Kind` que conserva longitudes manuales de **cabeceras y
+  separadores** y **adapta** `Depth` y el peralte de rack; restauración **individual completa** de
+  cualquier módulo y restauración total; reporte por categoría (**preservados, adaptados, eliminados,
+  incompatibles y restaurados**); adopción por `PushBackEditorState`/`PushBackEditorDesignAssembler` en
+  **los dos caminos** del recálculo; y la superficie avanzada en `RackPushBackSystemWindow` con
+  selección **única**, longitud, Calculada/Personalizada, confirmar, cancelar y restaurar, deshabilitando
+  **con explicación** los módulos que I-33 dejó sin dibujar y los postes derivados. **Gate documental**:
+  I-35 **no tiene fila en `ROADMAP.md`**; la procedencia del alcance es PB-011 y la fila la escribe la
+  sesión de integración. `requires_autocad: true`, `requires_owner_validation: true`;
+  `requires_owner_decision: false`. Estado versionado en
   [`../automation/state/I-35.yml`](../automation/state/I-35.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
