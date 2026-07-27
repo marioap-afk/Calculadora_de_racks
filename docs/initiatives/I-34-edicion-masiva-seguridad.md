@@ -32,9 +32,33 @@ automation:
 > Owner en la instruccion de apertura de esta iniciativa. El campo `priority` se deja vacio por falta de
 > fuente numerica en el ROADMAP, igual que en I-18, I-32 e I-33.
 >
-> **Estado**: el primer incremento (inventario, decisiones, regresiones y fundacion) y la **adopcion
-> productiva por los tres dialogos incluidos** estan **hechos**. Lo unico que queda fuera son parrilla y
-> defensa, que necesitan decision previa (§15).
+> **Estado**: inventario, decisiones, regresiones, fundacion y la **adopcion productiva por los cuatro
+> dialogos** estan **hechos**. La **parrilla del Selectivo** entra por el addendum del Owner (§0); la
+> **defensa** sigue fuera de alcance (§15).
+
+## 0. Addendum normativo del Owner (2026-07-27)
+
+Tras validar el candidato `f676aac5ee0711cea8c4c2dac221c6596114e0cc` en AutoCAD, el Owner **aprobo** los
+puntos A, C, D, E, F, G y H, y **aprobo el tope** del punto B. Confirmo ademas, como decisiones firmes,
+el **incremento de altura** de las ventanas y **`Desactivar` como estado inicial**.
+
+Registro un unico defecto pendiente: **falta la misma edicion masiva para las parrillas del Selectivo**.
+
+La decision del Owner, que es normativa y **amplia el alcance de esta iniciativa**:
+
+1. **La parrilla del Selectivo queda INCLUIDA en I-34.** Deja de ser un candidato sujeto a decision
+   futura (§6.3 y §15 quedan corregidas en consecuencia).
+2. **La defensa continua EXCLUIDA.** Su exclusion (formulario por poste, dos longitudes, sin eje de
+   nivel) sigue vigente y no se revisa aqui.
+3. La parrilla ofrece el mismo estado **Activar/Desactivar** y los mismos alcances
+   **Celda / Nivel / Frente / Todo** que los otros tres dialogos.
+4. **Conservacion obligatoria del contador vivo por celda.** Es la condicion que bloqueaba su adopcion
+   desde I-22 y el Owner la mantiene: la parrilla **no** puede reducirse a una casilla booleana que
+   pierda ese numero. Cuantas parrillas recibe cada celda —y el total al pie— se leen igual que hoy, a
+   traves de `SelectiveParrillaPlan`, que es la misma regla que consumen el dibujo y el BOM.
+
+Lo aprobado en los tres dialogos anteriores **no se toca**: desviador, tope y guia quedan como el Owner
+los valido.
 
 ## 1. Objetivo
 
@@ -178,11 +202,13 @@ columnas y cuantos niveles tiene cada una).
 
 ### 6.3 Exclusiones justificadas
 
-- **Parrilla (M5) — excluida.** No es una matriz booleana *plana*: cada celda lleva ademas un **contador
-  vivo** de parrillas (`SelectiveParrillaPlan.CountIn`) pintado junto a la casilla, un total al pie y un
-  rechazo en «Aceptar» cuando la cantidad forzada no cabe. Por eso I-22 ya la dejo **fuera** de la
-  adopcion de `SelectionMatrix` («no se fuerza; se documenta y se conserva su dialogo», I-22 §4 y §12).
-  Migrarla exige antes decidir como el control comparte una decoracion por celda, que es alcance nuevo.
+- **Parrilla (M5) — INCLUIDA por el addendum del Owner (§0).** No es una matriz booleana *plana*: cada
+  celda lleva ademas un **contador vivo** de parrillas (`SelectiveParrillaPlan.CountIn`) pintado junto a
+  la casilla, un total al pie y un rechazo en «Aceptar» cuando la cantidad forzada no cabe. Por eso I-22
+  la dejo **fuera** de la adopcion de `SelectionMatrix` («no se fuerza; se documenta y se conserva su
+  dialogo», I-22 §4 y §12), y esta iniciativa la excluyo hasta que el Owner decidiera. Ya decidio: la
+  parrilla se adopta **conservando el contador**, y la decision de como se resuelve esa decoracion por
+  celda esta en §7.12.
 - **Defensa — excluida.** No es booleana en absoluto: es un **formulario por poste** con dos longitudes
   independientes (salida/entrada), sus dos casillas de «Auto» y su propio DTO `SafetyPostDefense`. No
   tiene eje de nivel, asi que los alcances «Nivel» y «Celda» no significan nada en ella.
@@ -240,6 +266,18 @@ como candidatos en §15.
     `SelectionMatrix.CellInteracted`, que solo se dispara ante un clic real; un cambio programatico
     —incluida una edicion masiva— nunca mueve el ancla. Solo las celdas presentes tienen casilla, asi que
     la columna de un frente en blanco jamas puede ser primaria.
+12. **El contador por celda es un ADORNO OPCIONAL y NEUTRAL del control** (addendum §0.4). `SelectionMatrix`
+    gana una sola extension: `CellAdornment`, un proveedor de texto por celda que **declara el consumidor**,
+    y `RefreshAdornments()`, que reescribe esos textos **en sitio**. El control no sabe que es una parrilla
+    ni que significa el numero; solo pinta la cadena que le dan junto a la casilla.
+    - **Opt-in puro**: sin proveedor, el control construye la celda exactamente como antes (la casilla
+      directamente en la rejilla, sin envoltorio), asi que **los tres dialogos ya aprobados no cambian**.
+    - **Sin rebuild por operacion**: `RefreshAdornments()` solo asigna `Text`; conserva las instancias, el
+      scroll y el tamano, igual que el repintado de `ScopeApplied`.
+    - **Sin eventos por celda**: el consumidor lo llama **una** vez por operacion, desde el mismo sitio
+      donde ya recalculaba su total.
+    La alternativa —reducir la parrilla a una casilla booleana— esta **prohibida** por el addendum: se
+    perderia informacion que hoy el usuario lee antes de decidir.
 
 ## 8. Fases
 
