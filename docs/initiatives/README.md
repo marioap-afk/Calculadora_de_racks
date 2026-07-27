@@ -304,9 +304,18 @@ Planes disponibles:
   justificación explícita— **parrilla** (lleva un contador vivo por celda; I-22 ya la excluyó de la
   adopción del control), **defensa** (formulario por poste con dos longitudes, sin eje de nivel) y la
   **matriz estructural de tarimas** (es diseño, no seguridad). `requires_autocad: true`,
-  `requires_owner_validation: true` describen la **iniciativa completa**: este incremento no cambia dibujo
-  ni BOM, así que sus gates se resuelven con la adopción. `requires_owner_decision: false`. Estado
-  versionado en [`../automation/state/I-34.yml`](../automation/state/I-34.yml).
+  `requires_owner_validation: true`; `requires_owner_decision: false`. **INTEGRADA (2026-07-27)**: la
+  adopción quedó **completa en las CUATRO matrices** —desviador (eje **Poste**), tope (eje **Frente**, que
+  cubre a la vez el tope del Selectivo y el **tope posterior de Push Back**), guía y **parrilla**—. La
+  **parrilla entró por addendum normativo del Owner** durante la validación, con la condición de
+  **conservar su contador vivo por celda**: se resolvió con un **adorno opt-in y neutral** del control
+  (`CellAdornment` + `RefreshAdornments`), de modo que los otros tres diálogos no cambian ni una línea.
+  Corrigió además un defecto propio: un valor **no definido** de `SelectionMatrixScope` se interpretaba
+  como «Todo» y reescribía la rejilla entera; ahora falla cerrado. La **defensa** no entró y **no
+  bloqueó**: pasa a `ideas-futuras.md` como candidato futuro **independiente**. El Owner **aprobó** la
+  validación manual en AutoCAD 2025 sobre el candidato `dbdda74` (DLL SHA-256 `5353C298…`, CI 30283957763
+  4/4); `origin/main` no avanzó desde la base `7e48b5c`, así que **sin rebase**. Estado versionado en
+  [`../automation/state/I-34.yml`](../automation/state/I-34.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

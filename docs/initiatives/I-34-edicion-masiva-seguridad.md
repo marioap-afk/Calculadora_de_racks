@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-34
 title: Edicion masiva de matrices de seguridad
 type: feature
-status: implementing
+status: integrated
 branch: feature/edicion-masiva-seguridad
 base_branch: main
 priority:
@@ -32,9 +32,11 @@ automation:
 > Owner en la instruccion de apertura de esta iniciativa. El campo `priority` se deja vacio por falta de
 > fuente numerica en el ROADMAP, igual que en I-18, I-32 e I-33.
 >
-> **Estado**: inventario, decisiones, regresiones, fundacion y la **adopcion productiva por los cuatro
-> dialogos** estan **hechos**. La **parrilla del Selectivo** entra por el addendum del Owner (§0); la
-> **defensa** sigue fuera de alcance (§15).
+> **Estado: INTEGRADA.** El Owner **aprobo toda la validacion manual en AutoCAD 2025** sobre el candidato
+> `dbdda74860052c481998da8b63383cf68ec499cc` (DLL SHA-256
+> `5353c298b5b099ba9dedaa42c2252dd6891952c7fe83efd4c0261e4b82796e39`). Los gates `autocad` y
+> `owner-validation` quedan **cerrados**. La **defensa** no entro y **no bloqueo** la iniciativa: queda
+> como candidato futuro independiente en `ideas-futuras.md`.
 
 ## 0. Addendum normativo del Owner (2026-07-27)
 
@@ -329,13 +331,21 @@ Comandos:
   `MSB3277` conocidos de AutoCAD); produce el DLL candidato para la validacion del dueno.
 - CI: los cuatro jobs verdes sobre la punta publicada.
 
-## 10.bis Revalidacion FOCALIZADA de la parrilla (Owner, tras el addendum §0)
+## 10.bis Revalidacion FOCALIZADA de la parrilla — APROBADA por el Owner (2026-07-27)
 
-El Owner ya aprobo A, C, D, E, F, G, H y el tope de B sobre `f676aac`. Esta ronda cubre **solo** la
-parrilla y **lo compartido que cambio**; los tres dialogos ya aprobados **no** se re-validan salvo el
-punto 6, que existe precisamente para confirmar que siguen intactos.
+El Owner **aprobo** esta ronda y con ella **toda** la validacion manual de la iniciativa. Candidato
+aprobado: **`dbdda74860052c481998da8b63383cf68ec499cc`**; DLL Debug estampado
+`1.0.0+dbdda74860052c481998da8b63383cf68ec499cc`, SHA-256
+`5353c298b5b099ba9dedaa42c2252dd6891952c7fe83efd4c0261e4b82796e39`.
 
-Sobre el DLL Debug del worktree de I-34, en AutoCAD 2025:
+Lo aprobado, en sus palabras: el **desviador, el tope y la parrilla del Selectivo**; el **desviador y la
+guia del Dinamico**; el **desviador y el tope posterior de Push Back**; los alcances **Celda / Nivel /
+Frente-o-Poste / Todo**; las **matrices dentadas y las celdas ausentes**; los **contadores vivos de
+parrilla**; **dibujo, BOM, persistencia, reapertura, actualizacion y GUID**; el **incremento de altura**
+de los dialogos; **`Desactivar` como estado inicial**; y la **regresion compartida de los demas
+dialogos**. La **defensa** permanece fuera de alcance y **no bloqueo** el cierre.
+
+El checklist que se recorrio, sobre el DLL Debug del worktree de I-34, en AutoCAD 2025:
 
 1. **Selectivo → Elementos de seguridad → Parrilla**: la rejilla se ve como antes —una casilla por
    frente y nivel, con **su numero al lado**— y bajo ella aparece la fila «Aplicar a:» con
@@ -358,12 +368,13 @@ Sobre el DLL Debug del worktree de I-34, en AutoCAD 2025:
    su rejilla **no** lleva numeros junto a las casillas, porque el adorno es opt-in y solo la parrilla lo
    usa.
 
-## 10. Validacion manual — gates ABIERTOS
+## 10. Validacion manual — gates CERRADOS
 
-La adopcion cambia la **interaccion visible** de tres dialogos compartidos por los tres sistemas, asi que
-`autocad` y `owner-validation` quedan **abiertos**. El dibujo, el BOM y la persistencia **no** cambian por
-construccion (lo que cada dialogo devuelve sigue siendo su mismo conjunto de `OffCells`), pero eso es
-justo lo que el dueno debe confirmar en AutoCAD 2025 sobre el DLL Debug del **worktree de I-34**:
+La adopcion cambia la **interaccion visible** de los cuatro dialogos compartidos por los tres sistemas.
+El dibujo, el BOM y la persistencia **no** cambian por construccion (lo que cada dialogo devuelve sigue
+siendo su mismo conjunto de `OffCells`), y el Owner lo **confirmo en AutoCAD 2025**: los gates `autocad`
+y `owner-validation` quedan **cerrados** (§10.bis). Este es el checklist que se recorrio, sobre el DLL
+Debug del **worktree de I-34**:
 `…\feature-edicion-masiva-seguridad\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`.
 
 - [ ] **Selectivo → Elementos de seguridad → Larguero tope**: la fila «Aplicar a:» aparece bajo la
@@ -449,11 +460,7 @@ integracion (ultimo commit de la rama), nunca desde esta rama.
 Los cuatro conservan «Todos»/«Ninguno», el conjunto de `OffCells` que devuelven, la fusion de celdas
 dormidas donde aplica (`SafetyDormantCells`) y su interaccion previa: la edicion masiva se **suma**.
 
-Queda **fuera de alcance** por decision vigente:
-
-- **Defensa**: antes habria que decidir **que significa un alcance en un formulario por poste** con dos
-  longitudes independientes y sin eje de nivel. Hoy «Celda» y «Nivel» no significan nada en ella. El
-  addendum del Owner (§0.2) la mantiene excluida.
-
-Y como cierre de la iniciativa: la **revalidacion focalizada de la parrilla** (§10.bis) sobre lo ya
-aprobado en §10, que es el gate abierto.
+**No queda alcance restante de I-34.** La **defensa** nunca entro y **no bloqueo** el cierre: pasa a ser
+un **candidato futuro independiente**, registrado en `ideas-futuras.md` y desligado de esta iniciativa.
+Antes de tocarla habria que decidir **que significa un alcance en un formulario por poste** con dos
+longitudes independientes y sin eje de nivel, donde «Celda» y «Nivel» no significan nada.
