@@ -79,7 +79,7 @@ namespace RackCad.Tests
             Assert.True(session.HasPendingChanges);
             Assert.Equal(original, header.Length, 6);   // the live system is untouched
 
-            var committed = session.Commit();
+            var committed = session.Commit().Modules;
 
             Assert.False(session.HasPendingChanges);
             Assert.Equal(original + 7.0, committed.First(module => module.ModuleId == header.ModuleId).Length, 6);
@@ -201,21 +201,112 @@ namespace RackCad.Tests
             Assert.True(session.Modules.First(module => module.ModuleId == header.ModuleId).IsManualOverride);
         }
 
-        // ===== Reconciliation: what the base loses ==============================================================
+        // ===== Individual restore (Owner: full, for ANY module) =================================================
 
         [Fact]
-        public void Reconciliation_Preserve_CarriesTheCustomCabecera_AcrossARebuild()
+        public void Session_RestoreModule_ClearsEverything_OnACabecera_AndRecordsTheRestore()
         {
-            var catalog = Catalog;
-            var reconciliation = new RackModuleReconciliation(new DynamicRackSystemBuilder(catalog));
-            var previous = IntentsWithACustomHeader(out var marker, out var manualFondo);
+            var system = StandardSystem();
+            var header = system.Modules.First(module => module.IsHeader);
+            var session = RackModuleEditSession.Begin(system);
+            session.SetLength(header.ModuleId, 55.0);
+            session.SetHeaderConfiguration(header.ModuleId, CustomHeader(40.0));
+
+            Assert.True(session.RestoreModule(header.ModuleId));
+
+            var staged = session.Modules.First(module => module.ModuleId == header.ModuleId);
+            Assert.True(staged.IsCalculated);
+            Assert.False(staged.IsManualOverride);
+            Assert.True(staged.UsesCalculatedHeaderConfiguration);
+            Assert.False(staged.HasHeaderConfiguration);
+            Assert.True(session.IsRestored(header.ModuleId));
+            Assert.Equal(new[] { header.ModuleId }, session.RestoredModuleIds);
+        }
+
+        [Fact]
+        public void Session_RestoreModule_WorksOnASeparatorToo_NotOnlyOnCabeceras()
+        {
+            var system = StandardSystem();
+            var separator = system.Modules.First(module => module.Kind == DynamicRackModuleKind.Separator);
+            var session = RackModuleEditSession.Begin(system);
+            session.SetLength(separator.ModuleId, 33.0);
+
+            Assert.True(session.RestoreModule(separator.ModuleId));
+
+            var staged = session.Modules.First(module => module.ModuleId == separator.ModuleId);
+            Assert.True(staged.IsCalculated);
+            Assert.False(staged.IsManualOverride);
+            Assert.True(session.IsRestored(separator.ModuleId));
+        }
+
+        [Fact]
+        public void Session_EditingARestoredModuleAgain_CancelsItsRestore()
+        {
+            var system = StandardSystem();
+            var header = system.Modules.First(module => module.IsHeader);
+            var session = RackModuleEditSession.Begin(system);
+            session.SetLength(header.ModuleId, 55.0);
+            session.RestoreModule(header.ModuleId);
+            Assert.True(session.IsRestored(header.ModuleId));
+
+            session.SetLength(header.ModuleId, 60.0);
+
+            Assert.False(session.IsRestored(header.ModuleId));
+            Assert.Empty(session.RestoredModuleIds);
+        }
+
+        [Fact]
+        public void Session_Cancel_AlsoDiscardsAPendingIndividualRestore()
+        {
+            var system = StandardSystem();
+            var header = system.Modules.First(module => module.IsHeader);
+            var session = RackModuleEditSession.Begin(system);
+            session.SetLength(header.ModuleId, 55.0);
+            session.Commit();
+
+            session.RestoreModule(header.ModuleId);
+            Assert.True(session.HasPendingChanges);
+
+            session.Cancel();
+
+            Assert.False(session.HasPendingChanges);
+            Assert.Empty(session.RestoredModuleIds);
+            Assert.Equal(55.0, session.Modules.First(module => module.ModuleId == header.ModuleId).Length, 6);
+        }
+
+        [Fact]
+        public void Session_Commit_CarriesTheRestoreRequests_BecauseARestoredModuleLooksUncustomized()
+        {
+            var system = StandardSystem();
+            var header = system.Modules.First(module => module.IsHeader);
+            var session = RackModuleEditSession.Begin(system);
+            session.SetLength(header.ModuleId, 55.0);
+            session.Commit();
+
+            session.RestoreModule(header.ModuleId);
+            session.RequestStandardRestore();
+            var commit = session.Commit();
+
+            Assert.Equal(new[] { header.ModuleId }, commit.RestoredModuleIds);
+            Assert.True(commit.StandardRestoreRequested);
+            Assert.Empty(session.RestoredModuleIds);   // consumed by the commit
+        }
+
+        // ===== Reconciliation by ModuleId + Kind (Owner decisions 2, 3 and 4) ===================================
+
+        [Fact]
+        public void Reconciliation_MatchesByModuleIdAndKind_CarryingTheCustomCabeceraAcrossARebuild()
+        {
+            var reconciliation = Reconciliation();
+            var previous = IntentsWithACustomHeader(out var marker, out var manualFondo, out var headerId);
             var rebuilt = StandardSystem(palletsDeep: 8);   // a different structure, standard everywhere
 
-            var result = reconciliation.Reconcile(previous, rebuilt, RackModuleCustomizationPolicy.Preserve);
+            var result = reconciliation.Reconcile(previous, rebuilt);
 
-            var header = rebuilt.Modules.First(module => module.IsHeader);
-            Assert.Equal(1, result.ConfigurationsPreserved);
-            Assert.Equal(1, result.FondosRestored);
+            var header = rebuilt.Modules.First(module => module.ModuleId == headerId);
+            Assert.Equal(new[] { headerId }, result.Preserved);
+            Assert.Empty(result.Removed);
+            Assert.Empty(result.Incompatible);
             Assert.False(header.UseCalculatedHeaderConfiguration);
             Assert.Equal(marker, header.AssociatedFrameConfiguration.PanelClear, 4);
             Assert.Equal(manualFondo, header.Length, 6);
@@ -223,34 +314,151 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Reconciliation_Discard_LeavesTheRebuildsStandardCabecera_WhichIsWhatTheBaseDoesToday()
+        public void Reconciliation_CarriesAManualLength_OnSeparatorsToo_NotOnlyOnCabeceras()
         {
-            var catalog = Catalog;
-            var reconciliation = new RackModuleReconciliation(new DynamicRackSystemBuilder(catalog));
-            var previous = IntentsWithACustomHeader(out var marker, out _);
+            var reconciliation = Reconciliation();
+            var source = StandardSystem();
+            var separatorId = source.Modules.First(module => module.Kind == DynamicRackModuleKind.Separator).ModuleId;
+            var session = RackModuleEditSession.Begin(source);
+            session.SetLength(separatorId, 33.0);
+            var previous = session.Commit().Modules;
             var rebuilt = StandardSystem(palletsDeep: 8);
 
-            var result = reconciliation.Reconcile(previous, rebuilt, RackModuleCustomizationPolicy.Discard);
+            var result = reconciliation.Reconcile(previous, rebuilt);
 
-            var header = rebuilt.Modules.First(module => module.IsHeader);
-            Assert.Equal(1, result.ConfigurationsDiscarded);
-            Assert.Equal(0, result.ConfigurationsPreserved);
+            var separator = rebuilt.Modules.First(module => module.ModuleId == separatorId);
+            Assert.Contains(separatorId, result.Preserved);
+            Assert.Equal(33.0, separator.Length, 6);
+            Assert.True(separator.IsManualOverride);
+        }
+
+        [Fact]
+        public void Reconciliation_AdaptsThePreservedCabecera_DepthAndRackPeralte_ToTheRebuiltStructure()
+        {
+            var reconciliation = Reconciliation();
+            var previous = IntentsWithACustomHeader(out _, out var manualFondo, out var headerId);
+            var rebuilt = StandardSystem(palletsDeep: 8);
+            rebuilt.PostPeralte = 4.5;
+
+            // The staged cabecera was built at fondo 48 and no rack peralte: both must move.
+            var staged = previous.First(module => module.ModuleId == headerId);
+            Assert.NotEqual(manualFondo, staged.HeaderConfiguration.Depth);
+
+            var result = reconciliation.Reconcile(previous, rebuilt);
+
+            var header = rebuilt.Modules.First(module => module.ModuleId == headerId);
+            Assert.Contains(headerId, result.Adapted);
+            Assert.Contains(headerId, result.Preserved);   // adapting is not losing
+            Assert.Equal(manualFondo, header.AssociatedFrameConfiguration.Depth, 6);
+            Assert.Equal(4.5, header.AssociatedFrameConfiguration.PostPeralte, 6);
+        }
+
+        [Fact]
+        public void Reconciliation_AModuleThatIsGone_LosesItsCustomization_AndIsReportedAsRemoved()
+        {
+            var reconciliation = Reconciliation();
+            var source = StandardSystem(palletsDeep: 10);
+            var lastHeaderId = source.Modules.Last(module => module.IsHeader).ModuleId;
+            var session = RackModuleEditSession.Begin(source);
+            session.SetLength(lastHeaderId, 51.0);
+            var previous = session.Commit().Modules;
+
+            var rebuilt = StandardSystem(palletsDeep: 4);   // a much shorter rack: that id no longer exists
+            Assert.DoesNotContain(rebuilt.Modules, module => module.ModuleId == lastHeaderId);
+
+            var result = reconciliation.Reconcile(previous, rebuilt);
+
+            Assert.Equal(new[] { lastHeaderId }, result.Removed);
+            Assert.Empty(result.Preserved);
+            Assert.True(result.LostAnything);
+        }
+
+        [Fact]
+        public void Reconciliation_AModuleWhoseKindChanged_LosesItsCustomization_AndIsReportedAsIncompatible()
+        {
+            var reconciliation = Reconciliation();
+            var source = StandardSystem();
+            var headerId = source.Modules.First(module => module.IsHeader).ModuleId;
+            var session = RackModuleEditSession.Begin(source);
+            session.SetLength(headerId, 55.0);
+            session.SetHeaderConfiguration(headerId, CustomHeader(40.0));
+            var previous = session.Commit().Modules;
+
+            // Same id, different kind: structurally it is not the same module any more.
+            var rebuilt = StandardSystem(palletsDeep: 8);
+            var collision = rebuilt.Modules.First(module => module.ModuleId == headerId);
+            collision.Kind = DynamicRackModuleKind.Separator;
+            var lengthBefore = collision.Length;
+
+            var result = reconciliation.Reconcile(previous, rebuilt);
+
+            Assert.Equal(new[] { headerId }, result.Incompatible);
+            Assert.Empty(result.Preserved);
+            Assert.Equal(lengthBefore, collision.Length, 6);   // untouched: nothing was forced onto it
+            Assert.True(result.LostAnything);
+        }
+
+        [Fact]
+        public void Reconciliation_AnExplicitlyRestoredModule_IsReportedAsRestored_NotAsLost()
+        {
+            var reconciliation = Reconciliation();
+            var source = StandardSystem();
+            var headerId = source.Modules.First(module => module.IsHeader).ModuleId;
+            var session = RackModuleEditSession.Begin(source);
+            session.SetLength(headerId, 55.0);
+            session.SetHeaderConfiguration(headerId, CustomHeader(40.0));
+            session.Commit();
+
+            // The user restores it, so the intents still describe a customized module until the rebuild lands.
+            var staged = RackModuleEditSession.Begin(source);
+            staged.SetLength(headerId, 55.0);
+            staged.SetHeaderConfiguration(headerId, CustomHeader(40.0));
+            var customized = staged.Commit().Modules;
+
+            var rebuilt = StandardSystem(palletsDeep: 8);
+            var result = reconciliation.Reconcile(customized, rebuilt, new[] { headerId });
+
+            Assert.Equal(new[] { headerId }, result.Restored);
+            Assert.Empty(result.Preserved);
+            Assert.False(result.LostAnything);   // asked for, not lost
+            var header = rebuilt.Modules.First(module => module.ModuleId == headerId);
             Assert.True(header.UseCalculatedHeaderConfiguration);
-            Assert.NotEqual(marker, header.AssociatedFrameConfiguration.PanelClear);
+        }
+
+        [Fact]
+        public void Reconciliation_ACalculatedModule_IsNeverTouched_SoTheRebuiltHeightStands()
+        {
+            var reconciliation = Reconciliation();
+            var previous = RackModuleEditSession.Begin(StandardSystem()).Commit().Modules;
+            var rebuilt = StandardSystem(palletsDeep: 8);
+            var expected = rebuilt.Modules
+                .Where(module => module.IsHeader)
+                .Select(module => module.AssociatedFrameConfiguration.Height)
+                .ToList();
+
+            var result = reconciliation.Reconcile(previous, rebuilt);
+
+            Assert.Empty(result.Preserved);
+            Assert.Empty(result.Removed);
+            Assert.Empty(result.Incompatible);
+            Assert.Equal(
+                expected,
+                rebuilt.Modules
+                    .Where(module => module.IsHeader)
+                    .Select(module => module.AssociatedFrameConfiguration.Height));
         }
 
         [Fact]
         public void Reconciliation_PreservedCabecera_IsAnIndependentCopy_NotTheIntentsInstance()
         {
-            var catalog = Catalog;
-            var reconciliation = new RackModuleReconciliation(new DynamicRackSystemBuilder(catalog));
-            var previous = IntentsWithACustomHeader(out var marker, out _);
+            var reconciliation = Reconciliation();
+            var previous = IntentsWithACustomHeader(out var marker, out _, out var headerId);
             var rebuilt = StandardSystem(palletsDeep: 8);
 
-            reconciliation.Reconcile(previous, rebuilt, RackModuleCustomizationPolicy.Preserve);
+            reconciliation.Reconcile(previous, rebuilt);
 
-            var source = previous.First(module => module.IsHeader && !module.UseCalculatedHeaderConfiguration);
-            var header = rebuilt.Modules.First(module => module.IsHeader);
+            var source = previous.First(module => module.ModuleId == headerId);
+            var header = rebuilt.Modules.First(module => module.ModuleId == headerId);
             Assert.NotSame(source.HeaderConfiguration, header.AssociatedFrameConfiguration);
 
             header.AssociatedFrameConfiguration.PanelClear = 12.0;
@@ -258,43 +466,38 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void Reconciliation_AShorterRack_DropsTheExtraIntents_InsteadOfForcingThem()
+        public void Reconciliation_Describe_NamesEveryCategory_SoNothingIsLostInSilence()
         {
-            var catalog = Catalog;
-            var reconciliation = new RackModuleReconciliation(new DynamicRackSystemBuilder(catalog));
-            var previous = RackModuleEditSession.Begin(StandardSystem(palletsDeep: 10)).Commit();
-            var rebuilt = StandardSystem(palletsDeep: 4);
+            var reconciliation = Reconciliation();
+            var source = StandardSystem(palletsDeep: 10);
+            var goneId = source.Modules.Last(module => module.IsHeader).ModuleId;
+            var keptId = source.Modules.First(module => module.IsHeader).ModuleId;
+            var session = RackModuleEditSession.Begin(source);
+            session.SetLength(goneId, 51.0);
+            session.SetLength(keptId, 55.0);
+            var previous = session.Commit().Modules;
 
-            var expectedDrop =
-                previous.Count(module => module.IsHeader) - rebuilt.Modules.Count(module => module.IsHeader);
-            Assert.True(expectedDrop > 0, "the fixture must actually shrink the rack");
+            var result = reconciliation.Reconcile(previous, StandardSystem(palletsDeep: 4));
 
-            var result = reconciliation.Reconcile(previous, rebuilt, RackModuleCustomizationPolicy.Preserve);
-
-            Assert.Equal(expectedDrop, result.IntentsDropped);
+            var description = result.Describe();
+            Assert.Contains(keptId, description);
+            Assert.Contains(goneId, description);
+            Assert.Contains("conservado", description);
+            Assert.Contains("eliminado", description);
         }
 
         [Fact]
-        public void Reconciliation_ACalculatedCabecera_IsNeverTouched_SoTheRebuiltHeightStands()
+        public void TheFoundation_HasNoPublicDiscardPolicy_BecauseDiscardIsNotAnOrdinaryOutcome()
         {
-            var catalog = Catalog;
-            var reconciliation = new RackModuleReconciliation(new DynamicRackSystemBuilder(catalog));
-            var previous = RackModuleEditSession.Begin(StandardSystem()).Commit();
-            var rebuilt = StandardSystem(palletsDeep: 8);
-            var expected = rebuilt.Modules
-                .Where(module => module.IsHeader)
-                .Select(module => module.AssociatedFrameConfiguration.Height)
+            var exported = typeof(RackModuleReconciliation).Assembly
+                .GetExportedTypes()
+                .Select(type => type.Name)
                 .ToList();
 
-            var result = reconciliation.Reconcile(previous, rebuilt, RackModuleCustomizationPolicy.Preserve);
-
-            Assert.Equal(0, result.ConfigurationsPreserved);
-            Assert.Equal(0, result.FondosRestored);
-            Assert.Equal(
-                expected,
-                rebuilt.Modules
-                    .Where(module => module.IsHeader)
-                    .Select(module => module.AssociatedFrameConfiguration.Height));
+            Assert.DoesNotContain("RackModuleCustomizationPolicy", exported);
+            Assert.DoesNotContain(
+                typeof(RackModuleReconciliation).GetMethods().SelectMany(m => m.GetParameters()),
+                parameter => parameter.ParameterType.IsEnum);
         }
 
         // ===== Neutrality: the foundation must not know about systems ===========================================
@@ -337,20 +540,24 @@ namespace RackCad.Tests
             return configuration;
         }
 
+        private static RackModuleReconciliation Reconciliation()
+            => new RackModuleReconciliation(new DynamicRackSystemBuilder(Catalog));
+
         /// <summary>Module intents whose first header carries BOTH a manual fondo and a custom cabecera — the two
-        /// things the base's fondo-only snapshot cannot carry together.</summary>
+        /// things the base's fondo-only, ordinal-matched snapshot cannot carry together.</summary>
         private static System.Collections.Generic.IReadOnlyList<DynamicRackModuleDesign> IntentsWithACustomHeader(
             out double marker,
-            out double manualFondo)
+            out double manualFondo,
+            out string headerId)
         {
             marker = 40.0;
             manualFondo = 55.0;
 
             var session = RackModuleEditSession.Begin(StandardSystem());
-            var headerId = session.Modules.First(module => module.IsHeader).ModuleId;
+            headerId = session.Modules.First(module => module.IsHeader).ModuleId;
             session.SetLength(headerId, manualFondo);
             session.SetHeaderConfiguration(headerId, CustomHeader(marker));
-            return session.Commit();
+            return session.Commit().Modules;
         }
 
         private static FrameExceptionOverride RuntimeException()

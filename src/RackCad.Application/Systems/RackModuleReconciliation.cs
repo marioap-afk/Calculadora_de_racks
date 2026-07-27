@@ -1,72 +1,97 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using RackCad.Application.Persistence;
 using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Systems
 {
-    /// <summary>What a rebuild does with a cabecera the user had customized. The caller CHOOSES; this type does not
-    /// pick a default, because the answer is an Owner decision (I-35, contract section 12, question b).</summary>
-    public enum RackModuleCustomizationPolicy
-    {
-        /// <summary>Carry the user's cabecera across the rebuild, provenance included.</summary>
-        Preserve = 0,
-
-        /// <summary>Drop it and let the rebuild's standard cabecera stand — what the base does today, silently.</summary>
-        Discard = 1
-    }
-
-    /// <summary>Counts of what a reconciliation actually did, so a caller can report it instead of guessing.</summary>
+    /// <summary>
+    /// What a structural recompute did with each customized module, by module id. Every category is REPORTABLE:
+    /// losing a customization is never silent (Owner, I-35).
+    /// </summary>
     public sealed class RackModuleReconciliationResult
     {
-        public RackModuleReconciliationResult(
-            int fondosRestored,
-            int configurationsPreserved,
-            int configurationsDiscarded,
-            int intentsDropped)
+        internal RackModuleReconciliationResult(
+            IReadOnlyList<string> preserved,
+            IReadOnlyList<string> adapted,
+            IReadOnlyList<string> removed,
+            IReadOnlyList<string> incompatible,
+            IReadOnlyList<string> restored)
         {
-            FondosRestored = fondosRestored;
-            ConfigurationsPreserved = configurationsPreserved;
-            ConfigurationsDiscarded = configurationsDiscarded;
-            IntentsDropped = intentsDropped;
+            Preserved = preserved;
+            Adapted = adapted;
+            Removed = removed;
+            Incompatible = incompatible;
+            Restored = restored;
         }
 
-        /// <summary>Manual fondos re-applied onto the rebuilt headers.</summary>
-        public int FondosRestored { get; }
+        /// <summary>Modules whose customization survived: exact <c>ModuleId + Kind</c> match.</summary>
+        public IReadOnlyList<string> Preserved { get; }
 
-        /// <summary>Custom cabeceras carried across the rebuild.</summary>
-        public int ConfigurationsPreserved { get; }
+        /// <summary>Preserved cabeceras whose <c>Depth</c> and/or rack-wide PERALTE had to be brought to the new
+        /// structure. A subset of <see cref="Preserved"/>: adapting is not losing.</summary>
+        public IReadOnlyList<string> Adapted { get; }
 
-        /// <summary>Custom cabeceras deliberately dropped by the chosen policy.</summary>
-        public int ConfigurationsDiscarded { get; }
+        /// <summary>Customized modules the rebuilt rack no longer has. They lose their customization — explicitly.</summary>
+        public IReadOnlyList<string> Removed { get; }
 
-        /// <summary>Previous header intents with no counterpart because the rebuilt rack has fewer headers.</summary>
-        public int IntentsDropped { get; }
+        /// <summary>Customized modules whose id survived but whose KIND changed (a cabecera became a separator, an end
+        /// cabecera became an intermediate one…). Structurally incompatible, so they lose it — explicitly.</summary>
+        public IReadOnlyList<string> Incompatible { get; }
 
-        public bool ChangedAnything => FondosRestored > 0 || ConfigurationsPreserved > 0;
+        /// <summary>Modules the user explicitly restored. Nothing was carried BY REQUEST, which is a different fact
+        /// from having lost it.</summary>
+        public IReadOnlyList<string> Restored { get; }
+
+        public bool PreservedAnything => Preserved.Count > 0;
+
+        /// <summary>True when a customization was lost against the user's wish — the only case a surface must report
+        /// loudly. An explicit restore is not a loss.</summary>
+        public bool LostAnything => Removed.Count > 0 || Incompatible.Count > 0;
+
+        /// <summary>One Spanish sentence for a status line; empty when the recompute changed nothing worth saying.</summary>
+        public string Describe()
+        {
+            var parts = new List<string>();
+            if (Preserved.Count > 0) parts.Add(Count(Preserved, "módulo conservado", "módulos conservados"));
+            if (Adapted.Count > 0) parts.Add(Count(Adapted, "adaptado al nuevo tamaño", "adaptados al nuevo tamaño"));
+            if (Restored.Count > 0) parts.Add(Count(Restored, "restaurado", "restaurados"));
+            if (Removed.Count > 0) parts.Add(Count(Removed, "eliminado por el cambio", "eliminados por el cambio"));
+            if (Incompatible.Count > 0) parts.Add(Count(Incompatible, "incompatible (cambió de tipo)", "incompatibles (cambiaron de tipo)"));
+            return string.Join("; ", parts);
+        }
+
+        private static string Count(IReadOnlyList<string> ids, string singular, string plural)
+            => string.Format(
+                CultureInfo.CurrentCulture,
+                "{0} {1} ({2})",
+                ids.Count,
+                ids.Count == 1 ? singular : plural,
+                string.Join(", ", ids));
     }
 
     /// <summary>
-    /// Reconciles the module intents the user had against a FRESHLY REBUILT structure, by ordinal among headers
-    /// (I-35).
+    /// Reconciles the module customizations the user had against a FRESHLY REBUILT structure, matching by exact
+    /// <c>ModuleId + Kind</c> (Owner decision, I-35).
     /// <para>
-    /// The base reconciles with <c>DynamicEditorDesignAssembler.SnapshotHeaderFondos</c> /
+    /// The base reconciles by ORDINAL with <c>DynamicEditorDesignAssembler.SnapshotHeaderFondos</c> /
     /// <c>RestoreHeaderFondos</c>, and that pair carries the FONDO and nothing else: the snapshot is a list of
     /// nullable doubles, and the restore stamps <c>UseCalculatedHeaderConfiguration = true</c> and rebuilds the
-    /// configuration from the factory. A custom cabecera therefore cannot survive a pallet/fondos change. That is
-    /// inert while no Push Back cabecera can be custom, and stops being inert the moment PB-011 lands — the
-    /// dependency <c>ideas-futuras.md</c> asks to review in the same change.
+    /// configuration from the factory. Two consequences it cannot avoid: a custom cabecera never survives a
+    /// pallet/fondos change, and an ordinal match silently lands one module's edit on a DIFFERENT module whenever
+    /// the sequence shifts. Matching by id and kind removes both.
     /// </para>
     /// <para>
-    /// This type is the reconciliation that carries fondo, configuration AND provenance together. It does NOT
-    /// replace the existing pair and nothing calls it yet: changing <c>RestoreHeaderFondos</c> would change the
-    /// DYNAMIC editor, which I-35 must not touch. It is offered so the adopting phase can wire it for Push Back
-    /// alone, with the policy the Owner picks.
+    /// There is NO ordinary discard policy. A customization is carried across unless one of three things is true,
+    /// and each is reported by name: the user restored the module explicitly, the module no longer exists, or its
+    /// kind changed. Nothing is ever dropped in silence.
     /// </para>
     /// <para>
-    /// NEUTRAL: no <c>RackSystemKind</c> and no branch per system; it reconciles the shared longitudinal sequence.
-    /// Cabeceras are copied with <see cref="RackFrameProjectStore.DeepCopy"/>, the single canonical clone (I-17).
+    /// This type does NOT replace the base pair — changing <c>RestoreHeaderFondos</c> would change the DYNAMIC
+    /// editor, which I-35 must not touch. NEUTRAL: no <c>RackSystemKind</c> and no branch per system; cabeceras are
+    /// copied with <see cref="RackFrameProjectStore.DeepCopy"/>, the single canonical clone (I-17).
     /// </para>
     /// </summary>
     public sealed class RackModuleReconciliation
@@ -82,75 +107,138 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// Apply <paramref name="previous"/> onto <paramref name="rebuilt"/>, matching HEADERS BY ORDINAL — the same
-        /// correspondence the base uses, so a rebuild that keeps the header count lands every intent on the header
-        /// that inherits its place.
+        /// Apply the customizations in <paramref name="previous"/> onto <paramref name="rebuilt"/>.
         /// <list type="bullet">
-        /// <item>A manual fondo is re-applied and keeps its override flags.</item>
-        /// <item>A custom cabecera is carried over as an independent canonical copy WITH its provenance under
-        /// <see cref="RackModuleCustomizationPolicy.Preserve"/>, and left to the rebuild's standard one under
-        /// <see cref="RackModuleCustomizationPolicy.Discard"/>.</item>
-        /// <item>A calculated cabecera is never touched: the rebuild already produced it at the new inputs.</item>
-        /// <item>Extra previous headers are counted as dropped, never forced onto a shorter rack.</item>
+        /// <item>A MANUAL LENGTH is carried for cabeceras AND separators alike: both consume longitudinal run, so
+        /// both are editable and both must survive.</item>
+        /// <item>A CUSTOM CABECERA is carried as an independent canonical copy with its provenance, and then ADAPTED
+        /// to the rebuilt rack: its <c>Depth</c> follows the module's reconciled length and its PERALTE follows the
+        /// rack-wide one. Adapting is what keeps a preserved cabecera physically coherent.</item>
+        /// <item>A CALCULATED module is never touched: the rebuild already produced it at the new inputs.</item>
+        /// <item>An explicitly RESTORED module is skipped on purpose and reported as restored.</item>
         /// </list>
         /// </summary>
+        /// <param name="explicitlyRestoredModuleIds">Modules the user restored; their customization must NOT be
+        /// carried across, and the result reports them apart from the ones that were lost.</param>
         public RackModuleReconciliationResult Reconcile(
             IReadOnlyList<DynamicRackModuleDesign> previous,
             DynamicRackSystem rebuilt,
-            RackModuleCustomizationPolicy policy)
+            IEnumerable<string> explicitlyRestoredModuleIds = null)
         {
             if (rebuilt == null) throw new ArgumentNullException(nameof(rebuilt));
 
-            var intents = (previous ?? Array.Empty<DynamicRackModuleDesign>())
-                .Where(design => design != null && design.IsHeader)
-                .ToList();
-            var headers = rebuilt.Modules.Where(module => module != null && module.IsHeader).ToList();
+            var restoredIds = new HashSet<string>(
+                explicitlyRestoredModuleIds ?? Enumerable.Empty<string>(),
+                StringComparer.Ordinal);
 
-            var fondos = 0;
-            var preserved = 0;
-            var discarded = 0;
-
-            for (var ordinal = 0; ordinal < Math.Min(intents.Count, headers.Count); ordinal++)
+            var byId = new Dictionary<string, DynamicRackModule>(StringComparer.Ordinal);
+            foreach (var module in rebuilt.Modules.Where(module => module != null && !string.IsNullOrWhiteSpace(module.ModuleId)))
             {
-                var intent = intents[ordinal];
-                var header = headers[ordinal];
+                byId[module.ModuleId] = module;
+            }
 
-                if (intent.IsManualOverride && intent.Length > 0.0)
-                {
-                    header.Length = intent.Length;
-                    header.IsManualOverride = true;
-                    header.IsCalculated = false;
-                    fondos++;
-                }
+            var preserved = new List<string>();
+            var adapted = new List<string>();
+            var removed = new List<string>();
+            var incompatible = new List<string>();
+            var restored = new List<string>();
 
-                var wasCustom = !intent.UseCalculatedHeaderConfiguration && intent.HeaderConfiguration != null;
-                if (!wasCustom)
+            foreach (var intent in previous ?? Array.Empty<DynamicRackModuleDesign>())
+            {
+                if (intent == null || string.IsNullOrWhiteSpace(intent.ModuleId))
                 {
                     continue;
                 }
 
-                if (policy == RackModuleCustomizationPolicy.Preserve)
+                var hasCustomLength = intent.IsManualOverride && intent.Length > 0.0;
+                var hasCustomHeader = intent.IsHeader
+                                      && !intent.UseCalculatedHeaderConfiguration
+                                      && intent.HeaderConfiguration != null;
+
+                if (!hasCustomLength && !hasCustomHeader)
                 {
-                    header.AssociatedFrameConfiguration = clone.DeepCopy(intent.HeaderConfiguration);
-                    header.UseCalculatedHeaderConfiguration = false;
-                    preserved++;
+                    continue;   // nothing to carry; the rebuild's calculated module stands
                 }
-                else
+
+                if (restoredIds.Contains(intent.ModuleId))
                 {
-                    discarded++;
+                    restored.Add(intent.ModuleId);
+                    continue;   // dropped BY REQUEST, not lost
                 }
+
+                if (!byId.TryGetValue(intent.ModuleId, out var module))
+                {
+                    removed.Add(intent.ModuleId);
+                    continue;
+                }
+
+                if (module.Kind != intent.Kind)
+                {
+                    incompatible.Add(intent.ModuleId);
+                    continue;
+                }
+
+                if (hasCustomLength)
+                {
+                    module.Length = intent.Length;
+                    module.IsManualOverride = true;
+                    module.IsCalculated = false;
+                }
+
+                if (hasCustomHeader)
+                {
+                    module.AssociatedFrameConfiguration = clone.DeepCopy(intent.HeaderConfiguration);
+                    module.UseCalculatedHeaderConfiguration = false;
+
+                    if (Adapt(module, rebuilt.PostPeralte))
+                    {
+                        adapted.Add(intent.ModuleId);
+                    }
+                }
+
+                preserved.Add(intent.ModuleId);
             }
 
-            // Same closing step as the base: the depth of each cabecera follows its module length, the derived model
-            // is rebuilt and the longitudinal coordinates are laid out again.
+            // Same closing step as the base: the derived model is rebuilt and the longitudinal coordinates are laid
+            // out again, so the reconciled system is immediately resolvable.
             rebuilt.RecalculatePositions();
             builder.Refresh(rebuilt);
 
-            return new RackModuleReconciliationResult(
-                fondos,
-                preserved,
-                discarded,
-                Math.Max(0, intents.Count - headers.Count));
+            return new RackModuleReconciliationResult(preserved, adapted, removed, incompatible, restored);
+        }
+
+        /// <summary>
+        /// Bring a preserved cabecera to the rebuilt rack: its FONDO is the module's reconciled length and its
+        /// PERALTE is the rack-wide one. Returns true when either actually moved, so the caller can report it.
+        /// <para>
+        /// <c>builder.Refresh</c> assigns the depth for every header anyway; the point of doing it here is to observe
+        /// the change while the previous value is still readable, and to leave the configuration coherent even for a
+        /// caller that does not refresh.
+        /// </para>
+        /// </summary>
+        private static bool Adapt(DynamicRackModule module, double rackPostPeralte)
+        {
+            var configuration = module.AssociatedFrameConfiguration;
+            if (configuration == null)
+            {
+                return false;
+            }
+
+            var changed = false;
+
+            if (module.Length > 0.0 && configuration.Depth != module.Length)
+            {
+                configuration.Depth = module.Length;
+                changed = true;
+            }
+
+            if (rackPostPeralte > 0.0 && configuration.PostPeralte != rackPostPeralte)
+            {
+                configuration.PostPeralte = rackPostPeralte;
+                changed = true;
+            }
+
+            return changed;
         }
     }
 }
