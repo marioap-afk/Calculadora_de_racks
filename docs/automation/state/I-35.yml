@@ -13,7 +13,7 @@ automation_state:
     b-la-politica-de-reconciliacion-conservar-o-descartar-avisando-la-cabecera-personalizada ·
     c-si-el-configurador-compartido-debe-ganar-Aceptar-Cancelar-o-si-basta-la-sesion-transaccional-de-Push-Back ·
     NO-implementar-la-UI-avanzada-antes-de-esa-decision
-  last_evidence_commit: PENDIENTE-lo-fija-el-ultimo-commit-de-la-sesion
+  last_evidence_commit: e4137e8336707ec3024e1cd2df178fa0413c4bf5
 
 # --------------------------------------------------------------------------------------------------------
 # ALCANCE ENTREGADO EN LA SESION DE APERTURA. NO se implemento la UI avanzada de Push Back (prohibido por
@@ -78,8 +78,9 @@ audit:
 gates:
   ci: verde-requerido-sobre-la-punta-publicada-4-de-4
   plugin_build: >-
-    NO-EJECUTADO-en-esta-sesion-no-hay-cambio-de-produccion-que-lo-exija-la-fundacion-no-tiene-consumidor ·
-    requerido-a-partir-de-la-fase-6
+    EJECUTADO-y-correcto-con-AutoCAD-cerrado ·
+    UI-Debug-0-errores-0-advertencias · Plugin-Debug-0-errores-propios-y-las-2-MSB3277-conocidas ·
+    NO-acredita-dibujo-la-fundacion-no-tiene-consumidor-y-la-ventana-no-cambia
   autocad: >-
     ABIERTO-para-la-fase-6-en-adelante ·
     NO-aplica-a-esta-sesion-no-cambia-dibujo-BOM-GUID-ni-persistencia
@@ -117,6 +118,37 @@ evidence:
     primer-push-ACEPTADO-por-el-remoto-new-branch-sin-force
   baseline_tests: >-
     sobre-la-base-antes-de-tocar-nada-rackcad-tests-1522-de-1522-y-rackcad-ui-tests-398-de-398-cero-fallos-cero-omitidas
+  commits: >-
+    b0361bb-reclamo-vacio ·
+    4fa2127-auditoria-contrato-indice-estado-versionado-e-inconsistencia-de-PB-011-en-ideas-futuras ·
+    9f6fee7-14-caracterizaciones-de-la-base-verificadas-en-rojo ·
+    e4137e8-fundacion-neutral-descriptor-sesion-transaccional-y-reconciliacion-SIN-consumidor
+  tests: >-
+    rackcad-tests-1551-de-1551 · rackcad-ui-tests-398-de-398 · cero-fallos-cero-omitidas-en-ambas ·
+    14-caracterizaciones-mas-15-de-la-fundacion-sobre-las-1522-de-la-base
+  red_evidence: >-
+    LAS-29-PRUEBAS-NUEVAS-SE-VERIFICARON-FALLANDO-al-invertir-en-el-codigo-de-produccion-exactamente-lo-que-afirman-y-restaurando-despues ·
+    A-CloneHeader-usa-DeepCopy-pone-en-rojo-Fact6_ARecompute ·
+    A2-DeepCopy-deja-de-reanexar-Exceptions-pone-en-rojo-Fact6_TheDocumentRoundTrip ·
+    B-SnapshotHeaderFondos-deja-de-ser-solo-fondo-pone-en-rojo-Fact5_Snapshot ·
+    B3-un-cambio-estructural-no-fuerza-rebuild-pone-en-rojo-Fact5_AStructuralChange ·
+    C-CreateHeader-estampa-procedencia-personalizada-pone-en-rojo-las-dos-de-Fact4 ·
+    D1-forceRebuild-ignorado-en-sus-dos-efectos-pone-en-rojo-Fact3_ForceRebuild ·
+    D2-AcceptComputation-acepta-lo-invalido-pone-en-rojo-Fact2_AFailedRecompute ·
+    E-el-recalculo-siempre-reconstruye-pone-en-rojo-Fact2_Recompute ·
+    F2-la-profundidad-depende-del-numero-de-frentes-pone-en-rojo-Axis_TheModuleSequence ·
+    G-Push-Back-gana-los-controles-y-el-configurador-gana-DialogResult-pone-en-rojo-Fact1-Fact3_REGRESION-y-Fact7 ·
+    H-ModulesInRange-devuelve-copias-pone-en-rojo-Axis_ALateralSection ·
+    I-Cancel-no-revierte-pone-en-rojo-las-dos-de-transaccion ·
+    J-SetHeaderConfiguration-guarda-la-referencia-pone-en-rojo-la-de-copia-canonica ·
+    K-Preserve-deja-de-preservar-pone-en-rojo-la-de-reconciliacion
+  corrected_assumptions: >-
+    dos-supuestos-del-auditor-resultaron-FALSOS-y-las-pruebas-se-corrigieron-al-codigo-real-no-al-reves ·
+    la-capa-de-profundidad-la-gobierna-el-PalletsDeep-de-CADA-FRENTE-BuildFrontDesigns-no-el-de-rack ·
+    en-el-DISENO-el-modelo-derivado-NO-se-reconstruye-CloneHeader-se-salta-RefreshPhysicalModel-y-solo-el-SISTEMA-recibe-Refresh
+  builds: >-
+    build-UI-Debug-0-errores-0-advertencias ·
+    build-Plugin-Debug-0-errores-2-advertencias-ambas-MSB3277-conocidas-e-ignoradas-con-AutoCAD-cerrado
   scope_isolation: >-
     sin-tocar-ROADMAP-HANDOFF-SelectionMatrix-Safety-GridWindow-Selectivo-catalogos-bloques-DWG-ni-el-Dinamico ·
     RackDynamicSystemWindow-xaml-y-cs-sin-una-sola-linea-de-diff-se-leen-como-REFERENCIA ·
