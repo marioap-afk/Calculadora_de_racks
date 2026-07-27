@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-23
 title: Namespaces finales por sistema
 type: refactor
-status: implementing
+status: integrated
 branch: refactor/namespaces-sistemas
 base_branch: main
 priority:
@@ -20,9 +20,9 @@ automation_state_path: docs/automation/state/I-23.yml
 decision_paths: []
 requires_ci: true
 requires_plugin_build: true
-requires_autocad: false
+requires_autocad: true
 requires_owner_decision: false
-requires_owner_validation: false
+requires_owner_validation: true
 automation:
   enabled: true
   auto_merge: false
@@ -284,11 +284,26 @@ AutoCAD debe estar **cerrado** durante los builds (bloqueo de DLL, trampa conoci
 
 ## 10. Validacion manual
 
-**No aplica** como gate: el ROADMAP no marca I-23 con validacion del dueño y la iniciativa no cambia
-dibujo, BOM, catalogos ni comandos. La equivalencia se sostiene con los goldens, la comparacion
-antes/despues de planes, BOM, serializacion, legacy, metadata, handlers y comandos, y los builds Debug.
+**Smoke minimo, APROBADO por el Owner** en AutoCAD 2025 sobre el DLL Debug del SHA exacto del
+candidato (`5d49a6c`). Registro completo en
+[`I-23-autocad-smoke.md`](I-23-autocad-smoke.md).
 
-El riesgo de runtime residual se declara en la evidencia final, no se oculta.
+El ROADMAP no marca I-23 con la mano alzada y la iniciativa no cambia dibujo, BOM, catalogos, comandos
+ni alias, asi que la matriz completa de una feature **no** aplica. Pero un refactor de namespaces si
+puede romper tres cosas que **ninguna prueba automatizada ve**, y el smoke las cubre:
+
+| Punto | Que descarta | Resultado |
+|---|---|---|
+| `NETLOAD` del DLL del SHA exacto | carga del ensamblado y de sus dependencias | **Aprobado** |
+| `RACKCAD` | descubrimiento de comandos y menu principal | **Aprobado** |
+| Un editor de sistema | XAML y `AppStyles` de una ventana movida a `UI.Systems.<Sistema>`, **dentro del proceso de AutoCAD** | **Aprobado** |
+| `RACKCABECERA` | `UI.RackFrames`, la unica ventana con dos namespaces de UI y el `xmlns:frames` nuevo | **Aprobado** |
+
+Sin observaciones. La equivalencia funcional la sostienen ademas los 7 goldens byte-identicos, la
+superficie de API identica a la base, y la comparacion antes/despues de planes, BOM, serializacion,
+legacy, metadata, handlers y comandos.
+
+**Riesgo de runtime residual: ninguno conocido.** El gate queda cerrado.
 
 ## 11. Criterios de aceptacion
 
@@ -330,5 +345,38 @@ el agente **nunca** hace merge. El merge automatico esta prohibido.
 
 ## 14. Evidencia final
 
-Se completa al cerrar la sesion: SHA base, `Claim-Id`, inventario, mapa final, commits, diff por
-frontera, pruebas, builds, CI y riesgos de runtime pendientes. `main` no se modifica en ningun momento.
+| Campo | Valor |
+|---|---|
+| Base | `b43b5d15a242287ffe7514bc41e1086dd25e9387` |
+| `Claim-Id` | `fade0f8a-1438-4bfb-a894-2a9671685e60` |
+| Candidato tecnico validado | `5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128` (11 ahead / 0 behind) |
+| Rebase final | **no necesario**: `origin/main` no avanzo desde la base |
+| Archivos movidos | **176** con `git mv`, todos registrados como renombre (`R`) |
+| Tipos inventariados | **718** de primer nivel en **565** archivos, los seis proyectos |
+| Suites | **1619** + **494**, cero fallos, cero omitidas |
+| Goldens | los 7, SHA-256 byte-identicos a la base |
+| Superficie de API | **identica** a la base tras normalizar namespace y el unico renombre |
+| Builds Debug | UI 0/0; Plugin 0 errores (solo las 2 `MSB3277` conocidas) |
+| Bundle | 105 comprobaciones + harness 10/10 |
+| Smoke del Owner | **Aprobado**, sin observaciones ([registro](I-23-autocad-smoke.md)) |
+| Riesgo de runtime | **ninguno conocido** |
+
+Areas congeladas con **cero** archivos cambiados en toda la rama: `assets/`, `deploy/`, `.github/`,
+`RackCad.sln`, `Directory.Build.props` y `Directory.Build.targets`.
+
+Las guardas se verificaron **en rojo** bajo infraccion inyectada, no solo en verde. `main` no se
+modifico en ningun momento fuera de la sesion de integracion.
+
+### Congelacion funcional
+
+La congelacion funcional total que I-23 mantuvo durante toda su vida **termina al integrar**. Lo que
+queda vigente es la **regla**, no la congelacion: namespace y carpeta deben corresponder, y las
+guardas lo comprueban en cada CI.
+
+### Estado del backlog al cerrar
+
+- **Push Back v1 queda estable**: I-23 no lo toco funcionalmente.
+- **I-25 (guardas traseras) sigue en backlog DIFERIDO**: ni completada ni descartada. Deja de estar
+  bloqueada por el estorbo de I-23 al cerrarse la Fase 5.
+- Las mejoras listadas siguen en [`../ideas-futuras.md`](../ideas-futuras.md), incluida la deuda
+  documental de I-09 que I-23 detecto y no arreglo por estar fuera de alcance.

@@ -115,6 +115,52 @@ AutoCAD 2025** sobre el candidato `dbdda74`. `origin/main` **no avanzó** desde 
 rebase**, así que el árbol validado es el integrado. La rama se integra por `git merge --no-ff` en esta
 sesión.
 
+**I-23** (`refactor/namespaces-sistemas`, Fase 5) queda **integrada** el **2026-07-27** y **cierra la
+Fase 5**. Salda el hallazgo **E8** de la auditoría 2026-07 —el namespace `Systems` plano y multi-sistema,
+con nombres fósiles— con un refactor **mecánico** bajo congelación funcional total: **176 archivos movidos
+con `git mv`**, todos registrados como renombre, más la reescritura de `namespace`/`using` en sus
+consumidores. **Ninguna línea de lógica cambia.**
+
+Los **cuatro** proyectos de producto quedan repartidos por sistema en `Systems.{Selective, Dynamic,
+PushBack, FlowBed, Larguero, Shared}`: las tres raíces planas de `Systems` quedan **vacías**. Se disuelven
+**cinco** namespaces: `Domain.Systems`, `Application.Systems` y `Plugin.Systems` (los planos),
+`Application.Headers` y `Plugin.Headers`. La cabecera **física** conserva `RackFrames` en Domain,
+Application y UI; lo que **materializa** pasa a `Drawing` en Application y Plugin, que quedan simétricos.
+El único renombre autorizado es **`DynamicSystemPlan` a `Application.Drawing.HeaderRunPlan`**: no era el
+plan del sistema dinámico sino el **plan de corridas de cabecera**, y lo consumen los cuatro sistemas —
+exactamente lo que E8 denunciaba. **No** se aplicó el `SystemPlan` que anotaba el ROADMAP, por ambiguo en
+este árbol (colisiona con `SystemBomBuilder`, `SystemDescriptor`, `SystemRegistry` y `SystemBlockWriter`,
+que sí son por sistema). `HeaderGroup` y `HeaderPlacement` viajan con él y **conservan** su nombre.
+
+La regla aplicada es objetiva: un archivo pertenece al sistema que su tipo de primer nivel **nombra y
+modela**; **consumir** un contrato ajeno no lo mueve, porque componer entre sistemas es legal. Por eso
+`SelectiveDesviadorPlan` sigue en `Selective` aunque lo consuman el Dinámico y Push Back, y los **diálogos
+compartidos de seguridad** (`SelectiveSafetyWindow` y los cinco `Safety*GridWindow`) se quedan en la raíz
+de `RackCad.UI`: **un diálogo compartido no se asigna a un sistema por número de consumidores**. La
+infraestructura transversal de UI (`Controls`, `Editor`, `Preview`, `Shell`, `Themes`) tampoco se reparte.
+
+Los **dos proyectos de prueba conservan un único namespace de ensamblado** como **excepción explícita y
+comprobable**, no como exención: **92 de 220 archivos de prueba (42 %) ejercitan más de un sistema** y 48
+tocan tres o más, así que asignarles propietario sería arbitrario justo donde la regla exige que sea
+inequívoco; además `FullyQualifiedName~` es la interfaz operativa de verificación del repo. La vigila
+`NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace`.
+
+La regla nace con quien la comprueba: `NamespaceFolderGuardTests` (7 aserciones) y
+`UiSystemBoundaryGuardTests` (3, que **construyen de verdad** las seis ventanas WPF migradas y validan
+`x:Class` y pack URIs), más `.editorconfig`. **`EnforceCodeStyleInBuild` NO se activa**: el proyecto WPF
+compila vía un proyecto temporal (`RackCad.UI_<hash>_wpftmp`) e `IDE0130` deriva de ese nombre el namespace
+esperado, produciendo 68 advertencias falsas. Las guardas se verificaron **en rojo** bajo cinco
+infracciones inyectadas.
+
+Equivalencia **demostrada, no afirmada**: los **7 goldens byte-idénticos**, la **superficie de API
+idéntica** a la base tras normalizar namespace y el renombre (ninguna firma, accesibilidad ni miembro
+cambió), el inventario de los **28 comandos y alias byte-idéntico**, bundle 105 comprobaciones y harness
+10/10. **No** cambia dibujo, BOM, GUID, persistencia, wire format, catálogos, DWG, comandos, alias ni
+textos. `assets/`, `deploy/`, `.github/`, `RackCad.sln` y `Directory.Build.*` quedan con **cero** archivos
+cambiados. El Owner **aprobó el smoke mínimo en AutoCAD 2025** sobre el DLL Debug del SHA exacto. La
+**congelación funcional termina al integrar**; lo que queda vigente es la regla. **Push Back v1 sigue
+estable** e **I-25 continúa en backlog diferido**, ni completada ni descartada.
+
 I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
 `ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
 La iniciativa reorganizó documentación y no cambió comportamiento de producto.
@@ -735,6 +781,35 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
 
 ## 4. Siguiente acción
 
+### I-23 — INTEGRADA en `main` (2026-07-27) — **cierra la Fase 5**
+
+El Owner **aprobó el smoke mínimo en AutoCAD 2025** sobre el DLL Debug del SHA exacto del candidato. La
+iniciativa queda **integrada**; no queda acción pendiente de I-23.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `refactor/namespaces-sistemas` |
+| **CODE_SHA / BUILD_SHA aprobado** por el Owner | `5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128` (11 ahead / 0 behind) |
+| CI del candidato | **30304742946**, 4/4 sobre `5d49a6c` |
+| **DLL Debug** validado | `AssemblyInformationalVersion = 1.0.0+5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128`, SHA-256 `D2944E25C20098CD57AA15DA143EB2C7412710ED61A78BE548B8CD87146D43EE` |
+| Smoke aprobado | `NETLOAD`, `RACKCAD`, un editor de sistema y `RACKCABECERA`, sin errores de carga, comandos, XAML ni recursos ([registro](initiatives/I-23-autocad-smoke.md)) |
+| Suites al integrar | **1619** `RackCad.Tests` + **494** `RackCad.UI.Tests`, cero fallos, cero omitidas |
+| Builds Debug | UI 0 errores / 0 advertencias; Plugin 0 errores propios y 2 `MSB3277` conocidas, con AutoCAD cerrado |
+| Rebase | **no necesario**: `origin/main` no avanzó desde la base `b43b5d1` |
+| **MERGE_SHA** | vive en `git log --first-parent main`; este documento **no lo inventa** (se escribe antes del merge) |
+| Limpieza | rama local, rama remota y worktree **eliminados** tras la CI post-merge verde |
+
+Qué dejó integrado: los **namespaces finales por sistema** en los cuatro proyectos de producto, con
+`Drawing` para la materialización, `RackFrames` para la cabecera física, el renombre fósil
+`DynamicSystemPlan` a `HeaderRunPlan` y las guardas que impiden que la separación vuelva a aplanarse. El
+detalle está en §1 y el contrato en
+[`initiatives/I-23-namespaces-sistemas.md`](initiatives/I-23-namespaces-sistemas.md).
+
+**Con I-23 se cierra la Fase 5.** Lo siguiente del plan es **I-25 — `feature/guardas-traseras`**, que
+sigue en **backlog diferido** (ni completada ni descartada) y que ya no está bloqueada por el estorbo de
+I-23. **Push Back v1 queda estable.** La **congelación funcional de I-23 termina al integrar**: lo que
+queda vigente es la regla namespace-carpeta, que las guardas comprueban en cada CI.
+
 ### I-35 — INTEGRADA en `main` (2026-07-27)
 
 El Owner **aprobó explícitamente** la validación manual en AutoCAD 2025 del candidato técnico. La
@@ -915,7 +990,23 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-35 — 2026-07-27** (la vigente):
+**Baseline integrada de I-23 — 2026-07-27** (la vigente):
+
+- candidato de **código** aprobado por el Owner en AutoCAD 2025 y por CI:
+  `5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128` (CI run `30304742946`, **success** 4/4), 11 ahead / 0 behind
+  sobre la base. La punta de la rama antes del cierre documental fue 12 ahead; su delta contra el candidato
+  es **solo** documentación (0 archivos de `src`, `tests`, `assets`, `deploy` o `.github`), así que el
+  binario validado y el integrado son el mismo árbol de código;
+- **DLL Debug** validado por el Owner:
+  `AssemblyInformationalVersion = 1.0.0+5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128`, SHA-256
+  `D2944E25C20098CD57AA15DA143EB2C7412710ED61A78BE548B8CD87146D43EE`, en
+  `…-refactor-namespaces-sistemas/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll`;
+- suites **1619** + **494**, cero fallos, cero omitidas; builds Debug de UI y Plugin sin errores propios;
+- **7 goldens byte-idénticos** y **superficie de API idéntica** a la base tras normalizar namespace y el
+  único renombre autorizado; bundle 105 comprobaciones + harness 10/10;
+- **sin rebase**: `origin/main` no avanzó desde la base `b43b5d1`.
+
+Anterior: **baseline integrada de I-35 — 2026-07-27**:
 
 - candidato de **código** aprobado por el Owner en AutoCAD 2025 y por CI:
   `f2be30c20a7ff8958a24ddf078a5310dab5dbfe0` (CI run `30293536290`, **success** 4/4). La punta de la rama

@@ -1,9 +1,8 @@
-# I-23 — Smoke mínimo en AutoCAD (gate pendiente)
+# I-23 — Smoke mínimo en AutoCAD (aprobado)
 
-> Guion del **único gate pendiente** de I-23 ([contrato](I-23-namespaces-sistemas.md),
-> [inventario](I-23-inventario-namespaces.md)). El candidato está **técnicamente aprobado**; falta la
-> ejecución del dueño. Este archivo se rellena con el resultado; hasta entonces la columna de resultado
-> queda vacía a propósito.
+> Registro del smoke mínimo de I-23 ([contrato](I-23-namespaces-sistemas.md),
+> [inventario](I-23-inventario-namespaces.md)). **APROBADO por el Owner**: registro factual del
+> resultado que proporcionó; no incluye capturas ni detalles no proporcionados.
 >
 > **No** es la matriz completa de validación de una feature: I-23 es un refactor mecánico bajo
 > congelación funcional que **no cambia dibujo, BOM, catálogos, comandos ni alias**. Lo que el smoke
@@ -11,14 +10,17 @@
 > automatizada ve: que AutoCAD **cargue** el ensamblado, **descubra** los comandos y que las ventanas
 > WPF **resuelvan sus recursos dentro del proceso de AutoCAD**, que no es el host STA de las pruebas.
 
-## Artefacto a validar
+## Artefacto validado
 
 | Campo | Valor |
 |---|---|
 | AutoCAD | 2025 |
 | Rama | `refactor/namespaces-sistemas` |
 | Commit (SHA exacto) | `5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128` |
-| Base | `b43b5d15a242287ffe7514bc41e1086dd25e9387` (11 ahead / 0 behind, **sin rebase**) |
+| Base | `b43b5d15a242287ffe7514bc41e1086dd25e9387` |
+| Divergencia del **candidato** | **11 ahead / 0 behind** sobre la base |
+| Divergencia de la **punta documental** posterior | **12 ahead / 0 behind**; el commit extra es solo documentación (0 archivos de `src`, `tests`, `assets`, `deploy` o `.github`), así que el DLL validado sigue siendo el del árbol que se integra |
+| Rebase | **no necesario**: `origin/main` no avanzó desde la base |
 | Worktree | `~/.codex/worktrees/refactor-namespaces-sistemas` |
 | DLL para `NETLOAD` | `src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` |
 | `InformationalVersion` | `1.0.0+5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128` (los cuatro ensamblados) |
@@ -38,14 +40,14 @@ C:\Users\alejandra-mendoza\.codex\worktrees\refactor-namespaces-sistemas\src\Rac
 > Cerrar AutoCAD antes de cualquier recompilación: con el plugin cargado el DLL queda bloqueado
 > (trampa conocida de AGENTS.md). El DLL de arriba ya está compilado y sellado con el SHA exacto.
 
-## Guion (cuatro puntos)
+## Guion ejecutado y resultado
 
 | # | Punto | Qué descarta | Resultado |
 |---|---|---|---|
-| 1 | `NETLOAD` del DLL de la tabla | Que el reparto de namespaces impida cargar el ensamblado o resolver sus dependencias | |
-| 2 | `RACKCAD` abre el menú principal | Descubrimiento de comandos y que el menú (que quedó en la raíz de `RackCad.UI`) siga resolviendo el registro de módulos | |
-| 3 | Abrir **un** editor de sistema — `RACKPUSHBACK` (o `RACKSELECTIVO`) — y cerrarlo | Que una ventana movida a `RackCad.UI.Systems.<Sistema>` resuelva su XAML y `AppStyles` **dentro del proceso de AutoCAD** | |
-| 4 | Abrir el **configurador de cabecera** (`RACKCABECERA`) y cerrarlo | Que `RackCad.UI.RackFrames` cargue: es la ventana con el `xmlns:frames` nuevo y la única que referencia dos namespaces de UI a la vez | |
+| 1 | `NETLOAD` del DLL de la tabla | Que el reparto de namespaces impida cargar el ensamblado o resolver sus dependencias | **Aprobado** — sin errores de carga |
+| 2 | `RACKCAD` abre el menú principal | Descubrimiento de comandos y que el menú (que quedó en la raíz de `RackCad.UI`) siga resolviendo el registro de módulos | **Aprobado** — sin errores de comandos |
+| 3 | Abrir **un** editor de sistema — `RACKPUSHBACK` (o `RACKSELECTIVO`) — y cerrarlo | Que una ventana movida a `RackCad.UI.Systems.<Sistema>` resuelva su XAML y `AppStyles` **dentro del proceso de AutoCAD** | **Aprobado** — sin errores de XAML ni de recursos |
+| 4 | Abrir el **configurador de cabecera** (`RACKCABECERA`) y cerrarlo | Que `RackCad.UI.RackFrames` cargue: es la ventana con el `xmlns:frames` nuevo y la única que referencia dos namespaces de UI a la vez | **Aprobado** — sin errores de XAML ni de recursos |
 
 No hace falta dibujar, insertar ni generar BOM: si algo del refactor estuviera mal, falla al **cargar
 o al abrir**, no al calcular. La geometría y el BOM ya están fijados por los 7 goldens byte-idénticos
@@ -67,8 +69,9 @@ Lo que un refactor de namespaces puede romper y las pruebas **no** ven:
 
 ## Observaciones
 
-_(a rellenar por el dueño)_
+Ninguna. El Owner no reportó errores de carga, de comandos, de XAML ni de recursos.
 
 ## Resultado global
 
-_(pendiente)_
+**Aprobado.** Con esto queda cerrado el único gate pendiente de I-23 y la iniciativa pasa a
+`integration-ready`.

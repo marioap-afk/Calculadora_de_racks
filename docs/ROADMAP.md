@@ -1,6 +1,24 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-27 (**I-35 integrada en `main`**: **editor avanzado de módulos de Push Back**
+> Actualizado: 2026-07-27 (**I-23 integrada en `main`**: **namespaces finales por sistema** (E8).
+> **CIERRA LA FASE 5.** Refactor **mecánico** bajo congelación funcional total: **176 archivos movidos
+> con `git mv`**, todos como renombre, sin una sola línea de lógica. Los **cuatro** proyectos de producto
+> —Domain, Application, **UI** y Plugin— quedan repartidos en `Systems.{Selective, Dynamic, PushBack,
+> FlowBed, Larguero, Shared}` y las tres raíces planas quedan **vacías**; se disuelven **cinco**
+> namespaces, incluidos `Application.Headers` y `Plugin.Headers`. La cabecera **física** conserva
+> `RackFrames`; lo que **materializa** pasa a `Drawing`, simétrico en Application y Plugin. Único renombre
+> autorizado: **`DynamicSystemPlan` a `Drawing.HeaderRunPlan`** — **no** se aplicó el `SystemPlan` que
+> anotaba este plan, por ambiguo en el árbol actual. Los **diálogos compartidos de seguridad** y la
+> infraestructura transversal de UI **no** se reparten: un diálogo compartido no se asigna a un sistema por
+> número de consumidores. Los **dos proyectos de prueba** conservan un namespace de ensamblado como
+> **excepción explícita y comprobable** (42 % de sus archivos cruzan sistemas). Nacen dos guardas —
+> `NamespaceFolderGuardTests` y `UiSystemBoundaryGuardTests`, que **construyen** las ventanas WPF migradas—
+> más `.editorconfig`, verificadas **en rojo** bajo infracción inyectada. Equivalencia demostrada: 7
+> goldens byte-idénticos, superficie de API idéntica, 28 comandos byte-idénticos. Gate del Owner
+> **aprobado** (smoke en AutoCAD 2025) sobre el candidato `5d49a6c`. Rama y worktree eliminados.
+> **Siguiente: I-25**, en backlog diferido.)
+>
+> Anterior: 2026-07-27 (**I-35 integrada en `main`**: **editor avanzado de módulos de Push Back**
 > (PB-011). Push Back gana la edición **longitudinal de Cabeceras y Separadores** por módulo de RACK con
 > **selección única**, la **configuración transaccional** de cabecera (confirmar / cancelar sobre una
 > **copia**, sin tocar el configurador compartido), la **altura manual de cabecera**, el **refuerzo total o
@@ -143,7 +161,7 @@
 | 2 | Arquitectura base + producto dinámico | Contratos/registros que abaratan el sistema N+1 (la brecha cama↔dinámico quedó cerrada por I-02) | Alta de un Kind sin tocar stores/switches; persistencia uniforme (I-27 quedó absorbida por I-02) |
 | 3 | Componentes reutilizables | UI y Plugin componibles (controles, shell, draw service genérico) | Un editor nuevo cuesta ~300 líneas; rejilla de seguridad única |
 | 4 | Primer sistema nuevo | Push Back sobre la arquitectura nueva + guía validada | Push Back completo sin editar código de otros sistemas |
-| 5 | Migración progresiva | Los sistemas existentes adoptan la arquitectura, uno a uno | Editores migrados al shell; namespaces finales; lista de archivos calientes reducida |
+| 5 | Migración progresiva — **CERRADA (2026-07-27)** | Los sistemas existentes adoptan la arquitectura, uno a uno | CUMPLIDO: editores migrados al shell (I-30/I-31); **namespaces finales por sistema en los cuatro proyectos (I-23)**; lista de archivos calientes reducida. Queda I-25 en backlog diferido |
 
 Las fases se traslapan donde las dependencias lo permiten: la pista de UI (I-14→I-15) puede correr
 en paralelo con la Fase 2 de Application porque tocan capas distintas.
@@ -209,9 +227,9 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-20 | `refactor/selective-editor-state` | Extraer `FondoMatrix`/`Cell`/`ApplyScope`/`BuildDesign` a Application (testeables); la ventana queda observando/pintando (U1, U3) | M | I-15 | I-22 (orden fijo: I-20 primero) | integrada (2026-07-21) |
 | I-21 | `refactor/dynamic-editor-state` | Ídem para el editor dinámico (~3,318 líneas si A; 1,332 si B). Partir por vistas si excede | M-L | I-15 + I-02 (A ejecutada e integrada; I-28 solo si un ADR futuro reemplaza ADR-0002) | I-28 | integrada (2026-07-21) |
 | I-22 | `refactor/safety-placement` | Servicios de colocación por familia (Tope/Parrilla/Tarima…) parametrizados por vista; subtipos de `SelectiveSafetySelection` con DTO por subtipo; paso de troquel en UNA constante; las rejillas adoptan `SelectionMatrix` (E6, E7) | M | I-14, I-20 (orden fijo) | I-20 | integrada (2026-07-22) |
-| I-23 | `refactor/namespaces-sistemas` | `Systems.Selective/Dynamic/FlowBed/Shared`; renombres fósiles (`Headers`→`Drawing`, `DynamicSystemPlan`→`SystemPlan`); .editorconfig — mecánico, con tests golden, **cierra la Fase 5: depende de TODAS las demás** (E8) | M | I-08, I-15, I-16, I-20, I-21, I-22 | toda la Fase 5 | pendiente |
+| I-23 | `refactor/namespaces-sistemas` ✋ | **Namespaces finales por sistema** (E8) — **CIERRA LA FASE 5**. Refactor **mecánico** bajo congelación funcional total: **176 archivos** con `git mv`, todos como renombre, sin una línea de lógica. Reparte los **cuatro** proyectos de producto (Domain, Application, **UI** y Plugin) en `Systems.{Selective, Dynamic, PushBack, FlowBed, Larguero, Shared}`; las tres raíces planas quedan vacías y se disuelven **cinco** namespaces, incluidos `Application.Headers` y **`Plugin.Headers`**. `RackFrames` conserva la cabecera **física** (Domain, Application y UI); lo que **materializa** pasa a `Drawing`, simétrico en Application y Plugin. Único renombre autorizado: **`DynamicSystemPlan` a `Drawing.HeaderRunPlan`** — **no** se aplicó el `SystemPlan` que anotaba este plan, ambiguo en el árbol actual porque colisiona con `SystemBomBuilder`/`SystemDescriptor`/`SystemRegistry`/`SystemBlockWriter`. Regla objetiva: un archivo pertenece al sistema que su tipo de primer nivel **nombra y modela**; **consumir** un contrato ajeno no lo mueve. Por eso los **diálogos compartidos de seguridad** y la infraestructura transversal de UI (`Controls`, `Editor`, `Preview`, `Shell`, `Themes`) **no** se reparten: un diálogo compartido no se asigna a un sistema por número de consumidores. Los **dos proyectos de prueba** conservan un namespace de ensamblado como **excepción explícita y comprobable** (92 de 220 archivos, 42 %, cruzan sistemas). Añade `.editorconfig` y **dos guardas** —`NamespaceFolderGuardTests` (7) y `UiSystemBoundaryGuardTests` (3, que **construyen** las seis ventanas WPF migradas y validan `x:Class` y pack URIs)—, verificadas **en rojo** bajo infracción inyectada. `EnforceCodeStyleInBuild` **no** se activa (el proyecto WPF temporal produce 68 falsos IDE0130). Sin cambio de dibujo, BOM, GUID, persistencia, wire format, catálogos, DWG, comandos, alias ni textos | M | I-08, I-15, I-16, I-20, I-21, I-22 | toda la Fase 5 | **integrada (2026-07-27)** — smoke del Owner en AutoCAD 2025 **APROBADO** sobre el candidato `5d49a6c`; 7 goldens byte-idénticos, superficie de API idéntica y 28 comandos byte-idénticos |
 | I-24 | `refactor/ui-tests-editores` | Tests de ViewModels y estados de editor sobre `tests/RackCad.UI.Tests` (el proyecto nace en I-14) (U3) | S | I-15, I-20 | — | integrada (2026-07-22) |
-| I-25 | `feature/guardas-traseras` ✋ | Última familia de seguridad (prioridad final del producto), construida sobre I-22 | M | I-22 | — | pendiente |
+| I-25 | `feature/guardas-traseras` ✋ | Última familia de seguridad (prioridad final del producto), construida sobre I-22 | M | I-22 | — | **backlog diferido** — ni completada ni descartada. Al cerrarse la Fase 5 deja de estar bloqueada por el estorbo de I-23 |
 | I-30 | `architecture/editor-visual-shell` ✋ | **Fundación del shell visual común de editores** (tipo: arquitectura): contrato visual y tokens, componentes del shell, status presenter, action bar común, pruebas y **migración real de `RackDynamicSystemWindow`**. NO incluye Selectivo ni modificación de Push Back (`feature/push-back` solo en lectura). Requiere CI, builds Debug, AutoCAD y owner-validation. **Secuencia obligatoria: integrar I-30 antes de I-31 y antes de reanudar I-18** | — | I-14, I-15, I-20, I-21, I-24 (integradas) | I-31 (orden fijo: I-30 primero); reanudación de I-18 (espera la secuencia) | integrada (2026-07-24) |
 | I-31 | `refactor/selective-visual-shell` (provisional) ✋ | **Migración del editor Selectivo al shell visual**: migrar `RackSelectiveWindow` al shell integrado por I-30, preservando estado, geometría, BOM, persistencia y handlers. **No puede reclamarse antes de cerrar I-30**; debe integrarse antes de rebasar y reanudar I-18 | — | I-30 integrada | I-30 (orden fijo); reanudación de I-18 | integrada (2026-07-24) |
 | I-32 | `fix/correcciones-push-back` ✋ | **Correcciones funcionales y geométricas de Push Back** a partir del reporte del Owner sobre el sistema ya integrado por I-18: diez hallazgos (PB-002…006, 008…010, 012, 013), el override opt-in de elevaciones en sus cuatro ámbitos, el default del protector lateral y la **geometría ASIMÉTRICA de la cama**. PB-001, PB-007, PB-011 y PB-014 quedan diferidos en `ideas-futuras.md` y no bloquean | M | I-18 integrada | — | **integrada (2026-07-27)** — merge `--no-ff` `236619d`, CI 30228331452 4/4; validación manual del Owner **APROBADA** sobre el build `a0c3f27` (DLL SHA-256 `B7B15802…`, CI 30226757221) |
