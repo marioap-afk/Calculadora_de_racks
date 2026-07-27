@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-35
 title: Editor avanzado de modulos de Push Back
 type: feature
-status: implementing
+status: integration-ready
 branch: feature/editor-avanzado-push-back
 base_branch: main
 priority:
@@ -17,7 +17,7 @@ requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
 requires_owner_decision: false
-requires_owner_validation: true
+requires_owner_validation: true   # APROBADA por el Owner sobre f2be30c
 automation:
   enabled: true
   auto_merge: false
@@ -61,6 +61,38 @@ decisiones son normativas para el resto de la iniciativa:
 5. **`RackFrameConfiguratorWindow` no se modifica.** Confirmar y cancelar pertenecen a la **sesion**
    y a la **superficie de Push Back**; el configurador compartido se abre sobre una **copia** y su
    resultado se acepta o se descarta desde fuera.
+
+## 0.a Cierre: el Owner APRUEBA — `integration-ready`
+
+El Owner **aprueba explicitamente** la validacion en **AutoCAD 2025** del candidato tecnico
+**`f2be30c20a7ff8958a24ddf078a5310dab5dbfe0`**, sobre el DLL Debug del worktree estampado
+`1.0.0+f2be30c20a7ff8958a24ddf078a5310dab5dbfe0`, SHA-256
+`4FE530EFA0FFAEF005B20253A1C0F68BF99D321A82766D4FF559A3367E99C101`. Con eso quedan **cerrados** los
+gates `autocad` y `owner-validation`, y la rama pasa a **`integration-ready`**.
+
+- **Rebase final: NO necesario.** `origin/main` **no avanzo** desde la base
+  `52ce27f8f0e247eee5f4721c0d29b7e005588525`, asi que la validacion del Owner vale sobre el arbol que
+  se integra (WORKFLOW seccion 6).
+- **Arbol tecnico intacto.** El delta entre el candidato y la punta de la rama es **exclusivamente**
+  documental: **cero** archivos de `src/`, `tests/` o `assets/`. El DLL aprobado sigue siendo el valido.
+- **CI tecnica** del candidato: run **30293536290**, **verde 4/4**.
+- **Suites**: 1612 `RackCad.Tests` + 491 `RackCad.UI.Tests`, cero fallos, cero omitidas.
+- **Builds Debug**: UI 0 errores / 0 advertencias; Plugin 0 errores propios y las 2 `MSB3277`
+  conocidas, con AutoCAD cerrado.
+
+### Alcance final integrado
+
+1. **Edicion longitudinal de Cabeceras y Separadores** por modulo de RACK, con seleccion unica.
+2. **Configuracion transaccional** de cabecera: confirmar / cancelar sobre una **copia**, sin tocar
+   `RackFrameConfiguratorWindow`.
+3. **Altura manual de cabecera** (`ManualHeaderHeightOverride`).
+4. **Refuerzo total o parcial del poste derivado** (`DerivedPostReinforced` +
+   `DerivedPostReinforcementHeight`), con bloqueo visible en vez de recorte silencioso.
+5. **Cantidad y separacion globales de separadores** (`SeparatorCountOverride`,
+   `SeparatorSpacingOverride`), independientes entre si.
+6. **Restauracion individual** por modulo y **global** del rack.
+7. **Preservacion de I-33** (frentes en blanco y fronteras suprimidas) y de **PB-013** (alto de tarima
+   general inerte).
 
 ## 0.b Primera ronda del Owner: PARCIALMENTE RECHAZADA
 

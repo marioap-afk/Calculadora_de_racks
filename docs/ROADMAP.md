@@ -1,6 +1,18 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-27 (**I-34 integrada en `main`**: **edición masiva de matrices de seguridad**
+> Actualizado: 2026-07-27 (**I-35 integrada en `main`**: **editor avanzado de módulos de Push Back**
+> (PB-011). Push Back gana la edición **longitudinal de Cabeceras y Separadores** por módulo de RACK con
+> **selección única**, la **configuración transaccional** de cabecera (confirmar / cancelar sobre una
+> **copia**, sin tocar el configurador compartido), la **altura manual de cabecera**, el **refuerzo total o
+> parcial del poste derivado**, la **cantidad y separación globales de separadores**, y la **restauración
+> individual y global**. Los cuatro parámetros avanzados son **globales del rack** y reutilizan las
+> autoridades que la estructura dinámica compuesta ya poseía: **no se creó ninguna autoridad nueva**. La
+> reconciliación empareja por **`ModuleId + Kind`** exacto y **nada se pierde en silencio**: un módulo
+> eliminado o con el tipo cambiado se **reporta**. Preserva **I-33** y **PB-013**. La primera ronda del
+> Owner quedó **parcialmente rechazada** por cuatro residuos, corregidos en la segunda; gate del Owner
+> **aprobado** sobre el candidato `f2be30c`. Rama y worktree eliminados. **Siguiente: I-25 e I-23.**)
+>
+> Anterior: 2026-07-27 (**I-34 integrada en `main`**: **edición masiva de matrices de seguridad**
 > (PB-007). Las **cuatro** matrices booleanas —desviador (eje **Poste**), tope (eje **Frente**, que cubre a
 > la vez el tope del Selectivo y el **tope posterior de Push Back**), guía y **parrilla**— ganan el estado
 > **Activar/Desactivar** y los alcances **Celda / Nivel / Frente-o-Poste / Todo**, sobre una fundación pura
@@ -205,6 +217,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-32 | `fix/correcciones-push-back` ✋ | **Correcciones funcionales y geométricas de Push Back** a partir del reporte del Owner sobre el sistema ya integrado por I-18: diez hallazgos (PB-002…006, 008…010, 012, 013), el override opt-in de elevaciones en sus cuatro ámbitos, el default del protector lateral y la **geometría ASIMÉTRICA de la cama**. PB-001, PB-007, PB-011 y PB-014 quedan diferidos en `ideas-futuras.md` y no bloquean | M | I-18 integrada | — | **integrada (2026-07-27)** — merge `--no-ff` `236619d`, CI 30228331452 4/4; validación manual del Owner **APROBADA** sobre el build `a0c3f27` (DLL SHA-256 `B7B15802…`, CI 30226757221) |
 | I-33 | `feature/frente-en-blanco` ✋ | **Frente en blanco para Dinámico y Push Back**: implementa **PB-014**, que I-32 dejó diferido pidiendo decisión de alcance (la da el Owner al abrir la iniciativa). Un frente pasa a tener estado **Activo / En blanco**: en blanco conserva su claro y su estructura, desplaza a los frentes posteriores y no lleva ningún nivel ni componente de carga, con su configuración **dormida** para reactivarlo intacto. Autoridad única `DynamicFrontActivation` sobre la estructura dinámica que Push Back compone. Incluye el rechazo canónico del rack todo-en-blanco (sin normalizar en silencio), la edición deshabilitada al seleccionar un frente en blanco, las celdas de nivel inexistentes en los diálogos de seguridad con su configuración dormida preservada, el desacople forma-de-rejilla / selector de lado, y —decisión del Owner— la **frontera compartida por dos frentes en blanco que NO existe**. Fuera de alcance: Selectivo, PB-001, PB-007, PB-011, I-23, I-25, catálogos, DWG y shell | M | I-18, I-21, I-30, I-31, I-32 (integradas) | I-23, I-25 | **integrada (2026-07-27)** — validación manual del Owner **APROBADA**, incluida la ronda focalizada de fronteras físicas, sobre el candidato `b840cfe` |
 | I-34 | `feature/edicion-masiva-seguridad` ✋ | **Edición masiva de matrices de seguridad**: implementa **PB-007**, que I-32 registró y I-33 dejó explícitamente fuera de alcance pidiendo decisión del Owner por tocar diálogos COMPARTIDOS. Hoy las rejillas de seguridad son celda a celda (solo «Todos»/«Ninguno»): quitar el desviador del segundo nivel en 100 frentes cuesta 100 clics. Añade una **fundación común pura sobre `SelectionMatrixModel`** con **celda primaria no persistida**, estado **Activar/Desactivar** y alcances **Celda / Nivel / Frente-o-Poste / Todo**, al patrón de «Aplicar a:» que ya existe en los editores (`SelectiveApplyScope`, `DynamicRackCellScope`). La infraestructura es **agnóstica a `RackSystemKind`**: cada diálogo declara sus etiquetas y capacidades. Celdas **ausentes ignoradas**, **una** notificación agregada por operación masiva y **sin rebuild por celda**. Fuera de alcance: DTO, formato de alambre, stores, geometría, BOM, catálogos, DWG, namespaces, shell visual, `DesviadorCellsAreByPost`, **parrilla** y **defensa** | M | I-14, I-22, I-32, I-33 (integradas) | I-23, I-25 | **integrada (2026-07-27)** — validación manual del Owner **APROBADA** sobre el candidato `dbdda74`; incluye la **parrilla del Selectivo**, incorporada por addendum normativo del Owner. La **defensa** no entró y **no bloqueó**: queda como candidato futuro independiente |
+| I-35 | `feature/editor-avanzado-push-back` ✋ | **Editor avanzado de módulos de Push Back**: implementa **PB-011**, la prioridad alta del Owner que I-32 dejó diferida. El Dinámico permitía seleccionar un módulo —cabecera o separador— y personalizarlo; Push Back no. Entrega la **edición longitudinal de Cabeceras y Separadores** por módulo de RACK (los módulos son **una sola secuencia longitudinal**, nunca por frente ni por poste) con **selección única**; la **configuración transaccional** de cabecera —confirmar/cancelar sobre una **copia**, sin modificar `RackFrameConfiguratorWindow`—; la **altura manual de cabecera**; el **refuerzo total o parcial del poste derivado**; la **cantidad y separación globales de separadores**; y la **restauración individual y global**. Los cuatro parámetros avanzados son **globales del rack**, viven en su propia sección y reutilizan **exclusivamente** las autoridades existentes (`ManualHeaderHeightOverride`, `DerivedPostReinforced`, `DerivedPostReinforcementHeight`, `SeparatorCountOverride`, `SeparatorSpacingOverride`): **cero autoridades nuevas**. La reconciliación empareja por **`ModuleId + Kind`** exacto, **adapta** `Depth` y peralte de una cabecera conservada, y **reporta** preservados, adaptados, eliminados, incompatibles y restaurados: no existe descarte ordinario. Preserva **I-33** (frentes en blanco y fronteras suprimidas) y **PB-013**. Fuera de alcance: `SelectionMatrix*`, `Safety*GridWindow`, topes, desviadores, guías, defensas, Selectivo, catálogos, DWG y cambios funcionales en el Dinámico | M | I-15, I-17, I-18, I-21, I-30, I-32, I-33, I-34 (integradas) | I-23, I-25 | **integrada (2026-07-27)** — primera ronda del Owner **parcialmente rechazada** (cuatro residuos), corregidos; validación manual del Owner **APROBADA** sobre el candidato `f2be30c` |
 
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el
 dibujo, snapping, colisiones, clear height, undo/redo, shop drawings, 3D/IFC, optimizador IA, SQL/API
@@ -268,6 +281,10 @@ graph LR
   I18 --> I32[I-32 correcciones-push-back]
   I32 --> I33[I-33 frente-en-blanco]
   I14 --> I34[I-34 edicion-masiva-seguridad]
+  I18 --> I35[I-35 editor-avanzado-push-back]
+  I30 --> I35
+  I32 --> I35
+  I33 --> I35
   I22 --> I34
   I32 --> I34
   I33 --> I34

@@ -4,14 +4,12 @@ automation_state:
   branch: feature/editor-avanzado-push-back
   claim_id: 52940bec-3af4-42a3-a6e8-301bcb902624
   current_phase: 10
-  state: validating
-  gate: owner-validation
+  state: integration-ready
+  gate: none
   attempts: 1
   next_action: >-
-    SEGUNDA-RONDA-de-validacion-manual-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree-de-I-35 ·
-    checklist-FOCALIZADO-puntos-13-a-23-de-la-seccion-10-del-contrato-los-cuatro-residuos ·
-    lo-ya-APROBADO-de-la-edicion-por-modulo-no-se-rediseno-y-no-necesita-revalidarse-punto-por-punto ·
-    NO-integrar-NO-declarar-integration-ready-hasta-que-el-Owner-apruebe
+    INTEGRAR-a-main-con-git-merge-no-ff-sin-squash-sin-rebase-sobre-main-y-sin-force ·
+    esperar-CI-post-merge-VERDE-sobre-el-SHA-exacto-de-main-y-solo-entonces-limpiar-worktree-rama-local-y-rama-remota
   last_evidence_commit: f2be30c20a7ff8958a24ddf078a5310dab5dbfe0
 
 # --------------------------------------------------------------------------------------------------------
@@ -35,7 +33,7 @@ candidate:
   note_on_this_file: >-
     el-commit-que-escribe-este-archivo-es-POSTERIOR-al-candidato-y-es-SOLO-DOCUMENTAL ·
     no-toca-codigo-ni-pruebas-ni-catalogos-ni-el-contrato-ni-el-indice-por-lo-que-NO-cambia-el-binario ·
-    el-DLL-del-worktree-NO-se-recompila-y-sigue-ligado-a-7ceede96238894dd46377e24d6bab38126f961d7-con-el-SHA-256-de-arriba ·
+    el-DLL-del-worktree-esta-ligado-a-f2be30c20a7ff8958a24ddf078a5310dab5dbfe0-con-el-SHA-256-de-arriba-y-NO-se-recompila-por-un-commit-documental ·
     un-archivo-no-puede-contener-el-SHA-de-su-propio-commit-por-eso-el-candidato-se-fija-en-el-commit-anterior-y-se-ata-por-el-estampado-del-DLL
 
 # --------------------------------------------------------------------------------------------------------
@@ -63,8 +61,37 @@ superseded_artifacts:
     why: >-
       es-el-mismo-commit-de-codigo-DESPUES-del-rebase-pero-NO-es-la-punta ·
       se-anoto-como-candidato-en-una-version-anterior-de-este-archivo-cuando-su-CI-todavia-estaba-pendiente ·
-      la-punta-y-el-candidato-unico-son-7ceede96238894dd46377e24d6bab38126f961d7
+      el-candidato-unico-y-final-es-f2be30c20a7ff8958a24ddf078a5310dab5dbfe0
     status: NO-es-candidato-no-tiene-DLL-entregado-ni-CI-citable-propia
+
+# --------------------------------------------------------------------------------------------------------
+# CIERRE. El Owner APRUEBA la validacion en AutoCAD 2025 del candidato final; la rama queda lista para integrar.
+# --------------------------------------------------------------------------------------------------------
+closure:
+  owner_approval: >-
+    el-Owner-APRUEBA-EXPLICITAMENTE-la-validacion-en-AutoCAD-2025-del-candidato-tecnico-f2be30c20a7ff8958a24ddf078a5310dab5dbfe0 ·
+    DLL-validado-InformationalVersion-1-0-0-mas-f2be30c20a7ff8958a24ddf078a5310dab5dbfe0 ·
+    SHA-256-4FE530EFA0FFAEF005B20253A1C0F68BF99D321A82766D4FF559A3367E99C101 ·
+    con-esa-aprobacion-el-gate-owner-validation-y-el-gate-autocad-quedan-CERRADOS
+  rebase: >-
+    NO-NECESARIO-origin-main-NO-avanzo-desde-la-base-52ce27f8f0e247eee5f4721c0d29b7e005588525 ·
+    por-tanto-la-validacion-del-Owner-vale-sobre-el-arbol-que-se-integra-WORKFLOW-seccion-6
+  candidate_tree_intact: >-
+    el-delta-entre-el-candidato-f2be30c-y-la-punta-de-la-rama-es-EXCLUSIVAMENTE-docs-automation-state-I-35-yml-y-el-cierre-documental ·
+    CERO-archivos-de-src-tests-o-assets-cambian-asi-que-el-arbol-tecnico-aprobado-y-su-DLL-siguen-siendo-los-validos
+  integration_plan: >-
+    git-merge-no-ff-feature-editor-avanzado-push-back-sobre-main ·
+    SIN-squash-SIN-rebase-sobre-main-y-SIN-force-al-publicar ·
+    la-limpieza-de-worktree-rama-local-y-rama-remota-solo-tras-CI-post-merge-VERDE-sobre-el-SHA-exacto-de-main
+
+scope_delivered:
+  - edicion-longitudinal-de-CABECERAS-y-SEPARADORES-por-modulo-de-rack-seleccion-unica
+  - configuracion-transaccional-de-cabecera-confirmar-cancelar-sobre-una-COPIA-sin-tocar-el-configurador-compartido
+  - altura-manual-de-cabecera-ManualHeaderHeightOverride
+  - refuerzo-TOTAL-o-PARCIAL-del-poste-derivado-DerivedPostReinforced-mas-DerivedPostReinforcementHeight
+  - cantidad-y-separacion-GLOBALES-de-separadores-SeparatorCountOverride-y-SeparatorSpacingOverride
+  - restauracion-INDIVIDUAL-por-modulo-y-GLOBAL-del-rack
+  - preservacion-de-I-33-frentes-en-blanco-y-fronteras-suprimidas-y-de-PB-013-alto-de-tarima-general-inerte
 
 # --------------------------------------------------------------------------------------------------------
 # RONDA 1 DEL OWNER: PARCIALMENTE RECHAZADA. Lo aprobado NO se rediseña; los cuatro residuos se corrigieron.
@@ -229,12 +256,12 @@ gates:
     EJECUTADO-y-correcto-con-AutoCAD-cerrado-sobre-el-SHA-del-candidato ·
     UI-Debug-0-errores-0-advertencias · Plugin-Debug-0-errores-propios-y-las-2-MSB3277-conocidas
   autocad: >-
-    ABIERTO · la-edicion-por-modulo-CAMBIA-la-estructura-que-se-dibuja-en-las-cuatro-vistas-y-el-BOM ·
-    checklist-de-12-puntos-en-la-seccion-10-del-contrato
+    APROBADO · validacion-manual-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree-estampado-1-0-0-mas-f2be30c ·
+    checklist-de-23-puntos-de-la-seccion-10-del-contrato-los-12-de-la-ronda-1-mas-los-11-focalizados-de-los-cuatro-residuos
   owner_validation: >-
-    ABIERTO · PRIMERA-RONDA-PARCIALMENTE-RECHAZADA-por-cuatro-residuos-ya-corregidos ·
-    la-edicion-por-modulo-quedo-APROBADA-y-NO-se-rediseno ·
-    pendiente-la-SEGUNDA-RONDA-sobre-el-DLL-Debug-del-nuevo-candidato
+    APROBADA · el-Owner-aprobo-EXPLICITAMENTE-la-validacion-en-AutoCAD-2025-del-candidato-tecnico-f2be30c20a7ff8958a24ddf078a5310dab5dbfe0 ·
+    DLL-validado-InformationalVersion-1-0-0-mas-f2be30c20a7ff8958a24ddf078a5310dab5dbfe0-SHA-256-4FE530EFA0FFAEF005B20253A1C0F68BF99D321A82766D4FF559A3367E99C101 ·
+    la-ronda-1-quedo-PARCIALMENTE-RECHAZADA-por-cuatro-residuos-la-ronda-2-los-corrigio-y-el-Owner-aprueba
   owner_decision: >-
     CERRADO-las-cinco-decisiones-viven-en-owner_decisions-y-en-la-seccion-0-del-contrato
 

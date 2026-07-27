@@ -355,7 +355,18 @@ Planes disponibles:
   **con explicación** los módulos que I-33 dejó sin dibujar y los postes derivados. **Gate documental**:
   I-35 **no tiene fila en `ROADMAP.md`**; la procedencia del alcance es PB-011 y la fila la escribe la
   sesión de integración. `requires_autocad: true`, `requires_owner_validation: true`;
-  `requires_owner_decision: false`. Estado versionado en
+  `requires_owner_decision: false`. **Segunda ronda**: la primera validación del Owner quedó
+  **parcialmente rechazada** por **cuatro residuos** —altura manual de cabecera, refuerzo del poste
+  derivado con su longitud opcional, y cantidad y separación de separadores—, que son **parámetros
+  globales del rack** y no propiedades del módulo `Separator`. Se corrigieron reutilizando
+  **exclusivamente** las autoridades existentes (`ManualHeaderHeightOverride`, `DerivedPostReinforced`,
+  `DerivedPostReinforcementHeight`, `SeparatorCountOverride`, `SeparatorSpacingOverride`), en una
+  **sección propia** separada de «Módulo seleccionado»; el refuerzo admite **total o parcial** y una
+  recomputación que invalida una altura antes válida **bloquea con error visible** en vez de recortar.
+  **INTEGRADA (2026-07-27)**: el Owner **aprobó** la validación manual en AutoCAD 2025 sobre el candidato
+  `f2be30c` (CI 30293536290, 4/4; DLL SHA-256 `4FE530EF…C101`); **sin rebase** (`origin/main` no avanzó
+  desde la base `52ce27f`); integrada por `git merge --no-ff`; rama y worktree eliminados tras la CI
+  post-merge verde. Estado versionado en
   [`../automation/state/I-35.yml`](../automation/state/I-35.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
