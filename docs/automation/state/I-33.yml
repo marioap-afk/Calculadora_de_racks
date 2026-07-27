@@ -9,67 +9,99 @@ automation_state:
   attempts: 1
   next_action: >-
     validacion-manual-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree ·
-    los-9-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
+    los-11-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
   integration: NO-INTEGRADA-la-rama-y-el-worktree-siguen-vivos-a-la-espera-del-gate-manual
+
+# --------------------------------------------------------------------------------------------------------
+# EL CANDIDATO. Hay UNO SOLO y es este; cualquier SHA anterior de la rama queda superado y NO es candidato.
+# --------------------------------------------------------------------------------------------------------
+candidate:
+  sha: 6c4a77f2bd0710835fc4db29a5e6e51937335c75
+  subject: Frente en blanco - rechazo canonico del todo-en-blanco y edicion por seleccion
+  ci_run: 30232917345
+  ci_result: VERDE-4-de-4-sobre-el-SHA-del-candidato
+  ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
+  dll_path: >-
+    <worktree>/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
+  dll_informational_version: 1.0.0+6c4a77f2bd0710835fc4db29a5e6e51937335c75
+  dll_sha256: ECE8DC1DF14BC72791DA697890FB1DB690FB0336D11FD0C2F5718D9DB2445AB7
+  binding: >-
+    el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-candidato-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol
+  note_on_this_file: >-
+    el-commit-que-escribe-este-archivo-es-POSTERIOR-al-candidato-y-es-SOLO-DOCUMENTACION ·
+    no-toca-codigo-ni-pruebas-ni-catalogos-por-lo-que-NO-cambia-el-binario-y-el-DLL-del-worktree-sigue-siendo-el-estampado-arriba ·
+    un-archivo-no-puede-contener-el-SHA-de-su-propio-commit-por-eso-el-candidato-se-fija-en-el-commit-anterior-y-se-ata-por-el-estampado-del-DLL
+
 execution_context:
   mode: manual-git-only
   worktree: feature-frente-en-blanco
   pull_request: none
+
 evidence:
   base_commit: 0e505d8fed6944b32360439cf33742147d2ba561
   claim_commit: 0771773
   preflight: >-
     main-igual-a-origin-main-igual-a-0e505d8fed6944b32360439cf33742147d2ba561-verificado-tambien-contra-el-remoto-con-git-ls-remote ·
     arbol-limpio-sin-rebase-merge-cherry-pick-bisect-ni-revert-en-curso-y-sin-stashes ·
-    CI-verde-del-SHA-exacto-run-30228639660-cuatro-jobs-tests-domain-application-ui-tests-build-ui-build-plugin ·
+    CI-verde-del-SHA-exacto-run-30228639660-cuatro-jobs ·
     I-33-sin-ninguna-referencia-previa-en-el-repo-y-feature-frente-en-blanco-inexistente-local-y-remota ·
     I-32-limpiada-sin-rama-local-ni-remota-sin-worktree-y-git-worktree-prune-sin-efecto ·
     sin-trabajo-incompatible-main-era-la-UNICA-rama-existente-e-I-23-e-I-25-siguen-pendiente-en-el-ROADMAP
   claim: >-
     commit-vacio-0771773-con-Initiative-Id-I-33-Branch-feature-frente-en-blanco-y-Claim-Id-3a040262-d2b7-47cb-a870-b628bc972141 ·
     primer-push-ACEPTADO-por-el-remoto-new-branch-sin-force
+  commits: >-
+    0771773-reclamo-vacio ·
+    781e13f-autoridad-compartida-vistas-y-BOM-de-los-dos-sistemas-mas-las-regresiones-puras ·
+    edeca78-casilla-Activo-En-blanco-en-los-dos-editores-mas-las-pruebas-de-UI ·
+    0448ef0-documentacion-contrato-estado-indice-glosario-e-ideas-futuras ·
+    6d24903-estado-de-la-primera-ronda-SUPERADO ·
+    6c4a77f-CANDIDATO-rechazo-canonico-del-todo-en-blanco-y-edicion-por-seleccion
   regression_evidence: >-
-    rojo-verificado-con-la-bandera-declarada-pero-SIN-consumidores-11-de-19-fallando ·
+    rojo-verificado-en-la-primera-ronda-con-la-bandera-declarada-pero-SIN-consumidores-11-de-19-fallando ·
     fallaban-las-de-comportamiento-frontal-lateral-planta-BOM-dinamico-y-push-back-round-trip-snapshot-y-dormancia ·
     pasaban-las-2-de-autoridad-y-las-6-guardas-de-estructura-que-deben-pasar-antes-y-despues-porque-afirman-que-la-estructura-NO-cambia
   tests: >-
-    rackcad-tests-1490-de-1490-antes-1470-mas-20-nuevas ·
-    rackcad-ui-tests-371-de-371-antes-365-mas-6-nuevas ·
-    cero-fallos-cero-omitidas-en-ambas
-  bugs_fixed: pb-014
-  bugs_deferred: pb-001 pb-007 pb-011
-  authority: >-
-    DynamicFrontActivation-en-RackCad-Application-Systems-unica-fuente-de-la-regla ·
-    la-bandera-vive-en-la-estructura-dinamica-que-Push-Back-COMPONE-asi-que-los-dos-sistemas-no-pueden-divergir ·
-    EffectiveLoadLevels-devuelve-el-historico-Math-Max-1-LoadLevels-para-un-frente-activo-por-eso-un-rack-sin-frentes-en-blanco-no-cambia
-  wire_format: >-
-    IsActive-es-bool-nullable-con-JsonIgnore-WhenWritingNull ·
-    un-rack-sin-frentes-en-blanco-serializa-EXACTAMENTE-igual-que-antes-de-I-33-la-clave-se-omite-no-se-escribe-null ·
-    los-stores-no-ignoran-nulos-globalmente-por-eso-el-atributo-es-por-propiedad
-  scope_isolation: >-
-    sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
-    la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
-  commits: >-
-    0771773-reclamo-vacio ·
-    781e13f-autoridad-compartida-vistas-y-BOM-de-los-dos-sistemas-mas-las-20-regresiones-puras ·
-    edeca78-casilla-Activo-En-blanco-en-los-dos-editores-mas-las-6-pruebas-de-UI ·
-    0448ef0-documentacion-contrato-estado-indice-glosario-e-ideas-futuras
+    rackcad-tests-1498-de-1498 · rackcad-ui-tests-373-de-373 · cero-fallos-cero-omitidas-en-ambas
   targeted_filters: >-
-    core-BlankFrontTests-20-de-20 ·
+    core-BlankFrontTests-28-de-28 ·
     core-CatalogValidatorTests-mas-CatalogManifestGuardTests-25-de-25-baseline-del-catalogo-distribuido-intacto ·
-    core-PushBack-440-de-440 · core-Dynamic-197-de-197 · core-Persistence-118-de-118 ·
-    ui-BlankFrontEditorTests-6-de-6 · ui-PushBack-125-de-125 · ui-Dynamic-36-de-36 ·
+    core-PushBack-441-de-441 · core-Dynamic-197-de-197 · core-Persistence-118-de-118 ·
+    core-RackDesignValidation-mas-PersistenceValidation-5-de-5 ·
+    ui-BlankFrontEditorTests-8-de-8 · ui-PushBack-126-de-126 · ui-Dynamic-37-de-37 ·
     todos-con-conteo-NO-CERO
   builds: >-
-    build-UI-Debug-0-errores ·
+    build-UI-Debug-0-errores-0-advertencias ·
     build-Plugin-Debug-0-errores-2-advertencias-ambas-MSB3277-conocidas-e-ignoradas-con-AutoCAD-cerrado
   catalogs_untouched: >-
     ningun-archivo-de-assets-catalogs-modificado-y-el-validador-de-catalogos-conserva-su-baseline-aprobado
+  bugs_fixed: pb-014
+  bugs_deferred: pb-001 pb-007 pb-011
+  authority: >-
+    DynamicFrontActivation-en-RackCad-Application-Systems-unica-fuente-de-la-regla-y-TODOS-sus-miembros-son-PUROS ·
+    la-bandera-vive-en-la-estructura-dinamica-que-Push-Back-COMPONE-asi-que-los-dos-sistemas-no-pueden-divergir ·
+    EffectiveLoadLevels-devuelve-el-historico-Math-Max-1-LoadLevels-para-un-frente-activo-por-eso-un-rack-sin-frentes-en-blanco-no-cambia
+  all_blank_policy: >-
+    NADA-normaliza-en-silencio-las-tres-normalizaciones-de-la-primera-ronda-resolver-DTO-y-matriz-quedaron-RETIRADAS ·
+    prevencion-NO-destructiva-en-el-editor-DynamicFrontMatrix-SetActive-se-niega-y-no-cambia-nada-ni-la-seleccion ·
+    rechazo-con-error-VISIBLE-de-un-payload-explicitamente-todo-en-blanco-en-DynamicRackSystemResolver-Validate-y-por-composicion-en-PushBackResolver-mas-los-tres-predicados-de-RackDesignValidation ·
+    mensaje-unico-AllBlankMessage-compartido-por-todos-los-puntos-de-rechazo ·
+    los-documentos-legacy-no-traen-la-bandera-cargan-todos-activos-y-jamas-caen-en-este-caso
+  editor_editability: >-
+    al-seleccionar-un-frente-en-blanco-la-seleccion-sigue-siendo-VALIDA-SetActive-la-reasienta-como-celda-unica-acotada-del-propio-frente ·
+    se-deshabilitan-campos-de-nivel-y-de-celda-los-mas-menos-de-NIVELES-de-la-matriz-y-los-cinco-alcances-ligados-a-celda-con-el-motivo-en-el-tooltip-preservando-el-tooltip-original ·
+    siguen-disponibles-los-controles-ESTRUCTURALES-posiciones-fondos-inicio-en-fondo-y-los-botones-que-copian-datos-del-frente ·
+    reactivar-restaura-la-edicion-de-inmediato-y-hay-pruebas-STA-de-los-dos-sentidos-en-las-dos-ventanas-reales
+  front_count_rule: >-
+    al-CRECER-el-frente-nuevo-nace-ACTIVO-aunque-el-template-seleccionado-este-EN-BLANCO-agregar-un-frente-es-agregar-rack ·
+    todo-lo-demas-si-se-clona-del-template-posiciones-niveles-fondos-inicio-en-fondo-y-celdas ·
+    al-REDUCIR-se-eliminan-los-frentes-finales-los-indices-se-renumeran-la-seleccion-se-re-acota-y-los-que-sobreviven-conservan-estado-y-configuracion-dormida-junto-con-las-celdas-paralelas-de-Push-Back
+  scope_isolation: >-
+    sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
+    conflicts_with-declara-I-23-e-I-25 ·
+    la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
+
 gates:
-  ci: >-
-    VERDE-4-de-4-run-30231653623-sobre-el-SHA-publicado-0448ef07503cf16f738ed52bd931986d3954b786 ·
-    jobs-tests-domain-application-ui-tests-build-ui-build-plugin-without-autocad
-  plugin_build: >-
-    OK-DLL-Debug-en-el-worktree-SHA256-1A0A62AA758CF2292BBED5CDD0320C302B94FC820F167553D3D08BE3C72D038D ·
-    InformationalVersion-1-0-0-mas-0448ef07503cf16f738ed52bd931986d3954b786-confirma-que-el-DLL-es-del-commit-publicado
-  owner_validation: PENDIENTE-9-puntos-en-la-seccion-8-del-contrato
+  ci: VERDE-4-de-4-run-30232917345-sobre-el-SHA-del-candidato-6c4a77f2bd0710835fc4db29a5e6e51937335c75
+  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-6c4a77f2bd0710835fc4db29a5e6e51937335c75-SHA256-ECE8DC1DF14BC72791DA697890FB1DB690FB0336D11FD0C2F5718D9DB2445AB7
+  owner_validation: PENDIENTE-11-puntos-en-la-seccion-8-del-contrato
