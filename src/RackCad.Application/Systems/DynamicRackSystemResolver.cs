@@ -205,7 +205,9 @@ namespace RackCad.Application.Systems
                 system.Fronts.Add(front);
             }
             DynamicDepthGeometry.ResolveCoordinates(system);
-            var projectedLevels = resolvedFronts
+            // The rack-wide projection represents what the rack CARRIES, so a blank front never supplies it even when
+            // its dormant configuration is the tallest one (I-33).
+            var projectedLevels = DynamicFrontActivation.Active(resolvedFronts)
                 .OrderByDescending(front => front.LoadBeamLevels.Count)
                 .ThenByDescending(front => front.EndX - front.StartX)
                 .FirstOrDefault()?.LoadBeamLevels;
@@ -284,6 +286,7 @@ namespace RackCad.Application.Systems
                 {
                     var frontDesign = new DynamicRackFrontDesign
                     {
+                        IsActive = front.IsActive,
                         PalletCount = front.PalletCount,
                         LoadLevels = front.LoadLevels,
                         PalletsDeep = front.PalletsDeep,

@@ -128,7 +128,7 @@ namespace RackCad.Application.Systems
             var quantities = new Dictionary<(string ProfileId, double Length, double Peralte), int>();
             foreach (var front in system.Fronts.Where(front => front != null))
             {
-                for (var level = 1; level <= Math.Max(1, front.LoadLevels); level++)
+                for (var level = 1; level <= DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                 {
                     var configuration = DynamicRackLevelGeometry.At(system, front, level);
                     var key = (
@@ -280,7 +280,7 @@ namespace RackCad.Application.Systems
             foreach (var front in system.Fronts.Where(front => front != null))
             {
                 var supportCount = DynamicIntermediateBeamGeometry.Supports(system, finPoste, front).Count;
-                for (var level = 1; level <= Math.Max(1, front.LoadLevels); level++)
+                for (var level = 1; level <= DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                 {
                     var configuration = DynamicRackLevelGeometry.At(system, front, level);
                     var key = (
@@ -339,7 +339,7 @@ namespace RackCad.Application.Systems
                 foreach (var front in system.Fronts.Where(front => front != null))
                 {
                     var length = Round(DynamicFlowBedGeometry.ResolveBedLength(system, front));
-                    for (var level = 1; level <= Math.Max(1, front.LoadLevels); level++)
+                    for (var level = 1; level <= DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                     {
                         var configuration = DynamicRackLevelGeometry.At(system, front, level);
                         var key = (Round(configuration.Bfr), length);

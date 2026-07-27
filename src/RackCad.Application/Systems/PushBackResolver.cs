@@ -53,7 +53,9 @@ namespace RackCad.Application.Systems
                 var front = structure.Fronts[frontIndex];
                 var frontConfig = design.FrontConfig(frontIndex);
                 var resolved = new PushBackResolvedFront();
-                var levels = Math.Max(1, front.LoadLevels);
+                // A blank front carries no level, so it resolves no rear beam either (I-33). The entry stays in the
+                // list so HighEndBeams remains aligned by index with the resolved fronts.
+                var levels = DynamicFrontActivation.EffectiveLoadLevels(front);
                 for (var level = 0; level < levels; level++)
                 {
                     resolved.HighEndBeamPeraltes.Add(

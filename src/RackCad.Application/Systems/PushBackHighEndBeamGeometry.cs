@@ -19,7 +19,9 @@ namespace RackCad.Application.Systems
                 return PushBackDefaults.HighEndBeamDefaultPeralte;
             }
 
-            var levelCount = Math.Max(1, fronts[frontIndex].LoadLevels);
+            // A blank front has no level to envelope (I-33); the caller only reaches this for a front that produced a
+            // rear beam, so the explicit default below is the safe answer rather than a dormant level's peralte.
+            var levelCount = DynamicFrontActivation.EffectiveLoadLevels(fronts[frontIndex]);
             var max = 0.0;
             for (var level = 0; level < levelCount; level++)
             {

@@ -170,11 +170,17 @@ namespace RackCad.Application.Systems
             }
             else
             {
-                foreach (var front in bedFronts
+                // A blank front is physically at this post — its posts and header are drawn above — but it carries no
+                // bed, so it is dropped here rather than from AdjacentFronts (I-33).
+                foreach (var front in DynamicFrontActivation.Active(bedFronts)
                              .GroupBy(front => string.Join("|", front.StartX, front.EndX, front.LoadLevels))
                              .Select(group => group.First()))
                 {
-                    var flowBed = flowBedBuilder.Build(system, catalog, front, Math.Min(levelCount, front.LoadLevels));
+                    var flowBed = flowBedBuilder.Build(
+                        system,
+                        catalog,
+                        front,
+                        Math.Min(levelCount, DynamicFrontActivation.EffectiveLoadLevels(front)));
                     if (flowBed != null)
                     {
                         headers.Add(flowBed);

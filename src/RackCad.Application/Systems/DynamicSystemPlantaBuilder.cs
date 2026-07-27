@@ -264,6 +264,14 @@ namespace RackCad.Application.Systems
             for (var index = 0; index < system.Fronts.Count; index++)
             {
                 var front = system.Fronts[index];
+
+                // A blank front keeps its post line and its claro above, but collapses to zero load levels, so no
+                // IN/OUT beam and no intermediate support cross it (I-33).
+                if (DynamicFrontActivation.IsBlank(front))
+                {
+                    continue;
+                }
+
                 var envelope = DynamicRackLevelGeometry.Envelope(system, front);
                 var beamId = envelope.InOutBeamCatalogId;
                 var beamBlock = CatalogLookup.Block(catalog, beamId, View);

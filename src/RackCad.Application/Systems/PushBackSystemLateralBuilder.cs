@@ -84,7 +84,9 @@ namespace RackCad.Application.Systems
                 loose.AddRange(PushBackLoadBeamGeometry.HighBeams(system, catalog, frontIndex, front));
                 loose.AddRange(rearTopeBuilder.BuildLateral(system, catalog, frontIndex, front));
 
-                var bedLevels = sectioned ? Math.Min(levelCount, front.LoadLevels) : levelCount;
+                var bedLevels = sectioned
+                    ? Math.Min(levelCount, DynamicFrontActivation.EffectiveLoadLevels(front))
+                    : levelCount;
                 var bed = bedBuilder.BuildLateral(system, catalog, front, bedLevels);
                 if (bed != null)
                 {

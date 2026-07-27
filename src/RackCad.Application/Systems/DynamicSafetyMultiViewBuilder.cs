@@ -486,18 +486,21 @@ namespace RackCad.Application.Systems
                 return system?.LoadBeamLevels.Count ?? 0;
             }
 
+            // Level-indexed safety follows the LOAD, so a blank front contributes none and a post surrounded only by
+            // blank fronts receives no level-indexed piece (I-33). EffectiveLoadLevels already carries the historical
+            // Math.Max(1, ...) floor for an active front, so a rack without blank fronts is unaffected.
             var count = 0;
             if (postIndex > 0 && postIndex - 1 < system.Fronts.Count)
             {
-                count = Math.Max(count, system.Fronts[postIndex - 1].LoadLevels);
+                count = Math.Max(count, DynamicFrontActivation.EffectiveLoadLevels(system.Fronts[postIndex - 1]));
             }
 
             if (postIndex < system.Fronts.Count)
             {
-                count = Math.Max(count, system.Fronts[postIndex].LoadLevels);
+                count = Math.Max(count, DynamicFrontActivation.EffectiveLoadLevels(system.Fronts[postIndex]));
             }
 
-            return Math.Max(1, count);
+            return count;
         }
 
         private static HeaderBlockInstance Piece(

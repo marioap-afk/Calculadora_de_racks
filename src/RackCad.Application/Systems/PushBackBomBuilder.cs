@@ -59,7 +59,7 @@ namespace RackCad.Application.Systems
             for (var frontIndex = 0; frontIndex < structure.Fronts.Count; frontIndex++)
             {
                 var front = structure.Fronts[frontIndex];
-                for (var level = 0; level < Math.Max(1, front.LoadLevels); level++)
+                for (var level = 0; level < DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                 {
                     string beamId;
                     double peralte;
@@ -115,7 +115,12 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var perLane = Math.Max(1, front.PalletCount) * Math.Max(1, front.LoadLevels);
+                var perLane = Math.Max(1, front.PalletCount) * DynamicFrontActivation.EffectiveLoadLevels(front);
+                if (perLane <= 0)
+                {
+                    continue;
+                }
+
                 grouped[length] = grouped.TryGetValue(length, out var current) ? current + perLane : perLane;
             }
 
@@ -145,7 +150,7 @@ namespace RackCad.Application.Systems
             for (var frontIndex = 0; frontIndex < structure.Fronts.Count; frontIndex++)
             {
                 var front = structure.Fronts[frontIndex];
-                for (var level = 0; level < Math.Max(1, front.LoadLevels); level++)
+                for (var level = 0; level < DynamicFrontActivation.EffectiveLoadLevels(front); level++)
                 {
                     if (!rearTope.At(frontIndex, level))
                     {
