@@ -79,6 +79,67 @@ namespace RackCad.Application.Systems
             => (fronts ?? Enumerable.Empty<DynamicRackFront>()).Where(front => front != null && front.IsActive);
 
         /// <summary>
+        /// Whether the physical BOUNDARY at <paramref name="postIndex"/> exists — the post line, and with it its plate,
+        /// its share of the cabecera/separator assembly, its derived posts and reinforcements, its section cut and its
+        /// per-post safety (Owner, I-33).
+        /// <para>
+        /// A rack of N fronts has N+1 boundaries. The two EXTERIOR ones (0 and N) always exist. An INTERIOR one exists
+        /// unless BOTH of its adjacent fronts are en blanco: there is nothing on either side to hold up, so no post is
+        /// built. A run of N blank fronts therefore keeps only its two outer boundaries and loses its N−1 interior
+        /// ones; a SINGLE blank front loses none, and alternating blank fronts lose none either.
+        /// </para>
+        /// <para>
+        /// This is about the ASSEMBLY only. The logical fronts are untouched: their indices, claros, dormant
+        /// configuration, persistence and the rack's total length stay exactly as they were, so the X coordinates of
+        /// every boundary — including the suppressed ones — are still the ones the layout computed.
+        /// </para>
+        /// </summary>
+        public static bool BoundaryExists(IReadOnlyList<bool> frontIsActive, int postIndex)
+        {
+            var fronts = frontIsActive ?? Array.Empty<bool>();
+            if (postIndex < 0 || postIndex > fronts.Count)
+            {
+                return false;
+            }
+
+            if (postIndex == 0 || postIndex == fronts.Count)
+            {
+                return true;   // the rack's outer edges always exist
+            }
+
+            return fronts[postIndex - 1] || fronts[postIndex];
+        }
+
+        /// <summary>The same rule over a resolved system, which both the dynamic builders and Push Back consume.</summary>
+        public static bool BoundaryExists(DynamicRackSystem system, int postIndex)
+            => BoundaryExists(FrontActivation(system), postIndex);
+
+        /// <summary>The Activo/En blanco state of every resolved front, in front order.</summary>
+        public static IReadOnlyList<bool> FrontActivation(DynamicRackSystem system)
+            => (system?.Fronts ?? (IList<DynamicRackFront>)Array.Empty<DynamicRackFront>())
+                .Select(front => front != null && front.IsActive)
+                .ToList();
+
+        /// <summary>
+        /// The indices of the boundaries that DO exist, in order. Callers that must both skip the suppressed ones and
+        /// keep the original post index — every view, the BOM and the safety families do — iterate this.
+        /// </summary>
+        public static IReadOnlyList<int> PresentBoundaries(DynamicRackSystem system)
+        {
+            var fronts = FrontActivation(system);
+            var result = new List<int>(fronts.Count + 1);
+            for (var post = 0; post <= fronts.Count; post++)
+            {
+                if (BoundaryExists(fronts, post))
+                {
+                    result.Add(post);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// The ONE message for an all-blank rack, shared by every rejection point so the user reads the same sentence
         /// whichever boundary caught it.
         /// </summary>

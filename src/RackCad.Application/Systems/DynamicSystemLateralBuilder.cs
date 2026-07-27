@@ -39,7 +39,13 @@ namespace RackCad.Application.Systems
         public DynamicSystemPlan Build(
             DynamicRackSystem system, RackCatalog catalog, int postIndex, RackLevelElevations elevations = null)
         {
-            if (system == null || postIndex < 0 || postIndex > system.Fronts.Count)
+            // I-33 (Owner): una frontera compartida por dos frentes EN BLANCO no existe, así que su sección está
+            // vacía. El guardia va AQUÍ y no sólo en Cortes, para que el dibujo, el preview y cualquier consumidor
+            // directo del corte lean la misma regla y no puedan divergir.
+            if (system == null
+                || postIndex < 0
+                || postIndex > system.Fronts.Count
+                || !DynamicFrontActivation.BoundaryExists(system, postIndex))
             {
                 return new DynamicSystemPlan(new List<HeaderGroup>(), new List<HeaderBlockInstance>());
             }
@@ -220,6 +226,13 @@ namespace RackCad.Application.Systems
             var layout = DynamicFrontGeometry.Compute(system, catalog);
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): sin frontera física no hay corte que dibujar. Los cortes que sobreviven conservan su
+                // ÍNDICE de poste original, así que nada se renumera.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 result.Add(new DynamicLateralCorte(
                     postIndex,
                     layout.PostPositions[postIndex],

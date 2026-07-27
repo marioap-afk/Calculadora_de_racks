@@ -39,6 +39,13 @@ namespace RackCad.Application.Systems
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): misma regla que el Dinámico, sobre la MISMA autoridad — la frontera compartida por dos
+                // frentes en blanco no existe, así que no hay corte. Los que quedan conservan su índice de poste.
+                if (!DynamicFrontActivation.BoundaryExists(structure, postIndex))
+                {
+                    continue;
+                }
+
                 result.Add(new DynamicLateralCorte(postIndex, layout.PostPositions[postIndex], Build(system, catalog, postIndex)));
             }
 

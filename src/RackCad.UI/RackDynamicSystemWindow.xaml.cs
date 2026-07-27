@@ -1896,8 +1896,16 @@ namespace RackCad.UI
             suppressLateralPostSelection = true;
             try
             {
-                PreviewLateralPostBox.ItemsSource = Enumerable.Range(1, count)
-                    .Select(index => "Poste " + index.ToString(CultureInfo.InvariantCulture))
+                // I-33 (Owner): los postes se listan TODOS para que su número no cambie, pero el que no existe —la
+                // frontera compartida por dos frentes en blanco— se marca, porque su corte está vacío a propósito.
+                var activation = system != null
+                    ? DynamicFrontActivation.FrontActivation(system)
+                    : matrix.Fronts.Select(front => front.IsActive).ToList();
+                PreviewLateralPostBox.ItemsSource = Enumerable.Range(0, count)
+                    .Select(index => "Poste " + (index + 1).ToString(CultureInfo.InvariantCulture)
+                                     + (DynamicFrontActivation.BoundaryExists(activation, index)
+                                         ? string.Empty
+                                         : " (sin frontera)"))
                     .ToList();
                 PreviewLateralPostBox.SelectedIndex = selectedLateralPostIndex;
             }

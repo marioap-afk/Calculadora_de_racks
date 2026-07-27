@@ -93,6 +93,14 @@ Un frente tiene estado **Activo** o **En blanco**. En blanco:
    del frente (posiciones, fondos, inicio en fondo y los botones que copian datos del frente) siguen
    disponibles. Reactivar el frente **restaura la edicion de inmediato**.
 
+10. **La frontera compartida por dos frentes en blanco NO existe** (decision del Owner). Los dos bordes
+    exteriores del rack existen siempre; una frontera interior existe salvo que sus **dos** frentes
+    adyacentes esten en blanco. Una corrida de N blancos conserva solo sus dos fronteras exteriores y pierde
+    sus N−1 interiores; un blanco aislado y los blancos alternados no suprimen ninguna. Desaparece el
+    **ensamble fisico** —poste, placa, cabecera/separador, postes derivados y refuerzos, el corte lateral
+    entero, su parte del BOM y su seguridad por poste—, **nunca el frente logico**: indices, claros, ancho,
+    largo total, coordenadas X, configuracion dormida y persistencia se conservan. Detalle en §6.4.
+
 ## 4. Fuera de alcance
 
 - El **Selectivo** (no comparte la estructura dinamica) y cualquier otro sistema.
@@ -123,8 +131,9 @@ La bandera vive en la **estructura dinamica**, que Push Back **compone** (`PushB
 - `DynamicRackFrontDesign.IsActive` (intencion editable, default `true`).
 - `DynamicRackFront.IsActive` (frente resuelto, default `true`).
 - `DynamicFrontActivation` (Application): **unica** autoridad. Expone `IsBlank`, `EffectiveLoadLevels`,
-  `EffectiveLevelsPerFront`, `Active`, `HasActiveFront` y el mensaje unico `AllBlankMessage`. Todos sus
-  miembros son **puros**: ninguno normaliza ni reactiva nada.
+  `EffectiveLevelsPerFront`, `EffectiveLevelsPerPost`, `Active`, `HasActiveFront`, el mensaje unico
+  `AllBlankMessage` y —para la frontera fisica de §6.4— `BoundaryExists`, `FrontActivation` y
+  `PresentBoundaries`. Todos sus miembros son **puros**: ninguno normaliza ni reactiva nada.
 
 `EffectiveLoadLevels` devuelve **cero** para un frente en blanco y el historico `Math.Max(1, LoadLevels)`
 para uno activo. Por eso **un rack sin frentes en blanco no cambia en nada**: los consumidores que antes
@@ -151,7 +160,40 @@ los peraltes intermedios, la proyeccion rack-wide del resolver, `PushBackHighEnd
   numero, para que la secuencia que ve el usuario coincida con la del dibujo.
 - **Un frente nuevo nace activo** aunque el template seleccionado este en blanco (regla de §3.8).
 
-### 6.4 Los dialogos de seguridad
+### 6.4 La frontera compartida por dos frentes en blanco (decision del Owner)
+
+Un rack de N frentes tiene **N+1 fronteras**. La regla canonica:
+
+| Frontera | Existe |
+|---|---|
+| Borde exterior inicial (0) y final (N) | **Siempre** |
+| Activo / Activo | Si |
+| Activo / En blanco y En blanco / Activo | Si |
+| **En blanco / En blanco** | **No** |
+
+Una corrida de N frentes en blanco conserva **solo sus dos fronteras exteriores** y pierde sus **N−1**
+interiores. Un frente en blanco **aislado** no suprime ninguna, y frentes en blanco **alternados** tampoco.
+
+La autoridad es **una** —`DynamicFrontActivation.BoundaryExists` / `PresentBoundaries`, sobre el estado de
+los dos frentes adyacentes— y la consumen **todas** las materializaciones: frontal, lateral (el corte entero
+desaparece), planta, postes, placas, cabeceras, separadores, postes derivados y refuerzos, el BOM de los dos
+sistemas, la seguridad indexada por poste, y el preview y los planes de insercion/actualizacion. El guardia
+del corte lateral vive en `Build(system, catalog, postIndex)` y no solo en `Cortes`, para que dibujo y
+preview no puedan divergir.
+
+**Lo que NO cambia.** Desaparece el **ensamble fisico**, nunca el frente logico: se conservan los indices de
+frente, los claros, el ancho, la configuracion dormida, la persistencia y —verificado— **el largo total y
+todas las coordenadas X**, incluida la de la frontera suprimida, que el layout sigue calculando. Los cortes
+que sobreviven conservan su **numero de poste** original; en el selector de vista lateral el poste ausente
+sigue listado, marcado «(sin frontera)», para que la numeracion no se mueva.
+
+**La seguridad del poste ausente queda dormida.** No se desplaza a otro poste ni se borra: la seleccion
+guardada conserva su indice de poste. Mientras la frontera no exista, ese poste aporta **cero** niveles, asi
+que su columna en la rejilla del desviador es **ausente** —no seleccionable— y `SafetyDormantCells` la
+preserva a traves del dialogo. Al reactivar cualquiera de los dos frentes reaparecen el poste, todas sus
+piezas fisicas y sus celdas de seguridad, y dibujo y BOM vuelven al estado equivalente anterior.
+
+### 6.5 Los dialogos de seguridad
 
 Las rejillas de seguridad que abren el Dinamico y Push Back tratan un frente en blanco como lo que es: un
 frente **que existe** pero **sin niveles**.
@@ -194,7 +236,7 @@ frente **que existe** pero **sin niveles**.
   rama `Math.Max(left, right) + 1` del fallback per-front queda limitada al camino legacy/Selectivo: tras
   este arreglo **ninguna** ruta de I-33 la recorre.
 
-### 6.5 Un solo rechazo, ninguna normalizacion
+### 6.6 Un solo rechazo, ninguna normalizacion
 
 `DynamicFrontActivation.HasActiveFront` es la **unica** comprobacion; el mensaje tambien es unico
 (`AllBlankMessage`), asi que el usuario lee la misma frase la atrape quien la atrape:
@@ -211,7 +253,7 @@ frente **que existe** pero **sin niveles**.
 Las tres normalizaciones silenciosas que tuvo la primera version de I-33 (resolver, DTO y matriz) quedaron
 **retiradas**: reactivar un frente por cuenta propia enmascaraba el defecto y creaba guardas divergentes.
 
-### 6.6 Persistencia
+### 6.7 Persistencia
 
 `DynamicRackFrontDocument.IsActive` es `bool?` con `[JsonIgnore(WhenWritingNull)]`:
 
@@ -228,7 +270,8 @@ la persistencia de los dos sistemas queda cubierta en un solo sitio.
 `tests/RackCad.Tests/BlankFrontTests.cs` (28), `tests/RackCad.Tests/BlankFrontSafetyTests.cs` (9),
 `tests/RackCad.UI.Tests/BlankFrontEditorTests.cs` (8) y
 `tests/RackCad.UI.Tests/BlankFrontSafetyGridTests.cs` (11) y
-`tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs` (14). El
+`tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs` (14) y
+`tests/RackCad.Tests/BlankFrontBoundaryTests.cs` (15). El
 estado rojo se verifico con la bandera ya declarada pero **sin ningun consumidor**: 11 de 19 fallaban
 —exactamente las de comportamiento— y las 8 restantes eran las de autoridad y las guardas de estructura
 (que deben pasar tanto antes como despues, porque afirman que la estructura NO cambia).
@@ -255,6 +298,14 @@ Cubren, ademas del contrato de dibujo y BOM:
   y el nuevo sobre la rejilla real. Mas el desacople del selector de lado en sus tres combinaciones y
   guardas de fuente de que el Dinamico lo conserva, Push Back lo apaga explicitamente, la guia recibe la
   lista por FRENTE (no la de N+1 postes) y el Selectivo no opta por ningun parametro.
+- **Frontera En blanco/En blanco** (§6.4), verificadas **rojas** contra el candidato anterior (6 de 14
+  fallando: exactamente las materializaciones; pasaban las de autoridad, geometria, round-trip y rack sin
+  blancos, que deben pasar antes y despues): un blanco aislado no suprime nada; dos consecutivos al inicio,
+  medio y final suprimen una; tres suprimen dos; dos corridas independientes suprimen una cada una; los
+  alternados no suprimen ninguna; largo total y coordenadas X identicas; frontal, planta y cortes laterales
+  omiten **la misma** frontera; el BOM baja exactamente cabecera, poste reforzado, separador, poste y placa;
+  la seguridad del poste ausente no se mueve de indice ni se borra y vuelve al reactivar; round-trip de
+  persistencia; y un rack sin frentes en blanco intacto.
 
 ## 8. Validacion manual en AutoCAD (pendiente del Owner)
 
@@ -281,7 +332,15 @@ Cubren, ademas del contrato de dibujo y BOM:
     reabrir: **las mismas celdas apagadas siguen ahi**, editables e intactas. En Push Back repetir tambien
     sobre el **tope posterior**. Con **dos frentes consecutivos en blanco**, el poste que comparten queda sin
     celdas y los de los extremos conservan las suyas.
-11. Guardar, cerrar y reabrir con `RACKEDITAR`: el frente en blanco sigue en blanco y conserva el mismo GUID.
-12. Abrir un rack **guardado antes de I-33** (biblioteca o DWG): todos sus frentes cargan activos y su dibujo
+11. **Frontera compartida**: con **un solo** frente en blanco, sus **dos** postes siguen ahi. Poner en blanco
+    tambien el frente contiguo ⇒ el poste que comparten **desaparece por completo** —sin poste, placa,
+    cabecera, separador, postes derivados ni refuerzos— en frontal, planta y lateral (ese corte ya no se
+    dibuja), y el BOM baja exactamente esas piezas. **El rack no se encoge**: el ancho de los frentes, el
+    largo total y la posicion de todo lo demas son identicos. Con **tres** frentes en blanco seguidos
+    desaparecen **dos** postes; con blancos **alternados**, ninguno. Reactivar cualquiera de los dos frentes
+    devuelve el poste y todas sus piezas. La seguridad que ese poste tenia configurada **sigue ahi** al
+    volver, en el mismo poste.
+12. Guardar, cerrar y reabrir con `RACKEDITAR`: el frente en blanco sigue en blanco y conserva el mismo GUID.
+13. Abrir un rack **guardado antes de I-33** (biblioteca o DWG): todos sus frentes cargan activos y su dibujo
     y BOM son identicos a los de antes.
-13. Abrir el **Selectivo** y su dialogo de seguridad: identico a como estaba (no tiene frentes en blanco).
+14. Abrir el **Selectivo** y su dialogo de seguridad: identico a como estaba (no tiene frentes en blanco).

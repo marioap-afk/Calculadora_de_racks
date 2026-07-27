@@ -37,6 +37,12 @@ namespace RackCad.Application.Systems
             var headerConfigurations = new List<RackFrameConfiguration>();
             for (var postIndex = 0; postIndex < postLineCount; postIndex++)
             {
+                // I-33 (Owner): una frontera que no se construye tampoco se cotiza.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var range = DynamicDepthGeometry.AtPost(system, postIndex);
                 foreach (var module in system.Modules.Where(module => range.Contains(module.Index + 1)
                              && module.IsHeader
@@ -78,6 +84,12 @@ namespace RackCad.Application.Systems
             var quantities = new Dictionary<double, int>();
             for (var postIndex = 0; postIndex < postLineCount; postIndex++)
             {
+                // I-33 (Owner): sin frontera física no hay separadores anclados a ella.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var levelCount = DynamicSeparatorGeometry.Levels(
                     system,
                     catalog,
@@ -189,6 +201,12 @@ namespace RackCad.Application.Systems
             var grouped = new Dictionary<(double Primary, double Reinforcement), int>();
             for (var postIndex = 0; postIndex < postLineCount; postIndex++)
             {
+                // I-33 (Owner): los postes derivados y sus refuerzos cuelgan de la frontera; si no existe, no se cotizan.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var primaryHeight = Round(DynamicFrontGeometry.PostHeight(system, postIndex));
                 var reinforcementHeight = system.DerivedPostReinforced
                     ? Round(system.DerivedPostReinforcementHeight.HasValue
