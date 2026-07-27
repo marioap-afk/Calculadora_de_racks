@@ -329,6 +329,35 @@ Comandos:
   `MSB3277` conocidos de AutoCAD); produce el DLL candidato para la validacion del dueno.
 - CI: los cuatro jobs verdes sobre la punta publicada.
 
+## 10.bis Revalidacion FOCALIZADA de la parrilla (Owner, tras el addendum §0)
+
+El Owner ya aprobo A, C, D, E, F, G, H y el tope de B sobre `f676aac`. Esta ronda cubre **solo** la
+parrilla y **lo compartido que cambio**; los tres dialogos ya aprobados **no** se re-validan salvo el
+punto 6, que existe precisamente para confirmar que siguen intactos.
+
+Sobre el DLL Debug del worktree de I-34, en AutoCAD 2025:
+
+1. **Selectivo → Elementos de seguridad → Parrilla**: la rejilla se ve como antes —una casilla por
+   frente y nivel, con **su numero al lado**— y bajo ella aparece la fila «Aplicar a:» con
+   Activar/Desactivar y los botones Celda / **Nivel** / **Frente** / Todo. Arranca en **Desactivar**.
+2. **El contador sigue vivo**: los numeros por celda y el **Total** al pie son los mismos que antes de
+   este cambio. Escribir un **Frente** o una **Cantidad** los recalcula igual que siempre, y los avisos
+   de «No caben …» y «No cabe ninguna en …» aparecen cuando corresponde.
+3. **Alcances**: pulsar una celda la hace primaria (la fila lo indica). **Nivel** apaga ese nivel en
+   todos los frentes; **Frente** apaga ese frente entero; **Todo** apaga la rejilla; con **Activar**
+   vuelven. Tras cada operacion los numeros de las celdas apagadas **desaparecen** y los de las demas
+   **no se mueven**.
+4. **Rejilla dentada**: con frentes de distinto numero de niveles, los huecos de arriba siguen **sin
+   casilla**, no pueden seleccionarse y **ningun** alcance —ni «Todo»— los toca.
+5. **Aceptar, reabrir y dibujar**: reabrir la parrilla muestra exactamente las celdas que quedaron
+   apagadas; el rack dibujado y el BOM coinciden con lo que darian esas mismas celdas apagadas **a
+   mano**, en frontal y lateral (en planta la parrilla no se dibuja). **Todas/Ninguna** siguen
+   funcionando.
+6. **Lo compartido no se movio**: abrir el **desviador**, el **tope** (Selectivo y el posterior de Push
+   Back) y la **guia** y comprobar que se ven y se comportan **exactamente** como el Owner los aprobo —
+   su rejilla **no** lleva numeros junto a las casillas, porque el adorno es opt-in y solo la parrilla lo
+   usa.
+
 ## 10. Validacion manual — gates ABIERTOS
 
 La adopcion cambia la **interaccion visible** de tres dialogos compartidos por los tres sistemas, asi que
@@ -408,19 +437,23 @@ integracion (ultimo commit de la rama), nunca desde esta rama.
 
 ## 15. Alcance restante
 
-**Adopcion HECHA** en los tres dialogos incluidos: `SafetyDesviadorGridWindow` (M3, eje **Poste**, el caso
-de PB-007 y el de mayor rendimiento, con su nota viva recalculada una vez por operacion),
-`SafetyTopeGridWindow` (M1 **y** M2 — un solo dialogo, dos consumidores: el tope del Selectivo y el tope
-posterior de Push Back— eje **Frente**) y `SafetyGuiaEntradaGridWindow` (M4, eje **Frente**). Los tres
-conservan «Todos»/«Ninguno», el conjunto de `OffCells` que devuelven, la fusion de celdas dormidas
-(`SafetyDormantCells`) y su interaccion previa: la edicion masiva se **suma**.
+**Adopcion HECHA en las CUATRO matrices** que la iniciativa incluye:
 
-Queda **pendiente de decision del dueno**, no comprometido:
+| Matriz | Dialogo | Eje de columna | Nota |
+|---|---|---|---|
+| M3 desviador | `SafetyDesviadorGridWindow` | **Poste** | el caso de PB-007; nota viva una vez por operacion |
+| M1 tope + M2 tope posterior | `SafetyTopeGridWindow` | **Frente** | un dialogo, dos consumidores (Selectivo y Push Back) |
+| M4 guia | `SafetyGuiaEntradaGridWindow` | **Frente** | solo Dinamico |
+| M5 parrilla | `SafetyParrillaGridWindow` | **Frente** | addendum §0; conserva su **contador vivo** via §7.12 |
 
-1. **Parrilla** (M5, §6.3): antes hay que decidir **como comparte el control una decoracion por celda**
-   —su contador vivo de parrillas— sin perderla. Mientras eso no se decida, conserva su rejilla propia.
-2. **Defensa** (§6.3): antes hay que decidir **que significa un alcance en un formulario por poste** con
-   dos longitudes independientes y sin eje de nivel. Hoy «Celda» y «Nivel» no tienen sentido en ella.
+Los cuatro conservan «Todos»/«Ninguno», el conjunto de `OffCells` que devuelven, la fusion de celdas
+dormidas donde aplica (`SafetyDormantCells`) y su interaccion previa: la edicion masiva se **suma**.
 
-Y como cierre de la iniciativa: la **validacion manual del dueno en AutoCAD** (§10), que es el gate
-abierto.
+Queda **fuera de alcance** por decision vigente:
+
+- **Defensa**: antes habria que decidir **que significa un alcance en un formulario por poste** con dos
+  longitudes independientes y sin eje de nivel. Hoy «Celda» y «Nivel» no significan nada en ella. El
+  addendum del Owner (§0.2) la mantiene excluida.
+
+Y como cierre de la iniciativa: la **revalidacion focalizada de la parrilla** (§10.bis) sobre lo ya
+aprobado en §10, que es el gate abierto.

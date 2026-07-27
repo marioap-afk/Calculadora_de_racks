@@ -8,8 +8,8 @@ automation_state:
   gate: owner-validation
   attempts: 1
   next_action: >-
-    VALIDACION-MANUAL-DEL-OWNER-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree-de-I-34 ·
-    checklist-en-el-contrato-seccion-10 ·
+    REVALIDACION-FOCALIZADA-DE-LA-PARRILLA-por-el-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree ·
+    checklist-en-el-contrato-seccion-10-bis-los-puntos-A-C-D-E-F-G-H-y-el-tope-de-B-ya-estan-aprobados ·
     NO-integrar-NO-declarar-integration-ready-hasta-que-el-Owner-apruebe
   last_evidence_commit: 80d08883e0900c3c18449de8a0930f73fa9c3171
 
@@ -28,9 +28,17 @@ increment:
     - adopcion-en-SafetyDesviadorGridWindow-eje-POSTE
     - adopcion-en-SafetyTopeGridWindow-eje-FRENTE-que-cubre-Selectivo-y-el-tope-posterior-de-Push-Back
     - adopcion-en-SafetyGuiaEntradaGridWindow-eje-FRENTE
+    - adopcion-en-SafetyParrillaGridWindow-eje-FRENTE-CONSERVANDO-el-contador-vivo-por-celda
+    - extension-neutral-y-opt-in-del-control-CellAdornment-mas-RefreshAdornments
   not_delivered:
-    - parrilla-necesita-decidir-antes-como-comparte-el-control-su-contador-vivo-por-celda
     - defensa-necesita-decidir-antes-que-significa-un-alcance-en-un-formulario-por-poste-sin-eje-de-nivel
+
+owner_partial_validation:
+  candidate: f676aac5ee0711cea8c4c2dac221c6596114e0cc
+  approved: A-C-D-E-F-G-H-y-el-tope-de-B
+  confirmed: el-incremento-de-altura-de-las-ventanas-y-Desactivar-como-estado-inicial
+  defect_reported: faltaba-la-misma-edicion-masiva-para-las-parrillas-del-Selectivo
+  defect_status: CORREGIDO-en-esta-sesion-la-parrilla-adopta-el-mecanismo-conservando-su-contador-vivo
 
 gates:
   ci: verde-requerido-sobre-la-punta-publicada-4-de-4
@@ -38,18 +46,22 @@ gates:
     EJECUTADO-y-correcto-con-AutoCAD-cerrado ·
     0-errores-propios-las-2-advertencias-son-los-MSB3277-conocidos-de-las-referencias-de-AutoCAD
   autocad: >-
-    ABIERTO · la-adopcion-cambia-la-interaccion-visible-de-tres-dialogos-compartidos-por-los-tres-sistemas ·
-    checklist-en-el-contrato-seccion-10
+    ABIERTO-SOLO-PARA-LA-PARRILLA-y-lo-compartido-que-cambio ·
+    checklist-focalizado-en-el-contrato-seccion-10-bis
   owner_validation: >-
-    ABIERTO · pendiente-del-dueno-sobre-el-DLL-Debug-del-worktree-de-I-34
+    ABIERTO-PARCIAL · aprobado-A-C-D-E-F-G-H-y-el-tope-de-B-sobre-f676aac ·
+    pendiente-unicamente-la-parrilla
   owner_decision: >-
-    NO-REQUERIDO-para-lo-entregado ·
-    parrilla-y-defensa-SI-requieren-decision-antes-de-adoptarse
+    RECIBIDA-2026-07-27-addendum-normativo-registrado-en-el-contrato-seccion-0 ·
+    la-parrilla-Selectiva-ENTRA-la-defensa-sigue-EXCLUIDA-y-el-contador-vivo-es-de-conservacion-obligatoria
 
 invariants:
   - ningun-DTO-wire-format-store-geometria-BOM-catalogo-bloque-DWG-ni-namespace-cambia
   - DesviadorCellsAreByPost-sigue-en-false-para-el-Dinamico-y-no-se-toca
-  - parrilla-defensa-matriz-estructural-shell-visual-preview-y-guardas-traseras-intactos
+  - defensa-matriz-estructural-shell-visual-preview-y-guardas-traseras-intactos
+  - el-contador-vivo-por-celda-de-la-parrilla-y-su-total-al-pie-se-calculan-igual-que-antes
+  - la-tolerancia-historica-de-IsOn-una-celda-no-mostrada-cuenta-como-encendida-se-conserva
+  - el-adorno-por-celda-es-opt-in-asi-que-desviador-tope-y-guia-no-cambian-ni-una-linea
   - las-celdas-ausentes-y-la-configuracion-dormida-de-SafetyDormantCells-no-se-alteran-ni-con-el-alcance-Todo
   - la-columna-de-un-frente-en-blanco-no-puede-ser-primaria-y-ningun-alcance-la-toca
   - cada-dialogo-conserva-Todos-Ninguno-sus-controles-auxiliares-y-sus-validaciones
