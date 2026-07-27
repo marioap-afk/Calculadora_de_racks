@@ -4,8 +4,8 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: validating
-  gate: owner-validation
+  state: integration-ready
+  gate: integration
   attempts: 3
   attempts_note: >-
     attempts-PERMANECE-en-3-y-NO-se-incrementa-el-max-attempts-del-contrato-ya-se-AGOTO-con-los-rounds-1-2-y-3 ·
@@ -14,8 +14,8 @@ automation_state:
     historico-attempts-paso-a-3-al-abrirse-el-round-3-tras-la-aprobacion-tecnica-del-code-sha-924de1a-que-resulto-partir-de-una-lectura-equivocada-del-defecto ·
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
   next_action: >-
-    compilar-el-DLL-desde-la-punta-publicada-de-esta-corrida-con-autocad-cerrado-y-ejecutar-la-REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
-    NO-queda-pendiente-funcional-el-alcance-esta-implementado-y-cubierto-por-pruebas-lo-que-sigue-abierto-es-la-validacion-manual-que-ningun-test-sustituye
+    GATE-DE-INTEGRACION-integracion-serializada-en-main-por-git-merge-no-ff-y-limpieza-posterior-de-rama-y-worktree ·
+    NO-queda-ninguna-modificacion-funcional-pendiente-el-alcance-esta-terminado-y-la-validacion-manual-del-owner-esta-APROBADA
   last_evidence_commit: f911d75350702fb176e123a59a105d40f63690ec
 execution_context:
   mode: manual-git-only
@@ -110,6 +110,21 @@ evidence:
     APROBADA-2026-07-26-code-sha-bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6-head-revisado-877c60fc35a9931818afc74f5bed7b9ec023454d-ci-30222859775-VERDE-cuatro-jobs-sobre-el-head-exacto ·
     con-ella-se-autoriza-una-CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-que-NO-se-numera-como-un-round-mas ·
     leccion-del-round-3-llego-a-la-validacion-manual-CON-aprobacion-tecnica-y-aun-asi-fue-rechazado-la-revision-comprobo-que-el-codigo-hacia-lo-que-decia-pero-no-podia-comprobar-que-lo-que-decia-fuera-lo-que-el-owner-queria-porque-la-premisa-equivocada-ese-riel-sobrante-es-penetracion-venia-de-la-implementacion-y-nunca-se-cuestiono-aguas-abajo
+  owner_validation_result: >-
+    APROBADA-2026-07-27-el-owner-ejecuto-la-revalidacion-manual-dirigida-de-la-geometria-asimetrica-y-confirmo-listo-todo-correcto-TODOS-LOS-PUNTOS-CORRECTOS ·
+    CODE-SHA-funcional-f911d75350702fb176e123a59a105d40f63690ec ·
+    VALIDATED-BUILD-SHA-el-que-el-owner-cargo-a0c3f27c2447a4e1f85707ef9f3ad311765e3a43 ·
+    DLL-SHA256-b7b15802d19c90bbe40b19546423f9cc1850645051c1da971da2552778b2e931 ·
+    CI-30226757221-cuatro-jobs-verdes-sobre-a0c3f27 ·
+    el-traspaso-de-la-aprobacion-a-la-punta-de-cierre-es-VALIDO-porque-todo-commit-posterior-a-a0c3f27-en-esta-corrida-es-EXCLUSIVAMENTE-DOCUMENTAL-no-toca-src-tests-assets-ni-el-binario ·
+    el-DLL-aprobado-NO-se-recompila-ni-se-reemplaza ·
+    gates-autocad-y-owner-validation-RESUELTOS-evidencia-en-docs-automation-evidence-i-32-autocad-validation-md ·
+    attempts-permanece-en-3-esta-validacion-no-fue-un-round-mas-sino-una-revalidacion-dirigida-por-el-owner-ya-agotado-el-max-attempts
+  integration_readiness: >-
+    alcance-funcional-TERMINADO · pruebas-builds-y-ci-VERDES · validacion-manual-del-owner-APROBADA ·
+    SIN-pendiente-funcional-dentro-de-i-32 · rama-PUBLICADA-head-igual-a-upstream-y-arbol-LIMPIO ·
+    pb-001-pb-007-pb-011-y-pb-014-continuan-DIFERIDOS-en-ideas-futuras-y-NO-bloquean-nunca-estuvieron-en-el-alcance ·
+    NINGUNA-modificacion-funcional-pendiente · siguiente-accion-GATE-DE-INTEGRACION
   technical_approval_asymmetric: >-
     APROBACION-TECNICA-FINAL-2026-07-26-code-sha-f911d75350702fb176e123a59a105d40f63690ec-head-revisado-635473320e556b8c2c16b24658170acee3fdb527-ci-30226117429-VERDE-cuatro-jobs-sobre-el-head-exacto ·
     con-ella-se-autoriza-una-REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-que-NO-se-numera-como-otro-round-y-attempts-permanece-en-3
@@ -192,9 +207,8 @@ evidence:
     DOS-pasan-ya-y-deben-seguir-el-sistema-ordinario-manda-su-ultimo-protector-al-extremo-alto-y-una-matriz-explicita-sustituye-al-default ·
     del-defecto-1-no-hay-regresiones-porque-no-se-implementa-lo-que-hay-es-la-MEDICION-de-la-penetracion-registrada-arriba
   dll_for_owner: >-
-    PENDIENTE-DE-CONSTRUIR-desde-la-nueva-punta-con-autocad-CERRADO-en-la-ruta-canonica-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll ·
-    sus-datos-build-sha-upstream-run-de-ci-ruta-sha256-tamano-fecha-y-versiones-se-reportan-FUERA-de-git-no-se-hace-commit-para-registrar-el-hash ·
-    los-CUATRO-dll-anteriores-permanecen-OBSOLETOS ·
+    APROBADO-el-de-a0c3f27c2447a4e1f85707ef9f3ad311765e3a43-sha256-b7b15802d19c90bbe40b19546423f9cc1850645051c1da971da2552778b2e931-115200-bytes-assemblyinformationalversion-1-0-0-mas-a0c3f27-NO-se-recompila-ni-se-reemplaza ·
+    los-CUATRO-dll-de-las-validaciones-RECHAZADAS-permanecen-OBSOLETOS ·
     OBSOLETO-el-de-9a87c7c-sha256-8fcf4c92a353f8953ad110f472846506ec4f93846babb61475bd4faf7ae751f4-validado-y-RECHAZADO-en-la-confirmacion-final ·
     OBSOLETO-el-de-2641830-sha256-3034b908ce7593ea7ff9ed1c5b0db57b40f77c486b2a24b32556e8381af4b111-validado-y-RECHAZADO-en-el-round-3 ·
     OBSOLETO-el-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-validado-y-RECHAZADO-en-el-round-2 ·
@@ -269,17 +283,17 @@ evidence:
 gates:
   autocad:
     required: true
+    resolved: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA ·
-      REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-AUTORIZADA-sobre-los-21-puntos-obligatorios
-      de-la-seccion-10-del-contrato-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados
+      RESUELTO-el-owner-valido-en-AutoCAD-2025-el-dll-de-a0c3f27-y-aprobo-todos-los-puntos ·
+      historial-que-NO-se-reescribe-ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA
   owner_validation:
     required: true
+    resolved: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA ·
-      REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-AUTORIZADA-tras-la-aprobacion-tecnica-final-del-code-sha-f911d75-sobre-el-head-6354733-con-ci-30226117429-verde ·
-      NO-se-numera-como-otro-round-porque-max-attempts-ya-se-agoto-y-esto-no-es-un-intento-de-la-automatizacion ·
-      exige-un-DLL-NUEVO-compilado-con-autocad-cerrado-desde-la-punta-publicada-los-CUATRO-dll-anteriores-siguen-OBSOLETOS
+      APROBADA-2026-07-27-listo-todo-correcto-sobre-el-build-sha-a0c3f27-dll-sha256-b7b15802-ci-30226757221 ·
+      historial-que-NO-se-reescribe-ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA ·
+      la-que-aprobo-fue-una-REVALIDACION-MANUAL-DIRIGIDA-por-el-owner-no-un-round-mas-attempts-permanece-en-3
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-advertencias-conocidas-con-autocad-CERRADO-verificado-antes-de-compilar

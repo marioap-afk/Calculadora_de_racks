@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: validating
+status: integration-ready
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -224,21 +224,36 @@ la referencia real de la regla anterior.
 No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
 trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
 
-### Revalidacion manual dirigida de la geometria asimetrica — AUTORIZADA
+### APROBADA POR EL OWNER — la iniciativa queda `integration-ready`
 
-La revision tecnica aprobo el codigo en **`f911d75350702fb176e123a59a105d40f63690ec`**, sobre el HEAD
-revisado **`635473320e556b8c2c16b24658170acee3fdb527`** con CI **30226117429** verde en sus cuatro jobs.
+El Owner ejecuto la revalidacion manual dirigida de la geometria asimetrica y la **APROBO**:
+**«Listo, todo correcto»**.
 
-Con esa aprobacion queda autorizada una **revalidacion manual dirigida de la geometria asimetrica** sobre
-los 21 puntos obligatorios de §10, mas el smoke complementario de los cuatro hallazgos no implementados.
+| Campo | Valor |
+|---|---|
+| Fecha | 2026-07-27 |
+| **CODE_SHA** funcional | `f911d75350702fb176e123a59a105d40f63690ec` |
+| **VALIDATED_BUILD_SHA** | `a0c3f27c2447a4e1f85707ef9f3ad311765e3a43` |
+| **DLL SHA-256** | `B7B15802D19C90BBE40B19546423F9CC1850645051C1DA971DA2552778B2E931` |
+| CI | **30226757221**, 4/4 sobre `a0c3f27` |
 
-**No se numera como otro round.** `max_attempts` se agoto con los rounds 1, 2 y 3: esta revalidacion no
-es un intento nuevo de la automatizacion, sino una comprobacion que el Owner pide expresamente sobre una
-correccion que el mismo dirigio. **`attempts` permanece en 3.**
+Evidencia completa en
+[`evidence/I-32-autocad-validation.md`](../automation/evidence/I-32-autocad-validation.md).
 
-Los cuatro DLL validados hasta ahora —`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan **obsoletos** y
-no deben reutilizarse. La revalidacion exige un **DLL nuevo**, compilado con **AutoCAD cerrado** desde la
-punta publicada.
+**Estado de cierre:**
+
+- **alcance funcional TERMINADO**;
+- **pruebas, builds y CI verdes**;
+- **validacion manual del Owner APROBADA**;
+- **sin pendiente funcional dentro de I-32**;
+- **PB-001, PB-007, PB-011 y PB-014 continuan DIFERIDOS y NO bloquean** — nunca estuvieron en el alcance;
+- **siguiente accion: integracion serializada en `main`**.
+
+`attempts` permanece en **3**: la validacion aprobada no fue un round mas, sino una revalidacion dirigida
+por el Owner una vez agotado el `max_attempts`.
+
+Los cuatro DLL de las validaciones rechazadas —`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan
+**obsoletos**. El unico artefacto valido es el de `a0c3f27`, y no se recompila.
 
 ## 12. Condiciones para detenerse
 
