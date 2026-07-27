@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI
 {
@@ -41,6 +42,21 @@ namespace RackCad.UI
         }
 
         public ParrillaResult Result { get; private set; }
+
+        // ---- DECLARED SURFACE ONLY (I-34 addendum, red step): the parrilla does not adopt the shared bulk edit yet.
+        // Inert so the regressions can be verified failing; the real members land in the adoption commit. ----
+
+        internal SelectionMatrixModel Model => null;
+
+        internal SelectionMatrixBulkBar BulkBar => null;
+
+        internal SelectionMatrixBulkEditor BulkEditor => null;
+
+        internal ParrillaResult BuildResultForTest() => null;
+
+        internal string CountTextFor(int frente, int level) => null;
+
+        internal int RecountCount => 0;
 
         public SafetyParrillaGridWindow(
             string label, IReadOnlyList<int> levelsPerFrente, bool frontal, bool lateral, double frente, int cantidad,

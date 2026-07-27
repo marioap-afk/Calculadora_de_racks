@@ -68,6 +68,17 @@ namespace RackCad.UI.Controls
         /// </summary>
         public event EventHandler<SelectionMatrixCellChangedEventArgs> CellInteracted;
 
+        /// <summary>DECLARED SURFACE ONLY (I-34 addendum, red step): the optional per-cell adornment. Inert.</summary>
+        public Func<SelectionMatrixCell, string> CellAdornment { get; set; }
+
+        /// <summary>DECLARED SURFACE ONLY (I-34 addendum, red step): re-reads the adornments in place. Inert.</summary>
+        public void RefreshAdornments()
+        {
+        }
+
+        /// <summary>DECLARED SURFACE ONLY (I-34 addendum, red step): the adornment block of a cell. Inert.</summary>
+        internal TextBlock AdornmentFor(int column, int row) => null;
+
         /// <summary>The check box for a model cell, or null when out of range (for tests/adopters that poke a cell).</summary>
         public CheckBox CellFor(int column, int row)
         {
