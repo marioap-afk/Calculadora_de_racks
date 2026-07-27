@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: implementing
+status: validating
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -185,7 +185,7 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 - Compatibilidad legacy, GUID, metadata I-11, cuatro vistas, BOM, registros y shell conservados.
 - Validacion manual del Owner en AutoCAD (§10, **21 puntos obligatorios**) antes de integrar.
 
-### La cama: geometria ASIMETRICA
+### La cama: geometria ASIMETRICA (regla final)
 
 > **Correcciones acumuladas.** Esta seccion declaro sucesivamente que «no queda pendiente funcional»
 > (round 2 RECHAZADO), que el defecto de la cama estaba **bloqueado** por un contrato de catalogo
@@ -194,32 +194,51 @@ que sigan como estaban no es un fallo de I-32 y su ausencia no bloquea el gate.
 > final RECHAZADA: faltaba la asimetria). Todas quedan corregidas aqui en vez de retiradas.
 
 El bloque de la cama define **dos rectas paralelas** —la de su `TROQUEL_IN` y la de su **ORIGEN**—
-separadas por la componente perpendicular del mate local (1.25"). Comparten rotacion y pendiente, pero no
-son la misma recta.
+separadas por la componente perpendicular del mate local. Comparten rotacion y pendiente, pero no son la
+misma recta.
 
-| Extremo | Referencia |
+| Aspecto | Regla |
 |---|---|
-| **Entrada/Salida** | mate por `TROQUEL_IN` sobre `LARGUERO_IN_OUT.TROQUEL_CAMA` |
-| **Intermedios** | tangencia con la linea del **ORIGEN** |
-| **Posterior** | tangencia con la linea del **ORIGEN** |
-
-- una sola **rotacion** y una sola **pendiente** para todo el bloque, resueltas por
-  `PushBackBedRotation` con `E.X·sin t − E.Y·cos t = m.Y`;
-- el troquel del larguero bajo se elige **minimizando `|tan t − 7/192|`** sobre la reticula de 2",
-  recorriendo todo el rango valido;
-- el larguero **posterior** es el ANCLA y conserva su troquel;
-- **`LONGITUD` = fondo estructural completo**; el riel puede sobresalir por detras.
+| **Entrada/Salida** | mate `LARGUERO_IN_OUT.TROQUEL_CAMA` ↔ `RIEL_DE_CINTA_CALIBRE_12.TROQUEL_IN` |
+| **Posterior e intermedios** | tangentes a la **linea del ORIGEN** |
+| **Rotacion** | una sola `RotationRadians`, resuelta por `PushBackBedRotation` |
+| **Larguero posterior** | ANCLA: fijo en su troquel |
+| **Larguero bajo** | elegido **globalmente** por menor error contra 7/192, sobre la reticula de 2" |
+| **`LONGITUD`** | **fondo estructural completo**; el riel puede sobresalir por detras |
 
 **Conservado sin cambios:** el mate bajo, el ancla posterior, la longitud full-span, el BOM, el tope
 posterior, las botas, los protectores laterales (primer poste delante sin espejo, ultimo delante
 espejado), el Selectivo y el Dinamico.
 
-El detalle, la derivacion y los goldens afectados estan en
+El detalle, la derivacion, el desempate y los goldens afectados estan en
 [`decisions/I-32.md`](../automation/decisions/I-32.md).
 
-**Owner-validation:** rounds 1, 2 y 3 y la confirmacion final quedan **RECHAZADOS**. **No hay ninguna
-validacion abierta.** Los cuatro DLL validados —`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan
-**obsoletos** y no deben reutilizarse.
+### No queda pendiente funcional
+
+**Todo el alcance funcional de esta iniciativa esta implementado y cubierto por pruebas.** Los diez
+hallazgos autorizados estan corregidos, cada uno con su regresion observada fallando sin el fix; el
+override opt-in de elevaciones esta completo en sus cuatro ambitos; el default del protector lateral esta
+corregido; la geometria asimetrica de la cama sigue la regla final de arriba; y el desempate legacy usa
+la referencia real de la regla anterior.
+
+No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
+trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
+
+### Revalidacion manual dirigida de la geometria asimetrica — AUTORIZADA
+
+La revision tecnica aprobo el codigo en **`f911d75350702fb176e123a59a105d40f63690ec`**, sobre el HEAD
+revisado **`635473320e556b8c2c16b24658170acee3fdb527`** con CI **30226117429** verde en sus cuatro jobs.
+
+Con esa aprobacion queda autorizada una **revalidacion manual dirigida de la geometria asimetrica** sobre
+los 21 puntos obligatorios de §10, mas el smoke complementario de los cuatro hallazgos no implementados.
+
+**No se numera como otro round.** `max_attempts` se agoto con los rounds 1, 2 y 3: esta revalidacion no
+es un intento nuevo de la automatizacion, sino una comprobacion que el Owner pide expresamente sobre una
+correccion que el mismo dirigio. **`attempts` permanece en 3.**
+
+Los cuatro DLL validados hasta ahora —`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan **obsoletos** y
+no deben reutilizarse. La revalidacion exige un **DLL nuevo**, compilado con **AutoCAD cerrado** desde la
+punta publicada.
 
 ## 12. Condiciones para detenerse
 

@@ -4,17 +4,19 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: implementing
-  gate: changes-requested
+  state: validating
+  gate: owner-validation
   attempts: 3
   attempts_note: >-
-    attempts-PERMANECE-en-3-y-NO-se-incrementa-se-alcanzo-el-max-attempts-y-esta-es-una-CORRECCION-ADICIONAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER ·
+    attempts-PERMANECE-en-3-y-NO-se-incrementa-el-max-attempts-del-contrato-ya-se-AGOTO-con-los-rounds-1-2-y-3 ·
+    la-validacion-que-ahora-se-abre-NO-es-un-intento-nuevo-de-la-automatizacion-es-una-REVALIDACION-MANUAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-sobre-una-correccion-que-el-mismo-dirigio-por-eso-no-se-numera-como-otro-round ·
     la-validacion-que-ahora-se-abre-NO-es-un-intento-nuevo-de-la-automatizacion-es-una-CONFIRMACION-FINAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-sobre-una-correccion-que-el-mismo-dirigio-por-eso-no-se-numera-como-un-round-mas ·
     historico-attempts-paso-a-3-al-abrirse-el-round-3-tras-la-aprobacion-tecnica-del-code-sha-924de1a-que-resulto-partir-de-una-lectura-equivocada-del-defecto ·
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
   next_action: >-
-    revision-del-coordinador-sobre-esta-correccion-adicional-dirigida-por-el-owner-NO-se-genera-DLL-y-NO-hay-ninguna-validacion-abierta
-  last_evidence_commit: f911d75
+    compilar-el-DLL-desde-la-punta-publicada-de-esta-corrida-con-autocad-cerrado-y-ejecutar-la-REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
+    NO-queda-pendiente-funcional-el-alcance-esta-implementado-y-cubierto-por-pruebas-lo-que-sigue-abierto-es-la-validacion-manual-que-ningun-test-sustituye
+  last_evidence_commit: f911d75350702fb176e123a59a105d40f63690ec
 execution_context:
   mode: manual-git-only
   worktree: fix-correcciones-push-back
@@ -108,6 +110,16 @@ evidence:
     APROBADA-2026-07-26-code-sha-bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6-head-revisado-877c60fc35a9931818afc74f5bed7b9ec023454d-ci-30222859775-VERDE-cuatro-jobs-sobre-el-head-exacto ·
     con-ella-se-autoriza-una-CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-que-NO-se-numera-como-un-round-mas ·
     leccion-del-round-3-llego-a-la-validacion-manual-CON-aprobacion-tecnica-y-aun-asi-fue-rechazado-la-revision-comprobo-que-el-codigo-hacia-lo-que-decia-pero-no-podia-comprobar-que-lo-que-decia-fuera-lo-que-el-owner-queria-porque-la-premisa-equivocada-ese-riel-sobrante-es-penetracion-venia-de-la-implementacion-y-nunca-se-cuestiono-aguas-abajo
+  technical_approval_asymmetric: >-
+    APROBACION-TECNICA-FINAL-2026-07-26-code-sha-f911d75350702fb176e123a59a105d40f63690ec-head-revisado-635473320e556b8c2c16b24658170acee3fdb527-ci-30226117429-VERDE-cuatro-jobs-sobre-el-head-exacto ·
+    con-ella-se-autoriza-una-REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-que-NO-se-numera-como-otro-round-y-attempts-permanece-en-3
+  bed_rule_final_asymmetric: >-
+    1-ENTRADA-SALIDA-mate-larguero-in-out-troquel-cama-con-riel-de-cinta-calibre-12-troquel-in ·
+    2-POSTERIOR-e-INTERMEDIOS-tangentes-a-la-LINEA-DEL-ORIGEN-del-bloque-una-recta-PARALELA-a-la-anterior-y-distinta-de-ella ·
+    3-una-sola-ROTATIONRADIANS-para-todo-el-bloque-resuelta-por-pushbackbedrotation-con-ex-sin-t-menos-ey-cos-t-igual-my-es-la-autoridad-de-la-rotacion-nadie-la-deriva-de-la-diferencia-entre-contactos ·
+    4-el-larguero-POSTERIOR-es-el-ANCLA-y-queda-FIJO-en-su-troquel ·
+    5-el-larguero-BAJO-se-elige-GLOBALMENTE-por-menor-error-contra-7-192-recorriendo-todo-el-rango-valido-de-la-reticula-de-2 ·
+    6-LONGITUD-igual-al-FONDO-ESTRUCTURAL-COMPLETO-full-span-el-riel-puede-sobresalir-por-detras
   owner_rejection_asymmetric: >-
     la-CONFIRMACION-FINAL-sobre-9a87c7c-fue-RECHAZADA-por-un-defecto-geometrico-residual-el-larguero-posterior-volvia-a-usar-la-linea-de-troquel-in ·
     REGLA-ASIMETRICA-el-bloque-de-la-cama-define-DOS-rectas-PARALELAS-la-de-su-troquel-in-y-la-de-su-ORIGEN-separadas-por-la-componente-perpendicular-del-mate-local-1-25-comparten-rotacion-y-pendiente-pero-no-son-la-misma-recta ·
@@ -180,7 +192,9 @@ evidence:
     DOS-pasan-ya-y-deben-seguir-el-sistema-ordinario-manda-su-ultimo-protector-al-extremo-alto-y-una-matriz-explicita-sustituye-al-default ·
     del-defecto-1-no-hay-regresiones-porque-no-se-implementa-lo-que-hay-es-la-MEDICION-de-la-penetracion-registrada-arriba
   dll_for_owner: >-
-    NO-GENERADO-por-instruccion-del-owner-no-se-compila-uno-nuevo-hasta-revision-del-coordinador ·
+    PENDIENTE-DE-CONSTRUIR-desde-la-nueva-punta-con-autocad-CERRADO-en-la-ruta-canonica-src-rackcad-plugin-bin-debug-net8-0-windows-rackcad-plugin-dll ·
+    sus-datos-build-sha-upstream-run-de-ci-ruta-sha256-tamano-fecha-y-versiones-se-reportan-FUERA-de-git-no-se-hace-commit-para-registrar-el-hash ·
+    los-CUATRO-dll-anteriores-permanecen-OBSOLETOS ·
     OBSOLETO-el-de-9a87c7c-sha256-8fcf4c92a353f8953ad110f472846506ec4f93846babb61475bd4faf7ae751f4-validado-y-RECHAZADO-en-la-confirmacion-final ·
     OBSOLETO-el-de-2641830-sha256-3034b908ce7593ea7ff9ed1c5b0db57b40f77c486b2a24b32556e8381af4b111-validado-y-RECHAZADO-en-el-round-3 ·
     OBSOLETO-el-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-validado-y-RECHAZADO-en-el-round-2 ·
@@ -257,13 +271,15 @@ gates:
     required: true
     note: >-
       ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA ·
-      ninguna-validacion-abierta-hasta-revision-del-coordinador
+      REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-AUTORIZADA-sobre-los-21-puntos-obligatorios
+      de-la-seccion-10-del-contrato-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados
   owner_validation:
     required: true
     note: >-
-      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA-por-un-defecto-geometrico-residual-el-posterior-usaba-la-linea-de-troquel-in ·
-      el-gate-vuelve-a-estar-CERRADO-NO-hay-ninguna-validacion-abierta-y-los-CUATRO-dll-validados-quedan-OBSOLETOS ·
-      la-correccion-asimetrica-esta-hecha-con-evidencia-fallo-paso-y-espera-revision-del-coordinador
+      ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA ·
+      REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-AUTORIZADA-tras-la-aprobacion-tecnica-final-del-code-sha-f911d75-sobre-el-head-6354733-con-ci-30226117429-verde ·
+      NO-se-numera-como-otro-round-porque-max-attempts-ya-se-agoto-y-esto-no-es-un-intento-de-la-automatizacion ·
+      exige-un-DLL-NUEVO-compilado-con-autocad-cerrado-desde-la-punta-publicada-los-CUATRO-dll-anteriores-siguen-OBSOLETOS
   plugin_build:
     required: true
     note: RESUELTO-0-errores-2-advertencias-conocidas-con-autocad-CERRADO-verificado-antes-de-compilar
