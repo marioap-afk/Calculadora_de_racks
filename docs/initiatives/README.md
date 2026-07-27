@@ -267,8 +267,20 @@ Planes disponibles:
   en blanco**; al **seleccionar** un frente en blanco la selección sigue siendo válida pero se deshabilitan
   los controles de nivel/celda y los alcances, y reactivarlo restaura la edición de inmediato. Fuera de
   alcance: Selectivo, **PB-001**, **PB-007**, **PB-011**, I-23, I-25 (declaradas en `conflicts_with`),
-  catálogos, DWG y el shell visual. `requires_autocad: true`, `requires_owner_validation: true`;
-  `requires_owner_decision: false`. Estado versionado en
+  catálogos, DWG y el shell visual. En los **diálogos de seguridad** las celdas de nivel de un frente en
+  blanco son **inexistentes** y su configuración guardada se preserva **dormida**; la forma de la rejilla
+  del desviador y la visibilidad del **selector de lado** quedan **desacopladas**. Incorpora además
+  —**decisión del Owner**— que la **frontera compartida por dos frentes en blanco NO existe**: los dos
+  bordes exteriores existen siempre y una interior existe salvo que sus **dos** frentes adyacentes estén en
+  blanco, así que una corrida de N blancos pierde sus **N−1** fronteras interiores; desaparece el **ensamble
+  físico** (poste, placa, cabecera/separador, postes derivados y refuerzos, el corte lateral entero, su
+  parte del BOM y su seguridad por poste) y **nunca el frente lógico** —índices, claros, ancho, largo total
+  y coordenadas X se conservan—, con `DynamicFrontActivation.BoundaryExists` como autoridad única.
+  `requires_autocad: true`, `requires_owner_validation: true`; `requires_owner_decision: false`.
+  **INTEGRADA (2026-07-27)**: el Owner **aprobó** toda la validación manual, incluida la ronda focalizada de
+  fronteras físicas, sobre el candidato `b840cfe` (CI 30240730244, 4/4); **sin rebase** (`origin/main` no
+  avanzó desde la base `0e505d8`); integrada por `git merge --no-ff`; rama y worktree eliminados tras la CI
+  post-merge verde. Estado versionado en
   [`../automation/state/I-33.yml`](../automation/state/I-33.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.

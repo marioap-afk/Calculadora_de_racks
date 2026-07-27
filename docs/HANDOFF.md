@@ -25,6 +25,37 @@ aprobado visualmente.
 **I-32 corrige ese Push Back a partir del reporte del Owner y está INTEGRADA en `main` desde el
 2026-07-27** (merge `--no-ff` `236619d`, CI verde en los cuatro jobs, run 30228331452).
 
+**I-33** (`feature/frente-en-blanco`) queda **integrada** el **2026-07-27**. Implementa **PB-014**, el
+**frente en blanco** para el **Dinámico** y **Push Back**; la decisión de alcance que `ideas-futuras.md`
+exigía la dio el Owner al abrir la iniciativa (aplica a esos dos sistemas, **no** al Selectivo). Un frente
+pasa a tener estado **Activo / En blanco**: en blanco **conserva su claro y su estructura**, **sigue
+desplazando** a los frentes posteriores y **no lleva ningún nivel ni componente de carga** —ni larguero
+IN/OUT, ni intermedio, ni cama, ni larguero posterior o tope de Push Back, ni seguridad indexada por
+nivel— en ninguna de las cuatro vistas ni en los dos BOM, mientras su configuración queda **dormida** para
+reactivarlo intacto, **sin celda falsa**. La regla vive en **una** autoridad pura de Application,
+`DynamicFrontActivation`, sobre la **estructura dinámica que Push Back compone**, así que los dos sistemas
+no pueden divergir; para un frente activo devuelve el histórico `Math.Max(1, LoadLevels)`, de modo que un
+rack sin frentes en blanco **no cambia en nada** y **serializa igual que antes** (la bandera se omite del
+wire, no se escribe `null`). Los documentos legacy cargan **todos los frentes activos**; un payload
+explícitamente todo-en-blanco se **rechaza con error visible** (resolver y `RackDesignValidation`, mensaje
+único) y **nada se normaliza en silencio** —el editor lo previene de forma **no destructiva**, negándose a
+blanquear el último frente activo—. Al **seleccionar** un frente en blanco la selección sigue siendo válida
+pero se **deshabilitan** los controles de nivel/celda y los alcances ligados a celda, con el motivo
+visible; en los **diálogos de seguridad** sus celdas de nivel son **inexistentes** (no seleccionables ni
+aplicables) y su configuración guardada se preserva **dormida** (`SafetyDormantCells`), volviendo intacta
+al reactivar. La forma de la rejilla del desviador y la visibilidad del **selector de lado** quedan
+**desacopladas** (el Dinámico conserva el selector y recibe además su lista por poste; Push Back lo apaga
+explícitamente). Por **decisión del Owner**, la **frontera compartida por dos frentes en blanco NO
+existe**: los dos bordes exteriores existen siempre y una interior existe salvo que sus **dos** frentes
+adyacentes estén en blanco, así que una corrida de N blancos conserva solo sus dos fronteras exteriores y
+pierde sus **N−1** interiores; desaparece el **ensamble físico** (poste, placa, cabecera/separador, postes
+derivados y refuerzos, el corte lateral entero, su parte del BOM y su seguridad por poste) y **nunca el
+frente lógico** —índices, claros, ancho, **largo total y todas las coordenadas X** se conservan—. **No**
+toca Selectivo, catálogos, bloques DWG, el shell visual, I-23, I-25 ni la decisión pendiente sobre
+`DesviadorCellsAreByPost`. El Owner **aprobó la validación manual en AutoCAD 2025**, incluida la **ronda
+focalizada de fronteras físicas**, sobre el candidato `b840cfe`. `origin/main` **no avanzó** desde la base
+`0e505d8`: **sin rebase**. La rama se integra por `git merge --no-ff` en esta sesión.
+
 I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
 `ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
 La iniciativa reorganizó documentación y no cambió comportamiento de producto.
@@ -594,6 +625,20 @@ del candidato: run `30108459424` **success** sobre `b638653`. `origin/main` **no
 `40a2c8e`, así que la validación vale sobre el árbol integrado (WORKFLOW §6): sin rebase final. La rama
 se integra por `git merge --no-ff` en esta sesión.
 
+I-33 (`feature/frente-en-blanco`) **sí** requiere validación en AutoCAD (`requires_autocad: true`): cambia
+lo que se dibuja y lo que se cotiza en los dos sistemas. El Owner **aprobó la validación manual en AutoCAD
+2025** sobre el candidato **`b840cfe24578bc9faa3b13dad8b11d90d47aad84`** (DLL Debug del worktree, CI del
+candidato run `30240730244` **success** 4/4), **incluida la ronda focalizada de fronteras físicas** que él
+mismo dirigió tras revisar el primer resultado: un frente en blanco aislado conserva sus dos postes; dos
+frentes en blanco contiguos pierden **el poste que comparten** —con su placa, cabecera, separador, postes
+derivados y refuerzos— en frontal, planta y lateral (ese corte deja de dibujarse) y el BOM baja exactamente
+esas piezas; tres seguidos pierden dos postes; los blancos **alternados** no pierden ninguno; el rack **no
+se encoge** (ancho, largo total y posiciones idénticos); reactivar cualquiera de los dos frentes devuelve el
+poste, sus piezas y sus celdas de seguridad. La **owner-validation** quedó **aprobada**
+(`requires_owner_validation: true`). `origin/main` **no avanzó** desde la base `0e505d8`, así que la
+validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**. La rama se integra por
+`git merge --no-ff` en esta sesión.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -630,6 +675,34 @@ se integra por `git merge --no-ff` en esta sesión.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### I-33 — INTEGRADA en `main` (2026-07-27)
+
+El Owner **aprobó toda la validación manual**, incluida la **ronda focalizada de fronteras físicas**. La
+iniciativa queda **integrada**; no queda acción pendiente de I-33.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `feature/frente-en-blanco` |
+| **CODE_SHA / BUILD_SHA aprobado** por el Owner | `b840cfe24578bc9faa3b13dad8b11d90d47aad84` |
+| CI del candidato | **30240730244**, 4/4 sobre `b840cfe` |
+| Punta de la rama antes del commit documental | `caaad8851780fb0ff33fc3de1fe5866850db4515` (CI **30240912689**, 4/4) — delta contra `b840cfe`: **solo** `docs/automation/state/I-33.yml`, sin cambio de binario |
+| **DLL Debug** verificado en el cierre | `AssemblyInformationalVersion = 1.0.0+caaad8851780fb0ff33fc3de1fe5866850db4515`, SHA-256 `51F3FA7F6A9957EFF70689C782790A2C22644F882334FF7092569D73C21A7509` |
+| Suites al integrar | **1522** `RackCad.Tests` + **398** `RackCad.UI.Tests`, cero fallos, cero omitidas |
+| Builds Debug | UI 0 errores / 0 advertencias; Plugin 0 errores y 2 `MSB3277` conocidos, con AutoCAD cerrado |
+| Rebase | **no necesario**: `origin/main` no avanzó desde la base `0e505d8` |
+| **MERGE_SHA** | vive en `git log --first-parent main`; este documento **no lo inventa** (se escribe antes del merge) |
+| Limpieza | rama local, rama remota y worktree **eliminados** tras la CI post-merge verde |
+
+Qué dejó integrado: el **frente en blanco** (PB-014) para el **Dinámico** y **Push Back**, con la autoridad
+única `DynamicFrontActivation` y —decisión del Owner— la **frontera compartida por dos frentes en blanco
+que no existe**. El detalle funcional completo está en §1 y el contrato en
+[`initiatives/I-33-frente-en-blanco.md`](initiatives/I-33-frente-en-blanco.md).
+
+**Deuda que hereda quien siga:** la decisión sobre `DesviadorCellsAreByPost` del **Dinámico** sigue
+**pendiente del Owner** — I-33 corrigió la **forma** de la rejilla del desviador (ya recibe la lista por
+poste), pero la **lectura de la celda** en el dibujo continúa siendo por frente. Registrada en
+`ideas-futuras.md`.
 
 ### I-32 — INTEGRADA en `main` (2026-07-27)
 
@@ -713,7 +786,32 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-31 — 2026-07-24:**
+**Baseline integrada de I-33 — 2026-07-27** (la vigente):
+
+- candidato de **código** aprobado por el Owner en AutoCAD y por CI:
+  `b840cfe24578bc9faa3b13dad8b11d90d47aad84` (CI run `30240730244`, **success** 4/4). La punta de la rama
+  antes del commit documental fue `caaad8851780fb0ff33fc3de1fe5866850db4515` (CI run `30240912689`,
+  **success** 4/4); su delta contra el candidato es **solo** `docs/automation/state/I-33.yml`, así que el
+  binario validado y el integrado son el mismo árbol de código. Este documento **no inventa** el SHA del
+  merge: vive en `git log --first-parent main`;
+- **DLL Debug** verificado en el cierre:
+  `AssemblyInformationalVersion = 1.0.0+caaad8851780fb0ff33fc3de1fe5866850db4515` (el sufijo `+<sha>`
+  **coincide con el SHA exacto de la rama**), SHA-256
+  `51F3FA7F6A9957EFF70689C782790A2C22644F882334FF7092569D73C21A7509`, ruta
+  `…-feature-frente-en-blanco\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`;
+- suites completas **verdes**: **1522** `RackCad.Tests` + **398** `RackCad.UI.Tests`, cero fallos y cero
+  omitidas. Las nuevas de I-33 son `BlankFrontTests` (28), `BlankFrontSafetyTests` (9) y
+  `BlankFrontBoundaryTests` (15) en el core, más `BlankFrontEditorTests` (8), `BlankFrontSafetyGridTests`
+  (11) y `BlankFrontDesviadorHandoffTests` (14) en UI;
+- **filtros dirigidos**, todos con conteo no cero: core `BlankFront` 52, `BlankFrontBoundaryTests` 15,
+  validador de catálogos 25, `PushBack` 444, `Dynamic` 197, `Selective` 324, `Persistence` 119; UI
+  `BlankFront` 33, `Safety` 46, `Dynamic` 38, `PushBack` 129, `Selective` 32;
+- **builds Debug**: UI 0 errores / 0 advertencias; Plugin 0 errores con los 2 `MSB3277` conocidos, con
+  AutoCAD cerrado;
+- **catálogos intactos**: `git diff origin/main..HEAD -- assets/` vacío y el validador conserva su baseline
+  aprobado.
+
+**Baseline anterior de I-31 — 2026-07-24:**
 
 - candidato de **código** validado por el Owner en AutoCAD y por CI:
   `b638653b10bdba5cd5c1d9f814f196c177f18c3e` (CI run `30108459424`, **success**); el commit documental

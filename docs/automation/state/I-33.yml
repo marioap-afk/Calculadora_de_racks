@@ -3,14 +3,23 @@ automation_state:
   initiative: I-33
   branch: feature/frente-en-blanco
   claim_id: 3a040262-d2b7-47cb-a870-b628bc972141
-  current_phase: 1
-  state: implementing
-  gate: owner-validation
+  current_phase: 10
+  state: integrated
+  gate: none
   attempts: 1
-  next_action: >-
-    validacion-manual-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree ·
-    los-14-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
-  integration: NO-INTEGRADA-la-rama-y-el-worktree-siguen-vivos-a-la-espera-del-gate-manual
+  next_action: NINGUNA-i-33-esta-cerrada-integrada-en-main-y-limpiada
+  owner_approval: >-
+    el-Owner-APROBO-toda-la-validacion-manual-en-AutoCAD-2025-incluida-la-RONDA-FOCALIZADA-DE-FRONTERAS-FISICAS-que-el-mismo-dirigio ·
+    candidato-aprobado-b840cfe24578bc9faa3b13dad8b11d90d47aad84-CI-30240730244-4-de-4 ·
+    requires_owner_validation-true-CERRADO
+  integration: >-
+    INTEGRADA-en-main-2026-07-27-por-git-merge-no-ff-sobre-la-punta-remota-sin-squash-sin-force-sin-fast-forward-y-sin-PR ·
+    SIN-REBASE-origin-main-no-avanzo-desde-la-base-0e505d8-asi-que-la-validacion-del-Owner-vale-sobre-el-arbol-integrado-WORKFLOW-6 ·
+    el-MERGE_SHA-y-su-CI-post-merge-viven-en-git-log-first-parent-main-este-archivo-se-escribe-ANTES-del-merge-y-no-los-inventa
+  cleanup_plan: >-
+    tras-la-CI-post-merge-VERDE-eliminar-worktree-feature-frente-en-blanco-rama-local-y-rama-remota-y-correr-git-worktree-prune ·
+    confirmar-arbol-limpio-sin-stashes-y-main-igual-a-origin-main ·
+    NO-tocar-ninguna-otra-rama-ni-worktree-el-unico-worktree-restante-debe-ser-el-principal-del-Owner
 
 # --------------------------------------------------------------------------------------------------------
 # EL CANDIDATO. Hay UNO SOLO y es este; cualquier SHA anterior de la rama queda superado y NO es candidato.
@@ -25,6 +34,10 @@ candidate:
     <worktree>/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
   dll_informational_version: 1.0.0+b840cfe24578bc9faa3b13dad8b11d90d47aad84
   dll_sha256: 5A88FA02711457CB5C0AC507EB86A0C8FA8C4CB622195BBEC5F03CB227A2B3DF
+  final_branch_tip: >-
+    caaad8851780fb0ff33fc3de1fe5866850db4515-CI-30240912689-4-de-4 ·
+    su-delta-contra-el-candidato-es-SOLO-docs-automation-state-I-33-yml-asi-que-el-codigo-validado-y-el-integrado-son-el-mismo-arbol ·
+    DLL-del-cierre-estampado-1-0-0-mas-caaad8851780fb0ff33fc3de1fe5866850db4515-SHA256-51F3FA7F6A9957EFF70689C782790A2C22644F882334FF7092569D73C21A7509
   binding: >-
     el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-candidato-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol
   note_on_this_file: >-
@@ -68,7 +81,8 @@ evidence:
     fallaban-las-de-comportamiento-frontal-lateral-planta-BOM-dinamico-y-push-back-round-trip-snapshot-y-dormancia ·
     pasaban-las-2-de-autoridad-y-las-6-guardas-de-estructura-que-deben-pasar-antes-y-despues-porque-afirman-que-la-estructura-NO-cambia
   tests: >-
-    rackcad-tests-1522-de-1522 · rackcad-ui-tests-398-de-398 · cero-fallos-cero-omitidas-en-ambas
+    rackcad-tests-1522-de-1522 · rackcad-ui-tests-398-de-398 · cero-fallos-cero-omitidas-en-ambas ·
+    reverificadas-en-la-sesion-de-integracion-sobre-la-punta-caaad88
   targeted_filters: >-
     core-BlankFront-52-de-52 · core-BlankFrontBoundaryTests-15-de-15 ·
     core-CatalogValidatorTests-mas-CatalogManifestGuardTests-25-de-25-baseline-del-catalogo-distribuido-intacto ·
@@ -140,4 +154,4 @@ evidence:
 gates:
   ci: VERDE-4-de-4-run-30240730244-sobre-el-SHA-del-candidato-b840cfe24578bc9faa3b13dad8b11d90d47aad84
   plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-b840cfe24578bc9faa3b13dad8b11d90d47aad84-SHA256-5A88FA02711457CB5C0AC507EB86A0C8FA8C4CB622195BBEC5F03CB227A2B3DF
-  owner_validation: PENDIENTE-14-puntos-en-la-seccion-8-del-contrato
+  owner_validation: APROBADA-los-14-puntos-de-la-seccion-8-del-contrato-incluida-la-ronda-focalizada-de-fronteras-fisicas

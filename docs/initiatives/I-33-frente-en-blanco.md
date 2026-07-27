@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-33
 title: Frente en blanco para Dinamico y Push Back
 type: feature
-status: implementing
+status: integrated
 branch: feature/frente-en-blanco
 base_branch: main
 priority:
@@ -307,7 +307,11 @@ Cubren, ademas del contrato de dibujo y BOM:
   la seguridad del poste ausente no se mueve de indice ni se borra y vuelve al reactivar; round-trip de
   persistencia; y un rack sin frentes en blanco intacto.
 
-## 8. Validacion manual en AutoCAD (pendiente del Owner)
+## 8. Validacion manual en AutoCAD — APROBADA por el Owner (2026-07-27)
+
+El Owner **aprobo toda la validacion manual**, incluida la **ronda focalizada de fronteras fisicas** que el
+mismo dirigio (punto 11). Candidato aprobado: **`b840cfe24578bc9faa3b13dad8b11d90d47aad84`**, CI del
+candidato run **30240730244** 4/4. Los catorce puntos quedan cerrados.
 
 1. Dinamico con 3 frentes: marcar «En blanco» el del medio ⇒ el rack **no encoge**, los postes siguen a la
    misma altura y en la misma X, los frentes posteriores no se mueven.
