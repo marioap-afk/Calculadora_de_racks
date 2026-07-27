@@ -3,17 +3,49 @@ automation_state:
   initiative: I-35
   branch: feature/editor-avanzado-push-back
   claim_id: 52940bec-3af4-42a3-a6e8-301bcb902624
-  current_phase: 4
-  state: waiting
-  gate: owner-decision
+  current_phase: 6
+  state: implementing
+  gate: none
   attempts: 1
   next_action: >-
-    DECISION-DEL-OWNER-antes-de-implementar-la-UI-avanzada-tres-preguntas-en-la-seccion-12-del-contrato ·
-    a-el-eje-de-personalizacion-los-modulos-son-UNA-secuencia-de-RACK-no-por-frente-ni-por-poste ·
-    b-la-politica-de-reconciliacion-conservar-o-descartar-avisando-la-cabecera-personalizada ·
-    c-si-el-configurador-compartido-debe-ganar-Aceptar-Cancelar-o-si-basta-la-sesion-transaccional-de-Push-Back ·
-    NO-implementar-la-UI-avanzada-antes-de-esa-decision
-  last_evidence_commit: e4137e8336707ec3024e1cd2df178fa0413c4bf5
+    ADOPCION-de-la-fundacion-por-PushBackEditorState-y-PushBackEditorDesignAssembler-y-superficie-avanzada-en-la-ventana ·
+    el-gate-owner-decision-quedo-CERRADO-por-las-cinco-decisiones-de-la-seccion-0-del-contrato
+  last_evidence_commit: 4def89a6dbc86e581d29a8b8ca88551e1d905eee
+
+# --------------------------------------------------------------------------------------------------------
+# DECISIONES DEL OWNER. Cierran el gate owner-decision de la sesion de apertura y son normativas.
+# --------------------------------------------------------------------------------------------------------
+owner_decisions:
+  d1_eje: >-
+    la-personalizacion-es-por-MODULO-LONGITUDINAL-DE-RACK-NUNCA-por-frente-ni-por-poste ·
+    coincide-con-lo-que-el-modelo-soporta-DynamicRackSystem-Modules-es-UNA-sola-secuencia-compartida
+  d2_correspondencia: >-
+    en-recomputaciones-estructurales-una-personalizacion-se-conserva-UNICAMENTE-con-correspondencia-exacta-ModuleId-mas-Kind ·
+    se-retira-el-emparejamiento-por-ORDINAL-que-ademas-aterrizaba-la-edicion-de-un-modulo-en-OTRO-al-desplazarse-la-secuencia
+  d3_perdida_explicita: >-
+    un-modulo-ELIMINADO-o-cuyo-TIPO-cambio-pierde-su-personalizacion-de-forma-EXPLICITA-y-REPORTABLE ·
+    uno-NUEVO-nace-calculado ·
+    nada-se-pierde-en-silencio
+  d4_sin_discard: >-
+    NO-existe-politica-ordinaria-Discard ·
+    el-descarte-solo-ocurre-por-RESTAURACION-EXPLICITA-individual-o-total-o-por-INCOMPATIBILIDAD-ESTRUCTURAL ·
+    el-enum-publico-RackModuleCustomizationPolicy-queda-ELIMINADO
+  d5_configurador: >-
+    RackFrameConfiguratorWindow-NO-se-modifica ·
+    confirmar-y-cancelar-pertenecen-a-la-SESION-y-a-la-superficie-de-PUSH-BACK ·
+    el-configurador-compartido-se-abre-sobre-una-COPIA-y-su-resultado-se-acepta-o-se-descarta-desde-fuera
+
+contract_corrections:
+  dos_bom: >-
+    CORREGIDO-Push-Back-tiene-UN-BOM-PushBackBomBuilder-Build-el-unico-que-consumen-el-editor-y-PushBackKindHandler ·
+    la-formula-los-dos-BOM-venia-de-I-33-donde-el-alcance-eran-DOS-SISTEMAS-con-un-BOM-cada-uno ·
+    RACKBOMTOTAL-no-es-un-segundo-BOM-del-rack-agrega-los-de-todos-los-racks-colocados
+  checklist_separadores: >-
+    CORREGIDO-el-punto-decia-cantidad-y-separacion-se-respetan-que-son-overrides-de-RACK-del-Dinamico-SeparatorCountOverride-y-SeparatorSpacingOverride-y-NO-propiedades-del-modulo ·
+    ahora-dice-que-un-separador-seleccionado-ofrece-UNICAMENTE-su-longitud-fisicamente-consumida-y-su-restauracion
+  regla_roadmap_handoff: >-
+    CORREGIDO-decir-esta-rama-no-los-toca-nunca-era-incorrecto ·
+    lo-correcto-WORKFLOW-4-5-4-y-8-es-que-NINGUNA-SESION-DE-IMPLEMENTACION-los-toca-pero-SI-se-editan-en-esta-MISMA-rama-como-ULTIMO-commit-en-su-sesion-de-integracion-para-que-el-merge-lleve-los-docs-consigo
 
 # --------------------------------------------------------------------------------------------------------
 # ALCANCE ENTREGADO EN LA SESION DE APERTURA. NO se implemento la UI avanzada de Push Back (prohibido por
@@ -87,8 +119,7 @@ gates:
   owner_validation: >-
     ABIERTO-checklist-de-10-puntos-en-la-seccion-10-del-contrato
   owner_decision: >-
-    ABIERTO-y-BLOQUEANTE-tres-preguntas-en-la-seccion-12-del-contrato ·
-    eje-de-personalizacion-politica-de-reconciliacion-y-Aceptar-Cancelar-del-configurador-compartido
+    CERRADO-las-cinco-decisiones-viven-en-owner_decisions-y-en-la-seccion-0-del-contrato
 
 documentary_gate: >-
   el-indice-de-docs-initiatives-exige-que-un-contrato-no-invente-alcance-ausente-del-ROADMAP-e-I-35-NO-tiene-fila-en-ROADMAP ·

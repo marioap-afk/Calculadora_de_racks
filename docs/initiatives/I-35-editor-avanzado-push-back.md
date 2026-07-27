@@ -16,7 +16,7 @@ decision_paths: []
 requires_ci: true
 requires_plugin_build: true
 requires_autocad: true
-requires_owner_decision: true
+requires_owner_decision: false
 requires_owner_validation: true
 automation:
   enabled: true
@@ -32,10 +32,35 @@ automation:
 >
 > **Gate documental abierto.** El indice de esta carpeta exige que «un contrato no invente alcance
 > ausente del ROADMAP», y **I-35 todavia no tiene fila en `docs/ROADMAP.md`**. La apertura la
-> autorizo el Owner por instruccion directa, que ademas prohibio expresamente editar ROADMAP y
-> HANDOFF en esta sesion (los dos son archivos calientes que WORKFLOW seccion 4.5.4 reserva para la
-> sesion de integracion). La procedencia documental del alcance es **PB-011 en `ideas-futuras.md`**.
-> **La fila del ROADMAP la escribe el Owner o la sesion de integracion; esta rama no la toca.**
+> autorizo el Owner por instruccion directa. La procedencia documental del alcance es **PB-011 en
+> `ideas-futuras.md`**.
+>
+> **La regla de ROADMAP y HANDOFF, dicha bien** (WORKFLOW secciones 4.5.4 y 8): los dos son archivos
+> calientes que **NO** se tocan desde una sesion de implementacion ni desde una rama paralela, pero
+> **SI** se editan **en esta misma rama, como ULTIMO commit, en su sesion de integracion** —ahi se
+> marca la iniciativa en el ROADMAP y se actualiza HANDOFF, de modo que el merge lleve los docs
+> consigo—. Decir «esta rama no los toca nunca» era incorrecto: lo correcto es que **ninguna sesion
+> de implementacion los toca**, y esta sesion es de implementacion. El Owner ademas lo prohibio
+> explicitamente para la sesion de apertura.
+
+## 0. Decisiones del Owner (cerradas)
+
+El gate `owner-decision` que la sesion de apertura dejo abierto quedo **resuelto**. Estas cinco
+decisiones son normativas para el resto de la iniciativa:
+
+1. **La personalizacion es por MODULO LONGITUDINAL DE RACK, nunca por frente ni por poste.** Es lo
+   que el modelo soporta (`DynamicRackSystem.Modules` es una sola secuencia compartida) y lo que el
+   Owner quiere. No se introduce ningun eje por frente ni por poste.
+2. **En una recomputacion estructural, una personalizacion se conserva unicamente cuando existe
+   correspondencia exacta `ModuleId + Kind`.** Se retira el emparejamiento por ordinal.
+3. **Un modulo eliminado, o cuyo tipo cambio, pierde su personalizacion de forma explicita y
+   reportable; uno nuevo nace calculado.** Nada se pierde en silencio.
+4. **No existe una politica ordinaria `Discard`.** El descarte solo ocurre por **restauracion
+   explicita** (individual o total) o por **incompatibilidad estructural** (los dos casos del punto
+   3). La politica publica `Preserve/Discard` queda **eliminada**.
+5. **`RackFrameConfiguratorWindow` no se modifica.** Confirmar y cancelar pertenecen a la **sesion**
+   y a la **superficie de Push Back**; el configurador compartido se abre sobre una **copia** y su
+   resultado se acepta o se descarta desde fuera.
 
 ## 1. Objetivo
 
@@ -45,8 +70,15 @@ que la personalizacion se pierda en silencio en el siguiente recalculo y sin cam
 de comportamiento del Dinamico ni del Selectivo.
 
 Resultado verificable: sobre un Push Back con una cabecera personalizada, un cambio de tarima o de
-fondos **conserva** esa cabecera y su procedencia, las cuatro vistas y los dos BOM la reflejan, el
-round-trip la persiste, y existe una restauracion explicita que la descarta a peticion del usuario.
+fondos **conserva** esa cabecera y su procedencia, las **cuatro vistas** (lateral, frontal de
+entrada/salida, frontal posterior y planta) y **el BOM** de Push Back la reflejan, el round-trip la
+persiste, y existe una restauracion explicita que la descarta a peticion del usuario.
+
+> **Nota de precision.** Push Back tiene **UN** BOM —`PushBackBomBuilder.Build`, el unico que
+> consumen el editor y `PushBackKindHandler`—. La formula «los dos BOM» viene de I-33, donde el
+> alcance eran **dos sistemas** (Dinamico y Push Back) con **un** BOM cada uno; trasladarla a I-35,
+> cuyo alcance es solo Push Back, era un error de este contrato y queda corregido. El consolidado
+> `RACKBOMTOTAL` no es un segundo BOM del rack: agrega los de todos los racks colocados.
 
 ## 2. Problema
 
@@ -133,7 +165,8 @@ no se resuelve copiando el editor Dinamico.
 - Cualquier clon de `RackFrameConfiguration` que no sea `RackFrameProjectStore.DeepCopy` (I-17).
 - El **preview visual**, diferido por I-18 a una iniciativa transversal futura.
 - I-23 (namespaces) e I-25 (guardas traseras).
-- `docs/ROADMAP.md` y `docs/HANDOFF.md`: prohibidos por instruccion del Owner en esta sesion y
+- `docs/ROADMAP.md` y `docs/HANDOFF.md`: no se tocan desde ninguna sesion de IMPLEMENTACION (esta lo
+  es), y
   reservados por WORKFLOW seccion 4.5.4 a la sesion de integracion.
 
 ## 5. Contexto requerido
@@ -173,26 +206,27 @@ Conflictos que deben permanecer inactivos sobre el codigo:
   al integrar como en I-05/I-19/I-22/I-24.
 - **I-23** (namespaces) e **I-25** (guardas traseras) siguen `pendiente`, sin rama.
 
-Entradas del Owner que deben existir antes de implementar la UI (seccion 12).
+Las entradas del Owner exigidas por la seccion 12 ya existen: la seccion 0 las recoge.
 
 ## 7. Archivos esperados
 
 Crear (Application, fundacion neutral):
 
 - `src/RackCad.Application/Systems/RackModuleDescriptor.cs`
-- `src/RackCad.Application/Systems/RackModuleEditSession.cs`
-- `src/RackCad.Application/Systems/RackModuleReconciliation.cs`
+- `src/RackCad.Application/Systems/RackModuleEditSession.cs` (+ `RackModuleCommit`)
+- `src/RackCad.Application/Systems/RackModuleReconciliation.cs` (+ `RackModuleReconciliationResult`)
 
 Crear (pruebas):
 
 - `tests/RackCad.Tests/PushBackModuleEditorCharacterizationTests.cs`
 - `tests/RackCad.Tests/RackModuleEditSessionTests.cs`
+- `tests/RackCad.Tests/PushBackModuleAdoptionTests.cs`
+- `tests/RackCad.UI.Tests/PushBackModuleEditorWindowTests.cs`
 
-Modificar mas adelante (fases 3 y siguientes, **no** en esta sesion):
+Modificar:
 
-- `src/RackCad.UI/RackPushBackSystemWindow.xaml` y `.xaml.cs`
 - `src/RackCad.Application/Systems/PushBackEditorState.cs` y `PushBackEditorDesignAssembler.cs`
-- `tests/RackCad.UI.Tests/PushBackEditor*Tests.cs`
+- `src/RackCad.UI/RackPushBackSystemWindow.xaml` y `.xaml.cs`
 
 Documentacion: este contrato, `docs/initiatives/README.md`,
 `docs/automation/state/I-35.yml` y `docs/ideas-futuras.md`.
@@ -208,15 +242,16 @@ Una desviacion material —en particular tocar `RackDynamicSystemWindow`, `RackS
    **pasan sobre la base**, cada una verificada **en rojo** al invertir deliberadamente lo que
    afirma. **HECHA.**
 3. **Fundacion neutral** en Application, pura, cubierta y **sin conectar** a la ventana. **HECHA.**
-4. **Decision del Owner** (seccion 12) sobre el eje de personalizacion y la politica de
-   reconciliacion. **PENDIENTE — gate.**
-5. Adopcion de la fundacion por `PushBackEditorState`/`PushBackEditorDesignAssembler`, con la
-   reconciliacion que preserva configuracion y procedencia y con la regresion en rojo previa.
-6. Superficie de edicion por modulo en `RackPushBackSystemWindow` sobre el shell de I-30, mas
+4. **Decision del Owner** (seccion 0). **RESUELTA.**
+5. **Correccion de la fundacion a esas decisiones**: reconciliacion por `ModuleId + Kind`, longitud
+   manual en cabeceras y separadores, adaptacion de `Depth` y peralte, restauracion individual
+   completa, sin politica publica de descarte y con reporte por categoria. **HECHA.**
+6. Adopcion de la fundacion por `PushBackEditorState`/`PushBackEditorDesignAssembler`.
+7. Superficie de edicion por modulo en `RackPushBackSystemWindow` sobre el shell de I-30, mas
    «Restaurar estandar» consumiendo el `forceRebuild` existente.
-7. Revision de la dependencia del hecho 4 (alto de tarima general inerte, PB-013) con su prueba.
-8. Round-trip y persistencia: DTO, cuatro vistas, dos BOM e interaccion con I-33.
-9. Cierre: suite completa, builds Debug, CI verde, validacion manual del Owner en AutoCAD 2025.
+8. Revision de la dependencia del hecho 4 (alto de tarima general inerte, PB-013) con su prueba.
+9. Round-trip y persistencia: DTO, cuatro vistas, BOM e interaccion con I-33.
+10. Cierre: suite completa, builds Debug, CI verde, validacion manual del Owner en AutoCAD 2025.
 
 ## 9. Pruebas y builds
 
@@ -239,16 +274,24 @@ bugfix posterior lleva su regresion **verificada en rojo** sin el fix (AGENTS.md
 la estructura que se dibuja. Checklist a ejecutar sobre el DLL Debug del worktree de I-35:
 
 1. Push Back nuevo: la secuencia de modulos y el dibujo son identicos a los de `main`.
-2. Personalizar la **medida** de un modulo: las cuatro vistas y los dos BOM la reflejan.
+2. Personalizar la **longitud** de un modulo: las **cuatro vistas** y **el BOM** la reflejan.
 3. Personalizar una **cabecera**: se conserva al recalcular sin cambio estructural.
-4. Cambiar **tarima o fondos** con una cabecera personalizada viva: se conserva (hecho 5 corregido).
-5. **Restaurar estandar**: descarta las personalizaciones, explicitamente y solo entonces.
-6. **Separadores**: cantidad y separacion se respetan.
-7. Round-trip `RACKEDITAR` con el **mismo GUID**; biblioteca y documento legacy.
-8. Interaccion con **I-33**: un frente en blanco y una frontera suprimida no rompen la edicion por
-   modulo ni la reconciliacion.
-9. El **alto de tarima general** sigue inerte como input (PB-013).
-10. El **Dinamico** y el **Selectivo** se comportan exactamente como antes.
+4. Cambiar **tarima o fondos** con una cabecera personalizada viva: se conserva y su fondo y peralte
+   quedan **adaptados** a la estructura nueva.
+5. **Restaurar** un modulo (individual) y **Restaurar estandar** (todo): descartan las
+   personalizaciones, explicitamente y solo entonces.
+6. **Separador seleccionado**: el editor ofrece **unicamente** su **longitud fisicamente consumida**
+   y su restauracion —no cantidad ni separacion, que son overrides de RACK del Dinamico y **no**
+   entran en I-35—. Cambiar esa longitud mueve la corrida longitudinal en las cuatro vistas.
+7. **Reduccion estructural**: al perder un modulo personalizado, el editor lo **reporta** por su id;
+   nada desaparece en silencio.
+8. Round-trip `RACKEDITAR` con el **mismo GUID**; biblioteca y documento legacy.
+9. Interaccion con **I-33**: un frente en blanco y una frontera suprimida no rompen la edicion por
+   modulo ni la reconciliacion, no se reactiva ningun frente y no reaparece ninguna frontera.
+10. El **alto de tarima general** sigue inerte como input (PB-013).
+11. El **Dinamico** y el **Selectivo** se comportan exactamente como antes.
+12. El **configurador de cabecera** se abre desde Push Back, y **Cancelar** en la ventana de Push
+    Back deja el diseno como estaba aunque el configurador se haya cerrado con cambios.
 
 ## 11. Criterios de aceptacion
 
@@ -261,7 +304,8 @@ la estructura que se dibuja. Checklist a ejecutar sobre el DLL Debug del worktre
 - `RackFrameProjectStore.DeepCopy` es el **unico** clon de `RackFrameConfiguration` que I-35 introduce.
 - Dinamico y Selectivo, byte a byte iguales en comportamiento; suite completa verde; builds Debug con
   0 errores propios; CI 4/4 sobre el SHA publicado.
-- `docs/ROADMAP.md` y `docs/HANDOFF.md` **sin tocar** por esta rama.
+- `docs/ROADMAP.md` y `docs/HANDOFF.md` **sin tocar por ninguna sesion de implementacion**; su
+  actualizacion es el ULTIMO commit de esta misma rama, en la sesion de integracion (WORKFLOW 4.5.4).
 
 ## 12. Condiciones para detenerse
 
@@ -270,23 +314,15 @@ la estructura que se dibuja. Checklist a ejecutar sobre el DLL Debug del worktre
    o si I-35 necesitara tocarlos.
 3. **Necesidad de editar una superficie reservada**: ROADMAP, HANDOFF, catalogos, bloques DWG,
    Selectivo o comportamiento del Dinamico.
-4. **Decision del Owner pendiente (gate abierto).** La auditoria establece que
-   `DynamicRackSystem.Modules` es **una sola secuencia longitudinal de rack**, compartida por todos
-   los frentes y todos los postes: los modulos recorren la profundidad (X) y las secciones laterales
-   solo miran un **rango** de esa misma lista (`DynamicDepthGeometry.ModulesInRange`). Por tanto
-   **personalizar un modulo personaliza el rack entero**, no un frente ni un poste. Si lo que el
-   Owner espera es personalizacion **por frente o por poste**, el modelo no la soporta y el alcance
-   deja de ser PB-011: hay que detenerse y decidir. Preguntas abiertas:
-   - a) La personalizacion por modulo, ¿es de rack (como en el Dinamico) o el Owner espera poder
-     variarla por frente o por poste?
-   - b) Cuando un cambio estructural obliga a reconstruir, ¿la cabecera personalizada se **conserva**
-     (correccion del hecho 5) o se **descarta** avisando? El Dinamico hoy la descarta en silencio y
-     I-35 **no puede cambiar el Dinamico**, asi que Push Back divergiria a proposito.
-   - c) ¿El configurador de cabecera debe ganar **Aceptar/Cancelar** (hecho 7)? Ganarlo cambiaria una
-     ventana **compartida** con el Dinamico, el Selectivo y la cabecera: fuera de alcance salvo
-     autorizacion explicita. La alternativa dentro de alcance es que la **sesion transaccional** de
-     Push Back revierta al cancelar, sin tocar el configurador.
-5. **Ambiguidad** de cualquier otro tipo que implique personalizacion por frente o por poste.
+4. **Cualquier ambiguedad que implique personalizacion por frente o por poste.** El gate de decision
+   que la sesion de apertura abrio quedo **CERRADO** por la seccion 0 —las tres preguntas (eje,
+   politica de reconciliacion y confirmar/cancelar del configurador) estan respondidas—, pero la
+   condicion de detencion sigue viva: `DynamicRackSystem.Modules` es **una sola secuencia
+   longitudinal de rack** y el modelo no soporta un eje por frente ni por poste. Si una peticion
+   futura lo exige, el alcance deja de ser PB-011 y hay que detenerse.
+5. **Necesidad de modificar `RackFrameConfiguratorWindow`.** La decision 5 lo prohibe: si confirmar,
+   cancelar o restaurar exigieran cambiarlo, hay que detenerse en vez de tocar una ventana compartida
+   con el Dinamico, el Selectivo y la cabecera.
 
 ## 13. Estado versionado y entrega del Pull Request
 
@@ -297,6 +333,7 @@ workstation, serializada, conforme a WORKFLOW seccion 4.5.
 
 ## 14. Evidencia final
 
-La evidencia de cada sesion vive en el cuerpo de sus commits y en el estado versionado; los conteos
-de pruebas y los SHA canonicos viven en `docs/HANDOFF.md`, que esta rama **no** toca. `main` no fue
+La evidencia de cada sesion vive en el cuerpo de sus commits y en el estado versionado. Los conteos
+de pruebas y los SHA canonicos viven en `docs/HANDOFF.md`, que **ninguna sesion de implementacion**
+toca: lo actualiza el ULTIMO commit de esta misma rama, en su sesion de integracion. `main` no fue
 modificada por esta iniciativa.
