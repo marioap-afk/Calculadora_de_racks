@@ -146,9 +146,11 @@ namespace RackCad.UI.Tests
                     var shell = (RackEditorVisualShell)w.Content;
 
                     // The dense WrapPanels that crammed the fields are gone: the only WrapPanels left in the sidebar are
-                    // the two BUTTON rows (front scopes and cell scopes), exactly like the dynamic editor.
+                    // BUTTON rows (front scopes, cell scopes and — since I-35 — the per-module confirm/cancel/restore
+                    // row), exactly like the dynamic editor. The invariant is "a WrapPanel holds buttons, never
+                    // fields"; the count is only a ceiling so a new one cannot slip in unnoticed.
                     var wrapPanels = Descendants(shell.SidebarScroll).OfType<WrapPanel>().ToList();
-                    Assert.True(wrapPanels.Count <= 2, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
+                    Assert.True(wrapPanels.Count <= 3, $"the sidebar must not cram fields into WrapPanels; found {wrapPanels.Count}");
                     Assert.All(wrapPanels, panel => Assert.All(
                         panel.Children.OfType<FrameworkElement>(),
                         child => Assert.IsType<Button>(child)));

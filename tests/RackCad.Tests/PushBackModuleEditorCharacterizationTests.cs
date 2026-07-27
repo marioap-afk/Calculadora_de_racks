@@ -327,41 +327,72 @@ namespace RackCad.Tests
         }
 
         /// <summary>
-        /// REGRESION de I-35: hoy NINGUN codigo fuera del Dinamico pide `forceRebuild: true`. Guardia por fuente —
-        /// lee el `.cs` de la UI como texto, sin cargar WPF ni AutoCAD (patron de I-05/I-33). La fase que anada
-        /// «Restaurar estandar» a Push Back debe INVERTIR esta asercion.
+        /// El hecho 3 INVERTIDO: Push Back ya tiene su «Restaurar estandar». No lo pide con el literal
+        /// <c>forceRebuild: true</c> —eso sigue siendo del Dinamico— sino a traves de la sesion, que declara la
+        /// INTENCION y deja que el ensamblador la traduzca; asi el boton no conoce el mecanismo del recalculo.
+        /// Guardia por fuente: lee los `.cs` y el `.xaml` como texto, sin cargar WPF ni AutoCAD (patron de I-05/I-33).
         /// </summary>
         [Fact]
-        public void Fact3_REGRESION_NoPushBackSurface_RequestsAForcedRebuild_Today()
+        public void Fact3_PushBackNowHasAStandardRestore_ExpressedAsAnIntent_NotAsTheRawFlag()
         {
             var pushBackWindow = File.ReadAllText(UiSourcePath("RackPushBackSystemWindow.xaml.cs"));
+            var pushBackXaml = File.ReadAllText(UiSourcePath("RackPushBackSystemWindow.xaml"));
             var dynamicWindow = File.ReadAllText(UiSourcePath("RackDynamicSystemWindow.xaml.cs"));
+            var assembler = File.ReadAllText(ApplicationSourcePath("PushBackEditorDesignAssembler.cs"));
 
-            Assert.DoesNotContain("forceRebuild", pushBackWindow);
-            Assert.Contains("forceRebuild: true", dynamicWindow);   // the only consumer in the product
+            Assert.Contains("RestoreAllModulesButton", pushBackXaml);
+            Assert.Contains("RequestStandardRestore()", pushBackWindow);
+            Assert.Contains("StandardRestoreRequested", assembler);          // the assembler translates the intent
+            Assert.Contains("forceRebuild: true", dynamicWindow);            // the dynamic editor keeps its own literal
+
+            // The window never PASSES the flag: it names the mechanism only in prose. Matching the named-argument
+            // form is what distinguishes a call from a comment.
+            Assert.DoesNotContain("forceRebuild:", pushBackWindow);
+            Assert.DoesNotContain("forceRebuild)", pushBackWindow);
         }
 
         // ===== Fact 1 — Push Back has no module surface =========================================================
 
         /// <summary>
-        /// REGRESION de I-35: el XAML de Push Back no tiene NINGUNA de las piezas con las que el Dinamico edita un
-        /// modulo. Comparar los dos XAML por los mismos nombres deja la carencia y su objetivo en una sola prueba;
-        /// la fase que anada la superficie debe INVERTIR la mitad de Push Back.
+        /// El hecho 1 INVERTIDO: Push Back ya tiene su superficie de edicion por modulo. NO es una copia de la del
+        /// Dinamico —los nombres son propios y la de Push Back es transaccional (confirmar/cancelar/restaurar), que
+        /// el Dinamico no tiene—, y no aparecen ni la cantidad ni la separacion de separadores, que son overrides de
+        /// RACK del Dinamico y quedan fuera de I-35.
         /// </summary>
         [Fact]
-        public void Fact1_REGRESION_ThePushBackXaml_HasNoneOfTheModuleEditingControls_TheDynamicOneHas()
+        public void Fact1_ThePushBackXaml_NowHasItsOwnModuleSurface_WithoutCopyingTheDynamicOne()
         {
             var pushBack = File.ReadAllText(UiSourcePath("RackPushBackSystemWindow.xaml"));
             var dynamicXaml = File.ReadAllText(UiSourcePath("RackDynamicSystemWindow.xaml"));
 
-            var moduleControls = new[]
+            // Push Back's own surface: single selection, length, provenance, configurator and the transaction.
+            foreach (var name in new[]
+                     {
+                         "AdvancedModulesToggle", "AdvancedModulesPanel", "ModuleBox", "ModuleLengthBox",
+                         "ModuleCalculatedRadio", "ModuleCustomRadio", "ConfigureModuleHeaderButton",
+                         "ConfirmModuleButton", "CancelModuleButton", "RestoreModuleButton"
+                     })
             {
-                "AdvancedPanel", "ModulesGrid", "ModuleLengthBox", "ConfigBox",
-                "ApplyModuleButton", "EditHeaderButton", "SeparatorCountBox", "SeparatorSpacingBox"
-            };
+                Assert.Contains(name, pushBack);
+            }
 
-            Assert.All(moduleControls, name => Assert.Contains(name, dynamicXaml));
-            Assert.All(moduleControls, name => Assert.DoesNotContain(name, pushBack));
+            // It did NOT copy the dynamic editor's controls...
+            foreach (var name in new[] { "AdvancedPanel", "ModulesGrid", "ConfigBox", "ApplyModuleButton", "EditHeaderButton" })
+            {
+                Assert.Contains(name, dynamicXaml);
+                Assert.DoesNotContain(name, pushBack);
+            }
+
+            // ...and the rack-wide separator overrides stay out of scope.
+            foreach (var name in new[] { "SeparatorCountBox", "SeparatorSpacingBox" })
+            {
+                Assert.Contains(name, dynamicXaml);
+                Assert.DoesNotContain(name, pushBack);
+            }
+
+            // The transaction is Push Back's alone: the dynamic editor has no confirm/cancel for a module edit.
+            Assert.DoesNotContain("ConfirmModuleButton", dynamicXaml);
+            Assert.DoesNotContain("CancelModuleButton", dynamicXaml);
         }
 
         // ===== Fact 7 — no confirm/cancel anywhere ==============================================================
@@ -458,16 +489,21 @@ namespace RackCad.Tests
 
         // ===== Fixtures ========================================================================================
 
-        private static string UiSourcePath(string fileName)
+        private static string UiSourcePath(string fileName) => SourcePath("RackCad.UI", fileName);
+
+        private static string ApplicationSourcePath(string fileName)
+            => SourcePath("RackCad.Application", Path.Combine("Systems", fileName));
+
+        private static string SourcePath(string project, string relative)
         {
             var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
-            while (directory != null && !Directory.Exists(Path.Combine(directory.FullName, "src", "RackCad.UI")))
+            while (directory != null && !Directory.Exists(Path.Combine(directory.FullName, "src", project)))
             {
                 directory = directory.Parent;
             }
 
             Assert.NotNull(directory);
-            var path = Path.Combine(directory.FullName, "src", "RackCad.UI", fileName);
+            var path = Path.Combine(directory.FullName, "src", project, relative);
             Assert.True(File.Exists(path), path);
             return path;
         }

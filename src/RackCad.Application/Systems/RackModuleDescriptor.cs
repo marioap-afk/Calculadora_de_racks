@@ -33,7 +33,8 @@ namespace RackCad.Application.Systems
             bool isCalculated,
             bool isManualOverride,
             bool usesCalculatedHeaderConfiguration,
-            bool hasHeaderConfiguration)
+            bool hasHeaderConfiguration,
+            bool isPhysicallyPresent)
         {
             ModuleId = moduleId;
             Index = index;
@@ -45,6 +46,7 @@ namespace RackCad.Application.Systems
             IsManualOverride = isManualOverride;
             UsesCalculatedHeaderConfiguration = usesCalculatedHeaderConfiguration;
             HasHeaderConfiguration = hasHeaderConfiguration;
+            IsPhysicallyPresent = isPhysicallyPresent;
         }
 
         /// <summary>Stable identity of the module inside its rack; the ONLY handle an editor should keep.</summary>
@@ -87,8 +89,20 @@ namespace RackCad.Application.Systems
         /// <summary>True when the cabecera of this module is the user's own and a recompute must not regenerate it.</summary>
         public bool HasCustomHeaderConfiguration => IsHeader && HasHeaderConfiguration && !UsesCalculatedHeaderConfiguration;
 
-        /// <summary>Describe one resolved module.</summary>
-        public static RackModuleDescriptor From(DynamicRackModule module)
+        /// <summary>
+        /// Whether the module has a physical assembly anywhere in the rack. A module is drawn at the POSTS whose depth
+        /// range covers its position, and I-33 suppresses the boundary shared by two blank fronts — so a module that
+        /// only ever appeared at suppressed posts exists LOGICALLY (index, length, coordinates) but is drawn nowhere,
+        /// and an editor must refuse to edit it and say why. Always true when described from an intent, which carries
+        /// no resolved geometry.
+        /// </summary>
+        public bool IsPhysicallyPresent { get; }
+
+        /// <summary>Describe one resolved module, assuming it is drawn somewhere. Prefer
+        /// <see cref="Describe(DynamicRackSystem)"/>, which resolves physical presence against the rack.</summary>
+        public static RackModuleDescriptor From(DynamicRackModule module) => From(module, true);
+
+        private static RackModuleDescriptor From(DynamicRackModule module, bool isPhysicallyPresent)
         {
             if (module == null) throw new ArgumentNullException(nameof(module));
 
@@ -102,7 +116,8 @@ namespace RackCad.Application.Systems
                 module.IsCalculated,
                 module.IsManualOverride,
                 module.UseCalculatedHeaderConfiguration,
-                module.AssociatedFrameConfiguration != null);
+                module.AssociatedFrameConfiguration != null,
+                isPhysicallyPresent);
         }
 
         /// <summary>Describe one editable module intent (no resolved coordinates, so X reads as zero).</summary>
@@ -120,15 +135,48 @@ namespace RackCad.Application.Systems
                 design.IsCalculated,
                 design.IsManualOverride,
                 design.UseCalculatedHeaderConfiguration,
-                design.HeaderConfiguration != null);
+                design.HeaderConfiguration != null,
+                true);
         }
 
-        /// <summary>Describe every module of a resolved system, in longitudinal order.</summary>
+        /// <summary>
+        /// Describe every module of a resolved system, in longitudinal order, resolving each module's PHYSICAL
+        /// presence against the boundaries I-33 says exist: a module is present when at least one surviving post's
+        /// depth range covers it.
+        /// </summary>
         public static IReadOnlyList<RackModuleDescriptor> Describe(DynamicRackSystem system)
-            => (system?.Modules ?? (IList<DynamicRackModule>)Array.Empty<DynamicRackModule>())
+        {
+            if (system == null)
+            {
+                return Array.Empty<RackModuleDescriptor>();
+            }
+
+            var present = PresentModulePositions(system);
+            return system.Modules
                 .Where(module => module != null)
-                .Select(From)
+                .Select(module => From(module, present.Contains(module.Index + 1)))
                 .ToList();
+        }
+
+        /// <summary>
+        /// The longitudinal positions actually covered by a surviving post. Reuses I-33's authority
+        /// (<see cref="DynamicFrontActivation.PresentBoundaries"/>) and the depth range of each post, so the editor
+        /// and the drawing cannot disagree about what exists.
+        /// </summary>
+        private static HashSet<int> PresentModulePositions(DynamicRackSystem system)
+        {
+            var positions = new HashSet<int>();
+            foreach (var post in DynamicFrontActivation.PresentBoundaries(system))
+            {
+                var range = DynamicDepthGeometry.AtPost(system, post);
+                foreach (var module in DynamicDepthGeometry.ModulesInRange(system, range))
+                {
+                    positions.Add(module.Index + 1);
+                }
+            }
+
+            return positions;
+        }
 
         /// <summary>Describe every module intent, in longitudinal order.</summary>
         public static IReadOnlyList<RackModuleDescriptor> Describe(IEnumerable<DynamicRackModuleDesign> designs)

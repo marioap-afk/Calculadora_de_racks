@@ -89,8 +89,14 @@ namespace RackCad.Application.Systems
         /// <summary>The staged state, as read-only descriptors. This is what an editor renders.</summary>
         public IReadOnlyList<RackModuleDescriptor> Modules => RackModuleDescriptor.Describe(working);
 
-        /// <summary>True when the staged state differs from the last committed one.</summary>
-        public bool HasPendingChanges => !AreEquivalent(committed, working) || restored.Count > 0;
+        /// <summary>
+        /// True when there is anything to confirm: staged intents that differ from the last committed ones, an
+        /// individual restore, or the rack-wide standard restore. The last two are NOT visible in the intents —a
+        /// restored module looks uncustomized and a standard restore changes nothing until it is applied— so reading
+        /// only the intents would leave a confirmable action looking like nothing to confirm.
+        /// </summary>
+        public bool HasPendingChanges
+            => !AreEquivalent(committed, working) || restored.Count > 0 || standardRestoreRequested;
 
         /// <summary>Modules restored individually since the last commit, in the order they were restored.</summary>
         public IReadOnlyList<string> RestoredModuleIds => restored.ToList();

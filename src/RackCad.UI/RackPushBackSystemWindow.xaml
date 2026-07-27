@@ -251,6 +251,68 @@
                     <TextBlock x:Name="SafetySummary" TextWrapping="Wrap" Margin="0,6,0,0"
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
 
+                    <!-- ============================ AVANZADO: edicion por MODULO longitudinal (I-35 / PB-011) ============================
+                         Los modulos son UNA sola secuencia longitudinal de RACK, compartida por todos los frentes y todos los
+                         postes: personalizar un modulo personaliza el rack entero. NO hay modulo por frente ni por poste.
+                         La seleccion es UNICA (un ComboBox). Toda edicion queda ESCENIFICADA en la sesion hasta Confirmar;
+                         Cancelar la descarta entera. El configurador de cabecera compartido NO se modifica: se abre sobre una
+                         COPIA y su resultado se acepta o se descarta desde aqui. -->
+                    <TextBlock Text="Avanzado" Style="{StaticResource SectionTitle}" Margin="0,14,0,2" />
+                    <CheckBox x:Name="AdvancedModulesToggle" Content="Editar modulos" Margin="0,2,0,0"
+                              Foreground="{DynamicResource ShellTextPrimaryBrush}" FontWeight="SemiBold"
+                              Checked="AdvancedModules_Changed" Unchecked="AdvancedModules_Changed"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTip="Muestra la edicion por modulo longitudinal: cabeceras y separadores del rack." />
+
+                    <StackPanel x:Name="AdvancedModulesPanel" Visibility="Collapsed" Margin="0,6,0,0">
+                        <TextBlock Text="Modulo (secuencia longitudinal del rack)" Style="{StaticResource FieldLabel}" />
+                        <ComboBox x:Name="ModuleBox" SelectionChanged="Module_SelectionChanged"
+                                  ToolTipService.ShowOnDisabled="True"
+                                  ToolTip="Cabeceras y separadores en orden de profundidad. La seleccion es de una sola pieza." />
+
+                        <TextBlock x:Name="ModuleInfoText" TextWrapping="Wrap" Margin="0,6,0,0" FontSize="11"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+
+                        <TextBlock Text="Longitud consumida (in)" Style="{StaticResource FieldLabel}" />
+                        <controls:NumericField x:Name="ModuleLengthBox" LostFocus="ModuleLength_Changed" Minimum="0"
+                                               ToolTipService.ShowOnDisabled="True"
+                                               ToolTip="Corrida longitudinal que ocupa este modulo. En una cabecera es su FONDO." />
+
+                        <StackPanel x:Name="ModuleHeaderPanel" Margin="0,8,0,0">
+                            <TextBlock Text="Cabecera" Style="{StaticResource FieldLabel}" />
+                            <RadioButton x:Name="ModuleCalculatedRadio" Content="Calculada" GroupName="PushBackModuleConfig"
+                                         Foreground="{DynamicResource ShellTextPrimaryBrush}" Margin="0,2,0,0"
+                                         Checked="ModuleCalculated_Checked" ToolTipService.ShowOnDisabled="True"
+                                         ToolTip="La cabecera se deriva de los datos del rack y se regenera en cada recalculo." />
+                            <RadioButton x:Name="ModuleCustomRadio" Content="Personalizada" GroupName="PushBackModuleConfig"
+                                         Foreground="{DynamicResource ShellTextPrimaryBrush}" Margin="0,2,0,0"
+                                         IsEnabled="False" ToolTipService.ShowOnDisabled="True"
+                                         ToolTip="Se activa sola al configurar la cabecera; un recalculo la conserva." />
+                            <Button x:Name="ConfigureModuleHeaderButton" Content="Configurar cabecera..."
+                                    Style="{StaticResource SecondaryButtonStyle}" MinWidth="180" HorizontalAlignment="Left"
+                                    Margin="0,6,0,0" Click="ConfigureModuleHeader_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Abre el configurador sobre una COPIA. Al cerrarlo, el cambio queda pendiente de Confirmar." />
+                        </StackPanel>
+
+                        <WrapPanel Margin="0,10,0,0">
+                            <Button x:Name="ConfirmModuleButton" Content="Confirmar" Style="{StaticResource PrimaryButtonStyle}"
+                                    MinWidth="96" Margin="0,0,6,6" Click="ConfirmModule_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Aplica los cambios pendientes de modulo y recalcula." />
+                            <Button x:Name="CancelModuleButton" Content="Cancelar" Style="{StaticResource SecondaryButtonStyle}"
+                                    MinWidth="90" Margin="0,0,6,6" Click="CancelModule_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Descarta los cambios pendientes de modulo; el diseno queda como estaba." />
+                            <Button x:Name="RestoreModuleButton" Content="Restaurar modulo" Style="{StaticResource SecondaryButtonStyle}"
+                                    MinWidth="140" Margin="0,0,6,6" Click="RestoreModule_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Devuelve ESTE modulo a sus valores calculados. Queda pendiente de Confirmar." />
+                            <Button x:Name="RestoreAllModulesButton" Content="Restaurar estandar" Style="{StaticResource SecondaryButtonStyle}"
+                                    MinWidth="150" Margin="0,0,0,6" Click="RestoreAllModules_Click" ToolTipService.ShowOnDisabled="True"
+                                    ToolTip="Descarta TODAS las personalizaciones de modulo y vuelve a la estructura estandar. Queda pendiente de Confirmar." />
+                        </WrapPanel>
+
+                        <TextBlock x:Name="ModuleStatusText" TextWrapping="Wrap" FontSize="11"
+                                   Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                    </StackPanel>
+
                 </StackPanel>
             </Border>
         </shell:RackEditorVisualShell.SidePanelContent>
