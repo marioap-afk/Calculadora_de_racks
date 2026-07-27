@@ -149,12 +149,32 @@ los peraltes intermedios, la proyeccion rack-wide del resolver, `PushBackHighEnd
   el frente en blanco con su altura dormida. Es lo que hace que la estructura «continue».
 - **Numeracion de frentes** (`NumberFronts`): un frente en blanco sigue siendo un frente y conserva su
   numero, para que la secuencia que ve el usuario coincida con la del dibujo.
-- **La rejilla del dialogo de seguridad** sigue ofreciendo los niveles dormidos del frente en blanco. Es
-  coherente con la dormancia y es inocuo: el dibujo y el BOM ya no colocan seguridad indexada por nivel en
-  ese frente. Decision consciente, no omision.
 - **Un frente nuevo nace activo** aunque el template seleccionado este en blanco (regla de §3.8).
 
-### 6.4 Un solo rechazo, ninguna normalizacion
+### 6.4 Los dialogos de seguridad
+
+Las rejillas de seguridad que abren el Dinamico y Push Back tratan un frente en blanco como lo que es: un
+frente **que existe** pero **sin niveles**.
+
+- **Celdas inexistentes.** Los editores entregan al dialogo los conteos de la **autoridad**
+  (`DynamicFrontMatrix.EffectiveLevelCounts` y `DynamicFrontActivation.EffectiveLevelsPerPost`), no un
+  `Math.Max(1, LoadLevels)` propio. Un frente en blanco aporta **cero**, y con cero la columna entera se
+  construye **ausente** por el soporte de rejilla dentada de `SelectionMatrixModel` (I-22): no se dibuja, no
+  se puede seleccionar y `Toggle` no reporta cambio, asi que tampoco se le puede aplicar nada.
+- **Configuracion dormida.** Una rejilla solo puede informar de las celdas que muestra, asi que aceptar el
+  dialogo **borraria** las celdas guardadas de la columna ausente. Lo impide `SafetyDormantCells.Merge`, una
+  regla **pura y unica** que las tres rejillas indexadas por nivel —desviador, guia de entrada y tope—
+  consumen: lo que se persiste es lo visible **mas** lo dormido. Al reactivar el frente reaparecen
+  intactas y editables.
+- **El frente no se oculta ni cambia de indice**: sigue siendo la misma columna, en la misma posicion, con su
+  numero. Lo que cambia es que sus celdas de nivel no existen.
+- **El Selectivo no cambia.** El comportamiento nuevo es **opt-in**: `allowBlankFrontColumns` en
+  `SelectiveSafetyWindow` (y su equivalente en cada rejilla) tiene default `false` = comportamiento vigente.
+  El Selectivo no tiene frentes en blanco, nunca entrega un cero y por tanto ni la fusion de dormidas ni el
+  cero-como-ausente le aplican; una columna meramente **mas corta** (rejilla dentada) conserva su regla
+  historica de descartar las celdas fuera de rango.
+
+### 6.5 Un solo rechazo, ninguna normalizacion
 
 `DynamicFrontActivation.HasActiveFront` es la **unica** comprobacion; el mensaje tambien es unico
 (`AllBlankMessage`), asi que el usuario lee la misma frase la atrape quien la atrape:
@@ -171,7 +191,7 @@ los peraltes intermedios, la proyeccion rack-wide del resolver, `PushBackHighEnd
 Las tres normalizaciones silenciosas que tuvo la primera version de I-33 (resolver, DTO y matriz) quedaron
 **retiradas**: reactivar un frente por cuenta propia enmascaraba el defecto y creaba guardas divergentes.
 
-### 6.5 Persistencia
+### 6.6 Persistencia
 
 `DynamicRackFrontDocument.IsActive` es `bool?` con `[JsonIgnore(WhenWritingNull)]`:
 
@@ -185,7 +205,9 @@ la persistencia de los dos sistemas queda cubierta en un solo sitio.
 
 ## 7. Regresiones
 
-`tests/RackCad.Tests/BlankFrontTests.cs` (28) y `tests/RackCad.UI.Tests/BlankFrontEditorTests.cs` (8). El
+`tests/RackCad.Tests/BlankFrontTests.cs` (28), `tests/RackCad.Tests/BlankFrontSafetyTests.cs` (9),
+`tests/RackCad.UI.Tests/BlankFrontEditorTests.cs` (8) y
+`tests/RackCad.UI.Tests/BlankFrontSafetyGridTests.cs` (11). El
 estado rojo se verifico con la bandera ya declarada pero **sin ningun consumidor**: 11 de 19 fallaban
 —exactamente las de comportamiento— y las 8 restantes eran las de autoridad y las guardas de estructura
 (que deben pasar tanto antes como despues, porque afirman que la estructura NO cambia).
@@ -201,6 +223,11 @@ Cubren, ademas del contrato de dibujo y BOM:
 - **Editabilidad por seleccion** (STA, las dos ventanas reales): al seleccionar un frente en blanco la
   seleccion sigue siendo valida y los controles de nivel/celda y los alcances quedan deshabilitados con
   motivo visible, mientras los estructurales siguen disponibles; al reactivar se restauran de inmediato.
+- **Seguridad** (puras + STA sobre las rejillas reales): frente activo con seguridad editable como siempre;
+  activo → en blanco con la columna ausente, no seleccionable y sin cambio al intentar aplicar; en blanco →
+  activo con los valores restaurados y editables; rejillas dentadas y frentes consecutivos en blanco; y la
+  guarda de que **sin el opt-in** —el caso del Selectivo— el suelo historico y el descarte de celdas fuera
+  de rango se conservan verbatim.
 
 ## 8. Validacion manual en AutoCAD (pendiente del Owner)
 
@@ -220,6 +247,14 @@ Cubren, ademas del contrato de dibujo y BOM:
    editables. Al desmarcar «En blanco» todo vuelve a editarse de inmediato.
 9. Agregar frentes con un frente **en blanco seleccionado** ⇒ los nuevos nacen **activos** y con el resto de
    los valores del template; quitar frentes ⇒ se van los finales y los que quedan conservan su estado.
-10. Guardar, cerrar y reabrir con `RACKEDITAR`: el frente en blanco sigue en blanco y conserva el mismo GUID.
-11. Abrir un rack **guardado antes de I-33** (biblioteca o DWG): todos sus frentes cargan activos y su dibujo
+10. **Seguridad**: con un frente activo, apagar un par de celdas de desviador (y de guia en el Dinamico) y
+    aceptar. Poner ese frente **en blanco** y reabrir «Configurar seguridad…»: su columna aparece **sin
+    celdas** —no se puede marcar, desmarcar ni aplicarle un alcance— **sin que el frente desaparezca ni
+    cambie de numero**, y los demas frentes siguen editables. Aceptar el dialogo asi. Reactivar el frente y
+    reabrir: **las mismas celdas apagadas siguen ahi**, editables e intactas. En Push Back repetir tambien
+    sobre el **tope posterior**. Con **dos frentes consecutivos en blanco**, el poste que comparten queda sin
+    celdas y los de los extremos conservan las suyas.
+11. Guardar, cerrar y reabrir con `RACKEDITAR`: el frente en blanco sigue en blanco y conserva el mismo GUID.
+12. Abrir un rack **guardado antes de I-33** (biblioteca o DWG): todos sus frentes cargan activos y su dibujo
     y BOM son identicos a los de antes.
+13. Abrir el **Selectivo** y su dialogo de seguridad: identico a como estaba (no tiene frentes en blanco).

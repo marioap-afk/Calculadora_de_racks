@@ -1001,15 +1001,18 @@ namespace RackCad.UI
         /// per-FRONT list and index it by post, so the last post (and every interior one next to a taller front) offered
         /// fewer levels than the drawing places — cells the user could see drawn but not switch off.
         /// </summary>
+        /// <remarks>
+        /// I-33: los conteos salen de la AUTORIDAD compartida. Un frente en blanco aporta CERO, y un poste cuyos unicos
+        /// vecinos estan en blanco tambien, de modo que su columna del desviador se dibuja SIN celdas.
+        /// </remarks>
         internal IReadOnlyList<int> DesviadorLevelsPerPost()
-            => DynamicFrontGeometry.LoadLevelsPerPost(
-                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList());
+            => DynamicFrontActivation.EffectiveLevelsPerPost(state.Structure.EffectiveLevelCounts());
 
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
             var elements = SafetyElementsForDialog();
             var levels = PushBackRearTopeDialogAdapter.LevelsPerFrente(
-                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)));
+                state.Structure.EffectiveLevelCounts(), allowBlankFronts: true);
             var postCount = Math.Max(2, state.Structure.Count + 1);
 
             // The rear stop is edited INSIDE this same dialog, as its own visible section (Owner decision 2026-07-24).
@@ -1055,7 +1058,7 @@ namespace RackCad.UI
                 : ShowRearTopeDialog(
                     config,
                     PushBackRearTopeDialogAdapter.LevelsPerFrente(
-                        state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels))));
+                        state.Structure.EffectiveLevelCounts(), allowBlankFronts: true));
 
         /// <summary>Shows the real shared safety dialog; NULL when the user cancelled.</summary>
         private IReadOnlyList<SelectiveSafetySelection> ShowSafetyDialog(
@@ -1070,6 +1073,7 @@ namespace RackCad.UI
                 includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true,
                 extraSection: extraSection,
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
+                allowBlankFrontColumns: true,
                 // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
                 // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
                 defensaLowEndOnly: true)

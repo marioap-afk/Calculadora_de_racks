@@ -204,6 +204,14 @@ namespace RackCad.Application.Systems
         public bool IsActive(int index)
             => index >= 0 && index < fronts.Count && fronts[index].IsActive;
 
+        /// <summary>
+        /// Per-front EFFECTIVE load-level counts (zero for a front en blanco), straight from the shared authority.
+        /// This is what the editors hand to the safety dialogs, so a blank front's column arrives as "no cells" and
+        /// no dialog has to decide editability with a predicate of its own (I-33).
+        /// </summary>
+        public IReadOnlyList<int> EffectiveLevelCounts()
+            => fronts.Select(DynamicFrontActivation.EffectiveLoadLevels).ToList();
+
         /// <summary>Front indices that are blank, for the editor's rendering and status messages.</summary>
         public IReadOnlyList<int> BlankFrontIndices()
             => fronts.Select((front, index) => (front, index))

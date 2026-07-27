@@ -35,9 +35,15 @@ namespace RackCad.UI
                 : config.OffCells.Select(cell => new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level }).ToList();
 
         /// <summary>Levels per frente for the dialog's jagged grid; never empty (the dialog needs at least one column).</summary>
-        public static IReadOnlyList<int> LevelsPerFrente(IEnumerable<int> levels)
+        /// <param name="allowBlankFronts">
+        /// I-33, opt-in: honour a ZERO as "this frente has no cells" (a front EN BLANCO) instead of flooring it to one.
+        /// Default false keeps the historical flooring for any caller that has no notion of blank fronts.
+        /// </param>
+        public static IReadOnlyList<int> LevelsPerFrente(IEnumerable<int> levels, bool allowBlankFronts = false)
         {
-            var result = (levels ?? Enumerable.Empty<int>()).Select(count => Math.Max(1, count)).ToList();
+            var result = (levels ?? Enumerable.Empty<int>())
+                .Select(count => allowBlankFronts ? Math.Max(0, count) : Math.Max(1, count))
+                .ToList();
             if (result.Count == 0)
             {
                 result.Add(Math.Max(1, DynamicRackDefaults.DefaultLoadLevels));

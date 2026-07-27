@@ -42,11 +42,37 @@ namespace RackCad.Application.Systems
                 ? 0
                 : Math.Max(1, design.LoadLevels ?? DynamicRackDefaults.DefaultLoadLevels);
 
+        /// <summary>
+        /// The same rule over an EDITOR row, so the editors and the safety dialogs they open size their grids from the
+        /// authority instead of restating <c>Math.Max(1, LoadLevels)</c> — the very predicate this class replaces.
+        /// </summary>
+        public static int EffectiveLoadLevels(DynamicEditorFront front)
+            => front == null || !front.IsActive ? 0 : Math.Max(1, front.LoadLevels);
+
         /// <summary>Effective load levels of every resolved front, in front order (feeds the per-post rules).</summary>
         public static IReadOnlyList<int> EffectiveLevelsPerFront(DynamicRackSystem system)
             => (system?.Fronts ?? (IList<DynamicRackFront>)Array.Empty<DynamicRackFront>())
                 .Select(EffectiveLoadLevels)
                 .ToList();
+
+        /// <summary>
+        /// The level count of EVERY post from a set of EFFECTIVE per-front counts, by the same "tallest adjacent front
+        /// owns the cut" rule the drawing uses (<see cref="DynamicFrontGeometry.LoadLevelsAtPost(IReadOnlyList{int},int)"/>
+        /// — the rule is reused, not restated). Unlike <see cref="DynamicFrontGeometry.LoadLevelsPerPost"/> this does
+        /// NOT floor the answer to one: a post whose only neighbours are blank fronts carries ZERO levels, which is what
+        /// lets a safety grid render its column as absent (I-33).
+        /// </summary>
+        public static IReadOnlyList<int> EffectiveLevelsPerPost(IReadOnlyList<int> effectiveLevelsPerFront)
+        {
+            var fronts = effectiveLevelsPerFront ?? Array.Empty<int>();
+            var result = new List<int>(fronts.Count + 1);
+            for (var post = 0; post <= fronts.Count; post++)
+            {
+                result.Add(DynamicFrontGeometry.LoadLevelsAtPost(fronts, post));
+            }
+
+            return result;
+        }
 
         /// <summary>The resolved fronts that actually carry load; blank fronts are dropped.</summary>
         public static IEnumerable<DynamicRackFront> Active(IEnumerable<DynamicRackFront> fronts)

@@ -464,9 +464,12 @@ namespace RackCad.UI
                 .ToList();
             var levelCount = Math.Max(1, system?.LoadBeamLevels.Count ?? 1);
             var postCount = Math.Max(2, (system?.Fronts.Count ?? matrix.Count) + 1);
+            // I-33: los conteos por frente salen de la AUTORIDAD compartida, no de un Math.Max(1, LoadLevels) local.
+            // Un frente en blanco entrega CERO y el diálogo lo dibuja como columna sin celdas: no editable, no
+            // seleccionable y sin aplicar. Su configuración guardada queda dormida y regresa al reactivarlo.
             var levels = system?.Fronts.Count > 0
-                ? system.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList()
-                : matrix.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList();
+                ? DynamicFrontActivation.EffectiveLevelsPerFront(system).ToList()
+                : matrix.EffectiveLevelCounts().ToList();
             if (levels.Count == 0) levels.Add(levelCount);
             var intro = "Izquierda es la salida y derecha la entrada. La selección se proyecta en lateral, frontal y "
                         + "planta: el protector lateral reemplaza las botas del mismo poste y los desviadores respetan "
@@ -484,7 +487,8 @@ namespace RackCad.UI
                 introduction: intro,
                 includeDefensa: true,
                 includeGuia: true,
-                useDynamicSafetyDefaults: true) { Owner = this };
+                useDynamicSafetyDefaults: true,
+                allowBlankFrontColumns: true) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;

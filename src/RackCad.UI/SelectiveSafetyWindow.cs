@@ -31,6 +31,12 @@ namespace RackCad.UI
         private readonly bool fallbackLevelsArePerPost;
 
         /// <summary>
+        /// I-33 — OPT-IN: a level count of ZERO means "this column has no cells" (a front EN BLANCO) instead of being
+        /// floored to one. False (Selectivo) is the historical dialog, unchanged.
+        /// </summary>
+        private readonly bool allowBlankFrontColumns;
+
+        /// <summary>
         /// PB-002 (I-32) — an OPT-IN, already-per-POST level count for the desviador grid. Null (Selectivo, Dinámico)
         /// keeps the historical path byte for byte. Push Back passes it because it has no resolved
         /// <see cref="SelectiveRackSystem"/>, so the grid used to fall back to a per-FRONT list read with a per-POST
@@ -105,8 +111,16 @@ namespace RackCad.UI
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false)
+        /// <param name="allowBlankFrontColumns">
+        /// I-33, opt-in: honour a level count of ZERO as "this column has no cells" instead of flooring it to one. The
+        /// Dinamico and Push Back pass true so a front EN BLANCO shows its levels as non-existent — not drawable, not
+        /// selectable, not appliable — while its stored configuration stays DORMANT and returns intact on reactivation.
+        /// Default false is the historical behaviour, which is what the Selectivo keeps: it has no blank fronts and
+        /// never supplies a zero, so its dialog and its three grids are unchanged.
+        /// </param>
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false)
         {
+            this.allowBlankFrontColumns = allowBlankFrontColumns;
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
@@ -570,7 +584,8 @@ namespace RackCad.UI
         private void EditGuia(Row row)
         {
             var dialog = new SafetyGuiaEntradaGridWindow(
-                SelectedElementLabel(row), levelsPerFrente, row.GuiaOffCells) { Owner = this };
+                SelectedElementLabel(row), levelsPerFrente, row.GuiaOffCells,
+                allowBlankColumns: allowBlankFrontColumns) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -606,7 +621,8 @@ namespace RackCad.UI
                 desviadorLevelsPerPost?.Count ?? postCount,
                 desviadorLevelsPerPost ?? levelsPerFrente,
                 desviadorLevelsPerPost != null || fallbackLevelsArePerPost,
-                showSide: ShowDesviadorSide) { Owner = this };
+                showSide: ShowDesviadorSide,
+                allowBlankColumns: allowBlankFrontColumns) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
