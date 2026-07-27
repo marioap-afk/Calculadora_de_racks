@@ -110,11 +110,24 @@ namespace RackCad.UI.Controls
         /// stale when the grid is rebuilt for a new front count, and a stale anchor must not crash the dialog. (The
         /// indexer and <see cref="SetSelected"/> keep throwing — they take a caller-chosen cell, not a remembered one.)
         /// </para>
+        /// <para>
+        /// FAIL-CLOSED on an UNDEFINED scope: an enum is an int, so a cast or a member added later without revisiting
+        /// this method can carry a value the switch below does not know. Falling through to "every cell" would silently
+        /// perform the widest possible mass edit on a safety matrix — the one thing the user certainly did not ask for.
+        /// </para>
         /// </summary>
         /// <returns>The cells that changed, in column-major then row order; empty when nothing did.</returns>
         public IReadOnlyList<SelectionMatrixCell> ApplyScope(
             SelectionMatrixScope scope, int column, int row, bool value)
         {
+            if (scope != SelectionMatrixScope.Cell
+                && scope != SelectionMatrixScope.Row
+                && scope != SelectionMatrixScope.Column
+                && scope != SelectionMatrixScope.All)
+            {
+                return Array.Empty<SelectionMatrixCell>(); // not a member of the enum: mutate nothing, notify nothing
+            }
+
             var anchored = scope != SelectionMatrixScope.All;
             if (anchored && (column < 0 || column >= Columns || row < 0 || row >= Rows || IsAbsent(column, row)))
             {

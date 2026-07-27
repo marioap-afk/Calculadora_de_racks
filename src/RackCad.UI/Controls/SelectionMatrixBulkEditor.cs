@@ -33,7 +33,9 @@ namespace RackCad.UI.Controls
         /// <summary>The caption of <see cref="SelectionMatrixScope.All"/>.</summary>
         public string AllLabel { get; }
 
-        /// <summary>The caption of a scope button: "Celda", the row axis, the column axis, or the all label.</summary>
+        /// <summary>The caption of a scope button: "Celda", the row axis, the column axis, or the all label. An
+        /// UNDEFINED enum value gets NO caption (empty) instead of borrowing <see cref="AllLabel"/>: captioning an
+        /// unknown scope "Todo" would invite the user to press the widest possible action by mistake.</summary>
         public string For(SelectionMatrixScope scope)
         {
             switch (scope)
@@ -41,7 +43,8 @@ namespace RackCad.UI.Controls
                 case SelectionMatrixScope.Cell: return "Celda";
                 case SelectionMatrixScope.Row: return RowAxis;
                 case SelectionMatrixScope.Column: return ColumnAxis;
-                default: return AllLabel;
+                case SelectionMatrixScope.All: return AllLabel;
+                default: return string.Empty; // not a member of the enum
             }
         }
 
