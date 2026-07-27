@@ -1,0 +1,36 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-23
+  branch: refactor/namespaces-sistemas
+  claim_id: fade0f8a-1438-4bfb-a894-2a9671685e60
+  current_phase: 3
+  state: implementing
+  gate: none
+  attempts: 0
+  next_action: >-
+    mover-los-142-archivos-con-git-mv-por-frontera ·
+    Domain-luego-Application-luego-Headers-luego-Plugin ·
+    despues-editorconfig-y-guardas-y-verificacion-completa
+  last_evidence_commit: ed81d0a
+
+# --------------------------------------------------------------------------------------------------
+# BASELINE capturada sobre la base b43b5d1 ANTES de mover un solo archivo. Cualquier desviacion
+# posterior en estos numeros es un fallo del refactor, no un dato nuevo.
+# --------------------------------------------------------------------------------------------------
+baseline:
+  base_sha: b43b5d15a242287ffe7514bc41e1086dd25e9387
+  ci_run: 30295828340
+  tests_core: 1612
+  tests_ui: 491
+  tests_failed: 0
+  filter_catalog_golden_shipped: 120
+  goldens: 7
+  api_surface_entries: 2806        # 538 tipos + 2268 miembros, namespace-normalizado
+  build_ui: 0-errores-0-advertencias
+  build_plugin: 0-errores-2-MSB3277-conocidas
+
+scope:
+  files_to_move: 142
+  top_level_types: 196
+  authorised_rename: DynamicSystemPlan -> RackCad.Application.Drawing.HeaderRunPlan
+  functional_freeze: total
