@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI.Editor;
+using RackCad.UI.Systems.Selective;
 using Xunit;
 
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// STA tests for the REAL <see cref="RackCad.UI.RackSelectiveWindow"/> (initiative I-24). Insert/update run through the
+    /// STA tests for the REAL <see cref="RackCad.UI.Systems.Selective.RackSelectiveWindow"/> (initiative I-24). Insert/update run through the
     /// window's OWN button handlers (a genuine WPF Click → <c>*_Click</c> → <c>RequestDraw</c> → ConfirmPendingCellEdits →
     /// BuildSystem → SetModel → session → typed payload → Close), NOT by calling <c>session.RequestInsert/RequestUpdate</c>
     /// directly. <c>SelectiveEditorStateAdoptionTests</c> already locks the load→build GEOMETRY; here the orthogonal

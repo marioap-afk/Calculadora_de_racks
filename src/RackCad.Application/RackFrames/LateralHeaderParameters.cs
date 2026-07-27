@@ -1,0 +1,80 @@
+using RackCad.Domain.Systems.Selective;
+
+namespace RackCad.Application.RackFrames
+{
+    /// <summary>
+    /// Every editable input for building a lateral header. The builder reads only from here, so there
+    /// are no magic numbers buried in the logic — each tunable has a name and a sensible default.
+    /// </summary>
+    public sealed class LateralHeaderParameters
+    {
+        // ---- Overall geometry ----
+
+        /// <summary>Header height; drives the post's dynamic <c>LONGITUD</c> parameter (in).</summary>
+        public double Height { get; set; } = 132.0;
+
+        /// <summary>Fondo: horizontal separation between the two posts (in).</summary>
+        public double Depth { get; set; } = 42.0;
+
+        // ---- Celosía (truss) layout ----
+
+        /// <summary>Punch (troquel) pitch on the post (in). Troqueles repeat every PasoTroquel.</summary>
+        public double PasoTroquel { get; set; } = 2.0;
+
+        // ---- Diagonals ----
+
+        /// <summary>The diagonal starts this many troqueles above the lower horizontal of its panel.</summary>
+        public int OffsetDiagonalInicioTroqueles { get; set; } = 2;
+
+        /// <summary>The diagonal ends this many troqueles below the upper horizontal of its panel.</summary>
+        public int OffsetDiagonalFinTroqueles { get; set; } = 2;
+
+        /// <summary>Troquel separation between the two parallel diagonals of a double-diagonal panel.</summary>
+        public int DiagonalDoubleSpacingTroqueles { get; set; } = 1;
+
+        /// <summary>Each extra travesaño of a double horizontal sits this many troqueles above the previous.</summary>
+        public int HorizontalDoubleOffsetTroqueles { get; set; } = 1;
+
+        // ---- Top closing ----
+
+        /// <summary>
+        /// Leftover clear at the top (ValorClaroTravesaño). A negative value means "auto": compute the
+        /// leftover from the panel layout. When the resulting gap is &gt; 0 a closing horizontal is added.
+        /// </summary>
+        public double ValorClaroTravesano { get; set; } = -1.0;
+
+        // ---- Catalog ids: what to insert ----
+
+        public string PostId { get; set; }
+        public string BasePlateId { get; set; }
+
+        /// <summary>Truss profile id used for both horizontals and diagonals (they share one catalog).</summary>
+        public string TrussProfileId { get; set; }
+
+        // ---- Connection-point names: the logic is anchored on these ----
+
+        public string MontajePostePoint { get; set; } = "MONTAJE_POSTE";
+        public string TroquelCelosiaPoint { get; set; } = "TROQUEL_CELOSIA";
+        public string CelosiaPoint { get; set; } = "CELOSIA";
+
+        /// <summary>Point on the post where a reinforcement's origin mates (its X gives the reinforcement offset).</summary>
+        public string FinPostePoint { get; set; } = "FIN_POSTE";
+
+        // ---- Dynamic-block parameter names ----
+
+        /// <summary>Dynamic parameter that stretches the post to the header height.</summary>
+        public string PostLengthParameter { get; set; } = Domain.Systems.Selective.SelectiveRackDefaults.LengthParam;
+
+        /// <summary>Dynamic parameter that stretches a horizontal/diagonal to its length (same name as the post).</summary>
+        public string MemberLengthParameter { get; set; } = Domain.Systems.Selective.SelectiveRackDefaults.LengthParam;
+
+        /// <summary>Dynamic parameter for a section's peralte (used when a base plate carries a manual peralte).</summary>
+        public string PeralteParameter { get; set; } = Domain.Systems.Selective.SelectiveRackDefaults.PeralteParam;
+
+        /// <summary>Orthographic view these blocks live in (lateral by default).</summary>
+        public string View { get; set; } = "LATERAL";
+
+        /// <summary>True when the top closing gap should be computed instead of taken from the field.</summary>
+        public bool AutoClosing => ValorClaroTravesano < 0.0;
+    }
+}

@@ -62,7 +62,7 @@ no es el mecanismo implementado por RackCad.
 - [Arquitectura vigente — UI y adaptación AutoCAD](../ARCHITECTURE.md)
 - [Context Pack: autocad-plugin](../context-packs/autocad-plugin.md)
 - [Guía de generación — patrón ARRAY](../guias/generacion-cabecera-lateral.md)
-- [`HeaderInstanceGrouper`](../../src/RackCad.Application/Systems/HeaderInstanceGrouper.cs)
+- [`HeaderInstanceGrouper`](../../src/RackCad.Application/Drawing/HeaderInstanceGrouper.cs)
 - [`LateralHeaderDrawer`](../../src/RackCad.Plugin/Headers/LateralHeaderDrawer.cs)
 - [Pruebas de equivalencia del agrupador](../../tests/RackCad.Tests/HeaderInstanceGrouperTests.cs)
 - [ADR-0006: AutoCAD solo en RackCad.Plugin](0006-autocad-solo-en-plugin.md)

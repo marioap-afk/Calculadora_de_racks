@@ -4,8 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.UI
 {

@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
-using RackCad.Domain.Systems;
 using Xunit;
 
 namespace RackCad.Tests

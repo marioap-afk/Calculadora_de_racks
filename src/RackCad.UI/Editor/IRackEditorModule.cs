@@ -1,5 +1,5 @@
 using RackCad.Application.Persistence;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.UI.Editor
 {

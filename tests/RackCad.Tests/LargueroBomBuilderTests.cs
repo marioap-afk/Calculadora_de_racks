@@ -1,7 +1,7 @@
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Larguero;
+using RackCad.Domain.Systems.Larguero;
 using Xunit;
 
 namespace RackCad.Tests

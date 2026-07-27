@@ -58,7 +58,7 @@ tomó la decisión.
 - [AGENTS.md — regla en un solo sitio (`SelectiveFrontalBuilder.ParrillaRow`)](../../AGENTS.md)
 - [Arquitectura vigente — seguridad selectiva y conteo de parrilla](../ARCHITECTURE.md)
 - [Context Pack: system-selective](../context-packs/system-selective.md)
-- [`SelectiveFrontalBuilder.ParrillaRow` — cálculo puro de cantidad y ancho](../../src/RackCad.Application/Systems/SelectiveFrontalBuilder.cs)
+- [`SelectiveFrontalBuilder.ParrillaRow` — cálculo puro de cantidad y ancho](../../src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs)
 - [Pruebas de colocación de parrilla](../../tests/RackCad.Tests/SelectiveParrillaPlacementTests.cs)
 - [ADR-0016: Cantidad de parrilla acotada por la UI y por el builder](0016-cantidad-parrilla-acotada.md)
 

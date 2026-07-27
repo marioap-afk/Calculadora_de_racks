@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using RackCad.Application.Systems.Shared;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.UI.Controls
 {

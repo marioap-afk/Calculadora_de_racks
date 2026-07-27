@@ -1,6 +1,10 @@
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Larguero;
+using RackCad.Domain.Systems.PushBack;
 
 namespace RackCad.Application.Persistence
 {

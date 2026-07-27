@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Shared;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.Persistence
 {

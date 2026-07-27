@@ -1,4 +1,5 @@
 using System.Windows.Media;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.UI.Preview
 {

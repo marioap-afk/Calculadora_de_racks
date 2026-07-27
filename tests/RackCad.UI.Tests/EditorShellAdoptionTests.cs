@@ -1,6 +1,10 @@
 using RackCad.Application.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.FlowBed;
 using RackCad.UI.Editor;
+using RackCad.UI.RackFrames;
+using RackCad.UI.Systems.Dynamic;
+using RackCad.UI.Systems.FlowBed;
+using RackCad.UI.Systems.Selective;
 using Xunit;
 
 namespace RackCad.UI.Tests

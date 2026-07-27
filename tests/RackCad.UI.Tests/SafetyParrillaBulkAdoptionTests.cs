@@ -3,8 +3,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
 using RackCad.UI.Controls;
 using Xunit;
@@ -530,7 +531,7 @@ namespace RackCad.UI.Tests
 
         /// <summary>One canonical line per DECK instance: only the parrilla block, so the comparison is about the
         /// pattern this dialog produces and nothing else.</summary>
-        private static string Key(string view, int corte, RackCad.Application.Headers.HeaderBlockInstance instance)
+        private static string Key(string view, int corte, RackCad.Application.Drawing.HeaderBlockInstance instance)
             => string.Format(
                 System.Globalization.CultureInfo.InvariantCulture,
                 "{0}|{1}|{2}|{3}|{4:0.###}|{5:0.###}",

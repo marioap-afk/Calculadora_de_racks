@@ -1,0 +1,66 @@
+# EditorConfig — RackCad (I-23)
+#
+# Alcance deliberadamente MINIMO: la regla de namespace/ruta que I-23 establece, y la sangria que el
+# repo ya usa. Nada de estilo de codigo opinable: I-23 es un refactor mecanico bajo congelacion
+# funcional, y una regla de formato nueva ensuciaria cada archivo que alguien tocara despues.
+#
+# Fin de linea y charset NO se declaran a proposito: los gobierna Git (`core.autocrlf`), que guarda
+# LF en el repositorio y escribe CRLF al hacer checkout. Declararlos aqui solo crearia una segunda
+# autoridad que contradice a la primera.
+#
+# ESTA REGLA NO SE APLICA EN EL BUILD. Activar `EnforceCodeStyleInBuild` no sirve en este arbol: el
+# proyecto WPF compila a traves de un proyecto temporal (`RackCad.UI_<hash>_wpftmp`) y IDE0130 deriva
+# de ese nombre el namespace esperado, produciendo 68 advertencias falsas en RackCad.UI. Lo de aqui
+# es la guia del IDE; quien de verdad COMPRUEBA la regla, y corre en CI, es
+# tests/RackCad.Tests/NamespaceFolderGuardTests.cs.
+
+root = true
+
+[*]
+indent_style = space
+insert_final_newline = true
+
+[*.{cs,csproj,props,targets,xaml,sln}]
+indent_size = 4
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.md]
+indent_size = 2
+
+# Los catalogos son Excel-first y append-only: se editan en Excel y no se re-guardan con otro
+# encoding ni se reordenan (AGENTS.md, WORKFLOW seccion 7). Ningun editor debe normalizarlos.
+[assets/catalogs/*.csv]
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
+[*.cs]
+# --- LA regla de I-23 -----------------------------------------------------------------------------
+# El namespace de un archivo debe corresponder a su carpeta. Es lo que impide que los namespaces por
+# sistema vuelvan a aplanarse: un archivo nuevo de Push Back no puede nacer declarando
+# RackCad.Application.Systems.Selective, ni quedarse suelto en una raiz plana. Rige en los CUATRO
+# proyectos de producto, incluida RackCad.UI.
+dotnet_style_namespace_match_folder = true:warning
+dotnet_diagnostic.IDE0130.severity = warning
+
+# Un namespace por archivo, con llaves: es lo que declara todo el arbol de produccion.
+csharp_style_namespace_declarations = block_scoped:warning
+dotnet_diagnostic.IDE0161.severity = warning
+
+# --- Excepcion explicita: los proyectos de prueba ---------------------------------------------------
+# Los dos proyectos de prueba conservan UN namespace de ensamblado (RackCad.Tests y RackCad.UI.Tests) y
+# NO siguen la regla de carpeta. El motivo es medible: 92 de 220 archivos de prueba (42%) ejercitan mas
+# de un sistema —los golden comparan Selectivo contra Dinamico contra Push Back en el mismo archivo—,
+# asi que asignarles un propietario seria arbitrario justo donde la regla exige que sea inequivoco.
+# Ademas `FullyQualifiedName~` es la interfaz operativa de verificacion del repo: mover los namespaces
+# cambiaria el significado de cada filtro registrado, y un filtro que pasa a coincidir con cero pruebas
+# no avisa (AGENTS.md).
+#
+# La excepcion NO es una exencion: la vigila
+# NamespaceFolderGuardTests.TestProjects_KeepExactlyOneAssemblyRootNamespace, que exige exactamente un
+# namespace por archivo e igual a la raiz del ensamblado. Aqui solo se apaga IDE0130 para que el IDE no
+# pida lo contrario que la guarda.
+[tests/**/*.cs]
+dotnet_style_namespace_match_folder = false
+dotnet_diagnostic.IDE0130.severity = none

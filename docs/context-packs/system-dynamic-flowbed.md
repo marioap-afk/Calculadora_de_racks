@@ -7,14 +7,16 @@ required_docs:
 optional_docs:
   - docs/guias/catalogos-y-plantillas.md
 code_globs:
-  - src/RackCad.Domain/Systems/Dynamic*.cs
-  - src/RackCad.Domain/Systems/FlowBed*.cs
-  - src/RackCad.Application/Systems/Dynamic*.cs
-  - src/RackCad.Application/Systems/FlowBed*.cs
-  - src/RackCad.UI/RackDynamicSystemWindow*
-  - src/RackCad.UI/RackFlowBedWindow*
-  - src/RackCad.Plugin/Systems/Dynamic*.cs
-  - src/RackCad.Plugin/Systems/FlowBed*.cs
+  - src/RackCad.Domain/Systems/Dynamic/*.cs
+  - src/RackCad.Domain/Systems/FlowBed/*.cs
+  - src/RackCad.Application/Systems/Dynamic/*.cs
+  - src/RackCad.Application/Systems/FlowBed/*.cs
+  - src/RackCad.Application/Systems/Shared/*.cs
+  - src/RackCad.Application/Drawing/*.cs
+  - src/RackCad.UI/Systems/Dynamic/*
+  - src/RackCad.UI/Systems/FlowBed/*
+  - src/RackCad.Plugin/Systems/Dynamic/*.cs
+  - src/RackCad.Plugin/Systems/FlowBed/*.cs
   - tests/RackCad.Tests/Dynamic*.cs
   - tests/RackCad.Tests/FlowBed*.cs
 usual_gates:

@@ -1,5 +1,8 @@
 using RackCad.Application.Persistence;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Larguero;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests

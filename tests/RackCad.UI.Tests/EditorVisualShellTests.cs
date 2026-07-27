@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Shell;
 using Xunit;
 

@@ -368,6 +368,42 @@ Planes disponibles:
   desde la base `52ce27f`); integrada por `git merge --no-ff`; rama y worktree eliminados tras la CI
   post-merge verde. Estado versionado en
   [`../automation/state/I-35.yml`](../automation/state/I-35.yml).
+- [`I-23-namespaces-sistemas.md`](I-23-namespaces-sistemas.md): **Namespaces finales por sistema**
+  (tipo: refactor; rama `refactor/namespaces-sistemas`). Cierra el hallazgo **E8** de la auditoría
+  2026-07 y **CIERRA LA FASE 5**. Refactor **mecánico** bajo congelación funcional total: **176 archivos
+  movidos con `git mv`**, todos registrados como renombre, más la reescritura de `namespace`/`using` en
+  sus consumidores, **sin una sola línea de lógica**. Reparte los **cuatro** proyectos de producto
+  —Domain, Application, **UI** y Plugin— en `Systems.{Selective, Dynamic, PushBack, FlowBed, Larguero,
+  Shared}`: las tres raíces planas de `Systems` quedan **vacías** y se disuelven **cinco** namespaces,
+  incluidos `Application.Headers` y `Plugin.Headers`. La cabecera **física** conserva `RackFrames` en
+  Domain, Application y UI; lo que **materializa** pasa a `Drawing`, que queda simétrico en Application y
+  Plugin. Único renombre autorizado: **`DynamicSystemPlan` a `Drawing.HeaderRunPlan`** — **no** se aplicó
+  el `SystemPlan` que anota el ROADMAP, ambiguo en el árbol actual porque colisiona con
+  `SystemBomBuilder`/`SystemDescriptor`/`SystemRegistry`/`SystemBlockWriter`, que sí son por sistema;
+  `HeaderGroup` y `HeaderPlacement` viajan con él y conservan su nombre. La regla es objetiva: un archivo
+  pertenece al sistema que su tipo de primer nivel **nombra y modela**, y **consumir** un contrato ajeno
+  no lo mueve. Por eso los **diálogos compartidos de seguridad** (`SelectiveSafetyWindow` y los cinco
+  `Safety*GridWindow`) y la infraestructura transversal de UI (`Controls`, `Editor`, `Preview`, `Shell`,
+  `Themes`) **no** se reparten: **un diálogo compartido no se asigna a un sistema por número de
+  consumidores**. Los **dos proyectos de prueba** conservan un único namespace de ensamblado como
+  **excepción explícita y comprobable** —92 de 220 archivos (42 %) ejercitan más de un sistema—, vigilada
+  por `TestProjects_KeepExactlyOneAssemblyRootNamespace`. Añade `.editorconfig` y **dos guardas**:
+  `NamespaceFolderGuardTests` (7 aserciones) y `UiSystemBoundaryGuardTests` (3, que **construyen de
+  verdad** las seis ventanas WPF migradas y validan `x:Class`, pack URIs y recursos), verificadas **en
+  rojo** bajo cinco infracciones inyectadas. `EnforceCodeStyleInBuild` **no** se activa: el proyecto WPF
+  compila vía un proyecto temporal y `IDE0130` produce 68 advertencias falsas. Equivalencia
+  **demostrada**: 7 goldens byte-idénticos, superficie de API **idéntica** a la base y los 28 comandos y
+  alias byte-idénticos. Fuera de alcance: I-25, la defensa de I-34, el preview de I-18,
+  `DesviadorCellsAreByPost` y toda regla de producto. `requires_autocad: true`,
+  `requires_owner_validation: true`; `requires_owner_decision: false`. **INTEGRADA (2026-07-27)**: el Owner
+  **aprobó el smoke mínimo** en AutoCAD 2025 —NETLOAD, RACKCAD, un editor de sistema y RACKCABECERA, sin
+  errores de carga, comandos, XAML ni recursos— sobre el candidato `5d49a6c` (CI 30304742946, 4/4);
+  **sin rebase** (`origin/main` no avanzó desde la base `b43b5d1`); integrada por `git merge --no-ff`.
+  Con ella **se cierra la Fase 5**; **Push Back v1 queda estable** e **I-25 sigue en backlog diferido**.
+  Inventario completo de los seis proyectos en
+  [`I-23-inventario-namespaces.md`](I-23-inventario-namespaces.md) y registro del smoke en
+  [`I-23-autocad-smoke.md`](I-23-autocad-smoke.md). Estado versionado en
+  [`../automation/state/I-23.yml`](../automation/state/I-23.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

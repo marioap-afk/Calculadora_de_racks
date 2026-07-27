@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using RackCad.Application.Drawing;
 
 namespace RackCad.Application.Catalogs.Validation
 {
@@ -23,7 +24,7 @@ namespace RackCad.Application.Catalogs.Validation
         /// Dynamic parameter names the block is expected to expose. They come from TWO sources, combined per
         /// exact piece+view by <see cref="CatalogBlockParameters"/>: the connection-layout slide params
         /// (<c>paramX</c>/<c>paramY</c>) AND the grips the production builders actually write to
-        /// <see cref="Headers.HeaderBlockInstance.DynamicParameters"/> (LONGITUD of the rail/posts/separators,
+        /// <see cref="Drawing.HeaderBlockInstance.DynamicParameters"/> (LONGITUD of the rail/posts/separators,
         /// PERALTE, ALTURA of the pallet, SAQUE, FRENTE/FONDO). Data-derived, never invented; the names share the
         /// domain constants the builders use, and a builder→manifest guard proves the two cannot diverge.
         /// </summary>

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using RackCad.UI;
+using RackCad.UI.Systems.Dynamic;
 using Xunit;
 
 namespace RackCad.UI.Tests

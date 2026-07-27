@@ -2,18 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.FlowBed;
+using RackCad.Application.Systems.Selective;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Selective;
 using Xunit;
 
 namespace RackCad.Tests
 {
     /// <summary>
     /// I-16 (refactor/draw-services) equivalence baseline. The Plugin DrawServices are thin orchestrators
-    /// that funnel every view into a <see cref="DynamicSystemPlan"/> and hand it to the shared writer. I-16
+    /// that funnel every view into a <see cref="HeaderRunPlan"/> and hand it to the shared writer. I-16
     /// collapses that boilerplate WITHOUT changing the Application plan builders. These tests pin the plan
     /// STRUCTURE each DrawService depends on — the only equivalence surface reachable without AutoCAD — so a
     /// refactor that quietly drops a per-view specialization (the plan factory, the grouped-vs-all-loose
@@ -81,7 +85,7 @@ namespace RackCad.Tests
 
         /// <summary>Order-independent structural fingerprint of a plan (role, piece, world position of every
         /// flattened instance). Two plans with the same fingerprint draw the same pieces in the same places.</summary>
-        private static string Signature(DynamicSystemPlan plan)
+        private static string Signature(HeaderRunPlan plan)
             => string.Join("|", plan.Flatten().Instances
                 .Select(i => FormattableString.Invariant(
                     $"{i.View}:{i.Role}:{i.PieceId}:{i.Insertion.X:0.###}:{i.Insertion.Y:0.###}"))
@@ -102,9 +106,9 @@ namespace RackCad.Tests
         [Fact]
         public void FlowBed_DrawServicePlanShape_IsAllLoose()
         {
-            // FlowBedDrawService builds: new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog)).
+            // FlowBedDrawService builds: new HeaderRunPlan(new List<HeaderGroup>(), builder.Build(config, catalog)).
             var loose = new FlowBedLateralBuilder().Build(FlowBed(), Catalog);
-            var plan = new DynamicSystemPlan(new List<HeaderGroup>(), loose);
+            var plan = new HeaderRunPlan(new List<HeaderGroup>(), loose);
 
             Assert.Empty(plan.Headers);
             Assert.NotEmpty(plan.LooseInstances);
@@ -114,9 +118,9 @@ namespace RackCad.Tests
         [Fact]
         public void PlantaHeader_DrawServicePlanShape_IsAllLoose()
         {
-            // PlantaHeaderDrawService builds: new DynamicSystemPlan(new List<HeaderGroup>(), builder.Build(config, catalog)).
+            // PlantaHeaderDrawService builds: new HeaderRunPlan(new List<HeaderGroup>(), builder.Build(config, catalog)).
             var loose = new PlantaHeaderLayoutBuilder().Build(PlantaHeaderConfig(48.0), Catalog);
-            var plan = new DynamicSystemPlan(new List<HeaderGroup>(), loose);
+            var plan = new HeaderRunPlan(new List<HeaderGroup>(), loose);
 
             Assert.Empty(plan.Headers);
             Assert.NotEmpty(plan.LooseInstances);
@@ -126,7 +130,7 @@ namespace RackCad.Tests
         [Fact]
         public void AllLoose_And_Grouped_ShapesCoexist_SoTheGenericMustNotUnifyThePlanFactory()
         {
-            var cama = new DynamicSystemPlan(new List<HeaderGroup>(), new FlowBedLateralBuilder().Build(FlowBed(), Catalog));
+            var cama = new HeaderRunPlan(new List<HeaderGroup>(), new FlowBedLateralBuilder().Build(FlowBed(), Catalog));
             var lateral = new DynamicSystemLateralBuilder().Build(DynamicSystem(), Catalog);
 
             Assert.Empty(cama.Headers);        // cama / cabecera planta: everything loose

@@ -9,11 +9,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
 using RackCad.UI.Editor;
 using RackCad.UI.Shell;
+using RackCad.UI.Systems.Dynamic;
+using RackCad.UI.Systems.Selective;
 using Xunit;
 
 namespace RackCad.UI.Tests

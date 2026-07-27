@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.FlowBed;
 using Xunit;
 
 namespace RackCad.Tests

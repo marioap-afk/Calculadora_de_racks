@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Shared;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Plugin.KindHandlers
 {

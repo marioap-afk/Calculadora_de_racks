@@ -67,7 +67,7 @@ se tomó la decisión.
 - [Context Pack: persistence](../context-packs/persistence.md)
 - [Historial preservado — identidad y round-trip](../archivo/transicion-2026-07/01-estado-actual-mvp.md)
 - [`RackEmbedDocument` y `RackEmbedStore`](../../src/RackCad.Application/Persistence/RackEmbedDocument.cs)
-- [`RackBlockData`](../../src/RackCad.Plugin/Systems/RackBlockData.cs)
+- [`RackBlockData`](../../src/RackCad.Plugin/Systems/Shared/RackBlockData.cs)
 - [Consolidación del BOM total por identidad](../../src/RackCad.Plugin/RackInventarioCommands.BomTotal.cs)
 - [`RackListBuilder` — agrupación del listado por identidad](../../src/RackCad.Application/Persistence/RackListBuilder.cs)
 - [Pruebas del listado por rack lógico](../../tests/RackCad.Tests/RackListBuilderTests.cs)

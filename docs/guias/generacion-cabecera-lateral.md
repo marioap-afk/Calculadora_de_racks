@@ -20,7 +20,7 @@ y selectivo); el **mismo patrón por bloques + round-trip** descrito aquí sirve
 ## Arquitectura (separación pura ↔ AutoCAD)
 
 ```
-RackCad.Application/Headers/            (PURO, testeable en cualquier SO)
+RackCad.Application/RackFrames/         (PURO, testeable en cualquier SO)
   LateralHeaderParameters         parámetros editables (sin números mágicos)
   LateralHeaderParametersFactory  config → parámetros (mapea RackFrameConfiguration → LateralHeaderParameters)
   HeaderBlockInstance             una inserción del plan (qué, dónde, params dinámicos)
@@ -137,7 +137,7 @@ parámetros dinámicos por nombre; las piezas cuyo bloque no exista en el dibujo
 El dibujo (`RackCad.Plugin/Headers/`) **ya está cableado**:
 
 1. ✅ **Mapeo config → parámetros**: `LateralHeaderParametersFactory.FromConfiguration` (capa pura,
-   `RackCad.Application/Headers/`, con tests) arma `LateralHeaderParameters` desde la `RackFrameConfiguration`:
+   `RackCad.Application/RackFrames/`, con tests) arma `LateralHeaderParameters` desde la `RackFrameConfiguration`:
    `Height`, `Depth`,
    `OffsetDiagonalInicioTroqueles = DiagonalStartOffsetTroqueles`,
    `OffsetDiagonalFinTroqueles = DiagonalEndOffsetTroqueles` y los ids reales
@@ -216,7 +216,7 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 
 ## Dónde está en el código
 
-- Lógica pura: `src/RackCad.Application/Headers/` (builder, parámetros, `LateralHeaderParametersFactory`
+- Lógica pura: `src/RackCad.Application/RackFrames/` (builder, parámetros, `LateralHeaderParametersFactory`
   config→parámetros y `PlantaHeaderLayoutBuilder` para la vista PLANTA); la geometría de los puntos la resuelve
   `CatalogLookup` en `src/RackCad.Application/Catalogs/` (connection-layout.csv + blocks.csv).
 - Adapter AutoCAD: `src/RackCad.Plugin/Headers/LateralHeaderDrawer.cs` (+ `LateralHeaderDrawOutcome.cs`,
@@ -224,7 +224,7 @@ El dibujo por **bloques** y el **round-trip de edición** no son exclusivos de l
 - Servicio de dibujo (puente UI↔AutoCAD): `src/RackCad.Plugin/Headers/LateralHeaderDrawService.cs`,
   que implementa `src/RackCad.UI/IHeaderDrawService.cs`.
 - Round-trip: sobre `src/RackCad.Application/Persistence/RackEmbedDocument.cs` (`RackEmbedStore`), embebido con
-  `src/RackCad.Plugin/Systems/RackBlockData.cs`; comandos y despacho en `src/RackCad.Plugin/RackFrameCommands.cs`
+  `src/RackCad.Plugin/Systems/Shared/RackBlockData.cs`; comandos y despacho en `src/RackCad.Plugin/RackFrameCommands.cs`
   (`RACKEDITAR`, `EditCabecera`/`EditDynamic`/`EditCama`/`EditSelective`).
 - Comandos de cabecera: `RACKCABECERA`, `QUICKCABECERA` en
   `src/RackCad.Plugin/RackFrameCommands.cs`; botón "Insertar en AutoCAD" en

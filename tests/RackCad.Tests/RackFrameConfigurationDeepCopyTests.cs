@@ -5,7 +5,6 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
 using Xunit;
 
 namespace RackCad.Tests

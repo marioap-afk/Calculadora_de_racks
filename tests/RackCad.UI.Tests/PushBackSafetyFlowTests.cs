@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests

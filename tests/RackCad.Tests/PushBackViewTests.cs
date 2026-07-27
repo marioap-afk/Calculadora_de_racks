@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests
@@ -35,7 +38,7 @@ namespace RackCad.Tests
                 }
             });
 
-        private static string Signature(DynamicSystemPlan plan)
+        private static string Signature(HeaderRunPlan plan)
             => string.Join("|", plan.Flatten().Instances
                 .Select(i => FormattableString.Invariant($"{i.View}:{i.Role}:{i.PieceId}:{i.Insertion.X:0.###}:{i.Insertion.Y:0.###}"))
                 .OrderBy(s => s, StringComparer.Ordinal));

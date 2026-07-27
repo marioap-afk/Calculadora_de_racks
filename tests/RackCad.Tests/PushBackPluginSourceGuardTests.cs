@@ -1,5 +1,8 @@
 using System;
 using System.IO;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests
@@ -34,9 +37,9 @@ namespace RackCad.Tests
 
         private static string Commands => ReadPluginSource("RackPushBackCommands.cs");
         private static string Menu => ReadPluginSource("RackMenuCommands.cs");
-        private static string LateralService => ReadPluginSource(Path.Combine("Systems", "PushBackSystemDrawService.cs"));
-        private static string FrontalService => ReadPluginSource(Path.Combine("Systems", "PushBackFrontalDrawService.cs"));
-        private static string PlantaService => ReadPluginSource(Path.Combine("Systems", "PushBackPlantaDrawService.cs"));
+        private static string LateralService => ReadPluginSource(Path.Combine("Systems", "PushBack", "PushBackSystemDrawService.cs"));
+        private static string FrontalService => ReadPluginSource(Path.Combine("Systems", "PushBack", "PushBackFrontalDrawService.cs"));
+        private static string PlantaService => ReadPluginSource(Path.Combine("Systems", "PushBack", "PushBackPlantaDrawService.cs"));
 
         // ---- Commands + aliases ----
 
@@ -112,9 +115,9 @@ namespace RackCad.Tests
         // ---- Draw services: thin adapters over ViewBlockDraw, one builder each ----
 
         [Theory]
-        [InlineData("Systems/PushBackSystemDrawService.cs")]
-        [InlineData("Systems/PushBackFrontalDrawService.cs")]
-        [InlineData("Systems/PushBackPlantaDrawService.cs")]
+        [InlineData("Systems/PushBack/PushBackSystemDrawService.cs")]
+        [InlineData("Systems/PushBack/PushBackFrontalDrawService.cs")]
+        [InlineData("Systems/PushBack/PushBackPlantaDrawService.cs")]
         public void EachDrawService_CallsViewBlockDraw_DrawAndPlace_AndRedrawInPlace(string file)
         {
             var src = ReadPluginSource(file.Replace('/', Path.DirectorySeparatorChar));

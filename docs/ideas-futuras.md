@@ -487,3 +487,24 @@ Selectivo ni el Dinámico:
   quedan congelados en el valor cargado (42/60/1000 en un rack nuevo) y se siguen persistiendo así. Son
   inertes para la geometría porque la celda manda, pero si alguna vez dejaran de serlo habría que darles
   una superficie de edición o dejar de persistirlos.
+
+## Referencias documentales muertas que dejó I-09 (hallazgo de I-23, fuera de alcance)
+
+I-23 barrió los referentes de las rutas que movió y **no dejó ninguna referencia muerta nueva**. Al
+comprobarlo aparecieron **siete** que ya estaban rotas en la base `b43b5d1`, todas por el reparto que
+hizo **I-09** el 2026-07-20 y que nadie barrió entonces:
+
+| Documento | Referencia muerta |
+|---|---|
+| `docs/WORKFLOW.md` §7 | `src/RackCad.Plugin/RackFrameCommands.cs` |
+| `docs/guias/catalogos-y-plantillas.md` | `src/RackCad.Plugin/RackFrameCommands.cs` |
+| `docs/guias/generacion-cabecera-lateral.md` (×2) | `src/RackCad.Plugin/RackFrameCommands.cs` |
+| `docs/guias/generacion-cabecera-lateral.md` | `src/RackCad.UI/IHeaderDrawService.cs` |
+| `docs/guias/modelo-de-datos.md` | `src/RackCad.Plugin/RackFrameCommands.cs` |
+| `docs/guias/modelo-de-datos.md` | `src/RackCad.Plugin/RackFrameCommands.List.cs` |
+
+No se arreglan aquí porque no es una sustitución mecánica: `RackFrameCommands` se partió en **nueve**
+clases por área (`RackMenuCommands`, `RackCabeceraCommands`, `RackSelectivoCommands`, …), así que cada
+referencia exige decidir a cuál de las nueve apuntaba, y la fila de archivos calientes de `WORKFLOW.md`
+§7 además necesita saber si el riesgo de conflicto sigue siendo el mismo tras la partición. Es trabajo
+de documentación con criterio, no de reemplazo de cadena, y I-23 está bajo congelación funcional.

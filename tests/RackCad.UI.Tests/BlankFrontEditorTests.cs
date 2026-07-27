@@ -1,9 +1,13 @@
 using System;
 using System.Linq;
 using System.Windows.Controls;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI;
+using RackCad.UI.Systems.Dynamic;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests

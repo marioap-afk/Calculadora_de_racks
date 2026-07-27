@@ -1,10 +1,11 @@
 using System;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests
@@ -63,7 +64,7 @@ namespace RackCad.Tests
             var catalog = Catalog;
             var system = ResolvedSystem();
             var group = new DynamicFlowBedLateralBuilder().Build(system, catalog);
-            var plan = new DynamicSystemPlan(new[] { group }, Array.Empty<HeaderBlockInstance>());
+            var plan = new HeaderRunPlan(new[] { group }, Array.Empty<HeaderBlockInstance>());
             var firstRail = plan.Flatten().OfRole(HeaderBlockRole.Rail)
                 .OrderBy(instance => instance.Insertion.Y)
                 .First();
@@ -93,7 +94,7 @@ namespace RackCad.Tests
         {
             var system = ResolvedSystem();
             var group = new DynamicFlowBedLateralBuilder().Build(system, Catalog);
-            var firstRail = new DynamicSystemPlan(new[] { group }, Array.Empty<HeaderBlockInstance>())
+            var firstRail = new HeaderRunPlan(new[] { group }, Array.Empty<HeaderBlockInstance>())
                 .Flatten().OfRole(HeaderBlockRole.Rail).OrderBy(instance => instance.Insertion.Y).First();
             var expectedAngle = DynamicFlowBedGeometry.Resolve(system, Catalog).First().AngleRadians;
 

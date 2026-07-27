@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Selective;
 using Xunit;
 
 namespace RackCad.Tests

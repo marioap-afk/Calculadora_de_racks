@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests

@@ -56,7 +56,7 @@ tomó la decisión.
 
 ## Referencias
 
-- [`SelectiveFrontalBuilder.ParrillaRow` — acotado de la cantidad a las que caben](../../src/RackCad.Application/Systems/SelectiveFrontalBuilder.cs)
+- [`SelectiveFrontalBuilder.ParrillaRow` — acotado de la cantidad a las que caben](../../src/RackCad.Application/Systems/Selective/SelectiveFrontalBuilder.cs)
 - [Diálogo de parrilla del selectivo (guía de captura)](../../src/RackCad.UI/SafetyParrillaGridWindow.cs)
 - [`NumericFieldValidation` — rechazo por rango en la captura](../../src/RackCad.UI/Controls/NumericFieldValidation.cs)
 - [Context Pack: system-selective](../context-packs/system-selective.md)

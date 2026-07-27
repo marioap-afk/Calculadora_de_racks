@@ -1,5 +1,5 @@
 using System;
-using RackCad.Application.Headers;
+using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
 using Xunit;
 

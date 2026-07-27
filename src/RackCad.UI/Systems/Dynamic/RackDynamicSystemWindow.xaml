@@ -1,0 +1,399 @@
+<Window x:Class="RackCad.UI.Systems.Dynamic.RackDynamicSystemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:RackCad.UI.Shell"
+        Title="Sistema dinámico (Pallet Flow) - editor modular"
+        Style="{DynamicResource EditorShellWindowStyle}"
+        WindowStartupLocation="CenterOwner"
+        FocusManager.FocusedElement="{Binding ElementName=NameBox}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- I-30: the dynamic editor is now COMPOSED over RackEditorVisualShell. Every control keeps its x:Name, handler,
+         parsing, LostFocus, selection, recompute, preview, views, insert/update, BOM, GUID and persistence unchanged;
+         only the OUTER layout moved into the shell's slots (sidebar / matrix / preview / status / neutral action
+         categories). Initial/minimum size, background and typography come from the shared EditorShellWindowStyle
+         (shell tokens); the shell imposes no content minimum, so no MinWidth/MinHeight override is needed here. -->
+    <shell:RackEditorVisualShell x:Name="Shell">
+
+        <!-- SIDEBAR: inputs + module table + properties (the shell provides the scroll). -->
+        <shell:RackEditorVisualShell.SidePanelContent>
+            <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
+                    BorderThickness="1" Padding="{DynamicResource ShellPanelPadding}">
+                <StackPanel>
+                    <TextBlock Text="Rack" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
+                    <TextBlock Text="Nombre (Rack A)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="NameBox" Style="{StaticResource FieldBox}"
+                             ToolTip="Nombre del rack como lo ve el cliente. Se guarda con el bloque para reabrirlo y editarlo." />
+
+                    <TextBlock Text="Anotaciones y dibujo" Style="{StaticResource SectionTitle}" />
+                    <CheckBox x:Name="NumberFrontsCheck" Content="Numerar frentes" Margin="0,4,0,0" Foreground="#415161"
+                              Checked="Annotation_Changed" Unchecked="Annotation_Changed"
+                              ToolTip="Dibuja el número de cada frente en frontal y planta." />
+                    <CheckBox x:Name="NumberLevelsCheck" Content="Numerar niveles" Margin="0,4,0,0" Foreground="#415161"
+                              Checked="Annotation_Changed" Unchecked="Annotation_Changed"
+                              ToolTip="Dibuja el número de cada nivel en frontal y lateral." />
+                    <CheckBox x:Name="DrawRackNameCheck" Content="Colocar nombre de rack" Margin="0,4,0,0" Foreground="#415161"
+                              Checked="Annotation_Changed" Unchecked="Annotation_Changed"
+                              ToolTip="Dibuja el nombre del rack en lateral, frontal y planta." />
+                    <TextBlock Text="Escala de texto (1 = 6&quot;)" Style="{StaticResource FieldLabel}" Margin="0,4,0,0" />
+                    <TextBox x:Name="AnnotationScaleBox" Style="{StaticResource FieldBox}" Text="1" LostFocus="Annotation_Changed" />
+                    <TextBlock Text="Cotas" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="DimensionsBox" SelectionChanged="Annotation_Changed">
+                        <ComboBoxItem Content="Ninguna" />
+                        <ComboBoxItem Content="Mínimo" />
+                        <ComboBoxItem Content="Estándar" />
+                        <ComboBoxItem Content="Detallado" />
+                    </ComboBox>
+                    <TextBlock Text="Estilo de cota" Style="{StaticResource FieldLabel}" />
+                    <ComboBox x:Name="DimStyleBox" SelectionChanged="Annotation_Changed"
+                              ToolTip="(Automático) usa el estilo vigente; también puedes elegir un estilo existente del DWG." />
+
+                    <TextBlock Text="Estructura global" Style="{StaticResource SectionTitle}" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Fondo tarima (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="DepthBox" Style="{StaticResource FieldBox}" Text="48"
+                                     ToolTip="Fondo de la tarima en el sentido del flujo. Es global porque define la retícula longitudinal compartida." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Fondos máximos" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="PalletsDeepBox" Style="{StaticResource FieldBox}" Text="8" IsReadOnly="True"
+                                     ToolTip="Extensión total resuelta de la estructura. Los fondos y su inicio se editan por frente." />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="Sistema" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Niveles máximos" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="LoadLevelsBox" Style="{StaticResource FieldBox}" Text="3" IsReadOnly="True"
+                                     ToolTip="Máximo de niveles entre los frentes; gobierna la proyección lateral. En frontal cada poste toma el máximo de los frentes que toca." />
+                            <TextBlock Text="Peralte de poste (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="PostPeralteBox" Style="{StaticResource FieldBox}" Text="3"
+                                     LostFocus="PostPeralte_Changed"
+                                     ToolTip="Peralte global del poste. Se aplica a todas las cabeceras, incluidas las personalizadas." />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Tipo de poste" Style="{StaticResource FieldLabel}" />
+                            <ComboBox x:Name="PostBox"
+                                      SelectedValuePath="Id" DisplayMemberPath="DisplayName"
+                                      SelectionChanged="PostBox_SelectionChanged" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="Frentes" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <StackPanel Orientation="Horizontal" Margin="0,2,0,8">
+                        <StackPanel>
+                            <TextBlock Text="Cantidad de frentes" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="FrontCountBox" Style="{StaticResource FieldBox}" Text="1" Width="100"
+                                     HorizontalAlignment="Left" LostFocus="FrontCount_Changed" KeyDown="FrontCount_KeyDown"
+                                     ToolTip="Escribe directamente la cantidad total; se conservan los frentes existentes y los nuevos copian el frente seleccionado." />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Border Background="#F1F4F8" BorderBrush="#D8DEE6" BorderThickness="1" Padding="10" Margin="0,4,0,0">
+                        <StackPanel>
+                            <TextBlock x:Name="SelectedFrontText" Text="Celda: Frente 1 · Nivel 1"
+                                       Foreground="#1F2933" FontWeight="SemiBold" FontSize="12" />
+                            <TextBlock Text="Frente seleccionado" Style="{StaticResource SectionTitle}" Margin="0,6,0,2" />
+                            <TextBlock Text="Estos datos pertenecen al frente completo y no usan el alcance de celdas."
+                                       Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" Margin="0,0,0,3" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Posiciones" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="SelectedPositionsBox" Style="{StaticResource FieldBox}" Text="1" />
+                                    <TextBlock Text="Niveles" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="SelectedLevelsBox" Style="{StaticResource FieldBox}" Text="3" />
+                                    <TextBlock Text="Inicio 1er larguero (in)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="FirstLevelHeightBox" Style="{StaticResource FieldBox}" Text="6"
+                                             ToolTip="Elevación base de este frente; Application la ajusta al troquel más cercano." />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Fondos" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="SelectedPalletsDeepBox" Style="{StaticResource FieldBox}" Text="8"
+                                             ToolTip="Tarimas en el sentido del flujo para este frente (mín. 2)." />
+                                    <TextBlock Text="Inicio en fondo" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="SelectedDepthStartBox" Style="{StaticResource FieldBox}" Text="1"
+                                             ToolTip="Posición longitudinal inicial dentro de la estructura compartida (1 = salida más exterior)." />
+                                </StackPanel>
+                            </Grid>
+                            <WrapPanel Margin="0,6,0,2">
+                                <Button Content="Este frente" Click="ApplyFrontData_Click"
+                                        Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,6,6" />
+                                <Button Content="Frentes seleccionados" Click="ApplySelectedFrontData_Click"
+                                        Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,6,6"
+                                        ToolTip="Aplica estos datos a los frentes que tengan al menos una celda seleccionada con Ctrl." />
+                                <Button Content="Todos los frentes" Click="ApplyAllFrontData_Click"
+                                        Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,6,6" />
+                            </WrapPanel>
+
+                            <TextBlock Text="Celda seleccionada" Style="{StaticResource SectionTitle}" Margin="0,10,0,2" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Frente tarima (in)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="FrontBox" Style="{StaticResource FieldBox}" Text="42" />
+                                    <TextBlock Text="Alto tarima (in)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="PalletHeightBox" Style="{StaticResource FieldBox}" Text="60" />
+                                    <TextBlock Text="Peso tarima (kg)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="WeightBox" Style="{StaticResource FieldBox}" Text="1000" />
+                                    <TextBlock Text="Claro libre (in)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="SelectedClearHeightBox" Style="{StaticResource FieldBox}" Text="6" />
+                                    <TextBlock Text="Largo manual IN/OUT (in)" Style="{StaticResource FieldLabel}" />
+                                    <TextBox x:Name="SelectedBeamLengthBox" Style="{StaticResource FieldBox}"
+                                             ToolTip="Vacío = BFR × posiciones + 6&quot;. El frente físico usa el mayor largo resuelto de sus niveles." />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Tipo larguero IN/OUT" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox x:Name="SelectedInOutBeamBox" Height="26"
+                                              SelectedValuePath="Id" DisplayMemberPath="Label"
+                                              SelectionChanged="SelectedInOutBeam_Changed" />
+                                    <TextBlock Text="Peralte IN/OUT (in)" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox x:Name="SelectedInOutPeralteBox" Height="26" />
+                                    <TextBlock Text="Tipo larguero intermedio" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox x:Name="SelectedIntermediateBeamBox" Height="26"
+                                              SelectedValuePath="Id" DisplayMemberPath="Label"
+                                              SelectionChanged="SelectedIntermediateBeam_Changed" />
+                                    <TextBlock Text="Peralte intermedio (in)" Style="{StaticResource FieldLabel}" />
+                                    <ComboBox x:Name="SelectedIntermediatePeralteBox" Height="26"
+                                              ToolTip="Peralte del larguero intermedio de la celda seleccionada." />
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock x:Name="SelectedFrontInfo" Foreground="#617080" FontSize="10.5" TextWrapping="Wrap" Margin="0,4,0,0" />
+                            <TextBlock Text="Aplicar a:" Style="{StaticResource FieldLabel}" Margin="0,7,0,2" />
+                            <WrapPanel>
+                                <Button x:Name="ApplyCellButton" Content="Celda" Click="ApplyCell_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                                <Button x:Name="ApplySelectedCellsButton" Content="Seleccionadas" Click="ApplySelectedCells_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="0,0,6,6"
+                                        ToolTip="Ctrl + clic agrega o quita celdas de la selección múltiple." />
+                                <Button x:Name="ApplyLevelButton" Content="Nivel" Click="ApplyLevel_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                                <Button x:Name="ApplyFrontButton" Content="Frente" Click="ApplyFront_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                                <Button x:Name="ApplyAllButton" Content="Todas" Click="ApplyAll_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                            </WrapPanel>
+                            <TextBlock Text="Ctrl + clic selecciona varias celdas. Los alcances copian solamente claro, tarima y ambos largueros. Los botones superiores copian exclusivamente los datos estructurales del frente."
+                                       Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="Seguridad" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <Button x:Name="SafetyButton" Content="Elementos de seguridad…" Click="Safety_Click"
+                            Style="{StaticResource SecondaryButtonStyle}" HorizontalAlignment="Left" Margin="0,2,0,0"
+                            ToolTip="Configura botas, protectores laterales y desviadores para este corte lateral. Se dibujan y cuentan en el BOM." />
+
+                    <TextBlock x:Name="ComputedHeightText" Style="{StaticResource FieldLabel}" Text="Altura calculada: —" Margin="0,10,0,0" />
+
+                    <WrapPanel Margin="0,12,0,0">
+                        <Button Content="Actualizar vista (recalcular)" Click="Update_Click" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,12,0" IsDefault="True"
+                                ToolTip="Recalcula con los datos capturados (Enter). Conserva los fondos y cabeceras personalizados; usa 'Restaurar layout' para descartarlos." />
+                        <CheckBox x:Name="AdvancedToggle" Content="Avanzado" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#2B6CB0"
+                                  Checked="AdvancedToggle_Changed" Unchecked="AdvancedToggle_Changed"
+                                  ToolTip="Muestra el detalle de altura, separadores, tabla de módulos y edición por módulo." />
+                    </WrapPanel>
+
+                    <StackPanel x:Name="AdvancedPanel" Visibility="Collapsed">
+                        <TextBlock Text="Altura de cabecera (detalle)" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                        <CheckBox x:Name="ManualHeightToggle" Content="Altura manual (fijar en vez de derivar de niveles)"
+                                  Foreground="#415161" Margin="0,4,0,4"
+                                  Checked="ManualHeight_Changed" Unchecked="ManualHeight_Changed"
+                                  ToolTip="Fija a mano la altura de la cabecera/tramo; ignora la altura derivada de los niveles de carga." />
+                        <TextBox x:Name="ManualHeightBox" Style="{StaticResource FieldBox}"
+                                 IsEnabled="{Binding IsChecked, ElementName=ManualHeightToggle}"
+                                 LostFocus="ManualHeight_Changed"
+                                 ToolTip="Altura de cabecera (in) cuando 'Altura manual' está activo." />
+                        <TextBox x:Name="BeamDepthBox" Text="6" Visibility="Collapsed" />
+
+                        <TextBlock Text="Separadores (vacío = automático)" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="10" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Separadores (cantidad)" Style="{StaticResource FieldLabel}" />
+                                <TextBox x:Name="SeparatorCountBox" Style="{StaticResource FieldBox}" LostFocus="AdvancedOverride_LostFocus"
+                                         ToolTip="Cantidad de separadores por cabecera. Vacío = el cálculo estándar (mín. 2, +1 cada 60&quot;)." />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Separación (in)" Style="{StaticResource FieldLabel}" />
+                                <TextBox x:Name="SeparatorSpacingBox" Style="{StaticResource FieldBox}" LostFocus="AdvancedOverride_LostFocus"
+                                         ToolTip="Separación entre niveles. Vacío = el estándar (altura repartida con medios en los extremos)." />
+                            </StackPanel>
+                        </Grid>
+
+                    <TextBlock Text="Poste derivado" Style="{StaticResource SectionTitle}" Margin="0,12,0,2" />
+                    <CheckBox x:Name="DerivedReinforceBox" Content="Reforzar poste derivado" IsChecked="True"
+                              Foreground="#415161" Margin="0,4,0,0"
+                              Checked="DerivedReinforce_Changed" Unchecked="DerivedReinforce_Changed"
+                              ToolTip="El poste compartido donde se juntan dos separadores. Predeterminado: reforzado a altura completa." />
+                    <TextBlock Text="Longitud refuerzo (in)" Style="{StaticResource FieldLabel}" />
+                    <TextBox x:Name="DerivedReinforcementBox" Style="{StaticResource FieldBox}" LostFocus="AdvancedOverride_LostFocus"
+                             ToolTip="Longitud del refuerzo. Vacío = misma longitud que el poste (altura de cabecera)." />
+
+                    <TextBlock Text="Módulos" Style="{StaticResource SectionTitle}" />
+                    <DataGrid x:Name="ModulesGrid"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              SelectionMode="Single"
+                              Height="190"
+                              BorderBrush="#D8DEE6"
+                              BorderThickness="1"
+                              SelectionChanged="ModulesGrid_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Index}" Width="32" />
+                            <DataGridTextColumn Header="Tipo" Binding="{Binding Kind}" Width="*" />
+                            <DataGridTextColumn Header="Long (in)" Binding="{Binding Length, StringFormat={}{0:0.##}}" Width="62" />
+                            <DataGridTextColumn Header="X0 (in)" Binding="{Binding StartX, StringFormat={}{0:0.##}}" Width="55" />
+                            <DataGridTextColumn Binding="{Binding IsManualOverride}" Width="56">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock Text="Manual" ToolTip="Longitud del módulo editada a mano (override)." />
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Border Background="#F1F4F8" BorderBrush="#D8DEE6" BorderThickness="1" Padding="10" Margin="0,12,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Módulo seleccionado" FontWeight="SemiBold" Foreground="#415161" FontSize="12" />
+                            <TextBlock x:Name="SelectedInfoText" Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0" />
+
+                            <TextBlock Text="Tipo" Style="{StaticResource FieldLabel}" />
+                            <ComboBox x:Name="KindBox" />
+
+                            <TextBlock Text="Longitud (in)" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="ModuleLengthBox" Style="{StaticResource FieldBox}" />
+
+                            <TextBlock Text="Configuración de cabecera" Style="{StaticResource FieldLabel}" />
+                            <ComboBox x:Name="ConfigBox" SelectionChanged="ConfigBox_SelectionChanged"
+                                      ToolTip="Aplica una configuración de cabecera a este módulo. 'Calculada' es la predeterminada; cada cabecera que editas se guarda como 'Personalizada N' para reusarla aquí." />
+
+                            <WrapPanel Margin="0,10,0,0">
+                                <Button x:Name="ApplyModuleButton" Content="Aplicar" Click="ApplyModule_Click" Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" IsEnabled="False" />
+                                <Button x:Name="EditHeaderButton" Content="Editar cabecera" Click="EditHeader_Click" Style="{StaticResource SecondaryButtonStyle}" IsEnabled="False" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </shell:RackEditorVisualShell.SidePanelContent>
+
+        <!-- STATUS: summary + status line, always visible outside the scroll. -->
+        <shell:RackEditorVisualShell.StatusContent>
+            <StackPanel>
+                <TextBlock x:Name="SummaryText" Foreground="#1F2933" FontSize="12" TextWrapping="Wrap" />
+                <TextBlock x:Name="StatusText" Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0" />
+            </StackPanel>
+        </shell:RackEditorVisualShell.StatusContent>
+
+        <!-- MATRIX: front x level grid (central editing surface). -->
+        <shell:RackEditorVisualShell.MatrixContent>
+            <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Matriz frente × nivel — selecciona una celda y edítala en el panel izquierdo; puedes aplicar sus datos a celda, nivel, frente o todas. Nivel 1 abajo."
+                               Foreground="#617080" FontSize="11" TextWrapping="Wrap" Margin="10,8,10,0" />
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="230">
+                        <Grid x:Name="DynamicMatrixGrid" Margin="10,8,10,10" />
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </shell:RackEditorVisualShell.MatrixContent>
+
+        <!-- PREVIEW: linked-view preview + view selector. -->
+        <shell:RackEditorVisualShell.PreviewContent>
+            <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Margin="10,8">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                            <RadioButton x:Name="PreviewLateralRadio" Content="Lateral" IsChecked="True" GroupName="DynamicPreview"
+                                         Checked="PreviewView_Changed" Foreground="#415161" FontSize="11" Margin="0,0,14,0" />
+                            <RadioButton x:Name="PreviewExitRadio" Content="Frontal salida" GroupName="DynamicPreview"
+                                         Checked="PreviewView_Changed" Foreground="#415161" FontSize="11" Margin="0,0,14,0" />
+                            <RadioButton x:Name="PreviewEntranceRadio" Content="Frontal entrada" GroupName="DynamicPreview"
+                                         Checked="PreviewView_Changed" Foreground="#415161" FontSize="11" Margin="0,0,18,0" />
+                            <TextBlock x:Name="PreviewLateralPostLabel" Text="Poste lateral" Foreground="#617080"
+                                       FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <ComboBox x:Name="PreviewLateralPostBox" Width="82" Height="24" FontSize="11"
+                                      SelectionChanged="PreviewLateralPost_Changed" />
+                        </StackPanel>
+                        <TextBlock x:Name="PreviewHint" Text="Vista lateral (X = flujo, Y = altura). Clic en un módulo para seleccionarlo."
+                                   Foreground="#617080" FontSize="11" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="{DynamicResource ShellPreviewBackgroundBrush}" ClipToBounds="True"
+                            SizeChanged="PreviewCanvas_SizeChanged" MouseLeftButtonDown="PreviewCanvas_MouseLeftButtonDown" />
+                </Grid>
+            </Border>
+        </shell:RackEditorVisualShell.PreviewContent>
+
+        <!-- ACTIONS: neutral categories. Leading = reset; Secondary = data/project; Primary = draw/insert; Trailing = close. -->
+        <shell:RackEditorVisualShell.LeadingActions>
+            <Button Content="Restaurar layout" Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,8,0"
+                    ToolTip="Recalcula el sistema desde la tarima y elimina los overrides manuales de módulos y las cabeceras personalizadas." Click="RestoreDefault_Click" />
+        </shell:RackEditorVisualShell.LeadingActions>
+        <shell:RackEditorVisualShell.SecondaryActions>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Exportar BOM (CSV)" Style="{StaticResource SecondaryButtonStyle}" MinWidth="150" Margin="0,0,8,0" Click="ExportBom_Click"
+                        ToolTip="Guarda la lista de materiales del sistema como archivo CSV." />
+                <Button Content="Lista de materiales" Style="{StaticResource SecondaryButtonStyle}" MinWidth="140" Margin="0,0,8,0" Click="ViewBom_Click"
+                        ToolTip="Abre la lista de materiales (BOM) del sistema en una ventana." />
+                <Button Content="Abrir proyecto" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0" Click="OpenSystem_Click" />
+                <Button Content="Guardar proyecto" Style="{StaticResource SecondaryButtonStyle}" MinWidth="130" Margin="0,0,8,0" Click="SaveSystem_Click" />
+            </StackPanel>
+        </shell:RackEditorVisualShell.SecondaryActions>
+        <shell:RackEditorVisualShell.PrimaryActions>
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="110" Margin="0,0,8,0"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Redibuja en sitio todas las vistas existentes del sistema sin insertar otra." Click="UpdateExisting_Click" />
+                <Button x:Name="InsertLateralButton" Content="Insertar lateral" Style="{StaticResource PrimaryButtonStyle}" MinWidth="120" Margin="0,0,8,0"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Pide el número de poste e inserta ese corte lateral enlazado al sistema." Click="InsertLateral_Click" />
+                <Button x:Name="InsertExitButton" Content="Frontal salida" Style="{StaticResource SecondaryButtonStyle}" MinWidth="115" Margin="0,0,8,0"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Inserta el corte frontal de salida con los largueros IN/OUT en su elevación baja." Click="InsertExit_Click" />
+                <Button x:Name="InsertEntranceButton" Content="Frontal entrada" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Inserta el corte frontal de entrada con los largueros IN/OUT elevados por la pendiente." Click="InsertEntrance_Click" />
+                <Button x:Name="InsertPlantaButton" Content="Insertar planta" Style="{StaticResource SecondaryButtonStyle}" MinWidth="120" Margin="0,0,8,0"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Inserta la vista planta de la estructura, sin camas." Click="InsertPlanta_Click" />
+            </StackPanel>
+        </shell:RackEditorVisualShell.PrimaryActions>
+        <shell:RackEditorVisualShell.TrailingActions>
+            <Button Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Click="Close_Click" IsCancel="True" />
+        </shell:RackEditorVisualShell.TrailingActions>
+    </shell:RackEditorVisualShell>
+</Window>

@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
+using RackCad.UI.Systems.Dynamic;
 using Xunit;
 
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// STA tests for the REAL <see cref="RackCad.UI.RackDynamicSystemWindow"/> (initiative I-24), covering the wiring the
+    /// STA tests for the REAL <see cref="RackCad.UI.Systems.Dynamic.RackDynamicSystemWindow"/> (initiative I-24), covering the wiring the
     /// pure Application suites cannot reach. Two things are locked:
     ///
     /// 1. The window's adoption of the I-21 editor state round-trips the FULL resolved drawing (all lateral cortes +

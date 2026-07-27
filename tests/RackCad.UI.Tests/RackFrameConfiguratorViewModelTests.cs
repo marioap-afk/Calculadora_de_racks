@@ -3,12 +3,13 @@ using System.IO;
 using System.Linq;
 using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
+using RackCad.UI.RackFrames;
 using Xunit;
 
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// Unit tests for the header/cabecera <see cref="RackCad.UI.RackFrameConfiguratorViewModel"/> — the God-ViewModel that
+    /// Unit tests for the header/cabecera <see cref="RackCad.UI.RackFrames.RackFrameConfiguratorViewModel"/> — the God-ViewModel that
     /// had ZERO tests (initiative I-24, hallazgo U3). It is UI-framework-independent (no Dispatcher) and recomputes its
     /// physical model SYNCHRONOUSLY after each edit, so these assert on <c>Configuration</c> right after the edit — no
     /// timing, no pixels, no global order. They lock the structural invariants (a frame of N horizontals has N-1 panels;

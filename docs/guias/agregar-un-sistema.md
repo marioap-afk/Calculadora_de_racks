@@ -16,6 +16,49 @@ errores que costaron una ronda de corrección.
 3. **Decide qué NO es tuyo.** Push Back reutiliza la estructura del Dinámico entera; lo específico son los dos
    largueros de extremo, la cama y el tope. Cuanto más reutilices, menos golden propio mantienes.
 
+## 0.bis Dónde vive cada archivo (I-23)
+
+Desde **I-23**, cada sistema tiene su propio namespace y su propia carpeta en los **cuatro** proyectos
+de producto —incluida `RackCad.UI`—, y la regla es comprobable: `NamespaceFolderGuardTests` falla si un
+archivo declara un namespace que no corresponde a su carpeta, si queda suelto en la raíz plana de
+`Systems/`, o si aparece una subcarpeta que no es uno de los seis destinos.
+`UiSystemBoundaryGuardTests` añade la parte que solo se ve en ejecución: construye de verdad cada
+ventana migrada y comprueba `x:Class` y pack URIs.
+
+```text
+src/RackCad.Domain/Systems/<Sistema>/         RackCad.Domain.Systems.<Sistema>
+src/RackCad.Application/Systems/<Sistema>/    RackCad.Application.Systems.<Sistema>
+src/RackCad.UI/Systems/<Sistema>/             RackCad.UI.Systems.<Sistema>
+src/RackCad.Plugin/Systems/<Sistema>/         RackCad.Plugin.Systems.<Sistema>
+```
+
+`<Sistema>` es `Selective`, `Dynamic`, `PushBack`, `FlowBed`, `Larguero` o `Shared`. **Un sistema nuevo
+añade su carpeta y necesita antes su fila en el contrato de la iniciativa**: la guarda lo exige. La
+ventana de tu sistema y su XAML van ahí, con el `x:Class` alineado a la carpeta.
+
+Lo que NO es de tu sistema:
+
+- `RackCad.Application.Drawing` — el vocabulario de materialización que consumen todos
+  (`HeaderBlockInstance`, `LateralHeaderLayout`, `HeaderRunPlan`, `HeaderInstanceGrouper`). Tus builders
+  producen instancias de aquí; no declares un plan propio.
+- `RackCad.Plugin.Drawing` — los adapters y el dibujo compartidos (`BlockPlacement`, los drawers de
+  cabecera, el importador y el renombrador de bloques).
+- `RackCad.Application.RackFrames`, `RackCad.Domain.RackFrames` y `RackCad.UI.RackFrames` — la cabecera
+  física y su configurador.
+- `RackCad.UI.Controls`, `.Editor`, `.Preview`, `.Shell` y `Themes` — infraestructura transversal de UI.
+  Compón sobre ella; no la copies dentro de tu sistema.
+- Los **diálogos compartidos de seguridad** (`SelectiveSafetyWindow`, los `Safety*GridWindow`), que viven
+  en la raíz de `RackCad.UI`. Su nombre es un fósil; su contenido es neutral. **No los muevas a tu sistema
+  aunque seas su mayor consumidor.**
+
+Un archivo va al sistema que su tipo de primer nivel **nombra y modela**. **Consumir** un contrato de otro
+sistema no lo mueve: componer está permitido y es lo que se espera (ver §0.3). Solo va a `Shared` lo que es
+neutral en nombre **y** en contenido.
+
+Los **proyectos de prueba son la excepción**: conservan un único namespace de ensamblado
+(`RackCad.Tests`, `RackCad.UI.Tests`), porque el 42 % de los archivos de prueba ejercita más de un
+sistema. No crees `tests/.../Systems/<Sistema>/`: la guarda lo rechaza.
+
 ## 1. Dominio (`RackCad.Domain`)
 
 - Un `*Defaults` con las constantes del sistema (`PushBackDefaults`): ids de pieza, vista de sus puntos,

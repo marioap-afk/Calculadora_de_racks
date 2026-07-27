@@ -7,11 +7,13 @@ using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
-using RackCad.Plugin.Headers;
-using RackCad.Plugin.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Shared;
+using RackCad.Plugin.Drawing;
+using RackCad.Plugin.Systems.Dynamic;
 using RackCad.UI;
+using RackCad.UI.Systems.Dynamic;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin

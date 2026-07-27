@@ -2,12 +2,18 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI;
 using RackCad.UI.Controls;
 using RackCad.UI.Editor;
+using RackCad.UI.Systems.Dynamic;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests
@@ -360,7 +366,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(1, r.InsertSection);                        // InsertSection matches the shown corte
         }
 
-        private static string PlanSignature(DynamicSystemPlan plan)
+        private static string PlanSignature(HeaderRunPlan plan)
         {
             if (plan == null) return "null";
             var instances = plan.Headers.SelectMany(g => g.Instances).Concat(plan.LooseInstances);

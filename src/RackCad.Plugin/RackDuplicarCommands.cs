@@ -7,7 +7,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Persistence;
 using RackCad.Plugin.KindHandlers;
-using RackCad.Plugin.Systems;
+using RackCad.Plugin.Systems.Shared;
 using AcApplication = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace RackCad.Plugin

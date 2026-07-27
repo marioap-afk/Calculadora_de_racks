@@ -8,9 +8,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using RackCad.Application.Headers;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
+using RackCad.UI.Systems.PushBack;
 using Xunit;
 
 namespace RackCad.UI.Tests
@@ -305,7 +308,7 @@ namespace RackCad.UI.Tests
             StaTestRunner.Run(() =>
             {
                 var surface = new RackCad.UI.Preview.EditorPreviewSurface(new Canvas { Width = 400, Height = 300 });
-                var drawn = RackCad.UI.Preview.PushBackPreviewRenderer.Draw(
+                var drawn = RackCad.UI.Systems.PushBack.PushBackPreviewRenderer.Draw(
                     surface, null, null, "LATERAL", 6.0,
                     DynamicRackDefaults.InOutBeamCatalogId, PushBackDefaults.HighEndBeamCatalogId);
                 Assert.False(drawn);
@@ -322,7 +325,7 @@ namespace RackCad.UI.Tests
                 {
                     SelectView(w, Lateral);
                     var plan = w.CurrentPreviewPlan;
-                    var before = RackCad.UI.Preview.PushBackPreviewRenderer.Flatten(plan)
+                    var before = RackCad.UI.Systems.PushBack.PushBackPreviewRenderer.Flatten(plan)
                         .Select(i => $"{i.PieceId}|{i.Insertion.X}|{i.Insertion.Y}|{i.MirroredX}|{i.RotationRadians}")
                         .ToList();
 
@@ -330,7 +333,7 @@ namespace RackCad.UI.Tests
                     w.UpdateLayout();
                     SelectView(w, Lateral);
 
-                    var after = RackCad.UI.Preview.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan)
+                    var after = RackCad.UI.Systems.PushBack.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan)
                         .Select(i => $"{i.PieceId}|{i.Insertion.X}|{i.Insertion.Y}|{i.MirroredX}|{i.RotationRadians}")
                         .ToList();
 
@@ -368,16 +371,16 @@ namespace RackCad.UI.Tests
     internal static class PushBackPreviewProbe
     {
         public static IReadOnlyCollection<HeaderBlockRole> RolesOf(RackPushBackSystemWindow w)
-            => RackCad.UI.Preview.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan)
+            => RackCad.UI.Systems.PushBack.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan)
                 .Select(instance => instance.Role)
                 .Distinct()
                 .ToList();
 
         public static int PieceCount(RackPushBackSystemWindow w)
-            => RackCad.UI.Preview.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan).Count;
+            => RackCad.UI.Systems.PushBack.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan).Count;
 
         public static int CountOfRole(RackPushBackSystemWindow w, HeaderBlockRole role)
-            => RackCad.UI.Preview.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan)
+            => RackCad.UI.Systems.PushBack.PushBackPreviewRenderer.Flatten(w.CurrentPreviewPlan)
                 .Count(instance => instance.Role == role);
     }
 }

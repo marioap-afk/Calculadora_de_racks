@@ -3,7 +3,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.FlowBed;
 
 namespace RackCad.Plugin.KindHandlers
 {
