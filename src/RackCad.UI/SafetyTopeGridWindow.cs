@@ -16,12 +16,19 @@ namespace RackCad.UI
     /// default), whether it is one shared central tope or one per fondo (+ the side), and the SAQUE. Built in code
     /// (no XAML), like the other safety dialogs; the grid is the shared <see cref="SelectionMatrix"/> control (I-22)
     /// with absent cells for the jagged frentes. On OK, <see cref="Result"/> holds the config.
+    /// <para>
+    /// I-34 adds the shared <see cref="SelectionMatrixBulkBar"/>, whose column axis here is a FRENTE. This one dialog
+    /// serves TWO matrices — the Selectivo's tope and Push Back's REAR tope — so adopting it once covers both, and it
+    /// stays free of any per-system branch: what differs between them already travels through its parameters.
+    /// </para>
     /// </summary>
     public sealed class SafetyTopeGridWindow : Window
     {
         private static readonly string[] SideLabels = { "Izquierda", "Derecha", "Ambos" };
 
         private readonly SelectionMatrixModel model;
+        private readonly SelectionMatrixBulkEditor bulkEditor;
+        private readonly SelectionMatrixBulkBar bulkBar;
         private readonly CheckBox shared;
         private readonly ComboBox side;
         private readonly ComboBox fondoBox; // null when there is a single fondo (no choice)
@@ -73,9 +80,10 @@ namespace RackCad.UI
 
             Title = string.IsNullOrWhiteSpace(label) ? "Larguero tope" : label;
             Width = Math.Max(560, Math.Min(900, 260 + frentes * 46));
-            Height = Math.Min(640, 260 + maxLevels * 30);
+            // +36: the shared "Aplicar a:" row of I-34 sits under the grid and must not push the options out of view.
+            Height = Math.Min(676, 296 + maxLevels * 30);
             MinWidth = 540; // the options row (compartido + lado + saque + frontal) must fit without clipping
-            MinHeight = 300;
+            MinHeight = 336;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             FontFamily = new FontFamily("Segoe UI");
             Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
@@ -161,6 +169,14 @@ namespace RackCad.UI
                     .Select(l => "Larg. " + (l + 1).ToString(CultureInfo.InvariantCulture)).ToArray()
             };
 
+            // I-34 — the shared bulk-edit row, declared with the FRENTE axis (both consumers of this dialog index the
+            // grid by frente; only their persistence destination differs).
+            bulkEditor = new SelectionMatrixBulkEditor(model, SelectionMatrixScopeLabels.ByFrente);
+            bulkBar = new SelectionMatrixBulkBar(bulkEditor);
+            bulkBar.Attach(matrix);
+            DockPanel.SetDock(bulkBar, Dock.Bottom);
+            root.Children.Add(bulkBar);
+
             root.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Auto, Content = matrix });
             Content = root;
         }
@@ -187,6 +203,11 @@ namespace RackCad.UI
 
         /// <summary>The working matrix state — a test seam (I-22, InternalsVisibleTo).</summary>
         internal SelectionMatrixModel Model => model;
+
+        /// <summary>The shared bulk-edit row and its editor — test seams (I-34).</summary>
+        internal SelectionMatrixBulkBar BulkBar => bulkBar;
+
+        internal SelectionMatrixBulkEditor BulkEditor => bulkEditor;
 
         /// <summary>Builds the config from the current controls and grid, or null when the SAQUE is invalid (the error
         /// is shown). Shared by OK and the tests, which cannot set <see cref="Window.DialogResult"/> without ShowDialog.</summary>
