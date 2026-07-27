@@ -91,6 +91,15 @@ namespace RackCad.UI.Controls
         /// <summary>Raised after a bulk change (<see cref="SetAll"/>): observers repaint every cell once.</summary>
         public event EventHandler BulkChanged;
 
+        /// <summary>DECLARED SURFACE ONLY (I-34, red step): the single aggregated notification a scoped bulk edit
+        /// raises. Never raised yet — the foundation commit wires it.</summary>
+        public event EventHandler<SelectionMatrixScopeAppliedEventArgs> ScopeApplied;
+
+        /// <summary>DECLARED SURFACE ONLY (I-34, red step): applies a scope anchored at (column, row). Inert.</summary>
+        public IReadOnlyList<SelectionMatrixCell> ApplyScope(
+            SelectionMatrixScope scope, int column, int row, bool value)
+            => Array.Empty<SelectionMatrixCell>();
+
         public int Columns { get; }
 
         public int Rows { get; }
