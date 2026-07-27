@@ -56,6 +56,36 @@ toca Selectivo, catálogos, bloques DWG, el shell visual, I-23, I-25 ni la decis
 focalizada de fronteras físicas**, sobre el candidato `b840cfe`. `origin/main` **no avanzó** desde la base
 `0e505d8`: **sin rebase**. La rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-35** (`feature/editor-avanzado-push-back`) queda **integrada** el **2026-07-27**. Implementa
+**PB-011**, la prioridad alta del Owner que I-32 dejó diferida: el Dinámico permitía seleccionar un módulo
+—cabecera o separador— y personalizarlo; **Push Back no**. Entrega la **edición longitudinal de Cabeceras y
+Separadores** por módulo de **RACK** con **selección única** —`DynamicRackSystem.Modules` es **una sola
+secuencia longitudinal** compartida por todos los frentes y todos los postes, así que personalizar un módulo
+personaliza el rack entero y **no existe** módulo por frente ni por poste—; la **configuración transaccional**
+de cabecera (escenificar, **confirmar** o **cancelar** sobre una **copia** canónica, sin modificar
+`RackFrameConfiguratorWindow`, que es compartida); la **altura manual de cabecera**; el **refuerzo total o
+parcial del poste derivado**; la **cantidad y separación globales de separadores**; y la **restauración
+individual** por módulo y **global** del rack. Los cuatro parámetros avanzados son **globales del rack**,
+viven en su **propia sección** —separada de «Módulo seleccionado»— y reutilizan **exclusivamente** las
+autoridades que la estructura dinámica compuesta ya poseía (`ManualHeaderHeightOverride`,
+`DerivedPostReinforced`, `DerivedPostReinforcementHeight`, `SeparatorCountOverride`,
+`SeparatorSpacingOverride`): **no se creó ninguna autoridad nueva ni campo equivalente**, solo el transporte
+`PushBackAdvancedRackParameters`, que **valida y asigna**. La reconciliación empareja por **`ModuleId + Kind`
+exacto** —retirando el emparejamiento por ordinal, que además aterrizaba la edición de un módulo en **otro**
+al desplazarse la secuencia—, **adapta** `Depth` y el peralte de rack de una cabecera conservada, y **reporta
+por nombre** preservados, adaptados, eliminados, incompatibles y restaurados: **no existe descarte ordinario**
+y **nada se pierde en silencio**. El refuerzo del poste derivado no es un booleano: desactivado deja el poste
+sin su refuerzo, vacío refuerza toda la altura, un valor refuerza parcialmente desde la base, y una
+recomputación que vuelve inválida una altura antes válida **bloquea con error visible** en vez de recortar.
+**Preserva I-33** (frentes en blanco y fronteras suprimidas: un módulo que solo aparecía en postes suprimidos
+se deshabilita **con su motivo**, y ninguna edición reactiva un frente ni recrea una frontera) y **PB-013**.
+**No** toca el Selectivo, los catálogos, los bloques DWG, `SelectionMatrix*`, los `Safety*GridWindow`, topes,
+desviadores, guías, defensas ni el comportamiento del Dinámico. La **primera ronda** del Owner quedó
+**parcialmente rechazada** por cuatro residuos —altura manual, refuerzo del poste derivado, cantidad y
+separación de separadores—, corregidos en la segunda **sin rediseñar** lo ya aprobado. El Owner **aprobó la
+validación manual en AutoCAD 2025** sobre el candidato `f2be30c`. `origin/main` **no avanzó** desde la base
+`52ce27f`: **sin rebase**. La rama se integra por `git merge --no-ff` en esta sesión.
+
 **I-34** (`feature/edicion-masiva-seguridad`) queda **integrada** el **2026-07-27**. Implementa
 **PB-007**, la **edición masiva de matrices de seguridad**: hasta ahora las rejillas eran celda a celda y
 solo ofrecían «Todos»/«Ninguno», así que quitar el desviador del segundo nivel en 100 frentes costaba 100
@@ -705,6 +735,34 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
 
 ## 4. Siguiente acción
 
+### I-35 — INTEGRADA en `main` (2026-07-27)
+
+El Owner **aprobó explícitamente** la validación manual en AutoCAD 2025 del candidato técnico. La
+iniciativa queda **integrada**; no queda acción pendiente de I-35.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `feature/editor-avanzado-push-back` |
+| **CODE_SHA / BUILD_SHA aprobado** por el Owner | `f2be30c20a7ff8958a24ddf078a5310dab5dbfe0` |
+| CI del candidato | **30293536290**, 4/4 sobre `f2be30c` |
+| **DLL Debug** validado | `AssemblyInformationalVersion = 1.0.0+f2be30c20a7ff8958a24ddf078a5310dab5dbfe0`, SHA-256 `4FE530EFA0FFAEF005B20253A1C0F68BF99D321A82766D4FF559A3367E99C101` |
+| Punta de la rama antes del cierre documental | `ec52b678e7058f556e49b46cab4b0f38967e50d4` (CI **30293863850**, 4/4) — delta contra el candidato: **solo** `docs/automation/state/I-35.yml`, sin cambio de binario |
+| Suites al integrar | **1612** `RackCad.Tests` + **491** `RackCad.UI.Tests`, cero fallos, cero omitidas |
+| Builds Debug | UI 0 errores / 0 advertencias; Plugin 0 errores propios y 2 `MSB3277` conocidas, con AutoCAD cerrado |
+| Rebase | **no necesario**: `origin/main` no avanzó desde la base `52ce27f` |
+| **MERGE_SHA** | vive en `git log --first-parent main`; este documento **no lo inventa** (se escribe antes del merge) |
+| Limpieza | rama local, rama remota y worktree **eliminados** tras la CI post-merge verde |
+
+Qué dejó integrado: el **editor avanzado de módulos de Push Back** (PB-011) — edición longitudinal de
+cabeceras y separadores, configuración transaccional, altura manual de cabecera, refuerzo total o parcial
+del poste derivado, cantidad y separación globales de separadores, y restauración individual y global. El
+detalle funcional completo está en §1 y el contrato en
+[`initiatives/I-35-editor-avanzado-push-back.md`](initiatives/I-35-editor-avanzado-push-back.md).
+
+**Deuda que hereda quien siga:** ninguna nueva. Las que ya existían —la decisión del Owner sobre
+`DesviadorCellsAreByPost`, la **defensa** que I-34 dejó fuera y el **preview visual** diferido por I-18—
+siguen abiertas y **no** las toca I-35.
+
 ### I-34 — INTEGRADA en `main` (2026-07-27)
 
 El Owner **aprobó toda la validación manual en AutoCAD 2025**. La iniciativa queda **integrada**; no
@@ -857,7 +915,21 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-34 — 2026-07-27** (la vigente):
+**Baseline integrada de I-35 — 2026-07-27** (la vigente):
+
+- candidato de **código** aprobado por el Owner en AutoCAD 2025 y por CI:
+  `f2be30c20a7ff8958a24ddf078a5310dab5dbfe0` (CI run `30293536290`, **success** 4/4). La punta de la rama
+  antes del cierre documental fue `ec52b678e7058f556e49b46cab4b0f38967e50d4` (CI run `30293863850`,
+  **success** 4/4); su delta contra el candidato es **solo** `docs/automation/state/I-35.yml`, así que el
+  binario validado y el integrado son el mismo árbol de código;
+- **DLL Debug** validado por el Owner:
+  `AssemblyInformationalVersion = 1.0.0+f2be30c20a7ff8958a24ddf078a5310dab5dbfe0`, SHA-256
+  `4FE530EFA0FFAEF005B20253A1C0F68BF99D321A82766D4FF559A3367E99C101`, ruta
+  `…-feature-editor-avanzado-push-back\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`;
+- suites **1612** + **491**, cero fallos, cero omitidas; builds Debug de UI y Plugin sin errores propios;
+- **sin rebase**: `origin/main` no avanzó desde la base `52ce27f`.
+
+Anterior: **baseline integrada de I-34 — 2026-07-27**:
 
 - candidato de **código** aprobado por el Owner en AutoCAD y por CI:
   `dbdda74860052c481998da8b63383cf68ec499cc` (CI run `30283957763`, **success** 4/4). Es también la punta

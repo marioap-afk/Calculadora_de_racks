@@ -11,6 +11,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Headers;
 using RackCad.Application.Persistence;
 using RackCad.Application.Systems;
+using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 using RackCad.UI.Controls;
 using RackCad.UI.Editor;
@@ -56,6 +57,11 @@ namespace RackCad.UI
         /// therefore never changes the drawing through a panel the Owner reported as inert.
         /// </summary>
         private PalletSpecification generalPallet = PushBackEditorInputs.NewDesign().Pallet;
+
+        /// <summary>Carrier of the four advanced RACK-WIDE scopes between recomputes (I-35, Owner round 2). It is the
+        /// SAME transport type the assembler consumes, so there is no parallel field and no second authority: only
+        /// its four advanced properties are used, and ReadInputs copies them across verbatim.</summary>
+        private readonly PushBackEditorInputs advanced = PushBackEditorInputs.NewDesign();
 
         // The informative card matrix (PB-VAL-01 round 3). Cards are looked up by (front, level) for in-place updates;
         // the grid stores NO state of its own — every card derives from PushBackMatrixCardModel over the state.
@@ -230,6 +236,13 @@ namespace RackCad.UI
                 PostPeralteBox.SetNumber(inputs.PostPeralte);
                 BeamDepthBox.SetNumber(inputs.BeamDepth > 0.0 ? inputs.BeamDepth : DynamicRackDefaults.DefaultBeamDepth);
 
+                // I-35 (Owner round 2): adopt the four advanced scopes the load recovered, then paint them.
+                advanced.ManualHeaderHeightOverride = inputs.ManualHeaderHeightOverride;
+                advanced.DerivedPostReinforced = inputs.DerivedPostReinforced;
+                advanced.DerivedPostReinforcementHeight = inputs.DerivedPostReinforcementHeight;
+                advanced.SeparatorCountOverride = inputs.SeparatorCountOverride;
+                advanced.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;
+
                 var options = inputs.Annotations ?? new DynamicAnnotationOptions();
                 NumberFrontsCheck.IsChecked = options.NumberFronts;
                 NumberLevelsCheck.IsChecked = options.NumberLevels;
@@ -246,6 +259,7 @@ namespace RackCad.UI
                 RefreshFrontSelector();
                 RenderPushBackMatrix();
                 LoadSelectedFront();
+                LoadAdvancedRackParameters();
             }
             finally
             {
@@ -441,6 +455,13 @@ namespace RackCad.UI
                 suppressSync = true;
                 try { MirrorSelectedCellPallet(SelectedCell()); }
                 finally { suppressSync = wasSuppressed; }
+
+                // I-35: the accepted module edit has landed on the new baseline, so it must not be re-applied by an
+                // unrelated recompute (an individual restore would otherwise fire again and again). The module list is
+                // rebuilt from the new structure and the reconciliation report reaches the panel.
+                state.ClearModuleCommit();
+                RefreshModuleSelector();
+
                 SetStatus("Vista recalculada.", false);
             }
             else
@@ -534,6 +555,13 @@ namespace RackCad.UI
                     generalPallet.Front, Val(DepthBox, generalPallet.Depth), generalPallet.Height,
                     generalPallet.Weight, WeightUnitBox.SelectedItem as string ?? "kg"),
                 PalletsDeep = IntVal(PalletsDeepBox, DynamicRackDefaults.DefaultPalletsDeep),
+
+                // I-35 (Owner round 2): the four advanced RACK-WIDE scopes travel verbatim from their carrier.
+                ManualHeaderHeightOverride = advanced.ManualHeaderHeightOverride,
+                DerivedPostReinforced = advanced.DerivedPostReinforced,
+                DerivedPostReinforcementHeight = advanced.DerivedPostReinforcementHeight,
+                SeparatorCountOverride = advanced.SeparatorCountOverride,
+                SeparatorSpacingOverride = advanced.SeparatorSpacingOverride,
                 PostCatalogId = PostBox.SelectedId,
                 PostPeralte = Val(PostPeralteBox, 0.0),
                 PalletTolerance = Val(ToleranceBox, DynamicRackDefaults.DefaultPalletTolerance),
@@ -1007,6 +1035,469 @@ namespace RackCad.UI
         /// </remarks>
         internal IReadOnlyList<int> DesviadorLevelsPerPost()
             => DynamicFrontActivation.EffectiveLevelsPerPost(state.Structure.EffectiveLevelCounts());
+
+        // ---- Advanced: per-module editing (I-35 / PB-011) ---------------------------------------------------------
+
+        /// <summary>Test seam: how the header configurator is shown. Production opens the shared window on a COPY and
+        /// returns the edited copy; a test replaces the dialog without a real window. Returning null means "cancelled",
+        /// and NOTHING is staged.</summary>
+        internal Func<RackFrameConfiguration, RackFrameConfiguration> HeaderConfiguratorDialog { get; set; }
+
+        /// <summary>Test seam: the pure editor state the window drives, so an STA test can assert on the session, the
+        /// baseline and the reconciliation report without reaching through private fields.</summary>
+        internal PushBackEditorState EditorStateForTest => state;
+
+        private void AdvancedModules_Changed(object sender, RoutedEventArgs e)
+        {
+            if (AdvancedModulesPanel == null)
+            {
+                return;
+            }
+
+            AdvancedModulesPanel.Visibility = AdvancedModulesToggle.IsChecked == true
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            if (AdvancedModulesToggle.IsChecked == true)
+            {
+                LoadAdvancedRackParameters();
+                RefreshModuleSelector();
+            }
+        }
+
+        // ---- Advanced RACK-WIDE parameters (I-35, Owner round 2) --------------------------------------------------
+        // Height, derived-post reinforcement and the two separator overrides belong to the WHOLE rack, never to the
+        // selected Separator module: they have their own section and their own handler, and they are carried to the
+        // authorities that already own them by PushBackAdvancedRackParameters. Nothing here restates a rule.
+
+        /// <summary>Show the four scopes as the loaded inputs have them; empty means the standing calculation.</summary>
+        private void LoadAdvancedRackParameters()
+        {
+            if (RackHeaderHeightBox == null)
+            {
+                return;
+            }
+
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                SetOptional(RackHeaderHeightBox, advanced.ManualHeaderHeightOverride);
+                DerivedPostReinforcedCheck.IsChecked = advanced.DerivedPostReinforced;
+                SetOptional(DerivedPostReinforcementHeightBox, advanced.DerivedPostReinforcementHeight);
+                SetOptional(RackSeparatorCountBox, advanced.SeparatorCountOverride);
+                SetOptional(RackSeparatorSpacingBox, advanced.SeparatorSpacingOverride);
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+
+            UpdateReinforcementHeightSensitivity();
+        }
+
+        /// <summary>An optional numeric field: null clears it, which is how the user expresses "use the calculation".</summary>
+        private static void SetOptional(NumericField field, double? value)
+        {
+            if (field == null) return;
+            field.SetNumber(value);   // null clears the field: that is how "use the calculation" is expressed
+        }
+
+        private static void SetOptional(NumericField field, int? value)
+            => SetOptional(field, value.HasValue ? (double?)value.Value : null);
+
+        /// <summary>Read the four scopes back from the panel. An EMPTY field is null — the calculation — and never zero.</summary>
+        private void ReadAdvancedRackParameters()
+        {
+            if (RackHeaderHeightBox == null)
+            {
+                return;
+            }
+
+            advanced.ManualHeaderHeightOverride = RackHeaderHeightBox.Value;
+            advanced.DerivedPostReinforced = DerivedPostReinforcedCheck.IsChecked == true;
+            advanced.DerivedPostReinforcementHeight = DerivedPostReinforcementHeightBox.Value;
+            advanced.SeparatorCountOverride = RackSeparatorCountBox.Value.HasValue
+                ? (int?)(int)Math.Round(RackSeparatorCountBox.Value.Value)
+                : null;
+            advanced.SeparatorSpacingOverride = RackSeparatorSpacingBox.Value;
+        }
+
+        /// <summary>The reinforcement length is meaningless with no reinforcement: disabled, with the reason visible.</summary>
+        private void UpdateReinforcementHeightSensitivity()
+            => SetBlankSensitive(
+                DerivedPostReinforcementHeightBox,
+                DerivedPostReinforcedCheck.IsChecked == true,
+                "El poste derivado no lleva refuerzo: activa «Reforzar poste derivado» para fijar su altura.");
+
+        private void AdvancedRackParameter_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            ReadAdvancedRackParameters();
+            UpdateReinforcementHeightSensitivity();
+            RequestRecompute();
+        }
+
+        private void RestoreRackParameters_Click(object sender, RoutedEventArgs e)
+        {
+            state.RestoreAdvancedRackParameters(advanced);
+            LoadAdvancedRackParameters();
+            RequestRecompute();
+            SetModuleStatus("Parametros globales del rack restaurados.");
+        }
+
+        /// <summary>
+        /// Rebuild the module list from the session, preserving the selected module id when it survives. Called after
+        /// every valid recompute, so the list always names the modules the rack actually has.
+        /// </summary>
+        private void RefreshModuleSelector()
+        {
+            if (ModuleBox == null)
+            {
+                return;
+            }
+
+            var selectedId = SelectedModuleId();
+            var descriptors = state.ModuleSession.Modules;
+
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                ModuleBox.ItemsSource = descriptors.Select(ModuleLabel).ToList();
+                moduleIds = descriptors.Select(descriptor => descriptor.ModuleId).ToList();
+
+                var index = selectedId == null ? -1 : moduleIds.IndexOf(selectedId);
+                ModuleBox.SelectedIndex = index >= 0 ? index : (moduleIds.Count > 0 ? 0 : -1);
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+
+            LoadSelectedModule();
+        }
+
+        private List<string> moduleIds = new List<string>();
+
+        private string SelectedModuleId()
+            => ModuleBox != null && ModuleBox.SelectedIndex >= 0 && ModuleBox.SelectedIndex < moduleIds.Count
+                ? moduleIds[ModuleBox.SelectedIndex]
+                : null;
+
+        private RackModuleDescriptor SelectedModule()
+        {
+            var id = SelectedModuleId();
+            return id == null
+                ? null
+                : state.ModuleSession.Modules.FirstOrDefault(module => module.ModuleId == id)
+                  ?? DescribeFromLastComputation(id);
+        }
+
+        /// <summary>The physically-present flag only exists on a RESOLVED system, so it is read from the last valid
+        /// computation; the session's own descriptors describe intents and cannot know it.</summary>
+        private RackModuleDescriptor DescribeFromLastComputation(string moduleId)
+            => lastComputation?.System?.Structure == null
+                ? null
+                : RackModuleDescriptor.Describe(lastComputation.System.Structure)
+                    .FirstOrDefault(module => module.ModuleId == moduleId);
+
+        private static string ModuleLabel(RackModuleDescriptor module)
+        {
+            var kind = module.IsHeader ? "Cabecera" : "Separador";
+            var marks = new List<string>();
+            if (module.IsManualOverride) marks.Add("medida propia");
+            if (module.HasCustomHeaderConfiguration) marks.Add("cabecera propia");
+            if (!module.IsLengthBearing) marks.Add("poste derivado");
+
+            return string.Format(
+                CultureInfo.CurrentCulture,
+                "{0}. {1} · {2:0.##} in{3}",
+                module.Index + 1,
+                kind,
+                module.Length,
+                marks.Count == 0 ? string.Empty : " · " + string.Join(", ", marks));
+        }
+
+        private void Module_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            LoadSelectedModule();
+        }
+
+        /// <summary>
+        /// Load the selected module into the panel and decide, WITH A REASON, what may be edited. Three gates:
+        /// a module with no longitudinal run (a derived post) has no length to change; a module whose physical assembly
+        /// I-33 suppressed is drawn nowhere and must not be edited; and an invalid rack blocks everything.
+        /// </summary>
+        private void LoadSelectedModule()
+        {
+            var module = SelectedModule();
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                if (module == null)
+                {
+                    ModuleInfoText.Text = "Sin modulos todavia: recalcula el sistema para poder editarlos.";
+                    ModuleLengthBox.SetNumber(0.0);
+                    SetModuleSensitive(false, "Todavia no hay una estructura valida que editar.");
+                    ModuleStatusText.Text = string.Empty;
+                    return;
+                }
+
+                var resolved = DescribeFromLastComputation(module.ModuleId);
+                var physicallyPresent = resolved?.IsPhysicallyPresent ?? true;
+
+                ModuleInfoText.Text = string.Format(
+                    CultureInfo.CurrentCulture,
+                    "{0} · X {1:0.##} a {2:0.##} · {3}",
+                    module.IsHeader ? "Cabecera" : "Separador",
+                    module.StartX,
+                    module.EndX,
+                    module.IsHeader
+                        ? (module.HasCustomHeaderConfiguration ? "cabecera personalizada" : "cabecera calculada")
+                        : "solo consume longitud");
+
+                ModuleLengthBox.SetNumber(module.Length);
+                ModuleHeaderPanel.Visibility = module.IsHeader ? Visibility.Visible : Visibility.Collapsed;
+                ModuleCustomRadio.IsChecked = module.HasCustomHeaderConfiguration;
+                ModuleCalculatedRadio.IsChecked = !module.HasCustomHeaderConfiguration;
+
+                if (!currentInputsAreValid)
+                {
+                    SetModuleSensitive(false, "Corrige los campos numericos marcados antes de editar modulos.");
+                }
+                else if (!physicallyPresent)
+                {
+                    SetModuleSensitive(
+                        false,
+                        "Este modulo no se dibuja en ningun corte: los frentes en blanco suprimieron los postes donde aparecia (I-33). "
+                        + "Reactiva un frente para poder editarlo.");
+                }
+                else if (!module.IsLengthBearing)
+                {
+                    SetModuleSensitive(false, "Es un poste derivado: no consume longitud, asi que no hay medida que editar.");
+                }
+                else
+                {
+                    SetModuleSensitive(true, null);
+                }
+
+                RefreshModuleStatus();
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+        }
+
+        /// <summary>Enable or disable the whole per-module surface with the SAME reason on every control, reusing the
+        /// I-33 helper so the original tooltip comes back when it is re-enabled.</summary>
+        private void SetModuleSensitive(bool enabled, string reason)
+        {
+            foreach (var control in new Control[]
+                     {
+                         ModuleLengthBox, ModuleCalculatedRadio, ModuleCustomRadio,
+                         ConfigureModuleHeaderButton, RestoreModuleButton
+                     })
+            {
+                SetBlankSensitive(control, enabled, reason);
+            }
+
+            // "Personalizada" is never clickable: it is a READOUT of provenance that only "Configurar cabecera…" sets.
+            if (enabled)
+            {
+                ModuleCustomRadio.IsEnabled = false;
+            }
+        }
+
+        private void ModuleLength_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            var module = SelectedModule();
+            if (module == null || ModuleLengthBox.HasError)
+            {
+                return;
+            }
+
+            var length = Val(ModuleLengthBox, module.Length);
+            if (length <= 0.0 || Math.Abs(length - module.Length) < 0.0001)
+            {
+                return;
+            }
+
+            state.ModuleSession.SetLength(module.ModuleId, length);
+            RefreshModuleStatus();
+        }
+
+        private void ModuleCalculated_Checked(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            var module = SelectedModule();
+            if (module == null || !module.IsHeader)
+            {
+                return;
+            }
+
+            state.ModuleSession.ResetHeaderToCalculated(module.ModuleId);
+            RefreshModuleStatus();
+        }
+
+        /// <summary>
+        /// Open the SHARED header configurator on an independent canonical COPY. The configurator is not modified in
+        /// any way (Owner decision 5): it mutates the copy it was handed, and the copy only becomes a staged edit here.
+        /// Cancelling the whole module edit later still throws it away, which is the confirm/cancel the base lacks.
+        /// </summary>
+        private void ConfigureModuleHeader_Click(object sender, RoutedEventArgs e)
+        {
+            var module = SelectedModule();
+            if (module == null || !module.IsHeader)
+            {
+                SetModuleStatus("Selecciona una cabecera para configurarla.");
+                return;
+            }
+
+            var copy = state.ModuleSession.HeaderConfigurationCopy(module.ModuleId)
+                       ?? HeaderConfigurationFromLastComputation(module.ModuleId);
+            if (copy == null)
+            {
+                SetModuleStatus("Esta cabecera todavia no tiene una configuracion que editar.");
+                return;
+            }
+
+            var edited = HeaderConfiguratorDialog != null
+                ? HeaderConfiguratorDialog(copy)
+                : ShowHeaderConfigurator(copy);
+            if (edited == null)
+            {
+                return;
+            }
+
+            state.ModuleSession.SetHeaderConfiguration(module.ModuleId, edited);
+
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+            try
+            {
+                ModuleCustomRadio.IsChecked = true;
+                ModuleCalculatedRadio.IsChecked = false;
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+
+            RefreshModuleStatus();
+        }
+
+        private RackFrameConfiguration ShowHeaderConfigurator(RackFrameConfiguration copy)
+        {
+            var window = new RackFrameConfiguratorWindow(copy) { Owner = this };
+            window.ShowDialog();
+            return copy;   // the configurator edits the copy in place; accepting or discarding it happens here
+        }
+
+        private RackFrameConfiguration HeaderConfigurationFromLastComputation(string moduleId)
+            => lastComputation?.System?.Structure?.Modules
+                .FirstOrDefault(module => module.ModuleId == moduleId)?
+                .AssociatedFrameConfiguration;
+
+        private void ConfirmModule_Click(object sender, RoutedEventArgs e)
+        {
+            if (!state.ModuleSession.HasPendingChanges)
+            {
+                SetModuleStatus("No hay cambios de modulo pendientes.");
+                return;
+            }
+
+            state.CommitModuleEdits();
+            RequestRecompute();
+        }
+
+        private void CancelModule_Click(object sender, RoutedEventArgs e)
+        {
+            if (!state.ModuleSession.HasPendingChanges)
+            {
+                SetModuleStatus("No hay cambios de modulo pendientes.");
+                return;
+            }
+
+            state.CancelModuleEdits();
+            LoadSelectedModule();
+            SetModuleStatus("Cambios de modulo descartados.");
+        }
+
+        private void RestoreModule_Click(object sender, RoutedEventArgs e)
+        {
+            var module = SelectedModule();
+            if (module == null)
+            {
+                return;
+            }
+
+            state.ModuleSession.RestoreModule(module.ModuleId);
+            LoadSelectedModule();
+            SetModuleStatus("Modulo " + module.ModuleId + " marcado para restaurar. Confirma para aplicarlo.");
+        }
+
+        /// <summary>
+        /// Rack-wide "restaurar estándar": every module customization goes, and the structure comes back from the
+        /// standard build. It is the ONE explicit way to lose everything at once — the assembler turns it into the
+        /// <c>forceRebuild</c> the base already accepted but no Push Back surface ever requested.
+        /// </summary>
+        private void RestoreAllModules_Click(object sender, RoutedEventArgs e)
+        {
+            state.ModuleSession.RequestStandardRestore();
+            SetModuleStatus("Estructura estandar marcada para restaurar. Confirma para aplicarla.");
+        }
+
+        /// <summary>Pending-changes state plus what the LAST recompute did with the customizations — preserved,
+        /// adapted, restored, removed or incompatible. A loss is never silent (Owner decision 3).</summary>
+        private void RefreshModuleStatus()
+        {
+            if (ModuleStatusText == null)
+            {
+                return;
+            }
+
+            var pending = state.ModuleSession.HasPendingChanges;
+            ConfirmModuleButton.IsEnabled = pending;
+            CancelModuleButton.IsEnabled = pending;
+
+            var parts = new List<string>();
+            if (pending) parts.Add("Cambios pendientes: confirma o cancela.");
+
+            var reconciliation = state.LastModuleReconciliation?.Describe();
+            if (!string.IsNullOrEmpty(reconciliation)) parts.Add("Ultimo recalculo — " + reconciliation + ".");
+
+            ModuleStatusText.Text = string.Join(" ", parts);
+        }
+
+        private void SetModuleStatus(string message)
+        {
+            RefreshModuleStatus();
+            if (!string.IsNullOrEmpty(message))
+            {
+                ModuleStatusText.Text = message + (string.IsNullOrEmpty(ModuleStatusText.Text) ? string.Empty : " " + ModuleStatusText.Text);
+            }
+        }
 
         private void Safety_Click(object sender, RoutedEventArgs e)
         {

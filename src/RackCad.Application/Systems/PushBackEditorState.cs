@@ -59,8 +59,100 @@ namespace RackCad.Application.Systems
         public PushBackSystem WorkingBaseline => workingBaseline;
 
         /// <summary>Replace the working baseline (used by load and by the assembler's AcceptComputation). A null clears it so
-        /// the next recompute rebuilds from a standard structure.</summary>
-        public void SetWorkingBaseline(PushBackSystem baseline) => workingBaseline = baseline;
+        /// the next recompute rebuilds from a standard structure. The module session is re-seeded whenever the module
+        /// SIGNATURE (ids + kinds) changed, so an editor never keeps stale module ids; when the signature is the same,
+        /// staged module edits survive an unrelated recompute.</summary>
+        public void SetWorkingBaseline(PushBackSystem baseline)
+        {
+            workingBaseline = baseline;
+            ReseedModuleSession();
+        }
+
+        // ---- Longitudinal modules (I-35) --------------------------------------------------------------------------
+
+        private RackModuleEditSession moduleSession;
+        private RackModuleCommit moduleCommit;
+        private string moduleSignature;
+
+        /// <summary>
+        /// The TRANSACTIONAL edit of the rack's longitudinal modules, seeded from the working baseline. A brand-new
+        /// design has no baseline and therefore an empty session: there is nothing to customize until the first
+        /// recompute produces a structure.
+        /// <para>
+        /// Staging on this session changes NOTHING: only <see cref="CommitModuleEdits"/> hands the intents to the
+        /// assembler, and <see cref="CancelModuleEdits"/> throws them away. That is where confirm/cancel lives for
+        /// Push Back — deliberately NOT in the shared header configurator (Owner, I-35).
+        /// </para>
+        /// </summary>
+        public RackModuleEditSession ModuleSession
+        {
+            get
+            {
+                if (moduleSession == null)
+                {
+                    moduleSession = OpenModuleSession();
+                }
+
+                return moduleSession;
+            }
+        }
+
+        /// <summary>The last ACCEPTED module edit — intents plus restore requests — that the assembler applies on the
+        /// next recompute. Null while the user has never confirmed a module edit.</summary>
+        public RackModuleCommit ModuleCommit => moduleCommit;
+
+        /// <summary>What the last structural recompute did with each customized module, for the editor to report.
+        /// Null before the first reconciliation.</summary>
+        public RackModuleReconciliationResult LastModuleReconciliation { get; set; }
+
+        /// <summary>Accept the staged module edits so the next recompute applies them.</summary>
+        public RackModuleCommit CommitModuleEdits()
+        {
+            moduleCommit = ModuleSession.Commit();
+            return moduleCommit;
+        }
+
+        /// <summary>Throw away the staged module edits; the design is left exactly as it was.</summary>
+        public void CancelModuleEdits() => ModuleSession.Cancel();
+
+        /// <summary>
+        /// Return the four advanced RACK-WIDE scopes to their standing calculation or default: manual cabecera height,
+        /// derived-post reinforcement (and its optional length), separator count and separator spacing. Explicit — the
+        /// only way to lose them, exactly like the per-module customizations (Owner, I-35).
+        /// </summary>
+        public void RestoreAdvancedRackParameters(PushBackEditorInputs inputs)
+            => PushBackAdvancedRackParameters.Reset(inputs);
+
+        /// <summary>Consume the accepted edit, so a recompute triggered by something else does not re-apply a restore
+        /// that already landed. The intents themselves survive inside the new baseline.</summary>
+        public void ClearModuleCommit() => moduleCommit = null;
+
+        private RackModuleEditSession OpenModuleSession()
+        {
+            var structure = workingBaseline?.Structure;
+            moduleSignature = SignatureOf(structure);
+            return structure == null
+                ? RackModuleEditSession.Begin(Array.Empty<DynamicRackModuleDesign>())
+                : RackModuleEditSession.Begin(structure);
+        }
+
+        private void ReseedModuleSession()
+        {
+            var signature = SignatureOf(workingBaseline?.Structure);
+            if (moduleSession != null && string.Equals(signature, moduleSignature, StringComparison.Ordinal))
+            {
+                return;   // same modules: staged edits stay valid
+            }
+
+            moduleSession = null;
+            moduleSignature = signature;
+        }
+
+        /// <summary>Ids and kinds in longitudinal order — the identity a module edit is addressed by.</summary>
+        private static string SignatureOf(DynamicRackSystem system)
+            => system == null
+                ? string.Empty
+                : string.Join("|", system.Modules.Select(module => module.ModuleId + ":" + module.Kind));
 
         /// <summary>The Push Back cell at (<paramref name="frontIndex"/>, <paramref name="levelIndex"/>), or a default when
         /// out of range — never throws and never returns a shared/orphan cell the caller could mutate into the state.</summary>

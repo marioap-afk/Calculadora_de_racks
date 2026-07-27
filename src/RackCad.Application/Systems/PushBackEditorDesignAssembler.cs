@@ -27,6 +27,7 @@ namespace RackCad.Application.Systems
         private readonly DynamicEditorDesignAssembler dynamicAssembler;
         private readonly PushBackResolver pushResolver;
         private readonly PushBackSafetyAuthority safetyAuthority;
+        private readonly RackModuleReconciliation reconciliation;
         private readonly PushBackSystemLateralBuilder lateralBuilder = new PushBackSystemLateralBuilder();
         private readonly PushBackSystemFrontalBuilder frontalBuilder = new PushBackSystemFrontalBuilder();
         private readonly PushBackSystemPlantaBuilder plantaBuilder = new PushBackSystemPlantaBuilder();
@@ -39,6 +40,25 @@ namespace RackCad.Application.Systems
             dynamicAssembler = new DynamicEditorDesignAssembler(this.catalog, builder, dynamicResolver);
             pushResolver = new PushBackResolver(this.catalog);
             safetyAuthority = new PushBackSafetyAuthority(this.catalog);
+            reconciliation = new RackModuleReconciliation(builder);
+        }
+
+        /// <summary>
+        /// The module customizations to carry: the user's ACCEPTED edit when there is one, otherwise the baseline's own
+        /// modules, so a recompute triggered by any other control preserves what the rack already had.
+        /// </summary>
+        private static IReadOnlyList<DynamicRackModuleDesign> ModuleIntents(
+            RackModuleCommit commit,
+            DynamicRackSystem baseline)
+        {
+            if (commit != null)
+            {
+                return commit.Modules;
+            }
+
+            return baseline == null
+                ? Array.Empty<DynamicRackModuleDesign>()
+                : RackModuleEditSession.Begin(baseline).Commit().Modules;
         }
 
         /// <summary>The resolver the editor shares for load/snapshot and peralte normalization (single implementation).</summary>
@@ -113,25 +133,35 @@ namespace RackCad.Application.Systems
 
             var depthLayout = DynamicDepthGeometry.Resolve(matrix.BuildFrontDesigns(), Math.Max(2, editorInputs.PalletsDeep));
             var palletsDeep = depthLayout.TotalPositions;
-            var headerHeight = ComputeHeaderHeight(pallet, palletsDeep, levels, firstLevel, beamDepth);
+
+            // I-35 (Owner round 2) — the four advanced RACK-WIDE scopes. They are validated BEFORE anything is built,
+            // so an invalid one blocks with a visible message instead of producing a rack nobody asked for. The manual
+            // cabecera height replaces the derived one for the WHOLE recompute (that is what "manual" means), so it is
+            // resolved here and every consumer below sees a single effective height.
+            PushBackAdvancedRackParameters.Validate(editorInputs);
+            var derivedHeight = ComputeHeaderHeight(pallet, palletsDeep, levels, firstLevel, beamDepth);
+            var headerHeight = editorInputs.ManualHeaderHeightOverride ?? derivedHeight;
+            PushBackAdvancedRackParameters.ValidateReinforcementAgainstPost(editorInputs, headerHeight);
 
             // Dynamic recompute cycle (composed, never modified): rebuild only on a pallet/fondos change (or a forced reset);
             // otherwise reuse a COPY of the loaded baseline so custom modules and manual fondos survive. The baseline itself is
             // never mutated here — only AcceptComputation advances it, so a failed recompute cannot corrupt it.
             var baseline = state.WorkingBaseline?.Structure;
-            var mustRebuild = forceRebuild || DynamicEditorDesignAssembler.MustRebuild(baseline, pallet, depthLayout);
-            var savedFondos = !forceRebuild && mustRebuild && baseline != null
-                ? dynamicAssembler.SnapshotHeaderFondos(baseline)
-                : null;
+
+            // I-35: the accepted module edit. "Restaurar estándar" is a forced rebuild, and an individual restore also
+            // needs one — the module's CALCULATED length only exists in a freshly built standard structure.
+            var commit = state.ModuleCommit;
+            var restoredIds = commit?.RestoredModuleIds ?? (IReadOnlyList<string>)Array.Empty<string>();
+            var standardRestore = forceRebuild || (commit?.StandardRestoreRequested ?? false);
+
+            var mustRebuild = standardRestore
+                              || restoredIds.Count > 0
+                              || DynamicEditorDesignAssembler.MustRebuild(baseline, pallet, depthLayout);
 
             DynamicRackSystem system;
             if (mustRebuild)
             {
                 system = builder.BuildDefault(pallet, depthLayout, RackFrameTemplateCatalog.Default, postId, headerHeight, postPeralte);
-                if (savedFondos != null)
-                {
-                    dynamicAssembler.RestoreHeaderFondos(system, savedFondos, headerHeight, postId);
-                }
             }
             else
             {
@@ -140,6 +170,27 @@ namespace RackCad.Application.Systems
             }
 
             builder.ApplyPostPeralte(system, postPeralte);
+
+            // I-35 (Owner round 2): hand the four advanced scopes to the authorities that already own them. Assignment
+            // only — no rule is restated here; the resolver, DynamicSeparatorGeometry, the lateral builder and the BOM
+            // read them exactly as they do for the dynamic system. A rack-wide "restaurar estándar" clears them, which
+            // is what makes it a reset of EVERYTHING and not only of the modules.
+            if (standardRestore)
+            {
+                PushBackAdvancedRackParameters.Reset(editorInputs);
+            }
+
+            PushBackAdvancedRackParameters.ApplyTo(system, editorInputs);
+
+            // I-35: carry the user's module customizations onto whatever structure we ended up with, matching by exact
+            // ModuleId + Kind (Owner). This REPLACES the ordinal SnapshotHeaderFondos/RestoreHeaderFondos pair for Push
+            // Back — that pair carries the fondo only and re-stamps every restored header as calculated — WITHOUT
+            // touching it, because it is also the dynamic editor's and I-35 must not change the Dinámico.
+            // A rack-wide "restaurar estándar" carries nothing: that is what makes it a reset.
+            var intents = standardRestore
+                ? Array.Empty<DynamicRackModuleDesign>()
+                : ModuleIntents(commit, baseline);
+            state.LastModuleReconciliation = reconciliation.Reconcile(intents, system, restoredIds);
 
             var authorizedSafety = safetyAuthority.Authorize(editorInputs.SafetySelections);
             var sharedDesign = dynamicAssembler.BuildDesign(

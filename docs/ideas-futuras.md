@@ -419,6 +419,36 @@ no implementados, con lo que ya se sabe de cada uno:
   Back es «calculada» (`DynamicRackSystemBuilder` la crea con `UseCalculatedHeaderConfiguration = true` y
   solo la ventana del Dinámico lo pone en false), y de ahí depende que el alto de tarima general sea inerte.
   Si Push Back gana cabeceras personalizadas, esa dependencia debe revisarse en el mismo cambio.
+  **EN CURSO como I-35** (rama `feature/editor-avanzado-push-back`); contrato en
+  [`initiatives/I-35-editor-avanzado-push-back.md`](initiatives/I-35-editor-avanzado-push-back.md).
+
+  **La inconsistencia que la auditoría de apertura de I-35 encontró y que esta nota no anticipaba.** La
+  nota anterior advertía de UNA dependencia (el alto de tarima general). Hay **dos caminos más** que hoy
+  son inertes por la misma razón —ninguna cabecera de Push Back es personalizada— y que se vuelven reales
+  **en la misma sesión** en que Push Back gane cabeceras personalizadas:
+
+  1. **La reconciliación de módulos pierde la cabecera personalizada.**
+     `DynamicEditorDesignAssembler.SnapshotHeaderFondos` guarda **solo el fondo** por ordinal, y
+     `RestoreHeaderFondos` reasigna ese fondo, **fuerza `UseCalculatedHeaderConfiguration = true`** y
+     **reconstruye la configuración desde la fábrica**. Es decir: un cambio de tarima o de fondos
+     revierte a calculada cualquier cabecera personalizada. `PushBackEditorDesignAssembler` llama ese
+     mismo camino. **Inconsistencia**: la bandera `UseCalculatedHeaderConfiguration` promete «preservar
+     la configuración completa del usuario» (su propio XML-doc) y el snapshot no la preserva. El Dinámico
+     convive con esto desde siempre; corregirlo **allí** cambiaría el Dinámico, así que la decisión de si
+     Push Back diverge a propósito es del Owner (pregunta *b* de la sección 12 del contrato de I-35).
+  2. **El clon del resolver no es el clon canónico de I-17.**
+     `DynamicRackSystemResolver.CloneHeader` es `RackFrameProjectDocument.FromConfiguration(...)
+     .ToConfiguration()`, no `RackFrameProjectStore.DeepCopy`. El documento **no persiste**
+     `RackFrameConfiguration.Exceptions` —I-17 las declara estado *runtime* y por eso `DeepCopy` las
+     rea­nexa— así que ese round-trip las **descarta**.
+     `PushBackEditorDesignAssembler.CopyStructureSystem` lo recorre (`Snapshot` + `Resolve`) en **cada**
+     recálculo sin cambio estructural. El modelo *derivado* sí se reconstruye (`builder.Refresh` llama
+     `RefreshPhysicalModel` en cada cabecera), de modo que la pérdida es **exclusivamente** de
+     `Exceptions`.
+
+  Ninguna de las dos se corrige «de paso»: la primera necesita decisión del Owner y la segunda toca un
+  tipo compartido con el Dinámico. Quedan aquí registradas con su evidencia para que I-35 las resuelva en
+  su fase correspondiente y nadie las re-descubra.
 - ~~**PB-014 — Frente «en blanco» (Push Back y Dinámico).**~~ **RESUELTO por I-33** (rama
   `feature/frente-en-blanco`). La decisión de alcance que este punto pedía la dio el Owner al abrir la
   iniciativa: aplica al **Dinámico y a Push Back**, no al Selectivo. Un frente en blanco conserva su claro
