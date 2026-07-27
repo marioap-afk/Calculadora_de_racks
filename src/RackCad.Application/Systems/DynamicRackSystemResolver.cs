@@ -384,6 +384,10 @@ namespace RackCad.Application.Systems
                 throw new ArgumentException("La altura manual debe ser mayor que cero.", nameof(design));
             if (design.PalletTolerance <= 0.0)
                 throw new ArgumentException("La holgura transversal debe ser mayor que cero.", nameof(design));
+            // I-33: un payload explicitamente TODO EN BLANCO se rechaza con error visible; nunca se normaliza en
+            // silencio reactivando un frente. La comprobacion es la canonica compartida, no una guarda propia.
+            if (!DynamicFrontActivation.HasActiveFront(design.Fronts))
+                throw new ArgumentException(DynamicFrontActivation.AllBlankMessage, nameof(design));
             foreach (var front in design.Fronts)
             {
                 if (front == null || front.PalletCount < 1)

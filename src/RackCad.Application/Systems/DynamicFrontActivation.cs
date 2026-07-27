@@ -52,43 +52,37 @@ namespace RackCad.Application.Systems
         public static IEnumerable<DynamicRackFront> Active(IEnumerable<DynamicRackFront> fronts)
             => (fronts ?? Enumerable.Empty<DynamicRackFront>()).Where(front => front != null && front.IsActive);
 
-        /// <summary>True when at least one front carries load. An all-blank rack is not a valid design.</summary>
-        public static bool HasActiveFront(IEnumerable<DynamicRackFrontDesign> designs)
-            => (designs ?? Enumerable.Empty<DynamicRackFrontDesign>()).Any(design => design != null && design.IsActive);
+        /// <summary>
+        /// The ONE message for an all-blank rack, shared by every rejection point so the user reads the same sentence
+        /// whichever boundary caught it.
+        /// </summary>
+        public const string AllBlankMessage =
+            "Al menos un frente debe permanecer activo: un rack con todos los frentes en blanco no lleva carga.";
 
         /// <summary>
-        /// Enforces "at least one active front" on an editable design set, reactivating the FIRST front when every
-        /// front came back blank. Legacy documents never reach this path with an all-blank set — they have no blank
-        /// fronts at all — so it only guards an editor or a hand-written document that blanked everything.
+        /// True when the front set is acceptable: at least one front carries load. An EMPTY set is not judged here —
+        /// it means "no fronts declared", which the legacy fallbacks resolve elsewhere — so this answers only the
+        /// all-blank question.
+        /// <para>
+        /// This predicate is the SINGLE canonical check (I-33). Nothing normalizes an all-blank payload by silently
+        /// reactivating a front: the editor PREVENTS reaching that state non-destructively
+        /// (<c>DynamicFrontMatrix.SetActive</c> refuses to blank the last active front), and an explicitly all-blank
+        /// payload that arrives anyway is REJECTED with a visible error by the resolver and by
+        /// <c>RackDesignValidation</c>. Legacy documents carry no flag at all and therefore load every front active.
+        /// </para>
         /// </summary>
-        public static void EnsureActiveFront(IList<DynamicRackFrontDesign> designs)
+        public static bool HasActiveFront(IEnumerable<DynamicRackFrontDesign> designs)
         {
-            if (designs == null || designs.Count == 0 || HasActiveFront(designs))
-            {
-                return;
-            }
-
-            var first = designs.FirstOrDefault(design => design != null);
-            if (first != null)
-            {
-                first.IsActive = true;
-            }
+            var list = (designs ?? Enumerable.Empty<DynamicRackFrontDesign>()).Where(design => design != null).ToList();
+            return list.Count == 0 || list.Any(design => design.IsActive);
         }
 
-        /// <summary>The same guard over already resolved fronts, for the document boundary that rebuilds a system
+        /// <summary>The same canonical check over already resolved fronts, for the boundaries that rebuild a system
         /// directly instead of going through a design.</summary>
-        public static void EnsureActiveFront(IList<DynamicRackFront> fronts)
+        public static bool HasActiveFront(IEnumerable<DynamicRackFront> fronts)
         {
-            if (fronts == null || fronts.Count == 0 || fronts.Any(front => front != null && front.IsActive))
-            {
-                return;
-            }
-
-            var first = fronts.FirstOrDefault(front => front != null);
-            if (first != null)
-            {
-                first.IsActive = true;
-            }
+            var list = (fronts ?? Enumerable.Empty<DynamicRackFront>()).Where(front => front != null).ToList();
+            return list.Count == 0 || list.Any(front => front.IsActive);
         }
     }
 }

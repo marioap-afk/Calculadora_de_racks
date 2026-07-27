@@ -212,9 +212,9 @@ namespace RackCad.Application.Persistence
                 });
             }
 
-            // A hand-written or editor-produced document could blank every front; a rack that carries nothing is not a
-            // rack, so the load boundary restores the first one (I-33).
-            DynamicFrontActivation.EnsureActiveFront(design.Fronts);
+            // El estado Activo/En blanco se carga VERBATIM (I-33). Un documento con TODOS los frentes en blanco no se
+            // arregla en silencio aqui: lo rechaza la validacion canonica (RackDesignValidation / el resolver) con
+            // error visible. Un documento legacy no trae la bandera, asi que sus frentes cargan todos activos.
 
             foreach (var safety in SafetySelections ?? Enumerable.Empty<SafetySelectionDocument>())
             {
@@ -322,8 +322,8 @@ namespace RackCad.Application.Persistence
                 system.Fronts.Add(legacy);
             }
 
-            // Same guard as the design boundary: a rack whose every front is blank carries nothing (I-33).
-            DynamicFrontActivation.EnsureActiveFront(system.Fronts);
+            // Igual que el limite del diseno: el estado se carga verbatim y el rechazo de un rack todo en blanco es de
+            // la validacion canonica, no de una guarda propia de este DTO (I-33).
 
             foreach (var safety in SafetySelections ?? Enumerable.Empty<SafetySelectionDocument>())
             {

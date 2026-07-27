@@ -168,9 +168,15 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// Select the front and set its Activo/En blanco state (I-33). Blanking the LAST active front is refused —
-        /// a rack that carries nothing is not a rack — and reported by the false return so the editor can say why.
-        /// Nothing else on the row is touched, so the configuration stays dormant and reactivating restores it.
+        /// Set a front's Activo/En blanco state and SEAT the selection on it (I-33). Blanking the LAST active front is
+        /// refused — a rack that carries nothing is not a rack — and reported by the false return so the editor can say
+        /// why. Nothing else on the row is touched, so the configuration stays dormant and reactivating restores it.
+        /// <para>
+        /// The selection is re-seated as a clamped SINGLE cell of this front, not merely re-pointed: leaving the old
+        /// multi-selection behind would make <see cref="NormalizeSelection"/> snap the primary cell back to another
+        /// front, and the editor would then enable/disable its cell controls against a front the user did not touch.
+        /// The result is always a valid, non-empty selection.
+        /// </para>
         /// </summary>
         public bool SetActive(int index, bool isActive)
         {
@@ -186,8 +192,11 @@ namespace RackCad.Application.Systems
                 return false;
             }
 
-            selectedFrontIndex = index;
             fronts[index].IsActive = isActive;
+            selectedFrontIndex = index;
+            selectedLevelIndex = ClampLevel(index, selectedLevelIndex);
+            selectedCells.Clear();
+            selectedCells.Add((index, selectedLevelIndex));
             return true;
         }
 
@@ -440,7 +449,9 @@ namespace RackCad.Application.Systems
                 designs.Add(frontDesign);
             }
 
-            DynamicFrontActivation.EnsureActiveFront(designs);
+            // Sin normalizacion: la prevencion del editor es NO DESTRUCTIVA y vive en SetActive, que se niega a
+            // blanquear el ultimo frente activo. Reactivar aqui uno cualquiera reescribiria la intencion del usuario
+            // y seria una segunda guarda divergente (I-33).
             return designs;
         }
 

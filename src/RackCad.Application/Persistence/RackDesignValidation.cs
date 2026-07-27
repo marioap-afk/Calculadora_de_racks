@@ -1,3 +1,4 @@
+using RackCad.Application.Systems;
 using RackCad.Domain.RackFrames;
 using RackCad.Domain.Systems;
 
@@ -29,24 +30,31 @@ namespace RackCad.Application.Persistence
         public static bool IsUsableLarguero(LargueroDesign larguero)
             => larguero != null && !string.IsNullOrWhiteSpace(larguero.BeamProfileId);
 
+        // A rack whose every front is EN BLANCO carries nothing (I-33). It is rejected here, never normalized: the check
+        // is DynamicFrontActivation.HasActiveFront — the same canonical predicate the resolver throws on — so the two
+        // boundaries cannot drift. Legacy documents carry no flag and load every front active, so they pass unchanged.
         public static bool IsUsableDynamic(DynamicRackSystem system)
-            => system != null && system.Modules != null && system.Modules.Count > 0;
+            => system != null && system.Modules != null && system.Modules.Count > 0
+               && DynamicFrontActivation.HasActiveFront(system.Fronts);
 
         public static bool IsUsableDynamic(DynamicRackDesign design, DynamicRackSystem system)
             => design != null
                && design.Pallet != null
                && design.Pallet.Depth > 0.0
                && design.PalletsDeep >= 2
+               && DynamicFrontActivation.HasActiveFront(design.Fronts)
                && IsUsableDynamic(system);
 
         // Push Back reuses the dynamic structure; a library load carries only the editable design (no resolved system).
-        // Aligned with PushBackResolver.Validate: real pallet dimensions, >= 2 fondos and >= 1 load level.
+        // Aligned with PushBackResolver.Validate: real pallet dimensions, >= 2 fondos, >= 1 load level and — since
+        // I-33 — at least one front that is not en blanco.
         public static bool IsUsablePushBack(PushBackDesign design)
             => design?.Structure?.Pallet != null
                && design.Structure.Pallet.Front > 0.0
                && design.Structure.Pallet.Depth > 0.0
                && design.Structure.Pallet.Height > 0.0
                && design.Structure.PalletsDeep >= 2
-               && design.Structure.LoadLevels >= 1;
+               && design.Structure.LoadLevels >= 1
+               && DynamicFrontActivation.HasActiveFront(design.Structure.Fronts);
     }
 }

@@ -295,11 +295,71 @@ namespace RackCad.UI
 
                 RearPeralteBox.SelectedItem = RearPeraltes.FirstOrDefault(p => Math.Abs(p - push.HighEndBeamPeralte) < 1e-6);
                 if (RearPeralteBox.SelectedItem == null) RearPeralteBox.SelectedItem = PushBackDefaults.HighEndBeamDefaultPeralte;
+
+                ApplyBlankFrontEditability(front.IsActive);
             }
             finally
             {
                 suppressSync = wasSuppressed;
             }
+        }
+
+        /// <summary>
+        /// I-33: un frente EN BLANCO conserva una seleccion valida, pero sus niveles y celdas no existen, asi que todo
+        /// control que los edite —incluidos los alcances ligados a celda— se deshabilita mientras dure ese estado. Los
+        /// controles ESTRUCTURALES del frente (posiciones, fondos e inicio en fondo) siguen siendo validos y quedan
+        /// disponibles. Reactivar el frente vuelve a llamar aqui y restaura la edicion de inmediato.
+        /// </summary>
+        private void ApplyBlankFrontEditability(bool isActive)
+        {
+            const string reason = "El frente esta en blanco: no tiene niveles ni celdas que editar. "
+                                  + "Desmarca «En blanco» para volver a editarlo.";
+
+            // Nivel y elevacion del primer larguero: editan NIVELES.
+            foreach (var control in new Control[] { LevelsBox, FirstLevelHeightBox, SelectedLevelBox })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+
+            // Celda seleccionada y su peralte posterior: editan CELDAS inexistentes.
+            foreach (var control in new Control[]
+                     {
+                         CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox, CellClearBox,
+                         CellBeamLengthOverrideBox, CellInOutBeamBox, CellInOutPeralteBox,
+                         CellIntermediateBeamBox, CellIntermediatePeralteBox, RearPeralteBox
+                     })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+
+            // Alcances/aplicaciones ligados a CELDA. Los tres botones de datos del FRENTE quedan disponibles: copian
+            // valores estructurales, que siguen siendo validos en un frente en blanco.
+            foreach (var control in new Control[]
+                     { ApplyCellButton, ApplySelectedButton, ApplyLevelButton, ApplyFrontButton, ApplyAllButton })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+        }
+
+        /// <summary>Original tooltips, so explaining WHY a control is disabled never destroys the tooltip the control
+        /// already had (several carry real usage notes).</summary>
+        private readonly Dictionary<Control, object> blankToolTips = new Dictionary<Control, object>();
+
+        private void SetBlankSensitive(Control control, bool isActive, string reason)
+        {
+            if (control == null)
+            {
+                return;
+            }
+
+            if (!blankToolTips.ContainsKey(control))
+            {
+                blankToolTips[control] = control.ToolTip;
+            }
+
+            control.IsEnabled = isActive;
+            ToolTipService.SetShowOnDisabled(control, true);
+            control.ToolTip = isActive ? blankToolTips[control] : reason;
         }
 
         /// <summary>

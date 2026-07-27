@@ -259,9 +259,15 @@ Planes disponibles:
   (`DynamicFrontActivation`) sobre la **estructura dinámica que Push Back compone**, así que los dos
   sistemas no pueden divergir; para un frente activo devuelve el histórico `Math.Max(1, LoadLevels)`, de
   modo que un rack sin frentes en blanco **no cambia en nada** y **serializa igual que antes** (la bandera
-  se omite del wire). Los documentos legacy cargan **todos los frentes activos** y siempre debe quedar
-  **al menos un frente activo**. Fuera de alcance: Selectivo, **PB-001**, **PB-007**, **PB-011**, I-23,
-  I-25, catálogos, DWG y el shell visual. `requires_autocad: true`, `requires_owner_validation: true`;
+  se omite del wire). Los documentos legacy cargan **todos los frentes activos**. La regla «al menos un
+  frente activo» tiene **una sola** comprobación canónica y **nada la normaliza en silencio**: el editor
+  **previene** de forma no destructiva (se niega a blanquear el último activo, sin cambiar nada) y un
+  payload explícitamente todo en blanco se **rechaza con error visible** en el resolver y en
+  `RackDesignValidation`. Al **crecer** frentes, el nuevo **nace activo aunque el template seleccionado esté
+  en blanco**; al **seleccionar** un frente en blanco la selección sigue siendo válida pero se deshabilitan
+  los controles de nivel/celda y los alcances, y reactivarlo restaura la edición de inmediato. Fuera de
+  alcance: Selectivo, **PB-001**, **PB-007**, **PB-011**, I-23, I-25 (declaradas en `conflicts_with`),
+  catálogos, DWG y el shell visual. `requires_autocad: true`, `requires_owner_validation: true`;
   `requires_owner_decision: false`. Estado versionado en
   [`../automation/state/I-33.yml`](../automation/state/I-33.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue

@@ -51,11 +51,10 @@ namespace RackCad.Application.Systems
                 source.Add(new DynamicRackFrontDesign { PalletCount = DynamicRackDefaults.DefaultPalletsWide });
             }
 
-            // A rack whose every front is blank carries no load at all, which is not a rack. Normalizing HERE — the one
-            // place that turns editable intent into resolved fronts — protects the dynamic system, Push Back, every view
-            // and both BOMs at once, instead of repeating the guard at each boundary (I-33).
-            var hasActive = source.Any(design => design.IsActive);
-
+            // The Activo/En blanco intent is carried through VERBATIM. An all-blank set is NOT normalized here (I-33):
+            // the editor prevents reaching it, and the canonical check rejects it with a visible error at the resolver
+            // and at RackDesignValidation. Silently reactivating a front here would hide the caller's mistake and make
+            // this a second, divergent guard.
             var result = new List<DynamicRackFront>(source.Count);
             for (var index = 0; index < source.Count; index++)
             {
@@ -67,7 +66,7 @@ namespace RackCad.Application.Systems
                 result.Add(new DynamicRackFront
                 {
                     Index = index,
-                    IsActive = design.IsActive || (!hasActive && index == 0),
+                    IsActive = design.IsActive,
                     PalletCount = count,
                     LoadLevels = design.LoadLevels.HasValue && design.LoadLevels.Value > 0
                         ? design.LoadLevels.Value

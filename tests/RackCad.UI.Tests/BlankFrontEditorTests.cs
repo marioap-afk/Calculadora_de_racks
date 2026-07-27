@@ -52,6 +52,37 @@ namespace RackCad.UI.Tests
             }
         }
 
+        private static Control Named(System.Windows.Window window, string name)
+            => (Control)window.FindName(name)
+               ?? throw new InvalidOperationException("No existe el control " + name);
+
+        private static void AssertAllEnabled(System.Windows.Window window, bool expected, params string[] names)
+        {
+            foreach (var name in names)
+            {
+                Assert.True(
+                    Named(window, name).IsEnabled == expected,
+                    name + " deberia estar " + (expected ? "habilitado" : "deshabilitado"));
+            }
+        }
+
+        /// <summary>
+        /// The two +/- step rows the dynamic matrix header builds for one front, in order: [0] = Posiciones
+        /// (structural, stays available) and [1] = Niveles (edits levels, off while the front is blank). Neither
+        /// carries an x:Name, so they are located by their position in the header.
+        /// </summary>
+        private static System.Collections.Generic.List<System.Collections.Generic.List<Button>> StepButtonRows(
+            System.Windows.Window window, string gridName, int frontIndex)
+            => ((Grid)window.FindName(gridName)).Children
+                .OfType<System.Windows.FrameworkElement>()
+                .Where(element => Grid.GetRow(element) == 0 && Grid.GetColumn(element) == frontIndex + 1)
+                .SelectMany(Descendants)
+                .OfType<StackPanel>()
+                .Where(panel => panel.Orientation == Orientation.Horizontal)
+                .Select(panel => panel.Children.OfType<Button>().ToList())
+                .Where(buttons => buttons.Count == 2)
+                .ToList();
+
         // ---- Push Back ---------------------------------------------------------------------------------------
 
         private static RackPushBackSystemWindow PushBackWindow()
@@ -200,6 +231,116 @@ namespace RackCad.UI.Tests
                     Assert.All(restored.Fronts, front => Assert.True(front.IsActive));
                     Assert.Equal(dormantLevels, restored.Fronts[1].Levels.Count);
                     Assert.Equal(dormantPositions, restored.Fronts[1].PalletCount);
+                }
+                finally { window.Close(); }
+            });
+        }
+
+        // ---- Editability while a blank front is SELECTED (both directions) ----------------------------------
+
+        private static readonly string[] DynamicLevelAndCellControls =
+        {
+            "SelectedLevelsBox", "FirstLevelHeightBox",
+            "FrontBox", "PalletHeightBox", "WeightBox", "SelectedClearHeightBox", "SelectedBeamLengthBox",
+            "SelectedInOutBeamBox", "SelectedInOutPeralteBox",
+            "SelectedIntermediateBeamBox", "SelectedIntermediatePeralteBox",
+            "ApplyCellButton", "ApplySelectedCellsButton", "ApplyLevelButton", "ApplyFrontButton", "ApplyAllButton"
+        };
+
+        private static readonly string[] DynamicStructuralControls =
+        {
+            "SelectedPositionsBox", "SelectedPalletsDeepBox", "SelectedDepthStartBox"
+        };
+
+        [Fact]
+        public void Dynamic_SelectingABlankFrontKeepsAValidSelectionAndDisablesLevelAndCellEditing()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var window = DynamicWindow();
+                try
+                {
+                    AssertAllEnabled(window, true, DynamicLevelAndCellControls);
+
+                    BlankBox(window, "DynamicMatrixGrid", 1).IsChecked = true;
+
+                    // The selection stays VALID — the blank front is the selected one and the design still builds.
+                    var design = window.BuildDesignForTest(out var ok);
+                    Assert.True(ok);
+                    Assert.False(design.Fronts[1].IsActive);
+
+                    // Everything that edits a level or a non-existent cell, and every cell-bound scope, is off...
+                    AssertAllEnabled(window, false, DynamicLevelAndCellControls);
+                    // ...with a visible reason.
+                    Assert.Contains("en blanco", (string)Named(window, "ApplyCellButton").ToolTip);
+
+                    // In the matrix header, the NIVELES steppers go off while the POSICIONES ones — structural — stay.
+                    var rows = StepButtonRows(window, "DynamicMatrixGrid", 1);
+                    Assert.Equal(2, rows.Count);
+                    Assert.All(rows[0], button => Assert.True(button.IsEnabled));    // Posiciones
+                    Assert.All(rows[1], button => Assert.False(button.IsEnabled));   // Niveles
+
+                    // The front's structural controls remain valid and available.
+                    AssertAllEnabled(window, true, DynamicStructuralControls);
+
+                    // Reactivating restores editing immediately, tooltips included.
+                    BlankBox(window, "DynamicMatrixGrid", 1).IsChecked = false;
+                    AssertAllEnabled(window, true, DynamicLevelAndCellControls);
+                    AssertAllEnabled(window, true, DynamicStructuralControls);
+                    Assert.All(
+                        StepButtonRows(window, "DynamicMatrixGrid", 1).SelectMany(row => row),
+                        button => Assert.True(button.IsEnabled));
+                    Assert.DoesNotContain(
+                        "en blanco",
+                        (string)(Named(window, "ApplySelectedCellsButton").ToolTip ?? string.Empty));
+                }
+                finally { window.Close(); }
+            });
+        }
+
+        private static readonly string[] PushBackLevelAndCellControls =
+        {
+            "LevelsBox", "FirstLevelHeightBox", "SelectedLevelBox",
+            "CellPalletFrontBox", "CellPalletHeightBox", "CellPalletWeightBox", "CellClearBox",
+            "CellBeamLengthOverrideBox", "CellInOutBeamBox", "CellInOutPeralteBox",
+            "CellIntermediateBeamBox", "CellIntermediatePeralteBox", "RearPeralteBox",
+            "ApplyCellButton", "ApplySelectedButton", "ApplyLevelButton", "ApplyFrontButton", "ApplyAllButton"
+        };
+
+        private static readonly string[] PushBackStructuralControls =
+        {
+            "PositionsBox", "FondosBox", "DepthStartBox"
+        };
+
+        [Fact]
+        public void PushBack_SelectingABlankFrontKeepsAValidSelectionAndDisablesLevelAndCellEditing()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var window = PushBackWindow();
+                try
+                {
+                    AssertAllEnabled(window, true, PushBackLevelAndCellControls);
+
+                    // Select front 1 first, then blank it: the selection must survive the transition.
+                    window.SelectMatrixCell(1, 0, false);
+                    BlankBox(window, "PushBackMatrixGrid", 1).IsChecked = true;
+
+                    Assert.Equal(1, window.State.Structure.SelectedFrontIndex);
+                    Assert.True(window.State.Structure.SelectedCellCount > 0);
+                    Assert.False(window.State.Structure.IsActive(1));
+
+                    AssertAllEnabled(window, false, PushBackLevelAndCellControls);
+                    Assert.Contains("en blanco", (string)Named(window, "ApplyCellButton").ToolTip);
+                    AssertAllEnabled(window, true, PushBackStructuralControls);
+
+                    // Reactivating restores editing immediately.
+                    BlankBox(window, "PushBackMatrixGrid", 1).IsChecked = false;
+                    AssertAllEnabled(window, true, PushBackLevelAndCellControls);
+                    AssertAllEnabled(window, true, PushBackStructuralControls);
+                    Assert.DoesNotContain(
+                        "en blanco",
+                        (string)(Named(window, "ApplySelectedButton").ToolTip ?? string.Empty));
                 }
                 finally { window.Close(); }
             });
