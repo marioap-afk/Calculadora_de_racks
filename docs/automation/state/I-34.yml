@@ -4,13 +4,13 @@ automation_state:
   branch: feature/edicion-masiva-seguridad
   claim_id: 1a2f5fcf-2430-49a1-9f56-1aa526bcdbf6
   current_phase: 6
-  state: integration-ready
+  state: completed
   gate: none
   attempts: 1
   next_action: >-
-    INTEGRAR-en-main-por-git-merge-no-ff-en-la-sesion-de-integracion ·
-    tras-confirmar-la-CI-post-merge-verde-eliminar-worktree-rama-local-y-rama-remota ·
-    NINGUNA-accion-de-producto-pendiente-la-defensa-es-candidato-futuro-independiente
+    NINGUNA-I-34-esta-CERRADA-integrada-en-main-y-limpiada ·
+    la-defensa-es-candidato-futuro-INDEPENDIENTE-en-ideas-futuras-no-deuda-de-I-34 ·
+    siguiente-en-el-ROADMAP-I-25-y-I-23
   last_evidence_commit: 03c4c5ef0fa1c9b43c4729d39d2dd78f6d2a108f
 
 # --------------------------------------------------------------------------------------------------------
@@ -86,6 +86,18 @@ integration:
   base: origin-main-7e48b5c06afb790621d4997aa93e44e0b53e8af7-sin-avanzar-desde-el-reclamo
   rebase: NO-NECESARIO-el-trunk-no-avanzo-asi-que-el-arbol-aprobado-por-el-Owner-es-el-integrado
   method: git-merge-no-ff-sin-squash-sin-force-y-sin-PR
-  note: >-
-    el-MERGE_SHA-y-su-CI-post-merge-viven-en-git-log-first-parent-main ·
-    este-archivo-se-escribe-ANTES-del-merge-y-no-los-inventa
+  branch_head_merged: 0e4349f417f858d83af9e9b56003f8863ad795e0
+  branch_head_ci: 30286744076-VERDE-4-de-4
+  merge_sha: 0ce16d7d364e97c55e9aa55514c61097e209780a
+  post_merge_ci: 30287067183-VERDE-4-de-4-sobre-0ce16d7
+  cleanup: >-
+    worktree-eliminado · rama-local-borrada-con-git-branch-d-borrado-seguro ·
+    rama-remota-borrada-tras-confirmar-el-merge-en-main · git-worktree-prune-ejecutado ·
+    main-igual-a-origin-main-arbol-limpio-y-sin-stashes ·
+    los-17-commits-de-la-iniciativa-quedan-contenidos-en-main-y-son-recuperables
+  concurrent_work: >-
+    I-35-editor-avanzado-de-Push-Back-NO-fue-modificada ·
+    su-rama-remota-sigue-en-28b9c93d87da57e3cc3fbc24120badb7b6650194 ·
+    su-worktree-tiene-trabajo-vivo-de-otra-sesion-que-esta-integracion-no-toco ·
+    al-rebasar-sobre-el-nuevo-main-encontrara-conflictos-MECANICOS-y-documentales-en-initiatives-README
+    y-probablemente-en-ideas-futuras-ninguno-funcional
