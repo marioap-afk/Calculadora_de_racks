@@ -1276,6 +1276,23 @@ namespace RackCad.UI
                 moreLevel.Click += (_, __) => AdjustFrontLevels(captured, 1);
                 levelControls.Children.Add(moreLevel);
                 header.Children.Add(levelControls);
+
+                // I-33: el frente en blanco conserva su claro y su estructura, pero deja de llevar carga. La casilla
+                // solo cambia ese estado; la configuracion del frente queda dormida y vuelve al reactivarlo.
+                var blank = new CheckBox
+                {
+                    Content = "En blanco",
+                    IsChecked = !row.IsActive,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(0.0, 6.0, 0.0, 0.0),
+                    FontSize = 10.5,
+                    Foreground = LabelStroke,
+                    ToolTip = "Conserva el claro y la estructura del frente, desplaza los frentes posteriores y no lleva "
+                              + "niveles ni componentes de carga. Su configuracion se conserva para reactivarlo."
+                };
+                blank.Checked += (_, __) => SetFrontActive(captured, false);
+                blank.Unchecked += (_, __) => SetFrontActive(captured, true);
+                header.Children.Add(blank);
                 header.MouseLeftButtonDown += (_, __) => SelectFront(captured);
                 AddMatrixElement(header, 0, frontIndex + 1);
             }
@@ -1303,7 +1320,9 @@ namespace RackCad.UI
                         ? row.BeamLength
                         : cellValues.BeamLengthOverride ?? DynamicFrontGeometry.AutoBeamLength(
                             cellValues.PalletFront, row.PalletCount, DynamicRackDefaults.DefaultPalletTolerance);
-                    var active = level <= Math.Max(1, row.LoadLevels);
+                    // Un frente en blanco apaga TODA su columna: no tiene niveles efectivos (I-33). Sus valores siguen
+                    // guardados en la fila, asi que reactivarlo devuelve la celda tal cual estaba.
+                    var active = row.IsActive && level <= Math.Max(1, row.LoadLevels);
                     var selected = active
                                    && frontIndex == matrix.SelectedFrontIndex
                                    && capturedLevel == matrix.SelectedLevelIndex;
@@ -1494,6 +1513,45 @@ namespace RackCad.UI
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
             Recompose();
+        }
+
+        /// <summary>
+        /// Switches one front between Activo and En blanco (I-33). A blank front keeps its claro and its structure and
+        /// still displaces the fronts behind it, but stops carrying levels; its configuration stays dormant, so the
+        /// same toggle brings it back exactly as it was. The last active front cannot be blanked.
+        /// </summary>
+        private void SetFrontActive(int index, bool isActive)
+        {
+            if (index < 0 || index >= matrix.Count || matrix.IsActive(index) == isActive)
+            {
+                return;
+            }
+
+            if (!CommitSelectedFrontEditor(out var error))
+            {
+                SetStatus(error, true);
+                RenderFrontMatrix();
+                return;
+            }
+
+            if (!matrix.SetActive(index, isActive))
+            {
+                SetStatus("Al menos un frente debe permanecer activo.", true);
+                RenderFrontMatrix();
+                return;
+            }
+
+            LoadSelectedFrontEditor();
+            RenderFrontMatrix();
+            Recompose();
+            SetStatus(
+                isActive
+                    ? string.Format(CultureInfo.InvariantCulture, "Frente {0} activo.", index + 1)
+                    : string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Frente {0} en blanco: conserva claro y estructura, sin niveles de carga.",
+                        index + 1),
+                false);
         }
 
         // ---- Table + selected panel ----

@@ -553,21 +553,39 @@ namespace RackCad.UI
                 PushBackMatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             }
 
-            // Column headers: "Frente N" (click selects that front's primary cell).
+            // Column headers: "Frente N" (click selects that front's primary cell) + the Activo/En blanco toggle (I-33).
             for (var f = 0; f < fronts; f++)
             {
                 var captured = f;
+                var column = new StackPanel { Margin = new Thickness(2.0, 0.0, 2.0, 3.0) };
                 var header = new TextBlock
                 {
                     Text = "Frente " + (f + 1).ToString(CultureInfo.InvariantCulture),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     FontWeight = FontWeights.SemiBold,
-                    Margin = new Thickness(2.0, 0.0, 2.0, 3.0),
                     Cursor = Cursors.Hand,
                     Foreground = f == state.Structure.SelectedFrontIndex ? CardPrimaryStroke : CardLabelBrush
                 };
                 header.MouseLeftButtonDown += (_, __) => SelectMatrixCell(captured, state.Structure.SelectedLevelIndex, false);
-                AddMatrixElement(header, 0, f + 1);
+                column.Children.Add(header);
+
+                // El frente en blanco conserva su claro y su estructura, desplaza los frentes posteriores y deja de
+                // llevar niveles; su configuracion queda dormida y regresa al reactivarlo.
+                var blank = new CheckBox
+                {
+                    Content = "En blanco",
+                    IsChecked = !state.Structure.IsActive(captured),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(0.0, 3.0, 0.0, 0.0),
+                    FontSize = 10.5,
+                    Foreground = CardLabelBrush,
+                    ToolTip = "Conserva el claro y la estructura del frente, desplaza los frentes posteriores y no lleva "
+                              + "niveles ni componentes de carga. Su configuracion se conserva para reactivarlo."
+                };
+                blank.Checked += (_, __) => SetFrontActive(captured, false);
+                blank.Unchecked += (_, __) => SetFrontActive(captured, true);
+                column.Children.Add(blank);
+                AddMatrixElement(column, 0, f + 1);
             }
 
             // Row labels + cards, level 1 at the bottom.
@@ -698,6 +716,45 @@ namespace RackCad.UI
             {
                 MutateStructure(() => state.SetFrontCount(requested));
             }
+        }
+
+        /// <summary>
+        /// Switches one front between Activo and En blanco (I-33). A blank front keeps its claro and its structure and
+        /// still displaces the fronts behind it, but carries no level and therefore no larguero, cama, larguero
+        /// posterior ni tope. Its configuration stays dormant, so the same box brings it back exactly as it was.
+        /// </summary>
+        private void SetFrontActive(int index, bool isActive)
+        {
+            if (suppressSync || index < 0 || index >= state.Structure.Count
+                || state.Structure.IsActive(index) == isActive)
+            {
+                return;
+            }
+
+            if (!AllFieldsValid(out var error))
+            {
+                SetStatus(error, true);
+                RenderPushBackMatrix();   // re-checks the box the refused click had flipped
+                return;
+            }
+
+            var applied = false;
+            MutateStructure(() => applied = state.SetActive(index, isActive));
+            if (!applied)
+            {
+                SetStatus("Al menos un frente debe permanecer activo.", true);
+                RenderPushBackMatrix();
+                return;
+            }
+
+            SetStatus(
+                isActive
+                    ? string.Format(CultureInfo.InvariantCulture, "Frente {0} activo.", index + 1)
+                    : string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Frente {0} en blanco: conserva claro y estructura, sin niveles de carga.",
+                        index + 1),
+                false);
         }
 
         private void AddFront_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.SetFrontCount(state.Structure.Count + 1));
