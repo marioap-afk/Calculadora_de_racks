@@ -37,6 +37,13 @@ namespace RackCad.UI
         private readonly bool allowBlankFrontColumns;
 
         /// <summary>
+        /// I-33 — whether the desviador offers its aisle-face selector, INDEPENDENTLY of the grid's shape. True is the
+        /// historical behaviour (Selectivo and Dinámico); only Push Back turns it off, because its safety lives at a
+        /// single end and the selector could only mislead (PB-003).
+        /// </summary>
+        private readonly bool showDesviadorSide;
+
+        /// <summary>
         /// PB-002 (I-32) — an OPT-IN, already-per-POST level count for the desviador grid. Null (Selectivo, Dinámico)
         /// keeps the historical path byte for byte. Push Back passes it because it has no resolved
         /// <see cref="SelectiveRackSystem"/>, so the grid used to fall back to a per-FRONT list read with a per-POST
@@ -118,9 +125,16 @@ namespace RackCad.UI
         /// Default false is the historical behaviour, which is what the Selectivo keeps: it has no blank fronts and
         /// never supplies a zero, so its dialog and its three grids are unchanged.
         /// </param>
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false)
+        /// <param name="showDesviadorSide">
+        /// I-33 — whether the desviador offers its aisle-face selector. INDEPENDENT of
+        /// <paramref name="desviadorLevelsPerPost"/>, which governs the grid's SHAPE and nothing else. True (default)
+        /// is the historical behaviour of the Selectivo and of the Dinámico; Push Back passes false explicitly
+        /// (PB-003: its safety lives only at the low end, so naming a face the user cannot choose is pure noise).
+        /// </param>
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true)
         {
             this.allowBlankFrontColumns = allowBlankFrontColumns;
+            this.showDesviadorSide = showDesviadorSide;
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
@@ -557,8 +571,17 @@ namespace RackCad.UI
                     ? "Configurado ✓ (" + DesviadorSideName(row.DesviadorSide) + ")…"
                     : "Configurado ✓…";
 
-        /// <summary>True while the desviador dialog offers its aisle-face selector (everything but Push Back).</summary>
-        private bool ShowDesviadorSide => desviadorLevelsPerPost == null;
+        /// <summary>
+        /// True while the desviador dialog offers its aisle-face selector. I-33: this used to be DERIVED from
+        /// <c>desviadorLevelsPerPost == null</c>, which welded two unrelated decisions together — the SHAPE of the grid
+        /// and the VISIBILITY of the selector. Push Back happened to want both at once; the Dinámico needs the explicit
+        /// per-post shape but must KEEP its selector, and with the derived rule it would have lost it silently. The two
+        /// are now independent parameters.
+        /// </summary>
+        private bool ShowDesviadorSide => showDesviadorSide;
+
+        /// <summary>Test seam: the value the dialog resolved for its aisle-face selector.</summary>
+        internal bool ShowsDesviadorSide => showDesviadorSide;
 
         private static string DefensaLabel(Row row)
             => row.DefensaConfigured ? "Configurada ✓…" : "Configurar…";

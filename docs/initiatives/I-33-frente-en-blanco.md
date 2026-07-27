@@ -161,6 +161,17 @@ frente **que existe** pero **sin niveles**.
   `Math.Max(1, LoadLevels)` propio. Un frente en blanco aporta **cero**, y con cero la columna entera se
   construye **ausente** por el soporte de rejilla dentada de `SelectionMatrixModel` (I-22): no se dibuja, no
   se puede seleccionar y `Toggle` no reporta cambio, asi que tampoco se le puede aplicar nada.
+- **Dos listas distintas, cada una a lo suyo.** El diseno tiene N frentes y N+1 postes, y el dialogo recibe
+  **las dos** listas:
+  - `levelsPerFrente` (N) para la **guia** y las demas rejillas frente x nivel;
+  - `desviadorLevelsPerPost` (N+1) **exclusivamente** para el desviador, por la regla canonica «el frente
+    adyacente mas alto manda» del dibujo.
+
+  El Dinamico entregaba su lista **por frente marcada como por poste**, asi que el ultimo poste caia
+  artificialmente a **1** nivel y los interiores vecinos de un frente mas alto perdian niveles que el dibujo
+  si colocaba — el mismo defecto de contrato que **PB-002** corrigio en Push Back. Entregar la lista por
+  poste corrige la **forma de la rejilla** y **no** toca la lectura de la celda en el dibujo
+  (`DesviadorCellsAreByPost` sigue en `false` para el Dinamico, y esa decision sigue siendo del Owner).
 - **Configuracion dormida.** Una rejilla solo puede informar de las celdas que muestra, asi que aceptar el
   dialogo **borraria** las celdas guardadas de la columna ausente. Lo impide `SafetyDormantCells.Merge`, una
   regla **pura y unica** que las tres rejillas indexadas por nivel —desviador, guia de entrada y tope—
@@ -168,11 +179,20 @@ frente **que existe** pero **sin niveles**.
   intactas y editables.
 - **El frente no se oculta ni cambia de indice**: sigue siendo la misma columna, en la misma posicion, con su
   numero. Lo que cambia es que sus celdas de nivel no existen.
-- **El Selectivo no cambia.** El comportamiento nuevo es **opt-in**: `allowBlankFrontColumns` en
-  `SelectiveSafetyWindow` (y su equivalente en cada rejilla) tiene default `false` = comportamiento vigente.
-  El Selectivo no tiene frentes en blanco, nunca entrega un cero y por tanto ni la fusion de dormidas ni el
-  cero-como-ausente le aplican; una columna meramente **mas corta** (rejilla dentada) conserva su regla
-  historica de descartar las celdas fuera de rango.
+- **Forma y selector de lado, desacoplados.** La visibilidad del selector de cara de pasillo del desviador
+  se decidia **derivandola** de `desviadorLevelsPerPost == null`, es decir: pedir la forma por poste apagaba
+  el selector. A Push Back le servia porque queria las dos cosas, pero el Dinamico necesita la forma por
+  poste y **debe conservar** su selector — con la regla derivada lo habria perdido en silencio. Ahora son
+  **parametros independientes**: `desviadorLevelsPerPost` gobierna **solo** la forma de la rejilla, y
+  `showDesviadorSide` (default `true` = comportamiento vigente) **solo** el selector. Push Back lo apaga de
+  forma **explicita** (PB-003); el Dinamico y el Selectivo lo conservan.
+- **El Selectivo no cambia.** Todo lo nuevo es **opt-in** con default igual al comportamiento vigente
+  (`allowBlankFrontColumns: false`, `showDesviadorSide: true`, y el Selectivo tampoco pasa
+  `desviadorLevelsPerPost` ni `fallbackLevelsArePerPost`). No tiene frentes en blanco, nunca entrega un
+  cero, y por tanto ni la fusion de dormidas ni el cero-como-ausente le aplican; una columna meramente
+  **mas corta** (rejilla dentada) conserva su regla historica de descartar las celdas fuera de rango, y la
+  rama `Math.Max(left, right) + 1` del fallback per-front queda limitada al camino legacy/Selectivo: tras
+  este arreglo **ninguna** ruta de I-33 la recorre.
 
 ### 6.5 Un solo rechazo, ninguna normalizacion
 
@@ -207,7 +227,8 @@ la persistencia de los dos sistemas queda cubierta en un solo sitio.
 
 `tests/RackCad.Tests/BlankFrontTests.cs` (28), `tests/RackCad.Tests/BlankFrontSafetyTests.cs` (9),
 `tests/RackCad.UI.Tests/BlankFrontEditorTests.cs` (8) y
-`tests/RackCad.UI.Tests/BlankFrontSafetyGridTests.cs` (11). El
+`tests/RackCad.UI.Tests/BlankFrontSafetyGridTests.cs` (11) y
+`tests/RackCad.UI.Tests/BlankFrontDesviadorHandoffTests.cs` (14). El
 estado rojo se verifico con la bandera ya declarada pero **sin ningun consumidor**: 11 de 19 fallaban
 —exactamente las de comportamiento— y las 8 restantes eran las de autoridad y las guardas de estructura
 (que deben pasar tanto antes como despues, porque afirman que la estructura NO cambia).
@@ -228,6 +249,12 @@ Cubren, ademas del contrato de dibujo y BOM:
   activo con los valores restaurados y editables; rejillas dentadas y frentes consecutivos en blanco; y la
   guarda de que **sin el opt-in** —el caso del Selectivo— el suelo historico y el descarte de celdas fuera
   de rango se conservan verbatim.
+- **Handoff del desviador** (STA sobre el camino REAL de `RackDynamicSystemWindow`): frentes activos con
+  niveles distintos, frente en blanco inicial / medio / final, dos consecutivos, el ultimo poste heredando
+  su frente adyacente sin caer a 1, y la comparacion explicita entre el handoff viejo (que si lo colapsaba)
+  y el nuevo sobre la rejilla real. Mas el desacople del selector de lado en sus tres combinaciones y
+  guardas de fuente de que el Dinamico lo conserva, Push Back lo apaga explicitamente, la guia recibe la
+  lista por FRENTE (no la de N+1 postes) y el Selectivo no opta por ningun parametro.
 
 ## 8. Validacion manual en AutoCAD (pendiente del Owner)
 

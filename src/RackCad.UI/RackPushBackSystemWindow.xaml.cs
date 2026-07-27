@@ -1074,6 +1074,9 @@ namespace RackCad.UI
                 extraSection: extraSection,
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
                 allowBlankFrontColumns: true,
+                // PB-003: Push Back carga por un solo extremo, así que el selector de cara se OCULTA. Ahora es una
+                // decisión explícita e independiente de la lista por poste, no un efecto secundario de entregarla.
+                showDesviadorSide: false,
                 // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
                 // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
                 defensaLowEndOnly: true)

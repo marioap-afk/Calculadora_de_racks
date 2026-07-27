@@ -452,6 +452,38 @@ namespace RackCad.UI
             }
         }
 
+        /// <summary>
+        /// I-33 — niveles efectivos POR FRENTE, desde la autoridad compartida. Es la lista que consumen la guía y las
+        /// demás rejillas frente × nivel del diálogo. Un frente EN BLANCO aporta CERO, así que su columna se dibuja sin
+        /// celdas. Nunca es la lista de N+1 postes: esa es otra cosa y tiene su propio método.
+        /// </summary>
+        internal IReadOnlyList<int> SafetyLevelsPerFrente()
+        {
+            var levels = system?.Fronts.Count > 0
+                ? DynamicFrontActivation.EffectiveLevelsPerFront(system).ToList()
+                : matrix.EffectiveLevelCounts().ToList();
+            if (levels.Count == 0)
+            {
+                levels.Add(Math.Max(1, system?.LoadBeamLevels.Count ?? 1));
+            }
+
+            return levels;
+        }
+
+        /// <summary>
+        /// I-33 — niveles efectivos POR POSTE (N frentes ⇒ N+1 postes), por la regla canónica «el frente adyacente más
+        /// alto manda» que usa el dibujo. Es la lista que consume EXCLUSIVAMENTE el desviador.
+        /// <para>
+        /// Antes el Dinámico entregaba su lista por FRENTE marcada como por poste, así que el último poste caía
+        /// artificialmente a 1 nivel y los interiores vecinos de un frente más alto perdían niveles que el dibujo sí
+        /// colocaba — el mismo defecto de contrato que PB-002 corrigió en Push Back. Entregar la lista por poste NO
+        /// cambia la lectura de la celda en el dibujo (<c>DesviadorCellsAreByPost</c> sigue en false para el Dinámico):
+        /// solo corrige la FORMA de la rejilla, y no toca el selector de lado, que el Dinámico conserva.
+        /// </para>
+        /// </summary>
+        internal IReadOnlyList<int> DesviadorLevelsPerPost()
+            => DynamicFrontActivation.EffectiveLevelsPerPost(SafetyLevelsPerFrente());
+
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
             var elements = (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
@@ -462,15 +494,8 @@ namespace RackCad.UI
                                       || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DefensaType)
                                       || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType)))
                 .ToList();
-            var levelCount = Math.Max(1, system?.LoadBeamLevels.Count ?? 1);
             var postCount = Math.Max(2, (system?.Fronts.Count ?? matrix.Count) + 1);
-            // I-33: los conteos por frente salen de la AUTORIDAD compartida, no de un Math.Max(1, LoadLevels) local.
-            // Un frente en blanco entrega CERO y el diálogo lo dibuja como columna sin celdas: no editable, no
-            // seleccionable y sin aplicar. Su configuración guardada queda dormida y regresa al reactivarlo.
-            var levels = system?.Fronts.Count > 0
-                ? DynamicFrontActivation.EffectiveLevelsPerFront(system).ToList()
-                : matrix.EffectiveLevelCounts().ToList();
-            if (levels.Count == 0) levels.Add(levelCount);
+            var levels = SafetyLevelsPerFrente();
             var intro = "Izquierda es la salida y derecha la entrada. La selección se proyecta en lateral, frontal y "
                         + "planta: el protector lateral reemplaza las botas del mismo poste y los desviadores respetan "
                         + "la matriz frente por nivel. La defensa de montacargas permite longitud independiente en "
@@ -480,15 +505,22 @@ namespace RackCad.UI
                 elements,
                 safetySelections,
                 postCount: postCount,
+                // Por FRENTE: guía y demás rejillas frente × nivel.
                 levelsPerFrente: levels,
                 fondoCount: 1,
                 catalog: catalog,
-                fallbackLevelsArePerPost: true,
+                // Ya no hay camino de fallback para el desviador: recibe su lista por poste explícita (abajo), así que
+                // esta bandera —que solo gobierna ese fallback— deja de aplicar al Dinámico.
+                fallbackLevelsArePerPost: false,
                 introduction: intro,
                 includeDefensa: true,
                 includeGuia: true,
                 useDynamicSafetyDefaults: true,
-                allowBlankFrontColumns: true) { Owner = this };
+                // Por POSTE y SOLO para el desviador; la forma de la rejilla no decide nada más.
+                desviadorLevelsPerPost: DesviadorLevelsPerPost(),
+                allowBlankFrontColumns: true,
+                // El Dinámico SÍ elige cara de pasillo: el selector queda visible (default explícito por claridad).
+                showDesviadorSide: true) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;

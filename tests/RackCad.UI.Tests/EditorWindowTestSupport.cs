@@ -34,6 +34,56 @@ namespace RackCad.UI.Tests
             Click(button);
         }
 
+        /// <summary>
+        /// The «En blanco» box of one front's matrix header (I-33). It carries no x:Name — the headers are built in
+        /// code, one per front — so it is located by its grid cell: row 0, column frontIndex + 1. Setting IsChecked
+        /// runs the window's real Checked/Unchecked handler, exactly as the user's click would.
+        /// </summary>
+        public static CheckBox BlankFrontBox(Window window, string matrixGridName, int frontIndex)
+        {
+            var grid = window.FindName(matrixGridName) as Grid
+                ?? throw new InvalidOperationException($"No matrix grid '{matrixGridName}' in {window.GetType().Name}.");
+            foreach (var element in grid.Children)
+            {
+                if (element is FrameworkElement child
+                    && Grid.GetRow(child) == 0
+                    && Grid.GetColumn(child) == frontIndex + 1)
+                {
+                    foreach (var descendant in Descendants(child))
+                    {
+                        if (descendant is CheckBox box)
+                        {
+                            return box;
+                        }
+                    }
+                }
+            }
+
+            throw new InvalidOperationException($"No «En blanco» box for front {frontIndex} in {matrixGridName}.");
+        }
+
+        /// <summary>Switch one front between Activo and En blanco through its real box.</summary>
+        public static void SetFrontBlank(Window window, string matrixGridName, int frontIndex, bool blank)
+            => BlankFrontBox(window, matrixGridName, frontIndex).IsChecked = blank;
+
+        private static IEnumerable<FrameworkElement> Descendants(FrameworkElement element)
+        {
+            yield return element;
+            if (element is Panel panel)
+            {
+                foreach (var child in panel.Children)
+                {
+                    if (child is FrameworkElement framework)
+                    {
+                        foreach (var descendant in Descendants(framework))
+                        {
+                            yield return descendant;
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>Type <paramref name="text"/> into the named TextBox, as the user would before pressing a draw button.</summary>
         public static void SetText(Window window, string name, string text)
         {

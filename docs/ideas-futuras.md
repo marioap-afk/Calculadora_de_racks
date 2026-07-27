@@ -425,9 +425,12 @@ Selectivo ni el Dinámico:
   celda del penúltimo poste suprime también la del último. La capacidad
   `SelectiveSafetySelection.DesviadorCellsAreByPost` es el interruptor; activarla para el Dinámico
   cambiaría su comportamiento y necesita decisión del Owner.
-- **El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**:
-  `RackDynamicSystemWindow` también entrega al diálogo compartido una lista POR FRENTE marcada como por
-  POSTE. Se dejó intacto a propósito; el arreglo entró como parámetro opt-in.
+- ~~**El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**~~ **CORREGIDO por
+  I-33**: `RackDynamicSystemWindow` entregaba al diálogo compartido una lista POR FRENTE marcada como por
+  POSTE, así que el último poste caía a 1 nivel. Ahora entrega las dos listas por separado —por frente para
+  la guía, por poste (`DynamicFrontActivation.EffectiveLevelsPerPost`) sólo para el desviador—. Esto corrige
+  la **forma de la rejilla**; la **lectura de la celda** en el dibujo sigue siendo por FRENTE (ver el punto
+  anterior sobre `DesviadorCellsAreByPost`, que continúa pendiente de decisión del Owner).
 - **La regla «niveles en un poste» sigue duplicada**: `DynamicFrontGeometry.LoadLevelsAtPost` y la copia
   privada de `DynamicSafetyMultiViewBuilder`, con fallbacks distintos. I-32 unificó la primera con la
   versión pura que consume la UI, pero no colapsó la segunda. **I-33** hizo que **ambas** copias respeten
