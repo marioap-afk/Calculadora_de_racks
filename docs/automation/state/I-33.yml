@@ -49,7 +49,27 @@ evidence:
   scope_isolation: >-
     sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
     la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
+  commits: >-
+    0771773-reclamo-vacio ·
+    781e13f-autoridad-compartida-vistas-y-BOM-de-los-dos-sistemas-mas-las-20-regresiones-puras ·
+    edeca78-casilla-Activo-En-blanco-en-los-dos-editores-mas-las-6-pruebas-de-UI ·
+    0448ef0-documentacion-contrato-estado-indice-glosario-e-ideas-futuras
+  targeted_filters: >-
+    core-BlankFrontTests-20-de-20 ·
+    core-CatalogValidatorTests-mas-CatalogManifestGuardTests-25-de-25-baseline-del-catalogo-distribuido-intacto ·
+    core-PushBack-440-de-440 · core-Dynamic-197-de-197 · core-Persistence-118-de-118 ·
+    ui-BlankFrontEditorTests-6-de-6 · ui-PushBack-125-de-125 · ui-Dynamic-36-de-36 ·
+    todos-con-conteo-NO-CERO
+  builds: >-
+    build-UI-Debug-0-errores ·
+    build-Plugin-Debug-0-errores-2-advertencias-ambas-MSB3277-conocidas-e-ignoradas-con-AutoCAD-cerrado
+  catalogs_untouched: >-
+    ningun-archivo-de-assets-catalogs-modificado-y-el-validador-de-catalogos-conserva-su-baseline-aprobado
 gates:
-  ci: pendiente-sobre-el-SHA-publicado
-  plugin_build: pendiente-requiere-AutoCAD-cerrado
+  ci: >-
+    VERDE-4-de-4-run-30231653623-sobre-el-SHA-publicado-0448ef07503cf16f738ed52bd931986d3954b786 ·
+    jobs-tests-domain-application-ui-tests-build-ui-build-plugin-without-autocad
+  plugin_build: >-
+    OK-DLL-Debug-en-el-worktree-SHA256-1A0A62AA758CF2292BBED5CDD0320C302B94FC820F167553D3D08BE3C72D038D ·
+    InformationalVersion-1-0-0-mas-0448ef07503cf16f738ed52bd931986d3954b786-confirma-que-el-DLL-es-del-commit-publicado
   owner_validation: PENDIENTE-9-puntos-en-la-seccion-8-del-contrato
