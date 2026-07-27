@@ -4,8 +4,8 @@ automation_state:
   branch: fix/correcciones-push-back
   claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
   current_phase: 10
-  state: integration-ready
-  gate: integration
+  state: integrated
+  gate: none
   attempts: 3
   attempts_note: >-
     attempts-PERMANECE-en-3-y-NO-se-incrementa-el-max-attempts-del-contrato-ya-se-AGOTO-con-los-rounds-1-2-y-3 ·
@@ -13,9 +13,17 @@ automation_state:
     la-validacion-que-ahora-se-abre-NO-es-un-intento-nuevo-de-la-automatizacion-es-una-CONFIRMACION-FINAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-sobre-una-correccion-que-el-mismo-dirigio-por-eso-no-se-numera-como-un-round-mas ·
     historico-attempts-paso-a-3-al-abrirse-el-round-3-tras-la-aprobacion-tecnica-del-code-sha-924de1a-que-resulto-partir-de-una-lectura-equivocada-del-defecto ·
     historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
-  next_action: >-
-    GATE-DE-INTEGRACION-integracion-serializada-en-main-por-git-merge-no-ff-y-limpieza-posterior-de-rama-y-worktree ·
-    NO-queda-ninguna-modificacion-funcional-pendiente-el-alcance-esta-terminado-y-la-validacion-manual-del-owner-esta-APROBADA
+  next_action: NINGUNA-i-32-esta-cerrada-integrada-en-main-y-limpiada
+  integration: >-
+    INTEGRADA-en-main-2026-07-27-merge-sha-236619d9281041f9aead884f11a1f93d6f4c8599-git-merge-no-ff-sobre-la-punta-remota ·
+    dos-padres-91eb53cf58d225f1e34e8f4cb45da27e1cdd1884-y-98cfbe3a5e84fac84d6127c1753292feb66dfc1e ·
+    branch-final-sha-98cfbe3a5e84fac84d6127c1753292feb66dfc1e ·
+    CI-DEL-MERGE-30228331452-cuatro-jobs-verdes-sobre-el-merge-sha ·
+    sin-squash-sin-force-y-sin-PR ·
+    verificacion-local-post-merge-rackcad-tests-1470-de-1470-rackcad-ui-tests-365-de-365-build-ui-0-errores-build-plugin-0-errores-solo-msb3277-con-autocad-cerrado-y-arbol-limpio ·
+    CLEANUP-COMPLETADO-worktree-eliminado-sin-force-carpeta-fisica-ausente-rama-local-eliminada-con-branch-d-y-rama-remota-eliminada-mas-prune ·
+    el-DLL-aprobado-a0c3f27-sha256-b7b15802-NO-se-recompilo-ni-se-reemplazo-su-hash-se-verifico-identico-antes-de-eliminar-el-worktree ·
+    CODE-SHA-f911d75-BUILD-SHA-a0c3f27-y-el-DLL-aprobado-permanecen-como-REFERENCIAS-ESTABLES-y-los-cuatro-dll-rechazados-siguen-OBSOLETOS
   last_evidence_commit: f911d75350702fb176e123a59a105d40f63690ec
 execution_context:
   mode: manual-git-only

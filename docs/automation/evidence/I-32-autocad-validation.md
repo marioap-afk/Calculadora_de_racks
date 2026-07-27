@@ -79,7 +79,23 @@ cada uno.
 [`ideas-futuras.md`](../../ideas-futuras.md). Nunca estuvieron en el alcance de I-32 y **no bloquean la
 integración**.
 
+## Integración (2026-07-27)
+
+| Campo | Valor |
+|---|---|
+| **MERGE_SHA** | `236619d9281041f9aead884f11a1f93d6f4c8599` |
+| Método | `git merge --no-ff` sobre la punta remota — **sin squash, sin force y sin PR** |
+| Padres | `91eb53cf58d225f1e34e8f4cb45da27e1cdd1884` + `98cfbe3a5e84fac84d6127c1753292feb66dfc1e` |
+| **CI del merge** | **30228331452** — 4/4 |
+| Limpieza | worktree, rama local y rama remota **eliminados** (sin `--force`, sin `-D`) |
+
+**El DLL aprobado no fue reemplazado.** Su SHA-256 se verificó idéntico
+(`B7B15802D19C90BBE40B19546423F9CC1850645051C1DA971DA2552778B2E931`) justo antes de eliminar el worktree,
+y ningún archivo funcional cambió después del merge.
+
+`CODE_SHA f911d75`, `BUILD_SHA a0c3f27` y ese hash quedan como **referencias estables**. Los cuatro DLL
+de las validaciones rechazadas siguen **obsoletos**.
+
 ## Siguiente acción
 
-**Integración serializada en `main`** (`git merge --no-ff`), y limpieza posterior de rama y worktree. No
-se ha integrado ni limpiado nada todavía.
+**Ninguna.** I-32 está cerrada.

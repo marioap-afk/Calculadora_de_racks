@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-32
 title: Correcciones funcionales y geometricas de Push Back
 type: fix
-status: integration-ready
+status: integrated
 branch: fix/correcciones-push-back
 base_branch: main
 priority:
@@ -224,7 +224,18 @@ la referencia real de la regla anterior.
 No queda ningun cableado, ninguna consulta ni ningun consumidor por hacer. Lo que sigue abierto no es
 trabajo funcional: es la **validacion manual del Owner en AutoCAD**, que ningun test puede sustituir.
 
-### APROBADA POR EL OWNER — la iniciativa queda `integration-ready`
+### INTEGRADA en `main` (2026-07-27)
+
+| Campo | Valor |
+|---|---|
+| **MERGE_SHA** | `236619d9281041f9aead884f11a1f93d6f4c8599` — merge `--no-ff`, dos padres: `91eb53c` + `98cfbe3` |
+| CI del merge | **30228331452**, 4/4 |
+| Punta final de la rama | `98cfbe3a5e84fac84d6127c1753292feb66dfc1e` |
+| Limpieza | rama local, rama remota y worktree **eliminados** |
+
+Sin squash, sin force y sin PR. El historial tecnico y de validaciones de abajo **se conserva integro**.
+
+### APROBADA POR EL OWNER
 
 El Owner ejecuto la revalidacion manual dirigida de la geometria asimetrica y la **APROBO**:
 **«Listo, todo correcto»**.
@@ -247,13 +258,14 @@ Evidencia completa en
 - **validacion manual del Owner APROBADA**;
 - **sin pendiente funcional dentro de I-32**;
 - **PB-001, PB-007, PB-011 y PB-014 continuan DIFERIDOS y NO bloquean** — nunca estuvieron en el alcance;
-- **siguiente accion: integracion serializada en `main`**.
+- **siguiente accion: NINGUNA** — la integracion ya se hizo.
 
 `attempts` permanece en **3**: la validacion aprobada no fue un round mas, sino una revalidacion dirigida
 por el Owner una vez agotado el `max_attempts`.
 
 Los cuatro DLL de las validaciones rechazadas —`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan
-**obsoletos**. El unico artefacto valido es el de `a0c3f27`, y no se recompila.
+**obsoletos**. El unico artefacto valido es el de `a0c3f27`, y **no se recompilo** en ningun momento del
+cierre: su SHA-256 se verifico identico antes de eliminar el worktree.
 
 ## 12. Condiciones para detenerse
 

@@ -22,8 +22,8 @@ construido sobre el patrón de módulos, con el gate manual del Owner **aprobado
 (PB-VAL-01…06). El **preview visual** se **difiere** a una iniciativa transversal futura y **no** fue
 aprobado visualmente.
 
-**I-32 corrige ese Push Back a partir del reporte del Owner y está `integration-ready` desde el
-2026-07-27 — aprobada por el Owner pero AÚN NO INTEGRADA.**
+**I-32 corrige ese Push Back a partir del reporte del Owner y está INTEGRADA en `main` desde el
+2026-07-27** (merge `--no-ff` `236619d`, CI verde en los cuatro jobs, run 30228331452).
 
 I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
 `ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
@@ -631,18 +631,21 @@ se integra por `git merge --no-ff` en esta sesión.
 
 ## 4. Siguiente acción
 
-### I-32 — APROBADA por el Owner, LISTA PARA INTEGRAR (no integrada)
+### I-32 — INTEGRADA en `main` (2026-07-27)
 
-El Owner ejecutó la revalidación manual dirigida y confirmó **«Listo, todo correcto»**.
+El Owner ejecutó la revalidación manual dirigida y confirmó **«Listo, todo correcto»**. La iniciativa
+quedó **integrada**; no queda acción pendiente de I-32.
 
 | Campo | Valor |
 |---|---|
-| Rama | `fix/correcciones-push-back` |
+| Rama (eliminada tras integrar) | `fix/correcciones-push-back`, punta final `98cfbe3a5e84fac84d6127c1753292feb66dfc1e` |
+| **MERGE_SHA** | `236619d9281041f9aead884f11a1f93d6f4c8599` (merge `--no-ff`, dos padres: `91eb53c` + `98cfbe3`) |
+| CI del merge | **30228331452**, 4/4 sobre `236619d` |
 | **CODE_SHA** funcional | `f911d75350702fb176e123a59a105d40f63690ec` |
 | **BUILD_SHA validado** (el que el Owner cargó) | `a0c3f27c2447a4e1f85707ef9f3ad311765e3a43` |
-| **DLL SHA-256** | `B7B15802D19C90BBE40B19546423F9CC1850645051C1DA971DA2552778B2E931` |
+| **DLL SHA-256** aprobado | `B7B15802D19C90BBE40B19546423F9CC1850645051C1DA971DA2552778B2E931` |
 | CI del candidato | **30226757221**, 4/4 sobre `a0c3f27` |
-| Estado | **LISTA PARA INTEGRAR — no integrada** |
+| Limpieza | rama local, rama remota y worktree **eliminados** |
 
 **Qué corrigió.** Diez de los catorce hallazgos del reporte del Owner sobre el Push Back ya integrado
 (PB-002…006, 008…010, 012, 013), cada uno con su regresión observada fallando sin el fix. Además:
@@ -672,10 +675,11 @@ El Owner ejecutó la revalidación manual dirigida y confirmó **«Listo, todo c
 > posterior queda a **exactamente 1.25"** de la línea del origen — la separación entre las dos paralelas.
 > Si vuelve a aparecer ese 1.25", es esto.
 
-**Siguiente acción: integración serializada en `main`** (`git merge --no-ff`) y **limpieza posterior** de
-rama y worktree. Nada de eso se ha hecho todavía. Los **cuatro DLL** de las validaciones rechazadas
-—`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan **obsoletos**; el único artefacto válido es el de
-`a0c3f27`.
+**No queda acción pendiente de I-32.** La integración se hizo con `git merge --no-ff` sobre la punta
+remota, sin squash, sin force y sin PR; la limpieza de rama y worktree quedó completada. Los **cuatro
+DLL** de las validaciones rechazadas —`2210e67`, `557858d`, `2641830` y `9a87c7c`— siguen **obsoletos**;
+el único artefacto válido es el de `a0c3f27` con SHA-256 `B7B15802…`, que **no se recompiló** en ningún
+momento del cierre.
 
 Evidencia completa en
 [`automation/evidence/I-32-autocad-validation.md`](automation/evidence/I-32-autocad-validation.md).
@@ -704,8 +708,8 @@ su estandarización completa se **difiere a una iniciativa transversal futura** 
 editores. Parte de una sola tubería compartida, no de dos painters divergentes. **No está aprobado
 visualmente** y no debe presentarse como tal.
 
-**Siguiente:** primero **integrar I-32**; después quedan **I-25** (`feature/guardas-traseras`, sobre
-I-22) e **I-23** (namespaces, cierra la Fase 5, depende de todas).
+**Siguiente:** quedan **I-25** (`feature/guardas-traseras`, sobre I-22) e **I-23** (namespaces, cierra
+la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
