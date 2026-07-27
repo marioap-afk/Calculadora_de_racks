@@ -5,8 +5,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
 using RackCad.Application.Diagnostics;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
+using RackCad.Application.Drawing;
 
 namespace RackCad.Plugin.Headers
 {
@@ -27,7 +26,7 @@ namespace RackCad.Plugin.Headers
         /// every run position), and separators/derived posts are appended directly. Returns the system block.
         /// </summary>
         public LateralHeaderBlockResult CreateSystemBlock(
-            Database db, Transaction tr, DynamicSystemPlan plan, string systemBlockName)
+            Database db, Transaction tr, HeaderRunPlan plan, string systemBlockName)
         {
             var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
             var missing = new List<HeaderBlockInstance>();
@@ -87,7 +86,7 @@ namespace RackCad.Plugin.Headers
         /// and name. Selective frontal is all-loose; header groups are handled too for future reuse.
         /// </summary>
         public LateralHeaderDrawOutcome RedefineSystemBlock(
-            Database db, Transaction tr, ObjectId blockId, DynamicSystemPlan plan, out IReadOnlyCollection<ObjectId> staleDefs)
+            Database db, Transaction tr, ObjectId blockId, HeaderRunPlan plan, out IReadOnlyCollection<ObjectId> staleDefs)
         {
             var blockTable = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForWrite);
             var systemDef = (BlockTableRecord)tr.GetObject(blockId, OpenMode.ForWrite);

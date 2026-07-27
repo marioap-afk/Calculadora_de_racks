@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Selective;
 using Xunit;
 
 namespace RackCad.Tests

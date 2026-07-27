@@ -9,13 +9,15 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
-using RackCad.Application.Headers;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 using RackCad.UI.Preview;
 

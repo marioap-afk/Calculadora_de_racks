@@ -5,9 +5,12 @@ using System.Security.Cryptography;
 using System.Text;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests
@@ -53,7 +56,7 @@ namespace RackCad.Tests
             => string.Join(",", i.DynamicParameters.OrderBy(p => p.Key, StringComparer.Ordinal)
                 .Select(p => FormattableString.Invariant($"{p.Key}={p.Value:0.####}")));
 
-        private static string PlanSignature(DynamicSystemPlan plan)
+        private static string PlanSignature(HeaderRunPlan plan)
             => string.Join("\n", plan.Flatten().Instances.Select(Row).OrderBy(s => s, StringComparer.Ordinal));
 
         private static string BomSignature(BillOfMaterials bom)

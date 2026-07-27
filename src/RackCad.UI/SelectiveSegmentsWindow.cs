@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.UI
 {

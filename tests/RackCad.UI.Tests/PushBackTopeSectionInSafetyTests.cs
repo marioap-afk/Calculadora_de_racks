@@ -5,7 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Application.Catalogs;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
 using Xunit;
 
@@ -164,7 +166,7 @@ namespace RackCad.UI.Tests
                     Assert.False(w.State.Cell(0, 0).RearTopeEnabled);
 
                     // ...and it is nowhere in the safety list, nor in the design's safety.
-                    var authority = new RackCad.Application.Systems.PushBackSafetyAuthority(w.Session.Catalog);
+                    var authority = new RackCad.Application.Systems.PushBack.PushBackSafetyAuthority(w.Session.Catalog);
                     Assert.All(w.SafetySelections, s => Assert.False(authority.IsRearStop(s)));
                     Assert.All(w.LastComputation.Design.Structure.SafetySelections,
                         s => Assert.False(authority.IsRearStop(s)));

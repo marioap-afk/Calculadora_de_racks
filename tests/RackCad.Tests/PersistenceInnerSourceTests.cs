@@ -1,6 +1,7 @@
 using System.Text.Json;
 using RackCad.Application.Persistence;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests

@@ -8,11 +8,16 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Controls;
 using RackCad.UI.Editor;
 using RackCad.UI.Preview;
@@ -116,7 +121,7 @@ namespace RackCad.UI
 
         /// <summary>The plan currently drawn in the preview (the selected view/corte). For the lateral view this is the
         /// SELECTED corte's plan, so changing "Corte 1"→"Corte 2" changes what the preview shows.</summary>
-        internal DynamicSystemPlan CurrentPreviewPlan
+        internal HeaderRunPlan CurrentPreviewPlan
         {
             get
             {
@@ -1671,7 +1676,7 @@ namespace RackCad.UI
         /// <see cref="EditorPreviewParts"/>) — the same parts the dynamic editor draws with. There is no second painter
         /// and no simplified renderer left in the drawing path.
         /// </summary>
-        private void DrawSharedPreview(DynamicSystemPlan plan, string view)
+        private void DrawSharedPreview(HeaderRunPlan plan, string view)
         {
             previewSurface ??= new EditorPreviewSurface(PreviewCanvas);
             PushBackPreviewRenderer.Draw(
@@ -1697,7 +1702,7 @@ namespace RackCad.UI
         /// <summary>The semantic preview of <paramref name="plan"/>: interpreted primitives only — the plan is the
         /// geometry authority. The low lateral IN/OUT beam (no PERALTE of its own) falls back to the resolved system's
         /// beam depth, like the dynamic editor's preview.</summary>
-        private PushBackPreviewModel BuildPreviewModel(DynamicSystemPlan plan, string view)
+        private PushBackPreviewModel BuildPreviewModel(HeaderRunPlan plan, string view)
             => PushBackPreviewModel.Build(
                 plan,
                 catalog,
@@ -1708,7 +1713,7 @@ namespace RackCad.UI
 
         private void PreviewCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => RenderPreview();
 
-        private DynamicSystemPlan PlanFor(string view, int section)
+        private HeaderRunPlan PlanFor(string view, int section)
         {
             if (lastComputation == null) return null;
             if (string.Equals(view, RackEmbedDocument.ViewPlanta, StringComparison.OrdinalIgnoreCase)) return lastComputation.PlantaPlan;

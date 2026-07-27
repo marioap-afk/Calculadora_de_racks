@@ -5,9 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI;
 using Xunit;
 
@@ -348,7 +350,7 @@ namespace RackCad.UI.Tests
                     // Owner decision (2026-07-24): the only path that deactivates a stop is the rear-tope config,
                     // which Seguridad edits through the shared SafetyTopeGridWindow.
                     var config = w.State.RearTopeConfig();
-                    config.OffCells.Add(new RackCad.Domain.Systems.SelectiveGridCell { Frente = 0, Level = 0 });
+                    config.OffCells.Add(new RackCad.Domain.Systems.Selective.SelectiveGridCell { Frente = 0, Level = 0 });
                     w.State.LoadRearTopeConfig(config);
                     w.Session.Recompute.Request();
 
@@ -367,7 +369,7 @@ namespace RackCad.UI.Tests
             Assert.Equal(string.Empty, none.Signature());
 
             var empty = PushBackPreviewModel.Build(
-                new DynamicSystemPlan(null, null), null, "FRONTAL", 4.0);
+                new HeaderRunPlan(null, null), null, "FRONTAL", 4.0);
             Assert.True(empty.IsEmpty);
         }
 

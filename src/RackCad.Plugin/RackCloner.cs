@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application;
-using RackCad.Plugin.Systems;
+using RackCad.Plugin.Systems.Shared;
 
 namespace RackCad.Plugin
 {

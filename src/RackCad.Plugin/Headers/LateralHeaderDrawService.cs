@@ -8,10 +8,10 @@ using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
-using RackCad.Plugin.Systems;
+using RackCad.Plugin.Systems.Shared;
 
 namespace RackCad.Plugin.Headers
 {

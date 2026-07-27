@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
 using RackCad.UI.Controls;
 using RackCad.UI.Shell;
@@ -268,7 +270,7 @@ namespace RackCad.UI.Tests
                     // selections are exactly what it yields for this host's catalog. (That the shipped catalog yields a
                     // NON-empty, GUIA-free, low-end set is proven by the pure suite; the UI test host may ship no
                     // catalog at all, so asserting the wiring here keeps the test environment-independent.)
-                    var expected = new RackCad.Application.Systems.PushBackSafetyAuthority(w.Session.Catalog).Defaults();
+                    var expected = new RackCad.Application.Systems.PushBack.PushBackSafetyAuthority(w.Session.Catalog).Defaults();
                     Assert.Equal(expected.Count, w.SafetySelections.Count);
                     Assert.All(w.SafetySelections, selection =>
                         Assert.Contains(expected, e => string.Equals(e.ElementId, selection.ElementId, StringComparison.OrdinalIgnoreCase)));
@@ -295,10 +297,10 @@ namespace RackCad.UI.Tests
                     // host ships no catalog; meaningful with the real catalog (it carries a PARRILLA_GENERICA and a GUIA).
                     var offered = w.SafetyElementsForDialog();
                     Assert.All(offered, e => Assert.False(
-                        RackCad.Domain.Systems.SelectiveSafetyDefaults.IsType(e.Type, RackCad.Domain.Systems.SelectiveSafetyDefaults.GuiaType),
+                        RackCad.Domain.Systems.Selective.SelectiveSafetyDefaults.IsType(e.Type, RackCad.Domain.Systems.Selective.SelectiveSafetyDefaults.GuiaType),
                         $"GUIA must not be offered: {e.Id}"));
                     Assert.All(offered, e => Assert.False(
-                        RackCad.Domain.Systems.SelectiveSafetyDefaults.IsType(e.Type, RackCad.Domain.Systems.SelectiveSafetyDefaults.ParrillaType),
+                        RackCad.Domain.Systems.Selective.SelectiveSafetyDefaults.IsType(e.Type, RackCad.Domain.Systems.Selective.SelectiveSafetyDefaults.ParrillaType),
                         $"PARRILLA must not be offered (PB-VAL-06): {e.Id}"));
                 }
                 finally { w.Close(); }

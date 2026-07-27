@@ -2,8 +2,9 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
-using RackCad.Application.Headers;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.UI.Preview
 {

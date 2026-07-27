@@ -3,9 +3,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Shared;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
 using RackCad.UI.Controls;
 using Xunit;
 

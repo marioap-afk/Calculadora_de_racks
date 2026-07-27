@@ -9,8 +9,8 @@ using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Settings;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Larguero;
+using RackCad.Domain.Systems.Larguero;
 
 namespace RackCad.UI
 {

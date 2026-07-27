@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI;
 using Xunit;
 

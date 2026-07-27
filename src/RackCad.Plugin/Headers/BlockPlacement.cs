@@ -7,7 +7,7 @@ using Autodesk.AutoCAD.Geometry;
 using RackCad.Application;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
-using RackCad.Application.Headers;
+using RackCad.Plugin.Systems.Shared;
 
 namespace RackCad.Plugin.Headers
 {
@@ -17,7 +17,7 @@ namespace RackCad.Plugin.Headers
     /// definition, append it where the user clicks, report the outcome and missing pieces, and — when the user
     /// cancels — erase the leftover definition (and its private nested defs) so RACKEDITAR's GUID scan never
     /// finds a phantom view. The "write side" (definition create/redefine) stays in
-    /// <see cref="RackCad.Plugin.Systems.SystemBlockWriter"/>; the geometry stays in <see cref="LateralHeaderDrawer"/>.
+    /// <see cref="RackCad.Plugin.Systems.Shared.SystemBlockWriter"/>; the geometry stays in <see cref="LateralHeaderDrawer"/>.
     /// Behaviour is byte-equivalent to the methods it was moved from.
     /// </summary>
     internal static class BlockPlacement

@@ -5,7 +5,7 @@ using System.Windows;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.Settings;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 
 namespace RackCad.UI

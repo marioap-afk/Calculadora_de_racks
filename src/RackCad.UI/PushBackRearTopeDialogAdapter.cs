@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.UI
 {

@@ -1,14 +1,13 @@
 using System.Linq;
+using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
 using Xunit;
 
 namespace RackCad.Tests
 {
     /// <summary>
     /// The ARRAY grouper: identical pieces collapse into one nested definition referenced N times, singletons and
-    /// annotations stay loose, and <see cref="DynamicSystemPlan.Flatten"/> reproduces the input exactly.
+    /// annotations stay loose, and <see cref="HeaderRunPlan.Flatten"/> reproduces the input exactly.
     /// </summary>
     public class HeaderInstanceGrouperTests
     {

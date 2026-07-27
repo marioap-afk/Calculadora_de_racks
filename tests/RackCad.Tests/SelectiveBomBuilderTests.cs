@@ -2,8 +2,10 @@ using System.Linq;
 using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Larguero;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests

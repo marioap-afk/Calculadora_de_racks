@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests

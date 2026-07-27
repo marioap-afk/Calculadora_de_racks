@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
 using Xunit;
 
 namespace RackCad.Tests
@@ -123,7 +123,7 @@ namespace RackCad.Tests
             var system = new SelectiveGeometryResolver().Resolve(TwoBayDesign(), Catalog);
 
             var beams = new SelectivePlantaBuilder().Build(system, Catalog)
-                .Where(i => i.Role == RackCad.Application.Headers.HeaderBlockRole.Beam)
+                .Where(i => i.Role == RackCad.Application.Drawing.HeaderBlockRole.Beam)
                 .ToList();
 
             var troquelEntry = Catalog.ConnectionLayout.FindConnectionLayout(
@@ -177,7 +177,7 @@ namespace RackCad.Tests
 
             var frenteYs = SelectivePostGeometry.Compute(system, Catalog).PostXs;
             var plates = new SelectivePlantaBuilder().Build(system, Catalog)
-                .Where(i => i.Role == RackCad.Application.Headers.HeaderBlockRole.BasePlate)
+                .Where(i => i.Role == RackCad.Application.Drawing.HeaderBlockRole.BasePlate)
                 .ToList();
 
             // The frame stacked at post 0's frente draws the CUSTOM cabecera, so its front plate carries the override.

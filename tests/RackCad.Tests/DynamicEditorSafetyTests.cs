@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
 using Xunit;
 
 namespace RackCad.Tests

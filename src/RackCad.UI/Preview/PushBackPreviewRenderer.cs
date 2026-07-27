@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.UI.Preview
 {
@@ -27,7 +27,7 @@ namespace RackCad.UI.Preview
         /// <summary>Draws <paramref name="plan"/> for <paramref name="view"/>; returns false when there is nothing drawable.</summary>
         public static bool Draw(
             EditorPreviewSurface surface,
-            DynamicSystemPlan plan,
+            HeaderRunPlan plan,
             RackCatalog catalog,
             string view,
             double lowBeamDepth,
@@ -96,7 +96,7 @@ namespace RackCad.UI.Preview
         }
 
         /// <summary>Every instance of a plan, grouped or loose, in draw order. Never mutates the plan.</summary>
-        public static IReadOnlyList<HeaderBlockInstance> Flatten(DynamicSystemPlan plan)
+        public static IReadOnlyList<HeaderBlockInstance> Flatten(HeaderRunPlan plan)
         {
             if (plan == null)
             {

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Larguero;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 using Xunit;
 

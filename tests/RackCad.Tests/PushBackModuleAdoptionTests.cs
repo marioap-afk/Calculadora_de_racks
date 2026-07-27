@@ -2,11 +2,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests
@@ -540,7 +544,7 @@ namespace RackCad.Tests
                 module.UseCalculatedHeaderConfiguration.ToString(),
                 module.HeaderConfiguration?.PanelClear.ToString("0.####") ?? "-")));
 
-        private static string PlanSignature(DynamicSystemPlan plan)
+        private static string PlanSignature(HeaderRunPlan plan)
             => plan == null
                 ? string.Empty
                 : string.Join("|", plan.Flatten().Instances.Select(instance => string.Join(

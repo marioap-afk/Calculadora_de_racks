@@ -5,8 +5,7 @@ using System.Linq;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
+using RackCad.Application.Drawing;
 
 namespace RackCad.Plugin.Headers
 {
@@ -22,7 +21,7 @@ namespace RackCad.Plugin.Headers
         /// <summary>The library DWG path: the user override (from settings) if set, else the default next to the catalogs.</summary>
         public static string LibraryPath => BlockLibraryLocator.ResolvePath();
 
-        public static int EnsureForPlan(Database db, DynamicSystemPlan plan)
+        public static int EnsureForPlan(Database db, HeaderRunPlan plan)
         {
             if (plan == null)
             {

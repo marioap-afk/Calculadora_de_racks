@@ -1,6 +1,8 @@
 using System.Linq;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI;
 using Xunit;
 

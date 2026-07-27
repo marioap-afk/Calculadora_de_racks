@@ -5,8 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI.Controls;
 
 namespace RackCad.UI

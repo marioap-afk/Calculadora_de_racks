@@ -1,5 +1,5 @@
 using RackCad.Application.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.FlowBed;
 using RackCad.UI.Editor;
 using Xunit;
 

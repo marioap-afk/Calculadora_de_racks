@@ -4,10 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Drawing;
 using RackCad.Application.Geometry;
-using RackCad.Application.Headers;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.UI
 {
@@ -48,7 +48,7 @@ namespace RackCad.UI
     }
 
     /// <summary>
-    /// The technical preview of one <see cref="DynamicSystemPlan"/> as SEMANTIC primitives (PB-VAL-01 round 3): real
+    /// The technical preview of one <see cref="HeaderRunPlan"/> as SEMANTIC primitives (PB-VAL-01 round 3): real
     /// lines/boxes derived exclusively from data the plan and catalog already carry — insertion, rotation, mirror,
     /// LONGITUD/PERALTE/SAQUE parameters and catalog mate points. It never recomputes slope, snap, lengths, SAQUE or bed
     /// geometry, and never mutates the plan. Pure (no WPF types): tests inspect primitives and signatures directly; the
@@ -101,7 +101,7 @@ namespace RackCad.UI
         /// system's IN/OUT depth, used ONLY for the low lateral beam whose instance carries no PERALTE parameter (the
         /// same fallback the dynamic editor's preview applies). A null/empty plan yields an empty model.
         /// </summary>
-        public static PushBackPreviewModel Build(DynamicSystemPlan plan, RackCatalog catalog, string view, double fallbackBeamDepth)
+        public static PushBackPreviewModel Build(HeaderRunPlan plan, RackCatalog catalog, string view, double fallbackBeamDepth)
         {
             var primitives = new List<PushBackPreviewPrimitive>();
             if (plan == null)

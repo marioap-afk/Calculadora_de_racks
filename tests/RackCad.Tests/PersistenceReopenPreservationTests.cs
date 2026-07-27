@@ -1,11 +1,15 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using RackCad.Application.Catalogs;
-using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
 using RackCad.Application.Persistence;
+using RackCad.Application.RackFrames;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Domain.RackFrames;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.FlowBed;
+using RackCad.Domain.Systems.Larguero;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests

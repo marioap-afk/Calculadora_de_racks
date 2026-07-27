@@ -4,8 +4,8 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Shared;
+using RackCad.Domain.Systems.Shared;
 
 namespace RackCad.Application.Persistence
 {

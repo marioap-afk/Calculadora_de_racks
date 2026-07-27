@@ -4,9 +4,12 @@ using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests
@@ -503,7 +506,7 @@ namespace RackCad.Tests
         private static string UiSourcePath(string fileName) => SourcePath("RackCad.UI", fileName);
 
         private static string ApplicationSourcePath(string fileName)
-            => SourcePath("RackCad.Application", Path.Combine("Systems", fileName));
+            => SourcePath("RackCad.Application", Path.Combine("Systems", "PushBack", fileName));
 
         private static string SourcePath(string project, string relative)
         {

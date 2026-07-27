@@ -8,18 +8,19 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
+using RackCad.Application.Systems.Selective;
 using RackCad.Domain.RackFrames;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using RackCad.UI.Editor;
 // I-20: the selective editor's state and its Cell/FondoMatrix/Scope models moved to RackCad.Application.Systems;
 // these aliases keep the window's render/edit code reading the same short names while the state lives in Application.
-using Cell = RackCad.Application.Systems.SelectiveEditorCell;
-using FondoMatrix = RackCad.Application.Systems.SelectiveEditorFondoMatrix;
-using Scope = RackCad.Application.Systems.SelectiveApplyScope;
+using Cell = RackCad.Application.Systems.Selective.SelectiveEditorCell;
+using FondoMatrix = RackCad.Application.Systems.Selective.SelectiveEditorFondoMatrix;
+using Scope = RackCad.Application.Systems.Selective.SelectiveApplyScope;
 
 namespace RackCad.UI
 {

@@ -1,10 +1,14 @@
 using System;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.RackFrames;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Selective;
+using RackCad.Application.Systems.Shared;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
+using RackCad.Domain.Systems.Shared;
 using Xunit;
 
 namespace RackCad.Tests
@@ -559,7 +563,7 @@ namespace RackCad.Tests
             Assert.Equal(6, LoadBeamCount(cortes[3].Plan));
         }
 
-        private static double MaxPostLength(DynamicSystemPlan plan)
+        private static double MaxPostLength(HeaderRunPlan plan)
             => plan.Flatten().OfRole(HeaderBlockRole.Post)
                 .Select(instance => instance.DynamicParameters.TryGetValue(
                     SelectiveRackDefaults.LengthParam,
@@ -567,7 +571,7 @@ namespace RackCad.Tests
                 .DefaultIfEmpty(0.0)
                 .Max();
 
-        private static int LoadBeamCount(DynamicSystemPlan plan)
+        private static int LoadBeamCount(HeaderRunPlan plan)
             => plan.Flatten().OfRole(HeaderBlockRole.Beam)
                 .Count(instance => instance.PieceId == TestCatalogIds.Profiles.Beams.DynamicInOut);
     }

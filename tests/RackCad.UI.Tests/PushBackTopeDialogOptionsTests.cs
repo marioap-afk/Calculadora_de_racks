@@ -1,7 +1,9 @@
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.PushBack;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
 using RackCad.UI.Controls;
 using Xunit;

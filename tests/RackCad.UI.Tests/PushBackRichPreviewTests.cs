@@ -8,8 +8,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using RackCad.Application.Headers;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.PushBack;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI;
 using Xunit;
 

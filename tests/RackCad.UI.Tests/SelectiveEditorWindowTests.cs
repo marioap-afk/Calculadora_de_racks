@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RackCad.Application.Catalogs;
-using RackCad.Application.Headers;
+using RackCad.Application.Drawing;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems;
-using RackCad.Domain.Systems;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Selective;
 using RackCad.UI.Editor;
 using Xunit;
 

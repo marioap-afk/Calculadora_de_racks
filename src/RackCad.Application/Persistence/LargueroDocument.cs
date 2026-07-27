@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using RackCad.Domain.Systems;
+using RackCad.Domain.Systems.Larguero;
 
 namespace RackCad.Application.Persistence
 {

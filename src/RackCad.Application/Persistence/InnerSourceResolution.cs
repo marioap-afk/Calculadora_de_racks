@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using RackCad.Domain.Systems;
 
 namespace RackCad.Application.Persistence
 {

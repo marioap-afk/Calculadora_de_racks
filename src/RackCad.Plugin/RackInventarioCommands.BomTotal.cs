@@ -7,7 +7,6 @@ using RackCad.Application.Bom;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Persistence;
-using RackCad.Application.Systems;
 using RackCad.Plugin.Headers;
 using RackCad.Plugin.KindHandlers;
 using RackCad.UI;

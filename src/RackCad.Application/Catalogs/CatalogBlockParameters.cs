@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RackCad.Domain.Systems;
+using RackCad.Application.Drawing;
+using RackCad.Application.RackFrames;
+using RackCad.Application.Systems.Dynamic;
+using RackCad.Application.Systems.Selective;
+using RackCad.Domain.Systems.Dynamic;
+using RackCad.Domain.Systems.Selective;
 
 namespace RackCad.Application.Catalogs
 {
@@ -11,7 +16,7 @@ namespace RackCad.Application.Catalogs
     /// list. Two sources, combined per <b>exact</b> (pieceId, view):
     /// <list type="number">
     ///   <item>the connection-layout slide params (<c>paramX</c>/<c>paramY</c>) of that same piece and view;</item>
-    ///   <item>the role grips the builders write to <see cref="Headers.HeaderBlockInstance.DynamicParameters"/>
+    ///   <item>the role grips the builders write to <see cref="Drawing.HeaderBlockInstance.DynamicParameters"/>
     ///         (LONGITUD of the rail/posts/separators, PERALTE, ALTURA of the pallet, SAQUE, …).</item>
     /// </list>
     /// The parameter NAMES come from the same domain constants the builders use
