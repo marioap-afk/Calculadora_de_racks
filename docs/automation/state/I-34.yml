@@ -11,7 +11,7 @@ automation_state:
     ADOPCION-por-los-dialogos-en-una-sesion-propia-empezando-por-el-desviador-eje-POSTE ·
     despues-tope-que-cubre-Selectivo-y-el-tope-posterior-de-Push-Back-y-luego-guia ·
     parrilla-y-defensa-necesitan-decision-previa-y-NO-son-compromiso
-  last_evidence_commit: se-escribe-al-cerrar-la-sesion-el-SHA-completo-de-la-punta-publicada
+  last_evidence_commit: 15e50025c721f4efb8f9a98b0f58b6893c304466
 
 # --------------------------------------------------------------------------------------------------------
 # ALCANCE DE ESTE PRIMER INCREMENTO. La fundacion NO tiene consumidores de produccion: ningun dialogo
