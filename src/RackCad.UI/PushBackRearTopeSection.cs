@@ -4,7 +4,10 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.Catalogs;
+using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI
 {
@@ -25,7 +28,8 @@ namespace RackCad.UI
 
         public PushBackRearTopeSection(
             PushBackRearTopeConfig current,
-            Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> openDialog)
+            Func<PushBackRearTopeConfig, SafetyTopeGridWindow.TopeResult> openDialog,
+            RackCatalog catalog = null)
         {
             this.openDialog = openDialog ?? throw new ArgumentNullException(nameof(openDialog));
 
@@ -57,9 +61,34 @@ namespace RackCad.UI
             };
             Button.Click += (_, __) => Configure();
 
+            // PB-005 (I-32): the stop TYPE is picked from the catalog's TOPE family instead of being hard-wired to one
+            // piece. The list is whatever the catalog declares, so a new variant needs no code; the selection is written
+            // into the working copy as it changes, and the host applies that copy on accept like the SAQUE and the cells.
+            var variants = SelectiveSafetyFamilies.VariantsOfType(
+                catalog?.SafetyElements, SelectiveSafetyDefaults.TopeType);
+            PieceBox = new CatalogCombo
+            {
+                Name = PieceBoxName,
+                Margin = new Thickness(0, 0, 0, 6),
+                ToolTip = "Tipo de tope posterior. La lista viene del catálogo de elementos de seguridad.",
+            };
+            PieceBox.SetCatalogEntries(variants, PushBackRearTopeBuilder.ResolvePieceId(catalog, Config));
+            PieceBox.SelectionChanged += (_, __) => Config.PieceId = PieceBox.SelectedId;
+
             var panel = new StackPanel { Margin = new Thickness(0, 0, 0, 12) };
             panel.Children.Add(heading);
             panel.Children.Add(status);
+            if (variants.Count > 0)
+            {
+                panel.Children.Add(new TextBlock
+                {
+                    Text = PieceLabelText,
+                    FontSize = 11,
+                    Margin = new Thickness(0, 2, 0, 2),
+                });
+                panel.Children.Add(PieceBox);
+            }
+
             panel.Children.Add(Button);
             View = panel;
         }
@@ -68,6 +97,15 @@ namespace RackCad.UI
         public const string HeadingText = "Topes posteriores";
 
         public const string ConfigureButtonText = "Configurar…";
+
+        /// <summary>Label above the stop-type selector.</summary>
+        public const string PieceLabelText = "Tipo de tope";
+
+        /// <summary>x:Name-equivalent of the stop-type combo, so a test can find it inside the composed dialog.</summary>
+        public const string PieceBoxName = "RearTopePieceBox";
+
+        /// <summary>The stop-type selector (PB-005). Present only when the catalog declares TOPE variants.</summary>
+        public CatalogCombo PieceBox { get; }
 
         /// <summary>x:Name-equivalent of the button, so a test can find it inside the composed dialog.</summary>
         public const string ConfigureButtonName = "RearTopeConfigureButton";
@@ -109,7 +147,13 @@ namespace RackCad.UI
 
         private static PushBackRearTopeConfig Copy(PushBackRearTopeConfig source)
         {
-            var copy = new PushBackRearTopeConfig { Saque = PushBackRearTopeDialogAdapter.Saque(source) };
+            // PB-005: the chosen variant travels with the working copy. Without it, opening Seguridad and pressing
+            // Aceptar without touching anything would silently reset the stop back to the default piece.
+            var copy = new PushBackRearTopeConfig
+            {
+                Saque = PushBackRearTopeDialogAdapter.Saque(source),
+                PieceId = source?.PieceId,
+            };
             foreach (var cell in source?.OffCells ?? new List<SelectiveGridCell>())
             {
                 copy.OffCells.Add(new SelectiveGridCell { Frente = cell.Frente, Level = cell.Level });

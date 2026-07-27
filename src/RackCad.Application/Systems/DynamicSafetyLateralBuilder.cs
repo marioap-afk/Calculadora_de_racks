@@ -26,7 +26,8 @@ namespace RackCad.Application.Systems
             int levelCount = int.MaxValue,
             double? startX = null,
             double? endX = null,
-            IReadOnlyList<DynamicRackFront> adjacentFronts = null)
+            IReadOnlyList<DynamicRackFront> adjacentFronts = null,
+            RackLevelElevations elevations = null)
         {
             var result = new List<HeaderBlockInstance>();
             if (system == null || catalog == null || system.TotalLength <= 0.0)
@@ -40,16 +41,19 @@ namespace RackCad.Application.Systems
             var right = Endpoint(frameInstances, catalog, sectionEnd);
             var laterales = SelectiveSafetyPlacement.EnabledOfType(
                 system.SafetySelections, catalog, View, SelectiveSafetyPlacement.LateralType, allowEmptySide: true);
-            var lateralSide = laterales.Count > 0
-                ? DynamicLateralGuardPlan.SideAt(
+            // El protector lateral trae sus copias FÍSICAS: cada una con su extremo y su orientación resueltos por
+            // separado. Traducirlo a un SafetySide y leerlo literal aquí volvía a mezclar los dos ejes y mandaba
+            // atrás la copia del último poste (I-32, round 2).
+            var guardCopies = laterales.Count > 0
+                ? DynamicLateralGuardPlan.CopiesAt(
                     laterales[0].Selection, postIndex, Math.Max(1, system.Fronts.Count + 1))
-                : SafetySide.None;
+                : (IReadOnlyList<SafetyEndCopy>)new SafetyEndCopy[0];
 
-            if (lateralSide != SafetySide.None)
+            if (guardCopies.Count > 0)
             {
                 AppendEndpointFamily(
                     result, laterales, left.PlateOrigin, right.PlateOrigin,
-                    sectionEnd - sectionStart, postIndex, lateralSide);
+                    sectionEnd - sectionStart, postIndex, guardCopies);
             }
             else
             {
@@ -68,7 +72,8 @@ namespace RackCad.Application.Systems
                 levelCount,
                 sectionStart,
                 sectionEnd,
-                adjacentFronts);
+                adjacentFronts,
+                elevations);
             AppendDefensas(result, system, catalog, left, right, postIndex);
             AppendGuias(result, system, catalog, postIndex);
             return result;
@@ -95,8 +100,8 @@ namespace RackCad.Application.Systems
                 return;
             }
 
-            var setting = DynamicForkliftDefensePlan.At(
-                selection.DefensaPosts, postIndex, Math.Max(1, system.Fronts.Count + 1));
+            var setting = DynamicForkliftDefensePlan.ForSelection(
+                selection, postIndex, Math.Max(1, system.Fronts.Count + 1));
             var offset = CatalogLookup.Local(
                 catalog, selection.ElementId, DynamicForkliftDefensePlan.PostOriginPoint, View);
             if (setting.DrawsExit)
@@ -165,19 +170,22 @@ namespace RackCad.Application.Systems
             Point2D right,
             double? longitud,
             int postIndex,
-            SafetySide? sideOverride = null)
+            IReadOnlyList<SafetyEndCopy> copiesOverride = null)
         {
             foreach (var element in elements ?? Array.Empty<SelectiveSafetyPlacement.SafetyElement>())
             {
-                var side = sideOverride ?? element.Selection.SideForPost(postIndex);
-                if (side == SafetySide.Left || side == SafetySide.Both)
+                // El CORTE LATERAL elige el extremo FÍSICO de la línea del poste. Cada copia trae SU extremo y SU
+                // orientación por separado: en un sistema de extremo bajo, una elección Right se dibuja delante,
+                // espejada en su propio sitio, nunca atrás. El llamador puede traer sus propias copias —el
+                // protector lateral las resuelve con su regla adaptativa— y si no, se leen de la matriz por poste.
+                var copies = copiesOverride ?? SelectiveSafetyEnds.CopiesForPost(element.Selection, postIndex);
+                foreach (var copy in copies)
                 {
-                    target.Add(Piece(element.PieceId, element.Block, left, mirrored: false, longitud));
-                }
-
-                if (side == SafetySide.Right || side == SafetySide.Both)
-                {
-                    target.Add(Piece(element.PieceId, element.Block, right, mirrored: true, longitud));
+                    target.Add(Piece(
+                        element.PieceId, element.Block,
+                        copy.AtHighEnd ? right : left,
+                        mirrored: copy.Mirrored,
+                        longitud));
                 }
             }
         }
@@ -192,7 +200,8 @@ namespace RackCad.Application.Systems
             int levelCount,
             double startX,
             double endX,
-            IReadOnlyList<DynamicRackFront> adjacentFronts)
+            IReadOnlyList<DynamicRackFront> adjacentFronts,
+            RackLevelElevations elevations)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections,
@@ -220,23 +229,38 @@ namespace RackCad.Application.Systems
             var off = SelectiveSafetyGrid.OffCellKeys(selection.DesviadorOffCells);
 
             var fronts = adjacentFronts ?? Array.Empty<DynamicRackFront>();
-            var leftLevels = fronts.OrderBy(front => front.StartX)
-                .Select(front => DynamicFrontGeometry.LoadBeamLevels(system, front))
-                .FirstOrDefault() ?? system.LoadBeamLevels.ToList();
+            var leftFront = fronts.OrderBy(front => front.StartX).FirstOrDefault();
+            var leftLevels = leftFront != null
+                ? DynamicFrontGeometry.LoadBeamLevels(system, leftFront)
+                : system.LoadBeamLevels.ToList();
             var rightLevels = fronts.OrderByDescending(front => front.EndX)
                 .Select(front => DynamicFrontGeometry.LoadBeamLevels(system, front))
                 .FirstOrDefault() ?? system.LoadBeamLevels.ToList();
             var count = Math.Min(levelCount, Math.Max(leftLevels.Count, rightLevels.Count));
             for (var level = 0; level < count; level++)
             {
-                if (off.Contains((postIndex, level)))
+                if (off.Contains((SelectiveDesviadorPlan.CellKey(selection, postIndex, system.Fronts.Count), level)))
                 {
                     continue;
                 }
 
                 var leftLoad = leftLevels[Math.Min(level, leftLevels.Count - 1)];
                 var rightLoad = rightLevels[Math.Min(level, rightLevels.Count - 1)];
-                var leftY = level == 0 ? firstLeftY : leftLoad.ExitElevation - SelectiveDesviadorPlan.BeamYOffset;
+
+                // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
+                // deriva— y el ALTO no: su larguero es el ancla y conserva la elevación del resolver (PB-004, I-32).
+                // El primer nivel tampoco: mide desde el troquel del poste.
+                //
+                // Qué ámbito se consulta lo decide si este corte pertenece a un frente. SECCIONADO por poste: la
+                // columna baja pertenece al frente adyacente de menor StartX, así que se pregunta POR FRENTE. SIN
+                // seccionar: el corte dibuja el rack entero y ocupa su profundidad completa, que no es la de ningún
+                // frente, así que se pregunta por la ENVOLVENTE — la misma con la que se resuelven sus largueros.
+                var leftY = level == 0
+                    ? firstLeftY
+                    : (leftFront != null
+                        ? elevations.OrFront(leftFront.Index, leftLoad.LevelNumber, leftLoad.ExitElevation)
+                        : elevations.OrSystemEnvelope(leftLoad.LevelNumber, leftLoad.ExitElevation))
+                      - SelectiveDesviadorPlan.BeamYOffset;
                 var rightY = level == 0 ? firstRightY : rightLoad.EntranceElevation - SelectiveDesviadorPlan.BeamYOffset;
 
                 if (selection.Side == SafetySide.Left || selection.Side == SafetySide.Both)

@@ -29,6 +29,22 @@ namespace RackCad.UI
         private readonly RackCatalog catalog;
         private readonly SelectiveRackSystem resolvedSystem;
         private readonly bool fallbackLevelsArePerPost;
+
+        /// <summary>
+        /// PB-002 (I-32) — an OPT-IN, already-per-POST level count for the desviador grid. Null (Selectivo, Dinámico)
+        /// keeps the historical path byte for byte. Push Back passes it because it has no resolved
+        /// <see cref="SelectiveRackSystem"/>, so the grid used to fall back to a per-FRONT list read with a per-POST
+        /// index — which left posts showing fewer levels than the drawing actually places.
+        /// </summary>
+        private readonly IReadOnlyList<int> desviadorLevelsPerPost;
+
+        /// <summary>
+        /// PB-008 / PB-009 / PB-010 (I-32) — OPT-IN: this system's forklift defence lives only at the LOW
+        /// (entrance/exit) end. It renames the two columns to the ends the system really has, turns the far one off by
+        /// default, and offers the per-end Auto that recomputes 12"/36" when the rack gains or loses fronts. False
+        /// (Selectivo, Dinámico) keeps the historical dialog exactly.
+        /// </summary>
+        private readonly bool defensaLowEndOnly;
         private readonly bool useDynamicSafetyDefaults;
 
         private sealed class Row
@@ -89,7 +105,7 @@ namespace RackCad.UI
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null)
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false)
         {
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
@@ -98,6 +114,8 @@ namespace RackCad.UI
             this.catalog = catalog;
             this.resolvedSystem = resolvedSystem;
             this.fallbackLevelsArePerPost = fallbackLevelsArePerPost;
+            this.desviadorLevelsPerPost = desviadorLevelsPerPost;
+            this.defensaLowEndOnly = defensaLowEndOnly;
             this.useDynamicSafetyDefaults = useDynamicSafetyDefaults;
             elements ??= new List<SafetyElementCatalogEntry>();
             var currentSelections = (current ?? Enumerable.Empty<SelectiveSafetySelection>())
@@ -301,7 +319,9 @@ namespace RackCad.UI
                             Content = DesviadorLabel(row),
                             Padding = new Thickness(10, 3, 10, 3),
                             VerticalAlignment = VerticalAlignment.Center,
-                            ToolTip = "Desviador: elige poste y nivel, lado exterior (Izquierdo/Derecho/Ambas), LONGITUD y altura del primer nivel."
+                            ToolTip = ShowDesviadorSide
+                                ? "Desviador: elige poste y nivel, lado exterior (Izquierdo/Derecho/Ambas), LONGITUD y altura del primer nivel."
+                                : "Desviador: elige poste y nivel, LONGITUD y altura del primer nivel."
                         };
                         button.Click += (s, e) => EditDesviador(row);
                         Grid.SetColumn(button, 1);
@@ -343,7 +363,9 @@ namespace RackCad.UI
                                 {
                                     PostIndex = post.PostIndex,
                                     ExitLength = post.ExitLength,
-                                    EntranceLength = post.EntranceLength
+                                    EntranceLength = post.EntranceLength,
+                                    ExitAuto = post.ExitAuto,
+                                    EntranceAuto = post.EntranceAuto
                                 }).ToList() ?? new List<SafetyPostDefense>();
                         }
 
@@ -353,7 +375,9 @@ namespace RackCad.UI
                             Content = DefensaLabel(row),
                             Padding = new Thickness(10, 3, 10, 3),
                             VerticalAlignment = VerticalAlignment.Center,
-                            ToolTip = "Defensa de montacargas: elige Salida y Entrada por poste, con una LONGITUD independiente en cada extremo."
+                            ToolTip = defensaLowEndOnly
+                                ? "Defensa de montacargas: se coloca en el extremo de entrada/salida, con LONGITUD por poste y recálculo automático 12\"/36\"."
+                                : "Defensa de montacargas: elige Salida y Entrada por poste, con una LONGITUD independiente en cada extremo."
                         };
                         button.Click += (s, e) => EditDefensa(row);
                         Grid.SetColumn(button, 1);
@@ -510,8 +534,17 @@ namespace RackCad.UI
 
         private static string ParrillaLabel(Row row) => row.ParrillaConfigured ? "Configurado ✓…" : "Configurar…";
 
-        private static string DesviadorLabel(Row row)
-            => row.DesviadorConfigured ? "Configurado ✓ (" + DesviadorSideName(row.DesviadorSide) + ")…" : "Configurar…";
+        // PB-003 (I-32): with no side selector (Push Back) the label carries no side suffix — naming a face the user
+        // cannot choose is exactly the noise the Owner reported.
+        private string DesviadorLabel(Row row)
+            => !row.DesviadorConfigured
+                ? "Configurar…"
+                : ShowDesviadorSide
+                    ? "Configurado ✓ (" + DesviadorSideName(row.DesviadorSide) + ")…"
+                    : "Configurado ✓…";
+
+        /// <summary>True while the desviador dialog offers its aisle-face selector (everything but Push Back).</summary>
+        private bool ShowDesviadorSide => desviadorLevelsPerPost == null;
 
         private static string DefensaLabel(Row row)
             => row.DefensaConfigured ? "Configurada ✓…" : "Configurar…";
@@ -522,7 +555,8 @@ namespace RackCad.UI
         private void EditDefensa(Row row)
         {
             var dialog = new SafetyDefensaGridWindow(
-                SelectedElementLabel(row), postCount, row.DefensaPosts) { Owner = this };
+                SelectedElementLabel(row), postCount, row.DefensaPosts,
+                lowEndOnly: defensaLowEndOnly, autoPerEnd: defensaLowEndOnly) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -568,9 +602,11 @@ namespace RackCad.UI
                 row.DesviadorPrimerNivelAltura,
                 row.DesviadorSide,
                 row.DesviadorOffCells,
-                postCount,
-                levelsPerFrente,
-                fallbackLevelsArePerPost) { Owner = this };
+                // PB-002: with an explicit per-post list, the post count comes FROM it, so grid and count cannot drift.
+                desviadorLevelsPerPost?.Count ?? postCount,
+                desviadorLevelsPerPost ?? levelsPerFrente,
+                desviadorLevelsPerPost != null || fallbackLevelsArePerPost,
+                showSide: ShowDesviadorSide) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -728,13 +764,15 @@ namespace RackCad.UI
                             {
                                 PostIndex = post.PostIndex,
                                 ExitLength = post.ExitLength,
-                                EntranceLength = post.EntranceLength
+                                EntranceLength = post.EntranceLength,
+                                ExitAuto = post.ExitAuto,
+                                EntranceAuto = post.EntranceAuto
                             });
                         }
                     }
 
                     var drawsSomewhere = Enumerable.Range(0, postCount)
-                        .Select(post => DynamicForkliftDefensePlan.At(selection.DefensaPosts, post, postCount))
+                        .Select(post => DynamicForkliftDefensePlan.ForSelection(selection, post, postCount))
                         .Any(setting => setting.DrawsExit || setting.DrawsEntrance);
                     if (drawsSomewhere)
                     {

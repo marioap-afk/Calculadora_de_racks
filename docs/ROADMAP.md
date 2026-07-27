@@ -1,6 +1,11 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-24 (**I-31 integrada en `main`** (merge `--no-ff` `ad0ea1f`): **migración del
+> Actualizado: 2026-07-27 (**I-32 aprobada por el Owner y `integration-ready`**, aún **NO integrada**:
+> correcciones funcionales y geométricas de Push Back sobre el reporte del Owner, con la **geometría
+> asimétrica de la cama** como regla final. CODE_SHA `f911d75`, build validado `a0c3f27`, DLL SHA-256
+> `B7B15802…`, CI 30226757221. **Siguiente obligatorio: integración serializada en `main`.**)
+>
+> Anterior: 2026-07-24 (**I-31 integrada en `main`** (merge `--no-ff` `ad0ea1f`): **migración del
 > editor Selectivo** (`RackSelectiveWindow`) **al shell visual común** (`RackEditorVisualShell`, I-30) por
 > composición y slots + `EditorShellWindowStyle`, **solo XAML** (el `.cs` es byte-idéntico a `origin/main`),
 > **sin cambio** de dibujo/BOM/GUID/persistencia/handlers/comportamiento; conserva los 45 `x:Name`, la
@@ -180,6 +185,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-25 | `feature/guardas-traseras` ✋ | Última familia de seguridad (prioridad final del producto), construida sobre I-22 | M | I-22 | — | pendiente |
 | I-30 | `architecture/editor-visual-shell` ✋ | **Fundación del shell visual común de editores** (tipo: arquitectura): contrato visual y tokens, componentes del shell, status presenter, action bar común, pruebas y **migración real de `RackDynamicSystemWindow`**. NO incluye Selectivo ni modificación de Push Back (`feature/push-back` solo en lectura). Requiere CI, builds Debug, AutoCAD y owner-validation. **Secuencia obligatoria: integrar I-30 antes de I-31 y antes de reanudar I-18** | — | I-14, I-15, I-20, I-21, I-24 (integradas) | I-31 (orden fijo: I-30 primero); reanudación de I-18 (espera la secuencia) | integrada (2026-07-24) |
 | I-31 | `refactor/selective-visual-shell` (provisional) ✋ | **Migración del editor Selectivo al shell visual**: migrar `RackSelectiveWindow` al shell integrado por I-30, preservando estado, geometría, BOM, persistencia y handlers. **No puede reclamarse antes de cerrar I-30**; debe integrarse antes de rebasar y reanudar I-18 | — | I-30 integrada | I-30 (orden fijo); reanudación de I-18 | integrada (2026-07-24) |
+| I-32 | `fix/correcciones-push-back` ✋ | **Correcciones funcionales y geométricas de Push Back** a partir del reporte del Owner sobre el sistema ya integrado por I-18: diez hallazgos (PB-002…006, 008…010, 012, 013), el override opt-in de elevaciones en sus cuatro ámbitos, el default del protector lateral y la **geometría ASIMÉTRICA de la cama**. PB-001, PB-007, PB-011 y PB-014 quedan diferidos en `ideas-futuras.md` y no bloquean | M | I-18 integrada | — | **integration-ready (2026-07-27)** — validación manual del Owner **APROBADA** sobre el build `a0c3f27` (DLL SHA-256 `B7B15802…`, CI 30226757221). **NO integrada todavía**: pendiente el merge serializado en `main` |
 
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el
 dibujo, snapping, colisiones, clear height, undo/redo, shop drawings, 3D/IFC, optimizador IA, SQL/API

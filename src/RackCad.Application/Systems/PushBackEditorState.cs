@@ -42,6 +42,14 @@ namespace RackCad.Application.Systems
         /// <summary>The rear pallet-stop stick-out (SAQUE) applied to every rear tope (a single rack-wide Push Back scalar).</summary>
         public double RearTopeSaque { get; set; } = PushBackDefaults.RearTopeSaque;
 
+        /// <summary>
+        /// PB-005 (I-32) — the chosen rear-stop catalog variant, or null/blank for the system default. Like the SAQUE,
+        /// it is a single rack-wide Push Back scalar and travels through the very same five boundaries: the config the
+        /// Seguridad dialog reads and writes, the load from a resolved system, the snapshot and its restore, the reset
+        /// of a new design, and the assembled design.
+        /// </summary>
+        public string RearTopePieceId { get; set; }
+
         private PushBackSystem workingBaseline;
 
         /// <summary>The last accepted resolved system whose MODULAR structure — custom cabeceras and manual fondos — the next
@@ -170,7 +178,7 @@ namespace RackCad.Application.Systems
         /// </summary>
         public PushBackRearTopeConfig RearTopeConfig()
         {
-            var config = new PushBackRearTopeConfig { Saque = RearTopeSaque };
+            var config = new PushBackRearTopeConfig { Saque = RearTopeSaque, PieceId = RearTopePieceId };
             for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)
             {
                 var levels = Math.Max(1, structure.Fronts[frontIndex].LoadLevels);
@@ -199,6 +207,7 @@ namespace RackCad.Application.Systems
             }
 
             RearTopeSaque = config.Saque > 0.0 ? config.Saque : PushBackDefaults.RearTopeSaque;
+            RearTopePieceId = config.PieceId;
             for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)
             {
                 var levels = Math.Max(1, structure.Fronts[frontIndex].LoadLevels);
@@ -218,6 +227,7 @@ namespace RackCad.Application.Systems
                 structure.Snapshot(),
                 pushFronts.Select(front => front.Clone()).ToList(),
                 RearTopeSaque,
+                RearTopePieceId,
                 structure.SelectedFrontIndex,
                 structure.SelectedLevelIndex,
                 structure.SelectedCells());
@@ -235,6 +245,7 @@ namespace RackCad.Application.Systems
             pushFronts.Clear();
             pushFronts.AddRange(snapshot.PushFronts.Select(front => front.Clone()));
             RearTopeSaque = snapshot.RearTopeSaque;
+            RearTopePieceId = snapshot.RearTopePieceId;
             SyncPushConfig();
             RestoreSelection(snapshot.SelectedFrontIndex, snapshot.SelectedLevelIndex, snapshot.SelectedCells);
         }
@@ -327,6 +338,7 @@ namespace RackCad.Application.Systems
             IReadOnlyList<DynamicEditorFront> structure,
             IReadOnlyList<PushBackEditorFront> pushFronts,
             double rearTopeSaque,
+            string rearTopePieceId,
             int selectedFrontIndex,
             int selectedLevelIndex,
             IReadOnlyList<DynamicRackCellAddress> selectedCells)
@@ -334,6 +346,7 @@ namespace RackCad.Application.Systems
             Structure = structure ?? new List<DynamicEditorFront>();
             PushFronts = pushFronts ?? new List<PushBackEditorFront>();
             RearTopeSaque = rearTopeSaque;
+            RearTopePieceId = rearTopePieceId;
             SelectedFrontIndex = selectedFrontIndex;
             SelectedLevelIndex = selectedLevelIndex;
             SelectedCells = selectedCells ?? new List<DynamicRackCellAddress>();
@@ -342,6 +355,7 @@ namespace RackCad.Application.Systems
         public IReadOnlyList<DynamicEditorFront> Structure { get; }
         public IReadOnlyList<PushBackEditorFront> PushFronts { get; }
         public double RearTopeSaque { get; }
+        public string RearTopePieceId { get; }
         public int SelectedFrontIndex { get; }
         public int SelectedLevelIndex { get; }
         public IReadOnlyList<DynamicRackCellAddress> SelectedCells { get; }

@@ -133,12 +133,12 @@ namespace RackCad.Application.Systems
             }
         }
 
-        /// <summary>One rear tope (LARGUERO_ESCALON_TOPE_DE_3) per ACTIVE cell.</summary>
+        /// <summary>One rear tope per ACTIVE cell, of the CONFIGURED variant (PB-005) — the same piece the views place.</summary>
         private static void AddRearTopes(ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog)
         {
             var structure = system.Structure;
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
-            var topeId = PushBackRearTopeBuilder.TopePieceId;
+            var topeId = PushBackRearTopeBuilder.ResolvePieceId(catalog, rearTope);   // PB-005: one rule, drawing == BOM
             var label = catalog?.SafetyElements?.FirstOrDefault(entry => string.Equals(entry?.Id, topeId, StringComparison.OrdinalIgnoreCase))?.Label ?? topeId;
 
             var grouped = new Dictionary<double, int>();

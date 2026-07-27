@@ -381,3 +381,60 @@ Toda esta lista quedó cerrada en el batch de quick wins + higiene:
   **diseño intencional de I-11** (un bloque ajeno se salta, no aborta el escaneo), no un "fallo silencioso"
   del tipo D2, por lo que I-03 no las tocó. Si en el futuro se quisiera un rastro de esos saltos, habría que
   medir el ruido (el escaneo recorre todos los bloques del dibujo) antes de registrar.
+
+### I-32 — hallazgos de Push Back diferidos y limitaciones registradas (2026-07-25)
+
+El Owner reportó catorce hallazgos sobre el Push Back integrado por I-18. I-32 corrigió diez
+(PB-002…PB-006, PB-008…PB-010, PB-012, PB-013). Los otros cuatro quedan aquí como **candidatos futuros**,
+no implementados, con lo que ya se sabe de cada uno:
+
+- **PB-001 — Previews de Push Back (prioridad baja del Owner).** Las cuatro vistas del previsualizador
+  siguen siendo insatisfactorias. Es el MISMO frente que I-18 ya había diferido a «una iniciativa
+  transversal futura que abarque a los tres editores»
+  ([`decisions/I-18.md`](automation/decisions/I-18.md), addendum final §3): el preview **no** está aprobado
+  visualmente. Lo que I-18 dejó hecho y esa iniciativa hereda es la infraestructura compartida extraída del
+  renderer Dinámico (`EditorPreviewPalette`/`Surface`/`Parts`), ya consumida por los dos editores y con la
+  equivalencia del Dinámico medida. Se parte de una sola tubería, no de dos painters divergentes.
+- **PB-007 — Reconfigurador masivo de elementos de seguridad (prioridad alta del Owner, GENERAL, no solo
+  Push Back).** Hoy, para quitar el desviador del segundo nivel en 100 frentes hay que hacer 100 clics: las
+  rejillas de seguridad son celda a celda y no tienen alcances. Lo pedido es un aplicador masivo al patrón
+  del que ya existe en la interfaz de cada sistema (por celda, por frente, por nivel), disponible para cada
+  familia de seguridad. Toca los diálogos COMPARTIDOS, así que afecta a Selectivo y Dinámico: necesita
+  decisión de alcance del Owner antes de arrancar. Se apoya en `SelectionMatrix`/`SelectionMatrixModel`
+  (I-14/I-22), que ya tienen `SetAll` y celdas ausentes.
+- **PB-011 — Editor «avanzado» de módulos en Push Back (prioridad alta del Owner).** El Dinámico permite
+  seleccionar un módulo (cabecera o separador) y personalizarlo —medida, cantidad de separadores, cabecera
+  personalizada—; Push Back no. Nota técnica levantada al arreglar PB-013: hoy **toda** cabecera de Push
+  Back es «calculada» (`DynamicRackSystemBuilder` la crea con `UseCalculatedHeaderConfiguration = true` y
+  solo la ventana del Dinámico lo pone en false), y de ahí depende que el alto de tarima general sea inerte.
+  Si Push Back gana cabeceras personalizadas, esa dependencia debe revisarse en el mismo cambio.
+- **PB-014 — Frente «en blanco» (Push Back y Dinámico).** Un frente sin niveles cuya estructura continúa
+  con la misma separación que tendría el larguero, ajustable desde los campos de celda. Es compartido con
+  el Dinámico, así que necesita decisión de alcance.
+
+Limitaciones y observaciones registradas al corregir, **sin tocar** por la restricción de no cambiar el
+Selectivo ni el Dinámico:
+
+- **El Dinámico sigue leyendo la celda del desviador por FRENTE, no por poste.** En Push Back esto quedó
+  **corregido** (la off-cell es POSTE × NIVEL y la leen igual el lateral, los dos frontales, la planta y el
+  BOM, a través de `SelectiveDesviadorPlan.CellKey`). El Dinámico conserva a propósito la lectura histórica
+  `Math.Min(postIndex, Fronts.Count - 1)`, que colapsa el último poste sobre el último frente: apagar la
+  celda del penúltimo poste suprime también la del último. La capacidad
+  `SelectiveSafetySelection.DesviadorCellsAreByPost` es el interruptor; activarla para el Dinámico
+  cambiaría su comportamiento y necesita decisión del Owner.
+- **El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**:
+  `RackDynamicSystemWindow` también entrega al diálogo compartido una lista POR FRENTE marcada como por
+  POSTE. Se dejó intacto a propósito; el arreglo entró como parámetro opt-in.
+- **La regla «niveles en un poste» sigue duplicada**: `DynamicFrontGeometry.LoadLevelsAtPost` y la copia
+  privada de `DynamicSafetyMultiViewBuilder`, con fallbacks distintos. I-32 unificó la primera con la
+  versión pura que consume la UI, pero no colapsó la segunda.
+- **«Dibujar en frontal» sigue visible e inerte en el diálogo del tope para Push Back** (su adaptador solo
+  lee SAQUE y las off-cells). Es de la misma clase que PB-006, pero el Owner no lo reportó y quedó fuera.
+- **`INICIO_IZQUIERDO`/`INICIO_DERECHO` del `LARGUERO_ESCALON_TROQUEL_REDONDO` no dependen del PERALTE**
+  (`localYPorParam = 0` en `connection-layout.csv`) aunque el editor deje variar el peralte entre 3 y 6.
+  Tras PB-004 esa fila ya no afecta a la pendiente, pero conviene que el Owner mida en el DWG si esa cota
+  debería seguir al peralte.
+- **La tarima general de Push Back conserva Frente/Alto/Peso sin UI que los cambie.** Tras PB-013 esos tres
+  quedan congelados en el valor cargado (42/60/1000 en un rack nuevo) y se siguen persistiendo así. Son
+  inertes para la geometría porque la celda manda, pero si alguna vez dejaran de serlo habría que darles
+  una superficie de edición o dejar de persistirlos.

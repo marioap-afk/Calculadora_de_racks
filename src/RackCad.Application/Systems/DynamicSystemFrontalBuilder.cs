@@ -18,15 +18,23 @@ namespace RackCad.Application.Systems
         private const string View = "FRONTAL";
         private readonly DynamicSafetyMultiViewBuilder safetyBuilder = new DynamicSafetyMultiViewBuilder();
 
-        public DynamicSystemPlan BuildPlan(DynamicRackSystem system, RackCatalog catalog, DynamicRackEnd end)
+        public DynamicSystemPlan BuildPlan(
+            DynamicRackSystem system, RackCatalog catalog, DynamicRackEnd end,
+            RackLevelElevations elevations = null)
             => HeaderInstanceGrouper.Group(
-                Build(system, catalog, end),
+                Build(system, catalog, end, elevations),
                 end == DynamicRackEnd.Entrance ? "DIN_FRONTAL_ENTRADA" : "DIN_FRONTAL_SALIDA");
 
+        /// <param name="elevations">
+        /// Override OPCIONAL de elevaciones (PB-004, I-32). Solo afecta al corte BAJO: ahí el larguero IN/OUT se
+        /// coloca directamente en la elevación derivada de SU frente, sin reasientos posteriores. Con <c>null</c>
+        /// el plan es byte-idéntico al de siempre.
+        /// </param>
         public IReadOnlyList<HeaderBlockInstance> Build(
             DynamicRackSystem system,
             RackCatalog catalog,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            RackLevelElevations elevations = null)
         {
             var instances = new List<HeaderBlockInstance>();
             if (system == null || system.Fronts.Count == 0 || system.LoadBeamLevels.Count == 0)
@@ -93,9 +101,13 @@ namespace RackCad.Application.Systems
                 {
                     var configuration = DynamicRackLevelGeometry.At(system, front, level.LevelNumber);
                     var beamId = configuration.InOutBeamCatalogId;
+                    // El larguero bajo se coloca YA en su elevación definitiva: se pregunta por FRENTE, que es a
+                    // quien pertenece la pieza. Antes Push Back lo movía después, localizándolo por coordenada; ese
+                    // segundo reasiento desaparece y con él el riesgo de aplicarlo dos veces o de no encontrarlo
+                    // (PB-004, I-32). El extremo ALTO es el ancla y no admite override.
                     var y = end == DynamicRackEnd.Entrance
                         ? level.EntranceElevation
-                        : level.ExitElevation;
+                        : elevations.OrFront(front.Index, level.LevelNumber, level.ExitElevation);
                     var at = new Point2D(beamX, y);
                     var beam = new HeaderBlockInstance
                     {
@@ -112,8 +124,8 @@ namespace RackCad.Application.Systems
                 }
             }
 
-            safetyBuilder.AppendFrontal(instances, system, catalog, layout, plateId, end);
-            DynamicViewDecorations.AppendFrontal(instances, system, layout, end, catalog);
+            safetyBuilder.AppendFrontal(instances, system, catalog, layout, plateId, end, elevations);
+            DynamicViewDecorations.AppendFrontal(instances, system, layout, end, catalog, elevations);
 
             return instances;
         }

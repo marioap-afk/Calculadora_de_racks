@@ -9,8 +9,9 @@ namespace RackCad.Application.Systems
 {
     /// <summary>
     /// The two Push Back end beams per front and level, in the LATERAL view. Push Back is LIFO: the LOW (left) end
-    /// carries the same complete IN/OUT beam as the dynamic system (reused verbatim from the already-snapped exit
-    /// placement); the HIGH (right, rear) end carries <c>LARGUERO_ESCALON_TROQUEL_REDONDO</c> with the cell's own PERALTE
+    /// carries the same complete IN/OUT beam as the dynamic system, pero su ELEVACIÓN ya no es la del resolver: la
+    /// deriva <see cref="PushBackElevations"/> desde el larguero posterior y la ajusta a su propio troquel (PB-004,
+    /// I-32). El HIGH (right, rear) end carries <c>LARGUERO_ESCALON_TROQUEL_REDONDO</c> with the cell's own PERALTE
     /// (<see cref="PushBackSystem.HighEndBeamPeralteAt"/>) and the same transverse LONGITUD as the corresponding IN/OUT.
     /// Both origins come from <see cref="DynamicLoadBeamGeometry.Placements"/>, whose Y is already snapped to the 2" troquel.
     /// </summary>
@@ -92,48 +93,20 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// Owner decision (2026-07-24) — the vertical shift that lands the REAR beam's contact edge on the line through
-        /// the bed's PHYSICAL origin (<see cref="PushBackFlowBedAxis.RailOrigin"/>), evaluated at that edge's own X.
-        ///
-        /// The bed is resolved from the RAW placements (<see cref="PushBackFlowBedGeometry.Resolve"/> never sees this
-        /// shift), so its origin, slope, axis and full length are untouched: the bed does not move to meet the beam, the
-        /// REAR beam moves to meet the bed. The LOW IN/OUT beam is NOT shifted at all — it stays bolted where its
-        /// TROQUEL_CAMA meets the rail's TROQUEL_IN, which is the mate the bed itself is resolved from.
-        ///
-        /// Returns 0 for a level with no resolved bed axis or a beam with no measured contact edge: with no bed line
-        /// there is nothing to be tangent to, so the beam keeps its troquel-snapped elevation rather than being moved
-        /// by an unrelated level's line.
+        /// La elevación de inserción del larguero de ENTRADA/SALIDA, por nivel, para un frente. Delega en la autoridad
+        /// única <see cref="PushBackElevations"/>: aquí no vive ninguna fórmula, solo la forma que consumen las vistas.
         /// </summary>
-        public static double RearBeamTangencyOffset(
-            IReadOnlyList<PushBackFlowBedAxis> axes, int levelNumber,
-            RackCatalog catalog, string beamId, double placementX, double placementY, bool mirroredX)
-        {
-            if (axes == null)
-            {
-                return 0.0;
-            }
-
-            foreach (var axis in axes)
-            {
-                if (axis.LevelNumber != levelNumber)
-                {
-                    continue;
-                }
-
-                var contact = RearBeamTangencyPointWorld(catalog, beamId, placementX, placementY, mirroredX);
-                return contact.HasValue ? axis.RailOriginYAt(contact.Value.X) - contact.Value.Y : 0.0;
-            }
-
-            return 0.0;
-        }
+        public static IReadOnlyDictionary<int, double> LowBeamElevations(
+            PushBackSystem system, RackCatalog catalog, DynamicRackFront front)
+            => PushBackElevations.LowInsertions(system, catalog, front);
 
         /// <summary>
         /// Low-end IN/OUT beams: one per front x level, taken from the dynamic exit placements VERBATIM.
         ///
-        /// Owner decision (2026-07-24): the low beam is placed so that its <c>TROQUEL_CAMA</c> coincides EXACTLY with the
-        /// rail's <c>TROQUEL_IN</c> — the very mate the bed is resolved from — so it carries NO shift of its own. The
-        /// earlier bed-origin displacement of this beam is gone: it is the REAR beam that moves onto the bed-origin line
-        /// (<see cref="RearBeamTangencyOffset"/>).
+        /// PB-004 (I-32, tras el rechazo del round 1): el larguero POSTERIOR no se desplaza — es el ANCLA y conserva
+        /// su troquel. El que se deriva es ESTE: su elevación sale de <see cref="PushBackElevations"/>, que aplica la
+        /// pendiente nominal desde el contacto posterior y ajusta el resultado al troquel válido más cercano. Los dos
+        /// extremos quedan atornillados y la cama se traza entre los dos contactos reales.
         /// </summary>
         public static IReadOnlyList<HeaderBlockInstance> LowBeams(PushBackSystem system, RackCatalog catalog, DynamicRackFront front = null)
         {
@@ -144,6 +117,7 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
+            var elevations = LowBeamElevations(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => !placement.IsEntrance))
             {
                 var beamId = string.IsNullOrWhiteSpace(placement.BeamCatalogId)
@@ -155,7 +129,9 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var origin = new Point2D(placement.X, placement.Y);
+                var origin = new Point2D(
+                    placement.X,
+                    elevations.TryGetValue(placement.LevelNumber, out var derived) ? derived : placement.Y);
                 result.Add(new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,
@@ -173,9 +149,9 @@ namespace RackCad.Application.Systems
 
         /// <summary>
         /// High-end (rear) TROQUEL_REDONDO beams: one per front x level, PERALTE from the cell, LONGITUD = the IN/OUT's,
-        /// and lowered so that its measured contact edge is TANGENT to the bed-origin line
-        /// (<see cref="RearBeamTangencyOffset"/>, Owner decision 2026-07-24). The shift is vertical only, so the bed's
-        /// slope, full length, per-cell peralte and the intermediates are untouched.
+        /// en la elevación de troquel que ya les dio el resolver. NO se desplazan: son el ancla de la que cuelga todo
+        /// lo demás (PB-004, I-32). Su contacto con la cama lo elige la geometría entre las dos aristas medidas
+        /// (<see cref="RearBeamTangencyPointWorld"/>), no un lado fijo del catálogo.
         /// </summary>
         public static IReadOnlyList<HeaderBlockInstance> HighBeams(PushBackSystem system, RackCatalog catalog, int frontIndex, DynamicRackFront front = null)
         {
@@ -195,12 +171,10 @@ namespace RackCad.Application.Systems
                 return result;
             }
 
-            var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
             foreach (var placement in DynamicLoadBeamGeometry.Placements(structure, front).Where(placement => placement.IsEntrance))
             {
-                var offset = RearBeamTangencyOffset(
-                    axes, placement.LevelNumber, catalog, beamId, placement.X, placement.Y, placement.MirroredX);
-                var origin = new Point2D(placement.X, placement.Y + offset);
+                // PB-004: el posterior ES el ancla — se queda en el troquel que le dio el resolver, sin desplazamiento.
+                var origin = new Point2D(placement.X, placement.Y);
                 var instance = new HeaderBlockInstance
                 {
                     Role = HeaderBlockRole.Beam,

@@ -1,0 +1,318 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-32
+  branch: fix/correcciones-push-back
+  claim_id: 5bb26f55-365c-449b-8341-59dc955e5807
+  current_phase: 10
+  state: integration-ready
+  gate: integration
+  attempts: 3
+  attempts_note: >-
+    attempts-PERMANECE-en-3-y-NO-se-incrementa-el-max-attempts-del-contrato-ya-se-AGOTO-con-los-rounds-1-2-y-3 ·
+    la-validacion-que-ahora-se-abre-NO-es-un-intento-nuevo-de-la-automatizacion-es-una-REVALIDACION-MANUAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-sobre-una-correccion-que-el-mismo-dirigio-por-eso-no-se-numera-como-otro-round ·
+    la-validacion-que-ahora-se-abre-NO-es-un-intento-nuevo-de-la-automatizacion-es-una-CONFIRMACION-FINAL-DIRIGIDA-EXPLICITAMENTE-POR-EL-OWNER-sobre-una-correccion-que-el-mismo-dirigio-por-eso-no-se-numera-como-un-round-mas ·
+    historico-attempts-paso-a-3-al-abrirse-el-round-3-tras-la-aprobacion-tecnica-del-code-sha-924de1a-que-resulto-partir-de-una-lectura-equivocada-del-defecto ·
+    historico-revisiones-del-coordinador-2026-07-25-la-4-changes-requested-atendida-y-la-5-que-aprobo-formula-longitud-comercial-contacto-posterior-parametros-del-clon-y-matrices-de-seguridad-y-dejo-un-unico-bloqueo-completar-el-override-opt-in-cerrado-entonces
+  next_action: >-
+    GATE-DE-INTEGRACION-integracion-serializada-en-main-por-git-merge-no-ff-y-limpieza-posterior-de-rama-y-worktree ·
+    NO-queda-ninguna-modificacion-funcional-pendiente-el-alcance-esta-terminado-y-la-validacion-manual-del-owner-esta-APROBADA
+  last_evidence_commit: f911d75350702fb176e123a59a105d40f63690ec
+execution_context:
+  mode: manual-git-only
+  worktree: fix-correcciones-push-back
+  pull_request: none
+evidence:
+  base_commit: 91eb53cf58d225f1e34e8f4cb45da27e1cdd1884
+  claim_commit: 58146cfa33d5c6c9a619025f00e6415058e90b73
+  preflight: >-
+    main-igual-origin-main-91eb53c-arbol-limpio-sin-merge-rebase-cherry-pick-bisect-sin-stashes-ci-verde-run-30139711339-success-sobre-91eb53c-i18-integrada-merge-77031be-cierre-91eb53c-feature-push-back-eliminada-local-y-remota-i32-y-fix-correcciones-push-back-libres-sin-fichas-ni-estado-previo-unica-rama-remota-main-sin-worktrees-fuera-del-principal-i23-e-i25-pendientes-sin-rama-activa
+  claim: >-
+    worktree-unico-desde-origin-main-rama-fix-correcciones-push-back-commit-vacio-58146cf-initiative-i32-claim-id-5bb26f55-365c-449b-8341-59dc955e5807-trailer-co-authored-by-claude-primer-push-u-aceptado-como-new-branch-sin-force-reclamo-valido
+  commits: >-
+    58146cf-reclamo-vacio · cf34c85-pb004-pendiente-de-cama · a8523d4-pb012-primer-nivel-4 ·
+    8cd72e5-pb013-tarima-general-vs-celda · 02170b0-pb002-pb003-matriz-y-lado-del-desviador ·
+    a3f2555-pb005-pb006-tipo-de-tope-y-opciones-del-dialogo ·
+    df6cae9-pb008-pb009-pb010-defensa-de-montacargas · 00491b0-docs-contrato-decisiones-estado-indice ·
+    4ffea41-pb002-clave-por-poste-en-todas-las-vistas-mas-regresiones-de-reduccion-pb010-y-cabecera-pb004 ·
+    26642c9-estado-fija-el-sha-de-esa-corrida · 428c18a-pb010-el-dialogo-de-defensa-no-deduce-procedencia-comparando-numeros ·
+    4e3152a-docs-checklist-21-puntos · 2210e67-docs-cabecera-y-flujo-como-puntos-independientes ·
+    e561d8f-round1-defecto-2-la-matriz-por-poste-de-botas-y-laterales-deja-de-borrarse ·
+    a8717e5-round1-defecto-1-el-posterior-es-el-ancla-y-el-de-entrada-salida-se-deriva-y-se-ajusta ·
+    82876ec-docs-estado-de-la-corrida-del-rechazo ·
+    6a4f514-pb004-una-sola-autoridad-de-elevaciones-push-back ·
+    021178e-round1-defecto-2-separa-los-tres-ejes-tambien-en-el-camino-real-del-protector-lateral ·
+    c3fa138-docs-revision-4-atendida · db437c7-estado-ci-de-la-revision-4 ·
+    cb5e745-regresiones-de-consumidores-observadas-fallando-sobre-db437c7 ·
+    69ae738-contexto-neutral-e-inmutable-con-tres-consultas-explicitas ·
+    0fc5c85-enhebra-el-contexto-por-los-cinco-builders-siempre-opt-in ·
+    0eac610-docs-revision-5 · 5f7ec60-estado-ci-de-la-revision-5 ·
+    be809fd-regresiones-del-lateral-completo-observadas-fallando-sobre-5f7ec60 ·
+    bac6a62-atsystemenvelope-la-envolvente-es-un-ambito-propio-con-mapa-explicito ·
+    ddb302f-cablea-solo-el-lateral-no-seccionado-a-la-envolvente ·
+    4bb1756-docs-revision-6 · e6eb7ba-estado-ci-de-la-revision-6 · 557858d-a-validating-round-2-autorizado ·
+    3b91c87-regresiones-del-default-del-protector-lateral-fallando-sobre-557858d ·
+    159e488-round2-defecto-2-el-ultimo-protector-no-desaparece-se-espeja ·
+    f961f03-docs-round-2-rechazada · 27fd403-estado-ci · 2983fa1-regresiones-de-tangencia-por-origen ·
+    924de1a-round2-defecto-1-la-cama-se-coloca-por-su-origen
+  bugs_fixed: pb-002 pb-003 pb-004 pb-005 pb-006 pb-008 pb-009 pb-010 pb-012 pb-013
+  bugs_deferred: >-
+    pb-001-preview pb-007-reconfigurador-masivo-de-seguridad pb-011-editor-avanzado-de-modulos
+    pb-014-frente-en-blanco-registrados-en-ideas-futuras-no-implementados
+  regression_evidence: >-
+    corrida-1-pb004-4-de-7-pb012-3-de-5-pb013-3-de-3-pb002-primera-mitad-3-de-4-pb003-1-de-4-pb005-2-de-9-pb006-3-de-3-pb008-pb009-pb010-6-de-12-mas-3-de-dialogo ·
+    corrida-2-sobre-00491b0-pb002-clave-por-poste-3-de-7-pb010-reduccion-3-de-5-pb004-cabecera-3-de-3-contra-una-doble-elevacion-simulada ·
+    corrida-3-sobre-26642c9-pb010-dialogo-2-de-7-de-pushbackdefensadialogtests-la-prueba-afirma-en-el-mismo-metodo-que-el-helper-puro-dynamicforkliftdefenseplan-ya-resolvia-bien-el-registro-manual-lo-que-fallaba-era-lo-que-devolvia-el-dialogo-es-decir-el-defecto-era-de-la-ui ·
+    el-resto-son-centinelas-verdes-antes-y-despues
+  tests: rackcad-tests-1470-de-1470-rackcad-ui-tests-365-de-365-debug-cero-fallos-cero-omitidas
+  targeted_filters: >-
+    corrida-11-ningun-filtro-en-cero-bed-188-tangency-8-flowbed-33-elevation-77-lateral-158-safety-119-golden-2-bom-101-tiebreak-15-validador-i19-41 ·
+    historico-corrida-10-ningun-filtro-en-cero-bed-188-tangency-8-flowbed-33-elevation-77-lateral-158-safety-119-golden-2-bom-101-validador-i19-41 ·
+    historico-corrida-9-ningun-filtro-en-cero-bed-157-tangency-8-flowbed-33-safety-119-lateral-157-golden-2-bom-101-validador-i19-41 ·
+    historico-corrida-8-ningun-filtro-en-cero-bed-151-tangency-39-flowbed-33-safety-119-lateral-157-golden-2-bom-97-validador-i19-41 ·
+    historico-corrida-6-ningun-filtro-en-cero-pb004-108-desviador-52-decorations-40-dynamic-197-golden-2-validador-i19-41 ·
+    historico-corrida-5-pb004-89-desviador-51-decorations-39-dynamic-197-golden-2-bom-96-validador-i19-41 ·
+    historico-ningun-filtro-descubre-cero-core-pushback-235-selective-323-dynamic-193-safety-109-golden-1-bom-94-document-54-persistence-118-registration-7-validator-33-catalog-118-defense-22-desviador-44-tope-82-ui-defensa-7-ui-pushback-117-shell-63-selective-31-dynamic-32-safety-30-editor-121-matrix-57-preview-62-insertion-9-menu-7-el-filtro-shell-no-existe-en-core-por-diseno-el-shell-es-ui
+  builds: >-
+    ui-debug-0-errores-0-advertencias · plugin-debug-0-errores-solo-msb3277-conocidas-con-AutoCAD-CERRADO-verificado-antes-build-normal ·
+    NO-se-genera-ni-se-entrega-DLL-canonico-en-esta-corrida-por-instruccion-del-coordinador
+  goldens: >-
+    corrida-4-de-pb004-se-mueven-TRES-pines-lateral-lateral-corte0-y-frontal-entrada-frontal-posterior-planta-y-bom-INTACTOS-el-motivo-de-cada-pin-queda-escrito-en-pushbackgoldentests ·
+    historico-round-2-de-pb004-se-mueven-CUATRO-pines-de-vista-lateral-lateral-corte0-frontal-entrada-y-frontal-posterior-planta-y-bom-INTACTOS ·
+    frontal-posterior-vuelve-EXACTAMENTE-al-valor-previo-al-round-1-55af6395-que-es-la-comprobacion-mas-limpia-de-que-el-larguero-posterior-regreso-a-su-troquel ·
+    el-motivo-de-cada-pin-queda-escrito-en-pushbackgoldentests
+  catalogs_untouched: >-
+    assets-catalogs-deploy-sln-y-csproj-sin-cambios-validador-i19-41-pruebas-verdes-filtro-catalogvalidator-blockslibrary-manifest-baseline-aprobado-intacto-1-error-troquel-tope-2-avisos-tarima-generica
+  isolation: >-
+    selectivo-y-dinamico-sin-cambio-de-comportamiento-los-cuatro-dialogos-compartidos-solo-ganan-parametros-opcionales-al-final-de-sus-firmas-con-default-igual-al-comportamiento-vigente-selectivo-llama-por-posicion-y-no-los-alcanza-dinamico-llama-por-nombre-y-no-los-pasa-hay-pruebas-de-no-regresion-para-ambos
+  owner_validation_round_1: >-
+    RECHAZADA-2026-07-25-dos-defectos ·
+    defecto-1-geometria-la-interpretacion-literal-de-la-pendiente-sacaba-al-larguero-posterior-de-su-troquel-la-regla-vigente-la-sustituye-el-objetivo-de-7-16-por-pie-es-NOMINAL-el-posterior-es-el-ancla-en-troquel-el-de-entrada-salida-se-deriva-y-se-ajusta-y-la-cama-une-los-dos-contactos-reales ·
+    defecto-2-seguridad-pushbacksafetyauthority-restricttolowend-borraba-postsides-entera-para-imponer-el-extremo-bajo-y-con-ella-la-eleccion-por-poste-del-usuario-ahora-la-matriz-se-conserva-y-el-extremo-se-impone-donde-se-decide-con-selectivesafetyends-endsforpost ·
+    evidencia-fallo-paso-sobre-2210e67-pb004-19-de-43-de-pushbackbedanchortests-botas-7-de-10-puras-y-3-de-5-sta ·
+    gate-de-owner-validation-CERRADO-de-nuevo-y-sin-dll-canonico-hasta-nueva-revision-del-coordinador
+  coordinator_review_3: >-
+    resultado-tecnico-APPROVED-sobre-el-code-sha-428c18a714e8e5e486376f7a09b4f2f191c45c6e-con-ci-verde-run-30175762235-y-head-documental-revisado-4e3152ab261a2d3cecbce44aca0bced4ec3b4146-con-ci-verde-run-30175969327 ·
+    pendiente-unicamente-documental-restaurar-cabecera-y-el-flujo-insertar-actualizar-guardar-reabrir-bom-como-puntos-obligatorios-INDEPENDIENTES-hecho-en-esta-corrida-el-checklist-pasa-de-16-a-21-puntos ·
+    autorizacion-condicionada-a-tres-cosas-diff-limitado-a-contrato-mas-state-ci-verde-de-la-nueva-punta-y-build-canonico-con-autocad-cerrado-cumplidas-esas-tres-queda-abierto-owner-validation ·
+    integracion-NO-autorizada-hasta-aprobacion-explicita-del-owner
+  defense_provenance: >-
+    pb010-cerrado-el-dialogo-safetydefensagridwindow-onok-ya-no-infiere-la-procedencia-comparando-numeros-con-autoperend-guarda-el-registro-siempre-que-al-menos-un-extremo-sea-manual-ambos-en-auto-siguen-sin-guardar-y-sin-autoperend-selectivo-y-dinamico-conservan-la-heuristica-historica-de-descartar-una-fila-igual-a-su-default-con-prueba-que-lo-fija
+  desviador_cell_key: >-
+    pb002-completo-la-off-cell-del-desviador-es-poste-por-nivel-en-push-back-y-la-resuelve-una-sola-autoridad-selectivedesviadorplan-cellkey-que-consumen-el-lateral-los-dos-frontales-la-planta-y-el-bom-la-capacidad-selectivesafetyselection-desviadorcellsarebypost-es-derivada-no-persistida-y-la-reimpone-pushbacksafetyauthority-copiada-en-deepcopy-el-dinamico-conserva-su-lectura-por-frente-con-el-default-false
+  technical_approval: >-
+    APROBADA-2026-07-26-code-sha-924de1a5b1253fc56b7914167d8b1025600d7b7c-head-revisado-ba80a11721c5b5180ccc3e6f2ad094a5027f6ec8-ci-30220809064-VERDE-cuatro-jobs ·
+    con-esa-aprobacion-el-gate-owner-validation-queda-ABIERTO-para-un-ROUND-3-sobre-los-21-puntos-obligatorios-de-la-seccion-10-mas-el-smoke-complementario-de-los-4-hallazgos-no-implementados ·
+    historico-aprobada-code-sha-ddb302f-head-e6eb7ba-ci-30185630945-verde-y-con-ella-se-abrio-el-round-2-que-se-ejecuto-y-fue-RECHAZADO-la-aprobacion-tecnica-NO-implica-aprobacion-del-owner
+  bed_length: >-
+    UNA-sola-longitud-de-cama-el-FONDO-ESTRUCTURAL-COMPLETO-resolvebedlength-la-misma-dibuja-el-riel-alimenta-el-bom-y-mide-la-subida-nominal-de-7-16-por-pie-no-hay-dos-magnitudes-que-conciliar ·
+    queda-RECHAZADA-la-regla-de-colocar-la-cama-por-su-ORIGEN-con-longitud-igual-a-axis-length-y-hay-centinela-de-prueba-que-impide-que-vuelva
+  technical_approval_final: >-
+    APROBADA-2026-07-26-code-sha-bbdb8b9bb590096c6eca5cd4e582cbf33cf699a6-head-revisado-877c60fc35a9931818afc74f5bed7b9ec023454d-ci-30222859775-VERDE-cuatro-jobs-sobre-el-head-exacto ·
+    con-ella-se-autoriza-una-CONFIRMACION-FINAL-DIRIGIDA-POR-EL-OWNER-que-NO-se-numera-como-un-round-mas ·
+    leccion-del-round-3-llego-a-la-validacion-manual-CON-aprobacion-tecnica-y-aun-asi-fue-rechazado-la-revision-comprobo-que-el-codigo-hacia-lo-que-decia-pero-no-podia-comprobar-que-lo-que-decia-fuera-lo-que-el-owner-queria-porque-la-premisa-equivocada-ese-riel-sobrante-es-penetracion-venia-de-la-implementacion-y-nunca-se-cuestiono-aguas-abajo
+  owner_validation_result: >-
+    APROBADA-2026-07-27-el-owner-ejecuto-la-revalidacion-manual-dirigida-de-la-geometria-asimetrica-y-confirmo-listo-todo-correcto-TODOS-LOS-PUNTOS-CORRECTOS ·
+    CODE-SHA-funcional-f911d75350702fb176e123a59a105d40f63690ec ·
+    VALIDATED-BUILD-SHA-el-que-el-owner-cargo-a0c3f27c2447a4e1f85707ef9f3ad311765e3a43 ·
+    DLL-SHA256-b7b15802d19c90bbe40b19546423f9cc1850645051c1da971da2552778b2e931 ·
+    CI-30226757221-cuatro-jobs-verdes-sobre-a0c3f27 ·
+    el-traspaso-de-la-aprobacion-a-la-punta-de-cierre-es-VALIDO-porque-todo-commit-posterior-a-a0c3f27-en-esta-corrida-es-EXCLUSIVAMENTE-DOCUMENTAL-no-toca-src-tests-assets-ni-el-binario ·
+    el-DLL-aprobado-NO-se-recompila-ni-se-reemplaza ·
+    gates-autocad-y-owner-validation-RESUELTOS-evidencia-en-docs-automation-evidence-i-32-autocad-validation-md ·
+    attempts-permanece-en-3-esta-validacion-no-fue-un-round-mas-sino-una-revalidacion-dirigida-por-el-owner-ya-agotado-el-max-attempts
+  integration_readiness: >-
+    alcance-funcional-TERMINADO · pruebas-builds-y-ci-VERDES · validacion-manual-del-owner-APROBADA ·
+    SIN-pendiente-funcional-dentro-de-i-32 · rama-PUBLICADA-head-igual-a-upstream-y-arbol-LIMPIO ·
+    pb-001-pb-007-pb-011-y-pb-014-continuan-DIFERIDOS-en-ideas-futuras-y-NO-bloquean-nunca-estuvieron-en-el-alcance ·
+    NINGUNA-modificacion-funcional-pendiente · siguiente-accion-GATE-DE-INTEGRACION
+  technical_approval_asymmetric: >-
+    APROBACION-TECNICA-FINAL-2026-07-26-code-sha-f911d75350702fb176e123a59a105d40f63690ec-head-revisado-635473320e556b8c2c16b24658170acee3fdb527-ci-30226117429-VERDE-cuatro-jobs-sobre-el-head-exacto ·
+    con-ella-se-autoriza-una-REVALIDACION-MANUAL-DIRIGIDA-DE-LA-GEOMETRIA-ASIMETRICA-que-NO-se-numera-como-otro-round-y-attempts-permanece-en-3
+  bed_rule_final_asymmetric: >-
+    1-ENTRADA-SALIDA-mate-larguero-in-out-troquel-cama-con-riel-de-cinta-calibre-12-troquel-in ·
+    2-POSTERIOR-e-INTERMEDIOS-tangentes-a-la-LINEA-DEL-ORIGEN-del-bloque-una-recta-PARALELA-a-la-anterior-y-distinta-de-ella ·
+    3-una-sola-ROTATIONRADIANS-para-todo-el-bloque-resuelta-por-pushbackbedrotation-con-ex-sin-t-menos-ey-cos-t-igual-my-es-la-autoridad-de-la-rotacion-nadie-la-deriva-de-la-diferencia-entre-contactos ·
+    4-el-larguero-POSTERIOR-es-el-ANCLA-y-queda-FIJO-en-su-troquel ·
+    5-el-larguero-BAJO-se-elige-GLOBALMENTE-por-menor-error-contra-7-192-recorriendo-todo-el-rango-valido-de-la-reticula-de-2 ·
+    6-LONGITUD-igual-al-FONDO-ESTRUCTURAL-COMPLETO-full-span-el-riel-puede-sobresalir-por-detras
+  owner_rejection_asymmetric: >-
+    la-CONFIRMACION-FINAL-sobre-9a87c7c-fue-RECHAZADA-por-un-defecto-geometrico-residual-el-larguero-posterior-volvia-a-usar-la-linea-de-troquel-in ·
+    REGLA-ASIMETRICA-el-bloque-de-la-cama-define-DOS-rectas-PARALELAS-la-de-su-troquel-in-y-la-de-su-ORIGEN-separadas-por-la-componente-perpendicular-del-mate-local-1-25-comparten-rotacion-y-pendiente-pero-no-son-la-misma-recta ·
+    entrada-salida-mate-por-troquel-in-INTERMEDIOS-y-POSTERIOR-tangencia-con-la-linea-del-ORIGEN-una-sola-rotacion-y-una-sola-pendiente-para-todo-el-bloque ·
+    DEFECTO-CUANTIFICADO-el-codigo-derivaba-la-rotacion-como-atan2-highmate-menos-exitmate-tratando-los-dos-contactos-como-si-compartieran-recta-y-con-esa-rotacion-el-contacto-posterior-quedaba-EXACTAMENTE-a-1-25-de-la-linea-del-origen-en-todos-los-fondos-justo-la-separacion-entre-las-dos-paralelas ·
+    ECUACION-ex-sin-t-menos-ey-cos-t-igual-a-my-con-e-igual-highmate-menos-exitmate-de-donde-t-igual-asin-my-entre-modulo-e-menos-atan2-menos-ey-ex-los-terminos-en-mx-se-cancelan-solo-interviene-la-componente-perpendicular-del-mate-con-my-igual-a-cero-degenera-en-la-formula-antigua ·
+    SELECCION-del-troquel-bajo-ya-no-ajusta-una-subida-nominal-minimiza-el-error-de-pendiente-contra-7-192-sobre-la-reticula-de-2-recorriendo-TODO-el-rango-valido-asi-que-el-minimo-es-GLOBAL-desempate-1-menor-error-2-mas-cercano-a-la-posicion-teorica-continua-3-mas-cercano-al-resultado-de-la-regla-anterior-para-que-sea-estable-4-el-mas-bajo ·
+    API-pushbackflowbedaxis-pierde-angleradians-rise-run-y-length-que-describian-el-segmento-entre-contactos-y-no-la-linea-de-la-cama-y-expone-rotationradians-slope-y-rearcontactalongorigin-la-celda-pierde-resultingrise-y-expone-rotationradians-resultingslope-y-mateelevationdelta-con-el-aviso-de-que-NO-es-la-subida-de-la-cama ·
+    GOLDENS-se-mueven-TRES-lateral-y-lateral-corte0-por-la-rotacion-y-frontal-entrada-porque-el-frente-0-sube-un-troquel-10-6053-a-12-6053-y-82-6053-a-84-6053-frontal-posterior-planta-y-bom-INTACTOS ·
+    SIN-TOCAR-el-mate-bajo-el-ancla-posterior-la-longitud-full-span-el-bom-el-tope-posterior-las-botas-los-protectores-laterales-el-selectivo-y-el-dinamico
+  legacy_tie_break_fix: >-
+    el-TERCER-desempate-usaba-una-referencia-reconstruida-desde-la-posicion-teorica-ASIMETRICA-que-NO-es-el-resultado-de-la-regla-anterior-eso-colapsaba-el-tercer-criterio-sobre-el-segundo-y-lo-dejaba-sin-efecto-propio ·
+    ahora-pushbackelevations-resolve-calcula-el-legacy-REAL-donde-tiene-el-sistema-y-el-frente-a-mano-nominalrise-igual-pushbackbedslope-rise-resolvebedlength-system-front-y-legacyinsertion-igual-snap-rearcontact-y-menos-nominalrise-menos-lowmatelocaly-gridbase-y-lo-PASA-a-chooselowtroquel-que-ya-no-lo-deriva ·
+    sin-cambios-el-criterio-principal-minimizar-error-de-pendiente-sobre-todo-el-rango-valido-el-segundo-criterio-la-posicion-teorica-asimetrica-y-el-ultimo-desempate-determinista ·
+    el-candidato-elegido-NO-se-mueve-en-ningun-fixture-los-TRES-goldens-siguen-en-su-sitio ·
+    QUINCE-pruebas-nuevas-en-pushbacklegacytiebreaktests-sobre-fondos-2-a-8-las-dos-referencias-son-cantidades-distintas-medido-por-barrido-la-legacy-se-reconstruye-exactamente-con-la-formula-anterior-y-el-desempate-nunca-manda-por-encima-del-criterio-principal
+  obsolete_comments_fixed: >-
+    resumen-de-pushbackelevations-describia-derivar-la-subida-nominal-y-ajustar-al-troquel-ahora-dice-la-regla-vigente-posterior-fijo-en-su-troquel-mate-por-troquel-in-abajo-tangencia-por-la-linea-del-ORIGEN-atras-y-en-los-intermedios-una-sola-rotacion-asimetrica-seleccion-GLOBAL-por-menor-error-contra-7-192-y-los-dos-largueros-sobre-la-reticula-de-2 ·
+    resumen-de-pushbackflowbedaxis-empezaba-por-the-line-between-the-TWO-REAL-contact-points-que-es-justo-lo-que-NO-es-ahora-dice-que-exitmate-pertenece-a-la-linea-de-troquel-in-que-highmate-pertenece-a-la-del-ORIGEN-que-son-paralelas-y-distintas-y-que-la-autoridad-de-la-rotacion-es-rotationradians
+  regression_evidence_asymmetric: >-
+    TRECE-de-treinta-y-ocho-pruebas-de-pushbackbedasymmetrytests-observadas-FALLANDO-sobre-9a87c7c-el-contacto-posterior-no-pertenece-a-la-linea-del-origen-en-4-fondos-tampoco-esta-a-la-distancia-correcta-de-la-linea-de-troquel-in-la-rotacion-si-sale-de-atan2-highmate-menos-exitmate-y-el-troquel-elegido-no-minimiza-el-error-de-pendiente-en-fondos-8 ·
+    VEINTICINCO-pasan-ya-y-deben-seguir-el-mate-bajo-los-dos-largueros-en-troquel-el-ancla-posterior-la-longitud-full-span-y-el-protector-lateral ·
+    la-prueba-del-minimo-recorre-TODO-el-rango-valido-de-la-reticula-no-una-ventana-y-comprueba-ademas-los-vecinos-mas-menos-2-explicitamente ·
+    se-reescriben-las-pruebas-que-fijaban-la-regla-vieja-incluida-thebedpassesthroughthereartangency-que-media-la-tangencia-desde-el-troquel-in-transformado-cuando-debe-medirla-desde-el-ORIGEN-la-senalo-el-propio-owner
+  bed_rule_final: >-
+    1-MATE-larguero-in-out-troquel-cama-con-riel-de-cinta-calibre-12-troquel-in-la-cama-se-transforma-hasta-que-ese-troquel-in-local-cae-sobre-exitmate-es-un-mate-fisico-dos-troqueles-atornillados ·
+    2-LONGITUD-igual-al-FONDO-ESTRUCTURAL-COMPLETO-resolvebedlength-UNA-sola-longitud-de-cama-la-misma-dibuja-el-riel-alimenta-el-bom-y-mide-la-subida-nominal-de-7-16-por-pie ·
+    3-riel-ANTES-del-mate-y-SOBREPASO-posterior-son-ESPERADOS-el-riel-empieza-antes-de-su-primer-troquel-de-sujecion-y-sobresale-por-detras-porque-su-longitud-es-el-fondo-completo-ninguna-de-las-dos-se-recorta ·
+    4-TANGENCIAS-posterior-e-intermedias-CONSERVADAS-ya-eran-correctas-los-intermedios-siguen-matando-a-la-linea-del-origen-del-riel ·
+    PROHIBIDO-con-centinela-de-prueba-colocar-la-cama-por-su-origen-y-usar-axis-length-como-longitud
+  owner_clarification_final: >-
+    ROUND-3-RECHAZADO-la-correccion-de-la-cama-de-924de1a-era-EQUIVOCADA-lo-que-se-trato-como-penetracion-es-el-comportamiento-correcto-de-la-pieza ·
+    contrato-fisico-vigente-1-el-mate-obligatorio-de-entrada-salida-es-larguero-in-out-troquel-cama-con-riel-de-cinta-calibre-12-troquel-in-2-la-cama-se-coloca-transformando-su-troquel-in-local-hasta-exitmate-3-la-longitud-es-SIEMPRE-el-fondo-estructural-completo ·
+    es-ESPERADO-y-no-se-recorta-que-exista-geometria-del-riel-ANTES-de-troquel-in-el-riel-empieza-antes-de-su-primer-troquel-de-sujecion-y-que-el-riel-SOBRESALGA-del-larguero-posterior-porque-su-longitud-es-el-fondo-completo ·
+    railorigin-vuelve-a-calcularse-retrocediendo-raillocalmate-desde-exitmate-y-raillocalmate-vuelve-a-ser-la-autoridad-de-colocacion-el-builder-pierde-geometriclength-y-el-pivote-blockorigin ·
+    el-CODIGO-EJECUTABLE-de-los-dos-ficheros-quedo-BYTE-IDENTICO-al-previo-a-924de1a-lo-unico-distinto-son-los-comentarios-que-ahora-describen-la-regla-vigente ·
+    INTACTOS-pushbackelevations-rearcontact-highmate-elevaciones-de-largueros-pendiente-troqueles-intermedios-y-tope-posterior-la-tangencia-con-intermedios-y-posterior-ya-era-correcta ·
+    la-correccion-del-PROTECTOR-LATERAL-se-conserva-integra-primer-poste-delante-sin-espejo-ultimo-delante-espejado-con-centinela-propio ·
+    GOLDENS-lateral-y-lateral-corte0-vuelven-EXACTAMENTE-a-a7040d72-el-valor-previo-a-la-interpretacion-rechazada-esa-coincidencia-exacta-es-la-comprobacion-mas-limpia-de-que-la-reversion-es-completa-los-otros-cuatro-nunca-se-movieron ·
+    PRUEBAS-se-elimina-pushbackbedorigintangencytests-que-consideraba-defecto-lo-que-es-correcto-y-entra-pushbackbedinoutmatetests-41-pruebas-sobre-3-4-6-y-8-fondos-frente-concreto-y-front-null-pushbackplantests-recupera-bed-ispushback-fullspan-nobrakes
+  owner_validation_round_2: >-
+    RECHAZADA-2026-07-26-sobre-el-dll-de-557858d-dos-defectos ·
+    defecto-1-TANGENCIA-FISICA-de-la-cama-el-bloque-continuaba-dentro-del-larguero-CORREGIDO-se-coloca-por-su-ORIGEN ·
+    defecto-2-el-DEFAULT-del-protector-lateral-perdia-el-del-ULTIMO-poste-CORREGIDO-con-evidencia-fallo-paso ·
+    el-dll-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-queda-OBSOLETO-no-debe-reutilizarse ·
+    NO-hay-round-3-abierto-y-NO-se-genera-dll-canonico-nuevo-hasta-revision-del-coordinador
+  defect_1_bed_tangency: >-
+    CORRECCION-DE-INTERPRETACION-DEL-OWNER-2026-07-26-la-primera-lectura-fue-EQUIVOCADA-se-concluyo-que-faltaba-un-punto-medido-fin-riel-y-NO-falta-ninguno-ni-se-agrega-fila-al-catalogo-el-defecto-esta-en-el-lado-del-ORIGEN ·
+    CAUSA-RAIZ-la-cama-se-colocaba-haciendo-coincidir-su-troquel-in-con-el-contacto-y-ese-punto-esta-desplazado-respecto-del-origen-local-0-0-asi-que-todo-lo-que-hay-entre-ambos-quedaba-ANTES-del-contacto-dentro-del-larguero-y-ademas-la-longitud-del-riel-era-el-tramo-comercial-mas-largo-que-la-distancia-entre-contactos ·
+    penetracion-medida-antes-del-arreglo-fondos-3-comercial-156-000-entre-contactos-152-171-sobra-3-829-fondos-4-204-000-vs-200-211-sobra-3-789-fondos-6-300-000-vs-296-293-sobra-3-707 ·
+    REGLA-VIGENTE-1-el-origen-local-0-0-coincide-con-el-contacto-fisico-del-larguero-de-origen-2-la-cama-se-rota-hacia-el-contacto-del-otro-3-la-longitud-geometrica-es-la-distancia-euclidiana-entre-los-dos-pushbackflowbedaxis-length ·
+    troquel-in-sigue-siendo-punto-INTERNO-del-bloque-y-asi-queda-documentado-pero-deja-de-ser-la-autoridad-de-colocacion-railorigin-pasa-a-ser-el-propio-exitmate-antes-retrocedia-desde-troquel-in-y-ESE-RETROCESO-ERA-la-penetracion-los-intermedios-que-matan-a-esa-linea-la-siguen-sin-cambio-de-codigo ·
+    NO-se-agrega-fin-riel-NO-se-tocan-catalogos-NO-se-introduce-ningun-offset-medido-ni-magico ·
+    LO-QUE-NO-CAMBIA-la-longitud-COMERCIAL-se-queda-calculando-solo-la-subida-nominal-de-7-16-por-pie-los-dos-largueros-siguen-en-sus-troqueles-y-la-pendiente-sigue-siendo-la-resultante-con-pruebas-explicitas ·
+    VERIFICADO-no-supuesto-la-longitud-y-el-angulo-del-eje-son-identicos-en-todos-los-niveles-y-entre-un-frente-concreto-y-front-null-deep-4-len-200-2108-ang-0-034641-asi-que-una-sola-definicion-compartida-sigue-sirviendo ·
+    GOLDENS-se-mueven-SOLO-lateral-y-lateral-corte0-de-a7040d72-a-1914400c-donde-se-dibuja-la-cama-frontal-entrada-frontal-posterior-planta-y-bom-INTACTOS ·
+    A-DECIDIR-el-bom-de-la-cama-sigue-reportando-la-longitud-COMERCIAL-por-via-propia-pushbackbomBuilder-linea-112-y-su-golden-no-se-movio-se-deja-como-esta-y-se-senala-cambiar-lo-que-se-compra-es-decision-comercial-no-geometrica-y-el-owner-reporto-un-problema-de-dibujo
+  defect_2_lateral_guard_default: >-
+    CAUSA-RAIZ-la-misma-confusion-de-ejes-del-round-1-colada-en-la-regla-ADAPTATIVA-ahi-right-es-ORIENTACION-y-no-extremo-longitudinal-sideat-lo-leia-como-extremo-posterior-y-en-un-sistema-de-extremo-bajo-devolvia-none-borrando-la-pieza-en-vez-de-girarla ·
+    habia-TRES-vias-por-las-que-la-copia-del-ultimo-poste-se-perdia-o-se-iba-atras-y-las-tres-estan-corregidas-1-sideat-devuelve-right-tambien-con-extremo-bajo-2-copiesat-emite-copias-fisicas-directamente-en-la-ruta-adaptativa-con-athighend-solo-donde-el-sistema-tiene-extremo-alto-3-dynamicsafetylateralbuilder-consume-esas-copias-en-vez-de-un-safetyside-literal-desaparece-sideoverride-y-queda-copiesoverride ·
+    la-matriz-EXPLICITA-por-poste-no-se-toca-la-sigue-resolviendo-selectivesafetyends ·
+    pushbackforkliftdefensetests-fijaba-el-defecto-en-su-propio-nombre-keepstheadaptivelateralguardoffthefarface-y-se-corrigio-con-el-motivo-escrito-la-defensa-de-montacargas-el-otro-elemento-de-pb-009-sigue-restringida-al-extremo-bajo-y-no-cambia ·
+    dinamico-byte-identico-sus-siete-firmas-sha256-no-se-mueven-y-sus-copias-adaptativas-siguen-mandando-el-ultimo-protector-al-extremo-alto
+  regression_evidence_round_8: >-
+    defecto-1-VEINTICINCO-de-treinta-y-cinco-pruebas-de-pushbackbedorigintangencytests-observadas-FALLANDO-sobre-27fd403-sobre-el-bloque-APLANADO-con-2-3-4-6-y-8-fondos-y-tambien-con-front-null-el-origen-no-cae-en-el-contacto-bajo-longitud-es-el-tramo-comercial-y-no-axis-length-el-extremo-opuesto-no-cae-en-el-contacto-posterior-y-hay-piezas-ANTES-del-origen ·
+    DIEZ-pasan-ya-y-deben-seguir-los-dos-largueros-en-troquel-la-pendiente-resultante-y-la-longitud-comercial-calculando-solo-la-subida-nominal ·
+    la-comprobacion-de-penetracion-proyecta-cada-pieza-sobre-el-eje-desde-el-contacto-bajo-y-exige-que-caiga-en-0-length-una-coordenada-negativa-es-exactamente-lo-que-el-owner-vio
+  regression_evidence_round_7: >-
+    NUEVE-de-once-pruebas-de-pushbacklateralguarddefaulttests-observadas-FALLANDO-sobre-557858d-rack-nuevo-con-2-3-y-5-frentes-solo-lleva-un-protector-falta-el-del-ultimo-poste-en-entrada-salida-no-se-cumple-primero-sin-espejo-ultimo-espejado-planta-y-bom-cuentan-uno-crecer-o-reducir-no-mueve-el-default-guardar-y-reabrir-conserva-el-rack-incompleto-y-copiesat-devuelve-vacio-en-el-ultimo-poste-de-un-sistema-de-extremo-bajo ·
+    DOS-pasan-ya-y-deben-seguir-el-sistema-ordinario-manda-su-ultimo-protector-al-extremo-alto-y-una-matriz-explicita-sustituye-al-default ·
+    del-defecto-1-no-hay-regresiones-porque-no-se-implementa-lo-que-hay-es-la-MEDICION-de-la-penetracion-registrada-arriba
+  dll_for_owner: >-
+    APROBADO-el-de-a0c3f27c2447a4e1f85707ef9f3ad311765e3a43-sha256-b7b15802d19c90bbe40b19546423f9cc1850645051c1da971da2552778b2e931-115200-bytes-assemblyinformationalversion-1-0-0-mas-a0c3f27-NO-se-recompila-ni-se-reemplaza ·
+    los-CUATRO-dll-de-las-validaciones-RECHAZADAS-permanecen-OBSOLETOS ·
+    OBSOLETO-el-de-9a87c7c-sha256-8fcf4c92a353f8953ad110f472846506ec4f93846babb61475bd4faf7ae751f4-validado-y-RECHAZADO-en-la-confirmacion-final ·
+    OBSOLETO-el-de-2641830-sha256-3034b908ce7593ea7ff9ed1c5b0db57b40f77c486b2a24b32556e8381af4b111-validado-y-RECHAZADO-en-el-round-3 ·
+    OBSOLETO-el-de-557858d-sha256-3118dcb7498f77a60790b88d621cc4cd9a59532034f8796d80fb39d2936c013f-validado-y-RECHAZADO-en-el-round-2 ·
+    OBSOLETO-el-de-2210e67-sha256-b3a2d87e4b18e9d9b0c19e4c881c76d576d8a52ab2607df1e98042acc878c653-validado-y-RECHAZADO-en-el-round-1
+  coordinator_review_4: >-
+    resultado-CHANGES-REQUESTED-sobre-82876ec-atendido-en-esta-corrida-en-tres-frentes ·
+    pb004-longitud-la-subida-nominal-se-mide-sobre-la-LONGITUD-COMERCIAL-resolvebedlength-y-no-sobre-la-distancia-entre-contactos-hay-barrido-que-encuentra-racks-donde-las-dos-formulas-eligen-troqueles-distintos-fondos-2-a-8 ·
+    pb004-contacto-el-contacto-posterior-lo-elige-la-geometria-rearbeamtangencypointworld-y-no-un-lado-fijo-probado-en-bloque-normal-y-espejado-axis-highmate-es-exactamente-esa-arista ·
+    pb004-consumidores-pushbackelevations-es-la-unica-autoridad-por-frente-y-nivel-desaparecen-lowbeamelevation-y-rearbeamtangencyoffset-hay-prueba-de-que-el-lateral-y-el-frontal-entrada-salida-ven-la-MISMA-elevacion ·
+    frontal-cloneat-copia-TODOS-los-dynamicparameters-no-solo-longitud ·
+    botas-laterales-la-causa-real-estaba-en-dynamiclateralguardplan-que-traducia-el-lado-a-un-extremo-sin-pasar-por-la-autoridad-un-right-explicito-se-dibujaba-ATRAS-medido-0-piezas-en-entrada-salida-y-1-en-posterior-ahora-la-eleccion-explicita-se-enruta-por-selectivesafetyends-y-la-regla-adaptativa-queda-intacta
+  safety_three_axes: >-
+    selectivesafetyends-copiesforpost-devuelve-las-copias-fisicas-de-un-poste-con-los-dos-ejes-resueltos-por-separado-athighend-donde-va-y-mirrored-como-va ·
+    en-una-vista-de-PROFUNDIDAD-left-right-es-orientacion-pura-y-se-lee-literal-restringir-el-extremo-ahi-habria-borrado-una-de-las-dos-caras-de-un-both ·
+    medido-en-push-back-left-bom-1-frontal-entrada-1-posterior-0-planta-1-right-igual-pero-espejado-both-bom-2-planta-2-frontal-entrada-1-porque-en-esa-proyeccion-las-dos-orientaciones-se-superponen ·
+    el-protector-lateral-NO-aparece-en-la-vista-lateral-se-dibuja-en-frontal-y-planta-comprobado-y-no-es-un-defecto ·
+    selectivo-y-dinamico-conservan-su-lectura-historica-sin-la-marca-de-extremo-bajo-right-sigue-yendo-al-extremo-alto-con-centinela
+  regression_evidence_round_4: >-
+    botas-laterales-3-de-7-de-pushbacklateralprotectorendstests-fallaron-sobre-el-codigo-previo-y-el-nucleo-arightchoice-landsatthelowend-neverbehind-paso-solo-tras-enrutar-dynamiclateralguardplan ·
+    dos-de-esas-tres-aserciones-eran-MIAS-y-estaban-mal-no-el-codigo-la-sonda-midio-los-numeros-reales-y-se-corrigieron-a-lo-verificado-both-son-dos-piezas-y-la-vista-lateral-no-lleva-el-protector ·
+    pb004-19-pruebas-nuevas-en-pushbackelevationauthoritytests-incluido-el-barrido-que-demuestra-que-las-dos-formulas-no-son-intercambiables
+  coordinator_review_6: >-
+    aprobo-TODO-el-override-opt-in-salvo-un-unico-ambito-el-lateral-COMPLETO-no-seccionado ·
+    CORRECCION-la-corrida-anterior-escribio-que-ya-no-quedaba-ningun-pendiente-y-era-FALSO-esa-vista-dibuja-el-rack-entero-y-ocupa-la-profundidad-de-la-ENVOLVENTE-sus-largueros-ya-lo-sabian-front-null-pero-su-desviador-seguia-en-exitelevation-y-sus-cotas-en-atprojectedsystem-que-es-OTRO-frente ·
+    por-que-no-se-vio-antes-la-corrida-anterior-si-comprobo-esta-coherencia-pero-su-escenario-NO-discriminaba-el-frente-que-ganaba-la-proyeccion-resultaba-ser-tambien-el-mas-profundo-una-prueba-verde-sobre-un-caso-que-no-separa-dos-conceptos-no-demuestra-que-sean-el-mismo
+  system_envelope_scope: >-
+    PROYECCION-es-el-frente-que-origino-system-loadbeamlevels-gana-por-numero-de-niveles-ENVOLVENTE-es-el-rack-entero-su-longitud-de-cama-es-la-del-sistema-y-no-la-de-ningun-frente-son-distintos-en-cuanto-un-frente-gana-por-niveles-y-otro-es-mas-profundo ·
+    atsystemenvelope-levelnumber-fallback-es-la-CUARTA-consulta-su-mapa-llega-EXPLICITO-lowinsertions-system-catalog-front-null-y-NO-se-deduce-escogiendo-un-frente-porque-ninguno-la-representa-hay-prueba-que-le-pasa-un-mapa-que-no-coincide-con-el-de-ningun-frente ·
+    atprojectedsystem-NO-se-sobrecarga-sigue-significando-exactamente-el-frente-proyectado-con-prueba ·
+    cableado-en-DOS-puntos-y-ninguno-mas-dynamicsafetylateralbuilder-cuando-adjacentfronts-es-null-y-dynamicviewdecorations-appendlateral-cuando-postindex-menor-que-cero ·
+    intacto-atfront-en-lateral-seccionado-atpost-en-cotas-por-poste-y-desviador-frontal-atprojectedsystem-en-el-frontal-global-entranceelevation-en-el-extremo-posterior-y-primer-desviador-desde-troquel-mas-altura ·
+    consecuencia-asumida-el-lateral-COMPLETO-puede-diferir-del-SECCIONADO-uno-dibuja-el-conjunto-y-el-otro-una-linea-de-poste
+  regression_evidence_round_6: >-
+    fixture-f0-4-niveles-4-fondos-inicio-1-y-f1-3-niveles-6-fondos-inicio-1-el-resolver-proyecta-f0-por-niveles-pero-el-lateral-completo-ocupa-el-fondo-de-f1 ·
+    DOS-pruebas-observadas-FALLANDO-sobre-5f7ec60-el-desviador-superior-esperado-74-6053-146-6053-218-6053-obtenido-72-6053-144-6053-216-6053-y-las-cotas-etiquetas-esperado-8-6053-80-6053-152-6053-224-6053-obtenido-12-6053-84-6053-156-6053-228-6053 ·
+    DOS-pasan-ya-y-documentan-la-asimetria-proyeccion-y-envolvente-son-troqueles-distintos-y-el-larguero-bajo-del-lateral-completo-usa-el-de-la-envolvente ·
+    hallazgo-MEDIDO-el-fondo-de-tarima-es-50-y-no-48-porque-con-48-la-envolvente-coincide-EXACTAMENTE-con-exitelevation-la-cama-mas-larga-baja-el-troquel-justo-lo-que-la-pendiente-lo-sube-y-el-ajuste-cancela-asi-que-el-desviador-acertaba-por-ACCIDENTE-y-su-regresion-no-podia-fallar-el-guardia-del-fixture-comprueba-ahora-que-los-TRES-valores-estan-separados ·
+    valores-del-fixture-envolvente-80-605-proyeccion-84-605-exitelevation-78-605-ninguna-y-va-a-mano-se-piden-a-la-autoridad-y-se-comprueba-que-difieren ·
+    TRES-centinelas-mas-el-lateral-seccionado-sigue-por-frente-y-el-frontal-global-sigue-por-proyeccion-distinguibles-en-este-fixture-porque-los-tres-ambitos-dan-valores-distintos
+  coordinator_review_5: >-
+    aprobo-formula-de-pushbackelevations-longitud-comercial-contacto-posterior-elegido-por-geometria-parametros-del-clon-y-matrices-orientacion-de-botas-y-protectores-laterales ·
+    unico-bloqueo-completar-el-override-opt-in-declararlo-pendiente-no-satisface-el-contrato-CERRADO-en-esta-corrida
+  elevation_context: >-
+    racklevelelevations-es-neutral-e-inmutable-sin-nombres-ni-tipos-de-ningun-sistema-con-guardia-de-fuentes-que-lo-comprueba ·
+    tres-consultas-explicitas-atfront-frontindex-atpost-postindex-entre-los-frentes-ADYACENTES-y-atprojectedsystem ·
+    atpost-y-atprojectedsystem-eligen-frente-con-la-MISMA-regla-del-resolver-mayor-cantidad-de-niveles-y-en-empate-mayor-profundidad-endx-menos-startx-NO-palletsdeep-ordenacion-estable-asi-que-empate-doble-lo-gana-el-indice-menor ·
+    ELIMINADO-lowinsertions-system-catalog-su-regla-era-gana-el-primer-frente-que-resuelve-cada-nivel-ni-la-del-resolver-ni-la-que-usaba-el-resto-del-dibujo-lo-sustituye-la-proyeccion-explicita ·
+    pushbackelevations-context-lo-construye-UNA-vez-por-dibujo-en-los-dos-builders-de-vista
+  elevation_consumers: >-
+    LATERAL-COMPLETO-no-seccionado-desviador-superior-del-extremo-bajo-y-cotas-etiquetas-atsystemenvelope-dibuja-el-rack-entero-y-ocupa-su-envolvente-asi-que-no-pertenece-a-ningun-frente ·
+    LATERAL-SECCIONADO-por-poste-desviador-superior-del-extremo-bajo-atFRONT-su-columna-baja-pertenece-al-frente-adyacente-de-menor-startx-y-cotas-etiquetas-atPOST-un-corte-pertenece-a-la-linea-de-su-poste ·
+    FRONTAL-GLOBAL-cotas-y-etiquetas-atprojectedsystem-recorre-la-lista-de-niveles-proyectada-que-es-la-del-frente-que-la-origino ·
+    larguero-bajo-del-frontal-atfront-la-pieza-pertenece-a-un-frente · desviador-frontal-bajo-atpost-ese-bucle-recorre-postes ·
+    consecuencia-ASUMIDA-en-un-rack-jagged-el-desviador-frontal-y-el-lateral-pueden-caer-en-y-distintas-porque-el-frontal-es-un-corte-unico-que-cruza-todos-los-frentes-y-el-lateral-pertenece-a-uno ·
+    FUERA-del-override-por-decision-el-primer-desviador-conserva-primer-troquel-mas-altura-y-todo-el-extremo-posterior-sigue-leyendo-entranceelevation-porque-su-larguero-es-el-ancla ·
+    no-se-toco-dynamicracklevel-exitelevation-ni-el-dinamico
+  withderivedlowelevations_removed: >-
+    ELIMINADO-movia-los-largueros-DESPUES-de-colocarlos-localizandolos-por-coordenada-con-tolerancia-0-05-pulgadas-buscar-por-coordenada-una-pieza-ya-movida-es-exactamente-como-se-aplica-un-reasiento-dos-veces-o-ninguno ·
+    ahora-dynamicsystemfrontalbuilder-coloca-el-larguero-bajo-YA-en-su-elevacion-derivada-con-atfront ·
+    locatecell-sobrevive-solo-para-el-corte-POSTERIOR-cuyos-largueros-si-conservan-la-elevacion-del-resolver-y-por-eso-si-se-reconocen-por-coordenada-su-parametro-end-desaparece-por-muerto
+  opt_in_protection: >-
+    tres-redes-porque-una-sola-no-basta ·
+    1-dynamicnulloverridegoldentests-fija-SIETE-firmas-sha256-del-dinamico-capturadas-sobre-db437c7-antes-de-que-el-contexto-existiera-sobre-un-escenario-jagged-NO-se-re-fijan-un-cambio-ahi-es-un-fallo ·
+    2-elevationoverridesourceguardtests-comprueba-por-TEXTO-que-solo-push-back-construye-un-contexto-y-que-el-tipo-no-menciona-ningun-sistema-concreto-el-centinela-de-firmas-solo-mide-las-rutas-que-ejercita ·
+    3-el-contexto-solo-toca-valores-de-y-nunca-condiciones-de-bucle-asi-que-ni-el-numero-de-piezas-ni-el-bom-pueden-moverse
+  regression_evidence_round_5: >-
+    NUEVE-pruebas-de-pushbackelevationconsumertests-observadas-FALLANDO-sobre-db437c7-desviador-lateral-4-postes-desviador-frontal-bajo-cotas-y-etiquetas-laterales-3-de-4-postes-y-cotas-y-etiquetas-frontales ·
+    el-cuarto-poste-de-las-cotas-laterales-coincide-por-aritmetica-del-escenario-y-se-conserva-como-no-regresion-se-dice-en-vez-de-callarlo ·
+    CUATRO-centinelas-verdes-antes-y-despues-escenario-discriminante-extremo-posterior-primer-desviador-y-coherencia-del-lateral-no-seccionado ·
+    hallazgo-MEDIDO-la-profundidad-por-si-sola-NO-mueve-la-insercion-baja-al-alargar-la-cama-sube-tambien-el-larguero-posterior-y-la-diferencia-se-cancela-quien-separa-los-frentes-es-la-altura-del-primer-nivel-sin-eso-las-tres-consultas-darian-lo-mismo ·
+    riesgo-auditado-y-DESCARTADO-con-evidencia-el-lateral-no-seccionado-resuelve-sus-largueros-con-front-null-por-una-via-distinta-a-la-del-frente-ganador-se-comprobo-que-coinciden-y-quedo-fijado-en-regresion
+gates:
+  autocad:
+    required: true
+    resolved: true
+    note: >-
+      RESUELTO-el-owner-valido-en-AutoCAD-2025-el-dll-de-a0c3f27-y-aprobo-todos-los-puntos ·
+      historial-que-NO-se-reescribe-ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA
+  owner_validation:
+    required: true
+    resolved: true
+    note: >-
+      APROBADA-2026-07-27-listo-todo-correcto-sobre-el-build-sha-a0c3f27-dll-sha256-b7b15802-ci-30226757221 ·
+      historial-que-NO-se-reescribe-ROUND-1-RECHAZADA · ROUND-2-RECHAZADA · ROUND-3-RECHAZADA · CONFIRMACION-FINAL-RECHAZADA ·
+      la-que-aprobo-fue-una-REVALIDACION-MANUAL-DIRIGIDA-por-el-owner-no-un-round-mas-attempts-permanece-en-3
+  plugin_build:
+    required: true
+    note: RESUELTO-0-errores-2-advertencias-conocidas-con-autocad-CERRADO-verificado-antes-de-compilar
+  ci:
+    required: true
+    note: >-
+      VERDE-run-30225222530-success-4-de-4-jobs-sobre-la-punta-de-esta-corrida-6239f8d2057740147f6a18b7b3d94924b4f3e50b ·
+      historico-run-30223586448-success-sobre-9a87c7c-el-sha-del-dll-rechazado-en-la-confirmacion-final ·
+      historico-run-30222693798-success-sobre-beb69c2 ·
+      historico-run-30221531996-success-sobre-2641830-el-sha-del-dll-rechazado-en-el-round-3 ·
+      historico-run-30220649438-success-sobre-14585a9 ·
+      historico-run-30187329126-success-4-de-4-sobre-f961f03 ·
+      historico-run-30186125811-success-sobre-557858d-el-sha-del-dll-rechazado-en-el-round-2 ·
+      VERDE-run-30185464630-success-sobre-ddb302f ·
+      VERDE-run-30185518891-success-sobre-la-punta-DOCUMENTAL-4bb17560cc555c3f073db07d61c711c96602e54b ·
+      historico-run-30184629269-success-sobre-5f7ec60 · run-30184472300-success-sobre-0fc5c85 ·
+      VERDE-run-30184531051-success-sobre-la-punta-DOCUMENTAL-0eac610f1d21a7c5c57a4bf241b8e8491c0ef83a ·
+      historico-run-30183166266-success-sobre-db437c7 · run-30182977449-success-sobre-021178e ·
+      VERDE-run-30183053354-success-sobre-la-punta-DOCUMENTAL-c3fa138462ae88731b9ef56937d9a48488be1c67 ·
+      historico-run-30181543907-success-sobre-82876ec · run-30181396599-success-sobre-a8717e5 ·
+      historico-run-30177133342-success-sobre-2210e67 · run-30175969327-success-sobre-4e3152a · run-30175762235-success-sobre-428c18a ·
+      pendiente-solo-la-corrida-de-esta-punta-documental

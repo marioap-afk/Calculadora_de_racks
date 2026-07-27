@@ -209,11 +209,17 @@ namespace RackCad.Tests
             Assert.Equal(Math.Max(1, front.LoadLevels) - 1, topes.Count);   // OffCells still removes its cell
 
             // PB-VAL-03 stays approved: the elevation is the canonical rise-and-snap plus exactly 4".
+            // PB-004 (I-32, regla del Owner tras el round 1): el posterior es el ANCLA y no se mueve de su troquel, asi
+            // que la referencia vuelve a ser su colocacion cruda. La regla del tope —sube sobre el larguero posterior,
+            // ajusta a la retícula del poste, +4"— no cambia.
             Assert.Equal(4.0, PushBackRearTopeBuilder.ExtraRise, 9);
-            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
+            var rearBeams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
+                .Where(p => p.IsEntrance)
+                .Select(p => p.Y)
+                .ToList();
             var gridBase = PostGridBase(system, catalog);
             Assert.All(topes, tope => Assert.Contains(
-                rearBeams, b => Math.Abs(PushBackRearTopeBuilder.ElevationY(gridBase, b.Y) - tope.Insertion.Y) < 1e-9));
+                rearBeams, y => Math.Abs(PushBackRearTopeBuilder.ElevationY(gridBase, y) - tope.Insertion.Y) < 1e-9));
 
             var expectedLongitud = PushBackLoadBeamGeometry.CellBeamLength(system.Structure, front, 1)
                 + SelectiveTopePlacement.LengthAllowance;

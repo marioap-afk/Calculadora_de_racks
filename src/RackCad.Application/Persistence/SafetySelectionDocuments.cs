@@ -146,7 +146,10 @@ namespace RackCad.Application.Persistence
                 {
                     PostIndex = post.PostIndex,
                     ExitLength = post.ExitLength,
-                    EntranceLength = post.EntranceLength
+                    EntranceLength = post.EntranceLength,
+                    // PB-010: only a real AUTO end is written, so a rack that never used it stays byte-identical.
+                    ExitAuto = post.ExitAuto ? true : (bool?)null,
+                    EntranceAuto = post.EntranceAuto ? true : (bool?)null
                 }).ToList()
         };
 
@@ -161,7 +164,10 @@ namespace RackCad.Application.Persistence
                     {
                         PostIndex = post.PostIndex,
                         ExitLength = post.ExitLength.HasValue ? Math.Max(0.0, post.ExitLength.Value) : 0.0,
-                        EntranceLength = post.EntranceLength.HasValue ? Math.Max(0.0, post.EntranceLength.Value) : 0.0
+                        EntranceLength = post.EntranceLength.HasValue ? Math.Max(0.0, post.EntranceLength.Value) : 0.0,
+                        // PB-010: absent = the legacy meaning, an explicit override.
+                        ExitAuto = post.ExitAuto ?? false,
+                        EntranceAuto = post.EntranceAuto ?? false
                     });
                 }
             }

@@ -14,13 +14,25 @@ namespace RackCad.Application.Systems
     /// </summary>
     public sealed partial class PushBackEditorState
     {
-        /// <summary>Reset to a brand-new design: one dynamic-default front, rear peralte 3.5 and active topes, a valid
-        /// primary selection on the first cell. Returns the rack-wide inputs a new Push Back system opens with.</summary>
+        /// <summary>Reset to a brand-new design: one default front with Push Back's own first-level height, rear peralte
+        /// 3.5 and active topes, a valid primary selection on the first cell. Returns the rack-wide inputs a new Push
+        /// Back system opens with.</summary>
         public PushBackEditorInputs LoadNew()
         {
             structure.RestoreFromResolved(Enumerable.Empty<DynamicRackFront>()); // falls back to one default front
+
+            // PB-012 (I-32): the shared dynamic front opens at 6"; Push Back loads at floor level and opens at 4". It is
+            // applied HERE, on this state's own fronts, so the shared constant and the dynamic editor keep their value.
+            // Doing it only on the NEW-design path is what leaves a persisted rack's own height untouched on load, and
+            // it also seeds every front added afterwards (a new front copies the selected one).
+            foreach (var front in structure.Fronts)
+            {
+                front.FirstLevelHeight = PushBackDefaults.DefaultFirstLevelHeight;
+            }
+
             pushFronts.Clear();
             RearTopeSaque = PushBackDefaults.RearTopeSaque;
+            RearTopePieceId = null;   // PB-005: a new rack starts on the default variant, never on the previous rack's
             SetWorkingBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
             SyncPushConfig();
             structure.ToggleCell(0, 0, false);   // deterministic single (0,0) selection; never keep the previous one
@@ -66,6 +78,7 @@ namespace RackCad.Application.Systems
 
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
             RearTopeSaque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
+            RearTopePieceId = rearTope.PieceId;
 
             pushFronts.Clear();
             for (var frontIndex = 0; frontIndex < structure.Count; frontIndex++)

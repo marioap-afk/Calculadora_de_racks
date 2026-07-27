@@ -183,16 +183,71 @@ namespace RackCad.Application.Systems
 
             foreach (var element in elements)
             {
-                var side = sideOverride ?? element.Selection.SideForPost(postIndex);
-                if (side == SafetySide.Left || side == SafetySide.Both)
+                // Owner-validation round 1 (I-32): PERTENENCIA, ORIENTACIÓN y EXTREMO son tres ejes distintos y una
+                // sola autoridad los separa. Cada copia llega con los dos últimos ya resueltos:
+                //
+                //   · AtHighEnd decide DÓNDE va. Con mirrorYInPlace el bloque LATERAL ya cubre el fondo, así que las
+                //     dos copias comparten sitio y solo cambia la cara; sin él, la copia alta se refleja sobre el eje
+                //     y aterriza en la otra punta de la línea del poste.
+                //   · Mirrored decide CÓMO va, y sobrevive aunque el sistema solo tenga extremo bajo: un Right en
+                //     Push Back se queda delante, orientado a la derecha en su propio sitio, nunca atrás.
+                //
+                // La versión anterior colapsaba los dos ejes en un solo SafetySide, y al imponer el extremo bajo
+                // perdía la orientación: un Right acababa dibujado como un Left, o desaparecía del corte.
+                foreach (var copy in Copies(element.Selection, postIndex, sideOverride, mirrorYInPlace))
                 {
-                    target.Add(Piece(element.PieceId, element.Block, view, at, mirroredX: false, mirroredY: false, longitud));
+                    target.Add(Piece(
+                        element.PieceId, element.Block, view,
+                        copy.AtHighEnd ? mirroredAt : at,
+                        mirroredX: !mirrorYInPlace && copy.Mirrored,
+                        mirroredY: mirrorYInPlace && copy.Mirrored,
+                        longitud));
                 }
+            }
+        }
 
-                if (side == SafetySide.Right || side == SafetySide.Both)
-                {
-                    target.Add(Piece(element.PieceId, element.Block, view, mirroredAt, mirroredX: !mirrorYInPlace, mirroredY: mirrorYInPlace, longitud));
-                }
+        /// <summary>
+        /// Las copias físicas de una pieza en un poste, con la distinción que importa:
+        ///
+        /// <para>En una vista de PROFUNDIDAD (<paramref name="orientationOnly"/>) las dos copias comparten sitio y solo
+        /// se diferencian en la cara: ahí Left/Right es ORIENTACIÓN pura y se lee literal, sin que el extremo tenga
+        /// nada que decir. Restringir el extremo en esa vista borraría una de las dos caras de un Both.</para>
+        ///
+        /// <para>En el resto, la copia espejada además se muda a la otra punta: ahí interviene el EXTREMO y decide
+        /// <see cref="SelectiveSafetyEnds"/>, que conserva la orientación elegida.</para>
+        ///
+        /// <paramref name="sideOverride"/> lo impone el llamador que ya resolvió la pertenencia por su cuenta (la
+        /// regla adaptativa de los protectores), y se lee literal como orientación + extremo.
+        /// </summary>
+        private static IReadOnlyList<SafetyEndCopy> Copies(
+            SelectiveSafetySelection selection, int postIndex, SafetySide? sideOverride, bool orientationOnly)
+        {
+            if (sideOverride.HasValue)
+            {
+                return Literal(sideOverride.Value);
+            }
+
+            return orientationOnly
+                ? Literal(selection?.SideForPost(postIndex) ?? SafetySide.None)
+                : SelectiveSafetyEnds.CopiesForPost(selection, postIndex);
+        }
+
+        private static IReadOnlyList<SafetyEndCopy> Literal(SafetySide side)
+        {
+            switch (side)
+            {
+                case SafetySide.Left:
+                    return new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
+                case SafetySide.Right:
+                    return new[] { new SafetyEndCopy(atHighEnd: true, mirrored: true) };
+                case SafetySide.Both:
+                    return new[]
+                    {
+                        new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                        new SafetyEndCopy(atHighEnd: true, mirrored: true),
+                    };
+                default:
+                    return new SafetyEndCopy[0];
             }
         }
 

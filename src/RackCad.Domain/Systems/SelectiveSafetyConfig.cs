@@ -82,7 +82,9 @@ namespace RackCad.Domain.Systems
                     {
                         PostIndex = post.PostIndex,
                         ExitLength = post.ExitLength,
-                        EntranceLength = post.EntranceLength
+                        EntranceLength = post.EntranceLength,
+                        ExitAuto = post.ExitAuto,
+                        EntranceAuto = post.EntranceAuto
                     });
                 }
             }

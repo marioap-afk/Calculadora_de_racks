@@ -42,8 +42,12 @@ namespace RackCad.Application.Systems
         }
 
         /// <summary>
-        /// The local roller-bed assembly for one Push Back lane, at the tope's origin (before the lateral builder rotates
-        /// it onto the bed axis). Rail LONGITUD = the full structural span; <see cref="FlowBedType.Pushback"/> omits brakes.
+        /// El montaje local de rodillos de una calle Push Back, antes de que el builder lateral lo rote sobre el eje
+        /// de la cama. <see cref="FlowBedType.Pushback"/> omite frenos.
+        ///
+        /// La LONGITUD del riel es SIEMPRE el <b>fondo estructural completo</b> (<see cref="ResolveBedLength"/>).
+        /// Hay UNA sola longitud de cama y esta es: la misma que dibuja el riel, la que alimenta el BOM y la que
+        /// mide la subida nominal de 7/16" por pie (aclaración final del Owner, I-32).
         /// </summary>
         public IReadOnlyList<HeaderBlockInstance> BuildLocalAssembly(
             PushBackSystem system,
@@ -82,6 +86,11 @@ namespace RackCad.Application.Systems
                 return null;
             }
 
+            // La cama se atornilla por su TROQUEL_IN sobre el TROQUEL_CAMA del larguero de entrada/salida: ese es
+            // el mate FÍSICO del extremo bajo, y por eso el pivote es RailLocalMate y no el origen del bloque.
+            // Que sobre riel antes de ese punto y que sobresalga por detrás del larguero posterior es lo esperado
+            // —su LONGITUD es el fondo estructural completo—, no una penetración que haya que recortar
+            // (aclaración final del Owner, I-32).
             var localAssembly = BuildLocalAssembly(system, catalog, front);
             if (localAssembly.Count == 0)
             {
@@ -90,7 +99,7 @@ namespace RackCad.Application.Systems
 
             var firstAxis = axes[0];
             var definitionInstances = localAssembly
-                .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.AngleRadians, -firstAxis.ExitMate.Y))
+                .Select(instance => RigidClone(instance, firstAxis.RailLocalMate, firstAxis.ExitMate, firstAxis.RotationRadians, -firstAxis.ExitMate.Y))
                 .ToList();
             var levelPlacements = axes
                 .Select(axis => new HeaderPlacement(0.0, mirrored: false, insertionY: axis.ExitMate.Y))

@@ -54,7 +54,14 @@ namespace RackCad.Application.Systems
             }
 
             var sectioned = postIndex >= 0;
-            var basePlan = sectioned ? dynamicBuilder.Build(structure, catalog, postIndex) : dynamicBuilder.Build(structure, catalog);
+
+            // El contexto de elevaciones se construye UNA vez y viaja al builder compartido, que lo usa para el
+            // desviador bajo y para las cotas y etiquetas. Los largueros y la cama lo resuelven por su cuenta desde
+            // la misma autoridad, así que las cuatro cosas no pueden discrepar (PB-004, I-32).
+            var elevations = PushBackElevations.Context(system, catalog);
+            var basePlan = sectioned
+                ? dynamicBuilder.Build(structure, catalog, postIndex, elevations)
+                : dynamicBuilder.Build(structure, catalog, elevations);
 
             // Keep the common structure; drop every dynamic-specific piece by Role/PieceId.
             var headers = PushBackPlanComposer.StructuralHeaderGroups(basePlan);

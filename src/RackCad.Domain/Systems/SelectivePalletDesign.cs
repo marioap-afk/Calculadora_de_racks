@@ -145,6 +145,27 @@ namespace RackCad.Domain.Systems
         /// <summary>Default side for a drawable element, applied to every post unless overridden in <see cref="PostSides"/>.</summary>
         public SafetySide Side { get; set; } = SafetySide.Both;
 
+        /// <summary>
+        /// PB-009 (I-32) — this selection only exists at the LOW (entrance/exit) end of the rack, so the ADAPTIVE
+        /// defaults must never place a piece at the far end. False (Selectivo, Dinámico) is the historical behaviour.
+        ///
+        /// It is DERIVED, not persisted: the Push Back authority re-imposes it at every boundary it owns, so a
+        /// document can never carry a stale value and no DTO changes.
+        /// </summary>
+        public bool LowEndOnly { get; set; }
+
+        /// <summary>
+        /// PB-002 (I-32) — the DESVIADOR off-cells of this selection are keyed by <b>POST</b>, not by front.
+        ///
+        /// A rack of N fronts has N+1 posts and the desviador grid has one column per POST, so a post index cannot be
+        /// used as a front index. The dynamic system historically collapsed the two with a <c>Math.Min</c> onto the
+        /// last front, which silently merged the last two columns; false keeps exactly that reading.
+        ///
+        /// Like <see cref="LowEndOnly"/> it is DERIVED, not persisted: the Push Back authority re-imposes it at every
+        /// boundary it owns, so no stored value can go stale and no DTO changes.
+        /// </summary>
+        public bool DesviadorCellsAreByPost { get; set; }
+
         /// <summary>Per-post overrides (post index → side); a post not listed uses <see cref="Side"/>.</summary>
         public IList<SafetyPostSide> PostSides { get; } = new List<SafetyPostSide>();
 
@@ -252,6 +273,8 @@ namespace RackCad.Domain.Systems
                 ElementId = ElementId,
                 Quantity = Quantity,
                 Side = Side,
+                LowEndOnly = LowEndOnly,
+                DesviadorCellsAreByPost = DesviadorCellsAreByPost,
                 Tope = Tope.DeepCopy(),
                 Desviador = Desviador.DeepCopy(),
                 Defensa = Defensa.DeepCopy(),
@@ -284,6 +307,17 @@ namespace RackCad.Domain.Systems
         public int PostIndex { get; set; }
         public double ExitLength { get; set; }
         public double EntranceLength { get; set; }
+
+        /// <summary>
+        /// PB-010 (I-32) — this end follows the AUTOMATIC rule (12" on an edge post, 36" on an intermediate one)
+        /// instead of the stored length, so it is recomputed when the rack gains or loses fronts and a post that was
+        /// an edge becomes an intermediate. FALSE is the historical meaning of a stored record — an explicit override,
+        /// which is exactly what every document written before this field carried — so legacy data keeps its lengths.
+        /// </summary>
+        public bool ExitAuto { get; set; }
+
+        /// <summary>PB-010 — same rule for the other end, decided independently.</summary>
+        public bool EntranceAuto { get; set; }
     }
 
     /// <summary>A (frente, level) cell reference — used to mark which larguero cells carry (or skip) a tope.</summary>

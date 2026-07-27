@@ -64,9 +64,16 @@ namespace RackCad.Application.Systems
                 return selection.SideForPost(postIndex);
             }
 
+            // Regla ADAPTATIVA: protector en los DOS postes de los extremos y en ninguno interior.
+            //
+            // Owner-validation round 2 (I-32): aquí Left/Right es ORIENTACIÓN, no extremo longitudinal. La versión
+            // anterior leía el Right del último poste como «extremo posterior» y, en un sistema de extremo bajo,
+            // lo borraba — con lo que un Push Back nuevo perdía el protector del último poste. Un rack SIEMPRE
+            // lleva los dos: el primero sin espejo y el último espejado, porque protegen caras opuestas del
+            // pasillo. Dónde acaba cada copia lo decide <see cref="CopiesAt"/>, que es quien conoce los extremos.
             if (postCount <= 1)
             {
-                return SafetySide.Both;
+                return SafetySide.Both;   // un solo poste es el primero y el último a la vez
             }
 
             if (postIndex == 0)
@@ -74,7 +81,81 @@ namespace RackCad.Application.Systems
                 return SafetySide.Left;
             }
 
-            return postIndex == postCount - 1 ? SafetySide.Right : SafetySide.None;
+            if (postIndex == postCount - 1)
+            {
+                return SafetySide.Right;
+            }
+
+            return SafetySide.None;
+        }
+
+        /// <summary>
+        /// Las copias físicas del protector en un poste. Owner-validation round 1 (I-32): este es el camino REAL del
+        /// protector lateral, y también aquí hay que separar los tres ejes.
+        ///
+        /// <para>Una elección EXPLÍCITA del usuario la resuelve <see cref="SelectiveSafetyEnds"/>, la misma autoridad
+        /// que el resto de la seguridad: conserva la pertenencia, conserva la orientación y, en un sistema de extremo
+        /// bajo, lleva la pieza delante. Antes el lado se traducía directamente a un extremo, y un <c>Right</c> en
+        /// Push Back acababa dibujado ATRÁS, donde no hay pasillo que proteger.</para>
+        ///
+        /// <para>La regla ADAPTATIVA (sin elección) emite las copias DIRECTAMENTE, sin pasar por un
+        /// <see cref="SafetySide"/> intermedio que volvería a mezclar los dos ejes: el primer poste lleva una copia
+        /// sin espejo y el último una espejada, y en un sistema de extremo bajo las dos van DELANTE. El último
+        /// protector no desaparece por ser de extremo bajo — cambia de orientación, no de extremo.</para>
+        /// </summary>
+        public static IReadOnlyList<SafetyEndCopy> CopiesAt(
+            SelectiveSafetySelection selection, int postIndex, int postCount)
+        {
+            if (selection == null || postIndex < 0 || postIndex >= Math.Max(1, postCount))
+            {
+                return new SafetyEndCopy[0];
+            }
+
+            if (selection.Side != SafetySide.None || selection.PostSides.Any(post => post != null))
+            {
+                return SelectiveSafetyEnds.CopiesForPost(selection, postIndex);
+            }
+
+            // El extremo ALTO solo existe donde el sistema lo tiene. Con la marca de extremo bajo, la copia
+            // espejada se queda delante en vez de desaparecer.
+            var atFarEnd = !selection.LowEndOnly;
+
+            if (postCount <= 1)
+            {
+                return new[]
+                {
+                    new SafetyEndCopy(atHighEnd: false, mirrored: false),
+                    new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true),
+                };
+            }
+
+            if (postIndex == 0)
+            {
+                return new[] { new SafetyEndCopy(atHighEnd: false, mirrored: false) };
+            }
+
+            if (postIndex == postCount - 1)
+            {
+                return new[] { new SafetyEndCopy(atHighEnd: atFarEnd, mirrored: true) };
+            }
+
+            return new SafetyEndCopy[0];
+        }
+
+        /// <summary>La copia que le toca a un extremo, o null si ese extremo no lleva protector en ese poste.</summary>
+        public static SafetyEndCopy? CopyAtEnd(
+            SelectiveSafetySelection selection, int postIndex, int postCount, DynamicRackEnd end)
+        {
+            var highEnd = end == DynamicRackEnd.Entrance;
+            foreach (var copy in CopiesAt(selection, postIndex, postCount))
+            {
+                if (copy.AtHighEnd == highEnd)
+                {
+                    return copy;
+                }
+            }
+
+            return null;
         }
 
         public static bool DrawsAtEnd(
@@ -82,11 +163,6 @@ namespace RackCad.Application.Systems
             int postIndex,
             int postCount,
             DynamicRackEnd end)
-        {
-            var side = SideAt(selection, postIndex, postCount);
-            return end == DynamicRackEnd.Exit
-                ? side == SafetySide.Left || side == SafetySide.Both
-                : side == SafetySide.Right || side == SafetySide.Both;
-        }
+            => CopyAtEnd(selection, postIndex, postCount, end).HasValue;
     }
 }

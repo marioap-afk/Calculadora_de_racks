@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-24**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-27**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -21,6 +21,9 @@ dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 construido sobre el patrón de módulos, con el gate manual del Owner **aprobado** en AutoCAD 2025
 (PB-VAL-01…06). El **preview visual** se **difiere** a una iniciativa transversal futura y **no** fue
 aprobado visualmente.
+
+**I-32 corrige ese Push Back a partir del reporte del Owner y está `integration-ready` desde el
+2026-07-27 — aprobada por el Owner pero AÚN NO INTEGRADA.**
 
 I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
 `ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
@@ -628,6 +631,57 @@ se integra por `git merge --no-ff` en esta sesión.
 
 ## 4. Siguiente acción
 
+### I-32 — APROBADA por el Owner, LISTA PARA INTEGRAR (no integrada)
+
+El Owner ejecutó la revalidación manual dirigida y confirmó **«Listo, todo correcto»**.
+
+| Campo | Valor |
+|---|---|
+| Rama | `fix/correcciones-push-back` |
+| **CODE_SHA** funcional | `f911d75350702fb176e123a59a105d40f63690ec` |
+| **BUILD_SHA validado** (el que el Owner cargó) | `a0c3f27c2447a4e1f85707ef9f3ad311765e3a43` |
+| **DLL SHA-256** | `B7B15802D19C90BBE40B19546423F9CC1850645051C1DA971DA2552778B2E931` |
+| CI del candidato | **30226757221**, 4/4 sobre `a0c3f27` |
+| Estado | **LISTA PARA INTEGRAR — no integrada** |
+
+**Qué corrigió.** Diez de los catorce hallazgos del reporte del Owner sobre el Push Back ya integrado
+(PB-002…006, 008…010, 012, 013), cada uno con su regresión observada fallando sin el fix. Además:
+
+- **PB-004 — elevaciones.** El larguero **posterior** es el ancla y conserva su troquel; el de
+  entrada/salida se deriva y se ajusta al suyo. Una sola autoridad, `PushBackElevations`, y un
+  **override opt-in** que llega a los builders compartidos como último parámetro opcional en sus
+  **cuatro ámbitos** —frente, poste, proyección y envolvente— sin que el Selectivo ni el Dinámico
+  cambien una línea de comportamiento.
+- **Seguridad.** `SafetySide` mezclaba **tres ejes ortogonales** —pertenencia por poste, orientación y
+  extremo longitudinal—; ahora se resuelven por separado. Un `Right` en Push Back se dibuja **delante**,
+  espejado, nunca atrás. Y el **default** del protector lateral vuelve a poner uno en **cada poste
+  extremo**: el primero sin espejo, el último espejado, ninguno interior.
+
+**La regla geométrica asimétrica final de la cama** —lo que costó cuatro validaciones rechazadas:
+
+1. **Entrada/Salida** — mate `LARGUERO_IN_OUT.TROQUEL_CAMA` ↔ `RIEL_DE_CINTA_CALIBRE_12.TROQUEL_IN`.
+2. **Posterior e intermedios** — tangentes a la **línea del ORIGEN** del bloque, que es una recta
+   **paralela** a la anterior y **distinta** de ella.
+3. **Una sola `RotationRadians`** para todo el bloque, resuelta por `PushBackBedRotation`.
+4. El larguero **posterior** es el **ancla** y queda fijo en su troquel.
+5. El larguero **bajo** se selecciona **globalmente** por menor error contra 7/192, sobre la retícula de 2".
+6. **`LONGITUD` = fondo estructural completo**; el riel puede sobresalir por detrás, y eso es esperado.
+
+> **Trampa que costó cuatro rechazos:** derivar la rotación como `atan2(HighMate − ExitMate)` trata los
+> dos contactos como si compartieran recta. **No la comparten.** Su firma inconfundible es que el contacto
+> posterior queda a **exactamente 1.25"** de la línea del origen — la separación entre las dos paralelas.
+> Si vuelve a aparecer ese 1.25", es esto.
+
+**Siguiente acción: integración serializada en `main`** (`git merge --no-ff`) y **limpieza posterior** de
+rama y worktree. Nada de eso se ha hecho todavía. Los **cuatro DLL** de las validaciones rechazadas
+—`2210e67`, `557858d`, `2641830` y `9a87c7c`— quedan **obsoletos**; el único artefacto válido es el de
+`a0c3f27`.
+
+Evidencia completa en
+[`automation/evidence/I-32-autocad-validation.md`](automation/evidence/I-32-autocad-validation.md).
+
+### I-18 — cerrada
+
 **I-18 (Push Back) quedó integrada en `main` el 2026-07-25** — merge `--no-ff` `77031be` desde
 `feature/push-back` (`4f93abe`), CI verde en los cuatro jobs (run 30139506411), rama y worktree
 eliminados. No queda acción pendiente de I-18.
@@ -650,8 +704,8 @@ su estandarización completa se **difiere a una iniciativa transversal futura** 
 editores. Parte de una sola tubería compartida, no de dos painters divergentes. **No está aprobado
 visualmente** y no debe presentarse como tal.
 
-**Siguiente:** quedan **I-25** (`feature/guardas-traseras`, sobre I-22) e **I-23** (namespaces, cierra la
-Fase 5, depende de todas).
+**Siguiente:** primero **integrar I-32**; después quedan **I-25** (`feature/guardas-traseras`, sobre
+I-22) e **I-23** (namespaces, cierra la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 

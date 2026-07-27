@@ -42,19 +42,25 @@ namespace RackCad.Application.Systems
             if (end == PushBackFrontalEnd.EntradaSalida)
             {
                 // Low cut: the dynamic exit frontal (structure is GUIA-free) already IS "IN/OUT + applicable safety".
+                // PB-004 (I-32): el builder compartido recibe el contexto de elevaciones y coloca los largueros
+                // IN/OUT YA en su elevación derivada, junto con el desviador bajo y las anotaciones. No hay
+                // reasiento posterior: antes esta vista movía las piezas después, localizándolas por coordenada.
                 return HeaderInstanceGrouper.Group(
-                    dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Exit),
+                    dynamicBuilder.Build(
+                        structure, catalog, DynamicRackEnd.Exit, PushBackElevations.Context(system, catalog)),
                     "PB_FRONTAL_ENTRADA_SALIDA");
             }
 
+            // El corte POSTERIOR no lleva override: su larguero es el ancla y conserva la elevación del resolver.
             var entrance = dynamicBuilder.Build(structure, catalog, DynamicRackEnd.Entrance);
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             var redondoId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
                 ? PushBackDefaults.HighEndBeamCatalogId
                 : system.HighEndBeamCatalogId;
             var redondoBlock = CatalogLookup.Block(catalog, redondoId, View);
-            var topeBlock = CatalogLookup.Block(catalog, PushBackRearTopeBuilder.TopePieceId, View);
             var rearTope = system.RearTope ?? new PushBackRearTopeConfig();
+            var topePieceId = PushBackRearTopeBuilder.ResolvePieceId(catalog, rearTope);   // PB-005
+            var topeBlock = CatalogLookup.Block(catalog, topePieceId, View);
             var saque = rearTope.Saque > 0.0 ? rearTope.Saque : PushBackDefaults.RearTopeSaque;
 
             // Owner decision (2026-07-24, final): in the REAR FRONTAL the stop is anchored by the post's own TROQUEL_TOPE
@@ -78,7 +84,10 @@ namespace RackCad.Application.Systems
                 {
                     var (frontIndex, level) = LocateCell(structure, catalog, layout, instance);
 
-                    // Swap the IN/OUT for the rear TROQUEL_REDONDO, keeping the transverse LONGITUD, at the same spot.
+                    // Swap the IN/OUT for the rear TROQUEL_REDONDO, keeping the transverse LONGITUD, at the same column.
+                    // PB-004 (I-32, regla del Owner tras el round 1): el posterior es el ANCLA y se queda en su troquel,
+                    // así que esta vista y el corte lateral coinciden por construcción — sin desplazamiento que
+                    // sincronizar (D14 de la matriz de AutoCAD del dueño).
                     var redondo = CloneAt(instance, redondoId, redondoBlock);
                     redondo.DynamicParameters[SelectiveRackDefaults.PeralteParam] = level >= 0
                         ? system.HighEndBeamPeralteAt(frontIndex, level)
@@ -107,7 +116,7 @@ namespace RackCad.Application.Systems
                             ? beamLength + SelectiveTopePlacement.LengthAllowance
                             : (double?)null;
                         result.Add(SelectiveTopePlacement.Tope(
-                            PushBackRearTopeBuilder.TopePieceId, topeBlock, View,
+                            topePieceId, topeBlock, View,
                             topeX, topeY, saque, longitud,
                             mirroredX: PushBackRearTopeBuilder.Mirrored(View, instance.MirroredX)));
                     }
@@ -120,6 +129,7 @@ namespace RackCad.Application.Systems
 
             return HeaderInstanceGrouper.Group(result, "PB_FRONTAL_POSTERIOR");
         }
+
 
         private static HeaderBlockInstance CloneAt(HeaderBlockInstance source, string pieceId, string block)
         {
@@ -135,9 +145,11 @@ namespace RackCad.Application.Systems
                 MirroredX = source.MirroredX,
                 MirroredY = source.MirroredY
             };
-            if (source.DynamicParameters.TryGetValue(SelectiveRackDefaults.LengthParam, out var length))
+            // Copia TODOS los parámetros dinámicos, no solo LONGITUD: un parámetro que el bloque lleve y este clon
+            // no copie desaparece del dibujo sin que nada lo delate. Solo la Y cambia después, en el llamador.
+            foreach (var parameter in source.DynamicParameters)
             {
-                clone.DynamicParameters[SelectiveRackDefaults.LengthParam] = length;
+                clone.DynamicParameters[parameter.Key] = parameter.Value;
             }
 
             return clone;
@@ -151,8 +163,13 @@ namespace RackCad.Application.Systems
         /// (post+troquel); the level comes from THAT FRONT'S OWN load-beam levels (never the global projection), matched
         /// by entrance elevation within <see cref="LevelMatchTolerance"/>. Returns level = -1 (no silent front-0/level-0
         /// fallback) when nothing matches, so the caller neither mislabels the peralte nor draws a wrong-cell tope.
+        ///
+        /// Solo la usa el corte POSTERIOR, cuyos largueros conservan la elevación del resolver: por eso puede
+        /// reconocerlos por coordenada. El corte BAJO ya no pasa por aquí — su elevación se decide al colocarlo, no
+        /// después (PB-004, I-32), y buscar por coordenada una pieza ya movida era precisamente el riesgo.
         /// </summary>
-        private static (int FrontIndex, int Level) LocateCell(DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam)
+        private static (int FrontIndex, int Level) LocateCell(
+            DynamicRackSystem system, RackCatalog catalog, DynamicFrontLayout layout, HeaderBlockInstance beam)
         {
             var frontIndex = -1;
             var bestX = double.MaxValue;

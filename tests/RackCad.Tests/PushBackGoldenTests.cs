@@ -112,9 +112,74 @@ namespace RackCad.Tests
             // frontal-entrada carries no rear tope and the BOM counts the same pieces with the same SAQUE/LONGITUD, so
             // both stay UNCHANGED — which is what bounds this correction to the stop.
             // Previous: lateral/lateral-corte0 67F63860…, frontal-posterior 67511108…, planta 33A87C65…
-            ["lateral"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
-            ["lateral-corte0"] = "17815678B5C9D9E0D1D9ADC7DBEB717F5A3843E36956136828489391C3B7B364",
-            ["frontal-entrada"] = "C652265C592E4834A976C6E03ABC1282FA353E861DBF8A5AEC4F7C3E3CCE3974",
+            // PB-004 (I-32, Owner decision 2026-07-25): the bed rises 7/16" per commercial foot, so a 204" rack rises
+            // 7.4375" instead of the 11.2" the Owner measured. The high end of the axis is now DERIVED from the
+            // troquel-snapped low mate through that one rule, instead of being read from the rear beam's own second,
+            // independent snap plus a 4.9342" jump between two different catalog datums. THREE pins move, and only
+            // these three, because only the LATERAL frame and the REAR FRONTAL carry elevations that depend on the bed:
+            //  * lateral / lateral-corte0: the bed assembly (rotation + anchor), the intermediate supports that are
+            //    tangent to the rail-origin line, the rear TROQUEL_REDONDO beam that drops onto that line, and the rear
+            //    tope, which keeps its approved rule (rise above the rear larguero, snap to the post's grid, +4") and
+            //    therefore follows the larguero down;
+            //  * frontal-posterior: the SAME physical rear beam and its stop, now drawn at the SAME elevation as in the
+            //    lateral. They differed by 1.18" before this change and would have differed by ~4.9" after it (D14 of
+            //    the Owner's AutoCAD matrix demands the frontal be coherent with the lateral cuts).
+            // frontal-entrada carries no rear beam and no bed; planta has no elevation at all; and the BOM counts the
+            // same pieces with the same lengths (the bed's commercial length is the structural span and the beams'
+            // lengths are transverse) — so those three stay UNCHANGED, which is what bounds this correction.
+            // Previous: lateral/lateral-corte0 17815678…, frontal-posterior 55AF6395…
+            // PB-004, round 2 (I-32) — el Owner RECHAZO la validacion manual round 1 y SUSTITUYO la regla: la subida de
+            // 7/16" por pie es un OBJETIVO NOMINAL, no la subida final literal. Ahora el larguero POSTERIOR es el ANCLA
+            // y conserva el troquel que le dio el resolver; el de ENTRADA/SALIDA se DERIVA de el por la pendiente
+            // nominal y se ajusta a SU propio troquel; y la cama se traza entre los dos contactos fisicos reales, con
+            // la pendiente que salga de ese ajuste. Antes se hacia al reves —anclar el bajo y arrastrar el posterior
+            // FUERA de la reticula— y por eso se rechazo: un larguero siempre va atornillado a un troquel.
+            //
+            // Se mueven CUATRO pines, y cada uno por un motivo distinto:
+            //  * lateral / lateral-corte0: el larguero de entrada/salida sube a su troquel derivado, la cama se recalcula
+            //    entre los dos contactos reales, los intermedios la siguen y el posterior VUELVE a su troquel;
+            //  * frontal-entrada: ese mismo larguero bajo se dibuja aqui a la elevacion derivada — una pieza fisica, una
+            //    elevacion en todas las vistas;
+            //  * frontal-posterior: vuelve EXACTAMENTE al valor que tenia antes del round 1 (55AF6395...), que es la
+            //    comprobacion mas limpia de que el posterior regreso a su elevacion de resolver sin desplazamiento.
+            // planta (sin elevacion) y bom (mismas piezas, mismas longitudes) quedan INTACTOS, y eso acota el cambio.
+            // Anteriores: lateral/lateral-corte0 894A4822..., frontal-entrada C652265C..., frontal-posterior 602522B7...
+            // PB-004, round 3 (I-32) — dos precisiones del coordinador sobre la MISMA regla, que mueven TRES pines:
+            //  * la subida NOMINAL se mide sobre la LONGITUD COMERCIAL de la cama (ResolveBedLength), la pieza que se
+            //    compra y se dibuja, y no sobre la distancia entre contactos, que es algo mas corta;
+            //  * el CONTACTO del larguero posterior es la arista que elige la GEOMETRIA (RearBeamTangencyPointWorld,
+            //    la de mayor X en mundo) y no un lado fijo del catalogo: con el bloque espejado la arista buena es
+            //    INICIO_IZQUIERDO, no INICIO_DERECHO.
+            // Ambas mueven la elevacion derivada del larguero de entrada/salida, y con ella la cama, los intermedios y
+            // ese mismo larguero en el corte frontal bajo. El POSTERIOR no se mueve —sigue en su troquel— y por eso
+            // frontal-posterior, planta y bom quedan INTACTOS.
+            // Anteriores: lateral/lateral-corte0 16D20B37..., frontal-entrada DAC83E0C...
+            //
+            // ACLARACION FINAL DEL OWNER (2026-07-26) — geometria ASIMETRICA de la cama. Se mueven TRES pines.
+            //
+            // Que cambio, y por que lo exige la regla:
+            //  1. La ROTACION del bloque de la cama. Antes se derivaba como atan2(HighMate - ExitMate), es decir
+            //     tratando los dos contactos como si estuvieran en la MISMA recta. No lo estan: ExitMate vive en la
+            //     linea de TROQUEL_IN y HighMate en la del ORIGEN, que son PARALELAS y estan separadas por 1.25".
+            //     Con la rotacion antigua el contacto posterior quedaba exactamente 1.25" fuera de su linea. Ahora
+            //     la rotacion se resuelve con Ex*sin(t) - Ey*cos(t) = m.Y, y el posterior cae sobre la linea del
+            //     origen. Eso mueve el riel, su tope, sus rodillos y los intermedios -> lateral y lateral-corte0.
+            //  2. La ELEVACION del larguero de entrada/salida. El criterio de seleccion del troquel dejo de ser
+            //     "ajustar la subida nominal" y pasa a ser "minimizar |tan(t) - 7/192| sobre la reticula de 2"".
+            //     En este escenario el frente 0 sube UN troquel: 10.6053 -> 12.6053 en el nivel 1 y 82.6053 ->
+            //     84.6053 en el nivel 2 (delta +2.0000", pendiente resultante 0.034398). El frente 1 no se mueve
+            //     (ya estaba en el optimo, pendiente 0.040668). Ese larguero se dibuja tambien en el corte bajo
+            //     -> frontal-entrada.
+            //
+            // Que NO se movio, y por que:
+            //  * frontal-posterior: el larguero posterior es el ANCLA y conserva su troquel resuelto.
+            //  * planta: no lleva elevaciones.
+            //  * bom: la LONGITUD de la cama sigue siendo el fondo estructural completo, y los conteos no cambian.
+            //
+            // Anteriores: lateral/lateral-corte0 A7040D72..., frontal-entrada C124825D...
+            ["lateral"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
+            ["lateral-corte0"] = "1808DB213A973A87B6B4C1E463A00EB7A3A7F5E47224334F620267C0477AC9C9",
+            ["frontal-entrada"] = "2B993BAA64C6157CB2C724CF2C3D0B172FEEFBA5BC9961F70F8317CD4986DADF",
             // OWNER CLARIFICATION 2026-07-25: the LARGUERO_ESCALON_TOPE_DE_3 block mates by its ORIGIN, so the stop's
             // insertion must land on the POST's TROQUEL_TOPE in world coordinates — resolved from the POST instance of
             // the plan, not from the rear beam's insertion (which is what kept it on the larguero troquel). Exactly the
@@ -129,6 +194,8 @@ namespace RackCad.Tests
             // length). Previous BOM hash: 139C18EFDD0BCF1DBC9CABB867E3C40499B2BD264E1BED4F4CBC7DCEE74C57AC.
             ["bom"] = "057C6D2D30548D4F8FE65F1DA38678D0588792C2A65B43CD23CE4F8B7ECC59A3"
         };
+
+
 
         [Fact]
         public void Golden_AllSixSignatures_MatchTheFixedPins()

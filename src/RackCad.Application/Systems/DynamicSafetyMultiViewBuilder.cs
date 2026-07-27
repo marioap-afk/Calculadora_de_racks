@@ -21,7 +21,8 @@ namespace RackCad.Application.Systems
             RackCatalog catalog,
             DynamicFrontLayout layout,
             string plateId,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            RackLevelElevations elevations = null)
         {
             if (target == null || system == null || catalog == null || layout?.PostPositions == null)
             {
@@ -44,24 +45,36 @@ namespace RackCad.Application.Systems
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
-                var guard = guards.FirstOrDefault(element => DynamicLateralGuardPlan.DrawsAtEnd(
-                    element.Selection, postIndex, postCount: layout.PostPositions.Count, end: end));
-                if (guard != null)
+                // La ORIENTACIÓN la trae la COPIA, no el corte. En un sistema de extremo bajo las dos orientaciones
+                // caben en el mismo corte, así que deducirla del extremo las confundiría (I-32, round 1).
+                SafetyEndCopy? guardCopy = null;
+                var guard = guards.FirstOrDefault(element =>
+                {
+                    guardCopy = DynamicLateralGuardPlan.CopyAtEnd(
+                        element.Selection, postIndex, postCount: layout.PostPositions.Count, end: end);
+                    return guardCopy.HasValue;
+                });
+                if (guard != null && guardCopy.HasValue)
                 {
                     target.Add(Piece(guard.PieceId, guard.Block, view, at,
-                        mirroredX: end == DynamicRackEnd.Entrance, mirroredY: false, rangeEnd - rangeStart));
+                        mirroredX: guardCopy.Value.Mirrored, mirroredY: false, rangeEnd - rangeStart));
                     continue;
                 }
 
-                var boot = boots.FirstOrDefault(element => DrawsAtEnd(element.Selection, postIndex, end));
-                if (boot != null)
+                SafetyEndCopy? bootCopy = null;
+                var boot = boots.FirstOrDefault(element =>
+                {
+                    bootCopy = CopyAtEnd(element.Selection, postIndex, end);
+                    return bootCopy.HasValue;
+                });
+                if (boot != null && bootCopy.HasValue)
                 {
                     target.Add(Piece(boot.PieceId, boot.Block, view, at,
-                        mirroredX: end == DynamicRackEnd.Entrance, mirroredY: false, null));
+                        mirroredX: bootCopy.Value.Mirrored, mirroredY: false, null));
                 }
             }
 
-            AppendFrontalDesviadores(target, system, catalog, layout, end);
+            AppendFrontalDesviadores(target, system, catalog, layout, end, elevations);
             AppendFrontalDefensas(target, system, catalog, layout, plateId, end);
             AppendFrontalGuias(target, system, catalog, layout, end);
         }
@@ -142,7 +155,7 @@ namespace RackCad.Application.Systems
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
-                var setting = DynamicForkliftDefensePlan.At(selection.DefensaPosts, postIndex, postCount);
+                var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var draws = end == DynamicRackEnd.Exit ? setting.DrawsExit : setting.DrawsEntrance;
                 if (!draws)
                 {
@@ -294,7 +307,7 @@ namespace RackCad.Application.Systems
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
-                var setting = DynamicForkliftDefensePlan.At(selection.DefensaPosts, postIndex, postCount);
+                var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
@@ -318,7 +331,8 @@ namespace RackCad.Application.Systems
             DynamicRackSystem system,
             RackCatalog catalog,
             DynamicFrontLayout layout,
-            DynamicRackEnd end)
+            DynamicRackEnd end,
+            RackLevelElevations elevations)
         {
             var selection = SelectiveSafetyFamilies.SelectedOfType(
                 system.SafetySelections, catalog.SafetyElements, SelectiveSafetyDefaults.DesviadorType);
@@ -357,17 +371,26 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
-                var front = Math.Min(postIndex, Math.Max(0, system.Fronts.Count - 1));
+                // PB-002 (I-32): ONE authority decides which off-cell a post reads, so the lateral, the two frontal
+                // cuts, the planta and the BOM cannot disagree about the cell the user switched off.
+                var cellKey = SelectiveDesviadorPlan.CellKey(selection, postIndex, system.Fronts.Count);
                 var levelsAtPost = LoadLevelsAtPost(system, postIndex);
                 for (var levelIndex = 0; levelIndex < levelsAtPost && levelIndex < system.LoadBeamLevels.Count; levelIndex++)
                 {
-                    if (off.Contains((front, levelIndex)))
+                    if (off.Contains((cellKey, levelIndex)))
                     {
                         continue;
                     }
 
                     var level = system.LoadBeamLevels[levelIndex];
-                    var beamY = end == DynamicRackEnd.Entrance ? level.EntranceElevation : level.ExitElevation;
+
+                    // El desviador cuelga del larguero de SU extremo. El BAJO admite override —es el que Push Back
+                    // deriva— y se pregunta POR POSTE, porque este bucle recorre postes y en un rack jagged cada uno
+                    // puede tener frentes distintos a los lados. El ALTO no: su larguero es el ancla y conserva la
+                    // elevación del resolver (PB-004, I-32).
+                    var beamY = end == DynamicRackEnd.Entrance
+                        ? level.EntranceElevation
+                        : elevations.OrPost(postIndex, level.LevelNumber, level.ExitElevation);
                     var y = levelIndex == 0 ? troquel.Y + firstHeight : beamY - SelectiveDesviadorPlan.BeamYOffset;
                     target.Add(Piece(
                         selection.ElementId,
@@ -411,9 +434,9 @@ namespace RackCad.Application.Systems
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
-                var front = Math.Min(postIndex, Math.Max(0, system.Fronts.Count - 1));
+                var cellKey = SelectiveDesviadorPlan.CellKey(selection, postIndex, system.Fronts.Count);
                 var anyLevel = Enumerable.Range(0, LoadLevelsAtPost(system, postIndex))
-                    .Any(level => !off.Contains((front, level)));
+                    .Any(level => !off.Contains((cellKey, level)));
                 if (!anyLevel)
                 {
                     continue;
@@ -434,12 +457,26 @@ namespace RackCad.Application.Systems
             }
         }
 
+        /// <summary>La copia de ese poste que va en ese corte, con su orientación — o null si no lleva ninguna.</summary>
+        private static SafetyEndCopy? CopyAtEnd(SelectiveSafetySelection selection, int postIndex, DynamicRackEnd end)
+        {
+            var highEnd = end == DynamicRackEnd.Entrance;
+            foreach (var copy in SelectiveSafetyEnds.CopiesForPost(selection, postIndex))
+            {
+                if (copy.AtHighEnd == highEnd)
+                {
+                    return copy;
+                }
+            }
+
+            return null;
+        }
+
         private static bool DrawsAtEnd(SelectiveSafetySelection selection, int postIndex, DynamicRackEnd end)
         {
-            var side = selection?.SideForPost(postIndex) ?? SafetySide.None;
-            return end == DynamicRackEnd.Exit
-                ? side == SafetySide.Left || side == SafetySide.Both
-                : side == SafetySide.Right || side == SafetySide.Both;
+            // El FRONTAL elige el CORTE, es decir el extremo longitudinal. Lo resuelve SelectiveSafetyEnds, que
+            // respeta la pertenencia por poste y lleva al extremo bajo los sistemas que solo tienen ese (Push Back).
+            return SelectiveSafetyEnds.DrawsAt(selection, postIndex, highEnd: end == DynamicRackEnd.Entrance);
         }
 
         private static int LoadLevelsAtPost(DynamicRackSystem system, int postIndex)

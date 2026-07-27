@@ -33,6 +33,12 @@ namespace RackCad.Application.Persistence
         /// <summary>Rear-tope SAQUE (in); null falls back to the domain default.</summary>
         public double? RearTopeSaque { get; set; }
 
+        /// <summary>
+        /// PB-005 (I-32) — the chosen catalog TOPE variant. NULL is the legacy value every earlier document carries and
+        /// means "the system default", so an existing rack keeps drawing exactly the piece it always drew.
+        /// </summary>
+        public string RearTopePieceId { get; set; }
+
         /// <summary>Rear-tope DEACTIVATIONS only (front, level). Active-by-default is implicit: an absent cell is active.</summary>
         public List<PushBackCellDocument> RearTopeOffCells { get; set; }
 
@@ -66,6 +72,11 @@ namespace RackCad.Application.Persistence
             document.RearTopeSaque = design.RearTope != null && design.RearTope.Saque > 0.0
                 ? design.RearTope.Saque
                 : (double?)null;
+            // PB-005: only a real choice is written. A blank id stays absent from the file, so a rack that never chose
+            // a variant is byte-identical to what previous builds wrote.
+            document.RearTopePieceId = string.IsNullOrWhiteSpace(design.RearTope?.PieceId)
+                ? null
+                : design.RearTope.PieceId.Trim();
 
             if (design.Fronts != null && design.Fronts.Any(front => front != null && front.HighEndBeamPeraltes.Count > 0))
             {
@@ -114,6 +125,7 @@ namespace RackCad.Application.Persistence
             }
 
             design.RearTope.Saque = RearTopeSaque ?? PushBackDefaults.RearTopeSaque;
+            design.RearTope.PieceId = string.IsNullOrWhiteSpace(RearTopePieceId) ? null : RearTopePieceId.Trim();
             if (RearTopeOffCells != null)
             {
                 foreach (var cell in RearTopeOffCells)

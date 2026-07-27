@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using RackCad.UI.Controls;
 using RackCad.UI.Shell;
 
 namespace RackCad.UI.Tests
@@ -40,6 +41,19 @@ namespace RackCad.UI.Tests
             {
                 box.Text = text;
             }
+        }
+
+        /// <summary>
+        /// Type a number into the named <see cref="NumericField"/> and COMMIT it the way a user does — by leaving the
+        /// control. The editors wire their fields with <c>LostFocus="Input_Changed"</c>, so raising the real routed
+        /// LostFocus is what runs the window's ordinary edit path (commit → recompute), instead of a scope button.
+        /// </summary>
+        public static void SetNumberAndCommit(Window window, string name, double? value)
+        {
+            var field = window.FindName(name) as NumericField
+                ?? throw new InvalidOperationException($"No NumericField '{name}' in {window.GetType().Name}.");
+            field.SetNumber(value);
+            field.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent, field));
         }
 
         private static void Click(ButtonBase button)

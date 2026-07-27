@@ -82,13 +82,18 @@ namespace RackCad.Tests
             var topes = new PushBackRearTopeBuilder().BuildLateral(system, catalog, 0, front);
             Assert.NotEmpty(topes);
 
-            var beams = DynamicLoadBeamGeometry.Placements(system.Structure, front).Where(p => p.IsEntrance).ToList();
+            // PB-004 (I-32, regla del Owner tras el round 1): el larguero posterior vuelve a estar EN SU TROQUEL, asi
+            // que la referencia del tope es su colocacion cruda. PB-VAL-03 (+4" sobre el snap canonico) sigue intacto.
+            var beams = DynamicLoadBeamGeometry.Placements(system.Structure, front)
+                .Where(p => p.IsEntrance)
+                .Select(p => p.Y)
+                .ToList();
             foreach (var tope in topes)
             {
-                var source = beams.FirstOrDefault(b =>
-                    Math.Abs(PushBackRearTopeBuilder.ElevationY(mateY, b.Y) - tope.Insertion.Y) < 1e-6);
+                var source = beams.Select(y => (double?)y).FirstOrDefault(y =>
+                    Math.Abs(PushBackRearTopeBuilder.ElevationY(mateY, y.Value) - tope.Insertion.Y) < 1e-6);
                 Assert.NotNull(source);
-                var old = SelectiveTopePlacement.SnapY(mateY, source.Y, SelectiveRackDefaults.TroquelPaso);
+                var old = SelectiveTopePlacement.SnapY(mateY, source.Value, SelectiveRackDefaults.TroquelPaso);
                 Assert.Equal(old + 4.0, tope.Insertion.Y, 6);   // the Owner-measured correction, exactly
             }
         }
