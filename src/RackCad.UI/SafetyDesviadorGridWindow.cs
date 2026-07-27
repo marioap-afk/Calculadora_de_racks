@@ -14,10 +14,14 @@ namespace RackCad.UI
 {
     /// <summary>Configures the DESVIADOR post × load-level grid and its two even dimensions. The grid is the shared
     /// <see cref="SelectionMatrix"/> control (I-22) with absent cells for the jagged posts; toggling a cell still
-    /// recomputes the live clearance note through the model's granular events.</summary>
+    /// recomputes the live clearance note through the model's granular events. I-34 adds the shared
+    /// <see cref="SelectionMatrixBulkBar"/>: this grid's column axis is a POSTE, and the note recomputes ONCE per bulk
+    /// operation because it also listens to the aggregated <see cref="SelectionMatrixModel.ScopeApplied"/>.</summary>
     public sealed class SafetyDesviadorGridWindow : Window
     {
         private readonly SelectionMatrixModel model;
+        private readonly SelectionMatrixBulkEditor bulkEditor;
+        private readonly SelectionMatrixBulkBar bulkBar;
         private readonly IReadOnlyList<int> levelsPerPost;
 
         /// <summary>The off-cells this dialog was opened with. Those sitting on a column the grid renders as ABSENT —
@@ -105,9 +109,10 @@ namespace RackCad.UI
 
             Title = string.IsNullOrWhiteSpace(label) ? "Desviador" : label;
             Width = Math.Max(560, Math.Min(1000, 270 + posts * 46));
-            Height = Math.Min(680, 330 + maxLevels * 30);
+            // +36: the shared "Aplicar a:" row of I-34 sits under the grid and must not push the options out of view.
+            Height = Math.Min(716, 366 + maxLevels * 30);
             MinWidth = 540;
-            MinHeight = 330;
+            MinHeight = 366;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             FontFamily = new FontFamily("Segoe UI");
             Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
@@ -201,6 +206,17 @@ namespace RackCad.UI
             };
             model.CellChanged += (s, e) => RefreshNote();
             model.BulkChanged += (s, e) => RefreshNote();
+            // I-34: ONE recomputation per bulk operation. The aggregated event is why the note does not run N times
+            // when a whole level or a whole post is switched at once.
+            model.ScopeApplied += (s, e) => RefreshNote();
+
+            // I-34 — the shared bulk-edit row. The column axis of THIS grid is a POSTE (N frentes ⇒ N+1 postes), which
+            // is the only thing that makes it different from the other two; it is DECLARED here, never derived.
+            bulkEditor = new SelectionMatrixBulkEditor(model, SelectionMatrixScopeLabels.ByPoste);
+            bulkBar = new SelectionMatrixBulkBar(bulkEditor);
+            bulkBar.Attach(matrix);
+            DockPanel.SetDock(bulkBar, Dock.Bottom);
+            root.Children.Add(bulkBar);
 
             this.longitud.TextChanged += (s, e) => RefreshNote();
             this.firstHeight.TextChanged += (s, e) => RefreshNote();
@@ -211,6 +227,7 @@ namespace RackCad.UI
 
         private void RefreshNote()
         {
+            NoteRefreshCount++;
             note.Text = string.Empty;
             if (!TryDimensions(out var length, out var first, showError: false) || system == null || catalog == null)
             {
@@ -307,6 +324,15 @@ namespace RackCad.UI
 
         /// <summary>The working matrix state — a test seam (I-22, InternalsVisibleTo).</summary>
         internal SelectionMatrixModel Model => model;
+
+        /// <summary>The shared bulk-edit row and its editor — test seams (I-34).</summary>
+        internal SelectionMatrixBulkBar BulkBar => bulkBar;
+
+        internal SelectionMatrixBulkEditor BulkEditor => bulkEditor;
+
+        /// <summary>How many times the live clearance note has been recomputed (I-34 test seam): a bulk operation must
+        /// add exactly ONE, not one per cell.</summary>
+        internal int NoteRefreshCount { get; private set; }
 
         private SelectiveSafetySelection WorkingSelection(
             double length,

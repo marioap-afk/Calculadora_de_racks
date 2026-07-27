@@ -14,10 +14,13 @@ namespace RackCad.UI
     /// <summary>Chooses the dynamic-rack frente/level cells that receive the mirrored entrance-guide pair. The grid is
     /// the shared <see cref="SelectionMatrix"/> control (I-22): column = frente, row = level, with absent cells for the
     /// jagged fronts. The captions (F1.., Nivel n), the high-to-low order, the tolerant loading of persisted off-cells
-    /// and the exact off-cell set the dialog returns are unchanged.</summary>
+    /// and the exact off-cell set the dialog returns are unchanged. I-34 adds the shared
+    /// <see cref="SelectionMatrixBulkBar"/> with the FRENTE axis.</summary>
     public sealed class SafetyGuiaEntradaGridWindow : Window
     {
         private readonly SelectionMatrixModel model;
+        private readonly SelectionMatrixBulkEditor bulkEditor;
+        private readonly SelectionMatrixBulkBar bulkBar;
         private readonly IReadOnlyList<int> levelsPerFront;
 
         /// <summary>The off-cells this dialog was opened with; the ones on absent (blank-front) columns are DORMANT
@@ -58,9 +61,10 @@ namespace RackCad.UI
 
             Title = string.IsNullOrWhiteSpace(elementLabel) ? "Guía de entrada" : elementLabel;
             Width = Math.Max(470, Math.Min(1000, 220 + levels.Count * 54));
-            Height = Math.Min(680, 245 + maxLevels * 30);
+            // +36: the shared "Aplicar a:" row of I-34 sits under the grid.
+            Height = Math.Min(716, 281 + maxLevels * 30);
             MinWidth = 450;
-            MinHeight = 300;
+            MinHeight = 336;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             FontFamily = new FontFamily("Segoe UI");
             Resources.MergedDictionaries.Add(new ResourceDictionary
@@ -112,6 +116,13 @@ namespace RackCad.UI
                     .Select(level => "Nivel " + (level + 1).ToString(CultureInfo.InvariantCulture)).ToArray()
             };
 
+            // I-34 — the shared bulk-edit row, declared with the FRENTE axis.
+            bulkEditor = new SelectionMatrixBulkEditor(model, SelectionMatrixScopeLabels.ByFrente);
+            bulkBar = new SelectionMatrixBulkBar(bulkEditor);
+            bulkBar.Attach(matrix);
+            DockPanel.SetDock(bulkBar, Dock.Bottom);
+            root.Children.Add(bulkBar);
+
             root.Children.Add(new ScrollViewer
             {
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -133,6 +144,11 @@ namespace RackCad.UI
 
         /// <summary>The working matrix state — a test seam (I-22, InternalsVisibleTo).</summary>
         internal SelectionMatrixModel Model => model;
+
+        /// <summary>The shared bulk-edit row and its editor — test seams (I-34).</summary>
+        internal SelectionMatrixBulkBar BulkBar => bulkBar;
+
+        internal SelectionMatrixBulkEditor BulkEditor => bulkEditor;
 
         /// <summary>The off-cells the dialog would return for the current state, without needing ShowDialog.</summary>
         internal IReadOnlyList<SelectiveGridCell> CurrentOffCells()

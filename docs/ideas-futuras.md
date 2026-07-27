@@ -395,13 +395,24 @@ no implementados, con lo que ya se sabe de cada uno:
   visualmente. Lo que I-18 dejó hecho y esa iniciativa hereda es la infraestructura compartida extraída del
   renderer Dinámico (`EditorPreviewPalette`/`Surface`/`Parts`), ya consumida por los dos editores y con la
   equivalencia del Dinámico medida. Se parte de una sola tubería, no de dos painters divergentes.
-- **PB-007 — Reconfigurador masivo de elementos de seguridad (prioridad alta del Owner, GENERAL, no solo
-  Push Back).** Hoy, para quitar el desviador del segundo nivel en 100 frentes hay que hacer 100 clics: las
-  rejillas de seguridad son celda a celda y no tienen alcances. Lo pedido es un aplicador masivo al patrón
-  del que ya existe en la interfaz de cada sistema (por celda, por frente, por nivel), disponible para cada
-  familia de seguridad. Toca los diálogos COMPARTIDOS, así que afecta a Selectivo y Dinámico: necesita
-  decisión de alcance del Owner antes de arrancar. Se apoya en `SelectionMatrix`/`SelectionMatrixModel`
-  (I-14/I-22), que ya tienen `SetAll` y celdas ausentes.
+- ~~**PB-007 — Reconfigurador masivo de elementos de seguridad (prioridad alta del Owner, GENERAL, no solo
+  Push Back).**~~ **RESUELTO por I-34** (rama `feature/edicion-masiva-seguridad`). La decisión de alcance
+  que este punto pedía la dio el Owner al abrir la iniciativa, y la amplió por addendum durante la
+  validación. Las **cuatro** matrices booleanas de seguridad —desviador (eje **poste**), tope (eje
+  **frente**, que cubre a la vez el tope del Selectivo y el **tope posterior de Push Back**), guía y
+  **parrilla**— ganan el estado **Activar/Desactivar** y los alcances **Celda / Nivel / Frente-o-Poste /
+  Todo**, sobre `SelectionMatrix`/`SelectionMatrixModel` como se preveía. La infraestructura es
+  **agnóstica a `RackSystemKind`**: cada diálogo declara sus etiquetas y capacidades. Contrato en
+  [`initiatives/I-34-edicion-masiva-seguridad.md`](initiatives/I-34-edicion-masiva-seguridad.md).
+- **Edición masiva de la DEFENSA de montacargas — candidato futuro INDEPENDIENTE** (nace del alcance que
+  I-34 dejó deliberadamente fuera; no es deuda de I-34, que cerró completa). La defensa es el único
+  elemento de seguridad que **no** es una matriz booleana: es un formulario **por poste** con dos
+  longitudes independientes (salida/entrada), sus dos casillas de «Auto» y su propio DTO
+  `SafetyPostDefense`. **No tiene eje de nivel**, así que los alcances «Celda» y «Nivel» de I-34 no
+  significan nada en ella y el mecanismo compartido no le aplica tal cual. Antes de tocarla hay que
+  decidir **qué es un alcance en un formulario por poste** —¿aplicar una longitud a todos los postes?,
+  ¿a un rango?, ¿por extremo?—. El Owner la mantuvo fuera al aprobar I-34 y dejó constancia de que **no
+  bloquea**.
 - **PB-011 — Editor «avanzado» de módulos en Push Back (prioridad alta del Owner).** El Dinámico permite
   seleccionar un módulo (cabecera o separador) y personalizarlo —medida, cantidad de separadores, cabecera
   personalizada—; Push Back no. Nota técnica levantada al arreglar PB-013: hoy **toda** cabecera de Push

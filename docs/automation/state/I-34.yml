@@ -1,0 +1,91 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-34
+  branch: feature/edicion-masiva-seguridad
+  claim_id: 1a2f5fcf-2430-49a1-9f56-1aa526bcdbf6
+  current_phase: 6
+  state: integration-ready
+  gate: none
+  attempts: 1
+  next_action: >-
+    INTEGRAR-en-main-por-git-merge-no-ff-en-la-sesion-de-integracion ·
+    tras-confirmar-la-CI-post-merge-verde-eliminar-worktree-rama-local-y-rama-remota ·
+    NINGUNA-accion-de-producto-pendiente-la-defensa-es-candidato-futuro-independiente
+  last_evidence_commit: 03c4c5ef0fa1c9b43c4729d39d2dd78f6d2a108f
+
+# --------------------------------------------------------------------------------------------------------
+# ALCANCE ENTREGADO. La adopcion productiva esta COMPLETA en las CUATRO matrices que el contrato incluye,
+# y el Owner ya la aprobo en AutoCAD, asi que los gates del dueno quedan CERRADOS.
+# --------------------------------------------------------------------------------------------------------
+increment:
+  delivered:
+    - inventario-auditado-de-las-5-matrices-booleanas-de-seguridad-y-de-los-consumidores-reales-del-control
+    - decisiones-cerradas-de-UX-y-arquitectura-en-el-contrato-seccion-7
+    - regresiones-rojas-verificadas-fallando-antes-de-cada-cambio-de-comportamiento
+    - fundacion-comun-minima-y-pura-sobre-SelectionMatrixModel
+    - guarda-fail-closed-de-un-alcance-NO-DEFINIDO-que-antes-se-interpretaba-como-Todo
+    - superficie-WPF-compartida-SelectionMatrixBulkBar-mas-SelectionMatrix-CellInteracted
+    - adopcion-en-SafetyDesviadorGridWindow-eje-POSTE
+    - adopcion-en-SafetyTopeGridWindow-eje-FRENTE-que-cubre-Selectivo-y-el-tope-posterior-de-Push-Back
+    - adopcion-en-SafetyGuiaEntradaGridWindow-eje-FRENTE
+    - adopcion-en-SafetyParrillaGridWindow-eje-FRENTE-CONSERVANDO-el-contador-vivo-por-celda
+    - extension-neutral-y-opt-in-del-control-CellAdornment-mas-RefreshAdornments
+  not_delivered:
+    - defensa-NO-entro-y-NO-bloqueo-queda-como-candidato-futuro-INDEPENDIENTE-en-ideas-futuras
+
+# --------------------------------------------------------------------------------------------------------
+# APROBACION FINAL DEL OWNER. Hay UN candidato y es este; los SHA anteriores quedan superados.
+# --------------------------------------------------------------------------------------------------------
+owner_validation_final:
+  candidate: dbdda74860052c481998da8b63383cf68ec499cc
+  dll_stamp: 1.0.0+dbdda74860052c481998da8b63383cf68ec499cc
+  dll_sha256: 5353c298b5b099ba9dedaa42c2252dd6891952c7fe83efd4c0261e4b82796e39
+  approved_in_autocad_2025: >-
+    desviador-tope-y-parrilla-del-Selectivo · desviador-y-guia-del-Dinamico ·
+    desviador-y-tope-posterior-de-Push-Back · alcances-Celda-Nivel-Frente-o-Poste-Todo ·
+    matrices-jagged-y-celdas-ausentes · contadores-vivos-de-parrilla ·
+    dibujo-BOM-persistencia-reapertura-actualizacion-y-GUID · incremento-de-altura-de-los-dialogos ·
+    Desactivar-como-estado-inicial · regresion-compartida-de-los-demas-dialogos
+  out_of_scope_not_blocking: la-defensa-no-entro-y-NO-bloqueo-el-cierre
+
+owner_partial_validation_previous:
+  candidate: f676aac5ee0711cea8c4c2dac221c6596114e0cc
+  approved: A-C-D-E-F-G-H-y-el-tope-de-B
+  confirmed: el-incremento-de-altura-de-las-ventanas-y-Desactivar-como-estado-inicial
+  defect_reported: faltaba-la-misma-edicion-masiva-para-las-parrillas-del-Selectivo
+  defect_status: CORREGIDO-la-parrilla-adopta-el-mecanismo-conservando-su-contador-vivo
+
+gates:
+  ci: verde-requerido-sobre-la-punta-publicada-4-de-4
+  plugin_build: >-
+    EJECUTADO-y-correcto-con-AutoCAD-cerrado ·
+    0-errores-propios-las-2-advertencias-son-los-MSB3277-conocidos-de-las-referencias-de-AutoCAD
+  autocad: CERRADO-el-Owner-aprobo-la-validacion-manual-completa-sobre-dbdda74
+  owner_validation: CERRADO-aprobacion-final-registrada-en-owner_validation_final
+  owner_decision: >-
+    RECIBIDA-2026-07-27-addendum-normativo-registrado-en-el-contrato-seccion-0 ·
+    la-parrilla-Selectiva-ENTRA-la-defensa-sigue-EXCLUIDA-y-el-contador-vivo-es-de-conservacion-obligatoria
+
+invariants:
+  - ningun-DTO-wire-format-store-geometria-BOM-catalogo-bloque-DWG-ni-namespace-cambia
+  - DesviadorCellsAreByPost-sigue-en-false-para-el-Dinamico-y-no-se-toca
+  - defensa-matriz-estructural-shell-visual-preview-y-guardas-traseras-intactos
+  - el-contador-vivo-por-celda-de-la-parrilla-y-su-total-al-pie-se-calculan-igual-que-antes
+  - la-tolerancia-historica-de-IsOn-una-celda-no-mostrada-cuenta-como-encendida-se-conserva
+  - el-adorno-por-celda-es-opt-in-asi-que-desviador-tope-y-guia-no-cambian-ni-una-linea
+  - las-celdas-ausentes-y-la-configuracion-dormida-de-SafetyDormantCells-no-se-alteran-ni-con-el-alcance-Todo
+  - la-columna-de-un-frente-en-blanco-no-puede-ser-primaria-y-ningun-alcance-la-toca
+  - cada-dialogo-conserva-Todos-Ninguno-sus-controles-auxiliares-y-sus-validaciones
+  - una-rejilla-en-la-que-no-se-usan-las-acciones-nuevas-se-comporta-exactamente-como-antes
+  - ningun-dialogo-contiene-ramas-por-Selectivo-Dinamico-o-Push-Back
+  - catalogos-bloques-DWG-deploy-y-workflows-de-CI-intactos-respecto-de-origin-main
+  - Domain-Application-y-Plugin-sin-un-solo-cambio-la-iniciativa-vive-entera-en-RackCad-UI
+  - I-35-editor-avanzado-de-Push-Back-no-fue-modificada-interseccion-solo-en-el-indice-de-iniciativas
+
+integration:
+  base: origin-main-7e48b5c06afb790621d4997aa93e44e0b53e8af7-sin-avanzar-desde-el-reclamo
+  rebase: NO-NECESARIO-el-trunk-no-avanzo-asi-que-el-arbol-aprobado-por-el-Owner-es-el-integrado
+  method: git-merge-no-ff-sin-squash-sin-force-y-sin-PR
+  note: >-
+    el-MERGE_SHA-y-su-CI-post-merge-viven-en-git-log-first-parent-main ·
+    este-archivo-se-escribe-ANTES-del-merge-y-no-los-inventa

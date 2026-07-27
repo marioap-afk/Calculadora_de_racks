@@ -56,6 +56,35 @@ toca Selectivo, catálogos, bloques DWG, el shell visual, I-23, I-25 ni la decis
 focalizada de fronteras físicas**, sobre el candidato `b840cfe`. `origin/main` **no avanzó** desde la base
 `0e505d8`: **sin rebase**. La rama se integra por `git merge --no-ff` en esta sesión.
 
+**I-34** (`feature/edicion-masiva-seguridad`) queda **integrada** el **2026-07-27**. Implementa
+**PB-007**, la **edición masiva de matrices de seguridad**: hasta ahora las rejillas eran celda a celda y
+solo ofrecían «Todos»/«Ninguno», así que quitar el desviador del segundo nivel en 100 frentes costaba 100
+clics. Las **cuatro** matrices booleanas —**desviador** (eje **poste**, el único del producto), **tope**
+(eje **frente**, y un solo diálogo cubre a la vez el tope del Selectivo y el **tope posterior de Push
+Back**), **guía** y **parrilla**— ganan el estado **Activar/Desactivar** y los alcances **Celda / Nivel /
+Frente-o-Poste / Todo**, la misma gramática de «Aplicar a:» que ya usaban los editores de diseño. La
+fundación es **pura** (`SelectionMatrixBulkEditor` sobre `SelectionMatrixModel`) y **agnóstica a
+`RackSystemKind`**: ningún diálogo ramifica por sistema, porque cada uno **declara** sus etiquetas y sus
+capacidades en vez de derivarlas. La **celda primaria** es transitoria —la última celda válida que el
+usuario pulsó— y **no se persiste**: lo que se guarda sigue siendo el mismo conjunto de `OffCells`, aguas
+arriba de `SafetyDormantCells`, así que las **celdas ausentes** y la configuración **dormida** de los
+frentes en blanco de I-33 no se alteran ni con el alcance «Todo». Cada operación masiva emite **una**
+notificación agregada con exactamente las celdas cambiadas, y el control repinta esas casillas **sin
+reconstruir** la rejilla: la nota viva del desviador y el total de la parrilla se recalculan **una** vez,
+no N. La **parrilla** entró por **addendum normativo del Owner** durante la validación, con la condición
+de **conservar su contador vivo por celda**; se resolvió con un **adorno opt-in y neutral** del control
+compartido (`CellAdornment` + `RefreshAdornments`), de modo que los otros tres diálogos no cambian ni una
+línea. Corrige además un defecto propio detectado en revisión: un valor **no definido** de
+`SelectionMatrixScope` caía en el `default:` y se interpretaba como «Todo», reescribiendo la rejilla
+entera —la peor falla posible en una matriz de seguridad—; ahora los dos sitios **fallan cerrado**. **No**
+toca Domain, Application ni Plugin (vive entera en `RackCad.UI`), ni DTO, wire format, geometría, dibujo,
+BOM, GUID, catálogos, bloques DWG, el shell visual, `DesviadorCellsAreByPost`, I-23 ni I-25. La
+**defensa** —el único elemento que no es una matriz booleana— **no entró y no bloqueó**: queda como
+candidato futuro **independiente** en `ideas-futuras.md`. El Owner **aprobó la validación manual en
+AutoCAD 2025** sobre el candidato `dbdda74`. `origin/main` **no avanzó** desde la base `7e48b5c`: **sin
+rebase**, así que el árbol validado es el integrado. La rama se integra por `git merge --no-ff` en esta
+sesión.
+
 I-06 (`docs/reestructura`) está cerrada e integrada desde el **2026-07-17**. Entregó
 `ARCHITECTURE.md`, nueve Context Packs, guías vigentes, archivo histórico y este HANDOFF reducido.
 La iniciativa reorganizó documentación y no cambió comportamiento de producto.
@@ -676,6 +705,48 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
 
 ## 4. Siguiente acción
 
+### I-34 — INTEGRADA en `main` (2026-07-27)
+
+El Owner **aprobó toda la validación manual en AutoCAD 2025**. La iniciativa queda **integrada**; no
+queda acción pendiente de I-34.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `feature/edicion-masiva-seguridad` |
+| **CODE_SHA / BUILD_SHA aprobado** por el Owner | `dbdda74860052c481998da8b63383cf68ec499cc` |
+| CI del candidato | **30283957763**, 4/4 sobre `dbdda74` |
+| Base | `origin/main` `7e48b5c06afb790621d4997aa93e44e0b53e8af7` — **no avanzó** desde el reclamo, así que **no hubo rebase** y el árbol que el Owner validó es exactamente el integrado (WORKFLOW §6) |
+| **DLL Debug** verificado en el cierre | `AssemblyInformationalVersion = 1.0.0+dbdda74860052c481998da8b63383cf68ec499cc`, SHA-256 `5353C298B5B099BA9DEDAA42C2252DD6891952C7FE83EFD4C0261E4B82796E39` — **bit a bit el aprobado** |
+| Suites en el cierre | `RackCad.Tests` 1522, `RackCad.UI.Tests` 469 (+71 sobre la base) |
+
+**Qué aprobó el Owner**: desviador, tope y **parrilla** del Selectivo; desviador y guía del Dinámico;
+desviador y **tope posterior** de Push Back; los alcances Celda / Nivel / Frente-o-Poste / Todo; matrices
+dentadas y celdas ausentes; los **contadores vivos de parrilla**; dibujo, BOM, persistencia, reapertura,
+actualización y GUID; el incremento de altura de los diálogos; `Desactivar` como estado inicial; y la
+regresión compartida de los demás diálogos.
+
+**Qué entregó**: una fundación pura sobre `SelectionMatrixModel` (celda primaria transitoria, estado
+Activar/Desactivar, cuatro alcances, celdas ausentes ignoradas, **una** notificación agregada por
+operación y **sin rebuild**), la fila WPF compartida `SelectionMatrixBulkBar`, y la adopción por los
+**cuatro** diálogos. La **parrilla** entró por addendum del Owner conservando su **contador vivo**,
+resuelto con un **adorno opt-in y neutral** del control (`CellAdornment` + `RefreshAdornments`) que deja
+los otros tres diálogos sin una sola línea de cambio. Corrigió además un defecto propio: un valor **no
+definido** de `SelectionMatrixScope` se interpretaba como «Todo» y reescribía la rejilla entera; ahora
+falla cerrado.
+
+**Alcance vivo en `RackCad.UI` únicamente**: Domain, Application y Plugin no tienen un solo cambio, y
+catálogos, bloques DWG, `deploy/` y los workflows de CI quedaron intactos.
+
+**La defensa NO entró y NO bloqueó**: pasa a `ideas-futuras.md` como **candidato futuro independiente**,
+desligado de I-34, con la decisión que habría que tomar antes de abordarla.
+
+**Siguiente**: **I-25** (`feature/guardas-traseras`) e **I-23** (namespaces, cierra la Fase 5).
+**I-35** (`feature/editor-avanzado-push-back`, PB-011) está **en curso y detenida esperando decisión del
+Owner**; su rama no fue modificada por esta integración. Al rebasar sobre el nuevo `main` encontrará un
+conflicto **mecánico y documental** en `docs/initiatives/README.md` (ambas iniciativas añaden su entrada
+al índice) y probablemente otro adyacente en `docs/ideas-futuras.md` (I-34 reescribió el bullet PB-007,
+que queda justo antes del PB-011 que I-35 amplió). Ninguno es funcional.
+
 ### I-33 — INTEGRADA en `main` (2026-07-27)
 
 El Owner **aprobó toda la validación manual**, incluida la **ronda focalizada de fronteras físicas**. La
@@ -786,7 +857,35 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-33 — 2026-07-27** (la vigente):
+**Baseline integrada de I-34 — 2026-07-27** (la vigente):
+
+- candidato de **código** aprobado por el Owner en AutoCAD y por CI:
+  `dbdda74860052c481998da8b63383cf68ec499cc` (CI run `30283957763`, **success** 4/4). Es también la punta
+  de la rama **antes del commit documental de cierre**, así que el binario validado y el árbol de código
+  integrado son el mismo. `origin/main` **no avanzó** desde la base `7e48b5c…`, de modo que **no hubo
+  rebase** y la validación del Owner vale sobre el árbol integrado (WORKFLOW §6). Este documento **no
+  inventa** el SHA del merge: vive en `git log --first-parent main`;
+- **DLL Debug** verificado en el cierre:
+  `AssemblyInformationalVersion = 1.0.0+dbdda74860052c481998da8b63383cf68ec499cc` (el sufijo `+<sha>`
+  **coincide con el SHA exacto de la rama**), SHA-256
+  `5353C298B5B099BA9DEDAA42C2252DD6891952C7FE83EFD4C0261E4B82796E39`, ruta
+  `…-feature-edicion-masiva-seguridad\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll`.
+  Recompilado en la sesión de cierre y **bit a bit idéntico** al que el Owner aprobó;
+- suites completas **verdes**: **1522** `RackCad.Tests` + **469** `RackCad.UI.Tests`, cero fallos y cero
+  omitidas. Las nuevas de I-34 son, todas en UI: `SelectionMatrixBulkEditTests` (13),
+  `SelectionMatrixBulkEditorStaTests` (12), `SelectionMatrixScopeGuardTests` (11),
+  `SafetyGridBulkAdoptionTests` (22) y `SafetyParrillaBulkAdoptionTests` (13). El core **no cambia**:
+  la iniciativa vive entera en `RackCad.UI`;
+- **filtros dirigidos**, todos con conteo no cero: UI `SelectionMatrix` 63, `SelectionMatrixBulkEdit` 25,
+  `SelectionMatrixScopeGuard` 11, `SafetyGridBulkAdoption` 22, `SafetyParrillaBulkAdoption` 13,
+  `SafetyGrid` 38, `Parrilla` 14, `Desviador` 28, `Tope` 35, `BlankFront` 36, `Selective` 32,
+  `PushBack` 132; core `Parrilla` 28, `Safety` 129, `Selective` 324, `Persistence` 119, `Bom` 106,
+  `Frontal` 75, `Lateral` 161, `Equivalence` 11, `Catalog` 118;
+- **builds Debug**: UI 0 errores / 0 advertencias; Plugin 0 errores con los 2 `MSB3277` conocidos;
+- **intactos respecto de `origin/main`**: `assets/` (catálogos), bloques DWG, `deploy/`, `.github/`
+  (workflows de CI) y los tres proyectos `RackCad.Domain`, `RackCad.Application` y `RackCad.Plugin`.
+
+**Baseline anterior — I-33, 2026-07-27:**
 
 - candidato de **código** aprobado por el Owner en AutoCAD y por CI:
   `b840cfe24578bc9faa3b13dad8b11d90d47aad84` (CI run `30240730244`, **success** 4/4). La punta de la rama
