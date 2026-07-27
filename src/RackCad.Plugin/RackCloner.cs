@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application;
+using RackCad.Plugin.Drawing;
 using RackCad.Plugin.Systems.Shared;
 
 namespace RackCad.Plugin
@@ -13,7 +14,7 @@ namespace RackCad.Plugin
     /// so edit-one-edits-all still holds.
     ///
     /// The copy-name uniqueness policy is this helper's own (append " (1)", " (2)", …). It is intentionally NOT
-    /// unified with <see cref="RackCad.Plugin.Headers.LateralHeaderDrawer"/>'s distinct "_1", "_2" policy: the two
+    /// unified with <see cref="RackCad.Plugin.Drawing.LateralHeaderDrawer"/>'s distinct "_1", "_2" policy: the two
     /// stay separate.
     /// </summary>
     internal static class RackCloner

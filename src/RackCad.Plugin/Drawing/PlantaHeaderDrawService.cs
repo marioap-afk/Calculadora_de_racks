@@ -8,7 +8,7 @@ using RackCad.Domain.RackFrames;
 using RackCad.Plugin.Systems.Selective;
 using RackCad.Plugin.Systems.Shared;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>
     /// Draws the PLANTA (top-down) view of a cabecera — the post footprints, plates and the collapsed celosía — as a

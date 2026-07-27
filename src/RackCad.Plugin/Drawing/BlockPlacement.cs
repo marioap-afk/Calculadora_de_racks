@@ -9,7 +9,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
 using RackCad.Plugin.Systems.Shared;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>
     /// Shared AutoCAD block-placement infrastructure, extracted from <see cref="LateralHeaderDrawService"/>

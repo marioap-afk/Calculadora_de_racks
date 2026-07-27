@@ -1,6 +1,6 @@
 using Autodesk.AutoCAD.DatabaseServices;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>Outcome of turning a header plan into a single AutoCAD block definition.</summary>
     public sealed class LateralHeaderBlockResult

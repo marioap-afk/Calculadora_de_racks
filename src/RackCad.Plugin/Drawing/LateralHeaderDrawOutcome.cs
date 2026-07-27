@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using RackCad.Application.Drawing;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>
     /// Result of drawing a lateral header: the pure plan that was executed plus the instances that were

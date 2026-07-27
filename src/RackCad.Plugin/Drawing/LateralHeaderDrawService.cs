@@ -13,7 +13,7 @@ using RackCad.Application.RackFrames;
 using RackCad.Domain.RackFrames;
 using RackCad.Plugin.Systems.Shared;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>
     /// AutoCAD-side orchestration for drawing a lateral header: it loads the catalog, builds the pure plan

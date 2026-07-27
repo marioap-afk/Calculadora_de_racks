@@ -7,7 +7,7 @@ using RackCad.Application;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Drawing;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>
     /// Thin AutoCAD adapter: turns a pure plan into AutoCAD block definitions whose sub-entities are the

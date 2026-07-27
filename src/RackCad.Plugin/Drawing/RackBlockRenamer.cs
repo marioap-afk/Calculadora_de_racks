@@ -4,7 +4,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 using RackCad.Application;
 using RackCad.Application.Diagnostics;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>
     /// Best-effort sync of a rack view's block DEFINITION name to the current rack name, so renaming a rack updates the

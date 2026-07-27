@@ -1,6 +1,7 @@
 using System;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
+using RackCad.Plugin.Drawing;
 
 namespace RackCad.Plugin
 {

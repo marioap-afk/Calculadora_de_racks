@@ -7,7 +7,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Diagnostics;
 using RackCad.Application.Drawing;
 
-namespace RackCad.Plugin.Headers
+namespace RackCad.Plugin.Drawing
 {
     /// <summary>
     /// Imports block definitions the active drawing is missing from a single library DWG kept next to the
