@@ -79,12 +79,14 @@ namespace RackCad.UI.Controls
             {
                 oldModel.CellChanged -= matrix.OnModelCellChanged;
                 oldModel.BulkChanged -= matrix.OnModelBulkChanged;
+                oldModel.ScopeApplied -= matrix.OnModelScopeApplied;
             }
 
             if (e.NewValue is SelectionMatrixModel newModel)
             {
                 newModel.CellChanged += matrix.OnModelCellChanged;
                 newModel.BulkChanged += matrix.OnModelBulkChanged;
+                newModel.ScopeApplied += matrix.OnModelScopeApplied;
             }
 
             matrix.Rebuild();
@@ -185,6 +187,23 @@ namespace RackCad.UI.Controls
 
             suppress = true;
             checkbox.IsChecked = e.IsSelected;
+            suppress = false;
+        }
+
+        /// <summary>A scoped bulk edit (I-34): repaint ONLY the cells the model reported, never the whole grid and
+        /// never a rebuild — the same performance invariant a single click already honours (AGENTS §6).</summary>
+        private void OnModelScopeApplied(object sender, SelectionMatrixScopeAppliedEventArgs e)
+        {
+            suppress = true;
+            foreach (var cell in e.Cells)
+            {
+                var checkbox = CellFor(cell.Column, cell.Row);
+                if (checkbox != null)
+                {
+                    checkbox.IsChecked = e.IsSelected;
+                }
+            }
+
             suppress = false;
         }
 

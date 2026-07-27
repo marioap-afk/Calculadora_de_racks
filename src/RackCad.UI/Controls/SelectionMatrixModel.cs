@@ -91,14 +91,63 @@ namespace RackCad.UI.Controls
         /// <summary>Raised after a bulk change (<see cref="SetAll"/>): observers repaint every cell once.</summary>
         public event EventHandler BulkChanged;
 
-        /// <summary>DECLARED SURFACE ONLY (I-34, red step): the single aggregated notification a scoped bulk edit
-        /// raises. Never raised yet — the foundation commit wires it.</summary>
+        /// <summary>
+        /// Raised ONCE per scoped bulk edit (<see cref="ApplyScope"/>), carrying exactly the cells that changed — the
+        /// aggregated notification of I-34. Deliberately NOT <see cref="CellChanged"/> per cell (an observer such as
+        /// the desviador's live clearance note would recompute N times) and NOT <see cref="BulkChanged"/> (which says
+        /// only "everything may have moved"). An edit that changes nothing raises nothing.
+        /// </summary>
         public event EventHandler<SelectionMatrixScopeAppliedEventArgs> ScopeApplied;
 
-        /// <summary>DECLARED SURFACE ONLY (I-34, red step): applies a scope anchored at (column, row). Inert.</summary>
+        /// <summary>
+        /// Sets every PRESENT cell of <paramref name="scope"/> to <paramref name="value"/>, anchored at
+        /// (<paramref name="column"/>, <paramref name="row"/>) — the primary cell, which
+        /// <see cref="SelectionMatrixScope.All"/> ignores. Absent cells (a jagged column's empty slot, a blank front's
+        /// whole column) are never written and never reported, so a bulk edit can neither resurrect them nor disturb
+        /// the dormant configuration that <c>SafetyDormantCells</c> preserves.
+        /// <para>
+        /// An out-of-range anchor is TOLERATED as a no-op rather than thrown: the adopting dialog's primary cell can go
+        /// stale when the grid is rebuilt for a new front count, and a stale anchor must not crash the dialog. (The
+        /// indexer and <see cref="SetSelected"/> keep throwing — they take a caller-chosen cell, not a remembered one.)
+        /// </para>
+        /// </summary>
+        /// <returns>The cells that changed, in column-major then row order; empty when nothing did.</returns>
         public IReadOnlyList<SelectionMatrixCell> ApplyScope(
             SelectionMatrixScope scope, int column, int row, bool value)
-            => Array.Empty<SelectionMatrixCell>();
+        {
+            var anchored = scope != SelectionMatrixScope.All;
+            if (anchored && (column < 0 || column >= Columns || row < 0 || row >= Rows || IsAbsent(column, row)))
+            {
+                return Array.Empty<SelectionMatrixCell>();
+            }
+
+            var changed = new List<SelectionMatrixCell>();
+            for (var c = 0; c < Columns; c++)
+            {
+                if (scope == SelectionMatrixScope.Column && c != column)
+                {
+                    continue;
+                }
+
+                for (var r = 0; r < Rows; r++)
+                {
+                    if (scope == SelectionMatrixScope.Row && r != row) continue;
+                    if (scope == SelectionMatrixScope.Cell && (c != column || r != row)) continue;
+                    if (IsAbsent(c, r) || selected[c, r] == value) continue; // absent, or already there: not a change
+
+                    selected[c, r] = value;
+                    changed.Add(new SelectionMatrixCell(c, r));
+                }
+            }
+
+            if (changed.Count == 0)
+            {
+                return Array.Empty<SelectionMatrixCell>(); // no-op and idempotent repeat: silent
+            }
+
+            ScopeApplied?.Invoke(this, new SelectionMatrixScopeAppliedEventArgs(scope, changed, value));
+            return changed;
+        }
 
         public int Columns { get; }
 
