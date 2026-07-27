@@ -11,7 +11,7 @@ automation_state:
     esperar-CI-verde-sobre-la-punta-publicada ·
     la-integracion-es-manual-y-serializada-el-agente-NO-hace-merge ·
     I-25-sigue-diferida-y-no-debe-reclamarse-mientras-I-23-viva
-  last_evidence_commit: 363608f
+  last_evidence_commit: 492bd12
 
 # --------------------------------------------------------------------------------------------------
 # BASELINE capturada sobre b43b5d1 ANTES de mover un solo archivo, y el resultado DESPUES.
@@ -40,6 +40,10 @@ result:
   build_solution_warnings: 4       # las MISMAS 4 de la baseline (2 xUnit preexistentes)
   bundle: verificado-105-comprobaciones-mas-harness-10-casos
   dead_doc_links_introduced: 0
+  candidate_sha: 492bd12963c54b71607ff9666320c222cd8c3344
+  ci_run: 30301576624              # verde 4/4 sobre el candidato
+  # El unico commit posterior a 492bd12 es este registro: solo docs, cero src/tests/assets,
+  # asi que la CI verde del candidato sigue valiendo para el arbol que se integra.
 
 # Filtros dirigidos, todos con conteo POSITIVO (un filtro que corre cero pruebas no prueba nada):
 targeted_filters:
