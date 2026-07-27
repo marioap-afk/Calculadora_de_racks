@@ -52,6 +52,8 @@ namespace RackCad.Application.Systems
                 var insertionX = mirrored ? module.EndX : module.StartX;
                 var placements = layout.PostPositions
                     .Select((y, postIndex) => new { Y = y, PostIndex = postIndex })
+                    // I-33 (Owner): la cabecera no se coloca en una frontera que no existe.
+                    .Where(item => DynamicFrontActivation.BoundaryExists(system, item.PostIndex))
                     .Where(item => DynamicDepthGeometry.AtPost(system, item.PostIndex).Contains(module.Index + 1))
                     .Select(item => new HeaderPlacement(insertionX, mirrored, item.Y))
                     .ToList();
@@ -106,7 +108,9 @@ namespace RackCad.Application.Systems
             {
                 for (var postIndex = 0; postIndex < postYs.Count; postIndex++)
                 {
-                    if (!DynamicDepthGeometry.AtPost(system, postIndex).Contains(module.Index + 1))
+                    // I-33 (Owner): sin frontera física no hay separador que anclar en esa línea de postes.
+                    if (!DynamicFrontActivation.BoundaryExists(system, postIndex)
+                        || !DynamicDepthGeometry.AtPost(system, postIndex).Contains(module.Index + 1))
                     {
                         continue;
                     }
@@ -151,6 +155,13 @@ namespace RackCad.Application.Systems
                 var placement = DynamicDerivedPostGeometry.Resolve(boundary, system.DerivedPostReinforced, finPoste);
                 for (var postIndex = 0; postIndex < postYs.Count; postIndex++)
                 {
+                    // I-33 (Owner): el poste derivado y su refuerzo pertenecen a la línea de postes; sin frontera
+                    // física no se colocan.
+                    if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                    {
+                        continue;
+                    }
+
                     var range = DynamicDepthGeometry.AtPost(system, postIndex);
                     var boundaryPosition = system.Modules
                         .Where(module => module.EndX <= boundary + 1e-6)
@@ -180,6 +191,12 @@ namespace RackCad.Application.Systems
 
             for (var postIndex = 0; postIndex < postYs.Count; postIndex++)
             {
+                // I-33 (Owner): igual que los derivados, los postes de frontera de fondo viven en la línea de postes.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var range = DynamicDepthGeometry.AtPost(system, postIndex);
                 foreach (var offset in DynamicDepthGeometry.BoundaryPostOffsets(system, range))
                 {
@@ -264,6 +281,14 @@ namespace RackCad.Application.Systems
             for (var index = 0; index < system.Fronts.Count; index++)
             {
                 var front = system.Fronts[index];
+
+                // A blank front keeps its post line and its claro above, but collapses to zero load levels, so no
+                // IN/OUT beam and no intermediate support cross it (I-33).
+                if (DynamicFrontActivation.IsBlank(front))
+                {
+                    continue;
+                }
+
                 var envelope = DynamicRackLevelGeometry.Envelope(system, front);
                 var beamId = envelope.InOutBeamCatalogId;
                 var beamBlock = CatalogLookup.Block(catalog, beamId, View);

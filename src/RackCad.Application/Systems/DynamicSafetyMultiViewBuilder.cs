@@ -40,6 +40,13 @@ namespace RackCad.Application.Systems
 
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
+                // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var origin = new Point2D(layout.PostPositions[postIndex], 0.0);
                 var at = new Point2D(origin.X - plateMate.X, origin.Y - plateMate.Y);
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
@@ -99,6 +106,13 @@ namespace RackCad.Application.Systems
 
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
+                // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
@@ -155,6 +169,13 @@ namespace RackCad.Application.Systems
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
+                // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
+                // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var draws = end == DynamicRackEnd.Exit ? setting.DrawsExit : setting.DrawsEntrance;
                 if (!draws)
@@ -307,6 +328,13 @@ namespace RackCad.Application.Systems
             var postCount = layout.PostPositions.Count;
             for (var postIndex = 0; postIndex < postCount; postIndex++)
             {
+                // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
+                // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var setting = DynamicForkliftDefensePlan.ForSelection(selection, postIndex, postCount);
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
@@ -366,6 +394,13 @@ namespace RackCad.Application.Systems
 
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
+                // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 if (!DrawsAtEnd(selection, postIndex, end))
                 {
                     continue;
@@ -431,6 +466,13 @@ namespace RackCad.Application.Systems
 
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): la seguridad indexada por POSTE se atornilla a esa frontera; si no existe, no se
+                // coloca. La celda guardada NO se mueve a otro poste: queda dormida y vuelve al reactivar un frente.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var depthRange = DynamicDepthGeometry.AtPost(system, postIndex);
                 var rangeStart = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.StartPosition)?.StartX ?? 0.0;
                 var rangeEnd = system.Modules.FirstOrDefault(module => module.Index + 1 == depthRange.EndPosition)?.EndX ?? system.TotalLength;
@@ -486,18 +528,21 @@ namespace RackCad.Application.Systems
                 return system?.LoadBeamLevels.Count ?? 0;
             }
 
+            // Level-indexed safety follows the LOAD, so a blank front contributes none and a post surrounded only by
+            // blank fronts receives no level-indexed piece (I-33). EffectiveLoadLevels already carries the historical
+            // Math.Max(1, ...) floor for an active front, so a rack without blank fronts is unaffected.
             var count = 0;
             if (postIndex > 0 && postIndex - 1 < system.Fronts.Count)
             {
-                count = Math.Max(count, system.Fronts[postIndex - 1].LoadLevels);
+                count = Math.Max(count, DynamicFrontActivation.EffectiveLoadLevels(system.Fronts[postIndex - 1]));
             }
 
             if (postIndex < system.Fronts.Count)
             {
-                count = Math.Max(count, system.Fronts[postIndex].LoadLevels);
+                count = Math.Max(count, DynamicFrontActivation.EffectiveLoadLevels(system.Fronts[postIndex]));
             }
 
-            return Math.Max(1, count);
+            return count;
         }
 
         private static HeaderBlockInstance Piece(

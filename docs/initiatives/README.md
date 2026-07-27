@@ -247,6 +247,41 @@ Planes disponibles:
   módulos) y **PB-014** (frente en blanco). `requires_autocad: true`, `requires_owner_validation: true`;
   `requires_owner_decision: false`. Estado versionado en
   [`../automation/state/I-32.yml`](../automation/state/I-32.yml).
+- [`I-33-frente-en-blanco.md`](I-33-frente-en-blanco.md): **Frente en blanco para Dinámico y Push Back**
+  (tipo: feature; rama `feature/frente-en-blanco`). Implementa **PB-014**, que I-32 dejó diferido
+  señalando que «necesita decisión de alcance» por ser compartido con el Dinámico; esa decisión la da el
+  Owner al abrir la iniciativa. Un frente pasa a tener estado **Activo / En blanco**: en blanco **conserva
+  su claro y su estructura** (postes, alturas, cabeceras, separadores y postes derivados), **sigue
+  desplazando** a los frentes posteriores y **no lleva ningún nivel ni componente de carga** —ni larguero
+  IN/OUT, ni intermedio, ni cama, ni larguero posterior o tope de Push Back, ni seguridad indexada por
+  nivel— en ninguna de las cuatro vistas ni en los dos BOM. Su configuración queda **dormida** para
+  reactivarlo tal cual estaba, **sin celda falsa**. La regla vive en **una** autoridad de Application
+  (`DynamicFrontActivation`) sobre la **estructura dinámica que Push Back compone**, así que los dos
+  sistemas no pueden divergir; para un frente activo devuelve el histórico `Math.Max(1, LoadLevels)`, de
+  modo que un rack sin frentes en blanco **no cambia en nada** y **serializa igual que antes** (la bandera
+  se omite del wire). Los documentos legacy cargan **todos los frentes activos**. La regla «al menos un
+  frente activo» tiene **una sola** comprobación canónica y **nada la normaliza en silencio**: el editor
+  **previene** de forma no destructiva (se niega a blanquear el último activo, sin cambiar nada) y un
+  payload explícitamente todo en blanco se **rechaza con error visible** en el resolver y en
+  `RackDesignValidation`. Al **crecer** frentes, el nuevo **nace activo aunque el template seleccionado esté
+  en blanco**; al **seleccionar** un frente en blanco la selección sigue siendo válida pero se deshabilitan
+  los controles de nivel/celda y los alcances, y reactivarlo restaura la edición de inmediato. Fuera de
+  alcance: Selectivo, **PB-001**, **PB-007**, **PB-011**, I-23, I-25 (declaradas en `conflicts_with`),
+  catálogos, DWG y el shell visual. En los **diálogos de seguridad** las celdas de nivel de un frente en
+  blanco son **inexistentes** y su configuración guardada se preserva **dormida**; la forma de la rejilla
+  del desviador y la visibilidad del **selector de lado** quedan **desacopladas**. Incorpora además
+  —**decisión del Owner**— que la **frontera compartida por dos frentes en blanco NO existe**: los dos
+  bordes exteriores existen siempre y una interior existe salvo que sus **dos** frentes adyacentes estén en
+  blanco, así que una corrida de N blancos pierde sus **N−1** fronteras interiores; desaparece el **ensamble
+  físico** (poste, placa, cabecera/separador, postes derivados y refuerzos, el corte lateral entero, su
+  parte del BOM y su seguridad por poste) y **nunca el frente lógico** —índices, claros, ancho, largo total
+  y coordenadas X se conservan—, con `DynamicFrontActivation.BoundaryExists` como autoridad única.
+  `requires_autocad: true`, `requires_owner_validation: true`; `requires_owner_decision: false`.
+  **INTEGRADA (2026-07-27)**: el Owner **aprobó** toda la validación manual, incluida la ronda focalizada de
+  fronteras físicas, sobre el candidato `b840cfe` (CI 30240730244, 4/4); **sin rebase** (`origin/main` no
+  avanzó desde la base `0e505d8`); integrada por `git merge --no-ff`; rama y worktree eliminados tras la CI
+  post-merge verde. Estado versionado en
+  [`../automation/state/I-33.yml`](../automation/state/I-33.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

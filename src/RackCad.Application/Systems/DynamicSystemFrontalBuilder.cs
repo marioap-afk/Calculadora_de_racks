@@ -58,6 +58,13 @@ namespace RackCad.Application.Systems
 
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): la frontera compartida por dos frentes EN BLANCO no tiene poste ni placa. Se omite el
+                // ENSAMBLE, no la coordenada: el resto de las fronteras conserva su X exacta.
+                if (!DynamicFrontActivation.BoundaryExists(system, postIndex))
+                {
+                    continue;
+                }
+
                 var x = layout.PostPositions[postIndex];
                 var origin = new Point2D(x, 0.0);
                 var post = new HeaderBlockInstance

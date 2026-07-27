@@ -295,11 +295,71 @@ namespace RackCad.UI
 
                 RearPeralteBox.SelectedItem = RearPeraltes.FirstOrDefault(p => Math.Abs(p - push.HighEndBeamPeralte) < 1e-6);
                 if (RearPeralteBox.SelectedItem == null) RearPeralteBox.SelectedItem = PushBackDefaults.HighEndBeamDefaultPeralte;
+
+                ApplyBlankFrontEditability(front.IsActive);
             }
             finally
             {
                 suppressSync = wasSuppressed;
             }
+        }
+
+        /// <summary>
+        /// I-33: un frente EN BLANCO conserva una seleccion valida, pero sus niveles y celdas no existen, asi que todo
+        /// control que los edite —incluidos los alcances ligados a celda— se deshabilita mientras dure ese estado. Los
+        /// controles ESTRUCTURALES del frente (posiciones, fondos e inicio en fondo) siguen siendo validos y quedan
+        /// disponibles. Reactivar el frente vuelve a llamar aqui y restaura la edicion de inmediato.
+        /// </summary>
+        private void ApplyBlankFrontEditability(bool isActive)
+        {
+            const string reason = "El frente esta en blanco: no tiene niveles ni celdas que editar. "
+                                  + "Desmarca «En blanco» para volver a editarlo.";
+
+            // Nivel y elevacion del primer larguero: editan NIVELES.
+            foreach (var control in new Control[] { LevelsBox, FirstLevelHeightBox, SelectedLevelBox })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+
+            // Celda seleccionada y su peralte posterior: editan CELDAS inexistentes.
+            foreach (var control in new Control[]
+                     {
+                         CellPalletFrontBox, CellPalletHeightBox, CellPalletWeightBox, CellClearBox,
+                         CellBeamLengthOverrideBox, CellInOutBeamBox, CellInOutPeralteBox,
+                         CellIntermediateBeamBox, CellIntermediatePeralteBox, RearPeralteBox
+                     })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+
+            // Alcances/aplicaciones ligados a CELDA. Los tres botones de datos del FRENTE quedan disponibles: copian
+            // valores estructurales, que siguen siendo validos en un frente en blanco.
+            foreach (var control in new Control[]
+                     { ApplyCellButton, ApplySelectedButton, ApplyLevelButton, ApplyFrontButton, ApplyAllButton })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+        }
+
+        /// <summary>Original tooltips, so explaining WHY a control is disabled never destroys the tooltip the control
+        /// already had (several carry real usage notes).</summary>
+        private readonly Dictionary<Control, object> blankToolTips = new Dictionary<Control, object>();
+
+        private void SetBlankSensitive(Control control, bool isActive, string reason)
+        {
+            if (control == null)
+            {
+                return;
+            }
+
+            if (!blankToolTips.ContainsKey(control))
+            {
+                blankToolTips[control] = control.ToolTip;
+            }
+
+            control.IsEnabled = isActive;
+            ToolTipService.SetShowOnDisabled(control, true);
+            control.ToolTip = isActive ? blankToolTips[control] : reason;
         }
 
         /// <summary>
@@ -553,21 +613,39 @@ namespace RackCad.UI
                 PushBackMatrixGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             }
 
-            // Column headers: "Frente N" (click selects that front's primary cell).
+            // Column headers: "Frente N" (click selects that front's primary cell) + the Activo/En blanco toggle (I-33).
             for (var f = 0; f < fronts; f++)
             {
                 var captured = f;
+                var column = new StackPanel { Margin = new Thickness(2.0, 0.0, 2.0, 3.0) };
                 var header = new TextBlock
                 {
                     Text = "Frente " + (f + 1).ToString(CultureInfo.InvariantCulture),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     FontWeight = FontWeights.SemiBold,
-                    Margin = new Thickness(2.0, 0.0, 2.0, 3.0),
                     Cursor = Cursors.Hand,
                     Foreground = f == state.Structure.SelectedFrontIndex ? CardPrimaryStroke : CardLabelBrush
                 };
                 header.MouseLeftButtonDown += (_, __) => SelectMatrixCell(captured, state.Structure.SelectedLevelIndex, false);
-                AddMatrixElement(header, 0, f + 1);
+                column.Children.Add(header);
+
+                // El frente en blanco conserva su claro y su estructura, desplaza los frentes posteriores y deja de
+                // llevar niveles; su configuracion queda dormida y regresa al reactivarlo.
+                var blank = new CheckBox
+                {
+                    Content = "En blanco",
+                    IsChecked = !state.Structure.IsActive(captured),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(0.0, 3.0, 0.0, 0.0),
+                    FontSize = 10.5,
+                    Foreground = CardLabelBrush,
+                    ToolTip = "Conserva el claro y la estructura del frente, desplaza los frentes posteriores y no lleva "
+                              + "niveles ni componentes de carga. Su configuracion se conserva para reactivarlo."
+                };
+                blank.Checked += (_, __) => SetFrontActive(captured, false);
+                blank.Unchecked += (_, __) => SetFrontActive(captured, true);
+                column.Children.Add(blank);
+                AddMatrixElement(column, 0, f + 1);
             }
 
             // Row labels + cards, level 1 at the bottom.
@@ -698,6 +776,45 @@ namespace RackCad.UI
             {
                 MutateStructure(() => state.SetFrontCount(requested));
             }
+        }
+
+        /// <summary>
+        /// Switches one front between Activo and En blanco (I-33). A blank front keeps its claro and its structure and
+        /// still displaces the fronts behind it, but carries no level and therefore no larguero, cama, larguero
+        /// posterior ni tope. Its configuration stays dormant, so the same box brings it back exactly as it was.
+        /// </summary>
+        private void SetFrontActive(int index, bool isActive)
+        {
+            if (suppressSync || index < 0 || index >= state.Structure.Count
+                || state.Structure.IsActive(index) == isActive)
+            {
+                return;
+            }
+
+            if (!AllFieldsValid(out var error))
+            {
+                SetStatus(error, true);
+                RenderPushBackMatrix();   // re-checks the box the refused click had flipped
+                return;
+            }
+
+            var applied = false;
+            MutateStructure(() => applied = state.SetActive(index, isActive));
+            if (!applied)
+            {
+                SetStatus("Al menos un frente debe permanecer activo.", true);
+                RenderPushBackMatrix();
+                return;
+            }
+
+            SetStatus(
+                isActive
+                    ? string.Format(CultureInfo.InvariantCulture, "Frente {0} activo.", index + 1)
+                    : string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Frente {0} en blanco: conserva claro y estructura, sin niveles de carga.",
+                        index + 1),
+                false);
         }
 
         private void AddFront_Click(object sender, RoutedEventArgs e) => MutateStructure(() => state.SetFrontCount(state.Structure.Count + 1));
@@ -884,15 +1001,18 @@ namespace RackCad.UI
         /// per-FRONT list and index it by post, so the last post (and every interior one next to a taller front) offered
         /// fewer levels than the drawing places — cells the user could see drawn but not switch off.
         /// </summary>
+        /// <remarks>
+        /// I-33: los conteos salen de la AUTORIDAD compartida. Un frente en blanco aporta CERO, y un poste cuyos unicos
+        /// vecinos estan en blanco tambien, de modo que su columna del desviador se dibuja SIN celdas.
+        /// </remarks>
         internal IReadOnlyList<int> DesviadorLevelsPerPost()
-            => DynamicFrontGeometry.LoadLevelsPerPost(
-                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList());
+            => DynamicFrontActivation.EffectiveLevelsPerPost(state.Structure.EffectiveLevelCounts());
 
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
             var elements = SafetyElementsForDialog();
             var levels = PushBackRearTopeDialogAdapter.LevelsPerFrente(
-                state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels)));
+                state.Structure.EffectiveLevelCounts(), allowBlankFronts: true);
             var postCount = Math.Max(2, state.Structure.Count + 1);
 
             // The rear stop is edited INSIDE this same dialog, as its own visible section (Owner decision 2026-07-24).
@@ -938,7 +1058,7 @@ namespace RackCad.UI
                 : ShowRearTopeDialog(
                     config,
                     PushBackRearTopeDialogAdapter.LevelsPerFrente(
-                        state.Structure.Fronts.Select(front => Math.Max(1, front.LoadLevels))));
+                        state.Structure.EffectiveLevelCounts(), allowBlankFronts: true));
 
         /// <summary>Shows the real shared safety dialog; NULL when the user cancelled.</summary>
         private IReadOnlyList<SelectiveSafetySelection> ShowSafetyDialog(
@@ -953,6 +1073,10 @@ namespace RackCad.UI
                 includeDefensa: true, includeGuia: false, useDynamicSafetyDefaults: true,
                 extraSection: extraSection,
                 desviadorLevelsPerPost: DesviadorLevelsPerPost(),
+                allowBlankFrontColumns: true,
+                // PB-003: Push Back carga por un solo extremo, así que el selector de cara se OCULTA. Ahora es una
+                // decisión explícita e independiente de la lista por poste, no un efecto secundario de entregarla.
+                showDesviadorSide: false,
                 // PB-008/009/010: the two ends of the defence are named for what Push Back really has, the rear one is
                 // off by default, and each end can follow the automatic 12"/36" that recomputes with the front count.
                 defensaLowEndOnly: true)

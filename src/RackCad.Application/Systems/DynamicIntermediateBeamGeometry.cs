@@ -101,7 +101,7 @@ namespace RackCad.Application.Systems
             }
 
             var projected = system.Fronts
-                .Where(front => front != null && front.LoadLevels >= levelNumber)
+                .Where(front => DynamicFrontActivation.EffectiveLoadLevels(front) >= levelNumber)
                 .Select(front => PeralteAt(front, levelNumber))
                 .DefaultIfEmpty(0.0)
                 .Max();
@@ -124,7 +124,7 @@ namespace RackCad.Application.Systems
             }
 
             var projected = DynamicFrontGeometry.AdjacentFronts(system, postIndex)
-                .Where(front => front.LoadLevels >= levelNumber)
+                .Where(front => DynamicFrontActivation.EffectiveLoadLevels(front) >= levelNumber)
                 .Select(front => PeralteAt(front, levelNumber))
                 .DefaultIfEmpty(0.0)
                 .Max();
@@ -135,7 +135,7 @@ namespace RackCad.Application.Systems
         public static string BeamIdAtPost(DynamicRackSystem system, int postIndex, int levelNumber)
         {
             var selected = DynamicFrontGeometry.AdjacentFronts(system, postIndex)
-                .Where(front => front.LoadLevels >= levelNumber)
+                .Where(front => DynamicFrontActivation.EffectiveLoadLevels(front) >= levelNumber)
                 .OrderByDescending(front => PeralteAt(front, levelNumber))
                 .FirstOrDefault();
             return BeamIdAt(selected, levelNumber);

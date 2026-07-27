@@ -205,7 +205,9 @@ namespace RackCad.Application.Systems
                 system.Fronts.Add(front);
             }
             DynamicDepthGeometry.ResolveCoordinates(system);
-            var projectedLevels = resolvedFronts
+            // The rack-wide projection represents what the rack CARRIES, so a blank front never supplies it even when
+            // its dormant configuration is the tallest one (I-33).
+            var projectedLevels = DynamicFrontActivation.Active(resolvedFronts)
                 .OrderByDescending(front => front.LoadBeamLevels.Count)
                 .ThenByDescending(front => front.EndX - front.StartX)
                 .FirstOrDefault()?.LoadBeamLevels;
@@ -284,6 +286,7 @@ namespace RackCad.Application.Systems
                 {
                     var frontDesign = new DynamicRackFrontDesign
                     {
+                        IsActive = front.IsActive,
                         PalletCount = front.PalletCount,
                         LoadLevels = front.LoadLevels,
                         PalletsDeep = front.PalletsDeep,
@@ -381,6 +384,10 @@ namespace RackCad.Application.Systems
                 throw new ArgumentException("La altura manual debe ser mayor que cero.", nameof(design));
             if (design.PalletTolerance <= 0.0)
                 throw new ArgumentException("La holgura transversal debe ser mayor que cero.", nameof(design));
+            // I-33: un payload explicitamente TODO EN BLANCO se rechaza con error visible; nunca se normaliza en
+            // silencio reactivando un frente. La comprobacion es la canonica compartida, no una guarda propia.
+            if (!DynamicFrontActivation.HasActiveFront(design.Fronts))
+                throw new ArgumentException(DynamicFrontActivation.AllBlankMessage, nameof(design));
             foreach (var front in design.Fronts)
             {
                 if (front == null || front.PalletCount < 1)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using RackCad.UI.Controls;
 
@@ -38,6 +39,11 @@ namespace RackCad.UI
         }
 
         private readonly CheckBox frontal;
+        private readonly IReadOnlyList<int> levelsPerColumn;
+
+        /// <summary>The off-cells this dialog was opened with; the ones on absent (blank-front) columns are DORMANT
+        /// and must survive the round trip untouched (I-33).</summary>
+        private readonly IReadOnlyList<SelectiveGridCell> storedOffCells;
 
         public TopeResult Result { get; private set; }
 
@@ -52,11 +58,15 @@ namespace RackCad.UI
         public SafetyTopeGridWindow(string label, IReadOnlyList<int> levelsPerFrente, bool shared, SafetySide side, double saque, bool frontal, IEnumerable<SelectiveGridCell> offCells, int fondoCount = 1, int fondo = -1, bool showSharedAndSide = true)
         {
             var levels = levelsPerFrente ?? new List<int>();
+            // A supplied count of ZERO already renders as an absent column here (no flooring), which is what a front EN
+            // BLANCO needs (I-33); its stored cells are kept dormant by PersistedOffCells.
+            levelsPerColumn = levels;
+            storedOffCells = (offCells ?? Enumerable.Empty<SelectiveGridCell>())
+                .Where(cell => cell != null)
+                .ToList();
             model = SelectionMatrixModel.WithJaggedColumns(
                 levels,
-                (offCells ?? Enumerable.Empty<SelectiveGridCell>())
-                    .Where(cell => cell != null)
-                    .Select(cell => new SelectionMatrixCell(cell.Frente, cell.Level)));
+                storedOffCells.Select(cell => new SelectionMatrixCell(cell.Frente, cell.Level)));
 
             var frentes = levels.Count;
             var maxLevels = frentes > 0 ? levels.Max() : 0;
@@ -198,10 +208,11 @@ namespace RackCad.UI
                 Fondo = fondoBox == null || fondoBox.SelectedIndex <= 0 ? -1 : fondoBox.SelectedIndex - 1
             };
 
-            foreach (var cell in model.UnselectedCells())
-            {
-                result.OffCells.Add(new SelectiveGridCell { Frente = cell.Column, Level = cell.Row }); // an off cell
-            }
+            // The cells shown as OFF plus the DORMANT ones stored on absent (blank-front) columns, which this grid never
+            // rendered and therefore could not report; dropping them would erase a blank front's configuration (I-33).
+            var live = model.UnselectedCells()
+                .Select(cell => new SelectiveGridCell { Frente = cell.Column, Level = cell.Row });
+            result.OffCells.AddRange(SafetyDormantCells.Merge(live, storedOffCells, levelsPerColumn));
 
             return result;
         }

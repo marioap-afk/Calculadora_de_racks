@@ -98,6 +98,22 @@ namespace RackCad.Application.Systems
             SyncPushConfig();
         }
 
+        /// <summary>
+        /// Switch a front between Activo and En blanco (I-33). The matrix owns the flag and refuses to blank the last
+        /// active front; the parallel Push Back cells are re-synced but never trimmed, so the blank front's rear
+        /// peraltes and tope flags stay DORMANT and come back intact when it is reactivated. Returns the verdict.
+        /// </summary>
+        public bool SetActive(int index, bool isActive)
+        {
+            var applied = structure.SetActive(index, isActive);
+            if (applied)
+            {
+                SyncPushConfig();
+            }
+
+            return applied;
+        }
+
         /// <summary>Set or (extend) toggle the matrix selection at a cell. The selection is the matrix's alone.</summary>
         public void ToggleCell(int frontIndex, int levelIndex, bool extendSelection)
             => structure.ToggleCell(frontIndex, levelIndex, extendSelection);

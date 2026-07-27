@@ -19,6 +19,10 @@ namespace RackCad.UI
     {
         private readonly SelectionMatrixModel model;
         private readonly IReadOnlyList<int> levelsPerPost;
+
+        /// <summary>The off-cells this dialog was opened with. Those sitting on a column the grid renders as ABSENT —
+        /// a front en blanco (I-33) — are DORMANT: invisible here, but they must survive the round trip untouched.</summary>
+        private readonly IReadOnlyList<SelectiveGridCell> storedOffCells;
         private readonly ComboBox side;
         private readonly TextBox longitud;
         private readonly TextBox firstHeight;
@@ -63,12 +67,16 @@ namespace RackCad.UI
             int fallbackPostCount,
             IReadOnlyList<int> fallbackLevelsPerFrente,
             bool fallbackLevelsArePerPost = false,
-            bool showSide = true)
+            bool showSide = true,
+            bool allowBlankColumns = false)
         {
             this.elementId = elementId;
             this.system = system;
             this.catalog = catalog;
             this.showSide = showSide;
+            this.storedOffCells = (offCells ?? Enumerable.Empty<SelectiveGridCell>())
+                .Where(cell => cell != null)
+                .ToList();
 
             var initial = WorkingSelection(
                 Effective(longitud, SelectiveSafetyDefaults.DesviadorLongitud),
@@ -85,7 +93,7 @@ namespace RackCad.UI
             var plan = SelectiveDesviadorPlan.Build(system, catalog, gridSelection);
             levelsPerPost = plan.LevelCounts.Count > 0
                 ? plan.LevelCounts
-                : FallbackCounts(fallbackPostCount, fallbackLevelsPerFrente, fallbackLevelsArePerPost);
+                : FallbackCounts(fallbackPostCount, fallbackLevelsPerFrente, fallbackLevelsArePerPost, allowBlankColumns);
 
             var posts = levelsPerPost.Count;
             var maxLevels = posts > 0 ? levelsPerPost.Max() : 0;
@@ -243,9 +251,18 @@ namespace RackCad.UI
                 Longitud = length,
                 FirstLevelHeight = first,
                 LevelCounts = levelsPerPost.ToList(),
-                OffCells = CurrentOffCells()
+                OffCells = PersistedOffCells()
             };
         }
+
+        /// <summary>
+        /// What the dialog PERSISTS: the cells it shows as OFF plus the DORMANT ones stored on columns it rendered as
+        /// absent (a front en blanco, I-33). Without the merge, accepting would silently erase a blank front's stored
+        /// configuration, which must instead come back intact when the front is reactivated. The rule is the shared
+        /// <see cref="SafetyDormantCells"/>, so the three level-indexed grids cannot drift.
+        /// </summary>
+        internal List<SelectiveGridCell> PersistedOffCells()
+            => SafetyDormantCells.Merge(CurrentOffCells(), storedOffCells, levelsPerPost).ToList();
 
         private void OnOk()
         {
@@ -340,7 +357,13 @@ namespace RackCad.UI
         private static SafetySide EffectiveSide(SafetySide value)
             => value == SafetySide.Left || value == SafetySide.Right ? value : SafetySide.Both;
 
-        private static IReadOnlyList<int> FallbackCounts(int postCount, IReadOnlyList<int> levelsPerFrente, bool levelsArePerPost)
+        /// <param name="allowBlankColumns">
+        /// I-33, opt-in: when true a supplied count of ZERO is honoured instead of floored to one, so a front EN BLANCO
+        /// — or a post whose only neighbours are blank — renders as a column with no cells. Default false keeps the
+        /// historical flooring verbatim; the Selectivo never supplies a zero, so its grid is unchanged.
+        /// </param>
+        private static IReadOnlyList<int> FallbackCounts(
+            int postCount, IReadOnlyList<int> levelsPerFrente, bool levelsArePerPost, bool allowBlankColumns)
         {
             var count = Math.Max(1, postCount);
             var result = new int[count];
@@ -348,15 +371,17 @@ namespace RackCad.UI
             {
                 if (levelsArePerPost)
                 {
-                    result[post] = levelsPerFrente != null && post < levelsPerFrente.Count
-                        ? Math.Max(1, levelsPerFrente[post])
+                    var supplied = levelsPerFrente != null && post < levelsPerFrente.Count
+                        ? levelsPerFrente[post]
                         : 1;
+                    result[post] = allowBlankColumns ? Math.Max(0, supplied) : Math.Max(1, supplied);
                     continue;
                 }
 
                 var left = post > 0 && levelsPerFrente != null && post - 1 < levelsPerFrente.Count ? levelsPerFrente[post - 1] : 0;
                 var right = levelsPerFrente != null && post < levelsPerFrente.Count ? levelsPerFrente[post] : 0;
-                result[post] = Math.Max(1, Math.Max(left, right) + 1);
+                var adjacent = Math.Max(left, right);
+                result[post] = allowBlankColumns && adjacent <= 0 ? 0 : Math.Max(1, adjacent + 1);
             }
 
             return result;

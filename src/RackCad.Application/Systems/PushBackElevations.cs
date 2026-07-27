@@ -296,7 +296,9 @@ namespace RackCad.Application.Systems
                     .Where(front => front != null)
                     .Select(front => new RackFrontLevelElevations(
                         front.Index,
-                        front.LoadBeamLevels.Count,
+                        // A blank front keeps its elevations DORMANT on the front, so the authority reports the
+                        // EFFECTIVE count — zero — instead of claiming levels that nothing places (I-33).
+                        DynamicFrontActivation.EffectiveLoadLevels(front),
                         front.EndX - front.StartX,
                         LowInsertions(system, catalog, front))),
                 systemEnvelope: LowInsertions(system, catalog, null));

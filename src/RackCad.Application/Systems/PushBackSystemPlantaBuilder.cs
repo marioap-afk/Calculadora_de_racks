@@ -62,7 +62,9 @@ namespace RackCad.Application.Systems
                 result.Add(redondo);
 
                 var front = frontIndex >= 0 && frontIndex < structure.Fronts.Count ? structure.Fronts[frontIndex] : null;
-                var anyActive = front != null && Enumerable.Range(0, Math.Max(1, front.LoadLevels)).Any(level => rearTope.At(frontIndex, level));
+                var anyActive = front != null
+                    && Enumerable.Range(0, DynamicFrontActivation.EffectiveLoadLevels(front))
+                        .Any(level => rearTope.At(frontIndex, level));
                 if (!string.IsNullOrWhiteSpace(topeBlock) && anyActive)
                 {
                     // Owner clarification (2026-07-25): the tope block mates by its ORIGIN, so its insertion must land

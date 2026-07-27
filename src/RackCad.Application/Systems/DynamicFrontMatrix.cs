@@ -113,6 +113,9 @@ namespace RackCad.Application.Systems
                 var newFront = new DynamicEditorFront
                 {
                     Index = fronts.Count + 1,
+                    // A new front is ACTIVE even when the template is blank: adding a front means adding rack, and
+                    // inheriting blankness would silently create dead bays the user never asked for (I-33).
+                    IsActive = true,
                     PalletCount = template?.PalletCount ?? DynamicRackDefaults.DefaultPalletsWide,
                     LoadLevels = template?.LoadLevels ?? DynamicRackDefaults.DefaultLoadLevels,
                     PalletsDeep = template?.PalletsDeep ?? DynamicRackDefaults.DefaultPalletsDeep,
@@ -163,6 +166,58 @@ namespace RackCad.Application.Systems
             selectedFrontIndex = index;
             fronts[index].LoadLevels = Math.Max(1, fronts[index].LoadLevels + delta);
         }
+
+        /// <summary>
+        /// Set a front's Activo/En blanco state and SEAT the selection on it (I-33). Blanking the LAST active front is
+        /// refused — a rack that carries nothing is not a rack — and reported by the false return so the editor can say
+        /// why. Nothing else on the row is touched, so the configuration stays dormant and reactivating restores it.
+        /// <para>
+        /// The selection is re-seated as a clamped SINGLE cell of this front, not merely re-pointed: leaving the old
+        /// multi-selection behind would make <see cref="NormalizeSelection"/> snap the primary cell back to another
+        /// front, and the editor would then enable/disable its cell controls against a front the user did not touch.
+        /// The result is always a valid, non-empty selection.
+        /// </para>
+        /// </summary>
+        public bool SetActive(int index, bool isActive)
+        {
+            if (index < 0 || index >= fronts.Count)
+            {
+                return false;
+            }
+
+            // Refusing must change NOTHING — not even the selection — so the editor can simply re-render to undo the
+            // click that was rejected.
+            if (!isActive && !fronts.Where((_, position) => position != index).Any(front => front.IsActive))
+            {
+                return false;
+            }
+
+            fronts[index].IsActive = isActive;
+            selectedFrontIndex = index;
+            selectedLevelIndex = ClampLevel(index, selectedLevelIndex);
+            selectedCells.Clear();
+            selectedCells.Add((index, selectedLevelIndex));
+            return true;
+        }
+
+        /// <summary>Whether the front at <paramref name="index"/> carries load; out-of-range answers false.</summary>
+        public bool IsActive(int index)
+            => index >= 0 && index < fronts.Count && fronts[index].IsActive;
+
+        /// <summary>
+        /// Per-front EFFECTIVE load-level counts (zero for a front en blanco), straight from the shared authority.
+        /// This is what the editors hand to the safety dialogs, so a blank front's column arrives as "no cells" and
+        /// no dialog has to decide editability with a predicate of its own (I-33).
+        /// </summary>
+        public IReadOnlyList<int> EffectiveLevelCounts()
+            => fronts.Select(DynamicFrontActivation.EffectiveLoadLevels).ToList();
+
+        /// <summary>Front indices that are blank, for the editor's rendering and status messages.</summary>
+        public IReadOnlyList<int> BlankFrontIndices()
+            => fronts.Select((front, index) => (front, index))
+                .Where(item => !item.front.IsActive)
+                .Select(item => item.index)
+                .ToList();
 
         /// <summary>Set or (Ctrl) toggle the selection at a cell, keeping the primary cell coherent (was SelectCell's core).
         /// <paramref name="levelIndex"/> is clamped defensively; callers pass the value from <see cref="ClampLevel"/>.</summary>
@@ -321,6 +376,7 @@ namespace RackCad.Application.Systems
             for (var index = 0; index < resolved.Count; index++)
             {
                 fronts[index].Index = index + 1;
+                fronts[index].IsActive = resolved[index].IsActive;
                 fronts[index].Bfr = resolved[index].Bfr;
                 fronts[index].BeamLength = resolved[index].BeamLength;
                 fronts[index].LoadLevels = Math.Max(1, resolved[index].LoadLevels);
@@ -348,6 +404,7 @@ namespace RackCad.Application.Systems
                 var row = new DynamicEditorFront
                 {
                     Index = fronts.Count + 1,
+                    IsActive = front.IsActive,
                     PalletCount = Math.Max(1, front.PalletCount),
                     LoadLevels = Math.Max(1, front.LoadLevels),
                     PalletsDeep = Math.Max(2, front.PalletsDeep),
@@ -383,12 +440,15 @@ namespace RackCad.Application.Systems
                 row.EnsureCellCount(row.LoadLevels);
                 var frontDesign = new DynamicRackFrontDesign
                 {
+                    IsActive = row.IsActive,
                     PalletCount = row.PalletCount,
                     LoadLevels = row.LoadLevels,
                     PalletsDeep = row.PalletsDeep,
                     DepthStartPosition = row.DepthStartPosition,
                     FirstLevelHeight = row.FirstLevelHeight
                 };
+                // A blank front still writes its cells: that is what keeps its configuration DORMANT so reactivating
+                // it restores the rack it had, instead of rebuilding it from defaults (I-33).
                 foreach (var cell in row.Cells.Take(row.LoadLevels))
                 {
                     frontDesign.Levels.Add(cell.ToDesign());
@@ -397,6 +457,9 @@ namespace RackCad.Application.Systems
                 designs.Add(frontDesign);
             }
 
+            // Sin normalizacion: la prevencion del editor es NO DESTRUCTIVA y vive en SetActive, que se niega a
+            // blanquear el ultimo frente activo. Reactivar aqui uno cualquiera reescribiria la intencion del usuario
+            // y seria una segunda guarda divergente (I-33).
             return designs;
         }
 

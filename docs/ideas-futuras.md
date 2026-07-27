@@ -408,9 +408,12 @@ no implementados, con lo que ya se sabe de cada uno:
   Back es «calculada» (`DynamicRackSystemBuilder` la crea con `UseCalculatedHeaderConfiguration = true` y
   solo la ventana del Dinámico lo pone en false), y de ahí depende que el alto de tarima general sea inerte.
   Si Push Back gana cabeceras personalizadas, esa dependencia debe revisarse en el mismo cambio.
-- **PB-014 — Frente «en blanco» (Push Back y Dinámico).** Un frente sin niveles cuya estructura continúa
-  con la misma separación que tendría el larguero, ajustable desde los campos de celda. Es compartido con
-  el Dinámico, así que necesita decisión de alcance.
+- ~~**PB-014 — Frente «en blanco» (Push Back y Dinámico).**~~ **RESUELTO por I-33** (rama
+  `feature/frente-en-blanco`). La decisión de alcance que este punto pedía la dio el Owner al abrir la
+  iniciativa: aplica al **Dinámico y a Push Back**, no al Selectivo. Un frente en blanco conserva su claro
+  y su estructura, desplaza a los frentes posteriores y no lleva ningún nivel ni componente de carga; su
+  configuración queda dormida para reactivarlo. Contrato en
+  [`initiatives/I-33-frente-en-blanco.md`](initiatives/I-33-frente-en-blanco.md).
 
 Limitaciones y observaciones registradas al corregir, **sin tocar** por la restricción de no cambiar el
 Selectivo ni el Dinámico:
@@ -422,12 +425,17 @@ Selectivo ni el Dinámico:
   celda del penúltimo poste suprime también la del último. La capacidad
   `SelectiveSafetySelection.DesviadorCellsAreByPost` es el interruptor; activarla para el Dinámico
   cambiaría su comportamiento y necesita decisión del Owner.
-- **El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**:
-  `RackDynamicSystemWindow` también entrega al diálogo compartido una lista POR FRENTE marcada como por
-  POSTE. Se dejó intacto a propósito; el arreglo entró como parámetro opt-in.
+- ~~**El mismo defecto de contrato que PB-002 corrigió en Push Back sigue en el Dinámico**~~ **CORREGIDO por
+  I-33**: `RackDynamicSystemWindow` entregaba al diálogo compartido una lista POR FRENTE marcada como por
+  POSTE, así que el último poste caía a 1 nivel. Ahora entrega las dos listas por separado —por frente para
+  la guía, por poste (`DynamicFrontActivation.EffectiveLevelsPerPost`) sólo para el desviador—. Esto corrige
+  la **forma de la rejilla**; la **lectura de la celda** en el dibujo sigue siendo por FRENTE (ver el punto
+  anterior sobre `DesviadorCellsAreByPost`, que continúa pendiente de decisión del Owner).
 - **La regla «niveles en un poste» sigue duplicada**: `DynamicFrontGeometry.LoadLevelsAtPost` y la copia
   privada de `DynamicSafetyMultiViewBuilder`, con fallbacks distintos. I-32 unificó la primera con la
-  versión pura que consume la UI, pero no colapsó la segunda.
+  versión pura que consume la UI, pero no colapsó la segunda. **I-33** hizo que **ambas** copias respeten
+  el estado Activo/En blanco (vía `DynamicFrontActivation.EffectiveLoadLevels`), pero tampoco las colapsó:
+  siguen siendo dos funciones con fallbacks distintos.
 - **«Dibujar en frontal» sigue visible e inerte en el diálogo del tope para Push Back** (su adaptador solo
   lee SAQUE y las off-cells). Es de la misma clase que PB-006, pero el Owner no lo reportó y quedó fuera.
 - **`INICIO_IZQUIERDO`/`INICIO_DERECHO` del `LARGUERO_ESCALON_TROQUEL_REDONDO` no dependen del PERALTE**

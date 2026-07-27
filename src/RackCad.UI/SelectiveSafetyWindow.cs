@@ -31,6 +31,19 @@ namespace RackCad.UI
         private readonly bool fallbackLevelsArePerPost;
 
         /// <summary>
+        /// I-33 — OPT-IN: a level count of ZERO means "this column has no cells" (a front EN BLANCO) instead of being
+        /// floored to one. False (Selectivo) is the historical dialog, unchanged.
+        /// </summary>
+        private readonly bool allowBlankFrontColumns;
+
+        /// <summary>
+        /// I-33 — whether the desviador offers its aisle-face selector, INDEPENDENTLY of the grid's shape. True is the
+        /// historical behaviour (Selectivo and Dinámico); only Push Back turns it off, because its safety lives at a
+        /// single end and the selector could only mislead (PB-003).
+        /// </summary>
+        private readonly bool showDesviadorSide;
+
+        /// <summary>
         /// PB-002 (I-32) — an OPT-IN, already-per-POST level count for the desviador grid. Null (Selectivo, Dinámico)
         /// keeps the historical path byte for byte. Push Back passes it because it has no resolved
         /// <see cref="SelectiveRackSystem"/>, so the grid used to fall back to a per-FRONT list read with a per-POST
@@ -105,8 +118,23 @@ namespace RackCad.UI
 
         public IReadOnlyList<SelectiveSafetySelection> Result { get; private set; } = new List<SelectiveSafetySelection>();
 
-        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false)
+        /// <param name="allowBlankFrontColumns">
+        /// I-33, opt-in: honour a level count of ZERO as "this column has no cells" instead of flooring it to one. The
+        /// Dinamico and Push Back pass true so a front EN BLANCO shows its levels as non-existent — not drawable, not
+        /// selectable, not appliable — while its stored configuration stays DORMANT and returns intact on reactivation.
+        /// Default false is the historical behaviour, which is what the Selectivo keeps: it has no blank fronts and
+        /// never supplies a zero, so its dialog and its three grids are unchanged.
+        /// </param>
+        /// <param name="showDesviadorSide">
+        /// I-33 — whether the desviador offers its aisle-face selector. INDEPENDENT of
+        /// <paramref name="desviadorLevelsPerPost"/>, which governs the grid's SHAPE and nothing else. True (default)
+        /// is the historical behaviour of the Selectivo and of the Dinámico; Push Back passes false explicitly
+        /// (PB-003: its safety lives only at the low end, so naming a face the user cannot choose is pure noise).
+        /// </param>
+        public SelectiveSafetyWindow(IReadOnlyList<SafetyElementCatalogEntry> elements, IEnumerable<SelectiveSafetySelection> current, int postCount, IReadOnlyList<int> levelsPerFrente = null, int fondoCount = 1, IReadOnlyList<SelectiveParrillaPlan.Cell> parrillaPlan = null, RackCatalog catalog = null, SelectiveRackSystem resolvedSystem = null, bool fallbackLevelsArePerPost = false, string introduction = null, bool includeDefensa = false, bool includeGuia = false, bool useDynamicSafetyDefaults = false, UIElement extraSection = null, IReadOnlyList<int> desviadorLevelsPerPost = null, bool defensaLowEndOnly = false, bool allowBlankFrontColumns = false, bool showDesviadorSide = true)
         {
+            this.allowBlankFrontColumns = allowBlankFrontColumns;
+            this.showDesviadorSide = showDesviadorSide;
             this.postCount = Math.Max(1, postCount);
             this.fondoCount = Math.Max(1, fondoCount);
             this.levelsPerFrente = levelsPerFrente ?? new List<int>();
@@ -543,8 +571,17 @@ namespace RackCad.UI
                     ? "Configurado ✓ (" + DesviadorSideName(row.DesviadorSide) + ")…"
                     : "Configurado ✓…";
 
-        /// <summary>True while the desviador dialog offers its aisle-face selector (everything but Push Back).</summary>
-        private bool ShowDesviadorSide => desviadorLevelsPerPost == null;
+        /// <summary>
+        /// True while the desviador dialog offers its aisle-face selector. I-33: this used to be DERIVED from
+        /// <c>desviadorLevelsPerPost == null</c>, which welded two unrelated decisions together — the SHAPE of the grid
+        /// and the VISIBILITY of the selector. Push Back happened to want both at once; the Dinámico needs the explicit
+        /// per-post shape but must KEEP its selector, and with the derived rule it would have lost it silently. The two
+        /// are now independent parameters.
+        /// </summary>
+        private bool ShowDesviadorSide => showDesviadorSide;
+
+        /// <summary>Test seam: the value the dialog resolved for its aisle-face selector.</summary>
+        internal bool ShowsDesviadorSide => showDesviadorSide;
 
         private static string DefensaLabel(Row row)
             => row.DefensaConfigured ? "Configurada ✓…" : "Configurar…";
@@ -570,7 +607,8 @@ namespace RackCad.UI
         private void EditGuia(Row row)
         {
             var dialog = new SafetyGuiaEntradaGridWindow(
-                SelectedElementLabel(row), levelsPerFrente, row.GuiaOffCells) { Owner = this };
+                SelectedElementLabel(row), levelsPerFrente, row.GuiaOffCells,
+                allowBlankColumns: allowBlankFrontColumns) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -606,7 +644,8 @@ namespace RackCad.UI
                 desviadorLevelsPerPost?.Count ?? postCount,
                 desviadorLevelsPerPost ?? levelsPerFrente,
                 desviadorLevelsPerPost != null || fallbackLevelsArePerPost,
-                showSide: ShowDesviadorSide) { Owner = this };
+                showSide: ShowDesviadorSide,
+                allowBlankColumns: allowBlankFrontColumns) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;

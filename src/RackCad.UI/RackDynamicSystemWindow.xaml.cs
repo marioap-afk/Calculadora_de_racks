@@ -452,6 +452,38 @@ namespace RackCad.UI
             }
         }
 
+        /// <summary>
+        /// I-33 — niveles efectivos POR FRENTE, desde la autoridad compartida. Es la lista que consumen la guía y las
+        /// demás rejillas frente × nivel del diálogo. Un frente EN BLANCO aporta CERO, así que su columna se dibuja sin
+        /// celdas. Nunca es la lista de N+1 postes: esa es otra cosa y tiene su propio método.
+        /// </summary>
+        internal IReadOnlyList<int> SafetyLevelsPerFrente()
+        {
+            var levels = system?.Fronts.Count > 0
+                ? DynamicFrontActivation.EffectiveLevelsPerFront(system).ToList()
+                : matrix.EffectiveLevelCounts().ToList();
+            if (levels.Count == 0)
+            {
+                levels.Add(Math.Max(1, system?.LoadBeamLevels.Count ?? 1));
+            }
+
+            return levels;
+        }
+
+        /// <summary>
+        /// I-33 — niveles efectivos POR POSTE (N frentes ⇒ N+1 postes), por la regla canónica «el frente adyacente más
+        /// alto manda» que usa el dibujo. Es la lista que consume EXCLUSIVAMENTE el desviador.
+        /// <para>
+        /// Antes el Dinámico entregaba su lista por FRENTE marcada como por poste, así que el último poste caía
+        /// artificialmente a 1 nivel y los interiores vecinos de un frente más alto perdían niveles que el dibujo sí
+        /// colocaba — el mismo defecto de contrato que PB-002 corrigió en Push Back. Entregar la lista por poste NO
+        /// cambia la lectura de la celda en el dibujo (<c>DesviadorCellsAreByPost</c> sigue en false para el Dinámico):
+        /// solo corrige la FORMA de la rejilla, y no toca el selector de lado, que el Dinámico conserva.
+        /// </para>
+        /// </summary>
+        internal IReadOnlyList<int> DesviadorLevelsPerPost()
+            => DynamicFrontActivation.EffectiveLevelsPerPost(SafetyLevelsPerFrente());
+
         private void Safety_Click(object sender, RoutedEventArgs e)
         {
             var elements = (catalog?.SafetyElements ?? new List<SafetyElementCatalogEntry>())
@@ -462,12 +494,8 @@ namespace RackCad.UI
                                       || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.DefensaType)
                                       || SelectiveSafetyDefaults.IsType(element.Type, SelectiveSafetyDefaults.GuiaType)))
                 .ToList();
-            var levelCount = Math.Max(1, system?.LoadBeamLevels.Count ?? 1);
             var postCount = Math.Max(2, (system?.Fronts.Count ?? matrix.Count) + 1);
-            var levels = system?.Fronts.Count > 0
-                ? system.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList()
-                : matrix.Fronts.Select(front => Math.Max(1, front.LoadLevels)).ToList();
-            if (levels.Count == 0) levels.Add(levelCount);
+            var levels = SafetyLevelsPerFrente();
             var intro = "Izquierda es la salida y derecha la entrada. La selección se proyecta en lateral, frontal y "
                         + "planta: el protector lateral reemplaza las botas del mismo poste y los desviadores respetan "
                         + "la matriz frente por nivel. La defensa de montacargas permite longitud independiente en "
@@ -477,14 +505,22 @@ namespace RackCad.UI
                 elements,
                 safetySelections,
                 postCount: postCount,
+                // Por FRENTE: guía y demás rejillas frente × nivel.
                 levelsPerFrente: levels,
                 fondoCount: 1,
                 catalog: catalog,
-                fallbackLevelsArePerPost: true,
+                // Ya no hay camino de fallback para el desviador: recibe su lista por poste explícita (abajo), así que
+                // esta bandera —que solo gobierna ese fallback— deja de aplicar al Dinámico.
+                fallbackLevelsArePerPost: false,
                 introduction: intro,
                 includeDefensa: true,
                 includeGuia: true,
-                useDynamicSafetyDefaults: true) { Owner = this };
+                useDynamicSafetyDefaults: true,
+                // Por POSTE y SOLO para el desviador; la forma de la rejilla no decide nada más.
+                desviadorLevelsPerPost: DesviadorLevelsPerPost(),
+                allowBlankFrontColumns: true,
+                // El Dinámico SÍ elige cara de pasillo: el selector queda visible (default explícito por claridad).
+                showDesviadorSide: true) { Owner = this };
             if (dialog.ShowDialog() != true)
             {
                 return;
@@ -1051,6 +1087,7 @@ namespace RackCad.UI
             var row = matrix.Fronts[matrix.SelectedFrontIndex];
             row.EnsureCellCount(row.LoadLevels);
             var cell = row.Cells[matrix.SelectedLevelIndex];
+            ApplyBlankFrontEditability(row.IsActive);
             SelectedFrontText.Text = string.Format(
                 CultureInfo.InvariantCulture,
                 "Celda: Frente {0} · Nivel {1}{2}",
@@ -1261,7 +1298,9 @@ namespace RackCad.UI
                     FontSize = 9.5
                 });
                 var levelControls = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
-                var lessLevel = new Button { Content = "−", Width = 24.0, Height = 22.0, Padding = new Thickness(0.0), Margin = new Thickness(0.0, 2.0, 5.0, 2.0) };
+                // Los +/- de NIVELES editan niveles: en un frente en blanco no existen (I-33). Los de POSICIONES son
+                // estructurales y siguen disponibles.
+                var lessLevel = new Button { Content = "−", Width = 24.0, Height = 22.0, Padding = new Thickness(0.0), Margin = new Thickness(0.0, 2.0, 5.0, 2.0), IsEnabled = row.IsActive };
                 lessLevel.Click += (_, __) => AdjustFrontLevels(captured, -1);
                 levelControls.Children.Add(lessLevel);
                 levelControls.Children.Add(new TextBlock
@@ -1272,10 +1311,27 @@ namespace RackCad.UI
                     VerticalAlignment = VerticalAlignment.Center,
                     Foreground = LabelStroke
                 });
-                var moreLevel = new Button { Content = "+", Width = 24.0, Height = 22.0, Padding = new Thickness(0.0), Margin = new Thickness(5.0, 2.0, 0.0, 2.0) };
+                var moreLevel = new Button { Content = "+", Width = 24.0, Height = 22.0, Padding = new Thickness(0.0), Margin = new Thickness(5.0, 2.0, 0.0, 2.0), IsEnabled = row.IsActive };
                 moreLevel.Click += (_, __) => AdjustFrontLevels(captured, 1);
                 levelControls.Children.Add(moreLevel);
                 header.Children.Add(levelControls);
+
+                // I-33: el frente en blanco conserva su claro y su estructura, pero deja de llevar carga. La casilla
+                // solo cambia ese estado; la configuracion del frente queda dormida y vuelve al reactivarlo.
+                var blank = new CheckBox
+                {
+                    Content = "En blanco",
+                    IsChecked = !row.IsActive,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(0.0, 6.0, 0.0, 0.0),
+                    FontSize = 10.5,
+                    Foreground = LabelStroke,
+                    ToolTip = "Conserva el claro y la estructura del frente, desplaza los frentes posteriores y no lleva "
+                              + "niveles ni componentes de carga. Su configuracion se conserva para reactivarlo."
+                };
+                blank.Checked += (_, __) => SetFrontActive(captured, false);
+                blank.Unchecked += (_, __) => SetFrontActive(captured, true);
+                header.Children.Add(blank);
                 header.MouseLeftButtonDown += (_, __) => SelectFront(captured);
                 AddMatrixElement(header, 0, frontIndex + 1);
             }
@@ -1303,7 +1359,9 @@ namespace RackCad.UI
                         ? row.BeamLength
                         : cellValues.BeamLengthOverride ?? DynamicFrontGeometry.AutoBeamLength(
                             cellValues.PalletFront, row.PalletCount, DynamicRackDefaults.DefaultPalletTolerance);
-                    var active = level <= Math.Max(1, row.LoadLevels);
+                    // Un frente en blanco apaga TODA su columna: no tiene niveles efectivos (I-33). Sus valores siguen
+                    // guardados en la fila, asi que reactivarlo devuelve la celda tal cual estaba.
+                    var active = row.IsActive && level <= Math.Max(1, row.LoadLevels);
                     var selected = active
                                    && frontIndex == matrix.SelectedFrontIndex
                                    && capturedLevel == matrix.SelectedLevelIndex;
@@ -1494,6 +1552,104 @@ namespace RackCad.UI
             LoadSelectedFrontEditor();
             RenderFrontMatrix();
             Recompose();
+        }
+
+        /// <summary>
+        /// I-33: un frente EN BLANCO conserva una seleccion valida, pero sus niveles y celdas no existen, asi que todo
+        /// control que los edite —incluidos los alcances ligados a celda— se deshabilita mientras dure ese estado. Los
+        /// controles ESTRUCTURALES del frente (posiciones, fondos e inicio en fondo) siguen siendo validos y quedan
+        /// disponibles, igual que los tres botones que copian datos del frente. Reactivar el frente vuelve a llamar
+        /// aqui y restaura la edicion de inmediato.
+        /// </summary>
+        private void ApplyBlankFrontEditability(bool isActive)
+        {
+            const string reason = "El frente está en blanco: no tiene niveles ni celdas que editar. "
+                                  + "Desmarca «En blanco» para volver a editarlo.";
+
+            // Niveles y elevacion del primer larguero: editan NIVELES.
+            foreach (var control in new Control[] { SelectedLevelsBox, FirstLevelHeightBox })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+
+            // Celda seleccionada: edita CELDAS inexistentes.
+            foreach (var control in new Control[]
+                     {
+                         FrontBox, PalletHeightBox, WeightBox, SelectedClearHeightBox, SelectedBeamLengthBox,
+                         SelectedInOutBeamBox, SelectedInOutPeralteBox,
+                         SelectedIntermediateBeamBox, SelectedIntermediatePeralteBox
+                     })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+
+            // Alcances/aplicaciones ligados a CELDA. Los tres botones de datos del FRENTE quedan disponibles: copian
+            // valores estructurales, que siguen siendo validos en un frente en blanco.
+            foreach (var control in new Control[]
+                     { ApplyCellButton, ApplySelectedCellsButton, ApplyLevelButton, ApplyFrontButton, ApplyAllButton })
+            {
+                SetBlankSensitive(control, isActive, reason);
+            }
+        }
+
+        /// <summary>Original tooltips, so explaining WHY a control is disabled never destroys the tooltip the control
+        /// already had (several carry real usage notes).</summary>
+        private readonly Dictionary<Control, object> blankToolTips = new Dictionary<Control, object>();
+
+        private void SetBlankSensitive(Control control, bool isActive, string reason)
+        {
+            if (control == null)
+            {
+                return;
+            }
+
+            if (!blankToolTips.ContainsKey(control))
+            {
+                blankToolTips[control] = control.ToolTip;
+            }
+
+            control.IsEnabled = isActive;
+            ToolTipService.SetShowOnDisabled(control, true);
+            control.ToolTip = isActive ? blankToolTips[control] : reason;
+        }
+
+        /// <summary>
+        /// Switches one front between Activo and En blanco (I-33). A blank front keeps its claro and its structure and
+        /// still displaces the fronts behind it, but stops carrying levels; its configuration stays dormant, so the
+        /// same toggle brings it back exactly as it was. The last active front cannot be blanked.
+        /// </summary>
+        private void SetFrontActive(int index, bool isActive)
+        {
+            if (index < 0 || index >= matrix.Count || matrix.IsActive(index) == isActive)
+            {
+                return;
+            }
+
+            if (!CommitSelectedFrontEditor(out var error))
+            {
+                SetStatus(error, true);
+                RenderFrontMatrix();
+                return;
+            }
+
+            if (!matrix.SetActive(index, isActive))
+            {
+                SetStatus("Al menos un frente debe permanecer activo.", true);
+                RenderFrontMatrix();
+                return;
+            }
+
+            LoadSelectedFrontEditor();
+            RenderFrontMatrix();
+            Recompose();
+            SetStatus(
+                isActive
+                    ? string.Format(CultureInfo.InvariantCulture, "Frente {0} activo.", index + 1)
+                    : string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Frente {0} en blanco: conserva claro y estructura, sin niveles de carga.",
+                        index + 1),
+                false);
         }
 
         // ---- Table + selected panel ----
@@ -1740,8 +1896,16 @@ namespace RackCad.UI
             suppressLateralPostSelection = true;
             try
             {
-                PreviewLateralPostBox.ItemsSource = Enumerable.Range(1, count)
-                    .Select(index => "Poste " + index.ToString(CultureInfo.InvariantCulture))
+                // I-33 (Owner): los postes se listan TODOS para que su número no cambie, pero el que no existe —la
+                // frontera compartida por dos frentes en blanco— se marca, porque su corte está vacío a propósito.
+                var activation = system != null
+                    ? DynamicFrontActivation.FrontActivation(system)
+                    : matrix.Fronts.Select(front => front.IsActive).ToList();
+                PreviewLateralPostBox.ItemsSource = Enumerable.Range(0, count)
+                    .Select(index => "Poste " + (index + 1).ToString(CultureInfo.InvariantCulture)
+                                     + (DynamicFrontActivation.BoundaryExists(activation, index)
+                                         ? string.Empty
+                                         : " (sin frontera)"))
                     .ToList();
                 PreviewLateralPostBox.SelectedIndex = selectedLateralPostIndex;
             }

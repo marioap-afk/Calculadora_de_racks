@@ -12,6 +12,14 @@ namespace RackCad.Application.Systems
     public sealed class DynamicEditorFront
     {
         public int Index { get; set; }
+
+        /// <summary>
+        /// False marks this row as a BLANK front (I-33). The row keeps every other value — levels, cells, positions —
+        /// DORMANT so switching it back to active restores exactly what the user had configured; the grid never
+        /// represents a blank front by emptying the row.
+        /// </summary>
+        public bool IsActive { get; set; } = true;
+
         public int PalletCount { get; set; }
         public int LoadLevels { get; set; }
         public int PalletsDeep { get; set; }
@@ -46,6 +54,7 @@ namespace RackCad.Application.Systems
             var clone = new DynamicEditorFront
             {
                 Index = Index,
+                IsActive = IsActive,
                 PalletCount = PalletCount,
                 LoadLevels = LoadLevels,
                 PalletsDeep = PalletsDeep,

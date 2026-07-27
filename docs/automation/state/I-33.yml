@@ -1,0 +1,157 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-33
+  branch: feature/frente-en-blanco
+  claim_id: 3a040262-d2b7-47cb-a870-b628bc972141
+  current_phase: 10
+  state: integrated
+  gate: none
+  attempts: 1
+  next_action: NINGUNA-i-33-esta-cerrada-integrada-en-main-y-limpiada
+  owner_approval: >-
+    el-Owner-APROBO-toda-la-validacion-manual-en-AutoCAD-2025-incluida-la-RONDA-FOCALIZADA-DE-FRONTERAS-FISICAS-que-el-mismo-dirigio ·
+    candidato-aprobado-b840cfe24578bc9faa3b13dad8b11d90d47aad84-CI-30240730244-4-de-4 ·
+    requires_owner_validation-true-CERRADO
+  integration: >-
+    INTEGRADA-en-main-2026-07-27-por-git-merge-no-ff-sobre-la-punta-remota-sin-squash-sin-force-sin-fast-forward-y-sin-PR ·
+    SIN-REBASE-origin-main-no-avanzo-desde-la-base-0e505d8-asi-que-la-validacion-del-Owner-vale-sobre-el-arbol-integrado-WORKFLOW-6 ·
+    el-MERGE_SHA-y-su-CI-post-merge-viven-en-git-log-first-parent-main-este-archivo-se-escribe-ANTES-del-merge-y-no-los-inventa
+  cleanup_plan: >-
+    tras-la-CI-post-merge-VERDE-eliminar-worktree-feature-frente-en-blanco-rama-local-y-rama-remota-y-correr-git-worktree-prune ·
+    confirmar-arbol-limpio-sin-stashes-y-main-igual-a-origin-main ·
+    NO-tocar-ninguna-otra-rama-ni-worktree-el-unico-worktree-restante-debe-ser-el-principal-del-Owner
+
+# --------------------------------------------------------------------------------------------------------
+# EL CANDIDATO. Hay UNO SOLO y es este; cualquier SHA anterior de la rama queda superado y NO es candidato.
+# --------------------------------------------------------------------------------------------------------
+candidate:
+  sha: b840cfe24578bc9faa3b13dad8b11d90d47aad84
+  subject: Frente en blanco - la frontera compartida por dos frentes en blanco no existe
+  ci_run: 30240730244
+  ci_result: VERDE-4-de-4-sobre-el-SHA-del-candidato
+  ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
+  dll_path: >-
+    <worktree>/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
+  dll_informational_version: 1.0.0+b840cfe24578bc9faa3b13dad8b11d90d47aad84
+  dll_sha256: 5A88FA02711457CB5C0AC507EB86A0C8FA8C4CB622195BBEC5F03CB227A2B3DF
+  final_branch_tip: >-
+    caaad8851780fb0ff33fc3de1fe5866850db4515-CI-30240912689-4-de-4 ·
+    su-delta-contra-el-candidato-es-SOLO-docs-automation-state-I-33-yml-asi-que-el-codigo-validado-y-el-integrado-son-el-mismo-arbol ·
+    DLL-del-cierre-estampado-1-0-0-mas-caaad8851780fb0ff33fc3de1fe5866850db4515-SHA256-51F3FA7F6A9957EFF70689C782790A2C22644F882334FF7092569D73C21A7509
+  binding: >-
+    el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-candidato-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol
+  note_on_this_file: >-
+    el-commit-que-escribe-este-archivo-es-POSTERIOR-al-candidato-y-es-SOLO-DOCUMENTACION ·
+    no-toca-codigo-ni-pruebas-ni-catalogos-por-lo-que-NO-cambia-el-binario-y-el-DLL-del-worktree-sigue-siendo-el-estampado-arriba ·
+    un-archivo-no-puede-contener-el-SHA-de-su-propio-commit-por-eso-el-candidato-se-fija-en-el-commit-anterior-y-se-ata-por-el-estampado-del-DLL
+
+execution_context:
+  mode: manual-git-only
+  worktree: feature-frente-en-blanco
+  pull_request: none
+
+evidence:
+  base_commit: 0e505d8fed6944b32360439cf33742147d2ba561
+  claim_commit: 0771773
+  preflight: >-
+    main-igual-a-origin-main-igual-a-0e505d8fed6944b32360439cf33742147d2ba561-verificado-tambien-contra-el-remoto-con-git-ls-remote ·
+    arbol-limpio-sin-rebase-merge-cherry-pick-bisect-ni-revert-en-curso-y-sin-stashes ·
+    CI-verde-del-SHA-exacto-run-30228639660-cuatro-jobs ·
+    I-33-sin-ninguna-referencia-previa-en-el-repo-y-feature-frente-en-blanco-inexistente-local-y-remota ·
+    I-32-limpiada-sin-rama-local-ni-remota-sin-worktree-y-git-worktree-prune-sin-efecto ·
+    sin-trabajo-incompatible-main-era-la-UNICA-rama-existente-e-I-23-e-I-25-siguen-pendiente-en-el-ROADMAP
+  claim: >-
+    commit-vacio-0771773-con-Initiative-Id-I-33-Branch-feature-frente-en-blanco-y-Claim-Id-3a040262-d2b7-47cb-a870-b628bc972141 ·
+    primer-push-ACEPTADO-por-el-remoto-new-branch-sin-force
+  commits: >-
+    0771773-reclamo-vacio ·
+    781e13f-autoridad-compartida-vistas-y-BOM-de-los-dos-sistemas-mas-las-regresiones-puras ·
+    edeca78-casilla-Activo-En-blanco-en-los-dos-editores-mas-las-pruebas-de-UI ·
+    0448ef0-documentacion-contrato-estado-indice-glosario-e-ideas-futuras ·
+    6d24903-estado-de-la-primera-ronda-SUPERADO ·
+    6c4a77f-rechazo-canonico-del-todo-en-blanco-y-edicion-por-seleccion-SUPERADO ·
+    56ca7c6-estado-de-la-segunda-ronda-SUPERADO ·
+    932c822-celdas-de-nivel-inexistentes-en-los-dialogos-de-seguridad-SUPERADO ·
+    32d1b04-estado-de-la-tercera-ronda-SUPERADO ·
+    4f93214-desacopla-la-forma-de-la-rejilla-del-selector-de-lado-SUPERADO ·
+    366c886-estado-de-la-cuarta-ronda-SUPERADO ·
+    b840cfe-CANDIDATO-la-frontera-compartida-por-dos-frentes-en-blanco-no-existe
+  regression_evidence: >-
+    rojo-verificado-en-la-primera-ronda-con-la-bandera-declarada-pero-SIN-consumidores-11-de-19-fallando ·
+    fallaban-las-de-comportamiento-frontal-lateral-planta-BOM-dinamico-y-push-back-round-trip-snapshot-y-dormancia ·
+    pasaban-las-2-de-autoridad-y-las-6-guardas-de-estructura-que-deben-pasar-antes-y-despues-porque-afirman-que-la-estructura-NO-cambia
+  tests: >-
+    rackcad-tests-1522-de-1522 · rackcad-ui-tests-398-de-398 · cero-fallos-cero-omitidas-en-ambas ·
+    reverificadas-en-la-sesion-de-integracion-sobre-la-punta-caaad88
+  targeted_filters: >-
+    core-BlankFront-52-de-52 · core-BlankFrontBoundaryTests-15-de-15 ·
+    core-CatalogValidatorTests-mas-CatalogManifestGuardTests-25-de-25-baseline-del-catalogo-distribuido-intacto ·
+    core-PushBack-444-de-444 · core-Dynamic-197-de-197 · core-Selective-324-de-324 ·
+    ui-BlankFront-33-de-33 · ui-Safety-46-de-46 · ui-Dynamic-38-de-38 · ui-Selective-32-de-32 ·
+    todos-con-conteo-NO-CERO
+  builds: >-
+    build-UI-Debug-0-errores-0-advertencias ·
+    build-Plugin-Debug-0-errores-2-advertencias-ambas-MSB3277-conocidas-e-ignoradas-con-AutoCAD-cerrado
+  catalogs_untouched: >-
+    ningun-archivo-de-assets-catalogs-modificado-y-el-validador-de-catalogos-conserva-su-baseline-aprobado
+  bugs_fixed: pb-014
+  bugs_deferred: pb-001 pb-007 pb-011
+  authority: >-
+    DynamicFrontActivation-en-RackCad-Application-Systems-unica-fuente-de-la-regla-y-TODOS-sus-miembros-son-PUROS ·
+    la-bandera-vive-en-la-estructura-dinamica-que-Push-Back-COMPONE-asi-que-los-dos-sistemas-no-pueden-divergir ·
+    EffectiveLoadLevels-devuelve-el-historico-Math-Max-1-LoadLevels-para-un-frente-activo-por-eso-un-rack-sin-frentes-en-blanco-no-cambia
+  all_blank_policy: >-
+    NADA-normaliza-en-silencio-las-tres-normalizaciones-de-la-primera-ronda-resolver-DTO-y-matriz-quedaron-RETIRADAS ·
+    prevencion-NO-destructiva-en-el-editor-DynamicFrontMatrix-SetActive-se-niega-y-no-cambia-nada-ni-la-seleccion ·
+    rechazo-con-error-VISIBLE-de-un-payload-explicitamente-todo-en-blanco-en-DynamicRackSystemResolver-Validate-y-por-composicion-en-PushBackResolver-mas-los-tres-predicados-de-RackDesignValidation ·
+    mensaje-unico-AllBlankMessage-compartido-por-todos-los-puntos-de-rechazo ·
+    los-documentos-legacy-no-traen-la-bandera-cargan-todos-activos-y-jamas-caen-en-este-caso
+  editor_editability: >-
+    al-seleccionar-un-frente-en-blanco-la-seleccion-sigue-siendo-VALIDA-SetActive-la-reasienta-como-celda-unica-acotada-del-propio-frente ·
+    se-deshabilitan-campos-de-nivel-y-de-celda-los-mas-menos-de-NIVELES-de-la-matriz-y-los-cinco-alcances-ligados-a-celda-con-el-motivo-en-el-tooltip-preservando-el-tooltip-original ·
+    siguen-disponibles-los-controles-ESTRUCTURALES-posiciones-fondos-inicio-en-fondo-y-los-botones-que-copian-datos-del-frente ·
+    reactivar-restaura-la-edicion-de-inmediato-y-hay-pruebas-STA-de-los-dos-sentidos-en-las-dos-ventanas-reales
+  front_count_rule: >-
+    al-CRECER-el-frente-nuevo-nace-ACTIVO-aunque-el-template-seleccionado-este-EN-BLANCO-agregar-un-frente-es-agregar-rack ·
+    todo-lo-demas-si-se-clona-del-template-posiciones-niveles-fondos-inicio-en-fondo-y-celdas ·
+    al-REDUCIR-se-eliminan-los-frentes-finales-los-indices-se-renumeran-la-seleccion-se-re-acota-y-los-que-sobreviven-conservan-estado-y-configuracion-dormida-junto-con-las-celdas-paralelas-de-Push-Back
+  safety_dialogs: >-
+    un-frente-EN-BLANCO-entrega-CERO-niveles-y-su-columna-se-construye-AUSENTE-en-las-tres-rejillas-indexadas-por-nivel-desviador-guia-de-entrada-y-tope ·
+    ausente-significa-no-se-dibuja-no-se-selecciona-y-Toggle-no-reporta-cambio-asi-que-tampoco-admite-alcances ·
+    dos-frentes-en-blanco-consecutivos-dejan-sin-celdas-el-poste-que-comparten ·
+    el-frente-NO-se-oculta-ni-cambia-de-indice-sigue-siendo-la-misma-columna-en-la-misma-posicion ·
+    la-configuracion-guardada-de-la-columna-ausente-se-conserva-por-SafetyDormantCells-regla-pura-y-UNICA-que-consumen-las-tres-rejillas-se-persiste-lo-visible-MAS-lo-dormido ·
+    al-reactivar-el-frente-las-celdas-reaparecen-intactas-y-editables ·
+    la-editabilidad-la-decide-la-AUTORIDAD-compartida-EffectiveLevelCounts-y-EffectiveLevelsPerPost-no-un-predicado-por-dialogo
+  desviador_handoff: >-
+    desviadorLevelsPerPost-gobierna-EXCLUSIVAMENTE-la-forma-de-la-rejilla-y-showDesviadorSide-EXCLUSIVAMENTE-el-selector-de-cara-de-pasillo ·
+    antes-la-visibilidad-se-DERIVABA-de-desviadorLevelsPerPost-igual-a-null-asi-que-pedir-la-forma-por-poste-apagaba-el-selector-y-el-Dinamico-lo-habria-perdido-en-silencio ·
+    default-de-showDesviadorSide-es-true-igual-comportamiento-vigente-Selectivo-y-Dinamico-lo-conservan-y-Push-Back-lo-apaga-EXPLICITAMENTE-PB-003 ·
+    el-Dinamico-entrega-las-DOS-listas-SafetyLevelsPerFrente-N-para-guia-y-demas-rejillas-frente-por-nivel-y-DesviadorLevelsPerPost-N-mas-1-solo-para-el-desviador ·
+    de-paso-queda-corregido-el-defecto-gemelo-de-PB-002-que-el-Dinamico-arrastraba-la-lista-por-FRENTE-marcada-como-por-POSTE-hacia-caer-el-ultimo-poste-a-1-nivel ·
+    es-la-FORMA-de-la-rejilla-la-lectura-de-la-celda-en-el-dibujo-sigue-por-frente-DesviadorCellsAreByPost-en-false-y-esa-decision-sigue-siendo-del-Owner-anotada-en-ideas-futuras ·
+    fallbackLevelsArePerPost-pasa-a-false-en-el-Dinamico-porque-solo-gobierna-el-fallback-que-ya-no-recorre
+  physical_boundary: >-
+    decision-del-Owner-una-frontera-cuyos-DOS-frentes-adyacentes-estan-EN-BLANCO-no-tiene-poste-ni-estructura-fisica ·
+    los-dos-bordes-exteriores-del-rack-existen-siempre-y-Activo-Activo-Activo-En-blanco-y-En-blanco-Activo-tambien ·
+    una-corrida-de-N-blancos-conserva-solo-sus-dos-fronteras-exteriores-y-pierde-sus-N-menos-1-interiores-un-blanco-aislado-y-los-alternados-no-suprimen-ninguna ·
+    autoridad-UNICA-DynamicFrontActivation-BoundaryExists-con-FrontActivation-y-PresentBoundaries-consultada-por-frontal-lateral-planta-BOM-de-los-dos-sistemas-seguridad-por-poste-y-preview ·
+    el-guardia-del-corte-lateral-vive-en-Build-system-catalog-postIndex-y-no-solo-en-Cortes-para-que-dibujo-y-preview-no-diverjan ·
+    desaparece-el-ENSAMBLE-fisico-nunca-el-frente-logico-indices-claros-ancho-configuracion-dormida-persistencia-largo-total-y-TODAS-las-coordenadas-X-se-conservan ·
+    los-cortes-que-sobreviven-conservan-su-numero-de-poste-y-en-el-selector-lateral-el-poste-ausente-sigue-listado-marcado-sin-frontera ·
+    la-seguridad-del-poste-ausente-NO-se-desplaza-ni-se-borra-aporta-cero-niveles-asi-que-su-columna-es-ausente-y-SafetyDormantCells-la-preserva-y-vuelve-al-reactivar-cualquiera-de-los-dos-frentes
+  scope_isolation: >-
+    sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
+    el-comportamiento-nuevo-de-los-dialogos-compartidos-es-OPT-IN-allowBlankFrontColumns-default-false-y-showDesviadorSide-default-true-igual-comportamiento-vigente-patron-de-I-32 ·
+    el-Selectivo-no-tiene-frentes-en-blanco-nunca-entrega-un-cero-y-conserva-el-suelo-historico-y-el-descarte-de-celdas-fuera-de-rango-verificado-por-dos-guardas-STA ·
+    el-Selectivo-no-pasa-desviadorLevelsPerPost-ni-showDesviadorSide-ni-allowBlankFrontColumns-ni-fallbackLevelsArePerPost-guardia-de-fuente-dedicada ·
+    la-rama-historica-Math-Max-left-right-mas-1-del-fallback-per-front-NO-se-toca-y-queda-limitada-al-camino-legacy-Selectivo-ninguna-ruta-de-I-33-la-recorre ·
+    SafetyDesviadorGridWindow-cs-sin-una-sola-linea-de-diff-en-esta-ronda ·
+    RackSelectiveWindow-xaml-y-cs-sin-una-sola-linea-de-diff ·
+    conflicts_with-declara-I-23-e-I-25 ·
+    la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
+
+gates:
+  ci: VERDE-4-de-4-run-30240730244-sobre-el-SHA-del-candidato-b840cfe24578bc9faa3b13dad8b11d90d47aad84
+  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-b840cfe24578bc9faa3b13dad8b11d90d47aad84-SHA256-5A88FA02711457CB5C0AC507EB86A0C8FA8C4CB622195BBEC5F03CB227A2B3DF
+  owner_validation: APROBADA-los-14-puntos-de-la-seccion-8-del-contrato-incluida-la-ronda-focalizada-de-fronteras-fisicas

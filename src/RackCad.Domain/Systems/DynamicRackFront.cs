@@ -5,6 +5,15 @@ namespace RackCad.Domain.Systems
     /// <summary>Editable transverse intent for one dynamic rack front.</summary>
     public sealed class DynamicRackFrontDesign
     {
+        /// <summary>
+        /// False marks a BLANK front (I-33/PB-014): the front keeps its claro and its structure — posts, header
+        /// modules, separators and derived posts — and still displaces the fronts behind it, but contributes NO
+        /// effective load level and therefore no load component. Every other field stays DORMANT so switching the
+        /// front back to active restores exactly the configuration it had; a blank front is never represented by a
+        /// fake cell or a zeroed count. Legacy documents have no notion of blank fronts and load as active.
+        /// </summary>
+        public bool IsActive { get; set; } = true;
+
         /// <summary>Number of pallet-flow lanes placed side by side in this front.</summary>
         public int PalletCount { get; set; } = 1;
 
@@ -34,6 +43,16 @@ namespace RackCad.Domain.Systems
     public sealed class DynamicRackFront
     {
         public int Index { get; set; }
+
+        /// <summary>
+        /// False marks a resolved BLANK front (I-33/PB-014). Every structural field below stays resolved exactly as
+        /// if the front were active — that is what keeps its claro, its post height and the displacement it imposes
+        /// on the fronts behind it — while <see cref="LoadLevels"/> and <see cref="Levels"/> remain DORMANT. Callers
+        /// must never read those two directly to size load work: the one authority is
+        /// <c>DynamicFrontActivation.EffectiveLoadLevels</c>, which answers zero here.
+        /// </summary>
+        public bool IsActive { get; set; } = true;
+
         public int PalletCount { get; set; }
         public int LoadLevels { get; set; }
         public int PalletsDeep { get; set; }

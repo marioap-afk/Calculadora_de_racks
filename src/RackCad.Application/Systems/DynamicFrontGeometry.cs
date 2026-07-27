@@ -51,6 +51,10 @@ namespace RackCad.Application.Systems
                 source.Add(new DynamicRackFrontDesign { PalletCount = DynamicRackDefaults.DefaultPalletsWide });
             }
 
+            // The Activo/En blanco intent is carried through VERBATIM. An all-blank set is NOT normalized here (I-33):
+            // the editor prevents reaching it, and the canonical check rejects it with a visible error at the resolver
+            // and at RackDesignValidation. Silently reactivating a front here would hide the caller's mistake and make
+            // this a second, divergent guard.
             var result = new List<DynamicRackFront>(source.Count);
             for (var index = 0; index < source.Count; index++)
             {
@@ -62,6 +66,7 @@ namespace RackCad.Application.Systems
                 result.Add(new DynamicRackFront
                 {
                     Index = index,
+                    IsActive = design.IsActive,
                     PalletCount = count,
                     LoadLevels = design.LoadLevels.HasValue && design.LoadLevels.Value > 0
                         ? design.LoadLevels.Value
@@ -81,10 +86,20 @@ namespace RackCad.Application.Systems
             return result;
         }
 
+        /// <summary>
+        /// The load levels one front actually carries. This is the funnel every load-bearing consumer goes through —
+        /// frontal beams, lateral placements and the bed axes — so a BLANK front (I-33) answers an empty list here once
+        /// and disappears from all of them, while its own dormant elevations stay on the front for the height rule.
+        /// </summary>
         public static IReadOnlyList<DynamicLoadBeamLevel> LoadBeamLevels(
             DynamicRackSystem system,
             DynamicRackFront front)
         {
+            if (DynamicFrontActivation.IsBlank(front))
+            {
+                return Array.Empty<DynamicLoadBeamLevel>();
+            }
+
             if (front?.LoadBeamLevels?.Count > 0)
             {
                 return front.LoadBeamLevels.ToList();
@@ -217,8 +232,16 @@ namespace RackCad.Application.Systems
                 return 0;
             }
 
-            var levels = LoadLevelsAtPost(system.Fronts.Select(front => front?.LoadLevels ?? 0).ToList(), postIndex);
-            return levels > 0 ? levels : system.LoadBeamLevels.Count;
+            // Blank fronts contribute zero, so a post between an active and a blank front keeps its active neighbour's
+            // cut and a post surrounded only by blank fronts carries none (I-33). The rack-wide fallback is reserved
+            // for a legacy rack with no resolved fronts at all, where there is no neighbour to ask.
+            var levels = LoadLevelsAtPost(DynamicFrontActivation.EffectiveLevelsPerFront(system), postIndex);
+            if (levels > 0)
+            {
+                return levels;
+            }
+
+            return system.Fronts.Count == 0 ? system.LoadBeamLevels.Count : 0;
         }
 
         /// <summary>

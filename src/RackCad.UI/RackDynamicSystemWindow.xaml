@@ -189,12 +189,12 @@
                             <TextBlock x:Name="SelectedFrontInfo" Foreground="#617080" FontSize="10.5" TextWrapping="Wrap" Margin="0,4,0,0" />
                             <TextBlock Text="Aplicar a:" Style="{StaticResource FieldLabel}" Margin="0,7,0,2" />
                             <WrapPanel>
-                                <Button Content="Celda" Click="ApplyCell_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
-                                <Button Content="Seleccionadas" Click="ApplySelectedCells_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="0,0,6,6"
+                                <Button x:Name="ApplyCellButton" Content="Celda" Click="ApplyCell_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                                <Button x:Name="ApplySelectedCellsButton" Content="Seleccionadas" Click="ApplySelectedCells_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="88" Margin="0,0,6,6"
                                         ToolTip="Ctrl + clic agrega o quita celdas de la selección múltiple." />
-                                <Button Content="Nivel" Click="ApplyLevel_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
-                                <Button Content="Frente" Click="ApplyFront_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
-                                <Button Content="Todas" Click="ApplyAll_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                                <Button x:Name="ApplyLevelButton" Content="Nivel" Click="ApplyLevel_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                                <Button x:Name="ApplyFrontButton" Content="Frente" Click="ApplyFront_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
+                                <Button x:Name="ApplyAllButton" Content="Todas" Click="ApplyAll_Click" Style="{StaticResource SecondaryButtonStyle}" MinWidth="66" Margin="0,0,6,6" />
                             </WrapPanel>
                             <TextBlock Text="Ctrl + clic selecciona varias celdas. Los alcances copian solamente claro, tarima y ambos largueros. Los botones superiores copian exclusivamente los datos estructurales del frente."
                                        Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />

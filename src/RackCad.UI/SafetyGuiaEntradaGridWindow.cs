@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 using RackCad.UI.Controls;
 
@@ -17,19 +18,36 @@ namespace RackCad.UI
     public sealed class SafetyGuiaEntradaGridWindow : Window
     {
         private readonly SelectionMatrixModel model;
+        private readonly IReadOnlyList<int> levelsPerFront;
+
+        /// <summary>The off-cells this dialog was opened with; the ones on absent (blank-front) columns are DORMANT
+        /// and must survive the round trip untouched (I-33).</summary>
+        private readonly IReadOnlyList<SelectiveGridCell> storedOffCells;
 
         public IReadOnlyList<SelectiveGridCell> Result { get; private set; } = new List<SelectiveGridCell>();
 
+        /// <param name="allowBlankColumns">
+        /// I-33, opt-in: honour a supplied count of ZERO instead of flooring it to one, so a front EN BLANCO renders as
+        /// a column with no cells. Default false keeps the historical flooring for every existing caller.
+        /// </param>
         public SafetyGuiaEntradaGridWindow(
             string elementLabel,
             IReadOnlyList<int> levelsPerFront,
-            IEnumerable<SelectiveGridCell> offCells)
+            IEnumerable<SelectiveGridCell> offCells,
+            bool allowBlankColumns = false)
         {
-            var levels = (levelsPerFront ?? Array.Empty<int>()).Select(count => Math.Max(1, count)).ToList();
+            var levels = (levelsPerFront ?? Array.Empty<int>())
+                .Select(count => allowBlankColumns ? Math.Max(0, count) : Math.Max(1, count))
+                .ToList();
             if (levels.Count == 0)
             {
                 levels = new List<int> { 1 };
             }
+
+            this.levelsPerFront = levels;
+            this.storedOffCells = (offCells ?? Enumerable.Empty<SelectiveGridCell>())
+                .Where(cell => cell != null)
+                .ToList();
 
             var maxLevels = levels.Max();
             model = SelectionMatrixModel.WithJaggedColumns(
@@ -122,9 +140,14 @@ namespace RackCad.UI
                 .Select(cell => new SelectiveGridCell { Frente = cell.Column, Level = cell.Row })
                 .ToList();
 
+        /// <summary>What the dialog PERSISTS: the cells it shows as OFF plus the DORMANT ones stored on columns it
+        /// rendered as absent (a front en blanco, I-33), through the shared <see cref="SafetyDormantCells"/> rule.</summary>
+        internal IReadOnlyList<SelectiveGridCell> PersistedOffCells()
+            => SafetyDormantCells.Merge(CurrentOffCells(), storedOffCells, levelsPerFront);
+
         private void Accept()
         {
-            Result = CurrentOffCells();
+            Result = PersistedOffCells();
             DialogResult = true;
         }
     }

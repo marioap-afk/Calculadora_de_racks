@@ -73,7 +73,9 @@ namespace RackCad.UI
             for (var frontIndex = 0; frontIndex < state.Structure.Count; frontIndex++)
             {
                 var front = state.Structure.Fronts[frontIndex];
-                var ownLevels = Math.Max(1, front.LoadLevels);
+                // I-33: un frente EN BLANCO apaga toda su columna (cero niveles efectivos). Sus valores siguen en la
+                // fila, dormidos, asi que reactivarlo devuelve las tarjetas tal cual estaban.
+                var ownLevels = front.IsActive ? Math.Max(1, front.LoadLevels) : 0;
                 for (var levelIndex = 0; levelIndex < maxLevels; levelIndex++)
                 {
                     var active = levelIndex < ownLevels;

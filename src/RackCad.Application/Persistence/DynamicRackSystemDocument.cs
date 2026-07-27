@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using RackCad.Application.Systems;
 using RackCad.Domain.Systems;
 
@@ -211,6 +212,10 @@ namespace RackCad.Application.Persistence
                 });
             }
 
+            // El estado Activo/En blanco se carga VERBATIM (I-33). Un documento con TODOS los frentes en blanco no se
+            // arregla en silencio aqui: lo rechaza la validacion canonica (RackDesignValidation / el resolver) con
+            // error visible. Un documento legacy no trae la bandera, asi que sus frentes cargan todos activos.
+
             foreach (var safety in SafetySelections ?? Enumerable.Empty<SafetySelectionDocument>())
             {
                 if (safety != null && !string.IsNullOrWhiteSpace(safety.ElementId))
@@ -317,6 +322,9 @@ namespace RackCad.Application.Persistence
                 system.Fronts.Add(legacy);
             }
 
+            // Igual que el limite del diseno: el estado se carga verbatim y el rechazo de un rack todo en blanco es de
+            // la validacion canonica, no de una guarda propia de este DTO (I-33).
+
             foreach (var safety in SafetySelections ?? Enumerable.Empty<SafetySelectionDocument>())
             {
                 if (safety != null && !string.IsNullOrWhiteSpace(safety.ElementId))
@@ -342,6 +350,18 @@ namespace RackCad.Application.Persistence
 
     public sealed class DynamicRackFrontDocument
     {
+        /// <summary>
+        /// Nullable so a document written before I-33 — which has no notion of a blank front — loads every front
+        /// ACTIVE. Only an explicit <c>false</c> marks a blank front, and every other member of this document keeps
+        /// being written, so the DORMANT configuration survives the round trip and the front reactivates intact.
+        /// <para>
+        /// It is omitted from the wire when the front is active (the stores do NOT ignore nulls globally), so a rack
+        /// without blank fronts serializes exactly as it did before I-33.
+        /// </para>
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsActive { get; set; }
+
         public int PalletCount { get; set; } = DynamicRackDefaults.DefaultPalletsWide;
         public int? LoadLevels { get; set; }
         public int? PalletsDeep { get; set; }
@@ -355,6 +375,7 @@ namespace RackCad.Application.Persistence
         public static DynamicRackFrontDocument From(DynamicRackFrontDesign front)
             => new DynamicRackFrontDocument
             {
+                IsActive = front.IsActive ? (bool?)null : false,
                 PalletCount = front.PalletCount,
                 LoadLevels = front.LoadLevels,
                 PalletsDeep = front.PalletsDeep,
@@ -368,6 +389,7 @@ namespace RackCad.Application.Persistence
         public static DynamicRackFrontDocument From(DynamicRackFront front)
             => new DynamicRackFrontDocument
             {
+                IsActive = front.IsActive ? (bool?)null : false,
                 PalletCount = front.PalletCount,
                 LoadLevels = front.LoadLevels,
                 PalletsDeep = front.PalletsDeep,
@@ -383,6 +405,7 @@ namespace RackCad.Application.Persistence
         {
             var result = new DynamicRackFrontDesign
             {
+                IsActive = IsActive ?? true,
                 PalletCount = PalletCount > 0 ? PalletCount : DynamicRackDefaults.DefaultPalletsWide,
                 LoadLevels = LoadLevels.HasValue && LoadLevels.Value > 0
                     ? LoadLevels.Value
@@ -431,6 +454,7 @@ namespace RackCad.Application.Persistence
             var count = PalletCount > 0 ? PalletCount : DynamicRackDefaults.DefaultPalletsWide;
             var result = new DynamicRackFront
             {
+                IsActive = IsActive ?? true,
                 PalletCount = count,
                 LoadLevels = LoadLevels.HasValue && LoadLevels.Value > 0
                     ? LoadLevels.Value

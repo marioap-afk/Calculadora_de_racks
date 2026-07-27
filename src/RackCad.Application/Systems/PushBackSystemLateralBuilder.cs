@@ -39,6 +39,13 @@ namespace RackCad.Application.Systems
             var layout = DynamicFrontGeometry.Compute(structure, catalog);
             for (var postIndex = 0; postIndex < layout.PostPositions.Count; postIndex++)
             {
+                // I-33 (Owner): misma regla que el Dinámico, sobre la MISMA autoridad — la frontera compartida por dos
+                // frentes en blanco no existe, así que no hay corte. Los que quedan conservan su índice de poste.
+                if (!DynamicFrontActivation.BoundaryExists(structure, postIndex))
+                {
+                    continue;
+                }
+
                 result.Add(new DynamicLateralCorte(postIndex, layout.PostPositions[postIndex], Build(system, catalog, postIndex)));
             }
 
@@ -84,7 +91,9 @@ namespace RackCad.Application.Systems
                 loose.AddRange(PushBackLoadBeamGeometry.HighBeams(system, catalog, frontIndex, front));
                 loose.AddRange(rearTopeBuilder.BuildLateral(system, catalog, frontIndex, front));
 
-                var bedLevels = sectioned ? Math.Min(levelCount, front.LoadLevels) : levelCount;
+                var bedLevels = sectioned
+                    ? Math.Min(levelCount, DynamicFrontActivation.EffectiveLoadLevels(front))
+                    : levelCount;
                 var bed = bedBuilder.BuildLateral(system, catalog, front, bedLevels);
                 if (bed != null)
                 {
