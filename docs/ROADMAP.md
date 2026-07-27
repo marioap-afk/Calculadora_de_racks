@@ -194,6 +194,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-31 | `refactor/selective-visual-shell` (provisional) ✋ | **Migración del editor Selectivo al shell visual**: migrar `RackSelectiveWindow` al shell integrado por I-30, preservando estado, geometría, BOM, persistencia y handlers. **No puede reclamarse antes de cerrar I-30**; debe integrarse antes de rebasar y reanudar I-18 | — | I-30 integrada | I-30 (orden fijo); reanudación de I-18 | integrada (2026-07-24) |
 | I-32 | `fix/correcciones-push-back` ✋ | **Correcciones funcionales y geométricas de Push Back** a partir del reporte del Owner sobre el sistema ya integrado por I-18: diez hallazgos (PB-002…006, 008…010, 012, 013), el override opt-in de elevaciones en sus cuatro ámbitos, el default del protector lateral y la **geometría ASIMÉTRICA de la cama**. PB-001, PB-007, PB-011 y PB-014 quedan diferidos en `ideas-futuras.md` y no bloquean | M | I-18 integrada | — | **integrada (2026-07-27)** — merge `--no-ff` `236619d`, CI 30228331452 4/4; validación manual del Owner **APROBADA** sobre el build `a0c3f27` (DLL SHA-256 `B7B15802…`, CI 30226757221) |
 | I-33 | `feature/frente-en-blanco` ✋ | **Frente en blanco para Dinámico y Push Back**: implementa **PB-014**, que I-32 dejó diferido pidiendo decisión de alcance (la da el Owner al abrir la iniciativa). Un frente pasa a tener estado **Activo / En blanco**: en blanco conserva su claro y su estructura, desplaza a los frentes posteriores y no lleva ningún nivel ni componente de carga, con su configuración **dormida** para reactivarlo intacto. Autoridad única `DynamicFrontActivation` sobre la estructura dinámica que Push Back compone. Incluye el rechazo canónico del rack todo-en-blanco (sin normalizar en silencio), la edición deshabilitada al seleccionar un frente en blanco, las celdas de nivel inexistentes en los diálogos de seguridad con su configuración dormida preservada, el desacople forma-de-rejilla / selector de lado, y —decisión del Owner— la **frontera compartida por dos frentes en blanco que NO existe**. Fuera de alcance: Selectivo, PB-001, PB-007, PB-011, I-23, I-25, catálogos, DWG y shell | M | I-18, I-21, I-30, I-31, I-32 (integradas) | I-23, I-25 | **integrada (2026-07-27)** — validación manual del Owner **APROBADA**, incluida la ronda focalizada de fronteras físicas, sobre el candidato `b840cfe` |
+| I-34 | `feature/edicion-masiva-seguridad` ✋ | **Edición masiva de matrices de seguridad**: implementa **PB-007**, que I-32 registró y I-33 dejó explícitamente fuera de alcance pidiendo decisión del Owner por tocar diálogos COMPARTIDOS. Hoy las rejillas de seguridad son celda a celda (solo «Todos»/«Ninguno»): quitar el desviador del segundo nivel en 100 frentes cuesta 100 clics. Añade una **fundación común pura sobre `SelectionMatrixModel`** con **celda primaria no persistida**, estado **Activar/Desactivar** y alcances **Celda / Nivel / Frente-o-Poste / Todo**, al patrón de «Aplicar a:» que ya existe en los editores (`SelectiveApplyScope`, `DynamicRackCellScope`). La infraestructura es **agnóstica a `RackSystemKind`**: cada diálogo declara sus etiquetas y capacidades. Celdas **ausentes ignoradas**, **una** notificación agregada por operación masiva y **sin rebuild por celda**. Fuera de alcance: DTO, formato de alambre, stores, geometría, BOM, catálogos, DWG, namespaces, shell visual, `DesviadorCellsAreByPost`, **parrilla** y **defensa** | M | I-14, I-22, I-32, I-33 (integradas) | I-23, I-25 | pendiente |
 
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el
 dibujo, snapping, colisiones, clear height, undo/redo, shop drawings, 3D/IFC, optimizador IA, SQL/API
@@ -254,6 +255,12 @@ graph LR
   I24 --> I30
   I30 --> I31[I-31 selective-visual-shell]
   I31 -->|reanudación| I18
+  I18 --> I32[I-32 correcciones-push-back]
+  I32 --> I33[I-33 frente-en-blanco]
+  I14 --> I34[I-34 edicion-masiva-seguridad]
+  I22 --> I34
+  I32 --> I34
+  I33 --> I34
 ```
 
 Sin dependencias previas (pero sus estorbos aplican — principio 7): I-03 (estorba I-11),

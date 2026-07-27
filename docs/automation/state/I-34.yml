@@ -1,0 +1,45 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-34
+  branch: feature/edicion-masiva-seguridad
+  claim_id: 1a2f5fcf-2430-49a1-9f56-1aa526bcdbf6
+  current_phase: 4
+  state: implementing
+  gate: none
+  attempts: 1
+  next_action: >-
+    ADOPCION-por-los-dialogos-en-una-sesion-propia-empezando-por-el-desviador-eje-POSTE ·
+    despues-tope-que-cubre-Selectivo-y-el-tope-posterior-de-Push-Back-y-luego-guia ·
+    parrilla-y-defensa-necesitan-decision-previa-y-NO-son-compromiso
+  last_evidence_commit: se-escribe-al-cerrar-la-sesion-el-SHA-completo-de-la-punta-publicada
+
+# --------------------------------------------------------------------------------------------------------
+# ALCANCE DE ESTE PRIMER INCREMENTO. La fundacion NO tiene consumidores de produccion: ningun dialogo
+# cambia todavia de comportamiento, y por eso no hay gate de AutoCAD abierto en esta sesion.
+# --------------------------------------------------------------------------------------------------------
+increment:
+  delivered:
+    - inventario-auditado-de-las-5-matrices-booleanas-de-seguridad-y-de-los-consumidores-reales-del-control
+    - decisiones-cerradas-de-UX-y-arquitectura-en-el-contrato-seccion-7
+    - regresiones-rojas-verificadas-fallando-antes-de-la-fundacion
+    - fundacion-comun-minima-y-pura-sobre-SelectionMatrixModel
+  not_delivered:
+    - adopcion-por-SafetyDesviadorGridWindow-SafetyTopeGridWindow-SafetyGuiaEntradaGridWindow
+    - parrilla-y-defensa-excluidas-con-justificacion-en-el-contrato-seccion-6-3
+
+gates:
+  ci: verde-requerido-sobre-la-punta-publicada-4-de-4
+  plugin_build: no-ejecutado-en-esta-sesion-la-fundacion-no-toca-el-Plugin
+  autocad: >-
+    DIFERIDO-a-la-adopcion · este-incremento-no-cambia-dibujo-BOM-ni-interaccion-visible
+  owner_validation: >-
+    DIFERIDO-a-la-adopcion · requires_owner_validation-true-describe-la-iniciativa-completa
+  owner_decision: >-
+    NO-REQUERIDO · la-decision-de-alcance-que-PB-007-exigia-la-dio-el-Owner-en-la-instruccion-de-apertura
+
+invariants:
+  - ningun-DTO-wire-format-store-geometria-BOM-catalogo-bloque-DWG-ni-namespace-cambia
+  - DesviadorCellsAreByPost-sigue-en-false-para-el-Dinamico-y-no-se-toca
+  - parrilla-defensa-shell-visual-y-guardas-traseras-intactos
+  - las-celdas-ausentes-y-la-configuracion-dormida-de-SafetyDormantCells-no-se-alteran
+  - main-no-fue-modificada

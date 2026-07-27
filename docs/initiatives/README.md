@@ -282,6 +282,31 @@ Planes disponibles:
   avanzó desde la base `0e505d8`); integrada por `git merge --no-ff`; rama y worktree eliminados tras la CI
   post-merge verde. Estado versionado en
   [`../automation/state/I-33.yml`](../automation/state/I-33.yml).
+- [`I-34-edicion-masiva-seguridad.md`](I-34-edicion-masiva-seguridad.md): **Edición masiva de matrices de
+  seguridad** (tipo: feature; rama `feature/edicion-masiva-seguridad`). Implementa **PB-007**, que I-32
+  registró y **I-33 dejó explícitamente fuera de alcance** señalando que «toca los diálogos COMPARTIDOS,
+  así que afecta a Selectivo y Dinámico: necesita decisión de alcance del Owner»; esa decisión la da el
+  Owner al abrir la iniciativa. Hoy las cinco rejillas de seguridad son celda a celda y solo ofrecen
+  «Todos»/«Ninguno»: quitar el desviador del segundo nivel en 100 frentes cuesta 100 clics. Añade una
+  **fundación común pura sobre `SelectionMatrixModel`** con **celda primaria no persistida**, estado
+  **Activar/Desactivar** y alcances **Celda / Nivel / Frente-o-Poste / Todo** —la misma gramática de
+  «Aplicar a:» que ya usan los editores de diseño (`SelectiveApplyScope`, `DynamicRackCellScope`)—. La
+  infraestructura es **agnóstica a `RackSystemKind`**: cada diálogo **declara** sus etiquetas (el eje de
+  columna es «Frente» o **«Poste»**) y sus capacidades, en vez de derivarlas. Las **celdas ausentes**
+  (rejilla dentada de I-22, columna de frente en blanco de I-33) nunca cambian ni se reportan y la
+  configuración **dormida** de `SafetyDormantCells` queda intacta; cada operación masiva emite **una**
+  notificación agregada con exactamente las celdas cambiadas, y el control repinta esas casillas **sin
+  rebuild**. **Este primer incremento** entrega el **inventario auditado** de las cinco matrices booleanas
+  (tope, tope posterior de Push Back, desviador —el único eje por **poste**—, guía de entrada y parrilla),
+  las decisiones cerradas, las **regresiones rojas** y la fundación; **NO migra todavía los diálogos**.
+  Fuera de alcance: la adopción por los diálogos, DTO/wire/stores, geometría, BOM, catálogos, DWG,
+  namespaces (I-23), guardas traseras (I-25), shell visual, `DesviadorCellsAreByPost`, y —con
+  justificación explícita— **parrilla** (lleva un contador vivo por celda; I-22 ya la excluyó de la
+  adopción del control), **defensa** (formulario por poste con dos longitudes, sin eje de nivel) y la
+  **matriz estructural de tarimas** (es diseño, no seguridad). `requires_autocad: true`,
+  `requires_owner_validation: true` describen la **iniciativa completa**: este incremento no cambia dibujo
+  ni BOM, así que sus gates se resuelven con la adopción. `requires_owner_decision: false`. Estado
+  versionado en [`../automation/state/I-34.yml`](../automation/state/I-34.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
