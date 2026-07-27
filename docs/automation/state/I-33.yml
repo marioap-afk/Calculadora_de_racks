@@ -9,22 +9,22 @@ automation_state:
   attempts: 1
   next_action: >-
     validacion-manual-del-Owner-en-AutoCAD-2025-sobre-el-DLL-Debug-del-worktree ·
-    los-13-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
+    los-14-puntos-estan-en-la-seccion-8-del-contrato-docs-initiatives-I-33-frente-en-blanco-md
   integration: NO-INTEGRADA-la-rama-y-el-worktree-siguen-vivos-a-la-espera-del-gate-manual
 
 # --------------------------------------------------------------------------------------------------------
 # EL CANDIDATO. Hay UNO SOLO y es este; cualquier SHA anterior de la rama queda superado y NO es candidato.
 # --------------------------------------------------------------------------------------------------------
 candidate:
-  sha: 4f93214dee33161f61fc5d63bf1f67060ca5d702
-  subject: Frente en blanco - desacopla la forma de la rejilla del selector de lado
-  ci_run: 30235853266
+  sha: b840cfe24578bc9faa3b13dad8b11d90d47aad84
+  subject: Frente en blanco - la frontera compartida por dos frentes en blanco no existe
+  ci_run: 30240730244
   ci_result: VERDE-4-de-4-sobre-el-SHA-del-candidato
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   dll_path: >-
     <worktree>/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
-  dll_informational_version: 1.0.0+4f93214dee33161f61fc5d63bf1f67060ca5d702
-  dll_sha256: 747D239EE18F9EE59182FE90455A029A6C30B108BB6A3D84C67C336069DA0A9C
+  dll_informational_version: 1.0.0+b840cfe24578bc9faa3b13dad8b11d90d47aad84
+  dll_sha256: 5A88FA02711457CB5C0AC507EB86A0C8FA8C4CB622195BBEC5F03CB227A2B3DF
   binding: >-
     el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-candidato-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol
   note_on_this_file: >-
@@ -60,19 +60,20 @@ evidence:
     56ca7c6-estado-de-la-segunda-ronda-SUPERADO ·
     932c822-celdas-de-nivel-inexistentes-en-los-dialogos-de-seguridad-SUPERADO ·
     32d1b04-estado-de-la-tercera-ronda-SUPERADO ·
-    4f93214-CANDIDATO-desacopla-la-forma-de-la-rejilla-del-selector-de-lado
+    4f93214-desacopla-la-forma-de-la-rejilla-del-selector-de-lado-SUPERADO ·
+    366c886-estado-de-la-cuarta-ronda-SUPERADO ·
+    b840cfe-CANDIDATO-la-frontera-compartida-por-dos-frentes-en-blanco-no-existe
   regression_evidence: >-
     rojo-verificado-en-la-primera-ronda-con-la-bandera-declarada-pero-SIN-consumidores-11-de-19-fallando ·
     fallaban-las-de-comportamiento-frontal-lateral-planta-BOM-dinamico-y-push-back-round-trip-snapshot-y-dormancia ·
     pasaban-las-2-de-autoridad-y-las-6-guardas-de-estructura-que-deben-pasar-antes-y-despues-porque-afirman-que-la-estructura-NO-cambia
   tests: >-
-    rackcad-tests-1507-de-1507 · rackcad-ui-tests-398-de-398 · cero-fallos-cero-omitidas-en-ambas
+    rackcad-tests-1522-de-1522 · rackcad-ui-tests-398-de-398 · cero-fallos-cero-omitidas-en-ambas
   targeted_filters: >-
-    core-BlankFront-37-de-37 ·
+    core-BlankFront-52-de-52 · core-BlankFrontBoundaryTests-15-de-15 ·
     core-CatalogValidatorTests-mas-CatalogManifestGuardTests-25-de-25-baseline-del-catalogo-distribuido-intacto ·
-    core-PushBack-441-de-441 · core-Dynamic-197-de-197 · core-Selective-324-de-324 ·
-    ui-BlankFrontDesviadorHandoffTests-14-de-14 · ui-BlankFront-33-de-33 ·
-    ui-Safety-46-de-46 · ui-Desviador-26-de-26 · ui-Selective-32-de-32 ·
+    core-PushBack-444-de-444 · core-Dynamic-197-de-197 · core-Selective-324-de-324 ·
+    ui-BlankFront-33-de-33 · ui-Safety-46-de-46 · ui-Dynamic-38-de-38 · ui-Selective-32-de-32 ·
     todos-con-conteo-NO-CERO
   builds: >-
     build-UI-Debug-0-errores-0-advertencias ·
@@ -116,6 +117,15 @@ evidence:
     de-paso-queda-corregido-el-defecto-gemelo-de-PB-002-que-el-Dinamico-arrastraba-la-lista-por-FRENTE-marcada-como-por-POSTE-hacia-caer-el-ultimo-poste-a-1-nivel ·
     es-la-FORMA-de-la-rejilla-la-lectura-de-la-celda-en-el-dibujo-sigue-por-frente-DesviadorCellsAreByPost-en-false-y-esa-decision-sigue-siendo-del-Owner-anotada-en-ideas-futuras ·
     fallbackLevelsArePerPost-pasa-a-false-en-el-Dinamico-porque-solo-gobierna-el-fallback-que-ya-no-recorre
+  physical_boundary: >-
+    decision-del-Owner-una-frontera-cuyos-DOS-frentes-adyacentes-estan-EN-BLANCO-no-tiene-poste-ni-estructura-fisica ·
+    los-dos-bordes-exteriores-del-rack-existen-siempre-y-Activo-Activo-Activo-En-blanco-y-En-blanco-Activo-tambien ·
+    una-corrida-de-N-blancos-conserva-solo-sus-dos-fronteras-exteriores-y-pierde-sus-N-menos-1-interiores-un-blanco-aislado-y-los-alternados-no-suprimen-ninguna ·
+    autoridad-UNICA-DynamicFrontActivation-BoundaryExists-con-FrontActivation-y-PresentBoundaries-consultada-por-frontal-lateral-planta-BOM-de-los-dos-sistemas-seguridad-por-poste-y-preview ·
+    el-guardia-del-corte-lateral-vive-en-Build-system-catalog-postIndex-y-no-solo-en-Cortes-para-que-dibujo-y-preview-no-diverjan ·
+    desaparece-el-ENSAMBLE-fisico-nunca-el-frente-logico-indices-claros-ancho-configuracion-dormida-persistencia-largo-total-y-TODAS-las-coordenadas-X-se-conservan ·
+    los-cortes-que-sobreviven-conservan-su-numero-de-poste-y-en-el-selector-lateral-el-poste-ausente-sigue-listado-marcado-sin-frontera ·
+    la-seguridad-del-poste-ausente-NO-se-desplaza-ni-se-borra-aporta-cero-niveles-asi-que-su-columna-es-ausente-y-SafetyDormantCells-la-preserva-y-vuelve-al-reactivar-cualquiera-de-los-dos-frentes
   scope_isolation: >-
     sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
     el-comportamiento-nuevo-de-los-dialogos-compartidos-es-OPT-IN-allowBlankFrontColumns-default-false-y-showDesviadorSide-default-true-igual-comportamiento-vigente-patron-de-I-32 ·
@@ -128,6 +138,6 @@ evidence:
     la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
 
 gates:
-  ci: VERDE-4-de-4-run-30235853266-sobre-el-SHA-del-candidato-4f93214dee33161f61fc5d63bf1f67060ca5d702
-  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-4f93214dee33161f61fc5d63bf1f67060ca5d702-SHA256-747D239EE18F9EE59182FE90455A029A6C30B108BB6A3D84C67C336069DA0A9C
-  owner_validation: PENDIENTE-13-puntos-en-la-seccion-8-del-contrato
+  ci: VERDE-4-de-4-run-30240730244-sobre-el-SHA-del-candidato-b840cfe24578bc9faa3b13dad8b11d90d47aad84
+  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-b840cfe24578bc9faa3b13dad8b11d90d47aad84-SHA256-5A88FA02711457CB5C0AC507EB86A0C8FA8C4CB622195BBEC5F03CB227A2B3DF
+  owner_validation: PENDIENTE-14-puntos-en-la-seccion-8-del-contrato
