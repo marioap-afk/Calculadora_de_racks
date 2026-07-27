@@ -139,17 +139,18 @@ namespace RackCad.Tests
         // ===== Fact 5 — the reconciliation loses the custom cabecera (INERT defect) =============================
 
         /// <summary>
-        /// REGRESION de I-35: esta prueba fija el DEFECTO, no el comportamiento deseado. Un cambio estructural
-        /// (tarima o fondos) fuerza el rebuild, y <c>RestoreHeaderFondos</c> guarda SOLO el fondo por ordinal: al
-        /// restaurarlo pone <c>UseCalculatedHeaderConfiguration = true</c> y reconstruye la configuracion desde la
-        /// fabrica. La cabecera personalizada se pierde en silencio.
+        /// El hecho 5 INVERTIDO por la adopcion, como su propio marcador exigia. Antes, un cambio estructural
+        /// (tarima o fondos) reconstruia y <c>RestoreHeaderFondos</c> —que guarda SOLO el fondo, por ordinal—
+        /// re-estampaba la cabecera como calculada: la personalizacion se perdia en silencio.
         ///
-        /// Hoy es INERTE en Push Back porque ninguna cabecera suya puede ser personalizada (Fact 4). La fase que
-        /// implemente PB-011 debe INVERTIR estas dos aserciones: la cabecera personalizada debe sobrevivir al
-        /// rebuild, y solo una restauracion explicita debe descartarla.
+        /// Ahora Push Back reconcilia por <c>ModuleId + Kind</c> y la cabecera personalizada SOBREVIVE, con su
+        /// fondo y su procedencia. La prueba se conserva con el mismo escenario para que la regresion sea evidente
+        /// si alguien vuelve al emparejamiento por ordinal.
+        ///
+        /// El DINAMICO conserva el comportamiento historico: I-35 no toca <c>RestoreHeaderFondos</c>.
         /// </summary>
         [Fact]
-        public void Fact5_REGRESION_AStructuralChange_RevertsACustomCabecera_ToCalculated()
+        public void Fact5_AStructuralChange_NowPreservesACustomCabecera_ByModuleIdAndKind()
         {
             const double marker = 40.0;
             var assembler = Assembler();
@@ -160,22 +161,49 @@ namespace RackCad.Tests
             var stable = assembler.Build(state, inputs);
             Assert.True(stable.IsValid, stable.Error);
             assembler.AcceptComputation(state, stable);
-            Assert.Contains(
-                stable.Design.Structure.Modules,
-                module => module.IsHeader && !module.UseCalculatedHeaderConfiguration);
+            var customId = stable.Design.Structure.Modules
+                .First(module => module.IsHeader && !module.UseCalculatedHeaderConfiguration).ModuleId;
 
             // A pallet-depth change is a STRUCTURAL change: MustRebuild fires and the structure is rebuilt.
             inputs.Pallet = new PalletSpecification(42.0, 52.0, 60.0, 1000.0, "kg");
             var rebuilt = assembler.Build(state, inputs);
             Assert.True(rebuilt.IsValid, rebuilt.Error);
 
-            // TODAY: nothing survives as custom, and the semantic marker is gone with it.
-            Assert.DoesNotContain(
-                rebuilt.Design.Structure.Modules,
-                module => module.IsHeader && !module.UseCalculatedHeaderConfiguration);
-            Assert.DoesNotContain(
-                rebuilt.Design.Structure.Modules.Where(module => module.IsHeader && module.HeaderConfiguration != null),
-                module => module.HeaderConfiguration.PanelClear == marker);
+            var survivor = rebuilt.Design.Structure.Modules.FirstOrDefault(module => module.ModuleId == customId);
+            Assert.NotNull(survivor);
+            Assert.False(survivor.UseCalculatedHeaderConfiguration);
+            Assert.Equal(marker, survivor.HeaderConfiguration.PanelClear, 4);
+            Assert.Contains(customId, state.LastModuleReconciliation.Preserved);
+            Assert.False(state.LastModuleReconciliation.LostAnything);
+        }
+
+        /// <summary>The DINAMICO keeps the historical ordinal, fondo-only reconciliation: I-35 fixed Push Back by
+        /// composing a different one, not by changing the pair the dynamic editor uses.</summary>
+        [Fact]
+        public void Fact5_TheDynamicPair_IsUnchanged_StillFondoOnlyAndStillReStampsAsCalculated()
+        {
+            var catalog = Catalog;
+            var assembler = new DynamicEditorDesignAssembler(
+                catalog,
+                new DynamicRackSystemBuilder(catalog),
+                new DynamicRackSystemResolver(catalog));
+            var system = new PushBackResolver(catalog).Resolve(new PushBackDesign { Structure = Structure() }).Structure;
+
+            var header = system.Modules.First(module => module.IsHeader);
+            header.Length = 55.0;
+            header.IsManualOverride = true;
+            header.IsCalculated = false;
+            header.UseCalculatedHeaderConfiguration = false;
+            header.AssociatedFrameConfiguration.PanelClear = 40.0;
+
+            var fondos = assembler.SnapshotHeaderFondos(system);
+            var rebuilt = new PushBackResolver(catalog).Resolve(new PushBackDesign { Structure = Structure(8) }).Structure;
+            assembler.RestoreHeaderFondos(rebuilt, fondos, 120.0, catalog.Defaults?.Post);
+
+            var restored = rebuilt.Modules.First(module => module.IsHeader);
+            Assert.Equal(55.0, restored.Length, 6);                       // the fondo comes back...
+            Assert.True(restored.UseCalculatedHeaderConfiguration);       // ...and the provenance is re-stamped
+            Assert.NotEqual(40.0, restored.AssociatedFrameConfiguration.PanelClear);
         }
 
         /// <summary>The snapshot the reconciliation is built on carries the FONDO and nothing else — the direct cause

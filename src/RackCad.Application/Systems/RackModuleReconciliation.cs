@@ -150,6 +150,15 @@ namespace RackCad.Application.Systems
                     continue;
                 }
 
+                // An explicit restore is checked FIRST and reported even though the restored intent no longer shows a
+                // customization: clearing it is precisely what the restore did, and the fact that the user asked for
+                // it must reach the surface. Checking "is there anything to carry" first would swallow it silently.
+                if (restoredIds.Contains(intent.ModuleId))
+                {
+                    restored.Add(intent.ModuleId);
+                    continue;   // dropped BY REQUEST, not lost
+                }
+
                 var hasCustomLength = intent.IsManualOverride && intent.Length > 0.0;
                 var hasCustomHeader = intent.IsHeader
                                       && !intent.UseCalculatedHeaderConfiguration
@@ -158,12 +167,6 @@ namespace RackCad.Application.Systems
                 if (!hasCustomLength && !hasCustomHeader)
                 {
                     continue;   // nothing to carry; the rebuild's calculated module stands
-                }
-
-                if (restoredIds.Contains(intent.ModuleId))
-                {
-                    restored.Add(intent.ModuleId);
-                    continue;   // dropped BY REQUEST, not lost
                 }
 
                 if (!byId.TryGetValue(intent.ModuleId, out var module))
