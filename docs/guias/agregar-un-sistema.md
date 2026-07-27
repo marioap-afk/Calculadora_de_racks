@@ -16,6 +16,33 @@ errores que costaron una ronda de corrección.
 3. **Decide qué NO es tuyo.** Push Back reutiliza la estructura del Dinámico entera; lo específico son los dos
    largueros de extremo, la cama y el tope. Cuanto más reutilices, menos golden propio mantienes.
 
+## 0.bis Dónde vive cada archivo (I-23)
+
+Desde **I-23**, cada sistema tiene su propio namespace y su propia carpeta en los tres proyectos, y la
+regla es comprobable: `NamespaceFolderGuardTests` falla si un archivo declara un namespace que no
+corresponde a su carpeta, si queda suelto en la raíz plana de `Systems/`, o si aparece una subcarpeta que
+no es uno de los seis destinos.
+
+```text
+src/RackCad.Domain/Systems/<Sistema>/         RackCad.Domain.Systems.<Sistema>
+src/RackCad.Application/Systems/<Sistema>/    RackCad.Application.Systems.<Sistema>
+src/RackCad.Plugin/Systems/<Sistema>/         RackCad.Plugin.Systems.<Sistema>
+```
+
+`<Sistema>` es `Selective`, `Dynamic`, `PushBack`, `FlowBed`, `Larguero` o `Shared`. **Un sistema nuevo
+añade su carpeta y necesita antes su fila en el contrato de la iniciativa**: la guarda lo exige.
+
+Dos cosas que NO son de tu sistema:
+
+- `RackCad.Application.Drawing` — el vocabulario de materialización que consumen todos
+  (`HeaderBlockInstance`, `LateralHeaderLayout`, `HeaderRunPlan`, `HeaderInstanceGrouper`). Tus builders
+  producen instancias de aquí; no declares un plan propio.
+- `RackCad.Application.RackFrames` y `RackCad.Domain.RackFrames` — la cabecera física.
+
+Un archivo va al sistema que su tipo de primer nivel **nombra y modela**. **Consumir** un contrato de otro
+sistema no lo mueve: componer está permitido y es lo que se espera (ver §0.3). Solo va a `Shared` lo que es
+neutral en nombre **y** en contenido.
+
 ## 1. Dominio (`RackCad.Domain`)
 
 - Un `*Defaults` con las constantes del sistema (`PushBackDefaults`): ids de pieza, vista de sus puntos,

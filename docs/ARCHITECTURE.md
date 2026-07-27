@@ -328,7 +328,11 @@ XAML. La clonación de `RackFrameConfiguration` debe existir en un solo servicio
 - configuraciones de seguridad por subtipo, con DTO propio;
 - persistencia uniforme: Document + SchemaVersion + SchemaGuard + round-trip;
 - escritura atómica y distinción entre archivo ausente e ilegible;
-- namespaces `Systems.Selective`, `Systems.Dynamic`, `Systems.FlowBed`, `Systems.Shared`;
+- namespaces por sistema — **entregado por I-23** en los tres proyectos (Domain, Application y Plugin):
+  `Systems.Selective`, `Systems.Dynamic`, `Systems.PushBack`, `Systems.FlowBed`, `Systems.Larguero` y
+  `Systems.Shared`, más `Application.Drawing` para el vocabulario de materialización compartido. La
+  correspondencia namespace↔carpeta la comprueba `NamespaceFolderGuardTests`; el reparto para un sistema
+  nuevo está en [`guias/agregar-un-sistema.md`](guias/agregar-un-sistema.md) §0.bis;
 - stores/providers nuevos detrás de interfaz cuando llegue hosting fuera de AutoCAD.
 
 ### 7.5 Solución futura

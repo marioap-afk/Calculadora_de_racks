@@ -563,6 +563,6 @@ Los CUATRO tipos de rack (ventana editora + comando):
 | Selectivo (editor avanzado) | `RackSelectiveWindow` (+ `RackBomWindow`) | `RACKSELECTIVO` |
 
 - Menu principal: comando `RACKCAD`. Round-trip de edicion (los cuatro tipos): comando `RACKEDITAR`.
-- Geometria del selectivo: `src/RackCad.Application/Systems/SelectiveGeometryResolver.cs`; BOM: `SelectiveBomBuilder.cs`.
+- Geometria del selectivo: `src/RackCad.Application/Systems/Selective/SelectiveGeometryResolver.cs`; BOM: `SelectiveBomBuilder.cs`.
 - Comandos del plugin: `src/RackCad.Plugin/RackFrameCommands.cs`.
 - Identidad + round-trip: el sobre `RackEmbedDocument` (`SchemaVersion`, `Kind` = `selective`/`dynamic`/`cabecera`/`cama`, `View` = `frontal`/`lateral`/`planta`, `Section` = indice de corte; en dinamico `0=salida` y `1=entrada`; `-1` = vista no seccionada, `Id` GUID estable, `Name`, `Design`) se embebe en la definicion del bloque; ver `src/RackCad.Application/Persistence/RackEmbedDocument.cs`. Stores del diseño: `SelectivePalletDesignStore` (selectivo), `RackProjectStore` → `.rackcad.json` (dinamico/cabecera), `FlowBedConfigurationStore` (cama).

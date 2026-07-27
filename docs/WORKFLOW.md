@@ -164,7 +164,7 @@ cualquier iniciativa que los toque.
 | `src/RackCad.UI/RackSelectiveWindow.xaml.cs` (~2,460 líneas) | Editor más grande; toda feature del selectivo pasa por aquí |
 | `src/RackCad.Plugin/RackFrameCommands.cs` + partials | Una clase en 12 archivos con helpers estáticos cruzados |
 | `src/RackCad.UI/RackFrameConfiguratorViewModel.cs` (~2,550 líneas) | God-ViewModel del configurador |
-| `src/RackCad.Domain/Systems/SelectivePalletDesign.cs` | DeepCopy + DTO de seguridad: cada familia nueva lo toca |
+| `src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs` | DeepCopy + DTO de seguridad: cada familia nueva lo toca |
 
 (Las iniciativas `architecture/system-registry`, `architecture/editor-shell` y
 `refactor/plugin-commands` existen precisamente para encoger esta lista.)

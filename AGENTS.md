@@ -128,7 +128,7 @@ Un cambio de comportamiento esta terminado cuando:
 |---|---|
 | Estado del proyecto, bugs, backlog | `docs/HANDOFF.md` |
 | Datos de perfiles/bloques/seguridad | `assets/catalogs/*.csv` (+ como editarlos: `docs/guias/catalogos-y-plantillas.md`) |
-| Reglas de geometria del selectivo | `src/RackCad.Application/Systems/Selective*.cs` (los XML-doc explican cada regla) |
+| Reglas de geometria del selectivo | `src/RackCad.Application/Systems/Selective/` (los XML-doc explican cada regla) |
 | Modelo de datos / FKs de catalogos | `docs/guias/modelo-de-datos.md` |
 | Despliegue / Autoloader | `docs/guias/despliegue.md` |
 | Decisiones historicas | `docs/adr/` para decisiones vigentes; `docs/archivo/` solo para historia |

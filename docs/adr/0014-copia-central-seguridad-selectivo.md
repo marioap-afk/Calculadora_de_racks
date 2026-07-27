@@ -61,7 +61,7 @@ adoptó la convención.
 - [Arquitectura vigente — seguridad selectiva](../ARCHITECTURE.md)
 - [Context Pack: system-selective](../context-packs/system-selective.md)
 - [Context Pack: persistence](../context-packs/persistence.md)
-- [`SelectiveSafetySelection` y `DeepCopy`](../../src/RackCad.Domain/Systems/SelectivePalletDesign.cs)
+- [`SelectiveSafetySelection` y `DeepCopy`](../../src/RackCad.Domain/Systems/Selective/SelectivePalletDesign.cs)
 - [Documentos de persistencia de seguridad por subtipo](../../src/RackCad.Application/Persistence/SafetySelectionDocuments.cs)
 - [`SelectivePalletDesignDocument`](../../src/RackCad.Application/Persistence/SelectivePalletDesignDocument.cs)
 - [Pruebas de round-trip de la seguridad](../../tests/RackCad.Tests/SafetySelectionDocumentsTests.cs)
