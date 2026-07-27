@@ -16,15 +16,15 @@ automation_state:
 # EL CANDIDATO. Hay UNO SOLO y es este; cualquier SHA anterior de la rama queda superado y NO es candidato.
 # --------------------------------------------------------------------------------------------------------
 candidate:
-  sha: 932c822b4f96051d1345224038c8f2c415ad16fa
-  subject: Frente en blanco - celdas de nivel inexistentes en los dialogos de seguridad
-  ci_run: 30234344890
+  sha: 4f93214dee33161f61fc5d63bf1f67060ca5d702
+  subject: Frente en blanco - desacopla la forma de la rejilla del selector de lado
+  ci_run: 30235853266
   ci_result: VERDE-4-de-4-sobre-el-SHA-del-candidato
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   dll_path: >-
     <worktree>/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
-  dll_informational_version: 1.0.0+932c822b4f96051d1345224038c8f2c415ad16fa
-  dll_sha256: CC9EF3E733CEDEA1B97A3A6D7CF18282784C9BC6D05AD0AD1C034471D0EBE1DC
+  dll_informational_version: 1.0.0+4f93214dee33161f61fc5d63bf1f67060ca5d702
+  dll_sha256: 747D239EE18F9EE59182FE90455A029A6C30B108BB6A3D84C67C336069DA0A9C
   binding: >-
     el-InformationalVersion-del-DLL-ESTAMPA-el-SHA-del-candidato-asi-que-el-binario-que-carga-el-Owner-y-el-commit-con-CI-verde-son-el-mismo-arbol
   note_on_this_file: >-
@@ -58,19 +58,21 @@ evidence:
     6d24903-estado-de-la-primera-ronda-SUPERADO ·
     6c4a77f-rechazo-canonico-del-todo-en-blanco-y-edicion-por-seleccion-SUPERADO ·
     56ca7c6-estado-de-la-segunda-ronda-SUPERADO ·
-    932c822-CANDIDATO-celdas-de-nivel-inexistentes-en-los-dialogos-de-seguridad
+    932c822-celdas-de-nivel-inexistentes-en-los-dialogos-de-seguridad-SUPERADO ·
+    32d1b04-estado-de-la-tercera-ronda-SUPERADO ·
+    4f93214-CANDIDATO-desacopla-la-forma-de-la-rejilla-del-selector-de-lado
   regression_evidence: >-
     rojo-verificado-en-la-primera-ronda-con-la-bandera-declarada-pero-SIN-consumidores-11-de-19-fallando ·
     fallaban-las-de-comportamiento-frontal-lateral-planta-BOM-dinamico-y-push-back-round-trip-snapshot-y-dormancia ·
     pasaban-las-2-de-autoridad-y-las-6-guardas-de-estructura-que-deben-pasar-antes-y-despues-porque-afirman-que-la-estructura-NO-cambia
   tests: >-
-    rackcad-tests-1507-de-1507 · rackcad-ui-tests-384-de-384 · cero-fallos-cero-omitidas-en-ambas
+    rackcad-tests-1507-de-1507 · rackcad-ui-tests-398-de-398 · cero-fallos-cero-omitidas-en-ambas
   targeted_filters: >-
-    core-BlankFrontTests-28-de-28 · core-BlankFrontSafetyTests-9-de-9 ·
+    core-BlankFront-37-de-37 ·
     core-CatalogValidatorTests-mas-CatalogManifestGuardTests-25-de-25-baseline-del-catalogo-distribuido-intacto ·
     core-PushBack-441-de-441 · core-Dynamic-197-de-197 · core-Selective-324-de-324 ·
-    ui-BlankFrontSafetyGridTests-11-de-11 · ui-BlankFrontEditorTests-8-de-8 ·
-    ui-Safety-46-de-46 · ui-Selective-31-de-31 ·
+    ui-BlankFrontDesviadorHandoffTests-14-de-14 · ui-BlankFront-33-de-33 ·
+    ui-Safety-46-de-46 · ui-Desviador-26-de-26 · ui-Selective-32-de-32 ·
     todos-con-conteo-NO-CERO
   builds: >-
     build-UI-Debug-0-errores-0-advertencias ·
@@ -106,15 +108,26 @@ evidence:
     la-configuracion-guardada-de-la-columna-ausente-se-conserva-por-SafetyDormantCells-regla-pura-y-UNICA-que-consumen-las-tres-rejillas-se-persiste-lo-visible-MAS-lo-dormido ·
     al-reactivar-el-frente-las-celdas-reaparecen-intactas-y-editables ·
     la-editabilidad-la-decide-la-AUTORIDAD-compartida-EffectiveLevelCounts-y-EffectiveLevelsPerPost-no-un-predicado-por-dialogo
+  desviador_handoff: >-
+    desviadorLevelsPerPost-gobierna-EXCLUSIVAMENTE-la-forma-de-la-rejilla-y-showDesviadorSide-EXCLUSIVAMENTE-el-selector-de-cara-de-pasillo ·
+    antes-la-visibilidad-se-DERIVABA-de-desviadorLevelsPerPost-igual-a-null-asi-que-pedir-la-forma-por-poste-apagaba-el-selector-y-el-Dinamico-lo-habria-perdido-en-silencio ·
+    default-de-showDesviadorSide-es-true-igual-comportamiento-vigente-Selectivo-y-Dinamico-lo-conservan-y-Push-Back-lo-apaga-EXPLICITAMENTE-PB-003 ·
+    el-Dinamico-entrega-las-DOS-listas-SafetyLevelsPerFrente-N-para-guia-y-demas-rejillas-frente-por-nivel-y-DesviadorLevelsPerPost-N-mas-1-solo-para-el-desviador ·
+    de-paso-queda-corregido-el-defecto-gemelo-de-PB-002-que-el-Dinamico-arrastraba-la-lista-por-FRENTE-marcada-como-por-POSTE-hacia-caer-el-ultimo-poste-a-1-nivel ·
+    es-la-FORMA-de-la-rejilla-la-lectura-de-la-celda-en-el-dibujo-sigue-por-frente-DesviadorCellsAreByPost-en-false-y-esa-decision-sigue-siendo-del-Owner-anotada-en-ideas-futuras ·
+    fallbackLevelsArePerPost-pasa-a-false-en-el-Dinamico-porque-solo-gobierna-el-fallback-que-ya-no-recorre
   scope_isolation: >-
     sin-tocar-Selectivo-catalogos-bloques-DWG-formato-fisico-del-Xrecord-shell-visual-I-23-ni-I-25 ·
-    el-comportamiento-nuevo-de-los-dialogos-compartidos-es-OPT-IN-allowBlankFrontColumns-default-false-igual-comportamiento-vigente-patron-de-I-32 ·
+    el-comportamiento-nuevo-de-los-dialogos-compartidos-es-OPT-IN-allowBlankFrontColumns-default-false-y-showDesviadorSide-default-true-igual-comportamiento-vigente-patron-de-I-32 ·
     el-Selectivo-no-tiene-frentes-en-blanco-nunca-entrega-un-cero-y-conserva-el-suelo-historico-y-el-descarte-de-celdas-fuera-de-rango-verificado-por-dos-guardas-STA ·
+    el-Selectivo-no-pasa-desviadorLevelsPerPost-ni-showDesviadorSide-ni-allowBlankFrontColumns-ni-fallbackLevelsArePerPost-guardia-de-fuente-dedicada ·
+    la-rama-historica-Math-Max-left-right-mas-1-del-fallback-per-front-NO-se-toca-y-queda-limitada-al-camino-legacy-Selectivo-ninguna-ruta-de-I-33-la-recorre ·
+    SafetyDesviadorGridWindow-cs-sin-una-sola-linea-de-diff-en-esta-ronda ·
     RackSelectiveWindow-xaml-y-cs-sin-una-sola-linea-de-diff ·
     conflicts_with-declara-I-23-e-I-25 ·
     la-duplicacion-conocida-de-la-regla-niveles-en-un-poste-se-hace-respetar-la-bandera-en-AMBAS-copias-pero-NO-se-colapsa-sigue-en-ideas-futuras
 
 gates:
-  ci: VERDE-4-de-4-run-30234344890-sobre-el-SHA-del-candidato-932c822b4f96051d1345224038c8f2c415ad16fa
-  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-932c822b4f96051d1345224038c8f2c415ad16fa-SHA256-CC9EF3E733CEDEA1B97A3A6D7CF18282784C9BC6D05AD0AD1C034471D0EBE1DC
+  ci: VERDE-4-de-4-run-30235853266-sobre-el-SHA-del-candidato-4f93214dee33161f61fc5d63bf1f67060ca5d702
+  plugin_build: OK-DLL-Debug-estampado-1-0-0-mas-4f93214dee33161f61fc5d63bf1f67060ca5d702-SHA256-747D239EE18F9EE59182FE90455A029A6C30B108BB6A3D84C67C336069DA0A9C
   owner_validation: PENDIENTE-13-puntos-en-la-seccion-8-del-contrato
