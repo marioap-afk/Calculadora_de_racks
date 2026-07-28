@@ -23,8 +23,11 @@ candidate:
   sha: 164476c
   subject: I-36A - RONDA 2 - publicacion fail-closed, identidad neutral, verificacion del libro
   base: a35374f99dde91077a2e05bfc69358fb3e3b3ad9
-  ci_run: pendiente-de-verificar-sobre-el-candidato-de-la-RONDA-2
-  ci_result: pendiente
+  ci_run: 30327955080
+  ci_result: >-
+    VERDE-completed-success-sobre-6cdb9a5-que-CONTIENE-al-candidato-164476c ·
+    el-diff-164476c-a-6cdb9a5-es-EXCLUSIVAMENTE-DOCUMENTAL-cero-archivos-bajo-src-tests-tools-assets-deploy-o-github ·
+    asi-que-el-arbol-tecnico-con-CI-verde-y-el-que-el-Owner-valida-son-el-MISMO-y-se-comprueba-con-git-diff
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   por_que_importa_que_CI_sea_verde_en_LINUX: >-
     el-job-de-pruebas-corre-en-ubuntu-sobre-un-checkout-LIMPIO ·
