@@ -61,8 +61,8 @@ namespace RackCad.Application.StructuralSections.Geometry
 
         /// <summary>
         /// Builds without touching the cache. The dispatch is an explicit switch over the family, not
-        /// reflection or a registry: four families is the whole universe, and a fifth one should not be
-        /// possible to add without the compiler noticing.
+        /// reflection or a registry: the families are the whole universe, and a new one should not be
+        /// possible to add without the compiler noticing — which is exactly how I-36D added S.
         /// </summary>
         public static StructuralSectionGeometry Build(
             StructuralSectionDefinition section, SectionDetailLevel detail)
@@ -89,6 +89,8 @@ namespace RackCad.Application.StructuralSections.Geometry
                     return ChannelSectionGeometryBuilder.Build(section, detail);
                 case StructuralSectionFamily.Angle:
                     return AngleSectionGeometryBuilder.Build(section, detail);
+                case StructuralSectionFamily.S:
+                    return SSectionGeometryBuilder.Build(section, detail);
                 default:
                     throw new ArgumentOutOfRangeException(
                         nameof(section), section.Family, "Familia sin constructor de geometria.");

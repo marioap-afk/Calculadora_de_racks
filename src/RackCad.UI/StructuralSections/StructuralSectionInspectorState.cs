@@ -200,6 +200,33 @@ namespace RackCad.UI.StructuralSections
         }
 
         /// <summary>A one-line, human description of the fidelity the current detail achieved.</summary>
+        /// <summary>
+        /// The authority line: who authored the contour on screen.
+        ///
+        /// Empty for a tabulated-constrained family, and a WARNING for a visually derived one. It is
+        /// deliberately not a setting: ADR-0023 decision 22 makes the warning mandatory and non-configurable,
+        /// so there is no flag here to turn it off.
+        /// </summary>
+        public string AuthoritySummary()
+        {
+            if (_selected == null)
+            {
+                return string.Empty;
+            }
+
+            return _factory.Get(_selected, Detail).Authority == SectionGeometryAuthority.VisualDerived
+                ? "GEOMETRIA VISUAL DERIVADA (ADR-0023): la inclinacion del patin y el filete son una " +
+                  "convencion de RackCad, no un dato de AISC. Es aproximada, no esta garantizada por ningun " +
+                  "fabricante y NO es apta para CNC ni fabricacion. Dimensiones, area, peso y propiedades " +
+                  "siguen siendo los que tabula AISC."
+                : string.Empty;
+        }
+
+        /// <summary>True when the current selection draws under a declared RackCad convention.</summary>
+        public bool IsVisualDerived =>
+            _selected != null &&
+            _factory.Get(_selected, Detail).Authority == SectionGeometryAuthority.VisualDerived;
+
         public string FidelitySummary()
         {
             if (_selected == null)

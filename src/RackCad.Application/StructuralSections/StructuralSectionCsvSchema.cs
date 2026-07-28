@@ -27,6 +27,7 @@ namespace RackCad.Application.StructuralSections
         public const string HssRectangularFile = "structural-sections-hss-rect.csv";
         public const string ChannelFile = "structural-sections-c.csv";
         public const string AngleFile = "structural-sections-l.csv";
+        public const string SFile = "structural-sections-s.csv";
         public const string SourcesFile = "structural-section-sources.csv";
         public const string StatusFile = "structural-section-status.csv";
         public const string ManifestFile = "structural-sections-manifest.json";
@@ -103,6 +104,23 @@ namespace RackCad.Application.StructuralSections
             "PA", "PA2", "PB"
         };
 
+        /// <summary>
+        /// S: exactly the dimensional and property block of W, MINUS <c>T_F</c>.
+        ///
+        /// The flag is dropped rather than written empty because it would always be empty: AISC reserves its
+        /// special notes to W, M, WT and MT, and the 28 S rows leave it blank. A column that can only ever
+        /// hold nothing is not data, it is noise the reader would have to explain away.
+        ///
+        /// There is no slope column and no radius column, because the source publishes neither. The visual
+        /// taper of ADR-0023 is NOT catalog data and must never be persisted here.
+        /// </summary>
+        public static readonly string[] SSpecificColumns =
+        {
+            "d", "ddet", "bf", "bfdet", "tw", "twdet", "twdet_2", "tf", "tfdet",
+            "kdes", "kdet", "k1", "T", "WGi", "WGo",
+            "Cw", "Wno", "Sw1", "Qf", "Qw", "rts", "ho", "PA", "PB", "PC", "PD"
+        };
+
         public static readonly string[] SourcesColumns =
         {
             SourceId, SourceRevisionColumn, IdNamespace, Publisher, SourceType, NativeUnitSystem, Title, Url
@@ -118,6 +136,7 @@ namespace RackCad.Application.StructuralSections
                 case StructuralSectionFamily.HssRectangular: return HssRectangularFile;
                 case StructuralSectionFamily.Channel: return ChannelFile;
                 case StructuralSectionFamily.Angle: return AngleFile;
+                case StructuralSectionFamily.S: return SFile;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(family), family, "Familia desconocida.");
             }
@@ -140,6 +159,7 @@ namespace RackCad.Application.StructuralSections
                 case StructuralSectionFamily.HssRectangular: return HssRectangularSpecificColumns;
                 case StructuralSectionFamily.Channel: return ChannelSpecificColumns;
                 case StructuralSectionFamily.Angle: return AngleSpecificColumns;
+                case StructuralSectionFamily.S: return SSpecificColumns;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(family), family, "Familia desconocida.");
             }

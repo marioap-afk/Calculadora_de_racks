@@ -14,7 +14,7 @@ namespace RackCad.Tests
     ///
     /// This is the only suite that depends on real AISC ids, on purpose — everything else uses synthetic
     /// fixtures so a future revision of the source cannot break the whole test base. What it proves is that
-    /// the 983 shipped rows load strictly, validate clean, and match what the manifest claims about them.
+    /// the 1 011 shipped rows load strictly, validate clean, and match what the manifest claims about them.
     /// </summary>
     public class ShippedStructuralSectionCatalogTests
     {
@@ -22,7 +22,12 @@ namespace RackCad.Tests
         private const int ExpectedHssRectangular = 525;
         private const int ExpectedChannel = 32;
         private const int ExpectedAngle = 137;
-        private const int ExpectedTotal = ExpectedW + ExpectedHssRectangular + ExpectedChannel + ExpectedAngle;
+
+        /// <summary>I-36D: the 28 American Standard beams AISC publishes, formerly counted as an exclusion.</summary>
+        private const int ExpectedS = 28;
+
+        private const int ExpectedTotal =
+            ExpectedW + ExpectedHssRectangular + ExpectedChannel + ExpectedAngle + ExpectedS;
 
         private static CsvStructuralSectionCatalogProvider Provider() =>
             new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve());

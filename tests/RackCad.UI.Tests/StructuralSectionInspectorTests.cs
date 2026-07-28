@@ -27,9 +27,65 @@ namespace RackCad.UI.Tests
         {
             var state = State();
 
-            Assert.Equal(983, state.Catalog.Count);
+            Assert.Equal(1011, state.Catalog.Count);
             Assert.True(state.HasSelection);
-            Assert.Equal(983, state.Matches().Count);
+            Assert.Equal(1011, state.Matches().Count);
+        }
+
+        /// <summary>
+        /// I-36D: the family filter offers S under its market name, and the authority warning appears for it
+        /// and ONLY for it. The warning is not a setting — there is no switch here to turn it off.
+        /// </summary>
+        [Fact]
+        public void TheSFamilyIsOfferedAndCarriesTheVisualDerivedWarning()
+        {
+            var state = State();
+            state.Family = StructuralSectionFamily.S;
+            state.EnsureSelectionIsVisible();
+
+            Assert.Equal(28, state.Matches().Count);
+            Assert.True(state.IsVisualDerived);
+
+            var warning = state.AuthoritySummary();
+            Assert.Contains("VISUAL DERIVADA", warning, StringComparison.Ordinal);
+            Assert.Contains("CNC", warning, StringComparison.Ordinal);
+            Assert.Contains("AISC", warning, StringComparison.Ordinal);
+
+            Assert.Contains("S / IPS", StructuralSectionInspectorWindow.FamilyLabel(StructuralSectionFamily.S),
+                StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheWarningIsAbsentForEveryTabulatedConstrainedFamily()
+        {
+            foreach (var family in new[]
+                     {
+                         StructuralSectionFamily.W, StructuralSectionFamily.HssRectangular,
+                         StructuralSectionFamily.Channel, StructuralSectionFamily.Angle
+                     })
+            {
+                var state = State();
+                state.Family = family;
+                state.EnsureSelectionIsVisible();
+
+                Assert.False(state.IsVisualDerived, family.ToString());
+                Assert.Equal(string.Empty, state.AuthoritySummary());
+            }
+        }
+
+        /// <summary>The plan the preview draws is the SAME artefact, carrying the authority with it.</summary>
+        [Fact]
+        public void ThePlanTheInspectorBuildsCarriesTheAuthority()
+        {
+            var state = State();
+            state.Family = StructuralSectionFamily.S;
+            state.EnsureSelectionIsVisible();
+
+            var plan = state.BuildPlan();
+
+            Assert.NotNull(plan);
+            Assert.Equal(SectionGeometryAuthority.VisualDerived, plan.Authority);
+            Assert.True(plan.IsVisualDerived);
         }
 
         [Theory]
@@ -37,6 +93,7 @@ namespace RackCad.UI.Tests
         [InlineData(StructuralSectionFamily.HssRectangular, 525)]
         [InlineData(StructuralSectionFamily.Channel, 32)]
         [InlineData(StructuralSectionFamily.Angle, 137)]
+        [InlineData(StructuralSectionFamily.S, 28)]
         public void FilteringByFamilyNarrowsTheList(StructuralSectionFamily family, int expected)
         {
             var state = State();

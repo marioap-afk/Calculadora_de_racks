@@ -44,6 +44,29 @@ namespace RackCad.Application.StructuralSections.Geometry
         DegradedToSimplified = 3
     }
 
+    /// <summary>
+    /// WHOSE the contour is, which is a different question from how much detail it has.
+    ///
+    /// <see cref="SectionFidelity"/> answers "how complete is this?". This answers "who authored it?". They
+    /// are orthogonal and ADR-0023 keeps them apart on purpose: collapsing the authority into the fidelity
+    /// enum would force a single value to mean both, and the first consumer that needed one without the other
+    /// would have to re-derive it from the family — the re-derivation ADR-0022 already forbids elsewhere.
+    /// </summary>
+    public enum SectionGeometryAuthority
+    {
+        /// <summary>
+        /// Every point is traceable to a published datum or to a derivation whose rule lives in ADR-0022.
+        /// This is W, HSS, C and L, and it is the default: a new family does not get to be creative silently.
+        /// </summary>
+        TabulatedConstrained = 0,
+
+        /// <summary>
+        /// The contour embeds a RackCad convention the source does not publish (ADR-0023). Today only S, whose
+        /// flange slope AISC does not tabulate. A consumer showing this geometry must say so.
+        /// </summary>
+        VisualDerived = 1
+    }
+
     public enum SectionDiagnosticSeverity
     {
         /// <summary>Worth knowing; the geometry is what it claims to be.</summary>
@@ -153,8 +176,10 @@ namespace RackCad.Application.StructuralSections.Geometry
             ClosedContour2D[] holes,
             SectionOriginBasis originBasis,
             SectionReferencePoint[] referencePoints,
-            SectionGeometryDiagnostic[] diagnostics)
+            SectionGeometryDiagnostic[] diagnostics,
+            SectionGeometryAuthority authority)
         {
+            Authority = authority;
             SectionId = sectionId;
             Family = family;
             RequestedDetail = requestedDetail;
@@ -177,6 +202,16 @@ namespace RackCad.Application.StructuralSections.Geometry
         public SectionDetailLevel RequestedDetail { get; }
 
         public SectionFidelity Fidelity { get; }
+
+        /// <summary>
+        /// Whose contour this is: tabulated-constrained, or carrying a declared RackCad convention.
+        ///
+        /// Travels with the geometry and with the plan so no consumer has to look at the family to find out.
+        /// </summary>
+        public SectionGeometryAuthority Authority { get; }
+
+        /// <summary>True when the contour embeds a RackCad convention and must be shown with a warning.</summary>
+        public bool IsVisualDerived => Authority == SectionGeometryAuthority.VisualDerived;
 
         /// <summary>The outer boundary, always counter-clockwise.</summary>
         public ClosedContour2D OuterContour { get; }
@@ -253,7 +288,8 @@ namespace RackCad.Application.StructuralSections.Geometry
             IEnumerable<ClosedContour2D> holes = null,
             SectionOriginBasis originBasis = SectionOriginBasis.Symmetry,
             IEnumerable<SectionReferencePoint> referencePoints = null,
-            IEnumerable<SectionGeometryDiagnostic> diagnostics = null)
+            IEnumerable<SectionGeometryDiagnostic> diagnostics = null,
+            SectionGeometryAuthority authority = SectionGeometryAuthority.TabulatedConstrained)
         {
             if (outer == null)
             {
@@ -287,11 +323,23 @@ namespace RackCad.Application.StructuralSections.Geometry
                 }
             }
 
+            // A visually derived contour without its warning would be exactly the silent authorship ADR-0023
+            // exists to prevent, so the type refuses to build one.
+            if (authority == SectionGeometryAuthority.VisualDerived &&
+                !diagnosticList.Any(d => d.Code == SectionGeometryDiagnostics.VisualConventionApplied))
+            {
+                throw new ArgumentException(
+                    "Una geometria de autoridad visual derivada debe declararlo: falta el diagnostico " +
+                    SectionGeometryDiagnostics.VisualConventionApplied + ".",
+                    nameof(diagnostics));
+            }
+
             return new StructuralSectionGeometry(
                 sectionId, family, requestedDetail, fidelity,
                 normalizedOuter, normalizedHoles, originBasis,
                 (referencePoints ?? Enumerable.Empty<SectionReferencePoint>()).Where(p => p != null).ToArray(),
-                diagnosticList);
+                diagnosticList,
+                authority);
         }
 
         /// <summary>Area centroid of the material: the outer contour minus each hole, weighted by area.</summary>

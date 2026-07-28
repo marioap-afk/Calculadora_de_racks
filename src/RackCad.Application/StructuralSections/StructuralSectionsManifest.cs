@@ -29,8 +29,12 @@ namespace RackCad.Application.StructuralSections
         /// importer stamps it and the loader refuses anything else. A different mapping produces different
         /// columns, so accepting a version this build does not know would mean reading a file whose meaning
         /// is not guaranteed. Two copies of the number would eventually disagree.
+        ///
+        /// I-36D bumped it to <c>I-36D.1</c>: the mapping gained a fifth family, so a catalog produced by the
+        /// previous mapper no longer describes what this build expects to read. The bump is what makes that
+        /// mismatch a loud error instead of a file that loads with a family silently missing.
         /// </summary>
-        public const string SupportedMapperVersion = "I-36A.2";
+        public const string SupportedMapperVersion = "I-36D.1";
 
         public string SchemaVersion { get; init; }
 

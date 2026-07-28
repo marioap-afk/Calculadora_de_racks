@@ -38,6 +38,7 @@ namespace RackCad.UI.StructuralSections
         private readonly StructuralSectionPreview _preview;
         private readonly TextBlock _summary;
         private readonly TextBlock _fidelity;
+        private readonly TextBlock _authority;
         private readonly TextBlock _diagnostics;
         private bool _loaded;
 
@@ -122,6 +123,16 @@ namespace RackCad.UI.StructuralSections
             _preview = new StructuralSectionPreview { Background = Brushes.Transparent, MinHeight = 320 };
             _summary = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 8, 0, 2) };
             _fidelity = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 2, 0, 2) };
+            // The visual-derived warning is a first-class element, not a diagnostic bullet: it is the one
+            // statement a user must not miss (ADR-0023 decision 22).
+            _authority = new TextBlock
+            {
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 2, 0, 2),
+                FontWeight = FontWeights.Bold,
+                Foreground = Brushes.Firebrick,
+                Visibility = Visibility.Collapsed
+            };
             _diagnostics = new TextBlock
             {
                 TextWrapping = TextWrapping.Wrap,
@@ -150,6 +161,7 @@ namespace RackCad.UI.StructuralSections
                 case StructuralSectionFamily.HssRectangular: return "HSS rectangular y cuadrado";
                 case StructuralSectionFamily.Channel: return "C — canal";
                 case StructuralSectionFamily.Angle: return "L — angulo";
+                case StructuralSectionFamily.S: return "S / IPS — viga estandar americana";
                 default: return family.ToString();
             }
         }
@@ -182,6 +194,7 @@ namespace RackCad.UI.StructuralSections
             var info = new StackPanel();
             info.Children.Add(_summary);
             info.Children.Add(_fidelity);
+            info.Children.Add(_authority);
             info.Children.Add(_diagnostics);
 
             var actions = new StackPanel
@@ -307,6 +320,8 @@ namespace RackCad.UI.StructuralSections
                 _preview.Show(null);
                 _summary.Text = "Sin seleccion.";
                 _fidelity.Text = string.Empty;
+                _authority.Text = string.Empty;
+                _authority.Visibility = Visibility.Collapsed;
                 _diagnostics.Text = string.Empty;
                 return;
             }
@@ -320,6 +335,11 @@ namespace RackCad.UI.StructuralSections
                             _state.WeightSummary();
 
             _fidelity.Text = _state.FidelitySummary();
+
+            _authority.Text = _state.AuthoritySummary();
+            _authority.Visibility = string.IsNullOrEmpty(_authority.Text)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
 
             var diagnostics = _state.Diagnostics();
             _diagnostics.Text = diagnostics.Count == 0

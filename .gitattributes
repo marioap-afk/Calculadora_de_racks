@@ -12,6 +12,7 @@ assets/catalogs/structural-sections-w.csv         -text
 assets/catalogs/structural-sections-hss-rect.csv  -text
 assets/catalogs/structural-sections-c.csv         -text
 assets/catalogs/structural-sections-l.csv         -text
+assets/catalogs/structural-sections-s.csv         -text
 assets/catalogs/structural-section-sources.csv    -text
 assets/catalogs/structural-section-status.csv     -text
 assets/catalogs/structural-sections-manifest.json -text
