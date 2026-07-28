@@ -1,0 +1,165 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-36B
+  branch: architecture/geometria-secciones-estructurales
+  claim_id: ea5d0ad2-b61b-424c-ab1b-96678eca70a3
+  current_phase: 3
+  state: implementing
+  gate: none
+  attempts: 1
+  next_action: >-
+    FASE-3-primitivas-neutrales-ADITIVAS-en-Application-Geometry ·
+    vector-limites-transformacion-con-rotacion-y-espejo-segmento-arco-trayectoria-contorno-y-tipos-3D ·
+    reutilizando-Point2D-y-sin-mover-ni-renombrar-nada-existente
+  last_evidence_commit: 83f3692
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo. Verificable con git y con la CI publica.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: eafb785bed8dde32cb6cc61cef9eeaa0a0976667
+  base_asunto: Merge I-36A - nucleo y catalogo de secciones estructurales
+  base_ci: VERDE-run-30364323887-4-de-4-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-merge-sin-rebase-sin-cherry-pick-sin-bisect
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  rama_objetivo: architecture-geometria-secciones-estructurales-LIBRE-reservada-por-I-36A-y-ahora-reclamada
+  owner_decisions_md: NO-EXISTE-en-el-repositorio
+  siguiente_adr_libre: 0022
+  i36a_carga_y_valida: SI-ShippedStructuralSectionCatalogTests-29-de-29-verde-983-secciones
+  catalogo_coincide_con_su_manifiesto: SI
+  conflicto_material_con_otra_iniciativa: >-
+    ninguno · nadie mas toca Application-Geometry · Application-StructuralSections · UI-Preview ·
+    Plugin-Drawing · el registro de comandos ni los indices documentales
+
+# --------------------------------------------------------------------------------------------------------
+# MAPA DE REUTILIZACION, producido ANTES de escribir codigo.
+# --------------------------------------------------------------------------------------------------------
+mapa_de_reutilizacion:
+  primitivas_existentes_reutilizables:
+    - Application-Geometry-Point2D-con-ApproxEquals
+    - UI-Controls-PreviewProjection-fit-world-a-canvas-uniforme-con-Unproject-que-es-el-ajuste-al-area-que-pide-el-inspector
+    - UI-Controls-PreviewPalette-colores
+    - UI-Controls-NumericField-captura-numerica-localizada-para-la-longitud
+    - UI-Controls-CatalogCombo-para-el-filtro-de-familia
+  primitivas_que_faltan_y_se_anaden_ADITIVAMENTE:
+    - vector-2D
+    - limites-2D
+    - transformacion-2D-con-rotacion-y-espejo-Placement2D-solo-traslada
+    - segmento-de-linea
+    - arco-circular
+    - trayectoria-ordenada
+    - contorno-cerrado
+    - punto-vector-y-marco-3D-para-orientacion-y-proyeccion
+  preview_existente_reutilizable: >-
+    PreviewProjection-y-PreviewPalette-si · el-shell-de-editores-de-I-30-NO-porque-el-inspector-no-es-un-editor-de-sistema
+  patron_de_materializacion_autocad: >-
+    LockDocument-StartTransaction-BlockTable-ForWrite-BlockTableRecord-con-nombre-unico-AddNewlyCreatedDBObject-AppendEntity-Commit-ApplyRegen ·
+    mas-editor-GetPoint-para-el-punto-de-insercion · se-reutiliza-el-patron-no-se-copia-infraestructura
+  riesgos_de_infraestructura_paralela:
+    riesgo: crear-un-segundo-Point2D-un-segundo-proyector-de-preview-o-un-segundo-generador-geometrico
+    mitigacion: >-
+      un-UNICO-Point2D-reutilizado · un-UNICO-proyector-PreviewProjection ·
+      y-un-UNICO-generador-geometrico-cuyo-plan-neutral-consumen-igual-la-UI-y-el-Plugin
+
+# --------------------------------------------------------------------------------------------------------
+# VIABILIDAD GEOMETRICA MEDIDA ANTES DEL RECLAMO sobre las 983 filas reales, para no descubrir un
+# bloqueo a mitad de la implementacion. Reproducible: las cifras salen de los CSV distribuidos.
+# --------------------------------------------------------------------------------------------------------
+viabilidad_medida:
+  kdes_disponible: presente-en-el-100-por-ciento-de-W-C-y-L-y-kdes-menos-tf-mayor-que-cero-SIEMPRE
+  degradaciones_por_falta_de_radio: CERO
+  W:
+    regla: r-igual-a-kdes-menos-tf
+    acreditacion: >-
+      el-Readme-define-kdes-como-la-distancia-de-la-cara-EXTERIOR-del-patin-al-pie-del-filete ·
+      restarle-el-espesor-del-patin-da-el-radio-del-filete-de-raiz
+    error_area_maximo: 0.732-por-ciento
+    error_area_medio: 0.118-por-ciento
+    filas_sobre_5_por_ciento: 0
+    fidelidad_prevista: TABULADA-COMPLETA
+  HSS-RECT:
+    regla_radio_exterior: r-igual-a-Ht-menos-h-entre-2-y-tambien-B-menos-b-entre-2-porque-h-y-b-son-las-paredes-PLANAS
+    coherencia_entre_ambas_expresiones: discrepancia-relativa-maxima-4.762-por-ciento-por-el-redondeo-a-tres-cifras
+    radio_interior: se-deriva-como-radio-exterior-menos-tnom
+    hallazgo: >-
+      con-tnom-el-error-de-area-es-8.34-por-ciento-de-media-y-10.927-maximo-en-las-525-filas ·
+      con-tdes-cae-a-1.068-de-media-y-4.581-maximo-con-CERO-filas-sobre-el-5-por-ciento
+    interpretacion: >-
+      la-A-publicada-por-AISC-se-calcula-con-el-espesor-de-DISENO-y-la-decision-11-del-dueno-fija-el-NOMINAL-para-la-geometria ·
+      son-dos-magnitudes-distintas-POR-DEFINICION-no-un-defecto-de-la-geometria
+    resolucion: >-
+      el-contorno-usa-tnom-y-la-comprobacion-de-area-de-esta-familia-se-hace-contra-tdes-dejando-constancia-de-ambas-cifras
+    fidelidad_prevista: TABULADA-DERIVADA-los-radios-se-derivan-no-se-publican
+  C:
+    error_area_maximo: 5.545-por-ciento
+    filas_sobre_5_por_ciento: 3-de-32
+    causa: >-
+      AISC-incluye-en-su-area-el-redondeo-de-la-PUNTA-del-patin-que-la-fuente-NO-publica ·
+      modelarlo-bajaria-el-error-a-3.895-por-ciento-y-seria-INVENTAR-un-radio-que-la-decision-13-prohibe
+    resolucion: >-
+      se-conserva-el-contorno-SIN-radio-de-punta · el-area-geometrica-queda-por-encima-de-la-publicada ·
+      y-se-DOCUMENTA-en-vez-de-disimularse
+    fidelidad_prevista: TABULADA-DERIVADA-PARCIALMENTE-nunca-completa
+  L:
+    regla: r-igual-a-kdes-menos-t
+    error_area_maximo: 3.012-por-ciento
+    error_area_medio: 0.814-por-ciento
+    filas_sobre_5_por_ciento: 0
+    fidelidad_prevista: TABULADA-DERIVADA-PARCIALMENTE-por-la-misma-punta-no-publicada
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  - n: 1
+    nombre: reclamo
+    estado: HECHA
+    commit: 83f3692
+  - n: 2
+    nombre: contrato-decision-y-ADR-0022
+    estado: HECHA
+  - n: 3
+    nombre: primitivas-y-contrato-geometrico
+    estado: SIGUIENTE
+  - n: 4
+    nombre: builders-W-y-HSS
+    estado: pendiente
+  - n: 5
+    nombre: builders-C-y-L
+    estado: pendiente
+  - n: 6
+    nombre: instancia-prismatica-y-proyeccion
+    estado: pendiente
+  - n: 7
+    nombre: preview-e-inspector
+    estado: pendiente
+  - n: 8
+    nombre: materializacion-y-comando-RACKSECCION
+    estado: pendiente
+  - n: 9
+    nombre: pruebas-completas
+    estado: pendiente
+  - n: 10
+    nombre: documentacion-evidencia-y-estado
+    estado: pendiente
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE. Se verifican con git diff al cerrar, no se afirman.
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  assets_catalogs: cero-lineas-incluidos-secciones-csv-y-blocks-csv
+  blocks_library_dwg: no-se-toca-y-no-se-crean-bloques-de-biblioteca
+  domain: cero-archivos
+  sistemas_vigentes_de_ui_y_plugin: cero-cambios-funcionales
+  deploy_y_github: cero-archivos
+  handoff: NO-SE-TOCA-hasta-la-sesion-de-integracion
+  roadmap_columna_estado: NO-se-marca-integrada-en-esta-corrida
+  i37: >-
+    NO-se-implementa-Cantilever · sin-StructuralMember-postes-brazos-largueros-celosias-ni-bases ·
+    sin-conexiones-troqueles-perforaciones-placas-soldaduras-ni-fabricacion
+  solidos_3d: NO-sin-Region-sin-Solid3d-sin-extrusion-sin-sweep-solo-wireframe-2D
+  adr_0022: nace-PROPUESTO-y-solo-el-dueno-lo-acepta-tras-la-validacion-en-AutoCAD

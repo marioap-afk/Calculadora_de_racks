@@ -61,6 +61,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0019](0019-shell-visual-de-editores-por-composicion.md) | Shell visual de editores por composición y slots, agnóstico al sistema | aceptado |
 | [0020](0020-catalogo-neutral-de-secciones-estructurales.md) | Catálogo neutral de secciones estructurales | aceptado |
 | [0021](0021-identidad-unidades-y-presentacion-de-secciones.md) | Identidad, unidades y presentación de secciones estructurales | aceptado |
+| [0022](0022-geometria-parametrica-de-secciones-estructurales.md) | Geometría paramétrica y representación prismática de secciones estructurales | propuesto |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -89,3 +90,10 @@ exacta de IDs, seguía bajo gate y el dueño la había rechazado parcialmente en
 `{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}`, `ID_NAMESPACE` como autoridad explícita declarada por la
 fuente, `AISC-SHAPES` con namespace `AISC`, la revisión fuera del ID, y para `HSS4X4X1/4` su Manual
 Label visible con EDI `HSS4X4X.250` e ID `AISC-HSS-RECT-HSS4X4X_250`.
+
+Iniciativa I-36B (`architecture/geometria-secciones-estructurales`): **ADR-0022 nace `propuesto`** y no
+reabre a ADR-0020 ni a ADR-0021. Sus decisiones —origen en el centroide, Z longitudinal, sección frente
+a instancia prismática, radios solo derivables de forma documentada, wireframe sin líneas ocultas y
+bloque interno en vez de biblioteca por designación— son **verificables sobre el dibujo real**, y el
+gate `owner-validation` de I-36B incluye AutoCAD. Aceptarlas antes de que el dueño las mire diría lo
+contrario de lo que ocurre.
