@@ -146,8 +146,8 @@ namespace RackCad.Tests
                 foreach (var detail in new[] { SectionDetailLevel.Simplified, SectionDetailLevel.Tabulated })
                 {
                     var geometry = factory.Get(section, detail);
-                    Assert.True(geometry.CentroidOffset < 1e-9,
-                        section.SectionId + " " + detail + " centroide en " + geometry.Centroid);
+                    Assert.True(geometry.GeometricCentroidResidual < 1e-9,
+                        section.SectionId + " " + detail + " centroide en " + geometry.GeometricContourCentroid);
                 }
             }
         }
@@ -166,11 +166,11 @@ namespace RackCad.Tests
             {
                 var geometry = factory.Get(section, SectionDetailLevel.Tabulated);
                 var scale = Math.Max(geometry.Bounds.Width, geometry.Bounds.Height);
-                var relative = geometry.CentroidOffset / scale;
+                var relative = geometry.GeometricCentroidResidual / scale;
 
                 if (!worst.TryGetValue(section.Family, out var current) || relative > current.Relative)
                 {
-                    worst[section.Family] = (section.SectionId.Value, geometry.CentroidOffset, relative);
+                    worst[section.Family] = (section.SectionId.Value, geometry.GeometricCentroidResidual, relative);
                 }
             }
 
@@ -429,6 +429,83 @@ namespace RackCad.Tests
 
             _output.WriteLine("Codigos emitidos en " + detail + ": " +
                               (seen.Count == 0 ? "(ninguno)" : string.Join(", ", seen.OrderBy(c => c, StringComparer.Ordinal))));
+        }
+
+        // ---- El contrato del origen ----------------------------------------------------------------------
+
+        [Fact]
+        public void TheOriginIsAlwaysTheOrigin_AndSaysHowItWasResolved()
+        {
+            // Dos conceptos, dos nombres. El ORIGEN es (0,0) por definicion de estas coordenadas; el centroide
+            // del contorno APROXIMADO es una metrica de cuanto se aleja lo que pudimos derivar de la forma
+            // real. Confundirlos fue lo que llevo a proponer "mover C y L hasta que el residuo diera cero",
+            // que es exactamente sobreescribir la fuente con nuestro propio contorno incompleto.
+            var factory = Factory();
+
+            foreach (var section in factory.Catalog.All)
+            {
+                var geometry = factory.Get(section, SectionDetailLevel.Tabulated);
+
+                Assert.Equal(0.0, geometry.Origin.X);
+                Assert.Equal(0.0, geometry.Origin.Y);
+
+                var expected = section.Family == StructuralSectionFamily.Channel ||
+                               section.Family == StructuralSectionFamily.Angle
+                    ? SectionOriginBasis.TabulatedCentroid
+                    : SectionOriginBasis.Symmetry;
+
+                Assert.Equal(expected, geometry.OriginBasis);
+            }
+        }
+
+        [Fact]
+        public void TheTabulatedCentroidIsTheOne_ThatPlacesTheSection()
+        {
+            // La autoridad de colocacion es el punto de referencia TABULADO, y esta en el origen. El residuo
+            // no coloca nada: solo se informa.
+            var factory = Factory();
+            var channel = factory.Catalog.GetById(StructuralSectionId.Parse("AISC-C-C10X15_3"));
+            var geometry = factory.Get(channel, SectionDetailLevel.Tabulated);
+
+            var reference = geometry.TabulatedCentroidReference;
+
+            Assert.NotNull(reference);
+            Assert.Equal(0.0, reference.Location.X, 12);
+            Assert.Equal(0.0, reference.Location.Y, 12);
+
+            _output.WriteLine("C10X15.3 residuo = " + geometry.GeometricCentroidResidual.ToString("0.############", CultureInfo.InvariantCulture));
+
+            // Y el residuo se informa, no se anula. Que NINGUNA C o L tenga residuo cero seria sospechoso de
+            // haberlas movido para cuadrar; que TODAS lo tengan, tambien. Lo que se fija es que el residuo es
+            // pequeño y que la familia no ha sido recolocada en bloque.
+            // El umbral es RELATIVO al tamaño: 0.0756 in en un canal de 10 in es 0.76 %, y el mismo residuo
+            // absoluto en un C3 seria enorme. Un limite absoluto mediria el tamaño de la pieza, no el error.
+            var relative = geometry.GeometricCentroidResidual /
+                           Math.Max(geometry.Bounds.Width, geometry.Bounds.Height);
+
+            Assert.True(relative < 0.02, "residuo relativo " + relative.ToString("0.####", CultureInfo.InvariantCulture));
+
+            var asymmetric = factory.Catalog.All
+                .Where(s => s.Family == StructuralSectionFamily.Channel ||
+                            s.Family == StructuralSectionFamily.Angle)
+                .Select(s => factory.Get(s, SectionDetailLevel.Tabulated).GeometricCentroidResidual)
+                .ToArray();
+
+            Assert.Contains(asymmetric, r => r > 1e-6);
+        }
+
+        [Fact]
+        public void NoPublicMemberIsCalledJustCentroid()
+        {
+            // Guarda de vocabulario. Dos conceptos publicos distintos llamados "Centroid" a secas es como se
+            // gesta el error otra vez; el nombre tiene que decir de cual se habla.
+            var offenders = typeof(StructuralSectionGeometry).GetProperties()
+                .Select(p => p.Name)
+                .Concat(Enum.GetNames(typeof(SectionReferencePointKind)))
+                .Where(name => string.Equals(name, "Centroid", StringComparison.Ordinal))
+                .ToArray();
+
+            Assert.Empty(offenders);
         }
 
         internal static IEnumerable<Point2D> AllPoints(StructuralSectionGeometry geometry)

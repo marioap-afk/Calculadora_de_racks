@@ -74,11 +74,34 @@ namespace RackCad.Application.StructuralSections.Geometry
         public override string ToString() => "[" + Severity + "] " + Code + " — " + Message;
     }
 
+    /// <summary>
+    /// How the transverse origin of a section was resolved.
+    ///
+    /// It is recorded rather than assumed because the two answers have different standing. A doubly
+    /// symmetric shape is centred by CONSTRUCTION and the origin is exact; an asymmetric one is centred on
+    /// the value AISC publishes, rounded to three figures, and the origin is exact only in the sense that it
+    /// is where the source says the centroid is.
+    /// </summary>
+    public enum SectionOriginBasis
+    {
+        /// <summary>The shape is symmetric about both axes, so the origin falls out of the construction.</summary>
+        Symmetry = 0,
+
+        /// <summary>The contour was translated so the origin sits at the centroid the SOURCE tabulates.</summary>
+        TabulatedCentroid = 1
+    }
+
     /// <summary>What a labelled point on the section MEANS. Only points with clear semantics get one.</summary>
     public enum SectionReferencePointKind
     {
-        /// <summary>The area centroid, which after centring is the origin.</summary>
-        Centroid = 0,
+        /// <summary>
+        /// The centroid AISC tabulates, which after centring is the origin.
+        ///
+        /// Named for its SOURCE, not just "centroid", so it can never be confused with
+        /// <see cref="StructuralSectionGeometry.GeometricContourCentroid"/> — the centroid of the
+        /// approximated contour, which is a diagnostic and not a placement authority.
+        /// </summary>
+        TabulatedCentroid = 0,
 
         /// <summary>The shear centre, where the source publishes it (channels).</summary>
         ShearCenter = 1,
@@ -128,6 +151,7 @@ namespace RackCad.Application.StructuralSections.Geometry
             SectionFidelity fidelity,
             ClosedContour2D outer,
             ClosedContour2D[] holes,
+            SectionOriginBasis originBasis,
             SectionReferencePoint[] referencePoints,
             SectionGeometryDiagnostic[] diagnostics)
         {
@@ -137,12 +161,13 @@ namespace RackCad.Application.StructuralSections.Geometry
             Fidelity = fidelity;
             OuterContour = outer;
             Holes = holes;
+            OriginBasis = originBasis;
             ReferencePoints = referencePoints;
             Diagnostics = diagnostics;
 
             Area = outer.Area - holes.Sum(hole => hole.Area);
             Bounds = outer.Bounds;
-            Centroid = ComputeNetCentroid(outer, holes);
+            GeometricContourCentroid = ComputeNetCentroid(outer, holes);
         }
 
         public StructuralSectionId SectionId { get; }
@@ -166,17 +191,40 @@ namespace RackCad.Application.StructuralSections.Geometry
         public Bounds2D Bounds { get; }
 
         /// <summary>
-        /// The GEOMETRIC centroid of the material, computed from the contours.
+        /// The transverse origin of the section: always (0,0), by definition of these coordinates.
         ///
-        /// It is not assumed to be the origin: the contour is centred using the value the SOURCE tabulates, so
-        /// for W and HSS this lands on (0,0) by symmetry, while for C and L it lands very close to it — the
-        /// small residual is the detail the source does not publish, and reporting it is more useful than
-        /// hiding it. <see cref="CentroidOffset"/> is that residual.
+        /// It exists as a named property rather than as an implicit convention because the whole point of
+        /// ADR-0022 §5 is that a section has ONE origin and everything composes against it. Read
+        /// <see cref="OriginBasis"/> to know how it was resolved.
         /// </summary>
-        public Point2D Centroid { get; }
+        public Point2D Origin => new Point2D(0.0, 0.0);
 
-        /// <summary>How far the geometric centroid sits from the origin, in inches.</summary>
-        public double CentroidOffset => Math.Sqrt((Centroid.X * Centroid.X) + (Centroid.Y * Centroid.Y));
+        /// <summary>How <see cref="Origin"/> was resolved: by symmetry, or on the tabulated centroid.</summary>
+        public SectionOriginBasis OriginBasis { get; }
+
+        /// <summary>
+        /// The centroid of the APPROXIMATED contour, computed from its area.
+        ///
+        /// This is a DIAGNOSTIC and never a placement authority. The section is positioned on the centroid
+        /// the source tabulates; this one is what the contour we could derive happens to have, and the two
+        /// differ by whatever the source does not publish — the toe rounding of a channel, the taper of its
+        /// flange. Comparing them measures the approximation, which is useful; moving the geometry to make
+        /// them agree would silently overrule the source with our own incomplete contour, which is not.
+        ///
+        /// For W and HSS it lands on the origin by symmetry. For C and L it lands near it, and
+        /// <see cref="GeometricCentroidResidual"/> says how near.
+        /// </summary>
+        public Point2D GeometricContourCentroid { get; }
+
+        /// <summary>
+        /// Distance from <see cref="Origin"/> to <see cref="GeometricContourCentroid"/>, in inches.
+        ///
+        /// A measure of how much the derivable contour differs from the real shape. It is reported, not
+        /// corrected: see <see cref="GeometricContourCentroid"/>.
+        /// </summary>
+        public double GeometricCentroidResidual =>
+            Math.Sqrt((GeometricContourCentroid.X * GeometricContourCentroid.X) +
+                      (GeometricContourCentroid.Y * GeometricContourCentroid.Y));
 
         public IReadOnlyList<SectionReferencePoint> ReferencePoints { get; }
 
@@ -203,6 +251,7 @@ namespace RackCad.Application.StructuralSections.Geometry
             SectionFidelity fidelity,
             ClosedContour2D outer,
             IEnumerable<ClosedContour2D> holes = null,
+            SectionOriginBasis originBasis = SectionOriginBasis.Symmetry,
             IEnumerable<SectionReferencePoint> referencePoints = null,
             IEnumerable<SectionGeometryDiagnostic> diagnostics = null)
         {
@@ -240,7 +289,7 @@ namespace RackCad.Application.StructuralSections.Geometry
 
             return new StructuralSectionGeometry(
                 sectionId, family, requestedDetail, fidelity,
-                normalizedOuter, normalizedHoles,
+                normalizedOuter, normalizedHoles, originBasis,
                 (referencePoints ?? Enumerable.Empty<SectionReferencePoint>()).Where(p => p != null).ToArray(),
                 diagnosticList);
         }
@@ -266,5 +315,9 @@ namespace RackCad.Application.StructuralSections.Geometry
 
         public override string ToString() =>
             SectionId.Value + " " + Family + " " + RequestedDetail + " -> " + Fidelity;
+
+        /// <summary>The tabulated reference point that resolved the origin, when the source published one.</summary>
+        public SectionReferencePoint TabulatedCentroidReference =>
+            ReferencePoints.FirstOrDefault(p => p.Kind == SectionReferencePointKind.TabulatedCentroid);
     }
 }

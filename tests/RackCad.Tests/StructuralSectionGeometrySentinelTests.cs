@@ -37,7 +37,7 @@ namespace RackCad.Tests
             Assert.True(geometry.Bounds.ApproxEquals(new Bounds2D(-8.05, -22.4, 8.05, 22.4), Tol));
             Assert.Equal(SectionFidelity.TabulatedComplete, geometry.Fidelity);
             Assert.Empty(geometry.Holes);
-            Assert.True(geometry.CentroidOffset < 1e-9);
+            Assert.True(geometry.GeometricCentroidResidual < 1e-9);
 
             var fillets = geometry.OuterContour.Segments.Where(s => s.IsArc).ToArray();
             Assert.Equal(4, fillets.Length);
@@ -78,7 +78,7 @@ namespace RackCad.Tests
             Assert.True(geometry.Bounds.ApproxEquals(new Bounds2D(-5, -17, 5, 17), Tol));
             Assert.Single(geometry.Holes);
             Assert.Equal(ContourOrientation.Clockwise, geometry.Holes[0].Orientation);
-            Assert.True(geometry.CentroidOffset < 1e-9);
+            Assert.True(geometry.GeometricCentroidResidual < 1e-9);
             Assert.Equal(SectionFidelity.TabulatedDerived, geometry.Fidelity);
 
             Assert.All(geometry.OuterContour.Segments.Where(s => s.IsArc),
@@ -217,7 +217,7 @@ namespace RackCad.Tests
 
             // Y el residuo entre el centroide tabulado y el geometrico es pequeno: si las columnas se
             // hubieran intercambiado, seria enorme.
-            Assert.True(geometry.CentroidOffset < 0.05, "residuo " + geometry.CentroidOffset);
+            Assert.True(geometry.GeometricCentroidResidual < 0.05, "residuo " + geometry.GeometricCentroidResidual);
         }
 
         [Fact]

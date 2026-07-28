@@ -98,9 +98,10 @@ namespace RackCad.Application.StructuralSections.Geometry
                 fidelity,
                 outer,
                 holes: new[] { hole },
+                originBasis: SectionOriginBasis.Symmetry,
                 referencePoints: new[]
                 {
-                    new SectionReferencePoint(SectionReferencePointKind.Centroid, new Point2D(0.0, 0.0))
+                    new SectionReferencePoint(SectionReferencePointKind.TabulatedCentroid, new Point2D(0.0, 0.0))
                 },
                 diagnostics: diagnostics);
         }

@@ -94,7 +94,7 @@ namespace RackCad.Application.StructuralSections.Geometry
             }
 
             referencePoints.Add(new SectionReferencePoint(
-                SectionReferencePointKind.Centroid, new Point2D(0.0, 0.0)));
+                SectionReferencePointKind.TabulatedCentroid, new Point2D(0.0, 0.0)));
 
             return StructuralSectionGeometry.Create(
                 section.SectionId,
@@ -103,6 +103,7 @@ namespace RackCad.Application.StructuralSections.Geometry
                 fidelity,
                 contour,
                 holes: null,
+                originBasis: SectionOriginBasis.TabulatedCentroid,
                 referencePoints: referencePoints,
                 diagnostics: diagnostics);
         }
