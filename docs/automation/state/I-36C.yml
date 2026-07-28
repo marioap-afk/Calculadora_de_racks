@@ -1,0 +1,88 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-36C
+  branch: fix/acceso-menu-secciones-estructurales
+  claim_id: 3afd368a-0eb4-44aa-8c8f-ebde72ed256f
+  current_phase: 4
+  state: review-ready
+  gate: owner-validation
+  attempts: 1
+  next_action: >-
+    VALIDACION-DEL-DUENO-EN-AUTOCAD-checklist-de-8-puntos-en-la-evidencia ·
+    con-el-DLL-Debug-de-ESTE-worktree · el-cambio-es-VISIBLE-en-el-menu-asi-que-solo-mirandolo-se-cierra ·
+    NO-integrar-NO-limpiar-NO-abrir-IPS-S-NI-I-37
+  last_evidence_commit: PENDIENTE-commit-documental
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 14317a596484e72658956a03adf47259960caed8
+  base_asunto: Merge I-36B - geometria y representacion prismatica de secciones estructurales
+  base_ci: VERDE-run-30382411720-4-de-4-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: fix-acceso-menu-secciones-estructurales-LIBRE-en-local-y-en-remoto
+
+# --------------------------------------------------------------------------------------------------------
+# POR QUE I-36C Y NO I-37.
+# --------------------------------------------------------------------------------------------------------
+identificador:
+  elegido: I-36C
+  razon: >-
+    el-ROADMAP-reserva-I-37-e-I-38-para-Cantilever-y-su-ingenieria ·
+    este-trabajo-pertenece-a-la-misma-familia-que-I-36A-e-I-36B-y-sigue-su-convencion-de-sufijo
+  fila_en_roadmap: >-
+    NO-EXISTE-todavia · se-escribe-en-la-sesion-de-integracion-porque-WORKFLOW-seccion-8-prohibe-tocar-ROADMAP-desde-una-rama-paralela
+
+# --------------------------------------------------------------------------------------------------------
+# LO QUE ESTE FIX ES Y LO QUE NO ES. Importa dejarlo por escrito: el riesgo de este cambio no es que el
+# boton falle, sino que alguien lea "generador de perfiles" y crea que aqui se implemento uno.
+# --------------------------------------------------------------------------------------------------------
+naturaleza_del_cambio:
+  el_generador: YA-EXISTE-integrado-y-cerrado-por-I-36A-e-I-36B
+  el_defecto: DESCUBRIBILIDAD-no-habia-boton-en-el-menu-principal
+  lo_que_se_anade: un-boton-una-accion-tipada-y-una-autoridad-compartida
+  lo_que_NO_se_anade: >-
+    ningun-generador-nuevo · ninguna-geometria-nueva · ninguna-familia-nueva ·
+    ninguna-dimension-AISC-nueva · ningun-cambio-en-sistemas-vigentes
+
+# --------------------------------------------------------------------------------------------------------
+# DISENO
+# --------------------------------------------------------------------------------------------------------
+diseno:
+  accion_tipada: MainMenuAction.GenerateStructuralSection
+  por_que_no_un_RackInsertionRequest: >-
+    una-seccion-NO-es-un-rack · sin-RackSystemKind-sin-payload-de-diseno-y-sin-round-trip ·
+    un-request-con-Kind-inventado-empuja-la-mentira-hasta-el-switch-del-host
+  cuando_lo_lee_el_plugin: >-
+    DESPUES-de-que-ShowModalWindow-retorne · antes-del-switch-de-racks-y-con-return ·
+    porque-el-flujo-pide-un-punto-y-el-editor-tiene-que-estar-libre
+  autoridad_compartida: StructuralSectionCommandFlow.Run-document
+  la_consumen: RackSeccionCommands.RackSeccion-y-RackMenuCommands.RackCad
+  que_contiene: >-
+    carga-fail-closed-del-catalogo · inspector · aviso-de-unidades · insercion-transaccional · regen ·
+    mensaje-con-peso-fidelidad-y-diagnosticos
+  aviso_de_unidades: >-
+    NO-se-duplica · el-del-menu-cubre-las-inserciones-de-rack ·
+    el-del-flujo-cubre-la-seccion-y-salta-DESPUES-de-que-el-inspector-confirme
+  frontera_ui_plugin: RackCad.UI-sigue-sin-referenciar-Autodesk-comprobado-por-prueba
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  RackCad_Tests: 2071-de-2071-base-2043-mas-28
+  RackCad_UI_Tests: 534-de-534-base-523-mas-11
+  build_application_debug: 0-errores
+  build_ui_debug: 0-errores
+  build_plugin_debug: 0-errores-propios-2-avisos-MSB3277-preexistentes
+  bundle: OK-147-comprobaciones
+  guardas_de_alcance: >-
+    cero-lineas-en-assets-blocks-library-dwg-Domain-deploy-github-ROADMAP-y-HANDOFF ·
+    cero-cambios-geometricos

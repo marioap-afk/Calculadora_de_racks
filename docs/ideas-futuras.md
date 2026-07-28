@@ -575,3 +575,34 @@ Registrado también en [ADR-0022](adr/0022-geometria-parametrica-de-secciones-es
 [evidencia](automation/evidence/I-36B-geometria-secciones-estructurales.md), en su
 [estado](automation/state/I-36B.yml) y en la
 [guía de geometría](guias/geometria-secciones-estructurales.md).
+
+---
+
+## Pendientes de perfiles estructurales — el registro completo (I-36C, 2026-07-28)
+
+> **Nada de esto invalida lo ya implementado.** El catálogo neutral (I-36A) y el generador paramétrico
+> (I-36B) están **integrados, cerrados y validados por el Owner**: 983 perfiles AISC v16.0, geometría
+> generada en código para W, HSS rectangular/cuadrado, C y L, inspector, preview, `RACKSECCION`,
+> bloque interno del dibujo y —desde I-36C— acceso desde el menú principal. Lo que sigue son
+> **ampliaciones futuras**, no defectos abiertos.
+
+Los puntos **1 a 6** son el **requisito futuro obligatorio** que el Owner registró al cerrar I-36B (ver
+la sección anterior de este documento). El resto es alcance planificado o diferimientos ya decididos.
+
+| # | Pendiente | Estado |
+|---|---|---|
+| 1 | **Perfiles IPS/S** | requisito futuro obligatorio |
+| 2 | **Verificación de correspondencia** de IPS con la familia AISC `S` o con el catálogo comercial de la empresa | requisito futuro obligatorio |
+| 3 | **Geometría visual mejorada** para perfiles laminados | requisito futuro obligatorio |
+| 4 | **Conicidad de patines** | requisito futuro obligatorio |
+| 5 | **Radios, chaflanes y transiciones comerciales**, sólo cuando exista una **regla acreditada** | requisito futuro obligatorio |
+| 6 | **Separación** entre geometría **tabulada** y geometría **visual aproximada**, declarando cuándo la visual lo es | requisito futuro obligatorio |
+| 7 | **Cantilever I-37** | planificado en ROADMAP Fase 6 |
+| 8 | **Miembros estructurales** (`StructuralMember`, configuradores de columna, brazo y base) | nace con I-37 |
+| 9 | **Materiales, conexiones y fabricación** (troqueles, ménsulas, perforaciones, soldaduras, placas) | nace con I-37 |
+| 10 | **Cálculo resistente y selección estructural** | I-38; no reabre [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md) sin un ADR nuevo |
+| 11 | **Sólidos 3D** (`Region`, `Solid3d`, extrusión, sweep) | prohibido por [ADR-0022](adr/0022-geometria-parametrica-de-secciones-estructurales.md); necesitaría un ADR que lo reemplace |
+| 12 | **Round-trip de perfiles independientes**: hoy lo insertado es geometría plana y no se puede reabrir para editarla | sin decidir |
+| 13 | **Posible incorporación de familias adicionales** más allá de W, HSS rect./cuad., C y L | sin decidir |
+
+**No se ha abierto** rama, contrato ni worktree para ninguno de ellos.
