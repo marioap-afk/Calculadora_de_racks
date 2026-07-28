@@ -121,3 +121,17 @@ Una iniciativa que implemente conversión real debería, como mínimo:
   conversión, reescalado ni ampliación de alcance. El contenido de la sección Decisión no cambia (ADR
   aceptado inmutable). Decisión versionada del dueño en
   [`docs/automation/decisions/I-05.md`](../automation/decisions/I-05.md).
+
+- **2026-07-27 — Enlace a [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md)** (I-36A).
+  ADR-0021 fija la identidad, las unidades y la presentación del **catálogo neutral de secciones
+  estructurales** que introduce [ADR-0020](0020-catalogo-neutral-de-secciones-estructurales.md).
+  **Este ADR-0005 NO queda reemplazado**: la pulgada sigue siendo la unidad geométrica interna
+  canónica de RackCad y la política del DWG no cambia —no se altera `INSUNITS`, no se implementa
+  conversión ni reescalado, y la conversión real sigue diferida a una iniciativa propia con su propio
+  ADR (sección «Condiciones para una futura iniciativa de conversión real»)—. Lo que ADR-0021 añade es
+  que una **fuente de datos externa** puede declarar su propio sistema de unidades nativo (AISC v16.0
+  declara `US_CUSTOMARY`, con peso lineal en `lb/ft`), que ese valor nativo se conserva sin sustituirse
+  por su equivalente, y que la equivalencia métrica se **calcula** para presentación y para pruebas de
+  coherencia. Nada de eso convierte, reescala ni reinterpreta la geometría del dibujo, y la columna
+  `units` de los catálogos vigentes sigue siendo decorativa. El contenido de la sección Decisión de
+  este ADR no cambia (ADR aceptado inmutable).

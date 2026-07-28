@@ -1,6 +1,6 @@
 # ADR-0008: Perfiles estructurales unificados en secciones.csv por rol
 
-- **Estado:** aceptado
+- **Estado:** reemplazado por [ADR-0020](0020-catalogo-neutral-de-secciones-estructurales.md)
 - **Fecha:** 2026-07-22 (documentación retroactiva y aceptación; no es la fecha de la decisión original)
 - **Decisores:** Mario Pérez, dueño del repositorio (aceptó el registro el 2026-07-22). Redacción retroactiva bajo la iniciativa I-07. La evidencia conservada no identifica a los decisores de la decisión histórica original.
 - **Iniciativa relacionada:** I-07 — ADRs retroactivos (`docs/adr-retroactivos`)
@@ -66,7 +66,10 @@ relacionales; este ADR no las atribuye a la decisión histórica.
 - [`JsonRackCatalogProvider` — división por rol y fallback](../../src/RackCad.Application/Catalogs/JsonRackCatalogProvider.cs)
 - [Pruebas del catálogo unificado](../../tests/RackCad.Tests/SeccionesCatalogTests.cs)
 - [ADR-0007: Catálogos CSV Excel-first sin base de datos](0007-catalogos-csv-excel-first.md)
+- [ADR-0020: Catálogo neutral de secciones estructurales](0020-catalogo-neutral-de-secciones-estructurales.md) (lo reemplaza)
 
 ## Notas posteriores
 
 - **2026-07-22 — Aceptado por Mario Pérez**, dueño del repositorio («Sí, apruebo»). La aceptación recae sobre este registro tal como está en el candidato `600b22e`; no atribuye fecha ni decisores históricos ausentes y conserva las limitaciones documentadas. Decisión versionada en [`docs/automation/decisions/I-07.md`](../automation/decisions/I-07.md).
+
+- **2026-07-27 — Reemplazado por [ADR-0020](0020-catalogo-neutral-de-secciones-estructurales.md)** (I-36A). ADR-0020 establece `StructuralSection` como autoridad neutral de la sección transversal, sin rol de miembro y fuera de `RackCatalog`/`CatalogEntryBase`. El reemplazo es de **autoridad conceptual**, no de comportamiento: `secciones.csv`, su columna `rol`, la división por rol de `JsonRackCatalogProvider` y el fallback a los catálogos separados **siguen vigentes y sin cambio funcional** como catálogo legado de los miembros actuales, hasta que migraciones futuras —una por configurador, en modo strangler— los retiren. I-36A no migró, no borró y no modificó ninguna fila. La Decisión histórica de este registro no se altera (un ADR aceptado es inmutable en su contenido).

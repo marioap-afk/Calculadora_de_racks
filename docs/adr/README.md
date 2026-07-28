@@ -47,7 +47,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0005](0005-estrategia-de-unidades.md) | Estrategia de unidades | aceptado |
 | [0006](0006-autocad-solo-en-plugin.md) | AutoCAD solo en RackCad.Plugin | aceptado |
 | [0007](0007-catalogos-csv-excel-first.md) | Catálogos CSV Excel-first sin base de datos | aceptado |
-| [0008](0008-secciones-unificadas-por-rol.md) | Perfiles estructurales unificados en secciones.csv por rol | aceptado |
+| [0008](0008-secciones-unificadas-por-rol.md) | Perfiles estructurales unificados en secciones.csv por rol | reemplazado por [ADR-0020](0020-catalogo-neutral-de-secciones-estructurales.md) |
 | [0009](0009-identidad-guid-embebida-en-dwg.md) | Identidad de rack mediante GUID embebido en el DWG | aceptado |
 | [0010](0010-actualizar-redibuja-insertar-liga-vistas.md) | Actualizar redibuja e Insertar agrega una vista ligada | aceptado |
 | [0011](0011-parametros-dinamicos-con-patron-array.md) | Parámetros dinámicos mediante definiciones compartidas con patrón ARRAY | aceptado |
@@ -59,6 +59,8 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0017](0017-validacion-cargas-diferida-ram-elements.md) | Validación estructural de cargas diferida a RAM Elements | aceptado |
 | [0018](0018-optimizador-layout-ia-diferido.md) | Optimizador de layout con IA diferido; `RACKLAYOUT` determinista vigente | aceptado |
 | [0019](0019-shell-visual-de-editores-por-composicion.md) | Shell visual de editores por composición y slots, agnóstico al sistema | aceptado |
+| [0020](0020-catalogo-neutral-de-secciones-estructurales.md) | Catálogo neutral de secciones estructurales | aceptado |
+| [0021](0021-identidad-unidades-y-presentacion-de-secciones.md) | Identidad, unidades y presentación de secciones estructurales | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -70,3 +72,20 @@ el [contrato de I-07](../initiatives/I-07-adr-retroactivos.md). El ADR-0002 hist
 (`0002-paso0-evidencia.md`), no indexado por ser un apéndice de la misma decisión, no un ADR aparte. Los
 ADR-0017 y 0018 registran diferimientos por decisión del dueño con respaldo documental; su limitación de
 evidencia queda escrita en cada registro.
+
+Iniciativa I-36A (`architecture/catalogo-secciones-estructurales`): **ADR-0020 reemplaza a ADR-0008**.
+El reemplazo es de **autoridad conceptual** —`StructuralSection` pasa a ser la autoridad neutral de la
+sección transversal, sin rol de miembro—, **no de comportamiento**: `secciones.csv` y su división por
+`rol` siguen operando sin cambio como catálogo legado de los miembros actuales hasta que las
+migraciones futuras, una por configurador, las retiren. **ADR-0021 NO reemplaza a ADR-0005**: la
+pulgada sigue siendo la unidad geométrica interna y la política del DWG no cambia; ADR-0005 solo
+recibió una nota posterior con el enlace. Ambos ADRs recogen decisiones vinculantes del dueño
+versionadas en [`docs/automation/decisions/I-36A.md`](../automation/decisions/I-36A.md).
+
+**ADR-0021 quedó `aceptado` el 2026-07-28**, junto con el gate `owner-validation` de I-36A y sus siete
+puntos. Estuvo deliberadamente en `propuesto` durante tres rondas —su decisión central, la política
+exacta de IDs, seguía bajo gate y el dueño la había rechazado parcialmente en la primera—, y pasó a
+`aceptado` solo cuando la aceptación fue expresa: identidad
+`{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}`, `ID_NAMESPACE` como autoridad explícita declarada por la
+fuente, `AISC-SHAPES` con namespace `AISC`, la revisión fuera del ID, y para `HSS4X4X1/4` su Manual
+Label visible con EDI `HSS4X4X.250` e ID `AISC-HSS-RECT-HSS4X4X_250`.

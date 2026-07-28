@@ -10,3 +10,8 @@ TestResults/
 *.user
 *.suo
 *.cache
+
+# I-36A: el libro oficial de la AISC Shapes Database NO se versiona (es una fuente externa, pesa ~2 MB y
+# el manifiesto ya guarda su SHA-256). Esta es la ruta documentada donde dejarlo para reimportar; ver
+# docs/guias/secciones-estructurales.md.
+tools/sources/

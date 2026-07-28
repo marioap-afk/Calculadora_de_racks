@@ -404,6 +404,45 @@ Planes disponibles:
   [`I-23-inventario-namespaces.md`](I-23-inventario-namespaces.md) y registro del smoke en
   [`I-23-autocad-smoke.md`](I-23-autocad-smoke.md). Estado versionado en
   [`../automation/state/I-23.yml`](../automation/state/I-23.yml).
+- [`I-36A-catalogo-secciones-estructurales.md`](I-36A-catalogo-secciones-estructurales.md): **Nucleo y
+  catalogo de secciones estructurales** (tipo: architecture; rama
+  `architecture/catalogo-secciones-estructurales`). **Primera iniciativa de la Fase 6.** Funda
+  `StructuralSection` como autoridad **neutral** de la seccion transversal —**sin rol de miembro**,
+  independiente de `RackCatalog` y de `CatalogEntryBase`— en
+  `RackCad.Application.StructuralSections`, e importa **completas** cuatro familias de la **AISC
+  Shapes Database v16.0**: W, HSS rectangular y cuadrado, canales C y angulos L (**983** secciones:
+  289 + 525 + 32 + 137). El problema es de modelado: hoy una fila de `secciones.csv` es a la vez
+  seccion, **rol** (`POSTE`/`CELOSIA`/`LARGUERO`/`SEPARADOR`) y pieza comercial, y Cantilever rompe
+  la coincidencia porque la misma `W12X26` puede ser columna, brazo o base. Entrega: identidad
+  `AISC-{FAMILIA}-{EDI_NORMALIZADO}` con normalizacion determinista y **sin la revision dentro del
+  id**; siete archivos bajo `assets/catalogs/` (cuatro CSV de familia **generados**, fuentes, overlay
+  `IsEnabled` y manifiesto con conteos y SHA-256, sin timestamps); un **importador reproducible fuera
+  del producto** (`tools/`, .NET 8, **BCL puro**, cero NuGet, cero Office Interop, OOXML por ZIP/XML,
+  staging, salida **byte-identica** entre ejecuciones y **cero descartes silenciosos**); un **lector
+  CSV estricto dedicado** —la tolerancia historica de `CsvCatalogReader` **no se altera**; solo se
+  comparte su parser lexico RFC-4180, con regresiones—; catalogo con busqueda por id, EDI normalizado
+  y familia, que devuelve **solo habilitadas** por defecto mientras `GetById` **sigue resolviendo las
+  deshabilitadas** para diseños existentes; validador propio que reutiliza las severidades de I-19 sin
+  tocar `CatalogValidator`; unidades con peso nativo en `lb/ft`, equivalencia `kg/m` **calculada** y
+  formateador dual **puro**; y peso por longitud. Decisiones en
+  [ADR-0020](../adr/0020-catalogo-neutral-de-secciones-estructurales.md) —que **reemplaza a ADR-0008**
+  **solo en autoridad conceptual**: `secciones.csv` sigue operando **sin cambio** como catalogo legado
+  hasta que las migraciones futuras, una por configurador (strangler), lo retiren— y
+  [ADR-0021](../adr/0021-identidad-unidades-y-presentacion-de-secciones.md) —que **NO reemplaza a
+  ADR-0005**: la pulgada sigue siendo la unidad geometrica interna, no se altera `INSUNITS` y no se
+  implementa conversion del DWG—. Las 24 decisiones vinculantes del dueño y las dos discrepancias que
+  el ejecutor encontro en el encargo (la URL `globalassets` responde **404** y la pagina oficial
+  publica el libro en `cloud.aisc.org`; y el ejemplo de id para HSS del encargo corresponde al **AISC
+  Manual Label**, no al **EDI**, de modo que `HSS4X4X1/4` tiene id `AISC-HSS-RECT-HSS4X4X_250`) estan
+  versionadas en [`../automation/decisions/I-36A.md`](../automation/decisions/I-36A.md). **Fuera de
+  alcance**: I-36B y toda geometria, AutoCAD, WPF/preview, Cantilever (I-37/I-38), persistencia de
+  sistemas, migracion de `secciones.csv`, miembros y sus herrajes, BOM de sistemas, calculo
+  resistente, overrides distintos de `IsEnabled`, base SQL, NuGet y `blocks-library.dwg`.
+  `requires_autocad: **false**` (no cambia dibujo ni bloques), `requires_owner_validation: **true**`
+  (siete puntos: fuente y SHA, conteos, sentinelas, etiquetas de peso, politica de ids,
+  habilitado/deshabilitado y confirmacion de que los sistemas existentes no cambiaron);
+  `requires_owner_decision: false`. Estado versionado en
+  [`../automation/state/I-36A.yml`](../automation/state/I-36A.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

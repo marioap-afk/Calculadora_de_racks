@@ -20,6 +20,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\RackCad.Domain\RackCad.Domain.csproj" />
     <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
+    <!-- I-36A: el importador de secciones estructurales vive fuera del producto (tools/) y NO entra al
+         bundle. Se referencia aqui para que sus pruebas —incluido el XLSX sintetico que se genera en
+         runtime— corran en el job de CI que ya existe, sin abrir un tercer proyecto de pruebas. -->
+    <ProjectReference Include="..\..\tools\RackCad.StructuralSections.Import\RackCad.StructuralSections.Import.csproj" />
   </ItemGroup>
 
   <!-- Ship the versioned catalogs next to the test binaries so the JSON provider
