@@ -166,6 +166,37 @@ namespace RackCad.Application.Geometry
             return new LocalFrame3D(origin, x, y, z);
         }
 
+        /// <summary>
+        /// A CAMERA frame from a viewing direction and an up reference.
+        ///
+        /// It exists because building one by hand is deceptively easy to get wrong: picking three plausible
+        /// axes and passing them to <see cref="FromAxes"/> produces a LEFT-handed triple more often than not,
+        /// and the failure is total rather than subtle. Here the right axis is derived as up × forward and the
+        /// true up as forward × right, so the result is right-handed by construction.
+        ///
+        /// The resulting X and Y span the picture plane and Z is the viewing direction.
+        /// </summary>
+        public static LocalFrame3D Camera(Vector3D viewDirection, Vector3D upReference)
+        {
+            if (!viewDirection.IsFinite || !upReference.IsFinite)
+            {
+                throw new ArgumentException("La direccion de vista y la referencia vertical deben ser finitas.");
+            }
+
+            var forward = viewDirection.Normalized();
+            var right = upReference.Cross(forward);
+
+            if (right.Length <= 1e-8)
+            {
+                throw new ArgumentException(
+                    "La referencia vertical es paralela a la direccion de vista: no define una camara.",
+                    nameof(upReference));
+            }
+
+            right = right.Normalized();
+            return new LocalFrame3D(Point3D.Origin, right, forward.Cross(right).Normalized(), forward);
+        }
+
         /// <summary>Accepts three axes that are ALREADY orthonormal, verifying it rather than trusting it.</summary>
         public static LocalFrame3D FromAxes(Point3D origin, Vector3D axisX, Vector3D axisY, Vector3D axisZ)
         {
