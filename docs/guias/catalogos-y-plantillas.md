@@ -26,7 +26,25 @@ assets/catalogs/
   seguridad.csv                 Elementos de seguridad (bota/lateral/tope/desviador/parrilla) con costo y peso (Excel/CSV)
   header-templates.json         Plantillas de cabecera                       (JSON, auto-descriptivas)
   defaults.json                 Receta estandar global                       (JSON)
+
+  structural-sections-w.csv          CATALOGO NEUTRAL (I-36A) — 289 perfiles W        (GENERADO, no editar)
+  structural-sections-hss-rect.csv   CATALOGO NEUTRAL — 525 HSS rectangulares/cuadrados (GENERADO, no editar)
+  structural-sections-c.csv          CATALOGO NEUTRAL — 32 canales C                  (GENERADO, no editar)
+  structural-sections-l.csv          CATALOGO NEUTRAL — 137 angulos L                 (GENERADO, no editar)
+  structural-section-sources.csv     CATALOGO NEUTRAL — fuente y procedencia          (GENERADO, no editar)
+  structural-section-status.csv      CATALOGO NEUTRAL — habilitado/deshabilitado      (EDITABLE, solo excepciones)
+  structural-sections-manifest.json  CATALOGO NEUTRAL — conteos y SHA-256             (GENERADO, no editar)
 ```
+
+> **Los siete `structural-*` son OTRO catalogo y otras reglas.** No son piezas comerciales de RackCad:
+> son las **secciones transversales** de la AISC Shapes Database v16.0, sin rol de miembro, con su
+> propio lector ESTRICTO (una celda invalida es error con archivo, fila y columna, no un valor por
+> defecto) y su propio validador. Son **salida reproducible** de una herramienta de importacion, asi
+> que editarlos a mano se pierde en la siguiente reimportacion y ademas rompe los hashes del
+> manifiesto. El unico editable es `structural-section-status.csv`, que solo contiene EXCEPCIONES.
+> Todo lo demas —de donde sale el libro, como se regenera, la politica de ids, las unidades y por que
+> `secciones.csv` no se migra todavia— vive en
+> [secciones-estructurales.md](secciones-estructurales.md).
 
 Al compilar, estos archivos se copian a una carpeta `catalogs/` junto al DLL del plugin. La aplicacion los lee al iniciarse. Si para un catalogo existen `.csv` y `.json`, **gana el `.csv`**.
 

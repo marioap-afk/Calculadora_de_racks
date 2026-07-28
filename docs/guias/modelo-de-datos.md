@@ -31,6 +31,15 @@ Cada archivo es una "tabla". La columna `id` es la **clave primaria** (lo que ot
 > `beam-profiles.csv` son **fallback legacy** (mismos `id` y mismos campos que las filas de `secciones.csv`).
 > Solo se leen si **falta** `secciones.csv`; con la hoja unificada presente se ignoran.
 
+> **Nota (I-36A): los archivos `structural-*` NO forman parte de este modelo.** Son el **catálogo
+> neutral de secciones estructurales**: otra fuente (AISC Shapes Database v16.0), otro proveedor
+> (`CsvStructuralSectionCatalogProvider`, no `JsonRackCatalogProvider`), otro lector (estricto, no
+> tolerante), otro validador y **ninguna FK** hacia o desde las tablas de arriba. No entran a
+> `RackCatalog`, no tienen fila en `blocks.csv` y no aparecen en `connection-layout.csv`. Su clave es
+> `sectionId` (`AISC-{FAMILIA}-{EDI_NORMALIZADO}`) y la única relación interna que tienen es
+> `structural-section-status.csv` → `sectionId` y `sourceId` → `structural-section-sources.csv`. Su
+> modelo completo vive en [secciones-estructurales.md](secciones-estructurales.md).
+
 Las **hojas** (perfiles, puntos, vistas) no dependen de nadie: son el vocabulario base.
 Las que **referencian** (placas, bloques, plantillas, defaults) reutilizan esos `id`.
 
@@ -216,6 +225,11 @@ cambia qué fila de `connection-layout`/`blocks` se elige:
 
 - Carga y modelo de catálogos: `src/RackCad.Application/Catalogs/` (`JsonRackCatalogProvider`,
   `CsvCatalogReader`, `CatalogEntries` —incluye `RackCatalog`—, `RackCatalogExtensions`, `RackDefaults`).
+  El parser léxico RFC-4180 vive desde I-36A en `CsvLexer` y lo comparten el lector tolerante y el
+  estricto; el comportamiento del primero no cambió.
+- Catálogo **neutral** de secciones estructurales (I-36A, modelo aparte):
+  `src/RackCad.Application/StructuralSections/` e importador en
+  `tools/RackCad.StructuralSections.Import/`.
 - Carga de plantillas: `src/RackCad.Application/RackFrames/RackFrameTemplateProvider.cs`
   (fallback en `RackFrameTemplateCatalog`).
 - Resolución plantilla+defaults+catálogo → cabecera: `RackFrameConfigurationFactory.cs`.

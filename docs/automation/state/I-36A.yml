@@ -3,14 +3,16 @@ automation_state:
   initiative: I-36A
   branch: architecture/catalogo-secciones-estructurales
   claim_id: c72f4d42-a201-40c1-b9d9-2f03d9556681
-  current_phase: 3
-  state: implementing
-  gate: none
+  current_phase: 7
+  state: review-ready
+  gate: owner-validation
   attempts: 1
   next_action: >-
-    FASE-3-herramienta-de-importacion-tools-RackCad-StructuralSections-Import-net8-BCL-puro-OOXML-por-ZIP-XML ·
-    mas-sus-pruebas-sinteticas-en-tests-RackCad-Tests-con-XLSX-generado-en-runtime
-  last_evidence_commit: c9d53d209f71ff2cf019e8cc121dbe0096f84a2b
+    VALIDACION-DEL-OWNER-siete-puntos-fuente-y-SHA · conteos-por-familia · sentinelas ·
+    etiquetas-de-peso · politica-de-ids-INCLUIDO-el-caso-HSS · habilitado-deshabilitado ·
+    confirmacion-de-que-secciones-csv-y-los-sistemas-existentes-no-cambiaron ·
+    NO-integrar-NO-borrar-rama-ni-worktree-hasta-que-el-Owner-apruebe
+  last_evidence_commit: SE-FIJA-EN-EL-COMMIT-DE-CIERRE-DE-ESTA-EJECUCION
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo. Todo verificable con git y con la CI publica.
@@ -26,15 +28,14 @@ preflight:
   stashes: cero
   ramas_remotas_al_reclamar: solo-origin-main
   ramas_objetivo_disponibles: >-
-    architecture-catalogo-secciones-estructurales-LIBRE ·
-    architecture-geometria-secciones-estructurales-LIBRE-y-RESERVADA-para-I-36B
+    architecture-catalogo-secciones-estructurales-LIBRE-y-reclamada ·
+    architecture-geometria-secciones-estructurales-LIBRE-RESERVADA-para-I-36B-y-NO-creada
   conflicto_material_con_otra_iniciativa: ninguno
-  areas_verificadas_sin-otro-ocupante: >-
-    src-RackCad-Application-Catalogs · assets-catalogs · tests-RackCad-Tests · RackCad-sln ·
-    docs-adr-README · docs-initiatives-README
+  rebase_necesario: >-
+    NO-origin-main-no-avanzo-durante-la-ejecucion-la-rama-sigue-bifurcando-de-a35374f
 
 # --------------------------------------------------------------------------------------------------------
-# FUENTE OFICIAL. Obtenida FUERA del repositorio, en el scratchpad de la sesion. El XLSX NO se versiona.
+# FUENTE OFICIAL. Obtenida FUERA del repositorio. El XLSX NO se versiona.
 # --------------------------------------------------------------------------------------------------------
 fuente:
   nombre: AISC Shapes Database v16.0
@@ -50,21 +51,20 @@ fuente:
   sha256: 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496
   hojas: Readme + "Database v16.0"
   version_declarada: >-
-    la-hoja-Readme-dice-AISC-Shapes-Database-v16-0-agosto-2023-y-consistente-con-el-Steel-Construction-Manual-16a-edicion-1a-impresion
+    la-hoja-Readme-dice-AISC-Shapes-Database-v16-0-agosto-2023-consistente-con-el-Steel-Construction-Manual-16a-edicion-1a-impresion
   no_utilizado: >-
     aisc-shapes-database-v160h-xlsx-que-la-misma-pagina-publica-es-la-Historic-Shapes-Database-v16-0H ·
     la-base-suplementaria-ASTM-A1085-tampoco-se-usa-por-decision-del-encargo
 
 # --------------------------------------------------------------------------------------------------------
-# INVENTARIO MEDIDO del libro. Es el numero que el Owner valida (punto 2 de su checklist).
+# RESULTADO MEDIDO. Es lo que el Owner valida (puntos 2 y 3 de su checklist).
 # --------------------------------------------------------------------------------------------------------
-inventario_medido:
+resultado:
   filas_de_datos: 2299
-  filas_vacias_al_final: 2-las-2301-y-2302-de-la-hoja
-  columnas: 166-de-las-cuales-A-a-CF-son-estadounidenses-y-CG-a-FJ-el-espejo-metrico
-  marcador_no_aplica: EN-DASH-U-2013
   seleccionadas: 983
-  seleccionadas_por_familia:
+  secciones_importadas: 983
+  filas_seleccionadas_rechazadas: 0
+  por_familia:
     W: 289
     HSS-RECT: 525
     C: 32
@@ -82,21 +82,26 @@ inventario_medido:
     HP: 22
     M: 16
     MT: 14
+  cierre_aritmetico: 983-mas-1316-igual-2299-la-particion-no-deja-una-sola-fila-sin-clasificar
   criterio_hss: >-
-    clasificacion-por-CAMPOS-OFICIALES-no-por-regex-sobre-la-designacion ·
-    rectangular-o-cuadrado-tiene-Ht-B-h-b-y-NO-tiene-OD ·
-    redondo-tiene-OD-y-NO-tiene-Ht-ni-B ·
-    la-particion-es-limpia-525-mas-189-igual-714-sin-una-sola-fila-ambigua
-  ids_verificados: 983-unicos-cero-colisiones-de-normalizacion-todos-en-A-Z-0-9-guion-y-guion-bajo
-  contraste_metrico_medido:
-    geometria_y_area: desviacion-relativa-maxima-0-461-por-ciento-tolerancia-adoptada-1-por-ciento
-    peso_nominal: >-
-      desviacion-relativa-maxima-4-128-por-ciento-en-C6X6-7-frente-a-10-4-kg-m ·
-      el-peso-metrico-de-la-fuente-es-un-VALOR-NOMINAL-DE-DESIGNACION-redondeado-aparte-no-una-conversion ·
-      tolerancia-adoptada-5-por-ciento
+    por-CAMPOS-OFICIALES-no-por-regex ·
+    con-OD-y-sin-paredes-redondo-excluido-189 · con-Ht-B-h-b-y-sin-OD-importado-525 ·
+    525-mas-189-igual-714-el-total-de-Type-HSS-sin-solape-ni-sobrantes-y-cero-filas-ambiguas
+  ids: 983-unicos-cero-colisiones-todos-en-A-Z-0-9-guion-y-guion-bajo
+  reproducibilidad: >-
+    dos-importaciones-independientes-a-directorios-distintos-produjeron-los-SIETE-archivos-BYTE-IDENTICOS
+  hashes_generados:
+    structural-sections-w.csv: 9259F672CDDC6855E321E0483F819F5875967145C6F218571F3D8E1FDCE78F1E
+    structural-sections-hss-rect.csv: FDC8E3E436DFA33421D0ED8A06F8CAC7B82C232F997802B6A95CC25498443F0D
+    structural-sections-c.csv: E42871A455AD2F78E9C9550E6B9D65431B678BB6CC867C841EC4E6BBEF66F63E
+    structural-sections-l.csv: 6B5077003388735502FEBAC99281266B37C3688FAEEA2D2AB1BDB399E44BF2FC
+    structural-section-sources.csv: 96FB1590D0FB2E904F4ECEC0D8560A6B7F6080CCE7F6E8302FFFA3A83B5FA694
+    structural-section-status.csv: 7B4CB158AF88769BD90AB9CE2CE3D21010EDB7F7FB334E591917B6F5342E6D7D
+  hashes_verificados_en: >-
+    el-archivo-del-worktree · el-objeto-que-Git-almacena-git-show-HEAD · y-dentro-del-bundle-canonico
 
 # --------------------------------------------------------------------------------------------------------
-# HALLAZGOS sobre el encargo. NO reabren ninguna decision; afectan a lo que el Owner valida.
+# HALLAZGOS sobre el encargo. NO reabren ninguna decision; SI afectan a lo que el Owner valida.
 # --------------------------------------------------------------------------------------------------------
 hallazgos:
   - id: H1
@@ -109,61 +114,84 @@ hallazgos:
     tema: politica-de-ids-para-HSS
     hecho: >-
       el-encargo-manda-una-politica-BASADA-EN-LA-DESIGNACION-EDI-y-da-como-ejemplo-AISC-HSS-RECT-HSS4X4X1_4 ·
-      pero-en-el-libro-real-el-EDI-de-esa-seccion-es-HSS4X4X-250-y-HSS4X4X1-4-es-su-AISC-Manual-Label ·
-      para-las-525-HSS-rectangulares-el-EDI-usa-decimal-y-el-manual-fraccion-513-filas-difieren ·
-      los-otros-tres-ejemplos-del-encargo-W12X28-C10X15-3-L4X4X1-4-SI-coinciden-con-el-EDI
+      pero-el-EDI-real-de-esa-seccion-es-HSS4X4X-250-y-HSS4X4X1-4-es-su-AISC-Manual-Label ·
+      513-de-las-983-filas-difieren-entre-EDI-y-etiqueta-todas-HSS-rectangulares ·
+      los-otros-tres-ejemplos-del-encargo-SI-coinciden-con-el-EDI
     resuelto: >-
       se-aplico-la-REGLA-EDI-en-las-CUATRO-familias-sin-excepcion-porque-una-regla-que-cambia-de-fuente-segun-la-familia-deja-de-ser-determinista ·
-      el-id-real-es-AISC-HSS-RECT-HSS4X4X_250-el-Manual-Label-se-conserva-intacto-unico-y-buscable ·
+      el-id-real-es-AISC-HSS-RECT-HSS4X4X_250-y-el-Manual-Label-se-conserva-intacto-unico-y-buscable ·
       registrado-en-ADR-0021-punto-6-y-ES-el-punto-5-de-la-validacion-del-Owner
+  - id: H3
+    tema: W12X28-no-existe
+    hecho: >-
+      la-serie-W12-de-la-v16-0-va-de-W12X26-a-W12X30-sin-W12X28 ·
+      el-ejemplo-del-dueno-W12X28-28-lb-ft-41-7-kg-m-fija-el-FORMATO-de-la-etiqueta-no-una-seccion-real
+    resuelto: >-
+      la-prueba-que-reproduce-el-ejemplo-LITERAL-usa-una-seccion-SINTETICA ·
+      las-pruebas-del-catalogo-distribuido-usan-W12X26-26-lb-ft-38-7-kg-m
+  - id: H4
+    tema: cero-legitimo-en-zB
+    hecho: >-
+      zB-vale-exactamente-0-en-los-61-angulos-de-alas-iguales-porque-el-punto-B-esta-sobre-el-eje-z ·
+      es-el-unico-cero-legitimo-de-todo-el-cuerpo-de-datos-barrido-sobre-las-983-filas
+    resuelto: >-
+      la-regla-un-cero-significa-un-valor-perdido-se-restringio-a-las-MAGNITUDES-dejando-fuera-las-POSICIONES ·
+      hay-regresion-para-ambos-casos
 
 # --------------------------------------------------------------------------------------------------------
-# FASES. Cada una cierra con commit propio; ninguna toca HANDOFF ni marca la iniciativa como integrada.
+# COMMITS. Cada uno deja el arbol compilando y las suites en verde.
 # --------------------------------------------------------------------------------------------------------
-fases:
-  - n: 1
-    nombre: reclamo
-    estado: HECHA
-    commit: c9d53d2
-  - n: 2
-    nombre: contrato-ROADMAP-decisiones-y-ADRs
-    estado: HECHA
-    entregado: >-
-      ADR-0020-catalogo-neutral-aceptado · ADR-0021-identidad-unidades-presentacion-aceptado ·
-      ADR-0008-marcado-reemplazado-por-0020-con-nota-posterior-y-Decision-INTACTA ·
-      ADR-0005-solo-nota-posterior-NO-reemplazado · indice-ADR-actualizado ·
-      ROADMAP-Fase-6-con-I-36A-I-36B-I-37-I-38-grafo-y-orden-recomendado ·
-      contrato-de-iniciativa · decision-versionada-del-Owner · indice-de-iniciativas · este-estado
-  - n: 3
-    nombre: herramienta-de-importacion-y-pruebas-sinteticas
-    estado: SIGUIENTE
-  - n: 4
-    nombre: modelo-proveedor-y-lector-estricto
-    estado: pendiente
-  - n: 5
-    nombre: validador-unidades-estado-y-busquedas
-    estado: pendiente
-  - n: 6
-    nombre: importacion-completa-AISC-y-manifiesto
-    estado: pendiente
-  - n: 7
-    nombre: documentacion-evidencia-y-estado
-    estado: pendiente
+commits:
+  - sha: c9d53d209f71ff2cf019e8cc121dbe0096f84a2b
+    asunto: reclamo de architecture/catalogo-secciones-estructurales
+  - sha: e523ad2
+    asunto: contrato, Fase 6 del ROADMAP, decisiones y ADR-0020/0021
+  - sha: 59b6403
+    asunto: nucleo neutral de secciones, lector estricto y validador propio
+  - sha: bb78259
+    asunto: importador reproducible de la AISC Shapes Database
+  - sha: 48c2a48
+    asunto: catalogo AISC v16.0 importado, manifiesto y sentinelas
 
 # --------------------------------------------------------------------------------------------------------
-# GUARDAS DE ALCANCE. Se verifican con git diff al cerrar, no se afirman.
+# GATES. Ninguno se afirma sin comando que lo respalde.
+# --------------------------------------------------------------------------------------------------------
+gates:
+  rackcad_tests: 1762-de-1762-cero-fallos-cero-omitidas-base-1619-mas-143-nuevas
+  rackcad_ui_tests: 494-de-494-cero-fallos-cero-omitidas-sin-cambio
+  build_importador_debug: 0-errores-0-advertencias
+  build_application_debug: 0-errores-0-advertencias
+  build_ui_debug: 0-errores-0-advertencias
+  build_plugin_debug: 0-errores-2-MSB3277-conocidos-de-las-referencias-AutoCAD
+  bundle: OK-147-comprobaciones-catalogos-identicos-a-assets-catalogs-cero-DLL-Autodesk
+  archivos_nuevos_en_el_bundle: los-SIETE-presentes-con-hashes-identicos-al-manifiesto
+  ci: pendiente-de-verificar-sobre-el-SHA-publicado-de-cierre
+  autocad: NO-REQUERIDO-la-iniciativa-no-cambia-dibujo-bloques-comandos-ni-DWG
+  owner_validation: PENDIENTE-siete-puntos
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE, verificadas con git diff y no afirmadas.
 # --------------------------------------------------------------------------------------------------------
 guardas_de_alcance:
-  secciones_csv: debe-quedar-BYTE-IDENTICO-a-origin-main
-  otros_catalogos_vigentes: cero-lineas-cambiadas
-  blocks_library_dwg: no-se-toca-ni-se-crean-bloques
-  domain_ui_plugin: cero-archivos-cambiados
-  deploy_y_github: cero-archivos-cambiados
-  autocad: NO-REQUERIDO-la-iniciativa-no-cambia-dibujo-bloques-comandos-ni-DWG
+  secciones_csv: BYTE-IDENTICO-a-origin-main-git-diff-exit-code-limpio
+  otros_catalogos_vigentes: cero-lineas-cambiadas-en-los-diez
+  blocks_library_dwg: no-se-toco-y-no-se-creo-ningun-bloque
+  blocks_csv: sin-una-sola-fila-nueva
+  domain: cero-archivos
+  ui: cero-archivos
+  plugin: cero-archivos
+  deploy: cero-archivos
+  github: cero-archivos
   handoff: NO-SE-TOCA-hasta-la-sesion-de-integracion
   roadmap_columna_estado: >-
-    las-filas-de-la-Fase-6-nacen-en-pendiente ·
-    marcar-integrada-es-de-la-sesion-de-integracion-y-esta-rama-no-lo-hace
+    las-cuatro-filas-de-la-Fase-6-nacen-en-pendiente-y-NADA-se-marco-como-integrada
+  archivos_modificados_fuera-de-lo-nuevo: >-
+    gitignore-ruta-ignorada-del-libro · RackCad-sln-alta-del-proyecto-de-herramienta ·
+    tests-RackCad-Tests-csproj-referencia-a-la-herramienta ·
+    CsvCatalogReader-cs-SOLO-delega-su-parser-lexico-comportamiento-identico-y-fijado-por-regresiones
   i36b: >-
-    architecture-geometria-secciones-estructurales-queda-RESERVADA-y-SIN-crear ·
-    cero-geometria-cero-contornos-cero-radios-cero-proyecciones-en-esta-rama
+    architecture-geometria-secciones-estructurales-NO-CREADA-y-reservada ·
+    cero-geometria-cero-contornos-cero-radios-cero-proyecciones-cero-bloques-cero-AutoCAD-cero-WPF
+  main: INTACTA-sin-merge-sin-push-a-main-sin-borrado-de-rama-ni-worktree
+
+evidencia: docs/automation/evidence/I-36A-catalogo-secciones-estructurales.md

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-36A
 title: Nucleo y catalogo de secciones estructurales
 type: architecture
-status: implementing
+status: review-ready
 branch: architecture/catalogo-secciones-estructurales
 base_branch: main
 priority:
@@ -198,15 +198,19 @@ identico) y `tests/RackCad.Tests/` (pruebas nuevas y de regresion).
 
 Cada fase termina con evidencia revisable y commit.
 
-| # | Fase | Evidencia de cierre |
-|---|---|---|
-| 1 | Reclamo | Commit vacio con `Initiative-Id`, `Claim-Id` y `Co-Authored-By`; primer push aceptado sin force |
-| 2 | Contrato, ROADMAP, decisiones y ADRs | ADR-0020/0021 escritos; ADR-0008 reemplazado; ADR-0005 anotado; Fase 6 registrada; estado versionado inicial |
-| 3 | Herramienta de importacion y pruebas sinteticas | El importador compila y corre; XLSX sintetico generado en runtime demuestra las cuatro familias, los excluidos, el error por encabezado, el error por valor, la salida byte-identica y la colision de IDs |
-| 4 | Modelo, proveedor y lector estricto | Nucleo compilando; parser lexico compartido con regresiones de `CsvCatalogReader` en verde |
-| 5 | Validador, unidades, estado y busquedas | Validador con severidades; conversion y formateador probados; overlay `IsEnabled`; busquedas por id, EDI y familia |
-| 6 | Importacion completa AISC y manifiesto | Los siete archivos generados; conteos 289/525/32/137 = 983; cero filas seleccionadas rechazadas; hashes en el manifiesto |
-| 7 | Documentacion, evidencia y estado | Guia nueva, docs actualizados, evidencia reproducible, estado `review-ready` con gate `owner-validation` |
+Las fases 4 y 5 previstas resultaron ser un unico corte coherente —el modelo, el lector estricto, el
+proveedor, el validador, las unidades y el formateador se compilan y se prueban juntos, y separarlos
+habria dejado un commit intermedio que no compila—, y la 3 se movio DESPUES de ese nucleo porque el
+importador lo consume. El resto de cortes se respeto. Ejecucion real:
+
+| # | Fase | Commit | Evidencia de cierre |
+|---|---|---|---|
+| 1 | Reclamo | `c9d53d2` | Commit vacio con `Initiative-Id`, `Claim-Id` y `Co-Authored-By`; primer push **aceptado** sin force |
+| 2 | Contrato, ROADMAP, decisiones y ADRs | `e523ad2` | ADR-0020/0021 aceptados; ADR-0008 reemplazado con su Decision intacta; ADR-0005 solo anotado; Fase 6 registrada con las cuatro filas en `pendiente`; estado versionado inicial. **Solo documentacion** |
+| 3 | Nucleo, lector estricto, proveedor y validador | `59b6403` | Modelo por composicion; `CsvLexer` extraido verbatim con regresiones del lector tolerante; catalogo con busquedas; validador con las severidades de I-19; unidades y formateador. **106 pruebas sinteticas** |
+| 4 | Herramienta de importacion | `bb78259` | OOXML por ZIP/XML sin NuGet; columnas resueltas del libro real; clasificacion HSS por campos oficiales; salida determinista con staging. **19 pruebas sobre un XLSX generado en runtime** |
+| 5 | Importacion completa AISC y manifiesto | `48c2a48` | Los siete archivos; **289/525/32/137 = 983**; cero rechazadas; hashes verificados en worktree, en Git y en el bundle. **28 pruebas del catalogo distribuido**, sentinelas incluidas |
+| 6 | Documentacion, evidencia y estado | *(este cierre)* | Guia nueva con la matriz de las 84 columnas; ARCHITECTURE y las dos guias actualizadas; evidencia reproducible; estado `review-ready` con gate `owner-validation` |
 
 ## 9. Pruebas y builds
 

@@ -237,6 +237,38 @@ Cada pieza y vista se resuelve por `blocks.csv`; `blockName` coincide exactament
 del DWG. Los parámetros dinámicos se buscan case-insensitive. Si un stretch funciona manualmente y
 falla solo por API, primero se revisa la autoría del bloque y la dirección del grip.
 
+### 4.4.1 Catálogo neutral de secciones estructurales (I-36A)
+
+Junto al catálogo anterior —y **sin tocarlo**— vive un catálogo **neutral** de secciones
+transversales, gobernado por [ADR-0020](adr/0020-catalogo-neutral-de-secciones-estructurales.md) y
+[ADR-0021](adr/0021-identidad-unidades-y-presentacion-de-secciones.md). La separación que introduce es
+la que los sistemas actuales no necesitaban: una **sección** (qué forma tiene el material) deja de ser
+lo mismo que un **miembro** (para qué se usa) y que una **pieza comercial** (qué SKU se compra). Una
+`StructuralSection` **no tiene rol**: `POSTE`, `CELOSIA`, `LARGUERO` y `SEPARADOR` no existen en su
+esquema.
+
+Vive en `RackCad.Application.StructuralSections`, es independiente de `RackCatalog` y de
+`CatalogEntryBase`, y su proveedor es propio. La razón de no reutilizar `JsonRackCatalogProvider` es
+de contrato: su tolerancia —archivo ausente → lista vacía, celda inválida → valor por defecto— es
+correcta para una hoja que se edita en Excel e inaceptable para 983 filas de fuente oficial, donde un
+`0` silencioso es un dato falso indistinguible de uno real. El lector estricto convierte en error, con
+archivo, fila, columna e id, cualquier encabezado faltante, duplicado o desconocido, id vacío, número,
+bool o enum inválido, `NaN`/infinito y requerido ausente. Los dos lectores comparten **solo** el parser
+léxico (`CsvLexer`), extraído verbatim.
+
+Sus datos (`assets/catalogs/structural-*`) son **salida reproducible** de una herramienta que vive
+fuera del producto (`tools/RackCad.StructuralSections.Import`, .NET 8, BCL pura, cero NuGet) y que
+convierte la **AISC Shapes Database v16.0** en cuatro CSV por familia más fuentes, overlay de estado y
+un manifiesto con conteos y SHA-256. El único archivo editable a mano es el overlay: deshabilitar una
+sección la retira de las selecciones nuevas pero `GetById` la sigue resolviendo, así que un diseño
+guardado no deja de abrirse.
+
+`secciones.csv` **no se migra**: sigue siendo la fuente vigente de los cuatro sistemas, sin cambio
+funcional, hasta que migraciones futuras —una por configurador, strangler— la retiren. I-36A **no
+dibuja**: no toca `blocks.csv`, no crea bloques y no modifica `blocks-library.dwg`. La geometría
+derivada es I-36B. Detalle completo en
+[guias/secciones-estructurales.md](guias/secciones-estructurales.md).
+
 ### 4.5 Layout de almacén
 
 `WarehouseGridPlanner`, `WarehouseFitChecker` y `WarehouseAutoFill` viven en Application. Los
@@ -359,6 +391,13 @@ RackCad.UI.Tests
 Los CSV Excel-first continúan. Se agregan validación con severidades, diagnóstico de filas
 descartadas, reglas de encoding/EOL y un manifest de compatibilidad de `blocks-library.dwg`. Costos y
 precios requieren ADR antes de elegir catálogo versionado, fuente separada o base de datos.
+
+A partir de I-36A convive un segundo régimen, deliberadamente distinto (§4.4.1): los datos que vienen
+de una **fuente externa oficial** no se editan, se **regeneran** desde un importador reproducible, se
+leen con un lector **estricto** y declaran su procedencia y sus hashes en un manifiesto verificable.
+Los dos regímenes son complementarios, no rivales: el primero sirve a lo que el dueño mantiene, el
+segundo a lo que copia de una norma. La adopción de la sección neutral por los sistemas existentes es
+**strangler**, una iniciativa por configurador, y ninguna forma parte de I-36A.
 
 ## 8. Apéndice temporal: agregar un tipo hoy
 
