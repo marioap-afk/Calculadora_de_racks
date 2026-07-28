@@ -247,9 +247,9 @@ preview y el dibujo habrían pasado a ser dos implementaciones que hoy coinciden
 | `dotnet build src/RackCad.Plugin` Debug | 0 errores propios (2 avisos `MSB3277` preexistentes por la unificación de `System.Drawing` entre los ensamblados de AutoCAD y el ref-pack de net8.0) |
 | `deploy/build-bundle.ps1` | **OK: 147 comprobaciones.** DLL idénticos al publish, catálogos idénticos a `assets/catalogs` (SHA-256), solo archivos RackCad, **cero DLL de Autodesk** |
 | Validación del catálogo de I-36A | 29/29 verde, 983 secciones, catálogo == manifiesto |
-| **CI sobre el SHA publicado** | **verde 4/4** — run [`30374044447`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30374044447) sobre `69c11eb`: *Tests (Domain + Application)*, *UI Tests (WPF controls, net8.0-windows)*, *Build UI* y *Build Plugin without AutoCAD* |
+| **CI sobre el SHA publicado** | **verde 4/4** — run [`30377854819`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30377854819) sobre `a1360ec`: *Tests (Domain + Application)*, *UI Tests (WPF controls, net8.0-windows)*, *Build UI* y *Build Plugin without AutoCAD*. Ronda 1: `30374044447` sobre `69c11eb` |
 
-El único commit posterior a `69c11eb` es **solo documentación** —esta tabla y el estado versionado—, sin
+El único commit posterior a `a1360ec` es **solo documentación** —esta tabla y el estado versionado—, sin
 una línea de código ni de catálogo; su propia corrida de CI queda en §17.
 
 **Reparto de las 221 pruebas nuevas:**
@@ -453,8 +453,13 @@ es donde el contrato §4 manda los hallazgos fuera de alcance —no se corrigen 
 | `2185962` | 7 — preview e inspector |
 | `3dce1f9` | 8 — materialización y `RACKSECCION` |
 | `67fec4a` | 9 — diagnósticos no silenciosos |
-| `69c11eb` | 10 — guía, evidencia, índices y estado — **CI verde 4/4**, run `30374044447` |
-| *(este)* | 10 — solo documentación: registra la CI verde de `69c11eb` |
+| `69c11eb` | 10 — guía, evidencia, índices y estado — CI verde 4/4, run `30374044447` |
+| `4444027` | 10 — registro de esa CI; **HEAD revisado por el dueño** |
+| `186bf31` | R2 — F1 generatrices interiores + F2 canonicalización de proyecciones |
+| `443d8fc` | R2 — F3 contrato del origen frente al centroide del contorno |
+| `6142284` | R2 — F4 decisión del dueño sobre los canales |
+| `a1360ec` | R2 — ADR, guía, evidencia y estado — **CI verde 4/4**, run `30377854819` |
+| *(este)* | R2 — solo documentación: registra la CI verde de `a1360ec` |
 
 **Nota honesta sobre dos commits.** `d241e03` se hizo con la suite en **rojo**: encadené el `commit` a
 un `grep` que devolvió éxito por *encontrar texto*, no por una suite verde. Corregido en `4b66bf5`, y

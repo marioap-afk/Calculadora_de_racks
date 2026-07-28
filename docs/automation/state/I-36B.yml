@@ -202,7 +202,7 @@ resultados_medidos:
     ui_debug: 0-errores
     plugin_debug: 0-errores-propios-2-avisos-MSB3277-preexistentes-de-System-Drawing
     bundle: OK-147-comprobaciones-DLL-y-catalogos-identicos-cero-DLL-de-Autodesk
-  ci_sobre_el_sha_publicado: VERDE-4-de-4-run-30374044447-sobre-69c11eb
+  ci_sobre_el_sha_publicado: VERDE-4-de-4-run-30377854819-sobre-a1360ec-ronda-1-fue-30374044447-sobre-69c11eb
 
 # --------------------------------------------------------------------------------------------------------
 # GUARDAS DE ALCANCE VERIFICADAS con git diff --name-only origin/main..HEAD (34 archivos, +7144, -0).
