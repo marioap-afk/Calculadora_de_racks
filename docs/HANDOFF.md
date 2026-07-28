@@ -781,6 +781,62 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
 
 ## 4. Siguiente acción
 
+### I-36C — INTEGRADA en `main` (2026-07-28) — **acceso, no funcionalidad nueva**
+
+**Lo primero, porque es lo que se malinterpreta:** el catálogo y el generador paramétrico de perfiles
+estructurales **ya estaban implementados** por I-36A e I-36B. I-36C **únicamente** añadió el acceso
+visible **«Generar perfil estructural»** en el menú principal `RACKCAD`, reutilizando **exactamente el
+mismo flujo** de `RACKSECCION`. **No hay un segundo generador.**
+
+El defecto era de **descubribilidad**: la capacidad existía, estaba validada, y la única forma de
+invocarla era escribir el comando.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `fix/acceso-menu-secciones-estructurales` |
+| `Claim-Id` | `3afd368a-0eb4-44aa-8c8f-ebde72ed256f` |
+| **SHA técnico validado** por el Owner | `86867e62bba9c52bd0855719b1f51ba99c3edcaa` (CI **30386035953**, 4/4) |
+| SHA final de rama | vive en `git log`; su delta contra el validado es **solo documentación** |
+| **Validación en AutoCAD** | **APLICA y está APROBADA**, sin observaciones (`requires_autocad: satisfied`, `requires_owner_validation: satisfied`) |
+| Botón | «Generar perfil estructural», entre «Diseñar larguero» y «Abrir de la biblioteca de diseños», con el estilo `MenuButton` vigente |
+| Acción | `MainMenuAction.GenerateStructuralSection` — **no** un `RackInsertionRequest` |
+| Autoridad compartida | `StructuralSectionCommandFlow.Run(document)`, que consumen el botón y `RACKSECCION` |
+| Suites al integrar | **2071** `RackCad.Tests` + **534** `RackCad.UI.Tests`, cero fallos, cero omitidas |
+| Builds Debug | Application, UI y Plugin sin errores propios |
+| Bundle | **147 comprobaciones** |
+| Rebase | **no-op**: `origin/main` no avanzó desde la base `14317a5` |
+| **MERGE_SHA** | vive en `git log --first-parent main`; este documento **no lo inventa** |
+| Limpieza | rama local, rama remota y worktree **eliminados** tras confirmar el merge |
+
+**Los siete puntos que el Owner aprobó:** botón visible; posición y estilo; cancelación del inspector;
+cancelación del punto de inserción; inserción de `W12X26`; **equivalencia con `RACKSECCION`**; y
+ausencia de regresiones en los sistemas existentes. Cero observaciones, cero bloqueos.
+
+**Por qué la acción no es una inserción de rack.** El menú ya lleva un `RackInsertionRequest` tipado
+para los seis sistemas que sabe diseñar (I-15). Una sección **no es un rack**: no tiene
+`RackSystemKind` sobre el que despachar, no tiene payload de diseño que embeber y no tiene round-trip.
+Un request con un `Kind` inventado empujaría esa mentira hasta el `switch` del host. El Plugin lee la
+acción **después** de que la ventana modal se cierre, porque el flujo pide un punto y el editor de
+AutoCAD tiene que estar libre.
+
+**Cero duplicación, comprobada.** Cada pieza del caso de uso —carga fail-closed del catálogo, inspector,
+inserción, aviso de unidades, peso, fidelidad— la menciona **exactamente un** archivo del Plugin, y 25
+guardas de fuente lo fijan. Siete guardas de I-36B se reapuntaron al archivo del flujo: lo que fijan no
+cambió, cambió dónde vive.
+
+**Lo que NO cambió, verificado con `git diff`:** `assets/**` sin una línea —`secciones.csv`,
+`blocks.csv` y el manifiesto de I-36A intactos—; `blocks-library.dwg` sin tocar; `src/RackCad.Domain`,
+`deploy/` y `.github/` con **cero** archivos; y **cero archivos de geometría**. Los seis sistemas y la
+biblioteca conservan título, orden y handler.
+
+**Pendientes preservados, sin implementar y sin rama abierta:** perfiles IPS/S y su verificación frente a
+la familia AISC `S` o al catálogo comercial; geometría visual mejorada de laminados; conicidad de
+patines; radios y chaflanes acreditados; separación entre geometría tabulada y visual aproximada; I-37
+Cantilever; miembros estructurales; materiales, conexiones y fabricación; cálculo estructural; sólidos
+3D; round-trip de perfiles independientes; y familias adicionales. **Ninguno invalida lo implementado.**
+
+**Siguiente iniciativa habilitada: I-37 — Cantilever MVP**, que **no** se implementó en esta sesión.
+
 ### I-36B — INTEGRADA en `main` (2026-07-28) — **segunda de la Fase 6**
 
 El Owner **aprobó el gate `owner-validation`** tras ejecutar en AutoCAD el **smoke focalizado de cinco
@@ -1088,7 +1144,22 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-36B — 2026-07-28** (la vigente):
+**Baseline integrada de I-36C — 2026-07-28** (la vigente):
+
+- candidato de **código** aprobado por el Owner y por CI:
+  `86867e62bba9c52bd0855719b1f51ba99c3edcaa` (CI run `30386035953`, **success** 4/4). El SHA final de
+  rama difiere del validado **solo en documentación**, así que el árbol técnico validado y el integrado
+  son el mismo;
+- **validación en AutoCAD APROBADA**, siete puntos, **sin observaciones**: botón visible, posición y
+  estilo, cancelación del inspector, cancelación del punto, inserción de `W12X26`, **equivalencia con
+  `RACKSECCION`** y sistemas existentes sin regresiones;
+- suites **2071** + **534**, cero fallos, cero omitidas; builds Debug de Application, UI y Plugin sin
+  errores propios; bundle **147 comprobaciones**;
+- **cero duplicación del generador**: cada pieza del caso de uso la menciona exactamente un archivo del
+  Plugin; **cero cambios geométricos**; **cero cambios en catálogos**; **cero cambios en sistemas**;
+- **sin rebase**: `origin/main` no avanzó desde la base `14317a5`; rebase final **no-op**.
+
+Anterior: **baseline integrada de I-36B — 2026-07-28**:
 
 - candidato de **código** aprobado por el Owner y por CI:
   `30ef95c56c9ce6d3120e13c29f971c40dd65fbec` (CI run `30378134540`, **success** 4/4). El SHA final de

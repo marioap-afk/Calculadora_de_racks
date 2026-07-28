@@ -500,7 +500,11 @@ Planes disponibles:
   los canales C, I-37, solidos 3D, persistencia, round-trip, sistemas existentes, `blocks.csv`,
   `blocks-library.dwg`, los CSV de secciones y el rediseno del menu. `requires_autocad: **true**` y
   `requires_owner_validation: **true**` (el cambio es visible en el menu); `requires_owner_decision:
-  false`. Estado versionado en [`../automation/state/I-36C.yml`](../automation/state/I-36C.yml).
+  false`. **INTEGRADA el 2026-07-28**: el Owner aprobo los siete puntos de la validacion en AutoCAD
+  —boton visible, posicion y estilo, cancelacion del inspector, cancelacion del punto, insercion de
+  `W12X26`, **equivalencia con `RACKSECCION`** y sistemas existentes sin regresiones— **sin
+  observaciones ni bloqueos**. Estado versionado en
+  [`../automation/state/I-36C.yml`](../automation/state/I-36C.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

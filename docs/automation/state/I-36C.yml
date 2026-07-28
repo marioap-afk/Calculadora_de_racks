@@ -3,14 +3,14 @@ automation_state:
   initiative: I-36C
   branch: fix/acceso-menu-secciones-estructurales
   claim_id: 3afd368a-0eb4-44aa-8c8f-ebde72ed256f
-  current_phase: 4
-  state: review-ready
-  gate: owner-validation
+  current_phase: 5
+  state: completed
+  gate: none
   attempts: 1
   next_action: >-
-    VALIDACION-DEL-DUENO-EN-AUTOCAD-checklist-de-8-puntos-en-la-evidencia ·
-    con-el-DLL-Debug-de-ESTE-worktree · el-cambio-es-VISIBLE-en-el-menu-asi-que-solo-mirandolo-se-cierra ·
-    NO-integrar-NO-limpiar-NO-abrir-IPS-S-NI-I-37
+    NINGUNA-I-36C-esta-INTEGRADA-y-CERRADA ·
+    el-generador-de-perfiles-sigue-siendo-el-de-I-36A-e-I-36B-y-ahora-tiene-boton ·
+    los-trece-pendientes-siguen-registrados-sin-rama-abierta
   last_evidence_commit: a088546-CI-VERDE-4-de-4-run-30385776747
 
 # --------------------------------------------------------------------------------------------------------
@@ -87,3 +87,56 @@ gates:
   guardas_de_alcance: >-
     cero-lineas-en-assets-blocks-library-dwg-Domain-deploy-github-ROADMAP-y-HANDOFF ·
     cero-cambios-geometricos
+
+# --------------------------------------------------------------------------------------------------------
+# VALIDACION DEL OWNER. Gate owner-validation APROBADO.
+# --------------------------------------------------------------------------------------------------------
+owner_validation:
+  status: approved
+  date: 2026-07-28
+  owner: Mario Perez
+  sha_tecnico_validado: 86867e62bba9c52bd0855719b1f51ba99c3edcaa
+  observaciones: NINGUNA
+  bloqueos: NINGUNO
+  requires_owner_validation: satisfied
+  requires_autocad: satisfied
+  puntos_aprobados:
+    boton_visible: APROBADO
+    posicion_y_estilo: APROBADO
+    cancelacion_del_inspector: APROBADO
+    cancelacion_del_punto: APROBADO
+    insercion_W12X26: APROBADO
+    equivalencia_con_RACKSECCION: APROBADO
+    sistemas_existentes: APROBADO-sin-regresiones
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  rebase_final: NO-OP-origin-main-no-avanzo-desde-la-base-14317a5
+  ci_del_candidato: VERDE-4-de-4-run-30386035953-sobre-86867e6
+  merge: no-ff-sin-squash-desde-el-worktree-principal
+  merge_sha: >-
+    vive-en-git-log-first-parent-main · este-archivo-no-lo-inventa-porque-se-escribe-antes-del-merge
+  limpieza: worktree-sin-force-branch-d-nunca-branch-D-y-rama-remota-eliminada
+
+# --------------------------------------------------------------------------------------------------------
+# PENDIENTES QUE SIGUEN REGISTRADOS. Ninguno invalida lo implementado.
+# --------------------------------------------------------------------------------------------------------
+pendientes_preservados:
+  - perfiles-IPS-S
+  - verificacion-IPS-frente-a-AISC-S-o-catalogo-comercial-de-la-empresa
+  - geometria-visual-mejorada-de-perfiles-laminados
+  - conicidad-de-patines
+  - radios-y-chaflanes-acreditados
+  - separacion-geometria-tabulada-frente-a-visual-aproximada
+  - I-37-Cantilever
+  - miembros-estructurales
+  - materiales-conexiones-y-fabricacion
+  - calculo-estructural
+  - solidos-3D
+  - round-trip-de-perfiles-independientes
+  - familias-adicionales
+  aclaracion: >-
+    NINGUNO-invalida-lo-implementado · el-catalogo-y-el-generador-funcionan-y-estan-validados ·
+    son-ampliaciones-futuras-sin-rama-contrato-ni-worktree-abiertos

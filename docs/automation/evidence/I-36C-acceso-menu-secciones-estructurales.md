@@ -1,7 +1,7 @@
 # Evidencia — I-36C · Acceso desde el menú principal al generador de perfiles estructurales
 
-> Estado: **`review-ready`**, gate **`owner-validation`**.
-> **No integrada. No limpiada. `main` intacta.** El checklist de AutoCAD está en §8.
+> Estado al cerrar: **integrada (2026-07-28)**. Gate `owner-validation` **APROBADO** por el Owner, sin
+> observaciones. El resultado de la validación está en §8.b.
 
 ---
 
@@ -208,6 +208,38 @@ Con el DLL **Debug de este worktree**, según
 | 7 | **Insertar** | Pide punto, inserta el bloque interno y escribe en la línea de comandos el mensaje con peso y fidelidad |
 | 8 | Ejecutar **`RACKSECCION`** con la misma selección | El resultado **coincide** con el del paso 7: mismo dibujo, mismo tipo de bloque, mismo mensaje |
 
+### 8.b Resultado — APROBADO por el Owner
+
+```yaml
+owner_validation:
+  status: approved
+  date: 2026-07-28
+  owner: Mario Pérez
+```
+
+| Punto | Resultado |
+|---|---|
+| Botón visible | **Aprobado** |
+| Posición y estilo | **Aprobado** |
+| Cancelación del inspector | **Aprobado** |
+| Cancelación del punto | **Aprobado** |
+| Inserción `W12X26` | **Aprobado** |
+| Equivalencia con `RACKSECCION` | **Aprobado** |
+| Sistemas existentes | **Aprobado**, sin regresiones |
+| **Observaciones** | **ninguna** |
+| **Bloqueos** | **ninguno** |
+
+| Campo | Valor |
+|---|---|
+| SHA técnico validado | `86867e62bba9c52bd0855719b1f51ba99c3edcaa` |
+| `requires_owner_validation` | **satisfied** |
+| `requires_autocad` | **satisfied** |
+
+Los dos puntos que más importaban se aprobaron por separado y conviene dejarlo dicho: **cancelar el
+inspector** y **cancelar el punto de inserción** no dejan nada en el dibujo, y el resultado de insertar
+desde el menú **coincide** con el de `RACKSECCION`. Eso es exactamente lo que este fix prometía —una
+puerta más al mismo cuarto— comprobado sobre el dibujo real y no sólo por guardas de fuente.
+
 ## 9. Pendientes registrados (no implementados)
 
 Ninguno de estos **invalida lo ya implementado**. El catálogo y el generador funcionan y están
@@ -264,6 +296,12 @@ una línea de código.
 
 ## 12. Estado final
 
-- **`review-ready`**, gate **`owner-validation`**.
-- **No integrada, no limpiada**: rama y worktree se conservan. `main` intacta.
-- Sin Pull Request: el repositorio integra por `git merge --no-ff` desde una sesión de integración.
+- **Integrada (2026-07-28)**; gate `owner-validation` **aprobado** sin observaciones.
+- **Rebase final: no-op** — `origin/main` no avanzó desde la base `14317a5`.
+- Integrada por `git merge --no-ff`, sin squash. Sin Pull Request.
+- Rama local, rama remota y worktree **eliminados** tras confirmar el merge.
+
+**Lo que este fix fue, dicho una última vez:** el catálogo y el generador paramétrico de perfiles
+estructurales **ya estaban implementados** por I-36A e I-36B. I-36C **únicamente** añadió el acceso
+visible «Generar perfil estructural» en el menú principal `RACKCAD`, reutilizando **exactamente el mismo
+flujo** de `RACKSECCION`.

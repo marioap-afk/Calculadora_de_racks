@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-36C
 title: Acceso desde el menu principal al generador de perfiles estructurales
 type: fix
-status: review-ready
+status: integrated
 branch: fix/acceso-menu-secciones-estructurales
 base_branch: main
 priority:
@@ -152,6 +152,19 @@ geometria; o el alcance intenta expandirse hacia IPS/S o I-37.
 
 ## 11. Estado versionado y entrega
 
-Estado canonico: [`docs/automation/state/I-36C.yml`](../automation/state/I-36C.yml). `state` recorre
-`claimed` -> `implementing` -> `review-ready`; el gate final es `owner-validation`. No se abre Pull
-Request: el repositorio integra por `git merge --no-ff` desde una sesion de integracion.
+Estado canonico: [`docs/automation/state/I-36C.yml`](../automation/state/I-36C.yml). `state` recorrio
+`claimed` -> `implementing` -> `review-ready` -> `completed`. No se abrio Pull Request: el repositorio
+integra por `git merge --no-ff` desde una sesion de integracion.
+
+**Cerrada el 2026-07-28.** El Owner ejecuto la validacion manual en AutoCAD y aprobo los siete puntos
+—boton visible, posicion y estilo, cancelacion del inspector, cancelacion del punto, insercion de
+`W12X26`, equivalencia con `RACKSECCION` y ausencia de regresiones en los sistemas existentes— **sin
+observaciones y sin bloqueos**. `requires_owner_validation: satisfied`, `requires_autocad: satisfied`.
+SHA tecnico validado: `86867e62bba9c52bd0855719b1f51ba99c3edcaa` (CI `30386035953`, 4/4). Rebase final
+**no-op**: `origin/main` no avanzo desde la base `14317a5`.
+
+Y lo que conviene que sobreviva al cierre: **el catalogo y el generador parametrico ya estaban
+implementados por I-36A e I-36B**. I-36C **unicamente** anadio el acceso visible «Generar perfil
+estructural» en el menu `RACKCAD`, reutilizando **exactamente el mismo flujo** de `RACKSECCION`. Los
+trece pendientes de perfiles estructurales siguen registrados en
+[`docs/ideas-futuras.md`](../ideas-futuras.md), **sin rama abierta**.
