@@ -12,7 +12,27 @@ automation_state:
     etiquetas-de-peso · politica-de-ids-INCLUIDO-el-caso-HSS · habilitado-deshabilitado ·
     confirmacion-de-que-secciones-csv-y-los-sistemas-existentes-no-cambiaron ·
     NO-integrar-NO-borrar-rama-ni-worktree-hasta-que-el-Owner-apruebe
-  last_evidence_commit: SE-FIJA-EN-EL-COMMIT-DE-CIERRE-DE-ESTA-EJECUCION
+  last_evidence_commit: 48c2a48a92b21c2bed123057b73af6188d20452c
+
+# --------------------------------------------------------------------------------------------------------
+# EL CANDIDATO TECNICO. Hay UNO SOLO y es este: el ultimo commit que toca src, tests, tools o assets.
+# Todo lo posterior en la rama es EXCLUSIVAMENTE DOCUMENTAL, asi que el arbol tecnico con CI verde y el
+# que el Owner valida son el MISMO, y eso es comprobable con git diff sin confiar en este archivo.
+# --------------------------------------------------------------------------------------------------------
+candidate:
+  sha: 48c2a48a92b21c2bed123057b73af6188d20452c
+  subject: I-36A - catalogo AISC v16.0 importado, manifiesto y sentinelas
+  base: a35374f99dde91077a2e05bfc69358fb3e3b3ad9
+  ci_run: 30324052409
+  ci_result: VERDE-completed-success-sobre-el-SHA-exacto-del-candidato
+  ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
+  por_que_importa_que_CI_sea_verde_en_LINUX: >-
+    el-job-de-pruebas-corre-en-ubuntu-sobre-un-checkout-LIMPIO ·
+    ahi-se-ejecuta-ShippedStructuralSectionCatalogTests-que-recalcula-el-SHA-256-de-cada-CSV-distribuido-y-lo-compara-contra-el-manifiesto ·
+    que-pase-demuestra-que-gitattributes-text-hace-su-trabajo-y-que-los-bytes-sobreviven-al-checkout-en-otro-sistema-operativo
+  commits_posteriores: >-
+    solo-documentacion-docs-guias-docs-automation-docs-ARCHITECTURE-y-docs-initiatives ·
+    cero-archivos-bajo-src-tests-tools-assets-deploy-o-github
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo. Todo verificable con git y con la CI publica.
@@ -165,7 +185,7 @@ gates:
   build_plugin_debug: 0-errores-2-MSB3277-conocidos-de-las-referencias-AutoCAD
   bundle: OK-147-comprobaciones-catalogos-identicos-a-assets-catalogs-cero-DLL-Autodesk
   archivos_nuevos_en_el_bundle: los-SIETE-presentes-con-hashes-identicos-al-manifiesto
-  ci: pendiente-de-verificar-sobre-el-SHA-publicado-de-cierre
+  ci: VERDE-run-30324052409-sobre-el-candidato-48c2a48-mas-corrida-propia-del-cierre-documental
   autocad: NO-REQUERIDO-la-iniciativa-no-cambia-dibujo-bloques-comandos-ni-DWG
   owner_validation: PENDIENTE-siete-puntos
 
