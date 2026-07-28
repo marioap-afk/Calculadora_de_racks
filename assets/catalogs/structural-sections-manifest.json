@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0",
+  "catalogId": "structural-sections",
+  "sourceId": "AISC-SHAPES",
+  "sourceRevision": "16.0",
+  "sourceFileName": "aisc-shapes-database-v16.0.xlsx",
+  "sourceSha256": "82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496",
+  "sourceWorksheet": "Database v16.0",
+  "mapperVersion": "I-36A.1",
+  "countsByFamily": {
+    "C": 32,
+    "HSS-RECT": 525,
+    "L": 137,
+    "W": 289
+  },
+  "totalCount": 983,
+  "rejectedSelectedRows": 0,
+  "excludedTypeCounts": {
+    "2L": 639,
+    "HP": 22,
+    "HSS-ROUND": 189,
+    "M": 16,
+    "MC": 40,
+    "MT": 14,
+    "PIPE": 51,
+    "S": 28,
+    "ST": 28,
+    "WT": 289
+  },
+  "files": [
+    {
+      "name": "structural-section-sources.csv",
+      "sha256": "96FB1590D0FB2E904F4ECEC0D8560A6B7F6080CCE7F6E8302FFFA3A83B5FA694"
+    },
+    {
+      "name": "structural-section-status.csv",
+      "sha256": "7B4CB158AF88769BD90AB9CE2CE3D21010EDB7F7FB334E591917B6F5342E6D7D"
+    },
+    {
+      "name": "structural-sections-c.csv",
+      "sha256": "E42871A455AD2F78E9C9550E6B9D65431B678BB6CC867C841EC4E6BBEF66F63E"
+    },
+    {
+      "name": "structural-sections-hss-rect.csv",
+      "sha256": "FDC8E3E436DFA33421D0ED8A06F8CAC7B82C232F997802B6A95CC25498443F0D"
+    },
+    {
+      "name": "structural-sections-l.csv",
+      "sha256": "6B5077003388735502FEBAC99281266B37C3688FAEEA2D2AB1BDB399E44BF2FC"
+    },
+    {
+      "name": "structural-sections-w.csv",
+      "sha256": "9259F672CDDC6855E321E0483F819F5875967145C6F218571F3D8E1FDCE78F1E"
+    }
+  ]
+}

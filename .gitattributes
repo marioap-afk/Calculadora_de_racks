@@ -1,0 +1,17 @@
+# I-36A — los archivos generados del catalogo neutral de secciones estructurales.
+#
+# Son salida REPRODUCIBLE del importador y su SHA-256 esta declarado dentro de
+# assets/catalogs/structural-sections-manifest.json. El repositorio trabaja con core.autocrlf=true, asi
+# que sin esta regla Git convertiria los saltos de linea al hacer checkout y el hash del archivo EN DISCO
+# dejaria de coincidir con el que declara el manifiesto en un clon nuevo. `-text` desactiva esa conversion
+# y deja los bytes exactamente como los escribe el importador (UTF-8 sin BOM, terminador \n).
+#
+# El alcance es deliberadamente estrecho: solo estos archivos. Ningun otro archivo del repositorio cambia
+# de tratamiento por este .gitattributes.
+assets/catalogs/structural-sections-w.csv         -text
+assets/catalogs/structural-sections-hss-rect.csv  -text
+assets/catalogs/structural-sections-c.csv         -text
+assets/catalogs/structural-sections-l.csv         -text
+assets/catalogs/structural-section-sources.csv    -text
+assets/catalogs/structural-section-status.csv     -text
+assets/catalogs/structural-sections-manifest.json -text
