@@ -124,81 +124,11 @@ namespace RackCad.Application.Catalogs
             }
         }
 
-        /// <summary>Minimal RFC-4180 parser: quoted fields, doubled quotes, commas and CR/LF.</summary>
-        private static List<string[]> ParseCsv(string text)
-        {
-            var rows = new List<string[]>();
-
-            if (string.IsNullOrEmpty(text))
-            {
-                return rows;
-            }
-
-            var record = new List<string>();
-            var field = new StringBuilder();
-            var inQuotes = false;
-            var sawAny = false;
-
-            for (var i = 0; i < text.Length; i++)
-            {
-                var ch = text[i];
-
-                if (inQuotes)
-                {
-                    if (ch == '"')
-                    {
-                        if (i + 1 < text.Length && text[i + 1] == '"')
-                        {
-                            field.Append('"');
-                            i++;
-                        }
-                        else
-                        {
-                            inQuotes = false;
-                        }
-                    }
-                    else
-                    {
-                        field.Append(ch);
-                    }
-
-                    continue;
-                }
-
-                switch (ch)
-                {
-                    case '"':
-                        inQuotes = true;
-                        sawAny = true;
-                        break;
-                    case ',':
-                        record.Add(field.ToString());
-                        field.Clear();
-                        sawAny = true;
-                        break;
-                    case '\r':
-                        break;
-                    case '\n':
-                        record.Add(field.ToString());
-                        field.Clear();
-                        rows.Add(record.ToArray());
-                        record = new List<string>();
-                        sawAny = false;
-                        break;
-                    default:
-                        field.Append(ch);
-                        sawAny = true;
-                        break;
-                }
-            }
-
-            if (sawAny || field.Length > 0 || record.Count > 0)
-            {
-                record.Add(field.ToString());
-                rows.Add(record.ToArray());
-            }
-
-            return rows;
-        }
+        /// <summary>
+        /// Minimal RFC-4180 parse. The lexer moved VERBATIM to <see cref="CsvLexer"/> in I-36A so the strict
+        /// structural-section reader can share the tokenizer without inheriting THIS reader's tolerance for
+        /// invalid values. Behaviour here is unchanged and pinned by <c>CsvLexerTests</c>.
+        /// </summary>
+        private static List<string[]> ParseCsv(string text) => CsvLexer.ParseRows(text);
     }
 }

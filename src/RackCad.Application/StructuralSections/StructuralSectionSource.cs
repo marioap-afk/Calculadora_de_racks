@@ -1,0 +1,76 @@
+using System;
+
+namespace RackCad.Application.StructuralSections
+{
+    /// <summary>Which system of units a source publishes its values in (ADR-0021).</summary>
+    public enum StructuralSectionUnitSystem
+    {
+        /// <summary>Inches, square inches and lb/ft. AISC v16.0 publishes this block as its canonical values.</summary>
+        UsCustomary = 0,
+
+        /// <summary>Millimetres and kg/m. No source uses it today; the enum exists so the formatter is not imperial-only.</summary>
+        Metric = 1
+    }
+
+    public static class StructuralSectionUnitSystems
+    {
+        public const string UsCustomaryToken = "US_CUSTOMARY";
+        public const string MetricToken = "METRIC";
+
+        public static string ToToken(StructuralSectionUnitSystem system)
+        {
+            switch (system)
+            {
+                case StructuralSectionUnitSystem.UsCustomary: return UsCustomaryToken;
+                case StructuralSectionUnitSystem.Metric: return MetricToken;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(system), system, "Sistema de unidades desconocido.");
+            }
+        }
+
+        /// <summary>Ordinal, case sensitive — same reason as <see cref="StructuralSectionFamilies.TryParseToken"/>.</summary>
+        public static bool TryParseToken(string token, out StructuralSectionUnitSystem system)
+        {
+            switch (token)
+            {
+                case UsCustomaryToken: system = StructuralSectionUnitSystem.UsCustomary; return true;
+                case MetricToken: system = StructuralSectionUnitSystem.Metric; return true;
+                default: system = default; return false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Where a set of sections came from. Provenance is recorded because a catalogued dimension is only as
+    /// trustworthy as the document it was copied from; it is NOT a legal statement about licensing.
+    ///
+    /// The revision lives HERE and never inside <see cref="StructuralSectionId"/>, so a section that survives
+    /// a future revision keeps its identity (ADR-0021).
+    /// </summary>
+    public sealed class StructuralSectionSource
+    {
+        /// <summary>The only source that exists today.</summary>
+        public const string AiscShapesId = "AISC-SHAPES";
+
+        /// <summary>Stable machine token, e.g. <c>AISC-SHAPES</c>.</summary>
+        public string SourceId { get; init; }
+
+        /// <summary>Revision of the source, e.g. <c>16.0</c>. Deliberately outside the id.</summary>
+        public string Revision { get; init; }
+
+        public string Publisher { get; init; }
+
+        /// <summary>What kind of document this is, e.g. <c>official technical database</c>.</summary>
+        public string SourceType { get; init; }
+
+        /// <summary>The units the source's own values are expressed in; they are kept, never replaced.</summary>
+        public StructuralSectionUnitSystem NativeUnitSystem { get; init; }
+
+        public string Title { get; init; }
+
+        /// <summary>Official page the document is published from. Not fetched at runtime, ever.</summary>
+        public string Url { get; init; }
+
+        public override string ToString() => SourceId + " " + Revision;
+    }
+}
