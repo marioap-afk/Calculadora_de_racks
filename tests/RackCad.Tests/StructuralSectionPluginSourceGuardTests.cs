@@ -231,6 +231,22 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void TheAdapterClosesAPolylineOnlyBecauseThePlanSaysSo()
+        {
+            // La costura: `Closed` sale EXCLUSIVAMENTE de `curve.IsClosed`, nunca de una condicion propia del
+            // adaptador. Combinado con la invariante de SectionPlanCurve —que rechaza una curva cerrada cuya
+            // proyeccion es unidimensional— eso hace imposible que llegue al dibujo una polilinea cerrada de
+            // area cero, que es lo que el dueno vio al intentar seleccionarla.
+            var code = CodeOnly(Materializer);
+            var assignments = System.Text.RegularExpressions.Regex.Matches(code, @"\.Closed\s*=\s*([^;]+);");
+
+            Assert.Equal(1, assignments.Count);
+            Assert.Equal("curve.IsClosed", assignments[0].Groups[1].Value.Trim());
+
+            Assert.DoesNotContain(".Closed = true", code, StringComparison.Ordinal);
+        }
+
+        [Fact]
         public void NothingIsScaledOnTheWayIntoTheDrawing()
         {
             // The plan is already in the internal unit (ADR-0005). A conversion here would be the silent

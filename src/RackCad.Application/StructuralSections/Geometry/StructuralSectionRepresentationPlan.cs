@@ -7,7 +7,14 @@ using RackCad.Application.Geometry;
 
 namespace RackCad.Application.StructuralSections.Geometry
 {
-    /// <summary>What a drawn curve MEANS, so a consumer can style it without guessing.</summary>
+    /// <summary>
+    /// What a drawn curve MEANS, so a consumer can style it without guessing.
+    ///
+    /// Outside and inside are separate roles rather than one role plus a flag. A consumer that styles the
+    /// bore of a tube differently from its outside — or that wants to leave it out of a silhouette — must be
+    /// able to tell them apart without re-deriving which contour a curve came from, which is exactly the
+    /// re-derivation ADR-0022 §7 forbids.
+    /// </summary>
     public enum SectionCurveRole
     {
         /// <summary>The outer boundary of the section.</summary>
@@ -16,17 +23,28 @@ namespace RackCad.Application.StructuralSections.Geometry
         /// <summary>An interior void, such as the bore of an HSS.</summary>
         Hole = 1,
 
-        /// <summary>The section drawn at one end of the run.</summary>
+        /// <summary>The OUTER boundary drawn at one end of the run.</summary>
         EndProfile = 2,
 
-        /// <summary>A longitudinal line joining the two ends: the silhouette of the prism.</summary>
+        /// <summary>A longitudinal line joining the two ends, coming from the OUTER boundary.</summary>
         Generatrix = 3,
 
         /// <summary>The longitudinal centroidal axis.</summary>
         Axis = 4,
 
         /// <summary>The bounding envelope, drawn on request.</summary>
-        Envelope = 5
+        Envelope = 5,
+
+        /// <summary>An interior void drawn at one end of the run: the mouth of the bore.</summary>
+        EndProfileHole = 6,
+
+        /// <summary>
+        /// A longitudinal line coming from an interior void.
+        ///
+        /// This is what makes a tube read as a tube instead of a solid bar: seen from the side, the two lines
+        /// it adds sit exactly one nominal wall thickness inside the outer ones.
+        /// </summary>
+        InteriorGeneratrix = 7
     }
 
     /// <summary>How much of the prism to draw. Orthogonal to the section's detail level.</summary>
@@ -65,6 +83,17 @@ namespace RackCad.Application.StructuralSections.Geometry
                 throw new ArgumentException("Una curva del plan necesita al menos dos puntos.", nameof(points));
             }
 
+            // A closed curve must enclose something. Looking at a section exactly edge-on collapses its
+            // contour onto a line, and emitting THAT as closed makes every consumer retrace each edge in
+            // reverse — in AutoCAD, a zero-area polyline drawn twice over itself. The check lives in the type
+            // rather than in the builder so no future code path can reintroduce it.
+            if (isClosed && ProjectedDimensionality(points) < 2)
+            {
+                throw new ArgumentException(
+                    "Una curva cerrada tiene que encerrar area: esta proyeccion colapsa a una recta o a un " +
+                    "punto y debe emitirse abierta.", nameof(isClosed));
+            }
+
             Role = role;
             Points = points;
             IsClosed = isClosed;
@@ -76,6 +105,53 @@ namespace RackCad.Application.StructuralSections.Geometry
 
         /// <summary>True when the last point joins back to the first (which is NOT repeated in the list).</summary>
         public bool IsClosed { get; }
+
+        /// <summary>
+        /// How many dimensions the point set actually spans: 0 for a point, 1 for a line, 2 otherwise.
+        ///
+        /// The tolerance is relative to the extent so the answer does not depend on whether the piece is 4
+        /// inches or 400.
+        /// </summary>
+        public static int ProjectedDimensionality(IReadOnlyList<Point2D> points)
+        {
+            if (points == null || points.Count == 0)
+            {
+                return 0;
+            }
+
+            var bounds = Bounds2D.FromPoints(points);
+            var extent = Math.Max(bounds.Width, bounds.Height);
+            var tolerance = Math.Max(GeometryTolerance.Continuity, extent * 1e-9);
+
+            if (extent <= tolerance)
+            {
+                return 0;
+            }
+
+            var origin = points[0];
+            var direction = Vector2D.Zero;
+
+            foreach (var point in points)
+            {
+                var candidate = Vector2D.Between(origin, point);
+
+                if (candidate.Length > tolerance)
+                {
+                    direction = candidate.Normalized();
+                    break;
+                }
+            }
+
+            foreach (var point in points)
+            {
+                if (Math.Abs(direction.Cross(Vector2D.Between(origin, point))) > tolerance)
+                {
+                    return 2;
+                }
+            }
+
+            return 1;
+        }
 
         public override string ToString() => Role + " (" + Points.Count + " puntos)";
     }

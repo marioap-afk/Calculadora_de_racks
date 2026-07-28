@@ -224,6 +224,51 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void ThePreviewShowsTheBoreOfATubeSeenSideOn()
+        {
+            // La ventana no calcula geometria: recibe el plan. Lo que se comprueba aqui es que lo que llega al
+            // preview trae ya las lineas interiores, para que un tubo no se dibuje como una barra maciza.
+            var state = State();
+            state.Search = "HSS4X4X1/4";
+            state.EnsureSelectionIsVisible();
+            state.View = SectionViewKind.LongitudinalX;
+
+            var plan = state.BuildPlan();
+
+            Assert.NotEmpty(plan.CurvesOf(SectionCurveRole.InteriorGeneratrix));
+            Assert.NotEmpty(plan.CurvesOf(SectionCurveRole.Generatrix));
+        }
+
+        [Fact]
+        public void ThePreviewNeverReceivesADegenerateClosedCurve()
+        {
+            // Un rectangulo cerrado de area cero se ve como una raya en el preview y como una polilinea
+            // imposible de seleccionar en AutoCAD. Las dos superficies consumen el MISMO plan, asi que basta
+            // comprobarlo una vez.
+            var state = State();
+
+            foreach (var view in new[]
+                     {
+                         SectionViewKind.CrossSection, SectionViewKind.LongitudinalX,
+                         SectionViewKind.LongitudinalY, SectionViewKind.Isometric
+                     })
+            {
+                foreach (var id in new[] { "W12X26", "HSS4X4X1/4", "C10X15.3", "L8X6X1" })
+                {
+                    state.Search = id;
+                    state.EnsureSelectionIsVisible();
+                    state.View = view;
+                    state.ShowAxis = true;
+                    state.ShowEnvelope = true;
+
+                    Assert.All(state.BuildPlan().Curves, curve =>
+                        Assert.True(!curve.IsClosed || SectionPlanCurve.ProjectedDimensionality(curve.Points) == 2,
+                            id + " " + view + ": " + curve.Role + " cerrada y plana"));
+                }
+            }
+        }
+
+        [Fact]
         public void ChangingTheSelectionRecomputesThePlan()
         {
             var state = State();

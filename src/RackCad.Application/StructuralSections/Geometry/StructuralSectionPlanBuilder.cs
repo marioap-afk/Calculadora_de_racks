@@ -89,6 +89,10 @@ namespace RackCad.Application.StructuralSections.Geometry
                     throw new ArgumentOutOfRangeException(nameof(options), options.Mode, "Modo desconocido.");
             }
 
+            // The piece is canonicalized BEFORE the annotations are added, so the axis and the envelope are
+            // computed over the ink that will actually be drawn and are never eaten by it.
+            curves = SectionProjectionCanonicalizer.Canonicalize(curves).ToList();
+
             if (options.IncludeAxis && options.Mode != SectionRepresentationMode.Axis)
             {
                 AddAxis(curves, instance, viewpoint);
@@ -117,6 +121,10 @@ namespace RackCad.Application.StructuralSections.Geometry
         ///
         /// In the cross-section view the two ends project on top of each other, so only one is emitted and no
         /// generatrix is drawn: duplicating them would double every entity in the drawing for nothing.
+        ///
+        /// EVERY contour takes part, holes included. A tube whose bore stops at the end faces would be
+        /// drawing a solid bar: the two extra lines its bore adds, one nominal wall inside the outer ones,
+        /// are the whole reason a side view of a tube reads as hollow.
         /// </summary>
         private static void AddWireframe(
             ICollection<SectionPlanCurve> curves,
@@ -128,7 +136,6 @@ namespace RackCad.Application.StructuralSections.Geometry
         {
             var alongZ = viewpoint.PreservesSectionShape;
             var ends = alongZ ? new[] { 0.0 } : new[] { 0.0, instance.Length };
-            var role = alongZ ? SectionCurveRole.OuterContour : SectionCurveRole.EndProfile;
 
             var contours = geometry.AllContours().ToArray();
 
@@ -136,16 +143,11 @@ namespace RackCad.Application.StructuralSections.Geometry
             {
                 for (var i = 0; i < contours.Length; i++)
                 {
-                    var flattened = contours[i].Flatten(options.ChordTolerance);
-                    var projected = flattened
+                    var projected = contours[i].Flatten(options.ChordTolerance)
                         .Select(p => Project(p, z, instance, viewpoint, sectionTransform))
                         .ToArray();
 
-                    var curveRole = alongZ
-                        ? (i == 0 ? SectionCurveRole.OuterContour : SectionCurveRole.Hole)
-                        : role;
-
-                    curves.Add(new SectionPlanCurve(curveRole, Dedupe(projected), isClosed: true));
+                    AddProfile(curves, ProfileRole(alongZ, isHole: i > 0), Dedupe(projected));
                 }
             }
 
@@ -154,19 +156,63 @@ namespace RackCad.Application.StructuralSections.Geometry
                 return;
             }
 
-            // Generatrices: the silhouette of the prism. Every vertex of the OUTER contour would produce a
-            // line, which for a tessellated arc is hundreds of nearly-coincident ones; only the corners of
-            // the un-flattened contour are used, which is exactly the silhouette a draughtsman would draw.
-            foreach (var vertex in SilhouetteVertices(contours[0]))
+            // Generatrices: the silhouette of the prism. Every vertex of a contour would produce a line,
+            // which for a tessellated arc is hundreds of nearly-coincident ones; only the corners of the
+            // un-flattened contour are used, which is exactly the silhouette a draughtsman would draw.
+            for (var i = 0; i < contours.Length; i++)
             {
-                var start = Project(vertex, 0.0, instance, viewpoint, sectionTransform);
-                var end = Project(vertex, instance.Length, instance, viewpoint, sectionTransform);
+                var role = i == 0 ? SectionCurveRole.Generatrix : SectionCurveRole.InteriorGeneratrix;
 
-                if (!start.ApproxEquals(end, GeometryTolerance.Continuity))
+                foreach (var vertex in SilhouetteVertices(contours[i]))
                 {
-                    curves.Add(new SectionPlanCurve(
-                        SectionCurveRole.Generatrix, new[] { start, end }, isClosed: false));
+                    var start = Project(vertex, 0.0, instance, viewpoint, sectionTransform);
+                    var end = Project(vertex, instance.Length, instance, viewpoint, sectionTransform);
+
+                    if (!start.ApproxEquals(end, GeometryTolerance.Continuity))
+                    {
+                        curves.Add(new SectionPlanCurve(role, new[] { start, end }, isClosed: false));
+                    }
                 }
+            }
+        }
+
+        /// <summary>Which role a projected contour carries: outside or bore, cross-section or end face.</summary>
+        private static SectionCurveRole ProfileRole(bool alongZ, bool isHole)
+        {
+            if (alongZ)
+            {
+                return isHole ? SectionCurveRole.Hole : SectionCurveRole.OuterContour;
+            }
+
+            return isHole ? SectionCurveRole.EndProfileHole : SectionCurveRole.EndProfile;
+        }
+
+        /// <summary>
+        /// Emits a projected contour, closed when it still encloses area and open when the view flattened it.
+        ///
+        /// Looking exactly along X or Y squashes the whole cross-section onto a line. What the drawing wants
+        /// there is the single edge a person sees, not a closed polyline that walks the edge and walks back.
+        /// </summary>
+        private static void AddProfile(
+            ICollection<SectionPlanCurve> curves, SectionCurveRole role, IReadOnlyList<Point2D> points)
+        {
+            switch (SectionPlanCurve.ProjectedDimensionality(points))
+            {
+                case 2:
+                    curves.Add(new SectionPlanCurve(role, points, isClosed: true));
+                    return;
+
+                case 1:
+                    foreach (var piece in SectionProjectionCanonicalizer.Flatten(role, points))
+                    {
+                        curves.Add(piece);
+                    }
+
+                    return;
+
+                default:
+                    // A contour that projects to a single point draws nothing at all.
+                    return;
             }
         }
 
@@ -189,6 +235,13 @@ namespace RackCad.Application.StructuralSections.Geometry
             AddEnvelope(curves, points);
         }
 
+        /// <summary>
+        /// The bounding box of what is drawn.
+        ///
+        /// When the drawing is itself flat — asking for the axis alone in a longitudinal view leaves a single
+        /// straight line — the box has no area, and a closed rectangle of zero area is the same defect the
+        /// end profiles had. It degrades to the segment it really is.
+        /// </summary>
         private static void AddEnvelope(ICollection<SectionPlanCurve> curves, IReadOnlyList<Point2D> points)
         {
             if (points.Count == 0)
@@ -197,6 +250,19 @@ namespace RackCad.Application.StructuralSections.Geometry
             }
 
             var bounds = Bounds2D.FromPoints(points);
+
+            if (!bounds.HasArea)
+            {
+                if (bounds.Width > GeometryTolerance.Length || bounds.Height > GeometryTolerance.Length)
+                {
+                    curves.Add(new SectionPlanCurve(
+                        SectionCurveRole.Envelope,
+                        new[] { bounds.Min, bounds.Max },
+                        isClosed: false));
+                }
+
+                return;
+            }
 
             curves.Add(new SectionPlanCurve(
                 SectionCurveRole.Envelope,

@@ -253,10 +253,20 @@ namespace RackCad.Tests
         [Fact]
         public void AnHssDrawsItsInteriorInALongitudinalViewToo()
         {
-            // Los contornos interiores forman parte del wireframe: sin eliminacion de lineas ocultas se ven.
+            // El interior forma parte del wireframe, pero NO como perfil de extremo.
+            //
+            // Esta prueba exigia cuatro EndProfile —dos extremos x dos contornos— y con eso fijaba dos
+            // errores a la vez: llamaba "perfil exterior" al hueco, y contaba como acierto unas curvas
+            // cerradas que en esta vista colapsan a una recta. Vista de canto, la boca del tubo cae DENTRO
+            // de la cara de corte: dibujarla aparte seria una linea encima de otra. Lo que hace que el tubo
+            // se lea hueco son sus generatrices interiores.
             var plan = Plan(Hss, 48.0, SectionViewpoint.LongitudinalX);
 
-            Assert.Equal(4, plan.CurvesOf(SectionCurveRole.EndProfile).Count());
+            Assert.Equal(2, plan.CurvesOf(SectionCurveRole.EndProfile).Count());
+            Assert.All(plan.CurvesOf(SectionCurveRole.EndProfile), c => Assert.False(c.IsClosed));
+            Assert.Empty(plan.CurvesOf(SectionCurveRole.EndProfileHole));
+
+            Assert.NotEmpty(plan.CurvesOf(SectionCurveRole.InteriorGeneratrix));
         }
 
         [Fact]

@@ -92,7 +92,13 @@ namespace RackCad.UI.StructuralSections
             }
         }
 
-        /// <summary>Colour by ROLE, reusing the shared palette so the inspector looks like every other preview.</summary>
+        /// <summary>
+        /// Colour by ROLE, reusing the shared palette so the inspector looks like every other preview.
+        ///
+        /// Outside and inside get different colours on purpose: seen from the side, the bore of a tube is two
+        /// extra lines a hand's breadth inside the outer ones, and a viewer has to be able to tell at a glance
+        /// that they are the wall and not a stray edge.
+        /// </summary>
         private static Brush StrokeFor(SectionCurveRole role)
         {
             switch (role)
@@ -101,9 +107,12 @@ namespace RackCad.UI.StructuralSections
                 case SectionCurveRole.EndProfile:
                     return PreviewPalette.Structure;
                 case SectionCurveRole.Hole:
+                case SectionCurveRole.EndProfileHole:
                     return PreviewPalette.Beam;
                 case SectionCurveRole.Generatrix:
                     return PreviewPalette.Muted;
+                case SectionCurveRole.InteriorGeneratrix:
+                    return PreviewPalette.Beam;
                 case SectionCurveRole.Axis:
                     return PreviewPalette.Accent;
                 case SectionCurveRole.Envelope:
