@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- I-36A: importador reproducible de la AISC Shapes Database. NO es codigo de producto y NO entra al
+       bundle: el Plugin no lo referencia y AssembleAutoloaderBundle copia explicitamente los CUATRO DLL de
+       RackCad, asi que este ejecutable no puede colarse en la instalacion.
+
+       Referencia RackCad.Application a proposito: la normalizacion de designaciones, el esquema de columnas
+       y el escritor determinista son UNA autoridad compartida con el lector. Duplicarlos aqui garantizaria
+       que algun dia el catalogo generado y el que lee el producto dejaran de coincidir.
+
+       Cero NuGet (ADR-0012): el OOXML se lee con System.IO.Compression y System.Xml de la BCL. Sin Office
+       Interop, sin Excel instalado y sin descarga en runtime. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RackCad.StructuralSections.Import</RootNamespace>
+    <AssemblyName>RackCad.StructuralSections.Import</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <!-- Las pruebas del importador viven en tests/RackCad.Tests, que corre en el job de CI existente. -->
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
+  </ItemGroup>
+</Project>
