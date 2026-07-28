@@ -206,6 +206,10 @@ figuras hay que ordenar los puntos.
 RACKSECCION
 ```
 
+…o, desde la interfaz, **`RACKCAD` → «Generar perfil estructural»**. Son **la misma cosa**: las dos
+puertas llaman al mismo caso de uso (`StructuralSectionCommandFlow`), no a dos implementaciones que
+coinciden. El botón del menú no es un generador aparte; sólo hace visible el que ya existe.
+
 Abre el inspector, y al aceptar pide un punto e inserta la representación como **bloque interno del
 dibujo**.
 
@@ -258,7 +262,8 @@ de frontera que vigila por reflexión que no aparezcan esos conceptos.
 - **Los canales no se ven como los de una librería CAD comercial**, y eso está aceptado: ver §11.b.
 - **`RACKSECCION` no está en `RACKAYUDA`.** Añadirlo exigiría tocar `RackCommandReference`, que queda
   fuera del alcance de I-36B; `RACKPUSHBACK` tiene la misma ausencia desde antes. Anotado en
-  [ideas-futuras.md](../ideas-futuras.md).
+  [ideas-futuras.md](../ideas-futuras.md). **Desde I-36C sí está en el menú principal**, que es por
+  donde entra un usuario.
 
 ---
 
@@ -303,7 +308,9 @@ Cantilever salvo que el contrato de aquélla lo exija. Detalle en
 | Proyección y teselado | `Geometry/StructuralSectionPlanBuilder.cs` |
 | Inspector y preview | `src/RackCad.UI/StructuralSections/` |
 | Materialización en AutoCAD | `src/RackCad.Plugin/Drawing/StructuralSections/` |
-| Comando | `src/RackCad.Plugin/RackSeccionCommands.cs` |
+| Comando (punto de entrada) | `src/RackCad.Plugin/RackSeccionCommands.cs` |
+| Caso de uso compartido con el menú | `src/RackCad.Plugin/StructuralSectionCommandFlow.cs` |
+| Acción tipada del menú | `src/RackCad.UI/MainMenuAction.cs` |
 
 ---
 

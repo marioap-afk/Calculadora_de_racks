@@ -34,6 +34,16 @@ namespace RackCad.UI
         /// <summary>True when <see cref="InsertionRequest"/> is set (an editor asked to draw its design).</summary>
         public bool InsertRequested => InsertionRequest != null;
 
+        /// <summary>
+        /// A non-rack action the user picked, read by the host command AFTER this window has closed.
+        ///
+        /// It is deliberately NOT a <see cref="RackInsertionRequest"/>: a structural section is not a rack —no
+        /// system kind, no design payload, no round-trip— and a request whose <c>Kind</c> had to be invented
+        /// would push the lie down into the host's dispatch. Same timing rule as the insertion request, and for
+        /// the same reason: the AutoCAD editor must be free before anything asks for a point.
+        /// </summary>
+        public MainMenuAction RequestedAction { get; private set; } = MainMenuAction.None;
+
         public RackMainMenuWindow()
             : this(false, null)
         {
@@ -152,6 +162,22 @@ namespace RackCad.UI
                 MessageBox.Show(this, module.OpenFailureMessage + ex.Message,
                     "RackCad", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        /// <summary>
+        /// "Generar perfil estructural": reports the action and closes, so the host runs the SAME flow
+        /// <c>RACKSECCION</c> runs.
+        ///
+        /// Nothing else happens here. The catalogue is not loaded, the inspector is not opened and no geometry
+        /// is touched: all of that already exists behind one authority in the Plugin, and duplicating any part
+        /// of it in the menu would create a second path that diverges at the first correction. The window must
+        /// also be gone before the flow starts — it asks for an insertion point, and a modal window would hold
+        /// the AutoCAD editor.
+        /// </summary>
+        private void GenerateStructuralSection_Click(object sender, RoutedEventArgs e)
+        {
+            RequestedAction = MainMenuAction.GenerateStructuralSection;
+            Close();
         }
 
         private void OpenDesignLibrary_Click(object sender, RoutedEventArgs e)

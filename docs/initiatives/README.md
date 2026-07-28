@@ -481,6 +481,30 @@ Planes disponibles:
   la evidencia); `requires_owner_decision: false`. Guia en
   [`../guias/geometria-secciones-estructurales.md`](../guias/geometria-secciones-estructurales.md);
   estado versionado en [`../automation/state/I-36B.yml`](../automation/state/I-36B.yml).
+- [`I-36C-acceso-menu-secciones-estructurales.md`](I-36C-acceso-menu-secciones-estructurales.md):
+  **Acceso desde el menu principal al generador de perfiles estructurales** (tipo: fix; rama
+  `fix/acceso-menu-secciones-estructurales`). **Fix pequeno de descubribilidad, no de funcionalidad.**
+  El generador **ya existe, esta integrado y esta cerrado** —catalogo neutral de I-36A con 983 secciones
+  AISC v16.0, geometria parametrica de I-36B para W, HSS rectangular/cuadrado, C y L, inspector, preview,
+  materializacion en bloque interno y el comando `RACKSECCION`—, pero la **unica** forma de invocarlo era
+  escribir el comando: el menu `RACKCAD`, que es por donde entra un usuario, no lo mencionaba. Entrega un
+  boton **«Generar perfil estructural»** entre «Disenar larguero» y «Abrir de la biblioteca de disenos»,
+  con el estilo `MenuButton` vigente; una **accion tipada** `MainMenuAction.GenerateStructuralSection`
+  que el Plugin lee **despues** de cerrar el modal —porque el flujo pide un punto y el editor de AutoCAD
+  tiene que estar libre—; y una **autoridad compartida** `StructuralSectionCommandFlow` que consumen
+  igual `RACKSECCION` y el boton. La accion **no** es un `RackInsertionRequest` a proposito: una seccion
+  no es un rack —sin `RackSystemKind`, sin payload de diseno y sin round-trip— y un request con un `Kind`
+  inventado empujaria esa mentira hasta el `switch` del host. **No crea un segundo generador**, y 25
+  guardas de fuente lo comprueban: cada pieza del caso de uso la menciona exactamente un archivo del
+  Plugin. **Fuera de alcance**: IPS/S, familias nuevas, cualquier cambio geometrico, la mejora visual de
+  los canales C, I-37, solidos 3D, persistencia, round-trip, sistemas existentes, `blocks.csv`,
+  `blocks-library.dwg`, los CSV de secciones y el rediseno del menu. `requires_autocad: **true**` y
+  `requires_owner_validation: **true**` (el cambio es visible en el menu); `requires_owner_decision:
+  false`. **INTEGRADA el 2026-07-28**: el Owner aprobo los siete puntos de la validacion en AutoCAD
+  —boton visible, posicion y estilo, cancelacion del inspector, cancelacion del punto, insercion de
+  `W12X26`, **equivalencia con `RACKSECCION`** y sistemas existentes sin regresiones— **sin
+  observaciones ni bloqueos**. Estado versionado en
+  [`../automation/state/I-36C.yml`](../automation/state/I-36C.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
