@@ -190,7 +190,7 @@ cambió dónde vive, y las guardas lo dicen en su documentación.
 | `dotnet build src/RackCad.UI` Debug | 0 errores |
 | `dotnet build src/RackCad.Plugin` Debug | 0 errores propios (2 `MSB3277` preexistentes) |
 | `deploy/build-bundle.ps1` | **OK, 147 comprobaciones** |
-| CI sobre el SHA publicado | ver §11 |
+| **CI sobre el SHA publicado** | **verde 4/4** — run [`30385776747`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30385776747) sobre `a088546` |
 
 ## 8. Checklist de AutoCAD para el dueño (8 puntos)
 
@@ -252,7 +252,15 @@ ningún sistema existente ni se rediseñó el menú.
 
 ## 11. Commits y CI
 
-Se completa al publicar; ver `git log` de la rama.
+| SHA | Qué |
+|---|---|
+| `6db84c4` | Reclamo atómico (commit vacío, `Claim-Id`) |
+| `055260d` | El acceso: botón, acción tipada, autoridad compartida y pruebas |
+| `a088546` | Contrato, estado, evidencia y resumen documental — **CI verde 4/4**, run `30385776747` |
+| *(este)* | Solo documentación: registra esa CI |
+
+El único commit posterior a `a088546` es **solo documentación** —esta tabla y el estado versionado—, sin
+una línea de código.
 
 ## 12. Estado final
 

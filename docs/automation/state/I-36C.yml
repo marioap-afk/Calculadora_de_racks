@@ -11,7 +11,7 @@ automation_state:
     VALIDACION-DEL-DUENO-EN-AUTOCAD-checklist-de-8-puntos-en-la-evidencia ·
     con-el-DLL-Debug-de-ESTE-worktree · el-cambio-es-VISIBLE-en-el-menu-asi-que-solo-mirandolo-se-cierra ·
     NO-integrar-NO-limpiar-NO-abrir-IPS-S-NI-I-37
-  last_evidence_commit: PENDIENTE-commit-documental
+  last_evidence_commit: a088546-CI-VERDE-4-de-4-run-30385776747
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -83,6 +83,7 @@ gates:
   build_ui_debug: 0-errores
   build_plugin_debug: 0-errores-propios-2-avisos-MSB3277-preexistentes
   bundle: OK-147-comprobaciones
+  ci_sobre_el_sha_publicado: VERDE-4-de-4-run-30385776747-sobre-a088546
   guardas_de_alcance: >-
     cero-lineas-en-assets-blocks-library-dwg-Domain-deploy-github-ROADMAP-y-HANDOFF ·
     cero-cambios-geometricos
