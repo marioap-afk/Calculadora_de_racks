@@ -383,6 +383,54 @@ namespace RackCad.Tests
             Assert.NotNull(StructuralSectionGeometryFactory.Build(disabled, SectionDetailLevel.Tabulated));
         }
 
+        [Theory]
+        [InlineData(SectionDetailLevel.Simplified)]
+        [InlineData(SectionDetailLevel.Tabulated)]
+        public void NoDiagnosticIsSilent(SectionDetailLevel detail)
+        {
+            // Un diagnostico existe para que alguien lo LEA. Uno sin codigo no se puede filtrar, uno sin
+            // mensaje no se puede entender, y uno con un codigo que no esta declarado es una cadena suelta que
+            // nadie podra buscar dentro de seis meses.
+            var declared = new HashSet<string>(
+                typeof(SectionGeometryDiagnostics)
+                    .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                    .Select(field => (string)field.GetRawConstantValue()),
+                StringComparer.Ordinal);
+
+            var factory = Factory();
+            var failures = new List<string>();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+
+            foreach (var section in factory.Catalog.All)
+            {
+                foreach (var diagnostic in factory.Get(section, detail).Diagnostics)
+                {
+                    if (string.IsNullOrWhiteSpace(diagnostic.Code))
+                    {
+                        failures.Add(section.SectionId + ": diagnostico sin codigo");
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(diagnostic.Message))
+                    {
+                        failures.Add(section.SectionId + ": " + diagnostic.Code + " sin mensaje");
+                    }
+
+                    if (!declared.Contains(diagnostic.Code))
+                    {
+                        failures.Add(section.SectionId + ": codigo no declarado " + diagnostic.Code);
+                    }
+
+                    seen.Add(diagnostic.Code);
+                }
+            }
+
+            Assert.True(failures.Count == 0, string.Join("\n", failures.Take(20)));
+
+            _output.WriteLine("Codigos emitidos en " + detail + ": " +
+                              (seen.Count == 0 ? "(ninguno)" : string.Join(", ", seen.OrderBy(c => c, StringComparer.Ordinal))));
+        }
+
         internal static IEnumerable<Point2D> AllPoints(StructuralSectionGeometry geometry)
         {
             foreach (var contour in geometry.AllContours())
