@@ -45,6 +45,7 @@ namespace RackCad.Application.StructuralSections
         // ---- Sources file ------------------------------------------------------------------------------
 
         public const string SourceRevisionColumn = "revision";
+        public const string IdNamespace = "idNamespace";
         public const string Publisher = "publisher";
         public const string SourceType = "sourceType";
         public const string Title = "title";
@@ -104,7 +105,7 @@ namespace RackCad.Application.StructuralSections
 
         public static readonly string[] SourcesColumns =
         {
-            SourceId, SourceRevisionColumn, Publisher, SourceType, NativeUnitSystem, Title, Url
+            SourceId, SourceRevisionColumn, IdNamespace, Publisher, SourceType, NativeUnitSystem, Title, Url
         };
 
         public static readonly string[] StatusColumns = { SectionId, IsEnabled, Notes };
@@ -144,13 +145,30 @@ namespace RackCad.Application.StructuralSections
             }
         }
 
-        /// <summary>Every file the neutral catalog is distributed as, in a stable order.</summary>
-        public static string[] AllFiles()
+        /// <summary>
+        /// The files that are pure, reproducible OUTPUT of the importer: the four families and the source
+        /// sheet. These — and only these — are hashed by the manifest, because their bytes are a function of
+        /// the workbook and of nothing else.
+        ///
+        /// The status overlay is deliberately absent. It is a local, hand-edited decision, and hashing it
+        /// would mean a legitimate "disable this section" edit invalidated the AISC data it has nothing to do
+        /// with. It is validated on its own terms instead (schema, duplicates and FK against the catalog).
+        /// </summary>
+        public static string[] ImmutableFiles()
         {
             return StructuralSectionFamilies.All
                 .Select(FileFor)
-                .Concat(new[] { SourcesFile, StatusFile })
+                .Concat(new[] { SourcesFile })
                 .ToArray();
+        }
+
+        /// <summary>
+        /// Every file the neutral catalog is distributed as: the reproducible ones plus the mutable overlay.
+        /// This is what ships next to the binaries and what the bundle carries; it is NOT the hashed set.
+        /// </summary>
+        public static string[] AllFiles()
+        {
+            return ImmutableFiles().Concat(new[] { StatusFile }).ToArray();
         }
     }
 }

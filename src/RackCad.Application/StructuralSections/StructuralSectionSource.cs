@@ -52,8 +52,24 @@ namespace RackCad.Application.StructuralSections
         /// <summary>The only source that exists today.</summary>
         public const string AiscShapesId = "AISC-SHAPES";
 
+        /// <summary>The id authority AISC declares. Keeping it <c>AISC</c> is what preserves the 983 ids.</summary>
+        public const string AiscIdNamespace = "AISC";
+
         /// <summary>Stable machine token, e.g. <c>AISC-SHAPES</c>.</summary>
         public string SourceId { get; init; }
+
+        /// <summary>
+        /// The authority segment this source stamps on the ids it names, e.g. <c>AISC</c>.
+        ///
+        /// It is separate from <see cref="SourceId"/> because the two answer different questions: the source
+        /// id says WHICH document a row came from (and may carry a revision or a product name), while the id
+        /// namespace says WHO has the authority to name the section — a stable, short token that must never
+        /// change, because it is embedded in every stored design. Two sources of the same publisher can share
+        /// a namespace; two different authorities can never.
+        ///
+        /// Must be non-empty, upper-case ASCII letters and digits only, and unique across the catalog.
+        /// </summary>
+        public string IdNamespace { get; init; }
 
         /// <summary>Revision of the source, e.g. <c>16.0</c>. Deliberately outside the id.</summary>
         public string Revision { get; init; }

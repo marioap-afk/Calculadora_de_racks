@@ -19,7 +19,7 @@ namespace RackCad.Application.StructuralSections
         /// never replaced by its converted equivalent (ADR-0021 §8). The equivalent is computed on demand by
         /// <see cref="StructuralSectionUnits"/>.
         ///
-        /// This field is the ONLY authority for weight. Reading the "28" out of <c>W12X28</c> would work for a
+        /// This field is the ONLY authority for weight. Reading the "26" out of <c>W12X26</c> would work for a
         /// W and fail for every HSS, so nothing in this catalog derives a magnitude from a designation.
         /// </summary>
         public double WeightPerLength { get; init; }

@@ -15,8 +15,11 @@ namespace RackCad.StructuralSections.Import
     /// </summary>
     public static class AiscRowMapper
     {
-        /// <summary>Bumped whenever this mapping changes what the generated files contain.</summary>
-        public const string MapperVersion = "I-36A.1";
+        /// <summary>
+        /// Bumped whenever this mapping changes what the generated files contain. <c>.2</c> is the round that
+        /// added the id namespace to the source sheet and to the manifest.
+        /// </summary>
+        public const string MapperVersion = "I-36A.2";
 
         public static StructuralSectionDefinition Map(
             AiscColumnMap columns,
@@ -38,10 +41,13 @@ namespace RackCad.StructuralSections.Import
                 throw new AiscRowRejectedException(rowNumber, edi, "la etiqueta del manual AISC esta vacia.");
             }
 
-            if (!StructuralSectionId.TryCreate(family, edi, out var sectionId))
+            // The id is stamped with the authority the SOURCE declares, never with a hard-coded prefix.
+            if (!StructuralSectionId.TryCreate(source.IdNamespace, family, edi, out var sectionId))
             {
                 throw new AiscRowRejectedException(
-                    rowNumber, edi, "la designacion EDI no puede normalizarse a un id valido.");
+                    rowNumber, edi,
+                    "la designacion EDI no puede normalizarse a un id valido bajo el namespace '" +
+                    source.IdNamespace + "'.");
             }
 
             var weight = columns.Number(row, AiscColumnMap.Weight, rowNumber);

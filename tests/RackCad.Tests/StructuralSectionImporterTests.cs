@@ -15,7 +15,12 @@ namespace RackCad.Tests
     /// have to prove is the importer's CONTRACT — which families enter, that nothing selected is dropped in
     /// silence, that a layout or value change is fatal, that two runs are byte-identical and that an id
     /// collision stops everything.
+    ///
+    /// Serializada con las demas clases que publican: la costura de fallo de ImportOutputWriter es
+    /// estatica, y xUnit ejecuta CLASES distintas en paralelo, asi que sin esta coleccion un test
+    /// podria armar el fallo que otro sufre.
     /// </summary>
+    [Collection(StructuralSectionPublishCollection.Name)]
     public class StructuralSectionImporterTests : IDisposable
     {
         private readonly List<string> _temporaryFiles = new List<string>();
@@ -113,7 +118,7 @@ namespace RackCad.Tests
             headers[Array.IndexOf(headers, "kdes")] = "k_des";
 
             var path = WriteWorkbook(new[] { SyntheticAiscWorkbook.W("W12X26", 26) }, headers);
-            var error = Assert.Throws<XlsxFormatException>(() => new AiscShapesImporter().Import(path, SyntheticAiscWorkbook.SheetName));
+            var error = Assert.Throws<XlsxFormatException>(() => new AiscShapesImporter().Import(path));
 
             Assert.Contains("kdes", error.Message, StringComparison.Ordinal);
         }
@@ -129,7 +134,7 @@ namespace RackCad.Tests
 
             var path = WriteWorkbook(new[] { SyntheticAiscWorkbook.W("W12X26", 26) }, headers);
             var error = Assert.Throws<XlsxFormatException>(
-                () => new AiscShapesImporter().Import(path, SyntheticAiscWorkbook.SheetName));
+                () => new AiscShapesImporter().Import(path));
 
             Assert.Contains("EDI_Std_Nomenclature", error.Message, StringComparison.Ordinal);
         }
@@ -204,7 +209,7 @@ namespace RackCad.Tests
 
             var path = WriteRawWorkbook(headers, new[] { cells });
             var error = Assert.Throws<XlsxFormatException>(
-                () => new AiscShapesImporter().Import(path, SyntheticAiscWorkbook.SheetName));
+                () => new AiscShapesImporter().Import(path));
 
             Assert.Contains("Discrepancia", error.Message, StringComparison.OrdinalIgnoreCase);
         }
@@ -223,9 +228,9 @@ namespace RackCad.Tests
             });
 
             var first = ImportOutputWriter.Build(
-                new AiscShapesImporter().Import(path, SyntheticAiscWorkbook.SheetName), null);
+                new AiscShapesImporter().Import(path));
             var second = ImportOutputWriter.Build(
-                new AiscShapesImporter().Import(path, SyntheticAiscWorkbook.SheetName), null);
+                new AiscShapesImporter().Import(path));
 
             Assert.Equal(first.Files.Count, second.Files.Count);
 
@@ -295,7 +300,7 @@ namespace RackCad.Tests
             ImportOutputWriter.Publish(output, directory);
 
             var provider = new CsvStructuralSectionCatalogProvider(directory);
-            var catalog = provider.LoadUncached();
+            var catalog = provider.LoadUnvalidated();
             var report = new StructuralSectionCatalogValidator()
                 .Validate(catalog, provider.ReadManifest(), provider.ComputeSha256);
 
@@ -304,14 +309,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void AReimportPreservesTheStatusOverlayOfSectionsThatStillExist()
+        public void AReimportLeavesTheStatusOverlayUntouchedByteForByte()
         {
+            // The overlay is the operator's file, not the importer's output: a re-import must not rewrite it,
+            // reorder it or normalise it.
             var directory = NewTemporaryDirectory();
-            var first = BuildOutput(SyntheticAiscWorkbook.W("W12X26", 26), SyntheticAiscWorkbook.W("W12X30", 30));
-            ImportOutputWriter.Publish(first, directory);
+            ImportOutputWriter.Publish(
+                BuildOutput(SyntheticAiscWorkbook.W("W12X26", 26), SyntheticAiscWorkbook.W("W12X30", 30)),
+                directory);
 
+            var overlayPath = Path.Combine(directory, StructuralSectionCsvSchema.StatusFile);
             File.WriteAllText(
-                Path.Combine(directory, StructuralSectionCsvSchema.StatusFile),
+                overlayPath,
                 StructuralSectionCsvWriter.WriteStatus(new[]
                 {
                     new StructuralSectionStatusOverride
@@ -322,18 +331,34 @@ namespace RackCad.Tests
                     }
                 }));
 
-            var preserved = ImportOutputWriter.ReadExistingStatus(directory);
-            var second = ImportOutputWriter.Build(
-                ImportResult(SyntheticAiscWorkbook.W("W12X26", 26), SyntheticAiscWorkbook.W("W12X30", 30)),
-                preserved);
+            var before = File.ReadAllBytes(overlayPath);
 
-            ImportOutputWriter.Publish(second, directory);
+            ImportOutputWriter.Publish(
+                BuildOutput(SyntheticAiscWorkbook.W("W12X26", 26), SyntheticAiscWorkbook.W("W12X30", 30)),
+                directory);
 
-            var catalog = new CsvStructuralSectionCatalogProvider(directory).LoadUncached();
+            Assert.Equal(before, File.ReadAllBytes(overlayPath));
+
+            var catalog = new CsvStructuralSectionCatalogProvider(directory).LoadUnvalidated();
 
             Assert.True(catalog.TryGetById("AISC-W-W12X26", out var disabled));
             Assert.False(disabled.IsEnabled);
             Assert.Single(catalog.Enabled);
+        }
+
+        [Fact]
+        public void AFirstPublishSeedsAnEmptyOverlaySoTheSchemaIsThere()
+        {
+            var directory = NewTemporaryDirectory();
+            ImportOutputWriter.Publish(BuildOutput(SyntheticAiscWorkbook.W("W12X26", 26)), directory);
+
+            var overlay = Path.Combine(directory, StructuralSectionCsvSchema.StatusFile);
+
+            Assert.True(File.Exists(overlay));
+            Assert.Empty(ImportOutputWriter.ReadExistingStatus(directory));
+            Assert.Equal(
+                string.Join(",", StructuralSectionCsvSchema.StatusColumns) + "\n",
+                File.ReadAllText(overlay));
         }
 
         // ---- Helpers ----------------------------------------------------------------------------------------
@@ -343,11 +368,11 @@ namespace RackCad.Tests
         private AiscImportResult ImportResult(params SyntheticAiscWorkbook.RowBuilder[] rows)
         {
             var path = WriteWorkbook(rows);
-            return new AiscShapesImporter().Import(path, SyntheticAiscWorkbook.SheetName);
+            return new AiscShapesImporter().Import(path);
         }
 
         private ImportOutput BuildOutput(params SyntheticAiscWorkbook.RowBuilder[] rows) =>
-            ImportOutputWriter.Build(ImportResult(rows), null);
+            ImportOutputWriter.Build(ImportResult(rows));
 
         private string WriteWorkbook(IEnumerable<SyntheticAiscWorkbook.RowBuilder> rows, string[] headers = null)
         {

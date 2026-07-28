@@ -65,6 +65,7 @@ namespace RackCad.Application.StructuralSections
                 {
                     source.SourceId,
                     source.Revision,
+                    source.IdNamespace,
                     source.Publisher,
                     source.SourceType,
                     StructuralSectionUnitSystems.ToToken(source.NativeUnitSystem),

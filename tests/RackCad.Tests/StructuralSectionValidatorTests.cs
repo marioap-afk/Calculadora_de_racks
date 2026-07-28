@@ -41,7 +41,16 @@ namespace RackCad.Tests
             var section = With(Valid(), identity: Identity("W12X26", revision: string.Empty));
             var report = Validator.Validate(Catalog(section));
 
-            Assert.Single(report.WithCode(StructuralSectionCatalogValidator.CodeMissingRevision));
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeMissingRevision));
+        }
+
+        [Fact]
+        public void ARevisionThatContradictsItsSourceIsAnError()
+        {
+            var section = With(Valid(), identity: Identity("W12X26", revision: "15.0"));
+            var report = Validator.Validate(Catalog(section));
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeMissingRevision));
         }
 
         [Fact]
@@ -223,7 +232,7 @@ namespace RackCad.Tests
         public void AManifestThatAgreesWithTheCatalogProducesNoIssue()
         {
             var catalog = Catalog(Valid());
-            var report = Validator.Validate(catalog, Manifest(catalog), _ => "HASH");
+            var report = Validator.Validate(catalog, Manifest(catalog), HashOfEverything);
 
             Assert.True(report.IsValid(strict: true), report.Format());
         }
@@ -233,7 +242,7 @@ namespace RackCad.Tests
         {
             var catalog = Catalog(Valid());
             var manifest = Manifest(catalog, totalOverride: 99);
-            var report = Validator.Validate(catalog, manifest, _ => "HASH");
+            var report = Validator.Validate(catalog, manifest, HashOfEverything);
 
             Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestCount));
         }
@@ -242,11 +251,181 @@ namespace RackCad.Tests
         public void AWrongHashInTheManifestIsAnError()
         {
             var catalog = Catalog(Valid());
-            var report = Validator.Validate(catalog, Manifest(catalog), _ => "OTRO-HASH");
+            var report = Validator.Validate(catalog, Manifest(catalog), (_ => "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"));
 
             Assert.Equal(
-                StructuralSectionCsvSchema.AllFiles().Length,
+                StructuralSectionCsvSchema.ImmutableFiles().Length,
                 report.WithCode(StructuralSectionCatalogValidator.CodeManifestHash).Count());
+        }
+
+        // ---- F5: cada metadata del manifiesto, por separado --------------------------------------------------
+
+        [Fact]
+        public void AManifestThatHashesTheMutableOverlayIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, includeOverlay: true), HashOfEverything);
+
+            Assert.Single(report.WithCode(StructuralSectionCatalogValidator.CodeManifestFileSet));
+        }
+
+        [Fact]
+        public void AManifestThatDeclaresTheSameFileTwiceIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, duplicateFile: true), HashOfEverything);
+
+            Assert.Single(report.WithCode(StructuralSectionCatalogValidator.CodeManifestDuplicateFile));
+        }
+
+        [Fact]
+        public void AManifestMissingOneOfTheImmutableFilesIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var manifest = Manifest(catalog);
+            var trimmed = new StructuralSectionsManifest
+            {
+                SchemaVersion = manifest.SchemaVersion,
+                CatalogId = manifest.CatalogId,
+                SourceId = manifest.SourceId,
+                SourceRevision = manifest.SourceRevision,
+                IdNamespace = manifest.IdNamespace,
+                SourceFileName = manifest.SourceFileName,
+                SourceSha256 = manifest.SourceSha256,
+                SourceWorksheet = manifest.SourceWorksheet,
+                MapperVersion = manifest.MapperVersion,
+                CountsByFamily = manifest.CountsByFamily,
+                TotalCount = manifest.TotalCount,
+                RejectedSelectedRows = manifest.RejectedSelectedRows,
+                ExcludedTypeCounts = manifest.ExcludedTypeCounts,
+                Files = manifest.Files.Skip(1).ToArray()
+            };
+
+            var report = Validator.Validate(catalog, trimmed, HashOfEverything);
+
+            Assert.Single(report.WithCode(StructuralSectionCatalogValidator.CodeManifestFileSet));
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("no-son-64-hex")]
+        [InlineData("ZZZ0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496")]
+        [InlineData("82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D8601349")]
+        public void AWorkbookHashThatIsNotSixtyFourHexIsAnError(string sourceSha)
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, sourceSha: sourceSha), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMalformedHash));
+        }
+
+        [Fact]
+        public void AManifestOfAnotherCatalogIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, catalogId: "otro-catalogo"), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void AManifestWithoutItsWorksheetIsAnError(string worksheet)
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, worksheet: worksheet), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void AManifestWithoutItsMapperVersionIsAnError(string mapperVersion)
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(
+                catalog, Manifest(catalog, mapperVersion: mapperVersion), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
+        }
+
+        [Fact]
+        public void AManifestWithoutItsIdNamespaceIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, idNamespace: null), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
+        }
+
+        [Fact]
+        public void AManifestWhoseIdNamespaceContradictsTheSourceIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, idNamespace: "OTRO"), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestSourceMismatch));
+        }
+
+        [Fact]
+        public void AManifestWithAnInvalidIdNamespaceIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, idNamespace: "no-vale"), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeInvalidIdNamespace));
+        }
+
+        // ---- F4: el overlay se valida aparte -----------------------------------------------------------------
+
+        [Fact]
+        public void TheOverlayIsValidatedSeparately_AndAnUnknownIdIsAnError()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.ValidateOverlay(catalog, new[]
+            {
+                new StructuralSectionStatusOverride
+                {
+                    SectionId = StructuralSectionId.Parse("AISC-W-W99X999"),
+                    IsEnabled = false
+                }
+            });
+
+            Assert.False(report.IsValid());
+        }
+
+        [Fact]
+        public void TheOverlayRejectsARepeatedId()
+        {
+            var catalog = Catalog(Valid());
+            var entry = new StructuralSectionStatusOverride
+            {
+                SectionId = StructuralSectionId.Parse("AISC-W-W12X26"),
+                IsEnabled = false
+            };
+
+            var report = Validator.ValidateOverlay(catalog, new[] { entry, entry });
+
+            Assert.Single(report.WithCode(StructuralSectionCatalogValidator.CodeDuplicateId));
+        }
+
+        [Fact]
+        public void AValidOverlayProducesNoIssue()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.ValidateOverlay(catalog, new[]
+            {
+                new StructuralSectionStatusOverride
+                {
+                    SectionId = StructuralSectionId.Parse("AISC-W-W12X26"),
+                    IsEnabled = false,
+                    Notes = "sin existencias"
+                }
+            });
+
+            Assert.True(report.IsValid(strict: true), report.Format());
         }
 
         [Fact]
@@ -254,7 +433,7 @@ namespace RackCad.Tests
         {
             var catalog = Catalog(Valid());
             var manifest = Manifest(catalog, rejected: 3);
-            var report = Validator.Validate(catalog, manifest, _ => "HASH");
+            var report = Validator.Validate(catalog, manifest, HashOfEverything);
 
             Assert.Single(report.WithCode(StructuralSectionCatalogValidator.CodeManifestRejectedRows));
         }
@@ -264,7 +443,7 @@ namespace RackCad.Tests
         {
             var catalog = Catalog(Valid());
             var manifest = Manifest(catalog, includeSelf: true);
-            var report = Validator.Validate(catalog, manifest, _ => "HASH");
+            var report = Validator.Validate(catalog, manifest, HashOfEverything);
 
             Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
         }
@@ -274,9 +453,9 @@ namespace RackCad.Tests
         {
             var catalog = Catalog(Valid());
             var manifest = Manifest(catalog, sourceSha: null);
-            var report = Validator.Validate(catalog, manifest, _ => "HASH");
+            var report = Validator.Validate(catalog, manifest, HashOfEverything);
 
-            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMalformedHash));
         }
 
         [Fact]
@@ -318,7 +497,7 @@ namespace RackCad.Tests
             string revision = "16.0") =>
             new StructuralSectionIdentity
             {
-                SectionId = StructuralSectionId.Create(family, edi),
+                SectionId = StructuralSectionId.Create(StructuralSectionSource.AiscIdNamespace, family, edi),
                 Family = family,
                 EdiDesignation = edi,
                 ManualLabel = label ?? edi,
@@ -356,15 +535,26 @@ namespace RackCad.Tests
                 IsEnabled = section.IsEnabled
             };
 
+        /// <summary>A hash that is shaped like a real one: the validator now rejects anything that is not.</summary>
+        private const string ValidHash = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+
+        private static string HashOfEverything(string _) => ValidHash;
+
         private static StructuralSectionsManifest Manifest(
             StructuralSectionCatalog catalog,
             int? totalOverride = null,
             int rejected = 0,
             bool includeSelf = false,
-            string sourceSha = "82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496")
+            bool includeOverlay = false,
+            bool duplicateFile = false,
+            string sourceSha = "82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496",
+            string idNamespace = StructuralSectionSource.AiscIdNamespace,
+            string catalogId = StructuralSectionsManifest.StructuralSectionsCatalogId,
+            string worksheet = "Database v16.0",
+            string mapperVersion = "I-36A.2")
         {
-            var files = StructuralSectionCsvSchema.AllFiles()
-                .Select(name => new StructuralSectionsManifest.ManifestFile { Name = name, Sha256 = "HASH" })
+            var files = StructuralSectionCsvSchema.ImmutableFiles()
+                .Select(name => new StructuralSectionsManifest.ManifestFile { Name = name, Sha256 = ValidHash })
                 .ToList();
 
             if (includeSelf)
@@ -372,20 +562,39 @@ namespace RackCad.Tests
                 files.Add(new StructuralSectionsManifest.ManifestFile
                 {
                     Name = StructuralSectionCsvSchema.ManifestFile,
-                    Sha256 = "HASH"
+                    Sha256 = ValidHash
+                });
+            }
+
+            if (includeOverlay)
+            {
+                files.Add(new StructuralSectionsManifest.ManifestFile
+                {
+                    Name = StructuralSectionCsvSchema.StatusFile,
+                    Sha256 = ValidHash
+                });
+            }
+
+            if (duplicateFile)
+            {
+                files.Add(new StructuralSectionsManifest.ManifestFile
+                {
+                    Name = StructuralSectionCsvSchema.SourcesFile,
+                    Sha256 = ValidHash
                 });
             }
 
             return new StructuralSectionsManifest
             {
                 SchemaVersion = StructuralSectionsManifest.CurrentSchemaVersion,
-                CatalogId = StructuralSectionsManifest.StructuralSectionsCatalogId,
+                CatalogId = catalogId,
                 SourceId = StructuralSectionSource.AiscShapesId,
                 SourceRevision = "16.0",
+                IdNamespace = idNamespace,
                 SourceFileName = "aisc-shapes-database-v16.0.xlsx",
                 SourceSha256 = sourceSha,
-                SourceWorksheet = "Database v16.0",
-                MapperVersion = "I-36A.1",
+                SourceWorksheet = worksheet,
+                MapperVersion = mapperVersion,
                 CountsByFamily = catalog.CountsByFamily().ToDictionary(
                     pair => StructuralSectionFamilies.ToToken(pair.Key),
                     pair => pair.Value,

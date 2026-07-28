@@ -47,7 +47,7 @@ namespace RackCad.Tests
             string edi,
             string expected)
         {
-            Assert.Equal(expected, StructuralSectionId.Create(family, edi).Value);
+            Assert.Equal(expected, StructuralSectionId.Create(StructuralSectionSource.AiscIdNamespace, family, edi).Value);
         }
 
         [Fact]
@@ -278,7 +278,7 @@ namespace RackCad.Tests
             {
                 Identity = new StructuralSectionIdentity
                 {
-                    SectionId = StructuralSectionId.Create(StructuralSectionFamily.W, "W310X42"),
+                    SectionId = StructuralSectionId.Create(StructuralSectionSource.AiscIdNamespace, StructuralSectionFamily.W, "W310X42"),
                     Family = StructuralSectionFamily.W,
                     EdiDesignation = "W310X42",
                     ManualLabel = "W310X42",
@@ -314,6 +314,7 @@ namespace RackCad.Tests
         {
             SourceId = StructuralSectionSource.AiscShapesId,
             Revision = "16.0",
+            IdNamespace = StructuralSectionSource.AiscIdNamespace,
             Publisher = "American Institute of Steel Construction",
             SourceType = "official technical database",
             NativeUnitSystem = StructuralSectionUnitSystem.UsCustomary,
@@ -331,7 +332,7 @@ namespace RackCad.Tests
             {
                 Identity = new StructuralSectionIdentity
                 {
-                    SectionId = StructuralSectionId.Create(family, edi),
+                    SectionId = StructuralSectionId.Create(StructuralSectionSource.AiscIdNamespace, family, edi),
                     Family = family,
                     EdiDesignation = edi,
                     ManualLabel = label,

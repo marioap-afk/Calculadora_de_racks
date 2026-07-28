@@ -42,9 +42,18 @@ namespace RackCad.Application.StructuralSections
         public string NormalizedManualLabel =>
             StructuralSectionDesignationNormalizer.Normalize(ManualLabel);
 
-        /// <summary>Rebuilds the id from family + EDI. Used to prove a stored id still matches its designation.</summary>
-        public StructuralSectionId ExpectedSectionId =>
-            StructuralSectionId.Create(Family, EdiDesignation);
+        /// <summary>
+        /// Rebuilds the id from the naming AUTHORITY, the family and the EDI designation, to prove a stored id
+        /// still matches what its source would produce.
+        ///
+        /// The namespace is a parameter and not a property on purpose: an identity knows which source it came
+        /// from (<see cref="SourceId"/>) but not that source's naming authority, and inventing a default here
+        /// would let the check pass while silently ignoring the source — which is exactly the hole this
+        /// signature closes. The caller resolves the source and passes
+        /// <see cref="StructuralSectionSource.IdNamespace"/>.
+        /// </summary>
+        public StructuralSectionId ExpectedSectionId(string idNamespace) =>
+            StructuralSectionId.Create(idNamespace, Family, EdiDesignation);
 
         public override string ToString() => SectionId.Value + " (" + ManualLabel + ")";
     }

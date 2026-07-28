@@ -3,10 +3,11 @@
   "catalogId": "structural-sections",
   "sourceId": "AISC-SHAPES",
   "sourceRevision": "16.0",
+  "idNamespace": "AISC",
   "sourceFileName": "aisc-shapes-database-v16.0.xlsx",
   "sourceSha256": "82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496",
   "sourceWorksheet": "Database v16.0",
-  "mapperVersion": "I-36A.1",
+  "mapperVersion": "I-36A.2",
   "countsByFamily": {
     "C": 32,
     "HSS-RECT": 525,
@@ -30,11 +31,7 @@
   "files": [
     {
       "name": "structural-section-sources.csv",
-      "sha256": "96FB1590D0FB2E904F4ECEC0D8560A6B7F6080CCE7F6E8302FFFA3A83B5FA694"
-    },
-    {
-      "name": "structural-section-status.csv",
-      "sha256": "7B4CB158AF88769BD90AB9CE2CE3D21010EDB7F7FB334E591917B6F5342E6D7D"
+      "sha256": "AD2AC2302FC92D5C956FF1FD2F94C2AC91338609166A3FA74ABFAEE03298B385"
     },
     {
       "name": "structural-sections-c.csv",

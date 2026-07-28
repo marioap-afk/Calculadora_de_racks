@@ -30,6 +30,9 @@ namespace RackCad.Application.StructuralSections
 
         public string SourceRevision { get; init; }
 
+        /// <summary>The id authority the ids were built with (ADR-0021). Part of the metadata a loader verifies.</summary>
+        public string IdNamespace { get; init; }
+
         /// <summary>File name of the workbook the import read. The workbook itself is never versioned.</summary>
         public string SourceFileName { get; init; }
 
@@ -53,7 +56,14 @@ namespace RackCad.Application.StructuralSections
         /// <summary>Rows skipped on purpose, per source type. Reported, never an error.</summary>
         public IReadOnlyDictionary<string, int> ExcludedTypeCounts { get; init; }
 
-        /// <summary>Every generated file with its SHA-256, ordered by name.</summary>
+        /// <summary>
+        /// The IMMUTABLE generated files with their SHA-256, ordered by name
+        /// (<see cref="StructuralSectionCsvSchema.ImmutableFiles"/>).
+        ///
+        /// Neither the manifest itself — that would be circular — nor the status overlay appear here. The
+        /// overlay is a local decision the operator edits, and hashing it would make a legitimate
+        /// "disable this section" edit look like corruption of the AISC data.
+        /// </summary>
         public IReadOnlyList<ManifestFile> Files { get; init; }
 
         public sealed class ManifestFile
@@ -77,6 +87,7 @@ namespace RackCad.Application.StructuralSections
             AppendString(builder, 1, "catalogId", CatalogId, true);
             AppendString(builder, 1, "sourceId", SourceId, true);
             AppendString(builder, 1, "sourceRevision", SourceRevision, true);
+            AppendString(builder, 1, "idNamespace", IdNamespace, true);
             AppendString(builder, 1, "sourceFileName", SourceFileName, true);
             AppendString(builder, 1, "sourceSha256", SourceSha256, true);
             AppendString(builder, 1, "sourceWorksheet", SourceWorksheet, true);
@@ -117,6 +128,7 @@ namespace RackCad.Application.StructuralSections
                     CatalogId = Text(root, "catalogId"),
                     SourceId = Text(root, "sourceId"),
                     SourceRevision = Text(root, "sourceRevision"),
+                    IdNamespace = Text(root, "idNamespace"),
                     SourceFileName = Text(root, "sourceFileName"),
                     SourceSha256 = Text(root, "sourceSha256"),
                     SourceWorksheet = Text(root, "sourceWorksheet"),

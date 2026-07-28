@@ -45,6 +45,19 @@ namespace RackCad.Application.StructuralSections
             public StructuralSectionCatalog Catalog;
         }
 
+        /// <summary>
+        /// The ONE public way to obtain the catalog. It parses strictly, then VALIDATES —semantic invariants,
+        /// manifest metadata, the exact file set and the SHA-256 of every immutable file— and only then
+        /// caches. Anything wrong throws <see cref="StructuralSectionCatalogException"/>.
+        ///
+        /// It fails closed on purpose. A folder that merely parses is not a catalog: the files can be replaced
+        /// in a deployed installation, and a half-published import leaves new CSVs beside an old manifest.
+        /// Handing that to a consumer as if it were valid is the failure mode this method exists to remove, so
+        /// there is deliberately no public way to get an unvalidated catalog.
+        ///
+        /// The status overlay is validated separately and never participates in a hash (ADR-0020): a
+        /// legitimate "disable this section" edit must not look like corruption of the imported data.
+        /// </summary>
         public StructuralSectionCatalog Load()
         {
             var signature = ComputeSignature();
@@ -57,15 +70,48 @@ namespace RackCad.Application.StructuralSections
                     return entry.Catalog;
                 }
 
-                var catalog = LoadUncached();
+                var catalog = LoadUnvalidated();
+                Validate(catalog);
+
                 entry.Signature = signature;
                 entry.Catalog = catalog;
                 return catalog;
             }
         }
 
-        /// <summary>Reads the catalog ignoring the cache. Used by the validator and the tests.</summary>
-        public StructuralSectionCatalog LoadUncached()
+        private void Validate(StructuralSectionCatalog catalog)
+        {
+            var validator = new StructuralSectionCatalogValidator();
+            StructuralSectionsManifest manifest;
+
+            try
+            {
+                manifest = ReadManifest();
+            }
+            catch (Exception ex) when (!(ex is StructuralSectionCatalogException))
+            {
+                throw new StructuralSectionCatalogException(
+                    _directory, "no se pudo leer el manifiesto: " + ex.Message, ex);
+            }
+
+            var report = validator.Validate(catalog, manifest, ComputeSha256);
+            var overlay = validator.ValidateOverlay(catalog, ReadStatusOverrides());
+
+            if (report.HasErrors || overlay.HasErrors)
+            {
+                throw new StructuralSectionCatalogException(
+                    _directory,
+                    "el catalogo de secciones estructurales no es valido." + Environment.NewLine +
+                    report.Format() + Environment.NewLine + overlay.Format());
+            }
+        }
+
+        /// <summary>
+        /// Parses the files WITHOUT validating them. Internal and diagnostic only: it exists so the validator
+        /// and the tests can look at a catalog that is deliberately broken. Production code uses
+        /// <see cref="Load"/>.
+        /// </summary>
+        internal StructuralSectionCatalog LoadUnvalidated()
         {
             var sources = ReadSources();
             var overrides = ReadStatusOverrides();
@@ -97,6 +143,7 @@ namespace RackCad.Application.StructuralSections
                 {
                     SourceId = row.RequiredText(StructuralSectionCsvSchema.SourceId),
                     Revision = row.RequiredText(StructuralSectionCsvSchema.SourceRevisionColumn),
+                    IdNamespace = RequiredNamespace(row),
                     Publisher = row.RequiredText(StructuralSectionCsvSchema.Publisher),
                     SourceType = row.RequiredText(StructuralSectionCsvSchema.SourceType),
                     NativeUnitSystem = row.RequiredUnitSystem(StructuralSectionCsvSchema.NativeUnitSystem),
@@ -104,6 +151,21 @@ namespace RackCad.Application.StructuralSections
                     Url = row.OptionalText(StructuralSectionCsvSchema.Url)
                 })
                 .ToArray();
+        }
+
+        /// <summary>Reads and validates the id authority of a source row: the shape is part of the schema.</summary>
+        private static string RequiredNamespace(StrictCsvTable.Row row)
+        {
+            var value = row.RequiredText(StructuralSectionCsvSchema.IdNamespace);
+
+            if (!StructuralSectionId.IsValidNamespace(value))
+            {
+                throw row.Fail(
+                    StructuralSectionCsvSchema.IdNamespace,
+                    "'" + value + "' no es un namespace de id valido; solo se admiten A-Z y 0-9.");
+            }
+
+            return value;
         }
 
         public IReadOnlyList<StructuralSectionStatusOverride> ReadStatusOverrides()

@@ -16,10 +16,14 @@ namespace RackCad.StructuralSections.Import
     /// explains where to get it and where to put it.
     ///
     ///   dotnet run --project tools/RackCad.StructuralSections.Import --
-    ///     --workbook &lt;ruta al .xlsx&gt; --output assets/catalogs [--worksheet "Database v16.0"] [--check]
+    ///     --workbook &lt;ruta al .xlsx&gt; --output assets/catalogs [--check]
+    ///
+    /// There is deliberately NO <c>--worksheet</c> flag. The data sheet is whatever the workbook's own Readme
+    /// proves it to be, so no argument can make another sheet or another revision be labelled v16.0.
     ///
     /// <c>--check</c> compares against what is already on disk and changes nothing; it is how CI or a human
-    /// verifies that the distributed catalog still is what this workbook produces.
+    /// verifies that the distributed catalog still is what this workbook produces. It reports the reproducible
+    /// data and the local overlay SEPARATELY, because they answer different questions.
     /// </summary>
     public static class Program
     {
@@ -34,24 +38,11 @@ namespace RackCad.StructuralSections.Import
                 }
 
                 var importer = new AiscShapesImporter();
-                var result = importer.Import(options.WorkbookPath, options.Worksheet);
+                var result = importer.Import(options.WorkbookPath);
 
-                var existingStatus = ImportOutputWriter.ReadExistingStatus(options.OutputDirectory);
-                var known = new HashSet<StructuralSectionId>(result.Sections.Select(section => section.SectionId));
-                var preserved = existingStatus.Where(entry => known.Contains(entry.SectionId)).ToArray();
-                var dropped = existingStatus.Where(entry => !known.Contains(entry.SectionId)).ToArray();
+                RequireOverlayStillResolves(result, options.OutputDirectory);
 
-                if (dropped.Length > 0)
-                {
-                    // Never silently: an overlay entry whose section disappeared is a decision that would be
-                    // lost, and the operator has to see it.
-                    Console.Error.WriteLine(
-                        "AVISO: el overlay de estado referencia " + dropped.Length +
-                        " id(s) que esta importacion ya no produce: " +
-                        string.Join(", ", dropped.Select(entry => entry.SectionId.Value)) + ".");
-                }
-
-                var output = ImportOutputWriter.Build(result, preserved);
+                var output = ImportOutputWriter.Build(result);
 
                 Report(result, output);
 
@@ -61,8 +52,14 @@ namespace RackCad.StructuralSections.Import
                 }
 
                 ImportOutputWriter.Publish(output, options.OutputDirectory);
-                Console.WriteLine("Escritos " + output.Files.Count + " archivos en '" + options.OutputDirectory + "'.");
+                Console.WriteLine("Escritos " + output.Files.Count + " archivos reproducibles en '" +
+                                  options.OutputDirectory + "'. El overlay de estado no se toca.");
                 return 0;
+            }
+            catch (StructuralSectionOverlayException ex)
+            {
+                Console.Error.WriteLine("OVERLAY DE ESTADO INCOHERENTE: " + ex.Message);
+                return 1;
             }
             catch (AiscRowRejectedException ex)
             {
@@ -82,14 +79,44 @@ namespace RackCad.StructuralSections.Import
         }
 
         private const string Usage =
-            "Uso: --workbook <ruta.xlsx> --output <directorio> [--worksheet <nombre>] [--check]";
+            "Uso: --workbook <ruta.xlsx> --output <directorio> [--check]";
 
         private sealed class Options
         {
             public string WorkbookPath;
             public string OutputDirectory;
-            public string Worksheet = AiscShapesImporter.DefaultWorksheetName;
             public bool CheckOnly;
+        }
+
+        /// <summary>
+        /// A re-import must NOT quietly forget a decision. If the overlay names a section this workbook no
+        /// longer produces, the import stops: withdrawing that decision is the operator's call, and the way to
+        /// make it is to edit the overlay first. A warning would have let the decision evaporate.
+        /// </summary>
+        private static void RequireOverlayStillResolves(AiscImportResult result, string outputDirectory)
+        {
+            var existing = ImportOutputWriter.ReadExistingStatus(outputDirectory);
+
+            if (existing.Count == 0)
+            {
+                return;
+            }
+
+            var produced = new HashSet<StructuralSectionId>(result.Sections.Select(section => section.SectionId));
+            var orphaned = existing
+                .Where(entry => !produced.Contains(entry.SectionId))
+                .Select(entry => entry.SectionId.Value)
+                .OrderBy(id => id, StringComparer.Ordinal)
+                .ToArray();
+
+            if (orphaned.Length > 0)
+            {
+                throw new StructuralSectionOverlayException(
+                    "el overlay de estado referencia " + orphaned.Length +
+                    " id(s) que esta importacion ya no produce: " + string.Join(", ", orphaned) +
+                    ". Edita '" + StructuralSectionCsvSchema.StatusFile +
+                    "' y retira esas entradas conscientemente antes de reimportar.");
+            }
         }
 
         private static bool TryParse(string[] args, out Options options)
@@ -107,10 +134,6 @@ namespace RackCad.StructuralSections.Import
                     case "--output":
                         if (++i >= args.Length) return false;
                         options.OutputDirectory = args[i];
-                        break;
-                    case "--worksheet":
-                        if (++i >= args.Length) return false;
-                        options.Worksheet = args[i];
                         break;
                     case "--check":
                         options.CheckOnly = true;
@@ -166,9 +189,16 @@ namespace RackCad.StructuralSections.Import
             }
         }
 
+        /// <summary>
+        /// Reports the two questions separately, because they are different questions: are the REPRODUCIBLE
+        /// data still exactly what this workbook produces, and is the LOCAL overlay a valid one. An edited
+        /// overlay must never make the first answer "no".
+        /// </summary>
         private static bool Compare(ImportOutput output, string outputDirectory)
         {
             var identical = true;
+
+            Console.WriteLine("Datos generados reproducibles:");
 
             foreach (var file in output.Files)
             {
@@ -176,23 +206,38 @@ namespace RackCad.StructuralSections.Import
 
                 if (!File.Exists(path))
                 {
-                    Console.Error.WriteLine("FALTA: " + file.Key);
+                    Console.Error.WriteLine("  FALTA:   " + file.Key);
                     identical = false;
                     continue;
                 }
 
-                var onDisk = File.ReadAllText(path);
-
-                if (!string.Equals(onDisk, file.Value, StringComparison.Ordinal))
+                if (!string.Equals(File.ReadAllText(path), file.Value, StringComparison.Ordinal))
                 {
-                    Console.Error.WriteLine("DIFIERE: " + file.Key);
+                    Console.Error.WriteLine("  DIFIERE: " + file.Key);
                     identical = false;
+                    continue;
                 }
+
+                Console.WriteLine("  OK:      " + file.Key);
             }
 
             Console.WriteLine(identical
-                ? "El catalogo distribuido coincide exactamente con el que produce este libro."
-                : "El catalogo distribuido NO coincide con el que produce este libro.");
+                ? "  => los datos distribuidos coinciden exactamente con los que produce este libro."
+                : "  => los datos distribuidos NO coinciden con los que produce este libro.");
+
+            Console.WriteLine("Overlay local (" + StructuralSectionCsvSchema.StatusFile + "):");
+
+            try
+            {
+                var overlay = ImportOutputWriter.ReadExistingStatus(outputDirectory);
+                Console.WriteLine(
+                    "  OK: valido, con " + overlay.Count + " excepcion(es). No participa de los hashes.");
+            }
+            catch (StructuralSectionCsvException ex)
+            {
+                Console.Error.WriteLine("  INVALIDO: " + ex.Message);
+                identical = false;
+            }
 
             return identical;
         }

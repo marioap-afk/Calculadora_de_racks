@@ -38,6 +38,11 @@ namespace RackCad.Application.StructuralSections
         public const string CodeManifestRejectedRows = "SS_MANIFEST_REJECTED_ROWS";
         public const string CodeManifestMetadata = "SS_MANIFEST_METADATA";
         public const string CodeMaterialGradeInferred = "SS_MATERIAL_GRADE_INFERRED";
+        public const string CodeInvalidIdNamespace = "SS_INVALID_ID_NAMESPACE";
+        public const string CodeManifestFileSet = "SS_MANIFEST_FILE_SET";
+        public const string CodeManifestDuplicateFile = "SS_MANIFEST_DUPLICATE_FILE";
+        public const string CodeManifestMalformedHash = "SS_MANIFEST_MALFORMED_HASH";
+        public const string CodeManifestSourceMismatch = "SS_MANIFEST_SOURCE_MISMATCH";
 
         /// <summary>Validates the catalog on its own, without the distributed files.</summary>
         public CatalogValidationReport Validate(StructuralSectionCatalog catalog)
@@ -115,27 +120,22 @@ namespace RackCad.Application.StructuralSections
                     continue;
                 }
 
+                // Per SOURCE, not global: two publishers may name a profile the same way, which is exactly
+                // why the id carries their authority.
                 var edi = identity.NormalizedEdiDesignation;
+                var scopedEdi = identity.SourceId + "|" + edi;
 
-                if (byEdi.ContainsKey(edi))
+                if (byEdi.ContainsKey(scopedEdi))
                 {
                     Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.DuplicateId,
                         CodeDuplicateEdi,
-                        "dos secciones normalizan a la misma designacion EDI '" + edi + "' (colision de normalizacion).",
+                        "dos secciones de la fuente '" + identity.SourceId +
+                        "' normalizan a la misma designacion EDI '" + edi + "' (colision de normalizacion).",
                         id);
                 }
                 else
                 {
-                    byEdi.Add(edi, section);
-                }
-
-                if (identity.ExpectedSectionId != section.SectionId)
-                {
-                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.InvalidReference,
-                        CodeIdMismatch,
-                        "el id no corresponde a su familia y designacion EDI; se esperaba '" +
-                        identity.ExpectedSectionId + "'.",
-                        id);
+                    byEdi.Add(scopedEdi, section);
                 }
 
                 if (string.IsNullOrWhiteSpace(identity.SourceRevision))
@@ -144,12 +144,47 @@ namespace RackCad.Application.StructuralSections
                         CodeMissingRevision, "la seccion no declara la revision de su fuente.", id);
                 }
 
-                if (!catalog.TryGetSource(identity.SourceId, out _))
+                // The id is rebuilt through the authority the SOURCE declares, never through a default. A
+                // section whose source is unknown cannot be checked at all, and saying so is the honest
+                // outcome — silently assuming "AISC" is what ADR-0021 forbids.
+                if (!catalog.TryGetSource(identity.SourceId, out var source))
                 {
                     Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.InvalidReference,
                         CodeUnknownSource,
-                        "la seccion referencia la fuente '" + identity.SourceId + "', que no esta declarada.",
+                        "la seccion referencia la fuente '" + identity.SourceId + "', que no esta declarada; " +
+                        "sin ella no se puede reconstruir su id.",
                         id);
+                }
+                else if (!StructuralSectionId.IsValidNamespace(source.IdNamespace))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.InvalidReference,
+                        CodeInvalidIdNamespace,
+                        "la fuente '" + source.SourceId + "' declara un namespace de id invalido: '" +
+                        (source.IdNamespace ?? "<null>") + "'.",
+                        id);
+                }
+                else
+                {
+                    var expected = identity.ExpectedSectionId(source.IdNamespace);
+
+                    if (expected != section.SectionId)
+                    {
+                        Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.InvalidReference,
+                            CodeIdMismatch,
+                            "el id no corresponde al namespace '" + source.IdNamespace +
+                            "' de su fuente, su familia y su designacion EDI; se esperaba '" + expected + "'.",
+                            id);
+                    }
+
+                    if (!string.Equals(
+                            identity.SourceRevision, source.Revision, StringComparison.Ordinal))
+                    {
+                        Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.InvalidReference,
+                            CodeMissingRevision,
+                            "la seccion declara la revision '" + identity.SourceRevision +
+                            "' y su fuente declara '" + source.Revision + "'.",
+                            id);
+                    }
                 }
 
                 if (section.Dimensions == null || section.Dimensions.Family != identity.Family)
@@ -167,15 +202,16 @@ namespace RackCad.Application.StructuralSections
                         "la seccion trae grado de material y la base AISC no lo publica: no debe inferirse.", id);
                 }
 
-                Index(byDesignation, edi, section);
-                Index(byDesignation, identity.NormalizedManualLabel, section);
+                Index(byDesignation, scopedEdi, section);
+                Index(byDesignation, identity.SourceId + "|" + identity.NormalizedManualLabel, section);
             }
 
             foreach (var pair in byDesignation.Where(entry => entry.Value.Count > 1))
             {
                 Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.DuplicateId,
                     CodeAmbiguousDesignation,
-                    "la designacion '" + pair.Key + "' resuelve a " + pair.Value.Count + " secciones: " +
+                    "dentro de una misma fuente, la designacion '" + pair.Key + "' resuelve a " +
+                    pair.Value.Count + " secciones: " +
                     string.Join(", ", pair.Value.Select(section => section.SectionId.Value)) + ".",
                     pair.Key);
             }
@@ -374,12 +410,7 @@ namespace RackCad.Application.StructuralSections
                     StructuralSectionCsvSchema.ManifestFile);
             }
 
-            if (string.IsNullOrWhiteSpace(manifest.SourceSha256))
-            {
-                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
-                    CodeManifestMetadata, "el manifiesto no declara el SHA-256 del libro fuente.",
-                    StructuralSectionCsvSchema.ManifestFile);
-            }
+            ValidateManifestMetadata(catalog, manifest, issues);
 
             if (manifest.RejectedSelectedRows != 0)
             {
@@ -418,26 +449,238 @@ namespace RackCad.Application.StructuralSections
                     StructuralSectionCsvSchema.ManifestFile);
             }
 
-            if (hashOf == null)
+            ValidateManifestFileSet(manifest, hashOf, issues);
+        }
+
+        /// <summary>
+        /// Validates the status overlay ON ITS OWN TERMS: it is a local decision, not source data, so it never
+        /// touches a hash. What it must satisfy is that every id it names exists and that it names none twice —
+        /// an overlay pointing at a section that no longer exists would look like it worked and disable
+        /// nothing.
+        /// </summary>
+        public CatalogValidationReport ValidateOverlay(
+            StructuralSectionCatalog catalog,
+            IReadOnlyList<StructuralSectionStatusOverride> overrides)
+        {
+            if (catalog == null)
             {
-                return;
+                throw new ArgumentNullException(nameof(catalog));
             }
 
-            var declaredFiles = (manifest.Files ?? new StructuralSectionsManifest.ManifestFile[0])
-                .ToDictionary(file => file.Name, file => file.Sha256, StringComparer.Ordinal);
+            var issues = new List<CatalogValidationIssue>();
+            var seen = new HashSet<string>(StringComparer.Ordinal);
 
-            foreach (var fileName in StructuralSectionCsvSchema.AllFiles())
+            foreach (var entry in overrides ?? new StructuralSectionStatusOverride[0])
             {
-                if (!declaredFiles.TryGetValue(fileName, out var declared))
+                var id = entry.SectionId.Value;
+
+                if (!seen.Add(id))
                 {
-                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
-                        CodeManifestHash, "el manifiesto no declara el hash de este archivo.", fileName);
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.DuplicateId,
+                        CodeDuplicateId, "el overlay de estado declara el id mas de una vez.", id);
                     continue;
                 }
 
-                var computed = hashOf(fileName);
+                if (!catalog.TryGetById(entry.SectionId, out _))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.InvalidReference,
+                        CodeUnknownSource,
+                        "el overlay de estado referencia un id que no existe en el catalogo.", id);
+                }
+            }
 
-                if (!string.Equals(declared, computed, StringComparison.OrdinalIgnoreCase))
+            var report = new CatalogValidationReport();
+            report.AddRange(issues);
+            return report;
+        }
+
+        /// <summary>
+        /// Every metadata field a consumer would otherwise take on faith: the catalog it claims to be, the
+        /// source and revision it claims to come from, the id authority it was built with, the worksheet it
+        /// was read from, the mapping version and a workbook hash that is actually a SHA-256.
+        ///
+        /// The point is not paranoia about the file RackCad ships — it is that a catalog folder can be
+        /// replaced in a deployed installation, and a loader that only checks row counts would accept a
+        /// different source's data as if it were this one.
+        /// </summary>
+        private static void ValidateManifestMetadata(
+            StructuralSectionCatalog catalog,
+            StructuralSectionsManifest manifest,
+            ICollection<CatalogValidationIssue> issues)
+        {
+            var at = StructuralSectionCsvSchema.ManifestFile;
+
+            RequireText(issues, at, "catalogId", manifest.CatalogId);
+            RequireText(issues, at, "sourceId", manifest.SourceId);
+            RequireText(issues, at, "sourceRevision", manifest.SourceRevision);
+            RequireText(issues, at, "sourceWorksheet", manifest.SourceWorksheet);
+            RequireText(issues, at, "mapperVersion", manifest.MapperVersion);
+            RequireText(issues, at, "sourceFileName", manifest.SourceFileName);
+            RequireText(issues, at, "idNamespace", manifest.IdNamespace);
+
+            if (manifest.CatalogId != null &&
+                !string.Equals(
+                    manifest.CatalogId,
+                    StructuralSectionsManifest.StructuralSectionsCatalogId,
+                    StringComparison.Ordinal))
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestMetadata,
+                    "el manifiesto dice ser del catalogo '" + manifest.CatalogId + "' y no de '" +
+                    StructuralSectionsManifest.StructuralSectionsCatalogId + "'.",
+                    at);
+            }
+
+            if (!IsSha256(manifest.SourceSha256))
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestMalformedHash,
+                    "el SHA-256 del libro fuente no son exactamente 64 caracteres hexadecimales.",
+                    at);
+            }
+
+            if (manifest.IdNamespace != null && !StructuralSectionId.IsValidNamespace(manifest.IdNamespace))
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeInvalidIdNamespace,
+                    "el manifiesto declara el namespace de id invalido '" + manifest.IdNamespace + "'.",
+                    at);
+            }
+
+            // Source <-> rows <-> manifest have to be the same story, or the folder is a mix of two imports.
+            if (catalog.Sources.Count > 0)
+            {
+                var source = catalog.Sources.FirstOrDefault(
+                    candidate => string.Equals(candidate.SourceId, manifest.SourceId, StringComparison.Ordinal));
+
+                if (source == null)
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestSourceMismatch,
+                        "el manifiesto declara la fuente '" + manifest.SourceId +
+                        "', que no esta en el catalogo de fuentes distribuido.",
+                        at);
+                }
+                else
+                {
+                    if (!string.Equals(source.Revision, manifest.SourceRevision, StringComparison.Ordinal))
+                    {
+                        Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                            CodeManifestSourceMismatch,
+                            "el manifiesto declara la revision '" + manifest.SourceRevision +
+                            "' y la fuente distribuida declara '" + source.Revision + "'.",
+                            at);
+                    }
+
+                    if (!string.Equals(source.IdNamespace, manifest.IdNamespace, StringComparison.Ordinal))
+                    {
+                        Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                            CodeManifestSourceMismatch,
+                            "el manifiesto declara el namespace de id '" + manifest.IdNamespace +
+                            "' y la fuente distribuida declara '" + source.IdNamespace + "'.",
+                            at);
+                    }
+                }
+            }
+
+            foreach (var section in catalog.All)
+            {
+                if (!string.Equals(section.Identity.SourceId, manifest.SourceId, StringComparison.Ordinal))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestSourceMismatch,
+                        "la seccion declara la fuente '" + section.Identity.SourceId +
+                        "' y el manifiesto declara '" + manifest.SourceId + "'.",
+                        section.SectionId.Value);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The declared file set has to be EXACTLY the immutable one: no missing file, no unexpected file, no
+        /// repeated name, every hash well formed and every hash right. The overlay is deliberately absent, and
+        /// the manifest never hashes itself.
+        /// </summary>
+        private static void ValidateManifestFileSet(
+            StructuralSectionsManifest manifest,
+            Func<string, string> hashOf,
+            ICollection<CatalogValidationIssue> issues)
+        {
+            var declared = manifest.Files ?? new StructuralSectionsManifest.ManifestFile[0];
+            var expected = new HashSet<string>(StructuralSectionCsvSchema.ImmutableFiles(), StringComparer.Ordinal);
+            var seen = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            foreach (var file in declared)
+            {
+                if (string.IsNullOrEmpty(file.Name))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestFileSet, "el manifiesto declara un archivo sin nombre.",
+                        StructuralSectionCsvSchema.ManifestFile);
+                    continue;
+                }
+
+                if (seen.ContainsKey(file.Name))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestDuplicateFile,
+                        "el manifiesto declara el archivo dos veces.", file.Name);
+                    continue;
+                }
+
+                seen.Add(file.Name, file.Sha256);
+
+                if (string.Equals(file.Name, StructuralSectionCsvSchema.ManifestFile, StringComparison.Ordinal))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestMetadata, "el manifiesto se incluye a si mismo en sus hashes.", file.Name);
+                    continue;
+                }
+
+                if (string.Equals(file.Name, StructuralSectionCsvSchema.StatusFile, StringComparison.Ordinal))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestFileSet,
+                        "el manifiesto hashea el overlay de estado, que es EDITABLE: una edicion legitima " +
+                        "invalidaria los datos importados.",
+                        file.Name);
+                    continue;
+                }
+
+                if (!expected.Contains(file.Name))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestFileSet,
+                        "el manifiesto declara un archivo que no forma parte del catalogo inmutable.",
+                        file.Name);
+                    continue;
+                }
+
+                if (!IsSha256(file.Sha256))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestMalformedHash,
+                        "el hash declarado no son exactamente 64 caracteres hexadecimales.", file.Name);
+                }
+            }
+
+            foreach (var fileName in StructuralSectionCsvSchema.ImmutableFiles())
+            {
+                if (!seen.TryGetValue(fileName, out var declaredHash))
+                {
+                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                        CodeManifestFileSet, "el manifiesto no declara este archivo del catalogo inmutable.",
+                        fileName);
+                    continue;
+                }
+
+                if (hashOf == null || !IsSha256(declaredHash))
+                {
+                    continue;
+                }
+
+                if (!string.Equals(declaredHash, hashOf(fileName), StringComparison.OrdinalIgnoreCase))
                 {
                     Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
                         CodeManifestHash,
@@ -445,13 +688,38 @@ namespace RackCad.Application.StructuralSections
                         fileName);
                 }
             }
+        }
 
-            // The manifest never hashes itself: that would be circular, and a self-hash could never be written.
-            if (declaredFiles.ContainsKey(StructuralSectionCsvSchema.ManifestFile))
+        private static bool IsSha256(string value)
+        {
+            if (value == null || value.Length != 64)
+            {
+                return false;
+            }
+
+            foreach (var ch in value)
+            {
+                var isHex = (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
+
+                if (!isHex)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static void RequireText(
+            ICollection<CatalogValidationIssue> issues,
+            string at,
+            string field,
+            string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
             {
                 Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
-                    CodeManifestMetadata, "el manifiesto se incluye a si mismo en sus hashes.",
-                    StructuralSectionCsvSchema.ManifestFile);
+                    CodeManifestMetadata, "el manifiesto no declara '" + field + "'.", at);
             }
         }
 

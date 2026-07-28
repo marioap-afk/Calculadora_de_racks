@@ -24,6 +24,33 @@ namespace RackCad.Tests
     internal static class SyntheticAiscWorkbook
     {
         public const string SheetName = "Database v16.0";
+        public const string ReadmeSheetName = "Readme";
+
+        /// <summary>
+        /// A Readme that carries the three markers the verifier demands. It is a faithful abbreviation of the
+        /// real one: the product line, the manual edition and the sentence that introduces the EDI convention.
+        /// </summary>
+        public static readonly string[] ValidReadme =
+        {
+            "AISC Shapes Database v16.0",
+            "Readme File",
+            "August 2023",
+            "AISC Shapes Database v16.0 is an update to Shapes Database v15.0. This version is consistent " +
+            "with shape properties and dimensions tabulated in the AISC Steel Construction Manual, " +
+            "16th Edition, 1st Printing.",
+            "The shape designation according to the AISC Naming Convention for Structural Steel Products " +
+            "for Use in Electronic Data Interchange (EDI), June 25, 2001."
+        };
+
+        /// <summary>A Readme of a DIFFERENT revision: same shape, wrong product.</summary>
+        public static readonly string[] PreviousRevisionReadme =
+        {
+            "AISC Shapes Database v15.0",
+            "Readme File",
+            "AISC Shapes Database v15.0 is consistent with the AISC Steel Construction Manual, " +
+            "15th Edition.",
+            "Naming Convention for Structural Steel Products for Use in Electronic Data Interchange (EDI)."
+        };
 
         /// <summary>The value columns, in published order. Shared by the US block and the metric mirror.</summary>
         public static readonly string[] ValueColumns =
@@ -202,24 +229,43 @@ namespace RackCad.Tests
             return row;
         }
 
-        public static string WriteToTempFile(IEnumerable<RowBuilder> rows, string[] headers = null)
+        public static string WriteToTempFile(
+            IEnumerable<RowBuilder> rows,
+            string[] headers = null,
+            string[] readme = null,
+            bool includeReadme = true,
+            string dataSheetName = SheetName)
         {
             var path = Path.Combine(Path.GetTempPath(), "rackcad-i36a-" + Guid.NewGuid().ToString("N") + ".xlsx");
-            File.WriteAllBytes(path, Build(rows, headers));
+            File.WriteAllBytes(path, Build(rows, headers, readme, includeReadme, dataSheetName));
             return path;
         }
 
-        public static byte[] Build(IEnumerable<RowBuilder> rows, string[] headers = null)
+        /// <summary>
+        /// Builds the workbook. By default it carries a valid <c>Readme</c> and the <c>Database v16.0</c>
+        /// sheet, so the fixtures go through the SAME verified path production uses; the parameters exist so a
+        /// test can take one of those away on purpose.
+        /// </summary>
+        public static byte[] Build(
+            IEnumerable<RowBuilder> rows,
+            string[] headers = null,
+            string[] readme = null,
+            bool includeReadme = true,
+            string dataSheetName = SheetName)
         {
+            var readmeLines = readme ?? ValidReadme;
             var allRows = new List<string[]> { headers ?? Headers() };
             allRows.AddRange(rows.Select(row => row.Cells()));
 
             // Excel keeps every distinct string once and references it by index; the reader has to follow that
             // indirection, so the fixture uses it too.
+            var readmeRows = readmeLines.Select(line => new[] { line }).ToList();
             var sharedStrings = new List<string>();
             var sharedStringIndex = new Dictionary<string, int>(StringComparer.Ordinal);
 
-            foreach (var value in allRows.SelectMany(row => row).Where(value => !IsNumber(value)))
+            foreach (var value in allRows.Concat(readmeRows)
+                .SelectMany(row => row)
+                .Where(value => !IsNumber(value)))
             {
                 if (!sharedStringIndex.ContainsKey(value))
                 {
@@ -232,12 +278,17 @@ namespace RackCad.Tests
             {
                 using (var archive = new ZipArchive(buffer, ZipArchiveMode.Create, leaveOpen: true))
                 {
-                    Write(archive, "[Content_Types].xml", ContentTypes);
+                    Write(archive, "[Content_Types].xml", ContentTypes(includeReadme));
                     Write(archive, "_rels/.rels", PackageRelationships);
-                    Write(archive, "xl/workbook.xml", Workbook);
-                    Write(archive, "xl/_rels/workbook.xml.rels", WorkbookRelationships);
+                    Write(archive, "xl/workbook.xml", WorkbookXml(includeReadme, dataSheetName));
+                    Write(archive, "xl/_rels/workbook.xml.rels", WorkbookRelationships(includeReadme));
                     Write(archive, "xl/sharedStrings.xml", SharedStringsXml(sharedStrings));
                     Write(archive, "xl/worksheets/sheet1.xml", SheetXml(allRows, sharedStringIndex));
+
+                    if (includeReadme)
+                    {
+                        Write(archive, "xl/worksheets/sheet2.xml", SheetXml(readmeRows, sharedStringIndex));
+                    }
                 }
 
                 return buffer.ToArray();
@@ -336,13 +387,16 @@ namespace RackCad.Tests
         private static string Escape(string value) =>
             value.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-        private const string ContentTypes =
+        private static string ContentTypes(bool includeReadme) =>
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
             "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">" +
             "<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>" +
             "<Default Extension=\"xml\" ContentType=\"application/xml\"/>" +
             "<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>" +
             "<Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>" +
+            (includeReadme
+                ? "<Override PartName=\"/xl/worksheets/sheet2.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"
+                : string.Empty) +
             "<Override PartName=\"/xl/sharedStrings.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml\"/>" +
             "</Types>";
 
@@ -352,16 +406,23 @@ namespace RackCad.Tests
             "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>" +
             "</Relationships>";
 
-        private const string Workbook =
+        private static string WorkbookXml(bool includeReadme, string dataSheetName) =>
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
             "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" " +
-            "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">" +
-            "<sheets><sheet name=\"" + SheetName + "\" sheetId=\"1\" r:id=\"rId1\"/></sheets></workbook>";
+            "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><sheets>" +
+            (includeReadme
+                ? "<sheet name=\"" + ReadmeSheetName + "\" sheetId=\"2\" r:id=\"rId3\"/>"
+                : string.Empty) +
+            "<sheet name=\"" + Escape(dataSheetName) + "\" sheetId=\"1\" r:id=\"rId1\"/>" +
+            "</sheets></workbook>";
 
-        private const string WorkbookRelationships =
+        private static string WorkbookRelationships(bool includeReadme) =>
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
             "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
             "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>" +
+            (includeReadme
+                ? "<Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet2.xml\"/>"
+                : string.Empty) +
             "<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>" +
             "</Relationships>";
     }

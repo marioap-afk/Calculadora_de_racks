@@ -22,4 +22,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\RackCad.Application\RackCad.Application.csproj" />
   </ItemGroup>
+
+  <!-- La costura de fallo de ImportOutputWriter (F1) es internal: sirve para provocar una excepcion en un
+       punto elegido de la publicacion y demostrar el rollback, y no tiene ningun uso fuera de las pruebas. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="RackCad.Tests" />
+  </ItemGroup>
 </Project>

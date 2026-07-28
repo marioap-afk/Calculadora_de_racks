@@ -94,17 +94,22 @@ namespace RackCad.Application.StructuralSections
 
                 byId.Add(section.SectionId, section);
 
+                // Uniqueness of the EDI designation is PER SOURCE, not global. Two publishers may legitimately
+                // name a profile the same way — that is precisely why the id carries their authority — and a
+                // global rule would make a second source impossible to add.
                 var edi = section.Identity.NormalizedEdiDesignation;
+                var scopedEdi = section.Identity.SourceId + "|" + edi;
 
-                if (byEdi.ContainsKey(edi))
+                if (byEdi.ContainsKey(scopedEdi))
                 {
                     throw new ArgumentException(
-                        "Designacion EDI duplicada tras normalizar: '" + edi + "' (ids '" +
-                        byEdi[edi].SectionId + "' y '" + section.SectionId + "').",
+                        "Designacion EDI duplicada tras normalizar dentro de la fuente '" +
+                        section.Identity.SourceId + "': '" + edi + "' (ids '" +
+                        byEdi[scopedEdi].SectionId + "' y '" + section.SectionId + "').",
                         nameof(sections));
                 }
 
-                byEdi.Add(edi, section);
+                byEdi.Add(scopedEdi, section);
 
                 Index(byDesignation, edi, section);
                 Index(byDesignation, section.Identity.NormalizedManualLabel, section);
@@ -120,6 +125,7 @@ namespace RackCad.Application.StructuralSections
                 .ToArray();
 
             var sourcesById = new Dictionary<string, StructuralSectionSource>(StringComparer.Ordinal);
+            var namespaces = new Dictionary<string, string>(StringComparer.Ordinal);
 
             foreach (var source in sourceList)
             {
@@ -129,6 +135,25 @@ namespace RackCad.Application.StructuralSections
                         "Fuente duplicada: '" + source.SourceId + "'.", nameof(sources));
                 }
 
+                if (!StructuralSectionId.IsValidNamespace(source.IdNamespace))
+                {
+                    throw new ArgumentException(
+                        "La fuente '" + source.SourceId + "' declara un namespace de id invalido: '" +
+                        (source.IdNamespace ?? "<null>") + "'.",
+                        nameof(sources));
+                }
+
+                // Two authorities sharing a namespace would let the same designation resolve to one id from
+                // two different publishers, which is the collision the namespace exists to prevent.
+                if (namespaces.TryGetValue(source.IdNamespace, out var owner))
+                {
+                    throw new ArgumentException(
+                        "El namespace de id '" + source.IdNamespace + "' lo declaran dos fuentes: '" +
+                        owner + "' y '" + source.SourceId + "'.",
+                        nameof(sources));
+                }
+
+                namespaces.Add(source.IdNamespace, source.SourceId);
                 sourcesById.Add(source.SourceId, source);
             }
 
@@ -178,15 +203,52 @@ namespace RackCad.Application.StructuralSections
         }
 
         /// <summary>
-        /// Resolves by the EDI designation, normalized. Unique by construction, so this never has to choose.
-        /// Disabled sections resolve here too — this is identity resolution, not selection.
+        /// Resolves by the EDI designation, normalized, across every source. Returns <c>false</c> when more
+        /// than one source publishes that designation: with several authorities the designation alone stops
+        /// being an identity, and guessing which one was meant is exactly what must not happen — use
+        /// <see cref="TryGetByEdiDesignation(string,string,out StructuralSectionDefinition)"/> to say which.
+        ///
+        /// Disabled sections resolve here too: this is identity resolution, not selection.
         /// </summary>
         public bool TryGetByEdiDesignation(string ediDesignation, out StructuralSectionDefinition section)
         {
             section = null;
 
+            if (!StructuralSectionDesignationNormalizer.TryNormalize(ediDesignation, out var normalized))
+            {
+                return false;
+            }
+
+            var matches = _byNormalizedEdi
+                .Where(entry => string.Equals(EdiOf(entry.Key), normalized, StringComparison.Ordinal))
+                .Select(entry => entry.Value)
+                .ToArray();
+
+            if (matches.Length != 1)
+            {
+                return false;
+            }
+
+            section = matches[0];
+            return true;
+        }
+
+        /// <summary>Resolves by EDI designation within ONE source, which is always unambiguous.</summary>
+        public bool TryGetByEdiDesignation(
+            string sourceId,
+            string ediDesignation,
+            out StructuralSectionDefinition section)
+        {
+            section = null;
+
             return StructuralSectionDesignationNormalizer.TryNormalize(ediDesignation, out var normalized)
-                && _byNormalizedEdi.TryGetValue(normalized, out section);
+                && _byNormalizedEdi.TryGetValue(sourceId + "|" + normalized, out section);
+        }
+
+        private static string EdiOf(string scopedKey)
+        {
+            var separator = scopedKey.IndexOf('|');
+            return separator < 0 ? scopedKey : scopedKey.Substring(separator + 1);
         }
 
         /// <summary>

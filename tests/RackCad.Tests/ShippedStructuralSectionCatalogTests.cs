@@ -114,11 +114,28 @@ namespace RackCad.Tests
         [Fact]
         public void NoSectionHasAnEmptyIdOrAnIdThatContradictsItsDesignation()
         {
-            Assert.All(Catalog().All, section =>
+            var catalog = Catalog();
+
+            Assert.All(catalog.All, section =>
             {
                 Assert.False(section.SectionId.IsEmpty);
-                Assert.Equal(section.Identity.ExpectedSectionId, section.SectionId);
+
+                // The id is rebuilt through the authority the SOURCE declares, never through a default.
+                Assert.True(catalog.TryGetSource(section.Identity.SourceId, out var source));
+                Assert.Equal(section.Identity.ExpectedSectionId(source.IdNamespace), section.SectionId);
             });
+        }
+
+        [Fact]
+        public void TheDistributedSourceDeclaresTheAiscIdNamespace()
+        {
+            var source = Assert.Single(Catalog().Sources);
+
+            Assert.Equal(StructuralSectionSource.AiscIdNamespace, source.IdNamespace);
+            Assert.Equal(source.IdNamespace, Provider().ReadManifest().IdNamespace);
+            Assert.All(Catalog().All, section =>
+                Assert.StartsWith(
+                    StructuralSectionSource.AiscIdNamespace + "-", section.SectionId.Value, StringComparison.Ordinal));
         }
 
         [Fact]

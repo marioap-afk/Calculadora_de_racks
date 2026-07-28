@@ -9,6 +9,17 @@ using RackCad.Application.StructuralSections;
 
 namespace RackCad.StructuralSections.Import
 {
+    /// <summary>
+    /// The status overlay on disk contradicts what this import produces. Fatal on purpose: an operator's
+    /// decision is never withdrawn by the importer.
+    /// </summary>
+    public sealed class StructuralSectionOverlayException : Exception
+    {
+        public StructuralSectionOverlayException(string message) : base(message)
+        {
+        }
+    }
+
     /// <summary>A selected row that could not be imported. Always fatal — there are no silent drops.</summary>
     public sealed class AiscRowRejectedException : Exception
     {
@@ -80,8 +91,7 @@ namespace RackCad.StructuralSections.Import
     /// </summary>
     public sealed class AiscShapesImporter
     {
-        public const string DefaultWorksheetName = "Database v16.0";
-        public const string DefaultRevision = "16.0";
+        public const string DefaultRevision = AiscWorkbookVerifier.SupportedRevision;
 
         /// <summary>Geometry and area: AISC rounds to three significant figures, so 1 % is generous but tight.</summary>
         public const double GeometryTolerance = 0.01;
@@ -109,13 +119,22 @@ namespace RackCad.StructuralSections.Import
             ("b", StructuralSectionUnits.InchesToMillimeters, GeometryTolerance)
         };
 
-        public AiscImportResult Import(string workbookPath, string worksheetName = DefaultWorksheetName)
+        /// <summary>
+        /// Imports a workbook, VERIFYING first that it really is the AISC Shapes Database v16.0.
+        ///
+        /// There is no way to point this at another sheet or to label another revision as v16.0: the data
+        /// worksheet is derived from what the workbook's own Readme proves, never from a caller's argument.
+        /// That is why the CLI has no <c>--worksheet</c> flag.
+        /// </summary>
+        public AiscImportResult Import(string workbookPath)
         {
             var fileName = Path.GetFileName(workbookPath);
             var sha256 = Sha256OfFile(workbookPath);
 
             using (var workbook = XlsxWorkbook.Open(workbookPath))
             {
+                var identity = AiscWorkbookVerifier.Verify(workbook);
+                var worksheetName = identity.DataWorksheet;
                 var rows = workbook.ReadRows(worksheetName).ToArray();
 
                 if (rows.Length == 0)
@@ -124,7 +143,8 @@ namespace RackCad.StructuralSections.Import
                 }
 
                 var columns = AiscColumnMap.Resolve(rows[0].Value);
-                var source = BuildSource();
+                var source = BuildSource(identity.Revision);
+                AiscWorkbookVerifier.RequireCoherentMetadata(identity, worksheetName, source.Revision);
 
                 var sections = new List<StructuralSectionDefinition>();
                 var excluded = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -261,14 +281,19 @@ namespace RackCad.StructuralSections.Import
             return results;
         }
 
-        private static StructuralSectionSource BuildSource() => new StructuralSectionSource
+        /// <summary>
+        /// The logical source. The revision comes from what the workbook PROVED, not from a constant, so the
+        /// metadata cannot claim a revision the document does not support.
+        /// </summary>
+        private static StructuralSectionSource BuildSource(string revision) => new StructuralSectionSource
         {
             SourceId = StructuralSectionSource.AiscShapesId,
-            Revision = DefaultRevision,
+            Revision = revision,
+            IdNamespace = StructuralSectionSource.AiscIdNamespace,
             Publisher = "American Institute of Steel Construction",
             SourceType = "official technical database",
             NativeUnitSystem = StructuralSectionUnitSystem.UsCustomary,
-            Title = "AISC Shapes Database v16.0",
+            Title = "AISC Shapes Database v" + revision,
             Url = "https://www.aisc.org/aisc/publications/steel-construction-manual/aisc-shapes-database-v160/"
         };
 
