@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-27**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-28**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -781,6 +781,43 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
 
 ## 4. Siguiente acción
 
+### I-36A — INTEGRADA en `main` (2026-07-28) — **abre la Fase 6**
+
+El Owner **aprobó el gate `owner-validation` y sus siete puntos**. La iniciativa queda **integrada**; no
+queda acción pendiente de I-36A.
+
+Funda el **catálogo neutral de secciones estructurales**: la sección transversal deja de ser lo mismo
+que el miembro y que la pieza comercial. Importa **983** secciones de la AISC Shapes Database v16.0 —W
+289, HSS rectangular/cuadrado 525, C 32, L 137— con un importador reproducible fuera del producto y un
+lector CSV **estricto** propio. **No dibuja, no migra y no toca ningún sistema vigente.**
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `architecture/catalogo-secciones-estructurales` |
+| **CODE_SHA aprobado** por el Owner | `5cd526cca252ffcd30dc0e598c8e3049632ea4ec` |
+| CI del SHA aprobado | **30354958938**, 4/4 |
+| SHA final de rama | `c899a367fa76cd16218f364d438bc3491908cd2e` (CI **30363426285**, 4/4) — su delta contra el aprobado es **solo documentación** |
+| **Validación en AutoCAD** | **NO APLICA** por decisión expresa del Owner: no cambia dibujo, bloques, comandos ni comportamiento visible (`requires_autocad: false`) |
+| Conteos | W **289**, HSS-RECT **525** (126 cuadrados), C **32**, L **137**, total **983**; excluidos 1 316; **filas seleccionadas rechazadas 0** |
+| Fuente | AISC Shapes Database v16.0, SHA-256 `82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496`; el libro **no se versiona** |
+| Suites al integrar | **1851** `RackCad.Tests` + **494** `RackCad.UI.Tests`, cero fallos, cero omitidas |
+| Builds Debug | UI 0 errores / 0 advertencias; Plugin 0 errores propios y 2 `MSB3277` conocidas |
+| Bundle | 147 comprobaciones; los **siete** archivos nuevos dentro, con hashes idénticos a `assets/catalogs` |
+| ADRs | **ADR-0020** aceptado (reemplaza a ADR-0008 **solo en autoridad conceptual**); **ADR-0021** aceptado el 2026-07-28 (**no** reemplaza ADR-0005) |
+| Rebase | **no necesario**: `origin/main` no avanzó desde la base `a35374f`; verificado con `git rebase origin/main` → *up to date* |
+| **MERGE_SHA** | vive en `git log --first-parent main`; este documento **no lo inventa** (se escribe antes del merge) |
+| Limpieza | rama local, rama remota y worktree **eliminados** tras confirmar el merge |
+
+**Lo que NO cambió, verificado con `git diff`:** `assets/catalogs/secciones.csv` byte-idéntico y los
+diez catálogos vigentes sin una línea; `blocks.csv` y `blocks-library.dwg` intactos; `src/RackCad.Domain`,
+`src/RackCad.UI`, `src/RackCad.Plugin`, `deploy/` y `.github/` con **cero archivos cambiados**. El único
+cambio en Application fuera del namespace nuevo es que `CsvCatalogReader` **delega** su parser léxico en
+`CsvLexer`, con el comportamiento tolerante histórico intacto y fijado por regresiones.
+
+**Siguiente iniciativa habilitada: I-36B** — geometría y representación prismática, rama
+`architecture/geometria-secciones-estructurales`, **reservada y todavía sin crear**. Se reclama en una
+iniciativa separada; I-36A no la abrió.
+
 ### I-23 — INTEGRADA en `main` (2026-07-27) — **cierra la Fase 5**
 
 El Owner **aprobó el smoke mínimo en AutoCAD 2025** sobre el DLL Debug del SHA exacto del candidato. La
@@ -990,7 +1027,26 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-23 — 2026-07-27** (la vigente):
+**Baseline integrada de I-36A — 2026-07-28** (la vigente):
+
+- candidato de **código** aprobado por el Owner y por CI:
+  `5cd526cca252ffcd30dc0e598c8e3049632ea4ec` (CI run `30354958938`, **success** 4/4). El SHA final de
+  rama, `c899a367fa76cd16218f364d438bc3491908cd2e` (CI `30363426285`, 4/4), difiere del aprobado
+  **solo en documentación** —cero archivos de `src`, `tests`, `tools`, `assets`, `deploy` o `.github`—,
+  así que el árbol técnico validado y el integrado son el mismo;
+- **sin validación en AutoCAD**, por decisión expresa del Owner: I-36A no cambia dibujo, bloques,
+  comandos ni el comportamiento visible de ningún sistema;
+- suites **1851** + **494**, cero fallos, cero omitidas; builds Debug de UI y Plugin sin errores propios;
+  bundle **147 comprobaciones** con los siete archivos nuevos dentro;
+- **983 secciones** importadas —289 / 525 / 32 / 137— con **cero** filas seleccionadas rechazadas, y los
+  cuatro CSV de familia **byte-idénticos** entre reimportaciones; `--check` contra el libro oficial da OK
+  tanto en los datos reproducibles como en el overlay local;
+- que la CI sea verde **en Linux** importa aquí de forma específica: el job de pruebas corre en ubuntu
+  sobre un checkout limpio y recalcula el SHA-256 de cada CSV distribuido contra el manifiesto, lo que
+  demuestra que la regla `-text` de `.gitattributes` hace su trabajo con `core.autocrlf=true`;
+- **sin rebase**: `origin/main` no avanzó desde la base `a35374f`.
+
+Anterior: **baseline integrada de I-23 — 2026-07-27**:
 
 - candidato de **código** aprobado por el Owner en AutoCAD 2025 y por CI:
   `5d49a6cc990c5fc72e321aea37dd5bc2d3d4a128` (CI run `30304742946`, **success** 4/4), 11 ahead / 0 behind

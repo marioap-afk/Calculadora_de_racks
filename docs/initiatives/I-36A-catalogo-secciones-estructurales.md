@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-36A
 title: Nucleo y catalogo de secciones estructurales
 type: architecture
-status: integration-ready
+status: integrated
 branch: architecture/catalogo-secciones-estructurales
 base_branch: main
 priority:
@@ -36,11 +36,11 @@ automation:
 > la autorizacion esta versionada en
 > [`docs/automation/decisions/I-36A.md`](../automation/decisions/I-36A.md).
 >
-> **HANDOFF y el estado del ROADMAP.** WORKFLOW secciones 4.5.4 y 8 reservan `docs/HANDOFF.md` y la
-> **columna Estado** del ROADMAP a la sesion de integracion, como ULTIMO commit de la rama. Esta
-> sesion es de implementacion: **no** toca HANDOFF y **no** marca I-36A como integrada. Lo que si
-> hace, por autorizacion expresa, es **crear las filas** de la Fase 6 con estado `pendiente`, porque
-> sin ellas el plan no existe.
+> **HANDOFF y el estado del ROADMAP.** WORKFLOW secciones 4.5.4 y 8 los reservan a la sesion de
+> integracion, como ULTIMO commit de la rama. Las sesiones de implementacion **crearon** las filas de
+> la Fase 6 con estado `pendiente` (autorizacion expresa del dueno, porque sin ellas el plan no
+> existia) y **no** tocaron HANDOFF. La **sesion de integracion del 2026-07-28** si los actualizo:
+> HANDOFF secciones 4 y 5, y la columna Estado del ROADMAP como **`integrada (2026-07-28)`**.
 
 ## 1. Objetivo
 

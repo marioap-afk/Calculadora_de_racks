@@ -3,14 +3,38 @@ automation_state:
   initiative: I-36A
   branch: architecture/catalogo-secciones-estructurales
   claim_id: c72f4d42-a201-40c1-b9d9-2f03d9556681
-  current_phase: 10
-  state: integration-ready
+  current_phase: 11
+  state: integration-approved
   gate: none
   attempts: 3
   next_action: >-
-    INTEGRAR-a-main-con-git-merge-no-ff-sin-squash-sin-rebase-sobre-main-y-sin-force ·
-    esperar-CI-post-merge-VERDE-sobre-el-SHA-exacto-de-main-y-solo-entonces-limpiar-worktree-rama-local-y-rama-remota
-  last_evidence_commit: 1271bbe
+    MERGE-no-ff-en-main-ya-autorizado-por-el-Owner ·
+    despues-verificar-el-merge-en-main-y-limpiar-worktree-rama-local-y-rama-remota-con-borrado-SEGURO-sin-D-y-sin-force
+  last_evidence_commit: c899a367fa76cd16218f364d438bc3491908cd2e
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION. El Owner aprobo el gate y autorizo la integracion serial.
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  autorizada_por: Mario-Perez-dueno-del-repositorio-2026-07-28
+  code_sha_aprobado: 5cd526cca252ffcd30dc0e598c8e3049632ea4ec
+  ci_del_code_sha: VERDE-run-30354958938-4-de-4
+  sha_final_de_rama: c899a367fa76cd16218f364d438bc3491908cd2e
+  ci_del_sha_final: VERDE-run-30363426285-4-de-4
+  delta_entre_ambos: >-
+    EXCLUSIVAMENTE-DOCUMENTAL-mas-un-comentario-XML-de-prueba-sin-cambio-de-comportamiento ·
+    cero-archivos-bajo-src-de-produccion-tools-assets-deploy-o-github
+  rebase_final: NO-OP-VERIFICADO-origin-main-seguia-en-a35374f-y-git-rebase-respondio-up-to-date
+  merge: git-merge-no-ff-SIN-squash-SIN-force
+  merge_sha: se-registra-tras-el-merge-en-el-commit-de-cierre-de-la-sesion-de-integracion
+  autocad: NO-APLICA-por-decision-expresa-del-Owner
+  conteos_al_integrar: W-289 · HSS-RECT-525 · C-32 · L-137 · total-983 · rechazadas-0
+  suites_al_integrar: rackcad-tests-1851 · rackcad-ui-tests-494 · cero-fallos-cero-omitidas
+  bundle_al_integrar: OK-147-comprobaciones-con-los-siete-archivos-nuevos-dentro
+  siguiente_iniciativa_habilitada: >-
+    I-36B-geometria-y-representacion-prismatica ·
+    rama-architecture-geometria-secciones-estructurales-RESERVADA-y-TODAVIA-SIN-CREAR ·
+    se-reclama-en-una-iniciativa-SEPARADA-I-36A-no-la-abrio
 
 # --------------------------------------------------------------------------------------------------------
 # GATE owner-validation: APROBADO por el Owner el 2026-07-28 sobre el HEAD 5cd526c.
