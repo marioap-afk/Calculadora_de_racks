@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-36B
 title: Geometria y representacion prismatica de secciones estructurales
 type: architecture
-status: implementing
+status: review-ready
 branch: architecture/geometria-secciones-estructurales
 base_branch: main
 priority:
@@ -86,7 +86,8 @@ Autorizado por las decisiones vinculantes 1-25 del dueno
 8. **Comando `RACKSECCION`** y materializacion como **bloque interno del dibujo**.
 9. **Pruebas** puras sobre las 983 secciones, sentinelas, invariantes, area, centroides, proyeccion y
    UI.
-10. **Documentacion**: ARCHITECTURE, ROADMAP sin marcar integracion, indices, guia nueva y evidencia.
+10. **Documentacion**: ARCHITECTURE, README, indices, guia nueva y evidencia. **ROADMAP no**: ver
+    seccion 7.
 
 ## 4. Fuera de alcance
 
@@ -146,11 +147,19 @@ instancia prismatica, vistas, proyector, plan neutral y teselacion.
 `docs/initiatives/I-36B-*.md` (este), `docs/automation/decisions/I-36B.md`,
 `docs/automation/state/I-36B.yml`, `docs/automation/evidence/I-36B-*.md`.
 
-**Modificados**: `docs/ARCHITECTURE.md`, `docs/ROADMAP.md` (sin marcar integracion),
+**Modificados**: `docs/ARCHITECTURE.md`, `README.md` (WORKFLOW section 8 obliga a actualizarlo en la
+misma rama cuando cambian los comandos de AutoCAD),
 `docs/adr/README.md`, `docs/initiatives/README.md`, `docs/guias/secciones-estructurales.md`.
 
 **Prohibido tocar**: `assets/catalogs/**` (incluidos `secciones.csv` y `blocks.csv`),
 `blocks-library.dwg`, `src/RackCad.Domain`, los sistemas vigentes de UI y Plugin, `deploy/`, `.github/`.
+
+**`docs/ROADMAP.md` y `docs/HANDOFF.md` tampoco**, y esto corrige la version inicial de este contrato,
+que listaba ROADMAP entre los modificados. [`WORKFLOW.md`](../WORKFLOW.md) seccion 8 lo dice sin
+ambiguedad —«Nunca HANDOFF/ROADMAP desde ramas paralelas»— y WORKFLOW tiene precedencia sobre este
+documento (seccion 10 de WORKFLOW). La fila de I-36B queda `pendiente` y su actualizacion pertenece a
+la sesion de integracion. I-36A si escribio en ROADMAP, pero con **autorizacion expresa** del dueño
+registrada en su decision; I-36B no la tiene y no la pide.
 
 ## 8. Fases
 

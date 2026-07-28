@@ -508,3 +508,25 @@ clases por área (`RackMenuCommands`, `RackCabeceraCommands`, `RackSelectivoComm
 referencia exige decidir a cuál de las nueve apuntaba, y la fila de archivos calientes de `WORKFLOW.md`
 §7 además necesita saber si el riesgo de conflicto sigue siendo el mismo tras la partición. Es trabajo
 de documentación con criterio, no de reemplazo de cadena, y I-23 está bajo congelación funcional.
+
+---
+
+## Dos comandos ausentes de la referencia en la app (hallazgo de I-36B, fuera de alcance)
+
+`RackCommandReference.Commands` (`src/RackCad.UI/RackCommandReference.cs`) es la única fuente de verdad
+de lo que muestra `RACKAYUDA`, y la tabla de comandos de `README.md` la acompaña. **Faltan dos** de los
+comandos realmente registrados:
+
+| Comando | Alias | Desde |
+|---|---|---|
+| `RACKPUSHBACK` | `RPB` | I-32 |
+| `RACKSECCION` | — | I-36B |
+
+`RACKSECCION` **sí quedó** en la tabla de `README.md`: WORKFLOW §8 obliga a actualizar ese archivo en la
+misma rama cuando cambian los comandos de AutoCAD. Lo que no se tocó es `RackCommandReference`, que es
+UI vigente y queda fuera del alcance de I-36B (`docs/initiatives/I-36B-*.md` §4 y §7).
+
+Arreglarlo bien es una decisión de producto pequeña pero real, no un añadido mecánico: hay que decidir
+**a qué grupo** pertenece cada uno —`RACKSECCION` no es «Diseñar» un rack, y podría justificar un grupo
+nuevo— y si `RACKSECCION` merece alias corto, que hoy no tiene. Conviene hacerlo de una sola vez para
+los dos, con el `README.md` en el mismo cambio.

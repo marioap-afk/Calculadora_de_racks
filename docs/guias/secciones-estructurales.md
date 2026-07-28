@@ -358,13 +358,13 @@ Por eso I-36A **no toca** `blocks.csv`, **no modifica** `blocks-library.dwg` y *
 
 ---
 
-## 9. Qué queda para I-36B y para después
+## 9. Qué queda para después
 
-**I-36B — geometría y representación prismática.** Contornos detallados por familia, radios y filetes,
-el centroide como origen documentado, vistas transversales y longitudinales, longitud arbitraria,
-orientación, proyección y definiciones AutoCAD internas derivadas. Podrá **derivar** una geometría
-paramétrica documentada a partir de los valores tabulados; lo que no podrá es inventar un radio que la
-fuente no publique. I-36A **solo conserva los datos y su fidelidad**.
+**I-36B — geometría y representación prismática: hecha.** Deriva los contornos por familia con sus
+radios, pone el centroide en el origen, añade longitud, orientación, vistas y el comando `RACKSECCION`,
+y **no inventa** ningún radio que la fuente no publique. Está en su propia guía:
+[geometria-secciones-estructurales.md](geometria-secciones-estructurales.md). Lo que sigue siendo cierto
+de I-36A es que **solo conserva los datos y su fidelidad**: la geometría no vive aquí.
 
 **I-37 — Cantilever MVP.** El primer sistema sobre perfil estándar, y donde nacen los configuradores de
 miembro.

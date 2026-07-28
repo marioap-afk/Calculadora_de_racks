@@ -3,15 +3,16 @@ automation_state:
   initiative: I-36B
   branch: architecture/geometria-secciones-estructurales
   claim_id: ea5d0ad2-b61b-424c-ab1b-96678eca70a3
-  current_phase: 3
-  state: implementing
-  gate: none
+  current_phase: 10
+  state: review-ready
+  gate: owner-validation
   attempts: 1
   next_action: >-
-    FASE-3-primitivas-neutrales-ADITIVAS-en-Application-Geometry ·
-    vector-limites-transformacion-con-rotacion-y-espejo-segmento-arco-trayectoria-contorno-y-tipos-3D ·
-    reutilizando-Point2D-y-sin-mover-ni-renombrar-nada-existente
-  last_evidence_commit: 83f3692
+    VALIDACION-DEL-DUENO-EN-AUTOCAD-checklist-de-12-puntos-en-la-evidencia-seccion-14 ·
+    con-el-DLL-Debug-de-ESTE-worktree ·
+    despues-el-dueno-decide-sobre-ADR-0022-que-sigue-PROPUESTO ·
+    NO-integrar-NO-limpiar-NO-abrir-I-37
+  last_evidence_commit: PENDIENTE-commit-de-documentacion-de-la-fase-10
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo. Verificable con git y con la CI publica.
@@ -124,28 +125,35 @@ fases:
     estado: HECHA
   - n: 3
     nombre: primitivas-y-contrato-geometrico
-    estado: SIGUIENTE
+    estado: HECHA
+    commit: d1a01f0
   - n: 4
     nombre: builders-W-y-HSS
-    estado: pendiente
+    estado: HECHA
+    commit: 6cb407e
   - n: 5
     nombre: builders-C-y-L
-    estado: pendiente
+    estado: HECHA
+    commit: 6cb407e
   - n: 6
     nombre: instancia-prismatica-y-proyeccion
-    estado: pendiente
+    estado: HECHA
+    commits: d241e03-y-4b66bf5
   - n: 7
     nombre: preview-e-inspector
-    estado: pendiente
+    estado: HECHA
+    commit: 2185962
   - n: 8
     nombre: materializacion-y-comando-RACKSECCION
-    estado: pendiente
+    estado: HECHA
+    commit: 3dce1f9
   - n: 9
     nombre: pruebas-completas
-    estado: pendiente
+    estado: HECHA
+    commit: 67fec4a
   - n: 10
     nombre: documentacion-evidencia-y-estado
-    estado: pendiente
+    estado: HECHA
 
 # --------------------------------------------------------------------------------------------------------
 # GUARDAS DE ALCANCE. Se verifican con git diff al cerrar, no se afirman.
@@ -163,3 +171,60 @@ guardas_de_alcance:
     sin-conexiones-troqueles-perforaciones-placas-soldaduras-ni-fabricacion
   solidos_3d: NO-sin-Region-sin-Solid3d-sin-extrusion-sin-sweep-solo-wireframe-2D
   adr_0022: nace-PROPUESTO-y-solo-el-dueno-lo-acepta-tras-la-validacion-en-AutoCAD
+
+# --------------------------------------------------------------------------------------------------------
+# RESULTADOS MEDIDOS al cerrar la fase 10. Cifras reproducibles: salen de las suites, no de una estimacion.
+# --------------------------------------------------------------------------------------------------------
+resultados_medidos:
+  secciones_con_geometria: 983-de-983-en-los-DOS-niveles-de-detalle-sin-una-sola-excepcion
+  fidelidad:
+    TabulatedComplete: 289-todas-las-W
+    TabulatedDerived: 694-HSS-C-y-L
+    DegradedToSimplified: 0
+  error_de_area_frente_al_A_publicado:
+    W: max-0.732-media-0.118-sobre5-0
+    HssRectangular: max-10.927-media-8.34-sobre5-525-DIFERENCIA-DE-DEFINICION-ver-abajo
+    Channel: max-5.545-media-2.812-sobre5-3-por-la-punta-no-publicada
+    Angle: max-3.012-media-0.814-sobre5-0
+  hss_con_el_mismo_contorno_pero_tdes: max-4.581-media-1.068-sobre5-CERO
+  hss_interpretacion: >-
+    AISC-calcula-A-con-espesor-de-DISENO-y-la-geometria-dibuja-el-NOMINAL-por-decision-11-del-dueno ·
+    el-contorno-es-correcto-lo-que-difiere-es-que-espesor-significa-cada-numero
+  centroides:
+    W-y-HSS: residuo-menor-que-1e-9-pulgadas
+    Channel-peor-caso: 0.0373-in-1.244-por-ciento-en-AISC-C-C3X3_5
+    Angle-peor-caso: 0.0099-in-0.329-por-ciento-en-AISC-L-L3X3X3_16
+  suites:
+    RackCad_Tests: 1992-de-1992-base-1851-mas-141
+    RackCad_UI_Tests: 521-de-521-mas-27
+  builds:
+    application_debug: 0-errores
+    ui_debug: 0-errores
+    plugin_debug: 0-errores-propios-2-avisos-MSB3277-preexistentes-de-System-Drawing
+    bundle: OK-147-comprobaciones-DLL-y-catalogos-identicos-cero-DLL-de-Autodesk
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE VERIFICADAS con git diff --name-only origin/main..HEAD (34 archivos, +7144, -0).
+# --------------------------------------------------------------------------------------------------------
+guardas_verificadas_al_cerrar:
+  assets_catalogs: CERO-lineas
+  blocks_library_dwg: NO-TOCADO
+  domain: CERO-archivos
+  sistemas_vigentes: CERO-cambios-todo-lo-nuevo-son-archivos-nuevos
+  deploy_y_github: CERO-archivos
+  roadmap_y_handoff: CERO-lineas-WORKFLOW-seccion-8-prohibe-tocarlos-desde-una-rama-paralela
+  readme: ACTUALIZADO-porque-WORKFLOW-seccion-8-lo-EXIGE-al-cambiar-los-comandos-de-AutoCAD
+  main: INTACTA
+  i37: NO-implementada
+  solidos_3d_y_bloques_dinamicos: NINGUNO
+
+# --------------------------------------------------------------------------------------------------------
+# HALLAZGO FUERA DE ALCANCE, anotado en docs/ideas-futuras.md conforme a WORKFLOW seccion 8.
+# --------------------------------------------------------------------------------------------------------
+hallazgo_fuera_de_alcance:
+  que: >-
+    RackCommandReference-la-fuente-de-verdad-de-RACKAYUDA-no-lista-RACKSECCION-ni-RACKPUSHBACK ·
+    el-de-PushBack-falta-desde-I-32
+  por_que_no_se_arregla_aqui: >-
+    RackCommandReference-es-UI-vigente-y-esta-fuera-del-alcance-declarado ·
+    ademas-exige-decidir-grupo-y-alias-que-es-criterio-de-producto-no-un-anadido-mecanico

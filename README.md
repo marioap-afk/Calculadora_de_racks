@@ -40,6 +40,7 @@ Después ejecuta `RACKCAD`. El procedimiento completo y el formato de evidencia 
 | `RACKLISTA` | Listar racks, vistas y copias del dibujo. |
 | `RACKBOMTOTAL` | Generar el BOM consolidado. |
 | `RACKLAYOUT` / `RACKRELLENAR` | Colocar racks en una rejilla o sitio. |
+| `RACKSECCION` | Ver una sección estructural del catálogo AISC e insertarla como geometría. |
 | `RACKAYUDA` | Consultar comandos y alias dentro de AutoCAD. |
 
 ## Documentación
