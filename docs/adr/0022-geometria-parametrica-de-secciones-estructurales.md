@@ -1,15 +1,57 @@
 # ADR-0022: Geometría paramétrica y representación prismática de secciones estructurales
 
-- **Estado:** **propuesto**
-- **Fecha:** 2026-07-28 (redacción); pendiente de validación expresa del dueño
-- **Decisores:** Mario Pérez, dueño del repositorio (**pendiente**); Claude Opus 5 (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-07-28 (redacción y **aceptación**)
+- **Decisores:** **Mario Pérez, Owner del repositorio** (acepta); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-36B `architecture/geometria-secciones-estructurales`
 
-> **Por qué nace `propuesto`.** I-36B declara `requires_owner_validation: true` y su gate incluye ver
-> la geometría dibujada en AutoCAD. Las decisiones de abajo son verificables sobre el dibujo real —el
-> lado de apertura de un canal, el ala larga de un ángulo desigual, el espesor de un HSS—, así que
-> aceptarlas antes de que el dueño las mire diría lo contrario de lo que ocurre. ADR-0020 y ADR-0021
-> permanecen `aceptado`; éste no los reabre.
+> **Nació `propuesto` y se aceptó tras ver el dibujo.** I-36B declara `requires_owner_validation: true`
+> y su gate incluía ver la geometría en AutoCAD, porque las decisiones de abajo son verificables sobre
+> el dibujo real —el lado de apertura de un canal, el ala larga de un ángulo desigual, el espesor de un
+> HSS—. El Owner ejecutó el smoke focalizado y el checklist completo el **2026-07-28** y los aprobó sin
+> bloqueos. ADR-0020 y ADR-0021 permanecen `aceptado`; éste no los reabre.
+
+## Aceptación del Owner (2026-07-28)
+
+**Decisor:** Mario Pérez, Owner del repositorio. **Gate:** `owner-validation`, **aprobado**.
+
+Aceptado expresamente:
+
+| # | Lo aceptado |
+|---|---|
+| 1 | **Ejes locales X/Y/Z**: la sección vive en XY y Z es el eje longitudinal |
+| 2 | **Origen transversal** en el centroide tabulado, con `OriginBasis` declarando cómo se resolvió, y el centroide del contorno aproximado como métrica diagnóstica separada |
+| 3 | **Separación sección / instancia prismática**: la longitud no está en la sección |
+| 4 | **Plan neutral único** consumido igual por el preview y por AutoCAD |
+| 5 | **Wireframe sin eliminación de líneas ocultas** |
+| 6 | **Geometría paramétrica generada en `RackCad.Application`** |
+| 7 | **AutoCAD como adaptador**, que no decide geometría |
+| 8 | **Fidelidad tabulada / derivada** declarada y viajando con el resultado |
+| 9 | **Degradación explícita**, nunca silenciosa |
+| 10 | **Ausencia de sólidos 3D** |
+| 11 | **Canales C como `TabulatedDerived`**, con el error de área conocido (§ siguiente) |
+| 12 | **Mejora visual de perfiles laminados e IPS/S diferidos** a una iniciativa futura separada |
+
+También aprobó, sobre el dibujo real: la geometría de las cuatro familias; las cuatro vistas; las
+generatrices exteriores **e interiores** del HSS; la representación de su espesor nominal; los perfiles
+de extremo canonicalizados, sin polilíneas cerradas degeneradas; rotación y espejo; la materialización
+por `RACKSECCION` en bloques **internos** del dibujo; y que `blocks-library.dwg` y `blocks.csv` no
+cambian.
+
+### Observación visual sobre los canales C, aceptada
+
+El Owner observó que los canales que genera RackCad **no reproducen completamente la apariencia** de los
+perfiles comerciales de las librerías CAD: les falta la **conicidad de los patines**, los **redondeos o
+chaflanes de punta** y las **transiciones características del laminado**. La comparación visual
+**confirma** que esa diferencia es la que explica el error de área conocido de la familia.
+
+El Owner acepta expresamente que los canales permanezcan como `TabulatedDerived`; que el error máximo
+medido de **5.545 %** no bloquee I-36B; que **no se inventen** radios, chaflanes ni conicidades dentro
+de esta iniciativa; que la geometría actual es **técnicamente honesta y suficiente como fundación**; y
+que el objetivo visual mejorado se atienda en una iniciativa futura.
+
+Queda dicho sin ambigüedad: la fidelidad de los canales es **derivada**, y **no** son geométricamente
+idénticos a un perfil de librería comercial. La diferencia es conocida, medida y documentada.
 
 ## Contexto
 
@@ -224,6 +266,14 @@ de implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README.md).
   Plugin no empiecen a recalcular dimensiones; que la caché no se convierta en una biblioteca de
   bloques por longitud; que ninguna degradación se vuelva silenciosa; y que la instancia prismática no
   derive en un `StructuralMember` por acumulación de campos.
+
+- **Diferido por decisión del Owner**: la **mejora visual de los perfiles laminados** —conicidad de
+  patines, radios y chaflanes de punta, transiciones de laminado— y la **incorporación de perfiles
+  IPS/S**. Es un **requisito futuro obligatorio**, no una idea opcional, y su iniciativa deberá mantener
+  **separadas** la geometría tabulada de la geometría visual o de presentación, declarar cuándo una
+  representación visual es aproximada, y **no sustituir ni alterar** la geometría tabulada que esta ADR
+  fija. Registrado en [`docs/ideas-futuras.md`](../ideas-futuras.md) y en la decisión versionada de
+  I-36B.
 
 ## Referencias
 

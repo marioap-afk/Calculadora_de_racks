@@ -4,15 +4,12 @@ automation_state:
   branch: architecture/geometria-secciones-estructurales
   claim_id: ea5d0ad2-b61b-424c-ab1b-96678eca70a3
   current_phase: 10
-  state: review-ready
-  gate: owner-validation
+  state: completed
+  gate: none
   attempts: 2
   next_action: >-
-    VALIDACION-DEL-DUENO-EN-AUTOCAD · PRIMERO-el-smoke-focalizado-de-5-puntos-evidencia-14a ·
-    solo-si-pasa-el-checklist-completo-de-12-puntos-evidencia-14b ·
-    con-el-DLL-Debug-de-ESTE-worktree ·
-    despues-el-dueno-decide-sobre-ADR-0022-que-sigue-PROPUESTO ·
-    NO-integrar-NO-limpiar-NO-abrir-I-37
+    NINGUNA-I-36B-esta-INTEGRADA-y-CERRADA · habilita-I-37-Cantilever-que-NO-se-abre-en-esta-sesion ·
+    y-deja-registrado-el-requisito-futuro-de-perfiles-IPS-S-y-geometria-visual-mejorada
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo. Verificable con git y con la CI publica.
@@ -286,3 +283,75 @@ ronda_2:
   invariantes_conservadas: >-
     289-W-525-HSS-32-C-137-L-983-total · 289-TabulatedComplete-694-TabulatedDerived-CERO-degradadas ·
     mismos-errores-de-area-y-mismos-residuos-de-centroide · catalogos-y-manifiesto-de-I-36A-sin-una-linea
+
+# --------------------------------------------------------------------------------------------------------
+# VALIDACION DEL OWNER. Gate owner-validation APROBADO.
+# --------------------------------------------------------------------------------------------------------
+owner_validation:
+  status: approved
+  date: 2026-07-28
+  owner: Mario Perez
+  sha_tecnico_validado: 30ef95c56c9ce6d3120e13c29f971c40dd65fbec
+  smoke_focalizado_5_puntos: APROBADO
+  checklist_completo_12_puntos: APROBADO
+  bloqueos: NINGUNO
+  requires_owner_validation: satisfied
+  requires_autocad: satisfied
+  adr_0022: ACEPTADO-2026-07-28-por-Mario-Perez-Owner
+  puntos_aprobados:
+    - geometria-de-las-familias-W-HSS-rect-cuad-C-y-L
+    - vistas-seccion-longitudinal-X-longitudinal-Y-e-isometrica
+    - generatrices-exteriores-E-INTERIORES-de-HSS
+    - representacion-del-espesor-nominal-de-HSS
+    - perfiles-de-extremo-canonicalizados-sin-polilineas-cerradas-degeneradas
+    - rotacion-y-espejo
+    - materializacion-mediante-RACKSECCION
+    - bloques-internos-del-dibujo
+    - ausencia-de-cambios-en-blocks-library-dwg-y-blocks-csv
+    - un-unico-plan-neutral-para-preview-y-AutoCAD
+    - contrato-de-origen-y-centroide
+    - fidelidad-y-diagnosticos-visibles
+
+# --------------------------------------------------------------------------------------------------------
+# OBSERVACION VISUAL SOBRE LOS CANALES C, aceptada por el Owner sin bloquear.
+# --------------------------------------------------------------------------------------------------------
+observacion_visual_canales:
+  que_observo_el_owner: >-
+    los-canales-de-RackCad-NO-reproducen-completamente-la-apariencia-de-los-perfiles-comerciales-de-libreria-CAD ·
+    falta-la-conicidad-de-los-patines-los-redondeos-o-chaflanes-de-punta-y-las-transiciones-del-laminado
+  confirma: que-esa-diferencia-explica-el-error-de-area-conocido-de-la-familia
+  aceptado_expresamente:
+    - los-canales-permanecen-TabulatedDerived
+    - el-error-maximo-medido-de-5.545-por-ciento-NO-bloquea-I-36B
+    - NO-se-inventan-radios-chaflanes-ni-conicidades-dentro-de-I-36B
+    - la-geometria-actual-es-tecnicamente-honesta-y-suficiente-como-fundacion
+    - el-objetivo-visual-mejorado-se-atiende-en-una-iniciativa-futura
+  NO_se_afirma: >-
+    NO-se-afirma-que-los-canales-sean-geometricamente-identicos-a-una-libreria-comercial ·
+    su-fidelidad-es-DERIVADA-y-la-diferencia-es-conocida-medida-y-documentada
+
+# --------------------------------------------------------------------------------------------------------
+# REQUISITO FUTURO OBLIGATORIO. No es un hallazgo opcional.
+# --------------------------------------------------------------------------------------------------------
+requisito_futuro_ips_s_y_geometria_visual:
+  caracter: OBLIGATORIO-registrado-por-decision-del-Owner-no-idea-opcional
+  titulo: Perfiles-IPS-S-y-geometria-visual-mejorada-de-perfiles-laminados
+  debera:
+    - incorporar-perfiles-IPS-verificando-su-correspondencia-con-la-familia-AISC-S-o-con-el-catalogo-comercial-de-la-empresa
+    - importar-la-fuente-y-dimensiones-correspondientes
+    - modelar-la-inclinacion-caracteristica-de-los-patines
+    - representar-radios-chaflanes-y-transiciones-visuales-CUANDO-EXISTA-UNA-REGLA-ACREDITADA
+    - mejorar-visualmente-canales-C-y-otros-perfiles-laminados
+    - mantener-SEPARADAS-la-geometria-tabulada-y-la-geometria-visual-o-de-presentacion
+    - declarar-claramente-cuando-una-geometria-visual-es-aproximada
+    - NO-sustituir-ni-alterar-la-geometria-tabulada-de-I-36B
+    - NO-mezclarse-con-Cantilever-salvo-que-su-contrato-lo-requiera-explicitamente
+  estado: >-
+    NO-se-abre-rama-ni-contrato-ni-worktree-en-esta-sesion
+  registrado_en:
+    - docs/ideas-futuras.md
+    - docs/automation/decisions/I-36B.md
+    - docs/automation/evidence/I-36B-geometria-secciones-estructurales.md
+    - docs/guias/geometria-secciones-estructurales.md
+    - docs/adr/0022-geometria-parametrica-de-secciones-estructurales.md
+    - este-archivo

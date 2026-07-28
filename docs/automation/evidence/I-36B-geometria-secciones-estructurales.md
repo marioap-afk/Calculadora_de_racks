@@ -1,7 +1,7 @@
 # Evidencia — I-36B · Geometría y representación prismática de secciones estructurales
 
-> Estado al cerrar esta ejecución: **`review-ready`**, gate **`owner-validation`**.
-> **No integrada. No limpiada. `main` intacta.** El checklist de AutoCAD para el dueño está en §14.
+> Estado al cerrar: **integrada (2026-07-28)**. Gate `owner-validation` **APROBADO** por el Owner.
+> ADR-0022 **aceptado**. El detalle de la validación está en §14.c.
 
 ---
 
@@ -403,6 +403,64 @@ escribe: `RACKSECCION` (aún no aparece en `RACKAYUDA`; ver §16).
 | 10 | **Eje y envolvente** | Aparecen en `RACKCAD_ANOTACIONES`; congelar esa capa los oculta y **deja la pieza** |
 | 11 | **Dos longitudes** (p. ej. 48" y 240") en vista longitudinal | El largo cambia, la sección transversal **no**; el peso total escala proporcional |
 | 12 | **Escala, selección y limpieza** | Mide una dimensión conocida con `DIST` y sale en **pulgadas**; el bloque se selecciona como una unidad; **`RACKSECCION` + Esc en el punto no deja ninguna entidad**; `blocks.csv` sin filas nuevas y `blocks-library.dwg` sin tocar; abre un dibujo con racks existentes y comprueba que **nada cambió** |
+
+### 14.c Resultado — APROBADO por el Owner
+
+```yaml
+owner_validation:
+  status: approved
+  date: 2026-07-28
+  owner: Mario Pérez
+```
+
+| Campo | Valor |
+|---|---|
+| Smoke focalizado (§14.a, 5 puntos) | **aprobado** |
+| Checklist completo (§14.b, 12 puntos) | **aprobado** |
+| SHA técnico validado | `30ef95c56c9ce6d3120e13c29f971c40dd65fbec` |
+| Bloqueos | **ninguno** |
+| `requires_owner_validation` | **satisfied** |
+| `requires_autocad` | **satisfied** |
+| ADR-0022 | **aceptado** — Mario Pérez, Owner, 2026-07-28 |
+
+Aprobados sobre el dibujo real: la geometría de las cuatro familias; las cuatro vistas; las generatrices
+exteriores **e interiores** del HSS; la representación de su espesor nominal; los perfiles de extremo
+canonicalizados, **sin polilíneas cerradas degeneradas**; rotación y espejo; la materialización por
+`RACKSECCION`; los **bloques internos** del dibujo; la ausencia de cambios en `blocks-library.dwg` y
+`blocks.csv`; el **plan neutral único** que consumen igual el preview y AutoCAD; el contrato de origen y
+centroide; y la fidelidad con sus diagnósticos visibles.
+
+#### Observación visual sobre los canales C
+
+El Owner comparó los canales de RackCad con perfiles comerciales de librerías CAD y constató que **no
+reproducen completamente su apariencia**: falta la **conicidad de los patines**, los **redondeos o
+chaflanes de punta** y las **transiciones características del laminado**. La comparación **confirma** que
+esa diferencia es la que explica el error de área conocido de la familia.
+
+Aceptado expresamente: los canales permanecen **`TabulatedDerived`**; el error máximo medido de
+**5.545 %** **no bloquea** I-36B; **no se inventan** radios, chaflanes ni conicidades dentro de esta
+iniciativa; la geometría actual es **técnicamente honesta y suficiente como fundación**; y el objetivo
+visual mejorado se atenderá en una iniciativa futura.
+
+**Esta evidencia NO afirma que los canales sean geométricamente idénticos a un perfil de librería
+comercial.** Su fidelidad es **derivada** y la diferencia es conocida, medida y documentada.
+
+#### Requisito futuro obligatorio — Perfiles IPS/S y geometría visual mejorada
+
+Registrado por decisión del Owner, **no** como hallazgo opcional. Una iniciativa futura y separada
+deberá: incorporar perfiles **IPS** verificando su correspondencia con la familia AISC `S` o con el
+catálogo comercial de la empresa; importar su fuente y dimensiones; modelar la **inclinación de los
+patines**; representar radios, chaflanes y transiciones **cuando exista una regla acreditada**; mejorar
+visualmente C y los demás laminados; mantener **separadas** la geometría tabulada y la visual;
+**declarar** cuándo una geometría visual es aproximada; **no sustituir ni alterar** la geometría tabulada
+de I-36B; y **no mezclarse con Cantilever** salvo que su contrato lo exija.
+
+**No se abrió** rama, contrato ni worktree para ella. Queda registrado en
+[`../../ideas-futuras.md`](../../ideas-futuras.md), en
+[`../decisions/I-36B.md`](../decisions/I-36B.md), en
+[ADR-0022](../../adr/0022-geometria-parametrica-de-secciones-estructurales.md), en
+[`../state/I-36B.yml`](../state/I-36B.yml) y en la
+[guía](../../guias/geometria-secciones-estructurales.md) §11.b.
 
 ## 15. Diff y guardas de alcance
 

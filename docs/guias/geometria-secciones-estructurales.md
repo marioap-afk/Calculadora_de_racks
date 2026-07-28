@@ -255,9 +255,33 @@ de frontera que vigila por reflexión que no aparezcan esos conceptos.
   máximo en 3 de 32 filas, por la conicidad y el radio de punta que AISC no publica. Está registrado en
   [`decisions/I-36B.md`](../automation/decisions/I-36B.md), y **no** convierte la fidelidad de C en
   `TabulatedComplete`.
+- **Los canales no se ven como los de una librería CAD comercial**, y eso está aceptado: ver §11.b.
 - **`RACKSECCION` no está en `RACKAYUDA`.** Añadirlo exigiría tocar `RackCommandReference`, que queda
   fuera del alcance de I-36B; `RACKPUSHBACK` tiene la misma ausencia desde antes. Anotado en
   [ideas-futuras.md](../ideas-futuras.md).
+
+---
+
+### 11.b Los perfiles laminados no tienen aún su apariencia comercial
+
+Al validar en AutoCAD, el dueño comparó los canales de RackCad con los perfiles comerciales de las
+librerías CAD. **No reproducen completamente su apariencia**: falta la **conicidad de los patines**, los
+**redondeos o chaflanes de punta** y las **transiciones características del laminado**. La comparación
+confirma que esa diferencia es la que explica el error de área de la familia.
+
+Está **aceptado y no bloquea**: los canales son `TabulatedDerived`, la geometría es honesta sobre lo que
+puede afirmar, y dentro de I-36B **no se inventan** radios, chaflanes ni conicidades. Lo que esta guía
+**no** dice, y conviene que nadie lo lea así, es que un canal de RackCad sea geométricamente idéntico a
+uno de librería comercial: su fidelidad es **derivada** y la diferencia es conocida y está medida.
+
+**Requisito futuro obligatorio.** Una iniciativa futura y separada deberá incorporar perfiles **IPS**
+—verificando antes su correspondencia con la familia AISC `S` o con el catálogo comercial de la
+empresa—, importar su fuente, modelar la inclinación de los patines, representar radios y chaflanes
+**cuando exista una regla acreditada**, y mejorar visualmente C y los demás laminados. Deberá mantener
+**separadas** la geometría tabulada y la visual, **declarar** cuándo una representación visual es
+aproximada, y **no sustituir ni alterar** la geometría tabulada que I-36B fija. No se mezcla con
+Cantilever salvo que el contrato de aquélla lo exija. Detalle en
+[`ideas-futuras.md`](../ideas-futuras.md).
 
 ---
 
@@ -283,8 +307,10 @@ de frontera que vigila por reflexión que no aparezcan esos conceptos.
 
 ---
 
-## 13. Qué queda para I-37
+## 13. Qué queda para después
 
-Convertir una sección en un **miembro**: rol, material, troqueles, conectores, ménsulas, perforaciones,
-placas terminales, cortes de extremo, reglas de fabricación, persistencia y BOM. Nada de eso vive aquí,
-y esta guía no debería crecer hacia allá.
+**I-37 — Cantilever.** Convertir una sección en un **miembro**: rol, material, troqueles, conectores,
+ménsulas, perforaciones, placas terminales, cortes de extremo, reglas de fabricación, persistencia y
+BOM. Nada de eso vive aquí, y esta guía no debería crecer hacia allá.
+
+**Perfiles IPS/S y geometría visual mejorada** (§11.b), en su propia iniciativa, aún sin abrir.

@@ -1,14 +1,25 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-28 (**I-36A integrada en `main`**: **núcleo y catálogo neutral de secciones
-> estructurales**, la primera iniciativa de la Fase 6. Funda `StructuralSection` como autoridad de la
-> sección transversal —sin rol de miembro— e importa **983** secciones de la AISC Shapes Database v16.0
-> (W 289, HSS rectangular/cuadrado 525, C 32, L 137, cero rechazadas) con un importador reproducible
-> fuera del producto y un lector CSV estricto propio. **No dibuja, no migra y no toca ningún sistema
-> vigente**: `secciones.csv` queda byte-idéntico y Domain, UI y Plugin sin un archivo cambiado. El Owner
-> aprobó el gate `owner-validation` y sus siete puntos; **sin validación en AutoCAD** porque no cambia
-> dibujo, bloques ni comandos. **ADR-0021 pasó a `aceptado`**; ADR-0020 ya lo estaba. Siguiente
-> habilitada: **I-36B**, cuya rama sigue reservada y sin crear.)
+> Actualizado: 2026-07-28 (**I-36B integrada en `main`**: **geometría y representación prismática de
+> secciones estructurales**, la segunda iniciativa de la Fase 6. Convierte las **983** secciones de
+> I-36A en geometría **generada en código** —nada de un bloque por designación—, con fidelidad
+> declarada, instancia prismática donde vive la longitud, cuatro vistas más una personalizada, **un
+> único plan neutral** que consumen igual el preview y AutoCAD, inspector mínimo y el comando
+> **`RACKSECCION`**, que inserta **bloques internos** del dibujo. Medido: 289 `TabulatedComplete`, 694
+> `TabulatedDerived`, **cero** degradadas. El Owner aprobó el gate `owner-validation` con smoke
+> focalizado y checklist completo en AutoCAD, y **ADR-0022 pasó a `aceptado`**. Aceptó también, sin
+> bloquear, que los canales C **no reproducen la apariencia** de un perfil comercial —les falta la
+> conicidad de patines, los redondeos de punta y las transiciones del laminado—: quedan
+> `TabulatedDerived` y **no se inventa** esa geometría aquí. **No toca ningún sistema vigente**:
+> `assets/catalogs`, `blocks.csv`, `blocks-library.dwg`, Domain, `deploy/` y `.github/` sin una línea, y
+> en UI y Plugin todo lo aportado son archivos nuevos. Queda registrado un **requisito futuro
+> obligatorio**: perfiles **IPS/S** y **geometría visual mejorada** de perfiles laminados, en iniciativa
+> separada y aún sin abrir. Siguiente habilitada: **I-37 — Cantilever MVP**.)
+>
+> Anterior: 2026-07-28 (**I-36A integrada en `main`**: núcleo y catálogo neutral de secciones
+> estructurales, la primera iniciativa de la Fase 6. Importa **983** secciones de la AISC Shapes
+> Database v16.0 con un importador reproducible fuera del producto y un lector CSV estricto propio.
+> **ADR-0021 pasó a `aceptado`**; ADR-0020 ya lo estaba.)
 >
 > Anterior: 2026-07-27 (**registro autorizado de la Fase 6 — Secciones estructurales y nuevos
 > sistemas**, con **I-36A**, **I-36B**, **I-37** e **I-38**. **No es una integración**: las cuatro
@@ -278,7 +289,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | ID | Iniciativa (rama) | Qué incluye | Tamaño | Depende de | Se estorba con | Estado |
 |---|---|---|---|---|---|---|
 | I-36A | `architecture/catalogo-secciones-estructurales` | **Núcleo y catálogo de secciones estructurales.** Funda `StructuralSection` como autoridad neutral de la sección transversal —**sin rol de miembro**, independiente de `RackCatalog` y de `CatalogEntryBase`— en `RackCad.Application.StructuralSections`. Importa **completas** cuatro familias de la **AISC Shapes Database v16.0**: W, HSS rectangular y cuadrado, canales C y ángulos L. Entrega: identidad y normalización determinista de designación EDI; fuente y revisión versionadas por separado del id; siete archivos bajo `assets/catalogs/` (cuatro CSV de familia **generados**, fuentes, overlay `IsEnabled` y manifiesto con conteos y SHA-256); un **importador reproducible** fuera del producto (`tools/`, .NET 8, BCL puro, cero NuGet, cero Office Interop, salida byte-idéntica entre ejecuciones, sin descarte silencioso); un **lector CSV estricto dedicado** (la tolerancia histórica de `CsvCatalogReader` queda intacta); catálogo con búsqueda por id, EDI y familia; validador propio con las severidades de I-19; unidades con peso nativo en `lb/ft`, equivalencia `kg/m` calculada y formateador dual puro; y peso por longitud. ADRs [0020](adr/0020-catalogo-neutral-de-secciones-estructurales.md) y [0021](adr/0021-identidad-unidades-y-presentacion-de-secciones.md). **Fuera de alcance:** geometría, AutoCAD, WPF, Cantilever, migración de `secciones.csv`, miembros, BOM de sistemas, cálculo resistente y `blocks-library.dwg` | M | I-19, I-26, I-23 (integradas) | I-36B | **integrada (2026-07-28)** |
-| I-36B | `architecture/geometria-secciones-estructurales` | **Geometría y representación prismática.** Deriva de los datos que I-36A conserva —sin inventar valores que la fuente no publique— el **contorno detallado** de cada familia, con sus **radios y filetes**, el **centroide** como origen documentado, las **vistas transversales y longitudinales**, la **longitud arbitraria** del prisma, su **orientación**, su **proyección** y las **definiciones AutoCAD internas derivadas**. Rama **reservada**; no se implementa en I-36A | M-L | I-36A | I-36A | pendiente |
+| I-36B | `architecture/geometria-secciones-estructurales` | **Geometría y representación prismática.** Deriva de los datos que I-36A conserva —sin inventar valores que la fuente no publique— el **contorno detallado** de cada familia, con sus **radios y filetes**, el **centroide** como origen documentado, las **vistas transversales y longitudinales**, la **longitud arbitraria** del prisma, su **orientación**, su **proyección** y las **definiciones AutoCAD internas derivadas**. Entregado: primitivas 2D/3D **aditivas**, constructores por familia en dos niveles de detalle con **fidelidad declarada** y diagnósticos, **instancia prismática** —la longitud no está en la sección—, cuatro vistas más una personalizada con teselado determinista, un **plan neutral único** que consumen igual el preview WPF y AutoCAD (no hay dos generadores), caché perezosa, inspector mínimo y el comando **`RACKSECCION`**, que materializa **bloques internos del dibujo** sin `blocks-library.dwg` ni filas en `blocks.csv`. **No se inventa ningún radio que la fuente no publique**: 289 `TabulatedComplete`, 694 `TabulatedDerived`, **cero** degradadas. Error de área **medido y documentado** por familia. [ADR-0022](adr/0022-geometria-parametrica-de-secciones-estructurales.md) **aceptado**. Los canales C quedan `TabulatedDerived` con su diferencia visual frente a un perfil comercial **conocida y aceptada**; la mejora visual y los perfiles **IPS/S** quedan como **requisito futuro obligatorio** en iniciativa separada | M-L | I-36A | I-37 | **integrada (2026-07-28)** |
 | I-37 | (por definir) ✋ | **Cantilever MVP**: primer sistema sobre secciones estructurales estándar. Descriptor, documento versionado, resolver, builders por vista, BOM y editor sobre el shell, componiendo lo compartido. Aquí es donde nacen los **configuradores de miembro** (columna, brazo, base) que aportan lo que la sección no tiene: troqueles, conectores, ménsulas, perforaciones, soldaduras, placas terminales y reglas de fabricación | L (partir al diseñarla) | I-36B | — | pendiente |
 | I-38 | (por definir) | **Ingeniería estructural de Cantilever**: verificación y dimensionado. No reabre [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md) sin un ADR nuevo que lo reemplace | L (partir al diseñarla) | I-37 | — | pendiente |
 

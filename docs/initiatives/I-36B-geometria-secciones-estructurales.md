@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-36B
 title: Geometria y representacion prismatica de secciones estructurales
 type: architecture
-status: review-ready
+status: integrated
 branch: architecture/geometria-secciones-estructurales
 base_branch: main
 priority:
@@ -233,9 +233,20 @@ representacion simplificada honesta.
 ## 13. Estado versionado y entrega
 
 Estado canonico: [`docs/automation/state/I-36B.yml`](../automation/state/I-36B.yml), actualizado al
-terminar **cada** ejecucion. `state` recorre `claimed` -> `implementing` -> `review-ready`; el gate
-final es `owner-validation`. No se abre Pull Request: el repositorio integra por `git merge --no-ff`
-desde una sesion de integracion. `completed` no significa integrada.
+terminar **cada** ejecucion. `state` recorrio `claimed` -> `implementing` -> `review-ready` ->
+`completed`. No se abrio Pull Request: el repositorio integra por `git merge --no-ff` desde una sesion
+de integracion.
+
+**Cerrada el 2026-07-28.** El Owner aprobo el gate `owner-validation` —smoke focalizado de cinco puntos
+y checklist completo de doce en AutoCAD, sin bloqueos—, **ADR-0022 quedo `aceptado`**, y la iniciativa
+esta **integrada en `main`** por `git merge --no-ff`. SHA tecnico aprobado:
+`30ef95c56c9ce6d3120e13c29f971c40dd65fbec` (CI `30378134540`, 4/4).
+
+Dos apuntes que sobreviven al cierre. Los **canales C** quedan `TabulatedDerived`: no reproducen la
+apariencia de un perfil comercial —falta la conicidad de patines, los redondeos de punta y las
+transiciones del laminado— y esa diferencia, que explica su error de area de 5.545 %, esta **aceptada**
+sin inventar geometria. Y queda registrado un **requisito futuro obligatorio**: perfiles **IPS/S** y
+**geometria visual mejorada** de perfiles laminados, en iniciativa separada, **sin rama abierta**.
 
 ## 14. Evidencia final
 

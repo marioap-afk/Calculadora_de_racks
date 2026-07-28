@@ -530,3 +530,48 @@ Arreglarlo bien es una decisión de producto pequeña pero real, no un añadido 
 **a qué grupo** pertenece cada uno —`RACKSECCION` no es «Diseñar» un rack, y podría justificar un grupo
 nuevo— y si `RACKSECCION` merece alias corto, que hoy no tiene. Conviene hacerlo de una sola vez para
 los dos, con el `README.md` en el mismo cambio.
+
+---
+
+## REQUISITO FUTURO OBLIGATORIO — Perfiles IPS/S y geometría visual mejorada de perfiles laminados
+
+> **No es una idea opcional.** Es un requisito registrado por decisión expresa del Owner el
+> **2026-07-28**, al aprobar el gate `owner-validation` de I-36B. El resto de este documento es backlog
+> recomendado; esta sección no lo es.
+
+**De dónde sale.** Al validar I-36B en AutoCAD, el Owner comparó los canales C que genera RackCad con
+los perfiles comerciales de las librerías CAD y constató que **no reproducen completamente su
+apariencia**: falta la **conicidad de los patines**, los **redondeos o chaflanes de punta** y las
+**transiciones características del laminado**. La comparación visual **confirma** que esa diferencia es
+la que explica el error de área conocido de la familia (5.545 % máximo, 3 filas de 32).
+
+El Owner aceptó esa diferencia sin bloquear I-36B: los canales quedan como `TabulatedDerived`, la
+geometría actual es **técnicamente honesta y suficiente como fundación**, y **no se inventan** radios,
+chaflanes ni conicidades dentro de I-36B. Lo que sigue es lo que una iniciativa futura **deberá** hacer.
+
+### Lo que esa iniciativa deberá hacer
+
+1. **Incorporar perfiles IPS**, verificando primero su correspondencia con la familia AISC `S` o con el
+   catálogo comercial que usa la empresa. Es una verificación, no una equivalencia asumida.
+2. **Importar la fuente y las dimensiones** correspondientes, con la misma disciplina de I-36A:
+   importador reproducible fuera del producto, sin descartes silenciosos.
+3. **Modelar la inclinación característica de los patines.**
+4. **Representar radios, chaflanes y transiciones visuales cuando exista una regla acreditada** — y solo
+   entonces. La prohibición de inventar dimensiones no se levanta; lo que cambia es que esa iniciativa
+   sí puede ir a buscar la regla a su fuente.
+5. **Mejorar visualmente los canales C y los demás perfiles laminados.**
+6. **Mantener separadas la geometría tabulada y la geometría visual o de presentación.** Son dos
+   autoridades distintas y no deben mezclarse en un solo contorno.
+7. **Declarar claramente cuándo una geometría visual es aproximada.** Misma regla que la fidelidad de
+   I-36B: lo aproximado se dice, no se insinúa.
+8. **No sustituir ni alterar la geometría tabulada de I-36B.** Es la fundación y se queda como está.
+9. **No mezclarse con Cantilever (I-37)**, salvo que el contrato de aquella lo requiera explícitamente.
+
+### Estado
+
+**No se ha abierto** rama, contrato ni worktree para ella, y no debe abrirse sin instrucción del Owner.
+Registrado también en [ADR-0022](adr/0022-geometria-parametrica-de-secciones-estructurales.md), en la
+[decisión versionada de I-36B](automation/decisions/I-36B.md), en su
+[evidencia](automation/evidence/I-36B-geometria-secciones-estructurales.md), en su
+[estado](automation/state/I-36B.yml) y en la
+[guía de geometría](guias/geometria-secciones-estructurales.md).
