@@ -1,0 +1,357 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-36B
+  branch: architecture/geometria-secciones-estructurales
+  claim_id: ea5d0ad2-b61b-424c-ab1b-96678eca70a3
+  current_phase: 10
+  state: completed
+  gate: none
+  attempts: 2
+  next_action: >-
+    NINGUNA-I-36B-esta-INTEGRADA-y-CERRADA · habilita-I-37-Cantilever-que-NO-se-abre-en-esta-sesion ·
+    y-deja-registrado-el-requisito-futuro-de-perfiles-IPS-S-y-geometria-visual-mejorada
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo. Verificable con git y con la CI publica.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: eafb785bed8dde32cb6cc61cef9eeaa0a0976667
+  base_asunto: Merge I-36A - nucleo y catalogo de secciones estructurales
+  base_ci: VERDE-run-30364323887-4-de-4-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-merge-sin-rebase-sin-cherry-pick-sin-bisect
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  rama_objetivo: architecture-geometria-secciones-estructurales-LIBRE-reservada-por-I-36A-y-ahora-reclamada
+  owner_decisions_md: NO-EXISTE-en-el-repositorio
+  siguiente_adr_libre: 0022
+  i36a_carga_y_valida: SI-ShippedStructuralSectionCatalogTests-29-de-29-verde-983-secciones
+  catalogo_coincide_con_su_manifiesto: SI
+  conflicto_material_con_otra_iniciativa: >-
+    ninguno · nadie mas toca Application-Geometry · Application-StructuralSections · UI-Preview ·
+    Plugin-Drawing · el registro de comandos ni los indices documentales
+
+# --------------------------------------------------------------------------------------------------------
+# MAPA DE REUTILIZACION, producido ANTES de escribir codigo.
+# --------------------------------------------------------------------------------------------------------
+mapa_de_reutilizacion:
+  primitivas_existentes_reutilizables:
+    - Application-Geometry-Point2D-con-ApproxEquals
+    - UI-Controls-PreviewProjection-fit-world-a-canvas-uniforme-con-Unproject-que-es-el-ajuste-al-area-que-pide-el-inspector
+    - UI-Controls-PreviewPalette-colores
+    - UI-Controls-NumericField-captura-numerica-localizada-para-la-longitud
+    - UI-Controls-CatalogCombo-para-el-filtro-de-familia
+  primitivas_que_faltan_y_se_anaden_ADITIVAMENTE:
+    - vector-2D
+    - limites-2D
+    - transformacion-2D-con-rotacion-y-espejo-Placement2D-solo-traslada
+    - segmento-de-linea
+    - arco-circular
+    - trayectoria-ordenada
+    - contorno-cerrado
+    - punto-vector-y-marco-3D-para-orientacion-y-proyeccion
+  preview_existente_reutilizable: >-
+    PreviewProjection-y-PreviewPalette-si · el-shell-de-editores-de-I-30-NO-porque-el-inspector-no-es-un-editor-de-sistema
+  patron_de_materializacion_autocad: >-
+    LockDocument-StartTransaction-BlockTable-ForWrite-BlockTableRecord-con-nombre-unico-AddNewlyCreatedDBObject-AppendEntity-Commit-ApplyRegen ·
+    mas-editor-GetPoint-para-el-punto-de-insercion · se-reutiliza-el-patron-no-se-copia-infraestructura
+  riesgos_de_infraestructura_paralela:
+    riesgo: crear-un-segundo-Point2D-un-segundo-proyector-de-preview-o-un-segundo-generador-geometrico
+    mitigacion: >-
+      un-UNICO-Point2D-reutilizado · un-UNICO-proyector-PreviewProjection ·
+      y-un-UNICO-generador-geometrico-cuyo-plan-neutral-consumen-igual-la-UI-y-el-Plugin
+
+# --------------------------------------------------------------------------------------------------------
+# VIABILIDAD GEOMETRICA MEDIDA ANTES DEL RECLAMO sobre las 983 filas reales, para no descubrir un
+# bloqueo a mitad de la implementacion. Reproducible: las cifras salen de los CSV distribuidos.
+# --------------------------------------------------------------------------------------------------------
+viabilidad_medida:
+  kdes_disponible: presente-en-el-100-por-ciento-de-W-C-y-L-y-kdes-menos-tf-mayor-que-cero-SIEMPRE
+  degradaciones_por_falta_de_radio: CERO
+  W:
+    regla: r-igual-a-kdes-menos-tf
+    acreditacion: >-
+      el-Readme-define-kdes-como-la-distancia-de-la-cara-EXTERIOR-del-patin-al-pie-del-filete ·
+      restarle-el-espesor-del-patin-da-el-radio-del-filete-de-raiz
+    error_area_maximo: 0.732-por-ciento
+    error_area_medio: 0.118-por-ciento
+    filas_sobre_5_por_ciento: 0
+    fidelidad_prevista: TABULADA-COMPLETA
+  HSS-RECT:
+    regla_radio_exterior: r-igual-a-Ht-menos-h-entre-2-y-tambien-B-menos-b-entre-2-porque-h-y-b-son-las-paredes-PLANAS
+    coherencia_entre_ambas_expresiones: discrepancia-relativa-maxima-4.762-por-ciento-por-el-redondeo-a-tres-cifras
+    radio_interior: se-deriva-como-radio-exterior-menos-tnom
+    hallazgo: >-
+      con-tnom-el-error-de-area-es-8.34-por-ciento-de-media-y-10.927-maximo-en-las-525-filas ·
+      con-tdes-cae-a-1.068-de-media-y-4.581-maximo-con-CERO-filas-sobre-el-5-por-ciento
+    interpretacion: >-
+      la-A-publicada-por-AISC-se-calcula-con-el-espesor-de-DISENO-y-la-decision-11-del-dueno-fija-el-NOMINAL-para-la-geometria ·
+      son-dos-magnitudes-distintas-POR-DEFINICION-no-un-defecto-de-la-geometria
+    resolucion: >-
+      el-contorno-usa-tnom-y-la-comprobacion-de-area-de-esta-familia-se-hace-contra-tdes-dejando-constancia-de-ambas-cifras
+    fidelidad_prevista: TABULADA-DERIVADA-los-radios-se-derivan-no-se-publican
+  C:
+    error_area_maximo: 5.545-por-ciento
+    filas_sobre_5_por_ciento: 3-de-32
+    causa: >-
+      AISC-incluye-en-su-area-el-redondeo-de-la-PUNTA-del-patin-que-la-fuente-NO-publica ·
+      modelarlo-bajaria-el-error-a-3.895-por-ciento-y-seria-INVENTAR-un-radio-que-la-decision-13-prohibe
+    resolucion: >-
+      se-conserva-el-contorno-SIN-radio-de-punta · el-area-geometrica-queda-por-encima-de-la-publicada ·
+      y-se-DOCUMENTA-en-vez-de-disimularse
+    fidelidad_prevista: TABULADA-DERIVADA-PARCIALMENTE-nunca-completa
+  L:
+    regla: r-igual-a-kdes-menos-t
+    error_area_maximo: 3.012-por-ciento
+    error_area_medio: 0.814-por-ciento
+    filas_sobre_5_por_ciento: 0
+    fidelidad_prevista: TABULADA-DERIVADA-PARCIALMENTE-por-la-misma-punta-no-publicada
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  - n: 1
+    nombre: reclamo
+    estado: HECHA
+    commit: 83f3692
+  - n: 2
+    nombre: contrato-decision-y-ADR-0022
+    estado: HECHA
+  - n: 3
+    nombre: primitivas-y-contrato-geometrico
+    estado: HECHA
+    commit: d1a01f0
+  - n: 4
+    nombre: builders-W-y-HSS
+    estado: HECHA
+    commit: 6cb407e
+  - n: 5
+    nombre: builders-C-y-L
+    estado: HECHA
+    commit: 6cb407e
+  - n: 6
+    nombre: instancia-prismatica-y-proyeccion
+    estado: HECHA
+    commits: d241e03-y-4b66bf5
+  - n: 7
+    nombre: preview-e-inspector
+    estado: HECHA
+    commit: 2185962
+  - n: 8
+    nombre: materializacion-y-comando-RACKSECCION
+    estado: HECHA
+    commit: 3dce1f9
+  - n: 9
+    nombre: pruebas-completas
+    estado: HECHA
+    commit: 67fec4a
+  - n: 10
+    nombre: documentacion-evidencia-y-estado
+    estado: HECHA
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE. Se verifican con git diff al cerrar, no se afirman.
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  assets_catalogs: cero-lineas-incluidos-secciones-csv-y-blocks-csv
+  blocks_library_dwg: no-se-toca-y-no-se-crean-bloques-de-biblioteca
+  domain: cero-archivos
+  sistemas_vigentes_de_ui_y_plugin: cero-cambios-funcionales
+  deploy_y_github: cero-archivos
+  handoff: NO-SE-TOCA-hasta-la-sesion-de-integracion
+  roadmap_columna_estado: NO-se-marca-integrada-en-esta-corrida
+  i37: >-
+    NO-se-implementa-Cantilever · sin-StructuralMember-postes-brazos-largueros-celosias-ni-bases ·
+    sin-conexiones-troqueles-perforaciones-placas-soldaduras-ni-fabricacion
+  solidos_3d: NO-sin-Region-sin-Solid3d-sin-extrusion-sin-sweep-solo-wireframe-2D
+  adr_0022: nace-PROPUESTO-y-solo-el-dueno-lo-acepta-tras-la-validacion-en-AutoCAD
+
+# --------------------------------------------------------------------------------------------------------
+# RESULTADOS MEDIDOS al cerrar la fase 10. Cifras reproducibles: salen de las suites, no de una estimacion.
+# --------------------------------------------------------------------------------------------------------
+resultados_medidos:
+  secciones_con_geometria: 983-de-983-en-los-DOS-niveles-de-detalle-sin-una-sola-excepcion
+  fidelidad:
+    TabulatedComplete: 289-todas-las-W
+    TabulatedDerived: 694-HSS-C-y-L
+    DegradedToSimplified: 0
+  error_de_area_frente_al_A_publicado:
+    W: max-0.732-media-0.118-sobre5-0
+    HssRectangular: max-10.927-media-8.34-sobre5-525-DIFERENCIA-DE-DEFINICION-ver-abajo
+    Channel: max-5.545-media-2.812-sobre5-3-por-la-punta-no-publicada
+    Angle: max-3.012-media-0.814-sobre5-0
+  hss_con_el_mismo_contorno_pero_tdes: max-4.581-media-1.068-sobre5-CERO
+  hss_interpretacion: >-
+    AISC-calcula-A-con-espesor-de-DISENO-y-la-geometria-dibuja-el-NOMINAL-por-decision-11-del-dueno ·
+    el-contorno-es-correcto-lo-que-difiere-es-que-espesor-significa-cada-numero
+  centroides:
+    W-y-HSS: residuo-menor-que-1e-9-pulgadas
+    Channel-peor-caso: 0.0373-in-1.244-por-ciento-en-AISC-C-C3X3_5
+    Angle-peor-caso: 0.0099-in-0.329-por-ciento-en-AISC-L-L3X3X3_16
+  suites:
+    RackCad_Tests: 2043-de-2043-base-1851-mas-192
+    RackCad_UI_Tests: 523-de-523-mas-29
+  builds:
+    application_debug: 0-errores
+    ui_debug: 0-errores
+    plugin_debug: 0-errores-propios-2-avisos-MSB3277-preexistentes-de-System-Drawing
+    bundle: OK-147-comprobaciones-DLL-y-catalogos-identicos-cero-DLL-de-Autodesk
+  ci_sobre_el_sha_publicado: VERDE-4-de-4-run-30377854819-sobre-a1360ec-ronda-1-fue-30374044447-sobre-69c11eb
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE VERIFICADAS con git diff --name-only origin/main..HEAD (34 archivos, +7144, -0).
+# --------------------------------------------------------------------------------------------------------
+guardas_verificadas_al_cerrar:
+  assets_catalogs: CERO-lineas
+  blocks_library_dwg: NO-TOCADO
+  domain: CERO-archivos
+  sistemas_vigentes: CERO-cambios-todo-lo-nuevo-son-archivos-nuevos
+  deploy_y_github: CERO-archivos
+  roadmap_y_handoff: CERO-lineas-WORKFLOW-seccion-8-prohibe-tocarlos-desde-una-rama-paralela
+  readme: ACTUALIZADO-porque-WORKFLOW-seccion-8-lo-EXIGE-al-cambiar-los-comandos-de-AutoCAD
+  main: INTACTA
+  i37: NO-implementada
+  solidos_3d_y_bloques_dinamicos: NINGUNO
+
+# --------------------------------------------------------------------------------------------------------
+# HALLAZGO FUERA DE ALCANCE, anotado en docs/ideas-futuras.md conforme a WORKFLOW seccion 8.
+# --------------------------------------------------------------------------------------------------------
+hallazgo_fuera_de_alcance:
+  que: >-
+    RackCommandReference-la-fuente-de-verdad-de-RACKAYUDA-no-lista-RACKSECCION-ni-RACKPUSHBACK ·
+    el-de-PushBack-falta-desde-I-32
+  por_que_no_se_arregla_aqui: >-
+    RackCommandReference-es-UI-vigente-y-esta-fuera-del-alcance-declarado ·
+    ademas-exige-decidir-grupo-y-alias-que-es-criterio-de-producto-no-un-anadido-mecanico
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA 2 — el gate owner-validation quedo RECHAZADO PARCIALMENTE y estos son los cuatro puntos.
+# Rojos escritos y VISTOS FALLAR antes del arreglo: 34 de 42 sobre la base 4444027.
+# --------------------------------------------------------------------------------------------------------
+ronda_2:
+  base_revisada: 4444027dd941d7a2a3be37bfb9755955e656976c
+  origin_main_avanzo: NO-sigue-en-eafb785-asi-que-no-hubo-rebase
+  F1_generatrices_interiores:
+    defecto: >-
+      AddWireframe-generaba-perfiles-de-extremo-para-TODOS-los-contornos-pero-generatrices-solo-desde-contours-0 ·
+      un-HSS-visto-de-lado-se-dibujaba-como-barra-maciza
+    arreglo: >-
+      todos-los-contornos-aportan-generatrices ·
+      roles-SEPARADOS-Generatrix-InteriorGeneratrix-y-EndProfile-EndProfileHole-no-un-rol-con-bandera
+    medido_en_HSS4X4X1_4_a_120in_LongitudinalX: >-
+      seis-rectas-en--2--1.75--1.65-1.65-1.75-2 · separacion-0.25-in-igual-a-tnom-medible-con-DIST ·
+      seis-y-no-ocho-porque-los-arcos-son-CONCENTRICOS-y-sus-tangencias-coinciden-en-1.65
+    invariante_bajo_rotacion_y_espejo: SI-comprobada-a-0-grados-a-90-grados-y-espejada
+    W_C_y_L: CERO-lineas-interiores-fijado-por-rol-y-por-recuento-en-tres-vistas
+  F2_canonicalizacion_de_proyecciones:
+    defecto: >-
+      un-contorno-proyectado-a-lo-largo-de-X-o-Y-colapsa-a-recta-y-se-emitia-CERRADO ·
+      en-AutoCAD-una-polilinea-de-area-cero-que-recorre-cada-arista-de-ida-y-vuelta
+    arreglo: >-
+      dimensionalidad-de-la-proyeccion-calculada-DESPUES-de-proyectar ·
+      cerrada-solo-si-conserva-area · si-colapsa-segmentos-abiertos-unicos-sin-solapes-sin-recorridos-inversos-sin-colineales-redundantes-sin-longitud-cero ·
+      roles-conservados-y-salida-determinista
+    costura_con_autocad: >-
+      la-invariante-vive-en-el-TIPO-SectionPlanCurve-rechaza-cerrada-unidimensional ·
+      mas-guarda-de-fuente-que-exige-que-Closed-salga-SOLO-de-curve-IsClosed
+    efectos_correctos_del-mismo-pase:
+      - dos-generatrices-colineales-se-funden-en-una-dibujan-la-misma-tinta
+      - la-boca-del-tubo-no-se-dibuja-aparte-de-canto-porque-cae-DENTRO-de-la-cara-de-corte
+      - la-envolvente-de-un-dibujo-plano-deja-de-ser-un-rectangulo-cerrado-de-area-cero
+  F3_contrato_del_centroide:
+    problema: dos-conceptos-publicos-distintos-bajo-el-nombre-Centroid
+    ahora:
+      Origin: cero-cero-la-autoridad-de-colocacion
+      OriginBasis: Symmetry-en-W-y-HSS-TabulatedCentroid-en-C-y-L
+      GeometricContourCentroid: centroide-del-contorno-APROXIMADO-metrica-diagnostica
+      GeometricCentroidResidual: cuanto-se-separan
+      SectionReferencePointKind: Centroid-renombrado-a-TabulatedCentroid
+    geometria_movida: NINGUNA-los-residuos-son-los-mismos-que-en-la-primera-entrega
+    guarda: prueba-de-vocabulario-que-prohibe-un-miembro-publico-llamado-solo-Centroid
+  F4_decision_del_owner_sobre_canales:
+    registrada_en: docs/automation/decisions/I-36B.md
+    contenido: >-
+      C-se-acepta-con-TabulatedDerived · error-maximo-5.545-por-ciento-conocido-3-de-32-filas ·
+      causa-conicidad-y-radio-de-punta-no-publicados · NO-se-inventara-geometria-para-forzar-el-area ·
+      la-excepcion-NO-convierte-la-fidelidad-en-TabulatedComplete
+  F5_smoke_focalizado: >-
+    cinco-puntos-en-la-evidencia-14a-antes-del-checklist-completo ·
+    HSS-LongitudinalX-HSS-isometrico-W12X26-LongitudinalX-C10X15_3-LongitudinalY-L8X6X1-LongitudinalX
+  invariantes_conservadas: >-
+    289-W-525-HSS-32-C-137-L-983-total · 289-TabulatedComplete-694-TabulatedDerived-CERO-degradadas ·
+    mismos-errores-de-area-y-mismos-residuos-de-centroide · catalogos-y-manifiesto-de-I-36A-sin-una-linea
+
+# --------------------------------------------------------------------------------------------------------
+# VALIDACION DEL OWNER. Gate owner-validation APROBADO.
+# --------------------------------------------------------------------------------------------------------
+owner_validation:
+  status: approved
+  date: 2026-07-28
+  owner: Mario Perez
+  sha_tecnico_validado: 30ef95c56c9ce6d3120e13c29f971c40dd65fbec
+  smoke_focalizado_5_puntos: APROBADO
+  checklist_completo_12_puntos: APROBADO
+  bloqueos: NINGUNO
+  requires_owner_validation: satisfied
+  requires_autocad: satisfied
+  adr_0022: ACEPTADO-2026-07-28-por-Mario-Perez-Owner
+  puntos_aprobados:
+    - geometria-de-las-familias-W-HSS-rect-cuad-C-y-L
+    - vistas-seccion-longitudinal-X-longitudinal-Y-e-isometrica
+    - generatrices-exteriores-E-INTERIORES-de-HSS
+    - representacion-del-espesor-nominal-de-HSS
+    - perfiles-de-extremo-canonicalizados-sin-polilineas-cerradas-degeneradas
+    - rotacion-y-espejo
+    - materializacion-mediante-RACKSECCION
+    - bloques-internos-del-dibujo
+    - ausencia-de-cambios-en-blocks-library-dwg-y-blocks-csv
+    - un-unico-plan-neutral-para-preview-y-AutoCAD
+    - contrato-de-origen-y-centroide
+    - fidelidad-y-diagnosticos-visibles
+
+# --------------------------------------------------------------------------------------------------------
+# OBSERVACION VISUAL SOBRE LOS CANALES C, aceptada por el Owner sin bloquear.
+# --------------------------------------------------------------------------------------------------------
+observacion_visual_canales:
+  que_observo_el_owner: >-
+    los-canales-de-RackCad-NO-reproducen-completamente-la-apariencia-de-los-perfiles-comerciales-de-libreria-CAD ·
+    falta-la-conicidad-de-los-patines-los-redondeos-o-chaflanes-de-punta-y-las-transiciones-del-laminado
+  confirma: que-esa-diferencia-explica-el-error-de-area-conocido-de-la-familia
+  aceptado_expresamente:
+    - los-canales-permanecen-TabulatedDerived
+    - el-error-maximo-medido-de-5.545-por-ciento-NO-bloquea-I-36B
+    - NO-se-inventan-radios-chaflanes-ni-conicidades-dentro-de-I-36B
+    - la-geometria-actual-es-tecnicamente-honesta-y-suficiente-como-fundacion
+    - el-objetivo-visual-mejorado-se-atiende-en-una-iniciativa-futura
+  NO_se_afirma: >-
+    NO-se-afirma-que-los-canales-sean-geometricamente-identicos-a-una-libreria-comercial ·
+    su-fidelidad-es-DERIVADA-y-la-diferencia-es-conocida-medida-y-documentada
+
+# --------------------------------------------------------------------------------------------------------
+# REQUISITO FUTURO OBLIGATORIO. No es un hallazgo opcional.
+# --------------------------------------------------------------------------------------------------------
+requisito_futuro_ips_s_y_geometria_visual:
+  caracter: OBLIGATORIO-registrado-por-decision-del-Owner-no-idea-opcional
+  titulo: Perfiles-IPS-S-y-geometria-visual-mejorada-de-perfiles-laminados
+  debera:
+    - incorporar-perfiles-IPS-verificando-su-correspondencia-con-la-familia-AISC-S-o-con-el-catalogo-comercial-de-la-empresa
+    - importar-la-fuente-y-dimensiones-correspondientes
+    - modelar-la-inclinacion-caracteristica-de-los-patines
+    - representar-radios-chaflanes-y-transiciones-visuales-CUANDO-EXISTA-UNA-REGLA-ACREDITADA
+    - mejorar-visualmente-canales-C-y-otros-perfiles-laminados
+    - mantener-SEPARADAS-la-geometria-tabulada-y-la-geometria-visual-o-de-presentacion
+    - declarar-claramente-cuando-una-geometria-visual-es-aproximada
+    - NO-sustituir-ni-alterar-la-geometria-tabulada-de-I-36B
+    - NO-mezclarse-con-Cantilever-salvo-que-su-contrato-lo-requiera-explicitamente
+  estado: >-
+    NO-se-abre-rama-ni-contrato-ni-worktree-en-esta-sesion
+  registrado_en:
+    - docs/ideas-futuras.md
+    - docs/automation/decisions/I-36B.md
+    - docs/automation/evidence/I-36B-geometria-secciones-estructurales.md
+    - docs/guias/geometria-secciones-estructurales.md
+    - docs/adr/0022-geometria-parametrica-de-secciones-estructurales.md
+    - este-archivo

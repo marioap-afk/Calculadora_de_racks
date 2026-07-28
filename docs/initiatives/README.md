@@ -443,6 +443,44 @@ Planes disponibles:
   habilitado/deshabilitado y confirmacion de que los sistemas existentes no cambiaron);
   `requires_owner_decision: false`. Estado versionado en
   [`../automation/state/I-36A.yml`](../automation/state/I-36A.yml).
+- [`I-36B-geometria-secciones-estructurales.md`](I-36B-geometria-secciones-estructurales.md):
+  **Geometria y representacion prismatica de secciones estructurales** (tipo: architecture; rama
+  `architecture/geometria-secciones-estructurales`). **Segunda iniciativa de la Fase 6.** I-36A entrego
+  983 secciones y, deliberadamente, ninguna forma de VERLAS; I-36B las convierte en geometria
+  **generada en codigo** desde sus dimensiones. El patron vigente no servia: resolver cada pieza a un
+  bloque de `blocks-library.dwg` via `blocks.csv` exigiria **983 bloques dibujados a mano** contra un
+  archivo que no se versiona, y perderia justo lo que hace util un perfil normalizado —que su contorno
+  es derivable—. Entrega: primitivas neutrales **aditivas** en `RackCad.Application.Geometry`
+  (vector, limites, transformacion con espejo, arco circular, contorno cerrado con area y centroide
+  **analiticos**, marcos 3D); constructores por familia (W, HSS rect./cuad., C, L) en dos niveles de
+  detalle con **fidelidad declarada** y diagnosticos; **instancia prismatica** donde vive la longitud
+  —la seccion no tiene largo—, con rotacion y espejo; proyeccion ortografica a cinco vistas
+  (deliberadamente **no** llamadas frontal/lateral/planta) y teselado determinista por tolerancia de
+  cuerda; un **plan neutral unico** con roles semanticos y firma determinista que **el preview de la UI
+  y el adaptador de AutoCAD consumen igual** —no puede haber dos generadores geometricos, y hay guardas
+  de codigo que lo comprueban—; cache perezosa por seccion y detalle; inspector minimo sobre
+  `PreviewCanvas`/`PreviewProjection`; y el comando **`RACKSECCION`**, que materializa el plan como
+  **bloque interno del dibujo**, sin `blocks-library.dwg` y sin filas nuevas en `blocks.csv`. La regla
+  que no se cruza: **no se inventa un radio que la fuente no publique** —`r = kdes − tf` y la esquina
+  del HSS **si** se derivan y estan documentados; el redondeo de punta del ala y la conicidad del
+  canal **no**, y por eso C y L declaran `TabulatedDerived` y nunca `TabulatedComplete`—. El error de
+  area por familia se **mide y se reporta** sin manipular la geometria: el del HSS (media 8.34 %) es
+  una **diferencia de definicion** —AISC calcula `A` con espesor de diseño, la geometria dibuja el
+  nominal— acreditada por una prueba que reconstruye el mismo contorno con `tdes` y cae a 1.068 %.
+  Resultado medido sobre la v16.0: 289 `TabulatedComplete`, 694 `TabulatedDerived` y **cero**
+  degradadas. Decision en
+  [ADR-0022](../adr/0022-geometria-parametrica-de-secciones-estructurales.md), que **no reabre** a
+  ADR-0020 ni a ADR-0021 y respeta [ADR-0005](../adr/0005-estrategia-de-unidades.md) (pulgada interna,
+  cero conversion). Las 25 decisiones vinculantes del dueño estan versionadas en
+  [`../automation/decisions/I-36B.md`](../automation/decisions/I-36B.md). **Fuera de alcance**: I-37
+  Cantilever e I-38, `StructuralMember` y todo configurador de miembro, conexiones/troqueles/placas/
+  soldaduras/cortes de extremo, cargas y calculo resistente, persistencia y round-trip de lo insertado,
+  solidos 3D y bloques dinamicos, migracion de catalogos, cambios en sistemas vigentes, en
+  `blocks-library.dwg` o filas nuevas en `blocks.csv`. `requires_autocad: **true**` (dibuja, asi que
+  las pruebas no cierran el gate), `requires_owner_validation: **true**` (checklist de doce puntos en
+  la evidencia); `requires_owner_decision: false`. Guia en
+  [`../guias/geometria-secciones-estructurales.md`](../guias/geometria-secciones-estructurales.md);
+  estado versionado en [`../automation/state/I-36B.yml`](../automation/state/I-36B.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

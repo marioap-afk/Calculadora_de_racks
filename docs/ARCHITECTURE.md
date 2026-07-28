@@ -265,9 +265,36 @@ guardado no deja de abrirse.
 
 `secciones.csv` **no se migra**: sigue siendo la fuente vigente de todos los sistemas vigentes, sin cambio
 funcional, hasta que migraciones futuras —una por configurador, strangler— la retiren. I-36A **no
-dibuja**: no toca `blocks.csv`, no crea bloques y no modifica `blocks-library.dwg`. La geometría
-derivada es I-36B. Detalle completo en
+dibuja**: no toca `blocks.csv`, no crea bloques y no modifica `blocks-library.dwg`. Detalle completo en
 [guias/secciones-estructurales.md](guias/secciones-estructurales.md).
+
+### 4.4.2 Geometría paramétrica de secciones (I-36B)
+
+La geometría de esas 983 secciones se **deriva en código** desde sus dimensiones, gobernada por
+[ADR-0022](adr/0022-geometria-parametrica-de-secciones-estructurales.md). No hay un bloque por
+designación ni bloques dinámicos: el contorno de un perfil normalizado es paramétrico, y 983 bloques
+dibujados a mano contra un DWG que no se versiona habrían perdido justo eso.
+
+El régimen es distinto del de §4.4: la sección vive en **XY** con el **centroide** en el origen y **Z**
+como eje longitudinal; el contorno exterior es antihorario y los huecos horarios, normalizado al
+construir. La **longitud no está en la sección** —vive en una instancia prismática, que además aporta
+rotación y espejo—, así que el catálogo no crece una fila por medida.
+
+Lo que la fuente no publica **se declara en vez de inventarse**. El nivel de detalle es lo que se pide
+(`Simplified` / `Tabulated`); la **fidelidad** es lo que se obtuvo y viaja con el resultado
+(`TabulatedComplete`, `TabulatedDerived`, `DegradedToSimplified`), siempre con diagnóstico cuando
+degrada. Los radios derivables tienen regla documentada (`r = kdes − tf`; esquina HSS desde las paredes
+planas); el redondeo de punta del ala y la conicidad del canal no se modelan porque AISC no los
+publica.
+
+La frontera clave: `RackCad.Application` produce un **plan neutral único**
+(`StructuralSectionRepresentationPlan`) —curvas ya proyectadas con rol, límites, fidelidad,
+diagnósticos y firma determinista— y **tanto el preview de la UI como el adaptador de AutoCAD lo
+consumen sin recalcular nada**. No puede haber dos generadores geométricos; hay guardas de código que
+lo comprueban. `RACKSECCION` materializa ese plan como **bloque interno del dibujo**, sin
+`blocks-library.dwg` y sin filas nuevas en `blocks.csv`. Lo insertado es geometría, no un rack: sin
+payload, sin GUID y sin round-trip. Detalle y limitaciones en
+[guias/geometria-secciones-estructurales.md](guias/geometria-secciones-estructurales.md).
 
 ### 4.5 Layout de almacén
 

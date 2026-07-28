@@ -61,6 +61,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0019](0019-shell-visual-de-editores-por-composicion.md) | Shell visual de editores por composición y slots, agnóstico al sistema | aceptado |
 | [0020](0020-catalogo-neutral-de-secciones-estructurales.md) | Catálogo neutral de secciones estructurales | aceptado |
 | [0021](0021-identidad-unidades-y-presentacion-de-secciones.md) | Identidad, unidades y presentación de secciones estructurales | aceptado |
+| [0022](0022-geometria-parametrica-de-secciones-estructurales.md) | Geometría paramétrica y representación prismática de secciones estructurales | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -89,3 +90,20 @@ exacta de IDs, seguía bajo gate y el dueño la había rechazado parcialmente en
 `{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}`, `ID_NAMESPACE` como autoridad explícita declarada por la
 fuente, `AISC-SHAPES` con namespace `AISC`, la revisión fuera del ID, y para `HSS4X4X1/4` su Manual
 Label visible con EDI `HSS4X4X.250` e ID `AISC-HSS-RECT-HSS4X4X_250`.
+
+Iniciativa I-36B (`architecture/geometria-secciones-estructurales`): **ADR-0022 quedó `aceptado` el
+2026-07-28** y no reabre a ADR-0020 ni a ADR-0021. Nació `propuesto` a propósito: sus decisiones
+—origen en el centroide tabulado, Z longitudinal, sección frente a instancia prismática, radios solo
+derivables de forma documentada, wireframe sin líneas ocultas y bloque interno en vez de biblioteca por
+designación— son **verificables sobre el dibujo real**, y el gate `owner-validation` de I-36B incluía
+AutoCAD, así que aceptarlas antes de que el dueño las mirase habría dicho lo contrario de lo que
+ocurría. El dueño ejecutó el smoke focalizado y el checklist completo y aprobó los doce puntos.
+
+Dos apuntes que el registro deja explícitos y conviene no perder. **Los canales C son
+`TabulatedDerived`, no una geometría idéntica a la de una librería comercial**: al compararlos, el dueño
+constató que les falta la conicidad de los patines, los redondeos de punta y las transiciones del
+laminado, y que esa diferencia es justamente la que explica el error de área conocido del 5.545 %. La
+aceptó sin bloquear, con la condición expresa de **no inventar** esas dimensiones aquí. Y la **mejora
+visual de perfiles laminados junto con los perfiles IPS/S** queda **diferida como requisito futuro
+obligatorio** a una iniciativa separada, que deberá mantener apartada la geometría visual de la
+tabulada y **no alterar** esta última.

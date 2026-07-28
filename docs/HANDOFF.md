@@ -781,6 +781,67 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
 
 ## 4. Siguiente acción
 
+### I-36B — INTEGRADA en `main` (2026-07-28) — **segunda de la Fase 6**
+
+El Owner **aprobó el gate `owner-validation`** tras ejecutar en AutoCAD el **smoke focalizado de cinco
+puntos** y el **checklist completo de doce**, sin bloqueos. La iniciativa queda **integrada**; no queda
+acción pendiente de I-36B.
+
+Convierte las **983** secciones de I-36A en **geometría dibujable**, generada **en código** desde sus
+dimensiones: nada de un bloque por designación. Aporta primitivas 2D/3D aditivas, constructores por
+familia en dos niveles de detalle con **fidelidad declarada**, la **instancia prismática** donde vive la
+longitud —la sección no la tiene—, cuatro vistas más una personalizada, **un único plan neutral** que
+consumen igual el preview WPF y AutoCAD, un inspector mínimo y el comando **`RACKSECCION`**.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `architecture/geometria-secciones-estructurales` |
+| **SHA técnico aprobado** por el Owner | `30ef95c56c9ce6d3120e13c29f971c40dd65fbec` (CI **30378134540**, 4/4) |
+| SHA final de rama | vive en `git log`; su delta contra el aprobado es **solo documentación** |
+| **Validación en AutoCAD** | **APLICA y está APROBADA** (`requires_autocad: satisfied`, `requires_owner_validation: satisfied`) |
+| Geometría | **983 / 983** en los dos niveles de detalle, sin excepción; **289** `TabulatedComplete` (W), **694** `TabulatedDerived` (HSS, C, L), **cero** degradadas |
+| Error de área medido | W 0.732 % máx · HSS 10.927 % · C 5.545 % · L 3.012 %. El del HSS es **diferencia de definición** (AISC usa `tdes`, la geometría dibuja `tnom`; con `tdes` cae a 4.581 % máx y cero filas sobre el 5 %) |
+| Suites al integrar | **2043** `RackCad.Tests` + **523** `RackCad.UI.Tests`, cero fallos, cero omitidas |
+| Builds Debug | Application, UI y Plugin sin errores propios (2 `MSB3277` conocidas en Plugin) |
+| Bundle | **147 comprobaciones**, DLL y catálogos idénticos, cero DLL de Autodesk |
+| ADR | **ADR-0022 ACEPTADO** el 2026-07-28 por Mario Pérez, Owner. No reabre ADR-0020 ni ADR-0021 |
+| Rebase | **no necesario**: `origin/main` no avanzó desde la base `eafb785`. Rebase final **no-op** |
+| **MERGE_SHA** | vive en `git log --first-parent main`; este documento **no lo inventa** |
+| Limpieza | rama local, rama remota y worktree **eliminados** tras confirmar el merge |
+
+**Dos rondas de corrección antes de aprobar.** La primera validación rechazó parcialmente el gate: las
+generatrices salían solo del contorno exterior, así que un **HSS visto de lado se dibujaba macizo**; y un
+perfil proyectado exactamente a lo largo de X o Y **colapsa a una recta** y se seguía emitiendo como
+polilínea **cerrada** —en AutoCAD, área cero recorrida dos veces e imposible de seleccionar—. Ambos están
+corregidos, con la invariante viviendo en el **tipo**: `SectionPlanCurve` rechaza una curva cerrada
+unidimensional, y el adaptador copia `IsClosed` tal cual, así que no queda camino al dibujo.
+
+**Los canales C no se ven como los de una librería CAD comercial, y está aceptado.** Al compararlos, el
+Owner constató que falta la **conicidad de los patines**, los **redondeos de punta** y las **transiciones
+del laminado**, y que esa diferencia es la que explica su error de área. Aceptó sin bloquear: los canales
+son **`TabulatedDerived`**, la geometría es honesta sobre lo que puede afirmar y **no se inventan** esas
+dimensiones aquí. **No son geométricamente idénticos a un perfil comercial**, y la documentación no lo
+afirma en ningún punto.
+
+**Requisito futuro OBLIGATORIO registrado: perfiles IPS/S y geometría visual mejorada de perfiles
+laminados.** Una iniciativa futura y separada deberá incorporar IPS —verificando su correspondencia con
+la familia AISC `S` o con el catálogo comercial de la empresa—, importar su fuente, modelar la
+inclinación de los patines, representar radios y chaflanes **cuando exista una regla acreditada**, y
+mejorar visualmente C y los demás laminados; manteniendo **separadas** la geometría tabulada y la visual,
+**declarando** cuándo una representación visual es aproximada, y **sin sustituir ni alterar** la
+geometría tabulada de I-36B. No se mezcla con Cantilever salvo que su contrato lo exija. **No se abrió**
+rama, contrato ni worktree para ella. Registrado en `docs/ideas-futuras.md`, en la decisión versionada de
+I-36B, en su evidencia, en su estado, en la guía y en ADR-0022.
+
+**Lo que NO cambió, verificado con `git diff`:** `assets/catalogs/**` sin una línea —`secciones.csv`,
+`blocks.csv` y el manifiesto de I-36A intactos—; `blocks-library.dwg` sin tocar; `src/RackCad.Domain`,
+`deploy/` y `.github/` con **cero** archivos. En UI y Plugin **todo lo aportado son archivos nuevos**: no
+se modificó ni un archivo de los sistemas vigentes. El único archivo preexistente tocado fuera de `docs/`
+es `README.md`, porque WORKFLOW §8 obliga a registrar allí un comando de AutoCAD nuevo en la misma rama.
+
+**Siguiente iniciativa habilitada: I-37 — Cantilever MVP**, que **no** se implementó ni se abrió en esta
+sesión.
+
 ### I-36A — INTEGRADA en `main` (2026-07-28) — **abre la Fase 6**
 
 El Owner **aprobó el gate `owner-validation` y sus siete puntos**. La iniciativa queda **integrada**; no
@@ -1027,7 +1088,27 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-36A — 2026-07-28** (la vigente):
+**Baseline integrada de I-36B — 2026-07-28** (la vigente):
+
+- candidato de **código** aprobado por el Owner y por CI:
+  `30ef95c56c9ce6d3120e13c29f971c40dd65fbec` (CI run `30378134540`, **success** 4/4). El SHA final de
+  rama difiere del aprobado **solo en documentación** —cero archivos de `src`, `tests`, `tools`,
+  `assets`, `deploy` o `.github`—, así que el árbol técnico validado y el integrado son el mismo;
+- **validación en AutoCAD APROBADA**: smoke focalizado de cinco puntos **y** checklist completo de doce,
+  sobre el DLL Debug del worktree de la rama, sin bloqueos;
+- suites **2043** + **523**, cero fallos, cero omitidas; builds Debug de Application, UI y Plugin sin
+  errores propios; bundle **147 comprobaciones**;
+- **983 secciones** generan geometría en los **dos** niveles de detalle sin una sola excepción: **289**
+  `TabulatedComplete`, **694** `TabulatedDerived`, **cero** degradadas. Ningún diagnóstico silencioso;
+- el error de área por familia está **medido y documentado**, no ajustado: el del HSS es una diferencia
+  de **definición** —AISC calcula `A` con `tdes` y la geometría dibuja `tnom`, y una prueba lo acredita
+  reconstruyendo el mismo contorno con `tdes`—, y el de C es la conicidad y el radio de punta que la
+  fuente no publica, **aceptado por decisión del Owner**;
+- **ADR-0022 aceptado**; el requisito futuro de **IPS/S y geometría visual mejorada** queda registrado en
+  cinco documentos y **sin rama abierta**;
+- **sin rebase**: `origin/main` no avanzó desde la base `eafb785`; rebase final **no-op**.
+
+Anterior: **baseline integrada de I-36A — 2026-07-28**:
 
 - candidato de **código** aprobado por el Owner y por CI:
   `5cd526cca252ffcd30dc0e598c8e3049632ea4ec` (CI run `30354958938`, **success** 4/4). El SHA final de
