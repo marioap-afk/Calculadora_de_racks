@@ -508,7 +508,7 @@ Planes disponibles:
 - [`I-36D-perfiles-aisc-s.md`](I-36D-perfiles-aisc-s.md): **perfiles AISC S/IPS y geometria visual
   derivada**, cuarta iniciativa de la Fase 6 y la iniciativa separada que I-36B exigio como
   **requisito futuro obligatorio**. Incorpora las **28 filas** `Type = S` que I-36A dejo fuera
-  —contadas y declaradas, no perdidas— como **familia propia** con token `S` e id `AISC-S-S10X25.4`,
+  —contadas y declaradas, no perdidas— como **familia propia** con token `S` e id `AISC-S-S10X25_4` (el punto normaliza a `_` por ADR-0021),
   con `SSectionDimensions` como **tipo propio** y no como alias de W. El hecho que la gobierna esta
   **medido contra el libro**, no citado: la AISC Shapes Database v16.0 **no publica la pendiente del
   patin ni ningun radio explicito**, ni para S ni para ninguna familia —el unico encabezado con `tan`

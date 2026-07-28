@@ -46,7 +46,9 @@ de AISC y que parte es una **convencion visual de RackCad**.
 Resultado verificable:
 
 - las 28 filas `Type = S` importadas, **cero descartes silenciosos**, en `structural-sections-s.csv`;
-- id `AISC-S-S10X25.4` — token de familia `S`, estable y distinto de `W`;
+- id `AISC-S-S10X25_4` — token de familia `S`, estable y distinto de `W` (el punto de la designación
+  normaliza a `_` por **ADR-0021**, ya aceptado: mismo caso que `AISC-HSS-RECT-HSS4X4X_250`; la
+  designación EDI conserva su punto en su propio campo);
 - geometria con **patin inclinado** y filete visual, en los dos niveles de detalle;
 - una **autoridad declarada** que viaja con el resultado y separa dato tabulado de convencion visual;
 - una **advertencia visible** en el inspector y en el mensaje de insercion.

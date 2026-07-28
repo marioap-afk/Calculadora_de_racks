@@ -70,12 +70,20 @@ de ejecución ni de compilación.
 | HSS rectangular y cuadrado | `HSS-RECT` | `HSS` con paredes | 525 (126 cuadrados) |
 | Canales americanos | `C` | `C` | 32 |
 | Ángulos simples | `L` | `L` | 137 |
-| **Total** | | | **983** |
+| Vigas estándar americanas (IPS) | `S` | `S` | 28 |
+| **Total** | | | **1 011** |
+
+> **`S` entró con I-36D**, no con I-36A. Sus 28 filas estaban **contadas y declaradas** como exclusión
+> del MVP, nunca perdidas. Lo que las hacía especiales no era el dato —que está completo— sino que el
+> libro **no publica la pendiente de su patín**: verlo requiere una convención propia, y eso exigía
+> [ADR-0023](../adr/0023-geometria-visual-derivada-perfiles-s.md).
 
 ### Tipos deliberadamente NO importados
 
-`2L` (639), `WT` (289), **HSS redondo** (189), `PIPE` (51), `MC` (40), `S` (28), `ST` (28), `HP` (22),
-`M` (16), `MT` (14). Total **1 316**. Se **reportan** por tipo; no son un error.
+`2L` (639), `WT` (289), **HSS redondo** (189), `PIPE` (51), `MC` (40), `ST` (28), `HP` (22),
+`M` (16), `MT` (14). Total **1 288**. Se **reportan** por tipo; no son un error.
+
+(`S` figuraba aquí hasta I-36D, con sus 28 filas. Ya no: ahora es una familia importada.)
 
 `2L` merece una nota: una fila de doble ángulo describe un **ensamble** de dos ángulos a una
 separación dada, que es una decisión de miembro, no una sección transversal.
@@ -99,6 +107,7 @@ sin cambios el copiado a la carpeta `catalogs/` del plugin y el empaquetado del 
 | `structural-sections-hss-rect.csv` | 525 HSS rectangulares y cuadrados | **No** — salida generada |
 | `structural-sections-c.csv` | 32 canales C | **No** — salida generada |
 | `structural-sections-l.csv` | 137 ángulos L | **No** — salida generada |
+| `structural-sections-s.csv` | 28 vigas S / IPS | **No** — salida generada |
 | `structural-section-sources.csv` | La fuente lógica y su procedencia | **No** — salida generada |
 | `structural-section-status.csv` | Overlay de habilitado/deshabilitado | **SÍ**, es el único |
 | `structural-sections-manifest.json` | Conteos y SHA-256 de los archivos **inmutables** | **No** — salida generada |

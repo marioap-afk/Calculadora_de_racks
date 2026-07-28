@@ -240,3 +240,75 @@ particular** y el error absoluto máximo (**2.592 %**) queda **por debajo del 3 
 
 La convención candidata es **geométricamente viable para las 28 filas**. Su aceptación no es
 geométrica sino del Owner, sobre el dibujo real, mediante **ADR-0023** (`propuesto`).
+
+---
+
+# Evidencia de implementación (fases 2-4)
+
+## 6. Catálogo
+
+| Comprobación | Resultado |
+|---|---|
+| Filas `Type = S` importadas | **28**, cero descartes silenciosos |
+| Total del catálogo | **1 011** (983 + 28) |
+| `countsByFamily.S` | **28**; `S` **retirado** de `excludedTypeCounts` |
+| Archivo nuevo | `structural-sections-s.csv`, SHA-256 `C081CD93F95A1BBD5F701C6975D18803AA6CC2E798D94B5038544383E8CF3707` |
+| **Los cuatro CSV previos** | **byte-idénticos** — `git diff` vacío y los cuatro SHA-256 sin cambio (`9259F672…`, `FDC8E3E4…`, `E42871A4…`, `6B507700…`) |
+| `structural-section-sources.csv` | sin cambio (`AD2AC230…`) |
+| `secciones.csv` | **intacto** |
+| `mapperVersion` | `I-36A.2` → **`I-36D.1`** — el mapeo ganó una familia, así que un catálogo del mapper anterior debe fallar **ruidosamente**, no cargar con una familia ausente |
+| Reproducibilidad | dos ejecuciones del importador produjeron el **mismo** SHA-256 en los seis archivos |
+
+**Corrección del id sentinela.** El contrato anunciaba `AISC-S-S10X25.4`. El id real es
+**`AISC-S-S10X25_4`**: `StructuralSectionDesignationNormalizer` convierte el punto en `_`, y esa regla
+la fija **ADR-0021, ya aceptado**, con el ejemplo `AISC-HSS-RECT-HSS4X4X_250`. Cambiarla habría roto los
+**525** ids de HSS ya presentes en diseños guardados. Se corrigió el **documento**, no el normalizador.
+La designación EDI publicada conserva su punto (`S10X25.4`) en su propio campo.
+
+**`T_F` se omite del esquema de S**, en vez de escribirse vacío: AISC reserva sus notas especiales a W,
+M, WT y MT, y las 28 filas lo dejan en blanco. `SourceSpecialNote` queda `null`.
+
+## 7. Geometría
+
+| Comprobación | Resultado |
+|---|---|
+| Builder | `SSectionGeometryBuilder`, hermano de los cuatro existentes |
+| Autoridad | eje **nuevo y ortogonal** `SectionGeometryAuthority`; `SectionFidelity` **no cambia** |
+| S | `VisualDerived` en **los dos** niveles de detalle |
+| W, HSS, C, L | `TabulatedConstrained` — comprobado sobre las 983, en ambos niveles |
+| Fidelidad de S | `TabulatedDerived` en `Tabulated`, `Simplified` en `Simplified`, **cero degradadas** |
+| Recuento global | `TabulatedComplete` 289 · `TabulatedDerived` **722** (694 + 28) |
+| Bounds | ancho = `bf`, alto = `d`, **exactos** en las 28 × 2 niveles |
+| Centroide | residuo < 1e-9 por simetría doble |
+| Excepciones por designación | **ninguna**: las 28 derivan el filete sin degradar |
+| Área | +0,25 % a +2,59 %, **diagnóstica**, con prueba de **banda** que falla si alguien la cierra ajustando la regla |
+
+**La advertencia vive en el tipo.** `StructuralSectionGeometry.Create` **lanza** si la autoridad es
+`VisualDerived` y falta el diagnóstico `SG_VISUAL_CONVENTION_APPLIED`. No es una convención de
+llamada: ninguna ruta futura puede perderla.
+
+**Una sola tubería.** `StructuralSectionRepresentationPlan` transporta la autoridad y la incluye en su
+`Signature()`; el preview y AutoCAD lo consumen igual. Dos guardas de fuente comprueban que el
+adaptador **no** reimplementa la pendiente, el filete ni la familia.
+
+## 8. UI y Plugin
+
+- Filtro de familia: **«S / IPS — viga estándar americana»**, poblado desde `StructuralSectionFamilies.All`.
+- Inspector: línea de autoridad **destacada** (negrita, color), visible **sólo** para `VisualDerived`.
+- `RACKSECCION` y el botón del menú: advertencia **incondicional** bajo `plan.IsVisualDerived` —no
+  depende del detalle, ni de la fidelidad, ni de opción alguna—. Una guarda de fuente comprueba además
+  que no existe ninguna bandera que la apague.
+- **Cero** inspectores, previews, comandos o adaptadores nuevos.
+
+## 9. Pruebas y builds
+
+| Gate | Resultado |
+|---|---|
+| `RackCad.Tests` | **2 093 / 2 093** (base 2 071, +22) |
+| `RackCad.UI.Tests` | **538 / 538** (base 534, +4) |
+| Builds Debug | Application, UI y Plugin — 0 errores propios (2 `MSB3277` conocidas del Plugin) |
+| Bundle | **153 comprobaciones** (147 + 6 por el CSV nuevo); DLL idénticos al publish, catálogos idénticos a `assets/catalogs`, cero DLL Autodesk |
+| Harness del bundle | **10 / 10** (1 válido + 9 negativos) |
+
+Suites nuevas: `StructuralSectionSFamilyTests` (20), dos guardas de fuente del Plugin, tres pruebas de
+inspector y el caso `S = 28` del filtro por familia.
