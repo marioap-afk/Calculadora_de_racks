@@ -1,6 +1,19 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-27 (**I-23 integrada en `main`**: **namespaces finales por sistema** (E8).
+> Actualizado: 2026-07-27 (**registro autorizado de la Fase 6 — Secciones estructurales y nuevos
+> sistemas**, con **I-36A**, **I-36B**, **I-37** e **I-38**. **No es una integración**: las cuatro
+> filas nacen en estado `pendiente` y ninguna se ha integrado. Se registran desde la rama
+> `architecture/catalogo-secciones-estructurales` porque el dueño lo **autorizó expresamente** al
+> abrir I-36A y exigió que lo hiciera su primer commit sustantivo —sin el registro, el plan no
+> existía— (decisión versionada en [`docs/automation/decisions/I-36A.md`](automation/decisions/I-36A.md)).
+> La regla general no cambia: la **columna Estado** y `docs/HANDOFF.md` se tocan **solo** en la sesión
+> de integración, como último commit de la rama (WORKFLOW §4.5.4 y §8), y esta rama no lo ha hecho.
+> La fase separa la **sección transversal** del **miembro** y de la **pieza comercial**
+> ([ADR-0020](adr/0020-catalogo-neutral-de-secciones-estructurales.md), que **reemplaza a ADR-0008**
+> solo en autoridad conceptual, y [ADR-0021](adr/0021-identidad-unidades-y-presentacion-de-secciones.md),
+> que **no** reemplaza a ADR-0005).)
+>
+> Anterior: 2026-07-27 (**I-23 integrada en `main`**: **namespaces finales por sistema** (E8).
 > **CIERRA LA FASE 5.** Refactor **mecánico** bajo congelación funcional total: **176 archivos movidos
 > con `git mv`**, todos como renombre, sin una sola línea de lógica. Los **cuatro** proyectos de producto
 > —Domain, Application, **UI** y Plugin— quedan repartidos en `Systems.{Selective, Dynamic, PushBack,
@@ -162,6 +175,7 @@
 | 3 | Componentes reutilizables | UI y Plugin componibles (controles, shell, draw service genérico) | Un editor nuevo cuesta ~300 líneas; rejilla de seguridad única |
 | 4 | Primer sistema nuevo | Push Back sobre la arquitectura nueva + guía validada | Push Back completo sin editar código de otros sistemas |
 | 5 | Migración progresiva — **CERRADA (2026-07-27)** | Los sistemas existentes adoptan la arquitectura, uno a uno | CUMPLIDO: editores migrados al shell (I-30/I-31); **namespaces finales por sistema en los cuatro proyectos (I-23)**; lista de archivos calientes reducida. Queda I-25 en backlog diferido |
+| 6 | Secciones estructurales y nuevos sistemas | Una autoridad neutral de **sección transversal** (independiente del rol de miembro) sobre la que nazcan los sistemas de perfil estándar, empezando por Cantilever | Catálogo neutral completo y verificable (I-36A) → geometría prismática derivada (I-36B) → Cantilever dibujando y con BOM (I-37) → su ingeniería estructural (I-38) |
 
 Las fases se traslapan donde las dependencias lo permiten: la pista de UI (I-14→I-15) puede correr
 en paralelo con la Fase 2 de Application porque tocan capas distintas.
@@ -237,6 +251,27 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-34 | `feature/edicion-masiva-seguridad` ✋ | **Edición masiva de matrices de seguridad**: implementa **PB-007**, que I-32 registró y I-33 dejó explícitamente fuera de alcance pidiendo decisión del Owner por tocar diálogos COMPARTIDOS. Hoy las rejillas de seguridad son celda a celda (solo «Todos»/«Ninguno»): quitar el desviador del segundo nivel en 100 frentes cuesta 100 clics. Añade una **fundación común pura sobre `SelectionMatrixModel`** con **celda primaria no persistida**, estado **Activar/Desactivar** y alcances **Celda / Nivel / Frente-o-Poste / Todo**, al patrón de «Aplicar a:» que ya existe en los editores (`SelectiveApplyScope`, `DynamicRackCellScope`). La infraestructura es **agnóstica a `RackSystemKind`**: cada diálogo declara sus etiquetas y capacidades. Celdas **ausentes ignoradas**, **una** notificación agregada por operación masiva y **sin rebuild por celda**. Fuera de alcance: DTO, formato de alambre, stores, geometría, BOM, catálogos, DWG, namespaces, shell visual, `DesviadorCellsAreByPost`, **parrilla** y **defensa** | M | I-14, I-22, I-32, I-33 (integradas) | I-23, I-25 | **integrada (2026-07-27)** — validación manual del Owner **APROBADA** sobre el candidato `dbdda74`; incluye la **parrilla del Selectivo**, incorporada por addendum normativo del Owner. La **defensa** no entró y **no bloqueó**: queda como candidato futuro independiente |
 | I-35 | `feature/editor-avanzado-push-back` ✋ | **Editor avanzado de módulos de Push Back**: implementa **PB-011**, la prioridad alta del Owner que I-32 dejó diferida. El Dinámico permitía seleccionar un módulo —cabecera o separador— y personalizarlo; Push Back no. Entrega la **edición longitudinal de Cabeceras y Separadores** por módulo de RACK (los módulos son **una sola secuencia longitudinal**, nunca por frente ni por poste) con **selección única**; la **configuración transaccional** de cabecera —confirmar/cancelar sobre una **copia**, sin modificar `RackFrameConfiguratorWindow`—; la **altura manual de cabecera**; el **refuerzo total o parcial del poste derivado**; la **cantidad y separación globales de separadores**; y la **restauración individual y global**. Los cuatro parámetros avanzados son **globales del rack**, viven en su propia sección y reutilizan **exclusivamente** las autoridades existentes (`ManualHeaderHeightOverride`, `DerivedPostReinforced`, `DerivedPostReinforcementHeight`, `SeparatorCountOverride`, `SeparatorSpacingOverride`): **cero autoridades nuevas**. La reconciliación empareja por **`ModuleId + Kind`** exacto, **adapta** `Depth` y peralte de una cabecera conservada, y **reporta** preservados, adaptados, eliminados, incompatibles y restaurados: no existe descarte ordinario. Preserva **I-33** (frentes en blanco y fronteras suprimidas) y **PB-013**. Fuera de alcance: `SelectionMatrix*`, `Safety*GridWindow`, topes, desviadores, guías, defensas, Selectivo, catálogos, DWG y cambios funcionales en el Dinámico | M | I-15, I-17, I-18, I-21, I-30, I-32, I-33, I-34 (integradas) | I-23, I-25 | **integrada (2026-07-27)** — primera ronda del Owner **parcialmente rechazada** (cuatro residuos), corregidos; validación manual del Owner **APROBADA** sobre el candidato `f2be30c` |
 
+### Fase 6 — Secciones estructurales y nuevos sistemas
+
+> **Registro autorizado expresamente por el dueño al abrir I-36A** (decisión versionada en
+> [`docs/automation/decisions/I-36A.md`](automation/decisions/I-36A.md)): I-36A e I-36B no tenían fila
+> y el dueño ordenó que la creara el primer commit sustantivo de `architecture/catalogo-secciones-estructurales`.
+> I-37 e I-38 se registran como **plan**, sin implementarse ni reclamarse.
+>
+> El eje de la fase es una separación que los sistemas actuales no necesitaban: la **sección
+> transversal** (qué forma tiene el material) deja de ser lo mismo que el **miembro** (para qué se usa)
+> y que la **pieza comercial** (qué SKU se compra). Cantilever la fuerza: la misma `W12X28` puede ser
+> columna, brazo o base. La decisión vive en [ADR-0020](adr/0020-catalogo-neutral-de-secciones-estructurales.md),
+> que **reemplaza a ADR-0008** solo en autoridad conceptual —`secciones.csv` sigue operando sin cambio
+> como catálogo legado hasta que las migraciones futuras, una por configurador, lo retiren—.
+
+| ID | Iniciativa (rama) | Qué incluye | Tamaño | Depende de | Se estorba con | Estado |
+|---|---|---|---|---|---|---|
+| I-36A | `architecture/catalogo-secciones-estructurales` | **Núcleo y catálogo de secciones estructurales.** Funda `StructuralSection` como autoridad neutral de la sección transversal —**sin rol de miembro**, independiente de `RackCatalog` y de `CatalogEntryBase`— en `RackCad.Application.StructuralSections`. Importa **completas** cuatro familias de la **AISC Shapes Database v16.0**: W, HSS rectangular y cuadrado, canales C y ángulos L. Entrega: identidad y normalización determinista de designación EDI; fuente y revisión versionadas por separado del id; siete archivos bajo `assets/catalogs/` (cuatro CSV de familia **generados**, fuentes, overlay `IsEnabled` y manifiesto con conteos y SHA-256); un **importador reproducible** fuera del producto (`tools/`, .NET 8, BCL puro, cero NuGet, cero Office Interop, salida byte-idéntica entre ejecuciones, sin descarte silencioso); un **lector CSV estricto dedicado** (la tolerancia histórica de `CsvCatalogReader` queda intacta); catálogo con búsqueda por id, EDI y familia; validador propio con las severidades de I-19; unidades con peso nativo en `lb/ft`, equivalencia `kg/m` calculada y formateador dual puro; y peso por longitud. ADRs [0020](adr/0020-catalogo-neutral-de-secciones-estructurales.md) y [0021](adr/0021-identidad-unidades-y-presentacion-de-secciones.md). **Fuera de alcance:** geometría, AutoCAD, WPF, Cantilever, migración de `secciones.csv`, miembros, BOM de sistemas, cálculo resistente y `blocks-library.dwg` | M | I-19, I-26, I-23 (integradas) | I-36B | pendiente |
+| I-36B | `architecture/geometria-secciones-estructurales` | **Geometría y representación prismática.** Deriva de los datos que I-36A conserva —sin inventar valores que la fuente no publique— el **contorno detallado** de cada familia, con sus **radios y filetes**, el **centroide** como origen documentado, las **vistas transversales y longitudinales**, la **longitud arbitraria** del prisma, su **orientación**, su **proyección** y las **definiciones AutoCAD internas derivadas**. Rama **reservada**; no se implementa en I-36A | M-L | I-36A | I-36A | pendiente |
+| I-37 | (por definir) ✋ | **Cantilever MVP**: primer sistema sobre secciones estructurales estándar. Descriptor, documento versionado, resolver, builders por vista, BOM y editor sobre el shell, componiendo lo compartido. Aquí es donde nacen los **configuradores de miembro** (columna, brazo, base) que aportan lo que la sección no tiene: troqueles, conectores, ménsulas, perforaciones, soldaduras, placas terminales y reglas de fabricación | L (partir al diseñarla) | I-36B | — | pendiente |
+| I-38 | (por definir) | **Ingeniería estructural de Cantilever**: verificación y dimensionado. No reabre [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md) sin un ADR nuevo que lo reemplace | L (partir al diseñarla) | I-37 | — | pendiente |
+
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el
 dibujo, snapping, colisiones, clear height, undo/redo, shop drawings, 3D/IFC, optimizador IA, SQL/API
 (cuando lleguen: sus stores nacen instanciables tras interfaz).
@@ -306,6 +341,12 @@ graph LR
   I22 --> I34
   I32 --> I34
   I33 --> I34
+  I19[I-19 validador-catalogos] --> I36A[I-36A catalogo-secciones-estructurales]
+  I26[I-26 test-catalog-ids] --> I36A
+  I23 --> I36A
+  I36A --> I36B[I-36B geometria-secciones-estructurales]
+  I36B --> I37[I-37 Cantilever MVP]
+  I37 --> I38[I-38 ingenieria estructural de Cantilever]
 ```
 
 Sin dependencias previas (pero sus estorbos aplican — principio 7): I-03 (estorba I-11),
@@ -327,6 +368,7 @@ Fase 4:        I-18 (Push Back; su prerequisito de bloques DWG arranca ANTES, en
                (si ADR-0002=B: I-28 sustituye/precede a I-18 como primer gran módulo)
 Fase 5:        I-20 → I-22 → I-25; I-21; I-24; I-23 AL FINAL (depende de todas)
                Shell visual: I-30 → I-31 → reanudación de I-18 (secuencia obligatoria, serializada)
+Fase 6:        I-36A → I-36B → I-37 → I-38 (cadena estricta: cada una necesita la anterior integrada)
 ```
 
 Reglas de asignación: cada pista toca UNA capa (I-10 es Plugin y corre en la pista B, al final);
