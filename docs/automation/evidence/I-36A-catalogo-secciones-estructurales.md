@@ -215,6 +215,137 @@ como integrada; I-36B sin abrir y su rama sin crear; y **`main` intacta**.
 
 ---
 
+## 0-bis. Micro-ronda 3 — los dos residuos funcionales y las tres correcciones documentales
+
+La ronda 2 quedó **aprobada en sus cuatro correcciones principales**. Quedaban dos residuos
+funcionales y tres correcciones documentales; esta micro-ronda los cierra. **Sin cambios en los cuatro
+CSV de familias ni en sus ids.**
+
+### 0-bis.1 Preflight de reanudación
+
+| Comprobación | Resultado |
+|---|---|
+| HEAD al reanudar | `f8122a8dd69d73cb70f85d23c4a5893d405bb262` — la punta revisada |
+| Upstream | `origin/architecture/…` en el **mismo SHA**: nada sin publicar |
+| `git status` | limpio |
+| Stashes | cero |
+| Merge / rebase / cherry-pick / bisect | ninguno |
+| Divergencia real vs `origin/main` | **0 detrás / 10 delante**; `merge-base = a35374f = origin/main` |
+| ¿`origin/main` avanzó? | **No** → sin rebase |
+| Worktrees | los dos esperados; el principal sigue en `a35374f` |
+
+### 0-bis.2 Rojos observados
+
+Nueve, todos por comportamiento contra la API de `f8122a8`:
+
+| # | Caso | Rojo |
+|---|---|---|
+| 1–4 | `sourceWorksheet` incorrecto pero no vacío: `Database v15.0`, `Datos`, `database v16.0`, `Database v16.0 ` | `Assert.NotEmpty() Failure: Collection was empty` |
+| 5–7 | `mapperVersion` incorrecto pero no vacío: `I-36A.1`, `I-36A.3`, `otra-cosa` | `Assert.NotEmpty() Failure: Collection was empty` |
+| 8 | Fuente adicional **sin** secciones | `Assert.NotEmpty() Failure: Collection was empty` |
+| 9 | Rollback con una restauración imposible | `Expected: typeof(System.InvalidOperationException)` / `Actual: typeof(System.IO.IOException)` |
+
+El rojo 9 es exactamente el defecto: la excepción del rollback **sustituía** a la que causó el fallo.
+
+Dos de los casos exigidos **ya estaban cubiertos** antes del fix y se dejan fijados explícitamente:
+**fuente adicional CON secciones** (el bucle de secciones ya lo detectaba) y **catálogo correcto**.
+
+### 0-bis.3 Diseño final de la validación de metadata
+
+`StructuralSectionsManifest` esquema **1.0** exige ahora, además de lo que ya exigía:
+
+| Regla | Cómo |
+|---|---|
+| `sourceWorksheet` compatible con fuente y revisión | `StructuralSectionSource.TryExpectedWorksheet(sourceId, revision)` — para `AISC-SHAPES` + `16.0` ⇒ **`Database v16.0`**. Comparación ordinal, exacta |
+| `mapperVersion` = la que este build soporta | `StructuralSectionsManifest.SupportedMapperVersion` (`I-36A.2`), comparación ordinal |
+| Constante de mapeo **compartida** | Vive en **Application** y la consumen el lector y el importador. `AiscRowMapper.MapperVersion` **desaparece**: eran dos copias del mismo número |
+| Regla del worksheet **compartida** | `AiscWorkbookVerifier.DataWorksheetFor` **delega** en la autoridad de Application en vez de concatenar por su cuenta |
+| **Exactamente una** fuente en el catálogo v1 | `catalog.Sources.Count != 1` ⇒ error, con los ids que sí hay |
+| Esa fuente coincide con el manifiesto | `sourceId`, `sourceRevision` e `idNamespace`, uno a uno |
+| Todas las secciones pertenecen a ella | Recorrido sobre `catalog.All` |
+| Una fuente adicional **no utilizada** | Error igualmente |
+
+**Precisión que evita una lectura errónea de F2:** el **modelo** es deliberadamente multi-fuente —para
+eso existe el namespace de id— pero el **formato de distribución 1.0** no lo es. Un catálogo con dos
+fuentes es un catálogo que este manifiesto no sabe describir: sus conteos y sus hashes no dirían nada
+de la mitad de lo que hay. Por eso la restricción vive en el **validador del manifiesto** y no en
+`StructuralSectionCatalog`, que sigue admitiendo N autoridades.
+
+### 0-bis.4 Garantía exacta del rollback
+
+```text
+try:
+    escribir staging
+    sembrar overlay si falta      -> se REGISTRA como creado ANTES de escribirlo
+    por cada archivo: respaldar si existe -> mover -> hook
+catch (fallo de publicacion):
+    failures  = Rollback(...)          # intenta TODO, nunca lanza
+    failures += RemoveWorkingFolders() # idem
+    si failures: originalException.Data[RollbackFailuresKey] = failures
+    throw;                             # la ORIGINAL, no la del cleanup
+```
+
+**Lo que se garantiza:** el rollback **intenta** cada restauración y cada eliminación, no se detiene en
+la primera que falla y **nunca sustituye** la excepción que lo provocó. Cuando todos los intentos
+salen bien, el directorio queda exactamente como estaba.
+
+**Lo que NO se garantiza, y ahora se dice:**
+
+- **La restauración se intenta, no se asegura.** El sistema de archivos puede negarse —archivo
+  bloqueado por otro proceso, atributo de solo lectura, disco lleno—. En ese caso el directorio **no**
+  vuelve a su estado anterior, y los fallos quedan adjuntos a la excepción original bajo
+  `ImportOutputWriter.RollbackFailuresKey`, legibles con `RollbackFailuresOf`.
+- **Atomicidad frente a un corte de energía o a un proceso liquidado.** No es demostrable con una
+  prueba.
+
+En ambos casos lo que protege al consumidor no es una promesa sino un mecanismo: el **manifiesto se
+publica el último**, así que un conjunto parcial o parcialmente restaurado ya no cuadra con sus hashes
+y `Load()` se niega a abrirlo.
+
+**El overlay** se siembra ahora **antes** de los reemplazos y se registra como creado, de modo que un
+fallo posterior lo retira. Sembrarlo al final dejaba un archivo que el rollback no conocía y volvía
+falsa la frase «el directorio queda exactamente como estaba».
+
+La regresión lo demuestra entero: deja reemplazar `sources` y `c`, **bloquea `c`** —ya reemplazado—,
+falla en `hss-rect`, y comprueba que (1) sobrevive la excepción original, (2) el fallo de rollback se
+informa y nombra el archivo, (3) `sources` y `hss-rect` **sí** se restauraron, (4) el bloqueado no, y
+(5) el catálogo resultante **no se puede cargar**.
+
+### 0-bis.5 Correcciones documentales
+
+| # | Corrección | Dónde |
+|---|---|---|
+| 1 | `C6X6.7` → **`C5X6.7`** | Comentario **activo** de `AiscShapesImporter.WeightTolerance` |
+| 2 | La designación EDI es única **por fuente**, no global, y por qué | XML-doc de `StructuralSectionCatalog` |
+| 3 | Un namespace identifica **exactamente una** fuente; dos no lo comparten bajo el esquema actual | XML-doc de `StructuralSectionSource.IdNamespace` |
+
+**ADR-0021 sigue en `propuesto`.** Su aceptación expresa se registrará después de esta micro-ronda.
+
+### 0-bis.6 Gates de la micro-ronda 3
+
+| Gate | Resultado |
+|---|---|
+| Rojos dirigidos, vistos fallar antes del fix | **9** |
+| `RackCad.Tests` | **1851 / 1851** (ronda 2: 1837 → **+14**) |
+| `RackCad.UI.Tests` | **494 / 494** |
+| Build herramienta Debug | 0 errores, 0 advertencias |
+| Build `RackCad.Application` Debug | 0 errores, 0 advertencias |
+| Build `RackCad.UI` Debug | 0 errores, 0 advertencias |
+| Build `RackCad.Plugin` Debug | 0 errores (2 `MSB3277` conocidos) |
+| Bundle build + verify | **OK, 147 comprobaciones** |
+| `--check` contra el libro oficial | OK en las **dos** categorías |
+| Reimportación completa | W **289**, HSS-RECT **525**, C **32**, L **137**, total **983**, rechazadas **0** |
+| Hashes de los cuatro CSV de familia | **idénticos**; `git diff` sobre `assets/` vacío tras reimportar |
+
+### 0-bis.7 Lo que no cambió
+
+`secciones.csv` y los diez catálogos vigentes byte-idénticos; `blocks.csv` y `blocks-library.dwg`
+intactos; `src/RackCad.Domain`, `src/RackCad.UI`, `src/RackCad.Plugin`, `deploy/` y `.github/` con
+**cero archivos cambiados**; `docs/HANDOFF.md` sin tocar; la columna Estado del ROADMAP sin marcar nada
+como integrada; **I-36B sin abrir y su rama sin crear**; y **`main` intacta en `a35374f`**.
+
+---
+
 ## 1. Preflight real (ronda 1)
 
 Ejecutado **antes** de escribir nada y antes del reclamo.

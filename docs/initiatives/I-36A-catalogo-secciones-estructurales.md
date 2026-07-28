@@ -121,6 +121,20 @@ Autorizado por las decisiones vinculantes 1–24 del dueno
 13. **F5 — carga validada**: `Load()` valida y falla cerrada; no hay via publica sin validar.
 14. **F6/F7 — correcciones documentales** y ADR-0021 de vuelta a `propuesto`.
 
+**Ampliacion de la micro-ronda 3**, tras aprobar las cuatro correcciones principales de la ronda 2:
+
+15. **Metadata del manifiesto validada por VALOR**: `sourceWorksheet` compatible con fuente y revision,
+    `mapperVersion` exactamente la soportada por este build desde una constante COMPARTIDA en
+    Application, y **exactamente una fuente** en el catalogo v1 —coincidente con el manifiesto y dueña
+    de todas las secciones—. Una fuente adicional, se use o no, es error. El MODELO sigue admitiendo
+    varias autoridades; el FORMATO DE DISTRIBUCION 1.0 no.
+16. **Rollback honesto**: intenta todas las restauraciones, recopila sus propios fallos, conserva la
+    excepcion ORIGINAL como principal y adjunta los secundarios de forma inspeccionable. La
+    documentacion deja de prometer restauracion absoluta cuando el sistema de archivos lo impide. El
+    overlay se siembra antes y se registra como creado, para que un fallo posterior lo retire.
+17. **Tres correcciones documentales**: `C5X6.7` en el comentario activo del importador, EDI unica por
+    fuente en `StructuralSectionCatalog`, y namespace unico por fuente en `StructuralSectionSource`.
+
 ## 4. Fuera de alcance
 
 Estricto. Cualquiera de estos exige detenerse (seccion 12):
@@ -229,7 +243,8 @@ importador lo consume. El resto de cortes se respeto. Ejecucion real:
 | 5 | Importacion completa AISC y manifiesto | `48c2a48` | Los siete archivos; **289/525/32/137 = 983**; cero rechazadas; hashes verificados en worktree, en Git y en el bundle. **28 pruebas del catalogo distribuido**, sentinelas incluidas |
 | 6 | Documentacion, evidencia y estado | *(este cierre)* | Guia nueva con la matriz de las 84 columnas; ARCHITECTURE y las dos guias actualizadas; evidencia reproducible; estado `review-ready` con gate `owner-validation` |
 | 7 | **Ronda 2** — rechazo parcial del gate | `164476c` | Los cinco defectos funcionales del Owner (F1–F5), cada uno visto en ROJO por comportamiento antes del fix; +75 pruebas |
-| 8 | **Ronda 2** — correcciones documentales | *(este cierre)* | F6 (seis correcciones) y F7 (ADR-0021 a `propuesto`); evidencia §0 y estado |
+| 8 | **Ronda 2** — correcciones documentales | `6cdb9a5` / `f8122a8` | F6 (seis correcciones) y F7 (ADR-0021 a `propuesto`); evidencia §0 y estado |
+| 9 | **Micro-ronda 3** — dos residuos funcionales y tres documentales | `1271bbe` | Metadata del manifiesto por VALOR (worksheet, mapperVersion, fuente unica) y rollback honesto; 9 rojos dirigidos; +14 pruebas |
 
 ## 9. Pruebas y builds
 

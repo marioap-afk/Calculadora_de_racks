@@ -279,14 +279,25 @@ La identidad se verifica por **contenido y estructura**, no por el SHA-256: fija
 
 ### Publicación: qué garantiza exactamente
 
-Si algo falla durante la publicación, **todo archivo ya reemplazado se restaura byte por byte** desde
-un respaldo, los que no existían antes se eliminan, y las carpetas de trabajo (staging y respaldo) se
-borran: el directorio queda exactamente como estaba.
+Si algo falla durante la publicación, el rollback **intenta** cada restauración —cada archivo ya
+reemplazado vuelve byte por byte desde un respaldo— y cada eliminación —los que no existían antes,
+incluido el overlay si lo acababa de sembrar—, y después borra las carpetas de trabajo. **Cuando todos
+los intentos salen bien, el directorio queda exactamente como estaba.**
 
-Lo que **no** se promete, porque no se puede demostrar con una prueba: atomicidad frente a un corte de
-energía o a un proceso liquidado. Contra ese escenario protege otro mecanismo —el **manifiesto se
-publica el último**, así que una publicación interrumpida deja datos nuevos junto a un manifiesto
-viejo, y la carga validada se niega a abrir esa carpeta.
+Lo que **no** se promete, y conviene decirlo con precisión:
+
+- **la restauración se intenta, no se asegura.** El sistema de archivos puede negarse: un archivo
+  bloqueado por otro proceso, un atributo de solo lectura, un disco lleno. El rollback no se detiene en
+  la primera negativa —sigue con las demás— y **nunca sustituye** la excepción que lo provocó: los
+  fallos que no pudo resolver quedan adjuntos a esa excepción y son legibles con
+  `ImportOutputWriter.RollbackFailuresOf`. En ese caso el directorio **no** volvió a su estado
+  anterior, y afirmar lo contrario sería falso;
+- **atomicidad frente a un corte de energía o a un proceso liquidado**, que no se puede demostrar con
+  una prueba.
+
+En los dos casos lo que protege al consumidor no es una promesa sino un mecanismo: el **manifiesto se
+publica el último**, así que un conjunto parcialmente aplicado o parcialmente restaurado ya no cuadra
+con sus hashes y la carga validada se niega a abrir esa carpeta.
 
 Su salida es **determinista**: encabezados en orden de esquema, filas ordenadas por `sectionId` con
 comparación ordinal, números en cultura invariante con precisión de ida y vuelta, terminador `\n`,
@@ -318,6 +329,13 @@ SHA-256 del libro con exactamente 64 hexadecimales); el **conjunto exacto** de a
 —ninguno faltante, ninguno inesperado, ninguno repetido, y nunca el propio manifiesto ni el overlay—;
 el SHA-256 de cada archivo inmutable; y la correspondencia **fuente ↔ filas ↔ manifiesto**. El overlay
 se valida aparte.
+
+La metadata se comprueba **por su valor**, no solo por estar presente: `sourceWorksheet` tiene que ser
+el que implican la fuente y la revisión (`AISC-SHAPES` + `16.0` ⇒ `Database v16.0`), `mapperVersion`
+tiene que ser exactamente la que este build soporta —un mapeo distinto produce columnas distintas—, y
+el catálogo tiene que declarar **exactamente una** fuente, la que el manifiesto nombra, con todas sus
+secciones. Una segunda fuente, aunque no la use nadie, es un catálogo que el esquema 1.0 no sabe
+describir: el **modelo** sí admite varias autoridades, el **formato de distribución** no.
 
 Si algo falla lanza `StructuralSectionCatalogException` con el diagnóstico completo. Es deliberado:
 una carpeta que sólo *parsea* no es un catálogo. Puede reemplazarse en una instalación desplegada, y

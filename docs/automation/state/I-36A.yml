@@ -3,16 +3,16 @@ automation_state:
   initiative: I-36A
   branch: architecture/catalogo-secciones-estructurales
   claim_id: c72f4d42-a201-40c1-b9d9-2f03d9556681
-  current_phase: 8
+  current_phase: 9
   state: review-ready
   gate: owner-validation
-  attempts: 2
+  attempts: 3
   next_action: >-
     VALIDACION-DEL-OWNER-siete-puntos-fuente-y-SHA · conteos-por-familia · sentinelas ·
     etiquetas-de-peso · politica-de-ids-INCLUIDO-el-caso-HSS · habilitado-deshabilitado ·
     confirmacion-de-que-secciones-csv-y-los-sistemas-existentes-no-cambiaron ·
     NO-integrar-NO-borrar-rama-ni-worktree-hasta-que-el-Owner-apruebe
-  last_evidence_commit: 164476c
+  last_evidence_commit: 1271bbe
 
 # --------------------------------------------------------------------------------------------------------
 # EL CANDIDATO TECNICO. Hay UNO SOLO y es este: el ultimo commit que toca src, tests, tools o assets.
@@ -20,14 +20,11 @@ automation_state:
 # que el Owner valida son el MISMO, y eso es comprobable con git diff sin confiar en este archivo.
 # --------------------------------------------------------------------------------------------------------
 candidate:
-  sha: 164476c
-  subject: I-36A - RONDA 2 - publicacion fail-closed, identidad neutral, verificacion del libro
+  sha: 1271bbe
+  subject: I-36A - MICRO-RONDA 3 - metadata del manifiesto por valor y rollback honesto
   base: a35374f99dde91077a2e05bfc69358fb3e3b3ad9
-  ci_run: 30327955080
-  ci_result: >-
-    VERDE-completed-success-sobre-6cdb9a5-que-CONTIENE-al-candidato-164476c ·
-    el-diff-164476c-a-6cdb9a5-es-EXCLUSIVAMENTE-DOCUMENTAL-cero-archivos-bajo-src-tests-tools-assets-deploy-o-github ·
-    asi-que-el-arbol-tecnico-con-CI-verde-y-el-que-el-Owner-valida-son-el-MISMO-y-se-comprueba-con-git-diff
+  ci_run: pendiente-de-verificar-sobre-el-nuevo-HEAD-de-la-MICRO-RONDA-3
+  ci_result: pendiente
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   por_que_importa_que_CI_sea_verde_en_LINUX: >-
     el-job-de-pruebas-corre-en-ubuntu-sobre-un-checkout-LIMPIO ·
@@ -285,6 +282,113 @@ ronda_2:
     reimportacion_oficial: 289-525-32-137-igual-983-cero-rechazadas
     overlay_preservado: intacto-byte-a-byte-tras-reimportar
 
+
+# --------------------------------------------------------------------------------------------------------
+# MICRO-RONDA 3. La ronda 2 quedo APROBADA en sus cuatro correcciones principales. Quedaban dos residuos
+# funcionales y tres correcciones documentales; esta ronda los cierra. Sin cambios en los cuatro CSV de
+# familias ni en sus ids.
+# --------------------------------------------------------------------------------------------------------
+ronda_3:
+  preflight_de_reanudacion:
+    head_al_reanudar: f8122a8dd69d73cb70f85d23c4a5893d405bb262
+    coincide_con_la_punta_revisada: si
+    upstream: sincronizado-en-el-mismo-SHA-nada-sin-publicar
+    git_status: limpio
+    stashes: cero
+    operaciones_en_curso: ninguna
+    divergencia_vs_origin_main: 0-detras-10-delante-merge-base-a35374f-igual-a-origin-main
+    origin_main_avanzo: NO-sin-rebase
+
+  rojos_observados:
+    total: 9
+    worksheet_incorrecto_pero_no_vacio: >-
+      4-casos-Database-v15-0-Datos-database-v16-0-y-Database-v16-0-con-espacio-final ·
+      Assert-NotEmpty-Failure-Collection-was-empty
+    mapper_version_incorrecto_pero_no_vacio: >-
+      3-casos-I-36A-1-I-36A-3-y-otra-cosa · Assert-NotEmpty-Failure-Collection-was-empty
+    fuente_adicional_sin_secciones: Assert-NotEmpty-Failure-Collection-was-empty
+    rollback_con_restauracion_imposible: >-
+      Expected-typeof-System-InvalidOperationException-Actual-typeof-System-IO-IOException ·
+      la-excepcion-del-rollback-SUSTITUIA-a-la-que-causo-el-fallo
+    ya_cubiertos_antes_del_fix: >-
+      fuente-adicional-CON-secciones-el-bucle-de-secciones-ya-lo-detectaba · y-catalogo-correcto ·
+      ambos-quedan-fijados-explicitamente
+
+  residuo_1_metadata_del_manifiesto:
+    source_worksheet: >-
+      EXACTAMENTE-el-que-implican-fuente-y-revision ·
+      la-regla-vive-en-StructuralSectionSource-TryExpectedWorksheet-AISC-SHAPES-mas-16-0-igual-Database-v16-0 ·
+      comparacion-ordinal-exacta
+    mapper_version: >-
+      EXACTAMENTE-StructuralSectionsManifest-SupportedMapperVersion-I-36A-2-comparacion-ordinal
+    constante_compartida: >-
+      la-version-de-mapeo-vive-en-Application-y-la-consumen-el-lector-y-el-importador ·
+      AiscRowMapper-MapperVersion-DESAPARECE-eran-dos-copias-del-mismo-numero
+    regla_del_worksheet_compartida: >-
+      AiscWorkbookVerifier-DataWorksheetFor-DELEGA-en-la-autoridad-de-Application-en-vez-de-concatenar
+    exactamente_una_fuente: >-
+      el-esquema-1-0-describe-UNA-fuente · dos-o-cero-es-error ·
+      y-esa-fuente-coincide-con-manifest-sourceId-sourceRevision-e-idNamespace ·
+      todas-las-secciones-pertenecen-a-ella · una-fuente-adicional-NO-utilizada-tambien-es-error
+    por_que_no_contradice_a_F2: >-
+      el-MODELO-es-multi-fuente-para-eso-existe-el-namespace-de-id ·
+      pero-el-FORMATO-DE-DISTRIBUCION-1-0-no-lo-es ·
+      un-catalogo-con-dos-fuentes-es-uno-que-este-manifiesto-no-sabe-describir-sus-conteos-y-hashes-no-dirian-nada-de-la-mitad ·
+      por-eso-la-restriccion-vive-en-el-VALIDADOR-DEL-MANIFIESTO-y-no-en-StructuralSectionCatalog
+
+  residuo_2_rollback:
+    garantia: >-
+      el-rollback-INTENTA-cada-restauracion-y-cada-eliminacion ·
+      no-se-detiene-en-la-primera-que-falla · nunca-lanza ·
+      y-NUNCA-sustituye-la-excepcion-que-lo-provoco ·
+      cuando-todos-los-intentos-salen-bien-el-directorio-queda-exactamente-como-estaba
+    lo_que_NO_se_garantiza: >-
+      la-restauracion-se-INTENTA-no-se-asegura-el-filesystem-puede-negarse-archivo-bloqueado-solo-lectura-disco-lleno ·
+      en-ese-caso-el-directorio-NO-vuelve-a-su-estado-anterior-y-se-dice ·
+      tampoco-atomicidad-frente-a-corte-de-energia-o-proceso-liquidado
+    fallos_secundarios: >-
+      se-recopilan-y-se-adjuntan-a-la-excepcion-ORIGINAL-en-Exception-Data ·
+      clave-publica-ImportOutputWriter-RollbackFailuresKey-legibles-con-RollbackFailuresOf
+    que_protege_al_consumidor: >-
+      no-una-promesa-sino-un-mecanismo ·
+      el-manifiesto-se-publica-el-ULTIMO-asi-que-un-conjunto-parcial-o-parcialmente-restaurado-no-cuadra-con-sus-hashes ·
+      y-Load-se-niega-a-abrirlo
+    overlay: >-
+      se-siembra-AHORA-ANTES-de-los-reemplazos-y-se-registra-como-CREADO ·
+      asi-un-fallo-posterior-lo-retira ·
+      sembrarlo-al-final-dejaba-un-archivo-que-el-rollback-no-conocia-y-volvia-falsa-la-frase-directorio-exactamente-igual
+    regresion: >-
+      deja-reemplazar-sources-y-c · BLOQUEA-c-ya-reemplazado · falla-en-hss-rect ·
+      y-comprueba-1-sobrevive-la-excepcion-original · 2-el-fallo-de-rollback-se-informa-y-nombra-el-archivo ·
+      3-sources-y-hss-rect-SI-se-restauraron · 4-el-bloqueado-no · 5-el-catalogo-resultante-no-se-puede-cargar
+
+  residuo_3_correcciones_documentales:
+    - C6X6-7-pasa-a-C5X6-7-en-el-comentario-ACTIVO-de-AiscShapesImporter-WeightTolerance
+    - StructuralSectionCatalog-documenta-que-la-designacion-EDI-es-unica-POR-FUENTE-no-global-y-por-que
+    - StructuralSectionSource-documenta-que-un-namespace-identifica-EXACTAMENTE-UNA-fuente-y-que-dos-no-lo-comparten
+
+  adr_0021: sigue-en-PROPUESTO-su-aceptacion-expresa-se-registrara-despues-de-esta-micro-ronda
+
+  datos_conservados:
+    por_familia: W-289 · HSS-RECT-525 · C-32 · L-137
+    total: 983
+    filas_seleccionadas_rechazadas: 0
+    los_siete_archivos: >-
+      BYTE-IDENTICOS-a-los-ya-commiteados-incluidos-los-cuatro-de-familia-y-el-manifiesto ·
+      comprobado-con-git-diff-sobre-assets-tras-reimportar-el-libro-oficial
+    check: OK-en-las-dos-categorias-datos-reproducibles-y-overlay-local
+
+  gates_ronda_3:
+    rojos_dirigidos_vistos_fallar: 9
+    rackcad_tests: 1851-de-1851-ronda-2-1837-mas-14
+    rackcad_ui_tests: 494-de-494
+    build_importador_debug: 0-errores-0-advertencias
+    build_application_debug: 0-errores-0-advertencias
+    build_ui_debug: 0-errores-0-advertencias
+    build_plugin_debug: 0-errores-2-MSB3277-conocidos
+    bundle: OK-147-comprobaciones
+    ci: pendiente-de-verificar-sobre-el-nuevo-HEAD
+
 # --------------------------------------------------------------------------------------------------------
 # COMMITS. Cada uno deja el arbol compilando y las suites en verde.
 # --------------------------------------------------------------------------------------------------------
@@ -305,6 +409,12 @@ commits:
     asunto: candidato tecnico de la ronda 1 con CI verde
   - sha: 164476c
     asunto: RONDA 2 - publicacion fail-closed, identidad neutral, verificacion del libro
+  - sha: 6cdb9a5
+    asunto: RONDA 2 - correcciones documentales y ADR-0021 a propuesto
+  - sha: f8122a8
+    asunto: RONDA 2 - CI verde anclada al candidato tecnico
+  - sha: 1271bbe
+    asunto: MICRO-RONDA 3 - metadata del manifiesto por valor y rollback honesto
 
 # --------------------------------------------------------------------------------------------------------
 # GATES. Ninguno se afirma sin comando que lo respalde.
