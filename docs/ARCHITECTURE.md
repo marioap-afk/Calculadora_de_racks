@@ -263,7 +263,7 @@ un manifiesto con conteos y SHA-256. El único archivo editable a mano es el ove
 sección la retira de las selecciones nuevas pero `GetById` la sigue resolviendo, así que un diseño
 guardado no deja de abrirse.
 
-`secciones.csv` **no se migra**: sigue siendo la fuente vigente de los cuatro sistemas, sin cambio
+`secciones.csv` **no se migra**: sigue siendo la fuente vigente de todos los sistemas vigentes, sin cambio
 funcional, hasta que migraciones futuras —una por configurador, strangler— la retiren. I-36A **no
 dibuja**: no toca `blocks.csv`, no crea bloques y no modifica `blocks-library.dwg`. La geometría
 derivada es I-36B. Detalle completo en

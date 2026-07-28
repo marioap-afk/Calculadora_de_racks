@@ -31,7 +31,7 @@ en su esquema ni en sus tipos. Lo que la sección no dice —troqueles, conector
 perforaciones, soldaduras, placas terminales, reglas de fabricación— lo aportarán los
 **configuradores de miembro** de las iniciativas siguientes.
 
-> **`secciones.csv` no se migra todavía.** Sigue siendo la fuente vigente de los cuatro sistemas
+> **`secciones.csv` no se migra todavía.** Sigue siendo la fuente vigente de todos los sistemas vigentes
 > actuales, sin un solo cambio funcional, hasta que migraciones futuras —una por configurador, en modo
 > strangler— la retiren. I-36A no migró, no borró y no modificó ninguna fila.
 
@@ -101,7 +101,25 @@ sin cambios el copiado a la carpeta `catalogs/` del plugin y el empaquetado del 
 | `structural-sections-l.csv` | 137 ángulos L | **No** — salida generada |
 | `structural-section-sources.csv` | La fuente lógica y su procedencia | **No** — salida generada |
 | `structural-section-status.csv` | Overlay de habilitado/deshabilitado | **SÍ**, es el único |
-| `structural-sections-manifest.json` | Conteos y SHA-256 de todo lo anterior | **No** — salida generada |
+| `structural-sections-manifest.json` | Conteos y SHA-256 de los archivos **inmutables** | **No** — salida generada |
+
+### Datos reproducibles frente a overlay mutable
+
+Es la separación que gobierna todo lo demás:
+
+- Los **seis primeros** archivos son **datos reproducibles**: función del libro y de nada más. El
+  manifiesto declara el SHA-256 de los **cinco** que son datos (los cuatro de familia más las
+  fuentes); no se hashea a sí mismo, porque sería circular.
+- `structural-section-status.csv` es un **overlay local**: una decisión del operador, no un dato de la
+  fuente. **NO entra en los hashes.** Si entrara, deshabilitar una sección —una edición perfectamente
+  legítima— parecería corrupción de los datos AISC.
+- El overlay **sí** se valida, con su propio esquema, sin duplicados y comprobando que cada `sectionId`
+  exista. Simplemente se valida **aparte**.
+- El importador **nunca reescribe** un overlay existente. Sólo lo **siembra vacío** cuando la carpeta
+  todavía no tiene uno.
+
+`--check` refleja esa separación: informa por un lado si los **datos generados** siguen siendo
+exactamente los que produce el libro, y por otro si el **overlay local** es válido.
 
 Los siete están marcados como `-text` en `.gitattributes`. El repositorio trabaja con
 `core.autocrlf=true`, así que sin esa regla Git convertiría los saltos de línea al hacer checkout y el
@@ -116,9 +134,14 @@ nuevo.
 ## 4. Identidad: cómo se forma un id
 
 ```
-AISC-{FAMILIA}-{EDI_NORMALIZADO}
+{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}
 ```
 
+- `ID_NAMESPACE` es la **autoridad** que nombra la sección; la declara la fuente en su columna
+  `idNamespace`. `AISC-SHAPES` declara **`AISC`**, así que los 983 identificadores son exactamente los
+  de siempre. No es una constante del código: si mañana entrara otra fuente, declararía la suya y sus
+  secciones no colisionarían con las de AISC aunque publicaran la misma designación. Debe ser no
+  vacío, de `A-Z0-9` (el guion queda fuera: es el separador del propio id) y único en el catálogo.
 - `FAMILIA` es el token: `W`, `HSS-RECT`, `C` o `L`.
 - `EDI_NORMALIZADO` sale de la **designación EDI oficial** —la del *AISC Naming Convention for
   Structural Steel Products for Use in Electronic Data Interchange*— por una normalización
@@ -232,9 +255,38 @@ dotnet run --project tools/RackCad.StructuralSections.Import -- --workbook tools
 ```
 
 La herramienta vive **fuera del producto** (`tools/`), es .NET 8 con **BCL pura** —cero NuGet, cero
-Office Interop, sin Excel instalado— y **no entra al bundle**. Lee el OOXML como ZIP + XML, resuelve la
-hoja y las columnas **desde el propio libro** (no por posiciones supuestas), escribe primero en staging
-y solo publica cuando los siete archivos están escritos.
+Office Interop, sin Excel instalado— y **no entra al bundle**. Lee el OOXML como ZIP + XML y resuelve
+la hoja y las columnas **desde el propio libro**, no por posiciones supuestas.
+
+### Antes de importar, comprueba que el libro ES el que dice ser
+
+No basta con que los encabezados encajen: un fork, una copia editada, otra revisión o la exportación
+de otro proveedor tendrían encabezados compatibles y quedarían catalogados como la fuente oficial. La
+verificación exige, todo publicado por el propio documento:
+
+1. que exista y se pueda leer la hoja **`Readme`**;
+2. que ese Readme declare **«AISC Shapes Database v16.0»**;
+3. que mencione la **«16th Edition»** del Steel Construction Manual y la convención **EDI**;
+4. que exista la hoja de datos que esa revisión implica, **`Database v16.0`**;
+5. que revisión, hoja de datos y metadata generada cuenten **la misma historia**.
+
+Por eso la CLI **no tiene** `--worksheet`: la hoja sale de lo que el libro acredita, nunca de un
+argumento, y no hay forma de etiquetar otra hoja o revisión como v16.0.
+
+La identidad se verifica por **contenido y estructura**, no por el SHA-256: fijar el hash actual como
+único libro admisible haría imposible importar cualquier revisión futura legítima. El hash se sigue
+**registrando** en el manifiesto como procedencia; no es la compuerta.
+
+### Publicación: qué garantiza exactamente
+
+Si algo falla durante la publicación, **todo archivo ya reemplazado se restaura byte por byte** desde
+un respaldo, los que no existían antes se eliminan, y las carpetas de trabajo (staging y respaldo) se
+borran: el directorio queda exactamente como estaba.
+
+Lo que **no** se promete, porque no se puede demostrar con una prueba: atomicidad frente a un corte de
+energía o a un proceso liquidado. Contra ese escenario protege otro mecanismo —el **manifiesto se
+publica el último**, así que una publicación interrumpida deja datos nuevos junto a un manifiesto
+viejo, y la carga validada se niega a abrir esa carpeta.
 
 Su salida es **determinista**: encabezados en orden de esquema, filas ordenadas por `sectionId` con
 comparación ordinal, números en cultura invariante con precisión de ida y vuelta, terminador `\n`,
@@ -246,11 +298,31 @@ Al actualizar a una revisión futura, lo que hay que revisar es:
 1. que el importador **no** se detenga (si lo hace, dirá exactamente por qué: encabezado renombrado,
    fila ambigua, valor ilegible, colisión de ids o discrepancia US/métrico);
 2. los **conteos por familia** que imprime;
-3. el aviso de entradas del overlay cuyos ids ya no existan;
+3. que **ninguna entrada del overlay quede huérfana**: si el overlay nombra una sección que el libro
+   nuevo ya no produce, la importación **se detiene con error**. Retirar esa decisión es del operador,
+   y la forma de hacerlo es editar el overlay primero. Un aviso habría dejado que la decisión se
+   evaporara;
 4. que `dotnet test` siga en verde — las pruebas del catálogo distribuido fijan conteos y sentinelas,
    así que un cambio real de la fuente se verá ahí y hay que actualizarlas **conscientemente**.
 
 ---
+
+## 7.b Cargar el catálogo: una sola puerta, y falla cerrada
+
+`CsvStructuralSectionCatalogProvider.Load()` es la **única** forma pública de obtener el catálogo, y
+**valida antes de entregarlo**. No existe una vía pública para obtener uno sin validar.
+
+Comprueba, en una pasada: las invariantes semánticas de cada sección; el manifiesto completo
+(`catalogId`, `sourceId`, `sourceRevision`, `sourceWorksheet`, `mapperVersion`, `idNamespace` y un
+SHA-256 del libro con exactamente 64 hexadecimales); el **conjunto exacto** de archivos declarados
+—ninguno faltante, ninguno inesperado, ninguno repetido, y nunca el propio manifiesto ni el overlay—;
+el SHA-256 de cada archivo inmutable; y la correspondencia **fuente ↔ filas ↔ manifiesto**. El overlay
+se valida aparte.
+
+Si algo falla lanza `StructuralSectionCatalogException` con el diagnóstico completo. Es deliberado:
+una carpeta que sólo *parsea* no es un catálogo. Puede reemplazarse en una instalación desplegada, y
+una publicación interrumpida deja CSV nuevos junto a un manifiesto viejo — archivos individualmente
+correctos y colectivamente mentira.
 
 ## 8. Por qué no hay un bloque por designación
 
@@ -308,8 +380,17 @@ miembro.
 
 ## 11. Matriz de columnas de la fuente
 
-Las **84 columnas** del bloque estadounidense (`A`–`CF`) de la hoja `Database v16.0`, con la columna
-métrica espejo, lo que significa cada una según el Readme, en qué familias importadas aparece, a qué
+La hoja `Database v16.0` tiene 166 columnas repartidas en **cuatro tramos**:
+
+| Tramo | Columnas | Qué es |
+|---|---|---|
+| 1 | `A`–`D` | **Metadata e identidad** del bloque estadounidense: `Type`, designación EDI, etiqueta del manual y el indicador `T_F` |
+| 2 | `E`–`CF` | **Valores estadounidenses** (in., in.², lb/ft…) |
+| 3 | `CG`–`CH` | **Designaciones métricas**: EDI y etiqueta del manual en su forma métrica |
+| 4 | `CI`–`FJ` | **Valores métricos** (mm, mm², kg/m…), espejo del tramo 2 |
+
+La tabla siguiente recorre las **84 columnas** de los tramos 1 y 2 —las que se importan— con su
+espejo métrico, lo que significa cada una según el Readme, en qué familias importadas aparece, a qué
 campo de RackCad va y —si no se importa— por qué.
 
 Notación de familias: `W`, `H` = HSS rectangular/cuadrado, `C`, `L`. «—» = no aparece en ninguna
@@ -404,9 +485,9 @@ familia W).
 | `WGi` (CE) | FI | Gramil útil de los barrenos interiores del patín | in. | mm | W, C (24/32) | `WorkableGageInner` | **Importada** |
 | `WGo` (CF) | FJ | Separación entre barrenos interior y exterior | in. | mm | W (73/289) | `WorkableGageOuter` | **Importada** |
 
-Las **82 columnas del bloque métrico** (`CG`–`FJ`) son el espejo de las anteriores. **Ninguna se
-importa como dato**: se usan como contraste en la importación (§5) y no generan filas. `SourceId`,
-`SourceRevision` y `NativeUnitSystem` son campos de RackCad, no columnas de la fuente.
+Los tramos 3 y 4 (`CG`–`FJ`) son el espejo métrico. **Ninguna de sus columnas se importa como dato**:
+se usan como contraste en la importación (§5) y no generan filas. `SourceId`, `SourceRevision`,
+`IdNamespace` y `NativeUnitSystem` son campos de RackCad, no columnas de la fuente.
 
 Un valor que la fuente marca como no aplicable —una **raya EN DASH** `–`, no una celda vacía— se
 importa como **`null`**, nunca como cero.

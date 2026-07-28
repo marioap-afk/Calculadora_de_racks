@@ -13,7 +13,7 @@ RackCad describe hoy todo perfil estructural en `assets/catalogs/secciones.csv`,
 la que cada fila declara un **`rol`** —`POSTE`, `CELOSIA`/`CELOSÍA`, `LARGUERO` o `SEPARADOR`— y
 `JsonRackCatalogProvider` la proyecta en `PostProfiles`, `TrussProfiles`, `BeamProfiles` y
 `SpacerProfiles`. Esa decisión está registrada en [ADR-0008](0008-secciones-unificadas-por-rol.md) y
-funciona: es la fuente vigente de los cuatro sistemas actuales.
+funciona: es la fuente vigente de todos los sistemas actuales.
 
 Su límite es de modelado, no de calidad. Una fila de `secciones.csv` mezcla **tres cosas distintas**:
 
@@ -25,7 +25,7 @@ Su límite es de modelado, no de calidad. Una fila de `secciones.csv` mezcla **t
 Mientras el catálogo describió perfiles propios de rack —omega troquelado, travesaño de cinta,
 larguero escalón— la mezcla no dolía: cada fila era, a la vez, una sección, un rol y un SKU. Los
 sistemas que el ROADMAP pone a continuación rompen esa coincidencia. Un Cantilever se arma con perfil
-estructural **estándar** (W, HSS, C, L de la AISC Shapes Database): la misma `W12X28` puede ser
+estructural **estándar** (W, HSS, C, L de la AISC Shapes Database): la misma `W12X26` puede ser
 columna, brazo o base, y su designación comercial no es un SKU de RackCad sino una designación de
 norma. Modelarla como una fila con `rol` obligaría a duplicar la sección una vez por rol, y a que el
 rol —dato del miembro— viviera dentro del dato de la sección.
@@ -63,6 +63,21 @@ implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README.md).
    hasta que migraciones futuras —una por configurador— lo retiren o lo reduzcan. ADR-0008 describe
    correctamente cómo funciona ese catálogo hoy y ese comportamiento sigue vigente mientras exista.
 
+4.b **Los datos importados y el overlay del operador son cosas distintas y se tratan distinto.** Los
+   archivos generados por el importador son función del libro y de nada más: el manifiesto declara su
+   SHA-256 y una carga validada los verifica. `structural-section-status.csv` es un **overlay local**
+   —la decisión de retirar una sección de las selecciones nuevas— y por eso **no participa de ningún
+   hash**: si participara, una edición legítima parecería corrupción de los datos AISC. Se valida
+   aparte (esquema, duplicados y existencia de cada `sectionId`), el importador nunca lo reescribe, y
+   una reimportación cuyo overlay quede huérfano **se detiene con error** en vez de descartar la
+   decisión.
+
+4.c **La única puerta pública de carga valida y falla cerrada.** Un consumidor no puede recibir un
+   catálogo meramente parseado: `Load()` comprueba invariantes, manifiesto, metadata, conjunto exacto
+   de archivos y hashes antes de entregar nada, y no existe una vía pública para saltárselo. La
+   publicación de una importación, además, escribe el manifiesto **al final**, de modo que un estado a
+   medias nunca se puede cargar como válido.
+
 5. **I-36A no migra ni borra nada.** No toca `secciones.csv`, ni los perfiles, postes, largueros,
    celosías, separadores o sistemas existentes, ni `blocks.csv`, ni `blocks-library.dwg`. El catálogo
    neutral nace **junto** a lo vigente, sin consumidores de producto.
@@ -84,7 +99,7 @@ implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README.md).
 
 - **Añadir las secciones AISC como filas de `secciones.csv` con un `rol` nuevo** — es el camino más
   corto y el peor: obliga a inventar un rol para un dato que no tiene rol, mete 983 filas normalizadas
-  en el archivo caliente que comparten los cuatro sistemas y ~23 archivos de tests, y somete datos de
+  en el archivo caliente que comparten todos los sistemas y ~23 archivos de tests, y somete datos de
   fuente oficial a un lector tolerante que convierte un error de parseo en un cero silencioso.
   Rechazada.
 
@@ -94,7 +109,7 @@ implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README.md).
   bloque por designación cuando I-36A no crea ni un solo bloque. Rechazada.
 
 - **Migrar `secciones.csv` al modelo neutral dentro de I-36A** — es el destino, pero hacerlo aquí
-  convierte una iniciativa de fundación en una migración de los cuatro sistemas, con validación en
+  convierte una iniciativa de fundación en una migración de todos los sistemas, con validación en
   AutoCAD y riesgo de regresión de dibujo y BOM. El principio 3 del ROADMAP (strangler, no
   reescritura) lo prohíbe explícitamente. Diferida.
 
@@ -106,10 +121,10 @@ implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README.md).
 
 ## Consecuencias
 
-- **Positivas**: la sección deja de heredar el rol del miembro, así que la misma `W12X28` sirve a
+- **Positivas**: la sección deja de heredar el rol del miembro, así que la misma `W12X26` sirve a
   cualquier configurador sin duplicarse; el sistema N+1 (Cantilever) recibe un catálogo estándar y
   completo sin tocar el catálogo de los sistemas vigentes; la fuente oficial se importa con un lector
-  estricto que no puede degradar un dato en silencio; `secciones.csv` y los cuatro sistemas quedan
+  estricto que no puede degradar un dato en silencio; `secciones.csv` y todos los sistemas quedan
   literalmente sin cambios, de modo que I-36A no puede romper dibujo ni BOM.
 
 - **Negativas / costos aceptados**: durante el período strangler conviven **dos** catálogos de perfil

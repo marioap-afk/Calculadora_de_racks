@@ -1,10 +1,16 @@
 # ADR-0021: Identidad, unidades y presentación de secciones estructurales
 
-- **Estado:** aceptado
-- **Fecha:** 2026-07-27 (redacción y aceptación)
-- **Decisores:** Mario Pérez, dueño del repositorio (decisiones vinculantes emitidas al abrir I-36A);
-  Claude Opus 5 (redacción)
+- **Estado:** **propuesto**
+- **Fecha:** 2026-07-27 (redacción); pendiente de aceptación expresa del dueño
+- **Decisores:** Mario Pérez, dueño del repositorio (**pendiente**); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-36A `architecture/catalogo-secciones-estructurales`
+
+> **Por qué sigue `propuesto`.** La política exacta de IDs es uno de los siete puntos del gate
+> `owner-validation` de I-36A y todavía no está aceptada. En la primera ronda el dueño la rechazó
+> parcialmente, precisamente porque el ejemplo del encargo para HSS no coincide con la designación EDI
+> real (§6). Un ADR `aceptado` cuya decisión central sigue bajo gate diría lo contrario de lo que pasa.
+> ADR-0020 sí permanece `aceptado`: la separación sección / miembro fue decidida expresamente y no está
+> en discusión.
 
 ## Contexto
 
@@ -24,13 +30,15 @@ fila:
 
 2. **Unidades.** [ADR-0005](0005-estrategia-de-unidades.md) fija la **pulgada** como unidad interna
    canónica y prohíbe explícitamente conversión o reinterpretación del DWG. La fuente AISC, en
-   cambio, publica **cada** magnitud dos veces: un bloque estadounidense (columnas E–CF) y un bloque
-   métrico espejo (columnas CI–FJ) con su propia designación métrica (`W44X408` ↔ `W1100X607`).
-   Importar los dos bloques como filas produciría secciones duplicadas; importar solo el métrico
-   contradiría la pulgada interna.
+   cambio, publica **cada** magnitud dos veces. La hoja se reparte en cuatro tramos: `A`–`D` son
+   metadata e identidad del bloque estadounidense (`Type`, designación EDI, etiqueta del manual y el
+   indicador `T_F`), `E`–`CF` son los **valores estadounidenses**, `CG`–`CH` son las **designaciones
+   métricas** (EDI y etiqueta, `W44X408` ↔ `W1100X607`) y `CI`–`FJ` son los **valores métricos**.
+   Importar los dos bloques de valores como filas produciría secciones duplicadas; importar solo el
+   métrico contradiría la pulgada interna.
 
-3. **Presentación.** El peso comercial de un perfil se nombra en su unidad nativa: un `W12X28`
-   «pesa 28 lb/ft», y ese 28 es parte de la designación. Mostrarlo convertido y solo convertido
+3. **Presentación.** El peso comercial de un perfil se nombra en su unidad nativa: un `W12X26`
+   «pesa 26 lb/ft», y ese 26 es parte de la designación. Mostrarlo convertido y solo convertido
    («41.7 kg/m») borra la designación que el usuario reconoce; mostrarlo sin equivalencia deja fuera
    al lector métrico.
 
@@ -46,12 +54,33 @@ antes de implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README
 
 ### Identidad
 
-1. **El identificador de una sección es `AISC-{FAMILIA}-{EDI_NORMALIZADO}`**, con `FAMILIA` ∈
-   {`W`, `HSS-RECT`, `C`, `L`} y `EDI_NORMALIZADO` derivado de la designación **EDI oficial** por una
-   normalización determinista: mayúsculas invariantes, se eliminan los espacios y se sustituyen `.`,
-   `/` y `-` por `_`. El resultado es ASCII, en mayúsculas, sin espacios, sin barra y sin punto
-   decimal. Ejemplos reales del catálogo: `AISC-W-W12X28`, `AISC-C-C10X15_3`, `AISC-L-L4X4X1_4`,
-   `AISC-HSS-RECT-HSS4X4X_250`.
+1. **El identificador de una sección es `{ID_NAMESPACE}-{FAMILIA}-{DESIGNACION_NORMALIZADA}`**, con
+   `FAMILIA` ∈ {`W`, `HSS-RECT`, `C`, `L`} y la designación derivada de la forma **EDI oficial** por
+   una normalización determinista: mayúsculas invariantes, se eliminan los espacios y se sustituyen
+   `.`, `/` y `-` por `_`. El resultado es ASCII, en mayúsculas, sin espacios, sin barra y sin punto
+   decimal. Ejemplos **reales** del catálogo distribuido: `AISC-W-W12X26`, `AISC-C-C10X15_3`,
+   `AISC-L-L4X4X1_4`, `AISC-HSS-RECT-HSS4X4X_250`.
+
+1.b **`ID_NAMESPACE` es la AUTORIDAD que nombra la sección, y es un dato, no una constante.** Lo
+   declara la fuente en `StructuralSectionSource.IdNamespace`; `AISC-SHAPES` declara `AISC`, de modo
+   que los 983 identificadores existentes son exactamente los mismos. Es distinto de `SourceId`
+   porque responden a preguntas distintas: el `SourceId` dice de QUÉ documento salió una fila y puede
+   llevar revisión o nombre de producto, mientras que el namespace dice QUIÉN tiene autoridad para
+   nombrarla — un token corto y estable que va incrustado en cada diseño guardado y que por eso no
+   puede cambiar nunca. Debe ser no vacío y de `A-Z0-9` solamente —el guion queda excluido porque es
+   el separador del propio id— y **único** en el catálogo: dos autoridades que compartieran namespace
+   permitirían que la misma designación resolviera a un solo id desde dos publicadores distintos, que
+   es justo la colisión que este segmento existe para impedir. Un namespace vacío, con forma inválida
+   o duplicado es un error.
+
+1.c **La unicidad de la designación EDI es POR FUENTE, no global.** Dos publicadores pueden nombrar
+   legítimamente el mismo perfil; el id los distingue por su autoridad. `TryGetByEdiDesignation` sin
+   fuente resuelve mientras no haya ambigüedad y **se niega a elegir** cuando la hay.
+
+1.d **El ID se reconstruye siempre a través de la autoridad que declara la fuente.**
+   `ExpectedSectionId` **exige** el namespace como argumento en vez de asumir uno por omisión, y el
+   validador resuelve la fuente para pasárselo: una sección cuya fuente no exista no puede
+   comprobarse, y decirlo es el resultado honesto.
 
 2. **El ID no contiene la revisión de la fuente.** `SourceRevision` (`16.0`) se almacena en su propio
    campo, en cada fila y en el manifiesto. Una sección que sobreviva a una revisión futura conserva
@@ -90,7 +119,7 @@ antes de implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README
    de AISC: **1 %** para geometría y área (desviación máxima medida sobre las 983 filas: 0.461 %) y
    **5 %** para el peso nominal, porque el peso métrico de la fuente es un **valor nominal de
    designación redondeado por separado**, no una conversión (desviación máxima medida: 4.128 %, en
-   `C6X6.7` ↔ `10.4 kg/m`).
+   `C5X6.7` ↔ `10.4 kg/m`).
 
 10. **La equivalencia se calcula, no se tabula.** Una única función pura convierte `lb/ft` a `kg/m`
     con el factor exacto `0.45359237 / 0.3048`. Las conversiones de longitud y área usan `25.4` y
@@ -108,19 +137,24 @@ antes de implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README
 13. **El peso se muestra primero en la unidad nativa de la fuente y después en la equivalente**, con
     la designación del manual al frente:
 
-    - fuente imperial: `W12X28 — 28 lb/ft (41.7 kg/m)`
+    - fuente imperial: `W12X26 — 26 lb/ft (38.7 kg/m)`
     - una fuente métrica futura: `Designación — 41.7 kg/m (28 lb/ft)`
 
-    El número nativo se imprime tal como está tabulado (`28`, no `28.0`); el equivalente se redondea a
-    un decimal. El valor sale **siempre** de `WeightPerLength`, nunca de leer el `28` dentro de
-    `W12X28`.
+    El número nativo se imprime tal como está tabulado (`26`, no `26.0`); el equivalente se redondea a
+    un decimal. El valor sale **siempre** de `WeightPerLength`, nunca de leer el `26` dentro de
+    `W12X26`.
+
+    El encargo que abrió la iniciativa ilustraba este formato con `W12X28 — 28 lb/ft (41.7 kg/m)`.
+    **`W12X28` NO es una sección real de la v16.0**: la serie salta de `W12X26` a `W12X30`. Ese
+    ejemplo se conserva únicamente como **fixture SINTÉTICO** que fija el formato al carácter, y así
+    está etiquetado en la prueba que lo reproduce; los ejemplos reales usan `W12X26`.
 
 14. **El formateador es puro**: vive en `RackCad.Application`, no depende de WPF ni de AutoCAD, usa
     `CultureInfo.InvariantCulture` y está cubierto por pruebas.
 
 ## Alternativas consideradas
 
-- **Incluir la revisión en el ID (`AISC-V16-W-W12X28`)** — haría autoexplicativo el origen de cada
+- **Incluir la revisión en el ID (`AISC-V16-W-W12X26`)** — haría autoexplicativo el origen de cada
   fila y rompería todos los diseños guardados en cuanto llegue la v17, obligando a una migración por
   revisión. Rechazada: la revisión es un atributo, no identidad.
 

@@ -54,7 +54,7 @@ Un catalogo de secciones estructurales **neutral, completo, verificable y reprod
   byte-identicos entre ejecuciones;
 - **busqueda** por id y por designacion, **unidades** con su equivalencia calculada, **validacion**
   propia con severidades y **peso** por longitud;
-- cero cambios de comportamiento en los cuatro sistemas vigentes.
+- cero cambios de comportamiento en todos los sistemas vigentes.
 
 Resultado verificable: `assets/catalogs/secciones.csv` byte-identico, las suites completas verdes, el
 bundle conteniendo los archivos nuevos, y un manifiesto cuyos conteos y hashes coinciden con los
@@ -67,7 +67,7 @@ miembro** (`POSTE`/`CELOSIA`/`LARGUERO`/`SEPARADOR`) y la **pieza comercial** (`
 `unitCost`, `mensula`). Mientras el catalogo describio perfiles propios de rack la mezcla no dolia:
 cada fila era a la vez las tres cosas.
 
-Cantilever rompe la coincidencia. Se arma con perfil estructural **estandar**: la misma `W12X28` puede
+Cantilever rompe la coincidencia. Se arma con perfil estructural **estandar**: la misma `W12X26` puede
 ser columna, brazo o base, y su designacion no es un SKU de RackCad sino una designacion de norma.
 Modelarla por rol obligaria a duplicar la seccion una vez por rol y a meter el rol —dato del
 miembro— dentro del dato de la seccion.
@@ -86,8 +86,9 @@ Autorizado por las decisiones vinculantes 1–24 del dueno
 ([`decisions/I-36A.md`](../automation/decisions/I-36A.md)) y por ADR-0020 y ADR-0021.
 
 1. **ADRs previos a implementar**: ADR-0020 (catalogo neutral; **reemplaza a ADR-0008** solo en
-   autoridad conceptual) y ADR-0021 (identidad, unidades y presentacion; **no** reemplaza ADR-0005,
-   que solo recibe nota posterior).
+   autoridad conceptual, **aceptado**) y ADR-0021 (identidad, unidades y presentacion; **no** reemplaza
+   ADR-0005, que solo recibe nota posterior). **ADR-0021 queda en `propuesto`**: su decision central
+   —la politica exacta de ids— sigue bajo el gate `owner-validation`.
 2. **ROADMAP**: crear la **Fase 6 — Secciones estructurales y nuevos sistemas** con I-36A, I-36B,
    I-37 e I-38 y su cadena de dependencias.
 3. **Nucleo** en `src/RackCad.Application/StructuralSections/`: familia, identidad, fuente,
@@ -103,6 +104,22 @@ Autorizado por las decisiones vinculantes 1–24 del dueno
    modelo, del catalogo distribuido y de las regresiones existentes.
 8. **Documentacion**: ARCHITECTURE, guias de catalogos y modelo de datos, indices de ADR e
    iniciativas, guia nueva `secciones-estructurales.md`, evidencia y estado versionado.
+
+**Ampliacion de la ronda 2**, tras el rechazo parcial del gate `owner-validation`:
+
+9.  **F1 — publicacion fail-closed**: rollback byte a byte ante cualquier excepcion, staging y respaldo
+    borrados, manifiesto publicado el ULTIMO, y una costura INTERNAL para provocar el fallo. NO se
+    afirma atomicidad frente a un crash abrupto, porque no puede demostrarse.
+10. **F2 — identidad neutral respecto de la fuente**: `IdNamespace` explicito en
+    `StructuralSectionSource`, `Create(idNamespace, family, designation)`, `ExpectedSectionId` que
+    exige la autoridad, y unicidad EDI por fuente. Los 983 ids AISC **no cambian**.
+11. **F3 — verificacion real del libro**: Readme, marcadores de producto/edicion/EDI, hoja de datos y
+    coherencia de metadata; `--worksheet` eliminado. La identidad se verifica por contenido, NO por el
+    SHA-256.
+12. **F4 — datos reproducibles frente a overlay mutable**: el overlay sale de los hashes, se valida
+    aparte, no se reescribe, y una entrada huerfana DETIENE la reimportacion.
+13. **F5 — carga validada**: `Load()` valida y falla cerrada; no hay via publica sin validar.
+14. **F6/F7 — correcciones documentales** y ADR-0021 de vuelta a `propuesto`.
 
 ## 4. Fuera de alcance
 
@@ -211,6 +228,8 @@ importador lo consume. El resto de cortes se respeto. Ejecucion real:
 | 4 | Herramienta de importacion | `bb78259` | OOXML por ZIP/XML sin NuGet; columnas resueltas del libro real; clasificacion HSS por campos oficiales; salida determinista con staging. **19 pruebas sobre un XLSX generado en runtime** |
 | 5 | Importacion completa AISC y manifiesto | `48c2a48` | Los siete archivos; **289/525/32/137 = 983**; cero rechazadas; hashes verificados en worktree, en Git y en el bundle. **28 pruebas del catalogo distribuido**, sentinelas incluidas |
 | 6 | Documentacion, evidencia y estado | *(este cierre)* | Guia nueva con la matriz de las 84 columnas; ARCHITECTURE y las dos guias actualizadas; evidencia reproducible; estado `review-ready` con gate `owner-validation` |
+| 7 | **Ronda 2** — rechazo parcial del gate | `164476c` | Los cinco defectos funcionales del Owner (F1–F5), cada uno visto en ROJO por comportamiento antes del fix; +75 pruebas |
+| 8 | **Ronda 2** — correcciones documentales | *(este cierre)* | F6 (seis correcciones) y F7 (ADR-0021 a `propuesto`); evidencia §0 y estado |
 
 ## 9. Pruebas y builds
 

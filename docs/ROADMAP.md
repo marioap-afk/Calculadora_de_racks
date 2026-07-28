@@ -260,7 +260,7 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 >
 > El eje de la fase es una separación que los sistemas actuales no necesitaban: la **sección
 > transversal** (qué forma tiene el material) deja de ser lo mismo que el **miembro** (para qué se usa)
-> y que la **pieza comercial** (qué SKU se compra). Cantilever la fuerza: la misma `W12X28` puede ser
+> y que la **pieza comercial** (qué SKU se compra). Cantilever la fuerza: la misma `W12X26` puede ser
 > columna, brazo o base. La decisión vive en [ADR-0020](adr/0020-catalogo-neutral-de-secciones-estructurales.md),
 > que **reemplaza a ADR-0008** solo en autoridad conceptual —`secciones.csv` sigue operando sin cambio
 > como catálogo legado hasta que las migraciones futuras, una por configurador, lo retiren—.

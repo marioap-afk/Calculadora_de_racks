@@ -14,7 +14,208 @@ oficial, y cada afirmación se puede comprobar sin confiar en este archivo.
 
 ---
 
-## 1. Preflight real
+## 0. Ronda 2 — rechazo parcial del gate `owner-validation`
+
+El dueño rechazó parcialmente la primera ronda con **cinco defectos funcionales** y un bloque de
+correcciones documentales. Lo que sigue describe el estado **posterior** a corregirlos; las secciones
+1–16 conservan lo que no cambió, y donde cambió se anota aquí.
+
+### 0.1 Preflight de reanudación
+
+| Comprobación | Resultado |
+|---|---|
+| Rama | `architecture/catalogo-secciones-estructurales` |
+| HEAD al reanudar | `49e68ad82a26464bdea8e6df221061b47cd60e20` — coincide con la punta del encargo |
+| Upstream | `origin/architecture/…` en el **mismo SHA**: nada sin publicar |
+| `git status` | limpio |
+| Stashes | cero |
+| Merge / rebase / cherry-pick / bisect | ninguno |
+| Divergencia real vs `origin/main` | **0 detrás / 7 delante**; `merge-base = a35374f = origin/main` |
+| ¿`origin/main` avanzó? | **No.** WORKFLOW §4.2 no exige rebase, y no se hizo |
+| Worktrees | los dos esperados; el principal sigue en `a35374f` |
+
+### 0.2 Los seis rojos, vistos fallar ANTES del fix
+
+Compilan contra la API tal como estaba en `49e68ad` y fallan **por comportamiento**, no por
+compilación. Mensajes literales de la corrida:
+
+| Frente | Rojo observado |
+|---|---|
+| **F1** | `Tras un fallo de publicacion quedaron archivos REEMPLAZADOS: structural-sections-hss-rect.csv, structural-sections-w.csv` |
+| **F2** | `Dos fuentes distintas produjeron el MISMO id 'AISC-W-W12X26': el id no admite otra autoridad.` |
+| **F3** | `Un libro SIN hoja Readme se importo y se etiqueto como revision '16.0' de 'AISC Shapes Database v16.0'.` |
+| **F4a** | `El manifiesto hashea 'structural-section-status.csv', que es un overlay EDITABLE: una edicion legitima invalidaria los datos AISC.` |
+| **F4b** | `La reimportacion descarta 1 entrada(s) del overlay sin detenerse; hoy solo son un aviso por stderr.` |
+| **F5** | `Load() devolvio un catalogo de 1 seccion(es) cuyo manifiesto miente: la ruta publica de carga no falla cerrada.` |
+
+`Con error: 6, Superado: 0, Total: 6`. Tras corregir, las seis condiciones quedan cubiertas por las
+suites definitivas (§0.9) y el archivo temporal de línea base se retiró.
+
+### 0.3 F1 — diseño final de la publicación y su garantía exacta
+
+```text
+1. escribir los 6 archivos reproducibles en  .structural-sections-staging
+2. por cada archivo, EN ORDEN (el manifiesto el ULTIMO):
+     si existe en destino -> copiarlo a .structural-sections-backup   (ANTES de tocarlo)
+     mover staging -> destino
+3. sembrar el overlay vacio solo si falta
+4. exito     -> borrar staging y backup
+   excepcion -> ROLLBACK: restaurar los reemplazados desde backup, borrar los creados,
+                borrar staging y backup, y RELANZAR la excepcion original
+```
+
+**La garantía, dicha con precisión:** ante una excepción durante la publicación, el directorio queda
+exactamente como estaba —los archivos reemplazados vuelven byte por byte, los que no existían se
+eliminan— y no quedan carpetas de trabajo.
+
+**Lo que NO se afirma:** atomicidad frente a un corte de energía o a un proceso liquidado. Exigiría
+escrituras con journal del sistema de archivos, no puede demostrarse con una prueba y por eso ni el
+código ni la documentación lo prometen. Contra ese escenario protege otro mecanismo: el manifiesto se
+publica **el último**, así que una publicación interrumpida deja datos nuevos junto a un manifiesto
+viejo y la carga validada se niega a abrir esa carpeta — lo demuestra
+`APartiallyPublishedStateIsRejectedByTheValidatedLoad`.
+
+La costura es `internal static Action<string,int> AfterReplaceForTests`, no una abstracción pública de
+sistema de archivos: lo único que una prueba necesita es fallar en un momento elegido, y una interfaz
+para eso no la implementaría nadie más.
+
+### 0.4 F2 — diseño final de la autoridad de IDs
+
+```text
+{ID_NAMESPACE}-{FAMILIA}-{DESIGNACION_NORMALIZADA}
+StructuralSectionId.Create(idNamespace, family, designation)
+```
+
+- `ID_NAMESPACE` lo declara la fuente en `StructuralSectionSource.IdNamespace`, y viaja al CSV de
+  fuentes (columna `idNamespace`) y al manifiesto.
+- **`AISC-SHAPES` declara `AISC`, así que los 983 ids son EXACTAMENTE los mismos.** Verificado: los
+  cuatro CSV de familia conservan su SHA-256 byte a byte (§0.7).
+- Forma: `A-Z0-9`, no vacío. El guion queda excluido porque es el separador del propio id.
+- **Único en el catálogo**: dos fuentes con el mismo namespace son error.
+- `ExpectedSectionId(idNamespace)` es un **método con argumento**, no una propiedad: el validador
+  resuelve la fuente y le pasa su autoridad, de modo que no puede ignorarla. Una sección cuya fuente no
+  exista se reporta como no comprobable.
+- Defecto adicional que la prueba nueva destapó y se corrigió: la unicidad de la designación EDI era
+  **global**, así que dos fuentes sintéticas con la misma designación colisionaban aunque sus ids
+  fueran distintos. Ahora es **por fuente**, y la búsqueda por EDI sin fuente se niega a elegir cuando
+  hay ambigüedad.
+
+### 0.5 F3 — evidencia de libro incorrecto rechazado
+
+La ruta de producción exige, todo publicado por el propio documento: hoja `Readme` legible; que declare
+«AISC Shapes Database v16.0»; que mencione «16th Edition» y la convención EDI; que exista la hoja
+`Database v16.0`; y coherencia entre revisión detectada, hoja de datos y metadata generada. La revisión
+sale de lo acreditado, no de una constante.
+
+`--worksheet` **desaparece** de la CLI y del método público: no hay forma de etiquetar otra hoja o
+revisión como v16.0, y una prueba por reflexión lo fija.
+
+| Caso | Resultado |
+|---|---|
+| Readme ausente | **rechazado** — «El libro no tiene la hoja 'Readme'…» |
+| Readme vacío | **rechazado** |
+| Readme de la v15.0 | **rechazado** — falta el marcador `AISC SHAPES DATABASE V16.0` |
+| Readme sin «16th Edition» | **rechazado** |
+| Readme sin la convención EDI | **rechazado** |
+| Hoja `Database v16.0` ausente | **rechazado** |
+| Revisión y nombre de hoja contradictorios (`Database v15.0`) | **rechazado** |
+| Libro correcto | **aceptado**, revisión `16.0`, hoja `Database v16.0` |
+
+**El SHA-256 no es la compuerta**: dos libros sintéticos distintos —distinto hash— se aceptan los dos,
+porque lo que se verifica es la identidad publicada. El hash se sigue registrando en el manifiesto como
+procedencia.
+
+### 0.6 F4 y F5 — política final de hashes, overlay y metadata
+
+| Archivo | ¿En los hashes del manifiesto? | ¿En el bundle? | ¿Editable? |
+|---|---|---|---|
+| `structural-sections-{w,hss-rect,c,l}.csv` | **sí** | sí | no |
+| `structural-section-sources.csv` | **sí** | sí | no |
+| `structural-sections-manifest.json` | **no** (sería circular) | sí | no |
+| `structural-section-status.csv` | **NO** (overlay mutable) | sí | **sí, el único** |
+
+- Una edición legítima del overlay **no** invalida los datos AISC — lo demuestra
+  `ALegitimateOverlayEditDoesNotInvalidateTheImportedData`.
+- El overlay se valida aparte: esquema estricto, sin duplicados y con FK contra el catálogo.
+- Una reimportación con una entrada huérfana **se detiene con error**; retirarla es del operador, y la
+  forma de hacerlo es editar el overlay primero.
+- El importador nunca reescribe un overlay existente; sólo lo siembra vacío cuando falta.
+- `--check` informa **por separado** los datos reproducibles y la validez del overlay local.
+
+**Metadata adicional validada por la carga pública** — `Load()` valida antes de cachear y no existe vía
+pública para saltárselo: `catalogId`, `sourceId`, `sourceRevision`, `sourceWorksheet`, `mapperVersion`,
+`idNamespace`, `sourceFileName`, SHA-256 del libro con **exactamente 64 hexadecimales**, conjunto
+**exacto** de archivos declarados (ninguno faltante, inesperado ni repetido; nunca el manifiesto ni el
+overlay), hash de cada archivo inmutable y correspondencia **fuente ↔ filas ↔ manifiesto**. Falla con
+`StructuralSectionCatalogException` y el diagnóstico completo.
+
+### 0.7 Conteos y hashes tras la ronda 2
+
+Los datos AISC **no cambiaron**: `289 + 525 + 32 + 137 = 983`, cero filas seleccionadas rechazadas,
+mismos tipos excluidos, mismo contraste métrico (peor caso `C5X6.7`, 4.128 %).
+
+| Archivo | SHA-256 | ¿Cambió? |
+|---|---|---|
+| `structural-sections-w.csv` | `9259F672CDDC6855E321E0483F819F5875967145C6F218571F3D8E1FDCE78F1E` | **no** |
+| `structural-sections-hss-rect.csv` | `FDC8E3E436DFA33421D0ED8A06F8CAC7B82C232F997802B6A95CC25498443F0D` | **no** |
+| `structural-sections-c.csv` | `E42871A455AD2F78E9C9550E6B9D65431B678BB6CC867C841EC4E6BBEF66F63E` | **no** |
+| `structural-sections-l.csv` | `6B5077003388735502FEBAC99281266B37C3688FAEEA2D2AB1BDB399E44BF2FC` | **no** |
+| `structural-section-sources.csv` | `AD2AC2302FC92D5C956FF1FD2F94C2AC91338609166A3FA74ABFAEE03298B385` | **sí** — gana la columna `idNamespace` |
+| `structural-sections-manifest.json` | `A6B40B470B311CE27F0E3BFD8D7672B749680361FBA94184E51B3949147616AD` | **sí** — gana `idNamespace` y deja de hashear el overlay |
+| `structural-section-status.csv` | `7B4CB158AF88769BD90AB9CE2CE3D21010EDB7F7FB334E591917B6F5342E6D7D` | **no** — y ya no se hashea |
+
+`MapperVersion` pasa de `I-36A.1` a `I-36A.2`. Dos importaciones independientes vuelven a producir los
+siete archivos **byte-idénticos**, y `--check` sobre `assets/catalogs` da OK en las dos categorías.
+
+### 0.8 Correcciones documentales (F6) y estado de ADR-0021 (F7)
+
+| # | Corrección | Dónde |
+|---|---|---|
+| 1 | `W12X28` no es un ejemplo real de la v16.0: los ejemplos reales usan `W12X26` y `W12X28` queda **etiquetado como fixture sintético de formato** | ADR-0020, ADR-0021, contrato, guía, `initiatives/README`, ROADMAP, `StructuralSectionDefinition` |
+| 2 | Los cuatro tramos de columnas descritos correctamente: `A`–`D` metadata/identidad US, `E`–`CF` valores US, `CG`–`CH` designaciones métricas, `CI`–`FJ` valores métricos | ADR-0021 §Contexto, guía §11 |
+| 3 | El peor contraste real es **`C5X6.7`**, que es lo que vuelve a emitir el importador; se elimina `C6X6.7` | ADR-0021 |
+| 4 | «cuatro sistemas vigentes» → «todos los sistemas vigentes» | ADR-0020, ARCHITECTURE, guía, contrato |
+| 5 | No se afirma atomicidad frente a un crash: se documenta la garantía real y su límite | guía §7, `ImportOutputWriter` |
+| 6 | Separación datos importados ↔ overlay documentada explícitamente | ADR-0020 §4.b, guía §3, ARCHITECTURE |
+
+**F7:** ADR-0021 pasa a **`propuesto`**. Su decisión central —la política exacta de IDs— es uno de los
+siete puntos del gate y el dueño la rechazó parcialmente; un `aceptado` mientras sigue bajo gate diría
+lo contrario de lo que ocurre. **ADR-0020 permanece `aceptado`**: la separación sección / miembro fue
+decidida expresamente.
+
+### 0.9 Suites, builds y bundle de la ronda 2
+
+| Gate | Resultado |
+|---|---|
+| `RackCad.Tests` | **1837 / 1837** (ronda 1: 1762 → **+75**) |
+| `RackCad.UI.Tests` | **494 / 494** |
+| Build herramienta Debug | 0 errores, 0 advertencias |
+| Build `RackCad.Application` Debug | 0 errores, 0 advertencias |
+| Build `RackCad.UI` Debug | 0 errores, 0 advertencias |
+| Build `RackCad.Plugin` Debug | 0 errores (2 `MSB3277` conocidos) |
+| Bundle build + verify | **OK, 147 comprobaciones** |
+| Reimportación completa del libro oficial | 289/525/32/137 = **983**, cero rechazadas |
+| CSV AISC reproducibles | dos corridas byte-idénticas |
+| Overlay preservado | intacto byte a byte tras reimportar |
+
+Suites nuevas: `StructuralSectionPublishTransactionTests` (F1), `StructuralSectionIdNamespaceTests`
+(F2), `AiscWorkbookVerificationTests` (F3), `StructuralSectionLoadValidationTests` (F4/F5), más
+ampliaciones de `StructuralSectionValidatorTests` y `StructuralSectionImporterTests`.
+
+Las clases que publican comparten `StructuralSectionPublishCollection` sin paralelismo: el hook de
+fallo es estático y xUnit ejecuta clases en paralelo, así que sin eso una prueba armaba el fallo que
+otra sufría.
+
+### 0.10 Lo que NO cambió en la ronda 2
+
+`secciones.csv` y los diez catálogos vigentes byte-idénticos; `blocks.csv` y `blocks-library.dwg`
+intactos; `src/RackCad.Domain`, `src/RackCad.UI`, `src/RackCad.Plugin`, `deploy/` y `.github/` con
+**cero archivos cambiados**; `docs/HANDOFF.md` sin tocar; la columna Estado del ROADMAP sin marcar nada
+como integrada; I-36B sin abrir y su rama sin crear; y **`main` intacta**.
+
+---
+
+## 1. Preflight real (ronda 1)
 
 Ejecutado **antes** de escribir nada y antes del reclamo.
 

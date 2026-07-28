@@ -3,16 +3,16 @@ automation_state:
   initiative: I-36A
   branch: architecture/catalogo-secciones-estructurales
   claim_id: c72f4d42-a201-40c1-b9d9-2f03d9556681
-  current_phase: 7
+  current_phase: 8
   state: review-ready
   gate: owner-validation
-  attempts: 1
+  attempts: 2
   next_action: >-
     VALIDACION-DEL-OWNER-siete-puntos-fuente-y-SHA · conteos-por-familia · sentinelas ·
     etiquetas-de-peso · politica-de-ids-INCLUIDO-el-caso-HSS · habilitado-deshabilitado ·
     confirmacion-de-que-secciones-csv-y-los-sistemas-existentes-no-cambiaron ·
     NO-integrar-NO-borrar-rama-ni-worktree-hasta-que-el-Owner-apruebe
-  last_evidence_commit: 48c2a48a92b21c2bed123057b73af6188d20452c
+  last_evidence_commit: 164476c
 
 # --------------------------------------------------------------------------------------------------------
 # EL CANDIDATO TECNICO. Hay UNO SOLO y es este: el ultimo commit que toca src, tests, tools o assets.
@@ -20,11 +20,11 @@ automation_state:
 # que el Owner valida son el MISMO, y eso es comprobable con git diff sin confiar en este archivo.
 # --------------------------------------------------------------------------------------------------------
 candidate:
-  sha: 48c2a48a92b21c2bed123057b73af6188d20452c
-  subject: I-36A - catalogo AISC v16.0 importado, manifiesto y sentinelas
+  sha: 164476c
+  subject: I-36A - RONDA 2 - publicacion fail-closed, identidad neutral, verificacion del libro
   base: a35374f99dde91077a2e05bfc69358fb3e3b3ad9
-  ci_run: 30324052409
-  ci_result: VERDE-completed-success-sobre-el-SHA-exacto-del-candidato
+  ci_run: pendiente-de-verificar-sobre-el-candidato-de-la-RONDA-2
+  ci_result: pendiente
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   por_que_importa_que_CI_sea_verde_en_LINUX: >-
     el-job-de-pruebas-corre-en-ubuntu-sobre-un-checkout-LIMPIO ·
@@ -115,8 +115,9 @@ resultado:
     structural-sections-hss-rect.csv: FDC8E3E436DFA33421D0ED8A06F8CAC7B82C232F997802B6A95CC25498443F0D
     structural-sections-c.csv: E42871A455AD2F78E9C9550E6B9D65431B678BB6CC867C841EC4E6BBEF66F63E
     structural-sections-l.csv: 6B5077003388735502FEBAC99281266B37C3688FAEEA2D2AB1BDB399E44BF2FC
-    structural-section-sources.csv: 96FB1590D0FB2E904F4ECEC0D8560A6B7F6080CCE7F6E8302FFFA3A83B5FA694
-    structural-section-status.csv: 7B4CB158AF88769BD90AB9CE2CE3D21010EDB7F7FB334E591917B6F5342E6D7D
+    structural-section-sources.csv: AD2AC2302FC92D5C956FF1FD2F94C2AC91338609166A3FA74ABFAEE03298B385
+    structural-section-status.csv: 7B4CB158AF88769BD90AB9CE2CE3D21010EDB7F7FB334E591917B6F5342E6D7D-NO-SE-HASHEA-es-overlay-mutable
+    structural-sections-manifest.json: A6B40B470B311CE27F0E3BFD8D7672B749680361FBA94184E51B3949147616AD-NO-se-hashea-a-si-mismo
   hashes_verificados_en: >-
     el-archivo-del-worktree · el-objeto-que-Git-almacena-git-show-HEAD · y-dentro-del-bundle-canonico
 
@@ -158,6 +159,129 @@ hallazgos:
       la-regla-un-cero-significa-un-valor-perdido-se-restringio-a-las-MAGNITUDES-dejando-fuera-las-POSICIONES ·
       hay-regresion-para-ambos-casos
 
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA 2. El Owner RECHAZO PARCIALMENTE el gate owner-validation con cinco defectos funcionales y un
+# bloque de correcciones documentales. Los seis rojos se vieron fallar ANTES del fix, por COMPORTAMIENTO
+# y no por compilacion, contra la API tal como estaba en 49e68ad.
+# --------------------------------------------------------------------------------------------------------
+ronda_2:
+  preflight_de_reanudacion:
+    head_al_reanudar: 49e68ad82a26464bdea8e6df221061b47cd60e20
+    coincide_con_la_punta_del_encargo: si
+    upstream: sincronizado-en-el-mismo-SHA-nada-sin-publicar
+    git_status: limpio
+    stashes: cero
+    operaciones_en_curso: ninguna
+    divergencia_vs_origin_main: 0-detras-7-delante-merge-base-a35374f-igual-a-origin-main
+    origin_main_avanzo: NO-asi-que-WORKFLOW-4-2-no-exige-rebase-y-no-se-hizo
+
+  rojos_observados:
+    F1: Tras-un-fallo-de-publicacion-quedaron-archivos-REEMPLAZADOS-hss-rect-y-w
+    F2: Dos-fuentes-distintas-produjeron-el-MISMO-id-AISC-W-W12X26
+    F3: Un-libro-SIN-hoja-Readme-se-importo-y-se-etiqueto-como-revision-16-0
+    F4a: El-manifiesto-hashea-structural-section-status-csv-que-es-un-overlay-EDITABLE
+    F4b: La-reimportacion-descarta-una-entrada-del-overlay-sin-detenerse
+    F5: Load-devolvio-un-catalogo-cuyo-manifiesto-miente-no-falla-cerrada
+    resumen: Con-error-6-Superado-0-Total-6
+
+  F1_publicacion:
+    garantia: >-
+      ante-una-excepcion-todo-archivo-ya-reemplazado-se-restaura-BYTE-POR-BYTE-desde-un-respaldo ·
+      los-que-no-existian-antes-se-eliminan · staging-y-backup-se-borran · el-directorio-queda-como-estaba
+    lo_que_NO_se_afirma: >-
+      atomicidad-frente-a-corte-de-energia-o-proceso-liquidado ·
+      exigiria-escrituras-con-journal-del-sistema-de-archivos-y-no-se-puede-demostrar-con-una-prueba ·
+      por-eso-ni-el-codigo-ni-la-documentacion-lo-prometen
+    defensa_complementaria: >-
+      el-manifiesto-se-publica-el-ULTIMO-asi-que-una-publicacion-interrumpida-deja-datos-nuevos-junto-a-un-manifiesto-viejo ·
+      y-la-carga-validada-se-niega-a-abrir-esa-carpeta
+    costura: internal-static-Action-string-int-AfterReplaceForTests-NO-una-abstraccion-publica
+
+  F2_identidad:
+    forma: ID_NAMESPACE-FAMILIA-DESIGNACION_NORMALIZADA
+    construccion: StructuralSectionId-Create-idNamespace-family-designation
+    aisc: AISC-SHAPES-declara-el-namespace-AISC-asi-que-los-983-ids-son-EXACTAMENTE-los-mismos
+    verificado: los-cuatro-CSV-de-familia-conservan-su-SHA-256-byte-a-byte
+    forma_del_namespace: A-Z-y-0-9-no-vacio-sin-guion-porque-el-guion-es-el-separador-del-propio-id
+    unicidad: dos-fuentes-con-el-mismo-namespace-son-error
+    expected_section_id: >-
+      es-un-METODO-con-argumento-no-una-propiedad-asi-que-NO-puede-ignorar-la-fuente ·
+      el-validador-resuelve-la-fuente-y-le-pasa-su-autoridad
+    defecto_adicional_destapado_por_la_prueba: >-
+      la-unicidad-de-la-designacion-EDI-era-GLOBAL-y-dos-fuentes-sinteticas-colisionaban ·
+      ahora-es-POR-FUENTE-y-la-busqueda-sin-fuente-se-niega-a-elegir-si-hay-ambiguedad
+
+  F3_verificacion_del_libro:
+    exige: >-
+      hoja-Readme-legible · que-declare-AISC-Shapes-Database-v16-0 ·
+      que-mencione-16th-Edition-y-la-convencion-EDI · que-exista-la-hoja-Database-v16-0 ·
+      y-coherencia-entre-revision-hoja-de-datos-y-metadata-generada
+    worksheet_cli: ELIMINADO-de-la-CLI-y-del-metodo-publico-fijado-por-una-prueba-de-reflexion
+    revision: sale-de-lo-que-el-libro-acredita-no-de-una-constante
+    NO_se_fija_el_SHA: >-
+      la-identidad-se-verifica-por-CONTENIDO-Y-ESTRUCTURA ·
+      fijar-el-hash-actual-haria-imposible-importar-una-revision-futura-legitima ·
+      el-hash-se-sigue-REGISTRANDO-en-el-manifiesto-como-procedencia
+    casos_rechazados: >-
+      Readme-ausente · Readme-vacio · Readme-de-la-v15-0 · Readme-sin-16th-Edition ·
+      Readme-sin-convencion-EDI · hoja-v16-ausente · revision-y-nombre-de-hoja-contradictorios
+    caso_aceptado: libro-correcto-revision-16-0-hoja-Database-v16-0
+
+  F4_F5_hashes_y_overlay:
+    hasheados_por_el_manifiesto: los-CINCO-inmutables-cuatro-familias-mas-fuentes
+    NO_hasheados: el-manifiesto-a-si-mismo-seria-circular · y-el-overlay-de-estado-que-es-EDITABLE
+    overlay_en_runtime_y_bundle: SI-sigue-distribuyendose
+    overlay_validacion: aparte-esquema-estricto-sin-duplicados-y-FK-contra-el-catalogo
+    edicion_legitima_del_overlay: NO-invalida-los-hashes-de-los-datos-AISC-hay-regresion
+    reimportacion_con_entrada_huerfana: SE-DETIENE-CON-ERROR-no-se-elimina-tras-un-aviso
+    el_importador_no_reescribe_un_overlay_existente: solo-lo-siembra-vacio-cuando-falta
+    check: distingue-datos-generados-reproducibles-de-overlay-local-valido
+    carga_publica: >-
+      Load-valida-antes-de-cachear-y-NO-existe-via-publica-para-saltarselo-LoadUnvalidated-es-internal ·
+      falla-con-StructuralSectionCatalogException
+    metadata_validada: >-
+      catalogId · sourceId · sourceRevision · sourceWorksheet · mapperVersion · idNamespace ·
+      sourceFileName · SHA-256-del-libro-con-EXACTAMENTE-64-hexadecimales ·
+      conjunto-EXACTO-de-archivos-declarados · nombres-duplicados · archivos-faltantes-o-inesperados ·
+      hash-de-cada-archivo-inmutable · y-correspondencia-fuente-filas-manifiesto
+
+  F6_correcciones_documentales:
+    - W12X28-no-es-ejemplo-real-los-reales-usan-W12X26-y-W12X28-queda-etiquetado-como-fixture-SINTETICO
+    - columnas-A-D-metadata-US · E-CF-valores-US · CG-CH-designaciones-metricas · CI-FJ-valores-metricos
+    - el-peor-contraste-real-es-C5X6-7-se-elimina-C6X6-7
+    - cuatro-sistemas-vigentes-pasa-a-todos-los-sistemas-vigentes
+    - no-se-afirma-atomicidad-frente-a-un-crash-se-documenta-la-garantia-real-y-su-limite
+    - separacion-datos-importados-y-overlay-documentada-en-ADR-0020-guia-y-ARCHITECTURE
+
+  F7_estado_de_adr:
+    ADR_0021: >-
+      pasa-a-PROPUESTO-porque-su-decision-central-la-politica-exacta-de-ids-sigue-bajo-gate-owner-validation ·
+      un-aceptado-diria-lo-contrario-de-lo-que-ocurre
+    ADR_0020: permanece-ACEPTADO-la-separacion-seccion-miembro-fue-decidida-expresamente
+
+  datos_conservados:
+    por_familia: W-289 · HSS-RECT-525 · C-32 · L-137
+    total: 983
+    filas_seleccionadas_rechazadas: 0
+    csv_de_familia: SHA-256-IDENTICO-al-de-la-ronda-1-los-datos-AISC-no-cambiaron
+    cambian_solo: >-
+      structural-section-sources-csv-gana-la-columna-idNamespace-AD2AC230 ·
+      y-el-manifiesto-gana-idNamespace-y-deja-de-hashear-el-overlay-A6B40B47
+    mapper_version: I-36A-1-pasa-a-I-36A-2
+    reproducibilidad: dos-corridas-independientes-byte-identicas-y-check-OK-en-las-dos-categorias
+
+  gates_ronda_2:
+    rackcad_tests: 1837-de-1837-ronda-1-1762-mas-75
+    rackcad_ui_tests: 494-de-494
+    build_importador_debug: 0-errores-0-advertencias
+    build_application_debug: 0-errores-0-advertencias
+    build_ui_debug: 0-errores-0-advertencias
+    build_plugin_debug: 0-errores-2-MSB3277-conocidos
+    bundle: OK-147-comprobaciones
+    reimportacion_oficial: 289-525-32-137-igual-983-cero-rechazadas
+    overlay_preservado: intacto-byte-a-byte-tras-reimportar
+
 # --------------------------------------------------------------------------------------------------------
 # COMMITS. Cada uno deja el arbol compilando y las suites en verde.
 # --------------------------------------------------------------------------------------------------------
@@ -172,6 +296,12 @@ commits:
     asunto: importador reproducible de la AISC Shapes Database
   - sha: 48c2a48
     asunto: catalogo AISC v16.0 importado, manifiesto y sentinelas
+  - sha: 86f412e
+    asunto: guia, matriz de columnas, evidencia y cierre de la ronda 1
+  - sha: 49e68ad
+    asunto: candidato tecnico de la ronda 1 con CI verde
+  - sha: 164476c
+    asunto: RONDA 2 - publicacion fail-closed, identidad neutral, verificacion del libro
 
 # --------------------------------------------------------------------------------------------------------
 # GATES. Ninguno se afirma sin comando que lo respalde.
@@ -185,7 +315,7 @@ gates:
   build_plugin_debug: 0-errores-2-MSB3277-conocidos-de-las-referencias-AutoCAD
   bundle: OK-147-comprobaciones-catalogos-identicos-a-assets-catalogs-cero-DLL-Autodesk
   archivos_nuevos_en_el_bundle: los-SIETE-presentes-con-hashes-identicos-al-manifiesto
-  ci: VERDE-run-30324052409-sobre-el-candidato-48c2a48-mas-corrida-propia-del-cierre-documental
+  ci: pendiente-de-verificar-sobre-el-candidato-de-la-RONDA-2
   autocad: NO-REQUERIDO-la-iniciativa-no-cambia-dibujo-bloques-comandos-ni-DWG
   owner_validation: PENDIENTE-siete-puntos
 

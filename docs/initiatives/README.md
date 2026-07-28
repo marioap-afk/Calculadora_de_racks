@@ -413,7 +413,7 @@ Planes disponibles:
   Shapes Database v16.0**: W, HSS rectangular y cuadrado, canales C y angulos L (**983** secciones:
   289 + 525 + 32 + 137). El problema es de modelado: hoy una fila de `secciones.csv` es a la vez
   seccion, **rol** (`POSTE`/`CELOSIA`/`LARGUERO`/`SEPARADOR`) y pieza comercial, y Cantilever rompe
-  la coincidencia porque la misma `W12X28` puede ser columna, brazo o base. Entrega: identidad
+  la coincidencia porque la misma `W12X26` puede ser columna, brazo o base. Entrega: identidad
   `AISC-{FAMILIA}-{EDI_NORMALIZADO}` con normalizacion determinista y **sin la revision dentro del
   id**; siete archivos bajo `assets/catalogs/` (cuatro CSV de familia **generados**, fuentes, overlay
   `IsEnabled` y manifiesto con conteos y SHA-256, sin timestamps); un **importador reproducible fuera
