@@ -6,13 +6,13 @@ automation_state:
   current_phase: 10
   state: review-ready
   gate: owner-validation
-  attempts: 1
+  attempts: 2
   next_action: >-
-    VALIDACION-DEL-DUENO-EN-AUTOCAD-checklist-de-12-puntos-en-la-evidencia-seccion-14 ·
+    VALIDACION-DEL-DUENO-EN-AUTOCAD · PRIMERO-el-smoke-focalizado-de-5-puntos-evidencia-14a ·
+    solo-si-pasa-el-checklist-completo-de-12-puntos-evidencia-14b ·
     con-el-DLL-Debug-de-ESTE-worktree ·
     despues-el-dueno-decide-sobre-ADR-0022-que-sigue-PROPUESTO ·
     NO-integrar-NO-limpiar-NO-abrir-I-37
-  last_evidence_commit: 69c11eb-CI-VERDE-4-de-4-run-30374044447
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo. Verificable con git y con la CI publica.
@@ -195,8 +195,8 @@ resultados_medidos:
     Channel-peor-caso: 0.0373-in-1.244-por-ciento-en-AISC-C-C3X3_5
     Angle-peor-caso: 0.0099-in-0.329-por-ciento-en-AISC-L-L3X3X3_16
   suites:
-    RackCad_Tests: 1992-de-1992-base-1851-mas-141
-    RackCad_UI_Tests: 521-de-521-mas-27
+    RackCad_Tests: 2043-de-2043-base-1851-mas-192
+    RackCad_UI_Tests: 523-de-523-mas-29
   builds:
     application_debug: 0-errores
     ui_debug: 0-errores
@@ -229,3 +229,60 @@ hallazgo_fuera_de_alcance:
   por_que_no_se_arregla_aqui: >-
     RackCommandReference-es-UI-vigente-y-esta-fuera-del-alcance-declarado ·
     ademas-exige-decidir-grupo-y-alias-que-es-criterio-de-producto-no-un-anadido-mecanico
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA 2 — el gate owner-validation quedo RECHAZADO PARCIALMENTE y estos son los cuatro puntos.
+# Rojos escritos y VISTOS FALLAR antes del arreglo: 34 de 42 sobre la base 4444027.
+# --------------------------------------------------------------------------------------------------------
+ronda_2:
+  base_revisada: 4444027dd941d7a2a3be37bfb9755955e656976c
+  origin_main_avanzo: NO-sigue-en-eafb785-asi-que-no-hubo-rebase
+  F1_generatrices_interiores:
+    defecto: >-
+      AddWireframe-generaba-perfiles-de-extremo-para-TODOS-los-contornos-pero-generatrices-solo-desde-contours-0 ·
+      un-HSS-visto-de-lado-se-dibujaba-como-barra-maciza
+    arreglo: >-
+      todos-los-contornos-aportan-generatrices ·
+      roles-SEPARADOS-Generatrix-InteriorGeneratrix-y-EndProfile-EndProfileHole-no-un-rol-con-bandera
+    medido_en_HSS4X4X1_4_a_120in_LongitudinalX: >-
+      seis-rectas-en--2--1.75--1.65-1.65-1.75-2 · separacion-0.25-in-igual-a-tnom-medible-con-DIST ·
+      seis-y-no-ocho-porque-los-arcos-son-CONCENTRICOS-y-sus-tangencias-coinciden-en-1.65
+    invariante_bajo_rotacion_y_espejo: SI-comprobada-a-0-grados-a-90-grados-y-espejada
+    W_C_y_L: CERO-lineas-interiores-fijado-por-rol-y-por-recuento-en-tres-vistas
+  F2_canonicalizacion_de_proyecciones:
+    defecto: >-
+      un-contorno-proyectado-a-lo-largo-de-X-o-Y-colapsa-a-recta-y-se-emitia-CERRADO ·
+      en-AutoCAD-una-polilinea-de-area-cero-que-recorre-cada-arista-de-ida-y-vuelta
+    arreglo: >-
+      dimensionalidad-de-la-proyeccion-calculada-DESPUES-de-proyectar ·
+      cerrada-solo-si-conserva-area · si-colapsa-segmentos-abiertos-unicos-sin-solapes-sin-recorridos-inversos-sin-colineales-redundantes-sin-longitud-cero ·
+      roles-conservados-y-salida-determinista
+    costura_con_autocad: >-
+      la-invariante-vive-en-el-TIPO-SectionPlanCurve-rechaza-cerrada-unidimensional ·
+      mas-guarda-de-fuente-que-exige-que-Closed-salga-SOLO-de-curve-IsClosed
+    efectos_correctos_del-mismo-pase:
+      - dos-generatrices-colineales-se-funden-en-una-dibujan-la-misma-tinta
+      - la-boca-del-tubo-no-se-dibuja-aparte-de-canto-porque-cae-DENTRO-de-la-cara-de-corte
+      - la-envolvente-de-un-dibujo-plano-deja-de-ser-un-rectangulo-cerrado-de-area-cero
+  F3_contrato_del_centroide:
+    problema: dos-conceptos-publicos-distintos-bajo-el-nombre-Centroid
+    ahora:
+      Origin: cero-cero-la-autoridad-de-colocacion
+      OriginBasis: Symmetry-en-W-y-HSS-TabulatedCentroid-en-C-y-L
+      GeometricContourCentroid: centroide-del-contorno-APROXIMADO-metrica-diagnostica
+      GeometricCentroidResidual: cuanto-se-separan
+      SectionReferencePointKind: Centroid-renombrado-a-TabulatedCentroid
+    geometria_movida: NINGUNA-los-residuos-son-los-mismos-que-en-la-primera-entrega
+    guarda: prueba-de-vocabulario-que-prohibe-un-miembro-publico-llamado-solo-Centroid
+  F4_decision_del_owner_sobre_canales:
+    registrada_en: docs/automation/decisions/I-36B.md
+    contenido: >-
+      C-se-acepta-con-TabulatedDerived · error-maximo-5.545-por-ciento-conocido-3-de-32-filas ·
+      causa-conicidad-y-radio-de-punta-no-publicados · NO-se-inventara-geometria-para-forzar-el-area ·
+      la-excepcion-NO-convierte-la-fidelidad-en-TabulatedComplete
+  F5_smoke_focalizado: >-
+    cinco-puntos-en-la-evidencia-14a-antes-del-checklist-completo ·
+    HSS-LongitudinalX-HSS-isometrico-W12X26-LongitudinalX-C10X15_3-LongitudinalY-L8X6X1-LongitudinalX
+  invariantes_conservadas: >-
+    289-W-525-HSS-32-C-137-L-983-total · 289-TabulatedComplete-694-TabulatedDerived-CERO-degradadas ·
+    mismos-errores-de-area-y-mismos-residuos-de-centroide · catalogos-y-manifiesto-de-I-36A-sin-una-linea

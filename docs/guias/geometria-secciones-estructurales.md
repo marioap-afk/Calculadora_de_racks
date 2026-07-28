@@ -28,7 +28,7 @@ mañana cambia la forma de una W, cambia en un solo lugar.
 |---|---|
 | Plano de la sección | XY local |
 | Eje longitudinal | Z local |
-| Origen transversal | **El centroide** |
+| Origen transversal | **El centroide tabulado** |
 | Contorno exterior | Antihorario |
 | Huecos | Horario |
 
@@ -36,6 +36,25 @@ El origen es el centroide porque es lo que hace componibles a dos secciones dist
 sobre una HSS no debería depender de qué borde eligió tabular la fuente. AISC publica `x` e `y` para
 los perfiles asimétricos —canal y ángulo— y esos son los valores que se usan para centrar; no se
 recalcula un centroide propio para ese fin.
+
+### Dos centroides, dos nombres
+
+Conviene tenerlo claro porque son cosas distintas y se confunden con facilidad:
+
+| Propiedad | Qué es | Para qué sirve |
+|---|---|---|
+| `Origin` | `(0,0)`, el origen transversal | Colocar. Es la autoridad |
+| `OriginBasis` | `Symmetry` (W, HSS) o `TabulatedCentroid` (C, L) | Saber **cómo** se resolvió |
+| `GeometricContourCentroid` | El centroide del contorno **aproximado** | Diagnóstico |
+| `GeometricCentroidResidual` | Cuánto se separan | Medir la aproximación |
+
+El contorno que se puede derivar no incluye lo que la fuente no publica, así que su centroide de área
+no cae exactamente en el tabulado. **El residuo se informa; no coloca nada.** Mover la geometría hasta
+anularlo sustituiría la autoridad de AISC por nuestro propio contorno incompleto, y de paso desplazaría
+el perfil de donde la fuente dice que está.
+
+Ningún miembro público se llama simplemente `Centroid`: dos conceptos distintos bajo un mismo nombre es
+justamente como se confunden.
 
 El sentido de los contornos no es decorativo: es como se distingue material de vacío sin llevar una
 bandera aparte, y se **normaliza al construir**, no se confía en que cada constructor acierte.
@@ -144,6 +163,20 @@ Lo que se dibuja es un **wireframe sin eliminación de líneas ocultas**. En una
 el extremo de atrás. Está dicho en vez de arreglado: un paso de líneas ocultas es caro, frágil, y cuando
 falla produce dibujos sutilmente equivocados en lugar de obviamente rotos.
 
+**Un tubo se dibuja como tubo.** Todos los contornos aportan líneas longitudinales, huecos incluidos:
+un HSS visto de lado tiene cuatro caras, dos exteriores y dos interiores, separadas exactamente una
+pared nominal. Los roles lo distinguen —`Generatrix` / `InteriorGeneratrix` y `EndProfile` /
+`EndProfileHole`— para que un consumidor no tenga que deducir de qué contorno salió cada curva.
+
+**Lo que colapsa deja de ser una curva cerrada.** Mirando exactamente a lo largo de X o de Y, la sección
+se ve de canto: su contorno pasa de figura a recta. Emitirlo cerrado haría que cada arista se recorriera
+de ida y de vuelta —en AutoCAD, una polilínea de área cero imposible de seleccionar—, así que se reduce
+a los segmentos abiertos únicos que dibujan lo mismo. Por la misma razón, dos líneas colineales se
+funden en una: dibujan la misma tinta.
+
+Vista de canto, la boca del tubo cae **dentro** de la cara de corte, así que no se dibuja aparte. Lo que
+delata el hueco ahí son sus generatrices interiores, no su perfil de extremo.
+
 Las curvas llegan **teseladas** con una tolerancia de cuerda declarada. En la vista de sección un arco
 es un arco, pero en cualquier vista oblicua la proyección de un círculo es una **elipse**, y emitirla
 como arco sería callar un error.
@@ -218,6 +251,10 @@ de frontera que vigila por reflexión que no aparezcan esos conceptos.
 - **El área del HSS no coincide con la publicada** por diferencia de definición (sección 5).
 - **Lo insertado no se puede reeditar**: es geometría plana. Reabrirlo como objeto configurable es
   trabajo de I-37.
+- **El error de área del canal está aceptado por decisión del dueño**, no pendiente de arreglo: 5.545 %
+  máximo en 3 de 32 filas, por la conicidad y el radio de punta que AISC no publica. Está registrado en
+  [`decisions/I-36B.md`](../automation/decisions/I-36B.md), y **no** convierte la fidelidad de C en
+  `TabulatedComplete`.
 - **`RACKSECCION` no está en `RACKAYUDA`.** Añadirlo exigiría tocar `RackCommandReference`, que queda
   fuera del alcance de I-36B; `RACKPUSHBACK` tiene la misma ausencia desde antes. Anotado en
   [ideas-futuras.md](../ideas-futuras.md).
@@ -237,7 +274,8 @@ de frontera que vigila por reflexión que no aparezcan esos conceptos.
 | Factoría y caché | `Geometry/StructuralSectionGeometryFactory.cs` |
 | Longitud, rotación y espejo | `Geometry/PrismaticSectionInstance.cs` |
 | Vistas y cámaras | `Geometry/SectionViewpoint.cs` |
-| Plan neutral y firma | `Geometry/StructuralSectionRepresentationPlan.cs` |
+| Plan neutral, roles y firma | `Geometry/StructuralSectionRepresentationPlan.cs` |
+| Canonicalización de proyecciones | `Geometry/SectionProjectionCanonicalizer.cs` |
 | Proyección y teselado | `Geometry/StructuralSectionPlanBuilder.cs` |
 | Inspector y preview | `src/RackCad.UI/StructuralSections/` |
 | Materialización en AutoCAD | `src/RackCad.Plugin/Drawing/StructuralSections/` |

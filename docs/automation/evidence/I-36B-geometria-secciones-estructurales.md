@@ -240,8 +240,8 @@ preview y el dibujo habrían pasado a ser dos implementaciones que hoy coinciden
 
 | Suite / gate | Resultado |
 |---|---|
-| `RackCad.Tests` | **1992 / 1992** (base 1851 → **+141**) |
-| `RackCad.UI.Tests` | **521 / 521** (**+27**) |
+| `RackCad.Tests` | **2043 / 2043** (base 1851 → **+192**; ronda 2: 1992 → **+51**) |
+| `RackCad.UI.Tests` | **523 / 523** (**+29**; ronda 2: 521 → **+2**) |
 | `dotnet build src/RackCad.Application` Debug | 0 errores |
 | `dotnet build src/RackCad.UI` Debug | 0 errores |
 | `dotnet build src/RackCad.Plugin` Debug | 0 errores propios (2 avisos `MSB3277` preexistentes por la unificación de `System.Drawing` entre los ensamblados de AutoCAD y el ref-pack de net8.0) |
@@ -252,16 +252,17 @@ preview y el dibujo habrían pasado a ser dos implementaciones que hoy coinciden
 El único commit posterior a `69c11eb` es **solo documentación** —esta tabla y el estado versionado—, sin
 una línea de código ni de catálogo; su propia corrida de CI queda en §17.
 
-**Reparto de las 168 pruebas nuevas:**
+**Reparto de las 221 pruebas nuevas:**
 
 | Suite | Nuevas | Qué fija |
 |---|---|---|
 | `GeometryPrimitivesTests` | 34 | Vectores, límites, transformaciones, arcos, teselado, área/centroide analíticos, marcos 3D |
-| `StructuralSectionGeometryTests` | 15 | **Las 983** en los dos niveles: validez, cierre, centrado, área por familia, fidelidad, caché, diagnósticos no silenciosos |
+| `StructuralSectionGeometryTests` | 18 | **Las 983** en los dos niveles: validez, cierre, centrado, área por familia, fidelidad, caché, diagnósticos no silenciosos |
 | `StructuralSectionGeometrySentinelTests` | 12 | Sentinelas de las cuatro familias, **incluido el ángulo desigual** `L8X6X1` |
 | `StructuralSectionProjectionTests` | 38 | Instancia prismática, cinco vistas, rotación/espejo, modos, teselado y firma |
-| `StructuralSectionPluginSourceGuardTests` | 42 | El lado AutoCAD leído como texto (§13) |
-| `StructuralSectionInspectorTests` (UI) | 27 | Catálogo, filtros, longitud inválida, vista, detalle, rotación, espejo, recomputación, peso, fidelidad, fronteras |
+| `StructuralSectionPluginSourceGuardTests` | 43 | El lado AutoCAD leído como texto (§13), incluida la costura de `Closed` |
+| `StructuralSectionWireframeIntegrityTests` | 47 | **Ronda 2**: generatrices interiores, espesor medible, proyecciones que colapsan, aristas repetidas, perfiles legibles, y las 983 en las cuatro vistas |
+| `StructuralSectionInspectorTests` (UI) | 29 | Catálogo, filtros, longitud inválida, vista, detalle, rotación, espejo, recomputación, peso, fidelidad, fronteras, y que el preview nunca recibe una curva degenerada |
 
 ## 13. Por qué el lado AutoCAD se prueba como fuente
 
@@ -278,7 +279,111 @@ el razonamiento del código.
 **Lo que un guarda de texto no puede comprobar es cómo se ve el dibujo.** Eso es §14, y no lo sustituye
 nada de lo anterior.
 
-## 14. Checklist de AutoCAD para el dueño (12 puntos)
+## 13.b Ronda 2 — lo que la validación del dueño rechazó, y cómo quedó
+
+El gate `owner-validation` de la primera entrega quedó **rechazado parcialmente**. Cuatro puntos.
+
+### F1 — Un tubo se dibujaba como una barra maciza
+
+`AddWireframe` generaba perfiles de extremo para **todos** los contornos, pero generatrices sólo desde
+`contours[0]`. El hueco existía en la sección y desaparecía en cuanto la pieza tenía longitud.
+
+Ahora todos los contornos aportan generatrices, y hay **roles separados** —`Generatrix` /
+`InteriorGeneratrix` y `EndProfile` / `EndProfileHole`— en vez de un rol con una bandera, para que un
+consumidor los distinga sin volver a deducir de qué contorno salió cada curva.
+
+Medido en `HSS4X4X1/4` a 120 in, `LongitudinalX`: seis rectas longitudinales en **−2, −1.75, −1.65,
+1.65, 1.75 y 2**. Entre ±2 y ±1.75 hay **0.25 in = tnom**, y ahora se mide con `DIST`. Seis y no ocho
+porque los arcos interior y exterior son **concéntricos**: sus tangencias caen a la misma altura
+(`2 − 0.35 = 1.75 − 0.10 = 1.65`) y ahí las dos líneas son la misma tinta. El espesor sobrevive a
+rotación de 90° y a espejo.
+
+W, C y L no ganan nada: no tienen hueco, y una prueba lo fija por rol **y** por recuento de rectas en
+las tres vistas donde podría colarse.
+
+### F2 — Perfiles proyectados que colapsaban y seguían cerrados
+
+Mirando exactamente a lo largo de X o de Y el contorno se ve de canto y colapsa de figura a recta. Se
+seguía emitiendo **cerrado**: en AutoCAD, una polilínea de área cero que recorre cada arista de ida y de
+vuelta y que no hay forma de seleccionar.
+
+Ahora se calcula la **dimensionalidad** de la proyección después de proyectar. Si conserva área sigue
+cerrada; si colapsa se reduce a sus segmentos abiertos únicos —sin solapes, sin recorridos inversos
+duplicados, sin puntos colineales redundantes, sin tramos de longitud cero—, conservando los roles y con
+salida determinista.
+
+La invariante vive en el **tipo**: `SectionPlanCurve` rechaza una curva cerrada cuya proyección es
+unidimensional. Como el materializador copia `curve.IsClosed` tal cual —y una guarda de fuente fija que
+`Closed` no se asigna desde ninguna otra expresión—, **no queda camino** por el que una polilínea
+cerrada de área cero llegue al dibujo. Ésa es la costura que pedía la revisión.
+
+Dos efectos del mismo pase, ambos correctos: dos generatrices colineales se funden en una (en isométrica
+los ocho vértices del HSS caen sobre sólo cuatro rectas y sus tramos se solapan), y la boca del tubo deja
+de dibujarse aparte en vista de canto porque cae **dentro** de la cara de corte. Lo que delata el hueco
+ahí son sus generatrices interiores.
+
+También deja de emitirse una **envolvente cerrada de área cero**, alcanzable desde la UI con modo *Eje*
+más *mostrar envolvente* en una vista longitudinal.
+
+### F3 — Dos ideas compartiendo el nombre «centroide»
+
+| Antes | Ahora | Qué es |
+|---|---|---|
+| — | `Origin` | `(0,0)`. La autoridad de colocación |
+| — | `OriginBasis` | `Symmetry` (W, HSS) o `TabulatedCentroid` (C, L) |
+| `Centroid` | `GeometricContourCentroid` | El centroide del contorno **aproximado**. Diagnóstico |
+| `CentroidOffset` | `GeometricCentroidResidual` | Cuánto se separan |
+| `SectionReferencePointKind.Centroid` | `…TabulatedCentroid` | El punto que publica la fuente |
+
+**No se movió ninguna geometría.** Los residuos son los mismos que en la primera entrega. El residuo es
+una métrica y nunca una autoridad de colocación: anularlo moviendo la pieza sustituiría a AISC por
+nuestro propio contorno incompleto. Una prueba de vocabulario impide que vuelva a existir un miembro
+público llamado sólo `Centroid`.
+
+### F4 — Decisión del dueño sobre los canales
+
+Registrada en [`../decisions/I-36B.md`](../decisions/I-36B.md): fidelidad `TabulatedDerived` aceptada,
+error máximo de 5.545 % conocido (3 de 32 filas), causa acreditada en la conicidad y el radio de punta
+que AISC no publica, prohibición expresa de inventar geometría para forzar el área, y constancia de que
+la excepción **no** convierte la fidelidad en `TabulatedComplete`.
+
+### Rojos observados antes de arreglar
+
+Las regresiones se escribieron primero y se vieron fallar: **34 de 42** en
+`StructuralSectionWireframeIntegrityTests` sobre la base `4444027`. Tres de ellas eran de la propia
+prueba, no del producto, y se corrigieron con su razón anotada: la vista isométrica **escorza** el eje
+(120 in se dibujan como 97.98), así que una generatriz no se reconoce por su longitud sino por su
+dirección; y varios vértices caen sobre la misma recta proyectada, de modo que «un vértice, una línea»
+es falso incluso cuando el dibujo es correcto.
+
+Una prueba anterior, `AnHssDrawsItsInteriorInALongitudinalViewToo`, exigía cuatro `EndProfile` y con eso
+fijaba **dos** errores a la vez: llamaba perfil exterior al hueco, y contaba como acierto justo las
+curvas degeneradas. Reescrita.
+
+### Invariantes que la ronda 2 no tocó
+
+289 W · 525 HSS · 32 C · 137 L · **983** · 289 `TabulatedComplete` · 694 `TabulatedDerived` · **cero**
+degradadas · mismos errores de área por familia · mismos residuos de centroide · catálogos y manifiesto
+de I-36A sin una línea · sin cambios en sistemas · sin `blocks.csv` · sin `blocks-library.dwg` · sin
+sólidos 3D · sin I-37.
+
+## 14. Checklist de AutoCAD para el dueño
+
+### 14.a Smoke focalizado — hacer esto PRIMERO
+
+Cinco comprobaciones sobre lo que la ronda 2 arregló. Si alguna falla, no tiene sentido seguir.
+
+| # | Qué hacer | Qué debe verse |
+|---|---|---|
+| 1 | `HSS4X4X1/4`, 120", *Longitudinal X* | **Cuatro** caras: dos exteriores y dos interiores. El espesor se mide con `DIST` y da **0.25"**. Los perfiles de extremo son **una línea recta cada uno**, seleccionable, no una polilínea que se pisa a sí misma |
+| 2 | El mismo HSS, *Isométrica* | El hueco aporta sus propias líneas longitudinales, distintas de las exteriores. Las bocas de los dos extremos se ven como contornos cerrados con área |
+| 3 | `W12X26`, 120", *Longitudinal X* | Perfiles de extremo legibles: **una** recta por extremo, de altura 12.22". **Ninguna** polilínea cerrada de área cero — selecciónala y comprueba que `LIST` no reporta `Closed` |
+| 4 | `C10X15.3`, 120", *Longitudinal Y* | Un solo perfil de extremo por lado, abierto, y sin aristas repetidas |
+| 5 | `L8X6X1`, 120", *Longitudinal X* | Ídem, y el ala larga sigue siendo la vertical |
+
+### 14.b Checklist completo (12 puntos)
+
+Sólo después de que los cinco anteriores pasen.
 
 Con el DLL **Debug de este worktree**, según
 [`../../guias/validacion-manual-autocad.md`](../../guias/validacion-manual-autocad.md). El comando se

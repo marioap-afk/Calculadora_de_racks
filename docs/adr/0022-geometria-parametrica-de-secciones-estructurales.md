@@ -47,10 +47,22 @@ de implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README.md).
    toda la literatura de perfiles y la única que permite hablar de una sección sin saber cómo se
    colocará después.
 
-2. **El origen transversal resuelto es el CENTROIDE de la sección.** Los contornos se construyen en el
-   sistema que resulte natural a cada familia —el talón exterior de un ángulo, la espalda del alma de
-   un canal— y se **trasladan** al final usando el `x`/`y` que la fuente tabula. Después de esa
-   traslación, el centroide está en `(0,0)` por construcción, y una prueba lo comprueba sobre las 983.
+2. **El origen transversal resuelto es el CENTROIDE TABULADO de la sección.** Los contornos se
+   construyen en el sistema que resulte natural a cada familia —el talón exterior de un ángulo, la
+   espalda del alma de un canal— y se **trasladan** al final usando el `x`/`y` que la fuente tabula.
+
+   El origen es `(0,0)` y `OriginBasis` dice **cómo** se resolvió: `Symmetry` en W y HSS, donde sale de
+   la construcción, o `TabulatedCentroid` en C y L, donde sale de un valor publicado.
+
+2.b **El centroide del contorno aproximado es OTRA cosa, y se llama de otra manera.** El contorno que
+   podemos derivar no incluye lo que la fuente no publica —la conicidad del ala de un canal, el
+   redondeo de su punta—, así que su centroide de área no coincide exactamente con el tabulado.
+   `GeometricContourCentroid` y `GeometricCentroidResidual` **informan** esa diferencia; **no colocan
+   nada**. Mover la geometría hasta anular el residuo sustituiría la autoridad de la fuente por nuestro
+   propio contorno incompleto, y además desplazaría el perfil de donde AISC dice que está.
+
+   Por eso ningún miembro público se llama simplemente `Centroid`: dos conceptos distintos con un
+   nombre común es precisamente como se confunden.
 
 3. **Los nombres «frontal», «lateral» y «planta» NO se usan en el núcleo.** Dependen de cómo un
    sistema coloque el miembro, y la sección no sabe nada de eso. El núcleo habla de **sección**,
@@ -115,6 +127,30 @@ de implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README.md).
 14. **El resultado es WIREFRAME, sin eliminación de líneas ocultas.** Se dibujan los contornos de ambos
     extremos, las generatrices necesarias y los contornos interiores. No se ocultan aristas traseras y
     la documentación lo dice: prometer un dibujo «limpio» y entregar wireframe sería engañoso.
+
+14.b **TODOS los contornos generan líneas longitudinales, huecos incluidos, y el rol lo distingue.** Un
+    tubo cuyo hueco se detuviera en las caras de corte estaría dibujando una barra maciza: las dos
+    líneas que su hueco añade, exactamente una pared nominal por dentro de las exteriores, son lo que
+    hace que un tubo se lea como tubo. `Generatrix`/`InteriorGeneratrix` y
+    `EndProfile`/`EndProfileHole` son **roles separados**, no un rol con una bandera, para que un
+    consumidor los distinga sin volver a deducir de qué contorno salió cada curva —la re-deducción que
+    esta misma ADR prohíbe en §7—.
+
+15.b **Una proyección que colapsa deja de ser una curva cerrada.** Mirando exactamente a lo largo de X
+    o de Y, el contorno se ve de canto y colapsa de figura 2-D a recta. Emitirlo cerrado hace que cada
+    arista se recorra de ida y de vuelta: en AutoCAD, una polilínea de área cero. Después de proyectar
+    se calcula la **dimensionalidad** del resultado; si conserva área sigue cerrado, y si colapsa se
+    reduce a sus segmentos abiertos únicos —sin solapes, sin recorridos inversos duplicados, sin puntos
+    colineales redundantes y sin tramos de longitud cero—, conservando los roles y con salida
+    determinista.
+
+    La invariante vive en el **tipo**: `SectionPlanCurve` rechaza una curva cerrada cuya proyección es
+    unidimensional. Como el adaptador de AutoCAD copia `IsClosed` tal cual, no queda ningún camino por
+    el que una polilínea cerrada de área cero llegue al dibujo.
+
+    El mismo pase funde dos líneas colineales en una. Es correcto y no es una pérdida: en isométrica
+    varios vértices caen sobre la misma recta proyectada y dibujar la unión es exactamente la misma
+    tinta.
 
 15. **Un arco proyectado oblicuamente NO se finge arco circular.** En vistas isométricas o arbitrarias
     la proyección de un círculo es una elipse. En vez de introducir geometría incorrecta, los arcos se
