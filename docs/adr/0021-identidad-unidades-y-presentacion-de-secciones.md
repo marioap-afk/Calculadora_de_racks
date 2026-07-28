@@ -1,16 +1,9 @@
 # ADR-0021: Identidad, unidades y presentación de secciones estructurales
 
-- **Estado:** **propuesto**
-- **Fecha:** 2026-07-27 (redacción); pendiente de aceptación expresa del dueño
-- **Decisores:** Mario Pérez, dueño del repositorio (**pendiente**); Claude Opus 5 (redacción)
+- **Estado:** aceptado
+- **Fecha:** 2026-07-27 (redacción); **2026-07-28 (aceptado por el dueño del repositorio)**
+- **Decisores:** Mario Pérez, dueño del repositorio (aceptó el 2026-07-28); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-36A `architecture/catalogo-secciones-estructurales`
-
-> **Por qué sigue `propuesto`.** La política exacta de IDs es uno de los siete puntos del gate
-> `owner-validation` de I-36A y todavía no está aceptada. En la primera ronda el dueño la rechazó
-> parcialmente, precisamente porque el ejemplo del encargo para HSS no coincide con la designación EDI
-> real (§6). Un ADR `aceptado` cuya decisión central sigue bajo gate diría lo contrario de lo que pasa.
-> ADR-0020 sí permanece `aceptado`: la separación sección / miembro fue decidida expresamente y no está
-> en discusión.
 
 ## Contexto
 
@@ -209,3 +202,22 @@ antes de implementar, conforme a los criterios 1 y 2 de [`adr/README.md`](README
 - Guía: [`docs/guias/secciones-estructurales.md`](../guias/secciones-estructurales.md)
 - Fuente: AISC Shapes Database v16.0, hoja `Readme` (glosario de variables y convención EDI) y hoja
   `Database v16.0`
+
+
+## Notas posteriores
+
+- **2026-07-28 — Aceptado por Mario Pérez**, dueño del repositorio, junto con el gate
+  `owner-validation` de I-36A y sus siete puntos. La aceptación es **expresa** sobre la política de
+  identidad tal como está redactada, incluido lo que la primera ronda había dejado bajo gate:
+
+  - la identidad es **`{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}`**;
+  - `ID_NAMESPACE` es una **autoridad explícita** declarada por la fuente, no una constante del código;
+  - **`AISC-SHAPES` declara el namespace `AISC`**, así que los 983 identificadores son los de siempre;
+  - la **revisión de la fuente no forma parte del ID**;
+  - para `HSS4X4X1/4`: conserva su **Manual Label visible**, su designación **EDI es `HSS4X4X.250`**, y
+    su **ID técnico es `AISC-HSS-RECT-HSS4X4X_250`** (§6). El dueño aprobó esta consecuencia
+    explícitamente, que era el punto que había motivado el rechazo parcial de la primera ronda.
+
+  El contenido de la sección Decisión no cambia; a partir de aquí este ADR es inmutable salvo estado,
+  enlaces y notas posteriores. Decisión versionada del dueño en
+  [`docs/automation/decisions/I-36A.md`](../automation/decisions/I-36A.md).

@@ -11,11 +11,23 @@ namespace RackCad.Tests
     /// <summary>
     /// F1 — la publicación de una importación tiene que ser fail-closed.
     ///
-    /// La garantía que estas pruebas fijan es exactamente ésta y ni una palabra más: **ante una excepción
-    /// durante la publicación, el directorio de salida vuelve byte por byte a como estaba**, no quedan
-    /// carpetas de trabajo, y un estado a medias jamás se puede cargar como válido. NO se afirma atomicidad
-    /// frente a un corte de energía o un `kill -9`: eso exigiría escrituras con journal del sistema de
-    /// archivos y no se puede demostrar con una prueba, así que tampoco se promete.
+    /// La garantía que estas pruebas fijan, dicha con precisión y ni una palabra más:
+    ///
+    /// - ante una excepción durante la publicación, el rollback **intenta** todas las restauraciones y
+    ///   todas las eliminaciones, sin detenerse en la primera que falle;
+    /// - cuando todos esos intentos funcionan, el directorio de salida vuelve **byte por byte** a como
+    ///   estaba y no quedan carpetas de trabajo;
+    /// - el sistema de archivos puede **impedir** alguna restauración —un archivo bloqueado por otro
+    ///   proceso, un atributo de solo lectura, un disco lleno— y entonces el directorio NO vuelve a su
+    ///   estado anterior;
+    /// - esos fallos secundarios se adjuntan a la excepción **original**, que sigue siendo la que se
+    ///   propaga, y se leen con <c>ImportOutputWriter.RollbackFailuresOf</c>;
+    /// - un estado incompleto —parcialmente aplicado o parcialmente restaurado— **no puede cargarse**,
+    ///   porque el manifiesto se publica el último y la carga validada falla cerrada.
+    ///
+    /// Lo que NO se promete: atomicidad frente a un crash, un corte eléctrico o una terminación abrupta
+    /// del proceso. Eso exigiría escrituras con journal del sistema de archivos, no se puede demostrar
+    /// con una prueba y por lo tanto tampoco se afirma.
     ///
     /// Serializada con las demas clases que publican: la costura de fallo de ImportOutputWriter es
     /// estatica, y xUnit ejecuta CLASES distintas en paralelo, asi que sin esta coleccion un test

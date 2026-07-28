@@ -3,16 +3,45 @@ automation_state:
   initiative: I-36A
   branch: architecture/catalogo-secciones-estructurales
   claim_id: c72f4d42-a201-40c1-b9d9-2f03d9556681
-  current_phase: 9
-  state: review-ready
-  gate: owner-validation
+  current_phase: 10
+  state: integration-ready
+  gate: none
   attempts: 3
   next_action: >-
-    VALIDACION-DEL-OWNER-siete-puntos-fuente-y-SHA · conteos-por-familia · sentinelas ·
-    etiquetas-de-peso · politica-de-ids-INCLUIDO-el-caso-HSS · habilitado-deshabilitado ·
-    confirmacion-de-que-secciones-csv-y-los-sistemas-existentes-no-cambiaron ·
-    NO-integrar-NO-borrar-rama-ni-worktree-hasta-que-el-Owner-apruebe
+    INTEGRAR-a-main-con-git-merge-no-ff-sin-squash-sin-rebase-sobre-main-y-sin-force ·
+    esperar-CI-post-merge-VERDE-sobre-el-SHA-exacto-de-main-y-solo-entonces-limpiar-worktree-rama-local-y-rama-remota
   last_evidence_commit: 1271bbe
+
+# --------------------------------------------------------------------------------------------------------
+# GATE owner-validation: APROBADO por el Owner el 2026-07-28 sobre el HEAD 5cd526c.
+# --------------------------------------------------------------------------------------------------------
+owner_validation:
+  status: approved
+  fecha: 2026-07-28
+  decisor: Mario-Perez-dueno-del-repositorio
+  head_aprobado: 5cd526cca252ffcd30dc0e598c8e3049632ea4ec
+  ci_del_head_aprobado: VERDE-run-30354958938-4-de-4
+  requires_owner_validation: satisfied
+  autocad: NO-APLICA-por-decision-expresa-del-Owner-I-36A-no-cambia-dibujo-bloques-comandos-ni-comportamiento-visible
+  puntos_aprobados:
+    1_fuente_y_sha: AISC-Shapes-Database-v16-0-con-SHA-256-registrado
+    2_conteos: W-289 · HSS-RECT-525 · C-32 · L-137 · total-983 · filas-seleccionadas-rechazadas-0
+    3_sentinelas: documentadas-dos-por-familia
+    4_peso: unidad-nativa-primero-y-equivalente-despues
+    5_politica_de_ids: ID_NAMESPACE-guion-FAMILIA-guion-EDI_NORMALIZADO
+    6_overlay: habilitado-deshabilitado-SIN-perder-la-resolucion-por-ID
+    7_sin_cambios: secciones-csv-miembros-y-sistemas-existentes-no-cambiaron
+  politica_hss_aprobada_expresamente: >-
+    HSS4X4X1-4-conserva-su-Manual-Label-visible ·
+    su-designacion-EDI-es-HSS4X4X-250 ·
+    su-ID-tecnico-es-AISC-HSS-RECT-HSS4X4X_250 ·
+    ID_NAMESPACE-es-una-autoridad-explicita ·
+    AISC-SHAPES-declara-el-namespace-AISC ·
+    la-revision-de-la-fuente-NO-forma-parte-del-ID
+  adr_0021: >-
+    de-propuesto-a-ACEPTADO-decisor-Mario-Perez-Owner-fecha-2026-07-28 ·
+    estuvo-tres-rondas-en-propuesto-porque-su-decision-central-seguia-bajo-este-gate
+  adr_0020: ya-estaba-aceptado-desde-la-ronda-1
 
 # --------------------------------------------------------------------------------------------------------
 # EL CANDIDATO TECNICO. Hay UNO SOLO y es este: el ultimo commit que toca src, tests, tools o assets.

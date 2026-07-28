@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-36A
 title: Nucleo y catalogo de secciones estructurales
 type: architecture
-status: review-ready
+status: integration-ready
 branch: architecture/catalogo-secciones-estructurales
 base_branch: main
 priority:
@@ -17,7 +17,7 @@ requires_ci: true
 requires_plugin_build: true
 requires_autocad: false
 requires_owner_decision: false
-requires_owner_validation: true
+requires_owner_validation: satisfied   # APROBADO por el Owner el 2026-07-28 sobre 5cd526c
 automation:
   enabled: true
   auto_merge: false
@@ -87,8 +87,9 @@ Autorizado por las decisiones vinculantes 1–24 del dueno
 
 1. **ADRs previos a implementar**: ADR-0020 (catalogo neutral; **reemplaza a ADR-0008** solo en
    autoridad conceptual, **aceptado**) y ADR-0021 (identidad, unidades y presentacion; **no** reemplaza
-   ADR-0005, que solo recibe nota posterior). **ADR-0021 queda en `propuesto`**: su decision central
-   —la politica exacta de ids— sigue bajo el gate `owner-validation`.
+   ADR-0005, que solo recibe nota posterior). ADR-0021 estuvo tres rondas en `propuesto` —su decision
+   central, la politica exacta de ids, seguia bajo el gate `owner-validation`— y quedo **`aceptado` el
+   2026-07-28**, cuando el dueno la aprobo expresamente.
 2. **ROADMAP**: crear la **Fase 6 — Secciones estructurales y nuevos sistemas** con I-36A, I-36B,
    I-37 e I-38 y su cadena de dependencias.
 3. **Nucleo** en `src/RackCad.Application/StructuralSections/`: familia, identidad, fuente,
@@ -287,16 +288,24 @@ de ids AISC reales.
 
 **AutoCAD: no aplica.** I-36A no cambia dibujo, bloques, comandos ni DWG (`requires_autocad: false`).
 
-**Validacion del dueno: SI aplica** (`requires_owner_validation: true`). Los siete puntos:
+**Validacion del dueno: APROBADA el 2026-07-28** sobre el HEAD `5cd526c`
+(`requires_owner_validation: satisfied`). Los siete puntos, todos aprobados:
 
 1. **Fuente y SHA** del libro utilizado, incluida la nota de que la URL `globalassets` del encargo ya
-   no existe y de que se uso el enlace publicado por la propia pagina oficial.
-2. **Conteos por familia**: W 289, HSS rectangular/cuadrado 525, C 32, L 137, total 983.
-3. **Sentinelas** por familia contrastadas contra el libro.
-4. **Etiquetas de peso** en el formato nativo-primero.
-5. **Politica de IDs**, incluido el caso HSS (`AISC-HSS-RECT-HSS4X4X_250` para `HSS4X4X1/4`).
-6. **Estado habilitado/deshabilitado** y su comportamiento en busqueda frente a `GetById`.
-7. **Confirmacion** de que `secciones.csv` y los sistemas existentes no cambiaron.
+   no existe y de que se uso el enlace publicado por la propia pagina oficial. ✔
+2. **Conteos por familia**: W 289, HSS rectangular/cuadrado 525, C 32, L 137, total 983, filas
+   seleccionadas rechazadas 0. ✔
+3. **Sentinelas** por familia, dos por familia, contrastadas contra el libro. ✔
+4. **Etiquetas de peso** en el formato nativo-primero. ✔
+5. **Politica de IDs** `{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}`, incluido el caso HSS
+   (`AISC-HSS-RECT-HSS4X4X_250` para `HSS4X4X1/4`, con Manual Label visible y EDI `HSS4X4X.250`),
+   `ID_NAMESPACE` como autoridad explicita, `AISC-SHAPES` con namespace `AISC` y la revision **fuera**
+   del id. ✔
+6. **Estado habilitado/deshabilitado** sin perder la resolucion por id. ✔
+7. **Confirmacion** de que `secciones.csv`, los miembros y los sistemas existentes no cambiaron. ✔
+
+Con esa aprobacion **ADR-0021 pasa de `propuesto` a `aceptado`** (Mario Perez, Owner, 2026-07-28) y la
+iniciativa queda autorizada para la integracion serial en `main`.
 
 ## 11. Criterios de aceptacion
 

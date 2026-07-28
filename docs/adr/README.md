@@ -60,7 +60,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0018](0018-optimizador-layout-ia-diferido.md) | Optimizador de layout con IA diferido; `RACKLAYOUT` determinista vigente | aceptado |
 | [0019](0019-shell-visual-de-editores-por-composicion.md) | Shell visual de editores por composición y slots, agnóstico al sistema | aceptado |
 | [0020](0020-catalogo-neutral-de-secciones-estructurales.md) | Catálogo neutral de secciones estructurales | aceptado |
-| [0021](0021-identidad-unidades-y-presentacion-de-secciones.md) | Identidad, unidades y presentación de secciones estructurales | **propuesto** |
+| [0021](0021-identidad-unidades-y-presentacion-de-secciones.md) | Identidad, unidades y presentación de secciones estructurales | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -82,7 +82,10 @@ pulgada sigue siendo la unidad geométrica interna y la política del DWG no cam
 recibió una nota posterior con el enlace. Ambos ADRs recogen decisiones vinculantes del dueño
 versionadas en [`docs/automation/decisions/I-36A.md`](../automation/decisions/I-36A.md).
 
-**ADR-0021 permanece `propuesto`** a propósito: su decisión central —la política exacta de IDs— es uno
-de los siete puntos del gate `owner-validation` de I-36A y el dueño la rechazó parcialmente en la
-primera ronda. Un `aceptado` mientras la decisión sigue bajo gate diría lo contrario de lo que ocurre.
-ADR-0020 sí queda `aceptado`: la separación sección / miembro fue decidida expresamente.
+**ADR-0021 quedó `aceptado` el 2026-07-28**, junto con el gate `owner-validation` de I-36A y sus siete
+puntos. Estuvo deliberadamente en `propuesto` durante tres rondas —su decisión central, la política
+exacta de IDs, seguía bajo gate y el dueño la había rechazado parcialmente en la primera—, y pasó a
+`aceptado` solo cuando la aceptación fue expresa: identidad
+`{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}`, `ID_NAMESPACE` como autoridad explícita declarada por la
+fuente, `AISC-SHAPES` con namespace `AISC`, la revisión fuera del ID, y para `HSS4X4X1/4` su Manual
+Label visible con EDI `HSS4X4X.250` e ID `AISC-HSS-RECT-HSS4X4X_250`.

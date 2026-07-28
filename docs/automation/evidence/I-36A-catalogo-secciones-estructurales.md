@@ -785,22 +785,41 @@ evidencia.
 
 ---
 
-## 15. Validación pendiente del dueño
+## 15. Validación del dueño — **APROBADA** (2026-07-28)
 
-**AutoCAD: no aplica** — I-36A no cambia dibujo, bloques, comandos ni DWG.
+**AutoCAD: no aplica** — I-36A no cambia dibujo, bloques, comandos ni el comportamiento visible de
+ningún sistema. El dueño lo confirmó expresamente al aprobar.
 
-Gate `owner-validation`, siete puntos:
+Gate `owner-validation`: **`approved`** sobre el HEAD técnicamente aprobado
+**`5cd526cca252ffcd30dc0e598c8e3049632ea4ec`** (CI verde, run 30354958938, 4/4). Los siete puntos:
 
-1. **Fuente y SHA-256** — §2, incluida la nota de que la URL `globalassets` del encargo ya no existe y
-   de que se usó el enlace que publica la propia página oficial.
-2. **Conteos por familia** — §7: 289 / 525 / 32 / 137 = 983; excluidos 1 316; rechazadas 0.
-3. **Sentinelas** — §10, dos por familia con su fila del libro.
-4. **Etiquetas de peso** — nativo primero: `W12X26 — 26 lb/ft (38.7 kg/m)`.
-5. **Política de IDs** — §6, **incluido el caso HSS** (`AISC-HSS-RECT-HSS4X4X_250` para `HSS4X4X1/4`) y
-   el hecho de que `W12X28` no existe en la v16.0.
-6. **Estado habilitado/deshabilitado** — overlay de excepciones, hoy vacío; deshabilitar retira de las
-   selecciones nuevas y `GetById` sigue resolviendo.
-7. **`secciones.csv` y los sistemas existentes no cambiaron** — §13.
+| # | Punto | Dónde se comprueba | Aprobado |
+|---|---|---|---|
+| 1 | Fuente oficial AISC Shapes Database v16.0 y su SHA-256 registrado | §2 — incluida la nota de que la URL `globalassets` del encargo ya no existe y de que se usó el enlace que publica la propia página oficial | ✔ |
+| 2 | Conteos: W **289**, HSS rect./cuadrado **525**, C **32**, L **137**, total **983**, rechazadas **0** | §7 — excluidos 1 316; `983 + 1 316 = 2 299` cierra exacto | ✔ |
+| 3 | Sentinelas documentadas, **dos por familia** | §10 — cada una con su fila del libro | ✔ |
+| 4 | Peso con **unidad nativa primero** y equivalente después | §5 — `W12X26 — 26 lb/ft (38.7 kg/m)` | ✔ |
+| 5 | Política de IDs `{ID_NAMESPACE}-{FAMILIA}-{EDI_NORMALIZADO}` | §6 | ✔ |
+| 6 | Overlay habilitado/deshabilitado **sin** perder la resolución por ID | §0.5 y §6 — overlay de excepciones, hoy vacío; `GetById` sigue resolviendo una sección deshabilitada | ✔ |
+| 7 | `secciones.csv`, **miembros** y sistemas existentes no cambiaron | §13 | ✔ |
+
+### Aprobación expresa del caso HSS
+
+Es el punto que había motivado el rechazo parcial de la primera ronda, y el dueño lo aprobó
+explícitamente:
+
+- `HSS4X4X1/4` conserva su **Manual Label visible**;
+- su designación **EDI es `HSS4X4X.250`**;
+- su **ID técnico es `AISC-HSS-RECT-HSS4X4X_250`**;
+- `ID_NAMESPACE` es una **autoridad explícita**, declarada por la fuente y no una constante del código;
+- **`AISC-SHAPES` declara el namespace `AISC`**, así que los 983 identificadores son los de siempre;
+- la **revisión de la fuente no forma parte del ID**.
+
+Con ello **ADR-0021 pasó de `propuesto` a `aceptado`**, con Mario Pérez como decisor Owner y fecha
+**2026-07-28**. ADR-0020 ya estaba aceptado desde la ronda 1.
+
+`requires_owner_validation: **satisfied**`. La decisión versionada está en
+[`../decisions/I-36A.md`](../decisions/I-36A.md).
 
 ---
 
