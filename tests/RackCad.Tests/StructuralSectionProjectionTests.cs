@@ -350,24 +350,60 @@ namespace RackCad.Tests
                 baseline,
                 Plan(W, 24.0, SectionViewpoint.LongitudinalX, detail: SectionDetailLevel.Simplified).Signature());
 
-            // El espejo cambia la firma de una seccion ASIMETRICA...
-            var channel = Plan(Channel, 24.0, SectionViewpoint.LongitudinalX).Signature();
+            // El espejo cambia la firma de una seccion ASIMETRICA, en una vista donde la X del modelo se vea.
+            var channel = Plan(Channel, 24.0, SectionViewpoint.CrossSection).Signature();
             Assert.NotEqual(
                 channel,
-                Plan(Channel, 24.0, SectionViewpoint.LongitudinalX, mirrored: true).Signature());
+                Plan(Channel, 24.0, SectionViewpoint.CrossSection, mirrored: true).Signature());
         }
 
         [Fact]
-        public void MirroringADoublySymmetricSectionDoesNotChangeWhatIsDrawn()
+        public void TheSignatureIsAFingerprintOfThePlan_NotAGeometricEquivalenceClass()
         {
-            // ...y NO la de una doblemente simetrica, porque el dibujo es literalmente el mismo. La firma
-            // describe lo que se DIBUJA, no los ajustes que se pidieron, asi que esto es lo correcto: una W
-            // espejeada y una sin espejear son la misma imagen.
-            var plain = Plan(W, 24.0, SectionViewpoint.LongitudinalX);
-            var mirrored = Plan(W, 24.0, SectionViewpoint.LongitudinalX, mirrored: true);
+            // Precision necesaria sobre que es la firma, porque es facil pedirle de mas.
+            //
+            // Codifica las curvas TAL COMO SE EMITEN: sus puntos Y su orden de recorrido. Eso es justo lo que
+            // hace falta para afirmar "no se movio nada" entre dos versiones, y NO la convierte en una clase
+            // de equivalencia geometrica: espejear una W produce la misma FIGURA recorrida al reves —el
+            // espejo invierte el sentido y el contorno se revierte para conservar la orientacion— asi que la
+            // firma difiere aunque el dibujo sea identico.
+            var plain = Plan(W, 24.0, SectionViewpoint.CrossSection);
+            var mirrored = Plan(W, 24.0, SectionViewpoint.CrossSection, mirrored: true);
 
-            Assert.Equal(plain.Signature(), mirrored.Signature());
+            Assert.NotEqual(plain.Signature(), mirrored.Signature());
+
+            // Lo que SI se conserva, y es lo que "el dibujo es el mismo" significa de verdad: la envolvente
+            // y el conjunto de puntos.
+            Assert.True(plain.Bounds.ApproxEquals(mirrored.Bounds, 1e-9));
+            Assert.Equal(SortedPoints(plain), SortedPoints(mirrored));
         }
+
+        [Fact]
+        public void MirroringIsInvisibleInTheViewThatDiscardsItsAxis()
+        {
+            // Mirando a lo largo de X la proyeccion descarta ENTERA la coordenada X del modelo —dibuja la
+            // longitud contra la Y de la seccion—, asi que un espejo alrededor de Y no puede verse ahi ni
+            // siquiera en un canal asimetrico. No es un defecto: es lo que significa esa vista.
+            var plain = Plan(Channel, 24.0, SectionViewpoint.LongitudinalX);
+            var mirrored = Plan(Channel, 24.0, SectionViewpoint.LongitudinalX, mirrored: true);
+
+            Assert.True(plain.Bounds.ApproxEquals(mirrored.Bounds, 1e-9));
+            Assert.Equal(SortedPoints(plain), SortedPoints(mirrored));
+
+            // Y en la vista de seccion, donde si se ve, la figura cambia de verdad.
+            var front = Plan(Channel, 24.0, SectionViewpoint.CrossSection);
+            var flipped = Plan(Channel, 24.0, SectionViewpoint.CrossSection, mirrored: true);
+
+            Assert.NotEqual(SortedPoints(front), SortedPoints(flipped));
+        }
+
+        /// <summary>Los puntos del plan en un orden canonico, para comparar FIGURAS y no recorridos.</summary>
+        private static string SortedPoints(StructuralSectionRepresentationPlan plan) =>
+            string.Join(";", plan.Curves
+                .SelectMany(c => c.Points)
+                .Select(p => p.X.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture) + "," +
+                             p.Y.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture))
+                .OrderBy(s => s, StringComparer.Ordinal));
 
         [Fact]
         public void ATighterToleranceNeverProducesFewerPoints()
