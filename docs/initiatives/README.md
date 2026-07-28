@@ -505,6 +505,31 @@ Planes disponibles:
   `W12X26`, **equivalencia con `RACKSECCION`** y sistemas existentes sin regresiones— **sin
   observaciones ni bloqueos**. Estado versionado en
   [`../automation/state/I-36C.yml`](../automation/state/I-36C.yml).
+- [`I-36D-perfiles-aisc-s.md`](I-36D-perfiles-aisc-s.md): **perfiles AISC S/IPS y geometria visual
+  derivada**, cuarta iniciativa de la Fase 6 y la iniciativa separada que I-36B exigio como
+  **requisito futuro obligatorio**. Incorpora las **28 filas** `Type = S` que I-36A dejo fuera
+  —contadas y declaradas, no perdidas— como **familia propia** con token `S` e id `AISC-S-S10X25.4`,
+  con `SSectionDimensions` como **tipo propio** y no como alias de W. El hecho que la gobierna esta
+  **medido contra el libro**, no citado: la AISC Shapes Database v16.0 **no publica la pendiente del
+  patin ni ningun radio explicito**, ni para S ni para ninguna familia —el unico encabezado con `tan`
+  es `tan(alfa)`, que es de angulos simples y esta vacio en S; `kdes`, `kdet`, `k1` y `T` son
+  **distancias al pie del filete** y el Readme nunca las llama radios—. Como una S sin pendiente se
+  lee como una **W**, la iniciativa separa dos autoridades: AISC conserva dimensiones, `A`, peso y
+  propiedades; **RackCad declara como propia** la convencion visual (pendiente `1:6`, `tf` como
+  espesor medio del vuelo libre, radio visual del filete y punta aguda), en un eje **ortogonal** a
+  `SectionFidelity` —`TabulatedConstrained` frente a `VisualDerived`—, con advertencia obligatoria de
+  geometria aproximada **no apta para CNC ni fabricacion**. La regla **degenera exactamente** en la de
+  [ADR-0022](../adr/0022-geometria-parametrica-de-secciones-estructurales.md) cuando la pendiente es
+  cero. **Fuera de alcance**: I-37 y cualquier miembro Cantilever, calculo resistente, materiales,
+  solidos 3D, persistencia y round-trip, la mejora visual de W/C/L/HSS, `bf/2tf` y `h/tw`,
+  `secciones.csv`, catalogos de sistemas, `blocks.csv`, `blocks-library.dwg`, geometria de fabricante,
+  CNC y descarga en runtime. `requires_autocad: **true**` y `requires_owner_validation: **true**`
+  (el dibujo es el criterio); `requires_owner_decision: false`.
+  [ADR-0023](../adr/0023-geometria-visual-derivada-perfiles-s.md) nace **`propuesto`** y **solo el
+  Owner** puede aceptarlo tras ver el dibujo real. Decisiones vinculantes en
+  [`../automation/decisions/I-36D.md`](../automation/decisions/I-36D.md), auditoria medida en
+  [`../automation/evidence/I-36D-auditoria-aisc-s.md`](../automation/evidence/I-36D-auditoria-aisc-s.md)
+  y estado versionado en [`../automation/state/I-36D.yml`](../automation/state/I-36D.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

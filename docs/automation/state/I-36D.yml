@@ -1,0 +1,160 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-36D
+  branch: feature/perfiles-aisc-s
+  claim_id: 964effe9-9e1a-4861-ac34-594b04da48c7
+  current_phase: 2
+  state: review-ready
+  gate: none
+  attempts: 1
+  next_action: >-
+    REVISION-DEL-COORDINADOR-ANTES-DE-IMPLEMENTAR ·
+    la-fase-1-es-documental-y-analitica-y-esta-completa ·
+    la-fase-2-catalogo-NO-arranca-sin-esa-revision ·
+    ADR-0023-queda-propuesto-y-solo-el-Owner-lo-acepta-tras-ver-el-dibujo
+  last_evidence_commit: pendiente-se-escribe-con-el-commit-de-esta-fase
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo y revalidado al abrir esta sesion.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 202e456795ec65334212db03110d7149c6ca4dc9
+  base_asunto: Merge I-36C - acceso desde el menu al generador de perfiles
+  base_ci: VERDE-run-30388545724-4-de-4-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: feature-perfiles-aisc-s-LIBRE-en-local-y-en-remoto
+  ORCHESTRATION_md: NO-EXISTE-ni-en-el-repo-ni-en-la-carpeta-padre-comprobado-no-se-usa
+  revalidacion_de_sesion: >-
+    HEAD-igual-a-origin-feature-perfiles-aisc-s-igual-a-b0ff23b ·
+    origin-main-sigue-en-202e456-no-avanzo · arbol-versionado-limpio ·
+    unico-no-rastreado-es-el-XLSX-ignorado-bajo-tools-sources
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: b0ff23bc3f1483971e6c3f6280a54427eab9948a
+  commit: vacio-sin-implementacion-contrato-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/feature/perfiles-aisc-s
+  ci_del_claim: VERDE-4-de-4-run-30405551309
+  trailer: >-
+    Claude-Opus-5 · el-Owner-eligio-explicitamente-este-trailer-frente-a-las-dos-variantes-Codex ·
+    coherente-con-la-regla-vigente-de-atribuir-solo-a-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# FUENTE ACREDITADA. Nunca se versiona.
+# --------------------------------------------------------------------------------------------------------
+fuente:
+  archivo: aisc-shapes-database-v16.0.xlsx
+  ubicacion: tools/sources/ dentro del worktree y del principal
+  ignorada_por: .gitignore-linea-17-tools-sources
+  rastreada_por_git: NO-git-ls-files-tools-sources-vacio
+  tamano_bytes: 2028540
+  sha256: 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496
+  origen: >-
+    boton-DOWNLOAD-SHAPES-DATABASE-V16-0-de-la-pagina-oficial-de-AISC ·
+    cloud-aisc-org-biggie_bin-aisc-shapes-database-v160-2-xlsx ·
+    el-enlace-v160h-es-la-Historic-Database-y-NO-se-uso
+  hoja_usada: Database v16.0
+  hojas_existentes: Readme y Database v16.0
+  descarga_en_runtime: PROHIBIDA-fuera-de-alcance
+
+# --------------------------------------------------------------------------------------------------------
+# AUDITORIA MEDIDA sobre el libro, no citada de la documentacion.
+# --------------------------------------------------------------------------------------------------------
+auditoria_S:
+  filas: 28
+  filas_fisicas: 307-334-contiguas
+  coincide_con_manifiesto: si-excludedTypeCounts-S-igual-28
+  edi_igual_a_manual_label: en-las-28
+  columnas_completas_28_de_28: d ddet bf bfdet tw twdet twdet-2 tf tfdet kdes kdet T
+  columnas_parciales: WGi-21-de-28-faltan-las-7-menores
+  columnas_vacias: k1-0-de-28 y WGo-0-de-28
+  propiedades_completas_28_de_28: A Ix Zx Sx rx Iy Zy Sy ry J Cw Wno Sw1 Qf Qw rts ho PA PB PC PD
+  pobladas_fuera_de_alcance: bf-2tf y h-tw ambas 28-de-28
+  pendiente_de_patin: >-
+    NO-EXISTE-en-las-166-columnas · tan-alfa-es-de-angulos-simples-y-esta-vacia-en-S ·
+    slope-aparece-2-veces-y-solo-para-M-y-MT · T_F-vacio-en-las-28
+  radios_explicitos: >-
+    NO-EXISTEN · las-5-menciones-de-radius-son-radios-de-GIRO ·
+    kdes-kdet-k1-y-T-son-DISTANCIAS-al-pie-del-filete-por-definicion-del-Readme
+  punto_de-medicion_de_tf: NO-declarado-por-el-Readme
+
+# --------------------------------------------------------------------------------------------------------
+# VIABILIDAD DE LA CONVENCION VISUAL. Ningun criterio de bloqueo se disparo.
+# --------------------------------------------------------------------------------------------------------
+viabilidad:
+  formula: >-
+    s-igual-un-sexto · a-igual-bf-menos-tw-entre-2 · tRaiz-igual-tf-mas-s-por-a-entre-2 ·
+    tPunta-igual-tf-menos-s-por-a-entre-2 · delta-igual-kdes-menos-tRaiz ·
+    rVisual-igual-delta-por-raiz-de-1-mas-s-cuadrado-mas-s
+  degenera_en_ADR_0022: >-
+    con-s-igual-0-da-rVisual-igual-kdes-menos-tf-que-es-la-regla-vigente-de-W ·
+    la-regla-NO-bifurca-el-modelo-le-anade-el-termino-de-pendiente
+  metodo: >-
+    integral-de-contorno-exacta-con-primitiva-analitica-por-arco ·
+    verificada-contra-descomposicion-independiente-a-2-8e-14 ·
+    scratchpad-fuera-del-repo-sin-instalar-paquetes-y-sin-dejar-scripts
+  verificaciones_estructurales: 18-comprobaciones-PASS-28-de-28
+  centroide: Cx-maximo-1-204e-16 y Cy-maximo-2-725e-15-dentro-de-1e-9
+  bounds: ancho-igual-bf y alto-igual-d-exactos
+  error_de_area_firmado: minimo-mas-0-253-por-ciento y maximo-mas-2-592-por-ciento-todos-positivos
+  error_de_area_absoluto: media-1-116 mediana-1-079 maximo-2-592-por-ciento
+  filas_sobre_1_por_ciento: 16
+  filas_sobre_2_por_ciento: 3-S4X9-5 S4X7-7 S3X5-7
+  filas_sobre_3_por_ciento: 0
+  filas_sobre_5_por_ciento: 0
+  filas_que_exigen_excepcion: NINGUNA
+  coherencia_de_toes: >-
+    d-menos-2-kdet-iguala-T-en-26-de-28 · d-menos-2-kdes-en-14-de-28 ·
+    S20X96-y-S20X86-difieren-0-050-in-de-ambas-por-redondeo-del-d-publicado ·
+    se-ancla-en-kdes-y-se-DEJA-ESCRITA-la-diferencia-sin-elegirla-en-silencio
+  veredicto: VIABLE-ningun-criterio-de-bloqueo-disparado
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: contrato-ADR-0023-y-viabilidad-geometrica-COMPLETA-solo-documentacion
+  2: catalogo-familia-dimensiones-clasificador-mapper-CSV-y-manifiesto
+  3: geometria-builder-de-S-autoridad-diagnosticos-bounds-y-simetria
+  4: UI-y-Plugin-filtro-etiqueta-autoridad-y-advertencia
+  5: validacion-del-Owner-en-AutoCAD-y-aceptacion-o-rechazo-de-ADR-0023
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE de esta fase.
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  esta_fase_toca: solo-docs
+  cero_cambios_en: src tests tools-versionados assets deploy .github RackCad.sln
+  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  secciones_csv: INTACTO
+  cuatro_CSV_de_familia_existentes: INTACTOS-byte-identicos
+  blocks_csv_y_blocks_library_dwg: INTACTOS
+  iniciativas_cerradas: ningun-estado-modificado
+  fuera_de_alcance_declarado: >-
+    I-37-y-cualquier-miembro-Cantilever · conectores-mensulas-placas-soldaduras-perforaciones ·
+    calculo-resistente-y-seleccion-automatica · materiales-y-grados · solidos-3D ·
+    persistencia-y-round-trip · mejora-visual-de-W-C-L-o-HSS · bf-2tf-y-h-tw ·
+    secciones-csv · catalogos-de-sistemas · blocks-csv · blocks-library-dwg ·
+    geometria-de-fabricante · CNC-y-shop-drawings · descarga-en-runtime
+
+# --------------------------------------------------------------------------------------------------------
+# GATE PENDIENTE
+# --------------------------------------------------------------------------------------------------------
+owner_validation:
+  status: pending
+  gate: owner-validation
+  que_debe_ver: >-
+    una-S-insertada-en-las-cuatro-vistas · patin-VISIBLEMENTE-inclinado · el-filete ·
+    la-punta-aguda · la-advertencia-en-inspector-y-mensaje ·
+    y-que-W-C-L-y-HSS-NO-cambian
+  que_decide: aceptacion-o-rechazo-de-ADR-0023-que-hoy-esta-propuesto
+  requires_owner_decision: false-la-convencion-ya-esta-escrita-y-acotada-en-el-contrato
