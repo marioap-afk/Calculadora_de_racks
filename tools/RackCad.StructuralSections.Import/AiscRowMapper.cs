@@ -15,12 +15,6 @@ namespace RackCad.StructuralSections.Import
     /// </summary>
     public static class AiscRowMapper
     {
-        /// <summary>
-        /// Bumped whenever this mapping changes what the generated files contain. <c>.2</c> is the round that
-        /// added the id namespace to the source sheet and to the manifest.
-        /// </summary>
-        public const string MapperVersion = "I-36A.2";
-
         public static StructuralSectionDefinition Map(
             AiscColumnMap columns,
             IReadOnlyDictionary<int, string> row,

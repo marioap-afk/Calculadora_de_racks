@@ -123,6 +123,98 @@ namespace RackCad.Tests
             Assert.ThrowsAny<Exception>(() => provider.Load());
         }
 
+        // ---- Micro-ronda 3: el rollback es honesto cuando el sistema de archivos no coopera --------------
+
+        [Fact]
+        public void WhenARestoreIsImpossible_TheOriginalFailureSurvivesAndTheRestIsStillAttempted()
+        {
+            // Orden de publicacion (ordinal, con el manifiesto al final):
+            //   1 sources · 2 c · 3 hss-rect · 4 l · 5 w · 6 manifest
+            // Se deja reemplazar sources y c, se BLOQUEA c —que ya fue reemplazado— y se falla en hss-rect.
+            // El rollback no podra restaurar c, pero tiene que intentar los demas igualmente.
+            var directory = NewDirectory();
+            Publish(FirstCatalog(), directory);
+            var before = Snapshot(directory);
+
+            var blocked = Path.Combine(directory, StructuralSectionCsvSchema.ChannelFile);
+            FileStream lockedHandle = null;
+
+            try
+            {
+                ImportOutputWriter.AfterReplaceForTests = (_, count) =>
+                {
+                    if (count == 2)
+                    {
+                        lockedHandle = File.Open(blocked, FileMode.Open, FileAccess.Read, FileShare.None);
+                    }
+
+                    if (count == 3)
+                    {
+                        throw new InvalidOperationException("fallo inyectado tras 3 reemplazos.");
+                    }
+                };
+
+                var error = Assert.Throws<InvalidOperationException>(
+                    () => ImportOutputWriter.Publish(SecondCatalog(), directory));
+
+                // 1. La excepcion ORIGINAL sobrevive: no la sustituye el fallo del rollback.
+                Assert.Contains("fallo inyectado", error.Message, StringComparison.OrdinalIgnoreCase);
+
+                // 2. El fallo secundario se informa de forma inspeccionable.
+                var failures = ImportOutputWriter.RollbackFailuresOf(error);
+                Assert.NotEmpty(failures);
+                Assert.Contains(
+                    failures,
+                    failure => failure.Contains(StructuralSectionCsvSchema.ChannelFile, StringComparison.Ordinal));
+            }
+            finally
+            {
+                ImportOutputWriter.AfterReplaceForTests = null;
+                lockedHandle?.Dispose();
+            }
+
+            // 3. Las DEMAS restauraciones se intentaron y salieron bien.
+            var after = Snapshot(directory);
+
+            Assert.True(
+                after[StructuralSectionCsvSchema.HssRectangularFile]
+                    .SequenceEqual(before[StructuralSectionCsvSchema.HssRectangularFile]),
+                "el archivo posterior al bloqueado no se restauro.");
+            Assert.True(
+                after[StructuralSectionCsvSchema.SourcesFile]
+                    .SequenceEqual(before[StructuralSectionCsvSchema.SourcesFile]),
+                "el archivo anterior al bloqueado no se restauro.");
+
+            // El bloqueado, por definicion, NO pudo restaurarse.
+            Assert.False(
+                after[StructuralSectionCsvSchema.ChannelFile]
+                    .SequenceEqual(before[StructuralSectionCsvSchema.ChannelFile]));
+
+            AssertNoWorkingFolders(directory);
+
+            // 4. Y el estado resultante NO se puede cargar como valido: fail-closed.
+            Assert.ThrowsAny<Exception>(() => new CsvStructuralSectionCatalogProvider(directory).Load());
+        }
+
+        [Fact]
+        public void AFailureWhileSeedingTheOverlayDoesNotLeaveItBehind()
+        {
+            // El overlay se siembra solo cuando falta. Si la publicacion falla despues, la promesa de
+            // "el directorio queda exactamente como estaba" obliga a retirarlo: antes no existia.
+            var directory = NewDirectory();
+
+            Assert.False(File.Exists(Path.Combine(directory, StructuralSectionCsvSchema.StatusFile)));
+
+            Assert.Throws<InvalidOperationException>(
+                () => PublishFailingAfter(FirstCatalog(), directory, failAfter: 2));
+
+            Assert.False(
+                File.Exists(Path.Combine(directory, StructuralSectionCsvSchema.StatusFile)),
+                "quedo un overlay sembrado por una publicacion que fallo.");
+            Assert.Empty(Directory.EnumerateFiles(directory));
+            AssertNoWorkingFolders(directory);
+        }
+
         [Fact]
         public void ASuccessfulPublishLeavesNoWorkingFolders()
         {

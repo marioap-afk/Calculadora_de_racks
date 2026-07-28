@@ -351,6 +351,127 @@ namespace RackCad.Tests
             Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
         }
 
+        // ---- Micro-ronda 3: la metadata se valida por su VALOR, no solo por no estar vacia ---------------
+
+        [Theory]
+        [InlineData("Database v15.0")]
+        [InlineData("Datos")]
+        [InlineData("database v16.0")]
+        [InlineData("Database v16.0 ")]
+        public void AWorksheetThatDoesNotMatchTheSourceAndRevisionIsAnError(string worksheet)
+        {
+            // `AISC-SHAPES` en la revision `16.0` solo puede haberse leido de `Database v16.0`. Un nombre
+            // no vacio pero incompatible describe un libro que no es el que la metadata dice.
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog, worksheet: worksheet), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
+        }
+
+        [Fact]
+        public void TheWorksheetThatMatchesTheSourceAndRevisionIsAccepted()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(
+                catalog, Manifest(catalog, worksheet: "Database v16.0"), HashOfEverything);
+
+            Assert.True(report.IsValid(strict: true), report.Format());
+        }
+
+        [Theory]
+        [InlineData("I-36A.1")]
+        [InlineData("I-36A.3")]
+        [InlineData("otra-cosa")]
+        public void AMapperVersionThisBuildDoesNotSupportIsAnError(string mapperVersion)
+        {
+            // Un mapeo distinto produce columnas distintas. Aceptar una version que este build no conoce
+            // seria leer un archivo cuyo significado no se garantiza.
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(
+                catalog, Manifest(catalog, mapperVersion: mapperVersion), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestMetadata));
+        }
+
+        [Fact]
+        public void TheSupportedMapperVersionIsAcceptedAndIsOneSharedConstant()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(
+                catalog,
+                Manifest(catalog, mapperVersion: StructuralSectionsManifest.SupportedMapperVersion),
+                HashOfEverything);
+
+            Assert.True(report.IsValid(strict: true), report.Format());
+        }
+
+        [Fact]
+        public void ASecondSourceWithoutSectionsIsAnError()
+        {
+            // El esquema 1.0 del manifiesto describe UNA fuente. Una segunda, aunque no la use nadie, es un
+            // catalogo que este manifiesto no sabe describir.
+            var catalog = StructuralSectionCatalog.Create(
+                new[] { Valid() },
+                new[] { StructuralSectionModelTests.AiscSource, OtherSource() });
+
+            var report = Validator.Validate(catalog, Manifest(catalog), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestSourceMismatch));
+        }
+
+        [Fact]
+        public void ASecondSourceWithSectionsIsAnError()
+        {
+            var foreign = new StructuralSectionDefinition
+            {
+                Identity = new StructuralSectionIdentity
+                {
+                    SectionId = StructuralSectionId.Create("OTRA", StructuralSectionFamily.W, "W12X30"),
+                    Family = StructuralSectionFamily.W,
+                    EdiDesignation = "W12X30",
+                    ManualLabel = "W12X30",
+                    SourceId = "OTRA-FUENTE",
+                    SourceRevision = "1"
+                },
+                WeightPerLength = 30,
+                NativeUnitSystem = StructuralSectionUnitSystem.UsCustomary,
+                Dimensions = new WSectionDimensions
+                {
+                    Depth = 12.3, FlangeWidth = 6.52, WebThickness = 0.26, FlangeThickness = 0.44
+                },
+                Properties = new StructuralSectionProperties { Area = 8.79 }
+            };
+
+            var catalog = StructuralSectionCatalog.Create(
+                new[] { Valid(), foreign },
+                new[] { StructuralSectionModelTests.AiscSource, OtherSource() });
+
+            var report = Validator.Validate(catalog, Manifest(catalog), HashOfEverything);
+
+            Assert.NotEmpty(report.WithCode(StructuralSectionCatalogValidator.CodeManifestSourceMismatch));
+        }
+
+        [Fact]
+        public void ACorrectSingleSourceCatalogValidatesClean()
+        {
+            var catalog = Catalog(Valid());
+            var report = Validator.Validate(catalog, Manifest(catalog), HashOfEverything);
+
+            Assert.True(report.IsValid(strict: true), report.Format());
+        }
+
+        private static StructuralSectionSource OtherSource() => new StructuralSectionSource
+        {
+            SourceId = "OTRA-FUENTE",
+            Revision = "1",
+            IdNamespace = "OTRA",
+            Publisher = "fuente sintetica de prueba",
+            SourceType = "synthetic",
+            NativeUnitSystem = StructuralSectionUnitSystem.UsCustomary,
+            Title = "otra",
+            Url = "https://example.invalid"
+        };
+
         [Fact]
         public void AManifestWithoutItsIdNamespaceIsAnError()
         {

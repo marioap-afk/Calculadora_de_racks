@@ -22,6 +22,16 @@ namespace RackCad.Application.StructuralSections
         public const string CurrentSchemaVersion = "1.0";
         public const string StructuralSectionsCatalogId = "structural-sections";
 
+        /// <summary>
+        /// The ONE mapper version this build understands, shared by the reader and the importer.
+        ///
+        /// It lives here, in Application, and not in the tool, because both sides have to agree on it: the
+        /// importer stamps it and the loader refuses anything else. A different mapping produces different
+        /// columns, so accepting a version this build does not know would mean reading a file whose meaning
+        /// is not guaranteed. Two copies of the number would eventually disagree.
+        /// </summary>
+        public const string SupportedMapperVersion = "I-36A.2";
+
         public string SchemaVersion { get; init; }
 
         public string CatalogId { get; init; }

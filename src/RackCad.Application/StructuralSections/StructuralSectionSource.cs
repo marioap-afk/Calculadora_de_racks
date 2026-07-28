@@ -64,10 +64,15 @@ namespace RackCad.Application.StructuralSections
         /// It is separate from <see cref="SourceId"/> because the two answer different questions: the source
         /// id says WHICH document a row came from (and may carry a revision or a product name), while the id
         /// namespace says WHO has the authority to name the section — a stable, short token that must never
-        /// change, because it is embedded in every stored design. Two sources of the same publisher can share
-        /// a namespace; two different authorities can never.
+        /// change, because it is embedded in every stored design.
         ///
-        /// Must be non-empty, upper-case ASCII letters and digits only, and unique across the catalog.
+        /// Under the current schema a namespace identifies exactly ONE source: two sources may never share
+        /// it, not even two documents of the same publisher, and <see cref="StructuralSectionCatalog.Create"/>
+        /// refuses a catalog where they do. Sharing one would let the same designation resolve to a single id
+        /// from two different documents — the collision this segment exists to prevent.
+        ///
+        /// Must be non-empty and upper-case ASCII letters and digits only; the hyphen is excluded because it
+        /// is the id's own separator.
         /// </summary>
         public string IdNamespace { get; init; }
 
@@ -86,6 +91,29 @@ namespace RackCad.Application.StructuralSections
 
         /// <summary>Official page the document is published from. Not fetched at runtime, ever.</summary>
         public string Url { get; init; }
+
+        /// <summary>
+        /// The data worksheet a given source and revision MUST have been read from — for AISC,
+        /// <c>Database v{revision}</c>.
+        ///
+        /// It lives here so the importer (which verifies the workbook) and the validator (which verifies the
+        /// manifest) agree by construction. Returns <c>false</c> for a source whose worksheet naming this
+        /// build does not know, in which case the name is only required to be non-empty: claiming to know a
+        /// convention that has not been established would be worse than admitting it.
+        /// </summary>
+        public static bool TryExpectedWorksheet(string sourceId, string revision, out string worksheet)
+        {
+            worksheet = null;
+
+            if (!string.Equals(sourceId, AiscShapesId, StringComparison.Ordinal) ||
+                string.IsNullOrWhiteSpace(revision))
+            {
+                return false;
+            }
+
+            worksheet = "Database v" + revision;
+            return true;
+        }
 
         public override string ToString() => SourceId + " " + Revision;
     }

@@ -28,14 +28,25 @@ namespace RackCad.StructuralSections.Import
     /// <see cref="Publish"/> is FAIL-CLOSED, and the exact guarantee is worth stating precisely because an
     /// imprecise one would be a lie:
     ///
-    ///   if any step throws, every file that was already replaced is restored byte for byte from a backup,
-    ///   every file that did not exist before is removed, and both working folders are deleted — so the output
-    ///   directory ends exactly as it started.
+    ///   if any step throws, the rollback ATTEMPTS every restoration — each replaced file back byte for byte
+    ///   from a backup, each file that did not exist before removed — and then deletes both working folders.
+    ///   When every attempt succeeds, the output directory ends exactly as it started.
     ///
-    /// What it does NOT claim: atomicity against a power cut or a killed process. That would require
-    /// journalled writes from the file system, cannot be demonstrated by a test, and is therefore not
-    /// promised. What protects a consumer in that scenario is a different mechanism: the manifest is published
-    /// LAST, so an interrupted publication leaves new data beside an old manifest, and
+    /// What it does NOT claim, and why:
+    ///
+    /// - **Restoration is attempted, not guaranteed.** The file system can refuse: a file locked by another
+    ///   process, a read-only attribute, a disk that fills up. The rollback does not stop at the first
+    ///   refusal — it tries the rest — and it never replaces the exception that caused it. The failures it
+    ///   could not resolve are attached to that original exception under
+    ///   <see cref="RollbackFailuresKey"/>, readable with <see cref="RollbackFailuresOf"/>. In that case the
+    ///   directory is NOT back to its previous state, and saying otherwise would be false.
+    ///
+    /// - **Atomicity against a power cut or a killed process.** That would require journalled writes from the
+    ///   file system and cannot be demonstrated by a test.
+    ///
+    /// In both of those cases the consumer is protected by a different mechanism, not by a promise: the
+    /// manifest is published LAST, so any partially applied or partially restored set no longer matches its
+    /// declared hashes and
     /// <see cref="RackCad.Application.StructuralSections.CsvStructuralSectionCatalogProvider.Load"/> refuses
     /// to load it.
     /// </summary>
@@ -59,6 +70,21 @@ namespace RackCad.StructuralSections.Import
         /// would ever implement.
         /// </summary>
         internal static Action<string, int> AfterReplaceForTests { get; set; }
+
+        /// <summary>
+        /// Key under which a failed publication records the rollback's OWN failures in
+        /// <see cref="Exception.Data"/>.
+        /// </summary>
+        public const string RollbackFailuresKey = "RackCad.StructuralSections.RollbackFailures";
+
+        /// <summary>
+        /// The files the rollback could not restore or remove, if any. Empty when the rollback was complete
+        /// or when the exception did not come from a publication.
+        /// </summary>
+        public static IReadOnlyList<string> RollbackFailuresOf(Exception exception)
+        {
+            return exception?.Data[RollbackFailuresKey] as string[] ?? new string[0];
+        }
 
         /// <summary>UTF-8 without BOM. The generated content is pure ASCII, so the bytes are unambiguous.</summary>
         private static readonly UTF8Encoding Utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
@@ -98,7 +124,7 @@ namespace RackCad.StructuralSections.Import
                 SourceFileName = result.SourceFileName,
                 SourceSha256 = result.SourceSha256,
                 SourceWorksheet = result.Worksheet,
-                MapperVersion = AiscRowMapper.MapperVersion,
+                MapperVersion = StructuralSectionsManifest.SupportedMapperVersion,
                 CountsByFamily = StructuralSectionFamilies.All.ToDictionary(
                     StructuralSectionFamilies.ToToken,
                     family => result.Sections.Count(section => section.Family == family),
@@ -162,6 +188,11 @@ namespace RackCad.StructuralSections.Import
                     File.WriteAllBytes(Path.Combine(staging, file.Key), Utf8NoBom.GetBytes(file.Value));
                 }
 
+                // The overlay is seeded BEFORE the replacements and recorded as created, so a later failure
+                // can remove it. Seeding it at the end would leave a file the rollback never knew about, and
+                // "the directory ends exactly as it started" would be false.
+                SeedStatusOverlayIfMissing(outputDirectory, created);
+
                 var count = 0;
 
                 foreach (var file in ordered)
@@ -183,62 +214,130 @@ namespace RackCad.StructuralSections.Import
                     File.Move(Path.Combine(staging, file.Key), target, overwrite: true);
                     AfterReplaceForTests?.Invoke(file.Key, ++count);
                 }
-
-                SeedStatusOverlayIfMissing(outputDirectory);
             }
-            catch
+            catch (Exception publishFailure)
             {
-                Rollback(outputDirectory, backup, replaced, created);
+                // The rollback must never replace the failure that caused it. It collects its OWN failures
+                // and attaches them to the original exception, which is what propagates.
+                var failures = Rollback(outputDirectory, backup, replaced, created);
+                failures.AddRange(RemoveWorkingFolders(staging, backup));
+
+                if (failures.Count > 0)
+                {
+                    publishFailure.Data[RollbackFailuresKey] = failures.ToArray();
+                }
+
                 throw;
             }
-            finally
+
+            var cleanupFailures = RemoveWorkingFolders(staging, backup);
+
+            if (cleanupFailures.Count > 0)
             {
-                DeleteDirectory(staging);
-                DeleteDirectory(backup);
+                // The data landed, but leaving the working folders behind would make the next publication
+                // start from a dirty state. Fail loudly rather than pretend.
+                throw new IOException(
+                    "La publicacion escribio los archivos pero no pudo retirar sus carpetas de trabajo: " +
+                    string.Join(" | ", cleanupFailures));
             }
         }
 
         /// <summary>
-        /// Puts the output directory back exactly as it was: the replaced files return byte for byte from the
-        /// backup, and the ones that did not exist before are removed.
+        /// Tries to put the output directory back as it was: every replaced file returns byte for byte from
+        /// the backup, and every file that did not exist before is removed.
         ///
-        /// It swallows nothing quietly except its own secondary failures, and those are appended to the
-        /// original exception's data rather than replacing it: the caller must see WHY the publication failed,
-        /// not why the cleanup did.
+        /// It ATTEMPTS all of them and never throws. A file the operating system will not let it write —
+        /// locked by another process, read-only, gone — must not stop the remaining restorations, and above
+        /// all must not replace the exception that caused the rollback: the caller needs to see WHY the
+        /// publication failed, not why the cleanup did. Each secondary failure is returned so the caller can
+        /// attach it to the original exception.
+        ///
+        /// Consequence to be honest about: if a restoration fails, the directory is NOT back to its previous
+        /// state. That is why the failures are reported and why the validated load will refuse the folder —
+        /// the manifest is published last, so a partially restored set no longer matches its hashes.
         /// </summary>
-        private static void Rollback(
+        private static List<string> Rollback(
             string outputDirectory,
             string backup,
             IEnumerable<string> replaced,
             IEnumerable<string> created)
         {
+            var failures = new List<string>();
+
             foreach (var fileName in replaced)
             {
-                var source = Path.Combine(backup, fileName);
-
-                if (File.Exists(source))
+                try
                 {
-                    File.Copy(source, Path.Combine(outputDirectory, fileName), overwrite: true);
+                    var source = Path.Combine(backup, fileName);
+
+                    if (File.Exists(source))
+                    {
+                        File.Copy(source, Path.Combine(outputDirectory, fileName), overwrite: true);
+                    }
+                    else
+                    {
+                        failures.Add(fileName + ": no se conservo respaldo, no se pudo restaurar.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    failures.Add(
+                        fileName + ": no se pudo restaurar (" + ex.GetType().Name + ": " + ex.Message + ").");
                 }
             }
 
             foreach (var fileName in created)
             {
-                var target = Path.Combine(outputDirectory, fileName);
-
-                if (File.Exists(target))
+                try
                 {
-                    File.Delete(target);
+                    var target = Path.Combine(outputDirectory, fileName);
+
+                    if (File.Exists(target))
+                    {
+                        File.Delete(target);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    failures.Add(
+                        fileName + ": no se pudo eliminar (" + ex.GetType().Name + ": " + ex.Message + ").");
                 }
             }
+
+            return failures;
+        }
+
+        /// <summary>Removes staging and backup, reporting rather than throwing if one of them survives.</summary>
+        private static List<string> RemoveWorkingFolders(params string[] directories)
+        {
+            var failures = new List<string>();
+
+            foreach (var directory in directories)
+            {
+                try
+                {
+                    DeleteDirectory(directory);
+                }
+                catch (Exception ex)
+                {
+                    failures.Add(
+                        Path.GetFileName(directory) + ": no se pudo retirar (" + ex.GetType().Name + ": " +
+                        ex.Message + ").");
+                }
+            }
+
+            return failures;
         }
 
         /// <summary>
         /// Writes an EMPTY status overlay when the folder does not have one yet, so a fresh installation gets
         /// the file with its header. An overlay that already exists is never touched: it holds the operator's
         /// decisions and is not the importer's to rewrite.
+        ///
+        /// It records the file as CREATED before writing it, so a rollback removes it even if the write itself
+        /// failed halfway. Otherwise a failed publication could leave behind a file that did not exist before.
         /// </summary>
-        private static void SeedStatusOverlayIfMissing(string outputDirectory)
+        private static void SeedStatusOverlayIfMissing(string outputDirectory, ICollection<string> created)
         {
             var path = Path.Combine(outputDirectory, StructuralSectionCsvSchema.StatusFile);
 
@@ -246,6 +345,8 @@ namespace RackCad.StructuralSections.Import
             {
                 return;
             }
+
+            created.Add(StructuralSectionCsvSchema.StatusFile);
 
             File.WriteAllBytes(
                 path,

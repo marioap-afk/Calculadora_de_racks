@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RackCad.Application.StructuralSections;
 
 namespace RackCad.StructuralSections.Import
 {
@@ -45,8 +46,22 @@ namespace RackCad.StructuralSections.Import
         private const string EditionMarker = "16TH EDITION";
         private const string EdiMarker = "ELECTRONIC DATA INTERCHANGE";
 
-        /// <summary>The data worksheet a given revision must publish.</summary>
-        public static string DataWorksheetFor(string revision) => "Database v" + revision;
+        /// <summary>
+        /// The data worksheet a given revision must publish. Delegates to
+        /// <see cref="StructuralSectionSource.TryExpectedWorksheet"/> so the importer (which verifies the
+        /// workbook) and the validator (which verifies the manifest) cannot drift apart.
+        /// </summary>
+        public static string DataWorksheetFor(string revision)
+        {
+            if (!StructuralSectionSource.TryExpectedWorksheet(
+                    StructuralSectionSource.AiscShapesId, revision, out var worksheet))
+            {
+                throw new XlsxFormatException(
+                    "No hay una hoja de datos conocida para la revision '" + revision + "'.");
+            }
+
+            return worksheet;
+        }
 
         public static AiscWorkbookIdentity Verify(XlsxWorkbook workbook)
         {

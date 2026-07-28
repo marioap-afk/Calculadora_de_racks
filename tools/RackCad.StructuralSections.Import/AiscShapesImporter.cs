@@ -98,7 +98,7 @@ namespace RackCad.StructuralSections.Import
 
         /// <summary>
         /// Nominal weight: the metric column is an independently rounded DESIGNATION value, not a conversion
-        /// (C6X6.7 is published as 10.4 kg/m while the exact conversion is 9.97). 5 % catches a mis-mapped
+        /// (C5X6.7 is published as 10.4 kg/m while the exact conversion is 9.97). 5 % catches a mis-mapped
         /// column, which is what this contrast is for; it cannot and must not police precision.
         /// </summary>
         public const double WeightTolerance = 0.05;

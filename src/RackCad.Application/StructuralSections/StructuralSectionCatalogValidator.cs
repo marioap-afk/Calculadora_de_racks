@@ -547,50 +547,106 @@ namespace RackCad.Application.StructuralSections
                     at);
             }
 
-            // Source <-> rows <-> manifest have to be the same story, or the folder is a mix of two imports.
-            if (catalog.Sources.Count > 0)
+            // The mapper version is checked by VALUE, not merely for presence: a different mapping produces
+            // different columns, so a version this build does not know means a file whose meaning is not
+            // guaranteed.
+            if (manifest.MapperVersion != null &&
+                !string.Equals(
+                    manifest.MapperVersion,
+                    StructuralSectionsManifest.SupportedMapperVersion,
+                    StringComparison.Ordinal))
             {
-                var source = catalog.Sources.FirstOrDefault(
-                    candidate => string.Equals(candidate.SourceId, manifest.SourceId, StringComparison.Ordinal));
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestMetadata,
+                    "el manifiesto declara la version de mapeo '" + manifest.MapperVersion +
+                    "' y este build solo soporta '" + StructuralSectionsManifest.SupportedMapperVersion + "'.",
+                    at);
+            }
 
-                if (source == null)
-                {
-                    Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
-                        CodeManifestSourceMismatch,
-                        "el manifiesto declara la fuente '" + manifest.SourceId +
-                        "', que no esta en el catalogo de fuentes distribuido.",
-                        at);
-                }
-                else
-                {
-                    if (!string.Equals(source.Revision, manifest.SourceRevision, StringComparison.Ordinal))
-                    {
-                        Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
-                            CodeManifestSourceMismatch,
-                            "el manifiesto declara la revision '" + manifest.SourceRevision +
-                            "' y la fuente distribuida declara '" + source.Revision + "'.",
-                            at);
-                    }
+            // The worksheet has to be the one this source and revision imply. A non-empty but wrong name
+            // describes a workbook that is not the one the rest of the metadata claims.
+            if (manifest.SourceWorksheet != null &&
+                StructuralSectionSource.TryExpectedWorksheet(
+                    manifest.SourceId, manifest.SourceRevision, out var expectedWorksheet) &&
+                !string.Equals(manifest.SourceWorksheet, expectedWorksheet, StringComparison.Ordinal))
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestMetadata,
+                    "el manifiesto dice haber leido la hoja '" + manifest.SourceWorksheet + "', y la fuente '" +
+                    manifest.SourceId + "' en la revision '" + manifest.SourceRevision +
+                    "' solo puede venir de '" + expectedWorksheet + "'.",
+                    at);
+            }
 
-                    if (!string.Equals(source.IdNamespace, manifest.IdNamespace, StringComparison.Ordinal))
-                    {
-                        Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
-                            CodeManifestSourceMismatch,
-                            "el manifiesto declara el namespace de id '" + manifest.IdNamespace +
-                            "' y la fuente distribuida declara '" + source.IdNamespace + "'.",
-                            at);
-                    }
-                }
+            ValidateSingleSource(catalog, manifest, issues);
+        }
+
+        /// <summary>
+        /// Schema 1.0 of the manifest describes EXACTLY ONE source, and this checks that the catalog it
+        /// accompanies is that catalog: one source, the one the manifest names, with its revision and its id
+        /// authority, and every section belonging to it.
+        ///
+        /// The MODEL is deliberately multi-source —that is what the id namespace exists for— but the
+        /// distribution format v1.0 is not. A second source, even one no section uses, produces a catalog
+        /// this manifest cannot describe, and accepting it would mean shipping a file whose declared counts
+        /// and hashes say nothing about half of what is there.
+        /// </summary>
+        private static void ValidateSingleSource(
+            StructuralSectionCatalog catalog,
+            StructuralSectionsManifest manifest,
+            ICollection<CatalogValidationIssue> issues)
+        {
+            var at = StructuralSectionCsvSchema.ManifestFile;
+
+            if (catalog.Sources.Count != 1)
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestSourceMismatch,
+                    "el esquema " + StructuralSectionsManifest.CurrentSchemaVersion +
+                    " del manifiesto describe EXACTAMENTE UNA fuente y el catalogo distribuido declara " +
+                    catalog.Sources.Count + ": " +
+                    string.Join(", ", catalog.Sources.Select(source => source.SourceId)) + ".",
+                    at);
+                return;
+            }
+
+            var only = catalog.Sources[0];
+
+            if (!string.Equals(only.SourceId, manifest.SourceId, StringComparison.Ordinal))
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestSourceMismatch,
+                    "el manifiesto declara la fuente '" + manifest.SourceId +
+                    "' y el catalogo distribuido declara '" + only.SourceId + "'.",
+                    at);
+            }
+
+            if (!string.Equals(only.Revision, manifest.SourceRevision, StringComparison.Ordinal))
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestSourceMismatch,
+                    "el manifiesto declara la revision '" + manifest.SourceRevision +
+                    "' y la fuente distribuida declara '" + only.Revision + "'.",
+                    at);
+            }
+
+            if (!string.Equals(only.IdNamespace, manifest.IdNamespace, StringComparison.Ordinal))
+            {
+                Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
+                    CodeManifestSourceMismatch,
+                    "el manifiesto declara el namespace de id '" + manifest.IdNamespace +
+                    "' y la fuente distribuida declara '" + only.IdNamespace + "'.",
+                    at);
             }
 
             foreach (var section in catalog.All)
             {
-                if (!string.Equals(section.Identity.SourceId, manifest.SourceId, StringComparison.Ordinal))
+                if (!string.Equals(section.Identity.SourceId, only.SourceId, StringComparison.Ordinal))
                 {
                     Add(issues, CatalogValidationSeverity.Error, CatalogValidationCategory.Manifest,
                         CodeManifestSourceMismatch,
                         "la seccion declara la fuente '" + section.Identity.SourceId +
-                        "' y el manifiesto declara '" + manifest.SourceId + "'.",
+                        "' y el catalogo distribuido solo declara '" + only.SourceId + "'.",
                         section.SectionId.Value);
                     break;
                 }

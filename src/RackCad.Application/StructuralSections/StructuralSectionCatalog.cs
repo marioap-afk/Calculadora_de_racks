@@ -9,12 +9,19 @@ namespace RackCad.Application.StructuralSections
     /// is safe to hand around (the provider caches one per directory).
     ///
     /// Two invariants are enforced at CONSTRUCTION, so no lookup can ever be ambiguous by accident:
-    /// the section id is unique, and the normalized EDI designation is unique. Anything that would break them
-    /// throws here rather than resolving to "the first row", which is the failure mode the tolerant catalogs
-    /// still have and I-19 has to report.
     ///
-    /// The display-name index is the one place ambiguity is TOLERATED but never resolved: if two sections
-    /// could answer to the same typed text, the lookup reports ambiguity instead of picking one.
+    /// - the section id is unique across the whole catalog;
+    /// - the normalized EDI designation is unique WITHIN EACH SOURCE — not globally. Two publishers may
+    ///   legitimately name the same profile the same way, and the id keeps them apart by their authority
+    ///   (<see cref="StructuralSectionSource.IdNamespace"/>); a global rule would make a second source
+    ///   impossible to add, which is the opposite of what a neutral catalog is for.
+    ///
+    /// Anything that would break them throws here rather than resolving to "the first row", which is the
+    /// failure mode the tolerant catalogs still have and I-19 has to report.
+    ///
+    /// Lookups by DESIGNATION are the one place ambiguity is TOLERATED but never resolved: if two sections
+    /// could answer to the same typed text — the same designation from two sources, or a manual label that
+    /// collides with another section's EDI form — the lookup reports ambiguity instead of picking one.
     /// </summary>
     public sealed class StructuralSectionCatalog
     {

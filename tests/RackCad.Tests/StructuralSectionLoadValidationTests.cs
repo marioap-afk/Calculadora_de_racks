@@ -100,7 +100,7 @@ namespace RackCad.Tests
         public void AManifestWithoutItsMapperVersionIsRejected()
         {
             var directory = Published();
-            Patch(directory, "\"mapperVersion\": \"" + AiscRowMapper.MapperVersion + "\"", "\"mapperVersion\": \"\"");
+            Patch(directory, "\"mapperVersion\": \"" + StructuralSectionsManifest.SupportedMapperVersion + "\"", "\"mapperVersion\": \"\"");
 
             AssertRejected(directory, "mapperVersion");
         }
