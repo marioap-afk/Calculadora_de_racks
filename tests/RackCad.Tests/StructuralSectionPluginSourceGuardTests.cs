@@ -37,7 +37,19 @@ namespace RackCad.Tests
             return File.ReadAllText(path);
         }
 
+        /// <summary>
+        /// El FLUJO del comando.
+        ///
+        /// I-36C lo saco de <c>RackSeccionCommands.cs</c> a su propio archivo, porque el boton "Generar perfil
+        /// estructural" del menu principal tenia que invocar el mismo caso de uso y no una copia. Lo que estas
+        /// guardas fijan —fallo cerrado, orden punto-antes-de-crear, una sola transaccion, regen canonico— no
+        /// cambio; cambio donde vive, y por eso apuntan aqui.
+        /// </summary>
         private static string Command =>
+            ReadSource("src", "RackCad.Plugin", "StructuralSectionCommandFlow.cs");
+
+        /// <summary>El punto de entrada: lo unico que queda en el archivo del comando.</summary>
+        private static string CommandEntryPoint =>
             ReadSource("src", "RackCad.Plugin", "RackSeccionCommands.cs");
 
         private static string Materializer =>
@@ -68,7 +80,10 @@ namespace RackCad.Tests
         [Fact]
         public void TheCommandIsRegisteredAsRackseccion()
         {
-            Assert.Contains("[CommandMethod(\"RACKSECCION\")]", Command, StringComparison.Ordinal);
+            Assert.Contains("[CommandMethod(\"RACKSECCION\")]", CommandEntryPoint, StringComparison.Ordinal);
+
+            // Y sigue llegando al MISMO flujo, ahora compartido con el menu principal (I-36C).
+            Assert.Contains("StructuralSectionCommandFlow.Run(", CommandEntryPoint, StringComparison.Ordinal);
         }
 
         [Fact]

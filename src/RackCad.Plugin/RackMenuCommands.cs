@@ -29,8 +29,20 @@ namespace RackCad.Plugin
                     dimensionStyles: RackCommandSupport.ReadDimensionStyleNames(document));
                 AcApplication.ShowModalWindow(menu);
 
+                // A structural section is NOT a rack: no system kind, no design payload, no round-trip. It
+                // travels as a typed ACTION rather than as an InsertionRequest, and it runs the very same flow
+                // RACKSECCION runs — the menu adds a door, not a second generator. Dispatched here, after the
+                // modal window closed, because the flow asks for an insertion point and needs the editor free.
+                if (menu.RequestedAction == MainMenuAction.GenerateStructuralSection)
+                {
+                    StructuralSectionCommandFlow.Run(document);
+                    return;
+                }
+
                 // I-05: an insertion is about to happen (any non-null request). Warn once if the drawing is not in
                 // inches, before dispatching to the per-system draw calls (before the first DWG modification).
+                // The structural-section path above is NOT covered here on purpose: its own flow warns at the
+                // right moment — after the inspector confirms — and warning twice would be noise.
                 if (menu.InsertionRequest != null)
                 {
                     RackUnitsGuard.WarnIfNotInches(document);
