@@ -23,8 +23,11 @@ candidate:
   sha: 1271bbe
   subject: I-36A - MICRO-RONDA 3 - metadata del manifiesto por valor y rollback honesto
   base: a35374f99dde91077a2e05bfc69358fb3e3b3ad9
-  ci_run: pendiente-de-verificar-sobre-el-nuevo-HEAD-de-la-MICRO-RONDA-3
-  ci_result: pendiente
+  ci_run: 30354728636
+  ci_result: >-
+    VERDE-completed-success-sobre-8d21c22-que-CONTIENE-al-candidato-1271bbe ·
+    el-diff-1271bbe-a-8d21c22-es-EXCLUSIVAMENTE-DOCUMENTAL-cero-archivos-bajo-src-tests-tools-assets-deploy-o-github ·
+    asi-que-el-arbol-tecnico-con-CI-verde-y-el-que-el-Owner-valida-son-el-MISMO-y-se-comprueba-con-git-diff
   ci_jobs: tests-domain-application · ui-tests · build-ui · build-plugin-without-autocad
   por_que_importa_que_CI_sea_verde_en_LINUX: >-
     el-job-de-pruebas-corre-en-ubuntu-sobre-un-checkout-LIMPIO ·
@@ -387,7 +390,7 @@ ronda_3:
     build_ui_debug: 0-errores-0-advertencias
     build_plugin_debug: 0-errores-2-MSB3277-conocidos
     bundle: OK-147-comprobaciones
-    ci: pendiente-de-verificar-sobre-el-nuevo-HEAD
+    ci: VERDE-run-30354728636-4-de-4-sobre-8d21c22-que-contiene-al-candidato-1271bbe
 
 # --------------------------------------------------------------------------------------------------------
 # COMMITS. Cada uno deja el arbol compilando y las suites en verde.
