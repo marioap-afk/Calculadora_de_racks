@@ -12,7 +12,7 @@ automation_state:
     la-fase-1-es-documental-y-analitica-y-esta-completa ·
     la-fase-2-catalogo-NO-arranca-sin-esa-revision ·
     ADR-0023-queda-propuesto-y-solo-el-Owner-lo-acepta-tras-ver-el-dibujo
-  last_evidence_commit: pendiente-se-escribe-con-el-commit-de-esta-fase
+  last_evidence_commit: 89392379c0e5352475ebee0858cdb13f5f412ed7-CI-VERDE-4-de-4-run-30407500115
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo y revalidado al abrir esta sesion.
