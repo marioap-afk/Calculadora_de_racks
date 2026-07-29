@@ -12,7 +12,31 @@ automation_state:
     rebase-final-si-main-avanzo · CI-verde-sobre-el-SHA-exacto ·
     HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama · merge---no-ff ·
     NO-requiere-validacion-manual-en-AutoCAD-porque-no-cambia-dibujo-ni-UI
-  last_evidence_commit: e5b3b56-pruebas-e-invariantes-2192-y-544-verdes
+  last_evidence_commit: ronda-de-correcciones-2224-y-544-verdes
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA DE CORRECCIONES. Cuatro defectos senalados por el Owner sobre 5be43f1, sin reabrir el diseno.
+# --------------------------------------------------------------------------------------------------------
+correcciones:
+  1_igualdad_del_datum: >-
+    Equals-delegaba-en-ApproxEquals-mientras-GetHashCode-redondeaba-a-6-decimales ·
+    no-era-una-igualdad-valida-de-value-type-la-comparacion-tolerante-no-es-transitiva ·
+    ahora-Equals-es-exacto-sobre-Axis-U-V-Diameter-y-el-hash-usa-esos-mismos-campos-sin-redondear ·
+    ApproxEquals-sobrevive-como-metodo-geometrico-independiente ·
+    el-constructor-rechaza-un-eje-no-declarado ·
+    Direction-pasa-de-ternario-con-else-silencioso-a-switch-que-FALLA-CERRADO
+  2_orientacion_como_autoridad: >-
+    ColumnOrientation-y-BaseOrientation-eran-dato-que-nadie-leia-el-resolver-construia-marcos-fijos ·
+    nace-CantileverColumnBaseFrameResolver-como-unica-autoridad ·
+    geometria-vigente-numericamente-identica-con-prueba-que-la-compara-contra-la-expresion-original ·
+    enum-no-declarado-rechazado-por-excepcion-de-contrato-y-por-diagnostico-bloqueante
+  3_ajuste_geometrico_de_troqueles: >-
+    faltaba-validar-que-los-agujeros-CABEN ·
+    ocho-validaciones-bloqueantes-con-tres-codigos-nuevos-y-uno-retirado-de-un-uso-enganoso
+  4_evidencia: >-
+    docs-decia-9-archivos-y-el-informe-32 · los-dos-estaban-mal ·
+    en-5be43f1-eran-33-docs-10-Domain-7-Application-13-tests-3 ·
+    el-error-venia-de-medir-el-diff-antes-del-ultimo-commit-documental
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -102,13 +126,22 @@ implementacion:
     id_de_seccion: TEXTO-igual-que-DynamicRackDesign-InOutBeamCatalogId
     parametros_sin_default: nullable-y-RECHAZADOS-si-faltan-nunca-rellenados
   application:
-    archivos: 13
+    archivos: 14
     frontera_unica_de_parseo: CantileverSectionResolver
     politica: CantileverColumnBaseSectionPolicy-inyectable-por-ids-EXACTOS-familia-W-en-I-37A
     ids_de_produccion_registrados: CERO-las-pruebas-registran-los-suyos
     autoridad_de_colocacion: PrismaticSectionInstance-unica-derivados-sin-campo-de-respaldo
+    autoridad_de_marcos: >-
+      CantileverColumnBaseFrameResolver-unica ·
+      lee-la-orientacion-REGISTRADA-en-la-variante-y-recibe-la-GEOMETRIA-no-un-bounding-box ·
+      switch-explicito-con-default-que-lanza ·
+      guarda-de-fuente-impide-LocalFrame3D-Create-o-FromAxes-fuera-de-ella
     autoridad_compartida: CantileverColumnBaseConnectionPattern-una-sola-DatumAt-para-los-dos-lados
-    coincidencia: CantileverPunchDatum-eje-U-V-y-diametro-NUNCA-centros-3D
+    coincidencia: >-
+      CantileverPunchDatum-eje-U-V-y-diametro-NUNCA-centros-3D ·
+      Equals-es-EXACTO-y-consistente-con-GetHashCode ·
+      ApproxEquals-es-el-metodo-GEOMETRICO-tolerante-e-independiente ·
+      las-pruebas-de-coincidencia-fisica-llaman-a-ApproxEquals-explicitamente
     envolvente: CantileverEnvelope3D-LOCAL-al-namespace-no-se-anadio-nada-a-Geometry
     peso: NO-IMPLEMENTADO-diferido-y-prohibido-por-guarda
   formulas:
@@ -121,14 +154,30 @@ implementacion:
     primer_regular: ultimo-de-conexion-mas-4.00-NO-mas-2.00-y-sin-duplicarlo
     corte_regular: mientras-z-menor-o-igual-a-ColumnTopZ-menos-ColumnTopPunchOffset
     placa_inferior: pares-en-mas-menos-2k-1-por-pitch-entre-2-SIN-troquel-en-el-centro
+  ajuste_geometrico_de_troqueles:
+    semantica: los-offsets-son-de-borde-a-CENTRO-y-los-pitch-de-centro-a-centro
+    offsets_requieren: mayor-o-igual-al-RADIO-limite-INCLUSIVO-tangente-al-borde-es-valido
+    pitch_requieren: mayor-o-igual-al-DIAMETRO-limite-INCLUSIVO
+    separacion_entre_filas: mayor-o-igual-al-DIAMETRO
+    codigos_nuevos: >-
+      CANT_EDGE_OFFSET_BELOW_RADIUS-para-los-cuatro-offsets ·
+      CANT_PITCH_BELOW_DIAMETER-para-los-tres-pitch ·
+      CANT_PUNCH_ROWS_OVERLAP-para-la-separacion-entre-filas ·
+      CANT_ORIENTATION_NOT_SUPPORTED-para-una-variante-mal-registrada
+    codigo_retirado_de-un-uso-enganoso: >-
+      la-comprobacion-de-filas-usaba-CANT_PUNCH_OUTSIDE_REAR_PLATE ·
+      filas-que-se-funden-son-un-problema-de-la-COLUMNA-y-ese-mensaje-mandaba-a-revisar-la-BASE
+    defaults_aprobados: >-
+      siguen-resolviendo-EXACTAMENTE-igual-misma-firma-mismas-8-elevaciones-y-8-troqueles-inferiores ·
+      con-prueba-propia-que-lo-fija
 
 # --------------------------------------------------------------------------------------------------------
 # PRUEBAS Y BUILDS
 # --------------------------------------------------------------------------------------------------------
 pruebas:
-  RackCad_Tests: 2192-de-2192-base-2094-mas-98
+  RackCad_Tests: 2224-de-2224-base-2094-mas-130
   RackCad_UI_Tests: 544-de-544-sin-cambio
-  nuevas: CantileverColumnBaseTests-53-y-CantileverSourceGuardTests-45
+  nuevas: CantileverColumnBaseTests-81-y-CantileverSourceGuardTests-49
   builds_debug: Domain-0-0 Application-0-0 UI-0-0 Plugin-0-errores-2-MSB3277-conocidas
   bundle: >-
     NO-EJECUTADO · deploy-build-bundle-ps1-aborta-porque-AutoCAD-esta-abierto ·
@@ -139,15 +188,33 @@ pruebas:
     autoridad_compartida: la-columna-recalculando-su-patron-fallan-2-y-revertido
     patron_simetrico_placa_inferior: troquel-en-el-centro-falla-1-y-revertido
     guarda_de_fuente: un-acceso-a-Dimensions-muerde-la-guarda-y-revertido
+    igualdad_del_datum: >-
+      Equals-delegando-en-ApproxEquals-mas-hash-redondeado-fallan-3-pruebas-y-revertido
+    guardia_de_eje_del_constructor: quitarlo-falla-ADatumRejectsAnUndefinedAxis-y-revertido
+    direction_con-rama-else: el-ternario-muerde-la-guarda-de-fuente-y-revertido
+    marco_cableado_en_el_resolver: >-
+      LocalFrame3D-Create-fuera-de-la-autoridad-muerde-la-guarda-y-revertido
+    validacion_de_offset: >-
+      quitar-el-offset-horizontal-mayor-o-igual-al-radio-falla-1-prueba-y-revertido
+    validacion_de_pitch: >-
+      quitar-el-pitch-de-conexion-mayor-o-igual-al-diametro-falla-1-prueba-y-revertido
 
 # --------------------------------------------------------------------------------------------------------
-# GUARDAS DE ALCANCE. Medido con git diff --name-only 3c6ccf5..HEAD
+# GUARDAS DE ALCANCE. Medido con git diff --name-only 3c6ccf5..HEAD sobre la punta ACTUAL.
+#
+# CORREGIDO: una version anterior de este bloque decia "docs: 9-archivos" y el informe de cierre hablaba
+# de 32 archivos. Los dos numeros estaban mal. En 5be43f1 el diff eran 33 archivos -docs 10, Domain 7,
+# Application 13, tests 3-; el error venia de haber medido el diff ANTES del ultimo commit documental,
+# que anadio docs/ideas-futuras.md. La ronda de correcciones suma
+# CantileverColumnBaseFrameResolver.cs, asi que Application pasa a 14 y el total a 34.
 # --------------------------------------------------------------------------------------------------------
 areas_modificadas:
+  total: 34-archivos
+  docs: 10-archivos
   src_RackCad_Domain: 7-archivos-nuevos-Systems-Cantilever
-  src_RackCad_Application: 13-archivos-nuevos-Systems-Cantilever
+  src_RackCad_Application: 14-archivos-nuevos-Systems-Cantilever
   tests_RackCad_Tests: 3-archivos-2-nuevos-mas-el-bucket-de-NamespaceFolderGuardTests
-  docs: 9-archivos
+  en_5be43f1_eran: 33-archivos-docs-10-Domain-7-Application-13-tests-3
 
 guardas_de_alcance:
   HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion

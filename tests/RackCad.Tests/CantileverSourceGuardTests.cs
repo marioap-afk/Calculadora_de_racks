@@ -235,6 +235,33 @@ namespace RackCad.Tests
                 string.Join(", ", offenders) + ".");
         }
 
+        // ---- the punch axis has no silent default -------------------------------------------------------------
+
+        [Fact]
+        public void ThePunchDirectionFailsClosedInsteadOfDefaultingToAnAxis()
+        {
+            // Direction used to be `axis == AlongY ? UnitY : UnitZ`, whose else branch drilled an unknown
+            // axis vertically without a word.
+            //
+            // It is pinned HERE, as source, and not by a runtime test, because the constructor now rejects an
+            // undefined axis — so the bad state is unreachable through the public API and no test can build
+            // it. That is the right defence and it is also why the throwing branch cannot be exercised: what
+            // remains checkable is that the branch exists and that the ternary did not come back.
+            var punch = Sources()
+                .Single(f => f.Path.EndsWith("CantileverPunchPlan.cs", StringComparison.Ordinal))
+                .Code;
+
+            var direction = punch.Substring(punch.IndexOf("public Vector3D Direction", StringComparison.Ordinal));
+            direction = direction.Substring(0, direction.IndexOf("public override string ToString", StringComparison.Ordinal));
+
+            Assert.Contains("switch (Datum.Axis)", direction, StringComparison.Ordinal);
+            Assert.Contains("InvalidOperationException", direction, StringComparison.Ordinal);
+            Assert.DoesNotContain("?", direction, StringComparison.Ordinal);
+
+            // And the constructor keeps the state unreachable in the first place.
+            Assert.Contains("ArgumentOutOfRangeException", punch, StringComparison.Ordinal);
+        }
+
         // ---- the frame authority is the ONLY place a frame is built -----------------------------------------
 
         [Theory]
