@@ -322,10 +322,24 @@ namespace RackCad.Tests
 
             Assert.Equal(2, arm.Count);
 
+            // The pattern is SELF-VERIFIED against synthetic samples FIRST.
+            //
+            // This is not decoration. The first version of this guard shipped with its word boundaries
+            // turned into literal control characters by an escaping accident, and the surviving regex
+            // matched nothing that mattered: it passed with a hard-coded 4.0 sitting in the resolver. A
+            // guard that cannot fail is worse than no guard, because it reads as coverage. So the regex
+            // has to prove it bites before it is trusted.
+            var literalFour = new Regex(@"(^|[^\w.])4([^\w]|$)", RegexOptions.Compiled);
+
+            Assert.Matches(literalFour, "var observedPitch = 4.0;");
+            Assert.Matches(literalFour, "z += 4;");
+            Assert.DoesNotMatch(literalFour, "var x = 24.5;");
+            Assert.DoesNotMatch(literalFour, "Math.Round(value, 6);");
+
             foreach (var file in arm)
             {
                 Assert.False(
-                    Regex.IsMatch(file.Code, @"4(\.0+)?"),
+                    literalFour.IsMatch(file.Code),
                     file.Path + " contiene un literal 4: el pitch se OBSERVA de la columna, no se declara.");
 
                 Assert.DoesNotContain("RegularColumnPunchPitch", file.Code, StringComparison.Ordinal);
@@ -346,9 +360,9 @@ namespace RackCad.Tests
         }
 
         [Theory]
-        [InlineData(@"ChannelClearGap")]
-        [InlineData(@"ClearGap")]
-        [InlineData(@"ChannelGap")]
+        [InlineData(@"\bChannelClearGap\b")]
+        [InlineData(@"\bClearGap\b")]
+        [InlineData(@"\bChannelGap\b")]
         public void NoCantileverCodeCarriesAChannelGap(string pattern)
         {
             // Paired channels touch. The gap is zero because the arrangement puts both contact faces on one

@@ -3,15 +3,17 @@ automation_state:
   initiative: I-37B
   branch: architecture/cantilever-brazo
   claim_id: 57727fe5-46b6-4b51-83a9-85afa0d4ebf9
-  current_phase: 2
-  state: implementing
+  current_phase: 7
+  state: review-ready
   gate: none
   attempts: 1
   next_action: >-
-    contratos-de-Domain-politica-autoridades-y-subensamble ·
-    NO-tocar-HANDOFF-ni-marcar-integrada · NO-hacer-merge ·
-    NO-abrir-la-siguiente-subiniciativa
-  last_evidence_commit: 3594758-reclamo-vacio
+    sesion-de-integracion-del-Owner ·
+    rebase-final-si-main-avanzo · CI-verde-sobre-el-SHA-exacto ·
+    HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama · merge---no-ff ·
+    NO-requiere-validacion-manual-en-AutoCAD-porque-no-dibuja ·
+    ADR-0025-sigue-PROPUESTO-solo-el-Owner-lo-acepta
+  last_evidence_commit: punta-de-la-rama-2312-y-544-verdes
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -89,13 +91,13 @@ orientacion_canonica_del_canal:
 # FASES
 # --------------------------------------------------------------------------------------------------------
 fases:
-  1: COMPLETA-reclamo
-  2: EN-CURSO-contrato-ADR-0025-ROADMAP-decision-y-estado
-  3: PENDIENTE-contratos-de-Domain
-  4: PENDIENTE-politica-autoridad-de-arreglos-y-autoridad-de-marcos
-  5: PENDIENTE-cuerpo-placa-patron-placa-final-y-subensamble
-  6: PENDIENTE-pruebas-de-invariantes-y-guardas-de-fuente
-  7: PENDIENTE-evidencia-final
+  1: COMPLETA-reclamo-3594758
+  2: COMPLETA-contrato-ADR-0025-ROADMAP-decision-glosario-y-estado-efc7b1b
+  3: COMPLETA-contratos-de-Domain-4fbbaa6
+  4: COMPLETA-politica-y-las-dos-autoridades-9b5b4cf
+  5: COMPLETA-cuerpo-placa-patron-placa-final-y-subensamble-9b5b4cf
+  6: COMPLETA-invariantes-y-guardas-de-fuente-b93848a
+  7: COMPLETA-reparacion-de-la-guarda-vacua-y-evidencia-final
 
 # --------------------------------------------------------------------------------------------------------
 # PARAMETRO SIN DEFAULT APROBADO. No se inventa; es entrada obligatoria.
@@ -136,3 +138,129 @@ gates:
   autocad: NO-APLICA-no-cambia-dibujo-ni-UI
   owner_validation: NO-APLICA-no-hay-nada-que-ver
   owner_decision: satisfecho-docs-automation-decisions-I-37-md
+
+# --------------------------------------------------------------------------------------------------------
+# IMPLEMENTACION. Lo medido al terminar.
+# --------------------------------------------------------------------------------------------------------
+implementacion:
+  domain:
+    archivos: 1-nuevo-CantileverArmDesign-cs-mas-CantileverDefaults-ampliado
+    tipos: >-
+      CantileverArmDesign · CantileverArmBodyDesign · CantileverArmMountingPlateDesign ·
+      CantileverArmEndPlateDesign · CantileverArmBodyArrangement · CantileverArmEndPlateMode ·
+      CantileverArmSide
+    sin_campo_de_separacion: >-
+      no-existe-ChannelClearGap-ni-equivalente ·
+      un-campo-cuyo-unico-valor-legal-es-cero-se-acaba-editando
+  application:
+    archivos: 6-nuevos-mas-3-enums-extendidos-de-forma-ADITIVA
+    politica: CantileverArmSectionPolicy-por-id-EXACTO-mas-arreglo-CERO-ids-de-produccion
+    autoridad_de_arreglos: >-
+      CantileverArmBodyArrangementResolver · switch-exhaustivo-con-default-que-lanza ·
+      todo-derivado-de-Bounds-nada-de-d-bf-tw-tf
+    autoridad_de_marcos: >-
+      CantileverArmFrameResolver · el-eje-de-peralte-se-DERIVA-de-la-proyeccion-de-mas-Z ·
+      de-ahi-cae-solo-que-el-tope-crezca-hacia-arriba-con-pendiente
+    patron: >-
+      CantileverArmColumnConnectionPattern-SELECCIONA-no-crea ·
+      conserva-los-datums-de-la-columna-VERBATIM-y-OBSERVA-el-pitch ·
+      ninguna-constante-de-espaciado-vive-en-el-brazo
+    subensamble: CantileverArmAssembly-inmutable-con-firma-determinista
+  arreglos_soportados:
+    Single: 1-miembro-independiente-de-la-familia
+    DoubleChannelFacing: 2-miembros-puntas-de-patin-en-el-plano-central-segundo-espejado
+    DoubleChannelBackToBack: 2-miembros-dorsos-de-alma-en-el-plano-central-primero-espejado
+  formulas:
+    angulo: atan-de-SlopeRisePer12-entre-12
+    eje: PositiveY-0-mas-cos-mas-sin · NegativeY-0-menos-cos-MAS-sin-el-extremo-sube-en-los-dos
+    seleccion: elevaciones-regulares-de-la-columna-desde-LowerColumnPunchIndex-base-cero
+    placa: >-
+      PlateBottomZ-igual-primera-menos-margen · PlateTopZ-igual-ultima-mas-margen ·
+      mas-filas-crecen-hacia-ARRIBA-el-borde-inferior-esta-anclado-al-cuerpo
+    alto_aparente: >-
+      el-cuerpo-presenta-cos-angulo-por-su-peralte-en-el-plano-de-conexion ·
+      por-eso-la-comprobacion-no-es-simplemente-placa-mayor-o-igual-que-peralte
+    cuerpo: origen-en-la-cara-EXTERIOR-de-la-placa-y-envolvente-inferior-en-PlateBottomZ
+    placa_final: >-
+      perpendicular-al-eje-inclinado · normal-igual-al-eje · alto-en-la-direccion-de-peralte ·
+      Stop-crece-hacia-arriba-desde-el-mismo-borde-inferior-y-NO-toca-el-corte
+
+# --------------------------------------------------------------------------------------------------------
+# APROXIMACION DECLARADA. No se esconde.
+# --------------------------------------------------------------------------------------------------------
+aproximacion_declarada:
+  corte_a_escuadra_contra_placa_vertical: >-
+    con-pendiente-la-cara-de-arranque-NO-queda-a-ras-de-la-placa ·
+    se-emite-CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE-de-severidad-Info-con-la-intrusion-MEDIDA ·
+    ajustarla-exige-preparacion-de-extremos-que-esta-fuera-de-alcance-en-I-37A-y-en-I-37B ·
+    mismo-espiritu-que-SG_CHANNEL_FLANGE_TAPER_NOT_MODELLED-de-I-36
+
+# --------------------------------------------------------------------------------------------------------
+# PRUEBAS Y BUILDS
+# --------------------------------------------------------------------------------------------------------
+pruebas:
+  RackCad_Tests: 2312-de-2312-base-2224-mas-88
+  RackCad_UI_Tests: 544-de-544-sin-cambio
+  nuevas: CantileverArmTests-80-y-8-guardas-de-fuente-nuevas-el-archivo-sube-de-49-a-57
+  I_37A_focalizadas: 81-de-81-sin-cambio
+  catalogo_estructural: 34-de-34
+  builds_debug: Domain-0-0 Application-0-0 UI-0-0 Plugin-0-errores-2-MSB3277-conocidas
+  bundle: NO-EJECUTADO-y-NO-exigible-el-diff-no-toca-assets-catalogos-deploy-ni-github
+  regresiones_verificadas_fallando:
+    doble_canal_a_un_miembro: fallan-7-pruebas-y-revertido
+    separacion_distinta_de_cero: fallan-8-y-revertido
+    pendiente_invertida_en_lado_negativo: falla-TheFreeEndRISESOnBothSides-NegativeY-y-revertido
+    brazo_recalculando_el_pitch: fallan-las-DOS-guardas-de-pitch-y-revertido
+    filas_creciendo_hacia_abajo: fallan-8-y-revertido
+    placa_aceptando_un_cuerpo_mas_alto: fallan-2-y-revertido
+    tapa_modificando_el_corte: fallan-3-y-revertido
+    campo_de_separacion_de_canal: fallan-2-y-revertido
+
+# --------------------------------------------------------------------------------------------------------
+# DEFECTO PROPIO ENCONTRADO Y CORREGIDO EN LA MISMA CORRIDA
+# --------------------------------------------------------------------------------------------------------
+guarda_vacua_corregida:
+  que_paso: >-
+    la-primera-version-de-la-guarda-del-literal-4-se-escribio-por-heredoc-y-Python-interpreto-cada
+    barra-b-como-un-caracter-BACKSPACE-0x08 · quedaron-OCHO-caracteres-de-control-en-el-fuente-y-el
+    regex-resultante-no-emparejaba-nada-relevante
+  como_se_detecto: >-
+    al-verificar-la-regresion-R4-solo-mordio-UNA-de-las-dos-guardas-de-pitch ·
+    se-reaplico-la-mutacion-en-aislamiento-y-la-guarda-PASO-con-un-4-0-cableado-presente
+  correccion: >-
+    los-ocho-escapes-reparados-y-la-guarda-hecha-AUTOVERIFICABLE ·
+    ahora-comprueba-que-su-propio-patron-empareja-dos-muestras-malas-y-rechaza-dos-buenas
+    ANTES-de-mirar-el-fuente ·
+    verificado-en-rojo-despues-de-la-reparacion
+  leccion: una-guarda-que-no-puede-fallar-es-peor-que-no-tenerla-porque-se-lee-como-cobertura
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRIDAD MEDIDA con git diff --name-only e0f319f..HEAD
+# --------------------------------------------------------------------------------------------------------
+integridad:
+  src_RackCad_Application_StructuralSections: 0-cambios-I-36-intacta
+  src_RackCad_UI: 0-cambios
+  src_RackCad_Plugin: 0-cambios
+  assets: 0-cambios-ningun-id-de-produccion-ninguna-familia-nueva-ningun-PTR
+  deploy_github_sln: 0-cambios
+  HANDOFF_md: 0-cambios
+  ideas_futuras_md: 0-cambios-los-hallazgos-adyacentes-no-se-tocaron
+  sistemas_vigentes: 0-cambios-en-los-cinco
+  logica_de_I_37A: >-
+    CantileverColumnBaseResolver-ConnectionPattern-y-FrameResolver-con-diff-VACIO ·
+    lo-unico-que-cambio-de-I-37A-son-tres-valores-de-enum-al-final-y-tokens-nuevos
+
+# --------------------------------------------------------------------------------------------------------
+# PENDIENTE DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+pendiente_del_owner:
+  adr_0025: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
+  parametro_sin_default_de_I_37B: MountingPlateVerticalEndOffset-sigue-sin-default
+  parametros_sin_default_de_I_37A: ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-siguen-sin-default
+  default_visible_de_perfil_de_brazo: >-
+    sera-HSS-pero-se-fija-cuando-exista-editor-y-se-registren-los-disenos-aprobados ·
+    I-37B-no-registra-ningun-id-de-produccion
+  PTR: >-
+    no-se-equipara-a-HSS · si-el-catalogo-neutral-no-lo-tiene-queda-como-candidato-de-catalogo-futuro
+  imagen_de_referencia_del_brazo: >-
+    sigue-sin-existir-en-el-repositorio · la-geometria-implementada-es-la-del-encargo
