@@ -672,7 +672,7 @@ namespace RackCad.Tests
             string idNamespace = StructuralSectionSource.AiscIdNamespace,
             string catalogId = StructuralSectionsManifest.StructuralSectionsCatalogId,
             string worksheet = "Database v16.0",
-            string mapperVersion = "I-36A.2")
+            string mapperVersion = StructuralSectionsManifest.SupportedMapperVersion)
         {
             var files = StructuralSectionCsvSchema.ImmutableFiles()
                 .Select(name => new StructuralSectionsManifest.ManifestFile { Name = name, Sha256 = ValidHash })

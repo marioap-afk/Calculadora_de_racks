@@ -52,6 +52,60 @@ namespace RackCad.Tests
         private static string CommandEntryPoint =>
             ReadSource("src", "RackCad.Plugin", "RackSeccionCommands.cs");
 
+        // ---- I-36D: la advertencia de autoridad visual ---------------------------------------------------
+
+        /// <summary>
+        /// La advertencia de geometria visual derivada es INCONDICIONAL.
+        ///
+        /// No cuelga del nivel de detalle, ni de la fidelidad, ni de una opcion: un contorno con convencion de
+        /// RackCad es aproximado en los dos niveles (ADR-0023, decision 22). La guarda comprueba que la rama
+        /// que la emite depende de `plan.IsVisualDerived` y de nada mas, y que no existe ningun interruptor
+        /// que la apague.
+        /// </summary>
+        [Fact]
+        public void ElFlujoAdvierteDeGeometriaVisualDerivadaSinCondicionExtra()
+        {
+            var source = Command;
+
+            Assert.Contains("if (plan.IsVisualDerived)", source, StringComparison.Ordinal);
+            Assert.Contains("ADVERTENCIA", source, StringComparison.Ordinal);
+            Assert.Contains("no es apta para CNC", source.Replace("NO es apta para CNC", "no es apta para CNC"),
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("ADR-0023", source, StringComparison.Ordinal);
+
+            // Ni bandera, ni ajuste, ni preferencia que la silencie.
+            foreach (var forbidden in new[]
+                     {
+                         "SuppressVisualWarning", "HideVisualWarning", "ShowVisualWarning",
+                         "DisableWarning", "WarningEnabled"
+                     })
+            {
+                Assert.DoesNotContain(forbidden, source, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        /// <summary>
+        /// El adaptador NO decide geometria de S: no conoce la pendiente, el filete ni la familia.
+        ///
+        /// Todo eso vive en Application y llega en el plan neutral. Si un dia alguien copia el 1/6 aqui, esta
+        /// guarda lo detiene: seria el segundo generador que ADR-0022 §7 prohibe.
+        /// </summary>
+        [Fact]
+        public void ElAdaptadorNoReimplementaLaGeometriaDeS()
+        {
+            foreach (var source in new[] { Command, CommandEntryPoint, Materializer })
+            {
+                foreach (var forbidden in new[]
+                         {
+                             "1.0 / 6.0", "1.0/6.0", "FlangeSlope", "SSectionGeometryBuilder",
+                             "SSectionDimensions", "tRaiz", "tPunta", "rVisual"
+                         })
+                {
+                    Assert.DoesNotContain(forbidden, source, StringComparison.Ordinal);
+                }
+            }
+        }
+
         private static string Materializer =>
             ReadSource("src", "RackCad.Plugin", "Drawing", "StructuralSections", "StructuralSectionMaterializer.cs");
 

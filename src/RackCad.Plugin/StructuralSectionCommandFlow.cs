@@ -106,6 +106,17 @@ namespace RackCad.Plugin
                        StructuralSectionUnits.WeightInPounds(section, plan.Length)
                            .ToString("0.#", CultureInfo.InvariantCulture) + " lb.";
 
+            // The authority warning is UNCONDITIONAL and comes before the fidelity line: it does not depend on
+            // the detail level, on the fidelity or on any setting, because a visually derived contour is
+            // approximate at every level (ADR-0023 decision 22). There is no flag that turns it off.
+            if (plan.IsVisualDerived)
+            {
+                message += "\nADVERTENCIA: geometria visual derivada (ADR-0023). La inclinacion del patin y " +
+                           "el filete son una convencion de RackCad, no un dato de AISC: es aproximada, no " +
+                           "esta garantizada por ningun fabricante y NO es apta para CNC ni fabricacion. " +
+                           "Dimensiones, area, peso y propiedades siguen siendo los que tabula AISC.";
+            }
+
             // The fidelity travels with the plan on purpose: a derived radius must be visible to whoever
             // measures the result, not buried in a log (owner decision 10).
             if (plan.Fidelity != SectionFidelity.TabulatedComplete)

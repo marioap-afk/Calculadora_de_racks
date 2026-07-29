@@ -13,7 +13,7 @@ namespace RackCad.Application.StructuralSections
     ///
     /// For W, C and L the two coincide. For rectangular HSS they do NOT: the EDI writes the wall thickness as
     /// a decimal (<c>HSS4X4X.250</c>) and the manual as a fraction (<c>HSS4X4X1/4</c>). The id follows the EDI
-    /// in all four families without exception, because a rule that changes its source per family stops being
+    /// in every family without exception, because a rule that changes its source per family stops being
     /// deterministic (ADR-0021 §6).
     /// </summary>
     public sealed class StructuralSectionIdentity

@@ -24,7 +24,19 @@ namespace RackCad.Application.StructuralSections
         Channel = 2,
 
         /// <summary>Single angles (AISC Type <c>L</c>). Double angles (<c>2L</c>) are deliberately NOT imported.</summary>
-        Angle = 3
+        Angle = 3,
+
+        /// <summary>
+        /// American Standard beams (AISC Type <c>S</c>), the profile the local market calls IPS.
+        ///
+        /// It is a family of its own and NOT a case of <see cref="W"/>, even though AISC tabulates both with
+        /// the same columns and the same properties. The reason is geometric and it is the whole point of
+        /// I-36D: an S has SLOPED inner flange faces and a W does not, so drawing one with the other's builder
+        /// would produce a parallel-flange contour claiming the highest fidelity of the system. The source
+        /// publishes no slope, so that slope is a declared RackCad convention (ADR-0023) and it needs a family
+        /// to hang from.
+        /// </summary>
+        S = 4
     }
 
     /// <summary>
@@ -38,6 +50,7 @@ namespace RackCad.Application.StructuralSections
         public const string HssRectangularToken = "HSS-RECT";
         public const string ChannelToken = "C";
         public const string AngleToken = "L";
+        public const string SToken = "S";
 
         /// <summary>Every family, in declaration order. Callers rely on this order being stable.</summary>
         public static readonly StructuralSectionFamily[] All =
@@ -45,7 +58,8 @@ namespace RackCad.Application.StructuralSections
             StructuralSectionFamily.W,
             StructuralSectionFamily.HssRectangular,
             StructuralSectionFamily.Channel,
-            StructuralSectionFamily.Angle
+            StructuralSectionFamily.Angle,
+            StructuralSectionFamily.S
         };
 
         public static string ToToken(StructuralSectionFamily family)
@@ -56,6 +70,7 @@ namespace RackCad.Application.StructuralSections
                 case StructuralSectionFamily.HssRectangular: return HssRectangularToken;
                 case StructuralSectionFamily.Channel: return ChannelToken;
                 case StructuralSectionFamily.Angle: return AngleToken;
+                case StructuralSectionFamily.S: return SToken;
                 default:
                     throw new ArgumentOutOfRangeException(
                         nameof(family), family, "Familia de seccion estructural desconocida.");
@@ -75,6 +90,7 @@ namespace RackCad.Application.StructuralSections
                 case HssRectangularToken: family = StructuralSectionFamily.HssRectangular; return true;
                 case ChannelToken: family = StructuralSectionFamily.Channel; return true;
                 case AngleToken: family = StructuralSectionFamily.Angle; return true;
+                case SToken: family = StructuralSectionFamily.S; return true;
                 default: family = default; return false;
             }
         }
@@ -85,7 +101,8 @@ namespace RackCad.Application.StructuralSections
             {
                 throw new ArgumentException(
                     "Familia de seccion estructural desconocida: '" + token + "'. Valores validos: " +
-                    WToken + ", " + HssRectangularToken + ", " + ChannelToken + ", " + AngleToken + ".",
+                    WToken + ", " + HssRectangularToken + ", " + ChannelToken + ", " + AngleToken + ", " +
+                    SToken + ".",
                     nameof(token));
             }
 

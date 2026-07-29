@@ -107,7 +107,12 @@ namespace RackCad.Application.Geometry
                 center, radius, startAngle, sweepAngle);
         }
 
-        /// <summary>A quarter-turn arc, which is every fillet and every rounded corner in these four families.</summary>
+        /// <summary>
+        /// A quarter-turn arc: the rounded corners of an HSS and the root fillets of W and C.
+        ///
+        /// NOT every fillet is one. The visual fillet of an S sweeps <c>atan(1/s)</c>, about 80.5 degrees,
+        /// because its two tangent lines are not perpendicular; that builder composes its arcs directly.
+        /// </summary>
         public static PathSegment2D QuarterArc(Point2D center, double radius, double startAngle, bool counterClockwise) =>
             Arc(center, radius, startAngle, counterClockwise ? Math.PI / 2.0 : -Math.PI / 2.0);
 

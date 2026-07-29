@@ -296,6 +296,36 @@ lo comprueban. `RACKSECCION` materializa ese plan como **bloque interno del dibu
 payload, sin GUID y sin round-trip. Detalle y limitaciones en
 [guias/geometria-secciones-estructurales.md](guias/geometria-secciones-estructurales.md).
 
+### 4.4.3 Autoridad visual derivada: los perfiles S (I-36D, en curso)
+
+I-36D introduce el primer caso en que **RackCad es autor de parte de una geometría**, gobernado por
+[ADR-0023](adr/0023-geometria-visual-derivada-perfiles-s.md) (`propuesto`). Lo obliga un hecho medido
+sobre la fuente: la AISC Shapes Database v16.0 **no publica la pendiente del patín ni ningún radio
+explícito**, ni para S ni para ninguna familia. `kdes`, `kdet`, `k1` y `T` son, literalmente en su
+Readme, **distancias al pie del filete**; `tan(α)` es el ángulo de ejes principales **de ángulos
+simples**. Una S dibujada sólo con datos tabulados es un perfil de patines paralelos, es decir
+**indistinguible de una W**: a diferencia del canal C —que pierde detalle pero sigue siendo un canal—,
+aquí la aproximación cambia de familia.
+
+Por eso §4.4.2 se extiende con **dos autoridades declaradas y separadas**. La **tabulada** es AISC y
+conserva identidad, dimensiones, `A`, peso, propiedades y centroide tabulado: se copian, nunca se
+derivan, y **el peso y las propiedades jamás se recalculan desde el contorno**. La **visual derivada**
+es RackCad y cubre, sólo, la pendiente `1:6`, la interpretación de `tf` como espesor medio del vuelo
+libre **dentro de la representación**, el radio visual del filete, la punta aguda y las advertencias.
+La convención es constante para las 28 filas: no hay ajuste por designación ni ajuste para igualar
+`A`, y el área geométrica queda como **diagnóstico**.
+
+La autoridad viaja en un eje **ortogonal** a la fidelidad, no como un valor más de ella:
+`SectionFidelity` sigue diciendo **cuánto** detalle se obtuvo (`Simplified`, `TabulatedComplete`,
+`TabulatedDerived`, `DegradedToSimplified`) y la autoridad dice **de quién es** —`TabulatedConstrained`
+para W, HSS, C y L; `VisualDerived` para S en los dos niveles de detalle—. Son dos preguntas y
+necesitan dos respuestas.
+
+Nada de esto abre una segunda tubería: la familia S usa el **mismo** plan neutral
+(`StructuralSectionRepresentationPlan`), la misma instancia prismática, las mismas vistas, el mismo
+inspector y el mismo `StructuralSectionCommandFlow`. La regla del radio **degenera exactamente** en la
+de §4.4.2 cuando la pendiente es cero, así que el modelo geométrico no se bifurca.
+
 ### 4.5 Layout de almacén
 
 `WarehouseGridPlanner`, `WarehouseFitChecker` y `WarehouseAutoFill` viven en Application. Los

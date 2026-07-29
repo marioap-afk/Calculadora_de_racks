@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace RackCad.Tests
 {
     /// <summary>
-    /// La geometria de las 983 secciones REALMENTE distribuidas.
+    /// La geometria de las 1 011 secciones REALMENTE distribuidas.
     ///
     /// Es la unica suite de I-36B que depende de ids AISC reales, igual que en I-36A: todo lo demas usa
     /// fixtures sinteticos para que una revision futura de la fuente no tumbe la base de pruebas entera.
@@ -29,7 +29,7 @@ namespace RackCad.Tests
         private static StructuralSectionGeometryFactory Factory() =>
             new StructuralSectionGeometryFactory(Catalog());
 
-        // ---- Las 983, en los dos niveles de detalle -----------------------------------------------------
+        // ---- Las 1 011, en los dos niveles de detalle ---------------------------------------------------
 
         [Theory]
         [InlineData(SectionDetailLevel.Simplified)]
@@ -105,13 +105,13 @@ namespace RackCad.Tests
         [Fact]
         public void TheWholeCatalogIsCovered()
         {
-            Assert.Equal(983, Catalog().Count);
+            Assert.Equal(1011, Catalog().Count);
         }
 
         [Fact]
         public void ContoursAreContinuousAndClosed()
         {
-            // ClosedContour2D ya lo exige al construir; esto lo comprueba sobre las 983 reales, que es donde
+            // ClosedContour2D ya lo exige al construir; esto lo comprueba sobre las 1 011 reales, que es donde
             // una regla de familia mal encadenada aparecería.
             var factory = Factory();
 
@@ -320,9 +320,11 @@ namespace RackCad.Tests
                 _output.WriteLine(entry.Key + ": " + entry.Value);
             }
 
-            // W alcanza fidelidad completa; C, L y HSS declaran derivada; nada degrada sobre AISC v16.0.
+            // W alcanza fidelidad completa; C, L, HSS y S declaran derivada; nada degrada sobre AISC v16.0.
+            // Las 28 S entran en TabulatedDerived (694 + 28 = 722): su contorno lleva ademas una AUTORIDAD
+            // distinta, que se comprueba aparte porque es un eje ortogonal a la fidelidad (ADR-0023).
             Assert.Equal(289, counts[SectionFidelity.TabulatedComplete]);
-            Assert.Equal(694, counts[SectionFidelity.TabulatedDerived]);
+            Assert.Equal(722, counts[SectionFidelity.TabulatedDerived]);
             Assert.False(counts.ContainsKey(SectionFidelity.DegradedToSimplified));
         }
 

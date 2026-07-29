@@ -1,6 +1,30 @@
 # ROADMAP — plan de ejecución por fases e iniciativas
 
-> Actualizado: 2026-07-28 (**I-36C integrada en `main`**: **acceso desde el menú principal al generador
+> Actualizado: 2026-07-28 (**I-36D integrada en `main`**: **perfiles AISC S/IPS y geometría visual
+> derivada**, la cuarta iniciativa de la Fase 6 y la que I-36B dejó escrita como **requisito futuro
+> obligatorio**. Incorpora las **28 filas** `Type = S` que I-36A excluyó —contadas y declaradas, nunca
+> perdidas— como **familia propia** con token `S` e id `AISC-S-S10X25_4`, `SSectionDimensions` como
+> **tipo propio**, `structural-sections-s.csv` generado y catálogo total **1 011**; los cuatro CSV
+> anteriores quedan **byte-idénticos** y `secciones.csv` intacto. Lo que la obliga está **medido contra
+> el libro**: la AISC Shapes Database v16.0 **no publica la pendiente del patín ni ningún radio
+> explícito**, y una S sin pendiente se lee como una **W** —pierde la familia, no el detalle, a
+> diferencia del caso ya aceptado de los canales C—. Por eso separa la **autoridad tabulada** (AISC:
+> identidad, dimensiones, `A`, peso, propiedades y centroide) de la **autoridad visual derivada**
+> (RackCad: pendiente `1:6`, `tf` como espesor medio del vuelo libre, radio visual del filete y punta
+> aguda), en un eje **ortogonal** a `SectionFidelity`, que no cambia. La regla **degenera exactamente**
+> en la de ADR-0022 cuando la pendiente es cero, así que no bifurca el modelo geométrico, y el residuo
+> de área (+0,25 % a +2,59 %) queda **diagnóstico**, jamás corregido. La **advertencia** —visual
+> derivada, aproximada, no garantizada por fabricante, **no apta para CNC ni fabricación**— vive en el
+> tipo, que se niega a construir una geometría sin ella. El Owner **aprobó la validación manual en
+> AutoCAD 2025 sin observaciones** y **ADR-0023 pasó a `aceptado`**. **No toca** W, HSS, C, L,
+> `secciones.csv`, `blocks.csv`, `blocks-library.dwg`, `deploy/` ni `.github/`. Siguiente habilitada:
+> **I-37 — Cantilever MVP**, que **no** se abrió en esta sesión.)
+>
+> Anterior: 2026-07-28 (**registro autorizado de I-36D**. **No era una integración**: la fila nació
+> `en curso` desde la rama `feature/perfiles-aisc-s`, con autorización expresa del Owner igual que al
+> abrir I-36A; sin ella WORKFLOW §8 lo prohibiría. **I-37 pasó a depender de I-36D.**)
+>
+> Anterior: 2026-07-28 (**I-36C integrada en `main`**: **acceso desde el menú principal al generador
 > de perfiles estructurales**. Es un **fix de descubribilidad, no de funcionalidad**: el catálogo (I-36A)
 > y el generador paramétrico (I-36B) **ya estaban implementados**, pero la única forma de invocarlos era
 > escribir `RACKSECCION`, y el menú `RACKCAD` —por donde entra un usuario— no los mencionaba. Añade **un
@@ -13,7 +37,8 @@
 > observaciones**. **No toca geometría, catálogos ni sistemas vigentes.** Los trece pendientes de
 > perfiles estructurales —IPS/S, geometría visual mejorada, I-37, miembros, cálculo, sólidos 3D,
 > round-trip, familias adicionales— siguen registrados **sin rama abierta**. Siguiente habilitada:
-> **I-37 — Cantilever MVP**.)
+> **I-37 — Cantilever MVP**. *(Superado por el registro de I-36D: los pendientes 1-6 —IPS/S y geometría
+> visual— dejaron de estar sin rama, e I-37 pasa a depender de I-36D.)*)
 >
 > Anterior: 2026-07-28 (**I-36B integrada en `main`**: **geometría y representación prismática de
 > secciones estructurales**, la segunda iniciativa de la Fase 6. Convierte las **983** secciones de
@@ -29,7 +54,8 @@
 > `assets/catalogs`, `blocks.csv`, `blocks-library.dwg`, Domain, `deploy/` y `.github/` sin una línea, y
 > en UI y Plugin todo lo aportado son archivos nuevos. Queda registrado un **requisito futuro
 > obligatorio**: perfiles **IPS/S** y **geometría visual mejorada** de perfiles laminados, en iniciativa
-> separada y aún sin abrir. Siguiente habilitada: **I-37 — Cantilever MVP**.)
+> separada y aún sin abrir. Siguiente habilitada: **I-37 — Cantilever MVP**. *(Esa iniciativa separada
+> es **I-36D**, registrada y reclamada el 2026-07-28; I-37 pasa a depender de ella.)*)
 >
 > Anterior: 2026-07-28 (**I-36A integrada en `main`**: núcleo y catálogo neutral de secciones
 > estructurales, la primera iniciativa de la Fase 6. Importa **983** secciones de la AISC Shapes
@@ -211,7 +237,7 @@
 | 3 | Componentes reutilizables | UI y Plugin componibles (controles, shell, draw service genérico) | Un editor nuevo cuesta ~300 líneas; rejilla de seguridad única |
 | 4 | Primer sistema nuevo | Push Back sobre la arquitectura nueva + guía validada | Push Back completo sin editar código de otros sistemas |
 | 5 | Migración progresiva — **CERRADA (2026-07-27)** | Los sistemas existentes adoptan la arquitectura, uno a uno | CUMPLIDO: editores migrados al shell (I-30/I-31); **namespaces finales por sistema en los cuatro proyectos (I-23)**; lista de archivos calientes reducida. Queda I-25 en backlog diferido |
-| 6 | Secciones estructurales y nuevos sistemas | Una autoridad neutral de **sección transversal** (independiente del rol de miembro) sobre la que nazcan los sistemas de perfil estándar, empezando por Cantilever | Catálogo neutral completo y verificable (I-36A) → geometría prismática derivada (I-36B) → Cantilever dibujando y con BOM (I-37) → su ingeniería estructural (I-38) |
+| 6 | Secciones estructurales y nuevos sistemas | Una autoridad neutral de **sección transversal** (independiente del rol de miembro) sobre la que nazcan los sistemas de perfil estándar, empezando por Cantilever | Catálogo neutral completo y verificable (I-36A) → geometría prismática derivada (I-36B) → acceso desde el menú (I-36C) → perfiles S/IPS y geometría visual derivada (I-36D) → Cantilever dibujando y con BOM (I-37) → su ingeniería estructural (I-38) |
 
 Las fases se traslapan donde las dependencias lo permiten: la pista de UI (I-14→I-15) puede correr
 en paralelo con la Fase 2 de Application porque tocan capas distintas.
@@ -306,7 +332,8 @@ opción A** (evidencia en `adr/0002-paso0-evidencia.md`), cero ramas zombie.
 | I-36A | `architecture/catalogo-secciones-estructurales` | **Núcleo y catálogo de secciones estructurales.** Funda `StructuralSection` como autoridad neutral de la sección transversal —**sin rol de miembro**, independiente de `RackCatalog` y de `CatalogEntryBase`— en `RackCad.Application.StructuralSections`. Importa **completas** cuatro familias de la **AISC Shapes Database v16.0**: W, HSS rectangular y cuadrado, canales C y ángulos L. Entrega: identidad y normalización determinista de designación EDI; fuente y revisión versionadas por separado del id; siete archivos bajo `assets/catalogs/` (cuatro CSV de familia **generados**, fuentes, overlay `IsEnabled` y manifiesto con conteos y SHA-256); un **importador reproducible** fuera del producto (`tools/`, .NET 8, BCL puro, cero NuGet, cero Office Interop, salida byte-idéntica entre ejecuciones, sin descarte silencioso); un **lector CSV estricto dedicado** (la tolerancia histórica de `CsvCatalogReader` queda intacta); catálogo con búsqueda por id, EDI y familia; validador propio con las severidades de I-19; unidades con peso nativo en `lb/ft`, equivalencia `kg/m` calculada y formateador dual puro; y peso por longitud. ADRs [0020](adr/0020-catalogo-neutral-de-secciones-estructurales.md) y [0021](adr/0021-identidad-unidades-y-presentacion-de-secciones.md). **Fuera de alcance:** geometría, AutoCAD, WPF, Cantilever, migración de `secciones.csv`, miembros, BOM de sistemas, cálculo resistente y `blocks-library.dwg` | M | I-19, I-26, I-23 (integradas) | I-36B | **integrada (2026-07-28)** |
 | I-36B | `architecture/geometria-secciones-estructurales` | **Geometría y representación prismática.** Deriva de los datos que I-36A conserva —sin inventar valores que la fuente no publique— el **contorno detallado** de cada familia, con sus **radios y filetes**, el **centroide** como origen documentado, las **vistas transversales y longitudinales**, la **longitud arbitraria** del prisma, su **orientación**, su **proyección** y las **definiciones AutoCAD internas derivadas**. Entregado: primitivas 2D/3D **aditivas**, constructores por familia en dos niveles de detalle con **fidelidad declarada** y diagnósticos, **instancia prismática** —la longitud no está en la sección—, cuatro vistas más una personalizada con teselado determinista, un **plan neutral único** que consumen igual el preview WPF y AutoCAD (no hay dos generadores), caché perezosa, inspector mínimo y el comando **`RACKSECCION`**, que materializa **bloques internos del dibujo** sin `blocks-library.dwg` ni filas en `blocks.csv`. **No se inventa ningún radio que la fuente no publique**: 289 `TabulatedComplete`, 694 `TabulatedDerived`, **cero** degradadas. Error de área **medido y documentado** por familia. [ADR-0022](adr/0022-geometria-parametrica-de-secciones-estructurales.md) **aceptado**. Los canales C quedan `TabulatedDerived` con su diferencia visual frente a un perfil comercial **conocida y aceptada**; la mejora visual y los perfiles **IPS/S** quedan como **requisito futuro obligatorio** en iniciativa separada | M-L | I-36A | I-37 | **integrada (2026-07-28)** |
 | I-36C | `fix/acceso-menu-secciones-estructurales` | **Acceso desde el menú al generador de perfiles estructurales.** Fix pequeño de **descubribilidad**: el catálogo (I-36A) y el generador paramétrico (I-36B) ya estaban implementados y validados, pero solo se llegaba a ellos escribiendo `RACKSECCION`. Añade el botón **«Generar perfil estructural»** al menú `RACKCAD` —entre «Diseñar larguero» y «Abrir de la biblioteca de diseños», con el estilo `MenuButton` vigente—, una **acción tipada** `MainMenuAction.GenerateStructuralSection` que el Plugin lee tras cerrar el modal, y una **autoridad compartida** `StructuralSectionCommandFlow` que consumen igual el botón y el comando. La acción **no** es un `RackInsertionRequest` a propósito: una sección no es un rack —sin `RackSystemKind`, sin payload y sin round-trip—. **Cero duplicación del generador**, **cero cambios geométricos**, **cero cambios en catálogos y sistemas** | S | I-36A, I-36B, I-15 | I-37 | **integrada (2026-07-28)** |
-| I-37 | (por definir) ✋ | **Cantilever MVP**: primer sistema sobre secciones estructurales estándar. Descriptor, documento versionado, resolver, builders por vista, BOM y editor sobre el shell, componiendo lo compartido. Aquí es donde nacen los **configuradores de miembro** (columna, brazo, base) que aportan lo que la sección no tiene: troqueles, conectores, ménsulas, perforaciones, soldaduras, placas terminales y reglas de fabricación | L (partir al diseñarla) | I-36B | — | pendiente |
+| I-36D | `feature/perfiles-aisc-s` ✋ | **Perfiles AISC S/IPS y geometría visual derivada.** La iniciativa separada que I-36B dejó escrita como **requisito futuro obligatorio**. Incorpora las **28 filas** `Type = S` que I-36A excluyó —contadas y declaradas, no perdidas— como **familia propia**: token estable `S`, id `AISC-S-S10X25_4` (el punto normaliza a `_`, ADR-0021), `SSectionDimensions` como **tipo propio** (no alias de W), `structural-sections-s.csv`, manifiesto a `totalCount = 1011` y los cuatro CSV anteriores **byte-idénticos**. El hecho que la gobierna está **medido contra el libro**, no citado: la AISC Shapes Database v16.0 **no publica pendiente de patín ni radio explícito alguno** —el único encabezado con `tan` es `tan(α)`, de ángulos simples y vacío en S; `kdes`, `kdet`, `k1` y `T` son **distancias al pie del filete** y el Readme nunca las llama radios—. Como una S sin pendiente se lee como una **W** (pierde la familia, no el detalle, a diferencia del caso ya aceptado de los canales C), separa la **autoridad tabulada** —AISC conserva dimensiones, `A`, peso, propiedades y centroide— de la **autoridad visual derivada** —RackCad declara como propias la pendiente `1:6`, `tf` como espesor medio del vuelo libre, el radio visual del filete y la punta aguda—, en un eje **ortogonal** a `SectionFidelity` (`TabulatedConstrained` / `VisualDerived`), con **advertencia obligatoria** de geometría aproximada no apta para CNC ni fabricación. La regla **degenera exactamente** en la de [ADR-0022](adr/0022-geometria-parametrica-de-secciones-estructurales.md) cuando la pendiente es cero. [ADR-0023](adr/0023-geometria-visual-derivada-perfiles-s.md) nace **`propuesto`**. **Fuera de alcance**: I-37 y cualquier miembro, cálculo resistente, materiales, sólidos 3D, persistencia y round-trip, la mejora visual de W/C/L/HSS, `bf/2tf` y `h/tw`, `secciones.csv`, catálogos de sistemas, `blocks.csv`, `blocks-library.dwg`, geometría de fabricante, CNC y descarga en runtime | M | I-36A, I-36B, I-36C (integradas) | I-37 | **integrada (2026-07-28)** |
+| I-37 | (por definir) ✋ | **Cantilever MVP**: primer sistema sobre secciones estructurales estándar. Descriptor, documento versionado, resolver, builders por vista, BOM y editor sobre el shell, componiendo lo compartido. Aquí es donde nacen los **configuradores de miembro** (columna, brazo, base) que aportan lo que la sección no tiene: troqueles, conectores, ménsulas, perforaciones, soldaduras, placas terminales y reglas de fabricación | L (partir al diseñarla) | I-36D | — | pendiente |
 | I-38 | (por definir) | **Ingeniería estructural de Cantilever**: verificación y dimensionado. No reabre [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md) sin un ADR nuevo que lo reemplace | L (partir al diseñarla) | I-37 | — | pendiente |
 
 Backlog no planificado (sigue en ideas-futuras.md): cotizador, pesos, anclas, tabla-resumen en el
@@ -382,7 +409,9 @@ graph LR
   I26[I-26 test-catalog-ids] --> I36A
   I23 --> I36A
   I36A --> I36B[I-36B geometria-secciones-estructurales]
-  I36B --> I37[I-37 Cantilever MVP]
+  I36B --> I36C[I-36C acceso-menu-secciones-estructurales]
+  I36C --> I36D[I-36D perfiles-aisc-s]
+  I36D --> I37[I-37 Cantilever MVP]
   I37 --> I38[I-38 ingenieria estructural de Cantilever]
 ```
 
@@ -405,7 +434,8 @@ Fase 4:        I-18 (Push Back; su prerequisito de bloques DWG arranca ANTES, en
                (si ADR-0002=B: I-28 sustituye/precede a I-18 como primer gran módulo)
 Fase 5:        I-20 → I-22 → I-25; I-21; I-24; I-23 AL FINAL (depende de todas)
                Shell visual: I-30 → I-31 → reanudación de I-18 (secuencia obligatoria, serializada)
-Fase 6:        I-36A → I-36B → I-37 → I-38 (cadena estricta: cada una necesita la anterior integrada)
+Fase 6:        I-36A → I-36B → I-36C → I-36D → I-37 → I-38
+               (cadena estricta: cada una necesita la anterior integrada; I-36D en curso)
 ```
 
 Reglas de asignación: cada pista toca UNA capa (I-10 es Plugin y corre en la pista B, al final);

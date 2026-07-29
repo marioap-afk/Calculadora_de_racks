@@ -569,7 +569,20 @@ chaflanes ni conicidades dentro de I-36B. Lo que sigue es lo que una iniciativa 
 
 ### Estado
 
-**No se ha abierto** rama, contrato ni worktree para ella, y no debe abrirse sin instrucción del Owner.
+**RECLAMADA como I-36D el 2026-07-28**, por instrucción directa del Owner: rama
+`feature/perfiles-aisc-s`, [contrato](initiatives/I-36D-perfiles-aisc-s.md),
+[ADR-0023](adr/0023-geometria-visual-derivada-perfiles-s.md) (`propuesto`),
+[decisiones](automation/decisions/I-36D.md), [evidencia](automation/evidence/I-36D-auditoria-aisc-s.md)
+y [estado](automation/state/I-36D.yml). **Deja de ser un pendiente sin rama.**
+
+Lo que la auditoría de I-36D añadió a este registro, medido contra el libro y no supuesto: la fuente
+**no publica** la pendiente del patín ni ningún radio explícito, así que el punto 5 («radios,
+chaflanes y transiciones comerciales, sólo cuando exista una regla acreditada») **sigue sin regla
+acreditada** y I-36D **no lo resuelve**: lo que hace es declarar la pendiente como **convención visual
+de RackCad**, separada de la geometría tabulada, que es exactamente lo que los puntos 6, 7 y 8 exigían.
+Los puntos 3, 4 y 5 **sólo se cubren para S**; la mejora visual de **C y de los demás laminados sigue
+pendiente y sin rama**.
+
 Registrado también en [ADR-0022](adr/0022-geometria-parametrica-de-secciones-estructurales.md), en la
 [decisión versionada de I-36B](automation/decisions/I-36B.md), en su
 [evidencia](automation/evidence/I-36B-geometria-secciones-estructurales.md), en su
@@ -591,12 +604,12 @@ la sección anterior de este documento). El resto es alcance planificado o difer
 
 | # | Pendiente | Estado |
 |---|---|---|
-| 1 | **Perfiles IPS/S** | requisito futuro obligatorio |
-| 2 | **Verificación de correspondencia** de IPS con la familia AISC `S` o con el catálogo comercial de la empresa | requisito futuro obligatorio |
-| 3 | **Geometría visual mejorada** para perfiles laminados | requisito futuro obligatorio |
-| 4 | **Conicidad de patines** | requisito futuro obligatorio |
-| 5 | **Radios, chaflanes y transiciones comerciales**, sólo cuando exista una **regla acreditada** | requisito futuro obligatorio |
-| 6 | **Separación** entre geometría **tabulada** y geometría **visual aproximada**, declarando cuándo la visual lo es | requisito futuro obligatorio |
+| 1 | **Perfiles IPS/S** | **reclamado por I-36D** (2026-07-28) |
+| 2 | **Verificación de correspondencia** de IPS con la familia AISC `S` o con el catálogo comercial de la empresa | **resuelto por decisión de I-36D**: `IPS = AISC S`, escrito y vinculante |
+| 3 | **Geometría visual mejorada** para perfiles laminados | **parcial en I-36D: sólo S.** C y los demás laminados siguen pendientes y sin rama |
+| 4 | **Conicidad de patines** | **parcial en I-36D: sólo S**, y como **convención visual de RackCad**, no como dato de fuente |
+| 5 | **Radios, chaflanes y transiciones comerciales**, sólo cuando exista una **regla acreditada** | **sigue pendiente**: la auditoría de I-36D confirmó que AISC v16.0 **no publica ningún radio**; I-36D deriva un filete **visual** y **no** modela punta ni transiciones |
+| 6 | **Separación** entre geometría **tabulada** y geometría **visual aproximada**, declarando cuándo la visual lo es | **cubierto por I-36D / ADR-0023**: eje de autoridad `TabulatedConstrained` frente a `VisualDerived`, ortogonal a la fidelidad |
 | 7 | **Cantilever I-37** | planificado en ROADMAP Fase 6 |
 | 8 | **Miembros estructurales** (`StructuralMember`, configuradores de columna, brazo y base) | nace con I-37 |
 | 9 | **Materiales, conexiones y fabricación** (troqueles, ménsulas, perforaciones, soldaduras, placas) | nace con I-37 |

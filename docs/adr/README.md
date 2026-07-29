@@ -62,6 +62,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0020](0020-catalogo-neutral-de-secciones-estructurales.md) | Catálogo neutral de secciones estructurales | aceptado |
 | [0021](0021-identidad-unidades-y-presentacion-de-secciones.md) | Identidad, unidades y presentación de secciones estructurales | aceptado |
 | [0022](0022-geometria-parametrica-de-secciones-estructurales.md) | Geometría paramétrica y representación prismática de secciones estructurales | aceptado |
+| [0023](0023-geometria-visual-derivada-perfiles-s.md) | Geometría visual derivada para los perfiles S (IPS) | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -107,3 +108,21 @@ aceptó sin bloquear, con la condición expresa de **no inventar** esas dimensio
 visual de perfiles laminados junto con los perfiles IPS/S** queda **diferida como requisito futuro
 obligatorio** a una iniciativa separada, que deberá mantener apartada la geometría visual de la
 tabulada y **no alterar** esta última.
+
+Iniciativa I-36D (`feature/perfiles-aisc-s`): **ADR-0023 quedó `aceptado` el 2026-07-28** y es esa iniciativa
+separada. **No reemplaza** a ADR-0020, ADR-0021 ni ADR-0022: los **extiende** para el caso que
+ADR-0022 difirió por nombre. Introduce la primera geometría de RackCad que **no** es trazable punto a
+punto a un dato publicado, y por eso separa dos autoridades: la **tabulada** (AISC conserva identidad,
+dimensiones, `A`, peso, propiedades y centroide tabulado) y la **visual derivada** (RackCad declara
+como propias la pendiente `1:6`, la interpretación de `tf` como espesor medio del vuelo libre, el
+radio visual del filete, la terminación de punta y las advertencias). El motivo está medido, no
+supuesto: la AISC Shapes Database v16.0 **no publica pendiente de patín ni ningún radio explícito**, y
+una S sin pendiente se lee como una **W** —una pérdida de familia, no de detalle, que es lo que la
+distingue del caso ya aceptado de los canales C—. La regla **degenera exactamente** en la de ADR-0022
+cuando la pendiente es cero, así que no bifurca el modelo geométrico. La autoridad viaja en un eje
+**ortogonal** a `SectionFidelity` (`TabulatedConstrained` frente a `VisualDerived`), que no cambia.
+Como en I-36B, **solo el dueño podía aceptarla y solo después de ver el dibujo real**: ejecutó la
+validación manual en AutoCAD 2025 y **ADR-0023 quedó `aceptado` el 2026-07-28**, con los nueve puntos
+de su sección de aceptación y sin observaciones. La aceptación **no amplía** el alcance: no autoriza
+extender la convención a otras familias, ni radio de punta, ni sólidos 3D, ni que I-37 defina geometría
+de S por su cuenta.

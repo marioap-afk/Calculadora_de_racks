@@ -6,8 +6,12 @@ using RackCad.Application.Geometry;
 namespace RackCad.Application.StructuralSections.Geometry
 {
     /// <summary>
-    /// The rules the four family builders share: how a required dimension is demanded, how a root fillet is
+    /// The rules the family builders share: how a required dimension is demanded, how a root fillet is
     /// derived, and how a degradation is reported.
+    ///
+    /// The fillet derivation here is the TABULATED one, <c>r = kdes - t</c>, and it belongs to the families
+    /// whose authority is tabulated-constrained. S does not use it: its fillet is a declared convention and
+    /// lives in its own builder (ADR-0023).
     ///
     /// It exists so the derivation of <c>r = kdes − t</c> lives in ONE place. Three builders need it, and
     /// three copies of a documented derivation is how a documented derivation stops being one.

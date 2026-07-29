@@ -180,8 +180,10 @@ namespace RackCad.Application.StructuralSections.Geometry
             SectionFidelity fidelity,
             double chordTolerance,
             IReadOnlyList<SectionPlanCurve> curves,
-            IReadOnlyList<SectionGeometryDiagnostic> diagnostics)
+            IReadOnlyList<SectionGeometryDiagnostic> diagnostics,
+            SectionGeometryAuthority authority = SectionGeometryAuthority.TabulatedConstrained)
         {
+            Authority = authority;
             SectionId = sectionId;
             Family = family;
             Length = length;
@@ -217,6 +219,16 @@ namespace RackCad.Application.StructuralSections.Geometry
         /// <summary>The fidelity the underlying section geometry achieved. Travels with the plan on purpose.</summary>
         public SectionFidelity Fidelity { get; }
 
+        /// <summary>
+        /// Whose geometry this plan draws (ADR-0023). Travels with the plan for the same reason the fidelity
+        /// does: the consumer that renders it is the one that has to warn about it, and it must not have to
+        /// look at the family to find out.
+        /// </summary>
+        public SectionGeometryAuthority Authority { get; }
+
+        /// <summary>True when the plan carries a declared RackCad convention and needs a visible warning.</summary>
+        public bool IsVisualDerived => Authority == SectionGeometryAuthority.VisualDerived;
+
         /// <summary>Chord tolerance used to flatten arcs, in inches.</summary>
         public double ChordTolerance { get; }
 
@@ -243,7 +255,7 @@ namespace RackCad.Application.StructuralSections.Geometry
             builder.Append(SectionId.Value).Append('|').Append(Family).Append('|')
                 .Append(Length.ToString("0.######", CultureInfo.InvariantCulture)).Append('|')
                 .Append(View).Append('|').Append(Mode).Append('|')
-                .Append(RequestedDetail).Append('|').Append(Fidelity).Append('|')
+                .Append(RequestedDetail).Append('|').Append(Fidelity).Append('|').Append(Authority).Append('|')
                 .Append(ChordTolerance.ToString("0.########", CultureInfo.InvariantCulture));
 
             foreach (var curve in Curves)

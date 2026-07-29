@@ -7,14 +7,15 @@
   "sourceFileName": "aisc-shapes-database-v16.0.xlsx",
   "sourceSha256": "82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496",
   "sourceWorksheet": "Database v16.0",
-  "mapperVersion": "I-36A.2",
+  "mapperVersion": "I-36D.1",
   "countsByFamily": {
     "C": 32,
     "HSS-RECT": 525,
     "L": 137,
+    "S": 28,
     "W": 289
   },
-  "totalCount": 983,
+  "totalCount": 1011,
   "rejectedSelectedRows": 0,
   "excludedTypeCounts": {
     "2L": 639,
@@ -24,7 +25,6 @@
     "MC": 40,
     "MT": 14,
     "PIPE": 51,
-    "S": 28,
     "ST": 28,
     "WT": 289
   },
@@ -44,6 +44,10 @@
     {
       "name": "structural-sections-l.csv",
       "sha256": "6B5077003388735502FEBAC99281266B37C3688FAEEA2D2AB1BDB399E44BF2FC"
+    },
+    {
+      "name": "structural-sections-s.csv",
+      "sha256": "C081CD93F95A1BBD5F701C6975D18803AA6CC2E798D94B5038544383E8CF3707"
     },
     {
       "name": "structural-sections-w.csv",

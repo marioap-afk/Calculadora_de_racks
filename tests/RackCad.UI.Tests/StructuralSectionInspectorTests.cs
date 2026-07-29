@@ -27,9 +27,149 @@ namespace RackCad.UI.Tests
         {
             var state = State();
 
-            Assert.Equal(983, state.Catalog.Count);
+            Assert.Equal(1011, state.Catalog.Count);
             Assert.True(state.HasSelection);
-            Assert.Equal(983, state.Matches().Count);
+            Assert.Equal(1011, state.Matches().Count);
+        }
+
+        /// <summary>
+        /// The exact wording the tabulated-constrained families showed before I-36D. Pinned as a literal on
+        /// purpose: this suite exists to prove the S branch did NOT disturb it.
+        /// </summary>
+        private const string TabulatedDerivedFromSource =
+            "Tabulada derivada: los radios se derivan de la fuente, que no publica todo el " +
+            "detalle de la forma real.";
+
+        /// <summary>
+        /// I-36D residual: an S is `TabulatedDerived` AND `VisualDerived`, and the fidelity line must not
+        /// claim its radii come from AISC. The source publishes no slope and no radius at all.
+        /// </summary>
+        [Fact]
+        public void TheFidelityLineOfAnSDoesNotAttributeTheConventionToTheSource()
+        {
+            var state = State();
+            state.Family = StructuralSectionFamily.S;
+            state.EnsureSelectionIsVisible();
+            state.Detail = SectionDetailLevel.Tabulated;
+
+            Assert.True(state.IsVisualDerived);
+
+            var text = state.FidelitySummary();
+
+            // Says whose it is.
+            Assert.Contains("convencion de RackCad", text, StringComparison.Ordinal);
+            Assert.Contains("ADR-0023", text, StringComparison.Ordinal);
+            Assert.Contains("AISC", text, StringComparison.Ordinal);
+            Assert.Contains("no", text, StringComparison.Ordinal);
+
+            // And does NOT reuse the sentence that attributes the detail to the source.
+            Assert.DoesNotContain(TabulatedDerivedFromSource, text, StringComparison.Ordinal);
+            Assert.DoesNotContain("los radios se derivan de la fuente", text, StringComparison.Ordinal);
+        }
+
+        /// <summary>The simplified level keeps the taper, so it must keep saying whose the taper is.</summary>
+        [Fact]
+        public void TheSimplifiedFidelityLineOfAnSStillDeclaresTheConvention()
+        {
+            var state = State();
+            state.Family = StructuralSectionFamily.S;
+            state.EnsureSelectionIsVisible();
+            state.Detail = SectionDetailLevel.Simplified;
+
+            var text = state.FidelitySummary();
+
+            Assert.Contains("convencion de RackCad", text, StringComparison.Ordinal);
+            Assert.DoesNotContain("los radios se derivan de la fuente", text, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// The tabulated-constrained families that share the `TabulatedDerived` fidelity keep their message
+        /// BYTE FOR BYTE. This is the regression the S branch could plausibly have caused.
+        /// </summary>
+        [Theory]
+        [InlineData(StructuralSectionFamily.Channel)]
+        [InlineData(StructuralSectionFamily.Angle)]
+        [InlineData(StructuralSectionFamily.HssRectangular)]
+        public void TheTabulatedDerivedMessageOfTheOtherFamiliesIsPreservedVerbatim(
+            StructuralSectionFamily family)
+        {
+            var state = State();
+            state.Family = family;
+            state.EnsureSelectionIsVisible();
+            state.Detail = SectionDetailLevel.Tabulated;
+
+            Assert.False(state.IsVisualDerived, family.ToString());
+            Assert.Equal(TabulatedDerivedFromSource, state.FidelitySummary());
+        }
+
+        /// <summary>W reaches the complete fidelity and its wording is untouched too.</summary>
+        [Fact]
+        public void TheCompleteFidelityMessageOfWIsPreservedVerbatim()
+        {
+            var state = State();
+            state.Family = StructuralSectionFamily.W;
+            state.EnsureSelectionIsVisible();
+            state.Detail = SectionDetailLevel.Tabulated;
+
+            Assert.Equal(
+                "Tabulada completa: incluye todo el detalle que la fuente permite derivar.",
+                state.FidelitySummary());
+        }
+
+        /// <summary>
+        /// I-36D: the family filter offers S under its market name, and the authority warning appears for it
+        /// and ONLY for it. The warning is not a setting — there is no switch here to turn it off.
+        /// </summary>
+        [Fact]
+        public void TheSFamilyIsOfferedAndCarriesTheVisualDerivedWarning()
+        {
+            var state = State();
+            state.Family = StructuralSectionFamily.S;
+            state.EnsureSelectionIsVisible();
+
+            Assert.Equal(28, state.Matches().Count);
+            Assert.True(state.IsVisualDerived);
+
+            var warning = state.AuthoritySummary();
+            Assert.Contains("VISUAL DERIVADA", warning, StringComparison.Ordinal);
+            Assert.Contains("CNC", warning, StringComparison.Ordinal);
+            Assert.Contains("AISC", warning, StringComparison.Ordinal);
+
+            Assert.Contains("S / IPS", StructuralSectionInspectorWindow.FamilyLabel(StructuralSectionFamily.S),
+                StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheWarningIsAbsentForEveryTabulatedConstrainedFamily()
+        {
+            foreach (var family in new[]
+                     {
+                         StructuralSectionFamily.W, StructuralSectionFamily.HssRectangular,
+                         StructuralSectionFamily.Channel, StructuralSectionFamily.Angle
+                     })
+            {
+                var state = State();
+                state.Family = family;
+                state.EnsureSelectionIsVisible();
+
+                Assert.False(state.IsVisualDerived, family.ToString());
+                Assert.Equal(string.Empty, state.AuthoritySummary());
+            }
+        }
+
+        /// <summary>The plan the preview draws is the SAME artefact, carrying the authority with it.</summary>
+        [Fact]
+        public void ThePlanTheInspectorBuildsCarriesTheAuthority()
+        {
+            var state = State();
+            state.Family = StructuralSectionFamily.S;
+            state.EnsureSelectionIsVisible();
+
+            var plan = state.BuildPlan();
+
+            Assert.NotNull(plan);
+            Assert.Equal(SectionGeometryAuthority.VisualDerived, plan.Authority);
+            Assert.True(plan.IsVisualDerived);
         }
 
         [Theory]
@@ -37,6 +177,7 @@ namespace RackCad.UI.Tests
         [InlineData(StructuralSectionFamily.HssRectangular, 525)]
         [InlineData(StructuralSectionFamily.Channel, 32)]
         [InlineData(StructuralSectionFamily.Angle, 137)]
+        [InlineData(StructuralSectionFamily.S, 28)]
         public void FilteringByFamilyNarrowsTheList(StructuralSectionFamily family, int expected)
         {
             var state = State();

@@ -113,7 +113,8 @@ namespace RackCad.Application.StructuralSections.Geometry
                 geometry.Fidelity,
                 options.ChordTolerance,
                 curves,
-                geometry.Diagnostics);
+                geometry.Diagnostics,
+                geometry.Authority);
         }
 
         /// <summary>

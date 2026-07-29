@@ -1,6 +1,6 @@
 # Geometría de secciones estructurales
 
-Esta guía explica cómo las **983** secciones que I-36A dejó en el catálogo se convierten en geometría
+Esta guía explica cómo las **1 011** secciones que el catálogo neutral contiene se convierten en geometría
 dibujable: qué se genera, con qué fidelidad, qué **no** se inventa y cómo llega a AutoCAD.
 
 La decisión que la gobierna es
@@ -82,6 +82,52 @@ degradación sin diagnóstico, un diagnóstico sin código o un código no decla
 
 Sobre la v16.0 completa: **289** `TabulatedComplete` (las W), **694** `TabulatedDerived` (HSS, C y L) y
 **cero** degradadas.
+
+Desde I-36D, las **28 secciones S** entran en ese recuento como `TabulatedDerived` (694 + 28 = **722**),
+y traen además un eje **nuevo**.
+
+---
+
+## 3.b Autoridad: de quién es el contorno (I-36D, ADR-0023)
+
+La fidelidad dice **cuánto** detalle hay. No dice **de quién es**. Mientras cada punto vino de un dato
+publicado o de una derivación documentada, la pregunta no hacía falta. Los perfiles **S** la obligan.
+
+La AISC Shapes Database v16.0 **no publica la pendiente del patín ni ningún radio explícito**, para S ni
+para ninguna familia —medido sobre las 166 columnas y sobre el Readme, no supuesto—. Pero el patín
+inclinado es justo lo que hace que una S se vea como una S: sin él, el contorno es un perfil de patines
+paralelos, es decir **una W**. A diferencia de los canales C, donde la aproximación pierde detalle, aquí
+perdería la **familia**.
+
+Así que la pendiente se declara como **convención de RackCad**, y el resultado lo dice:
+
+| Autoridad | Qué significa | Quién |
+|---|---|---|
+| `TabulatedConstrained` | cada punto es trazable a un dato publicado o a una derivación de ADR-0022 | W, HSS, C, L |
+| `VisualDerived` | el contorno incorpora una convención que la fuente no publica | **S**, en los dos niveles de detalle |
+
+La convención, constante para las 28 y **nunca ajustada por designación**:
+
+```
+s = 1/6                       a = (bf - tw) / 2
+tRaiz  = tf + s*a/2           tPunta = tf - s*a/2
+delta  = kdes - tRaiz         rVisual = delta * (sqrt(1 + s^2) + s)
+```
+
+`tf` se lee como el **espesor medio del vuelo libre** *sólo aquí*; en el catálogo sigue siendo el valor
+tabulado. `rVisual` no se elige: con el pie del filete donde `kdes` lo pone, es el **único** radio
+tangente a la vez al alma y a la cara inclinada. Y la regla **degenera exactamente** en la de la §4
+cuando la pendiente es cero (`r = kdes − tf`), así que S **no bifurca** el modelo geométrico.
+
+El área geométrica queda entre **+0,25 %** y **+2,59 %** por encima de la tabulada (media +1,12 %),
+siempre positiva porque el contorno añade cuatro filetes y no modela el redondeo de punta. Es
+**diagnóstica**: no se corrige, y hay una prueba que falla si alguien la cierra ajustando la regla.
+
+**La advertencia no es opcional.** El tipo `StructuralSectionGeometry` se **niega a construir** una
+geometría `VisualDerived` sin su diagnóstico, el inspector la muestra destacada y `RACKSECCION` la
+imprime sin condición: geometría visual derivada, aproximada, no garantizada por fabricante y **no apta
+para CNC ni fabricación**. Dimensiones, área, peso y propiedades siguen siendo los de AISC y **nunca**
+se recalculan desde el contorno.
 
 ---
 

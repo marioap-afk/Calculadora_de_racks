@@ -1,0 +1,264 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-36D
+  branch: feature/perfiles-aisc-s
+  claim_id: 964effe9-9e1a-4861-ac34-594b04da48c7
+  current_phase: 5
+  state: completed
+  gate: none
+  attempts: 1
+  next_action: >-
+    NINGUNA-I-36D-esta-INTEGRADA-y-CERRADA ·
+    ADR-0023-ACEPTADO-por-el-Owner-el-2026-07-28-veredicto-OWNER_APPROVED_ADR_0023 ·
+    siguiente-iniciativa-habilitada-I-37-Cantilever-MVP-que-NO-se-abre-aqui
+  last_evidence_commit: 3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68-CI-VERDE-4-de-4-run-30410876362
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo y revalidado al abrir esta sesion.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 202e456795ec65334212db03110d7149c6ca4dc9
+  base_asunto: Merge I-36C - acceso desde el menu al generador de perfiles
+  base_ci: VERDE-run-30388545724-4-de-4-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: feature-perfiles-aisc-s-LIBRE-en-local-y-en-remoto
+  ORCHESTRATION_md: NO-EXISTE-ni-en-el-repo-ni-en-la-carpeta-padre-comprobado-no-se-usa
+  revalidacion_de_sesion: >-
+    HEAD-igual-a-origin-feature-perfiles-aisc-s-igual-a-b0ff23b ·
+    origin-main-sigue-en-202e456-no-avanzo · arbol-versionado-limpio ·
+    unico-no-rastreado-es-el-XLSX-ignorado-bajo-tools-sources
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: b0ff23bc3f1483971e6c3f6280a54427eab9948a
+  commit: vacio-sin-implementacion-contrato-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/feature/perfiles-aisc-s
+  ci_del_claim: VERDE-4-de-4-run-30405551309
+  trailer: >-
+    Claude-Opus-5 · el-Owner-eligio-explicitamente-este-trailer-frente-a-las-dos-variantes-Codex ·
+    coherente-con-la-regla-vigente-de-atribuir-solo-a-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# FUENTE ACREDITADA. Nunca se versiona.
+# --------------------------------------------------------------------------------------------------------
+fuente:
+  archivo: aisc-shapes-database-v16.0.xlsx
+  ubicacion: tools/sources/ dentro del worktree y del principal
+  ignorada_por: .gitignore-linea-17-tools-sources
+  rastreada_por_git: NO-git-ls-files-tools-sources-vacio
+  tamano_bytes: 2028540
+  sha256: 82D0CEB96A0D938AE1A6BD9637CB10A1E269225B5D668DCE5B0BDC8D86013496
+  origen: >-
+    boton-DOWNLOAD-SHAPES-DATABASE-V16-0-de-la-pagina-oficial-de-AISC ·
+    cloud-aisc-org-biggie_bin-aisc-shapes-database-v160-2-xlsx ·
+    el-enlace-v160h-es-la-Historic-Database-y-NO-se-uso
+  hoja_usada: Database v16.0
+  hojas_existentes: Readme y Database v16.0
+  descarga_en_runtime: PROHIBIDA-fuera-de-alcance
+
+# --------------------------------------------------------------------------------------------------------
+# AUDITORIA MEDIDA sobre el libro, no citada de la documentacion.
+# --------------------------------------------------------------------------------------------------------
+auditoria_S:
+  filas: 28
+  filas_fisicas: 307-334-contiguas
+  coincide_con_manifiesto: si-excludedTypeCounts-S-igual-28
+  edi_igual_a_manual_label: en-las-28
+  columnas_completas_28_de_28: d ddet bf bfdet tw twdet twdet-2 tf tfdet kdes kdet T
+  columnas_parciales: WGi-21-de-28-faltan-las-7-menores
+  columnas_vacias: k1-0-de-28 y WGo-0-de-28
+  propiedades_completas_28_de_28: A Ix Zx Sx rx Iy Zy Sy ry J Cw Wno Sw1 Qf Qw rts ho PA PB PC PD
+  pobladas_fuera_de_alcance: bf-2tf y h-tw ambas 28-de-28
+  pendiente_de_patin: >-
+    NO-EXISTE-en-las-166-columnas · tan-alfa-es-de-angulos-simples-y-esta-vacia-en-S ·
+    slope-aparece-2-veces-y-solo-para-M-y-MT · T_F-vacio-en-las-28
+  radios_explicitos: >-
+    NO-EXISTEN · las-5-menciones-de-radius-son-radios-de-GIRO ·
+    kdes-kdet-k1-y-T-son-DISTANCIAS-al-pie-del-filete-por-definicion-del-Readme
+  punto_de-medicion_de_tf: NO-declarado-por-el-Readme
+
+# --------------------------------------------------------------------------------------------------------
+# VIABILIDAD DE LA CONVENCION VISUAL. Ningun criterio de bloqueo se disparo.
+# --------------------------------------------------------------------------------------------------------
+viabilidad:
+  formula: >-
+    s-igual-un-sexto · a-igual-bf-menos-tw-entre-2 · tRaiz-igual-tf-mas-s-por-a-entre-2 ·
+    tPunta-igual-tf-menos-s-por-a-entre-2 · delta-igual-kdes-menos-tRaiz ·
+    rVisual-igual-delta-por-raiz-de-1-mas-s-cuadrado-mas-s
+  degenera_en_ADR_0022: >-
+    con-s-igual-0-da-rVisual-igual-kdes-menos-tf-que-es-la-regla-vigente-de-W ·
+    la-regla-NO-bifurca-el-modelo-le-anade-el-termino-de-pendiente
+  metodo: >-
+    integral-de-contorno-exacta-con-primitiva-analitica-por-arco ·
+    verificada-contra-descomposicion-independiente-a-2-8e-14 ·
+    scratchpad-fuera-del-repo-sin-instalar-paquetes-y-sin-dejar-scripts
+  verificaciones_estructurales: 18-comprobaciones-PASS-28-de-28
+  centroide: Cx-maximo-1-204e-16 y Cy-maximo-2-725e-15-dentro-de-1e-9
+  bounds: ancho-igual-bf y alto-igual-d-exactos
+  error_de_area_firmado: minimo-mas-0-253-por-ciento y maximo-mas-2-592-por-ciento-todos-positivos
+  error_de_area_absoluto: media-1-116 mediana-1-079 maximo-2-592-por-ciento
+  filas_sobre_1_por_ciento: 16
+  filas_sobre_2_por_ciento: 3-S4X9-5 S4X7-7 S3X5-7
+  filas_sobre_3_por_ciento: 0
+  filas_sobre_5_por_ciento: 0
+  filas_que_exigen_excepcion: NINGUNA
+  coherencia_de_toes: >-
+    d-menos-2-kdet-iguala-T-en-26-de-28 · d-menos-2-kdes-en-14-de-28 ·
+    S20X96-y-S20X86-difieren-0-050-in-de-ambas-por-redondeo-del-d-publicado ·
+    se-ancla-en-kdes-y-se-DEJA-ESCRITA-la-diferencia-sin-elegirla-en-silencio
+  veredicto: VIABLE-ningun-criterio-de-bloqueo-disparado
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: COMPLETA-contrato-ADR-0023-y-viabilidad-geometrica-solo-documentacion
+  2: COMPLETA-catalogo-familia-S-SSectionDimensions-clasificador-mapper-CSV-y-manifiesto
+  3: COMPLETA-geometria-SSectionGeometryBuilder-autoridad-ortogonal-diagnosticos-bounds-y-simetria
+  4: COMPLETA-UI-y-Plugin-filtro-etiqueta-S-IPS-autoridad-y-advertencia-incondicional
+  5: COMPLETA-validacion-del-Owner-en-AutoCAD-APROBADA-y-ADR-0023-ACEPTADO
+
+# --------------------------------------------------------------------------------------------------------
+# IMPLEMENTACION. Lo medido al terminar las fases 2 a 4.
+# --------------------------------------------------------------------------------------------------------
+implementacion:
+  catalogo:
+    familia_nueva: StructuralSectionFamily.S-token-S-quinto-miembro
+    dimensiones: SSectionDimensions-TIPO-PROPIO-no-alias-ni-herencia-de-W
+    archivo_generado: structural-sections-s.csv-28-filas
+    sha256_del_csv_de_S: C081CD93F95A1BBD5F701C6975D18803AA6CC2E798D94B5038544383E8CF3707
+    manifiesto: S-28-en-countsByFamily-y-FUERA-de-excludedTypeCounts-totalCount-1011
+    mapper_version: I-36A-2-subida-a-I-36D-1-para-que-un-catalogo-viejo-falle-ruidoso
+    cuatro_csv_previos: BYTE-IDENTICOS-git-diff-vacio-hashes-sin-cambio
+    secciones_csv: INTACTO
+    reproducible: dos-ejecuciones-del-importador-dieron-el-mismo-SHA-256
+    id_sentinela: >-
+      AISC-S-S10X25_4 · el-contrato-anunciaba-un-punto-y-el-normalizador-lo-convierte-en-guion-bajo ·
+      regla-de-ADR-0021-ya-aceptada-ejemplo-AISC-HSS-RECT-HSS4X4X_250 ·
+      se-corrigio-el-DOCUMENTO-no-el-normalizador-porque-cambiarlo-rompia-los-525-ids-de-HSS
+    T_F: columna-OMITIDA-del-esquema-de-S-porque-estaria-vacia-en-las-28-SourceSpecialNote-null
+  geometria:
+    builder: SSectionGeometryBuilder-hermano-de-los-cuatro-existentes
+    autoridad: >-
+      SectionGeometryAuthority-eje-ORTOGONAL-a-SectionFidelity-que-NO-cambia ·
+      TabulatedConstrained-para-W-HSS-C-L · VisualDerived-para-S-en-los-DOS-niveles
+    fidelidad_de_S: TabulatedDerived-en-Tabulated-y-Simplified-en-Simplified-cero-degradadas
+    conteo_de_fidelidad: TabulatedComplete-289-y-TabulatedDerived-722-antes-694-mas-28
+    diagnosticos_nuevos: SG_VISUAL_CONVENTION_APPLIED y SG_S_TIP_ROUNDING_NOT_MODELLED
+    guarda_de_tipo: >-
+      StructuralSectionGeometry-Create-LANZA-si-la-autoridad-es-VisualDerived-y-falta-el-diagnostico ·
+      la-advertencia-no-puede-perderse-por-una-ruta-futura
+    plan_neutral: >-
+      StructuralSectionRepresentationPlan-transporta-la-autoridad-y-la-incluye-en-Signature ·
+      sigue-siendo-la-AUTORIDAD-UNICA-que-consumen-igual-preview-y-AutoCAD
+    bounds: ancho-bf-y-alto-d-exactos-en-las-28-y-en-los-dos-niveles
+    centroide: residuo-menor-que-1e-9-por-simetria-doble
+    area: entre-mas-0-25-y-mas-2-59-por-ciento-DIAGNOSTICA-y-con-prueba-de-banda
+    excepciones_por_designacion: NINGUNA-las-28-derivan-el-filete-sin-degradar
+  ui_y_plugin:
+    etiqueta: S-IPS-viga-estandar-americana-en-el-filtro-de-familia
+    inspector: AuthoritySummary-destacado-en-negrita-y-color-solo-para-VisualDerived
+    plugin: >-
+      advertencia-INCONDICIONAL-en-StructuralSectionCommandFlow-bajo-plan-IsVisualDerived ·
+      no-depende-del-detalle-ni-de-la-fidelidad-ni-de-ninguna-opcion
+    segunda_tuberia: NINGUNA-ni-inspector-ni-preview-ni-comando-ni-adaptador-nuevos
+  pruebas:
+    RackCad_Tests: 2094-de-2094-base-2071-mas-23
+    RackCad_UI_Tests: 544-de-544-base-534-mas-10
+    nuevas: >-
+      StructuralSectionSFamilyTests-21-incluida-la-guarda-de-gitattributes ·
+      guardas-de-fuente-del-Plugin-2 · inspector-9 · filtro-por-familia-S-1
+    builds_debug: Application-UI-y-Plugin-0-errores-propios-2-MSB3277-conocidas
+    bundle: OK-153-comprobaciones-antes-147-mas-6-por-el-CSV-nuevo
+    harness_del_bundle: 10-de-10-casos-1-valido-y-9-negativos
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE.
+#
+# OJO: hasta la fase 1 este bloque decia "solo-docs" y "cero cambios en src/tests/assets". Eso era cierto
+# de la fase DOCUMENTAL y dejo de serlo al implementar; conservarlo habria sido una guarda que miente.
+# Ahora declara dos cosas distintas: lo que la iniciativa SI modifico, y lo que quedo intacto de verdad.
+# --------------------------------------------------------------------------------------------------------
+areas_modificadas:
+  medidas_con: git diff --name-only 202e456..HEAD
+  src_RackCad_Application: 15-archivos-catalogo-y-geometria
+  src_RackCad_UI: 2-archivos-inspector-estado-y-ventana
+  src_RackCad_Plugin: 1-archivo-StructuralSectionCommandFlow-solo-la-advertencia
+  tests_RackCad_Tests: 5-archivos
+  tests_RackCad_UI_Tests: 1-archivo
+  tools_importador: 3-archivos-clasificador-mapper-y-escritor
+  assets_catalogs: 2-archivos-structural-sections-s-csv-nuevo-y-el-manifiesto
+  gitattributes: 1-linea-text-para-el-CSV-generado-nuevo
+  docs: 12-archivos
+
+guardas_de_alcance:
+  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  secciones_csv: INTACTO-0-cambios
+  cuatro_CSV_de_familia_existentes: INTACTOS-byte-identicos-hash-sin-cambio
+  blocks_csv_y_blocks_library_dwg: INTACTOS-0-cambios
+  deploy: INTACTO-0-cambios
+  github_workflows: INTACTO-0-cambios
+  RackCad_sln: INTACTO-0-cambios
+  src_RackCad_Domain: INTACTO-0-cambios
+  iniciativas_cerradas: ningun-estado-modificado
+  fuera_de_alcance_declarado: >-
+    I-37-y-cualquier-miembro-Cantilever · conectores-mensulas-placas-soldaduras-perforaciones ·
+    calculo-resistente-y-seleccion-automatica · materiales-y-grados · solidos-3D ·
+    persistencia-y-round-trip · mejora-visual-de-W-C-L-o-HSS · bf-2tf-y-h-tw ·
+    secciones-csv · catalogos-de-sistemas · blocks-csv · blocks-library-dwg ·
+    geometria-de-fabricante · CNC-y-shop-drawings · descarga-en-runtime
+
+# --------------------------------------------------------------------------------------------------------
+# GATE PENDIENTE
+# --------------------------------------------------------------------------------------------------------
+candidato_para_el_owner:
+  sha_tecnico: 3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68
+  ci_del_sha_tecnico: VERDE-4-de-4-run-30410876362
+  dll_debug_sha256: 6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7
+  dll_debug_tamano_bytes: 121856
+  dll_debug_ruta: >-
+    C:/Users/alejandra-mendoza/.claude/worktrees/feature-perfiles-aisc-s/
+    src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
+  el_dll_corresponde_a: >-
+    el-SHA-TECNICO-3ffe4df · cualquier-commit-posterior-de-esta-rama-es-SOLO-DOCUMENTACION
+    y-no-cambia-el-binario
+  ronda: >-
+    R2 · la-ronda-anterior-fue-8b3e5f5-con-run-30409753528-y-DLL-CBE93240B57943A64F75DDC1ADDB0CD8D4B36B0D1DD9F96D5A59BB38D42C381B ·
+    QUEDA-SUPERSEDIDA-porque-R2-cambio-el-texto-de-fidelidad-del-inspector ·
+    el-Owner-debe-cargar-el-DLL-de-R2
+
+owner_validation:
+  status: approved
+  date: 2026-07-28
+  owner: Mario Perez
+  veredicto_normativo: OWNER_APPROVED_ADR_0023
+  sha_tecnico_validado: 3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68
+  ci_del_sha_validado: VERDE-4-de-4-run-30410876362
+  dll_debug_validado: 6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7
+  observaciones: NINGUNA
+  bloqueos: NINGUNO
+  requires_owner_validation: satisfied
+  requires_autocad: satisfied
+  requires_owner_decision: false-la-convencion-ya-estaba-escrita-y-acotada-en-el-contrato
+  adr_0023: ACEPTADO-paso-de-propuesto-a-aceptado-el-2026-07-28
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  rebase_final: NO-OP-origin-main-no-avanzo-desde-la-base-202e456
+  ci_del_candidato: VERDE-4-de-4-run-30410876362-sobre-3ffe4df
+  merge: no-ff-sin-squash-desde-el-worktree-principal
+  merge_sha: >-
+    vive-en-git-log-first-parent-main · este-archivo-no-lo-inventa-porque-se-escribe-antes-del-merge
+  limpieza: worktree-sin-force-branch-d-nunca-branch-D-y-rama-remota-eliminada-tras-confirmar-el-merge
+  siguiente_habilitada: I-37-Cantilever-MVP-NO-se-abre-en-esta-sesion

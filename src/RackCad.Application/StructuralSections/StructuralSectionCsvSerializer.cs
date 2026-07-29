@@ -65,6 +65,9 @@ namespace RackCad.Application.StructuralSections
                 case StructuralSectionFamily.Angle:
                     WriteAngle(values, section, properties);
                     break;
+                case StructuralSectionFamily.S:
+                    WriteS(values, section, properties);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(section), identity.Family, "Familia desconocida.");
             }
@@ -103,6 +106,47 @@ namespace RackCad.Application.StructuralSections
             var dimensions = Require<WSectionDimensions>(section);
 
             values["T_F"] = Boolean(section.SourceSpecialNote);
+            values["d"] = Number(dimensions.Depth);
+            values["ddet"] = Number(dimensions.DetailingDepth);
+            values["bf"] = Number(dimensions.FlangeWidth);
+            values["bfdet"] = Number(dimensions.DetailingFlangeWidth);
+            values["tw"] = Number(dimensions.WebThickness);
+            values["twdet"] = Number(dimensions.DetailingWebThickness);
+            values["twdet_2"] = Number(dimensions.HalfDetailingWebThickness);
+            values["tf"] = Number(dimensions.FlangeThickness);
+            values["tfdet"] = Number(dimensions.DetailingFlangeThickness);
+            values["kdes"] = Number(dimensions.KDesign);
+            values["kdet"] = Number(dimensions.KDetailing);
+            values["k1"] = Number(dimensions.K1);
+            values["T"] = Number(dimensions.DistanceBetweenFilletToes);
+            values["WGi"] = Number(dimensions.WorkableGageInner);
+            values["WGo"] = Number(dimensions.WorkableGageOuter);
+
+            values["Cw"] = Number(properties.Cw);
+            values["Wno"] = Number(properties.Wno);
+            values["Sw1"] = Number(properties.Sw1);
+            values["Qf"] = Number(properties.Qf);
+            values["Qw"] = Number(properties.Qw);
+            values["rts"] = Number(properties.Rts);
+            values["ho"] = Number(properties.Ho);
+            values["PA"] = Number(properties.PA);
+            values["PB"] = Number(properties.PB);
+            values["PC"] = Number(properties.PC);
+            values["PD"] = Number(properties.PD);
+        }
+
+        /// <summary>
+        /// S writes the same block as W without <c>T_F</c>. It is a separate method rather than a call into
+        /// <see cref="WriteW"/> because the two families have separate dimension types on purpose, and a
+        /// shared writer would be the first place that distinction quietly dissolved.
+        /// </summary>
+        private static void WriteS(
+            IDictionary<string, string> values,
+            StructuralSectionDefinition section,
+            StructuralSectionProperties properties)
+        {
+            var dimensions = Require<SSectionDimensions>(section);
+
             values["d"] = Number(dimensions.Depth);
             values["ddet"] = Number(dimensions.DetailingDepth);
             values["bf"] = Number(dimensions.FlangeWidth);
@@ -325,9 +369,16 @@ namespace RackCad.Application.StructuralSections
             };
         }
 
-        /// <summary>W and C are the two families whose files carry the Design Guide 9 warping block.</summary>
+        /// <summary>
+        /// W, C and S are the families whose files carry the Design Guide 9 warping block.
+        ///
+        /// S belongs here on the evidence, not by analogy with W: the 28 rows publish <c>Cw</c>, <c>Wno</c>,
+        /// <c>Sw1</c>, <c>Qf</c>, <c>Qw</c>, <c>rts</c>, <c>ho</c>, <c>PC</c> and <c>PD</c> complete, 28 of 28.
+        /// </summary>
         private static bool HasWarping(StructuralSectionFamily family) =>
-            family == StructuralSectionFamily.W || family == StructuralSectionFamily.Channel;
+            family == StructuralSectionFamily.W ||
+            family == StructuralSectionFamily.Channel ||
+            family == StructuralSectionFamily.S;
 
         /// <summary>C and L tabulate the polar radius and the flexural constant; W and HSS do not.</summary>
         private static bool HasPolarRadius(StructuralSectionFamily family) =>
@@ -393,6 +444,26 @@ namespace RackCad.Application.StructuralSections
                         PlasticNeutralAxisX = row.OptionalDouble("xp"),
                         DistanceBetweenFilletToes = row.OptionalDouble("T"),
                         WorkableGageInner = row.OptionalDouble("WGi")
+                    };
+
+                case StructuralSectionFamily.S:
+                    return new SSectionDimensions
+                    {
+                        Depth = row.OptionalDouble("d"),
+                        DetailingDepth = row.OptionalDouble("ddet"),
+                        FlangeWidth = row.OptionalDouble("bf"),
+                        DetailingFlangeWidth = row.OptionalDouble("bfdet"),
+                        WebThickness = row.OptionalDouble("tw"),
+                        DetailingWebThickness = row.OptionalDouble("twdet"),
+                        HalfDetailingWebThickness = row.OptionalDouble("twdet_2"),
+                        FlangeThickness = row.OptionalDouble("tf"),
+                        DetailingFlangeThickness = row.OptionalDouble("tfdet"),
+                        KDesign = row.OptionalDouble("kdes"),
+                        KDetailing = row.OptionalDouble("kdet"),
+                        K1 = row.OptionalDouble("k1"),
+                        DistanceBetweenFilletToes = row.OptionalDouble("T"),
+                        WorkableGageInner = row.OptionalDouble("WGi"),
+                        WorkableGageOuter = row.OptionalDouble("WGo")
                     };
 
                 case StructuralSectionFamily.Angle:

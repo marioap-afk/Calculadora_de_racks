@@ -135,6 +135,26 @@ namespace RackCad.StructuralSections.Import
                         WorkableGageOuter = columns.Number(row, "WGo", rowNumber)
                     };
 
+                case StructuralSectionFamily.S:
+                    return new SSectionDimensions
+                    {
+                        Depth = Required(columns, row, rowNumber, edi, "d"),
+                        DetailingDepth = columns.Number(row, "ddet", rowNumber),
+                        FlangeWidth = Required(columns, row, rowNumber, edi, "bf"),
+                        DetailingFlangeWidth = columns.Number(row, "bfdet", rowNumber),
+                        WebThickness = Required(columns, row, rowNumber, edi, "tw"),
+                        DetailingWebThickness = columns.Number(row, "twdet", rowNumber),
+                        HalfDetailingWebThickness = columns.Number(row, "twdet/2", rowNumber),
+                        FlangeThickness = Required(columns, row, rowNumber, edi, "tf"),
+                        DetailingFlangeThickness = columns.Number(row, "tfdet", rowNumber),
+                        KDesign = columns.Number(row, "kdes", rowNumber),
+                        KDetailing = columns.Number(row, "kdet", rowNumber),
+                        K1 = columns.Number(row, "k1", rowNumber),
+                        DistanceBetweenFilletToes = columns.Number(row, "T", rowNumber),
+                        WorkableGageInner = columns.Number(row, "WGi", rowNumber),
+                        WorkableGageOuter = columns.Number(row, "WGo", rowNumber)
+                    };
+
                 case StructuralSectionFamily.HssRectangular:
                     return new HssRectangularSectionDimensions
                     {
@@ -197,7 +217,10 @@ namespace RackCad.StructuralSections.Import
             var isHss = family == StructuralSectionFamily.HssRectangular;
             var isChannel = family == StructuralSectionFamily.Channel;
             var isAngle = family == StructuralSectionFamily.Angle;
-            var hasWarpingBlock = isW || isChannel;
+            var isS = family == StructuralSectionFamily.S;
+            // S publishes the same Design Guide 9 block as W and C, complete in all 28 rows. Measured, not
+            // assumed by analogy: see the I-36D evidence.
+            var hasWarpingBlock = isW || isChannel || isS;
 
             return new StructuralSectionProperties
             {

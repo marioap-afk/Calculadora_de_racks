@@ -40,5 +40,16 @@ namespace RackCad.Application.StructuralSections.Geometry
 
         /// <summary>The section was centred with the value the source tabulates, not with a computed centroid.</summary>
         public const string CentredWithTabulatedCentroid = "SG_CENTRED_WITH_TABULATED_CENTROID";
+
+        /// <summary>
+        /// The contour carries a RackCad visual convention the source does not publish (ADR-0023).
+        ///
+        /// Mandatory on every <see cref="SectionGeometryAuthority.VisualDerived"/> geometry — the type refuses
+        /// to build one without it — and it is what the inspector and the command turn into a user warning.
+        /// </summary>
+        public const string VisualConventionApplied = "SG_VISUAL_CONVENTION_APPLIED";
+
+        /// <summary>The S flange tip is drawn square: the source publishes no tip radius or chamfer.</summary>
+        public const string STipRoundingNotModelled = "SG_S_TIP_ROUNDING_NOT_MODELLED";
     }
 }

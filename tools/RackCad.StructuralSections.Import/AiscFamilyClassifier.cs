@@ -70,6 +70,10 @@ namespace RackCad.StructuralSections.Import
                     return Selected(StructuralSectionFamily.Channel);
                 case "L":
                     return Selected(StructuralSectionFamily.Angle);
+                case "S":
+                    // I-36D. Until then this fell through to the default and was counted as an exclusion; the
+                    // 28 rows were never missing, they were declined. Nothing else about the row changes.
+                    return Selected(StructuralSectionFamily.S);
                 case HssType:
                     return ClassifyHss(columns, row, rowNumber);
                 default:

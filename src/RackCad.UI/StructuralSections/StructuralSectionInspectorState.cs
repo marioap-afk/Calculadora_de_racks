@@ -48,7 +48,7 @@ namespace RackCad.UI.StructuralSections
             set => _search = value ?? string.Empty;
         }
 
-        /// <summary>Family filter; null means all four.</summary>
+        /// <summary>Family filter; null means every family the catalog carries.</summary>
         public StructuralSectionFamily? Family
         {
             get => _family;
@@ -199,7 +199,43 @@ namespace RackCad.UI.StructuralSections
                    kilograms.ToString("0.#", CultureInfo.InvariantCulture) + " kg)";
         }
 
-        /// <summary>A one-line, human description of the fidelity the current detail achieved.</summary>
+        /// <summary>
+        /// The authority line: who authored the contour on screen.
+        ///
+        /// Empty for a tabulated-constrained family, and a WARNING for a visually derived one. It is
+        /// deliberately not a setting: ADR-0023 decision 22 makes the warning mandatory and non-configurable,
+        /// so there is no flag here to turn it off.
+        /// </summary>
+        public string AuthoritySummary()
+        {
+            if (_selected == null)
+            {
+                return string.Empty;
+            }
+
+            return _factory.Get(_selected, Detail).Authority == SectionGeometryAuthority.VisualDerived
+                ? "GEOMETRIA VISUAL DERIVADA (ADR-0023): la inclinacion del patin y el filete son una " +
+                  "convencion de RackCad, no un dato de AISC. Es aproximada, no esta garantizada por ningun " +
+                  "fabricante y NO es apta para CNC ni fabricacion. Dimensiones, area, peso y propiedades " +
+                  "siguen siendo los que tabula AISC."
+                : string.Empty;
+        }
+
+        /// <summary>True when the current selection draws under a declared RackCad convention.</summary>
+        public bool IsVisualDerived =>
+            _selected != null &&
+            _factory.Get(_selected, Detail).Authority == SectionGeometryAuthority.VisualDerived;
+
+        /// <summary>
+        /// A one-line, human description of the fidelity the current detail achieved.
+        ///
+        /// The fidelity alone is not enough to word this. <see cref="SectionFidelity.TabulatedDerived"/>
+        /// covers two situations that must NOT read the same: for C and L the detail really is derived from
+        /// what AISC publishes, while for S it is a declared RackCad convention. Saying that the radii come
+        /// from the source for an S would attribute to AISC a slope it does not publish, which is exactly what
+        /// ADR-0023 forbids. So the wording branches on the AUTHORITY, and the message the other families
+        /// already showed is preserved verbatim.
+        /// </summary>
         public string FidelitySummary()
         {
             if (_selected == null)
@@ -207,15 +243,25 @@ namespace RackCad.UI.StructuralSections
                 return string.Empty;
             }
 
-            switch (_factory.Get(_selected, Detail).Fidelity)
+            var geometry = _factory.Get(_selected, Detail);
+            var isVisual = geometry.Authority == SectionGeometryAuthority.VisualDerived;
+
+            switch (geometry.Fidelity)
             {
                 case SectionFidelity.Simplified:
-                    return "Simplificada: esquinas vivas, por peticion.";
+                    return isVisual
+                        ? "Simplificada: esquinas vivas, por peticion. La conicidad del patin se conserva y " +
+                          "es una convencion de RackCad, no un dato de la fuente."
+                        : "Simplificada: esquinas vivas, por peticion.";
                 case SectionFidelity.TabulatedComplete:
                     return "Tabulada completa: incluye todo el detalle que la fuente permite derivar.";
                 case SectionFidelity.TabulatedDerived:
-                    return "Tabulada derivada: los radios se derivan de la fuente, que no publica todo el " +
-                           "detalle de la forma real.";
+                    return isVisual
+                        ? "Tabulada derivada con convencion visual: las dimensiones son las que tabula AISC; " +
+                          "la inclinacion del patin y el filete son una convencion de RackCad (ADR-0023), no " +
+                          "un dato de la fuente."
+                        : "Tabulada derivada: los radios se derivan de la fuente, que no publica todo el " +
+                          "detalle de la forma real.";
                 case SectionFidelity.DegradedToSimplified:
                     return "DEGRADADA a simplificada: falto un dato para el detalle pedido.";
                 default:

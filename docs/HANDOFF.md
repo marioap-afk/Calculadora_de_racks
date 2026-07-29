@@ -547,6 +547,46 @@ eslabón de la secuencia **I-30 → I-31 → reanudación de I-18**; `feature/pu
 **intacta**. **Handoff obligatorio: reanudación de I-18** (rebasar `feature/push-back` sobre el nuevo
 `origin/main` y migrar `RackPushBackSystemWindow` al shell, en su propio chat/worktree).
 
+**I-36D** (`feature/perfiles-aisc-s`, Fase 6) queda **integrada** el **2026-07-28** y es la iniciativa
+separada que I-36B dejó escrita como **requisito futuro obligatorio**. Incorpora las **28 filas**
+`Type = S` de la AISC Shapes Database v16.0 —las que I-36A dejó fuera, **contadas y declaradas**, nunca
+perdidas— como **familia propia**: token estable `S`, id `AISC-S-S10X25_4` (el punto de la designación
+normaliza a `_` por ADR-0021, ya aceptado; el EDI conserva su punto en su propio campo),
+`SSectionDimensions` como **tipo propio y no alias de `WSectionDimensions`**, `structural-sections-s.csv`
+generado y catálogo total **1 011**. Los **cuatro CSV anteriores quedan byte-idénticos**, `secciones.csv`
+intacto y `mapperVersion` sube a `I-36D.1` para que un catálogo del mapper anterior **falle ruidosamente**
+en vez de cargar con una familia ausente.
+
+Lo que la obliga está **medido contra el libro, no citado**: la fuente **no publica la pendiente del
+patín ni ningún radio explícito**, ni para S ni para ninguna familia —el único encabezado con `tan` es
+`tan(α)`, que es de ángulos simples y está vacío en S; `kdes`, `kdet`, `k1` y `T` son **distancias al pie
+del filete** y el Readme nunca las llama radios—. Y una S sin pendiente **se lee como una W**: a
+diferencia de los canales C, donde la aproximación pierde detalle, aquí perdería la **familia**. Por eso
+**ADR-0023** separa dos autoridades: la **tabulada** es AISC y conserva identidad, dimensiones, `A`, peso,
+propiedades y centroide —copiados, **jamás recalculados desde el contorno**—; la **visual derivada** es
+RackCad y cubre sólo la pendiente `1:6`, la lectura de `tf` como espesor medio del vuelo libre *dentro de
+la representación*, el radio visual del filete y la punta aguda. La autoridad viaja en un eje
+**ortogonal** a `SectionFidelity`, que **no cambia**: `TabulatedConstrained` para W, HSS, C y L;
+`VisualDerived` para S en los dos niveles de detalle.
+
+La regla es **constante para las 28** —sin ajuste por designación y sin ajuste para igualar `A`— y
+**degenera exactamente** en la de ADR-0022 cuando la pendiente es cero (`r = kdes − tf`), así que S **no
+bifurca** el modelo geométrico. El residuo de área (**+0,25 % a +2,59 %**, media +1,12 %, siempre
+positivo) queda **diagnóstico**, con una prueba de banda que falla si alguien lo cierra ajustando la
+regla. La **advertencia** —geometría visual derivada, aproximada, no garantizada por fabricante y **no
+apta para CNC ni fabricación**— vive en el **tipo**: `StructuralSectionGeometry.Create` se niega a
+construir una geometría `VisualDerived` sin su diagnóstico, el inspector la destaca y `RACKSECCION` la
+imprime **sin condición**. **No nace ninguna segunda tubería**:
+`StructuralSectionRepresentationPlan` sigue siendo la autoridad única que consumen igual el preview y
+AutoCAD, y dos guardas de fuente prohíben que el adaptador reimplemente la pendiente o el filete.
+
+**No toca** W, HSS, C ni L, `secciones.csv`, catálogos de sistemas, `blocks.csv`, `blocks-library.dwg`,
+`deploy/`, `.github/`, `RackCad.sln` ni `RackCad.Domain`. `origin/main` **no avanzó** desde la base
+`202e456`: **sin rebase**. El Owner **aprobó la validación manual en AutoCAD 2025 sin observaciones**
+(veredicto `OWNER_APPROVED_ADR_0023`) sobre el SHA técnico `3ffe4df`, y **ADR-0023 pasó de `propuesto` a
+`aceptado`**. La rama se integra por `git merge --no-ff` en esta sesión. **Siguiente iniciativa
+habilitada: I-37 — Cantilever MVP**, que **no** se abrió aquí.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -780,6 +820,51 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### I-36D — INTEGRADA en `main` (2026-07-28) — **la primera geometría que RackCad firma**
+
+**Lo primero, porque es lo que puede malinterpretarse:** las dimensiones, el área, el peso y las
+propiedades de las 28 secciones S son **de AISC y se copian tal cual**. Lo que RackCad aporta —y
+**declara**— es únicamente cómo se ven: la inclinación del patín, el filete y la punta. Es la primera
+vez que una geometría del producto no es trazable punto por punto a un dato publicado, y por eso lleva
+advertencia obligatoria.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `feature/perfiles-aisc-s` |
+| `Claim-Id` | `964effe9-9e1a-4861-ac34-594b04da48c7` |
+| **SHA técnico validado** por el Owner | `3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68` (CI **30410876362**, 4/4) |
+| SHA final de rama | vive en `git log`; su delta contra el validado es **solo documentación** |
+| **Validación en AutoCAD** | **APLICA y está APROBADA**, sin observaciones (`requires_autocad: satisfied`, `requires_owner_validation: satisfied`); veredicto `OWNER_APPROVED_ADR_0023` |
+| DLL Debug validado | `6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7` (121 856 bytes) |
+| Catálogo | **1 011** secciones; `S` = **28**, retirada de `excludedTypeCounts`; los cuatro CSV previos **byte-idénticos** |
+| ADR | **ADR-0023 ACEPTADO** el 2026-07-28. No reemplaza a ADR-0020, 0021 ni 0022: los **extiende** |
+| Suites al integrar | **2094** `RackCad.Tests` + **544** `RackCad.UI.Tests`, cero fallos, cero omitidas |
+| Builds Debug | Application, UI y Plugin sin errores propios (2 `MSB3277` conocidas) |
+| Bundle | **153 comprobaciones**; harness 10/10 |
+| Rebase | **no-op**: `origin/main` no avanzó desde la base `202e456` |
+| **MERGE_SHA** | vive en `git log --first-parent main`; este documento **no lo inventa** |
+| Limpieza | rama local, rama remota y worktree **eliminados** tras confirmar el merge |
+
+**Por qué S no se colapsó en W.** Los datos encajan —AISC tabula ambas con las mismas columnas— y
+precisamente por eso era peligroso: el id se forma `namespace-token-designación`, así que `S24X121`
+habría recibido **`AISC-W-S24X121`**, y el constructor de W la habría dibujado con patines paralelos
+rotulada `TabulatedComplete`, la degradación silenciosa que ADR-0022 prohíbe.
+
+**Dos gotchas que conviene no volver a descubrir.** El primero: el id real es `AISC-S-S10X25_4`, con
+guion bajo — `StructuralSectionDesignationNormalizer` convierte el punto por ADR-0021 y cambiarlo habría
+roto los 525 ids de HSS ya guardados. El segundo: **todo CSV generado necesita su línea `-text` en
+`.gitattributes`**, o un clon con `core.autocrlf=true` le cambia los saltos de línea y su SHA-256 deja de
+coincidir con el manifiesto; hay una guarda nueva que lo comprueba para todos los archivos generados.
+
+**Pendientes preservados, sin implementar y sin rama abierta:** la mejora visual de **C y los demás
+laminados** (I-36D cubrió sólo S), radios y chaflanes comerciales —que siguen **sin regla acreditada**,
+porque la fuente no publica ninguno—, `bf/2tf` y `h/tw`, I-37 Cantilever, miembros estructurales,
+materiales, conexiones y fabricación, cálculo estructural, sólidos 3D, round-trip de perfiles
+independientes y familias adicionales. **Ninguno invalida lo implementado.**
+
+**Siguiente iniciativa habilitada: I-37 — Cantilever MVP**, que **no** se implementó ni se abrió en esta
+sesión.
 
 ### I-36C — INTEGRADA en `main` (2026-07-28) — **acceso, no funcionalidad nueva**
 
@@ -1144,7 +1229,23 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-36C — 2026-07-28** (la vigente):
+**Baseline integrada de I-36D — 2026-07-28** (la vigente):
+
+- candidato de **código** aprobado por el Owner y por CI:
+  `3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68` (CI run `30410876362`, **success** 4/4). El SHA final de
+  rama difiere del validado **solo en documentación**, así que el árbol técnico validado y el integrado
+  son el mismo;
+- **validación en AutoCAD APROBADA**, **sin observaciones**, veredicto `OWNER_APPROVED_ADR_0023`, sobre
+  el DLL Debug `6A88D9FE…` (121 856 bytes);
+- **ADR-0023 ACEPTADO**: separación de autoridades, pendiente `1:6` como convención declarada de
+  RackCad, radio visual deducido, punta aguda, autoridad ortogonal a la fidelidad, residuo de área
+  diagnóstico, advertencia obligatoria, y W/HSS/C/L sin cambios;
+- catálogo neutral: **1 011** secciones, `S` = **28**, cuatro CSV previos **byte-idénticos**,
+  `secciones.csv` intacto, `mapperVersion` `I-36D.1`;
+- suites **2094** + **544**, cero fallos, cero omitidas; builds Debug de Application, UI y Plugin sin
+  errores propios; bundle **153** comprobaciones y harness **10/10**.
+
+**Baseline anterior, de I-36C — 2026-07-28**:
 
 - candidato de **código** aprobado por el Owner y por CI:
   `86867e62bba9c52bd0855719b1f51ba99c3edcaa` (CI run `30386035953`, **success** 4/4). El SHA final de

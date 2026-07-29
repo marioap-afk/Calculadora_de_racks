@@ -19,7 +19,7 @@ namespace RackCad.Application.StructuralSections
         /// <summary>An all-null instance, for a shape whose properties the source does not publish.</summary>
         public static readonly StructuralSectionProperties Empty = new StructuralSectionProperties();
 
-        // ---- Common to the four families -------------------------------------------------------------
+        // ---- Common to every family ------------------------------------------------------------------
 
         /// <summary>AISC <c>A</c> — cross-sectional area, in.².</summary>
         public double? Area { get; init; }
