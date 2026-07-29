@@ -90,7 +90,7 @@ namespace RackCad.StructuralSections.Import
         private static readonly UTF8Encoding Utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
 
         /// <summary>
-        /// Renders the REPRODUCIBLE output of an import: the four family files, the source sheet and the
+        /// Renders the REPRODUCIBLE output of an import: one file per family, the source sheet and the
         /// manifest. The status overlay is NOT here — it is a local decision, not a function of the workbook,
         /// so the importer neither produces it nor hashes it (see <see cref="SeedStatusOverlayIfMissing"/>).
         /// </summary>

@@ -57,14 +57,14 @@ namespace RackCad.Application.StructuralSections
         public const string IsEnabled = "isEnabled";
         public const string Notes = "notes";
 
-        /// <summary>Identity block shared by the four family files, in order.</summary>
+        /// <summary>Identity block shared by EVERY family file, in order.</summary>
         public static readonly string[] IdentityColumns =
         {
             SectionId, Family, EdiDesignation, ManualLabel, SourceId, SourceRevision,
             WeightPerLength, NativeUnitSystem
         };
 
-        /// <summary>Section properties every one of the four families publishes.</summary>
+        /// <summary>Section properties every family publishes.</summary>
         public static readonly string[] CommonPropertyColumns =
         {
             "A", "Ix", "Zx", "Sx", "rx", "Iy", "Zy", "Sy", "ry", "J"
@@ -166,7 +166,7 @@ namespace RackCad.Application.StructuralSections
         }
 
         /// <summary>
-        /// The files that are pure, reproducible OUTPUT of the importer: the four families and the source
+        /// The files that are pure, reproducible OUTPUT of the importer: one file per family and the source
         /// sheet. These — and only these — are hashed by the manifest, because their bytes are a function of
         /// the workbook and of nothing else.
         ///

@@ -11,7 +11,14 @@ namespace RackCad.Application.StructuralSections.Geometry
         /// <summary>Straight corners only. Always available, always cheap, never wrong about what it shows.</summary>
         Simplified = 0,
 
-        /// <summary>Every detail the source lets us derive in a documented way — root fillets, rounded HSS corners.</summary>
+        /// <summary>
+        /// Every detail the builder can produce in a DOCUMENTED way: root fillets, rounded HSS corners.
+        ///
+        /// "Documented" is not the same as "derived from the source". For a family whose authority is
+        /// <see cref="SectionGeometryAuthority.TabulatedConstrained"/> the detail comes from what AISC
+        /// publishes; for a <see cref="SectionGeometryAuthority.VisualDerived"/> one it comes from a declared
+        /// RackCad convention (ADR-0023). Read the authority to know which.
+        /// </summary>
         Tabulated = 1
     }
 
@@ -34,6 +41,10 @@ namespace RackCad.Application.StructuralSections.Geometry
         /// Derived detail is present, but the source does not publish everything the real shape has — the toe
         /// fillets of C and L, the flange taper of a channel. The contour is closer to reality than the
         /// simplified one and still not the whole truth, and it says so instead of implying exactness.
+        ///
+        /// S shares this value and does NOT mean the same by it: its detail is a RackCad convention, not a
+        /// derivation from AISC. That difference lives in <see cref="SectionGeometryAuthority"/>, so any text
+        /// shown to a user has to read BOTH; the fidelity alone would attribute the slope to the source.
         /// </summary>
         TabulatedDerived = 2,
 
