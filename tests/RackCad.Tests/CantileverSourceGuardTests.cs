@@ -275,15 +275,21 @@ namespace RackCad.Tests
             // reintroduce the same defect.
             var regex = new Regex(pattern, RegexOptions.Compiled);
 
+            var authorities = new[]
+            {
+                "CantileverColumnBaseFrameResolver.cs",   // I-37A: base and column
+                "CantileverArmFrameResolver.cs"           // I-37B: the arm
+            };
+
             var offenders = Sources()
-                .Where(f => !f.Path.EndsWith("CantileverColumnBaseFrameResolver.cs", StringComparison.Ordinal))
+                .Where(f => !authorities.Any(a => f.Path.EndsWith(a, StringComparison.Ordinal)))
                 .Where(f => regex.IsMatch(f.Code))
                 .Select(f => f.Path)
                 .ToList();
 
             Assert.True(
                 offenders.Count == 0,
-                "Solo CantileverColumnBaseFrameResolver construye marcos. Lo incumplen: " +
+                "Solo las autoridades de marcos nombradas construyen marcos. Lo incumplen: " +
                 string.Join(", ", offenders) + ".");
         }
 
@@ -299,6 +305,96 @@ namespace RackCad.Tests
             Assert.Contains("switch (orientation)", authority, StringComparison.Ordinal);
             Assert.Contains("ArgumentOutOfRangeException", authority, StringComparison.Ordinal);
             Assert.Contains(".Bounds", authority, StringComparison.Ordinal);
+        }
+
+        // ---- I-37B: the arm ---------------------------------------------------------------------------------
+
+        [Fact]
+        public void TheArmDoesNotDeclareItsOwnColumnPitch()
+        {
+            // The arm SELECTS the column's regular punches and OBSERVES their spacing. A literal 4 here would
+            // be a second authority for the same grid, and it would keep working right up to the day the
+            // column changed (ADR-0025, D5).
+            var arm = Sources()
+                .Where(f => f.Path.EndsWith("CantileverArmResolver.cs", StringComparison.Ordinal) ||
+                            f.Path.EndsWith("CantileverArmColumnConnectionPattern.cs", StringComparison.Ordinal))
+                .ToList();
+
+            Assert.Equal(2, arm.Count);
+
+            foreach (var file in arm)
+            {
+                Assert.False(
+                    Regex.IsMatch(file.Code, @"4(\.0+)?"),
+                    file.Path + " contiene un literal 4: el pitch se OBSERVA de la columna, no se declara.");
+
+                Assert.DoesNotContain("RegularColumnPunchPitch", file.Code, StringComparison.Ordinal);
+            }
+        }
+
+        [Fact]
+        public void TheArmPitchIsReadFromTheSelectedPunches()
+        {
+            // The positive half of the rule above: the pattern must actually derive the pitch from the
+            // elevations it selected.
+            var pattern = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmColumnConnectionPattern.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("selectedElevations[1] - selectedElevations[0]", pattern, StringComparison.Ordinal);
+            Assert.Contains("ObservedPitch", pattern, StringComparison.Ordinal);
+        }
+
+        [Theory]
+        [InlineData(@"ChannelClearGap")]
+        [InlineData(@"ClearGap")]
+        [InlineData(@"ChannelGap")]
+        public void NoCantileverCodeCarriesAChannelGap(string pattern)
+        {
+            // Paired channels touch. The gap is zero because the arrangement puts both contact faces on one
+            // plane, and a field whose only legal value is zero gets edited eventually (ADR-0025, D2).
+            Forbid(pattern, "Los canales apareados se tocan: no existe un parametro de separacion.");
+        }
+
+        [Fact]
+        public void TheArmBodyExposesAMemberCOLLECTIONAndNotASingleField()
+        {
+            // An arrangement can produce two profiles. A single `Member` property with an optional second one
+            // would make every consumer check, and would not scale to the third.
+            var properties = typeof(RackCad.Application.Systems.Cantilever.CantileverArmBodyPlan)
+                .GetProperties()
+                .Select(p => p.Name)
+                .ToArray();
+
+            Assert.Contains("Members", properties);
+            Assert.DoesNotContain("Member", properties);
+            Assert.DoesNotContain("SecondMember", properties);
+            Assert.DoesNotContain("MemberB", properties);
+        }
+
+        [Fact]
+        public void TheArmArrangementAuthorityDispatchesExhaustively()
+        {
+            var authority = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmBodyArrangementResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("switch (arrangement)", authority, StringComparison.Ordinal);
+            Assert.Contains("ArgumentOutOfRangeException", authority, StringComparison.Ordinal);
+            // And it reads the envelope rather than a tabulated dimension.
+            Assert.Contains(".Bounds", authority, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheArmSideAuthorityDispatchesExhaustively()
+        {
+            var authority = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmFrameResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("switch (side)", authority, StringComparison.Ordinal);
+            Assert.Contains("switch (orientation)", authority, StringComparison.Ordinal);
+            Assert.Contains("ArgumentOutOfRangeException", authority, StringComparison.Ordinal);
         }
 
         // ---- the guard is actually looking at something ---------------------------------------------------
