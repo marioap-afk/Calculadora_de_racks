@@ -68,6 +68,39 @@ namespace RackCad.Tests
             return Regex.Replace(withoutBlocks, @"//[^\n]*", string.Empty);
         }
 
+        /// <summary>
+        /// One product source file with its comments INTACT.
+        ///
+        /// <see cref="Sources"/> strips them on purpose, which is right for every guard that forbids naming a
+        /// forbidden thing. The guards on the declared square-cut approximation are the opposite case: what is
+        /// being pinned IS the prose, so they need the file as written.
+        /// </summary>
+        private static string RawSource(string fileName)
+        {
+            var root = RepoRoot().FullName;
+
+            var matches = new[]
+                {
+                    Path.Combine(root, "src", "RackCad.Domain", "Systems", "Cantilever"),
+                    Path.Combine(root, "src", "RackCad.Application", "Systems", "Cantilever")
+                }
+                .Where(Directory.Exists)
+                .SelectMany(d => Directory.GetFiles(d, fileName, SearchOption.AllDirectories))
+                .ToList();
+
+            Assert.Single(matches);
+            return File.ReadAllText(matches[0]);
+        }
+
+        /// <summary>One documentation file of the repository, verbatim.</summary>
+        private static string Document(params string[] relative)
+        {
+            var path = Path.Combine(new[] { RepoRoot().FullName }.Concat(relative).ToArray());
+
+            Assert.True(File.Exists(path), "No existe el documento " + path + ".");
+            return File.ReadAllText(path);
+        }
+
         private static void Forbid(string pattern, string why)
         {
             var regex = new Regex(pattern, RegexOptions.Compiled);
@@ -409,6 +442,132 @@ namespace RackCad.Tests
             Assert.Contains("switch (side)", authority, StringComparison.Ordinal);
             Assert.Contains("switch (orientation)", authority, StringComparison.Ordinal);
             Assert.Contains("ArgumentOutOfRangeException", authority, StringComparison.Ordinal);
+        }
+
+        // ---- I-37B, correction round: the four defects ------------------------------------------------------
+
+        [Fact]
+        public void TheEndPlateModeIsDispatchedExhaustivelyInBOTHPlaces()
+        {
+            // The defect: validation with guarded cases and no default let an undeclared mode through, and the
+            // builder's `if None ... else ternary` then drew it as a cap. Both sites switch now, and both close.
+            var resolver = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Equal(2, Regex.Matches(resolver, @"switch \(end\.Mode\)").Count);
+            Assert.Contains("ArmEndPlateModeNotSupported", resolver, StringComparison.Ordinal);
+            Assert.Contains("ArgumentOutOfRangeException", resolver, StringComparison.Ordinal);
+
+            // And the shape that caused it is gone: no ternary on the mode anywhere.
+            Assert.DoesNotMatch(new Regex(@"end\.Mode == CantileverArmEndPlateMode\.\w+\s*\?"), resolver);
+        }
+
+        [Fact]
+        public void TheEndPlateThicknessIsNotValidatedUnconditionally()
+        {
+            // Under `None` there is no plate, so the thickness is dormant data. A single unconditional
+            // RequirePositive on it would reject a valid arm — which is what the first version did.
+            var resolver = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            var validate = resolver.Substring(resolver.IndexOf("ValidateParameters(", StringComparison.Ordinal));
+            var untilEndPlate = validate.Substring(0, validate.IndexOf("ValidateEndPlate(", StringComparison.Ordinal));
+
+            Assert.DoesNotContain("end.Thickness", untilEndPlate, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void ThePunchIndexRangeIsCheckedWithASUBTRACTION()
+        {
+            // `lowerColumnPunchIndex + verticalPunchCount` overflows int for a large index: it wraps negative,
+            // the check passes, the selection comes out empty and the pitch read throws. The comparison has to
+            // stay on the subtraction side.
+            var pattern = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmColumnConnectionPattern.cs", StringComparison.Ordinal))
+                .Code;
+
+            var vulnerableSum = new Regex(
+                @"if\s*\(\s*lowerColumnPunchIndex\s*\+\s*verticalPunchCount", RegexOptions.Compiled);
+
+            // Self-verified before it is trusted: a guard that cannot bite reads as coverage.
+            Assert.Matches(vulnerableSum, "if (lowerColumnPunchIndex + verticalPunchCount > elevations.Count)");
+            Assert.DoesNotMatch(vulnerableSum, "if (lowerColumnPunchIndex > elevations.Count - verticalPunchCount)");
+
+            Assert.DoesNotMatch(vulnerableSum, pattern);
+            Assert.Contains(
+                "lowerColumnPunchIndex > elevations.Count - verticalPunchCount",
+                pattern,
+                StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheSlopeGateAndTheProjectionShareONENumber()
+        {
+            // A gate with its own copy of the bound is a gate that eventually disagrees with what it guards.
+            var frame = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmFrameResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Single(Regex.Matches(frame, @"DegenerateProjection\s*=\s*1e-8"));
+            Assert.Equal(2, Regex.Matches(frame, @"<=\s*DegenerateProjection").Count);
+            Assert.DoesNotMatch(new Regex(@"<=\s*1e-\d"), frame);
+
+            // And the resolver gates on the authority instead of re-deriving the condition.
+            var resolver = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("IsRepresentableSlope", resolver, StringComparison.Ordinal);
+            Assert.Contains("ArmSlopeFrameUndefined", resolver, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void NoSourceClaimsThePlateAndTheBodyDoNotOverlap()
+        {
+            // Read RAW, comments included: the claim that was wrong lived in an XML-doc and in a comment, and
+            // stripping them is exactly how it would survive this guard.
+            var plate = RawSource("CantileverPlatePlan.cs");
+            var resolver = RawSource("CantileverArmResolver.cs");
+
+            Assert.DoesNotContain("never overlap", plate, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("never share material", resolver, StringComparison.OrdinalIgnoreCase);
+
+            Assert.Contains("ORIGIN of the cut plane", plate, StringComparison.Ordinal);
+            Assert.Contains("declared visual approximation", plate, StringComparison.Ordinal);
+            Assert.Contains("not a claim of no overlap", resolver, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void NoDocumentClaimsThePlateAndTheBodyDoNotOverlapEITHER()
+        {
+            // The ADR and the contract are where a reader goes for the rule. They said the faces did not
+            // overlap; with slope and a square cut that is simply false.
+            var adr = Document("docs", "adr", "0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md");
+            var contract = Document("docs", "initiatives", "I-37B-cantilever-brazo.md");
+            var decision = Document("docs", "automation", "decisions", "I-37.md");
+
+            foreach (var document in new[] { adr, contract, decision })
+            {
+                // The indicative claim. The ADR and the contract both DENY it in the subjunctive
+                // ("no afirma que ... no se traslapen"), which is a different string and stays legal.
+                Assert.DoesNotContain("no se traslapan", document, StringComparison.Ordinal);
+            }
+
+            // Substrings only, and short ones: the prose is hard-wrapped, so a longer phrase would be split
+            // across lines and the guard would fail on formatting instead of on meaning.
+            Assert.Contains("plano de corte", adr, StringComparison.Ordinal);
+            Assert.Contains("cara exterior", adr, StringComparison.Ordinal);
+            Assert.Contains("penetra", adr, StringComparison.Ordinal);
+            Assert.Contains("holgura", adr, StringComparison.Ordinal);
+            Assert.Contains("aproximaci", adr, StringComparison.Ordinal);
+
+            Assert.Contains("NO queda a ras", contract, StringComparison.Ordinal);
+            Assert.Contains("fuera de alcance", contract, StringComparison.Ordinal);
+
+            Assert.Contains("origen", decision, StringComparison.Ordinal);
+            Assert.Contains("8.13.bis", decision, StringComparison.Ordinal);
         }
 
         // ---- the guard is actually looking at something ---------------------------------------------------

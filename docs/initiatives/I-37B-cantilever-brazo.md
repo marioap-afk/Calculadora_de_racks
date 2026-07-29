@@ -139,6 +139,19 @@ Regresion **verificada fallando** para, al menos: doble canal reducido a un miem
 cero; pendiente invertida en el lado negativo; el brazo recalculando el pitch de la columna; filas creciendo
 hacia abajo; placa aceptando un cuerpo mas alto que su patron; y tapa modificando el corte del perfil.
 
+## 9.bis Aproximacion declarada, no resuelta
+
+Con pendiente, el perfil va cortado **a escuadra** y la placa de conexion es un plano **vertical**, asi que
+la cara de arranque **NO queda a ras**: el origen del plano de corte se coloca sobre la cara exterior de la
+placa, y a partir de ahi una zona de la seccion **penetra** la placa y la opuesta deja **holgura**. Las dos
+magnitudes son distintas cuando la seccion no es simetrica respecto a su origen, y el resolver **informa las
+dos** en un diagnostico informativo derivado de los dos extremos de la envolvente.
+
+Es una **aproximacion visual declarada**. Resolver un **corte inclinado** o cualquier **preparacion de
+extremo** sigue **fuera de alcance**, y este contrato **no** afirma que la placa y el cuerpo no se
+traslapen: afirma donde esta el datum. Quien consuma esta geometria para fabricar tiene que saberlo, que es
+por que el diagnostico existe en vez de un comentario.
+
 ## 10. Validacion manual
 
 **No aplica.** I-37B no cambia el dibujo ni la interfaz — igual que I-37A, el gate se resuelve **sobre el

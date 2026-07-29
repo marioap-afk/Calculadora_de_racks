@@ -197,8 +197,25 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary><c>Stop</c> was asked for without a positive extra height.</summary>
         public const string ArmStopWithoutHeight = "CANT_ARM_STOP_WITHOUT_HEIGHT";
 
-        /// <summary>An extra stop height was given for a mode that is not <c>Stop</c>.</summary>
+        /// <summary>An extra stop height was given for a mode that is not <c>Stop</c>, or it is not finite.</summary>
         public const string ArmEndPlateHeightWithoutStop = "CANT_ARM_END_PLATE_HEIGHT_WITHOUT_STOP";
+
+        /// <summary>
+        /// The end plate mode is not one this initiative declares.
+        ///
+        /// Its own code because the previous validation had guarded cases and no default: an undeclared value
+        /// fell through without a word and was then materialised as a cap.
+        /// </summary>
+        public const string ArmEndPlateModeNotSupported = "CANT_ARM_END_PLATE_MODE_NOT_SUPPORTED";
+
+        /// <summary>
+        /// The slope is finite and non-negative but so steep that the arm's frame is undefined: the projection
+        /// of world +Z onto its transverse plane vanishes.
+        ///
+        /// BLOCKING and reported, because it is USER INPUT. Letting the projection throw would surface an
+        /// <c>InvalidOperationException</c> from a number somebody typed.
+        /// </summary>
+        public const string ArmSlopeFrameUndefined = "CANT_ARM_SLOPE_FRAME_UNDEFINED";
 
         /// <summary>The column assembly handed to the arm resolver is itself blocked.</summary>
         public const string ArmColumnAssemblyBlocked = "CANT_ARM_COLUMN_ASSEMBLY_BLOCKED";

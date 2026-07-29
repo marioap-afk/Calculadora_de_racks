@@ -97,8 +97,19 @@ contra la anatomía de un canal —dorso y patines— y no significan nada en un
 NominalCutLength = GeometricLength = Body.CutLength
 ```
 
-y **no** incluye el espesor de la placa de conexión, el de la tapa ni la extensión del tope. El inicio del
-miembro está en la **cara exterior** de la placa de conexión; la placa y el cuerpo **no se traslapan**.
+y **no** incluye el espesor de la placa de conexión, el de la tapa ni la extensión del tope. El **origen
+del plano de corte** del cuerpo se coloca sobre la **cara exterior** de la placa de conexión.
+
+**Y eso no es lo mismo que quedar a ras.** El perfil va cortado **a escuadra** y la placa de conexión es un
+plano **vertical**, así que en cuanto hay pendiente la cara de arranque no coincide con el plano de la placa:
+la parte de la sección por encima de su propio origen **penetra** la placa, y la de por debajo deja
+**holgura**. Las dos magnitudes son distintas —una sección no tiene por qué ser simétrica respecto a su
+origen; un ángulo no lo es— y el resolver **informa las dos**, derivadas de los dos extremos de la
+envolvente, sin suponer simetría.
+
+Es una **aproximación visual declarada**. Resolver un **corte inclinado** o cualquier **preparación de
+extremo** sigue fuera de alcance, en I-37B igual que en I-37A. Este ADR **no** afirma que la placa y el
+cuerpo no se traslapen: afirma dónde está el datum.
 
 Consecuencia deliberada: cambiar el espesor de una placa **mueve** el brazo, no lo **acorta**. El número
 que el usuario captura sigue siendo el que le pide al proveedor. Y sigue vigente ADR-0024 D4:
@@ -223,9 +234,14 @@ más una rama en una autoridad, no una capa.
 
 **Negativas, y asumidas.** `Members` obliga a un índice en los ids de pieza incluso cuando hay uno solo, y
 la simetría de los dobles se comprueba numéricamente en vez de garantizarse por tipo — dos pruebas en vez
-de una firma. Y la placa de conexión, al ser un plano perpendicular a Y mientras el cuerpo va inclinado,
-apoya el perfil por su origen y no por su cara completa: **I-37B no modela preparación de extremos**, que
-sigue fuera de alcance, y la verificación de no-traslape es numérica.
+de una firma.
+
+Y la más importante, porque es una **imprecisión geométrica real y no una limitación de forma**: con
+pendiente, el corte a escuadra del perfil **no queda a ras** de la placa de conexión. Una zona penetra la
+placa y la opuesta deja holgura, y el modelo **no las resuelve** — las **declara**, con las dos magnitudes
+medidas, en un diagnóstico informativo. Corregirlo exige un corte inclinado o una preparación de extremo, y
+las dos cosas están fuera de alcance. Cualquiera que consuma esta geometría para fabricar tiene que saberlo,
+que es exactamente por qué el diagnóstico existe en vez de un comentario.
 
 **Lo que este ADR NO decide.** No decide la estación, la lista de niveles, la doble cara como sistema, los
 separadores, los arriostres, la línea, el BOM, el peso, la persistencia, las vistas, el editor ni AutoCAD.

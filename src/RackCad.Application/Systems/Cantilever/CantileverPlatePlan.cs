@@ -19,7 +19,12 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>
         /// The plate that bolts an arm to the column (I-37B). Its outer face is where the arm's profile
-        /// STARTS, so the plate and the body never overlap.
+        /// STARTS — the ORIGIN of the cut plane sits on that face.
+        ///
+        /// With slope that is not the same as flush. The profile is cut SQUARE while this plate is a vertical
+        /// plane, so the part of the section above its own origin penetrates the plate and the part below
+        /// leaves clearance. It is a declared visual approximation; a mitred cut or any end preparation stays
+        /// out of scope, and the resolver reports both magnitudes.
         /// </summary>
         ArmMounting = 3,
 

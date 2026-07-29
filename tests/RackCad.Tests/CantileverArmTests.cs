@@ -34,6 +34,13 @@ namespace RackCad.Tests
         private const string Hss = "AISC-HSS-RECT-HSS4X4X_250";
         private const string SingleW = "AISC-W-W6X15";
 
+        /// <summary>
+        /// An ANGLE, used for one purpose only: its cross section is not symmetric about its own origin, so
+        /// the two halves of the square-cut misfit come out as DIFFERENT numbers. A W or an HSS would hide a
+        /// bug that conflated them.
+        /// </summary>
+        private const string Angle = "AISC-L-L8X6X1";
+
         private static readonly StructuralSectionCatalog Catalog =
             new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
 
@@ -973,6 +980,359 @@ namespace RackCad.Tests
 
             Assert.Equal(5.2, Math.Round(arm.Body.SectionWidth, 6));
             Assert.Equal(10.0, Math.Round(arm.Body.SectionHeight, 6));
+        }
+
+// ---- 9. the four defects of the correction round -----------------------------------------------------
+        //
+        // Each block below pins one defect that shipped in the first pass of I-37B and is now fixed. They are
+        // grouped by defect, and not folded into the sections above, so a regression reads as what it is.
+
+        // ---- 9.1 the end plate mode is validated EXHAUSTIVELY ---------------------------------------------
+
+        [Fact]
+        public void UnderNoneTheEndPlateThicknessIsDORMANTDataAndNotValidated()
+        {
+            // There is no plate, so the thickness is a number nobody uses. Blocking on it would reject a valid
+            // arm because of a value left behind by an earlier edit.
+            var design = Design(endMode: CantileverArmEndPlateMode.None);
+            design.EndPlate.Thickness = 0.0;
+
+            var arm = Resolve(design);
+
+            Assert.False(arm.IsBlocked);
+            Assert.Null(arm.EndPlate);
+            Assert.False(Has(arm, CantileverDiagnostics.ParameterNotPositive));
+        }
+
+        [Theory]
+        [InlineData(CantileverArmEndPlateMode.Cap, 0.0)]
+        [InlineData(CantileverArmEndPlateMode.Stop, 6.0)]
+        public void AModeThatDOESProduceAPlateRequiresItsThickness(
+            CantileverArmEndPlateMode mode, double extraStop)
+        {
+            var design = Design(section: Channel, count: 3, endMode: mode, extraStop: extraStop);
+            design.EndPlate.Thickness = 0.0;
+
+            var arm = Resolve(design);
+
+            Assert.True(arm.IsBlocked);
+            Assert.True(Has(arm, CantileverDiagnostics.ParameterNotPositive));
+        }
+
+        [Theory]
+        [InlineData(CantileverArmEndPlateMode.None, double.NaN)]
+        [InlineData(CantileverArmEndPlateMode.None, double.PositiveInfinity)]
+        [InlineData(CantileverArmEndPlateMode.Cap, double.NaN)]
+        [InlineData(CantileverArmEndPlateMode.Cap, double.PositiveInfinity)]
+        public void AModeThatFORBIDSAnExtraHeightRejectsANonFiniteOne(
+            CantileverArmEndPlateMode mode, double extraStop)
+        {
+            // `Math.Abs(NaN) > tolerance` is FALSE, so a comparison on its own would wave a NaN through as if it
+            // were zero. Finiteness is checked first, and this is what proves it.
+            var arm = Resolve(Design(section: Channel, count: 3, endMode: mode, extraStop: extraStop));
+
+            Assert.True(arm.IsBlocked);
+            Assert.True(Has(arm, CantileverDiagnostics.ArmEndPlateHeightWithoutStop));
+        }
+
+        [Theory]
+        [InlineData(double.NaN)]
+        [InlineData(double.PositiveInfinity)]
+        public void AStopWithANonFiniteHeightIsRejected(double extraStop)
+        {
+            var arm = Resolve(Design(
+                section: Channel, count: 3, endMode: CantileverArmEndPlateMode.Stop, extraStop: extraStop));
+
+            Assert.True(arm.IsBlocked);
+            Assert.True(Has(arm, CantileverDiagnostics.ArmStopWithoutHeight));
+        }
+
+        [Theory]
+        [InlineData(3)]
+        [InlineData(99)]
+        [InlineData(-1)]
+        public void AnUndeclaredEndPlateModeIsRejectedAndNeverMaterialisedAsACap(int raw)
+        {
+            // The defect exactly: the validation had guarded cases and NO default, so an undeclared value passed
+            // without a word and the builder's `if None ... else ternary` then drew it as a cap.
+            var design = Design(section: Channel, count: 3);
+            design.EndPlate.Mode = (CantileverArmEndPlateMode)raw;
+
+            var arm = Resolve(design);
+
+            Assert.True(arm.IsBlocked);
+            Assert.True(Has(arm, CantileverDiagnostics.ArmEndPlateModeNotSupported));
+            Assert.Null(arm.EndPlate);
+            Assert.Empty(arm.Plates);
+        }
+
+        [Fact]
+        public void OnlyTheDeclaredEndPlateModesExist()
+        {
+            // A member added to this enum fails here until somebody writes its rule in BOTH the validation and
+            // the builder.
+            Assert.Equal(
+                new[]
+                {
+                    CantileverArmEndPlateMode.None,
+                    CantileverArmEndPlateMode.Cap,
+                    CantileverArmEndPlateMode.Stop
+                },
+                Enum.GetValues(typeof(CantileverArmEndPlateMode)).Cast<CantileverArmEndPlateMode>());
+        }
+
+        [Fact]
+        public void TheThreeDeclaredModesKeepEXACTLYTheirGeometryAndSignature()
+        {
+            // The fix must not have moved anything that already worked.
+            var none = Resolve(Design(section: Channel, count: 3, endMode: CantileverArmEndPlateMode.None));
+            var cap = Resolve(Design(section: Channel, count: 3, endMode: CantileverArmEndPlateMode.Cap));
+            var stop = Resolve(Design(
+                section: Channel, count: 3, endMode: CantileverArmEndPlateMode.Stop, extraStop: 5.0));
+
+            Assert.All(new[] { none, cap, stop }, a => Assert.False(a.IsBlocked));
+
+            Assert.Null(none.EndPlate);
+            Assert.Single(none.Plates);
+            Assert.Equal(2, cap.Plates.Count);
+            Assert.Equal(2, stop.Plates.Count);
+
+            var capHeight = Distance(cap.EndPlate.Outline[1], cap.EndPlate.Outline[2]);
+            var stopHeight = Distance(stop.EndPlate.Outline[1], stop.EndPlate.Outline[2]);
+
+            Assert.Equal(cap.Body.SectionHeight, capHeight, 12);
+            Assert.Equal(cap.Body.SectionHeight + 5.0, stopHeight, 12);
+
+            // The body is untouched by the mode, and the three signatures stay distinguishable.
+            Assert.Equal(none.Body.Signature(), cap.Body.Signature());
+            Assert.Equal(none.Body.Signature(), stop.Body.Signature());
+            Assert.Equal(3, new[] { none.Signature(), cap.Signature(), stop.Signature() }.Distinct().Count());
+        }
+
+        // ---- 9.2 the punch index cannot overflow ----------------------------------------------------------
+
+        /// <summary>How many distinct regular elevations the fixture column actually resolved.</summary>
+        private static int RegularElevationCount(CantileverColumnBaseAssembly column) =>
+            column.ColumnRegularPunches.Select(p => p.Datum.V).Distinct().Count();
+
+        private static IReadOnlyList<double> RegularElevations(CantileverColumnBaseAssembly column) =>
+            column.ColumnRegularPunches.Select(p => p.Datum.V).Distinct().OrderBy(v => v).ToList();
+
+        [Theory]
+        [InlineData(int.MaxValue)]
+        [InlineData(int.MaxValue - 1)]
+        [InlineData(1000000)]
+        public void AHugeLowerIndexIsRejectedInsteadOfOverflowing(int lowerIndex)
+        {
+            // `lowerColumnPunchIndex + verticalPunchCount` wrapped NEGATIVE for a large index, the range check
+            // passed, and the empty selection then threw where the pitch is read. It is a subtraction now.
+            var arm = Resolve(Design(section: Channel, count: 3, lowerIndex: lowerIndex));
+
+            Assert.True(arm.IsBlocked);
+            Assert.True(Has(arm, CantileverDiagnostics.ArmPunchIndexOutOfRange));
+        }
+
+        [Fact]
+        public void TheOverflowingSelectionIsRejectedByThePatternItselfWithoutThrowing()
+        {
+            // Straight at the arithmetic, with no resolver in between: the pattern must REPORT, never throw.
+            var column = Column();
+            var diagnostics = new List<CantileverDiagnostic>();
+
+            var pattern = CantileverArmColumnConnectionPattern.Build(
+                column.ColumnRegularPunches, int.MaxValue, 2, 1.5, diagnostics);
+
+            Assert.Null(pattern);
+            Assert.Contains(diagnostics, d => d.Code == CantileverDiagnostics.ArmPunchIndexOutOfRange);
+            Assert.All(diagnostics, d => Assert.True(d.IsBlocking));
+        }
+
+        [Fact]
+        public void TheLastValidLowerIndexIsAcceptedAndTheNextOneIsRejected()
+        {
+            // Derived from the column, not copied: the boundary moves with the fixture instead of rotting.
+            var column = Column();
+            var elevations = RegularElevations(column);
+
+            Assert.True(
+                elevations.Count >= 4, "El fixture necesita varias elevaciones para que el limite tenga sentido.");
+
+            var last = Resolve(Design(lowerIndex: elevations.Count - 2, count: 2), column: column);
+            var past = Resolve(Design(lowerIndex: elevations.Count - 1, count: 2), column: column);
+
+            Assert.False(last.IsBlocked);
+            Assert.Equal(2, last.ConnectionPattern.Elevations.Count);
+            Assert.Equal(elevations[elevations.Count - 1], last.ConnectionPattern.LastElevation, 12);
+
+            Assert.True(past.IsBlocked);
+            Assert.True(Has(past, CantileverDiagnostics.ArmPunchIndexOutOfRange));
+        }
+
+        [Fact]
+        public void TheOrdinaryIndicesAreUnchangedByTheFix()
+        {
+            var column = Column();
+            var elevations = RegularElevations(column);
+
+            for (var i = 0; i < 4; i++)
+            {
+                var arm = Resolve(Design(lowerIndex: i, count: 2), column: column);
+
+                Assert.False(arm.IsBlocked);
+                Assert.Equal(elevations.Skip(i).Take(2), arm.ConnectionPattern.Elevations);
+            }
+        }
+
+        // ---- 9.3 a slope that collapses the frame is REJECTED, not thrown --------------------------------
+
+        [Theory]
+        [InlineData(1e12)]
+        [InlineData(1e15)]
+        [InlineData(double.MaxValue)]
+        public void ASlopeSteepEnoughToCollapseTheFrameIsReportedAndNeverThrows(double slope)
+        {
+            // `atan` is bounded below 90 degrees but CONVERGES on it, so a finite non-negative rise can leave the
+            // projection of +Z on the transverse plane at zero. That is a number somebody TYPED: it has to come
+            // back as a diagnostic and not as an InvalidOperationException from inside the frame authority.
+            var arm = Resolve(Design(slope: slope));
+
+            Assert.True(arm.IsBlocked);
+            Assert.True(Has(arm, CantileverDiagnostics.ArmSlopeFrameUndefined));
+            Assert.False(Has(arm, CantileverDiagnostics.ArmSlopeInvalid));
+        }
+
+        [Theory]
+        [InlineData(0.0)]
+        [InlineData(1.0)]
+        [InlineData(24.0)]
+        [InlineData(1e6)]
+        public void ALargeButREPRESENTABLESlopeStillResolves(double slope)
+        {
+            var arm = Resolve(Design(slope: slope));
+
+            Assert.False(arm.IsBlocked);
+            Assert.False(Has(arm, CantileverDiagnostics.ArmSlopeFrameUndefined));
+        }
+
+        [Theory]
+        [InlineData(-1.0)]
+        [InlineData(double.NaN)]
+        [InlineData(double.NegativeInfinity)]
+        public void AnInvalidSlopeReportsOnlyItsOwnCodeAndNotTheCollapseOne(double slope)
+        {
+            // Two codes for one bad number is noise, and a NaN cannot be judged for representability at all.
+            var arm = Resolve(Design(slope: slope));
+
+            Assert.True(arm.IsBlocked);
+            Assert.True(Has(arm, CantileverDiagnostics.ArmSlopeInvalid));
+            Assert.False(Has(arm, CantileverDiagnostics.ArmSlopeFrameUndefined));
+        }
+
+        [Theory]
+        [InlineData(CantileverArmSide.PositiveY)]
+        [InlineData(CantileverArmSide.NegativeY)]
+        public void TheFrameAuthorityAgreesWithTheGateItBacks(CantileverArmSide side)
+        {
+            Assert.True(CantileverArmFrameResolver.IsRepresentableSlope(side, 0.0));
+            Assert.True(CantileverArmFrameResolver.IsRepresentableSlope(side, 1e6));
+
+            Assert.False(CantileverArmFrameResolver.IsRepresentableSlope(side, 1e12));
+            Assert.False(CantileverArmFrameResolver.IsRepresentableSlope(side, double.MaxValue));
+            Assert.False(CantileverArmFrameResolver.IsRepresentableSlope(side, -1.0));
+            Assert.False(CantileverArmFrameResolver.IsRepresentableSlope(side, double.NaN));
+        }
+
+        [Fact]
+        public void AVerticalAxisHasNoDepthDirectionAndSaysSo()
+        {
+            Assert.False(CantileverArmFrameResolver.TryDepthAxis(Vector3D.UnitZ, out _));
+            Assert.False(CantileverArmFrameResolver.TryDepthAxis(new Vector3D(0.0, 0.0, 0.0), out _));
+            Assert.Throws<InvalidOperationException>(() => CantileverArmFrameResolver.DepthAxis(Vector3D.UnitZ));
+
+            // And a slope that IS representable produces a depth axis pointing up.
+            var axis = CantileverArmFrameResolver.Axis(
+                CantileverArmSide.PositiveY, CantileverArmFrameResolver.AngleRadians(2.0));
+
+            Assert.True(CantileverArmFrameResolver.TryDepthAxis(axis, out var depth));
+            Assert.True(depth.Z > 0.0);
+        }
+
+        [Fact]
+        public void TheGateAndTheProjectionShareONEBound()
+        {
+            // Two numbers for one threshold is how a gate and the computation it guards end up disagreeing.
+            Assert.True(CantileverArmFrameResolver.DegenerateProjection > 0.0);
+            Assert.True(CantileverArmFrameResolver.DegenerateProjection < 1e-6);
+        }
+
+        // ---- 9.4 intrusion and clearance are TWO magnitudes ----------------------------------------------
+
+        private static string Formatted(double value) =>
+            value.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);
+
+        [Fact]
+        public void AnASYMMETRICSectionReportsIntrusionAndClearanceSeparately()
+        {
+            var bounds = Bounds(Angle);
+
+            // The fixture verifies ITSELF: if this section were symmetric about its origin the test could pass
+            // while the code conflated the two magnitudes.
+            Assert.True(
+                Math.Abs(bounds.MaxY + bounds.MinY) > 1e-3,
+                "La seccion de prueba debe ser asimetrica respecto a su origen; " + Angle + " no lo es.");
+
+            var arm = Resolve(
+                Design(section: Angle, count: 3, slope: 1.0),
+                ArmPolicy((Angle, CantileverArmBodyArrangement.Single)));
+
+            Assert.False(arm.IsBlocked);
+
+            var rise = Math.Sin(CantileverArmFrameResolver.AngleRadians(1.0));
+            var intrusion = rise * Math.Max(0.0, bounds.MaxY);
+            var clearance = rise * Math.Max(0.0, -bounds.MinY);
+
+            Assert.NotEqual(Formatted(intrusion), Formatted(clearance));
+
+            var message = arm.Diagnostics
+                .Single(d => d.Code == CantileverDiagnostics.ArmSquareCutAtSlopedPlate)
+                .Message;
+
+            Assert.Contains(Formatted(intrusion), message, StringComparison.Ordinal);
+            Assert.Contains(Formatted(clearance), message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void ASymmetricSectionReportsTheSameNumberTwiceAndThatIsNotAnArtefact()
+        {
+            // The contrast that makes the test above mean something: on a section that IS symmetric the two
+            // magnitudes coincide, so one shared number would have looked correct here.
+            var bounds = Bounds(Hss);
+
+            Assert.Equal(bounds.MaxY, -bounds.MinY, 9);
+
+            var arm = Resolve(Design(slope: 1.0));
+            var rise = Math.Sin(CantileverArmFrameResolver.AngleRadians(1.0));
+            var message = arm.Diagnostics
+                .Single(d => d.Code == CantileverDiagnostics.ArmSquareCutAtSlopedPlate)
+                .Message;
+
+            Assert.Contains(Formatted(rise * bounds.MaxY), message, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheDeclaredApproximationDoesNotClaimTheFacesAreFlush()
+        {
+            // The message is what a user reads. It must not promise a fit the geometry does not have.
+            var arm = Resolve(Design(section: Channel, count: 3, slope: 1.0));
+            var message = arm.Diagnostics
+                .Single(d => d.Code == CantileverDiagnostics.ArmSquareCutAtSlopedPlate)
+                .Message;
+
+            Assert.Contains("NO queda a ras", message, StringComparison.Ordinal);
+            Assert.Contains("penetra", message, StringComparison.Ordinal);
+            Assert.Contains("holgura", message, StringComparison.Ordinal);
+            Assert.Contains("aproximacion visual declarada", message, StringComparison.Ordinal);
+            Assert.DoesNotContain("no se traslapan", message, StringComparison.Ordinal);
         }
 
         private static double Distance(Point3D a, Point3D b) => (b - a).Length;

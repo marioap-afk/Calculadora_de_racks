@@ -154,7 +154,11 @@ namespace RackCad.Application.Systems.Cantilever
                 return null;
             }
 
-            if (lowerColumnPunchIndex + verticalPunchCount > elevations.Count)
+            // Written as a SUBTRACTION on purpose. The sum `lowerColumnPunchIndex + verticalPunchCount`
+            // overflows for a large index — int.MaxValue wraps negative, the check passes, and the selection
+            // comes out empty, which then throws where the pitch is read. The count is already known to be
+            // no greater than the list, so `Count - verticalPunchCount` cannot underflow.
+            if (lowerColumnPunchIndex > elevations.Count - verticalPunchCount)
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ArmPunchIndexOutOfRange,

@@ -14,6 +14,13 @@ namespace RackCad.Application.Systems.Cantilever
     /// </summary>
     public static class CantileverArmFrameResolver
     {
+        /// <summary>
+        /// How short the projection of world +Z onto the arm's transverse plane may get before the frame is
+        /// undefined. It is the SAME bound <see cref="TryDepthAxis"/> applies, shared so the gate in the
+        /// resolver and the computation itself can never disagree.
+        /// </summary>
+        public const double DegenerateProjection = 1e-8;
+
         /// <summary>Whether this side has a frame rule.</summary>
         public static bool IsSupported(CantileverArmSide side) =>
             side == CantileverArmSide.PositiveY || side == CantileverArmSide.NegativeY;
@@ -126,19 +133,61 @@ namespace RackCad.Application.Systems.Cantilever
         /// </summary>
         public static Vector3D DepthAxis(Vector3D axisZ)
         {
+            if (!TryDepthAxis(axisZ, out var depth))
+            {
+                throw new InvalidOperationException(
+                    "El eje del brazo es practicamente vertical: no define una direccion de peralte.");
+            }
+
+            return depth;
+        }
+
+        /// <summary>
+        /// The same computation, reporting failure instead of throwing.
+        ///
+        /// It exists because <c>atan</c> is bounded below 90 degrees but CONVERGES on it: a finite,
+        /// non-negative <c>SlopeRisePer12</c> — <c>double.MaxValue</c>, say — produces an axis that is
+        /// vertical to within floating point, and the projection of world +Z onto its transverse plane
+        /// vanishes. That is user input, so it has to come back as a diagnostic and never as an exception.
+        /// </summary>
+        public static bool TryDepthAxis(Vector3D axisZ, out Vector3D depthAxis)
+        {
+            depthAxis = default;
+
+            if (!axisZ.IsFinite || axisZ.Length <= DegenerateProjection)
+            {
+                return false;
+            }
+
             var z = axisZ.Normalized();
             var projected = Vector3D.UnitZ - (z * Vector3D.UnitZ.Dot(z));
 
-            if (projected.Length <= 1e-8)
+            if (projected.Length <= DegenerateProjection)
             {
-                // Only reachable with a vertical arm, which no slope in range can produce: atan is bounded
-                // below 90 degrees. Guarded anyway, because the alternative is a normalisation that throws
-                // somewhere less obvious.
-                throw new InvalidOperationException(
-                    "El eje del brazo es vertical: no define una direccion de peralte.");
+                return false;
             }
 
-            return projected.Normalized();
+            depthAxis = projected.Normalized();
+            return true;
+        }
+
+        /// <summary>
+        /// Whether a slope produces an arm whose frame can be built at all.
+        ///
+        /// The bound is the GEOMETRIC tolerance the projection itself uses — not an invented commercial
+        /// maximum. A product limit on how steep an arm may be is a decision nobody has taken, and pretending
+        /// otherwise here would put a number in the code that no owner approved.
+        /// </summary>
+        public static bool IsRepresentableSlope(CantileverArmSide side, double slopeRisePer12)
+        {
+            if (!IsSupported(side) ||
+                !GeometryTolerance.IsFinite(slopeRisePer12) ||
+                slopeRisePer12 < 0.0)
+            {
+                return false;
+            }
+
+            return TryDepthAxis(Axis(side, AngleRadians(slopeRisePer12)), out _);
         }
 
         private static ArgumentOutOfRangeException Undefined(CantileverArmSide side) =>
