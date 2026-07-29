@@ -1,0 +1,106 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-37A
+  branch: architecture/cantilever-base-columna
+  claim_id: af0b650d-8a88-48c3-a328-b0b05c3bb61f
+  current_phase: 2
+  state: implementing
+  gate: none
+  attempts: 1
+  next_action: >-
+    contratos-de-Domain-y-resolucion-de-Application ·
+    NO-tocar-HANDOFF-ni-marcar-integrada · NO-hacer-merge
+  last_evidence_commit: 1caa69a-reclamo-vacio
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 3c6ccf57d09c28dd9804468c25e2301102524b02
+  base_asunto: Merge I-36D - perfiles AISC S/IPS y geometria visual derivada
+  base_ci: VERDE-run-30415349149-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-MERGE_HEAD-REBASE-CHERRY_PICK-ni-BISECT
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: architecture-cantilever-base-columna-LIBRE-en-local-y-en-remoto
+  ramas_i37_o_cantilever_previas: NINGUNA-git-ls-remote-heads-sin-coincidencias
+  i36_contenidas_en_main: eafb785-14317a5-202e456-3c6ccf5-las-cuatro-IN
+  imagenes_de_referencia: >-
+    NO-EXISTEN-en-el-repositorio · la-unica-especificacion-geometrica-es-la-del-encargo ·
+    cualquier-contradiccion-con-una-pieza-real-no-pudo-comprobarse-y-queda-declarada
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: 1caa69a
+  commit: vacio-sin-implementacion-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/architecture/cantilever-base-columna
+  trailer: Claude-Opus-5-solo-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# AUTORIZACION DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+autorizacion:
+  precedente: I-36A-el-primer-commit-sustantivo-escribe-la-fila-del-ROADMAP
+  cubre: >-
+    crear-y-reclamar-I-37A · rama-canonica-architecture-cantilever-base-columna ·
+    fila-de-ROADMAP-contrato-decision-ADR-y-estado-en-el-primer-commit-sustantivo ·
+    actualizar-la-descripcion-paraguas-de-I-37 · implementar-el-alcance-tecnico
+  no_cubre: >-
+    tocar-HANDOFF · marcar-integrada · hacer-merge · borrar-rama-o-worktree ·
+    implementar-iniciativas-posteriores
+
+# --------------------------------------------------------------------------------------------------------
+# PARAMETROS SIN DEFAULT APROBADO. No se inventan; son entradas obligatorias.
+# --------------------------------------------------------------------------------------------------------
+parametros_sin_default:
+  placa_inferior_offset_desde_extremos: >-
+    OBLIGATORIO-en-el-diseno · modelado-como-nullable-y-el-resolver-lo-RECHAZA-si-falta ·
+    diagnostico-CANT_REQUIRED_PARAMETER_MISSING
+  columna_offset_superior_al_ultimo_troquel_regular: >-
+    OBLIGATORIO-en-el-diseno · mismo-tratamiento-y-mismo-diagnostico
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: COMPLETA-reclamo
+  2: EN-CURSO-contrato-decision-ADR-0024-ROADMAP-y-estado
+  3: PENDIENTE-contratos-de-Domain
+  4: PENDIENTE-resolucion-de-Application
+  5: PENDIENTE-placas-cartabon-troqueles-y-patron-compartido
+  6: PENDIENTE-pruebas-de-invariantes-y-guardas-de-fuente
+  7: PENDIENTE-documentacion-final-y-evidencia
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  src_RackCad_UI: INTACTO
+  src_RackCad_Plugin: INTACTO
+  src_RackCad_Application_StructuralSections: INTACTO-I-36-no-se-modifica
+  assets_catalogs: INTACTO
+  deploy_y_github: INTACTOS
+  RackCad_sln: INTACTO
+  sistemas_vigentes: INTACTOS-Selective-Dynamic-PushBack-FlowBed-Larguero
+  fuera_de_alcance_declarado: >-
+    brazos-pendiente-niveles-estacion-doble-cara-separadores-arriostres-linea ·
+    BOM-peso-persistencia-RackSystemKind-los-tres-registros-biblioteca-editor-preview ·
+    vistas-AutoCAD-comandos-Xrecords-GUID · materiales-calculo-capacidad-placas ·
+    soldaduras-anclas-tornilleria-CNC-shop-drawings · familias-nuevas-bloques-DWG
+
+# --------------------------------------------------------------------------------------------------------
+# GATE
+# --------------------------------------------------------------------------------------------------------
+gates:
+  ci: requerido
+  plugin_build: requerido-la-suite-no-lo-cubre
+  autocad: NO-APLICA-no-cambia-dibujo-ni-UI
+  owner_validation: NO-APLICA-no-hay-nada-que-ver
+  owner_decision: satisfecho-docs-automation-decisions-I-37-md
