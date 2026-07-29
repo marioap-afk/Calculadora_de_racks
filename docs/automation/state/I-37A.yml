@@ -4,15 +4,18 @@ automation_state:
   branch: architecture/cantilever-base-columna
   claim_id: af0b650d-8a88-48c3-a328-b0b05c3bb61f
   current_phase: 7
-  state: review-ready
+  state: completed
   gate: none
   attempts: 1
   next_action: >-
-    sesion-de-integracion-del-Owner ·
-    rebase-final-si-main-avanzo · CI-verde-sobre-el-SHA-exacto ·
-    HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama · merge---no-ff ·
-    NO-requiere-validacion-manual-en-AutoCAD-porque-no-cambia-dibujo-ni-UI
-  last_evidence_commit: ronda-de-correcciones-2224-y-544-verdes
+    NINGUNA-I-37A-esta-INTEGRADA-y-CERRADA ·
+    ADR-0024-ACEPTADO-por-el-Owner-el-2026-07-29-veredicto-OWNER_APPROVED_ADR_0024 ·
+    integracion-autorizada-con-OWNER_AUTHORIZED_INTEGRATION_I_37A ·
+    siguiente-paso-real-la-definicion-fisica-y-el-contrato-de-la-siguiente-subiniciativa-de-I-37
+    -brazos-y-estacion-completa-que-NO-esta-reclamada-y-necesita-la-anatomia-real-de-la-pieza
+  last_evidence_commit: >-
+    15523679e655364c146917ece338c7cecbe24023-SHA-TECNICO-APROBADO-CI-VERDE-run-30488839172 ·
+    el-SHA-final-de-rama-difiere-solo-en-documentacion-de-cierre
 
 # --------------------------------------------------------------------------------------------------------
 # RONDA DE CORRECCIONES. Cuatro defectos senalados por el Owner sobre 5be43f1, sin reabrir el diseno.
@@ -209,15 +212,18 @@ pruebas:
 # CantileverColumnBaseFrameResolver.cs, asi que Application pasa a 14 y el total a 34.
 # --------------------------------------------------------------------------------------------------------
 areas_modificadas:
-  total: 34-archivos
-  docs: 10-archivos
+  total: 35-archivos-en-el-arbol-de-cierre
+  docs: 11-archivos-incluido-HANDOFF-que-solo-se-toca-al-integrar
   src_RackCad_Domain: 7-archivos-nuevos-Systems-Cantilever
   src_RackCad_Application: 14-archivos-nuevos-Systems-Cantilever
   tests_RackCad_Tests: 3-archivos-2-nuevos-mas-el-bucket-de-NamespaceFolderGuardTests
+  en_el_sha_tecnico_aprobado_1552367: 34-archivos-docs-10-Domain-7-Application-14-tests-3
   en_5be43f1_eran: 33-archivos-docs-10-Domain-7-Application-13-tests-3
 
 guardas_de_alcance:
-  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  HANDOFF_md: >-
+    tocado-SOLO-en-la-sesion-de-integracion-como-manda-WORKFLOW ·
+    secciones-reales-1-4-5-y-7-el-documento-tiene-SIETE-no-las-8-a-12-que-citan-AGENTS-y-WORKFLOW
   src_RackCad_UI: INTACTO-0-cambios
   src_RackCad_Plugin: INTACTO-0-cambios
   src_RackCad_Application_StructuralSections: INTACTO-I-36-sin-una-linea
@@ -236,17 +242,36 @@ guardas_de_alcance:
 # GATES
 # --------------------------------------------------------------------------------------------------------
 gates:
-  ci: pendiente-de-verde-sobre-la-punta-empujada
-  plugin_build: satisfecho-0-errores-propios
+  ci: satisfecho-VERDE-run-30488839172-sobre-el-SHA-tecnico-aprobado-1552367
+  plugin_build: satisfecho-0-errores-propios-2-MSB3277-conocidas
   autocad: NO-APLICA-no-cambia-dibujo-ni-UI
   owner_validation: NO-APLICA-no-hay-nada-que-ver
   owner_decision: satisfecho-docs-automation-decisions-I-37-md
+  todos_resueltos: si
 
 # --------------------------------------------------------------------------------------------------------
 # DECISIONES QUE SIGUEN ABIERTAS PARA EL OWNER
 # --------------------------------------------------------------------------------------------------------
-pendiente_del_owner:
-  adr_0024: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
+owner_validation_final:
+  adr_0024: ACEPTADO-paso-de-propuesto-a-aceptado-el-2026-07-29
+  veredicto_normativo: OWNER_APPROVED_ADR_0024
+  autorizacion_de_integracion: OWNER_AUTHORIZED_INTEGRATION_I_37A
+  sha_tecnico_aprobado: 15523679e655364c146917ece338c7cecbe24023
+  ci_del_sha_aprobado: VERDE-run-30488839172
+  gate: aprobado-SOBRE-EL-CODIGO-no-sobre-el-dibujo-porque-la-iniciativa-no-dibuja
+  observaciones: NINGUNA
+  bloqueos: NINGUNO
+  cubre: >-
+    las-doce-decisiones-que-ADR-0024-enumera-en-su-seccion-de-aceptacion
+  NO_autoriza: >-
+    vistas · UI · AutoCAD · persistencia-de-proyecto · brazos · estaciones ·
+    separadores · arriostres · BOM · peso · calculo-estructural · fabricacion ·
+    cambios-a-I-36
+
+# --------------------------------------------------------------------------------------------------------
+# LO QUE SIGUE ABIERTO DESPUES DEL CIERRE
+# --------------------------------------------------------------------------------------------------------
+sigue_abierto:
   valores_de_los_dos_parametros_sin_default: >-
     la-ARQUITECTURA-no-los-necesita-son-entradas-obligatorias-y-el-resolver-rechaza-si-faltan ·
     un-diseno-real-si-los-necesita

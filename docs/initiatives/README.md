@@ -554,7 +554,13 @@ Planes disponibles:
   biblioteca, editor, preview, vistas, AutoCAD, comandos, materiales, calculo, soldaduras, anclas,
   tornilleria, CNC, familias nuevas y bloques DWG. `requires_autocad: **false**` y
   `requires_owner_validation: **false**` — no cambia el dibujo ni la interfaz, asi que no hay nada que
-  validar. [ADR-0024](../adr/0024-fundacion-cantilever-base-columna.md) nace **`propuesto`**. Decisiones
+  validar. **INTEGRADA el 2026-07-29**:
+  [ADR-0024](../adr/0024-fundacion-cantilever-base-columna.md) quedo **`aceptado`** con veredicto
+  `OWNER_APPROVED_ADR_0024` sobre el SHA tecnico `1552367`, y la integracion se autorizo con
+  `OWNER_AUTHORIZED_INTEGRATION_I_37A`. Es la primera ADR de la Fase 6 aceptada **sobre el codigo** y no
+  sobre el dibujo, porque la iniciativa no dibuja: lo verificable de un contrato son sus invariantes y sus
+  guardas. Suites 2224 y 544, once regresiones comprobadas en rojo, y los **dos offsets sin default
+  aprobado siguen sin default**, como entradas obligatorias que el resolver rechaza si faltan. Decisiones
   vinculantes del Owner para **toda** la linea I-37 en
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37A.yml`](../automation/state/I-37A.yml).

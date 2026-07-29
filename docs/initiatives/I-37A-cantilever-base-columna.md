@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-37A
 title: Fundacion Cantilever - base y columna
 type: architecture
-status: implementing
+status: integrated
 branch: architecture/cantilever-base-columna
 base_branch: main
 priority:
@@ -138,6 +138,27 @@ patron simetrico de la placa inferior.
 ## 10. Validacion manual
 
 **No aplica.** I-37A no cambia el dibujo ni la interfaz: no hay nada que ver en AutoCAD.
+`requires_autocad: false` y `requires_owner_validation: false` — y esa es la diferencia con I-36B e I-36D,
+cuyo gate era ver la geometria real. Aqui lo que se entrega son **contratos**, y lo verificable de un
+contrato son sus invariantes y sus guardas.
+
+## 10.bis Aceptacion del Owner (2026-07-29)
+
+**ADR-0024 quedo `aceptado`**, veredicto normativo `OWNER_APPROVED_ADR_0024`, sobre el SHA tecnico
+`15523679e655364c146917ece338c7cecbe24023`. La integracion quedo autorizada con
+`OWNER_AUTHORIZED_INTEGRATION_I_37A`.
+
+La aceptacion cubre las doce decisiones que ADR-0024 enumera en su seccion de aceptacion, y **no** autoriza
+vistas, UI, AutoCAD, persistencia de proyecto, brazos, estaciones, separadores, arriostres, BOM, peso,
+calculo estructural, fabricacion ni cambios a I-36.
+
+**Los dos parametros sin default aprobado siguen sin default** y siguen siendo entradas **obligatorias** del
+diseno, rechazadas con `CANT_REQUIRED_PARAMETER_MISSING` cuando faltan:
+
+1. offset desde los extremos de la placa inferior de la columna a sus troqueles;
+2. offset superior de la columna al ultimo troquel regular.
+
+La aceptacion de ADR-0024 **no** les asigna un valor. Un diseno real los necesita.
 
 ## 11. Criterios de aceptacion
 

@@ -1,14 +1,47 @@
 # ADR-0024: Fundación Cantilever — diseño en Domain, resolución en Application y autoridad compartida base–columna
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-29 (redacción)
-- **Decisores:** Mario Pérez, dueño del repositorio (decisiones de producto emitidas al abrir I-37A);
-  Claude Opus 5 (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-07-29 (redacción y **aceptación**)
+- **Decisores:** **Mario Pérez, Owner del repositorio** (acepta); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-37A `architecture/cantilever-base-columna`
 - **No reemplaza a ninguna ADR.** Extiende [ADR-0020](0020-catalogo-neutral-de-secciones-estructurales.md),
   [ADR-0021](0021-identidad-unidades-y-presentacion-de-secciones.md),
   [ADR-0022](0022-geometria-parametrica-de-secciones-estructurales.md) y
   [ADR-0023](0023-geometria-visual-derivada-perfiles-s.md) hacia el primer **consumidor** del catálogo neutral.
+
+> **Nació `propuesto` y se aceptó sobre el código, no sobre el dibujo.** A diferencia de ADR-0022 y
+> ADR-0023, cuyo gate era ver la geometría en AutoCAD, I-37A **no dibuja nada**: no hay vistas, editor,
+> persistencia ni Plugin. Lo que se acepta aquí son **contratos**, y lo verificable de un contrato son sus
+> invariantes y sus guardas, no una captura. Por eso `requires_autocad: false` y
+> `requires_owner_validation: false`, y por eso el gate se resolvió con CI verde, 2 224 pruebas y las once
+> regresiones comprobadas en rojo.
+
+## Aceptación del Owner (2026-07-29)
+
+**Decisor:** Mario Pérez, Owner del repositorio. **Gate:** aprobado.
+**Veredicto normativo registrado:** `OWNER_APPROVED_ADR_0024`.
+**SHA técnico aprobado:** `15523679e655364c146917ece338c7cecbe24023`.
+
+Aceptado expresamente:
+
+| # | Lo aceptado |
+|---|---|
+| 1 | El **diseño Cantilever vive en Domain** y guarda los ids de sección como **texto** |
+| 2 | Una **frontera única de resolución** en Application: un solo sitio parsea el id y consulta el catálogo |
+| 3 | El **modelo híbrido** por **naturaleza física** —perfil del catálogo, placa, cartabón, troquel— con el rol como enum |
+| 4 | **`PrismaticSectionInstance` como única autoridad de colocación**; sección, longitud, extremos y dirección son derivados sin campo de respaldo |
+| 5 | El **patrón compartido base–columna**: una sola autoridad, consumida igual por la placa posterior y por la cara de la columna |
+| 6 | **Igualdad exacta del datum** consistente con su hash, y **comparación geométrica tolerante separada** (`ApproxEquals`) |
+| 7 | **Autoridad única de marcos** (`CantileverColumnBaseFrameResolver`), que lee la orientación registrada y falla cerrado |
+| 8 | **`NominalCutLength` igual a la longitud geométrica y NO liberada para fabricación** |
+| 9 | Toda **geometría exterior derivada de I-36** vía `StructuralSectionGeometry.Bounds` |
+| 10 | **Elegibilidad por combinaciones exactas** de ids, inyectable, sin lista blanca familia→rol |
+| 11 | El **datum base–columna declarado**: `y = 0` plano de conexión, `z = 0` fondo común, `x = 0` centro de la columna |
+| 12 | Las **validaciones de ajuste de troqueles**: offsets ≥ radio, pitches ≥ diámetro, separación de filas ≥ diámetro |
+
+**La aceptación NO autoriza**, y ninguna fase posterior puede darlas por concedidas: vistas; UI; AutoCAD;
+persistencia de proyecto; brazos; estaciones; separadores; arriostres; BOM; peso; cálculo estructural;
+fabricación; ni **cambios a I-36**. Cada una es una decisión de su propia iniciativa.
 
 ## Contexto
 
