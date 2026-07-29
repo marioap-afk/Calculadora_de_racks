@@ -357,3 +357,29 @@ documentación** y no altera el binario.
 
 La ronda anterior (`8b3e5f5`, run 30409753528, DLL `CBE93240…`) queda **superseded**: R2 cambió el texto
 de fidelidad del inspector, así que el Owner debe cargar el DLL de R2.
+
+## 12. Aprobación del Owner y cierre
+
+**Veredicto normativo:** `OWNER_APPROVED_ADR_0023` · **fecha:** 2026-07-28 · **decisor:** Mario Pérez,
+Owner del repositorio.
+
+| Campo | Valor |
+|---|---|
+| Gate | `owner-validation` — **APROBADO** |
+| SHA técnico validado | `3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68` |
+| CI de ese SHA | [30410876362](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30410876362) — **4/4** |
+| DLL Debug cargado con `NETLOAD` | `6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7` (121 856 bytes) |
+| Observaciones | **ninguna** |
+| Bloqueos | **ninguno** |
+
+El Owner ejecutó la validación manual en **AutoCAD 2025** y confirmó todo correcto. Con ello
+**ADR-0023 pasa de `propuesto` a `aceptado`**, con sus nueve puntos de aceptación expresa y su
+delimitación explícita de lo que la aprobación **no** amplía.
+
+**El DLL validado corresponde al SHA técnico `3ffe4df`.** Los commits posteriores de la rama son
+**sólo documentación** —cierre y registro de la aprobación— y no alteran el binario.
+
+`requires_autocad: satisfied` · `requires_owner_validation: satisfied` ·
+`requires_owner_decision: false`.
+
+**Siguiente iniciativa habilitada: I-37 — Cantilever MVP**, que **no** se abre ni se implementa aquí.

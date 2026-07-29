@@ -525,8 +525,10 @@ Planes disponibles:
   `secciones.csv`, catalogos de sistemas, `blocks.csv`, `blocks-library.dwg`, geometria de fabricante,
   CNC y descarga en runtime. `requires_autocad: **true**` y `requires_owner_validation: **true**`
   (el dibujo es el criterio); `requires_owner_decision: false`.
-  [ADR-0023](../adr/0023-geometria-visual-derivada-perfiles-s.md) nace **`propuesto`** y **solo el
-  Owner** puede aceptarlo tras ver el dibujo real. Decisiones vinculantes en
+  [ADR-0023](../adr/0023-geometria-visual-derivada-perfiles-s.md) nacio **`propuesto`** y **solo el
+  Owner** podia aceptarlo tras ver el dibujo real: lo hizo el **2026-07-28** y quedo **`aceptado`**.
+  **INTEGRADA el 2026-07-28**: el Owner aprobo la validacion manual en AutoCAD 2025 **sin
+  observaciones** (veredicto `OWNER_APPROVED_ADR_0023`) sobre el SHA tecnico `3ffe4df`. Decisiones vinculantes en
   [`../automation/decisions/I-36D.md`](../automation/decisions/I-36D.md), auditoria medida en
   [`../automation/evidence/I-36D-auditoria-aisc-s.md`](../automation/evidence/I-36D-auditoria-aisc-s.md)
   y estado versionado en [`../automation/state/I-36D.yml`](../automation/state/I-36D.yml).

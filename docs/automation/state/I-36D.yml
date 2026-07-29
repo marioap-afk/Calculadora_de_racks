@@ -4,15 +4,14 @@ automation_state:
   branch: feature/perfiles-aisc-s
   claim_id: 964effe9-9e1a-4861-ac34-594b04da48c7
   current_phase: 5
-  state: validating
-  gate: owner-validation
+  state: completed
+  gate: none
   attempts: 1
   next_action: >-
-    VALIDACION-MANUAL-DEL-OWNER-EN-AUTOCAD-2025-sobre-el-DLL-Debug-del-worktree ·
-    las-fases-1-a-4-estan-COMPLETAS ·
-    ADR-0023-sigue-propuesto-y-solo-el-Owner-lo-acepta-tras-ver-el-dibujo ·
-    NO-integrar-ni-tocar-HANDOFF-hasta-esa-aprobacion
-  last_evidence_commit: 89392379c0e5352475ebee0858cdb13f5f412ed7-CI-VERDE-4-de-4-run-30407500115
+    NINGUNA-I-36D-esta-INTEGRADA-y-CERRADA ·
+    ADR-0023-ACEPTADO-por-el-Owner-el-2026-07-28-veredicto-OWNER_APPROVED_ADR_0023 ·
+    siguiente-iniciativa-habilitada-I-37-Cantilever-MVP-que-NO-se-abre-aqui
+  last_evidence_commit: 3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68-CI-VERDE-4-de-4-run-30410876362
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo y revalidado al abrir esta sesion.
@@ -126,7 +125,7 @@ fases:
   2: COMPLETA-catalogo-familia-S-SSectionDimensions-clasificador-mapper-CSV-y-manifiesto
   3: COMPLETA-geometria-SSectionGeometryBuilder-autoridad-ortogonal-diagnosticos-bounds-y-simetria
   4: COMPLETA-UI-y-Plugin-filtro-etiqueta-S-IPS-autoridad-y-advertencia-incondicional
-  5: PENDIENTE-validacion-del-Owner-en-AutoCAD-y-aceptacion-o-rechazo-de-ADR-0023
+  5: COMPLETA-validacion-del-Owner-en-AutoCAD-APROBADA-y-ADR-0023-ACEPTADO
 
 # --------------------------------------------------------------------------------------------------------
 # IMPLEMENTACION. Lo medido al terminar las fases 2 a 4.
@@ -238,11 +237,28 @@ candidato_para_el_owner:
     el-Owner-debe-cargar-el-DLL-de-R2
 
 owner_validation:
-  status: pending
-  gate: owner-validation
-  que_debe_ver: >-
-    una-S-insertada-en-las-cuatro-vistas · patin-VISIBLEMENTE-inclinado · el-filete ·
-    la-punta-aguda · la-advertencia-en-inspector-y-mensaje ·
-    y-que-W-C-L-y-HSS-NO-cambian
-  que_decide: aceptacion-o-rechazo-de-ADR-0023-que-hoy-esta-propuesto
-  requires_owner_decision: false-la-convencion-ya-esta-escrita-y-acotada-en-el-contrato
+  status: approved
+  date: 2026-07-28
+  owner: Mario Perez
+  veredicto_normativo: OWNER_APPROVED_ADR_0023
+  sha_tecnico_validado: 3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68
+  ci_del_sha_validado: VERDE-4-de-4-run-30410876362
+  dll_debug_validado: 6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7
+  observaciones: NINGUNA
+  bloqueos: NINGUNO
+  requires_owner_validation: satisfied
+  requires_autocad: satisfied
+  requires_owner_decision: false-la-convencion-ya-estaba-escrita-y-acotada-en-el-contrato
+  adr_0023: ACEPTADO-paso-de-propuesto-a-aceptado-el-2026-07-28
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  rebase_final: NO-OP-origin-main-no-avanzo-desde-la-base-202e456
+  ci_del_candidato: VERDE-4-de-4-run-30410876362-sobre-3ffe4df
+  merge: no-ff-sin-squash-desde-el-worktree-principal
+  merge_sha: >-
+    vive-en-git-log-first-parent-main · este-archivo-no-lo-inventa-porque-se-escribe-antes-del-merge
+  limpieza: worktree-sin-force-branch-d-nunca-branch-D-y-rama-remota-eliminada-tras-confirmar-el-merge
+  siguiente_habilitada: I-37-Cantilever-MVP-NO-se-abre-en-esta-sesion

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-36D
 title: Perfiles AISC S/IPS y geometria visual derivada
 type: feature
-status: in-progress
+status: integrated
 branch: feature/perfiles-aisc-s
 base_branch: main
 priority:

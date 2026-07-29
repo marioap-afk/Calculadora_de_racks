@@ -1,17 +1,49 @@
 # ADR-0023: Geometría visual derivada para los perfiles S (IPS)
 
-- **Estado:** **propuesto**
-- **Fecha:** 2026-07-28 (redacción)
-- **Decisores:** Mario Pérez, Owner del repositorio (**acepta o rechaza tras ver el dibujo real**);
-  Claude Opus 5 (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-07-28 (redacción y **aceptación**)
+- **Decisores:** **Mario Pérez, Owner del repositorio** (acepta); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-36D `feature/perfiles-aisc-s`
 
-> **Nace `propuesto` a propósito, igual que ADR-0022.** Esta ADR introduce la primera geometría de
-> RackCad que **no** es trazable, punto por punto, a un dato publicado. Esa afirmación se verifica
-> mirando el dibujo: el ángulo del patín, el filete y la punta. Por eso el gate es
-> `owner-validation` y **solo el Owner** puede aceptarla. ADR-0020, ADR-0021 y ADR-0022 permanecen
-> `aceptado`; ésta **no los reemplaza**: los **extiende** para el caso que ADR-0022 difirió por
-> nombre.
+> **Nació `propuesto` a propósito, igual que ADR-0022, y se aceptó tras ver el dibujo.** Esta ADR
+> introduce la primera geometría de RackCad que **no** es trazable, punto por punto, a un dato
+> publicado. Esa afirmación sólo se verifica mirando el dibujo real: el ángulo del patín, el filete y
+> la punta. Por eso el gate era `owner-validation` y **solo el Owner** podía aceptarla. Ejecutó la
+> validación manual en AutoCAD 2025 el **2026-07-28** y la aprobó. ADR-0020, ADR-0021 y ADR-0022
+> permanecen `aceptado`; ésta **no los reemplaza**: los **extiende** para el caso que ADR-0022 difirió
+> por nombre.
+
+## Aceptación del Owner (2026-07-28)
+
+**Decisor:** Mario Pérez, Owner del repositorio. **Gate:** `owner-validation`, **aprobado**.
+**Veredicto normativo registrado:** `OWNER_APPROVED_ADR_0023`.
+
+| Campo | Valor |
+|---|---|
+| SHA técnico validado | `3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68` |
+| CI de ese SHA | run 30410876362, **4/4** |
+| DLL Debug cargado por `NETLOAD` | `6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7` (121 856 bytes) |
+| Observaciones | ninguna |
+| Bloqueos | ninguno |
+
+Aceptado expresamente:
+
+| # | Lo aceptado |
+|---|---|
+| 1 | La **separación de autoridades**: AISC conserva identidad, dimensiones, `A`, peso, propiedades y centroide tabulado; RackCad conserva la representación visual |
+| 2 | La **pendiente `1:6`** como convención declarada de RackCad, **no** dato de AISC, ASTM ni fabricante |
+| 3 | La lectura de **`tf` como espesor medio del vuelo libre**, válida sólo dentro de la representación |
+| 4 | El **radio visual** deducido, `r = delta·(sqrt(1+s²) + s)`, tangente al alma y a la cara inclinada |
+| 5 | La **punta vertical y aguda**, sin radio ni chaflán |
+| 6 | La **autoridad como eje ortogonal** a la fidelidad: `TabulatedConstrained` frente a `VisualDerived` |
+| 7 | El **residuo de área** (+0,25 % a +2,59 %) como **diagnóstico**, que no se corrige |
+| 8 | La **advertencia obligatoria y no configurable** en inspector y en `RACKSECCION` |
+| 9 | Que **W, HSS, C y L no cambian** |
+
+**Lo que la aceptación NO amplía:** no autoriza extender la convención a otras familias, ni radio o
+chaflán de punta, ni sólidos 3D, ni una segunda tubería de geometría, ni que I-37 defina geometría de S
+por su cuenta. Si algún día se acredita una fuente con procedencia para la pendiente, sustituye a la
+convención **sin cambiar la frontera** que esta ADR fija.
 
 ## Contexto
 
