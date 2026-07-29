@@ -13,7 +13,7 @@ automation_state:
     HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama · merge---no-ff ·
     NO-requiere-validacion-manual-en-AutoCAD-porque-no-dibuja ·
     ADR-0025-sigue-PROPUESTO-solo-el-Owner-lo-acepta
-  last_evidence_commit: punta-de-la-rama-2312-y-544-verdes
+  last_evidence_commit: f5b078e-ronda-de-correccion-2355-y-544-verdes
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -98,6 +98,9 @@ fases:
   5: COMPLETA-cuerpo-placa-patron-placa-final-y-subensamble-9b5b4cf
   6: COMPLETA-invariantes-y-guardas-de-fuente-b93848a
   7: COMPLETA-reparacion-de-la-guarda-vacua-y-evidencia-final
+  8: >-
+    COMPLETA-ronda-de-correccion-de-CUATRO-defectos-senalados-por-el-dueno-f5b078e ·
+    misma-rama-sin-reabrir-arquitectura-sin-funcionalidad-nueva-y-sin-iniciativas-posteriores
 
 # --------------------------------------------------------------------------------------------------------
 # PARAMETRO SIN DEFAULT APROBADO. No se inventa; es entrada obligatoria.
@@ -186,24 +189,38 @@ implementacion:
       Stop-crece-hacia-arriba-desde-el-mismo-borde-inferior-y-NO-toca-el-corte
 
 # --------------------------------------------------------------------------------------------------------
-# APROXIMACION DECLARADA. No se esconde.
+# APROXIMACION DECLARADA. No se esconde, y desde la ronda de correccion tampoco se subestima.
 # --------------------------------------------------------------------------------------------------------
 aproximacion_declarada:
+  datum: >-
+    el-ORIGEN-del-plano-de-corte-del-cuerpo-se-coloca-sobre-la-cara-EXTERIOR-de-la-placa ·
+    eso-es-un-datum-y-NO-una-afirmacion-de-que-las-caras-queden-a-ras
   corte_a_escuadra_contra_placa_vertical: >-
-    con-pendiente-la-cara-de-arranque-NO-queda-a-ras-de-la-placa ·
-    se-emite-CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE-de-severidad-Info-con-la-intrusion-MEDIDA ·
-    ajustarla-exige-preparacion-de-extremos-que-esta-fuera-de-alcance-en-I-37A-y-en-I-37B ·
+    con-pendiente-la-cara-de-arranque-NO-queda-a-ras-porque-el-perfil-va-cortado-a-ESCUADRA
+    y-la-placa-es-un-plano-VERTICAL ·
+    una-zona-PENETRA-la-placa-y-la-opuesta-deja-HOLGURA ·
+    las-dos-magnitudes-son-DISTINTAS-cuando-la-seccion-no-es-simetrica-respecto-a-su-origen ·
+    se-emite-CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE-de-severidad-Info-con-AMBAS-medidas ·
+    ajustarla-exige-corte-inclinado-o-preparacion-de-extremo-fuera-de-alcance-en-I-37A-y-en-I-37B ·
     mismo-espiritu-que-SG_CHANNEL_FLANGE_TAPER_NOT_MODELLED-de-I-36
+  donde_esta_escrita_la_verdad: >-
+    XML-doc-de-CantileverPlateKind-ArmMounting · comentario-del-resolver ·
+    ADR-0025-D3-y-Consecuencias · contrato-I-37B-seccion-9-bis ·
+    decision-versionada-8-13-y-8-13-bis ·
+    retirada-toda-afirmacion-absoluta-de-que-placa-y-cuerpo-no-se-traslapan
 
 # --------------------------------------------------------------------------------------------------------
 # PRUEBAS Y BUILDS
 # --------------------------------------------------------------------------------------------------------
 pruebas:
-  RackCad_Tests: 2312-de-2312-base-2224-mas-88
+  RackCad_Tests: 2355-de-2355-base-2224-mas-131-la-ronda-de-correccion-suma-43
   RackCad_UI_Tests: 544-de-544-sin-cambio
-  nuevas: CantileverArmTests-80-y-8-guardas-de-fuente-nuevas-el-archivo-sube-de-49-a-57
+  nuevas: >-
+    CantileverArmTests-117-el-archivo-sube-de-80-a-117 ·
+    CantileverSourceGuardTests-63-el-archivo-sube-de-49-a-57-y-luego-a-63
   I_37A_focalizadas: 81-de-81-sin-cambio
-  catalogo_estructural: 34-de-34
+  catalogo_estructural_y_secciones: 420-de-420
+  archivos_de_la_rama: 23-reales-medidos-con-git-diff--name-status-12-nuevos-y-11-modificados
   builds_debug: Domain-0-0 Application-0-0 UI-0-0 Plugin-0-errores-2-MSB3277-conocidas
   bundle: NO-EJECUTADO-y-NO-exigible-el-diff-no-toca-assets-catalogos-deploy-ni-github
   regresiones_verificadas_fallando:
@@ -215,6 +232,26 @@ pruebas:
     placa_aceptando_un_cuerpo_mas_alto: fallan-2-y-revertido
     tapa_modificando_el_corte: fallan-3-y-revertido
     campo_de_separacion_de_canal: fallan-2-y-revertido
+  regresiones_de_la_ronda_de_correccion:
+    R1_suma_vulnerable_restaurada: >-
+      se-restauro-lowerColumnPunchIndex-mas-verticalPunchCount-mayor-que-Count ·
+      ROJO-4-de-7-ThePunchIndexRangeIsCheckedWithASUBTRACTION-mas-int-MaxValue-mas-MaxValue-menos-1
+      mas-TheOverflowingSelectionIsRejectedByThePatternItselfWithoutThrowing ·
+      el-caso-de-un-millon-siguio-PASANDO-que-es-exactamente-lo-que-discrimina-el-desborde ·
+      revertido-y-verificado-con-git-diff--quiet
+    R2_gate_de_pendiente_desactivado: >-
+      se-sustituyo-la-condicion-del-gate-por-false ·
+      ROJO-4-de-4-la-guarda-mas-las-tres-pendientes-colapsantes ·
+      revertido-y-verificado
+    R3_default_de_ValidateEndPlate_retirado: >-
+      ROJO-4-de-4-la-guarda-mas-los-tres-modos-no-declarados ·
+      el-fallo-llega-como-ArgumentOutOfRangeException-de-BuildEndPlate-que-es-la-prueba-de-que
+      la-VALIDACION-es-la-que-convierte-el-caso-en-diagnostico ·
+      revertido-y-verificado
+    R4_penetracion_y_holgura_colapsadas: >-
+      se-sustituyeron-las-dos-magnitudes-por-una-sola-derivada-de-la-mitad-del-peralte ·
+      ROJO-AnASYMMETRICSectionReportsIntrusionAndClearanceSeparately-con-AISC-L-L8X6X1 ·
+      revertido-y-verificado
 
 # --------------------------------------------------------------------------------------------------------
 # DEFECTO PROPIO ENCONTRADO Y CORREGIDO EN LA MISMA CORRIDA
@@ -249,6 +286,61 @@ integridad:
   logica_de_I_37A: >-
     CantileverColumnBaseResolver-ConnectionPattern-y-FrameResolver-con-diff-VACIO ·
     lo-unico-que-cambio-de-I-37A-son-tres-valores-de-enum-al-final-y-tokens-nuevos
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA DE CORRECCION. Cuatro defectos senalados por el dueno, corregidos en la misma rama.
+# --------------------------------------------------------------------------------------------------------
+ronda_de_correccion:
+  commit: f5b078e
+  1_modo_de_placa_final_no_exhaustivo:
+    defecto: >-
+      la-validacion-tenia-casos-GUARDADOS-y-ningun-default · un-valor-no-declarado-pasaba-sin-una
+      palabra-y-BuildEndPlate-lo-materializaba-como-TAPA-porque-su-forma-era-un-if-None-y-un-ternario
+    correccion: >-
+      ValidateEndPlate-conmuta-sobre-los-tres-modos-y-CIERRA-con
+      CANT_ARM_END_PLATE_MODE_NOT_SUPPORTED · BuildEndPlate-conmuta-tambien-y-su-default-LANZA ·
+      el-espesor-deja-de-validarse-sin-condicion-porque-bajo-None-es-dato-DURMIENTE-y-bloquear-por-el
+      rechazaria-un-brazo-valido · la-finitud-de-ExtraStopHeight-se-comprueba-ANTES-de-comparar
+      porque-Math-Abs-de-NaN-mayor-que-tolerancia-es-FALSO
+    pruebas: 12-nuevas-mas-la-completitud-del-enum
+  2_desborde_del_indice_de_troquel:
+    defecto: >-
+      lowerColumnPunchIndex-mas-verticalPunchCount-DESBORDA-int-para-un-indice-grande ·
+      envolvia-a-negativo-la-comprobacion-pasaba-y-la-seleccion-vacia-reventaba-al-leer-el-pitch
+    correccion: >-
+      la-comparacion-se-escribe-como-RESTA-lowerColumnPunchIndex-mayor-que-Count-menos-count ·
+      el-count-ya-se-sabe-no-mayor-que-la-lista-asi-que-la-resta-no-puede-subdesbordar
+    pruebas: 5-nuevas-incluida-una-directa-contra-el-patron-sin-resolver-de-por-medio
+  3_pendiente_que_colapsa_el_marco:
+    defecto: >-
+      atan-esta-ACOTADA-bajo-90-grados-pero-CONVERGE-en-ellos · una-pendiente-finita-y-no-negativa
+      como-double-MaxValue-produce-un-eje-vertical-hasta-el-punto-flotante-y-anula-la-proyeccion
+      de-mas-Z-sobre-el-plano-transversal · salia-como-InvalidOperationException-de-un-numero-que
+      alguien-ESCRIBIO
+    correccion: >-
+      TryDepthAxis-informa-en-vez-de-lanzar · IsRepresentableSlope-es-la-autoridad ·
+      el-resolver-abre-un-gate-antes-de-construir-marco-alguno-y-emite
+      CANT_ARM_SLOPE_FRAME_UNDEFINED · la-cota-es-DegenerateProjection-la-MISMA-tolerancia-geometrica
+      que-usa-la-proyeccion-y-NO-un-maximo-comercial-inventado-que-nadie-aprobo ·
+      una-pendiente-invalida-reporta-SOLO-su-codigo-y-no-los-dos
+    pruebas: 14-nuevas-entre-teorias-y-hechos
+  4_afirmacion_falsa_de_no_traslape:
+    defecto: >-
+      el-XML-doc-el-comentario-el-ADR-el-contrato-y-la-decision-versionada-afirmaban-que-la-placa-y
+      el-cuerpo-NO-SE-TRASLAPAN · con-pendiente-y-corte-a-escuadra-eso-es-simplemente-FALSO ·
+      el-diagnostico-informaba-ademas-una-sola-magnitud-como-si-el-desajuste-fuera-simetrico
+    correccion: >-
+      se-informan-las-DOS-magnitudes-derivadas-de-los-dos-extremos-de-la-envolvente-sin-suponer
+      simetria · toda-afirmacion-absoluta-retirada-de-los-cinco-sitios ·
+      el-ADR-dice-explicitamente-que-NO-afirma-que-no-se-traslapen-sino-donde-esta-el-datum
+    pruebas: >-
+      3-nuevas-de-comportamiento-mas-2-guardas-una-de-fuente-RAW-con-comentarios-INTACTOS-y-una-de
+      documentos · la-de-la-seccion-asimetrica-usa-AISC-L-L8X6X1-y-se-AUTOVERIFICA-comprobando-que
+      la-seccion-es-asimetrica-antes-de-confiar-en-el-resultado
+  guardas_nuevas: 6-el-archivo-de-guardas-sube-de-57-a-63
+  no_se_toco: >-
+    NominalCutLength · la-posicion-del-cuerpo · la-arquitectura · ADR-0025-sigue-PROPUESTO ·
+    HANDOFF · I-36 · I-37A · UI · Plugin · estaciones-vistas-editor-AutoCAD-e-iniciativas-posteriores
 
 # --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
