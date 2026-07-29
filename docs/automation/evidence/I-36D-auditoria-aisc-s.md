@@ -304,11 +304,56 @@ adaptador **no** reimplementa la pendiente, el filete ni la familia.
 
 | Gate | Resultado |
 |---|---|
-| `RackCad.Tests` | **2 093 / 2 093** (base 2 071, +22) |
-| `RackCad.UI.Tests` | **538 / 538** (base 534, +4) |
+| `RackCad.Tests` | **2 094 / 2 094** (base 2 071, **+23**) |
+| `RackCad.UI.Tests` | **544 / 544** (base 534, **+10**) |
 | Builds Debug | Application, UI y Plugin — 0 errores propios (2 `MSB3277` conocidas del Plugin) |
 | Bundle | **153 comprobaciones** (147 + 6 por el CSV nuevo); DLL idénticos al publish, catálogos idénticos a `assets/catalogs`, cero DLL Autodesk |
 | Harness del bundle | **10 / 10** (1 válido + 9 negativos) |
 
-Suites nuevas: `StructuralSectionSFamilyTests` (20), dos guardas de fuente del Plugin, tres pruebas de
-inspector y el caso `S = 28` del filtro por familia.
+Suites nuevas: `StructuralSectionSFamilyTests` (21, incluida la guarda de `.gitattributes`), dos guardas
+de fuente del Plugin, nueve pruebas de inspector y el caso `S = 28` del filtro por familia.
+
+## 10. Corrección R2 — la línea de fidelidad de S
+
+Una S es `TabulatedDerived` **y** `VisualDerived` a la vez, y el inspector reutilizaba el texto de C y L:
+*«los radios se derivan de la fuente»*. Para una S eso es **falso** —AISC no publica pendiente ni radio
+alguno— y atribuía a la fuente justo la convención que ADR-0023 declara de RackCad.
+
+`FidelitySummary()` pasa a ramificar por **autoridad**, no sólo por fidelidad:
+
+| Caso | Texto |
+|---|---|
+| S, `Tabulated` | «Tabulada derivada **con convención visual**: las dimensiones son las que tabula AISC; la inclinación del patín y el filete son una convención de RackCad (ADR-0023), no un dato de la fuente.» |
+| S, `Simplified` | añade que la conicidad se conserva y es convención de RackCad |
+| C, L, HSS, `Tabulated` | **byte a byte el mensaje anterior**, fijado como literal en las pruebas |
+| W, `Tabulated` | **byte a byte el mensaje anterior** |
+
+Seis pruebas nuevas lo cubren: S en detalle tabulado y simplificado, la ausencia de la frase que atribuye
+el detalle a la fuente, y la preservación **verbatim** del mensaje de las tres familias tabuladas
+restringidas y de W.
+
+**Comentarios corregidos en la misma ronda** —la quinta familia los dejó desactualizados—: «the four
+families» en el esquema CSV (×3), la identidad, las propiedades, el soporte de geometría y el escritor
+del importador; la descripción de `Tabulated`, que ahora distingue *documentado* de *derivado de la
+fuente*; la de `TabulatedDerived`, que advierte que S no significa lo mismo por ella; y la de
+`QuarterArc`, porque el filete de una S barre ~80,5° y **no** un cuarto de vuelta. Se eliminó además el
+`<summary>` huérfano que había quedado sobre `AuthoritySummary()` y se devolvió el suyo a
+`FidelitySummary()`.
+
+**Sin cambios** de geometría, catálogo, manifiesto ni CSV: los seis archivos generados conservan su
+SHA-256.
+
+## 11. Candidato para la validación del Owner
+
+| Campo | Valor |
+|---|---|
+| **SHA técnico** | `3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68` |
+| CI del SHA técnico | [30410876362](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30410876362) — **4/4** |
+| **DLL Debug** | `6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7`, 121 856 bytes |
+| Ruta | `…/feature-perfiles-aisc-s/src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll` |
+
+**El DLL corresponde al SHA técnico `3ffe4df`.** Cualquier commit posterior de esta rama es **sólo
+documentación** y no altera el binario.
+
+La ronda anterior (`8b3e5f5`, run 30409753528, DLL `CBE93240…`) queda **superseded**: R2 cambió el texto
+de fidelidad del inspector, así que el Owner debe cargar el DLL de R2.

@@ -173,25 +173,43 @@ implementacion:
       no-depende-del-detalle-ni-de-la-fidelidad-ni-de-ninguna-opcion
     segunda_tuberia: NINGUNA-ni-inspector-ni-preview-ni-comando-ni-adaptador-nuevos
   pruebas:
-    RackCad_Tests: 2093-de-2093-base-2071-mas-22
-    RackCad_UI_Tests: 538-de-538-base-534-mas-4
+    RackCad_Tests: 2094-de-2094-base-2071-mas-23
+    RackCad_UI_Tests: 544-de-544-base-534-mas-10
     nuevas: >-
-      StructuralSectionSFamilyTests-20 · guardas-de-fuente-del-Plugin-2 ·
-      inspector-3 · filtro-por-familia-S-1
+      StructuralSectionSFamilyTests-21-incluida-la-guarda-de-gitattributes ·
+      guardas-de-fuente-del-Plugin-2 · inspector-9 · filtro-por-familia-S-1
     builds_debug: Application-UI-y-Plugin-0-errores-propios-2-MSB3277-conocidas
     bundle: OK-153-comprobaciones-antes-147-mas-6-por-el-CSV-nuevo
     harness_del_bundle: 10-de-10-casos-1-valido-y-9-negativos
 
 # --------------------------------------------------------------------------------------------------------
-# GUARDAS DE ALCANCE de esta fase.
+# GUARDAS DE ALCANCE.
+#
+# OJO: hasta la fase 1 este bloque decia "solo-docs" y "cero cambios en src/tests/assets". Eso era cierto
+# de la fase DOCUMENTAL y dejo de serlo al implementar; conservarlo habria sido una guarda que miente.
+# Ahora declara dos cosas distintas: lo que la iniciativa SI modifico, y lo que quedo intacto de verdad.
 # --------------------------------------------------------------------------------------------------------
+areas_modificadas:
+  medidas_con: git diff --name-only 202e456..HEAD
+  src_RackCad_Application: 15-archivos-catalogo-y-geometria
+  src_RackCad_UI: 2-archivos-inspector-estado-y-ventana
+  src_RackCad_Plugin: 1-archivo-StructuralSectionCommandFlow-solo-la-advertencia
+  tests_RackCad_Tests: 5-archivos
+  tests_RackCad_UI_Tests: 1-archivo
+  tools_importador: 3-archivos-clasificador-mapper-y-escritor
+  assets_catalogs: 2-archivos-structural-sections-s-csv-nuevo-y-el-manifiesto
+  gitattributes: 1-linea-text-para-el-CSV-generado-nuevo
+  docs: 12-archivos
+
 guardas_de_alcance:
-  esta_fase_toca: solo-docs
-  cero_cambios_en: src tests tools-versionados assets deploy .github RackCad.sln
   HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
-  secciones_csv: INTACTO
-  cuatro_CSV_de_familia_existentes: INTACTOS-byte-identicos
-  blocks_csv_y_blocks_library_dwg: INTACTOS
+  secciones_csv: INTACTO-0-cambios
+  cuatro_CSV_de_familia_existentes: INTACTOS-byte-identicos-hash-sin-cambio
+  blocks_csv_y_blocks_library_dwg: INTACTOS-0-cambios
+  deploy: INTACTO-0-cambios
+  github_workflows: INTACTO-0-cambios
+  RackCad_sln: INTACTO-0-cambios
+  src_RackCad_Domain: INTACTO-0-cambios
   iniciativas_cerradas: ningun-estado-modificado
   fuera_de_alcance_declarado: >-
     I-37-y-cualquier-miembro-Cantilever · conectores-mensulas-placas-soldaduras-perforaciones ·
@@ -203,6 +221,22 @@ guardas_de_alcance:
 # --------------------------------------------------------------------------------------------------------
 # GATE PENDIENTE
 # --------------------------------------------------------------------------------------------------------
+candidato_para_el_owner:
+  sha_tecnico: 3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68
+  ci_del_sha_tecnico: VERDE-4-de-4-run-30410876362
+  dll_debug_sha256: 6A88D9FEB097B5052429D2DF2660EC28992598F2616CCFD587840A44289DC3B7
+  dll_debug_tamano_bytes: 121856
+  dll_debug_ruta: >-
+    C:/Users/alejandra-mendoza/.claude/worktrees/feature-perfiles-aisc-s/
+    src/RackCad.Plugin/bin/Debug/net8.0-windows/RackCad.Plugin.dll
+  el_dll_corresponde_a: >-
+    el-SHA-TECNICO-3ffe4df · cualquier-commit-posterior-de-esta-rama-es-SOLO-DOCUMENTACION
+    y-no-cambia-el-binario
+  ronda: >-
+    R2 · la-ronda-anterior-fue-8b3e5f5-con-run-30409753528-y-DLL-CBE93240B57943A64F75DDC1ADDB0CD8D4B36B0D1DD9F96D5A59BB38D42C381B ·
+    QUEDA-SUPERSEDIDA-porque-R2-cambio-el-texto-de-fidelidad-del-inspector ·
+    el-Owner-debe-cargar-el-DLL-de-R2
+
 owner_validation:
   status: pending
   gate: owner-validation
