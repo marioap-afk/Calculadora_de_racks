@@ -80,6 +80,14 @@ existen arriba —troquel, peralte, nivel, frente— **se reutilizan y no se red
 | Datum de troquel | Identidad **lógica** de una perforación: coordenada transversal, elevación y eje. Dos agujeros del mismo tornillo comparten datum aunque sus centros 3D difieran por el espesor de una placa |
 | Patrón de conexión | `CantileverColumnBaseConnectionPattern`: la **única** autoridad de los agujeros que comparten la placa posterior y la columna. No hay dos algoritmos |
 | Longitud nominal de corte | Longitud de la pieza para el BOM futuro. En el MVP **es igual** a la longitud geométrica; **no** incluye tolerancias ni preparación de extremos y **no** está liberada para CNC |
+| Brazo | Voladizo portante de un cantilever, que sale de la columna hacia el pasillo. **Nunca «ménsula»** |
+| Arreglo del cuerpo | Cuántos perfiles forman un brazo: **perfil sencillo**, **canal doble encontrado** o **canal doble espalda con espalda** |
+| Canal doble encontrado | Dos canales con las **aberturas enfrentadas**, tocándose por las puntas de los patines en el plano central |
+| Canal doble espalda con espalda | Dos canales con los **dorsos de las almas en contacto** y las aberturas hacia afuera |
+| Placa de conexión | Placa de la raíz del brazo que se atornilla a la columna. Su cara exterior es donde **inicia** el perfil cortado |
+| Tapa | Placa perpendicular al eje del brazo que cierra su extremo libre, sin extensión |
+| Tope | La misma placa de la tapa, extendida **hacia arriba** para retener la carga. No altera el corte del perfil |
+| Pendiente (`RisePer12`) | Inclinación del brazo, en subida por cada 12 in. Única autoridad: los grados se derivan, no se guardan. El extremo libre sube en **ambos** lados |
 
 ## Arquitectura y persistencia
 

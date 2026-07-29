@@ -64,6 +64,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0022](0022-geometria-parametrica-de-secciones-estructurales.md) | Geometría paramétrica y representación prismática de secciones estructurales | aceptado |
 | [0023](0023-geometria-visual-derivada-perfiles-s.md) | Geometría visual derivada para los perfiles S (IPS) | aceptado |
 | [0024](0024-fundacion-cantilever-base-columna.md) | Fundación Cantilever: diseño en Domain, resolución en Application y autoridad compartida base–columna | aceptado |
+| [0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) | El brazo Cantilever: cuerpo simple o compuesto, y su conexión a la columna | propuesto |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -148,3 +149,13 @@ contratos son las invariantes y las guardas, no una captura. Veredicto normativo
 `OWNER_APPROVED_ADR_0024` sobre el SHA técnico `1552367`. La aceptación **no** autoriza vistas, UI,
 AutoCAD, persistencia de proyecto, brazos, estaciones, separadores, arriostres, BOM, peso, cálculo,
 fabricación ni cambios a I-36.
+
+Iniciativa I-37B (`architecture/cantilever-brazo`): **ADR-0025 nace `propuesto`**. Extiende ADR-0024 de
+forma **aditiva** y decide las cuatro cosas que la base no tenía: que el cuerpo del brazo es una
+**colección** de miembros con el arreglo como enum —y no una subclase por arreglo, que multiplicaría los
+`switch` de tipo—; que la longitud capturada es el **corte del perfil** y no incluye placas, así que cambiar
+un espesor **mueve** el brazo en vez de acortarlo; que el brazo **selecciona** troqueles ya resueltos de la
+columna y **observa** su pitch en vez de recalcularlo; y que un perfil demasiado aperaltado para sus filas
+**se rechaza** en lugar de estirar la placa en silencio. La orientación canónica del canal se **leyó** de
+`ChannelSectionGeometryBuilder` —dorso a −X, patines abriendo a +X— y de ahí salen los dos arreglos dobles
+sin leer una sola dimensión tabulada.

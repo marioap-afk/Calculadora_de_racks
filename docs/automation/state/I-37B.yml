@@ -1,0 +1,138 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-37B
+  branch: architecture/cantilever-brazo
+  claim_id: 57727fe5-46b6-4b51-83a9-85afa0d4ebf9
+  current_phase: 2
+  state: implementing
+  gate: none
+  attempts: 1
+  next_action: >-
+    contratos-de-Domain-politica-autoridades-y-subensamble ·
+    NO-tocar-HANDOFF-ni-marcar-integrada · NO-hacer-merge ·
+    NO-abrir-la-siguiente-subiniciativa
+  last_evidence_commit: 3594758-reclamo-vacio
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: e0f319f166e4d7ed961ef3e2d7e8c84224bd5fe8
+  base_asunto: Merge I-37A - fundacion Cantilever base-columna
+  base_ci: VERDE-run-30490770354-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-MERGE_HEAD-REBASE-CHERRY_PICK-ni-BISECT
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: architecture-cantilever-brazo-LIBRE-en-local-y-en-remoto
+  ramas_i37b_o_brazo_previas: NINGUNA-git-ls-remote-heads-sin-coincidencias
+  i37a_contenida_en_main: e0f319f-60b269a-y-1552367-las-tres-IN
+  adr_0024: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  imagen_de_referencia_del_brazo: >-
+    NO-DISPONIBLE · git-ls-files-no-devuelve-ninguna-imagen-versionada-en-el-repositorio ·
+    tampoco-hay-archivos-sin-versionar-en-assets-ni-docs ·
+    la-UNICA-especificacion-geometrica-es-la-del-encargo-que-es-completa-y-autoconsistente ·
+    queda-DECLARADO-igual-que-en-I-37A
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: 3594758
+  commit: vacio-sin-implementacion-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/architecture/cantilever-brazo
+  trailer: Claude-Opus-5-solo-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# AUTORIZACION DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+autorizacion:
+  precedente: I-37A-el-primer-commit-sustantivo-escribe-la-fila-del-ROADMAP
+  cubre: >-
+    crear-y-reclamar-I-37B · rama-canonica-architecture-cantilever-brazo ·
+    fila-de-ROADMAP-contrato-ADR-0025-decision-y-estado-en-el-primer-commit-sustantivo ·
+    implementar-el-alcance-tecnico · incluir-desde-ahora-perfil-sencillo-canal-doble-encontrado
+    -y-canal-doble-espalda-con-espalda
+  no_cubre: >-
+    tocar-HANDOFF · marcar-integrada · hacer-merge · borrar-rama-o-worktree ·
+    abrir-la-siguiente-subiniciativa
+
+# --------------------------------------------------------------------------------------------------------
+# CONTRATOS DE I-37A QUE SE EXTIENDEN DE FORMA ADITIVA. Ninguno se reabre.
+# --------------------------------------------------------------------------------------------------------
+extension_aditiva:
+  CantileverMemberRole: se-anade-Arm-al-final-Column-y-Base-sin-cambiar-nombre-ni-numero
+  CantileverPlateKind: se-anaden-ArmMounting-y-ArmEnd-al-final
+  CantileverPunchSurface: se-anade-ArmMountingPlate-al-final
+  CantileverPieceTokens: se-anaden-tokens-de-brazo-los-existentes-intactos
+  reutilizados_sin_cambio: >-
+    CantileverStructuralMemberPlan · CantileverPlatePlan · CantileverPunchPlan ·
+    CantileverPunchDatum · CantileverPieceId · CantileverDiagnostic ·
+    CantileverEnvelope3D · PrismaticSectionInstance-como-autoridad-de-colocacion
+  logica_de_I_37A: INTACTA-el-resolver-base-columna-no-se-modifica
+
+# --------------------------------------------------------------------------------------------------------
+# HECHO LEIDO DE I-36, NO SUPUESTO. Base de las dos colocaciones de canal doble.
+# --------------------------------------------------------------------------------------------------------
+orientacion_canonica_del_canal:
+  fuente: src/RackCad.Application/StructuralSections/Geometry/ChannelSectionGeometryBuilder.cs
+  regla: dorso-del-alma-hacia-menos-X · patines-abren-hacia-mas-X · d-en-Y · bf-en-X
+  centrado: el-contorno-se-traslada-al-centroide-tabulado-x-que-la-fuente-mide-desde-el-dorso
+  consecuencia_en_bounds: >-
+    Bounds-MinX-es-el-DORSO-del-alma · Bounds-MaxX-es-la-PUNTA-de-los-patines ·
+    de-ahi-salen-los-dos-arreglos-sin-leer-una-sola-dimension
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: COMPLETA-reclamo
+  2: EN-CURSO-contrato-ADR-0025-ROADMAP-decision-y-estado
+  3: PENDIENTE-contratos-de-Domain
+  4: PENDIENTE-politica-autoridad-de-arreglos-y-autoridad-de-marcos
+  5: PENDIENTE-cuerpo-placa-patron-placa-final-y-subensamble
+  6: PENDIENTE-pruebas-de-invariantes-y-guardas-de-fuente
+  7: PENDIENTE-evidencia-final
+
+# --------------------------------------------------------------------------------------------------------
+# PARAMETRO SIN DEFAULT APROBADO. No se inventa; es entrada obligatoria.
+# --------------------------------------------------------------------------------------------------------
+parametros_sin_default:
+  MountingPlateVerticalEndOffset: >-
+    OBLIGATORIO-en-el-diseno · modelado-como-nullable-y-el-resolver-lo-RECHAZA-si-falta ·
+    diagnostico-CANT_REQUIRED_PARAMETER_MISSING · mismo-tratamiento-que-los-dos-de-I-37A
+  heredados_de_I_37A_que_siguen_sin_default: >-
+    ColumnBottomPlateEndOffset · ColumnTopPunchOffset
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  ideas_futuras_md: INTACTO-los-hallazgos-adyacentes-no-se-corrigen-aqui
+  src_RackCad_UI: INTACTO
+  src_RackCad_Plugin: INTACTO
+  src_RackCad_Application_StructuralSections: INTACTO-I-36-no-se-modifica
+  assets_catalogs: INTACTO-ningun-id-de-produccion-ninguna-familia-nueva-ningun-PTR
+  deploy_y_github: INTACTOS
+  RackCad_sln: INTACTO
+  sistemas_vigentes: INTACTOS-Selective-Dynamic-PushBack-FlowBed-Larguero
+  fuera_de_alcance_declarado: >-
+    estacion-doble-cara-niveles-aplicacion-masiva-separadores-arriostres-linea ·
+    BOM-peso-persistencia-RackSystemKind-registros-biblioteca-UI-editor-preview-vistas ·
+    AutoCAD-comandos-Xrecords-bloques · calculo-capacidad-soldaduras-tornillos-anclas ·
+    CNC-shop-drawings · familias-nuevas-y-PTR-nuevo-en-el-catalogo ·
+    cambios-funcionales-a-I-36-o-I-37A
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  ci: requerido
+  plugin_build: requerido-la-suite-no-lo-cubre
+  autocad: NO-APLICA-no-cambia-dibujo-ni-UI
+  owner_validation: NO-APLICA-no-hay-nada-que-ver
+  owner_decision: satisfecho-docs-automation-decisions-I-37-md

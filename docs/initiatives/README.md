@@ -564,6 +564,28 @@ Planes disponibles:
   vinculantes del Owner para **toda** la linea I-37 en
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37A.yml`](../automation/state/I-37A.yml).
+- [`I-37B-cantilever-brazo.md`](I-37B-cantilever-brazo.md): **fundacion Cantilever, brazo y conexion a
+  columna**. Segunda subiniciativa de **I-37**, autorizada expresamente por el Owner con el precedente de
+  I-37A. Entrega el brazo como subensamble puro en Domain y Application: cuerpo **sencillo o compuesto** con
+  los tres arreglos desde el principio —perfil sencillo, canal doble encontrado y canal doble espalda con
+  espalda—, placa de conexion, patron de troqueles, pendiente, tapa y tope. El cuerpo es una **coleccion**
+  de miembros con el arreglo como enum, no una subclase por arreglo. Los canales dobles se tocan con
+  **separacion cero que no es un campo**, y sus dos disposiciones se derivan de la orientacion canonica que
+  **I-36 documenta** —dorso del alma a menos X, patines abriendo a mas X— via `Bounds`, sin leer ninguna
+  dimension tabulada. La longitud capturada es el **corte del perfil**: cambiar el espesor de una placa
+  **mueve** el brazo, no lo acorta. La pendiente es `RisePer12`, unica autoridad, y el extremo libre sube en
+  **ambos** lados. El brazo **no crea reticula**: selecciona un conjunto contiguo de los troqueles regulares
+  ya resueltos de la columna, conserva sus datums exactos y **observa** su pitch. Mas filas alargan la placa
+  **hacia arriba**, y un perfil demasiado aperaltado para sus filas **se rechaza**. Extiende los contratos de
+  I-37A de forma **estrictamente aditiva**. **Fuera de alcance**: estacion, doble cara como sistema, niveles,
+  separadores, arriostres, linea, BOM, peso, persistencia, `RackSystemKind`, registros, biblioteca, UI,
+  editor, preview, vistas, AutoCAD, comandos, bloques, calculo, soldaduras, anclas, CNC, familias nuevas, un
+  PTR nuevo en el catalogo, y cambios funcionales a I-36 o I-37A. `requires_autocad: **false**` y
+  `requires_owner_validation: **false**`.
+  [ADR-0025](../adr/0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) nace **`propuesto`**. Decisiones
+  vinculantes del Owner en la seccion 8 de
+  [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
+  [`../automation/state/I-37B.yml`](../automation/state/I-37B.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
