@@ -27,10 +27,15 @@ namespace RackCad.Tests
         private static readonly Regex NamespaceLine =
             new Regex(@"^namespace\s+(?<ns>[A-Za-z0-9_.]+)\s*$", RegexOptions.Compiled);
 
-        /// <summary>Los seis destinos por sistema. `Larguero` es un <c>RackSystemKind</c> real y también tiene
-        /// el suyo: dejarlo suelto mantendría viva justo la raíz plana que I-23 elimina.</summary>
+        /// <summary>Los destinos por sistema. `Larguero` es un <c>RackSystemKind</c> real y también tiene
+        /// el suyo: dejarlo suelto mantendría viva justo la raíz plana que I-23 elimina.
+        ///
+        /// `Cantilever` entra con I-37A y todavía NO es un <c>RackSystemKind</c>: la fundación de base y
+        /// columna es pura —sin registro, sin persistencia de proyecto y sin dibujo—. El bucket se declara
+        /// aquí ANTES que la carpeta porque esta guarda es justamente la que lo exige
+        /// (`docs/guias/agregar-un-sistema.md` §0.bis).</summary>
         private static readonly string[] SystemBuckets =
-            { "Selective", "Dynamic", "PushBack", "FlowBed", "Larguero", "Shared" };
+            { "Selective", "Dynamic", "PushBack", "FlowBed", "Larguero", "Cantilever", "Shared" };
 
         /// <summary>
         /// Los dos proyectos de prueba conservan UN namespace de ensamblado, como excepción explícita.

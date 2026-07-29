@@ -532,6 +532,38 @@ Planes disponibles:
   [`../automation/decisions/I-36D.md`](../automation/decisions/I-36D.md), auditoria medida en
   [`../automation/evidence/I-36D-auditoria-aisc-s.md`](../automation/evidence/I-36D-auditoria-aisc-s.md)
   y estado versionado en [`../automation/state/I-36D.yml`](../automation/state/I-36D.yml).
+- [`I-37A-cantilever-base-columna.md`](I-37A-cantilever-base-columna.md): **fundacion Cantilever, base y
+  columna**. Primera subiniciativa de **I-37**, autorizada expresamente por el Owner con el precedente de
+  I-36A: su primer commit sustantivo escribe la fila del ROADMAP, el contrato, la decision versionada, el
+  ADR y el estado. Funda el **primer miembro** de RackCad sobre el catalogo neutral, **puro en Domain y
+  Application**. El diseno vive en `RackCad.Domain.Systems.Cantilever` y guarda el id de seccion como
+  **texto** —Domain no puede referenciar Application, donde vive `StructuralSectionId`, y los cinco
+  sistemas ya guardan asi sus ids de catalogo—; la resolucion vive en
+  `RackCad.Application.Systems.Cantilever` como **frontera unica**: parseo, lookup, politica de
+  elegibilidad **inyectable por ids exactos**, colocacion y diagnosticos. El resultado es **hibrido**: un
+  tipo por **naturaleza fisica** —perfil del catalogo, placa, cartabon, troquel— con el rol como enum
+  dentro del plan de miembro, y `PrismaticSectionInstance` como **unica autoridad de colocacion**. El
+  patron de agujeros de la conexion tiene **una sola autoridad**, `CantileverColumnBaseConnectionPattern`,
+  que consumen igual la placa posterior de la base y la cara de conexion de la columna; su coincidencia se
+  prueba sobre un **datum logico** (X, Z y eje de perforacion) y **nunca** comparando centros 3D separados
+  por el espesor de una placa. Toda dimension exterior se deriva de `StructuralSectionGeometry.Bounds`:
+  **cero** accesos a `d`/`bf`/`tw`/`tf`, cero lectura de CSV y cero `RackCatalog`, con guardas de fuente
+  que lo comprueban. `NominalCutLength == Length` por definicion y con prueba, y **no** esta liberada para
+  fabricacion. **Fuera de alcance**: brazos y pendiente, niveles, estacion, doble cara, separadores,
+  arriostres, linea, BOM, peso, persistencia de `RackProject`, `RackSystemKind`, los tres registros,
+  biblioteca, editor, preview, vistas, AutoCAD, comandos, materiales, calculo, soldaduras, anclas,
+  tornilleria, CNC, familias nuevas y bloques DWG. `requires_autocad: **false**` y
+  `requires_owner_validation: **false**` — no cambia el dibujo ni la interfaz, asi que no hay nada que
+  validar. **INTEGRADA el 2026-07-29**:
+  [ADR-0024](../adr/0024-fundacion-cantilever-base-columna.md) quedo **`aceptado`** con veredicto
+  `OWNER_APPROVED_ADR_0024` sobre el SHA tecnico `1552367`, y la integracion se autorizo con
+  `OWNER_AUTHORIZED_INTEGRATION_I_37A`. Es la primera ADR de la Fase 6 aceptada **sobre el codigo** y no
+  sobre el dibujo, porque la iniciativa no dibuja: lo verificable de un contrato son sus invariantes y sus
+  guardas. Suites 2224 y 544, once regresiones comprobadas en rojo, y los **dos offsets sin default
+  aprobado siguen sin default**, como entradas obligatorias que el resolver rechaza si faltan. Decisiones
+  vinculantes del Owner para **toda** la linea I-37 en
+  [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
+  [`../automation/state/I-37A.yml`](../automation/state/I-37A.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

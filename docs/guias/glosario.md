@@ -59,6 +59,27 @@ C#, el texto conserva primero la palabra usada por ingeniería de racks.
 | Medio frente | Frente dividido en varios tramos con postes intermedios |
 | Doble profundidad | Varios fondos alineados sobre una rejilla horizontal compartida |
 | Layout de almacén | Colocación de huellas de rack y pasillos; no es el optimizador IA futuro |
+| Cantilever | Sistema de perfil estructural **estándar** (catálogo neutral de I-36), no de larguero-poste-tarima. Nace en I-37 |
+
+## Cantilever (I-37)
+
+Vocabulario del primer sistema construido sobre secciones estructurales estándar. Los términos que ya
+existen arriba —troquel, peralte, nivel, frente— **se reutilizan y no se redefinen**.
+
+| Término | Significado en RackCad |
+|---|---|
+| Miembro (`StructuralMember`) | Lo que una **sección** es cuando se usa: rol, longitud y orientación. La sección es la forma; el miembro es la pieza. Concepto de [ADR-0020](../adr/0020-catalogo-neutral-de-secciones-estructurales.md), materializado en I-37A |
+| Columna | Perfil vertical de un cantilever. Es el `Poste` del glosario general aplicado a este sistema; en Cantilever se dice **columna**, que es como lo nombra el ROADMAP |
+| Base | Perfil horizontal que sale de la columna hacia el pasillo y apoya en el piso. **No** es la `Placa base` de una cabecera: un cantilever puede llevar ambas |
+| Placa frontal | Tapa del extremo libre de la base. Sin troqueles |
+| Placa posterior | Placa del extremo de la base que se conecta a la columna. Sus troqueles los **gobierna la columna** |
+| Placa inferior de columna | Placa al pie de la columna, perpendicular a su eje, con contorno igual a la envolvente de su sección |
+| Cartabón | Refuerzo triangular entre la placa posterior y la parte superior de la base. **No** es una ménsula |
+| Ménsula | **PROHIBIDA en Cantilever.** Ya designa el conector larguero→poste, con catálogo (`mensulas.csv`) y FK propias. Un voladizo de cantilever es un **brazo**; un refuerzo triangular es un **cartabón** |
+| Plano de conexión base–columna | Datum `y = 0` del subensamble: el plano de contacto entre la cara de conexión de la columna y la placa posterior. La base sale en `+Y` y el eje de perforación de la conexión es `+Y` |
+| Datum de troquel | Identidad **lógica** de una perforación: coordenada transversal, elevación y eje. Dos agujeros del mismo tornillo comparten datum aunque sus centros 3D difieran por el espesor de una placa |
+| Patrón de conexión | `CantileverColumnBaseConnectionPattern`: la **única** autoridad de los agujeros que comparten la placa posterior y la columna. No hay dos algoritmos |
+| Longitud nominal de corte | Longitud de la pieza para el BOM futuro. En el MVP **es igual** a la longitud geométrica; **no** incluye tolerancias ni preparación de extremos y **no** está liberada para CNC |
 
 ## Arquitectura y persistencia
 

@@ -587,6 +587,40 @@ AutoCAD, y dos guardas de fuente prohíben que el adaptador reimplemente la pend
 `aceptado`**. La rama se integra por `git merge --no-ff` en esta sesión. **Siguiente iniciativa
 habilitada: I-37 — Cantilever MVP**, que **no** se abrió aquí.
 
+**I-37A es la primera subiniciativa de I-37 y está INTEGRADA en `main` desde el 2026-07-29.** Funda el
+primer **miembro** de RackCad sobre el catálogo neutral de secciones: el subensamble **base–columna**,
+puro en Domain y Application. **No dibuja nada** —sin vistas, preview, editor, persistencia de proyecto,
+`RackSystemKind`, registros ni AutoCAD—, así que **no requirió NETLOAD ni validación manual**: lo que
+entrega son contratos, y lo verificable de un contrato son sus invariantes y sus guardas.
+
+Lo que decide, y que condiciona todo lo que Cantilever construya encima
+([ADR-0024](adr/0024-fundacion-cantilever-base-columna.md), **aceptado**): el **diseño vive en Domain con
+los ids de sección como texto** —`RackCad.Domain.csproj` no declara ninguna `ProjectReference`, así que no
+puede ver `StructuralSectionId`, y el DTO guardaría texto igualmente porque el id tiene constructor privado
+y ningún `JsonConverter`—; una **frontera única** de Application parsea, busca en el catálogo y aplica una
+política de elegibilidad **inyectable por ids exactos**, sin lista blanca familia→rol (eso lo prohíbe
+ADR-0020, y el catálogo sigue sin saber que Cantilever existe); el resultado se tipa por **naturaleza
+física** —perfil del catálogo, placa, cartabón, troquel— con el rol como enum, de modo que añadir el brazo
+sea un valor y no un `switch` por consumidor; **`PrismaticSectionInstance` es la única autoridad de
+colocación** y sección, longitud, extremos y dirección son derivados sin campo de respaldo; y el patrón de
+agujeros de la conexión tiene **una sola autoridad**, que consumen igual la placa posterior de la base y la
+cara de la columna.
+
+Dos detalles que cuesta caro equivocar. La **coincidencia de troqueles se prueba sobre un datum lógico**
+—eje, las dos coordenadas que el eje no consume, y el diámetro— y **nunca** sobre centros 3D: los dos
+agujeros de un tornillo están en superficies separadas por el espesor de una placa, así que sus centros
+*deben* diferir, y compararlos solo funcionaría mientras alguien siguiera restando espesores en la prueba
+(el precedente es PB-004). Y **toda cota exterior sale de `StructuralSectionGeometry.Bounds`**, nunca de
+`d`, `bf`, `tw` ni `tf`: `Bounds` es la envolvente del contorno que se va a dibujar, mientras una dimensión
+tabulada es un número nominal, y componer contra uno y dibujar el otro es cómo se producen placas que no
+casan con su perfil. **49 guardas de fuente** lo comprueban, leyendo el fuente sin comentarios para que los
+XML-doc puedan explicar *por qué* no se toca `bf`.
+
+`NominalCutLength == Length` por definición y con prueba, y **no** está liberada para fabricación; el
+**peso queda diferido** para toda la línea I-37. **No toca** I-36, los cinco sistemas vigentes, UI, Plugin,
+`assets/`, `deploy/`, `.github/` ni `RackCad.sln`. **Siguen sin default aprobado** los dos offsets
+obligatorios de troquel, que el resolver rechaza con `CANT_REQUIRED_PARAMETER_MISSING` si faltan.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -820,6 +854,59 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### I-37A — INTEGRADA en `main` (2026-07-29) — **el primer miembro sobre el catálogo neutral**
+
+**Lo primero, porque delimita todo lo demás:** I-37A **no dibuja**. No hay vistas, preview, editor,
+persistencia de proyecto, `RackSystemKind`, registros ni una línea de Plugin. El usuario **no ve nada
+nuevo** al integrarla; lo que cambia es que el producto sabe qué es una columna, qué es una base y cómo se
+conectan.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `architecture/cantilever-base-columna` |
+| `Claim-Id` | `af0b650d-8a88-48c3-a328-b0b05c3bb61f` |
+| **SHA técnico aprobado** por el Owner y por CI | `15523679e655364c146917ece338c7cecbe24023` (CI **30488839172**, success) |
+| SHA final de rama | vive en `git log`; su delta contra el aprobado es **solo documentación de cierre** |
+| **Validación en AutoCAD** | **NO APLICA** (`requires_autocad: false`, `requires_owner_validation: false`): no cambia dibujo ni interfaz |
+| Veredictos normativos | `OWNER_APPROVED_ADR_0024` y `OWNER_AUTHORIZED_INTEGRATION_I_37A` |
+| Bundle | **no ejecutado y no exigible**: el diff no toca `assets/`, catálogos, `deploy/` ni `.github/` |
+| Diff contra la base `3c6ccf5` | **34** archivos: docs 10, Domain 7, Application 14, tests 3 |
+
+**Qué entregó.** Contratos editables en `RackCad.Domain.Systems.Cantilever` (columna, base, conexión,
+troqueles, tres placas independientes y el cartabón) y la resolución en
+`RackCad.Application.Systems.Cantilever`: `CantileverSectionResolver` como **único** límite de parseo y
+lookup, `CantileverColumnBaseSectionPolicy` inyectable por ids exactos,
+`CantileverColumnBaseFrameResolver` como **única autoridad de marcos** —lee la orientación registrada en la
+variante y falla cerrado ante un enum no declarado—, `CantileverColumnBaseConnectionPattern` como
+**autoridad compartida** del patrón de agujeros, y `CantileverColumnBaseAssembly` como subensamble
+inmutable con firma determinista.
+
+**El datum, que el encargo no fijaba y hubo que declarar.** `y = 0` es el plano de contacto entre la cara
+de conexión de la columna y la placa posterior; `z = 0` es el **fondo común** de la sección de la columna y
+de la base; `x = 0` es el centro transversal de la columna. El de `z` es el consecuente: toda elevación de
+conexión se mide desde el fondo de la base y la consume la columna, así que con dos orígenes verticales el
+patrón compartido no querría decir nada. Queda escrito en
+[`automation/state/I-37A.yml`](automation/state/I-37A.yml) para que se pueda corregir con una línea.
+
+**Un hecho del preflight que conviene no perder:** en el repositorio **no hay imágenes de referencia**
+—solo iconos de paquetes NuGet—. El patrón de pares simétricos de la placa inferior (`±p/2`, `±3p/2`, …,
+sin troquel en el centro) está implementado tal como lo describe el encargo y cubierto por prueba, pero
+**no se pudo contrastar contra una pieza real**. Si una lo contradice, el cambio es una función y su prueba.
+
+**Ronda de correcciones del Owner sobre el primer candidato.** Cuatro defectos, corregidos en la misma
+rama: la igualdad de `CantileverPunchDatum` no era válida para un value type (`Equals` delegaba en la
+comparación tolerante mientras el hash redondeaba, y la tolerancia no es transitiva) ⇒ `Equals` exacto y
+consistente con el hash, con `ApproxEquals` separado como el método geométrico; la orientación registrada
+era dato que nadie leía ⇒ nace la autoridad de marcos, con la geometría vigente **numéricamente
+idéntica**; faltaba validar que los troqueles **caben** ⇒ ocho validaciones bloqueantes con **tres códigos
+nuevos** y uno retirado de un uso engañoso; y el conteo de archivos de la evidencia estaba mal medido ⇒
+corregido con su causa escrita.
+
+**Siguiente paso real.** La **definición física y el contrato de la siguiente subiniciativa de I-37**
+—brazos y la estación completa—, que **no está reclamada** y que necesita del Owner la anatomía real de la
+pieza antes de abrir rama. I-37 permanece como **iniciativa paraguas partida**; ninguna otra subiniciativa
+está registrada ni reclamada.
 
 ### I-36D — INTEGRADA en `main` (2026-07-28) — **la primera geometría que RackCad firma**
 
@@ -1229,7 +1316,35 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-36D — 2026-07-28** (la vigente):
+**Baseline integrada de I-37A — 2026-07-29** (la vigente):
+
+- candidato de **código** aprobado por el Owner y por CI:
+  `15523679e655364c146917ece338c7cecbe24023` (CI run `30488839172`, **success**). El SHA final de rama
+  difiere del aprobado **solo en documentación de cierre**, así que el árbol técnico aprobado y el
+  integrado son el mismo;
+- **validación en AutoCAD: NO APLICA.** `requires_autocad: false`, `requires_owner_validation: false` —
+  I-37A no cambia dibujo ni interfaz. Es la primera iniciativa de la Fase 6 cuyo gate se resolvió **sobre
+  el código** y no sobre el dibujo;
+- **ADR-0024 ACEPTADO**, veredicto `OWNER_APPROVED_ADR_0024`: diseño en Domain con ids textuales, frontera
+  única de resolución, modelo híbrido por naturaleza física, `PrismaticSectionInstance` como autoridad de
+  colocación, patrón compartido base–columna, igualdad exacta del datum con comparación geométrica
+  separada, autoridad única de marcos, longitud nominal no liberada para fabricación, geometría exterior
+  derivada de I-36, elegibilidad por combinaciones exactas, datum declarado y validaciones de ajuste de
+  troqueles. **No** autoriza vistas, UI, AutoCAD, persistencia, brazos, estaciones, separadores,
+  arriostres, BOM, peso, cálculo, fabricación ni cambios a I-36;
+- suites **2224** + **544**, cero fallos, cero omitidas (base 2094 + **130** nuevas: 81 de invariantes y 49
+  de guardas de fuente); builds Debug de Domain, Application y UI con **0 errores y 0 advertencias**, y
+  Plugin con 0 errores y las 2 `MSB3277` conocidas;
+- **once regresiones verificadas en rojo** y revertidas, entre ellas los tres troqueles sobre la base, la
+  transición de 2 in a 4 in, la autoridad compartida, el patrón simétrico de la placa inferior, la igualdad
+  del datum, el marco cableado fuera de su autoridad, y una validación de offset y una de pitch;
+- **bundle no ejecutado y no exigible**: el diff no toca `assets/`, catálogos, `deploy/` ni `.github/`, que
+  es lo que el bundle inventariaría;
+- **sin default aprobado**, y por tanto entradas obligatorias que el resolver rechaza si faltan: el offset
+  desde los extremos de la placa inferior de la columna a sus troqueles, y el offset superior de la columna
+  al último troquel regular.
+
+**Baseline anterior, de I-36D — 2026-07-28**:
 
 - candidato de **código** aprobado por el Owner y por CI:
   `3ffe4dff3ac623dcb53fc715ebc5b81ed6bcde68` (CI run `30410876362`, **success** 4/4). El SHA final de
@@ -2110,3 +2225,11 @@ I-07). Ya no se conservan aquí: viven en [`docs/adr/`](adr/README.md), una deci
 correspondencia decisión → ADR está en el
 [contrato de I-07](initiatives/I-07-adr-retroactivos.md) y el registro de aceptación en
 [`docs/automation/decisions/I-07.md`](automation/decisions/I-07.md).
+
+Decisiones posteriores, cada una en su ADR: **ADR-0019** a **ADR-0023**, y **ADR-0024** —fundación
+Cantilever base–columna— **aceptada el 2026-07-29** con veredicto `OWNER_APPROVED_ADR_0024`. Es la primera
+ADR del lado **consumidor** del catálogo neutral, y la primera de la Fase 6 aceptada **sobre el código** en
+vez de sobre el dibujo, porque la iniciativa que la trae no dibuja nada. Las decisiones vinculantes del
+Owner para **toda** la línea I-37 —troqueles y placas visuales dentro; cálculo y fabricación fuera; peso
+diferido; pendiente del brazo parametrizable; frontal, lateral y planta obligatorias en el MVP— viven en
+[`docs/automation/decisions/I-37.md`](automation/decisions/I-37.md).

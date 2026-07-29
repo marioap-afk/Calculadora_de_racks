@@ -326,6 +326,36 @@ Nada de esto abre una segunda tubería: la familia S usa el **mismo** plan neutr
 inspector y el mismo `StructuralSectionCommandFlow`. La regla del radio **degenera exactamente** en la
 de §4.4.2 cuando la pendiente es cero, así que el modelo geométrico no se bifurca.
 
+### 4.4.4 Del catálogo al miembro: la frontera Cantilever (I-37A)
+
+I-36 entrega **secciones** y su geometría, y sus tipos declaran expresamente que **no son miembros**:
+`StructuralSectionDefinition` «no es un poste, una viga, un separador, un brazo de cantilever ni una
+columna», y `PrismaticSectionInstance` «no es un miembro: no hay rol, ni material, ni conexión».
+
+I-37A abre la frontera del otro lado: `RackCad.Domain.Systems.Cantilever` (intención editable) y
+`RackCad.Application.Systems.Cantilever` (resolución), gobernadas por
+[ADR-0024](adr/0024-fundacion-cantilever-base-columna.md). Cuatro reglas la definen:
+
+1. **El diseño vive en Domain y guarda el id de sección como texto.** `StructuralSectionId` vive en
+   Application y Domain no declara ninguna referencia de proyecto, así que no puede verlo — y los cinco
+   sistemas ya guardan sus ids de catálogo como `string`. La conversión texto → id ocurre en **un único
+   límite de Application**, que es también el único que consulta el catálogo.
+2. **El resultado se tipa por naturaleza física, no por rol.** `CantileverStructuralMemberPlan` cubre todo
+   lo que es un **perfil del catálogo** colocado, con el rol como enum; placa, cartabón y troquel tienen
+   sus propios planes. `PrismaticSectionInstance` es la **única autoridad de colocación**: sección,
+   longitud, marco, rotación y espejo viven ahí y nada los duplica.
+3. **La conexión base–columna tiene una sola autoridad.** El patrón de agujeros lo calcula una vez
+   `CantileverColumnBaseConnectionPattern`, y lo consumen igual la placa posterior de la base y la cara de
+   conexión de la columna. La coincidencia se comprueba sobre un **datum lógico** —coordenada transversal,
+   elevación y eje— y nunca comparando centros 3D, que difieren legítimamente por el espesor de una placa.
+4. **Toda dimensión exterior se deriva de `StructuralSectionGeometry.Bounds`.** Ni `d`, ni `bf`, ni `tw`,
+   ni `tf`, ni los tipos concretos de dimensiones, ni la designación. `Bounds` es la envolvente **del
+   contorno que se va a dibujar**; una dimensión tabulada es un número nominal, y componer contra uno y
+   dibujar el otro es cómo se producen placas que no casan con su perfil.
+
+I-37A **no dibuja**: no hay vistas, preview, editor, persistencia, `RackSystemKind` ni AutoCAD. Esas
+fronteras nacen en las subiniciativas siguientes de I-37.
+
 ### 4.5 Layout de almacén
 
 `WarehouseGridPlanner`, `WarehouseFitChecker` y `WarehouseAutoFill` viven en Application. Los

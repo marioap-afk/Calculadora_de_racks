@@ -1,0 +1,282 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-37A
+  branch: architecture/cantilever-base-columna
+  claim_id: af0b650d-8a88-48c3-a328-b0b05c3bb61f
+  current_phase: 7
+  state: completed
+  gate: none
+  attempts: 1
+  next_action: >-
+    NINGUNA-I-37A-esta-INTEGRADA-y-CERRADA ·
+    ADR-0024-ACEPTADO-por-el-Owner-el-2026-07-29-veredicto-OWNER_APPROVED_ADR_0024 ·
+    integracion-autorizada-con-OWNER_AUTHORIZED_INTEGRATION_I_37A ·
+    siguiente-paso-real-la-definicion-fisica-y-el-contrato-de-la-siguiente-subiniciativa-de-I-37
+    -brazos-y-estacion-completa-que-NO-esta-reclamada-y-necesita-la-anatomia-real-de-la-pieza
+  last_evidence_commit: >-
+    15523679e655364c146917ece338c7cecbe24023-SHA-TECNICO-APROBADO-CI-VERDE-run-30488839172 ·
+    el-SHA-final-de-rama-difiere-solo-en-documentacion-de-cierre
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA DE CORRECCIONES. Cuatro defectos senalados por el Owner sobre 5be43f1, sin reabrir el diseno.
+# --------------------------------------------------------------------------------------------------------
+correcciones:
+  1_igualdad_del_datum: >-
+    Equals-delegaba-en-ApproxEquals-mientras-GetHashCode-redondeaba-a-6-decimales ·
+    no-era-una-igualdad-valida-de-value-type-la-comparacion-tolerante-no-es-transitiva ·
+    ahora-Equals-es-exacto-sobre-Axis-U-V-Diameter-y-el-hash-usa-esos-mismos-campos-sin-redondear ·
+    ApproxEquals-sobrevive-como-metodo-geometrico-independiente ·
+    el-constructor-rechaza-un-eje-no-declarado ·
+    Direction-pasa-de-ternario-con-else-silencioso-a-switch-que-FALLA-CERRADO
+  2_orientacion_como_autoridad: >-
+    ColumnOrientation-y-BaseOrientation-eran-dato-que-nadie-leia-el-resolver-construia-marcos-fijos ·
+    nace-CantileverColumnBaseFrameResolver-como-unica-autoridad ·
+    geometria-vigente-numericamente-identica-con-prueba-que-la-compara-contra-la-expresion-original ·
+    enum-no-declarado-rechazado-por-excepcion-de-contrato-y-por-diagnostico-bloqueante
+  3_ajuste_geometrico_de_troqueles: >-
+    faltaba-validar-que-los-agujeros-CABEN ·
+    ocho-validaciones-bloqueantes-con-tres-codigos-nuevos-y-uno-retirado-de-un-uso-enganoso
+  4_evidencia: >-
+    docs-decia-9-archivos-y-el-informe-32 · los-dos-estaban-mal ·
+    en-5be43f1-eran-33-docs-10-Domain-7-Application-13-tests-3 ·
+    el-error-venia-de-medir-el-diff-antes-del-ultimo-commit-documental
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 3c6ccf57d09c28dd9804468c25e2301102524b02
+  base_asunto: Merge I-36D - perfiles AISC S/IPS y geometria visual derivada
+  base_ci: VERDE-run-30415349149-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-MERGE_HEAD-REBASE-CHERRY_PICK-ni-BISECT
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: architecture-cantilever-base-columna-LIBRE-en-local-y-en-remoto
+  ramas_i37_o_cantilever_previas: NINGUNA-git-ls-remote-heads-sin-coincidencias
+  i36_contenidas_en_main: eafb785-14317a5-202e456-3c6ccf5-las-cuatro-IN
+  imagenes_de_referencia: >-
+    NO-EXISTEN-en-el-repositorio-comprobado-solo-hay-iconos-de-paquetes-NuGet ·
+    la-UNICA-especificacion-geometrica-disponible-es-la-del-encargo ·
+    la-instruccion-de-detenerse-si-las-imagenes-contradicen-el-patron-de-pares-simetricos
+    NO-pudo-comprobarse-y-queda-DECLARADA-como-supuesto-verificable-por-el-Owner
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: 1caa69a
+  commit: vacio-sin-implementacion-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/architecture/cantilever-base-columna
+  trailer: Claude-Opus-5-solo-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# AUTORIZACION DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+autorizacion:
+  precedente: I-36A-el-primer-commit-sustantivo-escribe-la-fila-del-ROADMAP
+  cubre: >-
+    crear-y-reclamar-I-37A · rama-canonica · fila-de-ROADMAP-contrato-decision-ADR-y-estado ·
+    actualizar-la-descripcion-paraguas-de-I-37 · implementar-el-alcance-tecnico
+  no_cubre: >-
+    tocar-HANDOFF · marcar-integrada · hacer-merge · borrar-rama-o-worktree ·
+    implementar-iniciativas-posteriores
+
+# --------------------------------------------------------------------------------------------------------
+# DATUM Y SUPUESTOS DECLARADOS. Lo que el encargo no fijaba y hubo que fijar para que el patron
+# compartido tuviera sentido. Se declaran para que el Owner pueda corregirlos con una sola linea.
+# --------------------------------------------------------------------------------------------------------
+supuestos_declarados:
+  z_comun: >-
+    el-fondo-de-la-seccion-de-la-COLUMNA-y-el-de-la-BASE-comparten-z-igual-0 ·
+    el-encargo-mide-toda-elevacion-de-conexion-desde-BaseBottomZ-y-la-consume-la-columna ·
+    con-dos-origenes-verticales-el-patron-compartido-no-significaria-nada
+  plano_de_conexion: >-
+    y-igual-0-es-el-CONTACTO-entre-la-cara-de-la-columna-y-la-cara-de-apoyo-de-la-placa-posterior ·
+    la-columna-ocupa-y-menor-o-igual-0 · la-placa-posterior-ocupa-0-a-espesor ·
+    el-perfil-de-la-base-arranca-en-y-igual-espesor-de-la-placa-posterior
+  centro_transversal: x-igual-0-es-el-centro-de-la-envolvente-de-la-COLUMNA-que-es-quien-gobierna-las-filas
+  centro_de_troquel: >-
+    el-de-una-placa-va-a-media-espesor · el-de-una-cara-va-SOBRE-la-cara ·
+    por-eso-la-coincidencia-se-comprueba-por-datum-y-no-por-centro-3D
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: COMPLETA-reclamo-1caa69a
+  2: COMPLETA-contrato-decision-I-37-ADR-0024-ROADMAP-glosario-y-ARCHITECTURE-9c47d83
+  3: COMPLETA-contratos-de-Domain-1eacc7e
+  4: COMPLETA-resolucion-de-Application-planes-y-autoridad-compartida-d4b1755
+  5: COMPLETA-placas-cartabon-y-troqueles-en-el-mismo-commit-d4b1755
+  6: COMPLETA-invariantes-y-guardas-de-fuente-e5b3b56
+  7: COMPLETA-ideas-futuras-y-evidencia-final
+
+# --------------------------------------------------------------------------------------------------------
+# IMPLEMENTACION
+# --------------------------------------------------------------------------------------------------------
+implementacion:
+  domain:
+    archivos: 7
+    tipos: >-
+      CantileverColumnBaseDesign · CantileverColumnDesign · CantileverBaseDesign ·
+      CantileverColumnBaseConnectionDesign · CantileverPunchParameters ·
+      CantileverPlateDesign-x3-instancias · CantileverGussetDesign ·
+      CantileverColumnBaseVariantKind · CantileverDefaults
+    id_de_seccion: TEXTO-igual-que-DynamicRackDesign-InOutBeamCatalogId
+    parametros_sin_default: nullable-y-RECHAZADOS-si-faltan-nunca-rellenados
+  application:
+    archivos: 14
+    frontera_unica_de_parseo: CantileverSectionResolver
+    politica: CantileverColumnBaseSectionPolicy-inyectable-por-ids-EXACTOS-familia-W-en-I-37A
+    ids_de_produccion_registrados: CERO-las-pruebas-registran-los-suyos
+    autoridad_de_colocacion: PrismaticSectionInstance-unica-derivados-sin-campo-de-respaldo
+    autoridad_de_marcos: >-
+      CantileverColumnBaseFrameResolver-unica ·
+      lee-la-orientacion-REGISTRADA-en-la-variante-y-recibe-la-GEOMETRIA-no-un-bounding-box ·
+      switch-explicito-con-default-que-lanza ·
+      guarda-de-fuente-impide-LocalFrame3D-Create-o-FromAxes-fuera-de-ella
+    autoridad_compartida: CantileverColumnBaseConnectionPattern-una-sola-DatumAt-para-los-dos-lados
+    coincidencia: >-
+      CantileverPunchDatum-eje-U-V-y-diametro-NUNCA-centros-3D ·
+      Equals-es-EXACTO-y-consistente-con-GetHashCode ·
+      ApproxEquals-es-el-metodo-GEOMETRICO-tolerante-e-independiente ·
+      las-pruebas-de-coincidencia-fisica-llaman-a-ApproxEquals-explicitamente
+    envolvente: CantileverEnvelope3D-LOCAL-al-namespace-no-se-anadio-nada-a-Geometry
+    peso: NO-IMPLEMENTADO-diferido-y-prohibido-por-guarda
+  formulas:
+    filas_x: columnMinX-mas-1.50-y-columnMaxX-menos-1.50-derivadas-de-Bounds-de-la-COLUMNA
+    primer_troquel: BaseBottomZ-mas-2.50
+    siguientes: mas-2.00-mientras-no-excedan-BaseTopZ
+    sobre_la_base: EXACTAMENTE-3-mas-a-2.00-cada-uno
+    borde_superior_placa: ultimo-troquel-de-conexion-mas-2.50
+    cartabon: cateto-vertical-igual-a-RearPlateTopZ-menos-BaseTopZ-e-igual-al-horizontal-45-grados
+    primer_regular: ultimo-de-conexion-mas-4.00-NO-mas-2.00-y-sin-duplicarlo
+    corte_regular: mientras-z-menor-o-igual-a-ColumnTopZ-menos-ColumnTopPunchOffset
+    placa_inferior: pares-en-mas-menos-2k-1-por-pitch-entre-2-SIN-troquel-en-el-centro
+  ajuste_geometrico_de_troqueles:
+    semantica: los-offsets-son-de-borde-a-CENTRO-y-los-pitch-de-centro-a-centro
+    offsets_requieren: mayor-o-igual-al-RADIO-limite-INCLUSIVO-tangente-al-borde-es-valido
+    pitch_requieren: mayor-o-igual-al-DIAMETRO-limite-INCLUSIVO
+    separacion_entre_filas: mayor-o-igual-al-DIAMETRO
+    codigos_nuevos: >-
+      CANT_EDGE_OFFSET_BELOW_RADIUS-para-los-cuatro-offsets ·
+      CANT_PITCH_BELOW_DIAMETER-para-los-tres-pitch ·
+      CANT_PUNCH_ROWS_OVERLAP-para-la-separacion-entre-filas ·
+      CANT_ORIENTATION_NOT_SUPPORTED-para-una-variante-mal-registrada
+    codigo_retirado_de-un-uso-enganoso: >-
+      la-comprobacion-de-filas-usaba-CANT_PUNCH_OUTSIDE_REAR_PLATE ·
+      filas-que-se-funden-son-un-problema-de-la-COLUMNA-y-ese-mensaje-mandaba-a-revisar-la-BASE
+    defaults_aprobados: >-
+      siguen-resolviendo-EXACTAMENTE-igual-misma-firma-mismas-8-elevaciones-y-8-troqueles-inferiores ·
+      con-prueba-propia-que-lo-fija
+
+# --------------------------------------------------------------------------------------------------------
+# PRUEBAS Y BUILDS
+# --------------------------------------------------------------------------------------------------------
+pruebas:
+  RackCad_Tests: 2224-de-2224-base-2094-mas-130
+  RackCad_UI_Tests: 544-de-544-sin-cambio
+  nuevas: CantileverColumnBaseTests-81-y-CantileverSourceGuardTests-49
+  builds_debug: Domain-0-0 Application-0-0 UI-0-0 Plugin-0-errores-2-MSB3277-conocidas
+  bundle: >-
+    NO-EJECUTADO · deploy-build-bundle-ps1-aborta-porque-AutoCAD-esta-abierto ·
+    NO-es-exigible-para-I-37A-no-toca-assets-catalogos-deploy-ni-github
+  regresiones_verificadas_fallando:
+    tres_troqueles_adicionales: 3-a-2-fallan-3-pruebas-y-revertido
+    transicion_2in_a_4in: pitch-de-conexion-en-vez-del-regular-fallan-5-y-revertido
+    autoridad_compartida: la-columna-recalculando-su-patron-fallan-2-y-revertido
+    patron_simetrico_placa_inferior: troquel-en-el-centro-falla-1-y-revertido
+    guarda_de_fuente: un-acceso-a-Dimensions-muerde-la-guarda-y-revertido
+    igualdad_del_datum: >-
+      Equals-delegando-en-ApproxEquals-mas-hash-redondeado-fallan-3-pruebas-y-revertido
+    guardia_de_eje_del_constructor: quitarlo-falla-ADatumRejectsAnUndefinedAxis-y-revertido
+    direction_con-rama-else: el-ternario-muerde-la-guarda-de-fuente-y-revertido
+    marco_cableado_en_el_resolver: >-
+      LocalFrame3D-Create-fuera-de-la-autoridad-muerde-la-guarda-y-revertido
+    validacion_de_offset: >-
+      quitar-el-offset-horizontal-mayor-o-igual-al-radio-falla-1-prueba-y-revertido
+    validacion_de_pitch: >-
+      quitar-el-pitch-de-conexion-mayor-o-igual-al-diametro-falla-1-prueba-y-revertido
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE. Medido con git diff --name-only 3c6ccf5..HEAD sobre la punta ACTUAL.
+#
+# CORREGIDO: una version anterior de este bloque decia "docs: 9-archivos" y el informe de cierre hablaba
+# de 32 archivos. Los dos numeros estaban mal. En 5be43f1 el diff eran 33 archivos -docs 10, Domain 7,
+# Application 13, tests 3-; el error venia de haber medido el diff ANTES del ultimo commit documental,
+# que anadio docs/ideas-futuras.md. La ronda de correcciones suma
+# CantileverColumnBaseFrameResolver.cs, asi que Application pasa a 14 y el total a 34.
+# --------------------------------------------------------------------------------------------------------
+areas_modificadas:
+  total: 35-archivos-en-el-arbol-de-cierre
+  docs: 11-archivos-incluido-HANDOFF-que-solo-se-toca-al-integrar
+  src_RackCad_Domain: 7-archivos-nuevos-Systems-Cantilever
+  src_RackCad_Application: 14-archivos-nuevos-Systems-Cantilever
+  tests_RackCad_Tests: 3-archivos-2-nuevos-mas-el-bucket-de-NamespaceFolderGuardTests
+  en_el_sha_tecnico_aprobado_1552367: 34-archivos-docs-10-Domain-7-Application-14-tests-3
+  en_5be43f1_eran: 33-archivos-docs-10-Domain-7-Application-13-tests-3
+
+guardas_de_alcance:
+  HANDOFF_md: >-
+    tocado-SOLO-en-la-sesion-de-integracion-como-manda-WORKFLOW ·
+    secciones-reales-1-4-5-y-7-el-documento-tiene-SIETE-no-las-8-a-12-que-citan-AGENTS-y-WORKFLOW
+  src_RackCad_UI: INTACTO-0-cambios
+  src_RackCad_Plugin: INTACTO-0-cambios
+  src_RackCad_Application_StructuralSections: INTACTO-I-36-sin-una-linea
+  assets_catalogs: INTACTO-0-cambios
+  deploy_y_github: INTACTOS-0-cambios
+  RackCad_sln: INTACTO-0-cambios
+  sistemas_vigentes: INTACTOS-Selective-Dynamic-PushBack-FlowBed-Larguero
+  goldens_ajenos: NINGUNO-se-movio
+  fuera_de_alcance_declarado: >-
+    brazos-pendiente-niveles-estacion-doble-cara-separadores-arriostres-linea ·
+    BOM-peso-persistencia-RackSystemKind-los-tres-registros-biblioteca-editor-preview ·
+    vistas-AutoCAD-comandos-Xrecords-GUID · materiales-calculo-capacidad-placas ·
+    soldaduras-anclas-tornilleria-CNC-shop-drawings · familias-nuevas-bloques-DWG
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  ci: satisfecho-VERDE-run-30488839172-sobre-el-SHA-tecnico-aprobado-1552367
+  plugin_build: satisfecho-0-errores-propios-2-MSB3277-conocidas
+  autocad: NO-APLICA-no-cambia-dibujo-ni-UI
+  owner_validation: NO-APLICA-no-hay-nada-que-ver
+  owner_decision: satisfecho-docs-automation-decisions-I-37-md
+  todos_resueltos: si
+
+# --------------------------------------------------------------------------------------------------------
+# DECISIONES QUE SIGUEN ABIERTAS PARA EL OWNER
+# --------------------------------------------------------------------------------------------------------
+owner_validation_final:
+  adr_0024: ACEPTADO-paso-de-propuesto-a-aceptado-el-2026-07-29
+  veredicto_normativo: OWNER_APPROVED_ADR_0024
+  autorizacion_de_integracion: OWNER_AUTHORIZED_INTEGRATION_I_37A
+  sha_tecnico_aprobado: 15523679e655364c146917ece338c7cecbe24023
+  ci_del_sha_aprobado: VERDE-run-30488839172
+  gate: aprobado-SOBRE-EL-CODIGO-no-sobre-el-dibujo-porque-la-iniciativa-no-dibuja
+  observaciones: NINGUNA
+  bloqueos: NINGUNO
+  cubre: >-
+    las-doce-decisiones-que-ADR-0024-enumera-en-su-seccion-de-aceptacion
+  NO_autoriza: >-
+    vistas · UI · AutoCAD · persistencia-de-proyecto · brazos · estaciones ·
+    separadores · arriostres · BOM · peso · calculo-estructural · fabricacion ·
+    cambios-a-I-36
+
+# --------------------------------------------------------------------------------------------------------
+# LO QUE SIGUE ABIERTO DESPUES DEL CIERRE
+# --------------------------------------------------------------------------------------------------------
+sigue_abierto:
+  valores_de_los_dos_parametros_sin_default: >-
+    la-ARQUITECTURA-no-los-necesita-son-entradas-obligatorias-y-el-resolver-rechaza-si-faltan ·
+    un-diseno-real-si-los-necesita
+  supuestos_declarados: los-cuatro-del-bloque-supuestos_declarados-arriba
+  confirmacion_del_patron_de_pares: >-
+    sin-imagenes-de-referencia-en-el-repo-la-interpretacion-de-pares-simetricos-sin-centro
+    esta-implementada-tal-como-la-describe-el-encargo-y-cubierta-por-prueba ·
+    si-una-pieza-real-la-contradice-el-cambio-es-una-funcion-y-su-prueba

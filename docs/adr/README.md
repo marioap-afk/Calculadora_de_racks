@@ -63,6 +63,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0021](0021-identidad-unidades-y-presentacion-de-secciones.md) | Identidad, unidades y presentación de secciones estructurales | aceptado |
 | [0022](0022-geometria-parametrica-de-secciones-estructurales.md) | Geometría paramétrica y representación prismática de secciones estructurales | aceptado |
 | [0023](0023-geometria-visual-derivada-perfiles-s.md) | Geometría visual derivada para los perfiles S (IPS) | aceptado |
+| [0024](0024-fundacion-cantilever-base-columna.md) | Fundación Cantilever: diseño en Domain, resolución en Application y autoridad compartida base–columna | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -126,3 +127,24 @@ validación manual en AutoCAD 2025 y **ADR-0023 quedó `aceptado` el 2026-07-28*
 de su sección de aceptación y sin observaciones. La aceptación **no amplía** el alcance: no autoriza
 extender la convención a otras familias, ni radio de punta, ni sólidos 3D, ni que I-37 defina geometría
 de S por su cuenta.
+
+Iniciativa I-37A (`architecture/cantilever-base-columna`): **ADR-0024 quedó `aceptado` el 2026-07-29**. Es el primer ADR
+del lado **consumidor** del catálogo neutral y fija cuatro cosas que condicionan todo lo que Cantilever
+construya encima: el **diseño vive en Domain con el id de sección como texto** (Domain no puede referenciar
+Application, y `StructuralSectionId` tiene constructor privado y ningún `JsonConverter`, así que el DTO
+guardaría texto de todos modos); el **resultado es híbrido**, con un tipo por **naturaleza física** —perfil
+del catálogo, placa, cartabón, troquel— y el rol como enum dentro del plan de miembro, en vez de una
+jerarquía por rol que multiplicaría los `switch`; el **patrón de conexión base–columna tiene una sola
+autoridad**, y su coincidencia se comprueba sobre un **datum lógico** (X, Z y eje) y nunca comparando
+centros 3D separados por el espesor de una placa; y **`NominalCutLength` existe, es igual a la longitud
+geométrica y no está liberada para fabricación**. Toda dimensión exterior se deriva de
+`StructuralSectionGeometry.Bounds`, nunca de `d`/`bf`/`tw`/`tf`, lo que mantiene intacta la frontera que
+ADR-0020 y ADR-0022 fijaron. **No decide** vistas, persistencia, registros, BOM ni peso: cada una es una
+decisión de su propia iniciativa.
+
+A diferencia de ADR-0022 y ADR-0023, cuyo gate era **ver el dibujo**, ADR-0024 se aceptó **sobre el
+código**: I-37A no dibuja nada —sin vistas, editor, persistencia ni Plugin—, así que lo verificable de sus
+contratos son las invariantes y las guardas, no una captura. Veredicto normativo
+`OWNER_APPROVED_ADR_0024` sobre el SHA técnico `1552367`. La aceptación **no** autoriza vistas, UI,
+AutoCAD, persistencia de proyecto, brazos, estaciones, separadores, arriostres, BOM, peso, cálculo,
+fabricación ni cambios a I-36.
