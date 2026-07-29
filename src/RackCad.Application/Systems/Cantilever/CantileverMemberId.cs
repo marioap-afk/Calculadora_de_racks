@@ -15,7 +15,16 @@ namespace RackCad.Application.Systems.Cantilever
         Column = 0,
 
         /// <summary>The horizontal profile that projects from the column.</summary>
-        Base = 1
+        Base = 1,
+
+        /// <summary>
+        /// A load-carrying arm. Added by I-37B, at the END so the two existing values keep their numbers.
+        ///
+        /// One arm may resolve to TWO members of this role — a paired-channel body — which is exactly why the
+        /// role is an enum on a flat member plan and not a type: the cardinality lives in the arrangement,
+        /// not in the role (ADR-0025, D1).
+        /// </summary>
+        Arm = 2
     }
 
     /// <summary>
@@ -129,5 +138,15 @@ namespace RackCad.Application.Systems.Cantilever
         public const string ColumnConnectionPunch = "PCH-CONN";
         public const string ColumnRegularPunch = "PCH-REG";
         public const string ColumnBottomPlatePunch = "PCH-BOT";
+
+        // ---- I-37B: the arm. Added, never renumbered; the tokens above travel inside existing ids. -------
+
+        /// <summary>Owner token of a standalone arm, for a caller that has no station to name it from yet.</summary>
+        public const string ArmOwner = "ARM";
+
+        public const string ArmBody = "BODY";
+        public const string ArmMountingPlate = "PMOUNT";
+        public const string ArmEndPlate = "PEND";
+        public const string ArmMountingPunch = "PCH-MOUNT";
     }
 }

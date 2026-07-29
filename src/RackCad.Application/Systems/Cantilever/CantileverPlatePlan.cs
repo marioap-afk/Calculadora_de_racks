@@ -15,7 +15,19 @@ namespace RackCad.Application.Systems.Cantilever
         BaseRear = 1,
 
         /// <summary>The plate at the foot of the column, perpendicular to its axis.</summary>
-        ColumnBottom = 2
+        ColumnBottom = 2,
+
+        /// <summary>
+        /// The plate that bolts an arm to the column (I-37B). Its outer face is where the arm's profile
+        /// STARTS, so the plate and the body never overlap.
+        /// </summary>
+        ArmMounting = 3,
+
+        /// <summary>
+        /// The plate that closes an arm's free end (I-37B) — a cap, or a stop when it reaches above the body.
+        /// Perpendicular to the arm's sloped axis, not to the world.
+        /// </summary>
+        ArmEnd = 4
     }
 
     /// <summary>
