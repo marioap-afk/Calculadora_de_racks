@@ -582,7 +582,15 @@ Planes disponibles:
   editor, preview, vistas, AutoCAD, comandos, bloques, calculo, soldaduras, anclas, CNC, familias nuevas, un
   PTR nuevo en el catalogo, y cambios funcionales a I-36 o I-37A. `requires_autocad: **false**` y
   `requires_owner_validation: **false**`.
-  [ADR-0025](../adr/0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) nace **`propuesto`**. Decisiones
+  **INTEGRADA en `main` el 2026-07-29.**
+  [ADR-0025](../adr/0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) quedo **`aceptado`** con el
+  veredicto `OWNER_APPROVED_ADR_0025_WITH_CURRENT_DATUM` sobre el SHA tecnico `00d8126`, mas
+  `OWNER_AUTHORIZED_INTEGRATION_I_37B`. Aceptada **sobre el codigo** y no sobre el dibujo, igual que I-37A.
+  El veredicto **conserva el datum actual**: la cara exterior de la placa es el origen del plano de corte,
+  con pendiente eso **no** es quedar a ras, una zona penetra y la opuesta deja holgura, ambas magnitudes se
+  reportan por separado, y el corte inclinado y la preparacion de extremo siguen fuera de alcance. Suites
+  2355 y 544, cuatro regresiones de la ronda de correccion comprobadas **en rojo**, y **siguen sin default
+  aprobado** `MountingPlateVerticalEndOffset` mas los dos offsets heredados de I-37A. Decisiones
   vinculantes del Owner en la seccion 8 de
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37B.yml`](../automation/state/I-37B.yml).

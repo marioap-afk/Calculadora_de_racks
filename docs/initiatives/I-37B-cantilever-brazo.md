@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-37B
 title: Fundacion Cantilever - brazo y conexion a columna
 type: architecture
-status: implementing
+status: integrated
 branch: architecture/cantilever-brazo
 base_branch: main
 priority:
@@ -36,6 +36,20 @@ automation:
 >
 > **No dibuja nada**, igual que I-37A: sin vistas, preview, editor, persistencia de proyecto, registros ni
 > AutoCAD, y por tanto sin validacion manual.
+>
+> **INTEGRADA en `main` el 2026-07-29.** [ADR-0025](../adr/0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md)
+> quedo **aceptado** con el veredicto `OWNER_APPROVED_ADR_0025_WITH_CURRENT_DATUM` sobre el SHA tecnico
+> `00d8126eb687a46bafc156480ea6f080f295a771`, y la integracion con
+> `OWNER_AUTHORIZED_INTEGRATION_I_37B`. **No requirio AutoCAD ni validacion visual**
+> (`requires_autocad: false`, `requires_owner_validation: false`): el gate se resolvio **sobre el codigo**,
+> con CI verde sobre el SHA exacto, 2355 pruebas de `RackCad.Tests`, 544 de `RackCad.UI.Tests` y las
+> regresiones comprobadas **en rojo**.
+>
+> **Siguen sin default aprobado**, como entradas obligatorias que el resolver rechaza si faltan:
+> `MountingPlateVerticalEndOffset` (I-37B), `ColumnBottomPlateEndOffset` y `ColumnTopPunchOffset` (I-37A).
+> Siguen **diferidos** el perfil de brazo visible por omision —sera HSS, pero se fija cuando exista editor y
+> se registren los disenos aprobados— y el **PTR**, que no se equipara a HSS y queda como candidato de
+> catalogo futuro. Este contrato **no registra ningun id de produccion**.
 
 ## 1. Objetivo
 
@@ -176,4 +190,5 @@ contradice la orientacion canonica del canal que I-36 documenta.
 
 ## 14. Evidencia final
 
-Commits de la rama, archivos, pruebas, builds, CI y confirmacion de que `main` no fue modificada.
+Commits de la rama, archivos, pruebas, builds, CI y confirmacion de que `main` no fue modificada. La
+evidencia medida vive en [`../automation/state/I-37B.yml`](../automation/state/I-37B.yml).

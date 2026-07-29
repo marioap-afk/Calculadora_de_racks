@@ -3,17 +3,21 @@ automation_state:
   initiative: I-37B
   branch: architecture/cantilever-brazo
   claim_id: 57727fe5-46b6-4b51-83a9-85afa0d4ebf9
-  current_phase: 7
-  state: review-ready
-  gate: none
+  current_phase: 8
+  state: completed
+  gate: resuelto
   attempts: 1
   next_action: >-
-    sesion-de-integracion-del-Owner ·
-    rebase-final-si-main-avanzo · CI-verde-sobre-el-SHA-exacto ·
-    HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama · merge---no-ff ·
-    NO-requiere-validacion-manual-en-AutoCAD-porque-no-dibuja ·
-    ADR-0025-sigue-PROPUESTO-solo-el-Owner-lo-acepta
-  last_evidence_commit: f5b078e-ronda-de-correccion-2355-y-544-verdes
+    DEFINIR-FISICAMENTE-la-siguiente-subiniciativa-de-I-37-que-HOY-NO-EXISTE ·
+    sin-fila-en-ROADMAP-sin-contrato-sin-rama-y-sin-numero-asignado ·
+    lo-que-falta-decidir-es-como-se-compone-una-ESTACION-columna-con-sus-brazos-por-lado-y-sus-elevaciones ·
+    si-la-DOBLE-CARA-es-sistema-propio-o-propiedad-de-la-estacion ·
+    que-es-una-LINEA-Cantilever-con-separadores-y-arriostres ·
+    y-en-que-momento-entran-VISTAS-EDITOR-y-PERSISTENCIA-que-son-lo-unico-que-lo-haria-visible ·
+    NINGUNA-esta-autorizada-por-ADR-0024-ni-por-ADR-0025-y-ambas-lo-dicen ·
+    NO-se-abre-rama-sin-autorizacion-expresa-del-Owner-WORKFLOW-8
+  last_evidence_commit: >-
+    commit-documental-final-de-la-rama-2355-y-544-verdes-con-CI-sobre-el-SHA-exacto
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -101,6 +105,9 @@ fases:
   8: >-
     COMPLETA-ronda-de-correccion-de-CUATRO-defectos-senalados-por-el-dueno-f5b078e ·
     misma-rama-sin-reabrir-arquitectura-sin-funcionalidad-nueva-y-sin-iniciativas-posteriores
+  9: >-
+    COMPLETA-aceptacion-documental-verificacion-final-integracion-y-limpieza ·
+    ADR-0025-ACEPTADO · contrato-integrated · ROADMAP-HANDOFF-e-indices-cerrados
 
 # --------------------------------------------------------------------------------------------------------
 # PARAMETRO SIN DEFAULT APROBADO. No se inventa; es entrada obligatoria.
@@ -136,11 +143,11 @@ guardas_de_alcance:
 # GATES
 # --------------------------------------------------------------------------------------------------------
 gates:
-  ci: requerido
-  plugin_build: requerido-la-suite-no-lo-cubre
-  autocad: NO-APLICA-no-cambia-dibujo-ni-UI
+  ci: SATISFECHO-verde-sobre-el-SHA-exacto-del-candidato-y-del-commit-documental-final
+  plugin_build: SATISFECHO-0-errores-y-las-2-MSB3277-conocidas
+  autocad: NO-APLICA-no-cambia-dibujo-ni-UI-NETLOAD-no-ejecutado-y-no-exigible
   owner_validation: NO-APLICA-no-hay-nada-que-ver
-  owner_decision: satisfecho-docs-automation-decisions-I-37-md
+  owner_decision: SATISFECHO-docs-automation-decisions-I-37-md
 
 # --------------------------------------------------------------------------------------------------------
 # IMPLEMENTACION. Lo medido al terminar.
@@ -341,6 +348,35 @@ ronda_de_correccion:
   no_se_toco: >-
     NominalCutLength · la-posicion-del-cuerpo · la-arquitectura · ADR-0025-sigue-PROPUESTO ·
     HANDOFF · I-36 · I-37A · UI · Plugin · estaciones-vistas-editor-AutoCAD-e-iniciativas-posteriores
+
+# --------------------------------------------------------------------------------------------------------
+# ACEPTACION DEL OWNER E INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+aceptacion_e_integracion:
+  fecha: 2026-07-29
+  decisor: Mario-Perez-Owner-del-repositorio
+  veredictos:
+    - OWNER_APPROVED_ADR_0025_WITH_CURRENT_DATUM
+    - OWNER_AUTHORIZED_INTEGRATION_I_37B
+  sha_tecnico_aprobado: 00d8126eb687a46bafc156480ea6f080f295a771
+  ci_del_candidato: run-30499888210-success
+  rebase_final: >-
+    NO-EJECUTADO-y-correcto · origin-main-seguia-en-e0f319f-la-base-conocida ·
+    un-rebase-vacio-no-se-hace
+  adr_0025: ACEPTADO-con-los-22-puntos-enumerados-en-su-seccion-de-aceptacion
+  datum_conservado_expresamente: >-
+    la-cara-EXTERIOR-de-la-placa-de-conexion-es-el-ORIGEN-del-plano-de-corte ·
+    el-eje-centroidal-del-cuerpo-inicia-en-ese-datum ·
+    con-pendiente-y-corte-a-escuadra-una-zona-PENETRA-visualmente-la-placa-y-la-opuesta-deja-HOLGURA ·
+    ambas-magnitudes-se-reportan-POR-SEPARADO ·
+    NO-se-afirma-que-la-cara-quede-a-ras ·
+    el-corte-inclinado-y-la-preparacion-de-extremo-permanecen-FUERA-DE-ALCANCE ·
+    lo-aceptado-es-la-aproximacion-DECLARADA-no-una-geometria-exacta
+  la_aceptacion_no_autoriza: >-
+    estacion-completa · lista-de-niveles · doble-cara-como-sistema · separadores · arriostres ·
+    linea-Cantilever · BOM · peso · persistencia-de-proyecto · RackSystemKind · registros-globales ·
+    editor · preview · vistas · AutoCAD · bloques · preparacion-de-extremos · fabricacion ·
+    calculo-resistente · cambios-funcionales-en-I-36-o-I-37A
 
 # --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER

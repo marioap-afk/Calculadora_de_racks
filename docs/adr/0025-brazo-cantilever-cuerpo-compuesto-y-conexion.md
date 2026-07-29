@@ -1,12 +1,61 @@
 # ADR-0025: El brazo Cantilever — cuerpo simple o compuesto, y su conexión a la columna
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-29 (redacción)
-- **Decisores:** Mario Pérez, Owner del repositorio (decisiones de producto emitidas al abrir I-37B);
-  Claude Opus 5 (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-07-29 (redacción y **aceptación**)
+- **Decisores:** **Mario Pérez, Owner del repositorio** (acepta); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-37B `architecture/cantilever-brazo`
 - **No reemplaza a ninguna ADR.** Extiende [ADR-0024](0024-fundacion-cantilever-base-columna.md) de forma
   **aditiva**: ningún contrato que I-37A congeló se reabre.
+
+## Aceptación del Owner (2026-07-29)
+
+**Decisor:** Mario Pérez, Owner del repositorio. **Gate:** aprobado.
+**Veredicto normativo registrado:** `OWNER_APPROVED_ADR_0025_WITH_CURRENT_DATUM`.
+**SHA técnico aprobado:** `00d8126eb687a46bafc156480ea6f080f295a771`.
+
+> **Aceptado sobre el código, no sobre el dibujo**, igual que ADR-0024: I-37B no dibuja nada, así que no
+> hubo `requires_autocad` ni validación visual. El gate se resolvió con CI verde sobre el SHA exacto,
+> 2 355 pruebas de `RackCad.Tests`, 544 de `RackCad.UI.Tests` y las regresiones comprobadas **en rojo**.
+
+Aceptado expresamente:
+
+| # | Lo aceptado |
+|---|---|
+| 1 | El **cuerpo del brazo es una colección de miembros**, no un miembro con un segundo opcional |
+| 2 | Los **tres arreglos**: perfil sencillo, canal doble encontrado y canal doble espalda con espalda |
+| 3 | Los **canales dobles son de la misma sección y quedan en contacto**, **sin campo de separación** |
+| 4 | Toda **colocación derivada de `StructuralSectionGeometry.Bounds`**, nunca de `d`, `bf` ni la designación |
+| 5 | La **longitud capturada es el corte del perfil** y no incluye espesores de placa ni extensión de tope |
+| 6 | **`NominalCutLength == GeometricLength == Body.CutLength`** |
+| 7 | **`SlopeRisePer12` como única autoridad** de pendiente; los grados son derivados |
+| 8 | El **extremo libre asciende en AMBOS lados** — simetría especular, no rotación de 180° |
+| 9 | **Selección contigua** de troqueles regulares **ya existentes** de la columna |
+| 10 | El **pitch se OBSERVA de la columna** y nunca se cablea en el brazo |
+| 11 | La **placa de conexión crece hacia ARRIBA** al aumentar la cantidad de troqueles |
+| 12 | **Bloqueo** cuando el cuerpo no cabe en la placa: no se estira sin más agujeros |
+| 13 | **Tapa y tope son modos de una misma placa**, no dos piezas |
+| 14 | La **placa final es perpendicular al eje inclinado**, con su alto en la dirección de peralte |
+| 15 | **Elegibilidad por `StructuralSectionId` + `Arrangement`**, inyectable y sin ids de producción |
+| 16 | **Validación exhaustiva** de modos y enums: un valor no declarado se rechaza, nunca se materializa |
+| 17 | **Rango de índices sin overflow**: la comprobación es una resta, no una suma |
+| 18 | **Rechazo diagnóstico** de una pendiente cuyo marco colapsa; nunca una excepción |
+| 19 | El **datum actual**: el plano de corte tiene su **origen sobre la cara exterior** de la placa de conexión |
+| 20 | **Intrusión y holgura** como **aproximación visual declarada**, con las dos magnitudes **medidas por separado** |
+| 21 | La **coincidencia se compara por `CantileverPunchDatum`**, nunca por centros 3D |
+| 22 | El **PTR no se trata como alias de HSS**; queda como candidato de catálogo futuro |
+
+**El datum se conserva expresamente tal como está.** La cara exterior de la placa de conexión es el
+**origen del plano de corte** y el eje centroidal del cuerpo arranca en ese datum. Con pendiente y corte a
+escuadra, una zona del perfil **penetra visualmente** la placa y la opuesta deja **holgura**; ambas
+magnitudes se reportan **por separado**; **no** se afirma que la cara quede a ras; y el **corte inclinado**
+junto con cualquier **preparación de extremo** permanecen **fuera de alcance**. La aceptación es de la
+aproximación **declarada**, no de una geometría exacta.
+
+**La aceptación NO autoriza**, y ninguna fase posterior puede darlas por concedidas: estación completa;
+lista de niveles; doble cara como sistema; separadores; arriostres; línea Cantilever; BOM; peso;
+persistencia de proyecto; `RackSystemKind`; registros globales; editor; preview; vistas; AutoCAD; bloques;
+preparación de extremos; fabricación; cálculo resistente; ni **cambios funcionales en I-36 o I-37A**. Cada
+una es una decisión de su propia iniciativa.
 
 ## Contexto
 
