@@ -51,6 +51,15 @@ namespace RackCad.Application.Systems.Cantilever
 
         public CantileverPunchDatum(CantileverPunchAxis axis, double u, double v, double diameter)
         {
+            // A cast from an int can produce an axis that no case handles. Rejecting it here means every
+            // datum in existence has an axis somebody wrote down, so the consumers may switch on it without
+            // an "everything else" arm that would quietly pick a direction.
+            if (axis != CantileverPunchAxis.AlongY && axis != CantileverPunchAxis.AlongZ)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(axis), axis, "El eje de troquel '" + axis + "' no esta definido.");
+            }
+
             GeometryTolerance.RequireFinite(u, nameof(u));
             GeometryTolerance.RequireFinite(v, nameof(v));
             GeometryTolerance.RequireFinite(diameter, nameof(diameter));
@@ -76,23 +85,40 @@ namespace RackCad.Application.Systems.Cantilever
 
         public double Diameter { get; }
 
+        /// <summary>
+        /// Whether two datums describe the same hole WITHIN A TOLERANCE. This is the geometric question,
+        /// and it is deliberately NOT <see cref="Equals(CantileverPunchDatum)"/>.
+        ///
+        /// Tolerant comparison is not an equivalence relation: it is not transitive, so a value type whose
+        /// <c>Equals</c> delegated here would be broken in every dictionary and every <c>Distinct()</c> —
+        /// two "equal" values could hash to different buckets, and a hash coarse enough to agree with the
+        /// tolerance would put values that are NOT equal in the same one. Two questions, two methods, and
+        /// the caller who means the geometric one says so.
+        /// </summary>
         public bool ApproxEquals(CantileverPunchDatum other, double tolerance = Tolerance) =>
             Axis == other.Axis &&
             Math.Abs(U - other.U) <= tolerance &&
             Math.Abs(V - other.V) <= tolerance &&
             Math.Abs(Diameter - other.Diameter) <= tolerance;
 
-        public bool Equals(CantileverPunchDatum other) => ApproxEquals(other);
+        /// <summary>
+        /// Exact value equality over the same four fields the hash uses: reflexive, symmetric, transitive
+        /// and consistent with <see cref="GetHashCode"/>.
+        /// </summary>
+        public bool Equals(CantileverPunchDatum other) =>
+            Axis == other.Axis &&
+            U.Equals(other.U) &&
+            V.Equals(other.V) &&
+            Diameter.Equals(other.Diameter);
 
         public override bool Equals(object obj) => obj is CantileverPunchDatum other && Equals(other);
 
-        public override int GetHashCode() =>
-            // Rounded so that two values that ApproxEquals also land in the same bucket. Six decimals is
-            // the resolution the signatures use, and it is far coarser than the comparison tolerance.
-            (Axis,
-             Math.Round(U, 6, MidpointRounding.AwayFromZero),
-             Math.Round(V, 6, MidpointRounding.AwayFromZero),
-             Math.Round(Diameter, 6, MidpointRounding.AwayFromZero)).GetHashCode();
+        /// <summary>Exactly the four fields <see cref="Equals(CantileverPunchDatum)"/> compares, unrounded.</summary>
+        public override int GetHashCode() => (Axis, U, V, Diameter).GetHashCode();
+
+        public static bool operator ==(CantileverPunchDatum left, CantileverPunchDatum right) => left.Equals(right);
+
+        public static bool operator !=(CantileverPunchDatum left, CantileverPunchDatum right) => !left.Equals(right);
 
         public override string ToString() =>
             Axis + " u=" + U.ToString("0.####", CultureInfo.InvariantCulture) +
@@ -143,9 +169,29 @@ namespace RackCad.Application.Systems.Cantilever
 
         public double Diameter => Datum.Diameter;
 
-        /// <summary>The world direction of the drilling axis.</summary>
-        public Vector3D Direction =>
-            Datum.Axis == CantileverPunchAxis.AlongY ? Vector3D.UnitY : Vector3D.UnitZ;
+        /// <summary>
+        /// The world direction of the drilling axis.
+        ///
+        /// It FAILS CLOSED. The previous form was a conditional whose else branch returned Z, so an axis
+        /// nobody had written a rule for would have been drilled vertically without a word — the kind of
+        /// default that is only discovered when a hole comes out in the wrong face.
+        /// </summary>
+        public Vector3D Direction
+        {
+            get
+            {
+                switch (Datum.Axis)
+                {
+                    case CantileverPunchAxis.AlongY:
+                        return Vector3D.UnitY;
+                    case CantileverPunchAxis.AlongZ:
+                        return Vector3D.UnitZ;
+                    default:
+                        throw new InvalidOperationException(
+                            "El eje de troquel '" + Datum.Axis + "' no tiene direccion definida.");
+                }
+            }
+        }
 
         public override string ToString() => Id.Value + " " + Datum;
     }

@@ -175,13 +175,20 @@ namespace RackCad.Application.Systems.Cantilever
             var leftRowX = columnMinX + parameters.HorizontalEndOffset;
             var rightRowX = columnMaxX - parameters.HorizontalEndOffset;
 
-            if (rightRowX <= leftRowX)
+            // The two rows are centre-to-centre, so they only clear each other if they are at least one
+            // diameter apart. This subsumes the old "right <= left" check and reports it with its own code:
+            // rows that merge into a slot are not the same defect as holes that fall off the PLATE, and
+            // reusing that message sent the reader to look at the base when the problem was the column.
+            var separation = rightRowX - leftRowX;
+
+            if (separation + FitTolerance < parameters.Diameter)
             {
-                var tooNarrow = CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.PunchOutsideRearPlate,
-                    "La columna es demasiado estrecha para dos filas de troqueles al offset de " +
-                    Format(parameters.HorizontalEndOffset) + " in.");
-                diagnostics.Add(tooNarrow);
+                diagnostics.Add(CantileverDiagnostic.Blocking(
+                    CantileverDiagnostics.PunchRowsOverlap,
+                    "Las dos filas de troqueles quedarian a " + Format(separation) +
+                    " in una de otra, menos que el diametro (" + Format(parameters.Diameter) +
+                    " in): la columna es demasiado estrecha para el offset de " +
+                    Format(parameters.HorizontalEndOffset) + " in."));
                 return null;
             }
 

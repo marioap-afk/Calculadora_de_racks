@@ -235,6 +235,45 @@ namespace RackCad.Tests
                 string.Join(", ", offenders) + ".");
         }
 
+        // ---- the frame authority is the ONLY place a frame is built -----------------------------------------
+
+        [Theory]
+        [InlineData(@"\bLocalFrame3D\s*\.\s*Create\b")]
+        [InlineData(@"\bLocalFrame3D\s*\.\s*FromAxes\b")]
+        public void OnlyTheFrameAuthorityBuildsAPlacementFrame(string pattern)
+        {
+            // The orientation registered on a variant used to be data nobody read: the resolver built fixed
+            // frames regardless. Now CantileverColumnBaseFrameResolver owns them, and this stops the
+            // resolver — or any future piece — from wiring one directly again, which would silently
+            // reintroduce the same defect.
+            var regex = new Regex(pattern, RegexOptions.Compiled);
+
+            var offenders = Sources()
+                .Where(f => !f.Path.EndsWith("CantileverColumnBaseFrameResolver.cs", StringComparison.Ordinal))
+                .Where(f => regex.IsMatch(f.Code))
+                .Select(f => f.Path)
+                .ToList();
+
+            Assert.True(
+                offenders.Count == 0,
+                "Solo CantileverColumnBaseFrameResolver construye marcos. Lo incumplen: " +
+                string.Join(", ", offenders) + ".");
+        }
+
+        [Fact]
+        public void TheFrameAuthorityReadsTheOrientationItWasGiven()
+        {
+            var authority = Sources()
+                .Single(f => f.Path.EndsWith("CantileverColumnBaseFrameResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            // It must dispatch on the orientation and fail closed. A body without a switch would be the old
+            // fixed frame wearing a new name.
+            Assert.Contains("switch (orientation)", authority, StringComparison.Ordinal);
+            Assert.Contains("ArgumentOutOfRangeException", authority, StringComparison.Ordinal);
+            Assert.Contains(".Bounds", authority, StringComparison.Ordinal);
+        }
+
         // ---- the guard is actually looking at something ---------------------------------------------------
 
         [Fact]

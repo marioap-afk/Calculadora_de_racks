@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Catalogs;
+using RackCad.Application.Geometry;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
@@ -405,7 +406,10 @@ namespace RackCad.Tests
             var plate = assembly.RearPlatePunches[0];
             var column = assembly.ColumnConnectionPunches[0];
 
-            Assert.Equal(plate.Datum, column.Datum);
+            // ApproxEquals, explicitly: physical coincidence is the GEOMETRIC question, and Equals is exact
+            // value equality. They happen to agree here because both datums come from the one pattern, and
+            // saying which one we mean is the point.
+            Assert.True(plate.Datum.ApproxEquals(column.Datum));
             Assert.Equal(CantileverPunchAxis.AlongY, plate.Axis);
             Assert.Equal(plate.Centre.X, column.Centre.X, 12);
             Assert.Equal(plate.Centre.Z, column.Centre.Z, 12);
@@ -875,6 +879,356 @@ namespace RackCad.Tests
             Assert.Throws<ArgumentException>(() =>
                 CantileverColumnBaseSectionPolicy.Create(
                     new[] { Variant(ColumnW, BaseW), Variant(ColumnW, BaseW) }));
+        }
+
+        // ---- value semantics of CantileverPunchDatum -------------------------------------------------------
+        //
+        // Equals used to delegate to ApproxEquals while GetHashCode rounded to six decimals. That is not a
+        // valid equality for a value type: it is intransitive, and two values that compared "equal" could
+        // land in different hash buckets while two that were NOT equal shared one.
+
+        [Fact]
+        public void TwoDatumsThatDifferBelowTheToleranceAreApproxEqualButNotEqual()
+        {
+            var a = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 1.0, 2.0, 0.75);
+            var b = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 1.0 + 5e-10, 2.0, 0.75);
+
+            Assert.True(a.ApproxEquals(b));      // the geometric question
+            Assert.False(a.Equals(b));           // the value question — this FAILED before the fix
+            Assert.True(a != b);
+        }
+
+        [Fact]
+        public void EqualityIsConsistentWithTheHashAcrossARoundingBoundary()
+        {
+            // Both values round to the same six decimals, so the old hash put them in the same bucket while
+            // Equals — being tolerant — also said equal. The pair that breaks it is this one: they are
+            // 1e-7 apart, which the OLD hash collapsed and the OLD Equals rejected (1e-7 > 1e-9 tolerance).
+            // That combination is the defect: equal-by-hash, unequal-by-Equals.
+            var a = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 0.5000000, 1.0, 0.75);
+            var b = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 0.5000001, 1.0, 0.75);
+
+            Assert.False(a.Equals(b));
+            Assert.NotEqual(a.GetHashCode(), b.GetHashCode());
+            Assert.False(a.ApproxEquals(b));
+
+            // And an exactly equal pair must agree on both.
+            var c = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 0.5000001, 1.0, 0.75);
+            Assert.True(b.Equals(c));
+            Assert.Equal(b.GetHashCode(), c.GetHashCode());
+        }
+
+        [Fact]
+        public void ADatumSurvivesADictionaryAndADistinct()
+        {
+            // The consistency that the old implementation could not guarantee.
+            var a = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 1.0, 2.0, 0.75);
+            var same = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 1.0, 2.0, 0.75);
+            var nearly = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 1.0 + 5e-10, 2.0, 0.75);
+
+            var set = new HashSet<CantileverPunchDatum> { a, same, nearly };
+
+            Assert.Equal(2, set.Count);
+            Assert.Contains(a, set);
+
+            var map = new Dictionary<CantileverPunchDatum, string> { [a] = "primero" };
+            Assert.Equal("primero", map[same]);
+            Assert.False(map.ContainsKey(nearly));
+        }
+
+        [Fact]
+        public void TheAxisIsPartOfTheIdentity()
+        {
+            var alongY = new CantileverPunchDatum(CantileverPunchAxis.AlongY, 1.0, 2.0, 0.75);
+            var alongZ = new CantileverPunchDatum(CantileverPunchAxis.AlongZ, 1.0, 2.0, 0.75);
+
+            Assert.False(alongY.Equals(alongZ));
+            Assert.False(alongY.ApproxEquals(alongZ));
+        }
+
+        [Fact]
+        public void ADatumRejectsAnUndefinedAxis()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                new CantileverPunchDatum((CantileverPunchAxis)99, 1.0, 2.0, 0.75));
+        }
+
+        [Fact]
+        public void EveryPunchDirectionComesFromADeclaredAxis()
+        {
+            var assembly = Resolve();
+
+            foreach (var punch in assembly.AllPunches)
+            {
+                var direction = punch.Direction;
+
+                Assert.Equal(1.0, Math.Abs(direction.X) + Math.Abs(direction.Y) + Math.Abs(direction.Z), 12);
+                Assert.True(
+                    punch.Axis == CantileverPunchAxis.AlongY || punch.Axis == CantileverPunchAxis.AlongZ,
+                    "Un troquel llego con un eje no declarado.");
+            }
+        }
+
+        // ---- the registered orientation is a real authority -------------------------------------------------
+        //
+        // CantileverColumnBaseVariant declared ColumnOrientation and BaseOrientation and the resolver built
+        // fixed frames anyway, so registering a different orientation changed nothing while looking as if it
+        // had. CantileverColumnBaseFrameResolver is now the only place a frame is built.
+
+        [Fact]
+        public void TheFrameAuthorityReproducesTheCurrentColumnFrameExactly()
+        {
+            var geometry = Factory.Get(Id(ColumnW), SectionDetailLevel.Tabulated);
+            var bounds = geometry.Bounds;
+
+            var fromAuthority = CantileverColumnBaseFrameResolver.ColumnFrame(
+                CantileverColumnOrientation.DepthAlongBase, geometry);
+
+            var expected = LocalFrame3D.Create(
+                new Point3D(
+                    -bounds.Center.X,
+                    CantileverColumnBaseDatum.ConnectionPlaneY - bounds.MaxY,
+                    CantileverColumnBaseDatum.FloorZ),
+                Vector3D.UnitZ,
+                Vector3D.UnitX);
+
+            AssertSameFrame(expected, fromAuthority);
+
+            // ... and it is the frame the resolver actually placed the column with.
+            AssertSameFrame(expected, Resolve().Column.Placement.Frame);
+        }
+
+        [Fact]
+        public void TheFrameAuthorityReproducesTheCurrentBaseFrameExactly()
+        {
+            var geometry = Factory.Get(Id(BaseW), SectionDetailLevel.Tabulated);
+            var bounds = geometry.Bounds;
+            var rear = CantileverDefaults.PlateThickness;
+
+            var fromAuthority = CantileverColumnBaseFrameResolver.BaseFrame(
+                CantileverBaseOrientation.DepthVertical, geometry, rear);
+
+            var expected = LocalFrame3D.Create(
+                new Point3D(
+                    bounds.Center.X,
+                    CantileverColumnBaseDatum.ConnectionPlaneY + rear,
+                    CantileverColumnBaseDatum.FloorZ - bounds.MinY),
+                Vector3D.UnitY,
+                Vector3D.UnitZ.Cross(Vector3D.UnitY));
+
+            AssertSameFrame(expected, fromAuthority);
+            AssertSameFrame(expected, Resolve().Base.Placement.Frame);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(99)]
+        [InlineData(-1)]
+        public void AnUndefinedColumnOrientationIsRejectedAndNeverFallsBackToTheHistoricFrame(int raw)
+        {
+            var geometry = Factory.Get(Id(ColumnW), SectionDetailLevel.Tabulated);
+
+            // The whole point: a value the enum does not declare must NOT silently produce the frame that
+            // DepthAlongBase produces. Before the extraction there was no branch at all, so it always did.
+            Assert.False(CantileverColumnBaseFrameResolver.IsSupported((CantileverColumnOrientation)raw));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                CantileverColumnBaseFrameResolver.ColumnFrame((CantileverColumnOrientation)raw, geometry));
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(99)]
+        [InlineData(-1)]
+        public void AnUndefinedBaseOrientationIsRejectedAndNeverFallsBackToTheHistoricFrame(int raw)
+        {
+            var geometry = Factory.Get(Id(BaseW), SectionDetailLevel.Tabulated);
+
+            Assert.False(CantileverColumnBaseFrameResolver.IsSupported((CantileverBaseOrientation)raw));
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+                CantileverColumnBaseFrameResolver.BaseFrame(
+                    (CantileverBaseOrientation)raw, geometry, CantileverDefaults.PlateThickness));
+        }
+
+        [Fact]
+        public void OnlyTheDeclaredOrientationsAreSupported()
+        {
+            // A future member added to either enum fails here until somebody writes its frame rule. That is
+            // the guard against a new orientation quietly inheriting the historic behaviour.
+            Assert.Equal(
+                new[] { CantileverColumnOrientation.DepthAlongBase },
+                Enum.GetValues(typeof(CantileverColumnOrientation)).Cast<CantileverColumnOrientation>());
+            Assert.Equal(
+                new[] { CantileverBaseOrientation.DepthVertical },
+                Enum.GetValues(typeof(CantileverBaseOrientation)).Cast<CantileverBaseOrientation>());
+
+            Assert.All(
+                Enum.GetValues(typeof(CantileverColumnOrientation)).Cast<CantileverColumnOrientation>(),
+                o => Assert.True(CantileverColumnBaseFrameResolver.IsSupported(o)));
+            Assert.All(
+                Enum.GetValues(typeof(CantileverBaseOrientation)).Cast<CantileverBaseOrientation>(),
+                o => Assert.True(CantileverColumnBaseFrameResolver.IsSupported(o)));
+        }
+
+        [Fact]
+        public void AVariantRegisteredWithAnUnsupportedOrientationIsRejectedWithADiagnostic()
+        {
+            // The user path: a bad REGISTRATION must read as a diagnostic, not as an exception escaping the
+            // resolver.
+            var policy = CantileverColumnBaseSectionPolicy.Create(
+                new[]
+                {
+                    new CantileverColumnBaseVariant(
+                        CantileverColumnBaseVariantKind.WFlangeConnected, Id(ColumnW), Id(BaseW),
+                        (CantileverColumnOrientation)99)
+                },
+                new[] { StructuralSectionFamily.W });
+
+            var assembly = Resolve(Design(), policy);
+
+            Assert.True(assembly.IsBlocked);
+            Assert.True(Has(assembly, CantileverDiagnostics.OrientationNotSupported));
+        }
+
+        private static void AssertSameFrame(LocalFrame3D expected, LocalFrame3D actual)
+        {
+            Assert.Equal(expected.Origin.X, actual.Origin.X, 15);
+            Assert.Equal(expected.Origin.Y, actual.Origin.Y, 15);
+            Assert.Equal(expected.Origin.Z, actual.Origin.Z, 15);
+            Assert.True(expected.AxisX.ApproxEquals(actual.AxisX, 1e-15));
+            Assert.True(expected.AxisY.ApproxEquals(actual.AxisY, 1e-15));
+            Assert.True(expected.AxisZ.ApproxEquals(actual.AxisZ, 1e-15));
+        }
+
+        // ---- geometric compatibility of the punches ---------------------------------------------------------
+        //
+        // Offsets are edge-to-CENTRE, so a hole fits only if the offset is at least its RADIUS. Pitches are
+        // centre-to-centre, so consecutive holes clear each other only at a whole DIAMETER.
+
+        [Fact]
+        public void TheApprovedDefaultsStillResolveUnchanged()
+        {
+            // The guard on the guards: none of the new validations may reject the approved configuration,
+            // and the signature must be exactly what it was before they existed.
+            var assembly = Resolve();
+
+            Assert.False(assembly.IsBlocked);
+            Assert.DoesNotContain(
+                assembly.Diagnostics,
+                d => d.Code == CantileverDiagnostics.EdgeOffsetBelowRadius ||
+                     d.Code == CantileverDiagnostics.PitchBelowDiameter ||
+                     d.Code == CantileverDiagnostics.PunchRowsOverlap);
+            Assert.Equal(new[] { 2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5 },
+                assembly.Pattern.Elevations.Select(z => Math.Round(z, 9)));
+            Assert.Equal(8, assembly.ColumnBottomPlatePunches.Count);
+        }
+
+        [Fact]
+        public void AHoleThatSpillsPastAHorizontalEdgeIsRejected()
+        {
+            var assembly = Resolve(Design(tune: p => p.HorizontalEndOffset = p.Diameter / 2.0 - 0.01));
+
+            Assert.True(assembly.IsBlocked);
+            Assert.True(Has(assembly, CantileverDiagnostics.EdgeOffsetBelowRadius));
+        }
+
+        [Fact]
+        public void AHoleThatSpillsPastThePlateBottomEdgeIsRejected()
+        {
+            var assembly = Resolve(Design(tune: p => p.RearPlateVerticalEndOffset = p.Diameter / 2.0 - 0.01));
+
+            Assert.True(assembly.IsBlocked);
+            Assert.True(Has(assembly, CantileverDiagnostics.EdgeOffsetBelowRadius));
+        }
+
+        [Fact]
+        public void AHoleThatSpillsPastTheBottomPlateEndIsRejected()
+        {
+            var design = Design();
+            design.Connection.Punches.ColumnBottomPlateEndOffset = 0.1; // radius is 0.375
+
+            var assembly = Resolve(design);
+
+            Assert.True(assembly.IsBlocked);
+            Assert.True(Has(assembly, CantileverDiagnostics.EdgeOffsetBelowRadius));
+        }
+
+        [Fact]
+        public void AHoleThatSpillsPastTheColumnTopIsRejected()
+        {
+            var design = Design();
+            design.Connection.Punches.ColumnTopPunchOffset = 0.1;
+
+            var assembly = Resolve(design);
+
+            Assert.True(assembly.IsBlocked);
+            Assert.True(Has(assembly, CantileverDiagnostics.EdgeOffsetBelowRadius));
+        }
+
+        [Fact]
+        public void AnOffsetExactlyEqualToTheRadiusIsAccepted()
+        {
+            // Tangent to the edge is a product decision, not a defect: the floor is inclusive.
+            var assembly = Resolve(Design(tune: p =>
+            {
+                p.HorizontalEndOffset = p.Diameter / 2.0;
+                p.RearPlateVerticalEndOffset = p.Diameter / 2.0;
+            }));
+
+            Assert.DoesNotContain(
+                assembly.Diagnostics, d => d.Code == CantileverDiagnostics.EdgeOffsetBelowRadius);
+        }
+
+        [Theory]
+        [InlineData("connection")]
+        [InlineData("regular")]
+        [InlineData("bottom")]
+        public void APitchSmallerThanTheDiameterIsRejected(string which)
+        {
+            var assembly = Resolve(Design(tune: p =>
+            {
+                switch (which)
+                {
+                    case "connection": p.ConnectionPitch = p.Diameter - 0.01; break;
+                    case "regular": p.RegularColumnPitch = p.Diameter - 0.01; break;
+                    default: p.ColumnBottomPlatePitch = p.Diameter - 0.01; break;
+                }
+            }));
+
+            Assert.True(assembly.IsBlocked);
+            Assert.True(Has(assembly, CantileverDiagnostics.PitchBelowDiameter));
+        }
+
+        [Fact]
+        public void APitchExactlyEqualToTheDiameterIsAccepted()
+        {
+            var assembly = Resolve(Design(tune: p => p.ConnectionPitch = p.Diameter));
+
+            Assert.DoesNotContain(
+                assembly.Diagnostics, d => d.Code == CantileverDiagnostics.PitchBelowDiameter);
+        }
+
+        [Fact]
+        public void TwoRowsThatWouldMergeIntoASlotAreRejectedWithTheirOwnCode()
+        {
+            // W10X33 is 7.96 in wide, so an offset just under half of it drives the two rows together.
+            var assembly = Resolve(Design(tune: p => p.HorizontalEndOffset = 3.9));
+
+            Assert.True(assembly.IsBlocked);
+            Assert.True(Has(assembly, CantileverDiagnostics.PunchRowsOverlap));
+
+            // NOT the plate diagnostic: rows that merge are a COLUMN problem, and the old code sent the
+            // reader to look at the base.
+            Assert.False(Has(assembly, CantileverDiagnostics.PunchOutsideRearPlate));
+        }
+
+        [Fact]
+        public void RowsFartherApartThanADiameterAreAccepted()
+        {
+            var assembly = Resolve();
+
+            Assert.True(
+                assembly.Pattern.RightRowX - assembly.Pattern.LeftRowX >=
+                assembly.Pattern.Parameters.Diameter - Tolerance);
         }
     }
 }

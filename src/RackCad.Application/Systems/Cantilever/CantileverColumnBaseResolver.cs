@@ -86,18 +86,11 @@ namespace RackCad.Application.Systems.Cantilever
             var columnBounds = columnGeometry.Bounds;
             var baseBounds = baseGeometry.Bounds;
 
-            // ---- 4. placement, all of it derived from Bounds ----------------------------------------------
-            // Column: vertical, section local X across the run and local Y along the base direction. Its
-            // origin is pushed so the CONNECTING FACE lands on the datum plane and the transverse centre on
-            // x = 0. The frame origin sits at the section CENTROID, so the shift is a bounds offset — never
-            // "half of d".
-            var columnFrame = LocalFrame3D.Create(
-                new Point3D(
-                    -columnBounds.Center.X,
-                    CantileverColumnBaseDatum.ConnectionPlaneY - columnBounds.MaxY,
-                    CantileverColumnBaseDatum.FloorZ),
-                Vector3D.UnitZ,
-                Vector3D.UnitX);
+            // ---- 4. placement: the frame authority reads the REGISTERED orientation -----------------------
+            // The frames are not built here. CantileverColumnBaseFrameResolver owns them, so the variant's
+            // declared orientation is what decides them instead of being data nobody reads.
+            var columnFrame = CantileverColumnBaseFrameResolver.ColumnFrame(
+                variant.ColumnOrientation, columnGeometry);
 
             var columnMinX = columnFrame.Origin.X + columnBounds.MinX;
             var columnMaxX = columnFrame.Origin.X + columnBounds.MaxX;
@@ -105,16 +98,9 @@ namespace RackCad.Application.Systems.Cantilever
             var columnMaxY = columnFrame.Origin.Y + columnBounds.MaxY;
             var columnTopZ = CantileverColumnBaseDatum.FloorZ + column.Height;
 
-            // Base: longitudinal axis +Y, section depth VERTICAL. Asking for local Y to map to world +Z
-            // means referenceX = up x forward = Z x Y = -X, which LocalFrame3D.Create then completes.
             var rearThickness = basePiece.RearPlate.Thickness;
-            var baseFrame = LocalFrame3D.Create(
-                new Point3D(
-                    baseBounds.Center.X,
-                    CantileverColumnBaseDatum.ConnectionPlaneY + rearThickness,
-                    CantileverColumnBaseDatum.FloorZ - baseBounds.MinY),
-                Vector3D.UnitY,
-                Vector3D.UnitZ.Cross(Vector3D.UnitY));
+            var baseFrame = CantileverColumnBaseFrameResolver.BaseFrame(
+                variant.BaseOrientation, baseGeometry, rearThickness);
 
             var baseHalfWidth = baseBounds.Width / 2.0;
             var baseMinX = -baseHalfWidth;
@@ -254,6 +240,27 @@ namespace RackCad.Application.Systems.Cantilever
                 return null;
             }
 
+            // A variant may be registered with an orientation that has no frame rule. Checking it here
+            // turns what would be an exception out of the frame authority into a diagnostic the user can
+            // read, and keeps the authority itself free to fail closed.
+            if (!CantileverColumnBaseFrameResolver.IsSupported(variant.ColumnOrientation))
+            {
+                diagnostics.Add(CantileverDiagnostic.Blocking(
+                    CantileverDiagnostics.OrientationNotSupported,
+                    "La orientacion de columna '" + variant.ColumnOrientation +
+                    "' registrada en la variante no tiene regla de marco."));
+                return null;
+            }
+
+            if (!CantileverColumnBaseFrameResolver.IsSupported(variant.BaseOrientation))
+            {
+                diagnostics.Add(CantileverDiagnostic.Blocking(
+                    CantileverDiagnostics.OrientationNotSupported,
+                    "La orientacion de base '" + variant.BaseOrientation +
+                    "' registrada en la variante no tiene regla de marco."));
+                return null;
+            }
+
             return variant;
         }
 
@@ -286,6 +293,47 @@ namespace RackCad.Application.Systems.Cantilever
                 punches.ColumnTopPunchOffset,
                 "el offset superior de la columna al ultimo troquel regular",
                 diagnostics);
+
+            // ---- geometric compatibility of the punches themselves ----------------------------------------
+            // Every offset above is measured edge-to-CENTRE, so a hole physically fits only if the offset is
+            // at least its RADIUS; every pitch is centre-to-centre, so consecutive holes only clear each
+            // other if the pitch is at least a whole DIAMETER. Without these, a legal-looking design draws
+            // holes that spill past an edge or merge into a slot, and nothing says so.
+            var radius = punches.Diameter / 2.0;
+
+            RequireAtLeast(punches.HorizontalEndOffset, radius,
+                "el offset horizontal de troquel", "el radio del troquel",
+                CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
+
+            RequireAtLeast(punches.RearPlateVerticalEndOffset, radius,
+                "el offset vertical de la placa posterior", "el radio del troquel",
+                CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
+
+            if (bottomOffset != null)
+            {
+                RequireAtLeast(bottomOffset.Value, radius,
+                    "el offset desde los extremos de la placa inferior", "el radio del troquel",
+                    CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
+            }
+
+            if (topOffset != null)
+            {
+                RequireAtLeast(topOffset.Value, radius,
+                    "el offset superior de la columna", "el radio del troquel",
+                    CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
+            }
+
+            RequireAtLeast(punches.ConnectionPitch, punches.Diameter,
+                "el pitch de conexion", "el diametro del troquel",
+                CantileverDiagnostics.PitchBelowDiameter, diagnostics);
+
+            RequireAtLeast(punches.RegularColumnPitch, punches.Diameter,
+                "el pitch regular de la columna", "el diametro del troquel",
+                CantileverDiagnostics.PitchBelowDiameter, diagnostics);
+
+            RequireAtLeast(punches.ColumnBottomPlatePitch, punches.Diameter,
+                "el pitch de la placa inferior", "el diametro del troquel",
+                CantileverDiagnostics.PitchBelowDiameter, diagnostics);
 
             return new CantileverResolvedPunchParameters(
                 punches.Diameter,
@@ -540,6 +588,27 @@ namespace RackCad.Application.Systems.Cantilever
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.ParameterNotPositive,
                     "El valor de " + what + " debe ser un numero positivo; se recibio " + Format(value) + "."));
+            }
+        }
+
+        /// <summary>
+        /// A geometric floor with its OWN diagnostic code. Exact equality passes: an offset of exactly the
+        /// radius puts the hole tangent to the edge, which is a real product decision and not a defect.
+        /// </summary>
+        private static void RequireAtLeast(
+            double value,
+            double minimum,
+            string what,
+            string minimumName,
+            string code,
+            ICollection<CantileverDiagnostic> diagnostics)
+        {
+            if (!GeometryTolerance.IsFinite(value) || value + FitTolerance < minimum)
+            {
+                diagnostics.Add(CantileverDiagnostic.Blocking(
+                    code,
+                    "El valor de " + what + " (" + Format(value) + " in) es menor que " + minimumName +
+                    " (" + Format(minimum) + " in): el troquel no cabe."));
             }
         }
 

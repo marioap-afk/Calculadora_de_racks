@@ -93,6 +93,15 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>The registered variant is not the one the design declares.</summary>
         public const string VariantMismatch = "CANT_VARIANT_MISMATCH";
 
+        /// <summary>
+        /// The registered variant declares an orientation that has no frame rule.
+        ///
+        /// It is reported rather than thrown so that a bad REGISTRATION reaches the user as a diagnostic
+        /// like any other. The frame authority still throws if called directly with it, which covers the
+        /// programmer path.
+        /// </summary>
+        public const string OrientationNotSupported = "CANT_ORIENTATION_NOT_SUPPORTED";
+
         /// <summary>The contour of a section carries a declared RackCad convention (ADR-0023).</summary>
         public const string SectionVisualDerived = "CANT_SECTION_VISUAL_DERIVED";
 
@@ -101,6 +110,30 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>A length, thickness, pitch or offset is not a usable positive number.</summary>
         public const string ParameterNotPositive = "CANT_PARAMETER_NOT_POSITIVE";
+
+        /// <summary>
+        /// An edge offset is smaller than the punch RADIUS, so the hole would spill past the edge it is
+        /// measured from.
+        ///
+        /// Its own code, and not <see cref="ParameterNotPositive"/>: the value IS positive, and a message
+        /// saying otherwise would send the reader looking for the wrong thing. The offsets are measured
+        /// edge-to-CENTRE, so the physical requirement is half a diameter, not a whole one.
+        /// </summary>
+        public const string EdgeOffsetBelowRadius = "CANT_EDGE_OFFSET_BELOW_RADIUS";
+
+        /// <summary>
+        /// A pitch is smaller than the punch diameter, so consecutive holes of one row would overlap.
+        ///
+        /// Pitch is centre-to-centre, so here the requirement is a whole diameter — that is exactly why this
+        /// is a different code from <see cref="EdgeOffsetBelowRadius"/> and not a shared "too small".
+        /// </summary>
+        public const string PitchBelowDiameter = "CANT_PITCH_BELOW_DIAMETER";
+
+        /// <summary>
+        /// The two transverse punch columns are closer to each other than one diameter, so they would merge
+        /// into a slot. Distinct from <see cref="PunchOutsideRearPlate"/>, which is about the PLATE.
+        /// </summary>
+        public const string PunchRowsOverlap = "CANT_PUNCH_ROWS_OVERLAP";
 
         /// <summary>Not even the first connection punch fits inside the base section envelope.</summary>
         public const string NoPunchFitsInBase = "CANT_NO_PUNCH_FITS_IN_BASE";
