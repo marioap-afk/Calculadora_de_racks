@@ -619,3 +619,38 @@ la sección anterior de este documento). El resto es alcance planificado o difer
 | 13 | **Posible incorporación de familias adicionales** más allá de W, HSS rect./cuad., C y L | sin decidir |
 
 **No se ha abierto** rama, contrato ni worktree para ninguno de ellos.
+
+## Documentación desalineada con el árbol (hallazgo de I-37A, fuera de alcance)
+
+Detectados al preparar e implementar I-37A. Ninguno se arregló «de paso» (WORKFLOW §8): cada uno es un
+cambio de texto visible o de una fuente normativa, y merece su propia decisión.
+
+| # | Dónde | Qué dice | Qué es cierto |
+|---|---|---|---|
+| 1 | `docs/ARCHITECTURE.md` §4.4.3 (encabezado) | «I-36D, **en curso**» y ADR-0023 en estado `propuesto` | I-36D está **integrada** (merge `3c6ccf5`) y **ADR-0023 fue aceptado** el 2026-07-28. I-37A añadió §4.4.4 justo debajo y **no** tocó esa línea |
+| 2 | `docs/ARCHITECTURE.md` §8 | «Apéndice temporal: agregar un tipo hoy», y apunta a `RackFrameCommands` | Ese archivo ya no existe con ese rol (I-09 lo partió). La fuente vigente es `docs/guias/agregar-un-sistema.md`, que lo sustituye desde I-18. Riesgo real: un ejecutor que lo lea seguirá un patrón retirado |
+| 3 | `AGENTS.md` §«Pruebas» y `docs/WORKFLOW.md` §4.5.4, §8 | Citan `docs/HANDOFF.md` **§8-12** y **§14** | `HANDOFF.md` tiene **siete** secciones de primer nivel; los conteos viven en §5. Una sesión de integración que siga la letra escribiría en secciones inexistentes |
+| 4 | `docs/WORKFLOW.md` §7 (archivos calientes) | Lista `src/RackCad.UI/RackSelectiveWindow.xaml.cs`, `src/RackCad.UI/RackFrameConfiguratorViewModel.cs` y `src/RackCad.Plugin/RackFrameCommands.cs` | Los dos primeros los **movió I-23** a sus carpetas por sistema; el tercero **no existe**. Complementa el bloque de referencias muertas de I-09 de más arriba |
+| 5 | `docs/context-packs/ui-editors.md` | El Editor Shell «no se asume como existente» | I-14, I-15, I-30 e I-31 están integradas y `agregar-un-sistema.md` §3 **obliga** a componer sobre `RackEditorVisualShell`. Un ejecutor que cargue el pack literalmente concluirá lo contrario de la receta — importa para la subiniciativa del editor de Cantilever |
+| 6 | `docs/guias/glosario.md` (tabla Sistemas) | Push Back es un «Sistema futuro que será la prueba del contrato modular nuevo» | Integrado desde 2026-07-25. I-37A tocó ese archivo para añadir la sección Cantilever y **dejó la fila como estaba**, a propósito |
+| 7 | `src/RackCad.Application/Persistence/RackListBuilder.cs` (`KindLabel`) | Mapea cuatro `Kind` y devuelve el token crudo por omisión | Un Push Back se lista hoy en `RACKLISTA` como `"pushback"`. Es **texto visible al usuario**: arreglarlo necesita aprobación propia, no colarse en la iniciativa de otro sistema |
+| 8 | `docs/context-packs/` | No existe un pack de **secciones estructurales** | Las cuatro iniciativas de I-36 y ahora I-37A declaran `catalogs-data` y `architecture-kernel` para cubrirlo. Puede estar bien; conviene decidirlo explícitamente en vez de heredarlo |
+
+## Huecos de I-36 detectados al construir sobre él (hallazgo de I-37A, fuera de alcance)
+
+Ninguno bloqueó I-37A: se rodearon dentro del namespace Cantilever, sin tocar I-36.
+
+1. **`SectionRepresentationOptions.Detail` no lo consume el constructor del plan.** La opción existe y
+   `StructuralSectionPlanBuilder` no la usa: el detalle real es el de la geometría que se le pasa. Es un
+   parámetro que promete algo que no hace. Defecto acotado de I-36B.
+2. **No existe composición de varios prismas ni envolvente de conjunto.** I-36 resuelve una sección a la
+   vez; `Bounds2D.Union` es la única primitiva de unión y es 2D. I-37A declaró `CantileverEnvelope3D`
+   **local a su namespace** en vez de añadir un bounds 3D transversal: un contrato compartido no debería
+   nacer por la fuerza de un solo consumidor. Si aparece un segundo, promoverlo es un movimiento; retirar
+   una abstracción prematura sería una migración.
+3. **`SectionViewpoint.PreservesSectionShape` compara la cámara contra el Z del MUNDO**, no contra el eje
+   del miembro. Es correcto en I-36, donde el marco por omisión es `LocalFrame3D.World`; deja de serlo para
+   un miembro con marco rotado —la base de un cantilever lo está—. I-37A no dibuja y no lo consume, pero la
+   subiniciativa de vistas **debe** calcularlo por su cuenta y **no** tocar I-36 para arreglarlo sin
+   autorización expresa.
+

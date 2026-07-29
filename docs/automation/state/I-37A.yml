@@ -3,14 +3,16 @@ automation_state:
   initiative: I-37A
   branch: architecture/cantilever-base-columna
   claim_id: af0b650d-8a88-48c3-a328-b0b05c3bb61f
-  current_phase: 2
-  state: implementing
+  current_phase: 7
+  state: review-ready
   gate: none
   attempts: 1
   next_action: >-
-    contratos-de-Domain-y-resolucion-de-Application ·
-    NO-tocar-HANDOFF-ni-marcar-integrada · NO-hacer-merge
-  last_evidence_commit: 1caa69a-reclamo-vacio
+    sesion-de-integracion-del-Owner ·
+    rebase-final-si-main-avanzo · CI-verde-sobre-el-SHA-exacto ·
+    HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama · merge---no-ff ·
+    NO-requiere-validacion-manual-en-AutoCAD-porque-no-cambia-dibujo-ni-UI
+  last_evidence_commit: e5b3b56-pruebas-e-invariantes-2192-y-544-verdes
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -29,8 +31,10 @@ preflight:
   ramas_i37_o_cantilever_previas: NINGUNA-git-ls-remote-heads-sin-coincidencias
   i36_contenidas_en_main: eafb785-14317a5-202e456-3c6ccf5-las-cuatro-IN
   imagenes_de_referencia: >-
-    NO-EXISTEN-en-el-repositorio · la-unica-especificacion-geometrica-es-la-del-encargo ·
-    cualquier-contradiccion-con-una-pieza-real-no-pudo-comprobarse-y-queda-declarada
+    NO-EXISTEN-en-el-repositorio-comprobado-solo-hay-iconos-de-paquetes-NuGet ·
+    la-UNICA-especificacion-geometrica-disponible-es-la-del-encargo ·
+    la-instruccion-de-detenerse-si-las-imagenes-contradicen-el-patron-de-pares-simetricos
+    NO-pudo-comprobarse-y-queda-DECLARADA-como-supuesto-verificable-por-el-Owner
 
 # --------------------------------------------------------------------------------------------------------
 # CLAIM
@@ -48,47 +52,113 @@ claim:
 autorizacion:
   precedente: I-36A-el-primer-commit-sustantivo-escribe-la-fila-del-ROADMAP
   cubre: >-
-    crear-y-reclamar-I-37A · rama-canonica-architecture-cantilever-base-columna ·
-    fila-de-ROADMAP-contrato-decision-ADR-y-estado-en-el-primer-commit-sustantivo ·
+    crear-y-reclamar-I-37A · rama-canonica · fila-de-ROADMAP-contrato-decision-ADR-y-estado ·
     actualizar-la-descripcion-paraguas-de-I-37 · implementar-el-alcance-tecnico
   no_cubre: >-
     tocar-HANDOFF · marcar-integrada · hacer-merge · borrar-rama-o-worktree ·
     implementar-iniciativas-posteriores
 
 # --------------------------------------------------------------------------------------------------------
-# PARAMETROS SIN DEFAULT APROBADO. No se inventan; son entradas obligatorias.
+# DATUM Y SUPUESTOS DECLARADOS. Lo que el encargo no fijaba y hubo que fijar para que el patron
+# compartido tuviera sentido. Se declaran para que el Owner pueda corregirlos con una sola linea.
 # --------------------------------------------------------------------------------------------------------
-parametros_sin_default:
-  placa_inferior_offset_desde_extremos: >-
-    OBLIGATORIO-en-el-diseno · modelado-como-nullable-y-el-resolver-lo-RECHAZA-si-falta ·
-    diagnostico-CANT_REQUIRED_PARAMETER_MISSING
-  columna_offset_superior_al_ultimo_troquel_regular: >-
-    OBLIGATORIO-en-el-diseno · mismo-tratamiento-y-mismo-diagnostico
+supuestos_declarados:
+  z_comun: >-
+    el-fondo-de-la-seccion-de-la-COLUMNA-y-el-de-la-BASE-comparten-z-igual-0 ·
+    el-encargo-mide-toda-elevacion-de-conexion-desde-BaseBottomZ-y-la-consume-la-columna ·
+    con-dos-origenes-verticales-el-patron-compartido-no-significaria-nada
+  plano_de_conexion: >-
+    y-igual-0-es-el-CONTACTO-entre-la-cara-de-la-columna-y-la-cara-de-apoyo-de-la-placa-posterior ·
+    la-columna-ocupa-y-menor-o-igual-0 · la-placa-posterior-ocupa-0-a-espesor ·
+    el-perfil-de-la-base-arranca-en-y-igual-espesor-de-la-placa-posterior
+  centro_transversal: x-igual-0-es-el-centro-de-la-envolvente-de-la-COLUMNA-que-es-quien-gobierna-las-filas
+  centro_de_troquel: >-
+    el-de-una-placa-va-a-media-espesor · el-de-una-cara-va-SOBRE-la-cara ·
+    por-eso-la-coincidencia-se-comprueba-por-datum-y-no-por-centro-3D
 
 # --------------------------------------------------------------------------------------------------------
 # FASES
 # --------------------------------------------------------------------------------------------------------
 fases:
-  1: COMPLETA-reclamo
-  2: EN-CURSO-contrato-decision-ADR-0024-ROADMAP-y-estado
-  3: PENDIENTE-contratos-de-Domain
-  4: PENDIENTE-resolucion-de-Application
-  5: PENDIENTE-placas-cartabon-troqueles-y-patron-compartido
-  6: PENDIENTE-pruebas-de-invariantes-y-guardas-de-fuente
-  7: PENDIENTE-documentacion-final-y-evidencia
+  1: COMPLETA-reclamo-1caa69a
+  2: COMPLETA-contrato-decision-I-37-ADR-0024-ROADMAP-glosario-y-ARCHITECTURE-9c47d83
+  3: COMPLETA-contratos-de-Domain-1eacc7e
+  4: COMPLETA-resolucion-de-Application-planes-y-autoridad-compartida-d4b1755
+  5: COMPLETA-placas-cartabon-y-troqueles-en-el-mismo-commit-d4b1755
+  6: COMPLETA-invariantes-y-guardas-de-fuente-e5b3b56
+  7: COMPLETA-ideas-futuras-y-evidencia-final
 
 # --------------------------------------------------------------------------------------------------------
-# GUARDAS DE ALCANCE
+# IMPLEMENTACION
 # --------------------------------------------------------------------------------------------------------
+implementacion:
+  domain:
+    archivos: 7
+    tipos: >-
+      CantileverColumnBaseDesign · CantileverColumnDesign · CantileverBaseDesign ·
+      CantileverColumnBaseConnectionDesign · CantileverPunchParameters ·
+      CantileverPlateDesign-x3-instancias · CantileverGussetDesign ·
+      CantileverColumnBaseVariantKind · CantileverDefaults
+    id_de_seccion: TEXTO-igual-que-DynamicRackDesign-InOutBeamCatalogId
+    parametros_sin_default: nullable-y-RECHAZADOS-si-faltan-nunca-rellenados
+  application:
+    archivos: 13
+    frontera_unica_de_parseo: CantileverSectionResolver
+    politica: CantileverColumnBaseSectionPolicy-inyectable-por-ids-EXACTOS-familia-W-en-I-37A
+    ids_de_produccion_registrados: CERO-las-pruebas-registran-los-suyos
+    autoridad_de_colocacion: PrismaticSectionInstance-unica-derivados-sin-campo-de-respaldo
+    autoridad_compartida: CantileverColumnBaseConnectionPattern-una-sola-DatumAt-para-los-dos-lados
+    coincidencia: CantileverPunchDatum-eje-U-V-y-diametro-NUNCA-centros-3D
+    envolvente: CantileverEnvelope3D-LOCAL-al-namespace-no-se-anadio-nada-a-Geometry
+    peso: NO-IMPLEMENTADO-diferido-y-prohibido-por-guarda
+  formulas:
+    filas_x: columnMinX-mas-1.50-y-columnMaxX-menos-1.50-derivadas-de-Bounds-de-la-COLUMNA
+    primer_troquel: BaseBottomZ-mas-2.50
+    siguientes: mas-2.00-mientras-no-excedan-BaseTopZ
+    sobre_la_base: EXACTAMENTE-3-mas-a-2.00-cada-uno
+    borde_superior_placa: ultimo-troquel-de-conexion-mas-2.50
+    cartabon: cateto-vertical-igual-a-RearPlateTopZ-menos-BaseTopZ-e-igual-al-horizontal-45-grados
+    primer_regular: ultimo-de-conexion-mas-4.00-NO-mas-2.00-y-sin-duplicarlo
+    corte_regular: mientras-z-menor-o-igual-a-ColumnTopZ-menos-ColumnTopPunchOffset
+    placa_inferior: pares-en-mas-menos-2k-1-por-pitch-entre-2-SIN-troquel-en-el-centro
+
+# --------------------------------------------------------------------------------------------------------
+# PRUEBAS Y BUILDS
+# --------------------------------------------------------------------------------------------------------
+pruebas:
+  RackCad_Tests: 2192-de-2192-base-2094-mas-98
+  RackCad_UI_Tests: 544-de-544-sin-cambio
+  nuevas: CantileverColumnBaseTests-53-y-CantileverSourceGuardTests-45
+  builds_debug: Domain-0-0 Application-0-0 UI-0-0 Plugin-0-errores-2-MSB3277-conocidas
+  bundle: >-
+    NO-EJECUTADO · deploy-build-bundle-ps1-aborta-porque-AutoCAD-esta-abierto ·
+    NO-es-exigible-para-I-37A-no-toca-assets-catalogos-deploy-ni-github
+  regresiones_verificadas_fallando:
+    tres_troqueles_adicionales: 3-a-2-fallan-3-pruebas-y-revertido
+    transicion_2in_a_4in: pitch-de-conexion-en-vez-del-regular-fallan-5-y-revertido
+    autoridad_compartida: la-columna-recalculando-su-patron-fallan-2-y-revertido
+    patron_simetrico_placa_inferior: troquel-en-el-centro-falla-1-y-revertido
+    guarda_de_fuente: un-acceso-a-Dimensions-muerde-la-guarda-y-revertido
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE. Medido con git diff --name-only 3c6ccf5..HEAD
+# --------------------------------------------------------------------------------------------------------
+areas_modificadas:
+  src_RackCad_Domain: 7-archivos-nuevos-Systems-Cantilever
+  src_RackCad_Application: 13-archivos-nuevos-Systems-Cantilever
+  tests_RackCad_Tests: 3-archivos-2-nuevos-mas-el-bucket-de-NamespaceFolderGuardTests
+  docs: 9-archivos
+
 guardas_de_alcance:
   HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
-  src_RackCad_UI: INTACTO
-  src_RackCad_Plugin: INTACTO
-  src_RackCad_Application_StructuralSections: INTACTO-I-36-no-se-modifica
-  assets_catalogs: INTACTO
-  deploy_y_github: INTACTOS
-  RackCad_sln: INTACTO
+  src_RackCad_UI: INTACTO-0-cambios
+  src_RackCad_Plugin: INTACTO-0-cambios
+  src_RackCad_Application_StructuralSections: INTACTO-I-36-sin-una-linea
+  assets_catalogs: INTACTO-0-cambios
+  deploy_y_github: INTACTOS-0-cambios
+  RackCad_sln: INTACTO-0-cambios
   sistemas_vigentes: INTACTOS-Selective-Dynamic-PushBack-FlowBed-Larguero
+  goldens_ajenos: NINGUNO-se-movio
   fuera_de_alcance_declarado: >-
     brazos-pendiente-niveles-estacion-doble-cara-separadores-arriostres-linea ·
     BOM-peso-persistencia-RackSystemKind-los-tres-registros-biblioteca-editor-preview ·
@@ -96,11 +166,25 @@ guardas_de_alcance:
     soldaduras-anclas-tornilleria-CNC-shop-drawings · familias-nuevas-bloques-DWG
 
 # --------------------------------------------------------------------------------------------------------
-# GATE
+# GATES
 # --------------------------------------------------------------------------------------------------------
 gates:
-  ci: requerido
-  plugin_build: requerido-la-suite-no-lo-cubre
+  ci: pendiente-de-verde-sobre-la-punta-empujada
+  plugin_build: satisfecho-0-errores-propios
   autocad: NO-APLICA-no-cambia-dibujo-ni-UI
   owner_validation: NO-APLICA-no-hay-nada-que-ver
   owner_decision: satisfecho-docs-automation-decisions-I-37-md
+
+# --------------------------------------------------------------------------------------------------------
+# DECISIONES QUE SIGUEN ABIERTAS PARA EL OWNER
+# --------------------------------------------------------------------------------------------------------
+pendiente_del_owner:
+  adr_0024: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
+  valores_de_los_dos_parametros_sin_default: >-
+    la-ARQUITECTURA-no-los-necesita-son-entradas-obligatorias-y-el-resolver-rechaza-si-faltan ·
+    un-diseno-real-si-los-necesita
+  supuestos_declarados: los-cuatro-del-bloque-supuestos_declarados-arriba
+  confirmacion_del_patron_de_pares: >-
+    sin-imagenes-de-referencia-en-el-repo-la-interpretacion-de-pares-simetricos-sin-centro
+    esta-implementada-tal-como-la-describe-el-encargo-y-cubierta-por-prueba ·
+    si-una-pieza-real-la-contradice-el-cambio-es-una-funcion-y-su-prueba
