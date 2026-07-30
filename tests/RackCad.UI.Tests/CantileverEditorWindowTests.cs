@@ -267,6 +267,33 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void UnaOperacionDeMatrizProduceUNASolaRegeneracion()
+        {
+            // CARACTERIZACION de ronda 2. Aplicar a doce celdas debe reconstruir la linea UNA vez, no doce:
+            // una regeneracion por celda es invisible a simple vista y ruinosa en una linea larga.
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackCantileverWindow(canInsertInAutoCad: true);
+                Configure(w, stations: 3, levels: 2);
+                SetCombo(w, "FaceModeBox", 1); // doble: 12 celdas
+
+                ClickCell(w, new CantileverLineCell(0, 0, CantileverArmSide.PositiveY));
+                EditorWindowTestSupport.SetNumberAndCommit(w, "CellCutLengthBox", 54.0);
+                SetCombo(w, "ScopeBox", (int)CantileverLineApplyScope.Line);
+
+                var before = w.RecomputeCount;
+                EditorWindowTestSupport.ClickNamed(w, "ApplyCellButton");
+                var after = w.RecomputeCount;
+
+                return (before, after, w.Matrix.OverrideCount, w.Matrix.Cells.Count);
+            });
+
+            Assert.Equal(12, r.Item4);
+            Assert.Equal(12, r.Item3);
+            Assert.Equal(1, r.Item2 - r.Item1);
+        }
+
+        [Fact]
         public void RestoringAScopeClearsItsExceptions()
         {
             var r = StaTestRunner.Run(() =>

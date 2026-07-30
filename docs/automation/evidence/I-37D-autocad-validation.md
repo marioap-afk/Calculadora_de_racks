@@ -1,8 +1,34 @@
-# I-37D — Paquete de validación manual en AutoCAD 2025 (Owner)
+# I-37D — Paquete de validación manual en AutoCAD 2025 (Owner) · **RONDA 1**
 
-Estado: **PENDIENTE DE EJECUTAR**. Este documento es el gate real de I-37D. La CI verde es necesaria y
-**no suficiente**: I-37D es la primera subiniciativa de la línea I-37 que cambia interfaz y dibujo, así
-que sin el veredicto manual del dueño en AutoCAD 2025 **no se integra** y **I-37 no se cierra**.
+Estado: ❌ **RECHAZADA**. Veredicto del dueño: `OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_1`.
+
+> **Este documento se conserva tal cual y NO se reescribe como aprobado.** Es el registro de lo que se
+> puso a validar y de lo que el dueño rechazó. La ronda 2 tiene su propio paquete:
+> [`I-37D-autocad-validation-round-2.md`](I-37D-autocad-validation-round-2.md).
+
+## 0. Motivos del rechazo
+
+1. la ventana principal está **excesivamente saturada**;
+2. **mezcla propiedades de línea con propiedades internas de componentes**;
+3. los **perfiles son difíciles de seleccionar**;
+4. la **base no sigue inicialmente la sección de columna**;
+5. **faltan troqueles y placas visibles** en la representación de columnas;
+6. la **arquitectura visual no refleja el flujo real de configuración** del producto.
+
+Ninguno es un defecto de geometría resuelta: los seis son de **arquitectura visual y de flujo**. Por eso
+la ronda 2 reestructura el producto —la ventana principal edita la LÍNEA y cada componente se edita en su
+propia subventana— antes de revisar en detalle brazo, separador y tensor.
+
+El checklist de abajo **no se ejecutó completo**: el rechazo llegó por la estructura de la ventana, que
+es lo primero que se ve. Se conserva porque sus puntos siguen describiendo comportamiento que la ronda 2
+debe preservar, y porque su distribución visual es justamente lo que **no** debe congelarse como golden.
+
+---
+
+Estado original del documento cuando se emitió: **PENDIENTE DE EJECUTAR**. Este documento era el gate
+real de I-37D. La CI verde es necesaria y **no suficiente**: I-37D es la primera subiniciativa de la línea
+I-37 que cambia interfaz y dibujo, así que sin el veredicto manual del dueño en AutoCAD 2025 **no se
+integra** y **I-37 no se cierra**.
 
 ## 1. Identificación
 
@@ -215,10 +241,11 @@ Configura: Estaciones **4**, Altura de columna **Manual = 264**, resto como en e
 
 | Campo | Valor |
 |---|---|
-| Fecha | *(pendiente)* |
-| DLL SHA-256 realmente cargado | *(pendiente)* |
-| Veredicto | ☐ APROBADA ☐ RECHAZADA |
-| Observaciones | *(pendiente)* |
+| Fecha | 2026-07-30 |
+| DLL cargado | `53CA2118BD8D4923C9D660B0FFE3A65D4FC38507DD3CD788D295C22D2C0FEABC` (build `4a2a6f5`) |
+| Veredicto | ❌ **RECHAZADA** — `OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_1` |
+| Observaciones | Los seis motivos de la sección 0. Arquitectura visual y flujo, no geometría resuelta. |
+| Ronda siguiente | 2 — ver [`I-37D-autocad-validation-round-2.md`](I-37D-autocad-validation-round-2.md) |
 
 Si el veredicto es **RECHAZADA**, anota el número de cada punto que falló y qué se vio. Cada ronda de
 corrección se registra en `docs/automation/state/I-37D.yml` y esta tabla conserva su historial: las

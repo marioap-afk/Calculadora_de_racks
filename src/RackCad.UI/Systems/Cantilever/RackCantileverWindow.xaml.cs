@@ -71,6 +71,7 @@ namespace RackCad.UI.Systems.Cantilever
         private bool isEditingExisting;
         private bool suppressSync;
         private bool currentInputsAreValid;
+        private int recomputeCount;
 
         public RackCantileverWindow()
             : this(false)
@@ -131,6 +132,9 @@ namespace RackCad.UI.Systems.Cantilever
         internal CantileverLineEditorComputation LastComputation => lastComputation;
 
         internal bool CurrentInputsAreValid => currentInputsAreValid;
+
+        /// <summary>How many times the editor rebuilt. One matrix operation must add exactly ONE.</summary>
+        internal int RecomputeCount => recomputeCount;
 
         internal CantileverLineCell? SelectedCell => selectedCell;
 
@@ -547,6 +551,10 @@ namespace RackCad.UI.Systems.Cantilever
             {
                 return;
             }
+
+            // Counted so a test can prove that ONE matrix operation produces ONE rebuild — the alternative,
+            // a regeneration per cell, is invisible to the eye and ruinous on a line of twelve stations.
+            recomputeCount++;
 
             if (assembler == null)
             {

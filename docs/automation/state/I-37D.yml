@@ -3,16 +3,43 @@ automation_state:
   initiative: I-37D
   branch: feature/cantilever-mvp-final
   claim_id: c37684f6-4c3a-4243-82d6-e538dea2a8f6
-  current_phase: 15
+  current_phase: 16
   state: implementing
   gate: autocad-owner-validation
-  attempts: 1
+  attempts: 2
   next_action: >-
-    EJECUTAR-la-validacion-manual-del-Owner-en-AutoCAD-2025 ·
-    cerrar-AutoCAD-compilar-el-DLL-Debug-del-worktree-y-el-bundle ·
-    NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-md ·
-    despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
-  last_evidence_commit: 66ebe94
+    RONDA-2-de-correccion-visual-y-funcional ·
+    caracterizacion-previa · ventana-principal-solo-de-LINEA ·
+    infraestructura-comun-de-editor-de-componente · cuatro-subventanas ·
+    selector-estructural-buscable · columna-base-completa-con-BaseFollowsColumn ·
+    troqueles-y-placas-visibles · insercion-independiente-de-componentes ·
+    doce-regresiones-en-rojo · paquete-de-validacion-manual-de-ronda-2
+  last_evidence_commit: 5a0d188
+
+# --------------------------------------------------------------------------------------------------------
+# RONDAS DE VALIDACION MANUAL. El historial NO se reescribe.
+# --------------------------------------------------------------------------------------------------------
+rondas:
+  1:
+    veredicto: RECHAZADA
+    token: OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_1
+    fecha: 2026-07-30
+    build_sha: 4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9
+    dll_sha256: 53CA2118BD8D4923C9D660B0FFE3A65D4FC38507DD3CD788D295C22D2C0FEABC
+    evidencia: docs-automation-evidence-I-37D-autocad-validation-md
+    motivos: >-
+      1-ventana-principal-excesivamente-saturada ·
+      2-mezcla-propiedades-de-LINEA-con-propiedades-INTERNAS-de-componentes ·
+      3-los-perfiles-son-dificiles-de-seleccionar ·
+      4-la-base-no-sigue-inicialmente-la-seccion-de-columna ·
+      5-faltan-troqueles-y-placas-visibles-en-la-representacion-de-columnas ·
+      6-la-arquitectura-visual-no-refleja-el-flujo-real-de-configuracion-del-producto
+    lectura: >-
+      NINGUNO-es-un-defecto-de-geometria-resuelta · los-seis-son-de-ARQUITECTURA-VISUAL-y-de-FLUJO ·
+      la-distribucion-visual-rechazada-NO-se-congela-como-golden
+  2:
+    veredicto: EN-CURSO
+    evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-md
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
