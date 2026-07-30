@@ -58,7 +58,7 @@ namespace RackCad.Tests
                 }
             }
 
-            Assert.True(files.Count >= 10, "Se esperaban al menos diez archivos de Cantilever; hay " + files.Count + ".");
+            Assert.True(files.Count >= 18, "Se esperaban al menos dieciocho archivos de Cantilever; hay " + files.Count + ".");
             return files;
         }
 
@@ -239,14 +239,20 @@ namespace RackCad.Tests
         [InlineData(@"\bSystemDescriptor\b")]
         [InlineData(@"\bRackEmbedDocument\b")]
         [InlineData(@"\bRackProjectDocument\b")]
-        [InlineData(@"\bBillOfMaterials\b")]
         [InlineData(@"\bHeaderBlockInstance\b")]
         [InlineData(@"\bHeaderRunPlan\b")]
         public void NothingHereReachesIntoALaterInitiative(string pattern)
         {
-            // Registration, persistence, BOM and the drawing vocabulary are I-37B onwards. Having them
+            // Registration, persistence and the drawing vocabulary are still later initiatives. Having them
             // here would make the foundation look integrated when it is not.
-            Forbid(pattern, "I-37A es fundacion pura: sin registro, sin persistencia, sin BOM y sin dibujo.");
+            //
+            // `BillOfMaterials` USED to be on this list, and it was right to be: for I-37A and I-37B the BOM
+            // was a later initiative. I-37C IS that initiative, so the entry was REMOVED rather than
+            // suppressed — a guard that forbids what the current scope requires gets weakened by whoever hits
+            // it next, and that weakening is what would go unnoticed. Three narrower rules replaced it:
+            // TheBomIsBuiltFromTheSTATIONAndNotFromTheDesign, TheArmBomSignatureExcludesPositionAndSide and
+            // ThePunchesNeverBecomeBomLines.
+            Forbid(pattern, "Cantilever no toca registro, persistencia ni vocabulario de dibujo.");
         }
 
         [Theory]
@@ -568,6 +574,334 @@ namespace RackCad.Tests
 
             Assert.Contains("origen", decision, StringComparison.Ordinal);
             Assert.Contains("8.13.bis", decision, StringComparison.Ordinal);
+        }
+
+        // ---- I-37C: the station -----------------------------------------------------------------------------
+
+        [Theory]
+        [InlineData(@"\bsecciones\.csv\b")]
+        [InlineData(@"\bblocks\.csv\b")]
+        [InlineData(@"\bconnection-layout\.csv\b")]
+        [InlineData(@"\bblocks-library\b")]
+        public void NoCantileverCodeNamesALegacyCatalogueFile(string pattern)
+        {
+            // The station composes I-36 and I-37A/B, all of which read the neutral catalogue. A file name here
+            // would be a second data source, and the first one to disagree wins silently.
+            Forbid(pattern, "Cantilever no lee catalogos legacy ni la biblioteca de bloques.");
+        }
+
+        [Fact]
+        public void TheStationHasNoSECONDRegularGridFormula()
+        {
+            // The formula `LastConnectionElevation + index * pitch` exists in exactly ONE type. A copy in the
+            // station or in the layout would be PB-004 again: two algorithms for one set of bolts, agreeing
+            // right up to the day one is edited (ADR-0026, D5).
+            var offenders = Sources()
+                .Where(f => !f.Path.EndsWith("CantileverColumnRegularPunchGrid.cs", StringComparison.Ordinal))
+                .Where(f => f.Code.Contains("LastConnectionElevation +", StringComparison.Ordinal) ||
+                            f.Code.Contains("LastConnectionElevation+", StringComparison.Ordinal))
+                .Select(f => f.Path)
+                .ToList();
+
+            Assert.True(
+                offenders.Count == 0,
+                "Solo la autoridad de reticula deriva la primera elevacion regular. Lo incumplen: " +
+                string.Join(", ", offenders) + ".");
+
+            // And the authority really does own it, so the guard is not passing because nobody has it.
+            var grid = Sources()
+                .Single(f => f.Path.EndsWith("CantileverColumnRegularPunchGrid.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("LastConnectionElevation +", grid, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheStationResolverDeclaresNoPitchOfItsOwn()
+        {
+            // Same rule the arm follows: the pitch is the COLUMN's, observed and never declared.
+            var station = Sources()
+                .Where(f => f.Path.Contains("/CantileverStation", StringComparison.Ordinal))
+                .ToList();
+
+            Assert.True(station.Count >= 5, "Se esperaban al menos cinco archivos de estacion.");
+
+            var literalPitch = new Regex(@"(^|[^\w.])(2|4)\s*\.\s*0\s*;", RegexOptions.Compiled);
+
+            // SELF-VERIFIED before it is trusted: the first version of a guard like this one shipped with its
+            // word boundaries turned into control characters and matched nothing at all.
+            Assert.Matches(literalPitch, "var pitch = 4.0;");
+            Assert.Matches(literalPitch, "double p = 2.0;");
+            Assert.DoesNotMatch(literalPitch, "var factor = 1.0 / 3.0;");
+            Assert.DoesNotMatch(literalPitch, "Math.Round(value, 4);");
+
+            foreach (var file in station)
+            {
+                Assert.False(
+                    literalPitch.IsMatch(file.Code),
+                    file.Path + " declara un pitch literal: el espaciado lo gobierna la columna.");
+
+                Assert.DoesNotContain("RegularColumnPunchPitch", file.Code, StringComparison.Ordinal);
+            }
+        }
+
+        [Theory]
+        [InlineData(@"\bProvisionalHeight\b")]
+        [InlineData(@"\bTemporaryHeight\b")]
+        [InlineData(@"\bProbeHeight\b")]
+        [InlineData(@"\bAssumedHeight\b")]
+        [InlineData(@"\bDefaultColumnHeight\b")]
+        public void NoStationCodeCarriesAProvisionalHeight(string pattern)
+        {
+            // The circular dependency is resolved by a sequence, not by a magic number. A field named like this
+            // is that number acquiring a home (ADR-0026, D5).
+            Forbid(pattern, "La circularidad se resuelve con una secuencia explicita, no con una altura provisional.");
+        }
+
+        [Fact]
+        public void TheGridIsObtainedWithoutReadingTheHeight()
+        {
+            // The positive half of the rule above: the station asks for the grid through the height-independent
+            // seam, and the seam says in its own name that it does not read the height.
+            var resolver = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("ResolveRegularPunchGrid", resolver, StringComparison.Ordinal);
+
+            var columnBase = Sources()
+                .Single(f => f.Path.EndsWith("CantileverColumnBaseResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("ResolveHeightIndependent", columnBase, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void ADoubleStationCannotHoldTwoColumnsOrTwoSubAssemblies()
+        {
+            // The cardinality is carried by the TYPE: one Column property, one ColumnBottomPlate property, and
+            // a collection only for the sides. A second column would need a second property, and this is what
+            // stops one appearing (ADR-0026, D1).
+            var type = typeof(RackCad.Application.Systems.Cantilever.CantileverStationColumnBaseAssembly);
+            var properties = type.GetProperties().Select(p => p.Name).ToList();
+
+            Assert.Contains("Column", properties);
+            Assert.Contains("ColumnBottomPlate", properties);
+            Assert.Contains("Sides", properties);
+
+            Assert.DoesNotContain("Columns", properties);
+            Assert.DoesNotContain("SecondColumn", properties);
+            Assert.DoesNotContain("ColumnBottomPlates", properties);
+            Assert.DoesNotContain("PositiveAssembly", properties);
+            Assert.DoesNotContain("NegativeAssembly", properties);
+
+            // Column is a single member, and Sides is the only collection of base pieces.
+            Assert.Equal(
+                typeof(RackCad.Application.Systems.Cantilever.CantileverStructuralMemberPlan),
+                type.GetProperty("Column").PropertyType);
+        }
+
+        [Fact]
+        public void TheStationNeverResolvesASecondColumnBaseAssembly()
+        {
+            // A second `Resolve(` of the column–base would produce the second column this design exists to
+            // avoid. There is exactly ONE call, and the mirror composes from its result.
+            var resolver = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Equal(1, Regex.Matches(resolver, @"_columnBase\.Resolve\(").Count);
+
+            var side = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationBaseSideResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.DoesNotContain("CantileverColumnBaseResolver", side, StringComparison.Ordinal);
+            Assert.DoesNotContain(".Resolve(", side, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheStationRoundsNoElevationInsteadOfChoosingAnIndex()
+        {
+            // The answer is an INDEX of a grid that already exists. Rounding an elevation can land BELOW the
+            // requested clear, and it would also invent a hole where the column has none (ADR-0026, D4).
+            var layout = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationLevelLayoutResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.DoesNotContain("Math.Ceiling", layout, StringComparison.Ordinal);
+            Assert.DoesNotContain("Math.Floor", layout, StringComparison.Ordinal);
+            Assert.DoesNotContain("Math.Round", layout, StringComparison.Ordinal);
+
+            // And it walks candidates upwards from a floor instead.
+            Assert.Contains("UpperPunchIndex + 1", layout, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheBomIsBuiltFromTheSTATIONAndNotFromTheDesign()
+        {
+            // A BOM computed from the intent counts what the user asked for, not what the model resolved — and
+            // those differ exactly when something was rejected or adjusted (ADR-0026, D7).
+            var bom = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationBomBuilder.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.DoesNotContain("CantileverStationDesign", bom, StringComparison.Ordinal);
+            Assert.DoesNotContain("CantileverArmTemplateDesign", bom, StringComparison.Ordinal);
+            Assert.DoesNotContain("CantileverStationArmMatrix", bom, StringComparison.Ordinal);
+            Assert.Contains("CantileverStationAssembly station", bom, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheArmBomSignatureExcludesPositionAndSide()
+        {
+            // An identical arm on +Y and on −Y is ONE purchase line. Side, level, station index, world
+            // coordinates and the owner token would all split it (ADR-0026, D8).
+            var bom = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationBomBuilder.cs", StringComparison.Ordinal))
+                .Code;
+
+            var signature = bom.Substring(bom.IndexOf("public static string ArmSignature", StringComparison.Ordinal));
+            signature = signature.Substring(0, signature.IndexOf("private static double StopExtension", StringComparison.Ordinal));
+
+            Assert.DoesNotContain(".Side", signature, StringComparison.Ordinal);
+            Assert.DoesNotContain("Owner", signature, StringComparison.Ordinal);
+            Assert.DoesNotContain("LevelIndex", signature, StringComparison.Ordinal);
+            Assert.DoesNotContain("Centre", signature, StringComparison.Ordinal);
+            Assert.DoesNotContain("Frame", signature, StringComparison.Ordinal);
+
+            // And it does carry the physical recipe.
+            foreach (var term in new[] { "Arrangement", "SectionId", "NominalCutLength", "SlopeRisePer12" })
+            {
+                Assert.Contains(term, signature, StringComparison.Ordinal);
+            }
+        }
+
+        [Fact]
+        public void ThePunchesNeverBecomeBomLines()
+        {
+            var bom = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationBomBuilder.cs", StringComparison.Ordinal))
+                .Code;
+
+            // A hole is not a piece. Reading the punch collections at all would be the first step to listing
+            // them.
+            Assert.DoesNotContain("MountingPunches", bom, StringComparison.Ordinal);
+            Assert.DoesNotContain("AllPunches", bom, StringComparison.Ordinal);
+            Assert.DoesNotContain("RearPlatePunches", bom, StringComparison.Ordinal);
+            Assert.DoesNotContain("station.Punches", bom, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void TheStationDoesNotModifyTheNominalCutLengthOfAnArm()
+        {
+            // The length the user captured is what they order. A station that adjusted it would break the one
+            // promise ADR-0025 D3 makes about that number.
+            foreach (var file in Sources().Where(f => f.Path.Contains("/CantileverStation", StringComparison.Ordinal)))
+            {
+                Assert.DoesNotMatch(new Regex(@"NominalCutLength\s*="), file.Code);
+                Assert.DoesNotMatch(new Regex(@"CutLength\s*=\s*[^;]*[-+*/]"), file.Code);
+                Assert.DoesNotContain("WithLength(", file.Code, StringComparison.Ordinal);
+            }
+        }
+
+        [Theory]
+        [InlineData(@"\bChannelClearGap\b")]
+        [InlineData(@"\bChannelSpacing\b")]
+        [InlineData(@"\bArmGap\b")]
+        public void TheStationCarriesNoFreeSpacingBetweenChannels(string pattern)
+        {
+            Forbid(pattern, "Los canales apareados se tocan: la estacion no introduce un parametro de separacion.");
+        }
+
+        [Fact]
+        public void NoStationCodeMentionsARunOrItsFurniture()
+        {
+            // What is out of scope must not be half-present. A property named for a run is how the next
+            // initiative's decisions get taken by accident.
+            foreach (var word in new[]
+                     {
+                         "Separador", "Spacer", "Arriostr", "Brace", "StationRun", "RunIndex",
+                         "LongitudinalPosition", "NeighbourStation"
+                     })
+            {
+                var offenders = Sources()
+                    .Where(f => f.Code.Contains(word, StringComparison.OrdinalIgnoreCase))
+                    .Select(f => f.Path)
+                    .ToList();
+
+                Assert.True(
+                    offenders.Count == 0,
+                    "'" + word + "' pertenece a la linea, que es una iniciativa posterior. Lo incumplen: " +
+                    string.Join(", ", offenders) + ".");
+            }
+        }
+
+        [Fact]
+        public void TheStationHasNoPersistenceAndNoView()
+        {
+            foreach (var word in new[] { "Document", "Xrecord", "RackProject", "ViewBuilder", "Preview", "RackSystemKind" })
+            {
+                var offenders = Sources()
+                    .Where(f => f.Code.Contains(word, StringComparison.Ordinal))
+                    .Select(f => f.Path)
+                    .ToList();
+
+                Assert.True(
+                    offenders.Count == 0,
+                    "'" + word + "' esta fuera de alcance en I-37C. Lo incumplen: " +
+                    string.Join(", ", offenders) + ".");
+            }
+        }
+
+        [Fact]
+        public void TheMatrixHasNoOverrideLayerBeyondTheCell()
+        {
+            // One default plus cell overrides. A global, per-level or per-station override layer would be the
+            // PB-014 failure: the same datum living in four places (ADR-0026, D3).
+            var design = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationDesign.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.DoesNotContain("GlobalOverride", design, StringComparison.Ordinal);
+            Assert.DoesNotContain("LevelOverride", design, StringComparison.Ordinal);
+            Assert.DoesNotContain("StationOverride", design, StringComparison.Ordinal);
+            Assert.Contains("PositiveYOverride", design, StringComparison.Ordinal);
+            Assert.Contains("NegativeYOverride", design, StringComparison.Ordinal);
+
+            // And the matrix writes overrides rather than storing state of its own.
+            var matrix = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationArmMatrix.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("SetOverride", matrix, StringComparison.Ordinal);
+            Assert.DoesNotMatch(new Regex(@"private\s+(readonly\s+)?List<"), matrix);
+        }
+
+        [Fact]
+        public void NoArmOfAStationIsBuiltWithBothSides()
+        {
+            // There is no `Both`. A double station has TWO physical arms, and a single side per arm is what
+            // makes the BOM count them (ADR-0025, D1).
+            foreach (var file in Sources())
+            {
+                Assert.DoesNotMatch(new Regex(@"CantileverArmSide\s*\.\s*Both"), file.Code);
+            }
+
+            Assert.Equal(
+                2,
+                Enum.GetValues(typeof(RackCad.Domain.Systems.Cantilever.CantileverArmSide)).Length);
+        }
+
+        [Fact]
+        public void TheFinalPassIsVerifiedRatherThanTrusted()
+        {
+            var resolver = Sources()
+                .Single(f => f.Path.EndsWith("CantileverStationResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("VerifyFinalPassMatchesLayout", resolver, StringComparison.Ordinal);
+            Assert.Contains("StationFinalPassDiffersFromLayout", resolver, StringComparison.Ordinal);
         }
 
         // ---- the guard is actually looking at something ---------------------------------------------------

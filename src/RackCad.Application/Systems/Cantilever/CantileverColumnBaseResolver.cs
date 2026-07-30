@@ -74,6 +74,16 @@ namespace RackCad.Application.Systems.Cantilever
             var baseFarY = pre.BaseFarY;
             var rearThickness = pre.RearPlateThickness;
             var baseBottomZ = CantileverColumnBaseDatum.FloorZ;
+
+            // The height is checked HERE and not in the seam above, because it is the one input the seam does
+            // not read. Same rule, same message, same code — only the position moved (I-37C).
+            RequirePositive(column.Height, "la altura de la columna", diagnostics);
+
+            if (diagnostics.Any(d => d.IsBlocking))
+            {
+                return CantileverColumnBaseAssembly.Blocked(diagnostics);
+            }
+
             var columnTopZ = CantileverColumnBaseDatum.FloorZ + column.Height;
 
             if (pattern.LastConnectionElevation > columnTopZ + FitTolerance)
@@ -481,12 +491,18 @@ namespace RackCad.Application.Systems.Cantilever
                 topOffset ?? 0.0);
         }
 
+        /// <summary>
+        /// The lengths and thicknesses that do NOT depend on the column height.
+        ///
+        /// The height is validated by <see cref="RequireUsableHeight"/> instead, in the height-DEPENDENT half.
+        /// Splitting them is what lets a station ask for the regular grid before it has a height: a check on a
+        /// value the caller has not chosen yet would reject every such request (I-37C).
+        /// </summary>
         private static void ValidateLengths(
             CantileverColumnDesign column,
             CantileverBaseDesign basePiece,
             ICollection<CantileverDiagnostic> diagnostics)
         {
-            RequirePositive(column.Height, "la altura de la columna", diagnostics);
             RequirePositive(basePiece.Length, "la longitud de la base", diagnostics);
             RequirePositive(column.BottomPlate.Thickness, "el espesor de la placa inferior de la columna", diagnostics);
             RequirePositive(basePiece.FrontPlate.Thickness, "el espesor de la placa frontal", diagnostics);
