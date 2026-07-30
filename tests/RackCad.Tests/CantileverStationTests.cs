@@ -392,10 +392,16 @@ namespace RackCad.Tests
         [Fact]
         public void ThePLATESOfTwoLevelsNeverOverlap()
         {
-            // Many rows make the plate reach well above its own body, so the body-to-body clear alone does not
-            // imply it. A count of 6 with a shallow arm is the case that exposes a missing plate check.
+            // The fixture is chosen so the PLATE rule is the ONLY binding one, which is what makes this test
+            // discriminating. With a 4 in pitch, a 4 in deep body and a margin of 3 in, the plate spans
+            // e(k)-3 .. e(k)+7 while the body only reaches e(k)+1. A 4 in clear and the punch-disjointness
+            // rule are both satisfied by a gap of TWO indices; only the plate rule needs THREE.
+            //
+            // An earlier version of this test used a 1.5 in margin, and it passed with the plate check
+            // disabled: for any margin below 2 in the punch rule already forces the same gap, so the fixture
+            // proved nothing. The regression round is what exposed that.
             var station = Resolve(Design(
-                clear: 6.0, levels: 4, defaultArm: ArmTemplate(count: 6)));
+                clear: 4.0, levels: 3, defaultArm: ArmTemplate(count: 2, offset: 3.0)));
 
             Assert.False(station.IsBlocked);
 
@@ -408,7 +414,11 @@ namespace RackCad.Tests
 
                     Assert.True(
                         above.PlateBottomZ >= below.PlateTopZ - Tolerance,
-                        "Las placas de los niveles " + i + " y " + (i + 1) + " se traslapan.");
+                        "Las placas de los niveles " + i + " y " + (i + 1) + " se traslapan: " +
+                        above.PlateBottomZ + " < " + below.PlateTopZ);
+
+                    // THREE indices, not two: the plate is what moved the level.
+                    Assert.Equal(3, above.LowerPunchIndex - below.LowerPunchIndex);
                 }
             }
         }
