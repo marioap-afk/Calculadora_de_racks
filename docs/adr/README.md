@@ -65,6 +65,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0023](0023-geometria-visual-derivada-perfiles-s.md) | Geometría visual derivada para los perfiles S (IPS) | aceptado |
 | [0024](0024-fundacion-cantilever-base-columna.md) | Fundación Cantilever: diseño en Domain, resolución en Application y autoridad compartida base–columna | aceptado |
 | [0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) | El brazo Cantilever: cuerpo simple o compuesto, y su conexión a la columna | aceptado |
+| [0026](0026-estacion-cantilever-niveles-altura-y-bom.md) | La estación Cantilever: caras, niveles, altura y BOM por componentes | propuesto |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -170,3 +171,15 @@ exacta; el **corte inclinado** y la **preparación de extremo** siguen fuera de 
 autoriza estación, niveles, doble cara, separadores, arriostres, línea, BOM, peso, persistencia,
 `RackSystemKind`, registros, editor, preview, vistas, AutoCAD, bloques, fabricación, cálculo resistente ni
 cambios funcionales en I-36 o I-37A.
+
+Iniciativa I-37C (`architecture/cantilever-estacion-bom`): **ADR-0026 nace `propuesto`**. Extiende ADR-0024 y
+ADR-0025 hacia el primer **compositor**, y decide las cinco cosas que ninguna de las dos piezas tenía: que
+una **góndola doble** es **una** columna con **dos** bases espejadas y no dos estaciones —modelarla como dos
+subensambles duplicaría la columna y el BOM contaría mal—; que los **templates** de estación no llevan los
+valores que la estación gobierna, para que no exista una altura o un índice dormidos; que la dependencia
+circular **altura → troqueles → niveles → altura** se resuelve con una **secuencia explícita** sobre una
+**autoridad única de retícula** que I-37A también consume, y con un **pase final verificado** que falla
+cerrado si difiere; que el **claro libre** se mide cuerpo a cuerpo en el plano de conexión y el ajuste es
+**obligatorio hacia arriba** a un índice de troquel; y que el **componente del BOM** es lo atornillable —una
+columna con su base o bases, y cada brazo—, con los troqueles fuera y con un brazo idéntico en los dos lados
+contando como **el mismo** componente.
