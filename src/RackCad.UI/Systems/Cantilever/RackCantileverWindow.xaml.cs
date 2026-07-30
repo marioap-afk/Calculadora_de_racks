@@ -54,6 +54,9 @@ namespace RackCad.UI.Systems.Cantilever
         private static readonly string[] EndPlateModes = { "Ninguna", "Placa", "Placa con tope" };
         private static readonly string[] Scopes = { "Celda", "Estación", "Nivel (toda la línea)", "Lado (toda la línea)", "Toda la línea" };
 
+        /// <summary>The ONE display format of every decimal box, so writing and reading a field agree.</summary>
+        private const string NumberFormat = "0.###";
+
         private readonly bool canInsertInAutoCad;
         private readonly RackEditorSession<CantileverLineDesign, CantileverLineAssembly> session;
         private readonly CantileverLineEditorAssembler assembler;
@@ -321,27 +324,58 @@ namespace RackCad.UI.Systems.Cantilever
         {
             error = null;
 
-            var fields = new[]
+            // Paired with their labels: three of these fields have NO approved default, so a fresh line has three
+            // empty boxes at once and "Escribe un valor." alone would not say which one.
+            var fields = new (NumericField Field, string Label)[]
             {
-                StationCountBox, SpacingBox, LevelCountBox, FirstPunchBox, ClearHeightBox, TopClearFactorBox,
-                ManualHeightBox, ColumnPlateThicknessBox, BaseLengthBox, BaseFrontPlateBox, BaseRearPlateBox,
-                BaseGussetBox, PunchDiameterBox, PunchHorizontalOffsetBox, ConnectionPitchBox,
-                ConnectionPunchesAboveBaseBox, RearPlateOffsetBox, RegularPitchBox, BottomPlatePitchBox,
-                BottomPlateEndOffsetBox, TopPunchOffsetBox, ArmCutLengthBox, ArmSlopeBox, ArmPlateThicknessBox,
-                ArmPunchCountBox, ArmVerticalOffsetBox, ArmEndPlateThicknessBox, ArmExtraStopBox,
-                ManualPanelCountBox, PanelHeightBox, CentralSpaceBox, RodDiameterBox
+                (StationCountBox, "Estaciones"),
+                (SpacingBox, "Separación entre centros"),
+                (LevelCountBox, "Niveles"),
+                (FirstPunchBox, "Troquel del primer nivel"),
+                (ClearHeightBox, "Claro solicitado"),
+                (TopClearFactorBox, "Factor de claro superior"),
+                (ManualHeightBox, "Altura manual"),
+                (ColumnPlateThicknessBox, "Espesor de placa inferior"),
+                (BaseLengthBox, "Longitud de base"),
+                (BaseFrontPlateBox, "Espesor de placa frontal"),
+                (BaseRearPlateBox, "Espesor de placa trasera"),
+                (BaseGussetBox, "Espesor de cartabón de base"),
+                (PunchDiameterBox, "Diámetro de troquel"),
+                (PunchHorizontalOffsetBox, "Margen horizontal a extremo"),
+                (ConnectionPitchBox, "Paso de conexión"),
+                (ConnectionPunchesAboveBaseBox, "Troqueles de conexión sobre la base"),
+                (RearPlateOffsetBox, "Margen vertical de placa trasera"),
+                (RegularPitchBox, "Paso regular de columna"),
+                (BottomPlatePitchBox, "Paso de placa inferior"),
+                (BottomPlateEndOffsetBox, "Margen de extremo de placa inferior"),
+                (TopPunchOffsetBox, "Margen del troquel superior"),
+                (ArmCutLengthBox, "Longitud de corte del brazo"),
+                (ArmSlopeBox, "Pendiente del brazo"),
+                (ArmPlateThicknessBox, "Espesor de placa de montaje"),
+                (ArmPunchCountBox, "Troqueles verticales del brazo"),
+                (ArmVerticalOffsetBox, "Margen vertical de placa de montaje"),
+                (ArmEndPlateThicknessBox, "Espesor de placa de extremo"),
+                (ArmExtraStopBox, "Altura extra de tope"),
+                (ManualPanelCountBox, "Cantidad manual de paneles"),
+                (PanelHeightBox, "Altura de panel"),
+                (CentralSpaceBox, "Altura de espacio central"),
+                (RodDiameterBox, "Diámetro de varilla")
             };
 
-            var broken = fields.FirstOrDefault(f => f.HasError);
+            var broken = fields.Where(f => f.Field.HasError).ToList();
 
-            if (broken != null)
+            if (broken.Count > 0)
             {
-                error = broken.ErrorMessage ?? "Hay un campo numérico inválido.";
+                error = broken.Count == 1
+                    ? broken[0].Label + ": " + (broken[0].Field.ErrorMessage ?? "valor inválido.")
+                    : "Faltan o son inválidos " + broken.Count + " campos: "
+                      + string.Join(", ", broken.Select(f => f.Label)) + ".";
+
                 return false;
             }
 
             design.StationCount = (int)Math.Round(StationCountBox.Value ?? design.StationCount);
-            design.ColumnCentreSpacing = SpacingBox.Value ?? design.ColumnCentreSpacing;
+            design.ColumnCentreSpacing = Keep(SpacingBox, design.ColumnCentreSpacing);
 
             var topology = design.StationTopology ??= new CantileverLineStationTopologyDesign();
             topology.FaceMode = FaceModeBox.SelectedIndex == 1
@@ -352,8 +386,8 @@ namespace RackCad.UI.Systems.Cantilever
                 : CantileverArmSide.PositiveY;
             topology.LevelCount = (int)Math.Round(LevelCountBox.Value ?? topology.LevelCount);
             topology.FirstLevelPunchIndex = (int)Math.Round(FirstPunchBox.Value ?? topology.FirstLevelPunchIndex);
-            topology.RequestedClearHeight = ClearHeightBox.Value ?? topology.RequestedClearHeight;
-            topology.TopClearFactor = TopClearFactorBox.Value ?? topology.TopClearFactor;
+            topology.RequestedClearHeight = Keep(ClearHeightBox, topology.RequestedClearHeight);
+            topology.TopClearFactor = Keep(TopClearFactorBox, topology.TopClearFactor);
 
             var height = topology.ColumnHeight ??= new CantileverStationColumnHeightDesign();
             height.Mode = HeightModeBox.SelectedIndex == 1
@@ -364,28 +398,28 @@ namespace RackCad.UI.Systems.Cantilever
             var template = topology.ColumnBaseTemplate ??= new CantileverStationColumnBaseTemplateDesign();
             template.ColumnSectionId = SelectedSection(ColumnSectionBox);
             (template.ColumnBottomPlate ??= new CantileverPlateDesign()).Thickness =
-                ColumnPlateThicknessBox.Value ?? template.ColumnBottomPlate.Thickness;
+                Keep(ColumnPlateThicknessBox, template.ColumnBottomPlate.Thickness);
 
             var baseDesign = template.Base ??= new CantileverBaseDesign();
             baseDesign.SectionId = SelectedSection(BaseSectionBox);
-            baseDesign.Length = BaseLengthBox.Value ?? baseDesign.Length;
+            baseDesign.Length = Keep(BaseLengthBox, baseDesign.Length);
             (baseDesign.FrontPlate ??= new CantileverPlateDesign()).Thickness =
-                BaseFrontPlateBox.Value ?? baseDesign.FrontPlate.Thickness;
+                Keep(BaseFrontPlateBox, baseDesign.FrontPlate.Thickness);
             (baseDesign.RearPlate ??= new CantileverPlateDesign()).Thickness =
-                BaseRearPlateBox.Value ?? baseDesign.RearPlate.Thickness;
+                Keep(BaseRearPlateBox, baseDesign.RearPlate.Thickness);
             (baseDesign.Gusset ??= new CantileverGussetDesign()).Thickness =
-                BaseGussetBox.Value ?? baseDesign.Gusset.Thickness;
+                Keep(BaseGussetBox, baseDesign.Gusset.Thickness);
 
             var connection = template.Connection ??= new CantileverColumnBaseConnectionDesign();
             var punches = connection.Punches ??= new CantileverPunchParameters();
-            punches.Diameter = PunchDiameterBox.Value ?? punches.Diameter;
-            punches.HorizontalEndOffset = PunchHorizontalOffsetBox.Value ?? punches.HorizontalEndOffset;
-            punches.ConnectionPitch = ConnectionPitchBox.Value ?? punches.ConnectionPitch;
+            punches.Diameter = Keep(PunchDiameterBox, punches.Diameter);
+            punches.HorizontalEndOffset = Keep(PunchHorizontalOffsetBox, punches.HorizontalEndOffset);
+            punches.ConnectionPitch = Keep(ConnectionPitchBox, punches.ConnectionPitch);
             punches.ConnectionPunchesAboveBase =
                 (int)Math.Round(ConnectionPunchesAboveBaseBox.Value ?? punches.ConnectionPunchesAboveBase);
-            punches.RearPlateVerticalEndOffset = RearPlateOffsetBox.Value ?? punches.RearPlateVerticalEndOffset;
-            punches.RegularColumnPitch = RegularPitchBox.Value ?? punches.RegularColumnPitch;
-            punches.ColumnBottomPlatePitch = BottomPlatePitchBox.Value ?? punches.ColumnBottomPlatePitch;
+            punches.RearPlateVerticalEndOffset = Keep(RearPlateOffsetBox, punches.RearPlateVerticalEndOffset);
+            punches.RegularColumnPitch = Keep(RegularPitchBox, punches.RegularColumnPitch);
+            punches.ColumnBottomPlatePitch = Keep(BottomPlatePitchBox, punches.ColumnBottomPlatePitch);
 
             // The two mandatory margins are nullable ON PURPOSE: an empty box stays null and the resolver rejects
             // the line by name. Substituting a number here is exactly the invention I-37A refused.
@@ -405,19 +439,41 @@ namespace RackCad.UI.Systems.Cantilever
             bracing.ManualPanelCount = ManualPanelCountBox.Value.HasValue
                 ? (int?)Math.Round(ManualPanelCountBox.Value.Value)
                 : null;
-            bracing.BracedPanelHeight = PanelHeightBox.Value ?? bracing.BracedPanelHeight;
-            bracing.CentralEmptySpaceHeight = CentralSpaceBox.Value ?? bracing.CentralEmptySpaceHeight;
+            bracing.BracedPanelHeight = Keep(PanelHeightBox, bracing.BracedPanelHeight);
+            bracing.CentralEmptySpaceHeight = Keep(CentralSpaceBox, bracing.CentralEmptySpaceHeight);
             bracing.BraceKind = BraceKindBox.SelectedIndex == 1
                 ? CantileverBraceBodyKind.StructuralSection
                 : CantileverBraceBodyKind.ColdRolledRound;
             bracing.BraceSectionId = SelectedSection(BraceSectionBox);
             (bracing.ColdRolled ??= new CantileverColdRolledBraceDesign()).Diameter =
-                RodDiameterBox.Value ?? bracing.ColdRolled.Diameter;
+                Keep(RodDiameterBox, bracing.ColdRolled.Diameter);
 
             return true;
         }
 
         private static string SelectedSection(Selector box) => (box.SelectedValue as string)?.Trim();
+
+        /// <summary>
+        /// The number a field carries — or the value it was WRITTEN from, when the two are the same to display
+        /// precision.
+        ///
+        /// A default like one third does not survive a round trip through a formatted box: it goes out as
+        /// <c>0.333</c> and comes back three ten-thousandths SHORT, which is enough to fall under the floor its
+        /// own authority approves and to block a line the user never edited. Showing more decimals only moves the
+        /// problem. The rule instead is the honest one: a field the user did not touch must not change the design.
+        /// </summary>
+        private static double Keep(NumericField field, double current)
+        {
+            if (!field.Value.HasValue)
+            {
+                return current;
+            }
+
+            var shown = field.Value.Value.ToString(NumberFormat, CultureInfo.InvariantCulture);
+            var stored = current.ToString(NumberFormat, CultureInfo.InvariantCulture);
+
+            return string.Equals(shown, stored, StringComparison.Ordinal) ? current : field.Value.Value;
+        }
 
         /// <summary>Reads an arm out of one set of controls, onto a COPY of <paramref name="current"/>.</summary>
         private static CantileverArmTemplateDesign ReadArm(
@@ -431,18 +487,18 @@ namespace RackCad.UI.Systems.Cantilever
             var body = arm.Body ??= new CantileverArmBodyDesign();
             body.Arrangement = ArrangementOf(arrangement.SelectedIndex);
             body.SectionId = (section.SelectedValue as string)?.Trim();
-            body.CutLength = cutLength.Value ?? body.CutLength;
-            body.SlopeRisePer12 = slope.Value ?? body.SlopeRisePer12;
+            body.CutLength = Keep(cutLength, body.CutLength);
+            body.SlopeRisePer12 = Keep(slope, body.SlopeRisePer12);
 
             var plate = arm.MountingPlate ??= new CantileverArmMountingPlateTemplateDesign();
-            plate.Thickness = plateThickness.Value ?? plate.Thickness;
+            plate.Thickness = Keep(plateThickness, plate.Thickness);
             plate.VerticalPunchCount = (int)Math.Round(punchCount.Value ?? plate.VerticalPunchCount);
             plate.VerticalEndOffset = verticalOffset.Value; // mandatory and nullable, like the two punch margins
 
             var end = arm.EndPlate ??= new CantileverArmEndPlateDesign();
             end.Mode = EndPlateModeOf(endPlateMode.SelectedIndex);
-            end.Thickness = endPlateThickness.Value ?? end.Thickness;
-            end.ExtraStopHeight = extraStop.Value ?? end.ExtraStopHeight;
+            end.Thickness = Keep(endPlateThickness, end.Thickness);
+            end.ExtraStopHeight = Keep(extraStop, end.ExtraStopHeight);
 
             return arm;
         }
