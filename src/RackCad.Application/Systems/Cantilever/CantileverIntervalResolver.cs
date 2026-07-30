@@ -355,7 +355,7 @@ namespace RackCad.Application.Systems.Cantilever
             StructuralSectionId sectionId,
             StructuralSectionGeometry geometry)
         {
-            var placement = CantileverBracingFrameResolver.Separator(startX, plateFarY, z, geometry);
+            var placement = CantileverLineFrameResolver.Separator(startX, plateFarY, z, geometry);
 
             var placed = PrismaticSectionInstance.Create(
                 sectionId, cutLength, placement.Frame, 0.0, placement.Mirrored);
@@ -468,7 +468,7 @@ namespace RackCad.Application.Systems.Cantilever
                     var start = lowerBolt + (direction * -edge);
 
                     var geometry = geometryFactory.Get(braceSection.Section, SectionDetailLevel.Tabulated);
-                    var placement = CantileverBracingFrameResolver.Brace(start, direction, geometry);
+                    var placement = CantileverLineFrameResolver.Brace(start, direction, geometry);
 
                     var placed = PrismaticSectionInstance.Create(
                         braceSection.Section.SectionId, cutLength, placement.Frame, 0.0, placement.Mirrored);

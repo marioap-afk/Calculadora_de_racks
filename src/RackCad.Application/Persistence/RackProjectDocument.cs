@@ -34,6 +34,16 @@ namespace RackCad.Application.Persistence
         public PushBackDesignDocument PushBack { get; set; }
 
         /// <summary>
+        /// Cantilever LINE design (schema-versioned, flat DTO with its own ExtensionData); set when Kind is
+        /// Cantilever. Additive/optional — it does NOT bump the wrapper major (I-11).
+        ///
+        /// The slot is the LINE, not a station: a station is not independently editable, insertable or
+        /// duplicable, so registering one as a top-level payload would create an aggregate nothing owns
+        /// (ADR-0028, D2).
+        /// </summary>
+        public CantileverLineDocument Cantilever { get; set; }
+
+        /// <summary>
         /// Wrapper-level JSON fields this build does not know about, preserved verbatim across a load/save (I-11, D3).
         /// Only UNKNOWN keys land here; every known payload slot above is a typed property, so preserving this dictionary
         /// never resurrects an inactive known payload. Null/empty for freshly written projects (no extra keys emitted).

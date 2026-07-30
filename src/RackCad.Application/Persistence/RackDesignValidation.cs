@@ -1,6 +1,7 @@
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.RackFrames;
+using RackCad.Domain.Systems.Cantilever;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Domain.Systems.Larguero;
@@ -60,5 +61,30 @@ namespace RackCad.Application.Persistence
                && design.Structure.PalletsDeep >= 2
                && design.Structure.LoadLevels >= 1
                && DynamicFrontActivation.HasActiveFront(design.Structure.Fronts);
+
+        /// <summary>
+        /// Whether a Cantilever LINE design is worth opening.
+        ///
+        /// It checks what the DESIGN can answer on its own and nothing more: two stations, a positive pitch, at
+        /// least one level, an active side, and the two section ids a line cannot exist without. It deliberately
+        /// does NOT resolve the line. Resolving needs the section catalogue, and a predicate that loaded one would
+        /// make "is this design usable?" depend on a file being present — so a library list would HIDE a rack
+        /// whose catalogue had moved, instead of opening it and reporting why.
+        ///
+        /// Aligned with <c>CantileverLineResolver</c>'s own gates: whatever passes here and still cannot resolve
+        /// comes back as a diagnostic, which is visible, rather than as an absence, which is not.
+        /// </summary>
+        public static bool IsUsableCantilever(CantileverLineDesign design)
+            => design != null
+               && design.StationCount >= CantileverLineDefaults.MinimumStationCount
+               && design.ColumnCentreSpacing > 0.0
+               && design.StationTopology != null
+               && design.StationTopology.LevelCount >= 1
+               && design.TryActiveSides(out var sides)
+               && sides.Count > 0
+               && design.StationTopology.ColumnBaseTemplate != null
+               && !string.IsNullOrWhiteSpace(design.StationTopology.ColumnBaseTemplate.ColumnSectionId)
+               && design.StationTopology.ColumnBaseTemplate.Base != null
+               && !string.IsNullOrWhiteSpace(design.StationTopology.ColumnBaseTemplate.Base.SectionId);
     }
 }

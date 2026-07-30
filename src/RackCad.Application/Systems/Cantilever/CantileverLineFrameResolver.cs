@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using RackCad.Application.Geometry;
 using RackCad.Application.StructuralSections.Geometry;
 
@@ -22,8 +22,8 @@ namespace RackCad.Application.Systems.Cantilever
     }
 
     /// <summary>
-    /// THE frame authority of the bracing, alongside the one for the column and base (I-37A) and the one for
-    /// the arm (I-37B).
+    /// THE frame authority of the LINE, alongside the one for the column and base (I-37A) and the one for the
+    /// arm (I-37B).
     ///
     /// It exists for the reason those two do: a frame built inline in a resolver is a frame nobody can find
     /// again. The separator's orientation in particular is not obvious — it depends on which extreme of a
@@ -33,8 +33,12 @@ namespace RackCad.Application.Systems.Cantilever
     /// Everything here comes from <c>Bounds</c>. Nothing reads <c>d</c>, <c>bf</c> or <c>tw</c>: the contact
     /// between a separator and its plate lands on the contour that will be DRAWN, and a tabulated width is a
     /// nominal number (ADR-0024, D5).
+    ///
+    /// It also owns the line's own frame operation — moving a station's member to its place along the line —
+    /// because a translation builds a frame too, and a frame built inline in a view builder is a frame nobody
+    /// can find again.
     /// </summary>
-    public static class CantileverBracingFrameResolver
+    public static class CantileverLineFrameResolver
     {
         /// <summary>
         /// A separator: it runs along +X with its depth vertical and the BACK OF ITS WEB pressed against the
@@ -108,6 +112,36 @@ namespace RackCad.Application.Systems.Cantilever
 
             return new CantileverBracingPlacement(
                 LocalFrame3D.Create(origin, axisZ, referenceX), false);
+        }
+
+        /// <summary>
+        /// The same placement, moved to where its station sits on the line.
+        ///
+        /// A station is resolved at the datum ORIGIN by the I-37C authority and put in its place by translating
+        /// it. The translation is applied to the FRAME and not to the projected points: projecting first and
+        /// shifting the 2D result afterwards is wrong for any camera not aligned with the offset, and it happens
+        /// to be right for the three axis-aligned views this system has — which is the worse of the two failures,
+        /// because it would only break the day somebody added an isometric.
+        ///
+        /// A zero offset returns the placement itself, so a line of one station carries frames byte-identical to
+        /// the station's own.
+        /// </summary>
+        public static PrismaticSectionInstance Translated(PrismaticSectionInstance placement, Vector3D offset)
+        {
+            if (placement == null)
+            {
+                throw new ArgumentNullException(nameof(placement));
+            }
+
+            if (offset.Length <= 0.0)
+            {
+                return placement;
+            }
+
+            var frame = placement.Frame;
+
+            return placement.WithFrame(
+                LocalFrame3D.Create(frame.Origin + offset, frame.AxisZ, frame.AxisX));
         }
     }
 }

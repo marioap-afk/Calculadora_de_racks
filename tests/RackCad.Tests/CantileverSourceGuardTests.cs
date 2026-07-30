@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -318,7 +318,7 @@ namespace RackCad.Tests
             {
                 "CantileverColumnBaseFrameResolver.cs",   // I-37A: base and column
                 "CantileverArmFrameResolver.cs",          // I-37B: the arm
-                "CantileverBracingFrameResolver.cs"       // I-37D: the separator and the brace
+                "CantileverLineFrameResolver.cs"       // I-37D: the separators, the braces and the line translation
             };
 
             var offenders = Sources()
@@ -887,7 +887,8 @@ namespace RackCad.Tests
                 "CantileverLineDesign.cs", "CantileverLineResolver.cs", "CantileverLineAssembly.cs",
                 "CantileverLineArmMatrix.cs", "CantileverLineBomBuilder.cs",
                 "CantileverIntervalAssembly.cs", "CantileverIntervalResolver.cs",
-                "CantileverBracingLayoutResolver.cs", "CantileverBracingFrameResolver.cs",
+                "CantileverBracingLayoutResolver.cs", "CantileverLineFrameResolver.cs",
+                "CantileverViewPlanBuilder.cs",
                 "CantileverMemberId.cs"   // shared piece tokens: the interval's owner token lives with the rest
             };
 

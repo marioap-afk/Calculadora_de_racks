@@ -19,6 +19,12 @@ namespace RackCad.Application.Persistence
         public const string KindCama = "cama";
         public const string KindPushBack = "pushback";
 
+        /// <summary>
+        /// A Cantilever LINE (I-37D). FROZEN from the first persistence: every block ever stamped carries this
+        /// text, so changing it would orphan them.
+        /// </summary>
+        public const string KindCantilever = "cantilever";
+
         public const string ViewFrontal = "frontal";
         public const string ViewLateral = "lateral";
         public const string ViewPlanta = "planta";

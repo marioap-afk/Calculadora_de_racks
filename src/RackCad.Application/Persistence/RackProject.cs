@@ -1,4 +1,6 @@
-using RackCad.Domain.RackFrames;
+﻿using RackCad.Domain.RackFrames;
+using RackCad.Application.Systems.Cantilever;
+using RackCad.Domain.Systems.Cantilever;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Domain.Systems.Larguero;
@@ -39,6 +41,15 @@ namespace RackCad.Application.Persistence
 
         /// <summary>The resolved Push Back system (optional; a library load may leave it null and resolve later).</summary>
         public PushBackSystem PushBackSystem { get; private set; }
+
+        /// <summary>The editable Cantilever LINE design; set when <see cref="Kind"/> is Cantilever.</summary>
+        public CantileverLineDesign CantileverLineDesign { get; private set; }
+
+        /// <summary>
+        /// The resolved Cantilever line (optional; the store leaves it null and a caller with the section
+        /// catalogue resolves it later, the same way a library load defers the Push Back system).
+        /// </summary>
+        public CantileverLineAssembly CantileverLineAssembly { get; private set; }
 
         /// <summary>
         /// The persistence document this project was loaded from, kept so a re-save can carry forward JSON fields this
@@ -119,6 +130,21 @@ namespace RackCad.Application.Persistence
         public static RackProject ForPushBack(PushBackDesign design, PushBackSystem system = null)
         {
             return new RackProject { Kind = RackSystemKind.PushBack, PushBackDesign = design, PushBackSystem = system };
+        }
+
+        /// <summary>
+        /// A Cantilever LINE project (I-37D). The design is the persisted intention; the assembly is optional,
+        /// because resolving one needs the section catalogue and the store has no business loading it.
+        /// </summary>
+        public static RackProject ForCantilever(
+            CantileverLineDesign design, CantileverLineAssembly line = null)
+        {
+            return new RackProject
+            {
+                Kind = RackSystemKind.Cantilever,
+                CantileverLineDesign = design,
+                CantileverLineAssembly = line
+            };
         }
     }
 }
