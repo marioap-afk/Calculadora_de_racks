@@ -153,6 +153,14 @@ sus firmas y sus resultados. La extracción es **mecánica**, va precedida de un
 valores actuales, y una desviación numérica obliga a **detenerse**. La fórmula
 `LastConnectionElevation + index × pitch` **no puede existir fuera de la autoridad**.
 
+**Y la autoridad ACUMULA, no multiplica.** La caracterización lo forzó: con un pitch **no diádico** las dos
+formas difieren —el índice 2 de un pitch de 3.7 in es `27.599999999999998` acumulado y `27.6` multiplicado—,
+y acumular es lo que I-37A **ya hacía**. Cambiar a la multiplicación movería **todos** los agujeros de una
+columna con pitch no diádico, que es un cambio de comportamiento en código integrado que nadie autorizó.
+`ElevationAt(index)` recorre los mismos pasos que la generación, así que sigue habiendo **una** definición y
+un índice no puede discrepar de la secuencia. **Si la multiplicación es la regla mejor es una pregunta real,
+y es una decisión aparte**: no le corresponde a esta extracción tomarla de pasada.
+
 Con eso, la circularidad se resuelve en una **secuencia explícita**, sin altura provisional y sin bucle de
 convergencia: validar el diseño; resolver secciones y variantes; obtener la retícula canónica —que sólo
 necesita el patrón de conexión, no la altura—; resolver índices y métricas de niveles; calcular

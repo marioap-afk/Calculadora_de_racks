@@ -452,24 +452,20 @@ namespace RackCad.Application.Systems.Cantilever
             ICollection<CantileverDiagnostic> diagnostics)
         {
             // The regular grid CONTINUES the connection region; it is not a lattice recomputed from the
-            // floor. The first regular punch sits one REGULAR pitch above the last connection punch — not
-            // one connection pitch, and never a duplicate of it.
-            var first = pattern.LastConnectionElevation + parameters.RegularColumnPitch;
-            var ceiling = columnTopZ - parameters.ColumnTopPunchOffset;
-
-            var elevations = new List<double>();
-
-            for (var z = first; z <= ceiling + FitTolerance; z += parameters.RegularColumnPitch)
-            {
-                elevations.Add(z);
-            }
+            // floor. But WHERE its elevations fall is no longer decided here: since I-37C,
+            // CantileverColumnRegularPunchGrid is the one authority, and this resolver is one of its two
+            // consumers — the station is the other. Two copies of one spacing formula is PB-004
+            // (ADR-0026, D5). The extraction was mechanical and is pinned by the characterization suite.
+            var grid = CantileverColumnRegularPunchGrid.FromPattern(pattern);
+            var elevations = grid.ElevationsUpTo(columnTopZ, parameters.ColumnTopPunchOffset);
 
             if (elevations.Count == 0)
             {
                 diagnostics.Add(CantileverDiagnostic.Warning(
                     CantileverDiagnostics.NoRegularPunchFits,
                     "La columna no admite ningun troquel regular: el primero quedaria en z = " +
-                    Format(first) + " in y el limite superior esta en z = " + Format(ceiling) + " in."));
+                    Format(grid.FirstElevation) + " in y el limite superior esta en z = " +
+                    Format(columnTopZ - parameters.ColumnTopPunchOffset) + " in."));
                 return Array.Empty<CantileverPunchPlan>();
             }
 
@@ -477,7 +473,7 @@ namespace RackCad.Application.Systems.Cantilever
             var list = new List<CantileverPunchPlan>(2 * elevations.Count);
             var index = 0;
 
-            foreach (var rowX in pattern.RowX)
+            foreach (var rowX in grid.RowX)
             {
                 foreach (var z in elevations)
                 {
