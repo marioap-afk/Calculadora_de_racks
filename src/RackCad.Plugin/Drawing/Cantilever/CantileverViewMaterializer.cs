@@ -108,7 +108,7 @@ namespace RackCad.Plugin.Drawing.Cantilever
         {
             foreach (var curve in plan.Curves)
             {
-                var entity = BuildPolyline(curve);
+                var entity = Build(curve);
 
                 if (entity == null)
                 {
@@ -118,6 +118,31 @@ namespace RackCad.Plugin.Drawing.Cantilever
                 definition.AppendEntity(entity);
                 transaction.AddNewlyCreatedDBObject(entity, true);
             }
+        }
+
+        /// <summary>A curve becomes a real <see cref="Circle"/> when the plan says it is one, a polyline otherwise.</summary>
+        private static Entity Build(CantileverViewCurve curve) =>
+            curve.IsCircle ? BuildCircle(curve) : (Entity)BuildPolyline(curve);
+
+        /// <summary>
+        /// A hole seen down its own axis, as a REAL circle of the diameter the plan carries.
+        ///
+        /// Not a polygon that approximates one: whoever measures the drawing would measure the polygon. The
+        /// plan gives a centre and a diameter — neutral data — and this is the only place that knows AutoCAD
+        /// has a <c>Circle</c>.
+        /// </summary>
+        private static Circle BuildCircle(CantileverViewCurve curve)
+        {
+            if (curve.Points == null || curve.Points.Count != 1 || !(curve.CircleDiameter > 0.0))
+            {
+                return null;
+            }
+
+            var centre = new Point3d(curve.Points[0].X, curve.Points[0].Y, 0.0);
+            var circle = new Circle(centre, Vector3d.ZAxis, curve.CircleDiameter.Value / 2.0);
+
+            ApplyByBlock(circle);
+            return circle;
         }
 
         /// <summary>
@@ -141,16 +166,22 @@ namespace RackCad.Plugin.Drawing.Cantilever
 
             polyline.Closed = curve.IsClosed;
 
-            // BYBLOCK on layer 0: the inserted reference decides colour, linetype and lineweight, so the user can
-            // drop the line on any layer and restyle the whole view in one move. Layer 0 is set EXPLICITLY — a new
-            // entity is born on the current layer, and inheriting whatever CLAYER happened to be would quietly
-            // break that.
-            polyline.Layer = "0";
-            polyline.ColorIndex = 0;
-            polyline.Linetype = "ByBlock";
-            polyline.LineWeight = LineWeight.ByBlock;
-
+            ApplyByBlock(polyline);
             return polyline;
+        }
+
+        /// <summary>
+        /// BYBLOCK on layer 0: the inserted reference decides colour, linetype and lineweight, so the user can
+        /// drop the line on any layer and restyle the whole view in one move. Layer 0 is set EXPLICITLY — a new
+        /// entity is born on the current layer, and inheriting whatever CLAYER happened to be would quietly
+        /// break that.
+        /// </summary>
+        private static void ApplyByBlock(Entity entity)
+        {
+            entity.Layer = "0";
+            entity.ColorIndex = 0;
+            entity.Linetype = "ByBlock";
+            entity.LineWeight = LineWeight.ByBlock;
         }
 
         /// <summary>A readable name built from the rack, the view and the station. Nothing resolves a block by it.</summary>

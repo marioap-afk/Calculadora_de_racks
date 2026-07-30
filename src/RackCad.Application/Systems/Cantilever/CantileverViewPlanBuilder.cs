@@ -46,12 +46,14 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverViewPieceKind kind,
             CantileverPieceId pieceId,
             IReadOnlyList<Point2D> points,
-            bool isClosed)
+            bool isClosed,
+            double? circleDiameter = null)
         {
             Kind = kind;
             PieceId = pieceId;
             Points = points;
             IsClosed = isClosed;
+            CircleDiameter = circleDiameter;
         }
 
         public CantileverViewPieceKind Kind { get; }
@@ -63,8 +65,24 @@ namespace RackCad.Application.Systems.Cantilever
 
         public bool IsClosed { get; }
 
+        /// <summary>
+        /// When set, this curve is a CIRCLE of that diameter centred on its single point — not a polyline.
+        ///
+        /// A hole drilled along the camera is a circle, and a circle is what the drawing must carry: a polygon
+        /// approximation would put a shape on the paper that the punch does not have, and whoever measured it
+        /// would measure the polygon. It is still a neutral plan: a centre and a diameter name no AutoCAD type
+        /// (ADR-0028, D3). A hole seen EDGE-ON gets no diameter here — it is drawn as its trace, see
+        /// <see cref="CantileverViewPlanBuilder"/>.
+        /// </summary>
+        public double? CircleDiameter { get; }
+
+        public bool IsCircle => CircleDiameter.HasValue;
+
         public override string ToString() =>
-            Kind + " " + PieceId.Value + " (" + Points.Count + " puntos)";
+            Kind + " " + PieceId.Value +
+            (IsCircle
+                ? " (circulo d=" + CircleDiameter.Value.ToString("0.###", CultureInfo.InvariantCulture) + ")"
+                : " (" + Points.Count + " puntos)");
     }
 
     /// <summary>
@@ -125,8 +143,9 @@ namespace RackCad.Application.Systems.Cantilever
             View, StationIndex, Curves.Count,
             string.Join("|", Curves.Select(c => string.Format(
                 CultureInfo.InvariantCulture,
-                "{0}:{1}:{2}:{3}",
-                c.Kind, c.PieceId.Value, c.Points.Count, c.IsClosed ? "C" : "O"))));
+                "{0}:{1}:{2}:{3}{4}",
+                c.Kind, c.PieceId.Value, c.Points.Count, c.IsClosed ? "C" : "O",
+                c.IsCircle ? ":d=" + c.CircleDiameter.Value.ToString("0.####", CultureInfo.InvariantCulture) : string.Empty))));
 
         public override string ToString() =>
             View + (StationIndex < 0 ? " (linea)" : " (estacion " + (StationIndex + 1) + ")") +
@@ -306,6 +325,15 @@ namespace RackCad.Application.Systems.Cantilever
                     curves, CantileverViewPieceKind.Gusset, placement.ScopedId(gusset.Id),
                     gusset.Vertices, offset, viewpoint, true);
             }
+
+            // The holes. They were resolved from the first day and never asked for, which is why a column came
+            // out as a bare outline: the drawing showed a profile where the product has a punched column
+            // (motivo 5 del rechazo de la ronda 1). Nothing is recomputed here — every centre and every
+            // diameter comes from the PunchPlan the station already resolved.
+            foreach (var punch in station.Punches)
+            {
+                AddPunch(curves, placement.ScopedId(punch.Id), punch, offset, viewpoint);
+            }
         }
 
         private static void AddInterval(
@@ -322,6 +350,10 @@ namespace RackCad.Application.Systems.Cantilever
                 AddOutline(
                     curves, CantileverViewPieceKind.Plate, plate.Plate.Id,
                     plate.Plate.Outline, zero, viewpoint, true);
+
+                // Its ONE centred hole. A separator plate without its hole is a 3 × 3 square that says nothing
+                // about where the separator bolts, and that is what the frontal was showing.
+                AddPunch(curves, plate.Punch.Id, plate.Punch, zero, viewpoint);
             }
 
             foreach (var separator in interval.Separators)
@@ -329,6 +361,11 @@ namespace RackCad.Application.Systems.Cantilever
                 AddMember(
                     curves, separator.Member.Id, CantileverViewPieceKind.Separator,
                     separator.Member, zero, options, geometryFactory);
+
+                foreach (var punch in separator.Punches)
+                {
+                    AddPunch(curves, punch.Id, punch, zero, viewpoint);
+                }
             }
 
             foreach (var brace in interval.Braces)
@@ -402,6 +439,75 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 curves.Add(new CantileverViewCurve(kind, id, curve.Points, curve.IsClosed));
             }
+        }
+
+        /// <summary>
+        /// How much of a hole's own axis survives the projection before it is drawn as a circle.
+        ///
+        /// Zero would mean «only a perfectly axial hole is a circle», which no real camera gives; one would mean
+        /// «every hole is a circle», which would draw a full circle where the reader can only see an edge. A
+        /// fifth of the diameter is the line between the two, and it is a VIEWING convention: it changes what is
+        /// drawn, never what was resolved.
+        /// </summary>
+        private const double CircleForeshorteningLimit = 0.2;
+
+        /// <summary>
+        /// One hole, drawn as what the camera can actually see of it.
+        ///
+        /// Looking DOWN the drilling axis, a hole is a circle of its real diameter, and that is what gets
+        /// emitted — a real circle, not a polygon that approximates one. Seen EDGE-ON it is not a circle at all,
+        /// and drawing one would put a shape on the paper the piece does not have; it is drawn as its TRACE
+        /// instead: a segment as long as the diameter, across the hole, exactly where the material is pierced.
+        /// That is the same discipline the cold-rolled rod follows when it is drawn as its axis (ADR-0027, D7):
+        /// draw what is there, declare the convention, and never invent the rest.
+        ///
+        /// A hole is never omitted for being small. That was motivo 5 of the round-1 rejection.
+        /// </summary>
+        private static void AddPunch(
+            ICollection<CantileverViewCurve> curves,
+            CantileverPieceId id,
+            CantileverPunchPlan punch,
+            Vector3D offset,
+            SectionViewpoint viewpoint)
+        {
+            if (!(punch.Diameter > 0.0))
+            {
+                return; // a hole with no diameter is not a hole; the resolver already reported it
+            }
+
+            var centre = punch.Centre + offset;
+            var alongAxis = centre + punch.Direction * punch.Diameter;
+
+            var projectedCentre = viewpoint.Project(centre);
+            var projectedTip = viewpoint.Project(alongAxis);
+
+            var dx = projectedTip.X - projectedCentre.X;
+            var dy = projectedTip.Y - projectedCentre.Y;
+            var foreshortening = Math.Sqrt(dx * dx + dy * dy) / punch.Diameter;
+
+            if (foreshortening <= CircleForeshorteningLimit)
+            {
+                curves.Add(new CantileverViewCurve(
+                    CantileverViewPieceKind.Punch, id, new[] { projectedCentre }, false, punch.Diameter));
+                return;
+            }
+
+            // Edge-on: the trace is PERPENDICULAR to the projected axis, so it reads as the mouth of the hole
+            // and not as a piece of the axis itself.
+            var length = Math.Sqrt(dx * dx + dy * dy);
+            var nx = -dy / length;
+            var ny = dx / length;
+            var half = punch.Diameter / 2.0;
+
+            curves.Add(new CantileverViewCurve(
+                CantileverViewPieceKind.Punch,
+                id,
+                new[]
+                {
+                    new Point2D(projectedCentre.X - nx * half, projectedCentre.Y - ny * half),
+                    new Point2D(projectedCentre.X + nx * half, projectedCentre.Y + ny * half)
+                },
+                false));
         }
 
         private static void AddOutline(

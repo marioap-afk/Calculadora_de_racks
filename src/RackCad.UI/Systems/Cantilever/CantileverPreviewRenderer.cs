@@ -24,6 +24,9 @@ namespace RackCad.UI.Systems.Cantilever
         /// <summary>Padding, in device pixels, between the plan's extent and the canvas edge.</summary>
         private const double Margin = 14.0;
 
+        /// <summary>The smallest a hole may be drawn in the PREVIEW, in device pixels. See <see cref="Hole"/>.</summary>
+        private const double MinimumHolePixels = 3.0;
+
         private static readonly Brush ColumnBrush = UiSupport.FrozenBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
         private static readonly Brush BaseBrush = UiSupport.FrozenBrush(Color.FromRgb(0x5B, 0x8D, 0xEF));
         private static readonly Brush ArmBrush = UiSupport.FrozenBrush(Color.FromRgb(0xE0, 0x8A, 0x2B));
@@ -135,6 +138,11 @@ namespace RackCad.UI.Systems.Cantilever
 
             var brush = BrushFor(curve.Kind);
 
+            if (curve.IsCircle)
+            {
+                return Hole(points[0], curve.CircleDiameter.Value * scale, brush);
+            }
+
             if (!curve.IsClosed)
             {
                 return new Polyline { Points = points, Stroke = brush, StrokeThickness = 1.4 };
@@ -150,6 +158,31 @@ namespace RackCad.UI.Systems.Cantilever
                 // disappear under it.
                 Fill = Translucent(brush)
             };
+        }
+
+        /// <summary>
+        /// A hole, as a circle of its real diameter — with a FLOOR so it stays visible.
+        ///
+        /// A 9/16 in hole on a line 20 ft long is a fraction of a pixel at any scale that shows the whole rack,
+        /// and a hole nobody can see is indistinguishable from the hole that was missing. The floor is a
+        /// VIEWING aid of the preview and travels nowhere: the drawing gets the real diameter.
+        /// </summary>
+        private static Shape Hole(Point centre, double diameter, Brush brush)
+        {
+            var size = Math.Max(diameter, MinimumHolePixels);
+
+            var ellipse = new System.Windows.Shapes.Ellipse
+            {
+                Width = size,
+                Height = size,
+                Stroke = brush,
+                StrokeThickness = 1.0,
+                Fill = Translucent(brush)
+            };
+
+            Canvas.SetLeft(ellipse, centre.X - size / 2.0);
+            Canvas.SetTop(ellipse, centre.Y - size / 2.0);
+            return ellipse;
         }
 
         private static Brush Translucent(Brush brush)
