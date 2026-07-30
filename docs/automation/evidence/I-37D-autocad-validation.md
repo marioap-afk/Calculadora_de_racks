@@ -11,16 +11,30 @@ que sin el veredicto manual del dueño en AutoCAD 2025 **no se integra** y **I-3
 | Iniciativa | I-37D — Cantilever MVP final: línea, arriostramiento, vistas y editor |
 | Rama | `feature/cantilever-mvp-final` |
 | Claim-Id | `c37684f6-4c3a-4243-82d6-e538dea2a8f6` |
-| **CODE_SHA candidato** | `66ebe94` (fase 14: pruebas del editor y del Plugin) |
+| **CODE_SHA funcional** | `66ebe94` — la última punta que tocó `src/**` o `tests/**` |
+| **VALIDATED_BUILD_SHA** | `4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9` — la punta desde la que se compiló el DLL |
 | DLL Debug a cargar | `<worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` |
-| **DLL SHA-256** | `6769A7824EB2648017D05801F00617FD92BE375F53CB300A17F144D9C2B77A00` |
-| Tamaño / fecha | 133 120 bytes · `2026-07-30 08:09:11` |
+| **DLL SHA-256** | `53CA2118BD8D4923C9D660B0FFE3A65D4FC38507DD3CD788D295C22D2C0FEABC` |
+| `AssemblyInformationalVersion` | `1.0.0+4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9` |
+| Tamaño / fecha | 133 120 bytes · `2026-07-30 08:47:23` |
+| **Bundle** | ✅ generado y **verificado fail-closed** (153 comprobaciones, 24 archivos, cero DLL de Autodesk) |
+| Inventario del bundle | [`I-37D-bundle-inventory.txt`](I-37D-bundle-inventory.txt) |
 | Worktree | `C:\Users\alejandra-mendoza\.claude\worktrees\feature-cantilever-mvp-final` |
 | Pruebas | `RackCad.Tests` 2694/2694 · `RackCad.UI.Tests` 562/562 |
+| CI | run [`30552560784`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30552560784) — **success**, 4/4 jobs sobre `4a2a6f5` |
 | Requisitos | `requires_autocad: true`, `requires_owner_validation: true`, `bundle: REQUERIDO` |
 
-> **Si recompilas, el SHA-256 cambia.** Anota el nuevo antes de cargar: un DLL sin trazabilidad no valida
-> la rama. El comando está en el paso 2.
+**Los dos SHA no son el mismo, y la diferencia es sana.** `66ebe94` es el último commit que cambió
+código o pruebas; `4a2a6f5` es `66ebe94` más dos commits **exclusivamente documentales**. El DLL se
+compiló desde `4a2a6f5` porque su `AssemblyInformationalVersion` incrusta la punta de git, así que
+**recompilar tras un commit de docs cambia el SHA-256 aunque el código sea byte a byte el mismo**. El
+árbol funcional que se valida es el de `66ebe94`.
+
+El DLL de `bin\Debug` y el que viaja dentro del bundle son **el mismo binario** (`53CA2118…` los dos), así
+que cargar por `NETLOAD` y cargar por bundle validan exactamente lo mismo.
+
+> **Si recompilas, el SHA-256 vuelve a cambiar.** Anota el nuevo antes de cargar: un DLL sin
+> trazabilidad no valida la rama. El comando está en el paso 2.
 
 ## 2. Preparar el entorno
 
@@ -28,26 +42,36 @@ que sin el veredicto manual del dueño en AutoCAD 2025 **no se integra** y **I-3
    `RackCad.Plugin.dll`: con él abierto, el bundle **aborta** con un mensaje explícito y la copia del DLL
    puede fallar con `MSB3021`/`MSB3027`. Ese fallo de copia no es un error de código.
 
-2. Desde la raíz del worktree:
+2. **El DLL y el bundle de la tabla ya están construidos y verificados** sobre `4a2a6f5`. Si el árbol no
+   cambió, no hace falta recompilar: basta con comprobar que el binario sigue siendo el mismo.
 
 ```powershell
 git status; git branch --show-current; git rev-parse HEAD
-dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug
-dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug
-dotnet build src/RackCad.Plugin/RackCad.Plugin.csproj -c Debug
 Get-FileHash src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll -Algorithm SHA256
 ```
 
-3. El bundle (requerido porque el diff toca UI, Plugin y materialización):
+   Si prefieres reconstruirlo desde cero —o si el árbol cambió— este es el ciclo completo. **Ojo:**
+   recompilar tras cualquier commit nuevo cambia el SHA-256, así que anótalo y sustitúyelo en la tabla.
 
 ```powershell
+dotnet test tests/RackCad.Tests/RackCad.Tests.csproj -c Debug
+dotnet test tests/RackCad.UI.Tests/RackCad.UI.Tests.csproj -c Debug
 pwsh deploy\build-bundle.ps1 -Configuration Debug -InventoryOutPath docs\automation\evidence\I-37D-bundle-inventory.txt
+Get-FileHash src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll -Algorithm SHA256
 ```
 
-4. Abre AutoCAD 2025 con un dibujo **nuevo y descartable**, ejecuta `NETLOAD` y selecciona el DLL exacto
+   `build-bundle.ps1` publica y **verifica fail-closed**: DLL idénticos al publish, catálogos idénticos a
+   `assets/catalogs`, sólo archivos de RackCad y **cero DLL de Autodesk** (ADR-0003). También deja el
+   `bin\Debug\…\RackCad.Plugin.dll` recompilado, que es el que se carga en el paso 3.
+
+3. Abre AutoCAD 2025 con un dibujo **nuevo y descartable**, ejecuta `NETLOAD` y selecciona el DLL exacto
    del worktree. No cargues el DLL del worktree principal: valida otra rama.
 
-5. Comprueba las unidades del dibujo. Todo el modelo está en **pulgadas** y nada lo convierte: si el
+   Alternativa equivalente: instalar el bundle
+   (`src\RackCad.Plugin\bin\Debug\net8.0-windows\publish\RackCad.bundle`) con `deploy\install-bundle.ps1`.
+   Lleva **el mismo binario**, así que el veredicto vale igual por cualquiera de las dos vías.
+
+4. Comprueba las unidades del dibujo. Todo el modelo está en **pulgadas** y nada lo convierte: si el
    dibujo no está en pulgadas, RackCad avisa una vez antes del primer bloque (I-05, ADR-0005). El aviso
    es informativo y **no bloquea**.
 

@@ -98,9 +98,11 @@ distribucion_de_paneles_verificada:
 # GATES. El de esta iniciativa NO se resuelve sobre el codigo.
 # --------------------------------------------------------------------------------------------------------
 gates:
-  ci: requerido-necesario-pero-NO-suficiente
-  plugin_build: requerido
-  bundle: REQUERIDO-el-diff-toca-UI-Plugin-y-materializacion
+  ci: RESUELTO-run-30552560784-success-4-de-4-jobs-sobre-4a2a6f5-necesario-pero-NO-suficiente
+  plugin_build: RESUELTO-Debug-0-errores-propios
+  bundle: >-
+    RESUELTO-2026-07-30 · generado-y-verificado-fail-closed-153-comprobaciones-sobre-4a2a6f5 ·
+    era-REQUERIDO-porque-el-diff-toca-UI-Plugin-y-materializacion
   autocad: >-
     REQUERIDO-por-primera-vez-en-la-linea-I-37 · DLL-Debug-del-worktree-por-NETLOAD-con-instrucciones-
     exactas-y-checklist
@@ -342,17 +344,27 @@ costuras_fijadas:
 # CANDIDATO A VALIDAR. Lo que el Owner carga y contra que.
 # --------------------------------------------------------------------------------------------------------
 candidato:
-  code_sha: 66ebe94
+  code_sha_funcional: 66ebe94-ultima-punta-que-toco-src-o-tests
+  validated_build_sha: 4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9
   dll: worktree-src-RackCad-Plugin-bin-Debug-net8-0-windows-RackCad-Plugin-dll
-  dll_sha256: 6769A7824EB2648017D05801F00617FD92BE375F53CB300A17F144D9C2B77A00
+  dll_sha256: 53CA2118BD8D4923C9D660B0FFE3A65D4FC38507DD3CD788D295C22D2C0FEABC
   dll_bytes: 133120
-  dll_fecha: 2026-07-30T08:09:11
+  dll_fecha: 2026-07-30T08:47:23
+  informational_version: 1.0.0+4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9
+  por_que_cambio_el_sha256: >-
+    la-AssemblyInformationalVersion-incrusta-la-punta-de-git · recompilar-tras-un-commit-DOCUMENTAL-
+    cambia-el-binario-aunque-el-codigo-sea-byte-a-byte-el-mismo · el-SHA-anterior-6769A782-era-el-de-
+    5632a9d-y-quedo-OBSOLETO
   pruebas: RackCad-Tests-2694-de-2694 · RackCad-UI-Tests-562-de-562
+  ci: run-30552560784-success-los-4-jobs-sobre-4a2a6f5
   build: solucion-completa-Debug-0-errores-solo-los-MSB3277-conocidos-de-las-referencias-de-AutoCAD
   bundle: >-
-    NO-GENERADO-EN-ESTA-SESION · deploy-build-bundle-ps1-ABORTA-con-AutoCAD-abierto-porque-bloquea-
-    RackCad-Plugin-dll · el-Owner-tiene-que-cerrar-AutoCAD-para-validar-de-todos-modos-asi-que-el-
-    comando-exacto-va-en-el-paso-3-del-paquete
+    GENERADO-Y-VERIFICADO-2026-07-30 · deploy-build-bundle-ps1-Configuration-Debug ·
+    153-comprobaciones-OK · 24-archivos · DLL-identicos-al-publish-y-catalogos-identicos-a-assets-
+    catalogs-por-SHA-256 · solo-archivos-RackCad-y-CERO-DLL-de-Autodesk-ADR-0003 ·
+    el-DLL-del-bundle-es-el-MISMO-binario-que-el-de-bin-Debug-asi-que-NETLOAD-y-bundle-validan-lo-mismo
+  bundle_inventario: docs-automation-evidence-I-37D-bundle-inventory-txt
+  gate_bundle: RESUELTO
   numeros_normativos_verificados_contra_el-CODIGO: >-
     4-estaciones-altura-manual-264 · intervalos=3 · separadores=18-seis-por-intervalo ·
     tensores=24-ocho-por-intervalo · paneles=12-cuatro-por-intervalo · adaptadores=48 ·
