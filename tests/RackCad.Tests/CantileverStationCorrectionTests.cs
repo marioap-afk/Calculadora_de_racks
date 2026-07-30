@@ -685,6 +685,61 @@ namespace RackCad.Tests
                 new[] { new Point3D(0, 0, 0), new Point3D(1, 0, 0) }));
         }
 
+        [Fact]
+        public void TheBOMDescribesATiltedCapWithItsREALDimensions()
+        {
+            // Through the BOM, which is what the world-span bug actually corrupted: the plate identity. The cap
+            // is the body section at every slope, so its BOM line must carry the same dimensions — a projected
+            // measurement would shrink them and split one part into several.
+            var flat = Line(0.0, CantileverArmEndPlateMode.Cap, 0.0);
+            var tilted = Line(4.0, CantileverArmEndPlateMode.Cap, 0.0);
+
+            Assert.Equal(flat.ProfileId, tilted.ProfileId);
+            Assert.Equal(flat.Description, tilted.Description);
+        }
+
+        [Theory]
+        [InlineData(6.0)]
+        [InlineData(12.0)]
+        public void TheBOMSignatureKeepsTheStopExtensionAtEverySlope(double extra)
+        {
+            // The stop extension is measured along the arm's own UP. With world spans it shrank as the arm
+            // tilted, so the same physical stop signed differently at every slope.
+            var flat = StopSignature(0.0, extra);
+            var tilted = StopSignature(4.0, extra);
+
+            Assert.Contains("stop=" + extra.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture),
+                flat, StringComparison.Ordinal);
+            Assert.Contains("stop=" + extra.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture),
+                tilted, StringComparison.Ordinal);
+        }
+
+        private static BomLine Line(double slope, CantileverArmEndPlateMode mode, double extra)
+        {
+            var station = Resolve(Design(
+                levels: 1,
+                defaultArm: ArmTemplate(slope: slope, endMode: mode, extraStop: extra)));
+
+            Assert.False(station.IsBlocked);
+
+            return CantileverStationBomBuilder.Build(station).Lines
+                .Single(l => l.ProfileId.StartsWith(
+                    mode == CantileverArmEndPlateMode.Stop ? "Tope de brazo" : "Tapa de brazo",
+                    StringComparison.Ordinal));
+        }
+
+        private static string StopSignature(double slope, double extra)
+        {
+            var station = Resolve(Design(
+                levels: 1,
+                defaultArm: ArmTemplate(
+                    slope: slope, endMode: CantileverArmEndPlateMode.Stop, extraStop: extra)));
+
+            Assert.False(station.IsBlocked);
+
+            return CantileverStationBomBuilder.ArmSignature(station.Arms[0]);
+        }
+
         // ---- DEFECTO 7: la firma incluye los brazos reales -------------------------------------------
 
         /// <summary>Two designs whose LAYOUT is identical and whose physical arms are not.</summary>
