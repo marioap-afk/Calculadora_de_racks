@@ -135,42 +135,55 @@ namespace RackCad.Application.Systems.Cantilever
             }
 
             // ---- 3. parameters ----------------------------------------------------------------------------
-            var verticalEndOffset = ValidateParameters(body, mount, end, column.Pattern.Parameters.Diameter, diagnostics);
-
-            // A slope can be finite and non-negative and still leave the frame undefined: atan converges on
-            // 90 degrees, so a large enough rise produces an axis that is vertical to within floating point.
-            // Gated HERE, before any frame is built, so a typed number comes back as a diagnostic.
-            if (!diagnostics.Any(d => d.Code == CantileverDiagnostics.ArmSlopeInvalid) &&
-                !CantileverArmFrameResolver.IsRepresentableSlope(side, body.SlopeRisePer12))
-            {
-                diagnostics.Add(CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.ArmSlopeFrameUndefined,
-                    "La pendiente " + Format(body.SlopeRisePer12) +
-                    " deja el brazo practicamente vertical: la proyeccion de +Z sobre su plano transversal se " +
-                    "anula y el marco no queda definido."));
-            }
+            // Only the arm's OWN parameters here. Everything about the CONNECTION — the row count, the margin,
+            // the slope, the frame and whether the body fits its plate — belongs to
+            // CantileverArmConnectionMetricsResolver, which the station consumes too. Two places measuring the
+            // same four elevations is what the I-37C review found (ADR-0026, D5).
+            ValidateOwnParameters(body, mount, end, diagnostics);
 
             if (diagnostics.Any(d => d.IsBlocking))
             {
                 return CantileverArmAssembly.Blocked(owner, side, diagnostics);
             }
 
-            // ---- 4. the column's punches, SELECTED not recreated ------------------------------------------
+            // ---- 4. contour and combined section ----------------------------------------------------------
+            var geometry = _geometry.Get(section.SectionId, variant.Detail);
+            ReportVisualAuthority(geometry, diagnostics);
+
+            // ---- 5. the SHARED connection authority --------------------------------------------------------
+            var grid = CantileverColumnRegularPunchGrid.FromPattern(column.Pattern);
+
+            var metrics = CantileverArmConnectionMetricsResolver.Resolve(
+                side,
+                body.Arrangement,
+                variant.Orientation,
+                CantileverArmBodyArrangementResolver.CombinedBounds(body.Arrangement, geometry).Height,
+                body.SlopeRisePer12,
+                mount.LowerColumnPunchIndex,
+                mount.VerticalPunchCount,
+                mount.VerticalEndOffset,
+                grid,
+                column.Pattern.Parameters.Diameter);
+
+            diagnostics.AddRange(metrics.Diagnostics);
+
+            if (metrics.IsBlocked)
+            {
+                return CantileverArmAssembly.Blocked(owner, side, diagnostics);
+            }
+
+            // ---- 6. the column's punches, SELECTED not recreated ------------------------------------------
             var pattern = CantileverArmColumnConnectionPattern.Build(
                 column.ColumnRegularPunches,
                 mount.LowerColumnPunchIndex,
                 mount.VerticalPunchCount,
-                verticalEndOffset.Value,
+                metrics.VerticalEndOffset,
                 diagnostics);
 
             if (pattern == null)
             {
                 return CantileverArmAssembly.Blocked(owner, side, diagnostics);
             }
-
-            // ---- 5. contour and combined section ----------------------------------------------------------
-            var geometry = _geometry.Get(section.SectionId, variant.Detail);
-            ReportVisualAuthority(geometry, diagnostics);
 
             if (!CantileverArmBodyArrangementResolver.TouchesWithoutOverlap(
                     body.Arrangement, geometry, FitTolerance, out var gap, out var overlap))
@@ -200,27 +213,11 @@ namespace RackCad.Application.Systems.Cantilever
             var outerY = innerY + (outward * mount.Thickness);
             var midY = innerY + (outward * mount.Thickness / 2.0);
 
-            var angle = CantileverArmFrameResolver.AngleRadians(body.SlopeRisePer12);
+            // The angle, the run and the two body edges all come from the SHARED metrics: the plate-fit gate
+            // lives there now, so this resolver reads the verdict instead of recomputing the question.
+            var angle = metrics.AngleRadians;
             var run = Math.Cos(angle);
-
-            // The body sits so its LOWER envelope at the connection plane lands on the plate's bottom edge.
-            // The section's depth axis makes an angle with the vertical, so its apparent vertical extent there
-            // is scaled by cos(angle) — that factor is why the check below is not simply "plate >= depth".
-            var bodyBottomAtConnection = pattern.PlateBottomZ;
-            var bodyTopAtConnection = bodyBottomAtConnection + (run * combined.Height);
-
-            if (pattern.PlateTopZ < bodyTopAtConnection - FitTolerance)
-            {
-                diagnostics.Add(CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.ArmPlateTooShortForBody,
-                    "La placa de conexion llega a z = " + Format(pattern.PlateTopZ) +
-                    " in y el cuerpo alcanza z = " + Format(bodyTopAtConnection) +
-                    " in en el plano de conexion. Aumenta VerticalPunchCount: mas troqueles extienden la placa " +
-                    "hacia arriba. La placa NO se estira sin mas agujeros."));
-                return CantileverArmAssembly.Blocked(owner, side, diagnostics);
-            }
-
-            var originZ = bodyBottomAtConnection - (run * combined.MinY);
+            var originZ = metrics.BodyBottomZ - (run * combined.MinY);
 
             // ---- 7. members -------------------------------------------------------------------------------
             var placements = CantileverArmBodyArrangementResolver.Placements(body.Arrangement, geometry);
@@ -290,60 +287,23 @@ namespace RackCad.Application.Systems.Cantilever
 
         // ---- validation -----------------------------------------------------------------------------------
 
-        private static double? ValidateParameters(
+        /// <summary>
+        /// The arm's OWN parameters: the cut length, the plate thicknesses and the end plate.
+        ///
+        /// It no longer validates the row count, the margin or the slope. Those describe the CONNECTION, and
+        /// since the I-37C review they live in <see cref="CantileverArmConnectionMetricsResolver"/> — shared with
+        /// the station, so a design one accepts the other cannot reject.
+        /// </summary>
+        private static void ValidateOwnParameters(
             CantileverArmBodyDesign body,
             CantileverArmMountingPlateDesign mount,
             CantileverArmEndPlateDesign end,
-            double diameter,
             ICollection<CantileverDiagnostic> diagnostics)
         {
             RequirePositive(body.CutLength, "la longitud de corte del brazo", diagnostics);
             RequirePositive(mount.Thickness, "el espesor de la placa de conexion", diagnostics);
 
-            if (!GeometryTolerance.IsFinite(body.SlopeRisePer12) || body.SlopeRisePer12 < 0.0)
-            {
-                diagnostics.Add(CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.ArmSlopeInvalid,
-                    "La pendiente debe ser un numero finito no negativo; se recibio " +
-                    Format(body.SlopeRisePer12) + ". Cero es valido; bajar no."));
-            }
-
             ValidateEndPlate(end, diagnostics);
-
-            // The one parameter of I-37B with no approved default. Missing is REJECTED, never filled in.
-            if (mount.VerticalEndOffset == null)
-            {
-                diagnostics.Add(CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.RequiredParameterMissing,
-                    "El diseno debe declarar el margen vertical de la placa de conexion: no existe un valor " +
-                    "por omision aprobado."));
-                return null;
-            }
-
-            var offset = mount.VerticalEndOffset.Value;
-
-            if (!GeometryTolerance.IsFinite(offset) || offset < 0.0)
-            {
-                diagnostics.Add(CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.ParameterNotPositive,
-                    "El margen vertical de la placa de conexion no puede ser negativo; se recibio " +
-                    Format(offset) + "."));
-                return null;
-            }
-
-            // Edge-to-CENTRE, so the hole only fits if the margin is at least its RADIUS. Same rule and same
-            // code as I-37A.
-            if (offset + FitTolerance < diameter / 2.0)
-            {
-                diagnostics.Add(CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.EdgeOffsetBelowRadius,
-                    "El margen vertical de la placa de conexion (" + Format(offset) +
-                    " in) es menor que el radio del troquel (" + Format(diameter / 2.0) +
-                    " in): el agujero no cabe."));
-                return null;
-            }
-
-            return offset;
         }
 
         /// <summary>

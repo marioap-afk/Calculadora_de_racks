@@ -657,6 +657,45 @@ catálogo. **Sigue sin default aprobado** `MountingPlateVerticalEndOffset`, adem
 heredados de I-37A. Siguen **diferidos** el perfil de brazo visible por omisión —será HSS, pero se fija
 cuando exista editor— y el **PTR**, que **no** se equipara a HSS.
 
+**I-37C es la tercera subiniciativa de I-37 y está INTEGRADA en `main` desde el 2026-07-29.** Es la primera
+que **compone** en vez de fundar: toma la columna con su base (I-37A) y el brazo con su conexión (I-37B) y
+produce una **estación** completa, pura en Domain y Application. Tampoco dibuja, así que **no requirió
+AutoCAD ni validación visual**.
+
+Una **góndola sencilla** tiene una columna, una base, una lista de niveles y un brazo por nivel, todos en el
+mismo lado activo. Una **góndola doble** tiene **una sola columna física** y **una sola placa inferior**, con
+**dos bases espejadas** y **dos brazos por nivel**; la base negativa se **deriva** reflejando la positiva
+respecto al plano central, y resolver un segundo subensamble completo está prohibido porque produciría dos
+columnas que luego habría que descartar a mano. Los **niveles se comparten** entre lados: un índice y una
+elevación por nivel, y en doble **gobierna el lado más restrictivo**.
+
+El **claro libre** se mide **cuerpo a cuerpo en el plano de conexión** —ni ejes, ni centros de troquel, ni
+bordes de placa— y el ajuste es **obligatorio hacia arriba** a un **índice** de la retícula, nunca a una
+elevación redondeada. Además, las placas de dos niveles no se traslapan y dos niveles no comparten agujero.
+La **altura** es automática o manual, con `TopClearFactor` de default `1/3` y nunca menor; una manual
+insuficiente **bloquea** con el faltante medido, sin recortar niveles, mover brazos ni reducir el claro.
+
+**Y resolvió una circularidad real**: la altura decide cuántos troqueles existen, los troqueles deciden dónde
+caen los niveles, y los niveles deciden la altura mínima. La rompió extrayendo
+`CantileverColumnRegularPunchGrid` —que sólo necesita el patrón de conexión y **no** la altura— más una
+costura sin altura en `CantileverColumnBaseResolver`. Sin altura provisional, sin columna enorme, sin bucle de
+convergencia; y el **pase final se verifica** contra el layout previo y **falla cerrado** si difiere. La
+retícula **acumula** en vez de multiplicar, por compatibilidad exacta con lo que I-37A enviaba —con un pitch
+no diádico las dos formas difieren—, y su **dominio** es numérico y derivado de la precisión del `double`, no
+un límite comercial.
+
+Entrega también la **matriz pura** de brazos —un default más overrides de celda, con alcances celda/nivel/
+estación y sus restauraciones, sin celda falsa en el lado inactivo, y persistiendo **sólo** lo que difiere por
+comparación **estructural**— y el primer **BOM por componentes** de Cantilever: **un** componente
+columna–base por estación (con una o dos bases) y cada **brazo** como componente atornillable agrupado por
+**receta física**, con el lado fuera de su identidad. Los **troqueles no son piezas**: son parte de la
+identidad de la placa que los lleva.
+
+[ADR-0026](adr/0026-estacion-cantilever-niveles-altura-y-bom.md) quedó **aceptado**. **No toca** I-36, el
+contrato compartido de BOM, UI, Plugin, `assets/`, `deploy/`, `.github/` ni `RackCad.sln`. **No añadió ningún
+parámetro sin default**: los tres heredados siguen siendo entradas obligatorias. La continuación es
+**I-37D**, la última subiniciativa del MVP.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -854,14 +893,20 @@ poste, sus piezas y sus celdas de seguridad. La **owner-validation** quedó **ap
 validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**. La rama se integra por
 `git merge --no-ff` en esta sesión.
 
-I-37A e I-37B (`architecture/cantilever-base-columna`, `architecture/cantilever-brazo`) **no requirieron
+I-37A, I-37B e I-37C (`architecture/cantilever-base-columna`, `architecture/cantilever-brazo`,
+`architecture/cantilever-estacion-bom`) **no requirieron
 validación en AutoCAD ni validación visual del Owner** (`requires_autocad: false`,
 `requires_owner_validation: false`): ninguna de las dos cambia dibujo, interfaz ni BOM —no hay vistas,
 preview, editor, persistencia de proyecto, registros ni una línea de Plugin—, así que **no se ejecutó
 NETLOAD** y no era exigible por contrato. Son las primeras iniciativas de la Fase 6 cuyo gate se resolvió
 **sobre el código**: lo entregado son contratos, y lo verificable de un contrato son sus invariantes y sus
-guardas, no una captura. `origin/main` **no avanzó** desde `e0f319f` mientras I-37B estuvo en revisión, así
-que su verificación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
+guardas, no una captura. `origin/main` **no avanzó** ni desde `e0f319f` mientras I-37B estuvo en revisión, ni
+desde `0610adb` mientras lo estuvo I-37C, así que sus verificaciones valen sobre el árbol integrado
+(WORKFLOW §6): **sin rebase final** en ninguna de las dos.
+
+**I-37D será distinta.** Es la primera de la línea que cambia UI y AutoCAD, así que **sí** requiere DLL,
+bundle, `NETLOAD` y la **validación manual del Owner en AutoCAD 2025**, y no puede integrarse sin ese
+veredicto.
 
 ## 3. Problemas y riesgos activos
 
@@ -900,19 +945,57 @@ que su verificación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase
 
 ## 4. Siguiente acción
 
-### Lo siguiente de I-37 — **todavía sin definir y sin reclamar**
+### I-37D — la ÚLTIMA subiniciativa del MVP, autorizada y en curso
 
-I-37A e I-37B están integradas. La línea I-37 sigue **partida en subiniciativas**, y la que viene **no
-existe**: no tiene fila en el ROADMAP, ni contrato, ni rama, ni número asignado por el Owner. **No se abre
-ninguna rama** hasta que el Owner autorice expresamente la siguiente subiniciativa, igual que hizo con
-I-37A y con I-37B (WORKFLOW §8 lo prohíbe sin esa autorización).
+I-37A, I-37B e I-37C están integradas: el producto sabe qué es una columna con su base, qué es un brazo y
+cómo se compone una estación con su BOM. Lo que todavía **no** existe es lo único que lo haría visible al
+usuario, y es exactamente el alcance de I-37D:
 
-**Lo que falta definir físicamente para continuar**, y que hoy no está decidido: cómo se compone una
-**estación** —columna con sus brazos por lado, y las elevaciones de cada uno—; si la **doble cara** es un
-sistema propio o una propiedad de la estación; qué es una **línea** Cantilever y cómo se reparten
-separadores y arriostres; y en qué momento entran **vistas**, **editor** y **persistencia**, que son lo
-único que haría visible al usuario todo lo construido hasta ahora. Ninguna de esas cuatro está autorizada
-por ADR-0024 ni por ADR-0025, y ambas lo dicen explícitamente.
+la **línea** de estaciones con sus intervalos longitudinales; las **placas de columna** para separadores; los
+**separadores**; los **paneles arriostrados** con su distribución vertical; los **tensores** estructurales y
+**cold rolled** con sus adaptadores y cartabones; el **BOM completo** por componentes; la **persistencia** y
+los **registros del sistema**; las vistas **frontal, lateral y planta**; el **editor** sobre el shell visual
+común con la matriz estación × nivel × lado; y la **materialización en AutoCAD** con su comando y su flujo.
+
+**Es la primera de la línea que cambia UI y AutoCAD**, así que su gate NO se resuelve sobre el código: exige
+DLL, bundle, `NETLOAD` y la **validación manual del Owner en AutoCAD 2025**. Sin ese veredicto no se integra
+y I-37 no se cierra.
+
+**Sigue fuera de alcance incluso al cerrar I-37**: cálculo resistente, cargas, capacidad (son I-38), peso,
+costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
+drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
+
+### I-37C — INTEGRADA en `main` (2026-07-29) — **la estación, y el primer BOM de Cantilever**
+
+I-37C tampoco dibuja: el usuario **no ve nada nuevo**. Lo que cambia es que el producto sabe componer una
+estación completa y **cotizarla**.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `architecture/cantilever-estacion-bom` |
+| `Claim-Id` | `ef8cf6ce-326d-4562-b277-ed7a3404e148` |
+| **SHA técnico aprobado** por el Owner y por CI | `e1c3cab24d16ea0a6565fc43a81dcc0f2e31c694` (CI **30510202275**, success) |
+| SHA final de rama | vive en `git log`; su delta contra el aprobado es **solo documentación de cierre** |
+| **Validación en AutoCAD** | **NO APLICA** (`requires_autocad: false`, `requires_owner_validation: false`) |
+| Veredictos normativos | `OWNER_APPROVED_ADR_0026` y `OWNER_AUTHORIZED_INTEGRATION_I_37C` |
+| Bundle | **no ejecutado y no exigible**: el diff no toca `assets/`, catálogos, `deploy/` ni `.github/` |
+| Diff contra la base `0610adb` | **31** archivos: docs 8, Domain 3, Application 13, tests 7 |
+
+**Qué entregó.** El diseño editable en Domain —modo de cara, altura, nivel y los dos **templates** sin
+autoridades duplicadas— y en Application: la **retícula regular** extraída como autoridad única,
+las **métricas de conexión** compartidas con I-37B, la autoridad de **espejo** de base lateral, el
+**layout de niveles** sin tope de candidatos, el **resolver de estación** con su secuencia explícita de once
+pasos y su pase final verificado, la **matriz pura** de brazos y el **BOM por componentes**.
+
+**Seis defectos propios, encontrados en revisión y corregidos en la misma rama** antes de integrar: un tope
+funcional de 250 candidatos que bloqueaba una configuración válida; **dos** autoridades midiendo la conexión,
+con `Math.Max(2, count)` y `offset ?? 0` que normalizaban entradas inválidas; un pase final que no comparaba
+los bordes del **cuerpo**, que es lo que el claro mide; overrides iguales al default que se persistían y
+hacían que la celda dejara de seguirlo; un `ProfileId` genérico que fusionaba placas físicamente distintas; y
+placas medidas con una caja del mundo, que encogía una tapa inclinada. **Veintitrés** regresiones verificadas
+en rojo entre las dos rondas, y **dos caracterizaciones previas** para las extracciones.
+
+### I-37B — INTEGRADA en `main` (2026-07-29) — **el brazo, y el primer consumidor de I-37A**
 
 ### I-37B — INTEGRADA en `main` (2026-07-29) — **el brazo, y el primer consumidor de I-37A**
 
@@ -1410,7 +1493,42 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-37B — 2026-07-29** (la vigente):
+**Baseline integrada de I-37C — 2026-07-29** (la vigente):
+
+- candidato de **código** aprobado por el Owner y por CI:
+  `e1c3cab24d16ea0a6565fc43a81dcc0f2e31c694` (CI run `30510202275`, **success** en los cuatro jobs). El SHA
+  final de rama difiere del aprobado **solo en documentación de cierre**. `origin/main` **no avanzó** desde
+  la base `0610adb`: **sin rebase final**;
+- **validación en AutoCAD: NO APLICA.** `requires_autocad: false`, `requires_owner_validation: false` —
+  I-37C todavía no dibuja. Es la tercera y última de la línea cuyo gate se resuelve **sobre el código**:
+  I-37D sí exigirá `NETLOAD` y el veredicto manual del Owner;
+- **ADR-0026 ACEPTADO**, veredicto `OWNER_APPROVED_ADR_0026`, con sus **veintidós** puntos enumerados:
+  estación sencilla o doble, una columna compartida en doble, una o dos bases, niveles compartidos, templates
+  sin autoridades duplicadas, default más overrides de celda con comparación **estructural**, claro cuerpo a
+  cuerpo, ajuste obligatorio hacia arriba a troqueles, retícula regular única con **acumulación preservada**
+  y **dominio numérico derivado**, métricas de conexión compartidas con I-37B, pase final completo, altura
+  automática o manual con `TopClearFactor >= 1/3`, estación inmutable, BOM derivado de la geometría resuelta,
+  columna–base y brazo como componentes, piezas planas identificadas por receta, placas medidas en su plano y
+  lado excluido de la identidad de un brazo. **No se reabren en I-37D**;
+- suites **2565** + **544**, cero fallos, cero omitidas (base 2355 + **210** nuevas: 81 de estación, 78 de la
+  ronda de corrección, 16 y 9 de las dos caracterizaciones, y el archivo de guardas de 63 a **89**); builds
+  Debug de Domain, Application y UI con **0 errores y 0 advertencias**, y Plugin con 0 errores y las 2
+  `MSB3277` conocidas;
+- **dos caracterizaciones previas**, escritas ANTES de cada extracción: la de la retícula regular atrapó una
+  desviación numérica real —con pitch no diádico, `27.599999999999998` acumulado contra `27.6` multiplicado—,
+  y la de las métricas de conexión demostró que la autoridad compartida no movió nada de I-37B;
+- **veintitrés regresiones verificadas en rojo** y revertidas: catorce en la primera ronda —entre ellas la
+  doble como dos subensambles, la columna duplicada, el claro redondeado, el ajuste hacia abajo, los troqueles
+  compartidos, la placa ignorada, `TopClearFactor` ignorado, la altura manual normalizada, dos componentes
+  columna–base y el BOM desde el diseño— y **nueve** en la de corrección: el tope de 250, la fórmula de
+  `BodyTopZ` del prelayout, el `DeepCopy` incondicional, la comparación por referencia, el `ProfileId`
+  genérico, los spans mundiales, la firma sin brazos, los ternarios de enum y `Math.Max(2, count)`;
+- **bundle no ejecutado y no exigible**: el diff no toca `assets/`, catálogos, `deploy/` ni `.github/`;
+- **sin default aprobado**, y por tanto entradas obligatorias que el resolver rechaza si faltan: los dos
+  offsets de troquel de I-37A y el margen vertical de la placa de conexión del brazo de I-37B. **I-37C no
+  añadió ninguno.**
+
+**Baseline anterior — I-37B, 2026-07-29:**
 
 - candidato de **código** aprobado por el Owner y por CI:
   `00d8126eb687a46bafc156480ea6f080f295a771` (CI run `30499888210`, **success**). El SHA final de rama

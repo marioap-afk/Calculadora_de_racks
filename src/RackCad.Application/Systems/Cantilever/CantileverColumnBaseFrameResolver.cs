@@ -111,5 +111,35 @@ namespace RackCad.Application.Systems.Cantilever
                         "' no tiene regla de marco. Anadir una orientacion exige escribirla aqui.");
             }
         }
+
+        /// <summary>
+        /// Reflects a frame through the column's CENTRAL PLANE <c>y = 0</c>, for the second face of a station
+        /// (I-37C).
+        ///
+        /// It lives here, and not in the station that needs it, because constructing a placement frame is what
+        /// this type is the authority for — a source guard enforces exactly that. The station transforms a
+        /// side; it does not get to build a frame.
+        ///
+        /// The reflection is IMPROPER: it maps a right-handed triple to a left-handed one, and
+        /// <c>LocalFrame3D</c> only ever builds right-handed frames. So the handedness does not live in the
+        /// frame at all — the caller carries it in the section instance's own <c>Mirrored</c> flag, which is
+        /// what that flag is for. A caller that took this frame and forgot the flag would silently un-mirror
+        /// an asymmetric section, so the two belong together.
+        /// </summary>
+        public static LocalFrame3D MirrorAboutCentralPlane(LocalFrame3D frame)
+        {
+            if (frame == null)
+            {
+                throw new ArgumentNullException(nameof(frame));
+            }
+
+            return LocalFrame3D.Create(Reflect(frame.Origin), Reflect(frame.AxisZ), Reflect(frame.AxisX));
+        }
+
+        /// <summary>Reflects a point through <c>y = 0</c>.</summary>
+        public static Point3D Reflect(Point3D p) => new Point3D(p.X, -p.Y, p.Z);
+
+        /// <summary>Reflects a direction through <c>y = 0</c>.</summary>
+        public static Vector3D Reflect(Vector3D v) => new Vector3D(v.X, -v.Y, v.Z);
     }
 }

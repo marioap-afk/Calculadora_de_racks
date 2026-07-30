@@ -49,74 +49,42 @@ namespace RackCad.Application.Systems.Cantilever
             }
 
             var diagnostics = new List<CantileverDiagnostic>();
+            var pre = ResolveHeightIndependent(design, diagnostics);
 
-            var column = design.Column ?? new CantileverColumnDesign();
-            var basePiece = design.Base ?? new CantileverBaseDesign();
-            var connection = design.Connection ?? new CantileverColumnBaseConnectionDesign();
-            var punches = connection.Punches ?? new CantileverPunchParameters();
-
-            // ---- 1. sections: the single parse + lookup boundary -------------------------------------------
-            var columnSection = CantileverSectionResolver.Resolve(
-                _catalog, column.SectionId, CantileverMemberRole.Column, diagnostics);
-            var baseSection = CantileverSectionResolver.Resolve(
-                _catalog, basePiece.SectionId, CantileverMemberRole.Base, diagnostics);
-
-            if (!columnSection.IsResolved || !baseSection.IsResolved)
+            if (pre == null)
             {
                 return CantileverColumnBaseAssembly.Blocked(diagnostics);
             }
 
-            // ---- 2. eligibility ---------------------------------------------------------------------------
-            var variant = ResolveVariant(columnSection.Section, baseSection.Section, connection, diagnostics);
-            var parameters = ResolveParameters(punches, diagnostics);
-            ValidateLengths(column, basePiece, diagnostics);
+            var column = pre.Column;
+            var basePiece = pre.BasePiece;
+            var columnSection = pre.ColumnSection;
+            var baseSection = pre.BaseSection;
+            var parameters = pre.Parameters;
+            var pattern = pre.Pattern;
+            var columnFrame = pre.ColumnFrame;
+            var baseFrame = pre.BaseFrame;
+            var columnMinX = pre.ColumnMinX;
+            var columnMaxX = pre.ColumnMaxX;
+            var columnMinY = pre.ColumnMinY;
+            var columnMaxY = pre.ColumnMaxY;
+            var baseMinX = pre.BaseMinX;
+            var baseMaxX = pre.BaseMaxX;
+            var baseTopZ = pre.BaseTopZ;
+            var baseFarY = pre.BaseFarY;
+            var rearThickness = pre.RearPlateThickness;
+            var baseBottomZ = CantileverColumnBaseDatum.FloorZ;
+
+            // The height is checked HERE and not in the seam above, because it is the one input the seam does
+            // not read. Same rule, same message, same code — only the position moved (I-37C).
+            RequirePositive(column.Height, "la altura de la columna", diagnostics);
 
             if (diagnostics.Any(d => d.IsBlocking))
             {
                 return CantileverColumnBaseAssembly.Blocked(diagnostics);
             }
 
-            // ---- 3. contours ------------------------------------------------------------------------------
-            var columnGeometry = _geometry.Get(columnSection.SectionId, variant.Detail);
-            var baseGeometry = _geometry.Get(baseSection.SectionId, variant.Detail);
-
-            ReportVisualAuthority(columnGeometry, CantileverMemberRole.Column, diagnostics);
-            ReportVisualAuthority(baseGeometry, CantileverMemberRole.Base, diagnostics);
-
-            var columnBounds = columnGeometry.Bounds;
-            var baseBounds = baseGeometry.Bounds;
-
-            // ---- 4. placement: the frame authority reads the REGISTERED orientation -----------------------
-            // The frames are not built here. CantileverColumnBaseFrameResolver owns them, so the variant's
-            // declared orientation is what decides them instead of being data nobody reads.
-            var columnFrame = CantileverColumnBaseFrameResolver.ColumnFrame(
-                variant.ColumnOrientation, columnGeometry);
-
-            var columnMinX = columnFrame.Origin.X + columnBounds.MinX;
-            var columnMaxX = columnFrame.Origin.X + columnBounds.MaxX;
-            var columnMinY = columnFrame.Origin.Y + columnBounds.MinY;
-            var columnMaxY = columnFrame.Origin.Y + columnBounds.MaxY;
             var columnTopZ = CantileverColumnBaseDatum.FloorZ + column.Height;
-
-            var rearThickness = basePiece.RearPlate.Thickness;
-            var baseFrame = CantileverColumnBaseFrameResolver.BaseFrame(
-                variant.BaseOrientation, baseGeometry, rearThickness);
-
-            var baseHalfWidth = baseBounds.Width / 2.0;
-            var baseMinX = -baseHalfWidth;
-            var baseMaxX = baseHalfWidth;
-            var baseBottomZ = CantileverColumnBaseDatum.FloorZ;
-            var baseTopZ = baseBottomZ + baseBounds.Height;
-            var baseFarY = baseFrame.Origin.Y + basePiece.Length;
-
-            // ---- 5. the shared authority ------------------------------------------------------------------
-            var pattern = CantileverColumnBaseConnectionPattern.Build(
-                columnMinX, columnMaxX, baseMinX, baseMaxX, baseBottomZ, baseTopZ, parameters, diagnostics);
-
-            if (pattern == null)
-            {
-                return CantileverColumnBaseAssembly.Blocked(diagnostics);
-            }
 
             if (pattern.LastConnectionElevation > columnTopZ + FitTolerance)
             {
@@ -198,7 +166,183 @@ namespace RackCad.Application.Systems.Cantilever
                 pattern, diagnostics);
         }
 
+        // ---- the height-independent seam ------------------------------------------------------------------
+
+        /// <summary>
+        /// Everything about a column–base that does NOT depend on the column's height.
+        ///
+        /// It exists because I-37C's station has to choose which punches each level bolts to BEFORE it knows
+        /// how tall the column will be — the height depends on where the levels land. Extracting this seam is
+        /// what lets the station ask for the regular grid without inventing a provisional height, which
+        /// ADR-0026 D5 forbids.
+        ///
+        /// Note what is NOT here: the column's top elevation, the regular punches and every piece. Those are
+        /// the height-dependent half, and they stay in <see cref="Resolve"/>.
+        /// </summary>
+        private sealed class HeightIndependentResolution
+        {
+            public CantileverColumnDesign Column { get; set; }
+
+            public CantileverBaseDesign BasePiece { get; set; }
+
+            public CantileverSectionResolution ColumnSection { get; set; }
+
+            public CantileverSectionResolution BaseSection { get; set; }
+
+            public CantileverColumnBaseVariant Variant { get; set; }
+
+            public CantileverResolvedPunchParameters Parameters { get; set; }
+
+            public StructuralSectionGeometry ColumnGeometry { get; set; }
+
+            public StructuralSectionGeometry BaseGeometry { get; set; }
+
+            public LocalFrame3D ColumnFrame { get; set; }
+
+            public LocalFrame3D BaseFrame { get; set; }
+
+            public double ColumnMinX { get; set; }
+
+            public double ColumnMaxX { get; set; }
+
+            public double ColumnMinY { get; set; }
+
+            public double ColumnMaxY { get; set; }
+
+            public double BaseMinX { get; set; }
+
+            public double BaseMaxX { get; set; }
+
+            public double BaseTopZ { get; set; }
+
+            public double BaseFarY { get; set; }
+
+            public double RearPlateThickness { get; set; }
+
+            public CantileverColumnBaseConnectionPattern Pattern { get; set; }
+        }
+
+        /// <summary>
+        /// The REGULAR PUNCH GRID of a column–base, resolved without a height.
+        ///
+        /// Public so a station can consume it (I-37C). It returns null and records blocking diagnostics for
+        /// exactly the same reasons <see cref="Resolve"/> would, and it runs the same code path — so a design
+        /// the station accepts here cannot be one the full resolve rejects for a different reason.
+        ///
+        /// The height in <paramref name="design"/> is NOT read.
+        /// </summary>
+        public CantileverColumnRegularPunchGrid ResolveRegularPunchGrid(
+            CantileverColumnBaseDesign design, ICollection<CantileverDiagnostic> diagnostics)
+        {
+            if (design == null)
+            {
+                throw new ArgumentNullException(nameof(design));
+            }
+
+            if (diagnostics == null)
+            {
+                throw new ArgumentNullException(nameof(diagnostics));
+            }
+
+            var pre = ResolveHeightIndependent(design, diagnostics);
+
+            return pre == null ? null : CantileverColumnRegularPunchGrid.FromPattern(pre.Pattern);
+        }
+
+        private HeightIndependentResolution ResolveHeightIndependent(
+            CantileverColumnBaseDesign design, ICollection<CantileverDiagnostic> diagnostics)
+        {
+            var column = design.Column ?? new CantileverColumnDesign();
+            var basePiece = design.Base ?? new CantileverBaseDesign();
+            var connection = design.Connection ?? new CantileverColumnBaseConnectionDesign();
+            var punches = connection.Punches ?? new CantileverPunchParameters();
+
+            // ---- 1. sections: the single parse + lookup boundary -------------------------------------------
+            var columnSection = CantileverSectionResolver.Resolve(
+                _catalog, column.SectionId, CantileverMemberRole.Column, diagnostics);
+            var baseSection = CantileverSectionResolver.Resolve(
+                _catalog, basePiece.SectionId, CantileverMemberRole.Base, diagnostics);
+
+            if (!columnSection.IsResolved || !baseSection.IsResolved)
+            {
+                return null;
+            }
+
+            // ---- 2. eligibility ---------------------------------------------------------------------------
+            var variant = ResolveVariant(columnSection.Section, baseSection.Section, connection, diagnostics);
+            var parameters = ResolveParameters(punches, diagnostics);
+            ValidateLengths(column, basePiece, diagnostics);
+
+            if (diagnostics.Any(d => d.IsBlocking))
+            {
+                return null;
+            }
+
+            // ---- 3. contours ------------------------------------------------------------------------------
+            var columnGeometry = _geometry.Get(columnSection.SectionId, variant.Detail);
+            var baseGeometry = _geometry.Get(baseSection.SectionId, variant.Detail);
+
+            ReportVisualAuthority(columnGeometry, CantileverMemberRole.Column, diagnostics);
+            ReportVisualAuthority(baseGeometry, CantileverMemberRole.Base, diagnostics);
+
+            var columnBounds = columnGeometry.Bounds;
+            var baseBounds = baseGeometry.Bounds;
+
+            // ---- 4. placement: the frame authority reads the REGISTERED orientation -----------------------
+            // The frames are not built here. CantileverColumnBaseFrameResolver owns them, so the variant's
+            // declared orientation is what decides them instead of being data nobody reads.
+            var columnFrame = CantileverColumnBaseFrameResolver.ColumnFrame(
+                variant.ColumnOrientation, columnGeometry);
+
+            var rearThickness = basePiece.RearPlate.Thickness;
+            var baseFrame = CantileverColumnBaseFrameResolver.BaseFrame(
+                variant.BaseOrientation, baseGeometry, rearThickness);
+
+            var baseHalfWidth = baseBounds.Width / 2.0;
+            var baseMinX = -baseHalfWidth;
+            var baseMaxX = baseHalfWidth;
+            var baseBottomZ = CantileverColumnBaseDatum.FloorZ;
+            var baseTopZ = baseBottomZ + baseBounds.Height;
+
+            var columnMinX = columnFrame.Origin.X + columnBounds.MinX;
+            var columnMaxX = columnFrame.Origin.X + columnBounds.MaxX;
+
+            // ---- 5. the shared authority ------------------------------------------------------------------
+            var pattern = CantileverColumnBaseConnectionPattern.Build(
+                columnMinX, columnMaxX, baseMinX, baseMaxX, baseBottomZ, baseTopZ, parameters, diagnostics);
+
+            if (pattern == null)
+            {
+                return null;
+            }
+
+            return new HeightIndependentResolution
+            {
+                Column = column,
+                BasePiece = basePiece,
+                ColumnSection = columnSection,
+                BaseSection = baseSection,
+                Variant = variant,
+                Parameters = parameters,
+                ColumnGeometry = columnGeometry,
+                BaseGeometry = baseGeometry,
+                ColumnFrame = columnFrame,
+                BaseFrame = baseFrame,
+                ColumnMinX = columnMinX,
+                ColumnMaxX = columnMaxX,
+                ColumnMinY = columnFrame.Origin.Y + columnBounds.MinY,
+                ColumnMaxY = columnFrame.Origin.Y + columnBounds.MaxY,
+                BaseMinX = baseMinX,
+                BaseMaxX = baseMaxX,
+                BaseTopZ = baseTopZ,
+                BaseFarY = baseFrame.Origin.Y + basePiece.Length,
+                RearPlateThickness = rearThickness,
+                Pattern = pattern
+            };
+        }
+
         // ---- eligibility ----------------------------------------------------------------------------------
+
 
         private CantileverColumnBaseVariant ResolveVariant(
             StructuralSectionDefinition columnSection,
@@ -347,12 +491,18 @@ namespace RackCad.Application.Systems.Cantilever
                 topOffset ?? 0.0);
         }
 
+        /// <summary>
+        /// The lengths and thicknesses that do NOT depend on the column height.
+        ///
+        /// The height is validated by <see cref="RequireUsableHeight"/> instead, in the height-DEPENDENT half.
+        /// Splitting them is what lets a station ask for the regular grid before it has a height: a check on a
+        /// value the caller has not chosen yet would reject every such request (I-37C).
+        /// </summary>
         private static void ValidateLengths(
             CantileverColumnDesign column,
             CantileverBaseDesign basePiece,
             ICollection<CantileverDiagnostic> diagnostics)
         {
-            RequirePositive(column.Height, "la altura de la columna", diagnostics);
             RequirePositive(basePiece.Length, "la longitud de la base", diagnostics);
             RequirePositive(column.BottomPlate.Thickness, "el espesor de la placa inferior de la columna", diagnostics);
             RequirePositive(basePiece.FrontPlate.Thickness, "el espesor de la placa frontal", diagnostics);
@@ -452,24 +602,20 @@ namespace RackCad.Application.Systems.Cantilever
             ICollection<CantileverDiagnostic> diagnostics)
         {
             // The regular grid CONTINUES the connection region; it is not a lattice recomputed from the
-            // floor. The first regular punch sits one REGULAR pitch above the last connection punch — not
-            // one connection pitch, and never a duplicate of it.
-            var first = pattern.LastConnectionElevation + parameters.RegularColumnPitch;
-            var ceiling = columnTopZ - parameters.ColumnTopPunchOffset;
-
-            var elevations = new List<double>();
-
-            for (var z = first; z <= ceiling + FitTolerance; z += parameters.RegularColumnPitch)
-            {
-                elevations.Add(z);
-            }
+            // floor. But WHERE its elevations fall is no longer decided here: since I-37C,
+            // CantileverColumnRegularPunchGrid is the one authority, and this resolver is one of its two
+            // consumers — the station is the other. Two copies of one spacing formula is PB-004
+            // (ADR-0026, D5). The extraction was mechanical and is pinned by the characterization suite.
+            var grid = CantileverColumnRegularPunchGrid.FromPattern(pattern);
+            var elevations = grid.ElevationsUpTo(columnTopZ, parameters.ColumnTopPunchOffset);
 
             if (elevations.Count == 0)
             {
                 diagnostics.Add(CantileverDiagnostic.Warning(
                     CantileverDiagnostics.NoRegularPunchFits,
                     "La columna no admite ningun troquel regular: el primero quedaria en z = " +
-                    Format(first) + " in y el limite superior esta en z = " + Format(ceiling) + " in."));
+                    Format(grid.FirstElevation) + " in y el limite superior esta en z = " +
+                    Format(columnTopZ - parameters.ColumnTopPunchOffset) + " in."));
                 return Array.Empty<CantileverPunchPlan>();
             }
 
@@ -477,7 +623,7 @@ namespace RackCad.Application.Systems.Cantilever
             var list = new List<CantileverPunchPlan>(2 * elevations.Count);
             var index = 0;
 
-            foreach (var rowX in pattern.RowX)
+            foreach (var rowX in grid.RowX)
             {
                 foreach (var z in elevations)
                 {

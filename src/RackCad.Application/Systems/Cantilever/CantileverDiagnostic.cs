@@ -229,5 +229,79 @@ namespace RackCad.Application.Systems.Cantilever
         /// <c>SG_CHANNEL_FLANGE_TAPER_NOT_MODELLED</c>: state the approximation instead of implying exactness.
         /// </summary>
         public const string ArmSquareCutAtSlopedPlate = "CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE";
+
+        // ---- I-37C: the station -------------------------------------------------------------------------
+
+        /// <summary>The face mode has no composition rule. Added, never guessed.</summary>
+        public const string StationFaceModeNotSupported = "CANT_STATION_FACE_MODE_NOT_SUPPORTED";
+
+        /// <summary>The column height mode has no rule.</summary>
+        public const string StationHeightModeNotSupported = "CANT_STATION_HEIGHT_MODE_NOT_SUPPORTED";
+
+        /// <summary>A station was handed no levels. One is the minimum; zero is not a station.</summary>
+        public const string StationNoLevels = "CANT_STATION_NO_LEVELS";
+
+        /// <summary>
+        /// No candidate index satisfies the requested clear for a level.
+        ///
+        /// BLOCKING, because every alternative is worse. Shrinking the clear would give the user less space
+        /// than they asked for, and dropping the level would give them fewer levels — both in silence.
+        /// </summary>
+        public const string StationLevelDoesNotFit = "CANT_STATION_LEVEL_DOES_NOT_FIT";
+
+        /// <summary>
+        /// <c>TopClearFactor</c> is below the approved floor of one third, or is not finite.
+        ///
+        /// Its own code because the value IS positive: a message about a non-positive number would send the
+        /// reader looking for the wrong thing.
+        /// </summary>
+        public const string StationTopClearFactorTooSmall = "CANT_STATION_TOP_CLEAR_FACTOR_TOO_SMALL";
+
+        /// <summary>A manual column height was asked for and not supplied.</summary>
+        public const string StationManualHeightMissing = "CANT_STATION_MANUAL_HEIGHT_MISSING";
+
+        /// <summary>
+        /// The manual column height is below the minimum the levels need.
+        ///
+        /// BLOCKING, and the message says by how much. It is NOT normalised up to the minimum: the user asked
+        /// for a specific column, and quietly building a different one is how a drawing stops matching its own
+        /// inputs (ADR-0026, D6).
+        /// </summary>
+        public const string StationManualHeightBelowMinimum = "CANT_STATION_MANUAL_HEIGHT_BELOW_MINIMUM";
+
+        /// <summary>
+        /// The final resolve disagrees with the layout that sized the column.
+        ///
+        /// It should be unreachable, and it is BLOCKING precisely because of that: the two passes exist so the
+        /// prediction can be CHECKED, and silently accepting a different answer is how a model starts lying
+        /// (ADR-0026, D5).
+        /// </summary>
+        public const string StationFinalPassDiffersFromLayout = "CANT_STATION_FINAL_PASS_DIFFERS_FROM_LAYOUT";
+
+        /// <summary>An arm of the station could not be resolved by I-37B. Its own diagnostics travel with it.</summary>
+        public const string StationArmBlocked = "CANT_STATION_ARM_BLOCKED";
+
+        /// <summary>The column–base of the station could not be resolved by I-37A.</summary>
+        public const string StationColumnBaseBlocked = "CANT_STATION_COLUMN_BASE_BLOCKED";
+
+        /// <summary>The column resolved fewer regular punch elevations than the levels need.</summary>
+        public const string StationNotEnoughColumnPunches = "CANT_STATION_NOT_ENOUGH_COLUMN_PUNCHES";
+
+        /// <summary>
+        /// The regular grid does not rise: its pitch is not finite and positive.
+        ///
+        /// BLOCKING before any search starts. A non-rising grid is not a small grid — no monotonic search over
+        /// it terminates, and no level could ever sit above another.
+        /// </summary>
+        public const string StationGridNotIncreasing = "CANT_STATION_GRID_NOT_INCREASING";
+
+        /// <summary>
+        /// A punch index, or the row range it implies, falls outside the grid's DOMAIN.
+        ///
+        /// Its own code because it is not "out of range of this column": the column is not even known yet. It is
+        /// the arithmetic domain of the grid, and it is what an <c>int.MaxValue</c> index gets instead of an
+        /// overflow, a freeze or an empty selection.
+        /// </summary>
+        public const string StationPunchIndexDomainOverflow = "CANT_STATION_PUNCH_INDEX_DOMAIN_OVERFLOW";
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using RackCad.Domain.Systems.Cantilever;
 
 namespace RackCad.Application.Systems.Cantilever
 {
@@ -148,5 +149,52 @@ namespace RackCad.Application.Systems.Cantilever
         public const string ArmMountingPlate = "PMOUNT";
         public const string ArmEndPlate = "PEND";
         public const string ArmMountingPunch = "PCH-MOUNT";
+
+        // ---- I-37C: the station. Added at the end; every token above keeps its text. --------------------
+
+        /// <summary>Owner token of a station's SHARED pieces — the column and its bottom plate.</summary>
+        public const string StationOwner = "STN";
+
+        /// <summary>
+        /// Side discriminators, appended to an owner so the two bases of a double station cannot collide.
+        ///
+        /// They exist because a double station has TWO of several pieces that I-37A only ever built once, and
+        /// two pieces sharing one id is a BOM that counts one of them.
+        /// </summary>
+        public const string StationSidePositive = "PY";
+
+        /// <summary>See <see cref="StationSidePositive"/>.</summary>
+        public const string StationSideNegative = "NY";
+
+        /// <summary>Level discriminator of an arm owner, used as <c>L&lt;n&gt;</c> with n base one.</summary>
+        public const string StationLevel = "L";
+
+        /// <summary>The owner of one side's base pieces inside a station.</summary>
+        public static string StationBaseOwner(CantileverArmSide side) =>
+            StationOwner + "-" + SideToken(side);
+
+        /// <summary>The owner of one arm: station, level (base one) and side.</summary>
+        public static string StationArmOwner(int levelIndex, CantileverArmSide side) =>
+            StationOwner + "-" + StationLevel +
+            (levelIndex + 1).ToString(System.Globalization.CultureInfo.InvariantCulture) +
+            "-" + SideToken(side);
+
+        /// <summary>
+        /// The stable text of a side. An explicit <c>switch</c> with a throwing default: a side added
+        /// tomorrow must not silently inherit the positive one's ids.
+        /// </summary>
+        public static string SideToken(CantileverArmSide side)
+        {
+            switch (side)
+            {
+                case CantileverArmSide.PositiveY:
+                    return StationSidePositive;
+                case CantileverArmSide.NegativeY:
+                    return StationSideNegative;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(side), side, "El lado '" + side + "' no tiene token de pieza.");
+            }
+        }
     }
 }

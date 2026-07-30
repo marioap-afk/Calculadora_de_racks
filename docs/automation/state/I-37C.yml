@@ -1,0 +1,457 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-37C
+  branch: architecture/cantilever-estacion-bom
+  claim_id: ef8cf6ce-326d-4562-b277-ed7a3404e148
+  current_phase: 12
+  state: completed
+  gate: resuelto
+  attempts: 1
+  next_action: >-
+    I-37D-ULTIMA-subiniciativa-del-MVP-autorizada-expresamente-por-el-Owner ·
+    rama-canonica-feature-cantilever-mvp-final ·
+    linea-intervalos-placas-de-columna-separadores-paneles-arriostrados-tensores-estructurales-y-cold-
+    rolled-con-adaptadores · BOM-completo · persistencia-y-registros · vistas-frontal-lateral-y-planta ·
+    editor-sobre-el-shell-visual-comun · matriz-estacion-por-nivel-por-lado ·
+    materializacion-en-AutoCAD-con-su-comando ·
+    ES-LA-PRIMERA-DE-LA-LINEA-QUE-CAMBIA-UI-Y-AUTOCAD-asi-que-EXIGE-DLL-bundle-NETLOAD-y-el-veredicto-
+    MANUAL-del-Owner-en-AutoCAD-2025-antes-de-integrar
+  last_evidence_commit: cierre-documental-e-integracion-2565-y-544-verdes
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 0610adbc72af419b44b88d1edf3ddecb4a8d8464
+  base_asunto: Merge I-37B - brazo Cantilever y conexion a columna
+  base_ci: VERDE-run-30501384550-los-cuatro-jobs-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-MERGE_HEAD-REBASE-CHERRY_PICK-ni-BISECT
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: architecture-cantilever-estacion-bom-LIBRE-en-local-y-en-remoto
+  ramas_i37c_o_estacion_previas: NINGUNA-git-ls-remote-heads-sin-coincidencias
+  i37a_e_i37b_contenidas_en_main: 1552367-e0f319f-00d8126-012f808-0610adb-todas-IN
+  adr_0024: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  adr_0025: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  imagen_de_referencia_de_la_estacion: >-
+    NO-DISPONIBLE · igual-que-en-I-37A-y-I-37B ·
+    la-UNICA-especificacion-es-la-del-encargo-que-es-completa-y-autoconsistente · queda-DECLARADO
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: 259717e
+  commit: vacio-sin-implementacion-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/architecture/cantilever-estacion-bom
+  trailer: Claude-Opus-5-solo-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# AUTORIZACION DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+autorizacion:
+  precedente: I-37A-e-I-37B-el-primer-commit-sustantivo-escribe-la-fila-del-ROADMAP
+  cubre: >-
+    crear-y-reclamar-I-37C · rama-canonica-architecture-cantilever-estacion-bom ·
+    contrato-estado-decision-ADR-0026-y-fila-de-ROADMAP-en-el-primer-commit-sustantivo ·
+    implementar-el-alcance-tecnico-completo
+  no_cubre: >-
+    tocar-HANDOFF · marcar-integrada · hacer-merge · borrar-rama-o-worktree ·
+    abrir-otra-subiniciativa
+
+# --------------------------------------------------------------------------------------------------------
+# CONTRATOS CONGELADOS. I-37C los COMPONE; no los reabre ni recalcula sus geometrias.
+# --------------------------------------------------------------------------------------------------------
+contratos_congelados:
+  I_37A: >-
+    diseno-en-Domain-con-ids-textuales · frontera-unica-de-parseo-y-catalogo ·
+    PrismaticSectionInstance-como-autoridad-de-colocacion · patron-de-conexion-base-columna-unico ·
+    placas-cartabon-y-troqueles-como-naturalezas-distintas · geometria-desde-Bounds ·
+    elegibilidad-por-ids-exactos · NominalCutLength · datum-base-columna ·
+    ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-SIN-default
+  I_37B: >-
+    brazo-fisico-en-UN-solo-lado-no-existe-Both · cuerpo-como-coleccion-de-uno-o-dos-miembros ·
+    perfil-sencillo-canal-doble-encontrado-y-canal-doble-espalda-con-espalda ·
+    canales-dobles-en-contacto-sin-campo-de-separacion · corte-capturado-como-longitud-del-perfil ·
+    SlopeRisePer12 · extremo-libre-ascendiendo-en-ambos-lados ·
+    seleccion-de-troqueles-regulares-existentes · placa-creciente-hacia-arriba ·
+    tapa-y-tope-como-modos · datum-del-plano-de-corte-en-la-cara-exterior-de-la-placa ·
+    intrusion-y-holgura-declaradas · preparacion-de-extremos-fuera-de-alcance ·
+    MountingPlateVerticalEndOffset-SIN-default
+  unica_modificacion_permitida_a_I_37A: >-
+    consumir-la-reticula-regular-EXTRAIDA · extraccion-MECANICA-con-caracterizacion-previa ·
+    equivalencia-numerica-demostrada · una-desviacion-obliga-a-DETENERSE
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: COMPLETA-reclamo-259717e
+  2: COMPLETA-contrato-ADR-0026-ROADMAP-decision-glosario-y-estado-c9749a8
+  3: COMPLETA-contratos-de-Domain-y-caracterizacion-previa-fd594f7
+  4: COMPLETA-extraccion-de-la-reticula-regular-688bcc3
+  5: COMPLETA-composicion-costura-sin-altura-y-layout-de-niveles-fb7feda
+  6: COMPLETA-altura-y-resolver-de-estacion-e5aa1a6
+  7: COMPLETA-matriz-pura-y-alcances-e5aa1a6
+  8: COMPLETA-BOM-por-componentes-e5aa1a6
+  9: COMPLETA-pruebas-regresiones-en-rojo-y-guardas
+  10: COMPLETA-evidencia-final
+  11: >-
+    COMPLETA-ronda-de-correccion-de-la-revision-SEIS-defectos ·
+    misma-rama-sin-reabrir-arquitectura-sin-merge-y-sin-aceptar-ADR-0026
+  12: >-
+    COMPLETA-aceptacion-documental-verificacion-final-integracion-y-limpieza ·
+    ADR-0026-ACEPTADO · contrato-integrated · ROADMAP-HANDOFF-e-indices-cerrados
+
+# --------------------------------------------------------------------------------------------------------
+# LA DEPENDENCIA CIRCULAR. Resuelta explicitamente, no escondida.
+# --------------------------------------------------------------------------------------------------------
+dependencia_circular:
+  forma: >-
+    altura-de-columna → cuantos-troqueles-regulares-existen → donde-caen-los-niveles →
+    altura-minima-de-columna
+  prohibido: >-
+    altura-provisional-magica · columna-arbitrariamente-enorme · segunda-formula-de-pitch ·
+    bucle-que-eventualmente-funcione-sin-contrato
+  solucion: >-
+    se-EXTRAE-CantileverColumnRegularPunchGrid-que-solo-necesita-el-patron-de-conexion-y-NO-la-altura ·
+    la-estacion-elige-indices-con-esa-autoridad-antes-de-conocer-la-altura-final ·
+    despues-calcula-la-altura-minima-resuelve-I-37A-con-la-altura-final-y-VERIFICA-que-los-datums-e-
+    indices-del-pase-final-coinciden-con-el-layout-previo · una-diferencia-FALLA-CERRADO
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  ideas_futuras_md: INTACTO-los-hallazgos-adyacentes-no-se-corrigen-aqui
+  src_RackCad_UI: INTACTO
+  src_RackCad_Plugin: INTACTO
+  src_RackCad_Application_StructuralSections: INTACTO-I-36-no-se-modifica
+  contrato_compartido_de_BOM: >-
+    SIN-MODIFICAR-salvo-necesidad-objetiva-demostrada ·
+    BomComponent-BomLine-y-BillOfMaterials-se-consumen-como-estan
+  assets_catalogs: INTACTO-ningun-id-de-produccion-ninguna-familia-nueva-ningun-PTR
+  deploy_y_github: INTACTOS
+  RackCad_sln: INTACTO
+  sistemas_vigentes: INTACTOS-Selective-Dynamic-PushBack-FlowBed-Larguero
+  fuera_de_alcance_declarado: >-
+    varias-estaciones · separacion-longitudinal · linea-Cantilever · separadores · arriostres ·
+    frontal-lateral-planta-isometrica · preview · UI · editor-WPF · persistencia ·
+    RackSystemKind-Cantilever · registros-globales · biblioteca · AutoCAD · comandos · Xrecords ·
+    bloques · peso · costo · materiales · tornilleria · anclas · soldaduras · calculo-estructural ·
+    capacidades · preparacion-de-extremos · CNC · shop-drawings · familias-nuevas · PTR-nuevo
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  ci: SATISFECHO-verde-sobre-el-SHA-del-candidato-y-del-commit-documental-final
+  plugin_build: SATISFECHO-0-errores-y-las-2-MSB3277-conocidas
+  autocad: NO-APLICA-no-cambia-dibujo-ni-UI-NETLOAD-no-ejecutado-y-no-exigible
+  owner_validation: NO-APLICA-no-hay-nada-que-ver
+  owner_decision: SATISFECHO-docs-automation-decisions-I-37-md-secciones-10-y-10-8
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA DE CORRECCION DE LA REVISION. Seis defectos, misma rama.
+# --------------------------------------------------------------------------------------------------------
+ronda_de_correccion:
+  decisiones_normativas_que_dejan_de_estar_pendientes:
+    reticula_acumula: >-
+      NORMATIVO-la-aritmetica-ACUMULA-durante-todo-I-37C-para-preservar-exactamente-el-comportamiento-
+      integrado-de-I-37A · pasar-a-FirstElevation-mas-index-por-Pitch-seria-una-normalizacion-numerica-
+      SEPARADA-y-no-forma-parte-de-I-37C
+    claro_global: APROBADO-el-claro-libre-global-del-MVP-no-es-una-decision-pendiente
+    guarda_de_BOM: >-
+      la-actualizacion-se-CONSERVA-mientras-sigan-vigentes-las-tres-guardas-mas-estrechas-de-I-37C
+  1_tope_de_250_candidatos:
+    defecto: >-
+      MaxCandidatesPerLevel-bloqueaba-una-configuracion-VALIDA-porque-el-siguiente-nivel-quedaba-mas-de-
+      250-indices-arriba · no-era-una-regla-de-producto-sino-un-limite-de-busqueda-convertido-en-limite-
+      funcional
+    correccion: >-
+      RETIRADO · la-reticula-gana-TryFirstIndexAtOrAbove-y-cada-regla-se-vuelve-la-elevacion-debe-
+      alcanzar-Z · el-indice-del-nivel-es-el-MAYOR-de-los-minimos-por-lado-y-la-monotonia-garantiza-que-
+      es-el-PRIMERO-factible-asi-que-no-hay-bucle-de-candidatos ·
+      la-terminacion-solo-ocurre-por-indice-encontrado-dominio-agotado-entrada-no-finita-o-reticula-que-
+      no-crece-que-es-diagnostico-BLOQUEANTE-antes-de-cualquier-busqueda
+    dominio_derivado_no_inventado: >-
+      MaxDefinedIndex-igual-a-2-elevado-26 · la-acumulacion-se-desvia-del-ideal-en-n-por-eps-por-z-y-eso-
+      supera-un-PITCH-ENTERO-cuando-n-mayor-que-1-entre-raiz-de-eps · mas-alla-la-secuencia-dejo-de-ser-
+      la-reticula-que-dice-ser · con-pitch-de-4-in-son-268-millones-de-pulgadas ·
+      tambien-hace-que-ElevationAt-de-int-MaxValue-se-rechace-en-tiempo-CONSTANTE
+    overflow: todo-el-rango-en-LONG-indice-mas-filas-menos-uno-desbordaba-int-y-envolvia-a-negativo
+    pruebas: 12-nuevas-incluidas-limite-exacto-siguiente-int-MaxValue-y-pitch-no-diadico
+  2_dos_autoridades_midiendo_la_conexion:
+    defecto: >-
+      el-prelayout-forzaba-VerticalPunchCount-a-2-con-Math-Max · convertia-un-VerticalEndOffset-AUSENTE-
+      en-0 · calculaba-por-su-cuenta-la-altura-aparente-del-cuerpo · y-podia-llamar-AngleRadians-con-una-
+      pendiente-invalida · un-diseno-que-I-37B-habria-rechazado-producia-un-layout-confiado-y-el-rechazo-
+      aparecia-DESPUES-contra-numeros-que-ya-habian-dimensionado-la-columna
+    correccion: >-
+      CantileverArmConnectionMetricsResolver-extraido-con-caracterizacion-previa-y-consumido-por-
+      I-37B-Y-el-layout-de-I-37C · es-dueno-de-cantidad-minima-dos-SIN-ajustar-margen-obligatorio-finito-
+      no-negativo-y-al-menos-el-radio-pendiente-finita-no-negativa-marco-representable-arreglo-y-
+      orientacion-con-regla-y-cuerpo-que-cabe-en-su-placa ·
+      PROHIBIDOS-Math-Max-2-VerticalPunchCount-y-VerticalEndOffset-doble-interrogacion-0
+    caracterizacion_previa: >-
+      seis-fixtures-que-mueven-lado-arreglo-pendiente-indice-filas-y-margen ·
+      volcado-de-indices-elevaciones-bordes-de-placa-cuerpo-pitch-y-diametro-a-dieciseis-decimales ·
+      los-117-tests-de-I-37B-siguen-pasando-sin-cambio
+    pruebas: 11-entradas-invalidas-que-BLOQUEAN-sin-excepcion-mas-la-igualdad-entre-los-dos-consumidores
+  3_pase_final_incompleto:
+    defecto: >-
+      comparaba-indices-elevaciones-y-bordes-de-PLACA-pero-NO-los-bordes-del-CUERPO ·
+      y-el-claro-se-mide-precisamente-entre-los-bordes-del-cuerpo ·
+      una-formula-de-cuerpo-equivocada-producia-una-estacion-cuyos-claros-reales-eran-MENORES-que-los-
+      pedidos-mientras-todos-los-demas-numeros-seguian-coincidiendo
+    correccion: >-
+      compara-las-OCHO-magnitudes-por-nivel-y-lado ·
+      y-vuelve-a-derivar-de-los-brazos-RESUELTOS-el-claro-por-lado-su-igualdad-con-el-del-layout-el-
+      traslape-de-placas-la-disjuncion-de-troqueles-y-la-ocupacion-final-contra-la-altura-minima-usada
+  4_overrides_iguales_al_default:
+    defecto: >-
+      la-matriz-guardaba-template-DeepCopy-SIN-CONDICION · aplicar-el-default-a-una-celda-almacenaba-una-
+      copia-de-el-y-desde-ese-momento-la-celda-dejaba-de-SEGUIRLO ·
+      cambiar-el-default-la-dejaba-atras-sin-que-nada-dijera-que-celdas-se-fijaron-a-proposito
+    correccion: >-
+      CantileverArmTemplateComparer-compara-los-DIEZ-campos-editables-por-VALOR-nunca-por-referencia ·
+      un-margen-AUSENTE-no-es-igual-a-cero-porque-uno-se-rechaza-y-el-otro-no ·
+      aplicar-el-default-guarda-null · aplicar-el-mismo-override-dos-veces-NO-ensucia-el-diseno ·
+      cada-celda-sigue-recibiendo-su-propia-copia ·
+      el-resultado-agregado-distingue-celdas-ALCANZADAS-de-celdas-MODIFICADAS
+  5_identidad_fisica_de-las-piezas-planas:
+    defecto: >-
+      BillOfMaterials-agrupa-lineas-por-Category-ProfileId-Length · con-Length-0-que-es-el-precedente-
+      correcto-de-una-placa-y-un-ProfileId-GENERICO-todas-las-placas-de-conexion-de-la-estacion-
+      colapsaban-en-UNA-linea · una-placa-corta-con-dos-agujeros-y-una-alta-con-seis-eran-la-misma-parte
+    correccion: >-
+      el-ProfileId-lleva-la-receta-FISICA-tipo-dos-dimensiones-en-su-propio-plano-espesor-y-patron-de-
+      perforaciones-cuando-lo-tiene-con-cantidad-diametro-y-coordenadas-RELATIVAS-al-primer-vertice-
+      medidas-sobre-sus-propios-ejes · el-cartabon-lleva-sus-dos-piernas-y-su-espesor ·
+      los-troqueles-SIGUEN-sin-ser-lineas-del-BOM-son-parte-de-la-identidad-de-la-placa-perforada
+    guarda_estrechada: >-
+      lo-prohibido-es-una-LINEA-o-una-CATEGORIA-de-troquel-no-leer-la-coleccion ·
+      se-cuenta-que-existan-exactamente-tres-construcciones-de-BomLine
+  6_placas_medidas_con_una_caja_del_mundo:
+    defecto: >-
+      PlateExtents-usaba-la-caja-alineada-con-X-Y-Z · solo-es-correcto-mientras-la-placa-es-paralela-a-un-
+      plano-del-mundo-y-la-placa-final-de-un-brazo-es-perpendicular-a-un-eje-INCLINADO ·
+      al-inclinar-el-brazo-una-tapa-de-10-in-reportaba-9-8-y-luego-9-4-y-el-BOM-partia-una-placa-fisica-
+      en-varias · y-la-caja-devuelve-los-spans-ORDENADOS-asi-que-una-seccion-mas-alta-que-ancha-y-otra-
+      mas-ancha-que-alta-se-describian-igual
+    correccion: >-
+      CantileverPlateInPlaneDimensions-mide-sobre-las-aristas-PROPIAS-de-la-placa-validando-contorno-
+      suficiente-aristas-no-degeneradas-perpendicularidad-y-planitud ·
+      StopExtension-se-mide-a-lo-largo-del-UP-del-brazo-no-como-el-segundo-span-de-una-caja
+  7_firma_incompleta:
+    defecto: >-
+      la-firma-solo-incluia-los-planes-de-layout · dos-estaciones-cuyos-niveles-caian-en-los-mismos-
+      indices-firmaban-IGUAL-aunque-cada-brazo-fuera-otra-pieza-otro-corte-un-tope-en-vez-de-una-tapa-
+      otro-espesor-de-placa-final-un-canal-doble-en-vez-de-uno-sencillo-con-el-mismo-peralte
+    correccion: >-
+      incluye-columna-base-cada-nivel-cada-BRAZO-RESUELTO-por-nivel-y-lado-alturas-claros-modo-y-lado-
+      activo · el-BOM-NO-es-autoridad-de-geometria-porque-agrupa-y-agrupar-esconde-diferencias
+  8_mappings_de_enum_abiertos:
+    defecto: >-
+      ActiveSides-OverrideFor-y-SetOverride-usaban-comparaciones-TERNARIAS ·
+      cualquier-valor-no-declarado-se-trataba-como-Single-o-como-NegativeY-una-respuesta-equivocada-con-
+      aspecto-de-correcta
+    correccion: switch-exhaustivos-con-fallo-CERRADO-mas-TryActiveSides-como-forma-que-informa
+  consecuencias_del-refactor-tratadas-no-maquilladas:
+    - >-
+      el-desborde-de-dominio-emite-TAMBIEN-ArmPunchIndexOutOfRange-que-es-el-codigo-que-I-37B-promete-
+      para-un-indice-inusable · solo-el-nuevo-habria-sido-un-cambio-silencioso-de-lo-que-se-les-dice-a-
+      sus-llamadores
+    - >-
+      la-prueba-del-claro-imposible-usaba-10-elevado-6-in-y-pasaba-SOLO-por-el-tope-de-250 ·
+      ahora-usa-10-elevado-10-in-donde-la-reticula-deja-de-estar-definida-de-verdad ·
+      y-se-sumo-una-prueba-nueva-un-claro-de-1200-in-coloca-el-segundo-nivel-301-indices-arriba-y-
+      RESUELVE
+    - >-
+      dos-guardas-vigentes-se-reapuntaron-con-su-motivo-escrito-el-metodo-se-llama-
+      ValidateOwnParameters-y-el-gate-de-pendiente-vive-en-la-autoridad-compartida ·
+      las-reglas-no-cambiaron-cambio-el-unico-sitio-que-las-aplica
+    - >-
+      la-regresion-C6-NO-mordio-en-la-primera-vuelta-y-eso-expuso-que-mis-pruebas-de-plano-median-la-
+      autoridad-DIRECTAMENTE-en-vez-de-atravesar-el-BOM · se-anadieron-dos-que-si-lo-atraviesan
+
+# --------------------------------------------------------------------------------------------------------
+# LO QUE LA CARACTERIZACION ATRAPO. Estaba escrita para esto.
+# --------------------------------------------------------------------------------------------------------
+hallazgo_de_la_caracterizacion:
+  que_paso: >-
+    ElevationAt se escribio primero como MULTIPLICACION-first-mas-index-por-pitch-que-es-la-forma-
+    numericamente-mas-limpia · la-caracterizacion-fallo-en-el-caso-del-pitch-NO-DIADICO ·
+    el-indice-2-de-un-pitch-de-3-7-in-vale-27-599999999999998-acumulado-y-27-6-multiplicado
+  por_que_importa: >-
+    acumular-es-lo-que-I-37A-YA-hacia · cambiar-a-la-multiplicacion-moveria-TODOS-los-agujeros-de-una-
+    columna-con-pitch-no-diadico · eso-es-un-cambio-de-comportamiento-en-codigo-integrado-que-nadie-autorizo
+  correccion: >-
+    la-autoridad-ACUMULA · ElevationAt-recorre-los-mismos-pasos-que-la-generacion-para-que-un-indice-
+    no-pueda-discrepar-de-la-secuencia · sigue-habiendo-UNA-definicion
+  resuelto_por_el_owner: >-
+    NORMATIVO-desde-la-ronda-de-correccion-la-aritmetica-ACUMULA-durante-todo-I-37C ·
+    cambiar-a-la-multiplicacion-seria-una-normalizacion-numerica-SEPARADA-y-ya-NO-es-una-decision-
+    pendiente-del-Owner
+  leccion: >-
+    una-caracterizacion-que-solo-usara-el-pitch-por-omision-no-habria-probado-nada-sobre-el-unico-caso-
+    donde-las-dos-formas-pueden-divergir
+
+# --------------------------------------------------------------------------------------------------------
+# CAMBIOS A CODIGO INTEGRADO. Los tres, mecanicos y con equivalencia demostrada.
+# --------------------------------------------------------------------------------------------------------
+cambios_a_I_37A:
+  1_reticula_extraida: >-
+    BuildRegularPunches-consume-CantileverColumnRegularPunchGrid-en-vez-de-su-propio-bucle ·
+    misma-acumulacion-mismo-techo-misma-tolerancia
+  2_costura_sin_altura: >-
+    Resolve-delega-secciones-elegibilidad-contornos-marcos-y-patron-a-ResolveHeightIndependent ·
+    encima-queda-ResolveRegularPunchGrid-publico-que-NO-lee-la-altura ·
+    ninguna-regla-cambio-de-sitio-es-la-misma-secuencia-llamada-desde-el-mismo-lugar
+  3_validacion_de_altura_movida: >-
+    RequirePositive-de-column-Height-pasa-de-ValidateLengths-al-tramo-dependiente-de-la-altura ·
+    mismo-mensaje-mismo-codigo-solo-cambio-la-posicion ·
+    era-obligatorio-porque-un-check-sobre-un-valor-que-el-llamador-aun-no-ha-elegido-rechazaria-
+    toda-peticion-de-reticula
+  4_espejo_en_la_autoridad_de_marcos: >-
+    MirrorAboutCentralPlane-y-Reflect-viven-en-CantileverColumnBaseFrameResolver ·
+    lo-EXIGIO-una-guarda-vigente-de-I-37A-solo-las-autoridades-de-marcos-construyen-marcos-y-tenia-razon
+  equivalencia_demostrada: >-
+    caracterizacion-16-de-16-incluido-el-volcado-de-los-36-troqueles-a-dieciseis-decimales-y-la-firma-
+    completa-del-subensamble · I-37A-81-de-81-sin-cambio · I-37B-117-de-117-sin-cambio ·
+    diff-VACIO-en-los-cinco-archivos-de-logica-del-brazo
+cambios_a_I_37B: NINGUNO-diff-vacio-en-resolver-arreglos-patron-marcos-y-diseno
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDA VIGENTE ACTUALIZADA. Con su motivo, no debilitada en silencio.
+# --------------------------------------------------------------------------------------------------------
+guarda_actualizada:
+  cual: NothingHereReachesIntoALaterInitiative
+  que_cambio: >-
+    se-RETIRO-la-entrada-BillOfMaterials · para-I-37A-y-I-37B-el-BOM-era-una-iniciativa-posterior-y-la-
+    prohibicion-era-correcta · I-37C-ES-esa-iniciativa
+  por_que_no_se_suprimio: >-
+    una-guarda-que-prohibe-lo-que-el-alcance-vigente-exige-la-debilita-quien-la-encuentre-despues-y-
+    ese-debilitamiento-es-lo-que-pasaria-desapercibido · el-motivo-queda-escrito-en-el-propio-test
+  reglas_mas_estrechas_que_la_sustituyen: >-
+    TheBomIsBuiltFromTheSTATIONAndNotFromTheDesign · TheArmBomSignatureExcludesPositionAndSide ·
+    ThePunchesNeverBecomeBomLines
+
+# --------------------------------------------------------------------------------------------------------
+# PRUEBAS Y BUILDS
+# --------------------------------------------------------------------------------------------------------
+pruebas:
+  RackCad_Tests: 2565-de-2565-base-2355-mas-210
+  RackCad_UI_Tests: 544-de-544-sin-cambio
+  nuevas: >-
+    CantileverStationTests-81 · CantileverStationCorrectionTests-78 ·
+    CantileverRegularPunchGridCharacterizationTests-16 ·
+    CantileverArmConnectionMetricsCharacterizationTests-9 ·
+    CantileverSourceGuardTests-sube-de-63-a-89-mas-26
+  I_37A_focalizadas: 81-de-81-sin-cambio
+  I_37B_focalizadas: 117-de-117-sin-cambio
+  secciones_estructurales: 420-de-420
+  BOM: 118-de-118
+  builds_debug: Domain-0-0 Application-0-0 UI-0-0 Plugin-0-errores-2-MSB3277-conocidas
+  bundle: NO-EJECUTADO-y-NO-exigible-el-diff-no-toca-assets-catalogos-deploy-ni-github
+  archivos_de_la_rama: >-
+    31-reales-medidos-con-git-diff--name-status-tras-la-ronda-de-correccion-20-nuevos-y-11-modificados
+  regresiones_verificadas_fallando:
+    R1_doble_como_dos_subensambles: ROJO-6-pruebas-y-revertido
+    R2_columna_duplicada_en_doble: ROJO-3-y-revertido
+    R3_claro_redondeado_sin_troqueles: ROJO-2-y-revertido
+    R4_ajuste_hacia_abajo_permitido: ROJO-7-y-revertido
+    R5_doble_calculada_con_un_solo_lado: ROJO-6-y-revertido
+    R6_troqueles_compartidos_entre_niveles: >-
+      ROJO-1-la-guarda-y-revertido · HALLAZGO-el-piso-de-indices-es-behaviouralmente-REDUNDANTE-dado-
+      que-la-regla-de-placas-impone-el-mismo-limite-para-todo-margen-menor-que-2-in ·
+      se-conserva-como-invariante-explicita-y-se-declara-en-vez-de-fingir-una-prueba-que-no-discrimina
+    R7_placa_ignorada_al_comprobar_traslape: >-
+      ROJO-1-y-revertido · la-PRIMERA-vuelta-NO-mordio-y-eso-expuso-un-fixture-vacuo ·
+      con-margen-de-1-5-in-la-regla-de-troqueles-ya-forzaba-el-mismo-hueco ·
+      el-fixture-se-cambio-a-margen-3-in-donde-solo-la-placa-exige-tres-indices
+    R8_TopClearFactor_ignorado: ROJO-1-y-revertido
+    R9_altura_manual_insuficiente_normalizada: ROJO-2-y-revertido
+    R10_dos_componentes_columna_base_en_doble: ROJO-1-y-revertido
+    R11_brazos_identicos_separados_por_lado: ROJO-4-y-revertido
+    R12_BOM_desde_el_diseno: ROJO-no-compila-el-contrato-lo-impide-por-TIPOS-y-revertido
+    R13_formula_de_pitch_duplicada: ROJO-no-compila-el-contrato-lo-impide-por-TIPOS-y-revertido
+    R14_altura_provisional_magica: ROJO-1-la-guarda-y-revertido
+  regresiones_de_la_ronda_de_correccion:
+    C1_vuelve_el_tope_de_250: ROJO-1-AClearWhoseFirstValidIndexIsFarUPTheColumnStillRESOLVES-y-revertido
+    C2_BodyTopZ_del_prelayout_mutado: >-
+      ROJO-mutacion-MINIMA-de-mas-0-001-in-SOLO-en-el-prelayout ·
+      dispara-CANT_STATION_FINAL_PASS_DIFFERS_FROM_LAYOUT-por-el-borde-superior-del-cuerpo ·
+      es-la-magnitud-que-el-pase-final-NO-comparaba · revertido
+    C3_DeepCopy_incondicional: ROJO-3-y-revertido
+    C4_comparacion_por_referencia: ROJO-1-ApplyingTheSAMEOverrideTwiceIsANoOp-y-revertido
+    C5_ProfileId_generico: ROJO-3-y-revertido
+    C6_spans_mundiales: >-
+      ROJO-2-y-revertido · la-PRIMERA-vuelta-no-mordio-porque-mis-pruebas-median-la-autoridad-
+      directamente-en-vez-de-atravesar-el-BOM-que-es-lo-que-el-defecto-corrompia
+    C7_firma_sin_brazos: ROJO-4-y-revertido
+    C8_ternarios_de_enum: ROJO-9-y-revertido
+    C9_Math_Max_y_offset_por_omision: ROJO-1-el-margen-ausente-deja-de-bloquear-y-revertido
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRIDAD MEDIDA con git diff --stat 0610adb..HEAD
+# --------------------------------------------------------------------------------------------------------
+integridad:
+  src_RackCad_Application_StructuralSections: 0-cambios-I-36-intacta
+  src_RackCad_Application_Bom: 0-cambios-el-contrato-compartido-se-consume-como-esta
+  src_RackCad_UI: 0-cambios
+  src_RackCad_Plugin: 0-cambios
+  assets: 0-cambios-ningun-id-de-produccion-ninguna-familia-nueva-ningun-PTR
+  deploy_github_sln: 0-cambios
+  HANDOFF_md: 0-cambios
+  ideas_futuras_md: 0-cambios
+  sistemas_vigentes: 0-cambios-en-los-cinco
+  logica_de_I_37B: >-
+    la-mitad-de-CONEXION-de-CantileverArmResolver-pasa-a-consumir-la-autoridad-compartida-extraida-con-
+    caracterizacion-previa-y-117-de-117-sin-cambio ·
+    diff-VACIO-en-arreglos-patron-marcos-y-diseno-del-brazo
+  logica_de_I_37A: >-
+    tres-cambios-MECANICOS-con-equivalencia-demostrada-y-uno-exigido-por-su-propia-guarda ·
+    ningun-resultado-numerico-cambio
+
+# --------------------------------------------------------------------------------------------------------
+# ACEPTACION DEL OWNER E INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+aceptacion_e_integracion:
+  fecha: 2026-07-29
+  decisor: Mario-Perez-Owner-del-repositorio
+  veredictos:
+    - OWNER_APPROVED_ADR_0026
+    - OWNER_AUTHORIZED_INTEGRATION_I_37C
+  sha_tecnico_aprobado: e1c3cab24d16ea0a6565fc43a81dcc0f2e31c694
+  ci_del_candidato: run-30510202275-success-en-los-cuatro-jobs
+  rebase_final: >-
+    NO-EJECUTADO-y-correcto · origin-main-seguia-en-0610adb-la-base-conocida ·
+    un-rebase-vacio-no-se-hace
+  adr_0026: ACEPTADO-con-los-22-puntos-enumerados-en-su-seccion-de-aceptacion
+  no_se_reabren_en_I_37D: >-
+    los-22-puntos-son-CONGELADOS · I-37D-COMPONE-la-estacion-y-no-vuelve-a-decidir-como-se-resuelve
+  la_aceptacion_no_autoriza: >-
+    calculo-resistente · cargas · capacidad · peso · costo · materiales · tornilleria · anclas ·
+    soldaduras · roscas · tolerancias · preparacion-de-extremos · CNC · shop-drawings ·
+    interferencia-fisica-en-el-cruce-de-tensores · catalogos-nuevos-sin-procedencia
+
+# --------------------------------------------------------------------------------------------------------
+# PENDIENTE DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+pendiente_del_owner:
+  adr_0026: ACEPTADO-2026-07-29-OWNER_APPROVED_ADR_0026
+  parametros_sin_default_heredados: >-
+    ColumnBottomPlateEndOffset · ColumnTopPunchOffset · MountingPlateVerticalEndOffset ·
+    los-tres-siguen-siendo-entradas-obligatorias-que-el-resolver-rechaza-si-faltan
+  default_visible_de_perfil_de_brazo: >-
+    sera-HSS-pero-se-fija-cuando-exista-editor · I-37C-no-registra-ningun-id-de-produccion
+  PTR: no-se-equipara-a-HSS-queda-como-candidato-de-catalogo-futuro
+  reticula_acumulada_vs_multiplicada: RESUELTO-normativo-ACUMULA-durante-I-37C-decision-10-36
+  claro_libre_global: RESUELTO-APROBADO-decision-10-37
+  forma_de_la_guarda_de_BOM: RESUELTO-se-conserva-decision-10-38

@@ -594,6 +594,40 @@ Planes disponibles:
   vinculantes del Owner en la seccion 8 de
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37B.yml`](../automation/state/I-37B.yml).
+- [`I-37C-cantilever-estacion-bom.md`](I-37C-cantilever-estacion-bom.md): **estacion Cantilever y BOM por
+  componentes**. Tercera subiniciativa de **I-37**, autorizada expresamente por el Owner con el precedente de
+  I-37A e I-37B. Es la primera que **compone** en vez de fundar: toma columna y base (I-37A) y brazo con su
+  conexion (I-37B) y produce una **estacion** de **gondola sencilla** o **doble**. En la doble hay **una sola
+  columna fisica** y **una sola placa inferior**, con **dos bases espejadas** y **dos brazos por nivel**; la
+  base negativa se **deriva por espejo** y **no** se resuelve un segundo subensamble completo. Los niveles se
+  comparten entre lados y se ajustan **obligatoriamente hacia arriba** a los troqueles: el claro libre se mide
+  **cuerpo a cuerpo en el plano de conexion**, las placas de dos niveles no se traslapan, y dos niveles **no
+  comparten agujero**. En doble gobierna el **lado mas restrictivo**. La altura es **automatica o manual**,
+  con `TopClearFactor` default `1/3`, y una manual insuficiente **se bloquea**. La dependencia circular real
+  altura-troqueles-niveles se resuelve **extrayendo** `CantileverColumnRegularPunchGrid` como autoridad unica
+  que **I-37A tambien consume**, con caracterizacion previa y equivalencia numerica; el pase final se
+  **verifica** y **falla cerrado** si difiere. Entrega tambien la **matriz pura** de brazos (default mas
+  overrides de celda, con alcances y restauraciones, sin celda falsa en el lado inactivo) y el primer **BOM
+  por componentes** de Cantilever: **un** componente columna-base por estacion y cada **brazo** como
+  componente atornillable agrupado por **receta fisica**, con los troqueles fuera del BOM. **Fuera de
+  alcance**: varias estaciones, linea, separadores, arriostres, vistas, preview, UI, editor, persistencia,
+  `RackSystemKind`, registros, biblioteca, AutoCAD, bloques, peso, costo, materiales, tornilleria, anclas,
+  soldaduras, calculo, capacidades, preparacion de extremos, CNC, familias nuevas, un PTR nuevo, y cambios
+  funcionales de comportamiento en I-36, I-37A o I-37B. `requires_autocad: **false**` y
+  `requires_owner_validation: **false**`.
+  **INTEGRADA en `main` el 2026-07-29.**
+  [ADR-0026](../adr/0026-estacion-cantilever-niveles-altura-y-bom.md) quedo **`aceptado`** con el veredicto
+  `OWNER_APPROVED_ADR_0026` sobre el SHA tecnico `e1c3cab`, mas
+  `OWNER_AUTHORIZED_INTEGRATION_I_37C`. Aceptada **sobre el codigo**, como I-37A e I-37B. Suites 2565 y 544,
+  dos **caracterizaciones previas** -- reticula regular y metricas de conexion --, y **veintitres**
+  regresiones comprobadas en rojo entre las dos rondas. La revision encontro **seis defectos**, corregidos
+  en la misma rama: el tope de 250 candidatos, dos autoridades midiendo la conexion, el pase final
+  incompleto, overrides iguales al default que se persistian, la identidad generica de las piezas planas y
+  las placas medidas con una caja del mundo. **Siguen sin default aprobado** los tres heredados; I-37C no
+  anadio ninguno. La continuacion es **I-37D**. Decisiones
+  vinculantes del Owner en la seccion 10 de
+  [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
+  [`../automation/state/I-37C.yml`](../automation/state/I-37C.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

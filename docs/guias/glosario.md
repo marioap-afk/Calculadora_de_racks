@@ -88,6 +88,15 @@ existen arriba —troquel, peralte, nivel, frente— **se reutilizan y no se red
 | Tapa | Placa perpendicular al eje del brazo que cierra su extremo libre, sin extensión |
 | Tope | La misma placa de la tapa, extendida **hacia arriba** para retener la carga. No altera el corte del perfil |
 | Pendiente (`RisePer12`) | Inclinación del brazo, en subida por cada 12 in. Única autoridad: los grados se derivan, no se guardan. El extremo libre sube en **ambos** lados |
+| Estación | Una columna con su base o bases y sus brazos por nivel. La unidad que I-37C compone y que el BOM cotiza. **No** lleva posición longitudinal: eso es la línea |
+| Góndola sencilla | Estación de **una cara**: una columna, una base y un brazo por nivel, todos en el mismo lado activo |
+| Góndola doble | Estación de **dos caras**: **una sola** columna y **una sola** placa inferior, con **dos** bases espejadas y **dos** brazos por nivel. No son dos estaciones |
+| Lado activo | En góndola sencilla, el único lado (`PositiveY` o `NegativeY`) donde viven la base y todos los brazos. El opuesto **no existe** como celda |
+| Nivel | Una elevación de la estación, compartida por los dos lados en góndola doble. Se identifica por su **índice de troquel inferior**, no por una cota libre |
+| Claro libre | Distancia vertical entre la **parte superior del cuerpo** del brazo inferior y la **parte inferior del cuerpo** del superior, medidas en el **plano de conexión**. Ni ejes, ni centros de troquel, ni bordes de placa |
+| Retícula regular | `CantileverColumnRegularPunchGrid`: la **única** autoridad de las elevaciones de troquel regular de la columna. La consumen igual I-37A y la estación |
+| Margen superior (`TopClearFactor`) | Fracción del claro libre que la columna debe dejar sobre lo último ocupado. Default `1/3`, y nunca menos |
+| Componente (BOM) | Lo **atornillable** que el BOM cotiza como una unidad con su receta de piezas: una columna con su base o bases, y cada brazo. Los **troqueles no son piezas** |
 
 ## Arquitectura y persistencia
 
