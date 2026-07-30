@@ -27,7 +27,13 @@ namespace RackCad.Application.Systems.Cantilever
         BaseRearPlate = 1,
 
         /// <summary>The mid-thickness of the column's bottom plate.</summary>
-        ColumnBottomPlate = 2
+        ColumnBottomPlate = 2,
+
+        /// <summary>
+        /// The mid-thickness of an arm's mounting plate (I-37B). Its punches share the column's DATUMS while
+        /// sitting at a different Y — which is the whole reason the datum excludes the axis coordinate.
+        /// </summary>
+        ArmMountingPlate = 3
     }
 
     /// <summary>

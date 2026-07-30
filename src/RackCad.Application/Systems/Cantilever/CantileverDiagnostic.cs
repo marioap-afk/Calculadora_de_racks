@@ -151,5 +151,83 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>The column bottom plate is too shallow to hold a symmetric pair at the required offset.</summary>
         public const string NoBottomPlatePunchFits = "CANT_NO_BOTTOM_PLATE_PUNCH_FITS";
+
+        // ---- I-37B: the arm ---------------------------------------------------------------------------
+
+        /// <summary>The body arrangement has no placement rule. Added, never guessed.</summary>
+        public const string ArmArrangementNotSupported = "CANT_ARM_ARRANGEMENT_NOT_SUPPORTED";
+
+        /// <summary>The arm side has no frame rule.</summary>
+        public const string ArmSideNotSupported = "CANT_ARM_SIDE_NOT_SUPPORTED";
+
+        /// <summary>
+        /// A paired arrangement was asked for with a section that is not a channel.
+        ///
+        /// Its own code because the placements of a paired body are written against the anatomy of a channel
+        /// — the back of the web and the flange tips — and mean nothing on a W or an HSS.
+        /// </summary>
+        public const string ArmArrangementRequiresChannel = "CANT_ARM_ARRANGEMENT_REQUIRES_CHANNEL";
+
+        /// <summary>The slope is negative or not finite. Zero is legal; downhill is not.</summary>
+        public const string ArmSlopeInvalid = "CANT_ARM_SLOPE_INVALID";
+
+        /// <summary>Fewer than two punch rows were asked for. One bolt line is a hinge, not a connection.</summary>
+        public const string ArmVerticalCountTooSmall = "CANT_ARM_VERTICAL_COUNT_TOO_SMALL";
+
+        /// <summary>The requested run of column punches falls outside the ones the column actually resolved.</summary>
+        public const string ArmPunchIndexOutOfRange = "CANT_ARM_PUNCH_INDEX_OUT_OF_RANGE";
+
+        /// <summary>The column resolved fewer regular punch elevations than the arm needs.</summary>
+        public const string ArmNotEnoughColumnPunches = "CANT_ARM_NOT_ENOUGH_COLUMN_PUNCHES";
+
+        /// <summary>The selected column punches are not one contiguous, evenly spaced run.</summary>
+        public const string ArmPunchDatumsNotContiguous = "CANT_ARM_PUNCH_DATUMS_NOT_CONTIGUOUS";
+
+        /// <summary>
+        /// The body is deeper than the plate its selected punches can span.
+        ///
+        /// BLOCKING, and the message asks to raise the row count: stretching the plate without more holes
+        /// would produce a piece that looks resolved and is not (ADR-0025, D6).
+        /// </summary>
+        public const string ArmPlateTooShortForBody = "CANT_ARM_PLATE_TOO_SHORT_FOR_BODY";
+
+        /// <summary>The two channels of a paired body cannot be brought into contact without overlapping.</summary>
+        public const string ArmChannelsCannotTouch = "CANT_ARM_CHANNELS_CANNOT_TOUCH";
+
+        /// <summary><c>Stop</c> was asked for without a positive extra height.</summary>
+        public const string ArmStopWithoutHeight = "CANT_ARM_STOP_WITHOUT_HEIGHT";
+
+        /// <summary>An extra stop height was given for a mode that is not <c>Stop</c>, or it is not finite.</summary>
+        public const string ArmEndPlateHeightWithoutStop = "CANT_ARM_END_PLATE_HEIGHT_WITHOUT_STOP";
+
+        /// <summary>
+        /// The end plate mode is not one this initiative declares.
+        ///
+        /// Its own code because the previous validation had guarded cases and no default: an undeclared value
+        /// fell through without a word and was then materialised as a cap.
+        /// </summary>
+        public const string ArmEndPlateModeNotSupported = "CANT_ARM_END_PLATE_MODE_NOT_SUPPORTED";
+
+        /// <summary>
+        /// The slope is finite and non-negative but so steep that the arm's frame is undefined: the projection
+        /// of world +Z onto its transverse plane vanishes.
+        ///
+        /// BLOCKING and reported, because it is USER INPUT. Letting the projection throw would surface an
+        /// <c>InvalidOperationException</c> from a number somebody typed.
+        /// </summary>
+        public const string ArmSlopeFrameUndefined = "CANT_ARM_SLOPE_FRAME_UNDEFINED";
+
+        /// <summary>The column assembly handed to the arm resolver is itself blocked.</summary>
+        public const string ArmColumnAssemblyBlocked = "CANT_ARM_COLUMN_ASSEMBLY_BLOCKED";
+
+        /// <summary>
+        /// INFO, and always present on a sloped arm: the profile is cut SQUARE while the mounting plate is a
+        /// vertical plane, so the start face is not flush against it.
+        ///
+        /// It is reported rather than hidden because the fix — a mitred end — is end preparation, which
+        /// ADR-0024 and ADR-0025 both keep out of scope. Same spirit as
+        /// <c>SG_CHANNEL_FLANGE_TAPER_NOT_MODELLED</c>: state the approximation instead of implying exactness.
+        /// </summary>
+        public const string ArmSquareCutAtSlopedPlate = "CANT_ARM_SQUARE_CUT_AT_SLOPED_PLATE";
     }
 }

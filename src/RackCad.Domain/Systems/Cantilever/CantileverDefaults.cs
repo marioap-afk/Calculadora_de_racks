@@ -51,7 +51,18 @@ namespace RackCad.Domain.Systems.Cantilever
         /// It is ONE constant used as the default of FOUR independent properties — front plate, rear plate,
         /// column bottom plate and gusset. Sharing a default is not sharing an authority: each component
         /// keeps its own value and changing one never moves the others.
+        ///
+        /// I-37B adds two more independent users — the arm's mounting plate and its end plate — on the same
+        /// terms.
         /// </summary>
         public const double PlateThickness = 0.25;
+
+        /// <summary>
+        /// How many column punch elevations an arm's mounting plate uses by default (I-37B).
+        ///
+        /// Two is also the minimum the resolver enforces: a single bolt line is a hinge, not a connection.
+        /// There is no maximum — more rows simply extend the plate upwards (ADR-0025, D6).
+        /// </summary>
+        public const int ArmVerticalPunchCount = 2;
     }
 }

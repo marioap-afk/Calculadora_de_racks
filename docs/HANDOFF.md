@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-28**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-29**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -621,6 +621,42 @@ XML-doc puedan explicar *por qué* no se toca `bf`.
 `assets/`, `deploy/`, `.github/` ni `RackCad.sln`. **Siguen sin default aprobado** los dos offsets
 obligatorios de troquel, que el resolver rechaza con `CANT_REQUIRED_PARAMETER_MISSING` si faltan.
 
+**I-37B es la segunda subiniciativa de I-37 y está INTEGRADA en `main` desde el 2026-07-29.** Es la primera
+que **consume** lo que I-37A dejó resuelto: funda el **brazo** como subensamble puro en Domain y
+Application, y tampoco dibuja nada, así que **no requirió AutoCAD ni validación visual**.
+
+Entrega el cuerpo del brazo como una **colección** de miembros con el arreglo como enum —no una subclase por
+arreglo—, con los **tres arreglos desde el principio**: **perfil sencillo**, **canal doble encontrado** y
+**canal doble espalda con espalda**. Los dos dobles son de la misma sección y quedan **en contacto**, con
+separación cero que **no es un campo**: la posición sale de la orientación canónica que I-36 **documenta**
+—dorso del alma a −X, patines abriendo a +X— leída de `ChannelSectionGeometryBuilder` y aplicada vía
+`Bounds`, sin tocar una sola dimensión tabulada. La **pendiente** es `SlopeRisePer12`, única autoridad con
+los grados derivados, y el **extremo libre sube en ambos lados** —simetría especular, no rotación de 180°—,
+en `+Y` o en `−Y`.
+
+La **conexión no crea retícula**: el brazo **selecciona** un conjunto contiguo de los troqueles regulares
+que la columna ya resolvió, conserva sus **datums exactos** y **observa** su pitch, así que ninguna
+constante de espaciado vive en su resolver. La **placa de conexión** abarca el ancho de la columna y crece
+**hacia arriba** al pedir más filas; un perfil demasiado aperaltado para las suyas **se rechaza** en vez de
+estirarla en silencio. La **placa final** es un solo tipo con dos modos —**tapa** y **tope**—, perpendicular
+al eje inclinado, y el tope crece hacia arriba sin tocar el corte del perfil.
+
+**El datum aprobado, y su aproximación.** La cara exterior de la placa de conexión es el **origen del plano
+de corte** del cuerpo, y el eje centroidal arranca ahí. Con pendiente y corte a escuadra eso **no** es
+quedar a ras: una zona del perfil **penetra visualmente** la placa y la opuesta deja **holgura**, y las dos
+magnitudes **difieren** cuando la sección no es simétrica respecto a su origen. El resolver **reporta las
+dos por separado** en un diagnóstico informativo; el modelo **declara** la imprecisión en vez de resolverla,
+porque el **corte inclinado** y la **preparación de extremo** siguen fuera de alcance.
+[ADR-0025](adr/0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) quedó **aceptado** con el veredicto
+`OWNER_APPROVED_ADR_0025_WITH_CURRENT_DATUM`, que conserva ese datum **expresamente**.
+
+Extiende los contratos de I-37A de forma **estrictamente aditiva** —tres valores de enum al final y unos
+tokens— y su lógica queda **intacta**. **No toca** I-36, los cinco sistemas vigentes, UI, Plugin, `assets/`,
+`deploy/`, `.github/` ni `RackCad.sln`, y **no registra ningún id de producción** ni familia nueva de
+catálogo. **Sigue sin default aprobado** `MountingPlateVerticalEndOffset`, además de los dos offsets
+heredados de I-37A. Siguen **diferidos** el perfil de brazo visible por omisión —será HSS, pero se fija
+cuando exista editor— y el **PTR**, que **no** se equipara a HSS.
+
 ## 2. Última validación real
 
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
@@ -818,6 +854,15 @@ poste, sus piezas y sus celdas de seguridad. La **owner-validation** quedó **ap
 validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**. La rama se integra por
 `git merge --no-ff` en esta sesión.
 
+I-37A e I-37B (`architecture/cantilever-base-columna`, `architecture/cantilever-brazo`) **no requirieron
+validación en AutoCAD ni validación visual del Owner** (`requires_autocad: false`,
+`requires_owner_validation: false`): ninguna de las dos cambia dibujo, interfaz ni BOM —no hay vistas,
+preview, editor, persistencia de proyecto, registros ni una línea de Plugin—, así que **no se ejecutó
+NETLOAD** y no era exigible por contrato. Son las primeras iniciativas de la Fase 6 cuyo gate se resolvió
+**sobre el código**: lo entregado son contratos, y lo verificable de un contrato son sus invariantes y sus
+guardas, no una captura. `origin/main` **no avanzó** desde `e0f319f` mientras I-37B estuvo en revisión, así
+que su verificación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
+
 ## 3. Problemas y riesgos activos
 
 - `ParrillaFrente` y `ParrillaCantidad` siguen siendo globales al rack; una configuración
@@ -854,6 +899,55 @@ validación vale sobre el árbol integrado (WORKFLOW §6): **sin rebase final**.
   catálogos sigue decorativa. `RACKDUPLICAR` no avisa por diseño (clona geometría ya dibujada a la misma escala).
 
 ## 4. Siguiente acción
+
+### Lo siguiente de I-37 — **todavía sin definir y sin reclamar**
+
+I-37A e I-37B están integradas. La línea I-37 sigue **partida en subiniciativas**, y la que viene **no
+existe**: no tiene fila en el ROADMAP, ni contrato, ni rama, ni número asignado por el Owner. **No se abre
+ninguna rama** hasta que el Owner autorice expresamente la siguiente subiniciativa, igual que hizo con
+I-37A y con I-37B (WORKFLOW §8 lo prohíbe sin esa autorización).
+
+**Lo que falta definir físicamente para continuar**, y que hoy no está decidido: cómo se compone una
+**estación** —columna con sus brazos por lado, y las elevaciones de cada uno—; si la **doble cara** es un
+sistema propio o una propiedad de la estación; qué es una **línea** Cantilever y cómo se reparten
+separadores y arriostres; y en qué momento entran **vistas**, **editor** y **persistencia**, que son lo
+único que haría visible al usuario todo lo construido hasta ahora. Ninguna de esas cuatro está autorizada
+por ADR-0024 ni por ADR-0025, y ambas lo dicen explícitamente.
+
+### I-37B — INTEGRADA en `main` (2026-07-29) — **el brazo, y el primer consumidor de I-37A**
+
+I-37B **no dibuja**, igual que I-37A: el usuario **no ve nada nuevo**. Lo que cambia es que el producto sabe
+qué es un brazo de cantilever, cómo se compone con uno o dos perfiles y cómo se atornilla a la columna
+usando los agujeros que la columna ya tenía.
+
+| Campo | Valor |
+|---|---|
+| Rama (eliminada tras integrar) | `architecture/cantilever-brazo` |
+| `Claim-Id` | `57727fe5-46b6-4b51-83a9-85afa0d4ebf9` |
+| **SHA técnico aprobado** por el Owner y por CI | `00d8126eb687a46bafc156480ea6f080f295a771` (CI **30499888210**, success) |
+| SHA final de rama | vive en `git log`; su delta contra el aprobado es **solo documentación de cierre** |
+| **Validación en AutoCAD** | **NO APLICA** (`requires_autocad: false`, `requires_owner_validation: false`): no cambia dibujo ni interfaz |
+| Veredictos normativos | `OWNER_APPROVED_ADR_0025_WITH_CURRENT_DATUM` y `OWNER_AUTHORIZED_INTEGRATION_I_37B` |
+| Bundle | **no ejecutado y no exigible**: el diff no toca `assets/`, catálogos, `deploy/` ni `.github/` |
+| Diff contra la base `e0f319f` | **23** archivos del candidato: docs 8, Domain 2, Application 11, tests 2 |
+
+**Qué entregó.** El diseño editable en `RackCad.Domain.Systems.Cantilever` —cuerpo, placa de conexión y
+placa final, con el id de sección como **texto**— y la resolución en
+`RackCad.Application.Systems.Cantilever`: `CantileverArmSectionPolicy` (elegibilidad por
+`StructuralSectionId` **+** `Arrangement`, inyectable y sin ids de producción),
+`CantileverArmBodyArrangementResolver` como autoridad de arreglos, `CantileverArmFrameResolver` como
+**única autoridad de marcos** del brazo, `CantileverArmColumnConnectionPattern` —que **selecciona** y
+**observa**, nunca crea—, `CantileverArmBodyPlan` y `CantileverArmAssembly` con firma determinista. Los
+**tres arreglos** entraron desde el principio; la **pendiente** vale en los dos lados con el extremo libre
+subiendo en ambos; **tapa y tope** son modos de una misma placa; y el **datum aprobado** deja la
+aproximación de **intrusión y holgura** declarada, medida y reportada por separado.
+
+**Cuatro defectos propios, encontrados por el Owner y corregidos en la misma rama** antes de integrar: un
+`switch` de modo de placa final **no exhaustivo** que materializaba como tapa un valor no declarado; un
+**desborde de `int`** en el rango del índice de troquel, que envolvía a negativo y reventaba al leer el
+pitch; una **pendiente que colapsa el marco** —`atan` converge en 90° — que salía como excepción en vez de
+diagnóstico; y una afirmación **falsa** de que placa y cuerpo «no se traslapan». Las cuatro tienen
+regresión verificada **en rojo** y revertida.
 
 ### I-37A — INTEGRADA en `main` (2026-07-29) — **el primer miembro sobre el catálogo neutral**
 
@@ -1316,7 +1410,43 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-37A — 2026-07-29** (la vigente):
+**Baseline integrada de I-37B — 2026-07-29** (la vigente):
+
+- candidato de **código** aprobado por el Owner y por CI:
+  `00d8126eb687a46bafc156480ea6f080f295a771` (CI run `30499888210`, **success**). El SHA final de rama
+  difiere del aprobado **solo en documentación de cierre**, así que el árbol técnico aprobado y el integrado
+  son el mismo. `origin/main` **no avanzó** desde la base `e0f319f`: **sin rebase final**;
+- **validación en AutoCAD: NO APLICA.** `requires_autocad: false`, `requires_owner_validation: false` —
+  I-37B no cambia dibujo ni interfaz, igual que I-37A;
+- **ADR-0025 ACEPTADO**, veredicto `OWNER_APPROVED_ADR_0025_WITH_CURRENT_DATUM`: cuerpo como colección de
+  miembros, los tres arreglos, canales dobles en contacto sin campo de separación, colocación derivada de
+  `Bounds`, longitud capturada como corte del perfil con
+  `NominalCutLength == GeometricLength == Body.CutLength`, `SlopeRisePer12` como única autoridad, extremo
+  libre ascendiendo en ambos lados, selección contigua de troqueles existentes, pitch observado de la
+  columna, placa creciendo hacia arriba, bloqueo cuando el cuerpo no cabe, tapa y tope como modos de una
+  misma placa, placa final perpendicular al eje inclinado, elegibilidad por
+  `StructuralSectionId + Arrangement`, validación exhaustiva de modos y enums, rango de índices sin
+  overflow, rechazo diagnóstico de la pendiente que colapsa el marco, **datum actual** del plano de corte
+  sobre la cara exterior de la placa, **intrusión y holgura** como aproximación visual declarada con
+  magnitudes independientes, coincidencia por `CantileverPunchDatum`, y el **PTR no tratado como alias de
+  HSS**. **No** autoriza estación, niveles, doble cara, separadores, arriostres, línea, BOM, peso,
+  persistencia, `RackSystemKind`, registros, editor, preview, vistas, AutoCAD, bloques, preparación de
+  extremos, fabricación, cálculo resistente ni cambios funcionales en I-36 o I-37A;
+- suites **2355** + **544**, cero fallos, cero omitidas (base 2224 + **131** nuevas: 117 de invariantes del
+  brazo y el archivo de guardas de fuente de 49 a **63**); builds Debug de Domain, Application y UI con
+  **0 errores y 0 advertencias**, y Plugin con 0 errores y las 2 `MSB3277` conocidas;
+- **regresiones verificadas en rojo** y revertidas: las ocho de la primera pasada —doble canal reducido a un
+  miembro, separación distinta de cero, pendiente invertida en el lado negativo, el brazo recalculando el
+  pitch, filas creciendo hacia abajo, placa aceptando un cuerpo más alto, tapa modificando el corte y un
+  campo de separación— más las **cuatro** de la ronda de corrección: la suma vulnerable del índice, el gate
+  de pendiente desactivado, el `default` retirado de la validación de modo, e intrusión y holgura
+  colapsadas en un solo número;
+- **bundle no ejecutado y no exigible**: el diff no toca `assets/`, catálogos, `deploy/` ni `.github/`;
+- **sin default aprobado**, y por tanto entradas obligatorias que el resolver rechaza si faltan: el margen
+  vertical de la placa de conexión del brazo (`MountingPlateVerticalEndOffset`), más los dos offsets de
+  troquel que I-37A dejó sin default.
+
+**Baseline anterior — I-37A, 2026-07-29:**
 
 - candidato de **código** aprobado por el Owner y por CI:
   `15523679e655364c146917ece338c7cecbe24023` (CI run `30488839172`, **success**). El SHA final de rama
