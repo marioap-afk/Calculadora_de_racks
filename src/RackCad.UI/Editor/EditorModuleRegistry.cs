@@ -105,14 +105,15 @@ namespace RackCad.UI.Editor
         }
 
         /// <summary>
-        /// The six modules that exist today, in the menu's button order: selectivo, dinámico, push back, cabecera, cama,
-        /// larguero. Explicit construction — a new system registers here, not by editing the menu window.
+        /// The seven modules that exist today, in the menu's button order: selectivo, dinámico, push back, cantilever,
+        /// cabecera, cama, larguero. Explicit construction — a new system registers here, not by editing the menu window.
         /// </summary>
         public static EditorModuleRegistry Default { get; } = new EditorModuleRegistry(new IRackEditorModule[]
         {
             new SelectiveEditorModule(),
             new DynamicEditorModule(),
             new PushBackEditorModule(),
+            new CantileverEditorModule(),
             new HeaderEditorModule(),
             new FlowBedEditorModule(),
             new LargueroEditorModule(),

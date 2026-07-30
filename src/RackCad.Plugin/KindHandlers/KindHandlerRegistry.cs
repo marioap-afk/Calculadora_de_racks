@@ -46,16 +46,18 @@ namespace RackCad.Plugin.KindHandlers
             => _dispatch.TryResolveAll(kinds, out handlers, out firstUnresolved);
 
         /// <summary>
-        /// The single, explicit composition root: the five embedded kinds in canonical order — selective, dynamic and,
-        /// immediately after it, Push Back (which composes the dynamic structure), then cabecera and cama (the original
-        /// four kept the order the former RACKEDITAR / RACKBOMTOTAL switches used). <c>Larguero</c> has no embed
-        /// discriminator and no draw block, so it is deliberately ABSENT — an unknown kind resolves to no handler.
+        /// The single, explicit composition root: the six embedded kinds in canonical order — selective, dynamic and,
+        /// immediately after it, Push Back (which composes the dynamic structure), then Cantilever (I-37D), then
+        /// cabecera and cama (the original four kept the order the former RACKEDITAR / RACKBOMTOTAL switches used).
+        /// <c>Larguero</c> has no embed discriminator and no draw block, so it is deliberately ABSENT — an unknown
+        /// kind resolves to no handler.
         /// </summary>
         public static KindHandlerRegistry Default { get; } = new KindHandlerRegistry(new IRackKindHandler[]
         {
             new SelectiveKindHandler(),
             new DynamicKindHandler(),
             new PushBackKindHandler(),
+            new CantileverKindHandler(),
             new CabeceraKindHandler(),
             new CamaKindHandler(),
         });

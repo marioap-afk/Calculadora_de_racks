@@ -1,6 +1,8 @@
 using RackCad.Application.Persistence;
+using RackCad.Application.Systems.Cantilever;
 using RackCad.Application.Systems.PushBack;
 using RackCad.Domain.RackFrames;
+using RackCad.Domain.Systems.Cantilever;
 using RackCad.Domain.Systems.Dynamic;
 using RackCad.Domain.Systems.FlowBed;
 using RackCad.Domain.Systems.PushBack;
@@ -148,6 +150,51 @@ namespace RackCad.UI.Editor
         public string View { get; }
 
         /// <summary>The requested section (post index for lateral, (int)PushBackFrontalEnd for frontal, -1 for planta/update).</summary>
+        public int Section { get; }
+
+        public RackProject SourceProject { get; }
+    }
+
+    /// <summary>
+    /// Insert a Cantilever LINE view (<see cref="RackSystemKind.Cantilever"/>), initiative I-37D. It carries the
+    /// RESOLVED line as well as the design, for the same reason Push Back does: the window already resolved it,
+    /// and the host re-resolving would be a second answer to a question that was already answered — with a
+    /// different catalogue load, at a different moment.
+    ///
+    /// <see cref="View"/> is the envelope's view token and <see cref="Section"/> its station index: −1 for the
+    /// frontal and the planta, which are views of the whole line, and the station's own index for a lateral
+    /// (ADR-0028, D4). A null view with section −1 is the in-place update.
+    /// </summary>
+    public sealed class CantileverInsertionRequest : RackInsertionRequest
+    {
+        public CantileverInsertionRequest(
+            CantileverLineAssembly line, CantileverLineDesign design, string rackId, string rackName,
+            string view, int section, RackProject sourceProject)
+        {
+            Line = line; // see HeaderInsertionRequest: the Plugin's Draw* guards null, preserving "null → no draw"
+            Design = design;
+            RackId = rackId;
+            RackName = rackName;
+            View = view;
+            Section = section;
+            SourceProject = sourceProject; // library wrapper metadata to carry into the embed (I-11); null for a new design
+        }
+
+        public override RackSystemKind Kind => RackSystemKind.Cantilever;
+
+        /// <summary>The resolved line the window produced. The host draws THIS, and never re-resolves it.</summary>
+        public CantileverLineAssembly Line { get; }
+
+        public CantileverLineDesign Design { get; }
+
+        public string RackId { get; }
+
+        public string RackName { get; }
+
+        /// <summary>The requested view, or null on an update (in-place redraw of every existing view).</summary>
+        public string View { get; }
+
+        /// <summary>The station index for a lateral; −1 for the frontal, the planta and an update.</summary>
         public int Section { get; }
 
         public RackProject SourceProject { get; }

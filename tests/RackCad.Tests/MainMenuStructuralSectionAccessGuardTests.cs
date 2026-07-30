@@ -83,17 +83,21 @@ namespace RackCad.Tests
         }
 
         [Theory]
-        [InlineData("CsvStructuralSectionCatalogProvider")]   // la carga del catalogo
-        [InlineData("StructuralSectionInspectorWindow")]      // la construccion del inspector
-        [InlineData("StructuralSectionInsertService")]        // la insercion
-        [InlineData("StructuralSectionCatalogException")]     // el fallo cerrado
-        [InlineData("WeightInPounds")]                        // el calculo de peso
-        [InlineData("SectionFidelity")]                       // el manejo de fidelidad
-        public void ExactlyOnePlaceInThePluginOwnsEachPieceOfTheFlow(string symbol)
+        [InlineData("StructuralSectionInspectorWindow", "StructuralSectionCommandFlow.cs")]      // el inspector
+        [InlineData("StructuralSectionInsertService", "StructuralSectionCommandFlow.cs")]        // la insercion
+        [InlineData("WeightInPounds", "StructuralSectionCommandFlow.cs")]                        // el calculo de peso
+        [InlineData("SectionFidelity", "StructuralSectionCommandFlow.cs")]                       // la fidelidad
+        [InlineData("CsvStructuralSectionCatalogProvider", "StructuralSectionCatalogAccess.cs")] // la carga
+        [InlineData("StructuralSectionCatalogException", "StructuralSectionCatalogAccess.cs")]   // el fallo cerrado
+        public void ExactlyOnePlaceInThePluginOwnsEachPieceOfTheFlow(string symbol, string owner)
         {
+            // I-37D: la CARGA del catalogo y su fallo cerrado dejaron de ser exclusivos del flujo de secciones,
+            // porque la linea Cantilever tambien se construye sobre el catalogo neutral. La respuesta fue EXTRAER
+            // el duenno —StructuralSectionCatalogAccess— y RE-APUNTAR la guarda, no debilitarla: sigue habiendo
+            // exactamente un sitio por pieza, y copiar la carga en un segundo archivo seguiria fallando aqui.
             var files = PluginFilesMentioning(symbol);
 
-            Assert.Equal(new[] { "StructuralSectionCommandFlow.cs" }, files);
+            Assert.Equal(new[] { owner }, files);
         }
 
         [Theory]
@@ -165,17 +169,25 @@ namespace RackCad.Tests
         [Fact]
         public void AnInvalidCatalogueStillFailsClosed()
         {
+            // I-37D movio la CAPTURA al duenno unico de la carga (StructuralSectionCatalogAccess); lo que esta
+            // guarda protege —fallar cerrado ANTES de abrir el inspector— se sigue viendo aqui, en el flujo.
             var flow = Flow;
-            var handler = flow.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
+            var guard = flow.IndexOf("StructuralSectionCatalogAccess.TryLoad", StringComparison.Ordinal);
 
-            Assert.True(handler > 0, "El flujo debe capturar StructuralSectionCatalogException.");
-
-            var body = flow.Substring(handler, Math.Min(400, flow.Length - handler));
-            Assert.Contains("no es valido", body, StringComparison.Ordinal);
-            Assert.Contains("return;", body, StringComparison.Ordinal);
+            Assert.True(guard > 0, "El flujo debe cargar el catalogo por el duenno unico.");
+            Assert.Contains("return;", flow.Substring(guard, Math.Min(200, flow.Length - guard)), StringComparison.Ordinal);
 
             // Y falla cerrada ANTES de abrir nada: no se enseña un inspector sobre datos que no validaron.
-            Assert.True(handler < flow.IndexOf("new StructuralSectionInspectorWindow", StringComparison.Ordinal));
+            Assert.True(guard < flow.IndexOf("new StructuralSectionInspectorWindow", StringComparison.Ordinal));
+
+            var access = ReadPlugin("StructuralSectionCatalogAccess.cs");
+            var handler = access.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
+
+            Assert.True(handler > 0, "El duenno de la carga debe capturar StructuralSectionCatalogException.");
+            Assert.Contains(
+                "no es valido",
+                access.Substring(handler, Math.Min(400, access.Length - handler)),
+                StringComparison.Ordinal);
         }
 
         [Fact]

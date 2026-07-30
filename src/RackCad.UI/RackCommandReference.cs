@@ -33,6 +33,7 @@ namespace RackCad.UI
             new RackCommandInfo("Diseñar", "QUICKCABECERA", "QCB", "Cabecera por línea de comandos (pide poste/fondo/alto)."),
             new RackCommandInfo("Diseñar", "RACKSISTEMADINAMICO", "RSD", "Sistema dinámico (pallet flow)."),
             new RackCommandInfo("Diseñar", "QUICKCAMA", "QCM", "Cama de rodamiento (riel + rodillos + frenos)."),
+            new RackCommandInfo("Diseñar", "RACKCANTILEVER", "RCT", "Línea Cantilever: estaciones, brazos por nivel y lado, arriostramiento; vistas frontal, lateral y planta."),
 
             new RackCommandInfo("Editar y copiar", "RACKEDITAR", "RED", "Reabrir el editor de un rack dibujado; al confirmar redibuja todas sus vistas."),
             new RackCommandInfo("Editar y copiar", "RACKDUPLICAR", "RD", "Copiar un rack como INDEPENDIENTE, estilo COPY: punto base → destinos (múltiple por defecto)."),

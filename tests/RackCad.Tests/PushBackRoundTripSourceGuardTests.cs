@@ -124,14 +124,18 @@ namespace RackCad.Tests
 
         // ---- Registry ----
 
+        // I-37D re-apunta estas dos: lo que fijan es que Push Back siga INMEDIATAMENTE despues de Dynamic y que no
+        // haya duplicados, no que el registro tenga para siempre cinco entradas. Cantilever entra DESPUES de Push
+        // Back, asi que la relacion protegida no se toca y el conteo sube a seis.
         [Fact]
-        public void Registry_RegistersFiveHandlers_PushBackImmediatelyAfterDynamic_InExactOrder()
+        public void Registry_RegistersSixHandlers_PushBackImmediatelyAfterDynamic_InExactOrder()
         {
             var order = new[]
             {
                 "new SelectiveKindHandler()",
                 "new DynamicKindHandler()",
                 "new PushBackKindHandler()",
+                "new CantileverKindHandler()",
                 "new CabeceraKindHandler()",
                 "new CamaKindHandler()",
             };
@@ -144,15 +148,21 @@ namespace RackCad.Tests
                 previous = index;
             }
 
-            Assert.Equal(5, Count(Registry, "KindHandler()")); // exactly five constructions, no duplicates
+            Assert.Equal(6, Count(Registry, "KindHandler()")); // exactly six constructions, no duplicates
             Assert.Equal(1, Count(Registry, "new PushBackKindHandler()"));
+
+            // Push Back sigue pegado a Dynamic: nada se colo entre los dos.
+            Assert.True(
+                Registry.IndexOf("new PushBackKindHandler()", StringComparison.Ordinal) >
+                Registry.IndexOf("new DynamicKindHandler()", StringComparison.Ordinal));
         }
 
         [Fact]
-        public void Registry_CommentUpdatedToFiveKinds()
+        public void Registry_CommentUpdatedToSixKinds()
         {
-            Assert.Contains("five embedded kinds", Registry);
+            Assert.Contains("six embedded kinds", Registry);
             Assert.DoesNotContain("four embedded kinds", Registry);
+            Assert.DoesNotContain("five embedded kinds", Registry);
         }
 
         [Fact]

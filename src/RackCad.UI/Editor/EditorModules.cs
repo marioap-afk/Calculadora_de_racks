@@ -3,6 +3,7 @@ using RackCad.Application.RackFrames;
 using RackCad.Domain.Systems.PushBack;
 using RackCad.Domain.Systems.Shared;
 using RackCad.UI.RackFrames;
+using RackCad.UI.Systems.Cantilever;
 using RackCad.UI.Systems.Dynamic;
 using RackCad.UI.Systems.FlowBed;
 using RackCad.UI.Systems.Larguero;
@@ -11,7 +12,7 @@ using RackCad.UI.Systems.Selective;
 
 namespace RackCad.UI.Editor
 {
-    // The six editor modules the menu and library consume (initiative I-15; Push Back added by I-18). Each ADAPTS an existing editor window
+    // The seven editor modules the menu and library consume (I-15; Push Back added by I-18, Cantilever by I-37D). Each ADAPTS an existing editor window
     // verbatim — no window is rewritten this iteration (that is I-20/I-21). Every Open* method reproduces the exact
     // gestures of the corresponding old RackMainMenuWindow handler, including the pre-existing asymmetries (e.g. the
     // menu's brand-new selective did NOT set dimension styles, while its library path did). The pure metadata
@@ -129,6 +130,44 @@ namespace RackCad.UI.Editor
 
         // The window + its RackEditorSession are the authority for the payload: return what the session built, never rebuild it.
         private static RackInsertionRequest Build(RackPushBackSystemWindow window)
+            => window.InsertRequested ? window.InsertionRequest : null;
+    }
+
+    /// <summary>Cantilever LINE (<see cref="RackSystemKind.Cantilever"/>) → <see cref="RackCantileverWindow"/>, initiative
+    /// I-37D. Like the Push Back module, the window and its <c>RackEditorSession</c> own the insert/update contract, so this
+    /// returns the window's <c>InsertionRequest</c> verbatim and never rebuilds the payload.</summary>
+    public sealed class CantileverEditorModule : IRackEditorModule
+    {
+        public RackSystemKind Kind => RackSystemKind.Cantilever;
+
+        public bool CanInsert => true;
+
+        public bool IsLibraryFallback => false;
+
+        public string OpenFailureMessage => "No se pudo abrir la línea Cantilever: ";
+
+        public bool MatchesLibrary(RackDesignLibraryEntry entry, RackProject project)
+            => entry != null && entry.Kind == RackSystemKind.Cantilever && project?.CantileverLineDesign != null;
+
+        public RackInsertionRequest OpenForNew(RackEditorLaunchContext context)
+        {
+            var window = new RackCantileverWindow(context.CanInsertInAutoCad) { Owner = context.Owner };
+            window.ShowDialog();
+            return Build(window);
+        }
+
+        public RackInsertionRequest OpenFromLibrary(RackProject project, RackDesignLibraryEntry entry, RackEditorLaunchContext context)
+        {
+            var window = new RackCantileverWindow(context.CanInsertInAutoCad) { Owner = context.Owner };
+            // Pass the source project so a re-save preserves its wrapper metadata (I-11); a fresh GUID is minted on insert
+            // (the library entry's GUID is never reused as the new line's identity).
+            window.LoadDesignForNew(project.CantileverLineDesign, entry.Name, project);
+            window.ShowDialog();
+            return Build(window);
+        }
+
+        // The window + its RackEditorSession are the authority for the payload: return what the session built.
+        private static RackInsertionRequest Build(RackCantileverWindow window)
             => window.InsertRequested ? window.InsertionRequest : null;
     }
 

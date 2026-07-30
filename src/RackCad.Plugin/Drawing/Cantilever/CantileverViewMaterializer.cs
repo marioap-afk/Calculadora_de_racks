@@ -1,0 +1,229 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
+using RackCad.Application.Systems.Cantilever;
+
+namespace RackCad.Plugin.Drawing.Cantilever
+{
+    /// <summary>
+    /// Turns a <see cref="CantileverViewPlan"/> into AutoCAD entities. An ADAPTER and nothing else.
+    ///
+    /// It receives points and piece kinds and creates polylines. It never asks a section for a dimension, never
+    /// decides geometry and never rounds anything: every coordinate it draws was decided in
+    /// <c>RackCad.Application</c> (ADR-0028, D3). That is what makes the editor's preview and the drawing the same
+    /// picture rather than two implementations that agree today.
+    ///
+    /// It follows the <c>RACKSECCION</c> precedent (I-36C) and not the header one: a Cantilever line is built from
+    /// the neutral section catalogue, so there is no <c>blocks-library.dwg</c> entry, no row in <c>blocks.csv</c>
+    /// and no pre-existing block to depend on. The representation goes into a block DEFINITION created in THIS
+    /// drawing, and its entities are BYBLOCK so the inserted reference controls colour, layer and lineweight as a
+    /// unit.
+    /// </summary>
+    internal static class CantileverViewMaterializer
+    {
+        /// <summary>Prefix of the internal block name. It is a label for a human, never a key.</summary>
+        internal const string BlockNamePrefix = "RACKCAD_CANTILEVER_";
+
+        /// <summary>
+        /// Creates the block definition for a view and returns its id.
+        ///
+        /// The caller owns the transaction, so the definition, its payload and its reference commit together or
+        /// none of them exists.
+        /// </summary>
+        internal static ObjectId CreateBlockDefinition(
+            Database database, Transaction transaction, CantileverViewPlan plan, string rackName, out string blockName)
+        {
+            if (plan == null)
+            {
+                throw new ArgumentNullException(nameof(plan));
+            }
+
+            var blockTable = (BlockTable)transaction.GetObject(database.BlockTableId, OpenMode.ForWrite);
+            blockName = UniqueBlockName(blockTable, SuggestName(plan, rackName));
+
+            var definition = new BlockTableRecord { Name = blockName, Origin = Point3d.Origin };
+            var definitionId = blockTable.Add(definition);
+            transaction.AddNewlyCreatedDBObject(definition, true);
+
+            AppendCurves(definition, transaction, plan);
+
+            return definitionId;
+        }
+
+        /// <summary>
+        /// Redefines an existing definition IN PLACE from a new plan: every reference of it updates on regen.
+        ///
+        /// The old entities are erased and the new ones appended inside the caller's transaction. Nothing nested is
+        /// purged afterwards because nothing is nested: a Cantilever view is polylines, not references to library
+        /// blocks, so a redraw cannot orphan a definition.
+        /// </summary>
+        internal static void RedefineBlock(
+            Database database, Transaction transaction, ObjectId blockId, CantileverViewPlan plan)
+        {
+            if (plan == null)
+            {
+                throw new ArgumentNullException(nameof(plan));
+            }
+
+            var definition = (BlockTableRecord)transaction.GetObject(blockId, OpenMode.ForWrite);
+
+            foreach (ObjectId entityId in definition)
+            {
+                var entity = (Entity)transaction.GetObject(entityId, OpenMode.ForWrite);
+                entity.Erase();
+            }
+
+            AppendCurves(definition, transaction, plan);
+
+            // A redefinition that GROWS the line draws the new region but leaves AutoCAD testing selection against
+            // the old, smaller bounding box — so a window over the grown part selects nothing. Forcing each
+            // reference to recompute its graphics AND extents, together with the caller's single regen, makes the
+            // whole redrawn line selectable again. (The same defect the header drawer documents.)
+            foreach (ObjectId referenceId in definition.GetBlockReferenceIds(directOnly: true, forceValidity: true))
+            {
+                var reference = (BlockReference)transaction.GetObject(referenceId, OpenMode.ForWrite);
+                reference.RecordGraphicsModified(true);
+            }
+        }
+
+        /// <summary>Inserts a reference to a definition at a point in model space.</summary>
+        internal static ObjectId InsertReference(
+            Database database, Transaction transaction, ObjectId definitionId, Point3d insertion)
+        {
+            // The same model-space lookup BlockPlacement uses, so there is one idiom for "where a reference goes".
+            var modelSpace = (BlockTableRecord)transaction.GetObject(
+                SymbolUtilityServices.GetBlockModelSpaceId(database), OpenMode.ForWrite);
+
+            var reference = new BlockReference(insertion, definitionId);
+            modelSpace.AppendEntity(reference);
+            transaction.AddNewlyCreatedDBObject(reference, true);
+
+            return reference.ObjectId;
+        }
+
+        private static void AppendCurves(
+            BlockTableRecord definition, Transaction transaction, CantileverViewPlan plan)
+        {
+            foreach (var curve in plan.Curves)
+            {
+                var entity = BuildPolyline(curve);
+
+                if (entity == null)
+                {
+                    continue;
+                }
+
+                definition.AppendEntity(entity);
+                transaction.AddNewlyCreatedDBObject(entity, true);
+            }
+        }
+
+        /// <summary>
+        /// One polyline per plan curve, in INCHES — the drawing's own unit (ADR-0005). Nothing is scaled: the plan
+        /// is already in the internal unit and converting here would be the silent reinterpretation ADR-0005
+        /// forbids.
+        /// </summary>
+        private static Polyline BuildPolyline(CantileverViewCurve curve)
+        {
+            if (curve.Points == null || curve.Points.Count < 2)
+            {
+                return null; // a single point is not a drawable outline
+            }
+
+            var polyline = new Polyline(curve.Points.Count);
+
+            for (var i = 0; i < curve.Points.Count; i++)
+            {
+                polyline.AddVertexAt(i, new Point2d(curve.Points[i].X, curve.Points[i].Y), 0.0, 0.0, 0.0);
+            }
+
+            polyline.Closed = curve.IsClosed;
+
+            // BYBLOCK on layer 0: the inserted reference decides colour, linetype and lineweight, so the user can
+            // drop the line on any layer and restyle the whole view in one move. Layer 0 is set EXPLICITLY — a new
+            // entity is born on the current layer, and inheriting whatever CLAYER happened to be would quietly
+            // break that.
+            polyline.Layer = "0";
+            polyline.ColorIndex = 0;
+            polyline.Linetype = "ByBlock";
+            polyline.LineWeight = LineWeight.ByBlock;
+
+            return polyline;
+        }
+
+        /// <summary>A readable name built from the rack, the view and the station. Nothing resolves a block by it.</summary>
+        private static string SuggestName(CantileverViewPlan plan, string rackName)
+        {
+            var name = string.IsNullOrWhiteSpace(rackName) ? "LINEA" : rackName.Trim();
+            var suffix = plan.View == CantileverViewKind.Lateral && plan.StationIndex >= 0
+                ? "_E" + (plan.StationIndex + 1).ToString(CultureInfo.InvariantCulture)
+                : string.Empty;
+
+            return Sanitize(BlockNamePrefix + name + "_" + plan.View.ToString().ToUpperInvariant() + suffix);
+        }
+
+        /// <summary>Keeps only what an AutoCAD symbol name accepts.</summary>
+        private static string Sanitize(string name)
+        {
+            var builder = new System.Text.StringBuilder(name.Length);
+
+            foreach (var ch in name)
+            {
+                builder.Append(
+                    (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') ||
+                    (ch >= '0' && ch <= '9') || ch == '_' || ch == '-'
+                        ? ch
+                        : '_');
+            }
+
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// The first free name of the form <c>base</c>, <c>base_2</c>, … A collision is not an error: two frontals
+        /// of two lines with the same name are two independent views, and neither may redefine the other's block.
+        /// </summary>
+        private static string UniqueBlockName(BlockTable blockTable, string baseName)
+        {
+            if (!blockTable.Has(baseName))
+            {
+                return baseName;
+            }
+
+            for (var suffix = 2; suffix < int.MaxValue; suffix++)
+            {
+                var candidate = baseName + "_" + suffix.ToString(CultureInfo.InvariantCulture);
+
+                if (!blockTable.Has(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            throw new InvalidOperationException("No hay un nombre de bloque libre para la vista Cantilever.");
+        }
+
+        /// <summary>Every piece kind the plan drew, for the message the user reads afterwards.</summary>
+        internal static IReadOnlyList<string> DescribeContents(CantileverViewPlan plan)
+        {
+            var counts = new SortedDictionary<string, int>(StringComparer.Ordinal);
+
+            foreach (var curve in plan.Curves)
+            {
+                var key = curve.Kind.ToString();
+                counts[key] = counts.TryGetValue(key, out var current) ? current + 1 : 1;
+            }
+
+            var lines = new List<string>(counts.Count);
+
+            foreach (var pair in counts)
+            {
+                lines.Add(pair.Key + " x" + pair.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
+            return lines;
+        }
+    }
+}

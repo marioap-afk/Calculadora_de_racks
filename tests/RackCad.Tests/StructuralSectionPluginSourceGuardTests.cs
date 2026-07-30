@@ -52,6 +52,17 @@ namespace RackCad.Tests
         private static string CommandEntryPoint =>
             ReadSource("src", "RackCad.Plugin", "RackSeccionCommands.cs");
 
+        /// <summary>
+        /// El duenno de la CARGA del catalogo neutral en el Plugin.
+        ///
+        /// I-37D la saco del flujo a su propio archivo por la misma razon por la que I-36C saco el flujo del
+        /// comando: aparecio un segundo consumidor —la linea Cantilever, que tambien se construye sobre el
+        /// catalogo neutral— y la politica de fallo cerrado solo puede tener UN duenno. Lo que la guarda fija
+        /// —que un catalogo invalido detenga el dibujo— no cambio; cambio donde vive.
+        /// </summary>
+        private static string CatalogAccess =>
+            ReadSource("src", "RackCad.Plugin", "StructuralSectionCatalogAccess.cs");
+
         // ---- I-36D: la advertencia de autoridad visual ---------------------------------------------------
 
         /// <summary>
@@ -145,14 +156,21 @@ namespace RackCad.Tests
         {
             // Fail closed. The product catalogue degrades to empty on purpose; this one must not — drawing a
             // beam from dimensions that failed validation is worse than drawing nothing (I-36A F5).
-            var source = Command;
-            var handler = source.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
+            var access = CatalogAccess;
+            var handler = access.IndexOf("catch (StructuralSectionCatalogException", StringComparison.Ordinal);
 
-            Assert.True(handler > 0, "El comando debe capturar StructuralSectionCatalogException.");
+            Assert.True(handler > 0, "El duenno de la carga debe capturar StructuralSectionCatalogException.");
 
-            var body = source.Substring(handler, Math.Min(400, source.Length - handler));
+            var body = access.Substring(handler, Math.Min(400, access.Length - handler));
             Assert.Contains("no es valido", body, StringComparison.Ordinal);
-            Assert.Contains("return;", body, StringComparison.Ordinal);
+            Assert.Contains("return false;", body, StringComparison.Ordinal);
+
+            // Y el flujo respeta ese "false": corta y no dibuja nada.
+            var source = Command;
+            var guard = source.IndexOf("StructuralSectionCatalogAccess.TryLoad", StringComparison.Ordinal);
+
+            Assert.True(guard > 0, "El flujo debe cargar el catalogo por el duenno unico.");
+            Assert.Contains("return;", source.Substring(guard, Math.Min(200, source.Length - guard)), StringComparison.Ordinal);
         }
 
         [Fact]

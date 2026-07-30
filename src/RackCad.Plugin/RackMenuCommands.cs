@@ -77,6 +77,17 @@ namespace RackCad.Plugin
                         RackSelectivoCommands.DrawSelectiveView(
                             selective.View, selective.System, selective.Design, selective.RackId, selective.RackName);
                         break;
+                    case CantileverInsertionRequest cantilever:
+                        RackCantileverCommands.DrawCantileverView(
+                            cantilever.View,
+                            cantilever.Section,
+                            cantilever.Line,
+                            cantilever.Design,
+                            cantilever.RackId,
+                            cantilever.RackName,
+                            source: null,
+                            innerSource: cantilever.SourceProject);
+                        break;
                     case PushBackInsertionRequest pushBack:
                         RackPushBackCommands.DrawPushBackView(
                             pushBack.View,
