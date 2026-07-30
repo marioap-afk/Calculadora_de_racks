@@ -798,12 +798,21 @@ namespace RackCad.Tests
                 .Single(f => f.Path.EndsWith("CantileverStationBomBuilder.cs", StringComparison.Ordinal))
                 .Code;
 
-            // A hole is not a piece. Reading the punch collections at all would be the first step to listing
-            // them.
-            Assert.DoesNotContain("MountingPunches", bom, StringComparison.Ordinal);
-            Assert.DoesNotContain("AllPunches", bom, StringComparison.Ordinal);
-            Assert.DoesNotContain("RearPlatePunches", bom, StringComparison.Ordinal);
+            // A hole is not a PIECE, and the rule is about lines rather than about mentions. The builder does
+            // read the punch collections since the I-37C review — a plate's identity includes its hole pattern,
+            // which is exactly how two plates that differ only in their holes stay different parts. What must
+            // not exist is a line or a category FOR a punch.
+            //
+            // Every BomLine is built in one of three helpers: Profile, Plate and Gusset. Counting the
+            // constructions is what makes a fourth one impossible to add quietly.
+            Assert.Equal(3, Regex.Matches(bom, @"new BomLine").Count);
+
+            Assert.DoesNotMatch(new Regex(@"PunchCategory|TroquelCategory"), bom);
+            Assert.DoesNotMatch(new Regex(@"private static BomLine Punch\("), bom);
             Assert.DoesNotContain("station.Punches", bom, StringComparison.Ordinal);
+
+            // And the punches only ever reach the plate identity, never a quantity.
+            Assert.DoesNotMatch(new Regex(@"Quantity\s*=\s*\w*[Pp]unch"), bom);
         }
 
         [Fact]

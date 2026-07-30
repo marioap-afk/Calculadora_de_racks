@@ -590,7 +590,7 @@ namespace RackCad.Tests
                 new CantileverStationCell(1, CantileverArmSide.PositiveY),
                 ArmTemplate(section: ArmDeep));
 
-            Assert.Single(change.Touched);
+            Assert.Single(change.InScope);
             Assert.Null(design.Levels[1].NegativeYOverride);
         }
 
@@ -603,8 +603,8 @@ namespace RackCad.Tests
 
             var change = matrix.Apply(CantileverStationApplyScope.Cell, cell, ArmTemplate(section: ArmDeep));
 
-            Assert.Single(change.Touched);
-            Assert.Equal(cell, change.Touched[0]);
+            Assert.Single(change.InScope);
+            Assert.Equal(cell, change.InScope[0]);
             Assert.Equal(1, matrix.OverrideCount);
             Assert.True(matrix.HasOverride(cell));
             Assert.False(matrix.HasOverride(new CantileverStationCell(1, CantileverArmSide.PositiveY)));
@@ -621,8 +621,8 @@ namespace RackCad.Tests
                 new CantileverStationCell(2, CantileverArmSide.PositiveY),
                 ArmTemplate(section: ArmDeep));
 
-            Assert.Equal(2, change.Touched.Count);
-            Assert.All(change.Touched, c => Assert.Equal(2, c.LevelIndex));
+            Assert.Equal(2, change.InScope.Count);
+            Assert.All(change.InScope, c => Assert.Equal(2, c.LevelIndex));
             Assert.Equal(2, matrix.OverrideCount);
         }
 
@@ -637,7 +637,7 @@ namespace RackCad.Tests
                 new CantileverStationCell(0, CantileverArmSide.PositiveY),
                 ArmTemplate(section: ArmDeep));
 
-            Assert.Equal(8, change.Touched.Count);
+            Assert.Equal(8, change.InScope.Count);
             Assert.Equal(8, matrix.OverrideCount);
         }
 
@@ -645,17 +645,24 @@ namespace RackCad.Tests
         public void ApplyingAScopeProducesONEAggregateResult()
         {
             // One result and not N notifications: the user made one edit.
+            //
+            // And it distinguishes REACHED from CHANGED. The template here is the station default, so the
+            // operation reaches all ten cells and modifies none — which is the correct answer and the one the
+            // earlier version could not express, because it reported a single "touched" list.
             var design = Design(faceMode: CantileverStationFaceMode.Double, levels: 5);
             var matrix = new CantileverStationArmMatrix(design);
 
             var change = matrix.Apply(
                 CantileverStationApplyScope.Station,
                 new CantileverStationCell(0, CantileverArmSide.PositiveY),
-                ArmTemplate());
+                design.DefaultArmTemplate);
 
             Assert.Equal(CantileverStationApplyScope.Station, change.Scope);
             Assert.Equal(10, change.Count);
-            Assert.Equal(change.Count, change.Touched.Count);
+            Assert.Equal(10, change.InScope.Count);
+            Assert.Empty(change.Changed);
+            Assert.True(change.IsNoOp);
+            Assert.Equal(0, matrix.OverrideCount);
         }
 
         [Theory]
@@ -678,7 +685,7 @@ namespace RackCad.Tests
             Assert.Equal(6 - expected, matrix.OverrideCount);
 
             // A restored cell FOLLOWS the default; it does not hold a copy of it.
-            foreach (var cell in change.Touched)
+            foreach (var cell in change.InScope)
             {
                 Assert.False(matrix.HasOverride(cell));
                 Assert.Same(design.DefaultArmTemplate, matrix.Effective(cell));
@@ -955,9 +962,15 @@ namespace RackCad.Tests
             Assert.Equal(2, columnBase[0].Pieces.Single(p => p.Category == CantileverStationBomBuilder.BaseCategory).Quantity);
             Assert.Equal(2, columnBase[0].Pieces.Single(p => p.Category == CantileverStationBomBuilder.GussetCategory).Quantity);
 
-            // And exactly one column bottom plate in the whole recipe.
-            Assert.Single(columnBase[0].Pieces.Where(p => p.ProfileId == "Placa inferior de columna"));
-            Assert.Equal(1, columnBase[0].Pieces.Single(p => p.ProfileId == "Placa inferior de columna").Quantity);
+            // And exactly one column bottom plate in the whole recipe. Matched by PREFIX: since the review the
+            // ProfileId of a plate carries its physical recipe — dimensions, thickness and punch pattern — so
+            // two different plates cannot collapse into one BOM line.
+            var bottomPlates = columnBase[0].Pieces
+                .Where(p => p.ProfileId.StartsWith("Placa inferior de columna", StringComparison.Ordinal))
+                .ToList();
+
+            Assert.Single(bottomPlates);
+            Assert.Equal(1, bottomPlates[0].Quantity);
         }
 
         [Fact]
@@ -1067,12 +1080,97 @@ namespace RackCad.Tests
 
             Assert.NotEmpty(station.Punches);
 
-            var text = string.Join("|",
-                bom.Lines.Select(l => l.Category + " " + l.ProfileId + " " + l.Description));
+            // A punch is not a PIECE. It has no line and no component of its own, and no category names one.
+            //
+            // It IS part of the identity of the plate that carries it, which is a different statement and the
+            // one the review asked for: two plates that differ only in their hole pattern are different parts.
+            // So the check is about lines and categories, not about whether the word appears anywhere.
+            var categories = bom.Lines.Select(l => l.Category)
+                .Concat(bom.Components.Select(c => c.Category))
+                .Distinct()
+                .ToList();
 
-            Assert.DoesNotContain("Troquel", text, StringComparison.OrdinalIgnoreCase);
-            Assert.DoesNotContain("PCH", text, StringComparison.Ordinal);
-            Assert.DoesNotContain("Punch", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(
+                new[]
+                {
+                    CantileverStationBomBuilder.ColumnBaseCategory,
+                    CantileverStationBomBuilder.ArmCategory,
+                    CantileverStationBomBuilder.ColumnCategory,
+                    CantileverStationBomBuilder.BaseCategory,
+                    CantileverStationBomBuilder.PlateCategory,
+                    CantileverStationBomBuilder.GussetCategory,
+                    CantileverStationBomBuilder.ArmProfileCategory
+                }.OrderBy(c => c, StringComparer.Ordinal),
+                categories.OrderBy(c => c, StringComparer.Ordinal));
+
+            // No line counts a hole: the quantity of every line is a count of PIECES.
+            Assert.All(bom.Lines, l => Assert.DoesNotContain(
+                "Troquel ", l.Category, StringComparison.OrdinalIgnoreCase));
+
+            // And the total piece count is far below the punch count, which it would not be if holes were pieces.
+            Assert.True(
+                bom.TotalPieces < station.Punches.Count,
+                "El BOM cuenta " + bom.TotalPieces + " piezas y la estacion tiene " + station.Punches.Count +
+                " troqueles: los agujeros no pueden estar contados como piezas.");
+        }
+
+        [Fact]
+        public void TwoPlatesThatDifferONLYInTheirHolePatternAreDifferentLines()
+        {
+            // The defect the review found: BillOfMaterials groups flat lines by (Category, ProfileId, Length),
+            // and with Length = 0 and a generic ProfileId every mounting plate in the station collapsed into
+            // ONE line — a short plate with two holes and a tall one with six became the same part.
+            var design = Design(faceMode: CantileverStationFaceMode.Single, levels: 2, clear: 12.0);
+            design.Levels[1].SetOverride(CantileverArmSide.PositiveY, ArmTemplate(count: 5));
+
+            var station = Resolve(design);
+            Assert.False(station.IsBlocked);
+
+            var mounting = CantileverStationBomBuilder.Build(station).Lines
+                .Where(l => l.ProfileId.StartsWith("Placa de conexion de brazo", StringComparison.Ordinal))
+                .ToList();
+
+            Assert.Equal(2, mounting.Count);
+            Assert.Equal(2, mounting.Select(l => l.ProfileId).Distinct(StringComparer.Ordinal).Count());
+            Assert.All(mounting, l => Assert.Equal(1, l.Quantity));
+        }
+
+        [Fact]
+        public void PlatesThatAreReallyIDENTICALStillGroup()
+        {
+            // The other half of the rule. Three identical levels means three identical mounting plates, and they
+            // have to be ONE line of quantity three — otherwise the fix above would have traded a merge bug for
+            // a split bug.
+            var station = Resolve(Design(levels: 3));
+
+            Assert.False(station.IsBlocked);
+
+            var mounting = CantileverStationBomBuilder.Build(station).Lines
+                .Where(l => l.ProfileId.StartsWith("Placa de conexion de brazo", StringComparison.Ordinal))
+                .ToList();
+
+            Assert.Single(mounting);
+            Assert.Equal(3, mounting[0].Quantity);
+        }
+
+        [Fact]
+        public void GussetsThatDifferDoNotMerge()
+        {
+            // Same reasoning for the gusset: its id carries its two legs and its thickness.
+            var thin = Resolve(Design());
+            var gusset = CantileverStationBomBuilder.Build(thin).Lines
+                .Single(l => l.Category == CantileverStationBomBuilder.GussetCategory);
+
+            Assert.Contains("Cartabon|", gusset.ProfileId, StringComparison.Ordinal);
+            Assert.Contains("t0.25", gusset.ProfileId, StringComparison.Ordinal);
+
+            var design = Design();
+            design.ColumnBaseTemplate.Base.Gusset.Thickness = 0.5;
+
+            var thick = CantileverStationBomBuilder.Build(Resolve(design)).Lines
+                .Single(l => l.Category == CantileverStationBomBuilder.GussetCategory);
+
+            Assert.NotEqual(gusset.ProfileId, thick.ProfileId);
         }
 
         [Fact]
@@ -1095,6 +1193,15 @@ namespace RackCad.Tests
                     // A profile is identified by its section id and measured by its nominal cut.
                     Assert.True(line.Length > 0.0, line.Category + " deberia tener longitud.");
                     Assert.StartsWith("AISC-", line.ProfileId, StringComparison.Ordinal);
+                }
+
+                // And a flat piece's id carries its RECIPE, never just a label: that is what stops two
+                // physically different plates from sharing a line.
+                if (line.Category == CantileverStationBomBuilder.PlateCategory ||
+                    line.Category == CantileverStationBomBuilder.GussetCategory)
+                {
+                    Assert.Contains("|", line.ProfileId, StringComparison.Ordinal);
+                    Assert.Contains("t", line.ProfileId, StringComparison.Ordinal);
                 }
             }
         }

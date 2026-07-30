@@ -69,7 +69,9 @@ namespace RackCad.Application.Systems.Cantilever
             var pieces = new List<BomLine>
             {
                 Profile(ColumnCategory, columnBase.Column),
-                Plate(columnBase.ColumnBottomPlate, "Placa inferior de columna", 1)
+                Plate(
+                    columnBase.ColumnBottomPlate, "Placa inferior de columna", 1,
+                    columnBase.ColumnBottomPlatePunches)
             };
 
             var sides = columnBase.Sides.Count;
@@ -80,8 +82,8 @@ namespace RackCad.Application.Systems.Cantilever
             var first = columnBase.Sides[0];
 
             pieces.Add(Profile(BaseCategory, first.Member, sides));
-            pieces.Add(Plate(first.FrontPlate, "Placa frontal de base", sides));
-            pieces.Add(Plate(first.RearPlate, "Placa posterior de base", sides));
+            pieces.Add(Plate(first.FrontPlate, "Placa frontal de base", sides, Array.Empty<CantileverPunchPlan>()));
+            pieces.Add(Plate(first.RearPlate, "Placa posterior de base", sides, first.RearPlatePunches));
             pieces.Add(Gusset(first.Gusset, sides));
 
             return new BomComponent
@@ -148,7 +150,7 @@ namespace RackCad.Application.Systems.Cantilever
                 // Both members of a paired body have the SAME section and the same cut, so they are one line of
                 // quantity two rather than two lines. I-37B guarantees it; this reads it rather than assuming.
                 Profile(ArmProfileCategory, arm.Body.Members[0], arm.Body.Members.Count),
-                Plate(arm.MountingPlate, "Placa de conexion de brazo", 1)
+                Plate(arm.MountingPlate, "Placa de conexion de brazo", 1, arm.MountingPunches)
             };
 
             if (arm.EndPlate != null)
@@ -158,7 +160,8 @@ namespace RackCad.Application.Systems.Cantilever
                     arm.EndPlateMode == CantileverArmEndPlateMode.Stop
                         ? "Tope de brazo"
                         : "Tapa de brazo",
-                    1));
+                    1,
+                    Array.Empty<CantileverPunchPlan>()));
             }
 
             return pieces;
@@ -210,8 +213,13 @@ namespace RackCad.Application.Systems.Cantilever
                 return 0.0;
             }
 
-            // The plate's own height minus the body depth it closes: what the stop adds.
-            var height = PlateExtents(arm.EndPlate).Height;
+            // Measured along the ARM'S OWN UP — the depth axis of its member frame — and not as the
+            // second-largest world span of a bounding box. On a sloped arm those are different numbers, and the
+            // box one shrinks as the slope grows: the stop would appear to lose height the more the arm tilted,
+            // even though the plate never changed.
+            var up = arm.Body.Members[0].Placement.Frame.AxisY;
+            var height = CantileverPlateInPlaneDimensions.ExtentAlong(arm.EndPlate.Outline, up);
+
             return Math.Max(0.0, height - arm.Body.SectionHeight);
         }
 
@@ -231,34 +239,94 @@ namespace RackCad.Application.Systems.Cantilever
             };
 
         /// <summary>
-        /// A plate line.
+        /// A plate line, identified by its PHYSICAL RECIPE.
         ///
         /// <c>Length = 0</c>, following the vigent precedent of <c>BomBuilder.AddPlate</c>: a plate has no
         /// linear length, and putting one of its two in-plane dimensions there would make it look like a bar.
-        /// Its real size lives in the DESCRIPTION, where a reader can see both dimensions and the thickness.
+        ///
+        /// But that precedent has a consequence the review caught. <c>BillOfMaterials</c> groups its flat lines
+        /// by <c>(Category, ProfileId, Length)</c>, and with <c>Length = 0</c> and a generic <c>ProfileId</c>
+        /// like "Placa de conexion de brazo" every mounting plate in the station collapsed into ONE line — a
+        /// 7 in plate with two holes and an 18 in plate with six became the same part. So the id carries the
+        /// recipe: type, both in-plane dimensions, thickness, and the punch pattern when the plate has one.
+        ///
+        /// The punches are still NOT lines of their own. They are part of the identity of the plate that carries
+        /// them, which is the only place a hole belongs.
         /// </summary>
-        private static BomLine Plate(CantileverPlatePlan plate, string what, int quantity)
+        private static BomLine Plate(
+            CantileverPlatePlan plate,
+            string what,
+            int quantity,
+            IReadOnlyList<CantileverPunchPlan> punches)
         {
-            var extents = PlateExtents(plate);
+            var size = CantileverPlateInPlaneDimensions.Measure(plate);
+            var pattern = PunchPattern(plate, punches);
 
             return new BomLine
             {
                 Category = PlateCategory,
-                ProfileId = what,
+                ProfileId = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "{0}|{1}x{2}|t{3}{4}",
+                    what, Format(size.Width), Format(size.Height), Format(plate.Thickness), pattern),
                 Description = string.Format(
                     CultureInfo.InvariantCulture,
-                    "{0} {1:0.##}\" x {2:0.##}\" x {3:0.###}\"",
-                    what, extents.Width, extents.Height, plate.Thickness),
+                    "{0} {1:0.##}\" x {2:0.##}\" x {3:0.###}\"{4}",
+                    what, size.Width, size.Height, plate.Thickness,
+                    punches.Count == 0
+                        ? string.Empty
+                        : " · " + punches.Count + " troqueles"),
                 Length = 0.0,
                 Quantity = quantity
             };
         }
 
+        /// <summary>
+        /// The punch pattern of a plate, as RELATIVE coordinates.
+        ///
+        /// Relative to the plate's own first corner and measured along its own in-plane axes, so two identical
+        /// plates bolted at different elevations — or on opposite faces of a column — come out with the same
+        /// pattern. Absolute centres would make every plate of a station unique, which is the opposite of what a
+        /// BOM is for.
+        /// </summary>
+        private static string PunchPattern(
+            CantileverPlatePlan plate, IReadOnlyList<CantileverPunchPlan> punches)
+        {
+            if (punches == null || punches.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            var size = CantileverPlateInPlaneDimensions.Measure(plate);
+            var origin = plate.Outline[0];
+
+            var holes = punches
+                .Select(punch =>
+                {
+                    var delta = punch.Centre - origin;
+                    return (U: delta.Dot(size.WidthAxis), V: delta.Dot(size.HeightAxis), punch.Datum.Diameter);
+                })
+                .OrderBy(h => h.V)
+                .ThenBy(h => h.U)
+                .Select(h => Format(h.U) + "," + Format(h.V) + "@" + Format(h.Diameter));
+
+            return "|pch" + punches.Count + ":" + string.Join(";", holes);
+        }
+
+        /// <summary>
+        /// A gusset line, identified by its two legs and its thickness.
+        ///
+        /// Same reason as the plate: a shared <c>ProfileId</c> of "Cartabon" plus <c>Length = 0</c> merged every
+        /// gusset in the station into one line, however different their legs.
+        /// </summary>
         private static BomLine Gusset(CantileverGussetPlan gusset, int quantity) =>
             new BomLine
             {
                 Category = GussetCategory,
-                ProfileId = "Cartabon",
+                ProfileId = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Cartabon|{0}x{1}|t{2}",
+                    Format(gusset.VerticalLeg), Format(gusset.HorizontalLeg), Format(gusset.Thickness)),
                 Description = string.Format(
                     CultureInfo.InvariantCulture,
                     "Cartabon {0:0.##}\" x {1:0.##}\" x {2:0.###}\"",
@@ -268,30 +336,17 @@ namespace RackCad.Application.Systems.Cantilever
             };
 
         /// <summary>
-        /// The two IN-PLANE dimensions of a plate, largest first.
+        /// The plate's size as the BOM signature spells it, measured IN ITS OWN PLANE.
         ///
-        /// Measured from the outline and sorted, so a plate lying in XZ and one lying in XY describe themselves
-        /// the same way. Sorting matters: without it the same physical plate would produce two different
-        /// descriptions depending on which plane it happens to occupy, and the BOM would split one line in two.
+        /// The world-axis bounding box it replaced was only correct while a plate was parallel to a world plane.
+        /// An end plate is perpendicular to a sloped axis, so its world spans are projections: tilting the arm
+        /// made a 10 in cap report 9.8 in and then 9.4 in, and the BOM split one physical plate into several
+        /// while the plate stayed the same size.
         /// </summary>
-        private static (double Width, double Height) PlateExtents(CantileverPlatePlan plate)
-        {
-            var spans = new[]
-            {
-                plate.Outline.Max(p => p.X) - plate.Outline.Min(p => p.X),
-                plate.Outline.Max(p => p.Y) - plate.Outline.Min(p => p.Y),
-                plate.Outline.Max(p => p.Z) - plate.Outline.Min(p => p.Z)
-            }
-            .OrderByDescending(v => v)
-            .ToList();
-
-            return (spans[0], spans[1]);
-        }
-
         private static string PlateSize(CantileverPlatePlan plate)
         {
-            var extents = PlateExtents(plate);
-            return Format(extents.Width) + "x" + Format(extents.Height);
+            var size = CantileverPlateInPlaneDimensions.Measure(plate);
+            return Format(size.Width) + "x" + Format(size.Height);
         }
 
         // ---- descriptions --------------------------------------------------------------------------------

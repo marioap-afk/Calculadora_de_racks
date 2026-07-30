@@ -60,20 +60,42 @@ namespace RackCad.Application.Systems.Cantilever
     public sealed class CantileverStationMatrixChange
     {
         internal CantileverStationMatrixChange(
-            CantileverStationApplyScope scope, IReadOnlyList<CantileverStationCell> touched)
+            CantileverStationApplyScope scope,
+            IReadOnlyList<CantileverStationCell> inScope,
+            IReadOnlyList<CantileverStationCell> changed)
         {
             Scope = scope;
-            Touched = touched;
+            InScope = inScope;
+            Changed = changed;
         }
 
         public CantileverStationApplyScope Scope { get; }
 
-        /// <summary>The cells whose effective arm may have changed, in deterministic order.</summary>
-        public IReadOnlyList<CantileverStationCell> Touched { get; }
+        /// <summary>
+        /// Every cell the operation REACHED, in deterministic order.
+        ///
+        /// It is not the same as <see cref="Changed"/>, and conflating the two was a defect: applying the
+        /// default to a cell that already follows it reaches the cell and changes nothing. A window that
+        /// refreshed <c>InScope</c> is correct; a window that reported it as "N cells modified" would be lying.
+        /// </summary>
+        public IReadOnlyList<CantileverStationCell> InScope { get; }
 
-        public int Count => Touched.Count;
+        /// <summary>
+        /// The cells whose stored override actually MOVED — created, replaced or cleared.
+        ///
+        /// Empty means the design is untouched, which is what makes re-applying the same value a genuine no-op
+        /// rather than a write that happens to produce the same bytes.
+        /// </summary>
+        public IReadOnlyList<CantileverStationCell> Changed { get; }
 
-        public override string ToString() => Scope + " → " + Count + " celda(s)";
+        /// <summary>How many cells the operation reached. See <see cref="InScope"/>.</summary>
+        public int Count => InScope.Count;
+
+        /// <summary>Whether anything in the design moved.</summary>
+        public bool IsNoOp => Changed.Count == 0;
+
+        public override string ToString() =>
+            Scope + " → " + InScope.Count + " en alcance, " + Changed.Count + " modificada(s)";
     }
 
     /// <summary>
@@ -152,8 +174,12 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>
         /// Writes <paramref name="template"/> as the override of every cell in scope.
         ///
-        /// It stores a DEEP COPY per cell. Sharing one instance across cells would make a later edit of one
-        /// cell silently change the others, which is the same aliasing bug a shared default would cause.
+        /// It stores a DEEP COPY per cell. Sharing one instance across cells would make a later edit of one cell
+        /// silently change the others, which is the same aliasing bug a shared default would cause.
+        ///
+        /// And it stores NOTHING when the template is structurally equal to the station default: the contract
+        /// says only differences are persisted, and a cell holding a copy of the default has stopped following
+        /// it — so the next change to the default would leave that cell behind, invisibly (ADR-0026, D3).
         /// </summary>
         public CantileverStationMatrixChange Apply(
             CantileverStationApplyScope scope,
@@ -165,7 +191,9 @@ namespace RackCad.Application.Systems.Cantilever
                 throw new ArgumentNullException(nameof(template));
             }
 
-            return Write(scope, anchor, cell => template.DeepCopy());
+            var followsDefault = CantileverArmTemplateComparer.AreEqual(template, _design.DefaultArmTemplate);
+
+            return Write(scope, anchor, _ => followsDefault ? null : template.DeepCopy());
         }
 
         /// <summary>
@@ -177,22 +205,39 @@ namespace RackCad.Application.Systems.Cantilever
         /// </summary>
         public CantileverStationMatrixChange Restore(
             CantileverStationApplyScope scope, CantileverStationCell anchor) =>
-            Write(scope, anchor, cell => null);
+            Write(scope, anchor, _ => null);
 
+        /// <summary>
+        /// The one writer. It COMPARES before storing, so a write that would not change anything does not
+        /// happen at all — the design stays byte-identical and the caller is told nothing moved.
+        /// </summary>
         private CantileverStationMatrixChange Write(
             CantileverStationApplyScope scope,
             CantileverStationCell anchor,
             Func<CantileverStationCell, CantileverArmTemplateDesign> value)
         {
-            var touched = new List<CantileverStationCell>();
+            var inScope = InScope(scope, anchor);
+            var changed = new List<CantileverStationCell>();
 
-            foreach (var cell in InScope(scope, anchor))
+            foreach (var cell in inScope)
             {
-                _design.Levels[cell.LevelIndex].SetOverride(cell.Side, value(cell));
-                touched.Add(cell);
+                var level = _design.Levels[cell.LevelIndex];
+                var existing = level.OverrideFor(cell.Side);
+                var wanted = value(cell);
+
+                // Structural, never by reference. Two deep copies of one template are different objects and
+                // the same override, and treating them as different is how a design gets dirtied by an edit
+                // that changed nothing.
+                if (CantileverArmTemplateComparer.AreEqual(existing, wanted))
+                {
+                    continue;
+                }
+
+                level.SetOverride(cell.Side, wanted);
+                changed.Add(cell);
             }
 
-            return new CantileverStationMatrixChange(scope, touched);
+            return new CantileverStationMatrixChange(scope, inScope, changed);
         }
 
         /// <summary>

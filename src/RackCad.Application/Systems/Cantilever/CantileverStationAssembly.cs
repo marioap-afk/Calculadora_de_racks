@@ -173,16 +173,37 @@ namespace RackCad.Application.Systems.Cantilever
                 return "BLOCKED:" + string.Join(",", Diagnostics.Where(d => d.IsBlocking).Select(d => d.Code));
             }
 
+            // The arms are IN the signature, and that is the point of it. The earlier version listed only the
+            // layout plans, so two stations whose levels landed on the same indices signed identically even when
+            // every arm on them was a different piece: a longer cut, a stop instead of a cap, a thicker end
+            // plate, another profile of the same depth. All of those change what gets built and none of them
+            // changed the signature.
+            //
+            // The BOM is NOT used as the authority here — it groups and would hide a difference between two
+            // arms that share a recipe — but the signature has to move whenever any physical piece does.
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "{0};h={1:0.######}/min={2:0.######};clear={3:0.######};{4};levels={5}",
+                "{0}{1};h={2:0.######}/min={3:0.######};clear={4:0.######};{5};levels={6}",
                 FaceMode,
+                SingleSide == null ? string.Empty : ":" + SingleSide,
                 ResolvedColumnHeight,
                 MinimumColumnHeight,
                 RequestedClearHeight,
                 ColumnBase.Signature(),
-                string.Join("+", Levels.Select(l => l.Plan.Signature())));
+                string.Join("+", Levels.Select(LevelSignature)));
         }
+
+        /// <summary>
+        /// One level's signature: its layout plan, then the arms actually resolved on it, side by side in
+        /// deterministic order.
+        ///
+        /// The real clears travel inside the plan, so they are covered here too.
+        /// </summary>
+        private static string LevelSignature(CantileverStationResolvedLevel level) =>
+            level.Plan.Signature() + "{" +
+            string.Join("/", level.Arms
+                .OrderBy(a => a.Side)
+                .Select(a => a.Side + "=" + a.Signature())) + "}";
 
         public override string ToString() =>
             "Station " + FaceMode + " levels=" + Levels.Count +
