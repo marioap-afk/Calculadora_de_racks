@@ -150,6 +150,37 @@ fases:
   15: PENDIENTE-paquete-de-validacion-manual-y-evidencia-final
 
 # --------------------------------------------------------------------------------------------------------
+# ESTADO REAL AL CERRAR ESTA SESION. Lo que falta, dicho sin adornos.
+# --------------------------------------------------------------------------------------------------------
+estado_de_la_sesion_de_apertura:
+  hecho: >-
+    fase-1-reclamo-6650020 · fase-2-contrato-ADR-0027-ADR-0028-decisiones-12-1-a-12-44-ROADMAP-e-
+    indices-38260f7 · la-formula-de-paneles-VERIFICADA-numericamente-contra-las-doce-filas-y-el-caso-264
+  falta: >-
+    fases-3-a-15 · auditoria-de-costuras · contratos-de-Domain · autoridad-de-paneles ·
+    resolver-de-linea-e-intervalos · placas-y-separadores · paneles-tensores-y-adaptadores ·
+    matriz-y-BOM · persistencia-y-registro · planes-de-vista · editor · materializacion-en-AutoCAD ·
+    pruebas-veinte-regresiones-en-rojo-y-guardas · paquete-de-validacion-manual
+  por_que_no_esta_hecho: >-
+    I-37D-es-XL-y-toca-Domain-Application-UI-Plugin-persistencia-registro-tres-vistas-editor-y-AutoCAD ·
+    las-tres-subiniciativas-anteriores-ocuparon-una-sesion-COMPLETA-cada-una-y-NINGUNA-tocaba-UI-ni-
+    Plugin · no-cabe-en-una-sola-corrida-y-fingir-lo-contrario-produciria-codigo-sin-revisar
+  auditoria_de_costuras:
+    run_id: wf_23c7c163-994
+    estado: EN-CURSO-al-cerrar-la-sesion
+    areas: registry · persistence · editor-shell · views · plugin-commands · catalogs · bom-ui · blocks · guards
+    transcripciones: >-
+      .claude/projects/D--Documentos-Codex-Calculadora-de-racks/<sesion>/subagents/workflows/
+      wf_23c7c163-994 · leer journal.jsonl antes de suponer que un resultado esta vacio
+    para_que: >-
+      obtener-los-nombres-EXACTOS-del-registro-persistencia-shell-vistas-Drawing-comandos-y-catalogos ·
+      ADR-0028-decide-REGLAS-y-deja-los-nombres-a-esta-auditoria-a-proposito
+  siguiente_sesion: >-
+    retomar-en-la-fase-3-sobre-esta-misma-rama-y-worktree · el-contrato-y-los-dos-ADR-ya-fijan-todas-las-
+    decisiones-normativas-asi-que-la-implementacion-no-necesita-volver-a-preguntar-nada-al-Owner-hasta-
+    la-validacion-manual
+
+# --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
 # --------------------------------------------------------------------------------------------------------
 pendiente_del_owner:
