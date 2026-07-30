@@ -88,6 +88,33 @@ namespace RackCad.Plugin.Drawing.Cantilever
             }
         }
 
+        /// <summary>
+        /// Creates the block definition of a plan under an EXPLICIT base name.
+        ///
+        /// The stand-alone component insertion names its blocks itself — the name carries the component kind, its
+        /// designation, the view and its own id — so it needs the same materialisation with its own label. The
+        /// uniqueness rule is the shared one: a collision is not an error, it is two independent pieces.
+        /// </summary>
+        internal static ObjectId CreateBlockDefinitionNamed(
+            Database database, Transaction transaction, CantileverViewPlan plan, string baseName, out string blockName)
+        {
+            if (plan == null)
+            {
+                throw new ArgumentNullException(nameof(plan));
+            }
+
+            var blockTable = (BlockTable)transaction.GetObject(database.BlockTableId, OpenMode.ForWrite);
+            blockName = UniqueBlockName(blockTable, Sanitize(baseName));
+
+            var definition = new BlockTableRecord { Name = blockName, Origin = Point3d.Origin };
+            var definitionId = blockTable.Add(definition);
+            transaction.AddNewlyCreatedDBObject(definition, true);
+
+            AppendCurves(definition, transaction, plan);
+
+            return definitionId;
+        }
+
         /// <summary>Inserts a reference to a definition at a point in model space.</summary>
         internal static ObjectId InsertReference(
             Database database, Transaction transaction, ObjectId definitionId, Point3d insertion)

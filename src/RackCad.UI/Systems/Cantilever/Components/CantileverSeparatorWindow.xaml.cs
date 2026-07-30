@@ -1,10 +1,12 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Domain.Systems.Cantilever;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI.Systems.Cantilever.Components
 {
@@ -52,6 +54,10 @@ namespace RackCad.UI.Systems.Cantilever.Components
 
         /// <summary>The accepted bracing design, or null when the user cancelled.</summary>
         public CantileverBracingDesign Result { get; private set; }
+
+        /// <summary>The stand-alone insertion the user asked for, or null. Carries its OWN identity.</summary>
+        public CantileverComponentInsertionRequest ComponentInsertion { get; private set; }
+
 
         internal CantileverBracingDesign Working => working;
 
@@ -113,15 +119,48 @@ namespace RackCad.UI.Systems.Cantilever.Components
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
             Result = working.DeepCopy();
-            DialogResult = true;
-            Close();
+            CloseWith(true);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Result = null;
-            DialogResult = false;
-            Close();
+            CloseWith(false);
+        }
+
+
+        /// <summary>
+        /// Draws the separator ALONE, as a non-editable block with its own identity.
+        ///
+        /// Only from a RESOLVED separator: its cut length is derived from the holes of two column plates, so a
+        /// separator with no interval has no length and there is nothing honest to draw.
+        /// </summary>
+        private void InsertComponent_Click(object sender, RoutedEventArgs e)
+        {
+            if (resolved == null)
+            {
+                DiagnosticsText.Text =
+                    "Resuelve primero la línea: el corte del separador sale de los agujeros de sus dos placas.";
+                return;
+            }
+
+            var views = new[] { CantileverViewKind.Frontal, CantileverViewKind.Planta }
+                .Select(v => CantileverViewPlanBuilder.BuildSeparator(resolved, v, geometry))
+                .Where(p => !p.IsEmpty)
+                .ToList();
+
+            if (views.Count == 0)
+            {
+                DiagnosticsText.Text = "El separador no dibuja nada en ninguna vista.";
+                return;
+            }
+
+            ComponentInsertion = new CantileverComponentInsertionRequest(
+                CantileverComponentKind.Separator, views,
+                CantileverColumnBaseEditorState.Designation(working.SeparatorSectionId));
+
+            Result = working.DeepCopy();
+            CloseWith(true);
         }
 
         private void Restore_Click(object sender, RoutedEventArgs e)
@@ -129,5 +168,28 @@ namespace RackCad.UI.Systems.Cantilever.Components
             working = original.DeepCopy();
             LoadFromWorking();
         }
+
+        /// <summary>
+        /// Closes reporting <paramref name="result"/> as the dialog outcome.
+        ///
+        /// Setting <see cref="Window.DialogResult"/> THROWS when the window was not shown with
+        /// <c>ShowDialog</c> — a caller that merely constructed it, or a test. The contract the caller reads is
+        /// <c>Result</c> and the insertion request; the dialog flag is a convenience of the modal path, so it is
+        /// set when it can be and skipped when it cannot, instead of turning a legitimate use into an exception.
+        /// </summary>
+        private void CloseWith(bool result)
+        {
+            try
+            {
+                DialogResult = result;
+            }
+            catch (InvalidOperationException)
+            {
+                // Not shown as a dialog: `Result` already carries the outcome.
+            }
+
+            Close();
+        }
+
     }
 }

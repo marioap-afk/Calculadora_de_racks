@@ -1,11 +1,13 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Domain.Systems.Cantilever;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI.Systems.Cantilever.Components
 {
@@ -58,6 +60,10 @@ namespace RackCad.UI.Systems.Cantilever.Components
 
         /// <summary>The accepted bracing design, or null when the user cancelled.</summary>
         public CantileverBracingDesign Result { get; private set; }
+
+        /// <summary>The stand-alone insertion the user asked for, or null. Carries its OWN identity.</summary>
+        public CantileverComponentInsertionRequest ComponentInsertion { get; private set; }
+
 
         internal CantileverBracingDesign Working => working;
 
@@ -172,15 +178,47 @@ namespace RackCad.UI.Systems.Cantilever.Components
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
             Result = working.DeepCopy();
-            DialogResult = true;
-            Close();
+            CloseWith(true);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Result = null;
-            DialogResult = false;
-            Close();
+            CloseWith(false);
+        }
+
+
+        /// <summary>
+        /// Draws the brace ALONE, as a non-editable block with its own identity.
+        ///
+        /// ONE view: the plane of the brace, which is the frontal. The two diagonals of a panel share that plane
+        /// by decision (ADR-0027, D6), so a second projection would add nothing and invent a drawing nobody uses.
+        /// </summary>
+        private void InsertComponent_Click(object sender, RoutedEventArgs e)
+        {
+            if (resolved == null)
+            {
+                DiagnosticsText.Text =
+                    "Resuelve primero la línea: el corte del tensor sale de los agujeros de sus separadores.";
+                return;
+            }
+
+            var plan = CantileverViewPlanBuilder.BuildBrace(resolved, CantileverViewKind.Frontal, geometry);
+
+            if (plan.IsEmpty)
+            {
+                DiagnosticsText.Text = "El tensor no dibuja nada.";
+                return;
+            }
+
+            ComponentInsertion = new CantileverComponentInsertionRequest(
+                CantileverComponentKind.Brace, new[] { plan },
+                working.BraceKind == CantileverBraceBodyKind.ColdRolledRound
+                    ? "CR_" + (working.ColdRolled?.Diameter ?? 0.0).ToString("0.###", CultureInfo.InvariantCulture)
+                    : CantileverColumnBaseEditorState.Designation(working.BraceSectionId));
+
+            Result = working.DeepCopy();
+            CloseWith(true);
         }
 
         private void Restore_Click(object sender, RoutedEventArgs e)
@@ -188,5 +226,28 @@ namespace RackCad.UI.Systems.Cantilever.Components
             working = original.DeepCopy();
             LoadFromWorking();
         }
+
+        /// <summary>
+        /// Closes reporting <paramref name="result"/> as the dialog outcome.
+        ///
+        /// Setting <see cref="Window.DialogResult"/> THROWS when the window was not shown with
+        /// <c>ShowDialog</c> — a caller that merely constructed it, or a test. The contract the caller reads is
+        /// <c>Result</c> and the insertion request; the dialog flag is a convenience of the modal path, so it is
+        /// set when it can be and skipped when it cannot, instead of turning a legitimate use into an exception.
+        /// </summary>
+        private void CloseWith(bool result)
+        {
+            try
+            {
+                DialogResult = result;
+            }
+            catch (InvalidOperationException)
+            {
+                // Not shown as a dialog: `Result` already carries the outcome.
+            }
+
+            Close();
+        }
+
     }
 }

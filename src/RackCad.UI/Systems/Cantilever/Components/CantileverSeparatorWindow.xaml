@@ -76,6 +76,10 @@
             <DockPanel>
                 <Button x:Name="RestoreButton" Content="Restaurar" DockPanel.Dock="Left" MinWidth="110"
                         Style="{StaticResource SecondaryButtonStyle}" Click="Restore_Click" />
+                <Button x:Name="InsertButton" Content="Insertar sólo esta pieza" DockPanel.Dock="Left" MinWidth="180"
+                        Margin="8,0,0,0" Style="{StaticResource SecondaryButtonStyle}" Click="InsertComponent_Click"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Dibuja la pieza sola, como bloque independiente y NO editable. No modifica la línea que estás editando." />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="AcceptButton" Content="Aceptar" MinWidth="110" Margin="8,0,0,0"
                             Style="{StaticResource PrimaryButtonStyle}" Click="Accept_Click" />

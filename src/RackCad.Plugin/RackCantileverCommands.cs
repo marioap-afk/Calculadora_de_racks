@@ -4,6 +4,7 @@ using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
@@ -52,6 +53,14 @@ namespace RackCad.Plugin
             {
                 var window = new RackCantileverWindow(canInsertInAutoCad: true);
                 AcApplication.ShowModalWindow(window);
+
+                // A stand-alone component travels through the same seam and is drawn here, after the modal
+                // closed, because its point prompt needs the editor free.
+                if (window.ComponentInsertion != null)
+                {
+                    DrawCantileverComponent(window.ComponentInsertion);
+                    return;
+                }
 
                 if (!(window.InsertionRequest is CantileverInsertionRequest request))
                 {
@@ -367,6 +376,97 @@ namespace RackCad.Plugin
                   + erasedPhantoms.ToString(CultureInfo.InvariantCulture) + ")."
                 : "\nRackCad: no se pudo actualizar la linea Cantilever.");
         }
+
+
+        /// <summary>
+        /// Draws ONE Cantilever component on its own, as a NON-EDITABLE block.
+        ///
+        /// It follows the <c>RACKSECCION</c> precedent exactly, and the differences from a line insertion are the
+        /// point of it:
+        ///
+        /// <list type="bullet">
+        /// <item>the point is asked FIRST, so a cancelled prompt creates nothing at all — there is no definition to
+        /// clean up afterwards and no phantom block for any scan to find;</item>
+        /// <item><b>no payload is written.</b> No <c>RackBlockData</c>, no envelope, no <c>KindCantilever</c>: this
+        /// piece is not a rack, so <c>RACKLISTA</c> will not list it and <c>RACKEDITAR</c> will not offer to edit
+        /// it. Promising a round-trip that does not exist would be worse than not offering the insertion;</item>
+        /// <item>the block NAME carries the component's OWN id — never the line's — plus its kind, designation and
+        /// view, which is what identifies the piece as drawn by RackCad;</item>
+        /// <item>the views are laid out left to right from the picked point, so two of them do not land on top of
+        /// each other.</item>
+        /// </list>
+        ///
+        /// It materialises the plans the PREVIEW drew. There is no second projection here.
+        /// </summary>
+        internal static void DrawCantileverComponent(CantileverComponentInsertionRequest request)
+        {
+            var document = AcApplication.DocumentManager.MdiActiveDocument;
+
+            if (document == null || request == null)
+            {
+                return;
+            }
+
+            var editor = document.Editor;
+            var options = new PromptPointOptions("\nPunto de insercion del componente Cantilever: ")
+            {
+                AllowNone = false
+            };
+
+            var pick = editor.GetPoint(options);
+
+            if (pick.Status != PromptStatus.OK)
+            {
+                editor.WriteMessage("\nRackCad: insercion cancelada; no se dejo nada en el dibujo.");
+                return;
+            }
+
+            // I-05: the plans are in inches and nothing converts them.
+            RackUnitsGuard.WarnIfNotInches(document);
+
+            try
+            {
+                var names = new List<string>();
+                var offsetX = 0.0;
+
+                using (document.LockDocument())
+                {
+                    using (var transaction = document.Database.TransactionManager.StartTransaction())
+                    {
+                        foreach (var plan in request.Views)
+                        {
+                            var definitionId = CantileverViewMaterializer.CreateBlockDefinitionNamed(
+                                document.Database, transaction, plan, request.BlockName(plan), out var blockName);
+
+                            CantileverViewMaterializer.InsertReference(
+                                document.Database, transaction, definitionId,
+                                new Point3d(pick.Value.X + offsetX, pick.Value.Y, pick.Value.Z));
+
+                            names.Add(blockName);
+
+                            // A gap of a tenth of the width, so the views read as separate drawings of one piece.
+                            offsetX += plan.Bounds.Width * 1.1 + ViewGapInches;
+                        }
+
+                        transaction.Commit();
+                    }
+
+                    SystemBlockWriter.ApplyRegen(document, regen: true);
+                }
+
+                editor.WriteMessage("\nRackCad: " + request.Describe() + ". Bloques: " + string.Join(", ", names) +
+                                    ". Es una pieza SUELTA: no es una linea Cantilever, no aparece en RACKLISTA y " +
+                                    "RACKEDITAR no la abre.");
+            }
+            catch (System.Exception ex)
+            {
+                // Nothing was committed, so nothing partial reached the drawing.
+                editor.WriteMessage("\nRackCad: no se pudo dibujar el componente Cantilever. " + ex.Message);
+            }
+        }
+
+        /// <summary>The gap between two views of the same loose component, in inches.</summary>
+        private const double ViewGapInches = 6.0;
 
         /// <summary>Wraps a Cantilever line in the uniform embed envelope; reuses the project store for the JSON.</summary>
         internal static string BuildCantileverPayload(

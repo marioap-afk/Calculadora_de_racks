@@ -81,8 +81,17 @@ namespace RackCad.Tests
             return design;
         }
 
+        /// <summary>
+        /// SHA-256 of the content, with the LINE ENDINGS normalized first.
+        ///
+        /// <c>Utf8JsonWriter</c> indents with the platform's newline on .NET 8, so a JSON pin taken on Windows
+        /// does not match the same JSON on the Linux runner. That is a defect of the PIN and not of the product:
+        /// the bytes that differ are whitespace nobody persists meaning in. Normalizing keeps the pin portable
+        /// and still catches every real change of content — a renamed key, a lost field, a moved value.
+        /// </summary>
         private static string Sha(string content) =>
-            Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(content)));
+            Convert.ToHexString(SHA256.HashData(
+                Encoding.UTF8.GetBytes(content.Replace("\r\n", "\n").Replace("\r", "\n"))));
 
         /// <summary>The physical content of a view, WITHOUT punches. See the class remarks.</summary>
         private static string ViewSignatureWithoutPunches(CantileverViewPlan plan) =>
@@ -114,12 +123,16 @@ namespace RackCad.Tests
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
             ["frontal-doble"] = "7D74B31D65273817192792F2871DCB321227EAE8BE8BD2BFA41A14394A1B53AE",
 
-            // MOVIDO A PROPOSITO en la ronda 2, y es el UNICO pin que se movio. `BaseFollowsColumn` es
-            // intencion nueva del diseno y se persiste, asi que el JSON gana una clave. El pin anterior,
-            // 874066E2…, es el de antes de que la base pudiera seguir a la columna. Los ocho pines de
-            // resolucion, BOM y planes fisicos NO se movieron: la regla es del editor y no cambia lo que la
-            // linea resuelve, y hay una prueba que lo comprueba.
-            ["persistencia"] = "E7146CB36C0B9C1A385E2040EA8D4C8BA8E9DAD4C216C16F5CBCEE4A7C3D45F8"
+            // MOVIDO A PROPOSITO en la ronda 2, y es el UNICO pin que se movio por contenido.
+            // `BaseFollowsColumn` es intencion nueva del diseno y se persiste, asi que el JSON gana una clave.
+            // El pin anterior, 874066E2…, es el de antes de que la base pudiera seguir a la columna. Los ocho
+            // pines de resolucion, BOM y planes fisicos NO se movieron: la regla es del editor y no cambia lo
+            // que la linea resuelve, y hay una prueba que lo comprueba.
+            //
+            // Movido una SEGUNDA vez —de E7146CB3… a este— al normalizar los saltos de linea antes de hashear:
+            // la CI corre en Linux, `Utf8JsonWriter` indenta con el salto de la plataforma, y el pin tomado en
+            // Windows no podia coincidir. Era un defecto del pin, no del producto; el contenido no cambio.
+            ["persistencia"] = "C8D5A3C8CD67E8C01FE873A3B02545B01F39D5D1DB9099EE9097F36C1E9FF2AC"
         };
 
         // ---- 1. Las resoluciones ------------------------------------------------------------------------

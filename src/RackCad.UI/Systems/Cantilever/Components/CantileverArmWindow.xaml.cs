@@ -6,6 +6,7 @@ using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Domain.Systems.Cantilever;
+using RackCad.UI.Editor;
 using RackCad.UI.Controls;
 
 namespace RackCad.UI.Systems.Cantilever.Components
@@ -71,6 +72,10 @@ namespace RackCad.UI.Systems.Cantilever.Components
 
         /// <summary>The accepted arm, or null when the user cancelled.</summary>
         public CantileverArmTemplateDesign Result { get; private set; }
+
+        /// <summary>The stand-alone insertion the user asked for, or null. Carries its OWN identity.</summary>
+        public CantileverComponentInsertionRequest ComponentInsertion { get; private set; }
+
 
         internal CantileverArmTemplateDesign Working => working;
 
@@ -299,15 +304,61 @@ namespace RackCad.UI.Systems.Cantilever.Components
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
             Result = working.DeepCopy();
-            DialogResult = true;
-            Close();
+            CloseWith(true);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Result = null;
-            DialogResult = false;
-            Close();
+            CloseWith(false);
+        }
+
+
+        /// <summary>
+        /// Draws the arm ALONE, as a non-editable block with its own identity.
+        ///
+        /// Its main view is the LATERAL — that is where an arm's cut, its slope and its plate read. The frontal
+        /// and the planta are added only when they say something the lateral does not: a redundant projection is
+        /// two blocks the user has to delete, and ADR-0027 D6 already refuses to draw what nobody needs.
+        /// </summary>
+        private void InsertComponent_Click(object sender, RoutedEventArgs e)
+        {
+            if (assembly == null || assembly.Diagnostics.Any(d => d.IsBlocking))
+            {
+                DiagnosticsText.Text = "No se puede insertar un brazo que no se resolvió.";
+                return;
+            }
+
+            var lateral = CantileverViewPlanBuilder.BuildArm(assembly, CantileverViewKind.Lateral, geometry);
+            var views = new System.Collections.Generic.List<CantileverViewPlan>();
+
+            if (!lateral.IsEmpty)
+            {
+                views.Add(lateral);
+            }
+
+            foreach (var kind in new[] { CantileverViewKind.Frontal, CantileverViewKind.Planta })
+            {
+                var plan = CantileverViewPlanBuilder.BuildArm(assembly, kind, geometry);
+
+                if (!plan.IsEmpty && views.All(v => v.Signature() != plan.Signature()))
+                {
+                    views.Add(plan);
+                }
+            }
+
+            if (views.Count == 0)
+            {
+                DiagnosticsText.Text = "El brazo no dibuja nada en ninguna vista.";
+                return;
+            }
+
+            ComponentInsertion = new CantileverComponentInsertionRequest(
+                CantileverComponentKind.Arm, views,
+                CantileverColumnBaseEditorState.Designation(working.Body?.SectionId));
+
+            Result = working.DeepCopy();
+            CloseWith(true);
         }
 
         private void Restore_Click(object sender, RoutedEventArgs e)
@@ -315,5 +366,28 @@ namespace RackCad.UI.Systems.Cantilever.Components
             working = original.DeepCopy();
             LoadFromWorking();
         }
+
+        /// <summary>
+        /// Closes reporting <paramref name="result"/> as the dialog outcome.
+        ///
+        /// Setting <see cref="Window.DialogResult"/> THROWS when the window was not shown with
+        /// <c>ShowDialog</c> — a caller that merely constructed it, or a test. The contract the caller reads is
+        /// <c>Result</c> and the insertion request; the dialog flag is a convenience of the modal path, so it is
+        /// set when it can be and skipped when it cannot, instead of turning a legitimate use into an exception.
+        /// </summary>
+        private void CloseWith(bool result)
+        {
+            try
+            {
+                DialogResult = result;
+            }
+            catch (InvalidOperationException)
+            {
+                // Not shown as a dialog: `Result` already carries the outcome.
+            }
+
+            Close();
+        }
+
     }
 }

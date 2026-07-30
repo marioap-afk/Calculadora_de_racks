@@ -8,6 +8,7 @@ using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.UI.Controls;
+using RackCad.UI.Editor;
 
 namespace RackCad.UI.Systems.Cantilever.Components
 {
@@ -75,6 +76,9 @@ namespace RackCad.UI.Systems.Cantilever.Components
 
         /// <summary>Set when the user asked to draw this component on its own.</summary>
         public bool InsertRequested { get; private set; }
+
+        /// <summary>The stand-alone insertion the user asked for, or null. Carries its OWN identity.</summary>
+        public CantileverComponentInsertionRequest ComponentInsertion { get; private set; }
 
         // ---- Test seams -------------------------------------------------------------------------------------
 
@@ -364,15 +368,13 @@ namespace RackCad.UI.Systems.Cantilever.Components
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
             Result = state.Accept();
-            DialogResult = true;
-            Close();
+            CloseWith(true);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Result = null; // cancelling mutates nothing: the state edited a copy
-            DialogResult = false;
-            Close();
+            CloseWith(false);
         }
 
         private void Restore_Click(object sender, RoutedEventArgs e)
@@ -381,6 +383,13 @@ namespace RackCad.UI.Systems.Cantilever.Components
             LoadFromState();
         }
 
+        /// <summary>
+        /// Draws the column–base ALONE, as a non-editable block with its own identity.
+        ///
+        /// The three views are built from the assembly the preview is already showing, so what reaches the
+        /// drawing is the picture the user approved. It does not touch the line being edited: the accepted
+        /// template still travels in <see cref="Result"/>, and the insertion is a separate request.
+        /// </summary>
         private void InsertComponent_Click(object sender, RoutedEventArgs e)
         {
             if (assembly == null || assembly.IsBlocked)
@@ -389,10 +398,47 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 return;
             }
 
+            var views = new[] { CantileverViewKind.Frontal, CantileverViewKind.Lateral, CantileverViewKind.Planta }
+                .Select(v => CantileverViewPlanBuilder.BuildColumnBase(assembly, v, geometry))
+                .Where(p => !p.IsEmpty)
+                .ToList();
+
+            if (views.Count == 0)
+            {
+                DiagnosticsText.Text = "La pieza no dibuja nada en ninguna vista.";
+                return;
+            }
+
+            ComponentInsertion = new CantileverComponentInsertionRequest(
+                CantileverComponentKind.ColumnBase, views,
+                CantileverColumnBaseEditorState.Designation(state.ColumnSectionId));
+
             Result = state.Accept();
             InsertRequested = true;
-            DialogResult = true;
+            CloseWith(true);
+        }
+
+        /// <summary>
+        /// Closes reporting <paramref name="result"/> as the dialog outcome.
+        ///
+        /// Setting <see cref="Window.DialogResult"/> THROWS when the window was not shown with
+        /// <c>ShowDialog</c> — a caller that merely constructed it, or a test. The contract the caller reads is
+        /// <c>Result</c> and the insertion request; the dialog flag is a convenience of the modal path, so it is
+        /// set when it can be and skipped when it cannot, instead of turning a legitimate use into an exception.
+        /// </summary>
+        private void CloseWith(bool result)
+        {
+            try
+            {
+                DialogResult = result;
+            }
+            catch (InvalidOperationException)
+            {
+                // Not shown as a dialog: `Result` already carries the outcome.
+            }
+
             Close();
         }
+
     }
 }

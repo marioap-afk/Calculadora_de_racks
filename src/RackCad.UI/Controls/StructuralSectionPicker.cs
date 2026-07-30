@@ -282,5 +282,18 @@ namespace RackCad.UI.Controls
             Family = family;
             Refilter();
         }
+
+        /// <summary>
+        /// Picks a row by id, as clicking it would: sets the selection AND raises
+        /// <see cref="SectionChosen"/>.
+        ///
+        /// A test seam for the consumers of the picker — a window's rule «al elegir columna, la base la sigue»
+        /// hangs off that event, and setting the property alone would test a code path no user takes.
+        /// </summary>
+        internal void RaiseSectionChosen(string sectionId)
+        {
+            SelectedSectionId = sectionId;
+            SectionChosen?.Invoke(this, sectionId);
+        }
     }
 }

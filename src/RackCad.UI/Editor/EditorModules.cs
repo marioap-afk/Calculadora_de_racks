@@ -167,8 +167,10 @@ namespace RackCad.UI.Editor
         }
 
         // The window + its RackEditorSession are the authority for the payload: return what the session built.
+        // A stand-alone COMPONENT insertion travels through the same seam and takes precedence, because it is what
+        // the user asked for last and it never carries a line payload.
         private static RackInsertionRequest Build(RackCantileverWindow window)
-            => window.InsertRequested ? window.InsertionRequest : null;
+            => window.ComponentInsertion ?? (window.InsertRequested ? window.InsertionRequest : null);
     }
 
     /// <summary>Standalone cabecera (<see cref="RackSystemKind.Selective"/>) → <see cref="RackFrameConfiguratorWindow"/>.

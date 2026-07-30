@@ -142,6 +142,27 @@ namespace RackCad.UI.Systems.Cantilever
 
         public CantileverLineDesign DesignToInsert => (session.InsertionRequest as CantileverInsertionRequest)?.Design;
 
+        /// <summary>
+        /// The stand-alone component insertion a configurator asked for, or null.
+        ///
+        /// It travels through the SAME seam as a line insertion — the host draws it after every modal has closed,
+        /// because the point prompt needs the editor free. It does not touch the line being edited: whatever the
+        /// configurator accepted was already applied to the design before the window closed.
+        /// </summary>
+        public CantileverComponentInsertionRequest ComponentInsertion { get; private set; }
+
+        /// <summary>Bubbles a configurator's stand-alone insertion and closes, so the host can prompt for a point.</summary>
+        private void BubbleComponentInsertion(CantileverComponentInsertionRequest request)
+        {
+            if (request == null)
+            {
+                return;
+            }
+
+            ComponentInsertion = request;
+            Close();
+        }
+
         // ---- Loading -----------------------------------------------------------------------------------------
 
         /// <summary>A brand-new line: the domain defaults, no identity, insert only.</summary>
@@ -467,6 +488,7 @@ namespace RackCad.UI.Systems.Cantilever
             topology.ColumnBaseTemplate = window.Result;
             Recompute();
             SetStatus("Columna y base actualizadas.", false);
+            BubbleComponentInsertion(window.ComponentInsertion);
         }
 
         private void ConfigureArm_Click(object sender, RoutedEventArgs e) => EditArm(null);
@@ -478,7 +500,9 @@ namespace RackCad.UI.Systems.Cantilever
                 return;
             }
 
-            var window = new CantileverSeparatorWindow(design.Bracing, assembler.Catalogue) { Owner = this };
+            var window = new CantileverSeparatorWindow(
+                design.Bracing, assembler.Catalogue,
+                lastComputation?.Line?.Separators.FirstOrDefault()) { Owner = this };
             window.ShowDialog();
 
             if (window.Result == null)
@@ -489,6 +513,7 @@ namespace RackCad.UI.Systems.Cantilever
             design.Bracing = window.Result;
             Recompute();
             SetStatus("Separador actualizado.", false);
+            BubbleComponentInsertion(window.ComponentInsertion);
         }
 
         private void ConfigureBrace_Click(object sender, RoutedEventArgs e)
@@ -498,7 +523,9 @@ namespace RackCad.UI.Systems.Cantilever
                 return;
             }
 
-            var window = new CantileverBraceWindow(design.Bracing, assembler.Catalogue) { Owner = this };
+            var window = new CantileverBraceWindow(
+                design.Bracing, assembler.Catalogue,
+                lastComputation?.Line?.Braces.FirstOrDefault()) { Owner = this };
             window.ShowDialog();
 
             if (window.Result == null)
@@ -509,6 +536,7 @@ namespace RackCad.UI.Systems.Cantilever
             design.Bracing = window.Result;
             Recompute();
             SetStatus("Tensor actualizado.", false);
+            BubbleComponentInsertion(window.ComponentInsertion);
         }
 
         // ---- The matrix --------------------------------------------------------------------------------------
@@ -772,6 +800,7 @@ namespace RackCad.UI.Systems.Cantilever
                 design.DefaultArmTemplate = window.Result;
                 Recompute();
                 SetStatus("Brazo por omisión actualizado.", false);
+                BubbleComponentInsertion(window.ComponentInsertion);
                 return;
             }
 
@@ -782,6 +811,8 @@ namespace RackCad.UI.Systems.Cantilever
             SetStatus(change.IsNoOp
                 ? "Ninguna celda cambió: ese brazo ya estaba en vigor en las " + change.Count + " celdas del alcance."
                 : change.Changed.Count + " de " + change.Count + " celdas actualizadas.", false);
+
+            BubbleComponentInsertion(window.ComponentInsertion);
         }
 
         private static string DescribeScope(CantileverLineApplyScope scope, CantileverLineCell cell)
