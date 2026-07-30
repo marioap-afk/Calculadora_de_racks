@@ -3,7 +3,7 @@ automation_state:
   initiative: I-37D
   branch: feature/cantilever-mvp-final
   claim_id: c37684f6-4c3a-4243-82d6-e538dea2a8f6
-  current_phase: 2
+  current_phase: 3
   state: implementing
   gate: none
   attempts: 1
@@ -134,8 +134,11 @@ guardas_de_alcance:
 # --------------------------------------------------------------------------------------------------------
 fases:
   1: COMPLETA-reclamo-6650020
-  2: EN-CURSO-contrato-ADR-0027-ADR-0028-ROADMAP-decision-y-estado
-  3: PENDIENTE-auditoria-de-costuras-con-nombres-exactos
+  2: COMPLETA-contrato-ADR-0027-ADR-0028-ROADMAP-decision-y-estado-38260f7
+  3: >-
+    COMPLETA-auditoria-de-costuras · nueve-areas-con-critico-de-completitud-por-area ·
+    456-hallazgos-182-pasos-258-gotchas-y-84-preguntas-abiertas ·
+    evidencia-en-docs-automation-evidence-I-37D-seam-audit-md
   4: PENDIENTE-contratos-de-Domain
   5: PENDIENTE-autoridad-de-distribucion-vertical-de-paneles
   6: PENDIENTE-resolver-de-linea-con-altura-comun-e-intervalos
@@ -167,7 +170,9 @@ estado_de_la_sesion_de_apertura:
     Plugin · no-cabe-en-una-sola-corrida-y-fingir-lo-contrario-produciria-codigo-sin-revisar
   auditoria_de_costuras:
     run_id: wf_23c7c163-994
-    estado: EN-CURSO-al-cerrar-la-sesion
+    estado: >-
+      COMPLETA-18-de-18-agentes-cero-errores · verificada-fichero-a-fichero-contra-main-250d469 ·
+      evidencia-en-docs-automation-evidence-I-37D-seam-audit-md
     areas: registry · persistence · editor-shell · views · plugin-commands · catalogs · bom-ui · blocks · guards
     transcripciones: >-
       .claude/projects/D--Documentos-Codex-Calculadora-de-racks/<sesion>/subagents/workflows/
@@ -181,6 +186,112 @@ estado_de_la_sesion_de_apertura:
     la-validacion-manual
 
 # --------------------------------------------------------------------------------------------------------
+# LO QUE LA AUDITORIA RESOLVIO. Dos preguntas de catalogo que bloqueaban decisiones.
+# --------------------------------------------------------------------------------------------------------
+respuestas_de_la_auditoria:
+  canal_de_4_in_ligero:
+    respuesta: EXISTE-y-la-correspondencia-es-INEQUIVOCA
+    id_exacto: AISC-C-C4X4_5
+    evidencia: >-
+      linea-16-de-assets-catalogs-structural-sections-c-csv-verificada-byte-a-byte ·
+      grep-C4X-devuelve-EXACTAMENTE-cuatro-filas · orden-por-peso-ascendente-SIN-empates-
+      4-5-menor-que-5-4-menor-que-6-25-menor-que-7-25 · asi-que-el-C4-mas-ligero-es-inequivoco
+    dibujable: >-
+      SI-el-builder-de-canal-exige-d-bf-tw-tf-y-usa-KDesign-para-el-filete ·
+      C4X4-5-tiene-d=4-bf=1-52-tw=0-125-tf=0-296-kdes=0-75-asi-que-el-radio-derivado-0-454-cabe ·
+      la-geometria-se-construye-sin-diagnostico
+    consecuencia: >-
+      el-selector-de-separador-PUEDE-tener-id-inicial · la-condicion-de-detencion-del-contrato-NO-se-
+      dispara · sigue-siendo-una-eleccion-de-PRODUCTO-cual-C4-y-el-encargo-dice-ligero-de-4-in
+    donde_registrarlo: >-
+      NO-existe-hoy-ninguna-politica-de-Cantilever-de-PRODUCCION · las-seis-variantes-vivientes-estan-
+      SOLO-en-los-fixtures-de-prueba · I-37D-tiene-que-crear-la-politica-de-produccion-que-registre-ids-
+      exactos-y-la-familia-solo-sirve-para-construir-ese-conjunto-decision-12-36
+  tabla_de_calibres:
+    respuesta: NO-EXISTE-ninguna-tabla-de-calibres-en-el-repositorio
+    lo_que_si_existe: >-
+      una-columna-gauge-como-atributo-POR-FILA-en-varios-CSV-legacy-con-valores-10-12-14-y-hasta-3_16 ·
+      cinco-declaraciones-de-Gauge-en-CatalogEntries-cs-como-TEXTO-LIBRE-sin-conversion-validacion-ni-
+      lookup · dos-unicas-asignaciones-Gauge-igual-row-Gauge-copia-literal-de-la-fila
+    ausencia_verificada: >-
+      NO-existe-funcion-alguna-que-traduzca-calibre-a-espesor-ni-al-reves ·
+      el-espesor-esta-tabulado-por-pieza-cuando-existe-nunca-derivado-del-calibre
+    consecuencia: >-
+      se-aplica-la-decision-12-30-tal-cual-GaugeNumber-10-se-conserva-como-IDENTIDAD-y-DESCRIPCION-sin-
+      conversion-decimal-silenciosa · y-la-vista-2D-no-necesita-el-espesor-para-dibujar-su-contorno
+    precedente_directo: >-
+      MENSULA_3_REMACHES_CAL_10-y-otras-dos-mensulas-llevan-gauge-10-SIN-espesor-tabulado ·
+      ahi-el-calibre-es-el-unico-dato-de-lamina-que-hay-y-no-se-convierte-a-nada
+  cardinalidad_del_enum_de_kind:
+    correccion_importante: >-
+      RackSystemKind-tiene-SEIS-valores-no-cinco-Selective-0-PalletFlow-1-SelectiveRack-2-Cama-3-
+      Larguero-4-PushBack-5 · Cantilever-es-el-SEPTIMO-y-va-AL-FINAL
+    por_que_la_confusion: >-
+      HANDOFF-cuenta-FAMILIAS-operativas-cinco-mientras-el-enum-cuenta-KINDS-seis ·
+      Selective-0-es-la-cabecera-suelta-que-la-biblioteca-muestra-como-Cabecera-y-no-es-una-familia ·
+      las-dos-cuentas-son-correctas-y-hay-que-decir-cual-se-usa
+    ademas: >-
+      NADA-en-produccion-enumera-Enum-GetValues-de-RackSystemKind-asi-que-anadir-el-valor-no-rompe-UI-
+      por-si-solo · lo-que-rompe-son-las-PRUEBAS-que-fijan-la-cardinalidad
+
+# --------------------------------------------------------------------------------------------------------
+# HALLAZGOS ADYACENTES. NO se corrigen aqui: se registran como candidatos.
+# --------------------------------------------------------------------------------------------------------
+hallazgos_adyacentes:
+  regla: >-
+    son-defectos-REALES-de-codigo-ya-integrado-y-NINGUNO-esta-en-el-alcance-de-I-37D ·
+    corregirlos-de-paso-seria-ampliar-el-alcance-sin-autorizacion · quedan-como-candidatos
+  1_noun_binario_de_la_seccion_de_cantilever: >-
+    CantileverSectionResolver-Noun-tiene-un-ternario-de-DOS-ramas-y-CantileverMemberRole-tiene-TRES-
+    valores-desde-I-37B · un-id-de-BRAZO-mal-escrito-produce-mensajes-que-dicen-la-base ·
+    defecto-visible-al-usuario-de-un-renglon
+  2_kindlabel_sin_pushback: >-
+    RackListBuilder-KindLabel-no-tiene-case-para-PushBack · la-biblioteca-etiqueta-mal-un-Push-Back
+  3_referencia_de_comandos_incompleta: >-
+    RackCommandReference-Commands-no-lista-RACKPUSHBACK-RPB-ni-RACKSECCION
+  4_doc_comment_obsoleto_del_registro: >-
+    SystemRegistry-cs-dice-lists-the-five-kinds-that-exist-today-OBSOLETO-desde-I-18 ·
+    y-SystemRegistry-Default-cs-dice-six-correctamente · los-dos-se-contradicen ·
+    tambien-el-doc-comment-de-RackProjectDocument-describe-solo-dos-payloads
+  5_guia_de_catalogos_desactualizada: >-
+    docs-guias-catalogos-y-plantillas-md-sigue-diciendo-los-siete-y-le-falta-
+    structural-sections-s-csv
+  6_kind_cableado_en_withsourceflowbed: >-
+    RackProject-WithSourceFlowBed-construye-un-RackProjectDocument-con-Kind-Cama-CABLEADO ·
+    es-especifico-de-cama-el-unico-sistema-que-se-abre-desde-el-dibujo-sin-RackProject-fuente ·
+    NO-se-copia-a-ciegas-para-el-sistema-nuevo
+
+# --------------------------------------------------------------------------------------------------------
+# COSTURAS QUE LA AUDITORIA DEJO FIJADAS y que la implementacion NO puede ignorar
+# --------------------------------------------------------------------------------------------------------
+costuras_fijadas:
+  schema_guard: >-
+    solo-Cama-Larguero-y-PushBack-llaman-SchemaGuard-CheckReadable ·
+    Selective-PalletFlow-y-SelectiveRack-NO-porque-sus-DTO-se-versionan-en-otro-nivel ·
+    un-kind-nuevo-con-su-propio-Document-SI-debe-llamarlo
+  version_de_esquema: >-
+    RackProjectDocument-CurrentSchemaVersion-igual-2-0 · el-slot-nuevo-es-ADITIVO-y-NO-sube-el-major-I-11 ·
+    JsonExtensionData-preserva-los-campos-desconocidos
+  descriptor: >-
+    SystemDescriptor-tiene-DOS-ctores · el-completo-pone-SupportsPersistence-true-y-lanza-
+    ArgumentNullException-por-cada-delegado-nulo · EnsurePersistence-lanza-si-el-descriptor-no-define-
+    operaciones · el-ctor-label-only-existe-como-costura-y-NO-se-usa-en-Default
+  guarda_de_peso: >-
+    NoCantileverCodeComputesWeight-prohibe-WeightPerLength-bajo-Systems-Cantilever ·
+    el-peso-esta-FUERA-de-alcance-en-I-37D-asi-que-la-guarda-se-CONSERVA-intacta ·
+    si-algun-dia-el-BOM-debe-llevar-kg-hace-falta-la-misma-maniobra-explicita-que-se-hizo-con-
+    BillOfMaterials-retirar-la-entrada-y-sustituirla-por-reglas-mas-estrechas-nunca-una-supresion
+  muro_de_guardas_de_cantilever: >-
+    CantileverSourceGuardTests-aplica-a-TODO-archivo-nuevo-bajo-src-RackCad-Domain-Systems-Cantilever-y-
+    src-RackCad-Application-Systems-Cantilever-automaticamente · incluida-la-prohibicion-de-nombrar-
+    dimensiones-concretas-de-seccion-y-de-leer-CSV
+  precedente_de_materializacion_sin_bloques_del_usuario: >-
+    StructuralSectionCommandFlow-y-StructuralSectionInsertService-de-I-36C-RACKSECCION-son-el-UNICO-
+    precedente-en-el-Plugin-de-convertir-una-seccion-del-catalogo-neutral-en-dibujo ·
+    tiene-su-propio-muro-de-guardas-que-pina-fallo-cerrado-punto-antes-de-crear-una-sola-transaccion-y-
+    regen-canonico
+
+# --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
 # --------------------------------------------------------------------------------------------------------
 pendiente_del_owner:
@@ -192,11 +303,19 @@ pendiente_del_owner:
     ColumnBottomPlateEndOffset · ColumnTopPunchOffset · MountingPlateVerticalEndOffset ·
     los-tres-siguen-siendo-entradas-obligatorias-que-el-resolver-rechaza-si-faltan
   id_del_canal_de_4_in_ligero: >-
-    PENDIENTE-de-la-auditoria-de-catalogo · si-la-correspondencia-no-es-INEQUIVOCA-el-selector-queda-sin-
-    id-inicial-y-se-exige-seleccion-del-usuario-en-vez-de-inventar-la-seccion
+    RESUELTO-por-la-auditoria · AISC-C-C4X4_5-es-el-C4-mas-ligero-de-forma-INEQUIVOCA-y-se-dibuja-sin-
+    diagnostico · queda-como-default-del-separador-salvo-que-el-Owner-prefiera-otro-C4
   tabla_de_calibres: >-
-    PENDIENTE-de-auditoria · si-existe-se-reutiliza · si-no-GaugeNumber-10-se-conserva-como-identidad-y-
-    descripcion-SIN-conversion-decimal-silenciosa
+    RESUELTO-por-la-auditoria · NO-existe-ninguna-tabla-de-calibres-en-el-repositorio ·
+    se-aplica-12-30-GaugeNumber-10-como-identidad-y-descripcion-sin-conversion-decimal
+  granularidad_de-la-identidad-de-una-LINEA: >-
+    NUEVA-y-REAL · si-el-GUID-se-estampa-por-LINEA-una-identidad-N-estaciones-o-por-ESTACION-y-si-las-
+    tres-vistas-son-de-la-linea-completa-o-por-estacion · nada-en-el-codigo-actual-lo-prejuzga-y-cambia-
+    el-numero-de-bloques-y-el-round-trip · es-decision-de-producto
+  nombre_del_valor_de_enum: >-
+    RackSystemKind-Cantilever-es-el-nombre-que-las-decisiones-de-I-37-usan-literalmente ·
+    se-escribe-en-DISCO-en-PascalCase-y-es-IRREVOCABLE-una-vez-guardado-un-documento ·
+    conviene-confirmarlo-antes-de-la-primera-persistencia
   default_visible_de_perfil_de_brazo: >-
     sera-HSS-pero-el-sistema-BLOQUEA-hasta-que-se-seleccione-un-id-EXACTO · la-UI-puede-mostrar-
     HSS-seleccione-tamano
