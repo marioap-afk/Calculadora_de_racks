@@ -303,5 +303,59 @@ namespace RackCad.Application.Systems.Cantilever
         /// overflow, a freeze or an empty selection.
         /// </summary>
         public const string StationPunchIndexDomainOverflow = "CANT_STATION_PUNCH_INDEX_DOMAIN_OVERFLOW";
+
+        // ---- I-37D: la linea, el arriostramiento y los tensores ---------------------------------------
+
+        /// <summary>The panel-count mode has no rule. Added, never guessed.</summary>
+        public const string BracingPanelCountModeNotSupported = "CANT_BRACING_PANEL_COUNT_MODE_NOT_SUPPORTED";
+
+        /// <summary>Manual panel count asked for and not supplied.</summary>
+        public const string BracingManualPanelCountMissing = "CANT_BRACING_MANUAL_PANEL_COUNT_MISSING";
+
+        /// <summary>A manual panel count of zero or less. NOT clamped to the rule's answer.</summary>
+        public const string BracingManualPanelCountNotPositive = "CANT_BRACING_MANUAL_PANEL_COUNT_NOT_POSITIVE";
+
+        /// <summary>
+        /// The bracing core is taller than the column.
+        ///
+        /// BLOCKING under a manual height. The alternatives are all silent lies: compressing the panels,
+        /// shrinking the central spaces, or changing the count (ADR-0027, D4).
+        /// </summary>
+        public const string BracingDoesNotFitTheColumn = "CANT_BRACING_DOES_NOT_FIT_THE_COLUMN";
+
+        /// <summary>A line needs at least two stations: with one there is no interval and no bracing.</summary>
+        public const string LineNeedsTwoStations = "CANT_LINE_NEEDS_TWO_STATIONS";
+
+        /// <summary>The centre-to-centre column spacing is not a usable positive number.</summary>
+        public const string LineSpacingNotPositive = "CANT_LINE_SPACING_NOT_POSITIVE";
+
+        /// <summary>A station of the line could not be resolved. Its own diagnostics travel with it.</summary>
+        public const string LineStationBlocked = "CANT_LINE_STATION_BLOCKED";
+
+        /// <summary>
+        /// The common height moved a level index of some station.
+        ///
+        /// BLOCKING and it should be unreachable: the second pass exists so the prediction can be CHECKED
+        /// (ADR-0027, D2). Accepting a different answer in silence is how a model starts lying.
+        /// </summary>
+        public const string LineCommonHeightMovedALevel = "CANT_LINE_COMMON_HEIGHT_MOVED_A_LEVEL";
+
+        /// <summary>A manual common height below what the stations or the bracing need.</summary>
+        public const string LineManualHeightBelowMinimum = "CANT_LINE_MANUAL_HEIGHT_BELOW_MINIMUM";
+
+        /// <summary>The separator does not reach between the two column plates.</summary>
+        public const string SeparatorTooShortForItsPunches = "CANT_SEPARATOR_TOO_SHORT_FOR_ITS_PUNCHES";
+
+        /// <summary>The brace body kind has no rule.</summary>
+        public const string BraceBodyKindNotSupported = "CANT_BRACE_BODY_KIND_NOT_SUPPORTED";
+
+        /// <summary>A structural brace with no section id. There is no approved default for it.</summary>
+        public const string BraceSectionMissing = "CANT_BRACE_SECTION_MISSING";
+
+        /// <summary>The cold-rolled rod diameter is not a usable positive number.</summary>
+        public const string ColdRolledDiameterNotPositive = "CANT_COLD_ROLLED_DIAMETER_NOT_POSITIVE";
+
+        /// <summary>A separator or brace punch does not coincide with the datum it must bolt to.</summary>
+        public const string BracingDatumMismatch = "CANT_BRACING_DATUM_MISMATCH";
     }
 }

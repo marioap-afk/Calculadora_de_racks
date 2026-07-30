@@ -70,13 +70,13 @@ namespace RackCad.Application.Systems.Cantilever
                 throw new ArgumentNullException(nameof(diagnostics));
             }
 
-            var noun = Noun(role);
+            var noun = Of(role);
 
             if (string.IsNullOrWhiteSpace(storedId))
             {
                 var missing = CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.SectionIdMissing,
-                    "El diseno no declara la seccion de " + noun + ".");
+                    "El diseno no declara la seccion " + noun + ".");
                 diagnostics.Add(missing);
                 return CantileverSectionResolution.Failed(default, missing);
             }
@@ -85,7 +85,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 var invalid = CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.SectionIdInvalid,
-                    "El id de seccion de " + noun + " no es valido: '" + storedId + "'.");
+                    "El id de seccion " + noun + " no es valido: '" + storedId + "'.");
                 diagnostics.Add(invalid);
                 return CantileverSectionResolution.Failed(default, invalid);
             }
@@ -94,7 +94,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 var unknown = CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.SectionUnknown,
-                    "El catalogo no tiene la seccion de " + noun + " '" + id.Value + "'.");
+                    "El catalogo no tiene la seccion " + noun + " '" + id.Value + "'.");
                 diagnostics.Add(unknown);
                 return CantileverSectionResolution.Failed(id, unknown);
             }
@@ -103,14 +103,57 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 diagnostics.Add(CantileverDiagnostic.Warning(
                     CantileverDiagnostics.SectionDisabled,
-                    "La seccion de " + noun + " '" + id.Value +
+                    "La seccion " + noun + " '" + id.Value +
                     "' esta deshabilitada para disenos nuevos; este diseno la conserva."));
             }
 
             return CantileverSectionResolution.Ok(section);
         }
 
-        private static string Noun(CantileverMemberRole role) =>
-            role == CantileverMemberRole.Column ? "la columna" : "la base";
+        /// <summary>
+        /// The role's noun with its preposition attached: <c>de la columna</c>, <c>del brazo</c>.
+        ///
+        /// Spanish contracts <c>de</c> and <c>el</c> into <c>del</c>, so a message built as
+        /// <c>"de " + noun</c> reads correctly for the two feminine nouns and produces "de el tensor" for the
+        /// masculine ones. Contracting HERE keeps the four call sites identical and keeps every message the two
+        /// earlier initiatives already emit byte-for-byte unchanged.
+        /// </summary>
+        private static string Of(CantileverMemberRole role)
+        {
+            var noun = Noun(role);
+
+            return noun.StartsWith("el ", StringComparison.Ordinal)
+                ? "del " + noun.Substring(3)
+                : "de " + noun;
+        }
+
+        /// <summary>
+        /// The noun a message uses for a role.
+        ///
+        /// An explicit <c>switch</c> with a throwing default. The earlier form was
+        /// <c>role == Column ? "la columna" : "la base"</c>, which was true while there were exactly two roles
+        /// and became a LIE the day the arm was added: a design with an unknown arm section reported that the
+        /// catalogue had no section for "la base", pointing whoever read it at a field that was fine. A default
+        /// that guesses a noun is worse than no message, because it is believed.
+        /// </summary>
+        private static string Noun(CantileverMemberRole role)
+        {
+            switch (role)
+            {
+                case CantileverMemberRole.Column:
+                    return "la columna";
+                case CantileverMemberRole.Base:
+                    return "la base";
+                case CantileverMemberRole.Arm:
+                    return "el brazo";
+                case CantileverMemberRole.Separator:
+                    return "el separador";
+                case CantileverMemberRole.Brace:
+                    return "el tensor";
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(role), role, "El rol '" + role + "' no tiene sustantivo para mensajes.");
+            }
+        }
     }
 }

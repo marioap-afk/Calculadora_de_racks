@@ -317,7 +317,8 @@ namespace RackCad.Tests
             var authorities = new[]
             {
                 "CantileverColumnBaseFrameResolver.cs",   // I-37A: base and column
-                "CantileverArmFrameResolver.cs"           // I-37B: the arm
+                "CantileverArmFrameResolver.cs",          // I-37B: the arm
+                "CantileverBracingFrameResolver.cs"       // I-37D: the separator and the brace
             };
 
             var offenders = Sources()
@@ -840,24 +841,72 @@ namespace RackCad.Tests
         [Fact]
         public void NoStationCodeMentionsARunOrItsFurniture()
         {
-            // What is out of scope must not be half-present. A property named for a run is how the next
-            // initiative's decisions get taken by accident.
+            // I-37C wrote this over EVERY Cantilever file, because the line did not exist yet and a property
+            // named for one was how a later initiative's decisions got taken by accident. I-37D built the line,
+            // so the blanket ban would now forbid the line from being about itself.
+            //
+            // What the rule was actually protecting is still worth protecting, and it is narrower: a STATION
+            // must not know it is inside a line. So the ban now covers the three sub-assembly families — the
+            // station, the column with its base, and the arm — and not the line's own files. Anything a station
+            // file learns about a separator is still a defect, and this still says so.
+            var subAssemblies = new[] { "CantileverStation", "CantileverColumnBase", "CantileverArm" };
+
+            var stationFiles = Sources()
+                .Where(f => subAssemblies.Any(p => FileName(f.Path).StartsWith(p, StringComparison.Ordinal)))
+                .ToList();
+
+            Assert.True(stationFiles.Count >= 12, "Se esperaban al menos doce archivos de subensamble; hay " +
+                stationFiles.Count + ".");
+
             foreach (var word in new[]
                      {
                          "Separador", "Spacer", "Arriostr", "Brace", "StationRun", "RunIndex",
-                         "LongitudinalPosition", "NeighbourStation"
+                         "LongitudinalPosition", "NeighbourStation", "IntervalIndex", "CantileverLine"
                      })
             {
-                var offenders = Sources()
+                var offenders = stationFiles
                     .Where(f => f.Code.Contains(word, StringComparison.OrdinalIgnoreCase))
                     .Select(f => f.Path)
                     .ToList();
 
                 Assert.True(
                     offenders.Count == 0,
-                    "'" + word + "' pertenece a la linea, que es una iniciativa posterior. Lo incumplen: " +
+                    "'" + word + "' pertenece a la linea y una estacion no lo conoce. Lo incumplen: " +
                     string.Join(", ", offenders) + ".");
             }
+        }
+
+        [Fact]
+        public void TheLineIsTheONLYPlaceThatKnowsAboutIntervals()
+        {
+            // The other half of the rule above, and the reason it can be narrowed safely: the line's concepts
+            // are confined to the line's own files. If "Interval" ever appears outside them, the station has
+            // started to learn about its neighbours through some other door.
+            var lineFiles = new[]
+            {
+                "CantileverLineDesign.cs", "CantileverLineResolver.cs", "CantileverLineAssembly.cs",
+                "CantileverLineArmMatrix.cs", "CantileverLineBomBuilder.cs",
+                "CantileverIntervalAssembly.cs", "CantileverIntervalResolver.cs",
+                "CantileverBracingLayoutResolver.cs", "CantileverBracingFrameResolver.cs",
+                "CantileverMemberId.cs"   // shared piece tokens: the interval's owner token lives with the rest
+            };
+
+            var offenders = Sources()
+                .Where(f => !lineFiles.Any(n => FileName(f.Path).Equals(n, StringComparison.Ordinal)))
+                .Where(f => f.Code.Contains("Interval", StringComparison.Ordinal))
+                .Select(f => f.Path)
+                .ToList();
+
+            Assert.True(
+                offenders.Count == 0,
+                "Solo los archivos de la linea conocen intervalos. Lo incumplen: " +
+                string.Join(", ", offenders) + ".");
+        }
+
+        private static string FileName(string path)
+        {
+            var slash = path.LastIndexOf('/');
+            return slash < 0 ? path : path.Substring(slash + 1);
         }
 
         [Fact]

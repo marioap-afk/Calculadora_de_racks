@@ -104,6 +104,22 @@ namespace RackCad.Application.Systems.Cantilever
                 Math.Max(MaxY, other.MaxY),
                 Math.Max(MaxZ, other.MaxZ));
 
+        /// <summary>
+        /// The same box moved by a vector (I-37D).
+        ///
+        /// A line resolves each station at the datum origin and places it by translation, so the box has to
+        /// move with it. A translation cannot change the box's shape, which is why this is exact and not an
+        /// approximation the way a rotated box's would be.
+        /// </summary>
+        public CantileverEnvelope3D Translated(Vector3D offset) =>
+            new CantileverEnvelope3D(
+                MinX + offset.X,
+                MinY + offset.Y,
+                MinZ + offset.Z,
+                MaxX + offset.X,
+                MaxY + offset.Y,
+                MaxZ + offset.Z);
+
         public bool ApproxEquals(CantileverEnvelope3D other, double tolerance) =>
             GeometryTolerance.AreClose(MinX, other.MinX, tolerance) &&
             GeometryTolerance.AreClose(MinY, other.MinY, tolerance) &&
