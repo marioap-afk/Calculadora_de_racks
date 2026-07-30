@@ -107,6 +107,16 @@ EffectiveArm = CellOverride ?? DefaultArmTemplate
 no autoridades persistidas superpuestas. Es la lección de PB-014 y del tope que vivía en cuatro sitios de la
 UI a la vez.
 
+**Y «sólo lo que difiere» se cumple por comparación ESTRUCTURAL, no por referencia.** Guardar una copia
+profunda sin condición parece inofensivo y no lo es: aplicar el default a una celda almacenaba una copia de
+él, y desde ese momento la celda dejaba de **seguirlo**, así que cambiar el default la dejaba atrás sin que
+nada en el diseño dijera qué celdas se fijaron a propósito. `CantileverArmTemplateComparer` compara los diez
+campos editables por valor —y un margen **ausente** no es igual a cero, porque uno se rechaza y el otro no—;
+aplicar el default guarda `null`, aplicar el mismo override dos veces no ensucia el diseño, y cada celda sigue
+recibiendo su propia copia. El resultado agregado distingue las celdas **alcanzadas** de las realmente
+**modificadas**: confundirlas hacía que una ventana informara «N celdas modificadas» de una operación que no
+cambió ninguna.
+
 La matriz pura expone las **celdas activas** de `nivel × lado`. En sencilla una operación de nivel afecta
 sólo el lado activo y **el lado inactivo no aparece como celda falsa**; en doble afecta ambos lados. Una
 operación de estación afecta todas las celdas activas, y aplicar un alcance produce **un solo resultado
@@ -141,6 +151,19 @@ del nivel. Mezclar el brazo superior de un lado con el inferior del otro sólo e
 El cálculo usa sección, arreglo, peralte combinado, pendiente, margen de placa y cantidad de troqueles del
 **brazo efectivo de cada celda**: no puede suponer que todos los niveles usan el default.
 
+**Y lo mide UNA sola autoridad.** `CantileverArmConnectionMetricsResolver` valida y mide la conexión, y la
+consumen **I-37B y el layout de I-37C**. Antes había dos: el layout traía su propio `Math.Max(2, count)` y su
+propio `offset ?? 0`, que convertían una cantidad de filas de cero en dos y un margen **obligatorio** ausente
+en cero — así que un diseño que I-37B habría rechazado producía un layout confiado, y el rechazo aparecía
+después, contra números que ya habían dimensionado la columna. La autoridad es dueña de la cantidad mínima de
+dos **sin ajustar**, del margen obligatorio finito no negativo y de al menos el radio, de la pendiente finita
+no negativa, del marco representable, del arreglo y la orientación con regla, y de que el cuerpo quepa en su
+placa. Una entrada inválida es **diagnóstico bloqueante antes del layout**, nunca una normalización y nunca una
+excepción.
+
+El **claro libre global** del MVP está **aprobado** y no es una decisión pendiente; un claro por nivel es una
+iniciativa posterior.
+
 ### D5 — La retícula regular es una autoridad única, y la circularidad se resuelve explícitamente
 
 Se **extrae** `CantileverColumnRegularPunchGrid` de `CantileverColumnBaseResolver`. Conoce, desde los
@@ -153,13 +176,27 @@ sus firmas y sus resultados. La extracción es **mecánica**, va precedida de un
 valores actuales, y una desviación numérica obliga a **detenerse**. La fórmula
 `LastConnectionElevation + index × pitch` **no puede existir fuera de la autoridad**.
 
-**Y la autoridad ACUMULA, no multiplica.** La caracterización lo forzó: con un pitch **no diádico** las dos
-formas difieren —el índice 2 de un pitch de 3.7 in es `27.599999999999998` acumulado y `27.6` multiplicado—,
-y acumular es lo que I-37A **ya hacía**. Cambiar a la multiplicación movería **todos** los agujeros de una
-columna con pitch no diádico, que es un cambio de comportamiento en código integrado que nadie autorizó.
-`ElevationAt(index)` recorre los mismos pasos que la generación, así que sigue habiendo **una** definición y
-un índice no puede discrepar de la secuencia. **Si la multiplicación es la regla mejor es una pregunta real,
-y es una decisión aparte**: no le corresponde a esta extracción tomarla de pasada.
+**Y la autoridad ACUMULA, no multiplica. Eso es normativo, no pendiente.** La caracterización lo forzó: con
+un pitch **no diádico** las dos formas difieren —el índice 2 de un pitch de 3.7 in es `27.599999999999998`
+acumulado y `27.6` multiplicado—, y acumular es lo que I-37A **ya hacía**. Cambiar a la multiplicación movería
+**todos** los agujeros de una columna con pitch no diádico, que es un cambio de comportamiento en código
+integrado. **La acumulación se preserva por compatibilidad con I-37A durante todo I-37C**, y sustituirla por
+`FirstElevation + index × Pitch` sería una **normalización numérica separada** que no forma parte de esta
+iniciativa. `ElevationAt(index)` recorre los mismos pasos que la generación, así que sigue habiendo **una**
+definición y un índice no puede discrepar de la secuencia.
+
+**La retícula tiene un DOMINIO, y no un máximo de producto.** Un índice sólo está definido mientras la
+secuencia acumulada sigue siendo la retícula que dice ser: la desviación respecto al ideal crece como
+`n · eps · z` y supera un **pitch entero** cuando `n > 1/√eps`, es decir `2²⁶`. Más allá, la secuencia se
+movió más de un agujero completo. Ese bound se **deriva** de la precisión del `double` y del pitch, no de
+ninguna decisión comercial —con 4 in son 268 millones de pulgadas—, y es también lo que permite rechazar un
+índice como `int.MaxValue` en tiempo constante en vez de recorrer dos mil millones de sumas.
+
+**No hay tope de candidatos.** Las elevaciones crecen estrictamente, así que cada regla se convierte en «la
+elevación debe alcanzar Z» y el primer índice que lo cumple se **encuentra**; el índice del nivel es el mayor
+de los mínimos por lado, y la monotonía garantiza que es el **primero** factible. La terminación sólo ocurre
+por índice encontrado, dominio agotado, entrada no finita, o retícula que no crece —que es diagnóstico
+bloqueante antes de cualquier búsqueda—. Un nivel válido trescientos índices más arriba **resuelve**.
 
 Con eso, la circularidad se resuelve en una **secuencia explícita**, sin altura provisional y sin bucle de
 convergencia: validar el diseño; resolver secciones y variantes; obtener la retícula canónica —que sólo
@@ -171,6 +208,14 @@ construir estación, envolvente, BOM y firma.
 
 Si el pase final difiere del layout previo, la resolución **falla cerrado**. Una recomputación distinta
 aceptada en silencio es cómo un modelo empieza a mentir.
+
+**El pase final compara TODO lo que decidió el layout**, y no una parte. Por nivel y lado: índice inferior,
+índice superior, cantidad de troqueles, primera y última elevación, borde inferior y superior de placa, y
+**borde inferior y superior del cuerpo**. Los dos últimos faltaban, y son precisamente aquello entre lo que se
+mide el claro: una fórmula de cuerpo equivocada producía una estación cuyos claros reales eran menores que los
+pedidos mientras todos los demás números seguían coincidiendo. Después vuelve a comprobar, **sobre los brazos
+resueltos**, el claro por lado, su igualdad con el del layout, el traslape de placas, la disjunción de
+troqueles y la ocupación final contra la altura mínima que se usó.
 
 ### D6 — Altura automática o manual, con margen superior parametrizado
 
@@ -202,7 +247,15 @@ mínima.
 
 `CantileverStationAssembly` es inmutable y determinista: modo, lado sencillo cuando aplique, columna–base
 compuesta, niveles, brazos, altura mínima, altura resuelta, claro solicitado, claros reales, miembros,
-placas, troqueles, envolvente, diagnósticos y firma. Una estación **bloqueada** conserva sus diagnósticos y
+placas, troqueles, envolvente, diagnósticos y firma.
+
+**La firma incluye los brazos REALES.** Listar sólo los planes de layout hacía que dos estaciones cuyos
+niveles caían en los mismos índices firmaran igual aunque cada brazo fuera otra pieza —otro corte, un tope en
+vez de una tapa, otro espesor de placa final, un canal doble en vez de uno sencillo con el mismo peralte—.
+Ahora lleva, en orden determinista: la firma de columna–base, la de cada nivel, la de cada **brazo resuelto**
+por nivel y lado, la altura mínima y la resuelta, el claro solicitado, los claros reales, el modo y el lado
+activo. El **BOM no** se usa como autoridad de geometría —agrupa, y agrupar esconde diferencias—, pero la
+firma se mueve cuando se mueve cualquier pieza física. Una estación **bloqueada** conserva sus diagnósticos y
 **no produce BOM**.
 
 **No contiene** posición longitudinal X, índice dentro de una línea, separadores, arriostres ni referencias a
@@ -232,6 +285,25 @@ Los brazos se agrupan por **receta física**, no por posición. La firma de BOM 
 la placa de conexión, cantidad de troqueles, modo de placa final, espesor y dimensiones de la placa final, y
 altura adicional de tope. **No incluye** lado, nivel, índice de estación, coordenadas mundiales ni el owner
 token.
+
+**Y una pieza plana se identifica por su receta, no por una etiqueta.** `BillOfMaterials` agrupa sus líneas
+por `(Category, ProfileId, Length)`; con `Length = 0` —que es el precedente correcto para una placa— y un
+`ProfileId` genérico, **todas** las placas de conexión de una estación colapsaban en una línea, y una placa
+corta con dos agujeros y una alta con seis pasaban por la misma parte. El `ProfileId` de una placa lleva
+tipo, sus **dos dimensiones en su propio plano**, espesor y el **patrón de perforaciones** cuando lo tiene
+—cantidad, diámetro y coordenadas **relativas** al primer vértice, medidas sobre sus propios ejes, para que
+dos placas iguales atornilladas a distinta altura o en caras opuestas salgan iguales—. El del cartabón lleva
+sus dos piernas y su espesor. Los troqueles **siguen sin ser líneas del BOM**: son parte de la identidad de la
+placa perforada, que es el único sitio donde un agujero pertenece.
+
+**Y una placa se mide EN SU PROPIO PLANO.** Una caja alineada con los ejes del mundo sólo es correcta mientras
+la placa es paralela a un plano del mundo, y la placa final de un brazo es perpendicular a un eje **inclinado**:
+sus spans mundiales son proyecciones, así que al inclinar el brazo una tapa de 10 in reportaba 9.8 y luego 9.4
+y el BOM partía una placa física en varias. La caja además devuelve los spans **ordenados**, de modo que una
+sección más alta que ancha y otra más ancha que alta se describían igual.
+`CantileverPlateInPlaneDimensions` mide sobre las aristas propias de la placa, validando contorno suficiente,
+aristas no degeneradas, perpendicularidad y planitud; y la extensión de un tope se mide a lo largo del **up**
+del brazo.
 
 **Por decisión del Owner, un brazo idéntico en `PositiveY` y en `NegativeY` es el mismo componente del BOM.**
 Sólo se separará por lado cuando exista una variante física derecha/izquierda, que I-37C no introduce.
@@ -270,8 +342,9 @@ once pasos que se puede leer y probar, y el pase final se **verifica** contra el
 confiarse. Y la retícula regular pasa a tener **una** autoridad, que I-37A también consume: el brazo y la
 estación no pueden divergir de la columna.
 
-**Negativas, y asumidas.** La extracción de la retícula toca código integrado de I-37A, así que exige
-caracterización previa y equivalencia numérica demostrada — trabajo que no añade ninguna función. Los
+**Negativas, y asumidas.** Las extracciones tocan código integrado de I-37A y de I-37B —la retícula, la
+costura independiente de la altura y las métricas de conexión—, así que exigen caracterización previa y
+equivalencia numérica demostrada: trabajo que no añade ninguna función. Los
 templates duplican la forma de los diseños de I-37A y I-37B sin heredarla, porque heredar traería los campos
 que la estación gobierna; el precio es un adaptador y su prueba. El claro libre es global en el MVP, así que
 una estación con niveles de claro distinto todavía no se puede pedir. Y el layout se resuelve **dos veces**

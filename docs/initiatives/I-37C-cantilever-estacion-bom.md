@@ -174,6 +174,31 @@ comprobar traslape; ignorar `TopClearFactor`; normalizar una altura manual insuf
 componentes columna-base en doble; separar brazos identicos por lado en el BOM; calcular el BOM desde el
 diseno; duplicar la formula del pitch regular fuera de la autoridad; y usar una altura provisional magica.
 
+## 9.bis Defectos encontrados en revision, y lo que dejaron
+
+La revision de la primera punta encontro **seis** defectos. Ninguno reabrio la arquitectura; los seis se
+corrigieron en la misma rama, con caracterizacion previa donde tocaron codigo integrado.
+
+1. **Tope funcional de 250 candidatos.** No era una regla de producto: un nivel valido 301 indices mas arriba
+   se bloqueaba. Se retiro. La reticula gana `TryFirstIndexAtOrAbove` y el indice se **encuentra** en vez de
+   buscarse; la terminacion solo ocurre por indice encontrado, dominio agotado, entrada no finita o reticula
+   que no crece. El dominio se **deriva** de la precision del double y del pitch, no de un maximo comercial.
+2. **Dos autoridades midiendo la conexion.** El prelayout traia su propio `Math.Max(2, count)` y su propio
+   `offset ?? 0`. Se extrajo `CantileverArmConnectionMetricsResolver`, que consumen **I-37B y el layout**.
+3. **Pase final incompleto.** Comparaba indices, elevaciones y placas, pero no los **bordes del cuerpo**, que
+   es lo que el claro mide. Ahora compara las ocho magnitudes y re-deriva las reglas de los brazos resueltos.
+4. **Overrides iguales al default se persistian.** Comparacion **estructural** de las diez propiedades
+   editables; aplicar el default guarda `null`; el resultado distingue alcanzadas de modificadas.
+5. **Identidad fisica de las piezas planas.** El `ProfileId` generico con `Length = 0` fusionaba placas
+   distintas. Ahora lleva la receta, incluido el patron de troqueles **relativo**.
+6. **Placas medidas con una caja del mundo.** Se mide en el **plano propio** de la placa; la extension del
+   tope, a lo largo del **up** del brazo.
+
+Y **cerro tres asuntos que ya no son decisiones pendientes**: la reticula **acumula** por compatibilidad con
+I-37A durante todo I-37C —cambiar a la multiplicacion seria una normalizacion numerica separada—, el claro
+libre **global** del MVP esta aprobado, y la forma de la guarda de BOM se conserva mientras sigan las reglas
+mas estrechas que I-37C introdujo.
+
 ## 10. Validacion manual
 
 **No aplica.** I-37C no cambia el dibujo ni la interfaz — igual que I-37A e I-37B, el gate se resuelve
