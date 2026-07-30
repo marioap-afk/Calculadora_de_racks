@@ -153,7 +153,9 @@ Builds Debug de Domain, Application, UI y Plugin con cero errores propios; prueb
 I-37A, I-37B, I-37C **e** I-37D; guardas de fuente; BOM; persistencia; registro; UI; Drawing; suites
 completas de `RackCad.Tests` y `RackCad.UI.Tests`; **bundle**; CI verde en la rama.
 
-Regresion **verificada fallando** para, al menos: duplicar el separador de una frontera compartida; contar
+Regresion **verificada fallando** para, al menos: duplicar el separador de una frontera **horizontal**
+compartida entre dos segmentos verticales consecutivos del **mismo** intervalo -- dos intervalos adyacentes
+tienen separadores fisicamente distintos aunque coincidan en elevacion, y esos **no** se fusionan--; contar
 placas como componentes; usar centro a centro como corte directo; omitir el 1.25; invertir el espejo derecho;
 usar otro diametro; contar un panel vacio como arriostrado; repartir el espacio central en los externos;
 comprimir paneles; dibujar los tensores en planos distintos; anadir union central; omitir adaptadores; omitir
@@ -182,9 +184,12 @@ en I-36, I-37A, I-37B, I-37C y los cinco sistemas vigentes.
 ## 12. Condiciones para detenerse
 
 Necesitar un valor sin default aprobado; necesitar un id de catalogo que no existe **de forma inequivoca**
--- incluido el canal de 4 in ligero y una tabla de calibres --; necesitar reabrir ADR-0024, ADR-0025 o
-ADR-0026; que la altura comun mueva un indice de nivel; o que el pase final de una estacion difiera de su
-layout.
+-- una tabla de calibres, por ejemplo --; necesitar reabrir ADR-0024, ADR-0025 o ADR-0026; que la altura
+comun mueva un indice de nivel; o que el pase final de una estacion difiera de su layout.
+
+El **canal de 4 in ligero ya no dispara esta condicion**: `DefaultSeparatorSectionId = AISC-C-C4X4_5` es
+una decision **CERRADA y vinculante** (12.51). El usuario puede elegir otra seccion explicitamente, pero el
+default no esta pendiente.
 
 ## 13. Estado versionado y entrega del Pull Request
 

@@ -133,13 +133,14 @@ Configura: Estaciones **4**, Altura de columna **Manual = 264**, resto como en e
 
 | # | Paso | Resultado esperado | Veredicto |
 |---|---|---|---|
-| E1 | Lee el resumen de la banda de estado | **3 intervalos · 18 separadores · 24 tensores** | ☐ |
+| E1 | Lee el resumen de la banda de estado | **3 intervalos · 18 separadores · 24 tensores** (y, en el BOM, **36 placas de columna de separador**: 6 elevaciones × una cara en cada estación extrema y dos en cada interior) | ☐ |
 | E2 | Cuenta los paneles arriostrados de un intervalo en la frontal | **4 paneles**, con **1 espacio vacío al centro** | ☐ |
 | E3 | Mide la secuencia vertical de un intervalo | 32 · 40 · 40 · **40 vacío** · 40 · 40 · 32 (in) | ☐ |
 | E4 | Cuenta los separadores de un intervalo | **6** (paneles + vacíos + 1) | ☐ |
 | E5 | Cuenta los tensores de un intervalo | **8** (dos por panel arriostrado) | ☐ |
-| E6 | Mira una frontera entre dos intervalos | El separador de esa frontera aparece **una sola vez**; no hay dos superpuestos | ☐ |
-| E7 | Cambia la altura a otras de la tabla de producto (96, 144, 216, 336) | Los paneles siguen la regla: 1, 2, 3, 5 | ☐ |
+| E6 | Dentro de UN mismo intervalo, mira la frontera **horizontal** compartida entre dos paneles o segmentos verticales consecutivos | Hay **un solo** separador a esa elevación; no aparecen dos superpuestos (ADR-0027 D5: dos paneles adyacentes comparten su separador y se cuenta **una vez**) | ☐ |
+| E7 | Ahora mira una estación **interior**, donde se tocan dos intervalos, a una misma elevación | Hay **dos** separadores físicos distintos —uno hacia cada intervalo— y **dos** placas de columna, una por cara. **No** es un defecto: son piezas distintas que sólo coinciden en altura | ☐ |
+| E8 | Cambia la altura a otras de la tabla de producto (96, 144, 216, 336) | Los paneles siguen la regla: 1, 2, 3, 5 | ☐ |
 
 ### F. Tensores: cold rolled y estructural
 
@@ -203,7 +204,18 @@ validaciones previas **no se reescriben**.
 
 - **ADR-0027 y ADR-0028 siguen PROPUESTOS.** Aceptarlos es del dueño y es un acto aparte del veredicto
   de esta validación.
-- La sección **C4 más ligera** (`AISC-C-C4X4_5`) es el valor por omisión del separador porque el
-  catálogo la determina sin ambigüedad; **cuál C4 usa el producto** sigue siendo una elección del dueño.
 - El **perfil por omisión del brazo** no existe: la UI ofrece el catálogo y el sistema bloquea hasta que
   se elija un id exacto.
+
+## 7. Lo que ya está decidido y no se revalida
+
+- **`DefaultSeparatorSectionId = AISC-C-C4X4_5`** — decisión **CERRADA** y vinculante
+  (`OWNER_DECIDED_SEPARATOR_DEFAULT_AISC_C_C4X4_5`, decisión 12.51). Es el canal C4 **más ligero**
+  disponible y es el valor por omisión aprobado del MVP. El usuario puede elegir otra sección
+  explícitamente en el editor, pero **el default ya no está pendiente**: no se busca por designación
+  durante la resolución y ningún punto de este checklist lo cuestiona.
+- **Un separador no se comparte entre intervalos distintos.** Lo que se comparte —y se cuenta una sola
+  vez— es el separador **horizontal** entre dos segmentos verticales consecutivos del **mismo** intervalo
+  (ADR-0027 D5, decisión 12.14). Dos intervalos adyacentes tienen separadores **físicamente distintos**
+  aunque coincidan en elevación: uno une la estación *i* con la *i+1* y otro la *i+1* con la *i+2*. Por
+  eso una estación interior lleva **dos** placas de columna por elevación y una extrema **una**.
