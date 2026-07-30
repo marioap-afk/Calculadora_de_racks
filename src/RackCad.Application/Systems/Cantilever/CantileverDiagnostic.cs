@@ -284,6 +284,16 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>The column–base of the station could not be resolved by I-37A.</summary>
         public const string StationColumnBaseBlocked = "CANT_STATION_COLUMN_BASE_BLOCKED";
 
+        /// <summary>
+        /// The section chosen for the column cannot also be a base, so «la base sigue a la columna» did NOT
+        /// normalize it.
+        ///
+        /// A WARNING and not a block: the design stays editable and the user can pick a base by hand. What it
+        /// must never do is stay silent — leaving the base behind without a word looks like the rule was
+        /// forgotten, and writing an ineligible base would produce a line that cannot resolve (I-37D, ronda 2).
+        /// </summary>
+        public const string ColumnBaseSectionNotEligible = "CANT_COLUMN_BASE_SECTION_NOT_ELIGIBLE";
+
         /// <summary>The column resolved fewer regular punch elevations than the levels need.</summary>
         public const string StationNotEnoughColumnPunches = "CANT_STATION_NOT_ENOUGH_COLUMN_PUNCHES";
 

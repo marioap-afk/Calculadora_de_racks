@@ -113,7 +113,13 @@ namespace RackCad.Tests
             ["planta"] = "EFB547E6A9B591386307E424A02028F70898DCBE36112BB5BB3C32D7DE5F4266",
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
             ["frontal-doble"] = "7D74B31D65273817192792F2871DCB321227EAE8BE8BD2BFA41A14394A1B53AE",
-            ["persistencia"] = "874066E2CEFE63A74AB03467B31D0B870D4774BBD2DAEDA50E084C06A910B952"
+
+            // MOVIDO A PROPOSITO en la ronda 2, y es el UNICO pin que se movio. `BaseFollowsColumn` es
+            // intencion nueva del diseno y se persiste, asi que el JSON gana una clave. El pin anterior,
+            // 874066E2…, es el de antes de que la base pudiera seguir a la columna. Los ocho pines de
+            // resolucion, BOM y planes fisicos NO se movieron: la regla es del editor y no cambia lo que la
+            // linea resuelve, y hay una prueba que lo comprueba.
+            ["persistencia"] = "E7146CB36C0B9C1A385E2040EA8D4C8BA8E9DAD4C216C16F5CBCEE4A7C3D45F8"
         };
 
         // ---- 1. Las resoluciones ------------------------------------------------------------------------
