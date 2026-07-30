@@ -8,13 +8,11 @@ automation_state:
   gate: autocad-owner-validation
   attempts: 2
   next_action: >-
-    RONDA-2-de-correccion-visual-y-funcional ·
-    caracterizacion-previa · ventana-principal-solo-de-LINEA ·
-    infraestructura-comun-de-editor-de-componente · cuatro-subventanas ·
-    selector-estructural-buscable · columna-base-completa-con-BaseFollowsColumn ·
-    troqueles-y-placas-visibles · insercion-independiente-de-componentes ·
-    doce-regresiones-en-rojo · paquete-de-validacion-manual-de-ronda-2
-  last_evidence_commit: 5a0d188
+    EJECUTAR-la-validacion-manual-de-RONDA-2 ·
+    cerrar-AutoCAD-regenerar-el-bundle-y-recompilar-el-DLL ·
+    NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-round-2-md ·
+    despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
+  last_evidence_commit: 5142e1b
 
 # --------------------------------------------------------------------------------------------------------
 # RONDAS DE VALIDACION MANUAL. El historial NO se reescribe.
@@ -38,8 +36,35 @@ rondas:
       NINGUNO-es-un-defecto-de-geometria-resuelta · los-seis-son-de-ARQUITECTURA-VISUAL-y-de-FLUJO ·
       la-distribucion-visual-rechazada-NO-se-congela-como-golden
   2:
-    veredicto: EN-CURSO
+    veredicto: PENDIENTE-DE-EJECUTAR
     evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-md
+    code_sha: 5142e1ba1b73a332f3df9960df05a40df59b3f2d
+    dll_sha256: BFF6135E988A510D314FC8EBD65FE2692D257714F7465C57E41A5BFE24AD4CCD
+    dll_bytes: 135168
+    informational_version: 1.0.0+5142e1ba1b73a332f3df9960df05a40df59b3f2d
+    alcance: >-
+      los-SEIS-motivos-del-rechazo-atendidos ·
+      1-y-2-la-ventana-principal-edita-solo-la-LINEA-y-los-componentes-salen-a-cuatro-subventanas-sobre-
+      un-shell-comun · 3-selector-estructural-BUSCABLE-con-filtro-de-familia-y-lista-virtualizada ·
+      4-BaseFollowsColumn-con-sus-siete-reglas-PERSISTIDO-y-nunca-deducido-comparando-ids ·
+      5-todos-los-agujeros-resueltos-se-dibujan-circulo-real-de-frente-y-traza-de-canto ·
+      6-el-flujo-es-linea-tarjeta-configurador-aceptar
+    ademas: >-
+      insercion-independiente-de-componentes-con-el-patron-de-RACKSECCION ·
+      sin-kind-nuevo-sin-handler-sin-payload-y-con-identidad-PROPIA ·
+      bloque-identificado-y-NO-editable-declarado-como-tal
+    regresiones: 12-de-12-verificadas-EN-ROJO-y-revertidas-evidencia-I-37D-round-2-regressions-md
+    guardas_nuevas: 37-de-fuente-sobre-el-codigo-leido-como-texto
+    suites: RackCad-Tests-2788 · RackCad-UI-Tests-605
+    bundle: >-
+      NO-regenerado-en-la-corrida-de-cierre · deploy-build-bundle-ps1-ABORTA-con-AutoCAD-abierto-y-la-
+      sesion-del-dueno-lo-estaba · el-comando-exacto-esta-en-el-paso-2-del-paquete-y-hay-que-cerrar-
+      AutoCAD-para-validar-de-todos-modos
+    defectos_reales_encontrados_por_las_pruebas: >-
+      1-el-pin-de-persistencia-era-dependiente-de-la-PLATAFORMA-porque-Utf8JsonWriter-indenta-con-el-
+      salto-de-linea-del-sistema-y-la-CI-corre-en-Linux-ahora-se-normaliza ·
+      2-DialogResult-LANZA-si-la-ventana-no-se-mostro-como-dialogo-y-las-cuatro-subventanas-lo-ponian-
+      a-ciegas-ahora-CloseWith-lo-intenta-y-lo-omite
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -184,6 +209,11 @@ fases:
   14: >-
     COMPLETA-pruebas-y-guardas-66ebe94 · 45-pruebas-nuevas-2694-nucleo-y-562-UI ·
     un-defecto-REAL-encontrado-y-visto-en-rojo-el-factor-de-claro-superior-se-degradaba-al-leer-la-caja
+  16: >-
+    COMPLETA-RONDA-2-de-correccion-visual-y-funcional · caracterizacion-previa-12-pruebas ·
+    troqueles-y-placas-14 · selector-estructural-26 · BaseFollowsColumn-15 ·
+    cuatro-configuradores-31 · guardas-37 · doce-regresiones-EN-ROJO ·
+    paquete-de-validacion-de-ronda-2
   15: >-
     COMPLETA-el-paquete-de-validacion-manual-existe-y-esta-listo-para-EJECUTARSE ·
     docs-automation-evidence-I-37D-autocad-validation-md · 9-bloques-y-58-puntos ·

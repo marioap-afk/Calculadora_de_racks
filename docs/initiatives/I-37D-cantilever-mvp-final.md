@@ -163,6 +163,27 @@ cartabones; duplicar la columna al construir la linea; resolver alturas distinta
 BOM desde el diseno; una firma que omite el arriostramiento; persistencia que omite overrides; y una vista
 que recalcula geometria.
 
+## 9b. Ronda 2 de correccion visual y funcional
+
+La validacion manual de la **ronda 1** quedo **RECHAZADA**
+(`OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_1`) por seis motivos, y los seis son de **arquitectura
+visual y de flujo**, no de geometria resuelta: ventana saturada, propiedades de linea mezcladas con
+internas de componentes, perfiles dificiles de seleccionar, la base que no seguia a la columna, troqueles y
+placas que no se dibujaban, y una arquitectura que no reflejaba el flujo real de configuracion.
+
+La ronda 2 **reestructura el producto** antes de revisar en detalle cada componente:
+
+- la ventana principal edita **solo** el agregado `CantileverLineDesign`;
+- cada componente se edita en su **propia subventana**, sobre un shell comun, con sus parametros, su
+  preview, sus diagnosticos, su receta y su insercion independiente;
+- un **selector estructural buscable** sustituye al ComboBox en los cuatro configuradores;
+- `BaseFollowsColumn` es **intencion persistida** y nunca una comparacion de ids;
+- la representacion dibuja **todos** los agujeros resueltos.
+
+La **insercion independiente** sigue el precedente de `RACKSECCION`: sin `RackSystemKind` nuevo, sin
+handler de edicion, sin payload y con identidad propia. El bloque queda identificado y **no editable**, y
+eso se declara en el paquete manual en vez de prometerse.
+
 ## 10. Validacion manual
 
 **OBLIGATORIA.** `requires_autocad: true`, `requires_owner_validation: true`. I-37D cambia dibujo e interfaz,
