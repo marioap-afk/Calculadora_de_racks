@@ -47,22 +47,48 @@ namespace RackCad.UI.Tests
             box.SelectedIndex = index;
         }
 
-        /// <summary>Fills the window with a line that resolves, exactly as a user would fill it.</summary>
+        /// <summary>
+        /// Fills the window with a line that resolves.
+        ///
+        /// RONDA 2: the LINE fields are typed through their real controls, as a user would. The COMPONENT values
+        /// are written on the design, because after the refactor they are not in this window at all — they are
+        /// edited in <c>CantileverColumnBaseWindow</c> and <c>CantileverArmWindow</c>, which have their own
+        /// tests. Driving them from here would be testing a layout the owner rejected.
+        /// </summary>
         private static void Configure(RackCantileverWindow window, int stations = 3, int levels = 3)
         {
+            var template = window.Design.StationTopology.ColumnBaseTemplate;
+            template.ColumnSectionId = ColumnW;
+            template.Base = new CantileverBaseDesign { SectionId = BaseW, Length = 48.0 };
+            template.Connection.Punches.ColumnBottomPlateEndOffset = 1.5;
+            template.Connection.Punches.ColumnTopPunchOffset = 4.0;
+
+            window.Design.DefaultArmTemplate = new CantileverArmTemplateDesign
+            {
+                Body = new CantileverArmBodyDesign { SectionId = ArmHss, CutLength = 36.0 },
+                MountingPlate = new CantileverArmMountingPlateTemplateDesign
+                {
+                    VerticalPunchCount = 2,
+                    VerticalEndOffset = 1.5
+                }
+            };
+
             EditorWindowTestSupport.SetNumberAndCommit(window, "StationCountBox", stations);
             EditorWindowTestSupport.SetNumberAndCommit(window, "SpacingBox", 96.0);
             EditorWindowTestSupport.SetNumberAndCommit(window, "LevelCountBox", levels);
             EditorWindowTestSupport.SetNumberAndCommit(window, "ClearHeightBox", 24.0);
-            EditorWindowTestSupport.SetNumberAndCommit(window, "BaseLengthBox", 48.0);
-            EditorWindowTestSupport.SetNumberAndCommit(window, "BottomPlateEndOffsetBox", 1.5);
-            EditorWindowTestSupport.SetNumberAndCommit(window, "TopPunchOffsetBox", 4.0);
-            EditorWindowTestSupport.SetNumberAndCommit(window, "ArmCutLengthBox", 36.0);
-            EditorWindowTestSupport.SetNumberAndCommit(window, "ArmVerticalOffsetBox", 1.5);
+        }
 
-            SetSection(window, "ColumnSectionBox", ColumnW);
-            SetSection(window, "BaseSectionBox", BaseW);
-            SetSection(window, "ArmSectionBox", ArmHss);
+        /// <summary>Applies an arm to a scope the way the window does, without opening the modal configurator.</summary>
+        private static CantileverLineMatrixChange ApplyArm(
+            RackCantileverWindow window,
+            CantileverLineApplyScope scope,
+            CantileverLineCell anchor,
+            double cutLength)
+        {
+            var arm = window.Matrix.Effective(anchor).DeepCopy();
+            arm.Body.CutLength = cutLength;
+            return window.Matrix.Apply(scope, anchor, arm);
         }
 
         /// <summary>Every matrix cell button, keyed by the cell it carries in its Tag.</summary>
@@ -149,19 +175,39 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void AnEmptyMandatoryMarginIsReportedByName_AndTheLineStaysUndrawable()
+        public void UnCampoDeLINEAVacioSeReportaPorSuNombre()
         {
+            // Los campos de COMPONENTE ya no estan aqui; los de linea si, y siguen diciendo cual falta.
             var r = StaTestRunner.Run(() =>
             {
                 var w = new RackCantileverWindow(canInsertInAutoCad: true);
                 Configure(w);
-                EditorWindowTestSupport.SetNumberAndCommit(w, "TopPunchOffsetBox", null);
+                EditorWindowTestSupport.SetNumberAndCommit(w, "ClearHeightBox", null);
 
                 return (w.CurrentInputsAreValid, ((TextBlock)w.FindName("StatusText")).Text);
             });
 
             Assert.False(r.Item1);
-            Assert.Contains("Margen del troquel superior", r.Item2, StringComparison.Ordinal);
+            Assert.Contains("Claro solicitado", r.Item2, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void UnMargenObligatorioAusenteBLOQUEALaLinea_YSeDiceEnElEstado()
+        {
+            // El margen vive ahora en el configurador de columna y base. Si falta, la LINEA no se resuelve y la
+            // ventana principal lo dice con el diagnostico del resolvedor, no con un error de campo.
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackCantileverWindow(canInsertInAutoCad: true);
+                Configure(w);
+                w.Design.StationTopology.ColumnBaseTemplate.Connection.Punches.ColumnTopPunchOffset = null;
+                EditorWindowTestSupport.SetNumberAndCommit(w, "ClearHeightBox", 24.0);
+
+                return (w.CurrentInputsAreValid, ((TextBlock)w.FindName("StatusText")).Text);
+            });
+
+            Assert.False(r.Item1);
+            Assert.NotEmpty(r.Item2);
         }
 
         [Fact]
@@ -229,10 +275,10 @@ namespace RackCad.UI.Tests
                 var w = new RackCantileverWindow(canInsertInAutoCad: true);
                 Configure(w, stations: 3, levels: 2);
 
-                ClickCell(w, new CantileverLineCell(1, 0, CantileverArmSide.PositiveY));
-                EditorWindowTestSupport.SetNumberAndCommit(w, "CellCutLengthBox", 60.0);
+                var anchor = new CantileverLineCell(1, 0, CantileverArmSide.PositiveY);
+                ClickCell(w, anchor);
                 SetCombo(w, "ScopeBox", (int)CantileverLineApplyScope.Station);
-                EditorWindowTestSupport.ClickNamed(w, "ApplyCellButton");
+                ApplyArm(w, CantileverLineApplyScope.Station, anchor, 60.0);
 
                 var matrix = w.Matrix;
 
@@ -256,8 +302,9 @@ namespace RackCad.UI.Tests
                 var w = new RackCantileverWindow(canInsertInAutoCad: true);
                 Configure(w, stations: 2, levels: 1);
 
-                ClickCell(w, new CantileverLineCell(0, 0, CantileverArmSide.PositiveY));
-                EditorWindowTestSupport.ClickNamed(w, "ApplyCellButton"); // the cell already holds the default
+                var anchor = new CantileverLineCell(0, 0, CantileverArmSide.PositiveY);
+                ClickCell(w, anchor);
+                ApplyArm(w, CantileverLineApplyScope.Cell, anchor, w.Design.DefaultArmTemplate.Body.CutLength);
 
                 return (w.Matrix.OverrideCount, w.Design.ArmCellOverrides.Count);
             });
@@ -277,20 +324,24 @@ namespace RackCad.UI.Tests
                 Configure(w, stations: 3, levels: 2);
                 SetCombo(w, "FaceModeBox", 1); // doble: 12 celdas
 
-                ClickCell(w, new CantileverLineCell(0, 0, CantileverArmSide.PositiveY));
-                EditorWindowTestSupport.SetNumberAndCommit(w, "CellCutLengthBox", 54.0);
+                var anchor = new CantileverLineCell(0, 0, CantileverArmSide.PositiveY);
+                ClickCell(w, anchor);
                 SetCombo(w, "ScopeBox", (int)CantileverLineApplyScope.Line);
 
+                ApplyArm(w, CantileverLineApplyScope.Line, anchor, 54.0);
+
+                // «Restaurar» es un gesto REAL de la ventana y hace exactamente lo que hace «Editar brazo»
+                // cuando el configurador devuelve algo: una escritura de matriz y UNA reconstruccion.
                 var before = w.RecomputeCount;
-                EditorWindowTestSupport.ClickNamed(w, "ApplyCellButton");
+                EditorWindowTestSupport.ClickNamed(w, "RestoreCellButton");
                 var after = w.RecomputeCount;
 
                 return (before, after, w.Matrix.OverrideCount, w.Matrix.Cells.Count);
             });
 
             Assert.Equal(12, r.Item4);
-            Assert.Equal(12, r.Item3);
-            Assert.Equal(1, r.Item2 - r.Item1);
+            Assert.Equal(0, r.Item3);          // «Restaurar» sobre toda la linea borro las doce excepciones
+            Assert.Equal(1, r.Item2 - r.Item1); // y lo hizo con UNA sola reconstruccion, no doce
         }
 
         [Fact]
@@ -301,10 +352,10 @@ namespace RackCad.UI.Tests
                 var w = new RackCantileverWindow(canInsertInAutoCad: true);
                 Configure(w, stations: 2, levels: 2);
 
-                ClickCell(w, new CantileverLineCell(0, 0, CantileverArmSide.PositiveY));
-                EditorWindowTestSupport.SetNumberAndCommit(w, "CellCutLengthBox", 72.0);
+                var anchor = new CantileverLineCell(0, 0, CantileverArmSide.PositiveY);
+                ClickCell(w, anchor);
                 SetCombo(w, "ScopeBox", (int)CantileverLineApplyScope.Line);
-                EditorWindowTestSupport.ClickNamed(w, "ApplyCellButton");
+                ApplyArm(w, CantileverLineApplyScope.Line, anchor, 72.0);
                 var afterApply = w.Matrix.OverrideCount;
 
                 EditorWindowTestSupport.ClickNamed(w, "RestoreCellButton");

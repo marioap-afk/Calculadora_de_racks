@@ -151,7 +151,7 @@ namespace RackCad.Application.Systems.Cantilever
         /// It is a DISPLAY conversion of a text the design already holds, not a lookup: it does not consult the
         /// catalogue and it never turns a designation back into an id.
         /// </summary>
-        internal static string Designation(string sectionId)
+        public static string Designation(string sectionId)
         {
             if (string.IsNullOrWhiteSpace(sectionId))
             {

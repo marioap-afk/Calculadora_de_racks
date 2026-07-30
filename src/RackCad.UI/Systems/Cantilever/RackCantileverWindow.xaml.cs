@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
@@ -13,49 +12,33 @@ using RackCad.Application.Systems.Cantilever;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.UI.Controls;
 using RackCad.UI.Editor;
+using RackCad.UI.Systems.Cantilever.Components;
 
 namespace RackCad.UI.Systems.Cantilever
 {
-    /// <summary>One catalogued section as a picker row: the exact id, and a label a human recognises.</summary>
-    internal sealed class CantileverSectionOption
-    {
-        internal CantileverSectionOption(string id, string label)
-        {
-            Id = id;
-            Label = label;
-        }
-
-        /// <summary>The EXACT <c>StructuralSectionId</c> text. Null is the "no section chosen" row.</summary>
-        public string Id { get; }
-
-        public string Label { get; }
-    }
-
     /// <summary>
-    /// The Cantilever LINE editor (I-37D).
+    /// The Cantilever LINE editor (I-37D, reestructurado en la ronda 2).
     ///
-    /// It is a thin coordinator over the pure model: the editable authority is a <see cref="CantileverLineDesign"/>,
-    /// the per-cell writes go through <see cref="CantileverLineArmMatrix"/>, the recompute is
-    /// <see cref="CantileverLineEditorAssembler"/>, and identity plus the insert/update contract live on the shared
-    /// <see cref="RackEditorSession{TDesign,TSystem}"/>. It resolves no geometry, builds no BOM, decides no panel
-    /// count and knows no AutoCAD type: the Plugin host draws the payload it produces.
+    /// It edits the AGGREGATE and only the aggregate: the line, the topology its stations share and the bracing
+    /// distribution. Every component — column–base, arm, separator, brace — is edited in its own window, with its
+    /// own parameters, preview, diagnostics and recipe; here they appear as a compact summary and a button. That
+    /// is motivos 1, 2 y 6 del rechazo de la ronda 1: the window was saturated, it mixed line properties with the
+    /// internals of components, and its architecture did not reflect the real configuration flow.
     ///
-    /// Numeric entry uses <see cref="NumericField"/>; a field in error blocks the recompute, so a stale line is
-    /// never inserted or saved behind the user's back.
+    /// It still computes nothing: it reads controls into a <see cref="CantileverLineDesign"/> and hands it to
+    /// <see cref="CantileverLineEditorAssembler"/>.
     /// </summary>
     public partial class RackCantileverWindow : Window
     {
+        /// <summary>The ONE display format of every decimal box, so writing and reading a field agree.</summary>
+        private const string NumberFormat = "0.###";
+
         private static readonly string[] FaceModes = { "Sencilla", "Doble" };
         private static readonly string[] Sides = { "Lado +Y", "Lado −Y" };
         private static readonly string[] HeightModes = { "Automática", "Manual" };
         private static readonly string[] PanelModes = { "Automático", "Manual" };
-        private static readonly string[] BraceKinds = { "Cold rolled (varilla)", "Estructural (perfil)" };
-        private static readonly string[] Arrangements = { "Sencillo", "Canal doble enfrentada", "Canal doble espalda" };
-        private static readonly string[] EndPlateModes = { "Ninguna", "Placa", "Placa con tope" };
-        private static readonly string[] Scopes = { "Celda", "Estación", "Nivel (toda la línea)", "Lado (toda la línea)", "Toda la línea" };
-
-        /// <summary>The ONE display format of every decimal box, so writing and reading a field agree.</summary>
-        private const string NumberFormat = "0.###";
+        private static readonly string[] Scopes =
+            { "Celda", "Estación", "Nivel (toda la línea)", "Lado (toda la línea)", "Toda la línea" };
 
         private readonly bool canInsertInAutoCad;
         private readonly RackEditorSession<CantileverLineDesign, CantileverLineAssembly> session;
@@ -88,8 +71,7 @@ namespace RackCad.UI.Systems.Cantilever
 
             // FAIL CLOSED, like RACKSECCION: an invalid section catalogue means the dimensions are not
             // trustworthy, so the window opens read-only with the reason on screen rather than drawing from data
-            // that failed validation. It is not an exception, because a window that cannot open leaves the user
-            // with nothing to read.
+            // that failed validation.
             try
             {
                 assembler = new CantileverLineEditorAssembler(
@@ -108,15 +90,9 @@ namespace RackCad.UI.Systems.Cantilever
             SingleSideBox.ItemsSource = Sides;
             HeightModeBox.ItemsSource = HeightModes;
             PanelModeBox.ItemsSource = PanelModes;
-            BraceKindBox.ItemsSource = BraceKinds;
-            ArmArrangementBox.ItemsSource = Arrangements;
-            CellArrangementBox.ItemsSource = Arrangements;
-            ArmEndPlateModeBox.ItemsSource = EndPlateModes;
-            CellEndPlateModeBox.ItemsSource = EndPlateModes;
             ScopeBox.ItemsSource = Scopes;
             ScopeBox.SelectedIndex = 0;
 
-            LoadSectionPickers();
             LoadNew();
         }
 
@@ -146,7 +122,7 @@ namespace RackCad.UI.Systems.Cantilever
                 ? assembler.View(lastComputation.Line, SelectedViewKind(), LateralStationIndex())
                 : null;
 
-        // ---- The editor→host contract (mirrors the Push Back editor) -----------------------------------------
+        // ---- The editor→host contract ------------------------------------------------------------------------
 
         public bool InsertRequested => session.InsertRequested;
 
@@ -171,9 +147,8 @@ namespace RackCad.UI.Systems.Cantilever
         /// <summary>A brand-new line: the domain defaults, no identity, insert only.</summary>
         public void LoadNew()
         {
-            // No section id is invented here. The three sections and the two mandatory punch margins have no
-            // approved default, so the line opens BLOCKED and says which value it is waiting for — inventing one
-            // would be indistinguishable from a value the owner approved.
+            // No section id is invented here. The sections and the mandatory punch margins have no approved
+            // default, so the line opens BLOCKED and its component cards say what they are waiting for.
             design = new CantileverLineDesign();
             sourceProject = null;
             isEditingExisting = false;
@@ -194,7 +169,7 @@ namespace RackCad.UI.Systems.Cantilever
             this.sourceProject = sourceProject;
             isEditingExisting = false;
             selectedCell = null;
-            session.Identity.Adopt(null, rackName); // no id -> a fresh GUID is minted on insert
+            session.Identity.Adopt(null, rackName);
             LoadFromDesign(rackName);
         }
 
@@ -222,54 +197,25 @@ namespace RackCad.UI.Systems.Cantilever
             {
                 NameBox.Text = rackName ?? string.Empty;
                 StationCountBox.SetNumber(design.StationCount, "0");
-                SpacingBox.SetNumber(design.ColumnCentreSpacing);
+                SpacingBox.SetNumber(design.ColumnCentreSpacing, NumberFormat);
 
                 var topology = design.StationTopology ?? new CantileverLineStationTopologyDesign();
                 FaceModeBox.SelectedIndex = topology.FaceMode == CantileverStationFaceMode.Double ? 1 : 0;
                 SingleSideBox.SelectedIndex = topology.SingleSide == CantileverArmSide.NegativeY ? 1 : 0;
                 LevelCountBox.SetNumber(topology.LevelCount, "0");
                 FirstPunchBox.SetNumber(topology.FirstLevelPunchIndex, "0");
-                ClearHeightBox.SetNumber(topology.RequestedClearHeight);
-                TopClearFactorBox.SetNumber(topology.TopClearFactor);
+                ClearHeightBox.SetNumber(topology.RequestedClearHeight, NumberFormat);
+                TopClearFactorBox.SetNumber(topology.TopClearFactor, NumberFormat);
                 HeightModeBox.SelectedIndex =
                     (topology.ColumnHeight?.Mode ?? CantileverStationColumnHeightMode.Automatic)
                         == CantileverStationColumnHeightMode.Manual ? 1 : 0;
-                ManualHeightBox.SetNumber(topology.ColumnHeight?.ManualHeight);
-
-                var template = topology.ColumnBaseTemplate ?? new CantileverStationColumnBaseTemplateDesign();
-                ColumnSectionBox.SelectedValue = template.ColumnSectionId;
-                ColumnPlateThicknessBox.SetNumber(template.ColumnBottomPlate?.Thickness);
-                BaseSectionBox.SelectedValue = template.Base?.SectionId;
-                BaseLengthBox.SetNumber(template.Base?.Length);
-                BaseFrontPlateBox.SetNumber(template.Base?.FrontPlate?.Thickness);
-                BaseRearPlateBox.SetNumber(template.Base?.RearPlate?.Thickness);
-                BaseGussetBox.SetNumber(template.Base?.Gusset?.Thickness);
-
-                var punches = template.Connection?.Punches ?? new CantileverPunchParameters();
-                PunchDiameterBox.SetNumber(punches.Diameter);
-                PunchHorizontalOffsetBox.SetNumber(punches.HorizontalEndOffset);
-                ConnectionPitchBox.SetNumber(punches.ConnectionPitch);
-                ConnectionPunchesAboveBaseBox.SetNumber(punches.ConnectionPunchesAboveBase, "0");
-                RearPlateOffsetBox.SetNumber(punches.RearPlateVerticalEndOffset);
-                RegularPitchBox.SetNumber(punches.RegularColumnPitch);
-                BottomPlatePitchBox.SetNumber(punches.ColumnBottomPlatePitch);
-                BottomPlateEndOffsetBox.SetNumber(punches.ColumnBottomPlateEndOffset);
-                TopPunchOffsetBox.SetNumber(punches.ColumnTopPunchOffset);
-
-                WriteArm(
-                    design.DefaultArmTemplate ?? new CantileverArmTemplateDesign(),
-                    ArmArrangementBox, ArmSectionBox, ArmCutLengthBox, ArmSlopeBox, ArmPlateThicknessBox,
-                    ArmPunchCountBox, ArmVerticalOffsetBox, ArmEndPlateModeBox, ArmEndPlateThicknessBox, ArmExtraStopBox);
+                ManualHeightBox.SetNumber(topology.ColumnHeight?.ManualHeight, NumberFormat);
 
                 var bracing = design.Bracing ?? new CantileverBracingDesign();
-                SeparatorSectionBox.SelectedValue = bracing.SeparatorSectionId;
                 PanelModeBox.SelectedIndex = bracing.PanelCountMode == CantileverBracedPanelCountMode.Manual ? 1 : 0;
                 ManualPanelCountBox.SetNumber(bracing.ManualPanelCount, "0");
-                PanelHeightBox.SetNumber(bracing.BracedPanelHeight);
-                CentralSpaceBox.SetNumber(bracing.CentralEmptySpaceHeight);
-                BraceKindBox.SelectedIndex = bracing.BraceKind == CantileverBraceBodyKind.StructuralSection ? 1 : 0;
-                BraceSectionBox.SelectedValue = bracing.BraceSectionId;
-                RodDiameterBox.SetNumber(bracing.ColdRolled?.Diameter);
+                PanelHeightBox.SetNumber(bracing.BracedPanelHeight, NumberFormat);
+                CentralSpaceBox.SetNumber(bracing.CentralEmptySpaceHeight, NumberFormat);
 
                 LateralStationBox.SetNumber(1, "0");
             }
@@ -281,55 +227,16 @@ namespace RackCad.UI.Systems.Cantilever
             Recompute();
         }
 
-        private void LoadSectionPickers()
-        {
-            if (assembler == null)
-            {
-                return; // no catalogue: the pickers stay empty and every action is disabled
-            }
-
-            var w = Options(StructuralSectionFamily.W);
-            var channels = Options(StructuralSectionFamily.Channel);
-            var braces = Options(StructuralSectionFamily.Channel, StructuralSectionFamily.Angle);
-            var all = Options();
-
-            ColumnSectionBox.ItemsSource = w;
-            BaseSectionBox.ItemsSource = w;
-            SeparatorSectionBox.ItemsSource = channels;
-            BraceSectionBox.ItemsSource = braces;
-            ArmSectionBox.ItemsSource = all;
-            CellSectionBox.ItemsSource = Options();
-        }
-
-        /// <summary>The picker rows of one or more families; no family means the whole catalogue.</summary>
-        private List<CantileverSectionOption> Options(params StructuralSectionFamily[] families)
-        {
-            var sections = families == null || families.Length == 0
-                ? assembler.Catalogue.Enabled
-                : families.SelectMany(f => assembler.SectionsOf(f)).Where(s => s.IsEnabled).ToList();
-
-            var options = new List<CantileverSectionOption> { new CantileverSectionOption(null, "(sin sección)") };
-
-            options.AddRange(sections
-                .OrderBy(s => s.Family)
-                .ThenBy(s => s.DisplayName, StringComparer.OrdinalIgnoreCase)
-                .Select(s => new CantileverSectionOption(s.SectionId.Value, s.DisplayName + "  ·  " + s.SectionId.Value)));
-
-            return options;
-        }
-
-        // ---- Reading the controls ----------------------------------------------------------------------------
+        // ---- Reading the controls: ONLY the aggregate ---------------------------------------------------------
 
         /// <summary>
-        /// Writes every control into the live design. Returns false — with the reason — when a numeric field is in
-        /// error, so a half-parsed design never reaches the resolver.
+        /// Writes the LINE controls into the live design. The components' own fields are not here — they are
+        /// written by their own windows, which is the whole point of this round.
         /// </summary>
         private bool ReadInputs(out string error)
         {
             error = null;
 
-            // Paired with their labels: three of these fields have NO approved default, so a fresh line has three
-            // empty boxes at once and "Escribe un valor." alone would not say which one.
             var fields = new (NumericField Field, string Label)[]
             {
                 (StationCountBox, "Estaciones"),
@@ -339,31 +246,9 @@ namespace RackCad.UI.Systems.Cantilever
                 (ClearHeightBox, "Claro solicitado"),
                 (TopClearFactorBox, "Factor de claro superior"),
                 (ManualHeightBox, "Altura manual"),
-                (ColumnPlateThicknessBox, "Espesor de placa inferior"),
-                (BaseLengthBox, "Longitud de base"),
-                (BaseFrontPlateBox, "Espesor de placa frontal"),
-                (BaseRearPlateBox, "Espesor de placa trasera"),
-                (BaseGussetBox, "Espesor de cartabón de base"),
-                (PunchDiameterBox, "Diámetro de troquel"),
-                (PunchHorizontalOffsetBox, "Margen horizontal a extremo"),
-                (ConnectionPitchBox, "Paso de conexión"),
-                (ConnectionPunchesAboveBaseBox, "Troqueles de conexión sobre la base"),
-                (RearPlateOffsetBox, "Margen vertical de placa trasera"),
-                (RegularPitchBox, "Paso regular de columna"),
-                (BottomPlatePitchBox, "Paso de placa inferior"),
-                (BottomPlateEndOffsetBox, "Margen de extremo de placa inferior"),
-                (TopPunchOffsetBox, "Margen del troquel superior"),
-                (ArmCutLengthBox, "Longitud de corte del brazo"),
-                (ArmSlopeBox, "Pendiente del brazo"),
-                (ArmPlateThicknessBox, "Espesor de placa de montaje"),
-                (ArmPunchCountBox, "Troqueles verticales del brazo"),
-                (ArmVerticalOffsetBox, "Margen vertical de placa de montaje"),
-                (ArmEndPlateThicknessBox, "Espesor de placa de extremo"),
-                (ArmExtraStopBox, "Altura extra de tope"),
                 (ManualPanelCountBox, "Cantidad manual de paneles"),
                 (PanelHeightBox, "Altura de panel"),
-                (CentralSpaceBox, "Altura de espacio central"),
-                (RodDiameterBox, "Diámetro de varilla")
+                (CentralSpaceBox, "Altura de espacio central")
             };
 
             var broken = fields.Where(f => f.Field.HasError).ToList();
@@ -399,44 +284,7 @@ namespace RackCad.UI.Systems.Cantilever
                 : CantileverStationColumnHeightMode.Automatic;
             height.ManualHeight = ManualHeightBox.Value;
 
-            var template = topology.ColumnBaseTemplate ??= new CantileverStationColumnBaseTemplateDesign();
-            template.ColumnSectionId = SelectedSection(ColumnSectionBox);
-            (template.ColumnBottomPlate ??= new CantileverPlateDesign()).Thickness =
-                Keep(ColumnPlateThicknessBox, template.ColumnBottomPlate.Thickness);
-
-            var baseDesign = template.Base ??= new CantileverBaseDesign();
-            baseDesign.SectionId = SelectedSection(BaseSectionBox);
-            baseDesign.Length = Keep(BaseLengthBox, baseDesign.Length);
-            (baseDesign.FrontPlate ??= new CantileverPlateDesign()).Thickness =
-                Keep(BaseFrontPlateBox, baseDesign.FrontPlate.Thickness);
-            (baseDesign.RearPlate ??= new CantileverPlateDesign()).Thickness =
-                Keep(BaseRearPlateBox, baseDesign.RearPlate.Thickness);
-            (baseDesign.Gusset ??= new CantileverGussetDesign()).Thickness =
-                Keep(BaseGussetBox, baseDesign.Gusset.Thickness);
-
-            var connection = template.Connection ??= new CantileverColumnBaseConnectionDesign();
-            var punches = connection.Punches ??= new CantileverPunchParameters();
-            punches.Diameter = Keep(PunchDiameterBox, punches.Diameter);
-            punches.HorizontalEndOffset = Keep(PunchHorizontalOffsetBox, punches.HorizontalEndOffset);
-            punches.ConnectionPitch = Keep(ConnectionPitchBox, punches.ConnectionPitch);
-            punches.ConnectionPunchesAboveBase =
-                (int)Math.Round(ConnectionPunchesAboveBaseBox.Value ?? punches.ConnectionPunchesAboveBase);
-            punches.RearPlateVerticalEndOffset = Keep(RearPlateOffsetBox, punches.RearPlateVerticalEndOffset);
-            punches.RegularColumnPitch = Keep(RegularPitchBox, punches.RegularColumnPitch);
-            punches.ColumnBottomPlatePitch = Keep(BottomPlatePitchBox, punches.ColumnBottomPlatePitch);
-
-            // The two mandatory margins are nullable ON PURPOSE: an empty box stays null and the resolver rejects
-            // the line by name. Substituting a number here is exactly the invention I-37A refused.
-            punches.ColumnBottomPlateEndOffset = BottomPlateEndOffsetBox.Value;
-            punches.ColumnTopPunchOffset = TopPunchOffsetBox.Value;
-
-            design.DefaultArmTemplate = ReadArm(
-                design.DefaultArmTemplate ?? new CantileverArmTemplateDesign(),
-                ArmArrangementBox, ArmSectionBox, ArmCutLengthBox, ArmSlopeBox, ArmPlateThicknessBox,
-                ArmPunchCountBox, ArmVerticalOffsetBox, ArmEndPlateModeBox, ArmEndPlateThicknessBox, ArmExtraStopBox);
-
             var bracing = design.Bracing ??= new CantileverBracingDesign();
-            bracing.SeparatorSectionId = SelectedSection(SeparatorSectionBox);
             bracing.PanelCountMode = PanelModeBox.SelectedIndex == 1
                 ? CantileverBracedPanelCountMode.Manual
                 : CantileverBracedPanelCountMode.Automatic;
@@ -445,26 +293,14 @@ namespace RackCad.UI.Systems.Cantilever
                 : null;
             bracing.BracedPanelHeight = Keep(PanelHeightBox, bracing.BracedPanelHeight);
             bracing.CentralEmptySpaceHeight = Keep(CentralSpaceBox, bracing.CentralEmptySpaceHeight);
-            bracing.BraceKind = BraceKindBox.SelectedIndex == 1
-                ? CantileverBraceBodyKind.StructuralSection
-                : CantileverBraceBodyKind.ColdRolledRound;
-            bracing.BraceSectionId = SelectedSection(BraceSectionBox);
-            (bracing.ColdRolled ??= new CantileverColdRolledBraceDesign()).Diameter =
-                Keep(RodDiameterBox, bracing.ColdRolled.Diameter);
 
             return true;
         }
 
-        private static string SelectedSection(Selector box) => (box.SelectedValue as string)?.Trim();
-
         /// <summary>
         /// The number a field carries — or the value it was WRITTEN from, when the two are the same to display
-        /// precision.
-        ///
-        /// A default like one third does not survive a round trip through a formatted box: it goes out as
-        /// <c>0.333</c> and comes back three ten-thousandths SHORT, which is enough to fall under the floor its
-        /// own authority approves and to block a line the user never edited. Showing more decimals only moves the
-        /// problem. The rule instead is the honest one: a field the user did not touch must not change the design.
+        /// precision. A default like one third does not survive a round trip through a formatted box, and a field
+        /// the user did not touch must not change the design.
         /// </summary>
         private static double Keep(NumericField field, double current)
         {
@@ -478,68 +314,6 @@ namespace RackCad.UI.Systems.Cantilever
 
             return string.Equals(shown, stored, StringComparison.Ordinal) ? current : field.Value.Value;
         }
-
-        /// <summary>Reads an arm out of one set of controls, onto a COPY of <paramref name="current"/>.</summary>
-        private static CantileverArmTemplateDesign ReadArm(
-            CantileverArmTemplateDesign current,
-            Selector arrangement, Selector section, NumericField cutLength, NumericField slope,
-            NumericField plateThickness, NumericField punchCount, NumericField verticalOffset,
-            Selector endPlateMode, NumericField endPlateThickness, NumericField extraStop)
-        {
-            var arm = current.DeepCopy();
-
-            var body = arm.Body ??= new CantileverArmBodyDesign();
-            body.Arrangement = ArrangementOf(arrangement.SelectedIndex);
-            body.SectionId = (section.SelectedValue as string)?.Trim();
-            body.CutLength = Keep(cutLength, body.CutLength);
-            body.SlopeRisePer12 = Keep(slope, body.SlopeRisePer12);
-
-            var plate = arm.MountingPlate ??= new CantileverArmMountingPlateTemplateDesign();
-            plate.Thickness = Keep(plateThickness, plate.Thickness);
-            plate.VerticalPunchCount = (int)Math.Round(punchCount.Value ?? plate.VerticalPunchCount);
-            plate.VerticalEndOffset = verticalOffset.Value; // mandatory and nullable, like the two punch margins
-
-            var end = arm.EndPlate ??= new CantileverArmEndPlateDesign();
-            end.Mode = EndPlateModeOf(endPlateMode.SelectedIndex);
-            end.Thickness = Keep(endPlateThickness, end.Thickness);
-            end.ExtraStopHeight = Keep(extraStop, end.ExtraStopHeight);
-
-            return arm;
-        }
-
-        /// <summary>Writes an arm into one set of controls. The exact mirror of <see cref="ReadArm"/>.</summary>
-        private static void WriteArm(
-            CantileverArmTemplateDesign arm,
-            Selector arrangement, Selector section, NumericField cutLength, NumericField slope,
-            NumericField plateThickness, NumericField punchCount, NumericField verticalOffset,
-            Selector endPlateMode, NumericField endPlateThickness, NumericField extraStop)
-        {
-            var body = arm.Body ?? new CantileverArmBodyDesign();
-            arrangement.SelectedIndex = (int)body.Arrangement;
-            section.SelectedValue = body.SectionId;
-            cutLength.SetNumber(body.CutLength);
-            slope.SetNumber(body.SlopeRisePer12);
-
-            var plate = arm.MountingPlate ?? new CantileverArmMountingPlateTemplateDesign();
-            plateThickness.SetNumber(plate.Thickness);
-            punchCount.SetNumber(plate.VerticalPunchCount, "0");
-            verticalOffset.SetNumber(plate.VerticalEndOffset);
-
-            var end = arm.EndPlate ?? new CantileverArmEndPlateDesign();
-            endPlateMode.SelectedIndex = (int)end.Mode;
-            endPlateThickness.SetNumber(end.Thickness);
-            extraStop.SetNumber(end.ExtraStopHeight);
-        }
-
-        private static CantileverArmBodyArrangement ArrangementOf(int index) =>
-            Enum.IsDefined(typeof(CantileverArmBodyArrangement), index)
-                ? (CantileverArmBodyArrangement)index
-                : CantileverArmBodyArrangement.Single;
-
-        private static CantileverArmEndPlateMode EndPlateModeOf(int index) =>
-            Enum.IsDefined(typeof(CantileverArmEndPlateMode), index)
-                ? (CantileverArmEndPlateMode)index
-                : CantileverArmEndPlateMode.None;
 
         // ---- Recompute ---------------------------------------------------------------------------------------
 
@@ -577,6 +351,7 @@ namespace RackCad.UI.Systems.Cantilever
 
             BuildMatrix();
             UpdateGuid();
+            UpdateComponentCards();
 
             if (!computation.IsValid)
             {
@@ -611,9 +386,6 @@ namespace RackCad.UI.Systems.Cantilever
         private string Summarize(CantileverLineEditorComputation computation)
         {
             var line = computation.Line;
-            var separators = line.Separators.Count;
-            var braces = line.Braces.Count;
-            var panels = line.BracedPanels.Count;
 
             return string.Format(
                 CultureInfo.InvariantCulture,
@@ -621,10 +393,122 @@ namespace RackCad.UI.Systems.Cantilever
                 line.StationCount,
                 line.IntervalCount,
                 line.ColumnHeight.ToString("0.##", CultureInfo.InvariantCulture),
-                panels,
-                separators,
-                braces,
+                line.BracedPanels.Count,
+                line.Separators.Count,
+                line.Braces.Count,
                 computation.Bom?.Components.Count ?? 0);
+        }
+
+        // ---- The component cards -------------------------------------------------------------------------------
+
+        /// <summary>
+        /// The four summaries. COMPACT and deterministic: a card says what the component is, not how it is built.
+        ///
+        /// Long ids stay out of the card and live in its tooltip — showing `AISC-HSS-RECT-HSS4X4X_250` four times
+        /// is how the sidebar became unreadable in the first place.
+        /// </summary>
+        private void UpdateComponentCards()
+        {
+            var template = design.StationTopology?.ColumnBaseTemplate ?? new CantileverStationColumnBaseTemplateDesign();
+            var arm = design.DefaultArmTemplate ?? new CantileverArmTemplateDesign();
+            var bracing = design.Bracing ?? new CantileverBracingDesign();
+
+            ColumnBaseSummary.Text = Short(template.ColumnSectionId) == null
+                ? "(elige una sección de columna)"
+                : Short(template.ColumnSectionId) + " · base " + (Short(template.Base?.SectionId) ?? "(sin elegir)") +
+                  " · " + (template.BaseFollowsColumn ? "sigue a la columna" : "base manual");
+            ConfigureColumnBaseButton.ToolTip = template.ColumnSectionId;
+
+            ArmSummary.Text = Short(arm.Body?.SectionId) == null
+                ? "(elige una sección de brazo)"
+                : Short(arm.Body.SectionId) + " · " +
+                  arm.Body.CutLength.ToString("0.##", CultureInfo.InvariantCulture) + " in · " +
+                  arm.Body.SlopeRisePer12.ToString("0.##", CultureInfo.InvariantCulture) + "/12";
+            ConfigureArmButton.ToolTip = arm.Body?.SectionId;
+
+            var separatorPunches = lastComputation?.Line?.Separators.FirstOrDefault()?.Punches.Count ?? 4;
+            SeparatorSummary.Text = (Short(bracing.SeparatorSectionId) ?? "(sin elegir)") +
+                                    " · " + separatorPunches + " troqueles";
+            ConfigureSeparatorButton.ToolTip = bracing.SeparatorSectionId;
+
+            BraceSummary.Text = bracing.BraceKind == CantileverBraceBodyKind.ColdRolledRound
+                ? "Cold rolled Ø" + (bracing.ColdRolled?.Diameter ?? 0.0).ToString("0.###", CultureInfo.InvariantCulture) + " in"
+                : "Estructural " + (Short(bracing.BraceSectionId) ?? "(sin sección)");
+            ConfigureBraceButton.ToolTip = bracing.BraceSectionId;
+
+            BracingSummaryText.Text = lastComputation?.Line == null
+                ? string.Empty
+                : "Derivado: " + lastComputation.Line.BracedPanels.Count + " paneles · " +
+                  lastComputation.Line.Separators.Count + " separadores · " +
+                  lastComputation.Line.Braces.Count + " tensores.";
+        }
+
+        /// <summary>The designation part of an id, for a card that must stay compact.</summary>
+        private static string Short(string sectionId) => CantileverColumnBaseEditorState.Designation(sectionId);
+
+        private void ConfigureColumnBase_Click(object sender, RoutedEventArgs e)
+        {
+            if (assembler == null)
+            {
+                return;
+            }
+
+            var topology = design.StationTopology ??= new CantileverLineStationTopologyDesign();
+            var window = new CantileverColumnBaseWindow(
+                topology.ColumnBaseTemplate, assembler.Catalogue, canInsertInAutoCad) { Owner = this };
+
+            window.ShowDialog();
+
+            if (window.Result == null)
+            {
+                return; // cancelled: nothing was mutated, the window edited a copy
+            }
+
+            topology.ColumnBaseTemplate = window.Result;
+            Recompute();
+            SetStatus("Columna y base actualizadas.", false);
+        }
+
+        private void ConfigureArm_Click(object sender, RoutedEventArgs e) => EditArm(null);
+
+        private void ConfigureSeparator_Click(object sender, RoutedEventArgs e)
+        {
+            if (assembler == null)
+            {
+                return;
+            }
+
+            var window = new CantileverSeparatorWindow(design.Bracing, assembler.Catalogue) { Owner = this };
+            window.ShowDialog();
+
+            if (window.Result == null)
+            {
+                return;
+            }
+
+            design.Bracing = window.Result;
+            Recompute();
+            SetStatus("Separador actualizado.", false);
+        }
+
+        private void ConfigureBrace_Click(object sender, RoutedEventArgs e)
+        {
+            if (assembler == null)
+            {
+                return;
+            }
+
+            var window = new CantileverBraceWindow(design.Bracing, assembler.Catalogue) { Owner = this };
+            window.ShowDialog();
+
+            if (window.Result == null)
+            {
+                return;
+            }
+
+            design.Bracing = window.Result;
+            Recompute();
+            SetStatus("Tensor actualizado.", false);
         }
 
         // ---- The matrix --------------------------------------------------------------------------------------
@@ -695,7 +579,7 @@ namespace RackCad.UI.Systems.Cantilever
             }
 
             OverrideCountText.Text = matrix.OverrideCount == 0
-                ? "Sin excepciones: todas las celdas siguen el brazo por omisión."
+                ? "Sin excepciones."
                 : matrix.OverrideCount.ToString(CultureInfo.InvariantCulture) + " celdas con excepción.";
 
             if (selectedCell.HasValue && !matrix.IsActive(selectedCell.Value))
@@ -776,7 +660,7 @@ namespace RackCad.UI.Systems.Cantilever
                 return "—";
             }
 
-            var section = string.IsNullOrWhiteSpace(arm.Body.SectionId) ? "(sin sección)" : arm.Body.SectionId;
+            var section = Short(arm.Body.SectionId) ?? "(sin sección)";
 
             return section + "\n" + arm.Body.CutLength.ToString("0.##", CultureInfo.InvariantCulture) + " in";
         }
@@ -789,12 +673,6 @@ namespace RackCad.UI.Systems.Cantilever
             }
 
             selectedCell = cell;
-
-            var arm = Matrix.Effective(cell) ?? new CantileverArmTemplateDesign();
-            WriteArm(
-                arm, CellArrangementBox, CellSectionBox, CellCutLengthBox, CellSlopeBox, CellPlateThicknessBox,
-                CellPunchCountBox, CellVerticalOffsetBox, CellEndPlateModeBox, CellEndPlateThicknessBox, CellExtraStopBox);
-
             HighlightSelection();
             UpdateCellHeader();
         }
@@ -813,20 +691,31 @@ namespace RackCad.UI.Systems.Cantilever
         {
             if (!selectedCell.HasValue)
             {
-                CellHeaderText.Text = "Ninguna celda seleccionada — elige una para editar su brazo.";
-                ApplyCellButton.IsEnabled = false;
+                CellHeaderText.Text = "Ninguna celda seleccionada — elige una para ver su brazo.";
+                CellSummaryText.Text = string.Empty;
+                EditCellArmButton.IsEnabled = false;
                 RestoreCellButton.IsEnabled = false;
                 return;
             }
 
             var cell = selectedCell.Value;
+            var matrix = Matrix;
+
             CellHeaderText.Text = string.Format(
                 CultureInfo.InvariantCulture,
                 "Celda seleccionada: estación {0}, nivel {1}, lado {2}{3}",
                 cell.StationIndex + 1, cell.LevelIndex + 1, SideLabel(cell.Side),
-                Matrix.HasOverride(cell) ? " (con excepción)" : " (sigue el brazo por omisión)");
+                matrix.HasOverride(cell) ? " (con excepción)" : " (sigue el brazo por omisión)");
 
-            ApplyCellButton.IsEnabled = true;
+            var arm = matrix.Effective(cell);
+            CellSummaryText.Text = arm?.Body == null
+                ? string.Empty
+                : (Short(arm.Body.SectionId) ?? "(sin sección)") + " · corte " +
+                  arm.Body.CutLength.ToString("0.##", CultureInfo.InvariantCulture) + " in · pendiente " +
+                  arm.Body.SlopeRisePer12.ToString("0.##", CultureInfo.InvariantCulture) + "/12 · " +
+                  (arm.MountingPlate?.VerticalPunchCount ?? 0) + " troqueles";
+
+            EditCellArmButton.IsEnabled = true;
             RestoreCellButton.IsEnabled = true;
         }
 
@@ -835,7 +724,13 @@ namespace RackCad.UI.Systems.Cantilever
                 ? (CantileverLineApplyScope)ScopeBox.SelectedIndex
                 : CantileverLineApplyScope.Cell;
 
-        private void ApplyCell_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Opens the arm configurator for the selected scope, and applies what it returns as ONE operation.
+        ///
+        /// The full arm form used to live under the matrix; moving it out is half of the saturation the owner
+        /// rejected. The scope, the single notification and the single regeneration are unchanged.
+        /// </summary>
+        private void EditCellArm_Click(object sender, RoutedEventArgs e)
         {
             if (!selectedCell.HasValue)
             {
@@ -843,33 +738,68 @@ namespace RackCad.UI.Systems.Cantilever
                 return;
             }
 
-            var cellFields = new[]
-            {
-                CellCutLengthBox, CellSlopeBox, CellPlateThicknessBox, CellPunchCountBox, CellVerticalOffsetBox,
-                CellEndPlateThicknessBox, CellExtraStopBox
-            };
+            EditArm(selectedCell.Value);
+        }
 
-            var broken = cellFields.FirstOrDefault(f => f.HasError);
-
-            if (broken != null)
+        private void EditArm(CantileverLineCell? cell)
+        {
+            if (assembler == null)
             {
-                SetStatus(broken.ErrorMessage ?? "Hay un campo numérico inválido en la celda.", true);
                 return;
             }
 
-            var arm = ReadArm(
-                Matrix.Effective(selectedCell.Value) ?? new CantileverArmTemplateDesign(),
-                CellArrangementBox, CellSectionBox, CellCutLengthBox, CellSlopeBox, CellPlateThicknessBox,
-                CellPunchCountBox, CellVerticalOffsetBox, CellEndPlateModeBox, CellEndPlateThicknessBox, CellExtraStopBox);
+            var matrix = Matrix;
+            var current = cell.HasValue
+                ? matrix.Effective(cell.Value) ?? design.DefaultArmTemplate
+                : design.DefaultArmTemplate;
 
-            // ONE write and ONE recompute per operation: the matrix reports whether anything actually moved, so a
-            // scope that changed nothing does not redraw the preview or claim it did something.
-            var change = Matrix.Apply(SelectedScope(), selectedCell.Value, arm);
+            var scope = cell.HasValue
+                ? DescribeScope(SelectedScope(), cell.Value)
+                : null;
+
+            var window = new CantileverArmWindow(
+                current, design.StationTopology?.ColumnBaseTemplate, assembler.Catalogue, scope) { Owner = this };
+
+            window.ShowDialog();
+
+            if (window.Result == null)
+            {
+                return; // cancelled: the design was not touched
+            }
+
+            if (!cell.HasValue)
+            {
+                design.DefaultArmTemplate = window.Result;
+                Recompute();
+                SetStatus("Brazo por omisión actualizado.", false);
+                return;
+            }
+
+            // ONE write and ONE recompute per operation: the matrix reports whether anything actually moved.
+            var change = matrix.Apply(SelectedScope(), cell.Value, window.Result);
             Recompute();
 
             SetStatus(change.IsNoOp
                 ? "Ninguna celda cambió: ese brazo ya estaba en vigor en las " + change.Count + " celdas del alcance."
                 : change.Changed.Count + " de " + change.Count + " celdas actualizadas.", false);
+        }
+
+        private static string DescribeScope(CantileverLineApplyScope scope, CantileverLineCell cell)
+        {
+            switch (scope)
+            {
+                case CantileverLineApplyScope.Station:
+                    return "estación " + (cell.StationIndex + 1);
+                case CantileverLineApplyScope.Level:
+                    return "nivel " + (cell.LevelIndex + 1) + " de toda la línea";
+                case CantileverLineApplyScope.Side:
+                    return "lado " + SideLabel(cell.Side) + " de toda la línea";
+                case CantileverLineApplyScope.Line:
+                    return "toda la línea";
+                default:
+                    return "estación " + (cell.StationIndex + 1) + ", nivel " + (cell.LevelIndex + 1) +
+                           ", lado " + SideLabel(cell.Side);
+            }
         }
 
         private void RestoreCell_Click(object sender, RoutedEventArgs e)
@@ -1113,8 +1043,6 @@ namespace RackCad.UI.Systems.Cantilever
                 session.Identity.EnsureId();
                 session.Identity.SetName(NameBox.Text?.Trim());
 
-                // WithSourceMetadataFrom preserves the opened project's unknown JSON fields + non-downgraded
-                // schema version (I-11). Saving never flags an insert.
                 var project = RackProject.ForCantilever(lastComputation.Design).WithSourceMetadataFrom(sourceProject);
                 new RackProjectStore().Save(project, path);
                 SetStatus("Línea guardada: " + System.IO.Path.GetFileName(path), false);

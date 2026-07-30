@@ -15,15 +15,15 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <!-- I-37D (ADR-0019, ADR-0028): the Cantilever editor is COMPOSED over RackEditorVisualShell from the start —
-         it is the first system that never had a pre-shell layout to migrate. The sidebar holds the line, its shared
-         station topology, the column–base template, the default arm and the bracing; the matrix holds the
-         estación × nivel × lado grid with its apply scopes and the override editor; the preview renders the SAME
-         view plan the Plugin materialises. The window computes nothing: every number here is read into a
-         CantileverLineDesign and handed to CantileverLineEditorAssembler. -->
+    <!-- I-37D RONDA 2. La ventana principal edita la LÍNEA y nada más.
+         El dueño rechazó la ronda 1 porque esta ventana estaba saturada, mezclaba propiedades de línea con
+         propiedades internas de componentes, y su arquitectura no reflejaba el flujo real de configuración. Ahora
+         la barra lateral lleva SOLO el agregado `CantileverLineDesign` —línea, topología compartida y distribución
+         del arriostramiento— y los componentes se editan en su propia ventana, cada uno con sus parámetros, su
+         preview, sus diagnósticos y su receta. Aquí sólo queda su RESUMEN y un botón. -->
     <shell:RackEditorVisualShell x:Name="Shell">
 
-        <!-- ============================ SIDEBAR ============================ -->
+        <!-- ============================ SIDEBAR: SOLO la línea ============================ -->
         <shell:RackEditorVisualShell.SidePanelContent>
             <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}"
                     BorderThickness="1" Padding="{DynamicResource ShellPanelPadding}">
@@ -43,7 +43,7 @@
                     <controls:NumericField x:Name="SpacingBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False"
                                            ToolTip="Distancia centro a centro entre columnas. NO es el largo del separador: ese se deriva de los agujeros de las placas de columna." />
 
-                    <TextBlock Text="Estación (compartida por toda la línea)" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="Topología compartida" Style="{StaticResource SectionTitle}" />
                     <TextBlock Text="Caras" Style="{StaticResource FieldLabel}" />
                     <ComboBox x:Name="FaceModeBox" SelectionChanged="Combo_Changed"
                               ToolTip="Sencilla: brazos de un solo lado. Doble: brazos de los dos lados, con las bases espejadas." />
@@ -55,11 +55,9 @@
                     <controls:NumericField x:Name="FirstPunchBox" LostFocus="Input_Changed" IntegerOnly="True" Minimum="0"
                                            ToolTip="Índice base cero del troquel regular de columna al que atornilla la fila inferior del primer nivel." />
                     <TextBlock Text="Claro solicitado entre niveles (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ClearHeightBox" LostFocus="Input_Changed" Minimum="0"
-                                           ToolTip="Claro vertical pedido entre niveles, de lomo de cuerpo a lomo de cuerpo." />
+                    <controls:NumericField x:Name="ClearHeightBox" LostFocus="Input_Changed" Minimum="0" />
                     <TextBlock Text="Factor de claro superior" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="TopClearFactorBox" LostFocus="Input_Changed" Minimum="0"
-                                           ToolTip="Fracción del claro que la columna deja por encima del último nivel." />
+                    <controls:NumericField x:Name="TopClearFactorBox" LostFocus="Input_Changed" Minimum="0" />
                     <TextBlock Text="Altura de columna" Style="{StaticResource FieldLabel}" />
                     <ComboBox x:Name="HeightModeBox" SelectionChanged="Combo_Changed"
                               ToolTip="Automática: la línea resuelve una altura COMÚN, el máximo de las mínimas por estación. Manual: la altura que escribas, para todas." />
@@ -67,100 +65,94 @@
                     <controls:NumericField x:Name="ManualHeightBox" LostFocus="Input_Changed" IsOptional="True" Minimum="0"
                                            MinimumInclusive="False" />
 
-                    <TextBlock Text="Columna y base" Style="{StaticResource SectionTitle}" />
-                    <TextBlock Text="Sección de columna" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="ColumnSectionBox" SelectionChanged="Combo_Changed" DisplayMemberPath="Label"
-                              SelectedValuePath="Id" ToolTip="Perfil W del catálogo neutral AISC. Sin selección la línea no se resuelve." />
-                    <TextBlock Text="Espesor de placa inferior (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ColumnPlateThicknessBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Sección de base" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="BaseSectionBox" SelectionChanged="Combo_Changed" DisplayMemberPath="Label" SelectedValuePath="Id" />
-                    <TextBlock Text="Longitud de base (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="BaseLengthBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Espesor de placa frontal / trasera / cartabón (in)" Style="{StaticResource FieldLabel}" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="8" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="8" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <controls:NumericField x:Name="BaseFrontPlateBox" Grid.Column="0" LostFocus="Input_Changed"
-                                               Minimum="0" MinimumInclusive="False" />
-                        <controls:NumericField x:Name="BaseRearPlateBox" Grid.Column="2" LostFocus="Input_Changed"
-                                               Minimum="0" MinimumInclusive="False" />
-                        <controls:NumericField x:Name="BaseGussetBox" Grid.Column="4" LostFocus="Input_Changed"
-                                               Minimum="0" MinimumInclusive="False" />
-                    </Grid>
-
-                    <TextBlock Text="Troqueles" Style="{StaticResource SectionTitle}" />
-                    <TextBlock Text="Diámetro (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="PunchDiameterBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Margen horizontal a extremo (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="PunchHorizontalOffsetBox" LostFocus="Input_Changed" Minimum="0" />
-                    <TextBlock Text="Paso de conexión (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ConnectionPitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Troqueles de conexión sobre la base" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ConnectionPunchesAboveBaseBox" LostFocus="Input_Changed" IntegerOnly="True" Minimum="0" />
-                    <TextBlock Text="Margen vertical de placa trasera (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="RearPlateOffsetBox" LostFocus="Input_Changed" Minimum="0" />
-                    <TextBlock Text="Paso regular de columna (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="RegularPitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Paso de placa inferior (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="BottomPlatePitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Margen de extremo de placa inferior (in) — obligatorio" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="BottomPlateEndOffsetBox" LostFocus="Input_Changed" Minimum="0"
-                                           ToolTip="I-37A no aprobó un valor por omisión: sin él la línea NO se resuelve." />
-                    <TextBlock Text="Margen del troquel superior (in) — obligatorio" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="TopPunchOffsetBox" LostFocus="Input_Changed" Minimum="0"
-                                           ToolTip="I-37A no aprobó un valor por omisión: sin él la línea NO se resuelve." />
-
-                    <TextBlock Text="Brazo por omisión" Style="{StaticResource SectionTitle}" />
-                    <TextBlock Text="Arreglo" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="ArmArrangementBox" SelectionChanged="Combo_Changed" />
-                    <TextBlock Text="Sección" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="ArmSectionBox" SelectionChanged="Combo_Changed" DisplayMemberPath="Label" SelectedValuePath="Id"
-                              ToolTip="Cualquier sección del catálogo como cuerpo sencillo; los arreglos apareados exigen canal." />
-                    <TextBlock Text="Longitud de corte (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ArmCutLengthBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Pendiente (subida por 12 in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ArmSlopeBox" LostFocus="Input_Changed" Minimum="0" />
-                    <TextBlock Text="Espesor de placa de montaje (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ArmPlateThicknessBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Troqueles verticales" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ArmPunchCountBox" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" />
-                    <TextBlock Text="Margen vertical de placa (in) — obligatorio" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ArmVerticalOffsetBox" LostFocus="Input_Changed" Minimum="0" />
-                    <TextBlock Text="Placa de extremo" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="ArmEndPlateModeBox" SelectionChanged="Combo_Changed" />
-                    <TextBlock Text="Espesor de placa de extremo (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ArmEndPlateThicknessBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Altura extra de tope (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="ArmExtraStopBox" LostFocus="Input_Changed" Minimum="0" />
-
-                    <TextBlock Text="Arriostramiento" Style="{StaticResource SectionTitle}" />
-                    <TextBlock Text="Sección de separador" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="SeparatorSectionBox" SelectionChanged="Combo_Changed" DisplayMemberPath="Label" SelectedValuePath="Id"
-                              ToolTip="Por omisión el canal de 4 in más ligero del catálogo (AISC-C-C4X4_5)." />
-                    <TextBlock Text="Paneles arriostrados" Style="{StaticResource FieldLabel}" />
+                    <TextBlock Text="Distribución de arriostramiento" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="Cantidad de paneles" Style="{StaticResource FieldLabel}" />
                     <ComboBox x:Name="PanelModeBox" SelectionChanged="Combo_Changed"
                               ToolTip="Automático: la regla de producto max(1, techo((H − 72)/60)). Manual: la cantidad que escribas." />
-                    <TextBlock Text="Cantidad manual de paneles" Style="{StaticResource FieldLabel}" />
+                    <TextBlock Text="Cantidad manual" Style="{StaticResource FieldLabel}" />
                     <controls:NumericField x:Name="ManualPanelCountBox" LostFocus="Input_Changed" IsOptional="True"
                                            IntegerOnly="True" Minimum="1" />
                     <TextBlock Text="Altura de panel (in)" Style="{StaticResource FieldLabel}" />
                     <controls:NumericField x:Name="PanelHeightBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
                     <TextBlock Text="Altura de espacio central (in)" Style="{StaticResource FieldLabel}" />
                     <controls:NumericField x:Name="CentralSpaceBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                    <TextBlock Text="Tensor" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="BraceKindBox" SelectionChanged="Combo_Changed"
-                              ToolTip="Cold rolled: varilla redonda con adaptador y cartabones en cada extremo. Estructural: perfil atornillado del catálogo." />
-                    <TextBlock Text="Sección de tensor estructural" Style="{StaticResource FieldLabel}" />
-                    <ComboBox x:Name="BraceSectionBox" SelectionChanged="Combo_Changed" DisplayMemberPath="Label" SelectedValuePath="Id"
-                              ToolTip="Sin valor por omisión: un tensor estructural sin sección se rechaza." />
-                    <TextBlock Text="Diámetro de varilla cold rolled (in)" Style="{StaticResource FieldLabel}" />
-                    <controls:NumericField x:Name="RodDiameterBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                    <TextBlock x:Name="BracingSummaryText" TextWrapping="Wrap" FontSize="11" Margin="0,6,0,0"
+                               Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+
+                    <!-- ============ COMPONENTES: resumen + botón. Sus parámetros viven en su ventana ============ -->
+                    <TextBlock Text="Componentes" Style="{StaticResource SectionTitle}" />
+
+                    <Border BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1" Padding="8" Margin="0,2,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Columna y base" FontSize="12"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <TextBlock x:Name="ColumnBaseSummary" FontSize="11" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </StackPanel>
+                            <Button x:Name="ConfigureColumnBaseButton" Grid.Column="1" Content="Configurar"
+                                    VerticalAlignment="Center" Margin="8,0,0,0"
+                                    Style="{StaticResource SecondaryButtonStyle}" Click="ConfigureColumnBase_Click" />
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1" Padding="8" Margin="0,6,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Brazo (por omisión)" FontSize="12"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <TextBlock x:Name="ArmSummary" FontSize="11" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </StackPanel>
+                            <Button x:Name="ConfigureArmButton" Grid.Column="1" Content="Configurar"
+                                    VerticalAlignment="Center" Margin="8,0,0,0"
+                                    Style="{StaticResource SecondaryButtonStyle}" Click="ConfigureArm_Click" />
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1" Padding="8" Margin="0,6,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Separador" FontSize="12"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <TextBlock x:Name="SeparatorSummary" FontSize="11" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </StackPanel>
+                            <Button x:Name="ConfigureSeparatorButton" Grid.Column="1" Content="Configurar"
+                                    VerticalAlignment="Center" Margin="8,0,0,0"
+                                    Style="{StaticResource SecondaryButtonStyle}" Click="ConfigureSeparator_Click" />
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1" Padding="8" Margin="0,6,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Tensor" FontSize="12"
+                                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+                                <TextBlock x:Name="BraceSummary" FontSize="11" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </StackPanel>
+                            <Button x:Name="ConfigureBraceButton" Grid.Column="1" Content="Configurar"
+                                    VerticalAlignment="Center" Margin="8,0,0,0"
+                                    Style="{StaticResource SecondaryButtonStyle}" Click="ConfigureBrace_Click" />
+                        </Grid>
+                    </Border>
 
                 </StackPanel>
             </Border>
@@ -170,60 +162,29 @@
         <shell:RackEditorVisualShell.MatrixContent>
             <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Matriz estación × nivel × lado — clic en una celda para editar su brazo. Nivel 1 abajo; estación 1 a la izquierda."
+                    <TextBlock Text="Matriz estación × nivel × lado — clic en una celda para verla; «Editar brazo» abre el configurador. Nivel 1 abajo."
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" FontSize="11" TextWrapping="Wrap" Margin="10,8,10,0" />
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="200">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="170">
                         <Grid x:Name="MatrixGrid" Margin="10,8,10,6" />
                     </ScrollViewer>
 
+                    <!-- El formulario COMPLETO del brazo ya no vive aquí: sólo el resumen de la celda y el acceso
+                         a su configurador. Era la mitad de la saturación que el dueño rechazó. -->
                     <Border BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="0,1,0,0" Padding="10,8,10,10">
                         <StackPanel>
                             <TextBlock x:Name="CellHeaderText" Text="Ninguna celda seleccionada" Style="{StaticResource FieldLabel}" />
-                            <Grid Margin="0,4,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="8" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Arreglo" Style="{StaticResource FieldLabel}" />
-                                    <ComboBox x:Name="CellArrangementBox" />
-                                    <TextBlock Text="Sección" Style="{StaticResource FieldLabel}" />
-                                    <ComboBox x:Name="CellSectionBox" DisplayMemberPath="Label" SelectedValuePath="Id" />
-                                    <TextBlock Text="Placa de extremo" Style="{StaticResource FieldLabel}" />
-                                    <ComboBox x:Name="CellEndPlateModeBox" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Longitud de corte (in)" Style="{StaticResource FieldLabel}" />
-                                    <controls:NumericField x:Name="CellCutLengthBox" Minimum="0" MinimumInclusive="False" />
-                                    <TextBlock Text="Pendiente (por 12 in)" Style="{StaticResource FieldLabel}" />
-                                    <controls:NumericField x:Name="CellSlopeBox" Minimum="0" />
-                                    <TextBlock Text="Espesor de placa de extremo (in)" Style="{StaticResource FieldLabel}" />
-                                    <controls:NumericField x:Name="CellEndPlateThicknessBox" Minimum="0" MinimumInclusive="False" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="4">
-                                    <TextBlock Text="Troqueles verticales" Style="{StaticResource FieldLabel}" />
-                                    <controls:NumericField x:Name="CellPunchCountBox" IntegerOnly="True" Minimum="2" />
-                                    <TextBlock Text="Margen vertical (in)" Style="{StaticResource FieldLabel}" />
-                                    <controls:NumericField x:Name="CellVerticalOffsetBox" Minimum="0" />
-                                    <TextBlock Text="Espesor de placa de montaje (in)" Style="{StaticResource FieldLabel}" />
-                                    <controls:NumericField x:Name="CellPlateThicknessBox" Minimum="0" MinimumInclusive="False" />
-                                    <TextBlock Text="Altura extra de tope (in)" Style="{StaticResource FieldLabel}" />
-                                    <controls:NumericField x:Name="CellExtraStopBox" Minimum="0" />
-                                </StackPanel>
-                            </Grid>
+                            <TextBlock x:Name="CellSummaryText" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0"
+                                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                <TextBlock Text="Aplicar a:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <Button x:Name="EditCellArmButton" Content="Editar brazo de la celda" MinWidth="180"
+                                        Style="{StaticResource PrimaryButtonStyle}" Click="EditCellArm_Click"
+                                        ToolTip="Abre el configurador de brazo para el alcance elegido." />
+                                <TextBlock Text="Aplicar a:" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="12,0,8,0" />
                                 <ComboBox x:Name="ScopeBox" Width="150" VerticalAlignment="Center"
                                           ToolTip="Celda · toda la estación · ese nivel en toda la línea · ese lado en toda la línea · toda la línea." />
-                                <Button x:Name="ApplyCellButton" Content="Aplicar" Style="{StaticResource PrimaryButtonStyle}"
-                                        MinWidth="100" Margin="8,0,0,0" Click="ApplyCell_Click"
-                                        ToolTip="Escribe este brazo como excepción en el alcance elegido. Un brazo idéntico al de omisión NO se guarda como excepción." />
                                 <Button x:Name="RestoreCellButton" Content="Restaurar" Style="{StaticResource SecondaryButtonStyle}"
                                         MinWidth="100" Margin="8,0,0,0" Click="RestoreCell_Click"
-                                        ToolTip="Borra las excepciones del alcance elegido: esas celdas vuelven al brazo por omisión de la línea." />
+                                        ToolTip="Borra las excepciones del alcance elegido: esas celdas vuelven al brazo por omisión." />
                                 <TextBlock x:Name="OverrideCountText" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="12,0,0,0" />
                             </StackPanel>
                         </StackPanel>
@@ -232,7 +193,7 @@
             </Border>
         </shell:RackEditorVisualShell.MatrixContent>
 
-        <!-- ============================ VISTA PREVIA ============================ -->
+        <!-- ============================ VISTA PREVIA: tiene prioridad visual ============================ -->
         <shell:RackEditorVisualShell.PreviewContent>
             <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
                 <Grid>
@@ -276,7 +237,7 @@
             </StackPanel>
         </shell:RackEditorVisualShell.StatusContent>
 
-        <!-- ============================ ACCIONES ============================ -->
+        <!-- ============ ACCIONES: lo que NO dibuja, separado de lo que dibuja ============ -->
         <shell:RackEditorVisualShell.LeadingActions>
             <Button x:Name="UpdateButton" Content="Actualizar" Style="{StaticResource PrimaryButtonStyle}" MinWidth="120"
                     Margin="0,0,8,0" ToolTipService.ShowOnDisabled="True" Click="Update_Click"

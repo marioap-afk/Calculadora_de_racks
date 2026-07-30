@@ -280,6 +280,167 @@ namespace RackCad.Application.Systems.Cantilever
             };
         }
 
+        /// <summary>
+        /// One view of a COLUMN–BASE on its own, for the component editor's preview.
+        ///
+        /// It goes through the very same private helpers the line uses, so the picture in the component window,
+        /// the picture in the line window and the entities in the drawing are one projection with three
+        /// consumers. A second «small» projector here is exactly how a preview starts disagreeing with its
+        /// block, which is regression 8 of I-37D ronda 2.
+        /// </summary>
+        public static CantileverViewPlan BuildColumnBase(
+            CantileverColumnBaseAssembly columnBase,
+            CantileverViewKind view,
+            StructuralSectionGeometryFactory geometryFactory)
+        {
+            if (columnBase == null)
+            {
+                throw new ArgumentNullException(nameof(columnBase));
+            }
+
+            if (geometryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(geometryFactory));
+            }
+
+            var curves = new List<CantileverViewCurve>();
+            var viewpoint = Viewpoint(view);
+            var options = new SectionRepresentationOptions { Viewpoint = viewpoint };
+            var zero = new Vector3D(0.0, 0.0, 0.0);
+
+            if (columnBase.IsBlocked)
+            {
+                return new CantileverViewPlan(view, -1, curves, columnBase.Diagnostics);
+            }
+
+            AddMember(curves, columnBase.Column.Id, CantileverViewPieceKind.Column, columnBase.Column, zero, options, geometryFactory);
+            AddMember(curves, columnBase.Base.Id, CantileverViewPieceKind.Base, columnBase.Base, zero, options, geometryFactory);
+
+            foreach (var plate in new[] { columnBase.ColumnBottomPlate, columnBase.BaseFrontPlate, columnBase.BaseRearPlate })
+            {
+                if (plate != null)
+                {
+                    AddOutline(curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline, zero, viewpoint, true);
+                }
+            }
+
+            if (columnBase.Gusset != null)
+            {
+                AddOutline(
+                    curves, CantileverViewPieceKind.Gusset, columnBase.Gusset.Id,
+                    columnBase.Gusset.Vertices, zero, viewpoint, true);
+            }
+
+            foreach (var punch in columnBase.AllPunches)
+            {
+                AddPunch(curves, punch.Id, punch, zero, viewpoint);
+            }
+
+            return new CantileverViewPlan(view, -1, curves, columnBase.Diagnostics);
+        }
+
+        /// <summary>One view of an ARM on its own. Same helpers, same reason as <see cref="BuildColumnBase"/>.</summary>
+        public static CantileverViewPlan BuildArm(
+            CantileverArmAssembly arm,
+            CantileverViewKind view,
+            StructuralSectionGeometryFactory geometryFactory)
+        {
+            if (arm == null)
+            {
+                throw new ArgumentNullException(nameof(arm));
+            }
+
+            if (geometryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(geometryFactory));
+            }
+
+            var curves = new List<CantileverViewCurve>();
+            var viewpoint = Viewpoint(view);
+            var options = new SectionRepresentationOptions { Viewpoint = viewpoint };
+            var zero = new Vector3D(0.0, 0.0, 0.0);
+
+            foreach (var member in arm.Members)
+            {
+                AddMember(curves, member.Id, CantileverViewPieceKind.Arm, member, zero, options, geometryFactory);
+            }
+
+            foreach (var plate in arm.Plates)
+            {
+                AddOutline(curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline, zero, viewpoint, true);
+            }
+
+            foreach (var punch in arm.MountingPunches)
+            {
+                AddPunch(curves, punch.Id, punch, zero, viewpoint);
+            }
+
+            return new CantileverViewPlan(view, -1, curves, arm.Diagnostics);
+        }
+
+        /// <summary>One view of a SEPARATOR with its four holes. Same helpers.</summary>
+        public static CantileverViewPlan BuildSeparator(
+            CantileverSeparatorPlan separator,
+            CantileverViewKind view,
+            StructuralSectionGeometryFactory geometryFactory)
+        {
+            if (separator == null)
+            {
+                throw new ArgumentNullException(nameof(separator));
+            }
+
+            if (geometryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(geometryFactory));
+            }
+
+            var curves = new List<CantileverViewCurve>();
+            var viewpoint = Viewpoint(view);
+            var options = new SectionRepresentationOptions { Viewpoint = viewpoint };
+            var zero = new Vector3D(0.0, 0.0, 0.0);
+
+            AddMember(
+                curves, separator.Member.Id, CantileverViewPieceKind.Separator,
+                separator.Member, zero, options, geometryFactory);
+
+            foreach (var punch in separator.Punches)
+            {
+                AddPunch(curves, punch.Id, punch, zero, viewpoint);
+            }
+
+            return new CantileverViewPlan(view, -1, curves, Array.Empty<CantileverDiagnostic>());
+        }
+
+        /// <summary>
+        /// One view of a BRACE: its profile when it has one, its axis and its adapters when it is cold rolled.
+        ///
+        /// It reuses the very branch <see cref="AddInterval"/> uses, so a cold-rolled rod is drawn here exactly
+        /// as it is drawn in the line: as its axis, with the square of each adapter's cut (ADR-0027, D7).
+        /// </summary>
+        public static CantileverViewPlan BuildBrace(
+            CantileverBracePlan brace,
+            CantileverViewKind view,
+            StructuralSectionGeometryFactory geometryFactory)
+        {
+            if (brace == null)
+            {
+                throw new ArgumentNullException(nameof(brace));
+            }
+
+            if (geometryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(geometryFactory));
+            }
+
+            var curves = new List<CantileverViewCurve>();
+            var viewpoint = Viewpoint(view);
+            var options = new SectionRepresentationOptions { Viewpoint = viewpoint };
+
+            AddBrace(curves, brace, viewpoint, options, geometryFactory);
+
+            return new CantileverViewPlan(view, -1, curves, Array.Empty<CantileverDiagnostic>());
+        }
+
         private static IReadOnlyList<CantileverLineStationPlacement> OneStation(
             CantileverLineAssembly line, int stationIndex, ICollection<CantileverDiagnostic> diagnostics)
         {
@@ -370,31 +531,50 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var brace in interval.Braces)
             {
-                if (brace.Member != null)
-                {
-                    AddMember(
-                        curves, brace.Member.Id, CantileverViewPieceKind.Brace,
-                        brace.Member, zero, options, geometryFactory);
-                    continue;
-                }
-
-                // A cold-rolled rod has no catalogued section, so there is no contour to project: it is drawn as
-                // its AXIS. Giving it a fictional circular section would put a shape on the drawing that no
-                // catalogue row backs (ADR-0027, D7).
-                foreach (var adapter in brace.Adapters)
-                {
-                    AddOutline(
-                        curves, CantileverViewPieceKind.ColdRolledAdapter, adapter.Id,
-                        AdapterOutline(adapter), zero, viewpoint, true);
-                }
-
-                AddOutline(
-                    curves, CantileverViewPieceKind.Brace,
-                    CantileverPieceId.Create(
-                        CantileverPieceTokens.IntervalOwnerOf(brace.IntervalIndex),
-                        CantileverPieceTokens.BraceToken(brace.PanelIndex, brace.Diagonal)),
-                    new[] { brace.LowerEnd, brace.UpperEnd }, zero, viewpoint, false);
+                AddBrace(curves, brace, viewpoint, options, geometryFactory);
             }
+        }
+
+        /// <summary>
+        /// One brace: its profile when it is structural, its axis and its adapters when it is cold rolled.
+        ///
+        /// EXTRACTED from the interval loop when the component editor needed to draw a brace on its own. Copying
+        /// it would have produced two rules for what a cold-rolled rod looks like, and they would have disagreed
+        /// the first time one of them was corrected.
+        /// </summary>
+        private static void AddBrace(
+            ICollection<CantileverViewCurve> curves,
+            CantileverBracePlan brace,
+            SectionViewpoint viewpoint,
+            SectionRepresentationOptions options,
+            StructuralSectionGeometryFactory geometryFactory)
+        {
+            var zero = new Vector3D(0.0, 0.0, 0.0);
+
+            if (brace.Member != null)
+            {
+                AddMember(
+                    curves, brace.Member.Id, CantileverViewPieceKind.Brace,
+                    brace.Member, zero, options, geometryFactory);
+                return;
+            }
+
+            // A cold-rolled rod has no catalogued section, so there is no contour to project: it is drawn as
+            // its AXIS. Giving it a fictional circular section would put a shape on the drawing that no
+            // catalogue row backs (ADR-0027, D7).
+            foreach (var adapter in brace.Adapters)
+            {
+                AddOutline(
+                    curves, CantileverViewPieceKind.ColdRolledAdapter, adapter.Id,
+                    AdapterOutline(adapter), zero, viewpoint, true);
+            }
+
+            AddOutline(
+                curves, CantileverViewPieceKind.Brace,
+                CantileverPieceId.Create(
+                    CantileverPieceTokens.IntervalOwnerOf(brace.IntervalIndex),
+                    CantileverPieceTokens.BraceToken(brace.PanelIndex, brace.Diagonal)),
+                new[] { brace.LowerEnd, brace.UpperEnd }, zero, viewpoint, false);
         }
 
         /// <summary>
