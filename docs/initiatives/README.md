@@ -628,6 +628,29 @@ Planes disponibles:
   vinculantes del Owner en la seccion 10 de
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37C.yml`](../automation/state/I-37C.yml).
+- [`I-37D-cantilever-mvp-final.md`](I-37D-cantilever-mvp-final.md): **cierre del Cantilever MVP**. Cuarta y
+  **ultima** subiniciativa de **I-37**, autorizada expresamente por el Owner. Es la que hace el producto
+  **visible**: las tres anteriores son puras y ninguna dibuja, asi que hoy todo lo construido existe solo para
+  las pruebas. Entrega la **linea** de dos o mas estaciones con altura **comun verificada**, los
+  **intervalos** -- que son del **par** de estaciones adyacentes, no de una de ellas --, la **distribucion de
+  paneles** como regla que reproduce las doce filas de la tabla de producto, las **placas de columna** de
+  separador (parte del componente columna-base, nunca componentes propios), los **separadores** con su corte
+  derivado de los **agujeros de esas placas**, los **paneles arriostrados** con sus dos tensores en X **en el
+  mismo plano** y sin union central, los **tensores** estructurales y **cold rolled** con sus adaptadores y
+  cartabones calibre 10, el **BOM completo** por componentes, la **persistencia** con round-trip
+  determinista, el **registro** del sistema, los planes puros de vista **frontal, lateral y planta**, el
+  **editor** sobre el shell visual comun con la matriz **estacion x nivel x lado**, y la **materializacion en
+  AutoCAD**. **Fuera de alcance incluso al cerrar I-37**: calculo resistente, cargas, capacidad, peso, costo,
+  optimizacion, soldaduras, tornilleria, anclas, roscas, tolerancias, preparacion de extremos, CNC, shop
+  drawings, la interferencia en el cruce de tensores, y catalogos nuevos sin procedencia.
+  `requires_autocad: **true**` y `requires_owner_validation: **true**` -- es la PRIMERA de la linea que
+  cambia UI y AutoCAD, asi que su gate es el **veredicto manual del Owner en AutoCAD 2025** y sin el no se
+  integra ni se cierra I-37.
+  [ADR-0027](../adr/0027-linea-cantilever-intervalos-y-arriostramiento.md) y
+  [ADR-0028](../adr/0028-cantilever-persistencia-vistas-editor-y-dibujo.md) nacen **`propuestos`**.
+  Decisiones vinculantes del Owner en la seccion 12 de
+  [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
+  [`../automation/state/I-37D.yml`](../automation/state/I-37D.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

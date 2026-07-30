@@ -1,0 +1,171 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-37D
+  branch: feature/cantilever-mvp-final
+  claim_id: c37684f6-4c3a-4243-82d6-e538dea2a8f6
+  current_phase: 2
+  state: implementing
+  gate: none
+  attempts: 1
+  next_action: >-
+    auditoria-de-costuras-con-nombres-EXACTOS-leidos-del-codigo ·
+    contratos-de-Domain · autoridad-de-distribucion-de-paneles ·
+    resolver-de-linea-con-altura-comun-verificada-e-intervalos ·
+    placas-de-columna-y-separadores · paneles-tensores-y-adaptadores ·
+    matriz-de-linea-y-BOM · persistencia-y-registro · planes-de-vista ·
+    editor-sobre-el-shell · materializacion-en-AutoCAD ·
+    pruebas-regresiones-y-guardas · paquete-de-validacion-manual
+  last_evidence_commit: pendiente
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 250d4694dc63cd61f2e9c5b2fe0ddff707954b8f
+  base_asunto: Merge I-37C - estacion Cantilever y BOM por componentes
+  base_ci: VERDE-run-30512814825-los-cuatro-jobs-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-MERGE_HEAD-REBASE-CHERRY_PICK-ni-BISECT
+  worktrees_previos: uno-solo-el-principal-del-dueno-tras-la-limpieza-de-I-37C
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: feature-cantilever-mvp-final-LIBRE-en-local-y-en-remoto
+  ramas_i37d_previas: NINGUNA-git-ls-remote-heads-sin-coincidencias
+  i37abc_contenidas_en_main: e0f319f-0610adb-250d469-las-tres-IN
+  adr_0024: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  adr_0025: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  adr_0026: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  numeros_adr_libres: 0027-y-0028-VERIFICADOS-libres-con-glob-sobre-docs-adr
+  imagen_de_referencia: >-
+    DISPONIBLE-por-primera-vez-en-la-linea · el-Owner-aporto-capturas-de-un-modelo-CAD-con-la-linea-de-
+    cuatro-estaciones-los-paneles-arriostrados-en-X-el-separador-el-adaptador-de-cold-rolled-con-sus-
+    cartabones-y-la-cota-de-0-375-in · mas-la-tabla-de-producto-CAUS-818-con-doce-alturas-y-su-cantidad-
+    de-paneles
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: 6650020
+  commit: vacio-sin-implementacion-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/feature/cantilever-mvp-final
+  trailer: Claude-Opus-5-solo-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# AUTORIZACION DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+autorizacion:
+  veredictos:
+    - OWNER_AUTHORIZED_I_37D_FINAL_CANTILEVER_MVP
+    - OWNER_APPROVED_SEPARATOR_AND_BRACING_CONTRACTS
+  precedente: I-37A-I-37B-e-I-37C-el-primer-commit-sustantivo-escribe-la-fila-del-ROADMAP
+  cubre: >-
+    crear-y-reclamar-I-37D · rama-canonica-feature-cantilever-mvp-final ·
+    contrato-estado-decision-ADR-0027-ADR-0028-y-fila-de-ROADMAP-en-el-primer-commit-sustantivo ·
+    implementar-el-alcance-tecnico-completo-del-cierre-del-MVP
+  no_cubre: >-
+    aceptar-ADR-0027-ni-ADR-0028 · marcar-integrada · hacer-merge · marcar-I-37-completa ·
+    borrar-rama-o-worktree · abrir-I-38
+
+# --------------------------------------------------------------------------------------------------------
+# CONTRATOS CONGELADOS. I-37D los COMPONE; no reabre ninguno.
+# --------------------------------------------------------------------------------------------------------
+contratos_congelados:
+  adr_0024_0025_0026: NO-SE-REABREN-los-22-puntos-de-ADR-0026-son-congelados
+  compone: >-
+    CantileverColumnBaseAssembly · CantileverArmAssembly · CantileverStationAssembly ·
+    CantileverColumnRegularPunchGrid · CantileverArmConnectionMetricsResolver ·
+    CantileverStationBomBuilder · geometria-neutral-de-I-36 · shell-visual-comun ·
+    registros-persistencia-y-Drawing-existentes
+  no_recalcula: geometria-de-columna-base-brazo-ni-estacion
+
+# --------------------------------------------------------------------------------------------------------
+# GEOMETRIA VERIFICADA ANTES DE ESCRIBIR CODIGO
+# --------------------------------------------------------------------------------------------------------
+distribucion_de_paneles_verificada:
+  formula: StandardBracedPanelCount = max(1, ceil((ColumnHeight - 72 in) / 60 in))
+  reproduce_las_doce_filas: >-
+    SI-comprobado-numericamente-96-120-132-a-1 · 144-168-192-a-2 · 216-240-252-a-3 · 264-288-a-4 · 336-a-5
+  espacios_centrales: CentralEmptySpaceCount = floor((BracedPanelCount - 1) / 2)
+  agrupacion: bloques-de-maximo-DOS-desde-abajo-con-el-bloque-incompleto-ARRIBA
+  caso_normativo_264: >-
+    P=4 · G=1 · CoreHeight=200 · externos=32-cada-uno ·
+    secuencia-32-40-40-40vacio-40-40-32 · separadores=6 · tensores=8
+  conteos_de_cuatro_estaciones: intervalos=3 · separadores=18 · tensores=24
+  separadores_por_intervalo: SeparatorCountPerInterval = P + G + 1
+  tensores_por_intervalo: 2-por-panel-arriostrado
+
+# --------------------------------------------------------------------------------------------------------
+# GATES. El de esta iniciativa NO se resuelve sobre el codigo.
+# --------------------------------------------------------------------------------------------------------
+gates:
+  ci: requerido-necesario-pero-NO-suficiente
+  plugin_build: requerido
+  bundle: REQUERIDO-el-diff-toca-UI-Plugin-y-materializacion
+  autocad: >-
+    REQUERIDO-por-primera-vez-en-la-linea-I-37 · DLL-Debug-del-worktree-por-NETLOAD-con-instrucciones-
+    exactas-y-checklist
+  owner_validation: >-
+    REQUERIDO · sin-el-veredicto-manual-del-Owner-en-AutoCAD-2025-NO-se-integra-y-I-37-NO-se-cierra
+  owner_decision: satisfecho-docs-automation-decisions-I-37-md-seccion-12
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  ideas_futuras_md: INTACTO-los-hallazgos-adyacentes-no-se-corrigen-aqui
+  src_RackCad_Application_StructuralSections: INTACTO-I-36-no-se-modifica
+  sistemas_vigentes: >-
+    Selective-Dynamic-PushBack-FlowBed-Larguero-sin-cambios-de-comportamiento ·
+    si-aparece-una-responsabilidad-realmente-compartida-se-EXTRAE-con-caracterizacion-NUNCA-se-copia
+  assets_catalogs: >-
+    sin-familias-nuevas-y-sin-ids-inventados · un-id-de-catalogo-solo-se-usa-si-la-correspondencia-es-
+    INEQUIVOCA-de-lo-contrario-el-selector-queda-sin-id-inicial-y-se-documenta-el-pendiente
+  fuera_de_alcance_declarado: >-
+    calculo-resistente · cargas · capacidad · I-38 · peso · costo · optimizacion · soldaduras ·
+    tornillos-y-tuercas · anclas · roscas · tolerancias · preparacion-de-extremos · CNC ·
+    shop-drawings · interferencia-fisica-en-el-cruce-de-tensores · catalogos-nuevos-sin-procedencia
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: COMPLETA-reclamo-6650020
+  2: EN-CURSO-contrato-ADR-0027-ADR-0028-ROADMAP-decision-y-estado
+  3: PENDIENTE-auditoria-de-costuras-con-nombres-exactos
+  4: PENDIENTE-contratos-de-Domain
+  5: PENDIENTE-autoridad-de-distribucion-vertical-de-paneles
+  6: PENDIENTE-resolver-de-linea-con-altura-comun-e-intervalos
+  7: PENDIENTE-placas-de-columna-de-separador-y-separadores
+  8: PENDIENTE-paneles-arriostrados-tensores-y-adaptadores
+  9: PENDIENTE-matriz-de-linea-y-BOM-completo
+  10: PENDIENTE-persistencia-y-registro-del-sistema
+  11: PENDIENTE-planes-de-vista-frontal-lateral-y-planta
+  12: PENDIENTE-editor-sobre-el-shell-visual-comun
+  13: PENDIENTE-materializacion-en-AutoCAD-comando-y-flujo
+  14: PENDIENTE-pruebas-regresiones-en-rojo-y-guardas
+  15: PENDIENTE-paquete-de-validacion-manual-y-evidencia-final
+
+# --------------------------------------------------------------------------------------------------------
+# PENDIENTE DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+pendiente_del_owner:
+  adr_0027: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
+  adr_0028: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
+  validacion_manual_en_autocad: >-
+    PENDIENTE-y-BLOQUEANTE · es-el-gate-real-de-esta-iniciativa
+  parametros_sin_default_heredados: >-
+    ColumnBottomPlateEndOffset · ColumnTopPunchOffset · MountingPlateVerticalEndOffset ·
+    los-tres-siguen-siendo-entradas-obligatorias-que-el-resolver-rechaza-si-faltan
+  id_del_canal_de_4_in_ligero: >-
+    PENDIENTE-de-la-auditoria-de-catalogo · si-la-correspondencia-no-es-INEQUIVOCA-el-selector-queda-sin-
+    id-inicial-y-se-exige-seleccion-del-usuario-en-vez-de-inventar-la-seccion
+  tabla_de_calibres: >-
+    PENDIENTE-de-auditoria · si-existe-se-reutiliza · si-no-GaugeNumber-10-se-conserva-como-identidad-y-
+    descripcion-SIN-conversion-decimal-silenciosa
+  default_visible_de_perfil_de_brazo: >-
+    sera-HSS-pero-el-sistema-BLOQUEA-hasta-que-se-seleccione-un-id-EXACTO · la-UI-puede-mostrar-
+    HSS-seleccione-tamano
