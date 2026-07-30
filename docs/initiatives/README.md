@@ -615,7 +615,16 @@ Planes disponibles:
   soldaduras, calculo, capacidades, preparacion de extremos, CNC, familias nuevas, un PTR nuevo, y cambios
   funcionales de comportamiento en I-36, I-37A o I-37B. `requires_autocad: **false**` y
   `requires_owner_validation: **false**`.
-  [ADR-0026](../adr/0026-estacion-cantilever-niveles-altura-y-bom.md) nace **`propuesto`**. Decisiones
+  **INTEGRADA en `main` el 2026-07-29.**
+  [ADR-0026](../adr/0026-estacion-cantilever-niveles-altura-y-bom.md) quedo **`aceptado`** con el veredicto
+  `OWNER_APPROVED_ADR_0026` sobre el SHA tecnico `e1c3cab`, mas
+  `OWNER_AUTHORIZED_INTEGRATION_I_37C`. Aceptada **sobre el codigo**, como I-37A e I-37B. Suites 2565 y 544,
+  dos **caracterizaciones previas** -- reticula regular y metricas de conexion --, y **veintitres**
+  regresiones comprobadas en rojo entre las dos rondas. La revision encontro **seis defectos**, corregidos
+  en la misma rama: el tope de 250 candidatos, dos autoridades midiendo la conexion, el pase final
+  incompleto, overrides iguales al default que se persistian, la identidad generica de las piezas planas y
+  las placas medidas con una caja del mundo. **Siguen sin default aprobado** los tres heredados; I-37C no
+  anadio ninguno. La continuacion es **I-37D**. Decisiones
   vinculantes del Owner en la seccion 10 de
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37C.yml`](../automation/state/I-37C.yml).

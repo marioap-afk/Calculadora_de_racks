@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-37C
 title: Estacion Cantilever y BOM por componentes
 type: architecture
-status: implementing
+status: integrated
 branch: architecture/cantilever-estacion-bom
 base_branch: main
 priority:
@@ -38,6 +38,21 @@ automation:
 >
 > **No dibuja nada**, igual que las dos anteriores: sin vistas, preview, editor, persistencia de proyecto,
 > registros ni AutoCAD, y por tanto sin validacion manual.
+>
+> **INTEGRADA en `main` el 2026-07-29.**
+> [ADR-0026](../adr/0026-estacion-cantilever-niveles-altura-y-bom.md) quedo **aceptado** con el veredicto
+> `OWNER_APPROVED_ADR_0026` sobre el SHA tecnico `e1c3cab24d16ea0a6565fc43a81dcc0f2e31c694`, y la
+> integracion con `OWNER_AUTHORIZED_INTEGRATION_I_37C`. **No requirio AutoCAD ni validacion visual**
+> (`requires_autocad: false`, `requires_owner_validation: false`): el gate se resolvio **sobre el codigo**,
+> con CI verde sobre el SHA exacto, 2565 pruebas de `RackCad.Tests`, 544 de `RackCad.UI.Tests`, **dos
+> caracterizaciones previas** —reticula regular y metricas de conexion— y **veintitres** regresiones
+> comprobadas en rojo entre las dos rondas.
+>
+> **Siguen sin default aprobado**, como entradas obligatorias que el resolver rechaza si faltan:
+> `ColumnBottomPlateEndOffset` y `ColumnTopPunchOffset` (I-37A) y `MountingPlateVerticalEndOffset` (I-37B).
+> I-37C **no anadio ninguno**. Siguen diferidos el perfil de brazo visible por omision y el **PTR**.
+>
+> La continuacion es **I-37D**, la ultima subiniciativa del MVP.
 
 ## 1. Objetivo
 

@@ -3,16 +3,20 @@ automation_state:
   initiative: I-37C
   branch: architecture/cantilever-estacion-bom
   claim_id: ef8cf6ce-326d-4562-b277-ed7a3404e148
-  current_phase: 11
-  state: review-ready
-  gate: none
+  current_phase: 12
+  state: completed
+  gate: resuelto
   attempts: 1
   next_action: >-
-    sesion-de-integracion-del-Owner · rebase-final-si-main-avanzo ·
-    CI-verde-sobre-el-SHA-exacto · HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama ·
-    merge---no-ff · NO-requiere-validacion-manual-en-AutoCAD-porque-no-dibuja ·
-    ADR-0026-sigue-PROPUESTO-solo-el-Owner-lo-acepta
-  last_evidence_commit: ronda-de-correccion-de-la-revision-2565-y-544-verdes
+    I-37D-ULTIMA-subiniciativa-del-MVP-autorizada-expresamente-por-el-Owner ·
+    rama-canonica-feature-cantilever-mvp-final ·
+    linea-intervalos-placas-de-columna-separadores-paneles-arriostrados-tensores-estructurales-y-cold-
+    rolled-con-adaptadores · BOM-completo · persistencia-y-registros · vistas-frontal-lateral-y-planta ·
+    editor-sobre-el-shell-visual-comun · matriz-estacion-por-nivel-por-lado ·
+    materializacion-en-AutoCAD-con-su-comando ·
+    ES-LA-PRIMERA-DE-LA-LINEA-QUE-CAMBIA-UI-Y-AUTOCAD-asi-que-EXIGE-DLL-bundle-NETLOAD-y-el-veredicto-
+    MANUAL-del-Owner-en-AutoCAD-2025-antes-de-integrar
+  last_evidence_commit: cierre-documental-e-integracion-2565-y-544-verdes
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -99,6 +103,9 @@ fases:
   11: >-
     COMPLETA-ronda-de-correccion-de-la-revision-SEIS-defectos ·
     misma-rama-sin-reabrir-arquitectura-sin-merge-y-sin-aceptar-ADR-0026
+  12: >-
+    COMPLETA-aceptacion-documental-verificacion-final-integracion-y-limpieza ·
+    ADR-0026-ACEPTADO · contrato-integrated · ROADMAP-HANDOFF-e-indices-cerrados
 
 # --------------------------------------------------------------------------------------------------------
 # LA DEPENDENCIA CIRCULAR. Resuelta explicitamente, no escondida.
@@ -143,11 +150,11 @@ guardas_de_alcance:
 # GATES
 # --------------------------------------------------------------------------------------------------------
 gates:
-  ci: requerido
-  plugin_build: requerido-la-suite-no-lo-cubre
-  autocad: NO-APLICA-no-cambia-dibujo-ni-UI
+  ci: SATISFECHO-verde-sobre-el-SHA-del-candidato-y-del-commit-documental-final
+  plugin_build: SATISFECHO-0-errores-y-las-2-MSB3277-conocidas
+  autocad: NO-APLICA-no-cambia-dibujo-ni-UI-NETLOAD-no-ejecutado-y-no-exigible
   owner_validation: NO-APLICA-no-hay-nada-que-ver
-  owner_decision: satisfecho-docs-automation-decisions-I-37-md-seccion-10
+  owner_decision: SATISFECHO-docs-automation-decisions-I-37-md-secciones-10-y-10-8
 
 # --------------------------------------------------------------------------------------------------------
 # RONDA DE CORRECCION DE LA REVISION. Seis defectos, misma rama.
@@ -413,10 +420,32 @@ integridad:
     ningun-resultado-numerico-cambio
 
 # --------------------------------------------------------------------------------------------------------
+# ACEPTACION DEL OWNER E INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+aceptacion_e_integracion:
+  fecha: 2026-07-29
+  decisor: Mario-Perez-Owner-del-repositorio
+  veredictos:
+    - OWNER_APPROVED_ADR_0026
+    - OWNER_AUTHORIZED_INTEGRATION_I_37C
+  sha_tecnico_aprobado: e1c3cab24d16ea0a6565fc43a81dcc0f2e31c694
+  ci_del_candidato: run-30510202275-success-en-los-cuatro-jobs
+  rebase_final: >-
+    NO-EJECUTADO-y-correcto · origin-main-seguia-en-0610adb-la-base-conocida ·
+    un-rebase-vacio-no-se-hace
+  adr_0026: ACEPTADO-con-los-22-puntos-enumerados-en-su-seccion-de-aceptacion
+  no_se_reabren_en_I_37D: >-
+    los-22-puntos-son-CONGELADOS · I-37D-COMPONE-la-estacion-y-no-vuelve-a-decidir-como-se-resuelve
+  la_aceptacion_no_autoriza: >-
+    calculo-resistente · cargas · capacidad · peso · costo · materiales · tornilleria · anclas ·
+    soldaduras · roscas · tolerancias · preparacion-de-extremos · CNC · shop-drawings ·
+    interferencia-fisica-en-el-cruce-de-tensores · catalogos-nuevos-sin-procedencia
+
+# --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
 # --------------------------------------------------------------------------------------------------------
 pendiente_del_owner:
-  adr_0026: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
+  adr_0026: ACEPTADO-2026-07-29-OWNER_APPROVED_ADR_0026
   parametros_sin_default_heredados: >-
     ColumnBottomPlateEndOffset · ColumnTopPunchOffset · MountingPlateVerticalEndOffset ·
     los-tres-siguen-siendo-entradas-obligatorias-que-el-resolver-rechaza-si-faltan

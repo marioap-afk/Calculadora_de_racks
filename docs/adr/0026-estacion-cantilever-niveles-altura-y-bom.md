@@ -1,13 +1,58 @@
 # ADR-0026: La estación Cantilever — caras, niveles, altura y BOM por componentes
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-29 (redacción)
-- **Decisores:** Mario Pérez, Owner del repositorio (decisiones de producto emitidas al abrir I-37C);
-  Claude Opus 5 (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-07-29 (redacción y **aceptación**)
+- **Decisores:** **Mario Pérez, Owner del repositorio** (acepta); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-37C `architecture/cantilever-estacion-bom`
 - **No reemplaza a ninguna ADR.** Extiende [ADR-0024](0024-fundacion-cantilever-base-columna.md) y
   [ADR-0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) hacia el primer **compositor**: ningún
   contrato que I-37A o I-37B congelaron se reabre.
+
+## Aceptación del Owner (2026-07-29)
+
+**Decisor:** Mario Pérez, Owner del repositorio. **Gate:** aprobado.
+**Veredicto normativo registrado:** `OWNER_APPROVED_ADR_0026`.
+**SHA técnico aprobado:** `e1c3cab24d16ea0a6565fc43a81dcc0f2e31c694`.
+
+> **Aceptado sobre el código**, como ADR-0024 y ADR-0025: I-37C todavía no dibuja, así que no hubo
+> `requires_autocad` ni validación visual. El gate se resolvió con CI verde sobre el SHA exacto, 2 565
+> pruebas de `RackCad.Tests`, 544 de `RackCad.UI.Tests`, **dos caracterizaciones previas** —la retícula
+> regular y las métricas de conexión— y **veintitrés** regresiones comprobadas en rojo entre las dos rondas.
+
+Aceptado expresamente:
+
+| # | Lo aceptado |
+|---|---|
+| 1 | La estación es **sencilla o doble** |
+| 2 | En doble hay **una sola columna compartida** y una sola placa inferior de columna |
+| 3 | **Una o dos bases**, la negativa derivada por **espejo** y nunca por un segundo resolve |
+| 4 | Los **niveles se comparten** entre lados: un índice y una elevación por nivel |
+| 5 | **Templates sin autoridades duplicadas**: sin altura en el de columna–base, sin índice en el de brazo |
+| 6 | Un **default** más **overrides de celda**, y nada más |
+| 7 | **Comparación estructural** de overrides: aplicar el default no persiste nada |
+| 8 | El claro libre es **cuerpo a cuerpo** en el plano de conexión |
+| 9 | **Ajuste obligatorio hacia arriba** a un índice de troquel, nunca una elevación redondeada |
+| 10 | **Una** autoridad de retícula regular, consumida también por I-37A |
+| 11 | La **acumulación se preserva** por compatibilidad con I-37A; multiplicar sería una normalización aparte |
+| 12 | El **dominio** de la retícula es **numérico y derivado**, no un límite comercial |
+| 13 | Las **métricas de conexión** son **compartidas** entre I-37B e I-37C |
+| 14 | El **pase final completo**, con los bordes del cuerpo y las reglas re-derivadas de los brazos resueltos |
+| 15 | Altura **automática o manual**, y una manual insuficiente **bloquea** |
+| 16 | **`TopClearFactor >= 1/3`** |
+| 17 | La **estación es inmutable** y sin posición longitudinal |
+| 18 | El **BOM se deriva de la geometría resuelta**, nunca del diseño |
+| 19 | **Columna–base y brazo** son los componentes atornillables |
+| 20 | Las **piezas planas se identifican por receta**, incluido su patrón de perforaciones relativo |
+| 21 | Una **placa se mide en su propio plano** |
+| 22 | El **lado queda excluido** de la identidad de un brazo en el BOM |
+
+**Estas decisiones no se reabren en I-37D.** La iniciativa final del MVP **compone** la estación; no
+vuelve a decidir cómo se resuelve.
+
+**La aceptación NO autoriza**, y I-37D las tiene que pedir por su cuenta cuando corresponda: cálculo
+resistente; cargas; capacidad; peso; costo; materiales; tornillería; anclas; soldaduras; roscas;
+tolerancias; preparación de extremos; CNC; shop drawings; interferencia física en el cruce de tensores; ni
+catálogos nuevos sin procedencia.
 
 ## Contexto
 
