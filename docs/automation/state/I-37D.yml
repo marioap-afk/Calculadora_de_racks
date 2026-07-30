@@ -3,19 +3,16 @@ automation_state:
   initiative: I-37D
   branch: feature/cantilever-mvp-final
   claim_id: c37684f6-4c3a-4243-82d6-e538dea2a8f6
-  current_phase: 3
+  current_phase: 15
   state: implementing
-  gate: none
+  gate: autocad-owner-validation
   attempts: 1
   next_action: >-
-    auditoria-de-costuras-con-nombres-EXACTOS-leidos-del-codigo ·
-    contratos-de-Domain · autoridad-de-distribucion-de-paneles ·
-    resolver-de-linea-con-altura-comun-verificada-e-intervalos ·
-    placas-de-columna-y-separadores · paneles-tensores-y-adaptadores ·
-    matriz-de-linea-y-BOM · persistencia-y-registro · planes-de-vista ·
-    editor-sobre-el-shell · materializacion-en-AutoCAD ·
-    pruebas-regresiones-y-guardas · paquete-de-validacion-manual
-  last_evidence_commit: pendiente
+    EJECUTAR-la-validacion-manual-del-Owner-en-AutoCAD-2025 ·
+    cerrar-AutoCAD-compilar-el-DLL-Debug-del-worktree-y-el-bundle ·
+    NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-md ·
+    despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
+  last_evidence_commit: 66ebe94
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -139,18 +136,29 @@ fases:
     COMPLETA-auditoria-de-costuras · nueve-areas-con-critico-de-completitud-por-area ·
     456-hallazgos-182-pasos-258-gotchas-y-84-preguntas-abiertas ·
     evidencia-en-docs-automation-evidence-I-37D-seam-audit-md
-  4: PENDIENTE-contratos-de-Domain
-  5: PENDIENTE-autoridad-de-distribucion-vertical-de-paneles
-  6: PENDIENTE-resolver-de-linea-con-altura-comun-e-intervalos
-  7: PENDIENTE-placas-de-columna-de-separador-y-separadores
-  8: PENDIENTE-paneles-arriostrados-tensores-y-adaptadores
-  9: PENDIENTE-matriz-de-linea-y-BOM-completo
-  10: PENDIENTE-persistencia-y-registro-del-sistema
-  11: PENDIENTE-planes-de-vista-frontal-lateral-y-planta
-  12: PENDIENTE-editor-sobre-el-shell-visual-comun
-  13: PENDIENTE-materializacion-en-AutoCAD-comando-y-flujo
-  14: PENDIENTE-pruebas-regresiones-en-rojo-y-guardas
-  15: PENDIENTE-paquete-de-validacion-manual-y-evidencia-final
+  4: COMPLETA-contratos-de-Domain-gate-1-a7a0794
+  5: COMPLETA-autoridad-de-distribucion-vertical-de-paneles-gate-1
+  6: COMPLETA-resolver-de-linea-con-altura-comun-e-intervalos-gate-1
+  7: COMPLETA-placas-de-columna-de-separador-y-separadores-gate-1
+  8: COMPLETA-paneles-arriostrados-tensores-y-adaptadores-gate-1
+  9: COMPLETA-matriz-de-linea-y-BOM-completo-gate-1
+  10: COMPLETA-persistencia-y-registro-del-sistema-gates-2-y-3-9aa6af2
+  11: COMPLETA-planes-de-vista-frontal-lateral-y-planta-gates-2-y-3
+  12: >-
+    COMPLETA-editor-sobre-el-shell-visual-comun-gate-4-1f38920 ·
+    RackCantileverWindow-nace-sobre-el-shell-sin-migracion-previa ·
+    CantileverLineEditorAssembler-en-Application-es-la-UNICA-autoridad-de-recalculo
+  13: >-
+    COMPLETA-materializacion-en-AutoCAD-comando-y-flujo-gate-4-1f38920 ·
+    RACKCANTILEVER-RCT · CantileverViewMaterializer-precedente-RACKSECCION-no-cabeceras ·
+    CantileverKindHandler-registrado · despacho-desde-el-menu · round-trip-por-RACKEDITAR
+  14: >-
+    COMPLETA-pruebas-y-guardas-66ebe94 · 45-pruebas-nuevas-2694-nucleo-y-562-UI ·
+    un-defecto-REAL-encontrado-y-visto-en-rojo-el-factor-de-claro-superior-se-degradaba-al-leer-la-caja
+  15: >-
+    COMPLETA-el-paquete-de-validacion-manual-existe-y-esta-listo-para-EJECUTARSE ·
+    docs-automation-evidence-I-37D-autocad-validation-md · 9-bloques-y-52-puntos ·
+    la-EJECUCION-y-el-veredicto-son-del-Owner-y-son-el-gate-real
 
 # --------------------------------------------------------------------------------------------------------
 # ESTADO REAL AL CERRAR ESTA SESION. Lo que falta, dicho sin adornos.
@@ -184,6 +192,36 @@ estado_de_la_sesion_de_apertura:
     retomar-en-la-fase-3-sobre-esta-misma-rama-y-worktree · el-contrato-y-los-dos-ADR-ya-fijan-todas-las-
     decisiones-normativas-asi-que-la-implementacion-no-necesita-volver-a-preguntar-nada-al-Owner-hasta-
     la-validacion-manual
+  nota_posterior: >-
+    ESTE-BLOQUE-ES-HISTORICO-y-no-se-reescribe · su-lista-de-lo-que-faltaba-quedo-obsoleta-el-2026-07-30 ·
+    el-estado-vigente-esta-en-fases-y-en-estado_de_la_sesion_de_cierre
+
+# --------------------------------------------------------------------------------------------------------
+# ESTADO AL CERRAR LA SESION DE IMPLEMENTACION (2026-07-30). Lo que falta, dicho sin adornos.
+# --------------------------------------------------------------------------------------------------------
+estado_de_la_sesion_de_cierre:
+  hecho: >-
+    gate-1-a7a0794-linea-intervalos-y-BOM-en-Domain-y-Application ·
+    gates-2-y-3-9aa6af2-persistencia-registros-y-las-tres-vistas-como-planes-puros ·
+    gate-4-1f38920-editor-sobre-el-shell-y-materializacion-en-AutoCAD ·
+    fase-14-66ebe94-pruebas-guardas-y-un-defecto-real ·
+    fase-15-el-paquete-de-validacion-manual
+  falta: >-
+    UNA-sola-cosa-y-no-es-codigo · que-el-Owner-EJECUTE-la-validacion-manual-en-AutoCAD-2025 ·
+    y-despues-que-acepte-o-rechace-ADR-0027-y-ADR-0028
+  defecto_encontrado_por_las_pruebas: >-
+    el-factor-de-claro-superior-vale-un-tercio-y-las-cajas-muestran-tres-decimales · leer-la-caja-de-
+    vuelta-al-diseno-lo-degradaba-a-0-333-tres-diezmilesimas-BAJO-el-piso-aprobado-con-tolerancia-1e-9 ·
+    una-linea-recien-abierta-sin-tocar-nada-decia-que-la-estacion-1-habia-fallado ·
+    la-regla-que-lo-arregla-es-que-un-campo-que-el-usuario-NO-toco-no-puede-cambiar-el-diseno
+  extraccion_no_planeada: >-
+    StructuralSectionCatalogAccess · la-guarda-de-I-36C-fijaba-que-EXACTAMENTE-UN-sitio-del-Plugin-
+    cargara-el-catalogo-neutral-y-dejo-de-ser-cierto-al-aparecer-un-segundo-sistema-sobre-ese-catalogo ·
+    se-EXTRAJO-el-duenno-y-se-RE-APUNTO-la-guarda-en-vez-de-debilitarla
+  guardas_re_apuntadas: >-
+    cinco-manejadores-de-kind-a-seis-conservando-Push-Back-inmediatamente-despues-de-Dynamic ·
+    seis-modulos-de-editor-a-siete-en-el-orden-de-los-botones ·
+    dos-guardas-de-fallo-cerrado-al-nuevo-duenno-de-la-carga
 
 # --------------------------------------------------------------------------------------------------------
 # LO QUE LA AUDITORIA RESOLVIO. Dos preguntas de catalogo que bloqueaban decisiones.
@@ -290,6 +328,27 @@ costuras_fijadas:
     precedente-en-el-Plugin-de-convertir-una-seccion-del-catalogo-neutral-en-dibujo ·
     tiene-su-propio-muro-de-guardas-que-pina-fallo-cerrado-punto-antes-de-crear-una-sola-transaccion-y-
     regen-canonico
+
+# --------------------------------------------------------------------------------------------------------
+# CANDIDATO A VALIDAR. Lo que el Owner carga y contra que.
+# --------------------------------------------------------------------------------------------------------
+candidato:
+  code_sha: 66ebe94
+  dll: worktree-src-RackCad-Plugin-bin-Debug-net8-0-windows-RackCad-Plugin-dll
+  dll_sha256: 6769A7824EB2648017D05801F00617FD92BE375F53CB300A17F144D9C2B77A00
+  dll_bytes: 133120
+  dll_fecha: 2026-07-30T08:09:11
+  pruebas: RackCad-Tests-2694-de-2694 · RackCad-UI-Tests-562-de-562
+  build: solucion-completa-Debug-0-errores-solo-los-MSB3277-conocidos-de-las-referencias-de-AutoCAD
+  bundle: >-
+    NO-GENERADO-EN-ESTA-SESION · deploy-build-bundle-ps1-ABORTA-con-AutoCAD-abierto-porque-bloquea-
+    RackCad-Plugin-dll · el-Owner-tiene-que-cerrar-AutoCAD-para-validar-de-todos-modos-asi-que-el-
+    comando-exacto-va-en-el-paso-3-del-paquete
+  numeros_normativos_verificados_contra_el-CODIGO: >-
+    4-estaciones-altura-manual-264 · intervalos=3 · separadores=18-seis-por-intervalo ·
+    tensores=24-ocho-por-intervalo · paneles=12-cuatro-por-intervalo · adaptadores=48 ·
+    placas-de-columna-de-separador=36 · componentes-de-BOM=4 ·
+    curvas-frontal=368-planta=174-lateral=47
 
 # --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
