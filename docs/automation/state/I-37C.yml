@@ -3,15 +3,16 @@ automation_state:
   initiative: I-37C
   branch: architecture/cantilever-estacion-bom
   claim_id: ef8cf6ce-326d-4562-b277-ed7a3404e148
-  current_phase: 2
-  state: implementing
+  current_phase: 10
+  state: review-ready
   gate: none
   attempts: 1
   next_action: >-
-    contratos-de-Domain · caracterizacion-de-I-37A-y-extraccion-de-la-reticula ·
-    composicion-de-columna-y-bases · layout-de-niveles · altura · matriz-pura · BOM ·
-    pruebas-regresiones-y-guardas · evidencia-final
-  last_evidence_commit: pendiente
+    sesion-de-integracion-del-Owner · rebase-final-si-main-avanzo ·
+    CI-verde-sobre-el-SHA-exacto · HANDOFF-y-ROADMAP-como-ULTIMO-commit-de-la-rama ·
+    merge---no-ff · NO-requiere-validacion-manual-en-AutoCAD-porque-no-dibuja ·
+    ADR-0026-sigue-PROPUESTO-solo-el-Owner-lo-acepta
+  last_evidence_commit: punta-de-la-rama-2474-y-544-verdes
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
@@ -86,15 +87,15 @@ contratos_congelados:
 # --------------------------------------------------------------------------------------------------------
 fases:
   1: COMPLETA-reclamo-259717e
-  2: EN-CURSO-contrato-ADR-0026-ROADMAP-decision-glosario-y-estado
-  3: PENDIENTE-contratos-de-Domain
-  4: PENDIENTE-caracterizacion-y-extraccion-de-la-reticula-regular
-  5: PENDIENTE-composicion-de-columna-bases-y-layout-de-niveles
-  6: PENDIENTE-altura-automatica-manual-y-resolver-de-estacion
-  7: PENDIENTE-matriz-pura-y-alcances
-  8: PENDIENTE-BOM-por-componentes
-  9: PENDIENTE-pruebas-regresiones-en-rojo-y-guardas
-  10: PENDIENTE-evidencia-final
+  2: COMPLETA-contrato-ADR-0026-ROADMAP-decision-glosario-y-estado-c9749a8
+  3: COMPLETA-contratos-de-Domain-y-caracterizacion-previa-fd594f7
+  4: COMPLETA-extraccion-de-la-reticula-regular-688bcc3
+  5: COMPLETA-composicion-costura-sin-altura-y-layout-de-niveles-fb7feda
+  6: COMPLETA-altura-y-resolver-de-estacion-e5aa1a6
+  7: COMPLETA-matriz-pura-y-alcances-e5aa1a6
+  8: COMPLETA-BOM-por-componentes-e5aa1a6
+  9: COMPLETA-pruebas-regresiones-en-rojo-y-guardas
+  10: COMPLETA-evidencia-final
 
 # --------------------------------------------------------------------------------------------------------
 # LA DEPENDENCIA CIRCULAR. Resuelta explicitamente, no escondida.
@@ -146,6 +147,123 @@ gates:
   owner_decision: satisfecho-docs-automation-decisions-I-37-md-seccion-10
 
 # --------------------------------------------------------------------------------------------------------
+# LO QUE LA CARACTERIZACION ATRAPO. Estaba escrita para esto.
+# --------------------------------------------------------------------------------------------------------
+hallazgo_de_la_caracterizacion:
+  que_paso: >-
+    ElevationAt se escribio primero como MULTIPLICACION-first-mas-index-por-pitch-que-es-la-forma-
+    numericamente-mas-limpia · la-caracterizacion-fallo-en-el-caso-del-pitch-NO-DIADICO ·
+    el-indice-2-de-un-pitch-de-3-7-in-vale-27-599999999999998-acumulado-y-27-6-multiplicado
+  por_que_importa: >-
+    acumular-es-lo-que-I-37A-YA-hacia · cambiar-a-la-multiplicacion-moveria-TODOS-los-agujeros-de-una-
+    columna-con-pitch-no-diadico · eso-es-un-cambio-de-comportamiento-en-codigo-integrado-que-nadie-autorizo
+  correccion: >-
+    la-autoridad-ACUMULA · ElevationAt-recorre-los-mismos-pasos-que-la-generacion-para-que-un-indice-
+    no-pueda-discrepar-de-la-secuencia · sigue-habiendo-UNA-definicion
+  decision_del_owner_pendiente: >-
+    si-la-multiplicacion-es-la-regla-mejor-es-una-pregunta-REAL-y-una-decision-APARTE ·
+    queda-escrita-en-el-XML-doc-de-la-autoridad-y-en-ADR-0026-D5-sin-resolverse-de-pasada
+  leccion: >-
+    una-caracterizacion-que-solo-usara-el-pitch-por-omision-no-habria-probado-nada-sobre-el-unico-caso-
+    donde-las-dos-formas-pueden-divergir
+
+# --------------------------------------------------------------------------------------------------------
+# CAMBIOS A CODIGO INTEGRADO. Los tres, mecanicos y con equivalencia demostrada.
+# --------------------------------------------------------------------------------------------------------
+cambios_a_I_37A:
+  1_reticula_extraida: >-
+    BuildRegularPunches-consume-CantileverColumnRegularPunchGrid-en-vez-de-su-propio-bucle ·
+    misma-acumulacion-mismo-techo-misma-tolerancia
+  2_costura_sin_altura: >-
+    Resolve-delega-secciones-elegibilidad-contornos-marcos-y-patron-a-ResolveHeightIndependent ·
+    encima-queda-ResolveRegularPunchGrid-publico-que-NO-lee-la-altura ·
+    ninguna-regla-cambio-de-sitio-es-la-misma-secuencia-llamada-desde-el-mismo-lugar
+  3_validacion_de_altura_movida: >-
+    RequirePositive-de-column-Height-pasa-de-ValidateLengths-al-tramo-dependiente-de-la-altura ·
+    mismo-mensaje-mismo-codigo-solo-cambio-la-posicion ·
+    era-obligatorio-porque-un-check-sobre-un-valor-que-el-llamador-aun-no-ha-elegido-rechazaria-
+    toda-peticion-de-reticula
+  4_espejo_en_la_autoridad_de_marcos: >-
+    MirrorAboutCentralPlane-y-Reflect-viven-en-CantileverColumnBaseFrameResolver ·
+    lo-EXIGIO-una-guarda-vigente-de-I-37A-solo-las-autoridades-de-marcos-construyen-marcos-y-tenia-razon
+  equivalencia_demostrada: >-
+    caracterizacion-16-de-16-incluido-el-volcado-de-los-36-troqueles-a-dieciseis-decimales-y-la-firma-
+    completa-del-subensamble · I-37A-81-de-81-sin-cambio · I-37B-117-de-117-sin-cambio ·
+    diff-VACIO-en-los-cinco-archivos-de-logica-del-brazo
+cambios_a_I_37B: NINGUNO-diff-vacio-en-resolver-arreglos-patron-marcos-y-diseno
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDA VIGENTE ACTUALIZADA. Con su motivo, no debilitada en silencio.
+# --------------------------------------------------------------------------------------------------------
+guarda_actualizada:
+  cual: NothingHereReachesIntoALaterInitiative
+  que_cambio: >-
+    se-RETIRO-la-entrada-BillOfMaterials · para-I-37A-y-I-37B-el-BOM-era-una-iniciativa-posterior-y-la-
+    prohibicion-era-correcta · I-37C-ES-esa-iniciativa
+  por_que_no_se_suprimio: >-
+    una-guarda-que-prohibe-lo-que-el-alcance-vigente-exige-la-debilita-quien-la-encuentre-despues-y-
+    ese-debilitamiento-es-lo-que-pasaria-desapercibido · el-motivo-queda-escrito-en-el-propio-test
+  reglas_mas_estrechas_que_la_sustituyen: >-
+    TheBomIsBuiltFromTheSTATIONAndNotFromTheDesign · TheArmBomSignatureExcludesPositionAndSide ·
+    ThePunchesNeverBecomeBomLines
+
+# --------------------------------------------------------------------------------------------------------
+# PRUEBAS Y BUILDS
+# --------------------------------------------------------------------------------------------------------
+pruebas:
+  RackCad_Tests: 2474-de-2474-base-2355-mas-119
+  RackCad_UI_Tests: 544-de-544-sin-cambio
+  nuevas: >-
+    CantileverStationTests-77 · CantileverRegularPunchGridCharacterizationTests-16 ·
+    CantileverSourceGuardTests-sube-de-63-a-89-mas-26
+  I_37A_focalizadas: 81-de-81-sin-cambio
+  I_37B_focalizadas: 117-de-117-sin-cambio
+  secciones_estructurales: 420-de-420
+  BOM: 118-de-118
+  builds_debug: Domain-0-0 Application-0-0 UI-0-0 Plugin-0-errores-2-MSB3277-conocidas
+  bundle: NO-EJECUTADO-y-NO-exigible-el-diff-no-toca-assets-catalogos-deploy-ni-github
+  archivos_de_la_rama: 25-reales-medidos-con-git-diff--name-status-15-nuevos-y-10-modificados
+  regresiones_verificadas_fallando:
+    R1_doble_como_dos_subensambles: ROJO-6-pruebas-y-revertido
+    R2_columna_duplicada_en_doble: ROJO-3-y-revertido
+    R3_claro_redondeado_sin_troqueles: ROJO-2-y-revertido
+    R4_ajuste_hacia_abajo_permitido: ROJO-7-y-revertido
+    R5_doble_calculada_con_un_solo_lado: ROJO-6-y-revertido
+    R6_troqueles_compartidos_entre_niveles: >-
+      ROJO-1-la-guarda-y-revertido · HALLAZGO-el-piso-de-indices-es-behaviouralmente-REDUNDANTE-dado-
+      que-la-regla-de-placas-impone-el-mismo-limite-para-todo-margen-menor-que-2-in ·
+      se-conserva-como-invariante-explicita-y-se-declara-en-vez-de-fingir-una-prueba-que-no-discrimina
+    R7_placa_ignorada_al_comprobar_traslape: >-
+      ROJO-1-y-revertido · la-PRIMERA-vuelta-NO-mordio-y-eso-expuso-un-fixture-vacuo ·
+      con-margen-de-1-5-in-la-regla-de-troqueles-ya-forzaba-el-mismo-hueco ·
+      el-fixture-se-cambio-a-margen-3-in-donde-solo-la-placa-exige-tres-indices
+    R8_TopClearFactor_ignorado: ROJO-1-y-revertido
+    R9_altura_manual_insuficiente_normalizada: ROJO-2-y-revertido
+    R10_dos_componentes_columna_base_en_doble: ROJO-1-y-revertido
+    R11_brazos_identicos_separados_por_lado: ROJO-4-y-revertido
+    R12_BOM_desde_el_diseno: ROJO-no-compila-el-contrato-lo-impide-por-TIPOS-y-revertido
+    R13_formula_de_pitch_duplicada: ROJO-no-compila-el-contrato-lo-impide-por-TIPOS-y-revertido
+    R14_altura_provisional_magica: ROJO-1-la-guarda-y-revertido
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRIDAD MEDIDA con git diff --stat 0610adb..HEAD
+# --------------------------------------------------------------------------------------------------------
+integridad:
+  src_RackCad_Application_StructuralSections: 0-cambios-I-36-intacta
+  src_RackCad_Application_Bom: 0-cambios-el-contrato-compartido-se-consume-como-esta
+  src_RackCad_UI: 0-cambios
+  src_RackCad_Plugin: 0-cambios
+  assets: 0-cambios-ningun-id-de-produccion-ninguna-familia-nueva-ningun-PTR
+  deploy_github_sln: 0-cambios
+  HANDOFF_md: 0-cambios
+  ideas_futuras_md: 0-cambios
+  sistemas_vigentes: 0-cambios-en-los-cinco
+  logica_de_I_37B: 0-cambios-diff-vacio-en-los-cinco-archivos-del-brazo
+  logica_de_I_37A: >-
+    tres-cambios-MECANICOS-con-equivalencia-demostrada-y-uno-exigido-por-su-propia-guarda ·
+    ningun-resultado-numerico-cambio
+
+# --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
 # --------------------------------------------------------------------------------------------------------
 pendiente_del_owner:
@@ -156,3 +274,10 @@ pendiente_del_owner:
   default_visible_de_perfil_de_brazo: >-
     sera-HSS-pero-se-fija-cuando-exista-editor · I-37C-no-registra-ningun-id-de-produccion
   PTR: no-se-equipara-a-HSS-queda-como-candidato-de-catalogo-futuro
+  reticula_acumulada_vs_multiplicada: >-
+    la-autoridad-ACUMULA-porque-es-lo-que-I-37A-enviaba · con-pitch-no-diadico-la-multiplicacion-daria-
+    otros-numeros · elegir-la-multiplicacion-moveria-agujeros-en-columnas-ya-cotizadas-y-es-una-
+    decision-del-Owner-no-de-esta-extraccion
+  claro_libre_global: >-
+    el-claro-es-GLOBAL-en-el-MVP-por-decision-vinculante-10-12 · un-claro-por-nivel-es-una-iniciativa-
+    posterior-y-el-contrato-lo-declara
