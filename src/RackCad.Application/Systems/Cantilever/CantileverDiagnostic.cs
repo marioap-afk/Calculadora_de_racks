@@ -286,5 +286,22 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>The column resolved fewer regular punch elevations than the levels need.</summary>
         public const string StationNotEnoughColumnPunches = "CANT_STATION_NOT_ENOUGH_COLUMN_PUNCHES";
+
+        /// <summary>
+        /// The regular grid does not rise: its pitch is not finite and positive.
+        ///
+        /// BLOCKING before any search starts. A non-rising grid is not a small grid — no monotonic search over
+        /// it terminates, and no level could ever sit above another.
+        /// </summary>
+        public const string StationGridNotIncreasing = "CANT_STATION_GRID_NOT_INCREASING";
+
+        /// <summary>
+        /// A punch index, or the row range it implies, falls outside the grid's DOMAIN.
+        ///
+        /// Its own code because it is not "out of range of this column": the column is not even known yet. It is
+        /// the arithmetic domain of the grid, and it is what an <c>int.MaxValue</c> index gets instead of an
+        /// overflow, a freeze or an empty selection.
+        /// </summary>
+        public const string StationPunchIndexDomainOverflow = "CANT_STATION_PUNCH_INDEX_DOMAIN_OVERFLOW";
     }
 }

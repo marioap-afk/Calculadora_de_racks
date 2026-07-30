@@ -70,20 +70,15 @@ namespace RackCad.Application.Systems.Cantilever
                 : (CantileverArmSide?)null;
 
             // ---- 1. validate the design -------------------------------------------------------------------
-            if (!IsSupported(faceMode))
+            // The face mode and the single side are answered by the design's own exhaustive authority, which
+            // fails CLOSED. Asking here with a comparison would be a second mapping, and a second mapping is
+            // how an undeclared value ends up meaning "single".
+            if (!design.TryActiveSides(out var sides))
             {
                 diagnostics.Add(CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.StationFaceModeNotSupported,
-                    "El modo de cara '" + faceMode + "' no tiene regla de composicion."));
-                return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
-            }
-
-            if (faceMode == CantileverStationFaceMode.Single &&
-                !CantileverStationBaseSideResolver.IsSupported(design.SingleSide))
-            {
-                diagnostics.Add(CantileverDiagnostic.Blocking(
-                    CantileverDiagnostics.ArmSideNotSupported,
-                    "El lado '" + design.SingleSide + "' no tiene regla de composicion de base."));
+                    "El modo de cara '" + faceMode + "' con lado '" + design.SingleSide +
+                    "' no tiene regla de lados activos."));
                 return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
             }
 
@@ -105,12 +100,11 @@ namespace RackCad.Application.Systems.Cantilever
             }
 
             var template = design.ColumnBaseTemplate ?? new CantileverStationColumnBaseTemplateDesign();
-            var sides = design.ActiveSides();
 
             // ---- 2. sections and variants the levels need --------------------------------------------------
-            var sectionHeights = ResolveSectionHeights(design, sides, diagnostics);
+            var cellSections = ResolveCellSections(design, sides, diagnostics);
 
-            if (sectionHeights == null)
+            if (cellSections == null)
             {
                 return CantileverStationAssembly.Blocked(faceMode, singleSide, diagnostics);
             }
@@ -133,7 +127,10 @@ namespace RackCad.Application.Systems.Cantilever
 
             // ---- 4. level indices and metrics --------------------------------------------------------------
             var layout = CantileverStationLevelLayoutResolver.Resolve(
-                design, grid, (level, side) => sectionHeights[(level, side)]);
+                design,
+                grid,
+                (level, side) => cellSections[(level, side)].CombinedHeight,
+                (level, side) => cellSections[(level, side)].Orientation);
 
             diagnostics.AddRange(layout.Diagnostics);
 
@@ -218,7 +215,8 @@ namespace RackCad.Application.Systems.Cantilever
             }
 
             // ---- 11. the final pass must AGREE with the layout --------------------------------------------
-            VerifyFinalPassMatchesLayout(levels, diagnostics);
+            VerifyFinalPassMatchesLayout(
+                levels, design, layout.MinimumColumnHeight, layout.RequestedTopClear, diagnostics);
 
             if (diagnostics.Any(d => d.IsBlocking))
             {
@@ -231,21 +229,33 @@ namespace RackCad.Application.Systems.Cantilever
                 layout.MinimumColumnHeight, height.Value, design.RequestedClearHeight, diagnostics);
         }
 
-        private static bool IsSupported(CantileverStationFaceMode faceMode) =>
-            faceMode == CantileverStationFaceMode.Single || faceMode == CantileverStationFaceMode.Double;
+        /// <summary>What one cell's section contributes to the layout: its depth and its registered orientation.</summary>
+        private readonly struct CellSection
+        {
+            public CellSection(double combinedHeight, CantileverArmBodyOrientation orientation)
+            {
+                CombinedHeight = combinedHeight;
+                Orientation = orientation;
+            }
+
+            public double CombinedHeight { get; }
+
+            public CantileverArmBodyOrientation Orientation { get; }
+        }
 
         /// <summary>
-        /// The combined section depth of every cell, resolved once through I-36 and the arm policy.
+        /// The combined section depth and registered orientation of every cell, resolved once through I-36 and
+        /// the arm policy.
         ///
-        /// It is resolved HERE and handed to the layout as a lookup, so the layout stays free of the catalogue
-        /// and the policy: what it needs is a number per cell, not the ability to look one up.
+        /// It is resolved HERE and handed to the layout as lookups, so the layout stays free of the catalogue
+        /// and the policy: what it needs per cell is a number and an orientation, not the ability to look one up.
         /// </summary>
-        private Dictionary<(int Level, CantileverArmSide Side), double> ResolveSectionHeights(
+        private Dictionary<(int Level, CantileverArmSide Side), CellSection> ResolveCellSections(
             CantileverStationDesign design,
             IReadOnlyList<CantileverArmSide> sides,
             ICollection<CantileverDiagnostic> diagnostics)
         {
-            var heights = new Dictionary<(int, CantileverArmSide), double>();
+            var cells = new Dictionary<(int, CantileverArmSide), CellSection>();
 
             for (var level = 0; level < design.LevelCount; level++)
             {
@@ -284,12 +294,14 @@ namespace RackCad.Application.Systems.Cantilever
 
                     // The DEPTH comes from the arrangement authority over Bounds — never from d, and never
                     // from a single member's bounds when the body is a pair.
-                    heights[(level, side)] = CantileverArmBodyArrangementResolver
-                        .CombinedBounds(body.Arrangement, geometry).Height;
+                    cells[(level, side)] = new CellSection(
+                        CantileverArmBodyArrangementResolver
+                            .CombinedBounds(body.Arrangement, geometry).Height,
+                        variant.Orientation);
                 }
             }
 
-            return heights;
+            return cells;
         }
 
         /// <summary>
@@ -355,78 +367,206 @@ namespace RackCad.Application.Systems.Cantilever
         }
 
         /// <summary>
-        /// Checks the arms I-37B built against the layout that sized the column.
+        /// Checks the arms I-37B built against the layout that sized the column — EVERY magnitude the layout
+        /// used, and then the rules themselves against the resolved arms.
         ///
-        /// The two passes compute the same quantities — the selected elevations, the plate edges — from the
-        /// same inputs, so they must agree. The check exists because "must" is not "does": if the prediction
-        /// and the reality ever part company, the station has to say so rather than quietly ship the second
-        /// answer (ADR-0026, D5).
+        /// The two passes compute the same quantities from the same inputs, so they must agree. The check exists
+        /// because "must" is not "does": if the prediction and the reality ever part company, the station has to
+        /// say so rather than quietly ship the second answer (ADR-0026, D5).
+        ///
+        /// The review found this pass INCOMPLETE — it compared the indices, the elevations and the plate edges
+        /// but not the BODY edges, which are exactly what the clear height is measured between. So a wrong body
+        /// formula produced a station whose real clears were smaller than the ones requested, and every other
+        /// number still matched. That is why the clears are now RE-DERIVED from the resolved arms instead of
+        /// being trusted from the layout.
         /// </summary>
         private static void VerifyFinalPassMatchesLayout(
             IReadOnlyList<CantileverStationResolvedLevel> levels,
+            CantileverStationDesign design,
+            double minimumColumnHeight,
+            double requestedTopClear,
             ICollection<CantileverDiagnostic> diagnostics)
         {
+            var resolved = new List<Dictionary<CantileverArmSide, CantileverArmConnectionMetrics>>();
+
             foreach (var level in levels)
             {
+                var byside = new Dictionary<CantileverArmSide, CantileverArmConnectionMetrics>();
+
                 foreach (var cell in level.Plan.Cells)
                 {
                     var arm = level.Arm(cell.Side);
 
                     if (arm?.ConnectionPattern == null)
                     {
-                        diagnostics.Add(Mismatch(level, cell, "no hay patron de conexion resuelto"));
+                        diagnostics.Add(Mismatch(level, cell.Side, "no hay patron de conexion resuelto"));
                         continue;
                     }
 
                     var pattern = arm.ConnectionPattern;
+                    var actual = ResolvedMetrics(cell.Side, arm);
+
+                    byside[cell.Side] = actual;
 
                     if (pattern.LowerColumnPunchIndex != cell.LowerPunchIndex)
                     {
                         diagnostics.Add(Mismatch(
-                            level, cell,
+                            level, cell.Side,
                             "el indice inferior resuelto es " + pattern.LowerColumnPunchIndex +
                             " y el layout uso " + cell.LowerPunchIndex));
+                    }
+
+                    if (actual.UpperPunchIndex != cell.UpperPunchIndex)
+                    {
+                        diagnostics.Add(Mismatch(
+                            level, cell.Side,
+                            "el indice superior resuelto es " + actual.UpperPunchIndex +
+                            " y el layout uso " + cell.UpperPunchIndex));
                     }
 
                     if (pattern.VerticalPunchCount != cell.VerticalPunchCount)
                     {
                         diagnostics.Add(Mismatch(
-                            level, cell,
+                            level, cell.Side,
                             "la cantidad de troqueles resuelta es " + pattern.VerticalPunchCount +
                             " y el layout uso " + cell.VerticalPunchCount));
                     }
 
-                    Compare(level, cell, "la primera elevacion", pattern.FirstElevation, cell.FirstElevation, diagnostics);
-                    Compare(level, cell, "la ultima elevacion", pattern.LastElevation, cell.LastElevation, diagnostics);
-                    Compare(level, cell, "el borde inferior de la placa", pattern.PlateBottomZ, cell.PlateBottomZ, diagnostics);
-                    Compare(level, cell, "el borde superior de la placa", pattern.PlateTopZ, cell.PlateTopZ, diagnostics);
+                    Compare(level, cell.Side, "la primera elevacion",
+                        pattern.FirstElevation, cell.FirstElevation, diagnostics);
+                    Compare(level, cell.Side, "la ultima elevacion",
+                        pattern.LastElevation, cell.LastElevation, diagnostics);
+                    Compare(level, cell.Side, "el borde inferior de la placa",
+                        pattern.PlateBottomZ, cell.PlateBottomZ, diagnostics);
+                    Compare(level, cell.Side, "el borde superior de la placa",
+                        pattern.PlateTopZ, cell.PlateTopZ, diagnostics);
+
+                    // The two the review found missing. They are not implied by the plate edges: the body top
+                    // depends on the section depth and the slope, and neither shows up in a plate elevation.
+                    Compare(level, cell.Side, "el borde inferior del cuerpo",
+                        actual.BodyBottomZ, cell.BodyBottomZ, diagnostics);
+                    Compare(level, cell.Side, "el borde superior del cuerpo",
+                        actual.BodyTopZ, cell.BodyTopZ, diagnostics);
+                }
+
+                resolved.Add(byside);
+            }
+
+            // ---- and now the RULES, re-checked against the resolved arms -------------------------------
+            for (var i = 1; i < levels.Count; i++)
+            {
+                foreach (var pair in resolved[i])
+                {
+                    if (!resolved[i - 1].TryGetValue(pair.Key, out var below))
+                    {
+                        continue;
+                    }
+
+                    var above = pair.Value;
+                    var actualClear = above.BodyBottomZ - below.BodyTopZ;
+
+                    if (levels[i].Plan.ClearBySide.TryGetValue(pair.Key, out var predictedClear))
+                    {
+                        Compare(levels[i], pair.Key, "el claro libre", actualClear, predictedClear, diagnostics);
+                    }
+
+                    if (actualClear + FitTolerance < design.RequestedClearHeight)
+                    {
+                        diagnostics.Add(Mismatch(
+                            levels[i], pair.Key,
+                            "el claro real resuelto es " + Format(actualClear) + " in y se pidieron " +
+                            Format(design.RequestedClearHeight) + " in"));
+                    }
+
+                    if (above.PlateBottomZ + FitTolerance < below.PlateTopZ)
+                    {
+                        diagnostics.Add(Mismatch(
+                            levels[i], pair.Key, "las placas resueltas se traslapan"));
+                    }
+
+                    if (above.LowerPunchIndex <= below.UpperPunchIndex)
+                    {
+                        diagnostics.Add(Mismatch(
+                            levels[i], pair.Key, "los rangos de troqueles resueltos se solapan"));
+                    }
                 }
             }
+
+            // ---- and the height the column was actually built to ---------------------------------------
+            if (levels.Count == 0 || resolved[resolved.Count - 1].Count == 0)
+            {
+                return;
+            }
+
+            var top = resolved[resolved.Count - 1];
+            var highestPunch = resolved.SelectMany(r => r.Values).Max(m => m.LastElevation);
+
+            var occupation = Math.Max(
+                top.Values.Max(m => m.BodyTopZ),
+                Math.Max(top.Values.Max(m => m.PlateTopZ), highestPunch));
+
+            var required = Math.Max(
+                occupation + requestedTopClear,
+                highestPunch +
+                (design.ColumnBaseTemplate?.Connection?.Punches?.ColumnTopPunchOffset ?? 0.0));
+
+            if (Math.Abs(required - minimumColumnHeight) > FinalPassTolerance)
+            {
+                diagnostics.Add(CantileverDiagnostic.Blocking(
+                    CantileverDiagnostics.StationFinalPassDiffersFromLayout,
+                    "La altura minima que la estacion uso es " + Format(minimumColumnHeight) +
+                    " in y la ocupacion final resuelta exige " + Format(required) +
+                    " in. La estacion no se construye con una altura que no corresponde a lo que resolvio."));
+            }
+        }
+
+        /// <summary>
+        /// The metrics of an arm as I-37B ACTUALLY resolved it.
+        ///
+        /// Built from the resolved pattern and the resolved body — not from the design — so the comparison above
+        /// is between the prediction and the product, not between the prediction and itself.
+        /// </summary>
+        private static CantileverArmConnectionMetrics ResolvedMetrics(
+            CantileverArmSide side, CantileverArmAssembly arm)
+        {
+            var pattern = arm.ConnectionPattern;
+
+            return CantileverArmConnectionMetrics.Create(
+                side,
+                pattern.LowerColumnPunchIndex,
+                pattern.VerticalPunchCount,
+                pattern.VerticalEndOffset,
+                arm.Body.SlopeRisePer12,
+                arm.Body.AngleRadians,
+                arm.Body.SectionHeight,
+                pattern.FirstElevation,
+                pattern.LastElevation,
+                Array.Empty<CantileverDiagnostic>());
         }
 
         private static void Compare(
             CantileverStationResolvedLevel level,
-            CantileverStationArmMetrics cell,
+            CantileverArmSide side,
             string what,
-            double resolved,
+            double resolvedValue,
             double predicted,
             ICollection<CantileverDiagnostic> diagnostics)
         {
-            if (Math.Abs(resolved - predicted) > FinalPassTolerance)
+            if (Math.Abs(resolvedValue - predicted) > FinalPassTolerance)
             {
                 diagnostics.Add(Mismatch(
-                    level, cell,
-                    what + " resuelta es " + Format(resolved) + " in y el layout predijo " +
+                    level, side,
+                    what + " resuelta es " + Format(resolvedValue) + " in y el layout predijo " +
                     Format(predicted) + " in"));
             }
         }
 
         private static CantileverDiagnostic Mismatch(
-            CantileverStationResolvedLevel level, CantileverStationArmMetrics cell, string detail) =>
+            CantileverStationResolvedLevel level, CantileverArmSide side, string detail) =>
             CantileverDiagnostic.Blocking(
                 CantileverDiagnostics.StationFinalPassDiffersFromLayout,
                 "El pase final difiere del layout en el nivel " + (level.LevelIndex + 1) + ", lado " +
-                cell.Side + ": " + detail + ". La estacion no se construye con un resultado que no coincide " +
+                side + ": " + detail + ". La estacion no se construye con un resultado que no coincide " +
                 "con el que dimensiono la columna.");
 
         private static string Format(double value) =>

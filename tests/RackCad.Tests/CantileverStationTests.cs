@@ -529,11 +529,35 @@ namespace RackCad.Tests
         [Fact]
         public void AClearThatNoIndexCanSatisfyIsREJECTED()
         {
-            // A clear larger than the whole search window can reach.
-            var station = Resolve(Design(clear: 1.0e6, levels: 2));
+            // What makes a clear impossible is now the grid's DOMAIN, not an arbitrary candidate cap. The
+            // earlier version of this test used 10^6 in and passed only because the search gave up after 250
+            // candidates — a limit the review removed, because a valid level 300 indices up is still valid.
+            //
+            // 10^10 in needs an index past MaxDefinedIndex, which is where the grid genuinely stops being
+            // defined, so this rejection is a statement about arithmetic rather than about taste.
+            var station = Resolve(Design(clear: 1.0e10, levels: 2));
 
             Assert.True(station.IsBlocked);
             Assert.True(Has(station, CantileverDiagnostics.StationLevelDoesNotFit));
+        }
+
+        [Fact]
+        public void AClearWhoseFirstValidIndexIsFarUPTheColumnStillRESOLVES()
+        {
+            // The regression the 250-candidate cap caused. With a 4 in pitch and a 4 in body, a clear of
+            // 1 200 in puts the second level 301 indices above the first — inside the grid, well past the old
+            // limit, and a perfectly ordinary tall rack.
+            var station = Resolve(Design(clear: 1200.0, levels: 2));
+
+            Assert.False(
+                station.IsBlocked,
+                "Un nivel 301 indices mas arriba es valido: " +
+                string.Join(" | ", station.Diagnostics.Select(d => d.Code)));
+
+            var gap = station.Levels[1].LowerPunchIndex - station.Levels[0].LowerPunchIndex;
+
+            Assert.True(gap > 250, "El hueco deberia superar el viejo tope de 250; fue " + gap + ".");
+            Assert.True(station.Levels[1].Plan.GoverningClear >= 1200.0 - Tolerance);
         }
 
         // ---- 4. the matrix ----------------------------------------------------------------------------

@@ -478,8 +478,13 @@ namespace RackCad.Tests
                 .Single(f => f.Path.EndsWith("CantileverArmResolver.cs", StringComparison.Ordinal))
                 .Code;
 
-            var validate = resolver.Substring(resolver.IndexOf("ValidateParameters(", StringComparison.Ordinal));
-            var untilEndPlate = validate.Substring(0, validate.IndexOf("ValidateEndPlate(", StringComparison.Ordinal));
+            // The method is called ValidateOwnParameters since the I-37C review moved the connection half of
+            // the validation into the shared metrics authority. The RULE is unchanged: under `None` the end
+            // plate thickness is dormant data, so nothing before ValidateEndPlate may read it.
+            var validate = resolver.Substring(
+                resolver.IndexOf("ValidateOwnParameters(", StringComparison.Ordinal));
+            var untilEndPlate = validate.Substring(
+                0, validate.IndexOf("ValidateEndPlate(", StringComparison.Ordinal));
 
             Assert.DoesNotContain("end.Thickness", untilEndPlate, StringComparison.Ordinal);
         }
@@ -520,13 +525,22 @@ namespace RackCad.Tests
             Assert.Equal(2, Regex.Matches(frame, @"<=\s*DegenerateProjection").Count);
             Assert.DoesNotMatch(new Regex(@"<=\s*1e-\d"), frame);
 
-            // And the resolver gates on the authority instead of re-deriving the condition.
+            // And the CONSUMER gates on the authority instead of re-deriving the condition. Since the I-37C
+            // review that consumer is the shared connection-metrics authority rather than the arm resolver
+            // itself: the rule did not change, the single place that applies it did.
+            var metrics = Sources()
+                .Single(f => f.Path.EndsWith("CantileverArmConnectionMetricsResolver.cs", StringComparison.Ordinal))
+                .Code;
+
+            Assert.Contains("IsRepresentableSlope", metrics, StringComparison.Ordinal);
+            Assert.Contains("ArmSlopeFrameUndefined", metrics, StringComparison.Ordinal);
+
+            // And the arm resolver no longer carries its own copy of the gate.
             var resolver = Sources()
                 .Single(f => f.Path.EndsWith("CantileverArmResolver.cs", StringComparison.Ordinal))
                 .Code;
 
-            Assert.Contains("IsRepresentableSlope", resolver, StringComparison.Ordinal);
-            Assert.Contains("ArmSlopeFrameUndefined", resolver, StringComparison.Ordinal);
+            Assert.DoesNotContain("IsRepresentableSlope", resolver, StringComparison.Ordinal);
         }
 
         [Fact]

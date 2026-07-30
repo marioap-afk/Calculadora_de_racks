@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using RackCad.Application.Geometry;
 
 namespace RackCad.Application.Systems.Cantilever
 {
@@ -30,6 +31,24 @@ namespace RackCad.Application.Systems.Cantilever
         /// different epsilon is a different punch count on a column whose ceiling lands exactly on a pitch.
         /// </summary>
         public const double FitTolerance = 1e-9;
+
+        /// <summary>
+        /// How many accumulation steps the grid is DEFINED for.
+        ///
+        /// It is a numeric-domain bound and NOT a product limit, and it is derived rather than chosen. The
+        /// accumulated value drifts from the ideal by roughly <c>n · eps · z</c> after n steps; that drift
+        /// exceeds one whole <c>Pitch</c> when <c>n² · eps &gt; 1</c>, i.e. when <c>n &gt; 1/√eps ≈ 6.7 × 10⁷</c>.
+        /// Past that point the accumulated sequence has moved by more than a full pitch and is no longer the
+        /// grid it claims to be, so an index beyond it is outside the grid's domain — not "too tall for a
+        /// product", which is a decision nobody has taken.
+        ///
+        /// It also keeps random access CHEAP: without it, <c>ElevationAt(int.MaxValue)</c> would walk two
+        /// billion additions. With it, an index that far out is rejected in constant time by the estimate
+        /// below.
+        ///
+        /// For a 4 in pitch this is about 268 million inches of column, so it bounds nothing anybody can build.
+        /// </summary>
+        public const int MaxDefinedIndex = 1 << 26;
 
         private CantileverColumnRegularPunchGrid(
             double firstElevation, double pitch, double leftRowX, double rightRowX, double diameter)
@@ -88,6 +107,20 @@ namespace RackCad.Application.Systems.Cantilever
         }
 
         /// <summary>
+        /// Whether this grid is INCREASING and usable at all: a finite first elevation and a finite, strictly
+        /// positive pitch.
+        ///
+        /// A non-positive pitch is not a small grid — it is a sequence that never rises, so no monotonic search
+        /// over it terminates and no level can ever be placed above another. It has to be a blocking diagnostic
+        /// before any search starts, which is why this is a question the grid answers about itself rather than
+        /// something each caller re-checks.
+        /// </summary>
+        public bool IsIncreasing =>
+            GeometryTolerance.IsFinite(FirstElevation) &&
+            GeometryTolerance.IsFinite(Pitch) &&
+            Pitch > 0.0;
+
+        /// <summary>
         /// The elevation of one index, BASE ZERO.
         ///
         /// It ACCUMULATES rather than computing <c>First + index × Pitch</c>, and that is deliberate. The two
@@ -105,20 +138,116 @@ namespace RackCad.Application.Systems.Cantilever
         /// </summary>
         public double ElevationAt(int index)
         {
-            if (index < 0)
+            if (!TryElevationAt(index, out var z))
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(index), index, "El indice de troquel regular es base cero y no puede ser negativo.");
+                    nameof(index), index,
+                    "El indice de troquel regular esta fuera del dominio de la reticula.");
+            }
+
+            return z;
+        }
+
+        /// <summary>
+        /// The elevation of one index, reporting failure instead of throwing.
+        ///
+        /// It exists because the index can come from USER INPUT — a station's first level names one directly —
+        /// and a number somebody typed has to come back as a diagnostic, never as an exception. It is the same
+        /// rule I-37B applied to a slope that collapses the frame.
+        ///
+        /// The closed form is computed FIRST, and only as a bound estimate: it decides in constant time whether
+        /// the index is inside <see cref="MaxDefinedIndex"/> before any walking happens. The value returned is
+        /// always the ACCUMULATED one, which stays the grid's authority (ADR-0026, D5).
+        /// </summary>
+        public bool TryElevationAt(long index, out double elevation)
+        {
+            elevation = double.NaN;
+
+            if (index < 0 || index > MaxDefinedIndex || !IsIncreasing)
+            {
+                return false;
+            }
+
+            // Bound estimate only. It is never returned, and it never decides an elevation — it decides
+            // whether the accumulation is worth performing.
+            var estimate = FirstElevation + (index * Pitch);
+
+            if (!GeometryTolerance.IsFinite(estimate))
+            {
+                return false;
             }
 
             var z = FirstElevation;
 
-            for (var i = 0; i < index; i++)
+            for (long i = 0; i < index; i++)
             {
                 z += Pitch;
             }
 
-            return z;
+            elevation = z;
+            return GeometryTolerance.IsFinite(z);
+        }
+
+        /// <summary>
+        /// The FIRST index whose elevation reaches <paramref name="target"/>, or false if none does inside the
+        /// grid's domain.
+        ///
+        /// This is what replaced the candidate-by-candidate walk the level layout used to do, and with it the
+        /// arbitrary cap of 250 candidates disappeared: because the elevations are strictly increasing, the
+        /// first index that satisfies a lower bound can be found directly instead of searched for.
+        ///
+        /// The closed form gives a starting guess and the ACCUMULATED elevations then correct it by a step or
+        /// two — never more, because the two forms differ by far less than a pitch inside the domain. That
+        /// keeps the accumulated sequence as the final authority while making the lookup constant-time.
+        /// </summary>
+        public bool TryFirstIndexAtOrAbove(double target, out int index)
+        {
+            index = 0;
+
+            if (!IsIncreasing || !GeometryTolerance.IsFinite(target))
+            {
+                return false;
+            }
+
+            if (target <= FirstElevation)
+            {
+                return true;
+            }
+
+            var guess = Math.Floor((target - FirstElevation) / Pitch);
+
+            if (!GeometryTolerance.IsFinite(guess) || guess > MaxDefinedIndex)
+            {
+                return false;
+            }
+
+            var candidate = (long)Math.Max(0.0, guess);
+
+            // Walk BACKWARDS off the guess while the previous index would also do, then forwards until the
+            // accumulated elevation reaches the target. Both loops run a couple of steps at most; they exist
+            // because the guess comes from the closed form and the answer must come from the accumulation.
+            while (candidate > 0 && TryElevationAt(candidate - 1, out var below) && below >= target)
+            {
+                candidate--;
+            }
+
+            while (candidate <= MaxDefinedIndex)
+            {
+                if (!TryElevationAt(candidate, out var z))
+                {
+                    return false;
+                }
+
+                if (z >= target)
+                {
+                    index = (int)candidate;
+                    return true;
+                }
+
+                candidate++;
+            }
+
+            return false;
         }
 
         /// <summary>The two datums of one index, left row first. The datums the column itself would produce.</summary>
@@ -160,6 +289,11 @@ namespace RackCad.Application.Systems.Cantilever
         /// </summary>
         public IReadOnlyList<double> ElevationsUpTo(double columnTopZ, double columnTopPunchOffset)
         {
+            if (!IsIncreasing)
+            {
+                return new List<double>();
+            }
+
             var ceiling = columnTopZ - columnTopPunchOffset;
             var elevations = new List<double>();
 

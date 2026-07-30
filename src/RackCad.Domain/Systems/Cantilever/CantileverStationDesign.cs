@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -198,22 +199,49 @@ namespace RackCad.Domain.Systems.Cantilever
                 NegativeYOverride = NegativeYOverride?.DeepCopy()
             };
 
-        /// <summary>The override for one side, or null. Keeps the side→property mapping in ONE place.</summary>
-        public CantileverArmTemplateDesign OverrideFor(CantileverArmSide side) =>
-            side == CantileverArmSide.PositiveY ? PositiveYOverride : NegativeYOverride;
-
-        /// <summary>Sets or clears the override for one side. The only writer of the two properties.</summary>
-        public void SetOverride(CantileverArmSide side, CantileverArmTemplateDesign value)
+        /// <summary>
+        /// The override for one side, or null. Keeps the side→property mapping in ONE place.
+        ///
+        /// An exhaustive <c>switch</c> with a throwing default. The earlier form was
+        /// <c>side == PositiveY ? positive : negative</c>, so a third side value would silently have read the
+        /// NEGATIVE override — a wrong answer that looks like a right one.
+        /// </summary>
+        public CantileverArmTemplateDesign OverrideFor(CantileverArmSide side)
         {
-            if (side == CantileverArmSide.PositiveY)
+            switch (side)
             {
-                PositiveYOverride = value;
-            }
-            else
-            {
-                NegativeYOverride = value;
+                case CantileverArmSide.PositiveY:
+                    return PositiveYOverride;
+                case CantileverArmSide.NegativeY:
+                    return NegativeYOverride;
+                default:
+                    throw Undefined(side);
             }
         }
+
+        /// <summary>
+        /// Sets or clears the override for one side. The only writer of the two properties, and exhaustive for
+        /// the same reason: an undeclared side must not land in the negative slot.
+        /// </summary>
+        public void SetOverride(CantileverArmSide side, CantileverArmTemplateDesign value)
+        {
+            switch (side)
+            {
+                case CantileverArmSide.PositiveY:
+                    PositiveYOverride = value;
+                    break;
+                case CantileverArmSide.NegativeY:
+                    NegativeYOverride = value;
+                    break;
+                default:
+                    throw Undefined(side);
+            }
+        }
+
+        private static ArgumentOutOfRangeException Undefined(CantileverArmSide side) =>
+            new ArgumentOutOfRangeException(
+                nameof(side), side,
+                "El lado '" + side + "' no tiene celda en un nivel. Anadir un lado exige escribirla aqui.");
     }
 
     /// <summary>
@@ -311,11 +339,55 @@ namespace RackCad.Domain.Systems.Cantilever
         ///
         /// THE authority for "which cells exist". A single station has one side and the opposite one is not a
         /// cell at all — never an inactive cell, never a false one (ADR-0026, D3).
+        ///
+        /// It THROWS for an undeclared face mode rather than falling through to the single case. The earlier
+        /// form was <c>FaceMode == Double ? both : single</c>, which quietly treated any unknown value as a
+        /// single-faced station — the exact failure the rest of Cantilever spent two initiatives closing.
+        /// <see cref="TryActiveSides"/> is the reporting form for callers that hold user input.
         /// </summary>
-        public IReadOnlyList<CantileverArmSide> ActiveSides() =>
-            FaceMode == CantileverStationFaceMode.Double
-                ? new[] { CantileverArmSide.PositiveY, CantileverArmSide.NegativeY }
-                : new[] { SingleSide };
+        public IReadOnlyList<CantileverArmSide> ActiveSides()
+        {
+            if (!TryActiveSides(out var sides))
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(FaceMode), FaceMode,
+                    "El modo de cara '" + FaceMode +
+                    "' no tiene regla de lados activos. Anadir un modo exige escribirla aqui.");
+            }
+
+            return sides;
+        }
+
+        /// <summary>
+        /// The same question, reporting failure instead of throwing.
+        ///
+        /// It exists because the face mode reaches this type from a persisted document eventually, and a value
+        /// somebody stored has to come back as a diagnostic rather than as an exception.
+        /// </summary>
+        public bool TryActiveSides(out IReadOnlyList<CantileverArmSide> sides)
+        {
+            switch (FaceMode)
+            {
+                case CantileverStationFaceMode.Double:
+                    sides = new[] { CantileverArmSide.PositiveY, CantileverArmSide.NegativeY };
+                    return true;
+
+                case CantileverStationFaceMode.Single:
+                    if (SingleSide != CantileverArmSide.PositiveY &&
+                        SingleSide != CantileverArmSide.NegativeY)
+                    {
+                        sides = Array.Empty<CantileverArmSide>();
+                        return false;
+                    }
+
+                    sides = new[] { SingleSide };
+                    return true;
+
+                default:
+                    sides = Array.Empty<CantileverArmSide>();
+                    return false;
+            }
+        }
 
         /// <summary>
         /// The arm template in force for one cell: its override, or the station default.
