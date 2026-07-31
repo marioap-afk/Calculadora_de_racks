@@ -104,15 +104,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void AMissingMandatoryMarginBlocksTheLineInsteadOfBeingInvented()
+        public void UnaLineaSinLosMargenesLEGACYResuelvePERFECTAMENTE()
         {
+            // I-37D ronda 2, motivo 1: los dos margenes dejaron de ser entradas. Una linea que no los trae
+            // —que es ahora TODA linea nueva— resuelve igual, porque lo que limita un agujero es su radio.
             var design = ValidDesign();
             design.StationTopology.ColumnBaseTemplate.Connection.Punches.ColumnTopPunchOffset = null;
+            design.StationTopology.ColumnBaseTemplate.Connection.Punches.ColumnBottomPlateEndOffset = null;
 
             var computation = Assembler().Build(design);
 
-            Assert.False(computation.IsValid);
-            Assert.Null(computation.Bom);
+            Assert.True(computation.IsValid);
+            Assert.NotNull(computation.Bom);
         }
 
         [Fact]

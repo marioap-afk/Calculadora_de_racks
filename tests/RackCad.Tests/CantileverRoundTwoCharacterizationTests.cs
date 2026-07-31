@@ -114,8 +114,17 @@ namespace RackCad.Tests
             // Tomados sobre 5a0d188, la punta que el dueño validó y rechazó. La ronda 2 es un refactor de
             // ARQUITECTURA VISUAL: si cualquiera de estos se mueve, el refactor cambió el producto y no sólo
             // su interfaz.
-            ["linea"] = "35F179AA24C647488E76237C3A0F4D6D437F5D56A439B10B6E6A27A1F063F081",
-            ["linea-doble"] = "E05B3F68FD4C6EA6E6FC30A9D7F2FAD14B252043EDB3B01077C428AF4BC22251",
+            // ESTOS DOS SE MOVIERON en la correccion de columna/base, y por una causa fisica declarada: el
+            // dueno retiro los dos margenes de troquel, asi que cabe un agujero entero mas por fila. La firma
+            // de la linea lleva dentro las cuentas de troqueles —204 -> 210 en la sencilla, 276 -> 282 en la
+            // doble— y por eso se mueve.
+            //
+            // Los CUATRO pines de vista de abajo NO se movieron: excluyen los troqueles a proposito, asi que
+            // demuestran que el cambio toco agujeros y NADA MAS. Tampoco se movieron los dos del BOM: un
+            // troquel no es una linea de BOM.
+            // Anteriores: linea 35F179AA…, linea-doble E05B3F68…
+            ["linea"] = "58202A8B2E60AD5846BA3396F636BE0729585FA79877DB7EB73148798122EAF2",
+            ["linea-doble"] = "57A55555E68AC3D881CC06223EA0E825E56476E528E8FF4B1639562D96013F83",
             ["bom"] = "6088C538512ACDCA52D0C5DB5D0AD1DE180686CE13752D33F674F19C6DFA66F3",
             ["bom-doble"] = "608B790C28618CD013D8B807F937E3EF73FCF4BAF9B77D076E0CFE866FA5A272",
             ["frontal"] = "1A12F7495D9DBCE6FF5FD14B3ABD18F4EB10A78870397F8229C2636B2274629C",
@@ -132,7 +141,10 @@ namespace RackCad.Tests
             // Movido una SEGUNDA vez —de E7146CB3… a este— al normalizar los saltos de linea antes de hashear:
             // la CI corre en Linux, `Utf8JsonWriter` indenta con el salto de la plataforma, y el pin tomado en
             // Windows no podia coincidir. Era un defecto del pin, no del producto; el contenido no cambio.
-            ["persistencia"] = "C8D5A3C8CD67E8C01FE873A3B02545B01F39D5D1DB9099EE9097F36C1E9FF2AC"
+            // Movido una TERCERA vez, en la correccion de columna y base: el JSON dejo de escribir
+            // `ColumnBottomPlateEndOffset` y `ColumnTopPunchOffset`, que el dueno retiro. Dos claves menos.
+            // Anterior: C8D5A3C8…
+            ["persistencia"] = "24358728F2AAC25FF87059B099F7988EA09504D576602F47BDE70A8F19F3E695"
         };
 
         // ---- 1. Las resoluciones ------------------------------------------------------------------------
@@ -201,14 +213,14 @@ namespace RackCad.Tests
         [Fact]
         public void ElModeloYaTieneResueltosTodosSusTroqueles()
         {
-            // La medida del motivo 5 del rechazo: los troqueles EXISTEN resueltos —204 en la línea sencilla,
-            // 276 en la doble— y las placas de separador también. Lo que fallaba no era el modelo: era que la
+            // La medida del motivo 5 del rechazo: los troqueles EXISTEN resueltos —210 en la línea sencilla,
+            // 282 en la doble, tras retirar los dos márgenes— y las placas de separador también. Lo que fallaba no era el modelo: era que la
             // representación no los pedía. Este número es el que la corrección tiene que hacer visible.
             var single = Assembler().Build(Reference());
             var doble = Assembler().Build(Reference(CantileverStationFaceMode.Double));
 
-            Assert.Equal(204, single.Line.Stations.Sum(s => s.Station.Punches.Count));
-            Assert.Equal(276, doble.Line.Stations.Sum(s => s.Station.Punches.Count));
+            Assert.Equal(210, single.Line.Stations.Sum(s => s.Station.Punches.Count));
+            Assert.Equal(282, doble.Line.Stations.Sum(s => s.Station.Punches.Count));
             Assert.Equal(8, single.Line.SeparatorColumnPlates.Count);
             Assert.All(single.Line.SeparatorColumnPlates, p => Assert.True(p.Punch.Diameter > 0.0));
         }

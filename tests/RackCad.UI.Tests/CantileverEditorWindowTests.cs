@@ -192,22 +192,22 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void UnMargenObligatorioAusenteBLOQUEALaLinea_YSeDiceEnElEstado()
+        public void UnaLineaSinLosMargenesLEGACYSIGUERESOLVIENDO()
         {
-            // El margen vive ahora en el configurador de columna y base. Si falta, la LINEA no se resuelve y la
-            // ventana principal lo dice con el diagnostico del resolvedor, no con un error de campo.
+            // I-37D ronda 2, motivo 1: los dos margenes dejaron de ser entradas del diseno. Ninguna linea
+            // nueva los trae, y ninguna se bloquea por ello.
             var r = StaTestRunner.Run(() =>
             {
                 var w = new RackCantileverWindow(canInsertInAutoCad: true);
                 Configure(w);
                 w.Design.StationTopology.ColumnBaseTemplate.Connection.Punches.ColumnTopPunchOffset = null;
+                w.Design.StationTopology.ColumnBaseTemplate.Connection.Punches.ColumnBottomPlateEndOffset = null;
                 EditorWindowTestSupport.SetNumberAndCommit(w, "ClearHeightBox", 24.0);
 
                 return (w.CurrentInputsAreValid, ((TextBlock)w.FindName("StatusText")).Text);
             });
 
-            Assert.False(r.Item1);
-            Assert.NotEmpty(r.Item2);
+            Assert.True(r.Item1, r.Item2);
         }
 
         [Fact]

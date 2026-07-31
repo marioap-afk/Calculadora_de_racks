@@ -505,10 +505,13 @@ namespace RackCad.Application.Systems.Cantilever
                 top.Values.Max(m => m.BodyTopZ),
                 Math.Max(top.Values.Max(m => m.PlateTopZ), highestPunch));
 
+            // Same rule as the layout: the highest punch needs its own RADIUS of column above it, not a margin
+            // the design supplies. The two must agree, or the final pass would differ from the layout.
             var required = Math.Max(
                 occupation + requestedTopClear,
                 highestPunch +
-                (design.ColumnBaseTemplate?.Connection?.Punches?.ColumnTopPunchOffset ?? 0.0));
+                ((design.ColumnBaseTemplate?.Connection?.Punches?.Diameter
+                  ?? CantileverDefaults.PunchDiameter) / 2.0));
 
             if (Math.Abs(required - minimumColumnHeight) > FinalPassTolerance)
             {

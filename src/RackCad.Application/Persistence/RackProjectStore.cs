@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using RackCad.Application.RackFrames;
 using RackCad.Application.Systems.Shared;
 using RackCad.Domain.Systems.Shared;
@@ -357,6 +358,35 @@ namespace RackCad.Application.Persistence
             return false;
         }
 
+        /// <summary>The two properties no document may carry again. See <see cref="CreateOptions"/>.</summary>
+        private static readonly string[] RetiredCantileverPunchMargins =
+        {
+            "ColumnBottomPlateEndOffset",
+            "ColumnTopPunchOffset"
+        };
+
+        /// <summary>
+        /// Removes the retired margins from the serialized shape of <c>CantileverPunchParameters</c>.
+        ///
+        /// It drops them for WRITING and for READING alike: a legacy JSON that still carries them is not
+        /// rejected — the key is simply skipped — so an old file opens, resolves and re-saves clean.
+        /// </summary>
+        private static void DropRetiredCantileverPunchMargins(JsonTypeInfo type)
+        {
+            if (type.Type != typeof(RackCad.Domain.Systems.Cantilever.CantileverPunchParameters))
+            {
+                return;
+            }
+
+            for (var i = type.Properties.Count - 1; i >= 0; i--)
+            {
+                if (System.Array.IndexOf(RetiredCantileverPunchMargins, type.Properties[i].Name) >= 0)
+                {
+                    type.Properties.RemoveAt(i);
+                }
+            }
+        }
+
         private static JsonSerializerOptions CreateOptions()
         {
             var options = new JsonSerializerOptions
@@ -368,6 +398,18 @@ namespace RackCad.Application.Persistence
             };
 
             options.Converters.Add(new JsonStringEnumConverter());
+
+            // The two Cantilever punch margins are LEGACY: the owner retired them as parameters without product
+            // utility (I-37D, ronda 2). They survive on the design type because it belongs to the I-37A contract
+            // already integrated in main, and removing the properties would break that API. What they must NOT
+            // do is come back: a new document never writes them, and an older one that carries them loads,
+            // resolves and re-saves WITHOUT them. Dropping them here — at the serialization boundary — keeps
+            // Domain free of persistence attributes, which is the layering this repository holds.
+            options.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+            {
+                Modifiers = { DropRetiredCantileverPunchMargins }
+            };
+
             return options;
         }
     }

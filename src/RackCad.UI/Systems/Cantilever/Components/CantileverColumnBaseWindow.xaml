@@ -76,10 +76,9 @@
                 <controls:NumericField x:Name="RegularPitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
                 <TextBlock Text="Paso de placa inferior (in)" Style="{StaticResource FieldLabel}" />
                 <controls:NumericField x:Name="BottomPlatePitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
-                <TextBlock Text="Margen de extremo de placa inferior (in) — obligatorio" Style="{StaticResource FieldLabel}" />
-                <controls:NumericField x:Name="BottomPlateEndOffsetBox" LostFocus="Input_Changed" Minimum="0" />
-                <TextBlock Text="Margen del troquel superior (in) — obligatorio" Style="{StaticResource FieldLabel}" />
-                <controls:NumericField x:Name="TopPunchOffsetBox" LostFocus="Input_Changed" Minimum="0" />
+                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,6,0,0"
+                           Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                           Text="No hay márgenes de extremo que escribir: el patrón conserva todos los agujeros ENTEROS que caben, y lo que limita a un agujero es su propio radio contra el borde de la pieza." />
 
                 <TextBlock Text="Altura de la vista previa (in)" Style="{StaticResource SectionTitle}" />
                 <controls:NumericField x:Name="PreviewHeightBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False"

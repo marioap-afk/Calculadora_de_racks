@@ -113,8 +113,6 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 RearPlateOffsetBox.SetNumber(punches.RearPlateVerticalEndOffset, NumberFormat);
                 RegularPitchBox.SetNumber(punches.RegularColumnPitch, NumberFormat);
                 BottomPlatePitchBox.SetNumber(punches.ColumnBottomPlatePitch, NumberFormat);
-                BottomPlateEndOffsetBox.SetNumber(punches.ColumnBottomPlateEndOffset, NumberFormat);
-                TopPunchOffsetBox.SetNumber(punches.ColumnTopPunchOffset, NumberFormat);
 
                 if (!PreviewHeightBox.Value.HasValue)
                 {
@@ -272,8 +270,6 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 (RearPlateOffsetBox, "Margen vertical de placa posterior"),
                 (RegularPitchBox, "Paso regular de columna"),
                 (BottomPlatePitchBox, "Paso de placa inferior"),
-                (BottomPlateEndOffsetBox, "Margen de extremo de placa inferior"),
-                (TopPunchOffsetBox, "Margen del troquel superior"),
                 (PreviewHeightBox, "Altura de la vista previa")
             };
 
@@ -313,8 +309,7 @@ namespace RackCad.UI.Systems.Cantilever.Components
             punches.RearPlateVerticalEndOffset = Keep(RearPlateOffsetBox, punches.RearPlateVerticalEndOffset);
             punches.RegularColumnPitch = Keep(RegularPitchBox, punches.RegularColumnPitch);
             punches.ColumnBottomPlatePitch = Keep(BottomPlatePitchBox, punches.ColumnBottomPlatePitch);
-            punches.ColumnBottomPlateEndOffset = BottomPlateEndOffsetBox.Value;
-            punches.ColumnTopPunchOffset = TopPunchOffsetBox.Value;
+            // Los dos margenes ya no se piden ni se escriben: son datos legacy que el resolvedor ignora.
 
             return true;
         }

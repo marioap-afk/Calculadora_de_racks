@@ -426,17 +426,11 @@ namespace RackCad.Application.Systems.Cantilever
                     "El numero de troqueles sobre la seccion de la base no puede ser negativo."));
             }
 
-            // The two the owner did NOT approve a default for. Missing is REJECTED, never filled in: a value
-            // invented here would be indistinguishable from an approved one.
-            var bottomOffset = RequireSupplied(
-                punches.ColumnBottomPlateEndOffset,
-                "el offset desde los extremos de la placa inferior de la columna a sus troqueles",
-                diagnostics);
-
-            var topOffset = RequireSupplied(
-                punches.ColumnTopPunchOffset,
-                "el offset superior de la columna al ultimo troquel regular",
-                diagnostics);
+            // The two margins the design used to have to supply are GONE (I-37D ronda 2, motivo 1). The owner
+            // rejected them as parameters without product utility: what limits a hole is not a number somebody
+            // types, it is whether the HOLE ITSELF fits inside the piece. The rule is now the radius, and it
+            // lives in the pattern and the grid. The properties survive on the integrated I-37A design type as
+            // legacy data that nothing reads — removing them would break an API already in main.
 
             // ---- geometric compatibility of the punches themselves ----------------------------------------
             // Every offset above is measured edge-to-CENTRE, so a hole physically fits only if the offset is
@@ -452,20 +446,6 @@ namespace RackCad.Application.Systems.Cantilever
             RequireAtLeast(punches.RearPlateVerticalEndOffset, radius,
                 "el offset vertical de la placa posterior", "el radio del troquel",
                 CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
-
-            if (bottomOffset != null)
-            {
-                RequireAtLeast(bottomOffset.Value, radius,
-                    "el offset desde los extremos de la placa inferior", "el radio del troquel",
-                    CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
-            }
-
-            if (topOffset != null)
-            {
-                RequireAtLeast(topOffset.Value, radius,
-                    "el offset superior de la columna", "el radio del troquel",
-                    CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
-            }
 
             RequireAtLeast(punches.ConnectionPitch, punches.Diameter,
                 "el pitch de conexion", "el diametro del troquel",
@@ -487,8 +467,11 @@ namespace RackCad.Application.Systems.Cantilever
                 punches.RegularColumnPitch,
                 punches.ConnectionPunchesAboveBase,
                 punches.ColumnBottomPlatePitch,
-                bottomOffset ?? 0.0,
-                topOffset ?? 0.0);
+
+                // The two legacy margins are NOT read. They travel as zero so the resolved record keeps its
+                // shape for the integrated I-37A API, and every rule that used them now uses the radius.
+                legacyBottomPlateEndOffset: 0.0,
+                legacyColumnTopPunchOffset: 0.0);
         }
 
         /// <summary>
@@ -607,15 +590,15 @@ namespace RackCad.Application.Systems.Cantilever
             // consumers — the station is the other. Two copies of one spacing formula is PB-004
             // (ADR-0026, D5). The extraction was mechanical and is pinned by the characterization suite.
             var grid = CantileverColumnRegularPunchGrid.FromPattern(pattern);
-            var elevations = grid.ElevationsUpTo(columnTopZ, parameters.ColumnTopPunchOffset);
+            var elevations = grid.ElevationsUpTo(columnTopZ);
 
             if (elevations.Count == 0)
             {
                 diagnostics.Add(CantileverDiagnostic.Warning(
                     CantileverDiagnostics.NoRegularPunchFits,
                     "La columna no admite ningun troquel regular: el primero quedaria en z = " +
-                    Format(grid.FirstElevation) + " in y el limite superior esta en z = " +
-                    Format(columnTopZ - parameters.ColumnTopPunchOffset) + " in."));
+                    Format(grid.FirstElevation) + " in y el ultimo agujero entero cabe hasta z = " +
+                    Format(columnTopZ - grid.PunchRadius) + " in."));
                 return Array.Empty<CantileverPunchPlan>();
             }
 
@@ -654,8 +637,12 @@ namespace RackCad.Application.Systems.Cantilever
             // deliberately NO punch on the centre line: an odd pattern would put one there, and the owner's
             // description is explicit that the two rows start from the centre as a pair.
             var centre = (columnMinY + columnMaxY) / 2.0;
-            var lowLimit = columnMinY + parameters.ColumnBottomPlateEndOffset;
-            var highLimit = columnMaxY - parameters.ColumnBottomPlateEndOffset;
+            // The plate keeps every WHOLE hole that fits: a centre is legal when the hole clears both edges by
+            // its own radius, and by nothing more. No margin is added, no circle is clipped and no half hole is
+            // invented (I-37D ronda 2, motivo 1).
+            var radius = parameters.Diameter / 2.0;
+            var lowLimit = columnMinY + radius;
+            var highLimit = columnMaxY - radius;
 
             var offsets = new List<double>();
 

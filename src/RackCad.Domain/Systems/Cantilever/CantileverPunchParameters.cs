@@ -36,15 +36,25 @@ namespace RackCad.Domain.Systems.Cantilever
         public double ColumnBottomPlatePitch { get; set; } = CantileverDefaults.ColumnBottomPlatePunchPitch;
 
         /// <summary>
-        /// REQUIRED, no approved default. Minimum distance from both ends of the column bottom plate — along
-        /// the section depth — to the outermost punch it may keep. Null makes the design invalid.
+        /// LEGACY. Read by NOTHING, and never asked for.
+        ///
+        /// <para>It was a required margin from the ends of the column bottom plate to its outermost punch until
+        /// the owner rejected it (I-37D, ronda 2, motivo 1): a parameter without product utility. What limits a
+        /// hole is not a number somebody types, it is whether the HOLE ITSELF fits — a centre is legal when it
+        /// clears both edges by its own RADIUS, and by nothing more. That rule lives in the punch pattern.</para>
+        ///
+        /// <para>The property is NOT deleted: <c>CantileverPunchParameters</c> belongs to the I-37A contract
+        /// already integrated in <c>main</c>, and removing it would break an API that is not this round's to
+        /// break. It is deprecated data: a design may still carry it, the resolver ignores it, the editor never
+        /// shows it and the persistence never writes it again.</para>
         /// </summary>
         public double? ColumnBottomPlateEndOffset { get; set; }
 
         /// <summary>
-        /// REQUIRED, no approved default. Minimum distance from the top of the column to its last regular
-        /// punch. It is what STOPS the regular grid; without it the grid has no end. Null makes the design
-        /// invalid.
+        /// LEGACY. Read by NOTHING, and never asked for. See <see cref="ColumnBottomPlateEndOffset"/>.
+        ///
+        /// It used to STOP the regular grid; the grid now stops itself at the last whole hole that fits under
+        /// the physical top of the column.
         /// </summary>
         public double? ColumnTopPunchOffset { get; set; }
 

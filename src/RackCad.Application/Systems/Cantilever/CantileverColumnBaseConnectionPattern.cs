@@ -20,8 +20,8 @@ namespace RackCad.Application.Systems.Cantilever
             double regularColumnPitch,
             int connectionPunchesAboveBase,
             double columnBottomPlatePitch,
-            double columnBottomPlateEndOffset,
-            double columnTopPunchOffset)
+            double legacyBottomPlateEndOffset,
+            double legacyColumnTopPunchOffset)
         {
             Diameter = diameter;
             HorizontalEndOffset = horizontalEndOffset;
@@ -30,8 +30,8 @@ namespace RackCad.Application.Systems.Cantilever
             RegularColumnPitch = regularColumnPitch;
             ConnectionPunchesAboveBase = connectionPunchesAboveBase;
             ColumnBottomPlatePitch = columnBottomPlatePitch;
-            ColumnBottomPlateEndOffset = columnBottomPlateEndOffset;
-            ColumnTopPunchOffset = columnTopPunchOffset;
+            ColumnBottomPlateEndOffset = legacyBottomPlateEndOffset;
+            ColumnTopPunchOffset = legacyColumnTopPunchOffset;
         }
 
         public double Diameter { get; }
@@ -48,10 +48,17 @@ namespace RackCad.Application.Systems.Cantilever
 
         public double ColumnBottomPlatePitch { get; }
 
-        /// <summary>Supplied by the design; the owner approved no default for it.</summary>
+        /// <summary>
+        /// LEGACY, always zero, read by nothing.
+        ///
+        /// It was a margin the design had to supply until the owner rejected it as a parameter without product
+        /// utility (I-37D, ronda 2). What limits a hole is the hole itself: the rule is now the radius and it
+        /// lives in the pattern and in the grid. The property stays because the type is part of the I-37A API
+        /// already integrated in main; it is not deleted, it is emptied.
+        /// </summary>
         public double ColumnBottomPlateEndOffset { get; }
 
-        /// <summary>Supplied by the design; the owner approved no default for it.</summary>
+        /// <summary>LEGACY, always zero, read by nothing. See <see cref="ColumnBottomPlateEndOffset"/>.</summary>
         public double ColumnTopPunchOffset { get; }
     }
 

@@ -525,12 +525,15 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void TheRegularRegionKeepsItsPitchAndStopsAtTheRequiredTopOffset()
+        public void TheRegularRegionKeepsItsPitchAndStopsAtTheLastWholeHoleThatFits()
         {
+            // I-37D ronda 2, motivo 1. El techo ya NO es un margen que el diseno escribe: es el ultimo agujero
+            // ENTERO que cabe bajo el extremo fisico de la columna. El proposito de la prueba no cambia —el paso
+            // se conserva y no se deja fuera un agujero que cabria—; cambia el limite que lo decide.
             var design = Design();
             var assembly = Resolve(design);
-            var topOffset = design.Connection.Punches.ColumnTopPunchOffset.Value;
-            var ceiling = design.Column.Height - topOffset;
+            var radius = design.Connection.Punches.Diameter / 2.0;
+            var ceiling = design.Column.Height - radius;
 
             var elevations = assembly.ColumnRegularPunches
                 .Select(p => Math.Round(p.Datum.V, 9))
@@ -548,17 +551,52 @@ namespace RackCad.Tests
             Assert.True(elevations[elevations.Count - 1] <= ceiling + Tolerance);
             Assert.True(
                 elevations[elevations.Count - 1] + CantileverDefaults.RegularColumnPunchPitch > ceiling + Tolerance,
-                "Cabria otro troquel regular por debajo del offset superior y no se coloco.");
+                "Cabria otro troquel regular entero y no se coloco.");
         }
 
         [Fact]
         public void AColumnTooShortForARegularPunchSaysSoWithoutBlocking()
         {
-            var assembly = Resolve(Design(height: 22.0));
+            // El primer troquel regular esta en z = 20.5 y su radio es 0.375, asi que el agujero entero mas bajo
+            // exige una columna de 20.875. A 20.75 no cabe NINGUNO, y eso se avisa sin bloquear.
+            var assembly = Resolve(Design(height: 20.75));
 
             Assert.False(assembly.IsBlocked);
             Assert.Empty(assembly.ColumnRegularPunches);
             Assert.True(Has(assembly, CantileverDiagnostics.NoRegularPunchFits));
+        }
+
+        [Fact]
+        public void UnaColumnaQueSoloAdmiteUnAgujeroEnteroColocaEXACTAMENTEUno()
+        {
+            // 21 in: cabe el de 20.5 —20.875 <= 21— y no el de 24.5.
+            var assembly = Resolve(Design(height: 21.0));
+
+            Assert.False(assembly.IsBlocked);
+            Assert.Single(assembly.ColumnRegularPunches.Select(p => p.Datum.V).Distinct());
+            Assert.Equal(20.5, assembly.ColumnRegularPunches.First().Datum.V, 9);
+        }
+
+        [Fact]
+        public void UnAgujeroTANGENTEAlExtremoSuperiorSEINCLUYE()
+        {
+            // 92.875 = 92.5 + 0.375: el agujero toca el borde exactamente. Tangente CABE — el piso es
+            // inclusivo, igual que para los offsets de borde.
+            var assembly = Resolve(Design(height: 92.875));
+            var elevations = assembly.ColumnRegularPunches.Select(p => Math.Round(p.Datum.V, 9)).Distinct().ToList();
+
+            Assert.Contains(92.5, elevations);
+        }
+
+        [Fact]
+        public void ElSiguienteAgujeroQueINVADEElExtremoSEEXCLUYE()
+        {
+            // Una milesima menos que la tangencia: el mismo agujero ya no cabe entero y se queda fuera.
+            var assembly = Resolve(Design(height: 92.874));
+            var elevations = assembly.ColumnRegularPunches.Select(p => Math.Round(p.Datum.V, 9)).Distinct().ToList();
+
+            Assert.DoesNotContain(92.5, elevations);
+            Assert.Contains(88.5, elevations);
         }
 
         // ---- 18-19: the gusset --------------------------------------------------------------------------------
@@ -801,29 +839,7 @@ namespace RackCad.Tests
 
         // ---- required parameters ------------------------------------------------------------------------------------
 
-        [Fact]
-        public void AMissingBottomPlateOffsetIsRejectedAndNeverDefaulted()
-        {
-            var design = Design();
-            design.Connection.Punches.ColumnBottomPlateEndOffset = null;
 
-            var assembly = Resolve(design);
-
-            Assert.True(assembly.IsBlocked);
-            Assert.True(Has(assembly, CantileverDiagnostics.RequiredParameterMissing));
-        }
-
-        [Fact]
-        public void AMissingColumnTopOffsetIsRejectedAndNeverDefaulted()
-        {
-            var design = Design();
-            design.Connection.Punches.ColumnTopPunchOffset = null;
-
-            var assembly = Resolve(design);
-
-            Assert.True(assembly.IsBlocked);
-            Assert.True(Has(assembly, CantileverDiagnostics.RequiredParameterMissing));
-        }
 
         [Fact]
         public void TheDefaultsAreTheOnesTheOwnerApproved()
@@ -1141,27 +1157,75 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void AHoleThatSpillsPastTheBottomPlateEndIsRejected()
+        public void UnAgujeroQueSobresaleDelExtremoDeLaPlacaSeEXCLUYE()
         {
-            var design = Design();
-            design.Connection.Punches.ColumnBottomPlateEndOffset = 0.1; // radius is 0.375
+            // La placa inferior conserva TODOS los agujeros enteros que caben, y ninguno mas. El proposito de
+            // la prueba se mantiene —un agujero que sobresaldria no se dibuja— pero ahora se EXCLUYE en vez de
+            // bloquear, porque no hay un margen que validar: lo decide el radio contra el borde.
+            var assembly = Resolve();
+            var radius = assembly.Pattern.Parameters.Diameter / 2.0;
+            var plate = assembly.ColumnBottomPlate.Envelope();
 
-            var assembly = Resolve(design);
+            Assert.NotEmpty(assembly.ColumnBottomPlatePunches);
 
-            Assert.True(assembly.IsBlocked);
-            Assert.True(Has(assembly, CantileverDiagnostics.EdgeOffsetBelowRadius));
+            foreach (var punch in assembly.ColumnBottomPlatePunches)
+            {
+                Assert.True(punch.Datum.V - radius >= plate.MinY - Tolerance,
+                    "Un troquel de la placa inferior sobresale por el extremo bajo.");
+                Assert.True(punch.Datum.V + radius <= plate.MaxY + Tolerance,
+                    "Un troquel de la placa inferior sobresale por el extremo alto.");
+            }
         }
 
         [Fact]
-        public void AHoleThatSpillsPastTheColumnTopIsRejected()
+        public void LaPlacaInferiorConservaElMAXIMODeAgujerosEnterosQueCaben()
         {
+            // Y no uno menos: si cupiera otro paso completo dentro de la placa, faltaria.
+            var assembly = Resolve();
+            var radius = assembly.Pattern.Parameters.Diameter / 2.0;
+            var pitch = assembly.Pattern.Parameters.ColumnBottomPlatePitch;
+            var plate = assembly.ColumnBottomPlate.Envelope();
+
+            var centres = assembly.ColumnBottomPlatePunches
+                .Select(p => Math.Round(p.Datum.V, 9)).Distinct().OrderBy(v => v).ToList();
+
+            Assert.True(centres.Count >= 2);
+            Assert.True(centres.First() - pitch - radius < plate.MinY - Tolerance,
+                "Cabria otro troquel entero por debajo del primero.");
+            Assert.True(centres.Last() + pitch + radius > plate.MaxY + Tolerance,
+                "Cabria otro troquel entero por encima del ultimo.");
+        }
+
+        [Fact]
+        public void UnAgujeroQueSobresaleDelTopeDeLaColumnaSeEXCLUYE()
+        {
+            // Ningun troquel regular sobresale del extremo fisico de la columna, y ninguno de los que caben
+            // falta. Antes esto era una validacion de margen; ahora es la regla del radio, y por eso se
+            // comprueba sobre los agujeros COLOCADOS y no sobre un numero que el diseno escribia.
             var design = Design();
-            design.Connection.Punches.ColumnTopPunchOffset = 0.1;
-
             var assembly = Resolve(design);
+            var radius = design.Connection.Punches.Diameter / 2.0;
 
-            Assert.True(assembly.IsBlocked);
-            Assert.True(Has(assembly, CantileverDiagnostics.EdgeOffsetBelowRadius));
+            Assert.NotEmpty(assembly.ColumnRegularPunches);
+            Assert.All(
+                assembly.ColumnRegularPunches,
+                p => Assert.True(p.Datum.V + radius <= design.Column.Height + Tolerance));
+        }
+
+        [Fact]
+        public void UnPitchNoDIADICOSigueColocandoTodosLosEnterosQueCaben()
+        {
+            // 3.7 in no divide nada bonito. La regla no depende de que el paso sea redondo.
+            var assembly = Resolve(Design(tune: p => p.RegularColumnPitch = 3.7));
+            var radius = assembly.Pattern.Parameters.Diameter / 2.0;
+
+            var elevations = assembly.ColumnRegularPunches
+                .Select(p => Math.Round(p.Datum.V, 9)).Distinct().OrderBy(z => z).ToList();
+
+            Assert.NotEmpty(elevations);
+            Assert.All(elevations, z => Assert.True(z + radius <= 96.0 + Tolerance));
+            Assert.True(elevations.Last() + 3.7 + radius > 96.0 + Tolerance,
+                "Cabria otro troquel entero con este paso y no se coloco.");
         }
 
         [Fact]

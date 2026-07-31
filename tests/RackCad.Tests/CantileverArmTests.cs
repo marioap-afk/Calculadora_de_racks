@@ -562,7 +562,7 @@ namespace RackCad.Tests
 
         [Theory]
         [InlineData(-1)]
-        [InlineData(17)]
+        [InlineData(19)]
         [InlineData(500)]
         public void AnIndexOutsideTheColumnsPunchesIsRejected(int lowerIndex)
         {

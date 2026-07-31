@@ -263,38 +263,51 @@ namespace RackCad.Application.Systems.Cantilever
         }
 
         /// <summary>
-        /// The shortest column that still contains <paramref name="index"/>, given the top offset.
+        /// The RADIUS of a punch: half its diameter, and the only margin the grid needs.
+        ///
+        /// <para>Until the round-2 rejection the grid stopped at an approved margin the design had to supply
+        /// (<c>ColumnTopPunchOffset</c>). The owner rejected it as a parameter without product utility: what
+        /// physically limits the last hole is not a margin somebody types, it is whether the HOLE ITSELF fits
+        /// inside the piece. A centre is legal when <c>z − d/2 ≥ lowerEdge</c> and <c>z + d/2 ≤ upperEdge</c>,
+        /// and nothing else.</para>
+        ///
+        /// <para>The rule lives HERE, in the grid authority, and is not repeated by the editor or by a view —
+        /// which is what stops a preview from showing a hole the resolver excluded.</para>
+        /// </summary>
+        public double PunchRadius => Diameter / 2.0;
+
+        /// <summary>
+        /// The shortest column that still contains <paramref name="index"/>: its elevation plus the radius, so
+        /// the whole hole fits under the top edge.
         ///
         /// It is the inverse of <see cref="CountUpTo"/> and exists so a station can ask "how tall must this
         /// column be for the level I just placed?" without generating anything.
         /// </summary>
-        public double MinimumColumnHeightFor(int index, double columnTopPunchOffset) =>
-            ElevationAt(index) + columnTopPunchOffset;
+        public double MinimumColumnHeightFor(int index) =>
+            ElevationAt(index) + PunchRadius;
 
         /// <summary>
         /// How many indices fit in a column of this height. Zero is a legal answer.
         ///
-        /// The ceiling is <c>height − topOffset</c>, exactly as the pre-extraction loop computed it, and the
-        /// comparison keeps its tolerance so a ceiling landing on a pitch still includes that punch.
+        /// The ceiling is <c>columnTopZ − radius</c>: the last WHOLE hole that fits under the physical top of
+        /// the column. The tolerance is kept, so a hole exactly tangent to the edge is INCLUDED — it fits.
         /// </summary>
-        public int CountUpTo(double columnTopZ, double columnTopPunchOffset) =>
-            ElevationsUpTo(columnTopZ, columnTopPunchOffset).Count;
+        public int CountUpTo(double columnTopZ) => ElevationsUpTo(columnTopZ).Count;
 
         /// <summary>
         /// The elevations that fit in a column of this height, ascending. Zero of them is a legal answer.
         ///
-        /// This IS the pre-extraction loop, moved verbatim: same accumulation, same ceiling, same tolerance.
         /// <see cref="CountUpTo"/> delegates to it rather than re-walking, so the count and the sequence
         /// cannot disagree about where the last punch fell.
         /// </summary>
-        public IReadOnlyList<double> ElevationsUpTo(double columnTopZ, double columnTopPunchOffset)
+        public IReadOnlyList<double> ElevationsUpTo(double columnTopZ)
         {
             if (!IsIncreasing)
             {
                 return new List<double>();
             }
 
-            var ceiling = columnTopZ - columnTopPunchOffset;
+            var ceiling = columnTopZ - PunchRadius;
             var elevations = new List<double>();
 
             for (var z = FirstElevation; z <= ceiling + FitTolerance; z += Pitch)
@@ -308,8 +321,8 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>
         /// Whether the grid contains an index at all. A column can be too short for even the first one.
         /// </summary>
-        public bool Contains(int index, double columnTopZ, double columnTopPunchOffset) =>
-            index >= 0 && index < CountUpTo(columnTopZ, columnTopPunchOffset);
+        public bool Contains(int index, double columnTopZ) =>
+            index >= 0 && index < CountUpTo(columnTopZ);
 
         /// <summary>Deterministic fingerprint.</summary>
         public string Signature() => string.Format(
