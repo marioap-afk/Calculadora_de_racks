@@ -17,7 +17,8 @@ objetivamente. Brazo, separador y tensor no se modificaron. Un solo fallo rechaz
 | Iniciativa | I-37D — Cantilever MVP final |
 | Rama | `feature/cantilever-mvp-final` |
 | **CODE_SHA funcional** | `00f4ca1` — última punta que tocó `src/**` o `tests/**` |
-| **VALIDATED_BUILD_SHA** | `00f4ca1b373f9c210db6cbb78a2db869b81cc20c` |
+| **VALIDATED_BUILD_SHA** | `00f4ca1b373f9c210db6cbb78a2db869b81cc20c` — el DLL se compiló desde aquí |
+| Punta de la rama | `55e6e92` — `00f4ca1` **más este paquete**, que es documentación y nada más |
 | DLL Debug a cargar | `<worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` |
 | **DLL SHA-256** | `FDB37A4F0DC26F13C01D87028AFBC72263F8C1AEF8603D8D6C6829EF7920E5AD` |
 | `AssemblyInformationalVersion` | `1.0.0+00f4ca1b373f9c210db6cbb78a2db869b81cc20c` |
@@ -25,14 +26,19 @@ objetivamente. Brazo, separador y tensor no se modificaron. Un solo fallo rechaz
 | **Bundle** | ✅ generado con AutoCAD **cerrado** y verificado fail-closed: 153 comprobaciones, DLL idénticos al publish, catálogos idénticos a `assets/catalogs`, cero DLL de Autodesk |
 | Inventario del bundle | [`I-37D-column-base-fix-bundle-inventory.txt`](I-37D-column-base-fix-bundle-inventory.txt) |
 | Suites | `RackCad.Tests` 2848/2848 · `RackCad.UI.Tests` 605/605 |
-| CI | run [`30599549470`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30599549470) sobre `00f4ca1` |
+| CI | **success** sobre `00f4ca1` (run [`30599549470`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30599549470)) y sobre `55e6e92` (run [`30599724941`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30599724941)) — 4/4 jobs en ambos |
 | Regresiones | 15/15 verificadas **en rojo** — [evidencia](I-37D-column-base-fix-regressions.md) |
 
 El DLL de `bin\Debug` y el que viaja dentro del bundle son **el mismo binario** (`FDB37A4F…` los dos), así
 que cargar por `NETLOAD` y cargar por bundle validan exactamente lo mismo.
 
-> **Si recompilas, el SHA-256 vuelve a cambiar** —el informational version incrusta la punta de git—. Anota
-> el nuevo antes de cargar: un DLL sin trazabilidad no valida la rama.
+**`git rev-parse HEAD` te dará `55e6e92`, no `00f4ca1`, y eso es sano.** El DLL se compiló desde `00f4ca1`
+porque su `AssemblyInformationalVersion` incrusta la punta de git: recompilar tras un commit **de docs**
+cambiaría el SHA-256 sin que una sola línea de código fuese distinta. El árbol funcional que se valida es
+el de `00f4ca1`, y entre los dos commits `git diff 00f4ca1..55e6e92 -- src tests` está **vacío**.
+
+> **Si recompilas, el SHA-256 vuelve a cambiar** por esa misma razón. Anota el nuevo antes de cargar: un DLL
+> sin trazabilidad no valida la rama.
 
 ## 2. Preparar
 
