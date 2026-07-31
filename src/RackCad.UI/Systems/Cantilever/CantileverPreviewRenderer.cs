@@ -27,36 +27,30 @@ namespace RackCad.UI.Systems.Cantilever
         /// <summary>The smallest a hole may be drawn in the PREVIEW, in device pixels. See <see cref="Hole"/>.</summary>
         private const double MinimumHolePixels = 3.0;
 
-        private static readonly Brush ColumnBrush = UiSupport.FrozenBrush(Color.FromRgb(0x3D, 0xC9, 0x86));
-        private static readonly Brush BaseBrush = UiSupport.FrozenBrush(Color.FromRgb(0x5B, 0x8D, 0xEF));
-        private static readonly Brush ArmBrush = UiSupport.FrozenBrush(Color.FromRgb(0xE0, 0x8A, 0x2B));
-        private static readonly Brush PlateBrush = UiSupport.FrozenBrush(Color.FromRgb(0xB7, 0xC3, 0xCF));
-        private static readonly Brush GussetBrush = UiSupport.FrozenBrush(Color.FromRgb(0x8A, 0x97, 0xA4));
-        private static readonly Brush SeparatorBrush = UiSupport.FrozenBrush(Color.FromRgb(0xC0, 0x5B, 0xC0));
-        private static readonly Brush BraceBrush = UiSupport.FrozenBrush(Color.FromRgb(0xFF, 0xD1, 0x66));
-        private static readonly Brush AdapterBrush = UiSupport.FrozenBrush(Color.FromRgb(0xC0, 0x5B, 0x5B));
-        private static readonly Brush PunchBrush = UiSupport.FrozenBrush(Color.FromRgb(0x61, 0x70, 0x80));
+        /// <summary>
+        /// One brush per visual ROLE, built from the colour Application declares for it.
+        ///
+        /// The palette is not chosen here. Application owns it, because the block in the drawing has to read the
+        /// same as the picture the user approved — a green column that arrives yellow is the wrong picture — and
+        /// the only way to guarantee that is one authority and two adapters. This adapter's whole job is turning
+        /// an AutoCAD Color Index into a WPF brush.
+        /// </summary>
+        /// <summary>The colour of the «nothing to draw» message. Not a piece, so not a role.</summary>
         private static readonly Brush EmptyBrush = UiSupport.FrozenBrush(Color.FromRgb(0x8A, 0x97, 0xA4));
 
-        /// <summary>The colour a piece kind reads in, so the legend and the drawing agree by construction.</summary>
-        internal static Brush BrushFor(CantileverViewPieceKind kind)
-        {
-            switch (kind)
-            {
-                case CantileverViewPieceKind.Column: return ColumnBrush;
-                case CantileverViewPieceKind.Base: return BaseBrush;
-                case CantileverViewPieceKind.Arm: return ArmBrush;
-                case CantileverViewPieceKind.Plate: return PlateBrush;
-                case CantileverViewPieceKind.Gusset: return GussetBrush;
-                case CantileverViewPieceKind.Separator: return SeparatorBrush;
-                case CantileverViewPieceKind.Brace: return BraceBrush;
-                case CantileverViewPieceKind.ColdRolledAdapter: return AdapterBrush;
-                case CantileverViewPieceKind.Punch: return PunchBrush;
+        private static readonly IReadOnlyDictionary<CantileverVisualRole, Brush> RoleBrushes =
+            Enum.GetValues(typeof(CantileverVisualRole))
+                .Cast<CantileverVisualRole>()
+                .ToDictionary(
+                    role => role,
+                    role => UiSupport.FrozenBrush(AciPalette.ColorOf(CantileverVisualRoles.ColorIndexOf(role))));
 
-                // A kind added without a colour would otherwise be invisible, which is worse than being ugly.
-                default: return EmptyBrush;
-            }
-        }
+        /// <summary>The colour a piece kind reads in, so the legend, the preview and the drawing agree.</summary>
+        internal static Brush BrushFor(CantileverViewPieceKind kind) =>
+            RoleBrushes[CantileverVisualRoles.Of(kind)];
+
+        /// <summary>The colour a role reads in, for a legend that lists natures rather than pieces.</summary>
+        internal static Brush BrushFor(CantileverVisualRole role) => RoleBrushes[role];
 
         /// <summary>
         /// Clears <paramref name="canvas"/> and draws <paramref name="plan"/> scaled to fit, preserving aspect.

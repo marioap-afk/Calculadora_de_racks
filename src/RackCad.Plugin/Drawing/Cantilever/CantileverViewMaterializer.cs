@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.Geometry;
 using RackCad.Application.Systems.Cantilever;
 
@@ -47,6 +48,7 @@ namespace RackCad.Plugin.Drawing.Cantilever
             var definitionId = blockTable.Add(definition);
             transaction.AddNewlyCreatedDBObject(definition, true);
 
+            EnsureRoleLayers(database, transaction);
             AppendCurves(definition, transaction, plan);
 
             return definitionId;
@@ -142,9 +144,64 @@ namespace RackCad.Plugin.Drawing.Cantilever
                     continue;
                 }
 
+                ApplyRole(entity, curve.Kind);
+
                 definition.AppendEntity(entity);
                 transaction.AddNewlyCreatedDBObject(entity, true);
             }
+        }
+
+        /// <summary>
+        /// Creates the layer of every visual role, once, before anything is drawn on one.
+        ///
+        /// ALL of them, and not just the ones this plan happens to use: a user who freezes «troqueles» on one
+        /// view expects the same layer to be there on the next, and a layer that appears only when a hole does
+        /// makes that setting come and go. Existing layers are left ALONE — colour included — because the
+        /// drawing belongs to the user and re-imposing a colour would undo a deliberate change every time they
+        /// redrew.
+        /// </summary>
+        private static void EnsureRoleLayers(Database database, Transaction transaction)
+        {
+            var table = (LayerTable)transaction.GetObject(database.LayerTableId, OpenMode.ForRead);
+
+            foreach (CantileverVisualRole role in Enum.GetValues(typeof(CantileverVisualRole)))
+            {
+                var name = CantileverVisualRoles.LayerNameOf(role);
+
+                if (table.Has(name))
+                {
+                    continue;
+                }
+
+                table.UpgradeOpen();
+
+                var layer = new LayerTableRecord
+                {
+                    Name = name,
+                    Color = Color.FromColorIndex(ColorMethod.ByAci, CantileverVisualRoles.ColorIndexOf(role))
+                };
+
+                table.Add(layer);
+                transaction.AddNewlyCreatedDBObject(layer, true);
+            }
+        }
+
+        /// <summary>
+        /// Puts an entity on the layer of its NATURE, drawing its colour from there.
+        ///
+        /// It replaces «everything BYBLOCK on layer 0», which made a column, a plate, a gusset and a hole read
+        /// exactly alike — motivo 5 del rechazo de la ronda 2. What is lost is restyling a whole view from its
+        /// inserted reference in one move; what is gained is the control a reader of the drawing actually needs,
+        /// which is turning the holes off to look at the steel. Colour and lineweight stay BYLAYER rather than
+        /// being stamped on the entity, so the user still owns the look — one layer, not one entity at a time.
+        /// </summary>
+        private static void ApplyRole(Entity entity, CantileverViewPieceKind kind)
+        {
+            // Throws for an unclassified kind: a piece must not reach the drawing dressed as something else.
+            entity.Layer = CantileverVisualRoles.LayerNameOf(CantileverVisualRoles.Of(kind));
+            entity.ColorIndex = 256; // BYLAYER
+            entity.Linetype = "ByLayer";
+            entity.LineWeight = LineWeight.ByLayer;
         }
 
         /// <summary>A curve becomes a real <see cref="Circle"/> when the plan says it is one, a polyline otherwise.</summary>
@@ -198,10 +255,12 @@ namespace RackCad.Plugin.Drawing.Cantilever
         }
 
         /// <summary>
-        /// BYBLOCK on layer 0: the inserted reference decides colour, linetype and lineweight, so the user can
-        /// drop the line on any layer and restyle the whole view in one move. Layer 0 is set EXPLICITLY — a new
-        /// entity is born on the current layer, and inheriting whatever CLAYER happened to be would quietly
-        /// break that.
+        /// A newborn entity's starting state, before its role dresses it.
+        ///
+        /// Layer 0 is set EXPLICITLY because a new entity is born on the current layer, and inheriting whatever
+        /// CLAYER happened to be would leave a curve on the user's layer if its role were ever not applied.
+        /// <see cref="ApplyRole"/> then moves it and switches it to BYLAYER; this is the floor it starts from,
+        /// never the state it ships in.
         /// </summary>
         private static void ApplyByBlock(Entity entity)
         {

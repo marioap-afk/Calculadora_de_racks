@@ -127,10 +127,25 @@ namespace RackCad.Tests
             ["linea-doble"] = "57A55555E68AC3D881CC06223EA0E825E56476E528E8FF4B1639562D96013F83",
             ["bom"] = "6088C538512ACDCA52D0C5DB5D0AD1DE180686CE13752D33F674F19C6DFA66F3",
             ["bom-doble"] = "608B790C28618CD013D8B807F937E3EF73FCF4BAF9B77D076E0CFE866FA5A272",
-            ["frontal"] = "1A12F7495D9DBCE6FF5FD14B3ABD18F4EB10A78870397F8229C2636B2274629C",
-            ["planta"] = "EFB547E6A9B591386307E424A02028F70898DCBE36112BB5BB3C32D7DE5F4266",
+            // TRES DE ESTOS CUATRO SE MOVIERON en la correccion de columna/base, por la causa fisica del
+            // motivo 2: se le preguntaba a la CAMARA si miraba a lo largo del eje Z DEL MUNDO, cuando lo que
+            // decide si una seccion conserva su forma es el eje del MIEMBRO. Una camara cenital conserva la
+            // forma de una columna de pie y no la de una base tumbada, y solo su colocacion las distingue.
+            //
+            // - `planta`: la base pasa de UNA linea de 6.49 in con longitud CERO a su huella real de
+            //   6.49 x 48 in —sus dos caras y sus generatrices—, y los brazos de igual modo a 4 x 36 in.
+            // - `frontal` y `frontal-doble`: el caso contrario. La base apunta hacia la camara, asi que ahora
+            //   se dibuja como la seccion que es y no como dos caras extremas superpuestas: una entidad
+            //   duplicada menos por base.
+            // - `lateral` NO se movio, y es correcto: alli ninguna seccion cambia de regimen. Que las placas
+            //   ganen su espesor tampoco mueve esta firma, porque cuenta PUNTOS y no coordenadas —el casco de
+            //   un rectangulo visto de canto sigue siendo cuatro esquinas cerradas—; ese espesor lo fija
+            //   CantileverLateralViewTests, midiendolo.
+            // Anteriores: frontal 1A12F749…, planta EFB547E6…, frontal-doble 7D74B31D…
+            ["frontal"] = "D17564B60448EF08C46F99AE0B9328C5E94E00BA8ED48D31AF90D37F7D5544E3",
+            ["planta"] = "9E9611FA2AFD676F0F54082D0B84556C855CA42BE6E077B206604B17339D4E32",
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
-            ["frontal-doble"] = "7D74B31D65273817192792F2871DCB321227EAE8BE8BD2BFA41A14394A1B53AE",
+            ["frontal-doble"] = "34E02F2092FF7C3A17BB2382093E9819764E12ED776D0F49C3405B188B0FB91E",
 
             // MOVIDO A PROPOSITO en la ronda 2, y es el UNICO pin que se movio por contenido.
             // `BaseFollowsColumn` es intencion nueva del diseno y se persiste, asi que el JSON gana una clave.

@@ -135,7 +135,9 @@ namespace RackCad.Application.StructuralSections.Geometry
             Transform2D sectionTransform,
             SectionRepresentationOptions options)
         {
-            var alongZ = viewpoint.PreservesSectionShape;
+            // The MEMBER's own axis, not world Z: a camera looking down preserves a standing column's shape and
+            // not a base lying on the floor, and only the placement can tell them apart.
+            var alongZ = viewpoint.PreservesShapeOf(instance.Frame.AxisZ);
             var ends = alongZ ? new[] { 0.0 } : new[] { 0.0, instance.Length };
 
             var contours = geometry.AllContours().ToArray();
@@ -225,7 +227,9 @@ namespace RackCad.Application.StructuralSections.Geometry
             Transform2D sectionTransform,
             SectionRepresentationOptions options)
         {
-            var alongZ = viewpoint.PreservesSectionShape;
+            // The MEMBER's own axis, not world Z: a camera looking down preserves a standing column's shape and
+            // not a base lying on the floor, and only the placement can tell them apart.
+            var alongZ = viewpoint.PreservesShapeOf(instance.Frame.AxisZ);
             var ends = alongZ ? new[] { 0.0 } : new[] { 0.0, instance.Length };
 
             var points = ends

@@ -320,15 +320,18 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 if (plate != null)
                 {
-                    AddOutline(curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline, zero, viewpoint, true);
+                    AddFlatPiece(
+                        curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline,
+                        plate.Normal, plate.Thickness, zero, viewpoint);
                 }
             }
 
             if (columnBase.Gusset != null)
             {
-                AddOutline(
+                AddFlatPiece(
                     curves, CantileverViewPieceKind.Gusset, columnBase.Gusset.Id,
-                    columnBase.Gusset.Vertices, zero, viewpoint, true);
+                    columnBase.Gusset.Vertices, columnBase.Gusset.Normal, columnBase.Gusset.Thickness,
+                    zero, viewpoint);
             }
 
             foreach (var punch in columnBase.AllPunches)
@@ -367,7 +370,9 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var plate in arm.Plates)
             {
-                AddOutline(curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline, zero, viewpoint, true);
+                AddFlatPiece(
+                    curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline,
+                    plate.Normal, plate.Thickness, zero, viewpoint);
             }
 
             foreach (var punch in arm.MountingPunches)
@@ -475,16 +480,16 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var plate in station.Plates)
             {
-                AddOutline(
+                AddFlatPiece(
                     curves, CantileverViewPieceKind.Plate, placement.ScopedId(plate.Id),
-                    plate.Outline, offset, viewpoint, true);
+                    plate.Outline, plate.Normal, plate.Thickness, offset, viewpoint);
             }
 
             foreach (var gusset in station.Gussets)
             {
-                AddOutline(
+                AddFlatPiece(
                     curves, CantileverViewPieceKind.Gusset, placement.ScopedId(gusset.Id),
-                    gusset.Vertices, offset, viewpoint, true);
+                    gusset.Vertices, gusset.Normal, gusset.Thickness, offset, viewpoint);
             }
 
             // The holes. They were resolved from the first day and never asked for, which is why a column came
@@ -508,9 +513,9 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var plate in interval.ColumnPlates)
             {
-                AddOutline(
+                AddFlatPiece(
                     curves, CantileverViewPieceKind.Plate, plate.Plate.Id,
-                    plate.Plate.Outline, zero, viewpoint, true);
+                    plate.Plate.Outline, plate.Plate.Normal, plate.Plate.Thickness, zero, viewpoint);
 
                 // Its ONE centred hole. A separator plate without its hole is a 3 × 3 square that says nothing
                 // about where the separator bolts, and that is what the frontal was showing.
@@ -632,6 +637,15 @@ namespace RackCad.Application.Systems.Cantilever
         private const double CircleForeshorteningLimit = 0.2;
 
         /// <summary>
+        /// Below this cross product two hull edges count as collinear.
+        ///
+        /// It is an AREA, not a length, so it is smaller than a coordinate tolerance on purpose: a plate seen
+        /// almost face-on has a silhouette a few thousandths wide, and that sliver is the thickness the drawing
+        /// is supposed to show. Rounding it away would put back exactly the defect this fixes.
+        /// </summary>
+        private const double HullTolerance = 1e-12;
+
+        /// <summary>
         /// One hole, drawn as what the camera can actually see of it.
         ///
         /// Looking DOWN the drilling axis, a hole is a circle of its real diameter, and that is what gets
@@ -710,6 +724,109 @@ namespace RackCad.Application.Systems.Cantilever
 
             curves.Add(new CantileverViewCurve(kind, id, projected, isClosed));
         }
+
+        /// <summary>
+        /// A flat piece drawn as the SOLID it is: the silhouette of both of its faces, not the outline of one.
+        ///
+        /// A plate has thickness, and projecting only its reference face makes that thickness disappear the
+        /// moment the piece is seen edge-on. Measured on the reference line, the lateral drew the column's
+        /// bottom plate 9.73 in wide and <b>0.0000 in tall</b>, and the base's two plates <b>0.0000 in wide</b>:
+        /// present in the plan, invisible on paper. That is motivo 3 of the round-2 rejection — «la lateral
+        /// omite las placas y el cartabón» — and it was never an omission in the model, which had them all
+        /// along. Seen face-on the far face lands exactly on the near one and the silhouette IS the outline, so
+        /// the frontal does not change.
+        ///
+        /// The silhouette of a convex prism is the convex hull of its two projected faces. Every flat piece in
+        /// this system is convex — plates are rectangles, the gusset is a triangle — and
+        /// <c>CantileverPlatePlan</c> enforces four corners, so the hull is exact rather than an approximation.
+        /// A non-convex flat piece would need its true silhouette instead; a test pins the assumption so that
+        /// the day someone adds one, it says so rather than quietly rounding off a notch.
+        /// </summary>
+        private static void AddFlatPiece(
+            ICollection<CantileverViewCurve> curves,
+            CantileverViewPieceKind kind,
+            CantileverPieceId id,
+            IReadOnlyList<Point3D> outline,
+            Vector3D normal,
+            double thickness,
+            Vector3D offset,
+            SectionViewpoint viewpoint)
+        {
+            if (outline == null || outline.Count == 0)
+            {
+                return;
+            }
+
+            var extrusion = new Vector3D(normal.X * thickness, normal.Y * thickness, normal.Z * thickness);
+
+            var projected = outline.Select(p => viewpoint.Project(p + offset))
+                .Concat(outline.Select(p => viewpoint.Project(p + offset + extrusion)))
+                .ToList();
+
+            curves.Add(new CantileverViewCurve(kind, id, ConvexHull(projected), true));
+        }
+
+        /// <summary>
+        /// The convex hull of projected points, counter-clockwise, by monotone chain.
+        ///
+        /// Deterministic — it sorts before it builds — because a view plan's signature is pinned, and a hull
+        /// that depended on input order would make identical geometry hash differently on a different run.
+        /// Collinear points are DROPPED, so a piece seen exactly face-on comes back as its own four corners and
+        /// not as eight points, half of them redundant.
+        /// </summary>
+        private static IReadOnlyList<Point2D> ConvexHull(IReadOnlyList<Point2D> points)
+        {
+            var sorted = points
+                .OrderBy(p => p.X)
+                .ThenBy(p => p.Y)
+                .ToList();
+
+            if (sorted.Count < 3)
+            {
+                return sorted;
+            }
+
+            // Lower chain and upper chain built independently, each keeping only left turns so that an interior
+            // or collinear point is popped. Written as two lists rather than one shared index because the
+            // shared-index form hides an off-by-one in where the second chain may stop popping.
+            var lower = Chain(sorted);
+            var upper = Chain(Enumerable.Reverse(sorted).ToList());
+
+            var hull = new List<Point2D>(lower.Count + upper.Count);
+
+            // Each chain's last point is the next chain's first, so it is dropped once.
+            hull.AddRange(lower.Take(lower.Count - 1));
+            hull.AddRange(upper.Take(upper.Count - 1));
+
+            // Degenerate: every point collinear, so the hull collapsed. The piece really is a line here — a
+            // plate whose thickness is edge-on AND whose face is edge-on — and drawing its two ends is the
+            // honest answer.
+            return hull.Count >= 3
+                ? hull
+                : new[] { sorted[0], sorted[sorted.Count - 1] };
+        }
+
+        /// <summary>One monotone chain over already-sorted points.</summary>
+        private static List<Point2D> Chain(IReadOnlyList<Point2D> sorted)
+        {
+            var chain = new List<Point2D>(sorted.Count);
+
+            foreach (var point in sorted)
+            {
+                while (chain.Count >= 2 &&
+                       Cross(chain[chain.Count - 2], chain[chain.Count - 1], point) <= HullTolerance)
+                {
+                    chain.RemoveAt(chain.Count - 1);
+                }
+
+                chain.Add(point);
+            }
+
+            return chain;
+        }
+
+        private static double Cross(Point2D o, Point2D a, Point2D b) =>
+            ((a.X - o.X) * (b.Y - o.Y)) - ((a.Y - o.Y) * (b.X - o.X));
 
         private static CantileverViewPieceKind RoleOf(CantileverMemberRole role)
         {
