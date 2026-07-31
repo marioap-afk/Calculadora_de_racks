@@ -529,6 +529,60 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void Tensor_LaVistaSECCIONDelAdaptadorExisteYNoEsUnaVistaDeLinea()
+        {
+            // Decision 14.7. El adaptador no se lee como una L en frontal ni en planta —su eje de corte corre
+            // dentro del plano del panel— y las vistas de la linea NO se deforman para disimularlo (14.6): el
+            // detalle vive en este configurador.
+            var r = StaTestRunner.Run(() =>
+            {
+                var brace = ResolvedLine().Line.Intervals.SelectMany(i => i.Braces).First();
+                var w = new CantileverBraceWindow(new CantileverBracingDesign(), Catalog(), brace);
+                Layout(w);
+
+                var frontal = w.CurrentPreviewPlan;
+
+                ((RadioButton)w.FindName("PreviewAdapterSectionRadio")).IsChecked = true;
+                var seccion = w.CurrentPreviewPlan;
+
+                return (frontal?.View, seccion?.View,
+                    seccion?.Curves.Count(c => c.Kind == CantileverViewPieceKind.ColdRolledAdapter && c.IsClosed) ?? -1,
+                    seccion?.Curves.Count(c => c.Kind == CantileverViewPieceKind.Punch) ?? -1);
+            });
+
+            Assert.Equal(CantileverViewKind.Frontal, r.Item1);
+            Assert.Equal(CantileverViewKind.AdapterSection, r.Item2);
+
+            // UN contorno cerrado —la seccion del angulo— y los DOS centros de agujero.
+            Assert.Equal(1, r.Item3);
+            Assert.Equal(2, r.Item4);
+        }
+
+        [Fact]
+        public void Tensor_LaSeccionDelAdaptadorTraeLaLDeVERDADYNoUnaAEscuadra()
+        {
+            var puntos = StaTestRunner.Run(() =>
+            {
+                var brace = ResolvedLine().Line.Intervals.SelectMany(i => i.Braces).First();
+                var w = new CantileverBraceWindow(new CantileverBracingDesign(), Catalog(), brace);
+                Layout(w);
+
+                ((RadioButton)w.FindName("PreviewAdapterSectionRadio")).IsChecked = true;
+
+                return w.CurrentPreviewPlan.Curves
+                    .Where(c => c.Kind == CantileverViewPieceKind.ColdRolledAdapter && c.IsClosed)
+                    .Select(c => c.Points.Count)
+                    .ToList();
+            });
+
+            Assert.Single(puntos);
+
+            // Una L a escuadra son SEIS vertices. Con filete de raiz y dos puntas redondeadas, teselada, trae
+            // bastantes mas: es la seccion del catalogo, no una L dibujada a mano.
+            Assert.True(puntos[0] > 6, "La seccion salio con " + puntos[0] + " puntos: es una L a escuadra.");
+        }
+
+        [Fact]
         public void Tensor_EstructuralSinSeccionSeRECHAZAYLoDICE()
         {
             var r = StaTestRunner.Run(() =>

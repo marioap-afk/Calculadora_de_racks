@@ -18,7 +18,22 @@ namespace RackCad.Application.Systems.Cantilever
         Lateral = 1,
 
         /// <summary>Looking down: the line runs across and the depth goes up the picture. Whole line.</summary>
-        Planta = 2
+        Planta = 2,
+
+        /// <summary>
+        /// La SECCIÓN de un adaptador de tensor: la cámara mira a lo largo de su eje de corte.
+        ///
+        /// <para><b>NO es una vista de la línea</b>, y por eso no tiene cámara en <see cref="Viewpoint"/>: su
+        /// dirección de vista depende del ADAPTADOR concreto —cada uno tiene su propio eje de corte, derivado
+        /// de su diagonal— así que no existe una cámara fija que la produzca. Se construye con
+        /// <see cref="BuildAdapterSection"/>, que la toma del marco de la pieza.</para>
+        ///
+        /// <para>Existe porque el adaptador <b>no se lee como una L en ninguna de las tres vistas de la
+        /// línea</b>: su eje de corte corre dentro del plano del panel, así que la frontal ve un ala de frente
+        /// y la otra de canto. El dueño decidió que <b>ninguna vista de la línea se deforma</b> para
+        /// disimularlo (decisión 14.6) y que el detalle vive aquí (decisión 14.7).</para>
+        /// </summary>
+        AdapterSection = 3
     }
 
     /// <summary>What a projected piece IS, so a consumer can put it on the right layer without guessing.</summary>
@@ -202,6 +217,16 @@ namespace RackCad.Application.Systems.Cantilever
                 case CantileverViewKind.Planta:
                     // Looking down, with +Y up the picture: the line runs across and the arms reach up it.
                     return SectionViewpoint.Custom(new Vector3D(0.0, 0.0, -1.0), Vector3D.UnitY);
+
+                case CantileverViewKind.AdapterSection:
+                    // Caso EXPLICITO, y no el default generico, porque el motivo es distinto: no es que
+                    // falte declarar una camara, es que esta vista NO PUEDE tener una fija. Su direccion es
+                    // el eje de corte del adaptador, que cada pieza deriva de su propia diagonal. Se
+                    // construye con BuildAdapterSection, que lo toma del marco.
+                    throw new ArgumentOutOfRangeException(
+                        nameof(view), view,
+                        "La seccion del adaptador no tiene camara fija: su direccion es el eje de corte de " +
+                        "la pieza. Usa BuildAdapterSection, que lo toma de su marco.");
 
                 default:
                     throw new ArgumentOutOfRangeException(
@@ -475,6 +500,97 @@ namespace RackCad.Application.Systems.Cantilever
             AddBrace(curves, brace, viewpoint, options, geometryFactory);
 
             return new CantileverViewPlan(view, -1, curves, Array.Empty<CantileverDiagnostic>());
+        }
+
+        /// <summary>
+        /// LA SECCIÓN DEL ADAPTADOR: la cámara mira a lo largo de su eje de corte y la L sale como L.
+        ///
+        /// <para><b>Por qué hace falta.</b> El adaptador no se lee como un ángulo en ninguna de las tres
+        /// vistas de la línea, y no es un defecto de dibujo: su eje de corte corre PERPENDICULAR a la
+        /// diagonal y DENTRO del plano del panel, que es la única orientación en la que el agujero del ala
+        /// del tensor tiene por eje la propia varilla. Ninguna de las tres cámaras mira por ese eje, así que
+        /// la frontal ve un ala de frente y la otra de canto. El dueño decidió que <b>ninguna vista de la
+        /// línea se deforma</b> para disimularlo, y que el detalle vive aquí.</para>
+        ///
+        /// <para><b>La cámara sale del MARCO de la pieza</b>, no de una constante: mira a lo largo de
+        /// <c>AlongCut</c> con <c>AlongRodLeg</c> como vertical. De ahí sale que el ala apoyada corra hacia la
+        /// derecha de la imagen y la del tensor hacia arriba — el ángulo leído como se lee un ángulo.</para>
+        ///
+        /// <para><b>El contorno es el MISMO del prisma.</b> Se proyecta el miembro con
+        /// <c>StructuralSectionPlanBuilder</c>, igual que en cualquier otra vista, así que el filete de raíz,
+        /// los radios de punta, el talón vivo y el espesor son los de la <c>StructuralSectionGeometry</c> del
+        /// catálogo. No hay una segunda L, ni una segunda fórmula de radios: si esta vista enseñara algo
+        /// distinto de lo que la línea dibuja, sería porque hay dos geometrías, que es justo lo que la ronda 4
+        /// vino a quitar.</para>
+        /// </summary>
+        /// <param name="adapterIndex">
+        /// Cuál de los dos adaptadores del tensor. 0 es el del extremo inferior. Los dos son espejos
+        /// físicos, así que se ven distintos y la vista lo enseña.
+        /// </param>
+        public static CantileverViewPlan BuildAdapterSection(
+            CantileverBracePlan brace,
+            int adapterIndex,
+            StructuralSectionGeometryFactory geometryFactory)
+        {
+            if (brace == null)
+            {
+                throw new ArgumentNullException(nameof(brace));
+            }
+
+            if (geometryFactory == null)
+            {
+                throw new ArgumentNullException(nameof(geometryFactory));
+            }
+
+            var diagnostics = new List<CantileverDiagnostic>();
+            var curves = new List<CantileverViewCurve>();
+
+            if (brace.Adapters == null || brace.Adapters.Count == 0)
+            {
+                // Un tensor ESTRUCTURAL no tiene adaptadores, y no es un error: es otro producto. Se dice en
+                // vez de devolver un plan vacio que el lector interpretaria como un fallo de dibujo.
+                diagnostics.Add(CantileverDiagnostic.Info(
+                    CantileverDiagnostics.BraceHasNoAdapterSection,
+                    "Este tensor no lleva adaptadores: su cuerpo es un perfil de catalogo que se atornilla " +
+                    "directo. La seccion del adaptador solo existe para los tensores cold rolled."));
+
+                return new CantileverViewPlan(
+                    CantileverViewKind.AdapterSection, -1, curves, diagnostics);
+            }
+
+            if (adapterIndex < 0 || adapterIndex >= brace.Adapters.Count)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(adapterIndex), adapterIndex,
+                    "El tensor tiene " + brace.Adapters.Count + " adaptadores.");
+            }
+
+            var adapter = brace.Adapters[adapterIndex];
+            var frame = adapter.Frame;
+
+            var viewpoint = SectionViewpoint.Custom(frame.AlongCut, frame.AlongRodLeg);
+            var options = new SectionRepresentationOptions { Viewpoint = viewpoint };
+            var zero = new Vector3D(0.0, 0.0, 0.0);
+
+            AddMember(
+                curves, adapter.Id, CantileverViewPieceKind.ColdRolledAdapter,
+                adapter.Member, zero, options, geometryFactory,
+                role: CantileverVisualRole.BraceAdapter);
+
+            // LOS DOS CENTROS DE AGUJERO, cada uno con SU eje. En esta camara los dos ejes son
+            // perpendiculares a la direccion de vista —uno corre por el ala apoyada y el otro por la del
+            // tensor— asi que los dos se ven de canto y se dibujan como su TRAZA, que es exactamente donde el
+            // material esta perforado. Dibujarlos como circulos pondria en el papel una boca que desde aqui
+            // no se ve.
+            AddHoleAt(
+                curves, adapter.Id.At(0), adapter.Origin, frame.AlongRodLeg,
+                adapter.SeparatorFacePunch.Diameter, viewpoint, CantileverVisualRole.BracePunch);
+
+            AddHoleAt(
+                curves, adapter.Id.At(1), adapter.RodHoleCentre, frame.AlongSeatedLeg,
+                adapter.RodHoleDiameter, viewpoint, CantileverVisualRole.BracePunch);
+
+            return new CantileverViewPlan(CantileverViewKind.AdapterSection, -1, curves, diagnostics);
         }
 
         private static IReadOnlyList<CantileverLineStationPlacement> OneStation(
@@ -815,37 +931,53 @@ namespace RackCad.Application.Systems.Cantilever
                 return; // a hole with no diameter is not a hole; the resolver already reported it
             }
 
-            var centre = punch.Centre + offset;
-            var alongAxis = centre + punch.Direction * punch.Diameter;
+            AddHoleAt(curves, id, punch.Centre + offset, punch.Direction, punch.Diameter, viewpoint, role);
+        }
 
+        /// <summary>
+        /// Un agujero dibujado por lo que la camara puede ver de el, dado su CENTRO y su EJE.
+        ///
+        /// Se extrajo de <see cref="AddPunch"/> en la ronda 4 de I-37D para que la seccion del adaptador
+        /// pudiera reutilizar la misma disciplina en vez de escribir una segunda. La diferencia entre las dos
+        /// llamadas es de donde salen el centro y el eje: un troquel los lleva en su plan, y los agujeros del
+        /// adaptador salen de su MARCO —el centro material, en el plano medio de su ala— que es otra cosa.
+        /// </summary>
+        private static void AddHoleAt(
+            ICollection<CantileverViewCurve> curves,
+            CantileverPieceId id,
+            Point3D centre,
+            Vector3D axis,
+            double diameter,
+            SectionViewpoint viewpoint,
+            CantileverVisualRole? role)
+        {
             var projectedCentre = viewpoint.Project(centre);
-            var projectedTip = viewpoint.Project(alongAxis);
+            var projectedTip = viewpoint.Project(centre + (axis * diameter));
 
             var dx = projectedTip.X - projectedCentre.X;
             var dy = projectedTip.Y - projectedCentre.Y;
-            var foreshortening = Math.Sqrt(dx * dx + dy * dy) / punch.Diameter;
+            var length = Math.Sqrt((dx * dx) + (dy * dy));
 
-            if (foreshortening <= CircleForeshorteningLimit)
+            if (length / diameter <= CircleForeshorteningLimit)
             {
                 curves.Add(new CantileverViewCurve(
-                    CantileverViewPieceKind.Punch, id, new[] { projectedCentre }, false, punch.Diameter, role));
+                    CantileverViewPieceKind.Punch, id, new[] { projectedCentre }, false, diameter, role));
                 return;
             }
 
             // Edge-on: the trace is PERPENDICULAR to the projected axis, so it reads as the mouth of the hole
             // and not as a piece of the axis itself.
-            var length = Math.Sqrt(dx * dx + dy * dy);
             var nx = -dy / length;
             var ny = dx / length;
-            var half = punch.Diameter / 2.0;
+            var half = diameter / 2.0;
 
             curves.Add(new CantileverViewCurve(
                 CantileverViewPieceKind.Punch,
                 id,
                 new[]
                 {
-                    new Point2D(projectedCentre.X - nx * half, projectedCentre.Y - ny * half),
-                    new Point2D(projectedCentre.X + nx * half, projectedCentre.Y + ny * half)
+                    new Point2D(projectedCentre.X - (nx * half), projectedCentre.Y - (ny * half)),
+                    new Point2D(projectedCentre.X + (nx * half), projectedCentre.Y + (ny * half))
                 },
                 false,
                 null,

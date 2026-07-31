@@ -400,5 +400,14 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>El primer tramo avanzado empieza por debajo del piso.</summary>
         public const string BracingAdvancedLayoutBelowFloor = "CANT_BRACING_ADVANCED_LAYOUT_BELOW_FLOOR";
+
+        /// <summary>
+        /// Se pidio la seccion del adaptador de un tensor que NO lleva adaptadores.
+        ///
+        /// Informativo y no bloqueante: un tensor de perfil estructural se atornilla directo y no tiene
+        /// adaptador que seccionar. No es un fallo de dibujo, es otro producto, y decirlo evita que un plan
+        /// vacio se lea como un error.
+        /// </summary>
+        public const string BraceHasNoAdapterSection = "CANT_BRACE_HAS_NO_ADAPTER_SECTION";
     }
 }

@@ -67,7 +67,15 @@
                                      FontSize="11" Margin="0,0,14,0" />
                         <RadioButton x:Name="PreviewPlantaRadio" Content="Planta" GroupName="ComponentView"
                                      Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
-                                     FontSize="11" />
+                                     FontSize="11" Margin="0,0,14,0" />
+                        <!-- El adaptador NO se lee como una L en frontal ni en planta, porque su eje de corte
+                             corre dentro del plano del panel y ninguna de esas dos cámaras mira por él. Las
+                             vistas de la línea NO se deforman para disimularlo (decisión 14.6): el detalle
+                             vive aquí (14.7). -->
+                        <RadioButton x:Name="PreviewAdapterSectionRadio" Content="Sección del adaptador"
+                                     GroupName="ComponentView" Checked="PreviewView_Changed"
+                                     Foreground="{DynamicResource ShellTextPrimaryBrush}" FontSize="11"
+                                     ToolTip="Mira a lo largo del eje de corte del adaptador y muestra su sección real L2×2×3/16: las dos alas, el filete de raíz, los radios de punta y el talón vivo." />
                     </StackPanel>
                     <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="{DynamicResource ShellPreviewBackgroundBrush}"
                             ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />

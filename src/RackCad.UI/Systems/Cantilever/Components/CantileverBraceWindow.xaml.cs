@@ -67,8 +67,27 @@ namespace RackCad.UI.Systems.Cantilever.Components
 
         internal CantileverBracingDesign Working => working;
 
-        internal CantileverViewPlan CurrentPreviewPlan =>
-            resolved == null ? null : CantileverViewPlanBuilder.BuildBrace(resolved, SelectedView(), geometry);
+        /// <summary>
+        /// El plan que la previa dibuja: una vista de la línea, o la SECCIÓN del adaptador.
+        ///
+        /// La sección no entra por <c>BuildBrace</c> y no es un descuido: su cámara no es fija, la pone el
+        /// eje de corte de la pieza. Pedirla por la puerta de las vistas de línea falla en cerrado a
+        /// propósito.
+        /// </summary>
+        internal CantileverViewPlan CurrentPreviewPlan
+        {
+            get
+            {
+                if (resolved == null)
+                {
+                    return null;
+                }
+
+                return PreviewAdapterSectionRadio.IsChecked == true
+                    ? CantileverViewPlanBuilder.BuildAdapterSection(resolved, 0, geometry)
+                    : CantileverViewPlanBuilder.BuildBrace(resolved, SelectedView(), geometry);
+            }
+        }
 
         private void LoadFromWorking()
         {
@@ -163,7 +182,11 @@ namespace RackCad.UI.Systems.Cantilever.Components
 
         private void RenderPreview() =>
             CantileverPreviewRenderer.Render(
-                PreviewCanvas, CurrentPreviewPlan, "Resuelve primero la línea para ver su tensor.");
+                PreviewCanvas,
+                CurrentPreviewPlan,
+                PreviewAdapterSectionRadio.IsChecked == true
+                    ? "Un tensor de perfil estructural se atornilla directo: no lleva adaptador que seccionar."
+                    : "Resuelve primero la línea para ver su tensor.");
 
         private void PreviewCanvas_SizeChanged(object sender, SizeChangedEventArgs e) => RenderPreview();
 
