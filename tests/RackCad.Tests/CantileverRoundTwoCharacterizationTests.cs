@@ -186,7 +186,15 @@ namespace RackCad.Tests
             // Anteriores: frontal D17564B6…, planta 7DA73B45…, frontal-doble 34E02F20…
             ["frontal"] = "C7A22C781A99209CF2C67188A5C6F9CD28DF6903CAE33D05CF90A3A1A35D28CC",
             // Movido en la ronda 3 con la pendiente por omision del brazo: su huella en planta se acorta.
-            ["planta"] = "632DD853DA564DA9580CFE90A5E2B276034000950633DB97B407DD6F2D564B22",
+            // SOLO ESTE se movio en la ronda 3, punto 5, y por decision del dueño: la planta nace SIN
+            // brazos ni tensores, porque en esta etapa se lee para colocar columnas y bases y esas dos
+            // familias la llenan de lineas que estorban justo esa lectura.
+            //
+            // Que se moviera SOLO este es la comprobacion de que el cambio no se salio de la planta: la
+            // frontal, la lateral y la frontal-doble estan intactas, y los dos del BOM tambien —apagar una
+            // familia en una vista no descuenta una pieza de la lista de materiales—.
+            // Anterior: planta 632DD853…
+            ["planta"] = "22DA23D78F01C4075CA2E0C992019D5DA646DB504A71CC012232EFB7002B3454",
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
             ["frontal-doble"] = "C7EE670CF2960D5F6A575C5D5F2C1E6371791259747600B9F56D6006B0FFCD82",
 
@@ -204,7 +212,11 @@ namespace RackCad.Tests
             // Anterior: C8D5A3C8…
             // Movido una CUARTA vez, con el offset de 1.0: el JSON persiste el propio numero.
             // Movido una QUINTA vez en la ronda 3: el JSON persiste la pendiente y el margen nuevos.
-            ["persistencia"] = "C80E01490F21E980FF8BCAF69E5271EE3CC043AC32D8228477B361BC42E10065"
+            // MOVIDO en la ronda 3, punto 5: el diseño gana `PlantaVisibility` con sus dos interruptores.
+            // Se persiste a proposito —un proyecto que se reabre tiene que enseñar la planta que su dueño
+            // dejo— y por eso el JSON cambia. No cambia ni el BOM ni la firma fisica de la linea.
+            // Anterior: C80E0149…
+            ["persistencia"] = "0A6DAE0676D8E9837E23ADABC24EC20E3B9EB395B5EB5009D6F4BF640D51B66E"
         };
 
         // ---- 1. Las resoluciones ------------------------------------------------------------------------

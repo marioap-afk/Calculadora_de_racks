@@ -564,14 +564,21 @@ namespace RackCad.Tests
                     CantileverVisualRoles.LayerPrefix, CantileverVisualRoles.LayerNameOf(role));
             }
 
-            // El cuerpo y el adaptador se leen APARTE, que es lo que el dueno pidio.
-            Assert.NotEqual(
-                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.Brace),
-                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.BraceAdapter));
+            // EL CONJUNTO ENTERO EN CIAN. El dueno reviso en la ronda 3 el reparto de la ronda anterior
+            // -cuerpo azul, adaptador cian, cartabon magenta-: un tensor es UNA pieza compuesta y sus tres
+            // partes se leen juntas. Lo que se conserva es la separacion por CAPA, que es lo que permite
+            // apagar solo los cartabones; lo que se retira es el contraste dentro del conjunto.
+            Assert.Equal(4, CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.Brace));
+            Assert.Equal(4, CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.BraceAdapter));
+            Assert.Equal(4, CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.BraceGusset));
 
-            Assert.NotEqual(
-                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.BraceAdapter),
-                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.BraceGusset));
+            // Y las tres capas siguen siendo distintas: mismo color no es misma capa.
+            Assert.Equal(3, new[]
+            {
+                CantileverVisualRole.Brace,
+                CantileverVisualRole.BraceAdapter,
+                CantileverVisualRole.BraceGusset
+            }.Select(CantileverVisualRoles.LayerNameOf).Distinct(StringComparer.Ordinal).Count());
 
             // Y los agujeros en blanco, como el resto de los agujeros del sistema.
             Assert.Equal(7, CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.BracePunch));

@@ -82,15 +82,25 @@ namespace RackCad.Tests
             Assert.Equal(1.0, positive.Member.Direction.Y, 9);
             Assert.Equal(-1.0, negative.Member.Direction.Y, 9);
 
-            // Se tocan en la columna y no se pisan: una acaba donde la otra empieza.
+            // ARRANCAN EN LAS DOS CARAS DE LA COLUMNA, no las dos en y = 0. Corregido en la ronda 3 de
+            // I-37D: hasta entonces las dos empezaban en la cara de conexion y la negativa se metia dentro
+            // de la columna a lo largo de todo su canto. Esta prueba lo permitia porque comprobaba el limite
+            // contra el CERO, que es justo esa cara, en vez de contra la columna.
             var pos = positive.Envelope();
             var neg = negative.Envelope();
 
-            Assert.True(pos.MinY >= -1e-9, "La base positiva invade el lado negativo.");
-            Assert.True(neg.MaxY <= 1e-9, "La base negativa invade el lado positivo.");
+            var column = c.Line.Stations[0].Station.ColumnBase.ColumnBottomPlate.Outline;
+            var columnMinY = column.Min(q => q.Y);
+            var columnMaxY = column.Max(q => q.Y);
 
-            // Y llegan igual de lejos: una gondola doble es simetrica.
-            Assert.Equal(pos.MaxY, -neg.MinY, 9);
+            Assert.True(columnMinY < -1e-9, "La columna tiene que ocupar canto hacia y negativa.");
+
+            Assert.True(pos.MinY >= columnMaxY - 1e-9, "La base positiva invade la columna.");
+            Assert.True(neg.MaxY <= columnMinY + 1e-9, "La base negativa invade la columna.");
+
+            // Y llegan igual de lejos MEDIDAS DESDE SU PROPIA CARA: una gondola doble es simetrica respecto
+            // del plano medio de la columna, no respecto de una de sus caras.
+            Assert.Equal(pos.MaxY - columnMaxY, columnMinY - neg.MinY, 9);
             Assert.Equal(positive.Member.GeometricLength, negative.Member.GeometricLength, 9);
         }
 

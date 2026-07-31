@@ -305,20 +305,39 @@ namespace RackCad.Application.Systems.Cantilever
             var width = CantileverLineDefaults.SeparatorColumnPlateWidth;
             var height = CantileverLineDefaults.SeparatorColumnPlateHeight;
 
-            var halfWidth = width / 2.0;
             var halfHeight = height / 2.0;
 
-            // The plate is centred on ITS HOLE, which is the datum. It therefore overlaps the column face by
-            // half the width minus the edge distance — with a 3 in plate and a 1.25 in edge distance, a
-            // quarter of an inch. That overlap is a consequence of the datum, not a number of its own, and
-            // moving the hole moves the plate.
+            // LA PLACA APOYA EN LA CARA DEL ALMA Y CRECE HACIA SU TRAMO. Corrección del dueño en la ronda 3.
+            //
+            // Antes se centraba en su agujero, que es el datum, y de ahí salía una placa de 3 in cuyo agujero
+            // está a 1.25 in de la cara: sobresalía 0.25 in por delante de la cara… del ALMA, que mide 0.435
+            // in de canto. Es decir, la cruzaba entera y asomaba 1.28 in por el otro lado, invadiendo el tramo
+            // vecino. Eso es lo que el dueño reportaba como «atraviesa el alma».
+            //
+            // El DATUM NO SE MUEVE: el agujero sigue a `edge` de la cara, y la longitud del separador se sigue
+            // midiendo entre los dos agujeros. Lo que cambia es de dónde cuelga el rectángulo — de la cara y
+            // no del agujero—, así que el agujero deja de estar centrado en la placa y queda a `edge` de su
+            // borde interior, que es exactamente lo que una distancia a la orilla significa.
+            var faceX = side == CantileverIntervalSide.Left
+                ? attachment.LeftColumnFaceX
+                : attachment.RightColumnFaceX;
+
+            // Hacia dónde crece: el tramo queda a +X de la columna izquierda y a −X de la derecha.
+            var inward = side == CantileverIntervalSide.Left ? 1.0 : -1.0;
+
+            var nearX = faceX;
+            var farX = faceX + (inward * width);
+
+            var minX = Math.Min(nearX, farX);
+            var maxX = Math.Max(nearX, farX);
+
             var faceY = attachment.BracingFaceY;
             var outline = new[]
             {
-                new Point3D(holeX - halfWidth, faceY, z - halfHeight),
-                new Point3D(holeX + halfWidth, faceY, z - halfHeight),
-                new Point3D(holeX + halfWidth, faceY, z + halfHeight),
-                new Point3D(holeX - halfWidth, faceY, z + halfHeight)
+                new Point3D(minX, faceY, z - halfHeight),
+                new Point3D(maxX, faceY, z - halfHeight),
+                new Point3D(maxX, faceY, z + halfHeight),
+                new Point3D(minX, faceY, z + halfHeight)
             };
 
             var normal = new Vector3D(0.0, attachment.OutwardSign, 0.0);

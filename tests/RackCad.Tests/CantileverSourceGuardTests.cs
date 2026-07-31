@@ -641,14 +641,26 @@ namespace RackCad.Tests
 
             Assert.True(station.Count >= 5, "Se esperaban al menos cinco archivos de estacion.");
 
-            var literalPitch = new Regex(@"(^|[^\w.])(2|4)\s*\.\s*0\s*;", RegexOptions.Compiled);
+            // El literal tiene que estar DECLARADO —asignado o devuelto—, no operado. Se afinó en la ronda
+            // 3 de I-37D: la expresión anterior sólo miraba el carácter anterior, así que también cazaba
+            // `(min + max) / 2.0;`, que es un punto medio y no un pitch. Habría empujado a escribir la mitad
+            // de una suma de forma retorcida para esquivar una guarda, que es como una guarda buena se
+            // convierte en una molestia que alguien acaba borrando.
+            //
+            // Lo que protege —que nadie DECLARE un espaciado propio— sigue intacto, y los seis casos de abajo
+            // lo fijan en las dos direcciones.
+            var literalPitch = new Regex(
+                @"([^=!<>+\-*/%]=|\breturn)\s*(2|4)\s*\.\s*0\s*;", RegexOptions.Compiled);
 
             // SELF-VERIFIED before it is trusted: the first version of a guard like this one shipped with its
             // word boundaries turned into control characters and matched nothing at all.
             Assert.Matches(literalPitch, "var pitch = 4.0;");
             Assert.Matches(literalPitch, "double p = 2.0;");
             Assert.DoesNotMatch(literalPitch, "var factor = 1.0 / 3.0;");
+            Assert.Matches(literalPitch, "return 2.0;");
             Assert.DoesNotMatch(literalPitch, "Math.Round(value, 4);");
+            Assert.DoesNotMatch(literalPitch, "var mid = (min + max) / 2.0;");
+            Assert.DoesNotMatch(literalPitch, "var twice = offset * 2.0;");
 
             foreach (var file in station)
             {

@@ -28,7 +28,14 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>A structural member cantilevered off a column.</summary>
         Arm = 2,
 
-        /// <summary>Flat plate of a piece that is NOT the column–base: montaje o extremo de brazo, separador.</summary>
+        /// <summary>
+        /// Placa de un BRAZO: la de montaje contra la columna y la de su extremo libre.
+        ///
+        /// Dejó de significar «cualquier placa que no sea del conjunto columna–base» en la ronda 3: la que une
+        /// la columna con un separador salió de aquí a <see cref="ColumnSeparatorPlate"/> porque el dueño la
+        /// quiere leer con la columna. Lo que queda es el conjunto del brazo, y por eso comparte color con él
+        /// sin confundirse: el perfil es azul y sus placas moradas.
+        /// </summary>
         Plate = 3,
 
         /// <summary>A stiffening triangle. Read apart from a plate because it is welded, not bolted.</summary>
@@ -73,7 +80,17 @@ namespace RackCad.Application.Systems.Cantilever
         /// planos distintos y se apagan por separado; comparten el blanco porque los dos son ausencia de
         /// acero.
         /// </summary>
-        BracePunch = 12
+        BracePunch = 12,
+
+        /// <summary>
+        /// La placa que une una columna con un separador.
+        ///
+        /// Aparte de <see cref="Plate"/> por decisión del dueño en la ronda 3: la quiere leer <b>del color de
+        /// la columna</b>, porque es lo que le dice de un vistazo a qué columna pertenece un separador que
+        /// cruza el dibujo entero. Y aparte de <see cref="ColumnBasePlate"/> porque no pertenece al conjunto
+        /// columna–base: comparte su color, no su capa, así que se puede apagar sola.
+        /// </summary>
+        ColumnSeparatorPlate = 13
     }
 
     /// <summary>
@@ -152,8 +169,11 @@ namespace RackCad.Application.Systems.Cantilever
 
                 case CantileverPlateKind.ArmMounting:
                 case CantileverPlateKind.ArmEnd:
-                case CantileverPlateKind.SeparatorColumn:
                     return CantileverVisualRole.Plate;
+
+                // Salió de `Plate` en la ronda 3. No es una placa de brazo y el dueño la lee con la columna.
+                case CantileverPlateKind.SeparatorColumn:
+                    return CantileverVisualRole.ColumnSeparatorPlate;
 
                 default:
                     throw new ArgumentOutOfRangeException(
@@ -182,6 +202,9 @@ namespace RackCad.Application.Systems.Cantilever
 
                 case CantileverVisualRole.ColumnBasePlate:
                     return LayerPrefix + "PLACA_COLUMNA_BASE";
+
+                case CantileverVisualRole.ColumnSeparatorPlate:
+                    return LayerPrefix + "PLACA_COLUMNA_SEPARADOR";
 
                 case CantileverVisualRole.Gusset:
                     return LayerPrefix + "CARTABON";
@@ -229,37 +252,38 @@ namespace RackCad.Application.Systems.Cantilever
         {
             switch (role)
             {
-                // ---- El conjunto COLUMNA-BASE, entero en ROJO -------------------------------------------
-                // Decision del dueño: «todos los elementos de la columna/base deben verse rojos». Los cuatro
+                // ---- La COLUMNA y todo lo que la acompaña, entero en ROJO -------------------------------
+                // Decisión del dueño, ampliada en la ronda 3 con la placa que recibe un separador. Los cinco
                 // roles siguen SEPARADOS —cada uno con su capa— así que se pueden apagar por separado; lo que
                 // comparten es el color, que es lo que hace que el conjunto se lea como un conjunto.
                 case CantileverVisualRole.Column:
                 case CantileverVisualRole.Base:
                 case CantileverVisualRole.ColumnBasePlate:
                 case CantileverVisualRole.Gusset:
+                case CantileverVisualRole.ColumnSeparatorPlate:
                     return 1; // rojo
 
+                // ---- El BRAZO: el perfil y sus placas ----------------------------------------------------
+                // Dos colores y no uno: el dueño pidió leer el perfil aparte de la ménsula que lo cuelga,
+                // que es justo la pareja que un lector compara cuando revisa un nivel.
                 case CantileverVisualRole.Arm:
-                    return 2; // amarillo
+                    return 5; // azul
 
                 case CantileverVisualRole.Plate:
-                    return 254; // gris claro: la de montaje o la de un separador, secundaria a lo que une
+                    return 6; // morado
 
                 case CantileverVisualRole.Separator:
                     return 30; // naranja
 
-                // ---- El arriostramiento -------------------------------------------------------------------
-                // Azul para el cuerpo y un contrastante para el adaptador, que es lo que el dueño pidió en
-                // esta ronda: lo que se busca en un panel arriostrado es distinguir la varilla de la pieza
-                // fabricada que la remata, y el cartabón de las dos.
+                // ---- El arriostramiento, ENTERO en cian --------------------------------------------------
+                // El dueño revisó en la ronda 3 el reparto de la ronda anterior —cuerpo azul, adaptador cian,
+                // cartabón magenta—: un tensor es UNA pieza compuesta y sus tres partes se leen juntas, igual
+                // que la columna y su base. Las capas siguen separadas, así que apagar sólo los cartabones
+                // sigue siendo posible; lo que se retira es el contraste DENTRO del conjunto.
                 case CantileverVisualRole.Brace:
-                    return 5; // azul
-
                 case CantileverVisualRole.BraceAdapter:
-                    return 4; // cian: contrasta con el azul del cuerpo sin salirse de la familia
-
                 case CantileverVisualRole.BraceGusset:
-                    return 6; // magenta: color propio, para que no se confunda con el ala que refuerza
+                    return 4; // cian
 
                 // Blanco por decisión del dueño, y es la elección física correcta: un troquel NO es acero, es
                 // su ausencia, así que leerlo en el color opuesto al del acero es lo que un lector necesita.

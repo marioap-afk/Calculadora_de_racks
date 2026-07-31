@@ -243,18 +243,37 @@ namespace RackCad.Tests
             Assert.Equal(positive.Member.GeometricLength, negative.Member.GeometricLength, 12);
             Assert.Equal(positive.RearPlate.Thickness, negative.RearPlate.Thickness, 12);
 
-            // Mirrored in Y, identical in X and Z.
-            Assert.Equal(positive.Member.End.Y, -negative.Member.End.Y, 12);
+            // ESPEJADAS SOBRE EL PLANO MEDIO DE LA COLUMNA, no sobre y = 0. Corrección de la ronda 3 de
+            // I-37D: y = 0 es la CARA de conexión y la columna entera vive en y ≤ 0, así que espejar ahí
+            // ponía la base negativa encima de la columna. La prueba decía «simétricas» y lo comprobaba
+            // contra el plano equivocado, así que pasaba con la geometría mal puesta.
+            var plane = CantileverStationBaseSideResolver.MirrorPlaneY(station.ColumnBase.ColumnBottomPlate);
+
+            Assert.True(plane < 0.0, "El plano medio de la columna tiene que caer DENTRO de ella, en y < 0.");
+
+            static double Mirror(double y, double p) => (2.0 * p) - y;
+
+            Assert.Equal(Mirror(positive.Member.End.Y, plane), negative.Member.End.Y, 12);
             Assert.Equal(positive.Member.End.X, negative.Member.End.X, 12);
             Assert.Equal(positive.Member.End.Z, negative.Member.End.Z, 12);
 
             var pe = positive.Envelope();
             var ne = negative.Envelope();
 
-            Assert.Equal(pe.MaxY, -ne.MinY, 9);
-            Assert.Equal(pe.MinY, -ne.MaxY, 9);
+            Assert.Equal(Mirror(pe.MaxY, plane), ne.MinY, 9);
+            Assert.Equal(Mirror(pe.MinY, plane), ne.MaxY, 9);
             Assert.Equal(pe.MinZ, ne.MinZ, 9);
             Assert.Equal(pe.MaxZ, ne.MaxZ, 9);
+
+            // Y LO QUE DE VERDAD IMPORTA: las dos bases no se meten dentro de la columna. Era esto lo que
+            // fallaba y ninguna prueba miraba — el dueño lo vio en la lateral, con la columna dibujada dentro
+            // de la base.
+            var column = station.ColumnBase.ColumnBottomPlate.Outline;
+            var columnMinY = column.Min(q => q.Y);
+            var columnMaxY = column.Max(q => q.Y);
+
+            Assert.True(pe.MinY >= columnMaxY - 1e-9, "La base positiva invade la columna.");
+            Assert.True(ne.MaxY <= columnMinY + 1e-9, "La base negativa invade la columna.");
         }
 
         [Fact]
@@ -271,9 +290,20 @@ namespace RackCad.Tests
                 negative.RearPlatePunches.Select(p => p.Datum).ToList());
 
             // The CENTRES differ, because the plates are on opposite faces. That is the point of the datum.
+            // Se espejan sobre el plano MEDIO de la columna desde la ronda 3, no sobre y = 0, y con eso el
+            // tornillo pasa de verdad por las dos placas Y por la columna en medio, que es lo que el
+            // comentario de arriba venía prometiendo desde el principio.
+            var plane = CantileverStationBaseSideResolver.MirrorPlaneY(station.ColumnBase.ColumnBottomPlate);
+
             Assert.All(
                 positive.RearPlatePunches.Zip(negative.RearPlatePunches, (a, b) => (a, b)),
-                pair => Assert.Equal(pair.a.Centre.Y, -pair.b.Centre.Y, 12));
+                pair => Assert.Equal((2.0 * plane) - pair.a.Centre.Y, pair.b.Centre.Y, 12));
+
+            // Y las dos caras que atraviesa son las DOS de la columna, con ella en medio.
+            var column = station.ColumnBase.ColumnBottomPlate.Outline;
+
+            Assert.Equal(column.Max(q => q.Y), positive.RearPlate.Outline.Max(q => q.Y), 9);
+            Assert.Equal(column.Min(q => q.Y), negative.RearPlate.Outline.Min(q => q.Y), 9);
         }
 
         [Fact]

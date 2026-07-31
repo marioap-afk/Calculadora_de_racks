@@ -86,8 +86,13 @@ namespace RackCad.Application.Systems.Cantilever
     /// THE authority that turns the base half of a resolved I-37A sub-assembly into one SIDE of a station.
     ///
     /// The positive side is I-37A's own geometry, re-owned. The negative side is that same geometry
-    /// MIRRORED about the column's central plane <c>y = 0</c> — not a second resolve, and not a copy of
-    /// I-37A's formulas.
+    /// MIRRORED about the column's MID-DEPTH plane — not a second resolve, and not a copy of I-37A's
+    /// formulas.
+    ///
+    /// <para>El plano era <c>y = 0</c> hasta la ronda 3 de I-37D, y estaba mal: <c>y = 0</c> es la CARA de
+    /// conexión de la columna y no su plano medio, así que la base negativa aterrizaba encima de la columna.
+    /// El plano se MIDE ahora de la huella de la propia columna —la placa inferior, construida con
+    /// <c>columnMinY..columnMaxY</c>— y no de una cota tabulada, que es lo que ADR-0024 D5 exige.</para>
     ///
     /// Why a mirror and not a second <c>Resolve</c>: resolving twice would produce a second column and a
     /// second column bottom plate, which then have to be discarded by hand. A discarded piece is a piece
@@ -124,6 +129,7 @@ namespace RackCad.Application.Systems.Cantilever
             }
 
             var owner = CantileverPieceTokens.StationBaseOwner(side);
+            var planeY = MirrorPlaneY(assembly);
 
             switch (side)
             {
@@ -141,11 +147,11 @@ namespace RackCad.Application.Systems.Cantilever
                 case CantileverArmSide.NegativeY:
                     return new CantileverStationBaseSide(
                         side,
-                        Mirror(assembly.Base, owner, CantileverPieceTokens.Base),
-                        Mirror(assembly.BaseFrontPlate, owner, CantileverPieceTokens.BaseFrontPlate),
-                        Mirror(assembly.BaseRearPlate, owner, CantileverPieceTokens.BaseRearPlate),
-                        Mirror(assembly.Gusset, owner, CantileverPieceTokens.Gusset),
-                        Mirror(assembly.RearPlatePunches, owner, CantileverPieceTokens.RearPlatePunch));
+                        Mirror(assembly.Base, owner, CantileverPieceTokens.Base, planeY),
+                        Mirror(assembly.BaseFrontPlate, owner, CantileverPieceTokens.BaseFrontPlate, planeY),
+                        Mirror(assembly.BaseRearPlate, owner, CantileverPieceTokens.BaseRearPlate, planeY),
+                        Mirror(assembly.Gusset, owner, CantileverPieceTokens.Gusset, planeY),
+                        Mirror(assembly.RearPlatePunches, owner, CantileverPieceTokens.RearPlatePunch, planeY));
 
                 default:
                     throw new ArgumentOutOfRangeException(
@@ -157,10 +163,49 @@ namespace RackCad.Application.Systems.Cantilever
         // ---- the mirror -----------------------------------------------------------------------------------
 
         /// <summary>
-        /// Reflects a point through the column's central plane. DELEGATES to the frame authority, so there is
-        /// one reflection in the system and not two that could disagree about which plane.
+        /// El plano medio de la columna, MEDIDO de su propia huella.
+        ///
+        /// La placa inferior se construye con el rango <c>columnMinY..columnMaxY</c> del contorno resuelto de
+        /// la columna, así que su punto medio en Y ES el plano medio de la columna. Leerlo de ahí en vez de
+        /// tomar <c>d</c> del catálogo es lo que ADR-0024 D5 pide: la geometría manda sobre la tabla, y una
+        /// columna girada o espejada reporta el plano que de verdad ocupa.
         /// </summary>
-        public static Point3D MirrorY(Point3D p) => CantileverColumnBaseFrameResolver.Reflect(p);
+        public static double MirrorPlaneY(CantileverColumnBaseAssembly assembly)
+        {
+            if (assembly == null)
+            {
+                throw new ArgumentNullException(nameof(assembly));
+            }
+
+            return MirrorPlaneY(assembly.ColumnBottomPlate);
+        }
+
+        /// <summary>
+        /// El mismo plano, medido de la placa inferior suelta.
+        ///
+        /// La sobrecarga existe porque la estación RE-POSEE esa placa con otro id y ya no tiene a mano el
+        /// subensamble de I-37A del que salió. Las dos leen el MISMO contorno, así que no hay dos reglas: hay
+        /// una regla y dos formas de llegar a su entrada.
+        /// </summary>
+        public static double MirrorPlaneY(CantileverPlatePlan columnBottomPlate)
+        {
+            if (columnBottomPlate == null)
+            {
+                throw new ArgumentNullException(nameof(columnBottomPlate));
+            }
+
+            var outline = columnBottomPlate.Outline;
+            var span = outline.Min(p => p.Y) + outline.Max(p => p.Y);
+
+            return span / 2.0;
+        }
+
+        /// <summary>
+        /// Reflects a point through the column's mid-depth plane. DELEGATES to the frame authority, so there
+        /// is one reflection in the system and not two that could disagree about which plane.
+        /// </summary>
+        public static Point3D MirrorY(Point3D p, double planeY) =>
+            CantileverColumnBaseFrameResolver.Reflect(p, planeY);
 
         /// <summary>Reflects a direction through the same plane. Also delegated.</summary>
         public static Vector3D MirrorY(Vector3D v) => CantileverColumnBaseFrameResolver.Reflect(v);
@@ -171,7 +216,7 @@ namespace RackCad.Application.Systems.Cantilever
                 CantileverPieceId.Create(owner, token), member.Role, owner, member.Placement);
 
         private static CantileverStructuralMemberPlan Mirror(
-            CantileverStructuralMemberPlan member, string owner, string token)
+            CantileverStructuralMemberPlan member, string owner, string token, double planeY)
         {
             var placement = member.Placement;
             var frame = placement.Frame;
@@ -181,7 +226,7 @@ namespace RackCad.Application.Systems.Cantilever
             // frame with the flipped Mirrored flag — the reflection is improper, so the handedness has to
             // live in the section instance. Taking the frame and forgetting the flag would silently
             // un-mirror an asymmetric section.
-            var mirrored = CantileverColumnBaseFrameResolver.MirrorAboutCentralPlane(frame);
+            var mirrored = CantileverColumnBaseFrameResolver.MirrorAboutCentralPlane(frame, planeY);
 
             return CantileverStructuralMemberPlan.Create(
                 CantileverPieceId.Create(owner, token),
@@ -204,18 +249,23 @@ namespace RackCad.Application.Systems.Cantilever
                 plate.NearOffset,
                 plate.Outline);
 
-        private static CantileverPlatePlan Mirror(CantileverPlatePlan plate, string owner, string token) =>
+        private static CantileverPlatePlan Mirror(
+            CantileverPlatePlan plate, string owner, string token, double planeY) =>
             CantileverPlatePlan.Create(
                 CantileverPieceId.Create(owner, token),
                 plate.Kind,
                 plate.Thickness,
                 MirrorY(plate.Normal),
-                // NearOffset is UNCHANGED, and that is not an oversight. It is measured ALONG the normal, and
-                // the normal flipped too: a plate spanning y ∈ [c, c+t] with normal +Y mirrors to
-                // y ∈ [−c−t, −c] with normal −Y, which is offsets [c, c+t] along that new normal. Negating
-                // the offset as well would move the plate by twice its distance from the plane.
-                plate.NearOffset,
-                plate.Outline.Select(MirrorY).ToList());
+
+                // El offset se mide A LO LARGO del normal, y el normal también se volteó. Con el plano en
+                // y = p, una cara en y = c —normal +Y, offset c— va a parar a y = 2p − c con normal −Y, y un
+                // offset o sobre ese normal pone la cara en y = −o: luego o = c − 2p.
+                //
+                // Con el plano viejo en cero eso se reducía a dejar el offset intacto, que es lo que hacía y
+                // por eso funcionaba mientras el plano fue cero. Con el plano en el medio de la columna hay
+                // que restar de verdad, o la cara de referencia y el contorno dirían cosas distintas.
+                plate.NearOffset - (2.0 * planeY),
+                plate.Outline.Select(q => MirrorY(q, planeY)).ToList());
 
         private static CantileverGussetPlan ReOwn(CantileverGussetPlan gusset, string owner, string token) =>
             CantileverGussetPlan.Create(
@@ -229,7 +279,8 @@ namespace RackCad.Application.Systems.Cantilever
                 gusset.VerticalLeg,
                 gusset.HorizontalLeg);
 
-        private static CantileverGussetPlan Mirror(CantileverGussetPlan gusset, string owner, string token) =>
+        private static CantileverGussetPlan Mirror(
+            CantileverGussetPlan gusset, string owner, string token, double planeY) =>
             CantileverGussetPlan.Create(
                 CantileverPieceId.Create(owner, token),
                 gusset.Thickness,
@@ -238,9 +289,9 @@ namespace RackCad.Application.Systems.Cantilever
                 // real geometry, not an inconsistency.
                 gusset.Normal,
                 gusset.NearOffset,
-                MirrorY(gusset.Vertices[0]),
-                MirrorY(gusset.Vertices[1]),
-                MirrorY(gusset.Vertices[2]),
+                MirrorY(gusset.Vertices[0], planeY),
+                MirrorY(gusset.Vertices[1], planeY),
+                MirrorY(gusset.Vertices[2], planeY),
                 gusset.VerticalLeg,
                 gusset.HorizontalLeg);
 
@@ -255,15 +306,19 @@ namespace RackCad.Application.Systems.Cantilever
         }
 
         private static IReadOnlyList<CantileverPunchPlan> Mirror(
-            IReadOnlyList<CantileverPunchPlan> punches, string owner, string token)
+            IReadOnlyList<CantileverPunchPlan> punches, string owner, string token, double planeY)
         {
             var id = CantileverPieceId.Create(owner, token);
 
             // The DATUM is carried across untouched. A punch along Y has its datum in (x, z), and reflecting
-            // about y = 0 moves neither — so the mirrored hole and its original share a datum, which is
-            // exactly right: in a double station one bolt goes through both rear plates and the column.
+            // about ANY plane normal to Y moves neither, así que el agujero espejado y el original comparten
+            // datum: en una estación doble un mismo tornillo pasa por las dos placas traseras y por la
+            // columna. Con el plano corregido eso pasa a ser cierto FÍSICAMENTE y no sólo en el datum — las
+            // dos placas quedan en las dos caras de la columna, con la columna en medio, en vez de las dos
+            // pegadas a la misma cara.
             return punches
-                .Select((p, i) => new CantileverPunchPlan(id.At(i), p.Surface, MirrorY(p.Centre), p.Datum))
+                .Select((p, i) => new CantileverPunchPlan(
+                    id.At(i), p.Surface, MirrorY(p.Centre, planeY), p.Datum))
                 .ToList();
         }
     }

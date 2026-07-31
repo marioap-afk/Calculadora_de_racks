@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using RackCad.Application.Geometry;
 using RackCad.Application.StructuralSections.Geometry;
+using RackCad.Domain.Systems.Cantilever;
 
 namespace RackCad.Application.Systems.Cantilever
 {
@@ -223,7 +224,8 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverLineAssembly line,
             CantileverViewKind view,
             StructuralSectionGeometryFactory geometryFactory,
-            int stationIndex = 0)
+            int stationIndex = 0,
+            CantileverPlantaVisibilityDesign plantaVisibility = null)
         {
             if (line == null)
             {
@@ -255,9 +257,21 @@ namespace RackCad.Application.Systems.Cantilever
                 ? OneStation(line, stationIndex, diagnostics)
                 : line.Stations;
 
+            // LA PLANTA PUEDE OMITIR BRAZOS Y TENSORES, y nace omitiéndolos. Decisión del dueño en la ronda 3:
+            // en esta etapa la planta se lee para colocar columnas y bases, y las dos familias que se apagan
+            // la llenan de líneas que estorban justo esa lectura.
+            //
+            // La regla se aplica AQUÍ y sólo aquí: la frontal y la lateral no la consultan, así que no hay
+            // forma de que una vista que el dueño no pidió tocar se quede sin piezas. Y un `null` significa
+            // apagados, que es el valor que él pidió: un llamador que no sepa de esto obtiene el defecto
+            // correcto en vez del contrario.
+            var visibility = view == CantileverViewKind.Planta
+                ? plantaVisibility ?? new CantileverPlantaVisibilityDesign()
+                : CantileverPlantaVisibilityDesign.ShowingEverything;
+
             foreach (var placement in stations)
             {
-                AddStation(curves, placement, viewpoint, options, geometryFactory, view);
+                AddStation(curves, placement, viewpoint, options, geometryFactory, view, visibility);
             }
 
             // A lateral looks at ONE station, so the bracing between stations is not part of it: what it would
@@ -267,7 +281,7 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 foreach (var interval in line.Intervals)
                 {
-                    AddInterval(curves, interval, viewpoint, options, geometryFactory);
+                    AddInterval(curves, interval, viewpoint, options, geometryFactory, visibility);
                 }
             }
 
@@ -279,7 +293,8 @@ namespace RackCad.Application.Systems.Cantilever
         public static IReadOnlyList<CantileverViewPlan> BuildInitialSet(
             CantileverLineAssembly line,
             StructuralSectionGeometryFactory geometryFactory,
-            int lateralStationIndex = 0)
+            int lateralStationIndex = 0,
+            CantileverPlantaVisibilityDesign plantaVisibility = null)
         {
             // ONE frontal, ONE planta and ONE lateral. Not N laterals: a line of twelve stations would drop
             // twelve blocks nobody asked for, and the lateral of a station is reachable by changing the index
@@ -287,7 +302,7 @@ namespace RackCad.Application.Systems.Cantilever
             return new[]
             {
                 Build(line, CantileverViewKind.Frontal, geometryFactory),
-                Build(line, CantileverViewKind.Planta, geometryFactory),
+                Build(line, CantileverViewKind.Planta, geometryFactory, 0, plantaVisibility),
                 Build(line, CantileverViewKind.Lateral, geometryFactory, lateralStationIndex)
             };
         }
@@ -483,13 +498,22 @@ namespace RackCad.Application.Systems.Cantilever
             SectionViewpoint viewpoint,
             SectionRepresentationOptions options,
             StructuralSectionGeometryFactory geometryFactory,
-            CantileverViewKind view)
+            CantileverViewKind view,
+            CantileverPlantaVisibilityDesign visibility)
         {
             var station = placement.Station;
             var offset = placement.Offset;
 
             foreach (var member in station.Members)
             {
+                // Apagar «los brazos» apaga el CONJUNTO del brazo —su perfil, sus dos placas y los troqueles
+                // de ellas—, no sólo el perfil. Dejar las placas colgadas de una columna sin brazo dibujaría
+                // una pieza que no sujeta nada, que es peor que no dibujar ninguna.
+                if (member.Role == CantileverMemberRole.Arm && !visibility.ShowArms)
+                {
+                    continue;
+                }
+
                 // Solo el BRAZO se aplana, y solo en la frontal: ver WithoutRise. Aplanar la columna o la base
                 // no querria decir nada —no tienen pendiente— y aplanar el brazo en la lateral borraria justo
                 // la magnitud que esa vista existe para mostrar.
@@ -502,6 +526,11 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var plate in station.Plates)
             {
+                if (IsArmPlate(plate.Kind) && !visibility.ShowArms)
+                {
+                    continue;
+                }
+
                 AddFlatPiece(
                     curves, CantileverViewPieceKind.Plate, placement.ScopedId(plate.Id),
                     plate.Outline, plate.Normal, plate.Thickness, offset, viewpoint,
@@ -521,16 +550,26 @@ namespace RackCad.Application.Systems.Cantilever
             // diameter comes from the PunchPlan the station already resolved.
             foreach (var punch in station.Punches)
             {
+                if (punch.Surface == CantileverPunchSurface.ArmMountingPlate && !visibility.ShowArms)
+                {
+                    continue;
+                }
+
                 AddPunch(curves, placement.ScopedId(punch.Id), punch, offset, viewpoint);
             }
         }
+
+        /// <summary>Si una placa pertenece al conjunto de un BRAZO.</summary>
+        private static bool IsArmPlate(CantileverPlateKind kind) =>
+            kind == CantileverPlateKind.ArmMounting || kind == CantileverPlateKind.ArmEnd;
 
         private static void AddInterval(
             ICollection<CantileverViewCurve> curves,
             CantileverIntervalAssembly interval,
             SectionViewpoint viewpoint,
             SectionRepresentationOptions options,
-            StructuralSectionGeometryFactory geometryFactory)
+            StructuralSectionGeometryFactory geometryFactory,
+            CantileverPlantaVisibilityDesign visibility)
         {
             var zero = new Vector3D(0.0, 0.0, 0.0);
 
@@ -556,6 +595,13 @@ namespace RackCad.Application.Systems.Cantilever
                 {
                     AddPunch(curves, punch.Id, punch, zero, viewpoint);
                 }
+            }
+
+            // El SEPARADOR y su placa NO son tensores y se quedan: son lo que ata dos estaciones, que es
+            // justo lo que una planta de colocación necesita ver. Lo que se apaga son las diagonales.
+            if (!visibility.ShowBraces)
+            {
+                return;
             }
 
             foreach (var brace in interval.Braces)

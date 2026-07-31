@@ -1,6 +1,7 @@
 using System.Linq;
 using RackCad.Application.Catalogs;
 using RackCad.Application.StructuralSections;
+using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Application.Systems.Cantilever;
 using RackCad.Domain.Systems.Cantilever;
 using Xunit;
@@ -76,10 +77,34 @@ namespace RackCad.Tests
         [Fact]
         public void LaPlantaTambienLosDibuja()
         {
+            // La planta nace SIN brazos ni tensores desde la ronda 3 de I-37D, asi que le faltan los agujeros
+            // de esas dos familias y NO los de nadie mas. Se comprueban las dos cosas: cuantos faltan y que
+            // encendiendolos vuelven exactamente todos.
             var c = Build();
             var planta = View(c, CantileverViewKind.Planta);
 
-            Assert.Equal(ResolvedHolesOfTheWholeLine(c.Line), planta.Of(CantileverViewPieceKind.Punch).Count());
+            var deBrazo = c.Line.Stations
+                .SelectMany(s => s.Station.Punches)
+                .Count(x => x.Surface == CantileverPunchSurface.ArmMountingPlate);
+
+            var deTensor = c.Line.Intervals
+                .SelectMany(i => i.Braces)
+                .SelectMany(b => b.Adapters)
+                .Count();
+
+            Assert.True(deBrazo > 0 && deTensor > 0, "El caso de referencia tiene que traer de las dos.");
+
+            Assert.Equal(
+                ResolvedHolesOfTheWholeLine(c.Line) - deBrazo - deTensor,
+                planta.Of(CantileverViewPieceKind.Punch).Count());
+
+            var completa = CantileverViewPlanBuilder.Build(
+                c.Line, CantileverViewKind.Planta, new StructuralSectionGeometryFactory(Catalog), 0,
+                CantileverPlantaVisibilityDesign.ShowingEverything);
+
+            Assert.Equal(
+                ResolvedHolesOfTheWholeLine(c.Line),
+                completa.Of(CantileverViewPieceKind.Punch).Count());
         }
 
         [Fact]

@@ -121,7 +121,8 @@ namespace RackCad.Application.Systems.Cantilever
                 snapshot,
                 line,
                 CantileverLineBomBuilder.Build(line),
-                CantileverViewPlanBuilder.BuildInitialSet(line, GeometryFactory, index));
+                CantileverViewPlanBuilder.BuildInitialSet(
+                    line, GeometryFactory, index, snapshot.PlantaVisibility));
         }
 
         /// <summary>
@@ -131,14 +132,21 @@ namespace RackCad.Application.Systems.Cantilever
         /// is the model, and a view is a projection of it.
         /// </summary>
         public CantileverViewPlan View(
-            CantileverLineAssembly line, CantileverViewKind view, int stationIndex = 0)
+            CantileverLineAssembly line,
+            CantileverViewKind view,
+            int stationIndex = 0,
+            CantileverPlantaVisibilityDesign plantaVisibility = null)
         {
             if (line == null)
             {
                 throw new ArgumentNullException(nameof(line));
             }
 
-            return CantileverViewPlanBuilder.Build(line, view, GeometryFactory, stationIndex);
+            // La visibilidad viaja hasta aquí porque esta sobrecarga la usa la previa al CAMBIAR de vista sin
+            // volver a resolver. Sin ella, mirar la planta desde la previa y mirarla en el dibujo darían dos
+            // plantas distintas, que es exactamente la separación que la ronda 2 costó cerrar.
+            return CantileverViewPlanBuilder.Build(
+                line, view, GeometryFactory, stationIndex, plantaVisibility);
         }
 
         /// <summary>The catalogue sections a family offers, ordered as the catalogue holds them. For a picker.</summary>

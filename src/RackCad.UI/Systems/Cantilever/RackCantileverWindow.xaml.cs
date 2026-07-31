@@ -119,7 +119,8 @@ namespace RackCad.UI.Systems.Cantilever
         /// <summary>The plan the preview is currently drawing, so a test asserts CONTENT and never pixels.</summary>
         internal CantileverViewPlan CurrentPreviewPlan =>
             lastComputation != null && lastComputation.IsValid
-                ? assembler.View(lastComputation.Line, SelectedViewKind(), LateralStationIndex())
+                ? assembler.View(
+                    lastComputation.Line, SelectedViewKind(), LateralStationIndex(), design.PlantaVisibility)
                 : null;
 
         // ---- The editor→host contract ------------------------------------------------------------------------
@@ -239,6 +240,10 @@ namespace RackCad.UI.Systems.Cantilever
                 CentralSpaceBox.SetNumber(bracing.CentralEmptySpaceHeight, NumberFormat);
 
                 LateralStationBox.SetNumber(1, "0");
+
+                var planta = design.PlantaVisibility ?? new CantileverPlantaVisibilityDesign();
+                PlantaShowArmsCheck.IsChecked = planta.ShowArms;
+                PlantaShowBracesCheck.IsChecked = planta.ShowBraces;
             }
             finally
             {
@@ -879,11 +884,12 @@ namespace RackCad.UI.Systems.Cantilever
                 ? "Vista lateral de la estación " + (LateralStationIndex() + 1).ToString(CultureInfo.InvariantCulture)
                   + ". El arriostramiento vive ENTRE estaciones, así que no aparece aquí."
                 : view == CantileverViewKind.Planta
-                    ? "Vista en planta de la línea completa."
+                    ? PlantaHint()
                     : "Vista frontal de la línea completa, con sus paneles arriostrados.";
 
             var plan = lastComputation != null && lastComputation.IsValid
-                ? assembler.View(lastComputation.Line, view, LateralStationIndex())
+                ? assembler.View(
+                    lastComputation.Line, view, LateralStationIndex(), design.PlantaVisibility)
                 : null;
 
             CantileverPreviewRenderer.Render(
@@ -959,6 +965,54 @@ namespace RackCad.UI.Systems.Cantilever
             }
 
             RenderPreview();
+        }
+
+        /// <summary>
+        /// Los dos interruptores de la PLANTA.
+        ///
+        /// Sólo redibujan: no llaman a `RequestRecompute`, y eso es lo que dice que son de dibujo y no de
+        /// producto. La línea no se vuelve a resolver, el BOM no se recalcula y la firma física no se mueve —
+        /// lo único que cambia es qué entra en una vista.
+        /// </summary>
+        private void PlantaVisibility_Changed(object sender, RoutedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            design.PlantaVisibility = new CantileverPlantaVisibilityDesign
+            {
+                ShowArms = PlantaShowArmsCheck.IsChecked == true,
+                ShowBraces = PlantaShowBracesCheck.IsChecked == true
+            };
+
+            RenderPreview();
+        }
+
+        /// <summary>El texto de ayuda de la planta, que dice lo que NO se está dibujando.</summary>
+        private string PlantaHint()
+        {
+            var planta = design.PlantaVisibility ?? new CantileverPlantaVisibilityDesign();
+
+            var hidden = new List<string>();
+
+            if (!planta.ShowArms)
+            {
+                hidden.Add("brazos");
+            }
+
+            if (!planta.ShowBraces)
+            {
+                hidden.Add("tensores");
+            }
+
+            // Se dice lo que falta en vez de callarlo: una planta a la que le faltan piezas y no lo avisa es
+            // indistinguible de una que se resolvio mal.
+            return hidden.Count == 0
+                ? "Vista en planta de la línea completa."
+                : "Vista en planta de la línea completa, SIN " + string.Join(" ni ", hidden) +
+                  ". No cambia el BOM ni la firma física.";
         }
 
         // ---- Input handlers ----------------------------------------------------------------------------------

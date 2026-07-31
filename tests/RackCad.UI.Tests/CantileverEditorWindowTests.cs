@@ -528,6 +528,128 @@ namespace RackCad.UI.Tests
             Assert.Equal(CantileverViewKind.Planta, r.Item4);
         }
 
+        // ---- Ronda 3: los interruptores de la PLANTA ---------------------------------------------------------
+
+        private static CheckBox Check(Window window, string name) =>
+            window.FindName(name) as CheckBox
+                ?? throw new InvalidOperationException("No hay un CheckBox '" + name + "'.");
+
+        [Fact]
+        public void LosDosInterruptoresDeLaPlantaNACENApagados()
+        {
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackCantileverWindow(canInsertInAutoCad: true);
+                Configure(w);
+
+                ((RadioButton)w.FindName("PreviewPlantaRadio")).IsChecked = true;
+                var planta = w.CurrentPreviewPlan;
+
+                return (Check(w, "PlantaShowArmsCheck").IsChecked == true,
+                    Check(w, "PlantaShowBracesCheck").IsChecked == true,
+                    planta.Of(CantileverViewPieceKind.Arm).Any(),
+                    planta.Of(CantileverViewPieceKind.Brace).Any(),
+                    planta.Of(CantileverViewPieceKind.Column).Any());
+            });
+
+            Assert.False(r.Item1);
+            Assert.False(r.Item2);
+            Assert.False(r.Item3);
+            Assert.False(r.Item4);
+
+            // Y lo que la planta existe para enseñar sigue estando.
+            Assert.True(r.Item5);
+        }
+
+        [Fact]
+        public void EncenderUnInterruptorDevuelveSuFamiliaALaPlanta()
+        {
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackCantileverWindow(canInsertInAutoCad: true);
+                Configure(w);
+
+                ((RadioButton)w.FindName("PreviewPlantaRadio")).IsChecked = true;
+
+                var arms = Check(w, "PlantaShowArmsCheck");
+                arms.IsChecked = true;
+                arms.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+                var conBrazos = w.CurrentPreviewPlan;
+
+                var braces = Check(w, "PlantaShowBracesCheck");
+                braces.IsChecked = true;
+                braces.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+                var conTodo = w.CurrentPreviewPlan;
+
+                return (conBrazos.Of(CantileverViewPieceKind.Arm).Any(),
+                    conBrazos.Of(CantileverViewPieceKind.Brace).Any(),
+                    conTodo.Of(CantileverViewPieceKind.Arm).Any(),
+                    conTodo.Of(CantileverViewPieceKind.Brace).Any());
+            });
+
+            Assert.True(r.Item1);
+            Assert.False(r.Item2);   // cada interruptor manda SOLO sobre lo suyo
+            Assert.True(r.Item3);
+            Assert.True(r.Item4);
+        }
+
+        [Fact]
+        public void LosInterruptoresDeLaPlantaNoVuelvenAResolverLaLinea()
+        {
+            // La prueba de que son de DIBUJO y no de producto: la línea no se recalcula, así que ni el BOM ni
+            // la firma física pueden moverse por tocarlos.
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackCantileverWindow(canInsertInAutoCad: true);
+                Configure(w);
+
+                var before = w.RecomputeCount;
+
+                var arms = Check(w, "PlantaShowArmsCheck");
+                arms.IsChecked = true;
+                arms.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+                var braces = Check(w, "PlantaShowBracesCheck");
+                braces.IsChecked = true;
+                braces.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+                return (before, w.RecomputeCount);
+            });
+
+            Assert.Equal(r.Item1, r.Item2);
+        }
+
+        [Fact]
+        public void LosInterruptoresNoTocanNiLaFrontalNiLaLateral()
+        {
+            var r = StaTestRunner.Run(() =>
+            {
+                var w = new RackCantileverWindow(canInsertInAutoCad: true);
+                Configure(w);
+
+                var frontalAntes = w.CurrentPreviewPlan.Curves.Count;
+
+                ((RadioButton)w.FindName("PreviewLateralRadio")).IsChecked = true;
+                var lateralAntes = w.CurrentPreviewPlan.Curves.Count;
+
+                var arms = Check(w, "PlantaShowArmsCheck");
+                arms.IsChecked = true;
+                arms.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+                var lateralDespues = w.CurrentPreviewPlan.Curves.Count;
+
+                ((RadioButton)w.FindName("PreviewFrontalRadio")).IsChecked = true;
+                var frontalDespues = w.CurrentPreviewPlan.Curves.Count;
+
+                return (frontalAntes, frontalDespues, lateralAntes, lateralDespues);
+            });
+
+            Assert.Equal(r.Item1, r.Item2);
+            Assert.Equal(r.Item3, r.Item4);
+        }
+
         [Fact]
         public void TheLateralOfAStationDoesNotShowTheBracing_BecauseTheBracingLivesBetweenStations()
         {

@@ -47,7 +47,9 @@ namespace RackCad.Tests
                 .Build(CantileverRoundTwoCharacterizationTests.Reference(face));
 
         private static CantileverViewPlan Planta(CantileverLineEditorComputation computation) =>
-            CantileverViewPlanBuilder.Build(computation.Line, CantileverViewKind.Planta, Factory);
+            CantileverViewPlanBuilder.Build(
+                computation.Line, CantileverViewKind.Planta, Factory, 0,
+                CantileverPlantaVisibilityDesign.ShowingEverything);
 
         /// <summary>The picture-plane box of everything drawn for one piece id.</summary>
         private static Bounds2D BoxOf(CantileverViewPlan plan, string pieceId)

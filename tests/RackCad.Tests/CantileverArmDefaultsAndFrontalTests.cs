@@ -139,7 +139,11 @@ namespace RackCad.Tests
         }
 
         private static CantileverViewPlan View(CantileverLineEditorComputation c, CantileverViewKind view) =>
-            CantileverViewPlanBuilder.Build(c.Line, view, Factory, 0);
+            // La PLANTA nace sin brazos desde la ronda 3 de I-37D. Aqui se pide el conjunto completo porque lo
+            // que estas pruebas miden es como se PROYECTA un brazo, no si la planta lo dibuja por omision;
+            // eso lo fija CantileverPlantaVisibilityTests.
+            CantileverViewPlanBuilder.Build(
+                c.Line, view, Factory, 0, CantileverPlantaVisibilityDesign.ShowingEverything);
 
         /// <summary>
         /// La FORMA de lo dibujado para los brazos, con su posición quitada.

@@ -202,6 +202,43 @@ namespace RackCad.Domain.Systems.Cantilever
     /// view/editor state, it is stamped on the drawing envelope, and it must not change the BOM or the
     /// physical signature of the line.
     /// </summary>
+    /// <summary>
+    /// Que se dibuja en la vista de PLANTA.
+    ///
+    /// Existe porque el dueño lo pidió en la ronda 3 de I-37D: en la etapa de trabajo actual la planta se lee
+    /// para colocar columnas y bases, y los brazos y los tensores la llenan de líneas que estorban esa
+    /// lectura. Los dos nacen APAGADOS.
+    ///
+    /// <para>Es una decisión de DIBUJO y no de producto, y por eso no toca nada más: el modelo sigue
+    /// resolviendo brazos y tensores, el BOM los sigue contando y la frontal y la lateral los siguen
+    /// dibujando. Lo único que cambia es qué entra en una vista.</para>
+    ///
+    /// <para>Vive en el diseño —y por tanto se PERSISTE— porque un proyecto que se reabre tiene que volver a
+    /// enseñar la planta que su dueño dejó. Un ajuste que sólo viviera en la ventana se perdería al cerrarla y
+    /// el usuario tendría que volver a apagarlos cada vez.</para>
+    /// </summary>
+    public sealed class CantileverPlantaVisibilityDesign
+    {
+        /// <summary>Si la planta dibuja los BRAZOS. Apagado por omisión.</summary>
+        public bool ShowArms { get; set; }
+
+        /// <summary>Si la planta dibuja los TENSORES y sus adaptadores. Apagado por omisión.</summary>
+        public bool ShowBraces { get; set; }
+
+        /// <summary>
+        /// El valor que las vistas que NO son la planta usan: se dibuja todo.
+        ///
+        /// Existe para que la frontal y la lateral pasen por el mismo camino que la planta en vez de tener
+        /// una rama propia. Una rama aparte es como una de las dos vistas acaba perdiendo una pieza el día
+        /// que alguien añade una familia que se puede apagar.
+        /// </summary>
+        public static CantileverPlantaVisibilityDesign ShowingEverything =>
+            new CantileverPlantaVisibilityDesign { ShowArms = true, ShowBraces = true };
+
+        public CantileverPlantaVisibilityDesign DeepCopy() =>
+            new CantileverPlantaVisibilityDesign { ShowArms = ShowArms, ShowBraces = ShowBraces };
+    }
+
     public sealed class CantileverLineDesign
     {
         /// <summary>
@@ -239,6 +276,10 @@ namespace RackCad.Domain.Systems.Cantilever
 
         public CantileverBracingDesign Bracing { get; set; } = new CantileverBracingDesign();
 
+        /// <summary>Que se dibuja en la PLANTA. Ver <see cref="CantileverPlantaVisibilityDesign"/>.</summary>
+        public CantileverPlantaVisibilityDesign PlantaVisibility { get; set; } =
+            new CantileverPlantaVisibilityDesign();
+
         /// <summary>How many intervals a line of this length has. Derived, never stored.</summary>
         public int IntervalCount => Math.Max(0, StationCount - 1);
 
@@ -268,7 +309,8 @@ namespace RackCad.Domain.Systems.Cantilever
                     .Where(o => o != null)
                     .Select(o => o.DeepCopy())
                     .ToList(),
-                Bracing = Bracing?.DeepCopy() ?? new CantileverBracingDesign()
+                Bracing = Bracing?.DeepCopy() ?? new CantileverBracingDesign(),
+                PlantaVisibility = PlantaVisibility?.DeepCopy() ?? new CantileverPlantaVisibilityDesign()
             };
 
         /// <summary>

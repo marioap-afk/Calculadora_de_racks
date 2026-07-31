@@ -363,7 +363,12 @@ namespace RackCad.Tests
             var expected = new[]
             {
                 "Id", "Name", "StationCount", "ColumnCentreSpacing",
-                "StationTopology", "DefaultArmTemplate", "ArmCellOverrides", "Bracing"
+                "StationTopology", "DefaultArmTemplate", "ArmCellOverrides", "Bracing",
+
+                // Se sumo en la ronda 3 de I-37D. Es una decision de DIBUJO -que se ve en la planta- y aun
+                // asi se persiste, porque un proyecto que se reabre tiene que volver a enseñar la planta que
+                // su dueño dejo. No cambia el BOM ni la firma fisica de la linea.
+                "PlantaVisibility"
             };
 
             Assert.Equal(expected, PersistedNames(typeof(CantileverLineDesign)));
@@ -383,6 +388,10 @@ namespace RackCad.Tests
                     "CentralEmptySpaceHeight", "BraceKind", "BraceSectionId", "ColdRolled"
                 },
                 PersistedNames(typeof(CantileverBracingDesign)));
+
+            Assert.Equal(
+                new[] { "ShowArms", "ShowBraces" },
+                PersistedNames(typeof(CantileverPlantaVisibilityDesign)));
 
             Assert.Equal(
                 new[] { "StationIndex", "LevelIndex", "Side", "Arm" },

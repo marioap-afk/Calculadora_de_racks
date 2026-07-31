@@ -217,6 +217,16 @@
                             <controls:NumericField x:Name="LateralStationBox" Width="52" IntegerOnly="True" Minimum="1"
                                                    LostFocus="LateralStation_Changed"
                                                    ToolTip="Qué estación muestra la vista lateral. No cambia el BOM ni la firma física de la línea." />
+                            <TextBlock Text="En planta:" Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                                       FontSize="11" VerticalAlignment="Center" Margin="14,0,6,0" />
+                            <CheckBox x:Name="PlantaShowArmsCheck" Content="Brazos"
+                                      Click="PlantaVisibility_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                      FontSize="11" VerticalAlignment="Center" Margin="0,0,10,0"
+                                      ToolTip="Dibuja los brazos en la vista en planta. Apagado por omisión: no cambia el BOM ni la firma física de la línea, y no afecta a la frontal ni a la lateral." />
+                            <CheckBox x:Name="PlantaShowBracesCheck" Content="Tensores"
+                                      Click="PlantaVisibility_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                      FontSize="11" VerticalAlignment="Center" Margin="0,0,14,0"
+                                      ToolTip="Dibuja los tensores y sus adaptadores en la vista en planta. Apagado por omisión: no cambia el BOM ni la firma física de la línea, y no afecta a la frontal ni a la lateral." />
                         </StackPanel>
                         <TextBlock x:Name="PreviewHint" Text="Vista frontal de la línea completa."
                                    Foreground="{DynamicResource ShellTextSecondaryBrush}" FontSize="11" TextWrapping="Wrap" />
