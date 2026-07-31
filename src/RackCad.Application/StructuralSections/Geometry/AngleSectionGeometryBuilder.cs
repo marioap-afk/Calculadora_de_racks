@@ -20,22 +20,42 @@ namespace RackCad.Application.StructuralSections.Geometry
     ///
     /// The root fillet is derived as <c>kdes − t</c>, the same documented rule as W and C.
     ///
-    /// <para><b>Las PUNTAS también se redondean, desde la ronda 3 de I-37D.</b> Hasta entonces se dejaban a
-    /// escuadra con un motivo declarado —AISC las redondea pero no publica el radio— y el resultado era el
-    /// perfil rígido que el dueño rechazó al compararlo con el real. La regla que las sustituye no se eligió
-    /// por gusto: se MIDIÓ contra el área publicada de las 137 secciones, que es el único juez independiente
-    /// que hay. Radio de punta igual a <b>la mitad del filete de raíz</b>, en las <b>dos</b> esquinas de cada
-    /// punta, acotado a medio espesor de ala porque una punta no puede ser más redonda que gruesa es el ala.</para>
+    /// <para><b>TRES esquinas, TRES reglas distintas.</b> No hay un «redondear todas las esquinas»: cada
+    /// una de las tres familias de esquina del perfil se trata aparte, porque físicamente son cosas
+    /// distintas.</para>
     ///
-    /// <para>Lo que esa regla consigue, sobre las 137:</para>
     /// <list type="table">
-    ///   <item><term>a escuadra (antes)</term><description>sesgo +0.800 %, |error| medio 0.814 %, máximo 3.012 %</description></item>
-    ///   <item><term>R/2 en las dos esquinas</term><description>sesgo −0.078 %, |error| medio 0.441 %, máximo 2.316 %</description></item>
+    ///   <item>
+    ///     <term>Filete de RAÍZ</term>
+    ///     <description>La curva cóncava donde se encuentran las dos alas. Se deriva de <c>kdes − t</c>, la
+    ///     misma regla documentada que W y C. Es el radio GRANDE del perfil.</description>
+    ///   </item>
+    ///   <item>
+    ///     <term>Radios de PUNTA</term>
+    ///     <description>Las dos esquinas del extremo libre de cada ala. Son PEQUEÑOS, del orden del espesor:
+    ///     <see cref="ToeRadius"/>. Nunca llegan a medio espesor, así que las dos esquinas de una punta
+    ///     jamás se juntan en una nariz semicircular.</description>
+    ///   </item>
+    ///   <item>
+    ///     <term>Talón EXTERIOR</term>
+    ///     <description><b>VIVO.</b> La esquina exterior donde se cruzan las caras de fuera de las dos alas no
+    ///     se redondea: ver <see cref="HeelOuterRadius"/>.</description>
+    ///   </item>
     /// </list>
     ///
-    /// <para>El sesgo cae un factor diez y las otras dos métricas mejoran a la vez, así que el contorno no
-    /// sólo se ve mejor: se PARECE más al perfil real. Las alternativas medidas —R/2 sólo en la esquina
-    /// exterior, R/3, t/2, R entero— quedaron todas por detrás en las tres columnas.</para>
+    /// <para><b>La regla de punta se MIDIÓ, no se eligió.</b> El área que publica AISC no depende de nuestro
+    /// contorno, así que es el único juez independiente que hay. Sobre las 137 secciones L:</para>
+    ///
+    /// <list type="table">
+    ///   <item><term>a escuadra</term><description>sesgo +0.800 %, |error| medio 0.814 %, máximo 3.012 %</description></item>
+    ///   <item><term>t/3</term><description>sesgo +0.243 %, |error| medio 0.549 %, máximo 2.703 %</description></item>
+    ///   <item><term><b>min(R/2, 0.45·t)</b></term><description>sesgo <b>+0.018 %</b>, |error| medio <b>0.449 %</b>, máximo <b>2.449 %</b></description></item>
+    /// </list>
+    ///
+    /// <para>Gana en las tres columnas y además el tope de 0.45·t garantiza por construcción que la punta
+    /// nunca se cierra en nariz. Una versión anterior de esta ronda topaba en <c>t/2</c> y ahí las dos
+    /// esquinas SÍ se tocaban: el ala terminaba en semicírculo y el dueño lo rechazó al verlo. El tope no es
+    /// cosmético — es lo que separa una punta redondeada de una nariz.</para>
     ///
     /// <para>El radio sigue siendo DERIVADO y no publicado, así que un ángulo sigue sin poder reclamar
     /// <see cref="SectionFidelity.TabulatedComplete"/>: mejor aproximación no es lo mismo que exactitud.</para>
@@ -141,28 +161,35 @@ namespace RackCad.Application.StructuralSections.Geometry
         }
 
         /// <summary>
-        /// El radio de PUNTA que corresponde a un filete de raíz y un espesor de ala.
+        /// La fracción del espesor en la que se topa el radio de punta.
         ///
-        /// Mitad del filete, y nunca más de medio espesor: un ala no puede redondearse más de lo gruesa que
-        /// es. Justo en el tope las dos esquinas se tocan y la punta pasa a ser un semicírculo, que es una
-        /// forma legítima —una pletina delgada termina así— y la dibuja <see cref="IsFullNose"/>. El tope
-        /// muerde de verdad en las secciones delgadas, donde <c>kdes − t</c> supera al propio espesor.
+        /// Estrictamente menor que un medio, y ahí está todo el asunto: en un medio las dos esquinas de la
+        /// punta se tocan y el ala termina en NARIZ semicircular. Un ángulo laminado no hace eso, y el dueño
+        /// lo rechazó al verlo dibujado. 0.45 deja un canto recto de 0.1·t entre las dos curvas — poco, pero
+        /// existe, y es la diferencia entre una punta redondeada y una nariz.
+        /// </summary>
+        internal const double ToeRadiusThicknessCap = 0.45;
+
+        /// <summary>
+        /// El radio de PUNTA: la mitad del filete de raíz, topado en <see cref="ToeRadiusThicknessCap"/>·t.
+        ///
+        /// Pequeño y del orden del espesor, que es lo que un ángulo laminado enseña. El tope muerde en las
+        /// secciones delgadas, donde <c>kdes − t</c> supera al propio espesor.
         ///
         /// Se expone para que la prueba que compara con el área publicada mida LA MISMA regla que se dibuja.
         /// </summary>
         internal static double ToeRadius(double filletRadius, double thickness) =>
-            Math.Min(filletRadius / 2.0, thickness / 2.0);
+            Math.Min(filletRadius / 2.0, ToeRadiusThicknessCap * thickness);
 
         /// <summary>
-        /// Si el radio de punta consume el espesor entero y la punta pasa a ser un semicírculo.
+        /// El radio del talón EXTERIOR: CERO, y a propósito.
         ///
-        /// Ocurre en las secciones delgadas, donde <c>kdes − t</c> supera al propio espesor y el tope de
-        /// <see cref="ToeRadius"/> muerde. Se pregunta con la misma tolerancia que el resto de la geometría
-        /// para que un redondeo de coma flotante no deje una recta de longitud cero, que es geometría inválida
-        /// y no una recta muy corta.
+        /// La esquina de fuera del talón —donde se cruzan las caras exteriores de las dos alas— sale de la
+        /// laminación viva, no redondeada. Existe como constante nombrada, y no como una esquina que
+        /// simplemente nadie redondeó, para que quede dicho que es una DECISIÓN y no un olvido: si algún día
+        /// la fuente publicara ese radio, éste es el sitio donde entra.
         /// </summary>
-        private static bool IsFullNose(double toe, double thickness) =>
-            thickness - (2.0 * toe) <= GeometryTolerance.Length;
+        internal const double HeelOuterRadius = 0.0;
 
         /// <summary>
         /// La L con su filete de raíz y sus dos puntas redondeadas.
@@ -181,23 +208,11 @@ namespace RackCad.Application.StructuralSections.Geometry
             // ---- ala corta, hacia +X, y su punta -----------------------------------------------------------
             if (toe > 0.0)
             {
+                // El primer tramo arranca en el TALÓN EXTERIOR, que es un vértice vivo: ver `HeelOuterRadius`.
                 segments.Add(PathSegment2D.Line(new Point2D(0.0, 0.0), new Point2D(shortLeg - toe, 0.0)));
-
-                if (IsFullNose(toe, thickness))
-                {
-                    // El radio llega a medio espesor: los dos arcos se tocan y el canto recto entre ellos
-                    // desaparece. La punta es entonces UN semicírculo, no dos cuartos y una recta de longitud
-                    // cero — que además `PathSegment2D` rechaza, con razón.
-                    segments.Add(PathSegment2D.Arc(
-                        new Point2D(shortLeg - toe, thickness / 2.0), toe, -quarter, Math.PI));
-                }
-                else
-                {
-                    segments.Add(PathSegment2D.Arc(new Point2D(shortLeg - toe, toe), toe, -quarter, quarter));
-                    segments.Add(PathSegment2D.Line(new Point2D(shortLeg, toe), new Point2D(shortLeg, thickness - toe)));
-                    segments.Add(PathSegment2D.Arc(new Point2D(shortLeg - toe, thickness - toe), toe, 0.0, quarter));
-                }
-
+                segments.Add(PathSegment2D.Arc(new Point2D(shortLeg - toe, toe), toe, -quarter, quarter));
+                segments.Add(PathSegment2D.Line(new Point2D(shortLeg, toe), new Point2D(shortLeg, thickness - toe)));
+                segments.Add(PathSegment2D.Arc(new Point2D(shortLeg - toe, thickness - toe), toe, 0.0, quarter));
                 segments.Add(PathSegment2D.Line(new Point2D(shortLeg - toe, thickness), new Point2D(corner, thickness)));
             }
             else
@@ -214,19 +229,11 @@ namespace RackCad.Application.StructuralSections.Geometry
             if (toe > 0.0)
             {
                 segments.Add(PathSegment2D.Line(new Point2D(thickness, corner), new Point2D(thickness, longLeg - toe)));
+                segments.Add(PathSegment2D.Arc(new Point2D(thickness - toe, longLeg - toe), toe, 0.0, quarter));
+                segments.Add(PathSegment2D.Line(new Point2D(thickness - toe, longLeg), new Point2D(toe, longLeg)));
+                segments.Add(PathSegment2D.Arc(new Point2D(toe, longLeg - toe), toe, quarter, quarter));
 
-                if (IsFullNose(toe, thickness))
-                {
-                    segments.Add(PathSegment2D.Arc(
-                        new Point2D(thickness / 2.0, longLeg - toe), toe, 0.0, Math.PI));
-                }
-                else
-                {
-                    segments.Add(PathSegment2D.Arc(new Point2D(thickness - toe, longLeg - toe), toe, 0.0, quarter));
-                    segments.Add(PathSegment2D.Line(new Point2D(thickness - toe, longLeg), new Point2D(toe, longLeg)));
-                    segments.Add(PathSegment2D.Arc(new Point2D(toe, longLeg - toe), toe, quarter, quarter));
-                }
-
+                // …y cierra volviendo al talón exterior, otra vez sin redondearlo.
                 segments.Add(PathSegment2D.Line(new Point2D(0.0, longLeg - toe), new Point2D(0.0, 0.0)));
             }
             else
