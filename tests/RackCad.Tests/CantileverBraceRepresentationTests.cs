@@ -188,6 +188,31 @@ namespace RackCad.Tests
             Assert.True(Area(outline) < box * 0.75, "El adaptador se dibuja lleno: perdio la escuadra.");
         }
 
+        /// <summary>
+        /// Cuánto se separan del eje los puntos dibujados, medido perpendicularmente a él.
+        ///
+        /// Es la forma honesta de preguntar «¿tiene ancho?» a un cuerpo que se dibuja como un manojo de
+        /// rectas: un eje da cero por definición, y un perfil da su canto proyectado.
+        /// </summary>
+        private static double SpreadAcrossAxis(IReadOnlyList<CantileverViewCurve> bodies)
+        {
+            var points = bodies.SelectMany(b => b.Points).ToList();
+            var from = points.First();
+            var to = points.OrderByDescending(
+                p => ((p.X - from.X) * (p.X - from.X)) + ((p.Y - from.Y) * (p.Y - from.Y))).First();
+
+            var dx = to.X - from.X;
+            var dy = to.Y - from.Y;
+            var length = Math.Sqrt((dx * dx) + (dy * dy));
+
+            if (length <= 1e-9)
+            {
+                return 0.0;
+            }
+
+            return points.Max(p => Math.Abs((((p.X - from.X) * dy) - ((p.Y - from.Y) * dx)) / length));
+        }
+
         /// <summary>Área con signo del polígono en el plano X–Z, en valor absoluto.</summary>
         private static double Area(IReadOnlyList<Point3D> outline)
         {
@@ -373,9 +398,20 @@ namespace RackCad.Tests
 
             Assert.NotEmpty(bodies);
 
-            // Mas de dos puntos en total: un eje serian dos y nada mas.
-            Assert.True(bodies.Sum(b => b.Points.Count) > 2,
-                "El canal se dibujo como su eje.");
+            // Por CURVA y no por suma: sumar entre los cuatro tensores de la linea dejaba pasar cuatro ejes
+            // de dos puntos, que suman ocho. Lo destapo el ejercicio de regresiones.
+            // Lo que distingue un PERFIL de un EJE no es cuantos vertices tiene una curva: un prisma
+            // diagonal visto de lado se dibuja como sus dos caras extremas mas las generatrices que las unen,
+            // y todas ellas son rectas de dos puntos. Lo que un eje no tiene es ANCHO.
+            //
+            // Se mide la separacion perpendicular al eje: un eje da cero y un canal da su canto.
+            // Se mide sobre UN tensor y no sobre los cuatro de la linea: cuatro ejes paralelos tambien dan
+            // varias curvas y mucha dispersion, y con eso pasaba una regresion que no debia. Lo destapo el
+            // ejercicio de regresiones.
+            var uno = bodies.GroupBy(b => b.PieceId.Value).First().ToList();
+
+            Assert.True(uno.Count > 1, "El canal se dibujo con una sola curva: eso es un eje.");
+            Assert.True(SpreadAcrossAxis(uno) > 1.0, "El canal se dibujo sin ancho: eso es un eje.");
 
             // Y con extension en las dos direcciones del papel.
             var points = bodies.SelectMany(b => b.Points).ToList();
@@ -395,8 +431,14 @@ namespace RackCad.Tests
             var bodies = frontal.Of(CantileverViewPieceKind.Brace).ToList();
 
             Assert.NotEmpty(bodies);
-            Assert.True(bodies.Sum(b => b.Points.Count) > 4,
-                "El angulo se dibujo con cuatro puntos: es un rectangulo, no un perfil L.");
+
+            // Por CURVA, por la misma razon que en el canal: una suma dejaba pasar cuatro rectangulos.
+            // Igual que el canal: lo que se pide es ancho, no vertices. Y ademas MAS curvas de las que un
+            // rectangulo necesita, porque un perfil L tiene mas aristas longitudinales que una caja.
+            var uno = bodies.GroupBy(b => b.PieceId.Value).First().ToList();
+
+            Assert.True(uno.Count > 4, "El angulo se dibujo con las curvas de una caja: es un rectangulo.");
+            Assert.True(SpreadAcrossAxis(uno) > 0.5, "El angulo se dibujo sin ancho.");
         }
 
         [Fact]
@@ -442,10 +484,19 @@ namespace RackCad.Tests
                     "Hay un adaptador en el cruce de la X: eso es una union central.");
             }
 
-            Assert.DoesNotContain(
-                frontal.Curves, x => x.Kind == CantileverViewPieceKind.ColdRolledAdapter &&
-                                     x.Points.All(p => Math.Abs(p.X - crossX) < 1.0 &&
-                                                       Math.Abs(p.Y - crossZ) < 1.0));
+            // Y en el dibujo tampoco: ninguna pieza fabricada -adaptador ni cartabon- tiene su centro cerca
+            // del cruce. Se mide por CENTRO y no exigiendo que todos sus puntos caigan dentro de un radio: una
+            // union central podria ser mas grande que el radio y colarse por el hueco.
+            foreach (var piece in frontal.Curves.Where(
+                         x => x.Kind == CantileverViewPieceKind.ColdRolledAdapter))
+            {
+                var cx = piece.Points.Average(p => p.X);
+                var cy = piece.Points.Average(p => p.Y);
+
+                Assert.True(
+                    Math.Abs(cx - crossX) > 2.0 || Math.Abs(cy - crossZ) > 2.0,
+                    "Hay una pieza dibujada en el cruce de la X: eso es una union central.");
+            }
         }
 
         // ---- 8. El componente suelto dibuja LO MISMO que la linea ----------------------------------------
