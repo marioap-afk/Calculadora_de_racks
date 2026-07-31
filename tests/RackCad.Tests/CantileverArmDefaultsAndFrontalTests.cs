@@ -198,6 +198,31 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void LaFRONTALDelCOMPONENTESUELTOTampocoLaDibuja()
+        {
+            // Hueco de cobertura que destapo el ejercicio de regresiones: romper el aplanado en la ruta del
+            // COMPONENTE dejaba todas las pruebas en verde, porque las demas miran la ruta de la LINEA. Son
+            // dos constructores distintos, y la previa del configurador de brazo usa el primero: sin esta
+            // prueba, la ventana podia mostrar el brazo inclinado mientras la linea lo mostraba plano.
+            var arm = Build(7.0 / 16.0).Line.Stations[0].Station.Arms[0];
+            var plano = Build(0.0).Line.Stations[0].Station.Arms[0];
+
+            static string Shape(CantileverArmAssembly a)
+            {
+                var plan = CantileverViewPlanBuilder.BuildArm(a, CantileverViewKind.Frontal, Factory);
+                var points = plan.Of(CantileverViewPieceKind.Arm).SelectMany(c => c.Points).ToList();
+                var minX = points.Min(p => p.X);
+                var minY = points.Min(p => p.Y);
+
+                return string.Join("|", points.Select(
+                    p => Math.Round(p.X - minX, 6) + "," + Math.Round(p.Y - minY, 6)));
+            }
+
+            Assert.NotEmpty(Shape(arm));
+            Assert.Equal(Shape(plano), Shape(arm));
+        }
+
+        [Fact]
         public void LaLATERALSIDibujaLaInclinacionYEsDondeSeMide()
         {
             // La otra mitad, y la que impide que el aplanado se extienda a donde haría daño: la lateral es la

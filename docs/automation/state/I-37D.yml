@@ -506,6 +506,52 @@ candidato:
       frontal-planta-y-frontal-doble-por-causa-fisica-declarada-en-el-propio-archivo ·
       lateral-NO-se-movio-porque-su-firma-cuenta-PUNTOS-y-no-coordenadas
 
+  '3':
+    veredicto: PENDIENTE-DE-EJECUTAR
+    alcance_pedido: >-
+      SIETE-puntos · 1-insercion-del-componente-columna · 2-rol-color-de-columna ·
+      3-offset-de-troquel-1-0-in · 4-defaults-y-frontal-del-brazo · 5-bases-del-doble ·
+      6-separador-centrado-y-al-alma · 7-tensores-y-adaptadores-de-angulo
+    alcance_entregado: SEIS-de-SIETE · el-punto-7-NO-se-hizo-y-se-declara-como-pendiente
+    evidencia_regresiones: docs-automation-evidence-I-37D-round-3-regressions-md
+    regresiones: 15-de-15-verificadas-EN-ROJO
+    punto_1: >-
+      RESUELTO · era-un-defecto-introducido-en-la-correccion-anterior-por-MI: de-las-TRES-puertas-que-
+      appendean-curvas-solo-una-creaba-las-capas-por-rol-y-la-insercion-de-un-componente-suelto-era-una-
+      de-las-otras-dos · EnsureRoleLayers-cuelga-ahora-de-AppendCurves-y-una-guarda-de-forma-lo-fija ·
+      arregla-de-paso-el-redibujo-en-sitio
+    punto_2: >-
+      RESUELTO · conjunto-columna-base-entero-en-ROJO-y-troqueles-en-BLANCO · los-roles-siguen-separados-
+      con-su-capa-cada-uno-y-lo-que-comparten-es-el-color · aparece-ColumnBasePlate-para-no-tenir-la-
+      placa-de-montaje-de-un-brazo-y-la-distincion-la-decide-el-CantileverPlateKind-del-modelo ·
+      el-ROL-viaja-EN-la-curva-en-vez-de-deducirse-en-cada-consumidor
+    punto_3: >-
+      RESUELTO-con-precision-del-dueno · 1-5-a-1-0-in-Y-el-datum-cambia: se-mide-desde-el-EXTERIOR-DE-LA-
+      PLACA-hacia-el-centro-de-la-columna · con-1-0-desde-la-columna-los-agujeros-se-salian-0-11-in-de-la-
+      placa-posterior-y-la-pieza-de-referencia-quedaba-BLOQUEADA · filas-de-x-±2-48-a-±2-245 ·
+      la-comprobacion-de-encaje-cambia-de-lado: ahora-la-que-puede-quedarse-corta-es-la-COLUMNA
+    punto_4: >-
+      RESUELTO · pendiente-7-16-por-12 · margen-vertical-2-in-como-default-pero-nullable-porque-un-JSON-
+      viejo-no-lo-trae · cuenta-de-filas-DERIVADA-de-la-altura-del-perfil-con-el-paso-de-la-reticula-
+      REGULAR-4-in-confirmado-por-el-dueno-minimo-2-y-re-derivada-al-ELEGIR-SECCION ·
+      frontal-sin-inclinacion-como-convencion-de-VISTA-en-CantileverArmFrameResolver
+    punto_5: >-
+      RESUELTO-el-defecto-REAL-que-habia · el-modelo-del-doble-estaba-CORRECTO-medido-antes-de-tocar-nada ·
+      lo-que-fallaba-era-la-descomposicion-del-ESPEJO: volteaba-la-Y-local-y-compensaba-en-la-X-lo-que-da-
+      un-giro-de-180-grados-invisible-en-una-W-simetrica-y-del-reves-en-cualquier-base-asimetrica ·
+      NO-se-poda-la-frontal: dos-piezas-simetricas-coinciden-por-proyeccion-y-una-poda-geometrica-borraba-
+      agujeros-DISTINTOS-apilados-en-Z
+    punto_6: >-
+      RESUELTO · el-arriostramiento-se-ata-al-ALMA-y-no-al-patin · pasa-ENTRE-los-patines-y-topa-contra-
+      ella: queda-centrado-y-su-claro-pasa-de-88-04-a-95-71-in · el-espesor-del-alma-se-MIDE-sobre-el-
+      contorno-que-se-dibuja-ADR-0024-D5-lo-que-ademas-lo-hace-neutral-y-fail-closed ·
+      PRIMERA-VEZ-en-toda-la-iniciativa-que-se-mueven-los-pines-de-BOM
+    punto_7: >-
+      NO-HECHO · tensores-con-espesor-y-adaptadores-de-angulo-con-forma-de-L-rotados-y-biselados ·
+      se-declara-pendiente-en-vez-de-entregarse-a-medias · el-tensor-cold-rolled-se-dibuja-hoy-como-su-EJE-
+      por-decision-declarada-en-ADR-0027-D7-asi-que-darle-espesor-es-tambien-revisar-esa-decision
+    fuera_de_alcance_por_el_dueno: LOS-PANELES · diferidos-a-la-corrida-siguiente
+
 # --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
 # --------------------------------------------------------------------------------------------------------
@@ -515,9 +561,9 @@ pendiente_del_owner:
   validacion_manual_en_autocad: >-
     PENDIENTE-y-BLOQUEANTE · es-el-gate-real-de-esta-iniciativa
   parametros_sin_default_heredados: >-
-    MountingPlateVerticalEndOffset-es-el-UNICO-que-queda ·
-    ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-fueron-RETIRADOS-por-el-Owner-en-la-correccion-
-    de-columna-y-base-y-ya-no-son-entradas-obligatorias
+    NINGUNO-queda · MountingPlateVerticalEndOffset-recibio-su-default-aprobado-de-2-in-en-la-ronda-3 ·
+    ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-fueron-RETIRADOS-en-la-ronda-anterior ·
+    el-nulo-EXPLICITO-sigue-siendo-invalido-porque-un-JSON-viejo-no-trae-el-valor
   id_del_canal_de_4_in_ligero: >-
     CERRADO-y-fuera-de-la-lista-de-pendientes · DefaultSeparatorSectionId-igual-AISC-C-C4X4_5-es-
     VINCULANTE-decision-12-51 · el-C4-mas-ligero-de-forma-INEQUIVOCA-y-se-dibuja-sin-diagnostico ·
