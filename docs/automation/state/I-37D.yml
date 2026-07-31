@@ -36,7 +36,19 @@ rondas:
       NINGUNO-es-un-defecto-de-geometria-resuelta · los-seis-son-de-ARQUITECTURA-VISUAL-y-de-FLUJO ·
       la-distribucion-visual-rechazada-NO-se-congela-como-golden
   2:
-    veredicto: PENDIENTE-DE-EJECUTAR
+    veredicto: >-
+      RECHAZADA-EN-LOS-PUNTOS-DEL-CONFIGURADOR-DE-COLUMNA-Y-BASE ·
+      el-resto-de-la-ronda-2-no-fue-objetado
+    token: OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_2_COLUMN_BASE
+    motivos_del_rechazo: >-
+      1-se-exigen-dos-margenes-de-troquel-sin-utilidad-de-producto-ColumnBottomPlateEndOffset-y-
+      ColumnTopPunchOffset · 2-la-vista-en-planta-de-columna-base-contiene-geometria-incorrecta ·
+      3-la-vista-lateral-omite-placas-y-cartabon · 4-la-columna-arranca-desde-el-piso-y-no-desde-la-
+      cara-superior-de-su-placa-inferior · 5-las-naturalezas-fisicas-no-se-distinguen-visualmente
+    correccion_en_curso: >-
+      NO-CERRADA · motivo-1-RESUELTO-los-dos-margenes-retirados-y-la-regla-del-radio-en-la-autoridad ·
+      motivos-2-3-4-y-5-PENDIENTES
+    veredicto_original: PENDIENTE-DE-EJECUTAR
     evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-md
     code_sha: 5142e1ba1b73a332f3df9960df05a40df59b3f2d
     validated_build_sha: 4584e0c0b2f4fe95a55f8806cedc8a2c58abcd30
