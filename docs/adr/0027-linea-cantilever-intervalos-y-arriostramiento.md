@@ -236,6 +236,40 @@ Por cada tensor cold rolled: **2 adaptadores y 4 cartabones calibre 10**. El **c
 producto**: se conserva como `GaugeNumber = 10` en la identidad y la descripción, y **no** se convierte a un
 decimal en silencio. La vista 2D no necesita esa conversión para dibujar su contorno.
 
+#### D7-bis — El eje es el datum, no el dibujo · `OWNER_REVISED_CANTILEVER_BRACE_VISUAL_REPRESENTATION`
+
+**Revisado por el dueño en la ronda 3 de I-37D.** El ADR sigue **propuesto**: esta revisión no lo acepta, lo
+corrige.
+
+De D7 se venía leyendo, con razón, que un cold rolled sin fila de catálogo no debía dibujarse con una
+sección inventada; y de ahí se pasó a dibujarlo **como su eje**, una recta de dos puntos, y a dibujar su
+adaptador como un **cuadrado** de 2 × 2. Lo primero era una inferencia sensata; lo segundo, una
+simplificación que el dueño rechazó al verla.
+
+La regla que sustituye a esa lectura:
+
+> **El eje continúa siendo el datum geométrico del tensor, pero la geometría visible debe tener ancho
+> físico.**
+
+Y lo que eso quiere decir, exactamente:
+
+- El **eje conserva todo lo que ya gobernaba**: la longitud nominal, los dos extremos, la conexión con los
+  agujeros de tensor de los separadores. Nada de eso se recalcula desde el contorno.
+- El **cuerpo cold rolled se dibuja como una banda centrada en el eje**, de ancho igual a su **diámetro**.
+  No es una sección inventada: es el número que el diseño ya declaraba, puesto a los dos lados del eje que ya
+  existía. Dos bordes paralelos, un cierre perpendicular en cada extremo, polígono cerrado.
+- El **adaptador se dibuja como el ángulo que es**: contorno en L de seis puntos, con su talón, sus dos alas
+  de 2 in y su espesor de 3/16 in, orientado según el extremo que ocupe. Sus **dos cartabones** se dibujan
+  como triángulos, uno en cada extremo de su corte.
+- La **orientación no se declara, se deriva** de hacia dónde queda el agujero de la varilla respecto del del
+  separador. Los cuatro casos —abajo-izquierda, abajo-derecha, arriba-izquierda, arriba-derecha— salen
+  exhaustivos por construcción.
+
+**Lo que esta revisión NO autoriza.** Sigue sin haber preparación de bordes, destijeres, soldadura del talón,
+roscas, tuercas ni tolerancias de armado: es **representación visual, no fabricación**. Y sigue sin cambiar
+nada del producto — longitud nominal, diámetro, sección, número de adaptadores y de cartabones e identidad
+comercial son los mismos, y los contornos **no se persisten**: se rederivan.
+
 ### D8 — El BOM de la línea, y de quién es cada pieza
 
 Los componentes de una línea son **cuatro**: columna–base, brazo, separador y tensor.

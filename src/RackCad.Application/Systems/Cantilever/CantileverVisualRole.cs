@@ -58,7 +58,22 @@ namespace RackCad.Application.Systems.Cantilever
         /// —en rojo— y una placa de montaje de brazo no pertenece a ese conjunto. La distinción no se adivina
         /// mirando la curva: la decide el <see cref="CantileverPlateKind"/> que el modelo ya resolvió.
         /// </summary>
-        ColumnBasePlate = 9
+        ColumnBasePlate = 9,
+
+        /// <summary>El ángulo de extremo de un tensor cold rolled, con sus dos alas.</summary>
+        BraceAdapter = 10,
+
+        /// <summary>Uno de los dos cartabones calibre 10 de ese adaptador.</summary>
+        BraceGusset = 11,
+
+        /// <summary>
+        /// Un agujero DEL ARRIOSTRAMIENTO: el que bolta al separador y el que pasa la varilla.
+        ///
+        /// Aparte de <see cref="Punch"/> porque un troquel de columna y un agujero de adaptador se leen en
+        /// planos distintos y se apagan por separado; comparten el blanco porque los dos son ausencia de
+        /// acero.
+        /// </summary>
+        BracePunch = 12
     }
 
     /// <summary>
@@ -177,6 +192,15 @@ namespace RackCad.Application.Systems.Cantilever
                 case CantileverVisualRole.Brace:
                     return LayerPrefix + "TENSOR";
 
+                case CantileverVisualRole.BraceAdapter:
+                    return LayerPrefix + "TENSOR_ADAPTADOR";
+
+                case CantileverVisualRole.BraceGusset:
+                    return LayerPrefix + "TENSOR_CARTABON";
+
+                case CantileverVisualRole.BracePunch:
+                    return LayerPrefix + "TENSOR_TROQUEL";
+
                 case CantileverVisualRole.Punch:
                     return LayerPrefix + "TROQUEL";
 
@@ -216,20 +240,31 @@ namespace RackCad.Application.Systems.Cantilever
                     return 1; // rojo
 
                 case CantileverVisualRole.Arm:
-                    return 30; // naranja
+                    return 2; // amarillo
 
                 case CantileverVisualRole.Plate:
                     return 254; // gris claro: la de montaje o la de un separador, secundaria a lo que une
 
                 case CantileverVisualRole.Separator:
-                    return 6; // magenta
+                    return 30; // naranja
 
+                // ---- El arriostramiento -------------------------------------------------------------------
+                // Azul para el cuerpo y un contrastante para el adaptador, que es lo que el dueño pidió en
+                // esta ronda: lo que se busca en un panel arriostrado es distinguir la varilla de la pieza
+                // fabricada que la remata, y el cartabón de las dos.
                 case CantileverVisualRole.Brace:
-                    return 2; // amarillo
+                    return 5; // azul
+
+                case CantileverVisualRole.BraceAdapter:
+                    return 4; // cian: contrasta con el azul del cuerpo sin salirse de la familia
+
+                case CantileverVisualRole.BraceGusset:
+                    return 6; // magenta: color propio, para que no se confunda con el ala que refuerza
 
                 // Blanco por decisión del dueño, y es la elección física correcta: un troquel NO es acero, es
                 // su ausencia, así que leerlo en el color opuesto al del acero es lo que un lector necesita.
                 case CantileverVisualRole.Punch:
+                case CantileverVisualRole.BracePunch:
                     return 7; // blanco
 
                 // Comparte el blanco con el troquel, y no es un descuido: una cota tampoco es acero. Se

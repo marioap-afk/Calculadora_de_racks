@@ -588,44 +588,105 @@ namespace RackCad.Application.Systems.Cantilever
                 return;
             }
 
-            // A cold-rolled rod has no catalogued section, so there is no contour to project: it is drawn as
-            // its AXIS. Giving it a fictional circular section would put a shape on the drawing that no
-            // catalogue row backs (ADR-0027, D7).
-            foreach (var adapter in brace.Adapters)
+            // Una varilla cold rolled no tiene fila de catalogo, asi que no hay contorno de seccion que
+            // proyectar: su geometria visible la construye CantileverBraceRepresentationResolver, que centra
+            // una banda del ANCHO DEL DIAMETRO sobre el eje. El eje sigue siendo el datum -de el salen la
+            // longitud y los dos extremos- y deja de ser el dibujo
+            // (OWNER_REVISED_CANTILEVER_BRACE_VISUAL_REPRESENTATION, revisa ADR-0027 D7).
+            //
+            // La previa y el materializador consumen ESTE mismo plan, que es lo que impide que la imagen
+            // aprobada y el bloque entregado se separen.
+            var bodyId = CantileverPieceId.Create(
+                CantileverPieceTokens.IntervalOwnerOf(brace.IntervalIndex),
+                CantileverPieceTokens.BraceToken(brace.PanelIndex, brace.Diagonal));
+
+            var representation = CantileverBraceRepresentationResolver.Resolve(brace, bodyId);
+
+            foreach (var contour in representation.Contours)
             {
                 AddOutline(
-                    curves, CantileverViewPieceKind.ColdRolledAdapter, adapter.Id,
-                    AdapterOutline(adapter), zero, viewpoint, true);
+                    curves, KindOf(contour.Kind), contour.Id, contour.Outline, zero, viewpoint, true,
+                    RoleOf(contour.Kind));
             }
 
-            AddOutline(
-                curves, CantileverViewPieceKind.Brace,
-                CantileverPieceId.Create(
-                    CantileverPieceTokens.IntervalOwnerOf(brace.IntervalIndex),
-                    CantileverPieceTokens.BraceToken(brace.PanelIndex, brace.Diagonal)),
-                new[] { brace.LowerEnd, brace.UpperEnd }, zero, viewpoint, false);
+            // De los DOS agujeros del adaptador se dibuja uno solo, y no es un olvido: el de la cara del
+            // separador es el MISMO agujero fisico que el troquel de tensor del separador —el modelo exige que
+            // sus datums coincidan— asi que ya esta dibujado, y emitirlo otra vez pondria dos circulos
+            // identicos uno encima de otro. El de la varilla no lo dibuja nadie mas.
+            foreach (var adapter in brace.Adapters)
+            {
+                AddRodHole(curves, adapter, viewpoint);
+            }
+        }
+
+        /// <summary>Qué TIPO de pieza de vista es cada contorno de la representación de un tensor.</summary>
+        private static CantileverViewPieceKind KindOf(CantileverBracePieceKind kind)
+        {
+            switch (kind)
+            {
+                case CantileverBracePieceKind.Body:
+                    return CantileverViewPieceKind.Brace;
+
+                case CantileverBracePieceKind.Adapter:
+                case CantileverBracePieceKind.Gusset:
+                    return CantileverViewPieceKind.ColdRolledAdapter;
+
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(kind), kind, "El contorno de tensor '" + kind + "' no tiene tipo de pieza.");
+            }
         }
 
         /// <summary>
-        /// The adapter as a square in the bracing plane, centred on its separator hole.
+        /// Qué NATURALEZA tiene cada contorno, que no es lo mismo que su tipo.
         ///
-        /// It is a REPRESENTATION and says so: an angle cut to two inches, seen from the front, is a 2 × 2
-        /// square, and the MVP draws that square rather than modelling the heel, the two legs and their fillet.
-        /// Anything finer would need a contour authority for a fabricated part, which is not a thing this system
-        /// has and not a thing I-37D may invent.
+        /// El adaptador y su cartabón son las dos piezas fabricadas del extremo y comparten tipo, pero se leen
+        /// aparte en el plano: una es el ángulo que sujeta y la otra el triángulo que lo refuerza.
         /// </summary>
-        private static IReadOnlyList<Point3D> AdapterOutline(CantileverColdRolledAdapterPlan adapter)
+        private static CantileverVisualRole RoleOf(CantileverBracePieceKind kind)
         {
-            var half = adapter.CutLength / 2.0;
-            var centre = adapter.Origin;
-
-            return new[]
+            switch (kind)
             {
-                new Point3D(centre.X - half, centre.Y, centre.Z - half),
-                new Point3D(centre.X + half, centre.Y, centre.Z - half),
-                new Point3D(centre.X + half, centre.Y, centre.Z + half),
-                new Point3D(centre.X - half, centre.Y, centre.Z + half)
-            };
+                case CantileverBracePieceKind.Body:
+                    return CantileverVisualRole.Brace;
+
+                case CantileverBracePieceKind.Adapter:
+                    return CantileverVisualRole.BraceAdapter;
+
+                case CantileverBracePieceKind.Gusset:
+                    return CantileverVisualRole.BraceGusset;
+
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(kind), kind, "El contorno de tensor '" + kind + "' no tiene naturaleza visual.");
+            }
+        }
+
+        /// <summary>
+        /// El agujero por el que pasa la varilla, dibujado como un CIRCULO en el plano del arriostramiento.
+        ///
+        /// No pasa por AddPunch y es a proposito: aquel dibuja un agujero a partir de su eje de perforacion, y
+        /// este agujero tiene el eje de la varilla —diagonal en X–Z—, que es justo el que el modelo se nego a
+        /// escribir como datum porque ningun eje del mundo lo describe. Aqui se dibuja por lo que se sabe de
+        /// el con certeza: donde esta su centro y cuanto mide.
+        /// </summary>
+        private static void AddRodHole(
+            ICollection<CantileverViewCurve> curves,
+            CantileverColdRolledAdapterPlan adapter,
+            SectionViewpoint viewpoint)
+        {
+            if (!(adapter.RodHoleDiameter > 0.0))
+            {
+                return;
+            }
+
+            curves.Add(new CantileverViewCurve(
+                CantileverViewPieceKind.Punch,
+                adapter.Id.At(0),
+                new[] { viewpoint.Project(adapter.RodHoleCentre) },
+                false,
+                adapter.RodHoleDiameter,
+                CantileverVisualRole.BracePunch));
         }
 
         private static void AddMember(
@@ -692,7 +753,8 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverPieceId id,
             CantileverPunchPlan punch,
             Vector3D offset,
-            SectionViewpoint viewpoint)
+            SectionViewpoint viewpoint,
+            CantileverVisualRole? role = null)
         {
             if (!(punch.Diameter > 0.0))
             {
@@ -712,7 +774,7 @@ namespace RackCad.Application.Systems.Cantilever
             if (foreshortening <= CircleForeshorteningLimit)
             {
                 curves.Add(new CantileverViewCurve(
-                    CantileverViewPieceKind.Punch, id, new[] { projectedCentre }, false, punch.Diameter));
+                    CantileverViewPieceKind.Punch, id, new[] { projectedCentre }, false, punch.Diameter, role));
                 return;
             }
 
@@ -731,7 +793,9 @@ namespace RackCad.Application.Systems.Cantilever
                     new Point2D(projectedCentre.X - nx * half, projectedCentre.Y - ny * half),
                     new Point2D(projectedCentre.X + nx * half, projectedCentre.Y + ny * half)
                 },
-                false));
+                false,
+                null,
+                role));
         }
 
         private static void AddOutline(
@@ -741,7 +805,8 @@ namespace RackCad.Application.Systems.Cantilever
             IReadOnlyList<Point3D> outline,
             Vector3D offset,
             SectionViewpoint viewpoint,
-            bool isClosed)
+            bool isClosed,
+            CantileverVisualRole? role = null)
         {
             if (outline == null || outline.Count == 0)
             {
@@ -752,7 +817,7 @@ namespace RackCad.Application.Systems.Cantilever
                 .Select(p => viewpoint.Project(p + offset))
                 .ToList();
 
-            curves.Add(new CantileverViewCurve(kind, id, projected, isClosed));
+            curves.Add(new CantileverViewCurve(kind, id, projected, isClosed, null, role));
         }
 
         /// <summary>

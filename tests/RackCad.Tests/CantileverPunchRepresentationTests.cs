@@ -32,11 +32,23 @@ namespace RackCad.Tests
             CantileverLineEditorComputation computation, CantileverViewKind view) =>
             computation.Views.Single(v => v.View == view);
 
-        /// <summary>Every hole the LINE resolved: the stations', the separator plates' and the separators'.</summary>
+        /// <summary>
+        /// Todo agujero que la LINEA resolvio: los de las estaciones, los de las placas de separador, los de
+        /// los separadores y el de VARILLA de cada adaptador de tensor.
+        ///
+        /// El de la varilla se sumo en la ronda 3, cuando el tensor cold rolled paso a dibujarse con su ancho
+        /// fisico: hasta entonces el adaptador se dibujaba como un cuadrado sin agujeros y ese hueco no
+        /// llegaba al plano.
+        ///
+        /// El OTRO agujero del adaptador —el de la cara del separador— NO se suma, y no es un descuido: es el
+        /// mismo agujero fisico que el troquel de tensor del separador, cuyo datum el modelo obliga a que
+        /// coincida. Contarlo dos veces pediria dos circulos identicos superpuestos.
+        /// </summary>
         private static int ResolvedHolesOfTheWholeLine(CantileverLineAssembly line) =>
             line.Stations.Sum(s => s.Station.Punches.Count) +
             line.SeparatorColumnPlates.Count +
-            line.Separators.Sum(s => s.Punches.Count);
+            line.Separators.Sum(s => s.Punches.Count) +
+            line.Intervals.SelectMany(i => i.Braces).Sum(b => b.Adapters.Count(a => a.RodHoleDiameter > 0.0));
 
         /// <summary>Every diameter the line resolved, from the same three sources.</summary>
         private static System.Collections.Generic.HashSet<double> ResolvedDiameters(CantileverLineAssembly line) =>
@@ -44,6 +56,9 @@ namespace RackCad.Tests
                 .Concat(line.SeparatorColumnPlates.Select(p => p.Punch))
                 .Concat(line.Separators.SelectMany(s => s.Punches))
                 .Select(p => p.Diameter)
+                .Concat(line.Intervals.SelectMany(i => i.Braces).SelectMany(b => b.Adapters)
+                    .Where(a => a.RodHoleDiameter > 0.0)
+                    .Select(a => a.RodHoleDiameter))
                 .ToHashSet();
 
         // ---- 1. Nada se pierde --------------------------------------------------------------------------

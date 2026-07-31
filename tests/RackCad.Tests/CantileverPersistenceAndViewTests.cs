@@ -568,8 +568,16 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void AColdRolledBraceIsDrawnAsItsAxisAndNotAsAnInventedSection()
+        public void AColdRolledBraceIsDrawnWithItsPHYSICALWidthAndNotAsABareAxis()
         {
+            // ESTE ENUNCIADO SE INVIRTIO, y por decision del dueno
+            // (OWNER_REVISED_CANTILEVER_BRACE_VISUAL_REPRESENTATION). Antes se llamaba
+            // AColdRolledBraceIsDrawnAsItsAxisAndNotAsAnInventedSection y exigia dos puntos abiertos.
+            //
+            // La razon de aquella convencion —no poner en el plano una forma que ninguna fila de catalogo
+            // respalda— seguia siendo buena, pero el ancho de la banda NO es una seccion inventada: es el
+            // DIAMETRO que el diseno ya declaraba, puesto a los dos lados del eje que ya existia. El eje
+            // sigue siendo el datum; lo que deja de ser es el dibujo.
             var line = Resolve(Design());
             var frontal = CantileverViewPlanBuilder.Build(line, CantileverViewKind.Frontal, Factory);
 
@@ -577,11 +585,10 @@ namespace RackCad.Tests
 
             Assert.NotEmpty(braces);
 
-            // Two points, open: an axis. A fictional round contour would be a shape no catalogue row backs.
             Assert.All(braces, b =>
             {
-                Assert.Equal(2, b.Points.Count);
-                Assert.False(b.IsClosed);
+                Assert.Equal(4, b.Points.Count);   // dos bordes paralelos y un cierre en cada extremo
+                Assert.True(b.IsClosed);
             });
 
             Assert.NotEmpty(frontal.Of(CantileverViewPieceKind.ColdRolledAdapter));

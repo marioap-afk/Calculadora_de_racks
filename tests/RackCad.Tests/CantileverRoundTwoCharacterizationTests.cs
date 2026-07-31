@@ -174,11 +174,21 @@ namespace RackCad.Tests
             //   un rectangulo visto de canto sigue siendo cuatro esquinas cerradas—; ese espesor lo fija
             //   CantileverLateralViewTests, midiendolo.
             // Anteriores: frontal 1A12F749…, planta EFB547E6…, frontal-doble 7D74B31D…
-            ["frontal"] = "D17564B60448EF08C46F99AE0B9328C5E94E00BA8ED48D31AF90D37F7D5544E3",
+            // MOVIDOS en el punto 7 de la ronda 3, con la REPRESENTACION FISICA del tensor. El dueno reviso
+            // la convencion de ADR-0027 D7 —OWNER_REVISED_CANTILEVER_BRACE_VISUAL_REPRESENTATION—: el eje
+            // sigue siendo el datum y la geometria visible pasa a tener ancho. El cuerpo cold rolled pasa de
+            // una polilinea ABIERTA de 2 puntos a una banda CERRADA de 4, y cada adaptador de un cuadrado de 4
+            // puntos a una L de 6 mas sus dos cartabones de 3.
+            //
+            // `lateral` NO se movio: un intervalo no dibuja tensores en la lateral de una estacion. Los dos
+            // del BOM tampoco, y es la comprobacion de que esto fue un cambio de DIBUJO: la longitud nominal,
+            // el diametro y la cuenta de adaptadores y cartabones no se tocaron.
+            // Anteriores: frontal D17564B6…, planta 7DA73B45…, frontal-doble 34E02F20…
+            ["frontal"] = "C7A22C781A99209CF2C67188A5C6F9CD28DF6903CAE33D05CF90A3A1A35D28CC",
             // Movido en la ronda 3 con la pendiente por omision del brazo: su huella en planta se acorta.
-            ["planta"] = "7DA73B454792EA5FD5C96C3657EEDE006060E2CC74E7312ACF80289EA0D22AAE",
+            ["planta"] = "632DD853DA564DA9580CFE90A5E2B276034000950633DB97B407DD6F2D564B22",
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
-            ["frontal-doble"] = "34E02F2092FF7C3A17BB2382093E9819764E12ED776D0F49C3405B188B0FB91E",
+            ["frontal-doble"] = "C7EE670CF2960D5F6A575C5D5F2C1E6371791259747600B9F56D6006B0FFCD82",
 
             // MOVIDO A PROPOSITO en la ronda 2, y es el UNICO pin que se movio por contenido.
             // `BaseFollowsColumn` es intencion nueva del diseno y se persiste, asi que el JSON gana una clave.
