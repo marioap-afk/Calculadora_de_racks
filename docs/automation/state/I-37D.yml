@@ -560,6 +560,34 @@ candidato:
     punto_7_evidencia: >-
       docs-automation-evidence-I-37D-round-3-brace-regressions-md ·
       docs-automation-evidence-I-37D-autocad-validation-round-3-braces-md
+    ronda_correccion: >-
+      HECHA · cinco puntos del dueño, ninguno de producto ·
+      1-PALETA: la autoridad de roles se EXTIENDE-no-se-duplica; rojo columna-base-placas-cartabon-Y-la-placa-
+      columna-separador, blanco troqueles, naranja separador, AZUL perfil de brazo, MORADO su mensula, CIAN el
+      tensor entero; rol nuevo ColumnSeparatorPlate con capa propia ·
+      2-PLACA: cruzaba el alma -3in de placa con el agujero a 1.25in de la cara, asomaba 1.28in al otro lado-;
+      ahora APOYA en la cara y crece hacia su tramo, DATUM INTACTO ·
+      3-BASE: se espejaba sobre y=0 -la CARA de conexion- y la base negativa caia encima de la columna; ahora
+      sobre el plano MEDIO, MEDIDO de la huella de la columna; coincide con el brazo del mismo lado ·
+      4-ANGULO: puntas redondeadas a R/2 en ambas esquinas, regla ELEGIDA MIDIENDO contra el area publicada de
+      las 137 secciones -sesgo +0.800% a -0.078%, medio 0.814% a 0.441%, max 3.012% a 2.316%-; caso extremo de
+      punta semicircular resuelto ·
+      5-PLANTA: nace SIN brazos ni tensores, dos checkbox, apagar brazos apaga el CONJUNTO; frontal y lateral
+      intactas; persistido; NO vuelve a resolver la linea
+    ronda_correccion_pines: >-
+      DOS movidos: planta -por el punto 5- y persistencia -por el campo nuevo- ·
+      frontal, lateral, frontal-doble y LOS DOS DEL BOM intactos
+    ronda_correccion_hallazgos: >-
+      DOS pruebas mias eran AUTO-REFERENCIALES -derivaban lo esperado de lo que median- y se anclaron contra
+      algo externo ·
+      AMBIGUEDAD PREEXISTENTE DECLARADA-NO-RESUELTA: CantileverPlatePlan.NearOffset se documenta como
+      coordenada-del-mundo pero las placas de brazo lo usan como distancia-a-lo-largo-del-normal y la placa
+      inferior de columna sigue la otra; unificar toca 4 familias de placa = cambio de contrato fuera del encargo ·
+      LIMITE DE LA FIRMA: mover la base espejada 9.73in NO movio el pin linea-doble, asi que esa firma no capta
+      la posicion en Y de la base
+    ronda_correccion_evidencia: >-
+      docs-automation-evidence-I-37D-round-3-correction-regressions-md ·
+      docs-automation-evidence-I-37D-autocad-validation-round-3-correction-md
     punto_7_bom: >-
       NO-SE-MOVIO-y-es-la-comprobacion-de-que-fue-un-cambio-de-DIBUJO ·
       una-regresion-verifica-que-el-pin-del-BOM-SI-muerde-ante-un-cambio-de-producto-de-verdad-
