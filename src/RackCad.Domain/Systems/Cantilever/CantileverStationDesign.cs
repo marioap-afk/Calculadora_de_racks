@@ -145,10 +145,10 @@ namespace RackCad.Domain.Systems.Cantilever
         public int VerticalPunchCount { get; set; } = CantileverDefaults.ArmVerticalPunchCount;
 
         /// <summary>
-        /// Margin from the outermost punches to the plate's edges, inches. REQUIRED — I-37B approved no
-        /// default for it, and the station does not invent one either.
+        /// Margen de los troqueles extremos a los bordes de la placa, en pulgadas. Dos por omisión, aprobadas
+        /// por el dueño en la ronda 3; hasta entonces era obligatorio y sin default a propósito.
         /// </summary>
-        public double? VerticalEndOffset { get; set; }
+        public double? VerticalEndOffset { get; set; } = CantileverDefaults.ArmMountingPlateVerticalEndOffset;
 
         public CantileverArmMountingPlateTemplateDesign DeepCopy() =>
             new CantileverArmMountingPlateTemplateDesign

@@ -257,7 +257,7 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var placement in stations)
             {
-                AddStation(curves, placement, viewpoint, options, geometryFactory);
+                AddStation(curves, placement, viewpoint, options, geometryFactory, view);
             }
 
             // A lateral looks at ONE station, so the bracing between stations is not part of it: what it would
@@ -378,7 +378,9 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var member in arm.Members)
             {
-                AddMember(curves, member.Id, CantileverViewPieceKind.Arm, member, zero, options, geometryFactory);
+                AddMember(
+                    curves, member.Id, CantileverViewPieceKind.Arm, member, zero, options, geometryFactory,
+                    flattenSlope: view == CantileverViewKind.Frontal);
             }
 
             foreach (var plate in arm.Plates)
@@ -480,16 +482,22 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverLineStationPlacement placement,
             SectionViewpoint viewpoint,
             SectionRepresentationOptions options,
-            StructuralSectionGeometryFactory geometryFactory)
+            StructuralSectionGeometryFactory geometryFactory,
+            CantileverViewKind view)
         {
             var station = placement.Station;
             var offset = placement.Offset;
 
             foreach (var member in station.Members)
             {
+                // Solo el BRAZO se aplana, y solo en la frontal: ver WithoutRise. Aplanar la columna o la base
+                // no querria decir nada —no tienen pendiente— y aplanar el brazo en la lateral borraria justo
+                // la magnitud que esa vista existe para mostrar.
                 AddMember(
                     curves, placement.ScopedId(member.Id), RoleOf(member.Role),
-                    member, offset, options, geometryFactory);
+                    member, offset, options, geometryFactory,
+                    flattenSlope: view == CantileverViewKind.Frontal &&
+                                  member.Role == CantileverMemberRole.Arm);
             }
 
             foreach (var plate in station.Plates)
@@ -627,13 +635,19 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverStructuralMemberPlan member,
             Vector3D offset,
             SectionRepresentationOptions options,
-            StructuralSectionGeometryFactory geometryFactory)
+            StructuralSectionGeometryFactory geometryFactory,
+            bool flattenSlope = false)
         {
             var geometry = geometryFactory.Get(member.Placement.SectionId, options.Detail);
 
             // The line's translation goes through the FRAME AUTHORITY, which is where the reasoning for applying
             // it to the frame rather than to the projected points is written down.
             var placement = CantileverLineFrameResolver.Translated(member.Placement, offset);
+
+            if (flattenSlope)
+            {
+                placement = CantileverArmFrameResolver.WithoutRise(placement);
+            }
             var plan = StructuralSectionPlanBuilder.Build(geometry, placement, options);
 
             foreach (var curve in plan.Curves)

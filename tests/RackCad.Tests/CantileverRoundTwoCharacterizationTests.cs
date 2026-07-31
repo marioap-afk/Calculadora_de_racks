@@ -134,8 +134,20 @@ namespace RackCad.Tests
             // en X no cambia cuantas curvas dibuja ninguna vista. Los dos del BOM tampoco: un troquel no es
             // una linea de BOM.
             // Anteriores: linea 58202A8B…, linea-doble 57A55555…, persistencia 24358728…
-            ["linea"] = "6D3BB5C6F61D68D85820D042B7CC1BC48C2B1FBFA2AF3B6B57EEFADE47076D2D",
-            ["linea-doble"] = "2038786A4B1045769C376468BB243137D1196C3046CAFE21852AF2A7FBC153A5",
+            // MOVIDOS UNA TERCERA VEZ en la ronda 3, por los defaults del BRAZO que el dueno aprobo: la
+            // pendiente por omision pasa de 0 a 7/16 por 12 in y el margen vertical de la placa pasa a ser un
+            // default de 2 in. La fixture de referencia no fijaba pendiente, asi que ahora sus brazos SUBEN.
+            //
+            // `planta` se movio con ellos y es la consecuencia fisica exacta: un brazo inclinado recorre menos
+            // horizontal que su longitud de corte, asi que su huella en planta se acorta por el coseno.
+            //
+            // `frontal` y `frontal-doble` NO se movieron, y eso es la comprobacion de que el aplanado de la
+            // frontal hace lo que dice: deshace la pendiente nueva y devuelve exactamente el perfil que se
+            // veia cuando la pendiente era cero. `lateral` tampoco, porque cuenta puntos y no coordenadas.
+            // Los dos del BOM tampoco: la pendiente no cambia la longitud que se ordena.
+            // Anteriores: linea 6D3BB5C6…, linea-doble 2038786A…, planta 9E9611FA…, persistencia 9F89BB74…
+            ["linea"] = "E3AAA3BC2663DC7FA3651945B0DF18F148BE9FF167E4E9ADCE2BC4D15B3A36A3",
+            ["linea-doble"] = "2A9EF89BA2B9BC462FC9FCA942D3ECDB8A6481FBBD78612D2A6FB562B2663EA4",
             ["bom"] = "6088C538512ACDCA52D0C5DB5D0AD1DE180686CE13752D33F674F19C6DFA66F3",
             ["bom-doble"] = "608B790C28618CD013D8B807F937E3EF73FCF4BAF9B77D076E0CFE866FA5A272",
             // TRES DE ESTOS CUATRO SE MOVIERON en la correccion de columna/base, por la causa fisica del
@@ -154,7 +166,8 @@ namespace RackCad.Tests
             //   CantileverLateralViewTests, midiendolo.
             // Anteriores: frontal 1A12F749…, planta EFB547E6…, frontal-doble 7D74B31D…
             ["frontal"] = "D17564B60448EF08C46F99AE0B9328C5E94E00BA8ED48D31AF90D37F7D5544E3",
-            ["planta"] = "9E9611FA2AFD676F0F54082D0B84556C855CA42BE6E077B206604B17339D4E32",
+            // Movido en la ronda 3 con la pendiente por omision del brazo: su huella en planta se acorta.
+            ["planta"] = "7DA73B454792EA5FD5C96C3657EEDE006060E2CC74E7312ACF80289EA0D22AAE",
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
             ["frontal-doble"] = "34E02F2092FF7C3A17BB2382093E9819764E12ED776D0F49C3405B188B0FB91E",
 
@@ -171,7 +184,8 @@ namespace RackCad.Tests
             // `ColumnBottomPlateEndOffset` y `ColumnTopPunchOffset`, que el dueno retiro. Dos claves menos.
             // Anterior: C8D5A3C8…
             // Movido una CUARTA vez, con el offset de 1.0: el JSON persiste el propio numero.
-            ["persistencia"] = "9F89BB749F94D8893FE0926D705519881E98A223D1E94A33529372B2276A20FE"
+            // Movido una QUINTA vez en la ronda 3: el JSON persiste la pendiente y el margen nuevos.
+            ["persistencia"] = "C80E01490F21E980FF8BCAF69E5271EE3CC043AC32D8228477B361BC42E10065"
         };
 
         // ---- 1. Las resoluciones ------------------------------------------------------------------------

@@ -114,6 +114,13 @@ namespace RackCad.UI.Systems.Cantilever.Components
             Recompute();
         }
 
+        /// <summary>
+        /// Elegir una sección re-deriva cuántas filas de troqueles lleva la placa por omisión.
+        ///
+        /// Es el único momento en que se pisa ese campo, y no una imposición: la cuenta es la de las filas que
+        /// caben en la altura DEL PERFIL ELEGIDO, así que un perfil nuevo la cambia; después el usuario puede
+        /// subirla o bajarla y nada se la vuelve a tocar. Escribirla en cada tecla borraría lo que él escribió.
+        /// </summary>
         private void SectionChosen(object sender, string sectionId)
         {
             if (suppressSync)
@@ -121,7 +128,33 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 return;
             }
 
+            SuggestPunchCountFor(sectionId);
             Recompute();
+        }
+
+        private void SuggestPunchCountFor(string sectionId)
+        {
+            if (string.IsNullOrWhiteSpace(sectionId) || !catalogue.TryGetById(sectionId, out var section))
+            {
+                return;
+            }
+
+            var height = geometry.Get(section.SectionId, SectionDetailLevel.Tabulated).Bounds.Height;
+            var margin = VerticalOffsetBox.Value ?? CantileverDefaults.ArmMountingPlateVerticalEndOffset;
+
+            var count = CantileverArmPunchCountRule.For(
+                height, margin, CantileverDefaults.RegularColumnPunchPitch);
+
+            suppressSync = true;
+
+            try
+            {
+                PunchCountBox.SetNumber(count, "0");
+            }
+            finally
+            {
+                suppressSync = false;
+            }
         }
 
         private void Input_Changed(object sender, RoutedEventArgs e)

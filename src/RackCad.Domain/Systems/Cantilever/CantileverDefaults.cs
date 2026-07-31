@@ -72,5 +72,25 @@ namespace RackCad.Domain.Systems.Cantilever
         /// There is no maximum — more rows simply extend the plate upwards (ADR-0025, D6).
         /// </summary>
         public const int ArmVerticalPunchCount = 2;
+
+        /// <summary>
+        /// Pendiente por omisión del cuerpo del brazo: 7/16 de subida por cada 12 in de vuelo.
+        ///
+        /// Valor aprobado por el dueño. Se escribe como la división que es —no como 0.4375— porque lo que él
+        /// dictó es la fracción, y un decimal redondeado a mano es la clase de número que nadie sabe de dónde
+        /// salió cuando hay que revisarlo.
+        /// </summary>
+        public const double ArmSlopeRisePer12 = 7.0 / 16.0;
+
+        /// <summary>
+        /// Margen vertical por omisión de la placa de montaje del brazo, en pulgadas: del primer troquel
+        /// elegido al borde inferior de la placa, y del último a su borde superior.
+        ///
+        /// DEJÓ DE SER un parámetro sin default aprobado. Hasta la ronda 3 era obligatorio y nulo a propósito,
+        /// para que nadie inventara un número que pareciese aprobado; el dueño aprobó 2 in, así que ya lo es.
+        /// La regla de rechazo sobrevive para un diseño que lo ponga en null explícitamente —uno leído de un
+        /// JSON viejo— porque «ausente» y «aprobado» siguen sin ser lo mismo.
+        /// </summary>
+        public const double ArmMountingPlateVerticalEndOffset = 2.00;
     }
 }
