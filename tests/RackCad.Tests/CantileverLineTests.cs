@@ -552,9 +552,13 @@ namespace RackCad.Tests
         [Fact]
         public void ASeparatorThatCannotHoldItsFourPunchesIsRefused()
         {
-            // 1.25 + 4 + 4 + 1.25 = 10.5 in of punches. Two columns 12 in apart on centres leave less clear
-            // than that, and the resolver says so instead of emitting punches that overlap or run off the end.
-            var line = Resolve(Design(spacing: 12.0));
+            // 1.25 + 4 + 4 + 1.25 = 10.5 in de troqueles.
+            //
+            // La separacion de prueba BAJO de 12 a 10 in en la ronda 3, y por la correccion del dueno: el
+            // arriostramiento pasa a atarse al ALMA, asi que el claro ya no se mide de cara a cara de patin
+            // -12 - 7.96 = 4.04 in, que no llegaba- sino de alma a alma -12 - 0.29 = 11.71 in, que sobra-.
+            // Con 10 in el claro es 9.71 y el separador vuelve a no caber, que es lo que esta prueba mira.
+            var line = Resolve(Design(spacing: 10.0));
 
             Assert.True(Has(line, CantileverDiagnostics.SeparatorTooShortForItsPunches),
                 "Se esperaba el diagnostico de separador corto. " + Why(line));

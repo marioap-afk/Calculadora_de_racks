@@ -186,6 +186,12 @@ namespace RackCad.Application.Systems.Cantilever
 
             // ---- The intervals ---------------------------------------------------------------------------
             var attachmentGeometry = MeasureAttachment(placements[0].Station, geometryFactory);
+
+            if (attachmentGeometry.BlockedReason != null)
+            {
+                diagnostics.Add(CantileverDiagnostic.Blocking(
+                    CantileverDiagnostics.ColumnHasNoWebForBracing, attachmentGeometry.BlockedReason));
+            }
             var intervals = new List<CantileverIntervalAssembly>(design.IntervalCount);
 
             for (var i = 0; i < design.IntervalCount; i++)
@@ -253,29 +259,53 @@ namespace RackCad.Application.Systems.Cantilever
             var geometry = geometryFactory.Get(column.Placement.SectionId, SectionDetailLevel.Tabulated);
             var box = CantileverPrismExtent.CrossSection(column.Placement, geometry);
 
-            // The bracing goes on the column face the loads do NOT come from: on a single station, the side
-            // opposite its arms. A double station has arms on both sides and therefore no back at all, so the
-            // rule is declared rather than derived — +Y — and the MVP does not check whether a separator and
-            // an arm at nearby elevations interfere.
+            // EL ARRIOSTRAMIENTO VA AL ALMA, NO AL PATIN. Decision del dueno en la ronda 3, y es como se ata
+            // un cantilever real: el separador pasa ENTRE los dos patines de la columna y topa contra el alma.
+            //
+            // De ahi salen de golpe las tres cosas que el dueno reportaba mal:
+            //  · queda CENTRADO en planta, porque el alma esta en el plano medio de la columna y no en su cara;
+            //  · su LONGITUD deja de medirse de cara a cara de patin y pasa a medirse de alma a alma, que es
+            //    casi la separacion entre columnas entera: pasa de 88.04 a 95.57 in con la referencia;
+            //  · y deja de sobresalir por fuera de la linea, que es lo que se veia como descentrado.
+            //
+            // El SENTIDO hacia afuera se conserva tal cual estaba: sigue diciendo hacia donde crece la placa
+            // desde su cara de apoyo, y esa regla —el lado opuesto a los brazos en una sencilla, +Y declarado
+            // en una doble— no la toca esta correccion.
             var outward = station.FaceMode == CantileverStationFaceMode.Single &&
                 station.SingleSide == CantileverArmSide.PositiveY
                     ? -1.0
                     : 1.0;
 
+            // El semiancho X pasa a ser el del ALMA, que es contra lo que el separador topa. El resto de la
+            // columna -los dos patines- queda fuera de su camino, porque pasa por DENTRO de ellos.
+            //
+            // Una columna sin alma no puede recibir este arriostramiento, y eso se dice en vez de aproximarse:
+            // la autoridad falla en cerrado y aqui se convierte en diagnostico bloqueante.
+            if (!CantileverBracingPlaneResolver.TryWebHalfThickness(
+                    geometry, SectionRepresentationOptions.DefaultChordTolerance, out var halfWeb, out var reason))
+            {
+                return new ColumnAttachmentGeometry(0.0, 0.0, outward, reason);
+            }
+
             return new ColumnAttachmentGeometry(
-                Math.Max(Math.Abs(box.MinX), Math.Abs(box.MaxX)),
-                outward > 0.0 ? box.MaxY : box.MinY,
+                halfWeb,
+                CantileverBracingPlaneResolver.WebPlaneY(box),
                 outward);
         }
 
         private readonly struct ColumnAttachmentGeometry
         {
-            public ColumnAttachmentGeometry(double halfWidthX, double bracingFaceY, double outwardSign)
+            public ColumnAttachmentGeometry(
+                double halfWidthX, double bracingFaceY, double outwardSign, string blockedReason = null)
             {
                 HalfWidthX = halfWidthX;
                 BracingFaceY = bracingFaceY;
                 OutwardSign = outwardSign;
+                BlockedReason = blockedReason;
             }
+
+            /// <summary>Por que esta columna no puede recibir arriostramiento, o null si puede.</summary>
+            public string BlockedReason { get; }
 
             public double HalfWidthX { get; }
 

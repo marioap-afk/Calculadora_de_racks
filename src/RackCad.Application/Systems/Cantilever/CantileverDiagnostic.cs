@@ -367,5 +367,14 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>A separator or brace punch does not coincide with the datum it must bolt to.</summary>
         public const string BracingDatumMismatch = "CANT_BRACING_DATUM_MISMATCH";
+
+        /// <summary>
+        /// La columna no tiene ALMA donde recibir el arriostramiento longitudinal.
+        ///
+        /// Codigo propio y no uno compartido de «familia no soportada»: el problema no es que la seccion sea
+        /// rara, es que este arriostramiento se atornilla al alma y un tubo no tiene. El lector tiene que
+        /// saber que lo que falla es la union y no el catalogo.
+        /// </summary>
+        public const string ColumnHasNoWebForBracing = "CANT_COLUMN_HAS_NO_WEB_FOR_BRACING";
     }
 }

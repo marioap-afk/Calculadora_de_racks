@@ -146,10 +146,19 @@ namespace RackCad.Tests
             // veia cuando la pendiente era cero. `lateral` tampoco, porque cuenta puntos y no coordenadas.
             // Los dos del BOM tampoco: la pendiente no cambia la longitud que se ordena.
             // Anteriores: linea 6D3BB5C6…, linea-doble 2038786A…, planta 9E9611FA…, persistencia 9F89BB74…
-            ["linea"] = "E3AAA3BC2663DC7FA3651945B0DF18F148BE9FF167E4E9ADCE2BC4D15B3A36A3",
-            ["linea-doble"] = "2A9EF89BA2B9BC462FC9FCA942D3ECDB8A6481FBBD78612D2A6FB562B2663EA4",
-            ["bom"] = "6088C538512ACDCA52D0C5DB5D0AD1DE180686CE13752D33F674F19C6DFA66F3",
-            ["bom-doble"] = "608B790C28618CD013D8B807F937E3EF73FCF4BAF9B77D076E0CFE866FA5A272",
+            // MOVIDOS UNA CUARTA VEZ en la ronda 3, con el SEPARADOR al alma. El dueno declaro que el
+            // arriostramiento longitudinal se atornilla al alma y no al patin, asi que el separador pasa entre
+            // los dos patines y topa contra ella: su claro deja de medirse de cara a cara de patin —96 − 7.96
+            // = 88.04 in— y pasa a medirse de alma a alma —96 − 0.29 = 95.71 in—.
+            //
+            // Y esta vez SE MUEVEN TAMBIEN LOS DOS DEL BOM, que no se habian movido en toda la iniciativa: la
+            // longitud de un separador SI es una linea de pedido. Es la senal de que este cambio toca el
+            // producto y no solo el dibujo.
+            // Anteriores: linea E3AAA3BC…, linea-doble 2A9EF89B…, bom 6088C538…, bom-doble 608B790C…
+            ["linea"] = "04BFD336A2EC1F31E8ECF973FE23A0083F4A7C86FA072A2E7B5B10435C54803A",
+            ["linea-doble"] = "A7690B79B05895FD41D86F1031EADB160CB2EC96E9A7EEEF83B14287C14D51F5",
+            ["bom"] = "F8AB3351A2D4F7C2F59888AAD54DE47DE73E100DE36C7F07788CFDE8B18072EC",
+            ["bom-doble"] = "C17AD69D9A435B20B99D7DF3121D107C910C6D361D68D21261C230CCBF5D0F63",
             // TRES DE ESTOS CUATRO SE MOVIERON en la correccion de columna/base, por la causa fisica del
             // motivo 2: se le preguntaba a la CAMARA si miraba a lo largo del eje Z DEL MUNDO, cuando lo que
             // decide si una seccion conserva su forma es el eje del MIEMBRO. Una camara cenital conserva la
