@@ -133,7 +133,26 @@ namespace RackCad.Application.Systems.Cantilever
                 throw new ArgumentNullException(nameof(frame));
             }
 
-            return LocalFrame3D.Create(Reflect(frame.Origin), Reflect(frame.AxisZ), Reflect(frame.AxisX));
+            // La X local se NIEGA además de reflejarse, y ahí está la corrección.
+            //
+            // `LocalFrame3D` fija AxisY = AxisZ × AxisX, así que reflejar sólo Z y X dejaba una AxisY volteada:
+            // la sección quedaba boca abajo, y el flag `Mirrored` que el llamador voltea compensa en la X, no
+            // en la Y. Las dos cosas juntas no se cancelan — dan un giro de 180° sobre el eje del miembro.
+            //
+            // En una W, que es doblemente simétrica, ese giro no cambia el contorno y por eso nadie lo veía;
+            // en cuanto la base sea un perfil asimétrico —un canal, un ángulo— sale del revés. Medido sobre la
+            // línea de referencia en gónd0la doble: el patín inferior de la base espejada se dibujaba arriba,
+            // entre 11.82 y 12.2 in, en vez de abajo entre 0 y 0.38.
+            //
+            // Negando la X local, AxisY se conserva y el flag `Mirrored` compensa exactamente el eje que se
+            // negó. La reflexión sigue siendo impropia y la mano sigue viviendo en el flag: lo único que
+            // cambia es CUÁL de los dos ejes carga con ella.
+            var reflectedX = Reflect(frame.AxisX);
+
+            return LocalFrame3D.Create(
+                Reflect(frame.Origin),
+                Reflect(frame.AxisZ),
+                new Vector3D(-reflectedX.X, -reflectedX.Y, -reflectedX.Z));
         }
 
         /// <summary>Reflects a point through <c>y = 0</c>.</summary>
