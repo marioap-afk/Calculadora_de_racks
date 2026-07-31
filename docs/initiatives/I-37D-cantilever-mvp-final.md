@@ -184,6 +184,38 @@ La **insercion independiente** sigue el precedente de `RACKSECCION`: sin `RackSy
 handler de edicion, sin payload y con identidad propia. El bloque queda identificado y **no editable**, y
 eso se declara en el paquete manual en vez de prometerse.
 
+## 9c. Correccion de columna y base
+
+La validacion manual de la **ronda 2** quedo **RECHAZADA en columna y base**
+(`OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_2_COLUMN_BASE`); el resto de la ronda 2 no fue objetado.
+Cinco motivos, y **tres de ellos geometricos y medibles**, cosa que la ronda 1 no tuvo:
+
+1. **Dos margenes de troquel sin utilidad de producto.** Retirados de la autoridad y de la interfaz. El
+   troquel se acota por su **radio**: un agujero entero cabe o no cabe. Las dos propiedades del DTO se
+   conservan marcadas LEGACY porque la API de I-37A esta integrada en `main`, y el JSON deja de escribirlas.
+2. **Geometria de la planta incorrecta.** La base salia como **una linea de 6.49 in con longitud CERO**. La
+   causa estaba una capa mas abajo: se le preguntaba a la **camara** si miraba a lo largo del eje Z *del
+   mundo*, y lo que decide si una seccion conserva su forma es el eje del **miembro**. Una camara cenital
+   conserva la forma de una columna de pie y no la de una base tumbada. Para una vista expresada en ejes de
+   seccion el eje del miembro **es** Z, asi que `RACKSECCION` no cambia en nada.
+3. **La lateral omite placas y cartabon.** No las omitia: las dibujaba con **espesor cero**, por proyectar
+   el contorno de una sola cara. Ahora se dibuja la silueta del **solido**. Vista de frente la cara lejana
+   cae sobre la cercana y la silueta **es** el contorno, asi que nada cambia donde ya estaba bien.
+4. **La columna arranca en el piso.** Decision normativa del Owner: **la base se queda en el piso** y solo
+   sube la columna, que arranca en la cara superior de su placa inferior. Base y columna comparten el datum
+   **logico** de conexion, no el mismo origen fisico en Z — precisado en la nota **N1** de ADR-0024. La
+   longitud **nominal** de corte y el BOM comercial no cambian: la placa levanta la columna, no la alarga.
+5. **Naturalezas fisicas indistinguibles.** Todo salia BYBLOCK en la capa 0. Application gana el vocabulario
+   de **roles visuales** —con `Annotation` declarado antes de que nada lo emita— y dos adaptadores lo
+   consumen: color en la previa, capa BYLAYER en el dibujo.
+
+La **correccion arquitectonica** que el Owner exigio esta aplicada: una sola variable ya no significa piso,
+inicio de base e inicio de columna a la vez. El ejercicio de las quince regresiones destapo ademas **dos
+defectos vivos** —el arranque de la columna se calculaba en dos sitios, y `ColumnTopZ` se habia quedado sin
+consumidor—, los dos corregidos.
+
+**Brazo, separador y tensor no se modificaron.**
+
 ## 10. Validacion manual
 
 **OBLIGATORIA.** `requires_autocad: true`, `requires_owner_validation: true`. I-37D cambia dibujo e interfaz,

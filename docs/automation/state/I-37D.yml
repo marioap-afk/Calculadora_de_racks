@@ -12,7 +12,7 @@ automation_state:
     cerrar-AutoCAD-regenerar-el-bundle-y-recompilar-el-DLL ·
     NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-round-2-md ·
     despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
-  last_evidence_commit: 5142e1b
+  last_evidence_commit: 00f4ca1
 
 # --------------------------------------------------------------------------------------------------------
 # RONDAS DE VALIDACION MANUAL. El historial NO se reescribe.
@@ -45,9 +45,9 @@ rondas:
       ColumnTopPunchOffset · 2-la-vista-en-planta-de-columna-base-contiene-geometria-incorrecta ·
       3-la-vista-lateral-omite-placas-y-cartabon · 4-la-columna-arranca-desde-el-piso-y-no-desde-la-
       cara-superior-de-su-placa-inferior · 5-las-naturalezas-fisicas-no-se-distinguen-visualmente
-    correccion_en_curso: >-
-      NO-CERRADA · motivo-1-RESUELTO-los-dos-margenes-retirados-y-la-regla-del-radio-en-la-autoridad ·
-      motivos-2-3-4-y-5-PENDIENTES
+    correccion: >-
+      CERRADA-los-CINCO-motivos-atendidos · pendiente-SOLO-la-validacion-manual-de-la-ronda-2-corregida ·
+      su-paquete-es-docs-automation-evidence-I-37D-autocad-validation-round-2-column-base-fix-md
     veredicto_original: PENDIENTE-DE-EJECUTAR
     evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-md
     code_sha: 5142e1ba1b73a332f3df9960df05a40df59b3f2d
@@ -452,6 +452,60 @@ candidato:
     placas-de-columna-de-separador=36 · componentes-de-BOM=4 ·
     curvas-frontal=368-planta=174-lateral=47
 
+  '2-correccion':
+    veredicto: PENDIENTE-DE-EJECUTAR
+    alcance: >-
+      SOLO-columna-y-base-mas-las-costuras-compartidas-que-su-correccion-tocaba-objetivamente ·
+      brazo-separador-y-tensor-NO-se-modificaron
+    evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-column-base-fix-md
+    code_sha: 00f4ca1b373f9c210db6cbb78a2db869b81cc20c
+    validated_build_sha: 00f4ca1b373f9c210db6cbb78a2db869b81cc20c
+    dll_sha256: FDB37A4F0DC26F13C01D87028AFBC72263F8C1AEF8603D8D6C6829EF7920E5AD
+    dll_bytes: 135680
+    dll_fecha: 2026-07-30T20:40:00
+    informational_version: 1.0.0+00f4ca1b373f9c210db6cbb78a2db869b81cc20c
+    suites: RackCad-Tests-2848 · RackCad-UI-Tests-605
+    regresiones: 15-de-15-verificadas-EN-ROJO-docs-automation-evidence-I-37D-column-base-fix-regressions-md
+    bundle: >-
+      generado-con-AutoCAD-CERRADO-y-verificado-fail-closed-153-comprobaciones ·
+      el-DLL-del-bundle-es-el-MISMO-binario-que-el-de-bin-Debug
+    bundle_inventario: docs-automation-evidence-I-37D-column-base-fix-bundle-inventory-txt
+    motivo_1: >-
+      RESUELTO · los-dos-margenes-retirados-de-la-autoridad-y-de-la-UI · el-troquel-se-acota-por-su-
+      RADIO-un-agujero-entero-cabe-o-no-cabe · las-propiedades-del-DTO-se-conservan-marcadas-LEGACY-
+      porque-la-API-de-I-37A-esta-integrada-en-main · el-JSON-deja-de-escribirlas
+    motivo_2: >-
+      RESUELTO · la-causa-estaba-una-capa-mas-abajo-se-preguntaba-a-la-CAMARA-por-el-eje-Z-DEL-MUNDO-
+      y-lo-que-decide-si-una-seccion-conserva-su-forma-es-el-eje-del-MIEMBRO ·
+      SectionViewpoint-gana-PreservesShapeOf-eje · base-en-planta-6-49-por-0-0000-pasa-a-6-49-por-48-00 ·
+      para-una-vista-en-ejes-de-seccion-el-eje-del-miembro-ES-Z-asi-que-RACKSECCION-no-cambia
+    motivo_3: >-
+      RESUELTO · no-se-omitian-se-dibujaban-con-espesor-CERO-por-proyectar-el-contorno-de-UNA-cara ·
+      ahora-se-dibuja-la-silueta-del-SOLIDO-casco-convexo-de-sus-dos-caras ·
+      placa-inferior-9-73-por-0-0000-pasa-a-9-73-por-0-2500 · de-frente-la-silueta-ES-el-contorno-asi-
+      que-nada-cambia-donde-ya-estaba-bien
+    motivo_4: >-
+      RESUELTO-segun-la-DECISION-NORMATIVA-del-Owner · la-base-SE-QUEDA-en-el-piso-y-solo-sube-la-
+      columna · CantileverColumnBaseDatum-gana-un-nombre-por-elevacion-BaseBottomZ-
+      ColumnBottomPlateBottomZ-ColumnBottomPlateTopZ-ColumnStartZ-ColumnTopZ ·
+      la-longitud-NOMINAL-de-corte-y-el-BOM-comercial-no-cambian · envolvente-menos-0-25-a-96-pasa-a-0-a-96-25
+    motivo_5: >-
+      RESUELTO · Application-gana-el-vocabulario-de-roles-visuales-nueve-con-Annotation-declarado-antes-
+      de-que-nada-lo-emita-capa-y-color-por-rol-y-default-que-LANZA ·
+      la-previa-convierte-el-indice-ACI-a-pincel-y-el-materializador-pone-cada-entidad-en-la-capa-de-su-
+      naturaleza-BYLAYER · se-pierde-restilar-la-vista-entera-desde-su-referencia-y-se-gana-poder-apagar-
+      los-troqueles-para-mirar-el-acero
+    correccion_arquitectonica: >-
+      APLICADA · una-sola-variable-ya-no-significa-piso-e-inicio-de-base-e-inicio-de-columna-a-la-vez ·
+      ademas-el-ejercicio-de-regresiones-destapo-DOS-defectos-vivos-el-arranque-de-la-columna-se-
+      calculaba-en-DOS-sitios-y-ColumnTopZ-se-habia-quedado-sin-consumidor · los-dos-corregidos
+    adr_0024: >-
+      NOTA-N1-anadida · precisa-D7-sin-contradecirlo · base-y-columna-comparten-el-datum-LOGICO-de-
+      conexion-NO-el-mismo-origen-fisico-en-Z
+    pines_movidos: >-
+      frontal-planta-y-frontal-doble-por-causa-fisica-declarada-en-el-propio-archivo ·
+      lateral-NO-se-movio-porque-su-firma-cuenta-PUNTOS-y-no-coordenadas
+
 # --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
 # --------------------------------------------------------------------------------------------------------
@@ -461,8 +515,9 @@ pendiente_del_owner:
   validacion_manual_en_autocad: >-
     PENDIENTE-y-BLOQUEANTE · es-el-gate-real-de-esta-iniciativa
   parametros_sin_default_heredados: >-
-    ColumnBottomPlateEndOffset · ColumnTopPunchOffset · MountingPlateVerticalEndOffset ·
-    los-tres-siguen-siendo-entradas-obligatorias-que-el-resolver-rechaza-si-faltan
+    MountingPlateVerticalEndOffset-es-el-UNICO-que-queda ·
+    ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-fueron-RETIRADOS-por-el-Owner-en-la-correccion-
+    de-columna-y-base-y-ya-no-son-entradas-obligatorias
   id_del_canal_de_4_in_ligero: >-
     CERRADO-y-fuera-de-la-lista-de-pendientes · DefaultSeparatorSectionId-igual-AISC-C-C4X4_5-es-
     VINCULANTE-decision-12-51 · el-C4-mas-ligero-de-forma-INEQUIVOCA-y-se-dibuja-sin-diagnostico ·
