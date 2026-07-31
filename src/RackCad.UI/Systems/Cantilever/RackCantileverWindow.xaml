@@ -79,6 +79,60 @@
                     <TextBlock x:Name="BracingSummaryText" TextWrapping="Wrap" FontSize="11" Margin="0,6,0,0"
                                Foreground="{DynamicResource ShellTextSecondaryBrush}" />
 
+                    <!-- ============ SECUENCIA DE PANELES: la regla, o tramo a tramo ============
+                         La tabla sólo aparece en avanzado. En automático la secuencia la manda la regla y una
+                         tabla editable que no gobierna nada sería una invitación a escribir en ella y no
+                         entender por qué el dibujo no cambia. -->
+                    <TextBlock Text="Secuencia de paneles" Style="{StaticResource SectionTitle}" />
+                    <ComboBox x:Name="PanelLayoutModeBox" SelectionChanged="PanelLayoutMode_Changed"
+                              ToolTip="Automática: la regla reparte los paneles en la altura. Avanzada: declaras tramo a tramo de qué cota a qué cota va cada uno y cuál lleva tensores." />
+
+                    <StackPanel x:Name="AdvancedPanelArea" Visibility="Collapsed" Margin="0,6,0,0">
+                        <DataGrid x:Name="PanelSegmentGrid" AutoGenerateColumns="False" CanUserAddRows="False"
+                                  CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False"
+                                  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                                  SelectionMode="Single" SelectionUnit="FullRow" MaxHeight="220"
+                                  Background="Transparent" BorderBrush="{DynamicResource ShellBorderBrush}"
+                                  BorderThickness="1" FontSize="11"
+                                  CellEditEnding="PanelSegment_CellEditEnding">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="#" Binding="{Binding Number}" IsReadOnly="True" Width="28" />
+                                <DataGridTextColumn Header="Y1" Binding="{Binding Y1}" Width="*" />
+                                <DataGridTextColumn Header="Y2" Binding="{Binding Y2}" Width="*" />
+                                <!-- La altura es DERIVADA y por eso es de sólo lectura: se edita moviendo una
+                                     cota, nunca escribiendo la altura, que sería una tercera autoridad. -->
+                                <DataGridTextColumn Header="Alto" Binding="{Binding Height}" IsReadOnly="True" Width="*" />
+                                <DataGridCheckBoxColumn Header="Tens." Binding="{Binding Braced}" Width="44" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <WrapPanel Margin="0,6,0,0">
+                            <Button x:Name="PanelAddButton" Content="Agregar" Click="PanelAdd_Click"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,4,4" Padding="8,3" />
+                            <Button x:Name="PanelRemoveButton" Content="Eliminar" Click="PanelRemove_Click"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,4,4" Padding="8,3" />
+                            <Button x:Name="PanelUpButton" Content="Subir" Click="PanelUp_Click"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,4,4" Padding="8,3" />
+                            <Button x:Name="PanelDownButton" Content="Bajar" Click="PanelDown_Click"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,4,4" Padding="8,3" />
+                            <Button x:Name="PanelSplitButton" Content="Dividir" Click="PanelSplit_Click"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,4,4" Padding="8,3" />
+                            <Button x:Name="PanelMergeButton" Content="Unir" Click="PanelMerge_Click"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,4,4" Padding="8,3" />
+                            <Button x:Name="PanelToggleButton" Content="Tensores" Click="PanelToggle_Click"
+                                    Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,4,4" Padding="8,3" />
+                            <Button x:Name="PanelMaterializeButton" Content="Materializar automático"
+                                    Click="PanelMaterialize_Click" Style="{StaticResource SecondaryButtonStyle}"
+                                    Margin="0,0,4,4" Padding="8,3" />
+                        </WrapPanel>
+
+                        <!-- Los errores se ven AQUI, en la misma ventana. Un editor que manda al usuario a
+                             buscar el motivo en otro sitio es un editor que no dice lo que pasa. -->
+                        <TextBlock x:Name="PanelLayoutErrorText" TextWrapping="Wrap" FontSize="11"
+                                   Margin="0,4,0,0" Visibility="Collapsed"
+                                   Foreground="{DynamicResource ShellStatusErrorBrush}" />
+                    </StackPanel>
+
                     <!-- ============ COMPONENTES: resumen + botón. Sus parámetros viven en su ventana ============ -->
                     <TextBlock Text="Componentes" Style="{StaticResource SectionTitle}" />
 

@@ -37,6 +37,7 @@ namespace RackCad.UI.Systems.Cantilever
         private static readonly string[] Sides = { "Lado +Y", "Lado −Y" };
         private static readonly string[] HeightModes = { "Automática", "Manual" };
         private static readonly string[] PanelModes = { "Automático", "Manual" };
+        private static readonly string[] PanelLayoutModes = { "Automática", "Avanzada" };
         private static readonly string[] Scopes =
             { "Celda", "Estación", "Nivel (toda la línea)", "Lado (toda la línea)", "Toda la línea" };
 
@@ -53,6 +54,32 @@ namespace RackCad.UI.Systems.Cantilever
         private RackProject sourceProject;
         private bool isEditingExisting;
         private bool suppressSync;
+
+        /// <summary>
+        /// El estado del editor avanzado de paneles. La ventana COORDINA; quien decide es Application.
+        /// </summary>
+        /// <summary>
+        /// Cómo se pregunta antes de descartar la lista manual.
+        ///
+        /// Es una COSTURA y no un <c>MessageBox</c> escrito en el sitio, por dos razones. La primera es que un
+        /// diálogo modal dentro de un manejador cuelga cualquier prueba que toque este camino, y este camino
+        /// —volver a automático— es justo el que hay que probar. La segunda es que la decisión de PREGUNTAR ya
+        /// la tomó Application al marcar <c>ReplacesManualWork</c>; lo único que queda aquí es CÓMO.
+        /// </summary>
+        internal Func<string, bool> ConfirmDiscardingManualPanels { get; set; } = reason =>
+            MessageBox.Show(
+                reason + Environment.NewLine + Environment.NewLine + "¿Volver a la secuencia automática?",
+                "Secuencia de paneles",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning) == MessageBoxResult.Yes;
+
+        private CantileverPanelLayoutEditorState panelEditor =
+            new CantileverPanelLayoutEditorState(
+                CantileverPanelLayoutMode.Automatic, Array.Empty<CantileverPanelSegmentDesign>());
+
+        private readonly System.Collections.ObjectModel.ObservableCollection<CantileverPanelSegmentRow>
+            panelRows = new System.Collections.ObjectModel.ObservableCollection<CantileverPanelSegmentRow>();
+
         private bool currentInputsAreValid;
         private int recomputeCount;
 
@@ -90,6 +117,8 @@ namespace RackCad.UI.Systems.Cantilever
             SingleSideBox.ItemsSource = Sides;
             HeightModeBox.ItemsSource = HeightModes;
             PanelModeBox.ItemsSource = PanelModes;
+            PanelLayoutModeBox.ItemsSource = PanelLayoutModes;
+            PanelSegmentGrid.ItemsSource = panelRows;
             ScopeBox.ItemsSource = Scopes;
             ScopeBox.SelectedIndex = 0;
 
@@ -239,6 +268,14 @@ namespace RackCad.UI.Systems.Cantilever
                 PanelHeightBox.SetNumber(bracing.BracedPanelHeight, NumberFormat);
                 CentralSpaceBox.SetNumber(bracing.CentralEmptySpaceHeight, NumberFormat);
 
+                PanelLayoutModeBox.SelectedIndex =
+                    bracing.PanelLayoutMode == CantileverPanelLayoutMode.Advanced ? 1 : 0;
+
+                panelEditor = new CantileverPanelLayoutEditorState(
+                    bracing.PanelLayoutMode, bracing.AdvancedPanelSegments);
+
+                RefreshPanelRows();
+
                 LateralStationBox.SetNumber(1, "0");
 
                 var planta = design.PlantaVisibility ?? new CantileverPlantaVisibilityDesign();
@@ -319,6 +356,8 @@ namespace RackCad.UI.Systems.Cantilever
                 : null;
             bracing.BracedPanelHeight = Keep(PanelHeightBox, bracing.BracedPanelHeight);
             bracing.CentralEmptySpaceHeight = Keep(CentralSpaceBox, bracing.CentralEmptySpaceHeight);
+
+            panelEditor.ApplyTo(bracing);
 
             return true;
         }
@@ -1016,6 +1055,191 @@ namespace RackCad.UI.Systems.Cantilever
         }
 
         // ---- Input handlers ----------------------------------------------------------------------------------
+
+        // ---- Secuencia de paneles: la tabla avanzada -------------------------------------------------------
+
+        /// <summary>
+        /// Vuelca los tramos del editor en la tabla.
+        ///
+        /// La tabla es una VISTA del estado, no su dueña: se reconstruye desde <c>panelEditor</c> despues de
+        /// cada accion, asi que nunca puede quedar contando una historia distinta de la que se va a resolver.
+        /// </summary>
+        private void RefreshPanelRows()
+        {
+            var wasSuppressed = suppressSync;
+            suppressSync = true;
+
+            try
+            {
+                var selected = PanelSegmentGrid.SelectedIndex;
+
+                panelRows.Clear();
+
+                for (var i = 0; i < panelEditor.Segments.Count; i++)
+                {
+                    panelRows.Add(CantileverPanelSegmentRow.From(i, panelEditor.Segments[i], NumberFormat));
+                }
+
+                AdvancedPanelArea.Visibility = panelEditor.IsAdvanced
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
+                if (selected >= 0 && selected < panelRows.Count)
+                {
+                    PanelSegmentGrid.SelectedIndex = selected;
+                }
+                else if (panelRows.Count > 0)
+                {
+                    PanelSegmentGrid.SelectedIndex = 0;
+                }
+            }
+            finally
+            {
+                suppressSync = wasSuppressed;
+            }
+        }
+
+        /// <summary>Muestra —o retira— el motivo por el que una accion no se pudo hacer.</summary>
+        private void ShowPanelLayoutMessage(string message)
+        {
+            PanelLayoutErrorText.Text = message ?? string.Empty;
+            PanelLayoutErrorText.Visibility = string.IsNullOrEmpty(message)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+        }
+
+        private void ApplyPanelEdit(CantileverPanelEditResult result)
+        {
+            ShowPanelLayoutMessage(result.Applied ? null : result.Reason);
+            RefreshPanelRows();
+
+            if (result.Applied)
+            {
+                RequestRecompute();
+            }
+        }
+
+        private int SelectedPanelIndex => PanelSegmentGrid.SelectedIndex;
+
+        private void PanelLayoutMode_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            if (suppressSync)
+            {
+                return;
+            }
+
+            var wantsAdvanced = PanelLayoutModeBox.SelectedIndex == 1;
+
+            if (wantsAdvanced == panelEditor.IsAdvanced)
+            {
+                return;
+            }
+
+            if (wantsAdvanced)
+            {
+                // MATERIALIZA la secuencia que se esta viendo: el usuario empieza a editar lo que ya tenia, no
+                // una lista en blanco.
+                ApplyPanelEdit(panelEditor.MaterializeAutomatic(CurrentAutomaticSegments()));
+                return;
+            }
+
+            var restored = panelEditor.RestoreAutomatic();
+
+            // AVISA antes de devolver la autoridad a la regla, porque la lista manual deja de mandar. No se
+            // borra —se conserva por si vuelve— pero el dibujo y el BOM pasan a salir de la regla, y eso el
+            // usuario tiene que saberlo ANTES.
+            if (restored.ReplacesManualWork && !ConfirmDiscardingManualPanels(restored.Reason))
+            {
+                PanelLayoutModeBox.SelectedIndex = 1;
+                panelEditor.MaterializeAutomatic(panelEditor.Segments.ToList());
+                RefreshPanelRows();
+                return;
+            }
+
+            ApplyPanelEdit(restored);
+        }
+
+        /// <summary>
+        /// La lista que la REGLA produce ahora mismo, o vacia si la secuencia no resuelve.
+        ///
+        /// Sale de la resolucion vigente y no de un calculo aparte: materializar tiene que dar exactamente lo
+        /// que se esta dibujando, o el cambio de modo movería el dibujo por su cuenta.
+        /// </summary>
+        private IReadOnlyList<CantileverPanelSegmentDesign> CurrentAutomaticSegments()
+        {
+            var interval = lastComputation?.Line?.Intervals?.FirstOrDefault();
+
+            return interval?.Layout?.EffectiveSegments
+                ?? (IReadOnlyList<CantileverPanelSegmentDesign>)Array.Empty<CantileverPanelSegmentDesign>();
+        }
+
+        private void PanelAdd_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.Add(
+                PanelHeightBox.Value ?? CantileverLineDefaults.BracedPanelHeight,
+                CantileverPanelBracingMode.CrossBraced));
+
+        private void PanelRemove_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.Remove(SelectedPanelIndex));
+
+        private void PanelUp_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.Move(SelectedPanelIndex, 1));
+
+        private void PanelDown_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.Move(SelectedPanelIndex, -1));
+
+        private void PanelSplit_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.Split(SelectedPanelIndex));
+
+        private void PanelMerge_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.MergeWithNext(SelectedPanelIndex));
+
+        private void PanelToggle_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.ToggleBracing(SelectedPanelIndex));
+
+        private void PanelMaterialize_Click(object sender, RoutedEventArgs e) =>
+            ApplyPanelEdit(panelEditor.MaterializeAutomatic(CurrentAutomaticSegments()));
+
+        /// <summary>
+        /// Una cota o una casilla editada a mano vuelve al estado.
+        ///
+        /// Se lee la fila ENTERA y se reescribe el tramo, en vez de aplicar solo la celda que cambio: una cota
+        /// escrita a mano puede dejar la lista incompleta, y quien decide si eso es legal es la validacion al
+        /// resolver, no esta casilla.
+        /// </summary>
+        private void PanelSegment_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (suppressSync || e.EditAction != DataGridEditAction.Commit)
+            {
+                return;
+            }
+
+            // La celda aun no ha escrito su valor en el objeto cuando llega este evento, asi que se aplica
+            // despues de que el enlace lo haya hecho.
+            Dispatcher.BeginInvoke(new Action(CommitPanelRows), System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        private void CommitPanelRows()
+        {
+            var edited = new List<CantileverPanelSegmentDesign>();
+
+            foreach (var row in panelRows)
+            {
+                if (!row.TryToDesign(out var segment, out var reason))
+                {
+                    ShowPanelLayoutMessage(reason);
+                    RefreshPanelRows();
+                    return;
+                }
+
+                edited.Add(segment);
+            }
+
+            panelEditor = new CantileverPanelLayoutEditorState(CantileverPanelLayoutMode.Advanced, edited);
+
+            ShowPanelLayoutMessage(null);
+            RefreshPanelRows();
+            RequestRecompute();
+        }
 
         private void Input_Changed(object sender, RoutedEventArgs e) => RequestRecompute();
 
