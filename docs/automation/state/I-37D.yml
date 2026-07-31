@@ -39,9 +39,15 @@ rondas:
     veredicto: PENDIENTE-DE-EJECUTAR
     evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-md
     code_sha: 5142e1ba1b73a332f3df9960df05a40df59b3f2d
-    dll_sha256: BFF6135E988A510D314FC8EBD65FE2692D257714F7465C57E41A5BFE24AD4CCD
+    validated_build_sha: 4584e0c0b2f4fe95a55f8806cedc8a2c58abcd30
+    dll_sha256: BBB943E06CA484E3BBC9DD5B40227C0DA9AACB6DB45538C240ACF7DCAE57A41A
     dll_bytes: 135168
-    informational_version: 1.0.0+5142e1ba1b73a332f3df9960df05a40df59b3f2d
+    dll_fecha: 2026-07-30T17:58:26
+    informational_version: 1.0.0+4584e0c0b2f4fe95a55f8806cedc8a2c58abcd30
+    por_que_dos_sha: >-
+      5142e1b-es-el-CODE_SHA-funcional-la-ultima-punta-que-toco-src-o-tests · 4584e0c-es-ese-mas-un-
+      commit-EXCLUSIVAMENTE-documental · el-DLL-se-compilo-desde-4584e0c-porque-la-
+      AssemblyInformationalVersion-incrusta-la-punta-de-git · el-arbol-funcional-validado-es-el-de-5142e1b
     alcance: >-
       los-SEIS-motivos-del-rechazo-atendidos ·
       1-y-2-la-ventana-principal-edita-solo-la-LINEA-y-los-componentes-salen-a-cuatro-subventanas-sobre-
@@ -57,9 +63,12 @@ rondas:
     guardas_nuevas: 37-de-fuente-sobre-el-codigo-leido-como-texto
     suites: RackCad-Tests-2788 · RackCad-UI-Tests-605
     bundle: >-
-      NO-regenerado-en-la-corrida-de-cierre · deploy-build-bundle-ps1-ABORTA-con-AutoCAD-abierto-y-la-
-      sesion-del-dueno-lo-estaba · el-comando-exacto-esta-en-el-paso-2-del-paquete-y-hay-que-cerrar-
-      AutoCAD-para-validar-de-todos-modos
+      GENERADO-Y-VERIFICADO-2026-07-30-con-AutoCAD-ya-cerrado · deploy-build-bundle-ps1-Configuration-
+      Debug · 153-comprobaciones-OK · 24-archivos · DLL-identicos-al-publish-y-catalogos-identicos-a-
+      assets-catalogs-por-SHA-256 · solo-archivos-RackCad-y-CERO-DLL-de-Autodesk-ADR-0003 ·
+      el-DLL-de-bin-Debug-y-el-del-bundle-son-el-MISMO-binario-asi-que-NETLOAD-y-bundle-validan-lo-mismo
+    bundle_inventario: docs-automation-evidence-I-37D-round-2-bundle-inventory-txt
+    ci: run-30591689756-success-los-4-jobs-sobre-4584e0c
     defectos_reales_encontrados_por_las_pruebas: >-
       1-el-pin-de-persistencia-era-dependiente-de-la-PLATAFORMA-porque-Utf8JsonWriter-indenta-con-el-
       salto-de-linea-del-sistema-y-la-CI-corre-en-Linux-ahora-se-normaliza ·
@@ -150,11 +159,14 @@ distribucion_de_paneles_verificada:
 # GATES. El de esta iniciativa NO se resuelve sobre el codigo.
 # --------------------------------------------------------------------------------------------------------
 gates:
-  ci: RESUELTO-run-30552560784-success-4-de-4-jobs-sobre-4a2a6f5-necesario-pero-NO-suficiente
-  plugin_build: RESUELTO-Debug-0-errores-propios
+  ci: >-
+    RESUELTO-para-la-RONDA-2 · run-30591689756-success-4-de-4-jobs-sobre-4584e0c ·
+    necesario-pero-NO-suficiente · el-de-la-ronda-1-fue-run-30552560784-sobre-4a2a6f5
+  plugin_build: RESUELTO-Debug-0-errores-propios-sobre-4584e0c
   bundle: >-
-    RESUELTO-2026-07-30 · generado-y-verificado-fail-closed-153-comprobaciones-sobre-4a2a6f5 ·
-    era-REQUERIDO-porque-el-diff-toca-UI-Plugin-y-materializacion
+    RESUELTO-para-la-RONDA-2 · generado-y-verificado-fail-closed-153-comprobaciones-sobre-4584e0c ·
+    era-REQUERIDO-porque-el-diff-toca-UI-Plugin-y-materializacion ·
+    el-inventario-de-la-ronda-1-queda-como-historico-y-no-se-borra
   autocad: >-
     REQUERIDO-por-primera-vez-en-la-linea-I-37 · DLL-Debug-del-worktree-por-NETLOAD-con-instrucciones-
     exactas-y-checklist
