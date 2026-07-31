@@ -646,10 +646,7 @@ namespace RackCad.Application.Systems.Cantilever
                 CantileverPieceTokens.IntervalOwnerOf(brace.IntervalIndex),
                 CantileverPieceTokens.BraceToken(brace.PanelIndex, brace.Diagonal));
 
-            // La fabrica viaja hasta aqui desde la ronda 4 de I-37D: el contorno del adaptador lo da la
-            // tuberia de secciones, igual que el de cualquier otro perfil, en vez de construirse a mano.
-            var representation = CantileverBraceRepresentationResolver.Resolve(
-                brace, bodyId, geometryFactory);
+            var representation = CantileverBraceRepresentationResolver.Resolve(brace, bodyId);
 
             foreach (var contour in representation.Contours)
             {
@@ -664,6 +661,15 @@ namespace RackCad.Application.Systems.Cantilever
             // identicos uno encima de otro. El de la varilla no lo dibuja nadie mas.
             foreach (var adapter in brace.Adapters)
             {
+                // EL ANGULO ENTRA POR AddMember, igual que una columna o un separador. Desde la ronda 4 de
+                // I-37D es un miembro con su prisma y su marco fisico, no un contorno que el resolver de
+                // representacion dibujaba a mano: asi la L sale con su filete de raiz, sus radios de punta y su
+                // talon vivo, y sale de la MISMA tuberia que el resto del sistema.
+                AddMember(
+                    curves, adapter.Id, CantileverViewPieceKind.ColdRolledAdapter,
+                    adapter.Member, zero, options, geometryFactory,
+                    role: CantileverVisualRole.BraceAdapter);
+
                 AddRodHole(curves, adapter, viewpoint);
             }
         }
@@ -676,7 +682,6 @@ namespace RackCad.Application.Systems.Cantilever
                 case CantileverBracePieceKind.Body:
                     return CantileverViewPieceKind.Brace;
 
-                case CantileverBracePieceKind.Adapter:
                 case CantileverBracePieceKind.Gusset:
                     return CantileverViewPieceKind.ColdRolledAdapter;
 
@@ -689,8 +694,10 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>
         /// Qué NATURALEZA tiene cada contorno, que no es lo mismo que su tipo.
         ///
-        /// El adaptador y su cartabón son las dos piezas fabricadas del extremo y comparten tipo, pero se leen
-        /// aparte en el plano: una es el ángulo que sujeta y la otra el triángulo que lo refuerza.
+        /// El cartabón comparte TIPO de pieza con el ángulo al que refuerza —los dos son el extremo del tensor—
+        /// pero no su naturaleza: en el plano se leen aparte, uno es la pieza que sujeta y otro el triángulo que
+        /// la rigidiza. Desde la ronda 4 de I-37D el ángulo ya no pasa por aquí, porque es un miembro; el
+        /// cartabón sí, porque es una pieza fabricada sin fila de catálogo.
         /// </summary>
         private static CantileverVisualRole RoleOf(CantileverBracePieceKind kind)
         {
@@ -698,9 +705,6 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 case CantileverBracePieceKind.Body:
                     return CantileverVisualRole.Brace;
-
-                case CantileverBracePieceKind.Adapter:
-                    return CantileverVisualRole.BraceAdapter;
 
                 case CantileverBracePieceKind.Gusset:
                     return CantileverVisualRole.BraceGusset;
@@ -746,7 +750,8 @@ namespace RackCad.Application.Systems.Cantilever
             Vector3D offset,
             SectionRepresentationOptions options,
             StructuralSectionGeometryFactory geometryFactory,
-            bool flattenSlope = false)
+            bool flattenSlope = false,
+            CantileverVisualRole? role = null)
         {
             var geometry = geometryFactory.Get(member.Placement.SectionId, options.Detail);
 
@@ -762,7 +767,7 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var curve in plan.Curves)
             {
-                curves.Add(new CantileverViewCurve(kind, id, curve.Points, curve.IsClosed));
+                curves.Add(new CantileverViewCurve(kind, id, curve.Points, curve.IsClosed, null, role));
             }
         }
 

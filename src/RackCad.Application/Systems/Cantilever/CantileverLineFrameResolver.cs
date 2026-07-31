@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RackCad.Application.Geometry;
 using RackCad.Application.StructuralSections.Geometry;
 
@@ -112,6 +113,56 @@ namespace RackCad.Application.Systems.Cantilever
 
             return new CantileverBracingPlacement(
                 LocalFrame3D.Create(origin, axisZ, referenceX), false);
+        }
+
+        /// <summary>
+        /// El ÁNGULO de extremo de un tensor cold rolled, colocado sobre su marco físico.
+        ///
+        /// <para>El marco ya viene resuelto por <see cref="CantileverBraceAdapterFrameResolver"/> —que es quien
+        /// sabe de caras de separador y de diagonales— y aquí sólo se hace la parte que es de esta autoridad:
+        /// llevar el ORIGEN de la sección a donde el prisma tiene que empezar.</para>
+        ///
+        /// <para>La tubería centra el contorno de un ángulo en su centroide TABULADO y deja el talón anotado
+        /// como punto de referencia, así que el origen local de la sección está a <c>−talón</c> del talón. El
+        /// prisma se extruye desde su origen a lo largo de +Z, y los dos agujeros están a media longitud de
+        /// corte de cada extremo, así que el arranque queda media longitud por detrás del plano de los
+        /// agujeros.</para>
+        ///
+        /// <para><b>Sin espejo.</b> El catálogo construye el ángulo con un ala hacia +X y la otra hacia +Y desde
+        /// el talón, y el marco del adaptador nombra X al ala apoyada y Y a la del tensor. Las dos coinciden por
+        /// construcción, así que espejar sería deshacer la orientación que el marco acaba de derivar. Las cuatro
+        /// manos salen del marco —que gira con su diagonal— y no de un espejo aplicado a la sección.</para>
+        /// </summary>
+        public static CantileverBracingPlacement ColdRolledAdapter(
+            CantileverBraceAdapterFrame adapter, double cutLength, StructuralSectionGeometry geometry)
+        {
+            if (geometry == null)
+            {
+                throw new ArgumentNullException(nameof(geometry));
+            }
+
+            GeometryTolerance.RequireFinite(cutLength, nameof(cutLength));
+
+            var heel = geometry.ReferencePoints
+                .FirstOrDefault(r => r.Kind == SectionReferencePointKind.AngleHeel);
+
+            if (heel.Kind != SectionReferencePointKind.AngleHeel)
+            {
+                throw new InvalidOperationException(
+                    "La seccion '" + geometry.SectionId +
+                    "' no publica su talon, asi que no se puede colgar un adaptador de el.");
+            }
+
+            // El talón está en `heel.Location` dentro de la sección, así que el ORIGEN de la sección está a
+            // `−heel.Location` del talón, medido en los ejes del ángulo.
+            var origin =
+                adapter.Heel +
+                (adapter.AlongSeatedLeg * -heel.Location.X) +
+                (adapter.AlongRodLeg * -heel.Location.Y) +
+                (adapter.AlongCut * -(cutLength / 2.0));
+
+            return new CantileverBracingPlacement(
+                LocalFrame3D.Create(origin, adapter.AlongCut, adapter.AlongSeatedLeg), false);
         }
 
         /// <summary>

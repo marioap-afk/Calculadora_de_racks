@@ -691,10 +691,23 @@ namespace RackCad.Tests
                 (panel.UpperSeparator.RightBracePunch.Centre - panel.LowerSeparator.LeftBracePunch.Centre)
                 .Length;
 
-            var inset = CantileverIntervalResolver.RodHoleAxialOffset(
-                CantileverLineDefaults.AdapterCutLength);
+            // LA CORRECCION DE LA RONDA 4 DE I-37D, medida aqui. El agujero de la varilla ya no esta a medio
+            // corte del perno: esta en el PLANO MEDIO del ala perpendicular, o sea a (brazo - espesor)/2 del
+            // agujero del separador a lo largo de la diagonal. Como son dos extremos, el tensor mide
+            // `perno - perno - (brazo - espesor)`, y no `perno - perno - corte`.
+            var inset = CantileverBraceAdapterFrameResolver.HoleOffsetPerAxis(
+                CantileverLineDefaults.AdapterAngleLeg,
+                CantileverLineDefaults.AdapterAngleThickness);
 
             Assert.Equal(boltToBolt - (2.0 * inset), brace.BodyLength, 1e-9);
+
+            // Y el numero concreto: la aproximacion revocada quitaba 2.0 in de tensor y la fisica quita
+            // 1.8125, asi que la varilla CRECE exactamente el espesor del angulo. Que no vuelva a acortarse.
+            Assert.Equal(
+                boltToBolt - CantileverLineDefaults.AdapterCutLength +
+                    CantileverLineDefaults.AdapterAngleThickness,
+                brace.BodyLength,
+                1e-9);
             Assert.True(brace.BodyLength < boltToBolt, "La varilla es mas corta que el eje entre tornillos.");
 
             // Each adapter's separator hole IS the separator's brace punch, and its rod hole is the rod's end.

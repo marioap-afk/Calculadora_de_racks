@@ -155,10 +155,35 @@ namespace RackCad.Tests
             // longitud de un separador SI es una linea de pedido. Es la senal de que este cambio toca el
             // producto y no solo el dibujo.
             // Anteriores: linea E3AAA3BC…, linea-doble 2A9EF89B…, bom 6088C538…, bom-doble 608B790C…
-            ["linea"] = "04BFD336A2EC1F31E8ECF973FE23A0083F4A7C86FA072A2E7B5B10435C54803A",
-            ["linea-doble"] = "A7690B79B05895FD41D86F1031EADB160CB2EC96E9A7EEEF83B14287C14D51F5",
-            ["bom"] = "F8AB3351A2D4F7C2F59888AAD54DE47DE73E100DE36C7F07788CFDE8B18072EC",
-            ["bom-doble"] = "C17AD69D9A435B20B99D7DF3121D107C910C6D361D68D21261C230CCBF5D0F63",
+            // MOVIDOS UNA QUINTA VEZ en la ronda 4 de I-37D, por la decision del dueno sobre el ADAPTADOR.
+            //
+            // Se revoco `RodHoleAxialOffset = CutLength / 2`. El agujero de la varilla ya no esta a medio corte
+            // del perno medido sobre la diagonal: el adaptador es un prisma real de L2x2x3/16 y sus dos agujeros
+            // estan CENTRADOS CADA UNO EN SU ALA, en el plano medio de esa ala. Eso los separa (brazo -
+            // espesor)/2 = 0.90625 in en CADA uno de los dos ejes del angulo, o sea 1.281631 in en total y con
+            // las tres componentes vivas —(0.820358, -0.90625, 0.385099)— contra el 1.0 plano y con DeltaY = 0
+            // de la aproximacion revocada.
+            //
+            // `linea` y `linea-doble` se mueven porque la firma lleva dentro las coordenadas de cada pieza, y
+            // ahora hay dos adaptadores mas por tensor que son MIEMBROS con su prisma.
+            //
+            // `bom` y `bom-doble` SE MUEVEN, y es la senal de que esto toca el producto: el tensor mide
+            // 92.319026 in donde media 92.131526, o sea CRECE 0.1875 in = exactamente el espesor del angulo. No
+            // es casualidad: la aproximacion medía hasta la CARA del ala y la fisica mide hasta su PLANO MEDIO,
+            // y entre una y otra hay medio espesor por extremo. Las CANTIDADES no cambian —4 varillas, 8
+            // adaptadores, 16 cartabones— solo la longitud que se ordena.
+            //
+            // `frontal` y `frontal-doble` se mueven porque el angulo pasa a proyectarse por la tuberia comun.
+            //
+            // `planta`, `lateral`, `planta-doble`, `lateral-doble` y `persistencia` NO se movieron, y eso acota
+            // el cambio: el corte del adaptador corre dentro del plano del panel, asi que esas dos camaras no
+            // ven nada nuevo, y el JSON persiste el diseno y no la geometria derivada.
+            // Anteriores: linea 04BFD336..., linea-doble A7690B79..., bom F8AB3351..., bom-doble C17AD69D...,
+            //             frontal 2BCE702C..., frontal-doble A339B50E...
+            ["linea"] = "8FC93BDC350416F2434AED4AFEFE5D2327F2BDDE1C47E6620646B26A53EEDC78",
+            ["linea-doble"] = "5EA48A5FE7BDF04C1018DB53C8951EAB53B7D2500D3C2449F4D4042B772DA9EF",
+            ["bom"] = "C9B30A64EA0FA3CA603AA1FD1F50A1545CD479EFE70D8EDD0C0732A87ECEC639",
+            ["bom-doble"] = "4F48224B013A9DC2C6E4D7E68AFBF36D4A15D34A417D057E0C56183F638DD993",
             // TRES DE ESTOS CUATRO SE MOVIERON en la correccion de columna/base, por la causa fisica del
             // motivo 2: se le preguntaba a la CAMARA si miraba a lo largo del eje Z DEL MUNDO, cuando lo que
             // decide si una seccion conserva su forma es el eje del MIEMBRO. Una camara cenital conserva la
@@ -195,7 +220,7 @@ namespace RackCad.Tests
             // arriostramiento, que vive entre estaciones. Los dos del BOM tampoco: cambiar el contorno de una
             // pieza no cambia lo que se compra.
             // Anteriores: frontal C7A22C78…, frontal-doble C7EE670C…
-            ["frontal"] = "2BCE702C9DA25EF9352C6C2D4966A6FDF965940C9606C635F8E2989484618540",
+            ["frontal"] = "F1CE9F1C34D5C6BFAE4E87FD65F1C3845FC1099F4D4EBA48C7ED07E3B44B6540",
             // Movido en la ronda 3 con la pendiente por omision del brazo: su huella en planta se acorta.
             // SOLO ESTE se movio en la ronda 3, punto 5, y por decision del dueño: la planta nace SIN
             // brazos ni tensores, porque en esta etapa se lee para colocar columnas y bases y esas dos
@@ -207,7 +232,7 @@ namespace RackCad.Tests
             // Anterior: planta 632DD853…
             ["planta"] = "22DA23D78F01C4075CA2E0C992019D5DA646DB504A71CC012232EFB7002B3454",
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
-            ["frontal-doble"] = "A339B50EC2D7058F2D630EF7AC0EF11722730B82280AA92B656B69CAE221D9D0",
+            ["frontal-doble"] = "810177A6764F2E061C8EF3F0338B7F19DCB1C06B4FA7391CD4872BCD5C4FDAAA",
 
             // MOVIDO A PROPOSITO en la ronda 2, y es el UNICO pin que se movio por contenido.
             // `BaseFollowsColumn` es intencion nueva del diseno y se persiste, asi que el JSON gana una clave.

@@ -156,7 +156,9 @@ namespace RackCad.Application.Systems.Cantilever
             Point3D rodHoleCentre,
             double rodHoleDiameter,
             int gussetCount,
-            int gussetGaugeNumber)
+            int gussetGaugeNumber,
+            CantileverStructuralMemberPlan member,
+            CantileverBraceAdapterFrame frame)
         {
             Id = id;
             Origin = origin;
@@ -169,12 +171,42 @@ namespace RackCad.Application.Systems.Cantilever
             RodHoleDiameter = rodHoleDiameter;
             GussetCount = gussetCount;
             GussetGaugeNumber = gussetGaugeNumber;
+            Member = member;
+            Frame = frame;
         }
 
         public CantileverPieceId Id { get; }
 
-        /// <summary>Where the adapter sits: the centre of its separator-facing hole.</summary>
+        /// <summary>
+        /// Where the adapter sits: the centre of its separator-facing hole.
+        ///
+        /// Desde la ronda 4 de I-37D ese centro está en el PLANO MEDIO del ala apoyada, o sea medio espesor por
+        /// fuera de la cara del separador — no sobre la cara, que es donde lo ponía la aproximación revocada.
+        /// El troquel de <see cref="SeparatorFacePunch"/> sigue marcando la cara, que es lo que tiene que
+        /// coincidir con el del separador; este punto es material, no datum.
+        /// </summary>
         public Point3D Origin { get; }
+
+        /// <summary>
+        /// El ÁNGULO como miembro estructural: su sección de catálogo, cortada y colocada con marco físico.
+        ///
+        /// Que sea un miembro —y no un contorno que alguien dibuja— es lo que hace que se proyecte por la misma
+        /// tubería que una columna, un brazo o un separador. Antes de la ronda 4 de I-37D el adaptador se
+        /// construía a mano en el resolver de representación, que era una segunda implementación de esa misma
+        /// proyección.
+        /// </summary>
+        public CantileverStructuralMemberPlan Member { get; }
+
+        /// <summary>
+        /// El marco físico del que salen los dos agujeros, el prisma y la mano.
+        ///
+        /// Se conserva en el plan —y no sólo sus resultados— porque los cartabones cuelgan de sus ejes y porque
+        /// una prueba que quiera comprobar que los cuatro extremos NO salen iguales necesita poder mirarlo.
+        /// </summary>
+        public CantileverBraceAdapterFrame Frame { get; }
+
+        /// <summary>De qué esquina del panel es esta pieza. Cuatro manos, derivadas y no declaradas.</summary>
+        public CantileverBraceAdapterHand Hand => Frame.Hand;
 
         /// <summary>
         /// La sección de catálogo del ángulo. Lo que DIBUJA la pieza.

@@ -85,14 +85,17 @@ namespace RackCad.Application.Systems.Cantilever
     /// </summary>
     public static class CantileverIntervalResolver
     {
-        /// <summary>
-        /// How far the rod hole of an adapter sits from its separator hole, along the brace's axis.
-        ///
-        /// It is HALF the adapter's cut length, because the two holes are each centred on their own square
-        /// face and those faces are perpendicular: the second hole's centre is one half-cut along the leg. It
-        /// is derived and not a constant of its own, so an adapter cut differently moves its rod hole with it.
-        /// </summary>
-        public static double RodHoleAxialOffset(double adapterCutLength) => adapterCutLength / 2.0;
+        // REVOCADO en la ronda 4 de I-37D: `RodHoleAxialOffset(cut) => cut / 2`.
+        //
+        // Ponía el agujero de la varilla a medio corte del agujero del separador, medido a lo largo de la
+        // diagonal y sin componente fuera del plano del panel. La razón escrita era «medio corte, porque las dos
+        // caras son perpendiculares», y es esa razón la que no se sostiene: si las dos caras son
+        // perpendiculares, la separación entre dos agujeros centrados cada uno en SU ala tiene componente en los
+        // dos ejes, no en uno. El ΔY = 0 que salía de ahí era una pieza plana metida en el plano del panel.
+        //
+        // Lo sustituye CantileverBraceAdapterFrameResolver, que sitúa los dos agujeros desde la geometría real
+        // del prisma. No queda función puente: una que devolviera «el desplazamiento» seguiría insinuando que
+        // hay UN número y un eje, que es justo el error.
 
         public static CantileverIntervalAssembly Resolve(
             int intervalIndex,
@@ -224,12 +227,12 @@ namespace RackCad.Application.Systems.Cantilever
                 var braceA = BuildBrace(
                     owner, intervalIndex, p, 'A',
                     lower.LeftBracePunch.Centre, upper.RightBracePunch.Centre,
-                    bracing, braceSection, geometryFactory, diagnostics);
+                    attachment, bracing, braceSection, geometryFactory, diagnostics);
 
                 var braceB = BuildBrace(
                     owner, intervalIndex, p, 'B',
                     lower.RightBracePunch.Centre, upper.LeftBracePunch.Centre,
-                    bracing, braceSection, geometryFactory, diagnostics);
+                    attachment, bracing, braceSection, geometryFactory, diagnostics);
 
                 if (braceA == null || braceB == null)
                 {
@@ -433,6 +436,7 @@ namespace RackCad.Application.Systems.Cantilever
             char diagonal,
             Point3D lowerBolt,
             Point3D upperBolt,
+            CantileverBracingAttachment attachment,
             CantileverBracingDesign bracing,
             CantileverSectionResolution braceSection,
             StructuralSectionGeometryFactory geometryFactory,
@@ -455,12 +459,32 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 case CantileverBraceBodyKind.ColdRolledRound:
                 {
-                    var cut = CantileverLineDefaults.AdapterCutLength;
-                    var inset = RodHoleAxialOffset(cut);
-                    var rodLower = lowerBolt + (direction * inset);
-                    var rodUpper = upperBolt + (direction * -inset);
+                    // LOS ADAPTADORES PRIMERO, Y EL TENSOR DESPUES. El orden es la corrección: el extremo de la
+                    // varilla es el CENTRO DEL AGUJERO de su adaptador, así que hasta no haber colocado el
+                    // ángulo no se sabe dónde empieza el tensor. Al revés —fijar el tensor y colgarle un ángulo
+                    // encima— es lo que producía un agujero que no estaba en ningún ala.
+                    var faceNormal = new Vector3D(0.0, attachment.OutwardSign, 0.0);
 
-                    if ((rodUpper - rodLower).Length <= GeometryTolerance.Length)
+                    var lowerAdapter = BuildAdapter(
+                        owner, panelIndex, diagonal, 0, lowerBolt, direction, faceNormal,
+                        geometryFactory, diagnostics);
+
+                    var upperAdapter = BuildAdapter(
+                        owner, panelIndex, diagonal, 1, upperBolt, direction * -1.0, faceNormal,
+                        geometryFactory, diagnostics);
+
+                    if (lowerAdapter == null || upperAdapter == null)
+                    {
+                        return null;
+                    }
+
+                    var rodLower = lowerAdapter.RodHoleCentre;
+                    var rodUpper = upperAdapter.RodHoleCentre;
+
+                    // Que el tensor siga CORRIENDO en el sentido de su diagonal. Comprobar sólo que los dos
+                    // extremos no coinciden dejaría pasar un panel tan corto que los dos adaptadores se cruzan:
+                    // ahí la varilla sale del revés, con longitud positiva y sentido invertido.
+                    if ((rodUpper - rodLower).Dot(direction) <= GeometryTolerance.Length)
                     {
                         diagnostics.Add(CantileverDiagnostic.Blocking(
                             CantileverDiagnostics.BracingDoesNotFitTheColumn,
@@ -468,16 +492,10 @@ namespace RackCad.Application.Systems.Cantilever
                         return null;
                     }
 
-                    var adapters = new[]
-                    {
-                        BuildAdapter(owner, panelIndex, diagonal, 0, lowerBolt, rodLower, bracing),
-                        BuildAdapter(owner, panelIndex, diagonal, 1, upperBolt, rodUpper, bracing)
-                    };
-
                     return new CantileverBracePlan(
                         intervalIndex, panelIndex, diagonal, CantileverBraceBodyKind.ColdRolledRound,
                         rodLower, rodUpper, null, Array.Empty<CantileverPunchPlan>(),
-                        bracing.ColdRolled.Diameter, adapters);
+                        bracing.ColdRolled.Diameter, new[] { lowerAdapter, upperAdapter });
                 }
 
                 case CantileverBraceBodyKind.StructuralSection:
@@ -538,40 +556,77 @@ namespace RackCad.Application.Systems.Cantilever
                     CantileverLineDefaults.SeparatorPunchDiameter));
         }
 
+        /// <summary>
+        /// Un adaptador colocado sobre su marco físico, o <c>null</c> con un diagnóstico bloqueante.
+        /// </summary>
+        /// <param name="faceBolt">
+        /// El troquel de tensor del separador: donde el perno cruza la CARA. No es el centro del agujero del
+        /// adaptador, que está medio espesor más afuera, en el plano medio del ala apoyada.
+        /// </param>
+        /// <param name="towardsOtherEnd">Eje nominal de la diagonal, desde este extremo hacia el otro.</param>
         private static CantileverColdRolledAdapterPlan BuildAdapter(
             string owner,
             int panelIndex,
             char diagonal,
             int endIndex,
-            Point3D bolt,
-            Point3D rodHole,
-            CantileverBracingDesign bracing)
+            Point3D faceBolt,
+            Vector3D towardsOtherEnd,
+            Vector3D faceNormal,
+            StructuralSectionGeometryFactory geometryFactory,
+            ICollection<CantileverDiagnostic> diagnostics)
         {
+            var leg = CantileverLineDefaults.AdapterAngleLeg;
+            var thickness = CantileverLineDefaults.AdapterAngleThickness;
+            var cut = CantileverLineDefaults.AdapterCutLength;
+            var sectionId = StructuralSectionId.Parse(CantileverLineDefaults.AdapterAngleSectionId);
+
+            if (!CantileverBraceAdapterFrameResolver.TryResolve(
+                    faceBolt, faceNormal, towardsOtherEnd, leg, thickness, out var frame, out var reason))
+            {
+                diagnostics.Add(CantileverDiagnostic.Blocking(
+                    CantileverDiagnostics.BracingDoesNotFitTheColumn, reason));
+                return null;
+            }
+
             var id = CantileverPieceId.Create(
                 owner, CantileverPieceTokens.AdapterToken(panelIndex, diagonal, endIndex));
 
+            var geometry = geometryFactory.Get(sectionId, SectionDetailLevel.Tabulated);
+            var placement = CantileverLineFrameResolver.ColdRolledAdapter(frame, cut, geometry);
+
+            var member = CantileverStructuralMemberPlan.Create(
+                id,
+                CantileverMemberRole.ColdRolledAdapter,
+                owner,
+                PrismaticSectionInstance.Create(sectionId, cut, placement.Frame, 0.0, placement.Mirrored));
+
+            // EL TROQUEL SIGUE EN LA CARA, y no en el plano medio. Tiene que coincidir con el del separador —son
+            // el mismo agujero físico— y el del separador está anotado en la cara. Mover éste al plano medio
+            // rompería esa coincidencia para expresar un dato que el datum de un troquel no lleva.
             var punch = new CantileverPunchPlan(
                 CantileverPieceId.Create(owner, CantileverPieceTokens.ColdRolledAdapterPunch + diagonal)
                     .At(panelIndex)
                     .At(endIndex),
                 CantileverPunchSurface.ColdRolledAdapter,
-                bolt,
+                faceBolt,
                 new CantileverPunchDatum(
-                    CantileverPunchAxis.AlongY, bolt.X, bolt.Z,
+                    CantileverPunchAxis.AlongY, faceBolt.X, faceBolt.Z,
                     CantileverLineDefaults.SeparatorPunchDiameter));
 
             return new CantileverColdRolledAdapterPlan(
                 id,
-                bolt,
-                StructuralSectionId.Parse(CantileverLineDefaults.AdapterAngleSectionId),
-                CantileverLineDefaults.AdapterAngleLeg,
-                CantileverLineDefaults.AdapterCutLength,
-                CantileverLineDefaults.AdapterAngleThickness,
+                frame.SeparatorHoleCentre,
+                sectionId,
+                leg,
+                cut,
+                thickness,
                 punch,
-                rodHole,
+                frame.RodHoleCentre,
                 CantileverLineDefaults.SeparatorPunchDiameter,
                 CantileverLineDefaults.GussetsPerAdapter,
-                CantileverLineDefaults.GussetGaugeNumber);
+                CantileverLineDefaults.GussetGaugeNumber,
+                member,
+                frame);
         }
 
         /// <summary>

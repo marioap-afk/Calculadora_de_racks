@@ -52,7 +52,7 @@ namespace RackCad.Tests
 
         private static CantileverBraceRepresentation Represent(CantileverBracePlan brace) =>
             CantileverBraceRepresentationResolver.Resolve(
-                brace, CantileverPieceId.Create("TEST", "BRC"), Factory);
+                brace, CantileverPieceId.Create("TEST", "BRC"));
 
         // ---- 1. El cuerpo cold rolled tiene ANCHO -------------------------------------------------------
 
@@ -149,68 +149,11 @@ namespace RackCad.Tests
             }
         }
 
-        // ---- 2. El adaptador es una L de verdad ----------------------------------------------------------
-
-        [Fact]
-        public void ElAdaptadorUsaElCONTORNODELCATALOGOYNoUnaLAMano()
-        {
-            // Eran SEIS puntos hasta la ronda 4 de I-37D, porque el contorno se construía aquí con el brazo y
-            // el espesor: una L a escuadra, sin filete de raíz ni radios de punta. Ahora sale de la tubería de
-            // secciones, así que trae los arcos teselados del perfil REAL — bastantes más de seis.
-            var adapters = Represent(Braces(Build()).First()).Contours
-                .Where(c => c.Kind == CantileverBracePieceKind.Adapter)
-                .ToList();
-
-            Assert.Equal(2, adapters.Count);
-            Assert.All(adapters, a => Assert.True(
-                a.Outline.Count > 6,
-                "El adaptador volvio a dibujarse con una L a mano de " + a.Outline.Count + " puntos."));
-
-            // Y es el contorno de la sección que el plan declara, no otro: su área coincide con la del
-            // catálogo. Es la comprobación de que no hay una segunda geometría paralela.
-            var section = Factory.Get(
-                Braces(Build()).First().Adapters[0].SectionId, SectionDetailLevel.Tabulated);
-
-            foreach (var adapter in adapters)
-            {
-                Assert.Equal(section.Area, Area(adapter.Outline), 3);
-            }
-        }
-
-        [Fact]
-        public void LaLCONSERVASusDOSAlasYSuESPESOR()
-        {
-            var brace = Braces(Build()).First();
-            var adapter = brace.Adapters[0];
-            var outline = Represent(brace).Contours
-                .First(c => c.Kind == CantileverBracePieceKind.Adapter).Outline;
-
-            // El plan sigue declarando sus cotas nominales: 2 in de brazo y 3/16 in de espesor.
-            Assert.Equal(2.0, adapter.Leg, 9);
-            Assert.Equal(3.0 / 16.0, adapter.Thickness, 9);
-
-            // La CAJA del contorno mide un brazo por lado. Se comprueba sobre la caja y no sobre vértices
-            // concretos porque el contorno ya no tiene seis puntos nombrables: viene teselado del catálogo.
-            var width = outline.Max(p => p.X) - outline.Min(p => p.X);
-            var height = outline.Max(p => p.Z) - outline.Min(p => p.Z);
-
-            // Las alas de catálogo miden 2 in exactas; la tolerancia cubre la tesela de las puntas.
-            Assert.Equal(adapter.Leg, Math.Max(width, height), 2);
-
-            // Y NO es un rectangulo: el area de la L es bastante menor que la del cuadrado que la envuelve.
-            Assert.True(
-                Area(outline) < width * height * 0.75,
-                "El adaptador se dibuja lleno: perdio la escuadra.");
-
-            // Su area es la del perfil, que para un L2x2x3/16 ronda 0.72 in². Un cuadrado de 2 x 2 daria 4.
-            Assert.InRange(Area(outline), 0.5, 1.0);
-        }
-
         /// <summary>
-        /// Cuánto se separan del eje los puntos dibujados, medido perpendicularmente a él.
+        /// Cuanto se separan del eje los puntos dibujados, medido perpendicularmente a el.
         ///
-        /// Es la forma honesta de preguntar «¿tiene ancho?» a un cuerpo que se dibuja como un manojo de
-        /// rectas: un eje da cero por definición, y un perfil da su canto proyectado.
+        /// Es la forma honesta de preguntar si tiene ancho a un cuerpo que se dibuja como un manojo de rectas:
+        /// un eje da cero por definicion, y un perfil da su canto proyectado.
         /// </summary>
         private static double SpreadAcrossAxis(IReadOnlyList<CantileverViewCurve> bodies)
         {
@@ -231,28 +174,210 @@ namespace RackCad.Tests
             return points.Max(p => Math.Abs((((p.X - from.X) * dy) - ((p.Y - from.Y) * dx)) / length));
         }
 
-        /// <summary>Área con signo del polígono en el plano X–Z, en valor absoluto.</summary>
-        private static double Area(IReadOnlyList<Point3D> outline)
+        // ---- 2. El adaptador es un PRISMA de seccion real -------------------------------------------------
+
+        private static CantileverColdRolledAdapterPlan AnyAdapter() => Braces(Build()).First().Adapters[0];
+
+        /// <summary>Coordenadas de un punto en los ejes del angulo, medidas DESDE EL TALON.</summary>
+        private static (double A, double B, double W) InFrame(CantileverBraceAdapterFrame f, Point3D p)
         {
-            var sum = 0.0;
-
-            for (var i = 0; i < outline.Count; i++)
-            {
-                var a = outline[i];
-                var b = outline[(i + 1) % outline.Count];
-                sum += (a.X * b.Z) - (b.X * a.Z);
-            }
-
-            return Math.Abs(sum) / 2.0;
+            var d = p - f.Heel;
+            return (d.Dot(f.AlongSeatedLeg), d.Dot(f.AlongRodLeg), d.Dot(f.AlongCut));
         }
 
-        // ---- 3. Las CUATRO orientaciones -----------------------------------------------------------------
+        [Fact]
+        public void ElAdaptadorEsUnMIEMBROConLaSeccionEXACTADelCatalogo()
+        {
+            // Ya no es un contorno que el resolver de representacion dibujaba: es un miembro con su prisma, y
+            // por eso lo proyecta la misma tuberia que una columna.
+            var adapter = AnyAdapter();
+
+            Assert.NotNull(adapter.Member);
+            Assert.Equal("AISC-L-L2X2X3_16", adapter.Member.Placement.SectionId.Value);
+            Assert.Equal(adapter.SectionId.Value, adapter.Member.Placement.SectionId.Value);
+            Assert.Equal(CantileverMemberRole.ColdRolledAdapter, adapter.Member.Role);
+
+            // Longitud de corte 2 in, la del producto, y es la del PRISMA y no un numero paralelo.
+            Assert.Equal(2.0, adapter.CutLength, 9);
+            Assert.Equal(adapter.CutLength, adapter.Member.Placement.Length, 9);
+        }
+
+        [Fact]
+        public void LaRepresentacionYaNoDEVUELVEAdaptadores()
+        {
+            // La guarda de una sola implementacion de la proyeccion: si alguien volviera a dibujar la L a mano
+            // aqui, apareceria un contorno que no es ni cuerpo ni cartabon.
+            var kinds = Represent(Braces(Build()).First()).Contours.Select(c => c.Kind).Distinct().ToList();
+
+            Assert.All(kinds, k => Assert.True(
+                k == CantileverBracePieceKind.Body || k == CantileverBracePieceKind.Gusset,
+                "La representacion volvio a emitir un contorno de tipo '" + k + "'."));
+        }
+
+        [Fact]
+        public void LaSECCIONQueSeExtruyeTraeFileteDeRaizPuntasYTalonVIVO()
+        {
+            // Se comprueba sobre la SECCION que el prisma extruye, y no sobre una camara, y hay una razon
+            // fisica: el corte del angulo corre dentro del plano del panel, asi que ninguna de las tres vistas
+            // del sistema mira por su eje. La frontal ve el ala apoyada DE FRENTE —un cuadrado de 2 x 2 girado
+            // con la diagonal— y la del tensor DE CANTO. La L completa se veria mirando por el eje del corte,
+            // que es una camara que este sistema no tiene.
+            //
+            // Lo que importa es que la pieza este modelada con la seccion REAL, y eso es exactamente lo que se
+            // mide aqui: si alguien volviera a poner una L a mano, este contorno perderia sus curvas.
+            var adapter = AnyAdapter();
+            var section = Factory.Get(adapter.SectionId, SectionDetailLevel.Tabulated);
+
+            var flat = section.OuterContour
+                .Flatten(SectionRepresentationOptions.DefaultChordTolerance)
+                .ToList();
+
+            // Una L a escuadra son SEIS vertices. Con filete de raiz y dos puntas redondeadas, teselada, trae
+            // bastantes mas.
+            Assert.True(flat.Count > 6, "El adaptador volvio a una L a mano de " + flat.Count + " puntos.");
+
+            // AMBAS ALAS, con su brazo y su espesor reales.
+            var bounds = section.Bounds;
+
+            Assert.Equal(adapter.Leg, bounds.MaxX - bounds.MinX, 2);
+            Assert.Equal(adapter.Leg, bounds.MaxY - bounds.MinY, 2);
+
+            // Y no es un cuadrado lleno: el area del perfil ronda 0.715 in² contra las 4.0 de su caja.
+            Assert.InRange(section.Area, 0.68, 0.75);
+
+            // EL TALON, VIVO. Es el punto mas alejado del centroide en la esquina exterior, y ahi el contorno
+            // tiene que hacer ESQUINA: dos puntos consecutivos separados por mas que la cuerda de un arco.
+            var heel = section.ReferencePoints
+                .Single(r => r.Kind == SectionReferencePointKind.AngleHeel)
+                .Location;
+
+            var nearest = flat
+                .Select((q, i) => (Q: q, I: i))
+                .OrderBy(x => ((x.Q.X - heel.X) * (x.Q.X - heel.X)) + ((x.Q.Y - heel.Y) * (x.Q.Y - heel.Y)))
+                .First();
+
+            // El talon es un VERTICE del contorno, no el centro de un arco: cae sobre un punto teselado.
+            Assert.True(
+                Math.Sqrt(
+                    ((nearest.Q.X - heel.X) * (nearest.Q.X - heel.X)) +
+                    ((nearest.Q.Y - heel.Y) * (nearest.Q.Y - heel.Y))) < 1e-9,
+                "El talon dejo de ser un vertice del contorno: se redondeo.");
+        }
+
+        [Fact]
+        public void LaVISTAEmiteElAdaptadorConSuPROPIANaturaleza()
+        {
+            // Y llega al dibujo con su rol, que es lo que le da capa y color. Pasar por AddMember sin decir el
+            // rol lo dejaba con el que corresponde por defecto a su tipo de pieza, y el adaptador dejaba de
+            // distinguirse de la varilla.
+            var curves = View(Build(), CantileverViewKind.Frontal).Curves
+                .Where(c => c.Role == CantileverVisualRole.BraceAdapter)
+                .ToList();
+
+            Assert.NotEmpty(curves);
+            Assert.All(curves, c => Assert.Equal(CantileverViewPieceKind.ColdRolledAdapter, c.Kind));
+        }
+
+        [Fact]
+        public void LasDosALASSiguenMidiendoSuBrazoYSuESPESOR()
+        {
+            var adapter = AnyAdapter();
+
+            Assert.Equal(2.0, adapter.Leg, 9);
+            Assert.Equal(3.0 / 16.0, adapter.Thickness, 9);
+
+            var bounds = Factory.Get(adapter.SectionId, SectionDetailLevel.Tabulated).Bounds;
+
+            // La caja de la seccion mide un brazo por lado: las DOS alas estan, y ninguna se comio a la otra.
+            Assert.Equal(adapter.Leg, bounds.MaxX - bounds.MinX, 2);
+            Assert.Equal(adapter.Leg, bounds.MaxY - bounds.MinY, 2);
+        }
+
+        // ---- 3. Los DOS agujeros, cada uno en SU ala ------------------------------------------------------
+
+        [Fact]
+        public void LosDosAgujerosEstanCentradosEnALASDISTINTAS()
+        {
+            // EL corazon de la decision del dueño. En coordenadas de talon, midiendo `a` a lo largo del ala
+            // apoyada y `b` a lo largo de la del tensor:
+            //
+            //   separador -> (L/2, t/2)   centrado en su ala, en el plano medio de su ala
+            //   varilla   -> (t/2, L/2)   lo mismo, en la OTRA
+            var adapter = AnyAdapter();
+            var frame = adapter.Frame;
+
+            var sep = InFrame(frame, frame.SeparatorHoleCentre);
+            var rod = InFrame(frame, frame.RodHoleCentre);
+
+            Assert.Equal(adapter.Leg / 2.0, sep.A, 9);
+            Assert.Equal(adapter.Thickness / 2.0, sep.B, 9);
+
+            Assert.Equal(adapter.Thickness / 2.0, rod.A, 9);
+            Assert.Equal(adapter.Leg / 2.0, rod.B, 9);
+
+            // Y los dos centrados a lo largo del corte.
+            Assert.Equal(0.0, sep.W, 9);
+            Assert.Equal(0.0, rod.W, 9);
+        }
+
+        [Fact]
+        public void LaSeparacionEntreAgujerosNOTieneDeltaYCERO()
+        {
+            // La regresion directa contra la aproximacion revocada: CutLength/2 a lo largo de la diagonal daba
+            // exactamente DeltaY = 0, o sea una pieza plana metida en el plano del panel.
+            foreach (var brace in Braces(Build()).Where(b => b.IntervalIndex == 0))
+            {
+                foreach (var adapter in brace.Adapters)
+                {
+                    var delta = adapter.Frame.HoleSeparation;
+
+                    Assert.True(
+                        Math.Abs(delta.Y) > 0.5,
+                        "El adaptador volvio a tener los dos agujeros en el mismo plano Y.");
+
+                    // Las TRES componentes existen: la diagonal aporta X y Z, y el ala del tensor aporta Y.
+                    Assert.True(Math.Abs(delta.X) > 1e-6);
+                    Assert.True(Math.Abs(delta.Z) > 1e-6);
+                }
+            }
+        }
+
+        [Fact]
+        public void LaSeparacionEsLaQueLaGEOMETRIADelAnguloIMPONE()
+        {
+            var adapter = AnyAdapter();
+            var offset = CantileverBraceAdapterFrameResolver.HoleOffsetPerAxis(
+                adapter.Leg, adapter.Thickness);
+
+            // (L - t)/2 en CADA eje: 0.90625 in para el L2x2x3/16 del producto.
+            Assert.Equal(0.90625, offset, 9);
+
+            // Y como los dos ejes son perpendiculares, el modulo es ese por raiz de dos.
+            Assert.Equal(offset * Math.Sqrt(2.0), adapter.Frame.HoleSeparation.Length, 9);
+
+            // La revocada daba 1.0 clavado. Que no vuelva.
+            Assert.True(Math.Abs(adapter.Frame.HoleSeparation.Length - 1.0) > 0.01);
+        }
+
+        [Fact]
+        public void ElAgujeroDelSeparadorNOEstaSobreLaCARASinoEnElPlanoMEDIO()
+        {
+            // El troquel marca la cara —tiene que coincidir con el del separador, son el mismo agujero fisico—
+            // y el centro del agujero del adaptador esta medio espesor mas afuera.
+            var adapter = AnyAdapter();
+            var fromFace = adapter.Origin - adapter.SeparatorFacePunch.Centre;
+
+            Assert.Equal(adapter.Thickness / 2.0, fromFace.Length, 9);
+            Assert.Equal(adapter.Thickness / 2.0, Math.Abs(fromFace.Y), 9);
+        }
+
+        // ---- 3b. Las CUATRO orientaciones -----------------------------------------------------------------
 
         [Fact]
         public void LasCUATROManosSeDerivanYNoSeDeclaran()
         {
-            // Exhaustivo por construcción: la mano sale de hacia dónde queda el agujero de la varilla respecto
-            // del del separador, así que los cuatro casos existen sin que nadie tenga que acordarse del cuarto.
+            // Exhaustivo por construccion: la mano sale del eje de la diagonal, asi que los cuatro casos
+            // existen sin que nadie tenga que acordarse del cuarto.
             var cases = new (double Dx, double Dz, CantileverBraceAdapterHand Expected)[]
             {
                 (+1.0, +1.0, CantileverBraceAdapterHand.LowerLeft),
@@ -265,12 +390,20 @@ namespace RackCad.Tests
             {
                 Assert.True(CantileverBraceAdapterFrameResolver.TryResolve(
                     new Point3D(0.0, 0.0, 0.0),
-                    new Point3D(dx, 0.0, dz),
-                    out var along, out var towards, out var hand, out _));
+                    new Vector3D(0.0, 1.0, 0.0),
+                    new Vector3D(dx, 0.0, dz),
+                    2.0, 3.0 / 16.0,
+                    out var frame, out _));
 
-                Assert.Equal(expected, hand);
-                Assert.Equal(Math.Sign(dx), Math.Sign(along.X));
-                Assert.Equal(Math.Sign(dz), Math.Sign(towards.Z));
+                Assert.Equal(expected, frame.Hand);
+
+                // El ala apoyada crece EN CONTRA del otro extremo: es lo que impide que el cuerpo del
+                // adaptador invada el tramo por el que pasa la varilla.
+                Assert.Equal(-Math.Sign(dx), Math.Sign(frame.AlongSeatedLeg.X));
+                Assert.Equal(-Math.Sign(dz), Math.Sign(frame.AlongSeatedLeg.Z));
+
+                // Y la del tensor sale perpendicular al panel, por la normal de la cara.
+                Assert.Equal(1.0, frame.AlongRodLeg.Y, 9);
             }
 
             Assert.Equal(4, cases.Select(c => c.Expected).Distinct().Count());
@@ -279,34 +412,35 @@ namespace RackCad.Tests
         [Fact]
         public void UnExtremoQueNoDefineDiagonalSeRECHAZA()
         {
-            // Una diagonal que no avanza en X, o que no sube ni baja, no tiene extremo que orientar. Se dice
-            // en vez de inventarle un sentido.
-            foreach (var rod in new[] { new Point3D(0.0, 0.0, 5.0), new Point3D(5.0, 0.0, 0.0) })
+            // Una diagonal que no avanza en X, o que no sube ni baja, no tiene extremo que orientar.
+            foreach (var axis in new[] { new Vector3D(0.0, 0.0, 5.0), new Vector3D(5.0, 0.0, 0.0) })
             {
                 Assert.False(CantileverBraceAdapterFrameResolver.TryResolve(
-                    new Point3D(0.0, 0.0, 0.0), rod, out _, out _, out _, out var reason));
+                    new Point3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0), axis,
+                    2.0, 3.0 / 16.0, out _, out var reason));
 
                 Assert.NotEmpty(reason);
             }
         }
 
         [Fact]
-        public void LosDosExtremosDeUnaDiagonalTienenManosOPUESTAS()
+        public void UnAnguloSinESPESORValidoSeRECHAZA()
         {
-            // Sobre la línea de verdad, no sobre puntos de laboratorio: los adaptadores de una misma diagonal
-            // miran a lados contrarios, y los de las dos diagonales del panel cubren las cuatro esquinas.
-            var manos = new List<CantileverBraceAdapterHand>();
+            Assert.False(CantileverBraceAdapterFrameResolver.TryResolve(
+                new Point3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0), new Vector3D(1.0, 0.0, 1.0),
+                2.0, 2.0, out _, out var reason));
 
-            foreach (var brace in Braces(Build()).Where(b => b.IntervalIndex == 0))
-            {
-                foreach (var adapter in brace.Adapters)
-                {
-                    Assert.True(CantileverBraceAdapterFrameResolver.TryResolve(
-                        adapter.Origin, adapter.RodHoleCentre, out _, out _, out var hand, out _));
+            Assert.NotEmpty(reason);
+        }
 
-                    manos.Add(hand);
-                }
-            }
+        [Fact]
+        public void LosCuatroExtremosDelPanelCubrenLasCUATROManos()
+        {
+            var manos = Braces(Build())
+                .Where(b => b.IntervalIndex == 0)
+                .SelectMany(b => b.Adapters)
+                .Select(a => a.Hand)
+                .ToList();
 
             Assert.Equal(4, manos.Count);
             Assert.Equal(4, manos.Distinct().Count());
@@ -315,24 +449,65 @@ namespace RackCad.Tests
         [Fact]
         public void ElAdaptadorNOSaleIGUALEnLosCuatroExtremos()
         {
-            // La comprobación directa de «no girado arbitrariamente»: si los cuatro salieran iguales, sus
-            // contornos trasladados al origen coincidirían. Se redondea a tres decimales porque el contorno
-            // viene teselado y dos orientaciones distintas pueden coincidir en la sexta cifra.
-            var formas = new HashSet<string>(StringComparer.Ordinal);
+            // No girado arbitrariamente, comprobado sobre el marco fisico: si los cuatro salieran iguales, sus
+            // ternas de ejes coincidirian.
+            var ternas = new HashSet<string>(StringComparer.Ordinal);
 
-            foreach (var brace in Braces(Build()).Where(b => b.IntervalIndex == 0))
+            foreach (var adapter in Braces(Build()).Where(b => b.IntervalIndex == 0).SelectMany(b => b.Adapters))
             {
-                foreach (var contour in Represent(brace).Contours
-                             .Where(c => c.Kind == CantileverBracePieceKind.Adapter))
-                {
-                    var o = contour.Outline[0];
+                var f = adapter.Frame;
 
-                    formas.Add(string.Join("|", contour.Outline.Select(
-                        p => Math.Round(p.X - o.X, 3) + "," + Math.Round(p.Z - o.Z, 3))));
-                }
+                ternas.Add(string.Join("|", new[]
+                {
+                    f.AlongSeatedLeg.X, f.AlongSeatedLeg.Y, f.AlongSeatedLeg.Z,
+                    f.AlongRodLeg.X, f.AlongRodLeg.Y, f.AlongRodLeg.Z,
+                    f.AlongCut.X, f.AlongCut.Y, f.AlongCut.Z
+                }.Select(v => Math.Round(v, 6).ToString(
+                    "0.######", System.Globalization.CultureInfo.InvariantCulture))));
             }
 
-            Assert.Equal(4, formas.Count);
+            Assert.Equal(4, ternas.Count);
+        }
+
+        [Fact]
+        public void LosDosAdaptadoresDeUnaDiagonalSonESPEJOS()
+        {
+            // El ala apoyada de cada extremo crece en contra de SU vano, asi que las dos miran a lados
+            // contrarios. La del tensor, en cambio, es la misma en los dos: apoyan en la misma cara.
+            foreach (var brace in Braces(Build()).Where(b => b.IntervalIndex == 0))
+            {
+                var lower = brace.Adapters[0].Frame;
+                var upper = brace.Adapters[1].Frame;
+
+                Assert.Equal(-1.0, lower.AlongSeatedLeg.Dot(upper.AlongSeatedLeg), 9);
+                Assert.Equal(+1.0, lower.AlongRodLeg.Dot(upper.AlongRodLeg), 9);
+            }
+        }
+
+        [Fact]
+        public void ElTENSORNoATRAVIESAElAdaptador()
+        {
+            // La varilla va de agujero a agujero. El ala apoyada crece en contra del vano, asi que desde el
+            // agujero de la varilla hacia el otro extremo no queda cuerpo del adaptador: solo el medio espesor
+            // del ala que la varilla cruza.
+            foreach (var brace in Braces(Build()).Where(b => b.IntervalIndex == 0))
+            {
+                var axis = (brace.UpperEnd - brace.LowerEnd).Normalized();
+
+                foreach (var (adapter, towards) in new[]
+                {
+                    (brace.Adapters[0], axis),
+                    (brace.Adapters[1], axis * -1.0)
+                })
+                {
+                    var reach = (adapter.Frame.Heel - adapter.Frame.RodHoleCentre).Dot(towards);
+
+                    Assert.True(
+                        reach <= (adapter.Thickness / 2.0) + 1e-9,
+                        "El cuerpo del adaptador invade " + reach.ToString("0.####") +
+                        " in del vano por el que pasa la varilla.");
+                }
+            }
         }
 
         // ---- 4. Los cartabones ---------------------------------------------------------------------------
@@ -359,20 +534,34 @@ namespace RackCad.Tests
         [Fact]
         public void LosDosCartabonesVanEnLosDosEXTREMOSDelAdaptador()
         {
-            // Uno en cada extremo del corte de 2 in, así que se separan a lo LARGO del adaptador. En la
-            // frontal caen uno sobre otro porque esa cámara mira justo por ese eje; se ven aparte en planta.
+            // Uno en cada extremo del corte de 2 in, asi que se separan a lo LARGO del adaptador.
+            //
+            // CAMBIO DE LA RONDA 4 DE I-37D: ese eje ya no es Y. El corte del angulo corre PERPENDICULAR a la
+            // diagonal DENTRO del plano del panel, porque es la unica orientacion en la que el agujero del ala
+            // del tensor tiene por eje la propia varilla —que es como una varilla roscada se sujeta—. Antes se
+            // media la separacion en Y y ahora en el eje del corte; en la frontal, por tanto, los dos
+            // cartabones ya NO caen uno sobre otro, se ven aparte.
             var brace = Braces(Build()).First();
             var adapter = brace.Adapters[0];
+            var frame = adapter.Frame;
 
             var gussets = Represent(brace).Contours
                 .Where(c => c.Kind == CantileverBracePieceKind.Gusset)
                 .Take(2)
                 .ToList();
 
-            var ys = gussets.Select(g => g.Outline[0].Y).OrderBy(y => y).ToList();
+            var along = gussets
+                .Select(g => (g.Outline[0] - frame.Heel).Dot(frame.AlongCut))
+                .OrderBy(v => v)
+                .ToList();
 
-            Assert.Equal(adapter.CutLength, ys[1] - ys[0], 9);
-            Assert.Equal(adapter.Origin.Y, (ys[0] + ys[1]) / 2.0, 9);
+            Assert.Equal(adapter.CutLength, along[1] - along[0], 9);
+
+            // Y centrados en el talon, que es donde el prisma tiene su plano de agujeros.
+            Assert.Equal(0.0, (along[0] + along[1]) / 2.0, 9);
+
+            // El eje del corte esta EN el plano del panel: no tiene componente fuera de el.
+            Assert.Equal(0.0, frame.AlongCut.Y, 9);
         }
 
         // ---- 5. Los agujeros ------------------------------------------------------------------------------
@@ -556,9 +745,20 @@ namespace RackCad.Tests
                 Braces(Build()).First(), CantileverViewKind.Frontal, Factory);
 
             Assert.Contains(suelto.Curves, x => x.Role == CantileverVisualRole.Brace && x.IsClosed);
-            Assert.Equal(2, suelto.Curves.Count(x => x.Role == CantileverVisualRole.BraceAdapter));
             Assert.Equal(4, suelto.Curves.Count(x => x.Role == CantileverVisualRole.BraceGusset));
             Assert.Equal(2, suelto.Curves.Count(x => x.Role == CantileverVisualRole.BracePunch));
+
+            // Los adaptadores YA NO son dos contornos: desde la ronda 4 de I-37D cada uno es un prisma que
+            // proyecta la tuberia comun, y un prisma visto de lado emite las aristas de su silueta, no un
+            // contorno unico. Lo que se comprueba es que los DOS estan —cada uno con su identidad— y no
+            // cuantas curvas hace falta para dibujarlos.
+            var adaptadores = suelto.Curves
+                .Where(x => x.Role == CantileverVisualRole.BraceAdapter)
+                .Select(x => x.PieceId.Value)
+                .Distinct()
+                .ToList();
+
+            Assert.Equal(2, adaptadores.Count);
         }
 
         // ---- 9. Los roles visuales -----------------------------------------------------------------------

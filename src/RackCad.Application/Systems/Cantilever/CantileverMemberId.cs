@@ -39,7 +39,20 @@ namespace RackCad.Application.Systems.Cantilever
         /// One diagonal of a braced panel, when its body is a structural section. A cold-rolled rod produces
         /// NO member of this role: it is not a catalogued section, so it carries its own body (ADR-0027, D7).
         /// </summary>
-        Brace = 4
+        Brace = 4,
+
+        /// <summary>
+        /// El ANGULO de extremo de un tensor cold rolled, añadido por la ronda 4 de I-37D al FINAL.
+        ///
+        /// Es un miembro como cualquier otro y no una decoración del tensor: su cuerpo es una sección del
+        /// catálogo —el <c>L2×2×3/16</c>— cortada a 2 in y colocada con un marco físico, así que se dibuja por
+        /// la misma tubería que una columna o un separador. Tenerlo aquí es lo que quitó la segunda
+        /// implementación de la proyección que vivía en el resolver de representación.
+        ///
+        /// La varilla que une dos de estos SIGUE sin ser miembro, por la razón de <see cref="Brace"/>: no tiene
+        /// fila de catálogo. Un tensor cold rolled produce, entonces, dos miembros y ningún cuerpo catalogado.
+        /// </summary>
+        ColdRolledAdapter = 5
     }
 
     /// <summary>

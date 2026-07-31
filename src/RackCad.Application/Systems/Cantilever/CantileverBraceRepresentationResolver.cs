@@ -15,8 +15,9 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>El cuerpo del tensor: la banda de la varilla.</summary>
         Body = 0,
 
-        /// <summary>El ángulo de extremo, con sus dos alas.</summary>
-        Adapter = 1,
+        // El valor 1 fue `Adapter` y se RETIRO en la ronda 4 de I-37D: el angulo dejo de ser un contorno que
+        // esta autoridad dibujaba y paso a ser un miembro estructural con su prisma, proyectado por la misma
+        // tuberia que una columna o un separador. El numero no se reutiliza y `Gusset` conserva el suyo.
 
         /// <summary>Uno de los dos cartabones calibre 10 del adaptador.</summary>
         Gusset = 2
@@ -104,13 +105,17 @@ namespace RackCad.Application.Systems.Cantilever
                 : double.NaN;
 
         /// <summary>
-        /// La representación de un tensor COLD ROLLED con sus dos adaptadores.
+        /// La geometría FABRICADA de un tensor cold rolled: la banda de la varilla y los cartabones.
         ///
-        /// Un tensor estructural no pasa por aquí: su cuerpo es una sección de catálogo y lo proyecta la
-        /// tubería de secciones, que ya dibuja el contorno real —canal con sus dos alas y su alma, ángulo con
-        /// las suyas— respetando marco, espejo y rotación. Duplicar esa tubería aquí sería una segunda
-        /// implementación de la misma proyección, y la primera vez que una cambiara el canal saldría de una
-        /// forma en la línea y de otra en el componente suelto.
+        /// <para>Lo que NO sale de aquí es tan importante como lo que sale. Ni el cuerpo de un tensor
+        /// estructural —que es una sección de catálogo— ni, desde la ronda 4 de I-37D, el ÁNGULO de los
+        /// adaptadores. Los dos son miembros con su prisma y los proyecta la tubería de secciones, que dibuja
+        /// el contorno real respetando marco, espejo y rotación. Duplicar esa tubería aquí era exactamente el
+        /// defecto: el ángulo salía como una L de seis vértices a escuadra, sin filete de raíz ni radios de
+        /// punta, y era una segunda implementación de la misma proyección.</para>
+        ///
+        /// <para>Queda entonces lo que de verdad no tiene fila de catálogo: la varilla —barra redonda, no
+        /// perfil— y los dos cartabones calibre 10, que son piezas fabricadas.</para>
         /// </summary>
         /// <param name="bodyId">
         /// El id del cuerpo. Se RECIBE en vez de componerse aqui: los tokens de propiedad son de la linea, y
@@ -119,17 +124,8 @@ namespace RackCad.Application.Systems.Cantilever
         /// </param>
         public static CantileverBraceRepresentation Resolve(
             CantileverBracePlan brace,
-            CantileverPieceId bodyId,
-            StructuralSectionGeometryFactory geometryFactory)
+            CantileverPieceId bodyId)
         {
-            // OBLIGATORIA, no opcional. Con un valor por omision un llamador que no la pasara se quedaba sin
-            // adaptadores y sin enterarse: el dibujo salia incompleto y en silencio, que es justo el modo de
-            // fallo que esta ronda viene a quitar.
-            if (geometryFactory == null)
-            {
-                throw new ArgumentNullException(nameof(geometryFactory));
-            }
-
             if (brace == null)
             {
                 throw new ArgumentNullException(nameof(brace));
@@ -168,7 +164,7 @@ namespace RackCad.Application.Systems.Cantilever
 
             foreach (var adapter in brace.Adapters)
             {
-                AddAdapter(contours, notes, adapter, geometryFactory);
+                AddAdapter(contours, adapter);
             }
 
             return new CantileverBraceRepresentation(contours, width, notes);
@@ -213,106 +209,15 @@ namespace RackCad.Application.Systems.Cantilever
 
         private static void AddAdapter(
             ICollection<CantileverBraceContour> contours,
-            ICollection<string> notes,
-            CantileverColdRolledAdapterPlan adapter,
-            StructuralSectionGeometryFactory geometryFactory)
+            CantileverColdRolledAdapterPlan adapter)
         {
-            if (!CantileverBraceAdapterFrameResolver.TryResolve(
-                    adapter.Origin, adapter.RodHoleCentre,
-                    out var alongSeparator, out var towardsRod, out _, out var reason))
-            {
-                notes.Add(reason);
-                return;
-            }
-
-            contours.Add(new CantileverBraceContour(
-                CantileverBracePieceKind.Adapter,
-                adapter.Id,
-                AngleOutline(adapter, alongSeparator, towardsRod, geometryFactory, notes)));
-
-            foreach (var gusset in GussetOutlines(adapter, alongSeparator, towardsRod))
+            foreach (var gusset in GussetOutlines(adapter))
             {
                 contours.Add(new CantileverBraceContour(
                     CantileverBracePieceKind.Gusset,
                     adapter.Id.At(contours.Count(c => c.Kind == CantileverBracePieceKind.Gusset) + 1),
                     gusset));
             }
-        }
-
-        /// <summary>
-        /// El contorno del ángulo, tomado de la TUBERÍA DE SECCIONES y ya no construido a mano.
-        ///
-        /// <para>Hasta la ronda 4 de I-37D esto devolvía seis puntos calculados aquí con el brazo y el espesor
-        /// del plan. Salía una L a escuadra: sin filete de raíz, sin radios de punta y sin las cotas que el
-        /// catálogo publica. El dueño la rechazó por eso, y la corrección no es dibujar mejor la L sino
-        /// DEJAR DE DIBUJARLA: el contorno lo da <see cref="StructuralSectionGeometryFactory"/>, que es la
-        /// misma autoridad que dibuja columnas, brazos y separadores.</para>
-        ///
-        /// <para><b>El anclaje también cambió.</b> Antes el talón se ponía en <c>adapter.Origin</c>, que es el
-        /// centro del agujero que bolta al separador: el agujero quedaba EN la esquina de la pieza, que es un
-        /// sitio donde nadie taladra. Ahora ese agujero queda CENTRADO en su ala —medio brazo a lo largo y
-        /// medio espesor a través— y el talón se deduce de ahí.</para>
-        ///
-        /// <para>Sin fábrica de geometría se devuelve <c>null</c> y se deja una nota, en vez de volver a la L a
-        /// mano: dos contornos para la misma pieza es lo que esta corrección viene a quitar.</para>
-        /// </summary>
-        private static IReadOnlyList<Point3D> AngleOutline(
-            CantileverColdRolledAdapterPlan adapter,
-            Vector3D alongSeparator,
-            Vector3D towardsRod,
-            StructuralSectionGeometryFactory geometryFactory,
-            ICollection<string> notes)
-        {
-            StructuralSectionGeometry geometry;
-
-            try
-            {
-                geometry = geometryFactory.Get(adapter.SectionId, SectionDetailLevel.Tabulated);
-            }
-            catch (System.Exception ex)
-            {
-                notes.Add(
-                    "El adaptador '" + adapter.Id.Value + "' no se dibuja: la seccion '" +
-                    adapter.SectionId.Value + "' no dio geometria (" + ex.Message + ").");
-
-                return null;
-            }
-
-            // El TALÓN, en coordenadas de la sección. La tubería centra el contorno en el centroide tabulado y
-            // deja el talón anotado como punto de referencia, así que no hay que recalcularlo.
-            var heelPoint = geometry.ReferencePoints
-                .FirstOrDefault(r => r.Kind == SectionReferencePointKind.AngleHeel);
-
-            var heelU = heelPoint.Kind == SectionReferencePointKind.AngleHeel ? heelPoint.Location.X : 0.0;
-            var heelV = heelPoint.Kind == SectionReferencePointKind.AngleHeel ? heelPoint.Location.Y : 0.0;
-
-            // Dónde va el talón en el mundo: el agujero del separador queda centrado en su ala, así que el
-            // talón está medio brazo por detrás a lo largo del ala y medio espesor por debajo a su través.
-            var half = adapter.Leg / 2.0;
-            var halfThickness = adapter.Thickness / 2.0;
-
-            var origin = adapter.Origin;
-
-            Point3D At(double u, double v)
-            {
-                // (u, v) son coordenadas de SECCIÓN. Se pasan a coordenadas de talón restando el talón, y de
-                // ahí al mundo con los dos ejes que la orientación física ya resolvió.
-                var a = (u - heelU) - half;
-                var b = (v - heelV) - halfThickness;
-
-                return new Point3D(
-                    origin.X + (alongSeparator.X * a) + (towardsRod.X * b),
-                    origin.Y + (alongSeparator.Y * a) + (towardsRod.Y * b),
-                    origin.Z + (alongSeparator.Z * a) + (towardsRod.Z * b));
-            }
-
-            // El contorno se recorre por sus VÉRTICES muestreados: los arcos del filete y de las puntas ya
-            // vienen teselados por la tubería con su propia tolerancia de cuerda, que es la misma que usa
-            // cualquier otro perfil del sistema.
-            return geometry.OuterContour
-                .Flatten(SectionRepresentationOptions.DefaultChordTolerance)
-                .Select(q => At(q.X, q.Y))
-                .ToList();
         }
 
         /// <summary>
@@ -328,19 +233,20 @@ namespace RackCad.Application.Systems.Cantilever
         /// adaptador, y el BOM los cuenta ahí.
         /// </summary>
         private static IEnumerable<IReadOnlyList<Point3D>> GussetOutlines(
-            CantileverColdRolledAdapterPlan adapter, Vector3D alongSeparator, Vector3D towardsRod)
+            CantileverColdRolledAdapterPlan adapter)
         {
+            var frame = adapter.Frame;
             var half = adapter.CutLength / 2.0;
             var leg = adapter.Leg;
 
             foreach (var offset in new[] { -half, half })
             {
-                var heel = new Point3D(adapter.Origin.X, adapter.Origin.Y + offset, adapter.Origin.Z);
+                var heel = frame.Heel + (frame.AlongCut * offset);
 
                 Point3D At(double a, double b) => new Point3D(
-                    heel.X + (alongSeparator.X * a) + (towardsRod.X * b),
-                    heel.Y + (alongSeparator.Y * a) + (towardsRod.Y * b),
-                    heel.Z + (alongSeparator.Z * a) + (towardsRod.Z * b));
+                    heel.X + (frame.AlongSeatedLeg.X * a) + (frame.AlongRodLeg.X * b),
+                    heel.Y + (frame.AlongSeatedLeg.Y * a) + (frame.AlongRodLeg.Y * b),
+                    heel.Z + (frame.AlongSeatedLeg.Z * a) + (frame.AlongRodLeg.Z * b));
 
                 yield return new[] { At(0.0, 0.0), At(leg, 0.0), At(0.0, leg) };
             }
