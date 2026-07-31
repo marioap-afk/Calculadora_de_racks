@@ -333,22 +333,28 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void TheRowsAreDerivedFromTheColumnEnvelopeAndNotFromTheBase()
+        public void TheRowsAreDerivedFromTheREARPLATEAndNotFromTheColumn()
         {
-            var column = Envelope(ColumnW);
+            // ESTE ENUNCIADO SE INVIRTIO, y por decision del dueno: «es desde el exterior de la placa hacia el
+            // centro de la columna 1 pulgada». Antes se acotaba desde la columna, y con 1 in eso empujaba los
+            // agujeros FUERA de una placa mas angosta que ella. El nombre viejo era
+            // TheRowsAreDerivedFromTheColumnEnvelopeAndNotFromTheBase.
+            //
+            // La columna sigue gobernando el PATRON —son sus filas— pero no el borde desde el que se mide.
+            var plate = Envelope(BaseW);
             var pattern = Resolve().Pattern;
 
             Assert.Equal(
-                (-column.Width / 2.0) + CantileverDefaults.PunchHorizontalEndOffset,
+                (-plate.Width / 2.0) + CantileverDefaults.PunchHorizontalEndOffset,
                 pattern.LeftRowX,
                 12);
 
-            // Changing only the BASE leaves them untouched; changing the COLUMN moves them.
-            var otherBase = Resolve(Design(@base: BaseW), PolicyFor((ColumnW, BaseW))).Pattern;
-            Assert.Equal(pattern.LeftRowX, otherBase.LeftRowX, 12);
-
+            // Cambiar solo la COLUMNA ya no las mueve; cambiar la BASE, que es de donde sale la placa, si.
             var otherColumn = Resolve(Design(column: BaseW, @base: BaseW)).Pattern;
-            Assert.NotEqual(Math.Round(pattern.LeftRowX, 6), Math.Round(otherColumn.LeftRowX, 6));
+            Assert.Equal(pattern.LeftRowX, otherColumn.LeftRowX, 12);
+
+            var otherBase = Resolve(Design(column: ColumnW, @base: ColumnW), PolicyFor((ColumnW, ColumnW))).Pattern;
+            Assert.NotEqual(Math.Round(pattern.LeftRowX, 6), Math.Round(otherBase.LeftRowX, 6));
         }
 
         [Fact]
@@ -363,11 +369,15 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void AColumnWhosePunchesOverflowTheRearPlateIsRejected()
+        public void AColumnTooNARROWForThePlateThatGovernsItsRowsIsRejected()
         {
+            // La misma comprobacion con los papeles cambiados. Al acotar desde la placa, la pieza que puede
+            // quedarse corta ya no es la placa sino la COLUMNA: una base ancha manda las filas hacia afuera y
+            // una columna estrecha no las alcanza. Antes se llamaba
+            // AColumnWhosePunchesOverflowTheRearPlateIsRejected y emparejaba columna ancha con base estrecha.
             var assembly = Resolve(
-                Design(column: WideColumn, @base: NarrowBase),
-                PolicyFor((WideColumn, NarrowBase)));
+                Design(column: NarrowBase, @base: WideColumn),
+                PolicyFor((NarrowBase, WideColumn)));
 
             Assert.True(assembly.IsBlocked);
             Assert.True(Has(assembly, CantileverDiagnostics.PunchOutsideRearPlate));
@@ -667,14 +677,17 @@ namespace RackCad.Tests
         // ---- 21-22: changing a section recomposes what it governs -------------------------------------------------
 
         [Fact]
-        public void ChangingTheColumnSectionRecomposesTheDatumsItGoverns()
+        public void ChangingOnlyTheCOLUMNMovesNOTHINGOfThePattern()
         {
+            // Tras la correccion del dueno la columna no gobierna NINGUNA de las dos coordenadas del patron:
+            // la horizontal la da la placa y la vertical la da la base. Cambiar solo la columna deja el patron
+            // entero igual, y esa es ahora la afirmacion util. Antes era
+            // ChangingTheColumnSectionRecomposesTheDatumsItGoverns.
             var narrow = Resolve(Design(column: BaseW, @base: BaseW)).Pattern;
             var wide = Resolve().Pattern;
 
-            Assert.NotEqual(Math.Round(narrow.LeftRowX, 6), Math.Round(wide.LeftRowX, 6));
-
-            // ... and NOT the vertical pattern, which the base governs.
+            Assert.Equal(narrow.LeftRowX, wide.LeftRowX, 12);
+            Assert.Equal(narrow.RightRowX, wide.RightRowX, 12);
             Assert.Equal(narrow.Elevations, wide.Elevations);
             Assert.Equal(narrow.RearPlateTopZ, wide.RearPlateTopZ, 12);
         }
@@ -695,8 +708,11 @@ namespace RackCad.Tests
                 Math.Round(tall.Gusset.VerticalLeg, 6),
                 Math.Round(shortBase.Gusset.VerticalLeg, 6));
 
-            // ... and NOT the two rows, which the column governs.
-            Assert.Equal(tall.Pattern.LeftRowX, shortBase.Pattern.LeftRowX, 12);
+            // ... y TAMBIEN las dos filas, que ahora se acotan desde la placa y la placa sale de la base.
+            // Antes esta linea afirmaba lo contrario, porque el datum era la columna.
+            Assert.NotEqual(
+                Math.Round(tall.Pattern.LeftRowX, 6),
+                Math.Round(shortBase.Pattern.LeftRowX, 6));
         }
 
         // ---- 23: determinism -------------------------------------------------------------------------------------
@@ -853,7 +869,8 @@ namespace RackCad.Tests
             var punches = new CantileverPunchParameters();
 
             Assert.Equal(0.75, punches.Diameter);
-            Assert.Equal(1.50, punches.HorizontalEndOffset);
+            // UNA pulgada: el dueno declaro que 1.5 era un error suyo y la corrigio.
+            Assert.Equal(1.00, punches.HorizontalEndOffset);
             Assert.Equal(2.00, punches.ConnectionPitch);
             Assert.Equal(2.50, punches.RearPlateVerticalEndOffset);
             Assert.Equal(4.00, punches.RegularColumnPitch);

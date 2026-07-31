@@ -47,16 +47,28 @@ namespace RackCad.Application.Systems.Cantilever
             CantileverPieceId pieceId,
             IReadOnlyList<Point2D> points,
             bool isClosed,
-            double? circleDiameter = null)
+            double? circleDiameter = null,
+            CantileverVisualRole? role = null)
         {
             Kind = kind;
             PieceId = pieceId;
             Points = points;
             IsClosed = isClosed;
             CircleDiameter = circleDiameter;
+            Role = role ?? CantileverVisualRoles.Of(kind);
         }
 
         public CantileverViewPieceKind Kind { get; }
+
+        /// <summary>
+        /// Qué NATURALEZA tiene lo dibujado, para quien deba elegir un color o una capa.
+        /// 
+        /// Viaja EN la curva en vez de deducirse del <see cref="Kind"/> en cada consumidor, porque hay
+        /// naturalezas que el tipo de pieza no distingue: una placa del subensamble columna–base y la placa de
+        /// montaje de un brazo son las dos <c>Plate</c>, y sólo el modelo que las resolvió sabe cuál es cuál.
+        /// Deducirlo dos veces —una en la previa y otra en el dibujo— es exactamente cómo se separan.
+        /// </summary>
+        public CantileverVisualRole Role { get; }
 
         /// <summary>Which piece drew it, station scope included. Empty for nothing: every curve has an owner.</summary>
         public CantileverPieceId PieceId { get; }
@@ -322,7 +334,8 @@ namespace RackCad.Application.Systems.Cantilever
                 {
                     AddFlatPiece(
                         curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline,
-                        plate.Normal, plate.Thickness, zero, viewpoint);
+                        plate.Normal, plate.Thickness, zero, viewpoint,
+                        CantileverVisualRoles.OfPlate(plate.Kind));
                 }
             }
 
@@ -372,7 +385,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 AddFlatPiece(
                     curves, CantileverViewPieceKind.Plate, plate.Id, plate.Outline,
-                    plate.Normal, plate.Thickness, zero, viewpoint);
+                    plate.Normal, plate.Thickness, zero, viewpoint,
+                    CantileverVisualRoles.OfPlate(plate.Kind));
             }
 
             foreach (var punch in arm.MountingPunches)
@@ -482,7 +496,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 AddFlatPiece(
                     curves, CantileverViewPieceKind.Plate, placement.ScopedId(plate.Id),
-                    plate.Outline, plate.Normal, plate.Thickness, offset, viewpoint);
+                    plate.Outline, plate.Normal, plate.Thickness, offset, viewpoint,
+                    CantileverVisualRoles.OfPlate(plate.Kind));
             }
 
             foreach (var gusset in station.Gussets)
@@ -515,7 +530,8 @@ namespace RackCad.Application.Systems.Cantilever
             {
                 AddFlatPiece(
                     curves, CantileverViewPieceKind.Plate, plate.Plate.Id,
-                    plate.Plate.Outline, plate.Plate.Normal, plate.Plate.Thickness, zero, viewpoint);
+                    plate.Plate.Outline, plate.Plate.Normal, plate.Plate.Thickness, zero, viewpoint,
+                    CantileverVisualRoles.OfPlate(plate.Plate.Kind));
 
                 // Its ONE centred hole. A separator plate without its hole is a 3 × 3 square that says nothing
                 // about where the separator bolts, and that is what the frontal was showing.
@@ -750,7 +766,8 @@ namespace RackCad.Application.Systems.Cantilever
             Vector3D normal,
             double thickness,
             Vector3D offset,
-            SectionViewpoint viewpoint)
+            SectionViewpoint viewpoint,
+            CantileverVisualRole? role = null)
         {
             if (outline == null || outline.Count == 0)
             {
@@ -763,7 +780,7 @@ namespace RackCad.Application.Systems.Cantilever
                 .Concat(outline.Select(p => viewpoint.Project(p + offset + extrusion)))
                 .ToList();
 
-            curves.Add(new CantileverViewCurve(kind, id, ConvexHull(projected), true));
+            curves.Add(new CantileverViewCurve(kind, id, ConvexHull(projected), true, null, role));
         }
 
         /// <summary>

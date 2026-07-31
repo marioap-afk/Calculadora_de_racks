@@ -150,10 +150,10 @@ namespace RackCad.Application.Systems.Cantilever
         /// Builds the pattern, or returns null with a blocking diagnostic already in
         /// <paramref name="diagnostics"/>.
         /// </summary>
-        /// <param name="columnMinX">World X of the column envelope's lower edge.</param>
-        /// <param name="columnMaxX">World X of the column envelope's upper edge.</param>
-        /// <param name="rearPlateMinX">World X of the rear plate's lower edge.</param>
-        /// <param name="rearPlateMaxX">World X of the rear plate's upper edge.</param>
+        /// <param name="columnMinX">World X of the column envelope's lower edge. Ahora sólo LIMITA.</param>
+        /// <param name="columnMaxX">World X of the column envelope's upper edge. Ahora sólo LIMITA.</param>
+        /// <param name="rearPlateMinX">World X of the rear plate's lower edge. Es el DATUM horizontal.</param>
+        /// <param name="rearPlateMaxX">World X of the rear plate's upper edge. Es el DATUM horizontal.</param>
         /// <param name="baseBottomZ">Bottom of the base section envelope.</param>
         /// <param name="baseTopZ">Top of the base section envelope.</param>
         public static CantileverColumnBaseConnectionPattern Build(
@@ -178,9 +178,19 @@ namespace RackCad.Application.Systems.Cantilever
 
             var local = new List<CantileverDiagnostic>();
 
-            // ---- horizontal: the COLUMN governs -----------------------------------------------------------
-            var leftRowX = columnMinX + parameters.HorizontalEndOffset;
-            var rightRowX = columnMaxX - parameters.HorizontalEndOffset;
+            // ---- horizontal: la COLUMNA gobierna, pero la pulgada se mide en la PLACA ---------------------
+            // Decisión del dueño (I-37D, corrección de ronda 2): «es desde el exterior de la placa hacia el
+            // centro de la columna 1 pulgada». La columna sigue gobernando el patrón —son SUS filas, las
+            // mismas que suben por la rejilla regular y a las que un brazo se atornilla— pero el borde desde
+            // el que se acota es el de la placa posterior.
+            //
+            // Y es el datum físicamente correcto. Un troquel de esta pareja atraviesa la placa Y la columna,
+            // así que el que decide si el agujero se sale es el miembro MÁS ANGOSTO, y la placa lo es: su
+            // ancho es el del patín de la base, no el de la columna. Acotar desde la columna hacía que una
+            // columna más ancha que su placa empujara los agujeros fuera de ella —exactamente lo que pasaba
+            // con la pareja de referencia al bajar el offset a 1 in—.
+            var leftRowX = rearPlateMinX + parameters.HorizontalEndOffset;
+            var rightRowX = rearPlateMaxX - parameters.HorizontalEndOffset;
 
             // The two rows are centre-to-centre, so they only clear each other if they are at least one
             // diameter apart. This subsumes the old "right <= left" check and reports it with its own code:
@@ -194,24 +204,27 @@ namespace RackCad.Application.Systems.Cantilever
                     CantileverDiagnostics.PunchRowsOverlap,
                     "Las dos filas de troqueles quedarian a " + Format(separation) +
                     " in una de otra, menos que el diametro (" + Format(parameters.Diameter) +
-                    " in): la columna es demasiado estrecha para el offset de " +
+                    " in): la placa posterior es demasiado estrecha para el offset de " +
                     Format(parameters.HorizontalEndOffset) + " in."));
                 return null;
             }
 
-            // The holes the COLUMN governs have to fit in the plate the BASE offers. Widening the plate
-            // would be inventing a rule nobody approved, so an incompatible pair is simply rejected.
+            // El agujero atraviesa la placa Y la columna, asi que tambien tiene que caber en la COLUMNA. Es la
+            // misma comprobacion de antes con los dos papeles cambiados: al acotar desde la placa, la pieza
+            // que puede quedarse corta es la columna, y una columna mas ANGOSTA que su placa es lo que la
+            // rompe. Ensanchar cualquiera de las dos seria inventar una regla que nadie aprobo, asi que una
+            // pareja incompatible se rechaza y se dice cual de las dos no da.
             var radius = parameters.Diameter / 2.0;
 
-            if (leftRowX - radius < rearPlateMinX - FitTolerance ||
-                rightRowX + radius > rearPlateMaxX + FitTolerance)
+            if (leftRowX - radius < columnMinX - FitTolerance ||
+                rightRowX + radius > columnMaxX + FitTolerance)
             {
                 var outside = CantileverDiagnostic.Blocking(
                     CantileverDiagnostics.PunchOutsideRearPlate,
-                    "Los troqueles que gobierna la columna (x = " + Format(leftRowX) + " y " +
+                    "Los troqueles acotados desde la placa posterior (x = " + Format(leftRowX) + " y " +
                     Format(rightRowX) + ", diametro " + Format(parameters.Diameter) +
-                    " in) no caben en la placa posterior de la base, que abarca de " +
-                    Format(rearPlateMinX) + " a " + Format(rearPlateMaxX) + " in.");
+                    " in) no caben en la columna, que abarca de " +
+                    Format(columnMinX) + " a " + Format(columnMaxX) + " in.");
                 diagnostics.Add(outside);
                 return null;
             }

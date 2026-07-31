@@ -16,12 +16,20 @@ namespace RackCad.Domain.Systems.Cantilever
         public const double PunchDiameter = 0.75;
 
         /// <summary>
-        /// Horizontal distance from each transverse edge of the COLUMN envelope to its punch row, inches.
+        /// Distancia horizontal, en pulgadas, del EXTERIOR DE LA PLACA POSTERIOR hacia adentro, hasta el
+        /// centro de cada una de las dos filas de troqueles.
         ///
-        /// It is measured from the column and not from the plate because the column governs the two rows:
-        /// the rear plate has to accept them, not define them.
+        /// La columna sigue gobernando el patrón —son sus filas, las que suben por la rejilla regular y a las
+        /// que se atornilla un brazo— pero el borde desde el que se acota es el de la placa. Es el datum
+        /// físicamente correcto: el troquel atraviesa las dos piezas, así que manda la más angosta, y la placa
+        /// lo es porque su ancho es el del patín de la base.
+        ///
+        /// UNA PULGADA por corrección del dueño. Fue 1.5 in y él mismo declaró que ese valor era un error
+        /// suyo. Es la ÚNICA autoridad del número: <see cref="CantileverPunchParameters.HorizontalEndOffset"/>
+        /// lo toma de aquí y nadie más lo escribe, así que preview, dibujo, BOM y cualquier resolutor derivado
+        /// se mueven juntos y no pueden quedar uno en 1.5 y otro en 1.0.
         /// </summary>
-        public const double PunchHorizontalEndOffset = 1.50;
+        public const double PunchHorizontalEndOffset = 1.00;
 
         /// <summary>Vertical spacing of the connection region, inches.</summary>
         public const double ConnectionPunchPitch = 2.00;

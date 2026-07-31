@@ -45,7 +45,13 @@ namespace RackCad.UI.Systems.Cantilever
                     role => role,
                     role => UiSupport.FrozenBrush(AciPalette.ColorOf(CantileverVisualRoles.ColorIndexOf(role))));
 
-        /// <summary>The colour a piece kind reads in, so the legend, the preview and the drawing agree.</summary>
+        /// <summary>
+        /// El color de un TIPO de pieza, para una leyenda que no tiene una curva delante.
+        ///
+        /// Una leyenda lista tipos, no curvas, así que aquí sí hay que deducir el rol. Lo que dibuja una curva
+        /// usa el rol que la curva TRAE —ver la sobrecarga de abajo—, porque hay naturalezas que el tipo no
+        /// distingue.
+        /// </summary>
         internal static Brush BrushFor(CantileverViewPieceKind kind) =>
             RoleBrushes[CantileverVisualRoles.Of(kind)];
 
@@ -130,7 +136,7 @@ namespace RackCad.UI.Systems.Cantilever
                     height - offsetY - (point.Y - bounds.MinY) * scale));
             }
 
-            var brush = BrushFor(curve.Kind);
+            var brush = BrushFor(curve.Role);
 
             if (curve.IsCircle)
             {

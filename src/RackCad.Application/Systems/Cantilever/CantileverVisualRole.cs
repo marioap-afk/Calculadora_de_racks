@@ -28,7 +28,7 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>A structural member cantilevered off a column.</summary>
         Arm = 2,
 
-        /// <summary>Flat plate: bolted or welded, and always secondary to what it joins.</summary>
+        /// <summary>Flat plate of a piece that is NOT the column–base: montaje o extremo de brazo, separador.</summary>
         Plate = 3,
 
         /// <summary>A stiffening triangle. Read apart from a plate because it is welded, not bolted.</summary>
@@ -49,7 +49,16 @@ namespace RackCad.Application.Systems.Cantilever
         /// Declared before anything emits it, on purpose. A consumer written today already has to handle it, so
         /// the day dimensions arrive they cannot land silently on the colour of whatever came last.
         /// </summary>
-        Annotation = 8
+        Annotation = 8,
+
+        /// <summary>
+        /// Flat plate OF THE COLUMN–BASE subassembly: la inferior de la columna y las dos de la base.
+        ///
+        /// Aparte de <see cref="Plate"/> porque el dueño pidió que TODO el conjunto columna–base se lea junto
+        /// —en rojo— y una placa de montaje de brazo no pertenece a ese conjunto. La distinción no se adivina
+        /// mirando la curva: la decide el <see cref="CantileverPlateKind"/> que el modelo ya resolvió.
+        /// </summary>
+        ColumnBasePlate = 9
     }
 
     /// <summary>
@@ -110,6 +119,35 @@ namespace RackCad.Application.Systems.Cantilever
             }
         }
 
+        /// <summary>
+        /// La naturaleza de una PLACA, que su tipo decide y su curva no.
+        ///
+        /// Una placa proyectada es un rectángulo y todas se parecen; a cuál conjunto pertenece sólo lo sabe el
+        /// modelo que la resolvió. Preguntárselo a él es lo que permite que el subensamble columna–base se lea
+        /// entero sin teñir de paso la placa de montaje de un brazo.
+        /// </summary>
+        public static CantileverVisualRole OfPlate(CantileverPlateKind kind)
+        {
+            switch (kind)
+            {
+                case CantileverPlateKind.ColumnBottom:
+                case CantileverPlateKind.BaseFront:
+                case CantileverPlateKind.BaseRear:
+                    return CantileverVisualRole.ColumnBasePlate;
+
+                case CantileverPlateKind.ArmMounting:
+                case CantileverPlateKind.ArmEnd:
+                case CantileverPlateKind.SeparatorColumn:
+                    return CantileverVisualRole.Plate;
+
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(kind), kind,
+                        "La placa '" + kind + "' no tiene naturaleza visual declarada. " +
+                        "Anadir una exige clasificarla aqui.");
+            }
+        }
+
         /// <summary>The layer a role draws on. Throws for a role nobody has named.</summary>
         public static string LayerNameOf(CantileverVisualRole role)
         {
@@ -126,6 +164,9 @@ namespace RackCad.Application.Systems.Cantilever
 
                 case CantileverVisualRole.Plate:
                     return LayerPrefix + "PLACA";
+
+                case CantileverVisualRole.ColumnBasePlate:
+                    return LayerPrefix + "PLACA_COLUMNA_BASE";
 
                 case CantileverVisualRole.Gusset:
                     return LayerPrefix + "CARTABON";
@@ -164,20 +205,21 @@ namespace RackCad.Application.Systems.Cantilever
         {
             switch (role)
             {
+                // ---- El conjunto COLUMNA-BASE, entero en ROJO -------------------------------------------
+                // Decision del dueño: «todos los elementos de la columna/base deben verse rojos». Los cuatro
+                // roles siguen SEPARADOS —cada uno con su capa— así que se pueden apagar por separado; lo que
+                // comparten es el color, que es lo que hace que el conjunto se lea como un conjunto.
                 case CantileverVisualRole.Column:
-                    return 3; // verde
-
                 case CantileverVisualRole.Base:
-                    return 5; // azul
+                case CantileverVisualRole.ColumnBasePlate:
+                case CantileverVisualRole.Gusset:
+                    return 1; // rojo
 
                 case CantileverVisualRole.Arm:
                     return 30; // naranja
 
                 case CantileverVisualRole.Plate:
-                    return 254; // gris claro: secundaria, y no debe competir con el acero que une
-
-                case CantileverVisualRole.Gusset:
-                    return 252; // gris medio
+                    return 254; // gris claro: la de montaje o la de un separador, secundaria a lo que une
 
                 case CantileverVisualRole.Separator:
                     return 6; // magenta
@@ -185,11 +227,15 @@ namespace RackCad.Application.Systems.Cantilever
                 case CantileverVisualRole.Brace:
                     return 2; // amarillo
 
+                // Blanco por decisión del dueño, y es la elección física correcta: un troquel NO es acero, es
+                // su ausencia, así que leerlo en el color opuesto al del acero es lo que un lector necesita.
                 case CantileverVisualRole.Punch:
-                    return 1; // rojo: lo que mas se busca en el plano de una columna troquelada
+                    return 7; // blanco
 
+                // Comparte el blanco con el troquel, y no es un descuido: una cota tampoco es acero. Se
+                // distinguen por capa, que es lo que permite apagar una sin la otra.
                 case CantileverVisualRole.Annotation:
-                    return 7; // blanco/negro, segun el fondo
+                    return 7; // blanco
 
                 default:
                     throw new ArgumentOutOfRangeException(

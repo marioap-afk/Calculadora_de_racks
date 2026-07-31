@@ -94,23 +94,31 @@ namespace RackCad.Tests
         // Golden nuevo:    38 troqueles, 19 elevaciones por fila, ultima 92.5.
         // Causa fisica:    el agujero de 92.5 mide 0.75 y termina en 92.875 <= 96. Siempre cupo; el margen lo
         //                  excluia sin razon de producto.
+        // MOVIDO OTRA VEZ en la correccion de columna y base, y por una causa fisica declarada: el dueno
+        // corrigio la distancia de la orilla al centro del troquel de 1.5 a 1.0 in, y precisó que se mide
+        // «desde el exterior de la placa hacia el centro de la columna». Las dos filas pasan de x = ±2.48
+        // —(7.96/2) − 1.5, acotadas desde la COLUMNA— a x = ±2.245 —(6.49/2) − 1.0, acotadas desde la placa
+        // posterior, cuyo ancho es el del patin de la base—.
+        //
+        // El numero de troqueles y sus elevaciones NO cambian: el datum horizontal no toca el vertical.
         private const string Golden96 =
-            "38;CANT-CB-PCH-REG-1~ColumnFace~-2.48~20.5~0.75~-2.48~20.5~AlongY|CANT-CB-PCH-REG-2~ColumnFace~-2.48~24.5~0.75~-2.48~24.5~AlongY|CANT-CB-PCH-REG-3~Col" +
-            "umnFace~-2.48~28.5~0.75~-2.48~28.5~AlongY|CANT-CB-PCH-REG-4~ColumnFace~-2.48~32.5~0.75~-2.48~32.5~AlongY|CANT-CB-PCH-REG-5~ColumnFace~-2.48~36.5~0.75~" +
-            "-2.48~36.5~AlongY|CANT-CB-PCH-REG-6~ColumnFace~-2.48~40.5~0.75~-2.48~40.5~AlongY|CANT-CB-PCH-REG-7~ColumnFace~-2.48~44.5~0.75~-2.48~44.5~AlongY|CANT-C" +
-            "B-PCH-REG-8~ColumnFace~-2.48~48.5~0.75~-2.48~48.5~AlongY|CANT-CB-PCH-REG-9~ColumnFace~-2.48~52.5~0.75~-2.48~52.5~AlongY|CANT-CB-PCH-REG-10~ColumnFace~" +
-            "-2.48~56.5~0.75~-2.48~56.5~AlongY|CANT-CB-PCH-REG-11~ColumnFace~-2.48~60.5~0.75~-2.48~60.5~AlongY|CANT-CB-PCH-REG-12~ColumnFace~-2.48~64.5~0.75~-2.48~" +
-            "64.5~AlongY|CANT-CB-PCH-REG-13~ColumnFace~-2.48~68.5~0.75~-2.48~68.5~AlongY|CANT-CB-PCH-REG-14~ColumnFace~-2.48~72.5~0.75~-2.48~72.5~AlongY|CANT-CB-PC" +
-            "H-REG-15~ColumnFace~-2.48~76.5~0.75~-2.48~76.5~AlongY|CANT-CB-PCH-REG-16~ColumnFace~-2.48~80.5~0.75~-2.48~80.5~AlongY|CANT-CB-PCH-REG-17~ColumnFace~-2" +
-            ".48~84.5~0.75~-2.48~84.5~AlongY|CANT-CB-PCH-REG-18~ColumnFace~-2.48~88.5~0.75~-2.48~88.5~AlongY|CANT-CB-PCH-REG-19~ColumnFace~-2.48~92.5~0.75~-2.48~92" +
-            ".5~AlongY|CANT-CB-PCH-REG-20~ColumnFace~2.48~20.5~0.75~2.48~20.5~AlongY|CANT-CB-PCH-REG-21~ColumnFace~2.48~24.5~0.75~2.48~24.5~AlongY|CANT-CB-PCH-REG-" +
-            "22~ColumnFace~2.48~28.5~0.75~2.48~28.5~AlongY|CANT-CB-PCH-REG-23~ColumnFace~2.48~32.5~0.75~2.48~32.5~AlongY|CANT-CB-PCH-REG-24~ColumnFace~2.48~36.5~0." +
-            "75~2.48~36.5~AlongY|CANT-CB-PCH-REG-25~ColumnFace~2.48~40.5~0.75~2.48~40.5~AlongY|CANT-CB-PCH-REG-26~ColumnFace~2.48~44.5~0.75~2.48~44.5~AlongY|CANT-C" +
-            "B-PCH-REG-27~ColumnFace~2.48~48.5~0.75~2.48~48.5~AlongY|CANT-CB-PCH-REG-28~ColumnFace~2.48~52.5~0.75~2.48~52.5~AlongY|CANT-CB-PCH-REG-29~ColumnFace~2." +
-            "48~56.5~0.75~2.48~56.5~AlongY|CANT-CB-PCH-REG-30~ColumnFace~2.48~60.5~0.75~2.48~60.5~AlongY|CANT-CB-PCH-REG-31~ColumnFace~2.48~64.5~0.75~2.48~64.5~Alo" +
-            "ngY|CANT-CB-PCH-REG-32~ColumnFace~2.48~68.5~0.75~2.48~68.5~AlongY|CANT-CB-PCH-REG-33~ColumnFace~2.48~72.5~0.75~2.48~72.5~AlongY|CANT-CB-PCH-REG-34~Col" +
-            "umnFace~2.48~76.5~0.75~2.48~76.5~AlongY|CANT-CB-PCH-REG-35~ColumnFace~2.48~80.5~0.75~2.48~80.5~AlongY|CANT-CB-PCH-REG-36~ColumnFace~2.48~84.5~0.75~2.4" +
-            "8~84.5~AlongY|CANT-CB-PCH-REG-37~ColumnFace~2.48~88.5~0.75~2.48~88.5~AlongY|CANT-CB-PCH-REG-38~ColumnFace~2.48~92.5~0.75~2.48~92.5~AlongY";
+            "38;CANT-CB-PCH-REG-1~ColumnFace~-2.245~20.5~0.75~-2.245~20.5~AlongY|CANT-CB-PCH-REG-2~ColumnFace~-2.245~24.5~0.75~-2.245~24.5~AlongY|CANT-CB-PCH-REG-3" +
+            "~ColumnFace~-2.245~28.5~0.75~-2.245~28.5~AlongY|CANT-CB-PCH-REG-4~ColumnFace~-2.245~32.5~0.75~-2.245~32.5~AlongY|CANT-CB-PCH-REG-5~ColumnFace~-2.245~3" +
+            "6.5~0.75~-2.245~36.5~AlongY|CANT-CB-PCH-REG-6~ColumnFace~-2.245~40.5~0.75~-2.245~40.5~AlongY|CANT-CB-PCH-REG-7~ColumnFace~-2.245~44.5~0.75~-2.245~44.5" +
+            "~AlongY|CANT-CB-PCH-REG-8~ColumnFace~-2.245~48.5~0.75~-2.245~48.5~AlongY|CANT-CB-PCH-REG-9~ColumnFace~-2.245~52.5~0.75~-2.245~52.5~AlongY|CANT-CB-PCH-" +
+            "REG-10~ColumnFace~-2.245~56.5~0.75~-2.245~56.5~AlongY|CANT-CB-PCH-REG-11~ColumnFace~-2.245~60.5~0.75~-2.245~60.5~AlongY|CANT-CB-PCH-REG-12~ColumnFace~" +
+            "-2.245~64.5~0.75~-2.245~64.5~AlongY|CANT-CB-PCH-REG-13~ColumnFace~-2.245~68.5~0.75~-2.245~68.5~AlongY|CANT-CB-PCH-REG-14~ColumnFace~-2.245~72.5~0.75~-" +
+            "2.245~72.5~AlongY|CANT-CB-PCH-REG-15~ColumnFace~-2.245~76.5~0.75~-2.245~76.5~AlongY|CANT-CB-PCH-REG-16~ColumnFace~-2.245~80.5~0.75~-2.245~80.5~AlongY|" +
+            "CANT-CB-PCH-REG-17~ColumnFace~-2.245~84.5~0.75~-2.245~84.5~AlongY|CANT-CB-PCH-REG-18~ColumnFace~-2.245~88.5~0.75~-2.245~88.5~AlongY|CANT-CB-PCH-REG-19" +
+            "~ColumnFace~-2.245~92.5~0.75~-2.245~92.5~AlongY|CANT-CB-PCH-REG-20~ColumnFace~2.245~20.5~0.75~2.245~20.5~AlongY|CANT-CB-PCH-REG-21~ColumnFace~2.245~24" +
+            ".5~0.75~2.245~24.5~AlongY|CANT-CB-PCH-REG-22~ColumnFace~2.245~28.5~0.75~2.245~28.5~AlongY|CANT-CB-PCH-REG-23~ColumnFace~2.245~32.5~0.75~2.245~32.5~Alo" +
+            "ngY|CANT-CB-PCH-REG-24~ColumnFace~2.245~36.5~0.75~2.245~36.5~AlongY|CANT-CB-PCH-REG-25~ColumnFace~2.245~40.5~0.75~2.245~40.5~AlongY|CANT-CB-PCH-REG-26" +
+            "~ColumnFace~2.245~44.5~0.75~2.245~44.5~AlongY|CANT-CB-PCH-REG-27~ColumnFace~2.245~48.5~0.75~2.245~48.5~AlongY|CANT-CB-PCH-REG-28~ColumnFace~2.245~52.5" +
+            "~0.75~2.245~52.5~AlongY|CANT-CB-PCH-REG-29~ColumnFace~2.245~56.5~0.75~2.245~56.5~AlongY|CANT-CB-PCH-REG-30~ColumnFace~2.245~60.5~0.75~2.245~60.5~Along" +
+            "Y|CANT-CB-PCH-REG-31~ColumnFace~2.245~64.5~0.75~2.245~64.5~AlongY|CANT-CB-PCH-REG-32~ColumnFace~2.245~68.5~0.75~2.245~68.5~AlongY|CANT-CB-PCH-REG-33~C" +
+            "olumnFace~2.245~72.5~0.75~2.245~72.5~AlongY|CANT-CB-PCH-REG-34~ColumnFace~2.245~76.5~0.75~2.245~76.5~AlongY|CANT-CB-PCH-REG-35~ColumnFace~2.245~80.5~0" +
+            ".75~2.245~80.5~AlongY|CANT-CB-PCH-REG-36~ColumnFace~2.245~84.5~0.75~2.245~84.5~AlongY|CANT-CB-PCH-REG-37~ColumnFace~2.245~88.5~0.75~2.245~88.5~AlongY|" +
+            "CANT-CB-PCH-REG-38~ColumnFace~2.245~92.5~0.75~2.245~92.5~AlongY";
 
         [Fact]
         public void TheGoldenDumpIsNotVacuous()
@@ -223,7 +231,7 @@ namespace RackCad.Tests
             var assembly = Resolve(96.0);
 
             Assert.Equal(
-                "col=AISC-W-W10X33@96;base=AISC-W-W12X26@48;pattern=rows=-2.48,2.48;d=0.75;base=0..12.2;inside=5;above=3;top=19;z=2.5|4.5|6.5|8.5|10.5|12.5|14.5|16.5;plates=0.25,0.25,0.25,0.25;gusset=6.8x6.8;punches=16,16,38,8;env=-3.98,-9.73,0..3.98,48.5,96.25",
+                "col=AISC-W-W10X33@96;base=AISC-W-W12X26@48;pattern=rows=-2.245,2.245;d=0.75;base=0..12.2;inside=5;above=3;top=19;z=2.5|4.5|6.5|8.5|10.5|12.5|14.5|16.5;plates=0.25,0.25,0.25,0.25;gusset=6.8x6.8;punches=16,16,38,8;env=-3.98,-9.73,0..3.98,48.5,96.25",
                 assembly.Signature());
         }
     }

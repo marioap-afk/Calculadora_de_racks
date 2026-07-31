@@ -123,8 +123,19 @@ namespace RackCad.Tests
             // demuestran que el cambio toco agujeros y NADA MAS. Tampoco se movieron los dos del BOM: un
             // troquel no es una linea de BOM.
             // Anteriores: linea 35F179AA…, linea-doble E05B3F68…
-            ["linea"] = "58202A8B2E60AD5846BA3396F636BE0729585FA79877DB7EB73148798122EAF2",
-            ["linea-doble"] = "57A55555E68AC3D881CC06223EA0E825E56476E528E8FF4B1639562D96013F83",
+            // MOVIDOS OTRA VEZ en la correccion del offset de troquel, y por causa fisica declarada: el dueno
+            // bajo la distancia de la orilla al centro del troquel de 1.5 a 1.0 in y precisó que se mide
+            // «desde el exterior de la placa hacia el centro de la columna». Las dos filas pasan de x = ±2.48
+            // —(7.96/2) − 1.5, desde la COLUMNA— a x = ±2.245 —(6.49/2) − 1.0, desde la placa posterior—. La
+            // firma de la linea lleva dentro las coordenadas de cada troquel, y la persistencia lleva el
+            // propio 1.0 en el JSON.
+            //
+            // Los CUATRO pines de vista NO se movieron: excluyen los troqueles a proposito, y mover una fila
+            // en X no cambia cuantas curvas dibuja ninguna vista. Los dos del BOM tampoco: un troquel no es
+            // una linea de BOM.
+            // Anteriores: linea 58202A8B…, linea-doble 57A55555…, persistencia 24358728…
+            ["linea"] = "6D3BB5C6F61D68D85820D042B7CC1BC48C2B1FBFA2AF3B6B57EEFADE47076D2D",
+            ["linea-doble"] = "2038786A4B1045769C376468BB243137D1196C3046CAFE21852AF2A7FBC153A5",
             ["bom"] = "6088C538512ACDCA52D0C5DB5D0AD1DE180686CE13752D33F674F19C6DFA66F3",
             ["bom-doble"] = "608B790C28618CD013D8B807F937E3EF73FCF4BAF9B77D076E0CFE866FA5A272",
             // TRES DE ESTOS CUATRO SE MOVIERON en la correccion de columna/base, por la causa fisica del
@@ -159,7 +170,8 @@ namespace RackCad.Tests
             // Movido una TERCERA vez, en la correccion de columna y base: el JSON dejo de escribir
             // `ColumnBottomPlateEndOffset` y `ColumnTopPunchOffset`, que el dueno retiro. Dos claves menos.
             // Anterior: C8D5A3C8…
-            ["persistencia"] = "24358728F2AAC25FF87059B099F7988EA09504D576602F47BDE70A8F19F3E695"
+            // Movido una CUARTA vez, con el offset de 1.0: el JSON persiste el propio numero.
+            ["persistencia"] = "9F89BB749F94D8893FE0926D705519881E98A223D1E94A33529372B2276A20FE"
         };
 
         // ---- 1. Las resoluciones ------------------------------------------------------------------------

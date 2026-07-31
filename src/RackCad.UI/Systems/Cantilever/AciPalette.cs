@@ -27,7 +27,8 @@ namespace RackCad.UI.Systems.Cantilever
             [6] = Color.FromRgb(0xFF, 0x00, 0xFF),   // magenta
 
             // El 7 es blanco sobre fondo oscuro y negro sobre fondo claro. La previa tiene fondo claro, asi que
-            // se muestra oscuro: mostrarlo blanco lo haria invisible justo en el panel donde se revisa.
+            // se muestra oscuro: mostrarlo blanco lo haria INVISIBLE justo en el panel donde se revisa. Es la
+            // misma regla que AutoCAD aplica, no una licencia: el indice 7 significa «el contrario del fondo».
             [7] = Color.FromRgb(0x20, 0x28, 0x30),
 
             [30] = Color.FromRgb(0xFF, 0x7F, 0x00),  // naranja

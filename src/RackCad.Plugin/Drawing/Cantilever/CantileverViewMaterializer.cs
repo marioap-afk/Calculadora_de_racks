@@ -48,7 +48,6 @@ namespace RackCad.Plugin.Drawing.Cantilever
             var definitionId = blockTable.Add(definition);
             transaction.AddNewlyCreatedDBObject(definition, true);
 
-            EnsureRoleLayers(database, transaction);
             AppendCurves(definition, transaction, plan);
 
             return definitionId;
@@ -135,6 +134,13 @@ namespace RackCad.Plugin.Drawing.Cantilever
         private static void AppendCurves(
             BlockTableRecord definition, Transaction transaction, CantileverViewPlan plan)
         {
+            // Aqui, y no en el llamador. Una entidad se pone en la capa de su naturaleza, asi que esa capa tiene
+            // que existir ANTES de la primera curva; dejarlo en manos de quien crea la definicion ya fallo una
+            // vez: de las tres puertas que appendean curvas solo una creaba las capas, y las otras dos —redibujo
+            // en sitio e insercion de un componente suelto— morian con la capa inexistente. La INSERCION DE UN
+            // COMPONENTE SUELTO era una de ellas, y por eso la columna no se podia insertar.
+            EnsureRoleLayers(definition.Database, transaction);
+
             foreach (var curve in plan.Curves)
             {
                 var entity = Build(curve);
@@ -144,7 +150,7 @@ namespace RackCad.Plugin.Drawing.Cantilever
                     continue;
                 }
 
-                ApplyRole(entity, curve.Kind);
+                ApplyRole(entity, curve.Role);
 
                 definition.AppendEntity(entity);
                 transaction.AddNewlyCreatedDBObject(entity, true);
@@ -162,6 +168,11 @@ namespace RackCad.Plugin.Drawing.Cantilever
         /// </summary>
         private static void EnsureRoleLayers(Database database, Transaction transaction)
         {
+            if (database == null)
+            {
+                return; // una definicion sin base de datos no llega al dibujo
+            }
+
             var table = (LayerTable)transaction.GetObject(database.LayerTableId, OpenMode.ForRead);
 
             foreach (CantileverVisualRole role in Enum.GetValues(typeof(CantileverVisualRole)))
@@ -195,10 +206,12 @@ namespace RackCad.Plugin.Drawing.Cantilever
         /// which is turning the holes off to look at the steel. Colour and lineweight stay BYLAYER rather than
         /// being stamped on the entity, so the user still owns the look — one layer, not one entity at a time.
         /// </summary>
-        private static void ApplyRole(Entity entity, CantileverViewPieceKind kind)
+        private static void ApplyRole(Entity entity, CantileverVisualRole role)
         {
-            // Throws for an unclassified kind: a piece must not reach the drawing dressed as something else.
-            entity.Layer = CantileverVisualRoles.LayerNameOf(CantileverVisualRoles.Of(kind));
+            // El rol viene DECIDIDO en el plan, no se deduce aqui: deducirlo seria una segunda implementacion
+            // de la misma regla, y la primera vez que una de las dos cambiase el bloque dejaria de parecerse a
+            // la previa que el usuario aprobo.
+            entity.Layer = CantileverVisualRoles.LayerNameOf(role);
             entity.ColorIndex = 256; // BYLAYER
             entity.Linetype = "ByLayer";
             entity.LineWeight = LineWeight.ByLayer;

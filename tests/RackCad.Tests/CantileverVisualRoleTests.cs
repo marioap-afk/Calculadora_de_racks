@@ -87,23 +87,70 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void LasNaturalezasQueUnLectorMasSeparaTienenColoresDISTINTOS()
+        public void ElCONJUNTOColumnaBaseSeLeeEnteroENROJO()
         {
-            // No se exige que los nueve difieran —tensor y adaptador comparten rol a propósito—, sino que las
-            // seis del subensamble base–columna se lean aparte, que es lo que el rechazo pedía.
-            var criticos = new[]
+            // Regla del dueño, literal: «todos los elementos de la columna/base deben verse rojos».
+            //
+            // Sustituye a una prueba que exigía que las seis naturalezas críticas tuvieran colores DISTINTOS
+            // —LasNaturalezasQueUnLectorMasSeparaTienenColoresDISTINTOS—, y la sustituye porque el dueño la
+            // contradijo a propósito: lo que quiere es que el conjunto se lea COMO un conjunto. Lo que no se
+            // perdió es poder aislar cada pieza, y eso lo da la capa, no el color: ver
+            // CadaRolTieneSuPROPIACapa.
+            foreach (var role in new[]
+                     {
+                         CantileverVisualRole.Column,
+                         CantileverVisualRole.Base,
+                         CantileverVisualRole.ColumnBasePlate,
+                         CantileverVisualRole.Gusset
+                     })
             {
-                CantileverVisualRole.Column,
-                CantileverVisualRole.Base,
-                CantileverVisualRole.Arm,
+                Assert.Equal(1, CantileverVisualRoles.ColorIndexOf(role)); // 1 = rojo
+            }
+        }
+
+        [Fact]
+        public void ElTROQUELSeLeeEnBLANCOYNoComoElAceroQuePerfora()
+        {
+            // La otra mitad de la regla del dueño. Y es la elección físicamente correcta: un troquel no es
+            // acero, es su AUSENCIA, así que el contraste máximo contra el conjunto rojo es lo que un lector
+            // necesita para contar agujeros.
+            Assert.Equal(7, CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.Punch));
+
+            Assert.NotEqual(
+                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.Punch),
+                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.Column));
+        }
+
+        [Fact]
+        public void UnaPlacaDeBRAZONoSeTinneDelRojoDelConjunto()
+        {
+            // Que el conjunto sea rojo no puede teñir de paso la placa de montaje de un brazo: no pertenece a
+            // él. Es la razón de que ColumnBasePlate exista aparte de Plate, y la distinción NO se adivina
+            // mirando la curva —las dos son rectángulos— sino preguntándole su tipo al modelo.
+            Assert.Equal(
+                CantileverVisualRole.ColumnBasePlate,
+                CantileverVisualRoles.OfPlate(CantileverPlateKind.ColumnBottom));
+
+            Assert.Equal(
                 CantileverVisualRole.Plate,
-                CantileverVisualRole.Gusset,
-                CantileverVisualRole.Punch
-            };
+                CantileverVisualRoles.OfPlate(CantileverPlateKind.ArmMounting));
 
-            var colores = criticos.Select(CantileverVisualRoles.ColorIndexOf).ToList();
+            Assert.NotEqual(
+                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.ColumnBasePlate),
+                CantileverVisualRoles.ColorIndexOf(CantileverVisualRole.Plate));
+        }
 
-            Assert.Equal(criticos.Length, colores.Distinct().Count());
+        [Fact]
+        public void TODOTipoDePlacaTieneNaturalezaYUnaSinClasificarFALLA()
+        {
+            foreach (CantileverPlateKind kind in Enum.GetValues(typeof(CantileverPlateKind)))
+            {
+                Assert.True(Enum.IsDefined(
+                    typeof(CantileverVisualRole), CantileverVisualRoles.OfPlate(kind)));
+            }
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => CantileverVisualRoles.OfPlate((CantileverPlateKind)9999));
         }
 
         [Fact]
@@ -142,6 +189,29 @@ namespace RackCad.Tests
             Assert.Contains("CantileverVisualRoles.LayerNameOf", source);
             Assert.Contains("CantileverVisualRoles.ColorIndexOf", source);
             Assert.DoesNotContain("RACKCAD_CANT_", source);
+        }
+
+        [Fact]
+        public void LaCapaLaGarantizaQuienAPPENDEALasCurvasYNoCadaPuerta()
+        {
+            // Una entidad va a la capa de su naturaleza, así que esa capa tiene que existir ANTES de la
+            // primera curva. Dejarlo en manos de quien crea la definición YA FALLÓ: de las tres puertas que
+            // appendean curvas sólo una creaba las capas, y la inserción de un componente suelto era una de
+            // las otras dos. Por eso la columna no se podía insertar.
+            //
+            // La guarda es de forma, no de comportamiento: exige que la creación de capas cuelgue del único
+            // sitio por el que pasan todas las curvas.
+            var source = CodeOnly(Path.Combine(
+                SourceRoot(), "src", "RackCad.Plugin", "Drawing", "Cantilever", "CantileverViewMaterializer.cs"));
+
+            var llamadas = source.Split(new[] { "EnsureRoleLayers(" }, StringSplitOptions.None).Length - 1;
+
+            // Una para declararla y otra para llamarla: ni una tercera, que sería un llamador acordándose.
+            Assert.Equal(2, llamadas);
+
+            var append = source.Substring(source.IndexOf("private static void AppendCurves", StringComparison.Ordinal));
+
+            Assert.Contains("EnsureRoleLayers(", append.Substring(0, append.IndexOf("private static Entity Build", StringComparison.Ordinal)));
         }
 
         [Fact]
