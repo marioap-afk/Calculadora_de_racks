@@ -223,7 +223,7 @@ namespace RackCad.Tests
             var assembly = Resolve(96.0);
 
             Assert.Equal(
-                "col=AISC-W-W10X33@96;base=AISC-W-W12X26@48;pattern=rows=-2.48,2.48;d=0.75;base=0..12.2;inside=5;above=3;top=19;z=2.5|4.5|6.5|8.5|10.5|12.5|14.5|16.5;plates=0.25,0.25,0.25,0.25;gusset=6.8x6.8;punches=16,16,38,8;env=-3.98,-9.73,-0.25..3.98,48.5,96",
+                "col=AISC-W-W10X33@96;base=AISC-W-W12X26@48;pattern=rows=-2.48,2.48;d=0.75;base=0..12.2;inside=5;above=3;top=19;z=2.5|4.5|6.5|8.5|10.5|12.5|14.5|16.5;plates=0.25,0.25,0.25,0.25;gusset=6.8x6.8;punches=16,16,38,8;env=-3.98,-9.73,0..3.98,48.5,96.25",
                 assembly.Signature());
         }
     }

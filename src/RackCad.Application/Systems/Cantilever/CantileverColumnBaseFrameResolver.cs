@@ -41,7 +41,7 @@ namespace RackCad.Application.Systems.Cantilever
         /// the section centroid, so both shifts are offsets read from the envelope — never "half of d".
         /// </summary>
         public static LocalFrame3D ColumnFrame(
-            CantileverColumnOrientation orientation, StructuralSectionGeometry geometry)
+            CantileverColumnOrientation orientation, StructuralSectionGeometry geometry, double columnStartZ)
         {
             if (geometry == null)
             {
@@ -57,7 +57,7 @@ namespace RackCad.Application.Systems.Cantilever
                         new Point3D(
                             -bounds.Center.X,
                             CantileverColumnBaseDatum.ConnectionPlaneY - bounds.MaxY,
-                            CantileverColumnBaseDatum.FloorZ),
+                            columnStartZ),
                         Vector3D.UnitZ,
                         Vector3D.UnitX);
 

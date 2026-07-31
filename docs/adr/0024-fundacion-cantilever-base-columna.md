@@ -179,11 +179,43 @@ resolviendo y dibujando**, con advertencia y sin sustitución automática.
 - **`y = 0`** — el `ColumnBaseConnectionPlane`: el plano de contacto entre la cara de conexión de la columna
   y la cara de apoyo de la placa posterior. La columna ocupa `y ≤ 0`; todo el conjunto de la base ocupa
   `y ≥ 0`. El eje de perforación de la conexión es `+Y`.
-- **`z = 0`** — la elevación común del **fondo de la sección de la columna** y del **fondo de la sección de
-  la base**.
+- **`z = 0`** — el **piso**. Ver la nota N1: esta redacción original decía «la elevación común del fondo de
+  la sección de la columna y del fondo de la sección de la base», y esa parte queda **precisada**.
 - **`x = 0`** — el centro transversal de la sección de la columna.
 
 Los tres se derivan de `Bounds`; ninguno es un offset calculado a partir de una tabla AISC.
+
+### N1 — Nota de decisión (2026-07-30, I-37D): datum lógico compartido ≠ origen físico en Z
+
+**Qué precisa.** El tercer plano de D7. Base y columna **comparten el datum lógico de conexión** —las
+elevaciones de troquelado de la placa posterior de la base y de la cara de conexión de la columna son los
+mismos números absolutos, que es la razón de ser de D3—, pero **no comparten necesariamente el mismo origen
+físico en Z**.
+
+**Por qué.** La redacción original hacía arrancar la columna en el piso. La columna se apoya sobre una placa
+inferior que también se apoya en el piso, así que una columna que arranca en `z = 0` **atraviesa su propia
+placa**: una pieza que nadie puede fabricar. El defecto no era un número mal puesto sino un nombre haciendo
+tres trabajos —piso, inicio de base, inicio de columna— bajo una sola constante.
+
+**Qué queda fijado** (decisión normativa del Owner, ronda 2 de validación manual de I-37D):
+
+| Elevación | Valor | Dueño |
+|---|---|---|
+| `FloorZ` | `0` | el piso |
+| `BaseBottomZ` | `FloorZ` | la sección de la base — **se queda apoyada en el piso** |
+| `ColumnBottomPlateBottomZ` | `FloorZ` | la placa inferior de la columna |
+| `ColumnBottomPlateTopZ` | `FloorZ + espesor` | la cara de apoyo |
+| `ColumnStartZ` | `ColumnBottomPlateTopZ` | la sección de la **columna** |
+| `ColumnTopZ` | `ColumnStartZ + longitud nominal de corte` | el extremo superior |
+
+**Lo que NO cambia.** La placa posterior de la base, el cartabón y la placa frontal son piezas de la base y
+**no suben** con la columna. La longitud **nominal** de corte es la misma: la placa **levanta** la columna,
+no la alarga, y el BOM comercial no se mueve (D4 intacto). El patrón de conexión sigue siendo una sola
+autoridad (D3 intacto): un espesor mayor no traslada los troqueles, solo cambia **cuáles de ellos caen
+dentro** de la columna elevada —un agujero por debajo de su cara de apoyo se perforaría en el aire.
+
+**Dónde vive.** `CantileverColumnBaseDatum`, con un nombre por elevación. Está prohibido volver a usar una
+sola variable para significar piso, inicio de base e inicio de columna a la vez.
 
 ## Alternativas consideradas
 

@@ -1273,12 +1273,13 @@ namespace RackCad.Tests
                 box.Value.Width >= 2 * design.ColumnCentreSpacing,
                 "La envolvente debe abarcar las tres estaciones.");
 
-            // The floor is at Z = 0 and the column's bottom plate hangs BELOW it, so the box legitimately
-            // starts under zero. What must hold is that it starts at the plate and not lower.
+            // Correccion del datum (I-37D): la placa inferior se APOYA en el piso en vez de colgar de el, asi
+            // que nada de la linea baja de z = 0. Y el tope sube: la columna arranca sobre la placa, de modo
+            // que su extremo esta un espesor por encima de su longitud nominal.
             var plate = line.Stations[0].Station.ColumnBase.ColumnBottomPlate;
 
-            Assert.Equal(-plate.Thickness, box.Value.MinZ, 1e-6);
-            Assert.True(box.Value.MaxZ >= line.ColumnHeight - 1e-6);
+            Assert.Equal(0.0, box.Value.MinZ, 1e-6);
+            Assert.True(box.Value.MaxZ >= plate.Thickness + line.ColumnHeight - 1e-6);
         }
     }
 }

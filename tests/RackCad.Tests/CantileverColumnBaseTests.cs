@@ -533,7 +533,7 @@ namespace RackCad.Tests
             var design = Design();
             var assembly = Resolve(design);
             var radius = design.Connection.Punches.Diameter / 2.0;
-            var ceiling = design.Column.Height - radius;
+            var ceiling = design.Column.BottomPlate.Thickness + design.Column.Height - radius;
 
             var elevations = assembly.ColumnRegularPunches
                 .Select(p => Math.Round(p.Datum.V, 9))
@@ -558,8 +558,9 @@ namespace RackCad.Tests
         public void AColumnTooShortForARegularPunchSaysSoWithoutBlocking()
         {
             // El primer troquel regular esta en z = 20.5 y su radio es 0.375, asi que el agujero entero mas bajo
-            // exige una columna de 20.875. A 20.75 no cabe NINGUNO, y eso se avisa sin bloquear.
-            var assembly = Resolve(Design(height: 20.75));
+            // exige que la columna llegue a 20.875. Con la placa de 0.25 levantandola, eso son 20.625 in de
+            // corte. A 20.5 no cabe NINGUNO, y eso se avisa sin bloquear.
+            var assembly = Resolve(Design(height: 20.5));
 
             Assert.False(assembly.IsBlocked);
             Assert.Empty(assembly.ColumnRegularPunches);
@@ -569,8 +570,8 @@ namespace RackCad.Tests
         [Fact]
         public void UnaColumnaQueSoloAdmiteUnAgujeroEnteroColocaEXACTAMENTEUno()
         {
-            // 21 in: cabe el de 20.5 —20.875 <= 21— y no el de 24.5.
-            var assembly = Resolve(Design(height: 21.0));
+            // 20.75 in de corte + 0.25 de placa = 21 in de tope: cabe el de 20.5 y no el de 24.5.
+            var assembly = Resolve(Design(height: 20.75));
 
             Assert.False(assembly.IsBlocked);
             Assert.Single(assembly.ColumnRegularPunches.Select(p => p.Datum.V).Distinct());
@@ -580,9 +581,9 @@ namespace RackCad.Tests
         [Fact]
         public void UnAgujeroTANGENTEAlExtremoSuperiorSEINCLUYE()
         {
-            // 92.875 = 92.5 + 0.375: el agujero toca el borde exactamente. Tangente CABE — el piso es
-            // inclusivo, igual que para los offsets de borde.
-            var assembly = Resolve(Design(height: 92.875));
+            // Tope en 92.875 = 92.5 + 0.375: el agujero toca el borde exactamente y CABE. Con la placa de
+            // 0.25 levantando la columna, ese tope son 92.625 in de corte.
+            var assembly = Resolve(Design(height: 92.625));
             var elevations = assembly.ColumnRegularPunches.Select(p => Math.Round(p.Datum.V, 9)).Distinct().ToList();
 
             Assert.Contains(92.5, elevations);
@@ -592,7 +593,7 @@ namespace RackCad.Tests
         public void ElSiguienteAgujeroQueINVADEElExtremoSEEXCLUYE()
         {
             // Una milesima menos que la tangencia: el mismo agujero ya no cabe entero y se queda fuera.
-            var assembly = Resolve(Design(height: 92.874));
+            var assembly = Resolve(Design(height: 92.624));
             var elevations = assembly.ColumnRegularPunches.Select(p => Math.Round(p.Datum.V, 9)).Distinct().ToList();
 
             Assert.DoesNotContain(92.5, elevations);
@@ -764,13 +765,18 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void TheColumnStandsOnTheDatumAndTheBaseProjectsInPositiveY()
+        public void TheColumnStandsOnItsBottomPlateAndTheBaseProjectsInPositiveY()
         {
+            // Correccion del datum (I-37D): la columna arranca en la CARA SUPERIOR de su placa inferior, no en
+            // el piso. Su longitud NOMINAL no cambia: la placa la levanta, no la alarga.
             var design = Design();
             var assembly = Resolve(design);
+            var thickness = design.Column.BottomPlate.Thickness;
 
-            Assert.Equal(CantileverColumnBaseDatum.FloorZ, assembly.Column.Start.Z, 12);
-            Assert.Equal(design.Column.Height, assembly.Column.End.Z, 12);
+            Assert.Equal(
+                CantileverColumnBaseDatum.ColumnBottomPlateTopZ(thickness), assembly.Column.Start.Z, 12);
+            Assert.Equal(thickness + design.Column.Height, assembly.Column.End.Z, 12);
+            Assert.Equal(design.Column.Height, assembly.Column.End.Z - assembly.Column.Start.Z, 12);
             Assert.Equal(1.0, assembly.Column.Direction.Z, 12);
 
             Assert.Equal(1.0, assembly.Base.Direction.Y, 12);
@@ -871,7 +877,9 @@ namespace RackCad.Tests
             Assert.True(envelope.MinY <= CantileverColumnBaseDatum.ConnectionPlaneY + Tolerance);
             Assert.True(envelope.MaxY >= assembly.Base.End.Y - Tolerance);
             Assert.True(envelope.MaxZ >= assembly.Pattern.RearPlateTopZ - Tolerance);
-            Assert.True(envelope.MinZ <= -assembly.ColumnBottomPlate.Thickness + Tolerance);
+            // La placa se apoya en el piso, asi que nada baja de z = 0.
+            Assert.True(envelope.MinZ >= CantileverColumnBaseDatum.FloorZ - Tolerance);
+            Assert.True(envelope.MinZ <= CantileverColumnBaseDatum.FloorZ + Tolerance);
         }
 
         [Fact]
@@ -997,14 +1005,19 @@ namespace RackCad.Tests
             var geometry = Factory.Get(Id(ColumnW), SectionDetailLevel.Tabulated);
             var bounds = geometry.Bounds;
 
+            // La autoridad recibe ahora la elevacion de ARRANQUE de la columna: la cara superior de su placa
+            // inferior. Con espesor cero coincide con el piso, que es como estaba antes de la correccion.
+            var thickness = Design().Column.BottomPlate.Thickness;
+            var start = CantileverColumnBaseDatum.ColumnStartZ(thickness);
+
             var fromAuthority = CantileverColumnBaseFrameResolver.ColumnFrame(
-                CantileverColumnOrientation.DepthAlongBase, geometry);
+                CantileverColumnOrientation.DepthAlongBase, geometry, start);
 
             var expected = LocalFrame3D.Create(
                 new Point3D(
                     -bounds.Center.X,
                     CantileverColumnBaseDatum.ConnectionPlaneY - bounds.MaxY,
-                    CantileverColumnBaseDatum.FloorZ),
+                    start),
                 Vector3D.UnitZ,
                 Vector3D.UnitX);
 
@@ -1048,7 +1061,8 @@ namespace RackCad.Tests
             // DepthAlongBase produces. Before the extraction there was no branch at all, so it always did.
             Assert.False(CantileverColumnBaseFrameResolver.IsSupported((CantileverColumnOrientation)raw));
             Assert.Throws<ArgumentOutOfRangeException>(() =>
-                CantileverColumnBaseFrameResolver.ColumnFrame((CantileverColumnOrientation)raw, geometry));
+                CantileverColumnBaseFrameResolver.ColumnFrame(
+                    (CantileverColumnOrientation)raw, geometry, CantileverColumnBaseDatum.FloorZ));
         }
 
         [Theory]
@@ -1207,9 +1221,11 @@ namespace RackCad.Tests
             var radius = design.Connection.Punches.Diameter / 2.0;
 
             Assert.NotEmpty(assembly.ColumnRegularPunches);
+            var top = design.Column.BottomPlate.Thickness + design.Column.Height;
+
             Assert.All(
                 assembly.ColumnRegularPunches,
-                p => Assert.True(p.Datum.V + radius <= design.Column.Height + Tolerance));
+                p => Assert.True(p.Datum.V + radius <= top + Tolerance));
         }
 
         [Fact]
@@ -1223,8 +1239,8 @@ namespace RackCad.Tests
                 .Select(p => Math.Round(p.Datum.V, 9)).Distinct().OrderBy(z => z).ToList();
 
             Assert.NotEmpty(elevations);
-            Assert.All(elevations, z => Assert.True(z + radius <= 96.0 + Tolerance));
-            Assert.True(elevations.Last() + 3.7 + radius > 96.0 + Tolerance,
+            Assert.All(elevations, z => Assert.True(z + radius <= 96.25 + Tolerance));
+            Assert.True(elevations.Last() + 3.7 + radius > 96.25 + Tolerance,
                 "Cabria otro troquel entero con este paso y no se coloco.");
         }
 
