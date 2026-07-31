@@ -646,7 +646,10 @@ namespace RackCad.Application.Systems.Cantilever
                 CantileverPieceTokens.IntervalOwnerOf(brace.IntervalIndex),
                 CantileverPieceTokens.BraceToken(brace.PanelIndex, brace.Diagonal));
 
-            var representation = CantileverBraceRepresentationResolver.Resolve(brace, bodyId);
+            // La fabrica viaja hasta aqui desde la ronda 4 de I-37D: el contorno del adaptador lo da la
+            // tuberia de secciones, igual que el de cualquier otro perfil, en vez de construirse a mano.
+            var representation = CantileverBraceRepresentationResolver.Resolve(
+                brace, bodyId, geometryFactory);
 
             foreach (var contour in representation.Contours)
             {

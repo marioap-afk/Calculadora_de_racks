@@ -563,6 +563,7 @@ namespace RackCad.Application.Systems.Cantilever
             return new CantileverColdRolledAdapterPlan(
                 id,
                 bolt,
+                StructuralSectionId.Parse(CantileverLineDefaults.AdapterAngleSectionId),
                 CantileverLineDefaults.AdapterAngleLeg,
                 CantileverLineDefaults.AdapterCutLength,
                 CantileverLineDefaults.AdapterAngleThickness,

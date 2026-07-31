@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using RackCad.Application.Geometry;
+using RackCad.Application.StructuralSections;
 using RackCad.Domain.Systems.Cantilever;
 
 namespace RackCad.Application.Systems.Cantilever
@@ -147,6 +148,7 @@ namespace RackCad.Application.Systems.Cantilever
         internal CantileverColdRolledAdapterPlan(
             CantileverPieceId id,
             Point3D origin,
+            StructuralSectionId sectionId,
             double leg,
             double cutLength,
             double thickness,
@@ -158,6 +160,7 @@ namespace RackCad.Application.Systems.Cantilever
         {
             Id = id;
             Origin = origin;
+            SectionId = sectionId;
             Leg = leg;
             CutLength = cutLength;
             Thickness = thickness;
@@ -172,6 +175,16 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>Where the adapter sits: the centre of its separator-facing hole.</summary>
         public Point3D Origin { get; }
+
+        /// <summary>
+        /// La sección de catálogo del ángulo. Lo que DIBUJA la pieza.
+        ///
+        /// Se añadió en la ronda 4 de I-37D: hasta entonces el contorno se construía a mano con
+        /// <see cref="Leg"/> y <see cref="Thickness"/>, y salía una L de seis vértices sin filete de raíz ni
+        /// radios de punta. Ahora el contorno viene de la tubería de secciones, que es la misma que dibuja
+        /// columnas, brazos y separadores.
+        /// </summary>
+        public StructuralSectionId SectionId { get; }
 
         public double Leg { get; }
 

@@ -52,7 +52,7 @@ namespace RackCad.Tests
 
         private static CantileverBraceRepresentation Represent(CantileverBracePlan brace) =>
             CantileverBraceRepresentationResolver.Resolve(
-                brace, CantileverPieceId.Create("TEST", "BRC"));
+                brace, CantileverPieceId.Create("TEST", "BRC"), Factory);
 
         // ---- 1. El cuerpo cold rolled tiene ANCHO -------------------------------------------------------
 
@@ -152,16 +152,29 @@ namespace RackCad.Tests
         // ---- 2. El adaptador es una L de verdad ----------------------------------------------------------
 
         [Fact]
-        public void ElAdaptadorTieneSEISPuntosYNoCUATRO()
+        public void ElAdaptadorUsaElCONTORNODELCATALOGOYNoUnaLAMano()
         {
-            // Un ángulo de 2 × 2 visto de frente NO es un cuadrado de 2 × 2: es una L, y la diferencia es
-            // justamente lo que deja ver dónde está el talón.
+            // Eran SEIS puntos hasta la ronda 4 de I-37D, porque el contorno se construía aquí con el brazo y
+            // el espesor: una L a escuadra, sin filete de raíz ni radios de punta. Ahora sale de la tubería de
+            // secciones, así que trae los arcos teselados del perfil REAL — bastantes más de seis.
             var adapters = Represent(Braces(Build()).First()).Contours
                 .Where(c => c.Kind == CantileverBracePieceKind.Adapter)
                 .ToList();
 
             Assert.Equal(2, adapters.Count);
-            Assert.All(adapters, a => Assert.Equal(6, a.Outline.Count));
+            Assert.All(adapters, a => Assert.True(
+                a.Outline.Count > 6,
+                "El adaptador volvio a dibujarse con una L a mano de " + a.Outline.Count + " puntos."));
+
+            // Y es el contorno de la sección que el plan declara, no otro: su área coincide con la del
+            // catálogo. Es la comprobación de que no hay una segunda geometría paralela.
+            var section = Factory.Get(
+                Braces(Build()).First().Adapters[0].SectionId, SectionDetailLevel.Tabulated);
+
+            foreach (var adapter in adapters)
+            {
+                Assert.Equal(section.Area, Area(adapter.Outline), 3);
+            }
         }
 
         [Fact]
@@ -172,20 +185,25 @@ namespace RackCad.Tests
             var outline = Represent(brace).Contours
                 .First(c => c.Kind == CantileverBracePieceKind.Adapter).Outline;
 
-            // Cada ala mide el brazo declarado, y el espesor es el declarado: 2 in y 3/16 in.
+            // El plan sigue declarando sus cotas nominales: 2 in de brazo y 3/16 in de espesor.
             Assert.Equal(2.0, adapter.Leg, 9);
             Assert.Equal(3.0 / 16.0, adapter.Thickness, 9);
 
-            Assert.Equal(adapter.Leg, (outline[1] - outline[0]).Length, 9);
-            Assert.Equal(adapter.Leg, (outline[5] - outline[0]).Length, 9);
-            Assert.Equal(adapter.Thickness, (outline[2] - outline[1]).Length, 9);
-            Assert.Equal(adapter.Thickness, (outline[4] - outline[5]).Length, 9);
+            // La CAJA del contorno mide un brazo por lado. Se comprueba sobre la caja y no sobre vértices
+            // concretos porque el contorno ya no tiene seis puntos nombrables: viene teselado del catálogo.
+            var width = outline.Max(p => p.X) - outline.Min(p => p.X);
+            var height = outline.Max(p => p.Z) - outline.Min(p => p.Z);
 
-            // Y NO es un rectangulo: el area de la L es menor que la del cuadrado que la envuelve.
-            var box = (outline.Max(p => p.X) - outline.Min(p => p.X)) *
-                      (outline.Max(p => p.Z) - outline.Min(p => p.Z));
+            // Las alas de catálogo miden 2 in exactas; la tolerancia cubre la tesela de las puntas.
+            Assert.Equal(adapter.Leg, Math.Max(width, height), 2);
 
-            Assert.True(Area(outline) < box * 0.75, "El adaptador se dibuja lleno: perdio la escuadra.");
+            // Y NO es un rectangulo: el area de la L es bastante menor que la del cuadrado que la envuelve.
+            Assert.True(
+                Area(outline) < width * height * 0.75,
+                "El adaptador se dibuja lleno: perdio la escuadra.");
+
+            // Su area es la del perfil, que para un L2x2x3/16 ronda 0.72 in². Un cuadrado de 2 x 2 daria 4.
+            Assert.InRange(Area(outline), 0.5, 1.0);
         }
 
         /// <summary>
@@ -298,7 +316,8 @@ namespace RackCad.Tests
         public void ElAdaptadorNOSaleIGUALEnLosCuatroExtremos()
         {
             // La comprobación directa de «no girado arbitrariamente»: si los cuatro salieran iguales, sus
-            // contornos trasladados al origen coincidirían.
+            // contornos trasladados al origen coincidirían. Se redondea a tres decimales porque el contorno
+            // viene teselado y dos orientaciones distintas pueden coincidir en la sexta cifra.
             var formas = new HashSet<string>(StringComparer.Ordinal);
 
             foreach (var brace in Braces(Build()).Where(b => b.IntervalIndex == 0))
@@ -309,7 +328,7 @@ namespace RackCad.Tests
                     var o = contour.Outline[0];
 
                     formas.Add(string.Join("|", contour.Outline.Select(
-                        p => Math.Round(p.X - o.X, 6) + "," + Math.Round(p.Z - o.Z, 6))));
+                        p => Math.Round(p.X - o.X, 3) + "," + Math.Round(p.Z - o.Z, 3))));
                 }
             }
 

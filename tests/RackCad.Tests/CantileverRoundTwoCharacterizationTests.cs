@@ -184,7 +184,18 @@ namespace RackCad.Tests
             // del BOM tampoco, y es la comprobacion de que esto fue un cambio de DIBUJO: la longitud nominal,
             // el diametro y la cuenta de adaptadores y cartabones no se tocaron.
             // Anteriores: frontal D17564B6…, planta 7DA73B45…, frontal-doble 34E02F20…
-            ["frontal"] = "C7A22C781A99209CF2C67188A5C6F9CD28DF6903CAE33D05CF90A3A1A35D28CC",
+            // MOVIDOS en la ronda 4 de I-37D, punto A2: el contorno del ADAPTADOR de tensor dejo de
+            // construirse a mano —una L de seis vertices a escuadra— y pasa a salir de la tuberia de
+            // secciones, con el contorno real del L2x2x3/16: filete de raiz, radios de punta y las cotas que
+            // publica el catalogo. Un contorno teselado trae bastantes mas puntos que seis, y la firma lleva
+            // dentro la CUENTA de puntos de cada curva, asi que se mueve.
+            //
+            // `planta` y `lateral` NO se movieron, y eso dice exactamente donde llego el cambio: la planta
+            // nace sin tensores desde la ronda anterior, y la lateral de una estacion no dibuja el
+            // arriostramiento, que vive entre estaciones. Los dos del BOM tampoco: cambiar el contorno de una
+            // pieza no cambia lo que se compra.
+            // Anteriores: frontal C7A22C78…, frontal-doble C7EE670C…
+            ["frontal"] = "2BCE702C9DA25EF9352C6C2D4966A6FDF965940C9606C635F8E2989484618540",
             // Movido en la ronda 3 con la pendiente por omision del brazo: su huella en planta se acorta.
             // SOLO ESTE se movio en la ronda 3, punto 5, y por decision del dueño: la planta nace SIN
             // brazos ni tensores, porque en esta etapa se lee para colocar columnas y bases y esas dos
@@ -196,7 +207,7 @@ namespace RackCad.Tests
             // Anterior: planta 632DD853…
             ["planta"] = "22DA23D78F01C4075CA2E0C992019D5DA646DB504A71CC012232EFB7002B3454",
             ["lateral"] = "E26334E504741413419C6E777934B06209AE989F6202B37C8C33E149E5BB4343",
-            ["frontal-doble"] = "C7EE670CF2960D5F6A575C5D5F2C1E6371791259747600B9F56D6006B0FFCD82",
+            ["frontal-doble"] = "A339B50EC2D7058F2D630EF7AC0EF11722730B82280AA92B656B69CAE221D9D0",
 
             // MOVIDO A PROPOSITO en la ronda 2, y es el UNICO pin que se movio por contenido.
             // `BaseFollowsColumn` es intencion nueva del diseno y se persiste, asi que el JSON gana una clave.

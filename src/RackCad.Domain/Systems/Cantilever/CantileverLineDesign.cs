@@ -505,6 +505,21 @@ namespace RackCad.Domain.Systems.Cantilever
         // ---- the cold-rolled end adapter ---------------------------------------------------------------
 
         /// <summary>Leg of the adapter's angle, inches. Two by two.</summary>
+        /// <summary>
+        /// La sección de catálogo del adaptador de tensor.
+        ///
+        /// Existe desde la ronda 4 de I-37D, cuando el dueño pidió que el adaptador dejara de dibujarse con
+        /// una L construida a mano y pasara a salir de la geometría REAL de catálogo. Antes las cotas del
+        /// adaptador —brazo, espesor— vivían sueltas aquí y el dibujo las repetía a su manera; ahora el
+        /// contorno lo da la tubería de secciones, con su filete de raíz y sus radios de punta.
+        ///
+        /// Las cotas sueltas se conservan porque son las que el BOM describe y las que el modelo usa para
+        /// colocar los agujeros. Su valor nominal y el tabulado difieren en la tercera cifra —3/16 = 0.1875
+        /// frente a 0.188 que publica AISC— y eso está DECLARADO, no resuelto: unificarlas movería la
+        /// identidad comercial de la pieza.
+        /// </summary>
+        public const string AdapterAngleSectionId = "AISC-L-L2X2X3_16";
+
         public const double AdapterAngleLeg = 2.0;
 
         /// <summary>Length the adapter's angle is cut to, inches.</summary>
