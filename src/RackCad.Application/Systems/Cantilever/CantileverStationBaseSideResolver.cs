@@ -257,13 +257,21 @@ namespace RackCad.Application.Systems.Cantilever
                 plate.Thickness,
                 MirrorY(plate.Normal),
 
-                // El offset se mide A LO LARGO del normal, y el normal también se volteó. Con el plano en
-                // y = p, una cara en y = c —normal +Y, offset c— va a parar a y = 2p − c con normal −Y, y un
-                // offset o sobre ese normal pone la cara en y = −o: luego o = c − 2p.
+                // El offset se mide como DISTANCIA A LO LARGO del normal, que es la lectura que usan las
+                // placas vecinas de normal ±Y —las de montaje de brazo—: la de la cara lejana declara 9.73
+                // con normal −Y y se dibuja en y = −9.73. Con el plano en y = p, una cara en y = c va a parar
+                // a y = 2p − c con normal −Y, y un offset o sobre ese normal pone la cara en y = −o: luego
+                // o = c − 2p.
                 //
-                // Con el plano viejo en cero eso se reducía a dejar el offset intacto, que es lo que hacía y
-                // por eso funcionaba mientras el plano fue cero. Con el plano en el medio de la columna hay
-                // que restar de verdad, o la cara de referencia y el contorno dirían cosas distintas.
+                // Con el plano viejo en cero esto se reducía a dejar el offset intacto, que es lo que hacía.
+                // Con el plano en el medio de la columna hay que restar de verdad.
+                //
+                // ⚠ AMBIGÜEDAD PREEXISTENTE, declarada y NO resuelta aquí: el resumen de
+                // `CantileverPlatePlan.NearOffset` dice «coordenada del mundo», que es la lectura que sigue la
+                // placa INFERIOR de la columna —normal −Z, offset +0.25, dibujada en z = +0.25—. Las dos
+                // conviven en el sistema desde antes de esta ronda. Unificarlas es un cambio de contrato que
+                // toca a cuatro familias de placa y queda fuera del encargo; lo que esta ronda hace es
+                // alinearse con las placas de su MISMO eje y dejar el conflicto escrito.
                 plate.NearOffset - (2.0 * planeY),
                 plate.Outline.Select(q => MirrorY(q, planeY)).ToList());
 

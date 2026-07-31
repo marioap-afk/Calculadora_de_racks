@@ -243,6 +243,28 @@ namespace RackCad.Tests
             // Lo que la corrección CONSERVA. La longitud del separador se deriva de la distancia entre los dos
             // agujeros, así que mover la placa sin mover su agujero no puede tocarla.
             var c = Build();
+            var half = HalfWeb(c);
+
+            // ANCLA INDEPENDIENTE, y hace falta. Comprobar sólo que el corte sale de los dos agujeros es
+            // circular: si los agujeros se mueven juntos, la relación se sigue cumpliendo y el separador sale
+            // de otro largo sin que nadie proteste. Lo destapó el ejercicio de regresiones. Así que primero se
+            // fija DÓNDE está cada agujero respecto de una referencia que no es la placa: la cara del alma.
+            foreach (var plate in c.Line.SeparatorColumnPlates)
+            {
+                var columnX = c.Line.Stations[plate.Side == CantileverIntervalSide.Left
+                        ? plate.IntervalIndex
+                        : plate.IntervalIndex + 1]
+                    .OriginX;
+
+                var faceX = plate.Side == CantileverIntervalSide.Left
+                    ? columnX + half
+                    : columnX - half;
+
+                Assert.Equal(
+                    CantileverLineDefaults.SeparatorColumnPunchEdgeDistance,
+                    Math.Abs(plate.Punch.Centre.X - faceX),
+                    9);
+            }
 
             foreach (var interval in c.Line.Intervals)
             {
@@ -338,6 +360,41 @@ namespace RackCad.Tests
         }
 
         [Fact]
+        public void LaCARADEREFERENCIADeCadaPlacaCoincideConSuCONTORNO()
+        {
+            // Al espejar sobre un plano que ya no es el cero hay que corregir el offset, y si no se hace la
+            // placa DICE una cara y DIBUJA otra: el dibujo sale bien y cualquier consumidor que lea el offset
+            // —una cota, una colocación, un espesor— sale mal. Ninguna prueba lo miraba; lo destapó el
+            // ejercicio de regresiones.
+            //
+            // Se comprueban las placas de normal ±Y, que son las que el espejo toca, con la lectura que sus
+            // VECINAS usan: el offset es la distancia a lo largo del normal, así que la cara cae en
+            // `Normal · offset`. La placa de montaje del brazo negativo lo confirma —declara 9.73 con normal
+            // −Y y se dibuja en y = −9.73—.
+            //
+            // ⚠ La placa INFERIOR de la columna sigue otra lectura —normal −Z, offset +0.25, dibujada en
+            // z = +0.25— y por eso queda fuera de esta prueba. Es una ambigüedad PREEXISTENTE del resumen de
+            // `CantileverPlatePlan.NearOffset`, declarada y no resuelta en esta ronda.
+            var c = Build(CantileverStationFaceMode.Double);
+
+            var deY = c.Line.Stations[0].Station.Plates
+                .Where(x => Math.Abs(x.Normal.Y) > 0.5)
+                .ToList();
+
+            Assert.NotEmpty(deY);
+
+            foreach (var plate in deY)
+            {
+                var declarada = plate.Normal.Y * plate.NearOffset;
+                var dibujada = plate.Outline[0].Y;
+
+                Assert.True(
+                    Math.Abs(declarada - dibujada) < 1e-6,
+                    plate.Kind + " declara su cara en " + declarada + " y la dibuja en " + dibujada + ".");
+            }
+        }
+
+        [Fact]
         public void LaColumnaSigueELEVADASobreSuPlacaInferior()
         {
             // Lo que la corrección NO toca: el datum aprobado en la ronda anterior.
@@ -346,13 +403,24 @@ namespace RackCad.Tests
             var thickness = columnBase.ColumnBottomPlate.Thickness;
 
             Assert.True(thickness > 0.0);
-            Assert.Equal(CantileverColumnBaseDatum.ColumnStartZ(thickness), columnBase.Column.Start.Z, 9);
+
+            // Se mide contra la PLACA y no contra `ColumnStartZ`, que es la propia función bajo prueba.
+            // Comparar una función consigo misma pasa aunque devuelva el suelo, y eso es exactamente lo que
+            // pasaba: lo destapó el ejercicio de regresiones.
+            var caraDeApoyo = columnBase.ColumnBottomPlate.Outline.Max(q => q.Z);
+
+            Assert.Equal(caraDeApoyo, columnBase.Column.Start.Z, 9);
+            Assert.True(columnBase.Column.Start.Z >= CantileverColumnBaseDatum.FloorZ + thickness - 1e-9,
+                "La columna dejo de estar elevada: arranca en " + columnBase.Column.Start.Z);
 
             // La placa apoya en el suelo y la base también: sólo la columna sube.
-            Assert.Equal(
-                CantileverColumnBaseDatum.FloorZ,
-                columnBase.ColumnBottomPlate.Outline.Min(p => p.Z) - thickness,
-                9);
+            Assert.Equal(CantileverColumnBaseDatum.FloorZ, caraDeApoyo - thickness, 9);
+
+            var baseZ = columnBase.Sides
+                .SelectMany(x => new[] { x.RearPlate, x.FrontPlate })
+                .Min(x => x.Outline.Min(q => q.Z));
+
+            Assert.Equal(CantileverColumnBaseDatum.FloorZ, baseZ, 9);
         }
 
         [Fact]
