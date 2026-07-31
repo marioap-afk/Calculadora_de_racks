@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace RackCad.Domain.Systems.Cantilever
 {
@@ -93,6 +94,21 @@ namespace RackCad.Domain.Systems.Cantilever
 
         public CantileverColdRolledBraceDesign ColdRolled { get; set; } = new CantileverColdRolledBraceDesign();
 
+        /// <summary>
+        /// Quién manda sobre la secuencia vertical de paneles: la regla, o el usuario.
+        ///
+        /// Bajo <c>Automatic</c> la lista de <see cref="AdvancedPanelSegments"/> es DATO DORMIDO —se conserva,
+        /// no se lee y no se valida—, igual que <see cref="ManualPanelCount"/> lo es bajo un conteo automático.
+        /// Conservarla es lo que permite volver a avanzado sin haber perdido el trabajo, y no leerla es lo que
+        /// impide que una lista vieja cambie en silencio un dibujo que dice ser automático.
+        /// </summary>
+        public CantileverPanelLayoutMode PanelLayoutMode { get; set; } =
+            CantileverPanelLayoutMode.Automatic;
+
+        /// <summary>Los tramos que el usuario editó, de abajo arriba. Sólo se leen bajo <c>Advanced</c>.</summary>
+        public List<CantileverPanelSegmentDesign> AdvancedPanelSegments { get; set; } =
+            new List<CantileverPanelSegmentDesign>();
+
         public CantileverBracingDesign DeepCopy() =>
             new CantileverBracingDesign
             {
@@ -103,7 +119,74 @@ namespace RackCad.Domain.Systems.Cantilever
                 CentralEmptySpaceHeight = CentralEmptySpaceHeight,
                 BraceKind = BraceKind,
                 BraceSectionId = BraceSectionId,
-                ColdRolled = ColdRolled?.DeepCopy() ?? new CantileverColdRolledBraceDesign()
+                ColdRolled = ColdRolled?.DeepCopy() ?? new CantileverColdRolledBraceDesign(),
+                PanelLayoutMode = PanelLayoutMode,
+                AdvancedPanelSegments = AdvancedPanelSegments == null
+                    ? new List<CantileverPanelSegmentDesign>()
+                    : AdvancedPanelSegments.Select(s => s.DeepCopy()).ToList()
+            };
+    }
+
+    /// <summary>Quién gobierna la secuencia vertical de paneles arriostrados de un tramo.</summary>
+    public enum CantileverPanelLayoutMode
+    {
+        /// <summary>La regla del producto: cuántos paneles caben y dónde, derivado de la altura.</summary>
+        Automatic = 0,
+
+        /// <summary>Una lista de tramos que el usuario declaró, tramo a tramo.</summary>
+        Advanced = 1
+    }
+
+    /// <summary>Qué lleva DENTRO un tramo de la secuencia.</summary>
+    public enum CantileverPanelBracingMode
+    {
+        /// <summary>
+        /// Nada: un hueco.
+        ///
+        /// Es un tramo EXPLÍCITO y no la ausencia de uno. Un vacío que nadie declara es un hueco implícito, y
+        /// un hueco implícito no se distingue de un tramo que alguien olvidó escribir — ni al validar, ni al
+        /// leer un archivo, ni al mirar la tabla.
+        /// </summary>
+        None = 0,
+
+        /// <summary>La X de dos tensores entre los dos separadores del tramo.</summary>
+        CrossBraced = 1
+    }
+
+    /// <summary>
+    /// Un tramo de la secuencia vertical: de qué cota a qué cota, y qué lleva dentro.
+    ///
+    /// <para>Lo que NO lleva es tan importante como lo que lleva. No lleva su ALTURA —se deriva de las dos
+    /// cotas, y guardarla sería una tercera autoridad que un día no coincidiría con ellas—, no lleva sus
+    /// SEPARADORES —son las fronteras, y dos tramos vecinos comparten la de en medio— y no lleva sus
+    /// TENSORES, que son dos por cada tramo arriostrado y ninguno por los demás.</para>
+    /// </summary>
+    public sealed class CantileverPanelSegmentDesign
+    {
+        /// <summary>Cota inferior del tramo, en pulgadas desde el piso.</summary>
+        public double StartElevation { get; set; }
+
+        /// <summary>Cota superior. Estrictamente mayor que <see cref="StartElevation"/>.</summary>
+        public double EndElevation { get; set; }
+
+        public CantileverPanelBracingMode BracingMode { get; set; } = CantileverPanelBracingMode.None;
+
+        /// <summary>
+        /// La altura, DERIVADA.
+        ///
+        /// <c>JsonIgnore</c> no es cosmético: el dueño pidió expresamente que no se persistan alturas
+        /// duplicadas. Guardarla junto a las dos cotas crearía una tercera autoridad sobre el mismo hecho, y
+        /// el día que un archivo viejo trajera una altura que no cuadra con sus cotas nadie sabría cuál manda.
+        /// </summary>
+        [JsonIgnore]
+        public double Height => EndElevation - StartElevation;
+
+        public CantileverPanelSegmentDesign DeepCopy() =>
+            new CantileverPanelSegmentDesign
+            {
+                StartElevation = StartElevation,
+                EndElevation = EndElevation,
+                BracingMode = BracingMode
             };
     }
 

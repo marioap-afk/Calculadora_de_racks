@@ -376,5 +376,29 @@ namespace RackCad.Application.Systems.Cantilever
         /// saber que lo que falla es la union y no el catalogo.
         /// </summary>
         public const string ColumnHasNoWebForBracing = "CANT_COLUMN_HAS_NO_WEB_FOR_BRACING";
+
+        /// <summary>El modo avanzado no declara ningun tramo.</summary>
+        public const string BracingAdvancedLayoutEmpty = "CANT_BRACING_ADVANCED_LAYOUT_EMPTY";
+
+        /// <summary>Un tramo avanzado tiene cotas que no son numeros utilizables.</summary>
+        public const string BracingAdvancedSegmentInvalid = "CANT_BRACING_ADVANCED_SEGMENT_INVALID";
+
+        /// <summary>Un tramo avanzado no sube: altura cero, o las dos cotas al reves.</summary>
+        public const string BracingAdvancedSegmentNotAscending =
+            "CANT_BRACING_ADVANCED_SEGMENT_NOT_ASCENDING";
+
+        /// <summary>
+        /// Dos tramos avanzados dejan un vacio SIN DECLARAR entre ellos.
+        ///
+        /// Codigo propio, y no el de solape, porque el remedio es distinto: aqui se pide declarar el vacio como
+        /// un tramo con los tensores apagados, y alli se pide corregir una cota.
+        /// </summary>
+        public const string BracingAdvancedLayoutHasGap = "CANT_BRACING_ADVANCED_LAYOUT_HAS_GAP";
+
+        /// <summary>Dos tramos avanzados se pisan.</summary>
+        public const string BracingAdvancedLayoutOverlaps = "CANT_BRACING_ADVANCED_LAYOUT_OVERLAPS";
+
+        /// <summary>El primer tramo avanzado empieza por debajo del piso.</summary>
+        public const string BracingAdvancedLayoutBelowFloor = "CANT_BRACING_ADVANCED_LAYOUT_BELOW_FLOOR";
     }
 }

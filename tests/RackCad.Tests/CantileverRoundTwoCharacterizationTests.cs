@@ -252,7 +252,14 @@ namespace RackCad.Tests
             // Se persiste a proposito —un proyecto que se reabre tiene que enseñar la planta que su dueño
             // dejo— y por eso el JSON cambia. No cambia ni el BOM ni la firma fisica de la linea.
             // Anterior: C80E0149…
-            ["persistencia"] = "0A6DAE0676D8E9837E23ADABC24EC20E3B9EB395B5EB5009D6F4BF640D51B66E"
+            // MOVIDO en la ronda 4 de I-37D por el EDITOR AVANZADO DE PANELES: el diseño gana dos campos,
+            // `PanelLayoutMode` y `AdvancedPanelSegments`, y la persistencia lleva el arbol de diseño tal cual.
+            // El valor por omision es Automatic con la lista vacia, asi que ningun archivo existente cambia de
+            // significado al releerse. NINGUN pin fisico se movio con este cambio —ni linea, ni BOM, ni las
+            // seis vistas— y eso es exactamente lo que se queria: el modo automatico reproduce la tabla vigente
+            // hasta el ultimo byte.
+            // Anterior: persistencia 0A6DAE06...
+            ["persistencia"] = "CE4797E6BFBBC4569E0D78D98A949A15417A0FB0F54862DDC94ADC7B72BE7D14"
         };
 
         // ---- 1. Las resoluciones ------------------------------------------------------------------------

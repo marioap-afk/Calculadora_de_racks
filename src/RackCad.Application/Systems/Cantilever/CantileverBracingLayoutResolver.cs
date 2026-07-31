@@ -61,8 +61,12 @@ namespace RackCad.Application.Systems.Cantilever
             IReadOnlyList<CantileverBracingSlot> slots,
             IReadOnlyList<double> separatorElevations,
             IReadOnlyList<CantileverBracingSlot> bracedPanels,
+            IReadOnlyList<CantileverPanelSegmentDesign> effectiveSegments,
+            CantileverPanelLayoutMode mode,
             IReadOnlyList<CantileverDiagnostic> diagnostics)
         {
+            EffectiveSegments = effectiveSegments;
+            Mode = mode;
             BracedPanelCount = bracedPanelCount;
             CentralEmptySpaceCount = centralEmptySpaceCount;
             BracedPanelHeight = bracedPanelHeight;
@@ -102,6 +106,17 @@ namespace RackCad.Application.Systems.Cantilever
 
         /// <summary>Only the braced panels, in order. Each becomes two braces in an X.</summary>
         public IReadOnlyList<CantileverBracingSlot> BracedPanels { get; }
+
+        /// <summary>
+        /// LA LISTA EFECTIVA: la única entrada del resolver posterior, venga del modo que venga.
+        ///
+        /// Cubre el NÚCLEO —del primer tramo al último— y no la columna entera: lo que queda por debajo y por
+        /// encima son los espacios externos, que no llevan separador.
+        /// </summary>
+        public IReadOnlyList<CantileverPanelSegmentDesign> EffectiveSegments { get; }
+
+        /// <summary>Quién gobernó esta secuencia. La lista efectiva es la misma forma en los dos casos.</summary>
+        public CantileverPanelLayoutMode Mode { get; }
 
         public IReadOnlyList<CantileverDiagnostic> Diagnostics { get; }
 
@@ -252,6 +267,19 @@ namespace RackCad.Application.Systems.Cantilever
                     Format(columnHeight) + "."));
             }
 
+            if (bracing.PanelLayoutMode == CantileverPanelLayoutMode.Advanced)
+            {
+                // EL MODO AVANZADO NO PASA POR LA REGLA. Ni por el conteo de paneles, ni por el reparto del
+                // resto: la lista ya dice donde va cada tramo. Lo unico que se comprueba antes es la altura de
+                // columna, porque la validacion de la lista se mide contra ella.
+                if (diagnostics.Any(d => d.IsBlocking))
+                {
+                    return Blocked(diagnostics);
+                }
+
+                return ResolveAdvanced(bracing, columnHeight, diagnostics);
+            }
+
             var panels = ResolvePanelCount(bracing, columnHeight, diagnostics);
 
             if (panels == null || diagnostics.Any(d => d.IsBlocking))
@@ -280,67 +308,116 @@ namespace RackCad.Application.Systems.Cantilever
 
             var external = remainder / 2.0;
 
-            // ---- the sequence, bottom to top ---------------------------------------------------------------
-            //
-            // Blocks of at most TWO panels from the bottom, a central gap between blocks, and the incomplete
-            // block LAST. Written as a walk rather than as an index formula so the shape is readable: the
-            // shape IS the decision.
+            var segments = CantileverPanelLayoutResolver.Standard(panelCount, panelHeight, gapHeight, external);
+
+            return Derive(
+                segments, CantileverPanelLayoutMode.Automatic, columnHeight,
+                panelHeight, gapHeight, diagnostics);
+        }
+
+        /// <summary>
+        /// La secuencia bajo el modo AVANZADO: la lista que el usuario declaró, validada.
+        ///
+        /// No se le aplica ninguna regla de reparto. El usuario ya dijo dónde empieza y acaba cada tramo, y
+        /// «corregirle» las cotas para que cuadren con la regla estándar sería exactamente lo que el modo
+        /// avanzado existe para no hacer.
+        /// </summary>
+        private static CantileverBracingLayout ResolveAdvanced(
+            CantileverBracingDesign bracing,
+            double columnHeight,
+            List<CantileverDiagnostic> diagnostics)
+        {
+            var segments = (bracing.AdvancedPanelSegments ?? new List<CantileverPanelSegmentDesign>())
+                .Where(x => x != null)
+                .Select(x => x.DeepCopy())
+                .ToList();
+
+            CantileverPanelLayoutResolver.Validate(segments, 0.0, columnHeight, diagnostics);
+
+            if (diagnostics.Any(d => d.IsBlocking))
+            {
+                return Blocked(diagnostics);
+            }
+
+            return Derive(
+                segments, CantileverPanelLayoutMode.Advanced, columnHeight,
+                bracing.BracedPanelHeight, bracing.CentralEmptySpaceHeight, diagnostics);
+        }
+
+        /// <summary>
+        /// De la LISTA EFECTIVA a la secuencia: slots, separadores y paneles arriostrados.
+        ///
+        /// <para>Es el único sitio donde se derivan las tres cosas, y por eso los dos modos producen la misma
+        /// forma. Los separadores salen de <c>Distinct</c> sobre las fronteras, que es toda la regla de «no
+        /// dupliques separadores en fronteras compartidas»; los paneles arriostrados son los tramos con
+        /// tensores; y los dos espacios externos son lo que sobra por debajo del primero y por encima del
+        /// último.</para>
+        ///
+        /// <para>Los espacios externos NO son tramos. Bajo la regla estándar miden lo mismo los dos —la mitad
+        /// del resto— y bajo el avanzado pueden medir cosas distintas, porque el usuario coloca sus tramos
+        /// donde quiere.</para>
+        /// </summary>
+        private static CantileverBracingLayout Derive(
+            IReadOnlyList<CantileverPanelSegmentDesign> segments,
+            CantileverPanelLayoutMode mode,
+            double columnHeight,
+            double declaredPanelHeight,
+            double declaredGapHeight,
+            List<CantileverDiagnostic> diagnostics)
+        {
             var slots = new List<CantileverBracingSlot>();
-            var separators = new List<double>();
 
-            var z = external;
-            slots.Add(new CantileverBracingSlot(CantileverBracingSlotKind.ExternalSpace, 0.0, z, 0));
+            var firstStart = segments[0].StartElevation;
+            var lastEnd = segments[segments.Count - 1].EndElevation;
 
-            var placedPanels = 0;
-            var placedGaps = 0;
-
-            while (placedPanels < panelCount)
-            {
-                var inBlock = Math.Min(2, panelCount - placedPanels);
-
-                for (var k = 0; k < inBlock; k++)
-                {
-                    separators.Add(z);
-                    slots.Add(new CantileverBracingSlot(
-                        CantileverBracingSlotKind.BracedPanel, z, z + panelHeight, placedPanels));
-                    z += panelHeight;
-                    placedPanels++;
-                }
-
-                if (placedPanels < panelCount)
-                {
-                    separators.Add(z);
-                    slots.Add(new CantileverBracingSlot(
-                        CantileverBracingSlotKind.CentralEmptySpace, z, z + gapHeight, placedGaps));
-                    z += gapHeight;
-                    placedGaps++;
-                }
-            }
-
-            // The top of the last panel is the last separator. Adding it here — and not inside the loop — is
-            // what makes two adjacent panels SHARE the separator between them instead of each declaring one.
-            separators.Add(z);
             slots.Add(new CantileverBracingSlot(
-                CantileverBracingSlotKind.ExternalSpace, z, z + external, 1));
+                CantileverBracingSlotKind.ExternalSpace, 0.0, firstStart, 0));
 
-            if (placedGaps != gapCount)
+            var panelOrdinal = 0;
+            var gapOrdinal = 0;
+
+            foreach (var segment in segments)
             {
-                throw new InvalidOperationException(
-                    "La secuencia coloco " + placedGaps + " espacios centrales y la regla exige " + gapCount + ".");
+                if (segment.BracingMode == CantileverPanelBracingMode.CrossBraced)
+                {
+                    slots.Add(new CantileverBracingSlot(
+                        CantileverBracingSlotKind.BracedPanel,
+                        segment.StartElevation, segment.EndElevation, panelOrdinal));
+
+                    panelOrdinal++;
+                }
+                else
+                {
+                    slots.Add(new CantileverBracingSlot(
+                        CantileverBracingSlotKind.CentralEmptySpace,
+                        segment.StartElevation, segment.EndElevation, gapOrdinal));
+
+                    gapOrdinal++;
+                }
             }
 
-            if (separators.Count != panelCount + gapCount + 1)
+            slots.Add(new CantileverBracingSlot(
+                CantileverBracingSlotKind.ExternalSpace, lastEnd, columnHeight, 1));
+
+            var separators = CantileverPanelLayoutResolver.SeparatorElevationsOf(segments);
+
+            if (separators.Count != panelOrdinal + gapOrdinal + 1)
             {
+                // La comprobacion de que ninguna frontera compartida se duplico ni se perdio. Con tramos
+                // contiguos —que la validacion ya exigio— hay exactamente una frontera mas que tramos.
                 throw new InvalidOperationException(
-                    "La secuencia produjo " + separators.Count + " separadores y la regla exige " +
-                    (panelCount + gapCount + 1) + ".");
+                    "La secuencia produjo " + separators.Count + " separadores y sus " +
+                    (panelOrdinal + gapOrdinal) + " tramos exigen " + (panelOrdinal + gapOrdinal + 1) + ".");
             }
 
             return new CantileverBracingLayout(
-                panelCount, gapCount, panelHeight, gapHeight, core, external,
+                panelOrdinal, gapOrdinal, declaredPanelHeight, declaredGapHeight,
+                lastEnd - firstStart, firstStart,
                 slots,
                 separators,
-                slots.Where(s => s.Kind == CantileverBracingSlotKind.BracedPanel).ToList(),
+                slots.Where(x => x.Kind == CantileverBracingSlotKind.BracedPanel).ToList(),
+                segments,
+                mode,
                 diagnostics);
         }
 
@@ -395,7 +472,10 @@ namespace RackCad.Application.Systems.Cantilever
             new CantileverBracingLayout(
                 0, 0, double.NaN, double.NaN, double.NaN, double.NaN,
                 Array.Empty<CantileverBracingSlot>(), Array.Empty<double>(),
-                Array.Empty<CantileverBracingSlot>(), diagnostics);
+                Array.Empty<CantileverBracingSlot>(),
+                Array.Empty<CantileverPanelSegmentDesign>(),
+                CantileverPanelLayoutMode.Automatic,
+                diagnostics);
 
         private static void RequirePositive(
             double value, string what, ICollection<CantileverDiagnostic> diagnostics)

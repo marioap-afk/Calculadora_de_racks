@@ -385,9 +385,21 @@ namespace RackCad.Tests
                 new[]
                 {
                     "SeparatorSectionId", "PanelCountMode", "ManualPanelCount", "BracedPanelHeight",
-                    "CentralEmptySpaceHeight", "BraceKind", "BraceSectionId", "ColdRolled"
+                    "CentralEmptySpaceHeight", "BraceKind", "BraceSectionId", "ColdRolled",
+
+                    // Se sumaron en la ronda 4 de I-37D con el editor avanzado de paneles. El MODO dice quien
+                    // manda sobre la secuencia vertical y la LISTA lleva los tramos que el usuario edito. La
+                    // lista se persiste tambien bajo modo automatico —donde es dato dormido— para que volver a
+                    // avanzado no obligue a rehacer el trabajo.
+                    "PanelLayoutMode", "AdvancedPanelSegments"
                 },
                 PersistedNames(typeof(CantileverBracingDesign)));
+
+            // Y el tramo persiste sus dos cotas y su modo, y NADA MAS. En particular NO persiste su altura:
+            // es derivada, y guardarla junto a las cotas seria una tercera autoridad sobre el mismo hecho.
+            Assert.Equal(
+                new[] { "StartElevation", "EndElevation", "BracingMode" },
+                PersistedNames(typeof(CantileverPanelSegmentDesign)));
 
             Assert.Equal(
                 new[] { "ShowArms", "ShowBraces" },
