@@ -270,6 +270,101 @@ roscas, tuercas ni tolerancias de armado: es **representación visual, no fabric
 nada del producto — longitud nominal, diámetro, sección, número de adaptadores y de cartabones e identidad
 comercial son los mismos, y los contornos **no se persisten**: se rederivan.
 
+#### D7-ter — El adaptador FÍSICO manda sobre el tensor · ronda 4 de I-37D
+
+**Revisado por el dueño en la ronda 4 de I-37D.** El ADR sigue **propuesto**: esta revisión, como la
+anterior, no lo acepta — lo corrige.
+
+D7-bis dejó el adaptador dibujado «como el ángulo que es», y la implementación lo hizo con un **contorno en
+L de seis puntos construido a mano**: a escuadra, sin filete de raíz ni radios de punta. Y el agujero de la
+varilla se situaba con esta regla:
+
+```
+RodHoleAxialOffset = CutLength / 2
+```
+
+cuya justificación escrita era «medio corte, porque las dos caras son perpendiculares». **Esa justificación
+es justamente la que no se sostiene:** si las dos caras son perpendiculares, la separación entre dos agujeros
+centrados cada uno en SU ala tiene componente en los dos ejes del ángulo, no en uno. De ahí salía un
+`ΔY = 0` forzado — una pieza plana metida en el plano del panel — y un módulo de exactamente 1.0 in.
+
+**Queda REVOCADA.** La regla que la sustituye:
+
+> **El adaptador físico manda sobre el tensor.** El adaptador es un prisma real de la sección de catálogo
+> `AISC-L-L2X2X3_16` cortado a 2 in, y sus dos agujeros están **centrados cada uno en su propia ala**, en el
+> **plano medio real** de esa ala. El centro del agujero de varilla es el **datum físico** del extremo del
+> tensor.
+
+En coordenadas de talón, midiendo `a` a lo largo del ala apoyada y `b` a lo largo de la del tensor:
+
+| agujero | a | b |
+|---|---|---|
+| separador | `L/2` | `t/2` |
+| varilla | `t/2` | `L/2` |
+
+De ahí sale todo lo demás sin decidir nada más:
+
+- **Separación** `(L − t)/2` en **cada** eje. Para el `L2×2×3/16`: `0.90625 in` por eje, módulo
+  `1.281631 in`, medida `Δ = (0.820358, −0.906250, 0.385099)`. **ΔY ya no es cero.**
+- **El agujero del separador no está sobre la cara** del separador, sino medio espesor más afuera, en el
+  plano medio del ala apoyada. El **troquel** sigue marcando la cara, porque tiene que coincidir con el del
+  separador: son el mismo agujero físico, y el datum de un troquel no lleva la Y.
+- **La longitud nominal del tensor CRECE `0.1875 in`**, que es exactamente el espesor del ángulo. No es una
+  coincidencia: la aproximación revocada medía hasta la **cara** del ala y la física mide hasta su **plano
+  medio**, medio espesor por extremo. Sobre el caso normativo: `92.131526 in` → `92.319026 in`.
+- **El BOM cambia con ella, y es legítimo.** Las cantidades **no** cambian —4 varillas, 8 adaptadores, 16
+  cartabones— sólo la longitud que se ordena. No se conserva el BOM anterior por compatibilidad artificial.
+
+**El marco se deriva, no se declara**, de tres cosas: la normal de la cara del separador da el eje del ala
+que recibe la varilla; el eje de la diagonal da el del ala apoyada, **en contra** del otro extremo, para que
+el cuerpo del adaptador no invada el vano por el que pasa la varilla; y su producto da el eje del corte.
+
+**El eje del corte queda PERPENDICULAR a la diagonal y dentro del plano del panel.** No es una elección de
+dibujo: es la única orientación en la que el agujero del ala del tensor tiene por eje la **propia varilla**,
+que es como se sujeta una varilla roscada. Con el corte a lo largo de la diagonal la varilla no podría
+enhebrarse, y además el cuerpo del adaptador se comería media pulgada de vano.
+
+**Consecuencia visual, declarada y no disimulada.** Ninguna de las tres vistas de la línea mira por el eje del
+corte, así que **el adaptador no se lee como una L en ninguna de ellas**: la frontal ve el ala apoyada de
+frente y la del tensor de canto. El dueño decidió que **no se deforma ninguna vista** para que parezca una L
+—frontal, lateral y planta siguen siendo proyecciones físicas— y que el configurador de tensor gana una vista
+propia, **«Sección del adaptador»**, que mira a lo largo del eje de corte y muestra la sección real. Esa
+vista debe consumir la **misma** `StructuralSectionGeometry` que el prisma: ni otra L a mano, ni otra fórmula
+de radios.
+
+**Lo que esta revisión NO autoriza.** Lo mismo que D7-bis: sigue sin haber preparación de bordes, destijeres,
+soldadura del talón, roscas, tuercas ni tolerancias de armado. Y sigue sin persistirse ningún contorno.
+
+### D9 — La secuencia vertical de paneles: regla o lista declarada · ronda 4 de I-37D
+
+**Decisión del dueño en la ronda 4.** Hasta aquí la secuencia vertical de un intervalo la decidía entera la
+regla de D4. Sigue siendo la de por omisión; deja de ser la única.
+
+> Los **dos modos producen la misma cosa** —una lista de tramos contigua, de abajo arriba— y el resolver
+> posterior **sólo conoce esa lista**.
+
+```
+CantileverPanelLayoutMode    { Automatic, Advanced }
+CantileverPanelBracingMode   { None, CrossBraced }
+CantileverPanelSegmentDesign { StartElevation, EndElevation, BracingMode }
+```
+
+- **Un vacío es un TRAMO** con los tensores apagados, nunca la ausencia de uno: un hueco implícito no se
+  distingue de un tramo que alguien olvidó escribir.
+- **La lista cubre el NÚCLEO**, del primer tramo al último, no la columna entera. Lo que queda por debajo y
+  por encima son los espacios externos, que **no** llevan separador. Si fueran tramos,
+  `Distinct(inicios + fines)` pondría un separador en el piso y otro en la punta, y eso **no** es el
+  producto: D5 coloca `paneles + huecos + 1`.
+- **Derivaciones:** `SeparatorElevations = Distinct(inicios + fines)` —que es toda la regla de no duplicar
+  separadores en fronteras compartidas—, `BracedPanels = tramos CrossBraced` y `BraceCount = 2 × BracedPanels`.
+- **El tramo no lleva su altura.** Es derivada de sus dos cotas, y persistirla sería una tercera autoridad
+  sobre el mismo hecho.
+- **Automático → avanzado materializa** la lista que se está viendo; **avanzado → automático avisa** antes,
+  porque la lista manual deja de mandar, y la **conserva** como dato dormido.
+
+**El modo automático no cambia el producto.** Los pines de línea, BOM y las seis vistas siguen exactamente
+donde estaban: la lista efectiva es otra forma de escribir la misma secuencia.
+
 ### D8 — El BOM de la línea, y de quién es cada pieza
 
 Los componentes de una línea son **cuatro**: columna–base, brazo, separador y tensor.

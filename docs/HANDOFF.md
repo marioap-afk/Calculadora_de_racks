@@ -965,6 +965,50 @@ y I-37 no se cierra.
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
 
+#### Estado de revisión de I-37D — ronda 4 · adaptador físico y editor avanzado de paneles
+
+> **Esto registra un estado de REVISIÓN, no una integración.** I-37D **no** está integrada ni completa,
+> I-37 sigue **abierta**, y ADR-0027 y ADR-0028 siguen **propuestos**.
+
+| Campo | Valor |
+|---|---|
+| Rama | `feature/cantilever-mvp-final` (conservada, **sin merge**) |
+| `CODE_SHA` funcional | `3e9859a` |
+| `VALIDATED_BUILD_SHA` | **ninguno para esta ronda** — ver la nota de trazabilidad abajo |
+| Suites | `RackCad.Tests` **2966** · `RackCad.UI.Tests` **619** |
+| Regresiones | **14/14 en rojo** ([evidencia](automation/evidence/I-37D-round-4-regressions.md)) |
+| CI | [`30672070159`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30672070159) ✅ |
+| Bundle | Release verificado, 153 comprobaciones, cero DLL de Autodesk |
+| **Validación manual en AutoCAD** | **PENDIENTE** — [paquete de la ronda 4](automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) |
+
+**Qué cambió, en corto.** El **adaptador** de tensor cold rolled dejó de dibujarse como una L construida a
+mano y es un **prisma estructural real** de `AISC-L-L2X2X3_16`, proyectado por la misma tubería que columnas
+y separadores. Sus **dos agujeros** están centrados **cada uno en su propia ala**, en el plano medio real de
+esa ala: la separación mide `(0.820358, −0.906250, 0.385099)`, módulo `1.281631 in`, y **ΔY ya no es cero**.
+Queda revocada `RodHoleAxialOffset = CutLength / 2`.
+
+Como el **centro del agujero de varilla es el datum físico** del extremo del tensor, la longitud nominal pasa
+de `92.131526` a `92.319026 in` — **crece 0.1875 in, exactamente el espesor del ángulo**, porque la
+aproximación medía hasta la cara del ala y la física mide hasta su plano medio. **El BOM cambia con ella**, y
+es legítimo (decisión 14.5): las cantidades no se mueven, sólo la longitud que se ordena.
+
+Y la **secuencia vertical de paneles** admite modo **avanzado**: `PanelLayoutMode`, segmentos declarados
+tramo a tramo, y una **lista efectiva única** que es la sola entrada del resolver en los dos modos. De ella
+salen los **separadores por fronteras únicas** y los **tensores por segmentos `CrossBraced`**. El modo
+automático **no cambió el producto**: línea, BOM y las seis vistas siguen en su pin.
+
+**Dos cosas pendientes que conviene no perder de vista.**
+
+1. La **vista «Sección del adaptador»** (decisión 14.7) está **decidida y no implementada**. El adaptador no
+   se lee como una L en ninguna de las tres vistas de la línea —su eje de corte corre dentro del plano del
+   panel— y el dueño decidió **no deformar ninguna vista** para disimularlo, sino darle al configurador de
+   tensor una vista propia que mire por ese eje.
+2. **Trazabilidad del binario.** El bundle verificado se generó desde `3e9859a`, antes del commit documental.
+   Recompilar tras un commit documental **cambia el SHA-256** aunque el código sea idéntico, porque la
+   versión incrusta la punta de git. Antes de validar hay que regenerar, anotar el SHA nuevo y generar
+   **inventario nuevo** — sin reutilizar el anterior. La puerta que fijó el dueño: **no compilar ni generar
+   bundle con menos de 5 GB libres**.
+
 ### I-37C — INTEGRADA en `main` (2026-07-29) — **la estación, y el primer BOM de Cantilever**
 
 I-37C tampoco dibuja: el usuario **no ve nada nuevo**. Lo que cambia es que el producto sabe componer una

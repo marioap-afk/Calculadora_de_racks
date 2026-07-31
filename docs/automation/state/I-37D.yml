@@ -8,11 +8,12 @@ automation_state:
   gate: autocad-owner-validation
   attempts: 2
   next_action: >-
-    EJECUTAR-la-validacion-manual-de-RONDA-2 ·
+    IMPLEMENTAR-la-vista-Seccion-del-adaptador-decision-14-7-BLOQUEADA-POR-ESPACIO-EN-DISCO ·
+    despues-EJECUTAR-la-validacion-manual-de-RONDA-4 ·
     cerrar-AutoCAD-regenerar-el-bundle-y-recompilar-el-DLL ·
-    NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-round-2-md ·
+    NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md ·
     despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
-  last_evidence_commit: 00f4ca1
+  last_evidence_commit: PENDIENTE-este-commit-documental
 
 # --------------------------------------------------------------------------------------------------------
 # RONDAS DE VALIDACION MANUAL. El historial NO se reescribe.
@@ -166,6 +167,40 @@ distribucion_de_paneles_verificada:
   conteos_de_cuatro_estaciones: intervalos=3 · separadores=18 · tensores=24
   separadores_por_intervalo: SeparatorCountPerInterval = P + G + 1
   tensores_por_intervalo: 2-por-panel-arriostrado
+
+  # -- AMPLIADO EN LA RONDA 4. La regla de arriba NO se toca: es el modo Automatic. ------------------
+  contrato_de_modos:
+    decision: 14-9-a-14-16-de-docs-automation-decisions-I-37-md
+    modos: CantileverPanelLayoutMode = Automatic | Advanced
+    invariante_central: >-
+      los-DOS-modos-producen-la-MISMA-lista-efectiva-contigua-de-abajo-arriba ·
+      el-resolver-posterior-SOLO-conoce-esa-lista · Automatic-no-es-un-camino-distinto-hasta-el-dibujo-
+      es-otra-forma-de-escribir-la-lista
+    tramo: CantileverPanelSegmentDesign = StartElevation + EndElevation + BracingMode
+    bracing_mode: CantileverPanelBracingMode = None | CrossBraced
+    vacio_es_un_tramo: >-
+      EXPLICITO-con-BracingMode-None-nunca-la-ausencia-de-uno ·
+      un-hueco-implicito-no-se-distingue-de-un-tramo-que-alguien-olvido-escribir
+    alcance_de_la_lista: >-
+      cubre-el-NUCLEO-del-primer-tramo-al-ultimo-NO-la-columna-entera ·
+      lo-que-queda-debajo-y-encima-son-los-espacios-externos-que-NO-llevan-separador ·
+      si-fueran-tramos-Distinct-pondria-un-separador-en-el-piso-y-otro-en-la-punta-y-eso-NO-es-el-
+      producto-porque-D5-coloca-paneles-mas-huecos-mas-1
+    derivaciones:
+      separadores: SeparatorElevations = Distinct(todos-los-inicios + todos-los-fines)
+      paneles: BracedPanels = tramos-con-BracingMode-CrossBraced
+      tensores: BraceCount = 2 x BracedPanels.Count
+    invariantes_de_la_lista: >-
+      End-mayor-que-Start · Next.Start-igual-Previous.End · orden-ascendente · sin-solapes ·
+      sin-huecos-implicitos · sin-altura-cero · First.Start-mayor-o-igual-FloorZ ·
+      Last.End-menor-o-igual-CommonColumnTopZ
+    lo_que_NO_se_persiste: separadores-derivados · tensores-derivados · alturas-duplicadas
+    altura_del_tramo: >-
+      DERIVADA-de-las-dos-cotas-y-marcada-JsonIgnore ·
+      guardarla-seria-una-TERCERA-autoridad-sobre-el-mismo-hecho
+    automatico_no_cambio_el_producto: >-
+      VERIFICADO · linea-BOM-y-las-seis-vistas-siguen-en-su-pin-byte-a-byte ·
+      solo-se-movio-el-pin-de-persistencia-y-por-los-dos-campos-nuevos-del-contrato
 
 # --------------------------------------------------------------------------------------------------------
 # GATES. El de esta iniciativa NO se resuelve sobre el codigo.
@@ -595,13 +630,148 @@ candidato:
     fuera_de_alcance_por_el_dueno: LOS-PANELES · diferidos-a-la-corrida-siguiente
 
 # --------------------------------------------------------------------------------------------------------
+# RONDA 4 - adaptador fisico y editor avanzado de paneles.
+# NO tiene build validado: la puerta de espacio en disco del Owner lo impidio. Ver `trazabilidad`.
+# --------------------------------------------------------------------------------------------------------
+ronda_4:
+  veredicto: PENDIENTE-DE-VALIDACION-MANUAL
+  code_sha_funcional: 3e9859a
+  base_de_la_ronda: 579534a-verificado-antes-de-tocar-nada
+  commits:
+    c4f140d: A1-el-angulo-deja-de-redondearse-donde-no-debe
+    3aa94f9: A2-parcial-el-adaptador-usa-el-contorno-del-catalogo
+    8e6223e: A2-A3-el-adaptador-es-un-prisma-real-y-su-agujero-manda-sobre-el-tensor
+    5242a46: frente-B-1-de-2-el-contrato-de-paneles-y-la-lista-efectiva
+    3e9859a: frente-B-2-de-2-la-tabla-avanzada-de-paneles-en-la-ventana
+
+  adaptador_prisma_estructural_real:
+    rol_nuevo: CantileverMemberRole.ColdRolledAdapter
+    seccion: AISC-L-L2X2X3_16-exacta · corte-2-in · PrismaticSectionInstance · marco-fisico
+    proyeccion: >-
+      por-la-tuberia-estructural-COMUN-la-misma-que-columnas-brazos-y-separadores ·
+      el-resolver-de-representacion-YA-NO-devuelve-adaptadores-y-una-prueba-lo-guarda
+    revocado: >-
+      RodHoleAxialOffset-igual-CutLength-entre-2 · su-justificacion-medio-corte-porque-las-dos-caras-
+      son-perpendiculares-es-la-que-no-se-sostiene · no-queda-funcion-puente-a-proposito
+
+  agujeros_en_alas_distintas:
+    en_coordenadas_de_talon: separador-igual-L-medios-y-t-medios · varilla-igual-t-medios-y-L-medios
+    offset_por_eje: (L - t) / 2 = 0.90625-in-para-el-L2x2x3-16
+    delta_3d_medido: (0.820358, -0.906250, 0.385099)
+    modulo: 1.281631-in-contra-el-1.0-plano-de-la-aproximacion-revocada
+    delta_y: -0.90625-NO-forzado-a-cero
+    espejo: >-
+      los-dos-adaptadores-de-una-diagonal-son-espejos-fisicos ·
+      el-ala-apoyada-crece-EN-CONTRA-de-SU-vano-en-cada-extremo
+    troquel: >-
+      SIGUE-EN-LA-CARA-y-no-en-el-plano-medio · tiene-que-coincidir-con-el-del-separador-son-el-mismo-
+      agujero-fisico-y-el-datum-de-un-troquel-no-lleva-la-Y ·
+      el-CENTRO-del-agujero-del-adaptador-esta-medio-espesor-mas-afuera
+    eje_del_corte: >-
+      PERPENDICULAR-a-la-diagonal-y-DENTRO-del-plano-del-panel · no-es-eleccion-de-dibujo:
+      es-la-UNICA-orientacion-en-la-que-el-agujero-del-ala-del-tensor-tiene-por-eje-la-propia-varilla ·
+      con-el-corte-a-lo-largo-de-la-diagonal-la-varilla-no-podria-enhebrarse-y-el-cuerpo-se-comeria-
+      media-pulgada-de-vano
+
+  nueva_longitud_del_tensor:
+    perno_a_perno: 94.131526
+    antes: 92.131526
+    ahora: 92.319026
+    crece: >-
+      0.1875-in-que-es-EXACTAMENTE-el-espesor-del-angulo · no-es-coincidencia:
+      la-aproximacion-medía-hasta-la-CARA-del-ala-y-la-fisica-mide-hasta-su-PLANO-MEDIO-
+      medio-espesor-por-extremo
+
+  cambio_legitimo_del_bom:
+    pines_movidos: bom · bom-doble
+    cantidades: >-
+      NO-cambian-4-varillas-8-adaptadores-16-cartabones · solo-la-LONGITUD-que-se-ordena
+    politica: >-
+      no-se-conserva-el-BOM-anterior-por-compatibilidad-artificial-decision-14-5
+
+  pines_movidos_en_total:
+    seis_por_el_adaptador: linea · linea-doble · bom · bom-doble · frontal · frontal-doble
+    uno_por_el_contrato_de_paneles: persistencia
+    NO_se_movieron: >-
+      planta · lateral · planta-doble · lateral-doble ·
+      y-eso-ACOTA-el-cambio: el-corte-vive-en-el-plano-del-panel-asi-que-esas-camaras-no-ven-nada-nuevo
+
+  editor_avanzado_de_paneles:
+    panel_layout_mode: CantileverPanelLayoutMode = Automatic | Advanced-persistido
+    segmentos_avanzados: >-
+      CantileverPanelSegmentDesign-lista-persistida-con-su-ORDEN ·
+      dato-DORMIDO-bajo-Automatic-se-conserva-no-se-lee-y-no-se-valida
+    lista_efectiva_unica: >-
+      CantileverBracingLayout.EffectiveSegments · la-UNICA-entrada-del-resolver-posterior-en-los-dos-modos
+    separadores_por_fronteras_unicas: Distinct-sobre-inicios-y-fines-en-CantileverPanelLayoutResolver
+    tensores_por_segmentos_crossbraced: 2-por-tramo-CrossBraced-y-CERO-por-tramo-None
+    acciones: >-
+      agregar · eliminar-cerrando-el-vacio · subir · bajar · dividir · unir-solo-si-se-tocan-y-llevan-
+      lo-mismo-dentro · alternar-tensores · materializar-automatico · restaurar-automatico-CON-AVISO
+    donde_viven: >-
+      CantileverPanelLayoutEditorState-en-Application-como-I-20-e-I-21 ·
+      la-ventana-COORDINA-y-Application-decide
+    tabla_wpf: >-
+      solo-visible-en-modo-avanzado · columnas-indice-base-UNO-Y1-Y2-alto-y-tensores ·
+      el-ALTO-es-de-SOLO-LECTURA-porque-es-derivado ·
+      los-errores-se-ven-EN-LA-MISMA-VENTANA
+    costura_de_confirmacion: >-
+      ConfirmDiscardingManualPanels-inyectable-y-no-un-MessageBox-literal ·
+      un-modal-dentro-de-un-manejador-colgaria-justo-la-prueba-del-camino-que-hay-que-probar
+
+  suites: RackCad-Tests-2966 · RackCad-UI-Tests-619
+  regresiones: >-
+    14-de-14-verificadas-EN-ROJO-una-a-una-inyectando-el-defecto-y-revirtiendo ·
+    docs-automation-evidence-I-37D-round-4-regressions-md
+  build: solucion-completa-Debug-0-errores
+  ci: run-30672070159-success-sobre-3e9859a
+  bundle: >-
+    GENERADO-Y-VERIFICADO-2026-07-31-Release-con-AutoCAD-cerrado · 153-comprobaciones-OK ·
+    DLL-identicos-al-publish-y-catalogos-identicos-a-assets-catalogs-por-SHA-256 ·
+    CERO-DLL-de-Autodesk-ADR-0003
+  validacion_manual: >-
+    PENDIENTE · docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md
+
+  incidente_de_disco:
+    que_paso: >-
+      el-disco-C-se-lleno-al-100-durante-la-ronda-y-una-escritura-fallida-TRUNCO-
+      CantileverViewPlanBuilder-cs-a-0-bytes
+    recuperacion: >-
+      detectado-restaurado-desde-git-y-reaplicado-el-cambio ·
+      verificado-que-ningun-otro-archivo-quedo-vacio
+    dano_colateral: >-
+      la-limpieza-de-espacio-borro-el-SDK-NET-8-0-423-de-LOCALAPPDATA ·
+      el-Owner-lo-reinstalo-manualmente-y-desde-ahi-todo-quedo-verificado-con-toolchain-real
+    leccion: >-
+      el-SDK-vive-en-LOCALAPPDATA-asi-que-una-limpieza-que-barra-esa-carpeta-se-lo-lleva
+
+  trazabilidad:
+    code_sha: 3e9859a
+    validated_build_sha: >-
+      NINGUNO-PARA-ESTA-RONDA · el-bundle-verificado-se-genero-desde-3e9859a-ANTES-del-commit-
+      documental · si-se-recompila-tras-este-commit-el-SHA-256-del-DLL-CAMBIA-porque-
+      AssemblyInformationalVersion-incrusta-la-punta-de-git-y-habra-que-registrar-uno-nuevo-y-
+      generar-INVENTARIO-NUEVO-sin-reutilizar-el-anterior
+    head_documental: este-commit
+    puerta_de_espacio_del_owner: >-
+      NO-ejecutar-build-ni-bundle-con-menos-de-5-GB-libres ·
+      MEDIDO-513-MB-libres-al-cerrar-documentalmente-una-decima-parte-del-umbral ·
+      por-eso-esta-ronda-documental-NO-recompilo-NO-regenero-bundle-y-NO-implemento-la-decision-14-7
+
+# --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
 # --------------------------------------------------------------------------------------------------------
 pendiente_del_owner:
   adr_0027: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
   adr_0028: PROPUESTO-solo-el-Owner-lo-acepta-o-lo-rechaza
   validacion_manual_en_autocad: >-
-    PENDIENTE-y-BLOQUEANTE · es-el-gate-real-de-esta-iniciativa
+    PENDIENTE-y-BLOQUEANTE · es-el-gate-real-de-esta-iniciativa ·
+    paquete-de-la-RONDA-4-en-docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md
+  vista_seccion_del_adaptador: >-
+    DECIDIDA-14-7-y-NO-IMPLEMENTADA · el-configurador-de-tensor-debe-ganar-una-vista-que-mire-a-lo-largo-
+    del-eje-de-corte-y-muestre-la-seccion-real-consumiendo-la-MISMA-StructuralSectionGeometry-que-el-prisma ·
+    BLOQUEADA-por-la-puerta-de-5-GB: entregarla-sin-compilar-ni-probar-seria-entregarla-sin-verificar ·
+    las-vistas-de-la-LINEA-no-cambian-de-orientacion-decision-14-6
   parametros_sin_default_heredados: >-
     NINGUNO-queda · MountingPlateVerticalEndOffset-recibio-su-default-aprobado-de-2-in-en-la-ronda-3 ·
     ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-fueron-RETIRADOS-en-la-ronda-anterior ·
