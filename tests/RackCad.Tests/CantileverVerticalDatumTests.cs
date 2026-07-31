@@ -100,6 +100,11 @@ namespace RackCad.Tests
 
             Assert.Equal(96.5, a.Column.End.Z, 12);
             Assert.Equal(96.0, a.Column.End.Z - a.Column.Start.Z, 12);
+
+            // Y la formula DECLARADA es la del producto construido. Sin esta linea, ColumnTopZ podria decir
+            // una cosa y la columna dibujada otra, y la que manda es la segunda.
+            Assert.Equal(CantileverColumnBaseDatum.ColumnTopZ(0.5, 96.0), a.Column.End.Z, 12);
+            Assert.Equal(CantileverColumnBaseDatum.ColumnStartZ(0.5), a.Column.Start.Z, 12);
         }
 
         // ---- 5-8: quien se mueve y quien no ---------------------------------------------------------------
@@ -133,11 +138,22 @@ namespace RackCad.Tests
             // absolutas. Trasladar ciegamente los troqueles de la columna lo habria roto.
             var a = Resolve();
 
-            var rear = a.RearPlatePunches.Select(p => Math.Round(p.Datum.V, 9)).OrderBy(v => v).ToList();
-            var face = a.ColumnConnectionPunches.Select(p => Math.Round(p.Datum.V, 9)).OrderBy(v => v).ToList();
+            // Se comparan el DATUM y el CENTRO. Solo el datum bastaria para pasar mientras el centro que
+            // llega al dibujo se hubiera desplazado: dos numeros para una misma elevacion es justo el modo de
+            // fallo que esta correccion existia para no reintroducir.
+            var rearDatum = a.RearPlatePunches.Select(p => Math.Round(p.Datum.V, 9)).OrderBy(v => v).ToList();
+            var faceDatum = a.ColumnConnectionPunches.Select(p => Math.Round(p.Datum.V, 9)).OrderBy(v => v).ToList();
 
-            Assert.NotEmpty(face);
-            Assert.All(face, v => Assert.Contains(v, rear));
+            Assert.NotEmpty(faceDatum);
+            Assert.All(faceDatum, v => Assert.Contains(v, rearDatum));
+
+            var rearZ = a.RearPlatePunches.Select(p => Math.Round(p.Centre.Z, 9)).OrderBy(v => v).ToList();
+
+            foreach (var punch in a.ColumnConnectionPunches)
+            {
+                Assert.Equal(Math.Round(punch.Datum.V, 9), Math.Round(punch.Centre.Z, 9));
+                Assert.Contains(Math.Round(punch.Centre.Z, 9), rearZ);
+            }
         }
 
         [Fact]
@@ -240,6 +256,12 @@ namespace RackCad.Tests
 
             Assert.Equal(96.5, a.Column.End.Z, 12);
             Assert.NotEqual(97.0, Math.Round(a.Column.End.Z, 9));
+
+            // Tambien sobre la FORMULA, y no solo sobre la columna resuelta: el espesor puede contarse dos
+            // veces en cualquiera de las dos, y entonces el tope que acota los troqueles se separaria del
+            // extremo que se dibuja.
+            Assert.Equal(96.5, CantileverColumnBaseDatum.ColumnTopZ(0.5, 96.0), 12);
+            Assert.Equal(a.Column.End.Z, CantileverColumnBaseDatum.ColumnTopZ(0.5, 96.0), 12);
         }
     }
 }

@@ -86,8 +86,12 @@ namespace RackCad.Application.Systems.Cantilever
 
             // The physical top: the plate lifts the column, it does not lengthen it. The NOMINAL cut length is
             // untouched, which is what stops the thickness being counted twice.
+            //
+            // The start is READ from the placement and not recomputed. Recomputing it agreed with the frame by
+            // arithmetic rather than by construction, and a regression that returned the column to the floor
+            // moved the punches without moving the column — two elevations that must be one.
             var bottomPlateThickness = column.BottomPlate?.Thickness ?? 0.0;
-            var columnStartZ = CantileverColumnBaseDatum.ColumnStartZ(bottomPlateThickness);
+            var columnStartZ = pre.ColumnStartZ;
             var columnTopZ = CantileverColumnBaseDatum.ColumnTopZ(bottomPlateThickness, column.Height);
 
             if (pattern.LastConnectionElevation > columnTopZ + FitTolerance)
@@ -213,6 +217,14 @@ namespace RackCad.Application.Systems.Cantilever
 
             public LocalFrame3D ColumnFrame { get; set; }
 
+            /// <summary>
+            /// The elevation the COLUMN section starts at: the top face of its bottom plate.
+            ///
+            /// Published rather than recomputed by the caller, because it and the frame have to be the same
+            /// number and «the same by arithmetic» is not the same as «the same by construction».
+            /// </summary>
+            public double ColumnStartZ { get; set; }
+
             public LocalFrame3D BaseFrame { get; set; }
 
             public double ColumnMinX { get; set; }
@@ -307,10 +319,10 @@ namespace RackCad.Application.Systems.Cantilever
             // declared orientation is what decides them instead of being data nobody reads.
             // The column stands on the TOP FACE of its bottom plate, not on the floor. The base does not move
             // with it: it is a piece that rests on the ground (owner decision, I-37D).
+            var columnStartZ = CantileverColumnBaseDatum.ColumnStartZ(column.BottomPlate?.Thickness ?? 0.0);
+
             var columnFrame = CantileverColumnBaseFrameResolver.ColumnFrame(
-                variant.ColumnOrientation,
-                columnGeometry,
-                CantileverColumnBaseDatum.ColumnStartZ(design.Column.BottomPlate?.Thickness ?? 0.0));
+                variant.ColumnOrientation, columnGeometry, columnStartZ);
 
             var rearThickness = basePiece.RearPlate.Thickness;
             var baseFrame = CantileverColumnBaseFrameResolver.BaseFrame(
@@ -345,6 +357,7 @@ namespace RackCad.Application.Systems.Cantilever
                 ColumnGeometry = columnGeometry,
                 BaseGeometry = baseGeometry,
                 ColumnFrame = columnFrame,
+                ColumnStartZ = columnStartZ,
                 BaseFrame = baseFrame,
                 ColumnMinX = columnMinX,
                 ColumnMaxX = columnMaxX,
