@@ -512,7 +512,7 @@ candidato:
       SIETE-puntos · 1-insercion-del-componente-columna · 2-rol-color-de-columna ·
       3-offset-de-troquel-1-0-in · 4-defaults-y-frontal-del-brazo · 5-bases-del-doble ·
       6-separador-centrado-y-al-alma · 7-tensores-y-adaptadores-de-angulo
-    alcance_entregado: SEIS-de-SIETE · el-punto-7-NO-se-hizo-y-se-declara-como-pendiente
+    alcance_entregado: LOS-SIETE · el-punto-7-se-cerro-en-una-corrida-posterior-de-la-misma-ronda
     evidencia_regresiones: docs-automation-evidence-I-37D-round-3-regressions-md
     regresiones: 15-de-15-verificadas-EN-ROJO
     punto_1: >-
@@ -547,9 +547,23 @@ candidato:
       contorno-que-se-dibuja-ADR-0024-D5-lo-que-ademas-lo-hace-neutral-y-fail-closed ·
       PRIMERA-VEZ-en-toda-la-iniciativa-que-se-mueven-los-pines-de-BOM
     punto_7: >-
-      NO-HECHO · tensores-con-espesor-y-adaptadores-de-angulo-con-forma-de-L-rotados-y-biselados ·
-      se-declara-pendiente-en-vez-de-entregarse-a-medias · el-tensor-cold-rolled-se-dibuja-hoy-como-su-EJE-
-      por-decision-declarada-en-ADR-0027-D7-asi-que-darle-espesor-es-tambien-revisar-esa-decision
+      RESUELTO · OWNER_REVISED_CANTILEVER_BRACE_VISUAL_REPRESENTATION-recogida-en-ADR-0027-D7-bis-que-
+      CORRIGE-el-ADR-sin-aceptarlo: el-eje-sigue-siendo-el-DATUM-y-la-geometria-VISIBLE-pasa-a-tener-ancho ·
+      cold-rolled-de-polilinea-abierta-de-2-puntos-a-banda-cerrada-de-4-con-ancho-igual-al-DIAMETRO ·
+      adaptador-de-cuadrado-de-4-puntos-a-L-de-6-con-sus-dos-alas-y-su-espesor ·
+      dos-cartabones-triangulares-por-adaptador-y-el-agujero-de-varilla-que-nadie-dibujaba ·
+      orientacion-DERIVADA-de-donde-queda-el-agujero-de-la-varilla-respecto-del-del-separador-asi-que-los-
+      cuatro-casos-salen-exhaustivos-por-construccion ·
+      roles-BraceAdapter-BraceGusset-y-BracePunch-con-capa-y-color-propios ·
+      el-tensor-ESTRUCTURAL-no-pasa-por-la-autoridad-nueva-A-PROPOSITO: su-cuerpo-lo-proyecta-la-tuberia-de-
+      secciones-que-ya-dibuja-el-contorno-real-respetando-marco-espejo-y-rotacion
+    punto_7_evidencia: >-
+      docs-automation-evidence-I-37D-round-3-brace-regressions-md ·
+      docs-automation-evidence-I-37D-autocad-validation-round-3-braces-md
+    punto_7_bom: >-
+      NO-SE-MOVIO-y-es-la-comprobacion-de-que-fue-un-cambio-de-DIBUJO ·
+      una-regresion-verifica-que-el-pin-del-BOM-SI-muerde-ante-un-cambio-de-producto-de-verdad-
+      -bajar-el-diametro-de-la-varilla-de-3-4-a-5-8
     fuera_de_alcance_por_el_dueno: LOS-PANELES · diferidos-a-la-corrida-siguiente
 
 # --------------------------------------------------------------------------------------------------------
