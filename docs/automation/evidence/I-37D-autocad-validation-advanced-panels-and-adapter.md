@@ -17,11 +17,11 @@ de la aproximación con la que se situaba el agujero de varilla del adaptador.
 | Campo | Valor |
 |---|---|
 | Rama | `feature/cantilever-mvp-final` |
-| **CODE_SHA** | `3e9859a` |
+| **CODE_SHA** | `dd9e4a5` |
 | **VALIDATED_BUILD_SHA** | ⚠️ **ninguno para esta ronda** — ver §2 |
 | **DLL SHA-256** | ⚠️ **pendiente de registrar** — ver §2 |
 | Inventario del bundle | ⚠️ **pendiente de generar** — ver §2 |
-| Suites | `RackCad.Tests` **2966/2966** · `RackCad.UI.Tests` **619/619** |
+| Suites | `RackCad.Tests` **2978/2978** · `RackCad.UI.Tests` **621/621** |
 | Regresiones | **14/14 en rojo** — [evidencia](I-37D-round-4-regressions.md) |
 | CI | [`30672070159`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30672070159) ✅ sobre `3e9859a` |
 | Bundle | ✅ Release, AutoCAD cerrado, fail-closed, **153 comprobaciones**, cero DLL de Autodesk |
@@ -59,9 +59,9 @@ sería afirmar que el DLL que vas a cargar es el que se verificó, y no lo serí
 > perpendicular a la diagonal **dentro del plano del panel**, así que la frontal ve el ala apoyada de frente
 > y la del tensor de canto. Ninguna cámara mira por el eje de corte.
 >
-> Ninguna vista se deformó para disimularlo (decisión 14.6). La vista **«Sección del adaptador»** que lo
-> mostrará como L (decisión 14.7) **todavía no está implementada**: quedó bloqueada por la puerta de espacio
-> en disco. **En esta ronda no la busques.**
+> Ninguna vista se deformó para disimularlo (decisión 14.6). Para verlo como L está la vista
+> **«Sección del adaptador»** del configurador de tensor (decisión 14.7), que **ya está implementada** y
+> tiene su propio bloque de comprobaciones abajo.
 
 ---
 
@@ -200,6 +200,44 @@ Trabaja sobre un intervalo con la tabla en modo **Avanzada**.
 
 ---
 
+## Bloque E — La vista «Sección del adaptador»
+
+Ábrela en el **configurador de tensor**: es el tercer botón de la previa, junto a Frontal y Planta.
+
+| # | Comprobación | ✅/❌ |
+|---|---|---|
+| E1 | El botón **«Sección del adaptador»** existe en la previa del configurador de tensor | ☐ |
+| E2 | Al elegirlo se ve **una L**, con sus **dos alas** completas | ☐ |
+| E3 | El **ala apoyada** corre hacia la **derecha** de la imagen y la **del tensor hacia arriba** | ☐ |
+| E4 | Se aprecia el **espesor** real: la L no es una línea, tiene canto | ☐ |
+| E5 | El **filete de raíz** —la curva cóncava donde se juntan las dos alas— está ahí | ☐ |
+| E6 | Las **dos puntas libres** están redondeadas, con radios **pequeños**, del orden del espesor | ☐ |
+| E7 | Ninguna punta termina en **nariz semicircular**: entre las dos curvas de cada punta queda canto recto | ☐ |
+| E8 | El **talón exterior** —la esquina de fuera donde se cruzan las caras externas— está **vivo**, sin redondear | ☐ |
+| E9 | Se ven **dos marcas de agujero**, una en cada ala | ☐ |
+| E10 | Cada marca está **centrada a lo ancho de su ala** | ☐ |
+| E11 | Las marcas se ven como **trazas** (segmentos), no como círculos. Es correcto: en esta proyección los dos agujeros están de canto | ☐ |
+| E12 | Cambiar a **Frontal** y volver a **Sección** devuelve la misma figura: la vista no depende de por dónde se pasó | ☐ |
+| E13 | Con el tensor puesto en **perfil estructural**, la sección **no dibuja nada** y dice que ese tensor se atornilla directo y no lleva adaptador | ☐ |
+
+> **E7 es el que hay que mirar con más calma.** En una ronda anterior el radio de punta se topaba en medio
+> espesor y ahí las dos esquinas de cada punta se tocaban: el ala terminaba en semicírculo y lo rechazaste al
+> verlo. El tope actual deja un canto recto pequeño pero real. Si vuelves a ver una nariz, el tope se movió.
+
+> **E11 no es un defecto.** Los dos ejes de agujero son perpendiculares a la dirección de vista de esta
+> cámara, así que ninguno se ve como círculo. Dibujarlos redondos pondría en el papel una boca que desde aquí
+> no existe.
+
+### E.14 — Que la sección y la línea sean la MISMA pieza
+
+| # | Comprobación | ✅/❌ |
+|---|---|---|
+| E14 | La L de la sección tiene el **mismo espesor** que el canto que se ve en la frontal | ☐ |
+| E15 | El **brazo** de la L mide 2 in, igual que el ancho del adaptador en la frontal | ☐ |
+| E16 | Los **dos adaptadores** de un mismo tensor se ven **distintos** entre sí en esta vista: son espejos | ☐ |
+
+---
+
 ## 4. Veredicto
 
 | Campo | Valor |
@@ -210,5 +248,4 @@ Trabaja sobre un intervalo con la tabla en modo **Avanzada**.
 | Veredicto | ☐ ACEPTADA ☐ RECHAZADA |
 | Motivos, si se rechaza | ☐ |
 
-**El veredicto de este paquete no acepta ADR-0027 ni ADR-0028**, ni cierra I-37D ni I-37. Sigue faltando,
-además, la **vista «Sección del adaptador»** de la decisión 14.7.
+**El veredicto de este paquete no acepta ADR-0027 ni ADR-0028**, ni cierra I-37D ni I-37.

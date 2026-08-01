@@ -216,6 +216,72 @@ consumidor—, los dos corregidos.
 
 **Brazo, separador y tensor no se modificaron.**
 
+## 9d. Ronda 4 — el adaptador fisico y el editor avanzado de paneles
+
+El Owner **revoco** la aproximacion con la que se situaba el agujero de varilla del adaptador y **autorizo**
+el editor avanzado de paneles, que la ronda 3 habia dejado fuera de alcance.
+
+**El adaptador.** Queda revocada `RodHoleAxialOffset = CutLength / 2`. Su justificacion escrita —«medio
+corte, porque las dos caras son perpendiculares»— es justamente la que no se sostiene: si son
+perpendiculares, la separacion entre dos agujeros centrados **cada uno en su ala** tiene componente en los
+dos ejes, no en uno. El adaptador pasa a ser un **prisma real** de `AISC-L-L2X2X3_16` cortado a 2 in,
+proyectado por la **tuberia estructural comun**, y sus dos agujeros estan en el **plano medio real** de su
+ala: separacion `(0.820358, -0.906250, 0.385099)`, modulo `1.281631 in`, **DeltaY distinto de cero**.
+
+Como el centro del agujero de varilla es el **datum fisico** del extremo del tensor, su longitud nominal
+pasa de `92.131526` a `92.319026 in` — **crece 0.1875 in, el espesor del angulo**, porque la aproximacion
+media hasta la **cara** del ala y la fisica mide hasta su **plano medio**. **El BOM cambia con ella**, y es
+legitimo: las cantidades no se mueven, solo la longitud que se ordena.
+
+**La consecuencia visual, declarada y no disimulada.** El eje de corte del adaptador queda **perpendicular a
+la diagonal y dentro del plano del panel** — la unica orientacion en la que el agujero del ala del tensor
+tiene por eje la propia varilla, que es como se sujeta una varilla roscada. Ninguna de las tres camaras de la
+linea mira por ese eje, asi que **el adaptador no se lee como una L en ninguna vista de linea**. El Owner
+decidio que **ninguna vista de la linea se deforma** para disimularlo y que el configurador de tensor gana
+una vista propia, **«Seccion del adaptador»**, que mira por ese eje y consume la **misma**
+`StructuralSectionGeometry` que el prisma.
+
+**Los paneles.** La secuencia vertical admite dos modos, `Automatic` y `Advanced`, y **los dos producen la
+misma lista efectiva**, que es la **unica entrada** del resolver posterior. Un vacio es un **tramo
+explicito** con los tensores apagados; los separadores salen de `Distinct` sobre las fronteras y los tensores
+de los tramos `CrossBraced`. La lista cubre el **nucleo** y no la columna entera: si los espacios externos
+fueran tramos, se pondria un separador en el piso y otro en la punta, y eso no es el producto.
+
+**El modo automatico no cambio el producto**: linea, BOM y las seis vistas siguen en su pin.
+
+## 9d. Ronda 4 — el adaptador fisico y el editor avanzado de paneles
+
+El Owner **revoco** la aproximacion con la que se situaba el agujero de varilla del adaptador y **autorizo**
+el editor avanzado de paneles, que la ronda 3 habia dejado fuera de alcance.
+
+**El adaptador.** Queda revocada `RodHoleAxialOffset = CutLength / 2`. Su justificacion escrita —«medio
+corte, porque las dos caras son perpendiculares»— es justamente la que no se sostiene: si son
+perpendiculares, la separacion entre dos agujeros centrados **cada uno en su ala** tiene componente en los
+dos ejes, no en uno. El adaptador pasa a ser un **prisma real** de `AISC-L-L2X2X3_16` cortado a 2 in,
+proyectado por la **tuberia estructural comun**, y sus dos agujeros estan en el **plano medio real** de su
+ala: separacion `(0.820358, -0.906250, 0.385099)`, modulo `1.281631 in`, **DeltaY distinto de cero**.
+
+Como el centro del agujero de varilla es el **datum fisico** del extremo del tensor, su longitud nominal
+pasa de `92.131526` a `92.319026 in` — **crece 0.1875 in, el espesor del angulo**, porque la aproximacion
+media hasta la **cara** del ala y la fisica mide hasta su **plano medio**. **El BOM cambia con ella**, y es
+legitimo: las cantidades no se mueven, solo la longitud que se ordena.
+
+**La consecuencia visual, declarada y no disimulada.** El eje de corte del adaptador queda **perpendicular a
+la diagonal y dentro del plano del panel** — la unica orientacion en la que el agujero del ala del tensor
+tiene por eje la propia varilla, que es como se sujeta una varilla roscada. Ninguna de las tres camaras de la
+linea mira por ese eje, asi que **el adaptador no se lee como una L en ninguna vista de linea**. El Owner
+decidio que **ninguna vista de la linea se deforma** para disimularlo y que el configurador de tensor gana
+una vista propia, **«Seccion del adaptador»**, que mira por ese eje y consume la **misma**
+`StructuralSectionGeometry` que el prisma.
+
+**Los paneles.** La secuencia vertical admite dos modos, `Automatic` y `Advanced`, y **los dos producen la
+misma lista efectiva**, que es la **unica entrada** del resolver posterior. Un vacio es un **tramo
+explicito** con los tensores apagados; los separadores salen de `Distinct` sobre las fronteras y los tensores
+de los tramos `CrossBraced`. La lista cubre el **nucleo** y no la columna entera: si los espacios externos
+fueran tramos, se pondria un separador en el piso y otro en la punta, y eso no es el producto.
+
+**El modo automatico no cambio el producto**: linea, BOM y las seis vistas siguen en su pin.
+
 ## 10. Validacion manual
 
 **OBLIGATORIA.** `requires_autocad: true`, `requires_owner_validation: true`. I-37D cambia dibujo e interfaz,

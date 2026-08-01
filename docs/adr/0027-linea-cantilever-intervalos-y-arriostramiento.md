@@ -329,8 +329,15 @@ corte, así que **el adaptador no se lee como una L en ninguna de ellas**: la fr
 frente y la del tensor de canto. El dueño decidió que **no se deforma ninguna vista** para que parezca una L
 —frontal, lateral y planta siguen siendo proyecciones físicas— y que el configurador de tensor gana una vista
 propia, **«Sección del adaptador»**, que mira a lo largo del eje de corte y muestra la sección real. Esa
-vista debe consumir la **misma** `StructuralSectionGeometry` que el prisma: ni otra L a mano, ni otra fórmula
-de radios.
+vista consume la **misma** `StructuralSectionGeometry` que el prisma: ni otra L a mano, ni otra fórmula de
+radios.
+
+**Implementada** en la misma ronda. Su cámara sale del **marco de la pieza** —mira por `AlongCut` con
+`AlongRodLeg` como vertical— y por eso `CantileverViewKind.AdapterSection` **no tiene cámara fija**: pedirla
+por la puerta de las vistas de línea lanza, con un caso explícito y su motivo. Los dos agujeros se ven **de
+canto** en esa proyección —sus ejes son perpendiculares a la dirección de vista— y se dibujan como su
+**traza**, no como círculos. Las tres vistas de la línea **no se tocaron**, y una prueba lo comprueba sobre
+sus cámaras.
 
 **Lo que esta revisión NO autoriza.** Lo mismo que D7-bis: sigue sin haber preparación de bordes, destijeres,
 soldadura del talón, roscas, tuercas ni tolerancias de armado. Y sigue sin persistirse ningún contorno.

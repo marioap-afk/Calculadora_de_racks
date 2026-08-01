@@ -973,9 +973,9 @@ drawings, la interferencia física en el cruce de tensores, y cualquier catálog
 | Campo | Valor |
 |---|---|
 | Rama | `feature/cantilever-mvp-final` (conservada, **sin merge**) |
-| `CODE_SHA` funcional | `3e9859a` |
+| `CODE_SHA` funcional | `dd9e4a5` |
 | `VALIDATED_BUILD_SHA` | **ninguno para esta ronda** — ver la nota de trazabilidad abajo |
-| Suites | `RackCad.Tests` **2966** · `RackCad.UI.Tests` **619** |
+| Suites | `RackCad.Tests` **2978** · `RackCad.UI.Tests` **621** |
 | Regresiones | **14/14 en rojo** ([evidencia](automation/evidence/I-37D-round-4-regressions.md)) |
 | CI | [`30672070159`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30672070159) ✅ |
 | Bundle | Release verificado, 153 comprobaciones, cero DLL de Autodesk |
@@ -997,17 +997,18 @@ tramo a tramo, y una **lista efectiva única** que es la sola entrada del resolv
 salen los **separadores por fronteras únicas** y los **tensores por segmentos `CrossBraced`**. El modo
 automático **no cambió el producto**: línea, BOM y las seis vistas siguen en su pin.
 
-**Dos cosas pendientes que conviene no perder de vista.**
+**La vista «Sección del adaptador»** (decisión 14.7) ya está implementada. El adaptador no se lee como una L
+en ninguna de las tres vistas de la línea —su eje de corte corre dentro del plano del panel— y el dueño
+decidió **no deformar ninguna vista** para disimularlo, sino darle al configurador de tensor una vista propia
+que mire por ese eje. Su cámara sale del **marco de la pieza**, y consume la **misma**
+`StructuralSectionGeometry` que el prisma: una prueba compara el **área** del contorno proyectado contra la
+del catálogo, que es independiente de la cámara, así que una geometría paralela no pasaría desapercibida.
+Las tres vistas de la línea **no se tocaron**, y hay prueba sobre sus cámaras.
 
-1. La **vista «Sección del adaptador»** (decisión 14.7) está **decidida y no implementada**. El adaptador no
-   se lee como una L en ninguna de las tres vistas de la línea —su eje de corte corre dentro del plano del
-   panel— y el dueño decidió **no deformar ninguna vista** para disimularlo, sino darle al configurador de
-   tensor una vista propia que mire por ese eje.
-2. **Trazabilidad del binario.** El bundle verificado se generó desde `3e9859a`, antes del commit documental.
-   Recompilar tras un commit documental **cambia el SHA-256** aunque el código sea idéntico, porque la
-   versión incrusta la punta de git. Antes de validar hay que regenerar, anotar el SHA nuevo y generar
-   **inventario nuevo** — sin reutilizar el anterior. La puerta que fijó el dueño: **no compilar ni generar
-   bundle con menos de 5 GB libres**.
+**El trabajo se movió a `D:`.** `C:` llegó al 100 % dos veces en esta iniciativa y una de ellas truncó un
+archivo fuente. El worktree vive ahora en `D:\Documentos\Codex\worktreeseature-cantilever-mvp-final`, y
+`TEMP`, `TMP`, `NUGET_PACKAGES` y `DOTNET_CLI_HOME` apuntan a `D:`. `global.json` **no se tocó**. La puerta de
+espacio que se fijó en la ronda anterior queda **sin efecto**: era un parche a un problema que ya no existe.
 
 ### I-37C — INTEGRADA en `main` (2026-07-29) — **la estación, y el primer BOM de Cantilever**
 

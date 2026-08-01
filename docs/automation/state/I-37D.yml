@@ -8,8 +8,7 @@ automation_state:
   gate: autocad-owner-validation
   attempts: 2
   next_action: >-
-    IMPLEMENTAR-la-vista-Seccion-del-adaptador-decision-14-7-BLOQUEADA-POR-ESPACIO-EN-DISCO ·
-    despues-EJECUTAR-la-validacion-manual-de-RONDA-4 ·
+    EJECUTAR-la-validacion-manual-de-RONDA-4-la-decision-14-7-YA-ESTA-IMPLEMENTADA ·
     cerrar-AutoCAD-regenerar-el-bundle-y-recompilar-el-DLL ·
     NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md ·
     despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
@@ -719,7 +718,39 @@ ronda_4:
       ConfirmDiscardingManualPanels-inyectable-y-no-un-MessageBox-literal ·
       un-modal-dentro-de-un-manejador-colgaria-justo-la-prueba-del-camino-que-hay-que-probar
 
-  suites: RackCad-Tests-2966 · RackCad-UI-Tests-619
+  suites: RackCad-Tests-2978 · RackCad-UI-Tests-621
+
+  vista_seccion_del_adaptador:
+    decision: 14-7
+    commit: dd9e4a5
+    por_que_hace_falta: >-
+      el-adaptador-NO-se-lee-como-un-angulo-en-ninguna-de-las-tres-vistas-de-la-linea ·
+      su-eje-de-corte-corre-PERPENDICULAR-a-la-diagonal-y-DENTRO-del-plano-del-panel-que-es-la-unica-
+      orientacion-en-la-que-el-agujero-del-ala-del-tensor-tiene-por-eje-la-propia-varilla ·
+      ninguna-de-las-tres-camaras-mira-por-ese-eje
+    camara: >-
+      SALE-DEL-MARCO-de-la-pieza-no-de-una-constante · mira-por-AlongCut-con-AlongRodLeg-como-vertical ·
+      el-ala-apoyada-corre-a-la-DERECHA-de-la-imagen-y-la-del-tensor-hacia-ARRIBA
+    sin_camara_fija: >-
+      CantileverViewKind-AdapterSection-NO-tiene-camara-en-Viewpoint-y-pedirla-por-ahi-LANZA ·
+      caso-EXPLICITO-y-no-el-default-generico-porque-el-motivo-es-distinto:
+      no-falta-declarar-una-camara-es-que-no-puede-haber-una-fija
+    misma_geometria: >-
+      se-proyecta-el-MIEMBRO-con-StructuralSectionPlanBuilder-igual-que-cualquier-otra-vista ·
+      una-prueba-compara-el-AREA-del-contorno-proyectado-contra-la-del-catalogo-que-es-independiente-de-
+      la-camara-asi-que-una-geometria-paralela-no-pasaria-desapercibida
+    agujeros: >-
+      los-DOS-ejes-son-perpendiculares-a-la-direccion-de-vista-asi-que-los-dos-salen-de-CANTO-y-se-
+      dibujan-como-su-TRAZA · AddHoleAt-se-EXTRAJO-de-AddPunch-para-no-escribir-una-segunda-disciplina
+    tensor_estructural: >-
+      NO-tiene-seccion-de-adaptador-y-lo-DICE-con-diagnostico-INFORMATIVO-no-bloqueante ·
+      se-atornilla-directo-es-otro-producto-y-un-plan-vacio-en-silencio-se-leeria-como-un-fallo
+    vistas_de_linea: >-
+      NO-se-tocaron-decision-14-6 · hay-prueba-que-lo-comprueba-sobre-las-TRES-camaras
+    insercion_independiente: >-
+      NO-la-incluye · el-dueño-dijo-que-PUEDE-incluirla-no-que-deba ·
+      meter-geometria-extra-en-el-dibujo-de-alguien-es-cambio-de-producto-y-pide-su-propia-validacion
+    pruebas: 12-en-RackCad-Tests-mas-2-de-ventana-en-RackCad-UI-Tests
   regresiones: >-
     14-de-14-verificadas-EN-ROJO-una-a-una-inyectando-el-defecto-y-revirtiendo ·
     docs-automation-evidence-I-37D-round-4-regressions-md
@@ -731,6 +762,23 @@ ronda_4:
     CERO-DLL-de-Autodesk-ADR-0003
   validacion_manual: >-
     PENDIENTE · docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md
+
+  movimiento_a_D:
+    motivo: >-
+      C-llego-al-100-por-ciento-DOS-veces-en-esta-iniciativa-y-una-de-ellas-TRUNCO-un-archivo-fuente ·
+      el-dueño-ordeno-mover-el-trabajo-a-D-en-vez-de-seguir-parcheando-con-un-umbral-de-espacio
+    worktree_antes: C-Users-alejandra-mendoza-claude-worktrees-feature-cantilever-mvp-final
+    worktree_ahora: D-Documentos-Codex-worktrees-feature-cantilever-mvp-final
+    como: >-
+      git-worktree-move-FALLO-con-Improper-link-porque-el-rename-no-cruza-volumenes ·
+      se-recreo-con-worktree-remove-mas-worktree-add-TRAS-verificar-arbol-limpio-y-todo-publicado ·
+      la-rama-y-los-commits-viven-en-el-repo-principal-asi-que-no-habia-nada-que-perder
+    temporales: >-
+      TEMP-y-TMP-en-D-Temp-RackCad · NUGET_PACKAGES-en-D-NuGetPackages · DOTNET_CLI_HOME-en-D-DotNetHome
+    global_json: NO-se-toco · el-SDK-8-0-423-se-sigue-resolviendo-igual
+    espacio: >-
+      D-con-930-GB-libres · C-incluso-GANO-espacio-al-dejar-de-recibir-salidas-de-compilacion ·
+      la-puerta-de-5-GB-queda-SIN-EFECTO-por-instruccion-del-dueño-se-trabaja-en-D
 
   incidente_de_disco:
     que_paso: >-
@@ -768,10 +816,7 @@ pendiente_del_owner:
     PENDIENTE-y-BLOQUEANTE · es-el-gate-real-de-esta-iniciativa ·
     paquete-de-la-RONDA-4-en-docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md
   vista_seccion_del_adaptador: >-
-    DECIDIDA-14-7-y-NO-IMPLEMENTADA · el-configurador-de-tensor-debe-ganar-una-vista-que-mire-a-lo-largo-
-    del-eje-de-corte-y-muestre-la-seccion-real-consumiendo-la-MISMA-StructuralSectionGeometry-que-el-prisma ·
-    BLOQUEADA-por-la-puerta-de-5-GB: entregarla-sin-compilar-ni-probar-seria-entregarla-sin-verificar ·
-    las-vistas-de-la-LINEA-no-cambian-de-orientacion-decision-14-6
+    IMPLEMENTADA-en-dd9e4a5-y-ya-NO-es-un-pendiente · ver-ronda_4.vista_seccion_del_adaptador
   parametros_sin_default_heredados: >-
     NINGUNO-queda · MountingPlateVerticalEndOffset-recibio-su-default-aprobado-de-2-in-en-la-ronda-3 ·
     ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-fueron-RETIRADOS-en-la-ronda-anterior ·
