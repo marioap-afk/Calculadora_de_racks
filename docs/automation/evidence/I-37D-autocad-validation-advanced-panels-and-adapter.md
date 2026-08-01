@@ -18,9 +18,10 @@ de la aproximación con la que se situaba el agujero de varilla del adaptador.
 |---|---|
 | Rama | `feature/cantilever-mvp-final` |
 | **CODE_SHA** | `dd9e4a5` |
-| **VALIDATED_BUILD_SHA** | ⚠️ **ninguno para esta ronda** — ver §2 |
-| **DLL SHA-256** | ⚠️ **pendiente de registrar** — ver §2 |
-| Inventario del bundle | ⚠️ **pendiente de generar** — ver §2 |
+| **VALIDATED_BUILD_SHA** | `a594eb5d5e2cd703cf9063b36147cddc0042302b` |
+| **DLL SHA-256** | `F237CC7951A398751C369FB64A0A6FF541F80E37E39C4375905D2AE98985B6E1` |
+| Tamaño / fecha | 135 680 bytes · `2026-07-31 18:01:32` |
+| Inventario del bundle | [`I-37D-round-4-bundle-inventory.txt`](I-37D-round-4-bundle-inventory.txt) — **nuevo**, 24 archivos |
 | Suites | `RackCad.Tests` **2978/2978** · `RackCad.UI.Tests` **621/621** |
 | Regresiones | **14/14 en rojo** — [evidencia](I-37D-round-4-regressions.md) |
 | CI | [`30672070159`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30672070159) ✅ sobre `3e9859a` |
@@ -28,20 +29,26 @@ de la aproximación con la que se situaba el agujero de varilla del adaptador.
 
 ## 2. Trazabilidad — **léelo antes de cargar nada**
 
-El bundle verificado se generó desde `3e9859a`, **antes** de este commit documental. La
-`AssemblyInformationalVersion` incrusta la punta de git, así que **recompilar tras un commit documental
-cambia el binario aunque el código sea byte a byte el mismo**.
+Los tres identificadores están **separados a propósito**, porque no son el mismo:
 
-Por eso esta ronda **no registra** `VALIDATED_BUILD_SHA` ni SHA-256 de DLL: registrarlos con el valor viejo
-sería afirmar que el DLL que vas a cargar es el que se verificó, y no lo sería.
+| | Valor | Qué es |
+|---|---|---|
+| `CODE_SHA` | `dd9e4a5` | La última punta que tocó `src` o `tests`. **El árbol funcional validado es éste.** |
+| `VALIDATED_BUILD_SHA` | `a594eb5` | Ése más **dos commits exclusivamente documentales**. El DLL se compiló de aquí. |
+| HEAD documental | posterior | El commit que registra estas huellas, necesariamente después del build. |
+
+El DLL sale de `a594eb5` y no de `dd9e4a5` porque la `AssemblyInformationalVersion` **incrusta la punta de
+git**: recompilar tras un commit documental cambia el binario aunque el código sea byte a byte el mismo. Por
+eso el inventario del bundle se generó **de cero** y no se reutilizó el de la ronda anterior — los tres DLL
+de RackCad cambiaron de huella por esa razón y por ninguna otra.
 
 **Antes de validar:**
 
 1. Cierra AutoCAD. El bundle **aborta** si está abierto, y es a propósito.
-2. Comprueba **espacio libre ≥ 5 GB**. Al cerrar esta ronda había **513 MB**, una décima parte del umbral.
-3. Regenera el bundle y recompila el DLL desde la punta documental.
-4. Anota aquí el `VALIDATED_BUILD_SHA` y el **SHA-256 nuevo**, y genera un **inventario nuevo**.
-   **No reutilices el anterior.**
+2. Carga el DLL Debug del worktree, que ahora vive en
+   `D:/Documentos/Codex/worktrees/feature-cantilever-mvp-final`.
+3. Comprueba que su SHA-256 es el de la tabla de §1. **Si no coincide, alguien recompiló después**: vuelve a
+   anotar el que cargues antes de seguir.
 
 ---
 

@@ -794,17 +794,26 @@ ronda_4:
       el-SDK-vive-en-LOCALAPPDATA-asi-que-una-limpieza-que-barra-esa-carpeta-se-lo-lleva
 
   trazabilidad:
-    code_sha: 3e9859a
-    validated_build_sha: >-
-      NINGUNO-PARA-ESTA-RONDA · el-bundle-verificado-se-genero-desde-3e9859a-ANTES-del-commit-
-      documental · si-se-recompila-tras-este-commit-el-SHA-256-del-DLL-CAMBIA-porque-
-      AssemblyInformationalVersion-incrusta-la-punta-de-git-y-habra-que-registrar-uno-nuevo-y-
-      generar-INVENTARIO-NUEVO-sin-reutilizar-el-anterior
-    head_documental: este-commit
+    code_sha: dd9e4a5-ultima-punta-que-toco-src-o-tests
+    validated_build_sha: a594eb5d5e2cd703cf9063b36147cddc0042302b
+    head_documental: el-commit-que-registra-estas-huellas-posterior-al-build
+    dll: worktree-src-RackCad-Plugin-bin-Debug-net8-0-windows-RackCad-Plugin-dll
+    dll_sha256: F237CC7951A398751C369FB64A0A6FF541F80E37E39C4375905D2AE98985B6E1
+    dll_bytes: 135680
+    dll_fecha: 2026-07-31T18:01:32
+    informational_version: 1.0.0+a594eb5d5e2cd703cf9063b36147cddc0042302b
+    por_que_dos_sha: >-
+      dd9e4a5-es-el-CODE_SHA-funcional-la-ultima-punta-que-toco-src-o-tests ·
+      a594eb5-es-ese-mas-DOS-commits-exclusivamente-documentales ·
+      el-DLL-se-compilo-desde-a594eb5-porque-la-AssemblyInformationalVersion-incrusta-la-punta-de-git ·
+      el-arbol-FUNCIONAL-validado-es-el-de-dd9e4a5
+    bundle_inventario: docs-automation-evidence-I-37D-round-4-bundle-inventory-txt
+    inventario_nuevo: >-
+      SI-generado-de-cero-24-archivos · NO-se-reutilizo-el-de-la-ronda-anterior ·
+      los-tres-DLL-de-RackCad-cambiaron-de-huella-porque-la-version-incrusta-la-punta-de-git
     puerta_de_espacio_del_owner: >-
-      NO-ejecutar-build-ni-bundle-con-menos-de-5-GB-libres ·
-      MEDIDO-513-MB-libres-al-cerrar-documentalmente-una-decima-parte-del-umbral ·
-      por-eso-esta-ronda-documental-NO-recompilo-NO-regenero-bundle-y-NO-implemento-la-decision-14-7
+      RETIRADA-por-instruccion-del-dueño · era-un-parche-a-un-problema-que-ya-no-existe:
+      el-trabajo-vive-en-D-con-930-GB-libres · ver-movimiento_a_D
 
 # --------------------------------------------------------------------------------------------------------
 # PENDIENTE DEL OWNER
