@@ -1006,7 +1006,7 @@ del catálogo, que es independiente de la cámara, así que una geometría paral
 Las tres vistas de la línea **no se tocaron**, y hay prueba sobre sus cámaras.
 
 **El trabajo se movió a `D:`.** `C:` llegó al 100 % dos veces en esta iniciativa y una de ellas truncó un
-archivo fuente. El worktree vive ahora en `D:\Documentos\Codex\worktreeseature-cantilever-mvp-final`, y
+archivo fuente. El worktree vive ahora en `D:/Documentos/Codex/worktrees/feature-cantilever-mvp-final`, y
 `TEMP`, `TMP`, `NUGET_PACKAGES` y `DOTNET_CLI_HOME` apuntan a `D:`. `global.json` **no se tocó**. La puerta de
 espacio que se fijó en la ronda anterior queda **sin efecto**: era un parche a un problema que ya no existe.
 
