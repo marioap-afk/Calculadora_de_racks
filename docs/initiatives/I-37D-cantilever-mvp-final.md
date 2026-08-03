@@ -292,6 +292,25 @@ El checklist debe cubrir: gondola sencilla y doble; 2 y 4 estaciones; las tres v
 paneles estandar; el caso normativo de 264 in; tensor cold rolled; tensor estructural; BOM; guardar, cerrar y
 reabrir; y editar y redibujar.
 
+### EJECUTADA Y APROBADA — 2026-08-03
+
+**`OWNER_APPROVED_I37D_MANUAL_VALIDATION`.** Todo funciona correctamente, **sin defectos bloqueantes
+observados**.
+
+| Campo | Valor |
+|---|---|
+| `CODE_SHA` | `dd9e4a5` |
+| `VALIDATED_BUILD_SHA` | `a594eb5` |
+| DLL Debug SHA-256 | `F237CC7951A398751C369FB64A0A6FF541F80E37E39C4375905D2AE98985B6E1` |
+| Suites | 2978 core · 621 UI |
+| Bundle | Release verificado, 153 comprobaciones, inventario de 24 archivos |
+| CI | `30674507385` sobre `4e4e6d9` |
+| Paquete | [validacion de paneles avanzados y adaptador](../automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) |
+
+Con este veredicto **ADR-0027 y ADR-0028 quedan aceptados** y la iniciativa pasa a
+**implementation-complete · validation-complete · integration-ready**. El gate de I-37D **nunca se resolvio
+sobre el codigo**: por eso cuatro rondas de CI verde no bastaron.
+
 ## 11. Criterios de aceptacion
 
 Los catorce puntos del objetivo, cubiertos por prueba; las doce filas de la tabla de paneles reproducidas por

@@ -965,10 +965,12 @@ y I-37 no se cierra.
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
 
-#### Estado de revisión de I-37D — ronda 4 · adaptador físico y editor avanzado de paneles
+#### I-37D — **VALIDADA por el Owner** · lista para integrar
 
-> **Esto registra un estado de REVISIÓN, no una integración.** I-37D **no** está integrada ni completa,
-> I-37 sigue **abierta**, y ADR-0027 y ADR-0028 siguen **propuestos**.
+> **Validación manual APROBADA el 2026-08-03** (`OWNER_APPROVED_I37D_MANUAL_VALIDATION`): todo funciona
+> correctamente, **sin defectos bloqueantes observados**. **ADR-0027 y ADR-0028 quedan `aceptados`.**
+> I-37D pasa a **implementation-complete · validation-complete · integration-ready**.
+> **Todavía NO está integrada** — eso lo dice el merge, no este párrafo.
 
 | Campo | Valor |
 |---|---|
@@ -977,9 +979,10 @@ drawings, la interferencia física en el cruce de tensores, y cualquier catálog
 | `VALIDATED_BUILD_SHA` | **ninguno para esta ronda** — ver la nota de trazabilidad abajo |
 | Suites | `RackCad.Tests` **2978** · `RackCad.UI.Tests` **621** |
 | Regresiones | **14/14 en rojo** ([evidencia](automation/evidence/I-37D-round-4-regressions.md)) |
-| CI | [`30672070159`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30672070159) ✅ |
+| CI | [`30674507385`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30674507385) ✅ sobre `4e4e6d9` |
 | Bundle | Release verificado, 153 comprobaciones, cero DLL de Autodesk |
-| **Validación manual en AutoCAD** | **PENDIENTE** — [paquete de la ronda 4](automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) |
+| **Validación manual en AutoCAD** | ✅ **APROBADA 2026-08-03** — [paquete de la ronda 4](automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) |
+| `VALIDATED_BUILD_SHA` | `a594eb5` · DLL Debug `F237CC79…8985B6E1` |
 
 **Qué cambió, en corto.** El **adaptador** de tensor cold rolled dejó de dibujarse como una L construida a
 mano y es un **prisma estructural real** de `AISC-L-L2X2X3_16`, proyectado por la misma tubería que columnas

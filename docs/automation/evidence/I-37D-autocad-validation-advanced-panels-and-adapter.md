@@ -1,6 +1,7 @@
 # I-37D — Validación manual · **RONDA 4: adaptador físico y editor avanzado de paneles**
 
-Estado: **PENDIENTE DE EJECUTAR**. Los paquetes anteriores se conservan sin reescribir:
+Estado: **APROBADA** por el Owner · `OWNER_APPROVED_I37D_MANUAL_VALIDATION`. Los paquetes anteriores se
+conservan sin reescribir:
 [ronda 1](I-37D-autocad-validation.md) · [ronda 2](I-37D-autocad-validation-round-2.md) ·
 [columna y base](I-37D-autocad-validation-round-2-column-base-fix.md) ·
 [ronda 3, puntos 1–6](I-37D-autocad-validation-round-3.md) ·
@@ -24,7 +25,7 @@ de la aproximación con la que se situaba el agujero de varilla del adaptador.
 | Inventario del bundle | [`I-37D-round-4-bundle-inventory.txt`](I-37D-round-4-bundle-inventory.txt) — **nuevo**, 24 archivos |
 | Suites | `RackCad.Tests` **2978/2978** · `RackCad.UI.Tests` **621/621** |
 | Regresiones | **14/14 en rojo** — [evidencia](I-37D-round-4-regressions.md) |
-| CI | [`30672070159`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30672070159) ✅ sobre `3e9859a` |
+| CI | [`30674507385`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30674507385) ✅ sobre `4e4e6d9` |
 | Bundle | ✅ Release, AutoCAD cerrado, fail-closed, **153 comprobaciones**, cero DLL de Autodesk |
 
 ## 2. Trazabilidad — **léelo antes de cargar nada**
@@ -245,14 +246,32 @@ Trabaja sobre un intervalo con la tabla en modo **Avanzada**.
 
 ---
 
-## 4. Veredicto
+## 4. Veredicto — **APROBADA**
 
 | Campo | Valor |
 |---|---|
-| Fecha | ☐ |
-| `VALIDATED_BUILD_SHA` usado | ☐ |
-| SHA-256 del DLL cargado | ☐ |
-| Veredicto | ☐ ACEPTADA ☐ RECHAZADA |
-| Motivos, si se rechaza | ☐ |
+| Fecha de registro | **2026-08-03** |
+| Token | **`OWNER_APPROVED_I37D_MANUAL_VALIDATION`** |
+| `VALIDATED_BUILD_SHA` usado | `a594eb5d5e2cd703cf9063b36147cddc0042302b` |
+| SHA-256 del DLL cargado | `F237CC7951A398751C369FB64A0A6FF541F80E37E39C4375905D2AE98985B6E1` |
+| ¿Coincide con lo documentado? | **Sí.** El DLL cargado es exactamente el de §1, así que la huella **no se toca** |
+| Veredicto | ☑ **APROBADA** ☐ RECHAZADA |
+| Observaciones | **Todo funciona correctamente. No se observaron defectos bloqueantes.** |
 
-**El veredicto de este paquete no acepta ADR-0027 ni ADR-0028**, ni cierra I-37D ni I-37.
+**Aprobación explícita del Owner**, ejecutada sobre AutoCAD 2025 con el DLL Debug del worktree cargado por
+`NETLOAD`. Es el **gate real** de I-37D y queda resuelto: sin este veredicto la iniciativa no se integraba.
+
+Esta aprobación cubre los cinco bloques del paquete — adaptador, paneles automáticos como regresión, cambio
+de modo, editor avanzado y la sección del adaptador — sobre el árbol funcional `dd9e4a5`.
+
+### Nota de trazabilidad sobre la referencia de CI
+
+La fila de CI de §1 decía **`30672070159`**, que corresponde a **`3e9859a`** — la punta del frente B,
+**anterior** a que existiera la vista «Sección del adaptador». Era una referencia arrastrada, no la de lo que
+se validó.
+
+Se corrigió consultando el SHA de cada ejecución, no la memoria: la punta validada `4e4e6d9` tiene la
+ejecución **`30674507385`**, verde. Los commits intermedios `dd9e4a5`, `973fc21` y `a594eb5` viajaron en un
+solo push, así que GitHub ejecutó CI sobre la punta y no sobre cada uno; el árbol funcional de `4e4e6d9` es
+**idéntico** al de `dd9e4a5` —su delta es exclusivamente documental, comprobado— de modo que esa ejecución
+cubre el código validado. **Queda una sola referencia.**

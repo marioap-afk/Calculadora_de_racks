@@ -1,7 +1,18 @@
 # ADR-0028: Cantilever visible — persistencia, registro, vistas, editor y materialización
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-29 (redacción)
+- **Estado:** **aceptado**
+- **Aceptado el:** 2026-08-03, por **Mario Pérez, Owner del repositorio**, tras la validación manual en
+  AutoCAD 2025 · token **`OWNER_APPROVED_I37D_MANUAL_VALIDATION`**
+- **Veredicto:** todo funciona correctamente, **sin defectos bloqueantes observados**
+- **Evidencia de la validación:**
+  [paquete manual](../automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) ·
+  `CODE_SHA` **`dd9e4a5`** · `VALIDATED_BUILD_SHA` **`a594eb5`** ·
+  DLL Debug SHA-256 **`F237CC79…8985B6E1`** · suites **2978** + **621** ·
+  bundle Release verificado (153 comprobaciones, inventario de 24 archivos) ·
+  CI **`30674507385`** sobre `4e4e6d9`
+- **Fecha de redacción:** 2026-07-29
+- **Alcance de la aceptación:** D1 a D6. **D6 —el gate es el Owner en AutoCAD y no el CI— es
+  justamente lo que esta aceptación resuelve.**
 - **Decisores:** Mario Pérez, Owner del repositorio (decisiones de producto emitidas al abrir I-37D);
   Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-37D `feature/cantilever-mvp-final`

@@ -1,7 +1,17 @@
 # ADR-0027: La línea Cantilever — intervalos, distribución de paneles y arriostramiento
 
-- **Estado:** propuesto
-- **Fecha:** 2026-07-29 (redacción)
+- **Estado:** **aceptado**
+- **Aceptado el:** 2026-08-03, por **Mario Pérez, Owner del repositorio**, tras la validación manual en
+  AutoCAD 2025 · token **`OWNER_APPROVED_I37D_MANUAL_VALIDATION`**
+- **Veredicto:** todo funciona correctamente, **sin defectos bloqueantes observados**
+- **Evidencia de la validación:**
+  [paquete manual](../automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) ·
+  `CODE_SHA` **`dd9e4a5`** · `VALIDATED_BUILD_SHA` **`a594eb5`** ·
+  DLL Debug SHA-256 **`F237CC79…8985B6E1`** · suites **2978** + **621** ·
+  bundle Release verificado (153 comprobaciones, inventario de 24 archivos) ·
+  CI **`30674507385`** sobre `4e4e6d9`
+- **Fecha de redacción:** 2026-07-29
+- **Alcance de la aceptación:** D1 a D9, incluidas las revisiones **D7-bis** y **D7-ter** del dueño.
 - **Decisores:** Mario Pérez, Owner del repositorio (decisiones de producto emitidas al abrir I-37D);
   Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-37D `feature/cantilever-mvp-final`
@@ -342,6 +352,25 @@ sus cámaras.
 **Lo que esta revisión NO autoriza.** Lo mismo que D7-bis: sigue sin haber preparación de bordes, destijeres,
 soldadura del talón, roscas, tuercas ni tolerancias de armado. Y sigue sin persistirse ningún contorno.
 
+### D8 — El BOM de la línea, y de quién es cada pieza
+
+Los componentes de una línea son **cuatro**: columna–base, brazo, separador y tensor.
+
+El componente **columna–base** incluye la columna, su placa inferior, una o dos bases con sus placas y
+cartabones, y **las placas de conexión de separador que correspondan a esa estación**. Las placas **no** son
+componentes propios, **no** pertenecen al separador y **no** aparecen como categoría aparte. Su consecuencia
+es real y se acepta: una estación extrema y una interior tienen recetas **distintas**, así que agrupan por
+separado — normalmente dos grupos, las dos extremas y las interiores.
+
+Los **brazos** se agregan de todas las estaciones con la identidad que ADR-0026 D8 aprobó: por receta física,
+sin lado ni posición.
+
+Cada **separador** físico es un componente con su perfil; sus cuatro agujeros son parte de su identidad y no
+líneas del BOM. Cada **tensor** es un componente, separado por clase, sección o diámetro, corte, patrón de
+agujeros y —en el cold rolled— sus adaptadores y cartabones.
+
+**Los agujeros nunca son líneas.** Las placas de columna **nunca** son componentes independientes.
+
 ### D9 — La secuencia vertical de paneles: regla o lista declarada · ronda 4 de I-37D
 
 **Decisión del dueño en la ronda 4.** Hasta aquí la secuencia vertical de un intervalo la decidía entera la
@@ -371,25 +400,6 @@ CantileverPanelSegmentDesign { StartElevation, EndElevation, BracingMode }
 
 **El modo automático no cambia el producto.** Los pines de línea, BOM y las seis vistas siguen exactamente
 donde estaban: la lista efectiva es otra forma de escribir la misma secuencia.
-
-### D8 — El BOM de la línea, y de quién es cada pieza
-
-Los componentes de una línea son **cuatro**: columna–base, brazo, separador y tensor.
-
-El componente **columna–base** incluye la columna, su placa inferior, una o dos bases con sus placas y
-cartabones, y **las placas de conexión de separador que correspondan a esa estación**. Las placas **no** son
-componentes propios, **no** pertenecen al separador y **no** aparecen como categoría aparte. Su consecuencia
-es real y se acepta: una estación extrema y una interior tienen recetas **distintas**, así que agrupan por
-separado — normalmente dos grupos, las dos extremas y las interiores.
-
-Los **brazos** se agregan de todas las estaciones con la identidad que ADR-0026 D8 aprobó: por receta física,
-sin lado ni posición.
-
-Cada **separador** físico es un componente con su perfil; sus cuatro agujeros son parte de su identidad y no
-líneas del BOM. Cada **tensor** es un componente, separado por clase, sección o diámetro, corte, patrón de
-agujeros y —en el cold rolled— sus adaptadores y cartabones.
-
-**Los agujeros nunca son líneas.** Las placas de columna **nunca** son componentes independientes.
 
 ## Alternativas consideradas
 
