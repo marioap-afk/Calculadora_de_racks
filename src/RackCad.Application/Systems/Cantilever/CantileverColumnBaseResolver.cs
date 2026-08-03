@@ -84,7 +84,15 @@ namespace RackCad.Application.Systems.Cantilever
                 return CantileverColumnBaseAssembly.Blocked(diagnostics);
             }
 
-            var columnTopZ = CantileverColumnBaseDatum.FloorZ + column.Height;
+            // The physical top: the plate lifts the column, it does not lengthen it. The NOMINAL cut length is
+            // untouched, which is what stops the thickness being counted twice.
+            //
+            // The start is READ from the placement and not recomputed. Recomputing it agreed with the frame by
+            // arithmetic rather than by construction, and a regression that returned the column to the floor
+            // moved the punches without moving the column — two elevations that must be one.
+            var bottomPlateThickness = column.BottomPlate?.Thickness ?? 0.0;
+            var columnStartZ = pre.ColumnStartZ;
+            var columnTopZ = CantileverColumnBaseDatum.ColumnTopZ(bottomPlateThickness, column.Height);
 
             if (pattern.LastConnectionElevation > columnTopZ + FitTolerance)
             {
@@ -134,8 +142,13 @@ namespace RackCad.Application.Systems.Cantilever
                 CantileverPlateKind.ColumnBottom,
                 column.BottomPlate.Thickness,
                 -Vector3D.UnitZ,
-                CantileverColumnBaseDatum.FloorZ,
-                RectangleXY(columnMinX, columnMaxX, columnMinY, columnMaxY, CantileverColumnBaseDatum.FloorZ));
+
+                // Its outline is its BEARING face — the one the column stands on — and the plate extends down
+                // from there to the floor. It used to hang BELOW the floor, which put the column through it.
+                CantileverColumnBaseDatum.ColumnBottomPlateTopZ(bottomPlateThickness),
+                RectangleXY(
+                    columnMinX, columnMaxX, columnMinY, columnMaxY,
+                    CantileverColumnBaseDatum.ColumnBottomPlateTopZ(bottomPlateThickness)));
 
             var gusset = BuildGusset(owner, basePiece.Gusset.Thickness, baseFrame.Origin.Y, baseTopZ, pattern, diagnostics);
 
@@ -150,10 +163,15 @@ namespace RackCad.Application.Systems.Cantilever
                 CantileverPunchSurface.BaseRearPlate,
                 CantileverColumnBaseDatum.ConnectionPlaneY + (rearThickness / 2.0));
 
+            // The SHARED datums do not move: the rear plate and the column face drill the same absolute
+            // elevations, which is the whole point of one pattern. What the lifted column changes is which of
+            // them fall inside it — a hole below its bearing face would be drilled in air.
             var columnConnectionPunches = BuildConnectionPunches(
                 owner, CantileverPieceTokens.ColumnConnectionPunch, pattern,
                 CantileverPunchSurface.ColumnFace,
-                CantileverColumnBaseDatum.ConnectionPlaneY);
+                CantileverColumnBaseDatum.ConnectionPlaneY,
+                lowerEdgeZ: columnStartZ,
+                upperEdgeZ: columnTopZ);
 
             var columnRegularPunches = BuildRegularPunches(owner, pattern, columnTopZ, parameters, diagnostics);
 
@@ -198,6 +216,14 @@ namespace RackCad.Application.Systems.Cantilever
             public StructuralSectionGeometry BaseGeometry { get; set; }
 
             public LocalFrame3D ColumnFrame { get; set; }
+
+            /// <summary>
+            /// The elevation the COLUMN section starts at: the top face of its bottom plate.
+            ///
+            /// Published rather than recomputed by the caller, because it and the frame have to be the same
+            /// number and «the same by arithmetic» is not the same as «the same by construction».
+            /// </summary>
+            public double ColumnStartZ { get; set; }
 
             public LocalFrame3D BaseFrame { get; set; }
 
@@ -291,8 +317,12 @@ namespace RackCad.Application.Systems.Cantilever
             // ---- 4. placement: the frame authority reads the REGISTERED orientation -----------------------
             // The frames are not built here. CantileverColumnBaseFrameResolver owns them, so the variant's
             // declared orientation is what decides them instead of being data nobody reads.
+            // The column stands on the TOP FACE of its bottom plate, not on the floor. The base does not move
+            // with it: it is a piece that rests on the ground (owner decision, I-37D).
+            var columnStartZ = CantileverColumnBaseDatum.ColumnStartZ(column.BottomPlate?.Thickness ?? 0.0);
+
             var columnFrame = CantileverColumnBaseFrameResolver.ColumnFrame(
-                variant.ColumnOrientation, columnGeometry);
+                variant.ColumnOrientation, columnGeometry, columnStartZ);
 
             var rearThickness = basePiece.RearPlate.Thickness;
             var baseFrame = CantileverColumnBaseFrameResolver.BaseFrame(
@@ -327,6 +357,7 @@ namespace RackCad.Application.Systems.Cantilever
                 ColumnGeometry = columnGeometry,
                 BaseGeometry = baseGeometry,
                 ColumnFrame = columnFrame,
+                ColumnStartZ = columnStartZ,
                 BaseFrame = baseFrame,
                 ColumnMinX = columnMinX,
                 ColumnMaxX = columnMaxX,
@@ -426,17 +457,11 @@ namespace RackCad.Application.Systems.Cantilever
                     "El numero de troqueles sobre la seccion de la base no puede ser negativo."));
             }
 
-            // The two the owner did NOT approve a default for. Missing is REJECTED, never filled in: a value
-            // invented here would be indistinguishable from an approved one.
-            var bottomOffset = RequireSupplied(
-                punches.ColumnBottomPlateEndOffset,
-                "el offset desde los extremos de la placa inferior de la columna a sus troqueles",
-                diagnostics);
-
-            var topOffset = RequireSupplied(
-                punches.ColumnTopPunchOffset,
-                "el offset superior de la columna al ultimo troquel regular",
-                diagnostics);
+            // The two margins the design used to have to supply are GONE (I-37D ronda 2, motivo 1). The owner
+            // rejected them as parameters without product utility: what limits a hole is not a number somebody
+            // types, it is whether the HOLE ITSELF fits inside the piece. The rule is now the radius, and it
+            // lives in the pattern and the grid. The properties survive on the integrated I-37A design type as
+            // legacy data that nothing reads — removing them would break an API already in main.
 
             // ---- geometric compatibility of the punches themselves ----------------------------------------
             // Every offset above is measured edge-to-CENTRE, so a hole physically fits only if the offset is
@@ -452,20 +477,6 @@ namespace RackCad.Application.Systems.Cantilever
             RequireAtLeast(punches.RearPlateVerticalEndOffset, radius,
                 "el offset vertical de la placa posterior", "el radio del troquel",
                 CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
-
-            if (bottomOffset != null)
-            {
-                RequireAtLeast(bottomOffset.Value, radius,
-                    "el offset desde los extremos de la placa inferior", "el radio del troquel",
-                    CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
-            }
-
-            if (topOffset != null)
-            {
-                RequireAtLeast(topOffset.Value, radius,
-                    "el offset superior de la columna", "el radio del troquel",
-                    CantileverDiagnostics.EdgeOffsetBelowRadius, diagnostics);
-            }
 
             RequireAtLeast(punches.ConnectionPitch, punches.Diameter,
                 "el pitch de conexion", "el diametro del troquel",
@@ -487,8 +498,11 @@ namespace RackCad.Application.Systems.Cantilever
                 punches.RegularColumnPitch,
                 punches.ConnectionPunchesAboveBase,
                 punches.ColumnBottomPlatePitch,
-                bottomOffset ?? 0.0,
-                topOffset ?? 0.0);
+
+                // The two legacy margins are NOT read. They travel as zero so the resolved record keeps its
+                // shape for the integrated I-37A API, and every rule that used them now uses the radius.
+                legacyBottomPlateEndOffset: 0.0,
+                legacyColumnTopPunchOffset: 0.0);
         }
 
         /// <summary>
@@ -572,7 +586,9 @@ namespace RackCad.Application.Systems.Cantilever
             string token,
             CantileverColumnBaseConnectionPattern pattern,
             CantileverPunchSurface surface,
-            double y)
+            double y,
+            double? lowerEdgeZ = null,
+            double? upperEdgeZ = null)
         {
             var id = CantileverPieceId.Create(owner, token);
             var list = new List<CantileverPunchPlan>(2 * pattern.Elevations.Count);
@@ -583,6 +599,12 @@ namespace RackCad.Application.Systems.Cantilever
                 for (var i = 0; i < pattern.Elevations.Count; i++)
                 {
                     var datum = pattern.DatumAt(row, i);
+
+                    if (!FitsBetween(datum.V, datum.Diameter / 2.0, lowerEdgeZ, upperEdgeZ))
+                    {
+                        continue;
+                    }
+
                     list.Add(new CantileverPunchPlan(
                         id.At(index++),
                         surface,
@@ -593,6 +615,17 @@ namespace RackCad.Application.Systems.Cantilever
 
             return list;
         }
+
+        /// <summary>
+        /// The ONE fitting rule, applied to a host with optional edges: a WHOLE hole must clear both.
+        ///
+        /// A null edge means «this host does not bound the hole there» — the base's rear plate spans the whole
+        /// connection region by construction, so it passes none. Tangent counts as fitting: the floor is
+        /// inclusive, exactly as it is for the regular grid.
+        /// </summary>
+        private static bool FitsBetween(double centre, double radius, double? lowerEdge, double? upperEdge) =>
+            (lowerEdge == null || centre - radius >= lowerEdge.Value - FitTolerance) &&
+            (upperEdge == null || centre + radius <= upperEdge.Value + FitTolerance);
 
         private static IReadOnlyList<CantileverPunchPlan> BuildRegularPunches(
             string owner,
@@ -607,15 +640,15 @@ namespace RackCad.Application.Systems.Cantilever
             // consumers — the station is the other. Two copies of one spacing formula is PB-004
             // (ADR-0026, D5). The extraction was mechanical and is pinned by the characterization suite.
             var grid = CantileverColumnRegularPunchGrid.FromPattern(pattern);
-            var elevations = grid.ElevationsUpTo(columnTopZ, parameters.ColumnTopPunchOffset);
+            var elevations = grid.ElevationsUpTo(columnTopZ);
 
             if (elevations.Count == 0)
             {
                 diagnostics.Add(CantileverDiagnostic.Warning(
                     CantileverDiagnostics.NoRegularPunchFits,
                     "La columna no admite ningun troquel regular: el primero quedaria en z = " +
-                    Format(grid.FirstElevation) + " in y el limite superior esta en z = " +
-                    Format(columnTopZ - parameters.ColumnTopPunchOffset) + " in."));
+                    Format(grid.FirstElevation) + " in y el ultimo agujero entero cabe hasta z = " +
+                    Format(columnTopZ - grid.PunchRadius) + " in."));
                 return Array.Empty<CantileverPunchPlan>();
             }
 
@@ -654,8 +687,12 @@ namespace RackCad.Application.Systems.Cantilever
             // deliberately NO punch on the centre line: an odd pattern would put one there, and the owner's
             // description is explicit that the two rows start from the centre as a pair.
             var centre = (columnMinY + columnMaxY) / 2.0;
-            var lowLimit = columnMinY + parameters.ColumnBottomPlateEndOffset;
-            var highLimit = columnMaxY - parameters.ColumnBottomPlateEndOffset;
+            // The plate keeps every WHOLE hole that fits: a centre is legal when the hole clears both edges by
+            // its own radius, and by nothing more. No margin is added, no circle is clipped and no half hole is
+            // invented (I-37D ronda 2, motivo 1).
+            var radius = parameters.Diameter / 2.0;
+            var lowLimit = columnMinY + radius;
+            var highLimit = columnMaxY - radius;
 
             var offsets = new List<double>();
 
@@ -685,7 +722,8 @@ namespace RackCad.Application.Systems.Cantilever
             var id = CantileverPieceId.Create(owner, CantileverPieceTokens.ColumnBottomPlatePunch);
             var list = new List<CantileverPunchPlan>(4 * offsets.Count);
             var index = 0;
-            var z = CantileverColumnBaseDatum.FloorZ - (plateThickness / 2.0);
+            // The mid-plane of the plate, which now sits ABOVE the floor.
+            var z = CantileverColumnBaseDatum.ColumnBottomPlateBottomZ + (plateThickness / 2.0);
 
             foreach (var rowX in pattern.RowX)
             {

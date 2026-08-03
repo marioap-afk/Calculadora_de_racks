@@ -1,0 +1,880 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-37D
+  branch: feature/cantilever-mvp-final
+  claim_id: c37684f6-4c3a-4243-82d6-e538dea2a8f6
+  current_phase: 17
+  state: integration-ready
+  implementation: complete
+  validation: complete
+  gate: RESUELTO-OWNER_APPROVED_I37D_MANUAL_VALIDATION-2026-08-03
+  attempts: 2
+  next_action: >-
+    INTEGRAR-en-main-con-merge-no-ff-y-cerrar-I-37 ·
+    cerrar-AutoCAD-regenerar-el-bundle-y-recompilar-el-DLL ·
+    NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md ·
+    despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
+  last_evidence_commit: PENDIENTE-este-commit-documental
+
+# --------------------------------------------------------------------------------------------------------
+# RONDAS DE VALIDACION MANUAL. El historial NO se reescribe.
+# --------------------------------------------------------------------------------------------------------
+rondas:
+  1:
+    veredicto: RECHAZADA
+    token: OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_1
+    fecha: 2026-07-30
+    build_sha: 4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9
+    dll_sha256: 53CA2118BD8D4923C9D660B0FFE3A65D4FC38507DD3CD788D295C22D2C0FEABC
+    evidencia: docs-automation-evidence-I-37D-autocad-validation-md
+    motivos: >-
+      1-ventana-principal-excesivamente-saturada ·
+      2-mezcla-propiedades-de-LINEA-con-propiedades-INTERNAS-de-componentes ·
+      3-los-perfiles-son-dificiles-de-seleccionar ·
+      4-la-base-no-sigue-inicialmente-la-seccion-de-columna ·
+      5-faltan-troqueles-y-placas-visibles-en-la-representacion-de-columnas ·
+      6-la-arquitectura-visual-no-refleja-el-flujo-real-de-configuracion-del-producto
+    lectura: >-
+      NINGUNO-es-un-defecto-de-geometria-resuelta · los-seis-son-de-ARQUITECTURA-VISUAL-y-de-FLUJO ·
+      la-distribucion-visual-rechazada-NO-se-congela-como-golden
+  2:
+    veredicto: >-
+      RECHAZADA-EN-LOS-PUNTOS-DEL-CONFIGURADOR-DE-COLUMNA-Y-BASE ·
+      el-resto-de-la-ronda-2-no-fue-objetado
+    token: OWNER_REJECTED_I_37D_MANUAL_VALIDATION_ROUND_2_COLUMN_BASE
+    motivos_del_rechazo: >-
+      1-se-exigen-dos-margenes-de-troquel-sin-utilidad-de-producto-ColumnBottomPlateEndOffset-y-
+      ColumnTopPunchOffset · 2-la-vista-en-planta-de-columna-base-contiene-geometria-incorrecta ·
+      3-la-vista-lateral-omite-placas-y-cartabon · 4-la-columna-arranca-desde-el-piso-y-no-desde-la-
+      cara-superior-de-su-placa-inferior · 5-las-naturalezas-fisicas-no-se-distinguen-visualmente
+    correccion: >-
+      CERRADA-los-CINCO-motivos-atendidos · pendiente-SOLO-la-validacion-manual-de-la-ronda-2-corregida ·
+      su-paquete-es-docs-automation-evidence-I-37D-autocad-validation-round-2-column-base-fix-md
+    veredicto_original: PENDIENTE-DE-EJECUTAR
+    evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-md
+    code_sha: 5142e1ba1b73a332f3df9960df05a40df59b3f2d
+    validated_build_sha: 4584e0c0b2f4fe95a55f8806cedc8a2c58abcd30
+    dll_sha256: BBB943E06CA484E3BBC9DD5B40227C0DA9AACB6DB45538C240ACF7DCAE57A41A
+    dll_bytes: 135168
+    dll_fecha: 2026-07-30T17:58:26
+    informational_version: 1.0.0+4584e0c0b2f4fe95a55f8806cedc8a2c58abcd30
+    por_que_dos_sha: >-
+      5142e1b-es-el-CODE_SHA-funcional-la-ultima-punta-que-toco-src-o-tests · 4584e0c-es-ese-mas-un-
+      commit-EXCLUSIVAMENTE-documental · el-DLL-se-compilo-desde-4584e0c-porque-la-
+      AssemblyInformationalVersion-incrusta-la-punta-de-git · el-arbol-funcional-validado-es-el-de-5142e1b
+    alcance: >-
+      los-SEIS-motivos-del-rechazo-atendidos ·
+      1-y-2-la-ventana-principal-edita-solo-la-LINEA-y-los-componentes-salen-a-cuatro-subventanas-sobre-
+      un-shell-comun · 3-selector-estructural-BUSCABLE-con-filtro-de-familia-y-lista-virtualizada ·
+      4-BaseFollowsColumn-con-sus-siete-reglas-PERSISTIDO-y-nunca-deducido-comparando-ids ·
+      5-todos-los-agujeros-resueltos-se-dibujan-circulo-real-de-frente-y-traza-de-canto ·
+      6-el-flujo-es-linea-tarjeta-configurador-aceptar
+    ademas: >-
+      insercion-independiente-de-componentes-con-el-patron-de-RACKSECCION ·
+      sin-kind-nuevo-sin-handler-sin-payload-y-con-identidad-PROPIA ·
+      bloque-identificado-y-NO-editable-declarado-como-tal
+    regresiones: 12-de-12-verificadas-EN-ROJO-y-revertidas-evidencia-I-37D-round-2-regressions-md
+    guardas_nuevas: 37-de-fuente-sobre-el-codigo-leido-como-texto
+    suites: RackCad-Tests-2788 · RackCad-UI-Tests-605
+    bundle: >-
+      GENERADO-Y-VERIFICADO-2026-07-30-con-AutoCAD-ya-cerrado · deploy-build-bundle-ps1-Configuration-
+      Debug · 153-comprobaciones-OK · 24-archivos · DLL-identicos-al-publish-y-catalogos-identicos-a-
+      assets-catalogs-por-SHA-256 · solo-archivos-RackCad-y-CERO-DLL-de-Autodesk-ADR-0003 ·
+      el-DLL-de-bin-Debug-y-el-del-bundle-son-el-MISMO-binario-asi-que-NETLOAD-y-bundle-validan-lo-mismo
+    bundle_inventario: docs-automation-evidence-I-37D-round-2-bundle-inventory-txt
+    ci: run-30591689756-success-los-4-jobs-sobre-4584e0c
+    defectos_reales_encontrados_por_las_pruebas: >-
+      1-el-pin-de-persistencia-era-dependiente-de-la-PLATAFORMA-porque-Utf8JsonWriter-indenta-con-el-
+      salto-de-linea-del-sistema-y-la-CI-corre-en-Linux-ahora-se-normaliza ·
+      2-DialogResult-LANZA-si-la-ventana-no-se-mostro-como-dialogo-y-las-cuatro-subventanas-lo-ponian-
+      a-ciegas-ahora-CloseWith-lo-intenta-y-lo-omite
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 250d4694dc63cd61f2e9c5b2fe0ddff707954b8f
+  base_asunto: Merge I-37C - estacion Cantilever y BOM por componentes
+  base_ci: VERDE-run-30512814825-los-cuatro-jobs-sobre-el-SHA-exacto-de-origin-main
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna-sin-MERGE_HEAD-REBASE-CHERRY_PICK-ni-BISECT
+  worktrees_previos: uno-solo-el-principal-del-dueno-tras-la-limpieza-de-I-37C
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: feature-cantilever-mvp-final-LIBRE-en-local-y-en-remoto
+  ramas_i37d_previas: NINGUNA-git-ls-remote-heads-sin-coincidencias
+  i37abc_contenidas_en_main: e0f319f-0610adb-250d469-las-tres-IN
+  adr_0024: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  adr_0025: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  adr_0026: ACEPTADO-verificado-en-la-cabecera-del-archivo
+  numeros_adr_libres: 0027-y-0028-VERIFICADOS-libres-con-glob-sobre-docs-adr
+  imagen_de_referencia: >-
+    DISPONIBLE-por-primera-vez-en-la-linea · el-Owner-aporto-capturas-de-un-modelo-CAD-con-la-linea-de-
+    cuatro-estaciones-los-paneles-arriostrados-en-X-el-separador-el-adaptador-de-cold-rolled-con-sus-
+    cartabones-y-la-cota-de-0-375-in · mas-la-tabla-de-producto-CAUS-818-con-doce-alturas-y-su-cantidad-
+    de-paneles
+
+# --------------------------------------------------------------------------------------------------------
+# CLAIM
+# --------------------------------------------------------------------------------------------------------
+claim:
+  sha: 6650020
+  commit: vacio-sin-implementacion-ni-cambios-documentales
+  push: primer-push-aceptado-sin-force-nuevo-branch-remoto
+  upstream: origin/feature/cantilever-mvp-final
+  trailer: Claude-Opus-5-solo-quien-ejecuta
+
+# --------------------------------------------------------------------------------------------------------
+# AUTORIZACION DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+autorizacion:
+  veredictos:
+    - OWNER_AUTHORIZED_I_37D_FINAL_CANTILEVER_MVP
+    - OWNER_APPROVED_SEPARATOR_AND_BRACING_CONTRACTS
+  precedente: I-37A-I-37B-e-I-37C-el-primer-commit-sustantivo-escribe-la-fila-del-ROADMAP
+  cubre: >-
+    crear-y-reclamar-I-37D · rama-canonica-feature-cantilever-mvp-final ·
+    contrato-estado-decision-ADR-0027-ADR-0028-y-fila-de-ROADMAP-en-el-primer-commit-sustantivo ·
+    implementar-el-alcance-tecnico-completo-del-cierre-del-MVP
+  no_cubre: >-
+    aceptar-ADR-0027-ni-ADR-0028 · marcar-integrada · hacer-merge · marcar-I-37-completa ·
+    borrar-rama-o-worktree · abrir-I-38
+
+# --------------------------------------------------------------------------------------------------------
+# CONTRATOS CONGELADOS. I-37D los COMPONE; no reabre ninguno.
+# --------------------------------------------------------------------------------------------------------
+contratos_congelados:
+  adr_0024_0025_0026: NO-SE-REABREN-los-22-puntos-de-ADR-0026-son-congelados
+  compone: >-
+    CantileverColumnBaseAssembly · CantileverArmAssembly · CantileverStationAssembly ·
+    CantileverColumnRegularPunchGrid · CantileverArmConnectionMetricsResolver ·
+    CantileverStationBomBuilder · geometria-neutral-de-I-36 · shell-visual-comun ·
+    registros-persistencia-y-Drawing-existentes
+  no_recalcula: geometria-de-columna-base-brazo-ni-estacion
+
+# --------------------------------------------------------------------------------------------------------
+# GEOMETRIA VERIFICADA ANTES DE ESCRIBIR CODIGO
+# --------------------------------------------------------------------------------------------------------
+distribucion_de_paneles_verificada:
+  formula: StandardBracedPanelCount = max(1, ceil((ColumnHeight - 72 in) / 60 in))
+  reproduce_las_doce_filas: >-
+    SI-comprobado-numericamente-96-120-132-a-1 · 144-168-192-a-2 · 216-240-252-a-3 · 264-288-a-4 · 336-a-5
+  espacios_centrales: CentralEmptySpaceCount = floor((BracedPanelCount - 1) / 2)
+  agrupacion: bloques-de-maximo-DOS-desde-abajo-con-el-bloque-incompleto-ARRIBA
+  caso_normativo_264: >-
+    P=4 · G=1 · CoreHeight=200 · externos=32-cada-uno ·
+    secuencia-32-40-40-40vacio-40-40-32 · separadores=6 · tensores=8
+  conteos_de_cuatro_estaciones: intervalos=3 · separadores=18 · tensores=24
+  separadores_por_intervalo: SeparatorCountPerInterval = P + G + 1
+  tensores_por_intervalo: 2-por-panel-arriostrado
+
+  # -- AMPLIADO EN LA RONDA 4. La regla de arriba NO se toca: es el modo Automatic. ------------------
+  contrato_de_modos:
+    decision: 14-9-a-14-16-de-docs-automation-decisions-I-37-md
+    modos: CantileverPanelLayoutMode = Automatic | Advanced
+    invariante_central: >-
+      los-DOS-modos-producen-la-MISMA-lista-efectiva-contigua-de-abajo-arriba ·
+      el-resolver-posterior-SOLO-conoce-esa-lista · Automatic-no-es-un-camino-distinto-hasta-el-dibujo-
+      es-otra-forma-de-escribir-la-lista
+    tramo: CantileverPanelSegmentDesign = StartElevation + EndElevation + BracingMode
+    bracing_mode: CantileverPanelBracingMode = None | CrossBraced
+    vacio_es_un_tramo: >-
+      EXPLICITO-con-BracingMode-None-nunca-la-ausencia-de-uno ·
+      un-hueco-implicito-no-se-distingue-de-un-tramo-que-alguien-olvido-escribir
+    alcance_de_la_lista: >-
+      cubre-el-NUCLEO-del-primer-tramo-al-ultimo-NO-la-columna-entera ·
+      lo-que-queda-debajo-y-encima-son-los-espacios-externos-que-NO-llevan-separador ·
+      si-fueran-tramos-Distinct-pondria-un-separador-en-el-piso-y-otro-en-la-punta-y-eso-NO-es-el-
+      producto-porque-D5-coloca-paneles-mas-huecos-mas-1
+    derivaciones:
+      separadores: SeparatorElevations = Distinct(todos-los-inicios + todos-los-fines)
+      paneles: BracedPanels = tramos-con-BracingMode-CrossBraced
+      tensores: BraceCount = 2 x BracedPanels.Count
+    invariantes_de_la_lista: >-
+      End-mayor-que-Start · Next.Start-igual-Previous.End · orden-ascendente · sin-solapes ·
+      sin-huecos-implicitos · sin-altura-cero · First.Start-mayor-o-igual-FloorZ ·
+      Last.End-menor-o-igual-CommonColumnTopZ
+    lo_que_NO_se_persiste: separadores-derivados · tensores-derivados · alturas-duplicadas
+    altura_del_tramo: >-
+      DERIVADA-de-las-dos-cotas-y-marcada-JsonIgnore ·
+      guardarla-seria-una-TERCERA-autoridad-sobre-el-mismo-hecho
+    automatico_no_cambio_el_producto: >-
+      VERIFICADO · linea-BOM-y-las-seis-vistas-siguen-en-su-pin-byte-a-byte ·
+      solo-se-movio-el-pin-de-persistencia-y-por-los-dos-campos-nuevos-del-contrato
+
+# --------------------------------------------------------------------------------------------------------
+# GATES. El de esta iniciativa NO se resuelve sobre el codigo.
+# --------------------------------------------------------------------------------------------------------
+gates:
+  ci: >-
+    RESUELTO-para-la-RONDA-2 · run-30591689756-success-4-de-4-jobs-sobre-4584e0c ·
+    necesario-pero-NO-suficiente · el-de-la-ronda-1-fue-run-30552560784-sobre-4a2a6f5
+  plugin_build: RESUELTO-Debug-0-errores-propios-sobre-4584e0c
+  bundle: >-
+    RESUELTO-para-la-RONDA-2 · generado-y-verificado-fail-closed-153-comprobaciones-sobre-4584e0c ·
+    era-REQUERIDO-porque-el-diff-toca-UI-Plugin-y-materializacion ·
+    el-inventario-de-la-ronda-1-queda-como-historico-y-no-se-borra
+  autocad: >-
+    REQUERIDO-por-primera-vez-en-la-linea-I-37 · DLL-Debug-del-worktree-por-NETLOAD-con-instrucciones-
+    exactas-y-checklist
+  owner_validation: >-
+    REQUERIDO · sin-el-veredicto-manual-del-Owner-en-AutoCAD-2025-NO-se-integra-y-I-37-NO-se-cierra
+  owner_decision: satisfecho-docs-automation-decisions-I-37-md-seccion-12
+
+# --------------------------------------------------------------------------------------------------------
+# GUARDAS DE ALCANCE
+# --------------------------------------------------------------------------------------------------------
+guardas_de_alcance:
+  HANDOFF_md: INTACTO-se-toca-solo-en-la-sesion-de-integracion
+  ideas_futuras_md: INTACTO-los-hallazgos-adyacentes-no-se-corrigen-aqui
+  src_RackCad_Application_StructuralSections: INTACTO-I-36-no-se-modifica
+  sistemas_vigentes: >-
+    Selective-Dynamic-PushBack-FlowBed-Larguero-sin-cambios-de-comportamiento ·
+    si-aparece-una-responsabilidad-realmente-compartida-se-EXTRAE-con-caracterizacion-NUNCA-se-copia
+  assets_catalogs: >-
+    sin-familias-nuevas-y-sin-ids-inventados · un-id-de-catalogo-solo-se-usa-si-la-correspondencia-es-
+    INEQUIVOCA-de-lo-contrario-el-selector-queda-sin-id-inicial-y-se-documenta-el-pendiente
+  fuera_de_alcance_declarado: >-
+    calculo-resistente · cargas · capacidad · I-38 · peso · costo · optimizacion · soldaduras ·
+    tornillos-y-tuercas · anclas · roscas · tolerancias · preparacion-de-extremos · CNC ·
+    shop-drawings · interferencia-fisica-en-el-cruce-de-tensores · catalogos-nuevos-sin-procedencia
+
+# --------------------------------------------------------------------------------------------------------
+# FASES
+# --------------------------------------------------------------------------------------------------------
+fases:
+  1: COMPLETA-reclamo-6650020
+  2: COMPLETA-contrato-ADR-0027-ADR-0028-ROADMAP-decision-y-estado-38260f7
+  3: >-
+    COMPLETA-auditoria-de-costuras · nueve-areas-con-critico-de-completitud-por-area ·
+    456-hallazgos-182-pasos-258-gotchas-y-84-preguntas-abiertas ·
+    evidencia-en-docs-automation-evidence-I-37D-seam-audit-md
+  4: COMPLETA-contratos-de-Domain-gate-1-a7a0794
+  5: COMPLETA-autoridad-de-distribucion-vertical-de-paneles-gate-1
+  6: COMPLETA-resolver-de-linea-con-altura-comun-e-intervalos-gate-1
+  7: COMPLETA-placas-de-columna-de-separador-y-separadores-gate-1
+  8: COMPLETA-paneles-arriostrados-tensores-y-adaptadores-gate-1
+  9: COMPLETA-matriz-de-linea-y-BOM-completo-gate-1
+  10: COMPLETA-persistencia-y-registro-del-sistema-gates-2-y-3-9aa6af2
+  11: COMPLETA-planes-de-vista-frontal-lateral-y-planta-gates-2-y-3
+  12: >-
+    COMPLETA-editor-sobre-el-shell-visual-comun-gate-4-1f38920 ·
+    RackCantileverWindow-nace-sobre-el-shell-sin-migracion-previa ·
+    CantileverLineEditorAssembler-en-Application-es-la-UNICA-autoridad-de-recalculo
+  13: >-
+    COMPLETA-materializacion-en-AutoCAD-comando-y-flujo-gate-4-1f38920 ·
+    RACKCANTILEVER-RCT · CantileverViewMaterializer-precedente-RACKSECCION-no-cabeceras ·
+    CantileverKindHandler-registrado · despacho-desde-el-menu · round-trip-por-RACKEDITAR
+  14: >-
+    COMPLETA-pruebas-y-guardas-66ebe94 · 45-pruebas-nuevas-2694-nucleo-y-562-UI ·
+    un-defecto-REAL-encontrado-y-visto-en-rojo-el-factor-de-claro-superior-se-degradaba-al-leer-la-caja
+  16: >-
+    COMPLETA-RONDA-2-de-correccion-visual-y-funcional · caracterizacion-previa-12-pruebas ·
+    troqueles-y-placas-14 · selector-estructural-26 · BaseFollowsColumn-15 ·
+    cuatro-configuradores-31 · guardas-37 · doce-regresiones-EN-ROJO ·
+    paquete-de-validacion-de-ronda-2
+  15: >-
+    COMPLETA-el-paquete-de-validacion-manual-existe-y-esta-listo-para-EJECUTARSE ·
+    docs-automation-evidence-I-37D-autocad-validation-md · 9-bloques-y-58-puntos ·
+    la-EJECUCION-y-el-veredicto-son-del-Owner-y-son-el-gate-real ·
+    corregido-2026-07-30-el-punto-E6-confundia-la-frontera-LONGITUDINAL-entre-intervalos-con-la-
+    frontera-HORIZONTAL-compartida-dentro-de-un-intervalo-y-el-cierre-declaraba-abierta-una-decision-
+    que-ya-estaba-cerrada-el-default-del-separador
+
+# --------------------------------------------------------------------------------------------------------
+# ESTADO REAL AL CERRAR ESTA SESION. Lo que falta, dicho sin adornos.
+# --------------------------------------------------------------------------------------------------------
+estado_de_la_sesion_de_apertura:
+  hecho: >-
+    fase-1-reclamo-6650020 · fase-2-contrato-ADR-0027-ADR-0028-decisiones-12-1-a-12-44-ROADMAP-e-
+    indices-38260f7 · la-formula-de-paneles-VERIFICADA-numericamente-contra-las-doce-filas-y-el-caso-264
+  falta: >-
+    fases-3-a-15 · auditoria-de-costuras · contratos-de-Domain · autoridad-de-paneles ·
+    resolver-de-linea-e-intervalos · placas-y-separadores · paneles-tensores-y-adaptadores ·
+    matriz-y-BOM · persistencia-y-registro · planes-de-vista · editor · materializacion-en-AutoCAD ·
+    pruebas-veinte-regresiones-en-rojo-y-guardas · paquete-de-validacion-manual
+  por_que_no_esta_hecho: >-
+    I-37D-es-XL-y-toca-Domain-Application-UI-Plugin-persistencia-registro-tres-vistas-editor-y-AutoCAD ·
+    las-tres-subiniciativas-anteriores-ocuparon-una-sesion-COMPLETA-cada-una-y-NINGUNA-tocaba-UI-ni-
+    Plugin · no-cabe-en-una-sola-corrida-y-fingir-lo-contrario-produciria-codigo-sin-revisar
+  auditoria_de_costuras:
+    run_id: wf_23c7c163-994
+    estado: >-
+      COMPLETA-18-de-18-agentes-cero-errores · verificada-fichero-a-fichero-contra-main-250d469 ·
+      evidencia-en-docs-automation-evidence-I-37D-seam-audit-md
+    areas: registry · persistence · editor-shell · views · plugin-commands · catalogs · bom-ui · blocks · guards
+    transcripciones: >-
+      .claude/projects/D--Documentos-Codex-Calculadora-de-racks/<sesion>/subagents/workflows/
+      wf_23c7c163-994 · leer journal.jsonl antes de suponer que un resultado esta vacio
+    para_que: >-
+      obtener-los-nombres-EXACTOS-del-registro-persistencia-shell-vistas-Drawing-comandos-y-catalogos ·
+      ADR-0028-decide-REGLAS-y-deja-los-nombres-a-esta-auditoria-a-proposito
+  siguiente_sesion: >-
+    retomar-en-la-fase-3-sobre-esta-misma-rama-y-worktree · el-contrato-y-los-dos-ADR-ya-fijan-todas-las-
+    decisiones-normativas-asi-que-la-implementacion-no-necesita-volver-a-preguntar-nada-al-Owner-hasta-
+    la-validacion-manual
+  nota_posterior: >-
+    ESTE-BLOQUE-ES-HISTORICO-y-no-se-reescribe · su-lista-de-lo-que-faltaba-quedo-obsoleta-el-2026-07-30 ·
+    el-estado-vigente-esta-en-fases-y-en-estado_de_la_sesion_de_cierre
+
+# --------------------------------------------------------------------------------------------------------
+# ESTADO AL CERRAR LA SESION DE IMPLEMENTACION (2026-07-30). Lo que falta, dicho sin adornos.
+# --------------------------------------------------------------------------------------------------------
+estado_de_la_sesion_de_cierre:
+  hecho: >-
+    gate-1-a7a0794-linea-intervalos-y-BOM-en-Domain-y-Application ·
+    gates-2-y-3-9aa6af2-persistencia-registros-y-las-tres-vistas-como-planes-puros ·
+    gate-4-1f38920-editor-sobre-el-shell-y-materializacion-en-AutoCAD ·
+    fase-14-66ebe94-pruebas-guardas-y-un-defecto-real ·
+    fase-15-el-paquete-de-validacion-manual
+  falta: >-
+    UNA-sola-cosa-y-no-es-codigo · que-el-Owner-EJECUTE-la-validacion-manual-en-AutoCAD-2025 ·
+    y-despues-que-acepte-o-rechace-ADR-0027-y-ADR-0028
+  defecto_encontrado_por_las_pruebas: >-
+    el-factor-de-claro-superior-vale-un-tercio-y-las-cajas-muestran-tres-decimales · leer-la-caja-de-
+    vuelta-al-diseno-lo-degradaba-a-0-333-tres-diezmilesimas-BAJO-el-piso-aprobado-con-tolerancia-1e-9 ·
+    una-linea-recien-abierta-sin-tocar-nada-decia-que-la-estacion-1-habia-fallado ·
+    la-regla-que-lo-arregla-es-que-un-campo-que-el-usuario-NO-toco-no-puede-cambiar-el-diseno
+  extraccion_no_planeada: >-
+    StructuralSectionCatalogAccess · la-guarda-de-I-36C-fijaba-que-EXACTAMENTE-UN-sitio-del-Plugin-
+    cargara-el-catalogo-neutral-y-dejo-de-ser-cierto-al-aparecer-un-segundo-sistema-sobre-ese-catalogo ·
+    se-EXTRAJO-el-duenno-y-se-RE-APUNTO-la-guarda-en-vez-de-debilitarla
+  guardas_re_apuntadas: >-
+    cinco-manejadores-de-kind-a-seis-conservando-Push-Back-inmediatamente-despues-de-Dynamic ·
+    seis-modulos-de-editor-a-siete-en-el-orden-de-los-botones ·
+    dos-guardas-de-fallo-cerrado-al-nuevo-duenno-de-la-carga
+
+# --------------------------------------------------------------------------------------------------------
+# LO QUE LA AUDITORIA RESOLVIO. Dos preguntas de catalogo que bloqueaban decisiones.
+# --------------------------------------------------------------------------------------------------------
+respuestas_de_la_auditoria:
+  canal_de_4_in_ligero:
+    respuesta: EXISTE-y-la-correspondencia-es-INEQUIVOCA
+    id_exacto: AISC-C-C4X4_5
+    evidencia: >-
+      linea-16-de-assets-catalogs-structural-sections-c-csv-verificada-byte-a-byte ·
+      grep-C4X-devuelve-EXACTAMENTE-cuatro-filas · orden-por-peso-ascendente-SIN-empates-
+      4-5-menor-que-5-4-menor-que-6-25-menor-que-7-25 · asi-que-el-C4-mas-ligero-es-inequivoco
+    dibujable: >-
+      SI-el-builder-de-canal-exige-d-bf-tw-tf-y-usa-KDesign-para-el-filete ·
+      C4X4-5-tiene-d=4-bf=1-52-tw=0-125-tf=0-296-kdes=0-75-asi-que-el-radio-derivado-0-454-cabe ·
+      la-geometria-se-construye-sin-diagnostico
+    consecuencia: >-
+      el-selector-de-separador-PUEDE-tener-id-inicial · la-condicion-de-detencion-del-contrato-NO-se-
+      dispara
+    decision_cerrada: >-
+      DefaultSeparatorSectionId-igual-AISC-C-C4X4_5 · CERRADA-Y-VINCULANTE-decision-12-51-y-veredicto-
+      OWNER_DECIDED_SEPARATOR_DEFAULT_AISC_C_C4X4_5 · es-el-canal-C4-MAS-LIGERO-disponible-y-es-el-
+      default-aprobado-del-MVP · el-usuario-puede-elegir-otra-seccion-explicitamente-pero-el-DEFAULT-
+      YA-NO-ESTA-PENDIENTE · esta-entrada-decia-antes-que-cual-C4-seguia-siendo-una-eleccion-de-
+      producto-abierta-y-eso-era-INCORRECTO
+    donde_registrarlo: >-
+      NO-existe-hoy-ninguna-politica-de-Cantilever-de-PRODUCCION · las-seis-variantes-vivientes-estan-
+      SOLO-en-los-fixtures-de-prueba · I-37D-tiene-que-crear-la-politica-de-produccion-que-registre-ids-
+      exactos-y-la-familia-solo-sirve-para-construir-ese-conjunto-decision-12-36
+  tabla_de_calibres:
+    respuesta: NO-EXISTE-ninguna-tabla-de-calibres-en-el-repositorio
+    lo_que_si_existe: >-
+      una-columna-gauge-como-atributo-POR-FILA-en-varios-CSV-legacy-con-valores-10-12-14-y-hasta-3_16 ·
+      cinco-declaraciones-de-Gauge-en-CatalogEntries-cs-como-TEXTO-LIBRE-sin-conversion-validacion-ni-
+      lookup · dos-unicas-asignaciones-Gauge-igual-row-Gauge-copia-literal-de-la-fila
+    ausencia_verificada: >-
+      NO-existe-funcion-alguna-que-traduzca-calibre-a-espesor-ni-al-reves ·
+      el-espesor-esta-tabulado-por-pieza-cuando-existe-nunca-derivado-del-calibre
+    consecuencia: >-
+      se-aplica-la-decision-12-30-tal-cual-GaugeNumber-10-se-conserva-como-IDENTIDAD-y-DESCRIPCION-sin-
+      conversion-decimal-silenciosa · y-la-vista-2D-no-necesita-el-espesor-para-dibujar-su-contorno
+    precedente_directo: >-
+      MENSULA_3_REMACHES_CAL_10-y-otras-dos-mensulas-llevan-gauge-10-SIN-espesor-tabulado ·
+      ahi-el-calibre-es-el-unico-dato-de-lamina-que-hay-y-no-se-convierte-a-nada
+  cardinalidad_del_enum_de_kind:
+    correccion_importante: >-
+      RackSystemKind-tiene-SEIS-valores-no-cinco-Selective-0-PalletFlow-1-SelectiveRack-2-Cama-3-
+      Larguero-4-PushBack-5 · Cantilever-es-el-SEPTIMO-y-va-AL-FINAL
+    por_que_la_confusion: >-
+      HANDOFF-cuenta-FAMILIAS-operativas-cinco-mientras-el-enum-cuenta-KINDS-seis ·
+      Selective-0-es-la-cabecera-suelta-que-la-biblioteca-muestra-como-Cabecera-y-no-es-una-familia ·
+      las-dos-cuentas-son-correctas-y-hay-que-decir-cual-se-usa
+    ademas: >-
+      NADA-en-produccion-enumera-Enum-GetValues-de-RackSystemKind-asi-que-anadir-el-valor-no-rompe-UI-
+      por-si-solo · lo-que-rompe-son-las-PRUEBAS-que-fijan-la-cardinalidad
+
+# --------------------------------------------------------------------------------------------------------
+# HALLAZGOS ADYACENTES. NO se corrigen aqui: se registran como candidatos.
+# --------------------------------------------------------------------------------------------------------
+hallazgos_adyacentes:
+  regla: >-
+    son-defectos-REALES-de-codigo-ya-integrado-y-NINGUNO-esta-en-el-alcance-de-I-37D ·
+    corregirlos-de-paso-seria-ampliar-el-alcance-sin-autorizacion · quedan-como-candidatos
+  1_noun_binario_de_la_seccion_de_cantilever: >-
+    CantileverSectionResolver-Noun-tiene-un-ternario-de-DOS-ramas-y-CantileverMemberRole-tiene-TRES-
+    valores-desde-I-37B · un-id-de-BRAZO-mal-escrito-produce-mensajes-que-dicen-la-base ·
+    defecto-visible-al-usuario-de-un-renglon
+  2_kindlabel_sin_pushback: >-
+    RackListBuilder-KindLabel-no-tiene-case-para-PushBack · la-biblioteca-etiqueta-mal-un-Push-Back
+  3_referencia_de_comandos_incompleta: >-
+    RackCommandReference-Commands-no-lista-RACKPUSHBACK-RPB-ni-RACKSECCION
+  4_doc_comment_obsoleto_del_registro: >-
+    SystemRegistry-cs-dice-lists-the-five-kinds-that-exist-today-OBSOLETO-desde-I-18 ·
+    y-SystemRegistry-Default-cs-dice-six-correctamente · los-dos-se-contradicen ·
+    tambien-el-doc-comment-de-RackProjectDocument-describe-solo-dos-payloads
+  5_guia_de_catalogos_desactualizada: >-
+    docs-guias-catalogos-y-plantillas-md-sigue-diciendo-los-siete-y-le-falta-
+    structural-sections-s-csv
+  6_kind_cableado_en_withsourceflowbed: >-
+    RackProject-WithSourceFlowBed-construye-un-RackProjectDocument-con-Kind-Cama-CABLEADO ·
+    es-especifico-de-cama-el-unico-sistema-que-se-abre-desde-el-dibujo-sin-RackProject-fuente ·
+    NO-se-copia-a-ciegas-para-el-sistema-nuevo
+
+# --------------------------------------------------------------------------------------------------------
+# COSTURAS QUE LA AUDITORIA DEJO FIJADAS y que la implementacion NO puede ignorar
+# --------------------------------------------------------------------------------------------------------
+costuras_fijadas:
+  schema_guard: >-
+    solo-Cama-Larguero-y-PushBack-llaman-SchemaGuard-CheckReadable ·
+    Selective-PalletFlow-y-SelectiveRack-NO-porque-sus-DTO-se-versionan-en-otro-nivel ·
+    un-kind-nuevo-con-su-propio-Document-SI-debe-llamarlo
+  version_de_esquema: >-
+    RackProjectDocument-CurrentSchemaVersion-igual-2-0 · el-slot-nuevo-es-ADITIVO-y-NO-sube-el-major-I-11 ·
+    JsonExtensionData-preserva-los-campos-desconocidos
+  descriptor: >-
+    SystemDescriptor-tiene-DOS-ctores · el-completo-pone-SupportsPersistence-true-y-lanza-
+    ArgumentNullException-por-cada-delegado-nulo · EnsurePersistence-lanza-si-el-descriptor-no-define-
+    operaciones · el-ctor-label-only-existe-como-costura-y-NO-se-usa-en-Default
+  guarda_de_peso: >-
+    NoCantileverCodeComputesWeight-prohibe-WeightPerLength-bajo-Systems-Cantilever ·
+    el-peso-esta-FUERA-de-alcance-en-I-37D-asi-que-la-guarda-se-CONSERVA-intacta ·
+    si-algun-dia-el-BOM-debe-llevar-kg-hace-falta-la-misma-maniobra-explicita-que-se-hizo-con-
+    BillOfMaterials-retirar-la-entrada-y-sustituirla-por-reglas-mas-estrechas-nunca-una-supresion
+  muro_de_guardas_de_cantilever: >-
+    CantileverSourceGuardTests-aplica-a-TODO-archivo-nuevo-bajo-src-RackCad-Domain-Systems-Cantilever-y-
+    src-RackCad-Application-Systems-Cantilever-automaticamente · incluida-la-prohibicion-de-nombrar-
+    dimensiones-concretas-de-seccion-y-de-leer-CSV
+  precedente_de_materializacion_sin_bloques_del_usuario: >-
+    StructuralSectionCommandFlow-y-StructuralSectionInsertService-de-I-36C-RACKSECCION-son-el-UNICO-
+    precedente-en-el-Plugin-de-convertir-una-seccion-del-catalogo-neutral-en-dibujo ·
+    tiene-su-propio-muro-de-guardas-que-pina-fallo-cerrado-punto-antes-de-crear-una-sola-transaccion-y-
+    regen-canonico
+
+# --------------------------------------------------------------------------------------------------------
+# CANDIDATO A VALIDAR. Lo que el Owner carga y contra que.
+# --------------------------------------------------------------------------------------------------------
+candidato:
+  code_sha_funcional: 66ebe94-ultima-punta-que-toco-src-o-tests
+  validated_build_sha: 4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9
+  dll: worktree-src-RackCad-Plugin-bin-Debug-net8-0-windows-RackCad-Plugin-dll
+  dll_sha256: 53CA2118BD8D4923C9D660B0FFE3A65D4FC38507DD3CD788D295C22D2C0FEABC
+  dll_bytes: 133120
+  dll_fecha: 2026-07-30T08:47:23
+  informational_version: 1.0.0+4a2a6f576af433dcd5856fce7a2b6ef311ec0ea9
+  por_que_cambio_el_sha256: >-
+    la-AssemblyInformationalVersion-incrusta-la-punta-de-git · recompilar-tras-un-commit-DOCUMENTAL-
+    cambia-el-binario-aunque-el-codigo-sea-byte-a-byte-el-mismo · el-SHA-anterior-6769A782-era-el-de-
+    5632a9d-y-quedo-OBSOLETO
+  pruebas: RackCad-Tests-2694-de-2694 · RackCad-UI-Tests-562-de-562
+  ci: run-30552560784-success-los-4-jobs-sobre-4a2a6f5
+  build: solucion-completa-Debug-0-errores-solo-los-MSB3277-conocidos-de-las-referencias-de-AutoCAD
+  bundle: >-
+    GENERADO-Y-VERIFICADO-2026-07-30 · deploy-build-bundle-ps1-Configuration-Debug ·
+    153-comprobaciones-OK · 24-archivos · DLL-identicos-al-publish-y-catalogos-identicos-a-assets-
+    catalogs-por-SHA-256 · solo-archivos-RackCad-y-CERO-DLL-de-Autodesk-ADR-0003 ·
+    el-DLL-del-bundle-es-el-MISMO-binario-que-el-de-bin-Debug-asi-que-NETLOAD-y-bundle-validan-lo-mismo
+  bundle_inventario: docs-automation-evidence-I-37D-bundle-inventory-txt
+  gate_bundle: RESUELTO
+  numeros_normativos_verificados_contra_el-CODIGO: >-
+    4-estaciones-altura-manual-264 · intervalos=3 · separadores=18-seis-por-intervalo ·
+    tensores=24-ocho-por-intervalo · paneles=12-cuatro-por-intervalo · adaptadores=48 ·
+    placas-de-columna-de-separador=36 · componentes-de-BOM=4 ·
+    curvas-frontal=368-planta=174-lateral=47
+
+  '2-correccion':
+    veredicto: PENDIENTE-DE-EJECUTAR
+    alcance: >-
+      SOLO-columna-y-base-mas-las-costuras-compartidas-que-su-correccion-tocaba-objetivamente ·
+      brazo-separador-y-tensor-NO-se-modificaron
+    evidencia: docs-automation-evidence-I-37D-autocad-validation-round-2-column-base-fix-md
+    code_sha: 00f4ca1b373f9c210db6cbb78a2db869b81cc20c
+    validated_build_sha: 00f4ca1b373f9c210db6cbb78a2db869b81cc20c
+    dll_sha256: FDB37A4F0DC26F13C01D87028AFBC72263F8C1AEF8603D8D6C6829EF7920E5AD
+    dll_bytes: 135680
+    dll_fecha: 2026-07-30T20:40:00
+    informational_version: 1.0.0+00f4ca1b373f9c210db6cbb78a2db869b81cc20c
+    suites: RackCad-Tests-2848 · RackCad-UI-Tests-605
+    regresiones: 15-de-15-verificadas-EN-ROJO-docs-automation-evidence-I-37D-column-base-fix-regressions-md
+    bundle: >-
+      generado-con-AutoCAD-CERRADO-y-verificado-fail-closed-153-comprobaciones ·
+      el-DLL-del-bundle-es-el-MISMO-binario-que-el-de-bin-Debug
+    bundle_inventario: docs-automation-evidence-I-37D-column-base-fix-bundle-inventory-txt
+    motivo_1: >-
+      RESUELTO · los-dos-margenes-retirados-de-la-autoridad-y-de-la-UI · el-troquel-se-acota-por-su-
+      RADIO-un-agujero-entero-cabe-o-no-cabe · las-propiedades-del-DTO-se-conservan-marcadas-LEGACY-
+      porque-la-API-de-I-37A-esta-integrada-en-main · el-JSON-deja-de-escribirlas
+    motivo_2: >-
+      RESUELTO · la-causa-estaba-una-capa-mas-abajo-se-preguntaba-a-la-CAMARA-por-el-eje-Z-DEL-MUNDO-
+      y-lo-que-decide-si-una-seccion-conserva-su-forma-es-el-eje-del-MIEMBRO ·
+      SectionViewpoint-gana-PreservesShapeOf-eje · base-en-planta-6-49-por-0-0000-pasa-a-6-49-por-48-00 ·
+      para-una-vista-en-ejes-de-seccion-el-eje-del-miembro-ES-Z-asi-que-RACKSECCION-no-cambia
+    motivo_3: >-
+      RESUELTO · no-se-omitian-se-dibujaban-con-espesor-CERO-por-proyectar-el-contorno-de-UNA-cara ·
+      ahora-se-dibuja-la-silueta-del-SOLIDO-casco-convexo-de-sus-dos-caras ·
+      placa-inferior-9-73-por-0-0000-pasa-a-9-73-por-0-2500 · de-frente-la-silueta-ES-el-contorno-asi-
+      que-nada-cambia-donde-ya-estaba-bien
+    motivo_4: >-
+      RESUELTO-segun-la-DECISION-NORMATIVA-del-Owner · la-base-SE-QUEDA-en-el-piso-y-solo-sube-la-
+      columna · CantileverColumnBaseDatum-gana-un-nombre-por-elevacion-BaseBottomZ-
+      ColumnBottomPlateBottomZ-ColumnBottomPlateTopZ-ColumnStartZ-ColumnTopZ ·
+      la-longitud-NOMINAL-de-corte-y-el-BOM-comercial-no-cambian · envolvente-menos-0-25-a-96-pasa-a-0-a-96-25
+    motivo_5: >-
+      RESUELTO · Application-gana-el-vocabulario-de-roles-visuales-nueve-con-Annotation-declarado-antes-
+      de-que-nada-lo-emita-capa-y-color-por-rol-y-default-que-LANZA ·
+      la-previa-convierte-el-indice-ACI-a-pincel-y-el-materializador-pone-cada-entidad-en-la-capa-de-su-
+      naturaleza-BYLAYER · se-pierde-restilar-la-vista-entera-desde-su-referencia-y-se-gana-poder-apagar-
+      los-troqueles-para-mirar-el-acero
+    correccion_arquitectonica: >-
+      APLICADA · una-sola-variable-ya-no-significa-piso-e-inicio-de-base-e-inicio-de-columna-a-la-vez ·
+      ademas-el-ejercicio-de-regresiones-destapo-DOS-defectos-vivos-el-arranque-de-la-columna-se-
+      calculaba-en-DOS-sitios-y-ColumnTopZ-se-habia-quedado-sin-consumidor · los-dos-corregidos
+    adr_0024: >-
+      NOTA-N1-anadida · precisa-D7-sin-contradecirlo · base-y-columna-comparten-el-datum-LOGICO-de-
+      conexion-NO-el-mismo-origen-fisico-en-Z
+    pines_movidos: >-
+      frontal-planta-y-frontal-doble-por-causa-fisica-declarada-en-el-propio-archivo ·
+      lateral-NO-se-movio-porque-su-firma-cuenta-PUNTOS-y-no-coordenadas
+
+  '3':
+    veredicto: PENDIENTE-DE-EJECUTAR
+    alcance_pedido: >-
+      SIETE-puntos · 1-insercion-del-componente-columna · 2-rol-color-de-columna ·
+      3-offset-de-troquel-1-0-in · 4-defaults-y-frontal-del-brazo · 5-bases-del-doble ·
+      6-separador-centrado-y-al-alma · 7-tensores-y-adaptadores-de-angulo
+    alcance_entregado: LOS-SIETE · el-punto-7-se-cerro-en-una-corrida-posterior-de-la-misma-ronda
+    evidencia_regresiones: docs-automation-evidence-I-37D-round-3-regressions-md
+    regresiones: 15-de-15-verificadas-EN-ROJO
+    punto_1: >-
+      RESUELTO · era-un-defecto-introducido-en-la-correccion-anterior-por-MI: de-las-TRES-puertas-que-
+      appendean-curvas-solo-una-creaba-las-capas-por-rol-y-la-insercion-de-un-componente-suelto-era-una-
+      de-las-otras-dos · EnsureRoleLayers-cuelga-ahora-de-AppendCurves-y-una-guarda-de-forma-lo-fija ·
+      arregla-de-paso-el-redibujo-en-sitio
+    punto_2: >-
+      RESUELTO · conjunto-columna-base-entero-en-ROJO-y-troqueles-en-BLANCO · los-roles-siguen-separados-
+      con-su-capa-cada-uno-y-lo-que-comparten-es-el-color · aparece-ColumnBasePlate-para-no-tenir-la-
+      placa-de-montaje-de-un-brazo-y-la-distincion-la-decide-el-CantileverPlateKind-del-modelo ·
+      el-ROL-viaja-EN-la-curva-en-vez-de-deducirse-en-cada-consumidor
+    punto_3: >-
+      RESUELTO-con-precision-del-dueno · 1-5-a-1-0-in-Y-el-datum-cambia: se-mide-desde-el-EXTERIOR-DE-LA-
+      PLACA-hacia-el-centro-de-la-columna · con-1-0-desde-la-columna-los-agujeros-se-salian-0-11-in-de-la-
+      placa-posterior-y-la-pieza-de-referencia-quedaba-BLOQUEADA · filas-de-x-±2-48-a-±2-245 ·
+      la-comprobacion-de-encaje-cambia-de-lado: ahora-la-que-puede-quedarse-corta-es-la-COLUMNA
+    punto_4: >-
+      RESUELTO · pendiente-7-16-por-12 · margen-vertical-2-in-como-default-pero-nullable-porque-un-JSON-
+      viejo-no-lo-trae · cuenta-de-filas-DERIVADA-de-la-altura-del-perfil-con-el-paso-de-la-reticula-
+      REGULAR-4-in-confirmado-por-el-dueno-minimo-2-y-re-derivada-al-ELEGIR-SECCION ·
+      frontal-sin-inclinacion-como-convencion-de-VISTA-en-CantileverArmFrameResolver
+    punto_5: >-
+      RESUELTO-el-defecto-REAL-que-habia · el-modelo-del-doble-estaba-CORRECTO-medido-antes-de-tocar-nada ·
+      lo-que-fallaba-era-la-descomposicion-del-ESPEJO: volteaba-la-Y-local-y-compensaba-en-la-X-lo-que-da-
+      un-giro-de-180-grados-invisible-en-una-W-simetrica-y-del-reves-en-cualquier-base-asimetrica ·
+      NO-se-poda-la-frontal: dos-piezas-simetricas-coinciden-por-proyeccion-y-una-poda-geometrica-borraba-
+      agujeros-DISTINTOS-apilados-en-Z
+    punto_6: >-
+      RESUELTO · el-arriostramiento-se-ata-al-ALMA-y-no-al-patin · pasa-ENTRE-los-patines-y-topa-contra-
+      ella: queda-centrado-y-su-claro-pasa-de-88-04-a-95-71-in · el-espesor-del-alma-se-MIDE-sobre-el-
+      contorno-que-se-dibuja-ADR-0024-D5-lo-que-ademas-lo-hace-neutral-y-fail-closed ·
+      PRIMERA-VEZ-en-toda-la-iniciativa-que-se-mueven-los-pines-de-BOM
+    punto_7: >-
+      RESUELTO · OWNER_REVISED_CANTILEVER_BRACE_VISUAL_REPRESENTATION-recogida-en-ADR-0027-D7-bis-que-
+      CORRIGE-el-ADR-sin-aceptarlo: el-eje-sigue-siendo-el-DATUM-y-la-geometria-VISIBLE-pasa-a-tener-ancho ·
+      cold-rolled-de-polilinea-abierta-de-2-puntos-a-banda-cerrada-de-4-con-ancho-igual-al-DIAMETRO ·
+      adaptador-de-cuadrado-de-4-puntos-a-L-de-6-con-sus-dos-alas-y-su-espesor ·
+      dos-cartabones-triangulares-por-adaptador-y-el-agujero-de-varilla-que-nadie-dibujaba ·
+      orientacion-DERIVADA-de-donde-queda-el-agujero-de-la-varilla-respecto-del-del-separador-asi-que-los-
+      cuatro-casos-salen-exhaustivos-por-construccion ·
+      roles-BraceAdapter-BraceGusset-y-BracePunch-con-capa-y-color-propios ·
+      el-tensor-ESTRUCTURAL-no-pasa-por-la-autoridad-nueva-A-PROPOSITO: su-cuerpo-lo-proyecta-la-tuberia-de-
+      secciones-que-ya-dibuja-el-contorno-real-respetando-marco-espejo-y-rotacion
+    punto_7_evidencia: >-
+      docs-automation-evidence-I-37D-round-3-brace-regressions-md ·
+      docs-automation-evidence-I-37D-autocad-validation-round-3-braces-md
+    ronda_correccion: >-
+      HECHA · cinco puntos del dueño, ninguno de producto ·
+      1-PALETA: la autoridad de roles se EXTIENDE-no-se-duplica; rojo columna-base-placas-cartabon-Y-la-placa-
+      columna-separador, blanco troqueles, naranja separador, AZUL perfil de brazo, MORADO su mensula, CIAN el
+      tensor entero; rol nuevo ColumnSeparatorPlate con capa propia ·
+      2-PLACA: cruzaba el alma -3in de placa con el agujero a 1.25in de la cara, asomaba 1.28in al otro lado-;
+      ahora APOYA en la cara y crece hacia su tramo, DATUM INTACTO ·
+      3-BASE: se espejaba sobre y=0 -la CARA de conexion- y la base negativa caia encima de la columna; ahora
+      sobre el plano MEDIO, MEDIDO de la huella de la columna; coincide con el brazo del mismo lado ·
+      4-ANGULO: puntas redondeadas a R/2 en ambas esquinas, regla ELEGIDA MIDIENDO contra el area publicada de
+      las 137 secciones -sesgo +0.800% a -0.078%, medio 0.814% a 0.441%, max 3.012% a 2.316%-; caso extremo de
+      punta semicircular resuelto ·
+      5-PLANTA: nace SIN brazos ni tensores, dos checkbox, apagar brazos apaga el CONJUNTO; frontal y lateral
+      intactas; persistido; NO vuelve a resolver la linea
+    ronda_correccion_pines: >-
+      DOS movidos: planta -por el punto 5- y persistencia -por el campo nuevo- ·
+      frontal, lateral, frontal-doble y LOS DOS DEL BOM intactos
+    ronda_correccion_hallazgos: >-
+      DOS pruebas mias eran AUTO-REFERENCIALES -derivaban lo esperado de lo que median- y se anclaron contra
+      algo externo ·
+      AMBIGUEDAD PREEXISTENTE DECLARADA-NO-RESUELTA: CantileverPlatePlan.NearOffset se documenta como
+      coordenada-del-mundo pero las placas de brazo lo usan como distancia-a-lo-largo-del-normal y la placa
+      inferior de columna sigue la otra; unificar toca 4 familias de placa = cambio de contrato fuera del encargo ·
+      LIMITE DE LA FIRMA: mover la base espejada 9.73in NO movio el pin linea-doble, asi que esa firma no capta
+      la posicion en Y de la base
+    ronda_correccion_evidencia: >-
+      docs-automation-evidence-I-37D-round-3-correction-regressions-md ·
+      docs-automation-evidence-I-37D-autocad-validation-round-3-correction-md
+    punto_7_bom: >-
+      NO-SE-MOVIO-y-es-la-comprobacion-de-que-fue-un-cambio-de-DIBUJO ·
+      una-regresion-verifica-que-el-pin-del-BOM-SI-muerde-ante-un-cambio-de-producto-de-verdad-
+      -bajar-el-diametro-de-la-varilla-de-3-4-a-5-8
+    fuera_de_alcance_por_el_dueno: LOS-PANELES · diferidos-a-la-corrida-siguiente
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA 4 - adaptador fisico y editor avanzado de paneles.
+# NO tiene build validado: la puerta de espacio en disco del Owner lo impidio. Ver `trazabilidad`.
+# --------------------------------------------------------------------------------------------------------
+ronda_4:
+  veredicto: PENDIENTE-DE-VALIDACION-MANUAL
+  code_sha_funcional: 3e9859a
+  base_de_la_ronda: 579534a-verificado-antes-de-tocar-nada
+  commits:
+    c4f140d: A1-el-angulo-deja-de-redondearse-donde-no-debe
+    3aa94f9: A2-parcial-el-adaptador-usa-el-contorno-del-catalogo
+    8e6223e: A2-A3-el-adaptador-es-un-prisma-real-y-su-agujero-manda-sobre-el-tensor
+    5242a46: frente-B-1-de-2-el-contrato-de-paneles-y-la-lista-efectiva
+    3e9859a: frente-B-2-de-2-la-tabla-avanzada-de-paneles-en-la-ventana
+
+  adaptador_prisma_estructural_real:
+    rol_nuevo: CantileverMemberRole.ColdRolledAdapter
+    seccion: AISC-L-L2X2X3_16-exacta · corte-2-in · PrismaticSectionInstance · marco-fisico
+    proyeccion: >-
+      por-la-tuberia-estructural-COMUN-la-misma-que-columnas-brazos-y-separadores ·
+      el-resolver-de-representacion-YA-NO-devuelve-adaptadores-y-una-prueba-lo-guarda
+    revocado: >-
+      RodHoleAxialOffset-igual-CutLength-entre-2 · su-justificacion-medio-corte-porque-las-dos-caras-
+      son-perpendiculares-es-la-que-no-se-sostiene · no-queda-funcion-puente-a-proposito
+
+  agujeros_en_alas_distintas:
+    en_coordenadas_de_talon: separador-igual-L-medios-y-t-medios · varilla-igual-t-medios-y-L-medios
+    offset_por_eje: (L - t) / 2 = 0.90625-in-para-el-L2x2x3-16
+    delta_3d_medido: (0.820358, -0.906250, 0.385099)
+    modulo: 1.281631-in-contra-el-1.0-plano-de-la-aproximacion-revocada
+    delta_y: -0.90625-NO-forzado-a-cero
+    espejo: >-
+      los-dos-adaptadores-de-una-diagonal-son-espejos-fisicos ·
+      el-ala-apoyada-crece-EN-CONTRA-de-SU-vano-en-cada-extremo
+    troquel: >-
+      SIGUE-EN-LA-CARA-y-no-en-el-plano-medio · tiene-que-coincidir-con-el-del-separador-son-el-mismo-
+      agujero-fisico-y-el-datum-de-un-troquel-no-lleva-la-Y ·
+      el-CENTRO-del-agujero-del-adaptador-esta-medio-espesor-mas-afuera
+    eje_del_corte: >-
+      PERPENDICULAR-a-la-diagonal-y-DENTRO-del-plano-del-panel · no-es-eleccion-de-dibujo:
+      es-la-UNICA-orientacion-en-la-que-el-agujero-del-ala-del-tensor-tiene-por-eje-la-propia-varilla ·
+      con-el-corte-a-lo-largo-de-la-diagonal-la-varilla-no-podria-enhebrarse-y-el-cuerpo-se-comeria-
+      media-pulgada-de-vano
+
+  nueva_longitud_del_tensor:
+    perno_a_perno: 94.131526
+    antes: 92.131526
+    ahora: 92.319026
+    crece: >-
+      0.1875-in-que-es-EXACTAMENTE-el-espesor-del-angulo · no-es-coincidencia:
+      la-aproximacion-medía-hasta-la-CARA-del-ala-y-la-fisica-mide-hasta-su-PLANO-MEDIO-
+      medio-espesor-por-extremo
+
+  cambio_legitimo_del_bom:
+    pines_movidos: bom · bom-doble
+    cantidades: >-
+      NO-cambian-4-varillas-8-adaptadores-16-cartabones · solo-la-LONGITUD-que-se-ordena
+    politica: >-
+      no-se-conserva-el-BOM-anterior-por-compatibilidad-artificial-decision-14-5
+
+  pines_movidos_en_total:
+    seis_por_el_adaptador: linea · linea-doble · bom · bom-doble · frontal · frontal-doble
+    uno_por_el_contrato_de_paneles: persistencia
+    NO_se_movieron: >-
+      planta · lateral · planta-doble · lateral-doble ·
+      y-eso-ACOTA-el-cambio: el-corte-vive-en-el-plano-del-panel-asi-que-esas-camaras-no-ven-nada-nuevo
+
+  editor_avanzado_de_paneles:
+    panel_layout_mode: CantileverPanelLayoutMode = Automatic | Advanced-persistido
+    segmentos_avanzados: >-
+      CantileverPanelSegmentDesign-lista-persistida-con-su-ORDEN ·
+      dato-DORMIDO-bajo-Automatic-se-conserva-no-se-lee-y-no-se-valida
+    lista_efectiva_unica: >-
+      CantileverBracingLayout.EffectiveSegments · la-UNICA-entrada-del-resolver-posterior-en-los-dos-modos
+    separadores_por_fronteras_unicas: Distinct-sobre-inicios-y-fines-en-CantileverPanelLayoutResolver
+    tensores_por_segmentos_crossbraced: 2-por-tramo-CrossBraced-y-CERO-por-tramo-None
+    acciones: >-
+      agregar · eliminar-cerrando-el-vacio · subir · bajar · dividir · unir-solo-si-se-tocan-y-llevan-
+      lo-mismo-dentro · alternar-tensores · materializar-automatico · restaurar-automatico-CON-AVISO
+    donde_viven: >-
+      CantileverPanelLayoutEditorState-en-Application-como-I-20-e-I-21 ·
+      la-ventana-COORDINA-y-Application-decide
+    tabla_wpf: >-
+      solo-visible-en-modo-avanzado · columnas-indice-base-UNO-Y1-Y2-alto-y-tensores ·
+      el-ALTO-es-de-SOLO-LECTURA-porque-es-derivado ·
+      los-errores-se-ven-EN-LA-MISMA-VENTANA
+    costura_de_confirmacion: >-
+      ConfirmDiscardingManualPanels-inyectable-y-no-un-MessageBox-literal ·
+      un-modal-dentro-de-un-manejador-colgaria-justo-la-prueba-del-camino-que-hay-que-probar
+
+  suites: RackCad-Tests-2978 · RackCad-UI-Tests-621
+
+  vista_seccion_del_adaptador:
+    decision: 14-7
+    commit: dd9e4a5
+    por_que_hace_falta: >-
+      el-adaptador-NO-se-lee-como-un-angulo-en-ninguna-de-las-tres-vistas-de-la-linea ·
+      su-eje-de-corte-corre-PERPENDICULAR-a-la-diagonal-y-DENTRO-del-plano-del-panel-que-es-la-unica-
+      orientacion-en-la-que-el-agujero-del-ala-del-tensor-tiene-por-eje-la-propia-varilla ·
+      ninguna-de-las-tres-camaras-mira-por-ese-eje
+    camara: >-
+      SALE-DEL-MARCO-de-la-pieza-no-de-una-constante · mira-por-AlongCut-con-AlongRodLeg-como-vertical ·
+      el-ala-apoyada-corre-a-la-DERECHA-de-la-imagen-y-la-del-tensor-hacia-ARRIBA
+    sin_camara_fija: >-
+      CantileverViewKind-AdapterSection-NO-tiene-camara-en-Viewpoint-y-pedirla-por-ahi-LANZA ·
+      caso-EXPLICITO-y-no-el-default-generico-porque-el-motivo-es-distinto:
+      no-falta-declarar-una-camara-es-que-no-puede-haber-una-fija
+    misma_geometria: >-
+      se-proyecta-el-MIEMBRO-con-StructuralSectionPlanBuilder-igual-que-cualquier-otra-vista ·
+      una-prueba-compara-el-AREA-del-contorno-proyectado-contra-la-del-catalogo-que-es-independiente-de-
+      la-camara-asi-que-una-geometria-paralela-no-pasaria-desapercibida
+    agujeros: >-
+      los-DOS-ejes-son-perpendiculares-a-la-direccion-de-vista-asi-que-los-dos-salen-de-CANTO-y-se-
+      dibujan-como-su-TRAZA · AddHoleAt-se-EXTRAJO-de-AddPunch-para-no-escribir-una-segunda-disciplina
+    tensor_estructural: >-
+      NO-tiene-seccion-de-adaptador-y-lo-DICE-con-diagnostico-INFORMATIVO-no-bloqueante ·
+      se-atornilla-directo-es-otro-producto-y-un-plan-vacio-en-silencio-se-leeria-como-un-fallo
+    vistas_de_linea: >-
+      NO-se-tocaron-decision-14-6 · hay-prueba-que-lo-comprueba-sobre-las-TRES-camaras
+    insercion_independiente: >-
+      NO-la-incluye · el-dueño-dijo-que-PUEDE-incluirla-no-que-deba ·
+      meter-geometria-extra-en-el-dibujo-de-alguien-es-cambio-de-producto-y-pide-su-propia-validacion
+    pruebas: 12-en-RackCad-Tests-mas-2-de-ventana-en-RackCad-UI-Tests
+  regresiones: >-
+    14-de-14-verificadas-EN-ROJO-una-a-una-inyectando-el-defecto-y-revirtiendo ·
+    docs-automation-evidence-I-37D-round-4-regressions-md
+  build: solucion-completa-Debug-0-errores
+  ci: run-30672070159-success-sobre-3e9859a
+  bundle: >-
+    GENERADO-Y-VERIFICADO-2026-07-31-Release-con-AutoCAD-cerrado · 153-comprobaciones-OK ·
+    DLL-identicos-al-publish-y-catalogos-identicos-a-assets-catalogs-por-SHA-256 ·
+    CERO-DLL-de-Autodesk-ADR-0003
+  validacion_manual: >-
+    PENDIENTE · docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md
+
+  movimiento_a_D:
+    motivo: >-
+      C-llego-al-100-por-ciento-DOS-veces-en-esta-iniciativa-y-una-de-ellas-TRUNCO-un-archivo-fuente ·
+      el-dueño-ordeno-mover-el-trabajo-a-D-en-vez-de-seguir-parcheando-con-un-umbral-de-espacio
+    worktree_antes: C-Users-alejandra-mendoza-claude-worktrees-feature-cantilever-mvp-final
+    worktree_ahora: D-Documentos-Codex-worktrees-feature-cantilever-mvp-final
+    como: >-
+      git-worktree-move-FALLO-con-Improper-link-porque-el-rename-no-cruza-volumenes ·
+      se-recreo-con-worktree-remove-mas-worktree-add-TRAS-verificar-arbol-limpio-y-todo-publicado ·
+      la-rama-y-los-commits-viven-en-el-repo-principal-asi-que-no-habia-nada-que-perder
+    temporales: >-
+      TEMP-y-TMP-en-D-Temp-RackCad · NUGET_PACKAGES-en-D-NuGetPackages · DOTNET_CLI_HOME-en-D-DotNetHome
+    global_json: NO-se-toco · el-SDK-8-0-423-se-sigue-resolviendo-igual
+    espacio: >-
+      D-con-930-GB-libres · C-incluso-GANO-espacio-al-dejar-de-recibir-salidas-de-compilacion ·
+      la-puerta-de-5-GB-queda-SIN-EFECTO-por-instruccion-del-dueño-se-trabaja-en-D
+
+  incidente_de_disco:
+    que_paso: >-
+      el-disco-C-se-lleno-al-100-durante-la-ronda-y-una-escritura-fallida-TRUNCO-
+      CantileverViewPlanBuilder-cs-a-0-bytes
+    recuperacion: >-
+      detectado-restaurado-desde-git-y-reaplicado-el-cambio ·
+      verificado-que-ningun-otro-archivo-quedo-vacio
+    dano_colateral: >-
+      la-limpieza-de-espacio-borro-el-SDK-NET-8-0-423-de-LOCALAPPDATA ·
+      el-Owner-lo-reinstalo-manualmente-y-desde-ahi-todo-quedo-verificado-con-toolchain-real
+    leccion: >-
+      el-SDK-vive-en-LOCALAPPDATA-asi-que-una-limpieza-que-barra-esa-carpeta-se-lo-lleva
+
+  trazabilidad:
+    code_sha: dd9e4a5-ultima-punta-que-toco-src-o-tests
+    validated_build_sha: a594eb5d5e2cd703cf9063b36147cddc0042302b
+    head_documental: el-commit-que-registra-estas-huellas-posterior-al-build
+    dll: worktree-src-RackCad-Plugin-bin-Debug-net8-0-windows-RackCad-Plugin-dll
+    dll_sha256: F237CC7951A398751C369FB64A0A6FF541F80E37E39C4375905D2AE98985B6E1
+    dll_bytes: 135680
+    dll_fecha: 2026-07-31T18:01:32
+    informational_version: 1.0.0+a594eb5d5e2cd703cf9063b36147cddc0042302b
+    por_que_dos_sha: >-
+      dd9e4a5-es-el-CODE_SHA-funcional-la-ultima-punta-que-toco-src-o-tests ·
+      a594eb5-es-ese-mas-DOS-commits-exclusivamente-documentales ·
+      el-DLL-se-compilo-desde-a594eb5-porque-la-AssemblyInformationalVersion-incrusta-la-punta-de-git ·
+      el-arbol-FUNCIONAL-validado-es-el-de-dd9e4a5
+    bundle_inventario: docs-automation-evidence-I-37D-round-4-bundle-inventory-txt
+    inventario_nuevo: >-
+      SI-generado-de-cero-24-archivos · NO-se-reutilizo-el-de-la-ronda-anterior ·
+      los-tres-DLL-de-RackCad-cambiaron-de-huella-porque-la-version-incrusta-la-punta-de-git
+    puerta_de_espacio_del_owner: >-
+      RETIRADA-por-instruccion-del-dueño · era-un-parche-a-un-problema-que-ya-no-existe:
+      el-trabajo-vive-en-D-con-930-GB-libres · ver-movimiento_a_D
+
+# --------------------------------------------------------------------------------------------------------
+# PENDIENTE DEL OWNER
+# --------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------
+# VALIDACION MANUAL - APROBADA. El gate real de la iniciativa, resuelto.
+# --------------------------------------------------------------------------------------------------------
+validacion_manual:
+  veredicto: APROBADA
+  token: OWNER_APPROVED_I37D_MANUAL_VALIDATION
+  fecha: 2026-08-03
+  observaciones: todo-funciona-correctamente-SIN-defectos-bloqueantes-observados
+  code_sha: dd9e4a5
+  validated_build_sha: a594eb5d5e2cd703cf9063b36147cddc0042302b
+  dll_sha256: F237CC7951A398751C369FB64A0A6FF541F80E37E39C4375905D2AE98985B6E1
+  dll_coincide_con_lo_documentado: SI-la-huella-NO-se-toco
+  suites: RackCad-Tests-2978 · RackCad-UI-Tests-621
+  bundle: Release-verificado-153-comprobaciones-inventario-de-24-archivos
+  ci: run-30674507385-success-sobre-4e4e6d9
+  evidencia: docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md
+  correccion_de_trazabilidad: >-
+    la-fila-de-CI-del-paquete-decia-30672070159-que-corresponde-a-3e9859a-la-punta-del-frente-B-
+    ANTERIOR-a-que-existiera-la-vista-de-seccion · era-una-referencia-arrastrada ·
+    se-corrigio-consultando-el-SHA-de-cada-ejecucion-y-no-la-memoria ·
+    la-punta-validada-4e4e6d9-tiene-la-ejecucion-30674507385-verde ·
+    dd9e4a5-973fc21-y-a594eb5-viajaron-en-un-solo-push-asi-que-GitHub-ejecuto-CI-sobre-la-punta ·
+    el-arbol-FUNCIONAL-de-4e4e6d9-es-IDENTICO-al-de-dd9e4a5-delta-exclusivamente-documental-comprobado
+
+pendiente_del_owner:
+  adr_0027: >-
+    ACEPTADO-2026-08-03 · alcance-D1-a-D9-incluidas-las-revisiones-D7-bis-y-D7-ter-del-dueño ·
+    auditado-punto-por-punto-antes-de-aceptar: ninguno-quedaba-sin-implementar-ni-sin-validar
+  adr_0028: >-
+    ACEPTADO-2026-08-03 · alcance-D1-a-D6 ·
+    D6-el-gate-es-el-Owner-en-AutoCAD-y-no-el-CI-es-JUSTAMENTE-lo-que-esta-aceptacion-resuelve
+  validacion_manual_en_autocad: >-
+    RESUELTA-2026-08-03-APROBADA · OWNER_APPROVED_I37D_MANUAL_VALIDATION ·
+    era-el-gate-real-de-esta-iniciativa-y-ya-no-bloquea · ver-la-seccion-validacion_manual
+  vista_seccion_del_adaptador: >-
+    IMPLEMENTADA-en-dd9e4a5-y-ya-NO-es-un-pendiente · ver-ronda_4.vista_seccion_del_adaptador
+  parametros_sin_default_heredados: >-
+    NINGUNO-queda · MountingPlateVerticalEndOffset-recibio-su-default-aprobado-de-2-in-en-la-ronda-3 ·
+    ColumnBottomPlateEndOffset-y-ColumnTopPunchOffset-fueron-RETIRADOS-en-la-ronda-anterior ·
+    el-nulo-EXPLICITO-sigue-siendo-invalido-porque-un-JSON-viejo-no-trae-el-valor
+  id_del_canal_de_4_in_ligero: >-
+    CERRADO-y-fuera-de-la-lista-de-pendientes · DefaultSeparatorSectionId-igual-AISC-C-C4X4_5-es-
+    VINCULANTE-decision-12-51 · el-C4-mas-ligero-de-forma-INEQUIVOCA-y-se-dibuja-sin-diagnostico ·
+    el-usuario-puede-elegir-otra-seccion-explicitamente-pero-el-default-NO-esta-pendiente
+  tabla_de_calibres: >-
+    RESUELTO-por-la-auditoria · NO-existe-ninguna-tabla-de-calibres-en-el-repositorio ·
+    se-aplica-12-30-GaugeNumber-10-como-identidad-y-descripcion-sin-conversion-decimal
+  granularidad_de-la-identidad-de-una-LINEA: >-
+    NUEVA-y-REAL · si-el-GUID-se-estampa-por-LINEA-una-identidad-N-estaciones-o-por-ESTACION-y-si-las-
+    tres-vistas-son-de-la-linea-completa-o-por-estacion · nada-en-el-codigo-actual-lo-prejuzga-y-cambia-
+    el-numero-de-bloques-y-el-round-trip · es-decision-de-producto
+  nombre_del_valor_de_enum: >-
+    RackSystemKind-Cantilever-es-el-nombre-que-las-decisiones-de-I-37-usan-literalmente ·
+    se-escribe-en-DISCO-en-PascalCase-y-es-IRREVOCABLE-una-vez-guardado-un-documento ·
+    conviene-confirmarlo-antes-de-la-primera-persistencia
+  default_visible_de_perfil_de_brazo: >-
+    sera-HSS-pero-el-sistema-BLOQUEA-hasta-que-se-seleccione-un-id-EXACTO · la-UI-puede-mostrar-
+    HSS-seleccione-tamano

@@ -17,6 +17,16 @@ namespace RackCad.Domain.Systems.Shared
         Larguero,
 
         /// <summary>A Push Back pallet-rack system (LIFO; load and unload from the same low end). New in I-18.</summary>
-        PushBack
+        PushBack,
+
+        /// <summary>
+        /// A Cantilever LINE: a sequence of stations sharing one column height, with the separators and braced
+        /// panels between them. New in I-37D, and added at the END so the six values above keep their numbers.
+        ///
+        /// The persisted unit is the LINE and not a station. A station is not independently editable, insertable
+        /// or duplicable, and per-station persistence would let a line's stations drift apart in the drawing
+        /// while the design said they were one rack.
+        /// </summary>
+        Cantilever
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -317,7 +317,8 @@ namespace RackCad.Tests
             var authorities = new[]
             {
                 "CantileverColumnBaseFrameResolver.cs",   // I-37A: base and column
-                "CantileverArmFrameResolver.cs"           // I-37B: the arm
+                "CantileverArmFrameResolver.cs",          // I-37B: the arm
+                "CantileverLineFrameResolver.cs"       // I-37D: the separators, the braces and the line translation
             };
 
             var offenders = Sources()
@@ -640,14 +641,26 @@ namespace RackCad.Tests
 
             Assert.True(station.Count >= 5, "Se esperaban al menos cinco archivos de estacion.");
 
-            var literalPitch = new Regex(@"(^|[^\w.])(2|4)\s*\.\s*0\s*;", RegexOptions.Compiled);
+            // El literal tiene que estar DECLARADO —asignado o devuelto—, no operado. Se afinó en la ronda
+            // 3 de I-37D: la expresión anterior sólo miraba el carácter anterior, así que también cazaba
+            // `(min + max) / 2.0;`, que es un punto medio y no un pitch. Habría empujado a escribir la mitad
+            // de una suma de forma retorcida para esquivar una guarda, que es como una guarda buena se
+            // convierte en una molestia que alguien acaba borrando.
+            //
+            // Lo que protege —que nadie DECLARE un espaciado propio— sigue intacto, y los seis casos de abajo
+            // lo fijan en las dos direcciones.
+            var literalPitch = new Regex(
+                @"([^=!<>+\-*/%]=|\breturn)\s*(2|4)\s*\.\s*0\s*;", RegexOptions.Compiled);
 
             // SELF-VERIFIED before it is trusted: the first version of a guard like this one shipped with its
             // word boundaries turned into control characters and matched nothing at all.
             Assert.Matches(literalPitch, "var pitch = 4.0;");
             Assert.Matches(literalPitch, "double p = 2.0;");
             Assert.DoesNotMatch(literalPitch, "var factor = 1.0 / 3.0;");
+            Assert.Matches(literalPitch, "return 2.0;");
             Assert.DoesNotMatch(literalPitch, "Math.Round(value, 4);");
+            Assert.DoesNotMatch(literalPitch, "var mid = (min + max) / 2.0;");
+            Assert.DoesNotMatch(literalPitch, "var twice = offset * 2.0;");
 
             foreach (var file in station)
             {
@@ -840,24 +853,73 @@ namespace RackCad.Tests
         [Fact]
         public void NoStationCodeMentionsARunOrItsFurniture()
         {
-            // What is out of scope must not be half-present. A property named for a run is how the next
-            // initiative's decisions get taken by accident.
+            // I-37C wrote this over EVERY Cantilever file, because the line did not exist yet and a property
+            // named for one was how a later initiative's decisions got taken by accident. I-37D built the line,
+            // so the blanket ban would now forbid the line from being about itself.
+            //
+            // What the rule was actually protecting is still worth protecting, and it is narrower: a STATION
+            // must not know it is inside a line. So the ban now covers the three sub-assembly families — the
+            // station, the column with its base, and the arm — and not the line's own files. Anything a station
+            // file learns about a separator is still a defect, and this still says so.
+            var subAssemblies = new[] { "CantileverStation", "CantileverColumnBase", "CantileverArm" };
+
+            var stationFiles = Sources()
+                .Where(f => subAssemblies.Any(p => FileName(f.Path).StartsWith(p, StringComparison.Ordinal)))
+                .ToList();
+
+            Assert.True(stationFiles.Count >= 12, "Se esperaban al menos doce archivos de subensamble; hay " +
+                stationFiles.Count + ".");
+
             foreach (var word in new[]
                      {
                          "Separador", "Spacer", "Arriostr", "Brace", "StationRun", "RunIndex",
-                         "LongitudinalPosition", "NeighbourStation"
+                         "LongitudinalPosition", "NeighbourStation", "IntervalIndex", "CantileverLine"
                      })
             {
-                var offenders = Sources()
+                var offenders = stationFiles
                     .Where(f => f.Code.Contains(word, StringComparison.OrdinalIgnoreCase))
                     .Select(f => f.Path)
                     .ToList();
 
                 Assert.True(
                     offenders.Count == 0,
-                    "'" + word + "' pertenece a la linea, que es una iniciativa posterior. Lo incumplen: " +
+                    "'" + word + "' pertenece a la linea y una estacion no lo conoce. Lo incumplen: " +
                     string.Join(", ", offenders) + ".");
             }
+        }
+
+        [Fact]
+        public void TheLineIsTheONLYPlaceThatKnowsAboutIntervals()
+        {
+            // The other half of the rule above, and the reason it can be narrowed safely: the line's concepts
+            // are confined to the line's own files. If "Interval" ever appears outside them, the station has
+            // started to learn about its neighbours through some other door.
+            var lineFiles = new[]
+            {
+                "CantileverLineDesign.cs", "CantileverLineResolver.cs", "CantileverLineAssembly.cs",
+                "CantileverLineArmMatrix.cs", "CantileverLineBomBuilder.cs",
+                "CantileverIntervalAssembly.cs", "CantileverIntervalResolver.cs",
+                "CantileverBracingLayoutResolver.cs", "CantileverLineFrameResolver.cs",
+                "CantileverViewPlanBuilder.cs",
+                "CantileverMemberId.cs"   // shared piece tokens: the interval's owner token lives with the rest
+            };
+
+            var offenders = Sources()
+                .Where(f => !lineFiles.Any(n => FileName(f.Path).Equals(n, StringComparison.Ordinal)))
+                .Where(f => f.Code.Contains("Interval", StringComparison.Ordinal))
+                .Select(f => f.Path)
+                .ToList();
+
+            Assert.True(
+                offenders.Count == 0,
+                "Solo los archivos de la linea conocen intervalos. Lo incumplen: " +
+                string.Join(", ", offenders) + ".");
+        }
+
+        private static string FileName(string path)
+        {
+            var slash = path.LastIndexOf('/');
+            return slash < 0 ? path : path.Substring(slash + 1);
         }
 
         [Fact]

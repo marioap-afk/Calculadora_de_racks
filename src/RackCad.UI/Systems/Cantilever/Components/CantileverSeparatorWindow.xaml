@@ -1,0 +1,92 @@
+<Window x:Class="RackCad.UI.Systems.Cantilever.Components.CantileverSeparatorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:components="clr-namespace:RackCad.UI.Systems.Cantilever.Components"
+        xmlns:controls="clr-namespace:RackCad.UI.Controls"
+        Title="RackCad – Separador"
+        Style="{DynamicResource EditorShellWindowStyle}"
+        WindowStartupLocation="CenterOwner"
+        Width="900" Height="640">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- I-37D ronda 2. Mismo shell. El separador es la pieza del INTERVALO: su corte no se escribe, se deriva de
+         los agujeros de las dos placas de columna, así que aquí sólo se elige su sección. -->
+    <components:CantileverComponentEditorShell x:Name="Shell">
+
+        <components:CantileverComponentEditorShell.Header>
+            <TextBlock Text="Separador — la pieza que une dos estaciones" Style="{StaticResource SectionTitle}" />
+        </components:CantileverComponentEditorShell.Header>
+
+        <components:CantileverComponentEditorShell.Parameters>
+            <StackPanel>
+                <TextBlock x:Name="SectionText" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,8,0,0"
+                           Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                           Text="Su longitud de corte NO se escribe: se deriva de la distancia entre los agujeros de las dos placas de columna, más 1.25 in por extremo (ADR-0027, D5). Sus cuatro agujeros son parte de su identidad." />
+                <TextBlock x:Name="DerivedText" TextWrapping="Wrap" FontSize="11.5" Margin="0,10,0,0"
+                           Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+            </StackPanel>
+        </components:CantileverComponentEditorShell.Parameters>
+
+        <components:CantileverComponentEditorShell.SectionPicker>
+            <StackPanel>
+                <TextBlock Text="Sección del separador" Style="{StaticResource SectionTitle}" />
+                <controls:StructuralSectionPicker x:Name="SectionPicker" Height="300" SectionChosen="SectionChosen" />
+            </StackPanel>
+        </components:CantileverComponentEditorShell.SectionPicker>
+
+        <components:CantileverComponentEditorShell.Preview>
+            <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,8">
+                        <RadioButton x:Name="PreviewFrontalRadio" Content="Frontal" IsChecked="True" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" Margin="0,0,14,0" />
+                        <RadioButton x:Name="PreviewPlantaRadio" Content="Planta" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" />
+                    </StackPanel>
+                    <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="{DynamicResource ShellPreviewBackgroundBrush}"
+                            ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />
+                </Grid>
+            </Border>
+        </components:CantileverComponentEditorShell.Preview>
+
+        <components:CantileverComponentEditorShell.Diagnostics>
+            <TextBlock x:Name="DiagnosticsText" TextWrapping="Wrap" FontSize="11.5"
+                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+        </components:CantileverComponentEditorShell.Diagnostics>
+
+        <components:CantileverComponentEditorShell.BomSummary>
+            <TextBlock x:Name="BomText" TextWrapping="Wrap" FontSize="11.5"
+                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+        </components:CantileverComponentEditorShell.BomSummary>
+
+        <components:CantileverComponentEditorShell.Actions>
+            <DockPanel>
+                <Button x:Name="RestoreButton" Content="Restaurar" DockPanel.Dock="Left" MinWidth="110"
+                        Style="{StaticResource SecondaryButtonStyle}" Click="Restore_Click" />
+                <Button x:Name="InsertButton" Content="Insertar sólo esta pieza" DockPanel.Dock="Left" MinWidth="180"
+                        Margin="8,0,0,0" Style="{StaticResource SecondaryButtonStyle}" Click="InsertComponent_Click"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Dibuja la pieza sola, como bloque independiente y NO editable. No modifica la línea que estás editando." />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="AcceptButton" Content="Aceptar" MinWidth="110" Margin="8,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}" Click="Accept_Click" />
+                    <Button Content="Cancelar" MinWidth="110" Margin="8,0,0,0" IsCancel="True"
+                            Style="{StaticResource SecondaryButtonStyle}" Click="Cancel_Click" />
+                </StackPanel>
+            </DockPanel>
+        </components:CantileverComponentEditorShell.Actions>
+    </components:CantileverComponentEditorShell>
+</Window>

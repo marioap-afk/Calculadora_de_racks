@@ -25,7 +25,34 @@ namespace RackCad.Application.Systems.Cantilever
         /// role is an enum on a flat member plan and not a type: the cardinality lives in the arrangement,
         /// not in the role (ADR-0025, D1).
         /// </summary>
-        Arm = 2
+        Arm = 2,
+
+        /// <summary>
+        /// A longitudinal separator between two adjacent stations, added by I-37D at the END.
+        ///
+        /// It belongs to the interval, not to either station — which is what keeps the first and last station
+        /// from being special cases (ADR-0027, D3).
+        /// </summary>
+        Separator = 3,
+
+        /// <summary>
+        /// One diagonal of a braced panel, when its body is a structural section. A cold-rolled rod produces
+        /// NO member of this role: it is not a catalogued section, so it carries its own body (ADR-0027, D7).
+        /// </summary>
+        Brace = 4,
+
+        /// <summary>
+        /// El ANGULO de extremo de un tensor cold rolled, añadido por la ronda 4 de I-37D al FINAL.
+        ///
+        /// Es un miembro como cualquier otro y no una decoración del tensor: su cuerpo es una sección del
+        /// catálogo —el <c>L2×2×3/16</c>— cortada a 2 in y colocada con un marco físico, así que se dibuja por
+        /// la misma tubería que una columna o un separador. Tenerlo aquí es lo que quitó la segunda
+        /// implementación de la proyección que vivía en el resolver de representación.
+        ///
+        /// La varilla que une dos de estos SIGUE sin ser miembro, por la razón de <see cref="Brace"/>: no tiene
+        /// fila de catálogo. Un tensor cold rolled produce, entonces, dos miembros y ningún cuerpo catalogado.
+        /// </summary>
+        ColdRolledAdapter = 5
     }
 
     /// <summary>
@@ -85,6 +112,33 @@ namespace RackCad.Application.Systems.Cantilever
             // No zero padding on purpose: a fixed width silently changes every id the day a run outgrows it,
             // and ordering is done on the numeric index, never on this text.
             return new CantileverPieceId(Value + "-" + (index + 1).ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
+        /// The same piece, keyed to the station it belongs to inside a line: <c>CANT-S&lt;n&gt;-…</c>.
+        ///
+        /// A line has N stations whose pieces are resolved by the I-37C authority, which numbers them without
+        /// knowing about a line. Two stations therefore carry the SAME piece ids, and anything that puts a
+        /// whole line in one dictionary would lose N−1 of every piece. Scoping is done here, on the way out,
+        /// so the station's own ids stay exactly what I-37C shipped.
+        /// </summary>
+        public CantileverPieceId WithStationScope(int stationIndex)
+        {
+            if (IsEmpty)
+            {
+                throw new InvalidOperationException("Una pieza vacia no puede recibir alcance de estacion.");
+            }
+
+            if (stationIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(stationIndex));
+            }
+
+            var scope = CantileverPieceTokens.StationScope +
+                stationIndex.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            return new CantileverPieceId(
+                Prefix + "-" + scope + Value.Substring(Prefix.Length));
         }
 
         private static string Normalize(string text)
@@ -196,5 +250,94 @@ namespace RackCad.Application.Systems.Cantilever
                         nameof(side), side, "El lado '" + side + "' no tiene token de pieza.");
             }
         }
+
+        // ---- I-37D: the line. Added at the end; every token above keeps its text. -----------------------
+
+        /// <summary>
+        /// Owner token of the pieces of one interval, used as <c>INT&lt;i&gt;</c> with i base zero.
+        ///
+        /// The interval — not either station — owns them. Two intervals meet at an interior station and each
+        /// brings its own separators and its own column plates, so an interval-owned id cannot be produced
+        /// twice for the same piece, and walking the intervals cannot count a separator twice (ADR-0027, D3).
+        /// </summary>
+        public const string IntervalOwner = "INT";
+
+        /// <summary>The end of an interval at the LOWER station index.</summary>
+        public const string IntervalEndLeft = "EL";
+
+        /// <summary>The end of an interval at the HIGHER station index.</summary>
+        public const string IntervalEndRight = "ER";
+
+        /// <summary>A separator body, used as <c>SEP&lt;k&gt;</c> with k the separator index, base zero.</summary>
+        public const string Separator = "SEP";
+
+        /// <summary>A separator's end punch, into the column plate.</summary>
+        public const string SeparatorEndPunch = "PCH-SEP-END";
+
+        /// <summary>A separator's brace punch.</summary>
+        public const string SeparatorBracePunch = "PCH-SEP-BRC";
+
+        /// <summary>A separator's column plate.</summary>
+        public const string SeparatorColumnPlate = "PLT-SEP";
+
+        /// <summary>The single centred hole of a separator's column plate.</summary>
+        public const string SeparatorColumnPlatePunch = "PCH-PLT-SEP";
+
+        /// <summary>One diagonal of a braced panel.</summary>
+        public const string Brace = "BRC";
+
+        /// <summary>An end punch of a structural brace.</summary>
+        public const string BracePunch = "PCH-BRC";
+
+        /// <summary>The end adapter of a cold-rolled brace.</summary>
+        public const string ColdRolledAdapter = "ADP";
+
+        /// <summary>The separator-facing hole of a cold-rolled brace's adapter.</summary>
+        public const string ColdRolledAdapterPunch = "PCH-ADP";
+
+        /// <summary>The owner of one interval's pieces.</summary>
+        public static string IntervalOwnerOf(int intervalIndex) =>
+            IntervalOwner + intervalIndex.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        /// <summary>The owner of the column plates at ONE end of an interval.</summary>
+        public static string IntervalEndOwner(int intervalIndex, CantileverIntervalSide side) =>
+            IntervalOwnerOf(intervalIndex) + "-" + IntervalEndToken(side);
+
+        /// <summary>
+        /// The stable text of an interval end. An explicit <c>switch</c> with a throwing default, for the same
+        /// reason <see cref="SideToken"/> has one.
+        /// </summary>
+        public static string IntervalEndToken(CantileverIntervalSide side)
+        {
+            switch (side)
+            {
+                case CantileverIntervalSide.Left:
+                    return IntervalEndLeft;
+                case CantileverIntervalSide.Right:
+                    return IntervalEndRight;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(side), side, "El extremo de intervalo '" + side + "' no tiene token de pieza.");
+            }
+        }
+
+        /// <summary>The token of one diagonal: the panel index and which diagonal it is.</summary>
+        public static string BraceToken(int panelIndex, char diagonal) =>
+            Brace + panelIndex.ToString(System.Globalization.CultureInfo.InvariantCulture) + diagonal;
+
+        /// <summary>The token of one adapter: its brace's token and which end of it, base one.</summary>
+        public static string AdapterToken(int panelIndex, char diagonal, int endIndex) =>
+            ColdRolledAdapter + panelIndex.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+            diagonal + "-" + (endIndex + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        /// <summary>
+        /// The index token that scopes a station's pieces inside a line, as <c>S&lt;n&gt;</c>, base zero.
+        ///
+        /// A station resolved on its own keeps the ids I-37C gave it — <c>CANT-STN-…</c> — because renaming
+        /// them would rewrite every signature already integrated. What a LINE needs on top is a key that
+        /// distinguishes the same piece of two different stations, and that is this scope, applied by
+        /// <see cref="CantileverPieceId.WithStationScope"/>.
+        /// </summary>
+        public const string StationScope = "S";
     }
 }

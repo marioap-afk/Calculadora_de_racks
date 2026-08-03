@@ -23,10 +23,15 @@ namespace RackCad.Application.Systems.Cantilever
     ///     <b>+Y</b>.
     ///   </item>
     ///   <item>
-    ///     <b><c>z = 0</c> — the <see cref="FloorZ"/>.</b> The common elevation of the bottom of the column
-    ///     section and the bottom of the base section. They MUST share it: every connection elevation is
-    ///     measured from the base section's bottom edge and consumed by the column, so two vertical origins
-    ///     would make the shared pattern meaningless.
+    ///     <b><c>z = 0</c> — the <see cref="FloorZ"/>.</b> The floor. The BASE section rests on it and so does
+    ///     the column's bottom PLATE; the COLUMN itself starts on the top face of that plate
+    ///     (<see cref="ColumnStartZ"/>).
+    ///
+    ///     <para>Base and column share the LOGICAL connection datum — the punch elevations of the base's rear
+    ///     plate and of the column's connecting face are the same absolute numbers — but they do NOT share a
+    ///     physical origin in Z, and until the owner's correction of I-37D they did. A column standing on the
+    ///     floor passes through its own bottom plate, which is a piece nobody could build (owner decision,
+    ///     I-37D, corrección de columna y base).</para>
     ///   </item>
     ///   <item>
     ///     <b><c>x = 0</c> — the <see cref="CentrePlaneX"/>.</b> The transverse centre of the COLUMN section
@@ -39,8 +44,41 @@ namespace RackCad.Application.Systems.Cantilever
         /// <summary>The contact plane between column face and rear plate. The base projects towards +Y.</summary>
         public const double ConnectionPlaneY = 0.0;
 
-        /// <summary>Common bottom elevation of the column section and the base section.</summary>
+        /// <summary>The floor. Everything that rests on the ground starts here.</summary>
         public const double FloorZ = 0.0;
+
+        /// <summary>
+        /// The bottom of the BASE section. It rests on the floor and is NOT lifted with the column.
+        ///
+        /// The base is a piece that stands on the ground; only the column is bolted on top of a plate. Lifting
+        /// it too would put the whole assembly a plate-thickness in the air.
+        /// </summary>
+        public const double BaseBottomZ = FloorZ;
+
+        /// <summary>The bottom of the column's bottom plate: it rests on the floor.</summary>
+        public const double ColumnBottomPlateBottomZ = FloorZ;
+
+        /// <summary>The bearing face of the column's bottom plate — the elevation the column stands on.</summary>
+        public static double ColumnBottomPlateTopZ(double bottomPlateThickness) =>
+            ColumnBottomPlateBottomZ + bottomPlateThickness;
+
+        /// <summary>
+        /// Where the COLUMN section begins: the top face of its bottom plate, never the floor.
+        ///
+        /// It is a separate name from <see cref="FloorZ"/> on purpose. One variable meaning «floor», «start of
+        /// base» and «start of column» at once is how the column ended up passing through its own plate.
+        /// </summary>
+        public static double ColumnStartZ(double bottomPlateThickness) =>
+            ColumnBottomPlateTopZ(bottomPlateThickness);
+
+        /// <summary>
+        /// The physical top of the column: its start plus its NOMINAL cut length.
+        ///
+        /// The cut length does not change when the plate does — a thicker plate lifts the column, it does not
+        /// make it longer. Keeping the two apart is what stops the thickness being added twice.
+        /// </summary>
+        public static double ColumnTopZ(double bottomPlateThickness, double nominalColumnCutLength) =>
+            ColumnStartZ(bottomPlateThickness) + nominalColumnCutLength;
 
         /// <summary>Transverse centre, taken from the column section envelope.</summary>
         public const double CentrePlaneX = 0.0;

@@ -94,9 +94,11 @@ namespace RackCad.Application.StructuralSections.Geometry
             new SectionGeometryDiagnostic(
                 SectionDiagnosticSeverity.Info,
                 SectionGeometryDiagnostics.ToeRoundingNotPublished,
-                "AISC redondea la punta del ala y no publica ese radio, asi que el contorno la deja viva. " +
-                "Su area geometrica queda ligeramente por encima de la tabulada; inventar el radio la " +
-                "acercaria y seria una exactitud falsa.");
+                "AISC redondea la punta del ala y no publica ese radio, asi que el contorno usa uno " +
+                "DERIVADO: la mitad del filete de raiz, acotada a medio espesor de ala. No es un radio " +
+                "inventado sino el que mejor reproduce el area publicada de las 137 secciones -el sesgo " +
+                "medio baja de +0.800% con la punta viva a -0.078%-, pero sigue sin estar tabulado, asi " +
+                "que la seccion no puede reclamar exactitud.");
 
         /// <summary>The note every centred asymmetric contour carries.</summary>
         public static SectionGeometryDiagnostic CentredWithTabulatedCentroid(string variables) =>

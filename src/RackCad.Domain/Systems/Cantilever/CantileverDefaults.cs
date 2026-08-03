@@ -16,12 +16,20 @@ namespace RackCad.Domain.Systems.Cantilever
         public const double PunchDiameter = 0.75;
 
         /// <summary>
-        /// Horizontal distance from each transverse edge of the COLUMN envelope to its punch row, inches.
+        /// Distancia horizontal, en pulgadas, del EXTERIOR DE LA PLACA POSTERIOR hacia adentro, hasta el
+        /// centro de cada una de las dos filas de troqueles.
         ///
-        /// It is measured from the column and not from the plate because the column governs the two rows:
-        /// the rear plate has to accept them, not define them.
+        /// La columna sigue gobernando el patrón —son sus filas, las que suben por la rejilla regular y a las
+        /// que se atornilla un brazo— pero el borde desde el que se acota es el de la placa. Es el datum
+        /// físicamente correcto: el troquel atraviesa las dos piezas, así que manda la más angosta, y la placa
+        /// lo es porque su ancho es el del patín de la base.
+        ///
+        /// UNA PULGADA por corrección del dueño. Fue 1.5 in y él mismo declaró que ese valor era un error
+        /// suyo. Es la ÚNICA autoridad del número: <see cref="CantileverPunchParameters.HorizontalEndOffset"/>
+        /// lo toma de aquí y nadie más lo escribe, así que preview, dibujo, BOM y cualquier resolutor derivado
+        /// se mueven juntos y no pueden quedar uno en 1.5 y otro en 1.0.
         /// </summary>
-        public const double PunchHorizontalEndOffset = 1.50;
+        public const double PunchHorizontalEndOffset = 1.00;
 
         /// <summary>Vertical spacing of the connection region, inches.</summary>
         public const double ConnectionPunchPitch = 2.00;
@@ -64,5 +72,25 @@ namespace RackCad.Domain.Systems.Cantilever
         /// There is no maximum — more rows simply extend the plate upwards (ADR-0025, D6).
         /// </summary>
         public const int ArmVerticalPunchCount = 2;
+
+        /// <summary>
+        /// Pendiente por omisión del cuerpo del brazo: 7/16 de subida por cada 12 in de vuelo.
+        ///
+        /// Valor aprobado por el dueño. Se escribe como la división que es —no como 0.4375— porque lo que él
+        /// dictó es la fracción, y un decimal redondeado a mano es la clase de número que nadie sabe de dónde
+        /// salió cuando hay que revisarlo.
+        /// </summary>
+        public const double ArmSlopeRisePer12 = 7.0 / 16.0;
+
+        /// <summary>
+        /// Margen vertical por omisión de la placa de montaje del brazo, en pulgadas: del primer troquel
+        /// elegido al borde inferior de la placa, y del último a su borde superior.
+        ///
+        /// DEJÓ DE SER un parámetro sin default aprobado. Hasta la ronda 3 era obligatorio y nulo a propósito,
+        /// para que nadie inventara un número que pareciese aprobado; el dueño aprobó 2 in, así que ya lo es.
+        /// La regla de rechazo sobrevive para un diseño que lo ponga en null explícitamente —uno leído de un
+        /// JSON viejo— porque «ausente» y «aprobado» siguen sin ser lo mismo.
+        /// </summary>
+        public const double ArmMountingPlateVerticalEndOffset = 2.00;
     }
 }

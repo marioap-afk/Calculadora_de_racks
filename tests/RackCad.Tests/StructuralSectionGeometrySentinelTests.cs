@@ -176,8 +176,13 @@ namespace RackCad.Tests
             Assert.Equal(-3.5, heel.Location.X, 6);
             Assert.Equal(-3.5, heel.Location.Y, 6);
 
-            var fillet = Assert.Single(geometry.OuterContour.Segments, s => s.IsArc);
+            // El filete se identifica por su radio y no por ser el unico arco: desde la ronda 3 de I-37D las
+            // dos puntas aportan cuatro arcos mas, de la mitad de ese radio.
+            var fillet = Assert.Single(
+                geometry.OuterContour.Segments, s => s.IsArc && Math.Abs(s.Radius - 0.71) < 1e-6);
+
             Assert.Equal(0.71, fillet.Radius, 6);
+            Assert.Equal(4, geometry.OuterContour.Segments.Count(s => s.IsArc && Math.Abs(s.Radius - 0.355) < 1e-6));
         }
 
         [Fact]
@@ -190,8 +195,34 @@ namespace RackCad.Tests
             Assert.DoesNotContain(simplified.OuterContour.Segments, s => s.IsArc);
             Assert.True(simplified.Bounds.ApproxEquals(new Bounds2D(-1.08, -1.08, 2.92, 2.92), Tol));
 
-            var fillet = Assert.Single(tabulated.OuterContour.Segments, s => s.IsArc);
-            Assert.Equal(0.625 - 0.25, fillet.Radius, 6);
+            // CINCO arcos: el filete de raíz y las CUATRO esquinas de las dos puntas. Y ni uno más — el
+            // talón EXTERIOR es un vértice vivo, no un redondeo.
+            //
+            // Esta sección es la que fija el TOPE de la regla de punta: t = 0.25 y filete = 0.625 − 0.25 =
+            // 0.375, así que la mitad del filete —0.1875— excede 0.45·t —0.1125— y el tope muerde. Una
+            // versión anterior de esta ronda topaba en t/2 = 0.125, las dos esquinas se tocaban y el ala
+            // terminaba en NARIZ semicircular. El dueño lo rechazó al verlo, y por eso el tope es 0.45.
+            var arcs = tabulated.OuterContour.Segments.Where(s => s.IsArc).ToList();
+
+            Assert.Equal(5, arcs.Count);
+
+            var filletRadius = 0.625 - 0.25;
+            var fillet = Assert.Single(arcs, s => Math.Abs(s.Radius - filletRadius) < 1e-6);
+
+            Assert.Equal(filletRadius, fillet.Radius, 6);
+
+            // Las cuatro de punta miden 0.45 · t, que es el tope, y no la mitad del filete.
+            var toes = arcs.Where(s => Math.Abs(s.Radius - (0.45 * 0.25)) < 1e-6).ToList();
+
+            Assert.Equal(4, toes.Count);
+
+            // NINGUNA es un semicírculo: cada una barre un cuarto de vuelta.
+            Assert.All(toes, t => Assert.Equal(Math.PI / 2.0, Math.Abs(t.SweepAngle), 6));
+
+            // Y entre las dos de una punta queda canto RECTO: si se tocaran, sería una nariz.
+            Assert.True(0.25 - (2.0 * 0.45 * 0.25) > 1e-9);
+
+            // El área sigue por encima de la simplificada: el filete añade más de lo que quitan las puntas.
             Assert.True(tabulated.Area > simplified.Area);
         }
 

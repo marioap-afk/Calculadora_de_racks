@@ -163,14 +163,17 @@ namespace RackCad.UI.Tests
         // ---- The real Default registry: frozen metadata (menu order) ----
 
         [Fact]
-        public void Default_HasTheSixModulesInMenuOrder()
+        public void Default_HasTheSevenModulesInMenuOrder()
         {
+            // I-37D anade Cantilever DESPUES de Push Back y antes de la cabecera, que es donde el menu pone su
+            // boton. Lo que esta prueba fija es que el registro y los botones digan lo mismo, no que haya seis.
             Assert.Equal(
                 new[]
                 {
                     RackSystemKind.SelectiveRack, // "Diseñar sistema selectivo"
                     RackSystemKind.PalletFlow,    // "Diseñar sistema dinámico (Pallet Flow)"
                     RackSystemKind.PushBack,      // "Diseñar sistema Push Back"
+                    RackSystemKind.Cantilever,    // "Diseñar línea Cantilever"
                     RackSystemKind.Selective,     // "Diseñar cabecera"
                     RackSystemKind.Cama,          // "Diseñar cama de rodamiento"
                     RackSystemKind.Larguero,      // "Diseñar larguero"

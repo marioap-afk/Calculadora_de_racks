@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RackCad.Application.Systems.Shared;
@@ -22,14 +22,15 @@ namespace RackCad.Tests
             RackSystemKind.Cama,
             RackSystemKind.Larguero,
             RackSystemKind.PushBack,
+            RackSystemKind.Cantilever,
         };
 
         [Fact]
-        public void Default_ContainsExactlyTheSixKinds_NoneMissingNoDuplicates()
+        public void Default_ContainsExactlyTheSevenKinds_NoneMissingNoDuplicates()
         {
             var kinds = SystemRegistry.Default.Descriptors.Select(d => d.Kind).ToArray();
 
-            Assert.Equal(6, kinds.Length);
+            Assert.Equal(7, kinds.Length);
             Assert.Equal(kinds.Length, kinds.Distinct().Count()); // no duplicates
             Assert.Equal(
                 Enum.GetValues(typeof(RackSystemKind)).Cast<RackSystemKind>().ToHashSet(),

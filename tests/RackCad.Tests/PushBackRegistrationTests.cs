@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using RackCad.Application.Persistence;
@@ -38,8 +38,9 @@ namespace RackCad.Tests
             Assert.Equal(2, (int)RackSystemKind.SelectiveRack);
             Assert.Equal(3, (int)RackSystemKind.Cama);
             Assert.Equal(4, (int)RackSystemKind.Larguero);
-            Assert.Equal(5, (int)RackSystemKind.PushBack);   // new, at the end
-            Assert.Equal(6, Enum.GetValues(typeof(RackSystemKind)).Length);
+            Assert.Equal(5, (int)RackSystemKind.PushBack);
+            Assert.Equal(6, (int)RackSystemKind.Cantilever);   // I-37D, at the end
+            Assert.Equal(7, Enum.GetValues(typeof(RackSystemKind)).Length);
         }
 
         [Fact]

@@ -85,7 +85,7 @@ namespace RackCad.Domain.Systems.Cantilever
         /// and the angle in degrees is DERIVED, never stored alongside — two magnitudes for one quantity
         /// drift apart on the first edit (ADR-0025, D4).
         /// </summary>
-        public double SlopeRisePer12 { get; set; }
+        public double SlopeRisePer12 { get; set; } = CantileverDefaults.ArmSlopeRisePer12;
 
         public CantileverArmBodyDesign DeepCopy() =>
             new CantileverArmBodyDesign
@@ -121,11 +121,13 @@ namespace RackCad.Domain.Systems.Cantilever
         public int VerticalPunchCount { get; set; } = CantileverDefaults.ArmVerticalPunchCount;
 
         /// <summary>
-        /// REQUIRED, no approved default. Distance from the first selected punch down to the plate's bottom
-        /// edge, and from the last selected punch up to its top edge. Null makes the design invalid — a value
-        /// invented here would be indistinguishable from an approved one.
+        /// Distancia del primer troquel elegido al borde inferior de la placa, y del último a su borde
+        /// superior. Dos pulgadas por omisión, aprobadas por el dueño en la ronda 3.
+        ///
+        /// Sigue siendo NULLABLE, y no por inercia: un diseño leído de un JSON anterior a esa aprobación no
+        /// trae el valor, y «ausente» no es «aprobado». El resolutor sigue rechazando el nulo explícito.
         /// </summary>
-        public double? VerticalEndOffset { get; set; }
+        public double? VerticalEndOffset { get; set; } = CantileverDefaults.ArmMountingPlateVerticalEndOffset;
 
         public CantileverArmMountingPlateDesign DeepCopy() =>
             new CantileverArmMountingPlateDesign

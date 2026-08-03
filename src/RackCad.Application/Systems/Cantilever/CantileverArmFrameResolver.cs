@@ -1,5 +1,6 @@
 using System;
 using RackCad.Application.Geometry;
+using RackCad.Application.StructuralSections.Geometry;
 using RackCad.Domain.Systems.Cantilever;
 
 namespace RackCad.Application.Systems.Cantilever
@@ -131,6 +132,49 @@ namespace RackCad.Application.Systems.Cantilever
         /// This is also the height direction of the end plate, which is why a stop grows visually upwards even
         /// on a sloped arm without anybody choosing a direction for it (ADR-0025, D7).
         /// </summary>
+        /// <summary>
+        /// El mismo miembro con su SUBIDA quitada: el eje conserva su rumbo en planta y pierde su pendiente.
+        ///
+        /// Es una convención de VISTA y no un cambio del modelo, pero vive AQUÍ porque construye un marco de
+        /// colocación y esa es la autoridad de los marcos del brazo. Un constructor de vistas que se fabricara
+        /// el suyo sería una segunda regla de orientación, y la primera vez que una de las dos cambiase el
+        /// brazo saldría girado en una vista y no en las otras.
+        ///
+        /// En la frontal la cámara mira a lo largo de Y, que es por donde vuela un brazo, así que uno sin
+        /// pendiente se ve como lo que es —su perfil, de frente— y uno con pendiente se ve como un manchón:
+        /// dos caras extremas separadas por la subida más las generatrices que las unen. Ese manchón no dice
+        /// nada que la frontal deba decir; la pendiente se lee en la lateral, que es donde se mide. Decisión
+        /// del dueño: «en la frontal no es necesario dibujar la inclinación, quiero ver el perfil original».
+        ///
+        /// Nada de esto toca lo resuelto: el BOM, la longitud de corte y las otras dos vistas siguen viendo el
+        /// brazo inclinado que el modelo dice. Un miembro de eje VERTICAL no tiene rumbo en planta que
+        /// conservar, así que se devuelve intacto en vez de inventarle uno.
+        /// </summary>
+        public static PrismaticSectionInstance WithoutRise(PrismaticSectionInstance placement)
+        {
+            if (placement == null)
+            {
+                throw new ArgumentNullException(nameof(placement));
+            }
+
+            var axis = placement.Frame.AxisZ;
+            var horizontal = Math.Sqrt((axis.X * axis.X) + (axis.Y * axis.Y));
+
+            if (horizontal <= GeometryTolerance.Length)
+            {
+                return placement;
+            }
+
+            var flat = new Vector3D(axis.X / horizontal, axis.Y / horizontal, 0.0);
+
+            return PrismaticSectionInstance.Create(
+                placement.SectionId,
+                placement.Length,
+                LocalFrame3D.Create(placement.Frame.Origin, flat, placement.Frame.AxisX),
+                placement.RotationDegrees,
+                placement.Mirrored);
+        }
+
         public static Vector3D DepthAxis(Vector3D axisZ)
         {
             if (!TryDepthAxis(axisZ, out var depth))

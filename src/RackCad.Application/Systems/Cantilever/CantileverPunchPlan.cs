@@ -4,10 +4,14 @@ using RackCad.Application.Geometry;
 
 namespace RackCad.Application.Systems.Cantilever
 {
-    /// <summary>The world axis a punch is drilled along. Only the two the sub-assembly uses exist.</summary>
+    /// <summary>The world axis a punch is drilled along. Only the two the assembly uses exist.</summary>
     public enum CantileverPunchAxis
     {
-        /// <summary>Along the base direction: every connection punch, on the column face and on the rear plate.</summary>
+        /// <summary>
+        /// Along the base direction. Every connection punch, on the column face and on the rear plate; and,
+        /// from I-37D, every separator and brace punch — those connections are transverse too, because the
+        /// bracing plane is a Y offset from the column and the separator's end laps a plate on that face.
+        /// </summary>
         AlongY = 0,
 
         /// <summary>Along the column axis: every punch of the column's bottom plate.</summary>
@@ -33,7 +37,19 @@ namespace RackCad.Application.Systems.Cantilever
         /// The mid-thickness of an arm's mounting plate (I-37B). Its punches share the column's DATUMS while
         /// sitting at a different Y — which is the whole reason the datum excludes the axis coordinate.
         /// </summary>
-        ArmMountingPlate = 3
+        ArmMountingPlate = 3,
+
+        /// <summary>The mid-thickness of a separator's column plate (I-37D).</summary>
+        SeparatorColumnPlate = 4,
+
+        /// <summary>A separator's own body: its two end holes and its two brace holes (I-37D).</summary>
+        Separator = 5,
+
+        /// <summary>The body of a structural brace, at its two ends (I-37D).</summary>
+        Brace = 6,
+
+        /// <summary>The separator-facing square face of a cold-rolled brace's end adapter (I-37D).</summary>
+        ColdRolledAdapter = 7
     }
 
     /// <summary>

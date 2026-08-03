@@ -1,0 +1,118 @@
+<Window x:Class="RackCad.UI.Systems.Cantilever.Components.CantileverArmWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:components="clr-namespace:RackCad.UI.Systems.Cantilever.Components"
+        xmlns:controls="clr-namespace:RackCad.UI.Controls"
+        Title="RackCad – Brazo"
+        Style="{DynamicResource EditorShellWindowStyle}"
+        WindowStartupLocation="CenterOwner"
+        Width="1000" Height="700">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- I-37D ronda 2. Mismo shell que los otros tres configuradores: aquí sólo van los campos del brazo. Sus
+         parámetros son EXACTAMENTE los que ya tenía la ventana principal; esta ronda los muda, no los redefine. -->
+    <components:CantileverComponentEditorShell x:Name="Shell">
+
+        <components:CantileverComponentEditorShell.Header>
+            <TextBlock x:Name="HeaderText" Style="{StaticResource SectionTitle}" TextWrapping="Wrap" />
+        </components:CantileverComponentEditorShell.Header>
+
+        <components:CantileverComponentEditorShell.Parameters>
+            <StackPanel>
+                <TextBlock Text="Cuerpo" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
+                <TextBlock Text="Arreglo" Style="{StaticResource FieldLabel}" />
+                <ComboBox x:Name="ArrangementBox" SelectionChanged="Combo_Changed"
+                          ToolTip="Los arreglos apareados exigen canal: lo impone el resolvedor de arreglos, no esta ventana." />
+                <TextBlock x:Name="SectionText" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+                <TextBlock Text="Longitud de corte (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="CutLengthBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                <TextBlock Text="Pendiente (subida por 12 in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="SlopeBox" LostFocus="Input_Changed" Minimum="0" />
+
+                <TextBlock Text="Placa de montaje" Style="{StaticResource SectionTitle}" />
+                <TextBlock Text="Espesor (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="PlateThicknessBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                <TextBlock Text="Troqueles verticales" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="PunchCountBox" LostFocus="Input_Changed" IntegerOnly="True" Minimum="2" />
+                <TextBlock Text="Margen vertical (in) — obligatorio" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="VerticalOffsetBox" LostFocus="Input_Changed" Minimum="0" />
+
+                <TextBlock Text="Placa de extremo" Style="{StaticResource SectionTitle}" />
+                <ComboBox x:Name="EndPlateModeBox" SelectionChanged="Combo_Changed" />
+                <TextBlock Text="Espesor (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="EndPlateThicknessBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                <TextBlock Text="Altura extra de tope (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="ExtraStopBox" LostFocus="Input_Changed" Minimum="0" />
+
+                <TextBlock Text="Contexto de la vista previa" Style="{StaticResource SectionTitle}" />
+                <TextBlock Text="Sección de columna (referencia)" Style="{StaticResource FieldLabel}" />
+                <TextBlock x:Name="ColumnContextText" FontSize="11" TextWrapping="Wrap"
+                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+            </StackPanel>
+        </components:CantileverComponentEditorShell.Parameters>
+
+        <components:CantileverComponentEditorShell.SectionPicker>
+            <StackPanel>
+                <TextBlock Text="Sección del brazo" Style="{StaticResource SectionTitle}" />
+                <controls:StructuralSectionPicker x:Name="SectionPicker" Height="240" SectionChosen="SectionChosen" />
+            </StackPanel>
+        </components:CantileverComponentEditorShell.SectionPicker>
+
+        <components:CantileverComponentEditorShell.Preview>
+            <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,8">
+                        <RadioButton x:Name="PreviewFrontalRadio" Content="Frontal" IsChecked="True" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" Margin="0,0,14,0" />
+                        <RadioButton x:Name="PreviewLateralRadio" Content="Lateral" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" Margin="0,0,14,0" />
+                        <RadioButton x:Name="PreviewPlantaRadio" Content="Planta" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" />
+                    </StackPanel>
+                    <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="{DynamicResource ShellPreviewBackgroundBrush}"
+                            ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />
+                </Grid>
+            </Border>
+        </components:CantileverComponentEditorShell.Preview>
+
+        <components:CantileverComponentEditorShell.Diagnostics>
+            <TextBlock x:Name="DiagnosticsText" TextWrapping="Wrap" FontSize="11.5"
+                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+        </components:CantileverComponentEditorShell.Diagnostics>
+
+        <components:CantileverComponentEditorShell.BomSummary>
+            <TextBlock x:Name="BomText" TextWrapping="Wrap" FontSize="11.5"
+                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+        </components:CantileverComponentEditorShell.BomSummary>
+
+        <components:CantileverComponentEditorShell.Actions>
+            <DockPanel>
+                <Button x:Name="RestoreButton" Content="Restaurar" DockPanel.Dock="Left" MinWidth="110"
+                        Style="{StaticResource SecondaryButtonStyle}" Click="Restore_Click" />
+                <Button x:Name="InsertButton" Content="Insertar sólo esta pieza" DockPanel.Dock="Left" MinWidth="180"
+                        Margin="8,0,0,0" Style="{StaticResource SecondaryButtonStyle}" Click="InsertComponent_Click"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Dibuja la pieza sola, como bloque independiente y NO editable. No modifica la línea que estás editando." />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="AcceptButton" Content="Aceptar" MinWidth="110" Margin="8,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}" Click="Accept_Click" />
+                    <Button Content="Cancelar" MinWidth="110" Margin="8,0,0,0" IsCancel="True"
+                            Style="{StaticResource SecondaryButtonStyle}" Click="Cancel_Click" />
+                </StackPanel>
+            </DockPanel>
+        </components:CantileverComponentEditorShell.Actions>
+    </components:CantileverComponentEditorShell>
+</Window>

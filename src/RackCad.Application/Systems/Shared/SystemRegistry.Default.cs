@@ -34,6 +34,8 @@ namespace RackCad.Application.Systems.Shared
                 WriteLarguero, BuildLarguero, IsUsableLarguero),
             new SystemDescriptor(RackSystemKind.PushBack, "Push Back", "el sistema Push Back",
                 WritePushBack, BuildPushBack, IsUsablePushBack),
+            new SystemDescriptor(RackSystemKind.Cantilever, "Cantilever", "la línea Cantilever",
+                WriteCantilever, BuildCantilever, IsUsableCantilever),
         });
 
         // --- Selective (standalone cabecera) ---
@@ -191,6 +193,58 @@ namespace RackCad.Application.Systems.Shared
 
         // A wrapper that names a type but omits its payload is corrupt/truncated — fail clearly, with the same message the
         // store used before the migration. Strongly typed (no object) to honor the no-object/no-unchecked-cast rule.
+        // --- Cantilever (the line) ---
+
+        /// <summary>
+        /// Writes the line payload, and THROWS when there is none.
+        ///
+        /// Every other writer here returns false when its payload is absent, and the store answers that by
+        /// re-stamping <c>Kind = Selective</c> and writing a bare header. That fallback is right for the kinds it
+        /// was built for: a header exists for all of them and the historical bare-header file is a real format.
+        ///
+        /// It is WRONG here. A <see cref="RackProject"/> with <c>Kind = Cantilever</c> and no design is a
+        /// programming error, not a legacy document — <c>ForCantilever</c> is the only way to make one — and the
+        /// fallback would turn it into a file that says it is a cabecera. The rack would be gone, the file would
+        /// load without complaint, and the loss would surface as an empty drawing much later. Failing here costs
+        /// an exception at the moment of the mistake.
+        /// </summary>
+        private static bool WriteCantilever(RackProject project, RackProjectDocument document)
+        {
+            if (project.CantileverLineDesign == null)
+            {
+                throw new InvalidOperationException(
+                    "El proyecto declara tipo 'la línea Cantilever' pero no trae su diseño; " +
+                    "guardarlo lo convertiría en una cabecera vacía.");
+            }
+
+            document.Cantilever = CantileverLineDocument.FromDomain(
+                project.CantileverLineDesign, project.SourceDocument?.Cantilever);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Rebuilds the line project from its document.
+        ///
+        /// It carries only the DESIGN. Resolving the line needs the section catalogue and the two eligibility
+        /// policies, and the store has no business loading a catalogue: a caller that has one resolves it, exactly
+        /// as a library load defers the Push Back system. <paramref name="builder"/> is the dynamic-structure
+        /// member builder and has nothing to rebuild here — a Cantilever line has no bracing panel members.
+        /// </summary>
+        private static RackProject BuildCantilever(RackProjectDocument document, BracingPanelMemberBuilder builder)
+        {
+            RequirePayload(document.Cantilever, "la línea Cantilever");
+            SchemaGuard.CheckReadable(
+                document.Cantilever.SchemaVersion,
+                CantileverLineDocument.CurrentSchemaVersion,
+                "La línea Cantilever");
+
+            return RackProject.ForCantilever(document.Cantilever.ToDomain());
+        }
+
+        private static bool IsUsableCantilever(RackProject project)
+            => RackDesignValidation.IsUsableCantilever(project.CantileverLineDesign);
+
         private static void RequirePayload<T>(T payload, string typeName)
             where T : class
         {

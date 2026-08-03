@@ -77,6 +77,21 @@ namespace RackCad.Plugin
                         RackSelectivoCommands.DrawSelectiveView(
                             selective.View, selective.System, selective.Design, selective.RackId, selective.RackName);
                         break;
+                    // The component case comes FIRST: it is a loose piece, not a line, and it writes no envelope.
+                    case CantileverComponentInsertionRequest component:
+                        RackCantileverCommands.DrawCantileverComponent(component);
+                        break;
+                    case CantileverInsertionRequest cantilever:
+                        RackCantileverCommands.DrawCantileverView(
+                            cantilever.View,
+                            cantilever.Section,
+                            cantilever.Line,
+                            cantilever.Design,
+                            cantilever.RackId,
+                            cantilever.RackName,
+                            source: null,
+                            innerSource: cantilever.SourceProject);
+                        break;
                     case PushBackInsertionRequest pushBack:
                         RackPushBackCommands.DrawPushBackView(
                             pushBack.View,

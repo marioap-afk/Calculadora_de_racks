@@ -52,6 +52,29 @@ namespace RackCad.Plugin.Drawing
             }
         }
 
+        /// <summary>
+        /// The PLACE side alone: jig-drag a reference of an already-created definition and, when the user cancels,
+        /// erase the leftover definition. Returns the appended reference id (or <see cref="ObjectId.Null"/>).
+        ///
+        /// It exists for a system whose definition is NOT built from the block library — a Cantilever view is
+        /// polylines, so it has no <c>LateralHeaderDrawOutcome</c> and nothing to report as "missing pieces", and
+        /// <see cref="PlaceAndReport"/>'s header vocabulary would not describe it. The drag and the
+        /// cancelled-insert cleanup are the same two methods either way: this is the seam, not a copy of them.
+        /// </summary>
+        internal static ObjectId PlaceDefinition(Document document, ObjectId definitionId, string prompt = null)
+        {
+            var placedId = PlaceBlockWithJig(document, definitionId, prompt);
+
+            if (placedId.IsNull)
+            {
+                // Cancelled placement: the fresh definition — with the rack payload already embedded — would
+                // linger as a phantom view that RACKEDITAR's GUID scan finds and redraws. Remove it.
+                EraseUnreferencedDefinition(document, definitionId);
+            }
+
+            return placedId;
+        }
+
         /// <summary>Append a reference to a block definition at a fixed point (no jig); returns the reference id.</summary>
         internal static ObjectId AppendReference(Document document, ObjectId blockDefinitionId, Point3d insertion)
         {
@@ -148,7 +171,7 @@ namespace RackCad.Plugin.Drawing
 
         /// <summary>Drag a reference of the block under the cursor; commit it where the user clicks. Returns the
         /// appended reference's id (or <see cref="ObjectId.Null"/> if the user cancelled) so the caller can tag it.</summary>
-        private static ObjectId PlaceBlockWithJig(Document document, ObjectId blockDefinitionId)
+        private static ObjectId PlaceBlockWithJig(Document document, ObjectId blockDefinitionId, string prompt = null)
         {
             var database = document.Database;
             var editor = document.Editor;
@@ -157,7 +180,7 @@ namespace RackCad.Plugin.Drawing
             using (var transaction = database.TransactionManager.StartTransaction())
             {
                 var reference = new BlockReference(Point3d.Origin, blockDefinitionId);
-                var jig = new HeaderInsertionJig(reference);
+                var jig = new HeaderInsertionJig(reference, prompt);
                 var result = editor.Drag(jig);
 
                 if (result.Status != PromptStatus.OK)
@@ -180,16 +203,20 @@ namespace RackCad.Plugin.Drawing
         /// <summary>Entity jig that keeps the header block under the cursor until the user picks a point.</summary>
         private sealed class HeaderInsertionJig : EntityJig
         {
+            private readonly string prompt;
             private Point3d position;
 
-            public HeaderInsertionJig(BlockReference reference)
+            /// <summary>A null <paramref name="prompt"/> keeps the historic cabecera wording, so every caller that
+            /// existed before I-37D reads exactly what it always read.</summary>
+            public HeaderInsertionJig(BlockReference reference, string prompt = null)
                 : base(reference)
             {
+                this.prompt = string.IsNullOrWhiteSpace(prompt) ? "\nPunto de insercion de la cabecera: " : prompt;
             }
 
             protected override SamplerStatus Sampler(JigPrompts prompts)
             {
-                var options = new JigPromptPointOptions("\nPunto de insercion de la cabecera: ")
+                var options = new JigPromptPointOptions(prompt)
                 {
                     UserInputControls = UserInputControls.Accept3dCoordinates | UserInputControls.NullResponseAccepted
                 };

@@ -508,8 +508,12 @@ namespace RackCad.Application.Systems.Cantilever
                 return null;
             }
 
+            // The column must be tall enough for the highest punch's WHOLE hole, which is its elevation plus
+            // the RADIUS. It used to be the elevation plus a margin the design supplied; the owner retired that
+            // margin (I-37D, corrección de columna y base), and the rule now lives in the grid.
             var byPunch = highestElevation +
-                          (design.ColumnBaseTemplate?.Connection?.Punches?.ColumnTopPunchOffset ?? 0.0);
+                          ((design.ColumnBaseTemplate?.Connection?.Punches?.Diameter
+                            ?? CantileverDefaults.PunchDiameter) / 2.0);
 
             return Math.Max(byOccupation, byPunch);
         }

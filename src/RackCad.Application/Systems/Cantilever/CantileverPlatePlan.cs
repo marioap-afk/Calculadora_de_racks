@@ -32,7 +32,18 @@ namespace RackCad.Application.Systems.Cantilever
         /// The plate that closes an arm's free end (I-37B) — a cap, or a stop when it reaches above the body.
         /// Perpendicular to the arm's sloped axis, not to the world.
         /// </summary>
-        ArmEnd = 4
+        ArmEnd = 4,
+
+        /// <summary>
+        /// The plate on a column's bracing face that receives one end of a separator (I-37D). Its normal is
+        /// ±Y: the separator's end LAPS it and is bolted transversely, which is why it is a plate on a side
+        /// face and not a cap on the column's X face.
+        ///
+        /// Its single centred hole is a DATUM, not a decoration: the separator's cut length is derived from the
+        /// distance between the two plates' holes, so a plate that moved would move the separator with it
+        /// rather than leaving the two disagreeing (ADR-0027, D5).
+        /// </summary>
+        SeparatorColumn = 5
     }
 
     /// <summary>

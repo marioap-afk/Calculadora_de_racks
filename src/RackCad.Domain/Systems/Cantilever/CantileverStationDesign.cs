@@ -85,13 +85,29 @@ namespace RackCad.Domain.Systems.Cantilever
         public CantileverColumnBaseConnectionDesign Connection { get; set; } =
             new CantileverColumnBaseConnectionDesign();
 
+        /// <summary>
+        /// Whether choosing a column also chooses the base.
+        ///
+        /// A Cantilever is normally built from ONE profile, so the base follows the column until the user picks
+        /// a base by hand; from then on the base is theirs and a column change leaves it alone. It was motivo 4
+        /// of the round-1 rejection.
+        ///
+        /// <para>It is stored INTENT and is never derived from «the two ids happen to be equal». Two sections
+        /// can coincide by accident, and a user who deliberately chose the same base would lose that decision
+        /// the first time they changed the column. It is PERSISTED for the mirror reason: reopening a line must
+        /// not change the rule under it. A JSON with no key leaves it <c>true</c>, which is what a new design
+        /// says — and no saved design predates the field, because I-37D has not been integrated.</para>
+        /// </summary>
+        public bool BaseFollowsColumn { get; set; } = true;
+
         public CantileverStationColumnBaseTemplateDesign DeepCopy() =>
             new CantileverStationColumnBaseTemplateDesign
             {
                 ColumnSectionId = ColumnSectionId,
                 ColumnBottomPlate = ColumnBottomPlate?.DeepCopy() ?? new CantileverPlateDesign(),
                 Base = Base?.DeepCopy() ?? new CantileverBaseDesign(),
-                Connection = Connection?.DeepCopy() ?? new CantileverColumnBaseConnectionDesign()
+                Connection = Connection?.DeepCopy() ?? new CantileverColumnBaseConnectionDesign(),
+                BaseFollowsColumn = BaseFollowsColumn
             };
 
         /// <summary>
@@ -129,10 +145,10 @@ namespace RackCad.Domain.Systems.Cantilever
         public int VerticalPunchCount { get; set; } = CantileverDefaults.ArmVerticalPunchCount;
 
         /// <summary>
-        /// Margin from the outermost punches to the plate's edges, inches. REQUIRED — I-37B approved no
-        /// default for it, and the station does not invent one either.
+        /// Margen de los troqueles extremos a los bordes de la placa, en pulgadas. Dos por omisión, aprobadas
+        /// por el dueño en la ronda 3; hasta entonces era obligatorio y sin default a propósito.
         /// </summary>
-        public double? VerticalEndOffset { get; set; }
+        public double? VerticalEndOffset { get; set; } = CantileverDefaults.ArmMountingPlateVerticalEndOffset;
 
         public CantileverArmMountingPlateTemplateDesign DeepCopy() =>
             new CantileverArmMountingPlateTemplateDesign

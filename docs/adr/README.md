@@ -66,6 +66,8 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0024](0024-fundacion-cantilever-base-columna.md) | Fundación Cantilever: diseño en Domain, resolución en Application y autoridad compartida base–columna | aceptado |
 | [0025](0025-brazo-cantilever-cuerpo-compuesto-y-conexion.md) | El brazo Cantilever: cuerpo simple o compuesto, y su conexión a la columna | aceptado |
 | [0026](0026-estacion-cantilever-niveles-altura-y-bom.md) | La estación Cantilever: caras, niveles, altura y BOM por componentes | aceptado |
+| [0027](0027-linea-cantilever-intervalos-y-arriostramiento.md) | La línea Cantilever: intervalos, distribución de paneles y arriostramiento | aceptado |
+| [0028](0028-cantilever-persistencia-vistas-editor-y-dibujo.md) | Cantilever visible: persistencia, registro, vistas, editor y materialización | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -196,3 +198,23 @@ regular** tiene una sola autoridad, que I-37A también consume, y **acumula** �
 exactamente lo que I-37A enviaba; su **dominio** es numérico y derivado de la precisión del `double`, no un
 límite comercial. Con eso la dependencia altura→troqueles→niveles→altura se resuelve como una secuencia de
 once pasos cuyo pase final se **verifica** contra el layout previo y **falla cerrado** si difiere.
+
+Iniciativa I-37D (`feature/cantilever-mvp-final`): **ADR-0027 y ADR-0028 nacieron `propuestos` y quedaron
+`aceptados` el 2026-08-03**, tras la validación manual del Owner en AutoCAD 2025
+(`OWNER_APPROVED_I37D_MANUAL_VALIDATION`, sin defectos bloqueantes). Entre los dos cierran el MVP. **ADR-0027** decide la geometría de la línea: que un intervalo es del **par** de estaciones
+adyacentes —y no de una de ellas, que es lo que convertiría a la primera o la última en un caso especial y
+haría contar un separador dos veces—; que la cantidad de paneles arriostrados es una **regla**,
+`max(1, ceil((H − 72)/60))`, que reproduce las doce filas de la tabla de producto y sigue respondiendo en la
+altura trece; que los paneles se agrupan **desde abajo en bloques de dos** con el bloque incompleto arriba y
+sólo el remanente repartido a los extremos; que el **corte de un separador** lo dictan los **agujeros de las
+placas de columna** y nunca la separación entre centros, porque restar un ancho de columna cableado deja de
+valer al cambiar de sección; y que un tensor **cold rolled** necesita **adaptadores**, porque una varilla no se
+taladra y atornilla como un perfil y sin ellos el BOM no se puede comprar.
+
+**ADR-0028** decide cómo se hace visible: se persiste la **intención** versionada y nunca el resultado
+resuelto; el sistema entra en el **registro vigente** y ningún string de kind vive fuera de él; las tres vistas
+son **planes puros** que sólo el Plugin materializa, de modo que una vista se puede probar sin AutoCAD; el
+editor va **sobre el shell visual común** y una operación de matriz produce **una** regeneración y no una por
+celda; y la materialización **reutiliza** el Drawing vigente en vez de copiar otro sistema. Su gate es el
+**veredicto manual del Owner en AutoCAD 2025**: CI verde es necesario y **no** suficiente, porque las pruebas
+no ven los bloques DWG reales.

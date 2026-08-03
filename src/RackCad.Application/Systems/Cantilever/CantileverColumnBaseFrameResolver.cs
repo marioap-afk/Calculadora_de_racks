@@ -41,7 +41,7 @@ namespace RackCad.Application.Systems.Cantilever
         /// the section centroid, so both shifts are offsets read from the envelope — never "half of d".
         /// </summary>
         public static LocalFrame3D ColumnFrame(
-            CantileverColumnOrientation orientation, StructuralSectionGeometry geometry)
+            CantileverColumnOrientation orientation, StructuralSectionGeometry geometry, double columnStartZ)
         {
             if (geometry == null)
             {
@@ -57,7 +57,7 @@ namespace RackCad.Application.Systems.Cantilever
                         new Point3D(
                             -bounds.Center.X,
                             CantileverColumnBaseDatum.ConnectionPlaneY - bounds.MaxY,
-                            CantileverColumnBaseDatum.FloorZ),
+                            columnStartZ),
                         Vector3D.UnitZ,
                         Vector3D.UnitX);
 
@@ -113,8 +113,9 @@ namespace RackCad.Application.Systems.Cantilever
         }
 
         /// <summary>
-        /// Reflects a frame through the column's CENTRAL PLANE <c>y = 0</c>, for the second face of a station
-        /// (I-37C).
+        /// Reflects a frame through the column's CENTRAL PLANE, for the second face of a station (I-37C).
+        ///
+        /// El plano lo pone el llamador y ya NO es <c>y = 0</c>: ver <see cref="Reflect(Point3D, double)"/>.
         ///
         /// It lives here, and not in the station that needs it, because constructing a placement frame is what
         /// this type is the authority for — a source guard enforces exactly that. The station transforms a
@@ -126,20 +127,60 @@ namespace RackCad.Application.Systems.Cantilever
         /// what that flag is for. A caller that took this frame and forgot the flag would silently un-mirror
         /// an asymmetric section, so the two belong together.
         /// </summary>
-        public static LocalFrame3D MirrorAboutCentralPlane(LocalFrame3D frame)
+        public static LocalFrame3D MirrorAboutCentralPlane(LocalFrame3D frame, double planeY)
         {
             if (frame == null)
             {
                 throw new ArgumentNullException(nameof(frame));
             }
 
-            return LocalFrame3D.Create(Reflect(frame.Origin), Reflect(frame.AxisZ), Reflect(frame.AxisX));
+            GeometryTolerance.RequireFinite(planeY, nameof(planeY));
+
+            // La X local se NIEGA además de reflejarse, y ahí está la corrección.
+            //
+            // `LocalFrame3D` fija AxisY = AxisZ × AxisX, así que reflejar sólo Z y X dejaba una AxisY volteada:
+            // la sección quedaba boca abajo, y el flag `Mirrored` que el llamador voltea compensa en la X, no
+            // en la Y. Las dos cosas juntas no se cancelan — dan un giro de 180° sobre el eje del miembro.
+            //
+            // En una W, que es doblemente simétrica, ese giro no cambia el contorno y por eso nadie lo veía;
+            // en cuanto la base sea un perfil asimétrico —un canal, un ángulo— sale del revés. Medido sobre la
+            // línea de referencia en gónd0la doble: el patín inferior de la base espejada se dibujaba arriba,
+            // entre 11.82 y 12.2 in, en vez de abajo entre 0 y 0.38.
+            //
+            // Negando la X local, AxisY se conserva y el flag `Mirrored` compensa exactamente el eje que se
+            // negó. La reflexión sigue siendo impropia y la mano sigue viviendo en el flag: lo único que
+            // cambia es CUÁL de los dos ejes carga con ella.
+            var reflectedX = Reflect(frame.AxisX);
+
+            return LocalFrame3D.Create(
+                Reflect(frame.Origin, planeY),
+                Reflect(frame.AxisZ),
+                new Vector3D(-reflectedX.X, -reflectedX.Y, -reflectedX.Z));
         }
 
-        /// <summary>Reflects a point through <c>y = 0</c>.</summary>
-        public static Point3D Reflect(Point3D p) => new Point3D(p.X, -p.Y, p.Z);
+        /// <summary>
+        /// Reflects a point through the plane <c>y = planeY</c>.
+        ///
+        /// EL PLANO DEJÓ DE SER <c>y = 0</c> en la ronda 3 de I-37D, y la causa es física. <c>y = 0</c> es el
+        /// plano de CONEXIÓN —la cara de la columna contra la que apoya la placa trasera de la base— y la
+        /// columna entera vive en <c>y ≤ 0</c>. Espejar ahí ponía la base del lado negativo ENCIMA de la
+        /// columna: con una W10X33 de 9.73 in de canto las dos ocupaban el mismo sitio a lo largo de 9.5 in, y
+        /// en la lateral la columna se dibujaba dentro de la base. Es lo que el dueño reportaba como piezas
+        /// invertidas o desfasadas.
+        ///
+        /// El plano correcto es el MEDIO de la columna. Con él, la placa trasera del lado negativo cae en la
+        /// cara lejana de la columna, que es exactamente donde la placa de montaje del brazo negativo ya
+        /// estaba: el brazo llevaba razón desde el principio y la base era la que discrepaba con él.
+        /// </summary>
+        public static Point3D Reflect(Point3D p, double planeY) =>
+            new Point3D(p.X, (2.0 * planeY) - p.Y, p.Z);
 
-        /// <summary>Reflects a direction through <c>y = 0</c>.</summary>
+        /// <summary>
+        /// Reflects a DIRECTION through any plane normal to Y.
+        ///
+        /// Sin parámetro de plano a propósito: una dirección no tiene posición, así que todo plano normal a Y
+        /// la refleja igual. Darle uno sugeriría que el resultado depende de él.
+        /// </summary>
         public static Vector3D Reflect(Vector3D v) => new Vector3D(v.X, -v.Y, v.Z);
     }
 }

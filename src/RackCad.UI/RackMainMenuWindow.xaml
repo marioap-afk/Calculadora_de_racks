@@ -94,6 +94,13 @@
                     </StackPanel>
                 </Button>
 
+                <Button Style="{StaticResource MenuButton}" Click="DesignCantilever_Click">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar línea Cantilever" />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="Carga larga en voladizo: estaciones, brazos por nivel y lado, arriostramiento; vistas frontal, lateral y planta." />
+                    </StackPanel>
+                </Button>
+
                 <Button Style="{StaticResource MenuButton}" Click="DesignHeader_Click">
                     <StackPanel>
                         <TextBlock Style="{StaticResource OptionTitle}" Text="Diseñar cabecera" />
@@ -125,7 +132,7 @@
                 <Button Style="{StaticResource MenuButton}" Click="OpenDesignLibrary_Click">
                     <StackPanel>
                         <TextBlock Style="{StaticResource OptionTitle}" Text="Abrir de la biblioteca de diseños" />
-                        <TextBlock Style="{StaticResource OptionCaption}" Text="Reabre cualquier diseño guardado: cabecera, dinámico, Push Back, selectivo, cama o larguero." />
+                        <TextBlock Style="{StaticResource OptionCaption}" Text="Reabre cualquier diseño guardado: cabecera, dinámico, Push Back, Cantilever, selectivo, cama o larguero." />
                     </StackPanel>
                 </Button>
 

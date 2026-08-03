@@ -87,6 +87,11 @@ namespace RackCad.Application.Persistence
                 case RackEmbedDocument.KindDynamic: return "Sistema dinámico";
                 case RackEmbedDocument.KindCabecera: return "Cabecera";
                 case RackEmbedDocument.KindCama: return "Cama de rodamiento";
+                case RackEmbedDocument.KindCantilever: return "Cantilever";
+
+                // Push Back has no case here and lists as its raw kind. That is an ADJACENT gap, not this
+                // initiative's: I-37D adds Cantilever only, and fixing a neighbouring system's label "on the way
+                // past" would change what RACKLISTA shows for racks nobody asked about.
                 default: return kind ?? string.Empty;
             }
         }

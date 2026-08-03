@@ -965,6 +965,54 @@ y I-37 no se cierra.
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
 
+#### I-37D — **VALIDADA por el Owner** · lista para integrar
+
+> **Validación manual APROBADA el 2026-08-03** (`OWNER_APPROVED_I37D_MANUAL_VALIDATION`): todo funciona
+> correctamente, **sin defectos bloqueantes observados**. **ADR-0027 y ADR-0028 quedan `aceptados`.**
+> I-37D pasa a **implementation-complete · validation-complete · integration-ready**.
+> **Todavía NO está integrada** — eso lo dice el merge, no este párrafo.
+
+| Campo | Valor |
+|---|---|
+| Rama | `feature/cantilever-mvp-final` (conservada, **sin merge**) |
+| `CODE_SHA` funcional | `dd9e4a5` |
+| `VALIDATED_BUILD_SHA` | **ninguno para esta ronda** — ver la nota de trazabilidad abajo |
+| Suites | `RackCad.Tests` **2978** · `RackCad.UI.Tests` **621** |
+| Regresiones | **14/14 en rojo** ([evidencia](automation/evidence/I-37D-round-4-regressions.md)) |
+| CI | [`30674507385`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30674507385) ✅ sobre `4e4e6d9` |
+| Bundle | Release verificado, 153 comprobaciones, cero DLL de Autodesk |
+| **Validación manual en AutoCAD** | ✅ **APROBADA 2026-08-03** — [paquete de la ronda 4](automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) |
+| `VALIDATED_BUILD_SHA` | `a594eb5` · DLL Debug `F237CC79…8985B6E1` |
+
+**Qué cambió, en corto.** El **adaptador** de tensor cold rolled dejó de dibujarse como una L construida a
+mano y es un **prisma estructural real** de `AISC-L-L2X2X3_16`, proyectado por la misma tubería que columnas
+y separadores. Sus **dos agujeros** están centrados **cada uno en su propia ala**, en el plano medio real de
+esa ala: la separación mide `(0.820358, −0.906250, 0.385099)`, módulo `1.281631 in`, y **ΔY ya no es cero**.
+Queda revocada `RodHoleAxialOffset = CutLength / 2`.
+
+Como el **centro del agujero de varilla es el datum físico** del extremo del tensor, la longitud nominal pasa
+de `92.131526` a `92.319026 in` — **crece 0.1875 in, exactamente el espesor del ángulo**, porque la
+aproximación medía hasta la cara del ala y la física mide hasta su plano medio. **El BOM cambia con ella**, y
+es legítimo (decisión 14.5): las cantidades no se mueven, sólo la longitud que se ordena.
+
+Y la **secuencia vertical de paneles** admite modo **avanzado**: `PanelLayoutMode`, segmentos declarados
+tramo a tramo, y una **lista efectiva única** que es la sola entrada del resolver en los dos modos. De ella
+salen los **separadores por fronteras únicas** y los **tensores por segmentos `CrossBraced`**. El modo
+automático **no cambió el producto**: línea, BOM y las seis vistas siguen en su pin.
+
+**La vista «Sección del adaptador»** (decisión 14.7) ya está implementada. El adaptador no se lee como una L
+en ninguna de las tres vistas de la línea —su eje de corte corre dentro del plano del panel— y el dueño
+decidió **no deformar ninguna vista** para disimularlo, sino darle al configurador de tensor una vista propia
+que mire por ese eje. Su cámara sale del **marco de la pieza**, y consume la **misma**
+`StructuralSectionGeometry` que el prisma: una prueba compara el **área** del contorno proyectado contra la
+del catálogo, que es independiente de la cámara, así que una geometría paralela no pasaría desapercibida.
+Las tres vistas de la línea **no se tocaron**, y hay prueba sobre sus cámaras.
+
+**El trabajo se movió a `D:`.** `C:` llegó al 100 % dos veces en esta iniciativa y una de ellas truncó un
+archivo fuente. El worktree vive ahora en `D:/Documentos/Codex/worktrees/feature-cantilever-mvp-final`, y
+`TEMP`, `TMP`, `NUGET_PACKAGES` y `DOTNET_CLI_HOME` apuntan a `D:`. `global.json` **no se tocó**. La puerta de
+espacio que se fijó en la ronda anterior queda **sin efecto**: era un parche a un problema que ya no existe.
+
 ### I-37C — INTEGRADA en `main` (2026-07-29) — **la estación, y el primer BOM de Cantilever**
 
 I-37C tampoco dibuja: el usuario **no ve nada nuevo**. Lo que cambia es que el producto sabe componer una

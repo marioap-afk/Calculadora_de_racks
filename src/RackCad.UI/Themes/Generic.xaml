@@ -1,5 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:components="clr-namespace:RackCad.UI.Systems.Cantilever.Components"
+                    xmlns:controls="clr-namespace:RackCad.UI.Controls"
                     xmlns:shell="clr-namespace:RackCad.UI.Shell">
 
     <!-- Shared tokens and styles (window background, buttons, field styles, shell tokens). -->
@@ -8,6 +10,126 @@
     </ResourceDictionary.MergedDictionaries>
 
     <shell:ShellSlotVisibilityConverter x:Key="ShellSlotVisibility" />
+    <controls:SectionFamilyLabelConverter x:Key="SectionFamilyLabel" />
+
+    <!-- I-37D ronda 2 (motivos 1 y 6): el shell comun de los CUATRO editores de componente. Dividir el producto
+         en una ventana por componente solo ayuda si las cuatro ventanas son la misma ventana: cuatro layouts
+         escritos a mano divergirian en la primera correccion y el usuario aprenderia cuatro dialogos en vez de
+         uno. Izquierda: parametros propios + selector buscable, con scroll. Derecha: preview, que se queda con el
+         espacio que los parametros no usan. Abajo: diagnosticos, receta y acciones, SIEMPRE visibles fuera del
+         scroll. -->
+    <Style TargetType="{x:Type components:CantileverComponentEditorShell}">
+        <Setter Property="Background" Value="{DynamicResource ShellWindowBackgroundBrush}" />
+        <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />
+        <Setter Property="FontFamily" Value="{DynamicResource ShellFontFamily}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type components:CantileverComponentEditorShell}">
+                    <Border Background="{TemplateBinding Background}">
+                        <DockPanel Margin="{DynamicResource ShellZoneSpacing}">
+
+                            <ContentPresenter x:Name="PART_Header" DockPanel.Dock="Top" Margin="0,0,0,8"
+                                              Content="{TemplateBinding Header}"
+                                              Visibility="{Binding Header, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+
+                            <ContentPresenter x:Name="PART_Actions" DockPanel.Dock="Bottom" Margin="0,8,0,0"
+                                              Content="{TemplateBinding Actions}" />
+
+                            <ContentPresenter x:Name="PART_Bom" DockPanel.Dock="Bottom" Margin="0,6,0,0"
+                                              Content="{TemplateBinding BomSummary}"
+                                              Visibility="{Binding BomSummary, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+
+                            <ContentPresenter x:Name="PART_Diagnostics" DockPanel.Dock="Bottom" Margin="0,6,0,0"
+                                              Content="{TemplateBinding Diagnostics}"
+                                              Visibility="{Binding Diagnostics, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="330" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Disabled">
+                                    <StackPanel>
+                                        <ContentPresenter x:Name="PART_Parameters" Content="{TemplateBinding Parameters}" />
+                                        <ContentPresenter x:Name="PART_Picker" Margin="0,8,0,0"
+                                                          Content="{TemplateBinding SectionPicker}"
+                                                          Visibility="{Binding SectionPicker, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ShellSlotVisibility}}" />
+                                    </StackPanel>
+                                </ScrollViewer>
+
+                                <ContentPresenter x:Name="PART_Preview" Grid.Column="2"
+                                                  Content="{TemplateBinding Preview}" />
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- I-37D ronda 2 (motivo 3 del rechazo): el selector estructural BUSCABLE. Un ComboBox sobre 983 filas es
+         una barra de scroll, y quien sabe que la pieza se llama W10X33 no tenia como decirlo. La plantilla es
+         composicion pura: caja de busqueda, filtro de familia y una lista VIRTUALIZADA — 983 filas bastan para
+         que una lista sin virtualizar tartamudee en cada tecla. El control no resuelve nada: devuelve el id EXACTO
+         de la fila elegida. -->
+    <Style TargetType="{x:Type controls:StructuralSectionPicker}">
+        <Setter Property="MinHeight" Value="180" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:StructuralSectionPicker}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="PART_Search" Grid.Column="0" Style="{StaticResource FieldBox}"
+                                     ToolTip="Escribe la designación (W10X33), parte de ella (10X33) o el id completo (AISC-W-W10X33). Flechas para recorrer la lista." />
+                            <ComboBox x:Name="PART_Family" Grid.Column="2" MinWidth="112"
+                                      ToolTip="Filtra por familia. «Todas» quita el filtro.">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource SectionFamilyLabel}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
+                        <Border Grid.Row="1" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                            <Grid>
+                                <ListBox x:Name="PART_List"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         VirtualizingPanel.IsVirtualizing="True"
+                                         VirtualizingPanel.VirtualizationMode="Recycling">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel ToolTip="{Binding Id.Value}">
+                                                <TextBlock Text="{Binding Designation}" FontSize="12" />
+                                                <TextBlock Text="{Binding Id.Value}" FontSize="10"
+                                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <TextBlock x:Name="PART_Empty" Visibility="Collapsed" Margin="10"
+                                           TextWrapping="Wrap" FontSize="11.5"
+                                           Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- The default (lookless) template for RackEditorVisualShell. Composition only: five content zones + the four
          neutral action categories. Content is TemplateBound to the control's slots, so NAMED content injected by a

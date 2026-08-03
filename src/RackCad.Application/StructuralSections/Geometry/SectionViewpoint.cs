@@ -109,9 +109,40 @@ namespace RackCad.Application.StructuralSections.Geometry
         public double Depth(Point3D world) =>
             (world.X * Camera.AxisZ.X) + (world.Y * Camera.AxisZ.Y) + (world.Z * Camera.AxisZ.Z);
 
-        /// <summary>True when the picture plane is parallel to the section plane, so arcs stay circular.</summary>
+        /// <summary>
+        /// True when the picture plane is parallel to the section plane of a member laid along WORLD Z, so its
+        /// arcs stay circular.
+        ///
+        /// It answers a question about the camera alone, which is enough while every viewpoint is expressed in
+        /// the section's own axes — there, «along world Z» and «along the member» are the same sentence. They
+        /// stop being the same the moment a member is laid down: see <see cref="PreservesShapeOf"/>, which is
+        /// what a placed member must ask.
+        /// </summary>
         public bool PreservesSectionShape =>
             Math.Abs(Math.Abs(Camera.AxisZ.Z) - 1.0) <= 1e-9;
+
+        /// <summary>
+        /// True when this camera looks along the given member's OWN longitudinal axis, so that member's section
+        /// shape is preserved.
+        ///
+        /// A camera looking straight down preserves the shape of a standing column and NOT that of a base lying
+        /// on the floor, and only the member's own axis can tell the two apart. Asking the camera about world Z
+        /// instead drew the base of every Cantilever station as a single 6.49 in line with no length at all —
+        /// its two end faces were taken for one and its generatrices were never emitted. That is motivo 2 of the
+        /// round-2 rejection of I-37D.
+        ///
+        /// For a viewpoint expressed in section axes the member's axis IS world Z, so this agrees with
+        /// <see cref="PreservesSectionShape"/> exactly and nothing about a standalone section drawing changes.
+        /// </summary>
+        public bool PreservesShapeOf(Vector3D memberAxis)
+        {
+            var axis = memberAxis.Normalized();
+
+            var alignment =
+                (axis.X * Camera.AxisZ.X) + (axis.Y * Camera.AxisZ.Y) + (axis.Z * Camera.AxisZ.Z);
+
+            return Math.Abs(Math.Abs(alignment) - 1.0) <= 1e-9;
+        }
 
         public override string ToString() => Kind.ToString();
     }

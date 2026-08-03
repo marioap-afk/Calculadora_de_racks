@@ -45,19 +45,11 @@ namespace RackCad.Plugin
 
             var editor = document.Editor;
 
-            // FAIL CLOSED. Unlike the product catalogue — which degrades to empty so a draw still runs — an
-            // invalid section catalogue means the dimensions are not trustworthy, and drawing a beam from data
-            // that failed validation is worse than not drawing it (I-36A F5).
-            StructuralSectionCatalog catalog;
-
-            try
+            // FAIL CLOSED, through the ONE Plugin owner of that policy. The load lived here until a second system
+            // needed the same catalogue (I-37D); it was extracted rather than copied, so the rule and its wording
+            // still have a single home.
+            if (!StructuralSectionCatalogAccess.TryLoad(editor, out var catalog))
             {
-                catalog = new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
-            }
-            catch (StructuralSectionCatalogException ex)
-            {
-                editor.WriteMessage("\nRackCad: el catalogo de secciones estructurales no es valido, " +
-                                    "asi que no se dibujara nada. " + ex.Message);
                 return;
             }
 

@@ -1,0 +1,152 @@
+<Window x:Class="RackCad.UI.Systems.Cantilever.Components.CantileverColumnBaseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:components="clr-namespace:RackCad.UI.Systems.Cantilever.Components"
+        xmlns:controls="clr-namespace:RackCad.UI.Controls"
+        Title="RackCad – Columna y base"
+        Style="{DynamicResource EditorShellWindowStyle}"
+        WindowStartupLocation="CenterOwner"
+        Width="1000" Height="700">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RackCad.UI;component/Themes/AppStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- I-37D ronda 2. El primero de los cuatro configuradores, y el único que esta ronda deja COMPLETO. Todo el
+         layout viene del shell común de componente: aquí sólo van los campos de columna y base. -->
+    <components:CantileverComponentEditorShell x:Name="Shell">
+
+        <components:CantileverComponentEditorShell.Header>
+            <TextBlock Text="Columna y base — la pieza que sostiene la línea" Style="{StaticResource SectionTitle}" />
+        </components:CantileverComponentEditorShell.Header>
+
+        <components:CantileverComponentEditorShell.Parameters>
+            <StackPanel>
+                <TextBlock Text="Columna" Style="{StaticResource SectionTitle}" Margin="0,0,0,2" />
+                <TextBlock x:Name="ColumnSectionText" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+                <TextBlock Text="Espesor de placa inferior (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="ColumnPlateThicknessBox" LostFocus="Input_Changed"
+                                       Minimum="0" MinimumInclusive="False" />
+
+                <TextBlock Text="Base" Style="{StaticResource SectionTitle}" />
+                <TextBlock x:Name="BaseSectionText" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                    <CheckBox x:Name="FollowColumnCheck" Content="La base sigue a la columna"
+                              Foreground="{DynamicResource ShellTextPrimaryBrush}" VerticalAlignment="Center"
+                              Click="FollowColumn_Click"
+                              ToolTip="Al elegir una columna, la base toma la misma sección. Elegir una base a mano lo apaga." />
+                    <Button x:Name="UseSameSectionButton" Content="Usar misma sección" Margin="10,0,0,0"
+                            Style="{StaticResource SecondaryButtonStyle}" Click="UseSameSection_Click" />
+                </StackPanel>
+                <TextBlock Text="Longitud de base (in)" Style="{StaticResource FieldLabel}" Margin="0,6,0,0" />
+                <controls:NumericField x:Name="BaseLengthBox" LostFocus="Input_Changed"
+                                       Minimum="0" MinimumInclusive="False" />
+                <TextBlock Text="Espesor de placa frontal / posterior / cartabón (in)" Style="{StaticResource FieldLabel}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="6" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="6" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <controls:NumericField x:Name="BaseFrontPlateBox" Grid.Column="0" LostFocus="Input_Changed"
+                                           Minimum="0" MinimumInclusive="False" />
+                    <controls:NumericField x:Name="BaseRearPlateBox" Grid.Column="2" LostFocus="Input_Changed"
+                                           Minimum="0" MinimumInclusive="False" />
+                    <controls:NumericField x:Name="BaseGussetBox" Grid.Column="4" LostFocus="Input_Changed"
+                                           Minimum="0" MinimumInclusive="False" />
+                </Grid>
+
+                <TextBlock Text="Troqueles" Style="{StaticResource SectionTitle}" />
+                <TextBlock Text="Diámetro (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="PunchDiameterBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                <TextBlock Text="Margen horizontal a extremo (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="PunchHorizontalOffsetBox" LostFocus="Input_Changed" Minimum="0" />
+                <TextBlock Text="Paso de conexión (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="ConnectionPitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                <TextBlock Text="Troqueles de conexión sobre la base" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="ConnectionPunchesAboveBaseBox" LostFocus="Input_Changed" IntegerOnly="True" Minimum="0" />
+                <TextBlock Text="Margen vertical de placa posterior (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="RearPlateOffsetBox" LostFocus="Input_Changed" Minimum="0" />
+                <TextBlock Text="Paso regular de columna (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="RegularPitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                <TextBlock Text="Paso de placa inferior (in)" Style="{StaticResource FieldLabel}" />
+                <controls:NumericField x:Name="BottomPlatePitchBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False" />
+                <TextBlock TextWrapping="Wrap" FontSize="11" Margin="0,6,0,0"
+                           Foreground="{DynamicResource ShellTextSecondaryBrush}"
+                           Text="No hay márgenes de extremo que escribir: el patrón conserva todos los agujeros ENTEROS que caben, y lo que limita a un agujero es su propio radio contra el borde de la pieza." />
+
+                <TextBlock Text="Altura de la vista previa (in)" Style="{StaticResource SectionTitle}" />
+                <controls:NumericField x:Name="PreviewHeightBox" LostFocus="Input_Changed" Minimum="0" MinimumInclusive="False"
+                                       ToolTip="Sólo para ver la pieza aquí. La altura real de la columna la resuelve la LÍNEA, que la comparte entre sus estaciones." />
+            </StackPanel>
+        </components:CantileverComponentEditorShell.Parameters>
+
+        <components:CantileverComponentEditorShell.SectionPicker>
+            <StackPanel>
+                <TextBlock Text="Sección de columna" Style="{StaticResource SectionTitle}" />
+                <controls:StructuralSectionPicker x:Name="ColumnPicker" Height="180"
+                                                  SectionChosen="ColumnChosen" />
+                <TextBlock Text="Sección de base" Style="{StaticResource SectionTitle}" />
+                <controls:StructuralSectionPicker x:Name="BasePicker" Height="180"
+                                                  SectionChosen="BaseChosen" />
+            </StackPanel>
+        </components:CantileverComponentEditorShell.SectionPicker>
+
+        <components:CantileverComponentEditorShell.Preview>
+            <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,8">
+                        <RadioButton x:Name="PreviewFrontalRadio" Content="Frontal" IsChecked="True" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" Margin="0,0,14,0" />
+                        <RadioButton x:Name="PreviewLateralRadio" Content="Lateral" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" Margin="0,0,14,0" />
+                        <RadioButton x:Name="PreviewPlantaRadio" Content="Planta" GroupName="ComponentView"
+                                     Checked="PreviewView_Changed" Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                     FontSize="11" />
+                    </StackPanel>
+                    <Canvas x:Name="PreviewCanvas" Grid.Row="1" Background="{DynamicResource ShellPreviewBackgroundBrush}"
+                            ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />
+                </Grid>
+            </Border>
+        </components:CantileverComponentEditorShell.Preview>
+
+        <components:CantileverComponentEditorShell.Diagnostics>
+            <TextBlock x:Name="DiagnosticsText" TextWrapping="Wrap" FontSize="11.5"
+                       Foreground="{DynamicResource ShellTextSecondaryBrush}" />
+        </components:CantileverComponentEditorShell.Diagnostics>
+
+        <components:CantileverComponentEditorShell.BomSummary>
+            <TextBlock x:Name="BomText" TextWrapping="Wrap" FontSize="11.5"
+                       Foreground="{DynamicResource ShellTextPrimaryBrush}" />
+        </components:CantileverComponentEditorShell.BomSummary>
+
+        <components:CantileverComponentEditorShell.Actions>
+            <DockPanel>
+                <Button x:Name="RestoreButton" Content="Restaurar" DockPanel.Dock="Left" MinWidth="110"
+                        Style="{StaticResource SecondaryButtonStyle}" Click="Restore_Click"
+                        ToolTip="Vuelve a los valores con los que se abrió esta ventana." />
+                <Button x:Name="InsertButton" Content="Insertar sólo esta pieza" DockPanel.Dock="Left" MinWidth="180"
+                        Margin="8,0,0,0" Style="{StaticResource SecondaryButtonStyle}" Click="InsertComponent_Click"
+                        ToolTipService.ShowOnDisabled="True"
+                        ToolTip="Dibuja la columna y base sola, como bloque independiente. No modifica la línea que estás editando." />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="AcceptButton" Content="Aceptar" MinWidth="110" Margin="8,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}" Click="Accept_Click" />
+                    <Button Content="Cancelar" MinWidth="110" Margin="8,0,0,0" IsCancel="True"
+                            Style="{StaticResource SecondaryButtonStyle}" Click="Cancel_Click" />
+                </StackPanel>
+            </DockPanel>
+        </components:CantileverComponentEditorShell.Actions>
+    </components:CantileverComponentEditorShell>
+</Window>

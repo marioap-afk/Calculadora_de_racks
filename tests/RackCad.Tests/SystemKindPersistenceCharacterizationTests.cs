@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -92,9 +92,10 @@ namespace RackCad.Tests
             var root = doc.RootElement;
 
             // Exact wrapper keys, in declaration order, PascalCase. PushBack is the additive I-18 slot (written null here,
-            // like every inactive slot); it is compatible and does NOT bump the wrapper major.
+            // like every inactive slot), and Cantilever the additive I-37D one. Both are appended, both are compatible, and
+            // neither bumps the wrapper major.
             Assert.Equal(
-                new[] { "SchemaVersion", "Kind", "Header", "DynamicSystem", "SelectiveRack", "FlowBed", "Larguero", "PushBack" },
+                new[] { "SchemaVersion", "Kind", "Header", "DynamicSystem", "SelectiveRack", "FlowBed", "Larguero", "PushBack", "Cantilever" },
                 root.EnumerateObject().Select(p => p.Name).ToArray());
 
             Assert.Equal("2.0", root.GetProperty("SchemaVersion").GetString());
