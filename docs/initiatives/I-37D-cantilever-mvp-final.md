@@ -307,9 +307,12 @@ observados**.
 | CI | `30674507385` sobre `4e4e6d9` |
 | Paquete | [validacion de paneles avanzados y adaptador](../automation/evidence/I-37D-autocad-validation-advanced-panels-and-adapter.md) |
 
-Con este veredicto **ADR-0027 y ADR-0028 quedan aceptados** y la iniciativa pasa a
-**implementation-complete · validation-complete · integration-ready**. El gate de I-37D **nunca se resolvio
-sobre el codigo**: por eso cuatro rondas de CI verde no bastaron.
+Con este veredicto **ADR-0027 y ADR-0028 quedan aceptados**. El gate de I-37D **nunca se resolvio sobre el
+codigo**: por eso cuatro rondas de CI verde no bastaron.
+
+**INTEGRADA en `main` el 2026-08-03** con merge `--no-ff` **`fa7f8c5`** (padres `250d469` y `a973c7b`),
+suites postmerge 2978 + 621 y **CI `30830468566` verde en sus cuatro jobs**. Con ella **se cierra I-37**:
+sus cuatro subiniciativas estan integradas.
 
 ## 11. Criterios de aceptacion
 

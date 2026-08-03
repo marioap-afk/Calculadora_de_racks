@@ -629,8 +629,9 @@ Planes disponibles:
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37C.yml`](../automation/state/I-37C.yml).
 - [`I-37D-cantilever-mvp-final.md`](I-37D-cantilever-mvp-final.md): **cierre del Cantilever MVP** ·
-  **VALIDADA por el Owner el 2026-08-03** (`OWNER_APPROVED_I37D_MANUAL_VALIDATION`, sin defectos
-  bloqueantes); ADR-0027 y ADR-0028 **aceptados**. Cuarta y
+  **INTEGRADA en `main` el 2026-08-03** (merge `fa7f8c5`), tras la validacion manual del Owner
+  (`OWNER_APPROVED_I37D_MANUAL_VALIDATION`, sin defectos bloqueantes); ADR-0027 y ADR-0028 **aceptados**.
+  **Con ella se cierra I-37.** Cuarta y
   **ultima** subiniciativa de **I-37**, autorizada expresamente por el Owner. Es la que hace el producto
   **visible**: las tres anteriores son puras y ninguna dibuja, asi que hoy todo lo construido existe solo para
   las pruebas. Entrega la **linea** de dos o mas estaciones con altura **comun verificada**, los

@@ -3,14 +3,14 @@ automation_state:
   initiative: I-37D
   branch: feature/cantilever-mvp-final
   claim_id: c37684f6-4c3a-4243-82d6-e538dea2a8f6
-  current_phase: 17
-  state: integration-ready
+  current_phase: 18
+  state: integrated
   implementation: complete
   validation: complete
   gate: RESUELTO-OWNER_APPROVED_I37D_MANUAL_VALIDATION-2026-08-03
   attempts: 2
   next_action: >-
-    INTEGRAR-en-main-con-merge-no-ff-y-cerrar-I-37 ·
+    NINGUNA-I-37D-CERRADA · I-37-cerrada-al-completo · I-38-NO-se-abre-todavia ·
     cerrar-AutoCAD-regenerar-el-bundle-y-recompilar-el-DLL ·
     NETLOAD-y-checklist-de-docs-automation-evidence-I-37D-autocad-validation-advanced-panels-and-adapter-md ·
     despues-del-veredicto-aceptar-o-rechazar-ADR-0027-y-ADR-0028
@@ -878,3 +878,24 @@ pendiente_del_owner:
   default_visible_de_perfil_de_brazo: >-
     sera-HSS-pero-el-sistema-BLOQUEA-hasta-que-se-seleccione-un-id-EXACTO · la-UI-puede-mostrar-
     HSS-seleccione-tamano
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION. La iniciativa queda CERRADA.
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  fecha: 2026-08-03
+  merge_sha: fa7f8c52fed7132b5d8bd730d478426331e59238
+  padres: 250d4694-la-base · a973c7b9-la-punta-de-la-rama
+  modo: merge-no-ff-SIN-force
+  base_verificada_antes: origin-main-seguia-en-250d469-sin-avance
+  suites_postmerge: RackCad-Tests-2978 · RackCad-UI-Tests-621
+  builds_postmerge: solucion-Debug-0-errores · Plugin-Debug-correcto
+  ci_de_main: run-30830468566-success-los-4-jobs-sobre-fa7f8c5
+  rama_local: eliminada
+  rama_remota: eliminada-DESPUES-de-confirmar-que-main-contiene-su-punta
+  worktree: eliminado
+  huella_del_dll_tras_recompilar: >-
+    el-DLL-Debug-de-disco-CAMBIO-de-huella-durante-el-gate-porque-recompilar-incrusta-la-punta-de-git ·
+    misma-logica-distinta-cadena-de-version ·
+    la-huella-DOCUMENTADA-no-se-toco-porque-registra-lo-que-el-Owner-CARGO-y-valido ·
+    quien-revalide-debe-recompilar-y-anotar-la-suya

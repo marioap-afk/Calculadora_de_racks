@@ -945,7 +945,25 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-37D — la ÚLTIMA subiniciativa del MVP, autorizada y en curso
+### El MVP de Cantilever está CERRADO. No hay iniciativa en curso.
+
+**I-37 quedó cerrada el 2026-08-03** con la integración de I-37D (merge `fa7f8c5`). Sus cuatro
+subiniciativas —I-37A fundación columna–base, I-37B brazo, I-37C estación y BOM, I-37D línea,
+arriostramiento, vistas, editor y AutoCAD— están **integradas en `main`**, y ADR-0024 a ADR-0028 están
+**aceptados**.
+
+**No hay siguiente acción autorizada.** I-38 —cálculo resistente, cargas y capacidad— **no se abre** sin
+instrucción del Owner, y no reabre [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md).
+
+Lo que quedó **declarado y no resuelto**, para quien retome:
+
+- La ambigüedad de `CantileverPlatePlan.NearOffset`, que se documenta como coordenada del mundo pero que las
+  placas de brazo usan como distancia a lo largo del normal. Unificarla toca **cuatro familias de placa**: es
+  un cambio de contrato propio, no una corrección suelta.
+- La **interferencia física en el cruce de tensores**, que el MVP declara y no calcula.
+- El **peso**, diferido desde I-37A.
+
+### I-37D — la última subiniciativa del MVP (histórico del cierre)
 
 I-37A, I-37B e I-37C están integradas: el producto sabe qué es una columna con su base, qué es un brazo y
 cómo se compone una estación con su BOM. Lo que todavía **no** existe es lo único que lo haría visible al
@@ -965,16 +983,18 @@ y I-37 no se cierra.
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
 
-#### I-37D — **VALIDADA por el Owner** · lista para integrar
+#### I-37D — **INTEGRADA en `main`** (2026-08-03) · **y con ella se cierra I-37**
 
-> **Validación manual APROBADA el 2026-08-03** (`OWNER_APPROVED_I37D_MANUAL_VALIDATION`): todo funciona
-> correctamente, **sin defectos bloqueantes observados**. **ADR-0027 y ADR-0028 quedan `aceptados`.**
-> I-37D pasa a **implementation-complete · validation-complete · integration-ready**.
-> **Todavía NO está integrada** — eso lo dice el merge, no este párrafo.
+> **Validación manual APROBADA** (`OWNER_APPROVED_I37D_MANUAL_VALIDATION`): todo funciona correctamente,
+> **sin defectos bloqueantes observados**. **ADR-0027 y ADR-0028 quedan `aceptados`.**
+> Integrada con merge `--no-ff` **`fa7f8c5`**, CI **`30830468566`** verde en sus cuatro jobs.
+> **I-37 queda CERRADA**: sus cuatro subiniciativas están integradas.
 
 | Campo | Valor |
 |---|---|
-| Rama | `feature/cantilever-mvp-final` (conservada, **sin merge**) |
+| Rama | `feature/cantilever-mvp-final` — **integrada y eliminada** (local y remota) |
+| Merge en `main` | **`fa7f8c5`** · padres `250d469` y `a973c7b` · `--no-ff`, sin force |
+| CI de `main` | [`30830468566`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/30830468566) ✅ 4/4 jobs |
 | `CODE_SHA` funcional | `dd9e4a5` |
 | `VALIDATED_BUILD_SHA` | **ninguno para esta ronda** — ver la nota de trazabilidad abajo |
 | Suites | `RackCad.Tests` **2978** · `RackCad.UI.Tests` **621** |
