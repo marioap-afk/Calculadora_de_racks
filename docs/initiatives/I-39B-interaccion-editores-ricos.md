@@ -1,7 +1,7 @@
 ---
 schema: rackcad-initiative/v1
 id: I-39B
-title: Caracterizacion y fundacion de interaccion de los editores ricos
+title: Adopcion del contrato funcional comun en los seis editores ricos
 type: architecture
 status: implementing
 branch: architecture/interaccion-editores-ricos
@@ -21,37 +21,40 @@ decision_paths:
   - docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md
 requires_ci: true
 requires_plugin_build: true
-requires_autocad: false
+requires_autocad: true
 requires_owner_decision: true
-requires_owner_validation: false
+requires_owner_validation: true
 automation:
   enabled: false
   auto_merge: false
   max_attempts: 3
 ---
 
-# I-39B — Caracterización y fundación de interacción de los editores ricos
+# I-39B — Adopción del contrato funcional común en los seis editores ricos
 
-> Alcance autorizado por `docs/ROADMAP.md` (Fase 3, fila I-39B) y por las decisiones vinculantes del
-> Owner en [`decisions/I-39.md`](../automation/decisions/I-39.md), incluida la **decisión de partición
-> del 2026-08-07** que separó la mitad no observable de los editores ricos de la mitad que cambia lo
-> que el usuario ve. **Este contrato NO amplía el ROADMAP y NO reabre ADR-0019 ni ADR-0029.**
+> Alcance autorizado por `docs/ROADMAP.md` (Fase 3, fila I-39B) y por **ADR-0029**, aceptado. **Este
+> contrato NO amplía el ROADMAP y NO reabre ADR-0019 ni ADR-0029.** La auditoría de apertura
+> ([evidencia](../automation/evidence/I-39B-auditoria-editores-ricos.md)) ajusta **cómo** se implementa,
+> no **qué** debe entregarse.
 
 ## 1. Objetivo
 
-Dejar los seis editores ricos **caracterizados** y la infraestructura común **sin dependencias
-latentes**, de modo que la adopción observable del contrato pueda hacerse después sobre una red de
-seguridad que hoy no existe.
+Que los seis editores ricos adopten el contrato funcional común de ADR-0029, sobre una red de
+caracterización que hoy no existe, y sin cambiar reglas de producto.
 
 Verificable al cerrar:
 
-1. Existen pruebas que fijan, para las **seis** ventanas del arquetipo A, el comportamiento actual de
-   Enter, Escape, caminos de cierre, dirty declarado, acciones y sus motivos, autoridad y frescura del
-   preview, y foco inicial. Hoy la cobertura de interacción de esas seis es **cero**.
-2. `RackEditorVisualShell` resuelve sus seis tokens sin depender de que el consumidor haya mergeado
-   `AppStyles`, **sin cambiar el aspecto de ninguna de las cuatro ventanas ya validadas**.
-3. `Editor/` no contiene ningún `using` hacia un namespace de sistema, y una guarda lo impide.
-4. **Ninguna** de las seis ventanas cambia comportamiento observable.
+1. Existen pruebas que fijan, para las **seis**, el comportamiento de Enter, Escape, caminos de cierre,
+   dirty declarado, acciones y sus motivos, autoridad y frescura del preview, y foco inicial.
+2. **Ningún camino de cierre pierde trabajo en silencio.** Botón, Escape, X y `Alt+F4` atraviesan una
+   política coherente por ventana; la que no tiene ámbito pendiente real cierra directo.
+3. El configurador de cabecera respeta al cerrar el ámbito que **ya declara**
+   (`HasUnsavedManualEdits`), reutilizando `ConfirmDiscard` en vez de un segundo modelo.
+4. Push Back resuelve su cierre sin reducirlo a `IsCancel`, sobre las autoridades existentes.
+5. `RackEditorVisualShell` resuelve sus seis tokens sin depender del consumidor, **sin cambiar el
+   aspecto de ninguna de las cuatro ventanas ya validadas**.
+6. `Editor/` no contiene ningún `using` hacia un namespace de sistema, y una guarda lo impide.
+7. Cero cambios de geometría, BOM, persistencia, wire format, GUID, catálogos y reglas de producto.
 
 ## 2. Problema
 
@@ -74,10 +77,19 @@ incumplimiento que **no** se pueden atacar juntas.
   `RecomputeDebouncer.cs` y `DispatcherRecomputeScheduler.cs` declaran `using RackCad.UI.RackFrames;`,
   los tres solo para resolver un `<see cref>` de documentación. Viola D12 y ninguna guarda lo cubre.
 
-**Lo que no se puede corregir sin que el usuario lo note** es mucho, y por eso no está aquí: la
-política de cierre unificada, Push Back, la Cabecera, el preview obsoleto del Dinámico, `Insertar`
-habilitado sin modelo válido, la adopción del shell en Cama y Cabecera y la adopción de `EditorAction`.
-Todo eso es la iniciativa hermana.
+**Lo observable** es lo que da sentido a la subiniciativa, y por eso también está aquí:
+
+- **Ninguna de las seis tenía `OnClosing`.** No había punto de intercepción en el proyecto entero.
+- **El configurador de cabecera** tiene `IsCancel`, `HasUnsavedManualEdits` y `ConfirmDiscard`, y **el
+  cierre no consulta ese dirty**: hoy Escape y la X descartan ediciones manuales sin preguntar, mientras
+  la misma ventana sí pregunta al restaurar.
+- **Push Back** no lleva `IsCancel`, de modo que Escape no la cierra; y el ámbito perdible al cerrar
+  **excede** `ModuleSession`.
+- El **Dinámico** conserva un preview obsoleto sin marcarlo y deja materializar desde él.
+- **Cama** y **Cabecera** dejan habilitadas acciones que no pueden producir salida válida.
+- **Cantilever** pinta un aviso con severidad de error.
+- `EditorAction` no sabe expresar acción por defecto, cancelación, si la acción cierra, ni motivo de
+  bloqueo, y por eso ninguna ventana la consume.
 
 ## 3. Alcance
 
@@ -107,21 +119,41 @@ modo que el diccionario del control no puede sombrear un valor distinto.
 Se retiran los tres `using` y se ajustan los `<see cref>` que los motivaban. Una guarda nueva impide
 que vuelvan, con el mismo patrón que la de `Shell/`.
 
+### 3.4 Política común de cierre
+
+Infraestructura **neutral** en `Shell/`: un ámbito de trabajo pendiente que una ventana **declara** y un
+punto único por el que pasan botón, Escape, X y `Alt+F4`, con una costura de confirmación testeable
+—hoy `MessageBox.Show` no la tiene—. Una ventana **sin** ámbito pendiente real cierra directo:
+ADR-0029 D8 admite `NotApplicable`, y **no** se inventa un dirty global que el producto no tiene.
+
+### 3.5 Configurador de cabecera y Push Back
+
+La Cabecera reutiliza `HasUnsavedManualEdits` y `ConfirmDiscard`. Push Back resuelve su cierre sobre
+`ModuleSession` y las autoridades existentes, **sin** reducirlo a `IsCancel` y **sin** inventar
+persistencia ni un modelo de sesión nuevo.
+
+### 3.6 Dinámico, Cama, Cabecera y Cantilever
+
+Preview obsoleto clasificado por autoridad y frescura, con la materialización bloqueada cuando el
+contrato lo exija y **sin** borrar un preview válido que el producto hoy conserva. Acciones que no
+pueden producir salida válida, bloqueadas **con motivo** mediante la infraestructura común. Severidades
+de Cantilever corregidas **sin** tocar lógica de I-37.
+
+### 3.7 Evolución neutral de `EditorAction`
+
+Solo lo que haga falta para expresar acción por defecto, cancelación, si cierra y motivo de bloqueo,
+**agnóstico al sistema y con pruebas**. Sin migración cosmética masiva y sin modelos paralelos.
+
 ## 4. Fuera de alcance
 
 Cada uno es **condición de detención**:
 
-- **La política de cierre unificada** y todo `OnClosing`. Decisión del Owner ya tomada para cuando se
-  implemente —solo preguntan las ventanas que **declaran** un ámbito transaccional—, pero la
-  implementación es de la hermana.
-- **Push Back**: no se le añade `IsCancel` ni nada que cambie su cierre.
-- **Cabecera**: ni foco inicial, ni `ConfirmDiscard` al cerrar, ni su contrato de inserción paralelo
-  —que ADR-0029 excluye expresamente—, ni la adopción del shell.
-- **Cama**: no se adopta el shell ni se cambia su contrato de tamaño.
-- **Dinámico**: no se toca el preview obsoleto ni la habilitación de sus acciones de dibujo.
-- **Cantilever**: no se cambia la severidad con que pinta sus avisos.
-- **`EditorAction`, `EditorActionBar`, `EditorStatusPresenter`**: no se adoptan en ninguna de las seis.
-- Arquetipos **B**, **C** y **D**: I-39C e I-39D.
+- **El contrato de inserción paralelo del configurador de cabecera**, que ADR-0029 excluye
+  expresamente. Si proteger su cierre lo exigiera, se detiene y se registra.
+- **La adopción del shell en Cama y Cabecera** solo se hace si la auditoría demuestra que es compatible,
+  caracterizable y sin reestructurar lógica de producto; si no, se registra la desviación concreta.
+- Arquetipos **B**, **C** y **D**: I-39C e I-39D. Larguero, los cuatro componentes Cantilever, los
+  diálogos y las utilitarias **no se tocan**.
 - Geometría, resolvers, BOM, persistencia, wire format, GUID, catálogos, Domain, Application y Plugin.
 - Paquetes NuGet nuevos (**ADR-0012**).
 - `docs/HANDOFF.md` y `docs/ROADMAP.md` más allá de la fila autorizada: sesión de integración.
@@ -183,10 +215,17 @@ las cinco familias de sistema y las líneas I-36, I-37 y I-39A.
 
 ## 10. Validación manual
 
-**`no aplica`.** `requires_autocad: false`, `requires_owner_validation: false`. I-39B **no cambia
-comportamiento observable**: añade pruebas, hace que un token resuelva por una vía distinta al mismo
-valor, y retira tres `using` que solo servían a comentarios. El ROADMAP no la marca con ✋. La
-equivalencia se demuestra por caracterización, no se afirma.
+**OBLIGATORIA.** `requires_autocad: true`, `requires_owner_validation: true`. I-39B cambia
+comportamiento observable de cierre y de acciones en ventanas de produccion, asi que el gate es el
+veredicto del Owner en **AutoCAD 2025** sobre el DLL Debug del worktree, construido desde el SHA
+candidato. El ROADMAP la marca con la mano.
+
+Checklist acotado a lo observable: en **Cabecera**, con dirty real, Escape, X y boton de cierre, con
+confirmacion aceptada y rechazada, y sin dirty el cierre normal; en **Push Back**, con edicion pendiente
+relevante, Escape, X y Cerrar, confirmando y cancelando el descarte, y sin perdida silenciosa; en el
+**Dinamico**, captura invalida con preview anterior, su estado visible y las acciones bloqueadas cuando
+corresponda; en **Cama** y **Cabecera**, acciones bloqueadas con su razon visible, y el shell si se
+migraron; y regresion de que las seis siguen abriendo y operando con normalidad.
 
 ## 11. Criterios de aceptación
 

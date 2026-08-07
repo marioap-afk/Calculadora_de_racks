@@ -31,7 +31,7 @@ preflight:
 # --------------------------------------------------------------------------------------------------------
 # PARTICION. La auditoria de apertura corrigio dos premisas y obligo a partir la subiniciativa.
 # --------------------------------------------------------------------------------------------------------
-particion:
+hallazgos_de_auditoria:
   premisa_corregida_1: >-
     PushBack-NO-es-la-ventana-en-riesgo-es-la-unica-que-hoy-NO-lo-esta ·
     las-otras-cinco-ya-llevan-IsCancel-y-ninguna-tiene-guarda ·
