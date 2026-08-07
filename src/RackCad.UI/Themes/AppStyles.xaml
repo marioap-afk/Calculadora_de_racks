@@ -51,6 +51,19 @@
     <sys:Double x:Key="ShellMinHeight">672</sys:Double>
     <sys:Double x:Key="ShellActionBarSpacing">6</sys:Double>
 
+    <!-- I-39A (ADR-0029 D9): contrato de tamano del ARQUETIPO B, el editor acotado con preview. Vive aparte
+         porque "un arquetipo no hereda implicitamente restricciones de tamano de otro". La evidencia que lo
+         obliga: las cuatro ventanas de componente Cantilever aplican hoy EditorShellWindowStyle, que es el
+         contrato del editor RICO, y declaran Width/Height locales sin minimos propios, de modo que el minimo
+         heredado (1120x672) las clampea y sus cuatro anchos declarados quedan en letra muerta. Los valores de
+         abajo son los que el piloto de I-39A ya usa, para que su tamano observable no cambie; los definitivos
+         para las cuatro Cantilever son decision del Owner y se cierran en I-39C. NO se fija resolucion ni DPI
+         minimos. -->
+    <sys:Double x:Key="BoundedEditorInitialWidth">1040</sys:Double>
+    <sys:Double x:Key="BoundedEditorInitialHeight">680</sys:Double>
+    <sys:Double x:Key="BoundedEditorMinWidth">820</sys:Double>
+    <sys:Double x:Key="BoundedEditorMinHeight">520</sys:Double>
+
     <!-- Typography -->
     <FontFamily x:Key="ShellFontFamily">Segoe UI</FontFamily>
 
