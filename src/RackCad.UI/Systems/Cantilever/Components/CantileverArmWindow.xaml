@@ -4,9 +4,8 @@
         xmlns:shell="clr-namespace:RackCad.UI.Shell"
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
         Title="RackCad – Brazo"
-        Style="{DynamicResource EditorShellWindowStyle}"
-        WindowStartupLocation="CenterOwner"
-        Width="1000" Height="700">
+        Style="{DynamicResource BoundedEditorWindowStyle}"
+        WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

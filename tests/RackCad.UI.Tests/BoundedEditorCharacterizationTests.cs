@@ -138,7 +138,7 @@ namespace RackCad.UI.Tests
         //    HEREDADO clampea, de modo que ninguna abre en el tamano que escribe.
         // ================================================================================================
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void LasCuatroCantileverAplicanElContratoDeTamanoDelArquetipoRICO()
         {
             StaTestRunner.Run(() =>
@@ -158,7 +158,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Theory]
+        [Theory(Skip = BaseEvidence)]
         [InlineData(0, 1000.0, 700.0)]
         [InlineData(1, 1000.0, 700.0)]
         [InlineData(2, 900.0, 640.0)]
@@ -195,7 +195,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void NingunaDeLasCincoLeeLosTokensDelArquetipoB()
         {
             StaTestRunner.Run(() =>

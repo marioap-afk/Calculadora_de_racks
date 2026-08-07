@@ -48,10 +48,15 @@ namespace RackCad.UI.StructuralSections
             _state = new StructuralSectionInspectorState(catalog);
 
             Title = "Secciones estructurales";
-            Width = 1040;
-            Height = 680;
-            MinWidth = 820;
-            MinHeight = 520;
+
+            // I-39C: el tamano sale de los tokens del ARQUETIPO B, no de cuatro numeros repetidos aqui. Una ventana
+            // construida en codigo no aplica el estilo de ventana por DynamicResource como hacen las de XAML, asi que
+            // lee los mismos tokens del diccionario compartido. Los valores son los que esta ventana ya usaba —de
+            // ella salieron cuando I-39A escribio el contrato—, de modo que su tamano observable NO cambia.
+            Width = ShellResources.Get("BoundedEditorInitialWidth", 1040.0);
+            Height = ShellResources.Get("BoundedEditorInitialHeight", 680.0);
+            MinWidth = ShellResources.Get("BoundedEditorMinWidth", 820.0);
+            MinHeight = ShellResources.Get("BoundedEditorMinHeight", 520.0);
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             _search = new TextBox { Margin = new Thickness(0, 2, 0, 8) };

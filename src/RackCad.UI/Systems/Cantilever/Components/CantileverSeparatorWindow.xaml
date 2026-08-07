@@ -4,9 +4,8 @@
         xmlns:shell="clr-namespace:RackCad.UI.Shell"
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
         Title="RackCad – Separador"
-        Style="{DynamicResource EditorShellWindowStyle}"
-        WindowStartupLocation="CenterOwner"
-        Width="900" Height="640">
+        Style="{DynamicResource BoundedEditorWindowStyle}"
+        WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
