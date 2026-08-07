@@ -3,14 +3,14 @@ automation_state:
   initiative: I-39C
   branch: architecture/adopcion-editores-acotados
   claim_id: 611ca9e5-4734-4615-a008-21d3e69338f8
-  current_phase: 1
-  state: implementing
-  gate: none
+  current_phase: 8
+  state: validating
+  gate: owner-manual-validation
   attempts: 0
   next_action: >-
-    caracterizar-las-seis-ventanas-del-arquetipo-B-antes-de-migrar ·
-    retirar-la-fachada · cerrar-el-contrato-de-tamano · migrar-el-Larguero
-  last_evidence_commit: pendiente
+    VALIDACION-MANUAL-DEL-OWNER-EN-AUTOCAD-2025 ·
+    alcance-interno-CERRADO-sin-nada-diferido · sin-esa-aprobacion-no-se-integra
+  last_evidence_commit: bdcb4a2
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT
@@ -66,8 +66,12 @@ gates:
   owner_validation:
     required: true
     status: pending
+    checklist: docs/automation/evidence/I-39C-checklist-validacion-manual.md
+    puntos: 37
     note: >-
-      I-39C-cambia-el-TAMANO-OBSERVABLE-de-cuatro-ventanas-de-produccion-y-migra-una-quinta-de-contenedor
+      I-39C-cambia-el-TAMANO-OBSERVABLE-de-cinco-ventanas-de-produccion ·
+      migra-el-Larguero-de-contenedor · apaga-Insertar-con-motivo-en-cinco ·
+      declara-foco-inicial-en-seis
   autocad:
     required: true
     status: pending
@@ -82,3 +86,48 @@ integracion:
     autorizada-expresamente-por-el-Owner
   merge: no-ff-sin-squash-sin-force-desde-el-worktree-principal
   limpieza: solo-tras-confirmar-el-merge-y-el-push-de-main
+
+# --------------------------------------------------------------------------------------------------------
+# CIERRE DEL ALCANCE INTERNO. Ninguno queda diferido sin conclusion.
+# --------------------------------------------------------------------------------------------------------
+conclusiones:
+  fachada: >-
+    RETIRADA · los-cuatro-XAML-nombran-el-tipo-neutral · dos-guardas-REAPUNTADAS-no-debilitadas ·
+    verificadas-en-rojo-y-ademas-el-compilador-rechaza-el-XAML-viejo
+  recursos_del_shell_acotado: >-
+    RESUELTO-respaldo-en-OnApplyTemplate-solo-cuando-el-token-no-resuelve ·
+    simetria-exacta-con-el-shell-rico-de-I-39B · regresion-verificada-en-rojo
+  contrato_de_tamano: >-
+    CERRADO-con-estilo-HERMANO-BoundedEditorWindowStyle-y-literales-retirados ·
+    accesibilidad-al-minimo-MEDIDA-no-afirmada
+  editor_action: >-
+    EVOLUCIONADO-IsDefault-e-IsCancel-mas-consumidor-productivo-real-el-piloto ·
+    las-30-caracterizaciones-de-I-39A-siguen-verdes-SIN-tocarse
+  editor_action_bar: >-
+    NO-se-adopta-con-motivo-medido · sus-cuatro-categorias-y-su-envoltura-las-resuelve-ya-el-DockPanel-de-las-cuatro ·
+    y-la-prueba-de-minimo-demuestra-que-no-recorta
+  larguero: >-
+    MIGRADO-conservando-instancias-manejadores-y-orden · el-code-behind-no-se-toca ·
+    superficie-del-preview-CLARA-a-proposito-porque-sus-rotulos-son-grises
+  acciones_bloqueadas_D6: >-
+    RESUELTO-en-las-cinco · Insertar-se-apaga-con-motivo-y-Aceptar-no ·
+    incluida-la-deuda-que-I-39A-asigno-al-arquetipo
+  entrada_invalida_D5: >-
+    REVISADO-y-NO-cambiado-porque-es-CORRECTO ·
+    el-valor-aplicado-valido-sobrevive-a-una-entrada-invalida · probado-no-supuesto
+  foco_inicial_D9: DECLARADO-en-las-seis-cada-una-en-su-primer-control-de-captura
+  preview_D4: >-
+    MEDIDO-derivado-y-siempre-actual-en-las-seis · no-se-inventa-frescura-que-el-producto-no-exhibe ·
+    sin-plan-no-hay-ni-una-figura-y-lo-que-se-ve-es-un-MENSAJE
+  cierre_y_dirty_D7_D8: >-
+    MEDIDO-NotApplicable-con-razon-de-PRODUCTO-no-por-omision ·
+    guarda-que-ata-declarar-ambito-con-interceptar-el-cierre
+  registradas_en: docs/automation/evidence/I-39C-decisiones-tecnicas.md
+
+caracterizacion_previa:
+  inmutable: si
+  diez_diferencias: >-
+    conservadas-con-Skip-como-evidencia-versionada-y-contrato-nuevo-en-clase-separada ·
+    ocho-son-de-I-39C-y-dos-de-I-39A-cuyo-propio-texto-anticipaba-este-cambio ·
+    la-base-corria-en-verde-en-7cc6260
+  documentadas_en: docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md
