@@ -24,6 +24,34 @@ namespace RackCad.UI.Shell
                 typeof(RackEditorVisualShell), new FrameworkPropertyMetadata(typeof(RackEditorVisualShell)));
         }
 
+        public RackEditorVisualShell()
+        {
+            // El shell resuelve sus propios tokens en vez de depender de que el consumidor los haya mergeado. Un
+            // DynamicResource con clave de cadena recorre el arbol de elementos y Application.Resources, pero NO cae
+            // al diccionario de tema del ensamblado, aunque de ahi salga esta misma plantilla. Sin esto, un
+            // consumidor que no mergee AppStyles renderiza con los seis tokens sin resolver: ShellZoneSpacing caeria
+            // a Thickness(0), ShellSidebarWidth a NaN y ShellPreviewMinHeight a 0.
+            //
+            // Es RESPALDO, no sombreado, y la diferencia importa. Mergear siempre pondria el diccionario del control
+            // por delante del de la ventana tambien para el contenido que el editor inyecta en los slots, y ese
+            // contenido pasaria a resolver OTRA INSTANCIA del mismo Style — misma apariencia, distinto objeto—, que
+            // es justo lo que las pruebas de adopcion de I-37D fijan por identidad. Mergeando solo cuando el token
+            // NO resuelve, las cuatro ventanas migradas siguen resolviendo contra su propio diccionario y no cambia
+            // absolutamente nada para ellas.
+        }
+
+        /// <summary>Momento exacto en que la plantilla va a resolver sus tokens: para entonces el arbol ya existe y
+        /// se puede distinguir un consumidor que los aporta de uno que no.</summary>
+        public override void OnApplyTemplate()
+        {
+            if (TryFindResource("ShellZoneSpacing") == null)
+            {
+                Resources.MergedDictionaries.Add(ShellResources.Shared);
+            }
+
+            base.OnApplyTemplate();
+        }
+
         public static readonly DependencyProperty SidebarHeaderProperty =
             DependencyProperty.Register(nameof(SidebarHeader), typeof(object), typeof(RackEditorVisualShell), new PropertyMetadata(null));
 

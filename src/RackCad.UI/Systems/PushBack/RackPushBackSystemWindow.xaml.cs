@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -22,6 +23,7 @@ using RackCad.UI.Controls;
 using RackCad.UI.Editor;
 using RackCad.UI.Preview;
 using RackCad.UI.RackFrames;
+using RackCad.UI.Shell;
 using RackCad.UI.Systems.Dynamic;
 
 namespace RackCad.UI.Systems.PushBack
@@ -1831,6 +1833,44 @@ namespace RackCad.UI.Systems.PushBack
         }
 
         private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+        /// <summary>
+        /// El unico punto por el que pasan los CUATRO caminos de cierre (ADR-0029 D7): el boton Cerrar, Escape —que
+        /// llega aqui desde I-39B, porque ese boton pasa a ser <c>IsCancel</c>—, el boton de sistema y <c>Alt+F4</c>.
+        ///
+        /// <para>Hasta I-39B esta ventana era la unica de las seis SIN <c>IsCancel</c>, de modo que Escape no la
+        /// cerraba. Anadirselo sin politica habria convertido esa tecla en un descarte instantaneo justo en la unica
+        /// ventana con un ambito transaccional declarado, y mientras la propia ventana muestra «Cambios pendientes:
+        /// confirma o cancela». Por eso la politica va primero y el <c>IsCancel</c> despues.</para>
+        ///
+        /// <para>Insertar y Actualizar no son un descarte: <c>RequestDraw</c> marca la peticion en la sesion antes
+        /// de cerrar, y ese cierre no pregunta nada.</para>
+        /// </summary>
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!InsertRequested && !EditorClosePolicy.MayClose(PendingWork()))
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            base.OnClosing(e);
+        }
+
+        /// <summary>
+        /// El ambito transaccional que esta ventana DECLARA: la edicion de modulo escenificada y todavia sin
+        /// confirmar, que es la que la ventana ya sabe confirmar y cancelar por si misma. Incluye la cabecera
+        /// personalizada, porque configurarla escenifica sobre esa misma sesion.
+        ///
+        /// <para>Lo demas que el usuario haya tocado —matriz, seguridad, topes— no es un ambito declarado: se aplica
+        /// al estado en el acto y se recomputa, y su perdida al cerrar es la del ciclo de vida normal de un editor,
+        /// identica en las seis ventanas. Convertir eso en dirty exigiria comparar la sesion entera contra su
+        /// apertura, que es el dirty global artificial que ADR-0029 D8 no quiere: el contrato dice que dirty
+        /// pertenece a un AMBITO y que «no aplicable» es un valor legitimo.</para>
+        /// </summary>
+        internal EditorPendingWork PendingWork() => EditorPendingWork.When(
+            state.ModuleSession != null && state.ModuleSession.HasPendingChanges,
+            "Hay cambios de módulo sin confirmar que se perderán al cerrar. ¿Deseas continuar?");
 
         // ---- BOM + library ---------------------------------------------------------------------------------------
 

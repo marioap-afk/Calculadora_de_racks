@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.UI.Shell;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Formatting;
 
@@ -27,6 +28,23 @@ namespace RackCad.UI
             if (target == null) return;
             target.Text = message ?? string.Empty;
             target.Foreground = isError ? StatusErrorBrush : StatusOkBrush;
+        }
+
+        /// <summary>
+        /// La misma banda de estado, pero con la escala de CUATRO severidades del contrato funcional (ADR-0029),
+        /// resolviendo el color por la autoridad única que ya existía: los tokens <c>ShellStatus*Brush</c>, vía
+        /// <see cref="EditorStatusPalette"/>.
+        ///
+        /// <para>La sobrecarga booleana se conserva porque para la mayoría de los mensajes la distinción real es
+        /// error/ok y cambiarla movería el color de decenas de mensajes ya validados. Esta existe para el caso que
+        /// el booleano no sabe expresar: un aviso NO bloqueante, que hoy se pinta de rojo y se lee como un fallo.
+        /// No es una segunda paleta — es la del shell, que hasta ahora no tenía ningún consumidor productivo.</para>
+        /// </summary>
+        public static void SetStatus(TextBlock target, string message, EditorStatusSeverity severity)
+        {
+            if (target == null) return;
+            target.Text = message ?? string.Empty;
+            target.Foreground = EditorStatusPalette.For(severity);
         }
 
         /// <summary>A frozen (shareable, allocation-once) solid brush.</summary>

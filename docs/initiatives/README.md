@@ -677,6 +677,23 @@ Planes disponibles:
   catalogos, Plugin y cualquier paquete NuGet. `requires_autocad: true`,
   `requires_owner_validation: true`. Estado versionado en
   [`../automation/state/I-39A.yml`](../automation/state/I-39A.yml).
+- [`I-39B-interaccion-editores-ricos.md`](I-39B-interaccion-editores-ricos.md): **adopcion del contrato
+  funcional comun en los seis editores ricos** (tipo: architecture; rama
+  `architecture/interaccion-editores-ricos`) · **INTEGRADA en `main` el 2026-08-07**, con la validacion
+  manual del Owner APROBADA en sus 31 puntos. Segunda subiniciativa de **I-39**, que **NO queda
+  cerrada**: siguen I-39C e I-39D. Entrega la **politica comun de cierre** -- boton, Escape, X y Alt+F4
+  por un unico `OnClosing` en las dos ventanas que DECLARAN ambito transaccional, reutilizando
+  `HasUnsavedManualEdits` y `ConfirmDiscard` en la Cabecera y `ModuleSession` en Push Back, sin inventar
+  un dirty global --, la **costura testeable de confirmacion** (`EditorDiscardPrompt`, que en produccion
+  muestra el MISMO MessageBox), la **caracterizacion de las seis** ventanas del arquetipo A donde no
+  habia ninguna cobertura de teclado, cierre ni foco, el **respaldo de tokens** de
+  `RackEditorVisualShell` sin sombrear el diccionario del consumidor, `Editor/` **sin nombres de
+  sistema**, el **preview obsoleto declarado** del Dinamico con sus cinco acciones de dibujo apagadas
+  con motivo, **Insertar bloqueado con motivo** en la Cama, las **severidades** de Cantilever y el
+  **foco inicial** de la Cabecera. Desviaciones explicitas y medidas: Cama y Cabecera **no** migran al
+  shell, y `EditorAction` con `EditorActionBar` **no** se adoptan. `requires_autocad: true`,
+  `requires_owner_validation: true`. Estado versionado en
+  [`../automation/state/I-39B.yml`](../automation/state/I-39B.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

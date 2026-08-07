@@ -42,6 +42,13 @@ namespace RackCad.UI.Tests
                             _ = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
                         }
 
+                        // I-39B: ninguna prueba puede quedarse colgada en un MessageBox modal. Desde que existe la
+                        // politica de cierre, cerrar una ventana con trabajo pendiente pregunta; el default de la
+                        // suite es responder que si, que es lo que hacian de facto todas las pruebas antes de que la
+                        // politica existiera. Una prueba que se interese por el dialogo sustituye el suyo con
+                        // EditorDiscardPrompt.Substitute y recupera este al salir de su alcance.
+                        RackCad.UI.Shell.EditorDiscardPrompt.Substitute(_ => true);
+
                         dispatcher = Dispatcher.CurrentDispatcher;
                         ready.Set();
                         Dispatcher.Run();

@@ -1,11 +1,10 @@
 using System;
-using RackCad.UI.Systems.Selective;
 
 namespace RackCad.UI.Editor
 {
     /// <summary>
     /// Synchronous, scope-based coalescing of an editor's recompute, centralizing the pattern
-    /// <see cref="RackSelectiveWindow"/> inlines today (its <c>DeferRecompute</c>/<c>recomputeDeferDepth</c>/
+    /// the selective editor inlined before I-15 (its <c>DeferRecompute</c>/<c>recomputeDeferDepth</c>/
     /// <c>recomputePending</c>, initiative I-15). Every <see cref="Request"/> issued while a <see cref="Defer"/> scope is
     /// open collapses into AT MOST ONE run when the OUTERMOST scope closes — still synchronous, inside the same gesture,
     /// so the model/status is fresh for any follow-up reader. Outside any scope, <see cref="Request"/> runs immediately.

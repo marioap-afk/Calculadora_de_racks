@@ -129,6 +129,9 @@ namespace RackCad.UI.Systems.Dynamic
             = new RackEditorSession<DynamicRackDesign, DynamicRackSystem>();
         private bool isEditingExisting;
 
+        /// <summary>El lienzo muestra el ULTIMO calculo valido, no la captura actual (ADR-0029 D4).</summary>
+        private bool previewIsStale;
+
         /// <summary>The project this system was opened from (library or drawing), if any, so a re-save preserves its
         /// wrapper's unknown JSON metadata + non-downgraded schema version. SaveSystem_Click re-snapshots the design, so
         /// this retained field is the ONLY source of that metadata (it cannot be recovered from the recomputed design). (I-11)</summary>
@@ -171,10 +174,19 @@ namespace RackCad.UI.Systems.Dynamic
             Recompose();
         }
 
+        /// <summary>El aviso que Push Back ya usaba para lo mismo; se reutiliza literal para que las dos ventanas
+        /// digan lo mismo ante la misma situación (ADR-0029 D4).</summary>
+        private const string StalePreviewNotice = "La vista previa corresponde al ÚLTIMO cálculo válido.";
+
         private void UpdateDrawButtons()
         {
-            InsertLateralButton.IsEnabled = canInsertInAutoCad;
-            var linked = canInsertInAutoCad && isEditingExisting;
+            if (InsertLateralButton == null)
+            {
+                return;
+            }
+
+            InsertLateralButton.IsEnabled = canInsertInAutoCad && !previewIsStale;
+            var linked = canInsertInAutoCad && isEditingExisting && !previewIsStale;
             UpdateButton.IsEnabled = linked;
             InsertExitButton.IsEnabled = linked;
             InsertEntranceButton.IsEnabled = linked;
@@ -188,6 +200,18 @@ namespace RackCad.UI.Systems.Dynamic
                 InsertExitButton.ToolTip = reason;
                 InsertEntranceButton.ToolTip = reason;
                 InsertPlantaButton.ToolTip = reason;
+            }
+            else if (previewIsStale)
+            {
+                // ADR-0029 D4 y D6: un preview marcado «último válido obsoleto» no habilita ninguna acción que
+                // materialice, y una acción bloqueada expone su motivo. Antes estos cinco botones seguían
+                // habilitados y la defensa era en tiempo de clic: el usuario pulsaba y recibía un error.
+                const string stale = StalePreviewNotice + " Recalcula antes de dibujar en AutoCAD.";
+                UpdateButton.ToolTip = stale;
+                InsertLateralButton.ToolTip = stale;
+                InsertExitButton.ToolTip = stale;
+                InsertEntranceButton.ToolTip = stale;
+                InsertPlantaButton.ToolTip = stale;
             }
             else if (!isEditingExisting)
             {
@@ -331,7 +355,32 @@ namespace RackCad.UI.Systems.Dynamic
             Recompose();
         }
 
+        /// <summary>
+        /// Recalcula y, además, declara la FRESCURA del preview (ADR-0029 D4).
+        ///
+        /// <para>Cuando la captura actual es inválida, el núcleo sale temprano SIN tocar el lienzo, así que el dibujo
+        /// anterior sigue en pantalla. Esa semántica se conserva a propósito —el contrato dice que no se borra un
+        /// preview válido solo por homogeneidad— pero deja de ser muda: la imagen queda marcada como el último
+        /// cálculo válido y las cinco acciones que materializan se apagan con ese motivo.</para>
+        /// </summary>
         private bool Recompose(bool forceRebuild = false)
+        {
+            var recomputed = RecomposeCore(forceRebuild);
+
+            // Solo es «obsoleto» si hay algo anterior que mirar: sin modelo previo el lienzo está vacío y el estado
+            // correcto es «no disponible», no «obsoleto».
+            previewIsStale = !recomputed && system != null;
+            UpdateDrawButtons();
+
+            if (previewIsStale && StatusText != null && !StatusText.Text.Contains(StalePreviewNotice))
+            {
+                StatusText.Text = StatusText.Text + "  " + StalePreviewNotice;
+            }
+
+            return recomputed;
+        }
+
+        private bool RecomposeCore(bool forceRebuild = false)
         {
             if (!TryReadFrontInputs(out var palletTolerance, out var error))
             {

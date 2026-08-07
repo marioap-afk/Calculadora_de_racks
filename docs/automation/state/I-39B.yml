@@ -1,0 +1,145 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-39B
+  branch: architecture/interaccion-editores-ricos
+  claim_id: c752689d-714a-450b-a90e-53ff2729bc40
+  current_phase: 6
+  state: integration-ready
+  gate: none
+  attempts: 0
+  next_action: >-
+    integrar-en-main-por-merge-no-ff-sin-squash-desde-el-worktree-principal ·
+    gates-post-merge-SOBRE-MAIN · limpieza-segura-solo-tras-confirmar-el-merge
+  last_evidence_commit: 5755845051a5f10bd06367f1f97aed42e180dc9a
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 3853cd48bb94b22cc6ec9800f0ed581920d57068
+  base_asunto: I-39A integrada - registro del merge y de los gates post-merge
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  rama_objetivo: architecture-interaccion-editores-ricos-LIBRE-en-local-y-en-remoto
+  dependencias_integradas: I-39A
+
+# --------------------------------------------------------------------------------------------------------
+# PARTICION. La auditoria de apertura corrigio dos premisas y obligo a partir la subiniciativa.
+# --------------------------------------------------------------------------------------------------------
+hallazgos_de_auditoria:
+  premisa_corregida_1: >-
+    PushBack-NO-es-la-ventana-en-riesgo-es-la-unica-que-hoy-NO-lo-esta ·
+    las-otras-cinco-ya-llevan-IsCancel-y-ninguna-tiene-guarda ·
+    cero-ventanas-del-proyecto-UI-tienen-OnClosing ·
+    el-caso-grave-real-es-el-Configurador-de-cabecera-que-tiene-IsCancel-dirty-real-y-un-ConfirmDiscard-que-nunca-se-invoca-al-cerrar
+  premisa_corregida_2: >-
+    el-ambito-que-se-pierde-no-es-ModuleSession-sino-la-sesion-entera ·
+    nada-llega-al-DWG-hasta-Insertar-o-Actualizar
+  medicion: seis-incumplimientos-corregibles-sin-cambio-observable-y-diez-que-no
+  naturaleza: >-
+    son-HECHOS-medidos-NO-decisiones · ajustan-COMO-se-implementa-I-39B-no-QUE-debe-entregar
+  registrados_en: docs/automation/evidence/I-39B-auditoria-editores-ricos.md
+  correccion_de_orquestacion: >-
+    una-corrida-anterior-los-escribio-como-decisiones-36-38-del-Owner-y-redujo-unilateralmente-el-alcance ·
+    RETIRADAS · el-alcance-es-el-de-la-fila-del-ROADMAP-los-SEIS-editores-ricos
+
+# --------------------------------------------------------------------------------------------------------
+# ALCANCE
+# --------------------------------------------------------------------------------------------------------
+alcance:
+  caracterizacion: las-seis-ventanas-del-arquetipo-A-teclado-cierre-dirty-acciones-preview-foco-tamano
+  fix_recursos: RackEditorVisualShell-mergea-el-diccionario-compartido-en-sus-propios-recursos
+  limpieza_d12: retirada-de-los-tres-using-hacia-namespaces-de-sistema-en-Editor
+  politica_de_cierre: las-cuatro-rutas-por-OnClosing-en-las-dos-ventanas-que-DECLARAN-ambito
+  observable: >-
+    Cabecera-y-PushBack-preguntan-antes-de-descartar · PushBack-cierra-con-Escape ·
+    el-Dinamico-declara-su-preview-obsoleto-y-apaga-las-cinco-acciones-de-dibujo ·
+    la-Cama-apaga-Insertar-sin-modelo · Cantilever-deja-de-pintar-avisos-como-error ·
+    la-Cabecera-declara-foco-inicial
+  lo_que_NO_hace: >-
+    cero-geometria-BOM-persistencia-wire-format-GUID-catalogos-y-reglas-de-producto ·
+    no-toca-el-contrato-de-insercion-paralelo-de-la-Cabecera ·
+    no-migra-Cama-ni-Cabecera-al-shell-por-desviacion-registrada ·
+    no-adopta-EditorAction-ni-EditorActionBar-por-motivo-funcional-demostrado
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  owner_validation:
+    required: true
+    status: approved
+    date: 2026-08-07
+    veredicto: OWNER_APPROVED_I39B_MANUAL_VALIDATION
+    sha_tecnico_validado: 5755845051a5f10bd06367f1f97aed42e180dc9a
+    puntos: 31-de-31-APROBADOS-sin-observaciones
+    note: >-
+      I-39B-cambia-comportamiento-observable-de-cierre-acciones-severidad-y-foco-en-ventanas-de-produccion
+  autocad:
+    required: true
+    status: approved
+  ci_del_candidato: VERDE-4-de-4-run-31214414417-sobre-5755845
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  rebase_final: NO-OP-origin-main-no-avanzo-desde-3853cd4 · el-arbol-validado-es-el-integrado
+  merge: no-ff-sin-squash-sin-force-desde-el-worktree-principal
+  quien_integra: >-
+    sesion-de-integracion-dedicada-en-la-workstation-del-dueno-WORKFLOW-4-5 ·
+    automation-enabled-false · autorizada-expresamente-por-el-Owner
+  limpieza: solo-tras-confirmar-el-merge-y-el-push-de-main
+
+# --------------------------------------------------------------------------------------------------------
+# LO ENTREGADO Y LO QUE QUEDA DENTRO DEL ALCANCE DE I-39B
+# --------------------------------------------------------------------------------------------------------
+entregado:
+  caracterizacion: las-seis-ventanas-del-arquetipo-A
+  respaldo_de_tokens: RackEditorVisualShell-resuelve-sin-depender-del-consumidor-y-sin-sombrear-su-diccionario
+  limpieza_d12: Editor-sin-usings-de-sistema-con-EditorModules-como-excepcion-declarada
+  costura_de_confirmacion: EditorDiscardPrompt-mismo-MessageBox-en-produccion-sustituible-en-pruebas
+  politica_de_cierre: EditorPendingWork-mas-EditorClosePolicy-consumidas-por-Cabecera-y-PushBack-desde-OnClosing
+  cabecera: reutiliza-HasUnsavedManualEdits-y-ConfirmDiscard-sin-crear-un-segundo-modelo
+  pushback: politica-primero-e-IsCancel-despues-en-ese-orden
+  dinamico: frescura-declarada-preview-conservado-y-cinco-acciones-de-dibujo-apagadas-con-motivo
+  cama: Insertar-apagado-con-motivo-cuando-la-captura-es-invalida
+
+alcance_interno_cerrado:
+  - severidades-de-Cantilever
+  - evolucion-y-adopcion-de-EditorAction-EditorActionBar-EditorStatusPresenter
+  - adopcion-del-shell-en-Cama-y-Cabecera-que-cambia-tamano-fondo-tipografia-y-el-layout-persistido
+  - foco-inicial-de-la-Cabecera
+  aclaracion: >-
+    NO-se-convierten-en-otra-iniciativa · quedan-registrados-como-alcance-restante-de-I-39B
+
+
+# --------------------------------------------------------------------------------------------------------
+# CIERRE DEL ALCANCE INTERNO. Ninguno queda diferido sin conclusion.
+# --------------------------------------------------------------------------------------------------------
+conclusiones:
+  cantilever_severidad: RESUELTO-los-avisos-no-bloqueantes-dejan-de-pintarse-con-el-rojo-de-error
+  editor_status_palette: ADOPTADA-con-consumidor-productivo-real-via-UiSupport-SetStatus-por-severidad
+  editor_action_y_action_bar: >-
+    NO-se-adoptan-con-motivo-funcional-demostrado ·
+    EditorActions-Button-no-fija-IsDefault-ni-IsCancel-y-sustituir-los-botones-romperia-el-contrato-de-teclado
+  cama_al_shell: >-
+    NO-se-migra-desviacion-explicita ·
+    el-minimo-del-arquetipo-A-1120x672-es-MAYOR-que-el-tamano-inicial-completo-de-la-Cama-1080x640
+  cabecera_al_shell: >-
+    NO-se-migra-desviacion-explicita ·
+    perderia-el-layout-de-paneles-persistido-que-es-una-capacidad-de-producto
+  cabecera_foco_inicial: RESUELTO-apunta-al-arbol-del-modelo-que-no-es-destructivo-ni-bloqueable
+  registradas_en: docs/automation/evidence/I-39B-decisiones-tecnicas.md
+
+caracterizacion_previa:
+  inmutable: si
+  cuatro_diferencias: >-
+    conservadas-con-Skip-como-evidencia-versionada-y-contrato-nuevo-en-clase-separada ·
+    la-base-corria-en-verde-en-b61182f
+  documentadas_en: docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md
+

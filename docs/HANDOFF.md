@@ -16,6 +16,47 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-39B** (`architecture/interaccion-editores-ricos`) queda **integrada** el **2026-08-07** y es la
+segunda subiniciativa de **I-39**, que **sigue abierta**. Lleva el contrato funcional a los **seis
+editores ricos**, con la validación manual del Owner **APROBADA** en sus **31 puntos**
+(`OWNER_APPROVED_I39B_MANUAL_VALIDATION`).
+
+Lo central es la **política común de cierre** de ADR-0029 D7: las cuatro rutas —botón, Escape, la X y
+`Alt+F4`— convergen en `OnClosing`, así que la política vive ahí y no en el handler del botón. La
+consultan **exactamente las dos** ventanas que **declaran** un ámbito transaccional: la **Cabecera**,
+que reutiliza `HasUnsavedManualEdits` y `ConfirmDiscard` —la protección ya existía y el cierre la
+evitaba, de modo que Escape descartaba en silencio lo que la misma ventana protegía al restaurar— y
+**Push Back**, sobre `ModuleSession`. Las otras cuatro no declaran ámbito y cierran directo: D8 admite
+«no aplicable» como valor legítimo, y **no** se inventa un dirty global que el producto no tiene.
+Push Back gana `IsCancel` **después** de la política, nunca antes: al revés habría convertido Escape en
+un descarte instantáneo justo en la única ventana con ámbito declarado.
+
+La hace verificable una **costura de confirmación** mínima (`EditorDiscardPrompt`), que en producción
+muestra el **mismo** `MessageBox` de siempre y en pruebas se sustituye: `MessageBox.Show` no tenía
+ninguna, y una política de cierre inverificable es exactamente la que pierde trabajo en silencio.
+
+Entrega también la **caracterización de las seis** —Enter, Escape, cierre, dirty, acciones, preview,
+tamaño, ownership y foco—, donde no existía ninguna cobertura; el **respaldo de tokens** de
+`RackEditorVisualShell`, resuelto en `OnApplyTemplate` y **solo cuando el token no resuelve**, porque
+mergear siempre sombreaba el diccionario del consumidor y rompía una prueba de identidad de I-37D;
+`Editor/` **sin nombres de sistema**, con `EditorModules.cs` como excepción declarada; el **preview
+obsoleto declarado** del Dinámico, que **conserva** la imagen anterior pero deja de ser mudo y apaga sus
+cinco acciones de dibujo con motivo; **Insertar bloqueado con motivo** en la Cama; las **severidades**
+de Cantilever, cuyos avisos no bloqueantes se pintaban con el rojo de error; y el **foco inicial** de la
+Cabecera.
+
+**Cuatro** de las doce caracterizaciones cambiaron **a propósito** y **ninguna se reescribió**: se
+conservan intactas con `Skip` como evidencia versionada, y el contrato nuevo vive en clases separadas,
+de modo que la transición base → ADR → contrato se lee entera.
+
+**Desviaciones explícitas y medidas**: la **Cama** y la **Cabecera** **no** adoptan el shell —el mínimo
+del arquetipo A es **mayor** que el tamaño inicial completo de la Cama, y la Cabecera perdería su layout
+de paneles persistido, que es una capacidad de producto—; y **`EditorAction` con `EditorActionBar` no se
+adoptan**, porque no saben declarar acción por defecto ni cancelación y sustituir los botones rompería
+el contrato de teclado que I-39B fija. `EditorStatusPalette` **sí** queda adoptada y ya tiene consumidor
+productivo. **No** cambia geometría, BOM, persistencia, wire format, GUID, catálogos ni reglas de
+producto. Quedan **I-39C** e **I-39D**.
+
 **I-39A** (`architecture/contrato-funcional-ventanas-wpf`) queda **integrada** el **2026-08-07** y abre la
 línea **I-39**, el **contrato funcional común de ventanas WPF**. ADR-0019 había unificado la **composición
 visual** de los editores ricos; lo **funcional** seguía sin contrato. **ADR-0029**, que **complementa** a
@@ -991,10 +1032,16 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-39A está integrada. No hay iniciativa en curso.
+### I-39B está integrada. No hay iniciativa en curso.
+
+**I-39B quedó integrada el 2026-08-07**, con la validación manual del Owner **APROBADA** en sus 31
+puntos. Es la segunda subiniciativa de **I-39**, que **sigue abierta**: quedan **I-39C** (editores
+acotados restantes: los cuatro configuradores Cantilever, la retirada de la fachada, Larguero, el
+contrato definitivo de tamaño del arquetipo B y el sombreado de recursos del shell acotado) e **I-39D**
+(diálogos de configuración y ventanas utilitarias, incluido el papel final de `RackDialogWindow`).
 
 **I-39A quedó integrada el 2026-08-07**, con la validación manual del Owner **APROBADA** en su ronda 2 y
-**ADR-0029 aceptado**. Es la primera subiniciativa de **I-39**, que **sigue abierta**.
+**ADR-0029 aceptado**. Es la primera subiniciativa de **I-39**.
 
 **I-37 quedó cerrada el 2026-08-03** con la integración de I-37D (merge `fa7f8c5`). Sus cuatro
 subiniciativas —I-37A fundación columna–base, I-37B brazo, I-37C estación y BOM, I-37D línea,

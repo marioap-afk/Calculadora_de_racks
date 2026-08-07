@@ -1,11 +1,10 @@
 using System;
-using RackCad.UI.RackFrames;
 
 namespace RackCad.UI.Editor
 {
     /// <summary>
     /// Asynchronous coalescing of an editor's preview redraw, centralizing the pattern
-    /// <see cref="RackFrameConfiguratorWindow"/> inlines today (its <c>SchedulePreviewRedraw</c>/
+    /// the header configurator inlined before I-15 (its <c>SchedulePreviewRedraw</c>/
     /// <c>previewRedrawQueued</c>, initiative I-15). A burst of change notifications collapses into ONE redraw when idle:
     /// the first <see cref="Schedule"/> queues a flush via the injected <see cref="IRecomputeScheduler"/> and marks the
     /// debouncer queued; further <see cref="Schedule"/> calls are no-ops until the flush runs, clears the flag and runs
