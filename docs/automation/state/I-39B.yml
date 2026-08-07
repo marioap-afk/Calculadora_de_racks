@@ -1,0 +1,73 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-39B
+  branch: architecture/interaccion-editores-ricos
+  claim_id: c752689d-714a-450b-a90e-53ff2729bc40
+  current_phase: 2
+  state: implementing
+  gate: none
+  attempts: 0
+  next_action: >-
+    fix-de-recursos-de-RackEditorVisualShell-con-su-regresion-en-rojo ·
+    retirada-de-los-tres-using-de-sistema-en-Editor-con-su-guarda ·
+    NO-tocar-las-seis-ventanas · NO-tocar-HANDOFF · NO-hacer-merge
+  last_evidence_commit:
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 3853cd48bb94b22cc6ec9800f0ed581920d57068
+  base_asunto: I-39A integrada - registro del merge y de los gates post-merge
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  rama_objetivo: architecture-interaccion-editores-ricos-LIBRE-en-local-y-en-remoto
+  dependencias_integradas: I-39A
+
+# --------------------------------------------------------------------------------------------------------
+# PARTICION. La auditoria de apertura corrigio dos premisas y obligo a partir la subiniciativa.
+# --------------------------------------------------------------------------------------------------------
+particion:
+  premisa_corregida_1: >-
+    PushBack-NO-es-la-ventana-en-riesgo-es-la-unica-que-hoy-NO-lo-esta ·
+    las-otras-cinco-ya-llevan-IsCancel-y-ninguna-tiene-guarda ·
+    cero-ventanas-del-proyecto-UI-tienen-OnClosing ·
+    el-caso-grave-real-es-el-Configurador-de-cabecera-que-tiene-IsCancel-dirty-real-y-un-ConfirmDiscard-que-nunca-se-invoca-al-cerrar
+  premisa_corregida_2: >-
+    el-ambito-que-se-pierde-no-es-ModuleSession-sino-la-sesion-entera ·
+    nada-llega-al-DWG-hasta-Insertar-o-Actualizar
+  medicion: seis-incumplimientos-corregibles-sin-cambio-observable-y-diez-que-no
+  decision_del_owner: >-
+    I-39B-cubre-solo-la-mitad-NO-observable ·
+    la-mitad-observable-es-una-iniciativa-hermana-sin-fila-ni-contrato-todavia ·
+    politica-de-cierre-solo-preguntan-las-ventanas-que-DECLARAN-ambito-transaccional
+  registrada_en: docs/automation/decisions/I-39.md secciones 36 37 y 38
+
+# --------------------------------------------------------------------------------------------------------
+# ALCANCE
+# --------------------------------------------------------------------------------------------------------
+alcance:
+  caracterizacion: las-seis-ventanas-del-arquetipo-A-teclado-cierre-dirty-acciones-preview-foco-tamano
+  fix_recursos: RackEditorVisualShell-mergea-el-diccionario-compartido-en-sus-propios-recursos
+  limpieza_d12: retirada-de-los-tres-using-hacia-namespaces-de-sistema-en-Editor
+  lo_que_NO_hace: >-
+    ninguna-politica-de-cierre · ningun-OnClosing · PushBack-intacta · Cabecera-intacta ·
+    preview-obsoleto-del-Dinamico-intacto · sin-adoptar-EditorAction-ni-EditorStatusPresenter ·
+    sin-migrar-Cama-ni-Cabecera-al-shell · cero-cambios-en-los-xaml-y-xaml-cs-de-las-seis
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  owner_validation:
+    required: false
+    note: >-
+      I-39B-no-cambia-comportamiento-observable ·
+      anade-pruebas-hace-que-un-token-resuelva-por-otra-via-al-MISMO-valor-y-retira-tres-using-de-comentarios ·
+      el-ROADMAP-no-la-marca-con-mano
+  autocad:
+    required: false
