@@ -207,11 +207,21 @@ namespace RackCad.UI.StructuralSections
                 HorizontalAlignment = HorizontalAlignment.Right
             };
 
-            var accept = new Button { Content = "Insertar", Width = 110, Margin = new Thickness(0, 0, 8, 0), IsDefault = true };
-            accept.Click += (_, __) => Accept();
+            // I-39C: primer consumidor productivo de EditorAction. Antes esta ventana armaba sus dos botones a mano
+            // porque la fabrica comun no sabia declarar accion por defecto ni de cancelacion, y sustituirlos habria
+            // borrado Enter y Escape en silencio. Ahora la descripcion lleva el rol de teclado, asi que el contrato
+            // que la caracterizacion de I-39A fijo se conserva y ademas los botones dejan de tener chrome propio:
+            // usan los estilos compartidos, como los de las otras cinco ventanas del arquetipo.
+            var accept = EditorActions.Button(
+                new EditorAction("Insertar", isPrimary: true, isDefault: true),
+                (_, __) => Accept());
 
-            var cancel = new Button { Content = "Cerrar", Width = 110, IsCancel = true };
-            cancel.Click += (_, __) => { Result = null; DialogResult = false; };
+            var cancel = EditorActions.Button(
+                new EditorAction("Cerrar", isCancel: true),
+                (_, __) => { Result = null; DialogResult = false; });
+
+            accept.MinWidth = 110;
+            cancel.MinWidth = 110;
 
             actions.Children.Add(accept);
             actions.Children.Add(cancel);

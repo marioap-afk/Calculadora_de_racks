@@ -355,6 +355,47 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- 11b. I-39C: the action description carries the KEYBOARD role, not just the label ----
+
+        [Fact]
+        public void AnActionDeclaresWhetherEnterOrEscapeActivatesIt()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // Sin esto, sustituir un boton escrito a mano por uno de la fabrica borraba Enter y Escape en
+                // silencio. Es el motivo medido por el que ninguna ventana la consumia (censo de I-39A, hallazgo 3).
+                var accept = EditorActions.Button(new EditorAction("Insertar", isPrimary: true, isDefault: true));
+                var cancel = EditorActions.Button(new EditorAction("Cerrar", isCancel: true));
+                var plain = EditorActions.Button(new EditorAction("Restaurar"));
+
+                Assert.True(accept.IsDefault);
+                Assert.False(accept.IsCancel);
+                Assert.True(cancel.IsCancel);
+                Assert.False(cancel.IsDefault);
+                Assert.False(plain.IsDefault);
+                Assert.False(plain.IsCancel);
+            });
+        }
+
+        [Fact]
+        public void ProminenceAndKeyboardRoleAreIndependent()
+        {
+            // D7 solo admite Enter en una accion segura y contextual, asi que el rol de teclado NO se deriva de la
+            // prominencia visual: una accion primaria que dibuja puede tener que NO responder a Enter.
+            var primaryWithoutEnter = new EditorAction("Insertar", isPrimary: true);
+            var defaultWithoutProminence = new EditorAction("Aplicar", isDefault: true);
+
+            Assert.False(primaryWithoutEnter.IsDefault);
+            Assert.False(defaultWithoutProminence.IsPrimary);
+        }
+
+        [Fact]
+        public void AnActionCannotBeBothTheDefaultAndTheCancel()
+        {
+            // Enter y Escape harian lo mismo, que es un contrato de teclado roto, no una configuracion.
+            Assert.Throws<ArgumentException>(() => new EditorAction("Cerrar", isDefault: true, isCancel: true));
+        }
+
         // ---- 12. Measure/Arrange at initial and minimum size ----
 
         [Fact]

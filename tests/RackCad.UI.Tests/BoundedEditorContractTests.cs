@@ -180,6 +180,34 @@ namespace RackCad.UI.Tests
             Assert.Contains("ShellResources.Get(\"BoundedEditorInitialWidth\"", source, StringComparison.Ordinal);
         }
 
+        // ---- 3. EditorAction tiene por fin un consumidor productivo (D11) ----
+
+        [Fact]
+        public void ElPilotoConstruyeSusDosAccionesConLaFabricaComun()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // I-39A dejo escrito el motivo por el que no pudo adoptarla: la fabrica no sabia fijar IsDefault ni
+                // IsCancel, asi que sustituir los botones habria roto Enter y Escape. Resuelto eso, el piloto la
+                // consume y el contrato de teclado que su caracterizacion fija sigue intacto — esa suite no se toca.
+                var window = new StructuralSectionInspectorWindow(Catalog());
+
+                var insert = EditorWindowTestSupport.Find<Button>(window, b => (b.Content as string) == "Insertar");
+                var close = EditorWindowTestSupport.Find<Button>(window, b => (b.Content as string) == "Cerrar");
+
+                Assert.True(insert.IsDefault);
+                Assert.True(close.IsCancel);
+
+                // La prueba de que salen de la fabrica y no de chrome propio: llevan los estilos compartidos, cada uno
+                // el suyo, y la ayuda visible-aun-deshabilitada que la fabrica instala siempre.
+                Assert.NotNull(insert.Style);
+                Assert.NotNull(close.Style);
+                Assert.NotSame(insert.Style, close.Style);
+                Assert.True(ToolTipService.GetShowOnDisabled(insert));
+                Assert.True(ToolTipService.GetShowOnDisabled(close));
+            });
+        }
+
         [Fact]
         public void AlMinimoDelArquetipoLasAccionesYElDiagnosticoSiguenCOMPLETOS()
         {
