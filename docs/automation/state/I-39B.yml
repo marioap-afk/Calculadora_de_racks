@@ -4,13 +4,13 @@ automation_state:
   branch: architecture/interaccion-editores-ricos
   claim_id: c752689d-714a-450b-a90e-53ff2729bc40
   current_phase: 6
-  state: validating
-  gate: owner-validation
+  state: integration-ready
+  gate: none
   attempts: 0
   next_action: >-
-    el-Owner-valida-en-AutoCAD-2025-el-checklist-de-31-puntos ·
-    NO-tocar-HANDOFF · NO-hacer-merge · NO-borrar-rama-ni-worktree
-  last_evidence_commit: 4207417
+    integrar-en-main-por-merge-no-ff-sin-squash-desde-el-worktree-principal ·
+    gates-post-merge-SOBRE-MAIN · limpieza-segura-solo-tras-confirmar-el-merge
+  last_evidence_commit: 5755845051a5f10bd06367f1f97aed42e180dc9a
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT
@@ -72,10 +72,28 @@ alcance:
 gates:
   owner_validation:
     required: true
+    status: approved
+    date: 2026-08-07
+    veredicto: OWNER_APPROVED_I39B_MANUAL_VALIDATION
+    sha_tecnico_validado: 5755845051a5f10bd06367f1f97aed42e180dc9a
+    puntos: 31-de-31-APROBADOS-sin-observaciones
     note: >-
       I-39B-cambia-comportamiento-observable-de-cierre-acciones-severidad-y-foco-en-ventanas-de-produccion
   autocad:
     required: true
+    status: approved
+  ci_del_candidato: VERDE-4-de-4-run-31214414417-sobre-5755845
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  rebase_final: NO-OP-origin-main-no-avanzo-desde-3853cd4 · el-arbol-validado-es-el-integrado
+  merge: no-ff-sin-squash-sin-force-desde-el-worktree-principal
+  quien_integra: >-
+    sesion-de-integracion-dedicada-en-la-workstation-del-dueno-WORKFLOW-4-5 ·
+    automation-enabled-false · autorizada-expresamente-por-el-Owner
+  limpieza: solo-tras-confirmar-el-merge-y-el-push-de-main
 
 # --------------------------------------------------------------------------------------------------------
 # LO ENTREGADO Y LO QUE QUEDA DENTRO DEL ALCANCE DE I-39B

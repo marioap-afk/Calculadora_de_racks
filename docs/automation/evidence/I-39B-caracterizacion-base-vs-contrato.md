@@ -1,6 +1,6 @@
-# I-39B — Las tres pruebas de caracterización que cambiaron, y por qué
+# I-39B — Las cuatro pruebas de caracterización que cambiaron, y por qué
 
-> La caracterización previa es **inmutable**. Tres de las doce describían la base anterior a la mitad
+> La caracterización previa es **inmutable**. Cuatro de las doce describían la base anterior a la mitad
 > observable de I-39B y no pueden pasar contra el código nuevo. **No se reescribieron**: se conservan
 > intactas, con su texto original, marcadas `Skip` como evidencia versionada, y el contrato nuevo vive
 > en una clase separada.
@@ -73,12 +73,12 @@ cubre `EditorClosePolicyTests`.
 **Qué lo hace legítimo:** la protección ya existía en la Cabecera y el cierre la evitaba; reutilizarla
 es lo que el contrato de I-39B pide, no un modelo nuevo.
 
-## Las nueve restantes
+## Las ocho restantes
 
 `TheDefaultActionOfEachRichEditorIsWhatItIsToday`, `ClosingARichEditorNeverMaterialisesAnything`,
 `OnlyTwoRichEditorsDeclareATransactionalScope`, `FourRichEditorsAreComposedOverTheSharedShellAndTwoAreNot`,
 `TheFourShellEditorsShareTheArchetypeSizeContractAndTheOtherTwoDoNot`, `AllSixDeclareCenterOwner`,
-`FiveDeclareAnInitialFocusAndTheHeaderConfiguratorDoesNot`, `NoRichEditorDeclaresAnExplicitTabOrder` y
+`NoRichEditorDeclaresAnExplicitTabOrder` y
 `NoRichEditorConsumesTheSharedActionOrStatusInfrastructure` **no se tocaron** y siguen ejecutándose en
 verde: son la prueba de que el resto de la base no se movió.
 

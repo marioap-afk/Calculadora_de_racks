@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-39B
 title: Adopcion del contrato funcional comun en los seis editores ricos
 type: architecture
-status: implementing
+status: integrated
 branch: architecture/interaccion-editores-ricos
 base_branch: main
 priority:
@@ -254,5 +254,25 @@ automático; la integración es una sesión separada y autorizada.
 
 ## 14. Evidencia final
 
-Commits, evidencia de la auditoría, resultados de suites y builds, CI, y confirmación de que `main` no
-fue modificada.
+**I-39B queda INTEGRADA en `main` el 2026-08-07** por `git merge --no-ff`, sin squash, después de que el
+Owner aprobara los **31 puntos** del checklist (`OWNER_APPROVED_I39B_MANUAL_VALIDATION`) sobre el
+candidato `5755845051a5f10bd06367f1f97aed42e180dc9a`, con CI verde 4/4 (run `31214414417`).
+
+- **Auditoría de apertura**: [`I-39B-auditoria-editores-ricos.md`](../automation/evidence/I-39B-auditoria-editores-ricos.md)
+- **Base vs contrato**: [`I-39B-caracterizacion-base-vs-contrato.md`](../automation/evidence/I-39B-caracterizacion-base-vs-contrato.md)
+  — las **cuatro** caracterizaciones que cambiaron, conservadas con `Skip` como evidencia versionada.
+- **Decisiones técnicas**: [`I-39B-decisiones-tecnicas.md`](../automation/evidence/I-39B-decisiones-tecnicas.md)
+- **Validación manual**: [`I-39B-checklist-validacion-manual.md`](../automation/evidence/I-39B-checklist-validacion-manual.md)
+- **Estado versionado**: [`I-39B.yml`](../automation/state/I-39B.yml)
+
+`origin/main` **no avanzó** desde la base `3853cd4`: sin rebase, el árbol validado es el integrado.
+`main` no fue modificada en ninguna sesión anterior a la de integración.
+
+**Desviaciones explícitas vigentes**, medidas y registradas: la **Cama** y la **Cabecera** no adoptan
+`RackEditorVisualShell` —el mínimo del arquetipo A es mayor que el tamaño inicial completo de la Cama, y
+la Cabecera perdería su layout de paneles persistido—; y `EditorAction` con `EditorActionBar` no se
+adoptan porque no saben declarar acción por defecto ni cancelación, de modo que sustituir los botones
+rompería el contrato de teclado que esta misma subiniciativa fija.
+
+**Fuera por exclusión previa**: el contrato de inserción paralelo de la Cabecera, el defecto de *reseed*
+de Push Back y el merge incondicional del shell acotado, que es del arquetipo B y por tanto de I-39C.

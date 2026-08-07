@@ -1,11 +1,30 @@
 # I-39B — Checklist de validación manual en AutoCAD 2025 (Owner)
 
-> Estado: **PENDIENTE**. Describe qué validar y sobre qué binario; **no** contiene ningún resultado.
+> Estado: **APROBADA**. Registro factual del resultado proporcionado por el dueño; no incluye capturas ni detalles no proporcionados.
 > Contrato: [`../../initiatives/I-39B-interaccion-editores-ricos.md`](../../initiatives/I-39B-interaccion-editores-ricos.md) ·
 > Auditoría: [`I-39B-auditoria-editores-ricos.md`](I-39B-auditoria-editores-ricos.md) ·
 > Estado: [`../state/I-39B.yml`](../state/I-39B.yml)
 
-## Artefacto a validar
+## Resultado — EJECUTADA Y APROBADA (2026-08-07)
+
+**`OWNER_APPROVED_I39B_MANUAL_VALIDATION`.** El Owner validó en **AutoCAD 2025** el checklist completo
+de **31 puntos** sobre el DLL Debug del SHA candidato, y **todos se cumplen**. Sin observaciones ni
+defectos bloqueantes.
+
+| Campo | Valor |
+|---|---|
+| **SHA que recibió el veredicto** | `5755845051a5f10bd06367f1f97aed42e180dc9a` |
+| SHA-256 del DLL | `CF718FE661536BBFA5683FC94E3D0DDBBD492D1CABAE5EE9953552C127A4CECC` |
+| `AssemblyInformationalVersion` | `1.0.0+5755845051a5f10bd06367f1f97aed42e180dc9a` |
+| CI del candidato | run `31214414417`, 4/4 |
+| Base | `origin/main` `3853cd4` — **no avanzó**, así que **no hubo rebase** y el árbol validado es el integrado |
+| Validador | dueño del repositorio |
+| Resultado global | **aprobado** |
+
+El commit de cierre documental posterior a `5755845` **no cambia `src/` ni `tests/`**, de modo que no
+altera el binario validado (mismo criterio que I-31, I-35 e I-39A).
+
+## Artefacto validado
 
 | Campo | Valor |
 |---|---|
@@ -40,50 +59,50 @@ materialización, ni ninguna regla de producto. Tampoco el contrato de inserció
 
 | # | Punto | Resultado |
 |---|---|---|
-| 1 | Con ediciones manuales o excepciones, **Escape** pregunta antes de cerrar | |
-| 2 | Lo mismo con la **X** de la ventana | |
-| 3 | Lo mismo con **`Alt+F4`** | |
-| 4 | Lo mismo con el botón **Cerrar** | |
-| 5 | **Confirmar** el descarte cierra la ventana y no dibuja nada | |
-| 6 | **Cancelar** el descarte deja la ventana abierta con todo intacto | |
-| 7 | **Sin** ediciones manuales, cerrar no pregunta nada | |
-| 8 | **Insertar** y **Actualizar** siguen cerrando sin preguntar, y dibujan lo mismo que antes | |
-| 9 | «Restaurar estándar» y «Generar cabecera» siguen preguntando igual que antes | |
+| 1 | Con ediciones manuales o excepciones, **Escape** pregunta antes de cerrar | APROBADO |
+| 2 | Lo mismo con la **X** de la ventana | APROBADO |
+| 3 | Lo mismo con **`Alt+F4`** | APROBADO |
+| 4 | Lo mismo con el botón **Cerrar** | APROBADO |
+| 5 | **Confirmar** el descarte cierra la ventana y no dibuja nada | APROBADO |
+| 6 | **Cancelar** el descarte deja la ventana abierta con todo intacto | APROBADO |
+| 7 | **Sin** ediciones manuales, cerrar no pregunta nada | APROBADO |
+| 8 | **Insertar** y **Actualizar** siguen cerrando sin preguntar, y dibujan lo mismo que antes | APROBADO |
+| 9 | «Restaurar estándar» y «Generar cabecera» siguen preguntando igual que antes | APROBADO |
 
 ### Push Back
 
 | # | Punto | Resultado |
 |---|---|---|
-| 10 | Con un cambio de módulo pendiente («Cambios pendientes: confirma o cancela»), **Escape** pregunta | |
-| 11 | Lo mismo con la **X** y con **`Alt+F4`** | |
-| 12 | Lo mismo con el botón **Cerrar** | |
-| 13 | **Confirmar** cierra; **Cancelar** deja la ventana abierta y el módulo escenificado intacto | |
-| 14 | **Sin** cambios de módulo pendientes, cerrar no pregunta | |
-| 15 | Insertar y Actualizar siguen cerrando sin preguntar y dibujan lo mismo | |
-| 16 | Confirmar y Cancelar del editor de módulo siguen funcionando igual | |
+| 10 | Con un cambio de módulo pendiente («Cambios pendientes: confirma o cancela»), **Escape** pregunta | APROBADO |
+| 11 | Lo mismo con la **X** y con **`Alt+F4`** | APROBADO |
+| 12 | Lo mismo con el botón **Cerrar** | APROBADO |
+| 13 | **Confirmar** cierra; **Cancelar** deja la ventana abierta y el módulo escenificado intacto | APROBADO |
+| 14 | **Sin** cambios de módulo pendientes, cerrar no pregunta | APROBADO |
+| 15 | Insertar y Actualizar siguen cerrando sin preguntar y dibujan lo mismo | APROBADO |
+| 16 | Confirmar y Cancelar del editor de módulo siguen funcionando igual | APROBADO |
 
 ### Dinámico
 
 | # | Punto | Resultado |
 |---|---|---|
-| 17 | Con una captura inválida, la vista previa **se conserva** y el estado dice que corresponde al último cálculo válido | |
-| 18 | Las cinco acciones de dibujo quedan **apagadas**, y su tooltip explica por qué | |
-| 19 | Al corregir la captura y recalcular, vuelven a habilitarse y dibujan lo mismo que antes | |
+| 17 | Con una captura inválida, la vista previa **se conserva** y el estado dice que corresponde al último cálculo válido | APROBADO |
+| 18 | Las cinco acciones de dibujo quedan **apagadas**, y su tooltip explica por qué | APROBADO |
+| 19 | Al corregir la captura y recalcular, vuelven a habilitarse y dibujan lo mismo que antes | APROBADO |
 
 ### Cama
 
 | # | Punto | Resultado |
 |---|---|---|
-| 20 | Con una captura inválida, «Insertar en AutoCAD» queda **apagado** con su motivo visible | |
-| 21 | Al corregirla, vuelve a habilitarse e inserta igual que antes | |
+| 20 | Con una captura inválida, «Insertar en AutoCAD» queda **apagado** con su motivo visible | APROBADO |
+| 21 | Al corregirla, vuelve a habilitarse e inserta igual que antes | APROBADO |
 
 ### Regresión
 
 | # | Punto | Resultado |
 |---|---|---|
-| 22 | Los **seis** editores abren, calculan, dibujan y cierran con normalidad | |
-| 23 | Selectivo, Cantilever, Cama y Cabecera siguen cerrando **sin** diálogo cuando no hay nada pendiente | |
-| 24 | Geometría y BOM de los cinco sistemas sin cambios | |
+| 22 | Los **seis** editores abren, calculan, dibujan y cierran con normalidad | APROBADO |
+| 23 | Selectivo, Cantilever, Cama y Cabecera siguen cerrando **sin** diálogo cuando no hay nada pendiente | APROBADO |
+| 24 | Geometría y BOM de los cinco sistemas sin cambios | APROBADO |
 
 ## Alcance que I-39B **no** cubrió
 
@@ -114,20 +133,20 @@ Siguen fuera por **exclusión previa y expresa**, no por diferimiento:
 
 | # | Punto | Resultado |
 |---|---|---|
-| 25 | Una línea que resuelve **con avisos** muestra su texto en **ámbar**, no en el rojo de error | |
-| 26 | Un fallo real sigue en rojo, y una línea sin avisos sigue en verde | |
-| 27 | Los avisos no bloquean: insertar y actualizar siguen disponibles | |
+| 25 | Una línea que resuelve **con avisos** muestra su texto en **ámbar**, no en el rojo de error | APROBADO |
+| 26 | Un fallo real sigue en rojo, y una línea sin avisos sigue en verde | APROBADO |
+| 27 | Los avisos no bloquean: insertar y actualizar siguen disponibles | APROBADO |
 
 ### Configurador de cabecera
 
 | # | Punto | Resultado |
 |---|---|---|
-| 28 | Al abrir, el foco está en el **árbol del modelo**; escribir no altera ningún campo por accidente | |
-| 29 | Tabular desde ahí recorre la ventana en orden coherente | |
+| 28 | Al abrir, el foco está en el **árbol del modelo**; escribir no altera ningún campo por accidente | APROBADO |
+| 29 | Tabular desde ahí recorre la ventana en orden coherente | APROBADO |
 
 ### Cama y Cabecera — sin migración al shell
 
 | # | Punto | Resultado |
 |---|---|---|
-| 30 | Ambas conservan **su tamaño, su fondo y su composición actuales**: no se migraron al shell, por la desviación registrada en `I-39B-decisiones-tecnicas.md` | |
-| 31 | La Cabecera conserva su **layout de paneles persistido** y «Restablecer paneles» sigue funcionando | |
+| 30 | Ambas conservan **su tamaño, su fondo y su composición actuales**: no se migraron al shell, por la desviación registrada en `I-39B-decisiones-tecnicas.md` | APROBADO |
+| 31 | La Cabecera conserva su **layout de paneles persistido** y «Restablecer paneles» sigue funcionando | APROBADO |
