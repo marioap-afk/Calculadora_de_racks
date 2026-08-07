@@ -71,3 +71,26 @@ gates:
       el-ROADMAP-no-la-marca-con-mano
   autocad:
     required: false
+
+# --------------------------------------------------------------------------------------------------------
+# LO ENTREGADO Y LO QUE QUEDA DENTRO DEL ALCANCE DE I-39B
+# --------------------------------------------------------------------------------------------------------
+entregado:
+  caracterizacion: las-seis-ventanas-del-arquetipo-A
+  respaldo_de_tokens: RackEditorVisualShell-resuelve-sin-depender-del-consumidor-y-sin-sombrear-su-diccionario
+  limpieza_d12: Editor-sin-usings-de-sistema-con-EditorModules-como-excepcion-declarada
+  costura_de_confirmacion: EditorDiscardPrompt-mismo-MessageBox-en-produccion-sustituible-en-pruebas
+  politica_de_cierre: EditorPendingWork-mas-EditorClosePolicy-consumidas-por-Cabecera-y-PushBack-desde-OnClosing
+  cabecera: reutiliza-HasUnsavedManualEdits-y-ConfirmDiscard-sin-crear-un-segundo-modelo
+  pushback: politica-primero-e-IsCancel-despues-en-ese-orden
+  dinamico: frescura-declarada-preview-conservado-y-cinco-acciones-de-dibujo-apagadas-con-motivo
+  cama: Insertar-apagado-con-motivo-cuando-la-captura-es-invalida
+
+pendiente_dentro_del_alcance:
+  - severidades-de-Cantilever
+  - evolucion-y-adopcion-de-EditorAction-EditorActionBar-EditorStatusPresenter
+  - adopcion-del-shell-en-Cama-y-Cabecera-que-cambia-tamano-fondo-tipografia-y-el-layout-persistido
+  - foco-inicial-de-la-Cabecera
+  aclaracion: >-
+    NO-se-convierten-en-otra-iniciativa · quedan-registrados-como-alcance-restante-de-I-39B
+

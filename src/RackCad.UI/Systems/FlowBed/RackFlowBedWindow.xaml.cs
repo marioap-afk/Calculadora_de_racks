@@ -161,6 +161,7 @@ namespace RackCad.UI.Systems.FlowBed
                 SummaryText.Text = string.Empty;
                 PreviewCanvas.Children.Clear();
                 SetStatus(error, true);
+                UpdateInsertAvailability();
                 return;
             }
 
@@ -169,6 +170,36 @@ namespace RackCad.UI.Systems.FlowBed
             UpdateSummary();
             SetStatus("Vista actualizada.", false);
             DrawPreview();
+            UpdateInsertAvailability();
+        }
+
+        /// <summary>
+        /// ADR-0029 D6: una acción importante que no puede producir una salida válida se apaga, y lo hace **con su
+        /// motivo visible**.
+        ///
+        /// <para>Antes de I-39B, «Insertar en AutoCAD» solo se apagaba cuando la ventana no venía de AutoCAD: con una
+        /// captura inválida seguía habilitado, el usuario lo pulsaba y recibía un error en la línea de estado. El
+        /// comportamiento con modelo válido no cambia.</para>
+        /// </summary>
+        private void UpdateInsertAvailability()
+        {
+            if (InsertButton == null)
+            {
+                return;
+            }
+
+            if (!canInsertInAutoCad)
+            {
+                InsertButton.IsEnabled = false;
+                InsertButton.ToolTip = "Disponible solo cuando la cama se abre desde AutoCAD.";
+                return;
+            }
+
+            var hasModel = lastConfig != null;
+            InsertButton.IsEnabled = hasModel;
+            InsertButton.ToolTip = hasModel
+                ? "Dibuja la cama en el dibujo activo de AutoCAD (vista lateral)."
+                : "Corrige los datos capturados: no se puede insertar una cama inválida.";
         }
 
         private bool IsPushback() => ((BedTypeBox.SelectedItem as ComboBoxItem)?.Tag as string) == "Pushback";
