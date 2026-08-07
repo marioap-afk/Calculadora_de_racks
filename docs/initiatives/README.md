@@ -694,6 +694,26 @@ Planes disponibles:
   shell, y `EditorAction` con `EditorActionBar` **no** se adoptan. `requires_autocad: true`,
   `requires_owner_validation: true`. Estado versionado en
   [`../automation/state/I-39B.yml`](../automation/state/I-39B.yml).
+- [`I-39C-adopcion-editores-acotados.md`](I-39C-adopcion-editores-acotados.md): **adopcion del contrato
+  funcional comun en los editores acotados** (tipo: architecture; rama
+  `architecture/adopcion-editores-acotados`) · **en curso**, reclamada el 2026-08-07. Tercera
+  subiniciativa de **I-39**, que **NO queda cerrada** con ella: falta I-39D. Cierra el **arquetipo B**
+  completo. Caracteriza sus **seis** ventanas antes de migrarlas, donde hoy solo existe la del piloto de
+  I-39A y la cobertura vigente de los componentes Cantilever es **funcional** y no toca ninguna dimension
+  del contrato. Retira la **fachada** `CantileverComponentEditorShell`, que existia solo para que cuatro
+  XAML ya validados no se tocaran, y **reapunta** sus dos guardas al tipo real. Corrige el **merge
+  incondicional de recursos** del shell acotado con el patron que I-39B fijo para el rico. Cierra el
+  **contrato de tamano del arquetipo B**, hoy letra muerta: las cuatro ventanas Cantilever aplican el
+  contrato del arquetipo **A** y declaran anchos que el minimo heredado clampea, mientras los tokens
+  `BoundedEditor*` que I-39A dejo escritos no los lee nadie. Evoluciona **`EditorAction`** para que sepa
+  declarar accion por defecto y de cancelacion --el motivo textual por el que el piloto no pudo adoptar
+  `EditorActions.Button`-- y le da un consumidor productivo real. Y migra **`RackLargueroWindow`** al
+  shell conservando `sourceProject`, los metadatos desconocidos de I-11, el guardado en biblioteca, el
+  catalogo y el BOM modal. Fuera de alcance: los seis editores ricos (I-39B, integrada), los diez
+  dialogos y las seis utilitarias con `RackDialogWindow` (I-39D), geometria, BOM, persistencia,
+  catalogos, Plugin y cualquier paquete NuGet. `requires_autocad: true`,
+  `requires_owner_validation: true`. Estado versionado en
+  [`../automation/state/I-39C.yml`](../automation/state/I-39C.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
