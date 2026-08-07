@@ -454,6 +454,58 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- 15b. the shell carries its own tokens, whatever the consumer merged (I-39B) ----
+
+        [Fact]
+        public void ShellResolvesItsTokensWithoutTheConsumerMergingAnything()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // REGRESION I-39B: misma dependencia latente que I-39A midio y corrigio en el shell acotado. Un
+                // DynamicResource con clave de cadena NO cae al diccionario de tema del ensamblado, asi que sin el
+                // merge propio del control estos seis tokens quedan sin resolver para cualquier consumidor que no
+                // haya mergeado AppStyles. Hoy esta enmascarado porque los cuatro consumidores son XAML que si
+                // mergean; se manifestaria en el primer consumidor construido en codigo.
+                // Measured() aplica el Style real y mide, que es cuando la plantilla resuelve sus tokens: es el
+                // escenario del consumidor construido en codigo, sin ningun diccionario mergeado por encima.
+                var shell = Measured(1280, 720);
+                var styles = AppStyles();
+
+                // Se comparan VALORES, no instancias: un SolidColorBrush no tiene igualdad estructural, y lo que
+                // importa aqui es que el token resuelva al mismo valor, no que sea el mismo objeto.
+                Assert.Equal(styles["ShellZoneSpacing"], shell.TryFindResource("ShellZoneSpacing"));
+                Assert.Equal(styles["ShellSidebarWidth"], shell.TryFindResource("ShellSidebarWidth"));
+                Assert.Equal(styles["ShellPreviewMinHeight"], shell.TryFindResource("ShellPreviewMinHeight"));
+                Assert.Equal(styles["ShellFontSizeBase"], shell.TryFindResource("ShellFontSizeBase"));
+                Assert.Equal(styles["ShellFontFamily"], shell.TryFindResource("ShellFontFamily"));
+                Assert.Equal(
+                    ((SolidColorBrush)styles["ShellWindowBackgroundBrush"]).Color,
+                    ((SolidColorBrush)shell.TryFindResource("ShellWindowBackgroundBrush")).Color);
+            });
+        }
+
+        [Fact]
+        public void TheRecomputeInfrastructureNamesNoSystem()
+        {
+            // ADR-0029 D12: la infraestructura compartida no conoce un sistema, ni siquiera en un using que solo
+            // sirva a un <see cref> de documentacion. EditorModules.cs es la EXCEPCION declarada: es el registro
+            // explicito de modulos de I-15 y su trabajo es precisamente conocerlos todos, sin reflexion.
+            foreach (var file in new[]
+                     {
+                         "RecomputeGate.cs", "RecomputeDebouncer.cs", "DispatcherRecomputeScheduler.cs",
+                         "IRecomputeScheduler.cs", "RackEditorSession.cs"
+                     })
+            {
+                var path = Path.Combine(RepoRoot().FullName, "src", "RackCad.UI", "Editor", file);
+                Assert.True(File.Exists(path), "missing editor source " + path);
+
+                var source = File.ReadAllText(path);
+
+                Assert.DoesNotContain("using RackCad.UI.Systems", source);
+                Assert.DoesNotContain("using RackCad.UI.RackFrames", source);
+            }
+        }
+
         // ---- 16. zero RackSystemKind in the shell files ----
 
         [Fact]

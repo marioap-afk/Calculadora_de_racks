@@ -1,12 +1,11 @@
 using System;
 using System.Windows.Threading;
-using RackCad.UI.RackFrames;
 
 namespace RackCad.UI.Editor
 {
     /// <summary>
     /// The production <see cref="IRecomputeScheduler"/>: defers the flush to the WPF <see cref="Dispatcher"/> at
-    /// <see cref="DispatcherPriority.Background"/>, exactly as <see cref="RackFrameConfiguratorWindow"/> does today, so a
+    /// <see cref="DispatcherPriority.Background"/>, exactly as the header configurator does, so a
     /// burst of change notifications redraws once when the UI is idle (initiative I-15). WPF-only, so it lives outside
     /// the pure <see cref="RecomputeDebouncer"/> that tests exercise with a manual scheduler.
     /// </summary>
