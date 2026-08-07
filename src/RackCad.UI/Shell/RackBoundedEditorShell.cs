@@ -33,19 +33,32 @@ namespace RackCad.UI.Shell
                 new FrameworkPropertyMetadata(typeof(RackBoundedEditorShell)));
         }
 
-        public RackBoundedEditorShell()
+        /// <summary>
+        /// The exact moment the template is about to resolve its tokens: by now the tree exists, so a consumer that
+        /// supplies them can be told apart from one that does not.
+        ///
+        /// <para>The shell carries its own spacing, colour and typography tokens instead of depending on the consumer
+        /// having merged them. A <c>DynamicResource</c> with a plain string key searches the element tree and then
+        /// <c>Application.Resources</c>; it does NOT fall back to the assembly theme dictionary, even though that is
+        /// where this control's template came from. Without it a consumer that merges nothing — a window built in
+        /// code, which has no reason to merge anything — renders the template with <c>ShellZoneSpacing</c> unresolved,
+        /// i.e. a ZERO margin, and its action buttons end up flush against the window edges. That was the single
+        /// defect of I-39A's round-1 manual validation.</para>
+        ///
+        /// <para>It is a FALLBACK, not shadowing, and the difference matters — the lesson I-39B paid for on the rich
+        /// shell. Merging unconditionally, as I-39A did here, puts the control's dictionary ahead of the window's for
+        /// the content the editor injects into the slots too, and that content resolves ANOTHER INSTANCE of the same
+        /// style: same appearance, different object. Merging only when the token does NOT resolve leaves every XAML
+        /// consumer resolving against its own dictionary, so nothing changes for the four Cantilever windows.</para>
+        /// </summary>
+        public override void OnApplyTemplate()
         {
-            // The shell carries its own spacing, colour and typography tokens instead of depending on the consumer
-            // having merged them. A `DynamicResource` with a plain string key searches the element tree and then
-            // `Application.Resources`; it does NOT fall back to the assembly theme dictionary, even though that is
-            // where this control's template came from. So without this line a consumer that merges nothing — a window
-            // built in code, which has no reason to merge anything — renders the template with `ShellZoneSpacing`
-            // unresolved, i.e. a ZERO margin, and its action buttons end up flush against the window edges.
-            //
-            // A consumer that already merges AppStyles (every XAML window that applies a shared window style) is
-            // unaffected: the same keys resolve to the same values, and all six styles of AppStyles are keyed, so
-            // nothing implicit leaks into the consumer's tree.
-            Resources.MergedDictionaries.Add(ShellResources.Shared);
+            if (TryFindResource("ShellZoneSpacing") == null)
+            {
+                Resources.MergedDictionaries.Add(ShellResources.Shared);
+            }
+
+            base.OnApplyTemplate();
         }
 
         public static readonly DependencyProperty HeaderProperty =

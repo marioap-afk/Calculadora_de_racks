@@ -271,6 +271,32 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
+        public void TheShellBacksItsTokensUpWithoutShadowingAConsumerThatAlreadyHasThem()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // I-39C, simetria exacta con lo que I-39B corrigio en el shell rico. I-39A mergeaba el diccionario
+                // compartido SIEMPRE, en el constructor. Eso no es respaldo: es sombreado. Para el contenido que el
+                // editor inyecta en las ranuras, el diccionario del control queda por delante del de la ventana, de
+                // modo que ese contenido resuelve OTRA INSTANCIA del mismo estilo — misma apariencia, distinto
+                // objeto—. Ahora el respaldo solo entra cuando el token NO resuelve.
+                var window = FourComponentWindows()[0];
+                var shell = (RackBoundedEditorShell)window.Content;
+                shell.ApplyTemplate();
+
+                Assert.Empty(shell.Resources.MergedDictionaries);
+                Assert.Same(window.FindResource("PrimaryButtonStyle"), shell.FindResource("PrimaryButtonStyle"));
+                Assert.Same(window.FindResource("ShellBorderBrush"), shell.FindResource("ShellBorderBrush"));
+
+                // Y el consumidor construido en CODIGO, que no mergea nada, sigue resolviendo: ese es el respaldo.
+                var standalone = Measured<RackBoundedEditorShell>(s => s.Parameters = new StackPanel());
+
+                Assert.Single(standalone.Resources.MergedDictionaries);
+                Assert.Equal(ShellResourcesProbe.ZoneSpacing(), standalone.TryFindResource("ShellZoneSpacing"));
+            });
+        }
+
+        [Fact]
         public void TheActionsAreInsetFromTheShellEdgesByTheSharedZoneSpacing()
         {
             StaTestRunner.Run(() =>
