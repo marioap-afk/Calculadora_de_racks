@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -85,6 +86,28 @@ namespace RackCad.UI.Tests
 
         private static ResourceDictionary AppStyles()
             => new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) };
+
+        /// <summary>Source with its comments stripped (I-39A). A guard must catch a coupling written in CODE, not
+        /// prose that merely NAMES the system a shell used to live under — the same distinction
+        /// <c>CantileverRoundTwoSourceGuardTests.XamlCodeOnly</c> already makes.</summary>
+        private static string CodeOnly(string source)
+        {
+            var withoutXaml = Regex.Replace(source, @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
+            var withoutBlocks = Regex.Replace(withoutXaml, @"/\*.*?\*/", string.Empty, RegexOptions.Singleline);
+            return Regex.Replace(withoutBlocks, @"//[^\n]*", string.Empty);
+        }
+
+        /// <summary>Every file of the shared shell foundation. Kept in ONE place so a file added to
+        /// <c>Shell/</c> cannot quietly escape the two coupling guards below.</summary>
+        private static string[] FoundationSources() => new[]
+        {
+            ShellSource("RackEditorVisualShell.cs"), ShellSource("RackBoundedEditorShell.cs"),
+            ShellSource("EditorActionBar.cs"), ShellSource("EditorAction.cs"), ShellSource("EditorStatus.cs"),
+            ShellSource("EditorStatusPresenter.cs"), ShellSource("ShellResources.cs"),
+            ShellSource("ShellSlotVisibilityConverter.cs"),
+            // The shells' default templates live in Themes/Generic.xaml — it too must stay system-agnostic.
+            ThemesSource("Generic.xaml")
+        };
 
         // ---- 1. instantiation ----
 
@@ -436,14 +459,7 @@ namespace RackCad.UI.Tests
         [Fact]
         public void ShellFiles_ReferenceNoRackSystemKind()
         {
-            var sources = new[]
-            {
-                ShellSource("RackEditorVisualShell.cs"), ShellSource("EditorActionBar.cs"),
-                ShellSource("EditorAction.cs"), ShellSource("EditorStatus.cs"), ShellSource("EditorStatusPresenter.cs"),
-                ShellSource("ShellResources.cs"), ShellSource("ShellSlotVisibilityConverter.cs"),
-                ThemesSource("Generic.xaml")
-            };
-            foreach (var src in sources)
+            foreach (var src in FoundationSources())
             {
                 Assert.DoesNotContain("RackSystemKind", src);
             }
@@ -455,25 +471,20 @@ namespace RackCad.UI.Tests
         public void ShellFiles_HaveNoPerSystemCoupling()
         {
             // "DynamicResource"/"DependencyProperty" legitimately contain "Dynamic"; target the actual system couplings.
+            // I-39A adds "Cantilever": the bounded-editor shell used to live under Systems/Cantilever/Components and
+            // Generic.xaml declared an xmlns to that namespace, so the foundation depended on a system. Both are gone,
+            // and this token is what keeps them gone. Comments are stripped first — prose may NAME a system, code may not.
             var forbidden = new[]
             {
-                "Selective", "PushBack", "FlowBed",
+                "Selective", "PushBack", "FlowBed", "Cantilever",
                 "RackDynamic", "DynamicSystem", "DynamicFront", "DynamicEditor", "DynamicRack"
             };
-            var sources = new[]
+            foreach (var src in FoundationSources())
             {
-                // Shell/ code files (the shell is now a lookless templated control — no .xaml/.xaml.cs pair).
-                ShellSource("RackEditorVisualShell.cs"), ShellSource("EditorActionBar.cs"),
-                ShellSource("EditorAction.cs"), ShellSource("EditorStatus.cs"), ShellSource("EditorStatusPresenter.cs"),
-                ShellSource("ShellResources.cs"), ShellSource("ShellSlotVisibilityConverter.cs"),
-                // The shell's default template lives in Themes/Generic.xaml — it too must stay system-agnostic.
-                ThemesSource("Generic.xaml")
-            };
-            foreach (var src in sources)
-            {
+                var code = CodeOnly(src);
                 foreach (var token in forbidden)
                 {
-                    Assert.DoesNotContain(token, src);
+                    Assert.DoesNotContain(token, code);
                 }
             }
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -167,5 +168,74 @@ namespace RackCad.UI.Tests
             yield return shell.PrimaryActions;
             yield return shell.TrailingActions;
         }
+
+        private static IEnumerable<object> ShellSlots(RackBoundedEditorShell shell)
+        {
+            yield return shell.Header;
+            yield return shell.Parameters;
+            yield return shell.SectionPicker;
+            yield return shell.Preview;
+            yield return shell.Diagnostics;
+            yield return shell.BomSummary;
+            yield return shell.Actions;
+        }
+
+        /// <summary>
+        /// Every node under <paramref name="root"/>, descending the logical tree AND the dependency-property slots of
+        /// both shells (I-39A, extending what I-31 did for the rich editor shell).
+        ///
+        /// <para>A shell's slots are not part of the window's logical tree until its template is applied — i.e. until
+        /// the window is shown — so a test driving an unshown, shell-composed window would otherwise be unable to
+        /// reach any of its content. Walking the slots directly keeps a characterization test blind to WHICH
+        /// composition a window uses, which is the whole point when the migration changes exactly that.</para>
+        /// </summary>
+        public static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+        {
+            if (root == null)
+            {
+                yield break;
+            }
+
+            yield return root;
+
+            foreach (var child in LogicalTreeHelper.GetChildren(root))
+            {
+                if (child is DependencyObject node)
+                {
+                    foreach (var descendant in Descendants(node))
+                    {
+                        yield return descendant;
+                    }
+                }
+            }
+
+            var slots = root is RackEditorVisualShell rich ? ShellSlots(rich)
+                : root is RackBoundedEditorShell bounded ? ShellSlots(bounded)
+                : null;
+
+            if (slots == null)
+            {
+                yield break;
+            }
+
+            foreach (var slot in slots)
+            {
+                if (slot is DependencyObject slotNode)
+                {
+                    foreach (var descendant in Descendants(slotNode))
+                    {
+                        yield return descendant;
+                    }
+                }
+            }
+        }
+
+        /// <summary>The first descendant of type <typeparamref name="T"/> matching <paramref name="match"/>.</summary>
+        public static T Find<T>(DependencyObject root, Func<T, bool> match = null) where T : DependencyObject
+            => Descendants(root).OfType<T>().FirstOrDefault(node => match == null || match(node));
+
+        /// <summary>Every descendant of type <typeparamref name="T"/>, in logical order.</summary>
+        public static IReadOnlyList<T> FindAll<T>(DependencyObject root) where T : DependencyObject
+            => Descendants(root).OfType<T>().ToList();
     }
 }

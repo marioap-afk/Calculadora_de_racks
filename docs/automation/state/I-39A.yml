@@ -1,0 +1,222 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-39A
+  branch: architecture/contrato-funcional-ventanas-wpf
+  claim_id: fa57f5d5-197c-4b68-9b24-4d481cb15933
+  current_phase: 6
+  state: integration-ready
+  gate: none
+  attempts: 1
+  next_action: >-
+    NINGUNA-I-39A-esta-INTEGRADA-y-CERRADA ·
+    I-39-NO-se-cierra-quedan-I-39B-I-39C-e-I-39D-sin-fila-ni-contrato ·
+    ninguna-se-abre-sin-instruccion-del-Owner
+  last_evidence_commit: 16178dfb9c5871a4321d69594a26f67200f28c2f
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA 1 DE VALIDACION MANUAL. Trece de catorce puntos aprobados; un defecto, corregido.
+# --------------------------------------------------------------------------------------------------------
+ronda_1:
+  veredicto: PARCIALMENTE-RECHAZADA-un-solo-defecto
+  puntos_aprobados: 13-de-14
+  defecto: >-
+    los-botones-Insertar-y-Cerrar-quedaban-practicamente-pegados-a-los-bordes-derecho-e-inferior
+  causa_medida: >-
+    NO-era-del-piloto-sino-del-contrato-visual-comun-del-arquetipo-B ·
+    un-DynamicResource-con-clave-de-cadena-recorre-el-arbol-y-Application-Resources-pero-NO-cae-al-diccionario
+    de-tema-del-ensamblado-aunque-de-ahi-salga-la-plantilla ·
+    las-cuatro-ventanas-Cantilever-no-lo-notan-porque-son-XAML-y-mergean-AppStyles-en-sus-propios-recursos ·
+    el-inspector-es-code-only-y-no-mergea-nada-asi-que-ShellZoneSpacing-quedaba-sin-resolver-y-el-Margin-caia-a-CERO
+  medicion_sobre_la_ventana_real: >-
+    DockPanel-Margin-igual-0-0-0-0 · TryFindResource-ShellZoneSpacing-igual-NULL ·
+    hueco-derecho-e-inferior-del-boton-Cerrar-igual-0-px-exactos
+  correccion: >-
+    RackBoundedEditorShell-mergea-el-diccionario-compartido-en-sus-PROPIOS-recursos ·
+    los-tokens-de-su-plantilla-resuelven-para-TODO-consumidor ·
+    sin-valores-nuevos-el-margen-es-el-token-compartido-ShellZoneSpacing ·
+    los-cuatro-XAML-Cantilever-siguen-con-diff-vacio-y-sin-cambio-de-aspecto
+  regresion_verificada_en_rojo: >-
+    dos-pruebas-nuevas-fallan-al-retirar-la-linea-del-merge-y-pasan-al-devolverla ·
+    con-rebuild-COMPLETO-porque-el-build-incremental-no-recoge-un-cambio-en-el-ctor-del-control
+  caracterizacion: las-30-pruebas-del-piloto-siguen-INTACTAS-y-en-verde
+  hallazgo_registrado_no_corregido: >-
+    RackEditorVisualShell-tiene-la-misma-dependencia-latente-del-consumidor ·
+    hoy-enmascarada-porque-sus-cuatro-consumidores-son-ventanas-XAML-que-si-mergean-AppStyles ·
+    corregirla-tocaria-cuatro-ventanas-ya-validadas-y-queda-fuera-del-alcance · I-39B
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT REAL ejecutado antes del reclamo.
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: fdde6a7050189aa7f8ace41005ec06031f3f9142
+  base_asunto: I-37D integrada e I-37 CERRADA
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  pull_requests_abiertos: cero
+  rama_objetivo: architecture-contrato-funcional-ventanas-wpf-LIBRE-en-local-y-en-remoto
+  dependencias_integradas: I-14 · I-15 · I-24 · I-30 · I-31 · I-37D
+  documento_ausente: >-
+    ORCHESTRATION-md-NO-EXISTE-en-el-repositorio ·
+    las-autoridades-reales-son-AGENTS-md-WORKFLOW-md-y-AUTOMATION_PLAN-md-y-son-las-que-se-siguieron
+
+# --------------------------------------------------------------------------------------------------------
+# RECLAMO
+# --------------------------------------------------------------------------------------------------------
+claim:
+  commit_vacio: baadcbb
+  trailers: Initiative · Branch · Claim-Id · Co-Authored-By
+  primer_push: aceptado-sin-force-como-new-branch
+  registro_en_roadmap: >-
+    autorizado-por-INSTRUCCION-DIRECTA-del-Owner-con-el-precedente-de-I-36A-e-I-37A ·
+    sin-esa-autorizacion-WORKFLOW-seccion-8-lo-prohibiria ·
+    las-dos-filas-nacen-pendiente-y-la-columna-Estado-la-cambia-la-sesion-de-integracion
+
+# --------------------------------------------------------------------------------------------------------
+# GOBIERNO. I-39 NO tiene contrato paraguas, por decision del Owner: la linea la gobiernan su fila del
+# ROADMAP, decisions/I-39.md y ADR-0029, igual que se goberno I-37.
+# --------------------------------------------------------------------------------------------------------
+gobierno:
+  adr: ADR-0029-contrato-funcional-comun-de-ventanas-wpf
+  estado_del_adr: propuesto
+  quien_lo_acepta: solo-el-Owner
+  cuando: >-
+    junto-al-gate-de-validacion-manual-con-el-precedente-de-ADR-0023-en-I-36D
+  relacion_con_adr_0019: >-
+    COMPLEMENTA-no-reemplaza · ADR-0019-sigue-aceptado-e-inmutable ·
+    ADR-0019-decide-como-se-compone-lo-visual-y-ADR-0029-como-se-comporta-lo-funcional
+  decisiones_del_owner: docs/automation/decisions/I-39.md
+
+# --------------------------------------------------------------------------------------------------------
+# LO QUE ESTA SUBINICIATIVA ES Y LO QUE NO ES.
+# --------------------------------------------------------------------------------------------------------
+naturaleza_del_cambio:
+  el_shell: >-
+    YA-ERA-neutral-como-TIPO-antes-de-I-39A · siete-DP-de-tipo-object · cero-ramas ·
+    solo-usings-de-System-Windows
+  el_defecto: >-
+    UBICACION-no-neutralidad · vivia-bajo-Systems-Cantilever-Components-y-Generic-xaml-declaraba-un-xmlns
+    hacia-ese-namespace-de-sistema · un-consumidor-de-otro-sistema-habria-tenido-que-depender-de-Cantilever
+  lo_que_se_anade: >-
+    RackBoundedEditorShell-en-RackCad-UI-Shell · una-fachada-que-deriva-de-el ·
+    tokens-de-tamano-propios-del-arquetipo-B · el-censo-por-tipo-y-su-guarda ·
+    la-primera-cobertura-de-teclado-foco-tabulacion-y-cierre-del-repositorio
+  lo_que_NO_se_anade: >-
+    ninguna-geometria · ningun-BOM · ninguna-persistencia · ningun-catalogo ·
+    ningun-modelo-paralelo-de-acciones-severidades-o-estado · ningun-paquete-NuGet
+
+# --------------------------------------------------------------------------------------------------------
+# COMPATIBILIDAD CON LAS GUARDAS DE I-37D. Estaba en el alcance desde el contrato, no se descubrio a mitad.
+# --------------------------------------------------------------------------------------------------------
+guardas_de_i37d:
+  siete_ranuras: >-
+    REAPUNTADA-al-archivo-que-hoy-las-declara · asercion-conservada-palabra-por-palabra ·
+    NO-debilitada · precedente-I-36C-reapunto-guardas-al-mover-el-flujo
+  guarda_hermana_nueva: >-
+    la-fachada-debe-derivar-del-shell-neutral-y-NO-re-declarar-ninguna-ranura ·
+    re-declararlas-seria-codigo-escrito-para-satisfacer-una-prueba-que-la-decision-14-prohibe
+  las_otras_cuatro_reglas: >-
+    selector-buscable · DeepCopy · DiagnosticsText-con-EditorShell-Diagnostics · no-reconstruir-geometria ·
+    PASAN-SIN-TOCARSE-porque-los-cuatro-XAML-no-cambian
+  acoplamiento_por_sistema: >-
+    ShellFiles_HaveNoPerSystemCoupling-incorpora-el-archivo-nuevo-y-el-token-Cantilever ·
+    con-los-comentarios-eliminados-porque-la-prosa-puede-NOMBRAR-un-sistema-y-el-codigo-no
+
+# --------------------------------------------------------------------------------------------------------
+# CARACTERIZACION. Escrita y verde ANTES de migrar, y NO editada despues.
+# --------------------------------------------------------------------------------------------------------
+caracterizacion:
+  commit_previo_a_la_migracion: aadaa5c
+  commit_de_la_migracion: d1149e5
+  resultado: >-
+    las-pruebas-pasan-sin-editarse-contra-el-piloto-migrado ·
+    incluida-la-que-mide-que-las-acciones-siguen-visibles-y-con-area-al-tamano-minimo
+  comportamiento_ACTUAL_fijado_tal_cual:
+    - Insertar-nunca-se-deshabilita-y-sin-seleccion-es-un-no-op-silencioso
+    - una-longitud-o-rotacion-invalidas-NO-bloquean-la-insercion-que-usa-el-ultimo-valor-valido
+    - ningun-control-declara-TabIndex-y-la-ventana-no-declara-foco-inicial
+  por_que_no_se_corrigio: >-
+    convertir-cualquiera-de-las-tres-en-el-contrato-de-ADR-0029-seria-un-cambio-funcional-disfrazado-de
+    caracterizacion · la-decision-19-del-Owner-lo-prohibe · quedan-como-deuda-de-la-subiniciativa-del-arquetipo
+
+# --------------------------------------------------------------------------------------------------------
+# ADOPCION PARCIAL DE LA INFRAESTRUCTURA EXISTENTE, con su motivo medido.
+# --------------------------------------------------------------------------------------------------------
+adopcion_parcial:
+  editor_actions_button: >-
+    NO-adoptada-en-el-piloto · EditorActions-Button-no-fija-IsDefault-ni-IsCancel ·
+    sustituir-los-dos-botones-ROMPERIA-Enter-y-Escape-que-la-caracterizacion-fija
+  deuda_registrada: >-
+    evolucionar-EditorAction-para-describir-la-accion-por-defecto-y-la-de-cancelacion · I-39C
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  RackCad_Tests: verde-sin-fallos
+  RackCad_UI_Tests: verde-sin-fallos
+  build_ui_debug: 0-errores-0-advertencias
+  build_plugin_debug: 0-errores-propios-2-avisos-MSB3277-preexistentes
+  filtros_dirigidos: >-
+    censo · shell-acotado · inspector-ventana · inspector-estado · shell-visual-I30 ·
+    editores-de-componente-Cantilever · guardas-de-I-37D · NINGUN-filtro-vacio
+  guardas_verificadas_en_rojo:
+    - censo-una-ventana-real-retirada-del-censo
+    - censo-una-ventana-fantasma-declarada
+    - la-fachada-re-declarando-una-ranura
+    - el-shell-neutral-volviendo-a-nombrar-Cantilever-en-codigo
+  guardas_de_alcance: >-
+    los-cuatro-XAML-de-componente-Cantilever-con-DIFF-VACIO ·
+    Generic-xaml-sin-ningun-nombre-de-sistema ·
+    cero-cambios-en-Plugin-Application-Domain-assets-deploy-github-sln-Directory-Build-y-HANDOFF ·
+    cero-geometria-BOM-persistencia-identidad-y-wire-format
+  ci_sobre_el_sha_publicado: PENDIENTE-de-la-corrida-sobre-la-punta-publicada
+  owner_validation:
+    required: true
+    status: APROBADA
+    nota: >-
+      RESUELTO-ronda-2-aprobada-el-2026-08-07-token-OWNER_APPROVED_I39A_MANUAL_VALIDATION ·
+      sobre-el-SHA-16178dfb9c5871a4321d69594a26f67200f28c2f
+  autocad:
+    required: true
+    status: APROBADA
+    nota: >-
+      RESUELTO-el-Owner-cargo-por-NETLOAD-el-DLL-Debug-del-worktree-de-la-iniciativa ·
+      SHA-256-AB6CC4BE9668B5D25C45DB62DF03CACBD0E1AE0CC92E5D62FFE6DF2A5087CB93 ·
+      AssemblyInformationalVersion-1-0-0-plus-16178dfb9c5871a4321d69594a26f67200f28c2f
+  owner_decision:
+    required: true
+    status: APROBADA
+    nota: >-
+      ADR-0029-pasa-de-propuesto-a-ACEPTADO-el-2026-08-07-con-el-mismo-veredicto ·
+      inmutable-desde-ahora-cambiar-su-decision-exige-un-ADR-nuevo-que-la-reemplace
+
+# --------------------------------------------------------------------------------------------------------
+# HALLAZGOS ADYACENTES. Registrados, NO corregidos, y todos asignados.
+# --------------------------------------------------------------------------------------------------------
+hallazgos_adyacentes:
+  - PushBack-es-la-unica-ventana-de-rack-sin-IsCancel-y-Escape-no-la-cierra · I-39B
+  - el-dirty-de-PushBack-es-local-al-editor-de-modulo-y-ningun-Closing-lo-consulta · I-39B
+  - EditorAction-EditorActionBar-EditorStatusPresenter-y-sus-severidades-sin-consumidores-productivos · I-39B-C-D
+  - RackDialogWindow-sin-subclases-productivas-mientras-diez-dialogos-rehacen-Aceptar-Cancelar · I-39D
+  - RecomputeGate-y-hermanos-declaran-usings-hacia-namespaces-de-sistema-solo-para-un-see-cref · sin-asignar
+  - los-cuatro-Width-de-las-ventanas-Cantilever-son-letra-muerta-bajo-el-minimo-heredado · I-39C
+  aclaracion: >-
+    NINGUNO-bloquea-I-39A · ninguno-se-corrige-aqui · corregir-el-de-PushBack-antes-de-fijar-la-politica-de
+    Escape-convertiria-Escape-en-un-descarte-silencioso-justo-en-la-unica-ventana-con-cambios-pendientes
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  rebase_final: >-
+    NO-OP-si-origin-main-no-avanza-desde-fdde6a7 · comprobar-antes-de-integrar
+  merge: no-ff-sin-squash-desde-el-worktree-principal-del-dueno
+  merge_sha: >-
+    vive-en-git-log-first-parent-main · este-archivo-no-lo-inventa-porque-se-escribe-antes-del-merge
+  quien_integra: el-dueno-en-su-workstation-el-agente-NUNCA-hace-merge
+  limpieza: >-
+    rama-y-worktree-NO-se-borran-hasta-confirmar-el-merge-en-main

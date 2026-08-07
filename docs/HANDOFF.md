@@ -16,6 +16,52 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-39A** (`architecture/contrato-funcional-ventanas-wpf`) queda **integrada** el **2026-08-07** y abre la
+línea **I-39**, el **contrato funcional común de ventanas WPF**. ADR-0019 había unificado la **composición
+visual** de los editores ricos; lo **funcional** seguía sin contrato. **ADR-0029**, que **complementa** a
+ADR-0019 sin reabrir ninguna de sus seis reglas, queda **aceptado**: fija el inventario **por tipo** y nunca
+por `x:Name`, los cuatro arquetipos **A/B/C/D** con asignación obligatoria, estados **ortogonales** en vez de
+un enum lineal, el preview con **dos ejes** —autoridad y frescura—, cinco grados en un valor capturado donde
+una entrada inválida **no** sobrescribe en silencio un valor aplicado válido, acciones que declaran semántica
+y **motivo visible al bloquearse**, un **único camino de cierre** para botón, Escape, `Alt+F4` y botón de
+sistema, dirty como propiedad de un **ámbito** y no de la ventana, y el contrato de tamaño **por arquetipo**,
+de modo que el **B no hereda los mínimos del editor rico A**.
+
+El censo, obtenido por reflexión, encuentra **29 clases `Window` concretas**: 28 productivas y
+`RackDialogWindow` como infraestructura. Los dos métodos alternativos se midieron y mienten: por nombre de
+archivo se pierde `SafetyPerPostWindow`, declarada **dentro** de `SelectiveSafetyWindow.cs`; por `x:Name` se
+contarían once consumidores del **tipo** `PreviewCanvas` donde hay **uno**. Una guarda mantiene vivo el censo
+aseverando contención en los dos sentidos.
+
+El shell del arquetipo B nace como **`RackBoundedEditorShell`** en `RackCad.UI/Shell`. Ya era neutral **como
+tipo** —siete ranuras `object`, cero ramas—: lo que lo ataba a un sistema era su **ubicación**, bajo
+`Systems/Cantilever/Components`, con `Generic.xaml` declarando un `xmlns` hacia ese namespace.
+`CantileverComponentEditorShell` queda como **fachada que no declara nada**: al no sobrescribir
+`DefaultStyleKeyProperty` hereda la clave de estilo del tipo base y con ella la misma plantilla, así que los
+**cuatro XAML de componente Cantilever quedan con diff vacío** y `Generic.xaml` deja de nombrar ningún
+sistema. La guarda de I-37D de las siete ranuras se **reapunta, no se debilita**, y gana una hermana que
+vigila que la fachada no re-declare ninguna ranura.
+
+El **piloto** es `StructuralSectionInspectorWindow` —code-only, y el **único consumidor del tipo**
+`PreviewCanvas`—, **caracterizada antes de migrar** con 30 pruebas que cubren por primera vez en el
+repositorio Enter, Escape, foco inicial, tabulación y caminos de cierre, y que pasaron **sin editarse** tras
+la migración. Se caracterizó el comportamiento **actual**, no el deseable: `Insertar` nunca se deshabilita y
+sin selección es un no-op silencioso, y una longitud o rotación inválidas **no** bloquean la inserción.
+Convertir eso en el contrato de ADR-0029 habría sido un cambio funcional disfrazado de caracterización, así
+que queda como deuda de la subiniciativa del arquetipo.
+
+La **ronda 1** de validación manual encontró **un solo defecto**: los botones de acción quedaban pegados a
+los bordes derecho e inferior. La causa no era del piloto sino del contrato visual común: un
+`DynamicResource` con clave de cadena **no cae al diccionario de tema del ensamblado**, así que un consumidor
+construido en código —que no mergea `AppStyles`— dejaba `ShellZoneSpacing` sin resolver y el margen caía a
+**cero**. La corrección vive en el shell, que ahora mergea el diccionario compartido en sus **propios**
+recursos. **No** cambia geometría, BOM, persistencia, identidad, wire format, catálogos ni Plugin.
+
+**I-39 NO queda cerrada.** Siguen pendientes, **sin fila ni contrato todavía**: **I-39B** (editores ricos,
+incluidos la misma dependencia latente de recursos en `RackEditorVisualShell` y el defecto de
+Escape/`IsCancel` de Push Back), **I-39C** (editores acotados restantes, retirada de la fachada Cantilever y
+Larguero) e **I-39D** (diálogos y ventanas utilitarias).
+
 **Push Back** es la quinta familia operativa y está **integrada en `main`** desde el **2026-07-25**
 (merge `--no-ff` `77031be`, CI verde en los cuatro jobs, run 30139506411). I-18 entregó el primer sistema
 construido sobre el patrón de módulos, con el gate manual del Owner **aprobado** en AutoCAD 2025
@@ -945,15 +991,38 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### El MVP de Cantilever está CERRADO. No hay iniciativa en curso.
+### I-39A está integrada. No hay iniciativa en curso.
+
+**I-39A quedó integrada el 2026-08-07**, con la validación manual del Owner **APROBADA** en su ronda 2 y
+**ADR-0029 aceptado**. Es la primera subiniciativa de **I-39**, que **sigue abierta**.
 
 **I-37 quedó cerrada el 2026-08-03** con la integración de I-37D (merge `fa7f8c5`). Sus cuatro
 subiniciativas —I-37A fundación columna–base, I-37B brazo, I-37C estación y BOM, I-37D línea,
 arriostramiento, vistas, editor y AutoCAD— están **integradas en `main`**, y ADR-0024 a ADR-0028 están
 **aceptados**.
 
-**No hay siguiente acción autorizada.** I-38 —cálculo resistente, cargas y capacidad— **no se abre** sin
-instrucción del Owner, y no reabre [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md).
+**No hay siguiente acción autorizada.** Ninguna de las tres subiniciativas restantes de I-39 se abre sin
+instrucción del Owner, y ninguna tiene todavía fila ni contrato:
+
+- **I-39B** — adopción del contrato en los **editores ricos**. Arrastra dos hallazgos ya medidos y
+  deliberadamente **no corregidos** en I-39A: `RackEditorVisualShell` tiene **la misma dependencia latente
+  de recursos** que se corrigió en el shell acotado —hoy enmascarada porque sus cuatro consumidores son
+  ventanas XAML que sí mergean `AppStyles`, y corregirla tocaría cuatro ventanas ya validadas—; y
+  `RackPushBackSystemWindow` es la **única** de las nueve ventanas de rack **sin `IsCancel`**, de modo que
+  Escape no la cierra, mientras su dirty (`ModuleSession.HasPendingChanges`) es **local al editor de módulo**
+  y ningún `Closing` lo consulta. Añadir `IsCancel` **antes** de fijar la política de Escape con cambios
+  pendientes convertiría Escape en un descarte silencioso justo en la única ventana con cambios pendientes.
+- **I-39C** — adopción en los **editores acotados restantes**: migración física de los cuatro XAML de
+  componente Cantilever, **retirada de la fachada** `CantileverComponentEditorShell`, Larguero, el cierre
+  del contrato de tamaño del arquetipo B —hoy las cuatro ventanas Cantilever declaran anchos que el mínimo
+  heredado clampea, de modo que son letra muerta— y la evolución de `EditorAction`, que no sabe describir la
+  acción por defecto ni la de cancelación y por eso el piloto **no** pudo adoptar `EditorActions.Button`.
+- **I-39D** — **diálogos** de configuración y **ventanas utilitarias**, incluido decidir el papel de
+  `RackDialogWindow`, que sigue **sin una sola subclase productiva** mientras diez diálogos rehacen a mano
+  su par Aceptar/Cancelar.
+
+I-38 —cálculo resistente, cargas y capacidad— **tampoco se abre** sin instrucción del Owner, y no reabre
+[ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md).
 
 Lo que quedó **declarado y no resuelto**, para quien retome:
 
@@ -982,6 +1051,30 @@ y I-37 no se cierra.
 **Sigue fuera de alcance incluso al cerrar I-37**: cálculo resistente, cargas, capacidad (son I-38), peso,
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
+
+#### I-39A — **INTEGRADA en `main`** (2026-08-07) · **I-39 sigue abierta**
+
+> **Validación manual APROBADA** (`OWNER_APPROVED_I39A_MANUAL_VALIDATION`): ronda 1 parcialmente rechazada
+> por **un único defecto** de espaciado, ronda 2 **aprobada** sobre el candidato corregido, sin
+> observaciones. **ADR-0029 queda `aceptado`** y es inmutable desde ahora.
+> **I-39 NO se cierra**: quedan I-39B, I-39C e I-39D, sin fila ni contrato todavía.
+
+| Campo | Valor |
+|---|---|
+| Rama | `architecture/contrato-funcional-ventanas-wpf` — **integrada y eliminada** (local y remota) |
+| Merge en `main` | `--no-ff`, sin squash y sin force — SHA y padres registrados abajo |
+| `CODE_SHA` funcional | `16178dfb9c5871a4321d69594a26f67200f28c2f` |
+| `VALIDATED_BUILD_SHA` | `16178dfb9c5871a4321d69594a26f67200f28c2f` · DLL Debug `AB6CC4BE…5087CB93` |
+| Suites | `RackCad.Tests` **2979** · `RackCad.UI.Tests` **669** |
+| CI del candidato | [`31197679362`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31197679362) ✅ 4/4 jobs sobre `16178df` |
+| Base | `origin/main` `fdde6a7` — **no avanzó** desde el reclamo: **sin rebase**, y el árbol validado es el integrado |
+| Regresiones verificadas en rojo | 4 guardas + 2 pruebas del defecto de la ronda 1 |
+| **Validación manual en AutoCAD** | ✅ **APROBADA 2026-08-07** — [checklist](automation/evidence/I-39A-checklist-validacion-manual.md) |
+| Censo | [evidencia](automation/evidence/I-39A-censo-ventanas.md) — 29 clases `Window`, 28 productivas + 1 de infraestructura |
+
+**Trazabilidad del binario.** El commit de cierre documental posterior a `16178df` **no toca `src/` ni
+`tests/`**, así que no cambia el binario: la aprobación de `16178df` es vigente para el árbol integrado,
+con el mismo criterio que I-31 e I-35.
 
 #### I-37D — **INTEGRADA en `main`** (2026-08-03) · **y con ella se cierra I-37**
 

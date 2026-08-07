@@ -68,6 +68,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0026](0026-estacion-cantilever-niveles-altura-y-bom.md) | La estación Cantilever: caras, niveles, altura y BOM por componentes | aceptado |
 | [0027](0027-linea-cantilever-intervalos-y-arriostramiento.md) | La línea Cantilever: intervalos, distribución de paneles y arriostramiento | aceptado |
 | [0028](0028-cantilever-persistencia-vistas-editor-y-dibujo.md) | Cantilever visible: persistencia, registro, vistas, editor y materialización | aceptado |
+| [0029](0029-contrato-funcional-comun-de-ventanas-wpf.md) | Contrato funcional común de ventanas WPF | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -218,3 +219,21 @@ editor va **sobre el shell visual común** y una operación de matriz produce **
 celda; y la materialización **reutiliza** el Drawing vigente en vez de copiar otro sistema. Su gate es el
 **veredicto manual del Owner en AutoCAD 2025**: CI verde es necesario y **no** suficiente, porque las pruebas
 no ven los bloques DWG reales.
+
+Iniciativa I-39A (`architecture/contrato-funcional-ventanas-wpf`): **ADR-0029 nació `propuesto` y quedó
+`aceptado` el 2026-08-07** por el dueño, con el veredicto `OWNER_APPROVED_I39A_MANUAL_VALIDATION` sobre el
+candidato validado en AutoCAD 2025 — el mismo criterio de ADR-0023 en I-36D: un ADR que gobierna lo que se ve
+no se acepta a ciegas, sino después de ver la ventana real. **No reemplaza a ninguna ADR: complementa
+ADR-0019**, que decide cómo se compone lo visual, mientras
+ADR-0029 decide cómo se comporta lo funcional —estado, transacción, acciones y motivos de bloqueo, validación,
+preview, dirty, cierre, teclado, foco, ownership, tamaño, diagnóstico y recomputación observable—. ADR-0019
+permanece `aceptado` e inmutable y ninguna de sus seis reglas se reabre. Sus decisiones de fondo: el inventario
+de ventanas se hace **por tipo y nunca por `x:Name`**; cuatro arquetipos con asignación obligatoria; estados
+**ortogonales** en vez de un enum lineal; el preview con **dos ejes**, autoridad y frescura; cinco grados en un
+valor capturado, donde una entrada inválida **no** sobrescribe en silencio un valor aplicado válido; acciones
+que declaran semántica y **motivo visible al bloquearse**; Escape que **no** puede perder cambios en silencio y
+un único camino de cierre para botón, Escape, `Alt+F4` y botón de sistema; dirty como propiedad de un **ámbito**
+y no de la ventana; y el contrato de tamaño **por arquetipo**, de modo que el arquetipo B no hereda los mínimos
+del editor rico A. **No** decide MVVM, **no** unifica los mecanismos de recomputación, **no** fija resolución ni
+DPI mínimos y **no** autoriza corregir el defecto de Escape de Push Back, que espera a I-39B. Decisiones
+vinculantes del Owner en [`docs/automation/decisions/I-39.md`](../automation/decisions/I-39.md).

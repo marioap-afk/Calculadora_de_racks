@@ -390,8 +390,14 @@ namespace RackCad.Tests
         [Fact]
         public void ElShellDeComponenteTieneSusSieteRanuras()
         {
-            var shell = CodeOnly(Read(
-                "src", "RackCad.UI", "Systems", "Cantilever", "Components", "CantileverComponentEditorShell.cs"));
+            // I-39A REAPUNTA esta guarda, no la debilita. La intencion original -- que el shell que componen los
+            // cuatro configuradores expone SIETE ranuras y ninguna se pierde -- se conserva palabra por palabra; lo
+            // unico que cambia es donde vive el tipo que las declara. El shell nunca supo nada de Cantilever (siete
+            // DP de tipo object, cero ramas): solo su nombre y su ubicacion lo ataban a un sistema, y un consumidor
+            // de otro sistema habria tenido que depender de este namespace para reusarlo. Ahora vive en
+            // RackCad.UI/Shell y CantileverComponentEditorShell es una fachada que deriva de el, de modo que los
+            // cuatro XAML de componente siguen sin tocarse. I-39C los migra y retira la fachada.
+            var shell = CodeOnly(Read("src", "RackCad.UI", "Shell", "RackBoundedEditorShell.cs"));
 
             foreach (var slot in new[]
                      {
@@ -400,6 +406,28 @@ namespace RackCad.Tests
                      })
             {
                 Assert.Contains(slot, shell, StringComparison.Ordinal);
+            }
+        }
+
+        [Fact]
+        public void LaFachadaDeCantileverSigueSiendoElShellQueLosCuatroXamlNOMBRAN()
+        {
+            // El complemento de la guarda anterior: reapuntarla no puede significar que nadie vigile la fachada.
+            // Los cuatro XAML siguen nombrando components:CantileverComponentEditorShell, asi que el tipo tiene que
+            // existir en su ruta, derivar del shell neutral y NO re-declarar ninguna ranura (si las re-declarase
+            // seria codigo escrito para satisfacer una guarda, que es justo lo prohibido).
+            var facade = CodeOnly(Read(
+                "src", "RackCad.UI", "Systems", "Cantilever", "Components", "CantileverComponentEditorShell.cs"));
+
+            Assert.Contains("class CantileverComponentEditorShell : RackBoundedEditorShell", facade, StringComparison.Ordinal);
+            Assert.DoesNotContain("DependencyProperty.Register", facade, StringComparison.Ordinal);
+            Assert.DoesNotContain("DefaultStyleKeyProperty", facade, StringComparison.Ordinal);
+
+            foreach (var file in Directory.GetFiles(ComponentDirectory, "*.xaml"))
+            {
+                var xaml = XamlCodeOnly(File.ReadAllText(file));
+
+                Assert.Contains("CantileverComponentEditorShell", xaml, StringComparison.Ordinal);
             }
         }
     }
