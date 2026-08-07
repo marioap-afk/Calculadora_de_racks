@@ -3,15 +3,14 @@ automation_state:
   initiative: I-39B
   branch: architecture/interaccion-editores-ricos
   claim_id: c752689d-714a-450b-a90e-53ff2729bc40
-  current_phase: 2
-  state: implementing
-  gate: none
+  current_phase: 6
+  state: validating
+  gate: owner-validation
   attempts: 0
   next_action: >-
-    fix-de-recursos-de-RackEditorVisualShell-con-su-regresion-en-rojo ·
-    retirada-de-los-tres-using-de-sistema-en-Editor-con-su-guarda ·
-    NO-tocar-las-seis-ventanas · NO-tocar-HANDOFF · NO-hacer-merge
-  last_evidence_commit:
+    el-Owner-valida-en-AutoCAD-2025-el-checklist-de-31-puntos ·
+    NO-tocar-HANDOFF · NO-hacer-merge · NO-borrar-rama-ni-worktree
+  last_evidence_commit: 4207417
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT
@@ -41,11 +40,12 @@ hallazgos_de_auditoria:
     el-ambito-que-se-pierde-no-es-ModuleSession-sino-la-sesion-entera ·
     nada-llega-al-DWG-hasta-Insertar-o-Actualizar
   medicion: seis-incumplimientos-corregibles-sin-cambio-observable-y-diez-que-no
-  decision_del_owner: >-
-    I-39B-cubre-solo-la-mitad-NO-observable ·
-    la-mitad-observable-es-una-iniciativa-hermana-sin-fila-ni-contrato-todavia ·
-    politica-de-cierre-solo-preguntan-las-ventanas-que-DECLARAN-ambito-transaccional
-  registrada_en: docs/automation/decisions/I-39.md secciones 36 37 y 38
+  naturaleza: >-
+    son-HECHOS-medidos-NO-decisiones · ajustan-COMO-se-implementa-I-39B-no-QUE-debe-entregar
+  registrados_en: docs/automation/evidence/I-39B-auditoria-editores-ricos.md
+  correccion_de_orquestacion: >-
+    una-corrida-anterior-los-escribio-como-decisiones-36-38-del-Owner-y-redujo-unilateralmente-el-alcance ·
+    RETIRADAS · el-alcance-es-el-de-la-fila-del-ROADMAP-los-SEIS-editores-ricos
 
 # --------------------------------------------------------------------------------------------------------
 # ALCANCE
@@ -54,23 +54,28 @@ alcance:
   caracterizacion: las-seis-ventanas-del-arquetipo-A-teclado-cierre-dirty-acciones-preview-foco-tamano
   fix_recursos: RackEditorVisualShell-mergea-el-diccionario-compartido-en-sus-propios-recursos
   limpieza_d12: retirada-de-los-tres-using-hacia-namespaces-de-sistema-en-Editor
+  politica_de_cierre: las-cuatro-rutas-por-OnClosing-en-las-dos-ventanas-que-DECLARAN-ambito
+  observable: >-
+    Cabecera-y-PushBack-preguntan-antes-de-descartar · PushBack-cierra-con-Escape ·
+    el-Dinamico-declara-su-preview-obsoleto-y-apaga-las-cinco-acciones-de-dibujo ·
+    la-Cama-apaga-Insertar-sin-modelo · Cantilever-deja-de-pintar-avisos-como-error ·
+    la-Cabecera-declara-foco-inicial
   lo_que_NO_hace: >-
-    ninguna-politica-de-cierre · ningun-OnClosing · PushBack-intacta · Cabecera-intacta ·
-    preview-obsoleto-del-Dinamico-intacto · sin-adoptar-EditorAction-ni-EditorStatusPresenter ·
-    sin-migrar-Cama-ni-Cabecera-al-shell · cero-cambios-en-los-xaml-y-xaml-cs-de-las-seis
+    cero-geometria-BOM-persistencia-wire-format-GUID-catalogos-y-reglas-de-producto ·
+    no-toca-el-contrato-de-insercion-paralelo-de-la-Cabecera ·
+    no-migra-Cama-ni-Cabecera-al-shell-por-desviacion-registrada ·
+    no-adopta-EditorAction-ni-EditorActionBar-por-motivo-funcional-demostrado
 
 # --------------------------------------------------------------------------------------------------------
 # GATES
 # --------------------------------------------------------------------------------------------------------
 gates:
   owner_validation:
-    required: false
+    required: true
     note: >-
-      I-39B-no-cambia-comportamiento-observable ·
-      anade-pruebas-hace-que-un-token-resuelva-por-otra-via-al-MISMO-valor-y-retira-tres-using-de-comentarios ·
-      el-ROADMAP-no-la-marca-con-mano
+      I-39B-cambia-comportamiento-observable-de-cierre-acciones-severidad-y-foco-en-ventanas-de-produccion
   autocad:
-    required: false
+    required: true
 
 # --------------------------------------------------------------------------------------------------------
 # LO ENTREGADO Y LO QUE QUEDA DENTRO DEL ALCANCE DE I-39B
@@ -86,11 +91,37 @@ entregado:
   dinamico: frescura-declarada-preview-conservado-y-cinco-acciones-de-dibujo-apagadas-con-motivo
   cama: Insertar-apagado-con-motivo-cuando-la-captura-es-invalida
 
-pendiente_dentro_del_alcance:
+alcance_interno_cerrado:
   - severidades-de-Cantilever
   - evolucion-y-adopcion-de-EditorAction-EditorActionBar-EditorStatusPresenter
   - adopcion-del-shell-en-Cama-y-Cabecera-que-cambia-tamano-fondo-tipografia-y-el-layout-persistido
   - foco-inicial-de-la-Cabecera
   aclaracion: >-
     NO-se-convierten-en-otra-iniciativa · quedan-registrados-como-alcance-restante-de-I-39B
+
+
+# --------------------------------------------------------------------------------------------------------
+# CIERRE DEL ALCANCE INTERNO. Ninguno queda diferido sin conclusion.
+# --------------------------------------------------------------------------------------------------------
+conclusiones:
+  cantilever_severidad: RESUELTO-los-avisos-no-bloqueantes-dejan-de-pintarse-con-el-rojo-de-error
+  editor_status_palette: ADOPTADA-con-consumidor-productivo-real-via-UiSupport-SetStatus-por-severidad
+  editor_action_y_action_bar: >-
+    NO-se-adoptan-con-motivo-funcional-demostrado ·
+    EditorActions-Button-no-fija-IsDefault-ni-IsCancel-y-sustituir-los-botones-romperia-el-contrato-de-teclado
+  cama_al_shell: >-
+    NO-se-migra-desviacion-explicita ·
+    el-minimo-del-arquetipo-A-1120x672-es-MAYOR-que-el-tamano-inicial-completo-de-la-Cama-1080x640
+  cabecera_al_shell: >-
+    NO-se-migra-desviacion-explicita ·
+    perderia-el-layout-de-paneles-persistido-que-es-una-capacidad-de-producto
+  cabecera_foco_inicial: RESUELTO-apunta-al-arbol-del-modelo-que-no-es-destructivo-ni-bloqueable
+  registradas_en: docs/automation/evidence/I-39B-decisiones-tecnicas.md
+
+caracterizacion_previa:
+  inmutable: si
+  cuatro_diferencias: >-
+    conservadas-con-Skip-como-evidencia-versionada-y-contrato-nuevo-en-clase-separada ·
+    la-base-corria-en-verde-en-b61182f
+  documentadas_en: docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md
 

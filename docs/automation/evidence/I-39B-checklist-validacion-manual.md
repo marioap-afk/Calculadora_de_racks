@@ -87,15 +87,47 @@ materialización, ni ninguna regla de producto. Tampoco el contrato de inserció
 
 ## Alcance que I-39B **no** cubrió
 
-Registrado, no implementado, y **no** convertido en iniciativa nueva:
+Todo el alcance interno quedó **resuelto o cerrado con una desviación justificada y medida**, registrada
+en [`I-39B-decisiones-tecnicas.md`](I-39B-decisiones-tecnicas.md):
 
-- **Cantilever**: la severidad con que pinta un aviso como error.
-- **Evolución y adopción de `EditorAction` / `EditorActionBar` / `EditorStatusPresenter`**: siguen sin
-  consumidor productivo. La política de cierre no las necesitaba, y adoptarlas por adoptar habría sido
-  la migración cosmética masiva que el contrato prohíbe.
-- **Adopción de `RackEditorVisualShell` en Cama y Cabecera**: la auditoría midió que cambia tamaño,
-  fondo, tipografía y, en la Cabecera, su layout de paneles persistido. Requiere su propia
-  caracterización de layout.
-- **Foco inicial de la Cabecera** (ADR-0029 D9): es la única de las seis que no lo declara.
-- **Contrato de inserción paralelo de la Cabecera**: excluido expresamente por ADR-0029.
+- **Cantilever**: RESUELTO. Los avisos no bloqueantes dejan de pintarse con el rojo de error.
+- **`EditorStatusPalette`**: ADOPTADA, con consumidor productivo real. Ya no es cierto que la
+  infraestructura de status no tenga ninguno.
+- **`EditorAction` / `EditorActionBar`**: **no se adoptan**, con motivo funcional demostrado: no saben
+  declarar acción por defecto ni cancelación, y sustituir los botones rompería el contrato de teclado
+  que I-39B acaba de fijar. D6 queda cumplido por el mecanismo que ya usaban las ventanas.
+- **Cama y Cabecera al shell**: **no se migran**, con desviación explícita. El mínimo del arquetipo A
+  (`1120×672`) es mayor que el tamaño inicial completo de la Cama (`1080×640`), y la Cabecera perdería
+  su layout de paneles persistido, que es una capacidad de producto.
+- **Foco inicial de la Cabecera**: RESUELTO.
+
+Siguen fuera por **exclusión previa y expresa**, no por diferimiento:
+
+- **Contrato de inserción paralelo de la Cabecera**: ADR-0029 no autoriza tocar persistencia ni
+  identidad, y proteger el cierre no lo requirió.
 - **Defecto de reseed de Push Back**: pérdida silenciosa ajena al cierre, preexistente.
+- **Merge incondicional del shell acotado** (arquetipo B, I-39A).
+
+## Adenda — puntos añadidos al cerrar el alcance interno
+
+### Cantilever
+
+| # | Punto | Resultado |
+|---|---|---|
+| 25 | Una línea que resuelve **con avisos** muestra su texto en **ámbar**, no en el rojo de error | |
+| 26 | Un fallo real sigue en rojo, y una línea sin avisos sigue en verde | |
+| 27 | Los avisos no bloquean: insertar y actualizar siguen disponibles | |
+
+### Configurador de cabecera
+
+| # | Punto | Resultado |
+|---|---|---|
+| 28 | Al abrir, el foco está en el **árbol del modelo**; escribir no altera ningún campo por accidente | |
+| 29 | Tabular desde ahí recorre la ventana en orden coherente | |
+
+### Cama y Cabecera — sin migración al shell
+
+| # | Punto | Resultado |
+|---|---|---|
+| 30 | Ambas conservan **su tamaño, su fondo y su composición actuales**: no se migraron al shell, por la desviación registrada en `I-39B-decisiones-tecnicas.md` | |
+| 31 | La Cabecera conserva su **layout de paneles persistido** y «Restablecer paneles» sigue funcionando | |

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RackCad.UI.Shell;
 using RackCad.Application.Catalogs;
 using RackCad.Application.Persistence;
 using RackCad.Application.StructuralSections;
@@ -434,7 +435,17 @@ namespace RackCad.UI.Systems.Cantilever
             session.SetModel(computation.Design, computation.Line);
 
             SummaryText.Text = Summarize(computation);
-            SetStatus(Warnings(computation) ?? "Línea recalculada.", Warnings(computation) != null);
+
+            // ADR-0029: la severidad se representa como es, no como el booleano permitía. `Warnings` son los
+            // diagnósticos NO bloqueantes —la línea SÍ resolvió—, y hasta I-39B se pintaban con `isError: true`,
+            // es decir en el mismo rojo que un fallo real e indistinguibles de él. El dominio ya distinguía
+            // Info/Warning/Blocking; lo que faltaba era no perder esa distinción al presentarla.
+            var warnings = Warnings(computation);
+            UiSupport.SetStatus(
+                StatusText,
+                warnings ?? "Línea recalculada.",
+                warnings != null ? EditorStatusSeverity.Warning : EditorStatusSeverity.Success);
+
             RenderPreview();
             UpdateButtons();
         }

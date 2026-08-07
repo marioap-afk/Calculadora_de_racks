@@ -31,6 +31,21 @@ namespace RackCad.UI.Tests
     /// </summary>
     public sealed class RichEditorCharacterizationTests
     {
+        /// <summary>
+        /// Tres de estas pruebas describen la base ANTERIOR a la mitad observable de I-39B y por tanto ya no pueden
+        /// ejecutarse contra el codigo nuevo. Se conservan intactas, con su texto y sus comentarios originales, como
+        /// EVIDENCIA VERSIONADA de que hacia la base: reescribirlas para que pasaran habria borrado la transicion.
+        ///
+        /// <para>La transicion se lee en tres sitios: aqui esta el comportamiento anterior; ADR-0029 D7 y D8
+        /// autorizan el cambio; y <c>RichEditorCloseContractTests</c> prueba el comportamiento nuevo. El commit
+        /// <c>b61182f</c> es la version en que estas tres corrian en verde contra la base, y
+        /// <c>docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md</c> enfrenta las dos versiones
+        /// aserción por aserción.</para>
+        /// </summary>
+        private const string BaseEvidence =
+            "Evidencia de la BASE anterior a I-39B; el contrato nuevo lo prueba RichEditorCloseContractTests. " +
+            "Ver docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md";
+
         // ---- construccion de las seis ventanas reales ----
 
         private static RackSelectiveWindow Selective() => new RackSelectiveWindow(canInsertInAutoCad: true);
@@ -96,53 +111,47 @@ namespace RackCad.UI.Tests
 
         // ---- 2. Escape: cinco cierran, una no ----
 
-        [Fact]
-        public void TheSixCloseWithEscape()
+        [Fact(Skip = BaseEvidence)]
+        public void FiveOfTheSixCloseWithEscapeAndPushBackDoesNot()
         {
             StaTestRunner.Run(() =>
             {
-                // CAMBIO DELIBERADO DE I-39B, no una acomodacion de la prueba. La caracterizacion original decia que
-                // Push Back era la unica SIN IsCancel y que anadirselo sin politica convertiria Escape en un descarte
-                // silencioso. La politica de cierre ya existe (OnClosing + ambito declarado), asi que ahora si
-                // procede: Escape cierra las seis, y en las que declaran ambito pendiente pregunta antes.
                 foreach (var (window, name) in new (Window, string)[]
                          {
-                             (Selective(), "Selectivo"), (Dynamic(), "Dinamico"), (PushBack(), "Push Back"),
-                             (Cantilever(), "Cantilever"), (FlowBed(), "Cama"), (Frame(), "Cabecera")
+                             (Selective(), "Selectivo"), (Dynamic(), "Dinamico"), (Cantilever(), "Cantilever"),
+                             (FlowBed(), "Cama"), (Frame(), "Cabecera")
                          })
                 {
                     Assert.True(Cancel(window) != null, name + " deberia tener un boton IsCancel");
                     Assert.Equal("Cerrar", ContentOf(Cancel(window)));
                 }
+
+                // INCUMPLIMIENTO CARACTERIZADO, no corregido: Push Back es la unica sin IsCancel, asi que Escape NO
+                // la cierra. Es tambien la unica con un ambito dirty explicito, y por eso anadirle IsCancel sin
+                // politica de cierre convertiria Escape en un descarte silencioso. Lo corrige la hermana.
+                Assert.Null(Cancel(PushBack()));
             });
         }
 
         // ---- 3. Caminos de cierre: no hay ninguna politica ----
 
-        [Fact]
-        public void OnlyTheEditorsWithADeclaredScopeInterceptTheirClosing()
+        [Fact(Skip = BaseEvidence)]
+        public void NoRichEditorInterceptsItsClosing()
         {
-            // CAMBIO DELIBERADO DE I-39B. Antes ninguna de las seis declaraba OnClosing y por tanto ningun camino de
-            // cierre atravesaba politica alguna. Ahora la declaran EXACTAMENTE las dos que tienen un ambito
-            // transaccional: Push Back (ModuleSession) y Cabecera (HasUnsavedManualEdits). Las otras cuatro no
-            // declaran ambito y cierran directo — ADR-0029 D8 admite «no aplicable» como valor legitimo, y no se
-            // inventa un dirty global que el producto no tiene.
-            const System.Reflection.BindingFlags Declared =
-                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic |
-                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.DeclaredOnly;
-
-            foreach (var type in new[] { typeof(RackPushBackSystemWindow), typeof(RackFrameConfiguratorWindow) })
-            {
-                Assert.True(type.GetMethod("OnClosing", Declared) != null, type.Name + " deberia declarar OnClosing");
-            }
-
+            // INCUMPLIMIENTO CARACTERIZADO de ADR-0029 D7: ninguna de las seis declara OnClosing, de modo que el
+            // boton, Escape, Alt+F4 y el boton de sistema NO atraviesan una politica comun: no atraviesan ninguna.
             foreach (var type in new[]
                      {
-                         typeof(RackSelectiveWindow), typeof(RackDynamicSystemWindow),
-                         typeof(RackCantileverWindow), typeof(RackFlowBedWindow)
+                         typeof(RackSelectiveWindow), typeof(RackDynamicSystemWindow), typeof(RackPushBackSystemWindow),
+                         typeof(RackCantileverWindow), typeof(RackFlowBedWindow), typeof(RackFrameConfiguratorWindow)
                      })
             {
-                Assert.True(type.GetMethod("OnClosing", Declared) == null, type.Name + " no deberia declarar OnClosing");
+                var onClosing = type.GetMethod(
+                    "OnClosing",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic |
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.DeclaredOnly);
+
+                Assert.True(onClosing == null, type.Name + " ya declara OnClosing: la politica de cierre cambio");
             }
         }
 
@@ -185,27 +194,21 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
-        public void BothDeclaredScopesAreConsultedWhenTheWindowCloses()
+        [Fact(Skip = BaseEvidence)]
+        public void NeitherDeclaredScopeIsConsultedWhenTheWindowCloses()
         {
             StaTestRunner.Run(() =>
             {
-                // CAMBIO DELIBERADO DE I-39B: el ambito existia y el cierre no lo consultaba. Sin nada pendiente el
-                // cierre sigue siendo directo y sin dialogo, que es lo que se comprueba aqui; el caso con trabajo
-                // pendiente lo cubre EditorClosePolicyTests.
-                var asked = false;
-                using (EditorDiscardPrompt.Substitute(_ => { asked = true; return true; }))
-                {
-                    var pushBack = PushBack();
-                    pushBack.Close();
-                    Assert.Null(pushBack.InsertionRequest);
+                // INCUMPLIMIENTO CARACTERIZADO de ADR-0029 D8: el ambito existe y el cierre no lo agrega. Cerrar con
+                // cambios pendientes los descarta sin preguntar. Como no hay OnClosing, la ventana ni siquiera tiene
+                // donde consultarlo: cerrar simplemente sucede.
+                var pushBack = PushBack();
+                pushBack.Close();
+                Assert.Null(pushBack.InsertionRequest);
 
-                    var frame = Frame();
-                    frame.Close();
-                    Assert.False(frame.InsertRequested);
-                }
-
-                Assert.False(asked, "sin trabajo pendiente el cierre no debe preguntar nada");
+                var frame = Frame();
+                frame.Close();
+                Assert.False(frame.InsertRequested);
             });
         }
 
@@ -282,7 +285,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void FiveDeclareAnInitialFocusAndTheHeaderConfiguratorDoesNot()
         {
             StaTestRunner.Run(() =>
