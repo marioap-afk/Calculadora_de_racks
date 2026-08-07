@@ -4,12 +4,11 @@ automation_state:
   branch: architecture/interaccion-editores-ricos
   claim_id: c752689d-714a-450b-a90e-53ff2729bc40
   current_phase: 6
-  state: integration-ready
+  state: integrated
   gate: none
   attempts: 0
   next_action: >-
-    integrar-en-main-por-merge-no-ff-sin-squash-desde-el-worktree-principal ·
-    gates-post-merge-SOBRE-MAIN · limpieza-segura-solo-tras-confirmar-el-merge
+    NINGUNA-I-39B-esta-INTEGRADA-y-CERRADA · I-39-sigue-abierta · siguiente-autorizada-I-39C
   last_evidence_commit: 5755845051a5f10bd06367f1f97aed42e180dc9a
 
 # --------------------------------------------------------------------------------------------------------
@@ -142,4 +141,14 @@ caracterizacion_previa:
     conservadas-con-Skip-como-evidencia-versionada-y-contrato-nuevo-en-clase-separada ·
     la-base-corria-en-verde-en-b61182f
   documentadas_en: docs/automation/evidence/I-39B-caracterizacion-base-vs-contrato.md
+
+  merge_sha: 2239eac86ef275aae9c4b0aebf522cc5c679a36b
+  merge_padres: 3853cd48bb94b22cc6ec9800f0ed581920d57068 y 2675e72957e00c120d1ac9c6907d99201bebc361
+  candidato_final: 2675e72957e00c120d1ac9c6907d99201bebc361
+  relacion_con_el_sha_validado: >-
+    el-Owner-valido-5755845 · el-cierre-documental-2675e72-NO-toca-src-ni-tests-verificado-con-git-diff ·
+    el-binario-no-cambia-y-la-aprobacion-es-vigente-para-el-arbol-integrado
+  gates_post_merge: >-
+    main-igual-a-origin-main · suites-completas-verdes-SOBRE-MAIN ·
+    builds-Debug-de-UI-y-Plugin-verdes · guardas-de-censo-shell-y-I-37D-verdes
 
