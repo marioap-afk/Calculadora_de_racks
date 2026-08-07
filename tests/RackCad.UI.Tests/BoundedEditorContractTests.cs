@@ -9,6 +9,7 @@ using RackCad.Application.StructuralSections;
 using RackCad.Domain.Systems.Cantilever;
 using RackCad.UI.StructuralSections;
 using RackCad.UI.Systems.Cantilever.Components;
+using RackCad.UI.Systems.Larguero;
 using Xunit;
 
 namespace RackCad.UI.Tests
@@ -205,6 +206,87 @@ namespace RackCad.UI.Tests
                 Assert.NotSame(insert.Style, close.Style);
                 Assert.True(ToolTipService.GetShowOnDisabled(insert));
                 Assert.True(ToolTipService.GetShowOnDisabled(close));
+            });
+        }
+
+        // ---- 4. el Larguero, ultima ventana del arquetipo sin shell ----
+
+        [Fact]
+        public void ElLargueroComponeSobreElShellYAplicaElContratoDelArquetipo()
+        {
+            StaTestRunner.Run(() =>
+            {
+                var styles = AppStyles();
+                var window = new RackLargueroWindow();
+
+                Assert.IsType<RackCad.UI.Shell.RackBoundedEditorShell>(window.Content);
+                Assert.NotNull(window.Style);
+                Assert.Equal((double)styles["BoundedEditorInitialWidth"], window.Width);
+                Assert.Equal((double)styles["BoundedEditorInitialHeight"], window.Height);
+                Assert.Equal((double)styles["BoundedEditorMinWidth"], window.MinWidth);
+                Assert.Equal((double)styles["BoundedEditorMinHeight"], window.MinHeight);
+            });
+        }
+
+        [Fact]
+        public void ElLargueroConservaSusCincoCamposSuLienzoYSuEstado()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // La migracion muda las MISMAS instancias: si un x:Name se perdiera, el propio code-behind dejaria de
+                // encontrarlo (DrawPreview usa PreviewCanvas, SetStatus usa StatusText) y el catalogo no se cargaria.
+                var window = new RackLargueroWindow();
+
+                foreach (var name in new[] { "NameBox", "ProfileBox", "PeralteBox", "LengthBox", "MensulaBox", "PreviewCanvas", "StatusText" })
+                {
+                    Assert.True(window.FindName(name) != null, $"se perdio {name} al migrar");
+                }
+
+                // El catalogo sigue alimentando los combos y el perfil sigue derivando sus peraltes.
+                Assert.NotEmpty(((ComboBox)window.FindName("ProfileBox")).Items);
+                Assert.NotEmpty(((ComboBox)window.FindName("MensulaBox")).Items);
+                Assert.Equal("96", ((TextBox)window.FindName("LengthBox")).Text);
+            });
+        }
+
+        [Fact]
+        public void ElChromeDelLargueroSaleYaDeLosTokensCompartidos()
+        {
+            var source = File.ReadAllText(Path.Combine(
+                RepoRoot().FullName, "src", "RackCad.UI", "Systems", "Larguero", "RackLargueroWindow.xaml"));
+
+            // Los cuatro literales que el censo de I-39A registro como el tercer chrome del proyecto.
+            foreach (var literal in new[] { "#1F2933", "#9AA7B4", "#617080", "#D8DEE6" })
+            {
+                Assert.DoesNotContain(literal, source, StringComparison.Ordinal);
+            }
+
+            // La superficie del preview se queda CLARA a proposito: sus rotulos son grises y sobre el fondo oscuro
+            // del editor rico serian ilegibles. El token elegido vale exactamente lo que la ventana ya pintaba.
+            Assert.Contains("ShellSurfaceBrush", source, StringComparison.Ordinal);
+            Assert.DoesNotContain("ShellPreviewBackgroundBrush", source, StringComparison.Ordinal);
+            Assert.Equal(
+                ((SolidColorBrush)AppStyles()["ShellSurfaceBrush"]).Color,
+                Color.FromRgb(0xFF, 0xFF, 0xFF));
+        }
+
+        [Fact]
+        public void ElLargueroSigueSinDeclararSelectorNiRecetaEnLinea()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // Dos ranuras vacias A PROPOSITO, como el piloto: el larguero no elige del catalogo estructural
+                // —sus combos vienen del catalogo de producto— y su lista de materiales se consulta en una ventana
+                // modal. Rellenarlas seria inventar producto donde el shell solo pide composicion.
+                var shell = (RackCad.UI.Shell.RackBoundedEditorShell)new RackLargueroWindow().Content;
+
+                Assert.Null(shell.SectionPicker);
+                Assert.Null(shell.BomSummary);
+                Assert.NotNull(shell.Header);
+                Assert.NotNull(shell.Parameters);
+                Assert.NotNull(shell.Preview);
+                Assert.NotNull(shell.Diagnostics);
+                Assert.NotNull(shell.Actions);
             });
         }
 

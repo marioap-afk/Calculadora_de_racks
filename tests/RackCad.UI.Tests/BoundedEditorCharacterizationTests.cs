@@ -180,7 +180,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void ElLargueroDeclaraSuTamanoAManoYNoAplicaNingunEstiloDeVentana()
         {
             StaTestRunner.Run(() =>
@@ -480,7 +480,7 @@ namespace RackCad.UI.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void ElLargueroNoUsaNingunShellYArmaSuChromeAMano()
         {
             var source = UiSource("Systems", "Larguero", "RackLargueroWindow.xaml");
