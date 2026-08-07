@@ -39,6 +39,20 @@ namespace RackCad.UI.Shell
             }
         }
 
+        /// <summary>
+        /// The shared dictionary itself, so a lookless shell can merge it into its OWN resources and make the
+        /// <c>DynamicResource</c> tokens of its template resolve for EVERY consumer.
+        ///
+        /// <para>A <c>DynamicResource</c> with a plain string key searches the element tree and then
+        /// <c>Application.Resources</c>; it does NOT fall back to the assembly theme dictionary, even though that is
+        /// where the template itself came from. So a shell whose template says
+        /// <c>Margin="{DynamicResource ShellZoneSpacing}"</c> renders with a ZERO margin unless the consuming window
+        /// happens to have merged AppStyles — which a window built in code has no reason to do. Merging here removes
+        /// that dependency on the consumer. All six styles of AppStyles are keyed, so nothing implicit leaks into a
+        /// consumer's tree.</para>
+        /// </summary>
+        public static ResourceDictionary Shared => Dictionary;
+
         /// <summary>The shared resource for <paramref name="key"/> cast to <typeparamref name="T"/>, or
         /// <paramref name="fallback"/> when the key is ABSENT or of another type. A real dictionary-load failure is NOT
         /// swallowed — it propagates, so a broken AppStyles surfaces instead of every lookup silently returning defaults.</summary>

@@ -240,6 +240,69 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- 3b. the shell carries its own tokens, whatever the consumer merged ----
+
+        [Fact]
+        public void TheShellResolvesItsSpacingTokensWithoutTheConsumerMergingAnything()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // REGRESION (validacion manual de I-39A, defecto unico): los botones de accion aparecian pegados a
+                // los bordes derecho e inferior. Causa: un DynamicResource con clave de cadena recorre el arbol de
+                // elementos y Application.Resources, pero NO cae al diccionario de tema del ensamblado, aunque de
+                // ahi salga la propia plantilla. Un consumidor construido en codigo no mergea AppStyles y no tiene
+                // por que hacerlo, asi que ShellZoneSpacing quedaba sin resolver y el margen era CERO.
+                var shell = Measured<RackBoundedEditorShell>(s =>
+                {
+                    s.Parameters = new StackPanel();
+                    s.Preview = new Canvas();
+                    s.Actions = new StackPanel();
+                });
+
+                Assert.Equal(
+                    ShellResourcesProbe.ZoneSpacing(),
+                    shell.TryFindResource("ShellZoneSpacing"));
+            });
+        }
+
+        [Fact]
+        public void TheActionsAreInsetFromTheShellEdgesByTheSharedZoneSpacing()
+        {
+            StaTestRunner.Run(() =>
+            {
+                const double width = 1000.0;
+                const double height = 700.0;
+
+                var button = new Button { Content = "Insertar", Width = 110 };
+                var shell = Measured<RackBoundedEditorShell>(
+                    s =>
+                    {
+                        s.Parameters = new StackPanel();
+                        s.Preview = new Canvas();
+                        s.Actions = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                            Children = { button }
+                        };
+                    },
+                    width,
+                    height);
+
+                var spacing = (Thickness)ShellResourcesProbe.ZoneSpacing();
+                var corner = button.TransformToAncestor(shell).Transform(new Point(button.ActualWidth, button.ActualHeight));
+
+                Assert.True(spacing.Right > 0.0 && spacing.Bottom > 0.0);
+                Assert.Equal(spacing.Right, width - corner.X, 3);
+                Assert.Equal(spacing.Bottom, height - corner.Y, 3);
+            });
+        }
+
+        private static class ShellResourcesProbe
+        {
+            public static object ZoneSpacing() => AppStyles()["ShellZoneSpacing"];
+        }
+
         // ---- 4. the archetype's size contract is its own ----
 
         [Fact]

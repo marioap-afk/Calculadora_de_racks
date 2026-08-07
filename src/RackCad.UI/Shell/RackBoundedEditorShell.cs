@@ -33,6 +33,21 @@ namespace RackCad.UI.Shell
                 new FrameworkPropertyMetadata(typeof(RackBoundedEditorShell)));
         }
 
+        public RackBoundedEditorShell()
+        {
+            // The shell carries its own spacing, colour and typography tokens instead of depending on the consumer
+            // having merged them. A `DynamicResource` with a plain string key searches the element tree and then
+            // `Application.Resources`; it does NOT fall back to the assembly theme dictionary, even though that is
+            // where this control's template came from. So without this line a consumer that merges nothing — a window
+            // built in code, which has no reason to merge anything — renders the template with `ShellZoneSpacing`
+            // unresolved, i.e. a ZERO margin, and its action buttons end up flush against the window edges.
+            //
+            // A consumer that already merges AppStyles (every XAML window that applies a shared window style) is
+            // unaffected: the same keys resolve to the same values, and all six styles of AppStyles are keyed, so
+            // nothing implicit leaks into the consumer's tree.
+            Resources.MergedDictionaries.Add(ShellResources.Shared);
+        }
+
         public static readonly DependencyProperty HeaderProperty =
             DependencyProperty.Register(nameof(Header), typeof(object), typeof(RackBoundedEditorShell), new PropertyMetadata(null));
 

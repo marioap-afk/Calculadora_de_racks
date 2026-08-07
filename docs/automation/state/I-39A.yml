@@ -6,12 +6,43 @@ automation_state:
   current_phase: 6
   state: validating
   gate: owner-validation
-  attempts: 0
+  attempts: 1
   next_action: >-
-    el-Owner-valida-en-AutoCAD-2025-el-inspector-de-secciones-migrado-y-los-cuatro-editores-de-componente-Cantilever ·
-    con-ese-mismo-veredicto-acepta-o-rechaza-ADR-0029 ·
+    RONDA-2-el-Owner-revalida-los-puntos-12-y-13-del-checklist-sobre-el-DLL-nuevo ·
+    con-ese-veredicto-acepta-o-rechaza-ADR-0029 ·
     NO-tocar-HANDOFF · NO-hacer-merge · NO-borrar-rama-ni-worktree-hasta-confirmar-la-integracion
-  last_evidence_commit: d1149e5
+  last_evidence_commit: 94354ef0ced45032e561c0c235b5352a341efe76
+
+# --------------------------------------------------------------------------------------------------------
+# RONDA 1 DE VALIDACION MANUAL. Trece de catorce puntos aprobados; un defecto, corregido.
+# --------------------------------------------------------------------------------------------------------
+ronda_1:
+  veredicto: PARCIALMENTE-RECHAZADA-un-solo-defecto
+  puntos_aprobados: 13-de-14
+  defecto: >-
+    los-botones-Insertar-y-Cerrar-quedaban-practicamente-pegados-a-los-bordes-derecho-e-inferior
+  causa_medida: >-
+    NO-era-del-piloto-sino-del-contrato-visual-comun-del-arquetipo-B ·
+    un-DynamicResource-con-clave-de-cadena-recorre-el-arbol-y-Application-Resources-pero-NO-cae-al-diccionario
+    de-tema-del-ensamblado-aunque-de-ahi-salga-la-plantilla ·
+    las-cuatro-ventanas-Cantilever-no-lo-notan-porque-son-XAML-y-mergean-AppStyles-en-sus-propios-recursos ·
+    el-inspector-es-code-only-y-no-mergea-nada-asi-que-ShellZoneSpacing-quedaba-sin-resolver-y-el-Margin-caia-a-CERO
+  medicion_sobre_la_ventana_real: >-
+    DockPanel-Margin-igual-0-0-0-0 · TryFindResource-ShellZoneSpacing-igual-NULL ·
+    hueco-derecho-e-inferior-del-boton-Cerrar-igual-0-px-exactos
+  correccion: >-
+    RackBoundedEditorShell-mergea-el-diccionario-compartido-en-sus-PROPIOS-recursos ·
+    los-tokens-de-su-plantilla-resuelven-para-TODO-consumidor ·
+    sin-valores-nuevos-el-margen-es-el-token-compartido-ShellZoneSpacing ·
+    los-cuatro-XAML-Cantilever-siguen-con-diff-vacio-y-sin-cambio-de-aspecto
+  regresion_verificada_en_rojo: >-
+    dos-pruebas-nuevas-fallan-al-retirar-la-linea-del-merge-y-pasan-al-devolverla ·
+    con-rebuild-COMPLETO-porque-el-build-incremental-no-recoge-un-cambio-en-el-ctor-del-control
+  caracterizacion: las-30-pruebas-del-piloto-siguen-INTACTAS-y-en-verde
+  hallazgo_registrado_no_corregido: >-
+    RackEditorVisualShell-tiene-la-misma-dependencia-latente-del-consumidor ·
+    hoy-enmascarada-porque-sus-cuatro-consumidores-son-ventanas-XAML-que-si-mergean-AppStyles ·
+    corregirla-tocaria-cuatro-ventanas-ya-validadas-y-queda-fuera-del-alcance · I-39B
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT REAL ejecutado antes del reclamo.
