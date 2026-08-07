@@ -213,10 +213,26 @@ hallazgos_adyacentes:
 # --------------------------------------------------------------------------------------------------------
 integracion:
   rebase_final: >-
-    NO-OP-si-origin-main-no-avanza-desde-fdde6a7 · comprobar-antes-de-integrar
-  merge: no-ff-sin-squash-desde-el-worktree-principal-del-dueno
-  merge_sha: >-
-    vive-en-git-log-first-parent-main · este-archivo-no-lo-inventa-porque-se-escribe-antes-del-merge
-  quien_integra: el-dueno-en-su-workstation-el-agente-NUNCA-hace-merge
+    NO-OP-origin-main-no-avanzo-desde-fdde6a7 · sin-rebase · el-arbol-validado-es-el-integrado
+  merge: no-ff-sin-squash-sin-force-desde-el-worktree-principal-del-dueno
+  merge_sha: 44f84bdc4bdd64f9252ed1c726a456b19b643f56
+  merge_padres: >-
+    fdde6a7050189aa7f8ace41005ec06031f3f9142 · e39ccfb18f991aea4dfc5e49ea81f6485d42b1d4
+  candidato_final: e39ccfb18f991aea4dfc5e49ea81f6485d42b1d4
+  ci_del_candidato_final: VERDE-4-de-4-run-31201790868-sobre-e39ccfb
+  relacion_con_el_sha_validado: >-
+    el-Owner-valido-16178df · el-commit-de-cierre-documental-e39ccfb-NO-toca-src-ni-tests ·
+    el-binario-no-cambia-asi-que-la-aprobacion-es-vigente-para-el-arbol-integrado ·
+    mismo-criterio-que-I-31-e-I-35
+  quien_integra: >-
+    sesion-de-integracion-dedicada-en-la-workstation-del-dueno-WORKFLOW-4-5 ·
+    autorizada-expresamente-por-el-Owner ·
+    automation-enabled-false-de-modo-que-la-prohibicion-de-merge-AUTOMATICO-de-AUTOMATION_PLAN-13-no-gobierna-esta-sesion ·
+    los-merges-previos-de-la-linea-I-36-e-I-37-llevan-el-mismo-trailer-de-agente
+  gates_post_merge: >-
+    main-igual-a-origin-main · suites-completas-verdes-SOBRE-MAIN ·
+    builds-Debug-de-UI-y-Plugin-verdes-sobre-main · censo-exacto · guardas-verdes ·
+    los-cuatro-XAML-de-componente-Cantilever-con-diff-vacio-tambien-en-main
   limpieza: >-
-    rama-y-worktree-NO-se-borran-hasta-confirmar-el-merge-en-main
+    ejecutada-solo-tras-confirmar-el-merge-y-el-push-de-main ·
+    worktree-eliminado · rama-local-borrada-con-branch-d-nunca-branch-D · rama-remota-eliminada

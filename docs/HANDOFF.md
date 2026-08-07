@@ -1062,11 +1062,11 @@ drawings, la interferencia física en el cruce de tensores, y cualquier catálog
 | Campo | Valor |
 |---|---|
 | Rama | `architecture/contrato-funcional-ventanas-wpf` — **integrada y eliminada** (local y remota) |
-| Merge en `main` | `--no-ff`, sin squash y sin force — SHA y padres registrados abajo |
+| Merge en `main` | **`44f84bd`** · padres `fdde6a7` y `e39ccfb` · `--no-ff`, sin squash y sin force |
 | `CODE_SHA` funcional | `16178dfb9c5871a4321d69594a26f67200f28c2f` |
 | `VALIDATED_BUILD_SHA` | `16178dfb9c5871a4321d69594a26f67200f28c2f` · DLL Debug `AB6CC4BE…5087CB93` |
 | Suites | `RackCad.Tests` **2979** · `RackCad.UI.Tests` **669** |
-| CI del candidato | [`31197679362`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31197679362) ✅ 4/4 jobs sobre `16178df` |
+| CI del candidato | [`31201790868`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31201790868) ✅ 4/4 jobs sobre `e39ccfb` (el candidato validado `16178df` corrió en [`31197679362`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31197679362), también 4/4) |
 | Base | `origin/main` `fdde6a7` — **no avanzó** desde el reclamo: **sin rebase**, y el árbol validado es el integrado |
 | Regresiones verificadas en rojo | 4 guardas + 2 pruebas del defecto de la ronda 1 |
 | **Validación manual en AutoCAD** | ✅ **APROBADA 2026-08-07** — [checklist](automation/evidence/I-39A-checklist-validacion-manual.md) |
