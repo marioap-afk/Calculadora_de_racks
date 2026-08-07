@@ -654,6 +654,26 @@ Planes disponibles:
   Decisiones vinculantes del Owner en la seccion 12 de
   [`../automation/decisions/I-37.md`](../automation/decisions/I-37.md) y estado versionado en
   [`../automation/state/I-37D.yml`](../automation/state/I-37D.yml).
+- [`I-39A-contrato-funcional-piloto-editor-acotado.md`](I-39A-contrato-funcional-piloto-editor-acotado.md):
+  **fundacion del contrato funcional de ventanas WPF y piloto de editor acotado** (tipo: architecture; rama
+  `architecture/contrato-funcional-ventanas-wpf`). Primera subiniciativa de **I-39**, registrada en el ROADMAP
+  (Fase 3) por autorizacion expresa del Owner. **I-39 no tiene contrato paraguas**: la linea la gobiernan su
+  fila del ROADMAP, [`../automation/decisions/I-39.md`](../automation/decisions/I-39.md) y
+  [ADR-0029](../adr/0029-contrato-funcional-comun-de-ventanas-wpf.md), igual que se goberno I-37.
+  Entrega el **censo por tipo** de las clases derivadas de `System.Windows.Window` -- no por archivo, porque
+  una ventana vive dentro del archivo de otra, ni por `x:Name`, porque el **tipo** `PreviewCanvas` tiene un
+  solo consumidor mientras diez ventanas usan un `Canvas` homonimo --, la **taxonomia A/B/C/D** con sus casos
+  discutibles, el **shell neutral del arquetipo B** (`RackBoundedEditorShell`) en `RackCad.UI.Shell` con
+  `CantileverComponentEditorShell` reducido a **fachada** en su ruta actual, la guarda de I-37D
+  **reapuntada y no debilitada**, el **contrato de tamano del arquetipo B** separado del editor rico, y el
+  **piloto** en `StructuralSectionInspectorWindow`, **caracterizado antes de migrar** -- incluidos Enter,
+  Escape, foco inicial, tabulacion y caminos de cierre, que hoy no tienen ninguna cobertura -- y **sin cambio
+  de comportamiento observable**. Fuera de alcance: Larguero (I-39C), los seis editores ricos y el defecto de
+  Escape de Push Back (I-39B), los diez dialogos y las seis utilitarias (I-39D), la migracion fisica de los
+  cuatro XAML de componente Cantilever y la retirada de la fachada (I-39C), geometria, BOM, persistencia,
+  catalogos, Plugin y cualquier paquete NuGet. `requires_autocad: true`,
+  `requires_owner_validation: true`. Estado versionado en
+  [`../automation/state/I-39A.yml`](../automation/state/I-39A.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
