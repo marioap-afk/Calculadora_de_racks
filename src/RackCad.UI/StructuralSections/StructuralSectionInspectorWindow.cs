@@ -7,6 +7,7 @@ using System.Windows.Media;
 using RackCad.Application.StructuralSections;
 using RackCad.Application.StructuralSections.Geometry;
 using RackCad.UI.Controls;
+using RackCad.UI.Shell;
 
 namespace RackCad.UI.StructuralSections
 {
@@ -189,8 +190,6 @@ namespace RackCad.UI.StructuralSections
             left.Children.Add(_axis);
             left.Children.Add(_envelope);
 
-            var right = new DockPanel { Margin = new Thickness(12) };
-
             var info = new StackPanel();
             info.Children.Add(_summary);
             info.Children.Add(_fidelity);
@@ -200,8 +199,7 @@ namespace RackCad.UI.StructuralSections
             var actions = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Margin = new Thickness(0, 8, 0, 0)
+                HorizontalAlignment = HorizontalAlignment.Right
             };
 
             var accept = new Button { Content = "Insertar", Width = 110, Margin = new Thickness(0, 0, 8, 0), IsDefault = true };
@@ -213,23 +211,25 @@ namespace RackCad.UI.StructuralSections
             actions.Children.Add(accept);
             actions.Children.Add(cancel);
 
-            DockPanel.SetDock(actions, Dock.Bottom);
-            DockPanel.SetDock(info, Dock.Bottom);
-            right.Children.Add(actions);
-            right.Children.Add(info);
-            right.Children.Add(_preview);
-
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(320) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            var scroll = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Content = left };
-            Grid.SetColumn(scroll, 0);
-            Grid.SetColumn(right, 1);
-            grid.Children.Add(scroll);
-            grid.Children.Add(right);
-
-            return grid;
+            // I-39A: the inspector is the first non-Cantilever consumer of the bounded-editor shell (archetype B of
+            // ADR-0029). Its own controls are hosted AS THEY ARE — same instances, same handlers, same order — so
+            // nothing about search, filtering, families, defaults, geometry authority or the output contract moves.
+            //
+            // Three zones stay empty on purpose. `Header`: the inspector never had one. `SectionPicker`: its search
+            // and its list are part of the capture panel, and splitting them out would invert the visual order the
+            // characterization pins. `BomSummary`: the inspector produces no BOM and must not start producing one
+            // (owner decision 23 of I-36D).
+            //
+            // What the shell changes is composition, and that IS the point: diagnostics and actions leave the
+            // preview column and become bands that span the window, always outside the parameters scroll, so they
+            // stay reachable however long the capture panel grows.
+            return new RackBoundedEditorShell
+            {
+                Parameters = left,
+                Preview = _preview,
+                Diagnostics = info,
+                Actions = actions
+            };
         }
 
         private static TextBlock Label(string text) =>
