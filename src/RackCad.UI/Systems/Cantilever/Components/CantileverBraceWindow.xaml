@@ -1,7 +1,7 @@
 <Window x:Class="RackCad.UI.Systems.Cantilever.Components.CantileverBraceWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:components="clr-namespace:RackCad.UI.Systems.Cantilever.Components"
+        xmlns:shell="clr-namespace:RackCad.UI.Shell"
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
         Title="RackCad – Tensor"
         Style="{DynamicResource EditorShellWindowStyle}"
@@ -17,13 +17,13 @@
 
     <!-- I-37D ronda 2. Mismo shell. Dos productos con la misma función y anatomía distinta: un perfil atornillado
          y una varilla cold rolled con su adaptador en cada extremo (ADR-0027, D7). -->
-    <components:CantileverComponentEditorShell x:Name="Shell">
+    <shell:RackBoundedEditorShell x:Name="Shell">
 
-        <components:CantileverComponentEditorShell.Header>
+        <shell:RackBoundedEditorShell.Header>
             <TextBlock Text="Tensor — la diagonal del panel arriostrado" Style="{StaticResource SectionTitle}" />
-        </components:CantileverComponentEditorShell.Header>
+        </shell:RackBoundedEditorShell.Header>
 
-        <components:CantileverComponentEditorShell.Parameters>
+        <shell:RackBoundedEditorShell.Parameters>
             <StackPanel>
                 <TextBlock Text="Tipo" Style="{StaticResource FieldLabel}" />
                 <ComboBox x:Name="KindBox" SelectionChanged="Kind_Changed"
@@ -45,16 +45,16 @@
                 <TextBlock x:Name="DerivedText" TextWrapping="Wrap" FontSize="11.5" Margin="0,12,0,0"
                            Foreground="{DynamicResource ShellTextPrimaryBrush}" />
             </StackPanel>
-        </components:CantileverComponentEditorShell.Parameters>
+        </shell:RackBoundedEditorShell.Parameters>
 
-        <components:CantileverComponentEditorShell.SectionPicker>
+        <shell:RackBoundedEditorShell.SectionPicker>
             <StackPanel>
                 <TextBlock Text="Sección del tensor estructural" Style="{StaticResource SectionTitle}" />
                 <controls:StructuralSectionPicker x:Name="SectionPicker" Height="240" SectionChosen="SectionChosen" />
             </StackPanel>
-        </components:CantileverComponentEditorShell.SectionPicker>
+        </shell:RackBoundedEditorShell.SectionPicker>
 
-        <components:CantileverComponentEditorShell.Preview>
+        <shell:RackBoundedEditorShell.Preview>
             <Border Background="{DynamicResource ShellSurfaceBrush}" BorderBrush="{DynamicResource ShellBorderBrush}" BorderThickness="1">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -81,19 +81,19 @@
                             ClipToBounds="True" SizeChanged="PreviewCanvas_SizeChanged" />
                 </Grid>
             </Border>
-        </components:CantileverComponentEditorShell.Preview>
+        </shell:RackBoundedEditorShell.Preview>
 
-        <components:CantileverComponentEditorShell.Diagnostics>
+        <shell:RackBoundedEditorShell.Diagnostics>
             <TextBlock x:Name="DiagnosticsText" TextWrapping="Wrap" FontSize="11.5"
                        Foreground="{DynamicResource ShellTextSecondaryBrush}" />
-        </components:CantileverComponentEditorShell.Diagnostics>
+        </shell:RackBoundedEditorShell.Diagnostics>
 
-        <components:CantileverComponentEditorShell.BomSummary>
+        <shell:RackBoundedEditorShell.BomSummary>
             <TextBlock x:Name="BomText" TextWrapping="Wrap" FontSize="11.5"
                        Foreground="{DynamicResource ShellTextPrimaryBrush}" />
-        </components:CantileverComponentEditorShell.BomSummary>
+        </shell:RackBoundedEditorShell.BomSummary>
 
-        <components:CantileverComponentEditorShell.Actions>
+        <shell:RackBoundedEditorShell.Actions>
             <DockPanel>
                 <Button x:Name="RestoreButton" Content="Restaurar" DockPanel.Dock="Left" MinWidth="110"
                         Style="{StaticResource SecondaryButtonStyle}" Click="Restore_Click" />
@@ -108,6 +108,6 @@
                             Style="{StaticResource SecondaryButtonStyle}" Click="Cancel_Click" />
                 </StackPanel>
             </DockPanel>
-        </components:CantileverComponentEditorShell.Actions>
-    </components:CantileverComponentEditorShell>
+        </shell:RackBoundedEditorShell.Actions>
+    </shell:RackBoundedEditorShell>
 </Window>

@@ -38,6 +38,20 @@ namespace RackCad.UI.Tests
         private const string ColumnW = "AISC-W-W10X33";
         private const string ArmHss = "AISC-HSS-RECT-HSS4X4X_250";
 
+        /// <summary>
+        /// Marca de una caracterizacion que I-39C cambio A PROPOSITO. La prueba NO se reescribe: se conserva con su
+        /// cuerpo intacto como evidencia versionada del comportamiento anterior, y el comportamiento nuevo se prueba
+        /// en <c>BoundedEditorContractTests</c>.
+        ///
+        /// <para>La transicion se lee en tres sitios: aqui esta el comportamiento anterior; ADR-0029 lo autoriza; y
+        /// la clase de contrato prueba el nuevo. El commit <c>7cc6260</c> es la version en que toda esta suite corria
+        /// en verde contra la base, y <c>docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md</c>
+        /// enfrenta las dos versiones asercion por asercion.</para>
+        /// </summary>
+        private const string BaseEvidence =
+            "Evidencia de la BASE anterior a I-39C; el contrato nuevo lo prueba BoundedEditorContractTests. " +
+            "Ver docs/automation/evidence/I-39C-caracterizacion-base-vs-contrato.md";
+
         private static StructuralSectionCatalog Catalog() =>
             new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
 
@@ -453,7 +467,7 @@ namespace RackCad.UI.Tests
         // 8. COMPOSICION. Lo que la migracion cambia, fijado tal como esta hoy.
         // ================================================================================================
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void LosCuatroXAMLNombranUnShellConNombreDeSISTEMA()
         {
             foreach (var name in new[]

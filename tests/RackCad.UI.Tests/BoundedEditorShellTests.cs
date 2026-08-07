@@ -3,6 +3,9 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using RackCad.Application.Catalogs;
+using RackCad.Application.StructuralSections;
+using RackCad.Domain.Systems.Cantilever;
 using RackCad.UI.Shell;
 using RackCad.UI.Systems.Cantilever.Components;
 using Xunit;
@@ -10,13 +13,14 @@ using Xunit;
 namespace RackCad.UI.Tests
 {
     /// <summary>
-    /// I-39A: the bounded-editor shell (archetype B of ADR-0029) and its temporary Cantilever facade.
+    /// I-39A: the bounded-editor shell (archetype B of ADR-0029), completed by I-39C.
     ///
     /// <para>The shell was already neutral as a TYPE before I-39A — seven <c>object</c> slots, no branches, only
     /// <c>System.Windows</c> usings — but it lived under <c>Systems/Cantilever/Components</c> and
     /// <c>Themes/Generic.xaml</c> declared an xmlns to that namespace, so any consumer from another system would
-    /// have had to depend on Cantilever to reuse it. These tests fix the move and, above all, fix that the four
-    /// Cantilever component XAMLs keep resolving the very same template without being touched.</para>
+    /// have had to depend on Cantilever to reuse it. I-39A moved it and left a facade in the old place so the four
+    /// already-validated component XAMLs would not be touched; I-39C migrated those XAMLs and deleted the facade.
+    /// These tests fix the move and, above all, that the four windows keep resolving the very same template.</para>
     ///
     /// <para>Assertions are structural and semantic — never screenshots or pixel comparisons.</para>
     /// </summary>
@@ -48,6 +52,31 @@ namespace RackCad.UI.Tests
             shell.Arrange(new Rect(0, 0, w, h));
             shell.UpdateLayout();
             return shell;
+        }
+
+        /// <summary>The four Cantilever component windows, each with the minimum its constructor demands. They are the
+        /// shell's original consumers, and after I-39C they name the neutral type directly.</summary>
+        private static Window[] FourComponentWindows()
+        {
+            var catalogue = new CsvStructuralSectionCatalogProvider(CatalogDirectory.Resolve()).Load();
+            var template = new CantileverStationColumnBaseTemplateDesign
+            {
+                ColumnSectionId = "AISC-W-W10X33",
+                Base = new CantileverBaseDesign { SectionId = "AISC-W-W10X33", Length = 48.0 }
+            };
+
+            var arm = new CantileverArmTemplateDesign
+            {
+                Body = new CantileverArmBodyDesign { SectionId = "AISC-HSS-RECT-HSS4X4X_250", CutLength = 36.0 }
+            };
+
+            return new Window[]
+            {
+                new CantileverColumnBaseWindow(template, catalogue),
+                new CantileverArmWindow(arm, template, catalogue),
+                new CantileverSeparatorWindow(new CantileverBracingDesign(), catalogue),
+                new CantileverBraceWindow(new CantileverBracingDesign(), catalogue)
+            };
         }
 
         // ---- 1. the seven zones ----
@@ -180,63 +209,39 @@ namespace RackCad.UI.Tests
             });
         }
 
-        // ---- 3. the temporary Cantilever facade ----
+        // ---- 3. the Cantilever facade is gone: no bounded shell carries a system name ----
 
         [Fact]
-        public void TheCantileverFacadeIsTheBoundedShell()
+        public void NoBoundedShellTypeCarriesASystemName()
         {
-            Assert.True(typeof(RackBoundedEditorShell).IsAssignableFrom(typeof(CantileverComponentEditorShell)));
+            // I-39A left `CantileverComponentEditorShell` as a facade so four already-validated XAMLs would not be
+            // touched; I-39C migrated them and deleted it. What replaces those four facade guards is the invariant
+            // they existed to protect: the bounded-editor shell has exactly ONE type, it lives in shared
+            // infrastructure, and nothing derives from it to re-plant a system's name on the archetype.
+            var derived = typeof(RackBoundedEditorShell).Assembly
+                .GetTypes()
+                .Where(type => typeof(RackBoundedEditorShell).IsAssignableFrom(type) && type != typeof(RackBoundedEditorShell))
+                .ToList();
+
+            Assert.Empty(derived);
+            Assert.Equal("RackCad.UI.Shell", typeof(RackBoundedEditorShell).Namespace);
         }
 
         [Fact]
-        public void TheFacadeDeclaresNothingOfItsOwn()
-        {
-            // A facade that re-declared the seven dependency properties would be code written to satisfy a guard,
-            // which the owner forbade explicitly (decision 14). It declares nothing: it inherits everything.
-            const BindingFlags declared = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic |
-                                          BindingFlags.Instance | BindingFlags.Static;
-
-            Assert.Empty(typeof(CantileverComponentEditorShell).GetFields(declared));
-            Assert.Empty(typeof(CantileverComponentEditorShell).GetProperties(declared));
-            Assert.DoesNotContain(typeof(CantileverComponentEditorShell).GetMethods(declared), m => !m.IsSpecialName);
-        }
-
-        [Fact]
-        public void TheFacadeResolvesTheSameTemplateAsTheNeutralShell()
+        public void TheFourComponentWindowsComposeOverTheNeutralShell()
         {
             StaTestRunner.Run(() =>
             {
-                // It does NOT override DefaultStyleKeyProperty, so it inherits the base type's style key and with it
-                // the very same Style and ControlTemplate. This is what lets the four component XAMLs stay untouched.
+                // The migration is real, not nominal: the four windows' content IS an instance of the neutral type,
+                // and it resolves the SAME style key — i.e. the very same template they rendered with before.
                 var generic = Generic();
-
                 Assert.True(generic.Contains(typeof(RackBoundedEditorShell)));
-                Assert.False(generic.Contains(typeof(CantileverComponentEditorShell)));
 
-                Assert.Equal(typeof(RackBoundedEditorShell), StyleKeyProbe.Of(new CantileverComponentEditorShell()));
-                Assert.Equal(typeof(RackBoundedEditorShell), StyleKeyProbe.Of(new RackBoundedEditorShell()));
-            });
-        }
-
-        [Fact]
-        public void TheFacadeStillHostsTheSevenZones()
-        {
-            StaTestRunner.Run(() =>
-            {
-                var parameters = new StackPanel();
-                var preview = new Canvas();
-                var actions = new StackPanel();
-
-                var facade = Measured<CantileverComponentEditorShell>(s =>
+                foreach (var window in FourComponentWindows())
                 {
-                    s.Parameters = parameters;
-                    s.Preview = preview;
-                    s.Actions = actions;
-                });
-
-                Assert.Same(parameters, facade.ParametersHost.Content);
-                Assert.Same(preview, facade.PreviewHost.Content);
-                Assert.Same(actions, facade.ActionsHost.Content);
+                    var shell = Assert.IsType<RackBoundedEditorShell>(window.Content);
+                    Assert.Equal(typeof(RackBoundedEditorShell), StyleKeyProbe.Of(shell));
+                }
             });
         }
 
