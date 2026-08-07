@@ -98,10 +98,10 @@ construido en código —que no mergea `AppStyles`— dejaba `ShellZoneSpacing` 
 **cero**. La corrección vive en el shell, que ahora mergea el diccionario compartido en sus **propios**
 recursos. **No** cambia geometría, BOM, persistencia, identidad, wire format, catálogos ni Plugin.
 
-**I-39 NO queda cerrada.** Siguen pendientes, **sin fila ni contrato todavía**: **I-39B** (editores ricos,
-incluidos la misma dependencia latente de recursos en `RackEditorVisualShell` y el defecto de
-Escape/`IsCancel` de Push Back), **I-39C** (editores acotados restantes, retirada de la fachada Cantilever y
-Larguero) e **I-39D** (diálogos y ventanas utilitarias).
+**I-39 NO queda cerrada.** Los dos hallazgos que I-39A midió y dejó deliberadamente sin corregir —la misma
+dependencia latente de recursos en `RackEditorVisualShell` y el defecto de Escape/`IsCancel` de Push Back—
+los resolvió **I-39B**, ya integrada. Siguen pendientes **I-39C** (editores acotados restantes, retirada de
+la fachada Cantilever y Larguero) e **I-39D** (diálogos y ventanas utilitarias).
 
 **Push Back** es la quinta familia operativa y está **integrada en `main`** desde el **2026-07-25**
 (merge `--no-ff` `77031be`, CI verde en los cuatro jobs, run 30139506411). I-18 entregó el primer sistema
@@ -1048,17 +1048,9 @@ subiniciativas —I-37A fundación columna–base, I-37B brazo, I-37C estación 
 arriostramiento, vistas, editor y AutoCAD— están **integradas en `main`**, y ADR-0024 a ADR-0028 están
 **aceptados**.
 
-**No hay siguiente acción autorizada.** Ninguna de las tres subiniciativas restantes de I-39 se abre sin
-instrucción del Owner, y ninguna tiene todavía fila ni contrato:
+**Siguiente acción autorizada por el Owner: I-39C**, y después I-39D, para cerrar la línea I-39. Ninguna de
+las dos tiene todavía fila ni contrato, así que ambas arrancan por el **gate documental**:
 
-- **I-39B** — adopción del contrato en los **editores ricos**. Arrastra dos hallazgos ya medidos y
-  deliberadamente **no corregidos** en I-39A: `RackEditorVisualShell` tiene **la misma dependencia latente
-  de recursos** que se corrigió en el shell acotado —hoy enmascarada porque sus cuatro consumidores son
-  ventanas XAML que sí mergean `AppStyles`, y corregirla tocaría cuatro ventanas ya validadas—; y
-  `RackPushBackSystemWindow` es la **única** de las nueve ventanas de rack **sin `IsCancel`**, de modo que
-  Escape no la cierra, mientras su dirty (`ModuleSession.HasPendingChanges`) es **local al editor de módulo**
-  y ningún `Closing` lo consulta. Añadir `IsCancel` **antes** de fijar la política de Escape con cambios
-  pendientes convertiría Escape en un descarte silencioso justo en la única ventana con cambios pendientes.
 - **I-39C** — adopción en los **editores acotados restantes**: migración física de los cuatro XAML de
   componente Cantilever, **retirada de la fachada** `CantileverComponentEditorShell`, Larguero, el cierre
   del contrato de tamaño del arquetipo B —hoy las cuatro ventanas Cantilever declaran anchos que el mínimo
@@ -1098,6 +1090,32 @@ y I-37 no se cierra.
 **Sigue fuera de alcance incluso al cerrar I-37**: cálculo resistente, cargas, capacidad (son I-38), peso,
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
+
+#### I-39B — **INTEGRADA en `main`** (2026-08-07) · **I-39 sigue abierta**
+
+> **Validación manual APROBADA** (`OWNER_APPROVED_I39B_MANUAL_VALIDATION`): **31 de 31 puntos aprobados**,
+> sin observaciones y sin rondas rechazadas. **ADR-0029 ya estaba aceptado** desde I-39A y **no se reabre**:
+> I-39B lo **aplica** a los seis editores ricos.
+> **I-39 NO se cierra**: quedan I-39C e I-39D.
+
+| Campo | Valor |
+|---|---|
+| Rama | `architecture/interaccion-editores-ricos` — **integrada y eliminada** (local y remota) |
+| Merge en `main` | **`2239eac`** · padres `3853cd4` y `2675e72` · `--no-ff`, sin squash y sin force |
+| `CODE_SHA` funcional | `5755845051a5f10bd06367f1f97aed42e180dc9a` |
+| `VALIDATED_BUILD_SHA` | `5755845051a5f10bd06367f1f97aed42e180dc9a` · DLL Debug `CF718FE6…27A4CECC` |
+| Suites | `RackCad.Tests` **2979** · `RackCad.UI.Tests` **708** + **4 omitidas** de evidencia |
+| CI del candidato | [`31214414417`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31214414417) ✅ 4/4 jobs sobre `5755845` |
+| CI de `main` tras integrar | [`31218089176`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31218089176) ✅ 4/4 jobs |
+| Base | `origin/main` `3853cd4` — la rama estaba **8 detrás y 0 adelante** con intersección vacía: **sin rebase** |
+| Regresiones verificadas en rojo | política de cierre, `IsCancel` de Push Back, preview obsoleto del Dinámico, `Insertar` de la Cama, severidades de Cantilever y respaldo de tokens del shell rico |
+| **Validación manual en AutoCAD** | ✅ **APROBADA 2026-08-07** — [checklist](automation/evidence/I-39B-checklist-validacion-manual.md) |
+| Caracterización | [base vs contrato](automation/evidence/I-39B-caracterizacion-base-vs-contrato.md) — **4 de 12** cambiaron a propósito y se conservan con `Skip` como evidencia versionada |
+| Alcance interno resuelto | [decisiones técnicas](automation/evidence/I-39B-decisiones-tecnicas.md) y [auditoría de editores ricos](automation/evidence/I-39B-auditoria-editores-ricos.md) |
+
+**Trazabilidad del binario.** El commit de cierre documental `2675e72`, posterior a `5755845`, **no toca
+`src/` ni `tests/`** —verificado con `git diff --stat`—, así que no cambia el binario: la aprobación de
+`5755845` es vigente para el árbol integrado, con el mismo criterio que I-31, I-35 e I-39A.
 
 #### I-39A — **INTEGRADA en `main`** (2026-08-07) · **I-39 sigue abierta**
 
