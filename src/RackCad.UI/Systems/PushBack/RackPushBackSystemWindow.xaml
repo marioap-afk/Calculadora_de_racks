@@ -472,7 +472,7 @@
             </StackPanel>
         </shell:RackEditorVisualShell.PrimaryActions>
         <shell:RackEditorVisualShell.TrailingActions>
-            <Button x:Name="CloseButton" Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,0,4" Click="Close_Click" />
+            <Button x:Name="CloseButton" Content="Cerrar" Style="{StaticResource SecondaryButtonStyle}" MinWidth="90" Margin="0,0,0,4" IsCancel="True" Click="Close_Click" />
         </shell:RackEditorVisualShell.TrailingActions>
     </shell:RackEditorVisualShell>
 </Window>

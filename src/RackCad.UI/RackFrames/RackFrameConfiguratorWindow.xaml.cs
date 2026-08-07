@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using RackCad.Domain.RackFrames;
 using RackCad.UI.Editor;
+using RackCad.UI.Shell;
 
 namespace RackCad.UI.RackFrames
 {
@@ -171,14 +172,36 @@ namespace RackCad.UI.RackFrames
                 return true;
             }
 
-            var result = MessageBox.Show(
-                this,
+            // I-39B: el mensaje y el dialogo son los mismos de siempre; lo unico que cambia es que pasan por la
+            // costura comun, que en produccion sigue mostrando el MISMO MessageBox y en pruebas se puede sustituir.
+            // Sin ella la politica de cierre seria inverificable, y una politica de cierre inverificable es
+            // exactamente la que pierde trabajo en silencio.
+            return EditorDiscardPrompt.Confirm(
                 "Hay cambios manuales o excepciones que se perderán al " + action + ". ¿Deseas continuar?",
-                "Confirmar",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+                this);
+        }
 
-            return result == MessageBoxResult.Yes;
+        /// <summary>
+        /// El unico punto por el que pasan los CUATRO caminos de cierre (ADR-0029 D7): el boton Cerrar, Escape —que
+        /// llega aqui porque ese boton es <c>IsCancel</c>—, el boton de sistema y <c>Alt+F4</c>.
+        ///
+        /// <para>La proteccion ya existia: <c>HasUnsavedManualEdits</c> y <c>ConfirmDiscard</c> se consultaban al
+        /// restaurar la cabecera estandar, al generarla y al abrir otro proyecto, pero NO al cerrar, de modo que
+        /// Escape descartaba en silencio las ediciones manuales que la misma ventana protegia en los otros tres
+        /// caminos. Aqui se reutiliza esa autoridad, no se crea una segunda.</para>
+        ///
+        /// <para>Insertar y Actualizar no son un descarte: <c>RequestDraw</c> marca <c>InsertRequested</c> antes de
+        /// cerrar, y ese cierre no pregunta nada.</para>
+        /// </summary>
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!InsertRequested && !ConfirmDiscard("cerrar"))
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            base.OnClosing(e);
         }
 
         private void RestoreStandardFrameButton_Click(object sender, RoutedEventArgs e)
