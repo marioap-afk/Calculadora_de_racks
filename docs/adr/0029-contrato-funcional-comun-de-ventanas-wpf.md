@@ -1,13 +1,28 @@
 # ADR-0029: Contrato funcional común de ventanas WPF
 
-- **Estado:** propuesto
-- **Fecha:** 2026-08-07 (propuesto)
-- **Decisores:** dueño del repo (pendiente de aceptar); Claude Opus 5 (redacción)
+- **Estado:** **aceptado**
+- **Fecha:** 2026-08-07 (propuesto); 2026-08-07 (aceptado por el dueño del repo)
+- **Decisores:** dueño del repo (aceptó el 2026-08-07); Claude Opus 5 (redacción)
 - **Iniciativa relacionada:** I-39 (paraguas) / I-39A `architecture/contrato-funcional-ventanas-wpf`
 - **No reemplaza a ninguna ADR.** **Complementa**
   [ADR-0019](0019-shell-visual-de-editores-por-composicion.md), que decide **cómo se compone lo
   visual**; ésta decide **cómo se comporta lo funcional**. ADR-0019 permanece `aceptado` e íntegro:
   ninguna de sus seis reglas se reabre.
+
+## Aceptación del Owner (2026-08-07)
+
+- **Decisor:** dueño del repositorio.
+- **Gate:** `owner-decision`, resuelto junto a `owner-validation` y `autocad`, con el precedente de
+  ADR-0023 en I-36D: un ADR que gobierna lo que se ve no se acepta a ciegas, sino después de ver la
+  ventana real.
+- **Veredicto normativo registrado:** `OWNER_APPROVED_I39A_MANUAL_VALIDATION`.
+- **SHA técnico aprobado:** `16178dfb9c5871a4321d69594a26f67200f28c2f`.
+- **Evidencia:** [checklist de validación manual](../automation/evidence/I-39A-checklist-validacion-manual.md)
+  — ronda 1 parcialmente rechazada por un único defecto de espaciado, ronda 2 aprobada sobre el
+  candidato corregido.
+- **Alcance de la aceptación:** la aceptación fija las trece decisiones de abajo como normativas para
+  toda la línea I-39. **No** autoriza por sí sola ninguna migración: I-39B, I-39C e I-39D siguen
+  necesitando su propia fila, su contrato y su gate.
 
 ## Contexto
 

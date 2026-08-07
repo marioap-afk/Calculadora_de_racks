@@ -4,14 +4,14 @@ automation_state:
   branch: architecture/contrato-funcional-ventanas-wpf
   claim_id: fa57f5d5-197c-4b68-9b24-4d481cb15933
   current_phase: 6
-  state: validating
-  gate: owner-validation
+  state: integration-ready
+  gate: none
   attempts: 1
   next_action: >-
-    RONDA-2-el-Owner-revalida-los-puntos-12-y-13-del-checklist-sobre-el-DLL-nuevo ·
-    con-ese-veredicto-acepta-o-rechaza-ADR-0029 ·
-    NO-tocar-HANDOFF · NO-hacer-merge · NO-borrar-rama-ni-worktree-hasta-confirmar-la-integracion
-  last_evidence_commit: 94354ef0ced45032e561c0c235b5352a341efe76
+    NINGUNA-I-39A-esta-INTEGRADA-y-CERRADA ·
+    I-39-NO-se-cierra-quedan-I-39B-I-39C-e-I-39D-sin-fila-ni-contrato ·
+    ninguna-se-abre-sin-instruccion-del-Owner
+  last_evidence_commit: 16178dfb9c5871a4321d69594a26f67200f28c2f
 
 # --------------------------------------------------------------------------------------------------------
 # RONDA 1 DE VALIDACION MANUAL. Trece de catorce puntos aprobados; un defecto, corregido.
@@ -176,13 +176,23 @@ gates:
   ci_sobre_el_sha_publicado: PENDIENTE-de-la-corrida-sobre-la-punta-publicada
   owner_validation:
     required: true
-    status: PENDIENTE
+    status: APROBADA
+    nota: >-
+      RESUELTO-ronda-2-aprobada-el-2026-08-07-token-OWNER_APPROVED_I39A_MANUAL_VALIDATION ·
+      sobre-el-SHA-16178dfb9c5871a4321d69594a26f67200f28c2f
   autocad:
     required: true
-    status: PENDIENTE
+    status: APROBADA
     nota: >-
-      el-piloto-es-una-ventana-que-el-usuario-abre-desde-RACKSECCION-y-desde-el-menu-principal ·
-      el-DLL-a-cargar-por-NETLOAD-es-el-del-worktree-de-la-iniciativa-no-el-del-worktree-principal
+      RESUELTO-el-Owner-cargo-por-NETLOAD-el-DLL-Debug-del-worktree-de-la-iniciativa ·
+      SHA-256-AB6CC4BE9668B5D25C45DB62DF03CACBD0E1AE0CC92E5D62FFE6DF2A5087CB93 ·
+      AssemblyInformationalVersion-1-0-0-plus-16178dfb9c5871a4321d69594a26f67200f28c2f
+  owner_decision:
+    required: true
+    status: APROBADA
+    nota: >-
+      ADR-0029-pasa-de-propuesto-a-ACEPTADO-el-2026-08-07-con-el-mismo-veredicto ·
+      inmutable-desde-ahora-cambiar-su-decision-exige-un-ADR-nuevo-que-la-reemplace
 
 # --------------------------------------------------------------------------------------------------------
 # HALLAZGOS ADYACENTES. Registrados, NO corregidos, y todos asignados.

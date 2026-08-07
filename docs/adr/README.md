@@ -68,7 +68,7 @@ en una sesión. Esas van en comentarios de código o en el cuerpo del commit.
 | [0026](0026-estacion-cantilever-niveles-altura-y-bom.md) | La estación Cantilever: caras, niveles, altura y BOM por componentes | aceptado |
 | [0027](0027-linea-cantilever-intervalos-y-arriostramiento.md) | La línea Cantilever: intervalos, distribución de paneles y arriostramiento | aceptado |
 | [0028](0028-cantilever-persistencia-vistas-editor-y-dibujo.md) | Cantilever visible: persistencia, registro, vistas, editor y materialización | aceptado |
-| [0029](0029-contrato-funcional-comun-de-ventanas-wpf.md) | Contrato funcional común de ventanas WPF | propuesto |
+| [0029](0029-contrato-funcional-comun-de-ventanas-wpf.md) | Contrato funcional común de ventanas WPF | aceptado |
 
 Iniciativa `docs/adr-retroactivos` (I-07): los ADR-0006…0018 retro-documentan las trece decisiones de la
 antigua tabla de HANDOFF §7, una por ADR, y fueron **aceptados por el dueño el 2026-07-22** («Sí,
@@ -220,9 +220,11 @@ celda; y la materialización **reutiliza** el Drawing vigente en vez de copiar o
 **veredicto manual del Owner en AutoCAD 2025**: CI verde es necesario y **no** suficiente, porque las pruebas
 no ven los bloques DWG reales.
 
-Iniciativa I-39A (`architecture/contrato-funcional-ventanas-wpf`): **ADR-0029 nace `propuesto`** y su
-aceptación es del Owner, que la resuelve junto al gate de validación manual, con el precedente de ADR-0023 en
-I-36D. **No reemplaza a ninguna ADR: complementa ADR-0019**, que decide cómo se compone lo visual, mientras
+Iniciativa I-39A (`architecture/contrato-funcional-ventanas-wpf`): **ADR-0029 nació `propuesto` y quedó
+`aceptado` el 2026-08-07** por el dueño, con el veredicto `OWNER_APPROVED_I39A_MANUAL_VALIDATION` sobre el
+candidato validado en AutoCAD 2025 — el mismo criterio de ADR-0023 en I-36D: un ADR que gobierna lo que se ve
+no se acepta a ciegas, sino después de ver la ventana real. **No reemplaza a ninguna ADR: complementa
+ADR-0019**, que decide cómo se compone lo visual, mientras
 ADR-0029 decide cómo se comporta lo funcional —estado, transacción, acciones y motivos de bloqueo, validación,
 preview, dirty, cierre, teclado, foco, ownership, tamaño, diagnóstico y recomputación observable—. ADR-0019
 permanece `aceptado` e inmutable y ninguna de sus seis reglas se reabre. Sus decisiones de fondo: el inventario

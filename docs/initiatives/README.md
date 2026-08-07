@@ -656,7 +656,10 @@ Planes disponibles:
   [`../automation/state/I-37D.yml`](../automation/state/I-37D.yml).
 - [`I-39A-contrato-funcional-piloto-editor-acotado.md`](I-39A-contrato-funcional-piloto-editor-acotado.md):
   **fundacion del contrato funcional de ventanas WPF y piloto de editor acotado** (tipo: architecture; rama
-  `architecture/contrato-funcional-ventanas-wpf`). Primera subiniciativa de **I-39**, registrada en el ROADMAP
+  `architecture/contrato-funcional-ventanas-wpf`) · **INTEGRADA en `main` el 2026-08-07**, tras la validacion
+  manual del Owner en AutoCAD 2025 (`OWNER_APPROVED_I39A_MANUAL_VALIDATION`, ronda 2 aprobada) y con
+  **ADR-0029 aceptado**. **I-39 NO queda cerrada**: siguen pendientes I-39B, I-39C e I-39D, sin fila ni
+  contrato todavia. Primera subiniciativa de **I-39**, registrada en el ROADMAP
   (Fase 3) por autorizacion expresa del Owner. **I-39 no tiene contrato paraguas**: la linea la gobiernan su
   fila del ROADMAP, [`../automation/decisions/I-39.md`](../automation/decisions/I-39.md) y
   [ADR-0029](../adr/0029-contrato-funcional-comun-de-ventanas-wpf.md), igual que se goberno I-37.

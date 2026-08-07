@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-39A
 title: Contrato funcional de ventanas WPF - fundacion y piloto de editor acotado
 type: architecture
-status: implementing
+status: integrated
 branch: architecture/contrato-funcional-ventanas-wpf
 base_branch: main
 priority:
@@ -311,6 +311,28 @@ hace merge. No se abre un segundo Pull Request para la iniciativa.
 
 ## 14. Evidencia final
 
-Commits, censo publicado, resultados de las suites y de los builds Debug, CI, ruta y huella del DLL
-entregado al Owner, veredicto de la validación manual, intentos y confirmación de que `main` no fue
-modificada.
+**I-39A queda INTEGRADA en `main` el 2026-08-07** por `git merge --no-ff`, sin squash, desde el worktree
+principal, después de que el Owner aprobara la validación manual y aceptara ADR-0029.
+
+- **Censo publicado**: [`docs/automation/evidence/I-39A-censo-ventanas.md`](../automation/evidence/I-39A-censo-ventanas.md) —
+  29 clases `Window` concretas, 28 productivas y una de infraestructura, obtenidas **por tipo**.
+- **Validación manual del Owner**: [`docs/automation/evidence/I-39A-checklist-validacion-manual.md`](../automation/evidence/I-39A-checklist-validacion-manual.md) —
+  ronda 1 parcialmente rechazada por **un único defecto** (los botones de acción quedaban pegados a los
+  bordes derecho e inferior); ronda 2 **APROBADA** sobre el candidato corregido.
+- **Decisiones del Owner y aceptación de ADR-0029**: [`docs/automation/decisions/I-39.md`](../automation/decisions/I-39.md).
+- **Estado versionado**: [`docs/automation/state/I-39A.yml`](../automation/state/I-39A.yml), con el SHA
+  candidato, los SHA de merge y de `main`, y las huellas del DLL validado.
+- **Suites, builds y CI**: verdes sobre el candidato y sobre `main` tras el merge. Los conteos y los
+  hashes viven en `docs/HANDOFF.md`, que es su único lugar.
+- **`main` no fue modificada** en ninguna sesión anterior a la de integración.
+- **Intentos**: 1 (la ronda 1 de validación manual).
+
+Lo que la corrección de la ronda 1 dejó demostrado y conviene no re-descubrir: un `DynamicResource` con
+clave de cadena **no cae al diccionario de tema del ensamblado**, de modo que un shell templated que
+depende de tokens compartidos solo los resuelve si su consumidor los mergeó. La autoridad del espaciado
+es el shell, no la ventana, y por eso la corrección vive en el shell.
+
+**Diferido y no implementado**, sin fila ni contrato todavía: **I-39B** (editores ricos, incluida la
+misma dependencia latente de recursos en `RackEditorVisualShell` y el defecto de Escape/`IsCancel` de
+Push Back), **I-39C** (editores acotados restantes, retirada de la fachada Cantilever y Larguero) e
+**I-39D** (diálogos y ventanas utilitarias).
