@@ -56,6 +56,17 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 catalogue, new[] { StructuralSectionFamily.Channel, StructuralSectionFamily.Angle });
 
             LoadFromWorking();
+
+            // ADR-0029 D6, I-39C: sin linea resuelta no hay nada que insertar —el corte del tensor se DERIVA de los
+            // agujeros de sus separadores—, asi que Insertar se apaga con el motivo a la vista. Antes quedaba
+            // habilitado y pulsarlo solo escribia una linea en el diagnostico: una accion habilitada sin efecto, que
+            // es lo que D6 llama la violacion mayor. `resolved` no cambia despues de construir, asi que se fija aqui.
+            if (resolved == null)
+            {
+                InsertButton.IsEnabled = false;
+                InsertButton.ToolTip =
+                    "Resuelve primero la línea: el corte del tensor sale de los agujeros de sus separadores.";
+            }
         }
 
         /// <summary>The accepted bracing design, or null when the user cancelled.</summary>

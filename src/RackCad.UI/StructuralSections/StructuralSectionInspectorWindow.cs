@@ -41,6 +41,7 @@ namespace RackCad.UI.StructuralSections
         private readonly TextBlock _fidelity;
         private readonly TextBlock _authority;
         private readonly TextBlock _diagnostics;
+        private Button _accept;
         private bool _loaded;
 
         public StructuralSectionInspectorWindow(StructuralSectionCatalog catalog)
@@ -212,7 +213,7 @@ namespace RackCad.UI.StructuralSections
             // borrado Enter y Escape en silencio. Ahora la descripcion lleva el rol de teclado, asi que el contrato
             // que la caracterizacion de I-39A fijo se conserva y ademas los botones dejan de tener chrome propio:
             // usan los estilos compartidos, como los de las otras cinco ventanas del arquetipo.
-            var accept = EditorActions.Button(
+            _accept = EditorActions.Button(
                 new EditorAction("Insertar", isPrimary: true, isDefault: true),
                 (_, __) => Accept());
 
@@ -220,10 +221,10 @@ namespace RackCad.UI.StructuralSections
                 new EditorAction("Cerrar", isCancel: true),
                 (_, __) => { Result = null; DialogResult = false; });
 
-            accept.MinWidth = 110;
+            _accept.MinWidth = 110;
             cancel.MinWidth = 110;
 
-            actions.Children.Add(accept);
+            actions.Children.Add(_accept);
             actions.Children.Add(cancel);
 
             // I-39A: the inspector is the first non-Cantilever consumer of the bounded-editor shell (archetype B of
@@ -330,6 +331,8 @@ namespace RackCad.UI.StructuralSections
         /// <summary>Rebuilds the plan and repaints. The single place the preview is refreshed.</summary>
         public void Refresh()
         {
+            UpdateInsertAvailability();
+
             if (!_state.HasSelection)
             {
                 _preview.Show(null);
@@ -360,6 +363,29 @@ namespace RackCad.UI.StructuralSections
             _diagnostics.Text = diagnostics.Count == 0
                 ? string.Empty
                 : string.Join("\n", diagnostics.Select(d => "• " + d.Message));
+        }
+
+        /// <summary>
+        /// I-39C paga la deuda que I-39A midió y dejó asignada al arquetipo: <c>Insertar</c> no se deshabilitaba
+        /// nunca y sin selección era un no-op SILENCIOSO — ADR-0029 D6 llama a eso «una violación mayor», porque una
+        /// acción habilitada sin efecto es peor que una bloqueada sin motivo. Ahora se apaga con el motivo visible.
+        ///
+        /// <para>La otra mitad de aquella medición —que una longitud o una rotación inválidas no bloquean— se revisó
+        /// y NO se cambia: es correcta. D5 exige que una entrada inválida no sobrescriba en silencio un valor
+        /// aplicado válido, y eso es justo lo que la ventana hace: el campo se pinta en ámbar y el estado conserva el
+        /// último valor válido, así que lo que se inserta es un valor aplicado, no basura.</para>
+        /// </summary>
+        private void UpdateInsertAvailability()
+        {
+            if (_accept == null)
+            {
+                return;
+            }
+
+            _accept.IsEnabled = _state.HasSelection;
+            _accept.ToolTip = _state.HasSelection
+                ? null
+                : "Elige una sección de la lista para poder insertarla.";
         }
 
         private void Accept()

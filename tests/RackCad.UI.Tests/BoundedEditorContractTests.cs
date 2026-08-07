@@ -209,6 +209,103 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- 3b. ninguna accion queda habilitada sin efecto, y la bloqueada dice por que (D6) ----
+
+        [Fact]
+        public void InsertarSeApagaConMotivoCuandoLaPiezaNoPuedeMaterializARSE()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // D6: «una accion importante deshabilitada sin motivo es una violacion del contrato; una accion
+                // habilitada sin efecto es una violacion MAYOR». Las cuatro estaban en el segundo caso: Insertar
+                // quedaba encendido y pulsarlo solo escribia una linea en el diagnostico.
+                var catalogue = Catalog();
+
+                var sinLinea = new (Window Window, string Reason)[]
+                {
+                    (new CantileverSeparatorWindow(new CantileverBracingDesign(), catalogue),
+                        "Resuelve primero la línea: el corte del separador sale de los agujeros de sus dos placas."),
+                    (new CantileverBraceWindow(new CantileverBracingDesign(), catalogue),
+                        "Resuelve primero la línea: el corte del tensor sale de los agujeros de sus separadores.")
+                };
+
+                foreach (var (window, reason) in sinLinea)
+                {
+                    var insert = (Button)window.FindName("InsertButton");
+
+                    Assert.False(insert.IsEnabled);
+                    Assert.Equal(reason, insert.ToolTip as string);
+                    Assert.True(ToolTipService.GetShowOnDisabled(insert));
+                }
+            });
+        }
+
+        [Fact]
+        public void InsertarDistingueElMotivoDelLlamadorDelMotivoDeLaPieza()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // Dos motivos distintos, dos mensajes distintos: no basta con apagar el boton, hay que decir CUAL de
+                // los dos falta. Aceptar sigue encendido en ambos: una pieza bloqueada es una intencion que el
+                // usuario puede conservar y seguir editando.
+                var catalogue = Catalog();
+
+                var fueraDeAutoCad = new CantileverColumnBaseWindow(ColumnBaseTemplate(), catalogue, canInsertInAutoCad: false);
+                var insertOutside = (Button)fueraDeAutoCad.FindName("InsertButton");
+                Assert.False(insertOutside.IsEnabled);
+                Assert.Equal("Disponible solo cuando la ventana se abre desde AutoCAD.", insertOutside.ToolTip as string);
+
+                var desdeAutoCad = new CantileverColumnBaseWindow(ColumnBaseTemplate(), catalogue, canInsertInAutoCad: true);
+                var insertInside = (Button)desdeAutoCad.FindName("InsertButton");
+                Assert.True(insertInside.IsEnabled);
+                Assert.StartsWith("Dibuja la columna y base sola", insertInside.ToolTip as string, StringComparison.Ordinal);
+
+                Assert.True(((Button)fueraDeAutoCad.FindName("AcceptButton")).IsEnabled);
+                Assert.True(((Button)desdeAutoCad.FindName("AcceptButton")).IsEnabled);
+            });
+        }
+
+        [Fact]
+        public void ElInspectorApagaInsertarSinSeleccionYLoDICE()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // La deuda que I-39A midio y dejo escrita en su propia caracterizacion: «Insertar nunca se
+                // deshabilita y sin seleccion es un no-op SILENCIOSO».
+                var window = new StructuralSectionInspectorWindow(Catalog());
+                window.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent, window));
+
+                var insert = EditorWindowTestSupport.Find<Button>(window, b => (b.Content as string) == "Insertar");
+                Assert.True(insert.IsEnabled);   // con seleccion, que es el estado de apertura
+
+                EditorWindowTestSupport.FindAll<TextBox>(window)[0].Text = "ZZZZ-NO-EXISTE";
+
+                Assert.False(insert.IsEnabled);
+                Assert.Equal("Elige una sección de la lista para poder insertarla.", insert.ToolTip as string);
+                Assert.True(ToolTipService.GetShowOnDisabled(insert));
+            });
+        }
+
+        [Fact]
+        public void UnaLongitudInvalidaNoBloqueaPorqueElValorAPLICADOSigueSiendoValido()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // La otra mitad de la medicion de I-39A, revisada y NO cambiada: D5 exige que una entrada invalida no
+                // sobrescriba en silencio un valor aplicado valido, y eso es exactamente lo que la ventana hace. Lo
+                // que se inserta es el ultimo valor aplicado, no basura, asi que bloquear seria un error.
+                var window = new StructuralSectionInspectorWindow(Catalog());
+                window.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent, window));
+
+                var length = EditorWindowTestSupport.FindAll<TextBox>(window)[1];
+                var applied = window.State.Length;
+                length.Text = "no es un numero";
+
+                Assert.Equal(applied, window.State.Length);
+                Assert.True(EditorWindowTestSupport.Find<Button>(window, b => (b.Content as string) == "Insertar").IsEnabled);
+            });
+        }
+
         // ---- 4. el Larguero, ultima ventana del arquetipo sin shell ----
 
         [Fact]
