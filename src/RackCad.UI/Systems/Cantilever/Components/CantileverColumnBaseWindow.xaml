@@ -5,7 +5,8 @@
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
         Title="RackCad – Columna y base"
         Style="{DynamicResource BoundedEditorWindowStyle}"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterOwner"
+        FocusManager.FocusedElement="{Binding ElementName=ColumnPlateThicknessBox}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

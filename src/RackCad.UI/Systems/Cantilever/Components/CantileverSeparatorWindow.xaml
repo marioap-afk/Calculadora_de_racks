@@ -5,7 +5,8 @@
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
         Title="RackCad – Separador"
         Style="{DynamicResource BoundedEditorWindowStyle}"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterOwner"
+        FocusManager.FocusedElement="{Binding ElementName=SectionPicker}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

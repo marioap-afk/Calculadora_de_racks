@@ -306,6 +306,128 @@ namespace RackCad.UI.Tests
             });
         }
 
+        // ---- 3c. foco inicial declarado y determinista (D9) ----
+
+        [Fact]
+        public void LasSeisDeclaranSuFocoInicialYNingunoEsUnaAccion()
+        {
+            // Sin declararlo, el foco caia donde el arbol VISUAL del shell lo pusiera, y la plantilla acopla la barra
+            // de acciones arriba en el DockPanel, antes de la zona de parametros: el primer elemento enfocable podia
+            // ser un boton, y «Restaurar» descarta lo editado. D9 exige que el foco inicial sea determinista y que no
+            // recaiga en una accion destructiva ni bloqueada, asi que las seis lo declaran, cada una en su primer
+            // control de captura.
+            var declared = new (string File, string Element)[]
+            {
+                ("Systems/Cantilever/Components/CantileverColumnBaseWindow.xaml", "ColumnPlateThicknessBox"),
+                ("Systems/Cantilever/Components/CantileverArmWindow.xaml", "ArrangementBox"),
+                ("Systems/Cantilever/Components/CantileverBraceWindow.xaml", "KindBox"),
+                ("Systems/Cantilever/Components/CantileverSeparatorWindow.xaml", "SectionPicker"),
+                ("Systems/Larguero/RackLargueroWindow.xaml", "NameBox")
+            };
+
+            foreach (var (file, element) in declared)
+            {
+                var source = File.ReadAllText(Path.Combine(
+                    new[] { RepoRoot().FullName, "src", "RackCad.UI" }.Concat(file.Split('/')).ToArray()));
+
+                Assert.Contains(
+                    "FocusManager.FocusedElement=\"{Binding ElementName=" + element + "}\"",
+                    source,
+                    StringComparison.Ordinal);
+            }
+
+            // El inspector se construye en codigo, asi que lo declara en codigo y se puede comprobar sobre el objeto.
+            StaTestRunner.Run(() =>
+            {
+                var window = new StructuralSectionInspectorWindow(Catalog());
+                var focused = System.Windows.Input.FocusManager.GetFocusedElement(window);
+
+                Assert.NotNull(focused);
+                var box = Assert.IsType<TextBox>(focused);
+                Assert.Same(EditorWindowTestSupport.FindAll<TextBox>(window)[0], box);
+            });
+        }
+
+        // ---- 3d. preview: autoridad y frescura declaradas (D4) ----
+
+        [Fact]
+        public void ElPreviewDelArquetipoSeDerivaSIEMPREDeLaCapturaActual()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // D4 pide declarar autoridad y frescura, y dice expresamente que «una ventana no esta obligada a
+                // implementar estados que hoy no exhibe». La medicion de las seis: su preview es SIEMPRE derivado del
+                // borrador capturado y SIEMPRE actual, porque cada una lo rehace en el mismo paso en que recalcula.
+                // Ninguna conserva un ultimo-valido obsoleto, asi que no se inventa un modelo de frescura que el
+                // producto no tiene; lo que se fija es que no aparezca uno por accidente.
+                var catalogue = Catalog();
+
+                // Separador y tensor SIN linea resuelta: no hay plan, y el preview no muestra un residuo, muestra nada.
+                var separator = new CantileverSeparatorWindow(new CantileverBracingDesign(), catalogue);
+                var brace = new CantileverBraceWindow(new CantileverBracingDesign(), catalogue);
+
+                Assert.Null(separator.CurrentPreviewPlan);
+                Assert.Null(brace.CurrentPreviewPlan);
+
+                foreach (var window in new Window[] { separator, brace })
+                {
+                    var canvas = (Canvas)window.FindName("PreviewCanvas");
+
+                    // Ni una sola figura: sin plan no se dibuja geometria, y menos aun la de una captura anterior.
+                    Assert.Empty(canvas.Children.OfType<System.Windows.Shapes.Shape>());
+
+                    // Y lo que hay es un MENSAJE, no un residuo: el preview dice que no hay nada que enseñar en vez
+                    // de quedarse mudo, que es lo que D4 pide de un estado «no disponible».
+                    Assert.NotEmpty(canvas.Children.OfType<TextBlock>());
+                }
+
+                // Columna-base CON contexto: hay plan, y es el mismo que se insertaria (lo fija la suite funcional).
+                var columnBase = new CantileverColumnBaseWindow(ColumnBaseTemplate(), catalogue, canInsertInAutoCad: true);
+                Assert.NotNull(columnBase.CurrentPreviewPlan);
+            });
+        }
+
+        // ---- 3e. cierre y dirty: «no aplicable» es un valor legitimo (D7 y D8) ----
+
+        [Fact]
+        public void NingunaDelArquetipoDeclaraAmbitoPendienteYPorEsoNoInterceptaElCierre()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // Medido, no supuesto. D8 admite «no aplicable», y aqui lo es por una razon del PRODUCTO: las cuatro
+                // Cantilever editan una COPIA que solo se devuelve al aceptar, y lo dicen con su propia accion
+                // «Restaurar», que vuelve a los valores con que se abrio la ventana. El Larguero no acumula nada: lo
+                // que persiste lo persiste su boton de guardar. Y el inspector no edita, inspecciona.
+                //
+                // Inventarles un dirty global seria justo lo que I-39B se nego a hacer en los editores ricos. La
+                // guarda esta en que ese «no aplicable» siga siendo cierto: si alguna empezara a acumular trabajo
+                // perdible, tendria que declarar el ambito Y consultar el cierre, y esta prueba lo obligaria.
+                foreach (var window in FourCantileverComponents())
+                {
+                    Assert.NotNull(EditorWindowTestSupport.Find<Button>(window, b => (b.Content as string) == "Restaurar"));
+                }
+
+                var declared = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public
+                    | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.DeclaredOnly;
+
+                foreach (var type in new[]
+                {
+                    typeof(CantileverColumnBaseWindow), typeof(CantileverArmWindow),
+                    typeof(CantileverSeparatorWindow), typeof(CantileverBraceWindow),
+                    typeof(RackLargueroWindow), typeof(StructuralSectionInspectorWindow)
+                })
+                {
+                    var interceptsClose = type.GetMethod("OnClosing", declared) != null;
+                    var declaresScope = type.GetMethods(declared).Select(m => m.Name)
+                        .Concat(type.GetProperties(declared).Select(p => p.Name))
+                        .Any(name => name.Contains("Pending", StringComparison.Ordinal)
+                            || name.Contains("Unsaved", StringComparison.Ordinal));
+
+                    Assert.Equal(declaresScope, interceptsClose);
+                }
+            });
+        }
+
         // ---- 4. el Larguero, ultima ventana del arquetipo sin shell ----
 
         [Fact]

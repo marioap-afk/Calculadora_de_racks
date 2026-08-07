@@ -5,7 +5,8 @@
         xmlns:controls="clr-namespace:RackCad.UI.Controls"
         Title="RackCad – Brazo"
         Style="{DynamicResource BoundedEditorWindowStyle}"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterOwner"
+        FocusManager.FocusedElement="{Binding ElementName=ArrangementBox}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

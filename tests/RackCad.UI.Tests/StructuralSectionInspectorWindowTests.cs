@@ -543,7 +543,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = BaseEvidenceI39C)]
         public void TheWindowDeclaresNoInitialFocus()
         {
             StaTestRunner.Run(() =>

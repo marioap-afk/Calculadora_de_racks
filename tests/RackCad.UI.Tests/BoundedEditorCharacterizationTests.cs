@@ -232,7 +232,7 @@ namespace RackCad.UI.Tests
         // 3. FOCO INICIAL
         // ================================================================================================
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void NingunaDeLasCuatroCantileverDeclaraFocoInicial()
         {
             foreach (var name in new[]

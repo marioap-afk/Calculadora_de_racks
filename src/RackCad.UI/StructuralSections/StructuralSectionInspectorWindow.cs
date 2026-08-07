@@ -148,6 +148,13 @@ namespace RackCad.UI.StructuralSections
             };
 
             Content = BuildLayout();
+
+            // ADR-0029 D9, I-39C: el foco inicial es DETERMINISTA y declarado, y no recae en una accion destructiva
+            // ni bloqueada. Sin declararlo, el foco caia donde el arbol visual del shell lo pusiera —y la plantilla
+            // acopla la barra de acciones ARRIBA en el DockPanel, antes de la zona de parametros—. Aqui apunta a la
+            // caja de busqueda, que es por donde empieza el trabajo de esta ventana.
+            System.Windows.Input.FocusManager.SetFocusedElement(this, _search);
+
             Loaded += (_, __) => { _loaded = true; RefreshList(); };
         }
 
