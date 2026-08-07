@@ -75,7 +75,9 @@ gates:
   autocad:
     required: true
     status: pending
-  ci_del_candidato: pendiente
+  ci_del_candidato: VERDE-4-de-4-run-31223039489-sobre-2401698
+  candidato: 2401698a5801a01f3497b3bb27027f801b91960e
+  dll_sha256: 2919499780D6EA22C4A99AFBBCB596ADE632F0569B59B2D6DE1BF32C994749DB
 
 # --------------------------------------------------------------------------------------------------------
 # INTEGRACION

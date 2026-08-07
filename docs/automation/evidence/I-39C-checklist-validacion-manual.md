@@ -15,7 +15,10 @@
 | Claim-Id | `611ca9e5-4734-4615-a008-21d3e69338f8` |
 | DLL a cargar | `<worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` |
 | Worktree | `.claude\worktrees\architecture-adopcion-editores-acotados` |
-| SHA candidato | *(se rellena al ejecutar)* |
+| **SHA candidato** | `2401698a5801a01f3497b3bb27027f801b91960e` |
+| SHA-256 del DLL | `2919499780D6EA22C4A99AFBBCB596ADE632F0569B59B2D6DE1BF32C994749DB` |
+| `AssemblyInformationalVersion` | `1.0.0+2401698a5801a01f3497b3bb27027f801b91960e` |
+| CI del candidato | run [`31223039489`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31223039489), ✅ 4/4 |
 
 **El DLL es el del worktree de la iniciativa, no el del principal.** Cierra AutoCAD antes de recompilar:
 AutoCAD bloquea el DLL cargado.
