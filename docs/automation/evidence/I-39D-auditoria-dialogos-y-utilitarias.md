@@ -552,12 +552,31 @@ Se listan sin promediar. En cada caso se indica quién acierta y qué dice el c�
 
 ---
 
-## 9. Trazabilidad
+## 9. Correcciones que la caracterización impuso a esta auditoría
 
+La auditoría se hizo **leyendo**; la caracterización se hizo **construyendo las dieciséis ventanas**.
+Cinco afirmaciones no sobrevivieron a la ejecución y se corrigen aquí en vez de dejarlas en pie. Es
+exactamente la razón por la que ADR-0029 D13 exige caracterizar, y no auditar solamente.
+
+| § | La auditoría decía | Lo que la ejecución mide | Consecuencia |
+|---|---|---|---|
+| 4.1 | «tres de D declaran 720×480 / 520×320» | **Dos**: biblioteca y lista. `RackBomWindow` es **740×520** y solo comparte los **mínimos** | Se tokeniza lo que converge de verdad: dos tamaños completos y tres mínimos |
+| 5.1, 7 | «tres ventanas usan `SizeToContent`» | **Dos**: las de almacén. `SafetyPerPostWindow` declara su alto como las demás | El contrato de tamaño de C tiene **dos** excepciones, no tres |
+| 2.2 | «completar el chrome de Defensa cambia tipografía **y** fondo» | Solo el **fondo**: `FontFamily` resuelve a Segoe UI igualmente por ser la predeterminada del sistema | El delta observable es **la mitad** del anunciado: hoy abre en blanco liso en vez del `#F4F6F9` compartido |
+| 4.1 | «siete ventanas usan `Firebrick`» | **Seis** de las diez, más `SelectiveSegmentsWindow`. Parrilla y Guía **no** pintan aviso con color propio | La unificación de paleta afecta a siete archivos, no a ocho |
+| 7 | «con los campos en su estado inicial, `Colocar` no produce resultado» | **Sí** lo produce: la ventana se autorrellena con valores válidos y la validación pasa | Lo que hay que caracterizar es el camino **inválido**, no el inicial |
+
+Ninguna de las cinco cambia el plan de fases; todas cambian el **texto** de lo que hay que preservar,
+que es justo lo que una caracterización sirve para descubrir antes de tocar nada.
+
+## 10. Trazabilidad
+
+- Caracterización: `tests/RackCad.UI.Tests/DialogWindowCharacterizationTests.cs` — las dieciséis
+  construidas por primera vez en una prueba.
 - Guarda viva del censo: `tests/RackCad.UI.Tests/WindowCensusGuardTests.cs`.
 - Contrato funcional: [`docs/adr/0029-contrato-funcional-comun-de-ventanas-wpf.md`](../../adr/0029-contrato-funcional-comun-de-ventanas-wpf.md)
   (D1, D6, D7, D8, D9, D11, D12, D13 y «Lo que este ADR NO decide», `:228-230`).
-- Censo: [`I-39A-censo-ventanas.md`](I-39A-censo-ventanas.md) — **pendiente de refresco**, §1.2.
+- Censo: [`I-39A-censo-ventanas.md`](I-39A-censo-ventanas.md) — **refrescado por la fase 0 de I-39D**.
 - ADR-0019 D2 y su descarte de la alternativa de herencia (`:46-47` y `:70-74`).
 - Decisiones del Owner: [`../decisions/I-39.md`](../decisions/I-39.md).
 - ROADMAP Fase 3, filas I-39, I-39A, I-39B, I-39C (`docs/ROADMAP.md:365-368`).
