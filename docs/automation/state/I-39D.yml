@@ -1,0 +1,98 @@
+schema: rackcad-automation-state/v1
+automation_state:
+  initiative: I-39D
+  branch: architecture/dialogos-y-utilitarias
+  claim_id: d0adcb2c-336e-4b24-82cc-1999ff80ec30
+  current_phase: 1
+  state: implementing
+  gate: none
+  attempts: 0
+  next_action: >-
+    caracterizar-las-dieciseis-ventanas-de-C-y-D-antes-de-tocar-ADR-0029-D13
+  last_evidence_commit: pendiente
+
+# --------------------------------------------------------------------------------------------------------
+# PREFLIGHT
+# --------------------------------------------------------------------------------------------------------
+preflight:
+  base_remota: 7eb96cb11386c6def4dc595f01dd9c3695f71013
+  base_asunto: I-39C integrada - registro del merge y de los gates post-merge
+  main_igual_a_origin_main: si
+  git_status_al_reclamar: limpio
+  operaciones_en_curso: ninguna
+  worktrees_previos: uno-solo-el-principal-del-dueno
+  stashes: cero
+  ramas_remotas_al_reclamar: solo-origin-main
+  rama_objetivo: architecture-dialogos-y-utilitarias-LIBRE-en-local-y-en-remoto
+  dependencias_integradas: I-39A y I-39B y I-39C
+
+# --------------------------------------------------------------------------------------------------------
+# AUDITORIA DE APERTURA. Once lectores en paralelo mas sintesis con verificacion puntual propia.
+# Son HECHOS medidos, NO decisiones del Owner: ajustan COMO se implementa, no QUE debe entregarse.
+# --------------------------------------------------------------------------------------------------------
+hallazgos_de_auditoria:
+  censo: >-
+    C-son-DIEZ-y-D-son-SEIS-verificado-contra-la-guarda-por-reflexion ·
+    las-dieciseis-declaraciones-son-exactas · cuatro-punteros-de-A-y-B-caducaron-y-se-refrescan
+  lo_que_comparten_las_diez: >-
+    code-only · cero-herencia-de-RackDialogWindow · CenterOwner · mergean-AppStyles-a-mano ·
+    IsDefault-en-la-primaria-e-IsCancel-en-Cancelar · cero-OnClosing · cero-foco-inicial-y-cero-TabIndex ·
+    nunca-deshabilitan-un-boton-de-la-barra · devuelven-propiedad-tipada-mas-DialogResult · trabajan-sobre-copia
+  las_excepciones_que_gobiernan_el_plan: >-
+    SafetyDefensaGridWindow-es-la-UNICA-sin-FontFamily-ni-Background ·
+    la-etiqueta-primaria-es-Colocar-y-Calcular-en-las-dos-de-almacen ·
+    concordancia-de-genero-cruzada-Todos-Ninguno-frente-a-Todas-Ninguna ·
+    SelectiveSegmentsWindow-tiene-TRES-terminaciones ·
+    cinco-ventanas-declaran-CenterOwner-sin-que-pueda-existir-Owner
+  cobertura_real: >-
+    NUEVE-de-dieciseis-no-se-construyen-jamas-en-una-prueba ·
+    toda-la-cobertura-existente-es-FUNCIONAL-y-cero-de-contrato
+  rackdialogwindow: >-
+    cero-subclases-productivas-desde-I-14 · no-entrega-tamano · no-coloca-la-barra-que-fabrica ·
+    no-tiene-OnClosing · su-CreateActionBar-no-admite-la-invocacion-natural-de-las-cuatro-rejillas ·
+    asigna-Background-y-FontFamily-como-VALOR-LOCAL-que-bloquearia-cualquier-estilo-de-ventana-de-C
+  contradicciones_resueltas: ocho-resueltas-contra-el-codigo-y-ninguna-promediada
+  registrados_en: docs/automation/evidence/I-39D-auditoria-dialogos-y-utilitarias.md
+
+# --------------------------------------------------------------------------------------------------------
+# ALCANCE
+# --------------------------------------------------------------------------------------------------------
+alcance:
+  caracterizacion: las-dieciseis-ventanas-de-C-y-D-antes-de-tocar
+  rackdialogwindow: >-
+    papel-final-RESUELTO-por-medicion · chrome-generalizado-a-contrato-de-ventana-adoptable-por-composicion ·
+    barra-de-acciones-RETIRADA-por-ser-modelo-paralelo-de-EditorActions-Button-que-la-decision-28-prohibe ·
+    el-tipo-queda-sin-contenido-propio-y-se-retira
+  chrome: una-sola-fuente-para-las-NUEVE-que-hoy-lo-tienen-completo-con-diff-visual-vacio
+  tamano: solo-donde-la-evidencia-YA-converge-y-con-su-excepcion-escrita-donde-no
+  editor_actions: adopcion-en-los-dialogos-de-DOS-botones-sin-perder-etiqueta-metrica-teclado-ni-resultado
+  observable: chrome-de-Defensa · ubicacion-de-las-cinco-sin-padre-WPF · paleta-de-estado · foco-inicial · motivo-visible
+  lo_que_NO_hace: >-
+    cero-geometria-BOM-persistencia-wire-format-GUID-catalogos-y-reglas-de-producto ·
+    no-unifica-los-mapeos-SafetySide-porque-son-regla-de-producto ·
+    no-toca-los-arquetipos-A-ni-B · no-migra-los-botones-tarjeta-del-menu
+
+# --------------------------------------------------------------------------------------------------------
+# GATES
+# --------------------------------------------------------------------------------------------------------
+gates:
+  owner_validation:
+    required: true
+    status: pending
+    note: >-
+      I-39D-cambia-chrome-ubicacion-paleta-de-estado-y-foco-en-ventanas-de-produccion
+  autocad:
+    required: true
+    status: pending
+  ci_del_candidato: pendiente
+
+# --------------------------------------------------------------------------------------------------------
+# INTEGRACION
+# --------------------------------------------------------------------------------------------------------
+integracion:
+  quien_integra: >-
+    sesion-de-integracion-dedicada-WORKFLOW-4-5 · automation-enabled-false ·
+    autorizada-expresamente-por-el-Owner
+  merge: no-ff-sin-squash-sin-force-desde-el-worktree-principal
+  limpieza: solo-tras-confirmar-el-merge-y-el-push-de-main
+  cierre_de_la_linea: con-I-39D-integrada-se-cierra-la-iniciativa-paraguas-I-39

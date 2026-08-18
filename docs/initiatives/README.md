@@ -718,6 +718,24 @@ Planes disponibles:
   `EditorActionBar` **no** se adopta en el arquetipo B, porque sus dos aportaciones --las cuatro
   categorias neutrales y la envoltura que no recorta-- ya las resuelve el `DockPanel` que las cuatro
   ventanas Cantilever tienen; su papel en C y D lo decide I-39D.
+- [`I-39D-dialogos-y-utilitarias.md`](I-39D-dialogos-y-utilitarias.md): **dialogos del arquetipo C,
+  utilitarias del D y papel final de `RackDialogWindow`** (tipo: architecture; rama
+  `architecture/dialogos-y-utilitarias`) · **en curso**, reclamada el 2026-08-07. Cuarta y ultima
+  subiniciativa de **I-39**: **con ella se cierra la linea**. Caracteriza las **dieciseis** ventanas
+  antes de tocarlas, donde **nueve no se construyen jamas en una prueba** y toda la cobertura existente
+  es funcional. Resuelve por MEDICION el papel final de `RackDialogWindow`, que sigue con cero
+  subclases productivas desde I-14: encajan cuatro de diez y no encajan seis, asi que su **chrome** se
+  generaliza a un contrato de ventana adoptable por **composicion** y su **barra de acciones** se
+  retira por ser un modelo paralelo de `EditorActions.Button`, que la decision 28 del Owner prohibe.
+  Lleva el chrome del arquetipo C a una sola fuente con diff visual vacio, declara el contrato de
+  tamano **solo donde la evidencia ya converge** y con su excepcion escrita donde no, adopta
+  `EditorActions.Button` en los dialogos de dos botones, y corrige lo observable uno a uno. **NO**
+  unifica los mapeos `SafetySide`, que son regla de producto. Fuera de alcance: los arquetipos A y B
+  (cerrados por I-39B e I-39C), `MessageBox`/`SaveFileDialog` sin costura, los botones-tarjeta del
+  menu, geometria, BOM, persistencia, catalogos, Plugin y cualquier paquete NuGet.
+  `requires_autocad: true`, `requires_owner_validation: true`. Auditoria de apertura en
+  [`../automation/evidence/I-39D-auditoria-dialogos-y-utilitarias.md`](../automation/evidence/I-39D-auditoria-dialogos-y-utilitarias.md).
+  Estado versionado en [`../automation/state/I-39D.yml`](../automation/state/I-39D.yml).
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa
