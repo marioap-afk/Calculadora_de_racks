@@ -189,4 +189,30 @@
         <Setter Property="FontFamily" Value="{DynamicResource ShellFontFamily}" />
         <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />
     </Style>
+
+    <!-- I-39D (ADR-0029 D9): el contrato del ARQUETIPO C, el dialogo transaccional. Tercer hermano, y por la
+         misma razon: un arquetipo no hereda implicitamente restricciones de otro.
+
+         Lleva SOLO apariencia y tipografia, y deliberadamente NI tamano NI ubicacion. Lo manda la medicion:
+         dos de los diez dialogos se dimensionan por su contenido (SizeToContent.Height, sin MinHeight) y
+         cuatro calculan su tamano a partir de la matriz que muestran, asi que unos minimos comunes
+         reproducirian aqui la anomalia de letra muerta que I-39A midio en Cantilever y que I-39C cerro. Y la
+         ubicacion difiere por procedencia: cinco de estas ventanas las abre un comando de AutoCAD sin
+         ventana padre WPF, de modo que ningun Owner puede existir para ellas.
+
+         El fondo es WindowBackgroundBrush (#F4F6F9, el que estas ventanas YA usaban) y NO el del shell,
+         para que adoptarlo no mueva un solo pixel. Se aplica por COMPOSICION, con DialogWindowChrome.Apply;
+         el porque, medido, esta en ese archivo. -->
+    <Style x:Key="DialogWindowStyle" TargetType="Window">
+        <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource ShellFontFamily}" />
+    </Style>
+
+    <!-- I-39D: el tamano que las dos utilitarias de lista YA comparten, y los minimos que comparten con el
+         BOM. Tokenizar aqui no mueve nada porque es convergencia EXISTENTE, no un contrato impuesto: el BOM
+         difiere en el tamano inicial (740x520) y el BOM consolidado no comparte ninguno de los dos. -->
+    <sys:Double x:Key="ListWindowInitialWidth">720</sys:Double>
+    <sys:Double x:Key="ListWindowInitialHeight">480</sys:Double>
+    <sys:Double x:Key="ListWindowMinWidth">520</sys:Double>
+    <sys:Double x:Key="ListWindowMinHeight">320</sys:Double>
 </ResourceDictionary>

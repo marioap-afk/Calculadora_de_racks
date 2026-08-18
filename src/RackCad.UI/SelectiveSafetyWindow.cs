@@ -9,6 +9,7 @@ using RackCad.Application.Catalogs;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Application.Systems.Selective;
 using RackCad.Domain.Systems.Selective;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI
 {
@@ -162,9 +163,9 @@ namespace RackCad.UI
             MinWidth = 400;
             MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            FontFamily = new FontFamily("Segoe UI");
-            Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
-            if (TryFindResource("WindowBackgroundBrush") is Brush background) Background = background;
+            // I-39D: el chrome del arquetipo C en una sola fuente. Sustituye las cuatro sentencias que las
+            // diez ventanas repetian a mano; los valores son los MISMOS, asi que no cambia un pixel.
+            DialogWindowChrome.Apply(this);
 
             var root = new DockPanel { Margin = new Thickness(14) };
 
@@ -924,9 +925,9 @@ namespace RackCad.UI
             MinWidth = 300;
             MinHeight = 260;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            FontFamily = new FontFamily("Segoe UI");
-            Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
-            if (TryFindResource("WindowBackgroundBrush") is Brush background) Background = background;
+            // I-39D: el chrome del arquetipo C en una sola fuente. Sustituye las cuatro sentencias que las
+            // diez ventanas repetian a mano; los valores son los MISMOS, asi que no cambia un pixel.
+            DialogWindowChrome.Apply(this);
 
             var root = new DockPanel { Margin = new Thickness(14) };
 

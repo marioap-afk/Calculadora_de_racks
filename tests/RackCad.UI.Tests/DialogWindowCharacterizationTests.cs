@@ -37,6 +37,20 @@ namespace RackCad.UI.Tests
         // Construccion real de las dieciseis. Cada una con el minimo que su constructor exige.
         // ================================================================================================
 
+        /// <summary>
+        /// Marca de una caracterizacion que I-39D cambio A PROPOSITO. La prueba NO se reescribe: se conserva con su
+        /// cuerpo intacto como evidencia versionada del comportamiento anterior, y el nuevo se prueba en
+        /// <c>DialogWindowContractTests</c>.
+        ///
+        /// <para>La transicion se lee en tres sitios: aqui esta el comportamiento anterior; ADR-0029 lo autoriza; y
+        /// la clase de contrato prueba el nuevo. El commit <c>f6c4d12</c> es la version en que toda esta suite corria
+        /// en verde contra la base, y <c>docs/automation/evidence/I-39D-caracterizacion-base-vs-contrato.md</c>
+        /// enfrenta las dos versiones asercion por asercion.</para>
+        /// </summary>
+        private const string BaseEvidence =
+            "Evidencia de la BASE anterior a I-39D; el contrato nuevo lo prueba DialogWindowContractTests. " +
+            "Ver docs/automation/evidence/I-39D-caracterizacion-base-vs-contrato.md";
+
         private static IReadOnlyList<SelectiveGridCell> NoCells() => new List<SelectiveGridCell>();
 
         private static SelectiveSafetyWindow Safety() => new SelectiveSafetyWindow(
@@ -356,7 +370,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void NingunaDeLasDieciseisAplicaUnEstiloDeVentanaCompartido()
         {
             StaTestRunner.Run(() =>

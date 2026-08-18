@@ -83,9 +83,9 @@ namespace RackCad.UI
             MinWidth = 520;
             MinHeight = 376;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            FontFamily = new FontFamily("Segoe UI");
-            Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
-            if (TryFindResource("WindowBackgroundBrush") is Brush background) Background = background;
+            // I-39D: el chrome del arquetipo C en una sola fuente. Sustituye las cuatro sentencias que las
+            // diez ventanas repetian a mano; los valores son los MISMOS, asi que no cambia un pixel.
+            DialogWindowChrome.Apply(this);
 
             var root = new DockPanel { Margin = new Thickness(14) };
 
