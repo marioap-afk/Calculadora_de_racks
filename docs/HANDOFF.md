@@ -16,6 +16,51 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-39 — Contrato funcional común de ventanas WPF — queda CERRADA** el **2026-08-07** con la
+integración de **I-39D** (`architecture/dialogos-y-utilitarias`), cuarta y última subiniciativa, con la
+validación manual del Owner **APROBADA** en sus **24 puntos** (`OWNER_APPROVED_I39D_MANUAL_VALIDATION`).
+**ADR-0029 permanece `aceptado` e inmutable.**
+
+I-39D cierra los arquetipos **C** y **D**. Empieza donde tenía que empezar: **nueve de sus dieciséis
+ventanas no se habían construido jamás en una prueba**, y toda la cobertura que existía era funcional.
+Construirlas corrigió además **cinco afirmaciones** de su propia auditoría de apertura, que se había
+hecho leyendo —son dos y no tres las que comparten tamaño, dos y no tres las de `SizeToContent`, seis y
+no siete las que pintan con `Firebrick`, completar el chrome de Defensa cambia solo el fondo, y
+`Colocar` **sí** produce resultado con los valores iniciales—.
+
+**`RackDialogWindow` tiene por fin papel final, y es retirarse.** Nació en I-14 con patrón strangler y
+cinco iniciativas después seguía con **cero subclases productivas**. El motivo está medido: encaja en
+cuatro de los diez diálogos y no en seis —su `CreateActionBar` ni siquiera admite la invocación natural
+de las cuatro rejillas—, no entrega tamaño, no coloca la barra que fabrica y no tiene `OnClosing`. Y
+peor: asignaba fondo y tipografía como **valor local**, que en precedencia WPF gana al setter de un
+`Style`, de modo que **la base bloqueaba el contrato que venía a habilitar**. Sus dos mitades se separan:
+el chrome se generaliza a `DialogWindowChrome` + `DialogWindowStyle`, tercer estilo hermano de los de A y
+B, adoptado **por composición** por los diez diálogos en una línea; y la barra de acciones se retira por
+ser un **modelo paralelo** de `EditorActions.Button`, que la decisión 28 del Owner prohíbe. El censo baja
+de **29 a 28** clases y su guarda se **reapunta, no se debilita**.
+
+El **contrato de tamaño** se declara solo donde la evidencia ya converge —dos ventanas completas y tres
+mínimos— y el arquetipo C se queda deliberadamente **sin** él: dos de sus diez se dimensionan por su
+contenido y cuatro calculan el suyo de la matriz, así que unos mínimos comunes reproducirían la anomalía
+de letra muerta que I-39C acababa de cerrar en B. `EditorActions.Button` gana sus **primeros consumidores
+fuera del piloto** en las dos ventanas de almacén, conservando etiqueta —siguen diciendo «Colocar» y
+«Calcular»—, métrica, teclado y resultado. Y quedan corregidos **tres defectos observables**: el fondo de
+`SafetyDefensaGridWindow`, el motivo de bloqueo de la barra de selección masiva —que se calculaba y era
+ilegible justo cuando importaba— y el diagnóstico que no se borraba nunca.
+
+**Lo que NO se unifica, con su razón medida**: los mapeos `SafetySide`, porque dos no ofrecen «Ninguno» a
+propósito; las etiquetas Todos/Ninguno frente a Todas/Ninguna, que difieren por concordancia de género; y
+`EditorActionBar`, cuyo orden fijo invertiría primaria y secundaria en tres utilitarias.
+
+**Cuatro** caracterizaciones cambian a propósito y se conservan con `Skip`. Otras **dos** no pueden
+conservarse así, y se dice por qué: una prueba omitida sigue teniendo que **compilar**, y el tipo que
+caracterizaban ya no existe, así que su cuerpo se transcribe palabra por palabra en la evidencia.
+
+**La línea completa no tocó un solo archivo de producto.** El diff de I-39 entera contra su base
+(`fdde6a7`) tiene **cero** archivos en `RackCad.Plugin`, `RackCad.Application`, `RackCad.Domain`,
+`RackCad.Catalogs`, `assets/`, `deploy/` y `.github/`: geometría, BOM, persistencia, wire format, GUID,
+catálogos, materialización en AutoCAD y comandos quedan intactos por construcción, no por comprobación.
+
 **I-39C** (`architecture/adopcion-editores-acotados`) queda **integrada** el **2026-08-07** y es la
 tercera subiniciativa de **I-39**, que **sigue abierta**: falta **I-39D**. Cierra el **arquetipo B**
 completo, con la validación manual del Owner **APROBADA** en sus **37 puntos**
@@ -1076,28 +1121,39 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-39C está integrada. No hay iniciativa en curso.
+### I-39 está CERRADA. No hay iniciativa en curso.
 
-**I-39C quedó integrada el 2026-08-07**, con la validación manual del Owner **APROBADA** en sus 37
-puntos. Es la tercera subiniciativa de **I-39** y cierra el **arquetipo B** completo. **I-39 sigue
-abierta**: queda **I-39D**, y con ella se cerrará la línea.
+**I-39 — Contrato funcional común de ventanas WPF quedó cerrada el 2026-08-07**, con sus cuatro
+subiniciativas integradas en `main`: **I-39A** (`44f84bd`, ronda 2 aprobada, **ADR-0029 aceptado**),
+**I-39B** (`2239eac`, 31/31), **I-39C** (`fc9a287`, 37/37) e **I-39D** (`fea745c`, 24/24). Las cuatro con
+validación manual del Owner en AutoCAD 2025 y CI verde. **ADR-0029 permanece `aceptado` e inmutable.**
 
-**I-39B quedó integrada el 2026-08-07** (31 puntos aprobados) y **I-39A el mismo día** (ronda 2 aprobada,
-**ADR-0029 aceptado**). Son la segunda y la primera subiniciativas de **I-39**.
+Las **28** ventanas concretas del producto tienen arquetipo declarado y contrato cumplido, o desviación
+explícita documentada. La línea **no tocó un solo archivo** de Plugin, Application, Domain, Catalogs,
+`assets/`, `deploy/` ni `.github/`.
 
 **I-37 quedó cerrada el 2026-08-03** con la integración de I-37D (merge `fa7f8c5`). Sus cuatro
 subiniciativas —I-37A fundación columna–base, I-37B brazo, I-37C estación y BOM, I-37D línea,
 arriostramiento, vistas, editor y AutoCAD— están **integradas en `main`**, y ADR-0024 a ADR-0028 están
 **aceptados**.
 
-**Siguiente acción autorizada por el Owner: I-39D**, con la que se cierra la línea I-39. No tiene todavía
-fila ni contrato, así que arranca por el **gate documental**:
+**No hay siguiente acción autorizada.** Ninguna iniciativa se abre sin instrucción del Owner.
 
-- **I-39D** — **diálogos** de configuración del arquetipo C y **ventanas utilitarias** del D, incluido
-  decidir el papel de `RackDialogWindow`, que sigue **sin una sola subclase productiva** mientras diez
-  diálogos rehacen a mano su par Aceptar/Cancelar. Hereda de I-39C una desviación medida que le toca
-  resolver: `EditorActionBar` **no** se adoptó en el arquetipo B porque su `DockPanel` ya resolvía lo
-  mismo, y queda por decidir si en C o en D sí tiene consumidor.
+**Deuda registrada por I-39, fuera de su alcance y sin bloquear el cierre.** Ninguna de las tres corrige
+un defecto observado: mueven producto validado por preferencia, no por contrato. Lo único que el Owner ha
+decidido sobre ellas es **no incorporarlas a este cierre**; su destino final sigue abierto.
+
+- **Ubicación explícita** de las cinco ventanas que declaran `CenterOwner` sin que pueda existir `Owner`
+  —`RackWarehouseLayoutWindow`, `RackWarehouseFillWindow`, `RackListWindow`, `RackConsolidatedBomWindow`
+  y `RackCommandHelpWindow`—, porque las abre un comando de AutoCAD sin ventana padre WPF.
+- **Paleta del diagnóstico**: siete archivos pintan su aviso con `Firebrick` en vez del `#B00020` de
+  `EditorStatusPalette`.
+- **Foco inicial de las cuatro rejillas**, hoy emergente; hacerlo determinista exige que
+  `SelectionMatrix` acepte foco, que es un cambio de **control** y no de arquetipo.
+
+**Desviación explícita vigente y medida**: `EditorActionBar` no se adopta en ningún arquetipo. En A y B
+el `DockPanel` que las ventanas ya tienen resuelve lo mismo, y en C y D su orden fijo invertiría primaria
+y secundaria en tres utilitarias.
 
 I-38 —cálculo resistente, cargas y capacidad— **tampoco se abre** sin instrucción del Owner, y no reabre
 [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md).
@@ -1129,6 +1185,45 @@ y I-37 no se cierra.
 **Sigue fuera de alcance incluso al cerrar I-37**: cálculo resistente, cargas, capacidad (son I-38), peso,
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
+
+#### I-39D — **INTEGRADA en `main`** (2026-08-07) · **y con ella se CIERRA I-39**
+
+> **Validación manual APROBADA** (`OWNER_APPROVED_I39D_MANUAL_VALIDATION`): **24 de 24 puntos aprobados**,
+> agrupados por familia, sin observaciones y sin rondas rechazadas. **ADR-0029 permanece `aceptado` e
+> inmutable**: I-39D lo **aplica** a los arquetipos C y D.
+> **I-39 queda CERRADA**: sus cuatro subiniciativas están integradas.
+
+| Campo | Valor |
+|---|---|
+| Rama | `architecture/dialogos-y-utilitarias` — **integrada y eliminada** (local y remota) |
+| Merge en `main` | **`fea745c`** · padres `7eb96cb` y `1f24766` · `--no-ff`, sin squash y sin force |
+| `CODE_SHA` funcional | `f513e12751a1d5a03a32bd1d50ae345852ff2298` |
+| `VALIDATED_BUILD_SHA` | `f513e12751a1d5a03a32bd1d50ae345852ff2298` · DLL Debug `E93653E1…F150D54ED8` |
+| Suites | `RackCad.Tests` **2979** · `RackCad.UI.Tests` **765** + **17 omitidas** de evidencia |
+| CI del candidato | [`32154543819`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/32154543819) ✅ 4/4 sobre `f513e12` · candidato final [`32171970739`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/32171970739) ✅ sobre `1f24766` |
+| CI de `main` tras integrar | [`32172287044`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/32172287044) ✅ 4/4 jobs |
+| Base | `origin/main` `7eb96cb` — **no avanzó** desde el reclamo: **sin rebase** |
+| Censo final | **28** clases `Window` concretas, **todas producto**: 6 A + 6 B + 10 C + 6 D, cero infraestructura |
+| **Validación manual en AutoCAD** | ✅ **APROBADA 2026-08-07** — [checklist](automation/evidence/I-39D-checklist-validacion-manual.md) |
+| Auditoría de apertura | [11 lecturas en paralelo](automation/evidence/I-39D-auditoria-dialogos-y-utilitarias.md) — 8 contradicciones resueltas contra el código, 5 afirmaciones corregidas por la caracterización |
+| Caracterización | [base vs contrato](automation/evidence/I-39D-caracterizacion-base-vs-contrato.md) — **4** con `Skip` y **2** transcritas |
+
+**Trazabilidad del binario.** El commit de cierre documental `1f24766`, posterior a `f513e12`, **no toca
+`src/` ni `tests/`** —verificado con `git diff`—, así que no cambia el binario: la aprobación de
+`f513e12` es vigente para el árbol integrado, con el mismo criterio que I-31, I-35 e I-39A/B/C.
+
+#### I-39 — **CERRADA** (2026-08-07) · auditoría transversal sobre el `main` integrado
+
+| Comprobación | Resultado |
+|---|---|
+| Censo por tipo | **28** clases concretas, cada una con **un solo** arquetipo; `RackDialogWindow` ya no existe ni se nombra |
+| Infraestructura `Shell/`, `Controls/`, `Preview/`, `Themes/` | **cero** `using` hacia namespaces de sistema |
+| `Editor/` | 7 `using` en `EditorModules.cs`, **excepción declarada** y cubierta por su guarda: es el registro de módulos de I-15 y su trabajo es conocerlos |
+| Modelos paralelos | ninguno: una sola fábrica de acciones (`EditorActions`), una sola paleta de estado (`EditorStatusPalette`), un solo chrome por arquetipo |
+| `PreviewCanvas` | identificado por **tipo**, con un consumidor productivo; nunca por `x:Name` |
+| Cobertura del contrato | Enter, Escape, X, `Alt+F4`, dirty, confirmación de descarte, autoridad y frescura del preview, acción bloqueada con motivo, severidad, foco inicial, tabulación, ownership, tamaño y scroll: **todas** con suites que las cubren |
+| Regresión de producto | el diff de I-39 entera contra `fdde6a7` toca **cero** archivos de Plugin, Application, Domain, Catalogs, `assets/`, `deploy/` y `.github/` |
+| Incumplimiento residual corregido | el estado versionado de **I-39A** seguía en `integration-ready` pese a estar integrada desde el 7 de agosto; lo corrige esta auditoría |
 
 #### I-39C — **INTEGRADA en `main`** (2026-08-07) · **I-39 sigue abierta**
 

@@ -4,13 +4,12 @@ automation_state:
   branch: architecture/contrato-funcional-ventanas-wpf
   claim_id: fa57f5d5-197c-4b68-9b24-4d481cb15933
   current_phase: 6
-  state: integration-ready
+  state: integrated
   gate: none
   attempts: 1
   next_action: >-
-    NINGUNA-I-39A-esta-INTEGRADA-y-CERRADA ·
-    I-39-NO-se-cierra-quedan-I-39B-I-39C-e-I-39D-sin-fila-ni-contrato ·
-    ninguna-se-abre-sin-instruccion-del-Owner
+    NINGUNA-I-39A-esta-INTEGRADA-y-CERRADA · el-estado-quedo-en-integration-ready-por-descuido-en-su-cierre
+    y-lo-corrige-la-auditoria-transversal-de-I-39 · la-linea-I-39-esta-CERRADA
   last_evidence_commit: 16178dfb9c5871a4321d69594a26f67200f28c2f
 
 # --------------------------------------------------------------------------------------------------------
