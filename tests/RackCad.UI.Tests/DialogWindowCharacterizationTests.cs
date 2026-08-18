@@ -645,38 +645,18 @@ namespace RackCad.UI.Tests
         // 10. INFRAESTRUCTURA: RackDialogWindow sigue sin un solo adoptante
         // ================================================================================================
 
-        [Fact]
-        public void RackDialogWindowNoTieneNiUnaSolaSubclaseProductiva()
-        {
-            var derived = typeof(RackCad.UI.Controls.RackDialogWindow).Assembly
-                .GetTypes()
-                .Where(t => typeof(RackCad.UI.Controls.RackDialogWindow).IsAssignableFrom(t)
-                    && t != typeof(RackCad.UI.Controls.RackDialogWindow))
-                .Select(t => t.FullName)
-                .ToList();
-
-            Assert.Empty(derived);
-        }
-
-        [Fact]
-        public void RackDialogWindowAsignaChromeComoVALORLOCAL()
-        {
-            StaTestRunner.Run(() =>
-            {
-                // El obstaculo estructural medido: en precedencia WPF un valor local GANA al setter de un estilo, asi
-                // que mientras la base asigne fondo y tipografia en su constructor, ningun estilo de ventana del
-                // arquetipo C podria cambiarlos en una subclase suya.
-                var dialog = new RackCad.UI.Controls.RackDialogWindow();
-
-                Assert.Equal("Segoe UI", dialog.FontFamily?.Source);
-                Assert.NotNull(dialog.Background);
-                Assert.Equal(WindowStartupLocation.CenterOwner, dialog.WindowStartupLocation);
-
-                var source = UiSource("Controls", "RackDialogWindow.cs");
-                Assert.Contains("FontFamily = new FontFamily(\"Segoe UI\")", source, StringComparison.Ordinal);
-                Assert.Contains("WindowStartupLocation = WindowStartupLocation.CenterOwner", source, StringComparison.Ordinal);
-            });
-        }
+        // Aqui vivian DOS caracterizaciones de `RackDialogWindow` —que no tenia ni una sola subclase productiva, y
+        // que asignaba su chrome como VALOR LOCAL, que es lo que en precedencia WPF habria impedido a cualquier
+        // estilo de ventana del arquetipo C cambiarlo en una subclase suya—. I-39D retiro el tipo, asi que, a
+        // diferencia de las demas caracterizaciones que este cambio deja obsoletas, estas dos NO pueden conservarse
+        // con `Skip`: una prueba omitida sigue teniendo que COMPILAR, y ya no hay tipo al que referirse.
+        //
+        // Por eso su cuerpo se conserva TRANSCRITO, palabra por palabra, en
+        // `docs/automation/evidence/I-39D-caracterizacion-base-vs-contrato.md`, y siguen ejecutables en el commit
+        // `f6c4d12`, que es la version en que toda esta suite corria en verde contra la base. No se reescriben ni se
+        // borran en silencio: la transicion base → ADR → contrato se lee entera, que es la unica regla que importa.
+        // El contrato nuevo —que el tipo ya no existe y que sus dos mitades tienen casa— lo prueban
+        // `WindowCensusGuardTests.RackDialogWindowYaNoExiste` y `DialogWindowContractTests`.
 
         [Fact]
         public void NingunaDeLasDieciseisConsumeEditorActionNiEditorActionBar()

@@ -58,8 +58,17 @@ namespace RackCad.UI.Tests
             "RackListWindow", "RackCommandHelpWindow"
         };
 
-        /// <summary>Infrastructure, NOT product: a shared chrome base, not a window a user opens (owner decision 7).</summary>
-        private static readonly string[] Infrastructure = { "RackDialogWindow" };
+        /// <summary>
+        /// Infrastructure, NOT product: a window type that exists as shared chrome and that no user opens (owner
+        /// decision 7). **Empty since I-39D**, and that is the point rather than an oversight.
+        ///
+        /// <para><c>RackDialogWindow</c> was its only member and it was retired: its chrome half became
+        /// <c>DialogWindowChrome</c> plus <c>DialogWindowStyle</c>, adopted by composition by nine dialogs, and its
+        /// action-bar half was a parallel model of <c>EditorActions.Button</c>, which owner decision 28 forbids. With
+        /// both halves rehoused the type had nothing of its own left. The category stays declared, empty, because the
+        /// census must still be able to express it the day another piece of chrome needs it.</para>
+        /// </summary>
+        private static readonly string[] Infrastructure = Array.Empty<string>();
 
         private static IReadOnlyList<Type> ConcreteWindows() =>
             typeof(RackEditorVisualShell).Assembly
@@ -135,11 +144,32 @@ namespace RackCad.UI.Tests
         }
 
         [Fact]
-        public void InfrastructureIsNotCountedAsProduct()
+        public void EveryCensusedWindowIsNowProduct()
         {
-            // RackDialogWindow is shared chrome, not a window a user opens: it is censused, and it is not product.
-            Assert.Contains("RackDialogWindow", Infrastructure);
-            Assert.DoesNotContain("RackDialogWindow", RichEditors.Concat(BoundedEditors).Concat(ConfigurationDialogs).Concat(Utilities));
+            // I-39D REAPUNTA esta guarda, no la debilita. Antes aseveraba que la unica pieza de infraestructura
+            // estaba censada y NO contaba como producto; ahora que se retiro, asevera lo que queda: que el censo son
+            // 28 ventanas y las 28 son producto, repartidas 6 + 6 + 10 + 6. Si alguien vuelve a introducir chrome que
+            // derive de Window, tendra que declararlo en `Infrastructure` y esta prueba lo obligara a explicarlo.
+            Assert.Empty(Infrastructure);
+
+            var product = RichEditors.Concat(BoundedEditors).Concat(ConfigurationDialogs).Concat(Utilities).ToList();
+
+            Assert.Equal(6, RichEditors.Length);
+            Assert.Equal(6, BoundedEditors.Length);
+            Assert.Equal(10, ConfigurationDialogs.Length);
+            Assert.Equal(6, Utilities.Length);
+            Assert.Equal(28, product.Count);
+            Assert.Equal(product.Count, ConcreteWindows().Count);
+        }
+
+        [Fact]
+        public void RackDialogWindowYaNoExiste()
+        {
+            // El complemento del reapuntado: la base de dialogo de I-14 se retiro en I-39D y no puede reaparecer sin
+            // que alguien lo note. Sus dos mitades tienen casa: el chrome en DialogWindowChrome, adoptado por nueve
+            // dialogos, y la barra de acciones en EditorActions.Button, que ya transporta rol de teclado y motivo de
+            // bloqueo. Dos bases equivalentes son justo lo que la decision 28 del Owner prohibe.
+            Assert.DoesNotContain("RackDialogWindow", ConcreteWindows().Select(t => t.Name));
         }
     }
 }
