@@ -4,12 +4,11 @@ automation_state:
   branch: architecture/adopcion-editores-acotados
   claim_id: 611ca9e5-4734-4615-a008-21d3e69338f8
   current_phase: 8
-  state: integration-ready
+  state: integrated
   gate: none
   attempts: 0
   next_action: >-
-    integrar-en-main-por-merge-no-ff-sin-squash-desde-el-worktree-principal ·
-    gates-post-merge-SOBRE-MAIN · limpieza-segura-solo-tras-confirmar-el-merge
+    NINGUNA-I-39C-esta-INTEGRADA-y-CERRADA · I-39-sigue-abierta · siguiente-autorizada-I-39D
   last_evidence_commit: f4ed2c920b32c7635e60b8ce5d24924a21e34b10
 
 # --------------------------------------------------------------------------------------------------------
@@ -91,6 +90,16 @@ integracion:
     autorizada-expresamente-por-el-Owner
   merge: no-ff-sin-squash-sin-force-desde-el-worktree-principal
   limpieza: solo-tras-confirmar-el-merge-y-el-push-de-main
+  merge_sha: fc9a287b0f5bd0481af5486ec9542739f866a4e1
+  merge_padres: da3cd4aa835daf9e6c63ff2e127b9d7cc7e1a9f5 y b38d65332aa72bc072570522973f8940c0dd37ba
+  candidato_final: b38d65332aa72bc072570522973f8940c0dd37ba
+  relacion_con_el_sha_validado: >-
+    el-Owner-valido-2401698 · el-cierre-documental-b38d653-NO-toca-src-ni-tests-verificado-con-git-diff ·
+    el-binario-no-cambia-y-la-aprobacion-es-vigente-para-el-arbol-integrado
+  gates_post_merge: >-
+    main-igual-a-origin-main · suites-completas-verdes-SOBRE-MAIN ·
+    builds-Debug-de-UI-Plugin-y-los-dos-proyectos-de-pruebas-verdes ·
+    guardas-de-censo-shell-frontera-y-I-37D-verdes · CI-de-main-32145288441-verde-4-de-4
 
 # --------------------------------------------------------------------------------------------------------
 # CIERRE DEL ALCANCE INTERNO. Ninguno queda diferido sin conclusion.

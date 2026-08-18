@@ -16,6 +16,50 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-39C** (`architecture/adopcion-editores-acotados`) queda **integrada** el **2026-08-07** y es la
+tercera subiniciativa de **I-39**, que **sigue abierta**: falta **I-39D**. Cierra el **arquetipo B**
+completo, con la validación manual del Owner **APROBADA** en sus **37 puntos**
+(`OWNER_APPROVED_I39C_MANUAL_VALIDATION`).
+
+**Retira la fachada** `CantileverComponentEditorShell`. I-39A la había dejado en la ruta vieja para que
+cuatro XAML ya validados quedaran con **diff vacío**: un andamio con su fecha de retiro escrita en su
+propio comentario. Los cuatro nombran ya el tipo neutral y sus dos guardas se **reapuntan, no se
+debilitan** —verificadas en rojo por partida doble: con la fachada restaurada fallan, y con un XAML
+volviendo a nombrarla **no compila siquiera**, porque el tipo ya no existe—.
+
+El **shell acotado** respalda sus tokens en `OnApplyTemplate` y **solo cuando no resuelven**, con la
+simetría exacta que I-39B pagó en el rico: mergear siempre no es respaldo sino **sombreado**, y el
+contenido de las ranuras acabaría resolviendo otra instancia del mismo estilo.
+
+El **contrato de tamaño del arquetipo B** deja de ser letra muerta. `BoundedEditorWindowStyle` es
+**hermano** de `EditorShellWindowStyle` y no una variante suya, porque D9 dice que un arquetipo **no**
+hereda implícitamente restricciones de tamaño de otro. Las cuatro Cantilever abrían en `1120×700` y
+`1120×672` sin declararlo; ahora abren en `1040×680` con mínimo `820×520`, y que ahí no se pierda nada
+**no se afirma: se mide**, llevándolas al cliente más apretado.
+
+**`EditorAction` aprende `IsDefault` e `IsCancel`** y gana su **primer consumidor productivo**. La prueba
+de que la evolución es correcta es que las **treinta** caracterizaciones de I-39A siguen verdes **sin
+tocarse**, incluida la que fijaba esta deuda como de I-39C.
+
+El **Larguero** adopta el shell conservando instancias, manejadores y orden: su code-behind **no aparece
+en el diff**. Su preview se queda con superficie **clara a propósito**, porque sus rótulos son grises y el
+fondo oscuro del editor rico los volvería ilegibles.
+
+**`Insertar` se apaga con motivo visible** en cinco ventanas y **`Aceptar` no**: una pieza bloqueada sigue
+siendo una intención que el usuario puede conservar. La otra mitad de la medición de I-39A —que una
+entrada inválida **no** bloquee— se revisó y **no** se cambia, porque D5 la hace correcta. **Foco inicial**
+declarado en las seis; **preview y dirty medidos**: ninguna declara ámbito transaccional y por eso ninguna
+intercepta el cierre, que es «no aplicable» con razón de **producto**, no por omisión.
+
+**Diez** caracterizaciones cambiaron **a propósito** y **ninguna se reescribió**: se conservan con `Skip`
+como evidencia versionada, y **dos de ellas son de I-39A**, cuyo propio texto anticipaba este cambio.
+
+**Desviación explícita y medida**: `EditorActionBar` **no** se adopta en el arquetipo B —sus dos
+aportaciones ya las resuelve el `DockPanel` que las cuatro Cantilever tienen, y la prueba de mínimo
+demuestra que no recorta—; su papel en **C** y **D** lo decide I-39D. **No** cambia geometría, BOM,
+persistencia, wire format, GUID, catálogos ni reglas de producto, y el diff **no toca** Plugin,
+Application ni Domain.
+
 **I-39B** (`architecture/interaccion-editores-ricos`) queda **integrada** el **2026-08-07** y es la
 segunda subiniciativa de **I-39**, que **sigue abierta**. Lleva el contrato funcional a los **seis
 editores ricos**, con la validación manual del Owner **APROBADA** en sus **31 puntos**
@@ -1032,33 +1076,28 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-39B está integrada. No hay iniciativa en curso.
+### I-39C está integrada. No hay iniciativa en curso.
 
-**I-39B quedó integrada el 2026-08-07**, con la validación manual del Owner **APROBADA** en sus 31
-puntos. Es la segunda subiniciativa de **I-39**, que **sigue abierta**: quedan **I-39C** (editores
-acotados restantes: los cuatro configuradores Cantilever, la retirada de la fachada, Larguero, el
-contrato definitivo de tamaño del arquetipo B y el sombreado de recursos del shell acotado) e **I-39D**
-(diálogos de configuración y ventanas utilitarias, incluido el papel final de `RackDialogWindow`).
+**I-39C quedó integrada el 2026-08-07**, con la validación manual del Owner **APROBADA** en sus 37
+puntos. Es la tercera subiniciativa de **I-39** y cierra el **arquetipo B** completo. **I-39 sigue
+abierta**: queda **I-39D**, y con ella se cerrará la línea.
 
-**I-39A quedó integrada el 2026-08-07**, con la validación manual del Owner **APROBADA** en su ronda 2 y
-**ADR-0029 aceptado**. Es la primera subiniciativa de **I-39**.
+**I-39B quedó integrada el 2026-08-07** (31 puntos aprobados) y **I-39A el mismo día** (ronda 2 aprobada,
+**ADR-0029 aceptado**). Son la segunda y la primera subiniciativas de **I-39**.
 
 **I-37 quedó cerrada el 2026-08-03** con la integración de I-37D (merge `fa7f8c5`). Sus cuatro
 subiniciativas —I-37A fundación columna–base, I-37B brazo, I-37C estación y BOM, I-37D línea,
 arriostramiento, vistas, editor y AutoCAD— están **integradas en `main`**, y ADR-0024 a ADR-0028 están
 **aceptados**.
 
-**Siguiente acción autorizada por el Owner: I-39C**, y después I-39D, para cerrar la línea I-39. Ninguna de
-las dos tiene todavía fila ni contrato, así que ambas arrancan por el **gate documental**:
+**Siguiente acción autorizada por el Owner: I-39D**, con la que se cierra la línea I-39. No tiene todavía
+fila ni contrato, así que arranca por el **gate documental**:
 
-- **I-39C** — adopción en los **editores acotados restantes**: migración física de los cuatro XAML de
-  componente Cantilever, **retirada de la fachada** `CantileverComponentEditorShell`, Larguero, el cierre
-  del contrato de tamaño del arquetipo B —hoy las cuatro ventanas Cantilever declaran anchos que el mínimo
-  heredado clampea, de modo que son letra muerta— y la evolución de `EditorAction`, que no sabe describir la
-  acción por defecto ni la de cancelación y por eso el piloto **no** pudo adoptar `EditorActions.Button`.
-- **I-39D** — **diálogos** de configuración y **ventanas utilitarias**, incluido decidir el papel de
-  `RackDialogWindow`, que sigue **sin una sola subclase productiva** mientras diez diálogos rehacen a mano
-  su par Aceptar/Cancelar.
+- **I-39D** — **diálogos** de configuración del arquetipo C y **ventanas utilitarias** del D, incluido
+  decidir el papel de `RackDialogWindow`, que sigue **sin una sola subclase productiva** mientras diez
+  diálogos rehacen a mano su par Aceptar/Cancelar. Hereda de I-39C una desviación medida que le toca
+  resolver: `EditorActionBar` **no** se adoptó en el arquetipo B porque su `DockPanel` ya resolvía lo
+  mismo, y queda por decidir si en C o en D sí tiene consumidor.
 
 I-38 —cálculo resistente, cargas y capacidad— **tampoco se abre** sin instrucción del Owner, y no reabre
 [ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md).
@@ -1090,6 +1129,32 @@ y I-37 no se cierra.
 **Sigue fuera de alcance incluso al cerrar I-37**: cálculo resistente, cargas, capacidad (son I-38), peso,
 costo, optimización, soldaduras, tornillería, anclas, roscas, tolerancias, preparación de extremos, CNC, shop
 drawings, la interferencia física en el cruce de tensores, y cualquier catálogo nuevo sin procedencia.
+
+#### I-39C — **INTEGRADA en `main`** (2026-08-07) · **I-39 sigue abierta**
+
+> **Validación manual APROBADA** (`OWNER_APPROVED_I39C_MANUAL_VALIDATION`): **37 de 37 puntos aprobados**,
+> sin observaciones y sin rondas rechazadas. **ADR-0029 ya estaba aceptado** desde I-39A y **no se reabre**:
+> I-39C lo **aplica** al arquetipo B y lo cierra entero.
+> **I-39 NO se cierra**: queda I-39D.
+
+| Campo | Valor |
+|---|---|
+| Rama | `architecture/adopcion-editores-acotados` — **integrada y eliminada** (local y remota) |
+| Merge en `main` | **`fc9a287`** · padres `da3cd4a` y `b38d653` · `--no-ff`, sin squash y sin force |
+| `CODE_SHA` funcional | `2401698a5801a01f3497b3bb27027f801b91960e` |
+| `VALIDATED_BUILD_SHA` | `2401698a5801a01f3497b3bb27027f801b91960e` · DLL Debug `29194997…C994749DB` |
+| Suites | `RackCad.Tests` **2979** · `RackCad.UI.Tests` **738** + **14 omitidas** de evidencia |
+| CI del candidato | [`31223039489`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/31223039489) ✅ 4/4 jobs sobre `2401698` |
+| CI de `main` tras integrar | [`32145288441`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/32145288441) ✅ 4/4 jobs |
+| Base | `origin/main` `da3cd4a` — **no avanzó** desde el reclamo: **sin rebase**, y el árbol validado es el integrado |
+| Regresiones verificadas en rojo | fachada restaurada (3 guardas), un XAML volviendo a nombrarla (no compila), y el merge incondicional de recursos |
+| **Validación manual en AutoCAD** | ✅ **APROBADA 2026-08-07** — [checklist](automation/evidence/I-39C-checklist-validacion-manual.md) |
+| Caracterización | [base vs contrato](automation/evidence/I-39C-caracterizacion-base-vs-contrato.md) — **10** cambiaron a propósito y se conservan con `Skip`; **2** son de I-39A |
+| Alcance interno resuelto | [decisiones técnicas](automation/evidence/I-39C-decisiones-tecnicas.md) — 4 deudas heredadas + 5 dimensiones del contrato |
+
+**Trazabilidad del binario.** El commit de cierre documental `b38d653`, posterior a `2401698`, **no toca
+`src/` ni `tests/`** —verificado con `git diff`—, así que no cambia el binario: la aprobación de `2401698`
+es vigente para el árbol integrado, con el mismo criterio que I-31, I-35, I-39A e I-39B.
 
 #### I-39B — **INTEGRADA en `main`** (2026-08-07) · **I-39 sigue abierta**
 
