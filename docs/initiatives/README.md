@@ -720,8 +720,9 @@ Planes disponibles:
   ventanas Cantilever tienen; su papel en C y D lo decide I-39D.
 - [`I-39D-dialogos-y-utilitarias.md`](I-39D-dialogos-y-utilitarias.md): **dialogos del arquetipo C,
   utilitarias del D y papel final de `RackDialogWindow`** (tipo: architecture; rama
-  `architecture/dialogos-y-utilitarias`) · **en curso**, reclamada el 2026-08-07. Cuarta y ultima
-  subiniciativa de **I-39**: **con ella se cierra la linea**. Caracteriza las **dieciseis** ventanas
+  `architecture/dialogos-y-utilitarias`) · **INTEGRADA en `main` el 2026-08-07**, con la validacion
+  manual del Owner APROBADA en sus 24 puntos (`OWNER_APPROVED_I39D_MANUAL_VALIDATION`). Cuarta y ultima
+  subiniciativa de **I-39**: **con ella la linea queda CERRADA**. Caracteriza las **dieciseis** ventanas
   antes de tocarlas, donde **nueve no se construyen jamas en una prueba** y toda la cobertura existente
   es funcional. Resuelve por MEDICION el papel final de `RackDialogWindow`, que sigue con cero
   subclases productivas desde I-14: encajan cuatro de diez y no encajan seis, asi que su **chrome** se

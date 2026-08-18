@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-39D
 title: Dialogos del arquetipo C, utilitarias del D y papel final de RackDialogWindow
 type: architecture
-status: implementing
+status: integrated
 branch: architecture/dialogos-y-utilitarias
 base_branch: main
 priority:
@@ -242,3 +242,36 @@ contrato y repetir el punto once veces no añade evidencia.
 
 `docs/automation/state/I-39D.yml`, `schema: rackcad-automation-state/v1`. El agente nunca hace merge
 automático; la integración es una sesión separada y autorizada.
+
+## 14. Evidencia final
+
+**I-39D queda INTEGRADA en `main` el 2026-08-07** por `git merge --no-ff`, sin squash, despues de que el
+Owner aprobara los **24 puntos** del checklist (`OWNER_APPROVED_I39D_MANUAL_VALIDATION`) sobre el
+candidato `f513e12751a1d5a03a32bd1d50ae345852ff2298`, con CI verde 4/4 (run `32154543819`).
+
+**Con ella se cierra la linea I-39.**
+
+- **Auditoria de apertura**: [`I-39D-auditoria-dialogos-y-utilitarias.md`](../automation/evidence/I-39D-auditoria-dialogos-y-utilitarias.md)
+  — once lecturas en paralelo, ocho contradicciones resueltas contra el codigo y **cinco afirmaciones
+  corregidas por la caracterizacion**, que se hizo construyendo y no leyendo.
+- **Base vs contrato**: [`I-39D-caracterizacion-base-vs-contrato.md`](../automation/evidence/I-39D-caracterizacion-base-vs-contrato.md)
+  — **cuatro** caracterizaciones conservadas con `Skip` y **dos** transcritas palabra por palabra, porque
+  una prueba omitida sigue teniendo que **compilar** y el tipo que caracterizaban ya no existe.
+- **Validacion manual**: [`I-39D-checklist-validacion-manual.md`](../automation/evidence/I-39D-checklist-validacion-manual.md)
+- **Estado versionado**: [`I-39D.yml`](../automation/state/I-39D.yml)
+
+`origin/main` **no avanzo** desde la base `7eb96cb`: sin rebase, el arbol validado es el integrado.
+
+**Alcance interno CERRADO, sin nada diferido.** `RackDialogWindow` tiene papel final ejecutado, el chrome
+del arquetipo C vive en una sola fuente, el tamano se tokenizo donde converge y con su excepcion escrita
+donde no, `EditorActions.Button` tiene consumidores productivos en C, y los tres defectos observables
+quedan corregidos.
+
+**Desviacion explicita vigente y medida**: `EditorActionBar` **no** se adopta en C ni en D. Su orden fijo
+`leading → secondary → primary → trailing` **invertiria** primaria y secundaria en tres utilitarias, y
+ninguno de los diez dialogos tiene realmente cuatro categorias de accion.
+
+**Fuera de este cierre, como hallazgo y deuda futura y no como trabajo pendiente**: la ubicacion explicita
+de las cinco ventanas sin `Owner` WPF posible, la paleta `Firebrick` frente a la compartida, y el foco
+inicial de las cuatro rejillas, que exigiria que `SelectionMatrix` acepte foco. Ninguna corrige un defecto
+observado. Lo unico que el Owner ha decidido sobre ellas es **no incorporarlas a este cierre**.

@@ -4,12 +4,12 @@ automation_state:
   branch: architecture/dialogos-y-utilitarias
   claim_id: d0adcb2c-336e-4b24-82cc-1999ff80ec30
   current_phase: 7
-  state: validating
-  gate: owner-validation
+  state: integration-ready
+  gate: none
   attempts: 0
   next_action: >-
-    VALIDACION-MANUAL-DEL-OWNER-EN-AUTOCAD-2025 ·
-    alcance-interno-CERRADO-sin-nada-diferido · sin-esa-aprobacion-no-se-integra
+    integrar-en-main-por-merge-no-ff-sin-squash-desde-el-worktree-principal ·
+    gates-post-merge-SOBRE-MAIN · auditoria-transversal-de-I-39 · cierre-de-la-linea
   last_evidence_commit: f513e12751a1d5a03a32bd1d50ae345852ff2298
 
 # --------------------------------------------------------------------------------------------------------
@@ -79,14 +79,18 @@ alcance:
 gates:
   owner_validation:
     required: true
-    status: pending
+    status: approved
+    date: 2026-08-07
+    veredicto: OWNER_APPROVED_I39D_MANUAL_VALIDATION
+    sha_tecnico_validado: f513e12751a1d5a03a32bd1d50ae345852ff2298
+    puntos: 24-de-24-APROBADOS-sin-observaciones-y-sin-rondas-rechazadas
     checklist: docs/automation/evidence/I-39D-checklist-validacion-manual.md
     puntos: 24-agrupados-por-familia-no-ventana-a-ventana
     note: >-
       I-39D-cambia-chrome-ubicacion-paleta-de-estado-y-foco-en-ventanas-de-produccion
   autocad:
     required: true
-    status: pending
+    status: approved
   ci_del_candidato: VERDE-4-de-4-run-32154543819-sobre-f513e12
   candidato: f513e12751a1d5a03a32bd1d50ae345852ff2298
   dll_sha256: E93653E12BA28CEEDA5735EEFA22F1335E10CEDDD0EF154D3BB0A4F150D54ED8
@@ -125,9 +129,11 @@ conclusiones:
   observable_corregido: >-
     fondo-de-SafetyDefensaGridWindow · motivo-de-bloqueo-legible-en-la-barra-masiva ·
     diagnostico-obsoleto-que-se-limpia-al-revalidar
-  decisiones_que_quedan_al_Owner: >-
+  fuera_de_este_cierre: >-
     ubicacion-de-las-cinco-sin-padre-WPF · paleta-del-diagnostico · foco-inicial-de-las-cuatro-rejillas ·
-    ninguna-corrige-un-defecto-observado-y-por-eso-no-se-hicieron
+    ninguna-corrige-un-defecto-observado-y-por-eso-no-se-hicieron ·
+    quedan-como-HALLAZGO-y-deuda-futura-NO-como-trabajo-pendiente-de-I-39D ·
+    lo-unico-decidido-por-el-Owner-es-NO-incorporarlas-a-este-cierre
 
 caracterizacion_previa:
   inmutable: si
