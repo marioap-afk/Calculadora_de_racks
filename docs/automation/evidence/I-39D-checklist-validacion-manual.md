@@ -15,7 +15,10 @@
 | Claim-Id | `d0adcb2c-336e-4b24-82cc-1999ff80ec30` |
 | DLL a cargar | `<worktree>\src\RackCad.Plugin\bin\Debug\net8.0-windows\RackCad.Plugin.dll` |
 | Worktree | `.claude\worktrees\architecture-dialogos-y-utilitarias` |
-| SHA candidato | *(se rellena al ejecutar)* |
+| **SHA candidato** | `f513e12751a1d5a03a32bd1d50ae345852ff2298` |
+| SHA-256 del DLL | `E93653E12BA28CEEDA5735EEFA22F1335E10CEDDD0EF154D3BB0A4F150D54ED8` |
+| `AssemblyInformationalVersion` | `1.0.0+f513e12751a1d5a03a32bd1d50ae345852ff2298` |
+| CI del candidato | run [`32154543819`](https://github.com/marioap-afk/Calculadora_de_racks/actions/runs/32154543819), ✅ 4/4 |
 
 **El DLL es el del worktree de la iniciativa, no el del principal.** Cierra AutoCAD antes de recompilar.
 

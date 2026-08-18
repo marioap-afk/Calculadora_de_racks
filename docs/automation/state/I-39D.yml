@@ -10,7 +10,7 @@ automation_state:
   next_action: >-
     VALIDACION-MANUAL-DEL-OWNER-EN-AUTOCAD-2025 ·
     alcance-interno-CERRADO-sin-nada-diferido · sin-esa-aprobacion-no-se-integra
-  last_evidence_commit: pendiente
+  last_evidence_commit: f513e12751a1d5a03a32bd1d50ae345852ff2298
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT
@@ -87,7 +87,9 @@ gates:
   autocad:
     required: true
     status: pending
-  ci_del_candidato: pendiente
+  ci_del_candidato: VERDE-4-de-4-run-32154543819-sobre-f513e12
+  candidato: f513e12751a1d5a03a32bd1d50ae345852ff2298
+  dll_sha256: E93653E12BA28CEEDA5735EEFA22F1335E10CEDDD0EF154D3BB0A4F150D54ED8
 
 # --------------------------------------------------------------------------------------------------------
 # INTEGRACION
