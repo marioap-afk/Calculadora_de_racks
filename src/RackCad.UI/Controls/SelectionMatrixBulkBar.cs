@@ -67,6 +67,12 @@ namespace RackCad.UI.Controls
                     Margin = new Thickness(0, 2, 6, 2),
                     VerticalAlignment = VerticalAlignment.Center
                 };
+                // I-39D (ADR-0029 D6): el motivo de bloqueo se calcula y se asigna al ToolTip, pero era ILEGIBLE
+                // justo cuando importaba, porque WPF no muestra la ayuda de un control deshabilitado si nadie lo
+                // pide. Era la unica cobertura de D6 en el arquetipo C y estaba a medias: la prueba aseveraba que el
+                // motivo EXISTE, no que se pueda leer.
+                ToolTipService.SetShowOnDisabled(button, true);
+
                 button.Click += (_, __) => Apply(target);
                 buttons[target] = button;
                 Children.Add(button);

@@ -4,8 +4,8 @@
         Title="Lista de materiales (preliminar)"
         Height="520"
         Width="740"
-        MinHeight="320"
-        MinWidth="520"
+        MinHeight="{DynamicResource ListWindowMinHeight}"
+        MinWidth="{DynamicResource ListWindowMinWidth}"
         WindowStartupLocation="CenterOwner"
         FontFamily="Segoe UI"
         Background="{DynamicResource WindowBackgroundBrush}">

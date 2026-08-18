@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.Domain.Systems.Selective;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI.Systems.Selective
 {
@@ -48,11 +49,9 @@ namespace RackCad.UI.Systems.Selective
             SizeToContent = SizeToContent.Height;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             ResizeMode = ResizeMode.NoResize;
-            FontFamily = new FontFamily("Segoe UI");
-
-            // Same look as every other RackCad window (this one is code-built, so merge the shared styles by hand).
-            Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
-            if (TryFindResource("WindowBackgroundBrush") is Brush background) Background = background;
+            // I-39D: el chrome del arquetipo C en una sola fuente. Sustituye las cuatro sentencias que las
+            // diez ventanas repetian a mano; los valores son los MISMOS, asi que no cambia un pixel.
+            DialogWindowChrome.Apply(this);
 
             var root = new StackPanel { Margin = new Thickness(14) };
 

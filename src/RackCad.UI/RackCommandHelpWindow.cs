@@ -25,9 +25,14 @@ namespace RackCad.UI
             Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
             if (TryFindResource("WindowBackgroundBrush") is Brush background) Background = background;
 
-            var chipBrush = (TryFindResource("AccentBrush") as Brush) ?? new SolidColorBrush(Color.FromRgb(0x2F, 0x6F, 0xED));
-            var mutedBrush = (TryFindResource("SubtleTextBrush") as Brush) ?? new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88));
-            var textBrush = (TryFindResource("TextBrush") as Brush) ?? Foreground ?? Brushes.Black;
+            // I-39D: los tres colores eran una BUSQUEDA MUERTA. `AccentBrush`, `SubtleTextBrush` y `TextBrush` no
+            // estan definidos en ningun diccionario del repositorio, asi que el `TryFindResource` devolvia siempre
+            // null y ganaba el literal de respaldo. El codigo simulaba estar tematizado sin estarlo, que es peor que
+            // no estarlo: invita a creer que redefinir una clave cambiaria el aspecto. Se conservan los MISMOS
+            // colores; lo unico que desaparece es la busqueda que nunca encontro nada.
+            var chipBrush = new SolidColorBrush(Color.FromRgb(0x2F, 0x6F, 0xED));
+            var mutedBrush = new SolidColorBrush(Color.FromRgb(0x88, 0x88, 0x88));
+            var textBrush = Foreground ?? Brushes.Black;
 
             var root = new DockPanel { Margin = new Thickness(16) };
 

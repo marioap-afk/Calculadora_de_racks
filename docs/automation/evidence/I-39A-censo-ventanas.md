@@ -5,6 +5,12 @@
 > [decisiones](../decisions/I-39.md)). La unidad del censo es el **tipo**, no el archivo y nunca un
 > `x:Name` (ADR-0029 D1). Registro factual del árbol; no incluye conteos de pruebas ni hashes, que
 > viven en `docs/HANDOFF.md` §12.
+>
+> **Refrescado por I-39D (2026-08-07).** El censo se escribió antes de I-39B/C y algunos punteros de
+> línea se movieron; las declaraciones se re-verificaron una a una contra `main` y las **dieciséis**
+> de los arquetipos C y D eran exactas. Lo que sí cambió de fondo está marcado en su sitio: la
+> anomalía de tamaño de §4 (corregida por I-39C) y el punto 2 de §8 (parcialmente consumido). La
+> **clasificación** A/B/C/D no cambia, y la guarda por reflexión la mantiene viva.
 
 ## 1. Método, y por qué los otros dos no sirven
 
@@ -55,10 +61,10 @@ matriz no saca a una ventana de este arquetipo.**
 |---|---|---|---|
 | `RackSelectiveWindow` | `Systems/Selective/RackSelectiveWindow.xaml.cs:35` | XAML | `RackEditorVisualShell` |
 | `RackDynamicSystemWindow` | `Systems/Dynamic/RackDynamicSystemWindow.xaml.cs:34` | XAML | `RackEditorVisualShell` |
-| `RackPushBackSystemWindow` | `Systems/PushBack/RackPushBackSystemWindow.xaml.cs:40` | XAML | `RackEditorVisualShell` |
-| `RackCantileverWindow` | `Systems/Cantilever/RackCantileverWindow.xaml.cs:31` | XAML | `RackEditorVisualShell` |
+| `RackPushBackSystemWindow` | `Systems/PushBack/RackPushBackSystemWindow.xaml.cs:42` | XAML | `RackEditorVisualShell` |
+| `RackCantileverWindow` | `Systems/Cantilever/RackCantileverWindow.xaml.cs:32` | XAML | `RackEditorVisualShell` |
 | `RackFlowBedWindow` | `Systems/FlowBed/RackFlowBedWindow.xaml.cs:22` | XAML | ninguno |
-| `RackFrameConfiguratorWindow` | `RackFrames/RackFrameConfiguratorWindow.xaml.cs:17` | XAML | ninguno |
+| `RackFrameConfiguratorWindow` | `RackFrames/RackFrameConfiguratorWindow.xaml.cs:18` | XAML | ninguno |
 
 **Discutibles registrados.** `RackFlowBedWindow` es A por rol —sesión, preview, BOM, inserción y
 actualización en AutoCAD— y B por tamaño y complejidad; se clasifica **por rol**.
@@ -79,7 +85,7 @@ persistentes ni miembros del BOM (decisión 6 del Owner).
 | `CantileverSeparatorWindow` | `.../CantileverSeparatorWindow.xaml.cs:24` | XAML | shell de componentes |
 | `CantileverBraceWindow` | `.../CantileverBraceWindow.xaml.cs:22` | XAML | shell de componentes |
 | `RackLargueroWindow` | `Systems/Larguero/RackLargueroWindow.xaml.cs:22` | XAML | ninguno |
-| `StructuralSectionInspectorWindow` | `StructuralSections/StructuralSectionInspectorWindow.cs:24` | **code-only** | ninguno → **piloto de I-39A** |
+| `StructuralSectionInspectorWindow` | `StructuralSections/StructuralSectionInspectorWindow.cs:25` | **code-only** | ninguno → **piloto de I-39A** |
 
 **Discutible registrado.** `StructuralSectionInspectorWindow` explora un catálogo y no edita una
 pieza del modelo de rack, lo que la acercaría a D; se clasifica en **B** porque tiene parámetros,
@@ -97,9 +103,14 @@ mínimos propios. En precedencia WPF el valor local gana al setter del estilo, p
 | `CantileverColumnBaseWindow`, `CantileverArmWindow` | `1000×700` | `1120×700` |
 | `CantileverSeparatorWindow`, `CantileverBraceWindow` | `900×640` | `1120×672` |
 
-Los cuatro `Width` y dos de los cuatro `Height` son **letra muerta**: contradicen el contrato de
+Los cuatro `Width` y dos de los cuatro `Height` eran **letra muerta**: contradecían el contrato de
 tamaño sin producir el tamaño escrito. Es la evidencia que sostiene el texto normativo de ADR-0029
-D9. Su corrección es de **I-39C**, cuando esas cuatro ventanas adopten el contrato del arquetipo B.
+D9.
+
+> **CORREGIDO por I-39C** (2026-08-07). Las cuatro aplican ya `BoundedEditorWindowStyle`
+> (`Themes/AppStyles.xaml`) y **retiraron sus literales**, así que abren en `1040×680` con mínimo
+> `820×520` y lo declarado es lo que abre. La tabla de arriba describe el estado **anterior** y se
+> conserva como evidencia de la anomalía que obligó a escribir D9.
 
 ## 5. C — Diálogo de configuración transaccional
 
@@ -167,6 +178,12 @@ Ninguno bloquea I-39A; todos quedan asignados.
 2. **`EditorAction`, `EditorActionBar`, `EditorStatus`, `EditorStatusPresenter` y sus cuatro
    severidades: cero consumidores productivos.** Las ventanas migradas ponen botones crudos y
    replican a mano `ToolTipService.ShowOnDisabled`. → adopción gradual, I-39B/C/D.
+
+   > **PARCIALMENTE CONSUMIDO.** `EditorStatusPalette` tiene consumidor productivo desde **I-39B**
+   > (`UiSupport.SetStatus` por severidad) y `EditorAction` desde **I-39C**
+   > (`StructuralSections/StructuralSectionInspectorWindow.cs`), que además le añadió `IsDefault` e
+   > `IsCancel`. Siguen en **cero** `EditorActionBar` fuera de la plantilla del shell rico y
+   > `EditorStatusPresenter`. → **I-39D**.
 3. **`EditorActions.Button` no fija `IsDefault` ni `IsCancel`** (`Shell/EditorAction.cs:41-66`), así
    que hoy no puede describir la acción por defecto ni la de cancelación de una ventana. → evolución
    registrada para **I-39C**.

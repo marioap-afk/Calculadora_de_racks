@@ -83,9 +83,9 @@ namespace RackCad.UI
             MinWidth = 520;
             MinHeight = 376;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            FontFamily = new FontFamily("Segoe UI");
-            Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative) });
-            if (TryFindResource("WindowBackgroundBrush") is Brush background) Background = background;
+            // I-39D: el chrome del arquetipo C en una sola fuente. Sustituye las cuatro sentencias que las
+            // diez ventanas repetian a mano; los valores son los MISMOS, asi que no cambia un pixel.
+            DialogWindowChrome.Apply(this);
 
             var root = new DockPanel { Margin = new Thickness(14) };
 
@@ -282,10 +282,13 @@ namespace RackCad.UI
         private static string Join(IReadOnlyList<string> names)
             => string.Join(", ", names.Take(4)) + (names.Count > 4 ? " y " + (names.Count - 4).ToString(CultureInfo.InvariantCulture) + " más" : string.Empty);
 
-        private Brush WarnBrush(bool warn)
+        /// <summary>I-39D: <c>MutedTextBrush</c> no esta definido en ningun diccionario del repositorio, asi que el
+        /// <c>TryFindResource</c> devolvia siempre null y ganaba el respaldo. Se conserva el MISMO gris; desaparece
+        /// solo la busqueda muerta.</summary>
+        private static Brush WarnBrush(bool warn)
             => warn
                 ? UiSupport.FrozenBrush(Color.FromRgb(0xB0, 0x00, 0x20))
-                : (TryFindResource("MutedTextBrush") as Brush ?? UiSupport.FrozenBrush(Color.FromRgb(0x70, 0x70, 0x70)));
+                : UiSupport.FrozenBrush(Color.FromRgb(0x70, 0x70, 0x70));
 
         /// <summary>The working matrix state — a test seam (I-34).</summary>
         internal SelectionMatrixModel Model => model;
