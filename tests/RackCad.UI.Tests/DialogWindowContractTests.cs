@@ -201,7 +201,69 @@ namespace RackCad.UI.Tests
                 UiSource("SafetyDesviadorGridWindow.cs"), StringComparison.Ordinal);
         }
 
-        // ---- 4. el helper es composicion, no herencia, y no conoce ningun sistema (D12) ----
+        // ---- 4. EditorActions.Button tiene por fin consumidores en el arquetipo C ----
+
+        [Fact]
+        public void LasDosDeAlmacenConstruyenSuBarraConLaFabricaComun()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // Primer consumidor productivo de EditorActions.Button en el arquetipo C, y solo pudo serlo porque
+                // I-39C le enseno a transportar el rol de teclado: antes, sustituir un boton escrito a mano por uno
+                // suyo habria borrado Enter y Escape en silencio.
+                foreach (var (build, primaria) in new (Func<Window>, string)[]
+                {
+                    (() => new RackWarehouseLayoutWindow("R1", 48.0, 96.0), "Colocar"),
+                    (() => new RackWarehouseFillWindow("R1", 48.0, 96.0), "Calcular"),
+                })
+                {
+                    var window = build();
+                    var buttons = EditorWindowTestSupport.FindAll<System.Windows.Controls.Button>(window);
+
+                    var ok = buttons.Single(b => b.IsDefault);
+                    var cancel = buttons.Single(b => b.IsCancel);
+
+                    // El contrato de teclado y las etiquetas sobreviven a la fabrica: no se renombra la accion.
+                    Assert.Equal(primaria, ok.Content as string);
+                    Assert.Equal("Cancelar", cancel.Content as string);
+
+                    // La metrica tambien: la fabrica aporta estilo y ayuda visible, la ventana repone su padding.
+                    Assert.Equal(new Thickness(16, 3, 16, 3), ok.Padding);
+                    Assert.Equal(new Thickness(10, 3, 10, 3), cancel.Padding);
+
+                    // Y lo que la fabrica anade y el boton a mano no tenia: la ayuda legible aun deshabilitado.
+                    Assert.True(System.Windows.Controls.ToolTipService.GetShowOnDisabled(ok));
+                    Assert.True(System.Windows.Controls.ToolTipService.GetShowOnDisabled(cancel));
+
+                    Assert.NotNull(ok.Style);
+                    Assert.NotNull(cancel.Style);
+                    Assert.NotSame(ok.Style, cancel.Style);
+                }
+            });
+        }
+
+        [Fact]
+        public void LaAccionPrimariaSigueProduciendoSuResultado()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // La prueba de que la fabrica no rompio el cableado: pulsar sigue ejecutando el mismo OnOk.
+                var layout = new RackWarehouseLayoutWindow("R1", 48.0, 96.0);
+                var ok = EditorWindowTestSupport.FindAll<System.Windows.Controls.Button>(layout).Single(b => b.IsDefault);
+
+                try
+                {
+                    ok.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent, ok));
+                }
+                catch (InvalidOperationException)
+                {
+                }
+
+                Assert.NotNull(layout.Result);
+            });
+        }
+
+        // ---- 5. el helper es composicion, no herencia, y no conoce ningun sistema (D12) ----
 
         [Fact]
         public void ElChromeComunEsUnHelperYNoUnaBase()

@@ -658,7 +658,7 @@ namespace RackCad.UI.Tests
         // El contrato nuevo —que el tipo ya no existe y que sus dos mitades tienen casa— lo prueban
         // `WindowCensusGuardTests.RackDialogWindowYaNoExiste` y `DialogWindowContractTests`.
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void NingunaDeLasDieciseisConsumeEditorActionNiEditorActionBar()
         {
             foreach (var file in new[]

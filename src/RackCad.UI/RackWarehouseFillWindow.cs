@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using RackCad.UI.Controls;
+using RackCad.UI.Shell;
 
 namespace RackCad.UI
 {
@@ -101,9 +102,21 @@ namespace RackCad.UI
             root.Children.Add(error);
 
             var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 14, 0, 0) };
-            var ok = new Button { Style = TryFindResource("PrimaryButtonStyle") as Style, Content = "Calcular", Padding = new Thickness(16, 3, 16, 3), IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
-            ok.Click += (s, e) => OnOk();
-            var cancel = new Button { Style = TryFindResource("SecondaryButtonStyle") as Style, Content = "Cancelar", Padding = new Thickness(10, 3, 10, 3), IsCancel = true };
+            // I-39D (ADR-0029 D11 y decision 26 del Owner): la barra sale ya de la fabrica comun. Es el primer
+            // consumidor productivo de EditorActions.Button en el arquetipo C, y solo pudo serlo porque I-39C le
+            // enseno a transportar el rol de teclado: sustituir un boton escrito a mano por uno suyo antes de eso
+            // habria borrado Enter y Escape en silencio.
+            //
+            // Padding y margen se REPONEN despues de construir, que es la misma mitigacion que uso el piloto: la
+            // fabrica aporta estilo, motivo de bloqueo visible y rol de teclado, y la ventana conserva su metrica.
+            var ok = EditorActions.Button(
+                new EditorAction("Calcular", isPrimary: true, isDefault: true), (s, e) => OnOk());
+            ok.Padding = new Thickness(16, 3, 16, 3);
+            ok.Margin = new Thickness(0, 0, 8, 0);
+
+            var cancel = EditorActions.Button(new EditorAction("Cancelar", isCancel: true));
+            cancel.Padding = new Thickness(10, 3, 10, 3);
+            cancel.Margin = new Thickness(0);
             buttons.Children.Add(ok);
             buttons.Children.Add(cancel);
             root.Children.Add(buttons);
