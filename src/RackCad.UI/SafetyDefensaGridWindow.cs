@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using RackCad.Application.Systems.Dynamic;
 using RackCad.Domain.Systems.Selective;
+using RackCad.UI.Controls;
 
 namespace RackCad.UI
 {
@@ -69,10 +70,12 @@ namespace RackCad.UI
             MinWidth = 600;
             MinHeight = 360;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            Resources.MergedDictionaries.Add(new ResourceDictionary
-            {
-                Source = new Uri("/RackCad.UI;component/Themes/AppStyles.xaml", UriKind.Relative)
-            });
+
+            // I-39D: la UNICA de los diez dialogos que no aplicaba el chrome compartido. Abria en blanco liso
+            // mientras sus nueve hermanas abrian con el fondo #F4F6F9, y era una omision, no una decision: ni un
+            // comentario ni una prueba la respaldaban. Adoptar la fuente comun la corrige, y ese es su unico delta
+            // observable, medido: la tipografia ya resolvia a Segoe UI por ser la predeterminada del sistema.
+            DialogWindowChrome.Apply(this);
 
             var root = new DockPanel { Margin = new Thickness(14) };
             var footer = new StackPanel { Margin = new Thickness(0, 10, 0, 0) };
@@ -302,6 +305,10 @@ namespace RackCad.UI
 
         private void OnOk(object sender, RoutedEventArgs e)
         {
+            // I-39D: el diagnostico se limpia al REVALIDAR. Antes se escribia y no se borraba nunca, asi que un
+            // aviso corregido seguia en pantalla acusando a un poste que ya estaba bien.
+            error.Text = string.Empty;
+
             var result = new List<SafetyPostDefense>();
             foreach (var row in rows)
             {

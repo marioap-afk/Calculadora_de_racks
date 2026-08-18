@@ -157,7 +157,51 @@ namespace RackCad.UI.Tests
             });
         }
 
-        // ---- 3. el helper es composicion, no herencia, y no conoce ningun sistema (D12) ----
+        // ---- 3. lo observable que I-39D corrige ----
+
+        [Fact]
+        public void SafetyDefensaYaAbreConElFondoCompartidoComoSusNueveHermanas()
+        {
+            StaTestRunner.Run(() =>
+            {
+                // Era la unica de los diez que no aplicaba el chrome, y era una omision y no una decision: ni un
+                // comentario ni una prueba la respaldaban. Su unico delta observable era el FONDO --abria en blanco
+                // liso-- porque la tipografia ya resolvia a Segoe UI por ser la predeterminada del sistema.
+                var defensa = new SafetyDefensaGridWindow("Defensa", 3,
+                    Enumerable.Empty<RackCad.Domain.Systems.Selective.SafetyPostDefense>());
+
+                var fondo = ((SolidColorBrush)AppStyles()["WindowBackgroundBrush"]).Color;
+
+                Assert.Equal(fondo, ((SolidColorBrush)defensa.Background).Color);
+                Assert.NotEqual(Colors.White, ((SolidColorBrush)defensa.Background).Color);
+                Assert.NotNull(defensa.Style);
+                Assert.Contains("DialogWindowChrome.Apply(this)", UiSource("SafetyDefensaGridWindow.cs"),
+                    StringComparison.Ordinal);
+            });
+        }
+
+        [Fact]
+        public void ElMotivoDeBloqueoDeLaBarraMasivaSeLeeConElBotonAPAGADO()
+        {
+            // ADR-0029 D6. La barra calculaba el motivo y lo ponia en el ToolTip, pero WPF no muestra la ayuda de un
+            // control deshabilitado si nadie lo pide: el motivo existia y era ilegible justo cuando importaba. Era
+            // la unica cobertura de D6 en el arquetipo C, y estaba a medias.
+            Assert.Contains("ToolTipService.SetShowOnDisabled(button, true)",
+                UiSource("Controls", "SelectionMatrixBulkBar.cs"), StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void ElDiagnosticoObsoletoSeLimpiaAlRevalidar()
+        {
+            // Dos ventanas escribian su aviso y no lo borraban nunca, asi que un problema ya corregido seguia en
+            // pantalla acusando a un poste que ya estaba bien. En el desviador era mas sutil: solo se limpiaba
+            // cuando el llamador pedia mostrarlo, y la ruta viva pasa el contrario.
+            Assert.Contains("error.Text = string.Empty;", UiSource("SafetyDefensaGridWindow.cs"), StringComparison.Ordinal);
+            Assert.DoesNotContain("if (showError) error.Text = string.Empty;",
+                UiSource("SafetyDesviadorGridWindow.cs"), StringComparison.Ordinal);
+        }
+
+        // ---- 4. el helper es composicion, no herencia, y no conoce ningun sistema (D12) ----
 
         [Fact]
         public void ElChromeComunEsUnHelperYNoUnaBase()

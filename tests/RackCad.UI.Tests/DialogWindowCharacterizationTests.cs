@@ -342,7 +342,7 @@ namespace RackCad.UI.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = BaseEvidence)]
         public void SafetyDefensaEsLaUNICAQueNoAsignaChromeYSuDeltaREALEsElFONDO()
         {
             StaTestRunner.Run(() =>

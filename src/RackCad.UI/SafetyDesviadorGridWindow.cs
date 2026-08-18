@@ -312,7 +312,10 @@ namespace RackCad.UI
                 return false;
             }
 
-            if (showError) error.Text = string.Empty;
+            // I-39D: el diagnostico se limpia SIEMPRE que la validacion pasa, no solo cuando el llamador pidio
+            // mostrarlo. La ruta viva pasa showError: false, de modo que un aviso ya corregido se quedaba fijo en
+            // pantalla hasta que el usuario volvia a pulsar Aceptar.
+            error.Text = string.Empty;
             return true;
         }
 
