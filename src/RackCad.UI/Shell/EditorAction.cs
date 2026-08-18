@@ -13,12 +13,27 @@ namespace RackCad.UI.Shell
     /// </summary>
     public sealed class EditorAction
     {
-        public EditorAction(string label, bool isEnabled = true, string disabledReason = null, bool isPrimary = false)
+        public EditorAction(
+            string label,
+            bool isEnabled = true,
+            string disabledReason = null,
+            bool isPrimary = false,
+            bool isDefault = false,
+            bool isCancel = false)
         {
+            if (isDefault && isCancel)
+            {
+                throw new ArgumentException(
+                    "An action cannot be both the default and the cancel action: Enter and Escape would do the same thing.",
+                    nameof(isDefault));
+            }
+
             Label = label ?? string.Empty;
             IsEnabled = isEnabled;
             DisabledReason = disabledReason;
             IsPrimary = isPrimary;
+            IsDefault = isDefault;
+            IsCancel = isCancel;
         }
 
         public string Label { get; }
@@ -29,6 +44,22 @@ namespace RackCad.UI.Shell
         public string DisabledReason { get; }
 
         public bool IsPrimary { get; }
+
+        /// <summary>
+        /// Whether <c>Enter</c> activates this action (ADR-0029 D7). I-39C adds it: without it this model could not
+        /// describe a window's keyboard contract at all, which is the measured reason no window adopted
+        /// <see cref="EditorActions.Button"/> — substituting hand-built buttons would have SILENTLY dropped Enter.
+        ///
+        /// <para>Visual prominence and keyboard role stay SEPARATE on purpose: an editor may want a primary-looking
+        /// action that Enter must not fire — D7 only allows Enter on an action that is safe and contextual — so this
+        /// is not derived from <see cref="IsPrimary"/>.</para>
+        /// </summary>
+        public bool IsDefault { get; }
+
+        /// <summary>Whether <c>Escape</c> activates this action (ADR-0029 D7). D7 also warns that <c>IsCancel</c> is
+        /// not added mechanically to a window with pending edits: declaring it here says the window HAS a cancel
+        /// action, not that closing is free — whether it may close is the close policy's business.</summary>
+        public bool IsCancel { get; }
     }
 
     /// <summary>Builds WPF buttons from <see cref="EditorAction"/> descriptions, applying the shared button styles and
@@ -47,7 +78,12 @@ namespace RackCad.UI.Shell
                 Content = action.Label,
                 IsEnabled = action.IsEnabled,
                 Margin = new Thickness(ShellResources.Get("ShellActionBarSpacing", 6.0) / 2.0, 0.0, ShellResources.Get("ShellActionBarSpacing", 6.0) / 2.0, 0.0),
-                Style = ShellResources.Get<Style>(action.IsPrimary ? "PrimaryButtonStyle" : "SecondaryButtonStyle")
+                Style = ShellResources.Get<Style>(action.IsPrimary ? "PrimaryButtonStyle" : "SecondaryButtonStyle"),
+
+                // I-39C: the keyboard contract travels WITH the action, so a window that builds its bar from these
+                // descriptions keeps Enter and Escape instead of losing them on the way.
+                IsDefault = action.IsDefault,
+                IsCancel = action.IsCancel
             };
 
             // The disabled reason must remain readable even while the button is disabled.

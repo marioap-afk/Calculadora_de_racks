@@ -17,9 +17,9 @@
          de uno. Izquierda: parametros propios + selector buscable, con scroll. Derecha: preview, que se queda con
          el espacio que los parametros no usan. Abajo: diagnosticos, receta y acciones, SIEMPRE visibles fuera del
          scroll.
-         La plantilla NO cambia con I-39A: solo cambia el tipo al que se aplica. CantileverComponentEditorShell
-         deriva ahora de RackBoundedEditorShell y no sobrescribe DefaultStyleKeyProperty, asi que hereda esta misma
-         clave de estilo y los cuatro XAML de componente Cantilever siguen renderizando igual, sin tocarse. -->
+         La plantilla NO cambio con I-39A: solo cambio el tipo al que se aplica. Aquella dejo una fachada derivada
+         en la ruta vieja para no tocar cuatro XAML ya validados; I-39C los migro al tipo neutral y la retiro, de
+         modo que este estilo tiene ya un solo destinatario y ningun shell del arquetipo B lleva nombre de sistema. -->
     <Style TargetType="{x:Type shell:RackBoundedEditorShell}">
         <Setter Property="Background" Value="{DynamicResource ShellWindowBackgroundBrush}" />
         <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />

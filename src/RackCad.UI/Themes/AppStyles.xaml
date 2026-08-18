@@ -171,4 +171,22 @@
         <Setter Property="FontFamily" Value="{DynamicResource ShellFontFamily}" />
         <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />
     </Style>
+
+    <!-- I-39C (ADR-0029 D9): el MISMO contrato para el arquetipo B, y por eso es un estilo HERMANO y no
+         una variante del de arriba: "un arquetipo no hereda implicitamente restricciones de tamano de
+         otro". Cierra la anomalia que I-39A midio y dejo asignada: las cuatro ventanas de componente
+         Cantilever aplicaban el contrato del editor RICO y declaraban Width/Height locales sin minimos
+         propios, de modo que el minimo heredado las clampeaba y los cuatro anchos escritos eran letra
+         muerta. Aplicando esto y retirando esos literales, el tamano que la ventana declara es el que
+         abre, y lo declara UNA sola vez para todo el arquetipo. Fondo y tipografia son los mismos
+         tokens del shell: lo que cambia entre arquetipos es el tamano, no la piel. -->
+    <Style x:Key="BoundedEditorWindowStyle" TargetType="Window">
+        <Setter Property="Width" Value="{DynamicResource BoundedEditorInitialWidth}" />
+        <Setter Property="Height" Value="{DynamicResource BoundedEditorInitialHeight}" />
+        <Setter Property="MinWidth" Value="{DynamicResource BoundedEditorMinWidth}" />
+        <Setter Property="MinHeight" Value="{DynamicResource BoundedEditorMinHeight}" />
+        <Setter Property="Background" Value="{DynamicResource ShellWindowBackgroundBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource ShellFontFamily}" />
+        <Setter Property="FontSize" Value="{DynamicResource ShellFontSizeBase}" />
+    </Style>
 </ResourceDictionary>

@@ -39,12 +39,17 @@ namespace RackCad.UI.Systems.Cantilever.Components
         private CantileverColumnBaseAssembly assembly;
         private bool suppressSync;
 
+        /// <summary>Whether the caller can materialise at all. I-39C keeps it because the availability of
+        /// <c>Insertar</c> now depends on TWO things, not one: the caller's context and the piece resolving.</summary>
+        private readonly bool canInsertInAutoCad;
+
         public CantileverColumnBaseWindow(
             CantileverStationColumnBaseTemplateDesign template,
             StructuralSectionCatalog catalogue,
             bool canInsertInAutoCad = false)
         {
             this.catalogue = catalogue ?? throw new ArgumentNullException(nameof(catalogue));
+            this.canInsertInAutoCad = canInsertInAutoCad;
             geometry = new StructuralSectionGeometryFactory(catalogue);
             policy = CantileverCataloguePolicies.ColumnBase(catalogue);
             original = template?.DeepCopy() ?? new CantileverStationColumnBaseTemplateDesign();
@@ -61,13 +66,8 @@ namespace RackCad.UI.Systems.Cantilever.Components
             ColumnPicker.Load(catalogue, families);
             BasePicker.Load(catalogue, families);
 
-            InsertButton.IsEnabled = canInsertInAutoCad;
-
-            if (!canInsertInAutoCad)
-            {
-                InsertButton.ToolTip = "Disponible solo cuando la ventana se abre desde AutoCAD.";
-            }
-
+            // La disponibilidad de Insertar la fija ahora UpdateInsertAvailability, al que LoadFromState llega por
+            // Recompute: depende del contexto del llamador Y de que la pieza resuelva, no solo del primero.
             LoadFromState();
         }
 
@@ -219,6 +219,7 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 DiagnosticsText.Text = fieldError;
                 BomText.Text = string.Empty;
                 AcceptButton.IsEnabled = false;
+                UpdateInsertAvailability();
                 RenderPreview();
                 return;
             }
@@ -241,7 +242,27 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 : Recipe(assembly);
 
             AcceptButton.IsEnabled = true; // a blocked piece is still an intent the user may keep editing
+            UpdateInsertAvailability();
             RenderPreview();
+        }
+
+        /// <summary>
+        /// ADR-0029 D6, I-39C: <c>Insertar</c> materialises, so it must be OFF whenever it cannot produce anything —
+        /// and say why. Until now it only reflected whether the caller came from AutoCAD, stayed on for a piece that
+        /// does not resolve, and pressing it merely wrote a line into diagnostics: an action enabled with no effect,
+        /// which D6 calls the greater violation. <c>Aceptar</c> deliberately stays ON: a blocked piece is still an
+        /// intent the user may keep and come back to.
+        /// </summary>
+        private void UpdateInsertAvailability()
+        {
+            var resolves = assembly != null && !assembly.IsBlocked;
+            InsertButton.IsEnabled = canInsertInAutoCad && resolves;
+
+            InsertButton.ToolTip = !canInsertInAutoCad
+                ? "Disponible solo cuando la ventana se abre desde AutoCAD."
+                : resolves
+                    ? "Dibuja la columna y base sola, como bloque independiente. No modifica la línea que estás editando."
+                    : "No se puede insertar una pieza que no se resolvió.";
         }
 
         private static string Recipe(CantileverColumnBaseAssembly columnBase) => string.Format(

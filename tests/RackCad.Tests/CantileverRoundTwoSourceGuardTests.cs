@@ -394,9 +394,8 @@ namespace RackCad.Tests
             // cuatro configuradores expone SIETE ranuras y ninguna se pierde -- se conserva palabra por palabra; lo
             // unico que cambia es donde vive el tipo que las declara. El shell nunca supo nada de Cantilever (siete
             // DP de tipo object, cero ramas): solo su nombre y su ubicacion lo ataban a un sistema, y un consumidor
-            // de otro sistema habria tenido que depender de este namespace para reusarlo. Ahora vive en
-            // RackCad.UI/Shell y CantileverComponentEditorShell es una fachada que deriva de el, de modo que los
-            // cuatro XAML de componente siguen sin tocarse. I-39C los migra y retira la fachada.
+            // de otro sistema habria tenido que depender de este namespace para reusarlo. I-39C completo la mudanza:
+            // los cuatro XAML nombran ya el tipo neutral y la fachada intermedia dejo de existir.
             var shell = CodeOnly(Read("src", "RackCad.UI", "Shell", "RackBoundedEditorShell.cs"));
 
             foreach (var slot in new[]
@@ -410,25 +409,23 @@ namespace RackCad.Tests
         }
 
         [Fact]
-        public void LaFachadaDeCantileverSigueSiendoElShellQueLosCuatroXamlNOMBRAN()
+        public void LosCuatroXamlNombranElShellNEUTRALYNingunaFachadaDeSistema()
         {
-            // El complemento de la guarda anterior: reapuntarla no puede significar que nadie vigile la fachada.
-            // Los cuatro XAML siguen nombrando components:CantileverComponentEditorShell, asi que el tipo tiene que
-            // existir en su ruta, derivar del shell neutral y NO re-declarar ninguna ranura (si las re-declarase
-            // seria codigo escrito para satisfacer una guarda, que es justo lo prohibido).
-            var facade = CodeOnly(Read(
-                "src", "RackCad.UI", "Systems", "Cantilever", "Components", "CantileverComponentEditorShell.cs"));
-
-            Assert.Contains("class CantileverComponentEditorShell : RackBoundedEditorShell", facade, StringComparison.Ordinal);
-            Assert.DoesNotContain("DependencyProperty.Register", facade, StringComparison.Ordinal);
-            Assert.DoesNotContain("DefaultStyleKeyProperty", facade, StringComparison.Ordinal);
-
+            // El complemento de la guarda anterior, REAPUNTADO por I-39C y no debilitado. Antes vigilaba que la
+            // fachada intermedia existiera y no re-declarase ranuras, porque los cuatro XAML la nombraban; ahora que
+            // nombran el tipo neutral, lo que hay que vigilar es lo contrario: que NINGUNO vuelva a componerse sobre
+            // un shell con nombre de sistema, y que la fachada no reaparezca por la puerta de atras.
             foreach (var file in Directory.GetFiles(ComponentDirectory, "*.xaml"))
             {
                 var xaml = XamlCodeOnly(File.ReadAllText(file));
 
-                Assert.Contains("CantileverComponentEditorShell", xaml, StringComparison.Ordinal);
+                Assert.Contains("shell:RackBoundedEditorShell", xaml, StringComparison.Ordinal);
+                Assert.DoesNotContain("CantileverComponentEditorShell", xaml, StringComparison.Ordinal);
             }
+
+            Assert.False(
+                File.Exists(Path.Combine(ComponentDirectory, "CantileverComponentEditorShell.cs")),
+                "la fachada de I-39A se retiro en I-39C: el shell del arquetipo B vive solo en RackCad.UI/Shell");
         }
     }
 }

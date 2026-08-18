@@ -180,6 +180,7 @@ namespace RackCad.UI.Systems.Cantilever.Components
                 assembly = null;
                 DiagnosticsText.Text = error;
                 BomText.Text = string.Empty;
+                UpdateInsertAvailability();
                 RenderPreview();
                 return;
             }
@@ -205,7 +206,21 @@ namespace RackCad.UI.Systems.Cantilever.Components
                     assembly.Plates.Count,
                     assembly.MountingPunches.Count);
 
+            UpdateInsertAvailability();
             RenderPreview();
+        }
+
+        /// <summary>ADR-0029 D6, I-39C: <c>Insertar</c> materialises, so it must be OFF whenever it cannot produce
+        /// anything — and say why. It used to stay on for an arm that does not resolve, and pressing it only wrote a
+        /// line into diagnostics: an action enabled with no effect, which D6 calls the greater violation.</summary>
+        private void UpdateInsertAvailability()
+        {
+            var resolves = assembly != null && !assembly.Diagnostics.Any(d => d.IsBlocking);
+
+            InsertButton.IsEnabled = resolves;
+            InsertButton.ToolTip = resolves
+                ? "Dibuja la pieza sola, como bloque independiente y NO editable. No modifica la línea que estás editando."
+                : "No se puede insertar un brazo que no se resolvió.";
         }
 
         /// <summary>
