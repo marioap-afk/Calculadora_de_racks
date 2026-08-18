@@ -1,12 +1,22 @@
 # I-39C — Checklist de validación manual en AutoCAD 2025 (Owner)
 
-> Estado: **PENDIENTE**. Contrato:
+> Estado: **APROBADA**. Registro factual del resultado proporcionado por el dueño; no incluye
+> capturas ni detalles no proporcionados. Contrato:
 > [`../../initiatives/I-39C-adopcion-editores-acotados.md`](../../initiatives/I-39C-adopcion-editores-acotados.md) ·
 > Decisiones técnicas: [`I-39C-decisiones-tecnicas.md`](I-39C-decisiones-tecnicas.md) ·
 > Base vs contrato: [`I-39C-caracterizacion-base-vs-contrato.md`](I-39C-caracterizacion-base-vs-contrato.md) ·
 > Estado: [`../state/I-39C.yml`](../state/I-39C.yml)
 
-## Artefacto a validar
+## Resultado — EJECUTADA Y APROBADA (2026-08-07)
+
+**`OWNER_APPROVED_I39C_MANUAL_VALIDATION`.** El Owner validó en **AutoCAD 2025** el checklist completo
+de **37 puntos** sobre el DLL Debug del SHA candidato, y **todos se cumplen**. Sin observaciones ni
+defectos bloqueantes, y sin rondas rechazadas.
+
+El árbol validado es el que se integra: `origin/main` **no avanzó** desde la base `da3cd4a`, así que
+**no hubo rebase** y la aprobación es transferible sin reservas.
+
+## Artefacto validado
 
 | Campo | Valor |
 |---|---|
@@ -48,71 +58,71 @@ ninguna ventana ni lo que se dibuja en el DWG.
 
 | # | Punto | Resultado |
 |---|---|---|
-| 1 | Columna y base abre y su tamaño es cómodo; nada aparece recortado ni pegado a los bordes | |
-| 2 | Brazo abre igual | |
-| 3 | Separador abre igual | |
-| 4 | Tensor abre igual | |
-| 5 | Al reducir cualquiera de las cuatro hasta su tamaño mínimo, siguen viéndose **enteros** el diagnóstico, la receta y los cuatro botones | |
-| 6 | El preview sigue dibujando lo mismo que antes en las tres vistas | |
-| 7 | La receta (lista de materiales de la pieza) sigue diciendo lo mismo | |
-| 8 | Cambiar secciones y parámetros sigue recalculando preview, diagnóstico y receta | |
-| 9 | `Restaurar` vuelve a los valores con que se abrió la ventana | |
-| 10 | `Aceptar` devuelve la pieza editada a la línea, como antes | |
-| 11 | `Cancelar` y `Escape` cierran sin aplicar, como antes | |
-| 12 | Al abrir, el cursor está en el primer campo de captura y **no** en un botón | |
+| 1 | Columna y base abre y su tamaño es cómodo; nada aparece recortado ni pegado a los bordes | APROBADO |
+| 2 | Brazo abre igual | APROBADO |
+| 3 | Separador abre igual | APROBADO |
+| 4 | Tensor abre igual | APROBADO |
+| 5 | Al reducir cualquiera de las cuatro hasta su tamaño mínimo, siguen viéndose **enteros** el diagnóstico, la receta y los cuatro botones | APROBADO |
+| 6 | El preview sigue dibujando lo mismo que antes en las tres vistas | APROBADO |
+| 7 | La receta (lista de materiales de la pieza) sigue diciendo lo mismo | APROBADO |
+| 8 | Cambiar secciones y parámetros sigue recalculando preview, diagnóstico y receta | APROBADO |
+| 9 | `Restaurar` vuelve a los valores con que se abrió la ventana | APROBADO |
+| 10 | `Aceptar` devuelve la pieza editada a la línea, como antes | APROBADO |
+| 11 | `Cancelar` y `Escape` cierran sin aplicar, como antes | APROBADO |
+| 12 | Al abrir, el cursor está en el primer campo de captura y **no** en un botón | APROBADO |
 
 ### B. `Insertar sólo esta pieza`
 
 | # | Punto | Resultado |
 |---|---|---|
-| 13 | En columna-base y brazo, con la pieza resuelta, `Insertar` está **activo** e inserta como antes | |
-| 14 | En columna-base y brazo, con la pieza **sin resolver**, `Insertar` está **apagado** y al pasar el ratón dice por qué | |
-| 15 | En el separador y el tensor **sin línea resuelta**, `Insertar` está **apagado** y dice que hay que resolver la línea primero | |
-| 16 | En el separador y el tensor **con línea resuelta**, `Insertar` está activo e inserta como antes | |
-| 17 | `Aceptar` sigue activo en todos los casos anteriores | |
+| 13 | En columna-base y brazo, con la pieza resuelta, `Insertar` está **activo** e inserta como antes | APROBADO |
+| 14 | En columna-base y brazo, con la pieza **sin resolver**, `Insertar` está **apagado** y al pasar el ratón dice por qué | APROBADO |
+| 15 | En el separador y el tensor **sin línea resuelta**, `Insertar` está **apagado** y dice que hay que resolver la línea primero | APROBADO |
+| 16 | En el separador y el tensor **con línea resuelta**, `Insertar` está activo e inserta como antes | APROBADO |
+| 17 | `Aceptar` sigue activo en todos los casos anteriores | APROBADO |
 
 ### C. Larguero (menú principal `RACKCAD` → «Larguero»; no tiene comando propio)
 
 | # | Punto | Resultado |
 |---|---|---|
-| 18 | La ventana abre con el nuevo aspecto y el cursor está en **Nombre** | |
-| 19 | Los cinco campos están y funcionan: nombre, perfil, peralte, longitud, ménsula | |
-| 20 | Elegir un perfil actualiza la lista de peraltes | |
-| 21 | El esquema del preview se ve **claro y legible**, con sus rótulos | |
-| 22 | Cambiar longitud redibuja el esquema; una longitud inválida lo rotula «(longitud)» | |
-| 23 | `Ver lista de materiales` abre el BOM en su ventana, con el mismo contenido | |
-| 24 | `Guardar en biblioteca` guarda y lo dice en la línea de estado | |
-| 25 | Sin perfil o con longitud cero, guardar avisa en la línea de estado y no guarda | |
-| 26 | Abrir un larguero **guardado** desde la biblioteca lo recarga con sus valores | |
-| 27 | `Cerrar` y `Escape` cierran | |
+| 18 | La ventana abre con el nuevo aspecto y el cursor está en **Nombre** | APROBADO |
+| 19 | Los cinco campos están y funcionan: nombre, perfil, peralte, longitud, ménsula | APROBADO |
+| 20 | Elegir un perfil actualiza la lista de peraltes | APROBADO |
+| 21 | El esquema del preview se ve **claro y legible**, con sus rótulos | APROBADO |
+| 22 | Cambiar longitud redibuja el esquema; una longitud inválida lo rotula «(longitud)» | APROBADO |
+| 23 | `Ver lista de materiales` abre el BOM en su ventana, con el mismo contenido | APROBADO |
+| 24 | `Guardar en biblioteca` guarda y lo dice en la línea de estado | APROBADO |
+| 25 | Sin perfil o con longitud cero, guardar avisa en la línea de estado y no guarda | APROBADO |
+| 26 | Abrir un larguero **guardado** desde la biblioteca lo recarga con sus valores | APROBADO |
+| 27 | `Cerrar` y `Escape` cierran | APROBADO |
 
 ### D. Inspector de secciones estructurales (`RACKSECCION`)
 
 | # | Punto | Resultado |
 |---|---|---|
-| 28 | Abre con el mismo tamaño de siempre y el cursor en la caja de búsqueda | |
-| 29 | Buscar, filtrar por familia y elegir una sección funcionan como antes | |
-| 30 | Con una sección elegida, `Insertar` está activo e inserta como antes | |
-| 31 | Con una búsqueda que no encuentra nada, `Insertar` está **apagado** y dice que elijas una sección | |
-| 32 | Una longitud inválida **no** apaga `Insertar`: el campo avisa y se conserva el último valor válido | |
-| 33 | `Enter` sigue disparando `Insertar` y `Escape` sigue cerrando | |
-| 34 | Los dos botones se ven con el estilo del resto de la aplicación | |
+| 28 | Abre con el mismo tamaño de siempre y el cursor en la caja de búsqueda | APROBADO |
+| 29 | Buscar, filtrar por familia y elegir una sección funcionan como antes | APROBADO |
+| 30 | Con una sección elegida, `Insertar` está activo e inserta como antes | APROBADO |
+| 31 | Con una búsqueda que no encuentra nada, `Insertar` está **apagado** y dice que elijas una sección | APROBADO |
+| 32 | Una longitud inválida **no** apaga `Insertar`: el campo avisa y se conserva el último valor válido | APROBADO |
+| 33 | `Enter` sigue disparando `Insertar` y `Escape` sigue cerrando | APROBADO |
+| 34 | Los dos botones se ven con el estilo del resto de la aplicación | APROBADO |
 
 ### E. Regresión de la línea Cantilever completa
 
 | # | Punto | Resultado |
 |---|---|---|
-| 35 | Crear una línea Cantilever de principio a fin dibuja lo mismo que antes | |
-| 36 | Editar una línea existente por su GUID sigue funcionando | |
-| 37 | El BOM de la línea sigue dando los mismos totales | |
+| 35 | Crear una línea Cantilever de principio a fin dibuja lo mismo que antes | APROBADO |
+| 36 | Editar una línea existente por su GUID sigue funcionando | APROBADO |
+| 37 | El BOM de la línea sigue dando los mismos totales | APROBADO |
 
 ## Veredicto
 
 | Campo | Valor |
 |---|---|
-| Fecha | |
-| Validador | |
-| Resultado global | |
-| Observaciones | |
+| Fecha | 2026-08-07 |
+| Validador | dueño del repositorio |
+| Resultado global | **APROBADO** — 37 de 37 puntos |
+| Observaciones | ninguna |
 
-**Token de aprobación**: `OWNER_APPROVED_I39C_MANUAL_VALIDATION` (solo si **todos** los puntos se cumplen).
+**Token de aprobación emitido**: `OWNER_APPROVED_I39C_MANUAL_VALIDATION`.

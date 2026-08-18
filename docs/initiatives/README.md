@@ -696,7 +696,8 @@ Planes disponibles:
   [`../automation/state/I-39B.yml`](../automation/state/I-39B.yml).
 - [`I-39C-adopcion-editores-acotados.md`](I-39C-adopcion-editores-acotados.md): **adopcion del contrato
   funcional comun en los editores acotados** (tipo: architecture; rama
-  `architecture/adopcion-editores-acotados`) · **en curso**, reclamada el 2026-08-07. Tercera
+  `architecture/adopcion-editores-acotados`) · **INTEGRADA en `main` el 2026-08-07**, con la validacion
+  manual del Owner APROBADA en sus 37 puntos (`OWNER_APPROVED_I39C_MANUAL_VALIDATION`). Tercera
   subiniciativa de **I-39**, que **NO queda cerrada** con ella: falta I-39D. Cierra el **arquetipo B**
   completo. Caracteriza sus **seis** ventanas antes de migrarlas, donde hoy solo existe la del piloto de
   I-39A y la cobertura vigente de los componentes Cantilever es **funcional** y no toca ninguna dimension
@@ -713,7 +714,10 @@ Planes disponibles:
   dialogos y las seis utilitarias con `RackDialogWindow` (I-39D), geometria, BOM, persistencia,
   catalogos, Plugin y cualquier paquete NuGet. `requires_autocad: true`,
   `requires_owner_validation: true`. Estado versionado en
-  [`../automation/state/I-39C.yml`](../automation/state/I-39C.yml).
+  [`../automation/state/I-39C.yml`](../automation/state/I-39C.yml). Desviacion explicita y medida:
+  `EditorActionBar` **no** se adopta en el arquetipo B, porque sus dos aportaciones --las cuatro
+  categorias neutrales y la envoltura que no recorta-- ya las resuelve el `DockPanel` que las cuatro
+  ventanas Cantilever tienen; su papel en C y D lo decide I-39D.
 - I-13 conserva su evidencia detallada en `archive/i-13-experiment-final-4e084d2`; su promocion fue
   revalidada, autorizada e integrada en `main` el 2026-07-20.
 - [`I-29-licencia-procedencia-autocad-ci.md`](I-29-licencia-procedencia-autocad-ci.md): iniciativa

@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-39C
 title: Adopcion del contrato funcional comun en los editores acotados
 type: architecture
-status: implementing
+status: integrated
 branch: architecture/adopcion-editores-acotados
 base_branch: main
 priority:
@@ -256,3 +256,30 @@ regresión de que la línea Cantilever completa sigue dibujando lo mismo.
 
 `docs/automation/state/I-39C.yml`, `schema: rackcad-automation-state/v1`. El agente nunca hace merge
 automático; la integración es una sesión separada y autorizada.
+
+## 14. Evidencia final
+
+**I-39C queda INTEGRADA en `main` el 2026-08-07** por `git merge --no-ff`, sin squash, después de que el
+Owner aprobara los **37 puntos** del checklist (`OWNER_APPROVED_I39C_MANUAL_VALIDATION`) sobre el
+candidato `2401698a5801a01f3497b3bb27027f801b91960e`, con CI verde 4/4 (run `31223039489`).
+
+- **Base vs contrato**: [`I-39C-caracterizacion-base-vs-contrato.md`](../automation/evidence/I-39C-caracterizacion-base-vs-contrato.md)
+  — las **diez** caracterizaciones que cambiaron, conservadas con `Skip` como evidencia versionada.
+- **Decisiones técnicas**: [`I-39C-decisiones-tecnicas.md`](../automation/evidence/I-39C-decisiones-tecnicas.md)
+- **Validación manual**: [`I-39C-checklist-validacion-manual.md`](../automation/evidence/I-39C-checklist-validacion-manual.md)
+- **Estado versionado**: [`I-39C.yml`](../automation/state/I-39C.yml)
+
+`origin/main` **no avanzó** desde la base `da3cd4a`: sin rebase, el árbol validado es el integrado.
+`main` no fue modificada en ninguna sesión anterior a la de integración.
+
+**Alcance interno CERRADO, sin nada diferido.** Las cuatro deudas que I-39A e I-39B asignaron a esta
+subiniciativa tienen conclusión, y las cinco dimensiones del contrato —acciones con motivo, entrada
+inválida, foco inicial, preview y cierre— quedan medidas y probadas.
+
+**Desviación explícita vigente y medida**: `EditorActionBar` **no** se adopta en el arquetipo B. Sus dos
+aportaciones —las cuatro categorías neutrales y el envoltorio que no recorta— ya las resuelve el
+`DockPanel` que las cuatro ventanas Cantilever tienen, y la prueba de mínimo demuestra que no recorta.
+Su papel en los arquetipos **C** y **D** lo decide I-39D.
+
+**Fuera por exclusión previa**: los arquetipos **C** y **D** completos, incluido el papel final de
+`RackDialogWindow`, que sigue sin una sola subclase productiva. Son I-39D, con la que **se cerrará I-39**.

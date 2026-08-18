@@ -4,13 +4,13 @@ automation_state:
   branch: architecture/adopcion-editores-acotados
   claim_id: 611ca9e5-4734-4615-a008-21d3e69338f8
   current_phase: 8
-  state: validating
-  gate: owner-manual-validation
+  state: integration-ready
+  gate: none
   attempts: 0
   next_action: >-
-    VALIDACION-MANUAL-DEL-OWNER-EN-AUTOCAD-2025 ·
-    alcance-interno-CERRADO-sin-nada-diferido · sin-esa-aprobacion-no-se-integra
-  last_evidence_commit: bdcb4a2
+    integrar-en-main-por-merge-no-ff-sin-squash-desde-el-worktree-principal ·
+    gates-post-merge-SOBRE-MAIN · limpieza-segura-solo-tras-confirmar-el-merge
+  last_evidence_commit: f4ed2c920b32c7635e60b8ce5d24924a21e34b10
 
 # --------------------------------------------------------------------------------------------------------
 # PREFLIGHT
@@ -65,16 +65,19 @@ alcance:
 gates:
   owner_validation:
     required: true
-    status: pending
+    status: approved
+    date: 2026-08-07
+    veredicto: OWNER_APPROVED_I39C_MANUAL_VALIDATION
+    sha_tecnico_validado: 2401698a5801a01f3497b3bb27027f801b91960e
+    puntos: 37-de-37-APROBADOS-sin-observaciones-y-sin-rondas-rechazadas
     checklist: docs/automation/evidence/I-39C-checklist-validacion-manual.md
-    puntos: 37
     note: >-
       I-39C-cambia-el-TAMANO-OBSERVABLE-de-cinco-ventanas-de-produccion ·
       migra-el-Larguero-de-contenedor · apaga-Insertar-con-motivo-en-cinco ·
       declara-foco-inicial-en-seis
   autocad:
     required: true
-    status: pending
+    status: approved
   ci_del_candidato: VERDE-4-de-4-run-31223039489-sobre-2401698
   candidato: 2401698a5801a01f3497b3bb27027f801b91960e
   dll_sha256: 2919499780D6EA22C4A99AFBBCB596ADE632F0569B59B2D6DE1BF32C994749DB
