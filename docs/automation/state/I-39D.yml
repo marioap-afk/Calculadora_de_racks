@@ -3,12 +3,13 @@ automation_state:
   initiative: I-39D
   branch: architecture/dialogos-y-utilitarias
   claim_id: d0adcb2c-336e-4b24-82cc-1999ff80ec30
-  current_phase: 1
-  state: implementing
-  gate: none
+  current_phase: 7
+  state: validating
+  gate: owner-validation
   attempts: 0
   next_action: >-
-    caracterizar-las-dieciseis-ventanas-de-C-y-D-antes-de-tocar-ADR-0029-D13
+    VALIDACION-MANUAL-DEL-OWNER-EN-AUTOCAD-2025 ·
+    alcance-interno-CERRADO-sin-nada-diferido · sin-esa-aprobacion-no-se-integra
   last_evidence_commit: pendiente
 
 # --------------------------------------------------------------------------------------------------------
@@ -79,6 +80,8 @@ gates:
   owner_validation:
     required: true
     status: pending
+    checklist: docs/automation/evidence/I-39D-checklist-validacion-manual.md
+    puntos: 24-agrupados-por-familia-no-ventana-a-ventana
     note: >-
       I-39D-cambia-chrome-ubicacion-paleta-de-estado-y-foco-en-ventanas-de-produccion
   autocad:
@@ -96,3 +99,40 @@ integracion:
   merge: no-ff-sin-squash-sin-force-desde-el-worktree-principal
   limpieza: solo-tras-confirmar-el-merge-y-el-push-de-main
   cierre_de_la_linea: con-I-39D-integrada-se-cierra-la-iniciativa-paraguas-I-39
+
+# --------------------------------------------------------------------------------------------------------
+# CIERRE DEL ALCANCE INTERNO. Ninguno queda diferido sin conclusion.
+# --------------------------------------------------------------------------------------------------------
+conclusiones:
+  caracterizacion: >-
+    HECHA-las-dieciseis-construidas-por-primera-vez ·
+    corrigio-CINCO-afirmaciones-de-la-auditoria-que-se-hizo-leyendo
+  rackdialogwindow: >-
+    RETIRADO-tras-medir-que-encaja-en-cuatro-de-diez-y-no-en-seis ·
+    chrome-a-DialogWindowChrome-mas-DialogWindowStyle-adoptado-por-composicion-por-nueve ·
+    barra-a-EditorActions-Button-porque-era-un-MODELO-PARALELO-que-la-decision-28-prohibe ·
+    censo-de-29-a-28-y-guarda-REAPUNTADA-no-debilitada
+  chrome_de_C: UNA-sola-fuente-para-las-nueve-completas-con-diff-visual-vacio-medido
+  tamano: >-
+    tokenizado-SOLO-donde-converge-de-verdad-dos-ventanas-y-tres-minimos ·
+    el-arquetipo-C-sigue-SIN-contrato-de-tamano-a-proposito
+  editor_actions: ADOPTADO-en-las-dos-de-almacen-conservando-etiqueta-metrica-teclado-y-resultado
+  editor_action_bar: >-
+    NO-se-adopta-con-motivo-medido ·
+    su-orden-fijo-invertiria-primaria-y-secundaria-en-tres-utilitarias-de-D
+  observable_corregido: >-
+    fondo-de-SafetyDefensaGridWindow · motivo-de-bloqueo-legible-en-la-barra-masiva ·
+    diagnostico-obsoleto-que-se-limpia-al-revalidar
+  decisiones_que_quedan_al_Owner: >-
+    ubicacion-de-las-cinco-sin-padre-WPF · paleta-del-diagnostico · foco-inicial-de-las-cuatro-rejillas ·
+    ninguna-corrige-un-defecto-observado-y-por-eso-no-se-hicieron
+
+caracterizacion_previa:
+  inmutable: si
+  cuatro_con_skip: >-
+    conservadas-intactas-como-evidencia-versionada-y-contrato-nuevo-en-clase-separada ·
+    la-base-corria-en-verde-en-f6c4d12
+  dos_transcritas: >-
+    las-de-RackDialogWindow-NO-pueden-conservarse-con-Skip-porque-una-prueba-omitida-sigue-teniendo-que-COMPILAR ·
+    su-cuerpo-se-transcribe-palabra-por-palabra-en-la-evidencia
+  documentadas_en: docs/automation/evidence/I-39D-caracterizacion-base-vs-contrato.md
