@@ -40,12 +40,139 @@ namespace RackCad.Application.Systems.PushBack
                 .Select(Clone)
                 .ToList();
 
+            // I-42: un rack COMPUESTO cuenta EJECUCIONES fisicas de cama, no celdas de una rejilla. Dos camas
+            // encontradas son dos; una cama corrida es UNA, aunque atraviese los dos lados. La estructura ya viene
+            // del BOM compartido de arriba —cabeceras, separadores (el central incluido, una sola vez), postes
+            // derivados, placas y seguridad—, asi que no hay nada que deduplicar despues: el plan ya es correcto.
+            if (system.IsComposite)
+            {
+                var runs = PushBackRuns.Resolve(system);
+                AddRunEndBeams(components, system, catalog, runs, SystemBomBuilder.InOutBeam, isHighEnd: false);
+                AddRunEndBeams(components, system, catalog, runs, HighEndBeam, isHighEnd: true);
+                AddRunBeds(components, runs);
+                AddRunRearTopes(components, system, catalog, runs);
+                return new BillOfMaterials(components);
+            }
+
             AddEndBeams(components, system, catalog, SystemBomBuilder.InOutBeam, isHighEnd: false);
             AddEndBeams(components, system, catalog, HighEndBeam, isHighEnd: true);
             AddBeds(components, system);
             AddRearTopes(components, system, catalog);
 
             return new BillOfMaterials(components);
+        }
+
+        /// <summary>
+        /// I-42 — un larguero bajo y uno alto POR CAMA FISICA. Los valores se leen en el marco de la cama (el del
+        /// lado o el sintetico de la corrida), que es donde el resolver ya los dejo resueltos.
+        /// </summary>
+        private static void AddRunEndBeams(
+            ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog,
+            PushBackRunSet runs, string category, bool isHighEnd)
+        {
+            var highId = string.IsNullOrWhiteSpace(system.HighEndBeamCatalogId)
+                ? PushBackDefaults.HighEndBeamCatalogId
+                : system.HighEndBeamCatalogId;
+            var grouped = new Dictionary<(string BeamId, double Length, double Peralte), int>();
+
+            foreach (var run in runs.Runs)
+            {
+                var front = run.Front();
+                var source = run.Source?.Structure;
+                if (front == null || source == null)
+                {
+                    continue;
+                }
+
+                var length = PushBackLoadBeamGeometry.CellBeamLength(source, front, run.SourceLevel);
+                string beamId;
+                double peralte;
+                if (isHighEnd)
+                {
+                    beamId = highId;
+                    peralte = run.Source.HighEndBeamPeralteAt(run.SourceFrontIndex, run.SourceLevel - 1);
+                }
+                else
+                {
+                    var configuration = DynamicRackLevelGeometry.At(source, front, run.SourceLevel);
+                    beamId = string.IsNullOrWhiteSpace(configuration.InOutBeamCatalogId)
+                        ? (string.IsNullOrWhiteSpace(source.InOutBeamCatalogId)
+                            ? DynamicRackDefaults.InOutBeamCatalogId
+                            : source.InOutBeamCatalogId)
+                        : configuration.InOutBeamCatalogId;
+                    peralte = configuration.InOutBeamDepth > 0.0 ? configuration.InOutBeamDepth : source.InOutBeamDepth;
+                }
+
+                var key = (beamId, Round(length), Round(peralte));
+                grouped[key] = grouped.TryGetValue(key, out var current) ? current + 1 : 1;
+            }
+
+            EmitBeams(components, catalog, grouped, category);
+        }
+
+        /// <summary>
+        /// I-42 — UNA cama por ejecucion fisica y calle. La corrida aporta una sola, de la longitud del rack
+        /// entero; las encontradas aportan dos, cada una con su propia longitud.
+        /// </summary>
+        private static void AddRunBeds(ICollection<BomComponent> components, PushBackRunSet runs)
+        {
+            var grouped = new Dictionary<double, int>();
+            foreach (var run in runs.Runs)
+            {
+                var front = run.Front();
+                if (front == null)
+                {
+                    continue;
+                }
+
+                var length = Round(PushBackCellDepth.BedLength(run.Source, front, run.SourceLevel));
+                if (length <= 0.0)
+                {
+                    continue;
+                }
+
+                var lanes = Math.Max(1, front.PalletCount);
+                grouped[length] = grouped.TryGetValue(length, out var current) ? current + lanes : lanes;
+            }
+
+            EmitBeds(components, grouped);
+        }
+
+        /// <summary>
+        /// I-42 — como mucho UN tope por cama fisica, y solo en su extremo ALTO. Encontradas admiten dos topes
+        /// independientes (uno por cama); una corrida admite exactamente uno, del lado que sea su extremo alto.
+        /// </summary>
+        private static void AddRunRearTopes(
+            ICollection<BomComponent> components, PushBackSystem system, RackCatalog catalog, PushBackRunSet runs)
+        {
+            var reference = system.RearTope ?? new PushBackRearTopeConfig();
+            var topeId = PushBackRearTopeBuilder.ResolvePieceId(catalog, reference);
+            var label = catalog?.SafetyElements?.FirstOrDefault(entry =>
+                string.Equals(entry?.Id, topeId, StringComparison.OrdinalIgnoreCase))?.Label ?? topeId;
+
+            var grouped = new Dictionary<double, int>();
+            foreach (var run in runs.Runs)
+            {
+                var front = run.Front();
+                var source = run.Source?.Structure;
+                if (front == null || source == null)
+                {
+                    continue;
+                }
+
+                var tope = run.Source.RearTope ?? new PushBackRearTopeConfig();
+                if (!tope.At(run.SourceFrontIndex, run.SourceLevel - 1))
+                {
+                    continue;
+                }
+
+                var length = Round(
+                    PushBackLoadBeamGeometry.CellBeamLength(source, front, run.SourceLevel)
+                    + SelectiveTopePlacement.LengthAllowance);
+                grouped[length] = grouped.TryGetValue(length, out var current) ? current + 1 : 1;
+            }
+
+            EmitTopes(components, grouped, topeId, label);
         }
 
         /// <summary>
@@ -89,6 +216,20 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            EmitBeams(components, catalog, grouped, category);
+        }
+
+        /// <summary>
+        /// La emision de los largueros de extremo agrupados. Vive en UN sitio: el camino de un solo sentido y el
+        /// compuesto solo se diferencian en COMO se cuentan (celdas de un frente frente a camas fisicas), nunca en
+        /// como se describen ni como se agrupan.
+        /// </summary>
+        private static void EmitBeams(
+            ICollection<BomComponent> components,
+            RackCatalog catalog,
+            Dictionary<(string BeamId, double Length, double Peralte), int> grouped,
+            string category)
+        {
             foreach (var group in grouped.OrderBy(g => g.Key.BeamId, StringComparer.OrdinalIgnoreCase).ThenBy(g => g.Key.Length).ThenBy(g => g.Key.Peralte))
             {
                 var label = catalog?.BeamProfiles?.FirstOrDefault(entry => string.Equals(entry?.Id, group.Key.BeamId, StringComparison.OrdinalIgnoreCase))?.Label ?? group.Key.BeamId;
@@ -130,6 +271,12 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            EmitBeds(components, grouped);
+        }
+
+        /// <summary>La emision de las camas agrupadas por longitud, compartida por los dos caminos.</summary>
+        private static void EmitBeds(ICollection<BomComponent> components, Dictionary<double, int> grouped)
+        {
             foreach (var group in grouped.OrderBy(g => g.Key))
             {
                 components.Add(new BomComponent
@@ -170,6 +317,13 @@ namespace RackCad.Application.Systems.PushBack
                 }
             }
 
+            EmitTopes(components, grouped, topeId, label);
+        }
+
+        /// <summary>La emision de los topes agrupados por longitud, compartida por los dos caminos.</summary>
+        private static void EmitTopes(
+            ICollection<BomComponent> components, Dictionary<double, int> grouped, string topeId, string label)
+        {
             foreach (var group in grouped.OrderBy(g => g.Key))
             {
                 components.Add(new BomComponent

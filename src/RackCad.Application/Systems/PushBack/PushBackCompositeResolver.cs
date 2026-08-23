@@ -97,21 +97,52 @@ namespace RackCad.Application.Systems.PushBack
             var localDesign = new PushBackDesign
             {
                 Structure = PushBackCompositeStructure.SideStructuralDesign(design, side, modules),
-                LegacyHighEndBeamPeralte = side.LegacyHighEndBeamPeralte,
-                RearTope = side.RearTope?.DeepCopy() ?? new PushBackRearTopeConfig()
+                LegacyHighEndBeamPeralte = side.LegacyHighEndBeamPeralte
             };
 
             // La configuracion Push Back del lado viaja SOLO para las ranuras presentes, en el mismo orden en que
-            // SideStructuralDesign las apilo: asi el resolver de un lado sigue siendo el de siempre.
+            // SideStructuralDesign las apilo: asi el resolver de un lado sigue siendo el de siempre. La rejilla de
+            // topes se RE-INDEXA a la vez, porque esta escrita en ranuras compartidas y el sistema local numera solo
+            // las presentes: sin ese puente, un rack con una ranura ausente desactivaria el tope equivocado.
+            var localIndexBySlot = new Dictionary<int, int>();
             for (var slot = 0; slot < side.SlotCount; slot++)
             {
-                if (side.Front(slot) != null)
+                if (side.Front(slot) == null)
                 {
-                    localDesign.Fronts.Add(side.Config(slot)?.DeepCopy() ?? new PushBackFrontConfig());
+                    continue;
+                }
+
+                localIndexBySlot[slot] = localDesign.Fronts.Count;
+                localDesign.Fronts.Add(side.Config(slot)?.DeepCopy() ?? new PushBackFrontConfig());
+            }
+
+            localDesign.RearTope = ReindexTope(side.RearTope, localIndexBySlot);
+            return resolveSide(localDesign);
+        }
+
+        /// <summary>
+        /// La rejilla de topes de un lado, re-escrita de ranuras COMPARTIDAS a indices del sistema LOCAL. Una
+        /// desactivacion de una ranura que no existe en el lado se descarta: no tiene tope al que apagar, y
+        /// arrastrarla movería la desactivacion a otra ranura.
+        /// </summary>
+        private static PushBackRearTopeConfig ReindexTope(
+            PushBackRearTopeConfig source, IReadOnlyDictionary<int, int> localIndexBySlot)
+        {
+            var result = new PushBackRearTopeConfig
+            {
+                Saque = source?.Saque ?? PushBackDefaults.RearTopeSaque,
+                PieceId = source?.PieceId
+            };
+
+            foreach (var cell in source?.OffCells ?? new List<RackCad.Domain.Systems.Selective.SelectiveGridCell>())
+            {
+                if (cell != null && localIndexBySlot.TryGetValue(cell.Frente, out var local))
+                {
+                    result.Disable(local, cell.Level);
                 }
             }
 
-            return resolveSide(localDesign);
+            return result;
         }
 
         private static PushBackSideSystem BuildSide(
