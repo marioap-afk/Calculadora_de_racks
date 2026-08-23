@@ -122,14 +122,28 @@ namespace RackCad.Application.Systems.Shared
                 isPhysicallyPresent);
         }
 
-        /// <summary>Describe one editable module intent (no resolved coordinates, so X reads as zero).</summary>
-        public static RackModuleDescriptor From(DynamicRackModuleDesign design)
+        /// <summary>Describe one editable module intent, standalone (no position in a sequence, so the ordinal
+        /// reads as zero). Prefer <see cref="Describe(IEnumerable{DynamicRackModuleDesign})"/>, which numbers each
+        /// intent by its place in the longitudinal sequence.</summary>
+        public static RackModuleDescriptor From(DynamicRackModuleDesign design) => From(design, 0);
+
+        /// <summary>
+        /// Describe one editable module intent at its ORDINAL in the sequence (no resolved coordinates, so X reads
+        /// as zero).
+        /// <para>
+        /// The ordinal has to be supplied because an intent, unlike a resolved <see cref="DynamicRackModule"/>,
+        /// carries no <c>Index</c> of its own. Numbering every intent 1 is not a cosmetic detail: the module
+        /// selector and the «Copiar de:» list of Push Back are labelled from it, and a list where every cabecera
+        /// reads «1. Cabecera» cannot be used to pick one (I-40).
+        /// </para>
+        /// </summary>
+        public static RackModuleDescriptor From(DynamicRackModuleDesign design, int index)
         {
             if (design == null) throw new ArgumentNullException(nameof(design));
 
             return new RackModuleDescriptor(
                 design.ModuleId,
-                0,
+                index,
                 design.Kind,
                 design.Length,
                 0.0,
@@ -180,11 +194,11 @@ namespace RackCad.Application.Systems.Shared
             return positions;
         }
 
-        /// <summary>Describe every module intent, in longitudinal order.</summary>
+        /// <summary>Describe every module intent, in longitudinal order and NUMBERED by that order.</summary>
         public static IReadOnlyList<RackModuleDescriptor> Describe(IEnumerable<DynamicRackModuleDesign> designs)
             => (designs ?? Enumerable.Empty<DynamicRackModuleDesign>())
                 .Where(design => design != null)
-                .Select(From)
+                .Select((design, index) => From(design, index))
                 .ToList();
     }
 }

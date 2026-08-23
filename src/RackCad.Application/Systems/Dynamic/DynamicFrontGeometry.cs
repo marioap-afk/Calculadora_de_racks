@@ -206,6 +206,18 @@ namespace RackCad.Application.Systems.Dynamic
             int postIndex)
         {
             var configuration = module?.AssociatedFrameConfiguration;
+
+            // I-40 — la LINEA fisica manda sobre el modulo. Esta funcion es el UNICO sitio que decide que
+            // configuracion usa una cabecera en una linea, y la consumen la geometria lateral, el BOM y el preview,
+            // asi que el override llega a los tres por construccion (AGENTS: la regla vive en una sola funcion).
+            // Sin overrides —cualquier rack anterior, y todo el Dinamico— esta busqueda no encuentra nada y el
+            // comportamiento es identico al de siempre.
+            var line = LineOverride(system, module, postIndex);
+            if (line != null)
+            {
+                return line;
+            }
+
             if (configuration == null || !module.UseCalculatedHeaderConfiguration)
             {
                 return configuration;
@@ -224,6 +236,124 @@ namespace RackCad.Application.Systems.Dynamic
                 height,
                 module.Length,
                 system.PostPeralte);
+        }
+
+        /// <summary>
+        /// The per-LINE cabecera configuration of a module, or null when that line uses the module's own. Matching is
+        /// exact on <c>PostIndex</c> + <c>ModuleId</c>, the same identity the module reconciliation uses.
+        /// </summary>
+        public static RackFrameConfiguration LineOverride(
+            DynamicRackSystem system,
+            DynamicRackModule module,
+            int postIndex)
+        {
+            if (system == null || module == null || system.HeaderLineOverrides.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (var candidate in system.HeaderLineOverrides)
+            {
+                if (candidate?.Header != null
+                    && candidate.PostIndex == postIndex
+                    && string.Equals(candidate.ModuleId, module.ModuleId, StringComparison.Ordinal))
+                {
+                    return candidate.Header;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// The LONGITUD the derived posts of one physical line take (I-40). The line's own value wins; otherwise the
+        /// rack-wide one; otherwise <paramref name="inheritedHeight"/>, which is the cabecera height the derived post
+        /// has always inherited. Single authority: the lateral geometry and the BOM both read it.
+        /// </summary>
+        public static double DerivedPostHeightAtPost(
+            DynamicRackSystem system,
+            int postIndex,
+            double inheritedHeight)
+        {
+            if (system != null)
+            {
+                foreach (var candidate in system.DerivedPostLineOverrides)
+                {
+                    if (candidate != null && candidate.PostIndex == postIndex && candidate.Height > 0.0)
+                    {
+                        return candidate.Height;
+                    }
+                }
+
+                if (system.DerivedPostHeight.HasValue && system.DerivedPostHeight.Value > 0.0)
+                {
+                    return system.DerivedPostHeight.Value;
+                }
+            }
+
+            return inheritedHeight;
+        }
+
+        /// <summary>
+        /// The cabecera one physical LINE presents to the FRONTAL or the REAR view (I-40, decision del Owner).
+        ///
+        /// <para>
+        /// La frontal y la posterior son VISTAS DE CORTE, no envolventes: la frontal corta por la PRIMERA cabecera
+        /// longitudinal del rack —la del extremo bajo, la del pasillo— y la posterior por la ULTIMA. Mirando el rack
+        /// de frente se tiene delante esa cabecera y ninguna otra, asi que una cabecera mas alta en OTRA posicion
+        /// longitudinal no puede dominar la vista.
+        /// </para>
+        ///
+        /// <para>
+        /// Los dos ejes NO se mezclan: <paramref name="end"/> elige QUE cabecera se tiene delante (eje longitudinal)
+        /// y <paramref name="postIndex"/> elige de QUE linea es el poste que se dibuja (eje transversal). La
+        /// configuracion sale de <see cref="HeaderConfigurationAtPost"/>, la misma autoridad que gobiernan las
+        /// personalizaciones por linea y que consumen la geometria lateral y el BOM.
+        /// </para>
+        /// </summary>
+        public static double HeaderHeightAtPost(
+            DynamicRackSystem system,
+            RackCatalog catalog,
+            int postIndex,
+            DynamicRackEnd end)
+        {
+            var configuration = HeaderConfigurationAtCut(system, catalog, postIndex, end);
+            return configuration != null && configuration.Height > 0.0
+                ? configuration.Height
+                : PostHeight(system, postIndex);
+        }
+
+        /// <summary>
+        /// The configuration of the cabecera this CUT shows on that line: the FIRST header module of the line's
+        /// depth range for the low end (frontal), the LAST for the high end (posterior). Null when the line carries
+        /// no cabecera with a configuration.
+        /// </summary>
+        public static RackFrameConfiguration HeaderConfigurationAtCut(
+            DynamicRackSystem system,
+            RackCatalog catalog,
+            int postIndex,
+            DynamicRackEnd end)
+        {
+            if (system == null)
+            {
+                return null;
+            }
+
+            var range = DynamicDepthGeometry.AtPost(system, postIndex);
+            var headers = system.Modules
+                .Where(module => module != null && module.IsHeader && range.Contains(module.Index + 1))
+                .OrderBy(module => module.Index)
+                .ToList();
+
+            if (headers.Count == 0)
+            {
+                return null;
+            }
+
+            // Exit = extremo BAJO (entrada/salida, el del pasillo) ⇒ la PRIMERA cabecera longitudinal.
+            // Entrance = extremo ALTO (posterior) ⇒ la ULTIMA.
+            var module = end == DynamicRackEnd.Entrance ? headers[headers.Count - 1] : headers[0];
+            return HeaderConfigurationAtPost(system, module, catalog, postIndex);
         }
 
         /// <summary>Number of load levels visible at one post section: the tallest adjacent front owns the cut.</summary>

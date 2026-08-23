@@ -40,6 +40,15 @@ namespace RackCad.Application.Systems.PushBack
         /// <summary>Reinforcement length. Null = full height of the derived post; a value = partial, from the base up.</summary>
         public double? DerivedPostReinforcementHeight { get; set; }
 
+        /// <summary>
+        /// I-40 (Owner): ALTURA del poste derivado. Vacio = la altura de la cabecera, que es lo que el poste
+        /// derivado heredaba y sigue heredando cuando nadie la fija — un rack antiguo se comporta exactamente igual.
+        /// Es hermana de <see cref="DerivedPostReinforcementHeight"/> y vive en el mismo sitio: el poste derivado es
+        /// del RACK, no de una cabecera.
+        /// </summary>
+        public double? DerivedPostHeight { get; set; }
+
+
         /// <summary>Separator count per cabecera. Null = the standard calculation.</summary>
         public int? SeparatorCountOverride { get; set; }
 

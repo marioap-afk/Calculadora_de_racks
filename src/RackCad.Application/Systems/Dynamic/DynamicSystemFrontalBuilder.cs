@@ -78,7 +78,13 @@ namespace RackCad.Application.Systems.Dynamic
                     ConnectionAnchor = origin,
                     Insertion = origin
                 };
-                post.DynamicParameters[SelectiveRackDefaults.LengthParam] = DynamicFrontGeometry.PostHeight(system, postIndex);
+                // I-40 (Owner) — esta vista es un CORTE, no una envolvente. La ronda 5 hizo que leyera la
+                // configuracion de la cabecera (antes usaba PostHeight, un derivado que la ignoraba), pero tomando
+                // la MAS ALTA de la linea; el Owner precisó que la frontal corta por la PRIMERA cabecera
+                // longitudinal y la posterior por la ULTIMA. `end` elige cual, `postIndex` elige de que linea es el
+                // poste: los dos ejes conviven sin colapsarse.
+                post.DynamicParameters[SelectiveRackDefaults.LengthParam] =
+                    DynamicFrontGeometry.HeaderHeightAtPost(system, catalog, postIndex, end);
                 post.DynamicParameters[SelectiveRackDefaults.PeralteParam] = postPeralte;
                 instances.Add(post);
 

@@ -31,6 +31,21 @@ namespace RackCad.Application.Persistence
         public double? SeparatorSpacingOverride { get; set; }
         public bool DerivedPostReinforced { get; set; } = true;
         public double? DerivedPostReinforcementHeight { get; set; }
+
+        /// <summary>I-40: altura del poste derivado. Nullable y AUSENTE en documentos anteriores, donde su
+        /// significado es exactamente el de siempre: el poste derivado hereda la altura de la cabecera.</summary>
+        public double? DerivedPostHeight { get; set; }
+
+        /// <summary>
+        /// I-40: configuraciones de cabecera por LINEA fisica. AUSENTE en todo documento anterior, y ausente
+        /// significa exactamente lo de siempre: cada linea usa la configuracion del modulo. El formato solo CRECE
+        /// con un arreglo opcional; nada existente cambia de forma ni de significado.
+        /// </summary>
+        public List<DynamicHeaderLineOverrideDocument> HeaderLineOverrides { get; set; }
+
+        /// <summary>I-40: alturas de poste derivado por linea. AUSENTE en todo documento anterior, y ausente
+        /// significa que cada linea usa la altura del rack, que es lo de siempre.</summary>
+        public List<DynamicDerivedPostLineOverrideDocument> DerivedPostLineOverrides { get; set; }
         public double? ManualHeaderHeightOverride { get; set; }
         public bool? NumberFronts { get; set; }
         public bool? NumberLevels { get; set; }
@@ -78,6 +93,9 @@ namespace RackCad.Application.Persistence
                 SeparatorSpacingOverride = system.SeparatorSpacingOverride,
                 DerivedPostReinforced = system.DerivedPostReinforced,
                 DerivedPostReinforcementHeight = system.DerivedPostReinforcementHeight,
+                DerivedPostHeight = system.DerivedPostHeight,
+                HeaderLineOverrides = DynamicHeaderLineOverrideDocument.From(system.HeaderLineOverrides),
+                DerivedPostLineOverrides = DynamicDerivedPostLineOverrideDocument.From(system.DerivedPostLineOverrides),
                 ManualHeaderHeightOverride = system.ManualHeaderHeightOverride,
                 NumberFronts = system.NumberFronts,
                 NumberLevels = system.NumberLevels,
@@ -123,6 +141,9 @@ namespace RackCad.Application.Persistence
                 SeparatorSpacingOverride = design.SeparatorSpacingOverride,
                 DerivedPostReinforced = design.DerivedPostReinforced,
                 DerivedPostReinforcementHeight = design.DerivedPostReinforcementHeight,
+                DerivedPostHeight = design.DerivedPostHeight,
+                HeaderLineOverrides = DynamicHeaderLineOverrideDocument.From(design.HeaderLineOverrides),
+                DerivedPostLineOverrides = DynamicDerivedPostLineOverrideDocument.From(design.DerivedPostLineOverrides),
                 ManualHeaderHeightOverride = design.ManualHeaderHeightOverride,
                 NumberFronts = design.NumberFronts,
                 NumberLevels = design.NumberLevels,
@@ -175,6 +196,7 @@ namespace RackCad.Application.Persistence
                 SeparatorSpacingOverride = SeparatorSpacingOverride,
                 DerivedPostReinforced = DerivedPostReinforced,
                 DerivedPostReinforcementHeight = DerivedPostReinforcementHeight,
+                DerivedPostHeight = DerivedPostHeight,
                 ManualHeaderHeightOverride = ManualHeaderHeightOverride,
                 NumberFronts = NumberFronts ?? false,
                 NumberLevels = NumberLevels ?? false,
@@ -183,6 +205,24 @@ namespace RackCad.Application.Persistence
                 Dimensions = ValidDimensions(Dimensions),
                 DimensionStyle = DimensionStyle
             };
+
+
+            foreach (var line in HeaderLineOverrides ?? Enumerable.Empty<DynamicHeaderLineOverrideDocument>())
+            {
+                var restored = line?.ToDomain();
+                if (restored?.Header != null)
+                {
+                    design.HeaderLineOverrides.Add(restored);
+                }
+            }
+
+            foreach (var derived in DerivedPostLineOverrides ?? Enumerable.Empty<DynamicDerivedPostLineOverrideDocument>())
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    design.DerivedPostLineOverrides.Add(derived.ToDomain());
+                }
+            }
 
             foreach (var module in Modules ?? Enumerable.Empty<DynamicRackModuleDocument>())
             {
@@ -250,6 +290,7 @@ namespace RackCad.Application.Persistence
                 SeparatorSpacingOverride = SeparatorSpacingOverride,
                 DerivedPostReinforced = DerivedPostReinforced,
                 DerivedPostReinforcementHeight = DerivedPostReinforcementHeight,
+                DerivedPostHeight = DerivedPostHeight,
                 ManualHeaderHeightOverride = ManualHeaderHeightOverride,
                 NumberFronts = NumberFronts ?? false,
                 NumberLevels = NumberLevels ?? false,
@@ -258,6 +299,24 @@ namespace RackCad.Application.Persistence
                 Dimensions = ValidDimensions(Dimensions),
                 DimensionStyle = DimensionStyle
             };
+
+
+            foreach (var line in HeaderLineOverrides ?? Enumerable.Empty<DynamicHeaderLineOverrideDocument>())
+            {
+                var restored = line?.ToDomain();
+                if (restored?.Header != null)
+                {
+                    system.HeaderLineOverrides.Add(restored);
+                }
+            }
+
+            foreach (var derived in DerivedPostLineOverrides ?? Enumerable.Empty<DynamicDerivedPostLineOverrideDocument>())
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    system.DerivedPostLineOverrides.Add(derived.ToDomain());
+                }
+            }
 
             foreach (var module in Modules ?? Enumerable.Empty<DynamicRackModuleDocument>())
             {
@@ -640,6 +699,73 @@ namespace RackCad.Application.Persistence
         }
     }
 
+    /// <summary>Persisted form of a per-LINE derived-post height (I-40).</summary>
+    public sealed class DynamicDerivedPostLineOverrideDocument
+    {
+        public int PostIndex { get; set; }
+        public double Height { get; set; }
+
+        public static List<DynamicDerivedPostLineOverrideDocument> From(
+            IEnumerable<DynamicDerivedPostLineOverride> overrides)
+        {
+            var result = new List<DynamicDerivedPostLineOverrideDocument>();
+            foreach (var item in overrides ?? Enumerable.Empty<DynamicDerivedPostLineOverride>())
+            {
+                if (item != null && item.Height > 0.0)
+                {
+                    result.Add(new DynamicDerivedPostLineOverrideDocument
+                    {
+                        PostIndex = item.PostIndex,
+                        Height = item.Height
+                    });
+                }
+            }
+
+            return result.Count == 0 ? null : result;
+        }
+
+        public DynamicDerivedPostLineOverride ToDomain()
+            => new DynamicDerivedPostLineOverride { PostIndex = PostIndex, Height = Height };
+    }
+
+    /// <summary>Persisted form of a per-LINE cabecera configuration (I-40).</summary>
+    public sealed class DynamicHeaderLineOverrideDocument
+    {
+        public int PostIndex { get; set; }
+        public string ModuleId { get; set; }
+        public RackFrameProjectDocument Header { get; set; }
+
+        public static List<DynamicHeaderLineOverrideDocument> From(
+            IEnumerable<DynamicHeaderLineOverride> overrides)
+        {
+            var result = new List<DynamicHeaderLineOverrideDocument>();
+            foreach (var item in overrides ?? Enumerable.Empty<DynamicHeaderLineOverride>())
+            {
+                if (item?.Header == null || string.IsNullOrWhiteSpace(item.ModuleId))
+                {
+                    continue;   // an override with nothing to install is not an override
+                }
+
+                result.Add(new DynamicHeaderLineOverrideDocument
+                {
+                    PostIndex = item.PostIndex,
+                    ModuleId = item.ModuleId,
+                    Header = RackFrameProjectDocument.FromConfiguration(item.Header)
+                });
+            }
+
+            return result.Count == 0 ? null : result;   // absent when empty: the document does not grow for nothing
+        }
+
+        public DynamicHeaderLineOverride ToDomain()
+            => new DynamicHeaderLineOverride
+            {
+                PostIndex = PostIndex,
+                ModuleId = ModuleId,
+                Header = Header?.ToConfiguration()
+            };
+    }
+
     public sealed class DynamicRackModuleDocument
     {
         public string ModuleId { get; set; }
@@ -697,7 +823,10 @@ namespace RackCad.Application.Persistence
                 // Legacy documents had no provenance flag, and an advanced cabecera edit did not necessarily set
                 // IsManualOverride. Preserve every persisted header as custom; the user can explicitly restore the
                 // calculated preset. Separators have no Header and keep the harmless calculated default.
-                UseCalculatedHeaderConfiguration = UseCalculatedHeaderConfiguration ?? (Header == null),
+                // I-40 (ronda 3): SIN cabecera guardada la procedencia es CALCULADA, aunque el documento diga lo
+                // contrario. «Personalizada» sin configuracion es el estado hibrido que hacia que el editor mostrase
+                // los datos predeterminados bajo la etiqueta «Personalizada»; se repara al leer, no en la UI.
+                UseCalculatedHeaderConfiguration = Header == null || (UseCalculatedHeaderConfiguration ?? false),
                 Notes = Notes,
                 AssociatedFrameConfiguration = Header?.ToConfiguration()
             };
@@ -712,7 +841,8 @@ namespace RackCad.Application.Persistence
                 Length = Length,
                 IsCalculated = IsCalculated,
                 IsManualOverride = IsManualOverride,
-                UseCalculatedHeaderConfiguration = UseCalculatedHeaderConfiguration ?? (Header == null),
+                // Misma reparacion que ToDomain (I-40, ronda 3): sin cabecera guardada, procedencia calculada.
+                UseCalculatedHeaderConfiguration = Header == null || (UseCalculatedHeaderConfiguration ?? false),
                 Notes = Notes,
                 HeaderConfiguration = Header?.ToConfiguration()
             };

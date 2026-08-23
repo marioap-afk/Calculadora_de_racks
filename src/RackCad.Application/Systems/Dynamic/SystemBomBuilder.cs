@@ -209,7 +209,11 @@ namespace RackCad.Application.Systems.Dynamic
                     continue;
                 }
 
-                var primaryHeight = Round(DynamicFrontGeometry.PostHeight(system, postIndex));
+                // I-40 (Owner): la altura del poste derivado por la autoridad unica —la de ESTA linea, luego la del
+                // rack, y si ninguna la del poste en esa linea, que es el comportamiento historico—. El BOM y la
+                // geometria leen exactamente la misma funcion.
+                var primaryHeight = Round(DynamicFrontGeometry.DerivedPostHeightAtPost(
+                    system, postIndex, DynamicFrontGeometry.PostHeight(system, postIndex)));
                 var reinforcementHeight = system.DerivedPostReinforced
                     ? Round(system.DerivedPostReinforcementHeight.HasValue
                             && system.DerivedPostReinforcementHeight.Value > 0.0

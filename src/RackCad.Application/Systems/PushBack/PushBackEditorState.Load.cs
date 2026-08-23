@@ -37,7 +37,8 @@ namespace RackCad.Application.Systems.PushBack
             pushFronts.Clear();
             RearTopeSaque = PushBackDefaults.RearTopeSaque;
             RearTopePieceId = null;   // PB-005: a new rack starts on the default variant, never on the previous rack's
-            SetWorkingBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
+            AdoptLoadedBaseline(null);   // new design: rebuild from a standard structure, drop any loaded baseline
+                                         // AND the module session of whatever rack was open before (I-40, ronda 3)
             SyncPushConfig();
             structure.ToggleCell(0, 0, false);   // deterministic single (0,0) selection; never keep the previous one
             structure.NormalizeSelection();
@@ -56,7 +57,12 @@ namespace RackCad.Application.Systems.PushBack
             if (resolver == null) throw new ArgumentNullException(nameof(resolver));
 
             var system = resolver.Resolve(design);
-            SetWorkingBaseline(system);   // a fresh resolve: an independent deep baseline the recompute preserves
+
+            // I-40 (ronda 3): cargar es ADOPTAR otro rack, no recalcular este. La sesion de modulos del rack
+            // anterior —la que el constructor de la ventana crea con LoadNew— describe cabeceras que no son estas,
+            // y conservarla por coincidencia de firma es lo que hacia que RACKEDITAR mostrase la configuracion
+            // predeterminada sobre una cabecera personalizada.
+            AdoptLoadedBaseline(system);   // a fresh resolve: an independent deep baseline the recompute preserves
             RebuildFromResolved(system);
             return RecoverInputs(design, system);
         }

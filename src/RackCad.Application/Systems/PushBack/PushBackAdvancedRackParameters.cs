@@ -51,6 +51,14 @@ namespace RackCad.Application.Systems.PushBack
                     "La altura del refuerzo debe ser mayor que cero. Deja el campo vacío para reforzar toda la altura del poste derivado.");
             }
 
+            // I-40: la ALTURA del poste derivado, hermana de la del refuerzo. Vacia = la altura de la cabecera, que
+            // es lo que el poste derivado ha heredado siempre.
+            if (inputs.DerivedPostHeight.HasValue && inputs.DerivedPostHeight.Value <= 0.0)
+            {
+                throw new InvalidOperationException(
+                    "La altura del poste derivado debe ser mayor que cero. Deja el campo vacío para que herede la altura de la cabecera.");
+            }
+
             if (inputs.SeparatorCountOverride.HasValue && inputs.SeparatorCountOverride.Value <= 0)
             {
                 throw new InvalidOperationException(
@@ -112,6 +120,7 @@ namespace RackCad.Application.Systems.PushBack
             system.DerivedPostReinforcementHeight = inputs.DerivedPostReinforced
                 ? inputs.DerivedPostReinforcementHeight
                 : null;   // no reinforcement, no length: the structure must not carry a dead measurement
+            system.DerivedPostHeight = inputs.DerivedPostHeight;
             system.SeparatorCountOverride = inputs.SeparatorCountOverride;
             system.SeparatorSpacingOverride = inputs.SeparatorSpacingOverride;
         }
@@ -127,6 +136,7 @@ namespace RackCad.Application.Systems.PushBack
             inputs.ManualHeaderHeightOverride = design.ManualHeaderHeightOverride;
             inputs.DerivedPostReinforced = design.DerivedPostReinforced;
             inputs.DerivedPostReinforcementHeight = design.DerivedPostReinforcementHeight;
+            inputs.DerivedPostHeight = design.DerivedPostHeight;
             inputs.SeparatorCountOverride = design.SeparatorCountOverride;
             inputs.SeparatorSpacingOverride = design.SeparatorSpacingOverride;
         }
@@ -145,6 +155,7 @@ namespace RackCad.Application.Systems.PushBack
             inputs.ManualHeaderHeightOverride = null;
             inputs.DerivedPostReinforced = true;
             inputs.DerivedPostReinforcementHeight = null;
+            inputs.DerivedPostHeight = null;
             inputs.SeparatorCountOverride = null;
             inputs.SeparatorSpacingOverride = null;
         }

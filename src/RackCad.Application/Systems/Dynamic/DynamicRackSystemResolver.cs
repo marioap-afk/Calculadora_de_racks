@@ -161,8 +161,17 @@ namespace RackCad.Application.Systems.Dynamic
 
                     if (module.IsHeader)
                     {
-                        module.AssociatedFrameConfiguration = moduleDesign.UseCalculatedHeaderConfiguration
-                            || moduleDesign.HeaderConfiguration == null
+                        // I-40 (ronda 3): la PROCEDENCIA describe la configuracion que realmente queda instalada.
+                        // Una intencion puede llegar marcada como personalizada SIN configuracion —un documento de
+                        // una version anterior, o un productor con un defecto—; en ese caso aqui se construye la
+                        // CALCULADA, y decir «personalizada» sobre ella es exactamente el estado hibrido que el
+                        // Owner vio: el editor la etiquetaba «Personalizada» y el configurador mostraba los datos
+                        // predeterminados. Se sanea en el limite canonico, no en la UI.
+                        var useCalculated = moduleDesign.UseCalculatedHeaderConfiguration
+                                            || moduleDesign.HeaderConfiguration == null;
+
+                        module.UseCalculatedHeaderConfiguration = useCalculated;
+                        module.AssociatedFrameConfiguration = useCalculated
                             ? builder.BuildHeaderConfiguration(
                                 RackFrameTemplateCatalog.Default,
                                 postId,
@@ -185,6 +194,35 @@ namespace RackCad.Application.Systems.Dynamic
             system.SeparatorSpacingOverride = design.SeparatorSpacingOverride;
             system.DerivedPostReinforced = design.DerivedPostReinforced;
             system.DerivedPostReinforcementHeight = design.DerivedPostReinforcementHeight;
+            system.DerivedPostHeight = design.DerivedPostHeight;
+
+            // I-40: los overrides por linea viajan con COPIA canonica, como cualquier cabecera que cruza un limite.
+            system.DerivedPostLineOverrides.Clear();
+            foreach (var derived in design.DerivedPostLineOverrides)
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    system.DerivedPostLineOverrides.Add(new DynamicDerivedPostLineOverride
+                    {
+                        PostIndex = derived.PostIndex,
+                        Height = derived.Height
+                    });
+                }
+            }
+
+            system.HeaderLineOverrides.Clear();
+            foreach (var line in design.HeaderLineOverrides)
+            {
+                if (line?.Header != null && !string.IsNullOrWhiteSpace(line.ModuleId))
+                {
+                    system.HeaderLineOverrides.Add(new DynamicHeaderLineOverride
+                    {
+                        PostIndex = line.PostIndex,
+                        ModuleId = line.ModuleId,
+                        Header = CloneHeader(line.Header)
+                    });
+                }
+            }
             system.ManualHeaderHeightOverride = design.ManualHeaderHeightOverride;
             system.NumberFronts = design.NumberFronts;
             system.NumberLevels = design.NumberLevels;
@@ -264,8 +302,36 @@ namespace RackCad.Application.Systems.Dynamic
                 SeparatorSpacingOverride = system.SeparatorSpacingOverride,
                 DerivedPostReinforced = system.DerivedPostReinforced,
                 DerivedPostReinforcementHeight = system.DerivedPostReinforcementHeight,
+                DerivedPostHeight = system.DerivedPostHeight,
                 ManualHeaderHeightOverride = system.ManualHeaderHeightOverride
             };
+
+            // I-40: el snapshot devuelve los overrides por linea con copia canonica, para que el diseño persistido
+            // exprese exactamente lo que el sistema resuelto dibuja.
+            foreach (var line in system.HeaderLineOverrides)
+            {
+                if (line?.Header != null && !string.IsNullOrWhiteSpace(line.ModuleId))
+                {
+                    design.HeaderLineOverrides.Add(new DynamicHeaderLineOverride
+                    {
+                        PostIndex = line.PostIndex,
+                        ModuleId = line.ModuleId,
+                        Header = CloneHeader(line.Header)
+                    });
+                }
+            }
+
+            foreach (var derived in system.DerivedPostLineOverrides)
+            {
+                if (derived != null && derived.Height > 0.0)
+                {
+                    design.DerivedPostLineOverrides.Add(new DynamicDerivedPostLineOverride
+                    {
+                        PostIndex = derived.PostIndex,
+                        Height = derived.Height
+                    });
+                }
+            }
 
             design.NumberFronts = system.NumberFronts;
             design.NumberLevels = system.NumberLevels;
