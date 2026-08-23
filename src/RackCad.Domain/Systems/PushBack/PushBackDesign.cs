@@ -40,6 +40,34 @@ namespace RackCad.Domain.Systems.PushBack
         /// <summary>Rear pallet-stop configuration: active by default, deactivable per cell (persists deactivations only).</summary>
         public PushBackRearTopeConfig RearTope { get; set; } = new PushBackRearTopeConfig();
 
+        /// <summary>
+        /// I-42 — la configuracion funcional del lado B. NULL es el rack de un solo sentido: exactamente lo que
+        /// carga cualquier documento anterior a I-42, y por eso ese rack se comporta igual sin migrar nada. Cuando
+        /// existe, <see cref="Structure"/> y <see cref="Fronts"/> siguen siendo la configuracion del lado A y la
+        /// estructura fisica COMPARTIDA de todo el rack; el lado B nunca duplica esa estructura.
+        /// </summary>
+        public PushBackSideDesign SideB { get; set; }
+
+        /// <summary>
+        /// I-42 — la intencion de la INTERFAZ y de la estructura efectiva: gap, separador central, topologia por
+        /// celda y overrides de estructura por lado. NULL es el rack legacy (gap 0, sin separador, topologia
+        /// historica y sin override), asi que su ausencia ES el fallback.
+        /// </summary>
+        public PushBackCompositeDesign Composite { get; set; }
+
+        /// <summary>
+        /// True cuando el rack tiene DOS lados fisicos. Es la unica pregunta que el resto del codigo debe hacerse
+        /// para saber si esta ante un compuesto; nadie debe deducirlo de la presencia de <see cref="Composite"/>,
+        /// que puede existir por si solo (un rack de un lado con override de estructura o con gap declarado).
+        /// </summary>
+        public bool IsComposite => SideB != null && SideB.IsPresent;
+
+        /// <summary>La configuracion de interfaz efectiva: la almacenada, o una neutra equivalente al legacy.</summary>
+        public PushBackCompositeDesign CompositeOrDefault() => Composite ?? new PushBackCompositeDesign
+        {
+            DefaultTopology = PushBackCellTopology.SoloA
+        };
+
         /// <summary>Convenience accessor for the composed pallet spec (the structural intent owns it).</summary>
         public PalletSpecification Pallet => Structure?.Pallet;
 
