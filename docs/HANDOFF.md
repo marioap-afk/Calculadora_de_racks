@@ -1,6 +1,6 @@
 # Project Handoff
 
-> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-07-29**.
+> Estado vivo de RackCad para continuidad entre sesiones. Actualizado: **2026-08-23**.
 > La arquitectura se consulta en [ARCHITECTURE.md](ARCHITECTURE.md), el proceso en
 > [WORKFLOW.md](WORKFLOW.md), el plan en [ROADMAP.md](ROADMAP.md), los procedimientos en
 > [guias/](guias/) y la historia anterior en
@@ -15,6 +15,12 @@ es el único adaptador de la API de AutoCAD.
 El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, dinámico modular y cama
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
+
+**I-40 — Edición de cabeceras de Push Back — queda INTEGRADA y CERRADA** el **2026-08-23**
+(`feature/cabeceras-push-back`). Push Back gana la cabecera personalizada como **autoridad efectiva**, su
+**reutilización** como copia independiente y la **selección masiva** por producto cartesiano
+`Cabeceras destino × Líneas destino`. Funda la **línea física** como segunda dimensión del modelo y
+unifica las vistas sobre `HeaderConfigurationAtPost`. Detalle en §4.
 
 **I-39 — Contrato funcional común de ventanas WPF — queda CERRADA** el **2026-08-07** con la
 integración de **I-39D** (`architecture/dialogos-y-utilitarias`), cuarta y última subiniciativa, con la
@@ -1121,7 +1127,65 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-39 está CERRADA. No hay iniciativa en curso.
+### I-40 está INTEGRADA y CERRADA. No hay iniciativa en curso.
+
+**I-40 — Edición de cabeceras de Push Back quedó integrada el 2026-08-23** con merge `--no-ff` (su SHA
+lo registra el commit de cierre en `main`, como en I-39D), sobre el candidato funcional
+**`b43fcb433eb717ad5484b67f400fb5b77bc03826`**, con **validación manual del Owner APROBADA** en
+AutoCAD 2025 y CI verde en los cuatro jobs. `origin/main`
+**no avanzó** desde la base `8a54a4d`: **sin rebase final**, así que la validación corresponde
+exactamente al contenido integrado.
+
+**Lo que Push Back gana, en su comportamiento final** (no las hipótesis de las rondas rechazadas):
+
+- **A. Cabecera personalizada autoritativa.** Sobrevive Actualizar, RACKEDITAR y save/load con su
+  configuración **completa** —altura, PanelClear, horizontales, paneles, placas—, no solo su efecto
+  geométrico. Ya no es representable el estado híbrido «Personalizada + configuración predeterminada»:
+  se repara en los **tres** límites canónicos (resolver, persistencia y sesión).
+- **B. Reutilización.** La configuración de otra cabecera se copia como instancia **independiente**;
+  cada destino recibe su propio `RackFrameProjectStore.DeepCopy`. **Sin biblioteca persistente y sin
+  referencias entre cabeceras.**
+- **C. Selección masiva.** La configuración **origen** es independiente de los destinos: se obtiene una
+  vez y se aplica cuantas veces haga falta, **sin reabrir el configurador**. Los destinos son el
+  **producto cartesiano `Cabeceras destino × Líneas destino`**, ambos con multiselección y atajos
+  «Esta»/«Todas»; la aplicación es **explícita**, **atómica** (valida los dos ejes y resuelve el
+  producto entero antes de tocar nada) y **Cancelar** revierte todo lo escenificado.
+- **D. Líneas físicas.** Segunda dimensión del modelo: `DynamicHeaderLineOverride` direccionado por
+  **`(PostIndex, ModuleId)`**. Una cabecera longitudinal ya no es forzosamente igual en todos los cortes.
+- **E. Poste derivado.** Altura global nullable como **fallback compatible** más
+  `DynamicDerivedPostLineOverride` **por línea**; vacío = hereda la altura de la cabecera, que es el
+  comportamiento histórico.
+- **F. Vistas.** El lateral usa la configuración **física del corte**; la **frontal es el corte de la
+  PRIMERA cabecera longitudinal** y la **posterior el de la ÚLTIMA** —nunca una envolvente ni un
+  `Max()`—; y el **protector lateral del último corte** deja de dibujarse invertido. Las tres vistas y
+  el BOM leen la **misma** autoridad, `DynamicFrontGeometry.HeaderConfigurationAtPost`.
+
+**Compatibilidad.** El formato de alambre **solo crece** con dos arreglos **opcionales**
+(`HeaderLineOverrides`, `DerivedPostLineOverrides`) y un `double?` (`DerivedPostHeight`): ausentes en
+todo documento anterior, y ausente significa el comportamiento de siempre. **GUID intacto.** Sin
+paquetes NuGet nuevos, sin shell nuevo y sin tocar `RackEditorVisualShell` ni `RackFrames`.
+
+**Consecuencia declarada sobre infraestructura compartida.** El Dinámico comparte
+`DynamicFrontGeometry`, `DynamicRackSystemResolver`, los builders frontal y lateral, `SystemBomBuilder`
+y `RackModuleEditSession`. Nunca escribe overrides por línea, así que con ninguno presente su
+comportamiento es idéntico; lo que sí cambia para él es que su **frontal** pasa a seguir la
+configuración de la cabecera del corte en vez de una altura derivada — la misma corrección que I-40
+necesitaba, cubierta por sus suites (Dynamic 205 + 41, Selective 324 + 33, Cantilever 869 + 75).
+
+**No hay siguiente acción autorizada.** Ninguna iniciativa se abre sin instrucción del Owner. I-38
+—cálculo resistente, cargas y capacidad— tampoco se abre, y no reabre
+[ADR-0017](adr/0017-validacion-cargas-diferida-ram-elements.md).
+
+**Deuda registrada por I-40, fuera de su alcance y sin bloquear el cierre:**
+
+- `DynamicSystemFrontalBuilder.ResolvePlatePeralte` sigue leyendo el peralte de placa de la **primera**
+  cabecera con configuración del rack, sin mirar línea ni corte. No es una altura y el Owner no lo
+  reportó; queda anotado por simetría con la corrección de las vistas.
+- La regla adaptativa del protector lateral vive en `DynamicLateralGuardPlan` y su copia espejada se
+  reinterpreta en el lateral. Funciona y está cubierta, pero **el eje del espejo no está modelado**: se
+  deduce en cada vista.
+
+### I-39 está CERRADA.
 
 **I-39 — Contrato funcional común de ventanas WPF quedó cerrada el 2026-08-07**, con sus cuatro
 subiniciativas integradas en `main`: **I-39A** (`44f84bd`, ronda 2 aprobada, **ADR-0029 aceptado**),
@@ -1879,7 +1943,30 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-37C — 2026-07-29** (la vigente):
+**Baseline integrada de I-40 — 2026-08-23** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `b43fcb433eb717ad5484b67f400fb5b77bc03826`
+  (CI run `32621965348`, **success** en los cuatro jobs: Tests, Build UI, UI Tests y Build Plugin). El
+  SHA final de rama difiere del aprobado **solo en documentación de cierre**;
+- `origin/main` **no avanzó** desde la base `8a54a4d`: **sin rebase final**, de modo que la validación
+  manual corresponde exactamente al contenido integrado;
+- **validación manual del Owner en AutoCAD 2025: APROBADA**, sobre personalización de cabeceras,
+  persistencia tras Actualizar, reapertura con RACKEDITAR, copia de configuraciones, selección
+  cartesiana en sus cinco combinaciones (una×una, una×todas, varias×varias, todas×una, todas×todas),
+  poste derivado por línea, frontal y posterior sincronizados con los cortes físicos y **no**
+  envolventes, líneas intermedias independientes, protector lateral del último corte, Cancelar y
+  geometría general;
+- suites locales sobre el HEAD de rama: **RackCad.Tests 3037/3037** y **RackCad.UI.Tests 818 correctas /
+  17 omitidas / 835 totales**; Debug de UI (0 advertencias, 0 errores) y del Plugin (0 errores, solo los
+  MSB3277 conocidos);
+- **cinco rondas rechazadas** antes de la aprobación (`e31902b`, `3669adc`, `b515dc5`, `73325cf`,
+  `04f76cf`). Cada una dejó su causa raíz escrita en
+  [`initiatives/I-40-cabeceras-push-back.md`](initiatives/I-40-cabeceras-push-back.md): la frontera del
+  configurador que devolvía una instancia obsoleta, la regeneración desde plantilla del modo rápido,
+  dibujar sin confirmar la sesión, la sesión que sobrevivía a cargar otro rack, el alcance acoplado al
+  configurador y la envolvente de altura en las dos vistas.
+
+**Baseline integrada de I-37C — 2026-07-29** (histórica):
 
 - candidato de **código** aprobado por el Owner y por CI:
   `e1c3cab24d16ea0a6565fc43a81dcc0f2e31c694` (CI run `30510202275`, **success** en los cuatro jobs). El SHA

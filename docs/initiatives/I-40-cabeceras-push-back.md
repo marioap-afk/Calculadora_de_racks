@@ -3,7 +3,7 @@ schema: rackcad-initiative/v1
 id: I-40
 title: Edicion de cabeceras de Push Back
 type: feature
-status: implementing   # ronda 2 del Owner corregida; esperando nueva validacion manual
+status: integrated
 branch: feature/cabeceras-push-back
 base_branch: main
 priority:
