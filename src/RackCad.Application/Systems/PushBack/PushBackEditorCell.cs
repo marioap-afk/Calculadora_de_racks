@@ -21,6 +21,18 @@ namespace RackCad.Application.Systems.PushBack
         public bool RearTopeEnabled { get; set; } = true;
 
         /// <summary>
+        /// I-41 (PB-015) — el FONDO propio de esta celda, o null para heredar el del frente. La precedencia completa
+        /// vive en <see cref="PushBackCellDepth.Effective(int?, int)"/>; aqui solo se guarda la intencion.
+        /// </summary>
+        public int? PalletsDeepOverride { get; set; }
+
+        /// <summary>
+        /// I-41 (PB-016) — si esta celda dibuja su tarima. FALSE es el default LEGACY: Push Back no dibujaba ninguna
+        /// antes de I-41, y arrancar en false es lo que conserva exactamente el dibujo historico.
+        /// </summary>
+        public bool DrawPallet { get; set; }
+
+        /// <summary>
         /// Copy the Push-Back-specific values from an edit buffer (mirrors <see cref="DynamicEditorCell.Apply"/>).
         ///
         /// Owner decision (2026-07-24): the cell SCOPES (Celda/Selección/Nivel/Frente/Todo) must NOT copy
@@ -28,6 +40,13 @@ namespace RackCad.Application.Systems.PushBack
         /// deactivations through the rear-tope config; applying a scope must never silently switch a neighbouring
         /// cell's stop on or off. That is why the tope is absent from <see cref="PushBackEditorValues"/> entirely —
         /// there is no buffer field for it to travel in.
+        /// <para>
+        /// I-41 extiende esa misma regla a <see cref="PalletsDeepOverride"/> y <see cref="DrawPallet"/>, por una razon
+        /// del contrato: una operacion masiva de I-41 debe tocar UNICAMENTE la propiedad pedida. Si viajaran en este
+        /// buffer, aplicar «tarima al nivel» arrastraria de propina el claro, el largo y las dos tarimas de la celda
+        /// origen. Por eso tampoco estan en <see cref="PushBackEditorValues"/>: se escriben por sus propias
+        /// operaciones de alcance en <see cref="PushBackEditorState"/>.
+        /// </para>
         /// </summary>
         public void Apply(PushBackEditorValues values)
         {
@@ -35,7 +54,13 @@ namespace RackCad.Application.Systems.PushBack
         }
 
         public PushBackEditorCell Clone()
-            => new PushBackEditorCell { HighEndBeamPeralte = HighEndBeamPeralte, RearTopeEnabled = RearTopeEnabled };
+            => new PushBackEditorCell
+            {
+                HighEndBeamPeralte = HighEndBeamPeralte,
+                RearTopeEnabled = RearTopeEnabled,
+                PalletsDeepOverride = PalletsDeepOverride,
+                DrawPallet = DrawPallet
+            };
 
         public static PushBackEditorCell Default() => new PushBackEditorCell();
 

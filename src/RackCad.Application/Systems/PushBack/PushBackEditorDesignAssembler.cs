@@ -150,7 +150,12 @@ namespace RackCad.Application.Systems.PushBack
             var postPeralte = editorInputs.PostPeralte;
             var pallet = ClonePallet(editorInputs.Pallet);
 
-            var depthLayout = DynamicDepthGeometry.Resolve(matrix.BuildFrontDesigns(), Math.Max(2, editorInputs.PalletsDeep));
+            // I-41 (PB-015): la estructura se dimensiona por la ENVOLVENTE de cada frente —el mayor fondo efectivo de
+            // sus niveles activos—, no por el fondo por defecto. Es la MISMA lista que se usa mas abajo para armar el
+            // diseno, construida una sola vez: si el layout se calculara con una lista y el diseno con otra, la
+            // decision de reconstruir (MustRebuild) se tomaria sobre una estructura distinta de la que se guarda.
+            var envelopeFronts = state.BuildEnvelopeFrontDesigns();
+            var depthLayout = DynamicDepthGeometry.Resolve(envelopeFronts, Math.Max(2, editorInputs.PalletsDeep));
             var palletsDeep = depthLayout.TotalPositions;
 
             // I-35 (Owner round 2) — the four advanced RACK-WIDE scopes. They are validated BEFORE anything is built,
@@ -272,15 +277,39 @@ namespace RackCad.Application.Systems.PushBack
                 RearTope = new PushBackRearTopeConfig { Saque = state.RearTopeSaque, PieceId = state.RearTopePieceId }
             };
 
+            // I-41 (PB-015): la ENVOLVENTE mandada a la estructura compartida. El diseno se arma desde el matrix, que
+            // sigue llevando el fondo POR DEFECTO de cada frente, asi que hay que volver a escribirla — si no, un
+            // guardado devolveria el default como si fuera la estructura y el rack encogeria al recargarlo.
+            for (var frontIndex = 0; frontIndex < sharedDesign.Fronts.Count && frontIndex < envelopeFronts.Count; frontIndex++)
+            {
+                sharedDesign.Fronts[frontIndex].PalletsDeep = envelopeFronts[frontIndex].PalletsDeep;
+            }
+
             // Rear peralte per front x level (already canonical), and ONLY deactivations materialized into the OffCells.
+            // I-41 anade, en el MISMO recorrido y sobre la MISMA entrada por frente, el fondo por defecto, el override
+            // de cada celda y su flag de tarima, de modo que las cuatro listas no pueden desalinearse por nivel.
             for (var frontIndex = 0; frontIndex < matrix.Count; frontIndex++)
             {
                 var levelsF = Math.Max(1, matrix.Fronts[frontIndex].LoadLevels);
-                var config = new PushBackFrontConfig();
+                var config = new PushBackFrontConfig
+                {
+                    // El fondo POR DEFECTO es el que el usuario escribe en «Fondos frente»; la envolvente es derivada
+                    // y vive en la estructura. Guardar los dos es lo que hace el round trip reversible.
+                    DefaultPalletsDeep = Math.Max(
+                        PushBackCellDepth.MinimumPalletsDeep, matrix.Fronts[frontIndex].PalletsDeep)
+                };
                 for (var level = 0; level < levelsF; level++)
                 {
                     var cell = state.Cell(frontIndex, level);
                     config.HighEndBeamPeraltes.Add(cell.HighEndBeamPeralte);
+                    config.PalletsDeepOverrides.Add(
+                        cell.PalletsDeepOverride.HasValue
+                        && cell.PalletsDeepOverride.Value >= PushBackCellDepth.MinimumPalletsDeep
+                            ? cell.PalletsDeepOverride
+                            : null);
+                    // Solo el TRUE es intencion: el default legacy es false y se deja implicito, igual que el tope
+                    // posterior solo materializa desactivaciones.
+                    config.DrawPallets.Add(cell.DrawPallet ? true : (bool?)null);
                     if (!cell.RearTopeEnabled)
                     {
                         design.RearTope.Disable(frontIndex, level);

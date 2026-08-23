@@ -49,10 +49,13 @@ namespace RackCad.Application.Systems.PushBack
                 // PB-004 (I-32): el builder compartido recibe el contexto de elevaciones y coloca los largueros
                 // IN/OUT YA en su elevación derivada, junto con el desviador bajo y las anotaciones. No hay
                 // reasiento posterior: antes esta vista movía las piezas después, localizándolas por coordenada.
-                return HeaderInstanceGrouper.Group(
-                    dynamicBuilder.Build(
-                        structure, catalog, DynamicRackEnd.Exit, PushBackElevations.Context(system, catalog)),
-                    "PB_FRONTAL_ENTRADA_SALIDA");
+                var low = dynamicBuilder
+                    .Build(structure, catalog, DynamicRackEnd.Exit, PushBackElevations.Context(system, catalog))
+                    .ToList();
+                // I-41 (PB-016): las tarimas de las celdas que las piden, apoyadas sobre el contacto BAJO real de su
+                // cama. Sin ninguna celda marcada no se agrega nada y el corte es el de siempre.
+                low.AddRange(Tarimas(system, catalog, lowEnd: true));
+                return HeaderInstanceGrouper.Group(low, "PB_FRONTAL_ENTRADA_SALIDA");
             }
 
             // El corte POSTERIOR no lleva override: su larguero es el ancla y conserva la elevación del resolver.
@@ -131,7 +134,69 @@ namespace RackCad.Application.Systems.PushBack
                 result.Add(instance); // keep posts/plates/decorations
             }
 
+            // I-41 (PB-016): la misma tarima vista desde el otro extremo de la calle. Se apoya sobre el contacto
+            // POSTERIOR real de la cama, que es el ancla de esta vista.
+            result.AddRange(Tarimas(system, catalog, lowEnd: false));
+
             return HeaderInstanceGrouper.Group(result, "PB_FRONTAL_POSTERIOR");
+        }
+
+        /// <summary>
+        /// I-41 (PB-016) — las filas de tarimas de un corte frontal: una por celda que las pide, con tantas tarimas
+        /// como calles tiene el frente, repartidas sobre la LONGITUD de su larguero y apoyadas sobre el contacto real
+        /// de la cama en el extremo que este corte muestra. Las medidas —columna, longitud, contacto— salen de las
+        /// autoridades que ya existen (<see cref="DynamicFrontGeometry"/>, <see cref="PushBackLoadBeamGeometry"/> y
+        /// <see cref="PushBackElevations"/>); aqui no se recalcula ninguna.
+        /// </summary>
+        private static IReadOnlyList<HeaderBlockInstance> Tarimas(PushBackSystem system, RackCatalog catalog, bool lowEnd)
+        {
+            var result = new List<HeaderBlockInstance>();
+            var structure = system?.Structure;
+            if (structure == null)
+            {
+                return result;
+            }
+
+            var layout = DynamicFrontGeometry.Compute(structure, catalog);
+            var columns = Math.Min(layout.PostPositions.Count, layout.TroquelPositions.Count);
+            var supportLocalY = PushBackTarimaPlacement.SupportLocalY(catalog);
+            for (var frontIndex = 0; frontIndex < structure.Fronts.Count && frontIndex < columns; frontIndex++)
+            {
+                var front = structure.Fronts[frontIndex];
+                var elevations = PushBackElevations.Resolve(system, catalog, front);
+                var axes = PushBackFlowBedGeometry.Resolve(system, catalog, front);
+                var anchorX = layout.PostPositions[frontIndex] + layout.TroquelPositions[frontIndex];
+                for (var level = 0; level < DynamicFrontActivation.EffectiveLoadLevels(front); level++)
+                {
+                    if (!system.DrawPalletAt(frontIndex, level) || !elevations.TryGetValue(level + 1, out var elevation))
+                    {
+                        continue;
+                    }
+
+                    // La carga descansa sobre los RODILLOS, no sobre el contacto del larguero con el riel. La altura
+                    // de apoyo se pide a la MISMA autoridad que la coloca en el lateral, evaluada en el extremo que
+                    // este corte muestra, para que las tres vistas no puedan discrepar.
+                    var axis = axes.FirstOrDefault(candidate => candidate.LevelNumber == level + 1);
+                    if (axis.LevelNumber != level + 1)
+                    {
+                        continue;   // sin eje de cama no hay superficie de apoyo, y no se inventa una
+                    }
+
+                    var endX = lowEnd ? elevation.LowContact.X : elevation.RearContact.X;
+                    var cell = DynamicRackLevelGeometry.At(structure, front, level + 1);
+                    result.AddRange(PushBackTarimaPlacement.FrontalRow(
+                        catalog,
+                        Math.Max(1, front.PalletCount),
+                        anchorX,
+                        PushBackLoadBeamGeometry.CellBeamLength(structure, front, level + 1),
+                        cell?.Bfr ?? 0.0,
+                        PushBackTarimaPlacement.SupportYAt(axis, supportLocalY, endX),
+                        cell?.Pallet?.Front ?? 0.0,
+                        cell?.Pallet?.Height ?? 0.0));
+                }
+            }
+
+            return result;
         }
 
 

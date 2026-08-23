@@ -95,12 +95,25 @@ namespace RackCad.Application.Systems.PushBack
             {
                 var levels = Math.Max(1, structure.Fronts[frontIndex].LoadLevels);
                 var front = new PushBackEditorFront();
+
+                // I-41 (PB-015): la matriz vuelve de la estructura, que solo lleva la ENVOLVENTE. El fondo POR DEFECTO
+                // del frente —lo que el usuario ve y edita en «Fondos frente»— viaja aparte en el sistema resuelto, y
+                // se restituye aqui. Sin esto, cada guardar/abrir subiria el default hasta la envolvente y el override
+                // de la celda mas profunda desapareceria en silencio al segundo round trip.
+                var frontDefault = system.DefaultPalletsDeepAt(frontIndex);
+                structure.Fronts[frontIndex].PalletsDeep = Math.Max(PushBackCellDepth.MinimumPalletsDeep, frontDefault);
+
                 for (var level = 0; level < levels; level++)
                 {
+                    var effective = system.EffectivePalletsDeepAt(frontIndex, level);
                     front.Cells.Add(new PushBackEditorCell
                     {
                         HighEndBeamPeralte = system.HighEndBeamPeralteAt(frontIndex, level),
-                        RearTopeEnabled = rearTope.At(frontIndex, level)
+                        RearTopeEnabled = rearTope.At(frontIndex, level),
+                        // Solo es override lo que DIFIERE del default: una celda que coincide vuelve heredando, que es
+                        // lo que el usuario expreso, y no queda un override huerfano esperando a divergir.
+                        PalletsDeepOverride = effective != frontDefault ? effective : (int?)null,
+                        DrawPallet = system.DrawPalletAt(frontIndex, level)
                     });
                 }
 

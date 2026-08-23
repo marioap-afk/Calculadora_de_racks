@@ -241,6 +241,61 @@
                             </WrapPanel>
                             <TextBlock Text="Ctrl + clic selecciona varias celdas. Los alcances copian tarima, claro, largo y ambos largueros; el tope posterior NO viaja con ellos &#8212; se configura en Seguridad."
                                        Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
+
+                            <!-- ==================== I-41 · FONDO Y TARIMA POR CELDA (PB-015 / PB-016) ====================
+                                 Estas dos propiedades tienen sus PROPIOS botones a proposito. Los alcances de arriba
+                                 aplican el buffer COMPLETO de la celda, asi que hacerlas viajar en el arrastraria de
+                                 propina el claro, el largo y ambos largueros de la celda origen. Cada boton de aqui
+                                 escribe UNA sola propiedad sobre el alcance elegido, y una sola vez: el recalculo se
+                                 difiere hasta el final de la operacion. La seleccion y los cinco alcances son los MISMOS
+                                 (Ctrl + clic en la matriz); no hay un segundo modelo de seleccion. -->
+                            <TextBlock Text="Fondo y tarima por celda" Style="{StaticResource SectionTitle}" Margin="0,10,0,2" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Fondo celda" Style="{StaticResource FieldLabel}" />
+                                    <controls:NumericField x:Name="CellFondoOverrideBox" LostFocus="CellFondo_Changed"
+                                                           IsOptional="True" IntegerOnly="True" Minimum="2"
+                                                           ToolTipService.ShowOnDisabled="True"
+                                                           ToolTip="Fondo propio de esta celda. Vac&#237;o = hereda el «Fondos frente»." />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                    <CheckBox x:Name="CellDrawPalletCheck" Content="Dibujar tarima" Margin="0,0,0,4"
+                                              Foreground="{DynamicResource ShellTextPrimaryBrush}"
+                                              Checked="CellDrawPallet_Changed" Unchecked="CellDrawPallet_Changed"
+                                              ToolTipService.ShowOnDisabled="True"
+                                              ToolTip="Referencia VISUAL en el lateral y en los dos cortes frontales. Nunca entra al BOM." />
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="Alcance de estas dos:" Style="{StaticResource FieldLabel}" Margin="0,6,0,2" />
+                            <ComboBox x:Name="CellPropertyScopeBox" SelectedIndex="0"
+                                      ToolTip="A qu&#233; celdas aplican los botones de abajo. «Selecci&#243;n» usa las celdas marcadas con Ctrl + clic.">
+                                <ComboBoxItem Content="Celda" />
+                                <ComboBoxItem Content="Selecci&#243;n" />
+                                <ComboBoxItem Content="Nivel" />
+                                <ComboBoxItem Content="Frente" />
+                                <ComboBoxItem Content="Todo" />
+                            </ComboBox>
+                            <WrapPanel Margin="0,6,0,0">
+                                <Button x:Name="ApplyCellFondoButton" Content="Aplicar fondo" Style="{StaticResource SecondaryButtonStyle}"
+                                        MinWidth="104" Margin="0,0,6,6" Click="ApplyCellFondo_Click"
+                                        ToolTip="Escribe SOLO el fondo en las celdas del alcance." />
+                                <Button x:Name="RestoreCellFondoButton" Content="Restaurar fondo" Style="{StaticResource SecondaryButtonStyle}"
+                                        MinWidth="118" Margin="0,0,6,6" Click="RestoreCellFondo_Click"
+                                        ToolTip="Elimina el fondo propio: las celdas del alcance vuelven a heredar el del frente." />
+                                <Button x:Name="ApplyCellPalletButton" Content="Aplicar tarima" Style="{StaticResource SecondaryButtonStyle}"
+                                        MinWidth="110" Margin="0,0,6,6" Click="ApplyCellPallet_Click"
+                                        ToolTip="Escribe SOLO el estado de la tarima en las celdas del alcance." />
+                                <Button x:Name="RestoreCellPalletButton" Content="Quitar tarimas" Style="{StaticResource SecondaryButtonStyle}"
+                                        MinWidth="112" Margin="0,0,6,6" Click="RestoreCellPallet_Click"
+                                        ToolTip="Devuelve las celdas del alcance al valor por omisi&#243;n: sin tarima." />
+                            </WrapPanel>
+                            <TextBlock Text="El «Fondos frente» de arriba sigue siendo el valor que heredan las celdas sin fondo propio. La estructura del frente se dimensiona por el nivel m&#225;s profundo. Las tarimas son referencia visual y no entran al BOM."
+                                       Foreground="#7A8794" FontSize="9.5" TextWrapping="Wrap" />
                         </StackPanel>
                     </Border>
 

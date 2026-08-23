@@ -121,12 +121,10 @@ namespace RackCad.Application.Systems.PushBack
                 catalog, FlowBedDefaults.RailId, FlowBedDefaults.RailInOutMatePoint, FlowBedDefaults.View);
             var gridBase = PushBackTroquelGrid.Base(structure, catalog);
 
-            // La subida NOMINAL sobre la longitud comercial: ya no elige el troquel, pero sigue siendo la
-            // referencia del tercer desempate. Se calcula con la fórmula ANTERIOR, no reconstruyéndola desde la
-            // posición teórica asimétrica — son cantidades distintas y confundirlas volvería a hacer inútil el
-            // desempate.
-            var nominalRise = PushBackBedSlope.Rise(PushBackFlowBedGeometry.ResolveBedLength(system, front));
-            var placements = DynamicLoadBeamGeometry.Placements(structure, front);
+            // I-41 (PB-015): las colocaciones ya llegan con la X del larguero posterior resuelta POR CELDA, así que
+            // todo lo que sigue —la subida nominal, el contacto posterior y la elección del troquel bajo— se calcula
+            // sobre el fondo efectivo de cada nivel sin que ninguna fórmula cambie.
+            var placements = PushBackPlacements.Resolve(system, front);
 
             foreach (var level in placements.Select(p => p.LevelNumber).Distinct())
             {
@@ -136,6 +134,13 @@ namespace RackCad.Application.Systems.PushBack
                 {
                     continue;
                 }
+
+                // La subida NOMINAL sobre la longitud comercial: ya no elige el troquel, pero sigue siendo la
+                // referencia del tercer desempate. Se calcula con la fórmula ANTERIOR, no reconstruyéndola desde la
+                // posición teórica asimétrica — son cantidades distintas y confundirlas volvería a hacer inútil el
+                // desempate. I-41 la mide sobre la cama de ESTA celda: con fondos distintos por nivel, una sola
+                // subida nominal por frente desempataría contra una longitud que ese nivel no tiene.
+                var nominalRise = PushBackBedSlope.Rise(PushBackCellDepth.BedLength(system, front, level));
 
                 // El contacto posterior lo elige la GEOMETRÍA entre las dos aristas medidas del bloque.
                 var rearContact = PushBackLoadBeamGeometry.RearBeamTangencyPointWorld(

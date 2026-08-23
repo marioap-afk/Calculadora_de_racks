@@ -16,6 +16,14 @@ El producto mantiene cuatro familias operativas en `main`: cabecera, selectivo, 
 de rodamiento. Comparten identidad por GUID embebida en DWG, edición round-trip y vistas ligadas. El
 dinámico modular de I-02 y la instalación segura de I-04 están integrados.
 
+**I-41 — Configuración por celda de Push Back — queda INTEGRADA y CERRADA** el **2026-08-23**
+(`feature/push-back-cell-configuration`). El **fondo** deja de ser una propiedad del FRENTE y se resuelve
+por **celda** (`FrontIndex + LevelIndex`) con una regla de precedencia única, de modo que el
+`PalletsDeep` del frente pasa a ser la **envolvente estructural derivada** (**PB-015**); y cada celda
+decide si dibuja su **tarima** (**PB-016**), que es referencia visual y **nunca entra al BOM**.
+**Validación manual del Owner APROBADA** en AutoCAD 2025 sobre el DLL construido desde `c41aee1`.
+**ADR-0030 queda `aceptado`** con el modelo implementado, incluida su limitación declarada. Detalle en §4.
+
 **I-40 — Edición de cabeceras de Push Back — queda INTEGRADA y CERRADA** el **2026-08-23**
 (`feature/cabeceras-push-back`). Push Back gana la cabecera personalizada como **autoridad efectiva**, su
 **reutilización** como copia independiente y la **selección masiva** por producto cartesiano
@@ -880,6 +888,18 @@ parámetro sin default**: los tres heredados siguen siendo entradas obligatorias
 
 ## 2. Última validación real
 
+**I-41 (2026-08-23) — APROBADA.** El dueño cargó por NETLOAD el DLL Debug del worktree de
+`feature/push-back-cell-configuration`, construido **exactamente** desde
+`c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`, y aprobó la configuración por celda de Push Back en AutoCAD
+2025: fondos distintos por celda dentro de un mismo frente, restauración al fondo del frente, los cinco
+alcances de «Aplicar fondo» y «Aplicar tarima», tarimas por celda en el lateral seccionado y en los dos
+cortes frontales, su **ausencia del BOM**, la regresión de I-40 con cabeceras personalizadas por línea y
+el caso legacy. La aprobación llegó tras **dos correcciones de representación** de la tarima —tangencia
+al rodillo e inclinación en el lateral, alineación por calle en frontal y posterior— que no tocaron
+persistencia, BOM ni el contrato de I-41. `origin/main` **no avanzó** desde la base `43181a3`, así que
+**no hubo rebase final** y la validación corresponde exactamente al contenido integrado.
+
+
 La última validación manual de comportamiento sigue siendo I-02 sobre `b0de31d`, después del rebase
 sobre `main`: el dueño cargó el DLL Debug del worktree en AutoCAD 2025 y confirmó el checklist
 completo del dinámico modular, incluidos vistas, seguridad, BOM, persistencia, round-trip, escenario
@@ -1127,7 +1147,72 @@ veredicto.
 
 ## 4. Siguiente acción
 
-### I-40 está INTEGRADA y CERRADA. No hay iniciativa en curso.
+### I-41 está INTEGRADA y CERRADA. No hay iniciativa en curso.
+
+**I-41 — Configuración por celda de Push Back quedó integrada el 2026-08-23**, sobre el candidato
+funcional **`c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`**, con **validación manual del Owner APROBADA**
+en AutoCAD 2025 y CI verde. `origin/main` **no avanzó** desde la base `43181a3`: **sin rebase final**,
+así que la validación corresponde exactamente al contenido integrado.
+
+**Lo que Push Back gana, en su comportamiento final:**
+
+- **A. PB-015 — fondo efectivo por celda.** La celda se identifica por `FrontIndex + LevelIndex`. Su
+  fondo se resuelve con **una sola regla de precedencia**, que vive en una sola función
+  (`PushBackCellDepth.Effective`): `override de la celda ?? fondo por defecto del frente`, acotado
+  después a `[2, envolvente]`. No hay una tercera fuente.
+- **B. Default por frente + override por celda.** El **fondo por defecto del frente** es lo que el
+  usuario escribe en «Fondos frente» y lo que heredan las celdas sin fondo propio; se persiste **aparte**
+  en `PushBackFrontConfig.DefaultPalletsDeep`. Sin ese campo el round trip no sería reversible: una
+  envolvente no sabe qué heredaba cada nivel, así que cada guardar/abrir subiría el default hasta la
+  envolvente y el override más profundo desaparecería al segundo ciclo.
+- **C. Envolvente estructural derivada.** `DynamicRackFrontDesign.PalletsDeep` deja de ser la autoridad
+  final de producto y pasa a ser el **mayor fondo efectivo de los niveles activos** del frente. Es lo que
+  dimensiona la estructura compartida —módulos, cabeceras, separadores y postes derivados—, y es la razón
+  por la que I-40 sobrevive sin ninguna medida especial.
+- **D. Todo consume el fondo efectivo.** Cama y su longitud, pendiente, elevaciones, larguero posterior,
+  tope posterior, intermedios, las cuatro vistas y el **BOM** preguntan por celda, nunca por frente. El
+  BOM cotiza **una cama por celda**, no una por frente.
+- **E. PB-016 — `DrawPallet` por celda.** Autoridad por celda, con **default legacy `false`**: Push Back
+  no dibujaba ninguna tarima antes de I-41, así que un rack anterior queda **idéntico**. La tarima se
+  apoya sobre los **RODILLOS** —`Y de apoyo = origen del rodillo + radio del rodillo`—, **sigue la
+  pendiente** de su cama en el lateral y va **centrada en su calle BFR** en los dos cortes frontales.
+- **F. `PalletHeight` por celda.** Sigue siendo la autoridad **que ya existía** (`DynamicRackLevelDesign`
+  / `DynamicEditorCell`); I-41 **no crea una segunda**. Aplicar por «Nivel» es solo un **alcance** de
+  edición masiva, no una propiedad del nivel.
+- **G. Tarimas fuera del BOM.** Son `HeaderBlockRole.Pallet`, referencia **visual**. El BOM de Push Back
+  se construye desde el **sistema resuelto**, no desde los planes, así que no existe vía por la que
+  puedan llegar a él; está fijado por prueba que el BOM es idéntico con y sin tarimas.
+- **H. Compatibilidad legacy.** Los tres campos de I-41 son nullable y **ausentes** en todo documento
+  anterior. Su ausencia ES el fallback: fondo por defecto = el fondo estructural (que en un rack anterior
+  coincide con el de todos sus niveles), sin overrides y sin ninguna tarima. Un documento sin overrides
+  ni tarimas **no escribe ningún campo nuevo**.
+- **I. Preservación de I-40.** Mientras la **envolvente** no se mueva, el layout de fondos es idéntico,
+  `DynamicEditorDesignAssembler.MustRebuild` responde `false`, el recálculo copia el baseline y con él
+  sobreviven intactos `ModuleId`, las **cabeceras por línea** y las **alturas de poste derivado por
+  línea**. Si la envolvente cambia legítimamente, la reconciliación descarta lo que apunte a un módulo
+  que ya no existe, sin dejar overrides huérfanos.
+- **J. Corrección final de la tarima** (tras el rechazo de la primera validación manual): tangencia al
+  rodillo e **inclinación** en el lateral —se construye en el sistema local de la cama y se lleva a mundo
+  con la **misma transformación rígida** del montaje de riel y rodillos, llevando su rotación—, y
+  **alineación por calle** en frontal y posterior, con la altura de apoyo evaluada en el extremo que cada
+  corte muestra. Ninguna de las dos tocó persistencia, BOM ni contrato.
+- **K. Sin modelos paralelos.** Reutiliza `DynamicFrontMatrix`, la multiselección y los cinco alcances
+  `Cell/Selected/Level/Front/All`. Las operaciones masivas de I-41 escriben **una sola propiedad** —no
+  viajan en `PushBackEditorValues`, porque `Apply` arrastraría el resto de la celda origen— y provocan
+  **una sola recomputación**.
+- **L. Limitación declarada y ACEPTADA.** El corte lateral **NO seccionado** no dibuja tarimas: ya era
+  una envolvente antes de I-41 y no hay celda a la que preguntar. Las tarimas viven en los **cortes**
+  laterales y en los dos cortes frontales.
+
+**Dinámico, Selectivo y Cama no se tocan**, y está fijado por prueba que no mencionan nada de I-41.
+
+**[ADR-0030](adr/0030-fondo-por-celda-push-back-y-envolvente-derivada.md) queda `aceptado`** por el
+dueño con el modelo implementado, incluida la limitación del punto L. A partir de aquí su contenido es
+**inmutable**.
+
+---
+
+#### I-40 (integrada el 2026-08-23, previa a I-41)
 
 **I-40 — Edición de cabeceras de Push Back quedó integrada el 2026-08-23** con merge `--no-ff`
 **`bf327b353fc181d3ca5192641c54b9abf96ea39d`** (padres `8a54a4d` y `2673aab`), sobre el candidato
@@ -1943,7 +2028,28 @@ la Fase 5, depende de todas).
 
 ## 5. Última verificación vigente
 
-**Baseline integrada de I-40 — 2026-08-23** (la vigente):
+**Baseline integrada de I-41 — 2026-08-23** (la vigente):
+
+- candidato **funcional** aprobado por el Owner: `c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`
+  (CI run `32627802845`, **success**). El SHA final de rama difiere del aprobado **solo en documentación
+  de cierre**;
+- **merge `--no-ff`**: el SHA queda registrado en el commit de registro sobre `main`;
+- `origin/main` **no avanzó** desde la base `43181a33c391eb56c81dcf10b755a603743dc276`: **sin rebase
+  final**, de modo que la validación manual corresponde exactamente al contenido integrado;
+- **validación manual del Owner en AutoCAD 2025: APROBADA**, sobre fondos distintos por celda,
+  restauración al fondo del frente, los cinco alcances de fondo y de tarima, tarimas por celda en el
+  lateral seccionado y en los dos cortes frontales, su ausencia del BOM, la regresión de I-40 con
+  cabeceras personalizadas por línea y el caso legacy;
+- **una ronda de representación rechazada** antes de la aprobación: las tarimas se veían escalonadas en
+  el lateral —dibujadas horizontales sobre la línea del ORIGEN del riel en vez de tangentes a los
+  rodillos— y desalineadas respecto de su calle en frontal y posterior. Corregido en `c41aee1`;
+- suites locales sobre el HEAD de rama: **RackCad.Tests 3133/3133** y **RackCad.UI.Tests 834 correctas /
+  17 omitidas / 851 totales**; Debug de UI (0 advertencias, 0 errores) y del Plugin (0 errores, solo los
+  MSB3277 conocidos);
+- **22 filtros dirigidos** auditados sin que ninguno descubra cero pruebas;
+- **[ADR-0030](adr/0030-fondo-por-celda-push-back-y-envolvente-derivada.md) `aceptado`** por el dueño.
+
+**Baseline integrada de I-40 — 2026-08-23** (previa):
 
 - candidato **funcional** aprobado por el Owner: `b43fcb433eb717ad5484b67f400fb5b77bc03826`
   (CI run `32621965348`, **success** en los cuatro jobs: Tests, Build UI, UI Tests y Build Plugin). El
@@ -2956,3 +3062,10 @@ vez de sobre el dibujo, porque la iniciativa que la trae no dibuja nada. Las dec
 Owner para **toda** la línea I-37 —troqueles y placas visuales dentro; cálculo y fabricación fuera; peso
 diferido; pendiente del brazo parametrizable; frontal, lateral y planta obligatorias en el MVP— viven en
 [`docs/automation/decisions/I-37.md`](automation/decisions/I-37.md).
+
+**ADR-0030 — el fondo de Push Back es de la CELDA; el del frente es una envolvente derivada —
+`aceptado` el 2026-08-23** (iniciativa I-41). El dueño la acepta **con el modelo tal como quedó
+implementado**, tras validar manualmente en AutoCAD 2025 el DLL construido exactamente desde
+`c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`, e **incluye expresamente la limitación declarada**: el corte
+lateral **NO seccionado** no dibuja tarimas, por ser una envolvente y no una celda. Su contenido es
+**inmutable** desde ahora; solo pueden cambiar su Estado y sus enlaces.
