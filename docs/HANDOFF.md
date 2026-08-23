@@ -1149,7 +1149,8 @@ veredicto.
 
 ### I-41 está INTEGRADA y CERRADA. No hay iniciativa en curso.
 
-**I-41 — Configuración por celda de Push Back quedó integrada el 2026-08-23**, sobre el candidato
+**I-41 — Configuración por celda de Push Back quedó integrada el 2026-08-23** con merge `--no-ff`
+**`a28c9b73965f528ffbf3c2cd893e52da36995063`** (padres `43181a3` y `638c009`), sobre el candidato
 funcional **`c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`**, con **validación manual del Owner APROBADA**
 en AutoCAD 2025 y CI verde. `origin/main` **no avanzó** desde la base `43181a3`: **sin rebase final**,
 así que la validación corresponde exactamente al contenido integrado.
@@ -2033,7 +2034,7 @@ la Fase 5, depende de todas).
 - candidato **funcional** aprobado por el Owner: `c41aee1b8bcbfc0d6fed7a38b8c4767538648cd2`
   (CI run `32627802845`, **success**). El SHA final de rama difiere del aprobado **solo en documentación
   de cierre**;
-- **merge `--no-ff`**: el SHA queda registrado en el commit de registro sobre `main`;
+- **merge `--no-ff`**: `a28c9b73965f528ffbf3c2cd893e52da36995063`, padres `43181a3` y `638c009`;
 - `origin/main` **no avanzó** desde la base `43181a33c391eb56c81dcf10b755a603743dc276`: **sin rebase
   final**, de modo que la validación manual corresponde exactamente al contenido integrado;
 - **validación manual del Owner en AutoCAD 2025: APROBADA**, sobre fondos distintos por celda,
